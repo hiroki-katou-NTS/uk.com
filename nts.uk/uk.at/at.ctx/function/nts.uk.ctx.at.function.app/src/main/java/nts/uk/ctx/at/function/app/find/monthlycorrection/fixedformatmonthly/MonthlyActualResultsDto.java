@@ -12,19 +12,15 @@ import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyAc
 @Setter
 @NoArgsConstructor
 public class MonthlyActualResultsDto {
-	/**ID*/
-	private String monthlyActualID;
 	/**月次表示項目シート一覧*/
 	private List<SheetCorrectedMonthlyDto> listSheetCorrectedMonthly;
-	public MonthlyActualResultsDto(String monthlyActualID, List<SheetCorrectedMonthlyDto> listSheetCorrectedMonthly) {
+	public MonthlyActualResultsDto( List<SheetCorrectedMonthlyDto> listSheetCorrectedMonthly) {
 		super();
-		this.monthlyActualID = monthlyActualID;
 		this.listSheetCorrectedMonthly = listSheetCorrectedMonthly;
 	}
 	
 	public static MonthlyActualResultsDto fromDomain(MonthlyActualResults domain) {
 		return new MonthlyActualResultsDto(
-				domain.getMonthlyActualID(),
 				domain.getListSheetCorrectedMonthly().stream().map(c->SheetCorrectedMonthlyDto.fromDomain(c)).collect(Collectors.toList())
 				);
 	}

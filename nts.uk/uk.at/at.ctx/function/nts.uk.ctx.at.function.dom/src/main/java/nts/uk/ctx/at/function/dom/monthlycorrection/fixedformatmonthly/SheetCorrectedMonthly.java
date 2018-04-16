@@ -13,21 +13,19 @@ import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPer
  */
 @Getter
 public class SheetCorrectedMonthly extends DomainObject {
-	/**ID*/
-	private String monthlyActualID;
 	/**並び順*/
 	private int sheetNo;
 	/**名称*/
 	private DailyPerformanceFormatName sheetName;
 	/**月次表示項目一覧*/
 	private List<DisplayTimeItem> listDisplayTimeItem;
-	public SheetCorrectedMonthly(String monthlyActualID, int sheetNo, DailyPerformanceFormatName sheetName, List<DisplayTimeItem> listDisplayTimeItem) {
+	public SheetCorrectedMonthly(int sheetNo, DailyPerformanceFormatName sheetName, List<DisplayTimeItem> listDisplayTimeItem) {
 		super();
-		this.monthlyActualID = monthlyActualID;
 		this.sheetNo = sheetNo;
 		this.sheetName = sheetName;
 		this.listDisplayTimeItem = listDisplayTimeItem;
 	}
+
 
 
 	

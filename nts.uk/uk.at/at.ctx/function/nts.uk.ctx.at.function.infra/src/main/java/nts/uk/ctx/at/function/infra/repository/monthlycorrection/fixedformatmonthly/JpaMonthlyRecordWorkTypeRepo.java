@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.infra.repository.monthlycorrection.fixedformatmonthly;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,119 +12,106 @@ import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyAc
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyRecordWorkType;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyRecordWorkTypeRepository;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.SheetCorrectedMonthly;
-import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.KfnmtDisplayTimeItemRC;
-import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.KfnmtMonthlyActualResultRC;
+import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.KrcmtDisplayTimeItemRC;
+import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.KrcmtMonthlyActualResultRC;
+import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.KrcmtMonthlyRecordWorkType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 
 @Stateless
-public class JpaMonthlyRecordWorkTypeRepo  extends JpaRepository implements MonthlyRecordWorkTypeRepository {
+public class JpaMonthlyRecordWorkTypeRepo extends JpaRepository implements MonthlyRecordWorkTypeRepository {
 
-	private static final  String GET_MON_BY_CODE  = "SELECT a FROM KfnmtMonthlyActualResultRC a "
-			+ " WHERE a.companyID = :companyId "
-			+ " AND a.businessTypeCode = :businessTypeCode";
-	
-	
+	private static final String GET_ALL_MON = "SELECT a FROM KrcmtMonthlyRecordWorkType a " + " WHERE a.krcmtMonthlyRecordWorkTypePK.companyID = :companyId ";
+
+	private static final String GET_MON_BY_CODE = GET_ALL_MON + " AND a.krcmtMonthlyRecordWorkTypePK.businessTypeCode = :businessTypeCode";
+
+	@Override
+	public List<MonthlyRecordWorkType> getAllMonthlyRecordWorkType(String companyID) {
+		List<MonthlyRecordWorkType> data = this.queryProxy().query(GET_ALL_MON, KrcmtMonthlyRecordWorkType.class).setParameter("companyID", companyID).getList(c -> c.toDomain());
+		return data;
+	}
+
 	@Override
 	public Optional<MonthlyRecordWorkType> getMonthlyRecordWorkTypeByCode(String companyID, String businessTypeCode) {
-		List<KfnmtMonthlyActualResultRC> data =
-				this.queryProxy().query(GET_MON_BY_CODE,KfnmtMonthlyActualResultRC.class)
-				.setParameter("companyID", companyID)
-				.setParameter("businessTypeCode", businessTypeCode)
-				.getList();
-		if(data.isEmpty()){
-			return Optional.empty();
-		}
-		List<SheetCorrectedMonthly> listSheetCorrectedMonthly = data.stream().map(c->c.toDomain()).collect(Collectors.toList());
-		
-		MonthlyActualResults monthlyActualResults = new MonthlyActualResults(
-				listSheetCorrectedMonthly.get(0).getMonthlyActualID(),
-				listSheetCorrectedMonthly
-				);
-		MonthlyRecordWorkType monthlyRecordWorkType = new MonthlyRecordWorkType(
-				companyID,
-				new BusinessTypeCode(businessTypeCode),
-				monthlyActualResults
-				);
-		return Optional.of(monthlyRecordWorkType);
+		Optional<MonthlyRecordWorkType> data = this.queryProxy().query(GET_MON_BY_CODE, KrcmtMonthlyRecordWorkType.class).setParameter("companyID", companyID).setParameter("businessTypeCode", businessTypeCode).getSingle(c -> c.toDomain());
+		return data;
 	}
 
 	@Override
 	public void addMonthlyRecordWorkType(MonthlyRecordWorkType monthlyRecordWorkType) {
-		List<KfnmtMonthlyActualResultRC> newEntity = monthlyRecordWorkType.getDisplayItem().getListSheetCorrectedMonthly()
-				.stream().map(c->KfnmtMonthlyActualResultRC.toEntity(
-						monthlyRecordWorkType.getDisplayItem().getMonthlyActualID(),
-						monthlyRecordWorkType.getCompanyID(),monthlyRecordWorkType.getBusinessTypeCode().v()
-						, c)).collect(Collectors.toList());
-		this.commandProxy().insertAll(newEntity);
+		KrcmtMonthlyRecordWorkType newEntity = KrcmtMonthlyRecordWorkType.toEntity(monthlyRecordWorkType);
+		this.commandProxy().insert(newEntity);
 	}
-
-//	@Override
-//	public void deleteMonthlyRecordWorkType(String companyID, String businessTypeCode) {
-//		List<KfnmtMonthlyActualResultRC> data =
-//				this.queryProxy().query(GET_MON_BY_CODE,KfnmtMonthlyActualResultRC.class)
-//				.setParameter("companyID", companyID)
-//				.setParameter("businessTypeCode", businessTypeCode)
-//				.getList();
-//		this.commandProxy().removeAll(data);
-//		
-//	}
 
 	@Override
 	public void updateMonthlyRecordWorkType(MonthlyRecordWorkType monthlyRecordWorkType) {
-		List<KfnmtMonthlyActualResultRC> newEntity = monthlyRecordWorkType.getDisplayItem().getListSheetCorrectedMonthly()
-				.stream().map(c->KfnmtMonthlyActualResultRC.toEntity(
-						monthlyRecordWorkType.getDisplayItem().getMonthlyActualID(),
-						monthlyRecordWorkType.getCompanyID(),monthlyRecordWorkType.getBusinessTypeCode().v()
-						, c)).collect(Collectors.toList());
-		//List<KfnmtDisplayTimeItemRC> listKfnmtDisplayTimeItemRC = newEntity.ge
-		List<KfnmtMonthlyActualResultRC> updateEntity =
-				this.queryProxy().query(GET_MON_BY_CODE,KfnmtMonthlyActualResultRC.class)
-				.setParameter("companyID", monthlyRecordWorkType.getCompanyID())
-				.setParameter("businessTypeCode", monthlyRecordWorkType.getBusinessTypeCode().v())
-				.getList();
-		//loop list from ui -> server
-		for(KfnmtMonthlyActualResultRC newMonthlyRC : newEntity) {
-			//loop list from db
-			for(KfnmtMonthlyActualResultRC updateMonthlyRC : updateEntity) {
-				//if monthlyActualID from ui = monthlyActualID from db
-				if(newMonthlyRC.kfnmtMonthlyActualResultRCPK.monthlyActualID.equals(updateMonthlyRC.kfnmtMonthlyActualResultRCPK.monthlyActualID)) {
-					//get list DisplayTimeItemRC from newMonthlyRC
-					List<KfnmtDisplayTimeItemRC> newDisplayRC = newMonthlyRC.listKfnmtDisplayTimeItemRC;
-					//get list DisplayTimeItemRC from updateMonthlyRC
-					List<KfnmtDisplayTimeItemRC> updateDisplayRC = updateMonthlyRC.listKfnmtDisplayTimeItemRC;
-					//loop list newDisplayRC
-					for(KfnmtDisplayTimeItemRC displayNew : newDisplayRC) {
-						boolean checkExist = false;
-						for(KfnmtDisplayTimeItemRC displayUpdate : updateDisplayRC) {
-							if(displayNew.kfnmtDisplayTimeItemRCPK.itemDisplay == displayUpdate.kfnmtDisplayTimeItemRCPK.itemDisplay) {
-								checkExist = true;
-								break;
-							}
-						}
-						if(!checkExist) {
-							this.commandProxy().insert(displayNew);
-						}
-						
-					}
-					
-					//loop list updateDisplayRC, 
-					for(KfnmtDisplayTimeItemRC displayUpdate : updateDisplayRC) {
-						boolean checkExist = false;
-						for(KfnmtDisplayTimeItemRC displayNew : newDisplayRC) {
-							if(displayNew.kfnmtDisplayTimeItemRCPK.itemDisplay == displayUpdate.kfnmtDisplayTimeItemRCPK.itemDisplay) {
-								checkExist = true;
-								break;
-							}
-						}
-						if(!checkExist) {
-							this.commandProxy().remove(displayUpdate);
-						}
-						
-					}
-					
-				}//end if
-			}//end for 2
-		}//end for 1
+		KrcmtMonthlyRecordWorkType newEntity = KrcmtMonthlyRecordWorkType.toEntity(monthlyRecordWorkType);
+
+		KrcmtMonthlyRecordWorkType updateEntity = this.queryProxy().query(GET_MON_BY_CODE, KrcmtMonthlyRecordWorkType.class).setParameter("companyID", monthlyRecordWorkType.getCompanyID())
+				.setParameter("businessTypeCode", monthlyRecordWorkType.getBusinessTypeCode()).getSingle().get();
+
+		
+		List<KrcmtMonthlyActualResultRC> toInsertM = new ArrayList<>();
+		List<KrcmtMonthlyActualResultRC> toUpdateC = new ArrayList<>();
+		newEntity.listKrcmtMonthlyActualResultRC.stream().forEach(nE-> {
+			boolean isExist = updateEntity.listKrcmtMonthlyActualResultRC.stream().filter(oE -> {
+					return  oE.krcmtMonthlyActualResultRCPK.businessTypeCode.equals(nE.krcmtMonthlyActualResultRCPK.businessTypeCode)
+						&& oE.krcmtMonthlyActualResultRCPK.companyID.equals(nE.krcmtMonthlyActualResultRCPK.companyID)
+						&& oE.krcmtMonthlyActualResultRCPK.sheetNo == nE.krcmtMonthlyActualResultRCPK.sheetNo;
+			}).findFirst().isPresent();
+			if(isExist) {
+				toUpdateC.add(nE);
+			} else {
+				toInsertM.add(nE);
+			}
+		});
+		commandProxy().insertAll(toInsertM);
+		//update list Item
+		List<KrcmtDisplayTimeItemRC> newItem = toUpdateC.stream().map(c -> c.listKrcmtDisplayTimeItemRC).flatMap(List::stream).collect(Collectors.toList());
+		List<KrcmtDisplayTimeItemRC> updateItem = updateEntity.listKrcmtMonthlyActualResultRC.stream().map(c -> c.listKrcmtDisplayTimeItemRC).flatMap(List::stream).collect(Collectors.toList());
+
+		List<KrcmtDisplayTimeItemRC> toRemove = new ArrayList<>();
+		List<KrcmtDisplayTimeItemRC> toUpdate = new ArrayList<>();
+		List<KrcmtDisplayTimeItemRC> toAdd = new ArrayList<>();
+		
+		//check add and update
+		for(KrcmtDisplayTimeItemRC nItem : newItem) {
+			boolean checkItem = false;
+			for(KrcmtDisplayTimeItemRC uItem : updateItem) {
+				if(nItem.krcmtDisplayTimeItemRCPK.businessTypeCode.equals(uItem.krcmtDisplayTimeItemRCPK.businessTypeCode)
+						&& nItem.krcmtDisplayTimeItemRCPK.companyID.equals(uItem.krcmtDisplayTimeItemRCPK.companyID)
+						&& nItem.krcmtDisplayTimeItemRCPK.sheetNo == uItem.krcmtDisplayTimeItemRCPK.sheetNo
+						&& nItem.krcmtDisplayTimeItemRCPK.itemDisplay == uItem.krcmtDisplayTimeItemRCPK.itemDisplay) {
+					checkItem = true;
+					toUpdate.add(nItem);	
+				}
+			}
+			if(!checkItem) {
+				toAdd.add(nItem);
+			}
+				
+		}
+		//check remove
+		for(KrcmtDisplayTimeItemRC uItem : updateItem ) {
+			boolean checkItem = false;
+			for(KrcmtDisplayTimeItemRC nItem : newItem) {
+				if(nItem.krcmtDisplayTimeItemRCPK.businessTypeCode.equals(uItem.krcmtDisplayTimeItemRCPK.businessTypeCode)
+						&& nItem.krcmtDisplayTimeItemRCPK.companyID.equals(uItem.krcmtDisplayTimeItemRCPK.companyID)
+						&& nItem.krcmtDisplayTimeItemRCPK.sheetNo == uItem.krcmtDisplayTimeItemRCPK.sheetNo
+						&& nItem.krcmtDisplayTimeItemRCPK.itemDisplay == uItem.krcmtDisplayTimeItemRCPK.itemDisplay) {
+					checkItem = true;
+					break;
+				}
+			}
+			if(!checkItem) {
+				toRemove.add(uItem);
+			}
+				
+		}
+		
+		this.commandProxy().insertAll(toAdd);
+		this.commandProxy().update(toUpdate);
+		this.commandProxy().removeAll(toRemove);
+
 	}
 
 }

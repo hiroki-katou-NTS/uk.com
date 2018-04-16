@@ -12,17 +12,15 @@ import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.SheetCorr
 @Setter
 @NoArgsConstructor
 public class SheetCorrectedMonthlyDto {
-	/**ID*/
-	private String monthlyActualID;
+
 	/**並び順*/
 	private int sheetNo;
 	/**名称*/
 	private String sheetName;
 	/**月次表示項目一覧*/
 	private List<DisplayTimeItemDto> listDisplayTimeItem;
-	public SheetCorrectedMonthlyDto(String monthlyActualID, int sheetNo, String sheetName, List<DisplayTimeItemDto> listDisplayTimeItem) {
+	public SheetCorrectedMonthlyDto( int sheetNo, String sheetName, List<DisplayTimeItemDto> listDisplayTimeItem) {
 		super();
-		this.monthlyActualID = monthlyActualID;
 		this.sheetNo = sheetNo;
 		this.sheetName = sheetName;
 		this.listDisplayTimeItem = listDisplayTimeItem;
@@ -30,7 +28,6 @@ public class SheetCorrectedMonthlyDto {
 	
 	public static SheetCorrectedMonthlyDto fromDomain(SheetCorrectedMonthly domain) {
 		return new SheetCorrectedMonthlyDto(
-				domain.getMonthlyActualID(),
 				domain.getSheetNo(),
 				domain.getSheetName().v(),
 				domain.getListDisplayTimeItem().stream().map(c->DisplayTimeItemDto.fromDomain(c)).collect(Collectors.toList())

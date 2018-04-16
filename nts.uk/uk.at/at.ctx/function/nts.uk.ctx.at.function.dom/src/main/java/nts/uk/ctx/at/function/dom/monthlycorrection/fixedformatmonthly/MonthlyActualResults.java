@@ -11,14 +11,13 @@ import nts.arc.layer.dom.DomainObject;
  */
 @Getter
 public class MonthlyActualResults extends DomainObject {
-	/**ID*/
-	private String monthlyActualID;
 	/**月次表示項目シート一覧*/
 	private List<SheetCorrectedMonthly> listSheetCorrectedMonthly;
-	public MonthlyActualResults(String monthlyActualID, List<SheetCorrectedMonthly> listSheetCorrectedMonthly) {
+
+	public MonthlyActualResults(List<SheetCorrectedMonthly> listSheetCorrectedMonthly) {
 		super();
-		this.monthlyActualID = monthlyActualID;
 		this.listSheetCorrectedMonthly = listSheetCorrectedMonthly;
 	}
+
 
 }

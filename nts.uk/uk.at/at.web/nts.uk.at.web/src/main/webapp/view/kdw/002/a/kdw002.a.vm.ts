@@ -15,12 +15,10 @@ module nts.uk.at.view.kdw002.a {
             timeInputCurrentCode: KnockoutObservable<any>;
             linebreak: KnockoutObservable<any>;
             timeInputEnable: KnockoutObservable<boolean>;
-
             //
             isDaily: boolean;
             isSave : KnockoutObservable<boolean>;
             constructor(dataShare: any) {
-               
                 var self = this;
                 //
                 self.isSave = ko.observable(true);
@@ -162,19 +160,20 @@ module nts.uk.at.view.kdw002.a {
                 }
             }
 
-        interface IAttendanceItem {
-            attendanceItemId: number;
-            attendanceItemName: string;
-        }
-        class AttendanceItem {
-            attendanceItemId: number;
-            attendanceItemName: string;
-
-            constructor(params: IAttendanceItem) {
-                var self = this;
-                self.attendanceItemId = params.attendanceItemId;
-                self.attendanceItemName = params.attendanceItemName;
-            }
+//            interface IAttendanceItem {
+//                attendanceItemId: number;
+//                attendanceItemName: string;
+//            }
+//            class AttendanceItem {
+//                attendanceItemId: number;
+//                attendanceItemName: string;
+//    
+//                constructor(params: IAttendanceItem) {
+//                    var self = this;
+//                    self.attendanceItemId = params.attendanceItemId;
+//                    self.attendanceItemName = params.attendanceItemName;
+//                }
+//            }
         }
     }
 }

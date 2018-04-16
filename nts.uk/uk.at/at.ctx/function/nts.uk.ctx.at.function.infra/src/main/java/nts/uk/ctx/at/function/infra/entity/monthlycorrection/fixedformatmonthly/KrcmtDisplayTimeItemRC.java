@@ -16,43 +16,46 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_DIS_TIME_ITEM_RC")
-public class KfnmtDisplayTimeItemRC extends UkJpaEntity implements Serializable  {
+@Table(name = "KRCMT_BUS_MON_FORM_ITEM")
+public class KrcmtDisplayTimeItemRC extends UkJpaEntity implements Serializable  {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KfnmtDisplayTimeItemRCPK kfnmtDisplayTimeItemRCPK;
+	public KrcmtDisplayTimeItemRCPK krcmtDisplayTimeItemRCPK;
 	
 	@Column(name = "DISPLAY_ORDER")
 	public int displayOrder;
 
-	@Column(name = "COLUMN_WIDTH_TABLE")
+	@Column(name = "COLUMN_WIDTH")
 	public Integer columnWidthTable;
 	
 	@ManyToOne
 	@JoinColumns( {
-        @JoinColumn(name = "MON_ACTUAL_RESULTS_ID", referencedColumnName = "MON_ACTUAL_RESULTS_ID", insertable = false, updatable = false),
-        @JoinColumn(name = "SHEET_NO", referencedColumnName = "SHEET_NO", insertable = false, updatable = false)
+		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+        @JoinColumn(name = "BUSINESS_TYPE_CODE", referencedColumnName = "BUSINESS_TYPE_CODE", insertable = false, updatable = false),
+        @JoinColumn(name = "SHEET_NO", referencedColumnName = "SHEET_NO", insertable = false, updatable = false),
+        
     })
-	public KfnmtMonthlyActualResultRC monthlyacresult;
+	public KrcmtMonthlyActualResultRC monthlyacresult;
 	
 	@Override
 	protected Object getKey() {
-		return kfnmtDisplayTimeItemRCPK;
+		return krcmtDisplayTimeItemRCPK;
 	}
 
-	public KfnmtDisplayTimeItemRC(KfnmtDisplayTimeItemRCPK kfnmtDisplayTimeItemRCPK, int displayOrder, Integer columnWidthTable) {
+	public KrcmtDisplayTimeItemRC(KrcmtDisplayTimeItemRCPK krcmtDisplayTimeItemRCPK, int displayOrder, Integer columnWidthTable) {
 		super();
-		this.kfnmtDisplayTimeItemRCPK = kfnmtDisplayTimeItemRCPK;
+		this.krcmtDisplayTimeItemRCPK = krcmtDisplayTimeItemRCPK;
 		this.displayOrder = displayOrder;
 		this.columnWidthTable = columnWidthTable;
 	}
 	
-	public static KfnmtDisplayTimeItemRC toEntity(String monthlyActualID,int sheetNo,DisplayTimeItem domain) {
-		return new KfnmtDisplayTimeItemRC(
-				new KfnmtDisplayTimeItemRCPK(
-						monthlyActualID,
+	public static KrcmtDisplayTimeItemRC toEntity(String conpanyID,String businessTypeCode,int sheetNo,DisplayTimeItem domain) {
+		return new KrcmtDisplayTimeItemRC(
+				new KrcmtDisplayTimeItemRCPK(
+						conpanyID,
+						businessTypeCode,
 						sheetNo,
 						domain.getItemDaily()
 						),
@@ -62,7 +65,7 @@ public class KfnmtDisplayTimeItemRC extends UkJpaEntity implements Serializable 
 	}
 	public DisplayTimeItem toDomain() {
 		return new DisplayTimeItem(
-				this.kfnmtDisplayTimeItemRCPK.itemDisplay,
+				this.krcmtDisplayTimeItemRCPK.itemDisplay,
 				this.displayOrder,
 				this.columnWidthTable
 				);

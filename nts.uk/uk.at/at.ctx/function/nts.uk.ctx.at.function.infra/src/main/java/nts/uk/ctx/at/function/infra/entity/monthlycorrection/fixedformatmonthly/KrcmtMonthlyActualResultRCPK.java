@@ -13,12 +13,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class KfnmtMonthlyActualResultRCPK implements Serializable  {
+public class KrcmtMonthlyActualResultRCPK implements Serializable  {
 
 	private static final long serialVersionUID = 1L;
 	
-	@Column(name = "MON_ACTUAL_RESULTS_ID")
-	public String monthlyActualID;
+	@Column(name = "CID")
+	public String companyID;
+	
+	@Column(name = "BUSINESS_TYPE_CODE")
+	public String businessTypeCode;
 	
 	@Column(name = "SHEET_NO")
 	public int sheetNo;
