@@ -252,11 +252,11 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 
             //create leftMost Header and Content
             leftmostColumns = [
-                { headerText: text("KAF018_60"), key: "sName", width: "150px", control: "link" }
+                { headerText: text("KAF018_60"), key: "sName", width: "150px", control: "link", handler: function(rData, rowIdx, key) {} }
             ];
 
             if (self.useSetting.monthlyConfirm) {
-                leftmostColumns.push({ headerText: formatText(text("KAF018_61"), self.currentMonth), key: "monthConfirm", width: "40px" });
+                leftmostColumns.push({ headerText: formatText(text("KAF018_61"), self.currentMonth), key: "monthConfirm", width: "40px", headerControl: "link", headerHandler: function() {} });
             }
             if (self.useSetting.usePersonConfirm) {
                 leftmostColumns.push({ headerText: text("KAF018_62"), key: "personConfirm", width: "40px" });
@@ -312,6 +312,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 columns: detailContentColumns,
                 dataSource: listData,
                 primaryKey: "index",
+                highlight: false,
                 features: [{
                     name: "BodyCellStyle",
                     decorator: detailContentDeco
@@ -416,7 +417,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                             break;
                     }
                     detailContentDeco.push(new shareModel.CellColor(key, i.toString(), clazz));
-                    if (listData[i].dailyReport[j].hasError) { 
+                    if (listData[i].dailyReport[j].hasError) {
                         listData[i][key] = "ER";
                     }
                     else {

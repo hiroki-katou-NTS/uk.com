@@ -76,19 +76,8 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                             let wkp = _.find(listWorkplace, { code: item.wkpId });
                             self.listWkpStatusConfirm.push(new ApprovalStatusActivity(item.wkpId, wkp.name, item.monthConfirm, item.monthUnconfirm, item.bossConfirm, item.bossUnconfirm, item.personConfirm, item.personUnconfirm))
                             self.listWkpActive.push({ code: item.wkpId, name: wkp.name });
-
-                            let width = 500;
-                            if (self.useSetting.monthlyConfirm) {
-                                width += 100;
-                            }
-                            if (self.useSetting.useBossConfirm) {
-                                width += 100;
-                            }
-                            if (self.useSetting.usePersonConfirm) {
-                                width += 100;
-                            }
-                            $("#fixed-table").ntsFixedTable({ width: width, height: 186 });
                         })
+
                         dfd.resolve();
                     }).always(function() {
                         block.clear();
@@ -101,6 +90,21 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                 dfd.reject();
             }
             return dfd.promise();
+        }
+
+        initFixedTable() {
+            var self = this;
+            let width = 500;
+            if (self.useSetting.monthlyConfirm) {
+                width += 100;
+            }
+            if (self.useSetting.useBossConfirm) {
+                width += 200;
+            }
+            if (self.useSetting.usePersonConfirm) {
+                width += 200;
+            }
+            $("#fixed-table").ntsFixedTable({ width: width, height: 186 });
         }
 
         sendMail(value: TransmissionAttr) {
@@ -190,7 +194,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
         enable: boolean;
 
         constructor(code: string, name: string, monthConfirm: number, monthUnconfirm: number, dayBossUnconfirm: number, dayBossConfirm: number, dayPrincipalUnconfirm: number, dayPrincipalConfirm: number) {
-            /*this.code = code;
+            this.code = code;
             this.name = name;
             this.monthConfirm = monthConfirm ? monthConfirm : null;
             this.monthUnconfirm = monthUnconfirm ? monthUnconfirm : null;
@@ -198,23 +202,6 @@ module nts.uk.at.view.kaf018.e.viewmodel {
             this.dayBossConfirm = dayBossConfirm ? dayBossConfirm : null;
             this.dayPrincipalUnconfirm = dayPrincipalUnconfirm ? dayPrincipalUnconfirm : null;
             this.dayPrincipalConfirm = dayPrincipalConfirm ? dayPrincipalConfirm : null;
-            if (dayPrincipalUnconfirm == 0 && dayBossUnconfirm == 0 && monthUnconfirm == 0) {
-                //this.enable = false;
-                this.enable = true;
-                this.check = ko.observable(this.enable);
-            }
-            else {
-                this.enable = true;
-                this.check = ko.observable(this.enable);
-            }*/
-            this.code = code;
-            this.name = name;
-            this.monthConfirm = monthConfirm ? monthConfirm : 1;
-            this.monthUnconfirm = monthUnconfirm ? monthUnconfirm : 2;
-            this.dayBossUnconfirm = dayBossUnconfirm ? dayBossUnconfirm : 3;
-            this.dayBossConfirm = dayBossConfirm ? dayBossConfirm : 4;
-            this.dayPrincipalUnconfirm = dayPrincipalUnconfirm ? dayPrincipalUnconfirm : 5;
-            this.dayPrincipalConfirm = dayPrincipalConfirm ? dayPrincipalConfirm : 6;
             if (dayPrincipalUnconfirm == 0 && dayBossUnconfirm == 0 && monthUnconfirm == 0) {
                 //this.enable = false;
                 this.enable = true;
