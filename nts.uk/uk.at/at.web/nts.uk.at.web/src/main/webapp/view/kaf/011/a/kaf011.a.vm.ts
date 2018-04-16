@@ -113,7 +113,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.prePostSelectedCode(data.preOrPostType);
                 self.recWk().wkTypes(data.recWkTypes || []);
                 self.absWk().wkTypes(data.absWkTypes || []);
-                self.appReasons(data.appReasons || []);
+                self.appReasons(data.appReasonComboItems || []);
                 self.employeeID(data.employeeID);
                 self.manualSendMailAtr(data.applicationSetting.manualSendMailAtr);
                 self.drawalReqSet(new common.DrawalReqSet(data.drawalReqSet || null));

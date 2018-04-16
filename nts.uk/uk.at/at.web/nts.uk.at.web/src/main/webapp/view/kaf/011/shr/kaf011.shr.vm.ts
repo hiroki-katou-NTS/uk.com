@@ -68,7 +68,7 @@ module nts.uk.at.view.kaf011.shr {
             recWkTypes: Array<any>;
             absWkTypes: Array<any>;
             preOrPostType: any;
-            appReasons: Array<any>;
+            appReasonComboItems: Array<any>;
             employeeID: string;
             employeeName: string;
             drawalReqSet: any;
