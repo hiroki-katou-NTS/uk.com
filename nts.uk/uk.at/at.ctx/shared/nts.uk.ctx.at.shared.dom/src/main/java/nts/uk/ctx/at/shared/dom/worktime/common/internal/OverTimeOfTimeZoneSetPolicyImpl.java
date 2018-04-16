@@ -143,60 +143,42 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 		if (!predTime.isPredetermine() && AmPmAtr.AM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode)
 				&& useHalfDayShift) {
 			
-			// case MorningStartTime in shift1 + not use shift 2
+			// case MorningEndTime in shift1 + not use shift 2
 			if (presTz.getMorningEndTime().greaterThanOrEqualTo(shift1Timezone.getStart())
 					&& presTz.getMorningEndTime().lessThanOrEqualTo(shift1Timezone.getEnd())
 					&& !presTz.isUseShiftTwo()) {
-				// ot time end > shift 1 start
-				if (otTimezone.getEnd().greaterThan(shift1Timezone.getStart())
-						&& otTimezone.getStart().lessThan(shift1Timezone.getStart())) {
-					be.addMessage("Msg_1035", "KMK003_89");
-				}
-				// case ot start < morning end time
-				if (otTimezone.getStart().lessThan(presTz.getMorningEndTime())
-						&& otTimezone.getEnd().greaterThan(presTz.getMorningEndTime())) {
+				// # shift1 start ~ morning end time
+				if (!(otTimezone.getEnd().lessThanOrEqualTo(shift1Timezone.getStart())
+						|| otTimezone.getStart().greaterThanOrEqualTo(presTz.getMorningEndTime()))) {
 					be.addMessage("Msg_1035", "KMK003_89");
 				}
 			}
 
-			// case MorningStartTime in shift2 + use shift 2
+			// case MorningEndTime in shift2 + use shift 2
 			if (presTz.getMorningEndTime().greaterThanOrEqualTo(shift2Timezone.getStart())
 					&& presTz.getMorningEndTime().lessThanOrEqualTo(shift2Timezone.getEnd())
 					&& presTz.isUseShiftTwo()) {
-				// case ot end time > shift 1 start time
-				if (otTimezone.getEnd().greaterThan(shift1Timezone.getStart())
-						&& otTimezone.getStart().lessThan(shift1Timezone.getStart())) {
+
+				// # shift1 start ~ shift1 end
+				if (!(otTimezone.getEnd().lessThanOrEqualTo(shift1Timezone.getStart())
+						|| otTimezone.getStart().greaterThanOrEqualTo(shift1Timezone.getEnd()))) {
 					be.addMessage("Msg_1035", "KMK003_89");
 				}
-				// case ot start< shift 1 end
-				if (otTimezone.getStart().lessThan(shift1Timezone.getEnd())
-						&& otTimezone.getEnd().greaterThan(shift1Timezone.getEnd())) {
-					be.addMessage("Msg_1035", "KMK003_89");
-				}
-				// case ot end time > shift 2 start time
-				if (otTimezone.getEnd().greaterThan(shift2Timezone.getStart())
-						&& otTimezone.getStart().lessThan(shift2Timezone.getStart())) {
-					be.addMessage("Msg_1035", "KMK003_89");
-				}
-				// case ot end time > morning end time
-				if (otTimezone.getEnd().greaterThan(presTz.getMorningEndTime())
-						&& otTimezone.getStart().lessThan(presTz.getMorningEndTime())) {
+
+				// # shift2 start ~ morning end time
+				if (!(otTimezone.getEnd().lessThanOrEqualTo(shift2Timezone.getStart())
+						|| otTimezone.getStart().greaterThanOrEqualTo(presTz.getMorningEndTime()))) {
 					be.addMessage("Msg_1035", "KMK003_89");
 				}
 			}
-			
-			// case MorningStartTime in shift1 + use shift 2
+
+			// case MorningEndTime in shift1 + use shift 2
 			if (presTz.getMorningEndTime().greaterThanOrEqualTo(shift1Timezone.getStart())
 					&& presTz.getMorningEndTime().lessThanOrEqualTo(shift1Timezone.getEnd())
 					&& presTz.isUseShiftTwo()) {
-				// case ot end time > shift 1 start time
-				if (otTimezone.getEnd().greaterThan(shift1Timezone.getStart())
-						&& otTimezone.getStart().lessThan(shift1Timezone.getStart())) {
-					be.addMessage("Msg_1035", "KMK003_89");
-				}
-				// case ot start time< MorningEndTime
-				if (otTimezone.getStart().lessThan(presTz.getMorningEndTime())
-						&& otTimezone.getEnd().greaterThan(presTz.getMorningEndTime())) {
+				// # shift2 start ~ morning end time
+				if (!(otTimezone.getEnd().lessThanOrEqualTo(shift1Timezone.getStart())
+						|| otTimezone.getStart().greaterThanOrEqualTo(presTz.getMorningEndTime()))) {
 					be.addMessage("Msg_1035", "KMK003_89");
 				}
 			}
@@ -210,15 +192,10 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 			if (presTz.getAfternoonStartTime().greaterThanOrEqualTo(shift1Timezone.getStart())
 					&& presTz.getAfternoonStartTime().lessThanOrEqualTo(shift1Timezone.getEnd())
 					&& !presTz.isUseShiftTwo()) {
-				// case ot start < shift1 end time
-				if (otTimezone.getStart().lessThan(shift1Timezone.getEnd())
-						&& otTimezone.getEnd().greaterThan(shift1Timezone.getEnd())) {
-					be.addMessage("Msg_1036", "KMK003_89");
-				}
-				// case ot start< afternoon start time
-				if (otTimezone.getStart().lessThan(presTz.getAfternoonStartTime())
-						&& otTimezone.getEnd().greaterThan(presTz.getAfternoonStartTime())) {
-					be.addMessage("Msg_1036", "KMK003_89");
+				// # afternoonStartTime ~ shift1 end time
+				if (!(otTimezone.getEnd().lessThanOrEqualTo(presTz.getAfternoonStartTime())
+						|| otTimezone.getStart().greaterThanOrEqualTo(shift1Timezone.getEnd()))) {
+					be.addMessage("Msg_1035", "KMK003_89");
 				}
 			}
 
@@ -226,15 +203,10 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 			if (presTz.getAfternoonStartTime().greaterThanOrEqualTo(shift2Timezone.getStart())
 					&& presTz.getAfternoonStartTime().lessThanOrEqualTo(shift2Timezone.getEnd())
 					&& presTz.isUseShiftTwo()) {
-				// case ot end time < shift 2 end time
-				if (otTimezone.getStart().lessThan(shift2Timezone.getEnd())
-						&& otTimezone.getEnd().greaterThan(shift2Timezone.getEnd())) {
-					be.addMessage("Msg_1036", "KMK003_89");
-				}
-				// case ot start time < morning end time
-				if (otTimezone.getStart().lessThan(presTz.getAfternoonStartTime())
-						&& otTimezone.getEnd().greaterThan(presTz.getAfternoonStartTime())) {
-					be.addMessage("Msg_1036", "KMK003_89");
+				// # afternoonStartTime ~ shift2 end time
+				if (!(otTimezone.getEnd().lessThanOrEqualTo(presTz.getAfternoonStartTime())
+						|| otTimezone.getStart().greaterThanOrEqualTo(shift2Timezone.getEnd()))) {
+					be.addMessage("Msg_1035", "KMK003_89");
 				}
 			}
 			
@@ -242,28 +214,15 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 			if (presTz.getAfternoonStartTime().greaterThanOrEqualTo(shift1Timezone.getStart())
 					&& presTz.getAfternoonStartTime().lessThanOrEqualTo(shift1Timezone.getEnd())
 					&& presTz.isUseShiftTwo()) {
-
-				// case ot end time > shift 1 start time
-				if (otTimezone.getStart().lessThan(shift1Timezone.getStart())
-						&& otTimezone.getEnd().greaterThan(shift1Timezone.getStart())) {
-					be.addMessage("Msg_1036", "KMK003_89");
+				// # afternoon start time ~ shift 1 end time
+				if (!(otTimezone.getEnd().lessThanOrEqualTo(presTz.getAfternoonStartTime())
+						|| otTimezone.getStart().greaterThanOrEqualTo(shift1Timezone.getEnd()))) {
+					be.addMessage("Msg_1035", "KMK003_89");
 				}
-				// case ot end time > morning end time
-				if (otTimezone.getEnd().greaterThan(presTz.getAfternoonStartTime())
-						&& otTimezone.getStart().lessThan(presTz.getAfternoonStartTime())) {
-					be.addMessage("Msg_1036", "KMK003_89");
-				}
-
-				// case ot end time > shift 2 start time
-				if (otTimezone.getStart().lessThan(shift2Timezone.getStart())
-						&& otTimezone.getEnd().greaterThan(shift2Timezone.getStart())) {
-					be.addMessage("Msg_1036", "KMK003_89");
-				}
-
-				// case ot start time < shift 2 end time
-				if (otTimezone.getStart().lessThan(shift2Timezone.getEnd())
-						&& otTimezone.getEnd().greaterThan(shift2Timezone.getEnd())) {
-					be.addMessage("Msg_1036", "KMK003_89");
+				// # shift 1 start time ~ shift 1 end time
+				if (!(otTimezone.getEnd().lessThanOrEqualTo(shift2Timezone.getStart())
+						|| otTimezone.getStart().greaterThanOrEqualTo(shift2Timezone.getEnd()))) {
+					be.addMessage("Msg_1035", "KMK003_89");
 				}
 			}
 		}
