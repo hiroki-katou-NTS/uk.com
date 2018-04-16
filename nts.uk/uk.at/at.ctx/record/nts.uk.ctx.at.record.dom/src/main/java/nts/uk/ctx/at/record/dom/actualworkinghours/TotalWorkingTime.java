@@ -207,7 +207,13 @@ public class TotalWorkingTime {
 			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet
 			   ) {
 		
-
+		Optional<WorkTimeCode> workTimeCode = Optional.empty();
+		if(oneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode() != null) {
+			workTimeCode = oneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode().v() == null
+																		?Optional.empty()
+																		:Optional.of(new WorkTimeCode(oneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode().v().toString()));
+		}
+		
 		/*日別実績の法定内時間(就業時間)*/
 		val withinStatutoryTimeOfDaily = WithinStatutoryTimeOfDaily.calcStatutoryTime(oneDay,
 				   																      personalCondition,
@@ -227,16 +233,11 @@ public class TotalWorkingTime {
 				   																	  new SettingOfFlexWork(new FlexCalcMethodOfHalfWork(new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half),
 				   																							new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half))),
 				   																	  TimeLimitUpperLimitSetting.NOUPPERLIMIT,
-				   																	  workTimeDailyAtr
+				   																	  workTimeDailyAtr,
+				   																	  workTimeCode
 				   																      );
-		Optional<WorkTimeCode> workTimeCode = Optional.empty();
+
 		//日別実績の所定外時間
-		if(oneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode() != null) {
-			workTimeCode = oneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode().v() == null
-																		?Optional.empty()
-																		:Optional.of(new WorkTimeCode(oneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode().v().toString()));
-		}
-		
 		ExcessOfStatutoryTimeOfDaily excesstime =ExcessOfStatutoryTimeOfDaily.calculationExcessTime(oneDay, overTimeAutoCalcSet,holidayAutoCalcSetting,
 																									CalcMethodOfNoWorkingDay.isCalculateFlexTime,
 																									holidayCalcMethodSet,

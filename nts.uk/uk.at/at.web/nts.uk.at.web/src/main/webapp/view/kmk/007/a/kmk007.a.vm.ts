@@ -37,7 +37,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                     workAtr: 0,
                     digestPublicHd: 0,
                     holidayAtr: 0,
-                    countHodiday: 0,
+                    countHodiday: 1,
                     closeAtr: 0,
                     sumAbsenseNo: 0,
                     sumSpHodidayNo: 0,

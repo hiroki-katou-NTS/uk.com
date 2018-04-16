@@ -222,13 +222,14 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	private GobackReflectPara getGobackReflectPara(Application_New appInfor, GoBackDirectly gobackInfo) {
 		GobackReflectPara appGobackTmp = null;
 		
-		GobackAppRequestPara gobackReques = new GobackAppRequestPara(gobackInfo.getWorkChangeAtr(), 
-				gobackInfo.getSiftCD().v(), 
-				gobackInfo.getWorkTypeCD().v(), 
-				gobackInfo.getWorkTimeStart1().v(), 
-				gobackInfo.getWorkTimeEnd1().v(), 
-				gobackInfo.getWorkTimeStart2().v(), 
-				gobackInfo.getWorkTimeEnd2().v(), 
+		GobackAppRequestPara gobackReques = new GobackAppRequestPara(
+				gobackInfo.getWorkChangeAtr().get(), 
+				gobackInfo.getSiftCD().get().v(), 
+				gobackInfo.getWorkTypeCD().get().v(), 
+				gobackInfo.getWorkTimeStart1().get().v(), 
+				gobackInfo.getWorkTimeEnd1().get().v(), 
+				gobackInfo.getWorkTimeStart2().get().v(), 
+				gobackInfo.getWorkTimeEnd2().get().v(), 
 				appInfor.getReflectionInformation().getStateReflectionReal(),
 				appInfor.getReflectionInformation().getNotReasonReal().isPresent() ? appInfor.getReflectionInformation().getNotReasonReal().get() : null);
 		appGobackTmp = new GobackReflectPara(appInfor.getEmployeeID(), appInfor.getAppDate(), true, PriorStampRequestAtr.GOBACKPRIOR,

@@ -415,7 +415,7 @@ module nts.uk.at.view.kal003.share.model {
                 case 4:
                     self.displayLeftOperator("＜");
                     break;
-                case 5:
+                case 5: 
                     self.displayLeftOperator("≦");
                     break;
                 case 6:

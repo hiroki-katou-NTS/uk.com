@@ -231,6 +231,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 if (comType) {
                     self.appComSelectedCode(comType);
                 }
+                control.updateWorkingText();
             }
         }
 

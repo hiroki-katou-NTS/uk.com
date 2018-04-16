@@ -53,9 +53,8 @@ module nts.uk.at.view.kaf011.c.screenModel {
                     uiType: 0
                 };
 
-            service.start(startParam).done((data: common.IHolidayShipment) => {
+            service.start_c(startParam).done((data: common.IHolidayShipment) => {
                 self.setDataFromStart(data);
-
             }).fail((error) => {
                 dialog({ messageId: error.messageId });
             }).always(() => {
