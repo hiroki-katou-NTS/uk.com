@@ -38,6 +38,10 @@ module nts.uk.at.view.kdl034.a {
                                     listApprover.push(new Approver(approver.approverID, approver.approverName, approvalState.phaseOrder, approvalState.approvalReason, approver.jobtitle, approver.representerName));
                                 });
                             });
+                            listApprover = _.uniqBy(listApprover, function (approver) {
+                              return approver.id;
+                            });
+                            
                             self.listApprover(listApprover);
                             self.selectedApproverId(applicant.pid);
                         }
