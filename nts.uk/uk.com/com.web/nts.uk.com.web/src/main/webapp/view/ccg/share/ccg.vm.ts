@@ -638,7 +638,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     componentHeight = window.innerHeight - notIncluded;
                 }
 
-                const minHeight = 500;
+                const minHeight = 450;
                 if (componentHeight < minHeight) {
                     componentHeight = minHeight;
                 }
