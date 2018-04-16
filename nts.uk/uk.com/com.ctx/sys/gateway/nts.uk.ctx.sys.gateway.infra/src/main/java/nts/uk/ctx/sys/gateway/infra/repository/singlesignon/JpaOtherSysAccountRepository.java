@@ -171,9 +171,9 @@ public class JpaOtherSysAccountRepository extends JpaRepository implements Other
 				.find(new SgwmtOtherSysAccPK(otherSysAccDB.getUserId()), SgwmtOtherSysAcc.class).get();
 
 		// set data
-		entity.setCcd(otherSysAccCommand.getCompanyCode().v());
-		entity.setUserName(otherSysAccCommand.getUserName().v());
-		entity.setUseAtr(otherSysAccCommand.getUseAtr().value);
+		entity.setCcd(otherSysAccCommand.getAccountInfo().getCompanyCode().v());
+		entity.setUserName(otherSysAccCommand.getAccountInfo().getUserName().v());
+		entity.setUseAtr(otherSysAccCommand.getAccountInfo().getUseAtr().value);
 
 		// update
 		this.commandProxy().update(entity);

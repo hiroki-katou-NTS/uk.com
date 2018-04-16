@@ -52,17 +52,17 @@ public class JpaRoleSetGrantedPersonRepository extends JpaRepository implements 
 	public Optional<RoleSetGrantedPerson> getByEmployeeId(String employeeId) {
 		return this.queryProxy().find(employeeId, SacmtRoleSetGrantedPerson.class).map(r -> r.toDomain());
 	}
-	private final String SELECT_BY_ID_DATE = "SELECT c FROM SacmtRoleSetGrantedPerson"
+	private final String SELECT_BY_ID_DATE = "SELECT c FROM SacmtRoleSetGrantedPerson c"
 			+ " WHERE c.companyId = :companyId"
-			+ " AND c.employeeID = :employeeID"
-			+ "AND c.startDate <= :date AND c.endDate >= :date";
+			+ " AND c.employeeId = :employeeId"
+			+ " AND c.startDate <= :date AND c.endDate >= :date";
 	@Override
 											
-	public Optional<RoleSetGrantedPerson> findByIDAndDate(String companyId, String employeeID, GeneralDate date) {
+	public Optional<RoleSetGrantedPerson> findByIDAndDate(String companyId, String employeeId, GeneralDate date) {
 		
 		return this.queryProxy().query(SELECT_BY_ID_DATE ,SacmtRoleSetGrantedPerson.class)
 				.setParameter("companyId", companyId)
-				.setParameter("employeeID", employeeID)
+				.setParameter("employeeId", employeeId)
 				.setParameter("date", date).getSingle( c  -> c.toDomain());
 	}
 

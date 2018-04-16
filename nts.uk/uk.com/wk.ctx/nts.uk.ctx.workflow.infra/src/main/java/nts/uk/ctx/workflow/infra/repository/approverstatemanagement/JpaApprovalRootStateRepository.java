@@ -42,6 +42,13 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	
 	private static final String SELECT_BY_EMP_DATE;
 	
+	private static final String SELECT_BY_DATE_NO_ROOTYPE;  
+
+	private static final String SELECT_BY_DATE_AND_TYPE;
+	
+	private static final String SELECT_BY_LIST_EMP_DATE;
+
+	
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
@@ -74,11 +81,32 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString.append(" FROM WwfdtApprovalRootState e");
 		builderString.append(" WHERE e.recordDate >= :startDate");
 		builderString.append(" AND e.recordDate <= :endDate");
+		SELECT_BY_DATE_NO_ROOTYPE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM WwfdtApprovalRootState e");
+		builderString.append(" WHERE e.recordDate >= :startDate");
+		builderString.append(" AND e.recordDate <= :endDate");
 		builderString.append(" AND e.rootType = :rootType");
 		builderString.append(" AND e.employeeID = :employeeID");
 		SELECT_BY_EMP_DATE = builderString.toString();
 		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM WwfdtApprovalRootState e");
+		builderString.append(" WHERE e.recordDate >= :startDate");
+		builderString.append(" AND e.recordDate <= :endDate");
+		builderString.append(" AND e.rootType = :rootType");
+		builderString.append(" AND e.employeeID IN :employeeID");
+		SELECT_BY_LIST_EMP_DATE = builderString.toString();
 		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM WwfdtApprovalRootState e");
+		builderString.append(" WHERE e.recordDate = :recordDate");
+		builderString.append(" AND e.rootType = :rootType");
+		SELECT_BY_DATE_AND_TYPE = builderString.toString();
 	}
 	@Override
 	public List<ApprovalRootState> findEmploymentApps(List<String> rootStateIDs) {
@@ -184,6 +212,47 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 				.setParameter("endDate", endDate)
 				.setParameter("rootType", rootType)
 				.setParameter("employeeID", employeeID).getList(x -> x.toDomain());
+	}
+
+	@Override
+	public List<ApprovalRootState> getRootStateByDateAndType(GeneralDate date, Integer rootType) {
+		return this.queryProxy().query(SELECT_BY_DATE_AND_TYPE, WwfdtApprovalRootState.class)
+				.setParameter("recordDate", date)
+				.setParameter("rootType", rootType)
+				.getList(x -> x.toDomain());
+	}
+
+	@Override
+	public List<ApprovalRootState> findEmployeeAppByApprovalRecordDateAndNoRootType(GeneralDate startDate,
+			GeneralDate endDate, String approverID) {
+		List<ApprovalRootState> result  = new ArrayList<>();
+		List<ApprovalRootState> approvalRootStates = this.queryProxy()
+				.query(SELECT_BY_DATE_NO_ROOTYPE, WwfdtApprovalRootState.class).setParameter("startDate", startDate)
+				.setParameter("endDate", endDate).getList(x -> x.toDomain());
+		if (!CollectionUtil.isEmpty(approvalRootStates)) {
+			for (ApprovalRootState approvalRootState : approvalRootStates) {
+				for (ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()) {
+					for (ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()) {
+						for (ApproverState approverState : approvalFrame.getListApproverState()) {
+							if (approverState.getApproverID().equals(approverID)) {
+								result.add(approvalRootState);
+							}
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public List<ApprovalRootState> findAppByListEmployeeIDRecordDate(GeneralDate startDate, GeneralDate endDate,
+			List<String> employeeIDs, Integer rootType) {
+		return this.queryProxy().query(SELECT_BY_LIST_EMP_DATE, WwfdtApprovalRootState.class)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.setParameter("rootType", rootType)
+				.setParameter("employeeID", employeeIDs).getList(x -> x.toDomain());
 	}
 
 	

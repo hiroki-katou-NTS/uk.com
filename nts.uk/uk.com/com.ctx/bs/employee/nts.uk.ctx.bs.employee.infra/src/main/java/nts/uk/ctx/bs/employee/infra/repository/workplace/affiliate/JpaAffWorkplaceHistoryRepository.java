@@ -42,7 +42,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 			+ " INNER JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId"
 			+ " WHERE awit.workPlaceId IN :wkpIds AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
 
-	private static final String SELECT_BY_WKPID_BASEDATE = "SELECT * FROM BsymtAffiWorkplaceHist aw"
+	private static final String SELECT_BY_WKPID_BASEDATE = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " INNER JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId"
 			+ " WHERE awit.workPlaceId = :workplaceId AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
 

@@ -151,7 +151,7 @@ module nts.uk.com.view.cas012.a.viewmodel {
                     }
                     self.getData().done(() => {
                         self.selectRoleByKey(data.companyID, data.userID, data.roleType);
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     });
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId });
@@ -172,7 +172,7 @@ module nts.uk.com.view.cas012.a.viewmodel {
                 self.getData().done(() => {
                     self.selectRoleByKey(param.companyID, param.userID, param.roleType);
                 });
-                nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
             }).fail((res) => {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId });
             }).always(() => {

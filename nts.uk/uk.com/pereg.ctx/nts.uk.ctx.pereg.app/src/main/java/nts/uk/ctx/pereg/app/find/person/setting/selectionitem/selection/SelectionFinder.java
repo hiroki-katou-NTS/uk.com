@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
 import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.item.SelectionInitDto;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.IPerInfoSelectionItemRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoSelectionItem;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.Selection;
@@ -88,19 +89,18 @@ public class SelectionFinder {
 	// ham nay su dung chu y selectionItemClsAtr co gia tri la 0 vs 1
 	// con bang itemCommon thi co gia tri la 1 vs 2 ko map vs nhau
 	// do do ma ham nay phai chuyen doi de co du lieu chinh xac
-	public List<SelectionInitDto> getAllSelectionByHistoryId(String selectionItemId, String baseDate,
-			int selectionItemClsAtr) {
-		GeneralDate baseDateConvert = GeneralDate.fromString(baseDate, "yyyy-MM-dd");
-		List<SelectionInitDto> selectionLst = new ArrayList<>();
-		if (selectionItemClsAtr == 1) {
-			selectionLst = this.selectionRepo.getAllSelectionByHistoryId(selectionItemId, baseDateConvert, 0).stream()
-					.map(c -> SelectionInitDto.fromDomainSelection(c)).collect(Collectors.toList());
-		} else if (selectionItemClsAtr == 2) {
-			selectionLst = this.selectionRepo.getAllSelectionByHistoryId(selectionItemId, baseDateConvert, 1).stream()
-					.map(c -> SelectionInitDto.fromDomainSelection(c)).collect(Collectors.toList());
+	public List<SelectionInitDto> getAllSelectionByHistoryId(SelectionInitQuery query) {
+		GeneralDate today = GeneralDate.today();
+		String companyId = AppContexts.user().companyId();
+		String zeroCompanyId = AppContexts.user().zeroCompanyIdInContract();
+		String selectionItemId = query.getSelectionItemId();
+		List<Selection> selectionList = new ArrayList<>();
+		if (query.isCps006() && query.getSelectionItemClsAtr() == PersonEmployeeType.EMPLOYEE.value) {
+			selectionList = this.selectionRepo.getAllSelectionByHistoryId(companyId, selectionItemId, today, 1);
+		} else {
+			selectionList = this.selectionRepo.getAllSelectionByHistoryId(zeroCompanyId, selectionItemId, today, 0);
 		}
-		return selectionLst;
-
+		return selectionList.stream().map(c -> SelectionInitDto.fromDomainSelection(c)).collect(Collectors.toList());
 	}
 
 	// Lanlt

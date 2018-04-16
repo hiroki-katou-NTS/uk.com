@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.appabsence.service.three;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -9,6 +10,7 @@ import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.appabsence.AbsenceWorkType;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -21,7 +23,7 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 	// 1.勤務種類を取得する（新規）
 	@Override
 	public List<AbsenceWorkType> getWorkTypeCodes(List<AppEmploymentSetting> appEmploymentWorkType, String companyID,
-			String employeeID, int holidayType, int alldayHalfDay, boolean displayHalfDayValue) {
+			String employeeID, int holidayType, int alldayHalfDay, boolean displayHalfDayValue,Optional<HdAppSet> hdAppSet) {
 		List<AbsenceWorkType> absenceWorkTypes = new ArrayList<>();
 		// アルゴリズム「勤務種類を取得する（詳細）」を実行する(thực hiện xử lý 「勤務種類を取得する（詳細）」)
 		List<WorkType> workTypes = this.getWorkTypeDetails(appEmploymentWorkType, companyID, employeeID, holidayType, alldayHalfDay,displayHalfDayValue);
@@ -30,6 +32,12 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 			absenceWorkTypes.add(absenceWorkType);
 		}
 		// ドメインモデル「休暇申請設定」．「休暇申請未選択の設定」．未選択を表示するをチェックする(kiểm tra domain ドメインモデル「休暇申請設定」．「休暇申請未選択の設定」．未選択を表示する):TODO bên anh chình chưa làm.
+		if(hdAppSet.isPresent()){
+			if(hdAppSet.get().getHdType().value == holidayType && hdAppSet.get().getDisplayUnselect() == 1 ? true : false){
+				AbsenceWorkType absenceWorkType = new AbsenceWorkType("", "未選択");
+				absenceWorkTypes.add(0,absenceWorkType);
+			}
+		}
 		
 		return absenceWorkTypes;
 	}

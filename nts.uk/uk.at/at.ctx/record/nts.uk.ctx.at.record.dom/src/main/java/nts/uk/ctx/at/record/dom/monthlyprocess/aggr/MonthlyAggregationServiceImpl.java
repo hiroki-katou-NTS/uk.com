@@ -12,11 +12,12 @@ import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
-import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
-import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionStatus;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ErrorPresent;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -58,7 +59,7 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 		val dataSetter = asyncContext.getDataSetter();
 		dataSetter.setData("monthlyAggregateCount", 0);
 		dataSetter.setData("monthlyAggregateStatus", ExecutionStatus.PROCESSING.nameId);
-		dataSetter.setData("monthlyAggregateHasError", " ");
+		dataSetter.setData("monthlyAggregateHasError", ErrorPresent.NO_ERROR);
 
 		// 月次集計を実行するかチェックする
 		// ※　実行しない時、終了状態＝正常終了
@@ -112,6 +113,7 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 			if (status == ProcessState.INTERRUPTION){
 				
 				// 中断時
+				dataSetter.updateData("monthlyAggregateHasError", ErrorPresent.NO_ERROR);
 				dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.INCOMPLETE.nameId);
 				break;
 			}
@@ -121,6 +123,7 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 		// 処理を完了する
 		this.empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, executionContent.value,
 				ExecutionStatus.DONE.value);
+		dataSetter.updateData("monthlyAggregateHasError", ErrorPresent.NO_ERROR);
 		dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.DONE.nameId);
 		
 		return status;

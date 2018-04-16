@@ -204,6 +204,11 @@
 .ui-iggrid table tr th.ui-widget-header, .ui-iggrid table tr.ui-state-focus th.ui-widget-header, .ui-iggrid table tr.ui-ig-altrecord.ui-state-focus th.ui-widget-header {
     text-align: center;
 }
+#back-navigate{
+    z-index: 999;
+    position: fixed;
+    overflow-x: inherit;
+}
 /* .nts-grid  tr.ui-ig-altrecord td.ui-state-active{
 	background-color: #007fff !IMPORTANT;
 } */

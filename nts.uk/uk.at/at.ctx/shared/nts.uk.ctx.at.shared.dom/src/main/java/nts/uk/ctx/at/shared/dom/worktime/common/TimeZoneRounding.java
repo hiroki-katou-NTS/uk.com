@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -65,4 +66,10 @@ public class TimeZoneRounding extends TimeZone {
 		return this.start.v() + "," + this.end.v();
 	}
 
+	/**
+	 * 計算時間帯の取得 
+	 */
+	public TimeSpanForCalc getTimeSpan() {
+		return new TimeSpanForCalc(this.start,this.end);
+	}
 }

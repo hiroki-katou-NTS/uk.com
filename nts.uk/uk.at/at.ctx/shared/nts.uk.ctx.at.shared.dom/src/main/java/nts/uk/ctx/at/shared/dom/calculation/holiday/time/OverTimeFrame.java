@@ -1,6 +1,9 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday.time;
 /**
- * @author phongtq
  */
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,6 +11,9 @@ import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.OvertimeFrameName;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.TransferFrameName;
 
+/**
+ * The Class OverTimeFrame.
+ */
 @AllArgsConstructor
 @Getter
 public class OverTimeFrame extends DomainObject {

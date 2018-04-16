@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -34,14 +35,14 @@ public class OverTimeOfTimeSeries {
 		this.ymd = ymd;
 		this.overTime = new OverTimeFrameTime(
 				new OverTimeFrameNo(overTimeFrameNo.v()),
-				TimeWithCalculation.sameTime(new AttendanceTime(0)),
-				TimeWithCalculation.sameTime(new AttendanceTime(0)),
+				TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),
+				TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),
 				new AttendanceTime(0),
 				new AttendanceTime(0));
 		this.legalOverTime = new OverTimeFrameTime(
 				new OverTimeFrameNo(overTimeFrameNo.v()),
-				TimeWithCalculation.sameTime(new AttendanceTime(0)),
-				TimeWithCalculation.sameTime(new AttendanceTime(0)),
+				TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),
+				TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),
 				new AttendanceTime(0),
 				new AttendanceTime(0));
 	}
@@ -66,7 +67,7 @@ public class OverTimeOfTimeSeries {
 	 * 残業時間：残業時間を加算する
 	 * @param overTime 残業時間　（計算付き時間）
 	 */
-	public void addOverTimeInOverTime(TimeWithCalculation overTime){
+	public void addOverTimeInOverTime(TimeDivergenceWithCalculation overTime){
 		this.overTime = this.addOverTimeOnly(this.overTime, overTime);
 	}
 	
@@ -74,7 +75,7 @@ public class OverTimeOfTimeSeries {
 	 * 法定内残業時間：残業時間を加算する
 	 * @param overTime 残業時間　（計算付き時間）
 	 */
-	public void addOverTimeInLegalOverTime(TimeWithCalculation overTime){
+	public void addOverTimeInLegalOverTime(TimeDivergenceWithCalculation overTime){
 		this.legalOverTime = this.addOverTimeOnly(this.legalOverTime, overTime);
 	}
 	
@@ -82,7 +83,7 @@ public class OverTimeOfTimeSeries {
 	 * 残業時間：振替時間を加算する
 	 * @param transferTime 残業時間　（計算付き時間）
 	 */
-	public void addTransferTimeInOverTime(TimeWithCalculation transferTime){
+	public void addTransferTimeInOverTime(TimeDivergenceWithCalculation transferTime){
 		this.overTime = this.addTransferTimeOnly(this.overTime, transferTime);
 	}
 	
@@ -90,7 +91,7 @@ public class OverTimeOfTimeSeries {
 	 * 法定内残業時間：振替時間を加算する
 	 * @param transferTime 残業時間　（計算付き時間）
 	 */
-	public void addTransferTimeInLegalOverTime(TimeWithCalculation transferTime){
+	public void addTransferTimeInLegalOverTime(TimeDivergenceWithCalculation transferTime){
 		this.legalOverTime = this.addTransferTimeOnly(this.legalOverTime, transferTime);
 	}
 	
@@ -121,7 +122,7 @@ public class OverTimeOfTimeSeries {
 	 * @param overTime 加算する時間　（計算付き時間）
 	 * @return 残業枠時間　（加算後）
 	 */
-	private OverTimeFrameTime addOverTimeOnly(OverTimeFrameTime target, TimeWithCalculation overTime){
+	private OverTimeFrameTime addOverTimeOnly(OverTimeFrameTime target, TimeDivergenceWithCalculation overTime){
 		
 		return new OverTimeFrameTime(
 				target.getOverWorkFrameNo(),
@@ -139,7 +140,7 @@ public class OverTimeOfTimeSeries {
 	 * @param transferTime 加算する時間　（計算付き時間）
 	 * @return 残業枠時間　（加算後）
 	 */
-	private OverTimeFrameTime addTransferTimeOnly(OverTimeFrameTime target, TimeWithCalculation transferTime){
+	private OverTimeFrameTime addTransferTimeOnly(OverTimeFrameTime target, TimeDivergenceWithCalculation transferTime){
 		
 		return new OverTimeFrameTime(
 				target.getOverWorkFrameNo(),

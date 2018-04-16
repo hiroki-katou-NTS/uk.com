@@ -74,9 +74,9 @@ public class ExitStampIncorrectOrderCheck {
 							TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(stampStartTimeFirstTime,
 									endStartTimeFirstTime);
 
-							TimeWithDayAttr stampStartTimeSecondTime = attendanceLeavingGates.get(0).getAttendance()
+							TimeWithDayAttr stampStartTimeSecondTime = attendanceLeavingGates.get(1).getAttendance()
 									.get().getTimeWithDay();
-							TimeWithDayAttr endStartTimeSecondTime = attendanceLeavingGates.get(0).getLeaving().get()
+							TimeWithDayAttr endStartTimeSecondTime = attendanceLeavingGates.get(1).getLeaving().get()
 									.getTimeWithDay();
 							TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(stampStartTimeSecondTime,
 									endStartTimeSecondTime);
@@ -162,7 +162,7 @@ public class ExitStampIncorrectOrderCheck {
 						&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().get().getStamp().get().getTimeWithDay() != null) {
 					TimeWithDayAttr timeLeavingLeavingTime = timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0)
 							.getLeaveStamp().get().getStamp().get().getTimeWithDay();
-					if (firstLeavingTime.greaterThan(timeLeavingLeavingTime)) {
+					if (firstLeavingTime.lessThan(timeLeavingLeavingTime)) {
 						attendanceItemIds.add(77);
 						attendanceItemIds.add(34);
 					}
@@ -194,7 +194,7 @@ public class ExitStampIncorrectOrderCheck {
 						&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp().get().getStamp().get().getTimeWithDay() != null) {
 					TimeWithDayAttr timeLeavingLeavingTime = timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1)
 							.getLeaveStamp().get().getStamp().get().getTimeWithDay();
-					if (secondLeavingTime.greaterThan(timeLeavingLeavingTime)) {
+					if (secondLeavingTime.lessThan(timeLeavingLeavingTime)) {
 						attendanceItemIds.add(81);
 						attendanceItemIds.add(44);
 					}

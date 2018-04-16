@@ -117,6 +117,7 @@ public class RegisterLayoutFinder {
 		}
 		setData(items, itemCls, command);
 		
+		// check and set 9999/12/31 to endDate
 		itemCls.forEach(classItem -> {
 			if (classItem.getCtgType() == CategoryType.CONTINUOUSHISTORY.value && classItem.getItems().size() == 3) {
 				LayoutPersonInfoValueDto theThirdItem = (LayoutPersonInfoValueDto) classItem.getItems().get(2);
@@ -125,6 +126,19 @@ public class RegisterLayoutFinder {
 				}
 			}
 		});
+
+		// check and set employeeName to businessName
+		Optional<LayoutPersonInfoClsDto> businessNameOpt = itemCls.stream().filter(classItem -> {
+			LayoutPersonInfoValueDto item = (LayoutPersonInfoValueDto) classItem.getItems().get(0);
+			return item.getItemCode().equals("IS00009");
+		}).findFirst();
+		if ( businessNameOpt.isPresent()) {
+			LayoutPersonInfoClsDto businessName = businessNameOpt.get();
+			LayoutPersonInfoValueDto item = (LayoutPersonInfoValueDto) businessName.getItems().get(0);
+			if ( item.getValue() == null ) {
+				item.setValue(command.getEmployeeName());
+			}
+		}
 
 		return itemCls;
 	}
@@ -201,7 +215,9 @@ public class RegisterLayoutFinder {
 			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
 			item.setItem(sigleItem.getDataTypeState());
 			int dataTypeValue = item.getItem().getDataTypeValue();
-			if (dataTypeValue >= DataTypeValue.SELECTION.value) {
+			
+			if (dataTypeValue == DataTypeValue.SELECTION.value || dataTypeValue == DataTypeValue.SELECTION_BUTTON.value
+					|| dataTypeValue == DataTypeValue.SELECTION_RADIO.value) {
 
 				SelectionItemDto selectionItemDto = null;
 
@@ -220,7 +236,6 @@ public class RegisterLayoutFinder {
 					Object value =  processor.getValue(dto);
 					item.setValue(value);
 				}
-
 			}
 		}
 		item.setActionRole(EnumAdaptor.valueOf(state, ActionRole.class));

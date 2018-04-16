@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.app.find.vacation.setting.compensatoryleave.dto;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSettingSetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 
 /**
  * The Class CompensatoryOccurrenceSettingDto.
@@ -25,7 +25,7 @@ public class CompensatoryOccurrenceSettingDto implements CompensatoryOccurrenceS
 	}
 
 	@Override
-	public void setTransferSetting(TransferSetting transferSetting) {
+	public void setTransferSetting(SubHolTransferSet transferSetting) {
 		CompensatoryTransferSettingDto transfer = new CompensatoryTransferSettingDto();
 		transferSetting.saveToMemento(transfer);
 		this.transferSetting = transfer;

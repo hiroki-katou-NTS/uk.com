@@ -9,9 +9,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
@@ -60,6 +62,27 @@ public class ShClosurePubImpl implements ShClosurePub {
 		return Optional.of(PresentClosingPeriodExport.builder().processingYm(processingYm)
 				.closureStartDate(closurePeriod.start()).closureEndDate(closurePeriod.end())
 				.build());
+	}
+
+	@Override
+	public Optional<PresentClosingPeriodExport> find(String cId, int closureId, GeneralDate date) {
+		Optional<Closure> optClosure = closureRepo.findById(cId, closureId);
+
+		// Check exist and active
+		if (!optClosure.isPresent() || optClosure.get().getUseClassification()
+				.equals(UseClassification.UseClass_NotUse)) {
+			return Optional.empty();
+		}
+
+		Closure closure = optClosure.get();
+		Optional<ClosurePeriod> cPeriod = closure.getClosurePeriodByYmd(date);
+		if(cPeriod.isPresent()){
+			return Optional.of(PresentClosingPeriodExport.builder().processingYm(cPeriod.get().getYearMonth())
+				.closureStartDate(cPeriod.get().getPeriod().start()).closureEndDate(cPeriod.get().getPeriod().end())
+				.build());
+		}else{
+			return Optional.empty();
+		}
 	}
 
 }

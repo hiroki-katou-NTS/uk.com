@@ -4,109 +4,63 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave;
 
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OneDayTime;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSettingDivision;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KocmtOccurrenceSet;
 
 /**
  * The Class JpaTransferSettingGetMemento.
  */
-public class JpaTransferSettingGetMemento implements TransferSettingGetMemento {
-    
-    /** The true. */
-    private static int TRUE = 1;
-    
-    /** The entity. */
-    private KocmtOccurrenceSet entity;
-    
-    /**
-     * Instantiates a new jpa transfer setting get memento.
-     *
-     * @param entity the entity
-     */
-    public JpaTransferSettingGetMemento(KocmtOccurrenceSet entity) {
-        this.entity = entity;
-    }
-    
-    /**
-     * Gets the certain time.
-     *
-     * @return the certain time
-     */
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
-     * TransferSettingGetMemento#getCertainTime()
-     */
-    @Override
-    public OneDayTime getCertainTime() {
-        return new OneDayTime(this.entity.getCertainTime().intValue());
-    }
+public class JpaTransferSettingGetMemento implements SubHolTransferSetGetMemento {
 
-    /**
-     * Checks if is use division.
-     *
-     * @return true, if is use division
-     */
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
-     * TransferSettingGetMemento#isUseDivision()
-     */
-    @Override
-    public boolean isUseDivision() {
-        return this.entity.getUseType() == TRUE ? true : false;
-    }
+	/** The true. */
+	private static int TRUE = 1;
 
-    /**
-     * Gets the one day time.
-     *
-     * @return the one day time
-     */
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
-     * TransferSettingGetMemento#getOneDayTime()
-     */
-    @Override
-    public OneDayTime getOneDayTime() {
-        return new OneDayTime(this.entity.getOneDayTime().intValue());
-    }
+	/** The entity. */
+	private KocmtOccurrenceSet entity;
 
-    /**
-     * Gets the half day time.
-     *
-     * @return the half day time
-     */
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
-     * TransferSettingGetMemento#getHalfDayTime()
-     */
-    @Override
-    public OneDayTime getHalfDayTime() {
-        return new OneDayTime(this.entity.getHalfDayTime().intValue());
-    }
+	/**
+	 * Instantiates a new jpa transfer setting get memento.
+	 *
+	 * @param entity
+	 *            the entity
+	 */
+	public JpaTransferSettingGetMemento(KocmtOccurrenceSet entity) {
+		this.entity = entity;
+	}
 
-    /**
-     * Gets the transfer division.
-     *
-     * @return the transfer division
-     */
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
-     * TransferSettingGetMemento#getTransferDivision()
-     */
-    @Override
-    public TransferSettingDivision getTransferDivision() {
-        return TransferSettingDivision.valueOf(this.entity.getTransfType());
-    }
+	/**
+	 * Gets the certain time.
+	 *
+	 * @return the certain time
+	 */
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
+	 * TransferSettingGetMemento#getCertainTime()
+	 */
+	@Override
+	public OneDayTime getCertainTime() {
+		return new OneDayTime(this.entity.getCertainTime().intValue());
+	}
+
+	@Override
+	public boolean getUseDivision() {
+		return this.entity.getUseType() == TRUE ? true : false;
+	}
+
+	@Override
+	public DesignatedTime getDesignatedTime() {
+		return new DesignatedTime(new OneDayTime(this.entity.getOneDayTime().intValue()),
+				new OneDayTime(this.entity.getHalfDayTime().intValue()));
+	}
+
+	@Override
+	public SubHolTransferSetAtr getSubHolTransferSetAtr() {
+		return SubHolTransferSetAtr.valueOf(this.entity.getTransfType());
+	}
 
 }

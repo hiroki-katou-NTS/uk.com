@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
@@ -43,4 +44,17 @@ public class WorkTimezoneLateEarlySet extends WorkTimeDomainObject {
 		memento.setCommonSet(this.commonSet);
 		memento.setOtherClassSet(this.otherClassSets);
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public OtherEmTimezoneLateEarlySet getOtherEmTimezoneLateEarlySet(LateEarlyAtr lateEarlyAtr) {
+		if(lateEarlyAtr.isLATE()) {
+			return this.otherClassSets.stream().filter(t -> t.getLateEarlyAtr().isLATE()).collect(Collectors.toList()).get(0);
+		}else {
+			return this.otherClassSets.stream().filter(t -> t.getLateEarlyAtr().isEARLY()).collect(Collectors.toList()).get(0);
+		}
+	}
+	
 }

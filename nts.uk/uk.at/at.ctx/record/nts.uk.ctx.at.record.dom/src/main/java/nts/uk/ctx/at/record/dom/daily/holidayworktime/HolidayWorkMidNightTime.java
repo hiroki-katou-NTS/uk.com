@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.daily.holidayworktime;
 
 import lombok.Value;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 
 /**
@@ -11,6 +11,6 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAt
  */
 @Value
 public class HolidayWorkMidNightTime {
-	private TimeWithCalculation time;
+	private TimeDivergenceWithCalculation time;
 	private StaturoryAtrOfHolidayWork statutoryAtr;
 }

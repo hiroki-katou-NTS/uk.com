@@ -1,0 +1,22 @@
+#contents-area {
+	width: 1200px !important;
+}
+
+.row-1 {
+	margin-top: 15px;
+	margin-left: 27px;
+}
+
+.time-name {
+	display: inline-block;
+	width: 80px;
+	vertical-align: top;
+}
+
+.goback {
+	margin-right: 35px;
+}
+
+.input-time {
+	width: 100px;
+}

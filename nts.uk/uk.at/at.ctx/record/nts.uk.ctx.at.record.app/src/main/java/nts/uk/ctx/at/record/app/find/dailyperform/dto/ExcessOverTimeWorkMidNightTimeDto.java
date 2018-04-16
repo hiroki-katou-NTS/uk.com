@@ -4,9 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /** 法定外残業深夜時間 */
 @Data
@@ -25,6 +23,6 @@ public class ExcessOverTimeWorkMidNightTimeDto {
 	}
 
 	public ExcessOverTimeWorkMidNightTime toDomain() {
-		return time == null ? null : new ExcessOverTimeWorkMidNightTime(time.createTimeWithCalc());
+		return time == null ? null : new ExcessOverTimeWorkMidNightTime(time.createTimeDivWithCalc());
 	}
 }

@@ -26,28 +26,31 @@ public class WorkTypeNotRegisterDefault implements WorkTypeNotRegisterService {
 	
 	@Inject
 	private FixedConditionDataRepository fixedConditionDataRepository;
+	
+	private final String ERROR_CODE = "S023";
+	private final static List<Integer> LIST_TIME_ITEM_ID = new ArrayList<>();
+	static {
+		LIST_TIME_ITEM_ID.add(12);
+	}
 	@Override
-	public ValueExtractAlarmWR checkWorkTypeNotRegister(String workplaceID,String employeeID, GeneralDate date, String workTypeCD) {
+	public Optional<ValueExtractAlarmWR> checkWorkTypeNotRegister(String workplaceID,String employeeID, GeneralDate date, String workTypeCD) {
 		String companyID = AppContexts.user().companyId();
 		// 勤務種類CDがドメインモデル「勤務種類」に存在するかをチェックする
 		boolean check = checkExistWorkTypeAdapter.checkExistWorkType(workTypeCD);
 		//ドメインに存在する場合
-		if(check)
-			return null;
+		if(check || workTypeCD ==null)
+			return Optional.empty();
 		//社員の日別実績のエラーを作成する
-		String errorCode = "S023";
-		List<Integer> listTimeItemID  = new ArrayList<>();
-		listTimeItemID.add(12);
-		String comment = fixedConditionDataRepository.getAllFixedConditionData().get(0).getMessage().v();
+		String comment = fixedConditionDataRepository.getFixedByNO(1).get().getMessage().v();
 		
-		Optional<ValueExtractAlarmWR> valueExtractAlarmWR = createErrorForEmployeeService.createErrorForEmployeeService(workplaceID,companyID, employeeID, date, errorCode, listTimeItemID);
+		Optional<ValueExtractAlarmWR> valueExtractAlarmWR = createErrorForEmployeeService.createErrorForEmployeeService(workplaceID,companyID, employeeID, date, ERROR_CODE, LIST_TIME_ITEM_ID);
 		if(valueExtractAlarmWR.isPresent()) {
 		valueExtractAlarmWR.get().setAlarmItem(TextResource.localize("KAL010_6"));
-		valueExtractAlarmWR.get().setAlarmValueMessage(TextResource.localize("KAL010_7",errorCode));
-		valueExtractAlarmWR.get().setComment(comment);
-		return valueExtractAlarmWR.get();
+		valueExtractAlarmWR.get().setAlarmValueMessage(TextResource.localize("KAL010_7",ERROR_CODE));
+		valueExtractAlarmWR.get().setComment(Optional.ofNullable(comment));
+		return valueExtractAlarmWR;
 		}
-		return null;
+		return Optional.empty();
 		
 	}
 

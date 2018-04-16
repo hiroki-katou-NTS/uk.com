@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.request.dom.application.BreakReflect;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 /**
@@ -80,7 +81,7 @@ public class AppOvertimeSetting extends AggregateRoot{
 	/**
 	 * 休憩区分
 	 */
-	private UseAtr restAtr;
+	private BreakReflect restAtr;
 	
 	public static AppOvertimeSetting createFromJavaType(String companyId, int flexJExcessUseSetAtr, 
 			int preTypeSiftReflectFlg, int preOvertimeReflectFlg, int postTypeSiftReflectFlg, 
@@ -101,6 +102,6 @@ public class AppOvertimeSetting extends AggregateRoot{
 				EnumAdaptor.valueOf(normalOvertimeUseAtr, UseAtr.class), 
 				new OtHourUnitControl(EnumAdaptor.valueOf(attendanceId, AttendanceType.class), 
 						EnumAdaptor.valueOf(useOt, UseOtWk.class)), 
-				EnumAdaptor.valueOf(restAtr, UseAtr.class));
+				EnumAdaptor.valueOf(restAtr, BreakReflect.class));
 	}
 }

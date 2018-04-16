@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 
 /**
  * 
- * @author nampt
  * 休出切替区分
  *
  */

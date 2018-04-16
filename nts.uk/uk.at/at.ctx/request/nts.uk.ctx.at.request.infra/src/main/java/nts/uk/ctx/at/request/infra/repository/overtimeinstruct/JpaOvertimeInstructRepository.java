@@ -14,6 +14,7 @@ import nts.uk.ctx.at.request.infra.entity.overtimeinstruct.KrqdtOvertimeInstruct
 public class JpaOvertimeInstructRepository extends JpaRepository implements OvertimeInstructRepository {
 	private static final String FIND_ALL;
 	private static final String FIND_FOR_TARGET_PERSON;
+	private static final String FIND_ALL_BY_TARGET_PERSON;
 	
 	static{
 		StringBuilder query = new StringBuilder();
@@ -25,6 +26,12 @@ public class JpaOvertimeInstructRepository extends JpaRepository implements Over
 		query.append(" WHERE o.krqdtOvertimeInstructPK.instructDate = :instructDate");
 		query.append(" AND o.krqdtOvertimeInstructPK.targetPerson = :targetPerson");
 		FIND_FOR_TARGET_PERSON = query.toString();
+		
+		query = new StringBuilder();
+		query.append(FIND_ALL);
+		query.append(" AND o.krqdtOvertimeInstructPK.targetPerson = :targetPerson");
+		query.append(" ORDER BY o.krqdtOvertimeInstructPK.instructDate ASC");
+		FIND_ALL_BY_TARGET_PERSON = query.toString();
 		
 	}
 
@@ -54,6 +61,23 @@ public class JpaOvertimeInstructRepository extends JpaRepository implements Over
 				krqdtOvertimeInstruct.getEndClock());
 		
 		
+	}
+	
+	/**
+	 * For request list 230
+	 */
+	@Override
+	public List<OverTimeInstruct> getAllOverTimeInstructBySId(String sId) {
+		List<OverTimeInstruct> overTimeInstructs = this.queryProxy().query(FIND_ALL_BY_TARGET_PERSON, KrqdtOvertimeInstruct.class)
+				.setParameter("targetPerson", sId).getList(c -> convertToDomain(c));
+		
+		if(overTimeInstructs != null){
+			if(overTimeInstructs.size() > 0){
+				return overTimeInstructs;
+			}
+		}
+		
+		return null;
 	}
 
 }

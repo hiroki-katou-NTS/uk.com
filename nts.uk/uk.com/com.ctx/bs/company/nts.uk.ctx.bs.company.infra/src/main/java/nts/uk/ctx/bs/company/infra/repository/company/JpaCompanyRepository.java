@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.bs.company.infra.repository.company;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,6 +51,8 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 
 	
 	private final String GET_BY_CID = SELECT_NO_WHERE + " WHERE c.bcmmtCompanyInforPK.companyId = :cid AND c.isAbolition = 0 ";
+	
+	private final String GET_ALL_COMPANY_BY_CONTRACT_CD = SELECT_NO_WHERE + " WHERE c.contractCd = :contractCd ORDER BY c.companyCode ASC ";
 	
 //	/**
 //	 * @param entity
@@ -304,5 +305,12 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		} else {
 			return Optional.empty();
 		}
+	}
+
+	@Override
+	public List<Company> getAllCompanyByContractCd(String contractCd) {
+		return this.queryProxy().query(GET_ALL_COMPANY_BY_CONTRACT_CD, BcmmtCompanyInfor.class)
+				.setParameter("contractCd", contractCd)
+				.getList(c -> toDomainCom(c));
 	}
 }

@@ -1,88 +1,191 @@
 module nts.uk.at.view.kaf011.b.viewmodel {
 
-    import dialog = nts.uk.ui.dialog;
+    import dialog = nts.uk.ui.dialog.info;
     import text = nts.uk.resource.getText;
-    export class ViewModel {
+    import formatDate = nts.uk.time.formatDate;
+    import common = nts.uk.at.view.kaf011.shr.common;
+    import service = nts.uk.at.view.kaf011.shr.service;
+    import block = nts.uk.ui.block;
+    import jump = nts.uk.request.jump;
+
+    export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
+
+        screenModeNew: KnockoutObservable<boolean> = ko.observable(false);
+
+        employeeName: KnockoutObservable<string> = ko.observable('');
+
+        drawalReqSet: KnockoutObservable<common.DrawalReqSet> = ko.observable(new common.DrawalReqSet(null));
+
+        recWk: KnockoutObservable<common.AppItems> = ko.observable(new common.AppItems());
+
+        absWk: KnockoutObservable<common.AppItems> = ko.observable(new common.AppItems());
 
         prePostTypes = ko.observableArray([
-            { code: 1, text: text('KAF011_14') },
-            { code: 2, text: text('KAF011_15') }]);
+            { code: 0, text: text('KAF011_14') },
+            { code: 1, text: text('KAF011_15') }]);
 
-        prePostSelectedCode: KnockoutObservable<number> = ko.observable(1);
+        prePostSelectedCode: KnockoutObservable<number> = ko.observable(0);
 
         appComItems = ko.observableArray([
-            { code: 1, text: text('KAF011_19') },
-            { code: 2, text: text('KAF011_20') },
-            { code: 3, text: text('KAF011_21') },
+            { code: 0, text: text('KAF011_19') },
+            { code: 1, text: text('KAF011_20') },
+            { code: 2, text: text('KAF011_21') },
         ]);
-        appComSelectedCode: KnockoutObservable<number> = ko.observable(1);
 
-        appDate: KnockoutObservable<Date> = ko.observable(moment().toDate());
+        appComSelectedCode: KnockoutObservable<number> = ko.observable(0);
 
-        dutyTypes = ko.observableArray([]);
+        appReasons = ko.observableArray([]);
 
-        dutySelectedType: KnockoutObservable<number> = ko.observable(0);
-
-        workingHour: KnockoutObservable<WorkingHour> = ko.observable(new WorkingHour());
-
-        stereoTypes = ko.observableArray([]);
-
-        stereoSelectedType: KnockoutObservable<number> = ko.observable(0);
+        appReasonSelectedID: KnockoutObservable<string> = ko.observable('');
 
         reason: KnockoutObservable<string> = ko.observable('');
 
-        kaf000_a = new kaf000.a.viewmodel.ScreenModel();
+        showReason: KnockoutObservable<number> = ko.observable(0);
 
-        start() {
+        employeeID: KnockoutObservable<string> = ko.observable('');
 
+        version: KnockoutObservable<number> = ko.observable(0);
+
+        displayPrePostFlg: KnockoutObservable<number> = ko.observable(0);
+
+        appTypeSet: KnockoutObservable<common.AppTypeSet> = ko.observable(new common.AppTypeSet(null));
+
+
+        update() {
+            block.invisible();
+            let self = this,
+                saveCmd: common.ISaveHolidayShipmentCommand = {
+                    recCmd: ko.mapping.toJS(self.recWk()),
+                    absCmd: ko.mapping.toJS(self.absWk()),
+                    comType: self.appComSelectedCode(),
+                    usedDays: 1,
+                    appCmd: {
+                        appReasonText: self.appReasonSelectedID(),
+                        applicationReason: self.reason(),
+                        prePostAtr: self.prePostSelectedCode(),
+                        enteredPersonSID: self.employeeID(),
+                        appVersion: self.version(),
+                    }
+                };
+
+            saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;
+
+            service.update(saveCmd).done(() => {
+                dialog({ messageId: 'Msg_15' }).then(function() {
+                    location.reload();
+                });
+
+
+            }).fail((error) => {
+                dialog({ messageId: error.messageId });
+
+            }).always(() => {
+                block.clear();
+            });
         }
 
-        register() {
+        constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
+            super(listAppMetadata, currentApp);
             let self = this;
-            dialog.alertError({ messageId: "register" });
+
+            self.startPage(self.appID());
         }
 
-        openKDL003() {
+        startPage(appID: string): JQueryPromise<any> {
+            var self = this,
+                dfd = $.Deferred(),
+                appParam = { appID: appID };
+            service.findById(appParam).done((data) => {
+                self.setDataFromStart(data);
 
+            }).fail((error) => {
+                dialog({ messageId: error.messageId });
+            }).always(() => {
+                dfd.resolve();
+
+            });
+
+
+
+            return dfd.promise();
+
+        }
+        setDataFromStart(data: common.IHolidayShipment) {
             let self = this;
-            dialog.alertError({ messageId: "openKDL003" });
+            if (data) {
+                self.drawalReqSet(new common.DrawalReqSet(data.drawalReqSet || null));
+                self.employeeName(data.employeeName || null);
+                self.employeeID(data.employeeID || null);
+                self.version(data.application.version || 0);
+                self.displayPrePostFlg(data.applicationSetting.displayPrePostFlg);
+                self.appTypeSet(new common.AppTypeSet(data.appTypeSet || null));
+                self.recWk().wkTypes(data.recWkTypes || []);
+                self.absWk().wkTypes(data.absWkTypes || []);
+                if (data.application) {
+                    self.setDataCommon(data);
+                }
+
+                if (data.absApp && data.recApp) {
+                    self.setDataBothApp(data);
+
+                } else {
+                    if (data.recApp) {
+                        self.setDataApp(self.recWk(), data.recApp, 1);
+
+                    }
+                    if (data.absApp) {
+                        self.setDataApp(self.absWk(), data.absApp, 2);
+
+                    }
+
+                }
+            }
         }
 
-        genWorkingText() {
-            let self = this;
-            return '001' + ' ' + 'KDL' + ' ' + '08:30' + '~' + '09:30';
+        setDataCommon(data) {
+            let self = this,
+                app = data.application;
+            self.appReasons(data.appReasons || []);
+            self.prePostSelectedCode(app.prePostAtr);
+            self.showReason(data.applicationSetting.appReasonDispAtr);
+            self.reason(data.application.applicationReason);
+            self.appReasonSelectedID(data.application.applicationReason.split("\r\n")[0]);
+
         }
+
+        setDataBothApp(data) {
+            let self = this;
+            self.appComSelectedCode(0);
+            self.setDataApp(self.absWk(), data.absApp);
+            self.setDataApp(self.recWk(), data.recApp);
+        }
+
+
+
+
+        setDataApp(control: common.AppItems, data, comType?) {
+            let self = this;
+            if (data) {
+                control.wkTypeCD(data.workTypeCD);
+                control.wkTimeCD(data.workTimeCD);
+                control.changeWorkHoursType(data.changeWorkHoursType);
+                control.appDate(data.appDate);
+                control.appID(data.appID);
+                if (data.wkTime1) {
+                    control.wkTime1().startTime(data.wkTime1.startTime);
+                    control.wkTime1().endTime(data.wkTime1.endTime);
+                    if (data.wkTime1.startType) {
+                        control.wkTime1().startType(data.wkTime1.startType);
+                        control.wkTime1().startTime(data.wkTime1.endType);
+                    }
+                }
+                if (comType) {
+                    self.appComSelectedCode(comType);
+                }
+            }
+        }
+
     }
 
-    interface IWorkingHour {
-        startTime: Date;
-        endTime: Date;
-        startType: number;
-        endType: number;
-    }
-    export class WorkingHour {
-        startTime: KnockoutObservable<number> = ko.observable(100);
-        endTime: KnockoutObservable<number> = ko.observable(100);
-        startTypes: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 1, text: text('KAF011_39') },
-            { code: 2, text: text('KAF011_40') }
-        ]);
-        startType: KnockoutObservable<number> = ko.observable(1);
-        endTypes: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 1, text: text('KAF011_42') },
-            { code: 2, text: text('KAF011_43') }
-        ]);
-        endType: KnockoutObservable<number> = ko.observable(1);
 
-        timeOption = ko.mapping.fromJS({
-            width: "130px"
-        });
-        constructor(IWorkingHour?) {
-            this.startTime = ko.observable(IWorkingHour ? IWorkingHour.startTime || null : 100);
-            this.endTime = ko.observable(IWorkingHour ? IWorkingHour.endTime || null : 100);
-            this.startType = ko.observable(IWorkingHour ? IWorkingHour.startType || 1 : 1);
-            this.endType = ko.observable(IWorkingHour ? IWorkingHour.endType || 1 : 1);
-
-        }
-    }
 }

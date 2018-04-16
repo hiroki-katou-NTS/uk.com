@@ -102,5 +102,16 @@ public interface HolidayThreeProcess {
 	 * @param recordWorkInfoImport
 	 * @param calTime
 	 */
-	public void checkOnDayTheDayForHoliday(String companyID,String employeeID,String appDate, String siftCD,CaculationTime breakTimes,RecordWorkInfoImport recordWorkInfoImport,Integer calTime);
+	public void checkOnDayTheDayForHolidayWork(String companyID,String employeeID,String appDate, String siftCD,CaculationTime breakTimes,RecordWorkInfoImport recordWorkInfoImport,Integer calTime);
+	/**
+	 * 03-02-3-2_当日_休日の場合
+	 * @param companyID
+	 * @param employeeID
+	 * @param appDate
+	 * @param siftCD
+	 * @param breakTimes
+	 * @param recordWorkInfoImport
+	 * @param calTime
+	 */
+	public void checkDayIsHoliday(String companyID,String employeeID,String appDate, String siftCD,CaculationTime breakTimes,RecordWorkInfoImport recordWorkInfoImport,Integer calTime);
 }

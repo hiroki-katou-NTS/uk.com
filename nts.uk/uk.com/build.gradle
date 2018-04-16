@@ -67,6 +67,25 @@ subprojects {
         into "${project(':com.web').projectDir}/../../uk.repo"
         include "nts*.jar"
 	}
+
+	task initd (dependsOn: [
+		':shr:nts.uk.shr.com:upver',
+		':shr:nts.uk.shr.find:upver',
+		':query:nts.uk.query.pub:upver',
+		':wk.ctx:nts.uk.ctx.workflow.app:upver',
+		':wk.ctx:nts.uk.ctx.workflow.pub:upver',
+		':com.ctx:bs:company:nts.uk.ctx.bs.company.dom:upver',
+		':com.ctx:bs:company:nts.uk.ctx.bs.company.infra:upver',
+		':com.ctx:bs:company:nts.uk.ctx.bs.company.pub:upver',
+		':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom:upver',
+		':com.ctx:bs:employee:nts.uk.ctx.bs.employee.app:upver',
+		':com.ctx:bs:employee:nts.uk.ctx.bs.employee.infra:upver',
+		':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub:upver',
+		':com.ctx:bs:person:nts.uk.ctx.bs.person.dom:upver',
+		':com.ctx:bs:person:nts.uk.ctx.bs.person.infra:upver',
+		':com.ctx:bs:person:nts.uk.ctx.bs.person.pub:upver',
+		':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub:upver'
+	]) { }
 	
 	dependencies {
 	   // Apache commons lang
@@ -164,7 +183,6 @@ subprojects {
         compile group: 'nts.arc', name: 'nts.arc', version: version
 	}
 }
-
 //=============com.file�==========================================
 project (':com.file:nts.uk.file.com.ws') {
 	dependencies {
@@ -708,6 +726,9 @@ project (':com.screen:nts.uk.screen.com.app') {
 		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.dom')
 		compile project(':com.ctx:sys:env:nts.uk.ctx.sys.env.dom')
 		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
+		compile project(':wk.ctx:nts.uk.ctx.workflow.dom')
+		compile project(':wk.ctx:nts.uk.ctx.workflow.app')
+		
 		
 		compile project(':com.ctx:bs:company:nts.uk.ctx.bs.company.dom')
 	 	compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom')
@@ -715,6 +736,8 @@ project (':com.screen:nts.uk.screen.com.app') {
 		
 		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: version
 		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: version
+		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: version
+		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: version
 	}
 }
 
@@ -989,6 +1012,8 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':query:nts.uk.query.infra')
 		runtime project (':query:nts.uk.query.pub')
 		runtime project (':query:nts.uk.query.pubimp')
+		
+		runtime project (':pub:nts.uk.pub.spr')
 	}	
 	
 	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
@@ -1075,6 +1100,8 @@ project (':pereg.ctx:nts.uk.ctx.pereg.ac') {
 		compile project (':pereg.ctx:nts.uk.ctx.pereg.dom')
 		compile project (':pereg.ctx:nts.uk.ctx.pereg.app')
 		compile(group: 'at.shared', name: 'nts.uk.ctx.at.shared.pub', version: version)
+		
+		compile(group: 'bs.company', name: 'nts.uk.ctx.bs.company.pub', version: version)
 	}
 }
 
@@ -1144,6 +1171,7 @@ project (':pereg.ctx:nts.uk.ctx.pereg.ws') {
 project (':exio.ctx:nts.uk.ctx.exio.ac') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
 		compile project (':exio.ctx:nts.uk.ctx.exio.dom')
 		compile project (':exio.ctx:nts.uk.ctx.exio.app')
 		compile(group: 'at.shared', name: 'nts.uk.ctx.at.shared.pub', version: version)
@@ -1289,5 +1317,20 @@ project (':query:nts.uk.query.pubimp') {
 		compile project(':query:nts.uk.query.model')
 		compile project(':query:nts.uk.query.app')
 		compile project(':query:nts.uk.query.infra')
+	}
+}
+
+
+//========== published for internal system ==========================
+
+// SPR
+project (':pub:nts.uk.pub.spr') {
+	dependencies {
+		compile group: 'at.request', name: 'nts.uk.ctx.at.request.pub', version: version
+		compile group: 'at.record', name: 'nts.uk.ctx.at.record.pub', version: version
+		compile project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
+		compile project (':wk.ctx:nts.uk.ctx.workflow.pub')
+		compile project (':wk.ctx:nts.uk.ctx.workflow.pub')
+		compile project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
 	}
 }

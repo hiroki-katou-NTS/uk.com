@@ -7,6 +7,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
+import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectParameter;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -16,6 +23,8 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktype.service.AttendanceOfficeAtr;
+import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -26,8 +35,14 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 	private BasicScheduleService basicSche;
 	@Inject
 	private ScheWorkUpdateService scheWork;
+	@Inject
+	private WorkTypeIsClosedService workTypeService;
+	@Inject
+	private EditStateOfDailyPerformanceRepository editDailyPerforRespository;
+	@Inject
+	private WorkInformationRepository workInforRepository;
 	@Override
-	public ScheStartEndTimeReflectOutput reflectScheStartEndTime(PreOvertimeParameter para,
+	public ScheStartEndTimeReflectOutput reflectScheStartEndTime(OvertimeParameter para,
 			WorkTimeTypeOutput timeTypeData) {
 		//反映する開始終了時刻を求める
 		ScheStartEndTimeReflectOutput findStartEndTime = this.findStartEndTime(para, timeTypeData);
@@ -74,23 +89,63 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 			//１回勤務反映区分(output)をチェックする
 			if(findStartEndTime.isCountReflect1Atr()) {
 				//予定開始時刻を反映できるかチェックする
-				//TODO thu 2
-			} else {
-				
+				if(this.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 1, timeTypeData.getWorkTypeCode(), true)) {
+					//予定開始時刻の反映
+					TimeReflectParameter startTime = new TimeReflectParameter(para.getEmployeeId(), 
+							para.getDateInfo(), 
+							findStartEndTime.getStartTime1(), 
+							1, 
+							true);
+					scheWork.updateStartTimeOfReflect(startTime);
+				}
+				//予定終了時刻を反映できるかチェックする
+				if(this.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 2, timeTypeData.getWorkTypeCode(), false)) {
+					//予定終了時刻の反映
+					TimeReflectParameter endTime = new TimeReflectParameter(para.getEmployeeId(), 
+							para.getDateInfo(), 
+							findStartEndTime.getEndTime1(), 
+							1, 
+							false);
+					scheWork.updateStartTimeOfReflect(endTime);
+				}
+			}
+			//２回勤務反映区分(output)をチェックする
+			if(findStartEndTime.isCountReflect2Atr()) {
+				//予定開始時刻２を反映できるかチェックする
+				if(this.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 2, timeTypeData.getWorkTypeCode(), true)) {
+					//予定開始時刻２の反映
+					TimeReflectParameter startTime = new TimeReflectParameter(para.getEmployeeId(), 
+							para.getDateInfo(), 
+							findStartEndTime.getStartTime2(),
+							2,
+							true);
+					scheWork.updateStartTimeOfReflect(startTime);
+				}
+				//予定終了時刻２を反映できるかチェックする
+				if(this.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 2, timeTypeData.getWorkTypeCode(), false)) {
+					//予定終了時刻２の反映
+					TimeReflectParameter endTime = new TimeReflectParameter(para.getEmployeeId(), 
+							para.getDateInfo(), 
+							findStartEndTime.getEndTime2(),
+							2,
+							false);
+					scheWork.updateStartTimeOfReflect(endTime);
+				}
 			}
 		}
 		
-		return null;
+		return findStartEndTime;
 	}
 
 	@Override
-	public ScheStartEndTimeReflectOutput findStartEndTime(PreOvertimeParameter para, WorkTimeTypeOutput timeTypeData) {
+	public ScheStartEndTimeReflectOutput findStartEndTime(OvertimeParameter para, WorkTimeTypeOutput timeTypeData) {
 		ScheStartEndTimeReflectOutput findDataOut = new ScheStartEndTimeReflectOutput(null, null, true, null, null, true);
 		//ドメインモデル「就業時間帯の設定」を取得する
 		String companyId = AppContexts.user().companyId();
 		Optional<PredetemineTimeSetting> optWorkTimeData = predetemineTimeRepo.findByWorkTimeCode(companyId, timeTypeData.getWorktimeCode());
 		if(!optWorkTimeData.isPresent()) {
 			findDataOut.setCountReflect2Atr(false);
+			return findDataOut;
 		} 
 		PredetemineTimeSetting workTimeData = optWorkTimeData.get();		
 		List<TimezoneUse> lstTimeZone2 = workTimeData.getPrescribedTimezoneSetting().getLstTimezone()
@@ -243,6 +298,45 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 				}
 			}
 		}		
+	}
+
+	@Override
+	public boolean checkStartEndTimeReflect(String employeeId, GeneralDate datadata, Integer frameNo,
+			String workTypeCode, boolean isPre) {
+		//打刻自動セット区分を取得する
+		if(workTypeService.checkStampAutoSet(workTypeCode, AttendanceOfficeAtr.ATTENDANCE)) {
+			//編集状態を取得する
+			//勤怠項目ID: 予定項目ID=予定開始時刻(枠番)の項目ID 3??
+			Integer attendentId;
+			if(isPre) {
+				attendentId = 3;
+			} else {
+				attendentId = 4;
+			}
+			Optional<EditStateOfDailyPerformance> optDailyData = editDailyPerforRespository.findByKeyId(employeeId, datadata, attendentId);
+			if(!optDailyData.isPresent()) {
+				return false;
+			}
+			EditStateOfDailyPerformance dailyData = optDailyData.get();
+			//予定出勤時刻を取得する
+			Optional<WorkInfoOfDailyPerformance> optWorkInfor = workInforRepository.find(employeeId, datadata);
+			if(!optWorkInfor.isPresent()) {
+				return false;
+			}
+			List<ScheduleTimeSheet> lstScheduleTimeSheets = optWorkInfor.get().getScheduleTimeSheets()
+					.stream()
+					.filter(x -> x.getWorkNo().v() == frameNo).collect(Collectors.toList());
+			
+			//取得した予定出勤時刻に値がない  OR 
+			//（取得した編集状態が手修正（本人）AND 手修正（他人）ではない）
+			if(lstScheduleTimeSheets.isEmpty()
+					|| (dailyData.getEditStateSetting() != EditStateSetting.HAND_CORRECTION_MYSELF
+					&& dailyData.getEditStateSetting() != EditStateSetting.HAND_CORRECTION_OTHER)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 }

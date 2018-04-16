@@ -27,7 +27,7 @@ public class GobackReflectPara {
 	/**
 	 * 予定と実績を同じに変更する区分
 	 */
-	private ScheAndRecordSameChangeRequestFlg scheAndRecordSameChangeFlg;
+	private ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg;
 	/**
 	 * 予定時刻反映区分
 	 */

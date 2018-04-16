@@ -24,7 +24,7 @@ public class JpaApprovalSetRepository extends JpaRepository implements ApprovalS
 		entity.achiveCon = domain.getAchiveCon().value;
 		entity.hdPerform = domain.getHdPerform().value;
 		entity.hdPre = domain.getHdPre().value;
-		entity.msgAdvance = domain.getHdPre().value;
+		entity.msgAdvance = domain.getMsgAdvance().value;
 		entity.msgExceeded = domain.getMsgExceeded().value;
 		entity.overtimePerfom = domain.getOvertimePerfom().value;
 		entity.overtimePre = domain.getOvertimePre().value;

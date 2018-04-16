@@ -116,6 +116,14 @@ public class KrqstHdAppSet extends UkJpaEntity implements Serializable{
 	@Column(name = "REGIS_SHORT_RESER_YEAR")
 	public int regisShortReser;
 	
+	/** 休暇種類  */
+	@Column(name = "HD_APPTYPE")
+	public int hdType;
+	
+	/** 未選択を表示する  */
+	@Column(name = "DISPLAY_UNSELECT")
+	public int displayUnselect;
+	
 	@Override
 	protected Object getKey() {
 		return krqstHdAppSetPK;

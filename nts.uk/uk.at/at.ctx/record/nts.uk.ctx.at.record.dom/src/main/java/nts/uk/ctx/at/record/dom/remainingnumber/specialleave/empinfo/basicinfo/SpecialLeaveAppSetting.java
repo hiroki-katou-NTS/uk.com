@@ -6,10 +6,10 @@ import lombok.AllArgsConstructor;
 public enum SpecialLeaveAppSetting {
 
 	//個人
-	PERSON(0),
+	PERSONAL(1),
 
 	//所定
-	PRESCRIBED(1);
+	PRESCRIBED(0);
 	
 	/** The value. */
 	public final int value;

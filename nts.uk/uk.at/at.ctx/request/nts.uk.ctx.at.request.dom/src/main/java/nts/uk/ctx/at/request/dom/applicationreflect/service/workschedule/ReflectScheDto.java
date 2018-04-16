@@ -7,6 +7,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 @AllArgsConstructor
 @Setter
 @Getter
@@ -17,16 +18,19 @@ public class ReflectScheDto {
 	private GeneralDate datePara;
 	/**	実行種別 */
 	private ExecutionType executionType;
-	/** 申請内容	 */
-	private Application_New application;
 	/** 振出・休出時反映する区分	 */
 	private boolean reflectAtr;
 	/**	時刻の反映*/
 	private ApplyTimeRequestAtr timeAtr;
+	private Application_New appInfor;
 	/**	直行直帰申請 */
 	private GoBackDirectly goBackDirectly;
 	/**
 	 * 休暇申請
 	 */
 	private AppAbsence forLeave;
+	/**
+	 * 勤務変更申請
+	 */
+	private AppWorkChange workChange;
 }

@@ -18,4 +18,11 @@ public class ApprovalStatusOfDailyPerfor extends AggregateRoot {
 	private GeneralDate ymd;
 	
 	private String rootInstanceID;
+
+	public ApprovalStatusOfDailyPerfor(String employeeId, GeneralDate ymd, String rootInstanceID) {
+		super();
+		this.employeeId = employeeId;
+		this.ymd = ymd;
+		this.rootInstanceID = rootInstanceID;
+	}
 }

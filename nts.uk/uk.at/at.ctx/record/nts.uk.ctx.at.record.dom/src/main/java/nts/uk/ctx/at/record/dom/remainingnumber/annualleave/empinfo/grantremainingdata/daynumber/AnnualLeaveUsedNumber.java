@@ -3,19 +3,34 @@ package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremain
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.remainingnumber.base.DayNumber;
 
 @Getter
-public class AnnualLeaveUsedNumber extends DayNumber {
+public class AnnualLeaveUsedNumber{
+
+	/**
+	 * 日数
+	 */
+	private AnnualLeaveUsedDayNumber days;
+
+	/**
+	 * 時間
+	 */
+	private Optional<AnnualLeaveUsedTime> minutes;
 
 	/**
 	 * 積み崩し日数
 	 */
-	private Optional<Integer> stowageDays;
+	private Optional<AnnualLeaveUsedDayNumber> stowageDays;
 
-	public AnnualLeaveUsedNumber(int days, Integer hours, Integer stowageDays) {
-		super(days, hours);
-		this.stowageDays = stowageDays != null ? Optional.of(stowageDays) : Optional.empty();
+	public AnnualLeaveUsedNumber(double days, Integer minutes, Double stowageDays) {
+		this.days = new AnnualLeaveUsedDayNumber(days);
+		this.minutes = minutes != null ? Optional.of(new AnnualLeaveUsedTime(minutes)) : Optional.empty();
+		this.stowageDays = stowageDays != null ? Optional.of(new AnnualLeaveUsedDayNumber(stowageDays))
+				: Optional.empty();
+	}
+
+	public static AnnualLeaveUsedNumber createFromJavaType(double days, Integer minutes, Double stowageDays) {
+		return new AnnualLeaveUsedNumber(days, minutes, stowageDays);
 	}
 
 }

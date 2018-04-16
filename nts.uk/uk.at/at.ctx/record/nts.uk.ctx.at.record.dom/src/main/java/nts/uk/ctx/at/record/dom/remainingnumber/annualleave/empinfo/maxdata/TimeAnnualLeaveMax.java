@@ -1,11 +1,27 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class TimeAnnualLeaveMax {
 	
-	private Integer maxHours;
+	/**
+	 * 上限時間
+	 */
+	private MaxMinutes maxMinutes;
 	
-	private Integer usedHours;
+	/**
+	 * 使用時間
+	 */
+	private UsedMinutes usedMinutes;
 	
-	private Integer remainingHours;
+	/**
+	 * 残時間
+	 */
+	private RemainingMinutes remainingMinutes;
 
 }

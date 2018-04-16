@@ -104,6 +104,19 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.updateScheduleBreakTime(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleBreaks());
 		this.updateScheduleTime(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleTime());
 	}
+	
+	@Override
+	public void changeWorkTypeTime(String sId, GeneralDate date, String workTypeCode, String workTimeCode) {
+		Optional<KscdtBasicSchedule> optionalEntity = this.findById(sId, date);
+		KscdtBasicSchedule schedule = optionalEntity.get();
+		if(!workTypeCode.isEmpty()) {
+			schedule.workTypeCode = workTypeCode;	
+		}
+		if(!workTimeCode.isEmpty()) {
+			schedule.workTimeCode = workTimeCode;	
+		}		
+		this.commandProxy().update(schedule);
+	}
 
 	/**
 	 * update work schedule time zone
@@ -283,6 +296,51 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		// exclude select
 		return query.getResultList().stream().map(entity -> this.toDomainPersonFee(entity))
 				.collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<WorkScheduleBreak> findWorkBreakTime(String employeeId, GeneralDate baseDate) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<KscdtWorkScheduleBreak> cq = criteriaBuilder.createQuery(KscdtWorkScheduleBreak.class);
+
+		// root data
+		Root<KscdtWorkScheduleBreak> root = cq.from(KscdtWorkScheduleBreak.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equal employee id
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KscdtWorkScheduleBreak_.kscdtWorkScheduleBreakPk).get(KscdtWorkScheduleBreakPK_.sId), employeeId));
+
+		// equal year month date base date
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KscdtWorkScheduleBreak_.kscdtWorkScheduleBreakPk).get(KscdtWorkScheduleBreakPK_.date), baseDate));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// create query
+		TypedQuery<KscdtWorkScheduleBreak> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList().stream().map(entity -> this.toDomainWorkScheduleBreak(entity))
+				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * Convert entity KscdtWorkScheduleBreak to domain object WorkScheduleBreak
+	 * @param entity
+	 * @return
+	 */
+	private WorkScheduleBreak toDomainWorkScheduleBreak(KscdtWorkScheduleBreak entity) {
+		return WorkScheduleBreak.createFromJavaType(entity.scheduleStartClock, entity.scheduleStartClock, entity.scheduleEndClock);
 	}
 
 	/**

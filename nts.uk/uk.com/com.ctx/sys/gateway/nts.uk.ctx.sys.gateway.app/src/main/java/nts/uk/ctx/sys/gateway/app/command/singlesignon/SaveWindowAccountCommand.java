@@ -10,7 +10,6 @@ import lombok.Setter;
 /**
  * The Class SaveWindowAccountCommand.
  */
-
 @Setter
 @Getter
 public class SaveWindowAccountCommand {

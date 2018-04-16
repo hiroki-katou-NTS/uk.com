@@ -1,0 +1,207 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+
+
+			<script>
+				var dialogSize = {
+					width : 750,
+					height : 900
+				};
+			</script>
+
+			<com:scriptfile set="IGNITE" />
+
+			<com:stylefile path="cps001.g.style.css" />
+			<com:scriptfile path="cps001.g.service.js" />
+			<com:scriptfile path="cps001.g.vm.js" />
+			<com:scriptfile path="cps001.g.start.js" />
+		</ui:define>
+
+		<!-- PAGE CONTENT -->
+		<ui:define name="content">
+
+			<div id="functions-area">
+				<button tabindex="1"
+					data-bind="click: create, enable: createMode() == false"
+					class="btnStyle">#{i18n.getText('CPS001_108')}</button>
+				<button tabindex="2" data-bind="click: save"
+					class="proceed btnStyle">#{i18n.getText('CPS001_109')}</button>
+				<button tabindex="3"
+					data-bind="click: remove, enable: createMode() == false"
+					class="danger btnStyle">#{i18n.getText('CPS001_110')}</button>
+				<button tabindex="4" data-bind="click : close" class="btnStyle">#{i18n.getText('CPS001_111')}</button>
+			</div>
+
+			<div id="contents-area">
+				<div class="grid-container">
+					<div tabindex="5"
+						data-bind="ntsCheckBox: { checked: checked, enable: true}">#{i18n.getText('CPS001_125')}</div>
+					<div id="tbl">
+					</div>
+					<!-- <table tabindex="6" id="single-list"
+						data-bind="ntsGridList: {			
+		 				dataSource: listAnnualLeaveGrantRemainData, 
+						primaryKey: 'annLeavId', 
+						columns: columns, 
+						multiple: false, 
+		 				value: currentValue,
+		 				showNumbering: true,
+		 				rows:5
+			 		}"></table> -->
+				</div>
+				<table id="tbl-detail" data-bind="with: currentItem">
+					<tr>
+						<td data-itemCode="IS00385"><div
+								data-bind="ntsFormLabel: {required: true }">abc</div></td>
+
+						<td>
+							<div tabindex="7" id="idGrantDate"
+								data-bind="ntsDatePicker: {value: grantDate, dateFormat: 'YYYY/MM/DD'}"></div>
+						</td>
+					</tr>
+					<tr>
+						<td data-itemCode="IS00386"><div
+								data-bind="ntsFormLabel: {required: false }">abc</div></td>
+						<td>
+							<div tabindex="8" id="deadline"
+								data-bind="ntsDatePicker: {value: deadline, dateFormat: 'YYYY/MM/DD'}"></div>
+						</td>
+					</tr>
+					<tr>
+						<td data-itemCode="IS00387"><div
+								data-bind="ntsFormLabel: {required: true }">abc</div></td>
+						<td>
+							<div class="cf" tabindex="9" id = "expirationStatus"
+								data-bind="ntsSwitchButton: {
+								options: [
+							                 { code: '0', name: '使用可能'},
+							                 { code: '1', name: '期限切れ'}
+							             ],
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: expirationStatus,
+								required: true,
+								enable: true }"></div>
+						</td>
+					</tr>
+					<tr>
+						<!-- 					<div class="div_line"> -->
+						<td class="verTop">
+							<div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS002_104')}</div>
+						</td>
+						<td colspan="3">
+							<div class="formularStyle">#{i18n.getText('CPS001_114')}</div>
+							<table id="subContent">
+								<tr>
+									<td><div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_115')}</div></td>
+									<td data-itemCode="IS00390" class="tdTxt"><div>abc</div></td>
+									<td><input class="resize_Edittor" tabindex="10" id = "grantDays"
+										data-bind="ntsNumberEditor: {
+	         							  name: '',
+	                                      value: grantDays,
+	                                      option: {
+	                                       decimallength: 1
+	                                      },
+	                                      enable: true, 
+	                                      required: true,
+	                                      }" />
+									</td>
+									<td><table>
+											<tr>
+												<td data-itemCode="IS00391 grantMinutes" class="tdTxt"><div>abc</div></td>
+												<td><input class="resize_Edittor" tabindex="11" id = "grantMinutes"
+													data-bind="ntsTimeEditor: {
+															value: grantMinutes,
+															required: false,
+															enable: true,
+															mode: 'time',
+															inputFormat: 'time',
+															readonly: false,
+															immediate: false}" />
+												</td>
+											</tr>
+										</table></td>
+								</tr>
+								<tr>
+									<td>
+										<div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_116')}</div>
+									</td>
+									<td data-itemCode="IS00393" class="tdTxt"><div>abc</div></td>
+									<td><input tabindex="12" class="resize_Edittor" id = "usedDays"
+										data-bind="ntsNumberEditor: {
+	         							  name: '',
+	                                      value: usedDays,
+	                                      option: {
+	                                       decimallength: 1
+	                                      },
+	                                      enable: true, 
+	                                      required: true,
+	                                      }" />
+									</td>
+									<td><table>
+											<tr>
+												<td data-itemCode="IS00394 usedMinutes" class="tdTxt"><div>abc</div></td>
+												<td><input class="resize_Edittor" tabindex="13" id = "usedMinutes"
+													data-bind="ntsTimeEditor: {
+										value: usedMinutes,
+										required: false,
+										enable: true,
+										mode: 'time',
+										inputFormat: 'time',
+										readonly: false,
+										immediate: false}" />
+												</td>
+											</tr>
+										</table></td>
+								</tr>
+								<tr>
+									<td>
+										<div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('CPS001_117')}</div>
+									</td>
+									<td data-itemCode="IS00396" class="tdTxt"><div>abc</div></td>
+									<td><input class="resize_Edittor" tabindex="14" id = "remainingDays"
+										data-bind="ntsNumberEditor: {
+	         							  name: '',
+	                                      value: remainingDays,
+	                                      option: {
+	                                       decimallength: 1
+	                                      },
+	                                      enable: true, 
+	                                      required: true,
+	                                      }" />
+									</td>
+									<td><table>
+											<tr>
+												<td data-itemCode="IS00397 remainingMinutes" class="tdTxt"><div>abc</div></td>
+												<td><input class="resize_Edittor" tabindex="15" id = "remainingMinutes"
+													data-bind="ntsTimeEditor: {
+										value: remainingMinutes,
+										required: false,
+										enable: true,
+										readonly: false,
+										mode: 'time',
+										inputFormat: 'time',
+										immediate: false}" />
+												</td>
+											</tr>
+										</table></td>
+								</tr>
+
+							</table>
+						</td>
+					</tr>
+
+				</table>
+			</div>
+		</ui:define>
+
+	</ui:composition>
+</body>
+</html>

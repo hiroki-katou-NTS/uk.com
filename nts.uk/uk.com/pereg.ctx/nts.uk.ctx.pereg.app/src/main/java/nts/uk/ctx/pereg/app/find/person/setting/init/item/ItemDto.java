@@ -16,6 +16,8 @@ public class ItemDto {
 	
 	private String itemName;
 	
+	private boolean disabled;
+	
 	private int isRequired;
 
 }

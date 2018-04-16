@@ -9,6 +9,7 @@ module nts.uk.pr.view.kmf001.h {
             findAllByEmployment: 'ctx/at/shared/vacation/setting/substvacation/emp/findall',
             saveComSetting: "ctx/at/shared/vacation/setting/substvacation/com/save",
             saveEmpSetting: "ctx/at/shared/vacation/setting/substvacation/emp/save",
+            deleteEmpSetting: "ctx/at/shared/vacation/setting/substvacation/emp/delete",
             vacationExpirationEnum: "ctx/at/shared/vacation/setting/substvacation/enum/vacationexpiration",
             applyPermissionEnum: "ctx/at/shared/vacation/setting/substvacation/enum/applypermission",
             manageDistinctEnum: "ctx/at/shared/vacation/setting/substvacation/enum/managedistinct",
@@ -55,6 +56,13 @@ module nts.uk.pr.view.kmf001.h {
              */
             public saveEmpSetting(setting: model.EmpSubstVacationDto): JQueryPromise<void> {
                 return nts.uk.request.ajax(paths.saveEmpSetting, setting);
+            }
+            
+            /**
+             * Delete contract type's setting
+             */
+            public deleteEmpSetting(contractTypeCode: string): JQueryPromise<void> {
+                return nts.uk.request.ajax(paths.deleteEmpSetting + "/" + contractTypeCode);
             }
 
             /**

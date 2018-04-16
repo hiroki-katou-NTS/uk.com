@@ -6,6 +6,7 @@ package nts.uk.ctx.sys.auth.pub.user;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 
 /**
  * Gets the associated person ID.
@@ -62,4 +63,9 @@ public class UserExport {
 		this.associatedPersonID = associatedPersonID;
 		this.expirationDate = expirationDate;
 	}	
+	
+	public boolean isExistAssociatedPersonID(String associatedPersonID){
+		return !StringUtil.isNullOrEmpty(this.associatedPersonID, false);
+	}
+	
 }

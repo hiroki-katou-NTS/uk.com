@@ -20,7 +20,7 @@ public class FixedCheckItemAcFinder implements FixedCheckItemAdapter {
 
 	@Override
 	public Optional<ValueExtractAlarm>  checkWorkTypeNotRegister(String workplaceID,String employeeID, GeneralDate date, String workTypeCD) {
-		Optional<ValueExtractAlarmWRPubExport> data =Optional.ofNullable(fixedCheckItemPub.checkWorkTypeNotRegister(workplaceID,employeeID, date, workTypeCD));
+		Optional<ValueExtractAlarmWRPubExport> data =fixedCheckItemPub.checkWorkTypeNotRegister(workplaceID,employeeID, date, workTypeCD);
 		
 		if(data.isPresent())
 			return Optional.of(convertToExport(data.get()));
@@ -30,7 +30,7 @@ public class FixedCheckItemAcFinder implements FixedCheckItemAdapter {
 
 	@Override
 	public Optional<ValueExtractAlarm> checkWorkTimeNotRegister(String workplaceID,String employeeID, GeneralDate date, String workTimeCD) {
-		Optional<ValueExtractAlarmWRPubExport> data =Optional.ofNullable(fixedCheckItemPub.checkWorkTimeNotRegister(workplaceID,employeeID, date, workTimeCD));
+		Optional<ValueExtractAlarmWRPubExport> data =fixedCheckItemPub.checkWorkTimeNotRegister(workplaceID,employeeID, date, workTimeCD);
 		if(data.isPresent())
 			return Optional.of(convertToExport(data.get()));
 		return Optional.empty();
@@ -59,25 +59,13 @@ public class FixedCheckItemAcFinder implements FixedCheckItemAdapter {
 	
 	private ValueExtractAlarm convertToExport(ValueExtractAlarmWRPubExport export) {
 		return new ValueExtractAlarm(
-				export.getWorkplaceID(),
+				export.getWorkplaceID().orElse(null),
 				export.getEmployeeID(),
 				export.getAlarmValueDate().toString(),
 				export.getClassification(),
 				export.getAlarmItem(),
 				export.getAlarmValueMessage(),
-				export.getComment()
-				);
-	}
-	
-	private ValueExtractAlarmWRPubExport convertToImport(ValueExtractAlarm importDto) {
-		return new ValueExtractAlarmWRPubExport(
-				importDto.getWorkplaceID(),
-				importDto.getEmployeeID(),
-				GeneralDate.fromString(importDto.getAlarmValueDate(), "yyyy/MM/dd"),
-				importDto.getClassification(),
-				importDto.getAlarmItem(),
-				importDto.getAlarmValueMessage(),
-				importDto.getComment()
+				export.getComment().orElse(null)
 				);
 	}
 

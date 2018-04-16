@@ -23,7 +23,7 @@ public interface WorkplaceApprovalRootRepository {
 	 * @param approvalId
 	 * @param workplaceId
 	 * @param historyId
-	 * @return
+	 * @return 
 	 */
 	Optional<WorkplaceApprovalRoot> getWpApprovalRoot(String companyId, String approvalId, String workplaceId,
 			String historyId);
@@ -120,4 +120,9 @@ public interface WorkplaceApprovalRootRepository {
 	 * @return
 	 */
 	List<WorkplaceApprovalRoot> getWpAppRootLast(String companyId, String workplaceId,GeneralDate endDate);
+	
+	List<WorkplaceApprovalRoot> getWpAppRoot(String companyID, GeneralDate date, 
+			Integer employmentRootAtr, Integer confirmRootAtr);
+	
+	List<WorkplaceApprovalRoot> findEmpByConfirm(String companyID, String workplaceID, ConfirmationRootType confirmType, GeneralDate date);
 }

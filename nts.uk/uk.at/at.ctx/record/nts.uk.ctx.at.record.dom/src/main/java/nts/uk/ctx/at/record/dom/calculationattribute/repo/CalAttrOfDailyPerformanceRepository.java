@@ -15,4 +15,6 @@ public interface CalAttrOfDailyPerformanceRepository {
 	public void update(CalAttrOfDailyPerformance domain);
 
 	public void add(CalAttrOfDailyPerformance domain);
+	
+	void deleteByKey(String employeeId, GeneralDate baseDate);
 }

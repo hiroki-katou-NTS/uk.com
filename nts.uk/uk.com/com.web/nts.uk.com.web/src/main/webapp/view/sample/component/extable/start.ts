@@ -189,7 +189,7 @@ __viewContext.ready(function () {
         }, {
             key: "_4", width: "100px", handlerType: "input", dataType: "duration/duration", primitiveValue: "HolidayAppPrimitiveTime"
         }, {
-            key: "_5", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_5", width: "100px", handlerType: "input", dataType: "duration/duration", primitiveValue: "TimeWithDayAttr"
         }, {
             key: "_6", width: "100px", handlerType: "input", dataType: "time/time", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
         }, {
@@ -424,7 +424,7 @@ __viewContext.ready(function () {
             updateMode: "edit",
             pasteOverWrite: true,
             stickOverWrite: true,
-            viewMode: "shortName",
+            viewMode: "time",
             secondaryTable: $("#subtable"),
             determination: {
                 rows: [0],
@@ -443,7 +443,6 @@ __viewContext.ready(function () {
         .LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent)
         .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent)
         .create();
-    
     
     let leftHorzColumns2 = [
         { headerText: "項目名", key: "itemName", width: "200px" },

@@ -50,4 +50,10 @@ public interface ManageAnnualSettingSetMemento {
      * @param displaySetting the new display setting
      */
     void setDisplaySetting(DisplaySetting displaySetting);
+    
+    /**
+     * Sets the yearly of day.
+     * @return
+     */
+    void setYearLyOfDays(YearLyOfNumberDays yearLyOfNumberDays);
 }

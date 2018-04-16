@@ -5,12 +5,14 @@ import lombok.Getter;
 @Getter
 public class ApplicationCommand {
 
-	private String appReasonID;
+	private String appReasonText;
 
 	private String applicationReason;
 
 	private int prePostAtr;
 
 	private String enteredPersonSID;
+
+	private Long appVersion;
 
 }

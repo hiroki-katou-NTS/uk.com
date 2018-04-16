@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtComApprovalRoot;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtComApprovalRootPK;
@@ -33,7 +34,7 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	private final String FIND_BY_DATE_CFR = FIND_BY_CID 
 			   + " AND c.endDate = :endDate"
 			   + " AND c.confirmationRootType = :confirmationRootType"
-			   + " AND c.employmentRootAtr = :employmentRootAtr";
+			   + " AND c.employmentRootAtr = :employmentRootAtr"; 
 	private final String SELECT_COM_APR_BY_DATE_APP_NULL = FIND_BY_CID 
 				   + " AND c.endDate = :endDate"
 				   + " AND c.employmentRootAtr = :employmentRootAtr"
@@ -65,6 +66,21 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 				   + " ORDER BY c.startDate DESC";
 	private final String FIND_LAST_BY_END_DATE = FIND_BY_CID 
 					 +" AND c.endDate = :endDate";
+	private final String FIND_BY_DATE_EMP_CONFIRM = FIND_BY_CID 
+				+ " AND c.startDate <= :baseDate"
+				+ " AND c.endDate >= :baseDate"
+				+ " AND c.confirmationRootType = :confirmationRootType"
+				+ " AND c.employmentRootAtr = :employmentRootAtr";
+	private final String FIND_BY_DATE_EMP = FIND_BY_CID 
+			+ " AND c.startDate <= :baseDate"
+			+ " AND c.endDate >= :baseDate"
+			+ " AND c.employmentRootAtr = :employmentRootAtr";
+	
+	private final String FIND_BY_EMP_CONFIRM = FIND_BY_CID
+			 + " AND c.startDate <= :baseDate"
+			 + " AND c.endDate >= :baseDate"
+			 + " AND c.confirmationRootType = :confirmationRootType"
+			 + " AND c.employmentRootAtr = 2";
 	/**
 	 * get All Company Approval Root
 	 * @param companyId
@@ -307,5 +323,30 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 				.setParameter("companyId", companyID)
 				.setParameter("endDate", endDate)
 				.getList(c ->toDomainComApR(c));
+	}
+	@Override
+	public List<CompanyApprovalRoot> getComAppRoot(String companyID, GeneralDate date, Integer employmentRootAtr,
+			Integer confirmRootAtr) {
+		if(confirmRootAtr==null){
+			return this.queryProxy().query(FIND_BY_DATE_EMP, WwfmtComApprovalRoot.class)
+					.setParameter("companyId", companyID)
+					.setParameter("baseDate", date)
+					.setParameter("employmentRootAtr", employmentRootAtr)
+					.getList(c->toDomainComApR(c));
+		}
+		return this.queryProxy().query(FIND_BY_DATE_EMP_CONFIRM, WwfmtComApprovalRoot.class)
+				.setParameter("companyId", companyID)
+				.setParameter("baseDate", date)
+				.setParameter("confirmationRootType", confirmRootAtr)
+				.setParameter("employmentRootAtr", employmentRootAtr)
+				.getList(c->toDomainComApR(c));
+	}
+	@Override
+	public List<CompanyApprovalRoot> findEmpByConfirm(String companyID, ConfirmationRootType confirmType, GeneralDate date) {
+		return this.queryProxy().query(FIND_BY_EMP_CONFIRM, WwfmtComApprovalRoot.class)
+				.setParameter("companyId", companyID)
+				.setParameter("baseDate", date)
+				.setParameter("confirmationRootType", confirmType.value)
+				.getList(c->toDomainComApR(c));
 	}
 }

@@ -12,5 +12,11 @@ public interface ApplicationReflectProcessSche {
 	 * @param reflectSche
 	 */
 	public void forleaveReflect(ReflectScheDto reflectSche);
+	/**
+	 * 勤務変更申請
+	 * @param reflectSche
+	 * @return
+	 */
+	public boolean workChangeReflect(ReflectScheDto reflectSche);
 
 }

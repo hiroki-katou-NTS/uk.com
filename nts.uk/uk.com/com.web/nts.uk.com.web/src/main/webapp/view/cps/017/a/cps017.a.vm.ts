@@ -82,7 +82,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             charType: constraint.SelectionCdAlphaNumeric.charType,
                             maxLength: selectedObject.formatSelection.selectionCode,
                             valueType: constraint.SelectionCdAlphaNumeric.valueType
-                        });
+                        }); 
                         writeConstraint("SelectionName", {
                             charType: "Any",
                             maxLength: selectedObject.formatSelection.selectionName,

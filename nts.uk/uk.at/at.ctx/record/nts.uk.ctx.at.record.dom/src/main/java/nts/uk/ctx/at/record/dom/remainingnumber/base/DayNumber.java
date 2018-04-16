@@ -4,17 +4,17 @@ import java.util.Optional;
 
 public class DayNumber {
 
-	protected Integer days;
+	protected Float days;
 
-	protected Optional<Integer> hours;
+	protected Optional<Integer> minutes;
 
 	public DayNumber() {
 		super();
 	}
 
-	public DayNumber(int days, Integer hours) {
+	public DayNumber(float days, Integer minutes) {
 		this.days = days;
-		this.hours = hours != null ? Optional.of(hours) : Optional.empty();
+		this.minutes = minutes != null ? Optional.of(minutes) : Optional.empty();
 	}
 	
 }

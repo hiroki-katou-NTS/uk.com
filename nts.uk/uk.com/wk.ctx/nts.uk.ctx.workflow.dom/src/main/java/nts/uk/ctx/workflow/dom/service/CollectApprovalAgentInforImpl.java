@@ -48,19 +48,21 @@ public class CollectApprovalAgentInforImpl implements CollectApprovalAgentInforS
 		for(String approver : listApprover){
 			for(Agent agent : listAgentByDate){
 				if (approver.equals(agent.getEmployeeId())) {
+					// ktra xem AgentAppType = PATH hay k
+					//if(agentAdapterDto.getAgentAppType1() != null
+					if (agent.getAgentAppType1().equals(AgentAppType.PATH)) {
+						ApprovalRepresenterInforOutput obj = new ApprovalRepresenterInforOutput(approver, RepresenterInforOutput.pathInformation());
+						listApprovalAgentInfor.add(obj);
+						continue;
+					}
+					
 					if (Strings.isBlank(agent.getAgentSid1()) || agent.getAgentAppType1().equals(AgentAppType.NO_SETTINGS)) {
 						ApprovalRepresenterInforOutput obj = new ApprovalRepresenterInforOutput(approver, RepresenterInforOutput.noneInformation());
 						listApprovalAgentInfor.add(obj);
 						allPathSetFlag = false;
 						continue;
 					}
-					// ktra xem AgentAppType = PATH hay k
-					//if(agentAdapterDto.getAgentAppType1() != null
-					if (Strings.isNotBlank(agent.getAgentSid1()) && agent.getAgentAppType1().equals(AgentAppType.PATH)) {
-						ApprovalRepresenterInforOutput obj = new ApprovalRepresenterInforOutput(approver, RepresenterInforOutput.pathInformation());
-						listApprovalAgentInfor.add(obj);
-						continue;
-					}
+					
 					// ktra xem AgentAppType = SUBSTITUTE_DESIGNATION hay k
 					//if(agentAdapterDto.getAgentAppType1() != null
 					if (Strings.isNotBlank(agent.getAgentSid1()) && agent.getAgentAppType1().equals(AgentAppType.SUBSTITUTE_DESIGNATION)) {

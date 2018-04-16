@@ -48,4 +48,23 @@ public class DataTypeStateDto {
 		return SelectionRadioDto.createFromJavaType(refTypeState, DataTypeValue.SELECTION_RADIO.value);
 
 	}
+	
+	// start code thêm 4 item kiểu mới 19.3
+	
+	public static DataTypeStateDto createReadOnly(String readText) {
+		return ReadOnlyDto.createFromJavaType(readText);
+	}
+	
+	public static DataTypeStateDto createReadOnlyButton(String readText) {
+		return ReadOnlyButtonDto.createFromJavaType(readText);
+	}
+	
+	public static DataTypeStateDto createRelatedCategory(String relateCtgCode) {
+		return RelatedCategoryDto.createFromJavaType(relateCtgCode);
+	}
+	
+	public static DataTypeStateDto createNumericButtonDto(String readText) {
+		return NumericButtonDto.createFromJavaType(readText);
+	}
+	//end
 }

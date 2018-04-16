@@ -1,4 +1,6 @@
 module nts.uk.at.view.kmf003.b.viewmodel {
+    import blockUI = nts.uk.ui.block;
+    
     export class ScreenModel {
         code: KnockoutObservable<string>;
         name: KnockoutObservable<string>;
@@ -13,6 +15,8 @@ module nts.uk.at.view.kmf003.b.viewmodel {
         count: KnockoutObservable<number>;
         lengthOfServiceData: any;
         grantHdData: any;
+        checkDataExisted: KnockoutObservable<boolean>;
+        flag: KnockoutObservable<boolean>;
         
         constructor() {
             var self = this;
@@ -30,6 +34,9 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             } else {
                 self.displayDateSelected = ko.observable(true);
             }
+            
+            self.checkDataExisted = ko.observable(false);
+            self.flag = ko.observable(true);
             
             if(self.conditionData.useCondition == true){
                 var style = $('<style>table td.allow-pay { display: table-cell; }</style>');
@@ -62,21 +69,42 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 let combinedData = [];
                 
                 for(var i = 0; i < self.lengthOfServiceData.length; i++){
-                    var item : IItem = {
-                        grantYearHolidayNo: self.lengthOfServiceData[i].grantNum,
-                        conditionNo: self.grantHdData[i].conditionNo,
-                        yearHolidayCode: self.lengthOfServiceData[i].yearHolidayCode,
-                        lengthOfServiceYears: self.lengthOfServiceData[i].year,
-                        lengthOfServiceMonths: self.lengthOfServiceData[i].month,
-                        grantDays: self.grantHdData[i].grantDays,
-                        limitedTimeHdDays: self.grantHdData[i].limitTimeHd,
-                        limitedHalfHdCnt: self.grantHdData[i].limitDayYear,
-                        grantReferenceDate: self.lengthOfServiceData[i].standGrantDay,
-                        grantSimultaneity: self.lengthOfServiceData[i].allowStatus,
-                        grantDate: ""
-                    };
+                    var gNum = self.grantHdData[i] != null ? self.grantHdData[i].grantNum : self.grantHdData[self.grantHdData.length - 1].grantNum;
+                    if(self.lengthOfServiceData[i].grantNum == gNum) {
+                        var item : IItem = {
+                            grantYearHolidayNo: self.lengthOfServiceData[i].grantNum,
+                            conditionNo: self.grantHdData[i] != null ? self.grantHdData[i].conditionNo : (self.grantHdData[self.grantHdData.length - 1] != null ? self.grantHdData[self.grantHdData.length - 1].conditionNo : ""),
+                            yearHolidayCode: self.lengthOfServiceData[i].yearHolidayCode,
+                            lengthOfServiceYears: self.lengthOfServiceData[i].year,
+                            lengthOfServiceMonths: self.lengthOfServiceData[i].month,
+                            grantDays: self.grantHdData[i] != null ? self.grantHdData[i].grantDays : (self.grantHdData[self.grantHdData.length - 1] != null ? self.grantHdData[self.grantHdData.length - 1].grantDays : ""),
+                            limitedTimeHdDays: self.grantHdData[i] != null ? self.grantHdData[i].limitTimeHd : (self.grantHdData[self.grantHdData.length - 1] != null ? self.grantHdData[self.grantHdData.length - 1].limitTimeHd : ""),
+                            limitedHalfHdCnt: self.grantHdData[i] != null ? self.grantHdData[i].limitDayYear : (self.grantHdData[self.grantHdData.length - 1] != null ? self.grantHdData[self.grantHdData.length - 1].limitDayYear : ""),
+                            grantReferenceDate: self.lengthOfServiceData[i].standGrantDay,
+                            grantSimultaneity: self.lengthOfServiceData[i].allowStatus,
+                            grantDate: ""
+                        };
+                    } else {
+                        var item : IItem = {
+                            grantYearHolidayNo: self.lengthOfServiceData[i].grantNum,
+                            conditionNo: "",
+                            yearHolidayCode: self.lengthOfServiceData[i].yearHolidayCode,
+                            lengthOfServiceYears: self.lengthOfServiceData[i].year,
+                            lengthOfServiceMonths: self.lengthOfServiceData[i].month,
+                            grantDays: "",
+                            limitedTimeHdDays: "",
+                            limitedHalfHdCnt: "",
+                            grantReferenceDate: self.lengthOfServiceData[i].standGrantDay,
+                            grantSimultaneity: self.lengthOfServiceData[i].allowStatus,
+                            grantDate: ""
+                        };
+                    }
                     
                     combinedData.push(new Item(item));
+                }
+                
+                if(combinedData.length > 0) {
+                    self.checkDataExisted(true);
                 }
                 
                 self.bindData(combinedData);
@@ -131,43 +159,61 @@ module nts.uk.at.view.kmf003.b.viewmodel {
          */
         bindData(data: any){
             var self = this;
+            var flagDay = false;
+            var flagYear = false;
             
             self.items.removeAll();
             
-            //Update case
-            for(var i = 0; i < data.length; i++){
-                var item : IItem = {
-                    grantYearHolidayNo: data[i].grantYearHolidayNo(),
-                    conditionNo: data[i].conditionNo(),
-                    yearHolidayCode: data[i].yearHolidayCode(),
-                    lengthOfServiceYears: data[i].lengthOfServiceYears(),
-                    lengthOfServiceMonths: data[i].lengthOfServiceMonths(),
-                    grantDays: data[i].grantDays(),
-                    limitedTimeHdDays: data[i].limitedTimeHdDays(),
-                    limitedHalfHdCnt: data[i].limitedHalfHdCnt(),
-                    grantReferenceDate: data[i].grantReferenceDate(),
-                    grantSimultaneity: data[i].grantSimultaneity(),
-                    grantDate: data[i].grantDate()
-                };
-                self.items.push(new Item(item));
-            }
-            
-            for(var j = data.length; j < 20; j++) {
-                var item : IItem = {
-                    grantYearHolidayNo: j + 1,
-                    conditionNo: self.conditionData.conditionNo,
-                    yearHolidayCode: self.conditionData.code,
-                    lengthOfServiceYears: null,
-                    lengthOfServiceMonths: null,
-                    grantDays: null,
-                    limitedTimeHdDays: null,
-                    limitedHalfHdCnt: null,
-                    grantReferenceDate: 0,
-                    grantSimultaneity: data.length > 0 ? data[data.length - 1].grantSimultaneity() : false,
-                    grantDate: ""
-                };
-                self.items.push(new Item(item));    
-            }
+            service.checkData().done(function(check){
+                if(check.manageType == 1 && check.reference == 1) {
+                    flagDay = true;
+                }
+
+                if (check.maxManageType == 1 && check.maxReference == 1 && check.timeManageType == 1) {
+                    flagYear = true;
+                }
+                
+                //Update case
+                for(var i = 0; i < data.length; i++){
+                    var item : IItem = {
+                        grantYearHolidayNo: data[i].grantYearHolidayNo(),
+                        conditionNo: data[i].conditionNo(),
+                        yearHolidayCode: data[i].yearHolidayCode(),
+                        lengthOfServiceYears: data[i].lengthOfServiceYears(),
+                        lengthOfServiceMonths: data[i].lengthOfServiceMonths(),
+                        grantDays: data[i].grantDays(),
+                        limitedTimeHdDays: data[i].limitedTimeHdDays(),
+                        limitedHalfHdCnt: data[i].limitedHalfHdCnt(),
+                        grantReferenceDate: data[i].grantSimultaneity() == 0 ? data[i].grantReferenceDate() : 1,
+                        grantReferenceDateEnable: data[i].grantSimultaneity() == 1 ? false : true,
+                        grantSimultaneity: data[i].grantSimultaneity(),
+                        grantDate: data[i].grantDate(),
+                        ltdEnable: flagYear,
+                        lthEnable: flagDay 
+                    };
+                    self.items.push(new Item(item));
+                }
+                
+                for(var j = data.length; j < 20; j++) {
+                    var item : IItem = {
+                        grantYearHolidayNo: j + 1,
+                        conditionNo: self.conditionData.conditionNo,
+                        yearHolidayCode: self.conditionData.code,
+                        lengthOfServiceYears: null,
+                        lengthOfServiceMonths: null,
+                        grantDays: null,
+                        limitedTimeHdDays: null,
+                        limitedHalfHdCnt: null,
+                        grantReferenceDate: data.length > 0 ? (data[data.length - 1].grantSimultaneity() ? 1 : 0) : 0,
+                        grantReferenceDateEnable: data.length > 0 ? (data[data.length - 1].grantSimultaneity() ? false : true) : true,
+                        grantSimultaneity: data.length > 0 ? data[data.length - 1].grantSimultaneity() : false,
+                        grantDate: "",
+                        ltdEnable: flagYear,
+                        lthEnable: flagDay 
+                    };
+                    self.items.push(new Item(item));    
+                }
+            });
         }
         
         /**
@@ -175,8 +221,12 @@ module nts.uk.at.view.kmf003.b.viewmodel {
          */
         calculate() {
             var self = this;
+            var checkErr = true;
+            
+            blockUI.invisible();
             
             if (nts.uk.ui.errors.hasError()) {
+                blockUI.clear();
                 return;    
             }
             
@@ -204,8 +254,20 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 
                 // if no data then return
                 if (grantHolidayTblList == null || grantHolidayTblList.length == 0) {
+                    blockUI.clear();
                     return;
                 }
+                
+                _.forEach(grantHolidayTblList, function(item) {
+                    if(checkErr && item.month != null && item.year != null && (item.grantDays == null || item.grantDays == "")) {
+                        checkErr = false;
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_270" }).then(() => {
+                            $('#b2_1').focus();
+                        });
+                        blockUI.clear();
+                        return;
+                    }
+                });
                     
                 var dataTranfer: any = {
                     grantHolidayTblList: grantHolidayTblList,
@@ -214,32 +276,49 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                     simultaneousGrantDate: dateSelected
                 }
                 
-                service.calculateGrantDate(dataTranfer).done(function(res) {
-                    var results = [];
-                    for(var i = 0; i < res.length; i++){
-                        var item : IItem = {
-                            grantYearHolidayNo: res[i].grantNum,
-                            conditionNo: res[i].conditionNo,
-                            yearHolidayCode: res[i].yearHolidayCode,
-                            lengthOfServiceYears: res[i].year,
-                            lengthOfServiceMonths: res[i].month,
-                            grantDays: res[i].grantDays,
-                            limitedTimeHdDays: res[i].limitTimeHd,
-                            limitedHalfHdCnt: res[i].limitDayYear,
-                            grantReferenceDate: res[i].standGrantDay,
-                            grantSimultaneity: res[i].allowStatus,
-                            grantDate: res[i].grantDate
-                        };
+                if(checkErr) {
+                    service.calculateGrantDate(dataTranfer).done(function(res) {
+                        var results = [];
+                        for(var i = 0; i < res.length; i++){
+                            var item : IItem = {
+                                grantYearHolidayNo: res[i].grantNum,
+                                conditionNo: res[i].conditionNo,
+                                yearHolidayCode: res[i].yearHolidayCode,
+                                lengthOfServiceYears: res[i].year,
+                                lengthOfServiceMonths: res[i].month,
+                                grantDays: res[i].grantDays,
+                                limitedTimeHdDays: res[i].limitTimeHd,
+                                limitedHalfHdCnt: res[i].limitDayYear,
+                                grantReferenceDate: res[i].standGrantDay,
+                                grantSimultaneity: res[i].allowStatus,
+                                grantDate: res[i].grantDate
+                            };
+                            
+                            results.push(new Item(item));
+                        }
                         
-                        results.push(new Item(item));
-                    }
-                    
-                    self.bindData(results);
-                }).fail(function(error){
-                    nts.uk.ui.dialog.alertError({messageId: error.messageId});    
-                });
+                        self.bindData(results);
+                    }).fail(function(error){
+                        nts.uk.ui.dialog.alertError({ messageId: error.messageId }).then(() => {
+                            if(error.messageId === "Msg_266") {
+                                $('.year-input1').focus();
+                            } else if(error.messageId === "Msg_268") {
+                                
+                            } else if(error.messageId === "Msg_269") {
+                                $('.year-input1').focus();
+                            } else if(error.messageId === "Msg_270") {
+                                $('#b2_1').focus();
+                            }
+                        }); 
+                    }).always(function() {
+                        blockUI.clear();
+                    });
+                }
             } else {
-                nts.uk.ui.dialog.alert({ messageId: "Msg_272" });
+                nts.uk.ui.dialog.alert({ messageId: "Msg_272" }).then(() => {
+                    $('#reference-date').focus();
+                    blockUI.clear();
+                });
             }
         }
         
@@ -248,17 +327,21 @@ module nts.uk.at.view.kmf003.b.viewmodel {
          */
         submit() {
             var self = this;
+            var checkErr = true;
+            
+            blockUI.invisible();
             
             $('#reference-date').ntsError('clear');
             
             if (nts.uk.ui.errors.hasError()) {
+                blockUI.clear();
                 return;    
             }
 
             var grantHolidayTblList = [];
-            _.forEach(self.items(), function(item) {
+            _.forEach(self.items(), function(item, index) {
                 grantHolidayTblList.push({
-                    grantNum: item.grantYearHolidayNo(),
+                    grantNum: index + 1,
                     conditionNo: item.conditionNo(),
                     yearHolidayCode: item.yearHolidayCode(),
                     year: item.lengthOfServiceYears(),
@@ -274,23 +357,70 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             // if no data then return
             if (grantHolidayTblList == null || grantHolidayTblList.length == 0) {
                 nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", false);
+                blockUI.clear();
                 return;
             }
-        
-            service.addYearHolidayGrant(grantHolidayTblList).done(function(){
-                nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", true);
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-            }).fail(function(error){
-                nts.uk.ui.dialog.alertError({ messageId: error.messageId });    
+            
+            _.forEach(grantHolidayTblList, function(item) {
+                if(checkErr) {
+                    if((item.year != null || item.month != null) && item.grantDays == null) {
+                        if(Number(item.year) == 0 && Number(item.month) == 0) {
+                            checkErr = false;
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_268" }).then(() => {
+                                $('#b2_1').focus();
+                            });
+                            blockUI.clear();
+                            return;
+                        } else {
+                            checkErr = false;
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_270" }).then(() => {
+                                $('#b2_1').focus();
+                            });
+                            blockUI.clear();
+                            return;
+                        }                        
+                    } else if((item.year == null || item.month == null) && item.grantDays != null) {
+                        if(Number(item.year) == 0 && Number(item.month) == 0) {
+                            checkErr = false;
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_268" }).then(() => {
+                                $('#b2_1').focus();
+                            });
+                            blockUI.clear();
+                            return;
+                        }                       
+                    }
+                }
             });
+            
+            if(checkErr){
+                service.addYearHolidayGrant(grantHolidayTblList).done(function(){
+                    nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", true);
+                    self.checkDataExisted(true);
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                }).fail(function(error){
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId }).then(() => {
+                        if(error.messageId === "Msg_266") {
+                            $('.year-input1').focus();
+                        } else if(error.messageId === "Msg_268") {
+                            
+                        } else if(error.messageId === "Msg_269") {
+                            $('.year-input1').focus();
+                        } else if(error.messageId === "Msg_270") {
+                            $('#b2_1').focus();
+                        }
+                    }); 
+                }).always(function() {
+                    blockUI.clear();
+                });
+            }
         }
         
         /**
          * Close dialog.
          */
         cancel() {
-            var calcelData = nts.uk.ui.windows.getShared("KMF003_CANCEL_DATA");
-            nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", calcelData);
+            var self = this;
+            nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", self.checkDataExisted());
             nts.uk.ui.windows.close();
         }
         
@@ -308,23 +438,39 @@ module nts.uk.at.view.kmf003.b.viewmodel {
         //Set check or uncheck checkbox list
         checkAllowPayBelow(index: number, value: boolean): void {
             var self = this;
-            
             var checkMonths = self.checkTotalMonths(index);
-            if (!checkMonths) {
-                self.count(1);
-                self.items()[index].grantSimultaneity(false);   
-                nts.uk.ui.dialog.alert({ messageId: "Msg_267" });             
-                return;
+            
+            if (!checkMonths && value) {
+                if(self.flag()) {
+                    self.count(1);
+                    self.flag(false);
+                    self.items()[index].grantSimultaneity(false);   
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_267" }).then(() => {
+                        self.items()[index].grantSimultaneity(false);
+                        $('.year-input' + index).focus();
+                        self.flag(true);
+                    });
+                    return;
+                }
             }
             
             if (value) {
                 for (let i = index; i < self.items().length; i++) {
+                    self.items()[i].grantReferenceDate(1);
+                    self.items()[i].grantReferenceDateEnable(false);
                     self.items()[i].grantSimultaneity(value);
                 }
             } else {
-                for (let i = 0; i < index; i++) {
-                    self.items()[i].grantSimultaneity(value);
-                }    
+                if(index == 0) {
+                    self.items()[index].grantReferenceDateEnable(true);
+                    self.items()[index].grantSimultaneity(value);
+                } else {
+                    for (let i = 0; i < index; i++) {
+                        self.items()[i].grantReferenceDateEnable(true);
+                        self.items()[i + 1].grantReferenceDateEnable(true);
+                        self.items()[i].grantSimultaneity(value);
+                    }
+                }
             }
             
             self.items.valueHasMutated();
@@ -339,10 +485,15 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 return true;
             }
             
-            if(self.items()[index].lengthOfServiceYears() != null || self.items()[index].lengthOfServiceMonths() != null) {
+            if(Number(self.items()[0].lengthOfServiceYears()) <= 0 && Number(self.items()[0].lengthOfServiceMonths()) <= 0 && Number(self.items()[0].grantDays()) <= 0 
+                        && Number(self.items()[0].limitedHalfHdCnt()) <= 0 && Number(self.items()[0].limitedTimeHdDays()) <= 0) {
+                return false;
+            }
+            
+            if(self.items()[index].grantDays() != null || self.items()[index].lengthOfServiceMonths() != null) {
                 var totalMonths = Number(self.items()[index].lengthOfServiceMonths()) + Number(self.items()[index].grantDays());
                 
-                if (Number(self.items()[index].lengthOfServiceYears()) == 0 && totalMonths < 12) {            
+                if (Number(self.items()[index].lengthOfServiceYears()) <= 0 && totalMonths < 12) {            
                     return false;
                 }
             }
@@ -361,8 +512,11 @@ module nts.uk.at.view.kmf003.b.viewmodel {
         limitedTimeHdDays: KnockoutObservable<number>;
         limitedHalfHdCnt: KnockoutObservable<number>;
         grantReferenceDate: KnockoutObservable<number>;
+        grantReferenceDateEnable: KnockoutObservable<boolean>;
         grantSimultaneity: KnockoutObservable<boolean>;
         grantDate: KnockoutObservable<string>;
+        ltdEnable: KnockoutObservable<boolean>;
+        lthEnable: KnockoutObservable<boolean>;
         
         constructor(param: IItem) {
             var self = this;
@@ -375,11 +529,14 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             self.limitedTimeHdDays = ko.observable(param.limitedTimeHdDays);
             self.limitedHalfHdCnt = ko.observable(param.limitedHalfHdCnt);
             self.grantReferenceDate = ko.observable(param.grantReferenceDate);
+            self.grantReferenceDateEnable = ko.observable(param.grantReferenceDateEnable);
             self.grantSimultaneity = ko.observable(param.grantSimultaneity);    
             self.grantDate = ko.observable(param.grantDate);   
             self.grantSimultaneity.subscribe(function(value){
                 checkAllowPayBelow(self);
             });
+            self.ltdEnable = ko.observable(param.ltdEnable);  
+            self.lthEnable = ko.observable(param.lthEnable);  
         }
     }
     
@@ -393,8 +550,11 @@ module nts.uk.at.view.kmf003.b.viewmodel {
         limitedTimeHdDays: number;
         limitedHalfHdCnt: number;
         grantReferenceDate: number;
+        grantReferenceDateEnable: boolean;   
         grantSimultaneity: boolean;   
-        grantDate: string;     
+        grantDate: string;
+        ltdEnable: boolean;
+        lthEnable: boolean;   
     }
      
     export class GrantReferenceDateOption {
@@ -409,7 +569,9 @@ module nts.uk.at.view.kmf003.b.viewmodel {
     
     function checkAllowPayBelow(item: Item): void {
         var self = nts.uk.ui._viewModel.content;
-        var index = _.indexOf(self.items(), item);
+        var itemJS = ko.toJS(item);
+        
+        var index = itemJS.grantYearHolidayNo - 1;
         self.checkAllowPayBelow(index, item.grantSimultaneity());
     }
 

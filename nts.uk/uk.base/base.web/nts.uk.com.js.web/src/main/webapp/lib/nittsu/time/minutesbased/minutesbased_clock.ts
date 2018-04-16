@@ -84,11 +84,24 @@ module nts.uk.time.minutesBased {
                     clock.isNegative ? (timeAsMinutes + 1) / MINUTES_IN_DAY - 1
                             : timeAsMinutes / MINUTES_IN_DAY);
             
+            let positiveMinutes = positivizedMinutes();
+            let minuteStr = String(positiveMinutes);
+            let pointIndex = minuteStr.indexOf('.');
+            let minutePart;
+            if (pointIndex > -1) {
+                let fraction = minuteStr.substring(pointIndex + 1);
+                positiveMinutes = Math.floor(positiveMinutes);
+                minuteStr = String(positiveMinutes % 60) + "." + fraction;
+                minutePart = Number(minuteStr);
+            } else {
+                minutePart = positivizedMinutes() % 60;
+            }
+            
             util.accessor.defineInto(clock)
                 .get("typeName", () => "ClockMinutesBasedTime")
                 .get("daysOffset", daysOffset)
                 .get("hourPart", () => Math.floor((positivizedMinutes() % MINUTES_IN_DAY) / 60))
-                .get("minutePart", () => positivizedMinutes() % 60)
+                .get("minutePart", () => minutePart)
                 .get("dayAttr", () => DayAttr.fromDaysOffset(daysOffset()))
                 .get("clockTextInDay", () => format.clockTextInDay(clock));
             

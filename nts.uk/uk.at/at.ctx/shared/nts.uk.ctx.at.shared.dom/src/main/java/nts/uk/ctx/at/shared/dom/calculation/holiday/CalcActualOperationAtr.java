@@ -1,10 +1,13 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday;
 
 import lombok.AllArgsConstructor;
+
 /**
- * 
- * @author phongtq
- *実働のみで計算する
+ * The Enum CalcActualOperationAtr.
  */
 @AllArgsConstructor
 public enum CalcActualOperationAtr {

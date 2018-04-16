@@ -5,6 +5,7 @@ import java.util.Map;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
+import nts.uk.ctx.workflow.pub.service.export.AppRootStateConfirmExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootOfEmployeeExport;
@@ -17,8 +18,31 @@ import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
  *
  */
 public interface ApprovalRootStatePub {
+	/**
+	 * RequestList229
+	 * 承認対象者（複数）と期間から承認状況を取得する
+	 * @param startDate
+	 * @param endDate
+	 * @param employeeID
+	 * @param companyID
+	 * @param rootType
+	 * @return
+	 */
+	public List<ApproveRootStatusForEmpExport> getApprovalByListEmplAndDate(GeneralDate startDate, GeneralDate endDate, List<String> employeeID,String companyID,Integer rootType);
+	/**
+	 * 承認すべきデータ有無を取得する
+	 * RequestList190 - 191
+	 * @param startDate
+	 * @param endDate
+	 * @param approverID
+	 * @param rootType
+	 * @param companyID
+	 * @return
+	 */
+	public boolean checkDataApproveed(GeneralDate startDate, GeneralDate endDate, String approverID,Integer rootType,String companyID);
 	
 	/**
+	 * 承認対象者と期間から承認状況を取得する
 	 * RequestList113
 	 * @param startDate
 	 * @param endDate
@@ -163,5 +187,18 @@ public interface ApprovalRootStatePub {
 	 * @param rootStateID
 	 */
 	public void doRemandForApplicant(String companyID, String rootStateID);
+	
+	/**
+	 * RequestList #136
+	 * 承認ルートインスタンスを生成する
+	 * @param companyID
+	 * @param employeeID
+	 * @param confirmAtr
+	 * @param appType
+	 * @param date
+	 * @return
+	 */
+	public AppRootStateConfirmExport getApprovalRootState(String companyID, String employeeID, 
+			Integer confirmAtr, Integer appType, GeneralDate date);
 	
 }

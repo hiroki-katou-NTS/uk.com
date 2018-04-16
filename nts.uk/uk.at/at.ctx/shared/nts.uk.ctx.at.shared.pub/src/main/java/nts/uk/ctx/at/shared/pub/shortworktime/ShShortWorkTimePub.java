@@ -20,6 +20,6 @@ public interface ShShortWorkTimePub {
 	 * @param baseDate the base date
 	 * @return the optional
 	 */
-	// RequestList #72
+	// RequestList72
 	Optional<ShShortWorkTimeExport> findShortWorkTime(String empId, GeneralDate baseDate);
 }

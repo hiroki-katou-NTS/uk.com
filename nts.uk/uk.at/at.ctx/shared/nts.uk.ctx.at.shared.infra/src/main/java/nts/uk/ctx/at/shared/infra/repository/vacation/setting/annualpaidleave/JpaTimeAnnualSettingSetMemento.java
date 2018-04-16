@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.annualpaidleave;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualMaxDay;
@@ -87,4 +88,14 @@ public class JpaTimeAnnualSettingSetMemento implements TimeAnnualSettingSetMemen
         this.entity.setIsEnoughTimeOneDay(isEnoughTimeOneDay == true ? 1 : 0);
     }
 
+    /*
+     * (non-Javadoc)
+     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
+     * TimeAnnualSettingSetMemento#setRoundProcessClassific
+     * (nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla)
+     */
+	@Override
+	public void setRoundProcessClassific(TimeAnnualRoundProcesCla timeAnnualRoundProcesCla) {
+		this.entity.setRoundProcessCla(timeAnnualRoundProcesCla.value);
+	}
 }

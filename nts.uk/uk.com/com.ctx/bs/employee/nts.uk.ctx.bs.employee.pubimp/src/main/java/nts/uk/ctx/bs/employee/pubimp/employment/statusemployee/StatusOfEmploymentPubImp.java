@@ -11,6 +11,7 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.LeaveHolidayType;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmployment;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentPub;
@@ -54,7 +55,7 @@ public class StatusOfEmploymentPubImp implements StatusOfEmploymentPub {
 				int leaveHolidayType = tempAbsenceFrNo <= 6 ? tempAbsenceFrNo : 7;
 				statusOfEmploymentExport.setLeaveHolidayType(leaveHolidayType);
 
-				if (leaveHolidayType == 1) {
+				if (leaveHolidayType == LeaveHolidayType.LEAVE_OF_ABSENCE.value) {
 					// trường hợp 休職休業区分＝休職 LeaveHolidayState = TEMP_LEAVE(1)
 
 					// StatusOfEmployment = LEAVE_OF_ABSENCE

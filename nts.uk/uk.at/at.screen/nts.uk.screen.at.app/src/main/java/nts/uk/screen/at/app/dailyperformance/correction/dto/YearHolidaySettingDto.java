@@ -18,7 +18,7 @@ public class YearHolidaySettingDto {
 
 	private boolean manageAtr;
 
-	private boolean permitAtr;
+	//private boolean permitAtr;
 
 	// Enum
 	// 0 : 先入れ先出し

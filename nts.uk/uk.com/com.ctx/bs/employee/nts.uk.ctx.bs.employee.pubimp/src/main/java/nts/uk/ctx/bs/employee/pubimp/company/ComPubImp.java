@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
@@ -16,6 +17,7 @@ import nts.uk.ctx.bs.employee.pub.company.SyCompanyPub;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
+@Stateless
 public class ComPubImp implements SyCompanyPub {
 
 	@Inject

@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday.roundingmonth;
 
 import nts.arc.primitive.PrimitiveValue;
@@ -5,9 +9,7 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * 
- * @author phongtq
- * 勤怠項目ID
+ * The Class TimeItemId.
  */
 
 @StringMaxLength(36)

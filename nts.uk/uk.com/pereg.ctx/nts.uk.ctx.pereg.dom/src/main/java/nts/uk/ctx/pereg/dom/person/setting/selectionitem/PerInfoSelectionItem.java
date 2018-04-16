@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.ExternalCD;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.MemoSelection;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionCD;
@@ -19,7 +20,7 @@ import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionName
 @Getter
 @Setter
 // 個人情報の選択項目ドメイン
-public class PerInfoSelectionItem {
+public class PerInfoSelectionItem extends AggregateRoot{
 	private String selectionItemId;
 	private SelectionItemName selectionItemName;
 	private Memo Memo;

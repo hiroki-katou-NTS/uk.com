@@ -99,10 +99,14 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 																			item.getHolidayOrPauseType()), KrqstAppEmploymentSet.class);
 					if (updateItemOp.isPresent()) {
 						KrqstAppEmploymentSet updateItem = updateItemOp.get();
+						Integer holidayTypeUseFlg = null;
+						if (item.getHolidayTypeUseFlg() != null) {
+							holidayTypeUseFlg = item.getHolidayTypeUseFlg().booleanValue() ? 1: 0;
+						}
 						//updateItem.setVersion(item.getVersion());
 						updateItem.setHolidayTypeUseFlg(item.getHolidayOrPauseType());
 						updateItem.setDisplayFlag(item.isDisplayFlag() == true ? 1 : 0);
-						updateItem.setHolidayTypeUseFlg(item.getHolidayTypeUseFlg() == true ? 1 : 0);						
+						updateItem.setHolidayTypeUseFlg(holidayTypeUseFlg);						
 						return updateItem;
 					}
 					return toEntity(item);			
@@ -160,12 +164,16 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 	 * @return
 	 */
 	private static KrqstAppEmploymentSet toEntity(AppEmploymentSetting domain){
+		Integer holidayTypeUseFlg = null;
+		if (domain.getHolidayTypeUseFlg() != null) {
+			holidayTypeUseFlg = domain.getHolidayTypeUseFlg().booleanValue() ? 1: 0;
+		}
 		return new KrqstAppEmploymentSet(domain.getVersion(),
 				new KrqstAppEmploymentSetPK(domain.getCompanyID(), 
 						domain.getEmploymentCode(), 
 						domain.getAppType().value, 
 						domain.getHolidayOrPauseType()), 
-				domain.getHolidayTypeUseFlg() == true ? 1: 0,
+				holidayTypeUseFlg,
 				domain.isDisplayFlag() == true ? 1 : 0, 
 				domain.getLstWorkType()
 				.stream()

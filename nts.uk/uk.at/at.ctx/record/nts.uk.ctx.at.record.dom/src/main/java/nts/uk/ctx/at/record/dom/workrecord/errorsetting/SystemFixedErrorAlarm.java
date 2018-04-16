@@ -5,63 +5,83 @@ package nts.uk.ctx.at.record.dom.workrecord.errorsetting;
  */
 public enum SystemFixedErrorAlarm {
 
-	// フレックス時間超過
-	FLEX_OVER_TIME(0),
-
-	// 休出時間超過
-	REST_TIME_EXCESS(1),
-
+	// 出退勤打刻漏れ
+	TIME_LEAVING_STAMP_LEAKAGE("S001"),
+	
+	//PCログ打刻漏れ
+	PCLOG_STAMP_LEAKAGE("S002"),
+	
+	// 入退門打刻漏れ
+	ENTRANCE_STAMP_LACKING("S003"),
+	
+	// 打刻順序不正
+	INCORRECT_STAMP("S004"),
+	
 	// 休日打刻
-	HOLIDAY_STAMP(3),
+	HOLIDAY_STAMP("S005"),
+	
+	// 二重打刻
+	DOUBLE_STAMP("S006"),
+	
+	// 遅刻
+	LATE("007"),
+	
+	// 早退
+	LEAVE_EARLY("008"),
+	
+	// 事前残業申請超過
+	PRE_OVERTIME_APP_EXCESS("S009"),
+	
+	//事前休出申請超過
+	PRE_HOLIDAYWORK_APP_EXCESS("S010"),
+	
+	//事前フレックス申請超過
+	PRE_FLEX_APP_EXCESS("S011"),
+	
+	//事前深夜申請超過
+	PRE_MIDNIGHT_EXCESS("S012"),
 
 	// 残業時間超過
-	OVER_TIME_EXCESS(4),
+	OVER_TIME_EXCESS("S013"),
 
-	// 事前申請超過
-	PRE_APPLICATION_EXCESS(5),
-
-	// 出退勤打刻漏れ
-	TIME_LEAVING_STAMP_LEAKAGE(6),
+	// 休出時間超過
+	REST_TIME_EXCESS("S014"),
 
 	// 深夜時間超過
-	MIDNIGHT_EXCESS(7),
-
-	// 早退
-	LEAVE_EARLY(8),
-
-	// 打刻順序不正
-	INCORRECT_STAMP(9),
-
-	// 遅刻
-	LATE(10),
-
-	// 特定日
-	SPECIFIC_DATE(11),
-
-	// 二重打刻
-	DOUBLE_STAMP(12),
-
-	// 入退門打刻漏れ
-	ENTRANCE_STAMP_LACKING(13),
-
-	// 複数回勤務
-	MULTIPLE_TIME_WORK(14),
-
-	// 臨時勤務
-	TEMPORARY_WORK(15),
+	MIDNIGHT_EXCESS("S015"),
+	
+	// フレックス時間超過
+	FLEX_OVER_TIME("S016"),
+	
+	// 乖離時間のエラー
+	ERROR_OF_DIVERGENCE_TIME("S017"),
 
 	// 乖離時間のアラーム
-	ALARM_OF_DIVERGENCE_TIME(16),
-
-	// 乖離時間のエラー
-	ERROR_OF_DIVERGENCE_TIME(17),
+	ALARM_OF_DIVERGENCE_TIME("S018"),
 
 	// 乖離理由漏れ
-	LEAKAGE_REASON(18);
+	LEAKAGE_REASON("S019"),
 
-	public int value;
+	// 複数回勤務
+	MULTIPLE_TIME_WORK("S020"),
 
-	private SystemFixedErrorAlarm(int value) {
+	// 臨時勤務
+	TEMPORARY_WORK("S021"),
+	
+	// 特定日
+	SPECIFIC_DATE("S022"),
+
+	//勤務種類未登録
+	UNREGIST_WORKTYPE("S023"),
+	
+	//就業時間帯未登録
+	UNREGIST_WORKTIME("S024"),
+
+	NOT_CREATE("S025");
+
+	public String value;
+
+	private SystemFixedErrorAlarm(String value) {
 		this.value = value;
 	}
 }

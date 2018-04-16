@@ -1,0 +1,217 @@
+package nts.uk.pub.spr.login.paramcheck;
+
+import java.util.Optional;
+import java.util.UUID;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import org.apache.logging.log4j.util.Strings;
+
+import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.pub.spr.EmployeeSprPub;
+import nts.uk.ctx.bs.employee.pub.spr.export.EmpSprExport;
+import nts.uk.shr.com.time.AttendanceClock;
+
+/**
+ * 
+ * @author Doan Duy Hung
+ *
+ */
+@Stateless
+public class LoginParamCheckImpl implements LoginParamCheck {
+
+	private final String DATE_FORMAT = "yyyy/MM/dd";
+	
+	@Inject
+	private EmployeeSprPub employeeSprPub;
+	
+	@Override
+	public String checkParamPreApp(String employeeCD, String startTime, String date, String reason) {
+		// 契約コード固定：　000000000000
+		// 会社コード固定：　0001
+		// 会社ID固定：　000000000000-0001
+		String companyID = "000000000000-0001";
+		// フォームデータ「対象社員コード(employeeCode)」を取得する
+		if(Strings.isBlank(employeeCD)){
+			throw new BusinessException("Msg_1000", "Msg_1026");
+		}
+		// 対象社員コード(employeeCode)をチェックする
+		employeeSprPub.validateEmpCodeSpr(employeeCD);
+		// （基幹・社員Export）アルゴリズム「「会社ID」「社員コード」より社員基本情報を取得」を実行する　RequestList No.18
+		Optional<EmpSprExport> opEmployeeSpr = employeeSprPub.getEmployeeID(companyID, employeeCD);
+		if(!opEmployeeSpr.isPresent()){
+			throw new BusinessException("Msg_1000", "Msg_1027");
+		}
+		// フォームデータ「対象日(date)」を取得する
+		if(Strings.isBlank(date)){
+			throw new BusinessException("Msg_1009", "Msg_1026");
+		}
+		// 対象日(date)の形式をチェックする　日付型（yyyy/mm/dd）
+		try {
+			GeneralDate.fromString(date, DATE_FORMAT);
+		} catch (Exception e) {
+			throw new BusinessException("Msg_1009", date);
+		}
+		// フォームデータ「出勤時刻(starttime)」を取得する
+		if(startTime==null){
+			throw new BusinessException("Msg_1012", "Msg_1026");
+		}
+		// 出勤時刻(starttime)をチェックする
+		Integer startTimeValue = Integer.valueOf(startTime);
+		try {
+			new AttendanceClock(startTimeValue);
+		} catch (Exception e) {
+			throw new BusinessException("Msg_1012", startTime.toString());
+		}
+		// フォームデータ「申請理由(reason)」を取得する　※仕様追加　2018/03/28
+		return opEmployeeSpr.get().getEmployeeID();
+	}
+
+	@Override
+	public String checkParamOvertime(String employeeCD, String endTime, String date, String reason) {
+		// 契約コード固定：　000000000000
+		// 会社コード固定：　0001
+		// 会社ID固定：　000000000000-0001
+		String companyID = "000000000000-0001";
+		// フォームデータ「対象社員コード(employeeCode)」を取得する
+		if(Strings.isBlank(employeeCD)){
+			throw new BusinessException("Msg_1000", "Msg_1026");
+		}
+		// 対象社員コード(employeeCode)をチェックする
+		employeeSprPub.validateEmpCodeSpr(employeeCD);
+		// （基幹・社員Export）アルゴリズム「「会社ID」「社員コード」より社員基本情報を取得」を実行する　RequestList No.18
+		Optional<EmpSprExport> opEmployeeSpr = employeeSprPub.getEmployeeID(companyID, employeeCD);
+		if(!opEmployeeSpr.isPresent()){
+			throw new BusinessException("Msg_1000", "Msg_1027");
+		}
+		// フォームデータ「対象日(date)」を取得する
+		if(Strings.isBlank(date)){
+			throw new BusinessException("Msg_1009", "Msg_1026");
+		}
+		// 対象日(date)の形式をチェックする　日付型（yyyy/mm/dd）
+		try {
+			GeneralDate.fromString(date, DATE_FORMAT);
+		} catch (Exception e) {
+			throw new BusinessException("Msg_1009", date);
+		}
+		// フォームデータ「退勤時刻(endtime)」を取得する
+		if(endTime==null){
+			throw new BusinessException("Msg_1013", "Msg_1026");
+		}
+		// 退勤時刻(endtime)をチェックする
+		Integer endTimeValue = Integer.valueOf(endTime);
+		try {
+			new AttendanceClock(endTimeValue);
+		} catch (Exception e) {
+			throw new BusinessException("Msg_1013", endTime.toString());
+		}
+		// フォームデータ「申請理由(reason)」を取得する　※仕様追加　2018/03/28
+		return opEmployeeSpr.get().getEmployeeID();
+	}
+
+	@Override
+	public String checkParamAdjustDaily(String employeeCD, String startTime, String endTime, String date, String reason) {
+		// 契約コード固定：　000000000000
+		// 会社コード固定：　0001
+		// 会社ID固定：　000000000000-0001
+		String companyID = "000000000000-0001";
+		// フォームデータ「対象社員コード(employeeCode)」を取得する
+		if(Strings.isBlank(employeeCD)){
+			throw new BusinessException("Msg_1000", "Msg_1026");
+		}
+		// 対象社員コード(employeeCode)をチェックする
+		employeeSprPub.validateEmpCodeSpr(employeeCD);
+		// （基幹・社員Export）アルゴリズム「「会社ID」「社員コード」より社員基本情報を取得」を実行する　RequestList No.18
+		Optional<EmpSprExport> opEmployeeSpr = employeeSprPub.getEmployeeID(companyID, employeeCD);
+		if(!opEmployeeSpr.isPresent()){
+			throw new BusinessException("Msg_1000", "Msg_1027");
+		}
+		// フォームデータ「対象日(date)」を取得する
+		if(Strings.isBlank(date)){
+			throw new BusinessException("Msg_1009", "Msg_1026");
+		}
+		// 対象日(date)の形式をチェックする　日付型（yyyy/mm/dd）
+		try {
+			GeneralDate.fromString(date, DATE_FORMAT);
+		} catch (Exception e) {
+			throw new BusinessException("Msg_1009", date);
+		}
+		// フォームデータ「出勤時刻(starttime)」を取得する
+		if(startTime==null){
+			throw new BusinessException("Msg_1012", "Msg_1026");
+		}
+		// 出勤時刻(starttime)をチェックする
+		Integer startTimeValue = Integer.valueOf(startTime);
+		try {
+			new AttendanceClock(startTimeValue);
+		} catch (Exception e) {
+			throw new BusinessException("Msg_1012", startTime.toString());
+		}
+		// フォームデータ「退勤時刻(endtime)」を取得する
+		Integer endTimeValue = Integer.valueOf(endTime);
+		if(endTime==null){
+			throw new BusinessException("Msg_1013", "Msg_1026");
+		}
+		// 退勤時刻(endtime)をチェックする
+		try {
+			new AttendanceClock(endTimeValue);
+		} catch (Exception e) {
+			throw new BusinessException("Msg_1013", endTime.toString());
+		}
+		return opEmployeeSpr.get().getEmployeeID();
+	}
+
+	@Override
+	public void checkParamApprovalList(String date, String selectType) {
+		// フォームデータ「対象日(date)」を取得する
+		if(Strings.isBlank(date)){
+			throw new BusinessException("Msg_1009", "Msg_1026");
+		}
+		// 対象日(date)の形式をチェックする　日付型（yyyy/mm/dd）
+		try {
+			GeneralDate.fromString(date, DATE_FORMAT);
+		} catch (Exception e) {
+			throw new BusinessException("Msg_1009", date);
+		}
+		// フォームデータ「抽出対象(selecttype)」を取得する
+		Integer selectTypeValue = Integer.valueOf(selectType);
+		if(selectType == null){
+			throw new BusinessException("Msg_1014", "Msg_1026");
+		}
+		// 抽出対象(selecttype)をチェックする
+		if(selectTypeValue != 0 || selectTypeValue != 1){
+			throw new BusinessException("Msg_1014", selectType.toString());
+		}
+	}
+
+	@Override
+	public void checkParamConfirmDaily(String date) {
+		// フォームデータ「対象日(date)」を取得する
+		if(Strings.isBlank(date)){
+			throw new BusinessException("Msg_1009", "Msg_1026");
+		}
+		// 対象日(date)の形式をチェックする　日付型（yyyy/mm/dd）
+		try {
+			GeneralDate.fromString(date, DATE_FORMAT);
+		} catch (Exception e) {
+			throw new BusinessException("Msg_1009", date);
+		}
+	}
+
+	@Override
+	public void checkParamConfirmOvertime(String appID) {
+		// フォームデータ「申請ID(applicationID)」を取得する
+		if(Strings.isBlank(appID)){
+			throw new BusinessException("Msg_1025", "Msg_1026");
+		}
+		// 申請ID(applicationID)の形式をチェックする　UUID
+		try {
+			UUID.fromString(appID);
+		} catch (Exception e) {
+			throw new BusinessException("Msg_1025", appID);
+		}
+	}
+
+}

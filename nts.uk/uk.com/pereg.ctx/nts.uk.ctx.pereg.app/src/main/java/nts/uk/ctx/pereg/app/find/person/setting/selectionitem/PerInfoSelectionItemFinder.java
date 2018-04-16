@@ -7,9 +7,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.IPerInfoSelectionItemRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoSelectionItem;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 @Stateless
 public class PerInfoSelectionItemFinder {
@@ -19,11 +23,26 @@ public class PerInfoSelectionItemFinder {
 
 	public List<PerInfoSelectionItemDto> getAllPerInfoSelectionItem(boolean hasCompanyId) {
 		String contractCode = AppContexts.user().contractCode();
+		
+		LoginUserContext loginUserContext = AppContexts.user();
+		String roleID = loginUserContext.roles().forGroupCompaniesAdmin();
+		
+		// 個人情報共通アルゴリズム「ログイン者がグループ会社管理者かどうか判定する」を実行する
+		hasCompanyId = StringUtils.isEmpty(roleID) ? false : true;
 		if (hasCompanyId) {
-			String companyId = AppContexts.user().companyId();
-			return this.perInfoSelectionItemRepo.getAllSelectionItemByContractCdAndCID(contractCode, companyId).stream()
-					.map(i -> PerInfoSelectionItemDto.fromDomain(i)).collect(Collectors.toList());
+			// グループ会社管理者でない場合トップページへ戻す処理を追加
+			// エラーメッセージ（#Msg_1103）を表示するHiển thị error message （#Msg_1103）
+			throw new BusinessException("Msg_1103");
+			// return null;
+
+			// String companyId = AppContexts.user().companyId();
+			// return
+			// this.perInfoSelectionItemRepo.getAllSelectionItemByContractCdAndCID(contractCode,
+			// companyId).stream()
+			// .map(i ->
+			// PerInfoSelectionItemDto.fromDomain(i)).collect(Collectors.toList());
 		} else {
+			// ログイン者がグループ会社管理者かどうかの判定を追加
 			return this.perInfoSelectionItemRepo.getAllSelectionItemByContractCd(contractCode).stream()
 					.map(i -> PerInfoSelectionItemDto.fromDomain(i)).collect(Collectors.toList());
 		}

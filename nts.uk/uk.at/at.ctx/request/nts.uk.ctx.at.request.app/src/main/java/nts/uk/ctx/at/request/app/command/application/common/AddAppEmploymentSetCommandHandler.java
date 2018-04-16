@@ -31,7 +31,7 @@ public class AddAppEmploymentSetCommandHandler extends CommandHandler<List<AppEm
 		List<AppEmploymentSetting> insertDatas = listEmployments.stream().map(item -> {
 			return new AppEmploymentSetting(companyId, item.getEmploymentCode(),
 					EnumAdaptor.valueOf(item.getAppType(), ApplicationType.class), item.getHolidayOrPauseType(),
-					item.isHolidayTypeUseFlg(), item.isDisplayFlag(), item.getLstWorkType().stream().map(typeItem -> {
+					item.getHolidayTypeUseFlg(), item.isDisplayFlag(), item.getLstWorkType().stream().map(typeItem -> {
 						return AppEmployWorkType.createSimpleFromJavaType(companyId,
 								typeItem.getEmploymentCode(), typeItem.getAppType(), typeItem.getHolidayOrPauseType(),
 								typeItem.getWorkTypeCode());

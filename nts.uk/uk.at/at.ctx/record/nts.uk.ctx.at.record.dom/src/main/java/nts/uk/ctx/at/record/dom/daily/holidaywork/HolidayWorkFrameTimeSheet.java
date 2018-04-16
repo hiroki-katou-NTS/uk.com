@@ -6,6 +6,7 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheetForCalc;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayTimeSheetForCalc;
@@ -18,10 +19,9 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZone;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -76,9 +76,9 @@ public class HolidayWorkFrameTimeSheet extends CalculationTimeSheet{
 	 * @param autoCalcSet 時間外の自動計算区分
 	 * @return 残業時間枠時間帯クラス
 	 */
-	public HolidayWorkFrameTime calcOverTimeWorkTime(AutoCalcSetOfHolidayWorkTime autoCalcSet) {
+	public HolidayWorkFrameTime calcOverTimeWorkTime(AutoCalRestTimeSetting autoCalcSet) {
 		AttendanceTime holidayWorkTime;
-		if(autoCalcSet.getLateNightTime().getCalculationClassification().isCalculateEmbossing()) {
+		if(autoCalcSet.getLateNightTime().getCalAtr().isCalculateEmbossing()) {
 			holidayWorkTime = new AttendanceTime(0);
 		}
 		else {
@@ -86,7 +86,7 @@ public class HolidayWorkFrameTimeSheet extends CalculationTimeSheet{
 		}
 		return  new HolidayWorkFrameTime(this.frameTime.getHolidayFrameNo()
 				,this.frameTime.getTransferTime()
-				,Finally.of(TimeWithCalculation.sameTime(holidayWorkTime))
+				,Finally.of(TimeDivergenceWithCalculation.sameTime(holidayWorkTime))
 				,this.frameTime.getBeforeApplicationTime());
 	}
 	

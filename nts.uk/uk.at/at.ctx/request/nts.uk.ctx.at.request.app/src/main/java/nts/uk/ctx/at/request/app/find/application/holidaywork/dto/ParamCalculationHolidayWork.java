@@ -24,11 +24,39 @@ public class ParamCalculationHolidayWork {
 	 */
 	private String appDate;
 	
+	/**
+	 * siftCD
+	 */
 	private String siftCD;
 
+	/**
+	 * workTypeCode
+	 */
 	private String workTypeCode;
 	
+	/**
+	 * inputDate
+	 */
 	private String inputDate;
 	
+	/**
+	 * employeeID
+	 */
 	private String employeeID;
+	/**
+	 * startTime
+	 */
+	private Integer startTime;
+	/**
+	 * endTime
+	 */
+	private Integer endTime;
+	/**
+	 * startTimeRest
+	 */
+	private Integer startTimeRest;
+	/**
+	 * endTimeRest
+	 */
+	private Integer endTimeRest;
 }

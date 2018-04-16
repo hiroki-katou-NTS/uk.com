@@ -37,5 +37,5 @@ public interface HolidaySixProcess {
 	 * @param holidayWorkCal
 	 * @return
 	 */
-	public List<CaculationTime> getCaculationHolidayWork(String companyID,String employeeId, String appDate,int appType,List<CaculationTime> holidayWorks,Map<Integer,TimeWithCalculationImport> holidayWorkCal);
+	public List<CaculationTime> getCaculationHolidayWork(String companyID,String employeeId, String appDate,int appType,List<CaculationTime> holidayWorks,Map<Integer,TimeWithCalculationImport> holidayWorkCal,int prePostAtr);
 }

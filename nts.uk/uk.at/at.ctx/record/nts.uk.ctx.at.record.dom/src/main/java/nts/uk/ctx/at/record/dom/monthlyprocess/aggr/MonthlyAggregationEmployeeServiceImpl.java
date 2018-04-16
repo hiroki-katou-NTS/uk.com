@@ -13,10 +13,11 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.AggregateMonthlyRecordService;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 
 /**
  * ドメインサービス：月別集計　（社員の月別実績を集計する）
@@ -37,6 +38,9 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	/** リポジトリ：月別実績の勤怠時間 */
 	@Inject
 	private AttendanceTimeOfMonthlyRepository attendanceTimeRepository;
+	/** リポジトリ：管理時間の36協定時間 */
+	@Inject
+	private AgreementTimeOfManagePeriodRepository agreementTimeRepository;
 	
 	/**
 	 * 社員の月別実績を集計する
@@ -87,20 +91,13 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			}
 			
 			// 登録する
-			for (val attendanceTime : value.getAttendanceTimes()){
-				this.registAttendanceTime(attendanceTime);
+			for (val attendanceTime : value.getAttendanceTimeList()){
+				this.attendanceTimeRepository.persistAndUpdate(attendanceTime);
+			}
+			for (val agreementTime : value.getAgreementTimeList()){
+				this.agreementTimeRepository.persistAndUpdate(agreementTime);
 			}
 		}
 		return status;
-	}
-	
-	/**
-	 * 登録する
-	 * @param attendanceTime 月別実績の勤怠時間
-	 */
-	private void registAttendanceTime(AttendanceTimeOfMonthly attendanceTime){
-		
-		// 登録および更新
-		this.attendanceTimeRepository.persistAndUpdate(attendanceTime);
 	}
 }

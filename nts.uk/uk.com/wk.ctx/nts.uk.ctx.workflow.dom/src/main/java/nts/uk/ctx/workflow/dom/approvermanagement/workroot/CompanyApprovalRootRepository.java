@@ -25,7 +25,7 @@ public interface CompanyApprovalRootRepository {
 	 */
 	Optional<CompanyApprovalRoot> getComApprovalRoot(String companyId, String approvalId, String historyId);
 
-	/**
+	/** 
 	 * get Company Approval Root By End date
 	 * 
 	 * @param companyId
@@ -114,4 +114,9 @@ public interface CompanyApprovalRootRepository {
 	 * @return
 	 */
 	List<CompanyApprovalRoot> getComAppRootLast(String companyID,GeneralDate endDate);
+	
+	List<CompanyApprovalRoot> getComAppRoot(String companyID, GeneralDate date, 
+			Integer employmentRootAtr, Integer confirmRootAtr);
+	
+	List<CompanyApprovalRoot> findEmpByConfirm(String companyID, ConfirmationRootType confirmType, GeneralDate date);
 }

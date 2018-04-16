@@ -57,8 +57,16 @@ public class PersonInfoCategory extends AggregateRoot {
 	private CategoryCode categoryParentCode;
 	
 	private boolean alreadyCopy;
-
-	public final static String ROOT_COMPANY_ID = "000000000000-0000";
+	
+	/**
+	 * 初期値マスタ対象区分
+	 */
+	private InitValMasterObjCls initValMasterCls;
+	
+	/**
+	 * 項目追加対象区分
+	 */
+	private AddItemObjCls addItemCls;
 
 	private PersonInfoCategory(String companyId, String categoryCode, String categoryName, int categoryType) {
 		super();
@@ -126,5 +134,22 @@ public class PersonInfoCategory extends AggregateRoot {
 	
 	public void setCategoryType(int categoryType) {
 		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
+	}
+
+	public PersonInfoCategory(String personInfoCategoryId, CategoryCode categoryCode, CategoryName categoryName,
+			String companyId, IsFixed isFixed, PersonEmployeeType personEmployeeType, CategoryType categoryType,
+			IsAbolition isAbolition, CategoryCode categoryParentCode) {
+		super();
+		this.personInfoCategoryId = personInfoCategoryId;
+		this.categoryCode = categoryCode;
+		this.categoryName = categoryName;
+		this.companyId = companyId;
+		this.isFixed = isFixed;
+		this.personEmployeeType = personEmployeeType;
+		this.categoryType = categoryType;
+		this.isAbolition = isAbolition;
+		this.categoryParentCode = categoryParentCode;
+		this.initValMasterCls = InitValMasterObjCls.INIT;
+		this.addItemCls = AddItemObjCls.ENABLE;
 	}
 }

@@ -5,6 +5,7 @@ module kdl003.parent.viewmodel {
         selectWorkTypeCode: KnockoutObservable<string>;
         canSelectSiftCodes: KnockoutObservable<string>;
         selectSiftCode: KnockoutObservable<string>;
+        showNone: KnockoutObservable<boolean>;
 
         childSelectWorkTypeCode: KnockoutObservable<string>;
         childSelectWorkTypeName: KnockoutObservable<string>;
@@ -23,6 +24,7 @@ module kdl003.parent.viewmodel {
             self.selectWorkTypeCode = ko.observable('002');
             self.canSelectSiftCodes = ko.observable('');
             self.selectSiftCode = ko.observable('324');
+            self.showNone = ko.observable(true);
 
             self.childSelectWorkTypeCode = ko.observable('');
             self.childSelectWorkTypeName = ko.observable('');
@@ -44,7 +46,8 @@ module kdl003.parent.viewmodel {
                 workTypeCodes: workTypeCodes,
                 selectedWorkTypeCode: self.selectWorkTypeCode(),
                 workTimeCodes: workTimeCodes,
-                selectedWorkTimeCode: self.selectSiftCode()
+                selectedWorkTimeCode: self.selectSiftCode(),
+                showNone: self.showNone()
             }, true);
 
             nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
@@ -55,12 +58,10 @@ module kdl003.parent.viewmodel {
                     self.childSelectWorkTypeName(childData.selectedWorkTypeName);
                     self.childSelectSiftCode(childData.selectedWorkTimeCode);
                     self.childSelectSiftName(childData.selectedWorkTimeName);
-                    self.firstStartTime(childData.firstStartTime);
-                    self.firstEndTime(childData.firstEndTime);
-                    self.secondStartTime(childData.secondStartTime);
-                    self.secondEndTime(childData.secondEndTime);
-                    self.first(childData.first);
-                    self.second(childData.second);
+                    self.firstStartTime(childData.first.start);
+                    self.firstEndTime(childData.first.end);
+                    self.secondStartTime(childData.second.start);
+                    self.secondEndTime(childData.second.end);
                 }
             })
         }

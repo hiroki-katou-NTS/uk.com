@@ -16,12 +16,10 @@ import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
  */
 public class LateLeaveEarlyTimeSheet extends CalculationTimeSheet{
 
-	public LateLeaveEarlyTimeSheet(TimeZoneRounding timeSheet, TimeSpanForCalc calcrange,
-			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
-			List<TimeSheetOfDeductionItem> deductionTimeSheets, List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,
-			List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet, Optional<MidNightTimeSheetForCalc> midNighttimeSheet) {
-		super(timeSheet, calcrange, recorddeductionTimeSheets, deductionTimeSheets, bonusPayTimeSheet,
-				specifiedBonusPayTimeSheet, midNighttimeSheet);
+	public LateLeaveEarlyTimeSheet(TimeZoneRounding timeSheet, TimeSpanForCalc calcrange) {
+		super(timeSheet, calcrange);
 		// TODO Auto-generated constructor stub
 	}
+
+
 }

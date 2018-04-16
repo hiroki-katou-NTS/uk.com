@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.request.ac.bs;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,7 +14,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.ConcurrentEmployeeRequest;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.JobEntryHistoryImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
@@ -153,5 +152,25 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 		}
 		return null;
 	}
-	
+
+	@Override
+	public List<EmployeeEmailImport> getApprovalStatusEmpMailAddr(List<String> sIds) {
+		List<EmployeeEmailImport> data = this.syEmployeePub.findBySIds(sIds)
+			.stream()
+			.map(x-> new EmployeeEmailImport(
+						x.getEmployeeId(),
+						x.getPName(),
+						x.getEntryDate(),
+						x.getRetiredDate(),
+						x.getCompanyMailAddr() != null ? x.getCompanyMailAddr().v() : null
+					)).collect(Collectors.toList());
+		return data;
+	}
+
+	@Override
+	public List<String> getListSIdByWkpIdAndPeriod(String workplaceId, GeneralDate startDate,
+			GeneralDate endDate) {
+		List<String> data = this.workplacePub.findListSIdByCidAndWkpIdAndPeriod(workplaceId, startDate, endDate);
+		return data;
+	}
 }

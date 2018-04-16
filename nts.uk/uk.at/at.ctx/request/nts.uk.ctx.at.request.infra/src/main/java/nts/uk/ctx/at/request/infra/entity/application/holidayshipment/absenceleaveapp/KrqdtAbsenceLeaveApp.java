@@ -51,12 +51,6 @@ public class KrqdtAbsenceLeaveApp extends UkJpaEntity implements Serializable {
 	@Column(name = "CHANGE_WORK_HOURS_ATR")
 	private int changeWorkHoursAtr;
 
-	/**
-	 * 勤務場所コード
-	 */
-	@Basic(optional = true)
-	@Column(name = "WORK_LOCATION_CD")
-	private String workLocationCD;
 
 	/**
 	 * 就業時間帯
@@ -70,28 +64,28 @@ public class KrqdtAbsenceLeaveApp extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "START_WORK_TIME1")
-	private int startWorkTime1;
+	private Integer startWorkTime1;
 
 	/**
 	 * 終了時刻
 	 */
 	@Basic(optional = true)
 	@Column(name = "END_WORK_TIME1")
-	private int endWorkTime1;
+	private Integer endWorkTime1;
 
 	/**
 	 * 開始時刻
 	 */
 	@Basic(optional = true)
 	@Column(name = "START_WORK_TIME2")
-	private int startWorkTime2;
+	private Integer startWorkTime2;
 
 	/**
 	 * 終了時刻
 	 */
 	@Basic(optional = true)
 	@Column(name = "END_WORK_TIME2")
-	private int endWorkTime2;
+	private Integer endWorkTime2;
 
 	@Override
 	protected Object getKey() {

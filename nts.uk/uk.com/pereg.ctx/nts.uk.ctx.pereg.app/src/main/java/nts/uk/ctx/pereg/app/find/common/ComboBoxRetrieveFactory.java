@@ -19,6 +19,10 @@ import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
+import nts.uk.ctx.at.record.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.record.dom.remainingnumber.excessleave.PaymentMethod;
+import nts.uk.ctx.at.record.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveAppSetting;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleMasterReferenceAtr;
@@ -128,7 +132,15 @@ public class ComboBoxRetrieveFactory {
 		aMap.put("E00010", HourlyPaymentAtr.class);
 		// するしない区分
 		aMap.put("E00011", NotUseAtr.class);
-
+		// 特別休暇適用設定
+		aMap.put("E00012", SpecialLeaveAppSetting.class);
+		// 60H超過時の精算方法
+		aMap.put("E00013", PaymentMethod.class);
+		// 子の看護・介護休暇上限設定
+		aMap.put("E00014", UpperLimitSetting.class);
+		// 休暇期限切れ状態
+		aMap.put("E00015", LeaveExpirationStatus.class);
+		
 		enumMap = Collections.unmodifiableMap(aMap);
 	}
 

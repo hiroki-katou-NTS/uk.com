@@ -78,4 +78,9 @@ public class HdAppSetCommand {
 	
 	/** 積立年休残数不足登録できる */
 	public int regisShortReser;
+	
+	// 休暇種類
+	public int hdType;
+	// 未選択を表示する
+	public int displayUnselect;
 }

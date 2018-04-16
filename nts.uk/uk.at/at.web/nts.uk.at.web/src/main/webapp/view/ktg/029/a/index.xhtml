@@ -1,0 +1,369 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.shr.com.primitive.PersonId
+			</com:ValidatorScript>
+			<com:stylefile path="ktg029.a.style.css" />
+			<com:scriptfile path="ktg029.a.service.js" />
+			<com:scriptfile path="ktg029.a.start.js" />
+			<com:scriptfile path="ktg029.a.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<table class="widget-table">
+					<tr>
+						<td>06/01#{i18n.getText('KTG029_3')}06/03 #{i18n.getText('KTG029_5')}</td>
+						<td><button class="small">#{i18n.getText('KTG029_6')}</button></td>
+					</tr>
+					<tr>
+						<td>#{i18n.getText('KTG029_9')}</td>
+						<td>
+							<table class="detail">
+								<tr>
+									<td>0o</td>
+									<td>#{i18n.getText('KTG029_33')}</td>
+									<td class="go-button">
+										<button class = "overtime-work-no">
+											<i data-bind="click: openKAF015Dialog, ntsIcon: { no: 144 }"></i>
+										</button>
+									</td>
+								</tr>
+							</table>	
+						</td>
+					</tr>
+					<tr>
+						<td>#{i18n.getText('KTG029_10')}</td>
+						<td>
+							<table class="detail">
+								<tr>
+									<td>0o</td>
+									<td>#{i18n.getText('KTG029_33')}</td>
+									<td class="go-button">
+										<button class = "instruction-hd-no">
+											<i data-bind="click: openKAF015Dialog, ntsIcon: { no: 144 }"></i>
+										</button>
+									</td>
+								</tr>
+							</table>	
+						</td>
+					</tr>
+					<tr>
+						<td>#{i18n.getText('KTG029_11')}</td>
+						<td>
+							<table class="detail">
+								<tr>
+									<td>0o</td>
+									<td>#{i18n.getText('KTG029_33')}</td>
+									<td class="go-button">
+										<button class = "approved-no">
+											<i data-bind="click: openCMM045Dialog, ntsIcon: { no: 144 }"></i>
+										</button>
+									</td>
+								</tr>
+							</table>	
+						</td>
+					</tr>
+					<tr>
+						<td>#{i18n.getText('KTG029_12')}</td>
+						<td>
+							<table class="detail">
+								<tr>
+									<td>0o</td>
+									<td>#{i18n.getText('KTG029_33')}</td>
+									<td class="go-button">
+										<button>
+											<i data-bind="click: openCMM045Dialog, ntsIcon: { no: 144 }"></i>
+										</button>
+									</td>
+								</tr>
+							</table>	
+						</td>
+					</tr>
+					<tr>
+						<td>#{i18n.getText('KTG029_13')}</td>
+						<td>
+							<table class="detail">
+								<tr>
+									<td>0o</td>
+									<td>#{i18n.getText('KTG029_33')}</td>
+									<td class="go-button">
+										<button>
+											<i data-bind="click: openCMM045Dialog, ntsIcon: { no: 144 }"></i>
+										</button>
+									</td>
+								</tr>
+							</table>	
+						</td>
+					</tr>
+					<tr>
+						<td>#{i18n.getText('KTG029_14')}</td>
+						<td>
+							<table class="detail">
+								<tr>
+									<td>0o</td>
+									<td>#{i18n.getText('KTG029_33')}</td>
+									<td class="go-button">
+										<button>
+											<i data-bind="click: openCMM045Dialog, ntsIcon: { no: 144 }"></i>
+										</button>
+									</td>
+								</tr>
+							</table>	
+						</td>
+					</tr>
+					<!-- A9 -->
+					<tr>
+						<td>#{i18n.getText('KTG029_15')}</td>
+						<td>Sever</td>
+					</tr>
+					<!-- A10 -->
+					<tr>
+						<td>#{i18n.getText('KTG029_16')}</td>
+						<td>
+							<table class="detail">
+								<tr>
+									<td>Sever</td>
+									<td class="go-button">
+										<button>
+											<i data-bind="click: openKDW003Dialog, ntsIcon: { no: 144 }"></i>
+										</button>
+									</td>
+								</tr>
+							</table>	
+						</td>
+					</tr>
+					<tr>
+						<td class="tab" colspan="2">
+							<div data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KTG029_61')}</div>
+						</td>
+					</tr>
+					<!-- A11 -->
+					<tr>
+						<td>#{i18n.getText('KTG029_17')}</td>
+						<td>
+							<table class="detail">
+								<tr>
+									<td></td>
+									<td class="go-button">
+										<button>
+											<i data-bind="click: openKDL033Dialog, ntsIcon: { no: 144 }"></i>
+										</button>
+									</td>
+								</tr>
+							</table>	
+						</td>
+					</tr>
+					<!-- A12 -->
+					<tr>
+						<td>#{i18n.getText('KTG029_18')}</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A13 -->
+					<tr>
+						<td>#{i18n.getText('KTG029_19')}</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A14 -->
+					<tr>
+						<td>#{i18n.getText('KTG029_20')}</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A15 -->
+					<tr>
+						<td>#{i18n.getText('KTG029_21')}</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A16 -->
+					<tr>
+						<td>#{i18n.getText('KTG029_22')}</td>
+						<td>0o#{i18n.getText('KTG029_35')}AA#{i18n.getText('KTG029_36')}</td>
+					</tr>
+					<!-- A17 -->
+					<tr>
+						<td class="tab" colspan="2">#{i18n.getText('KTG029_23')}</td>
+					</tr>
+					<!-- A17_1 -->
+					<tr>
+						<td>#{i18n.getText('KTG029_40')}</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A17_2 -->
+					<tr>
+						<td class="tab" >#{i18n.getText('KTG029_23')}</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A17_3 -->
+					<tr>
+						<td class="tab" >#{i18n.getText('KTG029_43')}</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A17_4 -->
+					<tr>
+						<td class="tab" >#{i18n.getText('KTG029_46')}</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A17_5 -->
+					<tr>
+						<td class="tab" >#{i18n.getText('KTG029_49')}</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A17_6 -->
+					<tr>
+						<td class="tab" >#{i18n.getText('KTG029_50')}</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A17_7 -->
+					<tr>
+						<td class="tab" >#{i18n.getText('KTG029_51')}</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A17_8 -->
+					<tr>
+						<td class="tab" >#{i18n.getText('KTG029_52')}</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A17_9 -->
+					<tr>
+						<td class="tab" >#{i18n.getText('KTG029_53')}</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A17_10 -->
+					<tr>
+						<td class="tab" >#{i18n.getText('KTG029_54')}</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A17_11 -->
+					<tr>
+						<td class="tab" >#{i18n.getText('KTG029_55')}</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A17_12 -->
+					<tr>
+						<td class="tab" colspan="2">#{i18n.getText('KTG029_56')}</td>
+					</tr>
+					<!-- A17_13 -->
+					<tr>
+						<td class="tab" >#{i18n.getText('KTG029_57')}</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A17_14 -->
+					<tr>
+						<td class="tab" >#{i18n.getText('KTG029_59')}</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A18 -->
+					<tr>
+						<td>#{i18n.getText('KTG029_24')}</td>
+						<td>
+							<table class="detail">
+								<tr>
+									<td>0o #{i18n.getText('KTG029_60')}</td>
+									<td class="go-button">
+										<button>
+											<i data-bind="click: openKDL029Dialog, ntsIcon: { no: 144 }"></i>
+										</button>
+									</td>
+								</tr>
+							</table>	
+						</td>
+					</tr>
+					<!-- A19 -->
+					<tr>
+						<td class="tab" colspan="2">#{i18n.getText('KTG029_25')}</td>
+					</tr>
+					<!-- A19_1 -->
+					<tr>
+						<td class="tab" >#{i18n.getText('KTG029_25')}(1)</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A19_2 -->
+					<tr>
+						<td class="tab" >#{i18n.getText('KTG029_25')}(2)</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A19_3 -->
+					<tr>
+						<td class="tab" >#{i18n.getText('KTG029_25')}(3)</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A19_4 -->
+					<tr>
+						<td class="tab" >#{i18n.getText('KTG029_25')}(4)</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A19_5 -->
+					<tr>
+						<td class="tab" >#{i18n.getText('KTG029_25')}(5)</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A20 -->
+					<tr>
+						<td>#{i18n.getText('KTG029_26')}</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A21 -->
+					<tr>
+						<td>#{i18n.getText('KTG029_27')}</td>
+						<td>
+							<table class="detail">
+								<tr>
+									<td>0o #{i18n.getText('KTG029_60')}</td>
+									<td class="go-button">
+										<button>
+											<i data-bind="click: openKDL009Dialog, ntsIcon: { no: 144 }"></i>
+										</button>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<!-- A22 -->
+					<tr>
+						<td>#{i18n.getText('KTG029_28')}</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A23 -->
+					<tr>
+						<td>#{i18n.getText('KTG029_29')}</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A24 -->
+					<tr>
+						<td>#{i18n.getText('KTG029_30')}</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A25 -->
+					<tr>
+						<td>#{i18n.getText('KTG029_31')}</td>
+						<td>XX : XX</td>
+					</tr>
+					<!-- A26 -->
+					<tr>
+						<td>#{i18n.getText('KTG029_32')}</td>
+						<td>
+							<table class="detail">
+								<tr>
+									<td>XX : XX</td>
+									<td class="go-button">
+										<button>
+											<i data-bind="click: openKDL017Dialog, ntsIcon: { no: 144 }"></i>
+										</button>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>		
+				</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -105,6 +105,8 @@ public class ScheBatchCorrectExecutionCommandHandler
 	/** The Constant MAX_ERROR_RECORD. */
 	private static final int MAX_ERROR_RECORD = 5;
 	
+	/** Interrupt flag */
+	private static boolean isInterrupted = false;
 			
 	/*
 	 * (non-Javadoc)
@@ -147,8 +149,16 @@ public class ScheBatchCorrectExecutionCommandHandler
 		setter.setData(NUMBER_OF_SUCCESS, countSuccess);
 		setter.setData(NUMBER_OF_ERROR, DEFAULT_VALUE);
 		
+		// Set interrupt flag to false to start execution
+		isInterrupted = false;
+		
 		// 選択されている社員ループ
 		for (String employeeId : command.getEmployeeIds()) {
+			// Stop if being interrupted
+			if (isInterrupted) {
+				break;
+			}
+			
 			GeneralDate startDate = command.getStartDate();
 			GeneralDate endDate = command.getEndDate();
 			 	
@@ -159,7 +169,13 @@ public class ScheBatchCorrectExecutionCommandHandler
 			while (currentDateCheck.compareTo(endDate) <= 0) {
 				Optional<String> optErrorMsg = registerProcess(companyId, command, employeeId, currentDateCheck);
 				
+				// Stop if being interrupted
+				if (isInterrupted) {
+					break;
+				}
+				
 				if (optErrorMsg.isPresent()) {
+					
 					// Create and add error content to the errors list
 					ErrorContentDto errorContentDto = new ErrorContentDto();
 					errorContentDto.setMessage(optErrorMsg.get());
@@ -176,6 +192,8 @@ public class ScheBatchCorrectExecutionCommandHandler
 						errorList.clear();
 					}
 					errorList.add(errorContentDto);
+					setter.updateData(NUMBER_OF_ERROR, errorList.size()); // update the number of errors
+					if (errorList.size() == 1) dto.setWithError(WithError.WITH_ERROR); // if there is even one error, output it
 				} else {
 					countSuccess++;
 					setter.updateData(NUMBER_OF_SUCCESS, countSuccess);
@@ -193,19 +211,13 @@ public class ScheBatchCorrectExecutionCommandHandler
 			setter.setData(DATA_PREFIX + errorRecordCount, dto);
 		}
 		
-		// Count amount of error
-		if (errorList.size() > 0) {
-			dto.setWithError(WithError.WITH_ERROR);
-			setter.updateData(NUMBER_OF_ERROR, errorList.size());
-		}
-		// If there is completely no error, set to NO_ERROR
-		else {
-			dto.setWithError(WithError.NO_ERROR);
-		}
-
 		dto.setEndTime(GeneralDateTime.now());
 		dto.setExecutionState(ExecutionState.DONE);
 		//setter.updateData(DATA_EXECUTION, dto);
+	}
+	
+	public void interrupt() {
+		isInterrupted = true;
 	}
 	
 	/**
@@ -275,7 +287,7 @@ public class ScheBatchCorrectExecutionCommandHandler
 	 * @param baseDate
 	 * @return
 	 */
-	private Optional<String> checkClosePeriod(String companyId, String employeeId, GeneralDate baseDate) {
+	public Optional<String> checkClosePeriod(String companyId, String employeeId, GeneralDate baseDate) {
 		/**
 		 * 特定の日付の締めを取得する
 		 */

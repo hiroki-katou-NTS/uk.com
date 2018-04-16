@@ -58,7 +58,7 @@ public class SettingItemDto {
 	}
 
 	private static SaveDataDto createSaveDataDto(int saveDataValue, GeneralDate dateValue, BigDecimal intValue,
-			String stringValue, DateType dateType) {
+			String stringValue) {
 		SaveDataDto resultDto = new SaveDataDto();
 
 		SaveDataType saveDataType = EnumAdaptor.valueOf(saveDataValue, SaveDataType.class);
@@ -77,15 +77,44 @@ public class SettingItemDto {
 
 		return resultDto;
 	}
+	
+	private static SaveDataDto createSaveDataDto(Object value) {
+		if (value == null ) {
+			return new SaveDataDto(SaveDataType.STRING, null);
+		}
+
+		if (value.getClass().equals(Integer.class)) {
+			return new SaveDataDto(SaveDataType.NUMBERIC, value);
+		}
+		if (value.getClass().equals(String.class)) {
+			return new SaveDataDto(SaveDataType.STRING, value);
+		}
+
+		if (value.getClass().equals(GeneralDate.class)) {
+			return new SaveDataDto(SaveDataType.DATE, value);
+		}
+		
+		return new SaveDataDto(SaveDataType.STRING, null);
+
+	}
 
 	public static SettingItemDto createFromJavaType(String categoryCode, String itemDefId, String itemCode,
 			String itemName, int isRequired, int saveDataValue, GeneralDate dateValue, BigDecimal intValue,
 			String stringValue, int dataType, int selectionItemRefType, String itemParentCd, int dateType,
 			String SelectionItemRefCd) {
 		SettingItemDto itemDto = new SettingItemDto(categoryCode, itemDefId, itemCode, itemName, isRequired,
-				createSaveDataDto(saveDataValue, dateValue, intValue, stringValue,
-						EnumAdaptor.valueOf(dateType, DateType.class)),
+				createSaveDataDto(saveDataValue, dateValue, intValue, stringValue),
 				EnumAdaptor.valueOf(dataType, DataTypeValue.class),
+				EnumAdaptor.valueOf(selectionItemRefType, ReferenceTypes.class), itemParentCd,
+				EnumAdaptor.valueOf(dateType, DateType.class), SelectionItemRefCd);
+		return itemDto;
+	}
+	
+	public static SettingItemDto createFromJavaType(String categoryCode, String itemDefId, String itemCode,
+			String itemName, int isRequired, Object value, int dataType, int selectionItemRefType, String itemParentCd,
+			int dateType, String SelectionItemRefCd) {
+		SettingItemDto itemDto = new SettingItemDto(categoryCode, itemDefId, itemCode, itemName, isRequired,
+				createSaveDataDto(value), EnumAdaptor.valueOf(dataType, DataTypeValue.class),
 				EnumAdaptor.valueOf(selectionItemRefType, ReferenceTypes.class), itemParentCd,
 				EnumAdaptor.valueOf(dateType, DateType.class), SelectionItemRefCd);
 		return itemDto;
@@ -106,8 +135,13 @@ public class SettingItemDto {
 		this.setSaveData(new SaveDataDto(SaveDataType.STRING, value));
 
 	}
-
+	
 	public void setData(Object value) {
+		
+		if (value == null ) {
+			this.setSaveData(new SaveDataDto(SaveDataType.STRING, null));
+		}
+		
 		if (value.getClass().equals(Integer.class)) {
 			this.setSaveData(new SaveDataDto(SaveDataType.NUMBERIC, value));
 		}
@@ -120,5 +154,7 @@ public class SettingItemDto {
 		}
 
 	}
+	
+	
 
 }

@@ -1,11 +1,13 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday.flex;
 
 import lombok.AllArgsConstructor;
 
 /**
- * 
- * @author phongtq
- *非勤務日のフレックス時間計算方法
+ * The Enum FlexCalcAtr.
  */
 @AllArgsConstructor
 public enum FlexCalcAtr {

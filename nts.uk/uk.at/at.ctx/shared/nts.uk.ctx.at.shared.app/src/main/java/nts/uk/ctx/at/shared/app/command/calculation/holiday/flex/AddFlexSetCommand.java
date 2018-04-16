@@ -22,9 +22,15 @@ public class AddFlexSetCommand {
 
 	/** 割増計算 */
 	public int premiumCalcSubhd;
+	
+	/** 非勤務日計算 */
+	public int flexDeductTimeCalc;
+	
+	/** 非勤務日計算 */
+	public int flexNonworkingDayCalc;
 
 	public FlexSet toDomain(String companyId) {
 		return FlexSet.createFromJavaType(companyId, this.missCalcHd, this.premiumCalcHd, this.missCalcSubhd,
-				this.premiumCalcSubhd);
+				this.premiumCalcSubhd, this.flexDeductTimeCalc, this.flexNonworkingDayCalc);
 	}
 }

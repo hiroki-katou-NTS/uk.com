@@ -11,13 +11,18 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDetailDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureFindDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureForLogDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryForComDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryMasterDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureIdNameDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosuresDto;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
@@ -25,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMonthDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -47,8 +53,7 @@ public class ClosureFinder {
 
 	@Inject
 	ClosureEmploymentRepository closureEmpRepo;
-	
-	
+
 	/**
 	 * Gets the closure id name.
 	 *

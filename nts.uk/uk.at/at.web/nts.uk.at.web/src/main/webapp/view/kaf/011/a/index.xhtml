@@ -8,22 +8,22 @@
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<!-- kaf011 shr-->
-			<com:scriptfile path="../shr/kaf011.shr.vm.js" />
-			<com:scriptfile path="../shr/kaf011.shr.service.js" />
-			<!-- kaf011 a-->
-			<com:stylefile path="kaf011.a.style.css" />
-			<com:scriptfile path="kaf011.a.vm.js" />
-			<com:scriptfile path="kaf011.a.start.js" />
-
+			<!-- kaf011 cm-->
+			<com:stylefile path="../cm/kaf011.cm.style.css" />
 			<!-- kaf000 -->
 			<com:stylefile path="../../000/a/kaf000.a.main.css" />
 			<com:scriptfile path="../../000/shr/kaf000.shr.vm.js" />
 			<com:scriptfile path="../../000/a/kaf000.a.service.js" />
 			<com:scriptfile path="../../000/a/kaf000.a.vm.js" />
+			<!-- kaf011 shr-->
+			<com:scriptfile path="../shr/kaf011.shr.service.js" />
+			<com:scriptfile path="../shr/kaf011.shr.vm.js" />
+			<!-- kaf011 a-->
+			<com:scriptfile path="kaf011.a.vm.js" />
+			<com:scriptfile path="kaf011.a.start.js" />
 
 			<com:ValidatorScript>
-				nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode
+				nts.uk.ctx.at.request.dom.application.AppReason
 			</com:ValidatorScript>
 
 		</ui:define>
@@ -35,11 +35,15 @@
 					data-bind="enable: $root.errors.isEmpty, click: register"
 					tabindex="1">#{i18n.getText('KAF011_3')}</button>
 				<!-- A.A1_3 -->
-				<button data-bind=" click: register" tabindex="1">#{i18n.getText('KAF011_7')}</button>
+				<button data-bind=" click: openKDL009" tabindex="1">#{i18n.getText('KAF011_7')}</button>
 				<!-- A.A2_1 -->
-				<button data-bind="click: register" tabindex="1">#{i18n.getText('KAF011_9')}</button>
+				<button tabindex="1" data-bind=" click: openCMM018">#{i18n.getText('KAF011_9')}</button>
 				<!-- A.A3_1 -->
-				<div id="ckbSendMail" data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KAF011_10')}</div>
+				<div id="ckbSendMail"
+					data-bind="if:appTypeSet().sendMailWhenRegister()!=0">
+					<div tabindex="1"
+						data-bind="ntsCheckBox: { checked: manualSendMailAtr }">#{i18n.getText('KAF011_10')}</div>
+				</div>
 			</div>
 
 			<div id="contents-area" class="cf">

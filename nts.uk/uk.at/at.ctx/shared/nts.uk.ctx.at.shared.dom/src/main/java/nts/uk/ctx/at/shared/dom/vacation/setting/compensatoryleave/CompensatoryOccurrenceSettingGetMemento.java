@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
 
+import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
+
 /**
  * The Interface CompensatoryOccurrenceSettingGetMemento.
  */
@@ -21,5 +23,5 @@ public interface CompensatoryOccurrenceSettingGetMemento {
       *
       * @return the transfer setting
       */
-     TransferSetting getTransferSetting();
+     SubHolTransferSet getTransferSetting();
 }

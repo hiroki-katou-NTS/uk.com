@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 
 /*
  * 戻り値：ドメインサービス：月別実績を集計する．集計処理
@@ -14,8 +15,11 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 public class AggregateMonthlyRecordValue {
 
 	/** 月別実績の勤怠時間 */
-	private List<AttendanceTimeOfMonthly> attendanceTimes;
+	private List<AttendanceTimeOfMonthly> attendanceTimeList;
 
+	/** 管理時間の36協定時間 */
+	private List<AgreementTimeOfManagePeriod> agreementTimeList;
+	
 	/** エラー有無 */
 	@Setter
 	private boolean error;
@@ -25,7 +29,8 @@ public class AggregateMonthlyRecordValue {
 	 */
 	public AggregateMonthlyRecordValue(){
 		
-		this.attendanceTimes = new ArrayList<>();
+		this.attendanceTimeList = new ArrayList<>();
+		this.agreementTimeList = new ArrayList<>();
 		this.error = false;
 	}
 }

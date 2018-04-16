@@ -157,7 +157,8 @@ module nts.uk.at.view.kal001.a.model {
                     service.getCheckConditionTime(newCode).done((checkTimeData)=>{
                         self.periodByCategory(_.map((checkTimeData), (item) =>{
                             return new PeriodByCategory(item);
-                        }));                        
+                        }));
+                        self.periodByCategory(_.sortBy(self.periodByCategory(), 'category'));                        
                     }).fail((errorTime)=>{
                         alertError(errorTime);
                     });
@@ -201,12 +202,20 @@ module nts.uk.at.view.kal001.a.model {
             let self = this;
             let listSelectedEmpployee : Array<UnitModel> = self.employeeList().filter(e => self.multiSelectedCode().indexOf(e.code)>-1);
             let listPeriodByCategory = self.periodByCategory().filter(x => x.checkBox()==true);
-            if(self.currentAlarmCode()=='' ) return;
           
             if(listSelectedEmpployee.length==0){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_834" });
                 return;
             }
+            if(self.currentAlarmCode()=='' ){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_1167" });
+                return;
+            }
+            if(listPeriodByCategory.length==0){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_1168" });
+                return;    
+            }            
+            
             block.invisible();
             service.extractAlarm(listSelectedEmpployee, self.currentAlarmCode(), listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto)=>{
                 
@@ -233,22 +242,31 @@ module nts.uk.at.view.kal001.a.model {
 
     }
     
+    export class DateValue{
+        startDate : string;
+        endDate: string;
+        constructor(startDate: string, endDate: string){
+            this.startDate = (startDate);
+            this.endDate = (endDate);
+        }
+    }
     
     export class PeriodByCategory{
         category : number;
         categoryName: string;
-        startDate : KnockoutObservable<string>;
-        endDate: KnockoutObservable<string>;
+        dateValue: KnockoutObservable<DateValue>;
         checkBox: KnockoutObservable<boolean>;
-        startMonth: KnockoutObservable<string>;
-        endMonth: KnockoutObservable<string>;
+        typeInput :  string;
         constructor(dto:  service.CheckConditionTimeDto){
             this.category = dto.category;
             this.categoryName = dto.categoryName;
-            this.startDate = ko.observable(dto.startDate);
-            this.endDate = ko.observable(dto.endDate);
-            this.startMonth = ko.observable(dto.startMonth);
-            this.endMonth = ko.observable(dto.endMonth);
+            if(dto.category==2 || dto.category==5){
+                this.dateValue= ko.observable(new DateValue(dto.startDate, dto.endDate) );
+                this.typeInput = "fullDate";     
+            }else{
+                this.dateValue= ko.observable(new DateValue(dto.startMonth, dto.endMonth));
+                this.typeInput = "yearmonth";   
+            }
             this.checkBox = ko.observable(false);
         }
         

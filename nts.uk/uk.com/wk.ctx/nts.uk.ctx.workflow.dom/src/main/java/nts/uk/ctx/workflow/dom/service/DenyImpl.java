@@ -71,6 +71,7 @@ public class DenyImpl implements DenyService {
 							approvalFrame.setApprovalDate(GeneralDate.today());
 							approvalFrame.setApprovalReason(memo);
 							approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
+							executedFlag = true;
 							continue;
 						} else {
 							continue;
@@ -99,35 +100,34 @@ public class DenyImpl implements DenyService {
 	@Override
 	public Boolean canDenyCheck(ApprovalRootState approvalRootState, Integer order, String employeeID) {
 		Boolean canDenyFlag = true;
+		if(approvalRootState.getListApprovalPhaseState().size()==1){
+			return canDenyFlag;
+		}
 		if(order<=0){
 			return canDenyFlag;
 		}
-		for(int i = order; i >= 0 ; i--){
-			ApprovalPhaseState approvalPhaseState = approvalRootState.getListApprovalPhaseState().get(5-i);
-			List<String> listApprover = judgmentApprovalStatusService.getApproverFromPhase(approvalPhaseState);
-			if(CollectionUtil.isEmpty(listApprover)){
-				continue;
-			}
-			if(!approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
-				canDenyFlag = false;
-				break;
-			}
-			Optional<ApprovalFrame> opConfirmApprovalFrame = approvalPhaseState.getListApprovalFrame().stream()
-			 	.filter(x -> x.getConfirmAtr().equals(ConfirmPerson.CONFIRM)).findAny();
-			if(opConfirmApprovalFrame.isPresent()){
-				ApprovalFrame confirmApprovalFrame = opConfirmApprovalFrame.get();
-				if(confirmApprovalFrame.getApproverID().equals(employeeID)||confirmApprovalFrame.getRepresenterID().equals(employeeID)){
-					canDenyFlag = false;
-				} else {
-					canDenyFlag = true;
-				}
-				break;
-			}
-			canDenyFlag = approvalPhaseState.getListApprovalFrame().stream()
-				.filter(x -> x.getApproverID().equals(employeeID)||x.getRepresenterID().equals(employeeID))
-				.findAny().map(y -> false).orElse(true);
-			break;
+		ApprovalPhaseState lowerPhase = approvalRootState.getListApprovalPhaseState()
+				.stream().filter(x -> x.getPhaseOrder()<=order)
+				.sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed())
+				.findFirst().get();
+		if(!lowerPhase.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
+			canDenyFlag = false;
+			return canDenyFlag;
 		}
+		Optional<ApprovalFrame> opConfirmApprovalFrame = lowerPhase.getListApprovalFrame().stream()
+		 	.filter(x -> x.getConfirmAtr().equals(ConfirmPerson.CONFIRM)).findAny();
+		if(opConfirmApprovalFrame.isPresent()){
+			ApprovalFrame confirmApprovalFrame = opConfirmApprovalFrame.get();
+			if(confirmApprovalFrame.getApproverID().equals(employeeID)||confirmApprovalFrame.getRepresenterID().equals(employeeID)){
+				canDenyFlag = false;
+			} else {
+				canDenyFlag = true;
+			}
+			return canDenyFlag;
+		}
+		canDenyFlag = lowerPhase.getListApprovalFrame().stream()
+			.filter(x -> x.getApproverID().equals(employeeID)||x.getRepresenterID().equals(employeeID))
+			.findAny().map(y -> false).orElse(true);
 		return canDenyFlag;
 	}
 }

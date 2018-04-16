@@ -51,7 +51,9 @@ public class AttendanceItemRecordTest {
 				684, 685, 686, 687, 688, 689, 690, 691, 692, 693, 694, 695, 696, 697, 698, 699, 700, 701, 702, 703, 704,
 				705, 706, 707, 708, 709, 710, 711, 712, 713, 714, 715, 716, 717, 718, 719, 720, 721, 722, 723, 724, 725,
 				726, 727, 728, 729, 730, 731, 732, 733, 734, 735, 736, 737, 738, 739, 741, 742, 743, 744, 745, 746, 747,
-				748, 749, 750, 751, 752, 753, 754, 755, 759, 760, 761, 762, 763, 764, 765, 766
+				748, 749, 750, 751, 752, 753, 754, 755, 759, 760, 761, 762, 763, 764, 765, 766, 794, 795, 796, 797, 799,
+				800, 801, 802, 803, 804, 805, 806, 807, 808, 809, 810, 811, 812, 813, 814, 815, 816, 817, 818, 819, 820,
+				821, 822, 823, 824, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834, 835, 836, 837
 				);
 		List<ItemValue> items = AttendanceItemUtil.toItemValues(new DailyRecordDto(), itemIds).stream()
 				.sorted((c1, c2) -> c1.itemId() - c2.itemId()).collect(Collectors.toList());
@@ -87,10 +89,6 @@ public class AttendanceItemRecordTest {
 				new ItemValue(ValueType.INTEGER, "", 422, 7), new ItemValue(ValueType.INTEGER, "", 423, 8),
 				new ItemValue(ValueType.INTEGER, "", 424, 9), new ItemValue(ValueType.INTEGER, "", 425, 10));
 		DailyRecordDto items = AttendanceItemUtil.fromItemValues(new DailyRecordDto(), itemIds);
-		// items.stream().forEach(c -> {
-		// Logger.getLogger(this.getClass()).info(c.getItemId() + ":" +
-		// c.getLayoutCode());
-		// });
 		Assert.assertNotEquals(items, null);
 	}
 }

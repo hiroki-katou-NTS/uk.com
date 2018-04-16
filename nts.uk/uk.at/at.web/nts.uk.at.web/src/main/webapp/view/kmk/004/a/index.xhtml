@@ -15,7 +15,6 @@
 				};
 			</script>
 			<com:ValidatorScript>
-					nts.uk.ctx.at.shared.dom.common.Year
 					nts.uk.ctx.at.shared.dom.common.DailyTime
 					nts.uk.ctx.at.shared.dom.common.MonthlyTime
 					nts.uk.ctx.at.shared.dom.common.WeeklyTime
@@ -25,52 +24,42 @@
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
 			<com:scriptfile path="../e/kmk004.e.service.js" />
+			<com:scriptfile path="../shr/kmk004.shared.model.js" />
+			<com:scriptfile path="../shr/kmk004.worktime.setting.service.js" />
+			<com:scriptfile path="../shr/kmk004.worktime.setting.vm.js" />
 			<com:scriptfile path="kmk004.a.service.js" />
 			<com:scriptfile path="kmk004.a.vm.js" />
 			<com:scriptfile path="kmk004.a.start.js" />
+			<!-- <com:scriptfile path="../share/model.vm.js" /> -->
 		</ui:define>
 		<ui:define name="sidebar">
 			<ul class="navigator" data-bind="visible: true" style="display: none">
-				<li data-bind="click: onSelectCompany"><a tabindex="1" href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
-				<li data-bind="click: onSelectWorkplace, visible: usageUnitSetting.workplace"><a tabindex="-1" href="#tabpanel-2" role="tab-navigator">#{i18n.getText('Com_Workplace')}</a></li>
-				<li data-bind="click: onSelectEmployment, visible: usageUnitSetting.employment"><a tabindex="-1" href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Employment')}</a></li>
-				<li data-bind="visible: usageUnitSetting.employee"><a tabindex="-1" href="#tabpanel-4" role="tab-navigator">#{i18n.getText('Com_Person')}</a></li>
+				<li><a tabindex="1"  href="#tabpanel-0" data-bind="click: function() { location.href='../a/index.xhtml'; }" >#{i18n.getText('Com_Company')}</a></li>
+				<li><a tabindex="-1" href="#tabpanel-1" data-bind="click: function() { location.href='../c/index.xhtml'; }, visible: usageUnitSetting.employment()" >#{i18n.getText('Com_Employment')}</a></li>
+				<li><a tabindex="-1" href="#tabpanel-2" data-bind="click: function() { location.href='../d/index.xhtml'; }, visible: usageUnitSetting.workplace()" >#{i18n.getText('Com_Workplace')}</a></li>
+				<li><a tabindex="-1" href="#tabpanel-3" data-bind="click: function() { location.href='../b/index.xhtml'; }, visible: usageUnitSetting.employee()">#{i18n.getText('Com_Person')}</a></li>
 			</ul>
 		</ui:define>
 		<ui:define name="sidebar-content">
-				<!-- COMPANY WORK TIME SETTING  START -->
-				<div id="tabpanel-1" role="tabpanel">
-					<com:ko tag="if" bind="isCompanySelected">
-						<ui:include src="a.xhtml" />
-					</com:ko>
+			<div class="sidebar-content-header">
+				<span class="title">#{i18n.getText('Com_Company')}</span>
+				<span class="action-bar">
+				<button tabindex="2" data-bind="click: saveCompanySettingNewest, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('KMK004_27')}</button>
+				<!-- <button tabindex="4" class="danger" data-bind="click: removeCompanySetting, disable: isNewMode">#{i18n.getText('KMK004_29')}</button> -->
+				<button tabindex="3" id="btn-usage-unit" class="" data-bind="click: gotoE">#{i18n.getText('KMK004_30')}</button>
+				<!-- <button class="" data-bind="click: gotoF">#{i18n.getText('KMK004_30')}</button>
+				<button class="" data-bind="click: gotoG">#{i18n.getText('KMK004_30')}</button>
+				<button class="" data-bind="click: gotoH">#{i18n.getText('KMK004_30')}</button> -->
+				</span>
+			</div>
+			<com:ko tag="with" bind="worktimeVM">
+				<div class="contents-area cf" data-bind="ifnot: isLoading, visible: true" style="display: none">
+					<ui:include src="../shr/kmk004.worktime.setting.xhtml">
+						<ui:param name="baseTabIndex" value="5"></ui:param>
+					</ui:include>
 				</div>
-				<!-- COMPANY WORK TIME SETTING END -->
-
-				<!-- WORKPLACE WORK TIME SETTING START -->
-				<div id="tabpanel-2" role="tabpanel">
-					<com:ko tag="if" bind="isWorkplaceSelected">
-						<ui:include src="d.xhtml" />
-					</com:ko>
-				</div>
-				<!-- WORKPLACE WORK TIME SETTING END -->
-
-				<!-- EMPLOYMENT WORK TIME SETTING START -->
-				<div id="tabpanel-3" role="tabpanel">
-					<com:ko tag="if" bind="isEmploymentSelected">
-						<ui:include src="c.xhtml" />
-					</com:ko>
-				</div>
-				<!-- EMPLOYMENT WORK TIME SETTING END -->
-
-				<!-- EMPLOYEE WORK TIME SETTING START -->
-				<div id="tabpanel-4" role="tabpanel">
-					<com:ko tag="if" bind="isEmployeeSelected">
-						<ui:include src="b.xhtml" />
-					</com:ko>
-				</div>
-				<!-- EMPLOYEE WORK TIME SETTING END -->
+			</com:ko>
 		</ui:define>
 	</ui:composition>
 </body>
-
 </html>

@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/dialog.xhtml">	
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { 
+					width : 650,
+					height : 620
+			};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="kdm002.b.service.js" />
+			<com:scriptfile path="kdm002.b.vm.js" />
+			<com:scriptfile path="kdm002.b.start.js" />
+			<com:stylefile path="kdm002.b.style.css" />
+			
+		</ui:define>
+
+		<ui:define name="content">
+			<div class="contents-area">
+			<!-- B1-1 -->
+				<div><label class="kdm002_2">#{i18n.getText('KDM002_2')}</label></div>
+				<div class="result">
+					<!-- B2-1 -->
+					<table class="table_result">
+						<tbody>
+							<tr >
+								<!-- B2-2 -->
+								<td class="bggreen" width='200px'>
+									<label>#{i18n.getText('KDM002_20')}</label>
+								</td>
+								<td width='300px'>
+									<!-- B2-5 -->
+									<label style="padding-left:  10px;" data-bind="text : timeStart()"></label>
+								</td>
+							</tr>
+							<tr >
+								<!-- B2-3 -->
+								<td class="bggreen" width='200px' >
+									<label>#{i18n.getText('KDM002_21')}</label>
+								</td>
+								<td width='300px'>
+									<!-- B2-6 -->
+									<label style="padding-left:  10px;" data-bind="text : timeOver()"></label>
+								</td>
+							</tr>
+							<tr >
+								<!-- B2-4 -->
+								<td class="bggreen" width='200px'>
+									<label>#{i18n.getText('KDM002_22')}</label>
+								</td>
+								<td width='300px'>
+									<!-- B2-7 -->
+									<div style="float:left; "><label style="padding-left:  10px;" data-bind="text : status()"></label></div>
+									<!-- B2-8 -->
+									<div style="float:left; "><label style="padding-left:  10px;" data-bind="text : result()"></label></div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<com:ko-if bind="isComplete() == true">
+					<div class="error-ichiran">
+						<div style="float: right; height:50px">
+							<button id="BTN_ERROR_EXPORT" 
+							class="large btn-error-export" 
+							data-bind="click : errorExport" 
+							tabindex="3"
+							style="float: right;"
+							>#{i18n.getText('KDM002_32')}</button></div>
+						<div class="ichi-ran" style="margin-left:10px; margin-right:auto" >
+							<table id="single-list" data-bind="ntsGridList: {								
+	 							height: 350, 
+	 							dataSource: imErrorLog, 
+	 							columns: columns, 
+	 							showNumbering: true, 
+	 							rows: 10, 
+	 							value: currentCode,
+	 							multiple: false
+	 						}"></table> 
+						</div>
+					</div>
+				</com:ko-if>
+			</div>
+			<div id="functions-area-bottom">
+				<!-- B4-1 -->
+				<com:ko-if bind="isStop() == false">
+					<button id="BTN_STOP" class="x-large" tabindex="1" data-bind="click : stop">#{i18n.getText('KDM002_23')}</button>
+				</com:ko-if>
+				<!-- B4-2 -->
+				<com:ko-if bind="isStop() == true">
+					<button id="BTN_CLOSE" class="x-large" tabindex="2" data-bind="click : close">#{i18n.getText('KDM002_24')}</button>
+				</com:ko-if>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

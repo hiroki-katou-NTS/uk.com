@@ -29,6 +29,28 @@ module nts.uk.pr.view.kmf001.l {
                 
                 self.childNursingSetting = ko.observable(new NursingSettingModel(self));
                 self.backupChildNursingSetting = ko.observable(null);
+                
+                self.nursingSetting().selectedManageNursing.subscribe(function(v) {
+                    if(v == 0){
+                        // 子の看護
+                        $('#nursing-month').ntsError('clear');
+                        $('#nursing-day').ntsError('clear');
+                        $('#nursing-number-leave-day').ntsError('clear');
+                        $('#nursing-number-person').ntsError('clear');
+                        $('#work-type-code-nursing').ntsError('clear');
+                    }
+                });
+                
+                self.childNursingSetting().selectedManageNursing.subscribe(function(v) {
+                    if(v == 0){
+                         // 介護
+                        $('#child-nursing-month').ntsError('clear');
+                        $('#child-nursing-day').ntsError('clear');
+                        $('#child-nursing-number-leave-day').ntsError('clear');
+                        $('#child-nursing-number-person').ntsError('clear');
+                        $('#work-type-code-child-nursing').ntsError('clear');
+                    }
+                });
             }
             
             public startPage(): JQueryPromise<any> {
@@ -50,6 +72,9 @@ module nts.uk.pr.view.kmf001.l {
                     return;
                 }
                 let command = self.toJsObject();
+                
+                nts.uk.ui.block.grayout();
+                
                 service.save(command).done(function() {
                     self.loadSetting().done(function() {
                         $("#manage-nursing").focus();
@@ -58,6 +83,8 @@ module nts.uk.pr.view.kmf001.l {
                     });
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
             }
             
@@ -223,6 +250,8 @@ module nts.uk.pr.view.kmf001.l {
                 self.nursingNumberPerson = ko.observable(null);
                 self.workTypeCodes = ko.observableArray([]);
                 self.typeCode = ko.observable('');
+                
+
             }
             
             private openDialog() {

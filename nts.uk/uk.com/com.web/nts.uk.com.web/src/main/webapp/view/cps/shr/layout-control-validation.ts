@@ -155,6 +155,9 @@ module nts.layout {
             self.radio();
             self.button();
             self.combobox();
+            self.relate_radio();
+            self.relate_button();
+
             validate.initCheckError(lstCls);
         }
 
@@ -196,6 +199,7 @@ module nts.layout {
                 CS00020_IS00121: IFindData = finder.find('CS00020', 'IS00121'),
                 CS00020_IS00123: IFindData = finder.find("CS00020", "IS00123");
 
+
             if (CS00020_IS00248) {
                 CS00020_IS00248.data.value.subscribe(x => {
                     let ctrls: Array<IFindData> = finder.findChilds(CS00020_IS00248.data.categoryCode, CS00020_IS00248.data.itemParentCode);
@@ -230,6 +234,37 @@ module nts.layout {
                     CS00020_IS00121.data.value.valueHasMutated();
                 }, 0);
             }
+        }
+
+        relate_radio = () => {
+            let self = this,
+                finder = self.finder,
+                radios: Array<IRelateRadio> = [
+                    {
+                        ctgCode: 'CS00024',
+                        radioCode: 'IS00387',
+                        setParentCode: 'IS00388'
+                    }
+                ],
+                validation = (radio: IRelateRadio) => {
+                    let rd: IFindData = finder.find(radio.ctgCode, radio.radioCode),
+                        ctrls: Array<IFindData> = finder.findChilds(radio.ctgCode, radio.setParentCode);
+
+                    //debugger;
+                    if (rd) {
+                        rd.data.value.subscribe(x => {
+                            _.each(ctrls, c => {
+                                c.data.editable(x == 1);
+                            });
+                        });
+
+                        setTimeout(() => {
+                            rd.data.value.valueHasMutated();
+                        }, 0);
+                    }
+                };
+
+            _(radios).each(radio => validation(radio));
         }
 
         button = () => {
@@ -583,6 +618,21 @@ module nts.layout {
             });
         }
 
+        relate_button = () => {
+            let self = this,
+                finder: IFinder = self.finder,
+                buttons: Array<IRelateButton> = [{
+                    ctgCode: 'CS00024',
+                    btnCode: 'IS00276'
+                }],
+                validation = (btn: IRelateButton) => {
+                    let button: IFindData = finder.find(btn.ctgCode, btn.btnCode);
+                    //debugger;
+                };
+
+            _(buttons).each(btn => validation(btn));
+        }
+
         combobox = () => {
             let self = this,
                 finder: IFinder = self.finder,
@@ -715,5 +765,16 @@ module nts.layout {
     interface ITimeFindData {
         start: IFindData;
         end: IFindData;
+    }
+
+    interface IRelateRadio {
+        ctgCode: string;
+        radioCode: string;
+        setParentCode: string;
+    }
+
+    interface IRelateButton {
+        ctgCode: string;
+        btnCode: string;
     }
 }

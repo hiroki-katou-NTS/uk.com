@@ -6,9 +6,11 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pereg.dom.person.info.dateitem.DateItem;
 import nts.uk.ctx.pereg.dom.person.info.numericitem.NumericItem;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.ButtonName;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.RadioName;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.NumericButton;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReadOnly;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReadOnlyButton;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypeState;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.RelatedCategory;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionButton;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionItem;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionRadio;
@@ -46,14 +48,27 @@ public class DataTypeState extends AggregateRoot {
 		return SelectionItem.createFromJavaType(referenceTypeState);
 	}
 
-
-
 	public static DataTypeState createSelectionRadio(ReferenceTypeState referenceTypeState) {
 		return SelectionRadio.createFromJavaType(referenceTypeState);
 	}
 
-
 	public static DataTypeState createSelectionButton(ReferenceTypeState referenceTypeState) {
 		return SelectionButton.createFromJavaType(referenceTypeState);
+	}
+
+	public static DataTypeState createReadonly(String readText) {
+		return ReadOnly.createFromJavaType(readText);
+	}
+
+	public static DataTypeState createRelatedCategory(String relatedCtgText) {
+		return RelatedCategory.createFromJavaType(relatedCtgText);
+	}
+
+	public static DataTypeState createNumbericButton(String readText) {
+		return NumericButton.createFromJavaType(readText);
+	}
+
+	public static DataTypeState createReadonlyButton(String readText) {
+		return ReadOnlyButton.createFromJavaType(readText);
 	}
 }

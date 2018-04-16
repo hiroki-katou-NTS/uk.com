@@ -11,7 +11,10 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayName;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.event.SpecialHolidayEvent;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -42,7 +45,7 @@ public class AddSpecialHolidayCommandHandler extends CommandHandlerWithResult<Ad
 		if (existsBranch) {
 			addMessage(errList, "Msg_3");
 		}
-		
+
 		SpecialHoliday specialHoliday = addSpecialHolidayCommand.toDomain(companyId);
 		// validate Special Holiday
 		specialHoliday.validate();
@@ -62,11 +65,14 @@ public class AddSpecialHolidayCommandHandler extends CommandHandlerWithResult<Ad
 
 		if (errList.isEmpty()) {
 			// add Special Holiday
+
 			specialHolidayRepository.add(specialHoliday);
+
+			specialHoliday.publishEvent(true);
 		}
 
 		return errList;
-	}
+	} 
 
 	/**
 	 * Validate Special Holiday

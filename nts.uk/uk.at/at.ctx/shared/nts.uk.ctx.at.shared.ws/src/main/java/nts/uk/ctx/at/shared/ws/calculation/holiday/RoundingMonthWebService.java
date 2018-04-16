@@ -10,11 +10,21 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.shared.app.command.calculation.holiday.roundingmonth.AddExcoutRoundingCommand;
+import nts.uk.ctx.at.shared.app.command.calculation.holiday.roundingmonth.AddExcoutRoundingCommandHandler;
 import nts.uk.ctx.at.shared.app.command.calculation.holiday.roundingmonth.AddRoundingMonthCommand;
 import nts.uk.ctx.at.shared.app.command.calculation.holiday.roundingmonth.AddRoundingMonthCommandHandler;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.roundingmonth.RoundingMonthDto;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.roundingmonth.RoundingMonthFinder;
+import nts.uk.ctx.at.shared.app.find.calculation.holiday.roundingmonth.TimeRoundingOfExcessOutsideTimeDto;
+import nts.uk.ctx.at.shared.app.find.calculation.holiday.roundingmonth.TimeRoundingOfExcessOutsideTimeFinder;
+import nts.uk.ctx.at.shared.dom.monthly.roundingset.TimeRoundingOfExcessOutsideTime;
 
+/**
+ * Web service for rounding month
+ * @author HoangNDH
+ *
+ */
 @Path("shared/caculation/holiday/rounding")
 @Produces("application/json")
 public class RoundingMonthWebService extends WebService{
@@ -22,6 +32,18 @@ public class RoundingMonthWebService extends WebService{
 	private RoundingMonthFinder finder;
 	@Inject
 	private AddRoundingMonthCommandHandler handler;
+	
+	/**
+	 * Add excout rounding command handler
+	 */
+	@Inject
+	private AddExcoutRoundingCommandHandler excOutHandler;
+	
+	/**
+	 * Time rounding of excess outside finder
+	 */
+	@Inject
+	private TimeRoundingOfExcessOutsideTimeFinder timeExcessFinder;
 	
 	@Path("findByCid")
 	@POST
@@ -39,5 +61,18 @@ public class RoundingMonthWebService extends WebService{
 	@POST
 	public void update(List<AddRoundingMonthCommand> command) {
 		this.handler.handle(command);
+	}
+	
+	
+	@Path("updateExcoutRound")
+	@POST
+	public void updateExcoutRound(AddExcoutRoundingCommand command) {
+		this.excOutHandler.handle(command);
+	}
+	
+	@Path("findExcByCid")
+	@POST
+	public TimeRoundingOfExcessOutsideTimeDto findExcByCid() {
+		return timeExcessFinder.findTimeRounding();
 	}
 }

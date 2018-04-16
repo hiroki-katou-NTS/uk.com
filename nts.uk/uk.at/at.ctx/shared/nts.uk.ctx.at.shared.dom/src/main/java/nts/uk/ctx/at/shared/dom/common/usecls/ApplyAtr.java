@@ -69,4 +69,21 @@ public enum ApplyAtr {
 		// Not found.
 		return null;
 	}
+	
+	/**
+	 * 使用するか判定する
+	 * @return 使用する
+	 */
+	public boolean isUse() {
+		return USE.equals(this);
+	}
+	
+	/**
+	 * 使用しないか判定する
+	 * @return 使用しない
+	 */
+	public boolean isNOT_USE() {
+		return NOT_USE.equals(this);
+	}
+	
 }

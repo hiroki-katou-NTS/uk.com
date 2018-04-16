@@ -11,14 +11,17 @@ import javax.inject.Inject;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.setting.company.request.approvallistsetting.ApprovalListDisplaySetDto;
+import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetDto;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.AppListExtractCondition;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppListInitialRepository;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppListOutPut;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppMasterInfo;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.ApplicationFullOutput;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.CheckColorTime;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.PhaseStatus;
+import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
+import nts.uk.ctx.at.request.dom.application.applist.service.AppListInitialRepository;
+import nts.uk.ctx.at.request.dom.application.applist.service.AppListOutPut;
+import nts.uk.ctx.at.request.dom.application.applist.service.AppMasterInfo;
+import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationFullOutput;
+import nts.uk.ctx.at.request.dom.application.applist.service.CheckColorTime;
+import nts.uk.ctx.at.request.dom.application.applist.service.PhaseStatus;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
@@ -37,6 +40,8 @@ public class ApplicationListFinder {
 	private AppListInitialRepository repoAppListInit;
 	@Inject
 	private RequestSettingRepository repoRequestSet;
+	@Inject
+	private HdAppSetRepository repoHdAppSet;
 	
 	public ApplicationListDto getAppList(AppListExtractConditionDto param){
 		String companyId = AppContexts.user().companyId();
@@ -95,10 +100,13 @@ public class ApplicationListFinder {
 				master.setCheckTimecolor(this.findColorAtr(lstApp.getLstTimeColor(), master.getAppID()));
 			}
 		}
+		//ドメインモデル「休暇申請設定」を取得する (Vacation application setting)- YenNTH
+		Optional<HdAppSet> lstHdAppSet = repoHdAppSet.getAll();
+		HdAppSetDto hdAppSetDto = HdAppSetDto.convertToDto(lstHdAppSet.get());
 		List<AppInfor> lstAppType = this.findListApp(lstApp.getLstMasterInfo());
-		return new ApplicationListDto(param.getStartDate(), param.getEndDate(), displaySet, lstApp.getLstMasterInfo(),lstAppDto,
-				lstApp.getLstAppOt(),lstApp.getLstAppGoBack(), lstApp.getAppStatusCount(), lstApp.getLstAppGroup(), 
-				lstAgent, lstApp.getLstAppHdWork(), lstApp.getLstAppWorkChange(), lstAppType);
+		return new ApplicationListDto(param.getStartDate(), param.getEndDate(), displaySet, lstApp.getLstMasterInfo(),this.sortById(lstAppDto),
+				lstApp.getLstAppOt(),lstApp.getLstAppGoBack(), lstApp.getAppStatusCount(), lstApp.getLstAppGroup(), lstAgent,
+				lstApp.getLstAppHdWork(), lstApp.getLstAppWorkChange(), lstApp.getLstAppAbsence(), lstAppType, hdAppSetDto);
 	}
 	/**
 	 * find status approval
@@ -169,5 +177,16 @@ public class ApplicationListFinder {
 			}
 		}
 		return lstAppType.stream().sorted((x, y) -> x.getAppType()-y.getAppType()).collect(Collectors.toList());
+	}
+	private List<ApplicationDto_New> sortById(List<ApplicationDto_New> lstApp){
+		return lstApp.stream().sorted((a,b) ->{
+			Integer rs = a.getApplicationDate().compareTo(b.getApplicationDate());
+			if (rs == 0) {
+			 return  a.getApplicationType().compareTo(b.getApplicationType());
+			} else {
+			 return rs;
+			}
+		}).collect(Collectors.toList());
+		
 	}
 }

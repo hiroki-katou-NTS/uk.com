@@ -25,6 +25,13 @@ public interface EmpSubstVacationRepository {
 	 * @param setting the setting
 	 */
     void update(EmpSubstVacation setting);
+    
+    /**
+	 * Delete.
+	 *
+	 * @param setting the setting
+	 */
+    void delete(String companyId, String contractTypeCode);
 
 	/**
 	 * Find by id.

@@ -29,5 +29,5 @@ public class CompltLeaveSimMng extends AggregateRoot {
 	/**
 	 * 同期中
 	 */
-	private int syncing;
+	private SyncState syncing;
 }

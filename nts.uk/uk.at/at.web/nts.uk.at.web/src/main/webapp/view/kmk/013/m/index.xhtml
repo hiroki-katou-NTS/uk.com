@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="kmk013.m.start.js" />
+			<com:scriptfile path="kmk013.m.vm.js" />
+			<com:scriptfile path="kmk013.m.service.js" />
+			<com:stylefile path="kmk013.m.main.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<a class="goback"
+					data-bind="ntsLinkButton: { jump: '/view/kmk/013/a/index.xhtml' }"
+					tabindex="1"> #{i18n.getText('KMK013_204')} </a>
+				<button class="proceed save" tabindex="2" data-bind="click:saveData">#{i18n.getText('KMK013_205')}</button>
+			</div>
+			<div id="contents-area">
+			<div id="total">
+				<table>
+					<tbody>
+						<tr>
+							<td>
+								<div id="form-lb" style="margin-left: 20px" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_351')}</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+   								<div class="selectionUpper" tabindex="3"
+								data-bind="ntsRadioBoxGroup: {
+									name:'#{i18n.getText('KMK013_352')}',
+									options: upperLimitOption,
+									optionsValue: 'id',
+									optionsText: 'name',
+									value:upperLimitChoice}"></div>
+							</td>
+						</tr>
+						
+						<tr>
+							<td>
+								<div id="form-lb" style="margin-left: 20px" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_356')}</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+   								<div class="selectionConstraint" tabindex="4"
+								data-bind="ntsRadioBoxGroup: {
+									name:'#{i18n.getText('KMK013_357')}',
+									options: calcMethodOption,
+									optionsValue: 'id',
+									optionsText: 'name',
+									value:calcMethodChoice}"></div>
+							</td>
+						</tr>
+						
+						<tr>
+							<td>
+								<div id="form-lb" style="margin-left: 20px" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK013_361')}</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+   								<button class="child-lb" tabindex="5" data-bind="click: openScreenO">#{i18n.getText('KMK013_362')}</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

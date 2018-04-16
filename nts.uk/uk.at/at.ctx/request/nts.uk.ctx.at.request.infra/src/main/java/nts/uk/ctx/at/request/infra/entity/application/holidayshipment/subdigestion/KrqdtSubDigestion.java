@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -33,8 +33,13 @@ public class KrqdtSubDigestion extends UkJpaEntity implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
-	private KrqdtSubDigestionPK pk;
+	/**
+	 * 振休申請ID
+	 */
+	@Id
+	@Basic(optional = false)
+	@Column(name = "ABSENCE_LEAVE_APP_ID")
+	private String absenceLeaveAppID;
 
 	/**
 	 * 使用日数
@@ -60,13 +65,20 @@ public class KrqdtSubDigestion extends UkJpaEntity implements Serializable {
 	/**
 	 * 振休発生日
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "OCCURRENCE_DATE")
 	private GeneralDate occurrenceDate;
 
+	/**
+	 * 休出状態
+	 */
+	@Basic(optional = false)
+	@Column(name = "UNKNOWN_DATE_ATR")
+	private int unknownDate;
+
 	@Override
 	protected Object getKey() {
-		return pk;
+		return absenceLeaveAppID;
 	}
 
 }

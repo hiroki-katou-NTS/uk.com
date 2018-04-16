@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
@@ -20,11 +20,16 @@ import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySetGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -32,8 +37,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class ScheTimeReflectImpl implements ScheTimeReflect{
 
-	@Inject
-	private WorkTimeTypeScheReflect ScheReflect;
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeRepo;
 	@Inject
@@ -44,62 +47,108 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDaily;
 	@Inject
 	private WorkTimeSettingRepository workTimeRepository;
-	//@Inject
-	//private WorkTimezoneLateEarlySetGetMemento workMemento;
 	@Inject
-	private CommonProcessCheckService commonService;
+	private WorkTimeIsFluidWork workTimeisFluidWork;
+	@Inject
+	private FlexWorkSettingRepository flexWorkRepository;
 	@Override
 	public void reflectScheTime(GobackReflectParameter para, boolean timeTypeScheReflect) {
-		//予定勤務種類による勤種・就時を反映できるかチェックする
-		if(!ScheReflect.checkReflectWorkTimeType(para)) {
+		//予定時刻反映できるかチェックする
+		if(!this.checkScheReflect(para.getGobackData().getWorkTimeCode(), para.isScheReflectAtr(), para.getScheAndRecordSameChangeFlg())) {
 			return;
 		}
 		//(開始時刻)反映する時刻を求める
-		TimeOfDayReflectOutput startTimeReflect = this.getTimeOfDayReflect(para, timeTypeScheReflect, ApplyTimeAtr.START);
+		TimeOfDayReflectOutput startTimeReflect = this.getTimeOfDayReflect(timeTypeScheReflect, 
+				para.getGobackData().getStartTime1(), 
+				ApplyTimeAtr.START, 
+				para.getGobackData().getWorkTimeCode(), 
+				para.getScheTimeReflectAtr());
 		if(startTimeReflect.isReflectFlg()) {
 			//予定開始時刻の反映
-			TimeReflectParameter timeRef = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), para.getGobackData().getStartTime1(), 1, true);
+			TimeReflectParameter timeRef = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), startTimeReflect.getTimeOfDay(), 1, true);
 			scheUpdateService.updateStartTimeOfReflect(timeRef);
 		}
 		//(終了時刻)反映する時刻を求める
-		TimeOfDayReflectOutput endTimeReflect = this.getTimeOfDayReflect(para, timeTypeScheReflect, ApplyTimeAtr.END);
+		TimeOfDayReflectOutput endTimeReflect = this.getTimeOfDayReflect(timeTypeScheReflect, 
+				para.getGobackData().getEndTime1(), 
+				ApplyTimeAtr.END, 
+				para.getGobackData().getWorkTimeCode(), 
+				para.getScheTimeReflectAtr());
 		if(endTimeReflect.isReflectFlg()) {
-			TimeReflectParameter endTime = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), para.getGobackData().getEndTime1(), 1, false);
+			TimeReflectParameter endTime = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), endTimeReflect.getTimeOfDay(), 1, false);
+			scheUpdateService.updateStartTimeOfReflect(endTime);
+		}
+		//(開始時刻2)反映する時刻を求める
+		TimeOfDayReflectOutput startTime2Reflect = this.getTimeOfDayReflect(timeTypeScheReflect, 
+				para.getGobackData().getStartTime2(), 
+				ApplyTimeAtr.START2, 
+				para.getGobackData().getWorkTimeCode(), 
+				para.getScheTimeReflectAtr());
+		if(startTime2Reflect.isReflectFlg()) {
+			//予定開始時刻の反映
+			TimeReflectParameter timeRef = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), startTime2Reflect.getTimeOfDay(), 2, true);
+			scheUpdateService.updateStartTimeOfReflect(timeRef);
+		}
+		//(終了時刻2)反映する時刻を求める
+		TimeOfDayReflectOutput endTime2Reflect = this.getTimeOfDayReflect(timeTypeScheReflect, 
+				para.getGobackData().getEndTime2(), 
+				ApplyTimeAtr.END2, 
+				para.getGobackData().getWorkTimeCode(), 
+				para.getScheTimeReflectAtr());
+		if(endTime2Reflect.isReflectFlg()) {
+			TimeReflectParameter endTime = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), endTime2Reflect.getTimeOfDay(), 2, false);
 			scheUpdateService.updateStartTimeOfReflect(endTime);
 		}
 	}
 	@Override
-	public TimeOfDayReflectOutput getTimeOfDayReflect(GobackReflectParameter para, 
-			boolean timeTypeScheReflect,
-			ApplyTimeAtr applyTimeAtr) {
+	public TimeOfDayReflectOutput getTimeOfDayReflect(boolean timeTypeScheReflect, 
+			Integer timeData,
+			ApplyTimeAtr applyTimeAtr,
+			String workTimeCode,
+			ScheTimeReflectAtr scheTimeReflectAtr) {
 		//反映するフラグ=false、反映する時刻=0（初期化）
 		TimeOfDayReflectOutput reflectOutput = new TimeOfDayReflectOutput(false, 0);
 		//INPUT．予定時刻反映区分をチェックする
-		if(para.getScheTimeReflectAtr() == ScheTimeReflectAtr.APPTIME) {
+		if(scheTimeReflectAtr == ScheTimeReflectAtr.APPTIME) {
 			//INPUT．申請する時刻をチェックする
-			if(applyTimeAtr == ApplyTimeAtr.START
-					&& para.getGobackData().getStartTime1() != null) {
+			if(timeData > 0) {
 				reflectOutput.setReflectFlg(true);
-				reflectOutput.setTimeOfDay(para.getGobackData().getStartTime1());
-			} else if (applyTimeAtr == ApplyTimeAtr.END
-					&& para.getGobackData().getEndTime1() != null) {
-				reflectOutput.setReflectFlg(true);
-				reflectOutput.setTimeOfDay(para.getGobackData().getEndTime1());
+				reflectOutput.setTimeOfDay(timeData);
+				return reflectOutput;	
+			} else {
+				return reflectOutput;
 			}
-			return reflectOutput;
+			
 		} else {
 			//INPUT．勤種・就時の反映できるフラグをチェックする
 			if(timeTypeScheReflect) {
 				//ドメインモデル「就業時間帯の設定」を取得する
 				String companyId = AppContexts.user().companyId();
-				Optional<PredetemineTimeSetting> optFindByCode = predetemineTimeRepo.findByWorkTimeCode(companyId, para.getGobackData().getWorkTimeCode());
+				Optional<PredetemineTimeSetting> optFindByCode = predetemineTimeRepo.findByWorkTimeCode(companyId, workTimeCode);
 				if(!optFindByCode.isPresent()) {
 					return reflectOutput;
 				}
 				PredetemineTimeSetting workTimeData = optFindByCode.get();
-				TimezoneUse timeZone = workTimeData.getPrescribedTimezoneSetting().getLstTimezone()
-						.stream()
-						.filter(x -> x.getWorkNo() == 1).collect(Collectors.toList()).get(0);
+				TimezoneUse timeZone;
+				if(applyTimeAtr == ApplyTimeAtr.START
+						|| applyTimeAtr == ApplyTimeAtr.END) {
+					List<TimezoneUse> lstTimeZone = workTimeData.getPrescribedTimezoneSetting().getLstTimezone()
+					.stream()
+					.filter(x -> x.getWorkNo() == 1).collect(Collectors.toList());
+					if(lstTimeZone.isEmpty()) {
+						return reflectOutput;
+					}
+					timeZone = lstTimeZone.get(0);
+				} else {
+					List<TimezoneUse> lstTimeZone = workTimeData.getPrescribedTimezoneSetting().getLstTimezone()
+							.stream()
+							.filter(x -> x.getWorkNo() == 2).collect(Collectors.toList());
+							if(lstTimeZone.isEmpty()) {
+								return reflectOutput;
+							}
+							timeZone = lstTimeZone.get(0);
+				}
+				
 				if(timeZone.getUseAtr() == UseSetting.USE) {
 					if(applyTimeAtr == ApplyTimeAtr.START) {
 						reflectOutput.setTimeOfDay(timeZone.getStart().v());						
@@ -127,7 +176,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 				return;
 			} 
 			WorkInfoOfDailyPerformance workData = optWorkData.get();
-			tmpWorkTimeCode = workData.getRecordWorkInformation().getWorkTimeCode().v();
+			tmpWorkTimeCode = workData.getRecordInfo().getWorkTimeCode().v();
 		}
 		//出勤時刻を反映できるかチェックする
 		if(this.checkAttendenceReflect(para, 1, true)) {
@@ -135,7 +184,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 			Integer timeLate = this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getStartTime1(), 1, true);
 			//開始時刻を反映する 
 			TimeReflectParameter timeData = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), timeLate, 1, true);
-			scheUpdateService.updateReflectStartEndTime(timeData, commonService.lstWorkItem());			
+			scheUpdateService.updateReflectStartEndTime(timeData);			
 		}
 		//退勤時刻を反映できるか
 		if(this.checkAttendenceReflect(para, 1, false)) {
@@ -143,20 +192,34 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 			Integer timeLeave = this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getEndTime1(), 1, false);
 			//終了時刻の反映
 			TimeReflectParameter timeData = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), timeLeave, 1, false);
-			scheUpdateService.updateReflectStartEndTime(timeData, commonService.lstWorkItem());
+			scheUpdateService.updateReflectStartEndTime(timeData);
 		}
-		//TODO 出勤時刻２を反映できるか, 退勤時刻２を反映できるか
+		//出勤時刻２を反映できるか
+		if(this.checkAttendenceReflect(para, 2, true)) {
+			//ジャスト遅刻により時刻を編集する
+			Integer timeLate2 = this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getStartTime2(), 2, true);
+			//開始時刻を反映する 
+			TimeReflectParameter timeData = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), timeLate2, 2, true);
+			scheUpdateService.updateReflectStartEndTime(timeData);			
+		}
+		//退勤時刻２を反映できるか
+		if(this.checkAttendenceReflect(para, 2, false)) {
+			//ジャスト早退により時刻を編集する
+			Integer timeLeave2 = this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getEndTime2(), 2, false);
+			//終了時刻の反映
+			TimeReflectParameter timeData = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), timeLeave2, 2, false);
+			scheUpdateService.updateReflectStartEndTime(timeData);
+		}
 	}
 	@Override
 	public boolean checkAttendenceReflect(GobackReflectParameter para, Integer frameNo, boolean isPre) {
 		//INPUT．打刻優先区分をチェックする
 		if(para.getPriorStampAtr() == PriorStampAtr.GOBACKPRIOR) {
 			//INPUT．申請する時刻に値があるかチェックする
-			//chi lam voi frameNo == 1
-			if(isPre && frameNo == 1 && para.getGobackData().getStartTime1() != null
-					|| isPre && frameNo == 2 && para.getGobackData().getStartTime2() != null
-					|| !isPre && frameNo == 1 && para.getGobackData().getEndTime1() != null
-					|| !isPre && frameNo == 2 && para.getGobackData().getStartTime2() != null) {
+			if(isPre && frameNo == 1 && para.getGobackData().getStartTime1() != null && para.getGobackData().getStartTime1() > 0
+					|| isPre && frameNo == 2 && para.getGobackData().getStartTime2() != null && para.getGobackData().getStartTime2() > 0
+					|| !isPre && frameNo == 1 && para.getGobackData().getEndTime1() != null && para.getGobackData().getEndTime1() > 0
+					|| !isPre && frameNo == 2 && para.getGobackData().getEndTime2() != null && para.getGobackData().getEndTime2() > 0) {
 				return true;
 			} else {
 				return false;
@@ -206,35 +269,60 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 	@Override
 	public Integer justTimeLateLeave(String workTimeCode, Integer timeData, Integer frameNo, boolean isPre) {
 		String companyId = AppContexts.user().companyId();
-		//ドメインモデル「就業時間帯の設定」を取得する
-		Optional<WorkTimeSetting> findByCode = workTimeRepository.findByCode(companyId, workTimeCode);
-		if(!findByCode.isPresent()) {
+		
+		//時間丁度の打刻は遅刻・早退とするをチェックする		
+		Optional<FlexWorkSetting> optFlexWorkSetting = flexWorkRepository.find(companyId, workTimeCode);
+		if(!optFlexWorkSetting.isPresent()) {
 			return timeData;
 		}
-		
-		//時間丁度の打刻は遅刻・早退とするをチェックする
-		WorkTimeSetting workTimeData = findByCode.get();
-		//TODO can xem lai
-		/*List<OtherEmTimezoneLateEarlySet> lstEmTimezon = workMemento.getOtherClassSet();
-		OtherEmTimezoneLateEarlySet emTimezon;
-		if(isPre) {
-			emTimezon = lstEmTimezon.stream()
-					.filter(x -> x.getLateEarlyAtr() == LateEarlyAtr.LATE && x.getGraceTimeSet().getGraceTime().v() == frameNo).collect(Collectors.toList()).get(0);//dieu kien khong dung
-			
-		} else {
-			emTimezon = lstEmTimezon.stream()
-					.filter(x -> x.getLateEarlyAtr() == LateEarlyAtr.EARLY && x.getGraceTimeSet().getGraceTime().v() == frameNo).collect(Collectors.toList()).get(0);//dieu kien khong dung
-
+		FlexWorkSetting flexWorkSetting = optFlexWorkSetting.get();
+		WorkTimezoneCommonSet commonSetting = flexWorkSetting.getCommonSetting();
+		WorkTimezoneLateEarlySet lateEarlySet = commonSetting.getLateEarlySet();
+		List<OtherEmTimezoneLateEarlySet> lstOtherClassSets = lateEarlySet.getOtherClassSets();
+		if(lstOtherClassSets.isEmpty()) {
+			return timeData;
 		}
-		if(emTimezon.isStampExactlyTimeIsLateEarly()) {
+		OtherEmTimezoneLateEarlySet emTimezon = null;
+		if(isPre) {
+			List<OtherEmTimezoneLateEarlySet> temp = lstOtherClassSets.stream()
+					.filter(x -> x.getLateEarlyAtr() == LateEarlyAtr.LATE)
+					.collect(Collectors.toList());
+			if(!temp.isEmpty()) {
+				emTimezon = temp.get(0);
+			}
+		} else {
+			List<OtherEmTimezoneLateEarlySet> temp = lstOtherClassSets.stream()
+					.filter(x -> x.getLateEarlyAtr() == LateEarlyAtr.EARLY)
+					.collect(Collectors.toList());
+			if(!temp.isEmpty()) {
+				emTimezon = temp.get(0);
+			}
+		}
+		if(emTimezon != null && emTimezon.isStampExactlyTimeIsLateEarly()) {
 			if(isPre) {
 				return timeData - 1;				
 			} else {
 				return timeData + 1;
 			}
 
-		}*/				
+		}
 		return timeData;
+	}
+	@Override
+	public boolean checkScheReflect(String worktimeCode, boolean scheReflectAtr, ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg) {
+		//INPUT．予定反映区分をチェックする
+		//INPUT．予定と実績を同じに変更する区分をチェックする
+		if(scheReflectAtr
+				|| scheAndRecordSameChangeFlg == ScheAndRecordSameChangeFlg.ALWAY) {
+			return true;
+		}
+		//INPUT．予定と実績を同じに変更する区分が「流動勤務のみ自動変更する」
+		if(scheAndRecordSameChangeFlg == ScheAndRecordSameChangeFlg.FLUIDWORK) {
+			//流動勤務かどうかの判断処理
+			return workTimeisFluidWork.checkWorkTimeIsFluidWork(worktimeCode);
+		}
+		
+		return false;
 	}
 
 }

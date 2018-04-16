@@ -9,5 +9,5 @@ import lombok.Value;
  */
 @Value
 public class ExcessOverTimeWorkMidNightTime {
-	private TimeWithCalculation time;
+	private TimeDivergenceWithCalculation time;
 }

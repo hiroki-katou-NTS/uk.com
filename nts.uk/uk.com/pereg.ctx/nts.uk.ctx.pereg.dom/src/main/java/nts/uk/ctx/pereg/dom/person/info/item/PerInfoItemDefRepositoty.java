@@ -8,13 +8,14 @@ import nts.uk.ctx.pereg.dom.person.info.order.PerInfoItemDefOrder;
 public interface PerInfoItemDefRepositoty {
 
 	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCategoryId, String contractCd);
-	
-	List<PersonInfoItemDefinition> getAllItemByCtgWithAuth(String perInfoCategoryId, String contractCd, String roleId, boolean isSelfRef);
+
+	List<PersonInfoItemDefinition> getAllItemByCtgWithAuth(String perInfoCategoryId, String contractCd, String roleId,
+			boolean isSelfRef);
 
 	Optional<PersonInfoItemDefinition> getPerInfoItemDefById(String perInfoItemDefId, String contractCd);
 
 	List<PersonInfoItemDefinition> getPerInfoItemDefByListId(List<String> listItemDefId, String contractCd);
-	
+
 	List<PersonInfoItemDefinition> getPerInfoItemDefByListIdv2(List<String> listItemDefId, String contractCd);
 
 	List<String> getPerInfoItemsName(String perInfoCtgId, String contractCd);
@@ -33,7 +34,7 @@ public interface PerInfoItemDefRepositoty {
 
 	List<String> getRequiredIds(String contractCd, String companyId);
 
-	void removePerInfoItemDefRoot(List<String> perInfoCtgIds, String categoryCd, String contractCd, String itemCode);
+	void removePerInfoItemDef(List<String> perInfoCtgIds, String categoryCd, String contractCd, String itemCode);
 
 	boolean checkItemNameIsUnique(String perInfoCtgId, String newItemName, String perInfoItemDefId);
 
@@ -52,22 +53,22 @@ public interface PerInfoItemDefRepositoty {
 
 	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryIdWithoutSetItem(String perInfoCtgId,
 			String contractCd);
-	
-	List<PersonInfoItemDefinitionSimple> getRequiredItemFromCtgCdLst(String  contractCd,String companyId, List<String> CtgCodeList);
+
+	List<PersonInfoItemDefinitionSimple> getRequiredItemFromCtgCdLst(String contractCd, String companyId,
+			List<String> CtgCodeList);
 
 	// Sonnlb Code
 
-	// vinhpx start
 	int countPerInfoItemDefInCategory(String perInfoCategoryId, String companyId);
+	
+	int countPerInfoItemDefInCategoryNo812(String perInfoCategoryId, String companyId);
 
 	List<PersonInfoItemDefinition> getPerInfoItemByCtgIdAndOrder(String perInfoCategoryId, String companyId,
 			String contractCd);
 
-
-	// vinhpx end
-	
 	/**
-	 * getNotFixedPerInfoItemDefByCategoryId 
+	 * getNotFixedPerInfoItemDefByCategoryId
+	 * 
 	 * @param perInfoCategoryId
 	 * @param contractCd
 	 * @return
@@ -76,19 +77,34 @@ public interface PerInfoItemDefRepositoty {
 
 	List<PersonInfoItemDefinition> getPerInfoItemByCtgId(String personInfoCategoryId, String companyId,
 			String contractCode);
+
 	/**
-	 * @author lanlt
-	 * get All Item selection thuộc kiểu datatype = 6 & thuộc kiểu code
-	 * dùng cho màn hình cps016
+	 * @author lanlt get All Item selection thuộc kiểu datatype = 6 & thuộc kiểu
+	 *         code dùng cho màn hình cps016
 	 */
 	boolean checkExistedSelectionItemId(String selectionItemId);
-	
+
 	/**
 	 * 
 	 */
 	List<PersonInfoItemDefinition> getAllItemUsedByCtgId(List<String> ctgId);
-	
+
+	/**
+	 * @author lanlt \get All Item Required of a company
+	 * @param contractCd
+	 * @param companyId
+	 * @return
+	 */
 	List<String> getAllRequiredIds(String contractCd, String companyId);
 
+	/**
+	 * @author lanlt
+	 * @param ctgId
+	 * @return
+	 */
+	List<String> getAllRequiredIdsByCtgId(String contract, String ctgId);
 	
+	List<PersonInfoItemDefinition> getPerInfoItemByCtgCd(String ctgCd, String companyId);
+	
+	List<String> getAllItemIdsByCtgCode(String cid, String ctgCode);
 }

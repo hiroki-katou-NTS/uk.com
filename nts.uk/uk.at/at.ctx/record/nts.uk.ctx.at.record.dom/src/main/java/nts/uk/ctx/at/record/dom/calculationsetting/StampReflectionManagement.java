@@ -1,6 +1,8 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.record.dom.calculationsetting;
-
-import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
@@ -11,61 +13,79 @@ import nts.uk.ctx.at.record.dom.calculationsetting.enums.AutoStampReflectionClas
 import nts.uk.ctx.at.record.dom.calculationsetting.enums.BreakSwitchClass;
 import nts.uk.ctx.at.record.dom.calculationsetting.enums.GoBackOutCorrectionClass;
 import nts.uk.ctx.at.record.dom.calculationsetting.enums.ReflectWorkingTimeClass;
-import nts.uk.ctx.at.record.dom.stamp.GoOutReason;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 
 /**
- * 
- * @author nampt 打刻反映管理 - root
- *
+ * The Class StampReflectionManagement.
+ * 打刻反映管理
  */
 @Getter
 public class StampReflectionManagement extends AggregateRoot {
 
+	/*会社ID*/
 	private String companyId;
 
+	/*打刻反映管理     休出切替区分*/
 	private BreakSwitchClass breakSwitchClass;
 
+	/*打刻反映管理      自動打刻反映区分*/
 	private AutoStampReflectionClass autoStampReflectionClass;
 
+	/*打刻反映管理      実打刻と申請の優先区分*/
 	private ActualStampOfPriorityClass actualStampOfPriorityClass;
 
+	/*打刻反映管理      就業時間帯反映区分*/
 	private ReflectWorkingTimeClass reflectWorkingTimeClass;
 
+	/*打刻反映管理       外出補正区分*/
 	private GoBackOutCorrectionClass goBackOutCorrectionClass;
 
-	private UseAtr managementOfEntrance;
-
+	/*打刻反映管理       未来日区分*/
 	private AutoStampForFutureDayClass autoStampForFutureDayClass;
 	
-	private GoOutReason outingAtr;
-	
-	private BigDecimal maxUseCount;
 
-
-
+	/**
+	 * Creates the java type.
+	 *
+	 * @param companyId the company id
+	 * @param breakSwitchClass the break switch class
+	 * @param autoStampReflectionClass the auto stamp reflection class
+	 * @param actualStampOfPriorityClass the actual stamp of priority class
+	 * @param reflectWorkingTimeClass the reflect working time class
+	 * @param goBackOutCorrectionClass the go back out correction class
+	 * @param autoStampForFutureDayClass the auto stamp for future day class
+	 * @return the stamp reflection management
+	 */
 	public static StampReflectionManagement createJavaType(String companyId, int breakSwitchClass,
 			int autoStampReflectionClass, int actualStampOfPriorityClass,
 			int reflectWorkingTimeClass, int goBackOutCorrectionClass,
-			int managementOfEntrance, int autoStampForFutureDayClass, int outingAtr, BigDecimal maxUseCount){
+			int autoStampForFutureDayClass
+			){
 		return new StampReflectionManagement(companyId,
 				EnumAdaptor.valueOf(breakSwitchClass, BreakSwitchClass.class),
 				EnumAdaptor.valueOf(autoStampReflectionClass, AutoStampReflectionClass.class),
 				EnumAdaptor.valueOf(actualStampOfPriorityClass, ActualStampOfPriorityClass.class),
 				EnumAdaptor.valueOf(reflectWorkingTimeClass, ReflectWorkingTimeClass.class),
 				EnumAdaptor.valueOf(goBackOutCorrectionClass, GoBackOutCorrectionClass.class),
-				EnumAdaptor.valueOf(managementOfEntrance, UseAtr.class),
-				EnumAdaptor.valueOf(autoStampForFutureDayClass, AutoStampForFutureDayClass.class),
-				EnumAdaptor.valueOf(outingAtr, GoOutReason.class), maxUseCount);
+				EnumAdaptor.valueOf(autoStampForFutureDayClass, AutoStampForFutureDayClass.class)
+				);
 	}
 
-
-
+	/**
+	 * Instantiates a new stamp reflection management.
+	 *
+	 * @param companyId the company id
+	 * @param breakSwitchClass the break switch class
+	 * @param autoStampReflectionClass the auto stamp reflection class
+	 * @param actualStampOfPriorityClass the actual stamp of priority class
+	 * @param reflectWorkingTimeClass the reflect working time class
+	 * @param goBackOutCorrectionClass the go back out correction class
+	 * @param autoStampForFutureDayClass the auto stamp for future day class
+	 */
 	public StampReflectionManagement(String companyId, BreakSwitchClass breakSwitchClass,
 			AutoStampReflectionClass autoStampReflectionClass, ActualStampOfPriorityClass actualStampOfPriorityClass,
 			ReflectWorkingTimeClass reflectWorkingTimeClass, GoBackOutCorrectionClass goBackOutCorrectionClass,
-			UseAtr managementOfEntrance, AutoStampForFutureDayClass autoStampForFutureDayClass, GoOutReason outingAtr,
-			BigDecimal maxUseCount) {
+			AutoStampForFutureDayClass autoStampForFutureDayClass
+			) {
 		super();
 		this.companyId = companyId;
 		this.breakSwitchClass = breakSwitchClass;
@@ -73,10 +93,7 @@ public class StampReflectionManagement extends AggregateRoot {
 		this.actualStampOfPriorityClass = actualStampOfPriorityClass;
 		this.reflectWorkingTimeClass = reflectWorkingTimeClass;
 		this.goBackOutCorrectionClass = goBackOutCorrectionClass;
-		this.managementOfEntrance = managementOfEntrance;
 		this.autoStampForFutureDayClass = autoStampForFutureDayClass;
-		this.outingAtr = outingAtr;
-		this.maxUseCount = maxUseCount;
 	}
 	
 }

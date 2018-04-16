@@ -7,12 +7,12 @@ package nts.uk.ctx.sys.gateway.infra.repository.singlesignon;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -21,8 +21,10 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccount;
-import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccountRepository;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccount;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountGetMemento;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountInfo;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtWindowAcc;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtWindowAccPK;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtWindowAccPK_;
@@ -33,8 +35,9 @@ import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtWindowAcc_;
  */
 @Stateless
 @Transactional
-public class JpaWindowAccountRepository extends JpaRepository implements WindowAccountRepository {
-	
+public class JpaWindowAccountRepository extends JpaRepository implements WindowsAccountRepository {
+
+	/** The get by list userids. */
 	private final String GET_BY_LIST_USERIDS = "SELECT w FROM SgwmtWindowAcc w "
 			+ " where w.sgwmtWindowAccPK.userId IN :lstUserId";
 
@@ -45,7 +48,7 @@ public class JpaWindowAccountRepository extends JpaRepository implements WindowA
 	 * findByUserIdAndUseAtr(java.lang.String, java.lang.Integer)
 	 */
 	@Override
-	public List<WindowAccount> findListWindowAccountByUserId(String userId) {
+	public Optional<WindowsAccount> findListWindowAccountByUserId(String userId) {
 
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
@@ -58,15 +61,23 @@ public class JpaWindowAccountRepository extends JpaRepository implements WindowA
 
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
-		predicateList.add(bd.equal(root.get(SgwmtWindowAcc_.sgwmtWindowAccPK).get(SgwmtWindowAccPK_.userId), userId));
+		predicateList.add(bd.equal(
+				root.get(SgwmtWindowAcc_.sgwmtWindowAccPK).get(SgwmtWindowAccPK_.userId), userId));
 
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		// Create Query
-		TypedQuery<SgwmtWindowAcc> query = em.createQuery(cq);
+		List<SgwmtWindowAcc> result = em.createQuery(cq).getResultList();
 
-		return query.getResultList().stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
+		if (result.isEmpty()) {
+			return Optional.empty();
+		} else {
+			return Optional.of(this.toWindowsAccountDomain(
+					result.stream().findFirst().get().getSgwmtWindowAccPK().getUserId(),
+					result.stream().map(item -> this.toAccInfoDomain(item))
+							.collect(Collectors.toList())));
+		}
 
 	}
 
@@ -88,6 +99,12 @@ public class JpaWindowAccountRepository extends JpaRepository implements WindowA
 		}
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param windowAccount
+	 *            the window account
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -96,11 +113,10 @@ public class JpaWindowAccountRepository extends JpaRepository implements WindowA
 	 * uk.ctx.sys.gateway.dom.singlesignon.WindowAccount)
 	 */
 	@Override
-	public void add(WindowAccount windowAccount) {
+	public void add(String userId, WindowsAccountInfo windowAccount) {
 		SgwmtWindowAcc entity = new SgwmtWindowAcc();
-		windowAccount.saveToMemento(new JpaWindowAccountSetMemento(entity));
+		windowAccount.saveToMemento(new JpaWindowAccountInfoSetMemento(userId, entity));
 		this.commandProxy().insert(entity);
-
 	}
 
 	/*
@@ -111,7 +127,7 @@ public class JpaWindowAccountRepository extends JpaRepository implements WindowA
 	 * java.lang.String)
 	 */
 	@Override
-	public Optional<WindowAccount> findbyUserNameAndHostName(String userName, String hostName) {
+	public Optional<WindowsAccount> findbyUserNameAndHostName(String userName, String hostName) {
 
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
@@ -124,67 +140,150 @@ public class JpaWindowAccountRepository extends JpaRepository implements WindowA
 
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
-		predicateList
-				.add(bd.equal(root.get(SgwmtWindowAcc_.userName), userName));
-		predicateList
-				.add(bd.equal(root.get(SgwmtWindowAcc_.hostName), hostName));
-
-		// Set Where clause to SQL Query
-		cq.where(predicateList.toArray(new Predicate[] {}));
-
-		// Create Query		
-		List<SgwmtWindowAcc> result = em.createQuery(cq).getResultList();
-		
-		if (result.isEmpty()) {
-			return Optional.empty();
-		} else {
-			return Optional.of(this.toDomain(result.get(0)));
-		}
-
-	}
-
-	@Override
-	public List<WindowAccount> findByUserId(String userId) {
-		// Get entity manager
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder bd = em.getCriteriaBuilder();
-		CriteriaQuery<SgwmtWindowAcc> cq = bd.createQuery(SgwmtWindowAcc.class);
-
-		// Root
-		Root<SgwmtWindowAcc> root = cq.from(SgwmtWindowAcc.class);
-		cq.select(root);
-
-		// Predicate where clause
-		List<Predicate> predicateList = new ArrayList<>();
-		predicateList.add(bd.equal(root.get(SgwmtWindowAcc_.sgwmtWindowAccPK).get(SgwmtWindowAccPK_.userId), userId));
+		predicateList.add(bd.equal(root.get(SgwmtWindowAcc_.userName), userName));
+		predicateList.add(bd.equal(root.get(SgwmtWindowAcc_.hostName), hostName));
 
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		// Create Query
-		TypedQuery<SgwmtWindowAcc> query = em.createQuery(cq);
-		
-		return query.getResultList().stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
+		List<SgwmtWindowAcc> result = em.createQuery(cq).getResultList();
+
+		if (result.isEmpty()) {
+			return Optional.empty();
+		} else {
+			return Optional.of(this.toWindowsAccountDomain(
+					result.stream().findFirst().get().getSgwmtWindowAccPK().getUserId(),
+					result.stream().map(item -> this.toAccInfoDomain(item))
+							.collect(Collectors.toList())));
+		}
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountRepository#
+	 * findByUserId(java.lang.String)
+	 */
+	@Override
+	public Optional<WindowsAccount> findByUserId(String userId) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder bd = em.getCriteriaBuilder();
+		CriteriaQuery<SgwmtWindowAcc> cq = bd.createQuery(SgwmtWindowAcc.class);
+
+		// Root
+		Root<SgwmtWindowAcc> root = cq.from(SgwmtWindowAcc.class);
+		cq.select(root);
+
+		// Predicate where clause
+		List<Predicate> predicateList = new ArrayList<>();
+		predicateList.add(bd.equal(
+				root.get(SgwmtWindowAcc_.sgwmtWindowAccPK).get(SgwmtWindowAccPK_.userId), userId));
+
+		// Set Where clause to SQL Query
+		cq.where(predicateList.toArray(new Predicate[] {}));
+
+		// Create Query
+		List<SgwmtWindowAcc> result = em.createQuery(cq).getResultList();
+
+		if (result.isEmpty()) {
+			return Optional.empty();
+		} else {
+			return Optional.of(this.toWindowsAccountDomain(
+					result.stream().findFirst().get().getSgwmtWindowAccPK().getUserId(),
+					result.stream().map(item -> this.toAccInfoDomain(item))
+							.collect(Collectors.toList())));
+		}
 	}
 
 	/**
-	 * To domain.
+	 * To windows account domain.
 	 *
 	 * @param entity
 	 *            the entity
-	 * @return the window account
+	 * @return the windows account
 	 */
-	private WindowAccount toDomain(SgwmtWindowAcc entity) {
-		return new WindowAccount(new JpaWindowAccountGetMemento(entity));
+	private WindowsAccount toWindowsAccountDomain(String userId,
+			List<WindowsAccountInfo> windowsAccountInfos) {
+		return new WindowsAccount(new JpaWindowsAccountGetMemento(userId, windowsAccountInfos));
+	}
 
-	}	
+	/**
+	 * The Class JpaWindowsAccountGetMemento.
+	 */
+	private class JpaWindowsAccountGetMemento implements WindowsAccountGetMemento {
 
+		/** The user id. */
+		private String userId;
+
+		/** The windows account infos. */
+		private List<WindowsAccountInfo> windowsAccountInfos;
+
+		/**
+		 * Instantiates a new jpa windows account get memento.
+		 *
+		 * @param userId
+		 *            the user id
+		 * @param windowsAccountInfos
+		 *            the windows account infos
+		 */
+		public JpaWindowsAccountGetMemento(String userId,
+				List<WindowsAccountInfo> windowsAccountInfos) {
+			this.userId = userId;
+			this.windowsAccountInfos = windowsAccountInfos;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountGetMemento#
+		 * getUserId()
+		 */
+		@Override
+		public String getUserId() {
+			return this.userId;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountGetMemento#
+		 * getAccountInfos()
+		 */
+		@Override
+		public List<WindowsAccountInfo> getAccountInfos() {
+			return this.windowsAccountInfos;
+		}
+	}
+
+	/**
+	 * To acc info domain.
+	 *
+	 * @param entity
+	 *            the entity
+	 * @return the windows account info
+	 */
+	private WindowsAccountInfo toAccInfoDomain(SgwmtWindowAcc entity) {
+		return new WindowsAccountInfo(new JpaWindowAccountInfoGetMemento(entity));
+	}
+
+	/**
+	 * Update.
+	 *
+	 * @param winAccCommand
+	 *            the win acc command
+	 * @param winAccDb
+	 *            the win acc db
+	 */
 	@Override
-	public void update(WindowAccount winAccCommand, WindowAccount winAccDb) {
+	public void update(String userId, WindowsAccountInfo winAccCommand,
+			WindowsAccountInfo winAccDb) {
 		SgwmtWindowAcc entity = this.queryProxy()
-				.find(new SgwmtWindowAccPK(winAccDb.getUserId(), winAccDb.getNo()),
-						SgwmtWindowAcc.class)
-				.get();
+				.find(new SgwmtWindowAccPK(userId, winAccDb.getNo()), SgwmtWindowAcc.class).get();
 
 		// set data
 		entity.setHostName(winAccCommand.getHostName().v());
@@ -195,8 +294,14 @@ public class JpaWindowAccountRepository extends JpaRepository implements WindowA
 		this.commandProxy().update(entity);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountRepository#
+	 * findByListUserId(java.util.List)
+	 */
 	@Override
-	public List<WindowAccount> findByListUserId(List<String> ltsUserId) {
+	public List<WindowsAccount> findByListUserId(List<String> ltsUserId) {
 		// Check conditions
 		if (CollectionUtil.isEmpty(ltsUserId)) {
 			return Collections.emptyList();
@@ -210,9 +315,19 @@ public class JpaWindowAccountRepository extends JpaRepository implements WindowA
 					.setParameter("lstUserId", subList).getList());
 		});
 
-		// Return
-		return resultList.stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+		Map<String, List<SgwmtWindowAcc>> mapUsrAcc = resultList.stream()
+				.collect(Collectors.groupingBy(item -> item.getSgwmtWindowAccPK().getUserId()));
 
+		// Return
+		return mapUsrAcc.keySet().stream().map(userId -> {
+			List<SgwmtWindowAcc> result = mapUsrAcc.get(userId);
+
+			return this.toWindowsAccountDomain(
+					result.stream().findFirst().get().getSgwmtWindowAccPK().getUserId(),
+					result.stream().map(item -> this.toAccInfoDomain(item))
+							.collect(Collectors.toList()));
+
+		}).collect(Collectors.toList());
 	}
 
 }

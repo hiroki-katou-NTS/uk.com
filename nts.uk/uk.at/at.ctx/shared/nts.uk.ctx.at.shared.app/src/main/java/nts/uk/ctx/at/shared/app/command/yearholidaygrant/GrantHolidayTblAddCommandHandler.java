@@ -58,14 +58,14 @@ public class GrantHolidayTblAddCommandHandler extends CommandHandler<GrantHolida
 		// check update/insert limit time in holiday 半日年休上限回数  or not
 		if(!grantHdTblRepository.checkLimitTime()) {
 			for (GrantHdTbl item : grantHolidays) {
-				item.setLimitTimeHd(null);
+				item.setLimitDayYear(null);
 			}
 		}
 		
 		// check update/insert limit day in year 時間年休上限日数 or not
 		if(!grantHdTblRepository.checkLimitDay()) {
 			for (GrantHdTbl item : grantHolidays) {
-				item.setLimitDayYear(null);
+				item.setLimitTimeHd(null);
 			}
 		}
 		

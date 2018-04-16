@@ -7,9 +7,10 @@ module nts.uk.at.view.kal002.a.viewmodel {
 
         startPage(): JQueryPromise<any> {
             var self = this;
-
+            
             var dfd = $.Deferred();
             dfd.resolve();
+            
             return dfd.promise();
         }
 

@@ -10,6 +10,7 @@ import javax.persistence.Table;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
@@ -40,6 +41,10 @@ public class KrcdtDayPrsIncldTime extends UkJpaEntity implements Serializable{
 	/*休暇加算時間*/
 	@Column(name = "VACTN_ADD_TIME")
 	public int vactnAddTime;
+	/*所定内深夜乖離時間*/
+	@Column(name = "DIV_PRS_INCLD_MIDN_TIME")
+	public int divPrsIncldMidnTime;
+	
 	
 	@OneToOne(mappedBy="krcdtDayPrsIncldTime")
 	public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
@@ -67,10 +72,13 @@ public class KrcdtDayPrsIncldTime extends UkJpaEntity implements Serializable{
 			/*所定内割増時間*/
 			this.prsIncldPrmimTime = domain.getWithinPrescribedPremiumTime() == null ? 0 : domain.getWithinPrescribedPremiumTime().valueAsMinutes();
 			if(domain.getWithinStatutoryMidNightTime() != null){
-				TimeWithCalculation winthinTime = domain.getWithinStatutoryMidNightTime().getTime();
+				TimeDivergenceWithCalculation winthinTime = domain.getWithinStatutoryMidNightTime().getTime();
 				/*所定内深夜時間*/
 				this.prsIncldMidnTime = winthinTime == null || winthinTime.getCalcTime() == null ? 0 
 						: domain.getWithinStatutoryMidNightTime().getTime().getCalcTime().valueAsMinutes();	
+				/*所定内深夜乖離時間*/
+				this.divPrsIncldMidnTime = winthinTime == null || winthinTime.getDivergenceTime() == null ? 0
+						: domain.getWithinStatutoryMidNightTime().getTime().getDivergenceTime().valueAsMinutes();
 			}
 			/*休暇加算時間*/
 			this.vactnAddTime = domain.getVacationAddTime() == null ? 0 : domain.getVacationAddTime().valueAsMinutes();
@@ -81,7 +89,7 @@ public class KrcdtDayPrsIncldTime extends UkJpaEntity implements Serializable{
 		return WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(new AttendanceTime(this.workTime),
 									   									   new AttendanceTime(this.actWorkTime),
 									   									   new AttendanceTime(this.prsIncldPrmimTime),
-									   									   new WithinStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(this.prsIncldMidnTime))),
+									   									   new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(this.prsIncldMidnTime))),
 									   									   new AttendanceTime(this.vactnAddTime));
 	}
 	

@@ -29,6 +29,7 @@ import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
@@ -112,6 +113,9 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 	/* PCログオフ後時間 */
 	@Column(name = "AFT_PC_LOGOFF_TIME")
 	public int aftPcLogoffTime;
+	/*所定外深夜乖離時間*/
+	@Column(name = "DIV_OUT_PRS_MIDN_TIME")
+	public int divOutPrsMidnTime;
 
 	@OneToOne
 	@JoinColumns(value = { 
@@ -202,6 +206,7 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 			this.actWorkTime = totalWork.getActualTime() == null ? 0 : totalWork.getActualTime().valueAsMinutes();
 			/* 勤務回数 */
 			this.workTimes = totalWork.getWorkTimes() == null ? 0 : totalWork.getWorkTimes().v();
+				
 		}
 		if(constraintTime != null){
 			/* 総拘束時間 */
@@ -221,6 +226,8 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 			this.calcOutPrsMidnTime = excessStt.getTime() == null | excessStt.getTime().getCalcTime() == null ? 0 : excessStt.getTime().getCalcTime().valueAsMinutes();
 			/* 事前所定外深夜時間 */
 			this.preOutPrsMidnTime = excessStt.getBeforeApplicationTime() == null ? 0 : excessStt.getBeforeApplicationTime().valueAsMinutes();
+			//所定外深夜乖離時間
+			this.divOutPrsMidnTime = excessStt.getTime() == null | excessStt.getTime().getDivergenceTime() == null ? 0 : excessStt.getTime().getDivergenceTime().valueAsMinutes();  
 		}
 		
 		/* 予実差異時間 */
@@ -259,7 +266,7 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 				.addAll(this.krcdtDayHolidyWorkTs != null ? this.krcdtDayHolidyWorkTs.toDomain(): new ArrayList<>());
 		ExcessOfStatutoryTimeOfDaily excess = new ExcessOfStatutoryTimeOfDaily(
 				new ExcessOfStatutoryMidNightTime(
-						TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.outPrsMidnTime), new AttendanceTime(this.calcOutPrsMidnTime)),
+						TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(this.outPrsMidnTime), new AttendanceTime(this.calcOutPrsMidnTime)),
 						new AttendanceTime(this.preOutPrsMidnTime)),
 				Optional.ofNullable(overTime), Optional.ofNullable(holiday));
 		List<LateTimeOfDaily> lateTime = new ArrayList<>();
@@ -337,7 +344,7 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 								toAttendanceTime(this.krcdtDayBreakTime.deductionOutTime), 
 								toAttendanceTime(this.krcdtDayBreakTime.calDeductionOutTime))), 
 				this.krcdtDayBreakTime.count == null ? null : new BreakTimeGoOutTimes(this.krcdtDayBreakTime.count), 
-				this.krcdtDayBreakTime.duringworkTime == null ? null : new AttendanceTime(this.krcdtDayBreakTime.duringworkTime), 
+				new AttendanceTime(this.krcdtDayBreakTime.duringworkTime), 
 				new ArrayList<>());
 	}
 

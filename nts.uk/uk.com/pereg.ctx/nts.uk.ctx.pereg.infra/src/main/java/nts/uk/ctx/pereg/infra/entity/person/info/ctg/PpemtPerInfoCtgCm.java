@@ -39,6 +39,13 @@ public class PpemtPerInfoCtgCm extends UkJpaEntity implements Serializable {
     @Column(name = "FIXED_ATR")
     public int fixedAtr;
     
+    @Basic(optional = false)
+    @Column(name = "ADD_ITEM_OBJ_ATR")
+    public int addItemObjCls;
+    @Basic(optional = false)
+    @Column(name = "INIT_VAL_MASTER_OBJ_ATR")
+    public int initValMasterObjCls;
+    
 	@Override
 	protected Object getKey() {
 		return ppemtPerInfoCtgCmPK;

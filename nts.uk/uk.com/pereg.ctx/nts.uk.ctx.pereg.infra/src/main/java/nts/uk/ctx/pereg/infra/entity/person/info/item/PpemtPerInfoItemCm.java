@@ -99,6 +99,9 @@ public class PpemtPerInfoItemCm extends UkJpaEntity implements Serializable {
 
 	@Column(name = "SELECTION_ITEM_REF_CODE")
 	public String selectionItemRefCode;
+	
+	@Column(name = "RELATED_CATEGORY_CD")
+	public String relatedCategoryCode;
 
 	@Override
 	protected Object getKey() {

@@ -6,7 +6,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 
 /**
- *  
+ *  複数回勤務管理
  * @author hieult
  *
  */
@@ -14,10 +14,17 @@ import nts.arc.enums.EnumAdaptor;
 @AllArgsConstructor
 public class WorkManagementMultiple {
 			
+	/** 会社ID */
 	String companyID;
-	
+	/** 使用区分 */
 	UseATR useATR;
 
+	/**
+	 * Create domain from java data
+	 * @param companyID
+	 * @param useATR
+	 * @return
+	 */
 	public static WorkManagementMultiple createFromJavaType( String companyID, int useATR) {
 		
 		 return new WorkManagementMultiple( 

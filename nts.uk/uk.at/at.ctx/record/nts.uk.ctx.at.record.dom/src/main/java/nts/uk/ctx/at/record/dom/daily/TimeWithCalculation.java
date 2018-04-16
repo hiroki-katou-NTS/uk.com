@@ -58,4 +58,11 @@ public class TimeWithCalculation {
 		return new TimeWithCalculation(this.time.addMinutes(time.valueAsMinutes()),this.calcTime.addMinutes(calcTime.valueAsMinutes()));
 	}
 	
+	/**
+	 * 計算乖離付き時間からの変換
+	 * @param time
+	 */
+	public static TimeWithCalculation convertFromTimeDivergence(TimeDivergenceWithCalculation time) {
+		return new TimeWithCalculation(time.getTime(), time.getCalcTime());
+	}
 }

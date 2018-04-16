@@ -33,7 +33,7 @@ public class KrcctOtkVacationCk extends UkJpaEntity implements Serializable {
 	private String cid;
 
 	@Column(name="USE_ATR")
-	public long useAtr;
+	public int useAtr;
 
 	@Column(name="CONTINUOUS_DAYS")
 	public int continuousDays;
@@ -50,7 +50,7 @@ public class KrcctOtkVacationCk extends UkJpaEntity implements Serializable {
 	public KrcctOtkVacationCk() {
 	}
 
-	public KrcctOtkVacationCk(String cid, long useAtr, int continuousDays, String messageDisplay) {
+	public KrcctOtkVacationCk(String cid, int useAtr, int continuousDays, String messageDisplay) {
 		super();
 		this.cid = cid;
 		this.useAtr = useAtr;

@@ -2,7 +2,11 @@ package nts.uk.ctx.at.record.dom.monthly.agreement;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
+import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.shared.dom.common.Year;
 
 /**
@@ -59,5 +63,33 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 		domain.agreementTime = agreementTime;
 		domain.breakdown = breakdown;
 		return domain;
+	}
+	
+	/**
+	 * 作成
+	 * @param companyId 会社ID
+	 * @param year 年度
+	 * @param criteriaDate 基準日
+	 * @param aggregateAtr 集計区分
+	 * @param monthlyCalculation 月の計算
+	 * @param repositories 月次集計が必要とするリポジトリ
+	 */
+	public void aggregate(
+			String companyId,
+			Year year,
+			GeneralDate criteriaDate,
+			MonthlyAggregateAtr aggregateAtr,
+			MonthlyCalculation monthlyCalculation,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		// 36協定時間の対象を取得
+		this.breakdown.getTargetItemOfAgreement(aggregateAtr, monthlyCalculation, repositories);
+		
+		// 36協定時間内訳の合計時間を36協定時間とする
+		this.agreementTime.setAgreementTime(this.breakdown.getTotalTime());
+		
+		// エラーチェック
+		this.agreementTime.errorCheck(companyId, monthlyCalculation.getEmployeeId(), criteriaDate,
+				monthlyCalculation.getYearMonth(), monthlyCalculation.getWorkingSystem(), repositories);
 	}
 }

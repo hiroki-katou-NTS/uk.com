@@ -50,4 +50,10 @@ public interface ManageAnnualSettingGetMemento {
      * @return the display setting
      */
     DisplaySetting getDisplaySetting();
+    
+    /**
+     * Gets the yearly of day.
+     * @return
+     */
+    YearLyOfNumberDays getYearLyOfDays();
 }

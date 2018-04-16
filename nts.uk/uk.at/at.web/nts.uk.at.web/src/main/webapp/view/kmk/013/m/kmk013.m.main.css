@@ -1,0 +1,27 @@
+.selectionUpper {
+    width: 200px;
+    margin: 10px 0px 38px 60px;
+}
+.selectionConstraint {
+    width: 400px;
+    margin: 10px 20px 38px 60px;
+}
+
+.selectionUpper label {
+	margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.selectionConstraint label {
+	margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.text-label {
+	magin-left: 20px;
+}
+
+
+.child-lb {
+	margin: 15px 0px 0px 50px;
+}

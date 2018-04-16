@@ -11,7 +11,34 @@ public enum AggregateSetting {
 	INCLUDE_ALL_OUTSIDE_TIME_IN_FLEX_TIME(1);
 	
 	public int value;
+
+	/** The Constant values. */
+	private final static AggregateSetting[] values = AggregateSetting.values();
+	
 	private AggregateSetting(int value){
 		this.value = value;
+	}
+	/**
+	 * Value of.
+	 *
+	 * @param value
+	 *            the value
+	 * @return the method
+	 */
+	public static AggregateSetting valueOf(Integer value) {
+		// Invalid object.
+		if (value == null) {
+			return null;
+		}
+
+		// Find value.
+		for (AggregateSetting val : AggregateSetting.values) {
+			if (val.value == value) {
+				return val;
+			}
+		}
+
+		// Not found.
+		return null;
 	}
 }

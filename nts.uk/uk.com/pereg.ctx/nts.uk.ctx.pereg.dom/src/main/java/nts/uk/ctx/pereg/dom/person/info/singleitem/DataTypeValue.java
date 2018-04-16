@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import nts.arc.primitive.constraint.IntegerRange;
 
 @AllArgsConstructor
-@IntegerRange(max = 8, min = 1)
+@IntegerRange(max = 12, min = 1)
 public enum DataTypeValue {
 
 	// 1:文字列(String)
@@ -29,8 +29,20 @@ public enum DataTypeValue {
 	SELECTION_RADIO(7),
 	
 	//8:選択-ボタン(Selection-Button)
-	SELECTION_BUTTON(8);
-
+	SELECTION_BUTTON(8),
 	
+	//9:表示専用(Readonly)
+	
+	READONLY(9),
+	
+	//10: 関連カテゴリ(RelatedCategory)
+	RELATE_CATEGORY(10),
+	
+	//11: 数値-ボタン(Numeric-Button)
+	NUMBERIC_BUTTON(11),
+	
+	//12: 表示専用-ボタン (Readonly-Button)
+	READONLY_BUTTON(12);
+
 	public final int value;
 }

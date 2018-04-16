@@ -12,9 +12,7 @@ import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UserName;
 
 /**
- * Sets the use atr.
- *
- * @param useAtr the new use atr
+ * The Class SaveOtherSysAccountCommand.
  */
 @Setter
 @Getter

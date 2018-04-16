@@ -71,4 +71,10 @@ public interface RoleExportRepo {
 	 * @return
 	 */
 	RoleWhetherLoginPubExport  getWhetherLoginerCharge();
+	
+	/**
+	 * RequestList325
+	 * @return
+	 */
+	OperableSystemExport  getOperableSystem();
 }

@@ -26,6 +26,13 @@ public interface CompensLeaveEmSetRepository {
 	void update(CompensatoryLeaveEmSetting setting);
 	
 	/**
+	 * Delete.
+	 *
+	 * @param setting the setting
+	 */
+	void delete(String companyId, String employmentCode);
+	
+	/**
 	 * Find.
 	 *
 	 * @param companyId the company id

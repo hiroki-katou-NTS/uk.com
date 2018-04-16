@@ -1,10 +1,13 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday;
 
 import lombok.AllArgsConstructor;
+
 /**
- * 
- * @author phongtq
- *通常、変形の所定超過時
+ * The Enum DeformatExcValueAtr.
  */
 @AllArgsConstructor
 public enum DeformatExcValueAtr {

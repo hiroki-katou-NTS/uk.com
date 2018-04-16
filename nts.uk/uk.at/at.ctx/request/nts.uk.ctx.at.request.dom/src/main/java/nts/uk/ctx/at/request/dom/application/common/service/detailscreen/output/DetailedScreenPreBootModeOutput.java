@@ -20,6 +20,4 @@ public class DetailedScreenPreBootModeOutput {
 	boolean alternateExpiration;
 	//ドメインモデル「申請」．入力者 == ログイン者社員ID OR ドメインモデル「申請」．申請者 == ログイン者社員ID
 	private boolean loginInputOrApproval;
-	// 画面モード(表示/編集) 表示モード = 0, 編集モード = 1
-	private OutputMode screenMode;
 }

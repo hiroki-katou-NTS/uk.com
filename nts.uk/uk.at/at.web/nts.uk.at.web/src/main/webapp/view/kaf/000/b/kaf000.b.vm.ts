@@ -22,11 +22,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
          * value obj 
          */
         reasonToApprover: KnockoutObservable<string> = ko.observable('');
-        reasonOutputMess : string = nts.uk.resource.getText('KAF000_1');
+        reasonOutputMess: string = nts.uk.resource.getText('KAF000_1');
         reasonOutputMessFull: KnockoutObservable<string> = ko.observable('');
-        reasonOutputMessDealine : string = nts.uk.resource.getText('KAF000_2');
+        reasonOutputMessDealine: string = nts.uk.resource.getText('KAF000_2');
         reasonOutputMessDealineFull: KnockoutObservable<string> = ko.observable('');
-        messageArea : KnockoutObservable<boolean> = ko.observable(true);
+        messageArea: KnockoutObservable<boolean> = ko.observable(true);
         reasonApp: KnockoutObservable<string> = ko.observable('');
         inputCommonData: KnockoutObservable<model.InputCommonData> = ko.observable(null);
         dataApplication: KnockoutObservable<model.ApplicationDto> = ko.observable(null);
@@ -116,10 +116,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());
                 self.displayReturnReasonPanel(!nts.uk.util.isNullOrEmpty(data.applicationDto.reversionReason));
                 let deadlineMsg = data.outputMessageDeadline;
-                if(!nts.uk.text.isNullOrEmpty(deadlineMsg.message)){
-                    self.reasonOutputMessFull(self.reasonOutputMess + deadlineMsg.message);    
+                if (!nts.uk.text.isNullOrEmpty(deadlineMsg.message)) {
+                    self.reasonOutputMessFull(self.reasonOutputMess + deadlineMsg.message);
                 }
-                if(!nts.uk.text.isNullOrEmpty(deadlineMsg.deadline)){
+                if (!nts.uk.text.isNullOrEmpty(deadlineMsg.deadline)) {
                     self.reasonOutputMessDealineFull(self.reasonOutputMessDealine + deadlineMsg.deadline);
                 }
                 self.messageArea(deadlineMsg.chkShow);
@@ -127,10 +127,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 nts.uk.ui.block.clear();
                 dfd.resolve();
             }).fail((res) => {
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){
-                    nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() {
+                    nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                     nts.uk.ui.block.clear();
-                });  
+                });
             });
 
             return dfd.promise();
@@ -153,26 +153,25 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
             self.displayDenyButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER)
                 && (approvalAtrValue != ApprovalAtr.DENIAL));
-            self.enableDenyButton(
-                ((state == Status.DENIAL || state == Status.NOTREFLECTED || state == Status.REMAND)
-                && canApprove
-                && !expired) ||
-                (state == Status.WAITREFLECTION 
-                && canApprove
-                && (approvalAtrValue == ApprovalAtr.APPROVED || approvalAtrValue == ApprovalAtr.DENIAL)
-                && !expired)
-            );
-
-            self.displayRemandButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER));
-            self.enableRemandButton((state == Status.DENIAL || state == Status.WAITREFLECTION || state == Status.NOTREFLECTED || state == Status.REMAND)
+            self.enableDenyButton((state == Status.DENIAL || state == Status.WAITREFLECTION || state == Status.NOTREFLECTED || state == Status.REMAND)
                 && canApprove
                 && !expired);
+
+            self.displayRemandButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER));
+            self.enableRemandButton(
+                ((state == Status.DENIAL || state == Status.NOTREFLECTED || state == Status.REMAND)
+                    && canApprove
+                    && !expired) ||
+                (state == Status.WAITREFLECTION
+                    && canApprove
+                    && (approvalAtrValue == ApprovalAtr.APPROVED || approvalAtrValue == ApprovalAtr.DENIAL)
+                    && !expired)
+            );
 
             self.displayReleaseButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER));
             self.enableReleaseButton((state == Status.DENIAL || state == Status.WAITREFLECTION || state == Status.NOTREFLECTED || state == Status.REMAND)
                 && canApprove
-                && (approvalAtrValue == ApprovalAtr.APPROVED || approvalAtrValue == ApprovalAtr.DENIAL)
-                && !expired);
+                && (approvalAtrValue == ApprovalAtr.APPROVED || approvalAtrValue == ApprovalAtr.DENIAL));
 
             self.displayUpdateButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPLICANT || userTypeValue == UserType.OTHER));
             self.enableUpdateButton(state == Status.NOTREFLECTED || state == Status.REMAND);
@@ -188,13 +187,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
             self.displayDenyLabel((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER)
                 && (approvalAtrValue == ApprovalAtr.DENIAL));
-            
+
             self.displayApprovalReason((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER));
             self.enableApprovalReason((state == Status.DENIAL || state == Status.WAITREFLECTION || state == Status.NOTREFLECTED || state == Status.REMAND)
                 && canApprove
                 && !expired);
         }
-        
+
         //get all reason by app ID
         getAllReasonByAppID(appID: string) {
             let self = this;
@@ -276,8 +275,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             nts.uk.ui.block.invisible();
             let self = this;
             self.inputCommonData(new model.InputCommonData(self.dataApplication(), self.reasonToApprover()));
-            service.approveApp(self.inputCommonData()).done(function(data) {
-                nts.uk.ui.dialog.alert({ messageId: 'Msg_220' }).then(function() {
+            let approveCmd = self.appType() != 10 ? self.inputCommonData() : self.getHolidayShipmentCmd(self.reasonToApprover());
+            service.approveApp(approveCmd, self.appType()).done(function(data) {
+                nts.uk.ui.dialog.info({ messageId: 'Msg_220' }).then(function() {
                     if (!nts.uk.util.isNullOrUndefined(data)) {
                         nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [data] }).then(() => {
                             location.reload();
@@ -297,8 +297,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             nts.uk.ui.block.invisible();
             let self = this;
             self.inputCommonData(new model.InputCommonData(self.dataApplication(), self.reasonToApprover()));
-            service.denyApp(self.inputCommonData()).done(function(data) {
-                nts.uk.ui.dialog.alert({ messageId: 'Msg_222' }).then(function() {
+            let denyCmd = self.appType() != 10 ? self.inputCommonData() : self.getHolidayShipmentCmd(self.reasonToApprover());
+            service.denyApp(denyCmd, self.appType()).done(function(data) {
+                nts.uk.ui.dialog.info({ messageId: 'Msg_222' }).then(function() {
                     if (!nts.uk.util.isNullOrUndefined(data)) {
                         nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [data] }).then(() => {
                             location.reload();
@@ -311,12 +312,12 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
             });
         }
-        
-        btnRemand(){
+
+        btnRemand() {
             var self = this;
             let command = self.convertToApproverList();
             setShared("KDL034_PARAM", command);
-            nts.uk.ui.windows.sub.modal("/view/kdl/034/a/index.xhtml");     
+            nts.uk.ui.windows.sub.modal("/view/kdl/034/a/index.xhtml");
         }
 
         /**
@@ -326,8 +327,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             nts.uk.ui.block.invisible();
             let self = this;
             self.inputCommonData(new model.InputCommonData(self.dataApplication(), self.reasonToApprover()));
+            let releaseCmd = self.appType() != 10 ? self.inputCommonData() : self.getHolidayShipmentCmd(self.reasonToApprover());
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_248' }).ifYes(function() {
-                service.releaseApp(self.inputCommonData()).done(function() {
+                service.releaseApp(releaseCmd, self.appType()).done(function() {
                     nts.uk.ui.dialog.info({ messageId: 'Msg_221' }).then(() => {
                         location.reload();
                     });
@@ -368,9 +370,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             nts.uk.ui.block.invisible();
             let self = this;
             self.inputCommandEvent(new model.InputCommandEvent(self.inputCommandEvent().version, self.appID(), self.appReasonEvent()));
+            let deleteCmd = self.appType() != 10 ? self.inputCommandEvent() : self.getHolidayShipmentCmd();
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
-                service.deleteApp(self.inputCommandEvent()).done(function(data) {
-                    nts.uk.ui.dialog.alert({ messageId: 'Msg_16' }).then(function() {
+                service.deleteApp(deleteCmd, self.appType()).done(function(data) {
+                    nts.uk.ui.dialog.info({ messageId: 'Msg_16' }).then(function() {
                         //kiểm tra list người xác nhận, nếu khác null thì show info 392
                         if (!nts.uk.util.isNullOrEmpty(data)) {
                             nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [data] }).then(function() {
@@ -380,16 +383,34 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         //                        else{
                         //                            //self.setScreenAfterDelete();
                         //                        }
-                        nts.uk.request.jump("/view/kaf/000/test/index.xhtml");
+                        nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
                     });
                 }).fail(function(res: any) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
-                        nts.uk.request.jump("../test/index.xhtml");
+                        nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
                     });
                 });
             }).ifNo(function() {
                 nts.uk.ui.block.clear();
-            });
+                });
+
+
+        }
+
+        getHolidayShipmentCmd(memo?) {
+            let self = this,
+                shipmentCmd,
+                vm: nts.uk.at.view.kaf011.b.viewmodel.ScreenModel = __viewContext['viewModel'];
+
+            shipmentCmd = {
+                absAppID: vm.absWk().appID(),
+                recAppID: vm.recWk().appID(),
+                appVersion: vm.version(),
+                memo: memo ? memo : ""
+            }
+
+            return shipmentCmd;
+
         }
         setScreenAfterDelete() {
             let self = this;
@@ -404,31 +425,21 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             //if list # null    
             if (self.listAppMeta.length == 0) {
                 //nếu list null thì trả về màn hình mẹ
-                nts.uk.request.jump("/view/kaf/000/test/index.xhtml");
+                nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
             }
 
             if (self.listAppMeta.length == 1) {
-                nts.uk.request.jump("/view/kaf/000/b/index.xhtml", {
-                    'listAppMeta': self.listAppMeta,
-                    'currentApp': new shrvm.model.ApplicationMetadata(self.listAppMeta[0].appID, self.listAppMeta[0].appType, self.listAppMeta[0].appDate)
-                });
-                return;
+                nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
             }
             //nếu vị trí vừa xóa khác vị trí cuối
             if (index != self.listAppMeta.length) {
                 //gán lại appId mới tại vị trí chính nó
                 //self.btnAfter();
-                nts.uk.request.jump("/view/kaf/000/b/index.xhtml", {
-                    'listAppMeta': self.listAppMeta,
-                    'currentApp': new shrvm.model.ApplicationMetadata(self.listAppMeta[index].appID, self.listAppMeta[index].appType, self.listAppMeta[index].appDate)
-                });
+                nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
             } else {
                 //nếu nó ở vị trí cuối thì lấy appId ở vị trí trước nó
                 //                self.btnBefore();
-                nts.uk.request.jump("/view/kaf/000/b/index.xhtml", {
-                    'listAppMeta': self.listAppMeta,
-                    'currentApp': new shrvm.model.ApplicationMetadata(self.listAppMeta[self.listAppMeta.length - 1].appID, self.listAppMeta[self.listAppMeta.length - 1].appType, self.listAppMeta[self.listAppMeta.length - 1].appDate)
-                });
+                nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
             }
 
         }
@@ -440,9 +451,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             nts.uk.ui.block.invisible();
             let self = this;
             self.inputCommandEvent(new model.InputCommandEvent(self.inputCommandEvent().version, self.appID(), self.appReasonEvent()));
+            let cancelCmd = self.appType() == 10 ? self.getHolidayShipmentCmd() : self.inputCommandEvent();
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_249' }).ifYes(function() {
-                service.cancelApp(self.inputCommandEvent()).done(function() {
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_224" }).then(() => {
+                service.cancelApp(cancelCmd, self.appType()).done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_224" }).then(() => {
                         location.reload();
                     });
                 }).fail(function(res: any) {
@@ -458,20 +470,20 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 nts.uk.ui.block.clear();
             });
         }
-        
+
         convertToApproverList(): Array<Approver> {
             var self = this;
             let listApprover = [];
             listApprover.push(new Approver(self.appID(), self.employeeName(), null));
             _.forEach(ko.mapping.toJS(self.approvalRootState()), function(approvalPhase) {
                 _.forEach(approvalPhase, function(approvalFrame) {
-                    if((!nts.uk.util.isNullOrEmpty(approvalFrame.approverID))||(!nts.uk.util.isNullOrEmpty(approvalFrame.representerID))){
-                        if(!nts.uk.util.isNullOrEmpty(approvalFrame.approverID)){
-                            listApprover.push(new Approver(approvalFrame.approverID, approvalFrame.approverName, approvalFrame.phaseOrder));        
+                    if ((!nts.uk.util.isNullOrEmpty(approvalFrame.approverID)) || (!nts.uk.util.isNullOrEmpty(approvalFrame.representerID))) {
+                        if (!nts.uk.util.isNullOrEmpty(approvalFrame.approverID)) {
+                            listApprover.push(new Approver(approvalFrame.approverID, approvalFrame.approverName, approvalFrame.phaseOrder));
                         } else {
-                            listApprover.push(new Approver(approvalFrame.representerID, approvalFrame.representerName, approvalFrame.phaseOrder));    
-                        }      
-                    }     
+                            listApprover.push(new Approver(approvalFrame.representerID, approvalFrame.representerName, approvalFrame.phaseOrder));
+                        }
+                    }
                 });
             });
             return listApprover;

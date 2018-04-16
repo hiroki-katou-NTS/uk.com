@@ -19,7 +19,7 @@ import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfFinder;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListFinder;
-import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.ApplicationDisplayAtr;
+import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationDisplayAtr;
 
 /**
  * 

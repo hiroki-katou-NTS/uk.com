@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="kmk013.j.start.js" />
+			<com:scriptfile path="kmk013.j.vm.js" />
+			<com:scriptfile path="kmk013.j.service.js" />
+			<com:stylefile path="kmk013.j.main.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<a class="goback"
+					data-bind="ntsLinkButton: { jump: '/view/kmk/013/a/index.xhtml' }"
+					tabindex="1"> #{i18n.getText('KMK013_204')} </a>
+				<button class="proceed save" tabindex="2" data-bind="click:saveData">#{i18n.getText('KMK013_205')}</button>
+			</div>
+			<div id="contents-area">
+				<table class="left-content">
+					<TBODY>
+						<tr>
+							<td>
+								<div id="form-lb" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_309')}</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="td-content">
+								<div class="child-lb">#{i18n.getText('KMK013_310')}</div>
+								<hr />
+							</td>
+						</tr>
+						<tr>
+							<td>
+    								<div tabindex="3" class="selection"
+									data-bind="ntsRadioBoxGroup: {
+										name:'#{i18n.getText('KMK013_311')}',
+										options: transAttendMethod,
+										optionsValue: 'id',
+										optionsText: 'name',
+										value:selectedItem}"></div>
+							</td>
+						</tr>
+						
+						<tr>
+							<td>
+								<div id="form-lb" class="workSelection" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_335')}</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="td-content">
+								<div class="child-lb">#{i18n.getText('KMK013_336')}</div>
+								<hr />
+							</td>
+						</tr>
+						<tr>
+							<td class="td-content">
+								<button class="child-lb" tabindex="4" data-bind="click: openKDL002_givenDays">#{i18n.getText('KMK013_337')}</button>
+								<span tabindex="5">
+									<input 
+									class="nts-input" id="itemname"
+									data-bind="ntsTextEditor:{
+	                                         value: workTypeNames,
+	                                         required: true,
+	                                         enable: true,
+	                                         readonly:true}" />
+								</span>
+								
+							</td>
+						</tr>
+						
+						<tr>
+							<td class="td-content">
+								<div class="child-lb" style="margin-top:25px;">#{i18n.getText('KMK013_338')}</div>
+								<hr />
+							</td>
+						</tr>
+						<tr>
+							<td class="td-content">
+								<button class="child-lb" tabindex="6" data-bind="click: openKDL002_attendanceDays">#{i18n.getText('KMK013_337')}</button>
+								<span tabindex="7">
+									<input
+									class="nts-input" id="itemname"
+									data-bind="ntsTextEditor:{
+	                                         value: workTypeNamesAttendance,
+	                                         required: true,
+	                                         enable: true,
+	                                         readonly:true}" />
+								</span>
+							</td>
+						</tr>
+					</TBODY>
+				</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.retentionyearly;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionYearly;
@@ -61,4 +62,13 @@ public class JpaRetentionYearlyGetMemento implements RetentionYearlySettingGetMe
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * RetentionYearlySettingGetMemento#getManagementCategory()
+	 */
+	@Override
+	public ManageDistinct getManagementCategory() {
+		return ManageDistinct.valueOf((int)this.typeValue.getManagementYearlyAtr());
+	}
 }

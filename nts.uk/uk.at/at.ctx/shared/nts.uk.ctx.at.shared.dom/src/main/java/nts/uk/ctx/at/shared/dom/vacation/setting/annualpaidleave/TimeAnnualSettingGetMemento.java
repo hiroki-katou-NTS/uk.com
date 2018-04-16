@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 
 /**
@@ -46,4 +47,11 @@ public interface TimeAnnualSettingGetMemento {
      * @return true, if is enough time one day
      */
     boolean isEnoughTimeOneDay();
+    
+    /**
+     * Checks RoundProcessClassific.
+     * 
+     * @return RoundProcessClassific
+     */
+    TimeAnnualRoundProcesCla GetRoundProcessClassific();
 }

@@ -4,8 +4,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /** ログオン情報*/
 @Getter
@@ -13,15 +12,15 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 public class LogOnInfo {
 
 	/** 勤務NO: 勤務NO */
-	private WorkNo workNo;
+	private PCLogOnNo workNo;
 	
 	/** ログオフ: 勤怠打刻 */
-	private Optional<WorkStamp> logOff;
+	private Optional<TimeWithDayAttr> logOff;
 	
 	/** ログオン: 勤怠打刻*/
-	private Optional<WorkStamp> logOn;
+	private Optional<TimeWithDayAttr> logOn;
 
-	public LogOnInfo(WorkNo workNo, WorkStamp logOff, WorkStamp logOn) {
+	public LogOnInfo(PCLogOnNo workNo, TimeWithDayAttr logOff, TimeWithDayAttr logOn) {
 		super();
 		this.workNo = workNo;
 		this.logOff = Optional.ofNullable(logOff);

@@ -2,7 +2,9 @@ package nts.uk.ctx.bs.employee.pubimp.employee;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -96,8 +98,21 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 			return null;
 		}
 
+		List<String> employeeIds = listEmpDomain.stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
+		
+		
+		List<AffCompanyHist> affCompanyHistList = affComHistRepo.getAffCompanyHistoryOfEmployees(employeeIds);
+		
+		Map<String, AffCompanyHist> map = affCompanyHistList.stream()
+				.collect(Collectors.toMap(x -> x.getLstAffCompanyHistByEmployee().get(0).getSId(), x -> x));
+		
+		List<String> personIds = affCompanyHistList.stream().map(x -> x.getPId()).collect(Collectors.toList());
+		
+		Map<String, Person> personMap = personRepo.getPersonByPersonIds(personIds).stream().collect(Collectors.toMap( x -> x.getPersonId(), x -> x));
+		
+		
 		result =  listEmpDomain.stream().map(x -> {
-			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(companyId, x.getEmployeeId());
+			AffCompanyHist affComHist = map.get(x.getEmployeeId());
 
 			if (affComHist == null)
 				return null;
@@ -113,9 +128,8 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 
 				if (!filter.isEmpty()) {
 
-					Optional<Person> personOpt = this.personRepo.getByPersonId(affComHist.getPId());
-					if (personOpt.isPresent()) {
-						Person person = personOpt.get();
+					Person person = personMap.get(affComHist.getPId());
+					if (person != null ) {
 						employeeInfo.setPersonId(person.getPersonId());
 						employeeInfo.setPerName(person.getPersonNameGroup().getBusinessName() == null ? null
 								: person.getPersonNameGroup().getPersonName().getFullName().v());

@@ -1,8 +1,5 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
-import java.util.Arrays;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,17 +25,17 @@ public class MedicalTimeDailyPerformDto {
 	private int dayNightAtr;
 
 	/** 申送時間: 勤怠時間 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "申送時間", needCheckIDWithMethod = "dayNightAtr", methodForEnumValues = "dayNights")
+	@AttendanceItemLayout(layout = "B", jpPropertyName = "申送時間", needCheckIDWithMethod = "dayNightAtr")
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer takeOverTime;
 
 	/** 控除時間: 勤怠時間 */
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "控除時間", needCheckIDWithMethod = "dayNightAtr", methodForEnumValues = "dayNights")
+	@AttendanceItemLayout(layout = "C", jpPropertyName = "控除時間", needCheckIDWithMethod = "dayNightAtr")
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer deductionTime;
 
 	/** 勤務時間: 勤怠時間 */
-	@AttendanceItemLayout(layout = "D", jpPropertyName = "勤務時間", needCheckIDWithMethod = "dayNightAtr", methodForEnumValues = "dayNights")
+	@AttendanceItemLayout(layout = "D", jpPropertyName = "勤務時間", needCheckIDWithMethod = "dayNightAtr")
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer workTime;
 
@@ -52,18 +49,6 @@ public class MedicalTimeDailyPerformDto {
 		default:
 			return "";
 		}
-	}
-
-	public void dayNightAtr(String text) {
-		if (text.contains("日勤")) {
-			this.dayNightAtr = 0;
-		} else if (text.contains("夜勤")) {
-			this.dayNightAtr = 1;
-		}
-	}
-
-	public List<String> dayNights() {
-		return Arrays.asList("日勤", "夜勤");
 	}
 
 	public static MedicalTimeDailyPerformDto fromMedicalCareTime(MedicalCareTimeOfDaily domain) {

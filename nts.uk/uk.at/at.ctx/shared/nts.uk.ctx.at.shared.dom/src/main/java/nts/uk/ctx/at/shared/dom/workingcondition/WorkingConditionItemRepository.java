@@ -102,4 +102,13 @@ public interface WorkingConditionItemRepository {
 	 * @param destSid the dest sid
 	 */
 	boolean copyLastMonthlyPatternSetting(String sourceSid, List<String> destSid);
+	
+	/**
+	 * Gets the by sid and hist id.
+	 *
+	 * @param employeeId the employee id
+	 * @param histId the hist id
+	 * @return the by sid and hist id
+	 */
+	Optional<WorkingConditionItem> getBySidAndHistId(String employeeId, String histId);
 }

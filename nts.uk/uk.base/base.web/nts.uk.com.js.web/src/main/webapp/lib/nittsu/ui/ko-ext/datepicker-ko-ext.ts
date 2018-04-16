@@ -64,7 +64,7 @@ module nts.uk.ui.koExtentions {
             var $input: any = $("<input id='" + container.attr("id") + "' class='ntsDatepicker nts-input reset-element' tabindex='" + tabIndex + "'/>").addClass(inputClass);
             $input.addClass(containerClass).attr("id", idString).attr("data-name", container.data("name"));
             container.append($input);
-            
+            $input.data("required", required);
             let jumpButtonsDisplay = data.showJumpButtons !== undefined ? ko.unwrap(data.showJumpButtons) : false; 
             let fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
             let $prevButton, $nextButton;
@@ -103,10 +103,12 @@ module nts.uk.ui.koExtentions {
                                 .setDefaultCss(data.defaultClass || ""));
 
             name = nts.uk.resource.getControlName(name);
-            var validator = new validation.TimeValidator(name, constraintName, {required: required, 
-                outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar});
+            
             $input.on("change", (e) => {
                 var newText = $input.val();
+                var validator = new validation.TimeValidator(name, constraintName, {required: $input.data("required"), 
+                                                    outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, 
+                                                    valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar});
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
                 if (result.isValid) {
@@ -128,6 +130,9 @@ module nts.uk.ui.koExtentions {
             
             $input.on("blur", () => {
                 var newText = $input.val();
+                var validator = new validation.TimeValidator(name, constraintName, {required: $input.data("required"), 
+                                                    outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, 
+                                                    valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar});
                 var result = validator.validate(newText);
                 if (!result.isValid) {
                     $input.ntsError('set', result.errorMessage, result.errorCode, false);
@@ -149,6 +154,9 @@ module nts.uk.ui.koExtentions {
 
             $input.on('validate', (function(e: Event) {
                 var newText = $input.val();
+                var validator = new validation.TimeValidator(name, constraintName, {required: $input.data("required"), 
+                                                    outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, 
+                                                    valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar});
                 var result = validator.validate(newText);
                 $input.ntsError('clearKibanError');
                 if (!result.isValid) {
@@ -190,6 +198,7 @@ module nts.uk.ui.koExtentions {
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : undefined;
             var startDate: any = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
             var endDate: any = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
+            var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             
             var container = $(element); 
             let dateNormalizer = container.find("input").data("dateNormalizer");
@@ -216,6 +225,7 @@ module nts.uk.ui.koExtentions {
                 }        
             }
             
+            $input.data("required", required);
             // Properties Binding
             $input.datepicker('setStartDate', startDate);
             $input.datepicker('setEndDate', endDate);

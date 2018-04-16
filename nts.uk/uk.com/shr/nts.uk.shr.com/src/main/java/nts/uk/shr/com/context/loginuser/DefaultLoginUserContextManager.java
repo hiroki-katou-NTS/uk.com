@@ -1,5 +1,7 @@
 package nts.uk.shr.com.context.loginuser;
 
+import java.io.Serializable;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -7,13 +9,14 @@ import lombok.val;
 import nts.arc.scoped.session.SessionContextProvider;
 import nts.arc.security.ticket.DataTicket;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.serialize.ObjectSerializer;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.context.loginuser.role.DefaultLoginUserRoles;
 
 @Stateless
 public class DefaultLoginUserContextManager implements LoginUserContextManager {
 	
-	private static final int SECONDS_TO_EXPIRE_TICKET = 60;
+	private static final int SECONDS_TO_EXPIRE_TICKET = 60 * 60 * 24;
 
 	@Inject
 	private SessionLowLayer sessionLowLayer;
@@ -103,6 +106,11 @@ public class DefaultLoginUserContextManager implements LoginUserContextManager {
 				roles.setRoleIdforCompanyAdmin(roleId);
 				return this;
 			}
+			@Override
+			public RoleIdSetter forGroupCompaniesAdmin(String roleId) {
+				roles.setRoleIdforGroupCompaniesAdmin(roleId);
+				return this;
+			}
 		};
 	}
 
@@ -126,6 +134,30 @@ public class DefaultLoginUserContextManager implements LoginUserContextManager {
 		}
 		
 		DefaultLoginUserContext restored = ticket.getData();
+		
+		this.loggedInAsEmployee(
+				restored.userId(),
+				restored.personId(),
+				restored.contractCode(),
+				restored.companyId(),
+				restored.companyCode(),
+				restored.employeeId(),
+				restored.employeeCode());
+		
+		DefaultLoginUserContext context = SessionContextProvider.get().get(LoginUserContext.KEY_SESSION_SCOPED);
+		((DefaultLoginUserRoles)context.roles()).restore(restored.roles());
+	}
+
+	@Override
+	public String toBase64() {
+		val context = SessionContextProvider.get().get(LoginUserContext.KEY_SESSION_SCOPED);
+		return ObjectSerializer.toBase64((Serializable) context);
+	}
+
+	@Override
+	public void restoreBase64(String base64) {
+		
+		DefaultLoginUserContext restored = ObjectSerializer.restore(base64);
 		
 		this.loggedInAsEmployee(
 				restored.userId(),

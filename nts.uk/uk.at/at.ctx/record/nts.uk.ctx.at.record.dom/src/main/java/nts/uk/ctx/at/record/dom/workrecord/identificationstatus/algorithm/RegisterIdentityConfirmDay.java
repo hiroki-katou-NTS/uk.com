@@ -17,6 +17,10 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessU
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.enums.SelfConfirmError;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentityProcessUseSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ConfirmOfManagerOrYouself;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OpOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OperationOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -24,38 +28,45 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class RegisterIdentityConfirmDay {
-	
+
 	@Inject
 	private IdentityProcessUseSetRepository identityProcessUseSetRepository;
-	
+
 	@Inject
 	private CheckIdentityVerification checkIdentityVerification;
-	
+
 	@Inject
 	private IdentificationRepository identificationRepository;
-	
+
 	@Inject
 	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepository;
-	
+
 	@Inject
 	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
 	
-	public void registerIdentity(List<GeneralDate> dates) {
+	// code old 
+	@Inject
+	private OpOfDailyPerformance opOfDailyPerformance;
+
+	public void registerIdentity(ParamIdentityConfirmDay param) {
 		String companyId = AppContexts.user().companyId();
-		String employeeId = AppContexts.user().employeeId();
 		GeneralDate processingYmd = GeneralDate.today();
-		Optional<IdentityProcessUseSet>  identityProcessOpt= identityProcessUseSetRepository.findByKey(companyId);
-		if(identityProcessOpt.isPresent()){
+		Optional<IdentityProcessUseSet> identityProcessOpt = identityProcessUseSetRepository.findByKey(companyId);
+		if (identityProcessOpt.isPresent()) {
 			Optional<SelfConfirmError> canRegist = checkIdentityVerification.check(identityProcessOpt.get());
-			if(canRegist.isPresent()){
-				if(canRegist.get() == SelfConfirmError.CAN_CONFIRM_WHEN_ERROR){
-					dates.forEach(date -> {
-						identificationRepository.insert(new Identification(companyId, employeeId, processingYmd, date));
-					});
-				}else{
-					dates.forEach(date -> {
+			param.getSelfConfirmDay().forEach(data -> {
+				String employeeId = AppContexts.user().employeeId();
+				if (canRegist.isPresent()) {
+					if (canRegist.get() == SelfConfirmError.CAN_CONFIRM_WHEN_ERROR) {
+						if (data.getValue()) {
+							identificationRepository
+									.insert(new Identification(companyId, employeeId, data.getDate(), processingYmd));
+						} else {
+							identificationRepository.remove(companyId, employeeId, data.getDate());
+						}
+					} else {
 						List<EmployeeDailyPerError> employeeDailyPerErrors = employeeDailyPerErrorRepository
-								.findAll(employeeId, date);
+								.findAll(employeeId, data.getDate());
 						if (!employeeDailyPerErrors.isEmpty()) {
 							List<ErrorAlarmWorkRecord> errorAlarmWorkRecords = errorAlarmWorkRecordRepository
 									.getListErAlByListCodeError(companyId,
@@ -63,13 +74,65 @@ public class RegisterIdentityConfirmDay {
 													.map(x -> x.getErrorAlarmWorkRecordCode().v())
 													.collect(Collectors.toList()));
 							if (errorAlarmWorkRecords.isEmpty()) {
-								identificationRepository
-										.insert(new Identification(companyId, employeeId, processingYmd, date));
+								if (data.getValue()) {
+									identificationRepository.insert(
+											new Identification(companyId, employeeId, data.getDate(), processingYmd));
+								} else {
+									identificationRepository.remove(companyId, employeeId, data.getDate());
+								}
 							}
 						}
-					});
+					}
 				}
-			}
+			});
+		}
+	}
+	
+	public void registerIdentityOld(ParamIdentityConfirmDay param) {
+		String companyId = AppContexts.user().companyId();
+		GeneralDate processingYmd = GeneralDate.today();
+		//Optional<IdentityProcessUseSet> identityProcessOpt = identityProcessUseSetRepository.findByKey(companyId);
+		OperationOfDailyPerformance operation = opOfDailyPerformance.find(new CompanyId(companyId));
+		if (operation != null && operation.getFunctionalRestriction() != null) {
+			 Optional<ConfirmOfManagerOrYouself> canRegist = checkIdentityVerification.checkOld(operation.getFunctionalRestriction());
+			param.getSelfConfirmDay().forEach(data -> {
+				String employeeId = AppContexts.user().employeeId();
+				if (canRegist.isPresent()) {
+					if (canRegist.get() == ConfirmOfManagerOrYouself.CAN_CHECK_WHEN_ERROR) {
+						if (data.getValue()) {
+							identificationRepository
+									.insert(new Identification(companyId, employeeId, data.getDate(), processingYmd));
+						} else {
+							identificationRepository.remove(companyId, employeeId, data.getDate());
+						}
+					} else {
+						List<EmployeeDailyPerError> employeeDailyPerErrors = employeeDailyPerErrorRepository
+								.findAll(employeeId, data.getDate());
+						if (!employeeDailyPerErrors.isEmpty()) {
+							List<ErrorAlarmWorkRecord> errorAlarmWorkRecords = errorAlarmWorkRecordRepository
+									.getListErAlByListCodeError(companyId,
+											employeeDailyPerErrors.stream()
+													.map(x -> x.getErrorAlarmWorkRecordCode().v())
+													.collect(Collectors.toList()));
+							if (errorAlarmWorkRecords.isEmpty()) {
+								if (data.getValue()) {
+									identificationRepository.insert(
+											new Identification(companyId, employeeId, data.getDate(), processingYmd));
+								} else {
+									identificationRepository.remove(companyId, employeeId, data.getDate());
+								}
+							}
+						}else{
+							if (data.getValue()) {
+								identificationRepository.insert(
+										new Identification(companyId, employeeId, data.getDate(), processingYmd));
+							} else {
+								identificationRepository.remove(companyId, employeeId, data.getDate());
+							}
+						}
+					}
+				}
+			});
 		}
 	}
 }

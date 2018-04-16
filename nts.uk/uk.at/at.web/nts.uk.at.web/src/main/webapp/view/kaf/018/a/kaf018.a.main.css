@@ -1,0 +1,47 @@
+.content-area-right {
+	width: 283px;
+	height: 408px;
+	float: left;
+	margin-top:50px;
+}
+
+#wkp-list {
+	display: inline-block;
+}
+
+.content-top {
+	margin-left: 20px;
+}
+
+.content-area-left {
+	margin-left: 20px;
+	margin-top: 10px;
+	float: left;
+}
+
+.fix-combobox {
+	margin-left: 10px;
+}
+
+
+.format-selected {
+	float: left;
+	padding: 11px;
+	width: 140px;	
+	font-size: 12px;
+}
+
+.format-checkbox {
+	float: left;
+	margin-left: 25px;
+}
+
+.btn-excute {
+	float: left;
+	margin-left: 20px;
+	margin-top: 230px;	
+}
+
+.clear {
+	clear:both;
+}

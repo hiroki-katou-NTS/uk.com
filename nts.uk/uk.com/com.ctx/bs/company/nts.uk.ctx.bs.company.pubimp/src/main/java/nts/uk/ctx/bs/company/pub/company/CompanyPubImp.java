@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.company.pub.company;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,6 +11,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class CompanyPubImp implements ICompanyPub {
@@ -56,5 +59,28 @@ public class CompanyPubImp implements ICompanyPub {
 		}
 		return result;
 
+	}
+
+	/**
+	 * For request list No.289
+	 */
+	@Override
+	public List<String> acquireAllCompany() {
+		String contractCd = AppContexts.user().contractCode();
+		
+		// ドメインモデル「会社情報」を取得する
+		List<Company> comps = repo.getAllCompanyByContractCd(contractCd);
+		
+		if(comps.size() >= 1) {
+			List<String> cIds = new ArrayList<>();
+			
+			for (Company item : comps) {
+				cIds.add(item.getCompanyId());
+			}
+			
+			return cIds;
+		} else {
+			return Collections.emptyList();
+		}
 	}
 }

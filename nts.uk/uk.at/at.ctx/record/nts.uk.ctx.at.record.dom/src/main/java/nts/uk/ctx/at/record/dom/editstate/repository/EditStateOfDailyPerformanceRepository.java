@@ -24,4 +24,6 @@ public interface EditStateOfDailyPerformanceRepository {
 	void addAndUpdate(List<EditStateOfDailyPerformance> editStates);
 	
 	Optional<EditStateOfDailyPerformance> findByKeyId(String employeeId, GeneralDate ymd, Integer id);
+	
+	void updateByKeyFlush(List<EditStateOfDailyPerformance> editStates);
 }

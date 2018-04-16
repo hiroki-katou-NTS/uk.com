@@ -45,5 +45,5 @@ public interface ClosureGetMemento {
 	 * @return the closure histories
 	 */
 	List<ClosureHistory> getClosureHistories();
-
+	
 }

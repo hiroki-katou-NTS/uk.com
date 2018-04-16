@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -33,8 +33,13 @@ public class KrqdtSubTargetDigestion extends UkJpaEntity implements Serializable
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
-	private KrqdtSubTargetDigestionPK pk;
+	/**
+	 * 申請ID
+	 */
+	@Id
+	@Basic(optional = false)
+	@Column(name = "APP_ID")
+	private String appID;
 
 	/**
 	 * 使用時間数
@@ -53,7 +58,7 @@ public class KrqdtSubTargetDigestion extends UkJpaEntity implements Serializable
 	/**
 	 * 休出発生日
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "BREAK_OUT_DATE")
 	private GeneralDate breakOutDate;
 
@@ -64,9 +69,17 @@ public class KrqdtSubTargetDigestion extends UkJpaEntity implements Serializable
 	@Column(name = "REST_STATE")
 	private int restState;
 
+	/**
+	 * 休出状態
+	 */
+
+	@Basic(optional = false)
+	@Column(name = "UNKNOWN_DATE_ATR")
+	private int unknownDate;
+
 	@Override
 	protected Object getKey() {
-		return pk;
+		return appID;
 	}
 
 }

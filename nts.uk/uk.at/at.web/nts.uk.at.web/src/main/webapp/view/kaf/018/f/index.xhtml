@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kaf018.f.main.css" />
+			<com:scriptfile path="kaf018.f.service.js" />
+			<com:scriptfile path="kaf018.f.vm.js" />
+			<com:scriptfile path="kaf018.f.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- F1_1 -->
+				<a class="goback"
+					data-bind="ntsLinkButton: { jump: '/view/kaf/018/a/index.xhtml' }">振込元銀行の登録へ</a>
+				<!-- F1_2 -->
+				<button tabindex="1" data-bind="">#{i18n.getText('KAF018_59')}</button>
+			</div>
+			<div id="contents-area">
+				<table class="tbl-control">
+					<colgroup>
+						<col width="200px" />
+						<col />
+					</colgroup>
+					<tr>
+						<td>
+							<!-- F2_1 -->
+							<button class="auto-height">
+								#{i18n.getText('KAF018_27')}<i class="img-icon icon-prev"></i>
+							</button> <!-- F2_2 -->
+							<button class="auto-height">
+								#{i18n.getText('KAF018_28')}<i class="img-icon icon-next"></i>
+							</button>
+						</td>
+						<td>
+							<!-- F2_3 -->
+							<div class="label">000 1232s 13213 sdas</div>
+						</td>
+					</tr>
+				</table>
+				<table class="tbl-control">
+					<colgroup>
+						<col width="100px" />
+						<col width="300px" />
+						<col width="500px" />
+						<col width="100px" />
+					</colgroup>
+					<tr>
+						<td>
+							<!-- F3 -->
+							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_10')}</div>
+						</td>
+						<td>
+							<!-- F3_1 -->
+							<div class="limited-label label" style="width: 290px;">13123
+								21s 12321 312 sad asd q2</div>
+						</td>
+						<td>
+							<!-- F4 --> <!-- F4_1 -->
+							<div class="limited-label label" style="width: 490px;">2017/04(2017/01/01
+								~ 2017/04/30)</div>
+						</td>
+						<td class="align-right">
+							<!-- F10 -->
+							<button data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KAF018_65')}</button>
+						</td>
+					</tr>
+				</table>
+				<!-- F5 -->
+				<div id="extable"></div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

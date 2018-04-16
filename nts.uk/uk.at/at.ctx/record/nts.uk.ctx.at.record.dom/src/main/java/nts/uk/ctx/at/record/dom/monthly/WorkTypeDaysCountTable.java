@@ -2,12 +2,14 @@ package nts.uk.ctx.at.record.dom.monthly;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VacationAddSet;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AggregateAbsenceDays;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.VerticalTotalMethodOfMonthly;
+import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -46,7 +48,7 @@ public class WorkTypeDaysCountTable {
 	/** 振休使用日数 */
 	private AttendanceDaysMonth transferHolidayUseDays;
 	/** 休業日数 */
-	private AttendanceDaysMonth leaveDays;
+	private Map<CloseAtr, AttendanceDaysMonth> leaveDays;
 	/** 時消日数 */
 	private AttendanceDaysMonth timeDigestionDays;
 	/** 所定日数 */
@@ -64,16 +66,16 @@ public class WorkTypeDaysCountTable {
 	private boolean addSpecialHoliday;
 	
 	/** 月別実績の縦計方法 */
-	private VerticalTotalMethodOfMonthly verticalTotalMethod;
+	private Optional<VerticalTotalMethodOfMonthly> verticalTotalMethodOpt;
 	
 	/**
 	 * コンストラクタ
 	 * @param workType 勤務種類
 	 * @param vacationAddSet 休暇加算設定
-	 * @param verticalTotalMethod 月別実績の縦計方法
+	 * @param verticalTotalMethod 月別実績の縦計方法　（特定日日数の振分用）
 	 */
 	public WorkTypeDaysCountTable(WorkType workType,
-			VacationAddSet vacationAddSet, VerticalTotalMethodOfMonthly verticalTotalMethod){
+			VacationAddSet vacationAddSet, Optional<VerticalTotalMethodOfMonthly> verticalTotalMethod){
 		
 		// init
 		this.attendanceDays = new AttendanceDaysMonth(0.0);
@@ -88,7 +90,7 @@ public class WorkTypeDaysCountTable {
 		this.transferAttendanceDays = new AttendanceDaysMonth(0.0);
 		this.transferHolidayGenerateDays = new AttendanceDaysMonth(0.0);
 		this.transferHolidayUseDays = new AttendanceDaysMonth(0.0);
-		this.leaveDays = new AttendanceDaysMonth(0.0);
+		this.leaveDays = new HashMap<>();
 		this.timeDigestionDays = new AttendanceDaysMonth(0.0);
 		this.predetermineDays = new AttendanceDaysMonth(0.0);
 		this.workDays = new AttendanceDaysMonth(0.0);
@@ -99,7 +101,7 @@ public class WorkTypeDaysCountTable {
 		//*****（未）　特別休暇の判定方法について、設計確認要。
 		this.addSpecialHoliday = false;
 		
-		this.verticalTotalMethod = verticalTotalMethod;
+		this.verticalTotalMethodOpt = verticalTotalMethod;
 		
 		this.confirmCount(workType);
 	}
@@ -166,11 +168,13 @@ public class WorkTypeDaysCountTable {
 		boolean notCountForHolidayDays = false;
 		//boolean generateCompensatoryLeave = false;
 		int sumAbsenceNo = -1;
+		CloseAtr closeAtr = null;
 		if (workTypeSet != null) {
 			publicHoliday = (workTypeSet.getDigestPublicHd() == WorkTypeSetCheck.CHECK); 
 			notCountForHolidayDays = (workTypeSet.getCountHodiday() != WorkTypeSetCheck.CHECK);
 			//generateCompensatoryLeave = (workTypeSet.getGenSubHodiday() == WorkTypeSetCheck.CHECK);
 			sumAbsenceNo = workTypeSet.getSumAbsenseNo();
+			closeAtr = workTypeSet.getCloseAtr();
 		}
 		
 		switch (workTypeClass){
@@ -233,7 +237,10 @@ public class WorkTypeDaysCountTable {
 			this.predetermineDays = this.predetermineDays.addDays(addDays);
 			break;
 		case Closure:
-			this.leaveDays = this.leaveDays.addDays(addDays);
+			if (closeAtr != null){
+				this.leaveDays.putIfAbsent(closeAtr, new AttendanceDaysMonth(0.0));
+				this.leaveDays.compute(closeAtr, (k, v) -> v.addDays(addDays));
+			}
 			this.predetermineDays = this.predetermineDays.addDays(addDays);
 			break;
 		case LeaveOfAbsence:

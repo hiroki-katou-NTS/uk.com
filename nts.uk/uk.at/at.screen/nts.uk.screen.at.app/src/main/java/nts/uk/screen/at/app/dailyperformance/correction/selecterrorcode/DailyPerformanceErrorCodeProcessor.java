@@ -409,7 +409,7 @@ public class DailyPerformanceErrorCodeProcessor {
 				DailyPerformanceEmployeeDto employee = listEmployee.get(j);
 				for (int i = 0; i < lstDate.size(); i++) {
 					GeneralDate filterDate = lstDate.get(i);
-					result.add(new DPDataDto(employee.getId()+"_"+dataId, "", "", filterDate, false, employee.getId(), employee.getCode(),
+					result.add(new DPDataDto(employee.getId()+"_"+dataId, "", "", filterDate, false, false, employee.getId(), employee.getCode(),
 							employee.getBusinessName(), employee.getWorkplaceId(), "", ""));
 					dataId++;
 				}

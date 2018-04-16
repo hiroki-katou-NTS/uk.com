@@ -415,7 +415,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         private changeBooleanToNumber(wts: IWorkTypeSet): void {
             wts.digestPublicHd = Number(wts.digestPublicHd);
             wts.attendanceTime = Number(wts.attendanceTime);
-            wts.countHodiday = Number(wts.countHodiday);
+            wts.countHodiday = Number(!wts.countHodiday);
             wts.dayNightTimeAsk = Number(wts.dayNightTimeAsk);
             wts.genSubHodiday = Number(wts.genSubHodiday);
             wts.timeLeaveWork = Number(wts.timeLeaveWork);
@@ -983,7 +983,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 this.workAtr = ko.observable(param.workAtr);
                 this.digestPublicHd = ko.observable(!!param.digestPublicHd);
                 this.holidayAtr = ko.observable(param.holidayAtr);
-                this.countHodiday = ko.observable(!!param.countHodiday);
+                this.countHodiday = ko.observable(!param.countHodiday);
                 this.closeAtr = ko.observable(param.closeAtr);
                 this.sumAbsenseNo = ko.observable(param.sumAbsenseNo);
                 this.sumSpHodidayNo = ko.observable(param.sumSpHodidayNo);

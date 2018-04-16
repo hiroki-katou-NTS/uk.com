@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -10,11 +12,9 @@ import nts.arc.time.YearMonth;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
+import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
-import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
@@ -24,16 +24,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
  */
 @Stateless
 public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecordService {
-
-	/** 労働条件項目 */
-	@Inject
-	private WorkingConditionItemRepository workingConditionItemRepository;
-	/** 労働条件 */
-	@Inject
-	private WorkingConditionRepository workingConditionRepository;
-	/** 社員 */
-	@Inject
-	private EmpEmployeeAdapter empEmployeeAdapter;
 
 	/** 月別集計が必要とするリポジトリ */
 	@Inject
@@ -56,12 +46,12 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		val returnValue = new AggregateMonthlyRecordValue();
 
 		// 「労働条件項目」を取得
-		val workingConditionItems = this.workingConditionItemRepository.getBySidAndPeriodOrderByStrD(
+		val workingConditionItems = this.repositories.getWorkingConditionItem().getBySidAndPeriodOrderByStrD(
 				employeeId, datePeriod);
 		
 		// 社員を取得する
 		EmployeeImport employee = null;
-		employee = this.empEmployeeAdapter.findByEmpId(employeeId);
+		employee = this.repositories.getEmpEmployee().findByEmpId(employeeId);
 		if (employee == null){
 			String errMsg = "社員データが見つかりません。　社員ID：" + employeeId;
 			throw new BusinessException(new RawErrorMessage(errMsg));
@@ -72,7 +62,7 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 
 			// 「労働条件」の該当履歴から期間を取得
 			val historyId = workingConditionItem.getHistoryId();
-			val workingConditionOpt = this.workingConditionRepository.getByHistoryId(historyId);
+			val workingConditionOpt = this.repositories.getWorkingCondition().getByHistoryId(historyId);
 			if (!workingConditionOpt.isPresent()) continue;
 			val workingCondition = workingConditionOpt.get();
 
@@ -85,10 +75,6 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 				// 履歴の期間と重複がない時
 				continue;
 			}
-			
-			// 退職月か確認する　（変形労働勤務の月単位集計：精算月判定に利用）
-			boolean isRetireMonth = false;
-			if (procPeriod.contains(employee.getRetiredDate())) isRetireMonth = true;
 			
 			// 入社前、退職後を期間から除く
 			val termInOffice = new DatePeriod(employee.getEntryDate(), employee.getRetiredDate());
@@ -103,11 +89,24 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			
 			// 月別実績の勤怠時間　初期設定
 			val attendanceTime = new AttendanceTimeOfMonthly(employeeId, yearMonth, closureId, closureDate, procPeriod);
-			attendanceTime.prepareAggregation(companyId, procPeriod, workingSystem, isRetireMonth, this.repositories);
+			attendanceTime.prepareAggregation(companyId, procPeriod, workingConditionItem, this.repositories);
 			
 			// 月の計算
 			val monthlyCalculation = attendanceTime.getMonthlyCalculation();
-			monthlyCalculation.aggregate(procPeriod, MonthlyAggregateAtr.MONTHLY, this.repositories);
+			monthlyCalculation.aggregate(procPeriod, MonthlyAggregateAtr.MONTHLY,
+					Optional.empty(), Optional.empty(), this.repositories);
+			
+			// 36協定時間の集計
+			MonthlyCalculation monthlyCalculationForAgreement = new MonthlyCalculation();
+			val agreementTimeOpt = monthlyCalculationForAgreement.aggregateAgreementTime(
+					companyId, employeeId, yearMonth, closureId, closureDate, procPeriod,
+					workingConditionItem, Optional.empty(), this.repositories);
+			if (agreementTimeOpt.isPresent()){
+				val agreementTime = agreementTimeOpt.get();
+				val agreementTimeList = returnValue.getAgreementTimeList();
+				agreementTimeList.removeIf(c -> { return (c.getYearMonth() == agreementTime.getYearMonth());});
+				agreementTimeList.add(agreementTime);
+			}
 			
 			// 縦計
 			val verticalTotal = attendanceTime.getVerticalTotal();
@@ -119,7 +118,7 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			attendanceTime.setExcessOutsideWork(excessOutsideWorkMng.getExcessOutsideWork());
 
 			// 計算結果を戻り値に蓄積
-			returnValue.getAttendanceTimes().add(attendanceTime);
+			returnValue.getAttendanceTimeList().add(attendanceTime);
 		}
 		
 		return returnValue;

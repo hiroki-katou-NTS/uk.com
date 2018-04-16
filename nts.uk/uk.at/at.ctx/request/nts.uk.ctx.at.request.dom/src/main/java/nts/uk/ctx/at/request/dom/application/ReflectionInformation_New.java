@@ -34,9 +34,11 @@ public class ReflectionInformation_New extends DomainObject {
 	private DisabledSegment_New forcedReflectionReal;
 	
 	// 予定反映不可理由
+	@Setter
 	private Optional<ReasonNotReflect_New> notReason;
 	
 	// 実績反映不可理由
+	@Setter
 	private Optional<ReasonNotReflectDaily_New> notReasonReal;
 	
 	// 予定反映日時

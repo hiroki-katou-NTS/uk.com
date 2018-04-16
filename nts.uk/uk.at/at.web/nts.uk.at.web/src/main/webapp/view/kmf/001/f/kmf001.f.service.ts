@@ -17,7 +17,9 @@ module nts.uk.pr.view.kmf001.f {
             //employment
             findAllEmploymentSetting: 'ctx/at/shared/vacation/setting/compensatoryleave/employment/findall',
             updateEmploySetting: 'ctx/at/shared/vacation/setting/compensatoryleave/employment/save',
-            findEmploymentSetting: 'ctx/at/shared/vacation/setting/compensatoryleave/employment/findsetting'
+            deleteEmploySetting: 'ctx/at/shared/vacation/setting/compensatoryleave/employment/delete',
+            findEmploymentSetting: 'ctx/at/shared/vacation/setting/compensatoryleave/employment/findsetting',
+            findEmploymentDto: 'ctx/at/shared/vacation/setting/compensatoryleave/employment/finddto'
         };
 
         //update com
@@ -78,10 +80,20 @@ module nts.uk.pr.view.kmf001.f {
         export function updateEmploymentSetting(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.updateEmploySetting, command);
         }
+        
+        //delete em
+        export function deleteEmploymentSetting(command: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.deleteEmploySetting, command);
+        }
 
         //find em setting by em code
         export function findEmploymentSetting(employmentCode: string): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.findEmploymentSetting + "/" + employmentCode);
+        }
+        
+        //find em setting by em code
+        export function findEmploymentDto(employmentCode: string): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findEmploymentDto + "/" + employmentCode);
         }
         
         //find all em setting 

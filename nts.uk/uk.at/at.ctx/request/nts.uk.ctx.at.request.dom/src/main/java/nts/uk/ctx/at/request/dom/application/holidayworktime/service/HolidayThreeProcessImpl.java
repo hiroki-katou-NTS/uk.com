@@ -26,6 +26,8 @@ import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
@@ -115,6 +117,8 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 					 //画面上の申請時間＞Imported(申請承認)「計算休出時間」.休出時間
 					if(breakTime.getApplicationTime() > calTime){
 						throw new BusinessException("Msg_423");
+					}else{
+						breakTime.setCaculationTime(calTime != null ? Integer.toString(calTime) : null);
 					}
 				 }
 			}else{
@@ -138,6 +142,8 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 				 //画面上の申請時間＞Imported(申請承認)「計算休出時間」.休出時間
 				if(breakTime.getApplicationTime() > calTime){
 					throw new BusinessException("Msg_423");
+				}else{
+					breakTime.setCaculationTime(calTime != null ? Integer.toString(calTime) : null);
 				}
 			}else{
 				throw new BusinessException("Msg_423");
@@ -156,10 +162,10 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 		Optional<WorkType> workType = workTypeRep.findByPK(companyID, recordWorkInfoImport.getWorkTypeCode());
 		if(workType.isPresent()){
 			if(workType.get().getDailyWork().isHolidayWork()){
-				// 03-02-3-1_当日_休日出勤の場合 :TODO
-				this.checkOnDayTheDayForHoliday(companyID, employeeID, appDate, siftCD, breakTime, recordWorkInfoImport, calTime);
+				// 03-02-3-1_当日_休日出勤の場合 
+				this.checkOnDayTheDayForHolidayWork(companyID, employeeID, appDate, siftCD, breakTime, recordWorkInfoImport, calTime);
 			}else{
-				//03-02-3-2_当日_休日の場合:TODO
+				//03-02-3-2_当日_休日の場合
 				this.checkOutSideTimeTheDayNoForHoliday(companyID, employeeID, appDate, siftCD, breakTime, recordWorkInfoImport, calTime);
 			}
 		}
@@ -167,26 +173,69 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 	}
 	// 03-02-3-1_当日_休日出勤の場合
 	@Override
-	public void checkOnDayTheDayForHoliday(String companyID, String employeeID, String appDate, String siftCD,
+	public void checkOnDayTheDayForHolidayWork(String companyID, String employeeID, String appDate, String siftCD,
 			CaculationTime breakTime, RecordWorkInfoImport recordWorkInfoImport, Integer calTime) {
 		// ドメインモデル「休出申請設定」を取得
 		Optional<WithdrawalAppSet> withdrawalApp =	withdrawalAppSetRepository.getWithDraw();
 		if(recordWorkInfoImport != null){
 			//打刻漏れチェック
 			if(recordWorkInfoImport.getAttendanceStampTimeFirst() != null && recordWorkInfoImport.getLeaveStampTimeFirst() != null){
-				// ドメインモデル「残業休出申請共通設定」を取得
-				Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository
-						.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
-				if(overtimeRestAppCommonSet.isPresent()){
-					
-					//Imported(申請承認)「実績内容」.就業時間帯コード != 画面上の就業時間帯
-					 //画面上の申請時間＞Imported(申請承認)「計算休出時間」.休出時間
-					if(breakTime.getApplicationTime() > calTime){
-						throw new BusinessException("Msg_423");
+				if(withdrawalApp.isPresent() && withdrawalApp.get().getOverrideSet().equals(OverrideSet.TIME_OUT_PRIORITY)){
+					if(siftCD != null && siftCD.equals(recordWorkInfoImport.getWorkTimeCode())){
+						this.checkTimeThanCalTimeReally(breakTime, recordWorkInfoImport);
 					}
 				}
+				// Imported(申請承認)「実績内容」.就業時間帯コード != 画面上の就業時間帯
+				// 画面上の申請時間＞Imported(申請承認)「計算休出時間」.休出時間
+				if (breakTime.getApplicationTime() > calTime) {
+					throw new BusinessException("Msg_423");
+				} else {
+					// 
+					breakTime.setCaculationTime(calTime != null ? Integer.toString(calTime) : null);
+				}
 			}else{
+				if(withdrawalApp.isPresent() && withdrawalApp.get().getCalStampMiss().equals(CalcStampMiss.CAN_NOT_REGIS)){
+					throw new BusinessException("Msg_423");
+				}else{
+					if (breakTime.getApplicationTime() > calTime) {
+						//画面上の申請時間＞Imported(申請承認)「計算休出時間」.休出時間
+						throw new BusinessException("Msg_423");
+					} else {
+						//画面上の申請時間＜＝Imported(申請承認)「計算休出時間」.休出時間
+						breakTime.setCaculationTime(calTime != null ? Integer.toString(calTime) : null);
+					}
+				}
+			}
+		}
+		
+	}
+	// 03-02-3-2_当日_休日の場合
+	@Override
+	public void checkDayIsHoliday(String companyID, String employeeID, String appDate, String siftCD,
+			CaculationTime breakTime, RecordWorkInfoImport recordWorkInfoImport, Integer calTime) {
+		// ドメインモデル「休出申請設定」を取得
+		Optional<WithdrawalAppSet> withdrawalApp =	withdrawalAppSetRepository.getWithDraw();
+		if(recordWorkInfoImport.getAttendanceStampTimeFirst() != null && recordWorkInfoImport.getLeaveStampTimeFirst() != null){
+			//出勤、退勤打刻あり
+			if (breakTime.getApplicationTime() > calTime) {
+				//画面上の申請時間＞Imported(申請承認)「計算休出時間」.休出時間
 				throw new BusinessException("Msg_423");
+			} else {
+				//画面上の申請時間＜＝Imported(申請承認)「計算休出時間」.休出時間
+				breakTime.setCaculationTime(calTime != null ? Integer.toString(calTime) : null);
+			}
+			
+		}else{
+			if(withdrawalApp.isPresent() && withdrawalApp.get().getCalStampMiss().equals(CalcStampMiss.CAN_NOT_REGIS)){
+				throw new BusinessException("Msg_423");
+			}else{
+				if (breakTime.getApplicationTime() > calTime) {
+					//画面上の申請時間＞Imported(申請承認)「計算休出時間」.休出時間
+					throw new BusinessException("Msg_423");
+				} else {
+					//画面上の申請時間＜＝Imported(申請承認)「計算休出時間」.休出時間
+					breakTime.setCaculationTime(calTime != null ? Integer.toString(calTime) : null);
+				}
 			}
 		}
 		
@@ -309,9 +358,12 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 				 //画面上の申請時間＞Imported(申請承認)「実績内容」.休出時間
 				 if(breakTime.getApplicationTime() > holidayCal.getResultCaculation()){
 					 throw new BusinessException("Msg_423");
+				 }else{
+					 breakTime.setCaculationTime(holidayCal.getResultCaculation() != null ? Integer.toString(holidayCal.getResultCaculation()) : null);
 				 }
 			 }
 		 }
 	}
+	
 	
 }

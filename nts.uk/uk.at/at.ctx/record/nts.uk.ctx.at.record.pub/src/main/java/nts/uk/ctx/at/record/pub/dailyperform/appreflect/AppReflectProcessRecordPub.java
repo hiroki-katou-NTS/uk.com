@@ -27,9 +27,37 @@ public interface AppReflectProcessRecordPub {
 	 */
 	public AppReflectPubOutput afterGobackReflect(GobackReflectPubParameter para);
 	/**
+	 * 	勤務実績に反映
 	 * 事前申請の処理　残業申請
 	 * @param param
 	 * @return
 	 */
 	public AppReflectPubOutput preOvertimeReflect(PreOvertimePubParameter param);
+	/**
+	 * 勤務実績に反映: 事後残業申請処理
+	 * @param param
+	 * @return
+	 */
+	public AppReflectPubOutput afterOvertimeReflect(PreOvertimePubParameter param);
+	/**
+	 * (休暇申請)
+	 * @param param
+	 * @param isPre : true: 事前申請処理, false: 事後申請処理
+	 * @return
+	 */
+	public AppReflectPubOutput absenceReflect(CommonReflectPubParameter param, boolean isPre);
+	/**
+	 * 	勤務実績に反映: 事前申請の処理(休日出勤申請)
+	 * @param param
+	 * @return
+	 */
+	public AppReflectPubOutput holidayWorkReflect(HolidayWorkReflectPubPara param);
+	/**
+	 * 勤務変更申請
+	 * @param param
+	 * @param isPre : true: 事前申請処理, false: 事後申請処理
+	 * @return
+	 */
+	public AppReflectPubOutput workChangeReflect(CommonReflectPubParameter param, boolean isPre);
+	
 }

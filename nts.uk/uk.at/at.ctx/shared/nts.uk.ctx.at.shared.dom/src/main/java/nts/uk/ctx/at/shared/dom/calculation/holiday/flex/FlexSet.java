@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday.flex;
 
 import lombok.AllArgsConstructor;
@@ -6,9 +10,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
- * 
- * @author phongtq
- *
+ * The Class FlexSet.
  */
 @AllArgsConstructor
 @Getter
@@ -28,6 +30,12 @@ public class FlexSet extends AggregateRoot {
 
 	/** 割増計算 */
 	public FlexCalcAtr premiumCalcSubhd;
+	
+	/** 法定労働控除時間計算 */
+	public TimeHolidayCalcSet flexDeductTimeCalc;
+	
+	/** 非勤務日計算 */
+	public CalcMethodOfNoWorkingDay flexNonworkingDayCalc;
 
 	/**
 	 * Create from Java Type of Flex Set
@@ -40,7 +48,8 @@ public class FlexSet extends AggregateRoot {
 	 * @return
 	 */
 	public static FlexSet createFromJavaType(String companyId, int missCalcHd, int premiumCalcHd, int missCalcSubhd,
-			int premiumCalcSubhd) {
-		return new FlexSet(companyId, EnumAdaptor.valueOf(missCalcHd, FlexCalcAtr.class), EnumAdaptor.valueOf(premiumCalcHd, FlexCalcAtr.class),EnumAdaptor.valueOf(missCalcSubhd, FlexCalcAtr.class),EnumAdaptor.valueOf(premiumCalcSubhd, FlexCalcAtr.class));
+			int premiumCalcSubhd, int flexDeductTimeCalc, int flexNonworkingDayCalc) {
+		return new FlexSet(companyId, EnumAdaptor.valueOf(missCalcHd, FlexCalcAtr.class), EnumAdaptor.valueOf(premiumCalcHd, FlexCalcAtr.class),EnumAdaptor.valueOf(missCalcSubhd, FlexCalcAtr.class),EnumAdaptor.valueOf(premiumCalcSubhd, FlexCalcAtr.class),
+				EnumAdaptor.valueOf(flexDeductTimeCalc, TimeHolidayCalcSet.class), EnumAdaptor.valueOf(flexNonworkingDayCalc, CalcMethodOfNoWorkingDay.class));
 	}
 }

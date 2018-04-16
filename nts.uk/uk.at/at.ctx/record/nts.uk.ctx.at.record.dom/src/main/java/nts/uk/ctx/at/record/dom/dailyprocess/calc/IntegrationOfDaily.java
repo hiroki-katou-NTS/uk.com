@@ -6,6 +6,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTimeByWorkOfDaily;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 
@@ -33,6 +35,7 @@ public class IntegrationOfDaily {
 	//日別実績の勤務情報
 	private WorkInfoOfDailyPerformance workInformation;
 	//日別実績の計算区分
+	@Setter
 	private CalAttrOfDailyPerformance calAttr;
 	//日別実績の所属情報
 	private AffiliationInforOfDailyPerfor affiliationInfor;
@@ -118,5 +121,20 @@ public class IntegrationOfDaily {
 	}
 	
 	
+	
+	/**
+	 * 残業時間実績超過の取得
+	 * @param integrationOfDaily
+	 */
+	public  Optional<EmployeeDailyPerError> getErrorList(String employeeId,
+			   											 GeneralDate targetDate,
+			   											 ErrorAlarmWorkRecordCode errorCode,
+			   											 CheckExcessAtr checkAtr) {
+		Optional<EmployeeDailyPerError> returnErrorItem = Optional.empty();
+		if(this.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			this.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily();
+		}
+		return returnErrorItem;
+	}
 	
 }

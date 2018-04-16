@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.record.dom.divergencetimeofdaily;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /** 乖離時間 */
@@ -36,5 +39,13 @@ public class DivergenceTime {
 		this.divTimeId = divTimeId;
 		this.divReason = divReason;
 		this.divResonCode = divResonCode;
+	}
+	
+	/**
+	 * 乖離時間のチェック
+	 * @return
+	 */
+	public Optional<EmployeeDailyPerError> checkDivergenceTime(){
+		return Optional.empty();
 	}
 }

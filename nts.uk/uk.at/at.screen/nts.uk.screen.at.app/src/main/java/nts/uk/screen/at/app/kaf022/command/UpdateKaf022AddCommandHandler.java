@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.UpdateAppTypeBfCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.common.ApplicationSettingCommand;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationSettingCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.triprequestsetting.UpdateTripRequestSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.workchange.InsertAppWorkChangeSetCommandHandler;
@@ -15,8 +16,8 @@ import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsett
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.hdappset.UpdateTimeHdAppSetHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.hdworkappset.UpdateWDAppSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.withdrawalrequestset.UpdateWithDrawalReqSetHandler;
+import nts.uk.ctx.at.request.app.command.setting.company.applicationcommonsetting.ApprovalSetCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationcommonsetting.UpdateAppCommonSetCommandHandler;
-import nts.uk.ctx.at.request.app.command.setting.company.applicationcommonsetting.UpdateApprovalSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationsetting.UpdateProxyAppSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.displayname.UpdateAppDispNameCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.UpdateApprovalTempCommandHandler;
@@ -36,9 +37,6 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 	// 申請締切設定
 	@Inject
 	private UpdateApplicationDeadlineCommandHandler updateApp;
-	// 承認一覧表示設定, データが確立が確定されている場合の承認済申請の反映
-	@Inject
-	private UpdateApprovalSetCommandHandler updateAppSet;
 	// 申請一覧共通設定
 	@Inject 
 	private UpdateAppCommonSetCommandHandler updateAppCom;
@@ -54,7 +52,7 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 	// 申請承認メールテンプレート
 	@Inject
 	private UpdateApprovalTempCommandHandler updateAppTemp;
-	// 申請設定/申請承認設定/申請表示設定/申請制限設定
+	// 申請設定/申請承認設定/申請表示設定/申請制限設定 // YEN merged
 	@Inject
 	private UpdateApplicationSettingCommandHandler updateAppliSet;
 	// 申請表示名設定
@@ -112,7 +110,7 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 		// update list command object
 		this.updateApp.handle(kaf022.getAppDead());
 		
-		this.updateAppSet.handle(kaf022.getAppSet());
+//		this.updateAppSet.handle(kaf022.getAppSet());
 		
 		this.updateAppCom.handle(kaf022.getAppCommon());
 		
@@ -124,7 +122,8 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 		
 		this.updateAppTemp.handle(kaf022.getAppTemp());
 		
-		this.updateAppliSet.handle(kaf022.getAppliSet());
+		this.updateAppliSet.handle(setAgainData(kaf022.getAppliSet(), kaf022.getAppSet()));
+		
 		// update list command object
 		this.updateAppDisp.handle(kaf022.getAppName());
 		// update list command object
@@ -158,4 +157,17 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 		this.updateAppro.handle(kaf022.getApprovalSet());
 	}
 
+	private ApplicationSettingCommand setAgainData(ApplicationSettingCommand applicationSettingCommand , ApprovalSetCommand appSet) {
+		applicationSettingCommand.setAppReasonDispAtr(appSet.getReasonDisp());
+		applicationSettingCommand.setWarningDateDispAtr(appSet.getWarnDateDisp());
+		applicationSettingCommand.setOtActualDispAtr(appSet.getOvertimePerfom());
+		applicationSettingCommand.setOtAdvanceDispAtr(appSet.getOvertimePre());
+		applicationSettingCommand.setActualExcessMessDispAtr(appSet.getMsgExceeded());
+		applicationSettingCommand.setHwActualDispAtr(appSet.getHdPerform());
+		applicationSettingCommand.setHwAdvanceDispAtr(appSet.getHdPre());
+		applicationSettingCommand.setAdvanceExcessMessDispAtr(appSet.getMsgAdvance());
+		applicationSettingCommand.setAchievementConfirmedAtr(appSet.getAchiveCon());
+		applicationSettingCommand.setScheduleConfirmedAtr(appSet.getScheduleCon());
+		return applicationSettingCommand;
+	}
 }

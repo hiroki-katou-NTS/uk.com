@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.ac.processexecution;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,27 +17,24 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class EmployeeHistWorkRecordAcFinder implements EmployeeHistWorkRecordAdapter {
 
-//	@Inject
-//	private SyCompanyPub syCompanyPub;
+	@Inject
+	private SyCompanyPub syCompanyPub;
 
 	@Override
 	public List<AffCompanyHistImport> getWplByListSidAndPeriod(List<String> sids, DatePeriod datePeriod) {
-//		List<AffCompanyHistImport> importList =
-//				this.syCompanyPub.GetAffCompanyHistByEmployee(sids, datePeriod)
-//					.stream()
-//						.map(x->convertToImport(x))
-//							.collect(Collectors.toList());
-//		return importList;
-		return null;
+		List<AffCompanyHistImport> importList =
+				this.syCompanyPub.GetAffCompanyHistByEmployee(sids, datePeriod)
+					.stream()
+						.map(x->convertToImport(x))
+							.collect(Collectors.toList());
+		return importList;
 	}
 	
 	private AffCompanyHistImport convertToImport(AffCompanyHistExport export) {
-//		List<AffComHistItemImport> subListImport = null;
-//				export.getLstAffComHistItem()
-//					.stream()
-//						.map(x-> new AffComHistItemImport(x.getHistoryId(), x.isDestinationData(), x.getDatePeriod()))
-//							.collect(Collectors.toList());
-//		return new AffCompanyHistImport(export.getEmployeeId(), subListImport);
-		return null;
+		List<AffComHistItemImport> subListImport = export.getLstAffComHistItem()
+					.stream()
+						.map(x-> new AffComHistItemImport(x.getHistoryId(), x.isDestinationData(), x.getDatePeriod()))
+							.collect(Collectors.toList());
+		return new AffCompanyHistImport(export.getEmployeeId(), subListImport);
 	}
 }

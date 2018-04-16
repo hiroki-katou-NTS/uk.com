@@ -51,9 +51,9 @@
 											option: {width: '230px'},
                                            	constraint: 'EmailAuthentication'}" />
 								</div>
-								<button id="test_send_mail"
+								<!-- <button id="test_send_mail"
 									data-bind="click: showDialogTest, enable: isEnableButtonTest"
-									class="btnStyle">#{i18n.getText('CMM050_5')}</button>
+									class="btnStyle">#{i18n.getText('CMM050_5')}</button> -->
 							</td>
 						</tr>
 
@@ -135,7 +135,7 @@
 												name: '#[CMM050_12]',
 												value: smtpPort,
 												required: true,
-												option: {width: '25px', textalign: 'left'},
+												option: {width: '45px', textalign: 'left'},
 	                                           	constraint: 'Port'}" />
 
 										<span data-bind="text: computedText"></span>
@@ -186,7 +186,7 @@
 												name: '#[CMM050_21]',
 												value: imapPort,
 												required: true,
-												option: {width: '25px', textalign: 'left'},
+												option: {width: '45px', textalign: 'left'},
 	                                           	constraint: 'Port'}" />
 										<span>#{i18n.getText('CMM050_22')}</span>
 									</div>
@@ -250,7 +250,7 @@
 												name: '#[CMM050_16]',
 												value: popPort,
 												required: true,
-												option: {width: '25px', textalign: 'left'},
+												option: {width: '45px', textalign: 'left'},
 	                                           	constraint: 'Port'}" />
 										<span>#{i18n.getText('CMM050_17')}</span>
 									</div>

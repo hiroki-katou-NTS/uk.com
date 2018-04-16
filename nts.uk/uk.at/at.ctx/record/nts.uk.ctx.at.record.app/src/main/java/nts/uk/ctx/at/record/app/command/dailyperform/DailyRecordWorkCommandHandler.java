@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.app.command.dailyperform;
 
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,6 +11,8 @@ import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.Affiliatio
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyCommandUpdateHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.PCLogInfoOfDailyCommandAddHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.PCLogInfoOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AttendanceTimeOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AttendanceTimeOfDailyPerformCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.BreakTimeOfDailyPerformanceCommandAddHandler;
@@ -26,6 +27,8 @@ import nts.uk.ctx.at.record.app.command.dailyperform.goout.OutingTimeOfDailyPerf
 import nts.uk.ctx.at.record.app.command.dailyperform.goout.OutingTimeOfDailyPerformanceCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.optionalitem.OptionalItemOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.optionalitem.OptionalItemOfDailyPerformCommandUpdateHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.remark.RemarkOfDailyCommandAddHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.remark.RemarkOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.shorttimework.ShortTimeOfDailyCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.shorttimework.ShortTimeOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.specificdatetttr.SpecificDateAttrOfDailyCommandAddHandler;
@@ -38,10 +41,10 @@ import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.AttendanceTimeBy
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.AttendanceTimeByWorkOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommandUpdateHandler;
-import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.DetermineErrorAlarmWorkRecordService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlCheckService;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -171,10 +174,24 @@ public class DailyRecordWorkCommandHandler {
 	private TemporaryTimeOfDailyPerformanceCommandUpdateHandler temporaryTimeUpdateHandler;
 	
 	@Inject
+	@AttendanceItemLayout(layout = "P", jpPropertyName = "", index = 16)
+	private PCLogInfoOfDailyCommandAddHandler pcLogInfoAddHandler;
+	@Inject
+	@AttendanceItemLayout(layout = "P", jpPropertyName = "", index = 16)
+	private PCLogInfoOfDailyCommandUpdateHandler pcLogInfoUpdateHandler;
+
+	@Inject
+	@AttendanceItemLayout(layout = "Q", jpPropertyName = "", index = 17)
+	private RemarkOfDailyCommandAddHandler remarksAddHandler;
+	@Inject
+	@AttendanceItemLayout(layout = "Q", jpPropertyName = "", index = 17)
+	private RemarkOfDailyCommandUpdateHandler remarksUpdateHandler;
+	
+	@Inject
 	private CalculateDailyRecordService calcService;
 	
 	@Inject 
-	private DetermineErrorAlarmWorkRecordService determineErrorAlarmWorkRecordService;
+	private ErAlCheckService determineErrorAlarmWorkRecordService;
 	
 	@Inject
 	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepository;
@@ -201,7 +218,7 @@ public class DailyRecordWorkCommandHandler {
 		//remove data error
 		employeeDailyPerErrorRepository.removeParam(command.getEmployeeId(), command.getWorkDate());
 		//check and insert error;
-		determineErrorAlarmWorkRecordService.insertErrorAlarm(command.getEmployeeId(), command.getWorkDate());
+		determineErrorAlarmWorkRecordService.checkAndInsert(command.getEmployeeId(), command.getWorkDate());
 	}
 	
 	private void calcIfNeed(Set<String> group, DailyRecordWorkCommand command){
@@ -212,7 +229,7 @@ public class DailyRecordWorkCommandHandler {
 //				){
 			IntegrationOfDaily calced = calcService.calculate(
 					new IntegrationOfDaily(command.getWorkInfo().getData(), command.getCalcAttr().getData(), command.getAffiliationInfo().getData(), 
-							Optional.empty(), Arrays.asList(command.getErrors().getData()), command.getOutingTime().getData(), command.getBreakTime().getData(), 
+							command.getPcLogInfo().getData(), Arrays.asList(command.getErrors().getData()), command.getOutingTime().getData(), command.getBreakTime().getData(), 
 							command.getAttendanceTime().getData(), command.getAttendanceTimeByWork().getData(), command.getTimeLeaving().getData(), 
 							command.getShortWorkTime().getData(), command.getSpecificDateAttr().getData(), command.getAttendanceLeavingGate().getData(), 
 							command.getOptionalItem().getData(), command.getEditState().getData(), command.getTemporaryTime().getData()));
@@ -284,6 +301,12 @@ public class DailyRecordWorkCommandHandler {
 			break;
 		case "O":
 			handler = isUpdate ? this.temporaryTimeUpdateHandler : this.temporaryTimeAddHandler;
+			break;
+		case "P":
+			handler = isUpdate ? this.pcLogInfoUpdateHandler : this.pcLogInfoAddHandler;
+			break;
+		case "Q":
+			handler = isUpdate ? this.remarksUpdateHandler : this.remarksAddHandler;
 			break;
 		default:
 			break;

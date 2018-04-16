@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
  * The Class RetentionYearlySetting.
@@ -28,6 +29,9 @@ public class RetentionYearlySetting extends AggregateRoot {
 	/** The leave as work days. */
 	private Boolean leaveAsWorkDays;
 	
+	/** The management category. */
+	private ManageDistinct managementCategory;
+	
 	/**
 	 * Instantiates a new retention yearly setting.
 	 *
@@ -38,6 +42,8 @@ public class RetentionYearlySetting extends AggregateRoot {
 		this.upperLimitSetting = memento.getUpperLimitSetting();
 		this.leaveAsWorkDays = memento
 				.getLeaveAsWorkDays();
+		this.managementCategory = memento
+				.getManagementCategory();
 	}
 	
 	/**
@@ -49,6 +55,7 @@ public class RetentionYearlySetting extends AggregateRoot {
 		memento.setLeaveAsWorkDays(this.leaveAsWorkDays);
 		memento.setCompanyId(this.companyId);
 		memento.setUpperLimitSetting(this.upperLimitSetting);
+		memento.setManagementCategory(this.managementCategory);
 	}
 
 	/* (non-Javadoc)

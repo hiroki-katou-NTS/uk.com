@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
@@ -51,8 +50,8 @@ public class ExcessOfStatutoryTimeDailyPerformDto {
 
 	private ExcessOfStatutoryMidNightTime toExcessOfStatutory() {
 		return excessOfStatutoryMidNightTime == null ? null : new ExcessOfStatutoryMidNightTime(
-				excessOfStatutoryMidNightTime.getTime().createTimeWithCalc(),
-				toAttendanceTime(excessOfStatutoryMidNightTime.getBeforeApplicationTime()));
+												excessOfStatutoryMidNightTime.getTime().createTimeDivWithCalc(),
+												toAttendanceTime(excessOfStatutoryMidNightTime.getBeforeApplicationTime()));
 	}
 	
 	private AttendanceTime toAttendanceTime(Integer time) {
