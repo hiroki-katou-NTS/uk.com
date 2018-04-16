@@ -144,7 +144,7 @@ public class LoginWs extends WebService {
 	@Path("submit/form2")
 	public JavaTypeResult<String> submitLoginForm2(@Context HttpServletRequest request,SubmitLoginFormTwoCommand command) {
 		if (request.getParameter("signon") != null){
-			command.setSignOn(request.getParameter("signon").equals(SIGN_ON));
+			command.setSignOn(request.getParameter("signon").toLowerCase().equals(SIGN_ON));
 		}
 		command.setRequest(request);
 		return new JavaTypeResult(this.submitForm2.handle(command));
@@ -171,7 +171,7 @@ public class LoginWs extends WebService {
 	@Path("submit/form3")
 	public JavaTypeResult<String> submitLoginForm3(@Context HttpServletRequest request,SubmitLoginFormThreeCommand command) {
 		if (request.getParameter("signon") != null){
-			command.setSignOn(request.getParameter("signon").equals(SIGN_ON));
+			command.setSignOn(request.getParameter("signon").toLowerCase().equals(SIGN_ON));
 		}
 		command.setRequest(request);
 		return new JavaTypeResult(this.submitForm3.handle(command));
