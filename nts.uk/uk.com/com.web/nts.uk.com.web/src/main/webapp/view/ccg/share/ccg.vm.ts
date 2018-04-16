@@ -638,6 +638,11 @@ module nts.uk.com.view.ccg.share.ccg {
                     componentHeight = window.innerHeight - notIncluded;
                 }
 
+                const minHeight = 500;
+                if (componentHeight < minHeight) {
+                    componentHeight = minHeight;
+                }
+
                 // set component height
                 $('#component-ccg001').outerHeight(componentHeight);
                 $('#hor-scroll-button-hide').outerHeight(componentHeight);
@@ -885,7 +890,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     // Fix component width if screen width is smaller than component
                     const componentWidth = window.innerWidth - $('#hor-scroll-button-hide').offset().left;
                     if (componentWidth <= $('#ccg001-tab-content-2').outerWidth()) {
-                        const margin = 30;
+                        const margin = 20;
                         // fix width and show scrollbar
                         $('.tab-content-2.height-maximum').outerWidth(componentWidth - margin);
                         $('.tab-content-2.height-maximum').css('overflow-x', 'auto');
