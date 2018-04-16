@@ -488,23 +488,24 @@ module cmm045.a.viewmodel {
             let framName12 = '';
             let time = 0;
             let count = 0;
-            let lstSort = _.sortBy(lstFrame, ["frameNo"], ["asc"]);
-            //時間外深夜時間
-            let frame11 = self.findFrameByNo(lstFrame, 11);
-            if (frame11 !== undefined && frame11.applicationTime != 0) {
-                framName11 = frame11.name + self.convertTime_Short_HM(frame11.applicationTime);
-                time += frame11.applicationTime;
-                count += 1;
-            }
-            //ﾌﾚｯｸｽ超過
-            let frame12 = self.findFrameByNo(lstFrame, 12);
-            if (frame12 !== undefined && frame12.applicationTime != 0) {
-                framName12 = frame12.name + self.convertTime_Short_HM(frame12.applicationTime);
-                time += frame12.applicationTime;
-                count += 1;
-            }
+//            let lstSort = _.sortBy(lstFrame, ["frameNo"], ["asc"]);
+//            //時間外深夜時間
+//            let frame11 = self.findFrameByNo(lstFrame, 11);
+//            if (frame11 !== undefined && frame11.applicationTime != 0) {
+//                framName11 = frame11.name + self.convertTime_Short_HM(frame11.applicationTime);
+//                time += frame11.applicationTime;
+//                count += 1;
+//            }
+//            //ﾌﾚｯｸｽ超過
+//            let frame12 = self.findFrameByNo(lstFrame, 12);
+//            if (frame12 !== undefined && frame12.applicationTime != 0) {
+//                framName12 = frame12.name + self.convertTime_Short_HM(frame12.applicationTime);
+//                time += frame12.applicationTime;
+//                count += 1;
+//            }
+            let lstSort = self.sortFrameTime(lstFrame, 0);
             _.each(lstSort, function(item) {
-                if (item.frameNo != 11 && item.frameNo != 12 && item.applicationTime != 0) {//時間外深夜時間
+                if (item.applicationTime != 0) {//時間外深夜時間
                     if (count < 3) {
                         framName += item.name + self.convertTime_Short_HM(item.applicationTime);
                     }
@@ -514,7 +515,74 @@ module cmm045.a.viewmodel {
             });
             let other = count > 3 ? count - 3 : 0;
             let otherInfo = other > 0 ? '他' + other + '枠' : '';
-            let result = self.convertTime_Short_HM(time) + '(' + framName11 + framName12 + framName + otherInfo + ')';
+            let result = self.convertTime_Short_HM(time) + '(' + framName + otherInfo + ')';
+            return result;
+        }
+        sortFrameTime(lstFrame: Array<vmbase.OverTimeFrame>, appType: number): any {
+            let result: Array<vmbase.OverTimeFrame> = [];
+            let lstA0: Array<vmbase.OverTimeFrame> = [];
+            let lstA1: Array<vmbase.OverTimeFrame> = [];
+            let lstA2: Array<vmbase.OverTimeFrame> = [];
+            let lstA3: Array<vmbase.OverTimeFrame> = [];
+            let lstA4: Array<vmbase.OverTimeFrame> = [];
+            _.each(lstFrame, function(obj){
+                if(obj.attendanceType == 0){//RESTTIME
+                    lstA0.push(obj);
+                }
+                if(obj.attendanceType == 1){//NORMALOVERTIME
+                    lstA1.push(obj);
+                }
+                if(obj.attendanceType == 2){//BREAKTIME
+                    lstA2.push(obj);
+                }
+                if(obj.attendanceType == 3){//BONUSPAYTIME
+                    lstA3.push(obj);
+                }
+                if(obj.attendanceType == 4){//BONUSSPECIALDAYTIME
+                    lstA4.push(obj);
+                }
+            });
+            let sortByA0 =  _.orderBy(lstA0, ["frameNo"], ["asc"]);
+            let sortByA1 =  _.orderBy(lstA1, ["frameNo"], ["asc"]);
+            let sortByA2 =  _.orderBy(lstA2, ["frameNo"], ["asc"]);
+            let sortByA3 =  _.orderBy(lstA3, ["frameNo"], ["asc"]);
+            let sortByA4 =  _.orderBy(lstA4, ["frameNo"], ["asc"]);
+            if(appType == 0){//overtime
+                //push list A0 (休憩時間)
+//                _.each(sortByA0, function(obj){
+//                    result.push(obj);
+//                });
+                //push list A1 (残業時間)
+                _.each(sortByA1, function(obj){
+                    result.push(obj);
+                });
+                //push list A2 (休出時間)
+                _.each(sortByA2, function(obj){
+                    result.push(obj);
+                });
+                //push list A3 (加給時間)
+                _.each(sortByA3, function(obj){
+                    result.push(obj);
+                });
+                //push list A4 (特定日加給時間)
+                _.each(sortByA4, function(obj){
+                    result.push(obj);
+                });
+            }else{//holiday
+               
+                //push list A2 (休出時間)
+                _.each(sortByA2, function(obj){
+                    result.push(obj);
+                });
+                //push list A1 (残業時間)
+                _.each(sortByA1, function(obj){
+                    result.push(obj);
+                });
+                //push list A3 (加給時間)
+                _.each(sortByA3, function(obj){
+                    result.push(obj);
+                });
+            }
             return result;
         }
         /**
@@ -525,7 +593,7 @@ module cmm045.a.viewmodel {
             let framName = '';
             let time = 0;
             let count = 0;
-            let lstSort = _.sortBy(lstFrame, ["frameNo"], ["asc"]);
+            let lstSort = self.sortFrameTime(lstFrame, 6);
             _.each(lstSort, function(item, index) {
                 if (item.applicationTime != 0) {
                     if (count <= 1) {
@@ -604,7 +672,7 @@ module cmm045.a.viewmodel {
             let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
             let time1 = overTime.workClockFrom1  == '' ? '' : overTime.workClockFrom1 + getText('CMM045_100') + overTime.workClockTo1;
             let time2 = overTime.workClockFrom2  == '' ? '' : overTime.workClockFrom2 + getText('CMM045_100') + overTime.workClockTo2;
-            let appContentPost: string = getText('CMM045_272') + getText('CMM045_268') + ' ' + time1 + time2 + ' 残業合計' + self.convertFrameTime(overTime.lstFrame) + reason;
+            let appContentPost: string = getText('CMM045_272') + getText('CMM045_268') + '' + time1 + time2 + ' 残業合計' + self.convertFrameTime(overTime.lstFrame) + reason;
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let contentFull = '<div class = "appContent-' + app.applicationID + '">'+ appContentPost + contentPre + contentResult + '</div>';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
