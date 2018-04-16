@@ -1208,6 +1208,13 @@ module cmm045.a.viewmodel {
                 self.lstAppCommon([]);
                 self.lstAppMaster([]);
                 self.lstAppOt([]);
+                self.lstApp([]);
+                self.lstAppGoBack([]);
+                self.lstListAgent([]);
+                self.lstAppHdWork([]);
+                self.lstAppWorkChange([]);
+                self.lstAppAbsence([]);
+                self.lstAppCompltSync([]);
                 //luu
                 character.save('AppListExtractCondition', param);
                 let lstGoBack: Array<vmbase.AppGoBackInfoFull> = [];
