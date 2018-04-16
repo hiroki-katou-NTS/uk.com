@@ -6,10 +6,11 @@ module nts.uk.at.view.kaf018.e.viewmodel {
     import error = nts.uk.ui.dialog.alertError;
     import confirm = nts.uk.ui.dialog.confirm;
     import block = nts.uk.ui.block;
+    import shareModel = kaf018.share.model;
 
     export class ScreenModel {
-        listWkpStatusConfirm: Array<model.ApprovalStatusActivity>;
-        useSetting: model.UseSetting;
+        listWkpStatusConfirm: Array<ApprovalStatusActivity>;
+        useSetting: shareModel.UseSetting;
         closureId: string;
         closureName: string;
         processingYm: string;
@@ -31,9 +32,9 @@ module nts.uk.at.view.kaf018.e.viewmodel {
             $("#fixed-table").ntsFixedTable({ width: 1000, height: 186 });
             self.listWkpStatusConfirm = [];
             self.listWkp = [];
-            self.person = model.TransmissionAttr.PERSON;
-            self.daily = model.TransmissionAttr.DAILY;
-            self.monthly = model.TransmissionAttr.MONTHLY;
+            self.person = TransmissionAttr.PERSON;
+            self.daily = TransmissionAttr.DAILY;
+            self.monthly = TransmissionAttr.MONTHLY;
         }
 
         /**
@@ -56,14 +57,10 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                 let listWorkplace = params.listWorkplace;
                 self.listEmpCd = params.listEmployeeCode;
                 let listWorkplaceId = [];
-                _.each(listWorkplace, function(item){
+                _.each(listWorkplace, function(item) {
                     listWorkplaceId.push(item.code)
                 })
-                //for (let i = 0; i < listWorkplace.length; i++) {
-                   // listWorkplace.push({ wkpId: listWorkplaceId[i], wkpName: "workplace " + i });
-                //}
-                
-                
+
                 let obj = {
                     startDate: self.startDate,
                     endDate: self.endDate,
@@ -77,8 +74,8 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                     service.getStatusActivity(obj).done(function(data: any) {
                         _.each(data, function(item) {
                             let wkp = _.find(listWorkplace, { code: item.wkpId });
-                            self.listWkpStatusConfirm.push(new model.ApprovalStatusActivity(item.wkpId, wkp.name, item.monthConfirm, item.monthUnconfirm, item.bossConfirm, item.bossUnconfirm, item.personConfirm, item.personUnconfirm))
-                            self.listWkp.push({wkpId: item.wkpId, wkpName: wkp.name});
+                            self.listWkpStatusConfirm.push(new ApprovalStatusActivity(item.wkpId, wkp.name, item.monthConfirm, item.monthUnconfirm, item.bossConfirm, item.bossUnconfirm, item.personConfirm, item.personUnconfirm))
+                            self.listWkp.push({ wkpId: item.wkpId, wkpName: wkp.name });
                         })
                         dfd.resolve();
                     }).always(function() {
@@ -94,7 +91,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
             return dfd.promise();
         }
 
-        sendMail(value: model.TransmissionAttr) {
+        sendMail(value: TransmissionAttr) {
             var self = this;
             block.invisible();
             let listWkp = [];
@@ -105,13 +102,13 @@ module nts.uk.at.view.kaf018.e.viewmodel {
             service.checkSendUnconfirmedMail(listWkp).done(function() {
                 let messageId = "";
                 switch (value) {
-                    case model.TransmissionAttr.PERSON:
+                    case TransmissionAttr.PERSON:
                         messageId = "Msg_796";
                         break;
-                    case model.TransmissionAttr.DAILY:
+                    case TransmissionAttr.DAILY:
                         messageId = "Msg_797";
                         break;
-                    case model.TransmissionAttr.MONTHLY:
+                    case TransmissionAttr.MONTHLY:
                         messageId = "Msg_798";
                         break;
                 }
@@ -151,7 +148,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 
         gotoF(index) {
             var self = this;
-            
+
             let params = {
                 closureId: self.closureId,
                 closureName: self.closureName,
@@ -166,57 +163,48 @@ module nts.uk.at.view.kaf018.e.viewmodel {
         }
     }
 
-    export module model {
-        export class ApprovalStatusActivity {
-            code: string;
-            name: string;
-            monthConfirm: number;
-            monthUnconfirm: number;
-            dayBossUnconfirm: number;
-            dayBossConfirm: number;
-            dayPrincipalUnconfirm: number;
-            dayPrincipalConfirm: number;
-            check: KnockoutObservable<boolean>;
-            enable: boolean;
 
-            constructor(code: string, name: string, monthConfirm: number, monthUnconfirm: number, dayBossUnconfirm: number, dayBossConfirm: number, dayPrincipalUnconfirm: number, dayPrincipalConfirm: number) {
-                this.code = code;
-                this.name = name;
-                this.monthConfirm = monthConfirm ? monthConfirm : null;
-                this.monthUnconfirm = monthUnconfirm ? monthUnconfirm : null;
-                this.dayBossUnconfirm = dayBossUnconfirm ? dayBossUnconfirm : null;
-                this.dayBossConfirm = dayBossConfirm ? dayBossConfirm : null;
-                this.dayPrincipalUnconfirm = dayPrincipalUnconfirm ? dayPrincipalUnconfirm : null;
-                this.dayPrincipalConfirm = dayPrincipalConfirm ? dayPrincipalConfirm : null;
-                if (dayPrincipalUnconfirm == 0 && dayBossUnconfirm == 0 && monthUnconfirm == 0) {
-                    //this.enable = false;
-                    this.enable = true;
-                    this.check = ko.observable(this.enable);
-                }
-                else {
-                    this.enable = true;
-                    this.check = ko.observable(this.enable);
-                }
+    class ApprovalStatusActivity {
+        code: string;
+        name: string;
+        monthConfirm: number;
+        monthUnconfirm: number;
+        dayBossUnconfirm: number;
+        dayBossConfirm: number;
+        dayPrincipalUnconfirm: number;
+        dayPrincipalConfirm: number;
+        check: KnockoutObservable<boolean>;
+        enable: boolean;
+
+        constructor(code: string, name: string, monthConfirm: number, monthUnconfirm: number, dayBossUnconfirm: number, dayBossConfirm: number, dayPrincipalUnconfirm: number, dayPrincipalConfirm: number) {
+            this.code = code;
+            this.name = name;
+            this.monthConfirm = monthConfirm ? monthConfirm : null;
+            this.monthUnconfirm = monthUnconfirm ? monthUnconfirm : null;
+            this.dayBossUnconfirm = dayBossUnconfirm ? dayBossUnconfirm : null;
+            this.dayBossConfirm = dayBossConfirm ? dayBossConfirm : null;
+            this.dayPrincipalUnconfirm = dayPrincipalUnconfirm ? dayPrincipalUnconfirm : null;
+            this.dayPrincipalConfirm = dayPrincipalConfirm ? dayPrincipalConfirm : null;
+            if (dayPrincipalUnconfirm == 0 && dayBossUnconfirm == 0 && monthUnconfirm == 0) {
+                //this.enable = false;
+                this.enable = true;
+                this.check = ko.observable(this.enable);
+            }
+            else {
+                this.enable = true;
+                this.check = ko.observable(this.enable);
             }
         }
-
-        //送信区分
-        export enum TransmissionAttr {
-            //本人
-            PERSON = 1,
-            //日次
-            DAILY = 2,
-            //月次
-            MONTHLY = 3
-        }
-
-        export class UseSetting {
-            //月別確認を利用する
-            monthlyConfirm: boolean;
-            //上司確認を利用する
-            useBossConfirm: boolean;
-            //本人確認を利用する
-            usePersonConfirm: boolean;
-        }
     }
+
+    //送信区分
+    enum TransmissionAttr {
+        //本人
+        PERSON = 1,
+        //日次
+        DAILY = 2,
+        //月次
+        MONTHLY = 3
+    }
+
 }

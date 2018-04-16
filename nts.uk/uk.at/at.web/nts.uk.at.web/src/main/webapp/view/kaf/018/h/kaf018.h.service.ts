@@ -30,22 +30,6 @@ module nts.uk.at.view.kaf018.h {
             return nts.uk.request.ajax("at", path);
         }
 
-        export function getIdentityProcessUseSet(): JQueryPromise<any> {
-            let dfd = $.Deferred();
-            var dataTemp =
-                { useIdentityOfMonth: 1 };
-            dfd.resolve(dataTemp);
-            return dfd.promise();
-        }
-
-        export function getApprovalProcessingUseSetting(): JQueryPromise<any> {
-            let dfd = $.Deferred();
-            var dataTemp =
-                { useMonthApproverComfirm: 0, useDayApproverConfirm: 1 };
-            dfd.resolve(dataTemp);
-            return dfd.promise();
-        }
-
         /**
          * アルゴリズム「承認状況社員メールアドレス取得」を実行する
          */

@@ -2,14 +2,19 @@ module nts.uk.at.view.kaf018.f.viewmodel {
     import text = nts.uk.resource.getText;
     import getShared = nts.uk.ui.windows.getShared;
     import formatDate = nts.uk.time.formatDate;
+    import formatText = nts.uk.text.format;
     import shareModel = kaf018.share.model;
+    import block = nts.uk.ui.block;
 
     export class ScreenModel {
         legendOptions: any;
 
+        useSetting: shareModel.UseSetting;
+
         closureId: string;
         closureName: string;
         processingYm: string;
+        currentMonth: string;
         startDateFormat: string;
         endDateFormat: string;
         startDate: Date;
@@ -23,9 +28,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         enableNext: KnockoutObservable<boolean>;
         enablePre: KnockoutObservable<boolean>;
 
-        listData: any;
-
-        arrDay: Time[] = [];
+        arrDay: shareModel.Time[] = [];
         dtPrev: KnockoutObservable<Date> = ko.observable(null);
         dtAft: KnockoutObservable<Date> = ko.observable(null);
 
@@ -43,9 +46,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                     { cssClass: { className: 'bg-weekdays', colorPropertyName: 'background-color' }, labelText: text("KAF018_88") }
                 ]
             };
-            self.listData = [];
             self.listWkp = [];
-            //$("#fixed-table").ntsFixedTable({ width: 1200, height: 286 });
             self.selectedWplId = ko.observable('');
             self.selectedWplName = ko.observable('');
             self.enableNext = ko.observable(false);
@@ -58,12 +59,13 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         startPage(): JQueryPromise<any> {
             let self = this;
             var dfd = $.Deferred();
-
+            block.invisible();
             let params = getShared("KAF018F_PARAMS");
             if (params) {
                 self.closureId = params.closureId;
                 self.closureName = params.closureName;
                 self.processingYm = params.processingYm;
+                self.currentMonth = formatDate(new Date(params.processingYm), 'MM')
                 self.startDateFormat = formatDate(new Date(params.startDate), 'yyyy/MM/dd');
                 self.endDateFormat = formatDate(new Date(params.endDate), 'yyyy/MM/dd');
                 self.startDate = params.startDate;
@@ -76,7 +78,15 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             self.dtAft(new Date(self.endDateFormat));
             self.setArrDate();
             self.getWkpName();
-            self.initExTable();
+            service.getUseSetting().done(function(setting) {
+                self.useSetting = setting;
+                self.initExTable().done(function() {
+                    block.clear();
+                });
+            }).fail(function() {
+                block.clear();
+            })
+
             dfd.resolve();
             return dfd.promise();
         }
@@ -102,13 +112,14 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             let self = this;
             self.selectedWplIndex--;
             self.getWkpName();
+            self.updateExTable();
         }
 
         setArrDate() {
             let self = this;
             let currentDay = new Date(self.dtPrev().toString());
             while (currentDay <= self.dtAft()) {
-                self.arrDay.push(new Time(currentDay));
+                self.arrDay.push(new shareModel.Time(currentDay));
                 currentDay.setDate(currentDay.getDate() + 1);
             }
         };
@@ -123,7 +134,6 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 listEmpCd: self.listEmpCd
             };
             service.getEmpPerformance(obj).done(function(data: any) {
-                console.log(data);
                 let list = self.convertToEmpPerformance(data);
                 dfd.resolve(list);
             });
@@ -132,33 +142,30 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 
         convertToEmpPerformance(data): Array<EmpPerformance> {
             let self = this;
-            let index = 0;            
+            let index = 0;
             let listEmpPerformance = Array<EmpPerformance>();
             _.each(data, function(item) {
-                let monthConfirm, personConfirm, bossConfirm, dailyReport = Array<number>();
+                let monthConfirm, personConfirm, bossConfirm;
 
                 if (item.monthConfirm) {
                     monthConfirm = text("KAF018_92");
                 } else {
                     monthConfirm = "";
                 }
-                
+
                 if (item.personConfirm) {
                     personConfirm = text("KAF018_92");
                 } else {
                     personConfirm = "";
                 }
-                
+
                 if (item.bossConfirm) {
                     bossConfirm = text("KAF018_92");
                 } else {
                     bossConfirm = "";
                 }
                 item.dailyPerformance = _.sortBy(item.dailyPerformance, [function(o) { return o.targetDate; }]);
-                _.each(item.dailyPerformance, function(daily) {
-                    dailyReport.push(daily.performance);
-                })
-                listEmpPerformance.push(new EmpPerformance(index.toString(), item.sid, item.sname, monthConfirm, personConfirm, bossConfirm, dailyReport));
+                listEmpPerformance.push(new EmpPerformance(index.toString(), item.sid, item.sname, monthConfirm, personConfirm, bossConfirm, item.dailyPerformance));
                 index++;
             })
             return listEmpPerformance;
@@ -167,9 +174,9 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         /**
          * Create exTable
          */
-        initExTable(): void {
+        initExTable(): JQueryPromise<any> {
             let self = this;
-            //self.getSampleData().done(function(listData: any) {
+            var dfd = $.Deferred();
             self.getEmpPerformance().done(function(listData: any) {
                 let sv1 = self.setColorForCellHeaderDetail();
                 let sv2 = self.setColorForCellContentDetail(listData);
@@ -187,8 +194,11 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                         .LeftmostHeader(initExTable.leftmostHeader).LeftmostContent(initExTable.leftmostContent)
                         .DetailHeader(initExTable.detailHeader).DetailContent(initExTable.detailContent)
                         .create();
+
+                    dfd.resolve();
                 })
             });
+            return dfd.promise();
         }
 
         /**
@@ -196,101 +206,20 @@ module nts.uk.at.view.kaf018.f.viewmodel {
          */
         updateExTable() {
             let self = this;
-            self.getSampleData2().done(function(listData: any) {
+            block.invisible();
+            self.getEmpPerformance().done(function(listData: any) {
                 let sv1 = self.setColorForCellHeaderDetail();
                 let sv2 = self.setColorForCellContentDetail(listData);
                 $.when(sv1, sv2).done(function(detailHeaderDeco, detailContentDeco) {
                     let initExTable = self.setFormatData(detailHeaderDeco, detailContentDeco, listData);
                     $("#extable").exTable("updateTable", "leftmost", initExTable.leftmostHeader, initExTable.leftmostContent, true);
                     $("#extable").exTable("updateTable", "detail", initExTable.detailHeader, initExTable.detailContent, true);
+                }).always(() => {
+                    block.clear();
                 })
+            }).fail(() => {
+                block.clear();
             })
-        }
-
-        /**
-         * Get data
-         */
-        getSampleData(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-            let listData = [];
-            let currentDay = new Date(self.dtPrev().toString());
-            let r1 = new Date(self.dtPrev().toString()), r2 = new Date(self.dtPrev().toString()), r3 = new Date(self.dtPrev().toString());
-            r1.setDate(r1.getDate() + 5);
-            r2.setDate(r2.getDate() + 16);
-            r3.setDate(r3.getDate() + 25);
-            for (let i = 0; i < 30; i++) {
-                currentDay = new Date(self.dtPrev().toString());
-                let data = {
-                    index: i.toString(),
-                    sId: "sid-" + i,
-                    sName: "sName - " + i,
-                    monthConfirm: i % 3 == 0 ? text("KAF018_92") : "",
-                    personConfirm: i % 2 == 0 ? text("KAF018_92") : "",
-                    bossConfirm: i % 4 == 0 ? text("KAF018_92") : "",
-                    dailyReport: []
-                };
-                let dailyReport = [];
-                while (currentDay <= self.dtAft()) {
-                    let time = new Time(currentDay);
-                    if (currentDay <= r1) {
-                        dailyReport.push(0)
-                    } else if (currentDay <= r2) {
-                        dailyReport.push(1)
-                    } else if (currentDay <= r3) {
-                        dailyReport.push(2)
-                    } else {
-                        dailyReport.push(3)
-                    }
-                    currentDay.setDate(currentDay.getDate() + 1);
-                }
-                data.dailyReport = dailyReport;
-                listData.push(data);
-            }
-            dfd.resolve(listData);
-            return dfd.promise();
-        }
-
-        /**
-         * Get data
-         */
-        getSampleData2(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-            let listData = [];
-            let currentDay = new Date(self.dtPrev().toString());
-            let r1 = new Date(self.dtPrev().toString()), r2 = new Date(self.dtPrev().toString()), r3 = new Date(self.dtPrev().toString());
-            r1.setDate(r1.getDate() + 7);
-            r2.setDate(r2.getDate() + 10);
-            r3.setDate(r3.getDate() + 20);
-            for (let i = 0; i < 60; i++) {
-                currentDay = new Date(self.dtPrev().toString());
-                let data = {
-                    index: i.toString(),
-                    sId: "sid-" + i,
-                    sName: "sName - " + i,
-                    monthConfirm: i % 2 == 0 ? text("KAF018_92") : "",
-                    personConfirm: i % 4 == 0 ? text("KAF018_92") : "",
-                    bossConfirm: i % 3 == 0 ? text("KAF018_92") : "",
-                    dailyReport: []
-                };
-                let dailyReport = [];
-                while (currentDay <= self.dtAft()) {
-                    let time = new Time(currentDay);
-                    if (currentDay <= r1) {
-                        dailyReport.push(0)
-                    } else if (currentDay <= r2) {
-                        dailyReport.push(1)
-                    } else if (currentDay <= r3) {
-                        dailyReport.push(2)
-                    } else {
-                        dailyReport.push(3)
-                    }
-                    currentDay.setDate(currentDay.getDate() + 1);
-                }
-                data.dailyReport = dailyReport;
-                listData.push(data);
-            }
-            dfd.resolve(listData);
-            return dfd.promise();
         }
 
         setFormatData(detailHeaderDeco, detailContentDeco, listData) {
@@ -306,11 +235,19 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 
             //create leftMost Header and Content
             leftmostColumns = [
-                { headerText: text("KAF018_60"), key: "sName", width: "150px", control: "link" },
-                { headerText: text("KAF018_61"), key: "monthConfirm", width: "50px" },
-                { headerText: text("KAF018_62"), key: "personConfirm", width: "50px" },
-                { headerText: text("KAF018_63"), key: "bossConfirm", width: "50px" }
+                { headerText: text("KAF018_60"), key: "sName", width: "150px", control: "link" }
             ];
+
+            if (self.useSetting.monthlyConfirm) {
+                leftmostColumns.push({ headerText: formatText(text("KAF018_61"), self.currentMonth), key: "monthConfirm", width: "50px" });
+            }
+            if (self.useSetting.usePersonConfirm) {
+                leftmostColumns.push({ headerText: text("KAF018_62"), key: "personConfirm", width: "50px" });
+            }
+            if (self.useSetting.useBossConfirm) {
+                leftmostColumns.push({ headerText: text("KAF018_63"), key: "bossConfirm", width: "50px" });
+            }
+
             leftmostHeader = {
                 columns: leftmostColumns,
                 rowHeight: "50px",
@@ -325,7 +262,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             // create detail Columns and detail Content Columns
             let currentDay = new Date(self.dtPrev().toString());
             while (currentDay <= self.dtAft()) {
-                let time = new Time(currentDay);
+                let time = new shareModel.Time(currentDay);
                 detailHeaderColumns.push({
                     key: "_" + time.yearMonthDay, width: "40px", headerText: self.getDay(time)
                 });
@@ -371,7 +308,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             };
         }
 
-        getDay(time: Time): string {
+        getDay(time: shareModel.Time): string {
             if (time.day == "1") {
                 return time.month + '/' + time.day + "<br/>" + time.weekDay;
             } else {
@@ -393,7 +330,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                     let ymd = date.yearMonthDay;
                     let dateFormat = moment(date.yearMonthDay).format('YYYY/MM/DD');
                     if (_.includes(self.dataWkpSpecificDate(), dateFormat) || _.includes(self.dataComSpecificDate(), dateFormat)) {
-                        detailHeaderDeco.push(new shareModel.CellColor("_" + ymd, "1", "bg-schedule-specific-date "));
+                        detailHeaderDeco.push(new shareModel.CellColor("_" + ymd, "1", "bg-schedule-specific-date"));
                     } else if (_.includes(self.dataPublicHoliday(), dateFormat)) {
                         detailHeaderDeco.push(new shareModel.CellColor("_" + ymd, "1", "bg-schedule-sunday color-schedule-sunday"));
                     } else if (date.weekDay === '土') {
@@ -442,10 +379,10 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 let currentDay = new Date(self.dtPrev().toString());
                 let j = 0;
                 while (currentDay <= self.dtAft()) {
-                    let time = new Time(currentDay);
+                    let time = new shareModel.Time(currentDay);
                     let key = "__" + time.yearMonthDay;
                     let clazz = "";
-                    switch (listData[i].dailyReport[j]) {
+                    switch (listData[i].dailyReport[j].performance) {
                         case 0:
                             clazz = "bg-canceled-application";
                             break;
@@ -460,7 +397,12 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                             break;
                     }
                     detailContentDeco.push(new shareModel.CellColor(key, i.toString(), clazz));
-                    listData[i][key] = "";
+                    if (listData[i].dailyReport[j].hasError) {
+                        listData[i][key] = "ER";
+                    }
+                    else {
+                        listData[i][key] = "";
+                    }
 
                     currentDay.setDate(currentDay.getDate() + 1);
                     j++;
@@ -471,22 +413,6 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         }
     }
 
-    class Time {
-        year: string;
-        month: string;
-        day: string;
-        weekDay: string;
-        yearMonthDay: string;
-
-        constructor(ymd: Date) {
-            this.year = moment(ymd).format('YYYY');
-            this.month = moment(ymd).format('M');
-            this.day = moment(ymd).format('D');
-            this.weekDay = moment(ymd).format('dd');
-            this.yearMonthDay = this.year + moment(ymd).format('MM') + moment(ymd).format('DD');
-        }
-    }
-
     class EmpPerformance {
         index: String;
         sId: String;
@@ -494,7 +420,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         monthConfirm: String;
         personConfirm: String;
         bossConfirm: String;
-        dailyReport: Array<number>;
+        dailyReport: Array<DailyPerformance>;
 
         constructor(index: String, sId: String, sName: String, monthConfirm: String, personConfirm: String, bossConfirm: String, dailyReport: Array<number>) {
             this.index = index;

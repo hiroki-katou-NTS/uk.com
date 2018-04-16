@@ -20,9 +20,6 @@ module nts.uk.at.view.kaf018.h.viewmodel {
         monthlyUnconfirmByConfirmer: model.MailTemp = null;
         workConfirmation: model.MailTemp = null;
 
-        identityProcessUseSet: model.IdentityProcessUseSet = new model.IdentityProcessUseSet(false);
-        approvalProcessingUseSet: model.ApprovalProcessingUseSetting = new model.ApprovalProcessingUseSetting(false, false);
-
         screenEditMode: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
