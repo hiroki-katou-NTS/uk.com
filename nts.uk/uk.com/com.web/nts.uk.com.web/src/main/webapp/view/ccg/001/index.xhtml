@@ -176,14 +176,64 @@
 	<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
 	<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 	<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+</ui:define>
 
-	// The component container
+<div id="contents-area">
+	<!--The component container-->
 	<div id="com-ccg001"></div>
-</ui:define>]]>
+</div>]]>
 </pre>
 <h2>TypeScript</h2>
 								<pre>
-<![CDATA[//Interfaces
+<![CDATA[// Set component option
+const ccg001ComponentOption: GroupOption = {
+	/** Common properties */
+	systemType: 1,
+	showEmployeeSelection: true,
+	showQuickSearchTab: true,
+	showAdvancedSearchTab: true,
+	showBaseDate: true,
+	showClosure: true,
+	showAllClosure: true,
+	showPeriod: true,
+	periodFormatYM: false,
+	
+	/** Required parameter */
+	baseDate: moment().toISOString(),
+	periodStartDate: moment().toISOString(),
+	periodEndDate: moment().toISOString(),
+	inService: true,
+	leaveOfAbsence: true,
+	closed: true,
+	retirement: true,
+	
+	/** Quick search tab options */
+	showAllReferableEmployee: true,
+	showOnlyMe: true,
+	showSameWorkplace: true,
+	showSameWorkplaceAndChild: true,
+	
+	/** Advanced search properties */
+	showEmployment: true,
+	showWorkplace: true,
+	showClassification: true,
+	showJobTitle: true,
+	showWorktype: true,
+	isMutipleCheck: true,
+	
+	/**
+	* Self-defined function: Return data from CCG001
+	* @param: data: the data return from CCG001
+	*/
+	returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+	}
+}
+
+// Start component
+$('#com-ccg001').ntsGroupComponent(ccg001ComponentOption); // '#com-ccg-001' is the component container's id
+
+
+// Note: Defining these interfaces are optional
 export interface GroupOption {
     /** Common properties */
     showEmployeeSelection?: boolean; // 検索タイプ
@@ -236,55 +286,7 @@ export interface Ccg001ReturnedData {
     periodStart: string; // 対象期間（開始)
     periodEnd: string; // 対象期間（終了）
     listEmployee: Array<EmployeeSearchDto>; // 検索結果
-}
-
-// Set component option
-ccg001ComponentOption: GroupOption;
-ccg001ComponentOption = {
-	/** Common properties */
-	systemType: 1,
-	showEmployeeSelection: true,
-	showQuickSearchTab: true,
-	showAdvancedSearchTab: true,
-	showBaseDate: true,
-	showClosure: true,
-	showAllClosure: true,
-	showPeriod: true,
-	periodFormatYM: false,
-	
-	/** Required parameter */
-	baseDate: moment().toISOString(),
-	periodStartDate: moment().toISOString(),
-	periodEndDate: moment().toISOString(),
-	inService: true,
-	leaveOfAbsence: true,
-	closed: true,
-	retirement: true,
-	
-	/** Quick search tab options */
-	showAllReferableEmployee: true,
-	showOnlyMe: true,
-	showSameWorkplace: true,
-	showSameWorkplaceAndChild: true,
-	
-	/** Advanced search properties */
-	showEmployment: true,
-	showWorkplace: true,
-	showClassification: true,
-	showJobTitle: true,
-	showWorktype: true,
-	isMutipleCheck: true,
-	
-	/**
-	* Self-defined function: Return data from CCG001
-	* @param: data: the data return from CCG001
-	*/
-	returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-	}
-}
-
-// Start component
-$('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);]]>
+}]]>
 								</pre>
 							</div>
 							<div id="tabs-viewmodel" class="cf">
