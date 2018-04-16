@@ -482,27 +482,27 @@
                                    <tbody data-bind = "foreach: group2().lstErAlAtdItemCon()">
                                        <tr>
                                         <!-- B16_3 -->
-                                        	<com:ko-if bind="$data.compareOperator() == 8 || $data.compareOperator() == 9">
-												<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayTarget"></span></td>
-												<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayLeftOperator"></span></td>
-												<td><span class="limited-label" style="width: 160px;text-align: center;" data-bind="text: $data.displayLeftCompare() + ', ' + $data.displayRightCompare()"></span></td>
-												<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
-												<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayTarget"></span></td>
-											</com:ko-if>
-						                    <com:ko-if bind="$data.compareOperator() &gt; 5 && $data.compareOperator() &lt; 8">
+						                    <com:ko-if bind="$data.compareOperator() &gt; 5 &amp;&amp; $data.compareOperator() &lt; 8">
 				                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayLeftCompare"></span></td>
 				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayLeftOperator"></span></td>
 				                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayTarget"></span></td>
-				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
-		                            			<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayRightCompare"></span></td>
 			                            	</com:ko-if>
 			                            	<com:ko-if bind="$data.compareOperator() &lt; 6">
 				                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayTarget"></span></td>
 				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayLeftOperator"></span></td>
 				                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayLeftCompare"></span></td>
-				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
-		                            			<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayRightCompare"></span></td>
 			                            	</com:ko-if>
+			                            	<com:ko-if bind="$data.compareOperator() == 8 || $data.compareOperator() == 9">
+												<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayTarget"></span></td>
+												<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayLeftOperator"></span></td>
+												<td><span class="limited-label" style="width: 160px;" data-bind="text: $data.displayLeftCompare() + ', ' + $data.displayRightCompare()"></span></td>
+												<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
+												<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayTarget"></span></td>
+											</com:ko-if>
+											<com:ko-if bind="$data.compareOperator() &lt; 8">
+												<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
+	                            				<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayRightCompare"></span></td>
+											</com:ko-if>
                                            <!-- B16_4 -->
                                            <td><button id="btnSettingB16_5"  data-bind="click: $data.openAtdItemConditionDialog, enable: true">#{i18n.getText('KAL003_14')}</button></td>
                                        </tr>
