@@ -137,6 +137,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 				errorList.add(I18NText.getText("Msg_768", employeeName));
 				continue;
 			} else {
+				// TODO
 				mailsender.send("tarou@nittsusystem.co.jp", employeeMail, new MailContents(mailTitle, mailContentToSend));
 				successList.add(employeeName);
 			}

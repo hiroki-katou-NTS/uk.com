@@ -51,14 +51,14 @@ public class CheckTranmissionImpl implements CheckTransmission{
 				// TO DO Request List 228
 				List<String> employeeNameList = employeeIdList;
 				// TO DO Request List 225
-				UrlExecInfo urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(appId, application.getAppType().value,
-						application.getPrePostAtr().value, application.getEmployeeID());		
-				String mailContentToSend = urlInfo.getScreenId() + "\n" + urlInfo.getEmbeddedId() + "\n" + mailBody;
+//				UrlExecInfo urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(appId, application.getAppType().value,
+//						application.getPrePostAtr().value, application.getEmployeeID());		
+//				String mailContentToSend = urlInfo.getScreenId() + "\n" + urlInfo.getEmbeddedId() + "\n" + mailBody;
 				List<String> mailList = employeeIdList;
 				mailList.forEach( x -> {
 					try{
 						if(!x.isEmpty()){
-							mailSender.send("nts", "hiep.ld@3si.vn", new MailContents(mailTitle, mailContentToSend));
+							mailSender.send("nts", "hiep.ld@3si.vn", new MailContents(mailTitle, ""));
 							sendMailStatus.add(1);
 						}else {
 							sendMailStatus.add(0);
