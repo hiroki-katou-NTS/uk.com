@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.infra.repository.holidaysremaining;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -9,7 +10,6 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.HolidaysRemainingManagementRepository;
 import nts.uk.ctx.at.function.infra.entity.holidaysremaining.KfnmtHdRemainManage;
 import nts.uk.ctx.at.function.infra.entity.holidaysremaining.KfnmtHdRemainManagePk;
-import nts.uk.ctx.at.function.infra.entity.holidaysremaining.KfnmtSpecialHoliday;
 
 @Stateless
 public class JpaHdRemainManageRepository extends JpaRepository implements HolidaysRemainingManagementRepository{
@@ -40,6 +40,11 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 		KfnmtHdRemainManagePk kfnmtSpecialHolidayPk = new KfnmtHdRemainManagePk(companyId, code);
 		this.commandProxy().remove(KfnmtHdRemainManage.class, kfnmtSpecialHolidayPk);
 		
+	}
+	@Override
+	public List<HolidaysRemainingManagement> getProcessExecutionLogByCompanyId(String companyId) {
+		return this.queryProxy().query(SELECT_BY_KEY_STRING, KfnmtHdRemainManage.class)
+				.setParameter("companyId", companyId).getList(c -> c.toDomain());
 	}
 
 }

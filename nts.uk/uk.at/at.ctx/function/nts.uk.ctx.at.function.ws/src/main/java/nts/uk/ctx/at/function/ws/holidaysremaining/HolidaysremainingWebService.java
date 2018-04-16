@@ -12,7 +12,7 @@ import nts.uk.ctx.at.function.app.find.holidaysremaining.HdRemainManageDto;
 import nts.uk.ctx.at.function.app.find.holidaysremaining.HdRemainManageFinder;
 import nts.uk.ctx.at.function.app.find.holidaysremaining.SpecialHolidayFinder;
 
-@Path("at/function/processexec")
+@Path("at/function/holidaysremaining")
 @Produces("application/json")
 public class HolidaysremainingWebService extends WebService {
 
