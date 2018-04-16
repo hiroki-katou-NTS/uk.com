@@ -65,6 +65,7 @@ module nts.uk.at.view.kaf009.b {
             selectedReason: KnockoutObservable<string> = ko.observable('');
             displayTypicalReason: KnockoutObservable<boolean> = ko.observable(false);
             enableTypicalReason: KnockoutObservable<boolean> = ko.observable(false); 
+            requireTypicalReason: KnockoutObservable<boolean> = ko.observable(false);
             //MultilineEditor
             requiredReason : KnockoutObservable<boolean> = ko.observable(false);
             multilContent: KnockoutObservable<string> = ko.observable('');
@@ -123,6 +124,15 @@ module nts.uk.at.view.kaf009.b {
                     self.displayReason(self.displayTypicalReason()||
                         (settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false));
                     self.enableReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false);
+                    self.requireTypicalReason(
+                        (settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1)&&
+                        (settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1)
+                    );
+                    //申請制限設定.申請理由が必須
+                    self.requiredReason(
+                        (settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1)&&
+                        (settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1)
+                    );
                     self.employeeID = settingData.sid;
                     //get Reason
                     self.setReasonControl(settingData.listReasonDto);
@@ -229,12 +239,20 @@ module nts.uk.at.view.kaf009.b {
              * 
              */
             update() {
+                let self = this;
                 $("#inpStartTime1").ntsError("clear"); 
                 $("#inpEndTime1").ntsError("clear"); 
                 $("#inpStartTime2").ntsError("clear");
                 $("#inpEndTime2").ntsError("clear");
+//                if(self.requireTypicalReason()){
+//                    if(nts.uk.util.isNullOrEmpty($("#combo-box").val())){
+//                        $("#combo-box").ntsError('set', '定型理由を入力してください');    
+//                    }    
+//                }
+//                if(self.requiredReason()){
+//                    $('#inpReasonTextarea').trigger('validate');    
+//                }
                 nts.uk.ui.block.invisible();
-                let self = this;
                 if(!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(self.getCommand().appCommand.appReasonID) ? self.getCommand().appCommand.appReasonID + "\n" + self.multilContent() : self.multilContent(),"#inpReasonTextarea")){
                         return;
                 }
