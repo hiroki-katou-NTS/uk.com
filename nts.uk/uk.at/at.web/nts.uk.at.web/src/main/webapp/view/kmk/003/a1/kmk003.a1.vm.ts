@@ -80,7 +80,7 @@ module a1 {
                 }
             });
             
-            self.linkedWithDialogF = ko.observable(true);
+            self.linkedWithDialogF = ko.observable(self.checkLinked(self.collectDialog()));
             self.predseting.predTime.predTime.oneDay.subscribe((v) => {
                 let preCheck = self.linkedWithDialogF();
                 self.linkedWithDialogF(self.checkLinked(self.collectDialog()));
