@@ -11,6 +11,8 @@ import nts.arc.time.GeneralDateTime;
 
 @Value
 public class Kmw006cDto {
+	
+	private String monthlyClosureLogId;
 
 	private int closureId;
 	

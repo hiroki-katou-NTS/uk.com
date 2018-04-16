@@ -13,6 +13,8 @@ public interface MonthlyClosureUpdateLogRepository {
 
 	public List<MonthlyClosureUpdateLog> getAll(String companyId);
 	
+	public List<MonthlyClosureUpdateLog> getAllSortedByExeDate(String companyId);
+	
 	public List<MonthlyClosureUpdateLog> getAllByClosureId(String companyId, int closureId);
 	
 	public Optional<MonthlyClosureUpdateLog> getLogById(String id);

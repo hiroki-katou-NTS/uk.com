@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.monthlyclosureupdate;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureInfor;
 
 /**
@@ -33,10 +34,9 @@ public class ClosureInforDto {
 	// 締め日
 	private int closureDay;
 	private boolean isLastDay;
+	
+	private Integer targetYm;
+	
+	private GeneralDateTime executionDt;
 
-	public static ClosureInforDto fromDomain(ClosureInfor domain) {
-		return new ClosureInforDto(domain.getClosureId().value, domain.getClosureName().v(),
-				domain.getClosureMonth().getProcessingYm().v(), domain.getPeriod().start(), domain.getPeriod().end(),
-				domain.getClosureDate().getClosureDay().v(), domain.getClosureDate().getLastDayOfMonth());
-	}
 }

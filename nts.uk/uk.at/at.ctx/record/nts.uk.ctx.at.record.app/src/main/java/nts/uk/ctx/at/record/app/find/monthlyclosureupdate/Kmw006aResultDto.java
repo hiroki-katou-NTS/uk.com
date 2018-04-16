@@ -13,8 +13,6 @@ import nts.arc.time.GeneralDateTime;
 @Value
 public class Kmw006aResultDto {
 	private boolean executable;
-	private Integer targetYm;
-	private GeneralDateTime executionDate;
 	private int selectClosureId;
 	private List<ClosureInforDto> listInfor;
 }

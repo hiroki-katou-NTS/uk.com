@@ -35,7 +35,10 @@ public class JpaMonthlyClosureUpdatePersonLogRepository extends JpaRepository
 
 	@Override
 	public void delete(String monthlyLogId, String empId) {
-		this.commandProxy().remove(KrcdtMcloseUpdPerLog.class, new KrcdtMcloseUpdPerLogPk(empId, monthlyLogId));
+		Optional<KrcdtMcloseUpdPerLog> optEntity = this.queryProxy()
+				.find(new KrcdtMcloseUpdPerLogPk(empId, monthlyLogId), KrcdtMcloseUpdPerLog.class);
+		if (optEntity.isPresent())
+			this.commandProxy().remove(optEntity.get());
 	}
 
 	@Override

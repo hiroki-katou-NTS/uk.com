@@ -1,20 +1,30 @@
 package nts.uk.ctx.at.record.app.find.monthlyclosureupdate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureExecutionStatus;
+import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosurePersonExecutionResult;
+import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErrorAlarmAtr;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErrorInfor;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErrorInforRepository;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateLog;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateLogRepository;
+import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdatePersonLog;
+import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdatePersonLogRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureInfor;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
@@ -40,16 +50,28 @@ public class MonthlyClosureUpdateFinder {
 	@Inject
 	private EmployeeRecordAdapter empImportAdapter;
 
+	@Inject
+	private ClosureRepository closureRepo;
+
+	@Inject
+	private MonthlyClosureUpdatePersonLogRepository monthlyClosurePersonLogRepo;
+
 	public MonthlyClosureUpdateLogDto findById(String id) {
 		return domainToDto(monthlyClosureUpdateRepo.getLogById(id).get());
 	}
 
-	public Kmw006fResultDto getClosureResult(String monthlyClosureUpdateLogId) {
+	public Kmw006fResultDto getClosureResult(String monthlyClosureUpdateLogId, Integer atr) {
 		List<MonthlyClosureErrorInforDto> listResult = new ArrayList<>();
 		MonthlyClosureUpdateLog updateLog = monthlyClosureUpdateRepo.getLogById(monthlyClosureUpdateLogId).get();
-		// List<MonthlyClosureUpdatePersonLog> listPersonLog =
-		// personLogRepo.getAll(monthlyClosureUpdateLogId);
 		List<MonthlyClosureUpdateErrorInfor> listErrorInfo = errorInforRepo.getAll(monthlyClosureUpdateLogId);
+		if (atr != null && atr.intValue() == 1) { // get alarm only
+			listErrorInfo.stream().filter(item -> item.getAtr() == MonthlyClosureUpdateErrorAlarmAtr.ALARM)
+					.collect(Collectors.toList());
+		}
+		if (atr != null && atr.intValue() == 2) { // get error only
+			listErrorInfo.stream().filter(item -> item.getAtr() == MonthlyClosureUpdateErrorAlarmAtr.ERROR)
+					.collect(Collectors.toList());
+		}
 		if (!listErrorInfo.isEmpty()) {
 			for (MonthlyClosureUpdateErrorInfor errInfor : listErrorInfo) {
 				EmployeeRecordImport empImport = empImportAdapter.getPersonInfor(errInfor.getEmployeeId());
@@ -79,9 +101,23 @@ public class MonthlyClosureUpdateFinder {
 			if (checkExecutionStatus() == 0) { // not executable
 				executable = false;
 			}
+			List<ClosureInforDto> listInforDto = new ArrayList<>();
 			List<ClosureInfor> listClosureInfor = closureService.getClosureInfo();
 			ClosureInfor tmp = listClosureInfor.get(0);
 			for (ClosureInfor infor : listClosureInfor) {
+				List<MonthlyClosureUpdateLog> listMonthlyLog = monthlyClosureUpdateRepo
+						.getAllByClosureId(companyId, infor.getClosureId().value).stream()
+						.sorted((o1, o2) -> o1.getExecutionDateTime().compareTo(o2.getExecutionDateTime()))
+						.collect(Collectors.toList());
+				MonthlyClosureUpdateLog log = null;
+				if (!listMonthlyLog.isEmpty())
+					log = listMonthlyLog.get(0);
+				ClosureInforDto i = new ClosureInforDto(infor.getClosureId().value, infor.getClosureName().v(),
+						infor.getClosureMonth().getProcessingYm().v(), infor.getPeriod().start(),
+						infor.getPeriod().end(), infor.getClosureDate().getClosureDay().v(),
+						infor.getClosureDate().getLastDayOfMonth(), log == null ? null : log.getTargetYearMonth().v(),
+						log == null ? null : log.getExecutionDateTime());
+				listInforDto.add(i);
 				if (infor.getPeriod().end().after(tmp.getPeriod().end())) {
 					tmp = infor;
 				}
@@ -90,16 +126,7 @@ public class MonthlyClosureUpdateFinder {
 			listClosureInfor = listClosureInfor.stream().filter(item -> item.getPeriod().end().afterOrEquals(end))
 					.sorted((o1, o2) -> o1.getClosureId().compareTo(o2.getClosureId())).collect(Collectors.toList());
 			tmp = listClosureInfor.get(0);
-			List<MonthlyClosureUpdateLog> listMonthlyLog = monthlyClosureUpdateRepo
-					.getAllByClosureId(companyId, tmp.getClosureId().value).stream()
-					.sorted((o1, o2) -> o1.getExecutionDateTime().compareTo(o2.getExecutionDateTime()))
-					.collect(Collectors.toList());
-			MonthlyClosureUpdateLog log = null;
-			if (!listMonthlyLog.isEmpty())
-				log = listMonthlyLog.get(0);
-			return new Kmw006aResultDto(executable, log == null ? null : log.getTargetYearMonth().v(), log == null ? null : log.getExecutionDateTime(),
-					tmp.getClosureId().value, listClosureInfor.stream().map(item -> ClosureInforDto.fromDomain(item))
-							.collect(Collectors.toList()));
+			return new Kmw006aResultDto(executable, tmp.getClosureId().value, listInforDto);
 		}
 	}
 
@@ -123,11 +150,66 @@ public class MonthlyClosureUpdateFinder {
 		// return not executable
 		return 0;
 	}
-	
+
 	public List<Kmw006cDto> getClosureLogInfor() {
 		String companyId = AppContexts.user().companyId();
-		
-		return null;
+		List<Kmw006cDto> result = new ArrayList<>();
+		List<MonthlyClosureUpdateLog> listClosureLog = monthlyClosureUpdateRepo.getAllSortedByExeDate(companyId);
+		// アルゴリズム「締めの名称を取得する」を実行する
+		for (MonthlyClosureUpdateLog log : listClosureLog) {
+			String closureName = getClosureName(companyId, log.getClosureId().value, log.getTargetYearMonth().v());
+			List<MonthlyClosureUpdatePersonLog> listPersonLog = monthlyClosurePersonLogRepo.getAll(log.getId());
+			int alarmCount = listPersonLog.stream()
+					.filter(l -> l.getExecutionResult() == MonthlyClosurePersonExecutionResult.UPDATED_WITH_ALARM)
+					.collect(Collectors.toList()).size();
+			int errorCount = listPersonLog.stream()
+					.filter(l -> l.getExecutionResult() == MonthlyClosurePersonExecutionResult.NOT_UPDATED_WITH_ERROR)
+					.collect(Collectors.toList()).size();
+			Kmw006cDto r = new Kmw006cDto(log.getId(), log.getClosureId().value, closureName,
+					log.getTargetYearMonth().v(), log.getExecutionDateTime(), listPersonLog.size(), alarmCount,
+					errorCount);
+			result.add(r);
+		}
+		return result;
+	}
+
+	private String getClosureName(String companyId, int closureId, int targetYm) {
+		Optional<Closure> closure = closureRepo.findById(companyId, closureId);
+		if (!closure.isPresent()) {
+			return null;
+		}
+		Optional<ClosureHistory> closureHis = closure.get().getHistoryByYearMonth(YearMonth.of(targetYm));
+		if (closureHis.isPresent()) {
+			return closureHis.get().getClosureName().v();
+		} else
+			return null;
+	}
+
+	public List<String> getListExecutedEmployeeId(String monthlyClosureLogId, int atr) {
+		switch (atr) {
+		case 0:// all
+			return monthlyClosurePersonLogRepo.getAll(monthlyClosureLogId).stream().map(item -> item.getEmployeeId())
+					.collect(Collectors.toList());
+		case 1:// alarm
+			return monthlyClosurePersonLogRepo.getAll(monthlyClosureLogId).stream()
+					.filter(item -> item.getExecutionResult() == MonthlyClosurePersonExecutionResult.UPDATED_WITH_ALARM)
+					.map(item -> item.getEmployeeId()).collect(Collectors.toList());
+		case 2:// error
+			return monthlyClosurePersonLogRepo.getAll(monthlyClosureLogId).stream().filter(
+					item -> item.getExecutionResult() == MonthlyClosurePersonExecutionResult.NOT_UPDATED_WITH_ERROR)
+					.map(item -> item.getEmployeeId()).collect(Collectors.toList());
+		default:
+			return Collections.emptyList();
+		}
+	}
+
+	public List<EmployeeRecordImport> getListEmployeeInfo(List<String> listEmpId) {
+		List<EmployeeRecordImport> result = new ArrayList<>();
+		for (String id : listEmpId) {
+			EmployeeRecordImport empImport = empImportAdapter.getPersonInfor(id);
+			result.add(empImport);
+		}
+		return result;
 	}
 
 }

@@ -66,8 +66,8 @@ public class CalcPeriodForClosureProcess {
 		val currentDate = currentDateOpt.get();
 		
 		// 「締め状態管理」を取得
-		ClosureStatusManagement sttMng = closureSttMngRepo.getById(employeeId, currentYm, closureId, currentDate).get();
-		GeneralDate closureProcessedDate = sttMng.getPeriod().end();		// provisional 締め処理済み年月日
+		Optional<ClosureStatusManagement> sttMng = closureSttMngRepo.getById(employeeId, currentYm, closureId, currentDate);
+		GeneralDate closureProcessedDate = sttMng.isPresent() ? sttMng.get().getPeriod().end() : GeneralDate.today();		// provisional 締め処理済み年月日
 		
 		// 集計すべき期間を計算
 		this.periodForAggregateList = this.calcPeriodForAggregate.algorithm(companyId, employeeId, currentPeriod.end());
