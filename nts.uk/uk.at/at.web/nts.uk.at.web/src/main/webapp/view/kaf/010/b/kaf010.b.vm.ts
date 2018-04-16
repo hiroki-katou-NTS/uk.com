@@ -934,17 +934,17 @@ module nts.uk.at.view.kaf010.b {
                         }
                     }
                 });
-                //休憩時間
-                for (let i = 0; i < self.breakTimes().length; i++) {
-                    self.breakTimes()[i].applicationTime.subscribe(value => {
-                        if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
-                            if (self.preWorkContent.breakTimes[i].applicationTime != value) {
-                                //→エラーＭＳＧ
-                                self.calculateFlag(1);
-                            }
-                        }
-                    });
-                }
+//                //休憩時間
+//                for (let i = 0; i < self.breakTimes().length; i++) {
+//                    self.breakTimes()[i].applicationTime.subscribe(value => {
+//                        if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
+//                            if (self.preWorkContent.breakTimes[i].applicationTime != value) {
+//                                //→エラーＭＳＧ
+//                                self.calculateFlag(1);
+//                            }
+//                        }
+//                    });
+//                }
             }
         }
     }
