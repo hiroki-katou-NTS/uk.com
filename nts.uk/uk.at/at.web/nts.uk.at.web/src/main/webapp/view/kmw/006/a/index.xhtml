@@ -25,7 +25,7 @@
 						<tr>
 							<th class="ui-widget-header">#{i18n.getText('KMW006_2')}</th>
 							<td>
-								<div id="combo-box" style="vertical-align: middle" data-bind="ntsComboBox: {
+								<div tabindex="1" id="combo-box" style="vertical-align: middle" data-bind="ntsComboBox: {
 									options: itemList,
 									optionsValue: 'code',
 									visibleItemsCount: 5,
@@ -52,7 +52,7 @@
 							<th class="ui-widget-header">#{i18n.getText('KMW006_6')}</th>
 							<td>
 								<span class="label" style="width: 430px" data-bind="text: dispLatestClosure"></span>
-								<button data-bind="click: openKmw006cDialog">#{i18n.getText('KMW006_8')}</button>
+								<button tabindex="3" data-bind="click: openKmw006cDialog">#{i18n.getText('KMW006_8')}</button>
 							</td>
 						</tr>
 					</tbody>
@@ -101,7 +101,7 @@
 						</tr>
 					</tbody>
 				</table>
-				<button data-bind="click: executeClick, enable: executable" class="proceed" style="margin-top: 30px; margin-left: 690px">#{i18n.getText('KMW006_1')}</button>
+				<button tabindex="4" data-bind="click: executeClick, enable: executable" class="proceed" style="margin-top: 30px; margin-left: 690px">#{i18n.getText('KMW006_1')}</button>
 			</div>			
 		</ui:define>
 	</ui:composition>

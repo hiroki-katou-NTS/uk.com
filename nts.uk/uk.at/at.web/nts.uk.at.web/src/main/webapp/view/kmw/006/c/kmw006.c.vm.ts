@@ -52,11 +52,11 @@ module nts.uk.at.view.kmw006.c.viewmodel {
                     { headerText: getText('KMW006_33'), key: 'column2', dataType: 'string', width: '120px' },
                     { headerText: getText('KMW006_34'), key: 'column3', dataType: 'string', width: '200px' },
                     { headerText: "", key: 'totalEmp', dataType: 'number', hidden: true },
-                    { headerText: getText('KMW006_35'), key: 'column4', dataType: 'string', width: '100px', template: "{{if ${totalEmp} > 0}} <a data-bind=\"ntsLinkButton: { action: openKmw006dDialog.bind($data, \'${logId}\') }\">${column4}</a> {{else}} ${column4} {{/if}}" },
+                    { headerText: getText('KMW006_35'), key: 'column4', dataType: 'string', width: '100px', template: "{{if ${totalEmp} > 0}} <a tabindex=\"1\" data-bind=\"ntsLinkButton: { action: openKmw006dDialog.bind($data, \'${logId}\') }\">${column4}</a> {{else}} ${column4} {{/if}}" },
                     { headerText: "", key: 'alarmCount', dataType: 'number', hidden: true },
-                    { headerText: getText('KMW006_56'), key: 'column5', dataType: 'string', width: '100px', template: "{{if ${alarmCount} > 0}} <a data-bind=\"ntsLinkButton: { action: openKmw006eDialogA.bind($data, \'${logId}\') }\">${column5}</a> {{else}} ${column5} {{/if}}" },
+                    { headerText: getText('KMW006_56'), key: 'column5', dataType: 'string', width: '100px', template: "{{if ${alarmCount} > 0}} <a tabindex=\"2\" data-bind=\"ntsLinkButton: { action: openKmw006eDialogA.bind($data, \'${logId}\') }\">${column5}</a> {{else}} ${column5} {{/if}}" },
                     { headerText: "", key: 'errorCount', dataType: 'number', hidden: true },
-                    { headerText: getText('KMW006_36'), key: 'column6', dataType: 'string', width: '100px', template: "{{if ${errorCount} > 0}} <a data-bind=\"ntsLinkButton: { action: openKmw006eDialogE.bind($data, \'${logId}\') }\">${column6}</a> {{else}} ${column6} {{/if}}" }
+                    { headerText: getText('KMW006_36'), key: 'column6', dataType: 'string', width: '100px', template: "{{if ${errorCount} > 0}} <a tabindex=\"3\" data-bind=\"ntsLinkButton: { action: openKmw006eDialogE.bind($data, \'${logId}\') }\">${column6}</a> {{else}} ${column6} {{/if}}" }
                 ],
                 features: [
                     {
