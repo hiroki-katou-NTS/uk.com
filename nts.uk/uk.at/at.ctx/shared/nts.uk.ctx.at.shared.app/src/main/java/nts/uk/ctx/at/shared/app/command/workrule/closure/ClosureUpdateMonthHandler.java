@@ -35,9 +35,15 @@ public class ClosureUpdateMonthHandler extends CommandHandler<ClosureUpdateMonth
 		String companyId = AppContexts.user().companyId();
 		ClosureUpdateMonthCommand command = context.getCommand();
 		
+		// find Closure by ID
 		Optional<Closure> optClosure = closureRepository.findById(companyId, command.getClosureId());
-		if(!optClosure.isPresent()) return;
 		
+		// check exist
+		if(!optClosure.isPresent()) {
+			return;
+		}
+		
+		// update CurrentMonth
 		Closure closure = optClosure.get();
 		closure.updateCurrentMonth();
 		closureRepository.update(closure);
