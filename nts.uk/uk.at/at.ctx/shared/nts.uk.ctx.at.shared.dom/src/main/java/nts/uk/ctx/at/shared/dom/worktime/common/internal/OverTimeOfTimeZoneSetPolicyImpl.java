@@ -195,7 +195,7 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 				// # afternoonStartTime ~ shift1 end time
 				if (!(otTimezone.getEnd().lessThanOrEqualTo(presTz.getAfternoonStartTime())
 						|| otTimezone.getStart().greaterThanOrEqualTo(shift1Timezone.getEnd()))) {
-					be.addMessage("Msg_1035", "KMK003_89");
+					be.addMessage("Msg_1036", "KMK003_89");
 				}
 			}
 
@@ -206,7 +206,7 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 				// # afternoonStartTime ~ shift2 end time
 				if (!(otTimezone.getEnd().lessThanOrEqualTo(presTz.getAfternoonStartTime())
 						|| otTimezone.getStart().greaterThanOrEqualTo(shift2Timezone.getEnd()))) {
-					be.addMessage("Msg_1035", "KMK003_89");
+					be.addMessage("Msg_1036", "KMK003_89");
 				}
 			}
 			
@@ -217,12 +217,12 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 				// # afternoon start time ~ shift 1 end time
 				if (!(otTimezone.getEnd().lessThanOrEqualTo(presTz.getAfternoonStartTime())
 						|| otTimezone.getStart().greaterThanOrEqualTo(shift1Timezone.getEnd()))) {
-					be.addMessage("Msg_1035", "KMK003_89");
+					be.addMessage("Msg_1036", "KMK003_89");
 				}
 				// # shift 1 start time ~ shift 1 end time
 				if (!(otTimezone.getEnd().lessThanOrEqualTo(shift2Timezone.getStart())
 						|| otTimezone.getStart().greaterThanOrEqualTo(shift2Timezone.getEnd()))) {
-					be.addMessage("Msg_1035", "KMK003_89");
+					be.addMessage("Msg_1036", "KMK003_89");
 				}
 			}
 		}
