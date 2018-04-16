@@ -13,7 +13,7 @@ import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
-@Table(name = "KRCDT_DAY_REMARKSCOLUMN")
+@Table(name = "KRCDT_DAY_OVERTIMEWORK")
 @NoArgsConstructor
 public class KrcdtDayRemarksColumn extends UkJpaEntity implements Serializable {
 

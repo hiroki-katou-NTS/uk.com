@@ -2,7 +2,7 @@ module nts.uk.at.view.kdw006.g.service {
 
     let paths: any = {
         findWorkType: "at/screen/worktype/findAll",
-        defaultValue : "at/screen/worktype/find/dailyworktype",
+        defaultValue : "at/screen/worktype/find/dailyworktypekdw006",
         getWorkType: 'at/record/workrecord/worktype/get/',
         register: 'at/record/workrecord/worktype/register',
         checkSetting: 'at/record/workrecord/worktype/checkSetting',
