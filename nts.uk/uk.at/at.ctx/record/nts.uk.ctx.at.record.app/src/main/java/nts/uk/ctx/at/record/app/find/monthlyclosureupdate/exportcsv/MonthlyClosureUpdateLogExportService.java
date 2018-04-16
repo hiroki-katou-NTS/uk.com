@@ -41,7 +41,7 @@ public class MonthlyClosureUpdateLogExportService extends ExportService<List<Mon
 		List<Map<String, Object>> dataSource = new ArrayList<>();
 		for (MonthlyClosureErrorInforDto d : data) {
 			Map<String, Object> row = new HashMap<>();
-			row.put(header.get(0), data.indexOf(d));
+			row.put(header.get(0), data.indexOf(d) + 1);
 			row.put(header.get(1), d.getEmployeeCode());
 			row.put(header.get(2), d.getEmployeeName());
 			row.put(header.get(3),

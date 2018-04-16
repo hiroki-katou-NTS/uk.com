@@ -1,12 +1,8 @@
 package nts.uk.ctx.at.record.app.find.monthlyclosureupdate;
 
-import lombok.Data;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 

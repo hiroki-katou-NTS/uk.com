@@ -10,3 +10,7 @@ table tr {
 table th, td {
 	padding-left: 20px !important;
 }
+
+.dipsRed {
+	color: red;
+}

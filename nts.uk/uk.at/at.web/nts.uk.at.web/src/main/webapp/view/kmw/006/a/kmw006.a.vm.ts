@@ -162,6 +162,14 @@ module nts.uk.at.view.kmw006.a.viewmodel {
                     self.dispSelectedPeriod(getText("KMW006_54", [closureInfo.periodStart, closureInfo.periodEnd]));
                     self.targetYm(closureInfo.targetYm);
                     self.executionDate(closureInfo.executionDate);
+                    for (var i = 0; i < self.listClosureInfo().length; i++) {
+                        let info = self.listClosureInfo()[i];
+                        if (moment.utc(info.periodEnd, "YYYY/MM/DD") < moment.utc(closureInfo.periodEnd, "YYYY/MM/DD")) {
+                            $("#A1_14 tr:nth-child(" + (i + 1) + ") td").addClass("dipsRed");
+                        } else {
+                            $("#A1_14 tr:nth-child(" + (i + 1) + ") td").removeClass("dipsRed");
+                        }
+                    }
                 }
             });
         }
@@ -170,6 +178,7 @@ module nts.uk.at.view.kmw006.a.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             block.invisible();
+            self.listClosureInfo.removeAll();
             service.getInfors().done((results: any) => {
                 if (results) {
                     for (var i = 0; i < results.listInfor.length; i++) {

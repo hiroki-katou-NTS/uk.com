@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.app.find.monthlyclosureupdate;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureInfor;
 
 /**
  * 
