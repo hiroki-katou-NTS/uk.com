@@ -521,12 +521,14 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 af = cwt.afternoon(),
                 crod = self.currentOneDay(),
                 crmn = self.currentMorning(),
-                cratn = self.currentAfternoon()
+                cratn = self.currentAfternoon(),
+                sod = self.oneDay();
 
             self.checkDisabled(true);
-            crmn.countHodiday = false;
-            crod.countHodiday = false;
-            cratn.countHodiday = false;
+            crmn.countHodiday = (false);
+            crod.countHodiday = (false);
+            cratn.countHodiday = (false);
+            sod.countHodiday(false);
             cwt.workTypeCode('');
             cwt.dispName('');
             cwt.dispAbName('');
@@ -543,7 +545,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             od.workAtr(0);
             od.digestPublicHd(0);
             od.holidayAtr(0);
-            od.countHodiday(1);
+            od.countHodiday(false);
             od.closeAtr(0);
             od.sumAbsenseNo(0);
             od.sumSpHodidayNo(0);
@@ -556,7 +558,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             mn.workAtr(0);
             mn.digestPublicHd(0);
             mn.holidayAtr(0);
-            mn.countHodiday(1);
+            mn.countHodiday(false);
             mn.closeAtr(0);
             mn.sumAbsenseNo(0);
             mn.sumSpHodidayNo(0);
@@ -569,7 +571,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             af.workAtr(0);
             af.digestPublicHd(0);
             af.holidayAtr(0);
-            af.countHodiday(1);
+            af.countHodiday(false);
             af.closeAtr(0);
             af.sumAbsenseNo(0);
             af.sumSpHodidayNo(0);
