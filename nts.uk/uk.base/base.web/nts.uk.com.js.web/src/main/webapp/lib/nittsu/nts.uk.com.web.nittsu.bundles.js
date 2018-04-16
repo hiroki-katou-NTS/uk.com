@@ -4549,7 +4549,8 @@ var nts;
                             maxValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(this.constraint.max).asMinutes);
                         }
                         var parsed = uk.time.minutesBased.clock.dayattr.parseString(inputText);
-                        if (!parsed.success || parsed.asMinutes < minValue || parsed.asMinutes > maxValue) {
+                        if (!parsed.success || parsed.asMinutes !== Math.round(parsed.asMinutes)
+                            || parsed.asMinutes < minValue || parsed.asMinutes > maxValue) {
                             result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minValue.fullText, maxValue.fullText]), "FND_E_CLOCK");
                         }
                         else {
@@ -5016,7 +5017,7 @@ var nts;
                         // Check if contents is overflow
                         if ($label.outerWidth() < $label[0].scrollWidth) {
                             var $view_1 = $('<div />').addClass('limited-label-view')
-                                .text($label.text())
+                                .text($label.text() || $label.val())
                                 .appendTo('body')
                                 .position({
                                 my: 'left top',
@@ -19410,7 +19411,7 @@ var nts;
                                     return item["index"] >= 0;
                                 });
                             }
-                            else if (singleSelectedRaw !== null) {
+                            else if (singleSelectedRaw !== null && singleSelectedRaw.index > -1) {
                                 selected.push(singleSelectedRaw);
                             }
                             else {
@@ -22298,7 +22299,7 @@ var nts;
                             if (uk.util.isNullOrUndefined(idx))
                                 return;
                             var origData = origDs[idx]; //gridUpdate._getLatestValues(rId);
-                            grid.dataSource.updateRow(rId, $.extend({}, origData, updatedRowData), autoCommit);
+                            grid.dataSource.updateRow(rId, $.extend({}, gridUpdate._getLatestValues(rId), updatedRowData), autoCommit);
                             _.forEach(Object.keys(updatedRowData), function (key) {
                                 notifyUpdate($grid, rowId, key, updatedRowData[key], origData);
                                 var isControl = utils.isNtsControl($grid, key);
