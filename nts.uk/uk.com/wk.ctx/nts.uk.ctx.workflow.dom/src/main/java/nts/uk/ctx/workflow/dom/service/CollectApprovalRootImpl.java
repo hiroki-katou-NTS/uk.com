@@ -304,6 +304,9 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			if (requestInfo == null) {
 				return false;
 			}
+			if((requestInfo.getDisporder()==null)||(approverInfo.getDisporder()==null)){
+				return true;
+			}
 			if (requestInfo.getDisporder() > approverInfo.getDisporder()) {
 				return true;
 			}
@@ -450,7 +453,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
 			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter, 
 					perAppRootList.get(0).getEmploymentAppHistoryItems().get(0).getHistoryId());
-			if(!errorFlag.equals(ErrorFlag.NO_ERROR)){
+			if(errorFlag.equals(ErrorFlag.NO_ERROR)){
 				String appID = IdentifierUtil.randomUniqueId();
 				approvalRootStateRepository.insert(ApprovalRootState.createFromFirst(
 						appID,  
@@ -459,7 +462,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 						standardDate, 
 						employeeID, 
 						approvalRootState));
-				approvalRootState = approvalRootStateRepository.findEmploymentApp(appID).get();
+				approvalRootState = approvalRootStateRepository.findByID(appID).get();
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
@@ -473,7 +476,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
 			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter, 
 					opPerAppRootsOfCommon.get().getEmploymentAppHistoryItems().get(0).getHistoryId());
-			if(!errorFlag.equals(ErrorFlag.NO_ERROR)){
+			if(errorFlag.equals(ErrorFlag.NO_ERROR)){
 				String appID = IdentifierUtil.randomUniqueId();
 				approvalRootStateRepository.insert(ApprovalRootState.createFromFirst(
 						appID,  
@@ -482,7 +485,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 						standardDate, 
 						employeeID, 
 						approvalRootState));
-				approvalRootState = approvalRootStateRepository.findEmploymentApp(appID).get();
+				approvalRootState = approvalRootStateRepository.findByID(appID).get();
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
@@ -496,7 +499,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
 				ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter,
 						wkpAppRootList.get(0).getEmploymentAppHistoryItems().get(0).getHistoryId());
-				if(!errorFlag.equals(ErrorFlag.NO_ERROR)){
+				if(errorFlag.equals(ErrorFlag.NO_ERROR)){
 					String appID = IdentifierUtil.randomUniqueId();
 					approvalRootStateRepository.insert(ApprovalRootState.createFromFirst(
 							appID,  
@@ -505,7 +508,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 							standardDate, 
 							employeeID, 
 							approvalRootState));
-					approvalRootState = approvalRootStateRepository.findEmploymentApp(appID).get();
+					approvalRootState = approvalRootStateRepository.findByID(appID).get();
 				}
 				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 			}
@@ -516,7 +519,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
 				ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter,
 						opWkpAppRootsOfCom.get().getEmploymentAppHistoryItems().get(0).getHistoryId());
-				if(!errorFlag.equals(ErrorFlag.NO_ERROR)){
+				if(errorFlag.equals(ErrorFlag.NO_ERROR)){
 					String appID = IdentifierUtil.randomUniqueId();
 					approvalRootStateRepository.insert(ApprovalRootState.createFromFirst(
 							appID,  
@@ -525,7 +528,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 							standardDate, 
 							employeeID, 
 							approvalRootState));
-					approvalRootState = approvalRootStateRepository.findEmploymentApp(appID).get();
+					approvalRootState = approvalRootStateRepository.findByID(appID).get();
 				}
 				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 			}
@@ -538,7 +541,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
 			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter,
 					comAppRootList.get(0).getEmploymentAppHistoryItems().get(0).getHistoryId());
-			if(!errorFlag.equals(ErrorFlag.NO_ERROR)){
+			if(errorFlag.equals(ErrorFlag.NO_ERROR)){
 				String appID = IdentifierUtil.randomUniqueId();
 				approvalRootStateRepository.insert(ApprovalRootState.createFromFirst(
 						appID,  
@@ -547,7 +550,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 						standardDate, 
 						employeeID, 
 						approvalRootState));
-				approvalRootState = approvalRootStateRepository.findEmploymentApp(appID).get();
+				approvalRootState = approvalRootStateRepository.findByID(appID).get();
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
@@ -559,7 +562,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
 			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter,
 					opCompanyAppRootsOfCom.get().getEmploymentAppHistoryItems().get(0).getHistoryId());
-			if(!errorFlag.equals(ErrorFlag.NO_ERROR)){
+			if(errorFlag.equals(ErrorFlag.NO_ERROR)){
 				String appID = IdentifierUtil.randomUniqueId();
 				approvalRootStateRepository.insert(ApprovalRootState.createFromFirst(
 						appID,  
@@ -568,7 +571,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 						standardDate, 
 						employeeID, 
 						approvalRootState));
-				approvalRootState = approvalRootStateRepository.findEmploymentApp(appID).get();
+				approvalRootState = approvalRootStateRepository.findByID(appID).get();
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}

@@ -19,7 +19,7 @@
 				<a class="goback"
 					data-bind="ntsLinkButton: { jump: '/view/kmk/013/a/index.xhtml' }"
 					tabindex="1"> #{i18n.getText('KMK013_204')} </a>
-				<button class="proceed save" tabindex="2" data-bind="click:saveData">#{i18n.getText('KMK013_205')}</button>
+				<button class="proceed save" tabindex="2" style="margin-left: 50px;" data-bind="click:saveData">#{i18n.getText('KMK013_205')}</button>
 			</div>
 			<div id="contents-area">
 				<table class="left-content">
@@ -37,13 +37,13 @@
 						</tr>
 						<tr>
 							<td>
-    								<div tabindex="3" class="selection"
+    								<div tabindex="3" class="selection" id="trans-attend"
 									data-bind="ntsRadioBoxGroup: {
 										name:'#{i18n.getText('KMK013_311')}',
 										options: transAttendMethod,
 										optionsValue: 'id',
 										optionsText: 'name',
-										value:selectedItem}"></div>
+										value:selectedItem}, hasFocus: true"></div>
 							</td>
 						</tr>
 						
@@ -63,14 +63,14 @@
 								<button class="child-lb" tabindex="4" data-bind="click: openKDL002_givenDays">#{i18n.getText('KMK013_337')}</button>
 								<span tabindex="5">
 									<input 
-									class="nts-input" id="itemname"
+									class="limited-label" id="itemname_absenceDay"
 									data-bind="ntsTextEditor:{
 	                                         value: workTypeNames,
 	                                         required: true,
 	                                         enable: true,
 	                                         readonly:true}" />
 								</span>
-								
+<!-- 								<span class="tooltiptext" data-bind="text: workTypeNames"></span></div> -->
 							</td>
 						</tr>
 						
@@ -85,7 +85,7 @@
 								<button class="child-lb" tabindex="6" data-bind="click: openKDL002_attendanceDays">#{i18n.getText('KMK013_337')}</button>
 								<span tabindex="7">
 									<input
-									class="nts-input" id="itemname"
+									class="limited-label" id="itemname_attendanceDay"
 									data-bind="ntsTextEditor:{
 	                                         value: workTypeNamesAttendance,
 	                                         required: true,

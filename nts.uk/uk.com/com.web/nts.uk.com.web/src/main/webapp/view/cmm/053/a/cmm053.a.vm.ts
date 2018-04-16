@@ -32,7 +32,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
         targetBtnText: string = getText("KCP009_3");
         listComponentOption: ComponentOption;
         selectedItem: KnockoutObservable<string> = ko.observable(null);
-        tabindex: number = 1;
+        tabindex: number = -1;
         isInitDepartment: boolean = true;
         isInitdailyApproval: boolean = true;
 
@@ -44,7 +44,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             self.showinfoSelectedEmployee = ko.observable(false);
             self.ccgcomponent = {
                 /** Common properties */
-                systemType: 1,
+                systemType: 2,
                 showEmployeeSelection: true,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
@@ -178,8 +178,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
         //「登録」ボタンをクリックする
         regSettingManager_click(data) {
             let self = this;
-            $("#A2_3").trigger("validate");
-            $("#A2_7").trigger("validate");
+            $('.nts-input').trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
                 block.invisible();
                 let startDate = new Date(self.settingManager().startDate());
@@ -293,10 +292,11 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             }).fail(error => {
                 if (approverType == APPROVER_TYPE.DEPARTMENT_APPROVER) {
                     self.settingManager().departmentName('');
+                    $('#A2_7').ntsError('set', { messageId: error.messageId});
                 } else {
                     self.settingManager().dailyApprovalName('');
+                    $('#A2_10').ntsError('set', { messageId: error.messageId});
                 }
-                dialog.alertError({ messageId: error.messageId });
             }).always(() => {
                 block.clear();
             });

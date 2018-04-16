@@ -7,13 +7,19 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Value;
+import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.latetime.IntervalExemptionTime;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateLeaveEarlyTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -111,6 +117,24 @@ public class LeaveEarlyTimeOfDaily {
 															  					new IntervalExemptionTime(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)));
 		return LeaveEarlyTimeOfDaily;
 		
+	}
+	
+	/**
+	 * 早退時間のエラーチェック 
+	 * @return エラーである。
+	 */
+	public List<EmployeeDailyPerError>  checkError(String employeeId,
+												  GeneralDate targetDate,
+												  String searchWord,
+												  AttendanceItemDictionaryForCalc attendanceItemDictionary,
+												  ErrorAlarmWorkRecordCode errorCode) {
+		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
+		if(this.getLeaveEarlyTime().getTime().greaterThan(0)) {
+			val itemId = attendanceItemDictionary.findId(searchWord+this.workNo.v());
+			if(itemId.isPresent())
+				returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
+		}
+		return returnErrorList;
 	}
 	
 	

@@ -56,6 +56,7 @@ function LinkButtonClick() {
         let fileSize = ((res.originalSize) / 1024).toFixed(2);
         __viewContext['viewModel'].fileSize(nts.uk.resource.getText("CPS001_85", [fileSize]));
         __viewContext['viewModel'].filename(res.originalName);
+        nts.uk.request.specials.donwloadFile(rowItem.fileId);
 
     });
 }
