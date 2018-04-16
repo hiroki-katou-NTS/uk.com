@@ -627,7 +627,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     horizontalSumBodyRowHeight: "20px",
                     areaResize: true,
                     bodyHeightMode: "dynamic",
-                    windowXOccupation: 25,
+                    windowXOccupation: 134,
                     windowYOccupation: 210,
                     updateMode: "stick",
                     pasteOverWrite: true,
