@@ -53,7 +53,7 @@ module nts.uk.at.view.kmk013.e {
                     new ItemModel(1, nts.uk.resource.getText("Enum_Rounding_Up")),
                     new ItemModel(2, nts.uk.resource.getText("Enum_Rounding_Down_Over"))
                 ]);
-                self.currentRounding = ko.observableArray([]);
+                self.currentRounding = ko.observableArray(self.itemListExcOutRounding());
                 
                 self.isEnable = ko.observable(true);
                 self.isEditable = ko.observable(false);
