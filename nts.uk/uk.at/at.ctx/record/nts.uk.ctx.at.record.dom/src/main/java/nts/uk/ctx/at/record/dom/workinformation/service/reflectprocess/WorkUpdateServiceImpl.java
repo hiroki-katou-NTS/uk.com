@@ -107,7 +107,10 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 	
 	@Override
 	public void updateScheStartEndTime(TimeReflectPara para) {
-		
+		if(para.getStartTime() == null
+				|| para.getEndTime() == null) {
+			return;
+		}
 		//日別実績の勤務情報
 		Optional<WorkInfoOfDailyPerformance> optDailyPerfor = workRepository.find(para.getEmployeeId(), para.getDateData());
 		if(!optDailyPerfor.isPresent()) {

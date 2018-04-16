@@ -66,7 +66,6 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	public void reflectEmployeeOfApp(Application_New appInfor) {
 		GobackReflectPara appGobackTmp = null;
 		OvertimeReflectPara overTimeTmp = null;
-		AppOverTime appOvertimeData = null;
 		CommonReflectPara commonReflect = null;
 		HolidayWorkReflectPara holidayworkInfor = null;
 		ReflectScheDto reflectScheParam = new ReflectScheDto(appInfor.getEmployeeID(), 
@@ -195,8 +194,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				holidayWorkData.getHolidayShiftNight(),
 				appInfor.getReflectionInformation().getStateReflectionReal(), 
 				!appInfor.getReflectionInformation().getNotReasonReal().isPresent() ? null : appInfor.getReflectionInformation().getNotReasonReal().get(),
-						holidayWorkData.getWorkClock1().getStartTime().v(),
-						holidayWorkData.getWorkClock1().getEndTime().v()); 
+						holidayWorkData.getWorkClock1().getStartTime() == null ? null : holidayWorkData.getWorkClock1().getStartTime().v(),
+						holidayWorkData.getWorkClock1().getEndTime() == null ? null : holidayWorkData.getWorkClock1().getEndTime().v()); 
 		holidayPara = new HolidayWorkReflectPara(appInfor.getEmployeeID(), appInfor.getAppDate(), true, ScheAndRecordSameChangeFlg.ALWAY, true, appPara);
 		return holidayPara;
 		
@@ -225,10 +224,10 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		GobackAppRequestPara gobackReques = new GobackAppRequestPara(gobackInfo.getWorkChangeAtr(), 
 				gobackInfo.getSiftCD().v(), 
 				gobackInfo.getWorkTypeCD().v(), 
-				gobackInfo.getWorkTimeStart1().v(), 
-				gobackInfo.getWorkTimeEnd1().v(), 
-				gobackInfo.getWorkTimeStart2().v(), 
-				gobackInfo.getWorkTimeEnd2().v(), 
+				gobackInfo.getWorkTimeStart1() == null ? null : gobackInfo.getWorkTimeStart1().v(), 
+				gobackInfo.getWorkTimeEnd1() == null ? null : gobackInfo.getWorkTimeEnd1().v(), 
+				gobackInfo.getWorkTimeStart2() == null ? null : gobackInfo.getWorkTimeStart2().v(), 
+				gobackInfo.getWorkTimeEnd2() == null ? null : gobackInfo.getWorkTimeEnd2().v(), 
 				appInfor.getReflectionInformation().getStateReflectionReal(),
 				appInfor.getReflectionInformation().getNotReasonReal().isPresent() ? appInfor.getReflectionInformation().getNotReasonReal().get() : null);
 		appGobackTmp = new GobackReflectPara(appInfor.getEmployeeID(), appInfor.getAppDate(), true, PriorStampRequestAtr.GOBACKPRIOR,
