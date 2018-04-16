@@ -1,0 +1,19 @@
+/* style */
+#single-list_headers th {
+	text-align: center;
+}
+
+#single-list td {
+	text-align: center;
+}
+
+.link-button {
+	text-decoration: none;
+	color: #0D86D1 !important;
+	background-color: inherit !important;
+}
+
+.link-button:hover {
+	text-decoration: underline !important;
+	color: #0D86D1 !important;
+}

@@ -4,7 +4,7 @@ module nts.uk.at.view.kmw006.a.service {
     
     var paths = {
         checkStatus: "at/record/monthlyclosure/checkStatus/{0}",
-        getBusTypeByCodes: "at/record/worktypeselection/getNamesByCodes"
+        getInfors: "at/record/monthlyclosure/getInfors"
     }
 
     export function checkStatus(closureId: number): JQueryPromise<any> {
@@ -12,8 +12,8 @@ module nts.uk.at.view.kmw006.a.service {
         return ajax("at", _path);
     };
         
-    export function getBusTypeNamesByCodes(data: Array<string>): JQueryPromise<any> {
-        return ajax("at", paths.getBusTypeByCodes, data);
+    export function getInfors(): JQueryPromise<any> {
+        return ajax("at", paths.getInfors);
     }
     
 }

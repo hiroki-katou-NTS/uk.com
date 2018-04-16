@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
                 var dialogSize = {
-                    width : 1020,
-                    height : 515
+                    width : 820,
+                    height : 560
                 };
             </script>
 			<com:scriptfile set="IGNITE" />
@@ -25,43 +25,45 @@
 				<button data-bind="enable: isComplete(), click: confirmComplete">#{i18n.getText('KMW006_58')}</button>
 			</div>
 			<div class="contents-area">
-				<table id="fixed-table">
-					<colgroup>
-						<col width="200px"/>
-						<col width="400px"/>						
-					</colgroup>
-					<tbody>
-						<tr>
-							<th class="ui-widget-header">#{i18n.getText('KMW006_47')}</th>
-							<td>
-								#{i18n.getText('KMW006_49')}
-								<span data-bind="text: startTime"></span>
-							</td>
-						</tr>
-						<tr>
-							<th class="ui-widget-header">#{i18n.getText('KMW006_48')}</th>
-							<td>
-								#{i18n.getText('KMW006_49')}
-								<span data-bind="text: endTime"></span>
-							</td>
-						</tr>
-						<tr>
-							<th class="ui-widget-header">#{i18n.getText('KMW006_51')}</th>
-							<td><span id="elapseTime"></span></td>
-						</tr>
-						<tr>
-							<th class="ui-widget-header">#{i18n.getText('KMW006_52')}</th>
-							<td>
-								<span data-bind="text: processedCount"></span>/<span data-bind="text: totalCount"></span>
-								<span data-bind="visible: completeStatus() == nts.uk.at.view.kmw006.f.viewmodel.COMPLETE_STATUS.INCOMPLETE">#{i18n.getText('KMW006_61')}</span>
-								<span data-bind="visible: completeStatus() == nts.uk.at.view.kmw006.f.viewmodel.COMPLETE_STATUS.COMPLETE">#{i18n.getText('KMW006_58')}</span>
-								<span data-bind="visible: completeStatus() == nts.uk.at.view.kmw006.f.viewmodel.COMPLETE_STATUS.COMPLETE_WITH_ALARM">#{i18n.getText('KMW006_59')}</span>
-								<span data-bind="visible: completeStatus() == nts.uk.at.view.kmw006.f.viewmodel.COMPLETE_STATUS.COMPLETE_WITH_ERROR">#{i18n.getText('KMW006_60')}</span>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				<table id="single-list"></table>
+				<div style="padding: 20px">
+					<table id="fixed-table">
+						<colgroup>
+							<col width="200px"/>
+							<col width="400px"/>						
+						</colgroup>
+						<tbody>
+							<tr>
+								<th class="ui-widget-header">#{i18n.getText('KMW006_47')}</th>
+								<td>
+									<span class="label" data-bind="text: dispStartTime"></span>
+								</td>
+							</tr>
+							<tr>
+								<th class="ui-widget-header">#{i18n.getText('KMW006_48')}</th>
+								<td>
+									<span class="label" data-bind="text: dispEndTime"></span>
+								</td>
+							</tr>
+							<tr>
+								<th class="ui-widget-header">#{i18n.getText('KMW006_51')}</th>
+								<td><span id="elapseTime"></span></td>
+							</tr>
+							<tr>
+								<th class="ui-widget-header">#{i18n.getText('KMW006_52')}</th>
+								<td>
+									<span style="padding-right: 20px" data-bind="text: dispProcessCount"></span>
+									<span data-bind="visible: completeStatus() == nts.uk.at.view.kmw006.f.viewmodel.COMPLETE_STATUS.INCOMPLETE">#{i18n.getText('KMW006_61')}</span>
+									<span data-bind="visible: completeStatus() == nts.uk.at.view.kmw006.f.viewmodel.COMPLETE_STATUS.COMPLETE">#{i18n.getText('KMW006_58')}</span>
+									<span data-bind="visible: completeStatus() == nts.uk.at.view.kmw006.f.viewmodel.COMPLETE_STATUS.COMPLETE_WITH_ALARM">#{i18n.getText('KMW006_59')}</span>
+									<span data-bind="visible: completeStatus() == nts.uk.at.view.kmw006.f.viewmodel.COMPLETE_STATUS.COMPLETE_WITH_ERROR">#{i18n.getText('KMW006_60')}</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div style="padding-left: 20px">
+					<table id="single-list"></table>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

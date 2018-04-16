@@ -1,1 +1,12 @@
 /* style */
+#A1_1 tr:nth-child(1) {
+	border-top: 3px solid #CCC;
+}
+
+table tr {
+	height: 37px;
+}
+
+table th, td {
+	padding-left: 20px !important;
+}

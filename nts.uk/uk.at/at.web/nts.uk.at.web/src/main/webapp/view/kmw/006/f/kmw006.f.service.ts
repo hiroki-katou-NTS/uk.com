@@ -6,7 +6,7 @@ module nts.uk.at.view.kmw006.f.service {
         getMonthlyClosureLog: "at/record/monthlyclosure/getMonthlyClosure/{0}",
         executeMonthlyClosure: "at/record/monthlyclosure/execution",
         completeConfirm: "at/record/monthlyclosure/completeConfirm/{0}",
-        getResults: "at/record/monthlyclosure/getResults/{0}"
+        getResults: "at/record/monthlyclosure/getResults/{0}/{1}"
     }
 
     export function getMonthlyClosureLog(id: string): JQueryPromise<any> {
@@ -24,7 +24,7 @@ module nts.uk.at.view.kmw006.f.service {
     }
     
     export function getResults(id: string): JQueryPromise<any> {
-        let _path = format(paths.getResults, id);
+        let _path = format(paths.getResults, id, 0);
         return ajax("at", _path);
     }
     

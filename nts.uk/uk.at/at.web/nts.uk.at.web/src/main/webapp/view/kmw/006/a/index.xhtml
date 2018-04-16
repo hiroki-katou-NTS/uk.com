@@ -19,26 +19,25 @@
 				<table id="A1_1">
 					<colgroup>
 						<col width="200px"/>
-						<col width="500px"/>						
+						<col width="550px"/>						
 					</colgroup>
 					<tbody>
 						<tr>
 							<th class="ui-widget-header">#{i18n.getText('KMW006_2')}</th>
 							<td>
-	<!-- 							<div class="valign-center"> -->
-									<div id="combo-box" data-bind="ntsComboBox: {
-										options: itemList,
-										optionsValue: 'code',
-										visibleItemsCount: 5,
-										value: selectedClosureId,
-										optionsText: 'name',
-										columns: [
-											{ prop: 'name', length: 10 }
-										]
-									}"></div>
-									<label>Demo</label>
-									<label>#{i18n.getText('KMW006_54')}</label>
-	<!-- 							</div> -->
+								<div id="combo-box" style="vertical-align: middle" data-bind="ntsComboBox: {
+									options: itemList,
+									optionsValue: 'code',
+									visibleItemsCount: 5,
+									value: selectedClosureId,
+									optionsText: 'name',
+									option: {width: '90px'},
+									columns: [
+										{ prop: 'name', length: 10 }
+									]
+								}"></div>
+								<span class="label" style="padding-left: 30px" data-bind="text: dispSelectedCurrentMonth"></span>
+								<span class="label" style="padding-left: 30px" data-bind="text: dispSelectedPeriod"></span>
 							</td>
 						</tr>
 					</tbody>
@@ -46,60 +45,64 @@
 				<table id="A1_10">
 					<colgroup>
 						<col width="200px"/>
-						<col width="500px"/>						
+						<col width="550px"/>						
 					</colgroup>
 					<tbody>
 						<tr>
 							<th class="ui-widget-header">#{i18n.getText('KMW006_6')}</th>
 							<td>
-								<label>#{i18n.getText('KMW006_7')}</label>
-								<button>#{i18n.getText('KMW006_8')}</button>
+								<span class="label" style="width: 430px" data-bind="text: dispLatestClosure"></span>
+								<button data-bind="click: openKmw006cDialog">#{i18n.getText('KMW006_8')}</button>
 							</td>
 						</tr>
 					</tbody>
 				</table>
-				<table id="A1_14">
+				<table id="A1_14" data-bind="visible: displayClosurePeriod">
 					<colgroup>
 						<col width="200px"/>
-						<col width="500px"/>						
+						<col width="550px"/>
 					</colgroup>
 					<tbody>
 						<tr>
 							<th class="ui-widget-header" rowspan="5">#{i18n.getText('KMW006_57')}</th>
 							<td>
-								#{i18n.getText('KMW006_54')}
-								#{i18n.getText('KMW006_55')}
+								<span class="label" style="width: 120px" data-bind="text: dispClosureInfo1"></span>
+								<span class="label" style="width: 120px" data-bind="text: dispClosureCurrentMonth1"></span>
+								<span class="label" data-bind="text: dispClosurePeriod1"></span>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								#{i18n.getText('KMW006_54')}
-								#{i18n.getText('KMW006_55')}
+								<span class="label" style="width: 120px" data-bind="text: dispClosureInfo2"></span>
+								<span class="label" style="width: 120px" data-bind="text: dispClosureCurrentMonth2"></span>
+								<span class="label" data-bind="text: dispClosurePeriod2"></span>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								#{i18n.getText('KMW006_54')}
-								#{i18n.getText('KMW006_55')}
+								<span class="label" style="width: 120px" data-bind="text: dispClosureInfo3"></span>
+								<span class="label" style="width: 120px" data-bind="text: dispClosureCurrentMonth3"></span>
+								<span class="label" data-bind="text: dispClosurePeriod3"></span>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								#{i18n.getText('KMW006_54')}
-								#{i18n.getText('KMW006_55')}
+								<span class="label" style="width: 120px" data-bind="text: dispClosureInfo4"></span>
+								<span class="label" style="width: 120px" data-bind="text: dispClosureCurrentMonth4"></span>
+								<span class="label" data-bind="text: dispClosurePeriod4"></span>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								#{i18n.getText('KMW006_54')}
-								#{i18n.getText('KMW006_55')}
+								<span class="label" style="width: 120px" data-bind="text: dispClosureInfo5"></span>
+								<span class="label" style="width: 120px" data-bind="text: dispClosureCurrentMonth5"></span>
+								<span class="label" data-bind="text: dispClosurePeriod5"></span>
 							</td>
 						</tr>
 					</tbody>
 				</table>
-				<button data-bind="click: executeClick" class="proceed" style="margin-top: 20px">#{i18n.getText('KMW006_1')}</button>
-			</div>
-			
+				<button data-bind="click: executeClick, enable: executable" class="proceed" style="margin-top: 30px; margin-left: 690px">#{i18n.getText('KMW006_1')}</button>
+			</div>			
 		</ui:define>
 	</ui:composition>
 </body>

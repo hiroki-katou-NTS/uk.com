@@ -1,11 +1,7 @@
 module nts.uk.at.view.kmw006.f.viewmodel {
     import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
-    import confirm = nts.uk.ui.dialog.confirm;
     import alertError = nts.uk.ui.dialog.alertError;
-    import info = nts.uk.ui.dialog.info;
-    import modal = nts.uk.ui.windows.sub.modal;
-    import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import kibanTimer = nts.uk.ui.sharedvm.KibanTimer;
 
@@ -14,51 +10,58 @@ module nts.uk.at.view.kmw006.f.viewmodel {
         items: KnockoutObservableArray<MonthlyClosureErrorInfor>;
         taskId: KnockoutObservable<string> = ko.observable("");
         startTime: KnockoutObservable<string> = ko.observable("");
+        dispStartTime: KnockoutObservable<string>;
         endTime: KnockoutObservable<string> = ko.observable("");
+        dispEndTime: KnockoutObservable<string>;
         elapseTime: kibanTimer = new kibanTimer('elapseTime');
         isComplete: KnockoutObservable<boolean> = ko.observable(false);
         totalCount: KnockoutObservable<number> = ko.observable(0);
         processedCount: KnockoutObservable<number> = ko.observable(0);
+        dispProcessCount: KnockoutObservable<string>;
         completeStatus: KnockoutObservable<number> = ko.observable(COMPLETE_STATUS.INCOMPLETE);
         params: any;
 
         constructor() {
             var self = this;
             self.params = getShared("kmw006fParams");
-            self.totalCount(self.params.listEmployeeId.length);
-            this.items = ko.observableArray([]);
-
-            $("#single-list").ntsGrid({
-                height: '300px',
-                dataSource: this.items(),
-                primaryKey: 'code',
-                columns: [
-                    { headerText: getText('KMW006_13'), key: 'no', dataType: 'number', width: '60px' },
-                    { headerText: getText('KMW006_16'), key: 'employeeCode', dataType: 'string', width: '160px' },
-                    { headerText: getText('KMW006_17'), key: 'employeeName', dataType: 'string', width: '160px' },
-                    { headerText: getText('KMW006_39'), key: "atr", dataType: "number", width: '160px' },
-                    { headerText: getText('KMW006_40'), key: 'errorMessage', dataType: 'string', width: '160px' }
-                ],
-                features: [
-                    {
-                        name: 'Paging',
-                        pageSize: 15,
-                        currentPageIndex: 0,
-                        showPageSizeDropDown: false
-                    }
-                ]
+            if (self.params)
+                self.totalCount(self.params.listEmployeeId.length);
+            else
+                self.totalCount(sessionStorage.getItem("MonthlyClosureListEmpId").value.split(',').length);
+            self.items = ko.observableArray([]);
+            self.initIGrid();
+            self.dispProcessCount = ko.computed(() => {
+                return self.processedCount() + "/" + self.totalCount() + "人";
             });
+            self.dispStartTime = ko.computed(() => {
+                if (nts.uk.text.isNullOrEmpty(self.startTime()))
+                    return "";
+                else
+                    return getText("KMW006_49", [moment.utc(self.startTime()).format("YYYY/MM/DD HH:mm:ss")]);
+            });
+            self.dispEndTime = ko.computed(() => {
+                if (nts.uk.text.isNullOrEmpty(self.endTime()))
+                    return "";
+                else
+                    return getText("KMW006_49", [moment.utc(self.endTime()).format("YYYY/MM/DD HH:mm:ss")]);
+            });
+            $("#fixed-table").ntsFixedTable({ height: 150 });
         }
 
         startPage(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
             block.invisible();
-            service.getMonthlyClosureLog(self.params.monthlyClosureUpdateLogId).done((result) => {
+            service.getMonthlyClosureLog(self.params ? self.params.monthlyClosureUpdateLogId : sessionStorage.getItem("MonthlyClosureUpdateLogId").value).done((result) => {
                 self.startTime(result.executionDateTime);
                 self.completeStatus(result.completeStatus);
                 self.elapseTime.start();
-                self.processMonthlyUpdate();
+                if (self.params)
+                    self.processMonthlyUpdate();
+                else {
+                    self.taskId(sessionStorage.getItem("MonthlyClosureTaskId").value);
+                    self.checkAsyncProcess();
+                }
                 dfd.resolve();
             }).fail((error) => {
                 dfd.reject();
@@ -74,6 +77,7 @@ module nts.uk.at.view.kmw006.f.viewmodel {
             var command = self.params;
             service.executeMonthlyClosure(command).done(res => {
                 self.taskId(res.id);
+                sessionStorage.setItem("MonthlyClosureTaskId", res.id);
                 self.checkAsyncProcess();
             });
         }
@@ -83,6 +87,7 @@ module nts.uk.at.view.kmw006.f.viewmodel {
             nts.uk.deferred.repeat(conf => conf
                 .task(() => {
                     return nts.uk.request.asyncTask.getInfo(self.taskId()).done(info => {
+                        self.processedCount(self.getAsyncData(info.taskDatas, "processed").valueAsNumber);
                         if (!info.pending && !info.running) {
                             self.checkResult(info);
                             if (info.error) {
@@ -97,19 +102,26 @@ module nts.uk.at.view.kmw006.f.viewmodel {
             );
         }
 
+        private getAsyncData(data: Array<any>, key: string): any {
+            var result = _.find(data, (item) => {
+                return item.key == key;
+            });
+            return result || { valueAsString: "", valueAsNumber: 0, valueAsBoolean: false };
+        }
+
         private checkResult(taskInfor) {
             let self = this;
-            service.getResults(self.params.monthlyClosureUpdateLogId).done((result) => {
+            service.getResults(self.params ? self.params.monthlyClosureUpdateLogId : sessionStorage.getItem("MonthlyClosureUpdateLogId").value).done((result) => {
+                let listErr: Array<MonthlyClosureErrorInfor> = [];
                 for (let i = 0; i < result.listErrorInfor.length; i++) {
                     let item = result.listErrorInfor[i];
-                    this.items.push(new MonthlyClosureErrorInfor(i+1, item.employeeCode, item.employeeName, item.errorMessage, item.atr));
+                    listErr.push(new MonthlyClosureErrorInfor(i + 1, item.employeeCode, item.employeeName, item.errorMessage, item.atr));
                 }
+                self.items(listErr);
+                $("#single-list").igGrid("option", "dataSource", self.items());
                 self.isComplete(true);
-                // Get EndTime from server, fallback to client
                 self.endTime(taskInfor.finishedAt);
-                // End count time
                 self.elapseTime.end();
-                // display status
                 self.completeStatus(result.updateLog.completeStatus);
             }).fail((error) => {
                 alertError(error);
@@ -119,12 +131,42 @@ module nts.uk.at.view.kmw006.f.viewmodel {
         private confirmComplete() {
             let self = this;
             block.invisible();
-            service.completeConfirm(self.params.monthlyClosureUpdateLogId).done(() => {
+            service.completeConfirm(self.params ? self.params.monthlyClosureUpdateLogId : sessionStorage.getItem("MonthlyClosureUpdateLogId").value).done(() => {
+                sessionStorage.removeItem("MonthlyClosureUpdateLogId");
+                sessionStorage.removeItem("MonthlyClosureListEmpId");
+                sessionStorage.removeItem("MonthlyClosureId");
+                sessionStorage.removeItem("MonthlyClosureExecutionDateTime");
+                sessionStorage.removeItem("MonthlyClosureTaskId");
                 nts.uk.ui.windows.close();
             }).fail((error) => {
                 alertError(error);
             }).always(() => {
                 block.clear();
+            });
+        }
+
+        private initIGrid() {
+            let self = this;
+            $("#single-list").ntsGrid({
+                height: '300px',
+                dataSource: self.items(),
+                primaryKey: 'employeeCode',
+                columns: [
+                    { headerText: getText('KMW006_13'), key: 'no', dataType: 'number', width: '40px' },
+                    { headerText: getText('KMW006_16'), key: 'employeeCode', dataType: 'string', width: '160px' },
+                    { headerText: getText('KMW006_17'), key: 'employeeName', dataType: 'string', width: '160px' },
+                    { headerText: getText('KMW006_39'), key: 'atr', dataType: 'string', width: '120px' },
+                    { headerText: getText('KMW006_40'), key: 'errorMessage', dataType: 'string', width: '300px' }
+                ],
+                features: [
+                    {
+                        name: 'Paging',
+                        pageSize: 15,
+                        currentPageIndex: 0,
+                        showPageSizeDropDown: false,
+                        pageCountLimit: 20
+                    }
+                ]
             });
         }
 
@@ -135,14 +177,14 @@ module nts.uk.at.view.kmw006.f.viewmodel {
         employeeCode: string;
         employeeName: string;
         errorMessage: string;
-        atr: number;
+        atr: string;
 
         constructor(no: number, employeeCode: string, employeeName: string, errorMessage: string, atr: number) {
             this.no = no;
             this.employeeCode = employeeCode;
             this.employeeName = employeeName;
             this.errorMessage = errorMessage;
-            this.atr = atr;
+            this.atr = atr == ERROR_ALARM_ATR.ALARM ? getText("Enum_MonthlyClosureUpdate_Alarm") : getText("Enum_MonthlyClosureUpdate_Error");
         }
     }
 
@@ -153,10 +195,9 @@ module nts.uk.at.view.kmw006.f.viewmodel {
         COMPLETE_WITH_ALARM = 3
     }
 
-    enum EXECUTE_STATUS {
-        RUNNING = 0,
-        COMPLETED_NOT_CONFIRMED = 1,
-        COMPLETED_CONFIRMED = 2
+    enum ERROR_ALARM_ATR {
+        ALARM = 0,
+        ERROR = 1
     }
 
 }
