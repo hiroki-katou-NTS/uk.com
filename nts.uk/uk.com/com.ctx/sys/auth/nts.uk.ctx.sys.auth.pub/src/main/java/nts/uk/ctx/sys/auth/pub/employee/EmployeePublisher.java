@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface EmployeePublisher {
 	/** RequestList338 */
-	Optional<NarrowEmpByReferenceRange> findByEmpId(List<String> sID);
+	Optional<NarrowEmpByReferenceRange> findByEmpId(List<String> sID, int roleType);
 
 	/** RequestList314 */
 	Optional<EmpWithRangeLogin> findByCompanyIDAndEmpCD(String companyID, String employeeCD);

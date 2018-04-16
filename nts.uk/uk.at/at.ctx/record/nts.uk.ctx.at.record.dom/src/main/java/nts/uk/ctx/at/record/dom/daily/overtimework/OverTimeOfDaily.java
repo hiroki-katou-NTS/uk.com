@@ -25,6 +25,7 @@ import nts.uk.ctx.at.record.dom.daily.TimeWithCalculationMinusExist;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDay;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlOverFrameTime;
@@ -44,6 +45,7 @@ import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfHalfWork;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.time.OverTimeFrame;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
@@ -58,12 +60,17 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryO
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.ExceededPredAddVacationCalc;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.OverTimeCalcNoBreak;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -343,15 +350,21 @@ public class OverTimeOfDaily {
 	
 	/**
 	 * 残業時間超過のチェック&エラーゲット 
+	 * @param attendanceItemDictionary 
 	 */
 	public List<EmployeeDailyPerError> checkOverTimeExcess(String employeeId,
 														   GeneralDate targetDate,
+														   String searchWord,
+														   AttendanceItemDictionaryForCalc attendanceItemDictionary,
 														   ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
-//		returnErrorList.addAll(this.getOverTimeWorkFrameTime().stream()
-//									   						  .filter(tc -> tc.isOverLimitDivergenceTime())
-//									   						  .map(tc -> tc)/*社員の日別実績エラー一覧作成*/
-//									   						  .collect(Collectors.toList()));
+		for(OverTimeFrameTime frameTime:this.getOverTimeWorkFrameTime()) {
+			if(frameTime.isOverLimitDivergenceTime()) {
+				val itemId = attendanceItemDictionary.findId(searchWord+frameTime.getOverWorkFrameNo().v());
+				if(itemId.isPresent())
+					returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
+			}
+		}
 		return returnErrorList;
 	}
 	
@@ -360,12 +373,17 @@ public class OverTimeOfDaily {
 	 */
 	public List<EmployeeDailyPerError> checkPreOverTimeExcess(String employeeId,
 														   GeneralDate targetDate,
+														   String searchWord,
+														   AttendanceItemDictionaryForCalc attendanceItemDictionary,
 														   ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
-//		returnErrorList.addAll(this.getOverTimeWorkFrameTime().stream()
-//									   						  .filter(tc -> tc.isPreOverLimitDivergenceTime())
-//									   						  .map(tc -> tc)/*社員の日別実績エラー一覧作成*/
-//									   						  .collect(Collectors.toList()));
+		for(OverTimeFrameTime frameTime:this.getOverTimeWorkFrameTime()) {
+			if(frameTime.isPreOverLimitDivergenceTime()) {
+				val itemId = attendanceItemDictionary.findId(searchWord+frameTime.getOverWorkFrameNo().v());
+				if(itemId.isPresent())
+					returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
+			}
+		}
 		return returnErrorList;
 	}
 	
@@ -375,8 +393,16 @@ public class OverTimeOfDaily {
 	 */
 	public List<EmployeeDailyPerError> checkFlexTimeExcess(String employeeId,
 														   GeneralDate targetDate,
+														   String searchWord,
+														   AttendanceItemDictionaryForCalc attendanceItemDictionary,
 														   ErrorAlarmWorkRecordCode errorCode) {
-		return (this.getFlexTime().calcOverLimitDivergenceTime() > 0)?Collections.emptyList():Collections.emptyList();
+		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
+		if(this.getFlexTime().isOverLimitDivergenceTime()) {
+			val itemId = attendanceItemDictionary.findId(searchWord);
+			if(itemId.isPresent())
+				returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
+		}
+		return returnErrorList;
 	}
 	
 	/**
@@ -385,7 +411,126 @@ public class OverTimeOfDaily {
 	 */
 	public List<EmployeeDailyPerError> checkPreFlexTimeExcess(String employeeId,
 														   GeneralDate targetDate,
+														   String searchWord,
+														   AttendanceItemDictionaryForCalc attendanceItemDictionary,
 														   ErrorAlarmWorkRecordCode errorCode) {
-		return (this.getFlexTime().calcPreOverLimitDivergenceTime() > 0)?Collections.emptyList():Collections.emptyList();
+		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
+		if(this.getFlexTime().isPreOverLimitDivergenceTime()) {
+			val itemId = attendanceItemDictionary.findId(searchWord);
+			if(itemId.isPresent())
+				returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
+		}
+		return returnErrorList;
 	}
+
+	/**
+	 *　深夜時間のチェック＆エラーゲット 
+	 * @return
+	 */
+	public List<EmployeeDailyPerError> checkNightTimeExcess(String employeeId,
+														   GeneralDate targetDate,
+														   String searchWord,
+														   AttendanceItemDictionaryForCalc attendanceItemDictionary,
+														   ErrorAlarmWorkRecordCode errorCode) {
+		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
+		if(this.getExcessOverTimeWorkMidNightTime().isPresent()
+				&& this.getExcessOverTimeWorkMidNightTime().get().isOverLimitDivergenceTime()) {
+			val itemId = attendanceItemDictionary.findId(searchWord);
+			if(itemId.isPresent())
+				returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
+		}
+		return returnErrorList;
+	}
+	
+	
+	//大塚モード計算
+	/**
+	 * 
+	 * @param actualWorkTime 実働就業時間
+	 * @param unUseBreakTime　休憩未取得時間
+	 * @param predetermineTime 1日の所定時間
+	 * @param ootsukaFixedCalcSet　大塚固定計算設定
+	 */
+	public void calcOotsukaOverTime(AttendanceTime actualWorkTime, AttendanceTime unUseBreakTime,
+									AttendanceTime annualAddTime,AttendanceTime predTime,
+									Optional<FixedWorkCalcSetting> ootsukaFixedCalcSet,
+									AutoCalOvertimeSetting autoCalcSet) {
+		if(ootsukaFixedCalcSet.isPresent()) {
+			//休憩未取得時間から残業時間計算
+			calcOverTimeFromUnuseTime(actualWorkTime, unUseBreakTime, ootsukaFixedCalcSet.get().getOverTimeCalcNoBreak());
+			//所定時間を超過した残業時間を計算
+			calcOverTimeFromOverPredTime(actualWorkTime, unUseBreakTime, annualAddTime, predTime, ootsukaFixedCalcSet.get().getExceededPredAddVacationCalc(), autoCalcSet);
+		}
+	}
+
+	/**
+	 *  休憩未取得時間から残業時間計算 
+	 */
+	private void calcOverTimeFromUnuseTime(AttendanceTime actualWorkTime, AttendanceTime unUseBreakTime,
+										   OverTimeCalcNoBreak ootsukaFixedCalcSet
+										   ) {
+		//仮法定労働時間
+		AttendanceTime predetermineTime = new AttendanceTime(480);
+		
+		//就業時間として計算か判定
+		if(ootsukaFixedCalcSet.getCalcMethod().isCalcAsWorking())
+			return;
+		//法定労働時間を取得
+		val statutoryTime = new AttendanceTime(480);
+		
+		//実働就業<=法定労働(法定内)
+		if(actualWorkTime.lessThanOrEqualTo(statutoryTime)) {
+			this.overTimeWorkFrameTime.forEach(tc -> {if(tc.getOverWorkFrameNo().v().equals(ootsukaFixedCalcSet.getInLawOT().v())) 
+														 	tc.setOverTimeWork(TimeDivergenceWithCalculation.createTimeWithCalculation(unUseBreakTime, tc.getOverTimeWork().getCalcTime()));
+													 }
+											  );
+		}
+		//実働就業>法定労働(法定外)
+		else {
+			this.overTimeWorkFrameTime.forEach(tc -> {if(tc.getOverWorkFrameNo().v().equals(ootsukaFixedCalcSet.getNotInLawOT().v()))
+															tc.setOverTimeWork(TimeDivergenceWithCalculation.createTimeWithCalculation(actualWorkTime.minusMinutes(predetermineTime.valueAsMinutes()), tc.getOverTimeWork().getCalcTime()));
+													  if(tc.getOverWorkFrameNo().v().equals(ootsukaFixedCalcSet.getInLawOT().v()))
+														  	tc.setOverTimeWork(TimeDivergenceWithCalculation.createTimeWithCalculation(unUseBreakTime.minusMinutes(actualWorkTime.valueAsMinutes() + predetermineTime.valueAsMinutes()), tc.getOverTimeWork().getCalcTime()));
+													 }
+											  );
+		}
+	}
+	
+	/**
+	 * 所定時間を超過した残業時間を計算
+	 * @param actualWorkTime　実働時間
+	 * @param unUseBreakTime　未使用休憩時間
+	 * @param annualAddTime　年休加算時間
+	 * @param oneDayPredTime　1日の所定時間
+	 * @param ootsukaFixedCalcSet　大塚固定計算設定
+	 * @param autoCalcSet　残業時間の自動計算設定
+	 */
+	private void calcOverTimeFromOverPredTime(AttendanceTime actualWorkTime, AttendanceTime unUseBreakTime,
+											  AttendanceTime annualAddTime, AttendanceTime oneDayPredTime,
+											  ExceededPredAddVacationCalc ootsukaFixedCalcSet,
+											  AutoCalOvertimeSetting autoCalcSet) {
+		AttendanceTime totalWorkTime = new AttendanceTime(actualWorkTime.valueAsMinutes()
+				  						+ unUseBreakTime.valueAsMinutes()
+				  						+ annualAddTime.valueAsMinutes());
+
+		AttendanceTime withinOverTime = totalWorkTime.greaterThan(oneDayPredTime.valueAsMinutes())
+										?totalWorkTime.minusMinutes(actualWorkTime.valueAsMinutes())
+										:new AttendanceTime(0);
+		//一旦、普通を見るようにする　
+		if(autoCalcSet.decisionCalcAtr(StatutoryAtr.Statutory, false)) {
+			this.overTimeWorkFrameTime.forEach(tc ->{if(tc.getOverWorkFrameNo().equals(ootsukaFixedCalcSet.getOtFrameNo()))
+														tc.setOverTimeWork(TimeDivergenceWithCalculation.createTimeWithCalculation(withinOverTime, withinOverTime));
+													} 
+	  );
+		}
+		else {
+			this.overTimeWorkFrameTime.forEach(tc ->{if(tc.getOverWorkFrameNo().equals(ootsukaFixedCalcSet.getOtFrameNo()))
+														tc.setOverTimeWork(TimeDivergenceWithCalculation.createTimeWithCalculation(withinOverTime, tc.getOverTimeWork().getCalcTime()));
+													} 
+											  );
+		}
+		
+	}
+	
+	
 }

@@ -70,4 +70,16 @@ public class OverTimeCalcNoBreak extends WorkTimeDomainObject {
 
 		super.validate();
 	}
+
+	/**
+	 * Constructor 
+	 */
+	public OverTimeCalcNoBreak(CalcMethodNoBreak calcMethod, OverTimeFrameNo inLawOT, OverTimeFrameNo notInLawOT) {
+		super();
+		this.calcMethod = calcMethod;
+		this.inLawOT = inLawOT;
+		this.notInLawOT = notInLawOT;
+	}
+	
+	
 }

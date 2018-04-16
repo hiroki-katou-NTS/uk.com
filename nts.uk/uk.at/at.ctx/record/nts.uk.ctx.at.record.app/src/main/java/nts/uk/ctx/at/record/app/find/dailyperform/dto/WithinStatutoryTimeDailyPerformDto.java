@@ -48,7 +48,7 @@ public class WithinStatutoryTimeDailyPerformDto {
 			WithinStatutoryTimeOfDaily domain) {
 		return domain == null ? null: new WithinStatutoryTimeDailyPerformDto(
 						getAttendanceTime(domain.getWorkTime()),
-						getAttendanceTime(domain.getWorkTimeIncludeVacationTime()),
+						getAttendanceTime(domain.getActualWorkTime()),
 						getAttendanceTime(domain.getWithinPrescribedPremiumTime()),
 						getWithStatutory(domain.getWithinStatutoryMidNightTime()),
 						getAttendanceTime(domain.getVacationAddTime()));
