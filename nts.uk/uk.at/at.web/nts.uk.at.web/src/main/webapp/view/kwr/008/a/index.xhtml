@@ -9,6 +9,7 @@
 		<ui:define name="htmlHead">
 			<script></script>
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
 			<com:stylefile path="kwr008.a.style.css" />
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
@@ -16,6 +17,7 @@
 			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kdl/023/base/kdl023.base.service.js" />
+			<com:scriptfile path="kwr008.a.service.js" />
 			<com:scriptfile path="kwr008.a.vm.js" />
 			<com:scriptfile path="kwr008.a.start.js" />
 		</ui:define>
@@ -32,7 +34,7 @@
 				</div>
 				
 				<div class="fixed-flex-layout-left"
-					style="padding-top: 20px; padding-left: 20px">
+					style="padding-top: 20px; padding-left: 80px">
 					<div class="employeeInfoSearch">
 						<div class="selectionEmployee" tabindex="3">
 							<div id="employeeSearch" tabindex="-1"></div>
@@ -41,7 +43,8 @@
 				</div>
 				<div class="fixed-flex-layout-right" style="padding-top: 20px; margin-left:100px;">
 					<div>
-						<div id="A3" class="valign-center control-group">
+						<!-- A3 -->
+						<div class="valign-center control-group">
 							
 							<!-- A3_1 -->
 							<div class="form-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR008_4')}</div>
@@ -71,7 +74,8 @@
 						
 						<!-- A4 -->
 						<div class="valign-center control-group" style="margin-top:100px">
-							<div id="A4_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR008_11')}</div>
+							<!-- A4_1 -->
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KWR008_11')}</div>
 							<div tabindex="6" id="A4_2" data-bind="ntsComboBox: {
 								name: '#{i18n.getText('KWR008_12')}',
 								options: outputItem,
@@ -83,7 +87,8 @@
 									{ prop: 'name', length: 10 },
 								]}"></div>
 								
-								<button id="A4_3" tabindex="7" style="" class="small">#{i18n.getText('KWR008_13')}</button>
+								<!-- A4_3 -->
+								<button data-bind="click: redirectKWR008B" tabindex="7" class="small">#{i18n.getText('KWR008_13')}</button>
 						</div>
 						
 						<!-- A6 -->
@@ -91,12 +96,12 @@
 							<div id="A6_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR008_17')}</div>
 							<div tabindex="7" id="A4_2" data-bind="ntsComboBox: {
 								options: breakPage,
-								optionsValue: 'code',
+								optionsValue: 'value',
 								visibleItemsCount: 2,
 								value: selectedBreakPage,
-								optionsText: 'name',
+								optionsText: 'localizedName',
 								columns: [
-									{ prop: 'name', length: 2 }
+									{ prop: 'localizedName', length: 2 }
 								]}"></div>
 						</div>
 						

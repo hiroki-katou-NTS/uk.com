@@ -92,7 +92,7 @@ module nts.uk.at.view.kwr008.a {
             selectedOutputItem: KnockoutObservable<string>;
 
             //A6 
-            breakPage: KnockoutObservableArray<string>;
+            breakPage: KnockoutObservableArray<any>;
             selectedBreakPage: KnockoutObservable<string>
 
             constructor() {
@@ -132,10 +132,7 @@ module nts.uk.at.view.kwr008.a {
                 self.selectedOutputItem = ko.observable('0');
 
                 // A6
-                self.breakPage = ko.observable([
-                    new ItemModel(0, 'なし'),
-                    new ItemModel(1, '職場')
-                ]);
+                self.breakPage = ko.observable();
                 
                 self.selectedBreakPage = ko.observable('0');
 
@@ -175,6 +172,11 @@ module nts.uk.at.view.kwr008.a {
                 //                    self.periodDate().endDate = value;   
                 //                    self.periodDate.valueHasMutated();      
                 //                });
+            }
+            
+                        
+            redirectKWR008B(){
+                nts.uk.request.jump("/view/kwr/008/b/index.xhtml");
             }
 
             /**
@@ -278,7 +280,13 @@ module nts.uk.at.view.kwr008.a {
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-
+                service.getPageBreakSelection().done((enumRes)=>{
+                    console.log(enumRes);
+                    self.breakPage = ko.observable(enumRes);
+                    console.log(self.breakPage);
+                }).fail((enumError)=>{
+                    console.log(`fail : ${enumError}`);
+                });
                 dfd.resolve(self);
                 return dfd.promise();
             }
