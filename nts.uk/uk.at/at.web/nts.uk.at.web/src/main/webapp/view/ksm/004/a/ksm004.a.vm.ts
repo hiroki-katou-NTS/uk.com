@@ -1040,6 +1040,7 @@ module nts.uk.at.view.ksm004.a {
             textColor: string;
             backgroundColor: string;
             listText: Array<any>;
+            insertText: boolean;
             constructor(start: number, listText: number) {
                 this.start = moment(start.toString()).format('YYYY-MM-DD');
                 this.backgroundColor = 'white';
@@ -1056,7 +1057,8 @@ module nts.uk.at.view.ksm004.a {
                         this.textColor = '#31859C';
                         this.listText = [WorkingDayAtr.WorkingDayAtr_Company.toString()];
                         break;
-                }        
+                }
+                this.insertText = false;        
             }
             changeListText(value: number){
                 switch(value) {
@@ -1072,7 +1074,8 @@ module nts.uk.at.view.ksm004.a {
                         this.textColor = '#31859C';
                         this.listText = [WorkingDayAtr.WorkingDayAtr_Company.toString()];
                         break;
-                }         
+                }
+                this.insertText = true;              
             }
         }
         
