@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -70,11 +69,10 @@ public class DiffTimezoneSetting extends WorkTimeDomainObject {
 	}
 	
 	/**
-	 * Restore default data.
+	 * Correct default data.
 	 */
 	public void correctDefaultData() {
-		this.employmentTimezones = new ArrayList<>();
-		this.oTTimezones = new ArrayList<>();
+		this.oTTimezones.forEach(item -> item.correctDefaultData());
 	}
 	
 	@Override

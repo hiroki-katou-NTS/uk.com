@@ -200,4 +200,16 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot {
 			this.calculationSetting.get().correctDefaultData(screenMode);
 		}	
 	}
+
+	/**
+	 * Correct default data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param overtimeSetting the overtime setting
+	 */
+	public void setDefaultData(ScreenMode screenMode) {
+		if (screenMode.equals(ScreenMode.SIMPLE) || this.legalOTSetting == LegalOTSetting.LEGAL_INTERNAL_TIME) {
+			this.lstHalfDayWorkTimezone.forEach(item -> item.correctDefaultData());
+		}
+	}
 }

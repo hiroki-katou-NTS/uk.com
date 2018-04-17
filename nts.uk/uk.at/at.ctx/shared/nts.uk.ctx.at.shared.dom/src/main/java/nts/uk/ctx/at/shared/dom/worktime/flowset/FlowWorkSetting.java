@@ -152,4 +152,16 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot {
 		//Dialog H
 		this.restSetting.correctDefaultData(screenMode,this.getHalfDayWorkTimezone().getRestTimezone().isFixRestTime());
 	}
+
+	/**
+	 * Correct default data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param overtimeSetting the overtime setting
+	 */
+	public void setDefaultData(ScreenMode screenMode) {
+		if (screenMode.equals(ScreenMode.SIMPLE)) {
+			this.halfDayWorkTimezone.correctDefaultData();
+		}
+	}
 }

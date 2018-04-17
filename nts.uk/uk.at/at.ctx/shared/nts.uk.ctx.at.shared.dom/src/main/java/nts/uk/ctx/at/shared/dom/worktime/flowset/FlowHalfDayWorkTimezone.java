@@ -66,4 +66,11 @@ public class FlowHalfDayWorkTimezone extends WorkTimeDomainObject {
 	public void correctDefaultData(ScreenMode screenMode) {
 		this.restTimezone.correctDefaultData(screenMode);
 	}
+
+	/**
+	 * Correct default data.
+	 */
+	public void correctDefaultData() {
+		this.workTimeZone.correctDefaultData();
+	}
 }

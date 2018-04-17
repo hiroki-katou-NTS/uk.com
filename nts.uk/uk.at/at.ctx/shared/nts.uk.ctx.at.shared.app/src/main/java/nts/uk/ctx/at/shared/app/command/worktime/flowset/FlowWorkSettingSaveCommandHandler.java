@@ -58,15 +58,18 @@ public class FlowWorkSettingSaveCommandHandler extends CommandHandler<FlowWorkSe
 		// call repository save flow work setting
 		if (command.isAddMode()) {
 			flowWorkSetting.correctDefaultData(ScreenMode.valueOf(command.getScreenMode()));
+			flowWorkSetting.setDefaultData(ScreenMode.valueOf(command.getScreenMode()));
 			// Validate + common handler
 			this.validate(command, flowWorkSetting);
 			this.flowRepo.add(flowWorkSetting);
+			return;
 		}
 
 		// update mode
 		FlowWorkSetting oldDomain = this.flowRepo.find(companyId, command.getWorktimeSetting().worktimeCode).get();
 		flowWorkSetting.correctData(ScreenMode.valueOf(command.getScreenMode()),
 				command.getWorktimeSetting().getWorkTimeDivision(), oldDomain);
+		flowWorkSetting.setDefaultData(ScreenMode.valueOf(command.getScreenMode()));
 		// Validate + common handler
 		this.validate(command, flowWorkSetting);
 		this.flowRepo.update(flowWorkSetting);

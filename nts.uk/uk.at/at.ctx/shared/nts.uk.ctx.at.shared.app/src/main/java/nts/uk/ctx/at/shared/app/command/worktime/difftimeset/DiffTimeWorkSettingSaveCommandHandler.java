@@ -58,6 +58,7 @@ public class DiffTimeWorkSettingSaveCommandHandler extends CommandHandler<DiffTi
 		// call repository save fixed work setting
 		if (command.isAddMode()) {
 			difftimeWorkSetting.correctDefaultData(ScreenMode.valueOf(command.getScreenMode()));
+			difftimeWorkSetting.setDefaultData(ScreenMode.valueOf(command.getScreenMode()));
 			// Validate + common handler
 			this.validate(command, difftimeWorkSetting);
 			this.difftimeRepo.add(difftimeWorkSetting);
@@ -69,6 +70,7 @@ public class DiffTimeWorkSettingSaveCommandHandler extends CommandHandler<DiffTi
 				.get();
 		difftimeWorkSetting.correctData(ScreenMode.valueOf(command.getScreenMode()),
 				command.getWorktimeSetting().getWorkTimeDivision(), oldData);
+		difftimeWorkSetting.setDefaultData(ScreenMode.valueOf(command.getScreenMode()));
 		// Validate + common handler
 		this.validate(command, difftimeWorkSetting);
 		this.difftimeRepo.update(difftimeWorkSetting);

@@ -61,6 +61,7 @@ public class FlexWorkSettingSaveCommandHandler extends CommandHandler<FlexWorkSe
 			// Validate + common handler
 			this.validate(command, flexWorkSetting);
 			this.flexWorkSettingRepository.add(flexWorkSetting);
+			return;
 		}
 
 		// update mode

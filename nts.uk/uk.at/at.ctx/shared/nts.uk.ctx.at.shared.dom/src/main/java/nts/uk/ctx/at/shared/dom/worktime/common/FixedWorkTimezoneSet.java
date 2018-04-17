@@ -190,4 +190,11 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject {
 		this.lstWorkingTimezone = new ArrayList<>();
 		this.lstOTTimezone = new ArrayList<>();
 	}
+	
+	/**
+	 * Correct default data.
+	 */
+	public void correctDefaultData() {
+		this.lstOTTimezone.forEach(item -> item.correctDefaultData());
+	}
 }

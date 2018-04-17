@@ -82,6 +82,13 @@ public class DiffTimeHalfDayWorkTimezone extends WorkTimeDomainObject {
 			this.workTimezone.correctDefaultData();
 		}
 	}
+
+	/**
+	 * Correct default data.
+	 */
+	public void correctDefaultData() {
+		this.workTimezone.correctDefaultData();
+	}
 	
 	/**
 	 * Restore simple mode.

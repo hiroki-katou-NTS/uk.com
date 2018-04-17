@@ -84,7 +84,7 @@ public class JpaFlowOTTimezoneSetMemento implements FlowOTTimezoneSetMemento {
 	 */
 	@Override
 	public void setInLegalOTFrameNo(OvertimeWorkFrameNo no) {
-		this.entity.setInLegalOtFrameNo(no.v().intValue());
+		this.entity.setInLegalOtFrameNo(no == null ? null : no.v().intValue());
 	}
 
 	/*
@@ -96,7 +96,7 @@ public class JpaFlowOTTimezoneSetMemento implements FlowOTTimezoneSetMemento {
 	 */
 	@Override
 	public void setSettlementOrder(SettlementOrder od) {
-		this.entity.setSettlementOrder(od.v().intValue());
+		this.entity.setSettlementOrder(od == null ? null : od.v());
 	}
 
 }
