@@ -72,7 +72,7 @@ public class HolidayWorkReflectProcessImpl implements HolidayWorkReflectProcess{
 		for(Map.Entry<Integer,Integer> entry : mapWorkTimeFrame.entrySet()){
 			//INPUT．休出時間のループ中の番をチェックする
 			//INPUT．残業時間のループ中の番を、残業時間(反映用)に追加する
-			if(entry.getValue() > 0) {
+			if(entry.getValue() >= 0) {
 				tmp.put(entry.getKey(), entry.getValue());
 			}
 		}
