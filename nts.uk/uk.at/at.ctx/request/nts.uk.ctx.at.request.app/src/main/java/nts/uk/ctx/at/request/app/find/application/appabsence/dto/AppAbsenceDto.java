@@ -149,6 +149,8 @@ public class AppAbsenceDto {
 	 */
 	private List<HolidayAppTypeName> holidayAppTypeName;
 	
+	private boolean appReasonRequire;
+	
 	public static AppAbsenceDto fromDomain(AppAbsence app){
 		return new AppAbsenceDto(app.getVersion(),
 								ApplicationDto_New.fromDomain(app.getApplication()),
@@ -180,7 +182,7 @@ public class AppAbsenceDto {
 								null,
 								0,
 								false,
-								false,null);
+								false,null,true);
 	}
 }
 

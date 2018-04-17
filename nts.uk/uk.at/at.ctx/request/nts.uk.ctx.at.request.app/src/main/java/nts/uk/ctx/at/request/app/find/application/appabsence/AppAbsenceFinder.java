@@ -46,6 +46,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vaca
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -158,6 +159,9 @@ public class AppAbsenceFinder {
 		employeeName = employeeAdapter.getEmployeeName(employeeID);
 		result.setEmployeeID(employeeID);
 		result.setEmployeeName(employeeName);
+		if(appCommonSettingOutput.applicationSetting != null){
+			result.setAppReasonRequire(appCommonSettingOutput.applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED));
+		}
 		return result;
 	}
 
@@ -254,6 +258,9 @@ public class AppAbsenceFinder {
 		String employeeName = "";
 		employeeName = employeeAdapter.getEmployeeName(appAbsence.getApplication().getEmployeeID());
 		result.setEmployeeName(employeeName);
+		if(appCommonSettingOutput.applicationSetting != null){
+			result.setAppReasonRequire(appCommonSettingOutput.applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED));
+		}
 		// 8.休暇系の設定を取得する :TODO
 		return result;
 	}

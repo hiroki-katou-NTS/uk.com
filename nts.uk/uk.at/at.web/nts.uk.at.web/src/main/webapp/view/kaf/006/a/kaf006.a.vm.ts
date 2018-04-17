@@ -377,6 +377,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             self.displayPrePostFlg(data.prePostFlg);
             self.displayWorkTimeName(nts.uk.resource.getText("KAF006_21"));
             self.mailFlag(data.mailFlg);
+            self.requiredReason(data.appReasonRequire);
             if (data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0) {
                 let lstReasonCombo = _.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
                 self.reasonCombo(lstReasonCombo);
@@ -405,7 +406,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 self.reasonCombo(),
                 self.multilContent()
             );
-            let appReasonError = !appcommon.CommonProcess.checkAppReason(true, self.typicalReasonDisplayFlg(), self.displayAppReasonContentFlg(), appReason);
+            let appReasonError = !appcommon.CommonProcess.checkAppReason(self.requiredReason(), self.typicalReasonDisplayFlg(), self.displayAppReasonContentFlg(), appReason);
             if (appReasonError) {
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function() { nts.uk.ui.block.clear(); });
                 return;
