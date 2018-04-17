@@ -163,8 +163,8 @@ module nts.uk.ui.koExtentions {
                 }
                 var mmRs = new nts.uk.time.MomentResult();
                 var otFormat = nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat;
-                var minDate = (data.startDate !== undefined) ? moment(ko.unwrap(data.startDate), otFormat) : mmRs.systemMin();
-                var maxDate = (data.endDate !== undefined) ? moment(ko.unwrap(data.endDate), otFormat) : mmRs.systemMax();
+                var minDate = ($input.data('startDate') !== undefined) ? moment($input.data('startDate'), otFormat) : mmRs.systemMin();
+                var maxDate = ($input.data('endDate') !== undefined) ? moment($input.data('endDate'), otFormat) : mmRs.systemMax();
                 var momentCurrent = moment(parsedValue, otFormat);
                 var error = false;
                 if(momentCurrent.isBefore(minDate, 'day')){
@@ -223,6 +223,8 @@ module nts.uk.ui.koExtentions {
             container.data("init", false);
             
             $input.ntsDatepicker("bindFlip");
+            $input.data('startDate', startDate);
+            $input.data('endDate', endDate);
         }
 
         /**
@@ -272,6 +274,8 @@ module nts.uk.ui.koExtentions {
             // Properties Binding
             $input.datepicker('setStartDate', startDate);
             $input.datepicker('setEndDate', endDate);
+            $input.data('startDate', startDate);
+            $input.data('endDate', endDate);
             if (enable !== undefined)
                $input.prop("disabled", !enable);
             else
