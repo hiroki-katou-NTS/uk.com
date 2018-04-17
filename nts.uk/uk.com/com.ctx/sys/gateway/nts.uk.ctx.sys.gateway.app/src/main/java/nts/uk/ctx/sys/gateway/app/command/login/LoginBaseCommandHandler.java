@@ -7,6 +7,7 @@ package nts.uk.ctx.sys.gateway.app.command.login;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -49,8 +50,9 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.LoginLogRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.OperationSection;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.SuccessFailureClassification;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
-import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccount;
-import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccountRepository;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccount;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountInfo;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
@@ -93,7 +95,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 	/** The window account repository. */
 	@Inject
-	private WindowAccountRepository windowAccountRepository;
+	private WindowsAccountRepository windowAccountRepository;
 
 	/** The user adapter. */
 	@Inject
@@ -434,14 +436,16 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		// ドメインモデル「Windowsアカウント情報」を取得する
 		// ログイン時アカウントとドメインモデル「Windowsアカウント情報」を比較する - get 「Windowsアカウント情報」 from
 		// 「Windowsアカウント」
-		Optional<WindowAccount> opWindowAccount = this.windowAccountRepository.findbyUserNameAndHostName(username,
+		Optional<WindowsAccount> opWindowAccount = this.windowAccountRepository.findbyUserNameAndHostName(username,
 				hostname);
 
 		if (!opWindowAccount.isPresent()) {
 			// エラーメッセージ（#Msg_876）を表示する。
 			throw new BusinessException("Msg_876");
 		} else {
-			if (opWindowAccount.get().getUseAtr().equals(UseAtr.NotUse)) {
+			List<WindowsAccountInfo> windows =  opWindowAccount.get().getAccountInfos().stream().filter(item -> item.getHostName().v() == hostname 
+					&& item.getUserName().v() == username && item.getUseAtr().equals(UseAtr.NotUse)).collect(Collectors.toList());
+			if (windows.isEmpty()) {
 				throw new BusinessException("Msg_876");
 			} else {
 				this.getUserAndCheckLimitTime(context, opWindowAccount.get());
@@ -456,7 +460,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the window account
 	 * @return the user and check limit time
 	 */
-	private void getUserAndCheckLimitTime(HttpServletRequest request, WindowAccount windowAccount) {
+	private void getUserAndCheckLimitTime(HttpServletRequest request, WindowsAccount windowAccount) {
 		// get user
 		Optional<UserImport> optUserImport = this.userAdapter.findByUserId(windowAccount.getUserId());
 
