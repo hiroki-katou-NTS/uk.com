@@ -545,7 +545,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             od.workAtr(0);
             od.digestPublicHd(0);
             od.holidayAtr(0);
-            od.countHodiday(false);
+            od.countHodiday(1);
             od.closeAtr(0);
             od.sumAbsenseNo(0);
             od.sumSpHodidayNo(0);
@@ -558,7 +558,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             mn.workAtr(0);
             mn.digestPublicHd(0);
             mn.holidayAtr(0);
-            mn.countHodiday(false);
+            mn.countHodiday(1);
             mn.closeAtr(0);
             mn.sumAbsenseNo(0);
             mn.sumSpHodidayNo(0);
@@ -571,7 +571,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             af.workAtr(0);
             af.digestPublicHd(0);
             af.holidayAtr(0);
-            af.countHodiday(false);
+            af.countHodiday(1);
             af.closeAtr(0);
             af.sumAbsenseNo(0);
             af.sumSpHodidayNo(0);
