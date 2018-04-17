@@ -60,7 +60,7 @@ public class ApproveImpl implements ApproveService {
 					appDate);
 			approvalRootState = approvalRootContentOutput.getApprovalRootState();
 		} else {
-			Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findEmploymentApp(rootStateID);
+			Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID);
 			if(!opApprovalRootState.isPresent()){
 				throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 			}
@@ -168,7 +168,7 @@ public class ApproveImpl implements ApproveService {
 					appDate);
 			approvalRootState = approvalRootContentOutput.getApprovalRootState();
 		} else {
-			Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findEmploymentApp(rootStateID);
+			Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID);
 			if(!opApprovalRootState.isPresent()){
 				throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 			}
@@ -218,7 +218,7 @@ public class ApproveImpl implements ApproveService {
 					appDate);
 			approvalRootState = approvalRootContentOutput.getApprovalRootState();
 		} else {
-			Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findEmploymentApp(rootStateID);
+			Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID);
 			if(!opApprovalRootState.isPresent()){
 				throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 			}
