@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
@@ -23,6 +24,7 @@ public class KrcmtMonthlyRecordWorkType extends UkJpaEntity implements Serializa
 	
 	private static final long serialVersionUID = 1L;
 
+	@EmbeddedId
 	public KrcmtMonthlyRecordWorkTypePK krcmtMonthlyRecordWorkTypePK;
 
 	@OneToMany(mappedBy="monthlyactualresult", cascade = CascadeType.ALL, orphanRemoval = true)
