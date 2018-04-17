@@ -48,8 +48,8 @@ module a16 {
             
             // Init all data                                                                            
             _self.listZeroHStraddCalculateSetting = ko.observableArray([
-                { value: false, localizedName: nts.uk.resource.getText("KMK003_142") },
-                { value: true, localizedName: nts.uk.resource.getText("KMK003_143") }
+                { value: true, localizedName: nts.uk.resource.getText("KMK003_142") },
+                { value: false, localizedName: nts.uk.resource.getText("KMK003_143") }
             ]);
             
             // Detail mode and simple mode is same

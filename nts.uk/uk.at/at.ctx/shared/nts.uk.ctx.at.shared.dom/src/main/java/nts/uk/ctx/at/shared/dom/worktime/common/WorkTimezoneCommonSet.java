@@ -130,7 +130,9 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 		// Tab 15
 		this.medicalSets.forEach(item -> item.correctData(screenMode));
 		// Tab 16
-		
+		if (ScreenMode.SIMPLE.equals(screenMode)) {
+			this.zeroHStraddCalculateSet = false;
+		}		
 	}
 
 	/**
@@ -150,5 +152,9 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 		this.shortTimeWorkSet.correctData(screenMode);
 		// Tab 15
 		this.medicalSets.forEach(item -> item.correctData(screenMode));
+		// Tab 16
+		if (ScreenMode.SIMPLE.equals(screenMode)) {
+			this.zeroHStraddCalculateSet = false;
+		}	
 	}
 }

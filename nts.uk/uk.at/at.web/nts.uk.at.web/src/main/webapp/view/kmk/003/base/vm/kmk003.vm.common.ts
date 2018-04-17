@@ -239,7 +239,7 @@ module nts.uk.at.view.kmk003.a {
                 holidayCalculation: HolidayCalculationModel;
 
                 constructor() {
-                    this.zeroHStraddCalculateSet = ko.observable(false);
+                    this.zeroHStraddCalculateSet = ko.observable(true);
                     this.intervalSet = new IntervalTimeSettingModel();
                     this.subHolTimeSet = WorkTimezoneOtherSubHolTimeSetModel.getDefaultData();
                     this.raisingSalarySet = ko.observable('');
@@ -331,7 +331,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 resetData() {
-                    this.zeroHStraddCalculateSet(false);
+                    this.zeroHStraddCalculateSet(true);
                     this.intervalSet.resetData();
 
                     let workDayOffTimeSet = _.find(this.subHolTimeSet, o => o.originAtr() == SubHolidayOriginAtr.WORK_DAY_OFF_TIME);
