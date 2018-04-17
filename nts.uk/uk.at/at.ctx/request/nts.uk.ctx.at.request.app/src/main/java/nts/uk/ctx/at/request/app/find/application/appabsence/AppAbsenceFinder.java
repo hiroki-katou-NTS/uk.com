@@ -647,8 +647,6 @@ public class AppAbsenceFinder {
 		InitValueAtr initValueAtr = this.otherCommonAlgorithm.judgmentPrePostAtr(ApplicationType.ABSENCE_APPLICATION,
 				appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT), checkCaller);
 		applicationDto.setPrePostAtr(initValueAtr.value);
-		// ドメインモデル「休暇申請設定」を取得する(lấy dữ liệu domain 「休暇申請設定」)
-		Optional<HdAppSet> hdAppSet = this.hdAppSetRepository.getAll();
 		// ドメインモデル「申請定型理由」を取得する(lấy dữ liệu domain 「申請定型理由」) (hien thị A7_2)
 		result.setApplication(applicationDto);
 		getAppReason(result, companyID);

@@ -277,7 +277,7 @@ module nts.uk.at.view.kaf006.b{
             self.displayHalfDayValue(data.halfDayFlg);
             self.startAppDate(moment(data.application.applicationDate ).format(self.DATE_FORMAT));
             self.endAppDate(data.application.endDate);
-            if(nts.uk.util.isNullOrEmpty(self.endAppDate())){
+            if(self.endAppDate() === self.startAppDate()){
                 self.appDate(moment(data.application.applicationDate ).format(self.DATE_FORMAT));
             }else{
                 let appDateAll = moment(data.application.applicationDate ).format(self.DATE_FORMAT) +"　"+ nts.uk.resource.getText('KAF005_38')　+"　"+  moment(data.application.endDate).format(self.DATE_FORMAT);
