@@ -130,12 +130,13 @@ public class OverTimeSheet {
 		List<OverTimeFrameTime> calcOverTimeWorkTimeList = new ArrayList<>(overTimeFrameList.values()); 
 		//事前申請を上限とする制御
 		val afterCalcUpperTimeList = afterUpperControl(calcOverTimeWorkTimeList,autoCalcSet);
+		return afterCalcUpperTimeList; 
 		//振替処理
-		val aftertransTimeList = afterCalcUpperTimeList;//transProcess(workType,
+//		val aftertransTimeList = transProcess(workType,
 //											  afterCalcUpperTimeList,
 //											  eachWorkTimeSet,
 //											  eachCompanyTimeSet);
-		return aftertransTimeList;
+//		return aftertransTimeList;
 		
 	}
 	

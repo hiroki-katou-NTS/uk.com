@@ -297,17 +297,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 														 new AttendanceTime(0),
 														 new AttendanceTime(0));
 
-//      下書き(ここに持ってくる前に書いていたコード達)
-//		OverTimeWorkOfDaily overTimeWorkTime = overTimeWorkSheet.calcOverTimeWork()；/*残業時間の計算*/
-//		int totalOverTimeWorkTime = overTimeWorkTime.getOverTimeWorkFrameTime().stream().collect(Collectors.summarizingInt(tc -> tc.));/*残業時間の計算*/
-//		HolidayWorkTimeOfDaily holidayWorkTime = holidayWorkTimeSheet.calcHolidayWorkTime();/*休日出勤の計算*/
-//		int totalHolidayWorkTime = holidayWorkTime.getHolidayWorkFrameTime().stream().collect(Collectors.summarizingInt(tc -> tc.));/*休日出勤の計算*/
-//		int deductionBreakTime = deductionTimeSheet.getTotalBreakTime(DeductionAtr.Deduction);/*休憩時間の計算*/
-//		int recordBreakTime = deductionTimeSheet.getTotalBreakTime(DeductionAtr.Appropriate);/*計上用の休憩時間の計算*/
-////		int deductionGoOutTime = deductionTimeSheet.getTotalGoOutTime(DeductionAtr.Deduction);/*控除用の外出時間の計算*/
-////		int recordGoOutTime = deductionTimeSheet.getTotalGoOutTime(DeductionAtr.Appropriate);/*計上用の外出時間の計算*/
-//		return /*法定労働時間*/ - calcWithinWorkTime;
-		
 		return new AttendanceTimeOfDailyPerformance(recordOneDay.getWorkInformationOfDaily().getEmployeeId(),
 													recordOneDay.getAttendanceLeavingWork().getYmd(),
 													workScheduleTime,
@@ -316,7 +305,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 													unEmployedTime,
 													budgetTimeVariance,
 													medicalCareTime);
-		//return new AttendanceTimeOfDailyPerformance(ActualWorkingTimeOfDaily.calcRecordTime(oneDay));
 		
 	}
 	
@@ -330,10 +318,11 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	 */
 	private static WorkScheduleTimeOfDaily calcWorkSheduleTime(CalculationRangeOfOneDay recordOneDay, CalculationRangeOfOneDay scheduleOneDay,
 															   Optional<PredetermineTimeSetForCalc> schePreTime,WorkType workType) {
-		//計画所定時間の計算
+		//勤務予定時間を計算
+		//val schedulePredWorkTime = (scheduleOneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode() == null)?new AttendanceTime(0):recordOneDay.getPredetermineTimeSetForCalc().getpredetermineTime(workType.getDailyWork());
 		//実績所定労働時間の計算
 		val actualPredWorkTime = (recordOneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode() == null)?new AttendanceTime(0):recordOneDay.getPredetermineTimeSetForCalc().getpredetermineTime(workType.getDailyWork());
-		//勤務予定時間を計算
+		//計画所定時間の計算
 		val shedulePreWorkTime = (schePreTime.isPresent())? schePreTime.get().getpredetermineTime(workType.getDailyWork()):new AttendanceTime(0);
 		//val workSheduleTime
 		return new WorkScheduleTimeOfDaily(new WorkScheduleTime(new AttendanceTime(510),new AttendanceTime(0),new AttendanceTime(510)),shedulePreWorkTime,actualPredWorkTime);
