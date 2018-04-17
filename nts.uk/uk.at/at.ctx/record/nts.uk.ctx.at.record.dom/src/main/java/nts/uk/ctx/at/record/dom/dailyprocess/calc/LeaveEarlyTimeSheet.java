@@ -95,19 +95,21 @@ public class LeaveEarlyTimeSheet {
 				}
 			}
 		}
-		//退勤時刻と早退判断時刻を比較	
-		if(leaveEarlyDecisionClock.getLeaveEarlyDecisionClock().lessThan(leave)
-				||!graceTimeSetting.isIncludeWorkingHour()){//猶予時間を加算しない場合
-			
-			//早退控除時間帯の作成
-			Optional<LateLeaveEarlyTimeSheet> leaveEarlyDeductTimeSheet = createLateLeaveEarlyTimeSheet(DeductionAtr.Deduction,timeLeavingWork,coreTimeSetting,predetermineTimeSet,duplicateTimeSheet,deductionTimeSheet);
-			//早退時間帯の作成
-			Optional<LateLeaveEarlyTimeSheet> leaveEarlyAppTimeSheet = createLateLeaveEarlyTimeSheet(DeductionAtr.Appropriate,timeLeavingWork,coreTimeSetting,predetermineTimeSet,duplicateTimeSheet,deductionTimeSheet);
-			
-			LeaveEarlyTimeSheet leaveEarlyTimeSheet = new LeaveEarlyTimeSheet(leaveEarlyAppTimeSheet,leaveEarlyDeductTimeSheet, workNo, Optional.empty());
-			
-			return leaveEarlyTimeSheet;
-		}	
+		if(leave!=null) {
+			//退勤時刻と早退判断時刻を比較	
+			if(leaveEarlyDecisionClock.getLeaveEarlyDecisionClock().lessThan(leave)
+					||!graceTimeSetting.isIncludeWorkingHour()){//猶予時間を加算しない場合
+				
+				//早退控除時間帯の作成
+				Optional<LateLeaveEarlyTimeSheet> leaveEarlyDeductTimeSheet = createLateLeaveEarlyTimeSheet(DeductionAtr.Deduction,timeLeavingWork,coreTimeSetting,predetermineTimeSet,duplicateTimeSheet,deductionTimeSheet);
+				//早退時間帯の作成
+				Optional<LateLeaveEarlyTimeSheet> leaveEarlyAppTimeSheet = createLateLeaveEarlyTimeSheet(DeductionAtr.Appropriate,timeLeavingWork,coreTimeSetting,predetermineTimeSet,duplicateTimeSheet,deductionTimeSheet);
+				
+				LeaveEarlyTimeSheet leaveEarlyTimeSheet = new LeaveEarlyTimeSheet(leaveEarlyAppTimeSheet,leaveEarlyDeductTimeSheet, workNo, Optional.empty());
+				
+				return leaveEarlyTimeSheet;
+			}	
+		}
 		return LeaveEarlyTimeSheet.createAsNotLeaveEarly();//早退していない
 	}
 	

@@ -68,19 +68,20 @@ public class LateTimeOfDaily {
 											   boolean late, //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 											   HolidayCalcMethodSet holidayCalcMethodSet
 			) {
-
+					 
 		//勤務Noに一致する遅刻時間をListで取得する
 		List<LateTimeSheet> lateTimeSheetList = oneDay.getWithinWorkingTimeSheet().isPresent()?oneDay.getWithinWorkingTimeSheet().get().getWithinWorkTimeFrame().stream()
 																												 .filter(t -> new WorkNo(t.getLateTimeSheet().get().getWorkNo()).equals(workNo))
 																												 .map(t -> t.getLateTimeSheet().get())
+																												 .filter(t -> t.getForDeducationTimeSheet().isPresent())
 																												 .sorted((lateTimeSheet1,lateTimeSheet2) -> lateTimeSheet1.getForDeducationTimeSheet().get().getTimeSheet().getStart()
-																														 .compareTo(lateTimeSheet2.getForDeducationTimeSheet().get().getTimeSheet().getStart()))
+																												 .compareTo(lateTimeSheet2.getForDeducationTimeSheet().get().getTimeSheet().getStart()))
 																												 .collect(Collectors.toList()):new ArrayList<>();
 		LateLeaveEarlyTimeSheet forRecordTimeSheet = new LateLeaveEarlyTimeSheet(new TimeZoneRounding(new TimeWithDayAttr(0),new TimeWithDayAttr(0),new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN)),
 																									  new TimeSpanForCalc(new TimeWithDayAttr(0),new TimeWithDayAttr(0)));
 
 		LateLeaveEarlyTimeSheet forDeductTimeSheet = new LateLeaveEarlyTimeSheet(new TimeZoneRounding(new TimeWithDayAttr(0),new TimeWithDayAttr(0),new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN)),
-				  new TimeSpanForCalc(new TimeWithDayAttr(0),new TimeWithDayAttr(0)));
+				  																new TimeSpanForCalc(new TimeWithDayAttr(0),new TimeWithDayAttr(0)));
 		
 		if(!lateTimeSheetList.isEmpty()) {
 			//遅刻時間帯を１つの時間帯にする。

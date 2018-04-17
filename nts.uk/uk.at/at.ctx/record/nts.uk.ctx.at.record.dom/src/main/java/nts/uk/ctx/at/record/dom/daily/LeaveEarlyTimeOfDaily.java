@@ -77,6 +77,7 @@ public class LeaveEarlyTimeOfDaily {
 		List<LeaveEarlyTimeSheet> leaveEarlyTimeSheetList = oneDay.getWithinWorkingTimeSheet().isPresent()?oneDay.getWithinWorkingTimeSheet().get().getWithinWorkTimeFrame().stream()
 																												 .filter(t -> new WorkNo(t.getLeaveEarlyTimeSheet().get().getWorkNo()).equals(workNo))
 																												 .map(t -> t.getLeaveEarlyTimeSheet().get())
+																												 .filter(t -> t.getForDeducationTimeSheet().isPresent())
 																												 .sorted((leaveEarlyTimeSheet1,leaveEarlyTimeSheet2) -> leaveEarlyTimeSheet1.getForDeducationTimeSheet().get().getTimeSheet().getStart()
 																														 .compareTo(leaveEarlyTimeSheet2.getForDeducationTimeSheet().get().getTimeSheet().getStart()))
 																												 .collect(Collectors.toList()):new ArrayList<>();
