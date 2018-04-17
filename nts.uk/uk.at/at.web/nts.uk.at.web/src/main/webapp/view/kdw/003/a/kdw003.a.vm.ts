@@ -841,8 +841,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                  if (self.displayFormat() === 1) {
                     self.datePicker().startDate = self.dateRanger().startDate;
                     self.datePicker().endDate = self.dateRanger().endDate; 
-                    self.selectedDate(self.dateRanger().startDate);
                     self.datePicker.valueHasMutated();
+                    self.selectedDate(self.dateRanger().startDate);
                 }
                 let param = {
                     dateRange: {
