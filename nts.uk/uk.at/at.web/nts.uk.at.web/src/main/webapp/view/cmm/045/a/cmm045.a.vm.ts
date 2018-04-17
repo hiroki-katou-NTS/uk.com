@@ -238,9 +238,9 @@ module cmm045.a.viewmodel {
                     { headerText: 'ID', key: 'appId', dataType: 'string', width: '0px', hidden: true },
                     { headerText: getText('CMM045_50'), key: 'details', dataType: 'string', width: '70px', unbound: false, ntsControl: 'Button' },
                     { headerText: getText('CMM045_51'), key: 'applicant', dataType: 'string', width: '120px' },
-                    { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '120px' },
+                    { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '110px' },
                     { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '80px' },
-                    { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '150px'},
+                    { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '160px'},
                     { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '280px' },
                     { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '180px'},
                     { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '100px'}
@@ -389,10 +389,10 @@ module cmm045.a.viewmodel {
                             showHeaderCheckbox: true, ntsControl: 'Checkbox',  hiddenRows: lstHidden},
                     { headerText: getText('CMM045_50'), key: 'details', dataType: 'string', width: '60px', unbound: false, ntsControl: 'Button' },
                     { headerText: getText('CMM045_51'), key: 'applicant', dataType: 'string', width: '120px' },
-                    { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '100px' },
+                    { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '90px'},
                     { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '70px' },
-                    { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '130px'},
-                    { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '240px'},
+                    { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '160px'},
+                    { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '220px'},
                     { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '165px'},
                     { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '83px'},
                     { headerText: getText('CMM045_58'), key: 'displayAppStatus', dataType: 'string', width: '105px' },
@@ -639,7 +639,7 @@ module cmm045.a.viewmodel {
 
             let appInfor = {
                 appPre: appPre == null ? '' : getText('CMM045_273') + appPre,
-                appRes: lstFrameRes.length == 0 ? '' : appResContent
+                appRes: lstFrameRes == null || lstFrameRes.length == 0 ? '' : appResContent
             }
             return appInfor;
         }
@@ -665,7 +665,7 @@ module cmm045.a.viewmodel {
 
             let appInfor = {
                 appPre: appPre == null ? '' : getText('CMM045_273') + appPre,
-                appRes: lstFrameRes.length == 0 ? '' : appResContent
+                appRes: lstFrameRes == null || lstFrameRes.length == 0 ? '' : appResContent
             }
             return appInfor;
         }
@@ -761,7 +761,7 @@ module cmm045.a.viewmodel {
             let self = this;
             let day = absence.mournerFlag == true ? getText('CMM045_277') + absence.day + getText('CMM045_278') : '';
             //hdAppSet.specialVaca
-            let result = getText('CMM045_279') + getText('CMM045_248') + self.hdAppSet().specialVaca
+            let result = getText('CMM045_279') + getText('CMM045_248') + absence.workTimeName
             + absence.relationshipName + day;
             return result;
         }
@@ -770,7 +770,7 @@ module cmm045.a.viewmodel {
             let self = this;
             let time1 = absence.startTime1 == '' ? '' : absence.startTime1 + getText('CMM045_100') +  absence.endTime1;
             let time2 =  absence.startTime2 == '' ? '' : ' ' + absence.startTime2 + getText('CMM045_100') + absence.endTime2;
-            let result = getText('CMM045_279') + getText('CMM045_249') + getText('CMM045_230', [self.convertNameHoliday(absence.holidayAppType)])  + time1 + time2;
+            let result = getText('CMM045_279') + getText('CMM045_249') + getText('CMM045_230', [absence.workTimeName])  + time1 + time2;
             return result;
         }
         convertNameHoliday(holidayType: number): string{
@@ -920,7 +920,7 @@ module cmm045.a.viewmodel {
         //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
         convertA(compltLeave: vmbase.AppCompltLeaveFull, date: string, reason: string){
             let self = this;
-            let time = compltLeave.startTime + getText('CMM045_262') + compltLeave.endTime;
+            let time = compltLeave.startTime + getText('CMM045_100') + compltLeave.endTime;
             let reasonApp = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + reason : '';
             return getText('CMM045_262') + date + getText('CMM045_230', [compltLeave.workTypeName]) + time + reasonApp;
         }
@@ -929,7 +929,8 @@ module cmm045.a.viewmodel {
         //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
         convertB(compltLeave: vmbase.AppCompltLeaveFull, date: string, reason: string){
             let self = this;
-            let time = compltLeave.startTime + getText('CMM045_262') + compltLeave.endTime;
+            let eTime = compltLeave.endTime == '' ? '' : getText('CMM045_100') + compltLeave.endTime;
+            let time = compltLeave.startTime + eTime;
             let reasonApp = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + reason : '';
             return getText('CMM045_263') + date + getText('CMM045_230', [compltLeave.workTypeName]) + time + reasonApp;
         }
@@ -952,8 +953,8 @@ module cmm045.a.viewmodel {
             }else{
                 rec = compltSync.appMain;
                 abs = compltSync.appSub;
-                absContent = self.convertB(rec, compltSync.appDateSub, '');
-                recContent = self.convertA(abs, app.applicationDate, app.applicationReason);
+                absContent = self.convertB(abs, compltSync.appDateSub, '');
+                recContent = self.convertA(rec, app.applicationDate, app.applicationReason);
             }
             return  '<div class = "rec" >' + recContent + '</div>' + '<div class = "abs" >' + absContent + '</div>';
         }
@@ -1207,6 +1208,13 @@ module cmm045.a.viewmodel {
                 self.lstAppCommon([]);
                 self.lstAppMaster([]);
                 self.lstAppOt([]);
+                self.lstApp([]);
+                self.lstAppGoBack([]);
+                self.lstListAgent([]);
+                self.lstAppHdWork([]);
+                self.lstAppWorkChange([]);
+                self.lstAppAbsence([]);
+                self.lstAppCompltSync([]);
                 //luu
                 character.save('AppListExtractCondition', param);
                 let lstGoBack: Array<vmbase.AppGoBackInfoFull> = [];
