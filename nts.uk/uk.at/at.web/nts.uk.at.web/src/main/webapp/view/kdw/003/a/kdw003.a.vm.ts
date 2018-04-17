@@ -272,10 +272,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     }
                     if(self.displayFormat() == 1){
-                        self.selectedDate(dateRange.startDate);
                         self.datePicker().startDate = dateRange.startDate;
                         self.datePicker().endDate = dateRange.endDate; 
                         self.datePicker.valueHasMutated();
+                        self.selectedDate(dateRange.startDate);
                     }
                 }
             });
