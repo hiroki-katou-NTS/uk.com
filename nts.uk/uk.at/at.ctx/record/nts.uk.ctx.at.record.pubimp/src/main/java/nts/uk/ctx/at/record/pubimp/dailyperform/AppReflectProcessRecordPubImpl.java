@@ -105,7 +105,7 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	public AppReflectPubOutput preOvertimeReflect(PreOvertimePubParameter param) {
 		ApplicationReflectOutput reflect = preOvertimeReflect.overtimeReflect(this.toDomainOvertimeReflect(param));
 		AppReflectPubOutput reflectOutput = new AppReflectPubOutput(EnumAdaptor.valueOf(reflect.getReflectedState().value, ReflectedStatePubRecord.class),
-				EnumAdaptor.valueOf(reflect.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
+				reflect.getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(reflect.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
 		return reflectOutput;
 	}
 
@@ -113,7 +113,7 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	public AppReflectPubOutput afterOvertimeReflect(PreOvertimePubParameter param) {
 		ApplicationReflectOutput reflect = afterOvertimeReflect.reflectAfterOvertime(this.toDomainOvertimeReflect(param));
 		AppReflectPubOutput reflectOutput = new AppReflectPubOutput(EnumAdaptor.valueOf(reflect.getReflectedState().value, ReflectedStatePubRecord.class),
-				EnumAdaptor.valueOf(reflect.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
+				reflect.getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(reflect.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
 		return reflectOutput;
 	}
 
@@ -145,7 +145,7 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	public AppReflectPubOutput absenceReflect(CommonReflectPubParameter param, boolean isPre) {
 		ApplicationReflectOutput dataReflect = absenceReflect.absenceReflect(this.toRecordPara(param), isPre);
 		AppReflectPubOutput dataOutput = new AppReflectPubOutput(EnumAdaptor.valueOf(dataReflect.getReflectedState().value, ReflectedStatePubRecord.class), 
-				EnumAdaptor.valueOf(dataReflect.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
+				dataReflect.getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(dataReflect.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
 		return dataOutput;
 	}
 
@@ -165,8 +165,7 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				EnumAdaptor.valueOf(param.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangeFlg.class),
 				param.isScheReflectFlg(),
 				appPara);
-		ApplicationReflectOutput outputData = holidayworkService.preHolidayWorktimeReflect(para);
-		ReasonNotReflectPubRecord tem = outputData.getReflectedState() == null ? ReasonNotReflectPubRecord.ACTUAL_CONFIRMED : ReasonNotReflectPubRecord.NOT_PROBLEM;
+		ApplicationReflectOutput outputData = holidayworkService.preHolidayWorktimeReflect(para);		
 		return new AppReflectPubOutput(EnumAdaptor.valueOf(outputData.getReflectedState().value, ReflectedStatePubRecord.class),
 				outputData.getReflectedState() == null ? null : EnumAdaptor.valueOf(outputData.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
 	}
@@ -176,7 +175,7 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 		
 		ApplicationReflectOutput workChangeOut = workChangeService.workchangeReflect(this.toRecordPara(param), isPre);
 		AppReflectPubOutput outPutData = new AppReflectPubOutput(EnumAdaptor.valueOf(workChangeOut.getReflectedState().value, ReflectedStatePubRecord.class),
-				EnumAdaptor.valueOf(workChangeOut.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
+				workChangeOut.getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(workChangeOut.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
 		
 		return outPutData;
 	}

@@ -106,8 +106,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	
 	/**
 	 * 計算用休出枠ｔ時間帯(WORK)の作成
-	 * @param holidayWorkFrameTimeSheet
-	 * @param today
+	 * @param timeSpan 就業時間帯の休出和時間帯と打刻時間の重複時間帯
 	 * @return
 	 */
 	public static HolidayWorkFrameTimeSheetForCalc createHolidayTimeWorkFrameTimeSheet(TimeSpanForCalc timeSpan,HDWorkTimeSheetSetting holidayWorkFrameTimeSheet,WorkType today
@@ -122,12 +121,12 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 		BreakFrameNo breakFrameNo = holidayWorkFrameTimeSheet.decisionBreakFrameNoByHolidayAtr(today.getWorkTypeSetList().get(0).getHolidayAtr());
 		/*加給*/
 		/*加給*/
-		val duplibonusPayTimeSheet = getBonusPayTimeSheetIncludeDedTimeSheet(bonusPaySetting, holidayWorkFrameTimeSheet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);
+		val duplibonusPayTimeSheet = getBonusPayTimeSheetIncludeDedTimeSheet(bonusPaySetting, timeSpan, recordTimeSheet, recordTimeSheet);
 											 
 		/*特定日*/
-		val duplispecifiedBonusPayTimeSheet = getSpecBonusPayTimeSheetIncludeDedTimeSheet(bonusPaySetting, holidayWorkFrameTimeSheet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);
+		val duplispecifiedBonusPayTimeSheet = getSpecBonusPayTimeSheetIncludeDedTimeSheet(bonusPaySetting, timeSpan, recordTimeSheet, recordTimeSheet);
 		/*深夜*/
-		val duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(midNightTimeSheet, holidayWorkFrameTimeSheet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);
+		val duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(midNightTimeSheet, timeSpan, recordTimeSheet, recordTimeSheet);
 		
 		return new HolidayWorkFrameTimeSheetForCalc(new TimeZoneRounding(timeSpan.getStart(),timeSpan.getEnd(),holidayWorkFrameTimeSheet.getTimezone().getRounding()),
 													timeSpan,

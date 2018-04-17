@@ -7,8 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.ApplyTimeAtr;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.EndTimeReflectScheService;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.StartTimeReflectScheService;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.StartEndTimeReflectScheService;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.servicedto.TimeReflectScheDto;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
@@ -20,33 +19,23 @@ public class TimeOfDayReflectGoBackScheImpl implements TimeOfDayReflectGoBackSch
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeRepo;
 	@Inject
-	private StartTimeReflectScheService startTimeService;
-	@Inject
-	private EndTimeReflectScheService endTimeService;
+	private StartEndTimeReflectScheService startTimeService;	
 	@Override
 	public void stampReflectGobackSche(GobackReflectParam reflectPara) {
 		//(開始時刻)反映する時刻を求める
 		reflectPara.setApplyTimeAtr(ApplyTimeAtr.START);
 		TimeOfDayReflectFindDto startTimeReflectFind = this.timeReflectFind(reflectPara);
-		TimeReflectScheDto startTime = new TimeReflectScheDto(reflectPara.getEmployeeId(),
-				reflectPara.getDatePara(),
-				startTimeReflectFind.getTimeOfDay(),
-				reflectPara.getAppInfor().getWorkTimeEnd1(), 
-				1);
-		if(startTimeReflectFind.isReflectFlg()) {
-			startTimeService.updateStartTimeRflect(startTime);
-		}
 		//(終了時刻)反映する時刻を求める
 		reflectPara.setApplyTimeAtr(ApplyTimeAtr.END);
 		TimeOfDayReflectFindDto endTimeReflectFind = this.timeReflectFind(reflectPara);
-		TimeReflectScheDto endTime = new TimeReflectScheDto(reflectPara.getEmployeeId(),
+		TimeReflectScheDto timeData = new TimeReflectScheDto(reflectPara.getEmployeeId(),
 				reflectPara.getDatePara(),
 				startTimeReflectFind.getTimeOfDay(),
 				endTimeReflectFind.getTimeOfDay(), 
-				1);
-		if(endTimeReflectFind.isReflectFlg()) {
-			endTimeService.updateEndTimeRflect(endTime);
-		}
+				1,
+				startTimeReflectFind.isReflectFlg(),
+				endTimeReflectFind.isReflectFlg());
+		startTimeService.updateStartTimeRflect(timeData);		
 		//TODO (開始時刻2, 終了時刻2)反映する時刻を求める
 	}
 

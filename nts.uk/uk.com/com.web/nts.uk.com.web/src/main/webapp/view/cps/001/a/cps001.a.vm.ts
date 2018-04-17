@@ -62,9 +62,19 @@ module cps001.a.vm {
 
             /** Return data */
             returnDataFromCcg001: (data: any) => {
-                let self = this;
+                let self = this,
+                    id = ko.toJS(self.employee.employeeId),
+                    emps = data.listEmployee,
+                    exits = !!_.find(emps, m => m.employeeId == id);
 
-                self.employees(data.listEmployee);
+                self.employees(emps);
+                if (emps.length > 0) {
+                    if (!exits) {
+                        self.employee.employeeId(emps[0].employeeId);
+                    }
+                } else {
+                    self.employee.employeeId(undefined);
+                }
             }
         };
 
@@ -280,6 +290,7 @@ module cps001.a.vm {
             if (reload) {
                 let emps = self.employees(),
                     single = emps.length == 1,
+                    ids = _.map(emps, x => x.employeeId),
                     old_index = _.indexOf(emps.map(x => x.employeeId), employee.employeeId());
 
                 self.employees.removeAll();
@@ -304,6 +315,8 @@ module cps001.a.vm {
                             self.employees(_.filter(employees, m => m.employeeId == logInId));
                             employee.employeeId(logInId);
                         }
+                    } else {
+                        self.employees(_.filter(employees, m => ids.indexOf(m.employeeId) > -1));
                     }
 
                     let first = _.find(self.employees(), x => x.employeeId == employee.employeeId());
@@ -667,6 +680,8 @@ module cps001.a.vm {
                         }
                     }
                     self.categoryId.valueHasMutated();
+                } else {
+                    unblock();
                 }
             });
 
@@ -822,6 +837,8 @@ module cps001.a.vm {
                                 break;
                         }
                     }
+                } else {
+                    unblock();
                 }
             });
 
@@ -939,6 +956,8 @@ module cps001.a.vm {
                     } else {
                         setShared(REPL_KEY, REPL_KEYS.NORMAL);
                     }
+                } else {
+                    unblock();
                 }
             });
         }

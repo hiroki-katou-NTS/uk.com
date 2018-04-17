@@ -48,7 +48,7 @@
 					<button data-bind="visible: showButton().available2">#{i18n.getText('KDW003_6')}</button>
 					<button data-bind="visible: showButton().available3">#{i18n.getText('KDW003_12')}</button>
 					<button data-bind="click: employmentOk, visible:false">#{i18n.getText('KDW003_65')}</button>
-					<button data-bind="click: tighProcess, visible:showTighProcess()">本人締め処理</button>
+					<button data-bind="click: tighProcess, visible:showTighProcess()">#{i18n.getText('KDW003_88')}</button><!-- 本人締め処理 -->
 					<button
 						data-bind="click : changeExtractionCondition, visible: showButton().available5">#{i18n.getText('KDW003_13')}</button>
 					<button
@@ -104,29 +104,29 @@
 							data-bind="click : referencesActualResult, visible: false">#{i18n.getText('KDW003_22')}</button>
 							<!-- visible: showButton().available23 -->
 						<div id="numberHoliday">
-										<table id="fixed-table">
-											<thead>
-												<tr>
-													<th class="ui-widget-header" style="width: 65px">#{i18n.getText('KDW003_7',["#Com_CompensationHoliday"])}</th>
-													<th class="ui-widget-header" style="width: 65px">#{i18n.getText('KDW003_7',["#Com_SubstituteHoliday"])}</th>
-													<th class="ui-widget-header" style="width: 65px">#{i18n.getText('KDW003_7',["#Com_PaidHoliday"])}</th>
-													<th class="ui-widget-header" style="width: 100px">#{i18n.getText('KDW003_7',["#Com_FundedPaidHoliday"])}</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td class="ui-widget-body"><span class ="text-holiday"
-														data-bind="text: dataHoliday().compensation"></span></td>
-													<td class="ui-widget-body"><span  class ="text-holiday"
-														data-bind="text: dataHoliday().substitute"></span></td>
-													<td class="ui-widget-body"><span  class ="text-holiday"
-														data-bind="text: dataHoliday().paidYear"></span></td>
-													<td class="ui-widget-body"><span  class ="text-holiday"
-														data-bind="text: dataHoliday().fundedPaid"></span></td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
+							<table id="fixed-table">
+								<thead>
+									<tr>
+										<th class="ui-widget-header" style="width: 65px">#{i18n.getText('KDW003_7',["#Com_CompensationHoliday"])}</th>
+										<th class="ui-widget-header" style="width: 65px">#{i18n.getText('KDW003_7',["#Com_SubstituteHoliday"])}</th>
+										<th class="ui-widget-header" style="width: 65px">#{i18n.getText('KDW003_7',["#Com_PaidHoliday"])}</th>
+										<th class="ui-widget-header" style="width: 100px">#{i18n.getText('KDW003_7',["#Com_FundedPaidHoliday"])}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td class="ui-widget-body"><span class="text-holiday"
+											data-bind="text: dataHoliday().compensation"></span></td>
+										<td class="ui-widget-body"><span class="text-holiday"
+											data-bind="text: dataHoliday().substitute"></span></td>
+										<td class="ui-widget-body"><span class="text-holiday"
+											data-bind="text: dataHoliday().paidYear"></span></td>
+										<td class="ui-widget-body"><span class="text-holiday"
+											data-bind="text: dataHoliday().fundedPaid"></span></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					</div>
 						<div id="container">
 						<div id="emp-component"></div>
@@ -178,6 +178,38 @@
 						</div>
 						<span style="margin: 10px 0 0 18px; display: inline-block;"
 							data-bind="text: comment"></span>
+						<div id="flex">
+							<table id="flex-table">
+								<thead>
+									<tr>
+										<th class="ui-widget-header" style="width: 165px">#{i18n.getText('KDW003_77')}</th>
+										<th class="ui-widget-header" style="width: 75px">#{i18n.getText('KDW003_78')}</th>
+										<th class="ui-widget-header" style="width: 55px">#{i18n.getText('Com_PaidHoliday')}</th>
+										<th class="ui-widget-header" style="width: 55px">#{i18n.getText('KDW003_79')}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td class="ui-widget-body"><span class="text-holiday"
+											data-bind="text: flexShortage().shortageTime"></span></td>
+										<td class="ui-widget-body" id ="next-month"><span class="text-holiday" 
+											data-bind="text: flexShortage().nextMonthTransferredMoneyTime"></span></td>
+										<td class="ui-widget-body"><span class="text-holiday">
+												<input style="width: 55px"
+												data-bind="ntsNumberEditor: { name:'Deci', value: flexShortage().noOfHolidays, constraint: 'CommonAmount', option:  optionNoOfHolidays, required: true, enable: true, readonly: false} ">
+											</input>
+										</span></td>
+										<td class="ui-widget-body"><span class="text-holiday">
+												<input style="width: 55px"
+												data-bind="ntsTimeEditor: {name: 'Duration', constraint: 'SampleTimeDuration', value: flexShortage().absentDeductionTime, inputFormat: 'time', mode: 'time', enable: true, readonly: false, required: true}"></input>
+										</span></td>
+									</tr>
+								</tbody>
+							</table>
+							<div id ="text-flex">
+								<span style="color: red">#{i18n.getText('KDW003_80')}</span>
+							</div>
+						</div>
 					</div>
 					<div id="tooltip"><span id="textLock"></span></div>
 				</div>

@@ -118,7 +118,7 @@ module nts.uk.at.view.kmk011.c.viewmodel {
             } else {
                 self.divTimeId(id);
             }
-            service.getAllDivReason(self.divTimeId().toString()).done(function(lstDivReason: Array<model.DivergenceReason>) {
+            service.getAllDivReason(self.divTimeId().toString()).then(function(lstDivReason: Array<model.DivergenceReason>) {
                 blockUI.clear();
                 self.currentCode(null);
                 if (id == null || lstDivReason === undefined || lstDivReason.length == 0) {
@@ -135,11 +135,17 @@ module nts.uk.at.view.kmk011.c.viewmodel {
                 dfd.resolve();
                 if (id == null || lstDivReason === undefined || lstDivReason.length == 0) {
 
-                    $("#inpCode").focus();
+                    setTimeout(function() {
+                        $("#inpCode").focus();
+                    }, 100);
+
                 }
                 else {
 
-                    $("#inpReason").focus();
+                    setTimeout(function() {
+                        $("#inpReason").focus();
+                    }, 100);
+
                 }
                 if (self.mode) {
                     self.enableMode(true);
@@ -148,6 +154,11 @@ module nts.uk.at.view.kmk011.c.viewmodel {
                     self.enableMode(false);
 
             })
+            $('#inpReason').focus(function() {
+                var temp = $(this).val();
+                $(this).val('').select();
+                $(this).val(temp);
+            });
             return dfd.promise();
         }
         /**
@@ -188,8 +199,6 @@ module nts.uk.at.view.kmk011.c.viewmodel {
 
             blockUI.invisible();
             var self = this;
-            var text1 = nts.uk.text.isNullOrEmpty(self.divReasonCode());
-            var text2 = nts.uk.text.isNullOrEmpty(self.divReasonContent());
 
             $('.nts-input').trigger("validate");
             _.defer(() => {
@@ -293,7 +302,7 @@ module nts.uk.at.view.kmk011.c.viewmodel {
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                         blockUI.clear();
                         self.getDivReasonList_afterDelete();
-                        $("#inpCode").focus();
+                        $("#inpReason").focus();
                     });
                 });
             }).ifNo(function() {

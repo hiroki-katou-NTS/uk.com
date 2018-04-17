@@ -615,11 +615,12 @@ module nts.uk.at.view.ksm004.a {
                 var dfd = $.Deferred();
                 aService.insertCalendarCompany(value)
                     .done(() => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.calendarPanel.optionDates.removeAll();
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() =>{
+                            self.calendarPanel.optionDates.removeAll();
                         $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
                         .done(()=>{ dfd.resolve(); })
-                        .fail((res) => { dfd.reject(res); });   
+                        .fail((res) => { dfd.reject(res); });  
+                        });
                     }).fail((res) => {
                         dfd.reject(res);
                     });
@@ -634,13 +635,14 @@ module nts.uk.at.view.ksm004.a {
                 var dfd = $.Deferred();
                 aService.insertCalendarWorkPlace(value)
                     .done(() => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.calendarPanel1.optionDates.removeAll();
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() =>{
+                            self.calendarPanel1.optionDates.removeAll();
                         $.when(
                             self.getCalendarWorkplaceSet(self.currentCalendarWorkPlace().key()),
                             self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key())
                         ).done(()=>{ dfd.resolve(); })
-                        .fail((res) => { dfd.reject(res); });  
+                        .fail((res) => { dfd.reject(res); });
+                        });
                     }).fail((res) => {
                         dfd.reject(res);
                     });
@@ -655,13 +657,14 @@ module nts.uk.at.view.ksm004.a {
                 var dfd = $.Deferred();
                 aService.insertCalendarClass(value)
                     .done(() => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.calendarPanel2.optionDates.removeAll();
-                        $.when(
-                            self.getCalendarClassSet(self.currentCalendarClass().key()),
-                            self.getCalendarClassById(self.currentCalendarClass().key())
-                        ).done(()=>{ dfd.resolve(); })
-                        .fail((res) => { dfd.reject(res); });   
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            self.calendarPanel2.optionDates.removeAll();
+                            $.when(
+                                self.getCalendarClassSet(self.currentCalendarClass().key()),
+                                self.getCalendarClassById(self.currentCalendarClass().key())
+                            ).done(() => { dfd.resolve(); })
+                                .fail((res) => { dfd.reject(res); });
+                        });
                     }).fail((res) => {
                         dfd.reject(res);
                     });
@@ -676,11 +679,12 @@ module nts.uk.at.view.ksm004.a {
                 var dfd = $.Deferred();
                 aService.updateCalendarCompany(value)
                     .done(() => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.calendarPanel.optionDates.removeAll();
-                        $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
-                        .done(()=>{ dfd.resolve(); })
-                        .fail((res) => { dfd.reject(res); });    
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            self.calendarPanel.optionDates.removeAll();
+                            $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
+                                .done(() => { dfd.resolve(); })
+                                .fail((res) => { dfd.reject(res); });
+                        });
                     }).fail((res) => {
                         dfd.reject(res);
                     });
@@ -695,13 +699,14 @@ module nts.uk.at.view.ksm004.a {
                 var dfd = $.Deferred();
                 aService.updateCalendarWorkPlace(value)
                     .done(() => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.calendarPanel1.optionDates.removeAll();
-                        $.when(
-                            self.getCalendarWorkplaceSet(self.currentCalendarWorkPlace().key()),
-                            self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key())
-                        ).done(()=>{ dfd.resolve(); })
-                        .fail((res) => { dfd.reject(res); });  
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            self.calendarPanel1.optionDates.removeAll();
+                            $.when(
+                                self.getCalendarWorkplaceSet(self.currentCalendarWorkPlace().key()),
+                                self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key())
+                            ).done(() => { dfd.resolve(); })
+                                .fail((res) => { dfd.reject(res); });
+                        });
                     }).fail((res) => {
                         dfd.reject(res);
                     });
@@ -716,13 +721,14 @@ module nts.uk.at.view.ksm004.a {
                 var dfd = $.Deferred();
                 aService.updateCalendarClass(value)
                     .done(() => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.calendarPanel2.optionDates.removeAll();
-                        $.when(
-                            self.getCalendarClassSet(self.currentCalendarClass().key()),
-                            self.getCalendarClassById(self.currentCalendarClass().key())
-                        ).done(()=>{ dfd.resolve(); })
-                        .fail((res) => { dfd.reject(res); });     
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            self.calendarPanel2.optionDates.removeAll();
+                            $.when(
+                                self.getCalendarClassSet(self.currentCalendarClass().key()),
+                                self.getCalendarClassById(self.currentCalendarClass().key())
+                            ).done(() => { dfd.resolve(); })
+                                .fail((res) => { dfd.reject(res); });
+                        });
                     }).fail((res) => {
                         dfd.reject(res);
                     });
@@ -737,11 +743,12 @@ module nts.uk.at.view.ksm004.a {
                 var dfd = $.Deferred();
                 aService.deleteCalendarCompany(value)
                     .done(() => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                        self.calendarPanel.optionDates.removeAll();
-                        $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
-                        .done(()=>{ dfd.resolve(); })
-                        .fail((res) => { dfd.reject(res); });  
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                            self.calendarPanel.optionDates.removeAll();
+                            $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
+                                .done(() => { dfd.resolve(); })
+                                .fail((res) => { dfd.reject(res); });
+                        });
                     }).fail((res) => {
                         dfd.reject(res);
                     });
@@ -756,13 +763,14 @@ module nts.uk.at.view.ksm004.a {
                 var dfd = $.Deferred();
                 aService.deleteCalendarWorkPlace(value)
                     .done(() => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                        self.calendarPanel1.optionDates.removeAll();
-                        $.when(
-                            self.getCalendarWorkplaceSet(self.currentCalendarWorkPlace().key()),
-                            self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key())
-                        ).done(()=>{ dfd.resolve(); })
-                        .fail((res) => { dfd.reject(res); });     
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                            self.calendarPanel1.optionDates.removeAll();
+                            $.when(
+                                self.getCalendarWorkplaceSet(self.currentCalendarWorkPlace().key()),
+                                self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key())
+                            ).done(() => { dfd.resolve(); })
+                                .fail((res) => { dfd.reject(res); });
+                        });
                     }).fail((res) => {
                         dfd.reject(res);
                     });
@@ -777,13 +785,14 @@ module nts.uk.at.view.ksm004.a {
                 var dfd = $.Deferred();
                 aService.deleteCalendarClass(value)
                     .done(() => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                        self.calendarPanel2.optionDates.removeAll();
-                        $.when(
-                            self.getCalendarClassSet(self.currentCalendarClass().key()),
-                            self.getCalendarClassById(self.currentCalendarClass().key())
-                        ).done(()=>{ dfd.resolve(); })
-                        .fail((res) => { dfd.reject(res); });   
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                            self.calendarPanel2.optionDates.removeAll();
+                            $.when(
+                                self.getCalendarClassSet(self.currentCalendarClass().key()),
+                                self.getCalendarClassById(self.currentCalendarClass().key())
+                            ).done(() => { dfd.resolve(); })
+                                .fail((res) => { dfd.reject(res); });
+                        });
                     }).fail((res) => {
                         dfd.reject(res);
                     });

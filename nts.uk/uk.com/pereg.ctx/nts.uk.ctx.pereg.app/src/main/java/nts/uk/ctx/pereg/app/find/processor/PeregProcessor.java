@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.reflection.AnnotationUtil;
 import nts.gul.reflection.ReflectionUtil;
+import nts.uk.ctx.at.record.app.find.dailyperformanceformat.businesstype.BusinessTypeDto;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.common.InitDefaultValue;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
@@ -105,7 +106,7 @@ public class PeregProcessor {
 	
 	private static List<String> listCategorys = Arrays.asList("CS00020","CS00025", "CS00026", "CS00027", "CS00028", "CS00029",
 			"CS00030", "CS00031", "CS00032", "CS00033", "CS00034", "CS00049", "CS00050", "CS00051", "CS00052",
-			"CS00053", "CS00054", "CS00055", "CS00056", "CS00057", "CS00058", "CS00035");
+			"CS00053", "CS00054", "CS00055", "CS00056", "CS00057", "CS00058", "CS00035","CS00036");
 	
 	/**
 	 * get person information category and it's children (Hiển thị category và
@@ -237,6 +238,17 @@ public class PeregProcessor {
 				if (peregDto != null) {
 					// map data
 					MappingFactory.mapListItemClass(peregDto, classItemList);
+					
+					/*
+					 *	edit with category CS00021 勤務種別
+					 *	change type of category when history item is latest
+					 */
+					if (query.getCategoryCode().equals("CS00021")) {
+						BusinessTypeDto businessTypeDto = (BusinessTypeDto)peregDto.getDomainDto();
+						if (businessTypeDto.isLatestHistory()) {
+							changeCategoryType(classItemList, CategoryType.NODUPLICATEHISTORY);
+						}
+					}
 				}
 			} else {
 				switch (perInfoCtg.getCategoryType()) {
@@ -258,8 +270,25 @@ public class PeregProcessor {
 			initDefaultValue.setDefaultValueRadio(classItemList);
 		}
 		
+		/*
+		 *	edit with category CS00021 勤務種別
+		 *	change type of category when create new
+		 *	 
+		 */
+		if (query.getCategoryCode().equals("CS00021") && query.getInfoId() == null) {
+			changeCategoryType(classItemList, CategoryType.NODUPLICATEHISTORY);
+		}
 		
 		return classItemList;
+	}
+	
+	private void changeCategoryType(List<LayoutPersonInfoClsDto> classItemList, CategoryType type) {
+		classItemList.forEach( classItem -> {
+			classItem.getItems().forEach( item -> {
+				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+				valueItem.setCtgType(type.value);
+			});
+		});
 	}
 	
 	private List<LayoutPersonInfoClsDto> creatClassItemList(List<PerInfoItemDefForLayoutDto> lstClsItem) {
@@ -360,10 +389,12 @@ public class PeregProcessor {
 			String sDateId = "";	
 			String eDateId = "";	
 			if(!perInfoCtg.getCategoryCode().v().equals(exceptionItemCode)) {
-				DateRangeItem dateRangeItem = perInfoCtgRepositoty
+				Optional<DateRangeItem> dateRangeItem = perInfoCtgRepositoty
 						.getDateRangeItemByCategoryId(perInfoCtg.getPersonInfoCategoryId());
-				eDateId = dateRangeItem.getEndDateItemId();
-				sDateId = dateRangeItem.getStartDateItemId();
+				if (dateRangeItem.isPresent()) {
+					eDateId = dateRangeItem.get().getEndDateItemId();
+					sDateId = dateRangeItem.get().getStartDateItemId();
+				}
 			}
 			
 			Object sValue = null;
@@ -447,7 +478,7 @@ public class PeregProcessor {
 		List<PerInfoItemDefForLayoutDto> lstReturn = new ArrayList<>();
 		PersonInfoItemDefinition itemDefinition;
 
-		Map<Integer, Map<String, List<ComboBoxObject>>> combobox = new HashMap<Integer, Map<String, List<ComboBoxObject>>>();
+		Map<String, Map<Boolean, List<ComboBoxObject>>> combobox = new HashMap<String, Map<Boolean, List<ComboBoxObject>>>();
 		Map<String, PersonInfoItemAuth> mapItemAuth = itemAuthRepo
 				.getAllItemAuth(paramObject.getRoleId(), category.getPersonInfoCategoryId()).stream()
 				.collect(Collectors.toMap(e -> e.getPersonItemDefId(), e -> e));

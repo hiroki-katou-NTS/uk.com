@@ -29,6 +29,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareAtr;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.repository.YearServicePerRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
@@ -118,6 +119,9 @@ public class ComboBoxRetrieveFactory {
 	
 	@Inject
 	private YearHolidayRepository yearHolidayRepo;
+	
+	@Inject
+	private YearServicePerRepository yearServiceRepo;
 
 	private static Map<String, Class<?>> enumMap;
 	static {
@@ -159,7 +163,7 @@ public class ComboBoxRetrieveFactory {
 	private final String JP_SPACE = "　";
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto, String employeeId,
-			GeneralDate standardDate, boolean isRequired, PersonEmployeeType perEmplType) {
+			GeneralDate standardDate, boolean isRequired, PersonEmployeeType perEmplType, boolean isDataType6) {
 
 		if (standardDate == null) {
 			standardDate = GeneralDate.today();
@@ -181,7 +185,7 @@ public class ComboBoxRetrieveFactory {
 			refCd = masterRefTypeDto.getMasterType();
 			break;
 		}
-		return getComboBox(RefType, refCd, standardDate, employeeId, "", false, isRequired, perEmplType);
+		return getComboBox(RefType, refCd, standardDate, employeeId, "", false, isRequired, perEmplType, isDataType6);
 	}
 
 	/**
@@ -208,7 +212,7 @@ public class ComboBoxRetrieveFactory {
 			break;
 		}
 		return getComboBox(referenceType, referenceCode, comboBoxParam.getStandardDate(), comboBoxParam.getEmployeeId(),
-				comboBoxParam.getWorkplaceId(), comboBoxParam.isCps002(), comboBoxParam.isRequired(), perEmplType);
+				comboBoxParam.getWorkplaceId(), comboBoxParam.isCps002(), comboBoxParam.isRequired(), perEmplType, true);
 
 	}
 
@@ -335,6 +339,11 @@ public class ComboBoxRetrieveFactory {
 					.map(grantTable -> new ComboBoxObject(grantTable.getYearHolidayCode().v(),
 							grantTable.getYearHolidayName().v()))
 					.collect(Collectors.toList());
+		case "M00017":
+			return yearServiceRepo.getAllPer(companyId).stream()
+					.map(yearServicePer -> new ComboBoxObject(yearServicePer.getYearServiceCode().v(),
+							yearServicePer.getYearServiceName().v()))
+					.collect(Collectors.toList());
 		default:
 			break;
 		}
@@ -367,7 +376,7 @@ public class ComboBoxRetrieveFactory {
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(ReferenceTypes referenceType, String referenceCode,
 			GeneralDate standardDate, String employeeId, String workplaceId, boolean isCps002, boolean isRequired,
-			PersonEmployeeType perEmplType) {
+			PersonEmployeeType perEmplType, boolean isDataType6) {
 
 		List<ComboBoxObject> resultList = new ArrayList<ComboBoxObject>();
 		List<ComboBoxObject> comboboxItems = new ArrayList<ComboBoxObject>();
@@ -384,7 +393,7 @@ public class ComboBoxRetrieveFactory {
 
 		}
 		if (!CollectionUtil.isEmpty(resultList)) {
-			if (!isRequired) {
+			if (!isRequired && isDataType6) {
 
 				comboboxItems = new ArrayList<ComboBoxObject>(Arrays.asList(new ComboBoxObject("", "")));
 			}

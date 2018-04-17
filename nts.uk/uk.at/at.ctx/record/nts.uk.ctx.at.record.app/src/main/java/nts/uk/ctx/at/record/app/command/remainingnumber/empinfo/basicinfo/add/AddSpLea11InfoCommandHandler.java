@@ -27,7 +27,7 @@ implements PeregAddCommandHandler<AddSpecialleave11informationCommand>{
 
 	@Override
 	public Class<?> commandClass() {
-		return AddSpecialleave1informationCommand.class;
+		return AddSpecialleave11informationCommand.class;
 	}
 
 	@Override

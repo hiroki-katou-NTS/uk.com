@@ -50,7 +50,7 @@
 					<div tabindex="6" id="tbl"></div>
 
 				</div>
-				<div class='detailContent' data-bind="let: {gd: ko.toJS(nameDateGrantInp), dl: ko.toJS(nameDeadlineDateInp)}">
+				<div class='detailContent'>
 					<table id="tblDetail">
 						<!-- Line 1 -->
 						<tr>
@@ -63,7 +63,7 @@
 						<tr>
 							<td data-itemCode="IS00410 IS00425 IS00440 IS00455 IS00470 IS00485 IS00500 IS00515 IS00530 IS00545 IS00630 IS00645 IS00660 IS00675 IS00690 IS00705 IS00720 IS00735 IS00750 IS00765 deadlineDate"><div
 									data-bind="ntsFormLabel: {required: true}"></div></td>
-							<td><div tabindex="8" 
+							<td><div tabindex="8" id= "idDeadline"
 									data-bind="ntsDatePicker: {name:  '期限日' , value: deadlineDateInp, dateFormat: 'YYYY/MM/DD' , required: true }"></div></td>
 						</tr>
 						<!-- Line 3 -->

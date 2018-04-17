@@ -192,7 +192,7 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 	}
 
 	private void overrideLayout(MaintenanceLayoutCommand command, String newLayoutId) {
-
+		//truong hop layout nay da ton tai roi thi se ghi đè
 		if (checkExit) {
 			// get Old Layout
 			MaintenanceLayout oldLayout = this.repo.getByCode(companyId, command.getCode()).get();
@@ -208,7 +208,7 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 			// insert vao bang MaintenanceLayout
 			MaintenanceLayout newLayout = new MaintenanceLayout(companyId, newLayoutId,
 					new LayoutCode(command.getCode()), new LayoutName(command.getName()));
-			;
+			
 			this.repo.add(newLayout);
 
 			List<ClassificationCommand> classCommands = command.getClassifications();
@@ -227,36 +227,47 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 					}
 				}
 			}
+		}else {
+			// chưa tồn tại thì insert
+			this.insertForCoppyOrOvveride(command, newLayoutId);
 		}
 	}
 
 	private void coppyLayout(MaintenanceLayoutCommand command, String newLayoutId) {
 
 		if (!checkExit) {
-			// insert vao bang MaintenanceLayout
-			MaintenanceLayout newLayout = MaintenanceLayout.createFromJavaType(companyId, newLayoutId,
-					command.getCode(), command.getName());
-			this.repo.add(newLayout);
-
-			List<ClassificationCommand> classCommands = command.getClassifications();
-			if (classCommands != null) {
-				// add all classification on client to db
-				classfRepo.addClassifications(classCommands.stream()
-						.map(item -> toClassificationDomain(item, newLayoutId)).collect(Collectors.toList()));
-
-				// add all item definition relation with classification to db
-				for (ClassificationCommand classCommand : classCommands) {
-					List<ClassificationItemDfCommand> clsIDfs = classCommand.getListItemClsDf();
-					if (clsIDfs != null) {
-						clsDefRepo.addClassificationItemDefines(clsIDfs.stream()
-								.map(m -> toClassItemDefDomain(m, newLayoutId, classCommand.getDispOrder()))
-								.collect(Collectors.toList()));
-					}
-				}
-			}
+			insertForCoppyOrOvveride(command, newLayoutId);
 		} else {
 			// throw Error Message #Msg_3
 			throw new BusinessException(new RawErrorMessage("Msg_3"));
+		}
+	}
+
+	/**
+	 * @param command
+	 * @param newLayoutId
+	 */
+	private void insertForCoppyOrOvveride(MaintenanceLayoutCommand command, String newLayoutId) {
+		// insert vao bang MaintenanceLayout
+		MaintenanceLayout newLayout = MaintenanceLayout.createFromJavaType(companyId, newLayoutId,
+				command.getCode(), command.getName());
+		this.repo.add(newLayout);
+
+		List<ClassificationCommand> classCommands = command.getClassifications();
+		if (classCommands != null) {
+			// add all classification on client to db
+			classfRepo.addClassifications(classCommands.stream()
+					.map(item -> toClassificationDomain(item, newLayoutId)).collect(Collectors.toList()));
+
+			// add all item definition relation with classification to db
+			for (ClassificationCommand classCommand : classCommands) {
+				List<ClassificationItemDfCommand> clsIDfs = classCommand.getListItemClsDf();
+				if (clsIDfs != null) {
+					clsDefRepo.addClassificationItemDefines(clsIDfs.stream()
+							.map(m -> toClassItemDefDomain(m, newLayoutId, classCommand.getDispOrder()))
+							.collect(Collectors.toList()));
+				}
+			}
 		}
 	}
 

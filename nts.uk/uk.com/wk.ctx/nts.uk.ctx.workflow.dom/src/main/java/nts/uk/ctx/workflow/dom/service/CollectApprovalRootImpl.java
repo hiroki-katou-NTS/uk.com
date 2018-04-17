@@ -11,12 +11,14 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.EnumType;
 
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.ConcurrentEmployeeImport;
@@ -48,7 +50,9 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.RootType;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApproverInfo;
@@ -94,6 +98,9 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 	
 	@Inject
 	private ApprovalSettingRepository approvalSettingRepository;
+	
+	@Inject
+	private ApprovalRootStateRepository approvalRootStateRepository;
 	
 	@Override
 	public ApprovalRootContentOutput getApprovalRootOfSubjectRequest(String companyID, String employeeID, 
@@ -297,6 +304,9 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			if (requestInfo == null) {
 				return false;
 			}
+			if((requestInfo.getDisporder()==null)||(approverInfo.getDisporder()==null)){
+				return true;
+			}
 			if (requestInfo.getDisporder() > approverInfo.getDisporder()) {
 				return true;
 			}
@@ -443,6 +453,17 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
 			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter, 
 					perAppRootList.get(0).getEmploymentAppHistoryItems().get(0).getHistoryId());
+			if(errorFlag.equals(ErrorFlag.NO_ERROR)){
+				String appID = IdentifierUtil.randomUniqueId();
+				approvalRootStateRepository.insert(ApprovalRootState.createFromFirst(
+						appID,  
+						EnumAdaptor.valueOf(confirmAtr.value+1, RootType.class), 
+						approvalRootState.getHistoryID(), 
+						standardDate, 
+						employeeID, 
+						approvalRootState));
+				approvalRootState = approvalRootStateRepository.findByID(appID).get();
+			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
 		
@@ -455,6 +476,17 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
 			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter, 
 					opPerAppRootsOfCommon.get().getEmploymentAppHistoryItems().get(0).getHistoryId());
+			if(errorFlag.equals(ErrorFlag.NO_ERROR)){
+				String appID = IdentifierUtil.randomUniqueId();
+				approvalRootStateRepository.insert(ApprovalRootState.createFromFirst(
+						appID,  
+						EnumAdaptor.valueOf(confirmAtr.value+1, RootType.class), 
+						approvalRootState.getHistoryID(), 
+						standardDate, 
+						employeeID, 
+						approvalRootState));
+				approvalRootState = approvalRootStateRepository.findByID(appID).get();
+			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
 		
@@ -467,6 +499,17 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
 				ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter,
 						wkpAppRootList.get(0).getEmploymentAppHistoryItems().get(0).getHistoryId());
+				if(errorFlag.equals(ErrorFlag.NO_ERROR)){
+					String appID = IdentifierUtil.randomUniqueId();
+					approvalRootStateRepository.insert(ApprovalRootState.createFromFirst(
+							appID,  
+							EnumAdaptor.valueOf(confirmAtr.value+1, RootType.class), 
+							approvalRootState.getHistoryID(), 
+							standardDate, 
+							employeeID, 
+							approvalRootState));
+					approvalRootState = approvalRootStateRepository.findByID(appID).get();
+				}
 				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 			}
 			Optional<WorkplaceApprovalRoot> opWkpAppRootsOfCom = wkpApprovalRootRepository.findByBaseDateOfCommon(companyID, wｋｐId, standardDate);
@@ -476,6 +519,17 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
 				ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter,
 						opWkpAppRootsOfCom.get().getEmploymentAppHistoryItems().get(0).getHistoryId());
+				if(errorFlag.equals(ErrorFlag.NO_ERROR)){
+					String appID = IdentifierUtil.randomUniqueId();
+					approvalRootStateRepository.insert(ApprovalRootState.createFromFirst(
+							appID,  
+							EnumAdaptor.valueOf(confirmAtr.value+1, RootType.class), 
+							approvalRootState.getHistoryID(), 
+							standardDate, 
+							employeeID, 
+							approvalRootState));
+					approvalRootState = approvalRootStateRepository.findByID(appID).get();
+				}
 				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 			}
 		}
@@ -487,6 +541,17 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
 			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter,
 					comAppRootList.get(0).getEmploymentAppHistoryItems().get(0).getHistoryId());
+			if(errorFlag.equals(ErrorFlag.NO_ERROR)){
+				String appID = IdentifierUtil.randomUniqueId();
+				approvalRootStateRepository.insert(ApprovalRootState.createFromFirst(
+						appID,  
+						EnumAdaptor.valueOf(confirmAtr.value+1, RootType.class), 
+						approvalRootState.getHistoryID(), 
+						standardDate, 
+						employeeID, 
+						approvalRootState));
+				approvalRootState = approvalRootStateRepository.findByID(appID).get();
+			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
 		
@@ -497,6 +562,17 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
 			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter,
 					opCompanyAppRootsOfCom.get().getEmploymentAppHistoryItems().get(0).getHistoryId());
+			if(errorFlag.equals(ErrorFlag.NO_ERROR)){
+				String appID = IdentifierUtil.randomUniqueId();
+				approvalRootStateRepository.insert(ApprovalRootState.createFromFirst(
+						appID,  
+						EnumAdaptor.valueOf(confirmAtr.value+1, RootType.class), 
+						approvalRootState.getHistoryID(), 
+						standardDate, 
+						employeeID, 
+						approvalRootState));
+				approvalRootState = approvalRootStateRepository.findByID(appID).get();
+			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
 		return new ApprovalRootContentOutput(ApprovalRootState.builder().listApprovalPhaseState(Collections.emptyList()).build(), ErrorFlag.NO_APPROVER);

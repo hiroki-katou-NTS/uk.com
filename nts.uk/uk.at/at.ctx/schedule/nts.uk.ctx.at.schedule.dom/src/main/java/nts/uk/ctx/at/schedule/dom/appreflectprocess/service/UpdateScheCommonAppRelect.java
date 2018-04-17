@@ -12,4 +12,5 @@ public interface UpdateScheCommonAppRelect {
 	 */
 	public void updateScheWorkTimeType(String employeeId, GeneralDate baseDate, String workTypeCode, String workTimeCode);
 
+
 }

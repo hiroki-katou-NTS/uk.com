@@ -7,15 +7,21 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.PerServiceLengthTableCD;
+import nts.uk.shr.com.context.AppContexts;
 
 @Getter
 // domain name: 年休社員基本情報
 public class AnnualLeaveEmpBasicInfo extends AggregateRoot {
-
+	
 	/**
 	 * 社員ID
 	 */
 	private String employeeId;
+	
+	/**
+	 * 会社ID
+	 */
+	private String companyId;
 
 	/**
 	 * 年間所定労働日数
@@ -35,6 +41,7 @@ public class AnnualLeaveEmpBasicInfo extends AggregateRoot {
 	public static AnnualLeaveEmpBasicInfo createFromJavaType(String employeeId, Integer workingDaysPerYear,
 			Integer workingDayBeforeIntro, String grantTableCode, GeneralDate grantStandardDate) {
 		AnnualLeaveEmpBasicInfo domain = new AnnualLeaveEmpBasicInfo();
+		domain.companyId = AppContexts.user().companyId();
 		domain.employeeId = employeeId;
 		domain.workingDaysPerYear = workingDaysPerYear != null ? Optional.of(new WorkingDayPerYear(workingDaysPerYear))
 				: Optional.empty();

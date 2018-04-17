@@ -79,13 +79,28 @@ module nts.uk.ui.jqueryExtentions {
             return dfd.promise();    
         }
         
-        function downloadImage($element: JQuery, fileId){
-            $element.trigger("srcchanging", {url: nts.uk.request.liveView(fileId), isOutSiteUrl: false});
+        function downloadImage($element: JQuery, option){
+            let fileId = option;
+            let actionOnClose = $.noop;
+            if(typeof option === 'object'){
+                fileId = option.fileId;
+                if(!nts.uk.util.isNullOrUndefined(option.actionOnClose)){
+                    actionOnClose = option.actionOnClose;    
+                }
+            }
+            $element.trigger("srcchanging", {url: nts.uk.request.liveView(fileId), isOutSiteUrl: false, actionOnClose: actionOnClose});
         }
         
-        function viewByUrl($element: JQuery, sourceUrl){
-            $element.trigger("srcchanging", {url: sourceUrl, isOutSiteUrl: true});
-            
+        function viewByUrl($element: JQuery, option){
+            let fileId = option;
+            let actionOnClose = $.noop;
+            if(typeof option === 'object'){
+                fileId = nts.uk.util.isNullOrEmpty(option.url) ? option.fileId : option.url;
+                if(!nts.uk.util.isNullOrUndefined(option.actionOnClose)){
+                    actionOnClose = option.actionOnClose;    
+                }
+            }
+            $element.trigger("srcchanging", {url: fileId, isOutSiteUrl: true, actionOnClose: actionOnClose});
         }
             
         function clear($element: JQuery){

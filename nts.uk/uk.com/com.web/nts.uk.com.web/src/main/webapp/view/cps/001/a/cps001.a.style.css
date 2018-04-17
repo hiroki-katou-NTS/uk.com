@@ -40,7 +40,7 @@
 }
 
 #lefttabs .ntsSearchBox.ntsSearchBox_Component {
-	min-width: 100px;
+	width: 100px;
 }
 
 .bottom-right-area {
@@ -102,7 +102,7 @@
 }
 
 .ui-igcombo-wrapper {
-	width: 195px;
+	width: 100%;
 }
 
 .caret-background.caret-right:after {

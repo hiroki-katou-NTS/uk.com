@@ -1,5 +1,6 @@
 .contents-area{
-	margin:10px;
+	margin-left:10px;
+	padding-top:10px;
 }
 .bggreen{
 	background-color: #BFEA60;
@@ -9,6 +10,7 @@
 }
 .cmf001_508{
 	margin-bottom: 3px;
+	margin-left: 10px;
 }
 .cmf001_515{
 	top: 25px;
@@ -16,13 +18,15 @@
 }
 .error-ichiran{
 	margin: 5px;
-	display: grid;
+	clear:both;
 }
 .settingzyouho{
 	margin-bottom: 15px;
 }
 .kekkanaiyou{
 	margin-bottom: 15px;
+	margin-right: 60px;
+	float: left;
 }
 .setting-zyouhou {
 	margin: 10px;
@@ -35,6 +39,7 @@
 .ichi-ran{
 	margin-left: 10px;
 	font-weight: normal;
+	
 }
 table, th, td {
     border: 1px solid black;
@@ -55,9 +60,6 @@ table, th, td {
 	margin: 5px;
 	box-sizing: border-box;
 }
-.kekkanaiyou{
-	margin-bottom: 30px;
-}
 .button {
 	text-align:center;
 	margin-bottom: 10px;
@@ -66,14 +68,20 @@ table, th, td {
 	float: right;
 	margin-right: 0 !important;
 }
-td {
-	padding-top: 5px;
-	padding-bottom: 5px;
-}
 
 #grd_Accept .increment-col, #single-list th.ui-iggrid-rowselector-class
 	{
 	background-color: #CFF1A5;
 	text-align: right;
 	height: 1em;
+}
+#BTN_CLOSE {
+	margin-top: 10px;
+}
+#BTN_ERROR_EXPORT{
+	margin-top: 20px;
+}
+td {
+	padding-top: 2px;
+	padding-bottom: 2px;
 }

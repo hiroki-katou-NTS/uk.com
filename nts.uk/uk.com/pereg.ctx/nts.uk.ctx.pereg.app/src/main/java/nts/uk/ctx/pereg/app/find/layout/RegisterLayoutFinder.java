@@ -36,6 +36,7 @@ import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.pereg.dom.person.layout.NewLayout;
+import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutItemType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -133,10 +134,12 @@ public class RegisterLayoutFinder {
 		});
 
 		// check and set employeeName to businessName
-		Optional<LayoutPersonInfoClsDto> businessNameOpt = itemCls.stream().filter(classItem -> {
-			LayoutPersonInfoValueDto item = (LayoutPersonInfoValueDto) classItem.getItems().get(0);
-			return item.getItemCode().equals("IS00009");
-		}).findFirst();
+		Optional<LayoutPersonInfoClsDto> businessNameOpt = itemCls.stream()
+				.filter(classItem -> classItem.getLayoutItemType() != LayoutItemType.SeparatorLine)
+				.filter(classItem -> {
+					LayoutPersonInfoValueDto item = (LayoutPersonInfoValueDto) classItem.getItems().get(0);
+					return item.getItemCode().equals("IS00009");
+				}).findFirst();
 		if ( businessNameOpt.isPresent()) {
 			LayoutPersonInfoClsDto businessName = businessNameOpt.get();
 			LayoutPersonInfoValueDto item = (LayoutPersonInfoValueDto) businessName.getItems().get(0);
@@ -239,9 +242,10 @@ public class RegisterLayoutFinder {
 				List<ComboBoxObject> comboValues;
 
 				selectionItemDto = (SelectionItemDto) item.getItem();
-
+				boolean isDataType6 = dataTypeValue == DataTypeValue.SELECTION.value;
+				
 				comboValues = cbbfact.getComboBox(selectionItemDto, AppContexts.user().employeeId(),
-						command.getHireDate(), item.isRequired(), perInfoCategory.get().getPersonEmployeeType());
+						command.getHireDate(), item.isRequired(), perInfoCategory.get().getPersonEmployeeType(), isDataType6);
 
 				item.setLstComboBoxValue(comboValues);
 				PerInfoItemDefForLayoutDto dto = new PerInfoItemDefForLayoutDto();
