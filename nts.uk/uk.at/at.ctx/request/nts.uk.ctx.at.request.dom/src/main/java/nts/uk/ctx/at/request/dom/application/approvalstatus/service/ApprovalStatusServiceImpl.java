@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
@@ -24,7 +26,6 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Appro
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatus;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatusOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmbeddedUrlOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmployeeEmailOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmploymentOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.MailTransmissionContentOutput;
@@ -46,10 +47,13 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approve
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.mail.SendMailFailedException;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.url.RegisterEmbededURL;
+import nts.uk.shr.com.url.UrlTaskIncre;
 
 @Stateless
 public class ApprovalStatusServiceImpl implements ApprovalStatusService {
@@ -327,7 +331,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		List<String> listError = new ArrayList<>();
 		for (MailTransmissionContentOutput mailTransmission : listMailContent) {
 			// アルゴリズム「承認状況メール埋込URL取得」を実行する
-			EmbeddedUrlOutput embeddedURL = this.getEmbeddedURL(mailTransmission.getSId(), domain, mailType);
+			String embeddedURL = this.getEmbeddedURL(mailTransmission.getSId(), domain, mailType);
 			try {
 				// アルゴリズム「メールを送信する」を実行する
 				mailsender.send("nts", mailTransmission.getMailAddr(),
@@ -347,18 +351,42 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	/**
-	 * アルゴリズム「承認状況メール埋込URL取得」を実行する
-	 * 
-	 * @param eid
-	 * @param domain
-	 * @param transmissionAttr
+	 * 承認状況メール埋込URL取得
 	 */
-	private EmbeddedUrlOutput getEmbeddedURL(String eid, ApprovalStatusMailTemp domain, ApprovalStatusMailType mailType) {
-		// TODO waiting for Hiệp
-		String url1 = "123123123";
-		String url2 = "1231ád23123";
-		//EmbeddedUrlOutput ember = this.registerEmbededURL.obtainApplicationEmbeddedUrl(appId, appType, prePostAtr, employeeId);
-		return new EmbeddedUrlOutput(url1, url2);
+	private String getEmbeddedURL(String eid, ApprovalStatusMailTemp domain, ApprovalStatusMailType mailType) {
+		List<String> listUrl = new ArrayList<>();
+		// 承認状況メールテンプレート.URL承認埋込
+		if (NotUseAtr.USE.equals(domain.getUrlApprovalEmbed())) {
+			List<UrlTaskIncre> listTask = new ArrayList<>();
+			listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "activeMode", "approval"));
+			// アルゴリズム「埋込URL情報登録」を実行する
+			String url1 = registerEmbededURL.embeddedUrlInfoRegis("CMM045", "A", 1, 1, eid, "", listTask);
+			listUrl.add(url1);
+		}
+		// 承認状況メールテンプレート.URL日別埋込
+		if (NotUseAtr.USE.equals(domain.getUrlDayEmbed())) {
+			List<UrlTaskIncre> listTask = new ArrayList<>();
+			if (ApprovalStatusMailType.DAILY_UNCONFIRM_BY_PRINCIPAL.equals(mailType)) {
+				listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "screenMode", "normal"));
+			} else {
+				listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "screenMode", "approval"));
+			}
+			listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "errorRef", "true"));
+			listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "changePeriod", "true"));
+			// アルゴリズム「埋込URL情報登録」を実行する
+			String url2 = registerEmbededURL.embeddedUrlInfoRegis("KDW003", "A", 1, 1, eid, "", listTask);
+			listUrl.add(url2);
+		}
+		// 承認状況メールテンプレート.URL月別埋込
+		if (NotUseAtr.USE.equals(domain.getUrlMonthEmbed())) {
+			List<UrlTaskIncre> listTask = new ArrayList<>();
+			// アルゴリズム「埋込URL情報登録」を実行する
+			String url3 = registerEmbededURL.embeddedUrlInfoRegis("KMW003", "A", 1, 1, eid, "", listTask);
+			listUrl.add(url3);
+		}
+		String title = TextResource.localize("KAF018_190");
+		String url = StringUtils.join(listUrl, "/n");
+		return title + "/n" + url;
 	}
 
 	@Override
