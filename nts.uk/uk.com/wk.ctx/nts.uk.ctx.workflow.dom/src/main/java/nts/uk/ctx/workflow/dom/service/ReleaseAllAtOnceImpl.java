@@ -36,7 +36,7 @@ public class ReleaseAllAtOnceImpl implements ReleaseAllAtOnceService {
 
 	@Override
 	public void doReleaseAllAtOnce(String companyID, String rootStateID) {
-		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findEmploymentApp(rootStateID);
+		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID);
 		if(!opApprovalRootState.isPresent()){
 			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 		}
@@ -70,7 +70,7 @@ public class ReleaseAllAtOnceImpl implements ReleaseAllAtOnceService {
 	public ApproverApprovedOutput getApproverApproved(String rootStateID) {
 		List<ApproverWithFlagOutput> listApproverWithFlagOutput = new ArrayList<>();
 		List<String> listApprover = new ArrayList<>();
-		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findEmploymentApp(rootStateID);
+		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID);
 		if(!opApprovalRootState.isPresent()){
 			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 		}
