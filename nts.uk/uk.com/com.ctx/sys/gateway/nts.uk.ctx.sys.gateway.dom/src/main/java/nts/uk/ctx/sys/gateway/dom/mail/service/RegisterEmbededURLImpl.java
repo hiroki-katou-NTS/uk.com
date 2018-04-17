@@ -125,24 +125,38 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 		PeriodClassification periodClsEnum = PeriodClassification.values()[periodCls];
 		switch (periodClsEnum) {
 			case YEAR: {
-				// TODO
+				GeneralDateTime expiredDate = startDate.addYears(numOfPeriod);
+				expiredDate = expiredDate.addHours(- expiredDate.hours());
+				expiredDate = expiredDate.addMinutes(- expiredDate.minutes());
+				expiredDate = expiredDate.addSeconds(- expiredDate.seconds() - 1);
+				return expiredDate;
 			}
 			case MONTH: {
 				GeneralDateTime expiredDate = startDate.addMonths(numOfPeriod);
+				expiredDate = expiredDate.addHours(- expiredDate.hours());
+				expiredDate = expiredDate.addMinutes(- expiredDate.minutes());
 				expiredDate = expiredDate.addSeconds(- expiredDate.seconds() - 1);
 				return expiredDate;
 			}
 			case DAY: {
-				// TODO
+				GeneralDateTime expiredDate = startDate.addDays(numOfPeriod);
+				expiredDate = expiredDate.addHours(- expiredDate.hours());
+				expiredDate = expiredDate.addMinutes(- expiredDate.minutes());
+				expiredDate = expiredDate.addSeconds(- expiredDate.seconds() - 1);
+				return expiredDate;
 			}
 			case HOUR: {
-				// TODO
+				GeneralDateTime expiredDate = startDate.addHours(numOfPeriod);
+				expiredDate = expiredDate.addSeconds(- expiredDate.seconds() - 1);
+				return expiredDate;
 			}
 			case MINUTE: {
-				// TODO
+				GeneralDateTime expiredDate = startDate.addMinutes(numOfPeriod);
+				expiredDate = expiredDate.addSeconds(- expiredDate.seconds() - 1);
+				return expiredDate;
 			}
 		}
-		return null;
+		return GeneralDateTime.now();
 	}
 
 	@Override
