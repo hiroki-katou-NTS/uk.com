@@ -1,9 +1,10 @@
-package nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absenceleaveapp;
+package nts.uk.ctx.at.request.app.find.application.holidayshipment;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.SubTargetDigestion;
 
 /**
  * @author sonnlb 消化対象代休管理Dto
@@ -40,4 +41,9 @@ public class SubTargetDigestionDto {
 	 * 日付不明
 	 */
 	private int unknownDate;
+
+	public static SubTargetDigestionDto createFromDomain(SubTargetDigestion domain) {
+		return new SubTargetDigestionDto(domain.getAppID(), domain.getHoursUsed(), domain.getLeaveMngDataID(),
+				domain.getBreakOutDate(), domain.getRestState().value, domain.getUnknownDate());
+	}
 }

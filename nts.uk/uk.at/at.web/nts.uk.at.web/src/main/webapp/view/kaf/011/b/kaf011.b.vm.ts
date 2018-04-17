@@ -148,7 +148,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         setDataCommon(data) {
             let self = this,
                 app = data.application;
-            self.appReasons(data.appReasons || []);
+            self.appReasons(data.appReasonComboItems || []);
             self.prePostSelectedCode(app.prePostAtr);
             self.showReason(data.applicationSetting.appReasonDispAtr);
             self.reason(data.application.applicationReason);
@@ -222,17 +222,25 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 control.changeWorkHoursType(data.changeWorkHoursType);
                 control.appDate(data.appDate);
                 control.appID(data.appID);
+                control.wkTimeName(data.workTimeName);
                 if (data.wkTime1) {
                     control.wkTime1().startTime(data.wkTime1.startTime);
-                    control.wkTime1().endTime(data.wkTime1.endTime);
-                    control.wkTime1().startType(data.wkTime1.startUseAtr);
-                    control.wkTime1().endType(data.wkTime1.endUseAtr);
-                }
-                if (comType) {
-                    self.appComSelectedCode(comType);
-                }
-                control.updateWorkingText();
+                control.wkTime1().endTime(data.wkTime1.endTime);
+                control.wkTime1().startType(data.wkTime1.startUseAtr);
+                control.wkTime1().endType(data.wkTime1.endUseAtr);
+                
+                     }
+
+            if (data.timeZoneUseDtos && data.timeZoneUseDtos.length) {
+                let timeZone1 = data.timeZoneUseDtos[0];
+                control.wkTime1().startTimeDisplay(timeZone1.startTime);
+                control.wkTime1().endTimeDisplay(timeZone1.endTime);
             }
+                   if(comType) {
+                     self.appComSelectedCode(comType);
+                 }
+             control.updateWorkingText();
+         }
         }
 
     }

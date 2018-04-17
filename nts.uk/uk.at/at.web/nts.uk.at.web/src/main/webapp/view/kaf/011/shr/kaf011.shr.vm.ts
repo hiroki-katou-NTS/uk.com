@@ -16,7 +16,9 @@ module nts.uk.at.view.kaf011.shr {
         }
         export class WorkingHour {
             startTime: KnockoutObservable<number> = ko.observable(null);
+            startTimeDisplay: KnockoutObservable<number> = ko.observable(null);
             endTime: KnockoutObservable<number> = ko.observable(null);
+            endTimeDisplay: KnockoutObservable<number> = ko.observable(null);
             startTypes: KnockoutObservableArray<any> = ko.observableArray([
                 { code: 0, text: text('KAF011_39') },
                 { code: 1, text: text('KAF011_40') }
@@ -28,26 +30,37 @@ module nts.uk.at.view.kaf011.shr {
             ]);
             endType: KnockoutObservable<number> = ko.observable(1);
 
+
             timeOption = ko.mapping.fromJS({
                 timeWithDay: true,
                 width: "70px"
             });
             constructor(IWorkingHour?) {
                 if (IWorkingHour) {
-                    this.startTime(IWorkingHour.startTime || null);
-                    this.endTime(IWorkingHour.endTime || null);
+                    let startTime = IWorkingHour.startTime || null,
+                        endTime = IWorkingHour.endTime || null;
+                    this.startTime(startTime);
+                    this.endTime(endTime);
                     this.startType(IWorkingHour.startType != undefined ? IWorkingHour.startType : 1);
                     this.endType(IWorkingHour.endType != undefined ? IWorkingHour.endType : 1);
+                    this.startTimeDisplay(startTime);
+                    this.endTimeDisplay(endTime);
                 }
             }
             clearData() {
                 this.startTime(null);
                 this.endTime(null);
+                this.startTimeDisplay(null);
+                this.endTimeDisplay(null);
             }
             updateData(param) {
                 if (param) {
-                    this.startTime(param.start || null);
-                    this.endTime(param.end || null);
+                    let startTime = param.startTime || null,
+                        endTime = param.endTime || null;
+                    this.startTime(startTime);
+                    this.endTime(endTime);
+                    this.startTimeDisplay(startTime);
+                    this.endTimeDisplay(endTime);
                 }
             }
         }
@@ -335,8 +348,11 @@ module nts.uk.at.view.kaf011.shr {
             updateWorkingText() {
                 let self = this,
                     text = self.wkTimeCD() + ' ' + self.wkTimeName();
-                if (self.wkTime1().startTime()) {
-                    text += ' ' + self.parseTime(self.wkTime1().startTime()) + '~' + self.parseTime(self.wkTime1().endTime());
+                if (self.wkTime1().startTimeDisplay()) {
+                    let startTimeText = self.parseTime(self.wkTime1().startTimeDisplay()),
+                        endTimeText = self.parseTime(self.wkTime1().endTimeDisplay());
+
+                    text += ' ' + startTimeText + '~' + endTimeText;
                 }
                 self.wkText(text);
 
@@ -384,6 +400,8 @@ module nts.uk.at.view.kaf011.shr {
                             self.wkTypeCD(childData.selectedWorkTypeCode);
                             self.wkTime1().startTime(childData.first.start);
                             self.wkTime1().endTime(childData.first.end);
+                            self.wkTime1().startTimeDisplay(childData.first.start);
+                            self.wkTime1().endTimeDisplay(childData.first.end);
                             self.wkTimeName(childData.selectedWorkTimeName);
                         }
                         if (childData.selectedWorkTimeCode && childData.selectedWorkTimeName) {

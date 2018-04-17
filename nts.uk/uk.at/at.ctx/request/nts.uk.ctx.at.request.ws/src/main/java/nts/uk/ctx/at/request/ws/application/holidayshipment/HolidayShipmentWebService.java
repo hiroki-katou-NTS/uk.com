@@ -58,7 +58,7 @@ public class HolidayShipmentWebService extends WebService {
 	@POST
 	@Path("start")
 	public HolidayShipmentDto startPage(StartScreenAParam param) {
-		return this.screenAFinder.startPage(param.getSID(), param.getAppDate(), param.getUiType());
+		return this.screenAFinder.startPageA(param.getSID(), param.getAppDate(), param.getUiType());
 	}
 
 	@POST
@@ -76,7 +76,7 @@ public class HolidayShipmentWebService extends WebService {
 	@POST
 	@Path("change_day")
 	public HolidayShipmentDto changeDay(ChangeDateParam param) {
-		return this.screenAFinder.changeDay(param.getTakingOutDate(), param.getHolidayDate(), param.getComType(),
+		return this.screenAFinder.changeAppDate(param.getTakingOutDate(), param.getHolidayDate(), param.getComType(),
 				param.getUiType());
 	}
 
