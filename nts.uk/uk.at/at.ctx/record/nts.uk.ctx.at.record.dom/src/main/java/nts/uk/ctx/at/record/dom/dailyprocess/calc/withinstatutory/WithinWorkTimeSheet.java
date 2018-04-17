@@ -193,7 +193,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		
 		val timeFrames = new ArrayList<WithinWorkTimeFrame>();
 		//所定時間と就業時間帯の重複部分取得
-		List<EmTimeZoneSet> workingHourSet = createWorkingHourSet(workType, predetermineTimeForSet , lstHalfDayWorkTimezone, workNo);
+		//→勤務種類の出勤休日区分を見て就業時間帯取得
+		List<EmTimeZoneSet> workingHourSet = getWorkingHourSetByAmPmClass(lstHalfDayWorkTimezone,workType.getAttendanceHolidayAttr());
+				//createWorkingHourSet(workType, predetermineTimeForSet , lstHalfDayWorkTimezone, workNo);
 		//出退勤時刻と↑の重複時間帯と重複部分取得
 		List<WithinWorkTimeFrame> withinWorkTimeFrame = duplicatedByStamp(workingHourSet,timeLeavingWork);
 		
@@ -837,6 +839,12 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			totalTime = totalTime.addMinutes(addTime);
 		}
 		return totalTime;
+	}
+
+
+	public AttendanceTime calcWorkTimeBeforeDeductPremium() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 //	/**

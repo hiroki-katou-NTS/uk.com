@@ -292,7 +292,7 @@ public class OverTimeOfDaily {
 	public static OverTimeOfDaily calculationTime(OverTimeSheet overTimeSheet,AutoCalOvertimeSetting overTimeAutoCalcSet,WithinWorkTimeSheet withinWorkTimeSheetList,CalcMethodOfNoWorkingDay calcMethod,
 												  HolidayCalcMethodSet holidayCalcMethodSet,AutoCalOverTimeAttr autoCalcAtr,WorkType workType,
 												  Optional<SettingOfFlexWork> flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
-												  Optional<DeductionTimeSheet> tempDedTimeSheet,VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
+												  VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
 												  StatutoryDivision statutoryDivision,Optional<WorkTimeCode> siftCode,
 												  Optional<PersonalLaborCondition> personalCondition,
 //												  LateTimeSheet lateTimeSheet,LeaveEarlyTimeSheet leaveEarlyTimeSheet,LateTimeOfDaily lateTimeOfDaily,
@@ -323,7 +323,7 @@ public class OverTimeOfDaily {
 					new SettingOfFlexWork(new FlexCalcMethodOfHalfWork(new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half),
 																	   new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half))),
 					predetermineTimeSet,
-					tempDedTimeSheet,vacationClass,timevacationUseTimeOfDaily,
+					vacationClass,timevacationUseTimeOfDaily,
 					statutoryDivision,siftCode,
 					personalCondition,
 					late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻

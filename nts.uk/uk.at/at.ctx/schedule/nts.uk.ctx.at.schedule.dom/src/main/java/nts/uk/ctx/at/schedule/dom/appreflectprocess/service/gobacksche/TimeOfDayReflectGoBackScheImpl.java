@@ -31,7 +31,7 @@ public class TimeOfDayReflectGoBackScheImpl implements TimeOfDayReflectGoBackSch
 		TimeReflectScheDto timeData = new TimeReflectScheDto(reflectPara.getEmployeeId(),
 				reflectPara.getDatePara(),
 				startTimeReflectFind.getTimeOfDay(),
-				reflectPara.getAppInfor().getWorkTimeEnd1(), 
+				endTimeReflectFind.getTimeOfDay(), 
 				1,
 				startTimeReflectFind.isReflectFlg(),
 				endTimeReflectFind.isReflectFlg());

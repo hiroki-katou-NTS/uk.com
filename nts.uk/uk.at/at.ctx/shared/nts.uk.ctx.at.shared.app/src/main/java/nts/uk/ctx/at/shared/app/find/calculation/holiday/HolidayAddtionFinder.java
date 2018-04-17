@@ -91,8 +91,8 @@ public class HolidayAddtionFinder {
 			
 			holidayAddtimeDto.setAddSetManageWorkHour(addSetManageWorkHour == null ? 0 : addSetManageWorkHour.getAdditionSettingOfOvertime().value);
 			holidayAddtimeDto.setAddingMethod1(holidayAddtime.getTimeHolidayAddition().get(0).getAddingMethod().value);
-			holidayAddtimeDto.setAddingMethod2(holidayAddtime.getTimeHolidayAddition().get(0).getWorkClass().value);
-			holidayAddtimeDto.setWorkClass1(holidayAddtime.getTimeHolidayAddition().get(1).getAddingMethod().value);
+			holidayAddtimeDto.setAddingMethod2(holidayAddtime.getTimeHolidayAddition().get(1).getAddingMethod().value);
+			holidayAddtimeDto.setWorkClass1(holidayAddtime.getTimeHolidayAddition().get(0).getWorkClass().value);
 			holidayAddtimeDto.setWorkClass2(holidayAddtime.getTimeHolidayAddition().get(1).getWorkClass().value);
 			
 		return holidayAddtimeDto;

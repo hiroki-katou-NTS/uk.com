@@ -220,7 +220,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 				//breakdownTimeDay = 所定内時間
 				AttendanceTime ableRangeTime = new AttendanceTime(dailyUnit.getDailyTime().valueAsMinutes() - breakdownTimeDay.getPredetermineWorkTime());
 				if(ableRangeTime.greaterThan(0))
-					returnList.addAll(reclassified(ableRangeTime, createTimeSheet, autoCalculationSet,Optional.of(true),overTimeHourSetList,holidayCalcMethodSet));
+					returnList.addAll(reclassified(ableRangeTime, createTimeSheet, autoCalculationSet,overTimeHourSetList,holidayCalcMethodSet));
 			}
 		}
 		return returnList;
@@ -250,7 +250,6 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
         									   								 .sorted((first,second) -> first.getPayOrder().get().compareTo(second.getPayOrder().get()))
         									   								 .collect(Collectors.toList()),
         									   autoCalculationSet,
-        									   Optional.of(true),
         									   overTimeHourSetList,
         									   holidayCalcMethodSet));
         }
@@ -264,16 +263,13 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 * @param overTimeWorkFrameTimeSheetList　残業時間枠時間帯クラス
 	 * @param autoCalculationSet　時間外の自動計算設定
 	 */
-	public static List<OverTimeFrameTimeSheetForCalc> reclassified(AttendanceTime ableRangeTime,
-																   List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheetList,
-																   AutoCalOvertimeSetting autoCalculationSet,
-																   Optional<Boolean> forceCalcTime,
-																   List<OverTimeOfTimeZoneSet> overTimeHourSetList,
-																   HolidayCalcMethodSet holidayCalcMethodSet) {
+	public static List<OverTimeFrameTimeSheetForCalc> reclassified(AttendanceTime ableRangeTime,List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheetList,
+			AutoCalOvertimeSetting autoCalculationSet,List<OverTimeOfTimeZoneSet> overTimeHourSetList,HolidayCalcMethodSet holidayCalcMethodSet) {
+		boolean forceAtr = true;
 		AttendanceTime overTime = new AttendanceTime(0);
 		AttendanceTime transTime = new AttendanceTime(0);
 		for(int number = 0; number < overTimeWorkFrameTimeSheetList.size(); number++) {
-			overTime = overTimeWorkFrameTimeSheetList.get(number).correctCalculationTime(Optional.of(true),autoCalculationSet,DeductionAtr.Deduction);
+			overTime = overTimeWorkFrameTimeSheetList.get(number).correctCalculationTime(Optional.of(forceAtr),autoCalculationSet,DeductionAtr.Deduction);
 //			if(forceCalcTime.get()) {
 //				if(!decisionCalcAtr(overTimeWorkFrameTimeSheetList.get(number),autoCalculationSet)) {
 //					overTime = new AttendanceTime(0);

@@ -22,12 +22,12 @@ module nts.uk.at.view.kal001.b {
                 self.columns = ko.observableArray([
                     { headerText: '', key: 'guid', width: 1 ,hidden :true },
                     { headerText: getText('KAL001_20'), key: 'workplaceName', width: 100 },
-                    { headerText: getText('KAL001_13'), key: 'employeeCode', width: 150 },
+                    { headerText: getText('KAL001_13'), key: 'employeeCode', width: 110 },
                     { headerText: getText('KAL001_14'), key: 'employeeName', width: 150 },
-                    { headerText: getText('KAL001_15'), key: 'alarmValueDate', width: 100},
+                    { headerText: getText('KAL001_15'), key: 'alarmValueDate', width: 190},
                     { headerText: getText('KAL001_16'), key: 'categoryName', width: 120},
                     { headerText: getText('KAL001_17'), key: 'alarmItem', width: 150 },
-                    { headerText: getText('KAL001_18'), key: 'alarmValueMessage', width: 150 },
+                    { headerText: getText('KAL001_18'), key: 'alarmValueMessage', width: 200 },
                     { headerText: getText('KAL001_19'), key: 'comment', width: 200 }
                 ]);
 
@@ -43,7 +43,7 @@ module nts.uk.at.view.kal001.b {
                         primaryKey: 'guid',
                         columns: self.columns(), 
                         features: [
-                            { name: 'Paging', type: 'local', pageSize: 15 },
+                            { name: 'Paging', type: 'local', pageSize: 20 },
                             {
                               name: "Tooltips",
                               columnSettings: [ 
@@ -62,7 +62,14 @@ module nts.uk.at.view.kal001.b {
 
             exportExcel(): void {
                 let self = this;
-                service.saveAsExcel(self.dataSource);
+                block.invisible();
+                service.saveAsExcel(self.dataSource).done(()=>{
+                    
+                }).fail((errExcel) =>{
+                    alertError(errExcel);
+                }).always(()=>{
+                    block.clear();    
+                });
             }
             
             sendEmail(): void {

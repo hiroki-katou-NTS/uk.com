@@ -278,6 +278,7 @@ module nts.uk.at.view.kmf002.c {
                     _self.getDataFromService();
                     _self.alreadySettingList.push({code: _self.selectedCode(), isAlreadySetting: true});
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    $( "#scrC #datePickerYear" ).focus();
                 });    
             } 
         }

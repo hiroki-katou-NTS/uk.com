@@ -5,9 +5,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.util.Strings;
-
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -83,23 +80,23 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 		GoBackDirectly goBackDirect = goBackRepo.findByApplicationID(companyID, appID).get();
 		data.goBackDirectly = goBackDirect;
 		data.goBackDirectly.setVersion(application.getVersion());
-		if(Strings.isNotBlank(goBackDirect.getWorkLocationCD1())) {
-			data.workLocationName1 = workLocationAdapter.getByWorkLocationCD(companyID, goBackDirect.getWorkLocationCD1())
+		if(goBackDirect.getWorkLocationCD1().isPresent()) {
+			data.workLocationName1 = workLocationAdapter.getByWorkLocationCD(companyID, goBackDirect.getWorkLocationCD1().get())
 					.getWorkLocationName();
 			
 		}
-		if(Strings.isNotBlank(goBackDirect.getWorkLocationCD2())) {
-			data.workLocationName2 = workLocationAdapter.getByWorkLocationCD(companyID, goBackDirect.getWorkLocationCD2())
+		if(goBackDirect.getWorkLocationCD2().isPresent()) {
+			data.workLocationName2 = workLocationAdapter.getByWorkLocationCD(companyID, goBackDirect.getWorkLocationCD2().get())
 					.getWorkLocationName();
 		}
-		if (!StringUtils.isEmpty(goBackDirect.getWorkTypeCD().v())) {
-			Optional<WorkType> workType = workTypeRepo.findByPK(companyID, goBackDirect.getWorkTypeCD().v());
+		if (goBackDirect.getWorkTypeCD().isPresent()) {
+			Optional<WorkType> workType = workTypeRepo.findByPK(companyID, goBackDirect.getWorkTypeCD().get().v());
 			if(workType.isPresent()) {
 				data.workTypeName = workType.get().getName().v();
 			}
 		}
-		if (!StringUtils.isEmpty(goBackDirect.getSiftCD().v())) {
-			Optional<WorkTimeSetting> workTime = workTimeRepo.findByCode(companyID, goBackDirect.getSiftCD().v());
+		if (goBackDirect.getSiftCD().isPresent()) {
+			Optional<WorkTimeSetting> workTime = workTimeRepo.findByCode(companyID, goBackDirect.getSiftCD().get().v());
 			if(workTime.isPresent()) {
 				data.workTimeName = workTime.get().getWorkTimeDisplayName().getWorkTimeName().v();
 			}

@@ -15,6 +15,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
@@ -122,7 +123,8 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		// Get from PublicHolidaySetting domain
 		Optional<PublicHolidaySetting> publicHolidaySettingOpt = publicHolidaySettingRepo.findByCID(companyId);
 		if (!publicHolidaySettingOpt.isPresent())
-			throw new RuntimeException("「公休設定」ドメインが見つかりません！");
+			return new CheckConditionTimeDto(c.getAlarmCategory().value,
+					EnumAdaptor.convertToValueName(c.getAlarmCategory()).getLocalizedName(), null, null, null, null);
 		
 		if(publicHolidaySettingOpt.get().getPublicHdManagementClassification()==PublicHolidayManagementClassification._1_MONTH) {
 			PublicHolidayGrantDate publicHolidayGrantDate = (PublicHolidayGrantDate)publicHolidaySettingOpt.get().getPublicHdManagementStartDate();

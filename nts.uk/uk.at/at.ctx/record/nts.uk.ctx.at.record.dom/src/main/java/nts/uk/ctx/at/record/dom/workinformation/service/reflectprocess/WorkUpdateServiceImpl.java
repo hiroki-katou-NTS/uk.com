@@ -54,7 +54,11 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 	@Override
 	public void updateWorkTimeType(ReflectParameter para, boolean scheUpdate) {
 		//日別実績の勤務情報
-		WorkInfoOfDailyPerformance dailyPerfor = workRepository.find(para.getEmployeeId(), para.getDateData()).get();
+		Optional<WorkInfoOfDailyPerformance> optDailyPerfor = workRepository.find(para.getEmployeeId(), para.getDateData()); 
+		if(!optDailyPerfor.isPresent()) {
+			return;
+		}
+		WorkInfoOfDailyPerformance dailyPerfor = optDailyPerfor.get();
 		WorkInformation workInfor = new WorkInformation(para.getWorkTimeCode(), para.getWorkTypeCode());
 		List<Integer> lstItem = new ArrayList<>();
 		if(scheUpdate) {
@@ -103,7 +107,10 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 	
 	@Override
 	public void updateScheStartEndTime(TimeReflectPara para) {
-		
+		if(para.getStartTime() == null
+				|| para.getEndTime() == null) {
+			return;
+		}
 		//日別実績の勤務情報
 		Optional<WorkInfoOfDailyPerformance> optDailyPerfor = workRepository.find(para.getEmployeeId(), para.getDateData());
 		if(!optDailyPerfor.isPresent()) {
@@ -111,23 +118,27 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		}
 		//日別実績の勤務情報
 		WorkInfoOfDailyPerformance dailyPerfor = optDailyPerfor.get();
-		if(dailyPerfor.getScheduleTimeSheets().isEmpty()) {
-			return;
-		}
-		List<ScheduleTimeSheet> lstTimeSheetFrameNo = dailyPerfor.getScheduleTimeSheets().stream()
-				.filter(x -> x.getWorkNo().v() == para.getFrameNo()).collect(Collectors.toList());
-		if(lstTimeSheetFrameNo.isEmpty()) {
-			return;
-		}
-		ScheduleTimeSheet timeSheetFrameNo = lstTimeSheetFrameNo.get(0);
 		ScheduleTimeSheet timeSheet;
-		timeSheet = new ScheduleTimeSheet(timeSheetFrameNo.getWorkNo().v(), 
-				para.isStart() ? para.getStartTime() : timeSheetFrameNo.getAttendance().v(),
-				para.isEnd() ? para.getEndTime() : timeSheetFrameNo.getLeaveWork().v());
+		if(dailyPerfor.getScheduleTimeSheets().isEmpty()) {
+			timeSheet = new ScheduleTimeSheet(1, 
+					para.getStartTime(),
+					para.getEndTime());
+		} else {
+			List<ScheduleTimeSheet> lstTimeSheetFrameNo = dailyPerfor.getScheduleTimeSheets().stream()
+					.filter(x -> x.getWorkNo().v() == para.getFrameNo()).collect(Collectors.toList());
+			if(lstTimeSheetFrameNo.isEmpty()) {
+				return;
+			}
+			ScheduleTimeSheet timeSheetFrameNo = lstTimeSheetFrameNo.get(0);
+			
+			timeSheet = new ScheduleTimeSheet(timeSheetFrameNo.getWorkNo().v(), 
+					para.isStart() ? para.getStartTime() : timeSheetFrameNo.getAttendance().v(),
+					para.isEnd() ? para.getEndTime() : timeSheetFrameNo.getLeaveWork().v());
 
-		dailyPerfor.getScheduleTimeSheets().remove(timeSheetFrameNo);
-		dailyPerfor.getScheduleTimeSheets().add(timeSheet);		
-		//dailyPerfor.setScheduleTimeSheets(lstTimeSheetFrameNo);
+			dailyPerfor.getScheduleTimeSheets().remove(timeSheetFrameNo);
+		}
+		
+		dailyPerfor.getScheduleTimeSheets().add(timeSheet);
 		workRepository.updateByKeyFlush(dailyPerfor);
 		
 		
@@ -195,12 +206,12 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		TimeLeavingWork timeLeavingWorkTmp;
 		if(para.isPreCheck()) {
 			timeLeavingWorkTmp = new TimeLeavingWork(timeLeavingWork.getWorkNo(), 
-					Optional.of(timeActualStam), 
-					timeLeavingWork.getLeaveStamp());
+					timeActualStam, 
+					timeLeavingWork.getLeaveStamp().isPresent() ? timeLeavingWork.getLeaveStamp().get() : null);
 		} else {
 			timeLeavingWorkTmp = new TimeLeavingWork(timeLeavingWork.getWorkNo(), 
-					timeLeavingWork.getAttendanceStamp(),
-					Optional.of(timeActualStam));
+					timeLeavingWork.getAttendanceStamp().isPresent() ? timeLeavingWork.getAttendanceStamp().get() : null,
+					timeActualStam);
 		}
 		List<TimeLeavingWork> lstTimeLeavingWorksTmp = new ArrayList<>();
 		lstTimeLeavingWorksTmp.add(timeLeavingWorkTmp);
@@ -448,12 +459,7 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 	@Override
 	public void updateRecordWorkType(String employeeId, GeneralDate dateData, String workTypeCode, boolean scheUpdate) {
 		//日別実績の勤務情報
-		Optional<WorkInfoOfDailyPerformance> optDailyPerfor = workRepository.find(employeeId, dateData);
-		if(!optDailyPerfor.isPresent()) {
-			return;
-		} 
-		WorkInfoOfDailyPerformance dailyPerfor = optDailyPerfor.get();
-		
+		WorkInfoOfDailyPerformance dailyPerfor = workRepository.find(employeeId, dateData).get();
 		List<Integer> lstItem = new ArrayList<>();
 		if(scheUpdate) {
 			lstItem.add(1);
