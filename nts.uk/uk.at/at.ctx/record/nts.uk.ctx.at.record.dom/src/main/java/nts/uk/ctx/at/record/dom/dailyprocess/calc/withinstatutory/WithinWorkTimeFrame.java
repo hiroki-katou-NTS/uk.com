@@ -459,16 +459,17 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 															   				duplicateTimeSheet.getTimeSheet().getRounding()));
 		
 		//遅刻時間帯の作成
-		LateTimeSheet lateTimeSheet = createLateTimeSheet(workTimeCalcMethodDetailOfHoliday,
-												   		  timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay()==null?new TimeWithDayAttr(0):
-												   			 timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay(),
-												   		  workTimezoneLateEarlySet.getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE),
-												   		  lateDesClock,
-												   		  duplicateTimeSheet,
-												   		  deductionTimeSheet,
-												   		  workNo,
-												   		  predetermineTimeSet,
-												   		  coreTimeSetting);
+		LateTimeSheet lateTimeSheet = new LateTimeSheet(Optional.empty(),Optional.empty(),workNo,Optional.empty());
+//		LateTimeSheet lateTimeSheet = createLateTimeSheet(workTimeCalcMethodDetailOfHoliday,
+//												   		  timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay()==null?new TimeWithDayAttr(0):
+//												   			 timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay(),
+//												   		  workTimezoneLateEarlySet.getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE),
+//												   		  lateDesClock,
+//												   		  duplicateTimeSheet,
+//												   		  deductionTimeSheet,
+//												   		  workNo,
+//												   		  predetermineTimeSet,
+//												   		  coreTimeSetting);
 		//遅刻時間を計算する
 		AttendanceTime lateDeductTime = lateTimeSheet.getForDeducationTimeSheet().isPresent()?lateTimeSheet.getForDeducationTimeSheet().get().calcTotalTime():new AttendanceTime(0);		
 		//就業時間内時間帯から控除するか判断し控除する				
@@ -482,16 +483,17 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		}
 		
 		//早退時間帯の作成
-		LeaveEarlyTimeSheet LeaveEarlyTimeSheet = createLeaveEarlyTimeSheet(workTimeCalcMethodDetailOfHoliday,
-														  					timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay()==null?new TimeWithDayAttr(0):
-																	   			 timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay(),
-														  					workTimezoneLateEarlySet.getOtherEmTimezoneLateEarlySet(LateEarlyAtr.EARLY),
-														  					leaveEarlyDecisionClock,
-														  					duplicateTimeSheet,
-														  					deductionTimeSheet,
-														  					workNo,
-														  					predetermineTimeSet,
-														  					coreTimeSetting);		
+		LeaveEarlyTimeSheet LeaveEarlyTimeSheet = new LeaveEarlyTimeSheet(Optional.empty(), Optional.empty(), workNo, Optional.empty());
+//		LeaveEarlyTimeSheet LeaveEarlyTimeSheet = createLeaveEarlyTimeSheet(workTimeCalcMethodDetailOfHoliday,
+//														  					timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay()==null?new TimeWithDayAttr(0):
+//																	   			 timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay(),
+//														  					workTimezoneLateEarlySet.getOtherEmTimezoneLateEarlySet(LateEarlyAtr.EARLY),
+//														  					leaveEarlyDecisionClock,
+//														  					duplicateTimeSheet,
+//														  					deductionTimeSheet,
+//														  					workNo,
+//														  					predetermineTimeSet,
+//														  					coreTimeSetting);		
 		//早退時間を計算する
 		AttendanceTime LeaveEarlyDeductTime = LeaveEarlyTimeSheet.getForDeducationTimeSheet().isPresent()?LeaveEarlyTimeSheet.getForDeducationTimeSheet().get().calcTotalTime():new AttendanceTime(0);
 		//就業時間内時間帯から控除するか判断し控除する

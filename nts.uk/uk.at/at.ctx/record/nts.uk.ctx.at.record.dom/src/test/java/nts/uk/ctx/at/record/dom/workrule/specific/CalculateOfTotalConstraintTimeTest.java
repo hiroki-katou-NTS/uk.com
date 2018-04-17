@@ -36,7 +36,7 @@ public class CalculateOfTotalConstraintTimeTest {
 		List<TimeLeavingWork> list = new ArrayList<>();
 		WorkStamp a = new WorkStamp(new TimeWithDayAttr(400),new TimeWithDayAttr(400),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER);
 		WorkStamp b = new WorkStamp(new TimeWithDayAttr(1200),new TimeWithDayAttr(1200),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER);
-		list.add(new TimeLeavingWork(new WorkNo(1),Optional.of(new TimeActualStamp(a,a, 1)),Optional.of(new TimeActualStamp(b,b, 1))));
+		//list.add(new TimeLeavingWork(new WorkNo(1),Optional.of(new TimeActualStamp(a,a, 1)),Optional.of(new TimeActualStamp(b,b, 1))));
 //		list.add(new TimeLeavingWork(new WorkNo(2),Optional.of(new TimeActualStamp(a,b, 1)),Optional.of(new TimeActualStamp(a,b, 1))));
 		//日別実績の出退勤
 		Optional<TimeLeavingOfDailyPerformance> attendanceLeave = Optional.of(new TimeLeavingOfDailyPerformance("",new WorkTimes(1),list,GeneralDate.today()));

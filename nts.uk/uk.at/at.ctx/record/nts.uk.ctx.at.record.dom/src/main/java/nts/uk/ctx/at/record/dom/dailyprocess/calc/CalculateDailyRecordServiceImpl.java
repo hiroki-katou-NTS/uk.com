@@ -265,8 +265,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		// 実績データの計算
 		val afterCalcResult = this.calcDailyAttendancePerformance(integrationOfDaily);
 		//エラーチェック
-		//return calculationErrorCheckService.errorCheck(afterCalcResult);
-		return afterCalcResult;
+		return calculationErrorCheckService.errorCheck(afterCalcResult);
+		//return afterCalcResult;
 	}
 
 	private IntegrationOfDaily calcDailyAttendancePerformance(IntegrationOfDaily integrationOfDaily) {
@@ -307,7 +307,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		val oneRange = createOneDayRange(integrationOfDaily);
 		/* 勤務種類の取得 */
 		val workInfo = integrationOfDaily.getWorkInformation();
-		//val workType = this.workTypeRepository.findByPK(companyId, "001").get();
 		Optional<WorkType> workType = this.workTypeRepository.findByPK(companyId,workInfo.getRecordInfo().getWorkTypeCode().v()); // 要確認：勤務種類マスタが削除されている場合は考慮しない？
 		if(!workType.isPresent()) return ManageReGetClass.cantCalc();
 		
@@ -525,10 +524,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						yesterDay, 
 						workType.get(),
 						tomorrow, 
-						new BreakDownTimeDay(new AttendanceTime(4),new AttendanceTime(4),new AttendanceTime(8)),
+						oneRange.getPredetermineTimeSetForCalc().getAdditionSet().getPredTime(),
 						personalInfo.getStatutoryWorkTime(), 
 						calcSetinIntegre.getOvertimeSetting(), 
-						fixedWorkSetting.get().getLegalOTSetting(), 
+						//fixedWorkSetting.get().getLegalOTSetting(),
+						LegalOTSetting.LEGAL_INTERNAL_TIME,
 						StatutoryPrioritySet.priorityNormalOverTimeWork, 
 						workTime.get(),
 						breakTimeOfDailyList,
@@ -674,10 +674,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//-------------------------計算用一時的クラス作成----------------------------
 		
 		/*計画所定算出のため、計画側の所定時間取得*/
-		val scheWorkTime = workingConditionItemRepository.getBySidAndStandardDate(employeeId, targetDate);
+		val scheWorkTime = manageReGetClass.getIntegrationOfDaily().getWorkInformation().getScheduleInfo().getWorkTimeCode();
+				//workingConditionItemRepository.getBySidAndStandardDate(employeeId, targetDate);
 		Optional<PredetermineTimeSetForCalc> schePreTimeSet = Optional.empty();
-		if(scheWorkTime != null && scheWorkTime.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().isPresent()) {
-			val schePreTime = predetemineTimeSetRepository.findByWorkTimeCode(companyId, scheWorkTime.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().toString());
+		if(scheWorkTime != null) {
+			val schePreTime = predetemineTimeSetRepository.findByWorkTimeCode(companyId, scheWorkTime.toString());
 			if(schePreTime.isPresent()) {
 				schePreTimeSet = Optional.of(PredetermineTimeSetForCalc.convertMastarToCalc(schePreTime.get()));
 			}
