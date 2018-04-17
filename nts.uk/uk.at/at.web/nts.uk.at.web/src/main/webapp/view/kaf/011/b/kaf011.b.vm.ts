@@ -122,8 +122,8 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 self.version(data.application.version || 0);
                 self.displayPrePostFlg(data.applicationSetting.displayPrePostFlg);
                 self.appTypeSet(new common.AppTypeSet(data.appTypeSet || null));
-                self.recWk().wkTypes(data.recWkTypes || []);
-                self.absWk().wkTypes(data.absWkTypes || []);
+                self.recWk().setWkTypes(data.recWkTypes || []);
+                self.absWk().setWkTypes(data.absWkTypes || []);
                 if (data.application) {
                     self.setDataCommon(data);
                 }

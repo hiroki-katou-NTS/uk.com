@@ -111,8 +111,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
             if (data) {
                 self.employeeName(data.employeeName);
                 self.prePostSelectedCode(data.preOrPostType);
-                self.recWk().wkTypes(data.recWkTypes || []);
-                self.absWk().wkTypes(data.absWkTypes || []);
+                self.recWk().setWkTypes(data.recWkTypes || []);
+                self.absWk().setWkTypes(data.absWkTypes || []);
                 self.appReasons(data.appReasonComboItems || []);
                 self.employeeID(data.employeeID);
                 self.manualSendMailAtr(data.applicationSetting.manualSendMailAtr);

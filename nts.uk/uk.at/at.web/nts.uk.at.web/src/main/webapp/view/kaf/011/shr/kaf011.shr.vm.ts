@@ -234,6 +234,7 @@ module nts.uk.at.view.kaf011.shr {
                     if (items.length && !(_.find(items, ['workTypeCode', self.wkTypeCD()]))) {
                         self.wkTypeCD(items[0].workTypeCode);
                     }
+                    
                 });
 
                 self.appDate.subscribe((newDate) => {
@@ -250,14 +251,22 @@ module nts.uk.at.view.kaf011.shr {
                     if (!vm.screenModeNew() || nts.uk.ui.errors.hasError()) { return; }
                     block.invisible();
                     service.changeDay(changeDateParam).done((data: IHolidayShipment) => {
-                        vm.recWk().wkTypes(data.recWkTypes || []);
-                        vm.absWk().wkTypes(data.absWkTypes || []);
+                        vm.recWk().setWkTypes(data.recWkTypes || []);
+                        vm.absWk().setWkTypes(data.absWkTypes || []);
                         vm.kaf000_a.start("", 1, 10, moment(data.refDate).format("YYYY/MM/DD")).done(() => {
                         });
                     }).always(() => {
                         block.clear();
                     });;
                 });
+            }
+            setWkTypes(wkTypeDtos: Array<any>) {
+                let self = this;
+                this.wkTypes(_.map(wkTypeDtos, wkType => {
+                    return { workTypeCode: wkType.workTypeCode, name: wkType.workTypeCode + ' ' + wkType.name };
+                }));
+
+
             }
 
             enableWkTime() {
