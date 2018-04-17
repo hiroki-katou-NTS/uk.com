@@ -139,11 +139,8 @@ public class AppAbsenceFinder {
 		Optional<HdAppSet> hdAppSet = this.hdAppSetRepository.getAll();
 		// 1-1.起動時のエラーチェック
 		List<HolidayAppTypeName> holidayAppTypes = new ArrayList<>();
-
+		
 		holidayAppTypes = getHolidayAppTypeName(hdAppSet,holidayAppTypes,appCommonSettingOutput);
-		if (CollectionUtil.isEmpty(holidayAppTypes)) {
-			throw new BusinessException("Msg_473");
-		}
 		holidayAppTypes.sort((a, b) -> a.getHolidayAppTypeCode().compareTo(b.getHolidayAppTypeCode()));
 		result.setHolidayAppTypeName(holidayAppTypes);
 		if (appDate != null) {
@@ -248,9 +245,6 @@ public class AppAbsenceFinder {
 		List<HolidayAppTypeName> holidayAppTypes = new ArrayList<>();
 
 		holidayAppTypes = getHolidayAppTypeName(hdAppSet, holidayAppTypes, appCommonSettingOutput);
-		if (CollectionUtil.isEmpty(holidayAppTypes)) {
-			throw new BusinessException("Msg_473");
-		}
 		holidayAppTypes.sort((a, b) -> a.getHolidayAppTypeCode().compareTo(b.getHolidayAppTypeCode()));
 		result.setHolidayAppTypeName(holidayAppTypes);
 		getAppReason(result, companyID);
@@ -710,42 +704,56 @@ public class AppAbsenceFinder {
 		}
 		return null;
 	}
-	private List<HolidayAppTypeName> getHolidayAppTypeName(Optional<HdAppSet> hdAppSet, List<HolidayAppTypeName> holidayAppTypes,AppCommonSettingOutput appCommonSettingOutput){
+	private List<HolidayAppTypeName> getHolidayAppTypeName(Optional<HdAppSet> hdAppSet,
+			List<HolidayAppTypeName> holidayAppTypes,AppCommonSettingOutput appCommonSettingOutput){
+		List<Integer> holidayAppTypeCodes = new ArrayList<>();
 		if (CollectionUtil.isEmpty(appCommonSettingOutput.appEmploymentWorkType)) {
-			return holidayAppTypes;
+			holidayAppTypeCodes.add(0);
+			holidayAppTypeCodes.add(1);
+			holidayAppTypeCodes.add(2);
+			holidayAppTypeCodes.add(3);
+			holidayAppTypeCodes.add(4);
+			holidayAppTypeCodes.add(7);
+		}else{
+			for (AppEmploymentSetting appEmploymentSetting : appCommonSettingOutput.appEmploymentWorkType) {
+				if (!appEmploymentSetting.getHolidayTypeUseFlg() && appEmploymentSetting.getHolidayOrPauseType() != 6
+						&& appEmploymentSetting.getHolidayOrPauseType() != 5) {
+					holidayAppTypeCodes.add(appEmploymentSetting.getHolidayOrPauseType());
+				}
+			}
+			if (CollectionUtil.isEmpty(holidayAppTypeCodes)) {
+				throw new BusinessException("Msg_473");
+			}
 		}
-		for (AppEmploymentSetting appEmploymentSetting : appCommonSettingOutput.appEmploymentWorkType) {
-			if (!appEmploymentSetting.getHolidayTypeUseFlg() && appEmploymentSetting.getHolidayOrPauseType() != 6
-					&& appEmploymentSetting.getHolidayOrPauseType() != 5) {
-				switch (appEmploymentSetting.getHolidayOrPauseType()) {
+		for (Integer holidayCode : holidayAppTypeCodes) {
+				switch (holidayCode) {
 				case 0:
-					holidayAppTypes.add(new HolidayAppTypeName(appEmploymentSetting.getHolidayOrPauseType(),
+					holidayAppTypes.add(new HolidayAppTypeName(holidayCode,
 							hdAppSet.get().getYearHdName() == null ? "" : hdAppSet.get().getYearHdName().toString()));
 					break;
 				case 1:
-					holidayAppTypes.add(new HolidayAppTypeName(appEmploymentSetting.getHolidayOrPauseType(),
+					holidayAppTypes.add(new HolidayAppTypeName(holidayCode,
 							hdAppSet.get().getObstacleName() == null ? "" : hdAppSet.get().getObstacleName().toString()));
 					break;
 				case 2:
-					holidayAppTypes.add(new HolidayAppTypeName(appEmploymentSetting.getHolidayOrPauseType(),
+					holidayAppTypes.add(new HolidayAppTypeName(holidayCode,
 							hdAppSet.get().getAbsenteeism()== null ? "" : hdAppSet.get().getAbsenteeism().toString()));
 					break;
 				case 3:
-					holidayAppTypes.add(new HolidayAppTypeName(appEmploymentSetting.getHolidayOrPauseType(),
+					holidayAppTypes.add(new HolidayAppTypeName(holidayCode,
 							hdAppSet.get().getSpecialVaca() == null ? "" : hdAppSet.get().getSpecialVaca().toString()));
 					break;
 				case 4:
-					holidayAppTypes.add(new HolidayAppTypeName(appEmploymentSetting.getHolidayOrPauseType(),
+					holidayAppTypes.add(new HolidayAppTypeName(holidayCode,
 							hdAppSet.get().getYearResig() == null ? "" : hdAppSet.get().getYearResig().toString()));
 					break;
 				case 7:
-					holidayAppTypes.add(new HolidayAppTypeName(appEmploymentSetting.getHolidayOrPauseType(),
+					holidayAppTypes.add(new HolidayAppTypeName(holidayCode,
 							hdAppSet.get().getFurikyuName() == null ? "" :  hdAppSet.get().getFurikyuName().toString()));
 					break;
 				default:
 					break;
 				}
-			}
 		}
 		return holidayAppTypes;
 

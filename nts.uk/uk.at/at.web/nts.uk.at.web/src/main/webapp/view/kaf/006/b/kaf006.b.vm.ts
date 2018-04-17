@@ -253,6 +253,7 @@ module nts.uk.at.view.kaf006.b{
             self.convertListHolidayType(data.holidayAppTypeName);
             self.holidayTypeCode(data.holidayAppType);
             self.displayPrePostFlg(data.prePostFlg);
+            self.requiredReason(data.appReasonRequire);
             self.workTimeCode(data.workTimeCode);
             self.displayWorkTimeName(nts.uk.util.isNullOrEmpty(data.workTimeCode) ? nts.uk.resource.getText('KAF006_21') : data.workTimeCode +"　"+ data.workTimeName);
             if(data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0){
@@ -328,7 +329,7 @@ module nts.uk.at.view.kaf006.b{
                 self.reasonCombo(),
                 self.multilContent()
             );
-             let appReasonError = !appcommon.CommonProcess.checkAppReason(true, self.typicalReasonDisplayFlg(), self.displayAppReasonContentFlg(), appReason);
+             let appReasonError = !appcommon.CommonProcess.checkAppReason(self.requiredReason(), self.typicalReasonDisplayFlg(), self.displayAppReasonContentFlg(), appReason);
              if (appReasonError) {
                  nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function() { nts.uk.ui.block.clear(); });
                  return;
