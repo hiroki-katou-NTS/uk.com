@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
-import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -204,10 +204,10 @@ public class LeaveEarlyTimeSheet {
 	 */
 	public TimeWithCalculation calcDedctionTime(
 			boolean leaveEarly, //日別実績の計算区分.遅刻早退の自動計算設定.早退
-			NotUseAtr holidayCalcMethodSet
+			NotUseAtr notUseAtr //控除区分
 			) {
 		TimeWithCalculation leaveEarlyDeductionTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
-		if(holidayCalcMethodSet.isUse()) {//控除する場合
+		if(notUseAtr==NotUseAtr.USE) {//控除する場合
 			AttendanceTime calcDeductionTime = this.forDeducationTimeSheet.isPresent()?this.forDeducationTimeSheet.get().calcTotalTime():new AttendanceTime(0);
 			leaveEarlyDeductionTime =  leaveEarly?TimeWithCalculation.sameTime(calcDeductionTime):TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(0),calcDeductionTime);
 		}

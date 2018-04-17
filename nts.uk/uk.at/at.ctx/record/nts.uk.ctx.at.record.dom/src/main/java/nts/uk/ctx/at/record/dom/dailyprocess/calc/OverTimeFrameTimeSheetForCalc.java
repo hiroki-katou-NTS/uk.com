@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -130,7 +131,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 												TimeLeavingWork attendanceLeave,int workNo,
 												BreakDownTimeDay breakdownTimeDay,DailyTime dailyTime,AutoCalOvertimeSetting autoCalculationSet,
 												LegalOTSetting statutorySet,StatutoryPrioritySet prioritySet ,BonusPaySetting bonusPaySetting,MidNightTimeSheet midNightTimeSheet,
-												DailyCalculationPersonalInformation personalInfo,boolean isCalcWithinOverTime,DeductionTimeSheet deductionTimeSheet,DailyUnit dailyUnit) {
+												DailyCalculationPersonalInformation personalInfo,boolean isCalcWithinOverTime,DeductionTimeSheet deductionTimeSheet,DailyUnit dailyUnit,HolidayCalcMethodSet holidayCalcMethodSet) {
 		List<OverTimeFrameTimeSheetForCalc> createTimeSheet = new ArrayList<>();
 		
 		for(OverTimeOfTimeZoneSet overTimeHourSet:overTimeHourSetList) {
@@ -143,11 +144,11 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 		}
 //		/*変形残業　振替*/
 		List<OverTimeFrameTimeSheetForCalc> afterVariableWork = new ArrayList<>();
-		afterVariableWork = dicisionCalcVariableWork(createTimeSheet,breakdownTimeDay,autoCalculationSet,personalInfo,isCalcWithinOverTime,overTimeHourSetList,dailyUnit);
+		afterVariableWork = dicisionCalcVariableWork(createTimeSheet,breakdownTimeDay,autoCalculationSet,personalInfo,isCalcWithinOverTime,overTimeHourSetList,dailyUnit,holidayCalcMethodSet);
 		afterVariableWork.stream().sorted((first,second) -> first.calcrange.getStart().compareTo(second.calcrange.getStart()));
 //		/*法定内残業　振替*/
 		List<OverTimeFrameTimeSheetForCalc> afterCalcStatutoryOverTimeWork = new ArrayList<>();
-		afterCalcStatutoryOverTimeWork = diciaionCalcStatutory(statutorySet ,dailyTime ,afterVariableWork,autoCalculationSet,breakdownTimeDay,overTimeHourSetList,dailyUnit);
+		afterCalcStatutoryOverTimeWork = diciaionCalcStatutory(statutorySet ,dailyTime ,afterVariableWork,autoCalculationSet,breakdownTimeDay,overTimeHourSetList,dailyUnit,holidayCalcMethodSet);
 		
 		/*return*/
 		return afterCalcStatutoryOverTimeWork;
@@ -208,7 +209,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 	private static List<OverTimeFrameTimeSheetForCalc> dicisionCalcVariableWork(
 			List<OverTimeFrameTimeSheetForCalc> createTimeSheet, BreakDownTimeDay breakdownTimeDay, 
 			AutoCalOvertimeSetting autoCalculationSet,DailyCalculationPersonalInformation personalInfo,
-			boolean isCalcWithinOverTime,List<OverTimeOfTimeZoneSet> overTimeHourSetList,DailyUnit dailyUnit) {
+			boolean isCalcWithinOverTime,List<OverTimeOfTimeZoneSet> overTimeHourSetList,DailyUnit dailyUnit,HolidayCalcMethodSet holidayCalcMethodSet) {
 		List<OverTimeFrameTimeSheetForCalc> returnList = createTimeSheet;
 		//変形労働か
 		if(personalInfo.getWorkingSystem().isVariableWorkingTimeWork()) {
@@ -219,7 +220,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 				//breakdownTimeDay = 所定内時間
 				AttendanceTime ableRangeTime = new AttendanceTime(dailyUnit.getDailyTime().valueAsMinutes() - breakdownTimeDay.getPredetermineWorkTime());
 				if(ableRangeTime.greaterThan(0))
-					returnList.addAll(reclassified(ableRangeTime, createTimeSheet, autoCalculationSet,Optional.of(true),overTimeHourSetList));
+					returnList.addAll(reclassified(ableRangeTime, createTimeSheet, autoCalculationSet,Optional.of(true),overTimeHourSetList,holidayCalcMethodSet));
 			}
 		}
 		return returnList;
@@ -237,7 +238,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
      */
     public static List<OverTimeFrameTimeSheetForCalc> diciaionCalcStatutory(LegalOTSetting statutorySet,DailyTime dailyTime,List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheetList
                                                                     		,AutoCalOvertimeSetting autoCalculationSet,BreakDownTimeDay breakdownTimeDay,
-                                                                    		List<OverTimeOfTimeZoneSet> overTimeHourSetList,DailyUnit dailyUnit) {
+                                                                    		List<OverTimeOfTimeZoneSet> overTimeHourSetList,DailyUnit dailyUnit,HolidayCalcMethodSet holidayCalcMethodSet) {
     	List<OverTimeFrameTimeSheetForCalc> returnList = new ArrayList<>();
         if(statutorySet.isLegal()) {
             /*振替処理   法定内基準時間を計算する*/
@@ -250,7 +251,8 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
         									   								 .collect(Collectors.toList()),
         									   autoCalculationSet,
         									   Optional.of(true),
-        									   overTimeHourSetList));
+        									   overTimeHourSetList,
+        									   holidayCalcMethodSet));
         }
         return overTimeWorkFrameTimeSheetList;
     }
@@ -262,9 +264,12 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 * @param overTimeWorkFrameTimeSheetList　残業時間枠時間帯クラス
 	 * @param autoCalculationSet　時間外の自動計算設定
 	 */
-	public static List<OverTimeFrameTimeSheetForCalc> reclassified(AttendanceTime ableRangeTime,List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheetList,
-			AutoCalOvertimeSetting autoCalculationSet,Optional<Boolean> forceCalcTime,
-																   List<OverTimeOfTimeZoneSet> overTimeHourSetList) {
+	public static List<OverTimeFrameTimeSheetForCalc> reclassified(AttendanceTime ableRangeTime,
+																   List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheetList,
+																   AutoCalOvertimeSetting autoCalculationSet,
+																   Optional<Boolean> forceCalcTime,
+																   List<OverTimeOfTimeZoneSet> overTimeHourSetList,
+																   HolidayCalcMethodSet holidayCalcMethodSet) {
 		AttendanceTime overTime = new AttendanceTime(0);
 		AttendanceTime transTime = new AttendanceTime(0);
 		for(int number = 0; number < overTimeWorkFrameTimeSheetList.size(); number++) {

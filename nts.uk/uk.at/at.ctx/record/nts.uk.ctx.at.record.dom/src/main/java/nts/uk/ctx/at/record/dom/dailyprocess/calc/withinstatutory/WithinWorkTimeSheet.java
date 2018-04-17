@@ -24,11 +24,17 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.FlexWithinWorkTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateLeaveEarlyManagementTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.PremiumAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationAddTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.ENUM.CalcurationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
@@ -38,7 +44,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSetting
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfRegularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.CalculationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.WorkTimeCalcMethodDetailOfHoliday;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -109,8 +114,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 													MidNightTimeSheet midNightTimeSheet,
 													int workNo,
 													Optional<CoreTimeSetting> coreTimeSetting,
-													WorkTimeCalcMethodDetailOfHoliday workTimeCalcMethodDetailOfHoliday,
-													WorkTimezoneLateEarlySet workTimezoneLateEarlySet,DailyUnit dailyUnit) {
+													HolidayCalcMethodSet holidayCalcMethodSet,
+													WorkTimezoneLateEarlySet workTimezoneLateEarlySet,
+													DailyUnit dailyUnit) {
 		
 		List<WithinWorkTimeFrame> timeFrames = new ArrayList<>();
 		
@@ -149,7 +155,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 										  workNo,
 										  lateDesClock,
 										  leaveEarlyDesClock,
-										  workTimeCalcMethodDetailOfHoliday,
+										  holidayCalcMethodSet,
 										  workTimezoneLateEarlySet,
 										  coreTimeSetting,
 										  dailyUnit);
@@ -179,7 +185,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			int workNo,
 			LateDecisionClock lateDesClock,
 			LeaveEarlyDecisionClock leaveEarlyDecisionClock,
-			WorkTimeCalcMethodDetailOfHoliday workTimeCalcMethodDetailOfHoliday,
+			HolidayCalcMethodSet holidayCalcMethodSet,
 			WorkTimezoneLateEarlySet workTimezoneLateEarlySet,
 			Optional<CoreTimeSetting> coreTimeSetting,
 			DailyUnit dailyUnit
@@ -200,7 +206,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 																		 lateDesClock,
 																		 leaveEarlyDecisionClock,
 																		 timeLeavingWork,
-																		 workTimeCalcMethodDetailOfHoliday,
+																		 holidayCalcMethodSet,
 																		 workNo,
 																		 workTimezoneLateEarlySet,
 																		 predetermineTimeForSet.getTimeSheets(workNo),
@@ -383,7 +389,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @param dedTimeSheet　控除時間帯
 	 * @return 就業時間の計算結果
 	 */
-	public AttendanceTime calcWorkTimeForStatutory(PremiumAtr premiumAtr,CalculationByActualTimeAtr calcActualTime,
+	public AttendanceTime calcWorkTimeForStatutory(PremiumAtr premiumAtr,
+			   CalcurationByActualTimeAtr calcActualTime,
 			   TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
 			   VacationClass vacationClass,
 			   StatutoryDivision statutoryDivision,
@@ -398,10 +405,10 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 			   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			   WorkingSystem workingSystem,
-			   AddSettingOfIrregularWork addSettingOfIrregularWork,
-			   AddSettingOfFlexWork addSettingOfFlexWork,
-			   AddSettingOfRegularWork addSettingOfRegularWork,
-			   VacationAddTimeSet vacationAddTimeSet,
+			   WorkDeformedLaborAdditionSet illegularAddSetting,
+			   WorkFlexAdditionSet flexAddSetting,
+			   WorkRegularAdditionSet regularAddSetting,
+			   HolidayAddtionSet holidayAddtionSet,
 			   HolidayCalcMethodSet holidayCalcMethodSet) {
 		return calcWorkTime(
 					premiumAtr,
@@ -413,17 +420,13 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				    predetermineTimeSet,
 				   siftCode,
 				    personalCondition, 
-//				    lateTimeSheet,
-//				    leaveEarlyTimeSheet,
-//				    lateTimeOfDaily,
-//				    leaveEarlyTimeOfDaily,
 				    late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 				    leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 				    workingSystem,
-				    addSettingOfIrregularWork,
-				    addSettingOfFlexWork,
-				    addSettingOfRegularWork,
-				    vacationAddTimeSet,
+				    illegularAddSetting,
+				    flexAddSetting,
+				    regularAddSetting,
+				    holidayAddtionSet,
 				    holidayCalcMethodSet);
 	}
 	
@@ -432,33 +435,30 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * 就業時間の計算(控除時間差し引いた後)
 	 * @return 就業時間
 	 */
-	public AttendanceTime calcWorkTime(PremiumAtr premiumAtr, CalculationByActualTimeAtr calcActualTime,VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
+	public AttendanceTime calcWorkTime(PremiumAtr premiumAtr, CalcurationByActualTimeAtr calcActualTime,VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
 									   StatutoryDivision statutoryDivision,
 									   WorkType workType,
 									   PredetermineTimeSetForCalc predetermineTimeSet,
 									   Optional<WorkTimeCode> siftCode,
 									   Optional<PersonalLaborCondition> personalCondition, 
-//									   LateTimeSheet lateTimeSheet,
-//									   LeaveEarlyTimeSheet leaveEarlyTimeSheet,
-//									   LateTimeOfDaily lateTimeOfDaily,
-//									   LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
 									   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 									   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 									   WorkingSystem workingSystem,
-									   AddSettingOfIrregularWork addSettingOfIrregularWork,
-									   AddSettingOfFlexWork addSettingOfFlexWork,
-									   AddSettingOfRegularWork addSettingOfRegularWork,
-									   VacationAddTimeSet vacationAddTimeSet,
+									   WorkDeformedLaborAdditionSet illegularAddSetting,
+									   WorkFlexAdditionSet flexAddSetting,
+									   WorkRegularAdditionSet regularAddSetting,
+									   HolidayAddtionSet holidayAddtionSet,
 									   HolidayCalcMethodSet holidayCalcMethodSet) {
 		
 		HolidayAdditionAtr holidayAddition = HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(calcActualTime);
 		
-		AttendanceTime workTime = calcWorkTimeBeforeDeductPremium(holidayAddition ,timevacationUseTimeOfDaily,
-																  workingSystem,addSettingOfRegularWork,addSettingOfIrregularWork, 
-																  addSettingOfFlexWork,
-//																  lateTimeSheet,leaveEarlyTimeSheet,
-//																  lateTimeOfDaily,leaveEarlyTimeOfDaily,
-																  vacationAddTimeSet,
+		AttendanceTime workTime = calcWorkTimeBeforeDeductPremium(holidayAddition,
+																  timevacationUseTimeOfDaily,
+																  workingSystem,
+																  regularAddSetting,
+																  illegularAddSetting, 
+																  flexAddSetting,
+																  holidayAddtionSet,
 																  late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 																  leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 																  holidayCalcMethodSet,
@@ -466,16 +466,14 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		
 		if(holidayAddition.isHolidayAddition()) {
 			//休暇加算時間を計算
-			VacationAddTime vacationAddTime = vacationClass.calcVacationAddTime(statutoryDivision,
+			VacationAddTime vacationAddTime = vacationClass.calcVacationAddTime(premiumAtr,
 																				workingSystem, 
-																				addSettingOfRegularWork, 
-																				vacationAddTimeSet, 
+																				holidayAddtionSet, 
 																				workType, 
 																				predetermineTimeSet, 
 																				siftCode, 
 																				personalCondition, 
-																				addSettingOfIrregularWork, 
-																				addSettingOfFlexWork);
+																				holidayCalcMethodSet);
 			//休暇加算時間を加算
 			workTime = workTime.addMinutes(vacationAddTime.calcTotaladdVacationAddTime());
 		}
@@ -492,14 +490,10 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	public AttendanceTime calcWorkTimeBeforeDeductPremium(HolidayAdditionAtr holidayAdditionAtr,
 														  TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
 														  WorkingSystem workingSystem,
-														  AddSettingOfRegularWork addSettingOfRegularWork,
-														  AddSettingOfIrregularWork addSettingOfIrregularWork, 
-														  AddSettingOfFlexWork addSettingOfFlexWork,
-//														  LateTimeSheet lateTimeSheet,
-//														  LeaveEarlyTimeSheet leaveEarlyTimeSheet,
-//														  LateTimeOfDaily lateTimeOfDaily,
-//														  LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
-														  VacationAddTimeSet vacationAddTimeSet,
+														  WorkRegularAdditionSet addSettingOfRegularWork,
+														  WorkDeformedLaborAdditionSet addSettingOfIrregularWork, 
+														  WorkFlexAdditionSet addSettingOfFlexWork,
+														  HolidayAddtionSet holidayAddtionSet,
 														  boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 														  boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 														  HolidayCalcMethodSet holidayCalcMethodSet,
@@ -518,7 +512,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 //																							  leaveEarlyTimeSheet,
 //																							  lateTimeOfDaily,
 //																							  leaveEarlyTimeOfDaily,
-																							  vacationAddTimeSet,
+																							  holidayAddtionSet,
 																							  late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 																							  leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 																							  holidayCalcMethodSet,

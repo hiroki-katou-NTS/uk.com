@@ -16,13 +16,13 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateLeaveEarlyTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayCalcMethodSet;
-import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.shr.com.context.AppContexts;
@@ -103,10 +103,13 @@ public class LateTimeOfDaily {
 		
 		LateTimeSheet lateTimeSheet = new LateTimeSheet(Optional.of(forRecordTimeSheet), Optional.of(forDeductTimeSheet), workNo.v(), Optional.empty());
 		
+		//遅刻・早退を控除する
+		NotUseAtr notDeductLateLeaveEarly = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()?holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly()
+																															  :NotUseAtr.NOT_USE;
 		//遅刻計上時間の計算
 		TimeWithCalculation lateTime = lateTimeSheet.calcForRecordTime(late);
 		//遅刻控除時間の計算 
-		TimeWithCalculation lateDeductionTime = lateTimeSheet.calcDedctionTime(late,NotUseAtr.To);
+		TimeWithCalculation lateDeductionTime = lateTimeSheet.calcDedctionTime(late,notDeductLateLeaveEarly);
 		
 		LateTimeOfDaily lateTimeOfDaily = new LateTimeOfDaily(lateTime,
 															  lateDeductionTime,

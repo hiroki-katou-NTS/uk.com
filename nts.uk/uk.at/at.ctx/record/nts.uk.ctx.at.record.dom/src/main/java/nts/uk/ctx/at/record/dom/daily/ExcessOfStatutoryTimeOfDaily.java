@@ -35,6 +35,11 @@ import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
@@ -43,7 +48,6 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfIrregularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfRegularWork;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -99,8 +103,10 @@ public class ExcessOfStatutoryTimeOfDaily {
 			   														 Optional<PersonalLaborCondition> personalCondition, 
 			   														 boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 			   														 boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-			   														 WorkingSystem workingSystem,AddSettingOfIrregularWork addSettingOfIrregularWork,AddSettingOfFlexWork addSettingOfFlexWork,AddSettingOfRegularWork addSettingOfRegularWork,
-			   														 VacationAddTimeSet vacationAddTimeSet,
+			   														 WorkingSystem workingSystem, WorkDeformedLaborAdditionSet illegularAddSetting,
+			   														 WorkFlexAdditionSet flexAddSetting,
+			   														 WorkRegularAdditionSet regularAddSetting,
+			   														 HolidayAddtionSet holidayAddtionSet,
 			   														 WorkTimeDailyAtr workTimeDailyAtr,
 			   														 List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 			   														 List<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
@@ -111,8 +117,8 @@ public class ExcessOfStatutoryTimeOfDaily {
 				   						   personalCondition,
 				   						   late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 				   						   leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-				   						   workingSystem,addSettingOfIrregularWork,addSettingOfFlexWork,addSettingOfRegularWork,
-				   						   vacationAddTimeSet,workTimeDailyAtr,
+				   						   workingSystem,illegularAddSetting,flexAddSetting,regularAddSetting,
+				   						   holidayAddtionSet,workTimeDailyAtr,
 										   eachWorkTimeSet.stream().filter(tc -> tc.getOriginAtr().isOverTime()).findFirst(),
 										   eachCompanyTimeSet.stream().filter(tc -> tc.getOccurrenceType().isOverTime()).findFirst());
 		//休出時間
@@ -139,21 +145,36 @@ public class ExcessOfStatutoryTimeOfDaily {
 													   Optional<PersonalLaborCondition> personalCondition,
 													   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 													   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-													   WorkingSystem workingSystem,AddSettingOfIrregularWork addSettingOfIrregularWork,AddSettingOfFlexWork addSettingOfFlexWork,AddSettingOfRegularWork addSettingOfRegularWork,
-													   VacationAddTimeSet vacationAddTimeSet,WorkTimeDailyAtr workTimeDailyAtr,
+													   WorkingSystem workingSystem,WorkDeformedLaborAdditionSet illegularAddSetting,
+ 														 WorkFlexAdditionSet flexAddSetting,
+ 														 WorkRegularAdditionSet regularAddSetting,
+ 														HolidayAddtionSet holidayAddtionSet,WorkTimeDailyAtr workTimeDailyAtr,
 													   Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 													   Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
 		if(oneDay.getOutsideWorkTimeSheet().isPresent()) {
 			if(oneDay.getOutsideWorkTimeSheet().get().getOverTimeWorkSheet().isPresent()) {
-				return OverTimeOfDaily.calculationTime(oneDay.getOutsideWorkTimeSheet().get().getOverTimeWorkSheet().get(), overTimeAutoCalcSet,
-													   oneDay.getWithinWorkingTimeSheet().get(),calcMethod,holidayCalcMethodSet,autoCalcAtr,workType,flexCalcMethod,predetermineTimeSet,
-													   oneDay.getTemporaryDeductionTimeSheet(),vacationClass,timevacationUseTimeOfDaily,
+				return OverTimeOfDaily.calculationTime(oneDay.getOutsideWorkTimeSheet().get().getOverTimeWorkSheet().get(),
+													   overTimeAutoCalcSet,
+													   oneDay.getWithinWorkingTimeSheet().get(),
+													   calcMethod,
+													   holidayCalcMethodSet,
+													   autoCalcAtr,
+													   workType,
+													   flexCalcMethod,
+													   predetermineTimeSet,
+													   oneDay.getTemporaryDeductionTimeSheet(),
+													   vacationClass,
+													   timevacationUseTimeOfDaily,
 													   statutoryDivision,siftCode,
 													   personalCondition,
 													   late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 													   leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-													   workingSystem,addSettingOfIrregularWork,addSettingOfFlexWork,addSettingOfRegularWork,
-													   vacationAddTimeSet,workTimeDailyAtr,
+													   workingSystem,
+													   illegularAddSetting,
+													   flexAddSetting,
+													   regularAddSetting,
+													   holidayAddtionSet,
+													   workTimeDailyAtr,
 													   eachWorkTimeSet,
 													   eachCompanyTimeSet);
 			}

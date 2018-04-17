@@ -46,6 +46,11 @@ import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.time.OverTimeFrame;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
@@ -54,7 +59,6 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfIrregularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfRegularWork;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -295,8 +299,10 @@ public class OverTimeOfDaily {
 //												  LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
 												  boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 												  boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-												  WorkingSystem workingSystem,AddSettingOfIrregularWork addSettingOfIrregularWork,AddSettingOfFlexWork addSettingOfFlexWork,AddSettingOfRegularWork addSettingOfRegularWork,
-												  VacationAddTimeSet vacationAddTimeSet,WorkTimeDailyAtr workTimeDailyAtr,
+												  WorkingSystem workingSystem,WorkDeformedLaborAdditionSet illegularAddSetting,
+													 WorkFlexAdditionSet flexAddSetting,
+													 WorkRegularAdditionSet regularAddSetting,
+													 HolidayAddtionSet holidayAddtionSet,WorkTimeDailyAtr workTimeDailyAtr,
 												  Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 												  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
 		//枠時間帯入れる
@@ -320,12 +326,10 @@ public class OverTimeOfDaily {
 					tempDedTimeSheet,vacationClass,timevacationUseTimeOfDaily,
 					statutoryDivision,siftCode,
 					personalCondition,
-//					lateTimeSheet,leaveEarlyTimeSheet,lateTimeOfDaily,
-//					leaveEarlyTimeOfDaily,
 					late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 					leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-					workingSystem,addSettingOfIrregularWork,addSettingOfFlexWork,addSettingOfRegularWork,
-					vacationAddTimeSet,TimeLimitUpperLimitSetting.NOUPPERLIMIT);
+					workingSystem,illegularAddSetting,flexAddSetting,regularAddSetting,
+					holidayAddtionSet,TimeLimitUpperLimitSetting.NOUPPERLIMIT);
 		}
 
 		val overTimeWork = new AttendanceTime(0);

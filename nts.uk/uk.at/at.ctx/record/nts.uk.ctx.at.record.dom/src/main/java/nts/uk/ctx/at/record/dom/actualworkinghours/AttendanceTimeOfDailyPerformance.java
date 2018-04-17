@@ -35,13 +35,17 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfIrregularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfRegularWork;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -148,10 +152,10 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 			   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			   WorkingSystem workingSystem,
-			   AddSettingOfIrregularWork addSettingOfIrregularWork,
-			   AddSettingOfFlexWork addSettingOfFlexWork,
-			   AddSettingOfRegularWork addSettingOfRegularWork,
-			   VacationAddTimeSet vacationAddTimeSet,
+			   WorkDeformedLaborAdditionSet illegularAddSetting,
+			   WorkFlexAdditionSet flexAddSetting,
+			   WorkRegularAdditionSet regularAddSetting,
+			   HolidayAddtionSet holidayAddtionSet,
 			   AutoCalOverTimeAttr overTimeAutoCalcAtr,
 			   WorkTimeDailyAtr workTimeDailyAtr,
 			   Optional<SettingOfFlexWork> flexCalcMethod,
@@ -176,10 +180,10 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				   																		 late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 				   																		 leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 				   																		 workingSystem,
-				   																		 addSettingOfIrregularWork,
-				   																		 addSettingOfFlexWork,
-				   																		 addSettingOfRegularWork,
-				   																		 vacationAddTimeSet,
+				   																		 illegularAddSetting,
+				   																		 flexAddSetting,
+				   																		 regularAddSetting,
+				   																		 holidayAddtionSet,
 				   																		 overTimeAutoCalcAtr,
 				   																		 workTimeDailyAtr,
 				   																		 flexCalcMethod,
@@ -219,10 +223,10 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 			   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			   WorkingSystem workingSystem,
-			   AddSettingOfIrregularWork addSettingOfIrregularWork,
-			   AddSettingOfFlexWork addSettingOfFlexWork,
-			   AddSettingOfRegularWork addSettingOfRegularWork,
-			   VacationAddTimeSet vacationAddTimeSet,
+			   WorkDeformedLaborAdditionSet illegularAddSetting,
+			   WorkFlexAdditionSet flexAddSetting,
+			   WorkRegularAdditionSet regularAddSetting,
+			   HolidayAddtionSet holidayAddtionSet,
 			   AutoCalOverTimeAttr overTimeAutoCalcAtr,
 			   WorkTimeDailyAtr workTimeDailyAtr,
 			   Optional<SettingOfFlexWork> flexCalcMethod,
@@ -252,10 +256,10 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				    late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 				    leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 				    workingSystem,
-				    addSettingOfIrregularWork,
-				    addSettingOfFlexWork,
-				    addSettingOfRegularWork,
-				    vacationAddTimeSet,
+				    illegularAddSetting,
+				    flexAddSetting,
+				    regularAddSetting,
+				    holidayAddtionSet,
 				    overTimeAutoCalcAtr,
 				    workTimeDailyAtr,
 				    flexCalcMethod,
