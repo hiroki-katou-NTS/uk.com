@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTy
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationApprContent;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatus;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatusOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmbeddedUrlOutput;
@@ -587,7 +588,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			listAppSttAcquisitionAppl.stream().forEach(item -> listApprovalContent.add(item.getApplication()));
 			// アルゴリズム「承認状況日別状態作成」を実行する
 			List<DailyStatus> dailyStatus = this.getApprovalSttByDate(appStt, listApprovalContent);
-			listDailyStatus.add(new DailyStatusOutput(empName, dailyStatus));
+			listDailyStatus.add(new DailyStatusOutput(appStt.getSId() , empName, dailyStatus));
 		}
 		return listDailyStatus;
 	}
@@ -636,7 +637,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			}
 			List<Integer> listSymbol = new ArrayList<>();
 			listSymbol.add(symbol);
-			dailyStatus = new DailyStatus(appStt.getSId(), dateTemp, listSymbol);
+			dailyStatus = new DailyStatus(dateTemp, listSymbol);
 			
 			// 日別状態(リスト)に社員ID＝社員ID、日付＝対象日付が存在する
 			if(listDailyStatus.stream().filter(item -> item.getDate().compareTo(dateTemp) == 0).count() > 0) {
@@ -647,5 +648,28 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			}
 		}
 		return listDailyStatus;
+	}
+
+	@Override
+	public List<String> initApprovalSttRequestContentDis(List<ApprovalStatusEmployeeOutput> listStatusEmp,
+			String selectedWkpId, String selectedEmpId) {
+		//期間（リスト）
+		for(ApprovalStatusEmployeeOutput appEmp : listStatusEmp) {
+			//アルゴリズム「承認状況取得申請」を実行する
+			List<ApplicationApprContent> listAppContent = this.getAppSttAcquisitionAppl(appEmp);
+			//アルゴリズム「承認状況申請内容追加」を実行する
+			
+		}
+		return null;
+	}
+	
+	/**
+	 * 承認状況申請内容追加
+	 */
+	private List<ApproverOutput> getApprovalSttAppDetail(List<ApplicationApprContent> listAppContent) {
+		for(ApplicationApprContent appContent : listAppContent) {
+			///ドメインモデル「申請表示名」より申請表示名称を取得する
+		}
+		return null;
 	}
 }

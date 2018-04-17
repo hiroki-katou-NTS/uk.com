@@ -104,9 +104,9 @@ module nts.uk.at.view.kaf018.b.viewmodel {
         
         private getTargetDate() : string{
             var self = this;
-//            var startDate: string = nts.uk.time.formatDate(self.startDate, 'yyyy/MM/dd');
-//            var endDate: string = nts.uk.time.formatDate(self.endDate, 'yyyy/MM/dd');
-            return self.processingYm +"("+ self.startDate +"～"+ self.endDate+")";
+            let startDate = nts.uk.time.formatDate(new Date(self.startDate), 'yyyy/MM/dd');
+            let endDate = nts.uk.time.formatDate(new Date(self.endDate), 'yyyy/MM/dd');
+            return self.processingYm +"("+ startDate +" ～ "+ endDate+")";
         }
         
         gotoC(index) {

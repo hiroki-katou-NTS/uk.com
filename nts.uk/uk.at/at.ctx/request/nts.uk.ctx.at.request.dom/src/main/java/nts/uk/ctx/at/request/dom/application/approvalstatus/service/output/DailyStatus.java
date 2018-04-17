@@ -13,7 +13,6 @@ import nts.arc.time.GeneralDate;
 @Setter
 @Getter
 public class DailyStatus {
-	String empId;
 	GeneralDate date;
 	List<Integer> stateSymbol;
 	

@@ -14,7 +14,9 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTempRepository;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatus;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatusOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
@@ -234,7 +236,32 @@ public class ApprovalStatusFinder {
 	 * アルゴリズム「承認状況社員別起動」を実行する
 	 */
 	public List<DailyStatusOutput> initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById) {
-		return appSttService.getApprovalSttById(appSttById.getSelectedWkpId(), appSttById.getListWkpId(),
-				appSttById.getStartDate(), appSttById.getEndDate(), appSttById.getListEmpCode());
+		List<DailyStatusOutput> listDailyOut = new ArrayList<>();
+		List<DailyStatus> listDaily = new ArrayList<>();
+		List<DailyStatus> listDaily1 = new ArrayList<>();
+		List<Integer> listSymbol1 = new ArrayList<>();
+		listSymbol1.add(1);
+		listSymbol1.add(3);
+		listSymbol1.add(2);
+		List<Integer> listSymbol2 = new ArrayList<>();
+		listSymbol2.add(2);
+		listSymbol2.add(1);
+		listSymbol2.add(0);
+		GeneralDate date1 = appSttById.getEndDate().addDays(-2);
+		GeneralDate date12 = appSttById.getStartDate().addDays(2);
+		listDaily.add(new DailyStatus(date1, listSymbol1));
+		listDaily1.add(new DailyStatus(date12, listSymbol2));
+		listDailyOut.add(new DailyStatusOutput("0e4bfa2e-5459-4631-86b8-b3e2c0356ae0", "Anh", listDaily));
+		listDailyOut.add(new DailyStatusOutput("0e4bfa2e-5459-1245-86b8-b3e2c035567h", "Tuan", listDaily1));
+		/*return appSttService.getApprovalSttById(appSttById.getSelectedWkpId(), appSttById.getListWkpId(),
+				appSttById.getStartDate(), appSttById.getEndDate(), appSttById.getListEmpCode());*/
+		return listDailyOut;
+	}
+	
+	/**
+	 * アルゴリズム「承認状況申請内容表示」を実行する
+	 */
+	public List<String> initApprovalSttRequestContentDis(ApprovalSttRequestContentDis appSttContent) {
+		return appSttService.initApprovalSttRequestContentDis(appSttContent.getListStatusEmp(), appSttContent.getSelectedWkpId(), appSttContent.getSelectedEmpId());
 	}
 }

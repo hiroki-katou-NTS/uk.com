@@ -104,4 +104,10 @@ public interface ApprovalStatusService {
 	List<DailyStatusOutput> getApprovalSttById(String selectedWkpId, List<String> listWkpId,
 			GeneralDate startDate, GeneralDate endDate, List<String> listEmpCode);
 
+	/**
+	 * アルゴリズム「承認状況申請内容表示」を実行する
+	 */
+	List<String> initApprovalSttRequestContentDis(List<ApprovalStatusEmployeeOutput> listStatusEmp,
+			String selectedWkpId, String selectedEmpId);
+
 }

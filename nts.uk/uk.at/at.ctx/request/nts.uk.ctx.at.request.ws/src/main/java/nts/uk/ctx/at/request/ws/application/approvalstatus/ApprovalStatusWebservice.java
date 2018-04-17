@@ -16,9 +16,9 @@ import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusB
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusFinder;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusMailTempDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusPeriorDto;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalSttRequestContentDis;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.UnAppMailTransmisDto;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatus;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatusOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
@@ -108,5 +108,11 @@ public class ApprovalStatusWebservice extends WebService {
 	public List<DailyStatusOutput> initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById){
 		return this.finder.initApprovalSttByEmployee(appSttById);
 		
+	}
+	
+	@POST
+	@Path("initApprovalSttRequestContentDis")
+	public List<String> initApprovalSttRequestContentDis(ApprovalSttRequestContentDis appSttContent) {
+		return this.finder.initApprovalSttRequestContentDis(appSttContent);
 	}
 }
