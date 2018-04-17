@@ -443,8 +443,8 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			// エラーメッセージ（#Msg_876）を表示する。
 			throw new BusinessException("Msg_876");
 		} else {
-			List<WindowsAccountInfo> windows =  opWindowAccount.get().getAccountInfos().stream().filter(item -> item.getHostName().v() == hostname 
-					&& item.getUserName().v() == username && item.getUseAtr().equals(UseAtr.NotUse)).collect(Collectors.toList());
+			List<WindowsAccountInfo> windows =  opWindowAccount.get().getAccountInfos().stream().filter(item -> item.getHostName().v().equals(hostname)
+					&& item.getUserName().v().equals(username) && item.getUseAtr().equals(UseAtr.Use)).collect(Collectors.toList());
 			if (windows.isEmpty()) {
 				throw new BusinessException("Msg_876");
 			} else {
