@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.dom.mail;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -23,7 +22,6 @@ import nts.uk.shr.com.context.AppContexts;
 //import nts.uk.ctx.sys.gateway.dom.mail.service.RegisterEmbededURL;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.url.RegisterEmbededURL;
-import nts.uk.shr.com.url.UrlExecInfo;
 
 /**
  * @author hiep.ld
@@ -51,14 +49,15 @@ public class CheckTranmissionImpl implements CheckTransmission {
 		Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(cid);
 		List<String> successList = new ArrayList<>();
 		List<String> errorList = new ArrayList<>();
+		String appContent = "app contents";
 		if (urlEmbedded.isPresent()) {
 			int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
 			NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
 			if (checkUrl == NotUseAtr.USE) {
-				UrlExecInfo urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(appId, application.getAppType().value,
+				String urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(appId, application.getAppType().value,
 						application.getPrePostAtr().value, application.getEmployeeID());
-				if (!Objects.isNull(urlInfo)){
-					mailBody = "\n" + urlInfo.getProgramId() + urlInfo.getEmbeddedId() + "\n" + mailBody ;
+				if (!Strings.isEmpty(urlInfo)){
+					appContent += "\n" + "#KDL030_30" + " " + application.getAppID() + "\n" + urlInfo;
 				}
 			}
 		}
@@ -69,7 +68,7 @@ public class CheckTranmissionImpl implements CheckTransmission {
 				loginName, mailBody,
 				GeneralDate.today().toString(), application.getAppType().nameId,
 				empName, application.getAppDate().toLocalDate().toString(),
-				"appContent", loginName, loginMail);
+				appContent, loginName, loginMail);
 		// TO - DO
 		// request list 225
 		// request list 228
@@ -80,7 +79,7 @@ public class CheckTranmissionImpl implements CheckTransmission {
 			if (Strings.isBlank(mail)) {
 				errorList.add(mail);
 			} else {
-				mailSender.send("tarou@nittsusystem.co.jp", employeeMail, new MailContents("", mailBody));
+				mailSender.send("tarou@nittsusystem.co.jp", employeeMail, new MailContents("", mailContentToSend));
 				successList.add(employeeToSendId);
 				
 			}
