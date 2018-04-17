@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -17,13 +16,13 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
+import lombok.extern.slf4j.Slf4j;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleAdapter;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleSidDto;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.WorkBreakTimeImport;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.WorkScheduleSidImport;
-import nts.uk.ctx.at.record.dom.adapter.businesscalendar.daycalendar.RecCalendarCompanyAdapter;
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationAdapter;
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationSidImport;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentAdapter;
@@ -38,15 +37,12 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceDto;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
-import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
-import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalStatusOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfLeaveEarlySetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
@@ -66,20 +62,17 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectStampOu
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeActualStampOutPut;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeLeavingWorkOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.WorkStampOutPut;
-import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.jobtitle.affiliate.AffJobTitleAdapter;
 import nts.uk.ctx.at.record.dom.jobtitle.affiliate.AffJobTitleSidImport;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrSheet;
 import nts.uk.ctx.at.record.dom.raisesalarytime.enums.SpecificDateAttr;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
-import nts.uk.ctx.at.record.dom.stamp.StampRepository;
 import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
@@ -92,8 +85,6 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
-import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkingTimesheetCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
@@ -114,7 +105,6 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.BaseAutoCalSetting;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -150,29 +140,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	@Inject
 	private WorkInformationRepository workInformationRepository;
 
-	@Inject
-	private ApprovalStatusOfDailyPerforRepository approvalStatusOfDailyPerforRepository;
-
-	@Inject
-	private AffiliationInforOfDailyPerforRepository affiliationInforOfDailyPerforRepository;
-
-	@Inject
-	private IdentificationRepository identificationRepository;
-
-	@Inject
-	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepository;
-
-	@Inject
-	private TemporaryTimeOfDailyPerformanceRepository temporaryTimeOfDailyPerformanceRepository;
-
-	@Inject
-	private EditStateOfDailyPerformanceRepository editStateOfDailyPerformanceRepository;
 
 	@Inject
 	private BreakTimeOfDailyPerformanceRepository breakTimeOfDailyPerformanceRepository;
-
-	@Inject
-	private OutingTimeOfDailyPerformanceRepository outingTimeOfDailyPerformanceRepository;
 
 	@Inject
 	private ErrMessageInfoRepository errMessageInfoRepository;
@@ -190,16 +160,10 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	private AffJobTitleAdapter affJobTitleAdapter;
 
 	@Inject
-	private PersonalLaborConditionRepository personalLaborConditionRepository;
-
-	@Inject
 	private BasicScheduleAdapter basicScheduleAdapter;
 
 	@Inject
 	private WorkTypeRepository workTypeRepository;
-
-	@Inject
-	private RecCalendarCompanyAdapter calendarCompanyAdapter;
 
 	@Inject
 	private BasicScheduleService basicScheduleService;
@@ -215,9 +179,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
-
-	@Inject
-	private StampRepository stampRepository;
 
 	@Inject
 	private BusinessTypeEmpOfHistoryRepository businessTypeEmpOfHistoryRepository;
@@ -302,21 +263,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		// this.reflect(companyId, employeeId, day, empCalAndSumExecLogID,
 		// reCreateAttr);
 		// }
-	}
-
-	private void deleteDailyResult(String employeeId, GeneralDate day) {
-		this.workInformationRepository.delete(employeeId, day);
-		// this.approvalStatusOfDailyPerforRepository.delete(employeeId, day);
-		this.affiliationInforOfDailyPerforRepository.delete(employeeId, day);
-		// this.identificationRepository.delete(employeeId, day);
-		this.timeLeavingOfDailyPerformanceRepository.delete(employeeId, day);
-		this.temporaryTimeOfDailyPerformanceRepository.delete(employeeId, day);
-		// this.editStateOfDailyPerformanceRepository.delete(employeeId,
-		// day);
-		// this.breakTimeOfDailyPerformanceRepository.delete(employeeId,
-		// day);
-		// this.outingTimeOfDailyPerformanceRepository.delete(employeeId,
-		// day);
 	}
 
 	private void reflect(String companyId, String employeeId, GeneralDate day, String empCalAndSumExecLogID,
@@ -1472,22 +1418,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				result = result.setScale(0, RoundingMode.UP);
 				;
 			}
-		} else {
-			return result.intValue();
-		}
-		return result.intValue();
-	}
-
-	private List<GeneralDate> getDaysBetween(GeneralDate startDate, GeneralDate endDate) {
-		List<GeneralDate> daysBetween = new ArrayList<>();
-
-		while (startDate.beforeOrEquals(endDate)) {
-			daysBetween.add(startDate);
-			GeneralDate temp = startDate.addDays(1);
-			startDate = temp;
-		}
-
-		return daysBetween;
+		} 
+		return result.multiply(new BigDecimal(roundingTimeUnit)).intValue();
 	}
 
 	@AllArgsConstructor
@@ -1504,21 +1436,5 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		public final int value;
 
 	}
-
-	// private void lateCorrection(TimeActualStamp timeActualStamp) {
-	// // ドメインモデル「就業時間帯の遅刻・早退設定」を取得する
-	// OtherEmTimezoneLateEarlySet earlySet = new OtherEmTimezoneLateEarlySet();
-	// if (earlySet.isStampExactlyTimeIsLateEarly() &&
-	// !timeActualStamp.getStamp().equals(null)) {
-	// timeActualStamp.setStamp(new WorkStamp(
-	// new TimeWithDayAttr(timeActualStamp.getStamp().getAfterRoundingTime().v()
-	// - 1),
-	// new
-	// TimeWithDayAttr(timeActualStamp.getStamp().getTimeWithDay().valueAsMinutes()
-	// - 1),
-	// timeActualStamp.getStamp().getLocationCode(),
-	// timeActualStamp.getStamp().getStampSourceInfo()));
-	// }
-	// }
 
 }
