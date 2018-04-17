@@ -94,6 +94,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         ];
         // date ranger component
         dateRanger: KnockoutObservable<any> = ko.observable(null);
+        
+        datePicker: KnockoutObservable<any> = ko.observable(null);
         // date picker component
         selectedDate: KnockoutObservable<any> = ko.observable(null);
 
@@ -278,13 +280,23 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             self.lstDate.push({ date: elementDate });
                             elementDate = moment(elementDate, "YYYY/MM/DD").add(1, 'd').format("YYYY/MM/DD");
                         }
+                    }
+                    if(self.displayFormat() == 1){
+                        self.datePicker().startDate = dateRange.startDate;
+                        self.datePicker().endDate = dateRange.endDate; 
+                        self.datePicker.valueHasMutated();
+                    }
                 }
-                }
+            });
+            self.datePicker({
+                startDate: moment().add(-1, "M").add(1 ,"d").format("YYYY/MM/DD"),
+                endDate: moment().format("YYYY/MM/DD")
             });
             self.dateRanger({
                 startDate: moment().add(-1, "M").add(1 ,"d").format("YYYY/MM/DD"),
                 endDate: moment().format("YYYY/MM/DD")
             });
+            
         }
 
         initDisplayFormat() {
@@ -825,6 +837,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     }));
                 } else {
                     lstEmployee = self.lstEmployee();
+                }
+                 if (self.displayFormat() === 1) {
+                    self.datePicker().startDate = self.dateRanger().startDate;
+                    self.datePicker().endDate = self.dateRanger().endDate; 
+                    self.datePicker.valueHasMutated();
                 }
                 let param = {
                     dateRange: {
