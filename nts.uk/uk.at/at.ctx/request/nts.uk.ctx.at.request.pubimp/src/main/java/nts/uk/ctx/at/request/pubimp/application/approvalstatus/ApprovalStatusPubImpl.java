@@ -86,7 +86,7 @@ public class ApprovalStatusPubImpl implements ApprovalStatusPub {
 
 	@Override
 	public SendMailResultExport exeApprovalStatusMailTransmission(List<MailTransmissionContentExport> listMailContent,
-			ApprovalStatusMailTempExport domain) {
+			ApprovalStatusMailTempExport domain, int mailType) {
 		List<MailTransmissionContentOutput> listMail = new ArrayList<>();
 
 		for (MailTransmissionContentExport item : listMailContent) {
@@ -100,7 +100,8 @@ public class ApprovalStatusPubImpl implements ApprovalStatusPub {
 				EnumAdaptor.valueOf(domain.getUrlDayEmbed(), NotUseAtr.class),
 				EnumAdaptor.valueOf(domain.getUrlMonthEmbed(), NotUseAtr.class), new Subject(domain.getMailSubject()),
 				new Content(domain.getMailContent()));
-		SendMailResultOutput result = approvalStatusService.exeApprovalStatusMailTransmission(listMail, domainMail);
+		SendMailResultOutput result = approvalStatusService.exeApprovalStatusMailTransmission(listMail, domainMail,
+				EnumAdaptor.valueOf(mailType, ApprovalStatusMailType.class));
 		return new SendMailResultExport(result.isOK(), result.getListError());
 	}
 }
