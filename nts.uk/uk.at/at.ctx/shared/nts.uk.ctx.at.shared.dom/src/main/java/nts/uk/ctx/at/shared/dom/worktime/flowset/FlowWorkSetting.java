@@ -160,7 +160,7 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot {
 	 * @param overtimeSetting the overtime setting
 	 */
 	public void setDefaultData(ScreenMode screenMode) {
-		if (screenMode.equals(ScreenMode.SIMPLE)) {
+		if (screenMode == ScreenMode.SIMPLE) {
 			this.halfDayWorkTimezone.correctDefaultData();
 		}
 	}
