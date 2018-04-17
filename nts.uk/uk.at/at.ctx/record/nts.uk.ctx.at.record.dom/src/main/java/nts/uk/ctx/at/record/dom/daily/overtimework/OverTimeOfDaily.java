@@ -289,20 +289,27 @@ public class OverTimeOfDaily {
 	 * メンバー変数の時間計算を指示するクラス
 	 * @return 計算結果
 	 */
-	public static OverTimeOfDaily calculationTime(OverTimeSheet overTimeSheet,AutoCalOvertimeSetting overTimeAutoCalcSet,WithinWorkTimeSheet withinWorkTimeSheetList,CalcMethodOfNoWorkingDay calcMethod,
-												  HolidayCalcMethodSet holidayCalcMethodSet,AutoCalOverTimeAttr autoCalcAtr,WorkType workType,
-												  Optional<SettingOfFlexWork> flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
-												  VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
-												  StatutoryDivision statutoryDivision,Optional<WorkTimeCode> siftCode,
+	public static OverTimeOfDaily calculationTime(OverTimeSheet overTimeSheet,
+												  AutoCalOvertimeSetting overTimeAutoCalcSet,
+												  WithinWorkTimeSheet withinWorkTimeSheetList,
+												  CalcMethodOfNoWorkingDay calcMethod,
+												  HolidayCalcMethodSet holidayCalcMethodSet,
+												  AutoCalOverTimeAttr autoCalcAtr,
+												  WorkType workType,
+												  Optional<SettingOfFlexWork> flexCalcMethod,
+												  PredetermineTimeSetForCalc predetermineTimeSet,
+												  VacationClass vacationClass,
+												  TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
+												  StatutoryDivision statutoryDivision,
+												  Optional<WorkTimeCode> siftCode,
 												  Optional<PersonalLaborCondition> personalCondition,
-//												  LateTimeSheet lateTimeSheet,LeaveEarlyTimeSheet leaveEarlyTimeSheet,LateTimeOfDaily lateTimeOfDaily,
-//												  LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
 												  boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 												  boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-												  WorkingSystem workingSystem,WorkDeformedLaborAdditionSet illegularAddSetting,
-													 WorkFlexAdditionSet flexAddSetting,
-													 WorkRegularAdditionSet regularAddSetting,
-													 HolidayAddtionSet holidayAddtionSet,WorkTimeDailyAtr workTimeDailyAtr,
+												  WorkingSystem workingSystem,
+												  WorkDeformedLaborAdditionSet illegularAddSetting,
+												  WorkFlexAdditionSet flexAddSetting,
+												  WorkRegularAdditionSet regularAddSetting,
+												  HolidayAddtionSet holidayAddtionSet,WorkTimeDailyAtr workTimeDailyAtr,
 												  Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 												  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
 		//枠時間帯入れる

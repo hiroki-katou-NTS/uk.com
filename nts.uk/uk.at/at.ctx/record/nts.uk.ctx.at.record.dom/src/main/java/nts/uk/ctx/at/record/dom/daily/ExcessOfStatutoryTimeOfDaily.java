@@ -162,7 +162,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 													   workType,
 													   flexCalcMethod,
 													   predetermineTimeSet,
-													   oneDay.getTemporaryDeductionTimeSheet(),
+//													   oneDay.getTemporaryDeductionTimeSheet(),
 													   vacationClass,
 													   timevacationUseTimeOfDaily,
 													   statutoryDivision,siftCode,

@@ -580,31 +580,32 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		WorkRegularAdditionSet regularAddSetting = workRegularAdditionSet!=null?(WorkRegularAdditionSet)workRegularAdditionSet:null;
 		//フレックス勤務の加算設定
 		WorkFlexAdditionSet flexAddSetting = workFlexAdditionSet!=null?(WorkFlexAdditionSet)workFlexAdditionSet:null;
+		// 変形労働勤務の加算設定
 		WorkDeformedLaborAdditionSet illegularAddSetting = workDeformedLaborAdditionSet!=null?(WorkDeformedLaborAdditionSet)workDeformedLaborAdditionSet:null;
 		//時給者の加算設定
 		HourlyPaymentAdditionSet hourlyPaymentAddSetting = hourlyPaymentAdditionSet!=null?(HourlyPaymentAdditionSet)hourlyPaymentAdditionSet:null;
 
-		// 変形労働勤務の加算設定
-		WorkTimeCalcMethodDetailOfHoliday workDetailSet = new WorkTimeCalcMethodDetailOfHoliday(
-				nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To,
-				new IncludeHolidaysWorkCalcDetailSet(
-						nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To));
-		WorkTimeCalcMethodOfHoliday workTimeClacMethodOfHoliday = new WorkTimeCalcMethodOfHoliday(
-				CalculationByActualTimeAtr.CalculationByActualTime, workDetailSet);
-		PremiumCalcMethodDetailOfHoliday preDetailSet = new PremiumCalcMethodDetailOfHoliday(
-				new IncludeHolidaysPremiumCalcDetailSet(
-						nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To),
-				nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To);
-		PremiumCalcMethodOfHoliday premiumCalcMethodOfHoliday = new PremiumCalcMethodOfHoliday(preDetailSet,
-				CalculationByActualTimeAtr.CalculationByActualTime);
-		HolidayCalcMethodSet holidaycalcMethodSet = new HolidayCalcMethodSet(workTimeClacMethodOfHoliday,
-				premiumCalcMethodOfHoliday);
-		val illegularAddSetting = new AddSettingOfIrregularWork(new CompanyId(companyId), holidaycalcMethodSet);
-		// フレックス勤務の加算設定
-		AddSettingOfFlexWork flexAddSetting = new AddSettingOfFlexWork(new CompanyId(companyId), holidaycalcMethodSet);
-		// 固定勤務の加算設定
-		AddSettingOfRegularWork regularAddSetting = new AddSettingOfRegularWork(new CompanyId(companyId),
-				holidaycalcMethodSet);
+//		// 変形労働勤務の加算設定
+//		WorkTimeCalcMethodDetailOfHoliday workDetailSet = new WorkTimeCalcMethodDetailOfHoliday(
+//				nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To,
+//				new IncludeHolidaysWorkCalcDetailSet(
+//						nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To));
+//		WorkTimeCalcMethodOfHoliday workTimeClacMethodOfHoliday = new WorkTimeCalcMethodOfHoliday(
+//				CalculationByActualTimeAtr.CalculationByActualTime, workDetailSet);
+//		PremiumCalcMethodDetailOfHoliday preDetailSet = new PremiumCalcMethodDetailOfHoliday(
+//				new IncludeHolidaysPremiumCalcDetailSet(
+//						nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To),
+//				nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To);
+//		PremiumCalcMethodOfHoliday premiumCalcMethodOfHoliday = new PremiumCalcMethodOfHoliday(preDetailSet,
+//				CalculationByActualTimeAtr.CalculationByActualTime);
+//		HolidayCalcMethodSet holidaycalcMethodSet = new HolidayCalcMethodSet(workTimeClacMethodOfHoliday,
+//				premiumCalcMethodOfHoliday);
+//		val illegularAddSetting = new AddSettingOfIrregularWork(new CompanyId(companyId), holidaycalcMethodSet);
+//		// フレックス勤務の加算設定
+//		AddSettingOfFlexWork flexAddSetting = new AddSettingOfFlexWork(new CompanyId(companyId), holidaycalcMethodSet);
+//		// 固定勤務の加算設定
+//		AddSettingOfRegularWork regularAddSetting = new AddSettingOfRegularWork(new CompanyId(companyId),
+//				holidaycalcMethodSet);
 
 		// 個人労働条件
 		PersonalLaborCondition personalLabor = new PersonalLaborCondition(
