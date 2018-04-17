@@ -143,10 +143,19 @@ public class AppAbsenceFinder {
 					holidayAppTypes.add(appEmploymentSetting.getHolidayOrPauseType());
 				}
 			}
+			if (CollectionUtil.isEmpty(holidayAppTypes)) {
+				throw new BusinessException("Msg_473");
+			}
+		}else{
+			holidayAppTypes.add(0);
+			holidayAppTypes.add(1);
+			holidayAppTypes.add(2);
+			holidayAppTypes.add(3);
+			holidayAppTypes.add(4);
+			holidayAppTypes.add(7);
+			
 		}
-		if (CollectionUtil.isEmpty(holidayAppTypes)) {
-			throw new BusinessException("Msg_473");
-		}
+		
 		holidayAppTypes.sort((a, b) -> a.compareTo(b));
 		result.setHolidayAppTypes(holidayAppTypes);
 		if (appDate != null) {
@@ -254,9 +263,17 @@ public class AppAbsenceFinder {
 					holidayAppTypes.add(appEmploymentSetting.getHolidayOrPauseType());
 				}
 			}
-		}
-		if (CollectionUtil.isEmpty(holidayAppTypes)) {
-			throw new BusinessException("Msg_473");
+			if (CollectionUtil.isEmpty(holidayAppTypes)) {
+				throw new BusinessException("Msg_473");
+			}
+		}else{
+			holidayAppTypes.add(0);
+			holidayAppTypes.add(1);
+			holidayAppTypes.add(2);
+			holidayAppTypes.add(3);
+			holidayAppTypes.add(4);
+			holidayAppTypes.add(7);
+			
 		}
 		holidayAppTypes.sort((a, b) -> a.compareTo(b));
 		result.setHolidayAppTypes(holidayAppTypes);
