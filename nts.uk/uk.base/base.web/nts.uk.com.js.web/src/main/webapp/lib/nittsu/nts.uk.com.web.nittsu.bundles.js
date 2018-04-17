@@ -2391,7 +2391,7 @@ var nts;
                         return dateTime;
                 };
                 DateTimeFormatter.prototype.format = function (date) {
-                    return new Date(date).toLocaleDateString("ja-JP");
+                    return date; //new Date(date).toLocaleDateString("ja-JP");
                 };
                 return DateTimeFormatter;
             }());
@@ -4804,6 +4804,8 @@ var nts;
                 errors_1.hide = hide;
                 function add(error) {
                     errorsViewModel().addError(error);
+                    error.$control.data(nts.uk.ui.DATA_HAS_ERROR, true);
+                    (error.$control.data(nts.uk.ui.DATA_SET_ERROR_STYLE) || function () { error.$control.parent().addClass('error'); })();
                 }
                 errors_1.add = add;
                 function hasError() {
@@ -4817,14 +4819,26 @@ var nts;
                 errors_1.clearAll = clearAll;
                 function removeByElement($control) {
                     errorsViewModel().removeErrorByElement($control);
+                    $control.data(nts.uk.ui.DATA_HAS_ERROR, false);
+                    ($control.data(nts.uk.ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
                 }
                 errors_1.removeByElement = removeByElement;
                 function removeByCode($control, errorCode) {
                     errorsViewModel().removeErrorByCode($control, errorCode);
+                    var remainErrors = getErrorByElement($control);
+                    if (nts.uk.util.isNullOrEmpty(remainErrors)) {
+                        $control.data(nts.uk.ui.DATA_HAS_ERROR, false);
+                        ($control.data(nts.uk.ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
+                    }
                 }
                 errors_1.removeByCode = removeByCode;
                 function removeCommonError($control) {
                     errorsViewModel().removeKibanError($control);
+                    var remainErrors = getErrorByElement($control);
+                    if (nts.uk.util.isNullOrEmpty(remainErrors)) {
+                        $control.data(nts.uk.ui.DATA_HAS_ERROR, false);
+                        ($control.data(nts.uk.ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
+                    }
                 }
                 errors_1.removeCommonError = removeCommonError;
                 function getErrorByElement($element) {
@@ -20834,6 +20848,8 @@ var nts;
         (function (ui) {
             ui.DATA_SET_ERROR_STYLE = "set-error-style";
             ui.DATA_CLEAR_ERROR_STYLE = "clear-error-style";
+            ui.DATA_HAS_ERROR = 'hasError';
+            ui.DATA_GET_ERROR = 'getError';
             var bindErrorStyle;
             (function (bindErrorStyle) {
                 function setError($element, callback) {
@@ -20862,14 +20878,12 @@ var nts;
             (function (jqueryExtentions) {
                 var ntsError;
                 (function (ntsError) {
-                    var DATA_HAS_ERROR = 'hasError';
-                    var DATA_GET_ERROR = 'getError';
                     $.fn.ntsError = function (action, message, errorCode, businessError) {
                         var $control = $(this);
-                        if (action === DATA_HAS_ERROR) {
+                        if (action === ui.DATA_HAS_ERROR) {
                             return _.some($control, function (c) { return hasError($(c)); });
                         }
-                        else if (action === DATA_GET_ERROR) {
+                        else if (action === ui.DATA_GET_ERROR) {
                             return getErrorByElement($control.first());
                         }
                         else {
@@ -20898,7 +20912,6 @@ var nts;
                         return ui.errors.getErrorByElement($control);
                     }
                     function setError($control, message, errorCode, businessError) {
-                        $control.data(DATA_HAS_ERROR, true);
                         ui.errors.add({
                             location: $control.data('name') || "",
                             message: message,
@@ -20906,35 +20919,22 @@ var nts;
                             $control: $control,
                             businessError: businessError
                         });
-                        ($control.data(ui.DATA_SET_ERROR_STYLE) || function () { $control.parent().addClass('error'); })();
                         return $control;
                     }
                     function clearErrors($control) {
-                        $control.data(DATA_HAS_ERROR, false);
                         ui.errors.removeByElement($control);
-                        ($control.data(ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
                         return $control;
                     }
                     function clearErrorByCode($control, errorCode) {
                         ui.errors.removeByCode($control, errorCode);
-                        var remainErrors = ui.errors.getErrorByElement($control);
-                        if (uk.util.isNullOrEmpty(remainErrors)) {
-                            $control.data(DATA_HAS_ERROR, false);
-                            ($control.data(ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
-                        }
                         return $control;
                     }
                     function clearKibanError($control) {
                         ui.errors.removeCommonError($control);
-                        var remainErrors = ui.errors.getErrorByElement($control);
-                        if (uk.util.isNullOrEmpty(remainErrors)) {
-                            $control.data(DATA_HAS_ERROR, false);
-                            ($control.data(ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
-                        }
                         return $control;
                     }
                     function hasError($control) {
-                        return $control.data(DATA_HAS_ERROR) === true;
+                        return $control.data(ui.DATA_HAS_ERROR) === true;
                     }
                 })(ntsError || (ntsError = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
