@@ -25,6 +25,7 @@ import nts.uk.ctx.at.record.dom.daily.TimeWithCalculationMinusExist;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDay;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlOverFrameTime;
@@ -64,6 +65,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -343,15 +345,21 @@ public class OverTimeOfDaily {
 	
 	/**
 	 * 残業時間超過のチェック&エラーゲット 
+	 * @param attendanceItemDictionary 
 	 */
 	public List<EmployeeDailyPerError> checkOverTimeExcess(String employeeId,
 														   GeneralDate targetDate,
+														   String searchWord,
+														   AttendanceItemDictionaryForCalc attendanceItemDictionary,
 														   ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
-//		returnErrorList.addAll(this.getOverTimeWorkFrameTime().stream()
-//									   						  .filter(tc -> tc.isOverLimitDivergenceTime())
-//									   						  .map(tc -> tc)/*社員の日別実績エラー一覧作成*/
-//									   						  .collect(Collectors.toList()));
+		for(OverTimeFrameTime frameTime:this.getOverTimeWorkFrameTime()) {
+			if(frameTime.isOverLimitDivergenceTime()) {
+				val itemId = attendanceItemDictionary.findId(searchWord+frameTime.getOverWorkFrameNo().v());
+				if(itemId.isPresent())
+					returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
+			}
+		}
 		return returnErrorList;
 	}
 	
@@ -360,12 +368,17 @@ public class OverTimeOfDaily {
 	 */
 	public List<EmployeeDailyPerError> checkPreOverTimeExcess(String employeeId,
 														   GeneralDate targetDate,
+														   String searchWord,
+														   AttendanceItemDictionaryForCalc attendanceItemDictionary,
 														   ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
-//		returnErrorList.addAll(this.getOverTimeWorkFrameTime().stream()
-//									   						  .filter(tc -> tc.isPreOverLimitDivergenceTime())
-//									   						  .map(tc -> tc)/*社員の日別実績エラー一覧作成*/
-//									   						  .collect(Collectors.toList()));
+		for(OverTimeFrameTime frameTime:this.getOverTimeWorkFrameTime()) {
+			if(frameTime.isPreOverLimitDivergenceTime()) {
+				val itemId = attendanceItemDictionary.findId(searchWord+frameTime.getOverWorkFrameNo().v());
+				if(itemId.isPresent())
+					returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
+			}
+		}
 		return returnErrorList;
 	}
 	
@@ -375,8 +388,16 @@ public class OverTimeOfDaily {
 	 */
 	public List<EmployeeDailyPerError> checkFlexTimeExcess(String employeeId,
 														   GeneralDate targetDate,
+														   String searchWord,
+														   AttendanceItemDictionaryForCalc attendanceItemDictionary,
 														   ErrorAlarmWorkRecordCode errorCode) {
-		return (this.getFlexTime().calcOverLimitDivergenceTime() > 0)?Collections.emptyList():Collections.emptyList();
+		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
+		if(this.getFlexTime().isOverLimitDivergenceTime()) {
+			val itemId = attendanceItemDictionary.findId(searchWord);
+			if(itemId.isPresent())
+				returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
+		}
+		return returnErrorList;
 	}
 	
 	/**
@@ -385,7 +406,35 @@ public class OverTimeOfDaily {
 	 */
 	public List<EmployeeDailyPerError> checkPreFlexTimeExcess(String employeeId,
 														   GeneralDate targetDate,
+														   String searchWord,
+														   AttendanceItemDictionaryForCalc attendanceItemDictionary,
 														   ErrorAlarmWorkRecordCode errorCode) {
-		return (this.getFlexTime().calcPreOverLimitDivergenceTime() > 0)?Collections.emptyList():Collections.emptyList();
+		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
+		if(this.getFlexTime().isPreOverLimitDivergenceTime()) {
+			val itemId = attendanceItemDictionary.findId(searchWord);
+			if(itemId.isPresent())
+				returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
+		}
+		return returnErrorList;
 	}
+
+	/**
+	 *　深夜時間のチェック＆エラーゲット 
+	 * @return
+	 */
+	public List<EmployeeDailyPerError> checkNightTimeExcess(String employeeId,
+														   GeneralDate targetDate,
+														   String searchWord,
+														   AttendanceItemDictionaryForCalc attendanceItemDictionary,
+														   ErrorAlarmWorkRecordCode errorCode) {
+		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
+		if(this.getExcessOverTimeWorkMidNightTime().isPresent()
+				&& this.getExcessOverTimeWorkMidNightTime().get().isOverLimitDivergenceTime()) {
+			val itemId = attendanceItemDictionary.findId(searchWord);
+			if(itemId.isPresent())
+				returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
+		}
+		return returnErrorList;
+	}
+	
 }

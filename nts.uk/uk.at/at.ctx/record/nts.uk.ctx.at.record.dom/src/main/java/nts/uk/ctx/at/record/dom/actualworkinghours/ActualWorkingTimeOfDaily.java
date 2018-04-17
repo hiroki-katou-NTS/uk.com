@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.dom.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
@@ -174,22 +175,14 @@ public class ActualWorkingTimeOfDaily {
 		
 	}
 	
-	public Optional<EmployeeDailyPerError> checkOverTimeExcess(String employeeId,
-			   													GeneralDate targetDate,
-			   													ErrorAlarmWorkRecordCode errorCode,
-			   													CheckExcessAtr checkAtr) {
-		Optional<EmployeeDailyPerError> returnErrorItem = Optional.empty();
-		if(this.getTotalWorkingTime() != null ) {
-			switch(checkAtr) {
-				//乖離時間
-				case ALARM_OF_DIVERGENCE_TIME:
-				case ERROR_OF_DIVERGENCE_TIME:
-					break;
-				default:
-					this.getTotalWorkingTime().checkOverTimeExcess(employeeId, targetDate, errorCode, checkAtr);
-			}
-			
-		}
-		return returnErrorItem;
+	/**
+	 * エラーチェックの指示メソッド 
+	 * @param attendanceItemConverter 
+	 * @return 社員のエラーチェック一覧
+	 */
+	public List<EmployeeDailyPerError> requestCheckError(String employeeId,GeneralDate targetDate,
+			   											 SystemFixedErrorAlarm fixedErrorAlarmCode,
+			   											 CheckExcessAtr checkAtr) {
+		return this.getTotalWorkingTime().checkOverTimeExcess(employeeId, targetDate, fixedErrorAlarmCode, checkAtr);
 	}
 }

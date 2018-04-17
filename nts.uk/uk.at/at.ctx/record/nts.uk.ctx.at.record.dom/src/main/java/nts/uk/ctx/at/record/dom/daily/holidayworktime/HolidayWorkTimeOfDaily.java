@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkTimeSheetAtr;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlHolidayWorkTime;
@@ -32,6 +33,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAt
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 日別実績の休出時間
@@ -213,25 +215,58 @@ public class HolidayWorkTimeOfDaily {
 		}
 	}
 	
+	/**
+	 * 休出時間 実績超過チェック
+	 * @return　社員のエラー一覧
+	 */
 	public List<EmployeeDailyPerError> checkHolidayWorkExcess(String employeeId,
 															  GeneralDate targetDate,
+															  String searchWord,
+															  AttendanceItemDictionaryForCalc attendanceItemDictionary,
 															  ErrorAlarmWorkRecordCode errorCode) {
-			List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
-//			returnErrorList.addAll(this.getHolidayWorkFrameTime().stream()
-//																 .filter(tc -> tc.isOverLimitDivergenceTime())
-//																 .map(tc -> tc)/*社員の日別実績エラー一覧作成*/
-//																 .collect(Collectors.toList()));
-			return returnErrorList;
+		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
+		for(HolidayWorkFrameTime frameTime:this.getHolidayWorkFrameTime()) {
+			if(frameTime.isOverLimitDivergenceTime()) {
+				val itemId = attendanceItemDictionary.findId(searchWord+frameTime.getHolidayFrameNo().v());
+				if(itemId.isPresent())
+					returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
+			}
+		}
+		return returnErrorList;
 	}
 	
+	/**
+	 * 休出事前申請のチェック
+	 * @return　社員のエラー一覧
+	 */
 	public List<EmployeeDailyPerError> checkPreHolidayWorkExcess(String employeeId,
 			  												  GeneralDate targetDate,
+															  String searchWord,
+															  AttendanceItemDictionaryForCalc attendanceItemDictionary,
 			  												  ErrorAlarmWorkRecordCode errorCode) {
-			List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
-//			returnErrorList.addAll(this.getHolidayWorkFrameTime().stream()
-//																 .filter(tc -> tc.isPreOverLimitDivergenceTime())
-//																 .map(tc -> tc)/*社員の日別実績エラー一覧作成*/
-//																 .collect(Collectors.toList()));
-			return returnErrorList;
+		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
+		for(HolidayWorkFrameTime frameTime:this.getHolidayWorkFrameTime()) {
+			if(frameTime.isOverLimitDivergenceTime()) {
+				val itemId = attendanceItemDictionary.findId(searchWord+frameTime.getHolidayFrameNo().v());
+				if(itemId.isPresent())
+					returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
+			}
+		}
+		return returnErrorList;
+	}
+	
+	/**
+	 *　深夜時間のチェック＆エラーゲット 
+	 * @return
+	 */
+	public List<EmployeeDailyPerError> checkNightTimeExcess(String employeeId,
+														   GeneralDate targetDate,
+														   AttendanceItemDictionaryForCalc attendanceItemDictionary,
+														   ErrorAlarmWorkRecordCode errorCode) {
+		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
+		if(this.getHolidayMidNightWork().isPresent()) {
+			returnErrorList.addAll(this.getHolidayMidNightWork().get().getErrorList(employeeId, targetDate, attendanceItemDictionary, errorCode));
+		}
+		return returnErrorList;
 	}
 }

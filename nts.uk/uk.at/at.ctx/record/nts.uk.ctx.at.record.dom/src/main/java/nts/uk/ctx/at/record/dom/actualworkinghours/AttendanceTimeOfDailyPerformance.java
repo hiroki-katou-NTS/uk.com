@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.actualworkinghours;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +30,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
@@ -278,13 +280,16 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	}
 	
 	
-	public Optional<EmployeeDailyPerError> checkOverTimeExcess(String employeeId,
-			   													GeneralDate targetDate,
-			   													ErrorAlarmWorkRecordCode errorCode,
-			   													CheckExcessAtr checkAtr) {
-		Optional<EmployeeDailyPerError> returnErrorItem = Optional.empty();
-		if(this.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
-			getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get();
+	/**
+	 * エラーチェックの指示メソッド 
+	 * @param attendanceItemConverter 
+	 * @return 社員のエラーチェック一覧
+	 */
+	public List<EmployeeDailyPerError> getErrorList(String employeeId,GeneralDate targetDate,
+			   										SystemFixedErrorAlarm fixedErrorAlarmCode, CheckExcessAtr checkAtr) {
+		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
+		if(this.getActualWorkingTimeOfDaily() != null) {
+			getActualWorkingTimeOfDaily().requestCheckError(employeeId, targetDate, fixedErrorAlarmCode, checkAtr);
 		}
 		return returnErrorItem;
 	}
