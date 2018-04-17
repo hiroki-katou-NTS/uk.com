@@ -86,8 +86,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         modeDisplay: KnockoutObservableArray<any> = ko.observableArray([
             { code: 1, name: '略名' },
-            { code: 2, name: '時刻' },
-            { code: 3, name: '記号' }
+            { code: 2, name: '時刻' }
+            //            { code: 3, name: '記号' }
         ]);
         selectedModeDisplay: KnockoutObservable<number> = ko.observable(1);
 
@@ -596,13 +596,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
                                 ]
                             },
-                            popup: {
-                                rows: [1],
-                                provider: function(columnKey) {
-                                    self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
-                                    return $("#popup-area8");
-                                }
-                            }
+                            //                            popup: {
+                            //                                rows: [1],
+                            //                                provider: function(columnKey) {
+                            //                                    self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
+                            //                                    return $("#popup-area8");
+                            //                                }
+                            //                            }
 
                         }]
                 };
@@ -627,7 +627,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     horizontalSumBodyRowHeight: "20px",
                     areaResize: true,
                     bodyHeightMode: "dynamic",
-                    windowXOccupation: 25,
+                    windowXOccupation: 134,
                     windowYOccupation: 210,
                     updateMode: "stick",
                     pasteOverWrite: true,
@@ -639,11 +639,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     },
                 })
                     .LeftmostHeader(leftmostHeader).LeftmostContent(leftmostContent)
-                    .MiddleHeader(middleHeader).MiddleContent(middleContent)
+                    //                    .MiddleHeader(middleHeader).MiddleContent(middleContent)
                     .DetailHeader(detailHeader).DetailContent(detailContent)
-                    .VerticalSumHeader(vertSumHeader).VerticalSumContent(vertSumContent)
-                    .LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent)
-                    .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent)
+                    //                    .VerticalSumHeader(vertSumHeader).VerticalSumContent(vertSumContent)
+                    //                    .LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent)
+                    //                    .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent)    
                     .create();
 
                 // set stick single
@@ -755,13 +755,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
                                 ]
                             },
-                            popup: {
-                                rows: [1],
-                                provider: function(columnKey) {
-                                    self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
-                                    return $("#popup-area8");
-                                }
-                            }
+                            //                            popup: {
+                            //                                rows: [1],
+                            //                                provider: function(columnKey) {
+                            //                                    self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
+                            //                                    return $("#popup-area8");
+                            //                                }
+                            //                            }
                         }]
                 };
 
@@ -797,11 +797,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 };
 
                 $("#extable").exTable("updateTable", "leftmost", {}, updateLeftmostContent);
-                $("#extable").exTable("updateTable", "middle", {}, updateMiddleContent);
-                $("#extable").exTable("updateTable", "verticalSummaries", {}, updateVertSumContent);
-                $("#extable").exTable("updateTable", "leftHorizontalSummaries", {}, updateLeftHorzSumContent);
+                //                $("#extable").exTable("updateTable", "middle", {}, updateMiddleContent);
+                //                $("#extable").exTable("updateTable", "verticalSummaries", {}, updateVertSumContent);
+                //                $("#extable").exTable("updateTable", "leftHorizontalSummaries", {}, updateLeftHorzSumContent);
                 $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
-                $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
+                //                $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
                 $("#extable").on("extablecellupdated", function() { });
                 $("#extable").on("extablerowupdated", function() { });
@@ -924,13 +924,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                         { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
                                     ]
                                 },
-                                popup: {
-                                    rows: [1],
-                                    provider: function(columnKey) {
-                                        self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
-                                        return $("#popup-area8");
-                                    }
-                                }
+                                //                                popup: {
+                                //                                    rows: [1],
+                                //                                    provider: function(columnKey) {
+                                //                                        self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
+                                //                                        return $("#popup-area8");
+                                //                                    }
+                                //                                }
 
                             }]
                     };
@@ -945,7 +945,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     };
 
                     $("#extable").exTable("updateTable", "detail", updateDetailHeader, {});
-                    $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, {});
+                    //                    $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, {});
 
                     setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
 
@@ -972,13 +972,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                             { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
                                         ]
                                     },
-                                    popup: {
-                                        rows: [1],
-                                        provider: function(columnKey) {
-                                            self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
-                                            return $("#popup-area8");
-                                        }
-                                    }
+                                    //                                    popup: {
+                                    //                                        rows: [1],
+                                    //                                        provider: function(columnKey) {
+                                    //                                            self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
+                                    //                                            return $("#popup-area8");
+                                    //                                        }
+                                    //                                    }
 
                                 }]
                         };
@@ -1015,7 +1015,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         };
 
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
-                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
+                        //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
                         setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
                     });
@@ -1044,13 +1044,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                             { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
                                         ]
                                     },
-                                    popup: {
-                                        rows: [1],
-                                        provider: function(columnKey) {
-                                            self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
-                                            return $("#popup-area8");
-                                        }
-                                    }
+                                    //                                    popup: {
+                                    //                                        rows: [1],
+                                    //                                        provider: function(columnKey) {
+                                    //                                            self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
+                                    //                                            return $("#popup-area8");
+                                    //                                        }
+                                    //                                    }
                                 }]
                         };
 
@@ -1085,7 +1085,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         };
 
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
-                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
+//                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
                         setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
                     });

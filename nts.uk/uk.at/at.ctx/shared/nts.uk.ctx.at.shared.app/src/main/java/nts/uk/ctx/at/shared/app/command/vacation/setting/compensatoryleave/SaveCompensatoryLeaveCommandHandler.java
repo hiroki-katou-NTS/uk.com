@@ -134,7 +134,8 @@ public class SaveCompensatoryLeaveCommandHandler
 		}
 	}
 
-	public void controllOccurrence(boolean compensManage, CompensatoryOccurrenceSettingDto commandOccurrence,
+	public void controllOccurrence(boolean compensManage,
+			CompensatoryOccurrenceSettingDto commandOccurrence,
 			CompensatoryOccurrenceSetting findOccurrence) {
 		// for certain time
 		if (commandOccurrence.getTransferSetting()

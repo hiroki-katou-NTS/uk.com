@@ -5,6 +5,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Value;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
@@ -172,11 +174,11 @@ class ChangeDateParam {
 	private int uiType;
 
 	public GeneralDate getHolidayDate() {
-		return holidayDate != null ? GeneralDate.fromString(holidayDate, "yyyy/MM/dd") : null;
+		return !StringUtils.isEmpty(holidayDate) ? GeneralDate.fromString(holidayDate, "yyyy/MM/dd") : null;
 	}
 
 	public GeneralDate getTakingOutDate() {
-		return takingOutDate != null ? GeneralDate.fromString(takingOutDate, "yyyy/MM/dd") : null;
+		return !StringUtils.isEmpty(takingOutDate) ? GeneralDate.fromString(takingOutDate, "yyyy/MM/dd") : null;
 	}
 
 }
