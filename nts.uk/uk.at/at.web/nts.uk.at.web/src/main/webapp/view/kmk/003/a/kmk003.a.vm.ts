@@ -321,19 +321,7 @@ module nts.uk.at.view.kmk003.a {
                     self.selectedWorkTimeCode(self.workTimeSettings()[selectedIndex].worktimeCode);
                 }
             }
-            
-            //get infor of worktime by code
-            private getWorkTimeInfo(workTimeCode: string): JQueryPromise<void> {
-                var self = this;
-                let dfd = $.Deferred<void>();
-                //TODO when complete get data from infra
-                service.findWorktimeSetingInfoByCode(workTimeCode).done(function(worktimeInfo: any) {
-                    //TODO set worktimeInfo to mainSettingModel
-                    dfd.resolve();
-                });
-                return dfd.promise();
-            }
-            
+                        
             //get all enums
             private getAllEnums(): JQueryPromise<void> {
                 var self = this;
@@ -1139,7 +1127,7 @@ module nts.uk.at.view.kmk003.a {
                 self.workTimeAtrEnums = _.cloneDeep(enums.workTimeDailyAtr);
                 self.workTimeMethodEnums = _.cloneDeep(enums.workTimeMethodSet);
                 let all = <EnumConstantDto>{};
-                all.value = 3; //TODO: nen cho thanh so may?
+                all.value = 3;
                 all.localizedName = "全て";
                 self.workTimeAtrEnums.unshift(all);
                 self.workTimeMethodEnums.unshift(all);

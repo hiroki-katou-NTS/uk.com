@@ -572,8 +572,6 @@ module nts.uk.at.view.kmk003.a {
                 public resetData(): void {
                     let self = this;
                     self.aheadChange(0);
-                    //TODO
-//                    self.unit.resetData();
                     self.behindChange(0);
                 }
 

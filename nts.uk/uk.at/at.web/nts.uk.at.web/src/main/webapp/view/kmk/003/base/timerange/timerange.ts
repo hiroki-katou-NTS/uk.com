@@ -189,7 +189,7 @@ module kmk003.base.timerange {
             let screenModel = new ScreenModel(input);
             screenModel.element = $(element);
             if (input.enable) {
-                input.enable.subscribe(function(val) {
+                input.enable.subscribe(function(val: any) {
                     screenModel.enable(val);
                 });
             }

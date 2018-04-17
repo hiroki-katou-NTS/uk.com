@@ -148,7 +148,7 @@ module nts.uk.at.view.kmk003.a {
                     this.updateTimeZone(data.lstTimezone);
                 }
 
-                updateTimeZone(data: TimezoneDto[]) {
+                updateTimeZone(data: Array<TimezoneDto>) {
                     let self = this;
                     let shift1 = _.find(data, item => item.workNo == 1);
                     let shift2 = _.find(data, item => item.workNo == 2);
@@ -161,7 +161,7 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 toDto(): PrescribedTimezoneSettingDto {
-                    var lstTimezone: TimezoneDto[] = [];
+                    var lstTimezone: Array<TimezoneDto> = [];
                     lstTimezone.push(this.shiftOne.toDto());
                     lstTimezone.push(this.shiftTwo.toDto());
                     var dataDTO: PrescribedTimezoneSettingDto = {

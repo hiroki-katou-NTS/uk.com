@@ -191,8 +191,8 @@ module nts.uk.at.view.kmk003.a {
                     this.updateTimezone(data.lstOTTimezone);
                 }
                 
-                updateTimezone(lstOTTimezone: FlOTTimezoneDto[]) {
-                    var dataModelTimezone: FlowOTTimezoneModel[] = [];
+                updateTimezone(lstOTTimezone: Array<FlOTTimezoneDto>) {
+                    var dataModelTimezone: Array<FlowOTTimezoneModel> = [];
                     for (var dataDTO of lstOTTimezone) {
                         var dataModel: FlowOTTimezoneModel = new FlowOTTimezoneModel();
                         dataModel.updateData(dataDTO);
@@ -207,7 +207,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 toDto(): FlWorkTzSettingDto {
-                    let lstOTTimezone: FlOTTimezoneDto[] = _.map(this.lstOTTimezone(), (dataModel) => dataModel.toDto());
+                    let lstOTTimezone: Array<FlOTTimezoneDto> = _.map(this.lstOTTimezone(), (dataModel) => dataModel.toDto());
                     
                     let dataDTO: FlWorkTzSettingDto = {
                         workTimeRounding: this.workTimeRounding.toDto(),
@@ -385,8 +385,8 @@ module nts.uk.at.view.kmk003.a {
                     this.updateHDTimezone(data.lstWorkTimezone);
                 }
                 
-                updateHDTimezone(lstWorkTimezone: FlWorkHdTimeZoneDto[]) {                   
-                    let dataModelWorktimezone: FlowWorkHdTimeZoneModel[] = [];
+                updateHDTimezone(lstWorkTimezone: Array<FlWorkHdTimeZoneDto>) {                   
+                    let dataModelWorktimezone: Array<FlowWorkHdTimeZoneModel> = [];
                     for (let dataDTO of lstWorkTimezone) {
                         let dataModel: FlowWorkHdTimeZoneModel = new FlowWorkHdTimeZoneModel();
                         dataModel.updateData(dataDTO);
@@ -400,7 +400,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 toDto(): FlOffdayWorkTzDto {
-                    var lstWorkTimezone: FlWorkHdTimeZoneDto[] = [];
+                    var lstWorkTimezone: Array<FlWorkHdTimeZoneDto> = [];
                     for (var dataModel of this.lstWorkTimezone()) {
                         lstWorkTimezone.push(dataModel.toDto());
                     }
@@ -443,7 +443,7 @@ module nts.uk.at.view.kmk003.a {
 
             export class FlowStampReflectTzModel {
                 twoTimesWorkReflectBasicTime: KnockoutObservable<number>;
-                stampReflectTimezones: StampReflectTimezoneModel[];
+                stampReflectTimezones: Array<StampReflectTimezoneModel>;
 
                 constructor() {
                     this.twoTimesWorkReflectBasicTime = ko.observable(60);
@@ -477,7 +477,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 toDto(): FlStampReflectTzDto {
-                    var stampReflectTimezones: StampReflectTimezoneDto[] = [];
+                    var stampReflectTimezones: Array<StampReflectTimezoneDto> = [];
                     for (var dataModel of this.stampReflectTimezones) {
                         stampReflectTimezones.push(dataModel.toDto());
                     }
