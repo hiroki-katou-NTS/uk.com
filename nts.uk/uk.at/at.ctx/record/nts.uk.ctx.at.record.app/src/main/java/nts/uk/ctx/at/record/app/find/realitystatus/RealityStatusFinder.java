@@ -18,7 +18,7 @@ import nts.uk.ctx.at.record.dom.adapter.request.application.dto.SendMailResultIm
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.application.realitystatus.RealityStatusService;
-import nts.uk.ctx.at.record.dom.application.realitystatus.enums.TransmissionAttr;
+import nts.uk.ctx.at.record.dom.application.realitystatus.enums.ApprovalStatusMailType;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.DailyConfirmOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.EmpPerformanceOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.ErrorStatusOutput;
@@ -50,7 +50,7 @@ public class RealityStatusFinder {
 		List<WkpIdMailCheckOutput> listWkp = this.getWkpIdMailCheck(dto.getListWkp());
 		// アルゴリズム「承認状況未確認メール送信実行」を実行する
 		SendMailResultImport result = realityStatusService.exeSendUnconfirmMail(
-				EnumAdaptor.valueOf(dto.getType(), TransmissionAttr.class), listWkp, dto.getStartDate(),
+				EnumAdaptor.valueOf(dto.getType(), ApprovalStatusMailType.class), listWkp, dto.getStartDate(),
 				dto.getEndDate(), dto.getListEmpCd());
 		return new SendMailResultDto(result.isOK(), result.getListError());
 	}
