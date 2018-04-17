@@ -168,4 +168,68 @@ public class DailyWork extends DomainObject { // 1日の勤務
 		return this.oneDay == WorkTypeClassification.Holiday;
 	}
 	
+	
+	/**
+	 * 1日年休の場合であるか
+	 * @return 1日年休である
+	 */
+	public boolean isOneOrHalfAnnualHoliday() {
+		if(this.workTypeUnit.isOneDay()) {
+			return this.getOneDay().isAnnualLeave();
+		}
+		else {
+			return this.getMorning().isAnnualLeave() && this.getAfternoon().isAnnualLeave();
+		}
+	}
+	
+	/**
+	 * 特別休暇の場合であるか
+	 * @return 特別休暇である
+	 */
+	public boolean isOneOrHalfDaySpecHoliday() {
+		if(this.workTypeUnit.isOneDay()) {
+			return this.getOneDay().isSpecialHoliday();
+		}
+		else {
+			return this.getMorning().isSpecialHoliday() && this.getAfternoon().isSpecialHoliday();
+		}
+	}
+	
+	/**
+	 * 積立年休の場合であるか
+	 * @return 積立年休である
+	 */
+	public boolean isOneOrHalfDayYearlyReserved() {
+		if(this.workTypeUnit.isOneDay()) {
+			return this.getOneDay().isYearlyReserved();
+		}
+		else {
+			return this.getMorning().isYearlyReserved() && this.getAfternoon().isYearlyReserved();
+		}
+	}
+	
+	public WorkTypeRangeForPred decisionWorkTypeRange() {
+		if(oneDay.isWeekDayAttendance()) {
+			return WorkTypeRangeForPred.ONEDAY;
+		}
+		else if(morning.isWeekDayAttendance() &&(afternoon.isHoliday() || afternoon.isShooting())) {
+			return WorkTypeRangeForPred.MORNING;
+		}
+		else if((morning.isHoliday() || morning.isShooting()) && afternoon.isWeekDayAttendance()) {
+			return WorkTypeRangeForPred.AFTERNOON;
+		}
+		else if(oneDay.isVacation()) {
+			return WorkTypeRangeForPred.ONEDAY;
+		}
+		else if(morning.isVacation() && afternoon.isVacation()) {
+			return WorkTypeRangeForPred.ONEDAY; 
+		} 
+		else if(morning.isVacation() &&(afternoon.isHoliday()||afternoon.isShooting())) {
+			return WorkTypeRangeForPred.MORNING;
+		}
+		else if((morning.isHoliday()||morning.isShooting()) && morning.isVacation()) {
+			return WorkTypeRangeForPred.AFTERNOON;
+		}
+		return WorkTypeRangeForPred.NOTHING;
+	}
 }

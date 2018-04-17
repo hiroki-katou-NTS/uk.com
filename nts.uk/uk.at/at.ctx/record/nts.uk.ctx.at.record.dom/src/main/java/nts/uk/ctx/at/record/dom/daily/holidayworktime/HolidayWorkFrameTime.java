@@ -32,8 +32,8 @@ public class HolidayWorkFrameTime {
 		this.beforeApplicationTime = beforeApplicationTime;
 	}
 	
-	public void addHolidayTime(AttendanceTime holidayWorkTime) {
-		this.holidayWorkTime = Finally.of(this.holidayWorkTime.get().addMinutes(holidayWorkTime, holidayWorkTime));
+	public void addHolidayTime(AttendanceTime time,AttendanceTime calcTime) {
+		this.holidayWorkTime = Finally.of(this.holidayWorkTime.get().addMinutes(time, calcTime));
 	}
 	
 	//休出枠Noのみ指定した休出枠Noに更新する

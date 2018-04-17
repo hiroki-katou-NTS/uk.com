@@ -999,17 +999,17 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     }
                 }
             });
-            //休憩時間
-            for (let i = 0; i < self.overtimeHours().length; i++) {
-                self.overtimeHours()[i].applicationTime.subscribe(value => {
-                    if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
-                        if (self.preWorkContent.overtimeHours[i].applicationTime != value) {
-                            //→エラーＭＳＧ
-                            self.calculateFlag(1);
-                        }
-                    }
-                });
-            }
+//            //休憩時間
+//            for (let i = 0; i < self.overtimeHours().length; i++) {
+//                self.overtimeHours()[i].applicationTime.subscribe(value => {
+//                    if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
+//                        if (self.preWorkContent.overtimeHours[i].applicationTime != value) {
+//                            //→エラーＭＳＧ
+//                            self.calculateFlag(1);
+//                        }
+//                    }
+//                });
+//            }
         }
         private changeOvertimeHours(data){
             let self = this;
