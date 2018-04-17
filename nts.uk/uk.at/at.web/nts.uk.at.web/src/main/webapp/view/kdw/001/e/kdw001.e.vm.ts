@@ -195,7 +195,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                     });
                 })
                 .while(info => info.pending || info.running)
-                .pause(100)
+                .pause(1000)
             );
         }
 
