@@ -57,6 +57,7 @@ import nts.uk.ctx.at.record.dom.daily.vacationusetime.TimeDigestOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -195,6 +196,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 
 	@Inject
 	private HolidayAddtionRepository holidayAddtionRepository;
+	
+	@Inject
+	private CalculationErrorCheckService calculationErrorCheckService;
 
 	/**
 	 * 勤務情報を取得して計算
@@ -218,7 +222,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		if (integrationOfDaily.getAffiliationInfor() == null)
 			return integrationOfDaily;
 		// 実績データの計算
-		return this.calcDailyAttendancePerformance(integrationOfDaily);
+		val afterCalcResult = this.calcDailyAttendancePerformance(integrationOfDaily);
+		//エラーチェック
+		return calculationErrorCheckService.errorCheck(afterCalcResult);
 	}
 
 	private IntegrationOfDaily calcDailyAttendancePerformance(IntegrationOfDaily integrationOfDaily) {

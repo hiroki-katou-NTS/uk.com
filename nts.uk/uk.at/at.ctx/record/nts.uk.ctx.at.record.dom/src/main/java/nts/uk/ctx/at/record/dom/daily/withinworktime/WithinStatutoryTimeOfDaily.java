@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDay;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BreakTimeManagement;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
@@ -46,6 +47,7 @@ import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 日別実績の所定内時間
@@ -219,15 +221,16 @@ public class WithinStatutoryTimeOfDaily {
 	}
 	
 	public List<EmployeeDailyPerError> checkWithinMidNightExcess(String employeeId,
-			                                               		 GeneralDate targetDate,
-			                                               		 ErrorAlarmWorkRecordCode errorCode) {
+																 GeneralDate targetDate,
+																 String searchWord,
+																 AttendanceItemDictionaryForCalc attendanceItemDictionary,
+																 ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
 		if(this.getWithinStatutoryMidNightTime().isOverLimitDivergenceTime()) {
-			//社員の日別実績エラー一覧取得↓へ入れる			
-		}
-
-			
-			
+			val itemId = attendanceItemDictionary.findId(searchWord);
+			if(itemId.isPresent())
+				returnErrorItem.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
+			}
 		return returnErrorItem;
 	}
 }

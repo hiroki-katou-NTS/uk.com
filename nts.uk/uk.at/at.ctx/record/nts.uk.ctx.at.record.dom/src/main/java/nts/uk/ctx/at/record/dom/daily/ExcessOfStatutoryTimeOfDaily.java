@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
@@ -53,6 +54,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 日別実績の所定外時間
@@ -212,15 +214,18 @@ public class ExcessOfStatutoryTimeOfDaily {
 				   						  new AttendanceTime(0));
 	}
 	
+	
 	/**
 	 * 残業時間超過 
 	 */
 	public List<EmployeeDailyPerError> checkOverTimeExcess(String employeeId,
 														   GeneralDate targetDate,
+														   String searchWord,
+														   AttendanceItemDictionaryForCalc attendanceItemDictionary,
 														   ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
 		if(this.getOverTimeWork().isPresent())
-			returnErrorItem = this.getOverTimeWork().get().checkOverTimeExcess(employeeId,targetDate,errorCode);
+			returnErrorItem = this.getOverTimeWork().get().checkOverTimeExcess(employeeId,targetDate,searchWord, attendanceItemDictionary,errorCode);
 		return returnErrorItem;
 	}
 	
@@ -229,10 +234,12 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 */
 	public List<EmployeeDailyPerError> checkPreOverTimeExcess(String employeeId,
 														   GeneralDate targetDate,
+														   String searchWord,
+														   AttendanceItemDictionaryForCalc attendanceItemDictionary,
 														   ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
 		if(this.getOverTimeWork().isPresent())
-			returnErrorItem = this.getOverTimeWork().get().checkOverTimeExcess(employeeId,targetDate,errorCode);
+			returnErrorItem = this.getOverTimeWork().get().checkOverTimeExcess(employeeId,targetDate,searchWord, attendanceItemDictionary, errorCode);
 		return returnErrorItem;
 	}
 	/**
@@ -240,10 +247,12 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 */
 	public List<EmployeeDailyPerError> checkFlexTimeExcess(String employeeId,
 			   											   GeneralDate targetDate,
-			   											   ErrorAlarmWorkRecordCode errorCode) {
+														   String searchWord,
+														   AttendanceItemDictionaryForCalc attendanceItemDictionary,
+														   ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
 		if(this.getOverTimeWork().isPresent())
-			returnErrorItem = this.getOverTimeWork().get().checkFlexTimeExcess(employeeId,targetDate,errorCode);
+			returnErrorItem = this.getOverTimeWork().get().checkFlexTimeExcess(employeeId,targetDate,searchWord, attendanceItemDictionary, errorCode);
 		return returnErrorItem;
 	}
 	
@@ -252,10 +261,12 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 */
 	public List<EmployeeDailyPerError> checkPreFlexTimeExcess(String employeeId,
 			   											   GeneralDate targetDate,
-			   											   ErrorAlarmWorkRecordCode errorCode) {
+														   String searchWord,
+														   AttendanceItemDictionaryForCalc attendanceItemDictionary,
+														   ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
 		if(this.getOverTimeWork().isPresent())
-			returnErrorItem = this.getOverTimeWork().get().checkFlexTimeExcess(employeeId,targetDate,errorCode);
+			returnErrorItem = this.getOverTimeWork().get().checkFlexTimeExcess(employeeId,targetDate,searchWord, attendanceItemDictionary, errorCode);
 		return returnErrorItem;
 	}
 	
@@ -264,10 +275,12 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 */
 	public List<EmployeeDailyPerError> checkHolidayWorkTimeExcess(String employeeId,
 														   		  GeneralDate targetDate,
-														   		  ErrorAlarmWorkRecordCode errorCode) {
+																   String searchWord,
+																   AttendanceItemDictionaryForCalc attendanceItemDictionary,
+																   ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
 		if(this.getWorkHolidayTime().isPresent())
-			returnErrorItem = this.getWorkHolidayTime().get().checkHolidayWorkExcess(employeeId,targetDate,errorCode);
+			returnErrorItem = this.getWorkHolidayTime().get().checkHolidayWorkExcess(employeeId,targetDate,searchWord, attendanceItemDictionary, errorCode);
 		return returnErrorItem;
 	}
 	
@@ -276,30 +289,38 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 */
 	public List<EmployeeDailyPerError> checkPreHolidayWorkTimeExcess(String employeeId,
 														   		  GeneralDate targetDate,
-														   		  ErrorAlarmWorkRecordCode errorCode) {
+																   String searchWord,
+																   AttendanceItemDictionaryForCalc attendanceItemDictionary,
+																   ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
 		if(this.getWorkHolidayTime().isPresent())
-			returnErrorItem = this.getWorkHolidayTime().get().checkPreHolidayWorkExcess(employeeId,targetDate,errorCode);
+			returnErrorItem = this.getWorkHolidayTime().get().checkPreHolidayWorkExcess(employeeId,targetDate,searchWord, attendanceItemDictionary, errorCode);
 		return returnErrorItem;
 	}
 	
 	/**
-	 * 所定外深夜時間超過 
+	 * 所定外深夜時間超過
 	 */
 	public List<EmployeeDailyPerError> checkMidNightExcess(String employeeId,
 			   											   GeneralDate targetDate,
-			   											   ErrorAlarmWorkRecordCode errorCode) {
-		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
+														   String searchWord,
+														   AttendanceItemDictionaryForCalc attendanceItemDictionary,
+														   ErrorAlarmWorkRecordCode errorCode) {
+		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
 		if(this.getExcessOfStatutoryMidNightTime().isOverLimitDivergenceTime()) {
-			
+			val itemId = attendanceItemDictionary.findId(searchWord);
+			if(itemId.isPresent())
+				returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
 		}
-			//社員の日別実績エラー一覧処理  returnErrorItem = this.getExcessOfStatutoryMidNightTime();
 		//残業深夜
-		//checkOverTimeExcess(employeeId,targetDate, errorCode);
+		if(this.getOverTimeWork().isPresent()) {
+			returnErrorList.addAll(this.getOverTimeWork().get().checkNightTimeExcess(employeeId,targetDate, searchWord, attendanceItemDictionary, errorCode));
+		}
 		//休出深夜
-		//checkHolidayWorkTimeExcess(employeeId,targetDate, errorCode);
-		
-		return returnErrorItem;
+		if(this.getWorkHolidayTime().isPresent()) {
+			returnErrorList.addAll(this.getWorkHolidayTime().get().checkNightTimeExcess(employeeId,targetDate, attendanceItemDictionary, errorCode));
+		}
+		return returnErrorList;
 	}
 	
 	/**
@@ -307,11 +328,16 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 */
 	public List<EmployeeDailyPerError> checkPreMidNightExcess(String employeeId,
 			   											   GeneralDate targetDate,
-			   											   ErrorAlarmWorkRecordCode errorCode) {
-		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
+														   String searchWord,
+														   AttendanceItemDictionaryForCalc attendanceItemDictionary,
+														   ErrorAlarmWorkRecordCode errorCode) {
+		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
 		if(this.getExcessOfStatutoryMidNightTime().isPreOverLimitDivergenceTime()) {
-			//社員の日別実績エラー一覧
+			val itemId = attendanceItemDictionary.findId(searchWord);
+			if(itemId.isPresent())
+				returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
 		}
-		return returnErrorItem;
+		return returnErrorList;
 	}
+	
 }

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -51,6 +52,19 @@ public class EmployeeDailyPerError extends AggregateRoot {
 		this.employeeID = employeeID;
 		this.date = date;
 		this.errorAlarmWorkRecordCode = errorAlarmWorkRecordCode;
+		this.attendanceItemList = attendanceItemList;
+		this.errorCancelAble = 0;
+	}
+	
+	public EmployeeDailyPerError(String companyID, String employeeID, GeneralDate date,
+			ErrorAlarmWorkRecordCode errorAlarmWorkRecordCode, Integer attendanceItem) {
+		super();
+		this.companyID = companyID;
+		this.employeeID = employeeID;
+		this.date = date;
+		this.errorAlarmWorkRecordCode = errorAlarmWorkRecordCode;
+		List<Integer> attendanceItemList = new ArrayList<>();
+		attendanceItemList.add(attendanceItem);
 		this.attendanceItemList = attendanceItemList;
 		this.errorCancelAble = 0;
 	}
