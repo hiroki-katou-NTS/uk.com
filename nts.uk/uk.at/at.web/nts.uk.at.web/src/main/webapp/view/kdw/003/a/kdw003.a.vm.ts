@@ -263,7 +263,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var self = this;
             self.dateRanger.subscribe((dateRange) => {
                 if (dateRange && dateRange.startDate && dateRange.endDate) {
-                    self.selectedDate(dateRange.startDate);
+                    
                     var elementDate = dateRange.startDate;
                     if (moment(elementDate, "YYYY/MM/DD").isValid()) {
                         while (!moment(elementDate, "YYYY/MM/DD").isAfter(dateRange.endDate)) {
@@ -272,6 +272,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     }
                     if(self.displayFormat() == 1){
+                        self.selectedDate(dateRange.startDate);
                         self.datePicker().startDate = dateRange.startDate;
                         self.datePicker().endDate = dateRange.endDate; 
                         self.datePicker.valueHasMutated();
@@ -286,7 +287,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 startDate: moment().add(-1, "M").add(1 ,"d").format("YYYY/MM/DD"),
                 endDate: moment().format("YYYY/MM/DD")
             });
-            
         }
 
         initDisplayFormat() {
@@ -818,6 +818,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                  if (self.displayFormat() === 1) {
                     self.datePicker().startDate = self.dateRanger().startDate;
                     self.datePicker().endDate = self.dateRanger().endDate; 
+                    self.selectedDate(self.dateRanger().startDate);
                     self.datePicker.valueHasMutated();
                 }
                 let param = {
