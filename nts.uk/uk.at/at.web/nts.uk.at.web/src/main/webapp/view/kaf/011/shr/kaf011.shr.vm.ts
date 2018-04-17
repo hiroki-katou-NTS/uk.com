@@ -46,10 +46,8 @@ module nts.uk.at.view.kaf011.shr {
             }
             updateData(param) {
                 if (param) {
-                    this.startTime(param.startTime || null);
-                    this.endTime(param.endTime || null);
-                    this.startType(param.startType != undefined ? param.startType : 1);
-                    this.endType(param.endType != undefined ? param.endType : 1);
+                    this.startTime(param.start || null);
+                    this.endTime(param.end || null);
                 }
             }
         }
@@ -196,39 +194,32 @@ module nts.uk.at.view.kaf011.shr {
                     block.invisible();
                     service.changeWkType(changeWkTypeParam).done((data: IChangeWorkType) => {
                         if (data) {
-                            if (data.timezoneUseDtos) {
-                                let timeZone1 = data.timezoneUseDtos[0];
-                                let timeZone2 = data.timezoneUseDtos[1];
+                            if (vm.screenModeNew()) {
+                                if (data.timezoneUseDtos) {
+                                    let timeZone1 = data.timezoneUseDtos[0];
+                                    let timeZone2 = data.timezoneUseDtos[1];
 
-                                timeZone1 ? self.wkTime1().updateData(timeZone1) : self.wkTime1().clearData();
+                                    timeZone1 ? self.wkTime1().updateData(timeZone1) : self.wkTime1().clearData();
 
-                                timeZone2 ? self.wkTime2().updateData(timeZone2) : self.wkTime2().clearData();
+                                    timeZone2 ? self.wkTime2().updateData(timeZone2) : self.wkTime2().clearData();
 
-                            } else {
-                                self.wkTime1().clearData();
-                                self.wkTime2().clearData();
+                                } else {
+                                    self.wkTime1().clearData();
+                                    self.wkTime2().clearData();
+                                }
                             }
                             self.wkType().workAtr(data.wkType.workAtr);
                             self.wkType().morningCls(data.wkType.morningCls);
                             self.wkType().afternoonCls(data.wkType.afternoonCls);
-                            self.updateWorkingText();
                         }
                     }).always(() => {
                         block.clear();
                     });
 
                 });
-
-                self.wkTime1().startTime.subscribe((newValue) => {
-                    self.updateWorkingText();
-                });
-                self.wkTime1().endTime.subscribe((newValue) => {
-
-                    self.updateWorkingText();
-                });
-                self.wkTypes.subscribe((item) => {
-                    if (item.length) {
-                        self.wkTypeCD(item[0].workTypeCode);
+                self.wkTypes.subscribe((items) => {
+                    if (items.length && !(_.find(items, ['workTypeCode', self.wkTypeCD()]))) {
+                        self.wkTypeCD(items[0].workTypeCode);
                     }
                 });
 
@@ -371,12 +362,11 @@ module nts.uk.at.view.kaf011.shr {
 
             openKDL003() {
                 let self = this,
-                    workTypeCodes = self.wkTypes().map(function(x) { return x.workTypeCode; }),
                     selectedWorkTypeCode = self.wkTypeCD(),
                     WorkTimeCd = self.wkTimeCD();
 
                 nts.uk.ui.windows.setShared('parentCodes', {
-                    workTypeCodes: workTypeCodes,
+                    workTypeCodes: [selectedWorkTypeCode],
                     selectedWorkTypeCode: selectedWorkTypeCode,
                     workTimeCodes: [],
                     selectedWorkTimeCode: WorkTimeCd,
@@ -399,8 +389,6 @@ module nts.uk.at.view.kaf011.shr {
                         if (childData.selectedWorkTimeCode && childData.selectedWorkTimeName) {
                             self.updateWorkingText();
                         }
-
-
                     }
                 });
 

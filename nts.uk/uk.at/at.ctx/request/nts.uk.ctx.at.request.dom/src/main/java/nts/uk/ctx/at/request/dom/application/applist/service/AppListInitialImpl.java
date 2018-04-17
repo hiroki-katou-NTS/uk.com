@@ -1162,6 +1162,12 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				statusFrame.setAgentId(frame.getRepresenterID());
 				break;
 			}
+			//TH login la agent va da approval
+			if(frame.getRepresenterID() != null && frame.getRepresenterID().equals(sID)){
+				statusFrame.setFrameStatus(frame.getApprovalAtr().value);
+				statusFrame.setAgentId(frame.getRepresenterID());
+				break;
+			}
 		}
 		return statusFrame;
 	}
