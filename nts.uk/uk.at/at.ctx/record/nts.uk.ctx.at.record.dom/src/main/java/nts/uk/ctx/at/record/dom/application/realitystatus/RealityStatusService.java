@@ -4,7 +4,7 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.request.application.dto.SendMailResultImport;
-import nts.uk.ctx.at.record.dom.application.realitystatus.enums.TransmissionAttr;
+import nts.uk.ctx.at.record.dom.application.realitystatus.enums.ApprovalStatusMailType;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.EmpPerformanceOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.StatusWkpActivityOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.UseSetingOutput;
@@ -25,7 +25,7 @@ public interface RealityStatusService {
 	/**
 	 * 承認状況未確認メール送信実行
 	 */
-	SendMailResultImport exeSendUnconfirmMail(TransmissionAttr type, List<WkpIdMailCheckOutput> listWkp, GeneralDate startDate,
+	SendMailResultImport exeSendUnconfirmMail(ApprovalStatusMailType type, List<WkpIdMailCheckOutput> listWkp, GeneralDate startDate,
 			GeneralDate endDate, List<String> listEmpCd);
 	/**
 	 * 承認状況取得実績使用設定

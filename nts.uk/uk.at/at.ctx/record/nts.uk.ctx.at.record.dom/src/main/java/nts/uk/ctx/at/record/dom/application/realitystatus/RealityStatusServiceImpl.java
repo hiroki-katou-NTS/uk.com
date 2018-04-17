@@ -20,7 +20,7 @@ import nts.uk.ctx.at.record.dom.adapter.request.application.dto.SendMailResultIm
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
-import nts.uk.ctx.at.record.dom.application.realitystatus.enums.TransmissionAttr;
+import nts.uk.ctx.at.record.dom.application.realitystatus.enums.ApprovalStatusMailType;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.DailyConfirmOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.EmpPerformanceOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.EmpUnconfirmResultOutput;
@@ -287,7 +287,7 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 	}
 
 	@Override
-	public SendMailResultImport exeSendUnconfirmMail(TransmissionAttr type, List<WkpIdMailCheckOutput> listWkp,
+	public SendMailResultImport exeSendUnconfirmMail(ApprovalStatusMailType type, List<WkpIdMailCheckOutput> listWkp,
 			GeneralDate startDate, GeneralDate endDate, List<String> listEmpCd) {
 		// アルゴリズム「承認状況未確認メール送信社員取得」を実行する
 		EmpUnconfirmResultOutput result = this.getListEmpUnconfirm(type, listWkp, startDate, endDate, listEmpCd);
@@ -311,7 +311,7 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 	 * @param listWkp
 	 * @return
 	 */
-	private EmpUnconfirmResultOutput getListEmpUnconfirm(TransmissionAttr type, List<WkpIdMailCheckOutput> listWkpId,
+	private EmpUnconfirmResultOutput getListEmpUnconfirm(ApprovalStatusMailType type, List<WkpIdMailCheckOutput> listWkpId,
 			GeneralDate closureStart, GeneralDate closureEnd, List<String> listEmpCd) {
 		List<String> listSId = new ArrayList<>();
 		// 職場一覧
@@ -487,7 +487,7 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 	 *            送信区分
 	 */
 	private MailTranmissionContentResultOutput getUnconfirmEmailContent(List<EmployeeUnconfirmImport> listEmpUmconfirm,
-			TransmissionAttr type) {
+			ApprovalStatusMailType type) {
 		List<MailTransmissionContentOutput> listMail = new ArrayList<>();
 		// アルゴリズム「承認状況メール本文取得」を実行する
 		ApprovalStatusMailTempImport mailDomain = approvalStatusRequestAdapter.getApprovalStatusMailTemp(type.value);
