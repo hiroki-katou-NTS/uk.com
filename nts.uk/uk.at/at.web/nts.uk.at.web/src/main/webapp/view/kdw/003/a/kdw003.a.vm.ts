@@ -257,6 +257,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         self.datePicker().startDate = dateRange.startDate;
                         self.datePicker().endDate = dateRange.endDate; 
                         self.datePicker.valueHasMutated();
+                        self.selectedDate(dateRange.startDate);
                     }
                 }
             });
