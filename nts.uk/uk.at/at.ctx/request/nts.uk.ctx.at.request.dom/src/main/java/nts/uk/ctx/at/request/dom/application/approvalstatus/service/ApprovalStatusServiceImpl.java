@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.mail.send.MailContents;
@@ -300,7 +301,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	public SendMailResultOutput sendTestMail(int mailType) {
 		// 会社ID
 		String cid = AppContexts.user().companyId();
-		// ドメインモデル「承認状況メールテンプレート」を取得する
+		// アルゴリズム「承認状況メール本文取得」を実行する
 		ApprovalStatusMailTemp domain = approvalStatusMailTempRepo.getApprovalStatusMailTempById(cid, mailType).get();
 		// 社員ID
 		String sid = AppContexts.user().employeeId();
@@ -316,18 +317,17 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// ログイン者よりメール送信内容を作成する(create nội dung send mail theo người login)
 		List<MailTransmissionContentOutput> listMailContent = new ArrayList<MailTransmissionContentOutput>();
 		listMailContent.add(new MailTransmissionContentOutput(sid, sName, mailAddr, subject, text));
-		// UseSetingDto transmissionAttr = this.getUseSeting();
 		// アルゴリズム「承認状況メール送信実行」を実行する
-		return this.exeApprovalStatusMailTransmission(listMailContent, domain);
+		return this.exeApprovalStatusMailTransmission(listMailContent, domain, EnumAdaptor.valueOf(mailType, ApprovalStatusMailType.class));
 	}
 
 	@Override
 	public SendMailResultOutput exeApprovalStatusMailTransmission(List<MailTransmissionContentOutput> listMailContent,
-			ApprovalStatusMailTemp domain) {
+			ApprovalStatusMailTemp domain, ApprovalStatusMailType mailType) {
 		List<String> listError = new ArrayList<>();
 		for (MailTransmissionContentOutput mailTransmission : listMailContent) {
 			// アルゴリズム「承認状況メール埋込URL取得」を実行する
-			EmbeddedUrlOutput embeddedURL = this.getEmbeddedURL(mailTransmission.getSId(), domain);
+			EmbeddedUrlOutput embeddedURL = this.getEmbeddedURL(mailTransmission.getSId(), domain, mailType);
 			try {
 				// アルゴリズム「メールを送信する」を実行する
 				mailsender.send("nts", mailTransmission.getMailAddr(),
@@ -353,7 +353,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	 * @param domain
 	 * @param transmissionAttr
 	 */
-	private EmbeddedUrlOutput getEmbeddedURL(String eid, ApprovalStatusMailTemp domain) {
+	private EmbeddedUrlOutput getEmbeddedURL(String eid, ApprovalStatusMailTemp domain, ApprovalStatusMailType mailType) {
 		// TODO waiting for Hiệp
 		String url1 = "123123123";
 		String url2 = "1231ád23123";
@@ -413,7 +413,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		MailTransmissionContentResultOutput getMailTransmissContent = this.getMailTransmissContent(listApprovalPerson);
 		// アルゴリズム「承認状況メール送信実行」を実行する
 		this.exeApprovalStatusMailTransmission(getMailTransmissContent.getListMailTransmisContent(),
-				getMailTransmissContent.getMailDomain());
+				getMailTransmissContent.getMailDomain(), EnumAdaptor.valueOf(0, ApprovalStatusMailType.class));
 	}
 
 	/**

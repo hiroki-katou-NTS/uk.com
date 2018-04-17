@@ -300,7 +300,7 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 				type);
 		// アルゴリズム「承認状況メール送信実行」を実行する
 		return approvalStatusRequestAdapter.exeApprovalStatusMailTransmission(mailResult.getListMail(),
-				mailResult.getApprovalStatusMailTemp());
+				mailResult.getApprovalStatusMailTemp(), type.value);
 	}
 
 	/**
@@ -533,8 +533,7 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 			if (useSetting.isMonthlyConfirm()) {
 				// imported（ワークフロー）「承認ルート状況」を取得する
 				Optional<ApproveRootStatusForEmpImport> appRootStatus = approvalStatusAdapter
-						.getApprovalByEmplAndDate(startDate, endDate, emp.getSId(), cId, 2).stream()
-						.findFirst();
+						.getApprovalByEmplAndDate(startDate, endDate, emp.getSId(), cId, 2).stream().findFirst();
 				if (appRootStatus.isPresent()) {
 					routeStatus = appRootStatus.get();
 				}

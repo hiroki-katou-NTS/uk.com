@@ -66,8 +66,8 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 self.closureId = params.closureId;
                 self.closureName = params.closureName;
                 self.processingYm = params.processingYm;
-                self.currentMonth = formatDate(new Date(params.processingYm), 'MM')
-                self.startDateFormat = formatDate(new Date(params.startDate), 'yyyy/MM/dd');
+                self.currentMonth = params.processingYm.split('/')[1],
+                    self.startDateFormat = formatDate(new Date(params.startDate), 'yyyy/MM/dd');
                 self.endDateFormat = formatDate(new Date(params.endDate), 'yyyy/MM/dd');
                 self.startDate = params.startDate;
                 self.endDate = params.endDate;
@@ -252,11 +252,11 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 
             //create leftMost Header and Content
             leftmostColumns = [
-                { headerText: text("KAF018_60"), key: "sName", width: "150px", control: "link", handler: function(rData, rowIdx, key) {} }
+                { headerText: text("KAF018_60"), key: "sName", width: "150px", control: "link", handler: function(rData, rowIdx, key) { } }
             ];
 
             if (self.useSetting.monthlyConfirm) {
-                leftmostColumns.push({ headerText: formatText(text("KAF018_61"), self.currentMonth), key: "monthConfirm", width: "40px", headerControl: "link", headerHandler: function() {} });
+                leftmostColumns.push({ headerText: formatText(text("KAF018_61"), self.currentMonth), key: "monthConfirm", width: "40px", headerControl: "link", headerHandler: function() { } });
             }
             if (self.useSetting.usePersonConfirm) {
                 leftmostColumns.push({ headerText: text("KAF018_62"), key: "personConfirm", width: "40px" });
@@ -392,7 +392,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
          * Set color for cell detail
          * 
          */
-        setColorForCellContentDetail(listData): JQueryPromise<any> {
+        setColorForCellContentDetail(listData: Array<EmpPerformance>): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             let detailContentDeco = [];
             for (let i = 0; i < listData.length; i++) {
@@ -428,7 +428,6 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                     j++;
                 }
             }
-            console.log(listData);
             dfd.resolve(detailContentDeco);
             return dfd.promise();
         }
@@ -443,7 +442,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         bossConfirm: String;
         dailyReport: Array<DailyPerformance>;
 
-        constructor(index: String, sId: String, sName: String, monthConfirm: String, personConfirm: String, bossConfirm: String, dailyReport: Array<number>) {
+        constructor(index: String, sId: String, sName: String, monthConfirm: String, personConfirm: String, bossConfirm: String, dailyReport: Array<DailyPerformance>) {
             this.index = index;
             this.sId = sId;
             this.sName = sName;
