@@ -239,7 +239,7 @@ module nts.uk.at.view.kmk003.a {
                 holidayCalculation: HolidayCalculationModel;
 
                 constructor() {
-                    this.zeroHStraddCalculateSet = ko.observable(true);
+                    this.zeroHStraddCalculateSet = ko.observable(false);
                     this.intervalSet = new IntervalTimeSettingModel();
                     this.subHolTimeSet = WorkTimezoneOtherSubHolTimeSetModel.getDefaultData();
                     this.raisingSalarySet = ko.observable('');
@@ -331,7 +331,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 resetData() {
-                    this.zeroHStraddCalculateSet(true);
+                    this.zeroHStraddCalculateSet(false);
                     this.intervalSet.resetData();
 
                     let workDayOffTimeSet = _.find(this.subHolTimeSet, o => o.originAtr() == SubHolidayOriginAtr.WORK_DAY_OFF_TIME);
@@ -1615,9 +1615,9 @@ module nts.uk.at.view.kmk003.a {
                 childCareWorkUse: KnockoutObservable<boolean>;
 
                 constructor() {
-                    this.nursTimezoneWorkUse = ko.observable(true);
+                    this.nursTimezoneWorkUse = ko.observable(false);
                     this.employmentTimeDeduct = ko.observable(false);
-                    this.childCareWorkUse = ko.observable(true);
+                    this.childCareWorkUse = ko.observable(false);
                 }
 
                 updateData(data: WorkTimezoneShortTimeWorkSetDto) {
@@ -1636,9 +1636,9 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 resetData() {
-                    this.nursTimezoneWorkUse(true);
+                    this.nursTimezoneWorkUse(false);
                     this.employmentTimeDeduct(false);
-                    this.childCareWorkUse(true);
+                    this.childCareWorkUse(false);
                 }
             }
 

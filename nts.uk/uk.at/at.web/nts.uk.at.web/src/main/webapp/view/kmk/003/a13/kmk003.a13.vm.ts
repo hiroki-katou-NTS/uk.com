@@ -44,7 +44,7 @@ module a13 {
             _self.isNewMode.subscribe((v) => {
                 // Set default value for switch button
                 if (v) {
-                    if (!nts.uk.util.isNullOrUndefined(_self.temporaryWorkTimeSettingRounding)) _self.temporaryWorkTimeSettingRounding(1);
+                    if (!nts.uk.util.isNullOrUndefined(_self.temporaryWorkTimeSettingRounding)) _self.temporaryWorkTimeSettingRounding(0);
                 }    
             });
             

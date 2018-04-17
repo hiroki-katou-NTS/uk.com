@@ -53,10 +53,10 @@ module a9 {
             _self.isNewMode.subscribe((v) => {
                 // Set default value for switch button
                 if (v) {
-                    if (!nts.uk.util.isNullOrUndefined(_self.recordLateSettingRounding)) _self.recordLateSettingRounding(1);
-                    if (!nts.uk.util.isNullOrUndefined(_self.recordLeaveEarlySettingRounding)) _self.recordLeaveEarlySettingRounding(1);
-                    if (!nts.uk.util.isNullOrUndefined(_self.deductionLateSettingRounding)) _self.deductionLateSettingRounding(1);
-                    if (!nts.uk.util.isNullOrUndefined(_self.deductionLeaveEarlySettingRounding)) _self.deductionLeaveEarlySettingRounding(1);
+                    if (!nts.uk.util.isNullOrUndefined(_self.recordLateSettingRounding)) _self.recordLateSettingRounding(0);
+                    if (!nts.uk.util.isNullOrUndefined(_self.recordLeaveEarlySettingRounding)) _self.recordLeaveEarlySettingRounding(0);
+                    if (!nts.uk.util.isNullOrUndefined(_self.deductionLateSettingRounding)) _self.deductionLateSettingRounding(0);
+                    if (!nts.uk.util.isNullOrUndefined(_self.deductionLeaveEarlySettingRounding)) _self.deductionLeaveEarlySettingRounding(0);
                 }    
             });
 

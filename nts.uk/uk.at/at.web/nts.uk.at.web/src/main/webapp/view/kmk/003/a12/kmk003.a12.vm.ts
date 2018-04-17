@@ -45,7 +45,7 @@ module a12 {
             _self.isNewMode.subscribe((v) => {
                 // Set default value for switch button
                 if (v) {
-                    if (!nts.uk.util.isNullOrUndefined(_self.lateNightSettingRounding)) _self.lateNightSettingRounding(1);
+                    if (!nts.uk.util.isNullOrUndefined(_self.lateNightSettingRounding)) _self.lateNightSettingRounding(0);
                 }    
             });
             

@@ -50,8 +50,8 @@ module a15 {
             _self.isNewMode.subscribe((v) => {
                 // Set default value for switch button
                 if (v) {
-                    if (!nts.uk.util.isNullOrUndefined(_self.dayShiftSettingRounding)) _self.dayShiftSettingRounding(1);
-                    if (!nts.uk.util.isNullOrUndefined(_self.nightShiftSettingRounding)) _self.nightShiftSettingRounding(1);
+                    if (!nts.uk.util.isNullOrUndefined(_self.dayShiftSettingRounding)) _self.dayShiftSettingRounding(0);
+                    if (!nts.uk.util.isNullOrUndefined(_self.nightShiftSettingRounding)) _self.nightShiftSettingRounding(0);
                 }    
             });
             

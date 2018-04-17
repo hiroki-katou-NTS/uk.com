@@ -54,11 +54,11 @@ public class EmTimeZoneSetPolicyImpl implements EmTimeZoneSetPolicy {
 				if (!this.isBetweenOneDayTimezone(presTz, emTimezone)) {
 					be.addMessage("Msg_774", "KMK003_86");
 				}
-			} else if (AmPmAtr.AM.equals(dayAtr)) {
+			} else if (AmPmAtr.AM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode) && useHalfDayShift) {
 				if (!isBetweenMorningTimezone(presTz, emTimezone)) {
 					be.addMessage("Msg_774", "KMK003_295");
 				}
-			} else if (AmPmAtr.PM.equals(dayAtr)) {
+			} else if (AmPmAtr.PM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode) && useHalfDayShift) {
 				if (!isBetweenAfternoonTimezone(presTz, emTimezone)) {
 					be.addMessage("Msg_774", "KMK003_296");
 				}
