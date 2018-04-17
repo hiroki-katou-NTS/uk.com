@@ -37,12 +37,11 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 	@Inject
 	private ScheWorkUpdateService scheWork;
 	@Override
-	public ApplicationReflectOutput preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara) {		
+	public boolean preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara) {		
 		try {
 			Optional<WorkInfoOfDailyPerformance> optDailyData = workRepository.find(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate());
 			if(!optDailyData.isPresent()) {
-				return new ApplicationReflectOutput(EnumAdaptor.valueOf(holidayWorkPara.getHolidayWorkPara().getReflectedState().value, ReflectedStateRecord.class), 
-						holidayWorkPara.getHolidayWorkPara().getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(holidayWorkPara.getHolidayWorkPara().getReasonNotReflect().value, ReasonNotReflectRecord.class));
+				return false;
 			}
 			// 予定勤種・就時の反映
 			holidayWorkProcess.updateScheWorkTimeType(holidayWorkPara.getEmployeeId(),
@@ -75,10 +74,9 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 			workUpdate.updateTimeShiftNight(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate(), holidayWorkPara.getHolidayWorkPara().getNightTime(), true);
 			IntegrationOfDaily calculateData = calculate.calculate(overTimeService.calculateForAppReflect(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate()));
 			attendanceTime.updateFlush(calculateData.getAttendanceTimeOfDailyPerformance().get());
-			return new ApplicationReflectOutput(ReflectedStateRecord.REFLECTED, ReasonNotReflectRecord.ACTUAL_CONFIRMED);
+			return true;
 		} catch (Exception e) {
-			return new ApplicationReflectOutput(EnumAdaptor.valueOf(holidayWorkPara.getHolidayWorkPara().getReflectedState().value, ReflectedStateRecord.class), 
-					holidayWorkPara.getHolidayWorkPara().getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(holidayWorkPara.getHolidayWorkPara().getReasonNotReflect().value, ReasonNotReflectRecord.class));
+			return false;
 		}
 		
 	}

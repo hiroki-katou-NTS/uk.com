@@ -18,12 +18,12 @@ public interface AppReflectProcessRecord {
 	 * isPre：事前申請
 	 * @return
 	 */
-	public WorkReflectedStatesInfo gobackReflectRecord(GobackReflectPara para, boolean isPre);
+	public boolean gobackReflectRecord(GobackReflectPara para, boolean isPre);
 	/**
 	 * 残業申請：　 事前申請の処理   
 	 * @return
 	 */
-	public WorkReflectedStatesInfo overtimeReflectRecord(OvertimeReflectPara para, boolean isPre);
+	public boolean overtimeReflectRecord(OvertimeReflectPara para, boolean isPre);
 	/**
 	 * 休暇申請
 	 * @param para
@@ -37,12 +37,12 @@ public interface AppReflectProcessRecord {
 	 * @param isPre
 	 * @return
 	 */
-	public WorkReflectedStatesInfo holidayWorkReflectRecord(HolidayWorkReflectPara para, boolean isPre);
+	public boolean holidayWorkReflectRecord(HolidayWorkReflectPara para, boolean isPre);
 	/**
 	 * 勤務変更申請
 	 * @param para
 	 * @param isPre
 	 * @return
 	 */
-	public WorkReflectedStatesInfo workChangeReflectRecord(CommonReflectPara para, boolean isPre);
+	public boolean workChangeReflectRecord(CommonReflectPara para, boolean isPre);
 }
