@@ -1511,22 +1511,32 @@ module cmm045.a.viewmodel {
             let remandNumner = 0;
             let denialNumber = 0;
             _.each(lstApp, function(app){
-                if(app.appStatus == '未'){ unApprovalNumber += 1; }//UNAPPROVED:5
-                if(app.appStatus == '承認済み'){//APPROVED: 4
+                let add = self.checkSync(self.lstAppCompltSync(), app.appId) ? 2 : 1;
+                if(app.appStatusNo == 5){ unApprovalNumber += 1; }//UNAPPROVED:5
+                if(app.appStatusNo == 4){//APPROVED: 4
                     let agent = self.findAgent(app.appId);
                     if(agent != undefined && agent.agentId != null && agent.agentId != ''){
-                        approvalAgentNumber += 1;
+                        approvalAgentNumber += add;
                     }else{
-                        approvalNumber += 1;
+                        approvalNumber += add;
                     }
                 }
-//                if(app.appStatus == '-'){ approvalAgentNumber += 1; }//-: 0 
-                if(app.appStatus == '取消'){ cancelNumber += 1; }//CANCELED: 3
-                if(app.appStatus == '差戻'){ remandNumner += 1; }//REMAND: 2
-                if(app.appStatus == '否'){ denialNumber += 1; }//DENIAL: 1
+                if(app.appStatusNo == 3){ cancelNumber += add; }//CANCELED: 3
+                if(app.appStatusNo == 2){ remandNumner += add; }//REMAND: 2
+                if(app.appStatusNo == 1){ denialNumber += add; }//DENIAL: 1
             })
             return new vmbase.ApplicationStatus(unApprovalNumber, approvalNumber,
                 approvalAgentNumber, cancelNumber, remandNumner,denialNumber);
+        }
+        checkSync(lstSync: Array<vmbase.AppCompltLeaveSync>, appId: string): boolean{
+            let check: boolean = false;
+            _.each(lstSync, function(appSync){
+                if(appSync.appMain.appID == appId && appSync.sync){
+                    check = true;
+                    return;
+                }
+            });
+            return check;
         }
         findAgent(appId: string): any{
             return _.find(this.lstListAgent(), function(agent){
