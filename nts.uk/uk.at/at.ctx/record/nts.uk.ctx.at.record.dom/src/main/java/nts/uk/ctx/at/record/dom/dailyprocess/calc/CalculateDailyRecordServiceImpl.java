@@ -42,6 +42,8 @@ import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
@@ -62,6 +64,8 @@ import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
+import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
+import nts.uk.ctx.at.record.dom.workrule.specific.CalculationMethodOfConstraintTime;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
@@ -512,6 +516,16 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		// 個人労働条件
 		PersonalLaborCondition personalLabor = new PersonalLaborCondition(
 				manageReGetClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getAdditionSet());
+		
+		//日別実績の入退門　　　　
+		Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGateOfDaily = manageReGetClass.getIntegrationOfDaily().getAttendanceLeavingGate();
+		//日別実績のPCログオン情報　　　
+		Optional<PCLogOnInfoOfDaily> pCLogOnInfoOfDaily = manageReGetClass.getIntegrationOfDaily().getPcLogOnInfo();
+		//日別実績の出退勤
+		Optional<TimeLeavingOfDailyPerformance> attendanceLeave = manageReGetClass.getIntegrationOfDaily().getAttendanceLeave();
+		//総拘束時間の計算
+		CalculateOfTotalConstraintTime calculateOfTotalConstraintTime = new CalculateOfTotalConstraintTime(new CompanyId(companyId),CalculationMethodOfConstraintTime.REQUEST_FROM_ENTRANCE_EXIT);
+		
 		// 休暇クラス
 		VacationClass vacation = new VacationClass(new HolidayOfDaily(new AbsenceOfDaily(new AttendanceTime(0)),
 				new TimeDigestOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
@@ -573,7 +587,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				manageReGetClass.getPersonalInfo().getWorkingSystem(), illegularAddSetting, flexAddSetting,
 				regularAddSetting, vacationAddSetting, AutoCalOverTimeAttr.CALCULATION_FROM_STAMP, workTime.get(),
 				flexCalcMethod, holidaycalcMethodSet, autoRaisingSet, bonusPayAutoCalcSet, calcAtrOfDaily,
-				manageReGetClass.getSubHolTransferSetList(), eachCompanyTimeSet));
+				manageReGetClass.getSubHolTransferSetList(), eachCompanyTimeSet,
+				attendanceLeavingGateOfDaily,pCLogOnInfoOfDaily,attendanceLeave,calculateOfTotalConstraintTime
+				));
 
 		// // 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
 		List<Integer> attendanceItemIdList = manageReGetClass.getIntegrationOfDaily().getEditState().stream()

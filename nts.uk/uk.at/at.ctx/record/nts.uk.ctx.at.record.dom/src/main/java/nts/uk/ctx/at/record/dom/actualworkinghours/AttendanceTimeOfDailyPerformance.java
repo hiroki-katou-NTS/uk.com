@@ -16,6 +16,8 @@ import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.AutoCalOverTimeAttr;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CheckExcessAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
@@ -25,6 +27,8 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
@@ -37,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
@@ -143,7 +148,12 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			   CalAttrOfDailyPerformance calcAtrOfDaily,
 			   List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
+			   Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGateOfDaily,
+			   Optional<PCLogOnInfoOfDaily> pCLogOnInfoOfDaily,
+			   Optional<TimeLeavingOfDailyPerformance> attendanceLeave,
+			   CalculateOfTotalConstraintTime calculateOfTotalConstraintTime
+			) {
 		integrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(collectCalculationResult(oneDay,overTimeAutoCalcSet,holidayAutoCalcSetting,
 				   																		personalCondition,
 				   																		 vacationClass,
@@ -163,7 +173,12 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				   																	     bonusPayAutoCalcSet,
 				   																	     calcAtrOfDaily,
 				   																	     eachWorkTimeSet,
-				   																	     eachCompanyTimeSet)));
+				   																	     eachCompanyTimeSet,
+				   																	     attendanceLeavingGateOfDaily,
+				   																	     pCLogOnInfoOfDaily,
+				   																	     attendanceLeave,
+				   																	     calculateOfTotalConstraintTime
+				)));
 		return integrationOfDaily;
 	}
 	
@@ -190,7 +205,12 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			   CalAttrOfDailyPerformance calcAtrOfDaily,
 			   List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
+			   Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGateOfDaily,
+			   Optional<PCLogOnInfoOfDaily> pCLogOnInfoOfDaily,
+			   Optional<TimeLeavingOfDailyPerformance> attendanceLeave,
+			   CalculateOfTotalConstraintTime calculateOfTotalConstraintTime
+			) {
 		
 		/*所定時間*/
 		
@@ -219,11 +239,11 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 					eachWorkTimeSet,
 					eachCompanyTimeSet);
 		/*滞在時間の計算*/
-		val stayingTime = new StayingTimeOfDaily(new AttendanceTime(0),
-												 new AttendanceTime(0),
-												 new AttendanceTime(0),
-												 new AttendanceTime(0),
-												 new AttendanceTime(0));
+		StayingTimeOfDaily stayingTime = new StayingTimeOfDaily(pCLogOnInfoOfDaily.isPresent()?pCLogOnInfoOfDaily.get().calcPCLogOnCalc(attendanceLeave,GoLeavingWorkAtr.LEAVING_WORK):new AttendanceTime(0),
+																pCLogOnInfoOfDaily.isPresent()?pCLogOnInfoOfDaily.get().calcPCLogOnCalc(attendanceLeave,GoLeavingWorkAtr.GO_WORK):new AttendanceTime(0),
+																attendanceLeavingGateOfDaily.isPresent()?attendanceLeavingGateOfDaily.get().calcBeforeAttendanceTime(attendanceLeave,GoLeavingWorkAtr.GO_WORK):new AttendanceTime(0),
+																StayingTimeOfDaily.calcStayingTimeOfDaily(attendanceLeavingGateOfDaily,pCLogOnInfoOfDaily,attendanceLeave,calculateOfTotalConstraintTime),
+																attendanceLeavingGateOfDaily.isPresent()?attendanceLeavingGateOfDaily.get().calcBeforeAttendanceTime(attendanceLeave,GoLeavingWorkAtr.LEAVING_WORK):new AttendanceTime(0));
 		/*不就労時間*/
 		val unEmployedTime = new AttendanceTime(0);
 		/*予定差異時間の計算*/
