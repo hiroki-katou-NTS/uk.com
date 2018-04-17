@@ -16,6 +16,7 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
+import lombok.extern.slf4j.Slf4j;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleAdapter;
@@ -248,6 +249,20 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				}
 			}
 		}
+		// end --
+
+		// if (reCreateAttr == ExecutionType.RERUN) {
+		// this.deleteDailyResult(employeeId, day);
+		//
+		// this.reflect(companyId, employeeId, day, empCalAndSumExecLogID,
+		// reCreateAttr);
+		// }
+		//
+		// if (!this.workInformationRepository.find(employeeId,
+		// day).isPresent()) {
+		// this.reflect(companyId, employeeId, day, empCalAndSumExecLogID,
+		// reCreateAttr);
+		// }
 	}
 
 	private void reflect(String companyId, String employeeId, GeneralDate day, String empCalAndSumExecLogID,
@@ -453,6 +468,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		ReflectStampOutput stampOutput = new ReflectStampOutput();
 
 		WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate = new WorkInfoOfDailyPerformance();
+
+		// 日別実績の出退勤
+		TimeLeavingOfDailyPerformance timeLeavingOptional = new TimeLeavingOfDailyPerformance();
 
 		// 日別実績の休憩時間帯
 		Optional<BreakTimeOfDailyPerformance> breakTimeOfDailyPerformance = Optional.empty();
@@ -764,7 +782,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						.checkWorkDay(workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTypeCode().v());
 				if (workStyle != WorkStyle.ONE_DAY_REST) {
 
-					TimeLeavingOfDailyPerformance timeLeavingOptional = createStamp(companyId, workInfoOfDailyPerformanceUpdate, workingConditionItem, null,
+					createStamp(companyId, workInfoOfDailyPerformanceUpdate, workingConditionItem, timeLeavingOptional,
 							employeeID, day);
 					if (reCreateWorkType == false) {
 						// check tay
@@ -1015,16 +1033,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		return recordWorkInformation;
 	}
 
-	@Override
-	public TimeLeavingOfDailyPerformance createStamp(String companyId, WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate,
+	private void createStamp(String companyId, WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate,
 			Optional<WorkingConditionItem> workingConditionItem, TimeLeavingOfDailyPerformance timeLeavingOptional,
 			String employeeID, GeneralDate day) {
-		
-		if (timeLeavingOptional == null) {
-			// 日別実績の出退勤
-			timeLeavingOptional = new TimeLeavingOfDailyPerformance();			
-		}
-		
 		// ドメインモデル「打刻反映管理」を取得する
 		Optional<StampReflectionManagement> stampReflectionManagement = this.stampReflectionManagementRepository
 				.findByCid(companyId);
@@ -1095,7 +1106,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 								.filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst().get();
 						int leaveTimeAfterRounding = this.roudingTime(sheet.getLeaveWork().v(),
 								leavingRoundingSet.getRoundingSet().getFontRearSection().value,
-								new Integer(leavingRoundingSet.getRoundingSet().getRoundingTimeUnit().description).intValue());
+								new Integer(leavingRoundingSet.getRoundingSet().getRoundingTimeUnit().description)
+										.intValue());
 
 						// ドメインモデル「所属職場履歴」を取得する
 						attendanceStampTemp
@@ -1147,7 +1159,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 									// 出勤系時刻を丸める
 									Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = this.getCommonSet.get(
 											companyId,
-											workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode().v());
+											workInfoOfDailyPerformanceUpdate.getScheduleInfo().getWorkTimeCode().v());
 									WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
 									// 出勤
 									RoundingSet atendanceRoundingSet = stampSet.getRoundingSets().stream()
@@ -1155,7 +1167,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 											.get();
 									int attendanceTimeAfterRouding = this.roudingTime(timezone.getStart().v(),
 											atendanceRoundingSet.getRoundingSet().getFontRearSection().value,
-											new Integer(atendanceRoundingSet.getRoundingSet().getRoundingTimeUnit().description).intValue());
+											atendanceRoundingSet.getRoundingSet().getRoundingTimeUnit().value);
 
 									actualStamp.setAfterRoundingTime(new TimeWithDayAttr(attendanceTimeAfterRouding));
 									// 退勤
@@ -1164,7 +1176,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 											.get();
 									int leaveTimeAfterRounding = this.roudingTime(timezone.getEnd().v(),
 											leavingRoundingSet.getRoundingSet().getFontRearSection().value,
-											new Integer(leavingRoundingSet.getRoundingSet().getRoundingTimeUnit().description).intValue());
+											leavingRoundingSet.getRoundingSet().getRoundingTimeUnit().value);
 
 									leaveActualStamp.setAfterRoundingTime(new TimeWithDayAttr(leaveTimeAfterRounding));
 
@@ -1342,8 +1354,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		} else {
 			timeLeavingOptional = null;
 		}
-		
-		return timeLeavingOptional;
 	}
 
 	/**
