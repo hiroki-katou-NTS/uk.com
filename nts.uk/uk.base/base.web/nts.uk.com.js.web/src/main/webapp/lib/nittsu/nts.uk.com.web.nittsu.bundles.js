@@ -4549,7 +4549,8 @@ var nts;
                             maxValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(this.constraint.max).asMinutes);
                         }
                         var parsed = uk.time.minutesBased.clock.dayattr.parseString(inputText);
-                        if (!parsed.success || parsed.asMinutes < minValue || parsed.asMinutes > maxValue) {
+                        if (!parsed.success || parsed.asMinutes !== Math.round(parsed.asMinutes)
+                            || parsed.asMinutes < minValue || parsed.asMinutes > maxValue) {
                             result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minValue.fullText, maxValue.fullText]), "FND_E_CLOCK");
                         }
                         else {
@@ -5016,7 +5017,7 @@ var nts;
                         // Check if contents is overflow
                         if ($label.outerWidth() < $label[0].scrollWidth) {
                             var $view_1 = $('<div />').addClass('limited-label-view')
-                                .text($label.text())
+                                .text($label.text() || $label.val())
                                 .appendTo('body')
                                 .position({
                                 my: 'left top',
@@ -7047,12 +7048,13 @@ var nts;
                                     innerDiv.innerHTML = data;
                                     td.appendChild(innerDiv);
                                 }
-                                else if (helper.containsBr(data)) {
+                                else if (!column.headerControl && helper.containsBr(data)) {
                                     td.innerHTML = data;
                                 }
-                                else {
+                                else if (!column.headerControl) {
                                     td.innerText = data;
                                 }
+                                controls.checkHeader(td, column, data, column.headerHandler);
                             }
                             else if (!self.options.isHeader) {
                                 if (!uk.util.isNullOrUndefined(column.icon) && column.icon.for === "body") {
@@ -7165,7 +7167,7 @@ var nts;
                          */
                         Painter.prototype.highlight = function (td) {
                             var self = this;
-                            if (self.options.isHeader || self.options.containerClass !== BODY_PRF + DETAIL)
+                            if (self.options.isHeader || self.options.containerClass !== BODY_PRF + DETAIL || self.options.highlight === false)
                                 return;
                             var $targetContainer = self.$container;
                             var targetHeader = helper.firstSibling($targetContainer, self.options.containerClass.replace(BODY_PRF, HEADER_PRF));
@@ -7302,6 +7304,7 @@ var nts;
                                 $td.setAttribute("colspan", cell.colspan);
                             else if (!self.visibleColumnsMap[cell.key])
                                 tdStyle += "; display: none;";
+                            var column = self.columnsMap[cell.key];
                             if (!uk.util.isNullOrUndefined(cell.icon) && cell.icon.for === "header") {
                                 var $icon = document.createElement("span");
                                 $icon.className = render.COL_ICON_CLS + " " + cell.icon.class;
@@ -7316,11 +7319,14 @@ var nts;
                                 $content.innerHTML = text;
                                 $td.appendChild($content);
                             }
-                            else if (helper.containsBr(text)) {
+                            else if ((!column || (column && !column.headerControl)) && helper.containsBr(text)) {
                                 $td.innerHTML = text;
                             }
-                            else {
+                            else if (!column || (column && !column.headerControl)) {
                                 $td.textContent = text;
+                            }
+                            if (column) {
+                                controls.checkHeader($td, column, text, column.headerHandler);
                             }
                             $td.style.cssText += tdStyle;
                             return $td;
@@ -11084,6 +11090,25 @@ var nts;
                     }
                     controls.check = check;
                     /**
+                     * Check header.
+                     */
+                    function checkHeader(td, column, data, action) {
+                        if (column.headerControl) {
+                            switch (column.headerControl) {
+                                case controls.LINK_BUTTON:
+                                    var a = document.createElement("a");
+                                    a.classList.add(controls.LINK_CLS);
+                                    a.addXEventListener(events.CLICK_EVT, function (evt) {
+                                        action();
+                                    });
+                                    a.innerHTML = data;
+                                    td.appendChild(a);
+                                    break;
+                            }
+                        }
+                    }
+                    controls.checkHeader = checkHeader;
+                    /**
                      * Add checkbox def.
                      */
                     function addCheckBoxDef(arr) {
@@ -13954,6 +13979,36 @@ var nts;
                             return $this.data(dataName);
                     }
                 };
+                $.fn.tooltipWhenReadonly = function () {
+                    var $this = $(this);
+                    var border = 2;
+                    $this.mouseenter(function (e) {
+                        if (!$this.prop("readonly") || !$this.isOverflowContent(border)) {
+                            return;
+                        }
+                        $this.showTextContentAsTooltip(function () { return $this.val(); });
+                    });
+                };
+                $.fn.isOverflowContent = function (border) {
+                    var $this = $(this);
+                    return $this.prop("offsetWidth") - border < $this.prop("scrollWidth");
+                };
+                $.fn.showTextContentAsTooltip = function (textContentGetter) {
+                    var $this = $(this);
+                    var $view = $('<div />').addClass('limited-label-view')
+                        .text(textContentGetter())
+                        .appendTo('body')
+                        .position({
+                        my: 'left top',
+                        at: 'left bottom',
+                        of: $this,
+                        collision: 'flip'
+                    });
+                    $this.bind('mouseleave.limitedlabel', function () {
+                        $this.unbind('mouseleave.limitedlabel');
+                        $view.remove();
+                    });
+                };
             })(jqueryExtentions = ui_4.jqueryExtentions || (ui_4.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -15864,6 +15919,7 @@ var nts;
                         new nts.uk.util.value.DefaultValue().onReset($input, data.value);
                         var tabIndex = $input.attr("tabindex");
                         $input.data("tabindex", tabIndex);
+                        $input.tooltipWhenReadonly();
                     };
                     TextEditorProcessor.prototype.update = function ($input, data) {
                         _super.prototype.update.call(this, $input, data);
@@ -19355,7 +19411,7 @@ var nts;
                                     return item["index"] >= 0;
                                 });
                             }
-                            else if (singleSelectedRaw !== null) {
+                            else if (singleSelectedRaw !== null && singleSelectedRaw.index > -1) {
                                 selected.push(singleSelectedRaw);
                             }
                             else {
@@ -22243,7 +22299,7 @@ var nts;
                             if (uk.util.isNullOrUndefined(idx))
                                 return;
                             var origData = origDs[idx]; //gridUpdate._getLatestValues(rId);
-                            grid.dataSource.updateRow(rId, $.extend({}, origData, updatedRowData), autoCommit);
+                            grid.dataSource.updateRow(rId, $.extend({}, gridUpdate._getLatestValues(rId), updatedRowData), autoCommit);
                             _.forEach(Object.keys(updatedRowData), function (key) {
                                 notifyUpdate($grid, rowId, key, updatedRowData[key], origData);
                                 var isControl = utils.isNtsControl($grid, key);

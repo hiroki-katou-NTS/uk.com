@@ -117,6 +117,7 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandler<Upda
 		return isWorkingType(wt.getMorning()) || isWorkingType(wt.getAfternoon());
 	}
 
+	/** 出勤系かチェックする　*/
 	private boolean isWorkingType(WorkTypeClassification wt) {
 		return wt == WorkTypeClassification.Attendance || wt == WorkTypeClassification.Shooting;
 	}

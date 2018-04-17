@@ -220,16 +220,15 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	
 	
 	private GobackReflectPara getGobackReflectPara(Application_New appInfor, GoBackDirectly gobackInfo) {
-		GobackReflectPara appGobackTmp = null;
-		
+		GobackReflectPara appGobackTmp = null;		
 		GobackAppRequestPara gobackReques = new GobackAppRequestPara(
-				gobackInfo.getWorkChangeAtr().get(), 
-				gobackInfo.getSiftCD().get().v(), 
-				gobackInfo.getWorkTypeCD().get().v(), 
-				gobackInfo.getWorkTimeStart1().get().v(), 
-				gobackInfo.getWorkTimeEnd1().get().v(), 
-				gobackInfo.getWorkTimeStart2().get().v(), 
-				gobackInfo.getWorkTimeEnd2().get().v(), 
+				gobackInfo.getWorkChangeAtr().isPresent() ? gobackInfo.getWorkChangeAtr().get() : null,
+				gobackInfo.getSiftCD().isPresent() ? gobackInfo.getSiftCD().get().v() : null, 
+				gobackInfo.getWorkTypeCD().isPresent() ? gobackInfo.getWorkTypeCD().get().v() : null, 
+				gobackInfo.getWorkTimeStart1().isPresent() ? gobackInfo.getWorkTimeStart1().get().v() : null, 
+				gobackInfo.getWorkTimeEnd1().isPresent() ? gobackInfo.getWorkTimeEnd1().get().v() : null, 
+				gobackInfo.getWorkTimeStart2().isPresent() ? gobackInfo.getWorkTimeStart2().get().v() : null, 
+				gobackInfo.getWorkTimeEnd2().isPresent() ? gobackInfo.getWorkTimeEnd2().get().v() : null, 
 				appInfor.getReflectionInformation().getStateReflectionReal(),
 				appInfor.getReflectionInformation().getNotReasonReal().isPresent() ? appInfor.getReflectionInformation().getNotReasonReal().get() : null);
 		appGobackTmp = new GobackReflectPara(appInfor.getEmployeeID(), appInfor.getAppDate(), true, PriorStampRequestAtr.GOBACKPRIOR,

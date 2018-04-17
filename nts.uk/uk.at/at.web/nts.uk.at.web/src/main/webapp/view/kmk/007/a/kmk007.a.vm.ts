@@ -521,12 +521,14 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 af = cwt.afternoon(),
                 crod = self.currentOneDay(),
                 crmn = self.currentMorning(),
-                cratn = self.currentAfternoon()
+                cratn = self.currentAfternoon(),
+                sod = self.oneDay();
 
             self.checkDisabled(true);
-            crmn.countHodiday = false;
-            crod.countHodiday = false;
-            cratn.countHodiday = false;
+            crmn.countHodiday = (false);
+            crod.countHodiday = (false);
+            cratn.countHodiday = (false);
+            sod.countHodiday(false);
             cwt.workTypeCode('');
             cwt.dispName('');
             cwt.dispAbName('');

@@ -91,14 +91,25 @@ module nts.uk.com.view.cps005.b {
                     }
                     new service.Service().updateItemDef(newItemDef).done(function(data: string) {
                         if (data) {
-                            info({ messageId: data }).then(() => { info({ messageId: "Msg_15" }).then(() => { block.clear(); }); });
-                        } else {
-                            info({ messageId: "Msg_15" }).then(() => { block.clear(); });
-                        }
-                        self.reloadData();
+                            info({ messageId: data }).then(() => {
+                                info({ messageId: "Msg_15" }).then(() => {
+                                    self.reloadData();
+                                    self.currentItemData().perInfoItemSelectCode(newItemDef.perInfoItemDefId);
+                                    self.currentItemData().perInfoItemSelectCode.valueHasMutated();
+                                    block.clear();
+                                }
 
-                        self.currentItemData().perInfoItemSelectCode(newItemDef.perInfoItemDefId);
-                        self.currentItemData().perInfoItemSelectCode.valueHasMutated();
+                                );
+                            });
+                        } else {
+                            info({ messageId: "Msg_15" }).then(() => {
+                                self.reloadData();
+                                self.currentItemData().perInfoItemSelectCode(newItemDef.perInfoItemDefId);
+                                self.currentItemData().perInfoItemSelectCode.valueHasMutated();
+                                block.clear();
+                            });
+                        }
+
                     }).fail(error => {
 
                         if (error.messageId == 'Msg_928') {
@@ -123,11 +134,17 @@ module nts.uk.com.view.cps005.b {
                         newItemDef.singleItem.decimalPart = 0;
                     }
                     new service.Service().addItemDef(newItemDef).done(function(data: string) {
-                        self.reloadData().done(() => {
-                            self.currentItemData().perInfoItemSelectCode(data);
-                            //  self.selectionItemId(params.selectionItemId);
+
+                        info({ messageId: "Msg_15" }).then(() => {
+
+                            self.reloadData().done(() => {
+                                self.currentItemData().perInfoItemSelectCode(data);
+                                //  self.selectionItemId(params.selectionItemId);
+                            });
+
+                            block.clear();
+
                         });
-                        info({ messageId: "Msg_15" }).then(() => { block.clear(); });
                     }).fail(error => {
                         if (error.messageId == 'Msg_928') {
                             alertError({
