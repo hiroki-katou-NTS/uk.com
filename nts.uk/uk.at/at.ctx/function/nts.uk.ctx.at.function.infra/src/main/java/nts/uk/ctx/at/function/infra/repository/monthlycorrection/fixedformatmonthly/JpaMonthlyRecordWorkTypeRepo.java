@@ -8,14 +8,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyActualResults;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyRecordWorkType;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyRecordWorkTypeRepository;
-import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.SheetCorrectedMonthly;
 import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.KrcmtDisplayTimeItemRC;
 import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.KrcmtMonthlyActualResultRC;
 import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.KrcmtMonthlyRecordWorkType;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 
 @Stateless
 public class JpaMonthlyRecordWorkTypeRepo extends JpaRepository implements MonthlyRecordWorkTypeRepository {
@@ -47,7 +44,7 @@ public class JpaMonthlyRecordWorkTypeRepo extends JpaRepository implements Month
 		KrcmtMonthlyRecordWorkType newEntity = KrcmtMonthlyRecordWorkType.toEntity(monthlyRecordWorkType);
 
 		KrcmtMonthlyRecordWorkType updateEntity = this.queryProxy().query(GET_MON_BY_CODE, KrcmtMonthlyRecordWorkType.class).setParameter("companyID", monthlyRecordWorkType.getCompanyID())
-				.setParameter("businessTypeCode", monthlyRecordWorkType.getBusinessTypeCode()).getSingle().get();
+				.setParameter("businessTypeCode", monthlyRecordWorkType.getBusinessTypeCode().v()).getSingle().get();
 
 		
 		List<KrcmtMonthlyActualResultRC> toInsertM = new ArrayList<>();
