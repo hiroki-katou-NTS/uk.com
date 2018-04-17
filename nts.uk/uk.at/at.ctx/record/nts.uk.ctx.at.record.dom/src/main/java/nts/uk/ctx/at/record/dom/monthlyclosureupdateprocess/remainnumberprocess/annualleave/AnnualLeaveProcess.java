@@ -9,7 +9,7 @@ import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.annualleave.updateremainnum.RemainAnnualLeaveUpdating;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.annualleave.updatereserveannual.RemainReserveAnnualLeaveUpdating;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualAndReserveLeaveOutput;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 
 /**
  * 
@@ -37,10 +37,11 @@ public class AnnualLeaveProcess {
 
 	// 年休残数処理
 	public void annualHolidayProcess(AggrPeriodEachActualClosure period, String empId) {
-		AnnualAndReserveLeaveOutput output = remainHolidayCalculation.calculateRemainAnnualHoliday(period, empId);
-		remainHolidayUpdating.updateRemainAnnualLeave(output.getAnnualLeave(), period, empId);
+		AggrResultOfAnnAndRsvLeave output = remainHolidayCalculation.calculateRemainAnnualHoliday(period, empId);
+		remainHolidayUpdating.updateRemainAnnualLeave(output.getAnnualLeave().get(), period, empId);
 		tmpAnnualLeaveDeleting.deleteTempAnnualLeaveData(empId, period.getPeriod());
-		rsvRemainAnnualLeaveUpdating.updateReservedAnnualLeaveRemainNumber(output.getReserveLeave(), period, empId);
+		rsvRemainAnnualLeaveUpdating.updateReservedAnnualLeaveRemainNumber(output.getReserveLeave().get(), period,
+				empId);
 		tmpRsvAnnualLeaveDeleting.deleteTempRsvAnnualLeaveData(empId, period.getPeriod());
 	}
 

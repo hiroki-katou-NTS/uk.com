@@ -31,7 +31,7 @@ module nts.uk.at.view.kmw006.f.viewmodel {
             self.items = ko.observableArray([]);
             self.initIGrid();
             self.dispProcessCount = ko.computed(() => {
-                return self.processedCount() + "/" + self.totalCount() + "人";
+                return getText("KMW006_62", [self.processedCount(), self.totalCount()]);
             });
             self.dispStartTime = ko.computed(() => {
                 if (nts.uk.text.isNullOrEmpty(self.startTime()))

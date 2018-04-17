@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -16,8 +15,8 @@ import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremain
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantTimeRemainHistoryData;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RsvLeaveGrantRemainHistRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RsvLeaveGrantTimeRemainHistRepository;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveInfo;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveOutput;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -45,8 +44,8 @@ public class RemainReserveAnnualLeaveUpdating {
 	 * @param period
 	 * @param empId
 	 */
-	public void updateReservedAnnualLeaveRemainNumber(ReserveLeaveOutput output, AggrPeriodEachActualClosure period,
-			String empId) {
+	public void updateReservedAnnualLeaveRemainNumber(AggrResultOfReserveLeave output,
+			AggrPeriodEachActualClosure period, String empId) {
 		updateNumberOfRemainingLeaveData(output, period, empId);
 	}
 
@@ -57,7 +56,7 @@ public class RemainReserveAnnualLeaveUpdating {
 	 * @param period
 	 * @param empId
 	 */
-	private void updateNumberOfRemainingLeaveData(ReserveLeaveOutput output, AggrPeriodEachActualClosure period,
+	private void updateNumberOfRemainingLeaveData(AggrResultOfReserveLeave output, AggrPeriodEachActualClosure period,
 			String empId) {
 		String cid = AppContexts.user().companyId();
 		List<ReserveLeaveGrantRemainingData> listData = reserveLeaveRemainRepo.findNotExp(empId, cid);
@@ -69,8 +68,8 @@ public class RemainReserveAnnualLeaveUpdating {
 			}
 		}
 		updateProcess(output.getAsOfPeriodEnd());
-		updateRsvLeaveTimeRemainHistProcess(output.getAsOfGrant().isPresent()
-				? output.getAsOfGrant().get().values().stream().collect(Collectors.toList()) : Collections.emptyList());
+		updateRsvLeaveTimeRemainHistProcess(
+				output.getAsOfGrant().isPresent() ? output.getAsOfGrant().get() : Collections.emptyList());
 	}
 
 	/**
@@ -80,8 +79,7 @@ public class RemainReserveAnnualLeaveUpdating {
 	 */
 	private void updateProcess(ReserveLeaveInfo info) {
 		String cId = AppContexts.user().companyId();
-		List<ReserveLeaveGrantRemainingData> listData = info.getGrantRemainingNumbers().values().stream()
-				.collect(Collectors.toList());
+		List<ReserveLeaveGrantRemainingData> listData = info.getGrantRemainingNumberList();
 		for (ReserveLeaveGrantRemainingData data : listData) {
 			Optional<ReserveLeaveGrantRemainingData> optDomain = reserveLeaveRemainRepo.find(data.getEmployeeId(),
 					data.getGrantDate(), data.getDeadline());
@@ -116,8 +114,7 @@ public class RemainReserveAnnualLeaveUpdating {
 	private void updateRsvLeaveTimeRemainHistProcess(List<ReserveLeaveInfo> listInfo) {
 		String cid = AppContexts.user().companyId();
 		for (ReserveLeaveInfo info : listInfo) {
-			List<ReserveLeaveGrantRemainingData> listData = info.getGrantRemainingNumbers().values().stream()
-					.collect(Collectors.toList());
+			List<ReserveLeaveGrantRemainingData> listData = info.getGrantRemainingNumberList();
 			for (ReserveLeaveGrantRemainingData data : listData) {
 				ReserveLeaveGrantTimeRemainHistoryData hist = new ReserveLeaveGrantTimeRemainHistoryData(data,
 						info.getYmd());

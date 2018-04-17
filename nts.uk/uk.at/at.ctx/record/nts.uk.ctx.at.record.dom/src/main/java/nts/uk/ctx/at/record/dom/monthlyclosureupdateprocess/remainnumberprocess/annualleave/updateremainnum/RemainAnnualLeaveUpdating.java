@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -17,8 +16,8 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.AnnL
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxHistRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxHistoryData;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveOutput;
 
 /**
  * 
@@ -48,7 +47,7 @@ public class RemainAnnualLeaveUpdating {
 	 * @param period
 	 * @param empId
 	 */
-	public void updateRemainAnnualLeave(AnnualLeaveOutput output, AggrPeriodEachActualClosure period, String empId) {
+	public void updateRemainAnnualLeave(AggrResultOfAnnualLeave output, AggrPeriodEachActualClosure period, String empId) {
 		updateRemainAnnualLeaveNumber(output, period, empId);
 		updateMaxAnnualLeaveNumber(output, period, empId);
 	}
@@ -60,7 +59,7 @@ public class RemainAnnualLeaveUpdating {
 	 * @param period
 	 * @param empId
 	 */
-	private void updateRemainAnnualLeaveNumber(AnnualLeaveOutput output, AggrPeriodEachActualClosure period,
+	private void updateRemainAnnualLeaveNumber(AggrResultOfAnnualLeave output, AggrPeriodEachActualClosure period,
 			String empId) {
 		List<AnnualLeaveGrantRemainingData> listRemainData = annLeaveRemainRepo.findNotExp(empId);
 		for (AnnualLeaveGrantRemainingData data : listRemainData) {
@@ -79,7 +78,7 @@ public class RemainAnnualLeaveUpdating {
 	 * @param period
 	 * @param empId
 	 */
-	private void updateMaxAnnualLeaveNumber(AnnualLeaveOutput output, AggrPeriodEachActualClosure period,
+	private void updateMaxAnnualLeaveNumber(AggrResultOfAnnualLeave output, AggrPeriodEachActualClosure period,
 			String empId) {
 		Optional<AnnualLeaveMaxData> optMaxData = annLeaveMaxRepo.get(empId);
 		if (optMaxData.isPresent()) {
@@ -101,8 +100,7 @@ public class RemainAnnualLeaveUpdating {
 	 * @param info
 	 */
 	private void updateAnnualLeaveRemainProcess(AnnualLeaveInfo info) {
-		List<AnnualLeaveGrantRemainingData> listData = info.getGrantRemainingNumbers().values().stream()
-				.collect(Collectors.toList());
+		List<AnnualLeaveGrantRemainingData> listData = info.getGrantRemainingNumberList();
 		for (AnnualLeaveGrantRemainingData data : listData) {
 			Optional<AnnualLeaveGrantRemainingData> optDomain = annLeaveRemainRepo.find(data.getEmployeeId(),
 					data.getGrantDate(), data.getDeadline());

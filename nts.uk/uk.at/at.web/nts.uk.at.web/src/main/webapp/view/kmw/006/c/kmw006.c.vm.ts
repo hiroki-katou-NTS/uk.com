@@ -24,8 +24,8 @@ module nts.uk.at.view.kmw006.c.viewmodel {
                         let r = result[i];
                         self.items.push(new ItemModel(r.monthlyClosureLogId, r.closureId, r.closureName, r.yearMonth, r.executeDT, r.totalEmployee, r.alarmCount, r.errorCount));
                     }
-                    self.initIGrid();
                 }
+                self.initIGrid();
                 dfd.resolve();
             }).fail((error) => {
                 dfd.reject();
