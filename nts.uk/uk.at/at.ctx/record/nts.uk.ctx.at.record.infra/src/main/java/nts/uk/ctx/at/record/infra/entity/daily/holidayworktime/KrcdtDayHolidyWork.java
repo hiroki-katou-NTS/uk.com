@@ -443,7 +443,18 @@ public class KrcdtDayHolidyWork extends UkJpaEntity implements Serializable{
 
 
 	private HolidayWorkFrameTime getHolidayTimeFrame(List<HolidayWorkFrameTime> frames, int frameNo) {
-		return frames.stream().filter(tc -> tc.getHolidayFrameNo().v() == frameNo).findFirst().get();
+		
+		val getFrame = frames.stream().filter(tc -> tc.getHolidayFrameNo().v() == frameNo).findFirst();
+		if(getFrame.isPresent()) {
+			return getFrame.get();
+		}
+		else {
+			return new HolidayWorkFrameTime(new HolidayWorkFrameNo(frameNo), 
+											Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))), 
+											Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))), 
+											Finally.of(new AttendanceTime(0)));
+					
+		}
 	}
 	
 	

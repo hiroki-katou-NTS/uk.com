@@ -77,52 +77,60 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 		switch(fixedErrorAlarmCode.get()) {
 			//事前残業申請超過
 			case PRE_OVERTIME_APP_EXCESS:
-				return integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
+				integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
 												integrationOfDaily.getAffiliationInfor().getYmd(),
 												fixedErrorAlarmCode.get(),
 												CheckExcessAtr.PRE_OVERTIME_APP_EXCESS);
+				break;
 			//事前休出申請超過
 			case PRE_HOLIDAYWORK_APP_EXCESS:
-				return integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
+				integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
 												integrationOfDaily.getAffiliationInfor().getYmd(),
 												fixedErrorAlarmCode.get(),
 												CheckExcessAtr.PRE_HOLIDAYWORK_APP_EXCESS);
+				break;
 			//事前フレックス申請超過
 			case PRE_FLEX_APP_EXCESS:
-				return integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
+				integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
 												integrationOfDaily.getAffiliationInfor().getYmd(),
 												fixedErrorAlarmCode.get(),
 												CheckExcessAtr.PRE_FLEX_APP_EXCESS);
+				break;
 			//事前深夜申請超過
 			case PRE_MIDNIGHT_EXCESS:
-				return integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
+				integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
 												integrationOfDaily.getAffiliationInfor().getYmd(),
 												fixedErrorAlarmCode.get(),
 												CheckExcessAtr.PRE_MIDNIGHT_EXCESS);
+				break;
 			//残業時間実績超過
 			case OVER_TIME_EXCESS:
-				return integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
+				integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
 												integrationOfDaily.getAffiliationInfor().getYmd(),
 												fixedErrorAlarmCode.get(),
 												CheckExcessAtr.OVER_TIME_EXCESS);
+				break;
 			//休出時間実績超過
 			case REST_TIME_EXCESS:
-				return integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
+				integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
 												integrationOfDaily.getAffiliationInfor().getYmd(),
 												fixedErrorAlarmCode.get(),
 												CheckExcessAtr.REST_TIME_EXCESS);
+				break;
 			//フレックス時間実績超過
 			case FLEX_OVER_TIME:
-				return integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
+				integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
 												integrationOfDaily.getAffiliationInfor().getYmd(),
 												fixedErrorAlarmCode.get(),
 												CheckExcessAtr.FLEX_OVER_TIME);
+				break;
 			//深夜時間実績超過
 			case MIDNIGHT_EXCESS:
-				return integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
+				integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
 												integrationOfDaily.getAffiliationInfor().getYmd(),
 												fixedErrorAlarmCode.get(),
 												CheckExcessAtr.MIDNIGHT_EXCESS);
+				break;
 			
 			//乖離時間のエラー	
 			case ERROR_OF_DIVERGENCE_TIME:
@@ -134,21 +142,25 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 																			 	 integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime().getDivergenceTime()
 																			 	);
 				}
+				break;
 			//遅刻
 			case LATE:
-				return integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
+				integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
 												integrationOfDaily.getAffiliationInfor().getYmd(),
 												fixedErrorAlarmCode.get(),
 												CheckExcessAtr.LATE);
+				break;
 			//早退
 			case LEAVE_EARLY:
-				return integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
+				integrationOfDaily.getErrorList(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
 												integrationOfDaily.getAffiliationInfor().getYmd(),
 												fixedErrorAlarmCode.get(),
 												CheckExcessAtr.LEAVE_EARLY);
+				break;
 			//それ以外ルート
 			default:
 				return Collections.emptyList();
 		}
+		return Collections.emptyList();
 	}
 }

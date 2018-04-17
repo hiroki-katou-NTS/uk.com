@@ -104,4 +104,5 @@ public class AttendanceLeavingGateOfDaily {
 		return Optional.empty();
 	}
 	
+	
 }

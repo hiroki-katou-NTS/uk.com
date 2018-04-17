@@ -108,7 +108,7 @@ public class WorkTimeOfMonthly {
 			val workTimeOfTimeSeries = WorkTimeOfTimeSeries.of(ymd,
 					WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(
 							workTime,
-							withinPrescribedTimeOfDaily.getWorkTimeIncludeVacationTime(),
+							withinPrescribedTimeOfDaily.getActualWorkTime(),
 							withinPrescribedPremiumTime,
 							withinPrescribedTimeOfDaily.getWithinStatutoryMidNightTime(),
 							withinPrescribedTimeOfDaily.getVacationAddTime())

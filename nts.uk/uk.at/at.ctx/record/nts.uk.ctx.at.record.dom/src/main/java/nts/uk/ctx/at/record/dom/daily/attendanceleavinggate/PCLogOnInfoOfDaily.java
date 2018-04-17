@@ -32,6 +32,7 @@ public class PCLogOnInfoOfDaily {
 	/** ログオン情報: ログオン情報 */
 	private List<LogOnInfo> logOnInfo;
 	
+	
 	//出勤ログイン乖離時間の計算
 	public AttendanceTime calcPCLogOnCalc(Optional<TimeLeavingOfDailyPerformance> attendanceLeave,GoLeavingWorkAtr goLeavingWorkAtr) {
 		List<AttendanceTime> resultList = new ArrayList<>();
@@ -85,5 +86,6 @@ public class PCLogOnInfoOfDaily {
 		}
 		return Optional.empty();
 	}
+	
 	
 }

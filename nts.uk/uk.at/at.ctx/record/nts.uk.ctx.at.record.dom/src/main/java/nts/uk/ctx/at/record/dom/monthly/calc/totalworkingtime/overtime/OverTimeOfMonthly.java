@@ -164,6 +164,7 @@ public class OverTimeOfMonthly {
 		}
 	
 		// 残業・振替の処理順序を取得する
+		if (workInfo.getWorkTimeCode() == null) return;
 		val workTimeCode = workInfo.getWorkTimeCode().v();
 		val overTimeAndTransferAtrs = repositories.getOverTimeAndTransferOrder().get(
 				companyId, workTimeCode, false);

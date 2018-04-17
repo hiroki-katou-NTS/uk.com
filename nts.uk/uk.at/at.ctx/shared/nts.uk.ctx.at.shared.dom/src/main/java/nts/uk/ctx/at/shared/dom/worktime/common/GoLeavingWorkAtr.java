@@ -70,6 +70,7 @@ public enum GoLeavingWorkAtr {
 		return null;
 	}
 	
+	
 	/**
 	 * 出勤か判定する
 	 * @return 使用する

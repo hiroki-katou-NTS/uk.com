@@ -57,6 +57,5 @@ public class StayingTimeOfDaily {
 			   											CalculateOfTotalConstraintTime calculateOfTotalConstraintTime) {
 		return calculateOfTotalConstraintTime.calcCalculateOfTotalConstraintTime(attendanceLeavingGateOfDaily,pCLogOnInfoOfDaily,attendanceLeave);
 	}
-	
-	
+   
 }

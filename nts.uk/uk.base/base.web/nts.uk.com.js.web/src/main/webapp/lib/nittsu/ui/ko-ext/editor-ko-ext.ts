@@ -315,6 +315,8 @@ module nts.uk.ui.koExtentions {
             
             let tabIndex = $input.attr("tabindex");
             $input.data("tabindex", tabIndex);
+            
+            $input.tooltipWhenReadonly();
         }
 
         update($input: JQuery, data: any) {

@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +16,7 @@ import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
@@ -129,14 +129,15 @@ public class IntegrationOfDaily {
 	 * @param attendanceItemConverter 
 	 * @param integrationOfDaily
 	 */
-	public  List<EmployeeDailyPerError> getErrorList(String employeeId,
+	public  Optional<EmployeeDailyPerError> getErrorList(String employeeId,
 			   											 GeneralDate targetDate,
 			   											 SystemFixedErrorAlarm fixedErrorAlarmCode,
 			   											 CheckExcessAtr checkAtr) {
+		Optional<EmployeeDailyPerError> returnErrorItem = Optional.empty();
 		if(this.getAttendanceTimeOfDailyPerformance().isPresent()) {
-			return this.getAttendanceTimeOfDailyPerformance().get().getErrorList(employeeId, targetDate, fixedErrorAlarmCode, checkAtr);
+			this.getAttendanceTimeOfDailyPerformance().get().getErrorList(employeeId, targetDate, fixedErrorAlarmCode, checkAtr);
 		}
-		return Collections.emptyList();
+		return returnErrorItem;
 	}
 	
 }

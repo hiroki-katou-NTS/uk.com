@@ -46,6 +46,7 @@ public class CalculateOfTotalConstraintTime {
 		return new CalculateOfTotalConstraintTime(new CompanyId(companyId), EnumAdaptor.valueOf(calcMethod, CalculationMethodOfConstraintTime.class));
 	}
 	
+	
 	/**
 	 * 総拘束時間の計算
 	 * @return
@@ -166,6 +167,5 @@ public class CalculateOfTotalConstraintTime {
 		}
 		return new TimeSpanForCalc(start, end);
 	}
-	
-	
+		
 }

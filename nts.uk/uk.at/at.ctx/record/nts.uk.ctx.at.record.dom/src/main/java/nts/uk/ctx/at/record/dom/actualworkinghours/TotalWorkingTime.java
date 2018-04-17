@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -41,6 +42,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.CheckExcessAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethod;
 import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfEachPremiumHalfWork;
@@ -94,13 +96,7 @@ public class TotalWorkingTime {
 	//実働時間
 	private AttendanceTime actualTime;
 	
-	//日別実績の残業時間
-	//private OverTimeOfDaily overTimeWorkOfDaily;
-	
-	//日別実績の休出時間
-	//private HolidayWorkTimeOfDaily holidayWorkTimeOfDaily;
-	
-	//日別実績の法定内時間
+	//日別実績の所定内時間
 	private WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily;
 	
 	//日別実績の所定外時間
@@ -185,6 +181,7 @@ public class TotalWorkingTime {
 	
 	/**
 	 * 日別実績の総労働時間の計算
+	 * @param breakTimeCount 
 	 * @return 
 	 */
 	public static TotalWorkingTime calcAllDailyRecord(CalculationRangeOfOneDay oneDay,AutoCalOvertimeSetting overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting,
@@ -206,7 +203,8 @@ public class TotalWorkingTime {
 			   BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			   CalAttrOfDailyPerformance calcAtrOfDaily,
 			   List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet
+			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, 
+			   int breakTimeCount
 			   ) {
 		
 		Optional<WorkTimeCode> workTimeCode = Optional.empty();
@@ -271,7 +269,7 @@ public class TotalWorkingTime {
 			//leaveEarlyTime.add(LeaveEarlyTimeOfDaily.calcLeaveEarlyTime(oneDay, work.getWorkNo(),leaveEarly,holidayCalcMethodSet));
 		
 		//日別実績の休憩時間
-		val breakTime = BreakTimeOfDaily.calcTotalBreakTime(oneDay);
+		val breakTime = BreakTimeOfDaily.calcTotalBreakTime(oneDay,breakTimeCount);
 
 		//日別実績の外出時間
 		val outingList = new ArrayList<OutingTimeOfDaily>();
@@ -293,6 +291,11 @@ public class TotalWorkingTime {
 		val workTimes = new WorkTimes(1);
 		/*日別実績の臨時時間*/
 		val tempTime = new TemporaryTimeOfDaily(Collections.emptyList());
+
+		//日別実績の休暇
+		val vacationOfDaily = VacationClass.calcUseRestTime(workType, oneDay.getPredetermineTimeSetForCalc(), workTimeCode, personalCondition, vacationAddTimeSet, outingList, lateTime, leaveEarlyTime);
+				//new  HolidayOfDaily();
+				//
 		
 		//総労働時間
 		val totalWorkTime = new AttendanceTime(withinStatutoryTimeOfDaily.getWorkTime().valueAsMinutes()

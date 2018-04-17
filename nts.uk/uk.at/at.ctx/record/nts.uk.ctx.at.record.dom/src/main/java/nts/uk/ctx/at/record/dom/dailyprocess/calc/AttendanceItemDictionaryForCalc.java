@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -11,7 +10,7 @@ import java.util.Optional;
  */
 public class AttendanceItemDictionaryForCalc {
 
-	private Map<String,Integer> dictionary = new HashMap<>();
+	private Map<String,Integer> dictionary;
 
 	/**
 	 * Constructor 

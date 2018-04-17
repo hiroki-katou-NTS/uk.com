@@ -15,6 +15,7 @@ public enum CalculationMethodOfConstraintTime {
 	
 	public final int value;
 	
+	
 	/**
 	 * 入門退門から求めるか判定する
 	 * @return 使用する
@@ -38,5 +39,6 @@ public enum CalculationMethodOfConstraintTime {
 	public boolean isREQUEST_FROM_PC_OUTSIDE_ATTENDANCE() {
 		return REQUEST_FROM_PC_OUTSIDE_ATTENDANCE.equals(this);
 	}
-		
+	
+	
 }
