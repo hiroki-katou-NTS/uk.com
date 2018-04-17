@@ -110,8 +110,8 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 		}
 		ContentOfRemandMail remandTemp = remandRepo.getRemandMailById(cid).orElse(null);
 		if (!Objects.isNull(remandTemp)) {
-			mailTitle = remandTemp.getMailTitle();
-			mailBody = remandTemp.getMailBody();
+			mailTitle = remandTemp.getMailTitle().v();
+			mailBody = remandTemp.getMailBody().v();
 		}
 		String emp = employeeAdapter.empEmail(AppContexts.user().employeeId());
 		if (Strings.isEmpty(emp)){
