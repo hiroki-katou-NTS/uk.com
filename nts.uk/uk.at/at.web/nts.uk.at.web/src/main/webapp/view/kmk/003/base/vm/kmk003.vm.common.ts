@@ -2238,6 +2238,8 @@ module nts.uk.at.view.kmk003.a {
                         const simple = this.lstWorkingTimezoneSimpleMode()[0];
                         const detail = <EmTimeZoneSetDto>{};
                         detail.employmentTimeFrameNo = 1;
+                        detail.timezone = <TimeZoneRoundingDto>{};
+                        detail.timezone.rounding = <TimeRoundingSettingDto>{};
                         detail.timezone.rounding.roundingTime = simple.roundingTime();
                         detail.timezone.rounding.rounding = simple.rounding();
                         detail.timezone.start = simple.timeRange().startTime;
