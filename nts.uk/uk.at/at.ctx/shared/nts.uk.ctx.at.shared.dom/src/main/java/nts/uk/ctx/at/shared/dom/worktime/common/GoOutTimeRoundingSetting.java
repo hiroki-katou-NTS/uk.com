@@ -18,7 +18,7 @@ public class GoOutTimeRoundingSetting extends WorkTimeDomainObject {
 
 	/** The rounding method. */
 	// 丸め方法
-	private GoOutTimeRoundingMethod roundingMethod;
+	private RoundingGoOutTimeSheet roundingMethod;
 
 	/** The rounding setting. */
 	// 丸め設定
@@ -32,7 +32,7 @@ public class GoOutTimeRoundingSetting extends WorkTimeDomainObject {
 	 * @param roundingSetting
 	 *            the rounding setting
 	 */
-	public GoOutTimeRoundingSetting(GoOutTimeRoundingMethod roundingMethod, TimeRoundingSetting roundingSetting) {
+	public GoOutTimeRoundingSetting(RoundingGoOutTimeSheet roundingMethod, TimeRoundingSetting roundingSetting) {
 		super();
 		this.roundingMethod = roundingMethod;
 		this.roundingSetting = roundingSetting;
@@ -71,18 +71,18 @@ public class GoOutTimeRoundingSetting extends WorkTimeDomainObject {
 	public void correctData(ScreenMode screenMode, GoOutTimeRoundingSetting oldDomain) {
 		// Simple mode
 		if (screenMode == ScreenMode.SIMPLE) {
-			this.roundingMethod = oldDomain.getRoundingMethod();
-			this.roundingSetting.correctData(oldDomain.getRoundingSetting());
+			this.roundingMethod = RoundingGoOutTimeSheet.REVERSE_ROUNDING_EACH_TIMEZONE;
+			this.roundingSetting.setDefaultDataRoundingDown();
 			return;
 		}
 
 		// Detail mode
 		switch (this.roundingMethod) {
-		case TOTAL_AND_ROUNDING:
+		case REVERSE_ROUNDING_EACH_TIMEZONE:
 			this.roundingSetting.correctData(oldDomain.getRoundingSetting());
 			break;
 
-		case ROUNDING_AND_TOTAL:
+		case INDIVIDUAL_ROUNDING:
 			// Nothing change
 			break;
 
@@ -100,18 +100,18 @@ public class GoOutTimeRoundingSetting extends WorkTimeDomainObject {
 	public void correctDefaultData(ScreenMode screenMode) {
 		// Simple mode
 		if (screenMode == ScreenMode.SIMPLE) {
-			this.roundingMethod = GoOutTimeRoundingMethod.TOTAL_AND_ROUNDING;
+			this.roundingMethod = RoundingGoOutTimeSheet.REVERSE_ROUNDING_EACH_TIMEZONE;
 			this.roundingSetting.setDefaultDataRoundingUp();
 			return;
 		}
 
 		// Detail mode
 		switch (this.roundingMethod) {
-		case TOTAL_AND_ROUNDING:
+		case REVERSE_ROUNDING_EACH_TIMEZONE:
 			this.roundingSetting.setDefaultDataRoundingUp();
 			break;
 
-		case ROUNDING_AND_TOTAL:
+		case INDIVIDUAL_ROUNDING:
 			// Nothing change
 			break;
 

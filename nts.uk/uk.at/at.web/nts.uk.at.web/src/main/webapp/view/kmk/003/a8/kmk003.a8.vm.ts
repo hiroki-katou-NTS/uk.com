@@ -110,8 +110,8 @@ module a8 {
             _self.pubHolWorkTimePublicApproTimeSetting = new TimeRoundingSetting(settingEnum);          
             
             _self.listRoundingBreakTimezone = ko.observableArray([
-                { value: 0, localizedName: nts.uk.resource.getText("KMK003_198") },
-                { value: 1, localizedName: nts.uk.resource.getText("KMK003_199") }
+                { value: 1, localizedName: nts.uk.resource.getText("KMK003_198") },
+                { value: 0, localizedName: nts.uk.resource.getText("KMK003_199") }
             ]);          
             //_self.listRoundingBreakTimezone(_self.settingEnum.roundingBreakTimezone);  
             

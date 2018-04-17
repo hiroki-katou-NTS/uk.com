@@ -56,7 +56,8 @@ public class WorkTimezoneGoOutSet extends WorkTimeDomainObject {
 	public void correctData(ScreenMode screenMode, WorkTimezoneGoOutSet oldDomain) {
 		// Simple mode
 		if (screenMode == ScreenMode.SIMPLE) {
-			this.totalRoundingSet.correctData(oldDomain.getTotalRoundingSet());
+			this.totalRoundingSet.correctDefaultData();
+			this.diffTimezoneSetting.correctDefaultData(screenMode);
 		}
 
 		// Go deeper

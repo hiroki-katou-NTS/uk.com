@@ -74,17 +74,6 @@ public class TotalRoundingSet extends WorkTimeDomainObject {
 	}
 
 	/**
-	 * Correct data.
-	 *
-	 * @param oldDomain
-	 *            the old domain
-	 */
-	public void correctData(TotalRoundingSet oldDomain) {
-		this.setSameFrameRounding = oldDomain.getFrameStraddRoundingSet();
-		this.frameStraddRoundingSet = oldDomain.getFrameStraddRoundingSet();
-	}
-
-	/**
 	 * Correct default data.
 	 */
 	public void correctDefaultData() {
