@@ -89,10 +89,18 @@ public class TimeRoundingSetting extends DomainObject {
 	}
 
 	/**
-	 * Correct default data.
+	 * Default data rounding up.
 	 */
-	public void correctDefaultData() {
+	public void setDefaultDataRoundingUp() {
 		this.roundingTime = Unit.ROUNDING_TIME_1MIN;
 		this.rounding = Rounding.ROUNDING_UP;
+	}
+
+	/**
+	 * Default data rounding down.
+	 */
+	public void setDefaultDataRoundingDown() {
+		this.roundingTime = Unit.ROUNDING_TIME_1MIN;
+		this.rounding = Rounding.ROUNDING_DOWN;
 	}
 }

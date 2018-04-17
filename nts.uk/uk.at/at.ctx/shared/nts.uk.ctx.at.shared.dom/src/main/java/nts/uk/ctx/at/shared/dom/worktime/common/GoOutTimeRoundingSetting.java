@@ -101,14 +101,14 @@ public class GoOutTimeRoundingSetting extends WorkTimeDomainObject {
 		// Simple mode
 		if (screenMode == ScreenMode.SIMPLE) {
 			this.roundingMethod = GoOutTimeRoundingMethod.TOTAL_AND_ROUNDING;
-			this.roundingSetting.correctDefaultData();
+			this.roundingSetting.setDefaultDataRoundingUp();
 			return;
 		}
 
 		// Detail mode
 		switch (this.roundingMethod) {
 		case TOTAL_AND_ROUNDING:
-			this.roundingSetting.correctDefaultData();
+			this.roundingSetting.setDefaultDataRoundingUp();
 			break;
 
 		case ROUNDING_AND_TOTAL:

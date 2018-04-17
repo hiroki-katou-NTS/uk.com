@@ -122,6 +122,15 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 		this.subHolTimeSet.forEach(item -> item.correctData(screenMode, oldDomain.getSubHolTimeSet().stream()
 				.filter(oldItem -> oldItem.getOriginAtr().equals(item.getOriginAtr())).findFirst().orElse(null)));
 		this.stampSet.correctData(screenMode, oldDomain.getStampSet());
+		
+		// Tab 13
+		this.extraordTimeSet.correctData(screenMode);
+		// Tab 14
+		this.shortTimeWorkSet.correctData(screenMode);
+		// Tab 15
+		this.medicalSets.forEach(item -> item.correctData(screenMode));
+		// Tab 16
+		
 	}
 
 	/**
@@ -134,5 +143,12 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 		this.goOutSet.correctDefaultData(screenMode);
 		this.subHolTimeSet.forEach(item -> item.correctDefaultData(screenMode));
 		this.stampSet.correctDefaultData(screenMode);
+		
+		// Tab 13
+		this.extraordTimeSet.correctData(screenMode);
+		// Tab 14
+		this.shortTimeWorkSet.correctData(screenMode);
+		// Tab 15
+		this.medicalSets.forEach(item -> item.correctData(screenMode));
 	}
 }

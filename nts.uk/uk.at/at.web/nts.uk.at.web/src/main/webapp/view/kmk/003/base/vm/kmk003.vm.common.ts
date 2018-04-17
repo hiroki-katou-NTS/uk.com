@@ -1615,9 +1615,9 @@ module nts.uk.at.view.kmk003.a {
                 childCareWorkUse: KnockoutObservable<boolean>;
 
                 constructor() {
-                    this.nursTimezoneWorkUse = ko.observable(false);
+                    this.nursTimezoneWorkUse = ko.observable(true);
                     this.employmentTimeDeduct = ko.observable(false);
-                    this.childCareWorkUse = ko.observable(false);
+                    this.childCareWorkUse = ko.observable(true);
                 }
 
                 updateData(data: WorkTimezoneShortTimeWorkSetDto) {
@@ -1636,9 +1636,9 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 resetData() {
-                    this.nursTimezoneWorkUse(false);
+                    this.nursTimezoneWorkUse(true);
                     this.employmentTimeDeduct(false);
-                    this.childCareWorkUse(false);
+                    this.childCareWorkUse(true);
                 }
             }
 

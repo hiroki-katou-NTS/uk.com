@@ -52,12 +52,12 @@ module a14 {
             
             // Init all data               
             _self.lstChildCareEnum = ko.observableArray([
-                {value: false, localizedName: nts.uk.resource.getText("KMK003_116")},
-                {value: true, localizedName: nts.uk.resource.getText("KMK003_117")}
+                {value: true, localizedName: nts.uk.resource.getText("KMK003_116")},
+                {value: false, localizedName: nts.uk.resource.getText("KMK003_117")}
             ]);          
             _self.lstNursingTimeEnum = ko.observableArray([
-                {value: false, localizedName: nts.uk.resource.getText("KMK003_196")},
-                {value: true, localizedName: nts.uk.resource.getText("KMK003_197")}
+                {value: true, localizedName: nts.uk.resource.getText("KMK003_196")},
+                {value: false, localizedName: nts.uk.resource.getText("KMK003_197")}
             ]);
             
             // Detail mode and simple mode is same
