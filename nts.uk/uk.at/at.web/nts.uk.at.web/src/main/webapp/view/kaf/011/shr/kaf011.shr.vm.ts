@@ -20,15 +20,15 @@ module nts.uk.at.view.kaf011.shr {
             endTime: KnockoutObservable<number> = ko.observable(null);
             endTimeDisplay: KnockoutObservable<number> = ko.observable(null);
             startTypes: KnockoutObservableArray<any> = ko.observableArray([
-                { code: 0, text: text('KAF011_39') },
-                { code: 1, text: text('KAF011_40') }
+                { code: 1, text: text('KAF011_39') },
+                { code: 0, text: text('KAF011_40') }
             ]);
-            startType: KnockoutObservable<number> = ko.observable(1);
+            startType: KnockoutObservable<number> = ko.observable(0);
             endTypes: KnockoutObservableArray<any> = ko.observableArray([
-                { code: 0, text: text('KAF011_42') },
-                { code: 1, text: text('KAF011_43') }
+                { code: 1, text: text('KAF011_42') },
+                { code: 0, text: text('KAF011_43') }
             ]);
-            endType: KnockoutObservable<number> = ko.observable(1);
+            endType: KnockoutObservable<number> = ko.observable(0);
 
 
             timeOption = ko.mapping.fromJS({
@@ -234,7 +234,7 @@ module nts.uk.at.view.kaf011.shr {
                     if (items.length && !(_.find(items, ['workTypeCode', self.wkTypeCD()]))) {
                         self.wkTypeCD(items[0].workTypeCode);
                     }
-                    
+
                 });
 
                 self.appDate.subscribe((newDate) => {

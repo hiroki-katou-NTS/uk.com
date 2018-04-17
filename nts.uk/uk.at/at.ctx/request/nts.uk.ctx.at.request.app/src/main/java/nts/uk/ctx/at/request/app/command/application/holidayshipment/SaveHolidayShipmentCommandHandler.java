@@ -285,11 +285,11 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 				new RecruitmentWorkingHour(new WorkTime(wkTime1Cmd.getStartTime()),
 						EnumAdaptor.valueOf(wkTime1Cmd.getStartType(), NotUseAtr.class),
 						new WorkTime(wkTime1Cmd.getEndTime()),
-						EnumAdaptor.valueOf(wkTime1Cmd.getStartType(), NotUseAtr.class)),
+						EnumAdaptor.valueOf(wkTime1Cmd.getEndType(), NotUseAtr.class)),
 				new RecruitmentWorkingHour(new WorkTime(wkTime2Cmd.getStartTime()),
 						EnumAdaptor.valueOf(wkTime2Cmd.getStartType(), NotUseAtr.class),
 						new WorkTime(wkTime2Cmd.getEndTime()),
-						EnumAdaptor.valueOf(wkTime2Cmd.getStartType(), NotUseAtr.class)),
+						EnumAdaptor.valueOf(wkTime2Cmd.getEndType(), NotUseAtr.class)),
 				Collections.emptyList());
 		appImp.insert(recApplication);
 		recRepo.insert(recApp);
