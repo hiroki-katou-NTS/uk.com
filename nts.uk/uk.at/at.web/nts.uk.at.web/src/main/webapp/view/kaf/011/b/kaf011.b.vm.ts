@@ -225,22 +225,22 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 control.wkTimeName(data.workTimeName);
                 if (data.wkTime1) {
                     control.wkTime1().startTime(data.wkTime1.startTime);
-                control.wkTime1().endTime(data.wkTime1.endTime);
-                control.wkTime1().startType(data.wkTime1.startUseAtr);
-                control.wkTime1().endType(data.wkTime1.endUseAtr);
-                
-                     }
+                    control.wkTime1().endTime(data.wkTime1.endTime);
+                    control.wkTime1().startType(data.wkTime1.startUseAtr);
+                    control.wkTime1().endType(data.wkTime1.endUseAtr);
 
-            if (data.timeZoneUseDtos && data.timeZoneUseDtos.length) {
-                let timeZone1 = data.timeZoneUseDtos[0];
-                control.wkTime1().startTimeDisplay(timeZone1.startTime);
-                control.wkTime1().endTimeDisplay(timeZone1.endTime);
+                }
+
+                if (data.timeZoneUseDtos && data.timeZoneUseDtos.length) {
+                    let timeZone1 = data.timeZoneUseDtos[0];
+                    control.wkTime1().startTimeDisplay(timeZone1.startTime);
+                    control.wkTime1().endTimeDisplay(timeZone1.endTime);
+                }
+                if (comType) {
+                    self.appComSelectedCode(comType);
+                }
+                control.updateWorkingText();
             }
-                   if(comType) {
-                     self.appComSelectedCode(comType);
-                 }
-             control.updateWorkingText();
-         }
         }
 
     }

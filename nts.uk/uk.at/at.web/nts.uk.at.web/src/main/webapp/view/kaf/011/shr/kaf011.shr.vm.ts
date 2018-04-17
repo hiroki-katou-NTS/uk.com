@@ -187,7 +187,7 @@ module nts.uk.at.view.kaf011.shr {
             wkTypes: KnockoutObservableArray<IWorkType> = ko.observableArray([]);
             wkType: KnockoutObservable<WkType> = ko.observable(new WkType(null));
             wkTypeCD: KnockoutObservable<string> = ko.observable(null);
-            wkTimeCD: KnockoutObservable<string> = ko.observable('');
+            wkTimeCD: KnockoutObservable<string> = ko.observable(null);
             wkTimeName: KnockoutObservable<string> = ko.observable('');
             wkTime1: KnockoutObservable<WorkingHour> = ko.observable(new WorkingHour());
             wkTime2: KnockoutObservable<WorkingHour> = ko.observable(new WorkingHour());
@@ -347,7 +347,9 @@ module nts.uk.at.view.kaf011.shr {
             }
             updateWorkingText() {
                 let self = this,
-                    text = self.wkTimeCD() + ' ' + self.wkTimeName();
+                    wkTimeCDText = self.wkTimeCD() ? self.wkTimeCD() : "",
+                    wkTimeNameText = self.wkTimeName() ? self.wkTimeName() : "",
+                    text = wkTimeCDText + ' ' + wkTimeNameText;
                 if (self.wkTime1().startTimeDisplay()) {
                     let startTimeText = self.parseTime(self.wkTime1().startTimeDisplay()),
                         endTimeText = self.parseTime(self.wkTime1().endTimeDisplay());

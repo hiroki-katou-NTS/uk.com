@@ -36,6 +36,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveWorkingHour;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTime;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTimeCode;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
@@ -60,7 +61,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -257,8 +257,8 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 				new WorkTime(wkTime2Cmd.getEndTime()));
 		AbsenceLeaveApp absApp = new AbsenceLeaveApp(absAppID, absAppCmd.getWkTypeCD(),
 				EnumAdaptor.valueOf(absAppCmd.getChangeWorkHoursType(), NotUseAtr.class),
-				new WorkTimeCode(absAppCmd.getWkTimeCD()), workTime1, workTime2, Collections.emptyList(),
-				Collections.emptyList());
+				absAppCmd.getWkTimeCD() == null ? null : new WorkTimeCode(absAppCmd.getWkTimeCD()), workTime1,
+				workTime2, Collections.emptyList(), Collections.emptyList());
 		appImp.insert(absApplication);
 		absRepo.insert(absApp);
 		// アルゴリズム「新規画面登録時承認反映情報の整理」を実行する

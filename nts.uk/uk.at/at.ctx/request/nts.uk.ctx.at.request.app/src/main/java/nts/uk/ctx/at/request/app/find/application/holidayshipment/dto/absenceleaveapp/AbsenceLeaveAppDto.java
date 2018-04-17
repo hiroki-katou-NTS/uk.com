@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absenceleaveapp;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,7 +9,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentAppDto;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.SubTargetDigestionDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.WorkingHoursDto;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.SubTargetDigestion;
@@ -51,7 +49,7 @@ public class AbsenceLeaveAppDto extends HolidayShipmentAppDto {
 				.map(x -> SubDigestionDto.createFromDomain(x)).collect(Collectors.toList());
 
 		AbsenceLeaveAppDto result = new AbsenceLeaveAppDto(domain.getAppID(), domain.getWorkTypeCD(),
-				domain.getChangeWorkHoursType().value, domain.getWorkTimeCD().v(), WorkTime1, WorkTime2,
+				domain.getChangeWorkHoursType().value, domain.getWorkTimeCD(), WorkTime1, WorkTime2,
 				domain.getSubTargetDigestions(), subDigestions, appDate);
 
 		return result;
