@@ -171,13 +171,13 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 
 			// 就業時間帯の休憩時間帯を日別実績に反映する
 			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance = this.reflectBreakTimeOfDailyDomainService
-					.reflectBreakTime(companyID, employeeID, processingDate, empCalAndSumExecLogID,
+					.reflectBreakTimeZone(companyID, employeeID, processingDate, empCalAndSumExecLogID,
 							timeLeavingOfDailyPerformance, workInfoOfDailyPerformance);
 			reflectStamp.setBreakTimeOfDailyPerformance(breakTimeOfDailyPerformance);
 
 			// 短時間勤務時間帯を反映する
 			ShortTimeOfDailyPerformance shortTimeOfDailyPerformance = this.reflectShortWorkingTimeDomainService
-					.reflect(companyID, processingDate, employeeID, workInfoOfDailyPerformance);
+					.reflect(companyID, processingDate, employeeID, workInfoOfDailyPerformance, timeLeavingOfDailyPerformance);
 			reflectStamp.setShortTimeOfDailyPerformance(shortTimeOfDailyPerformance);
 
 			// エラーチェック
