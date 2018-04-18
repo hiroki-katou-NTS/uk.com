@@ -113,6 +113,7 @@ public class OverTimeSheet {
 		for(OverTimeFrameTimeSheetForCalc overTimeFrameTime : frameTimeSheets) {
 			//控除時間算出
 			AttendanceTime calcDedTime = overTimeFrameTime.correctCalculationTime(Optional.empty(), autoCalcSet,DeductionAtr.Deduction);
+
 			AttendanceTime calcRecTime = overTimeFrameTime.correctCalculationTime(Optional.empty(), autoCalcSet,DeductionAtr.Appropriate);
 			//加算だけ
 			if(overTimeFrameList.containsKey(overTimeFrameTime.getFrameTime().getOverWorkFrameNo().v())) {
@@ -129,12 +130,13 @@ public class OverTimeSheet {
 		List<OverTimeFrameTime> calcOverTimeWorkTimeList = new ArrayList<>(overTimeFrameList.values()); 
 		//事前申請を上限とする制御
 		val afterCalcUpperTimeList = afterUpperControl(calcOverTimeWorkTimeList,autoCalcSet);
+		return afterCalcUpperTimeList; 
 		//振替処理
-		val aftertransTimeList = afterCalcUpperTimeList;//transProcess(workType,
+//		val aftertransTimeList = transProcess(workType,
 //											  afterCalcUpperTimeList,
 //											  eachWorkTimeSet,
 //											  eachCompanyTimeSet);
-		return aftertransTimeList;
+//		return aftertransTimeList;
 		
 	}
 	

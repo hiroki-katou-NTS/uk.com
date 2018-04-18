@@ -130,9 +130,9 @@ public class HolidayAddtionFinder {
 			regularWorkDto.setIncChildNursingCareWork(advanceSetWork.getCalculateIncludCareTime().value);
 			regularWorkDto.setNotDeductLateleaveWork(advanceSetWork.getNotDeductLateLeaveEarly().value);
 			regularWorkDto.setAdditionTimeWork(includeVacationSet.getAddition().value);
-			regularWorkDto.setEnableSetPerWorkHour1(deductLeaveEarly.isDeduct() == true ? 1 : 0);
+			regularWorkDto.setEnableSetPerWorkHour1(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
 			// spec describle enable1 same enable2
-			regularWorkDto.setEnableSetPerWorkHour2(deductLeaveEarly.isDeduct() == true ? 1 : 0);
+			regularWorkDto.setEnableSetPerWorkHour2(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
 		return regularWorkDto;
 	}
 
@@ -171,7 +171,7 @@ public class HolidayAddtionFinder {
 		flexWorkDto.setPredeterminDeficiencyWork(includeVacationSet.getPredeterminedDeficiencyOfFlex().get().value);
 		flexWorkDto.setAdditionTimeWork(includeVacationSet.getAddition().value);
 		flexWorkDto.setEnableSetPerWorkHour1(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
-		// spec describle same enable1
+		// spec describle enable2 same enable1
 		flexWorkDto.setEnableSetPerWorkHour2(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
 		flexWorkDto.setAdditionWithinMonthlyStatutory(includeVacationSet.getAdditionWithinMonthlyStatutory().get().value);
 		return flexWorkDto;
@@ -211,6 +211,7 @@ public class HolidayAddtionFinder {
 			laborDto.setNotDeductLateleaveWork(advanceSetWork.getNotDeductLateLeaveEarly().value);
 			laborDto.setAdditionTimeWork(includeVacationSet.getAddition().value);
 			laborDto.setEnableSetPerWorkHour1(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
+			// spec describle enable2 same enable1
 			laborDto.setEnableSetPerWorkHour2(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
 		return laborDto;
 	}
