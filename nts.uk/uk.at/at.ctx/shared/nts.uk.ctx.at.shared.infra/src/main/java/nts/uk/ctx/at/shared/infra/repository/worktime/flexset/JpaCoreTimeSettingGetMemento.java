@@ -8,8 +8,8 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSetPK;
 
 /**
  * The Class JpaCoreTimeSettingGetMemento.

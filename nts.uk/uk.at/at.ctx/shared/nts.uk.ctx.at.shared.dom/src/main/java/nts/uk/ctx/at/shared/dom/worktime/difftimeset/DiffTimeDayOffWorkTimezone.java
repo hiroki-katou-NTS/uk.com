@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
@@ -24,7 +25,7 @@ public class DiffTimeDayOffWorkTimezone extends WorkTimeDomainObject {
 
 	/** The work timezones. */
 	// 勤務時間帯
-	private List<DayOffTimezoneSetting> workTimezones;
+	private List<HDWorkTimeSheetSetting> workTimezones;
 
 	/**
 	 * Instantiates a new diff time day off work timezone.
@@ -82,7 +83,7 @@ public class DiffTimeDayOffWorkTimezone extends WorkTimeDomainObject {
 	
 	private void validateRestInWork() {
 		this.restTimezone.getRestTimezones().stream().forEach(rest -> {
-			List<DayOffTimezoneSetting> workTime = this.workTimezones.stream()
+			List<HDWorkTimeSheetSetting> workTime = this.workTimezones.stream()
 					.filter(work -> (work.getTimezone().getStart().v() <= rest.getStart().v())
 							&& (work.getTimezone().getEnd().v() >= rest.getEnd().v()))
 					.collect(Collectors.toList());

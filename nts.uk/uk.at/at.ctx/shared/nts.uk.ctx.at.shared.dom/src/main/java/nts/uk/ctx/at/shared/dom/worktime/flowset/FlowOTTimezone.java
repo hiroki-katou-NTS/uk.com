@@ -69,4 +69,12 @@ public class FlowOTTimezone extends WorkTimeDomainObject {
 		memento.setInLegalOTFrameNo(this.inLegalOTFrameNo);
 		memento.setSettlementOrder(this.settlementOrder);
 	}
+
+	/**
+	 * Correct default data.
+	 */
+	public void correctDefaultData() {
+		this.settlementOrder = null;
+		this.inLegalOTFrameNo = null;
+	}
 }

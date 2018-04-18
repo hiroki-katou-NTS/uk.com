@@ -1,10 +1,11 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
@@ -23,7 +24,7 @@ public interface FixedWorkSettingGetMemento {
 	 * @return the company id
 	 */
 	String getCompanyId();
-	
+
 	/**
 	 * Gets the work time code.
 	 *
@@ -79,5 +80,12 @@ public interface FixedWorkSettingGetMemento {
 	 * @return the legal OT setting
 	 */
 	LegalOTSetting getLegalOTSetting();
-	
+
+	/**
+	 * Gets the calculation setting.
+	 *
+	 * @return the calculation setting
+	 */
+	Optional<FixedWorkCalcSetting> getCalculationSetting();
+
 }

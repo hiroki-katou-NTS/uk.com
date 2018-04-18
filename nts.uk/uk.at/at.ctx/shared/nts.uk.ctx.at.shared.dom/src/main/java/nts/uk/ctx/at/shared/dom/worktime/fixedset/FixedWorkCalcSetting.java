@@ -4,22 +4,25 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class FixedWorkCalcSetting.
  */
 @Getter
-// 固定勤務の計算設定
+// 固定勤務�計算設�
 public class FixedWorkCalcSetting extends WorkTimeDomainObject {
 
 	/** The exceeded pred add vacation calc. */
-	// 休暇加算時間が所定を超過した場合の計算
+	// 休暇�算時間が所定を趁�した場合�計�
 	private ExceededPredAddVacationCalc exceededPredAddVacationCalc;
 
 	/** The over time calc no break. */
-	// 休憩未取得時の残業計算
+	// 休�未取得時の残業計�
 	private OverTimeCalcNoBreak overTimeCalcNoBreak;
 
 	/**
@@ -45,14 +48,30 @@ public class FixedWorkCalcSetting extends WorkTimeDomainObject {
 	}
 
 	/**
-	 * Constructor 
+	 * Correct data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 * @param oldDomain
+	 *            the old domain
 	 */
-	public FixedWorkCalcSetting(ExceededPredAddVacationCalc exceededPredAddVacationCalc,
-			OverTimeCalcNoBreak overTimeCalcNoBreak) {
-		super();
-		this.exceededPredAddVacationCalc = exceededPredAddVacationCalc;
-		this.overTimeCalcNoBreak = overTimeCalcNoBreak;
+	public void correctData(ScreenMode screenMode, Optional<FixedWorkCalcSetting> oldDomain) {
+		if (oldDomain.isPresent()) {
+			this.exceededPredAddVacationCalc.correctData(screenMode, oldDomain.get().getExceededPredAddVacationCalc());
+			this.overTimeCalcNoBreak.correctData(screenMode, oldDomain.get().getOverTimeCalcNoBreak());
+		} else {
+			this.correctDefaultData(screenMode);
+		}
 	}
-	
-	
+
+	/**
+	 * Correct default data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 */
+	public void correctDefaultData(ScreenMode screenMode) {
+		this.exceededPredAddVacationCalc.correctDefaultData(screenMode);
+		this.overTimeCalcNoBreak.correctDefaultData(screenMode);
+	}
 }
