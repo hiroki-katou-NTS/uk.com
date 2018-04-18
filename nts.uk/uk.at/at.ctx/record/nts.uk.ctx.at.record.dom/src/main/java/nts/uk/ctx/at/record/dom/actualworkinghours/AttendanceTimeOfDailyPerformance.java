@@ -139,12 +139,13 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	 * @param oneDay 1日の範囲クラス
 	 * @param schePreTimeSet 
 	 * @param ootsukaFixCalsSet 
+	 * @param integrationOfDaily2 
 	 * @return 日別実績(Work)クラス
 	 */
 	public static IntegrationOfDaily calcTimeResult(CalculationRangeOfOneDay oneDay,IntegrationOfDaily integrationOfDaily,AutoCalOvertimeSetting overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting,
 			   Optional<PersonalLaborCondition> personalCondition,
 			   VacationClass vacationClass,
-			   WorkType workType,
+			   WorkType recordWorkType,
 			   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 			   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			   WorkingSystem workingSystem,
@@ -168,11 +169,11 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   List<DivergenceTime> divergenceTimeList,
 			   CalculateOfTotalConstraintTime calculateOfTotalConstraintTime, 
 			   Optional<PredetermineTimeSetForCalc> schePreTimeSet, Optional<FixedWorkCalcSetting> ootsukaFixCalsSet,
-			   Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting) {
+			   Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting,Optional<WorkType> scheWorkType) {
 		integrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(collectCalculationResult(oneDay,oneDay, overTimeAutoCalcSet,holidayAutoCalcSetting,
 				   																		personalCondition,
 				   																		 vacationClass,
-				   																		 workType,
+				   																		 recordWorkType,
 				   																		 late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 				   																		 leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 				   																		 workingSystem,
@@ -198,7 +199,9 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				   																	     schePreTimeSet,
 				   																	     integrationOfDaily.getBreakTime().size(),
 				   																	     ootsukaFixCalsSet,
-				   																	     fixRestTimeSetting)));
+				   																	     fixRestTimeSetting,
+				   																	  integrationOfDaily, scheWorkType
+				   																	     )));
 		
 		return integrationOfDaily;
 	}
@@ -208,6 +211,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	 * @param schePreTimeSet 
 	 * @param breakTimeCount 
 	 * @param ootsukaFixCalsSet 
+	 * @param integrationOfDaily 
 	 * @param 1日の範囲クラス
 	 */
 	private static AttendanceTimeOfDailyPerformance collectCalculationResult(CalculationRangeOfOneDay recordOneDay,CalculationRangeOfOneDay scheduleOneDay,
@@ -215,7 +219,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   AutoCalSetting holidayAutoCalcSetting,
 			   Optional<PersonalLaborCondition> personalCondition,
 			   VacationClass vacationClass,
-			   WorkType workType,
+			   WorkType recordWorkType,
 			   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 			   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			   WorkingSystem workingSystem,
@@ -239,16 +243,17 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   List<DivergenceTime> divergenceTimeList,
 			   CalculateOfTotalConstraintTime calculateOfTotalConstraintTime, Optional<PredetermineTimeSetForCalc> schePreTimeSet, int breakTimeCount,
 			   Optional<FixedWorkCalcSetting> ootsukaFixCalsSet,
-			   Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting
+			   Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting, IntegrationOfDaily integrationOfDaily,
+			   Optional<WorkType> scheWorkType
 			   ) {
 		
 		/*日別実績の勤務予定時間の計算*/
 		//実績,予定で渡す予定(今は実績のみ渡してる)　****要修正***
-		val workScheduleTime = calcWorkSheduleTime(recordOneDay,scheduleOneDay,schePreTimeSet, workType);
+		val workScheduleTime = calcWorkSheduleTime(recordOneDay,scheduleOneDay,schePreTimeSet, recordWorkType,scheWorkType);
 		/*日別実績の実績時間の計算*/
 		val actualWorkingTimeOfDaily = ActualWorkingTimeOfDaily.calcRecordTime(recordOneDay,overTimeAutoCalcSet,holidayAutoCalcSetting,personalCondition,
 				    vacationClass,
-				    workType,
+				    recordWorkType,
 				    late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 				    leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 				    workingSystem,
@@ -273,7 +278,8 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 					schePreTimeSet,
 					breakTimeCount,
 					ootsukaFixCalsSet,
-					fixRestTimeSetting);
+					fixRestTimeSetting,
+					integrationOfDaily);
 		
 
 		/*滞在時間の計算*/
@@ -310,16 +316,17 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	 * @param scheduleOneDay　予定の1日の範囲クラス
 	 * @param schePreTime　労働条件の個人勤務区分別の就時コードから取得した所定時間クラス
 	 * @param workType
+	 * @param scheWorkType 
 	 * @return
 	 */
 	private static WorkScheduleTimeOfDaily calcWorkSheduleTime(CalculationRangeOfOneDay recordOneDay, CalculationRangeOfOneDay scheduleOneDay,
-															   Optional<PredetermineTimeSetForCalc> schePreTime,WorkType workType) {
+															   Optional<PredetermineTimeSetForCalc> schePreTime,WorkType workType, Optional<WorkType> scheWorkType) {
 		//勤務予定時間を計算
 		//val schedulePredWorkTime = (scheduleOneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode() == null)?new AttendanceTime(0):recordOneDay.getPredetermineTimeSetForCalc().getpredetermineTime(workType.getDailyWork());
 		//実績所定労働時間の計算
-		val actualPredWorkTime = (recordOneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode() == null)?new AttendanceTime(0):recordOneDay.getPredetermineTimeSetForCalc().getpredetermineTime(workType.getDailyWork());
+		val actualPredWorkTime = (recordOneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode() == null)?new AttendanceTime(0):recordOneDay.getPredetermineTimeSetForCalc().getPredetermineTimeByAttendanceAtr(workType.getAttendanceHolidayAttr());
 		//計画所定時間の計算
-		val shedulePreWorkTime = (schePreTime.isPresent())? schePreTime.get().getpredetermineTime(workType.getDailyWork()):new AttendanceTime(0);
+		val shedulePreWorkTime = (schePreTime.isPresent()&&scheWorkType.isPresent())? schePreTime.get().getPredetermineTimeByAttendanceAtr(scheWorkType.get().getAttendanceHolidayAttr()):new AttendanceTime(0);
 		//val workSheduleTime
 		return new WorkScheduleTimeOfDaily(new WorkScheduleTime(new AttendanceTime(510),new AttendanceTime(0),new AttendanceTime(510)),shedulePreWorkTime,actualPredWorkTime);
 	}

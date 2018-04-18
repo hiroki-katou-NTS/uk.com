@@ -417,12 +417,12 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 //			|| (integrationOfDaily.getCalAttr().getDivergenceTime() != null))
 //			return ManageReGetClass.cantCalc();
 		if(integrationOfDaily.getCalAttr() == null
-				|| (integrationOfDaily.getCalAttr().getRasingSalarySetting() != null)
-				|| (integrationOfDaily.getCalAttr().getOvertimeSetting() != null)
-				|| (integrationOfDaily.getCalAttr().getLeaveEarlySetting() != null)
-				|| (integrationOfDaily.getCalAttr().getHolidayTimeSetting() != null)
-				|| (integrationOfDaily.getCalAttr().getFlexExcessTime() != null)
-				|| (integrationOfDaily.getCalAttr().getDivergenceTime() != null))
+				|| (integrationOfDaily.getCalAttr().getRasingSalarySetting() == null)
+				|| (integrationOfDaily.getCalAttr().getOvertimeSetting() == null)
+				|| (integrationOfDaily.getCalAttr().getLeaveEarlySetting() == null)
+				|| (integrationOfDaily.getCalAttr().getHolidayTimeSetting() == null)
+				|| (integrationOfDaily.getCalAttr().getFlexExcessTime() == null)
+				|| (integrationOfDaily.getCalAttr().getDivergenceTime() == null))
 		{
 			val autoCalcSet = new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT,AutoCalAtrOvertime.CALCULATEMBOSS);
 			val calAttr = new CalAttrOfDailyPerformance(employeeId, 
@@ -485,7 +485,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 //												new WorkTimeCalcMethodDetailOfHoliday(flexWork.isPresent()?flexWork.get().getFlexWork().getNotDeductLateleave2():1,
 //																					  flexWork.isPresent()?flexWork.get().getFlexWork().getAdditionTime2():1),
 												Optional.of(flexWorkSetOpt.get().getCoreTimeSetting()),
-												dailyUnit);
+												dailyUnit, integrationOfDaily);
 		} else {
 			switch (workTime.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
 			case FIXED_WORK:
@@ -538,7 +538,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						new WorkTimeCalcMethodDetailOfHoliday(1,1),
 //						new WorkTimeCalcMethodDetailOfHoliday(regularWork.isPresent()?regularWork.get().getRegularWork().getNotDeductLateleave2():1,
 //															  regularWork.isPresent()?regularWork.get().getRegularWork().getAdditionTime2():1),
-						dailyUnit);
+						dailyUnit
+						);
 				break;
 			case FLOW_WORK:
 				/* 流動勤務 */
@@ -692,7 +693,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		val workType = manageReGetClass.getWorkType();
 		if(!workType.isPresent() || !workTime.isPresent()) return manageReGetClass.getIntegrationOfDaily();
-		
+		//予定時間帯が作成されるまでの一時対応
+		val scheWorkTypeCode = manageReGetClass.getCalculationRangeOfOneDay().getWorkInformationOfDaily().getScheduleInfo().getWorkTypeCode();
+		Optional<WorkType> scheWorkType = Optional.empty();
+		if(scheWorkTypeCode != null)
+			 scheWorkType = workTypeRepository.findByPK(companyId, scheWorkTypeCode.toString()); 
 		
 		//休暇加算時間設定
 		VacationAddTimeSet vacationAddSetting = new VacationAddTimeSet(new BreakDownTimeDay(manageReGetClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getAdditionSet().getPredTime().getOneDay(), 
@@ -741,7 +746,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					calculateOfTotalConstraintTime, 
 					schePreTimeSet,
 					manageReGetClass.getOotsukaFixedWorkSet(),
-					manageReGetClass.getFixRestTimeSetting()
+					manageReGetClass.getFixRestTimeSetting(),
+					scheWorkType
 					));
 //					schePreTimeSet));
 	

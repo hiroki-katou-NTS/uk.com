@@ -124,13 +124,15 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 * @param toDay
 	 * @param afterDay
 	 * @param prioritySet
+	 * @param integrationOfDaily 
 	 * @return
 	 */
 	public static List<OverTimeFrameTimeSheetForCalc> createOverWorkFrame(List<OverTimeOfTimeZoneSet> overTimeHourSetList,WorkingSystem workingSystem,
 												TimeLeavingWork attendanceLeave,int workNo,
 												BreakDownTimeDay breakdownTimeDay,DailyTime dailyTime,AutoCalOvertimeSetting autoCalculationSet,
 												LegalOTSetting statutorySet,StatutoryPrioritySet prioritySet ,BonusPaySetting bonusPaySetting,MidNightTimeSheet midNightTimeSheet,
-												DailyCalculationPersonalInformation personalInfo,boolean isCalcWithinOverTime,DeductionTimeSheet deductionTimeSheet,DailyUnit dailyUnit) {
+												DailyCalculationPersonalInformation personalInfo,boolean isCalcWithinOverTime,DeductionTimeSheet deductionTimeSheet,
+												DailyUnit dailyUnit) {
 		List<OverTimeFrameTimeSheetForCalc> createTimeSheet = new ArrayList<>();
 		
 		for(OverTimeOfTimeZoneSet overTimeHourSet:overTimeHourSetList) {
@@ -157,6 +159,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 * 残業枠時間帯の作成
 	 * @param overTimeHourSet 残業時間の時間帯設定
 	 * @param timeSpan 計算範囲
+	 * @param integrationOfDaily 
 	 * @return
 	 */
 	public static OverTimeFrameTimeSheetForCalc createOverWorkFramTimeSheet(OverTimeOfTimeZoneSet overTimeHourSet,TimeSpanForCalc timeSpan,
@@ -177,6 +180,15 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 		/*深夜*/
 		val duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(midNightTimeSheet, timeSpan, recordTimeSheet, recordTimeSheet);
 		
+		
+		OverTimeFrameTime overTimeFrameTime = new OverTimeFrameTime(new OverTimeFrameNo(overTimeHourSet.getOtFrameNo().v()),
+				    												TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),
+				    												TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),
+				    												new AttendanceTime(0),
+				    												new AttendanceTime(0));
+
+		
+		
 		return new OverTimeFrameTimeSheetForCalc(new TimeZoneRounding(timeSpan.getStart(),timeSpan.getEnd(),overTimeHourSet.getTimezone().getRounding()),
 											  	timeSpan,
 											  	dedTimeSheet.stream().map(tc ->tc.createWithExcessAtr()).collect(Collectors.toList()),
@@ -184,11 +196,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 											  	duplibonusPayTimeSheet,
 											  	duplispecifiedBonusPayTimeSheet,
 											  	duplicatemidNightTimeSheet,
-											  	new OverTimeFrameTime(new OverTimeFrameNo(overTimeHourSet.getOtFrameNo().v()),
-											  						    TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),
-											  						    TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),
-													  					new AttendanceTime(0),
-													  					new AttendanceTime(0)),
+											  	overTimeFrameTime,
 											  	StatutoryAtr.Statutory,
 											  	false,
 											  	overTimeHourSet.getWorkTimezoneNo(),

@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlHolidayWorkTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkFrameTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheet;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
@@ -62,6 +63,7 @@ public class HolidayWorkTimeOfDaily {
 
 	/**
 	 * メンバー変数の時間計算を指示するクラス
+	 * @param integrationOfDaily 
 	 * @param holidayTimeSheet
 	 * @return
 	 */
@@ -69,14 +71,15 @@ public class HolidayWorkTimeOfDaily {
 														 AutoCalSetting holidayAutoCalcSetting,
 														 WorkType workType,
 														 Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-														 Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+														 Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily) {
 		//時間帯
 		val holidayWorkFrameTimeSheet = holidayWorkTimeSheet.changeHolidayWorkTimeFrameTimeSheet();
 		//枠時間
 		val holidayWorkFrameTime = holidayWorkTimeSheet.collectHolidayWorkTime(holidayAutoCalcSetting,
 				 															   workType,
 				 															   eachWorkTimeSet,
-				 															   eachCompanyTimeSet);
+				 															   eachCompanyTimeSet,
+				 															   integrationOfDaily);
 		//深夜
 		//holMidNightTime.add(new HolidayWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0)), StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork));
 		val holidayMidnightWork = Finally.of(calcMidNightTimeIncludeHolidayWorkTime(holidayWorkTimeSheet));
