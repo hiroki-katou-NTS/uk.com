@@ -49,7 +49,7 @@ module cps008.c.viewmodel {
                 nts.uk.ui.dialog.alert({ messageId: "Msg_355" });
                 return;
             } else if (layout.newCode && layout.newName) {
-                let command: any = {
+                let command = {
                     id: layout.id,
                     code: layout.newCode,
                     name: layout.newName,
