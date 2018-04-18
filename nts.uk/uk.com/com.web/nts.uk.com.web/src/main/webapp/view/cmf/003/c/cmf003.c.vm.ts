@@ -1,5 +1,6 @@
 module nts.uk.com.view.cmf001.a {
     import getText = nts.uk.resource.getText;
+    import close = nts.uk.ui.windows.close;
     export module viewmodel {
         export class ScreenModel {
             
@@ -7,7 +8,6 @@ module nts.uk.com.view.cmf001.a {
            itemsSwap: KnockoutObservableArray<ItemModel>;
            columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
            currentCodeListSwap: KnockoutObservableArray<any>;
-           test: KnockoutObservableArray<any>;
            
            // comboBox
            itemList: KnockoutObservableArray<ItemModelCombo>;
@@ -43,12 +43,18 @@ module nts.uk.com.view.cmf001.a {
                ]);
     
                self.currentCodeListSwap = ko.observableArray([]);
-               self.test = ko.observableArray([]);
            }
        
            remove(){
                self.itemsSwap.shift();            
            }
+            
+            closeUp() {
+                close();
+            }
+            
+            
+            
         }
     }
 
@@ -56,12 +62,10 @@ module nts.uk.com.view.cmf001.a {
            code: number;
            name: string;
            description: string;
-           deletable: boolean;
            constructor(code: number, name: string, description: string) {
                this.code = code;
                this.name = name;
                this.description = description;
-               this.deletable = code % 3 === 0;
            }
        }
 

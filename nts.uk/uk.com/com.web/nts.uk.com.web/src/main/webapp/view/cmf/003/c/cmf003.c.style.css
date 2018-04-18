@@ -1,10 +1,13 @@
+#dialogSize {
+	padding-bottom: 15px;
+}
 #inline{
 	width:100%;
 	height:auto;
 	display:flex;
 }
 .one{
-	margin-left: 290px;
+	margin-left: 20px;
 	margin-bottom: 25px;
 	margin-top:10px;
 }
@@ -13,17 +16,17 @@
 	margin:10px;
 }
 #labelLeft{
-	margin-left: 290px;
+	margin-left: 20px;
 }
 #labelRight{
-	margin-left: 350px; 
+	margin-left: 10px; 
 	margin-bottom: 25px;
 }
 #swap-list{
-	margin-left: 290px;
+	margin-left: 20px;
 }
 #btnLeft {
-	margin-left: 625px; 
+	margin-left: 345px; 
 	margin-top: 15px;
 }
 #btnRight {

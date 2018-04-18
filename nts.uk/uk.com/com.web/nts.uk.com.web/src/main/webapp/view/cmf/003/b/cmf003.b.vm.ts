@@ -5,6 +5,7 @@ module nts.uk.com.view.cmf003.b.viewmodel {
     import block = nts.uk.ui.block;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import modal = nts.uk.ui.windows.sub.modal;
 
     export class ScreenModel {
         //wizard
@@ -118,6 +119,14 @@ module nts.uk.com.view.cmf003.b.viewmodel {
                 self.yearValue.valueHasMutated();      
             });
         }
+        
+        
+        selectCategory() {
+           modal('../c/index.xhtml').onClosed(() => {
+                
+            });  
+         }
+        
     }   
 }
 
