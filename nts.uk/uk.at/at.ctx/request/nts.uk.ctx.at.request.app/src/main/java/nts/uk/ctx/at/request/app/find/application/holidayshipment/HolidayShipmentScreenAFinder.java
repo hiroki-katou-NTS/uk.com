@@ -20,8 +20,6 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingD
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absenceleaveapp.AbsenceLeaveAppDto;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmentapp.RecruitmentAppDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
@@ -56,7 +54,6 @@ import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
-import nts.uk.ctx.at.shared.app.command.worktime.worktimeset.dto.WorkTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
@@ -195,11 +192,11 @@ public class HolidayShipmentScreenAFinder {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		GeneralDate baseDate = comType == ApplicationCombination.Abs.value ? absDate : recDate;
-		// アルゴリズム「実績の取得」を実行する
+
 		HolidayShipmentDto output = commonProcessBeforeStart(appType, companyID, employeeID, baseDate);
 		// AchievementOutput achievementOutput = getAchievement(companyID,
 		// employeeID, baseDate);
-
+		// アルゴリズム「実績の取得」を実行する
 		setChangeAppDateData(recDate, absDate, companyID, employeeID, uiType, output);
 
 		return output;
@@ -230,17 +227,18 @@ public class HolidayShipmentScreenAFinder {
 		GeneralDate referenceDate = DetRefDate(recDate, absDate);
 		int rootAtr = EmploymentRootAtr.APPLICATION.value;
 		AppCommonSettingOutput appCommonSet = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID,
-				employeeID, rootAtr, ApplicationType.BREAK_TIME_APPLICATION, referenceDate);
+				employeeID, rootAtr, appType, referenceDate);
 
 		ApplicationSetting appSet = appCommonSet.applicationSetting;
 		// 承認ルート基準日をチェックする
 		GeneralDate inputDate;
 		if (!appSet.getBaseDateFlg().equals(BaseDateFlg.APP_DATE)) {
-			// アルゴリズム「社員の対象申請の承認ルートを取得する」を実行する
+
 			inputDate = referenceDate;
 		} else {
 			inputDate = GeneralDate.today();
 		}
+		// アルゴリズム「社員の対象申請の承認ルートを取得する」を実行する
 		List<ApprovalRootImport> approvalRoots = rootAdapter.getApprovalRootOfSubjectRequest(companyID, employeeID,
 				rootAtr, appType.value, referenceDate);
 
@@ -517,7 +515,10 @@ public class HolidayShipmentScreenAFinder {
 
 	private List<WorkType> extractTargetWkTypes(String companyID, String employmentCode, int breakOutType,
 			List<WorkType> wkTypes, AppCommonSettingOutput appCommonSet) {
+
+		// ドメインモデル「申請別対象勤務種類」を取得する
 		Optional<AppEmploymentSetting> empSetOpt = appCommonSet.appEmploymentWorkType.stream()
+				.filter(x -> x.getEmploymentCode().equals(employmentCode))
 				.filter(x -> x.getHolidayOrPauseType() == breakOutType).findFirst();
 		if (empSetOpt.isPresent()) {
 			AppEmploymentSetting empSet = empSetOpt.get();
