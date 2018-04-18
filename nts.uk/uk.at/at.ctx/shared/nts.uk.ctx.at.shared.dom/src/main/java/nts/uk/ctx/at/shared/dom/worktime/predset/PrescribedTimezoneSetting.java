@@ -18,12 +18,12 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * The Class PrescribedTimezoneSetting.
  */
-// 所定時間帯設�
+// 所定時間帯設定
 @Getter
 public class PrescribedTimezoneSetting extends WorkTimeDomainObject {
 
 	/** The morning end time. */
-	// 午前終亙�刻
+	// 午前終了時刻
 	private TimeWithDayAttr morningEndTime;
 
 	/** The afternoon start time. */
@@ -286,7 +286,7 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject {
 	 * Valid time day.
 	 */
 	private void validTimeDay() {
-		// 使用しな�
+		// 使用しない
 		if (!this.getTimezoneShiftTwo().isUsed()) {
 			TimezoneUse tzWorkNo1 = this.getTimezoneShiftOne();
 			if (!tzWorkNo1.consistOf(this.getAfternoonStartTime())) {

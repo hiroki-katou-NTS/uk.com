@@ -14,15 +14,15 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  * The Class OverTimeCalcNoBreak.
  */
 @Getter
-// 休�未取得時の残業計�
+// 休憩未取得時の残業計算
 public class OverTimeCalcNoBreak extends WorkTimeDomainObject {
 
 	/** The calc method. */
-	// 計算方�
+	// 計算方法
 	private CalcMethodNoBreak calcMethod;
 
 	/** The in law OT. */
-	// 法�残業
+	// 法内残業
 	private OTFrameNo inLawOT;
 
 	/** The not in law OT. */
