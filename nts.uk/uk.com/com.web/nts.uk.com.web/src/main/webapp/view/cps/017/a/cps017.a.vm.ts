@@ -11,9 +11,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
     let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'];
     export class ScreenModel {
         //listSelectionItem
-        listItems: KnockoutObservableArray<ISelectionItem> = ko.observableArray([]);
+        listItems: KnockoutObservableArray<SelectionItem> = ko.observableArray([]);
         perInfoSelectionItem: KnockoutObservable<SelectionItem> = ko.observable(new SelectionItem({ selectionItemId: '', selectionItemName: '' }));
-
+        
         // history:
         listHistorySelection: KnockoutObservableArray<IHistorySelection> = ko.observableArray([]);
         historySelection: KnockoutObservable<HistorySelection> = ko.observable(new HistorySelection({ histId: '', selectionItemId: '' }));
@@ -54,30 +54,30 @@ module nts.uk.com.view.cps017.a.viewmodel {
         constraints: KnockoutObservable<any> = ko.observable();
 
         constructor() {
-            let self = this,
-                perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
-                listItems: Array<SelectionItem> = self.listItems(),
-                historySelection: HistorySelection = self.historySelection(),
-                listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
-                selection: Selection = self.selection();
+            let self = this;
+            let historySelection: HistorySelection = self.historySelection();
+            let selection: Selection = self.selection();
+            let perInfoSelectionItem: ISelectionItem1 = self.perInfoSelectionItem();
+            
             self.isGroupManager = ko.observable(false);
             //check insert/update
             self.checkCreate = ko.observable(true);
             self.checkCreateaaa = ko.observable(true);
 
             //Subscribe: 項目変更→項目のID変更
-            perInfoSelectionItem.selectionItemId.subscribe(x => {
-                if (x) {
+            perInfoSelectionItem.selectionItemId.subscribe( id => {
+                if (id) {
 
                     let selectedObject: ISelectionItem1 = _.find(self.listItems(), (item) => {
-                        return item.selectionItemId == x;
+                        return item.selectionItemId == id;
                     });
 
                     if (selectedObject != undefined) {
                         
+                        //self.perInfoSelectionItem(new SelectionItem(selectedObject));
                         perInfoSelectionItem.selectionItemName(selectedObject.selectionItemName);
-                        perInfoSelectionItem.selectionCodeCharacter(selectedObject.characterType);
-                        perInfoSelectionItem.selectionItemClassification(selectedObject.selectionItemClassification);
+                        perInfoSelectionItem.characterType(selectedObject.characterType ? 1 : 0);
+                        perInfoSelectionItem.selectionItemClassification(selectedObject.shareChecked ? 0 : 1);
                         
                         self.constraints.selectionCode = selectedObject.codeLength;
                         self.constraints.selectionName = selectedObject.nameLength;
@@ -122,7 +122,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     }
                     
                     // history
-                    service.getAllPerInfoHistorySelection(x).done((_selectionItemList: IHistorySelection) => {
+                    service.getAllPerInfoHistorySelection(id).done((_selectionItemList: IHistorySelection) => {
                         let changeData: Array<IHistorySelection> = _.each(_selectionItemList, (item) => {
                             item.displayDate = item.startDate + "  " + getText('CPS017_12') + "  " + item.endDate;
                             return item;
@@ -140,9 +140,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
             });
             
             
-            
-
-            //sub theo historyID:
             historySelection.histId.subscribe(x => {
                 if (x) {
                     let histCur = _.find(self.listHistorySelection(), a => a.histId == x);
@@ -293,7 +290,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
             selection.codeType(99);
             _.defer(() => {
-                selection.codeType(perSelection.selectionCodeCharacter);
+                selection.codeType(perSelection.characterType);
             });
             self.checkCreateaaa(true);
 
@@ -727,18 +724,27 @@ module nts.uk.com.view.cps017.a.viewmodel {
     }
 
     class SelectionItem {
+        
         selectionItemId: KnockoutObservable<string> = ko.observable('');
         selectionItemName: KnockoutObservable<string> = ko.observable('');
-        selectionCodeCharacter: KnockoutObservable<number> = ko.observable(1);
-        reflectedToAllCompanies: KnockoutObservable<number> = ko.observable();
+        
+        characterType: KnockoutObservable<number> = ko.observable(1);
+        codeLength : KnockoutObservable<number> = ko.observable(null);
+        nameLength : KnockoutObservable<number> = ko.observable(null);
+        extraCodeLength : KnockoutObservable<number> = ko.observable(null);
+        
         selectionItemClassification: KnockoutObservable<number> = ko.observable();
         
-        constructor(param: ISelectionItem) {
+        constructor(param: ISelectionItem1) {
             let self = this;
             self.selectionItemId(param.selectionItemId || '');
             self.selectionItemName(param.selectionItemName || '');
-            self.reflectedToAllCompanies(param.reflectedToAllCompanies || '');
-
+            
+            self.characterType(param.characterType ? 1 : 0);
+            self.codeLength(param.codeLength);
+            self.nameLength(param.nameLength);
+            self.extraCodeLength(param.extraCodeLength);
+            
             self.selectionItemClassification((param.shareChecked ? 0 : 1) || '');
         }
     }

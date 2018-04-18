@@ -60,8 +60,7 @@
 				</com:ko-if>
 
 			</div>
-			<div id="contents-area" class="cf"
-				data-bind="let: { infoSelection: perInfoSelectionItem }">
+			<div id="contents-area" class="cf">
 
 				<!-- phần trái của màn hình -->
 				<div id="content-left" class="pull-left">
@@ -178,7 +177,7 @@
 				<div id="content-right" class="pull-left"
 					data-bind="with: selection">
 
-					<com:ko-if bind="codeType() === 0">
+					<com:ko-if bind="$parent.perInfoSelectionItem().characterType() === 0">
 						<div class="form-input">
 							<div class="form-lable"
 								data-bind="ntsFormLabel: {constraint: ['SelectionCdNumeric', 'SelectionName'] , required: true }">
@@ -228,7 +227,7 @@
 						</div>
 					</com:ko-if>
 
-					<com:ko-if bind="codeType() === 1">
+					<com:ko-if bind="$parent.perInfoSelectionItem().characterType() === 1">
 						<div class="form-input">
 							<div class="form-lable"
 								data-bind="ntsFormLabel: {constraint: ['SelectionCdAlphaNumeric', 'SelectionName'], required: true }">
