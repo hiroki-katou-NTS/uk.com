@@ -72,7 +72,6 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             { headerText: 'コード', key: 'code', width: 100, hidden: true },
             { headerText: nts.uk.resource.getText("KDW007_82"), key: 'name', width: 300 },
         ]);
-
         constructor() {
             let self = this;
             self.selectedErrorAlarmCode.subscribe((code) => {
@@ -142,11 +141,11 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             $("#errorAlarmWorkRecordName").focus();
         }
 
-        startPage(isDaily,code): JQueryPromise<any> {
+        startPage(isDaily, code): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             nts.uk.ui.block.grayout();
-            if(isDaily != null)
+            if (isDaily != null)
                 self.screenMode(isDaily);
             if (self.screenMode() == ScreenMode.Daily) {
                 service.getAll().done((lstData) => {
@@ -321,7 +320,11 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     if (self.screenMode() == ScreenMode.Daily) {
                         service.update(data).done(() => {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                self.startPage(0, self.isNewMode() ? "U" + data.code : data.code);
+                                let i = self.selectedErrorAlarmCode();
+                                self.startPage(0, self.isNewMode() ? "U" + data.code : data.code).then(() => {
+                                    self.showTypeAtr.valueHasMutated();
+                                    self.selectedErrorAlarmCode(i);
+                                });
                                 if (self.lstErrorAlarm().length > 0) {
                                     $("#errorAlarmWorkRecordName").focus();
                                 } else {
@@ -332,7 +335,11 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     } else if (self.screenMode() == ScreenMode.Monthly) {
                         service.updateMonthlyCondition(data).done(() => {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                self.startPage(1, self.isNewMode() ? "U" + data.code : data.code);
+                                let i = self.selectedErrorAlarmCode();
+                                self.startPage(1, self.isNewMode() ? "U" + data.code : data.code).then(() => {
+                                    self.showTypeAtr.valueHasMutated();
+                                    self.selectedErrorAlarmCode(i);
+                                });
                                 if (self.lstErrorAlarm().length > 0) {
                                     $("#errorAlarmWorkRecordName").focus();
                                 } else {
@@ -353,7 +360,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_618" }).ifYes(() => {
                     service.remove(data).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                            self.startPage(0,null);
+                            self.startPage(0, null);
                             if (self.lstErrorAlarm().length > 0) {
                                 $("#errorAlarmWorkRecordName").focus();
                             } else {
@@ -366,7 +373,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_618" }).ifYes(() => {
                     service.removeMonthlyCondition(data).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                            self.startPage(1,null);
+                            self.startPage(1, null);
                             if (self.lstErrorAlarm().length > 0) {
                                 $("#errorAlarmWorkRecordName").focus();
                             } else {
@@ -1233,6 +1240,11 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 }
                 self.setTextDisplay();
             });
+        }
+
+        clear() {
+            let self = this;
+            self.setData(0, null);
         }
 
         setData(NO, param) {
