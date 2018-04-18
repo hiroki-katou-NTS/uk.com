@@ -496,6 +496,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		// (kiểm tra thông tin 「予定確定区分」 của domain 「勤務予定基本情報」)
 		if (command.getContent().getReCreateContent().getReCreateAtr() == ReCreateAtr.ALL_CASE
 				|| basicSchedule.getConfirmedAtr().equals(ConfirmedAtr.UNSETTLED)) {
+			// アルゴリズム「スケジュール作成判定処理」を実行する
 			if (this.scheCreExeMonthlyPatternHandler.scheduleCreationDeterminationProcess(command, basicSchedule,
 					employmentStatus, workingConditionItem.getAutoStampSetAtr())) {
 				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, workingConditionItem);
