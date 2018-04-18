@@ -24,6 +24,7 @@ module nts.uk.at.view.kdw008.b {
             //swap list tab 1
             monthlyDetailList: KnockoutObservableArray<BusinessTypeFormatDetailModel>;
             columns3: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+            columns4: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             currentCodeListSwapMonthly: KnockoutObservableArray<any>;
             businessTypeFormatMonthlyValue: KnockoutObservableArray<AttendanceItemModel>;
             monthlyDataSource: KnockoutObservableArray<AttendanceItemModel>;
@@ -38,8 +39,24 @@ module nts.uk.at.view.kdw008.b {
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
 
-            constructor() {
+            //is daily
+            isDaily: boolean;
+            
+            //monthly
+            listMonthlyAttdItem : KnockoutObservableArray<any>;
+            valuesMonthly :  KnockoutObservableArray<any>;
+            
+            
+            constructor(dataShare: any) {
                 var self = this;
+                //check daily
+                self.isDaily = dataShare.ShareObject;
+                self.isDaily = false;
+                
+                //monthly
+                self.listMonthlyAttdItem = ko.observableArray([]);
+                self.valuesMonthly = ko.observableArray([]);
+                
                 self.newMode = ko.observable(false);
                 self.isUpdate = true;
                 self.hasdata = true;
@@ -58,6 +75,11 @@ module nts.uk.at.view.kdw008.b {
                 ]);
                 this.selectedCode = ko.observable();
 
+                self.columns4 = ko.observableArray([
+                    { headerText: 'コード', key: 'attendanceItemDisplayNumber', width: 70 },
+                    { headerText: 'ID', key: 'attendanceItemId', hidden: true, width: 100 },
+                    { headerText: '名称', key: 'attendanceItemName', width: 150 }
+                ]);
                 self.columns3 = ko.observableArray([
                     { headerText: 'コード', key: 'attendanceItemDisplayNumber', width: 70 },
                     { headerText: 'ID', key: 'attendanceItemId', hidden: true, width: 100 },
@@ -80,8 +102,9 @@ module nts.uk.at.view.kdw008.b {
                     console.log(value);
                 });
                 self.tabs = ko.observableArray([
-                    { id: 'tab-1', title: '月次項目', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-2', title: '日次項目', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
+                    { id: 'tab-1', title: '月次項目', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(self.isDaily) },
+                    { id: 'tab-2', title: '日次項目', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(self.isDaily) },
+                    { id: 'tab-3', title: '月次項目', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(!self.isDaily) },
                 ]);
                 self.selectedTab = ko.observable('tab-1');
 
@@ -131,6 +154,31 @@ module nts.uk.at.view.kdw008.b {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                
+                let dfdGetBusinessType = self.getBusinessType();
+                let dfdGetListMonthlyAttdItem = self.getListMonthlyAttdItem();
+                $.when(dfdGetBusinessType,dfdGetListMonthlyAttdItem).done(function(dfdGetBusinessTypeData,dfdGetListMonthlyAttdItemData){
+                    
+                    dfd.resolve();
+                });
+                dfd.resolve();
+                return dfd.promise();
+            }
+            
+            getListMonthlyAttdItem(){
+                let self = this;
+                let dfd = $.Deferred();
+                new service.Service().getListMonthlyAttdItem().done(function(data) {
+                    self.listMonthlyAttdItem(data);
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+            
+            
+            getBusinessType(){
+                let self = this;
+                let dfd = $.Deferred();
                 nts.uk.ui.block.grayout();
                 self.businessTypeList([]);
                 new service.Service().getBusinessType().done(function(data: Array<IBusinessType>) {
@@ -173,7 +221,7 @@ module nts.uk.at.view.kdw008.b {
                     dfd = $.Deferred();
                 new service.Service().getDailyPerformance(businessTypeCode, self.selectedSheetNo()).done(function(data: IBusinessTypeDetail) {
                     if (data) {
-                        self.businessTypeFormatMonthlyValue([]);
+                        self.valuesMonthly([]);
                         self.businessTypeFormatDailyValue([]);
                         self.currentBusinessType(new BusinessTypeDetailModel(data));
                         self.currentBusinessType().attendanceItemDtos.valueHasMutated();
@@ -201,9 +249,9 @@ module nts.uk.at.view.kdw008.b {
                                 };
                                 return new AttendanceItemModel(obj);
                             });
-                            self.businessTypeFormatMonthlyValue(attendanceItemModelMonthly);
+                            self.valuesMonthly(attendanceItemModelMonthly);
 
-                        } else self.businessTypeFormatMonthlyValue([]);
+                        } else self.valuesMonthly([]);
                         //show data tab 2
                         //self.selectedSheetNo(data.businessTypeFormatDailyDto.sheetNo);
                         self.selectedSheetName(data.businessTypeFormatDailyDto.sheetName);
@@ -250,8 +298,8 @@ module nts.uk.at.view.kdw008.b {
                 let self = this; $(".need-check").trigger("validate");
                 if (!nts.uk.ui.errors.hasError()) {
                     //add or update Monthly
-                    var businessTypeFormatDetailDtosAdd = _.map(self.businessTypeFormatMonthlyValue(), item => {
-                        var indexOfItem = _.findIndex(self.businessTypeFormatMonthlyValue(), { attendanceItemId: item.attendanceItemId });
+                    var businessTypeFormatDetailDtosAdd = _.map(self.valuesMonthly(), item => {
+                        var indexOfItem = _.findIndex(self.valuesMonthly(), { attendanceItemId: item.attendanceItemId });
                         var monthlyAdd = {
                             attendanceItemId: item.attendanceItemId,
                             dislayNumber: item.attendanceItemDisplayNumber,

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * 勤務種別で参照する場合の順番
@@ -8,7 +9,7 @@ import lombok.Getter;
  *
  */
 @Getter
-public class OrderReferWorkType {
+public class OrderReferWorkType extends DomainObject {
 
 	/**勤怠項目ID*/
 	private int attendanceItemID;

@@ -27,6 +27,7 @@ module nts.uk.at.view.kdw008.a {
             //swap list tab 2
             monthlyDetailList: KnockoutObservableArray<DailyAttendanceAuthorityDetailDto>;
             columns3: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+            columns4: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             currentCodeListSwapMonthly: KnockoutObservableArray<any>;
             authorityFormatMonthlyValue: KnockoutObservableArray<AttendanceItemModel>;
             monthlyDataSource: KnockoutObservableArray<AttendanceItemModel>;
@@ -57,7 +58,7 @@ module nts.uk.at.view.kdw008.a {
 
                 //isdaily
                 self.isDaily = dataShare.ShareObject;
-                self.isDaily = true;
+                self.isDaily = false;
 
                 self.newMode = ko.observable(false);
                 self.isUpdate = ko.observable(true);
@@ -85,6 +86,11 @@ module nts.uk.at.view.kdw008.a {
                     { headerText: 'ID', key: 'attendanceItemId', hidden: true, width: 100 },
                     { headerText: '名称', key: 'attendanceItemName', width: 100 }
                 ]);
+                self.columns4 = ko.observableArray([
+                    { headerText: 'コード', key: 'attendanceItemDisplayNumber', width: 70 },
+                    { headerText: 'ID', key: 'attendanceItemId', hidden: true, width: 100 },
+                    { headerText: '名称', key: 'attendanceItemName', width: 100 }
+                ]);
                 self.columns2 = ko.observableArray([
                     { headerText: 'コード', key: 'attendanceItemDisplayNumber', width: 70 },
                     { headerText: 'ID', key: 'attendanceItemId', hidden: true, width: 100 },
@@ -101,8 +107,9 @@ module nts.uk.at.view.kdw008.a {
                     console.log(value);
                 });
                 self.tabs = ko.observableArray([
-                    { id: 'tab-1', title: '日次項目', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-2', title: '月次項目', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
+                    { id: 'tab-1', title: '日次項目', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(self.isDaily) },
+                    { id: 'tab-2', title: '月次項目', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(self.isDaily) },
+                    { id: 'tab-3', title: '月次項目', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(!self.isDaily) }
                 ]);
                 self.selectedTab = ko.observable('tab-1');
 
@@ -230,7 +237,7 @@ module nts.uk.at.view.kdw008.a {
                         } else {
                             self.checked(false);
                         }
-                        self.authorityFormatMonthlyValue([]);
+                        self.valuesMonthly([]);
                         self.authorityFormatDailyValue([]);
                         self.currentBusinessType(new AuthorityDetailModel(data));
                         self.currentBusinessType().attendanceItemDtos.valueHasMutated();
@@ -257,9 +264,9 @@ module nts.uk.at.view.kdw008.a {
                                 };
                                 return new AttendanceItemModel(obj);
                             });
-                            self.authorityFormatMonthlyValue(attendanceItemModelMonthly);
+                            self.valuesMonthly(attendanceItemModelMonthly);
 
-                        } else self.authorityFormatMonthlyValue([]);
+                        } else self.valuesMonthly([]);
                         //show data tab 1
                         //self.selectedSheetNo(data.businessTypeFormatDailyDto.sheetNo);
                         self.selectedSheetName(data.dailyAttendanceAuthorityDailyDto.sheetName);
@@ -330,8 +337,8 @@ module nts.uk.at.view.kdw008.a {
                 $(".need-check").trigger("validate");
                 if (!nts.uk.ui.errors.hasError()) {
                     //add or update Monthly
-                    var authorityFormatDetailDtos = _.map(self.authorityFormatMonthlyValue(), item => {
-                        var indexOfItem = _.findIndex(self.authorityFormatMonthlyValue(), { attendanceItemId: item.attendanceItemId });
+                    var authorityFormatDetailDtos = _.map(self.valuesMonthly(), item => {
+                        var indexOfItem = _.findIndex(self.valuesMonthly(), { attendanceItemId: item.attendanceItemId });
                         var obj = {
                             attendanceItemId: item.attendanceItemId,
                             dislayNumber: item.attendanceItemDisplayNumber,
@@ -340,7 +347,7 @@ module nts.uk.at.view.kdw008.a {
                             columnWidth: item.columnWidth ? item.columnWidth : null
                         };
                         return new DailyAttendanceAuthorityDetailDto(obj);
-                    })
+                    });
                     var addOrUpdateBusinessFormatMonthly = new AddAuthorityFormatMonthly(self.currentDailyFormatCode(), authorityFormatDetailDtos);
 
                     //add or update Daily

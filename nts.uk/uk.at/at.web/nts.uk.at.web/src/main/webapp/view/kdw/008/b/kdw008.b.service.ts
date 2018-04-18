@@ -9,7 +9,10 @@ module nts.uk.at.view.kdw008.b {
                 
                 
                 getBusinessType: "at/record/businesstype/findAll",
-                getDailyPerformance: "at/record/businesstype/find/businessTypeDetail/{0}/{1}"
+                getDailyPerformance: "at/record/businesstype/find/businessTypeDetail/{0}/{1}",
+                
+                //monthly
+                getListMonthlyAttdItem:"at/record/attendanceitem/monthly/findall"
             }
 
             constructor() {
@@ -40,6 +43,11 @@ module nts.uk.at.view.kdw008.b {
             getDailyPerformance(businessTypeCode: string, sheetNo: number): JQueryPromise<any> {
                 let _path = nts.uk.text.format(this.paths.getDailyPerformance, businessTypeCode, sheetNo);
                 return nts.uk.request.ajax("at", _path);
+            };
+            
+             // monthly
+            getListMonthlyAttdItem(): JQueryPromise<any> {
+                return nts.uk.request.ajax("at",nts.uk.text.format(this.paths.getListMonthlyAttdItem));
             };
 
 

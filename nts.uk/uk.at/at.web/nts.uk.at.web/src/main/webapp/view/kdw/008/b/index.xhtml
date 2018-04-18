@@ -64,10 +64,10 @@
 										data-bind="ntsSwapList: {
 											showSearchBox: { showLeft : true, showRight: true},
 											height: 456,
-											dataSource: monthlyDataSource,
+											dataSource: listMonthlyAttdItem,
 											primaryKey: 'attendanceItemId',
 											columns: columns3,
-											value: businessTypeFormatMonthlyValue,
+											value: valuesMonthly,
 											searchMode: 'filter',
 											searchCriterion: ['attendanceItemName','attendanceItemId'],
 											draggable: true,
@@ -79,7 +79,7 @@
 										}"></div>
 									<div id="up-down"
 										data-bind="ntsUpDown: {
-													targetSource: businessTypeFormatMonthlyValue,
+													targetSource: valuesMonthly,
 													primaryKey: 'attendanceItemId',
 													comId: '#swap-list',
 													type: 'swap',
@@ -128,6 +128,52 @@
 													targetSource: businessTypeFormatDailyValue,
 													primaryKey: 'attendanceItemId',
 													comId: '#swap-list2',
+													type: 'swap',
+													swapTarget: 'right'}">
+									</div>
+								</div>
+								<!-- tab3 -->
+								<div class="tab-content-3" style="height: 500px; width: 900px">
+									<div>
+										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW008_23')}</div>
+										<div id="A_SEL_002"
+											data-bind="ntsComboBox: {
+											options: sheetNoList,
+											optionsValue: 'sheetNoId',
+											optionsText: 'sheetNoName',
+											value: selectedSheetNo,
+											enable: true}">
+										</div>
+										<div id="label2" data-bind="ntsFormLabel: { constraint: 'DailyPerFormatSheetName', inline: true, required: true, enable: true}">#{i18n.getText('KDW008_8')}</div>
+										<input class="need-check" data-bind="ntsTextEditor: {value: selectedSheetName,
+																	   	  constraint: 'DailyPerFormatSheetName',
+																	   	  name: '#[KDW008_8]',
+																	   	  required: true}"></input>
+									</div>
+									<div style="margin-top: 10px">#{i18n.getText('KDW008_24')}</div>
+									<div style="margin-top: 10px" >#{i18n.getText('KDW008_29')}</div>
+									<div style="margin-top: 10px" id="swap-list3"
+										data-bind="ntsSwapList: {
+											showSearchBox: { showLeft : true, showRight: true},
+											height: 406,
+											dataSource: listMonthlyAttdItem,
+											primaryKey: 'attendanceItemId',
+											columns: columns4,
+											value: valuesMonthly,
+											searchMode: 'filter',
+											searchCriterion: ['attendanceItemName','attendanceItemId'],
+											draggable: true,
+											enableRowNumbering: false,
+											multipleDrag: { left: true, right: false },
+											innerDrag: { left: false, right: true },
+											outerDrag: { left: true, right: true },
+											itemsLimit: { right: 20} 
+										}"></div>
+									<div id="up-down"
+										data-bind="ntsUpDown: {
+													targetSource: valuesMonthly,
+													primaryKey: 'attendanceItemId',
+													comId: '#swap-list3',
 													type: 'swap',
 													swapTarget: 'right'}">
 									</div>
