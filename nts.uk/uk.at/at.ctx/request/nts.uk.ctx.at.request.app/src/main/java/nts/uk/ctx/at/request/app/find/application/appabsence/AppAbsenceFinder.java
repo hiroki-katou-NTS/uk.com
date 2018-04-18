@@ -350,24 +350,26 @@ public class AppAbsenceFinder {
 		// ドメインモデル「申請設定」．承認ルートの基準日をチェックする ( Domain model "application setting".
 		// Check base date of approval route )
 		if (appCommonSettingOutput.applicationSetting.getBaseDateFlg().value == BaseDateFlg.APP_DATE.value) {
-			String workTypeCDForChange = "";
-			Optional<HdAppSet> hdAppSet = this.hdAppSetRepository.getAll();
-			// 1.勤務種類を取得する（新規） :TODO
-			List<AbsenceWorkType> workTypes = this.appAbsenceThreeProcess.getWorkTypeCodes(
-					appCommonSettingOutput.appEmploymentWorkType, companyID, employeeID, holidayType, alldayHalfDay,
-					displayHalfDayValue, hdAppSet);
-			if (!CollectionUtil.isEmpty(workTypes)) {
-				List<AbsenceWorkType> workTypeForFilter = workTypes.stream()
-						.filter(x -> x.getWorkTypeCode().equals(workTypeCode == null ? "" : workTypeCode))
-						.collect(Collectors.toList());
-				if (CollectionUtil.isEmpty(workTypeForFilter)) {
-					workTypeCDForChange = workTypes.get(0).getWorkTypeCode();
-				} else {
-					workTypeCDForChange = workTypeCode;
+			if(holidayType != null){
+				String workTypeCDForChange = "";
+				Optional<HdAppSet> hdAppSet = this.hdAppSetRepository.getAll();
+				// 1.勤務種類を取得する（新規） :TODO
+				List<AbsenceWorkType> workTypes = this.appAbsenceThreeProcess.getWorkTypeCodes(
+						appCommonSettingOutput.appEmploymentWorkType, companyID, employeeID, holidayType, alldayHalfDay,
+						displayHalfDayValue, hdAppSet);
+				if (!CollectionUtil.isEmpty(workTypes)) {
+					List<AbsenceWorkType> workTypeForFilter = workTypes.stream()
+							.filter(x -> x.getWorkTypeCode().equals(workTypeCode == null ? "" : workTypeCode))
+							.collect(Collectors.toList());
+					if (CollectionUtil.isEmpty(workTypeForFilter)) {
+						workTypeCDForChange = workTypes.get(0).getWorkTypeCode();
+					} else {
+						workTypeCDForChange = workTypeCode;
+					}
 				}
+				result.setWorkTypes(workTypes);
+				result.setWorkTypeCode(workTypeCDForChange);
 			}
-			result.setWorkTypes(workTypes);
-			result.setWorkTypeCode(workTypeCDForChange);
 		}
 		result.setApplication(application);
 		return result;
