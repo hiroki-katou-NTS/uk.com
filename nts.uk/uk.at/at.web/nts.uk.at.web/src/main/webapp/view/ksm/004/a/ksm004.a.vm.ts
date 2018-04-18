@@ -82,7 +82,7 @@ module nts.uk.at.view.ksm004.a {
                 self.yearMonthPicked.subscribe(value => {
                     if(!nts.uk.util.isNullOrEmpty(value)){
                         nts.uk.ui.block.invisible();
-                        self.calendarPanel.optionDates(self.getBlankOptionDate());
+                        self.calendarPanel.optionDates.removeAll();
                         self.getAllCalendarCompany().done(() => {
                             if(Math.floor(value/100)!=Number(Object.keys(self.cssRangerYM())[0])){
                                 self.getCalendarCompanySet()
@@ -103,7 +103,7 @@ module nts.uk.at.view.ksm004.a {
                 self.yearMonthPicked1.subscribe(value => {
                     if(!nts.uk.util.isNullOrEmpty(value)){
                         nts.uk.ui.block.invisible();
-                        self.calendarPanel1.optionDates(self.getBlankOptionDate());
+                        self.calendarPanel1.optionDates.removeAll();
                         self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key()).done(()=>{
                             if(Math.floor(value/100)!=Number(Object.keys(self.cssRangerYM1())[0])){
                                 self.getCalendarWorkplaceSet(self.currentCalendarWorkPlace().key())
@@ -163,7 +163,7 @@ module nts.uk.at.view.ksm004.a {
                 $('#tree-grid').ntsTreeComponent(self.kcpTreeGrid).done(() => {
                     $('#classification-list-setting').ntsListComponent(self.kcpGridlist).done(() => {
                         nts.uk.ui.block.invisible();
-                        self.calendarPanel.optionDates(self.getBlankOptionDate());
+                        self.calendarPanel.optionDates.removeAll();
                         $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
                         .done(()=>{
                             $("#yearMonthPicker1").datepicker("hide");
@@ -190,7 +190,7 @@ module nts.uk.at.view.ksm004.a {
                             } else {
                                 self.currentCalendarWorkPlace().name('');
                             }
-                            self.calendarPanel1.optionDates(self.getBlankOptionDate());
+                            self.calendarPanel1.optionDates.removeAll();
                             $.when(self.getCalendarWorkplaceSet(value),self.getCalenderWorkPlaceByCode(value))
                             .done(()=>{ nts.uk.ui.block.clear(); })
                             .fail((res) => {
@@ -532,7 +532,7 @@ module nts.uk.at.view.ksm004.a {
                 var dfd = $.Deferred();
                 aService.getAllCalendarCompany(self.yearMonthPicked().toString())
                     .done((dataCompany) => {
-                        //self.calendarPanel.optionDates(self.getBlankOptionDate());
+                        //self.calendarPanel.optionDates.removeAll();
                         let a = [];
                         if(!nts.uk.util.isNullOrEmpty(dataCompany)){
                             _.forEach(dataCompany,(companyItem)=>{
