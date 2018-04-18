@@ -10,11 +10,11 @@ module nts.uk.at.view.cmf003.d {
             
             //Help Button
             enable: KnockoutObservable<boolean>;
-            
+
             //Radio button
             itemTitleAtr: KnockoutObservableArray<any>;
             selectedTitleAtr: KnockoutObservable<number>;
-                        
+
             ccgcomponent: GroupOption;
             systemTypes: KnockoutObservableArray<any>;
 
@@ -65,7 +65,7 @@ module nts.uk.at.view.cmf003.d {
             workTypeCode: KnockoutObservable<string>;
             workTimeInfo: KnockoutObservable<string>;
             workTimeCode: KnockoutObservable<string>;
-            
+
             periodDate: KnockoutObservable<any>;
             startDateString: KnockoutObservable<string>;
             endDateString: KnockoutObservable<string>;
@@ -74,7 +74,7 @@ module nts.uk.at.view.cmf003.d {
             infoCreateMethod: KnockoutObservable<string>;
             infoPeriodDate: KnockoutObservable<string>;
             lengthEmployeeSelected: KnockoutObservable<string>;
-            
+
             // Employee tab
             lstPersonComponentOption: any;
             selectedEmployeeCode: KnockoutObservableArray<string>;
@@ -86,17 +86,20 @@ module nts.uk.at.view.cmf003.d {
             //for control field
             isReCreate: KnockoutObservable<boolean>;
             isReSetting: KnockoutObservable<boolean>;
-            
-            
+
+
             // date
             date: KnockoutObservable<string>;
-             maxDaysCumulationByEmp: KnockoutObservable<number>;
+            maxDaysCumulationByEmp: KnockoutObservable<number>;
             constructor() {
                 var self = this;
-                
+
+
+
+
                 //Help Button
                 self.enable = ko.observable(true);
-                
+
                 //Radio button
                 self.itemTitleAtr = ko.observableArray([
                     { value: 0, titleAtrName: resource.getText('CMF003_088') },
@@ -107,7 +110,7 @@ module nts.uk.at.view.cmf003.d {
                 _.defer(function() {
                     $(".ntsSearchBox").prop('disabled', true);
                 });
-                
+
                 // dump
                 self.date = ko.observable('20181231');
                 self.systemTypes = ko.observableArray([
@@ -118,24 +121,25 @@ module nts.uk.at.view.cmf003.d {
 
                 // initial ccg options
                 self.setDefaultCcg001Option();
-                
+
                 // Init component.
                 self.reloadCcg001();
-                
+
                 self.periodFormatYM.subscribe(item => {
-                    if (item){
-                        self.showClosure(true);    
+                    if (item) {
+                        self.showClosure(true);
                     }
                 });
-                
+
                 self.startDateString = ko.observable("20180101");
                 self.endDateString = ko.observable("20181230");
                 self.selectedEmployeeCode = ko.observableArray([]);
                 self.alreadySettingPersonal = ko.observableArray([]);
                 self.maxDaysCumulationByEmp = ko.observable(0);
                 self.periodDate = ko.observable({
-                    startDate: self.startDateString(), 
-                    endDate: self.endDateString()});
+                    startDate: self.startDateString(),
+                    endDate: self.endDateString()
+                });
                 self.checkReCreateAtrOnlyUnConfirm = ko.observable(false);
                 self.checkReCreateAtrAllCase = ko.observable(true);
                 self.checkProcessExecutionAtrRebuild = ko.observable(true);
@@ -149,25 +153,25 @@ module nts.uk.at.view.cmf003.d {
                 self.checkCreateMethodAtrPersonalInfo = ko.observable(true);
                 self.checkCreateMethodAtrPatternSchedule = ko.observable(false);
                 self.checkCreateMethodAtrCopyPastSchedule = ko.observable(false);
-                
+
                 self.workTypeInfo = ko.observable('');
                 self.workTypeCode = ko.observable('');
                 self.workTimeInfo = ko.observable('');
                 self.workTimeCode = ko.observable('');
-                 
-                self.startDateString.subscribe(function(value){
+
+                self.startDateString.subscribe(function(value) {
                     self.periodDate().startDate = value;
-                    self.periodDate.valueHasMutated();        
+                    self.periodDate.valueHasMutated();
                 });
-                
-                self.endDateString.subscribe(function(value){
-                    self.periodDate().endDate = value;   
-                    self.periodDate.valueHasMutated();      
+
+                self.endDateString.subscribe(function(value) {
+                    self.periodDate().endDate = value;
+                    self.periodDate.valueHasMutated();
                 });
             }//end constructor
-            
-            
-            
+
+
+
             /**
              * Set default ccg001 options
              */
@@ -206,17 +210,17 @@ module nts.uk.at.view.cmf003.d {
              */
             public reloadCcg001(): void {
                 var self = this;
-                var periodStartDate, periodEndDate : string;
-                if (self.showBaseDate()){
+                var periodStartDate, periodEndDate: string;
+                if (self.showBaseDate()) {
                     periodStartDate = moment(self.periodStartDate()).format("YYYY-MM-DD");
                     periodEndDate = moment(self.periodEndDate()).format("YYYY-MM-DD");
                 } else {
                     periodStartDate = moment(self.periodStartDate()).format("YYYY-MM");
                     periodEndDate = moment(self.periodEndDate()).format("YYYY-MM"); // 対象期間終了日
                 }
-                
-                if (!self.showBaseDate() && !self.showClosure() && !self.showPeriod()){
-                    nts.uk.ui.dialog.alertError("Base Date or Closure or Period must be shown!" );
+
+                if (!self.showBaseDate() && !self.showClosure() && !self.showPeriod()) {
+                    nts.uk.ui.dialog.alertError("Base Date or Closure or Period must be shown!");
                     return;
                 }
                 self.ccgcomponent = {
@@ -262,7 +266,7 @@ module nts.uk.at.view.cmf003.d {
                 }
                 //$('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
             }
-            
+
             /**
            * start page data 
            */
@@ -306,34 +310,6 @@ module nts.uk.at.view.cmf003.d {
                 };
 
             }
-            
-            
-            /**
-             * function export excel button
-             */
-            private exportButton() {
-                var self = this;
-                // check selection employee 
-                if (self.selectedEmployeeCode && self.selectedEmployee() && self.selectedEmployeeCode().length > 0) {
-                   if(new Date(self.date()) >= new Date(self.periodDate().endDate)){
-                       nts.uk.ui.windows.setShared('cmf003Params', {
-                            empployeeList: self.selectedEmployee(),
-                            periodDate: self.periodDate(),
-                            date: self.date(),
-                            maxday: self.maxDaysCumulationByEmp()    
-                       });
-                       
-                       nts.uk.ui.windows.sub.modal("/view/kdm/002/b/index.xhtml");
-                   }
-                    else{
-                       nts.uk.ui.dialog.alertError({ messageId: 'Msg_1064' });
-                   }
-                }
-                else {
-                    // show message by not choose employee of kcp005
-                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1063' });
-                }
-            }
 
             /**
              * convert string to date
@@ -341,11 +317,16 @@ module nts.uk.at.view.cmf003.d {
             private toDate(strDate: string): Date {
                 return moment(strDate, 'YYYY/MM/DD').toDate();
             }
+
             
-        }
-        
-      
-        
+            btnRightClick() {
+                let self = this;
+                nts.uk.ui.dialog.error({ messageId: "Msg_498", messageParams: ["X", "Y"] });
+            }
+        }//end screemodule
+ 
+ 
+ 
         export class ListType {
             static EMPLOYMENT = 1;
             static Classification = 2;
@@ -388,19 +369,19 @@ module nts.uk.at.view.cmf003.d {
 
         export interface GroupOption {
             baseDate?: KnockoutObservable<Date>;
-            
+ 
             periodStartDate?: KnockoutObservable<Date>;
-            
+ 
             periodEndDate?: KnockoutObservable<Date>;
-            
+ 
             inService: boolean;
-            
+ 
             leaveOfAbsence: boolean;
-            
+ 
             closed: boolean;
-            
+ 
             retirement: boolean;
-            
+ 
             // クイック検索タブ
             isQuickSearchTab: boolean;
             // 参照可能な社員すべて
