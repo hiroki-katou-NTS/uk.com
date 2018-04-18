@@ -35,3 +35,17 @@
 .pull-right {
 	float: right;
 }
+
+#B4_16, #B4_17, #B4_18 {
+	display: inline-block;
+}
+
+#B4_12 {
+	margin-right: 20px; 
+}
+
+.space {
+	width: 122px;
+    height: 10px;
+    display: inline-block;
+}

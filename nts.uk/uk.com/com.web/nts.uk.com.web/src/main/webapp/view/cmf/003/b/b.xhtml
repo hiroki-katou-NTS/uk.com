@@ -38,8 +38,24 @@
 				<div class="valign-center control-group">
 					<div id="B4_12" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF003_33')}</div>
 					<span id="B4_13">#{i18n.getText('CMF003_34')}</span>
+					<div id="B4_16" tabindex="7" data-bind="ntsDateRangePicker: { 
+						required: dayRequired, enable: dayEnable, name: '#[CMF003_37]', 
+						showNextPrevious: true, value: dayValue}"/>
+				</div>
+				<div class="valign-center control-group">
+					<div class="space"></div>
 					<span id="B4_14">#{i18n.getText('CMF003_35')}</span>
+					<div id="B4_17" tabindex="8" data-bind="ntsDateRangePicker: { 
+						required: monthRequired, enable: monthEnable, name: '#[CMF003_38]',
+						showNextPrevious: true, value: monthValue, type: 'yearmonth'}"/>
+				</div>
+				<div class="valign-center control-group">
+					<div class="space"></div>
 					<span id="B4_15">#{i18n.getText('CMF003_36')}</span>
+					<div id="B4_18" tabindex="9" data-bind="ntsDateRangePicker: {
+						required: yearRequired, enable: yearEnable, name: '#[CMF003_39]',
+						showNextPrevious: true, value: yearValue, type: 'year'}"/>
+					
 				</div>
 			</div>
 		</div>
