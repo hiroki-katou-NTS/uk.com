@@ -18,6 +18,7 @@ import nts.uk.pub.spr.appstatus.SprAppStatusService;
 import nts.uk.pub.spr.dailystatus.SprDailyStatusService;
 import nts.uk.pub.spr.login.SprLoginFormService;
 import nts.uk.pub.spr.login.output.LoginUserContextSpr;
+import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
 @Path("public/spr_") // <- plz fix when discard SptWebServiceStub
 public class SprWebService {
@@ -33,6 +34,9 @@ public class SprWebService {
 	
 	@Inject
 	private SprApprovalRootService sprApprovalRootService;
+	
+	@Inject
+	private LoginUserContextManager loginUserContextManager;
 
 	@POST
 	@Path("01/loginfromspr")
@@ -57,6 +61,14 @@ public class SprWebService {
 				selectType, 
 				applicationID, 
 				reason);
+		loginUserContextManager.loggedInAsEmployee(
+				loginUserContextSpr.getUserID(), 
+				loginUserContextSpr.getPersonID(), 
+				loginUserContextSpr.getContractCD(), 
+				loginUserContextSpr.getCompanyID(), 
+				loginUserContextSpr.getCompanyCD(), 
+				loginUserContextSpr.getEmployeeID(), 
+				loginUserContextSpr.getEmployeeCD());
 		val paramsMap = new LinkedHashMap<String, String>();
 		paramsMap.put("menu", SprStubHelper.formatParam(menuCode));
 		paramsMap.put("loginemployeeCode", SprStubHelper.formatParam(loginEmployeeCode));
