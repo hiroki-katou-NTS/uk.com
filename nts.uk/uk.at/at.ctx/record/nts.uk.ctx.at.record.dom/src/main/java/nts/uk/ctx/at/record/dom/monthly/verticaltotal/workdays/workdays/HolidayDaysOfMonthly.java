@@ -46,4 +46,13 @@ public class HolidayDaysOfMonthly {
 		// 休日日数に加算する
 		this.days = this.days.addDays(workTypeDaysCountTable.getHolidayDays().v());
 	}
+
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(HolidayDaysOfMonthly target){
+		
+		this.days = this.days.addDays(target.days.v());
+	}
 }

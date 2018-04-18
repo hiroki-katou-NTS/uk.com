@@ -456,4 +456,28 @@ public class HolidayWorkTimeOfMonthly {
 		return new AttendanceTimeMonth(this.totalHolidayWorkTime.getTime().v() +
 				this.totalTransferTime.getTime().v());
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(HolidayWorkTimeOfMonthly target){
+		
+		this.totalHolidayWorkTime = this.totalHolidayWorkTime.addMinutes(
+				target.totalHolidayWorkTime.getTime().v(), target.totalHolidayWorkTime.getCalcTime().v());
+		this.beforeHolidayWorkTime = this.beforeHolidayWorkTime.addMinutes(target.beforeHolidayWorkTime.v());
+		this.totalTransferTime = this.totalTransferTime.addMinutes(
+				target.totalTransferTime.getTime().v(), target.totalTransferTime.getCalcTime().v());
+		
+		for (val aggrHolidayWorkTime : this.aggregateHolidayWorkTimeMap.values()){
+			val frameNo = aggrHolidayWorkTime.getHolidayWorkFrameNo();
+			if (target.aggregateHolidayWorkTimeMap.containsKey(frameNo)){
+				aggrHolidayWorkTime.sum(target.aggregateHolidayWorkTimeMap.get(frameNo));
+			}
+		}
+		for (val targetAggrHolidayWorkTime : target.aggregateHolidayWorkTimeMap.values()){
+			val frameNo = targetAggrHolidayWorkTime.getHolidayWorkFrameNo();
+			this.aggregateHolidayWorkTimeMap.putIfAbsent(frameNo, targetAggrHolidayWorkTime);
+		}
+	}
 }
