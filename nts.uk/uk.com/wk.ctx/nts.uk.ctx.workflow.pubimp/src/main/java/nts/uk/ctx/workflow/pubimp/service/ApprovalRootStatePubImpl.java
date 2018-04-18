@@ -381,7 +381,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 					// フェーズ承認区分＝ループ中のフェーズ．承認区分
 					int approverPhaseIndicator = listApprovalPhaseState.get(i).getApprovalAtr().value;
 					//1.承認状況の判断
-					ApprovalStatusOutput approvalStatusOutput = judgmentApprovalStatusService.judmentApprovalStatus(companyID, listApprovalPhaseState.get(i), approverRoot.getEmployeeID());
+					ApprovalStatusOutput approvalStatusOutput = judgmentApprovalStatusService.judmentApprovalStatus(companyID, listApprovalPhaseState.get(i), approverID);
 					if(approverPhaseFlag == true && approvalStatusOutput.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
 						break;
 					}
@@ -395,7 +395,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 						approvalStatus.setReleaseDivision(EnumAdaptor.valueOf(ReleasedProprietyDivision.NOT_RELEASE.value, ReleasedProprietyDivision.class));
 					}
 					//承認状況．基準社員の承認アクション
-					if(approvalStatusOutput.getApprovableFlag() == true){
+					if(approvalStatusOutput.getApprovableFlag() == false){
 						approvalStatus.setApprovalActionByEmpl(EnumAdaptor.valueOf(ApprovalActionByEmpl.NOT_APPROVAL.value, ApprovalActionByEmpl.class));
 					}else if(approvalStatusOutput.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
 						approvalStatus.setApprovalActionByEmpl(EnumAdaptor.valueOf(ApprovalActionByEmpl.APPROVAL_REQUIRE.value, ApprovalActionByEmpl.class));
@@ -486,7 +486,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 					}else{
 						unapprovedPhasePresent = true;
 						if(checkApproverOfFrame(approvalPhaseState.getListApprovalFrame())){
-							status = approvalPhaseState.getApprovalAtr().value;
+							status = ApprovalStatusForEmployee.DURING_APPROVAL.value;
 							break;
 						}
 					}
@@ -601,9 +601,9 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 			Integer rootType,String companyID) {
 		// 対象者リストと日付リストから承認ルートインスタンスを取得する
 		List<ApprovalRootState> approvalRootSates = this.approvalRootStateRepository.findAppByListEmployeeIDAndListRecordDate(approvalRecordDates, employeeIDs, rootType);
-		if(approvalRootSates != null){
+		if(!CollectionUtil.isEmpty(approvalRootSates)){
 			for(ApprovalRootState approvalRootState : approvalRootSates){
-				 this.doApprove(companyID, approvalRootState.getRootStateID(), approvalRootState.getEmployeeID(), false, 0, null, null);
+				 this.doApprove(companyID, approvalRootState.getRootStateID(), approverID, false, 0, null, null);
 			}
 		}
 	}
@@ -616,7 +616,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		List<ApprovalRootState> approvalRootSates = this.approvalRootStateRepository.findAppByListEmployeeIDAndListRecordDate(approvalRecordDates, employeeIDs, rootType);
 		if(approvalRootSates != null){
 			for(ApprovalRootState approvalRootState : approvalRootSates){
-				result = this.doRelease(companyID, approvalRootState.getRootStateID(), approvalRootState.getEmployeeID());
+				result = this.doRelease(companyID, approvalRootState.getRootStateID(), approverID);
 				if(!result){
 					return result;
 				}

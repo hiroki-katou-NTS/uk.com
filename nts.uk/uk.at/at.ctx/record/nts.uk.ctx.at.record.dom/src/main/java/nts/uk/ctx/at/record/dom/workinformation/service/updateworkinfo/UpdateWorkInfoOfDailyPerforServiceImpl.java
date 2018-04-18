@@ -42,10 +42,7 @@ public class UpdateWorkInfoOfDailyPerforServiceImpl implements UpdateWorkInfoOfD
 				this.workInformationRepository.updateByKeyFlush(workInfoOfDailyPerformance);
 				
 				// domain event
-				WorkInfoChangeEvent dfChangeEvent = WorkInfoChangeEvent.builder().employeeId(employeeID)
-						.newWorkTimeCode(recordWorkInformation.getWorkTimeCode())
-						.newWorkTypeCode(recordWorkInformation.getWorkTypeCode()).build();
-				dfChangeEvent.toBePublished();
+				workInfoOfDailyPerformance.workInfoChange();
 			}
 		}
 	}

@@ -195,6 +195,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 				   						  new AttendanceTime(0));
 	}
 	
+	
 	/**
 	 * 残業時間超過 
 	 */
@@ -319,4 +320,5 @@ public class ExcessOfStatutoryTimeOfDaily {
 		}
 		return returnErrorList;
 	}
+	
 }

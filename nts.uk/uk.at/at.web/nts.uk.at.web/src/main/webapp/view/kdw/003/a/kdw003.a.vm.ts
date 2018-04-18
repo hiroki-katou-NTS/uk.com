@@ -94,6 +94,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         ];
         // date ranger component
         dateRanger: KnockoutObservable<any> = ko.observable(null);
+        
+        datePicker: KnockoutObservable<any> = ko.observable(null);
         // date picker component
         selectedDate: KnockoutObservable<any> = ko.observable(null);
 
@@ -271,15 +273,25 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var self = this;
             self.dateRanger.subscribe((dateRange) => {
                 if (dateRange && dateRange.startDate && dateRange.endDate) {
-                    self.selectedDate(dateRange.startDate);
+                    
                     var elementDate = dateRange.startDate;
                     if (moment(elementDate, "YYYY/MM/DD").isValid()) {
                         while (!moment(elementDate, "YYYY/MM/DD").isAfter(dateRange.endDate)) {
                             self.lstDate.push({ date: elementDate });
                             elementDate = moment(elementDate, "YYYY/MM/DD").add(1, 'd').format("YYYY/MM/DD");
                         }
+                    }
+                    if(self.displayFormat() == 1){
+                        self.datePicker().startDate = dateRange.startDate;
+                        self.datePicker().endDate = dateRange.endDate; 
+                        self.datePicker.valueHasMutated();
+                        self.selectedDate(dateRange.startDate);
+                    }
                 }
-                }
+            });
+            self.datePicker({
+                startDate: moment().add(-1, "M").add(1 ,"d").format("YYYY/MM/DD"),
+                endDate: moment().format("YYYY/MM/DD")
             });
             self.dateRanger({
                 startDate: moment().add(-1, "M").add(1 ,"d").format("YYYY/MM/DD"),
@@ -826,6 +838,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 } else {
                     lstEmployee = self.lstEmployee();
                 }
+                 if (self.displayFormat() === 1) {
+                    self.datePicker().startDate = self.dateRanger().startDate;
+                    self.datePicker().endDate = self.dateRanger().endDate; 
+                    self.datePicker.valueHasMutated();
+                    self.selectedDate(self.dateRanger().startDate);
+                }
                 let param = {
                     dateRange: {
                         startDate:  self.displayFormat() === 1 ?  moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
@@ -1120,15 +1138,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var container = $("#setting-content");
             if (container.css("visibility") === 'hidden') {
                 container.css("visibility", "visible");
-                container.css("top", "0px");
-                container.css("left", "0px");
+//                container.css("top", "0px");
+//                container.css("left", "0px");
             }
             $(document).mouseup(function(e) {
                 // if the target of the click isn't the container nor a descendant of the container
                 if (!container.is(e.target) && container.has(e.target).length === 0) {
                     container.css("visibility", "hidden");
-                    container.css("top", "-9999px");
-                    container.css("left", "-9999px");
+//                    container.css("top", "-9999px");
+//                    container.css("left", "-9999px");
                 }
             });
         }
@@ -2180,7 +2198,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         self.listCode(_.map(data, 'code'));
                         nts.uk.ui.windows.setShared('kml001multiSelectMode', false);
                         nts.uk.ui.windows.setShared('kml001selectAbleCodeList', nts.uk.util.isNullOrEmpty(self.listCode()) ? [] : self.listCode());
-                        nts.uk.ui.windows.setShared('kml001selectedCodeList', []);
+                        nts.uk.ui.windows.setShared('kml001selectedCodeList', [self.selectedCode()]);
                         nts.uk.ui.windows.setShared('kml001isSelection', true);
                         nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                             let codes: any = nts.uk.ui.windows.getShared("kml001selectedCodeList");
@@ -2188,17 +2206,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 codeName = _.find(data, (item: any) => {
                                     return item.code == codes[0];
                                 });
-                                var objectName = {};
-                                objectName["Name" + self.attendenceId] = codeName.name;
-                                var objectCode = {};
-                                objectCode["Code" + self.attendenceId] = codeName.code;
+                                if (codeName != undefined) {
+                                    var objectName = {};
+                                    objectName["Name" + self.attendenceId] = codeName.name;
+                                    var objectCode = {};
+                                    objectCode["Code" + self.attendenceId] = codeName.code;
 
-                                $.when($("#dpGrid").ntsGrid("updateRow", self.rowId(), objectName),
-                                    $("#dpGrid").ntsGrid("updateRow", self.rowId(), objectCode)
-                                ).done(() => {
-                                    nts.uk.ui.block.clear();
-                                    dfd.resolve();
-                                })
+                                    $.when($("#dpGrid").ntsGrid("updateRow", self.rowId(), objectName),
+                                        $("#dpGrid").ntsGrid("updateRow", self.rowId(), objectCode)
+                                    ).done(() => {
+                                        nts.uk.ui.block.clear();
+                                        dfd.resolve();
+                                    })
+                                }
                             }
                         });
                     });
