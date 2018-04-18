@@ -7,141 +7,81 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<com:stylefile path="cmf003.d.style.css" />
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="../share/model.js" />
-			<com:scriptfile path="cmf003.d.start.js" />
-			<com:scriptfile path="cmf003.d.service.js" />
-			<com:scriptfile path="cmf003.d.vm.js" />
-			<com:scriptfile path="../share/model.js" />
+			<com:stylefile path="cmf003.d.main.css" />
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
-			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.service.js"
 				of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
-
-			<com:scriptfile path="/view/cps/shr/cbx-control-ko-ext.js" />
-			<com:scriptfile path="/view/cps/shr/layout-control-validation.js" />
-			<com:scriptfile path="/view/cps/shr/layout-control-ko-ext.js" />
+			<com:scriptfile path="/view/kdl/023/base/kdl023.base.service.js"
+				of="/nts.uk.at.web" />
+			<com:scriptfile path="cmf003.d.start.js" />
+			<com:scriptfile path="cmf003.d.vm.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber
+				</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area">
+			<div id="functions-area" tabindex="-1">
+				<!-- D1_1 -->
 				<a class="goback"
 					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF001_430')}</a>
+				<!-- D1_2 -->
+				<a class="label area-text-right">#{i18n.getText('CMF003_081')}</a>			
 			</div>
-			<div id="contents-area"
-				data-bind="let: { 
-						text: nts.uk.resource.getText,
-						TABS: {
-							LAYOUT: 'layout',
-							CATEGORY: 'category'
-						},
-						CAT_TYPE: {	
-							SINGLE : 1,
-							MULTI: 2,
-							CONTI: 3, /* continuos history hasn't end date */
-							NODUP: 4,
-							DUPLI: 5,
-							CONTIWED: 6 /* continuos history has end date */
-						}
-					}">
+
+			<div class="cf" tabindex="-1" id="contents-area">
+				
+
+				<div class="ccg001searchkcp005">
+					<div id="ccgcomponent" tabindex="2"></div>
+					<!--  -->
+					<div class="employeeInfoSearch">
 
 
-				<div id="ex_output_wizard"
-					data-bind="ntsWizard: {active: activeStep, steps: stepList, theme: 'yellow'}"
-					class="cf">
-					<div class="header">
-						<div class="image" data-icon="../resource/外部出力アイコンA1.jpg"></div>
-						<div class="content">#{i18n.getText('CMF003_084')}</div>
-					</div>
-					<div class="steps">
-						<div class="step-1"></div>
-						<div class="step-2">
-							<span>#{i18n.getText('CMF002_215')}</span><br />
-							└#{i18n.getText('CMF002_216')}
-						</div>
-						<div class="step-3">#{i18n.getText('CMF002_217')}</div>
-						<div class="end step-4">#{i18n.getText('CMF002_218')}</div>
-					</div>
-					<div class="contents">
-						<div class="step-1">
+						<div class="top-right-list-employee">
+							<div style="float: left; width: 50%;">
+								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF003_087')}</div>
+							</div>
+							<div style="float: left;width: 40%;">
 
 
-
-							<!--MULTISELECT EXAMPLE-->
-							<div class="cf">
-								<div style="float: left; width: 50%;"></div>
-								<div style="float: right; width: 50%;">
-									<div style="float: left; width: 50%;">
-										<div
-											data-bind="ntsFormLabel: { constraint: 'LayoutCode', enable: false }">#{i18n.getText('CMF003_087')}</div>
-
-									</div>
-									<div style="float: right; width: 50%;">
-										<div id="first-list"
-											data-bind="ntsRadioBoxGroup: {options: itemList,optionsValue: '1',optionsText: 'name',value: selectedValue,enable: enable}"
-											class="ntsControl radio-wrapper reset-element" tabindex="0">
-											<span class="ntsControl"> <label class="ntsRadioBox">
-													<input type="radio" name="textRadio"
-													data-bind="checkedValue: 1, checked: selectedValue, enable: enable" />
-													<span class="box"></span><span class="label">#{i18n.getText('CMF003_088')}</span>
-											</label>
-											</span> <span class="ntsControl"> <label class="ntsRadioBox">
-													<input type="radio" name="textRadio"
-													data-bind="checkedValue: 2, checked: selectedValue, enable: enable" />
-													<span class="box"></span><span class="label">#{i18n.getText('CMF003_089')}</span>
-											</label>
-											</span>
-										</div>
-
-									</div>
-									<div style="clear: both;"></div>
-
-									<!--MULTISELECT EXAMPLE-->
-									<div class="cf">
-										<div style="float: left">
-											<div style="width: 700px"
-												data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid2', 
-		items: dataSource2, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />
-											<h3>Multi Selection TreeGrid</h3>
-											<table id="treegrid2"
-												data-bind="ntsTreeGridView:{
-												width: 700,
-												height: 250,
-												options: dataSource2,
-												value: selectedCodes2,								
-												optionsValue: 'code',
-												optionsChild: 'childs',
-												optionsText: 'nodeText',
-												multiple: true,
-												enable: true,										
-												showCheckBox: true}">
-											</table>
-										</div>
-										<div style="float: left">
-											<br /> <br />
-											<h4>Your multi selected codes:</h4>
-											<span data-bind="text: selectedCodes2"></span>
-										</div>
-									</div>
-									<!--END MULTISELECT EXAMPLE-->
-
-
+								<div tabindex="3"
+									data-bind="ntsRadioBoxGroup: {
+																		options: itemTitleAtr,
+																		optionsValue: 'value',
+																		optionsText: 'titleAtrName',
+																		value: selectedTitleAtr,	
+																		enable: true}">
 								</div>
 
+
 							</div>
-
-
-
+							<div style="clear: both;"></div>
+						</div>
+						<div class="selectionEmployee" tabindex="3">
+							<div id="employeeSearch" tabindex="-1"></div>
+						</div>
+						
+						<div class="bot-right-list-employee">
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_100')}</div>
+							<button data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top'">?</button>
+														
+							<div class="bot-button-action">
+								<button class="large prev_btn" id="prev_btn" data-bind="">#{i18n.getText('CMF003_101')}</button>
+								<button class="x-large proceed next_btn" id="next_btn"
+									data-bind="">#{i18n.getText('CMF003_102')}</button>
+							</div>
+							
 						</div>
 					</div>
 				</div>
+
+			</div>
 		</ui:define>
 	</ui:composition>
-
-
 </body>
 </html>
