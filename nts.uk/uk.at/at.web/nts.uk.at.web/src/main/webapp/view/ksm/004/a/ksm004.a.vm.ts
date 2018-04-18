@@ -82,7 +82,7 @@ module nts.uk.at.view.ksm004.a {
                 self.yearMonthPicked.subscribe(value => {
                     if(!nts.uk.util.isNullOrEmpty(value)){
                         nts.uk.ui.block.invisible();
-                        self.calendarPanel.optionDates.removeAll();
+                        self.calendarPanel.optionDates(self.getBlankOptionDate());
                         self.getAllCalendarCompany().done(() => {
                             if(Math.floor(value/100)!=Number(Object.keys(self.cssRangerYM())[0])){
                                 self.getCalendarCompanySet()
@@ -103,7 +103,7 @@ module nts.uk.at.view.ksm004.a {
                 self.yearMonthPicked1.subscribe(value => {
                     if(!nts.uk.util.isNullOrEmpty(value)){
                         nts.uk.ui.block.invisible();
-                        self.calendarPanel1.optionDates.removeAll();
+                        self.calendarPanel1.optionDates(self.getBlankOptionDate());
                         self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key()).done(()=>{
                             if(Math.floor(value/100)!=Number(Object.keys(self.cssRangerYM1())[0])){
                                 self.getCalendarWorkplaceSet(self.currentCalendarWorkPlace().key())
@@ -124,7 +124,7 @@ module nts.uk.at.view.ksm004.a {
                 self.yearMonthPicked2.subscribe(value => {
                     if(!nts.uk.util.isNullOrEmpty(value)){
                         nts.uk.ui.block.invisible();
-                        self.calendarPanel2.optionDates.removeAll();
+                        self.calendarPanel2.optionDates(self.getBlankOptionDate());
                         self.getCalendarClassById(self.currentCalendarClass().key()).done(()=>{
                             if(Math.floor(value/100)!=Number(Object.keys(self.cssRangerYM2())[0])){
                                 self.getCalendarClassSet(self.currentCalendarClass().key())
@@ -163,7 +163,7 @@ module nts.uk.at.view.ksm004.a {
                 $('#tree-grid').ntsTreeComponent(self.kcpTreeGrid).done(() => {
                     $('#classification-list-setting').ntsListComponent(self.kcpGridlist).done(() => {
                         nts.uk.ui.block.invisible();
-                        self.calendarPanel.optionDates.removeAll();
+                        self.calendarPanel.optionDates(self.getBlankOptionDate());
                         $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
                         .done(()=>{
                             $("#yearMonthPicker1").datepicker("hide");
@@ -190,7 +190,7 @@ module nts.uk.at.view.ksm004.a {
                             } else {
                                 self.currentCalendarWorkPlace().name('');
                             }
-                            self.calendarPanel1.optionDates.removeAll();
+                            self.calendarPanel1.optionDates(self.getBlankOptionDate());
                             $.when(self.getCalendarWorkplaceSet(value),self.getCalenderWorkPlaceByCode(value))
                             .done(()=>{ nts.uk.ui.block.clear(); })
                             .fail((res) => {
@@ -208,7 +208,7 @@ module nts.uk.at.view.ksm004.a {
                             } else {
                                 self.currentCalendarClass().name('');
                             }
-                            self.calendarPanel2.optionDates.removeAll();
+                            self.calendarPanel2.optionDates(self.getBlankOptionDate());
                             $.when(self.getCalendarClassSet(value),self.getCalendarClassById(value))
                             .done(()=>{nts.uk.ui.block.clear();})
                             .fail((res) => {
@@ -532,7 +532,7 @@ module nts.uk.at.view.ksm004.a {
                 var dfd = $.Deferred();
                 aService.getAllCalendarCompany(self.yearMonthPicked().toString())
                     .done((dataCompany) => {
-                        //self.calendarPanel.optionDates.removeAll();
+                        //self.calendarPanel.optionDates(self.getBlankOptionDate());
                         let a = [];
                         if(!nts.uk.util.isNullOrEmpty(dataCompany)){
                             _.forEach(dataCompany,(companyItem)=>{
@@ -618,7 +618,7 @@ module nts.uk.at.view.ksm004.a {
                 aService.insertCalendarCompany(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() =>{
-                            self.calendarPanel.optionDates.removeAll();
+                            self.calendarPanel.optionDates(self.getBlankOptionDate());
                         $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
                         .done(()=>{ dfd.resolve(); })
                         .fail((res) => { dfd.reject(res); });  
@@ -638,7 +638,7 @@ module nts.uk.at.view.ksm004.a {
                 aService.insertCalendarWorkPlace(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() =>{
-                            self.calendarPanel1.optionDates.removeAll();
+                            self.calendarPanel1.optionDates(self.getBlankOptionDate());
                         $.when(
                             self.getCalendarWorkplaceSet(self.currentCalendarWorkPlace().key()),
                             self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key())
@@ -660,7 +660,7 @@ module nts.uk.at.view.ksm004.a {
                 aService.insertCalendarClass(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                            self.calendarPanel2.optionDates.removeAll();
+                            self.calendarPanel2.optionDates(self.getBlankOptionDate());
                             $.when(
                                 self.getCalendarClassSet(self.currentCalendarClass().key()),
                                 self.getCalendarClassById(self.currentCalendarClass().key())
@@ -682,7 +682,7 @@ module nts.uk.at.view.ksm004.a {
                 aService.updateCalendarCompany(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                            self.calendarPanel.optionDates.removeAll();
+                            self.calendarPanel.optionDates(self.getBlankOptionDate());
                             $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
                                 .done(() => { dfd.resolve(); })
                                 .fail((res) => { dfd.reject(res); });
@@ -702,7 +702,7 @@ module nts.uk.at.view.ksm004.a {
                 aService.updateCalendarWorkPlace(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                            self.calendarPanel1.optionDates.removeAll();
+                            self.calendarPanel1.optionDates(self.getBlankOptionDate());
                             $.when(
                                 self.getCalendarWorkplaceSet(self.currentCalendarWorkPlace().key()),
                                 self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key())
@@ -724,7 +724,7 @@ module nts.uk.at.view.ksm004.a {
                 aService.updateCalendarClass(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                            self.calendarPanel2.optionDates.removeAll();
+                            self.calendarPanel2.optionDates(self.getBlankOptionDate());
                             $.when(
                                 self.getCalendarClassSet(self.currentCalendarClass().key()),
                                 self.getCalendarClassById(self.currentCalendarClass().key())
@@ -746,7 +746,7 @@ module nts.uk.at.view.ksm004.a {
                 aService.deleteCalendarCompany(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                            self.calendarPanel.optionDates.removeAll();
+                            self.calendarPanel.optionDates(self.getBlankOptionDate());
                             $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
                                 .done(() => { dfd.resolve(); })
                                 .fail((res) => { dfd.reject(res); });
@@ -766,7 +766,7 @@ module nts.uk.at.view.ksm004.a {
                 aService.deleteCalendarWorkPlace(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                            self.calendarPanel1.optionDates.removeAll();
+                            self.calendarPanel1.optionDates(self.getBlankOptionDate());
                             $.when(
                                 self.getCalendarWorkplaceSet(self.currentCalendarWorkPlace().key()),
                                 self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key())
@@ -788,7 +788,7 @@ module nts.uk.at.view.ksm004.a {
                 aService.deleteCalendarClass(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                            self.calendarPanel2.optionDates.removeAll();
+                            self.calendarPanel2.optionDates(self.getBlankOptionDate());
                             $.when(
                                 self.getCalendarClassSet(self.currentCalendarClass().key()),
                                 self.getCalendarClassById(self.currentCalendarClass().key())
@@ -980,6 +980,11 @@ module nts.uk.at.view.ksm004.a {
                         });        
                     }); 
                 }
+            }
+            
+            //Init blank calendar option date
+            getBlankOptionDate(): any{
+                return [{ start: "", textColor: "", backgroundColor: "", listText: [], insertText: false }];
             }
         }
         
