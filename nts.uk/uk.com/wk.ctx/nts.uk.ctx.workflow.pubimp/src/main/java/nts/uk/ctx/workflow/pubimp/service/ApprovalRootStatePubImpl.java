@@ -381,7 +381,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 					// フェーズ承認区分＝ループ中のフェーズ．承認区分
 					int approverPhaseIndicator = listApprovalPhaseState.get(i).getApprovalAtr().value;
 					//1.承認状況の判断
-					ApprovalStatusOutput approvalStatusOutput = judgmentApprovalStatusService.judmentApprovalStatus(companyID, listApprovalPhaseState.get(i), approverRoot.getEmployeeID());
+					ApprovalStatusOutput approvalStatusOutput = judgmentApprovalStatusService.judmentApprovalStatus(companyID, listApprovalPhaseState.get(i), approverID);
 					if(approverPhaseFlag == true && approvalStatusOutput.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
 						break;
 					}
@@ -395,7 +395,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 						approvalStatus.setReleaseDivision(EnumAdaptor.valueOf(ReleasedProprietyDivision.NOT_RELEASE.value, ReleasedProprietyDivision.class));
 					}
 					//承認状況．基準社員の承認アクション
-					if(approvalStatusOutput.getApprovableFlag() == true){
+					if(approvalStatusOutput.getApprovableFlag() == false){
 						approvalStatus.setApprovalActionByEmpl(EnumAdaptor.valueOf(ApprovalActionByEmpl.NOT_APPROVAL.value, ApprovalActionByEmpl.class));
 					}else if(approvalStatusOutput.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
 						approvalStatus.setApprovalActionByEmpl(EnumAdaptor.valueOf(ApprovalActionByEmpl.APPROVAL_REQUIRE.value, ApprovalActionByEmpl.class));
