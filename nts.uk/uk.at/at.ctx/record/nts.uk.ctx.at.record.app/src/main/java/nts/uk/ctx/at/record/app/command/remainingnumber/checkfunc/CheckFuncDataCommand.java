@@ -14,4 +14,6 @@ public class CheckFuncDataCommand {
 	private List<EmployeeSearchCommand> employeeList;
 	private GeneralDate startTime;
 	private GeneralDate endTime;
+	private GeneralDate date;
+	private int maxDay;
 }

@@ -6,5 +6,22 @@ import nts.arc.time.GeneralDate;
 
 
 public interface AnnualBreakManagePub {
+	/**
+	 * RequestList 304
+	 * アルゴリズム「社員ID、期間をもとに期間内に年休付与日がある社員を抽出する」を実行する
+	 * @param employeeId
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
 	List<AnnualBreakManageExport> getEmployeeId(List<String> employeeId, GeneralDate startDate, GeneralDate endDate);
+	
+	/**
+	 * RequestList 327 
+	 * 指定年月日時点の年休残数を取得
+	 * @param employeeId
+	 * @param confirmDay
+	 * @return
+	 */
+	List<YearlyHolidaysTimeRemainingExport> getYearHolidayTimeAnnualRemaining(String employeeId, GeneralDate confirmDay);
 }

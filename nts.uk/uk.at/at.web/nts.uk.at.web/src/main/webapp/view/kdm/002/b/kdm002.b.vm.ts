@@ -98,7 +98,9 @@ module nts.uk.at.view.kdm002.b {
                     outputErrorList: null,
                     employeeList: self.pempployeeList(),
                     startTime: moment.utc(self.pstartDate()).toISOString(),
-                    endTime: moment.utc(self.pendDate()).toISOString()
+                    endTime: moment.utc(self.pendDate()).toISOString(),
+                    date: moment.utc(self.pdate()).toISOString(),
+                    maxDay: self.pmaxday()
                 });
                 
                 // find task id
@@ -225,6 +227,8 @@ module nts.uk.at.view.kdm002.b {
             employeeList: EmployeeSearchDto[];
             startTime: string;
             endTime: string;
+            date:string;
+            maxDay: number;
         }
         
         class CheckFuncDto {
@@ -235,6 +239,8 @@ module nts.uk.at.view.kdm002.b {
             employeeList: EmployeeSearchDto[];
             startTime: string;
             endTime: string;
+            date: string;
+            maxDay: number;
             
              constructor(param: ICheckFuncDto) {
                 let self = this;
@@ -245,6 +251,8 @@ module nts.uk.at.view.kdm002.b {
                 self.employeeList = param.employeeList;
                 self.startTime = param.startTime;
                 self.endTime = param.endTime;
+                self.date = param.date;
+                self.maxDay = param.maxDay;
              }
         }
     }

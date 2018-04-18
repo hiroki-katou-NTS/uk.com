@@ -27,8 +27,7 @@ public class ErrorInfoExportService extends ExportService<List<OutputErrorInfoCo
     private CSVReportGenerator generator;
     
     /** The Constant LST_NAME_ID. */
-    private static final List<String> LST_NAME_ID_HEADER = Arrays.asList("会社コード","会社名","イラー内容");
-    /** The Constant FILE NAM CSV. */
+    private static final List<String> LST_NAME_ID_HEADER = Arrays.asList("会社コード","会社名","エラー内容");
     
     @Override
 	protected void handle(ExportServiceContext<List<OutputErrorInfoCommand>> context) {
