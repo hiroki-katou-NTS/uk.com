@@ -16,6 +16,8 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReflectedS
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
@@ -49,6 +51,8 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 	private WorkInformationRepository workRepository;
 	@Inject
 	private ScheWorkUpdateService scheWork;
+	@Inject
+	private EditStateOfDailyPerformanceRepository dailyReposiroty;
 	@Override
 	public boolean preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara) {		
 		try {
@@ -121,6 +125,8 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 					holidayWorkPara.getBaseDate(), 
 					holidayWorkPara.getHolidayWorkPara().getNightTime(), 
 					true, daily);
+			List<EditStateOfDailyPerformance> lstEditState = dailyReposiroty.findByKey(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate());
+			daily.setEditState(lstEditState);
 			calculateData = calculate.calculate(daily);
 			attendanceTime.updateFlush(calculateData.getAttendanceTimeOfDailyPerformance().get());
 			return true;
