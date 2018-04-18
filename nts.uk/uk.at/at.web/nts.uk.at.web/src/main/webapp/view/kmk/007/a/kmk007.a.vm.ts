@@ -233,7 +233,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                             cwt.afternoonCls(itemWorkType.afternoonCls);
                             cwt.calculatorMethod(itemWorkType.calculatorMethod);
                         }
-
                         self.setWorkTypeSet(cwt.oneDay(), itemWorkType.oneDay);
                         self.setWorkTypeSet(cwt.morning(), itemWorkType.morning);
                         self.setWorkTypeSet(cwt.afternoon(), itemWorkType.afternoon);
