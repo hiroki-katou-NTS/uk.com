@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.worktime;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,10 +42,15 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	}
 	
 	/** <<Event>> 実績の出退勤が変更されたイベントを発行する　*/
-	public void timeLeaveChangeWithNo(int no) {
+	public void timeLeaveChangedByNo(int no) {
 		timeLeavingWorks.stream().filter(tl -> tl.getWorkNo().v() == no).findFirst().ifPresent(tl -> {
-			TimeLeaveChangeEvent.builder().employeeId(employeeId).targetDate(ymd).timeLeave(tl).build().toBePublished();
+			TimeLeaveChangeEvent.builder().employeeId(employeeId).targetDate(ymd).timeLeave(Arrays.asList(tl)).build().toBePublished();
 		});
+	}
+	
+	/** <<Event>> 実績の出退勤が変更されたイベントを発行する　*/
+	public void timeLeavesChanged() {
+		TimeLeaveChangeEvent.builder().employeeId(employeeId).targetDate(ymd).timeLeave(timeLeavingWorks).build().toBePublished();
 	}
 //	/**
 //	 * 計算可能な打刻であるか判定する
