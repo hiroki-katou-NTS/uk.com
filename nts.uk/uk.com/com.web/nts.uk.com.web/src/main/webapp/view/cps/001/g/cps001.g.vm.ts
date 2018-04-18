@@ -374,15 +374,15 @@ module nts.uk.com.view.cps001.g.vm {
               data: any = getShared('CPS001GHI_VALUES');
             if (param) {
                 self.annLeavID(param.annLeavID || null);
-                self.grantDate(moment.utc(param.grantDate,"YYYY/MM/DD") || null);
-                self.deadline(moment.utc(param.deadline,"YYYY/MM/DD") || null);
+                self.grantDate(moment.utc(param.grantDate,"YYYY/MM/DD"));
+                self.deadline(moment.utc(param.deadline,"YYYY/MM/DD"));
                 self.expirationStatus(param.expirationStatus);
-                self.grantDays(param.grantDays || null);
-                self.grantMinutes(param.grantMinutes || null);
-                self.usedDays(param.usedDays || null);
-                self.usedMinutes(param.usedMinutes || null);
-                self.remainingDays(param.remainingDays || null);
-                self.remainingMinutes(param.remainingMinutes || null);
+                self.grantDays(param.grantDays);
+                self.grantMinutes(param.grantMinutes);
+                self.usedDays(param.usedDays);
+                self.usedMinutes(param.usedMinutes);
+                self.remainingDays(param.remainingDays);
+                self.remainingMinutes(param.remainingMinutes);
                 self.employeeId(data.sid);
             }
             // Subcribe grantDate
