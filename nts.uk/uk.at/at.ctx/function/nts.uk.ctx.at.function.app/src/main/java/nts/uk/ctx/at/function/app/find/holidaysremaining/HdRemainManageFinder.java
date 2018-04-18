@@ -19,7 +19,7 @@ public class HdRemainManageFinder {
 	private HolidaysRemainingManagementRepository hdRemainingManagementRepo;
 
 	public List<HdRemainManageDto> findAll() {
-		return this.hdRemainingManagementRepo.getProcessExecutionLogByCompanyId(AppContexts.user().companyId())
+		return this.hdRemainingManagementRepo.getHolidayManagerLogByCompanyId(AppContexts.user().companyId())
 				.stream().map(a -> {
 					HdRemainManageDto dto = HdRemainManageDto.fromDomain(a);
 					return dto;

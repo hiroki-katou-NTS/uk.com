@@ -4,6 +4,8 @@ module nts.uk.at.view.kdr001.a {
     import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
 
     export module viewmodel {
         export class ScreenModel {
@@ -305,41 +307,6 @@ module nts.uk.at.view.kdr001.a {
              * function export excel button
              */
             private exportButton() {
-                //                var self = this;
-                //                // check selection employee 
-                //                if (self.endDateString - self.startDateString <14) {
-                //                    if (self.selectedEmployee.size() > 0) {
-                //                    }
-                //                    else {
-                //                        nts.uk.ui.dialog.alertError({ messageId: 'Msg_884' });
-                //                    }
-                //                }
-                //                else {
-                //                    // show message by not choose employee of kcp005
-                //                    
-                //                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1173' });
-                //                }
-                var self = this;
-                // check selection employee 
-                if (self.selectedEmployeeCode && self.selectedEmployee() && self.selectedEmployeeCode().length > 0) {
-                    if (new Date(self.date()) >= new Date(self.periodDate().endDate)) {
-                        nts.uk.ui.windows.setShared('KDM002Params', {
-                            empployeeList: self.selectedEmployee(),
-                            periodDate: self.periodDate(),
-                            date: self.date(),
-                            maxday: self.maxDaysCumulationByEmp()
-                        });
-
-                        nts.uk.ui.windows.sub.modal("/view/kdm/002/b/index.xhtml");
-                    }
-                    else {
-                        nts.uk.ui.dialog.alertError({ messageId: 'Msg_1064' });
-                    }
-                }
-                else {
-                    // show message by not choose employee of kcp005
-                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1063' });
-                }
             }
 
 
