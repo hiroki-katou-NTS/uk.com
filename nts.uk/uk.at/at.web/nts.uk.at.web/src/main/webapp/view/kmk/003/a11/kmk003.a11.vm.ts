@@ -130,63 +130,63 @@ module a11 {
             _self.oldFromOverTimeCertainTime(_self.model.commonSetting.getOverTimeSet().subHolTimeSet.certainTime());
             
             // Disable
-            _self.workdayOffTimeUseDivision.subscribe(newValue => {
-                if (typeof _self.workdayOffTimeCertainTime() !== 'number') {                        
-                    _self.workdayOffTimeCertainTime(_self.oldWorkdayOffTimeCertainTime()); 
-                }
-                if (typeof _self.workdayOffTimeOneDayTime() !== 'number') {
-                    _self.workdayOffTimeOneDayTime(_self.oldWorkdayOffTimeOneDayTime()); 
-                }                
-                if (typeof _self.workdayOffTimeHalfDayTime() !== 'number') {
-                    _self.workdayOffTimeHalfDayTime(_self.oldWorkdayOffTimeHalfDayTime()); 
-                }
-                _self.clearError();
-            });
-            
-            _self.workdayOffTimeSubHolTransferSetAtr.subscribe(newValue => {
-                if (newValue === SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
-                    if (typeof _self.workdayOffTimeCertainTime() !== 'number') {                        
-                        _self.workdayOffTimeCertainTime(_self.oldWorkdayOffTimeCertainTime()); 
-                    }
-                } else {
-                    if (typeof _self.workdayOffTimeOneDayTime() !== 'number') {
-                        _self.workdayOffTimeOneDayTime(_self.oldWorkdayOffTimeOneDayTime()); 
-                    }                
-                    if (typeof _self.workdayOffTimeHalfDayTime() !== 'number') {
-                        _self.workdayOffTimeHalfDayTime(_self.oldWorkdayOffTimeHalfDayTime()); 
-                    }
-                }
-                _self.clearError();
-            });
-            
-            _self.fromOverTimeUseDivision.subscribe(newValue => {
-                if (typeof _self.fromOverTimeCertainTime() !== 'number') {
-                    _self.fromOverTimeCertainTime(_self.oldFromOverTimeCertainTime()); 
-                }
-                if (typeof _self.fromOverTimeOneDayTime() !== 'number') {
-                    _self.fromOverTimeOneDayTime(_self.oldFromOverTimeOneDayTime()); 
-                }                
-                if (typeof _self.fromOverTimeHalfDayTime() !== 'number') {
-                    _self.fromOverTimeHalfDayTime(_self.oldFromOverTimeHalfDayTime()); 
-                }
-                _self.clearError();
-            });
-            
-            _self.fromOverTimeSubHolTransferSetAtr.subscribe(newValue => {
-                if (newValue === SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
-                    if (typeof _self.fromOverTimeCertainTime() !== 'number') {
-                        _self.fromOverTimeCertainTime(_self.oldFromOverTimeCertainTime()); 
-                    }
-                } else {
-                    if (typeof _self.fromOverTimeOneDayTime() !== 'number') {
-                        _self.fromOverTimeOneDayTime(_self.oldFromOverTimeOneDayTime()); 
-                    }                
-                    if (typeof _self.fromOverTimeHalfDayTime() !== 'number') {
-                        _self.fromOverTimeHalfDayTime(_self.oldFromOverTimeHalfDayTime()); 
-                    }
-                }
-                _self.clearError();
-            });
+//            _self.workdayOffTimeUseDivision.subscribe(newValue => {
+//                if (typeof _self.workdayOffTimeCertainTime() !== 'number') {                        
+//                    _self.workdayOffTimeCertainTime(_self.oldWorkdayOffTimeCertainTime()); 
+//                }
+//                if (typeof _self.workdayOffTimeOneDayTime() !== 'number') {
+//                    _self.workdayOffTimeOneDayTime(_self.oldWorkdayOffTimeOneDayTime()); 
+//                }                
+//                if (typeof _self.workdayOffTimeHalfDayTime() !== 'number') {
+//                    _self.workdayOffTimeHalfDayTime(_self.oldWorkdayOffTimeHalfDayTime()); 
+//                }
+//                _self.clearError();
+//            });
+//            
+//            _self.workdayOffTimeSubHolTransferSetAtr.subscribe(newValue => {
+//                if (newValue === SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
+//                    if (typeof _self.workdayOffTimeCertainTime() !== 'number') {                        
+//                        _self.workdayOffTimeCertainTime(_self.oldWorkdayOffTimeCertainTime()); 
+//                    }
+//                } else {
+//                    if (typeof _self.workdayOffTimeOneDayTime() !== 'number') {
+//                        _self.workdayOffTimeOneDayTime(_self.oldWorkdayOffTimeOneDayTime()); 
+//                    }                
+//                    if (typeof _self.workdayOffTimeHalfDayTime() !== 'number') {
+//                        _self.workdayOffTimeHalfDayTime(_self.oldWorkdayOffTimeHalfDayTime()); 
+//                    }
+//                }
+//                _self.clearError();
+//            });
+//            
+//            _self.fromOverTimeUseDivision.subscribe(newValue => {
+//                if (typeof _self.fromOverTimeCertainTime() !== 'number') {
+//                    _self.fromOverTimeCertainTime(_self.oldFromOverTimeCertainTime()); 
+//                }
+//                if (typeof _self.fromOverTimeOneDayTime() !== 'number') {
+//                    _self.fromOverTimeOneDayTime(_self.oldFromOverTimeOneDayTime()); 
+//                }                
+//                if (typeof _self.fromOverTimeHalfDayTime() !== 'number') {
+//                    _self.fromOverTimeHalfDayTime(_self.oldFromOverTimeHalfDayTime()); 
+//                }
+//                _self.clearError();
+//            });
+//            
+//            _self.fromOverTimeSubHolTransferSetAtr.subscribe(newValue => {
+//                if (newValue === SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
+//                    if (typeof _self.fromOverTimeCertainTime() !== 'number') {
+//                        _self.fromOverTimeCertainTime(_self.oldFromOverTimeCertainTime()); 
+//                    }
+//                } else {
+//                    if (typeof _self.fromOverTimeOneDayTime() !== 'number') {
+//                        _self.fromOverTimeOneDayTime(_self.oldFromOverTimeOneDayTime()); 
+//                    }                
+//                    if (typeof _self.fromOverTimeHalfDayTime() !== 'number') {
+//                        _self.fromOverTimeHalfDayTime(_self.oldFromOverTimeHalfDayTime()); 
+//                    }
+//                }
+//                _self.clearError();
+//            });
         }
         
         private clearError() {
