@@ -276,8 +276,25 @@ module cmm045.a.viewmodel {
             $("#grid2").on("click", ".ntsButton", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
-                nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { appID: id });
+                let a = self.findDataModeAppByID(id, self.items());
+                let lstAppId = self.findListAppType(a.appType);
+                nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': id });
             });
+        }
+        findDataModeAppByID(appId: string, lstAppCommon: Array<vmbase.DataModeApp>){
+            return _.find(lstAppCommon, function(app) {
+                return app.appId == appId;
+            });
+        }
+        findListAppType(appType: number){
+            let self = this;
+            let lstAppId = [];
+            _.each(self.items(), function(item){
+                if(item.appType == appType){
+                    lstAppId.push(item.appId);
+                }
+            });
+            return lstAppId;
         }
 
         fillColorbackGr(): Array<vmbase.CellState>{
@@ -397,7 +414,9 @@ module cmm045.a.viewmodel {
             $("#grid1").on("click", ".ntsButton", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
-                nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { appID: id });
+                let a = self.findDataModeAppByID(id, self.items());
+                let lstAppId = self.findListAppType(a.appType);
+                nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': id });
             });
 
             $("#grid1").setupSearchScroll("igGrid", true);
