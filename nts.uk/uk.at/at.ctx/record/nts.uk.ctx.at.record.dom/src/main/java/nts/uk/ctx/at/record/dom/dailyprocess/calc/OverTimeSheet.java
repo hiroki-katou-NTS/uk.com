@@ -114,6 +114,7 @@ public class OverTimeSheet {
 		for(OverTimeFrameTimeSheetForCalc overTimeFrameTime : frameTimeSheets) {
 			//控除時間算出
 			AttendanceTime calcDedTime = overTimeFrameTime.correctCalculationTime(Optional.empty(), autoCalcSet,DeductionAtr.Deduction);
+
 			AttendanceTime calcRecTime = overTimeFrameTime.correctCalculationTime(Optional.empty(), autoCalcSet,DeductionAtr.Appropriate);
 			//加算だけ
 			if(overTimeFrameList.containsKey(overTimeFrameTime.getFrameTime().getOverWorkFrameNo().v())) {

@@ -78,12 +78,6 @@ public class KshstHourPayAaddSet extends UkJpaEntity implements Serializable{
 	@Column(name = "ENABLE_SELECT_PER_WORK_HOUR1")
 	public int enableSetPerWorkHour1;
 	
-	/*就業時間帯毎の設定を可能とする*/
-	@Column(name = "ENABLE_SELECT_PER_WORK_HOUR2")
-	public int enableSetPerWorkHour2;
-	
-	
-	
 	@OneToOne(optional = false)
 		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false)
 	public KshstHolidayAdditionSet holidayAddtimeSet;
