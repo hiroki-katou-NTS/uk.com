@@ -163,8 +163,8 @@ module nts.uk.ui.koExtentions {
                 }
                 var mmRs = new nts.uk.time.MomentResult();
                 var otFormat = nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat;
-                var minDate = ($input.data('startDate') !== undefined) ? moment($input.data('startDate'), otFormat) : mmRs.systemMin();
-                var maxDate = ($input.data('endDate') !== undefined) ? moment($input.data('endDate'), otFormat) : mmRs.systemMax();
+                var minDate = !nts.uk.util.isNullOrUndefined($input.data('startDate')) ? moment($input.data('startDate'), otFormat) : mmRs.systemMin();
+                var maxDate = !nts.uk.util.isNullOrUndefined($input.data('endDate')) ? moment($input.data('endDate'), otFormat) : mmRs.systemMax();
                 var momentCurrent = moment(parsedValue, otFormat);
                 var error = false;
                 if(momentCurrent.isBefore(minDate, 'day')){
