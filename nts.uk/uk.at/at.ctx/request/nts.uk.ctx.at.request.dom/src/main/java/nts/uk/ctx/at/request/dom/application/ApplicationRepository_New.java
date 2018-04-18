@@ -10,6 +10,8 @@ public interface ApplicationRepository_New {
 	
 	public Optional<Application_New> findByID(String companyID, String appID);
 	
+	public List<Application_New> findByListID(String companyID, List<String> listAppID);
+	
 	public List<Application_New> getApplicationIdByDate(String companyId, GeneralDate startDate, GeneralDate endDate);
 	
 	/**
