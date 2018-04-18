@@ -400,7 +400,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				String errorContent = this.internationalization.localize("Msg_602", "#KSC001_87").get();
 				// ドメインモデル「スケジュール作成エラーログ」を登録する
 				ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, command.getExecutionId(),
-						command.getToDate(), command.getEmployeeId());
+						command.getToDate(), creator.getEmployeeId());
 				this.scheduleErrorLogRepository.add(scheduleErrorLog);
 			}
 
@@ -498,7 +498,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				|| basicSchedule.getConfirmedAtr().equals(ConfirmedAtr.UNSETTLED)) {
 			// アルゴリズム「スケジュール作成判定処理」を実行する
 			if (this.scheCreExeMonthlyPatternHandler.scheduleCreationDeterminationProcess(command, basicSchedule,
-					employmentStatus, workingConditionItem.getAutoStampSetAtr())) {
+					employmentStatus, workingConditionItem)) {
 				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, workingConditionItem);
 			}
 		}
