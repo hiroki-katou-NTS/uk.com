@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.worktime;
 
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Getter;
 import nts.arc.layer.dom.event.DomainEvent;
@@ -16,6 +18,6 @@ public class TimeLeaveChangeEvent extends DomainEvent {
 	private GeneralDate targetDate;
 
 	/** 変更された出退勤: 出退勤 */
-	private TimeLeavingWork timeLeave;
+	private List<TimeLeavingWork> timeLeave;
 
 }

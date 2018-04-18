@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.command.dailyperform.breaktime;
 
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
@@ -14,7 +16,7 @@ public class UpdateBreakTimeByTimeLeaveChangeCommand {
 	
 	private GeneralDate workingDate;
 	
-	private TimeLeavingWork timeLeave;
+	private List<TimeLeavingWork> timeLeave;
 	
 	private WorkTimeCode newWorkTimeCode;
 }
