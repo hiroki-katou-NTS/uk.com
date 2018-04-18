@@ -95,7 +95,16 @@ public class ApplicationFinder {
 		}
 		if (application_New.isPresent()){
 			Application_New app = application_New.get();
-			return ApplicationSendDto.fromDomain(ApplicationDto_New.fromDomain(app), appTempAsStr, approvalRootContentImport, listApproverDetail, employeeRequestAdapter.getEmployeeInfor(app.getEmployeeID()));
+			String loginName = "D00001";
+			String loginMail = "D00001@nittsusystime.co.jp";
+			String empName = "D00001 name";
+			String appContent = "";
+			String mailContentToSend = I18NText.getText("Msg_703",
+					loginName, appTempAsStr,
+					GeneralDate.today().toString(), app.getAppType().nameId,
+					empName, app.getAppDate().toLocalDate().toString(),
+					appContent, loginName, loginMail);
+			return ApplicationSendDto.fromDomain(ApplicationDto_New.fromDomain(app), mailContentToSend, approvalRootContentImport, listApproverDetail, employeeRequestAdapter.getEmployeeInfor(app.getEmployeeID()));
 		}
 		return null;
 	}
