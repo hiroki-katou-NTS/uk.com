@@ -195,4 +195,36 @@ public class WorkTimeOfMonthly {
 		
 		this.divergenceTime.aggregateDivergenceAtr(employeeDailyPerErrors);
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(WorkTimeOfMonthly target){
+		
+		this.bonusPayTime.sum(target.bonusPayTime);
+		this.goOut.sum(target.goOut);
+		this.premiumTime.sum(target.premiumTime);
+		this.breakTime.sum(target.breakTime);
+		this.holidayTime.sum(target.holidayTime);
+		this.midnightTime.sum(target.midnightTime);
+		this.lateLeaveEarly.sum(target.lateLeaveEarly);
+		this.attendanceLeaveGateTime.sum(target.attendanceLeaveGateTime);
+		this.budgetTimeVarience.sum(target.budgetTimeVarience);
+		this.divergenceTime.sum(target.divergenceTime);
+		
+		for (val medicalValue : this.medicalTime.values()){
+			val dayNightAtr = medicalValue.getDayNightAtr();
+			if (target.medicalTime.containsKey(dayNightAtr)){
+				val targetMedicalValue = target.medicalTime.get(dayNightAtr);
+				medicalValue.addMinutesToWorkTime(targetMedicalValue.getWorkTime().v());
+				medicalValue.addMinutesToDeducationTime(targetMedicalValue.getDeducationTime().v());
+				medicalValue.addMinutesToTakeOverTime(targetMedicalValue.getTakeOverTime().v());
+			}
+		}
+		for (val targetMedicalValue : target.medicalTime.values()){
+			val dayNightAtr = targetMedicalValue.getDayNightAtr();
+			this.medicalTime.putIfAbsent(dayNightAtr, targetMedicalValue);
+		}
+	}
 }

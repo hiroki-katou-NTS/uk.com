@@ -244,4 +244,17 @@ public class AggregateTotalWorkingTime {
 				this.overTime.getTotalWorkingTargetTime().v() +
 				this.holidayWorkTime.getTotalWorkingTargetTime().v());
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(AggregateTotalWorkingTime target){
+		
+		this.workTime.sum(target.workTime);
+		this.overTime.sum(target.overTime);
+		this.holidayWorkTime.sum(target.holidayWorkTime);
+		this.vacationUseTime.sum(target.vacationUseTime);
+		this.prescribedWorkingTime.sum(target.prescribedWorkingTime);
+	}
 }

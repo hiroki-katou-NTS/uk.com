@@ -185,4 +185,15 @@ public class WorkTimeOfMonthly {
 		
 		return new AttendanceTimeMonth(this.workTime.v() + this.withinPrescribedPremiumTime.v());
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(WorkTimeOfMonthly target){
+		
+		this.workTime = this.workTime.addMinutes(target.workTime.v());
+		this.withinPrescribedPremiumTime = this.withinPrescribedPremiumTime.addMinutes(
+				target.withinPrescribedPremiumTime.v());
+	}
 }

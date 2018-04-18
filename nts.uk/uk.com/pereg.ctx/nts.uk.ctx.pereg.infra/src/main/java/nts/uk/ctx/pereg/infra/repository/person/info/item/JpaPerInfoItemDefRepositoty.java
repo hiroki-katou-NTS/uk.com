@@ -668,7 +668,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				break;
 			case SELECTION_RADIO:
 				// SelectionRadio selectionRadio = (SelectionRadio) dataTypeState;
-				// break;
+				break;
 			case SELECTION_BUTTON:
 				// SelectionButton selectionButton = (SelectionButton) dataTypeState;
 				break;

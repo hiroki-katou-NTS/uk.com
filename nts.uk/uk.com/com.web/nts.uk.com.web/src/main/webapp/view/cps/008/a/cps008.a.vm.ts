@@ -112,7 +112,7 @@ module cps008.a.viewmodel {
             // validate
             $("#A_INP_CODE").trigger("validate");
             $("#A_INP_NAME").trigger("validate");
-            
+
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
@@ -149,37 +149,9 @@ module cps008.a.viewmodel {
             modal('../c/index.xhtml').onClosed(() => {
                 let _data = getShared('CPS008C_RESPONE');
                 if (_data) {
-                    var command: any = {
-                        id: data.id,
-                        code: _data.code,
-                        name: _data.name,
-                        classifications: data.outData
-                    };
-
-                    if (_data.action) {
-                        command.action = LAYOUT_ACTION.OVERRIDE;
-                    } else {
-                        command.action = LAYOUT_ACTION.COPY;
-                    }
-
-                    // call saveData service
-                    invisible();
-                    service.saveData(command).done((data: any) => {
-                        showDialog.info({ messageId: "Msg_20" }).then(function() {
-                            unblock();
-                            self.start(_data.code);
-                        });
-                    }).fail((error: any) => {
-                        if (error.message == 'Msg_3') {
-                            showDialog.alert({ messageId: "Msg_3" }).then(function() {
-                                unblock();
-                                self.start(data.code);
-                            });
-                        }
-                    });
-
+                    self.start(_data);
                 } else {
-                    $("#A_INP_NAME").focus();
+                    self.start(data.code);
                 }
             });
         }

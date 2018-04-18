@@ -7,10 +7,13 @@ import lombok.Getter;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
+import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
+import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.GetVacationAddSet;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.PayItemCountOfMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlexRepository;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.GetAggrSettingMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthlyRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
@@ -29,6 +32,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetOfStatutoryWorkTime;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetWeekStart;
+import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.flex.GetFlexPredWorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetHolidayWorkAndTransferOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetOverTimeAndTransferOrder;
@@ -62,6 +66,10 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	@Inject
 	public SyEmploymentAdapter syEmployment;
 	
+	/** 社員の勤務種別の取得 */
+	@Inject
+	public WorkTypeOfDailyPerforRepository workTypeOfDaily;
+	
 	/** 日別実績の勤怠時間の取得 */
 	@Inject
 	public AttendanceTimeRepository attendanceTimeOfDaily;
@@ -70,6 +78,10 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	@Inject
 	public WorkInformationRepository workInformationOfDaily;
 
+	/** 日別実績の所属情報の取得 */
+	@Inject
+	public AffiliationInforOfDailyPerforRepository affiliationInfoOfDaily;
+	
 	/** 日別実績の出退勤の取得 */
 	@Inject
 	public TimeLeavingOfDailyPerformanceRepository timeLeavingOfDaily;
@@ -159,6 +171,13 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 休暇加算設定を取得する */
 	@Inject
 	public GetVacationAddSet vacationAddSet;
+
+	/** フレックス勤務の月別集計設定の取得 */
+	@Inject
+	public MonthlyAggrSetOfFlexRepository monthlyAggrSetOfFlex;
+	/** フレックス勤務所定労働時間取得 */
+	@Inject
+	public GetFlexPredWorkTimeRepository flexPredWorktime;
 	
 	/** 週開始の取得 */
 	@Inject

@@ -51,4 +51,15 @@ public class FlexShortDeductTime {
 		domain.flexShortTimeBeforeDeduct = flexShortTimeBeforeDeduct;
 		return domain;
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(FlexShortDeductTime target){
+		
+		this.annualLeaveDeductDays = this.annualLeaveDeductDays.addDays(target.annualLeaveDeductDays.v());
+		this.absenceDeductTime = this.absenceDeductTime.addMinutes(target.absenceDeductTime.v());
+		this.flexShortTimeBeforeDeduct = this.flexShortTimeBeforeDeduct.addMinutes(target.flexShortTimeBeforeDeduct.v());
+	}
 }

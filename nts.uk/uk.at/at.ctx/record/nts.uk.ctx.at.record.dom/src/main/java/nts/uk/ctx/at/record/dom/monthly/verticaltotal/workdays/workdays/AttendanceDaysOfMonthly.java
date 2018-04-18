@@ -63,4 +63,13 @@ public class AttendanceDaysOfMonthly {
 			}
 		}
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(AttendanceDaysOfMonthly target){
+		
+		this.days = this.days.addDays(target.days.v());
+	}
 }
