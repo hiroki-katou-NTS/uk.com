@@ -387,7 +387,7 @@ module nts.uk.com.view.cps001.g.vm {
             }
             // Subcribe grantDate
             self.grantDate.subscribe(value => {
-                if (value && __viewContext.viewModel.createMode() && !nts.uk.ui.errors.hasError())  {
+                if (value && __viewContext.viewModel.createMode())  {
                     service.lostFocus(value).done((data: Date) => {
                         if (data){
                             self.deadline(moment.utc(data,"YYYY/MM/DD"));                            
