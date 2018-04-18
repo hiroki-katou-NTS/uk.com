@@ -11,14 +11,18 @@ import javax.inject.Inject;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.setting.company.request.approvallistsetting.ApprovalListDisplaySetDto;
+import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetDto;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.AppListExtractCondition;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppListInitialRepository;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppListOutPut;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppMasterInfo;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.ApplicationFullOutput;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.CheckColorTime;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.PhaseStatus;
+import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
+import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
+import nts.uk.ctx.at.request.dom.application.applist.service.AppListInitialRepository;
+import nts.uk.ctx.at.request.dom.application.applist.service.AppListOutPut;
+import nts.uk.ctx.at.request.dom.application.applist.service.AppMasterInfo;
+import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationFullOutput;
+import nts.uk.ctx.at.request.dom.application.applist.service.CheckColorTime;
+import nts.uk.ctx.at.request.dom.application.applist.service.PhaseStatus;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
@@ -37,6 +41,8 @@ public class ApplicationListFinder {
 	private AppListInitialRepository repoAppListInit;
 	@Inject
 	private RequestSettingRepository repoRequestSet;
+	@Inject
+	private HdAppSetRepository repoHdAppSet;
 	
 	public ApplicationListDto getAppList(AppListExtractConditionDto param){
 		String companyId = AppContexts.user().companyId();
@@ -51,25 +57,16 @@ public class ApplicationListFinder {
 		//URパラメータが存在する-(Check param)
 		if(StringUtil.isNullOrEmpty(param.getStartDate(), false) || StringUtil.isNullOrEmpty(param.getEndDate(), false)){
 			//アルゴリズム「申請一覧初期日付期間」を実行する-(Thực hiện thuật toán lấy ngày　－12)
-			DatePeriod date = repoAppListInit.getInitialPeriod(companyId);
+			DatePeriod date = null;
+//			if(param.getAppListAtr().equals(ApplicationListAtr.APPROVER)){
+				date = repoAppListInit.getInitialPeriod(companyId);
+//			}else{
+//				date = repoAppListInit.getInitPeriodApp(companyId);
+//			}
 			param.setStartDate(date.start().toString());
 			param.setEndDate(date.end().toString());
 			
 		}
-//		if(param.getAppListAtr() != null){//存在する場合
-//			//期間（開始日、終了日）が存する場合
-//			if(StringUtil.isNullOrEmpty(param.getStartDate(), false) || StringUtil.isNullOrEmpty(param.getEndDate(), false)){
-//				//アルゴリズム「申請一覧初期日付期間」を実行する-(Thực hiện thuật toán lấy ngày　－12)
-//				DatePeriod date = repoAppListInit.getInitialPeriod(companyId);
-//				param.setStartDate(date.start().toString());
-//				param.setEndDate(date.end().toString());
-//			}
-//			// TODO Auto-generated method stub
-//		}else{//存在しない場合
-//			//ドメインモデル「申請一覧抽出条件」を取得する
-//			// TODO Auto-generated method stub
-//			//申請一覧抽出条件.社員IDリストが空白
-//		}
 		//ドメインモデル「申請一覧共通設定フォーマット.表の列幅」を取得-(Lấy 表の列幅)//xu ly o ui
 		//アルゴリズム「申請一覧リスト取得」を実行する-(Thực hiện thuật toán Application List get): 1-申請一覧リスト取得
 		AppListExtractCondition appListExCon = param.convertDtotoDomain(param);
@@ -95,10 +92,13 @@ public class ApplicationListFinder {
 				master.setCheckTimecolor(this.findColorAtr(lstApp.getLstTimeColor(), master.getAppID()));
 			}
 		}
+		//ドメインモデル「休暇申請設定」を取得する (Vacation application setting)- YenNTH
+		Optional<HdAppSet> lstHdAppSet = repoHdAppSet.getAll();
+		HdAppSetDto hdAppSetDto = HdAppSetDto.convertToDto(lstHdAppSet.get());
 		List<AppInfor> lstAppType = this.findListApp(lstApp.getLstMasterInfo());
-		return new ApplicationListDto(param.getStartDate(), param.getEndDate(), displaySet, lstApp.getLstMasterInfo(),lstAppDto,
-				lstApp.getLstAppOt(),lstApp.getLstAppGoBack(), lstApp.getAppStatusCount(), lstApp.getLstAppGroup(), 
-				lstAgent, lstApp.getLstAppHdWork(), lstApp.getLstAppWorkChange(), lstAppType);
+		return new ApplicationListDto(param.getStartDate(), param.getEndDate(), displaySet, lstApp.getLstMasterInfo(),this.sortById(lstAppDto),
+				lstApp.getLstAppOt(),lstApp.getLstAppGoBack(), lstApp.getAppStatusCount(), lstApp.getLstAppGroup(), lstAgent,
+				lstApp.getLstAppHdWork(), lstApp.getLstAppWorkChange(), lstApp.getLstAppAbsence(), lstAppType, hdAppSetDto, lstApp.getLstAppCompltLeaveSync());
 	}
 	/**
 	 * find status approval
@@ -169,5 +169,16 @@ public class ApplicationListFinder {
 			}
 		}
 		return lstAppType.stream().sorted((x, y) -> x.getAppType()-y.getAppType()).collect(Collectors.toList());
+	}
+	private List<ApplicationDto_New> sortById(List<ApplicationDto_New> lstApp){
+		return lstApp.stream().sorted((a,b) ->{
+			Integer rs = a.getApplicationDate().compareTo(b.getApplicationDate());
+			if (rs == 0) {
+			 return  a.getApplicationType().compareTo(b.getApplicationType());
+			} else {
+			 return rs;
+			}
+		}).collect(Collectors.toList());
+		
 	}
 }

@@ -48,6 +48,9 @@ public class JpaFlexODWorkTimeSetMemento implements FlexOffdayWorkTimeSetMemento
 		if (CollectionUtil.isEmpty(lstWorkTimezone)) {
 			this.entity.setKshmtFlexHolSets(new ArrayList<>());
 		} else {
+			if (CollectionUtil.isEmpty(this.entity.getKshmtFlexHolSets())) {
+				this.entity.setKshmtFlexHolSets(new ArrayList<>());
+			}
 			Map<KshmtFlexHolSetPK, KshmtFlexHolSet> entityMap = this.entity.getKshmtFlexHolSets().stream()
 					.collect(Collectors.toMap(KshmtFlexHolSet::getKshmtFlexHolSetPK, Function.identity()));
 			List<KshmtFlexHolSet> lstNewEntity = lstWorkTimezone.stream().map(domain -> {

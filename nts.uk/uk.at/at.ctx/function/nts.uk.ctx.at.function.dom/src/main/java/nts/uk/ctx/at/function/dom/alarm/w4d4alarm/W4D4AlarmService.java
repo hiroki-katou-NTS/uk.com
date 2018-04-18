@@ -1,11 +1,20 @@
 package nts.uk.ctx.at.function.dom.alarm.w4d4alarm;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
-import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.at.function.dom.adapter.workrecord.alarmlist.fourweekfourdayoff.W4D4CheckAdapter;
+import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckAdapter;
+import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.RegulationInfoEmployeeResult;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
+import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
 import nts.uk.shr.com.context.AppContexts;
@@ -15,31 +24,45 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class W4D4AlarmService {
 	
 	@Inject
-	private AlarmCheckConditionByCategoryRepository alarmCheckConditionByCategoryRepository;
+	private AlarmCheckConditionByCategoryRepository alarmCheckConditionByCategoryRepository;	
 	
 	@Inject
-	private WorkplaceAdapter workplaceAdapter;
+	private W4D4CheckAdapter w4D4CheckAdapter;
+	
+	@Inject
+	private ErAlWorkRecordCheckAdapter erAlWorkRecordCheckAdapter;
 		
-	public void calculateTotal4W4D(String employeeID, DatePeriod period, String checkConditionCode) {
+	public List<ValueExtractAlarm> calculateTotal4W4D(EmployeeSearchDto employee, DatePeriod period, String checkConditionCode) {
 		String companyID = AppContexts.user().companyId();
+		List<ValueExtractAlarm> result = new ArrayList<ValueExtractAlarm>();
 		
-		val optAlarmCheckConditionByCategory = alarmCheckConditionByCategoryRepository.find(companyID, AlarmCategory.SCHEDULE_4WEEK.value, checkConditionCode);
+		Optional<AlarmCheckConditionByCategory> optAlarmCheckConditionByCategory = alarmCheckConditionByCategoryRepository.find(companyID, AlarmCategory.SCHEDULE_4WEEK.value, checkConditionCode);
 		if (!optAlarmCheckConditionByCategory.isPresent())
 			throw new RuntimeException("Can't find AlarmCheckConditionByCategory with category: 4W4D and code: " + checkConditionCode);
 		
 		// TODO: Narrow down the target audience
-		
-		// Acquire company employee's work place history
-		val workplaceImport = workplaceAdapter.getWorlkplaceHistory(employeeID, period.end());
-		
-		val alarmCheckConditionByCategory = optAlarmCheckConditionByCategory.get();
-		AlarmCheckCondition4W4D fourW4DCheckCond = (AlarmCheckCondition4W4D) alarmCheckConditionByCategory.getExtractionCondition();
-		if (fourW4DCheckCond.isForActualResultsOnly()) {
-			this.checkWithActualResults(employeeID, period);
+		List<RegulationInfoEmployeeResult> listTarget = erAlWorkRecordCheckAdapter.filterEmployees(period.end(), Arrays.asList(employee.getId()), optAlarmCheckConditionByCategory.get().getExtractTargetCondition());
+		if(!listTarget.isEmpty()) {
+			for(RegulationInfoEmployeeResult target : listTarget) {
+				if(target.getEmployeeId().equals(employee.getId())) {
+					AlarmCheckConditionByCategory alarmCheckConditionByCategory = optAlarmCheckConditionByCategory.get();
+					AlarmCheckCondition4W4D fourW4DCheckCond = (AlarmCheckCondition4W4D) alarmCheckConditionByCategory.getExtractionCondition();
+					
+					if (fourW4DCheckCond.isForActualResultsOnly()) {
+						Optional<ValueExtractAlarm> optAlarm = this.checkWithActualResults(employee, period);
+						if (optAlarm.isPresent())
+							result.add(optAlarm.get());
+					}
+					break;
+				}
+			}
 		}
+	
+		return result;
+
 	}
 	
-	public void checkWithActualResults(String employeeID, DatePeriod period) {
-		
+	public Optional<ValueExtractAlarm> checkWithActualResults(EmployeeSearchDto employee, DatePeriod period) {
+		return w4D4CheckAdapter.checkHoliday(employee.getWorkplaceId(), employee.getId(), period);
 	}
 }

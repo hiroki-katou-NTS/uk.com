@@ -33,14 +33,7 @@
 			<div class="lblTitle-kaf007" data-bind="ntsFormLabel:{required:true}">#{i18n.getText('KAF007_11')}</div>
 			<!--A4_1 申請日付-->
 			<div data-bind="if: $parent.screenModeNew()" class="mode-style">
-				<!-- 申請開始日  -->
-				<div id="inputdatestart"
-					data-bind="ntsDatePicker: {name: '#[KAF007_12]',required:true, value: application().startDate, dateFormat: $parent.dateFormat}"></div>
-				<!--A4_2 ~-->
-				<label class="valign-center link-app-date-label-kaf007">#{i18n.getText('KAF007_14')}</label>
-				<!-- 申請終了日 -->
-				<div id="inputdateend"
-					data-bind="ntsDatePicker: {name: '#[KAF007_12]',required:true, value: application().endDate, dateFormat: $parent.dateFormat}"></div>
+				<div id="daterangepicker" data-bind="ntsDateRangePicker: { value: $parent.datePeriod, maxRange: 'none', required: true, showNextPrevious: false }" />				
 			</div>
 			<div data-bind="if: !$parent.screenModeNew()" class="mode-style">
 				<span data-bind="text: application().startDate"></span>
@@ -82,24 +75,25 @@
 				<div class="cell valign-top">
 					<div class="lblTitle-kaf007" data-bind="ntsFormLabel: {required:true}">#{i18n.getText('KAF007_13')}</div>
 				</div>
-				<div class="cell valign-center row-width">
+				<div class="cell valign-center row-width-inputTime">
 					<div>
 						<!--A7_1 勤務時間直行--> 
-						<input class="row-cell-margin right-content-kaf007" id="inpStartTime1"
+						<input class="row-cell-margin right-content-kaf007 inputTime-kaf007" id="inpStartTime1"
 							data-bind="ntsTimeWithDayEditor: { name: '勤務時間直行',
 															constraint:'TimeWithDayAttr',
 															value: workChange().workTimeStart1, 
 															enable: $parent.editable, 
 															readonly: false,
 															required: true }" />
-						<!--A7_2 ~--> 
-						<label class="valign-center link-label">#{i18n.getText('KAF007_14')}</label>
+						
 					</div>					
 				</div>
-				<div class="cell valign-center row-width">
+				<div class="cell valign-center row-width-inputTime">
 					<div class="row-cell-margin">
+						<!--A7_2 ~--> 
+						<label class="valign-center link-label-kaf007">#{i18n.getText('KAF007_14')}</label>
 						<!--A7_3 勤務時間直帰-->
-						<input id="inpEndTime1" class="right-content-kaf007"
+						<input id="inpEndTime1" class="right-content-kaf007 inputTime-kaf007"
 							data-bind="ntsTimeWithDayEditor: {name: '勤務時間直帰', 
 															constraint:'TimeWithDayAttr', 
 															value: workChange().workTimeEnd1, 
@@ -109,7 +103,7 @@
 					</div>
 				</div>
 			</div>			
-			<div class="table">
+			<div class="table" data-bind="if : false">
 				<div class="cell valign-top lblTitle-kaf007">
 				</div>				
 				<div class="cell valign-center row-width">
@@ -149,26 +143,28 @@
 			</div>
 		</div>
 		<!--A8 勤務時間２--> 	
-		<div class="valign-center control-group-kaf007" data-bind="if: $parent.isMultipleTime">
+		<!-- <div class="valign-center control-group-kaf007" data-bind="if: $parent.isMultipleTime"> -->
+		<div class="valign-center control-group-kaf007" data-bind="if: false">
 			<div class="table">				
 				<div class="cell valign-center">
 					<div class="lblTitle-kaf007" data-bind="ntsFormLabel: {required:false}">#{i18n.getText('KAF007_20')}</div>
 				</div>
-				<div class="cell valign-center row-width">
+				<div class="cell valign-center row-width-inputTime">
 					<!--A8_1 勤務時間２直行--> 
 					<div>
-						<input class="row-cell-margin" id="inpStartTime2"
+						<input class="row-cell-margin right-content-kaf007 inputTime-kaf007" id="inpStartTime2"
 							data-bind="ntsTimeWithDayEditor: {name: '勤務時間２直行',
 															constraint:'TimeWithDayAttr',
 															value: workChange().workTimeStart2}" />
-						<!--A8_2 ~--> 
-						<label class="valign-center link-label">#{i18n.getText('KAF007_14')}</label>
+						
 					</div>					
 				</div>
 				<!--A8_3 勤務時間２直帰-->
-				<div class="cell valign-center row-width">
+				<div class="cell valign-center row-width-inputTime">
 					<div class="row-cell-margin">
-						<input id="inpEndTime2" class="right-content-kaf007"
+					<!--A8_2 ~--> 
+						<label class="valign-center link-label-kaf007">#{i18n.getText('KAF007_14')}</label>
+						<input id="inpEndTime2" class="right-content-kaf007 inputTime-kaf007"
 							data-bind="ntsTimeWithDayEditor: {name: '勤務時間２直帰', 
 															constraint:'TimeWithDayAttr',
 															value: workChange().workTimeEnd2}" />
@@ -215,30 +211,34 @@
 			</div>		
 		</div>		
 		<!--A9 休憩時間--> 
-		<div class="valign-center control-group-kaf007">
+		<div class="valign-center control-group-kaf007" data-bind="if: false">
 			<div class="table">
 				<div class="cell valign-center">
 					<div class="lblTitle-kaf007" data-bind="ntsFormLabel: {required:false}">#{i18n.getText('KAF007_40')}</div>
 				</div>
-				<div class="cell valign-center row-width">
+				<div class="cell valign-center row-width-inputTime">
 					<!--A9_1 開始時刻--> 
 					<div>
-						<input class="row-cell-margin" id="breakTimeStart1"
+						<input class="row-cell-margin right-content-kaf007 inputTime-kaf007" id="breakTimeStart1"
 							data-bind="ntsTimeWithDayEditor: {name: '開始時刻',
 															constraint:'TimeWithDayAttr',
 															value: workChange().breakTimeStart1,
 															enable: $parent.editable}" />
-						<!--A9_2 ~--> 
-						<label class="valign-center link-label">#{i18n.getText('KAF007_14')}</label>
+						
 					</div>					
 				</div>
 				<!--A9_3 終了時刻-->
-				<div class="cell valign-center row-width">
-					<input class="row-cell-margin" id="breakTimeEnd1"
-						data-bind="ntsTimeWithDayEditor: {name: '終了時刻', 
+				<div class="cell valign-center row-width-inputTime">
+					<div class="row-cell-margin">
+						<!--A9_2 ~-->
+						<label class="valign-center link-label-kaf007">#{i18n.getText('KAF007_14')}</label>
+						<input class="right-content-kaf007 inputTime-kaf007"
+							id="breakTimeEnd1"
+							data-bind="ntsTimeWithDayEditor: {name: '終了時刻', 
 															constraint:'TimeWithDayAttr',
 															value: workChange().breakTimeEnd1,
 															enable: $parent.editable}" />
+					</div>
 				</div>
 			</div>		
 		</div>
@@ -260,7 +260,7 @@
 			</div>
 		</div>
 		<!--A11 定型理由（ラベル）--> 
-		<div class="valign-center control-group-kaf007" data-bind="if: $parent.typicalReasonDisplayFlg">
+		<div class="valign-center control-group-kaf007 overlay-reason-kaf007" data-bind="if: $parent.typicalReasonDisplayFlg">
 			<!--A11_1 定型理由--> 
 			<div class="lblTitle-kaf007" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF007_25')}</div>
 			<!--A12 申請理由（ラベル）--> 
@@ -289,15 +289,15 @@
 									                    	width: '450',
 									                    	textalign: 'left'
 									                   	},
-			                   						required : $parent.requiredReason(), 
+			                   						required : false, 
 			                   						name: '#[KAF007_29]',
 			                   						enable: $parent.editable}" />
 			</div>
 		</div>
 	</div>
 	<!--RIGHT CONTENT -->
-	<div class="right-contents-kaf007" data-bind="with: $parent.recordWorkInfo">
-		<div class="panel panel-gray-bg panel-kaf007 panel-frame">
+	<div class="right-contents-kaf007" data-bind="visible: application().prePostAtr() == 1">
+        <div class="panel panel-gray-bg panel-kaf007 panel-frame" data-bind="with: $parent.recordWorkInfo">
 			<!--A30_1 実績の内容(ラベル)--> 
 			<label>#{i18n.getText('KAF007_30')}</label> 
 			<br/>
@@ -352,7 +352,7 @@
 					<div class="cell valign-center">
 						<label data-bind="text : $parents[1].convertIntToTime(startTime1())"> </label>
 						<!--~-->
-						<label data-bind="visible: startTime1() >= 0" class="valign-center">#{i18n.getText('KAF007_14')}</label>
+						<label data-bind="visible: startTime1() > 0" class="valign-center">#{i18n.getText('KAF007_14')}</label>
 						<label data-bind="text : $parents[1].convertIntToTime(endTime1())"></label>
 					</div>
 				</div>
@@ -367,7 +367,7 @@
 					<div class="cell valign-center">
 						<label data-bind="text : $parents[1].convertIntToTime(startTime2())"> </label>
 						<!--~-->
-						<label data-bind="visible: startTime2() >= 0" class="valign-center">#{i18n.getText('KAF007_14')}</label>
+						<label data-bind="visible: startTime2() > 0" class="valign-center">#{i18n.getText('KAF007_14')}</label>
 						<label data-bind="text : $parents[1].convertIntToTime(endTime2())"></label>
 					</div>
 				</div>
@@ -382,7 +382,7 @@
 					<div class="cell valign-center">
 						<label data-bind="text : $parents[1].convertIntToTime(breakTimeStart())"> </label>
 						<!--~-->
-						<label data-bind="visible: breakTimeStart() >= 0" class="valign-center">#{i18n.getText('KAF007_14')}</label>
+						<label data-bind="visible: breakTimeStart() > 0" class="valign-center">#{i18n.getText('KAF007_14')}</label>
 						<label data-bind="text : $parents[1].convertIntToTime(breakTimeEnd())"></label>
 					</div>
 				</div>

@@ -15,18 +15,18 @@
 			<com:scriptfile path="kmf001.j.start.js" />
 		</ui:define>
 
-		<ui:define name="sidebar">
-			<ul class="navigator" tabindex="1">
-				<li><a tabindex="-1" href="#tabpanel-1" role="tab-navigator" class="active"> #{i18n.getText('Com_Company')} </a></li>
-				<li><a tabindex="-1" href="#tabpanel-2" role="tab-navigator" data-bind="click: checkComManaged"> #{i18n.getText('Com_Employment')} </a></li>
-			</ul>
-		</ui:define>
+<!-- 		<ui:define name="sidebar"> -->
+<!-- 			<ul class="navigator" tabindex="1"> -->
+<!-- 				<li><a tabindex="-1" href="#tabpanel-1" role="tab-navigator" class="active"> #{i18n.getText('Com_Company')} </a></li> -->
+<!-- 				<li><a tabindex="-1" href="#tabpanel-2" role="tab-navigator" data-bind="click: checkComManaged"> #{i18n.getText('Com_Employment')} </a></li> -->
+<!-- 			</ul> -->
+<!-- 		</ui:define> -->
 
-		<ui:define name="sidebar-content">
-			<div id="tabpanel-1" role="tabpanel">
-				<div class="sidebar-content-header">
-					<span class="title">#{i18n.getText('Com_Company')}</span>
-<!-- 					<button tabindex="2" data-bind="click: back">#{i18n.getText('KMF001_27')}</button> -->
+		<ui:define name="content">
+<!-- 			<div id="tabpanel-1" role="tabpanel"> -->
+				<div id="functions-area" class="fix-on-top">
+<!-- 				<div class="sidebar-content-header"> -->
+<!-- 					<span class="title">#{i18n.getText('Com_Company')}</span> -->
 					<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmf/001/a/index.xhtml' }" tabindex="2">#{i18n.getText('KMF001_27')}</a>
 					<button tabindex="3" class="proceed"
 						data-bind="click: saveComSetting">
@@ -41,7 +41,7 @@
 						<tr>
 							<td class="row_head"><div
 									data-bind="ntsFormLabel: { required: true }">
-									#{i18n.getText('KMF001_96')}</div></td>
+									#{i18n.getText('KMF001_97')}</div></td>
 							<td class="row_head">
 								<!-- ＃KMF001_93 enum  管理区分 -->
 								<div id="company_manage" class="btn-switch"
@@ -58,7 +58,7 @@
 								<table class="form-default">
 									<tr class="">
 										<td><div data-bind="ntsFormLabel: {}">
-												#{i18n.getText('KMF001_97')}</div></td>
+												#{i18n.getText('KMF001_96')}</div></td>
 										<td>
 											<!--罫線 -->
 											<div class="set-row">
@@ -95,6 +95,7 @@
 																			optionsValue: 'value',
 																			value: sixtyHourExtra,
 																			optionsText: 'localizedName',
+																			visibleItemsCount: 15,
 																			editable: false,
 																			enable: $parent.isComManaged,
 																			columns: [
@@ -110,96 +111,6 @@
 						</tr>
 					</table>
 				</div>
-			</div>
-			<div id="tabpanel-2" role="tabpanel">
-				<div class="sidebar-content-header">
-					<span class="title">#{i18n.getText('Com_Employment')}</span>
-<!-- 					<button data-bind="click: back"> -->
-<!-- 						#{i18n.getText('KMF001_27')}</button> -->
-					<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmf/001/a/index.xhtml' }">#{i18n.getText('KMF001_27')}</a>
-					<button class="proceed" data-bind="click: saveEmpSetting, enable: saveDisable">
-						#{i18n.getText('KMF001_28')}</button>
-
-					<!-- <span class="title" style="float: right; font-size: 15px;">
-						#{i18n.getText('KMF001_29')} </span> -->
-				</div>
-				<div class="contents-area">
-					<table>
-						<tr>
-							<td>
-								<div tabindex="1" id="left-content"></div>	
-							</td>
-
-							<td id="right-content">
-								<table class="form-default" data-bind="with: empSettingModel" style="margin-left: 87px;">
-								<tr>
-										<td colspan="3" > <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF001_97')}</div></td>
-										<td>
-											<div id="employment-manage" tabindex="2" class="btn-switch"
-												data-bind="ntsSwitchButton: {
-																options: $parent.manageDistinctEnums,
-																optionsValue: 'value',
-																optionsText: 'localizedName',
-																enable: $parent.hasEmp,
-																value: isManage}"></div>
-										</td>
-									</tr>
-									<tr>
-										<td colspan="4">
-											<div style="margin-top: -17px;">
-												<hr />
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td style="padding-left: 40px;"><div data-bind="ntsFormLabel: {}">
-												#{i18n.getText('KMF001_96')}</div></td>
-									</tr>
-									<tr>
-										<td colspan="4" style="padding-left: 40px;">
-											<div style="margin-top: -17px;">
-												<hr />
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td colspan="3" style="padding-left: 90px;">#{i18n.getText('KMF001_102')}</td>
-										<td>
-											<div style="margin-left: 5px;" tabindex="3"
-												data-bind="ntsComboBox: {
-																			options: $parent.timeDigestiveUnitEnums,
-																			optionsValue: 'value',
-																			value: digestiveUnit,
-																			optionsText: 'localizedName',
-																			editable: false,
-																			enable: $parent.isEmpManaged,
-																			columns: [
-																				{ prop: 'localizedName', length: 10 }
-																			]}"></div>
-										</td>
-									</tr>
-									<tr>
-										<td colspan="3" style="padding-left: 90px;">#{i18n.getText('KMF001_98')}</td>
-										<td>
-											<div style="margin-left: 5px;" tabindex="4"
-												data-bind="ntsComboBox: {
-																			options: $parent.sixtyHourExtraEnums,
-																			optionsValue: 'value',
-																			value: sixtyHourExtra,
-																			optionsText: 'localizedName',
-																			editable: false,
-																			enable: $parent.isEmpManaged,
-																			columns: [
-																				{ prop: 'localizedName', length: 10 }
-																			]}"></div>
-										</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-					</table>
-				</div>
-			</div>
 		</ui:define>
 	</ui:composition>
 </body>

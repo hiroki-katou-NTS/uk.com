@@ -174,4 +174,17 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
         }
         return result;
 	}
+     
+	private final String SELECT_BY_CID_ROLLSETCD_AUTHOR = "SELECT rs FROM SacmtRoleSet rs"
+            + " WHERE rs.roleSetPK.companyId = :companyId"
+            + " AND rs.roleSetPK.roleSetCd = :roleSetCd "
+            + " AND rs.approvalAuthority = :approvalAuthority";
+	@Override
+	public Optional<RoleSet> findByCidRollSetCDAuthor(String companyId, String roleSetCd, int approvalAuthority) {
+		return this.queryProxy().query(SELECT_BY_CID_ROLLSETCD_AUTHOR ,SacmtRoleSet.class)
+				.setParameter("companyId", companyId)
+				.setParameter("roleSetCd", roleSetCd)
+				.setParameter("approvalAuthority", approvalAuthority)
+				.getSingle( c -> toDomain(c));
+	}
 }

@@ -23,7 +23,7 @@ public class JpaWithdrawalAppSetRepository extends JpaRepository implements With
 		WithdrawalAppSet domain = WithdrawalAppSet.createFromJavaType(entity.companyId, entity.prePerflex, 
 				entity.breakTime, entity.workTime, entity.checkHdTime, entity.typePaidLeave, entity.workChange, 
 				entity.timeInit, entity.checkOut, entity.prefixLeave, entity.unitTime, entity.appSimul, 
-				entity.bounSeg, entity.directDivi, entity.restTime);
+				entity.bounSeg, entity.directDivi, entity.restTime, entity.overrideSet, entity.calStampMiss);
 		return domain;
 	}
 	/**

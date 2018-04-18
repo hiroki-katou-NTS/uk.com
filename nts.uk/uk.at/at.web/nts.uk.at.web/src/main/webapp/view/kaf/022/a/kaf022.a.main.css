@@ -1,6 +1,6 @@
 /* Override Base */
 .ui-widget.ui-tabs.vertical>.ui-tabs-panel {
-	overflow: visible !important;
+	overflow: hidden !important;
 	width: auto;
 }
 
@@ -240,7 +240,6 @@ textarea {
 
 .contents-area-kaf022 {
 	height: 620px;
-	overflow-y: scroll;
 }
 
 #tab-1, #tab-2, #tab-3, #tab-4, #tab-5, #tab-6, #tab-7, #tab-8, #tab-9,

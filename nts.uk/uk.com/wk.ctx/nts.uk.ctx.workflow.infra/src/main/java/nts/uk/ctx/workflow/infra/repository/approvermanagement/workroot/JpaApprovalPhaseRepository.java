@@ -31,6 +31,12 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 	private static final String DELETE_APHASE_BY_BRANCHID = "DELETE from WwfmtApprovalPhase c "
 			+ " WHERE c.wwfmtApprovalPhasePK.companyId = :companyId"
 			+ " AND c.wwfmtApprovalPhasePK.branchId = :branchId";
+	private final String SELECT_FIRST_APPHASE = SELECT_FROM_APPHASE
+			+ " AND c.displayOrder = 1";
+	private static final String DELETE_FIRST_APPHASE = "DELETE from WwfmtApprovalPhase c "
+			+ " WHERE c.wwfmtApprovalPhasePK.companyId = :companyId"
+			+ " AND c.wwfmtApprovalPhasePK.branchId = :branchId"
+			+ " AND c.displayOrder = 1";
 
 	/**
 	 * get All Approval Phase by Code
@@ -186,4 +192,20 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 		entity.displayOrder = domain.getOrderNumber();
 		return entity;
 	}
+
+	@Override
+	public Optional<ApprovalPhase> getApprovalFirstPhase(String companyId, String branchId) {
+		return this.queryProxy().query(SELECT_FIRST_APPHASE,WwfmtApprovalPhase.class)
+				.setParameter("companyId", companyId)
+				.setParameter("branchId", branchId)
+				.getSingle(c->toDomainApPhase(c));
+	}
+
+	@Override
+	public void deleteApprovalFirstPhase(String companyId, String branchId) {
+		this.getEntityManager().createQuery(DELETE_FIRST_APPHASE)
+		.setParameter("companyId", companyId)
+		.setParameter("branchId", branchId)
+		.executeUpdate();
+	}	
 }

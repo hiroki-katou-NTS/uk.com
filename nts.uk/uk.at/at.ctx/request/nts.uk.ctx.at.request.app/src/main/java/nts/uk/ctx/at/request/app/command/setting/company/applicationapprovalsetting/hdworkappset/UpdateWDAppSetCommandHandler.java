@@ -31,7 +31,7 @@ public class UpdateWDAppSetCommandHandler extends CommandHandler<WithdrawalAppSe
 				0, data.getBreakTime(), data.getWorkTime(), data.getCheckHdTime(), 
 				data.getTypePaidLeave(), data.getWorkChange(), data.getTimeInit(), data.getCheckOut(), 
 				data.getPrefixLeave(), 0, 0, data.getBounSeg(), 
-				data.getDirectDivi(), data.getRestTime());
+				data.getDirectDivi(), data.getRestTime(), 0, 0);
 		if(with.isPresent()){
 			withRep.update(withDraw);
 			return;

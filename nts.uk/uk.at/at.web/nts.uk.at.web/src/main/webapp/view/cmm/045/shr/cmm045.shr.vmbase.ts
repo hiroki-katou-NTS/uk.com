@@ -78,13 +78,14 @@ module cmm045.shr {
             checkAtr: boolean;
             version: number;
             checkTimecolor: number;
+            appIdSub: string;
+            appStatusNo: number;
             constructor(appId: string,appType: number,  details: string, applicant: string,
                 appName: string, appAtr: string, appDate: string, appContent: string,
-                inputDate: string, appStatus: string, displayAppStatus: string,
-                checkAtr: boolean, version: number, checkTimecolor: number){
+                inputDate: string, appStatus: string, displayAppStatus: string, checkAtr: boolean,
+                version: number, checkTimecolor: number, appIdSub: string, appStatusNo: number){
                 this.appId = appId;
                 this.appType = appType;
-//                this.check = appType == 0 ? true : false;
                 this.check = false;
                 this.details = details;
                 this.applicant = applicant;
@@ -98,6 +99,8 @@ module cmm045.shr {
                 this.checkAtr = checkAtr;
                 this.version = version;
                 this.checkTimecolor = checkTimecolor;
+                this.appIdSub = appIdSub;
+                this.appStatusNo = appStatusNo;
             }
         }  
         
@@ -433,9 +436,9 @@ module cmm045.shr {
             startTime2: string;
             //勤務終了時刻2
             endTime2: string;
-            lstFrame: any;
+            lstFrame: Array<OverTimeFrame>;
             constructor(appId: string, workTypeName: string, workTimeName: string, startTime1: string,
-                endTime1: string, startTime2: string, endTime2: string, lstFrame: any){
+                endTime1: string, startTime2: string, endTime2: string, lstFrame: Array<OverTimeFrame>){
                 this.appId = appId;
                 this.workTypeName = workTypeName;
                 this.workTimeName = workTimeName;
@@ -489,6 +492,41 @@ module cmm045.shr {
                 this.mournerFlag = mournerFlag;    
             }
         }
+        export class AppCompltLeaveFull {
+            /**申請ID*/
+            appID: string;
+            /**勤務種類Name*/
+            workTypeName: string;
+            /**勤務時間1.開始時刻*/
+            startTime: string;
+            /**勤務時間1.終了時刻*/
+            endTime: string;
+            constructor(appID: string, workTypeName: string, startTime: string, endTime: string){
+                this.appID = appID;
+                this.workTypeName = workTypeName;
+                this.startTime = startTime;
+                this.endTime = endTime;
+            }
+        }
+        export class AppCompltLeaveSync {
+            //0 - abs
+            //1 - rec
+            typeApp: number;
+            sync: boolean;
+            appMain: AppCompltLeaveFull;
+            appSub: AppCompltLeaveFull;
+            appDateSub: string;
+            appInputSub: string;
+            constructor(typeApp: number, sync: boolean, appMain: AppCompltLeaveFull,
+                appSub: AppCompltLeaveFull, appDateSub: string, appInputSub: string){
+                this.typeApp = typeApp;
+                this.sync = sync;
+                this.appMain = appMain;
+                this.appSub = appSub;
+                this.appDateSub = appDateSub;
+                this.appInputSub = appInputSub;
+            }
+        }
         export class HdAppSet{
             // 代表者名 - 1
             obstacleName: string;
@@ -506,6 +544,17 @@ module cmm045.shr {
             specialVaca: string;
             // 積立年休名称  - 4
             yearResig: string;
+            constructor(obstacleName: string, hdName: string, yearHdName: string, furikyuName: string,
+                timeDigest: string, absenteeism: string, specialVaca: string, yearResig: string){
+                this.obstacleName = obstacleName == null ? '' : obstacleName;
+                this.hdName = hdName == null ? '' : hdName;
+                this.yearHdName = yearHdName == null ? '' : yearHdName;
+                this.furikyuName = furikyuName == null ? '' : furikyuName;
+                this.timeDigest = timeDigest == null ? '' : timeDigest;
+                this.absenteeism = absenteeism == null ? '' : absenteeism;
+                this.specialVaca = specialVaca == null ? '' : specialVaca;
+                this.yearResig = yearResig == null ? '' : yearResig;
+            }
         }
         export class CellState {
             rowId: number;
@@ -526,7 +575,7 @@ module cmm045.shr {
                 this.columnKey = columnKey;
                 this.color = color;
             } 
-        }      
+        }
         export class ProcessHandler {
             /**
              * sort by appType and appDate
@@ -534,6 +583,7 @@ module cmm045.shr {
             static orderByList(lstData: Array<DataModeApp>): Array<DataModeApp>{
                 let result: Array<DataModeApp> = [];
                 let lstA0: Array<DataModeApp> = [];
+                let lstA1: Array<DataModeApp> = [];
                 let lstA2: Array<DataModeApp> = [];
                 let lstA4: Array<DataModeApp> = [];
                 let lstA6: Array<DataModeApp> = [];
@@ -550,13 +600,21 @@ module cmm045.shr {
                     if(obj.appType == 6){//holiday work
                         lstA6.push(obj);
                     }
+                    if(obj.appType == 1){//absence
+                        lstA1.push(obj);
+                    }
                 });
                 let sortByA0 =  _.orderBy(lstA0, ["appDate"], ["asc"]);
+                let sortByA1 =  _.orderBy(lstA1, ["appDate"], ["asc"]);
                 let sortByA2 =  _.orderBy(lstA2, ["appDate"], ["asc"]);
                 let sortByA4 =  _.orderBy(lstA4, ["appDate"], ["asc"]);
                 let sortByA6 =  _.orderBy(lstA6, ["appDate"], ["asc"]);
                 //push list A0 (残業申請)
                 _.each(sortByA0, function(obj){
+                    result.push(obj);
+                });
+                //push list A1 (休暇申請)
+                _.each(sortByA1, function(obj){
                     result.push(obj);
                 });
                 //push list A2 (勤務変更申請)

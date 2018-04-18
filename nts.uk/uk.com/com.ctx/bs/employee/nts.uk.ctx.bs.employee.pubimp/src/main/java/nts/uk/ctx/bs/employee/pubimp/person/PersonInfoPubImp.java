@@ -1,5 +1,8 @@
 package nts.uk.ctx.bs.employee.pubimp.person;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -80,6 +83,28 @@ public class PersonInfoPubImp implements IPersonInfoPub {
 
 			}
 		}
+	} 
+
+	@Override
+	public List<PersonInfoExport> listPersonInfor(List<String> listSID) {
+		List<PersonInfoExport> listEmployee = new ArrayList<>();
+		List<EmployeeDataMngInfo> data = empDataMngRepo.findByListEmployeeId(listSID);
+		if (data.isEmpty()) {
+			return Collections.emptyList();
+		}
+		for (EmployeeDataMngInfo employee : data) {
+			PersonInfoExport perResult = null;
+
+			EmployeeDataMngInfo empData = employee;
+			perResult = new PersonInfoExport();
+
+			setEmployeeInfo(empData, perResult);
+
+			setPersonInfo(empData.getPersonId(), perResult);
+			listEmployee.add(perResult);
+
+		}
+		return listEmployee;
 	}
 
 }

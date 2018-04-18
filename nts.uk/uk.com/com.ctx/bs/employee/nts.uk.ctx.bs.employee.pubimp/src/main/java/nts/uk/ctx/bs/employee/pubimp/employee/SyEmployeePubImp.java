@@ -339,7 +339,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			return null;
 		}
 
-		List<AffWorkplaceHistoryItem> result = this.affWkpItemRepo.getAffWrkplaHistItemByListEmpIdAndDate(baseDate,
+		List<AffWorkplaceHistoryItem> result = this.affWkpItemRepo.getAffWrkplaHistItemByListWkpIdAndDate(baseDate,
 				lstWkpId);
 
 		if (result.isEmpty()) {

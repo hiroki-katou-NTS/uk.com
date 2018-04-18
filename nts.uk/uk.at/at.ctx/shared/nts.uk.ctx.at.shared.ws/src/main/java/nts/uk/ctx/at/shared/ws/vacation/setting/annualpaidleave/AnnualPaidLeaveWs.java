@@ -17,11 +17,14 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.command.vacation.setting.annualpaidleave.AnnualPaidLeaveSaveCommand;
 import nts.uk.ctx.at.shared.app.command.vacation.setting.annualpaidleave.AnnualPaidLeaveSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.annualpaidleave.AnnualPaidLeaveFinder;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.annualpaidleave.CheckAnnualKMF003Finder;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.annualpaidleave.dto.AnnualPaidLeaveSettingFindDto;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.annualpaidleave.dto.CheckAnnualKMF003Dto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplayDivision;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RoundProcessingClassification;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxDayReference;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPriority;
 
@@ -35,6 +38,9 @@ public class AnnualPaidLeaveWs extends WebService {
     /** The annual finder. */
     @Inject
     private AnnualPaidLeaveFinder annualFinder;
+    
+    @Inject
+    private CheckAnnualKMF003Finder checkKmf003Finder;
 
     /** The annual paid handler. */
     @Inject
@@ -49,17 +55,6 @@ public class AnnualPaidLeaveWs extends WebService {
     @Path("find/managedistinct")
     public List<EnumConstant> findManageDistinct() {
         return EnumAdaptor.convertToValueNameList(ManageDistinct.class);
-    }
-    
-    /**
-     * Find apply permission.
-     *
-     * @return the list
-     */
-    @POST
-    @Path("find/applypermission")
-    public List<EnumConstant> findApplyPermission() {
-        return EnumAdaptor.convertToValueNameList(ApplyPermission.class);
     }
     
     /**
@@ -106,6 +101,19 @@ public class AnnualPaidLeaveWs extends WebService {
         return EnumAdaptor.convertToValueNameList(MaxDayReference.class);
     }
     
+    
+    @POST
+    @Path("find/roundProcessCla")
+    public List<EnumConstant> findRoundProcessClassification() {
+        return EnumAdaptor.convertToValueNameList(RoundProcessingClassification.class);
+    }
+    
+    @POST
+    @Path("find/roundProcessClassific")
+    public List<EnumConstant> findRoundProcessClassific() {
+        return EnumAdaptor.convertToValueNameList(TimeAnnualRoundProcesCla.class);
+    }
+    
     /**
      * Save.
      *
@@ -126,5 +134,16 @@ public class AnnualPaidLeaveWs extends WebService {
     @Path("find/setting")
     public AnnualPaidLeaveSettingFindDto findByCompanyId() {
         return this.annualFinder.findByCompanyId();
+    }
+    
+    /**
+     * Find by company id.
+     * @return the annual paid leave setting find dto
+     * @author yennth
+     */
+    @POST
+    @Path("find/checkkmf003")
+    public CheckAnnualKMF003Dto findByCompany() {
+        return this.checkKmf003Finder.findByCom();
     }
 }

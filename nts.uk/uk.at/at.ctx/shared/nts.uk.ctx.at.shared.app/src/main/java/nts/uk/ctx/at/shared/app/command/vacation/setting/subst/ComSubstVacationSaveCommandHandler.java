@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
@@ -17,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSettingDomainEvent;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -76,6 +78,16 @@ public class ComSubstVacationSaveCommandHandler
 		} else {
 			// Insert into db
 			this.repository.insert(comSubstVacation);
+		}
+		
+		//get isManageByTime from DB
+		int isManageDB = optComSubstVacation.isPresent() ? optComSubstVacation.get().getSetting().getIsManage().value : -1;
+		//check managementCategory change
+		boolean isManage = command.getIsManage() != isManageDB;
+		if (isManage) {
+			boolean manage = command.getIsManage() == ManageDistinct.YES.value;
+			val substVacationSettingEvent = new SubstVacationSettingDomainEvent(manage);
+			substVacationSettingEvent.toBePublished();
 		}
 	}
 }

@@ -30,6 +30,8 @@ import nts.uk.ctx.pereg.app.find.person.info.item.SingleItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
 import nts.uk.ctx.pereg.app.find.processor.PeregProcessor;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
+import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
@@ -75,6 +77,9 @@ public class RegisterLayoutFinder {
 	@Inject
 	private PeregProcessor processor;
 	
+	@Inject 
+	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
+	
 	private final String END_DATE_NAME = "終了日";
 
 	// sonnlb end
@@ -117,6 +122,7 @@ public class RegisterLayoutFinder {
 		}
 		setData(items, itemCls, command);
 		
+		// check and set 9999/12/31 to endDate
 		itemCls.forEach(classItem -> {
 			if (classItem.getCtgType() == CategoryType.CONTINUOUSHISTORY.value && classItem.getItems().size() == 3) {
 				LayoutPersonInfoValueDto theThirdItem = (LayoutPersonInfoValueDto) classItem.getItems().get(2);
@@ -125,6 +131,19 @@ public class RegisterLayoutFinder {
 				}
 			}
 		});
+
+		// check and set employeeName to businessName
+		Optional<LayoutPersonInfoClsDto> businessNameOpt = itemCls.stream().filter(classItem -> {
+			LayoutPersonInfoValueDto item = (LayoutPersonInfoValueDto) classItem.getItems().get(0);
+			return item.getItemCode().equals("IS00009");
+		}).findFirst();
+		if ( businessNameOpt.isPresent()) {
+			LayoutPersonInfoClsDto businessName = businessNameOpt.get();
+			LayoutPersonInfoValueDto item = (LayoutPersonInfoValueDto) businessName.getItems().get(0);
+			if ( item.getValue() == null ) {
+				item.setValue(command.getEmployeeName());
+			}
+		}
 
 		return itemCls;
 	}
@@ -197,20 +216,33 @@ public class RegisterLayoutFinder {
 		item.setRequired(itemDef.getIsRequired() == 1);
 		item.setType(itemDef.getItemTypeState().getItemType());
 		item.setItemParentCode(itemDef.getItemParentCode());
+		
+		// Get contactCD
+		String contactCD = AppContexts.user().contractCode();
+		// Get Command
+		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategory(itemDef.getPerInfoCtgId(),contactCD);
+		
+		if (!perInfoCategory.isPresent()){
+			throw new RuntimeException("invalid PersonInfoCategory");
+		}
+				
 		if (itemDef.getItemTypeState().getItemType() != 1) {
 			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
 			item.setItem(sigleItem.getDataTypeState());
 			int dataTypeValue = item.getItem().getDataTypeValue();
-			if (dataTypeValue >= DataTypeValue.SELECTION.value) {
+			
+			if (dataTypeValue == DataTypeValue.SELECTION.value || dataTypeValue == DataTypeValue.SELECTION_BUTTON.value
+					|| dataTypeValue == DataTypeValue.SELECTION_RADIO.value) {
 
 				SelectionItemDto selectionItemDto = null;
 
 				List<ComboBoxObject> comboValues;
 
 				selectionItemDto = (SelectionItemDto) item.getItem();
-
+				boolean isDataType6 = dataTypeValue == DataTypeValue.SELECTION.value;
+				
 				comboValues = cbbfact.getComboBox(selectionItemDto, AppContexts.user().employeeId(),
-						command.getHireDate(), item.isRequired());
+						command.getHireDate(), item.isRequired(), perInfoCategory.get().getPersonEmployeeType(), isDataType6);
 
 				item.setLstComboBoxValue(comboValues);
 				PerInfoItemDefForLayoutDto dto = new PerInfoItemDefForLayoutDto();
@@ -220,7 +252,6 @@ public class RegisterLayoutFinder {
 					Object value =  processor.getValue(dto);
 					item.setValue(value);
 				}
-
 			}
 		}
 		item.setActionRole(EnumAdaptor.valueOf(state, ActionRole.class));
@@ -228,6 +259,7 @@ public class RegisterLayoutFinder {
 			item.setValue(setItem.getSaveData().getValue());
 		}
 		item.setCategoryCode(itemCls.getPersonInfoCategoryCD());
+		item.setResourceId(itemDef.getResourceId());
 		return item;
 
 	}

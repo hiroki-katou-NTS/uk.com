@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -65,7 +64,7 @@ public class WithinStatutoryTimeDailyPerformDto {
 				toAttendanceTime(workTimeIncludeVacationTime), 
 				toAttendanceTime(withinPrescribedPremiumTime),
 				withinStatutoryMidNightTime == null ? null 
-						: new WithinStatutoryMidNightTime(withinStatutoryMidNightTime.createTimeWithCalc()),
+						: new WithinStatutoryMidNightTime(withinStatutoryMidNightTime.createTimeDivWithCalc()),
 				toAttendanceTime(vacationAddTime));
 	}
 	

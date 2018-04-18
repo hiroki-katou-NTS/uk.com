@@ -16,7 +16,15 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
@@ -47,14 +55,18 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	@Inject
 	private WorkTimeWorkplaceRepository workTimeWorkplaceRepo;
 	
-		@Inject
-		private ClosureRepository closureRepository;
+	@Inject
+	private ClosureRepository closureRepository;
 	
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
 	
 	@Inject
 	private ClosureService closureService;
+	@Inject
+	private AbsenceLeaveAppRepository absRepo;
+	@Inject
+	private CompltLeaveSimMngRepository compLeaveRepo;
 	
 	public PeriodCurrentMonth employeePeriodCurrentMonthCalculate(String companyID, String employeeID, GeneralDate date){
 		/*
@@ -162,5 +174,40 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			outputInitValueAtr = InitValueAtr.NOCHOOSE;
 		}
 		return outputInitValueAtr;
+	}
+	/**
+	 * 9.同時申請された振休振出申請を取得する
+	 * @author hoatt
+	 * @param companyId
+	 * @param appId
+	 * @return
+	 */
+	@Override
+	public AppCompltLeaveSyncOutput getAppComplementLeaveSync(String companyId, String appId) {
+		// TODO Auto-generated method stub
+		Optional<AbsenceLeaveApp> abs = absRepo.findByAppId(appId);
+		Optional<CompltLeaveSimMng> sync = null;
+		String absId = "";
+		String recId = "";
+		boolean synced = false;
+		int type = 0;
+		if(abs.isPresent()){//don xin nghi
+			absId = appId;
+			//tim lien ket theo abs
+			sync = compLeaveRepo.findByAbsID(appId);
+			if(sync.isPresent() && sync.get().getSyncing().equals(SyncState.SYNCHRONIZING)){
+				recId = sync.get().getRecAppID();
+				synced = true;
+			}
+		}else{//don lam bu
+			type = 1;
+			recId = appId;
+			sync = compLeaveRepo.findByRecID(appId);
+			if(sync.isPresent() && sync.get().getSyncing().equals(SyncState.SYNCHRONIZING)){
+				absId = sync.get().getAbsenceLeaveAppID();
+				synced = true;
+			}
+		}
+		return new AppCompltLeaveSyncOutput(absId, recId, synced, type);
 	}
 }

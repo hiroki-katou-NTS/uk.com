@@ -48,7 +48,6 @@ public class AnnualPaidLeaveFinder {
         dto.setAnnualManage(setting.getYearManageType().value);
         
         // AcquisitionSetting
-        dto.setPermitType(setting.getAcquisitionSetting().permitType.value);
         dto.setAnnualPriority(setting.getAcquisitionSetting().annualPriority.value);
         
         // Manage Annual
@@ -61,6 +60,8 @@ public class AnnualPaidLeaveFinder {
         dto.setNumberYearRetain(setting.getManageAnnualSetting().getRemainingNumberSetting().retentionYear.v());
         dto.setRemainingNumberDisplay(setting.getManageAnnualSetting().getDisplaySetting().remainingNumberDisplay.value);
         dto.setNextGrantDayDisplay(setting.getManageAnnualSetting().getDisplaySetting().nextGrantDayDisplay.value);
+        dto.setYearlyOfDays(setting.getManageAnnualSetting().getYearlyOfNumberDays().v());        
+        dto.setRoundProcessCla(setting.getManageAnnualSetting().getHalfDayManage().roundProcesCla.value);
         
         // Time Manage
         dto.setTimeManageType(setting.getTimeSetting().getTimeManageType().value);
@@ -68,7 +69,7 @@ public class AnnualPaidLeaveFinder {
         dto.setManageMaxDayVacation(setting.getTimeSetting().getMaxYearDayLeave().manageType.value);
         dto.setReference(setting.getTimeSetting().getMaxYearDayLeave().reference.value);
         dto.setMaxTimeDay(setting.getTimeSetting().getMaxYearDayLeave().maxNumberUniformCompany.v());
-        dto.setIsEnoughTimeOneDay(setting.getTimeSetting().isEnoughTimeOneDay());
+        dto.setRoundProcessClassific(setting.getTimeSetting().getRoundProcessClassific().value);
         
         return dto;
     }

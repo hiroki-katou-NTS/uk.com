@@ -9,6 +9,8 @@
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternName
+				nts.uk.shr.com.time.TimeWithDayAttr
+				nts.uk.ctx.at.request.dom.application.holidayworktime.primitivevalue.HolidayAppPrimitiveTime
 			</com:ValidatorScript>
 
 			<!-- COMPONENT CCG001 -->
@@ -395,8 +397,8 @@
 								<button tabindex="-1" id="nextMonth" class="size-image-button1"
 									data-bind="click: nextMonth"></button>
 
-								<!-- <label class="ml-3">#{i18n.getText('KSU001_38')}:</label>
-								<div tabindex="-1" class="cf"
+								<label class="ml-3">#{i18n.getText('KSU001_38')}:</label>
+								<!-- <div tabindex="-1" class="cf"
 									data-bind="ntsSwitchButton: {
 										options: timePeriod,
 										optionsValue: 'code',
@@ -411,8 +413,8 @@
 										optionsText: 'name',
 										value: selectedModeDisplay}">
 								</div>
-								<!-- <label class="ml-3">#{i18n.getText('KSU001_46')}:</label>
-								<div tabindex="-1" class="cf"
+								<label class="ml-3">#{i18n.getText('KSU001_46')}:</label>
+								<!-- <div tabindex="-1" class="cf"
 									data-bind="ntsSwitchButton: {
 										options: modeDisplayObject,
 										optionsValue: 'code',

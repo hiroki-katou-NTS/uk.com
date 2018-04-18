@@ -25,6 +25,7 @@ import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemChangeDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFullEnumDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.SimpleItemDef;
 
 @Path("ctx/pereg/person/info/ctgItem")
 @Produces("application/json")
@@ -96,7 +97,6 @@ public class PernfoItemDefWebservice extends WebService {
 		return itemDefFinder.getPerInfoItemDefByIdForLayout(Id);
 	}
 
-
 	@POST
 	@Path("layout/findby/listItemId")
 	public List<PerInfoItemDefDto> getPerInfoItemDefByListIdForLayout(List<String> listItemDefId) {
@@ -104,7 +104,7 @@ public class PernfoItemDefWebservice extends WebService {
 	}
 
 	// to anh Vuong
-	//test hieu nang Layout
+	// test hieu nang Layout
 	@POST
 	@Path("layout/findby/listItemIdv2")
 	public List<PerInfoItemDefDto> getPerInfoItemDefByListIdForLayoutV2(List<String> listItemDefId) {
@@ -159,15 +159,29 @@ public class PernfoItemDefWebservice extends WebService {
 
 	@POST
 	@Path("layout/findAll/required")
-	public List<ItemRequiredBackGroud> getAllRequiredIds() {
-		return itemDefFinder.getAllRequiredIds();
+	public List<ItemRequiredBackGroud> getAllRequiredIdsByCid() {
+		return itemDefFinder.getAllRequiredIdsByCompanyID();
 	}
-	
+
+	@POST
+	@Path("layout/findAll/required/{ctgId}")
+	public List<ItemRequiredBackGroud> getAllRequiredIdsByCtgId(@PathParam("ctgId") String ctgId) {
+		return itemDefFinder.getAllItemRequiredIdsByCtgId(ctgId);
+	}
+
 	@POST
 	@Path("check/itemData/{itemId}")
 	public boolean checkItemData(@PathParam("itemId") String itemId) {
 		return this.itemDefFinder.isCheckData(itemId);
 	}
-	
+
 	// lanlt end
+	
+	@POST
+	@Path("findby/ctg-cd/{ctgcd}")
+	public List<SimpleItemDef> getSimpleItemDefsByCtgCd(@PathParam("ctgcd") String ctgCd) {
+		return itemDefFinder.getSingpleItemDef(ctgCd);
+	}
+	
+	
 }

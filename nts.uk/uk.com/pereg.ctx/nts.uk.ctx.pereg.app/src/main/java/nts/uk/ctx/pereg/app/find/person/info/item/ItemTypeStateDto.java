@@ -13,6 +13,10 @@ public class ItemTypeStateDto {
 		return SetItemDto.createFromJavaType(items);
 	};
 
+	public static ItemTypeStateDto createSetTableItemDto(List<String> items) {
+		return SetTableItemDto.createFromJavaType(items);
+	};
+	
 	public static ItemTypeStateDto createSingleItemDto(DataTypeStateDto dataTypeState) {
 		return SingleItemDto.createFromJavaType(dataTypeState);
 	};

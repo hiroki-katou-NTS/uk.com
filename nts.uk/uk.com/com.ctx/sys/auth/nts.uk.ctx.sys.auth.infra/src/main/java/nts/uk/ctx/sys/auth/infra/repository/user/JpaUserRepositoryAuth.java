@@ -14,6 +14,7 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.auth.dom.user.SearchUser;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
+import nts.uk.ctx.sys.auth.infra.entity.grant.roleindividualgrant.SacmtRoleIndiviGrant;
 import nts.uk.ctx.sys.auth.infra.entity.user.SacmtUser;
 
 @Stateless
@@ -137,6 +138,14 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 				.setParameter("defUser", 1)
 				.setParameter("expirationDate", expirationDate).getSingle(c -> c.toDomain());
 	}
+
+	@Override
+	public void update(User user) {
+		SacmtUser entity = SacmtUser.toEntity(user);
+	    this.commandProxy().update(entity);
+	}
+
+	
 
 
 

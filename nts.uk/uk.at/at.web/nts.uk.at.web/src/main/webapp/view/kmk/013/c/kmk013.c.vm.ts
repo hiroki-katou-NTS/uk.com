@@ -231,7 +231,7 @@ module nts.uk.at.view.kmk013.c {
                     });
                 });
                 service.save(data).done(() => {
-                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     blockUI.clear();
                 }).fail((error) => {
                     console.log(error);

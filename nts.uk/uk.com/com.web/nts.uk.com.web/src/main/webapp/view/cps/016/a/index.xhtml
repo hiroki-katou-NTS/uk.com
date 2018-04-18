@@ -7,10 +7,10 @@
 <body>
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>
-				var dialogSize = { width: 1290, height: 800 };
+<!-- 			<script> 
+ 				var dialogSize = { width: 1290, height: 800 };
 				
-			</script>
+ 			</script> -->
 			<com:ValidatorScript>
 					nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionItemName
 					nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionCodeLength
@@ -34,7 +34,8 @@
 				<button id="A_BTN_REGISTER" class="proceed"
 					data-bind="click : addDataSelectioItem, enable: $root.errors.isEmpty"
 					tabindex="2">#{i18n.getText('CPS016_2')}</button>
-				<button id="A_BTN_COPPY" tabindex="3">マスタ修正ログ</button>
+				<button id="A_BTN_COPPY" 
+					data-bind="click: masterCorrLog, visible: isMaCoLog" tabindex="3">マスタ修正ログ</button>
 				<button id="A_BTN_DELETE" class="danger"
 					data-bind="click : removeDataSelectioItem, enable: checkCreate()==false &amp;&amp; $root.errors.isEmpty"
 					tabindex="4">#{i18n.getText('CPS016_3')}</button>

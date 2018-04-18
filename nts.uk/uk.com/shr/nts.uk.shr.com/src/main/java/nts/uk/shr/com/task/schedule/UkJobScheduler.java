@@ -7,7 +7,7 @@ import nts.arc.time.GeneralDateTime;
 
 public interface UkJobScheduler {
 
-	ScheduleInfo scheduleOnCurrentcompany(UkJobScheduleOptions options);
+	ScheduleInfo scheduleOnCurrentCompany(UkJobScheduleOptions options);
 	
 	void unscheduleOnCurrentCompany(Class<? extends ScheduledJob> jobClass, String scheduleId);
 	

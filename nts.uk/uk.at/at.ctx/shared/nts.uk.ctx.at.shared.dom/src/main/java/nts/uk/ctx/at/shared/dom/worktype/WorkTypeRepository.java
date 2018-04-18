@@ -15,10 +15,8 @@ public interface WorkTypeRepository {
 	/**
 	 * Gets the possible work type.
 	 *
-	 * @param companyId
-	 *            the company id
-	 * @param lstPossible
-	 *            the lst possible
+	 * @param companyId the company id
+	 * @param lstPossible the lst possible
 	 * @return the possible work type
 	 */
 	List<WorkType> getPossibleWorkType(String companyId, List<String> lstPossible);
@@ -26,36 +24,33 @@ public interface WorkTypeRepository {
 	/**
 	 * Find by company id.
 	 *
-	 * @param companyId
-	 *            the company id
+	 * @param companyId the company id
 	 * @return the list
 	 */
 	List<WorkType> findByCompanyId(String companyId);
 	
 	/**
-	 * 廃止されていない勤務種類をすべて取得する 
-	 * @author danpv
-	 * @param companyId
-	 * @return
+	 * Find by company id and leave absence.
+	 *
+	 * @param companyId the company id
+	 * @return the list
 	 */
 	List<WorkType> findByCompanyIdAndLeaveAbsence(String companyId);
 	
 	
 	/**
-	 *1日.休職
+	 * Find not deprecate by company id.
 	 *
-	 * @param companyId
-	 *            the company id
+	 * @param companyId the company id
 	 * @return the list
 	 */
 	
 	List<WorkType> findNotDeprecateByCompanyId(String companyId);
 	
 	/**
-	 *1日.休職
+	 * Find code and name of work type by company id.
 	 *
-	 * @param companyId
-	 *            the company id
+	 * @param companyId the company id
 	 * @return the list
 	 */
 	
@@ -64,8 +59,7 @@ public interface WorkTypeRepository {
 	/**
 	 * Find not deprecated.
 	 *
-	 * @param companyId
-	 *            the company id
+	 * @param companyId the company id
 	 * @return the list
 	 */
 	List<WorkType> findNotDeprecated(String companyId);
@@ -73,62 +67,43 @@ public interface WorkTypeRepository {
 	/**
 	 * Find not deprecated by list code.
 	 *
-	 * @param companyId
-	 *            the company id
-	 * @param codes
-	 *            the codes
+	 * @param companyId the company id
+	 * @param codes the codes
 	 * @return the list
 	 */
 	List<WorkType> findNotDeprecatedByListCode(String companyId, List<String> codes);
 	
 	/**
-	 * Find work type by.
-	 * allDayAtr, halfAtr = WorkTypeClassification
-	 * 勤務種類の分類:
-	 * 	0.出勤
-	 * 	1.休日
-	 * 	2.年休
-	 * 	3.積立年休
-	 * 	4.特別休暇
-	 * 	5.欠勤
-	 * 	6.代休
-	 * 	7.振出
-	 * 	8.振休
-	 * 	9.時間消化休暇
-	 * 	10.連続勤務
-	 * 	11.休日出勤
-	 * 	12.休職
-	 * 	13.休業 
-	 * abolishAtr = DeprecateClassification (0: 廃止しない, 1: 廃止する)   
+	 * Find work type.
+	 *
 	 * @param companyId the company id
-	 * @param abolishAtr deprecate (廃止区分)
-	 * @param allDayAtrs all day (勤務種類の分類 - 1日単位で勤務種類を登録する)
-	 * @param halfAtrs half day (勤務種類の分類 - 半日単位で勤務種類を登録する)
-	 * @return the list of Work Type
+	 * @param abolishAtr the abolish atr
+	 * @param allDayAtrs the all day atrs
+	 * @param halfAtrs the half atrs
+	 * @return the list
 	 */
 	List<WorkType> findWorkType(String companyId, int abolishAtr, List<Integer> allDayAtrs, List<Integer> halfAtrs);
 	
 	/**
-	 * Find by companyId and workTypeCd.
+	 * Find by PK.
 	 *
-	 * @param companyId
-	 *            the company id
-	 * @param workTypeCd
-	 *            the work type cd
-	 * @return WorkType
+	 * @param companyId the company id
+	 * @param workTypeCd the work type cd
+	 * @return the optional
 	 */
 	Optional<WorkType> findByPK(String companyId, String workTypeCd);
 	
 	/**
-	 * 
-	 * @param companyId
-	 * @param workTypeCd
-	 * @return
+	 * Find work type set.
+	 *
+	 * @param companyId the company id
+	 * @param workTypeCode the work type code
+	 * @return the list
 	 */
 	List<WorkTypeSet> findWorkTypeSet(String companyId, String workTypeCode);
 	
 	/**
-	 * Find work type set.
+	 * Find work type set close atr.
 	 *
 	 * @param companyId the company id
 	 * @param closeAtr the close atr
@@ -137,70 +112,162 @@ public interface WorkTypeRepository {
 	List<WorkTypeSet> findWorkTypeSetCloseAtr(String companyId, int closeAtr);
 	
 	/**
-	 * Insert workType to DB
-	 * 
-	 * @param workType
+	 * Adds the.
+	 *
+	 * @param workType the work type
 	 */
 	void add(WorkType workType);
 	
 	/**
-	 * Update workType to DB
-	 * 
-	 * @param workType
+	 * Update.
+	 *
+	 * @param workType the work type
 	 */
 	void update(WorkType workType);
 	
 	/**
-	 * Insert workTypeSet to DB
-	 * 
-	 * @param workTypeSet
+	 * Adds the work type set.
+	 *
+	 * @param workTypeSet the work type set
 	 */
 	void addWorkTypeSet(WorkTypeSet workTypeSet);
 	
 	/**
-	 * Delete workTypeSet to DB
-	 * 
-	 * @param workTypeSet
+	 * Removes the work type set.
+	 *
+	 * @param companyId the company id
+	 * @param workTypeCd the work type cd
 	 */
 	void removeWorkTypeSet(String companyId, String workTypeCd);
 	
 	/**
-	 * Delete workType to DB
-	 * 
-	 * @param workTypeCd
+	 * Removes the.
+	 *
+	 * @param companyId the company id
+	 * @param workTypeCd the work type cd
 	 */
 	void remove(String companyId, String workTypeCd);
+	
 	/**
-	 * @param companyId  会社ID
-	 * @param abolishAtr 勤務種類.廃止する
-	 * @param worktypeAtr １日の勤務
-	 * @return the list of Work Type
+	 * Find work one day.
+	 *
+	 * @param companyId the company id
+	 * @param abolishAtr the abolish atr
+	 * @param worktypeAtr the worktype atr
+	 * @return the list
 	 */
 	List<WorkType> findWorkOneDay(String companyId, int abolishAtr, int worktypeAtr);
 	
 	/**
-	 * Get acquired attendance work type
-	 * @return
+	 * Find work one day.
+	 *
+	 * @param companyId the company id
+	 * @param abolishAtr the abolish atr
+	 * @param worktypeAtr the worktype atr
+	 * @param oneDay the one day
+	 * @return the list
+	 */
+	List<WorkType> findWorkOneDay(String companyId, int abolishAtr, int worktypeAtr, int oneDay);
+	
+	/**
+	 * Gets the acquired attendance work types.
+	 *
+	 * @param companyId the company id
+	 * @return the acquired attendance work types
 	 */
 	List<WorkType> getAcquiredAttendanceWorkTypes(String companyId);
 	
 	/**
-	 * Get acquired holiday work type
-	 * @return
+	 * Gets the acquired holiday work types.
+	 *
+	 * @param companyId the company id
+	 * @return the acquired holiday work types
 	 */
 	List<WorkType> getAcquiredHolidayWorkTypes(String companyId);
 	
 	/**
-	 * Get acquired leave system work type
-	 * @return
+	 * Gets the acquired leave system work types.
+	 *
+	 * @param companyId the company id
+	 * @return the acquired leave system work types
 	 */
 	List<WorkType> getAcquiredLeaveSystemWorkTypes(String companyId);
 	
 	/**
-	 * Get data by Deprecated
-	 * @param companyId
-	 * @param workTypeCd
-	 * @return
+	 * Find by deprecated.
+	 *
+	 * @param companyId the company id
+	 * @param workTypeCd the work type cd
+	 * @return the optional
 	 */
 	Optional<WorkType> findByDeprecated(String companyId, String workTypeCd);
+
+	/**
+	 * Find work type for shorting.
+	 *
+	 * @param companyId the company id
+	 * @return the list
+	 */
+	List<WorkType> findWorkTypeForShorting(String companyId);
+
+	/**
+	 * Find work type for pause.
+	 *
+	 * @param companyId the company id
+	 * @return the list
+	 */
+	List<WorkType> findWorkTypeForPause(String companyId);
+	
+	/**
+	 * Find work type for app holiday app type.
+	 *
+	 * @param companyId the company id
+	 * @param allDayAtrs the all day atrs
+	 * @param mornings the mornings
+	 * @param afternoons the afternoons
+	 * @param morning the morning
+	 * @param afternoon the afternoon
+	 * @return the list
+	 */
+	List<WorkType> findWorkTypeForAppHolidayAppType(String companyId,List<Integer> allDayAtrs, List<Integer> mornings,List<Integer> afternoons,Integer morning,Integer afternoon);
+	
+	/**
+	 * Find work type for half day.
+	 *
+	 * @param companyId the company id
+	 * @param halfDay the half day
+	 * @param workTypeCodes the work type codes
+	 * @return the list
+	 */
+	List<WorkType> findWorkTypeForHalfDay(String companyId,List<Integer> halfDay,List<String> workTypeCodes);
+	
+	/**
+	 * Find work type for all day and half day.
+	 *
+	 * @param companyId the company id
+	 * @param halfDay the half day
+	 * @param workTypeCodes the work type codes
+	 * @param oneDays the one days
+	 * @return the list
+	 */
+	List<WorkType> findWorkTypeForAllDayAndHalfDay(String companyId,List<Integer> halfDay,List<String> workTypeCodes,List<Integer> oneDays);
+	
+	/**
+	 * Find work type by codes.
+	 *
+	 * @param companyId the company id
+	 * @param workTypeCodes the work type codes
+	 * @param abolishAtr the abolish atr
+	 * @param worktypeAtr the worktype atr
+	 * @return the list
+	 */
+	List<WorkType> findWorkTypeByCodes(String companyId,List<String> workTypeCodes,int abolishAtr, int worktypeAtr);
+	
+	/**
+	 * Find work type by condition.
+	 *
+	 * @param companyId the company id
+	 * @return the list
+	 */
+	List<WorkType> findWorkTypeByCondition(String companyId);
 }

@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 
 @Entity
-@Table(name="KSHST_GRANT_HD_TBL")
+@Table(name="KSHST_YEAR_HD_GRANT_TBL")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KshstGrantHdTbl extends UkJpaEntity {
@@ -30,32 +30,17 @@ public class KshstGrantHdTbl extends UkJpaEntity {
     public KshstGrantHdTblPK kshstGrantHdTblPK;
 	
 	/* 年休付与日数 */
-	@Column(name = "GRANT_DAYS")
-	public BigDecimal grantDays;
-	
-	/* 時間年休上限日数 */
-	@Column(name = "LIMITED_TIME_HD_DAYS")
-	public int limitedTimeHdDays;
+	@Column(name = "GRANT_DAY")
+	public BigDecimal grantDay;
 	
 	/* 半日年休上限回数 */
-	@Column(name = "LIMITED_HALF_HD_CNT")
-	public int limitedHalfHdCnt;
+	@Column(name = "LIMIT_TIME_HD")
+	public Integer limitTimeHd;
 	
-	/* 勤続年数月数 */
-	@Column(name = "LENGTH_OF_SERVICE_MONTHS")
-	public int lengthOfServiceMonths;
+	/* 時間年休上限日数 */
+	@Column(name = "LIMIT_DAY_YEAR")
+	public Integer limitDayYear;
 	
-	/* 勤続年数年数 */
-	@Column(name = "LENGTH_OF_SERVICE_YEARS")
-	public int lengthOfServiceYears;
-	
-	/* 付与基準日 */
-	@Column(name = "GRANT_REFERENCE_DATE")
-	public int grantReferenceDate;
-	
-	/* 一斉付与する */
-	@Column(name = "GRANT_SIMULTANEITY")
-	public int grantSimultaneity;
 	
 	@ManyToOne
 	@JoinColumns( {
@@ -70,18 +55,13 @@ public class KshstGrantHdTbl extends UkJpaEntity {
 		return kshstGrantHdTblPK;
 	}
 
-	public KshstGrantHdTbl(KshstGrantHdTblPK kshstGrantHdTblPK, BigDecimal grantDays, int limitedTimeHdDays,
-			int limitedHalfHdCnt, int lengthOfServiceMonths, int lengthOfServiceYears, int grantReferenceDate,
-			int grantSimultaneity) {
+	public KshstGrantHdTbl(KshstGrantHdTblPK kshstGrantHdTblPK, BigDecimal grantDays, 
+			Integer limitTimeHd, Integer limitDayYear) {
 		super();
 		this.kshstGrantHdTblPK = kshstGrantHdTblPK;
-		this.grantDays = grantDays;
-		this.limitedTimeHdDays = limitedTimeHdDays;
-		this.limitedHalfHdCnt = limitedHalfHdCnt;
-		this.lengthOfServiceMonths = lengthOfServiceMonths;
-		this.lengthOfServiceYears = lengthOfServiceYears;
-		this.grantReferenceDate = grantReferenceDate;
-		this.grantSimultaneity = grantSimultaneity;
+		this.grantDay = grantDays;
+		this.limitTimeHd = limitTimeHd;
+		this.limitDayYear = limitDayYear;
 	}
 	
 }

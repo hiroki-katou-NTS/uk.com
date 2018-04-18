@@ -82,10 +82,13 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 		val specBonusPays = new HashMap<Integer,AttendanceTime>();
 		if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
 			for(int loopNumber = 1 ; loopNumber <=10 ; loopNumber++ ) {
+				final int loop = loopNumber;
 				//残業
 				if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
-					if(loopNumber < integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime().size()) {
-						overTimeFrames.put(new OverTimeFrameNo(loopNumber), integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime().get(loopNumber - 1).getOverTimeWork());
+					val getOver = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime()
+									.stream().filter(tc -> tc.getOverWorkFrameNo().v().intValue() == loop).findFirst();
+					if(getOver.isPresent()) {
+						overTimeFrames.put(new OverTimeFrameNo(loopNumber), TimeWithCalculation.convertFromTimeDivergence(getOver.get().getOverTimeWork()));
 					}
 					else {
 						overTimeFrames.put(new OverTimeFrameNo(loopNumber),TimeWithCalculation.sameTime(new AttendanceTime(0)));
@@ -93,8 +96,10 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 				}
 				//休出
 				if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()) {
-					if(loopNumber < integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime().size()) {
-						holidayWorkFrames.put(new HolidayWorkFrameNo(loopNumber), integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime().get(loopNumber - 1).getHolidayWorkTime().get());
+					val getHol = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime()
+									.stream().filter(tc -> tc.getHolidayFrameNo().v().intValue() == loop).findFirst();
+					if(getHol.isPresent()) {
+						holidayWorkFrames.put(new HolidayWorkFrameNo(loopNumber), TimeWithCalculation.convertFromTimeDivergence(getHol.get().getHolidayWorkTime().get()));
 					}
 					else {
 						holidayWorkFrames.put(new HolidayWorkFrameNo(loopNumber),TimeWithCalculation.sameTime(new AttendanceTime(0)));
@@ -125,7 +130,7 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 				bonusPays,
 				specBonusPays,
 				integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getNotMinusFlexTime(),
-				integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime().getTime()
+				TimeWithCalculation.convertFromTimeDivergence(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime().getTime())
 			);
 	}
 

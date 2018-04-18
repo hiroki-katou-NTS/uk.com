@@ -1,11 +1,9 @@
 package nts.uk.ctx.pereg.app.find.copysetting.item;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -49,10 +47,10 @@ public class CopySettingItemFinder {
 		// check empployeeId
 		boolean isSelf = AppContexts.user().employeeId().equals(employeeId) ? true : false;
 
-		List<EmpCopySettingItem> itemList = this.empCopyItemRepo.getAllItemFromCategoryCd(categoryCd, companyId,
+		List<EmpCopySettingItem> copyItemList = this.empCopyItemRepo.getAllItemFromCategoryCd(categoryCd, companyId,
 				isSelf);
 
-		if (isScreenB && CollectionUtil.isEmpty(itemList)) {
+		if (isScreenB && CollectionUtil.isEmpty(copyItemList)) {
 
 			boolean isPersonnelRepresentative = true;
 			if (isPersonnelRepresentative) {
@@ -62,12 +60,13 @@ public class CopySettingItemFinder {
 			}
 
 		}
-
-		itemList.forEach(x -> {
-			result.add(SettingItemDto.createFromJavaType(x.getCategoryCode(), x.getItemDefId(), x.getItemCode(),
-					x.getItemName(), x.getIsRequired().value, 1, GeneralDate.min(), BigDecimal.valueOf(0), "",
-					x.getDataType(), x.getSelectionItemRefType(), x.getItemParentCd(), x.getDateType().value,
-					x.getSelectionItemRefCd()));
+		
+		// initial with null-value
+		copyItemList.forEach(copyItem -> {
+			result.add(SettingItemDto.createFromJavaType(copyItem.getCategoryCode(), copyItem.getItemDefId(), 
+					copyItem.getItemCode(), copyItem.getItemName(), copyItem.getIsRequired().value, null , 
+					copyItem.getDataType(), copyItem.getSelectionItemRefType(), copyItem.getItemParentCd(), 
+					copyItem.getDateType().value, copyItem.getSelectionItemRefCd()));
 		});
 
 		PeregQuery query = new PeregQuery(categoryCd, employeeId, null, baseDate);
@@ -76,19 +75,9 @@ public class CopySettingItemFinder {
 
 		if (dto != null) {
 			Map<String, Object> dataMap = MappingFactory.getFullDtoValue(dto);
+			// set data to setting-item-DTO
+			result.forEach( settingItemDto -> settingItemDto.setData(dataMap.get(settingItemDto.getItemCode())));
 
-			dataMap.forEach((k, v) -> {
-
-				Optional<SettingItemDto> itemDtoOpt = result.stream().filter(x -> x.getItemCode().equals(k))
-						.findFirst();
-
-				if (itemDtoOpt.isPresent()) {
-					SettingItemDto itemInfo = itemDtoOpt.get();
-
-					itemInfo.setData(v != null ? v.toString() : "");
-				}
-
-			});
 		} else {
 			if (!isScreenB) {
 				return Collections.emptyList();
@@ -112,6 +101,17 @@ public class CopySettingItemFinder {
 		String contractId = AppContexts.user().contractCode();
 		List<CopySettingItemDto> listData = empCopyItemRepo
 				.getPerInfoItemByCtgId(perInfoCategoryId, companyId, contractId).stream().map(item -> {
+					return CopySettingItemDto.createFromDomain(item);
+				}).collect(Collectors.toList());
+
+		return listData;
+	}
+	
+	public List<CopySettingItemDto> getPerInfoDefByIdNo812(String perInfoCategoryId) {
+		String companyId = AppContexts.user().companyId();
+		String contractId = AppContexts.user().contractCode();
+		List<CopySettingItemDto> listData = empCopyItemRepo
+				.getPerInfoItemByCtgIdNo812(perInfoCategoryId, companyId, contractId).stream().map(item -> {
 					return CopySettingItemDto.createFromDomain(item);
 				}).collect(Collectors.toList());
 

@@ -11,9 +11,11 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.SettingDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRule;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AnnualHoliday;
+import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.HoursHoliday;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -43,20 +45,24 @@ public class SaveAcquisitionRuleCommandHandler extends CommandHandler<Acquisitio
 
 		// Update VacationAcquisitionRule
 		Optional<AcquisitionRule> optVaAcRule = this.vaRepo.findById(companyId);
-
-		//check VacationAcquisitionRule exits
-		if (optVaAcRule.isPresent()) {
-			//Check is managed, keep old values when is not managed
-			if (acquisitionRuleCommand.getCategory().equals(ManageDistinct.NO)) {
+		
+		//Check is managed, keep old values when is not managed
+		if (acquisitionRuleCommand.getCategory().equals(SettingDistinct.NO)) {
+			if (optVaAcRule.isPresent()) {
 				AcquisitionRule acquisitionRuleDB = optVaAcRule.get();
 				acquisitionRuleDB.setCategory(acquisitionRuleCommand.getCategory());
 				this.vaRepo.update(acquisitionRuleDB);
-				return;
-			} 
-			this.vaRepo.update(acquisitionRuleCommand);
-			return;
+			} else {
+				acquisitionRuleCommand.setAnnualHoliday(new AnnualHoliday(false, false, false));
+				acquisitionRuleCommand.setHoursHoliday(new HoursHoliday(false,false));
+				this.vaRepo.create(acquisitionRuleCommand);
+			}
+		} else {
+			if (optVaAcRule.isPresent()) {
+				this.vaRepo.update(acquisitionRuleCommand);
+			} else {
+				this.vaRepo.create(acquisitionRuleCommand);
+			}
 		}
-		this.vaRepo.create(acquisitionRuleCommand);
 	}
-
 }

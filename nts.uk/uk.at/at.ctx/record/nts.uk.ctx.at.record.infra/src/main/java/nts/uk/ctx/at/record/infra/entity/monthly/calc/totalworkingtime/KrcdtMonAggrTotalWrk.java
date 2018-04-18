@@ -32,10 +32,6 @@ public class KrcdtMonAggrTotalWrk extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KrcdtMonAttendanceTimePK PK;
 	
-	/** 総労働時間 */
-	@Column(name = "TOTAL_WORKING_TIME")
-	public int totalWorkingTime;
-	
 	/** 就業時間 */
 	@Column(name = "WORK_TIME")
 	public int workTime;

@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -23,6 +24,7 @@ import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentPu
 /**
  * The Class EmpInDesignatedPubImp.
  */
+@Stateless
 public class EmpInDesignatedPubImp implements EmpInDesignatedPub {
 
 	/** The aff workplace history repo. */

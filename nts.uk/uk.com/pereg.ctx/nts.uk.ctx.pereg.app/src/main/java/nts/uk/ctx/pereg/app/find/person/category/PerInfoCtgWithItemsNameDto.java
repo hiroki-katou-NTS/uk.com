@@ -11,6 +11,8 @@ public class PerInfoCtgWithItemsNameDto {
 	private int categoryType;
 	private int isFixed;
 	private int personEmployeeType;
+	private boolean initValMasterObjCls;
+	private boolean addItemObjCls;
 	private List<String> itemNameList;
 	private boolean isChangeAbleCtgType;
 }

@@ -2,12 +2,18 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -31,47 +37,59 @@ public class LateDecisionClock {
 	 * @return
 	 */
 	public static LateDecisionClock create(
-			int workNo, PredetemineTimeSetting predetermineTimeSet,
+			int workNo,
+			PredetermineTimeSetForCalc predetermineTimeSet,
 			DeductionTimeSheet deductionTimeSheet,
-			GraceTimeSetting lateGraceTime) {
+			GraceTimeSetting lateGraceTime,
+			TimeLeavingWork timeLeavingWork,
+			Optional<CoreTimeSetting> coreTimeSetting) {
 
-		val predetermineTimeSheet = predetermineTimeSet.getTimeSheetOf(workNo);
+		TimezoneUse predetermineTimeSheet = predetermineTimeSet.getTimeSheets(workNo);
 		TimeWithDayAttr decisionClock = new TimeWithDayAttr(0);
 
-		if (lateGraceTime.isZero()) {
-			// 猶予時間が0：00の場合、所定時間の開始時刻を判断時刻にする
-			decisionClock = predetermineTimeSheet.getStart();
-		} else {
-			// 猶予時間帯の作成
-			//TimeSpanForCalc graceTimeSheet = lateGraceTime.createLateGraceTimeSheet(predetermineTimeSheet);
-
-//			int breakTime = deductionTimeSheet.sumBreakTimeIn(graceTimeSheet);
-//			decisionClock = graceTimeSheet.getEnd().forwardByMinutes(breakTime);
+		//計算範囲取得
+		TimeSpanForCalc calｃRange = getCalcRange(predetermineTimeSheet,timeLeavingWork.getTimespan().getStart(),coreTimeSetting);
+		if(calｃRange!=null) {
+			if (lateGraceTime.isZero()) {
+				// 猶予時間が0：00の場合、所定時間の開始時刻を判断時刻にする
+				decisionClock = calｃRange.getStart();
+			} else {
+				// 猶予時間帯の作成
+				TimeSpanForCalc graceTimeSheet = new TimeSpanForCalc(predetermineTimeSet.getTimeSheets().get(workNo).getStart(),
+																	 predetermineTimeSet.getTimeSheets().get(workNo).getStart().backByMinutes(lateGraceTime.getGraceTime().minute()));
+	
+				// 重複している控除分をずらす
+				//TimeSpanForCalc dedtimesheet = graceTimeSheet.getDuplicatedWith(deductionTimeSheet.getForDeductionTimeZoneList());
+	//			int breakTime = deductionTimeSheet.sumBreakTimeIn(graceTimeSheet);
+	//			decisionClock = graceTimeSheet.getEnd().forwardByMinutes(breakTime);
+				decisionClock = graceTimeSheet.getEnd();
+			}
 		}
-
 		//補正後の猶予時間帯の開始時刻を判断時刻とする
 		return new LateDecisionClock(decisionClock, workNo);
 	}
-
+	
 	/**
-	 * 全勤務回数（最大２回）分の遅刻判断時刻のリストを作る
+	 * 遅刻時間の計算範囲の取得
 	 * @param predetermineTimeSet
-	 * @param deductionTimeSheet
-	 * @param lateGraceTime
+	 * @param timeLeavingWork
 	 * @return
 	 */
-	public static List<LateDecisionClock> createListOfAllWorks(
-			PredetemineTimeSetting predetermineTimeSet,
-			DeductionTimeSheet deductionTimeSheet,
-			GraceTimeSetting lateGraceTime) {
-
-		List<LateDecisionClock> clocks = new ArrayList<LateDecisionClock>();
-		for (int workNo = 1; workNo < 3; workNo++) {// 勤務回数分ループ　→　workNoは引数として渡すように修正
-			// 遅刻猶予時間の取得
-			clocks.add(LateDecisionClock.create(workNo, predetermineTimeSet, deductionTimeSheet, lateGraceTime));
-		}
+	static public TimeSpanForCalc getCalcRange(TimezoneUse predetermineTimeSet,TimeWithDayAttr attendance,Optional<CoreTimeSetting> coreTimeSetting)
+	{
+		//フレックス勤務では無い場合の計算範囲
+		TimeSpanForCalc result = new TimeSpanForCalc(predetermineTimeSet.getStart(), attendance);
+		//計算範囲を取得
 		
-		return clocks;
+		//フレ勤務かどうか判断
+		if(coreTimeSetting.isPresent()) {
+			//コアタイム使用するかどうか
+			if(coreTimeSetting.get().getTimesheet().isNOT_USE()) {
+				result = null;
+			}
+			result = new TimeSpanForCalc(coreTimeSetting.get().getCoreTimeSheet().getStartTime(), attendance);
+		}	
+		return result;
 	}
 	
 	/**

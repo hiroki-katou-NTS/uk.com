@@ -1,0 +1,160 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script type='text/javascript'>
+				var dialogSize = {
+					width : 440,
+					height : 440
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:stylefile path="cmf002.n.style.css" />
+			<com:scriptfile path="cmf002.n.vm.js" />
+			<com:scriptfile path="cmf002.n.start.js" />
+			
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div>
+					<!-- N1タイトル -->
+					<div class="title_content">#{i18n.getText('CMF002_209')}</div>
+					<table id="table_content">
+						<!-- row1 -->
+						<tr>
+							<td class="col_left">
+								<!--N2出力値の設定(ラベル) -->
+								<div  data-bind="ntsFormLabel: {}" class="form-label enable">
+									<label>#{i18n.getText('CMF002_210')}</label>
+								</div>
+							</td>
+							<!-- N2_1_1在職時(ラベル) -->
+							<td class="col_center">
+								<div class="lable">#{i18n.getText('CMF002_211')}</div>
+							</td>
+							<!-- N2_1_2在職時 -->
+							<td class="col_right">
+								<input tabindex="1" style="width: 80px;" data-bind="ntsTextEditor: { 
+																 value: getValue,
+															     enable: true, 
+															     name: '#[CMF002_211]',
+															     required: true,
+															     optionsText: 'name'}, 
+																 "/>
+							</td>
+						</tr>
+						<!-- row2 -->
+						<tr>
+							<td class="col_left">
+								
+							</td>
+							<td class="col_center">
+								<div class="lable">#{i18n.getText('CMF002_212')}</div>
+							</td>
+							<td class="col_right">
+								<!-- N2_2_2休職時 -->
+								<input tabindex="2" style="width: 80px;" data-bind="ntsTextEditor: { 
+																 value: getValue,
+															     enable: true, 
+															     name: '#[CMF002_212]',
+															     required: true,
+															     optionsText: 'name'}, 
+																 "/>
+							</td>
+						</tr>
+						<!-- row3 -->
+						<tr>
+							<td class="col_left">
+
+							</td>
+							<td class="col_center">
+								<div class="lable">#{i18n.getText('CMF002_213')}</div>
+							</td>
+							<td class="col_right">
+								<!-- N2_3_2退職時-->
+								<input tabindex="3" style="width: 80px;" data-bind="ntsTextEditor: {
+																 value: getValue, 
+															     enable: true, 
+															     name: '#[CMF002_213]',
+															     required: true,
+															     optionsText: 'name'}"/>
+							</td>
+						</tr>
+						<!-- row4 -->
+						<tr>
+							<td class="col_left">
+								
+							</td>
+							<td class="col_center">
+								<div class="lable">#{i18n.getText('CMF002_214')}</div>
+							</td>
+							<td class="col_right">
+								<!--N2_4_2休業時 -->
+								<input tabindex="4" style="width: 80px;" data-bind="ntsTextEditor: { 
+																 value: getValue,
+															     enable: true, 
+															     name: '#[CMF002_214]',
+															     required: true,
+															     optionsText: 'name'}, 
+																 "/>
+							</td>
+						</tr>
+					</table>
+					<!-- table2 -->
+					<table id="tbl_devision">
+						<tr>
+							<!-- N3固定値(ラベル) -->
+							<td class="col_left">
+								<div  data-bind="ntsFormLabel: {}" class="form-label enable">
+									<label>#{i18n.getText('CMF002_159')}</label>
+								</div>
+							</td>
+							<!-- N3_1固定値 -->
+							<!-- N3_1_1使用する -->
+							<td class="col_center_dv">
+								<div data-bind="ntsRadioButton: {checked: selectedValue1, 
+																enable: true, 
+																option: items()[0], 
+																optionValue: 'code', 
+																optionText: 'name',
+																group: 'effectDigitCls' }"></div>
+								<!-- N3_1_2使用しない -->								
+								<div data-bind="ntsRadioButton: {checked: selectedValue2, 
+																enable: true, 
+																option: items()[1], 
+																optionValue: 'code', 
+																optionText: 'name',
+																group: 'effectDigitCls'} "></div>
+							</td>
+							<!-- N3_2固定値の値 -->
+							<td class="col_right_dv">
+								<input tabindex="2" style="width: 50px;" data-bind="ntsTextEditor: { 
+																 value: getValue,
+															     enable: true, 
+															     name: '#[CMF002_160]',
+															     required: true,
+															     optionsText: 'name'} 
+																 "/>
+							</td>
+						</tr>
+
+					</table>
+				</div>
+			</div>
+ 			<div id="functions-area-bottom">
+ 				<!-- L3_1設定 -->
+				<button class="x-large" tabindex="12" data-bind="click: saveSetting, enable: $root.errors.isEmpty">#{i18n.getText('CMF002_161')}</button>
+				<!-- L3_2キャンセル -->
+				<button class="large" tabindex="13" data-bind="click: cancelSetting">#{i18n.getText('CMF002_162')}</button>
+			</div> 
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

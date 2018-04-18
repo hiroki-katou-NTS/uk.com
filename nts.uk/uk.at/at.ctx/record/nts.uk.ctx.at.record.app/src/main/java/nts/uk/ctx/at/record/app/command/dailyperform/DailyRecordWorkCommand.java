@@ -7,6 +7,7 @@ import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyCommand;
+import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.PCLogInfoOfDailyCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AttendanceTimeOfDailyPerformCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.BreakTimeOfDailyPerformanceCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.calculationattribute.CalcAttrOfDailyPerformanceCommand;
@@ -14,6 +15,7 @@ import nts.uk.ctx.at.record.app.command.dailyperform.editstate.EditStateOfDailyP
 import nts.uk.ctx.at.record.app.command.dailyperform.erroralarm.EmployeeDailyPerErrorCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.goout.OutingTimeOfDailyPerformanceCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.optionalitem.OptionalItemOfDailyPerformCommand;
+import nts.uk.ctx.at.record.app.command.dailyperform.remark.RemarkOfDailyCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.shorttimework.ShortTimeOfDailyCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.specificdatetttr.SpecificDateAttrOfDailyCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.temporarytime.TemporaryTimeOfDailyPerformanceCommand;
@@ -89,6 +91,14 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 	/** 臨時出退勤: 日別実績の臨時出退勤 */
 	@Getter
 	private final TemporaryTimeOfDailyPerformanceCommand temporaryTime = new TemporaryTimeOfDailyPerformanceCommand();
+	
+	/** PCログオン情報: 日別実績のPCログオン情報 */
+	@Getter
+	private final PCLogInfoOfDailyCommand pcLogInfo = new PCLogInfoOfDailyCommand();
+	
+	/** PCログオン情報: 日別実績のPCログオン情報 */
+	@Getter
+	private final RemarkOfDailyCommand remarks = new RemarkOfDailyCommand();
 
 	public DailyWorkCommonCommand getCommand(String group){
 		DailyWorkCommonCommand command = null;
@@ -138,6 +148,12 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		case "O":
 			command = this.temporaryTime;
 			break;
+		case "P":
+			command = this.pcLogInfo;
+			break;
+		case "Q":
+			command = this.remarks;
+			break;
 		default:
 			break;
 		}
@@ -162,6 +178,8 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		this.optionalItem.setRecords(fullDto.getOptionalItem().orElse(null));
 		fullDto.getEditStates().stream().forEach(c -> this.editState.setRecords(c));
 		this.temporaryTime.setRecords(fullDto.getTemporaryTime().orElse(null));
+		this.pcLogInfo.setRecords(fullDto.getPcLogInfo().orElse(null));
+		fullDto.getRemarks().stream().forEach(c -> this.remarks.setRecords(c));
 	}
 
 	@Override
@@ -182,6 +200,8 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		this.optionalItem.forEmployee(employeId);
 		this.editState.forEmployee(employeId);
 		this.temporaryTime.forEmployee(employeId);
+		this.pcLogInfo.forEmployee(employeId);
+		this.remarks.forEmployee(employeId);
 	}
 
 	@Override
@@ -202,6 +222,8 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		this.optionalItem.withDate(date);
 		this.editState.withDate(date);
 		this.temporaryTime.withDate(date);
+		this.pcLogInfo.withDate(date);
+		this.remarks.withDate(date);
 	}
 	
 	public static DailyRecordWorkCommand open(){

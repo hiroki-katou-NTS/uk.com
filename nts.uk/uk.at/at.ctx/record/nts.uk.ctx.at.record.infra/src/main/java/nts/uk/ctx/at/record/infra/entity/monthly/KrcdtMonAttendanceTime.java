@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.KrcdtMonAggrTotalSpt;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.KrcdtMonAgreementTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.actualworkingtime.KrcdtMonRegIrregTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.flex.KrcdtMonFlexTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.KrcdtMonAggrTotalWrk;
@@ -66,6 +67,10 @@ public class KrcdtMonAttendanceTime extends UkJpaEntity implements Serializable 
 	/** 法定労働時間 */
 	@Column(name = "STAT_WORKING_TIME")
 	public int statutoryWorkingTime;
+	
+	/** 総労働時間 */
+	@Column(name = "TOTAL_WORKING_TIME")
+	public int totalWorkingTime;
 
 	/** 実働時間：月別実績の通常変形時間 */
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
@@ -110,6 +115,10 @@ public class KrcdtMonAttendanceTime extends UkJpaEntity implements Serializable 
 	/** 時間外超過：時間外超過 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
 	public List<KrcdtMonExcoutTime> krcdtMonExcoutTime;
+	
+	/** 36協定時間 */
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
+	public KrcdtMonAgreementTime krcdtMonAgreementTime;
 	
 	/** 縦計 */
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)

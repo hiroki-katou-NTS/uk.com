@@ -10,26 +10,48 @@ import nts.uk.ctx.at.record.app.command.calculationsetting.StampReflectionManage
 import nts.uk.ctx.at.record.app.find.calculationsetting.StampReflectionManagementDto;
 import nts.uk.ctx.at.record.app.find.calculationsetting.StampReflectionManagementFinder;
 
+/**
+ * The Class StampReflectionManagementWebService.
+ */
 @Path("at/record/calculation")
 @Produces("application/json")
 public class StampReflectionManagementWebService {
+	
+	/** The finder. */
 	@Inject
 	private StampReflectionManagementFinder finder;
+	
+	/** The handler. */
 	@Inject
 	private StampReflectionManagementCommandHandler handler;
 	
+	/**
+	 * Gets the stamp reflection.
+	 *
+	 * @return the stamp reflection
+	 */
 	@POST
 	@Path("findByCode")
 	public StampReflectionManagementDto getStampReflection(){
 		return this.finder.findByCode();
 	}
 	
+	/**
+	 * Adds the.
+	 *
+	 * @param command the command
+	 */
 	@Path("add")
 	@POST
 	public void add(StampReflectionManagementCommand command) {
 		this.handler.handle(command);
 	}
 	
+	/**
+	 * Update.
+	 *
+	 * @param command the command
+	 */
 	@Path("update")
 	@POST
 	public void update(StampReflectionManagementCommand command) {

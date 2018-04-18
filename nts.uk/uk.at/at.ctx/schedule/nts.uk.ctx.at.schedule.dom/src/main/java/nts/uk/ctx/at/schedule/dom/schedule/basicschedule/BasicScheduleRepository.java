@@ -10,6 +10,8 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedulePersonFee;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
 
 /**
  * The Interface BasicScheduleRepository.
@@ -48,6 +50,14 @@ public interface BasicScheduleRepository {
 	 */
 	void update(BasicSchedule bSchedule);
 	
+	/**
+	 * Change work type code and work time code ( code for Du Do)
+	 * @param sId employee id
+	 * @param date date
+	 * @param workTypeCode work type code
+	 * @param workTimeCode work time code
+	 */
+	void changeWorkTypeTime(String sId, GeneralDate date, String workTypeCode, String workTimeCode);
 	
 	/**
 	 * Delete.
@@ -74,4 +84,13 @@ public interface BasicScheduleRepository {
 	 * @return the list
 	 */
 	public List<WorkSchedulePersonFee> findPersonFeeById(String employeeId, GeneralDate baseDate); 
+	
+	/**
+	 * Find work schedule break time (勤務予定休憩時間帯)
+	 * 
+	 * @param employeeId
+	 * @param baseDate
+	 * @return
+	 */
+	List<WorkScheduleBreak> findWorkBreakTime(String employeeId, GeneralDate baseDate);
 }

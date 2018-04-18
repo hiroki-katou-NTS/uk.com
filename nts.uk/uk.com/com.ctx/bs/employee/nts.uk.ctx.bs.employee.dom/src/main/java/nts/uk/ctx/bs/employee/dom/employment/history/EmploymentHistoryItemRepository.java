@@ -19,6 +19,14 @@ public interface EmploymentHistoryItemRepository {
 	 */
 	Optional<EmploymentHistoryItem> getByHistoryId(String historyId);
 	
+	
+	/**
+	 * get with historyId
+	 * @param historyId
+	 * @return
+	 */
+	List<EmploymentHistoryItem> getByListHistoryId(List<String> historyIds);
+	
 	/**
 	 * Add employment
 	 * @param domain
@@ -74,5 +82,12 @@ public interface EmploymentHistoryItemRepository {
 	 * @return
 	 */
 	List<EmploymentHistoryItem> getEmploymentByEmpIdAndDate(GeneralDate basedate, String employeeId);
+	
+	/**
+	 * Get employment item by employee ID
+	 * @param employeeId
+	 * @return List EmploymentHistoryOfEmployee
+	 */
+	List<EmploymentHistoryOfEmployee> getEmploymentBySID(String employeeId);
 
 }

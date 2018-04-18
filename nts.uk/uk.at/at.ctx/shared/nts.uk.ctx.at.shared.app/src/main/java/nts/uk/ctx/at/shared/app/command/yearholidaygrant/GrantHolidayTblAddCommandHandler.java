@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.shared.dom.service.GrantHdTblRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantYearHolidayRepository;
@@ -30,6 +31,8 @@ public class GrantHolidayTblAddCommandHandler extends CommandHandler<GrantHolida
 	private YearHolidayRepository yearHolidayRepo;
 	@Inject
 	private GrantYearHolidayRepository grantYearHolidayRepo;
+	@Inject
+	private GrantHdTblRepository grantHdTblRepository;
 	
 	@Override
 	protected void handle(CommandHandlerContext<GrantHolidayTblCommand> context) {
@@ -44,7 +47,27 @@ public class GrantHolidayTblAddCommandHandler extends CommandHandler<GrantHolida
 		
 		List<GrantHdTbl> grantHolidays = command.getGrantHolidayList().stream()
 				.map(x->x.toDomain(companyId)).collect(Collectors.toList());
-		GrantHdTbl.validateInput(grantHolidays);
+		
+		// 勤続年数が入力されている場合、付与日数を入力すること
+		for (GrantHdTbl item : grantHolidays) {
+			if(item.getGrantDays().v() == null) {
+				throw new BusinessException("Msg_270");
+			}
+		}
+		
+		// check update/insert limit time in holiday 半日年休上限回数  or not
+		if(!grantHdTblRepository.checkLimitTime()) {
+			for (GrantHdTbl item : grantHolidays) {
+				item.setLimitDayYear(null);
+			}
+		}
+		
+		// check update/insert limit day in year 時間年休上限日数 or not
+		if(!grantHdTblRepository.checkLimitDay()) {
+			for (GrantHdTbl item : grantHolidays) {
+				item.setLimitTimeHd(null);
+			}
+		}
 		
 		// remove all
 		grantYearHolidayRepo.remove(companyId, command.getConditionNo(), command.getYearHolidayCode());
@@ -53,7 +76,7 @@ public class GrantHolidayTblAddCommandHandler extends CommandHandler<GrantHolida
 			// validate
 			item.validate();		
 					
-			// add to db		
+			// add to db
 			grantYearHolidayRepo.add(item);
 		}
 	}

@@ -10,6 +10,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
@@ -24,6 +25,8 @@ import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtWpAppro
 public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements WorkplaceApprovalRootRepository{
 
 	private final String FIND_BY_ALL = "SELECT c FROM WwfmtWpApprovalRoot c";
+	private final String FIND_BY_CID = FIND_BY_ALL
+			+ " WHERE c.wwfmtWpApprovalRootPK.companyId = :companyId";
 	private final String FIND_BY_WKPID = FIND_BY_ALL
 			+ " WHERE c.wwfmtWpApprovalRootPK.companyId = :companyId"
 			+ " AND c.wwfmtWpApprovalRootPK.workplaceId = :workplaceId";
@@ -36,7 +39,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " AND c.applicationType IS NULL";
 	private final String SELECT_WPAPR_BY_EDATE_CONFIRM = FIND_BY_WKPID
-			   + " AND c.endDate = :endDate"
+			   + " AND c.endDate = :endDate" 
 			   + " AND c.confirmationRootType = :confirmationRootType"
 			   + " AND c.employmentRootAtr = :employmentRootAtr";
 	private final String FIND_BY_BASEDATE = FIND_BY_WKPID
@@ -66,7 +69,20 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 			   + " ORDER BY c.startDate DESC";
 	private final String FIND_WP_APP_LAST = FIND_BY_WKPID
 			+ " AND c.endDate = :endDate";
-
+	private final String FIND_BY_DATE_EMP_CONFIRM = FIND_BY_CID 
+			+ " AND c.startDate <= :baseDate"
+			+ " AND c.endDate >= :baseDate"
+			+ " AND c.confirmationRootType = :confirmationRootType"
+			+ " AND c.employmentRootAtr = :employmentRootAtr";
+	private final String FIND_BY_DATE_EMP = FIND_BY_CID 
+			+ " AND c.startDate <= :baseDate"
+			+ " AND c.endDate >= :baseDate"
+			+ " AND c.employmentRootAtr = :employmentRootAtr";	
+	private final String FIND_BY_EMP_CONFIRM = FIND_BY_WKPID
+			 + " AND c.startDate <= :baseDate"
+			 + " AND c.endDate >= :baseDate"
+			 + " AND c.confirmationRootType = :confirmationRootType"
+			 + " AND c.employmentRootAtr = 2";
 	/**
 	 * get All Workplace Approval Root
 	 * @param companyId
@@ -330,5 +346,34 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 				.setParameter("workplaceId", workplaceId)
 				.setParameter("endDate", endDate)
 				.getList(c -> toDomainWpApR(c));
+	}
+
+	@Override
+	public List<WorkplaceApprovalRoot> getWpAppRoot(String companyID, GeneralDate date, 
+			Integer employmentRootAtr, Integer confirmRootAtr) {
+		if(confirmRootAtr==null){
+			return this.queryProxy().query(FIND_BY_DATE_EMP, WwfmtWpApprovalRoot.class)
+					.setParameter("companyId", companyID)
+					.setParameter("baseDate", date)
+					.setParameter("employmentRootAtr", employmentRootAtr)
+					.getList(c -> toDomainWpApR(c));
+		}
+		return this.queryProxy().query(FIND_BY_DATE_EMP_CONFIRM, WwfmtWpApprovalRoot.class)
+				.setParameter("companyId", companyID)
+				.setParameter("baseDate", date)
+				.setParameter("confirmationRootType", confirmRootAtr)
+				.setParameter("employmentRootAtr", employmentRootAtr)
+				.getList(c -> toDomainWpApR(c));
+	}
+
+	@Override
+	public List<WorkplaceApprovalRoot> findEmpByConfirm(String companyID, String workplaceID, 
+			ConfirmationRootType confirmType, GeneralDate date) {
+		return this.queryProxy().query(FIND_BY_EMP_CONFIRM, WwfmtWpApprovalRoot.class)
+				.setParameter("companyId", companyID)
+				.setParameter("workplaceId", workplaceID)
+				.setParameter("baseDate", date)
+				.setParameter("confirmationRootType", confirmType.value)
+				.getList(c->toDomainWpApR(c));
 	}
 }

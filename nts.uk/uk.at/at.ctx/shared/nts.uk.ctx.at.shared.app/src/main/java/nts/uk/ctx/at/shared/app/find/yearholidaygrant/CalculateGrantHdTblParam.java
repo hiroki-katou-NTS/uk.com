@@ -12,7 +12,7 @@ import nts.arc.time.GeneralDate;
  */
 @Value
 public class CalculateGrantHdTblParam {
-	List<GrantHolidayTblDto> grantHolidayTblList;
+	List<CalculateDateDto> grantHolidayTblList;
 	int useSimultaneousGrant;
 	GeneralDate referDate;
 	GeneralDate simultaneousGrantDate;

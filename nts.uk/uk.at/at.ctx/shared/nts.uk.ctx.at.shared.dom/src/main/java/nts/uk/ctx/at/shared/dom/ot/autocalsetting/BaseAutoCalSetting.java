@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.ot.autocalsetting;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -12,6 +13,7 @@ import nts.arc.layer.dom.AggregateRoot;
  */
 // 別自動計算設定
 @Getter
+@NoArgsConstructor
 public class BaseAutoCalSetting extends AggregateRoot {
 
 	/** The normal OT time. */
@@ -25,5 +27,13 @@ public class BaseAutoCalSetting extends AggregateRoot {
 	/** The rest time. */
 	// 休出時間
 	protected AutoCalRestTimeSetting restTime;
+
+	public BaseAutoCalSetting(AutoCalOvertimeSetting normalOTTime, AutoCalFlexOvertimeSetting flexOTTime,
+			AutoCalRestTimeSetting restTime) {
+		super();
+		this.normalOTTime = normalOTTime;
+		this.flexOTTime = flexOTTime;
+		this.restTime = restTime;
+	}
 
 }

@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.RaisingSalaryTimeItemNo;
@@ -77,8 +79,8 @@ public class BonusPayTimeSheetForCalc extends CalculationTimeSheet{
 											Optional.empty(),
 											this.raiseSalaryTimeItemNo);
 	}
+	
 
-
-
+	
 }
 

@@ -32,7 +32,7 @@ public interface SyEmployeePub {
 	 * @param baseDate the base date
 	 * @return the concurrent employee
 	 */
-	// RequestList #77
+	// RequestList77
 	List<ConcurrentEmployeeExport> getConcurrentEmployee(String companyId, String jobId, GeneralDate baseDate);
 
 	/**
@@ -50,7 +50,7 @@ public interface SyEmployeePub {
 	 * @param sIds the s ids
 	 * @return the list
 	 */
-	// RequestList #126
+	// RequestList126
 	List<EmployeeBasicInfoExport> findBySIds(List<String> sIds);
 	
 	

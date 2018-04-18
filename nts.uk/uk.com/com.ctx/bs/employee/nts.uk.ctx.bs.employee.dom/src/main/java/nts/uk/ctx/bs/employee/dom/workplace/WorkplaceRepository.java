@@ -7,6 +7,8 @@ package nts.uk.ctx.bs.employee.dom.workplace;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 /**
  * The Interface WorkplaceRepository.
  */
@@ -69,4 +71,7 @@ public interface WorkplaceRepository {
      * @return the optional
      */
     Optional<Workplace> findByHistoryId(String companyId, String historyId);
+    
+    
+    Workplace findWorkplace(String companyId, String workplaceId, GeneralDate baseDate);
 }

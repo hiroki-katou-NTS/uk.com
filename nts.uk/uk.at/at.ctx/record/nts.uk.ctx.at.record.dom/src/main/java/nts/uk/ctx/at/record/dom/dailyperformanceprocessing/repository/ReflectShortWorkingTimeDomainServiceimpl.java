@@ -54,8 +54,8 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 	private SWorkTimeHistItemRepository SWorkTimeHistItemRepo;
 
 	@Override
-	public ShortTimeOfDailyPerformance reflect(String companyId, GeneralDate date, String employeeId) {
-		boolean confirmReflectWorkingTime = confirmReflectWorkingTime(companyId, date, employeeId);
+	public ShortTimeOfDailyPerformance reflect(String companyId, GeneralDate date, String employeeId, WorkInfoOfDailyPerformance WorkInfo) {
+		boolean confirmReflectWorkingTime = confirmReflectWorkingTime(companyId, date, employeeId, WorkInfo);
 		if (confirmReflectWorkingTime) {
 			Optional<ShortWorkTimeHistory> findByBaseDate = this.SWorkTimeHistoryRepo.findByBaseDate(employeeId, date);
 			if (findByBaseDate.isPresent()) {
@@ -79,7 +79,7 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 	}
 
 	// 短時間勤務時間帯を反映するか確認する
-	public boolean confirmReflectWorkingTime(String companyId, GeneralDate date, String employeeId) {
+	public boolean confirmReflectWorkingTime(String companyId, GeneralDate date, String employeeId, WorkInfoOfDailyPerformance WorkInfo) {
 		Optional<ShortTimeOfDailyPerformance> shortTimeOfDailyPerformanceOptional = this.shortTimeOfDailyPerformanceRepo
 				.find(employeeId, date);
 		if (shortTimeOfDailyPerformanceOptional.isPresent()
@@ -102,14 +102,14 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 					&& timeLeavingWork.getAttendanceStamp().get().getActualStamp() != null
 					&& timeLeavingWork.getAttendanceStamp().get().getActualStamp().isPresent()) {
 				checkReflectWorkInfoOfDailyPerformance = this.reflectWorkInfoOfDailyPerformance(companyId, date,
-						employeeId);
+						employeeId, WorkInfo);
 				break;
 			}
 			if (timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent()
 					&& timeLeavingWork.getLeaveStamp().get().getActualStamp() != null
 					&& timeLeavingWork.getLeaveStamp().get().getActualStamp().isPresent()) {
 				checkReflectWorkInfoOfDailyPerformance = this.reflectWorkInfoOfDailyPerformance(companyId, date,
-						employeeId);
+						employeeId, WorkInfo);
 				break;
 			}
 
@@ -137,11 +137,8 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 		return false;
 	}
 
-	public boolean reflectWorkInfoOfDailyPerformance(String companyId, GeneralDate date, String employeeId) {
-		Optional<WorkInfoOfDailyPerformance> WorkInfoOfDailyPerformanceOptional = this.workInformationRepo
-				.find(employeeId, date);
-		WorkInfoOfDailyPerformance WorkInfo = WorkInfoOfDailyPerformanceOptional.get();
-		WorkInformation scheduleWorkInformation = WorkInfo.getRecordWorkInformation();
+	public boolean reflectWorkInfoOfDailyPerformance(String companyId, GeneralDate date, String employeeId, WorkInfoOfDailyPerformance WorkInfo) {
+		WorkInformation scheduleWorkInformation = WorkInfo.getRecordInfo();
 		WorkTypeCode workTypeCode = scheduleWorkInformation.getWorkTypeCode();
 		boolean checkHolidayOrNot = this.checkHolidayOrNot(companyId, workTypeCode.v());
 		if (checkHolidayOrNot) {
@@ -149,7 +146,7 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 		}
 		// 1日半日出勤・1日休日系の判定
 		WorkStyle checkWorkDay = this.basicScheduleService
-				.checkWorkDay(WorkInfo.getRecordWorkInformation().getWorkTypeCode().v());
+				.checkWorkDay(WorkInfo.getRecordInfo().getWorkTypeCode().v());
 		// 1日休日系
 		if (checkWorkDay.value == 0) {
 			return false;

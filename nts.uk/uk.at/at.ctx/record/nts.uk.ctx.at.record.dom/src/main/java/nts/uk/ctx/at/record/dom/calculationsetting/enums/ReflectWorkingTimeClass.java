@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 
 /**
  * 
- * @author nampt
  * 就業時間帯打刻反映区分
  */
 @AllArgsConstructor

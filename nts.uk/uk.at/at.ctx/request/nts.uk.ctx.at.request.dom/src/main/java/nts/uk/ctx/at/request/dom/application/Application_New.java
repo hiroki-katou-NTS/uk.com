@@ -85,4 +85,23 @@ public class Application_New extends DomainObject {
 				.reflectionInformation(ReflectionInformation_New.firstCreate())
 				.build();
 	}
+	
+	public boolean isAppOverTime(){
+		return this.appType  == ApplicationType.OVER_TIME_APPLICATION;
+	}
+	public boolean isAppGoBack(){
+		return this.appType  == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION;
+	}
+	public boolean isAppHdWork(){
+		return this.appType  == ApplicationType.BREAK_TIME_APPLICATION;
+	}
+	public boolean isAppWkChange(){
+		return this.appType  == ApplicationType.WORK_CHANGE_APPLICATION;
+	}
+	public boolean isAppAbsence(){
+		return this.appType  == ApplicationType.ABSENCE_APPLICATION;
+	}
+	public boolean isAppCompltLeave(){
+		return this.appType  == ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
+	}
 }

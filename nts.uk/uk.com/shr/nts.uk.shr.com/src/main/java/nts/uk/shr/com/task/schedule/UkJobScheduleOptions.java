@@ -6,7 +6,7 @@ import lombok.Value;
 import nts.arc.primitive.TimeClockPrimitiveValue;
 import nts.arc.task.schedule.ScheduledJob;
 import nts.arc.task.schedule.ScheduledJobUserData;
-import nts.arc.task.schedule.cron.CronSchedule;
+import nts.arc.task.schedule.SchedulingMethod;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 
@@ -15,7 +15,7 @@ public class UkJobScheduleOptions {
 
 	private final Class<? extends ScheduledJob> jobClass;
 	private final Optional<Class<? extends ScheduledJob>> cleanupJobClass;
-	private final CronSchedule cronSchedule;
+	private final SchedulingMethod schedulingMethod;
 	private final ScheduledJobUserData userData;
 	private final Optional<GeneralDate> startDate;
 	private final Optional<GeneralDate> endDate;
@@ -40,13 +40,13 @@ public class UkJobScheduleOptions {
 		});
 	}
 	
-	public static Builder builder(Class<? extends ScheduledJob> jobClass, CronSchedule cronSchedule) {
-		return new Builder(jobClass, cronSchedule);
+	public static Builder builder(Class<? extends ScheduledJob> jobClass, SchedulingMethod schedulingMethod) {
+		return new Builder(jobClass, schedulingMethod);
 	}
 	
 	public static class Builder {
 		final Class<? extends ScheduledJob> jobClass;
-		final CronSchedule cronSchedule;
+		final SchedulingMethod schedulingMethod;
 		final ScheduledJobUserData userData = new ScheduledJobUserData();
 		Class<? extends ScheduledJob> cleanupJobClass;
 		GeneralDate startDate = null;
@@ -54,9 +54,9 @@ public class UkJobScheduleOptions {
 		TimeClockPrimitiveValue<?> startClock = null;
 		TimeClockPrimitiveValue<?> endClock = null;
 		
-		public Builder(Class<? extends ScheduledJob> jobClass, CronSchedule cronSchedule) {
+		public Builder(Class<? extends ScheduledJob> jobClass, SchedulingMethod schedulingMethod) {
 			this.jobClass = jobClass;
-			this.cronSchedule = cronSchedule;
+			this.schedulingMethod = schedulingMethod;
 		}
 		
 		public Builder cleanupJobClass(Class<? extends ScheduledJob> cleanupJobClass) {
@@ -93,7 +93,7 @@ public class UkJobScheduleOptions {
 			return new UkJobScheduleOptions(
 					jobClass,
 					Optional.ofNullable(cleanupJobClass),
-					cronSchedule,
+					schedulingMethod,
 					userData,
 					Optional.ofNullable(startDate),
 					Optional.ofNullable(endDate),

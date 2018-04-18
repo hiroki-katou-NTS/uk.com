@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.monthly.verticaltotal;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
@@ -146,7 +147,7 @@ public class VerticalTotalOfMonthly {
 		if (payItemCountOpt.isPresent()) payItemCount = payItemCountOpt.get();
 		
 		// 休暇加算設定　取得
-		val vacationAddSet = new VacationAddSet(companyId, repositories);
+		val vacationAddSet = repositories.getVacationAddSet().get(companyId);
 		
 		// 出勤状態クラスの作成
 		AttendanceStatusMap attendanceStatusMap = new AttendanceStatusMap(
@@ -168,14 +169,15 @@ public class VerticalTotalOfMonthly {
 			WorkTypeDaysCountTable workTypeDaysCountTable = null;
 			PredetemineTimeSetting predetermineTimeSet = null;
 			if (workInfoOfDaily != null){
-				val recordWorkInfo = workInfoOfDaily.getRecordWorkInformation();
+				val recordWorkInfo = workInfoOfDaily.getRecordInfo();
 				val workTypeCode = recordWorkInfo.getWorkTypeCode();
 				val workTimeCode = recordWorkInfo.getWorkTimeCode();
 				workType = workTypeMap.get(workTypeCode);
 				if (workType != null){
 					
 					// 勤務種類を判断しカウント数を取得する
-					workTypeDaysCountTable = new WorkTypeDaysCountTable(workType, vacationAddSet, verticalTotalMethod);
+					workTypeDaysCountTable = new WorkTypeDaysCountTable(workType, vacationAddSet,
+							Optional.of(verticalTotalMethod));
 				}
 				else {
 					workInfoOfDaily = null;

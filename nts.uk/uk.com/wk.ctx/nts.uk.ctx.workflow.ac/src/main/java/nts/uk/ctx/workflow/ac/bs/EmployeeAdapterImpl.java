@@ -15,10 +15,8 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.pub.employee.ConcurrentEmployeeExport;
-import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
-import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.sys.auth.pub.grant.RoleSetGrantedEmployeePub;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
@@ -122,5 +120,15 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 				x.getPersonName(), 
 				x.getJobId(), 
 				x.getJobCls().value)).collect(Collectors.toList());
+	}
+	
+	@Override
+	public PersonImport getEmployeeInformation(String sID){
+		return this.psInfor.getPersonInfo(sID);
+	}
+
+	@Override
+	public boolean canApprovalOnBaseDate(String companyId , String employeeID , GeneralDate date){
+		return this.roleSetPub.canApprovalOnBaseDate(companyId, employeeID, date);
 	}
 }

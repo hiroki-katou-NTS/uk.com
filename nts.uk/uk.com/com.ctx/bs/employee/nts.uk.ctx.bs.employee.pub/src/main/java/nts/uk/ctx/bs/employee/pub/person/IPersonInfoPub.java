@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.employee.pub.person;
 
+import java.util.List;
+
 public interface IPersonInfoPub {
 
 	/**
@@ -8,4 +10,6 @@ public interface IPersonInfoPub {
 	 * @return
 	 */
 	PersonInfoExport getPersonInfo(String sID);
+	
+	List<PersonInfoExport> listPersonInfor(List<String> listSID);
 }

@@ -1,13 +1,18 @@
 package nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkLocationCD;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.SubTargetDigestion;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 /**
- * 振休申請
+ * 振出申請
  * 
  * @author sonnlb
  */
@@ -24,6 +29,10 @@ public class RecruitmentApp extends AggregateRoot {
 	 * 勤務種類
 	 */
 	private String workTypeCD;
+	/**
+	 * 就業時間帯
+	 */
+	private WorkTimeCode workTimeCD;
 
 	/**
 	 * 勤務時間1
@@ -33,5 +42,10 @@ public class RecruitmentApp extends AggregateRoot {
 	 * 勤務時間2
 	 */
 	private RecruitmentWorkingHour workTime2;
+
+	/**
+	 * 消化対象代休管理
+	 */
+	private List<SubTargetDigestion> subTargetDigestions;
 
 }

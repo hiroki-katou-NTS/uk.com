@@ -11,5 +11,14 @@ public interface IdentificationRepository {
 	List<Identification> findByEmployeeID(String employeeID,GeneralDate startDate,GeneralDate endDate);
 	
 	Optional<Identification> findByCode(String employeeID,GeneralDate processingYmd);
+	
+	void insert(Identification identification);
+	
+	void remove(String companyId, String employeeId, GeneralDate processingYmd);
+	
+	List<Identification> findByEmployeeIDSortDate(String employeeID,GeneralDate startDate,GeneralDate endDate);
+
+	void removeByEmployeeIdAndDate(String employeeId, GeneralDate processingYmd);
+
 
 }

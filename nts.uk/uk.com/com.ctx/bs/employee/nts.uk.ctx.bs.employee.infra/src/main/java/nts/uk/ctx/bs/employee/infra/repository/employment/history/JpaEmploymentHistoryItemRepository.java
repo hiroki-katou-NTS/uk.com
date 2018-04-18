@@ -20,9 +20,12 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryOfEmployee;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem_;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist_;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 
 @Stateless
 public class JpaEmploymentHistoryItemRepository extends JpaRepository implements EmploymentHistoryItemRepository {
@@ -42,6 +45,13 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 			+ " INNER JOIN  BsymtEmploymentHist eh on eh.hisId = ehi.hisId"
 			+ " WHERE eh.sid = :sid AND eh.strDate <= :basedate AND :basedate <= eh.endDate";
 
+	private static final String SELECT_BY_EMPID = "SELECT ehi.sid, eh.strDate, eh.endDate, ehi.empCode FROM BsymtEmploymentHistItem ehi"
+			+ " INNER JOIN  BsymtEmploymentHist eh on eh.hisId = ehi.hisId"
+			+ " WHERE eh.sid = :sid ORDER BY eh.strDate";
+	
+	/** The Constant SELECT_BY_HISTIDS. */
+	private static final String SELECT_BY_HISTIDS = "SELECT aw FROM BsymtEmploymentHistItem aw"
+			+ " WHERE aw.hisId IN :historyId";
 	
 	@Override
 	public Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String companyId, String sid, GeneralDate date) {
@@ -356,6 +366,49 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 			EmploymentHistoryItem domain = this.toDomain(e);
 			return domain;
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<EmploymentHistoryOfEmployee> getEmploymentBySID(String employeeId) {
+		List<Object[]> listTemp =  this.queryProxy()
+				.query(SELECT_BY_EMPID, Object[].class)
+				.setParameter("sid", employeeId).getList();
+		
+		if (listTemp == null || listTemp.isEmpty()){
+			return Collections.emptyList();
+		}
+		return  listTemp.stream().map(i -> createDomainFromEntity(i)).collect(Collectors.toList());
+
+		
+	}
+	/**
+	 * Convert from entity to domain
+	 * @param i
+	 * @return
+	 */
+	private EmploymentHistoryOfEmployee createDomainFromEntity(Object[] i){
+		String sID = String.valueOf(i[0]);
+		GeneralDate startDate = GeneralDate.fromString(String.valueOf(i[1]), ConstantUtils.FORMAT_DATE_YYYYMMDD);
+		GeneralDate endDate = GeneralDate.fromString(String.valueOf(i[2]), ConstantUtils.FORMAT_DATE_YYYYMMDD);
+		String empCD = String.valueOf(i[3]);
+		EmploymentHistoryOfEmployee emHisOfSid = new EmploymentHistoryOfEmployee(sID, startDate, endDate, empCD);
+		
+		return emHisOfSid;
+	}
+
+	@Override
+	public List<EmploymentHistoryItem> getByListHistoryId(List<String> historyIds) {
+		if (CollectionUtil.isEmpty(historyIds)) {
+			return new ArrayList<>();
+		}
+		List<BsymtEmploymentHistItem> listHistItem = new ArrayList<>();
+		CollectionUtil.split(historyIds, 1000, subList -> {
+			listHistItem.addAll(this.queryProxy().query(SELECT_BY_HISTIDS, BsymtEmploymentHistItem.class)
+					.setParameter("historyId", subList).getList());
+		});
+		return listHistItem.stream().map(item -> toDomain(item))
+				.collect(Collectors.toList());
+	
 	}
 
 }

@@ -8,6 +8,7 @@ module nts.uk.pr.view.kmf001.d {
             saveRetentionYearly: 'ctx/at/shared/vacation/setting/retentionyearly/save',
             findByEmployment: 'ctx/at/shared/vacation/setting/employmentsetting/find',
             saveByEmployment: 'ctx/at/shared/vacation/setting/employmentsetting/save',
+            deleteByEmployment: 'ctx/at/shared/vacation/setting/employmentsetting/delete',
             findIsManaged: 'ctx/at/share/vacation/setting/annualpaidleave/find/setting',
             findAllByEmployment: 'ctx/at/shared/vacation/setting/employmentsetting/findAll'
         };
@@ -24,6 +25,10 @@ module nts.uk.pr.view.kmf001.d {
         
         export function findByEmployment(empCode: string): JQueryPromise<model.EmploymentSettingFindDto> {
             return nts.uk.request.ajax(paths.findByEmployment + "/" + empCode);
+        }
+        
+        export function deleteByEmployment(empCode: string): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.deleteByEmployment + "/" + empCode);
         }
         
         export function saveByEmployment(employmentSetting: model.EmploymentSettingDto):  JQueryPromise<void> {
@@ -53,6 +58,7 @@ module nts.uk.pr.view.kmf001.d {
             export class RetentionYearlyFindDto {
                 upperLimitSetting: UpperLimitSettingFindDto;
                 leaveAsWorkDays: boolean;
+                managementCategory: number;
             }
             
             export class UpperLimitSettingDto {
@@ -63,6 +69,7 @@ module nts.uk.pr.view.kmf001.d {
             export class RetentionYearlyDto {
                 upperLimitSettingDto: UpperLimitSettingDto;
                 leaveAsWorkDays: boolean;
+                managementCategory: number;
             }
             
             export class EmploymentSettingDto {

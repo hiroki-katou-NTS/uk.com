@@ -57,8 +57,16 @@ public class PersonInfoCategory extends AggregateRoot {
 	private CategoryCode categoryParentCode;
 	
 	private boolean alreadyCopy;
-
-	public final static String ROOT_COMPANY_ID = "000000000000-0000";
+	
+	/**
+	 * 初期値マスタ対象区分
+	 */
+	private InitValMasterObjCls initValMasterCls;
+	
+	/**
+	 * 項目追加対象区分
+	 */
+	private AddItemObjCls addItemCls;
 
 	private PersonInfoCategory(String companyId, String categoryCode, String categoryName, int categoryType) {
 		super();
@@ -71,6 +79,8 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.isAbolition = IsAbolition.NOT_ABOLITION;
 		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
 		this.isFixed = IsFixed.NOT_FIXED;
+		this.initValMasterCls = InitValMasterObjCls.INIT;
+		this.addItemCls = AddItemObjCls.ENABLE;
 	}
 
 	private PersonInfoCategory(String personInfoCategoryId, String companyId, String categoryCode,
@@ -93,6 +103,10 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.companyId = companyId;
 		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
 	}
+	
+	private PersonInfoCategory(){
+		super();
+	}
 
 	public static PersonInfoCategory createFromJavaType(String companyId, String categoryCode, String categoryName,
 			int categoryType) {
@@ -111,6 +125,18 @@ public class PersonInfoCategory extends AggregateRoot {
 		return new PersonInfoCategory(personInfoCategoryId, companyId, categoryType);
 	}
 	
+	public static PersonInfoCategory createDomainWithAbolition(String ctgId, String ctgCd, String name){
+		PersonInfoCategory p = new PersonInfoCategory();
+		p.personInfoCategoryId = ctgId;
+		p.categoryName = new CategoryName(name);
+		p.categoryCode = new CategoryCode(ctgCd);
+		return p;
+	}
+	public void setDomainNameAndAbolition(CategoryName name, int isAbolition){
+		this.isAbolition = EnumAdaptor.valueOf(isAbolition, IsAbolition.class);
+		this.categoryName = name;
+	}
+	
 	public static List<PersonInfoCategory> getAllPerInfoCategoryWithCondition(List<PersonInfoCategory> lstObj){
 		return lstObj.stream().filter(obj -> 
 			obj.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE
@@ -126,5 +152,22 @@ public class PersonInfoCategory extends AggregateRoot {
 	
 	public void setCategoryType(int categoryType) {
 		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
+	}
+
+	public PersonInfoCategory(String personInfoCategoryId, CategoryCode categoryCode, CategoryName categoryName,
+			String companyId, IsFixed isFixed, PersonEmployeeType personEmployeeType, CategoryType categoryType,
+			IsAbolition isAbolition, CategoryCode categoryParentCode) {
+		super();
+		this.personInfoCategoryId = personInfoCategoryId;
+		this.categoryCode = categoryCode;
+		this.categoryName = categoryName;
+		this.companyId = companyId;
+		this.isFixed = isFixed;
+		this.personEmployeeType = personEmployeeType;
+		this.categoryType = categoryType;
+		this.isAbolition = isAbolition;
+		this.categoryParentCode = categoryParentCode;
+		this.initValMasterCls = InitValMasterObjCls.INIT;
+		this.addItemCls = AddItemObjCls.ENABLE;
 	}
 }

@@ -16,6 +16,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.datadialog.WorkTimeWorkp
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.WorkTypeChangedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ActualLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalUseSettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFomatDailyDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatInitialDisplayDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatSheetDto;
@@ -36,6 +37,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DivergenceTimeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmploymentDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.FormatDPCorrectionDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.SubstVacationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
@@ -98,6 +100,7 @@ public interface DailyPerformanceScreenRepo {
 	/** Get list employee by jobTitle, employment, workplace, classification */
 	List<DailyPerformanceEmployeeDto> getListEmployee(List<String> lstJobTitle, List<String> lstEmployment,
 			Map<String, String> lstWorkplace, List<String> lstClassification);
+	List<DailyPerformanceEmployeeDto> getListEmployee(List<String> sids);
 	
 	/** Get list employee by sid*/
 	List<DailyPerformanceEmployeeDto> getListEmployeeWithSid(List<String> sid);
@@ -186,5 +189,11 @@ public interface DailyPerformanceScreenRepo {
 	Optional<DailyRecOpeFuncDto> findDailyRecOpeFun(String companyId);
 	
 	List<EnumConstant> findErAlApplication(String companyId, List<String> errorCode);
+	
+	Optional<IdentityProcessUseSetDto> findIdentityProcessUseSet(String comapnyId);
+	
+	Optional<ApprovalUseSettingDto> findApprovalUseSettingDto(String comapnyId);
+	
+	Map<String, Boolean> getConfirmDay(String companyId, List<String> sids, DateRange dates);
 	
  }

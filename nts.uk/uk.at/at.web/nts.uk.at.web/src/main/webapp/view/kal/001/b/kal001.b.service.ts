@@ -13,8 +13,9 @@ module nts.uk.at.view.kal001.b {
         /**
          * save file excel
          */
-        export function saveAsExcel(data:any): JQueryPromise<any> {
-            return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "alarmList", domainType: "alarmlist", languageId: 'ja', reportType: 0 ,data:data});
+        export function saveAsExcel(data: Array<model.ValueExtractAlarmDto>): JQueryPromise<any> {
+            return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "alarmList", domainType: "AlarmList", languageId: 'ja', reportType: 0 ,data:data});
+            
         }
     
     }

@@ -66,6 +66,18 @@ public class JpaApproverRepository extends JpaRepository implements ApproverRepo
 		.executeUpdate();
 	}
 	/**
+	 * updateEmployeeIdApprover
+	 * @param companyId
+	 * @param approvalPhaseId
+	 */
+	@Override
+	public void updateEmployeeIdApprover(Approver updateApprover) {
+		WwfmtAppover a = toEntityApprover(updateApprover);
+		WwfmtAppover x = this.queryProxy().find(a.wwfmtAppoverPK, WwfmtAppover.class).get();
+		x.setEmployeeId(a.employeeId);
+		this.commandProxy().update(x);
+	}
+	/**
 	 * convert entity WwfmtAppover to domain Approver
 	 * @param entity
 	 * @return

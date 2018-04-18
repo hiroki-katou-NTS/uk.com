@@ -24,18 +24,18 @@ public class CheckConfirmService {
 		//ドメインモデル「日の本人確認」を取得する
 		List<Identification> listIdentification = identificationRepository.findByEmployeeID(employeeID, startDate, endDate);
 		//取得した「日の本人確認」をもとにListを作成する
-		for(GeneralDate dateBegin = startDate;dateBegin.after(endDate);dateBegin.addDays(1)) {
+		GeneralDate date = GeneralDate.localDate(startDate.localDate());
+		while(date.before(endDate)) {
 			boolean checkExist = false;
 			for(Identification identification : listIdentification) {
-				if(dateBegin.equals(identification.getProcessingYmd())){
+				if(date.equals(identification.getProcessingYmd())){
 					checkExist = true;
 					break;
 				}
 			}
-			listStateConfirm.add(new StateConfirm(dateBegin,checkExist));
+			listStateConfirm.add(new StateConfirm(date,checkExist));
+			date = date.addDays(1);
 		}
-		
-		
 		return listStateConfirm;
 	}
 

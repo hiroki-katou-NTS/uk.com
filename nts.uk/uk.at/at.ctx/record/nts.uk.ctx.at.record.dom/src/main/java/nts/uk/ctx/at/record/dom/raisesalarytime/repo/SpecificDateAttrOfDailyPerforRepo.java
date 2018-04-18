@@ -18,4 +18,6 @@ public interface SpecificDateAttrOfDailyPerforRepo {
 	public void update(SpecificDateAttrOfDailyPerfor domain);
 
 	public void add(SpecificDateAttrOfDailyPerfor domain);
+	
+	public void deleteByEmployeeIdAndDate(String employeeId, GeneralDate baseDate);
 }

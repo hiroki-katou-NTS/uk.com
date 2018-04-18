@@ -231,7 +231,7 @@ module nts.uk.ui {
                     });
                 }
 
-                var $this = createNoticeDialog(message, buttons);
+                var $this = createNoticeDialog(message, buttons, { text: toBeResource.confirm });
             });
 
             return handlers;
@@ -272,8 +272,13 @@ module nts.uk.ui {
                     }
                     
                     let currentControlOffset = element.offset();
-                    let top = additonalTop + currentControlOffset.top  + element.outerHeight() - window.scrollY;
-                    let left = additonalLeft + currentControlOffset.left - window.scrollX;
+                    let doc = document.documentElement;
+                    let scrollX = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
+                    let scrollY = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+                    let top = additonalTop + currentControlOffset.top + element.outerHeight() - scrollY;
+                    //                    let top = additonalTop + currentControlOffset.top  + element.outerHeight() - window.scrollY;
+                    let left = additonalLeft + currentControlOffset.left - scrollX;
+                    //                    let left = additonalLeft + currentControlOffset.left - window.scrollX;
                     let $errorDialogOffset = $dialogContainer.offset();
                     let maxLeft = $errorDialogOffset.left + $dialogContainer.width();
                     let maxTop = $errorDialogOffset.top + $dialogContainer.height();
@@ -315,6 +320,8 @@ module nts.uk.ui {
                 return alertError(errors);
             }
                        
+            let dialogInfo = nts.uk.ui.windows.getSelf();
+            
             closeButton.appendTo(functionArea);
             functionArea.appendTo(container);
             errorBoard.appendTo(container);
@@ -338,7 +345,38 @@ module nts.uk.ui {
                             then();
                         });
                         
-                        container.closest("div[role='dialog']").position({ my: "center", at: "center", of: window.parent });
+                        let currentInfo = dialogInfo;
+                        let top=0, left=0;
+                        let dialog = container.closest("div[role='dialog']");
+                        if(dialogInfo.isRoot){
+                            top = (window.innerHeight - dialog.innerHeight()) / 2;
+                            left = (window.innerWidth - dialog.innerWidth()) / 2;
+                        } else {
+                            while(!nts.uk.util.isNullOrUndefined(currentInfo)){
+                                if(currentInfo.isRoot){
+                                    currentInfo = null;
+                                } else {
+                                    var fullDialog = currentInfo.$dialog.closest("div[role='dialog']"); 
+                                    var offset = fullDialog.offset();
+                                    top += offset.top;
+                                    left += offset.left;
+                                    currentInfo = currentInfo.parent;
+                                }
+                            }
+                        }
+                        
+                        setTimeout(function(){
+                            let dialogM = dialogInfo.$dialog.closest("div[role='dialog']");
+                            let topDiff = (dialogM.innerHeight() - dialog.innerHeight()) / 2;
+                            let leftDiff = (dialogM.innerWidth() - dialog.innerWidth()) / 2;
+                            if(topDiff > 0){
+                                top += topDiff;
+                            }
+                            if(leftDiff > 0){
+                                left += leftDiff;
+                            }
+                            dialog.css({top: top, left: left});
+                        }, 33);
                     },
                     close: function(event) {
                     }

@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.annualpaidleave;
 
-import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AcquisitionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingGetMemento;
@@ -49,7 +48,6 @@ public class JpaAnnualPaidLeaveSettingGetMemento implements AnnualPaidLeaveSetti
     @Override
     public AcquisitionSetting getAcquisitionSetting() {
         AcquisitionSetting setting = AcquisitionSetting.builder()
-                .permitType(ApplyPermission.valueOf(this.entity.getPermitAtr()))
                 .annualPriority(AnnualPriority.valueOf(this.entity.getPriorityType()))
                 .build();
         return setting;
@@ -87,5 +85,4 @@ public class JpaAnnualPaidLeaveSettingGetMemento implements AnnualPaidLeaveSetti
     public TimeAnnualSetting getTimeSetting() {
         return new TimeAnnualSetting(new JpaTimeAnnualSettingGetMemento(this.entity.getKtvmtTimeVacationSet()));
     }
-
 }

@@ -7,9 +7,9 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.AppListExtractCondition;
-import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.ApplicationDisplayAtr;
-import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.ApplicationListAtr;
+import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
+import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationDisplayAtr;
+import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
 @Getter
 public class AppListExtractConditionDto {
 

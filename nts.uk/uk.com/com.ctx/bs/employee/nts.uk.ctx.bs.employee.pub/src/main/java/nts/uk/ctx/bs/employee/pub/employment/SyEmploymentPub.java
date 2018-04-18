@@ -4,10 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pub.employment;
 
+import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface WorkplacePub.
@@ -30,7 +32,7 @@ public interface SyEmploymentPub {
 	 * @param companyId the company id
 	 * @return the list
 	 */
-	// RequestList #89
+	// RequestList89
 	List<EmpCdNameExport> findAll(String companyId);
 	
 	/**
@@ -41,4 +43,16 @@ public interface SyEmploymentPub {
 	 * @return the list
 	 */
 	List<ShEmploymentExport> findByEmpCodes(String companyId, List<String> empCodes);
+	
+	/** 
+	 * Find by List Sids and Period
+	 * @param sids
+	 * @param period
+	 * @return
+	 */
+	//RequestList 264
+	List<EmploymentHisExport> findByListSidAndPeriod(List<String> sids , DatePeriod datePeriod);
+	
+	
+	
 }

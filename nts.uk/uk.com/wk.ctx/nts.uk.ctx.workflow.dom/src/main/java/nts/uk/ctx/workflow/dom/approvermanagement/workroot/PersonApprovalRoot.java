@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -106,5 +107,12 @@ public class PersonApprovalRoot extends AggregateRoot implements UnduplicatableH
 	@Override
 	public List<EmploymentAppHistoryItem> items() {
 		return employmentAppHistoryItems;
+	}
+
+	public static boolean isCommonPsApprovalRoot(PersonApprovalRoot psAppRoot) {
+		if (psAppRoot.getEmploymentRootAtr().value == 0 && Objects.isNull(psAppRoot.getApplicationType())) {
+			return true;
+		}
+		return false;
 	}
 }

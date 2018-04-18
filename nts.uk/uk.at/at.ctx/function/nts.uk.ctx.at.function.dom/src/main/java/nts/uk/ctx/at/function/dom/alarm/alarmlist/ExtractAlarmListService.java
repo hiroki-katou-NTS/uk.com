@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.AggregationProcessService;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatus;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatusRepository;
@@ -45,19 +46,22 @@ public class ExtractAlarmListService {
 		// 条件を満たしていない
 		if (listEmployee.isEmpty()) {
 			// エラーメッセージ(#Msg_834)を表示する
-			throw new BusinessException("Msg_834");
+			throw new BusinessException("Msg_834");	
 		}
 		
 		// ドメインモデル「アラームリスト抽出処理状況」を作成する
-		AlarmListExtraProcessStatus alarmExtraProcessStatus = new AlarmListExtraProcessStatus(companyID, GeneralDate.today(), GeneralDateTime.now().minutes(),
-				employeeId, Optional.ofNullable(null), null);
+		AlarmListExtraProcessStatus alarmExtraProcessStatus = new AlarmListExtraProcessStatus(
+				IdentifierUtil.randomUniqueId(),
+				companyID, GeneralDate.today(), 
+				GeneralDateTime.now().hours()*60 +GeneralDateTime.now().minutes(),
+				employeeId, null, null);
 		this.alListExtraProcessStatusRepo.addAlListExtaProcess(alarmExtraProcessStatus);
 		
 		// 勤務実績のアラームリストの集計処理を行う
 		List<AlarmExtraValueWkReDto> listAlarmExtraValueWR = aggregationProcessService.processAlarmListWorkRecord(listEmployee,
 				checkPatternCode, periodByCategory);
 		// ドメインモデル「アラームリスト抽出処理状況」を更新する
-		alarmExtraProcessStatus.setEndDateAndEndTime(GeneralDate.today(), GeneralDateTime.now().minutes());
+		alarmExtraProcessStatus.setEndDateAndEndTime(GeneralDate.today(), GeneralDateTime.now().hours()*60 + GeneralDateTime.now().minutes());
 		this.alListExtraProcessStatusRepo.updateAlListExtaProcess(alarmExtraProcessStatus);
 
 		// 集計結果を確認する sort list

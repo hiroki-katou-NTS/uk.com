@@ -370,8 +370,8 @@ module nts.uk.ui.gridlist {
                                             { name: "Sheet", 
                                               initialDisplay: "sheet1",
                                               sheets: [ 
-                                                        { name: "sheet1", text: "Sheet 1", columns: ["time", "addressCode1", "addressCode2", "address1", "address2", "comboCode1", "combo", "header0", "comboCode2", "header01", "header02"] }, 
-                                                        { name: "sheet2", text: "Sheet 2", columns: ["header1", "header2", "header3", "header4", "header5", "header6", "alert"] }
+                                                        { name: "sheet1", text: "Sheet 1", columns: ["time", "addressCode1", "address1" , "comboCode1", "combo", "addressCode2", "address2", "header0", "comboCode2", "header01", "header02"] }, 
+                                                        { name: "sheet2", text: "Sheet 2", columns: ["addressCode1", "address1", "time", "header1", "header2", "header3", "header4", "header5", "header6", "alert"] }
                                                       ]
                                             },
                                             {

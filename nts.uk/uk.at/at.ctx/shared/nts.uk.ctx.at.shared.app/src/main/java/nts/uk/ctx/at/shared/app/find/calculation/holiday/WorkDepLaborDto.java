@@ -51,4 +51,12 @@ public class WorkDepLaborDto {
 
 	/** 加算する */
 	private int additionTimeWork;
+	
+	/*B7_23*/
+	/*就業時間帯毎の設定を可能とする*/
+	private int enableSetPerWorkHour1;
+	
+	/*B7_24*/
+	/*就業時間帯毎の設定を可能とする*/
+	private int enableSetPerWorkHour2;
 }

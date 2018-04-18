@@ -57,6 +57,10 @@ public class KtvmtTimeAnnualSet extends UkJpaEntity implements Serializable {
     /** The is enough time one day. */
     @Column(name = "IS_ENOUGH_TIME_ONE_DAY")
     private Integer isEnoughTimeOneDay;
+    
+    /** The Round Processing Classification. */
+    @Column(name = "ROUND_PRO_CLA")
+    private Integer roundProcessCla;
 
     /**
      * Instantiates a new ktvmt time vacation set.

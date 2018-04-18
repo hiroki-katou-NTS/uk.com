@@ -73,8 +73,11 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 			// 実績反映状態 = 反映状態．反映待ち
 			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.WAITREFLECTION);
 			applicationRepository.update(application);
-			if(application.getPrePostAtr().equals(PrePostAtr.PREDICT)&&
-					application.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)){
+			if((application.getPrePostAtr().equals(PrePostAtr.PREDICT)&&
+					(application.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)
+					|| application.getAppType().equals(ApplicationType.BREAK_TIME_APPLICATION)))
+				|| application.getAppType().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION)
+				|| application.getAppType().equals(ApplicationType.WORK_CHANGE_APPLICATION)){
 				appReflectManager.reflectEmployeeOfApp(application);
 			}
 		}

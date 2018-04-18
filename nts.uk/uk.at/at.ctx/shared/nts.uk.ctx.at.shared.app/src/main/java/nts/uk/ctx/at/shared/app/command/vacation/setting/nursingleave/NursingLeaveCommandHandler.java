@@ -10,12 +10,15 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.app.command.vacation.setting.nursingleave.dto.NursingLeaveSettingDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildNursingLeaveSettingDomainEvent;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingDomainEvent;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -54,6 +57,33 @@ public class NursingLeaveCommandHandler extends CommandHandler<NursingLeaveComma
         } else {
             this.nursingLeaveRepo.update(nursingSetting, childNursingSetting);
         }
+        
+        int manageTypeDB1,manageTypeDB2;
+        
+        //get manageType from DB
+        if (CollectionUtil.isEmpty(result)) {
+        	manageTypeDB1 = -1;
+        	manageTypeDB2 = -1;
+        } else {
+        	manageTypeDB1 = result.get(INDEX_NURSING) != null ? result.get(INDEX_NURSING).getManageType().value : -1;
+        	manageTypeDB2 = result.get(INDEX_CHILD_NURSING) != null ? result.get(INDEX_CHILD_NURSING).getManageType().value : -1;
+        }
+		
+		//check managementCategory change
+		boolean manageType1 = command.getNursingSetting().getManageType() != manageTypeDB1;
+		if (manageType1) {
+			boolean manage = command.getNursingSetting().getManageType() == ManageDistinct.YES.value;
+			val nursingLeaveSettingEvent = new NursingLeaveSettingDomainEvent(manage);
+			nursingLeaveSettingEvent.toBePublished();
+		}
+		
+		//check managementCategory change
+		boolean manageType2 = command.getChildNursingSetting().getManageType() != manageTypeDB2;
+		if (manageType2) {
+			boolean manage = command.getChildNursingSetting().getManageType() == ManageDistinct.YES.value;
+			val childNursingLeaveSettingEvent = new ChildNursingLeaveSettingDomainEvent(manage);
+			childNursingLeaveSettingEvent.toBePublished();
+		}
     }
 
     /**

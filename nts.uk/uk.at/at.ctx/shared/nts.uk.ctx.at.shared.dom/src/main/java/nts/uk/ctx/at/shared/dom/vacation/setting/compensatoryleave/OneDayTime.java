@@ -5,10 +5,12 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
 
 import nts.arc.primitive.TimeClockPrimitiveValue;
+import nts.arc.primitive.constraint.TimeRange;
 
 /**
  * The Class OneDayTime.
  */
+@TimeRange(min = "00:00", max = "24:00")
 public class OneDayTime extends TimeClockPrimitiveValue<OneDayTime>{
 
 	/** The Constant serialVersionUID. */

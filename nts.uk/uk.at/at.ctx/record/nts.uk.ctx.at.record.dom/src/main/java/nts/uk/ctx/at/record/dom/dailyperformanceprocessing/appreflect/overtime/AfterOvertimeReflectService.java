@@ -9,15 +9,9 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.Applicatio
  */
 public interface AfterOvertimeReflectService {
 	/**
-	 * 予定勤種就時の反映
-	 * @return
-	 */
-	public void scheReflectJobType(OvertimeParameter overtimePara);
-	/**
-	 * 勤種・就時の反映
+	 * 事後申請の反映処理(残業申請)
 	 * @param overtimePara
 	 * @return
 	 */
-	public ApplicationReflectOutput reflectAfterOvertime(OvertimeParameter overtimePara);
-
+	public boolean reflectAfterOvertime(OvertimeParameter overtimePara);
 }

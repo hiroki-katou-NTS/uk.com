@@ -22,14 +22,14 @@ public class DefaultUkJobScheduler implements UkJobScheduler {
 	private JobScheduler scheduler;
 
 	@Override
-	public ScheduleInfo scheduleOnCurrentcompany(UkJobScheduleOptions options) {
+	public ScheduleInfo scheduleOnCurrentCompany(UkJobScheduleOptions options) {
 		val scheduleInfo = ScheduleInfo.createNew();
 		
 		val ntsOptions = new JobScheduleOptions(
 				options.getJobClass(),
 				createJobContextKey(scheduleInfo.getScheduleId()),
 				options.getUserData(),
-				options.getCronSchedule(),
+				options.getSchedulingMethod(),
 				options.getStartDateTime(),
 				options.getEndDateTime());
 		

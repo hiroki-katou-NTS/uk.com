@@ -3,18 +3,26 @@ module nts.uk.at.view.kmf003.b.service {
      *  Service paths
      */
     var servicePath = {
-        findByCode: "at/share/grantholidaytbl/findByCode/{0}/{1}",
-        addGrantHdTbl: "at/share/grantholidaytbl/add",
-        updateGrantHdTbl: "at/share/grantholidaytbl/update",
-        deleteGrantHdTbl: "at/share/grantholidaytbl/delete",
-        calculateGrantDate: "at/share/grantholidaytbl/calculateGrantDate"
+        findByCode: "at/share/lengthofservice/findByCode/{0}",
+        findGrantByCode: "at/share/grantholidaytbl/findByCode/{0}/{1}",
+        addGrantHdTbl: "at/share/lengthofservice/add",
+        calculateGrantDate: "at/share/grantholidaytbl/calculateGrantDate",
+        checkData: "ctx/at/share/vacation/setting/annualpaidleave/find/checkkmf003"
     }  
     
     /**
      *  Find data by codes
      */
-    export function findByCode(conditionNo: number, yearHolidayCode: string): JQueryPromise<GrantHolidayTblDto> {
-        var path = nts.uk.text.format(servicePath.findByCode, conditionNo, yearHolidayCode);
+    export function findByCode(yearHolidayCode: string): JQueryPromise<GrantHolidayTblDto> {
+        var path = nts.uk.text.format(servicePath.findByCode, yearHolidayCode);
+        return nts.uk.request.ajax(path);
+    }  
+    
+    /**
+     *  Find Grant data by codes
+     */
+    export function findGrantByCode(conditionNo: number, yearHolidayCode: string): JQueryPromise<GrantHolidayTblDto> {
+        var path = nts.uk.text.format(servicePath.findGrantByCode, conditionNo, yearHolidayCode);
         return nts.uk.request.ajax(path);
     }  
     
@@ -24,23 +32,7 @@ module nts.uk.at.view.kmf003.b.service {
     export function addYearHolidayGrant(data: Array<GrantHolidayTblDto>): JQueryPromise<any> {
         var path = nts.uk.text.format(servicePath.addGrantHdTbl);
         return nts.uk.request.ajax("at", path, data);
-    }  
-    
-    /**
-     *  Update data
-     */
-    export function updateYearHolidayGrant(data: Array<GrantHolidayTblDto>): JQueryPromise<any> {
-        var path = nts.uk.text.format(servicePath.updateGrantHdTbl);
-        return nts.uk.request.ajax("at", path, data);
-    }  
-    
-    /**
-     *  Delete data
-     */
-    export function deleteYearHolidayGrant(codes: Array<Codes>): JQueryPromise<any> {
-        var path = nts.uk.text.format(servicePath.deleteGrantHdTbl);
-        return nts.uk.request.ajax("at", path, codes);
-    } 
+    }
     
     /**
      *  Calculate grant dates
@@ -49,6 +41,13 @@ module nts.uk.at.view.kmf003.b.service {
         var path = nts.uk.text.format(servicePath.calculateGrantDate);
         return nts.uk.request.ajax("at", path, param);
     } 
+    
+    /**
+     *  Check data before load
+     */
+    export function checkData(): JQueryPromise<any> {
+        return nts.uk.request.ajax(servicePath.checkData);
+    }
     
     export interface GrantHolidayTblDto {
         grantYearHolidayNo: number,

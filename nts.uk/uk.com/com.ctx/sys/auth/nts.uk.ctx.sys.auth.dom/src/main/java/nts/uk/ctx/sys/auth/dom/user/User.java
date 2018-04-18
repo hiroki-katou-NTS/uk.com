@@ -57,11 +57,14 @@ public class User extends AggregateRoot {
 	/** The associated employee id. */
 	private String associatedPersonID;
 
-	public static User createFromJavatype(String userID, Boolean defaultUser, String password, String loginID, String contractCode, GeneralDate expirationDate, int specialUser, int multiCompanyConcurrent, String mailAddress,
-			String userName, String associatedPersonID) {
+	public static User createFromJavatype(String userID, Boolean defaultUser, String password, String loginID,
+			String contractCode, GeneralDate expirationDate, int specialUser, int multiCompanyConcurrent,
+			String mailAddress, String userName, String associatedPersonID) {
 
-		return new User(userID, defaultUser, new HashPassword(password), new LoginID(loginID), new ContractCode(contractCode), expirationDate, EnumAdaptor.valueOf(specialUser, DisabledSegment.class),
-				EnumAdaptor.valueOf(multiCompanyConcurrent, DisabledSegment.class), new MailAddress(mailAddress), new UserName(userName), associatedPersonID);
+		return new User(userID, defaultUser, new HashPassword(password), new LoginID(loginID),
+				new ContractCode(contractCode), expirationDate, EnumAdaptor.valueOf(specialUser, DisabledSegment.class),
+				EnumAdaptor.valueOf(multiCompanyConcurrent, DisabledSegment.class), new MailAddress(mailAddress),
+				new UserName(userName), associatedPersonID);
 	}
 
 	public boolean hasAssociatedPersonID() {

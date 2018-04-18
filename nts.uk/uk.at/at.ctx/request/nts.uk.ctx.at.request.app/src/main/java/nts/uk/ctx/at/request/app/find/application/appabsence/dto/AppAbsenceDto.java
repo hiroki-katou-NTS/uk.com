@@ -2,11 +2,17 @@ package nts.uk.ctx.at.request.app.find.application.appabsence.dto;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
+import nts.uk.ctx.at.request.dom.application.appabsence.AbsenceWorkType;
+import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AppAbsenceDto {
 	/**
 	 * version
@@ -61,7 +67,7 @@ public class AppAbsenceDto {
 	/**
 	 * 就業時間帯変更する
 	 */
-	private boolean changeWorkHour;
+	private boolean changeWorkHourFlg;
 	/**
 	 * 終日半日休暇区分
 	 */
@@ -116,4 +122,60 @@ public class AppAbsenceDto {
 	private boolean prePostFlg;
 	
 	private List<Integer> holidayAppTypes;
+	
+	/**
+	 * workTypes
+	 */
+	private List<AbsenceWorkType> workTypes;
+	
+	/**
+	 * workTimeCodes
+	 */
+	private List<String> workTimeCodes;
+	
+	private int initMode;
+	/**
+	 * mailFlg
+	 */
+	private boolean mailFlg;
+	
+	/**
+	 * displayWorkChangeFlg : dùng cho màn B
+	 */
+	private boolean displayWorkChangeFlg;
+	
+	public static AppAbsenceDto fromDomain(AppAbsence app){
+		return new AppAbsenceDto(app.getVersion(),
+								ApplicationDto_New.fromDomain(app.getApplication()),
+								app.getCompanyID(),
+								app.getAppID(),
+								app.getApplication().getEmployeeID(),
+								"",
+								app.getHolidayAppType().value,
+								app.getWorkTypeCode() == null ? null : app.getWorkTypeCode().toString(),
+								"",
+								app.getWorkTimeCode() == null ? null : app.getWorkTimeCode().toString(),
+								"",
+								app.isHalfDayFlg(),
+								app.isChangeWorkHour(),
+								app.getAllDayHalfDayLeaveAtr().value,
+								app.getStartTime1() == null ? null :app.getStartTime1().v(),
+								app.getEndTime1() == null ? null :app.getEndTime1().v(),
+								app.getStartTime2() == null ? null :app.getStartTime2().v(),
+								app.getEndTime2() == null ? null :app.getEndTime2().v(),
+								null,
+								null,
+								null,
+								null,
+								false,
+								null,
+								true,
+								null,
+								null,
+								null,
+								0,
+								false,
+								false);
+	}
 }
+

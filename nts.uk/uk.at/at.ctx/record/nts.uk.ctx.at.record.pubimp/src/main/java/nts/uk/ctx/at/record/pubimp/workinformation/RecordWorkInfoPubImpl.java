@@ -11,7 +11,7 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.stamp.GoOutReason;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
@@ -43,9 +43,9 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 		if(!workInfo.isPresent()) {
 			return new RecordWorkInfoPubExport("", "");
 		}
-		String workTimeCode = workInfo.get().getRecordWorkInformation().getWorkTimeCode() == null 
-				? null : workInfo.get().getRecordWorkInformation().getWorkTimeCode().v();
-		String workTypeCode = workInfo.get().getRecordWorkInformation().getWorkTypeCode().v();
+		String workTimeCode = workInfo.get().getRecordInfo().getWorkTimeCode() == null 
+				? null : workInfo.get().getRecordInfo().getWorkTimeCode().v();
+		String workTypeCode = workInfo.get().getRecordInfo().getWorkTypeCode().v();
 		RecordWorkInfoPubExport record = new RecordWorkInfoPubExport(
 				workTypeCode,
 				workTimeCode);
@@ -142,27 +142,35 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 	}
 
 	@Override
-	public InfoCheckNotRegisterPubExport getInfoCheckNotRegister(String employeeId, GeneralDate ymd) {
+	public Optional<InfoCheckNotRegisterPubExport> getInfoCheckNotRegister(String employeeId, GeneralDate ymd) {
 		 Optional<InfoCheckNotRegisterPubExport> data = workInformationRepository.find(employeeId, ymd).map(c->convertToExport(c));
 		if(data.isPresent()) {
-			return data.get();
+			return data;
 		}
-		return null;
+		return Optional.empty();
 	}
 	
 	private InfoCheckNotRegisterPubExport convertToExport(WorkInfoOfDailyPerformance domain) {
 		return new InfoCheckNotRegisterPubExport(
 				domain.getEmployeeId(),
-				domain.getRecordWorkInformation().getWorkTimeCode().v(),
-				domain.getRecordWorkInformation().getWorkTypeCode().v()
+				domain.getRecordInfo().getWorkTimeCode()==null?"":domain.getRecordInfo().getWorkTimeCode().v(),
+				domain.getRecordInfo().getWorkTypeCode().v()
 				);
 	}
 	
-	private Integer getCalcTime(TimeWithCalculation calc){
+	private Integer getCalcTime(TimeDivergenceWithCalculation calc){
 		return calc == null || calc.getCalcTime() == null ? null : calc.getCalcTime().valueAsMinutes();
 	}
 
-	private Integer getCalcTime(Finally<TimeWithCalculation> calc){
+	private Integer getCalcTime(Finally<TimeDivergenceWithCalculation> calc){
 		return !calc.isPresent() || calc == null || calc.get().getCalcTime() == null ? null : calc.get().getCalcTime().valueAsMinutes();
 	}
+
+	@Override
+	public Optional<String> getWorkTypeCode(String employeeId, GeneralDate ymd) {
+		Optional<WorkInfoOfDailyPerformance> optWorkInfo =  workInformationRepository.find(employeeId, ymd);
+		if(!optWorkInfo.isPresent()) return Optional.ofNullable(null);		
+		return Optional.of(optWorkInfo.get().getRecordInfo().getWorkTypeCode().v());
+	}
+	
 }

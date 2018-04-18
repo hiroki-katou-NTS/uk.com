@@ -4,9 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.outsideot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.collection.CollectionUtil;
@@ -169,4 +171,15 @@ public class OutsideOTSetting extends AggregateRoot{
 		return true;
 	}
 
+	/**
+	 * 内訳項目に設定されている勤怠項目IDをすべて取得
+	 * @return 勤怠項目IDリスト
+	 */
+	// 2018.3.19 add shuichi_ishida
+	public List<Integer> getAllAttendanceItemIds(){
+		
+		List<Integer> allIds = new ArrayList<>();
+		for (val breakdownItem : this.breakdownItems) allIds.addAll(breakdownItem.getAttendanceItemIds());
+		return allIds;
+	}
 }

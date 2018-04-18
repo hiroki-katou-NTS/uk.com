@@ -39,7 +39,7 @@ public class OvertimeReflectPara {
 	/**
 	 * 予定と実績を同じに変更する区分
 	 */
-	private ScheAndRecordSameRequestChangeFlg scheAndRecordSameChangeFlg;
+	private ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg;
 	/**
 	 * 予定出退勤反映フラグ
 	 * true: する

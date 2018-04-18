@@ -86,7 +86,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         modeDisplay: KnockoutObservableArray<any> = ko.observableArray([
             { code: 1, name: '略名' },
-            { code: 2, name: '時刻' },
+            { code: 2, name: '時刻' }
             //            { code: 3, name: '記号' }
         ]);
         selectedModeDisplay: KnockoutObservable<number> = ko.observable(1);
@@ -170,8 +170,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $('#group-bt').show();
                     $('#oViewModel').show();
                     $('#qViewModel').hide();
-                    //                    $("#extable").exTable("viewMode", "shortName", { y: 175 });
-                    $("#extable").exTable("viewMode", "shortName", { y: 232 });
+                    $("#extable").exTable("viewMode", "shortName", { y: 210 });
                     $("#extable").exTable("updateMode", "stick");
                     $("#extable").exTable("stickMode", "single");
                     $("#combo-box1").focus();
@@ -179,8 +178,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $("#extable").exTable("stickData", __viewContext.viewModel.viewO.nameWorkTimeType());
                 } else if (newValue == 2) {
                     $('#contain-view').hide();
-                    //                    $("#extable").exTable("viewMode", "time", { y: 115 });
-                    $("#extable").exTable("viewMode", "time", { y: 172 });
+                    $("#extable").exTable("viewMode", "time", { y: 150 });
                     $("#extable").exTable("updateMode", "edit");
                 } else {
                     $('#contain-view').show();
@@ -188,7 +186,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $('#oViewModel').hide();
                     $('#qViewModel').show();
                     $('#group-bt').show();
-                    $("#extable").exTable("viewMode", "symbol", { y: 235 });
+                    $("#extable").exTable("viewMode", "symbol", { y: 245 });
                     $("#extable").exTable("updateMode", "stick");
                     $("#extable").exTable("stickMode", "multi");
                     $("#tab-panel").focus();
@@ -439,7 +437,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let time = new Time(currentDay);
                 objDetailHeaderDs['_' + time.yearMonthDay] = '';
                 detailColumns.push({
-                    key: "_" + time.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", min: "-12:00", max: "71:59", visible: true
+                    key: "_" + time.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", primitiveValue: "HolidayAppPrimitiveTime", visible: true
                 });
 
                 currentDay.setDate(currentDay.getDate() + 1);
@@ -629,9 +627,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     horizontalSumBodyRowHeight: "20px",
                     areaResize: true,
                     bodyHeightMode: "dynamic",
-                    windowXOccupation: 25,
-                    //                    windowYOccupation: 175,
-                    windowYOccupation: 230,
+                    windowXOccupation: 134,
+                    windowYOccupation: 210,
                     updateMode: "stick",
                     pasteOverWrite: true,
                     stickOverWrite: true,
@@ -646,7 +643,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     .DetailHeader(detailHeader).DetailContent(detailContent)
                     //                    .VerticalSumHeader(vertSumHeader).VerticalSumContent(vertSumContent)
                     //                    .LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent)
-                    //                    .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent)
+                    //                    .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent)    
                     .create();
 
                 // set stick single
@@ -716,7 +713,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             //define the new detailColumns
             _.each(self.arrDay, (x: Time) => {
                 newDetailColumns.push({
-                    key: "_" + x.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", min: "-12:00", max: "71:59", visible: true
+                    key: "_" + x.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", primitiveValue: "HolidayAppPrimitiveTime", visible: true
                 });
             });
 
@@ -765,7 +762,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             //                                    return $("#popup-area8");
                             //                                }
                             //                            }
-
                         }]
                 };
 
@@ -828,23 +824,23 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                  * validate when stick data in cell
                  */
                 $("#extable").exTable("stickValidate", function(rowIdx, key, data) {
-                    //                    if (__viewContext.viewModel.viewO.selectedWorkTimeCode() == '000据え置き') {
-                    //                        let dataS: BasicSchedule =
-                    //                            _.find(self.dataSource(), { 'date': moment(key, '_YYYYMMDD').format('YYYY/MM/DD'), 'employeeId': self.listSid()[rowIdx] });
-                    //                        let wTimeCode: string = dataS ? dataS.workTimeCode : null;
-                    //                        let wTime: any =
-                    //                            wTimeCode ? _.find(__viewContext.viewModel.viewO.listWorkTime(), { 'workTimeCode': wTimeCode }) : null;
-                    //                        let wTimeName: string = wTime ? wTime.abName : null;
-                    //                        $("#extable").exTable("stickData", {
-                    //                            workTypeCode: data.workTypeCode,
-                    //                            workTypeName: data.workTypeName,
-                    //                            workTimeCode: wTimeCode,
-                    //                            workTimeName: wTimeName,
-                    //                            startTime: dataS ? dataS.scheduleStartClock : '',
-                    //                            endTime: dataS ? dataS.scheduleEndClock : ''
-                    //                        });
-                    //                        return true;
-                    //                    }
+                    if (__viewContext.viewModel.viewO.selectedWorkTimeCode() == '000据え置き') {
+                        let dataS: BasicSchedule =
+                            _.find(self.dataSource(), { 'date': moment(key, '_YYYYMMDD').format('YYYY/MM/DD'), 'employeeId': self.listSid()[rowIdx] });
+                        let wTimeCode: string = dataS ? dataS.workTimeCode : null;
+                        let wTime: any =
+                            wTimeCode ? _.find(__viewContext.viewModel.viewO.listWorkTime(), { 'workTimeCode': wTimeCode }) : null;
+                        let wTimeName: string = wTime ? wTime.abName : null;
+                        $("#extable").exTable("stickData", {
+                            workTypeCode: data.workTypeCode,
+                            workTypeName: data.workTypeName,
+                            workTimeCode: wTimeCode,
+                            workTimeName: wTimeName,
+                            startTime: dataS ? dataS.scheduleStartClock : '',
+                            endTime: dataS ? dataS.scheduleEndClock : ''
+                        });
+                        return true;
+                    }
 
                     let stateWorkTypeCd: any = _.find(self.listCheckNeededOfWorkTime(), ['workTypeCode', data.workTypeCode]);
                     // if workTypeCode is not required( state = 2) worktime is needless
@@ -881,7 +877,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let time = new Time(currentDay);
                 //define the new detailColumns
                 newDetailColumns.push({
-                    key: "_" + time.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", min: "-12:00", max: "71:59", visible: true
+                    key: "_" + time.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", primitiveValue: "HolidayAppPrimitiveTime", visible: true
                 });
                 //create new detailHeaderDs
                 newObjDetailHeaderDs['_' + time.yearMonthDay] = '';
@@ -928,13 +924,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                         { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
                                     ]
                                 },
-                                //                            popup: {
-                                //                                rows: [1],
-                                //                                provider: function(columnKey) {
-                                //                                    self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
-                                //                                    return $("#popup-area8");
+                                //                                popup: {
+                                //                                    rows: [1],
+                                //                                    provider: function(columnKey) {
+                                //                                        self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
+                                //                                        return $("#popup-area8");
+                                //                                    }
                                 //                                }
-                                //                            }
 
                             }]
                     };
@@ -976,13 +972,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                             { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
                                         ]
                                     },
-                                    //                            popup: {
-                                    //                                rows: [1],
-                                    //                                provider: function(columnKey) {
-                                    //                                    self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
-                                    //                                    return $("#popup-area8");
-                                    //                                }
-                                    //                            }
+                                    //                                    popup: {
+                                    //                                        rows: [1],
+                                    //                                        provider: function(columnKey) {
+                                    //                                            self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
+                                    //                                            return $("#popup-area8");
+                                    //                                        }
+                                    //                                    }
 
                                 }]
                         };
@@ -1048,14 +1044,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                             { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
                                         ]
                                     },
-                                    //                            popup: {
-                                    //                                rows: [1],
-                                    //                                provider: function(columnKey) {
-                                    //                                    self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
-                                    //                                    return $("#popup-area8");
-                                    //                                }
-                                    //                            }
-
+                                    //                                    popup: {
+                                    //                                        rows: [1],
+                                    //                                        provider: function(columnKey) {
+                                    //                                            self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
+                                    //                                            return $("#popup-area8");
+                                    //                                        }
+                                    //                                    }
                                 }]
                         };
 
@@ -1090,7 +1085,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         };
 
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
-                        //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
+//                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
                         setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
                     });
@@ -1128,6 +1123,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             service.getDataBasicSchedule(obj).done(function(data) {
                 //set dataSource for mode shortName
+                self.dataSource([]);
                 _.each(data.listDataShortName, (itemData: BasicSchedule) => {
                     let itemDataSource: BasicSchedule = _.find(self.dataSource(), { 'employeeId': itemData.employeeId, 'date': itemData.date });
                     if (itemDataSource) {
@@ -1146,6 +1142,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }));
                     }
                 });
+
                 //set dataSource for mode timeZone
                 _.each(self.dataSource(), (itemDataSource: BasicSchedule) => {
                     let itemDataTimeZone: any = _.find(data.listDataTimeZone, { 'employeeId': itemDataSource.employeeId, 'date': itemDataSource.date });
@@ -1638,7 +1635,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let ymd = date.yearMonthDay;
                     let dateFormat = moment(date.yearMonthDay).format('YYYY/MM/DD');
                     if (_.includes(self.dataWkpSpecificDate(), dateFormat) || _.includes(self.dataComSpecificDate(), dateFormat)) {
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-schedule-specific-date "));
+                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-schedule-specific-date"));
                         detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 1, "bg-schedule-specific-date"));
                     } else if (_.includes(self.dataPublicHoliday(), dateFormat)) {
                         detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-schedule-sunday color-schedule-sunday"));
@@ -1689,7 +1686,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         setColor(detailHeaderDeco: any, detailContentDeco: any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             $.when(self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco), self.setColorForText(detailContentDeco),
-                self.setColorForCell(detailContentDeco), self.setColorForLeftmostContent()).done(() => {                    dfd.resolve();                });
+                self.setColorForCell(detailContentDeco), self.setColorForLeftmostContent()).done(() => {
+                    dfd.resolve();
+                });
             return dfd.promise();
         }
 

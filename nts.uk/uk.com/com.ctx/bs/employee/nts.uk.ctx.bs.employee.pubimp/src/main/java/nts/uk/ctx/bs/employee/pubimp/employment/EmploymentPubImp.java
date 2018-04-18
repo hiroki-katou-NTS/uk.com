@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pubimp.employment;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,13 +16,17 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
 import nts.uk.ctx.bs.employee.pub.employment.EmpCdNameExport;
+import nts.uk.ctx.bs.employee.pub.employment.EmploymentHisExport;
 import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.ShEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class EmploymentPubImp.
@@ -47,28 +52,24 @@ public class EmploymentPubImp implements SyEmploymentPub {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub#findAll(java.lang.
+	 * @see nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub#findAll(java.lang.
 	 * String)
 	 */
 	@Override
 	public List<EmpCdNameExport> findAll(String companyId) {
-		return employmentRepository.findAll(companyId).stream()
-				.map(item -> EmpCdNameExport.builder().code(item.getEmploymentCode().v())
-						.name(item.getEmploymentName().v()).build())
+		return employmentRepository.findAll(companyId).stream().map(item -> EmpCdNameExport.builder()
+				.code(item.getEmploymentCode().v()).name(item.getEmploymentName().v()).build())
 				.collect(Collectors.toList());
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub#findSEmpHistBySid(
+	 * @see nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub#findSEmpHistBySid(
 	 * java.lang.String, java.lang.String, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public Optional<SEmpHistExport> findSEmpHistBySid(String companyId, String employeeId,
-			GeneralDate baseDate) {
+	public Optional<SEmpHistExport> findSEmpHistBySid(String companyId, String employeeId, GeneralDate baseDate) {
 
 		// Query
 		Optional<EmploymentInfo> employmentInfo = employmentHistoryItemRepository
@@ -85,10 +86,9 @@ public class EmploymentPubImp implements SyEmploymentPub {
 		EmploymentInfo employment = employmentInfo.get();
 
 		// Return
-		return Optional.of(SEmpHistExport.builder().employeeId(employeeId)
-				.employmentCode(employment.getEmploymentCode())
-				.employmentName(employment.getEmploymentName()).period(optHistoryItem.get().span())
-				.build());
+		return Optional
+				.of(SEmpHistExport.builder().employeeId(employeeId).employmentCode(employment.getEmploymentCode())
+						.employmentName(employment.getEmploymentName()).period(optHistoryItem.get().span()).build());
 	}
 
 	/*
@@ -109,6 +109,60 @@ public class EmploymentPubImp implements SyEmploymentPub {
 			empExport.setEmpExternalCode(emp.getEmpExternalCode().v());
 			empExport.setMemo(emp.getMemo().v());
 			return empExport;
+		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<EmploymentHisExport> findByListSidAndPeriod(List<String> sids, DatePeriod datePeriod) {
+
+		if (sids.isEmpty() || datePeriod.start() == null || datePeriod.end() == null)
+			return null;
+		
+		List<EmploymentHisExport> result = new ArrayList<EmploymentHisExport>();
+
+
+		List<EmploymentHistory> lstEmpHist = employmentHistoryRepository.getByListSid(sids);
+		if (lstEmpHist.isEmpty())
+			return null;
+
+		List<String> historyIds = new ArrayList<>();
+
+		lstEmpHist.stream().forEach(x -> {
+
+			List<DateHistoryItem> historyItemList = x.items();
+			List<String> hists = new ArrayList<>();
+			if (!historyItemList.isEmpty()) {
+				hists = historyItemList.stream().filter(itemHist -> {
+					return (itemHist.start().afterOrEquals(datePeriod.start())
+							&& itemHist.start().beforeOrEquals(datePeriod.end())
+							&& itemHist.end().afterOrEquals(datePeriod.start())
+							&& itemHist.end().beforeOrEquals(datePeriod.end()))
+							|| (itemHist.start().afterOrEquals(datePeriod.start())
+									&& itemHist.start().beforeOrEquals(datePeriod.end())
+									&& itemHist.end().after(datePeriod.end()))
+							|| (itemHist.end().afterOrEquals(datePeriod.start())
+									&& itemHist.end().beforeOrEquals(datePeriod.end())
+									&& itemHist.start().before(datePeriod.start()));
+
+				}).map(y -> y.identifier()).collect(Collectors.toList());
+
+				historyIds.addAll(hists);
+			}
+
+		});
+
+		if (historyIds.isEmpty())
+			return null;
+
+		List<EmploymentHistoryItem> empHistItems = employmentHistoryItemRepository.getByListHistoryId(historyIds);
+
+		return result = empHistItems.stream().map(x -> {
+			EmploymentHisExport emp = new EmploymentHisExport();
+			emp.setEmployeeId(x.getEmployeeId());
+			emp.setHistoryID(x.getHistoryId());
+			emp.setEmploymentCode(x.getEmploymentCode().v());
+			emp.setSalarySegment(x.getSalarySegment() == null ? null : x.getSalarySegment().value);
+			return emp;
 		}).collect(Collectors.toList());
 	}
 

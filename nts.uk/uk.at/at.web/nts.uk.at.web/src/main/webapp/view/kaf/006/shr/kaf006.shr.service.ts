@@ -1,20 +1,29 @@
 module nts.uk.at.view.kaf006.shr.service {
     var paths: any = {
         getAppForLeaveStart: "at/request/application/appforleave/getAppForLeaveStart",
-        findByChangeAppDate: "at/request/application/overtime/findByChangeAppDate",
+        getAllAppForLeave: "at/request/application/appforleave/getAllAppForLeave",
+        findByChangeAppDate: "at/request/application/appforleave/findChangeAppdate",
         checkConvertPrePost: "at/request/application/overtime/checkConvertPrePost",
-        getCaculationResult: "at/request/application/overtime/getCaculationResult",
-        createOvertime: "at/request/application/overtime/create",
+        findChangeAllDayHalfDay: "at/request/application/appforleave/getChangeAllDayHalfDay",
+        getChangeDisplayHalfDay: "at/request/application/appforleave/findChangeDisplayHalfDay",
+        getChangeWorkType: "at/request/application/appforleave/findChangeWorkType",
+        getListWorkTime: "at/request/application/appforleave/getListWorkTime",
+        getWorkingHours: "at/request/application/appforleave/getWorkingHours",
+        createAbsence: "at/request/application/appforleave/insert",
         deleteOvertime: "at/request/application/overtime/delete",
-        updateOvertime: "at/request/application/overtime/update",
+        updateAbsence: "at/request/application/appforleave/update",
         checkBeforeRegister: "at/request/application/overtime/checkBeforeRegister",
         checkBeforeUpdate: "at/request/application/overtime/checkBeforeUpdate",
-        findByAppID: "at/request/application/overtime/findByAppID",
+        findByAppID: "at/request/application/appforleave/getByAppID",
+        getChangeAllDayHalfDayForDetail: "at/request/application/appforleave/getChangeAllDayHalfDayForDetail",
         getRecordWork: "at/request/application/overtime/getRecordWork"
     }
     /** Get TitleMenu */
     export function getAppForLeaveStart(param: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getAppForLeaveStart, param);
+    }
+    export function getAllAppForLeave(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getAllAppForLeave, param);
     }
     
     export function findByChangeAppDate(param: any): JQueryPromise<any> {
@@ -25,20 +34,34 @@ module nts.uk.at.view.kaf006.shr.service {
         return nts.uk.request.ajax("at", paths.checkConvertPrePost, prePostAtr);
     }
     
-    export function getCaculationResult(param: any): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getCaculationResult, param);
+    export function findChangeAllDayHalfDay(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.findChangeAllDayHalfDay, param);
+     }
+     export function getChangeAllDayHalfDayForDetail(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getChangeAllDayHalfDayForDetail, param);
+     }    
+    export function getChangeDisplayHalfDay(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getChangeDisplayHalfDay, param);
     }
-    
-    export function createOvertime(overtime: any): JQueryPromise<void> {
-        return nts.uk.request.ajax("at", paths.createOvertime,overtime);
+    export function getChangeWorkType(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getChangeWorkType, param);
+    }
+    export function getListWorkTime(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getListWorkTime, param);
+    }
+    export function getWorkingHours(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getWorkingHours, param);
+    }
+    export function createAbsence(param: any): JQueryPromise<void> {
+        return nts.uk.request.ajax("at", paths.createAbsence,param);
     }
     
      export function deleteOvertime(appID : string): JQueryPromise<void> { 
         return nts.uk.request.ajax("at", paths.deleteOvertime,appID);
     }
     
-     export function updateOvertime(overtime:any): JQueryPromise<void> {
-        return nts.uk.request.ajax("at", paths.updateOvertime ,overtime);
+     export function updateAbsence(overtime:any): JQueryPromise<void> {
+        return nts.uk.request.ajax("at", paths.updateAbsence ,overtime);
     }
     
     export function checkBeforeRegister(overtime:any): JQueryPromise<any> {

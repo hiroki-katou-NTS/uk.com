@@ -5,13 +5,16 @@
 package nts.uk.ctx.at.shared.dom.ot.autocalsetting;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 
 /**
  * The Class AutoCalOvertimeSetting.
  */
 /// 残業時間の自動計算設定
 @Getter
+@NoArgsConstructor
 public class AutoCalOvertimeSetting extends DomainObject {
 
 	/** The early ot time. */
@@ -71,5 +74,27 @@ public class AutoCalOvertimeSetting extends DomainObject {
 		memento.setNormalOtTime(this.normalOtTime);
 	}
 
+	public AutoCalOvertimeSetting(AutoCalSetting earlyOtTime, AutoCalSetting earlyMidOtTime,
+			AutoCalSetting normalOtTime, AutoCalSetting normalMidOtTime, AutoCalSetting legalOtTime,
+			AutoCalSetting legalMidOtTime) {
+		super();
+		this.earlyOtTime = earlyOtTime;
+		this.earlyMidOtTime = earlyMidOtTime;
+		this.normalOtTime = normalOtTime;
+		this.normalMidOtTime = normalMidOtTime;
+		this.legalOtTime = legalOtTime;
+		this.legalMidOtTime = legalMidOtTime;
+	}
 
+	public AutoCalSetting decisionUseCalcSetting(StatutoryAtr statutoryAtr,boolean goEarlyAtr) {
+		switch(statutoryAtr) {
+		case DeformationCriterion:
+		case Excess:
+			return goEarlyAtr?this.earlyOtTime:this.normalOtTime;
+		case Statutory:
+			return this.legalOtTime;
+		default:
+			throw new RuntimeException("unknown StatutoryAtr When dicision Ot AutoCalc Setting:"+statutoryAtr);
+		}
+	}
 }

@@ -44,10 +44,14 @@ public class WithdrawalAppSet extends AggregateRoot{
 	private UnitTime directDivi;
 	// 休出時間
 	private UnitTime restTime;
+	// 実績超過打刻優先設定
+	private OverrideSet overrideSet;
+	// 打刻漏れ計算区分
+	private CalcStampMiss calStampMiss;
 	
 	public static WithdrawalAppSet createFromJavaType(String companyId, int prePerflex, int breakTime, int workTime, 
 			int checkHdTime, int typePaidLeave, int workChange, int timeInit, int checkOut, int prefixLeave, 
-			int unitTime, int appSimul, int bounSeg, int directDivi, int restTime){
+			int unitTime, int appSimul, int bounSeg, int directDivi, int restTime, int overrideSet, int calStampMiss){
 		return new WithdrawalAppSet(companyId, 
 				EnumAdaptor.valueOf(prePerflex, UseAtr.class), 
 				EnumAdaptor.valueOf(breakTime, UseAtr.class), 
@@ -61,6 +65,8 @@ public class WithdrawalAppSet extends AggregateRoot{
 				EnumAdaptor.valueOf(unitTime, UnitTime.class), appSimul, 
 				EnumAdaptor.valueOf(bounSeg, UnitTime.class), 
 				EnumAdaptor.valueOf(directDivi, UnitTime.class), 
-				EnumAdaptor.valueOf(restTime, UnitTime.class));
+				EnumAdaptor.valueOf(restTime, UnitTime.class),
+				EnumAdaptor.valueOf(overrideSet, OverrideSet.class),
+				EnumAdaptor.valueOf(calStampMiss, CalcStampMiss.class));
 	}
 }

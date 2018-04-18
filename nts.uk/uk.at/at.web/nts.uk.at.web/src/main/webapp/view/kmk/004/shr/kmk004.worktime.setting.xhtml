@@ -1,0 +1,178 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition>
+		<com:ko tag="with" bind="worktimeSetting">
+			<!-- YEAR -->
+			<div class="control-group ">
+				<div tabindex="#{baseTabIndex + 3}" id="worktimeYearPicker" 
+					data-bind="ntsDatePicker: {name:'#[KMK004_31]', 
+											value: normalSetting().year, 
+											dateFormat: 'YYYY', 
+											valueFormat: 'YYYY', 
+											fiscalYear: true, 
+											showJumpButtons: true}">
+				</div>
+			</div>
+			<!-- YEAR -->
+			<ui:insert name="worktime-setting-extra-info" />
+			<!-- Start of TAB PANEL -->
+			<div tabindex="#{baseTabIndex + 4}" id="tab-panel" class="pull-left"
+				data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: selectedTab}">
+
+				<!-- NORMAL WORK TIME SETTING START -->
+				<div class="tab-content-1" id="worktime-tab-1">
+					<div class="control-group">
+						<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_45')}</div>
+						<table class="border-all tbl-monthly">
+							<tr class="bg-dark-green">
+								<td>#{i18n.getText('KMK004_13')}</td>
+								<td>#{i18n.getText('KMK004_8')}</td>
+							</tr>
+							<com:ko tag="foreach" bind="normalSetting().statutorySetting">
+								<tr>
+									<td class="bg-green">
+										<div data-bind="text: month()+'月度'"></div>
+									</td>
+									<td><input
+										data-bind="attr: {'tabindex': #{baseTabIndex} + 5 + $index()}, ntsTimeEditor: {value: time, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
+									</td>
+								</tr>
+							</com:ko>
+						</table>
+					</div>
+				</div>
+				<!-- NORMAL WORK TIME SETTING END -->
+
+				<!-- FLEX WORK TIME SETTING START -->
+				<div class="tab-content-2" id="worktime-tab-2">
+					<div class="control-group">
+						<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_45')}</div>
+						<table class="border-all tbl-monthly">
+							<tr class="bg-dark-green">
+								<td>#{i18n.getText('KMK004_13')}</td>
+								<td>#{i18n.getText('KMK004_17')}</td>
+								<td>#{i18n.getText('KMK004_8')}</td>
+							</tr>
+							<com:ko tag="foreach" bind="flexSetting().flexSettingDetail">
+								<tr>
+									<td class="bg-green">
+										<div data-bind="text: month()+'月度'"></div>
+									</td>
+									<td><input
+										data-bind="attr: {'tabindex': #{baseTabIndex} + 17 + $index()}, ntsTimeEditor: {value: specifiedTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
+									</td>
+									<td><input
+										data-bind="attr: {'tabindex': #{baseTabIndex} + 29 + $index()}, ntsTimeEditor: {value: statutoryTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
+									</td>
+								</tr>
+							</com:ko>
+
+						</table>
+					</div>
+				</div>
+				<!-- FLEX WORK TIME SETTING END -->
+
+				<!-- DEFORMATION LABOR WORK TIME SETTING START -->
+				<div class="tab-content-3" id="worktime-tab-3">
+					<div class="control-group">
+						<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_45')}</div>
+						<table class="border-all tbl-monthly">
+							<tr class="bg-dark-green">
+								<td>#{i18n.getText('KMK004_13')}</td>
+								<td>#{i18n.getText('KMK004_8')}</td>
+							</tr>
+							<com:ko tag="foreach" bind="deformLaborSetting().statutorySetting">
+								<tr>
+									<td class="bg-green">
+										<div data-bind="text: month()+'月度'"></div>
+									</td>
+									<td><input
+										data-bind="attr: {'tabindex': #{baseTabIndex} + 41 + $index()}, ntsTimeEditor: {value: time, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
+									</td>
+								</tr>
+							</com:ko>
+						</table>
+					</div>
+				</div>
+				<!-- DEFORMATION LABOR WORK TIME SETTING END -->
+			</div>
+			<!-- End of TAB PANEL -->
+			
+			
+			<!-- Start Aggregate Setting -->
+			<div id="aggr-setting-content" class="float-left">
+				<!-- Normal Setting -->
+				<div class="panel panel-frame setting-panel">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_46')}</div>
+					<button class="open-Detail" tabindex="#{baseTabIndex + 53}" data-bind="click: gotoF">#{i18n.getText('KMK004_47')}</button>
+
+					<!-- <com:ko tag="with" bind=normalWorktime> -->
+						<table class="border-all">
+							<tr class="bg-dark-green">
+								<td></td>
+								<td>#{i18n.getText('KMK004_8')}</td>
+							</tr>
+							<tr>
+								<td class="bg-green">#{i18n.getText('KMK004_9')}</td>
+								<td><input tabindex="#{baseTabIndex + 54}"
+									data-bind="ntsTimeEditor: {name:'#[KMK004_10]', value: normalWorktime().dailyTime, constraint:'DailyTime', inputFormat: 'time', mode: 'time', required: true}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="bg-green">#{i18n.getText('KMK004_11')}</td>
+								<td><input tabindex="#{baseTabIndex + 55}"
+									data-bind="ntsTimeEditor: {name:'#[KMK004_12]', value: normalWorktime().weeklyTime, constraint:'WeeklyTime', inputFormat: 'time', mode: 'time', required: true}" />
+								</td>
+							</tr>
+						</table>
+					<!-- </com:ko> -->
+				</div>
+				<!-- Flex Setting -->
+				<div class="panel panel-frame setting-panel">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_48')}</div>
+					<BUTTON class="open-Detail" tabindex="#{baseTabIndex + 56}" data-bind="click: gotoG">#{i18n.getText('KMK004_47')}</BUTTON>
+					<div id="radio-box-content" tabindex="#{baseTabIndex + 57}" data-bind="ntsRadioBoxGroup: {
+									name: '#[KMK004_50]',
+									options: $parent.aggrSelectionItemList,
+									optionsValue: 'id',
+									optionsText: 'name',
+									value: flexAggrSetting().aggregateMethod,
+									enable: true}"></div>
+				</div>
+				<!-- Deformed Labor Setting -->
+				<div class="panel panel-frame setting-panel">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_49')}</div>
+					<button class="open-Detail" tabindex="#{baseTabIndex + 58}" data-bind="click: gotoH">#{i18n.getText('KMK004_47')}</button>
+
+					<com:ko tag="with" bind="deformLaborWorktime">
+						<table class="border-all">
+							<tr class="bg-dark-green">
+								<td></td>
+								<td>#{i18n.getText('KMK004_8')}</td>
+							</tr>
+							<tr>
+								<td class="bg-green">#{i18n.getText('KMK004_9')}</td>
+								<td><input tabindex="#{baseTabIndex + 59}"
+									data-bind="ntsTimeEditor: {name:'#[KMK004_10]', value: dailyTime, constraint:'DailyTime', inputFormat: 'time', mode: 'time', required: true}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="bg-green">#{i18n.getText('KMK004_11')}</td>
+								<td><input tabindex="#{baseTabIndex + 60}"
+									data-bind="ntsTimeEditor: {name:'#[KMK004_12]', value: weeklyTime, constraint:'WeeklyTime', inputFormat: 'time', mode: 'time', required: true}" />
+								</td>
+							</tr>
+						</table>
+					</com:ko>
+				</div>
+			</div>
+			<!-- End of Aggregate Setting -->
+		</com:ko>
+	</ui:composition>
+</body>
+</html>

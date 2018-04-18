@@ -97,5 +97,11 @@ public interface CompanyRepository {
 	// request list No.125
 	Optional<Company> getComanyByCid(String cid);
 	
+	/**
+	 * For request list No.289
+	 * @param contractCd
+	 * @return
+	 */
+	List<Company> getAllCompanyByContractCd(String contractCd);
 }
 

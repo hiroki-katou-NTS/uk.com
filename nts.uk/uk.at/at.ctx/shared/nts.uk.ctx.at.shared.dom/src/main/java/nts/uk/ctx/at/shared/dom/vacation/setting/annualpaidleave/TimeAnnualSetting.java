@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 
 /**
@@ -30,7 +31,9 @@ public class TimeAnnualSetting extends DomainObject {
     /** The is enough time one day. */
     // 1日の時間未満の時間年休を積立年休とする
     private boolean isEnoughTimeOneDay;
-
+    
+    //端数処理区分
+    private TimeAnnualRoundProcesCla roundProcessClassific;
     /**
      * Instantiates a new time vacation setting.
      *
@@ -41,6 +44,7 @@ public class TimeAnnualSetting extends DomainObject {
         this.timeUnit = memento.getTimeUnit();
         this.maxYearDayLeave = memento.getMaxYearDayLeave();
         this.isEnoughTimeOneDay = memento.isEnoughTimeOneDay();
+        this.roundProcessClassific = memento.GetRoundProcessClassific();
     }
     
     /**
@@ -53,5 +57,6 @@ public class TimeAnnualSetting extends DomainObject {
         memento.setTimeUnit(this.timeUnit);
         memento.setMaxYearDayLeave(this.maxYearDayLeave);
         memento.setEnoughTimeOneDay(this.isEnoughTimeOneDay);
+        memento.setRoundProcessClassific(this.roundProcessClassific);
     }
 }

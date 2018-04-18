@@ -54,6 +54,9 @@ public class ItemValue {
 		case STRING:
 		case SELECTION:
 		case SELECTION_BUTTON:
+		case READONLY:
+		case RELATE_CATEGORY:
+		case READONLY_BUTTON:
 			convertedValue = this.value;
 			break;
 		case DATE:
@@ -81,11 +84,15 @@ public class ItemValue {
 		case TIME:
 		case TIMEPOINT:
 		case SELECTION_RADIO:
+		case NUMBERIC_BUTTON:
 			this.value = obj.toString();
 			break;
 		case STRING:
 		case SELECTION:
 		case SELECTION_BUTTON:
+		case READONLY:
+		case RELATE_CATEGORY:
+		case READONLY_BUTTON:
 			this.value = obj.toString();
 			break;
 		case DATE:

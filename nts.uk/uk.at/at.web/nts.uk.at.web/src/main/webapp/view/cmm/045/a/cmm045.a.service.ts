@@ -24,10 +24,4 @@ module cmm045.a.service {
     export function approvalListApp(data: any): JQueryPromise<any>{
         return nts.uk.request.ajax("at", paths.approvalListApp, data);
     }
-    /**
-     * get holiday set info
-     */
-    export function getHdSetInfo(): JQueryPromise<any>{
-        return nts.uk.request.ajax("at", paths.getHdSetInfo);
-    }
 }

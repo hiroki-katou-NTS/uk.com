@@ -1,0 +1,190 @@
+.overtimeListQ5_1 tr {
+	border: 1px solid black;
+}
+
+.overtimeListQ5_1 tr > td:nth-child(3) > div > label{
+	border-left: 1px solid black;
+}
+
+.overtimeListQ5_1 tr > td:nth-child(1){
+	background-color: #CFF1A5;
+	width: 70px;
+}
+
+.overtimeListQ5_1 tr > td:nth-child(2){
+	background-color: #CFF1A5;
+	width: 115px;
+}
+
+.overtimeListQ5_1 tr > td:nth-child(3){
+	background-color: #F2F2F2;
+}
+
+.overtimeListQ5_1 tr > td:nth-child(3) > div > label:nth-child(1){
+	width: 140px;
+}
+
+.overtimeListQ5_1 tr > td:nth-child(3) > div > label:nth-child(2){
+	width: 140px;
+}
+
+.overtimeListQ5_1 tr > td:nth-child(3) > div > label:nth-child(3){
+	width: 230px;
+}
+
+#tab-panel {
+	width: 800px;
+}
+
+.constText1 {
+	width: 236px;
+	margin-left: 468px;
+	margin-bottom: 10px;
+}
+
+.constText1 > div:nth-child(1) > span {
+	margin-left: 108px;
+	color: #CFF1A5;
+}
+
+.constText1 > div:nth-child(1) {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.tableQ8_1 tr {
+	border: 1px solid black;
+}
+
+.tableQ8_1 td:nth-child(2) {
+	border: 1px solid black;
+}
+
+.tableQ8_1 tr > td:nth-child(1) {
+	background-color: #CFF1A5;
+	width: 185px;
+}
+
+.tableQ8_1 tr > td:nth-child(2), .tableQ8_1 tr > td:nth-child(3) {
+	background-color: #F2F2F2;
+	width: 140px;
+}
+
+.divConst1 {
+	display: flex;
+}
+
+.divConst1 > div:nth-child(1) {
+	flex: 0 0 480px;
+}
+
+#imgq6_1 {
+	position: absolute;
+	left: 248px;
+	top: 315px;
+}
+
+#imgq6_2 {
+	position: absolute;
+	left: 278px;
+	top: 371px;
+}
+
+#imgq6_3 {
+	position: absolute;
+	left: 389px;
+	top: 315px;
+}
+
+#imgq6_4 {
+	position: absolute;
+	left: 414px;
+	top: 357px;
+}
+
+#imgq6_5 {
+	position: absolute;
+	left: 193px;
+	top: 463px;
+}
+
+#imgq6_6 {
+	position: absolute;
+	left: 191px;
+	top: 463px;
+}
+
+#imgq6_7 {
+	position: absolute;
+	left: 332px;
+	top: 544px;
+}
+
+#img-chart {
+	margin-top: 30px;
+}
+
+#img-chart > img:nth-child(2) {
+	margin-left: 275px
+}
+
+.tableQ8_1 a {
+	color: blue
+}
+
+.help-btn {
+    margin-left: 185px;
+}
+
+#img-chart-tab-2 {
+	display: flex
+}
+
+#img-chart-tab-2 > div:nth-child(2) {
+	padding-top: 37px;
+	margin-left: 20px;
+}
+
+#imgq14_1 {
+	position: absolute;
+	left: 248px;
+	top: 315px;
+}
+
+#imgq14_2 {
+	position: absolute;
+	left: 278px;
+	top: 371px;
+}
+
+#imgq14_3 {
+	position: absolute;
+	left: 389px;
+	top: 315px;
+}
+
+#imgq14_4 {
+	position: absolute;
+	left: 414px;
+	top: 357px;
+}
+
+#imgq14_5 {
+	position: absolute;
+	left: 196px;
+	top: 461px;
+}
+
+#imgq14_6 {
+	position: absolute;
+	left: 231px;
+	top: 462px;
+}
+
+#img-chart-tab-2 > img {
+	margin-top: -12px;
+}
+
+.tableQ8_1 tr > td:nth-child(3) {
+	vertical-align: top
+}

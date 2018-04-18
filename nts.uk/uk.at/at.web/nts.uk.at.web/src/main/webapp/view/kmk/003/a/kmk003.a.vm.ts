@@ -418,7 +418,6 @@ module nts.uk.at.view.kmk003.a {
             //save worktime data
             public save() {
                 let self = this;
-                self.isClickSave(true);
                 // re validate
                 self.validateInput();
 
@@ -426,6 +425,7 @@ module nts.uk.at.view.kmk003.a {
                 if ($('.nts-editor').ntsError('hasError') || $('.time-range-editor').ntsError('hasError')) {
                     return;
                 }
+                self.isClickSave(true);
                 self.mainSettingModel.save(self.isNewOrCopyMode(), self.tabMode())
                     .done(() => {
                         // recheck abolish condition of list worktime
@@ -444,6 +444,13 @@ module nts.uk.at.view.kmk003.a {
                             }
                             return key;
                         });
+
+                        // close current error dialog
+                        const buttonCloseDialog = $('#functions-area-bottom>.ntsClose');
+                        if (!nts.uk.util.isNullOrEmpty(buttonCloseDialog)) {
+                            buttonCloseDialog.click();
+                        }
+
                         err.errors = errors;
                         self.showMessageError(err);
                     });

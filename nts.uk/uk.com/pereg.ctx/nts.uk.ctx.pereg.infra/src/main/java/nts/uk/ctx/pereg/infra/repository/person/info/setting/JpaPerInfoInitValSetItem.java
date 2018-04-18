@@ -45,16 +45,15 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " CM.stringItemType, CM.stringItemLength, CM.stringItemDataType"
 			// 20,21,22
 			+ " FROM  PpemtPerInfoCtg CTG INNER JOIN PpemtPerInfoItemCm CM"
-			+ " ON  CTG.categoryCd = CM.ppemtPerInfoItemCmPK.categoryCd" + " AND CM.itemType = 2"
+			+ " ON  CTG.categoryCd = CM.ppemtPerInfoItemCmPK.categoryCd" 
 			+ " INNER JOIN  PpemtPerInfoItem ITEM" + " ON CM.ppemtPerInfoItemCmPK.itemCd = ITEM.itemCd"
-			+ " AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =  ITEM.perInfoCtgId " + " AND ITEM.perInfoCtgId =:perInfoCtgId"
-			+ " AND ITEM.abolitionAtr = 0 "
-
+			+ " AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =  ITEM.perInfoCtgId " 
 			+ " INNER JOIN PpemtPerInfoItemOrder E"
 			+ " ON  ITEM.ppemtPerInfoItemPK.perInfoItemDefId = E.ppemtPerInfoItemPK.perInfoItemDefId "
 			+ " AND ITEM.perInfoCtgId = E.perInfoCtgId"
-
-			+ " WHERE  CTG.abolitionAtr = 0 AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =:perInfoCtgId"
+			+ " WHERE  CTG.abolitionAtr = 0 " + " AND CM.itemType = 2" + " AND ITEM.abolitionAtr = 0 " 
+			+ " AND CM.dataType <> 9 AND CM.dataType <> 10 AND CM.dataType <> 12 "
+			+ " AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =:perInfoCtgId"
 			+ " ORDER BY E.disporder";
 
 	private final String IS_EXITED_ITEM_LST_1 = "SELECT ITEM "

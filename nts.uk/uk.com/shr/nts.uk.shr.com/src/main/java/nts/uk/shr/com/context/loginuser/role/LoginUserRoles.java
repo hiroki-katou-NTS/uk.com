@@ -45,6 +45,12 @@ public interface LoginUserRoles {
 	String forCompanyAdmin();
 	
 	/**
+	 * REturns role ID for group companies admin: グループ会社管理者
+	 * @return role ID
+	 */
+	String forGroupCompaniesAdmin();
+	
+	/**
 	 * Check if user has role for ...
 	 * @return HavingRole
 	 */

@@ -27,6 +27,17 @@ module nts.uk.ui.gridlist {
             }
         }
         
+        class CellState {
+            rowId: number;
+            columnKey: string;
+            state: Array<any>
+            constructor(rowId: string, columnKey: string, state: Array<any>) {
+                this.rowId = rowId;
+                this.columnKey = columnKey;
+                this.state = state;
+            }
+        }
+        
         class ScreenModel {
             tabs: KnockoutObservableArray<any>;
             selectedTab: KnockoutObservable<string>;
@@ -83,6 +94,12 @@ module nts.uk.ui.gridlist {
                 var comboColumns = [{ prop: 'code', length: 4 },
                                     { prop: 'name', length: 8 }];
                 
+                var statesTable = [];
+                statesTable.push(new CellState(546, "flag", [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
+                statesTable.push(new CellState(503, "flag", [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
+                statesTable.push(new CellState(509, "flag", [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
+                statesTable.push(new CellState(511, "flag", [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
+                
                 $("#grid0").ntsGrid({ 
                             width: '970px',
                             height: '400px',
@@ -90,6 +107,7 @@ module nts.uk.ui.gridlist {
                             primaryKey: 'id',
                             virtualization: true,
                             virtualizationMode: 'continuous',
+                            hidePrimaryKey: true,
 //                            enter: 'right',
                             columns: [
                                 { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
@@ -100,17 +118,32 @@ module nts.uk.ui.gridlist {
                                 { headerText: 'Button', key: 'open', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Button' },
                                 { headerText: 'Delete', key: 'delete', dataType: 'string', width: '80px', unbound: true, ntsControl: 'DeleteButton' }
                             ], 
-                            features: [{ name: 'Resizing' },
+                            features: [{ name: 'Resizing',
+                                            columnSettings: [{
+                                                columnKey: 'id', allowResizing: true, minimumWidth: 30
+                                            }, {
+                                                columnKey: 'flag', allowResizing: false 
+                                            }] 
+                                        },
                                         { 
                                             name: 'Selection',
                                             mode: 'row',
                                             multipleSelection: true
                                         }
                             ],
-//                            ntsFeatures: [{ name: 'CopyPaste' }],
+                            ntsFeatures: [
+//                                { name: 'CopyPaste' },
+                                { name: 'CellState',
+                                    rowId: 'rowId',
+                                    columnKey: 'columnKey',
+                                    state: 'state',
+                                    states: statesTable
+                                }
+                                ],
                             ntsControls: [{ name: 'Checkbox', options: { value: 1, text: 'Custom Check' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                                             { name: 'SwitchButtons', options: [{ value: '1', text: 'Option 1' }, { value: '2', text: 'Option 2' }, { value: '3', text: 'Option 3' }], 
-                                                optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true },
+                                                optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true,
+                                                distinction: { "503": ['1', '2'], "506": ["2", "3"], "600": ["1", "2"] }},
                                             { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true },
                                             { name: 'Button', text: 'Open', click: function() { alert("Button!!"); }, controlType: 'Button' },
                                             { name: 'DeleteButton', text: 'Delete', controlType: 'DeleteButton', enable: true }]

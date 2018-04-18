@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.infra.entity.holidayworkinstruct.KrqdtHolidayInstru
 public class JpaHolidayInstructRepository extends JpaRepository implements HolidayInstructRepository {
 	private static final String FIND_ALL;
 	private static final String FIND_FOR_TARGET_PERSON;
+	private static final String FIND_ALL_BY_TARGET_PERSON;
 	
 	static{
 		StringBuilder query = new StringBuilder();
@@ -27,6 +28,11 @@ public class JpaHolidayInstructRepository extends JpaRepository implements Holid
 		query.append(" AND o.krqdtHolidayInstructPK.targetPerson = :targetPerson");
 		FIND_FOR_TARGET_PERSON = query.toString();
 		
+		query = new StringBuilder();
+		query.append(FIND_ALL);
+		query.append(" AND o.krqdtHolidayInstructPK.targetPerson = :targetPerson");
+		query.append(" ORDER BY o.krqdtHolidayInstructPK.instructDate ASC");
+		FIND_ALL_BY_TARGET_PERSON = query.toString();
 	}
 	@Override
 	public HolidayInstruct getHolidayWorkInstruct(GeneralDate instructDate, String targetPerson) {
@@ -51,5 +57,21 @@ public class JpaHolidayInstructRepository extends JpaRepository implements Holid
 				 krqdtHolidayWorkInstruct.getEndClock());
 		
 		
+	}
+	/**
+	 * For request list No.231
+	 */
+	@Override
+	public List<HolidayInstruct> getAllHolidayInstructBySId(String sId) {
+		List<HolidayInstruct> holidayInstruct = this.queryProxy().query(FIND_ALL_BY_TARGET_PERSON, KrqdtHolidayInstruct.class)
+				.setParameter("targetPerson", sId).getList(c -> convertToDomain(c));
+		
+		if(holidayInstruct != null){
+			if(holidayInstruct.size() > 0){
+				return holidayInstruct;
+			}
+		}
+		
+		return null;
 	}
 }

@@ -11,6 +11,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * @author phongtq
@@ -46,7 +47,7 @@ public class KshstWorkFlexSet  extends UkJpaEntity implements Serializable{
 	@Column(name = "PRE_ADDITION_TIME")
 	public int additionTime1;
 	
-	/** 遅刻・早退を控除しない */
+	/** 控除する */
 	@Column(name = "PRE_NOT_DEDUCT_LATELEAVE")
 	public int notDeductLateleave1;
 	
@@ -66,7 +67,7 @@ public class KshstWorkFlexSet  extends UkJpaEntity implements Serializable{
 	@Column(name = "WKT_INC_CHILD_NURSE_CARE")
 	public int incChildNursingCare2;
 	
-	/** 遅刻・早退を控除しない */
+	/** 遅刻・早退を控除する*/
 	@Column(name = "WKT_NOT_DEDUCT_LATELEAVE")
 	public int notDeductLateleave2;
 	
@@ -77,6 +78,18 @@ public class KshstWorkFlexSet  extends UkJpaEntity implements Serializable{
 	/** 加算する */
 	@Column(name = "WKT_ADDITION_TIME")
 	public int additionTime2;
+	
+	/*就業時間帯毎の設定を可能とする*/
+	@Column(name = "ENABLE_SET_PER_WORK_HOUR1")
+	public int enableSetPerWorkHour1;
+	
+	/*就業時間帯毎の設定を可能とする*/
+	@Column(name = "ENABLE_SET_PER_WORK_HOUR2")
+	public int enableSetPerWorkHour2;
+	
+	/*月次法定内のみ加算*/
+	@Column(name = "ADDITION_WITHIN_MONTHLY_STATUTORY")
+	public int additionWithinMonthlyStatutory;
 	
 	@OneToOne(optional = false)
 		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false)

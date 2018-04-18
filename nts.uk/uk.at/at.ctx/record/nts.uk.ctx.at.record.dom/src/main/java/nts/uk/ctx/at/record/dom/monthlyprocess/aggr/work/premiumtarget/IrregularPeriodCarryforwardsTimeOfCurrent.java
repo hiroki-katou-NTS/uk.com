@@ -8,7 +8,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWork
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetAddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetVacationAddTime;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.PremiumAtr;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtion;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -47,7 +47,7 @@ public class IrregularPeriodCarryforwardsTimeOfCurrent {
 	 */
 	public void aggregate(String companyId, String employeeId, DatePeriod datePeriod,
 			AttendanceTimeMonth weeklyTotalPremiumTime,
-			Optional<HolidayAddtion> holidayAdditionOpt,
+			Optional<HolidayAddtionSet> holidayAdditionOpt,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			AttendanceTimeMonth statutoryWorkingTimeMonth){
 
@@ -129,24 +129,25 @@ public class IrregularPeriodCarryforwardsTimeOfCurrent {
 	 * 変形労働勤務の加算設定（加算方法）を取得する
 	 * @param holidayAdditionOpt
 	 */
-	private ProcAtrAddMethod getAddMethod(Optional<HolidayAddtion> holidayAdditionOpt){
+	private ProcAtrAddMethod getAddMethod(Optional<HolidayAddtionSet> holidayAdditionOpt){
 	
 		// 変形労働勤務の加算設定を取得する
 		if (!holidayAdditionOpt.isPresent()) return ProcAtrAddMethod.ADD;
-		val addSetOfIrg = holidayAdditionOpt.get().getIrregularWork();
+		//*****（未）　加算設定のドメイン構成が変更されたため、修正要。2018.4.11 shuichi_ishida
+		//val addSetOfIrg = holidayAdditionOpt.get().getWorkDeformLabor();
 		
 		// 割増計算方法．加算する＝「加算しない」
-		if (addSetOfIrg.getAdditionTime1() == 0){
-			// 就業時間計算方法．加算する＝「加算する」
-			if (addSetOfIrg.getAdditionTime2() == 1){
-				// 不足時加算
-				return ProcAtrAddMethod.ADD_FOR_SHORTAGE;
-			}
-			else {
-				// 加算しない
-				return ProcAtrAddMethod.NOT_ADD;
-			}
-		}
+		//if (addSetOfIrg.getAdditionTime1() == 0){
+		//	// 就業時間計算方法．加算する＝「加算する」
+		//	if (addSetOfIrg.getAdditionTime2() == 1){
+		//		// 不足時加算
+		//		return ProcAtrAddMethod.ADD_FOR_SHORTAGE;
+		//	}
+		//	else {
+		//		// 加算しない
+		//		return ProcAtrAddMethod.NOT_ADD;
+		//	}
+		//}
 		// 加算する
 		return ProcAtrAddMethod.ADD;
 	}

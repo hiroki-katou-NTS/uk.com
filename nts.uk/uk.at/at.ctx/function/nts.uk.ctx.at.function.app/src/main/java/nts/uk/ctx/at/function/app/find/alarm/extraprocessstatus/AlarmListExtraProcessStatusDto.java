@@ -39,9 +39,9 @@ public class AlarmListExtraProcessStatusDto {
 				domain.getCompanyID(),
 				domain.getStartDate(),
 				domain.getStartTime(),
-				domain.getEmployeeID(),
-				domain.getEndDate().get(),
-				domain.getEndTime()
+				domain.getEmployeeID().orElse(null),
+				domain.getEndDate().orElse(null),
+				domain.getEndTime().orElse(null)
 				);
 	}
 }

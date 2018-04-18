@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayCode;
 
 /**
  * 
- * @author TanLV
+ * @author yennth
  *
  */
 
@@ -22,9 +22,9 @@ public class KshstGrantHdTblPK {
 	@Column(name = "CID")
 	public String companyId;
 	
-	/* 年休付与NO */
-	@Column(name = "GRANT_YEAR_HD_NO")
-	public int grantYearHolidayNo;
+	/* 付与回数 */
+	@Column(name = "GRANT_NUM")
+	public int grantNum;
 	
 	/* 条件NO */
 	@Column(name = "CONDITION_NO")

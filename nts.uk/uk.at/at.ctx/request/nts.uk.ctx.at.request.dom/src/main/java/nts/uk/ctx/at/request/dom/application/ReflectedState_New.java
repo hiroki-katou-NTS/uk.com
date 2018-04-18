@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum ReflectedState_New {
-	
 	/** 未反映 */
 	NOTREFLECTED(0, "未反映"),
 	

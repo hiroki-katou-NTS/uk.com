@@ -5,6 +5,8 @@
 package nts.uk.ctx.sys.gateway.app.command.singlesignon;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,8 +21,11 @@ import org.apache.commons.lang3.StringUtils;
 import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccount;
-import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccountRepository;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccount;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountGetMemento;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountInfo;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountRepository;
 
 /**
  * The Class SaveWindowAccountCommandHandler.
@@ -30,7 +35,7 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 
 	/** The window account repository. */
 	@Inject
-	private WindowAccountRepository windowAccountRepository;
+	private WindowsAccountRepository windowAccountRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -120,10 +125,10 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 			}
 			
 			// remove old domain
-			List<WindowAccount> listWindowAcc = windowAccountRepository.findByUserId(command.getUserId());
+			Optional<WindowsAccount> optWindowAcc = windowAccountRepository.findByUserId(command.getUserId());
 		
 			// add and update data to db
-			save(listWindowAcc,listWinAccDto );
+			this.save(optWindowAcc,listWinAccDto );
 
 		}
 	
@@ -131,7 +136,7 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 			List<WindowAccountDto> listOtherWinAccCheckDupli) {
 
 		Optional<WindowAccountDto> winAccount = listOtherWinAccCheckDupli.stream().filter(
-				winAcc -> hostName.equals(winAcc.getHostName().v()) && userName.equals(winAcc.getUserName().v()))
+				winAcc -> hostName.equals(winAcc.getHostName()) && userName.equals(winAcc.getUserName()))
 				.findAny();
 
 		if (winAccount.isPresent()) {
@@ -141,33 +146,40 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 
 	}
 	
-	private void save(List<WindowAccount> listWindowAccDB, List<WindowAccountDto> listWinAccDto) {
-		List<WindowAccount> lstWindAccCommand = listWinAccDto.stream().map(item -> new WindowAccount(item)).collect(Collectors.toList());
+	private void save(Optional<WindowsAccount> optWindowAccDB, List<WindowAccountDto> listWinAccDto) {
+		WindowsAccount windAccCommand = this.toWindowsAccountDomain(listWinAccDto);
 		
-		Map<Integer, WindowAccount> mapWinAcc = listWindowAccDB.stream()
-				.collect(Collectors.toMap(item -> ((WindowAccount) item).getNo(), Function.identity()));
+		Map<Integer, WindowsAccountInfo> mapWinAcc = new HashMap<Integer, WindowsAccountInfo>();
+		
+		if(optWindowAccDB.isPresent()) {
+			mapWinAcc = optWindowAccDB.get().getAccountInfos().stream()
+					.collect(Collectors.toMap(WindowsAccountInfo::getNo, Function.identity()));
+		}
 		
 		List<Integer> lstWinAccSaved = new ArrayList<>();
 		
-		lstWindAccCommand.forEach(domain -> {
+		for (WindowsAccountInfo domain : windAccCommand.getAccountInfos()) {
+			
 			lstWinAccSaved.add(domain.getNo());
 			
-			WindowAccount winAccDb = mapWinAcc.get(domain.getNo());
+			WindowsAccountInfo winAccDb = mapWinAcc.get(domain.getNo());
 			
 			// not existed, insert DB
 			if (winAccDb == null) {
-				this.windowAccountRepository.add(domain);
+				this.windowAccountRepository.add(windAccCommand.getUserId(), domain);
 			} else {
-				this.windowAccountRepository.update(domain, winAccDb);
+				this.windowAccountRepository.update(windAccCommand.getUserId(), domain, winAccDb);
 			}
-		});
+		}
 		
 		// remove item not setting
-		listWindowAccDB.stream()
-		.filter(domain -> domain.getNo() != null && !lstWinAccSaved.contains(domain.getNo()))
-		.forEach(domain -> {
-			this.windowAccountRepository.remove(domain.getUserId(), domain.getNo());
-		});
+		if(optWindowAccDB.isPresent()) {
+			optWindowAccDB.get().getAccountInfos().stream().filter(
+					domain -> domain.getNo() != null && !lstWinAccSaved.contains(domain.getNo()))
+					.forEach(domain -> {
+						this.windowAccountRepository.remove(windAccCommand.getUserId(), domain.getNo());
+					});
+		}
 	}
 	
 	/**
@@ -182,7 +194,7 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 		BundledBusinessException exceptions = BundledBusinessException.newInstance();
 
 		if (!StringUtils.isEmpty(dto.getHostName().v()) && !StringUtils.isEmpty(dto.getUserName().v())) {
-			Optional<WindowAccount> opWindowAccount = windowAccountRepository
+			Optional<WindowsAccount> opWindowAccount = windowAccountRepository
 					.findbyUserNameAndHostName(dto.getUserName().v(), dto.getHostName().v());
 
 			// Check condition
@@ -199,4 +211,52 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 		}
 	}
 		
+	/**
+	 * To domain.
+	 *
+	 * @return the total condition
+	 */
+	public WindowsAccount toWindowsAccountDomain(List<WindowAccountDto> windowAccountDtos) {
+		return new WindowsAccount(new WindowsAccountDtoGetMemento(windowAccountDtos));
+	}
+
+	/**
+	 * The Class DtoGetMemento.
+	 */
+	private class WindowsAccountDtoGetMemento implements WindowsAccountGetMemento {
+
+		/** The command. */
+		private List<WindowAccountDto> windowAccountDtos;
+
+		/**
+		 * Instantiates a new dto get memento.
+		 *
+		 * @param command
+		 *            the command
+		 */
+		public WindowsAccountDtoGetMemento(List<WindowAccountDto> windowAccountDtos) {
+			this.windowAccountDtos = windowAccountDtos;
+		}
+
+
+		@Override
+		public String getUserId() {
+			if (CollectionUtil.isEmpty(this.windowAccountDtos)) {
+				return null;
+			}
+			return this.windowAccountDtos.stream().findFirst().get().getUserId();
+		}
+
+		@Override
+		public List<WindowsAccountInfo> getAccountInfos() {
+			// Check empty
+			if (CollectionUtil.isEmpty(this.windowAccountDtos)) {
+				return Collections.emptyList();
+			}
+			
+			return this.windowAccountDtos.stream().map(item -> new WindowsAccountInfo(item))
+					.collect(Collectors.toList());
+		}
+
+	}
 }

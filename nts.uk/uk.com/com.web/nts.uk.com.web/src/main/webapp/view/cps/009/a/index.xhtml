@@ -108,6 +108,7 @@
 								enable: false,
 								immediate: false}"
 								tabindex="7"></input>
+								
 							<!-- A3_003: 名称 -->
 							<input id="ctgName"
 								data-bind="ntsTextEditor: {
@@ -119,10 +120,11 @@
 								required: true}"
 								tabindex="8"></input>
 						</div>
+						
 						<div id='sub-content-right'>
-							<div id="search_his" class='flex valign-center'>
-								<!-- A3_004: カテゴリー検索 -->
-								<div id="search" tabindex="9"
+ 							<div id="search_his" class='flex valign-center'>
+								<!-- A3_004: カテゴリー検索
+ -->								<div id="search" tabindex="9"
 									data-bind="ntsSearchBox: {
 									name: '#[CPS009_17]',
 									searchMode: 'filter',
@@ -153,7 +155,8 @@
 									<button id="A3_15" data-bind="click: historyFilter_Lan"
 										tabindex="13">#{i18n.getText('CPS009_20')}</button>
 								</div>
-							</div>
+							</div> 
+							
 							<div id='sub-left'>
 								<!-- A3_005: list カテゴリ一覧 -->
 								<table id="item_grid"
@@ -228,7 +231,7 @@
 														optionsText: 'name',
 														editable: false,
 														visibleItemsCount: 5,
-														enable: true,
+														enable: disableCombox,
 														dropDownAttachedToBody:true,
 														columns: [
 															{ prop: 'name', length: 10 },
@@ -424,7 +427,7 @@
 																name: itemName, 
 																constraint: itemCode, 
 																value: dateWithDay, 
-																enable: true, 
+																enable: enableControl, 
 																readonly: false,
 																required: true },
 																attr: { NameID: itemName }" />
@@ -436,7 +439,7 @@
 																name: itemName, 
 																constraint: itemCode, 
 																value: dateWithDay, 
-																enable: true, 
+																enable: enableControl, 
 																readonly: false },
 																attr: { NameID: itemName }" />
 														</com:ko-if>
@@ -536,35 +539,16 @@
 														</com:ko-if>
 														
 														<com:ko-if bind="(dataType() === 7)">
-														<div id="combox1" 
-																data-bind="ntsComboBox: {
-																options: selection,
-																optionsValue: 'optionValue',
-																value: selectedCode,
-																optionsText: 'optionText',
-																editable: false,
-																enable: true,
-																dropDownAttachedToBody:true,
-																columns: [
-																	{ prop: 'optionText', length: 10 },
-																]}">
-														</div>
+														<div data-bind="ntsRadioBoxGroup: {
+															options: selection,
+															optionsValue: 'optionValue',
+															optionsText: 'optionText',
+															value: selectedCode,
+															enable: true}"></div>																												
 														</com:ko-if> 
 														
 														<com:ko-if bind="(dataType() === 8)">
-														<div id="combox1" 
-																data-bind="ntsComboBox: {
-																options: selection,
-																optionsValue: 'optionValue',
-																value: selectedCode,
-																optionsText: 'optionText',
-																editable: false,
-																enable: true,
-																dropDownAttachedToBody:true,
-																columns: [
-																	{ prop: 'optionText', length: 10 },
-																]}">
-														</div>
+														<button >#{i18n.getText('CPS009_37')}</button><span class="caret-right caret-inline"></span>
 														</com:ko-if> 
 														</td>
 														</com:ko-if>

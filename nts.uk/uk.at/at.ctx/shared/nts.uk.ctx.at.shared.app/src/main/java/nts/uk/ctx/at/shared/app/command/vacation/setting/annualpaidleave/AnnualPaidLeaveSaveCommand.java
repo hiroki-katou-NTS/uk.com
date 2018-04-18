@@ -6,8 +6,8 @@ package nts.uk.ctx.at.shared.app.command.vacation.setting.annualpaidleave;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AcquisitionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualLeaveGrantDay;
@@ -25,8 +25,10 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxRemainingDay
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxTimeDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RemainingNumberSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RetentionYear;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RoundProcessingClassification;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearLyOfNumberDays;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualMaxDay;
 
 /**
@@ -60,9 +62,6 @@ public class AnnualPaidLeaveSaveCommand {
     /** The number year retain. */
     private Integer numberYearRetain;
 
-    /** The permit type. */
-    private Integer permitType;
-
     /** The annual priority. */
     private Integer annualPriority;
 
@@ -88,7 +87,13 @@ public class AnnualPaidLeaveSaveCommand {
     private Integer maxTimeDay;
 
     /** The is enough time one day. */
-    private Boolean isEnoughTimeOneDay;
+    private Integer roundProcessClassific;
+    
+    /** The yearly of date. */
+    private Double yearlyOfDays;
+    
+    /** The round processing classification. */
+    private Integer roundProcessCla;
 
     /**
      * To domain.
@@ -153,7 +158,6 @@ public class AnnualPaidLeaveSaveCommand {
         @Override
         public AcquisitionSetting getAcquisitionSetting() {
             AcquisitionSetting setting = AcquisitionSetting.builder()
-                    .permitType(ApplyPermission.valueOf(this.command.permitType))
                     .annualPriority(AnnualPriority.valueOf(this.command.annualPriority))
                     .build();
             return setting;
@@ -238,6 +242,7 @@ public class AnnualPaidLeaveSaveCommand {
                     .manageType(ManageDistinct.valueOf(this.command.maxManageSemiVacation))
                     .reference(MaxDayReference.valueOf(this.command.maxNumberSemiVacation))
                     .maxNumberUniformCompany(new AnnualNumberDay(this.command.maxNumberCompany))
+                    .roundProcesCla(RoundProcessingClassification.valueOf(this.command.roundProcessCla))
                     .build();
             return halfDay;
         }
@@ -283,6 +288,11 @@ public class AnnualPaidLeaveSaveCommand {
                     .build();
             return display;
         }
+
+		@Override
+		public YearLyOfNumberDays getYearLyOfDays() {
+			return this.command.yearlyOfDays == null ? null : new YearLyOfNumberDays(this.command.yearlyOfDays);
+		}
     }
 
     /**
@@ -358,14 +368,23 @@ public class AnnualPaidLeaveSaveCommand {
 
         /*
          * (non-Javadoc)
+         * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
+         * TimeAnnualSettingGetMemento#GetRoundProcessClassific()
+         */
+		@Override
+		public TimeAnnualRoundProcesCla GetRoundProcessClassific() {
+			return TimeAnnualRoundProcesCla.valueOf(this.command.roundProcessClassific);
+		}
+
+        /*
+         * (non-Javadoc)
          * 
          * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
          * TimeVacationSettingGetMemento#isEnoughTimeOneDay()
          */
         @Override
         public boolean isEnoughTimeOneDay() {
-            return this.command.isEnoughTimeOneDay;
-        }
-
+            return false;
+        }		
     }
 }

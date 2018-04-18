@@ -8,7 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 
 @Getter
 @Setter
@@ -84,7 +85,7 @@ public class EmpCalAndSumExeLogDto {
 	 */
 	private List<ExecutionLogDto> executionLogs;
 	
-	public static EmpCalAndSumExeLogDto fromDomain(EmpCalAndSumExeLog domain) {
+	public static EmpCalAndSumExeLogDto fromDomain(EmpCalAndSumExeLog domain, List<ExecutionLog> lstExecutionLog) {
 		return new EmpCalAndSumExeLogDto(
 				domain.getEmpCalAndSumExecLogID(), 
 				domain.getCompanyID(), 
@@ -96,7 +97,7 @@ public class EmpCalAndSumExeLogDto {
 				domain.getEmployeeID(),
 				domain.getClosureID(),
 				domain.getCaseSpecExeContentID(),
-				domain.getExecutionLogs().stream().map(c->ExecutionLogDto.fromDomain(c)).collect(Collectors.toList())
+				lstExecutionLog.stream().map(c->ExecutionLogDto.fromDomain(c)).collect(Collectors.toList())
 				);
 	}
 

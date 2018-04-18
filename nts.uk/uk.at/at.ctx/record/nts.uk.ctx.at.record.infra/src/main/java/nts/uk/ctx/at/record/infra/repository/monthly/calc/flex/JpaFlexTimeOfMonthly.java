@@ -47,6 +47,8 @@ public class JpaFlexTimeOfMonthly extends JpaRepository implements FlexTimeOfMon
 		val flexCarryForwardTime = domain.getFlexCarryforwardTime();
 		// 時間外超過のフレックス時間
 		val flexTimeOfExcessOutsideTime = domain.getFlexTimeOfExcessOutsideTime();
+		// フレックス不足控除時間
+		val flexShortDeductTime = domain.getFlexShortDeductTime();
 		
 		KrcdtMonFlexTime entity = this.getEntityManager().find(KrcdtMonFlexTime.class, key);
 		if (entity == null) return;
@@ -63,5 +65,8 @@ public class JpaFlexTimeOfMonthly extends JpaRepository implements FlexTimeOfMon
 		entity.excessFlexAtr = flexTimeOfExcessOutsideTime.getExcessFlexAtr().value;
 		entity.principleTime = flexTimeOfExcessOutsideTime.getPrincipleTime().v();
 		entity.forConvenienceTime = flexTimeOfExcessOutsideTime.getForConvenienceTime().v();
+		entity.annualLeaveDeductDays = flexShortDeductTime.getAnnualLeaveDeductDays().v();
+		entity.absenceDeductTime = flexShortDeductTime.getAbsenceDeductTime().v();
+		entity.shotTimeBeforeDeduct = flexShortDeductTime.getFlexShortTimeBeforeDeduct().v();
 	}
 }

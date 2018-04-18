@@ -64,7 +64,7 @@ module nts.uk.ui.koExtentions {
             var $input: any = $("<input id='" + container.attr("id") + "' class='ntsDatepicker nts-input reset-element' tabindex='" + tabIndex + "'/>").addClass(inputClass);
             $input.addClass(containerClass).attr("id", idString).attr("data-name", container.data("name"));
             container.append($input);
-            
+            $input.data("required", required);
             let jumpButtonsDisplay = data.showJumpButtons !== undefined ? ko.unwrap(data.showJumpButtons) : false; 
             let fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
             let $prevButton, $nextButton;
@@ -103,13 +103,18 @@ module nts.uk.ui.koExtentions {
                                 .setDefaultCss(data.defaultClass || ""));
 
             name = nts.uk.resource.getControlName(name);
-            var validator = new validation.TimeValidator(name, constraintName, {required: required, 
-                outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar});
+            
             $input.on("change", (e) => {
                 var newText = $input.val();
+                var validator = new validation.TimeValidator(name, constraintName, {required: $input.data("required"), 
+                                                    outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, 
+                                                    valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar});
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
                 if (result.isValid) {
+                    if(!validateMinMax(result.parsedValue)){
+                       return; 
+                    }
                     // Day of Week
                     if (hasDayofWeek) {
                         if (util.isNullOrEmpty(result.parsedValue))
@@ -128,10 +133,16 @@ module nts.uk.ui.koExtentions {
             
             $input.on("blur", () => {
                 var newText = $input.val();
+                var validator = new validation.TimeValidator(name, constraintName, {required: $input.data("required"), 
+                                                    outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, 
+                                                    valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar});
                 var result = validator.validate(newText);
                 if (!result.isValid) {
                     $input.ntsError('set', result.errorMessage, result.errorCode, false);
                 } else if (acceptJapaneseCalendar){
+                    if(!validateMinMax(result.parsedValue)){
+                       return; 
+                    }
                     // Day of Week
                     if (hasDayofWeek) {
                         if (util.isNullOrEmpty(result.parsedValue))
@@ -145,10 +156,50 @@ module nts.uk.ui.koExtentions {
 //                    }
                 }
             });
+            
+            var validateMinMax = function(parsedValue){
+                if(nts.uk.util.isNullOrEmpty(parsedValue)){
+                    return true;
+                }
+                var mmRs = new nts.uk.time.MomentResult();
+                var otFormat = nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat;
+                var minDate = ($input.data('startDate') !== undefined) ? moment($input.data('startDate'), otFormat) : mmRs.systemMin();
+                var maxDate = ($input.data('endDate') !== undefined) ? moment($input.data('endDate'), otFormat) : mmRs.systemMax();
+                var momentCurrent = moment(parsedValue, otFormat);
+                var error = false;
+                if(momentCurrent.isBefore(minDate, 'day')){
+                    error = true;
+                } else if(momentCurrent.isAfter(maxDate, 'day')){
+                    error = true;
+                }    
+                if(error){
+                    var isHasYear = (nts.uk.util.isNullOrEmpty(otFormat) ? false : otFormat.indexOf("Y") >= 0) || otFormat.indexOf("Y") >= 0;
+                    var isHasMonth = (nts.uk.util.isNullOrEmpty(otFormat) ? false : otFormat.indexOf("M") >= 0) || otFormat.indexOf("M") >= 0;
+                    var isHasDay = (nts.uk.util.isNullOrEmpty(otFormat) ? false : otFormat.indexOf("D") >= 0) || otFormat.indexOf("D") >= 0;
+                    var mesId = "FND_E_DATE_Y";
+                    var fm = "YYYY";
+                    if (isHasDay && isHasMonth && isHasYear) {
+                        mesId = "FND_E_DATE_YMD", fm = "YYYY/MM/DD";
+                    } else if (isHasMonth && isHasYear) {
+                        mesId = "FND_E_DATE_YM", fm = "YYYY/MM";
+                    } 
+                    nts.uk.ui.dialog.error({ messageId: mesId, messageParams: [ name, minDate.format(fm), maxDate.format(fm) ] }).then(function(){
+                        if (hasDayofWeek) {
+                            $label.text("");
+                        }
+                        value(null);
+                    });
+                    return false;
+                }
+                return true
+            };
 
 
             $input.on('validate', (function(e: Event) {
                 var newText = $input.val();
+                var validator = new validation.TimeValidator(name, constraintName, {required: $input.data("required"), 
+                                                    outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, 
+                                                    valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar});
                 var result = validator.validate(newText);
                 $input.ntsError('clearKibanError');
                 if (!result.isValid) {
@@ -172,6 +223,8 @@ module nts.uk.ui.koExtentions {
             container.data("init", false);
             
             $input.ntsDatepicker("bindFlip");
+            $input.data('startDate', startDate);
+            $input.data('endDate', endDate);
         }
 
         /**
@@ -190,6 +243,7 @@ module nts.uk.ui.koExtentions {
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : undefined;
             var startDate: any = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
             var endDate: any = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
+            var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             
             var container = $(element); 
             let dateNormalizer = container.find("input").data("dateNormalizer");
@@ -216,9 +270,12 @@ module nts.uk.ui.koExtentions {
                 }        
             }
             
+            $input.data("required", required);
             // Properties Binding
             $input.datepicker('setStartDate', startDate);
             $input.datepicker('setEndDate', endDate);
+            $input.data('startDate', startDate);
+            $input.data('endDate', endDate);
             if (enable !== undefined)
                $input.prop("disabled", !enable);
             else

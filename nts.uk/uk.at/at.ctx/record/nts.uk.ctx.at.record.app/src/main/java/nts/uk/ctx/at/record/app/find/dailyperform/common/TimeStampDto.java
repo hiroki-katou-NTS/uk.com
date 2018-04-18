@@ -14,17 +14,17 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 public class TimeStampDto {
 
 	/** 時刻 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "時刻", needCheckIDWithIndex = true)
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "時刻")
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer timesOfDay;
 
 	/** 丸め後の時刻 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "丸め後の時刻", needCheckIDWithIndex = true)
+	@AttendanceItemLayout(layout = "B", jpPropertyName = "丸め後の時刻")
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer afterRoundingTimesOfDay;
 
 	/** 場所コード */
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "場所コード", needCheckIDWithIndex = true)
+	@AttendanceItemLayout(layout = "C", jpPropertyName = "場所コード")
 	@AttendanceItemValue
 	private String placeCode;
 	

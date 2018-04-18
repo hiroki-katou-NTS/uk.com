@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
@@ -36,13 +36,13 @@ public class HolidayWorkTimeOfTimeSeries {
 		this.ymd = ymd;
 		this.holidayWorkTime = new HolidayWorkFrameTime(
 				holidayWorkFrameNo,
-				Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
-				Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+				Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
+				Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
 				Finally.of(new AttendanceTime(0)));
 		this.legalHolidayWorkTime = new HolidayWorkFrameTime(
 				holidayWorkFrameNo,
-				Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
-				Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+				Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
+				Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
 				Finally.of(new AttendanceTime(0)));
 	}
 	
@@ -66,7 +66,7 @@ public class HolidayWorkTimeOfTimeSeries {
 	 * 休出時間：休出時間を加算する
 	 * @param holidayWorkTime 休出時間　（計算付き時間）
 	 */
-	public void addHolidayWorkTimeInHolidayWorkTime(TimeWithCalculation holidayWorkTime){
+	public void addHolidayWorkTimeInHolidayWorkTime(TimeDivergenceWithCalculation holidayWorkTime){
 		this.holidayWorkTime = this.addHolidayWorkTimeOnly(this.holidayWorkTime, holidayWorkTime);
 	}
 	
@@ -74,7 +74,7 @@ public class HolidayWorkTimeOfTimeSeries {
 	 * 法定内休出時間：休出時間を加算する
 	 * @param holidayWorkTime 休出時間　（計算付き時間）
 	 */
-	public void addHolidayWorkTimeInLegalHolidayWorkTime(TimeWithCalculation holidayWorkTime){
+	public void addHolidayWorkTimeInLegalHolidayWorkTime(TimeDivergenceWithCalculation holidayWorkTime){
 		this.legalHolidayWorkTime = this.addHolidayWorkTimeOnly(this.legalHolidayWorkTime, holidayWorkTime);
 	}
 	
@@ -82,7 +82,7 @@ public class HolidayWorkTimeOfTimeSeries {
 	 * 休出時間：振替時間を加算する
 	 * @param transferTime 休出時間　（計算付き時間）
 	 */
-	public void addTransferTimeInHolidayWorkTime(TimeWithCalculation transferTime){
+	public void addTransferTimeInHolidayWorkTime(TimeDivergenceWithCalculation transferTime){
 		this.holidayWorkTime = this.addTransferTimeOnly(this.holidayWorkTime, transferTime);
 	}
 	
@@ -90,7 +90,7 @@ public class HolidayWorkTimeOfTimeSeries {
 	 * 法定内休出時間：振替時間を加算する
 	 * @param transferTime 休出時間　（計算付き時間）
 	 */
-	public void addTransferTimeInLegalHolidayWorkTime(TimeWithCalculation transferTime){
+	public void addTransferTimeInLegalHolidayWorkTime(TimeDivergenceWithCalculation transferTime){
 		this.legalHolidayWorkTime = this.addTransferTimeOnly(this.legalHolidayWorkTime, transferTime);
 	}
 	
@@ -120,7 +120,7 @@ public class HolidayWorkTimeOfTimeSeries {
 	 * @param holidayWorkTime 加算する時間　（計算付き時間）
 	 * @return 休出枠時間　（加算後）
 	 */
-	private HolidayWorkFrameTime addHolidayWorkTimeOnly(HolidayWorkFrameTime target, TimeWithCalculation holidayWorkTime){
+	private HolidayWorkFrameTime addHolidayWorkTimeOnly(HolidayWorkFrameTime target, TimeDivergenceWithCalculation holidayWorkTime){
 		return new HolidayWorkFrameTime(
 				target.getHolidayFrameNo(),
 				Finally.of(target.getHolidayWorkTime().get().addMinutes(
@@ -137,7 +137,7 @@ public class HolidayWorkTimeOfTimeSeries {
 	 * @param transferTime 加算する時間　（計算付き時間）
 	 * @return 休出枠時間　（加算後）
 	 */
-	private HolidayWorkFrameTime addTransferTimeOnly(HolidayWorkFrameTime target, TimeWithCalculation transferTime){
+	private HolidayWorkFrameTime addTransferTimeOnly(HolidayWorkFrameTime target, TimeDivergenceWithCalculation transferTime){
 		return new HolidayWorkFrameTime(
 				target.getHolidayFrameNo(),
 				Finally.of(target.getHolidayWorkTime().get()),

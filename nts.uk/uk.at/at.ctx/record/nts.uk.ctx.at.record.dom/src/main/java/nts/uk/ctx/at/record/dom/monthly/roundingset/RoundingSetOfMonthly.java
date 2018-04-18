@@ -60,17 +60,17 @@ public class RoundingSetOfMonthly extends AggregateRoot {
 
 	/**
 	 * 時間外超過丸め
-	 * @param attendanceTimeId 勤怠項目ID
+	 * @param attendanceItemId 勤怠項目ID
 	 * @param attendanceTimeMonth 勤怠月間時間　（丸め前）
 	 * @return 勤怠月間時間　（丸め後）
 	 */
-	public AttendanceTimeMonth excessOutsideRound(int attendanceTimeId, AttendanceTimeMonth attendanceTimeMonth){
+	public AttendanceTimeMonth excessOutsideRound(int attendanceItemId, AttendanceTimeMonth attendanceTimeMonth){
 
 		int minutes = attendanceTimeMonth.v();
 		
 		// 時間外超過の時間丸めが設定されていない時、項目丸め設定を参照する
 		if (!this.timeRoundingOfExcessOutsideTime.isPresent()){
-			return this.itemRound(attendanceTimeId, attendanceTimeMonth);
+			return this.itemRound(attendanceItemId, attendanceTimeMonth);
 		}
 
 		val excessOutsideRoundSet = this.timeRoundingOfExcessOutsideTime.get();
@@ -82,22 +82,22 @@ public class RoundingSetOfMonthly extends AggregateRoot {
 			minutes = excessOutsideRoundSet.getRoundingUnit().round(minutes, Direction.TO_FORWARD);
 			break;
 		case FOLLOW_ELEMENTS:
-			return this.itemRound(attendanceTimeId, attendanceTimeMonth);
+			return this.itemRound(attendanceItemId, attendanceTimeMonth);
 		}
 		return new AttendanceTimeMonth(minutes);
 	}
 
 	/**
 	 * 項目丸め
-	 * @param attendanceTimeId 勤怠項目ID
+	 * @param attendanceItemId 勤怠項目ID
 	 * @param attendanceTimeMonth 勤怠月間時間　（丸め前）
 	 * @return 勤怠月間時間　（丸め後）
 	 */
-	public AttendanceTimeMonth itemRound(int attendanceTimeId, AttendanceTimeMonth attendanceTimeMonth){
+	public AttendanceTimeMonth itemRound(int attendanceItemId, AttendanceTimeMonth attendanceTimeMonth){
 		
 		int minutes = attendanceTimeMonth.v();
-		if (!this.itemRoundingSet.containsKey(attendanceTimeId)) return attendanceTimeMonth;
-		val targetRoundingSet = this.itemRoundingSet.get(attendanceTimeId);
+		if (!this.itemRoundingSet.containsKey(attendanceItemId)) return attendanceTimeMonth;
+		val targetRoundingSet = this.itemRoundingSet.get(attendanceItemId);
 		return new AttendanceTimeMonth(targetRoundingSet.getRoundingSet().round(minutes));
 	}
 }

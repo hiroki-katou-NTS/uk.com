@@ -26,7 +26,7 @@ public interface PersonApprovalRootRepository {
 	 * 
 	 * @param companyId
 	 * @param employeeId
-	 * @param historyId
+	 * @param  historyId
 	 */
 	void deletePsApprovalRoot(String companyId, String approvalId, String employeeId, String historyId);
 
@@ -123,4 +123,50 @@ public interface PersonApprovalRootRepository {
 	 * @return
 	 */
 	List<PersonApprovalRoot> getPsAppRootLastest(String companyId, String employeeId,GeneralDate endDate);
+	
+	List<PersonApprovalRoot> getPsAppRoot(String companyID, GeneralDate date, 
+			Integer employmentRootAtr, Integer confirmRootAtr);
+
+	/**
+	 * getNewestCommonPsAppRoot
+	 * @param companyId
+	 * @param employeeId
+	 * @return
+	 */
+	Optional<PersonApprovalRoot> getNewestCommonPsAppRoot(String companyId, String employeeId);
+
+	/**
+	 * getNewestMonthlyPsAppRoot
+	 * @param companyId
+	 * @param employeeId
+	 * @return
+	 */
+	Optional<PersonApprovalRoot> getNewestMonthlyPsAppRoot(String companyId, String employeeId);
+
+	/**
+	 * getPastHistory
+	 * @param companyId
+	 * @param employeeId
+	 * @return
+	 */
+	List<PersonApprovalRoot> getPastHistory(String companyId, String employeeId);
+
+	/**
+	 * getPsApprovalRootBySdate
+	 * @param companyId
+	 * @param employeeId
+	 * @param startDate
+	 * @return
+	 */
+	List<PersonApprovalRoot> getPsApprovalRootBySdate(String companyId, String employeeId, GeneralDate startDate);
+	
+	/**
+	 * 
+	 * @param companyID
+	 * @param employeeID
+	 * @param confirmType
+	 * @param date
+	 * @return
+	 */
+	List<PersonApprovalRoot> findEmpByConfirm(String companyID, String employeeID, ConfirmationRootType confirmType, GeneralDate date);
 }

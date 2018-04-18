@@ -1,0 +1,34 @@
+.form-lb {
+	margin: 10px;
+}
+
+.child-lb {
+	margin: 0px 0px 2px 35px;
+}
+
+hr {
+	margin-left: 35px;
+	margin-top: 1px;
+	opacity: 0.4;
+}
+
+.selection {
+	padding: 0px 0px 10px 60px;
+	width: 250px;
+}
+
+.selection label {
+	padding-top: 3px;
+}
+
+.workSelection {
+	margin-top: 60px;
+}
+
+#itemname {
+	width: 250px;
+}
+
+.left-content {
+	margin-left: 30px;
+}

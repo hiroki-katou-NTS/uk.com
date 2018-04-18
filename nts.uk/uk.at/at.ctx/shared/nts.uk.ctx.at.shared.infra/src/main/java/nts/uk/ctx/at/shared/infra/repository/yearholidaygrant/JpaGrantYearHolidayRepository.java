@@ -40,9 +40,9 @@ public class JpaGrantYearHolidayRepository extends JpaRepository implements Gran
 			+ "AND a.kshstGrantHdTblPK.yearHolidayCode = :yearHolidayCode ";
 	
 	@Override
-	public Optional<GrantHdTbl> find(String companyId, int conditionNo, String yearHolidayCode,
-			int grantYearHolidayNo) {
-		return this.queryProxy().find(new KshstGrantHdTblPK(companyId, grantYearHolidayNo, conditionNo, yearHolidayCode), KshstGrantHdTbl.class)
+	public Optional<GrantHdTbl> find(String companyId, int conditionNo, 
+			String yearHolidayCode, int grantNum) {
+		return this.queryProxy().find(new KshstGrantHdTblPK(companyId, grantNum, conditionNo, yearHolidayCode), KshstGrantHdTbl.class)
 					.map(x -> convertToDomain(x));
 	}
 	
@@ -62,14 +62,14 @@ public class JpaGrantYearHolidayRepository extends JpaRepository implements Gran
 
 	@Override
 	public void update(GrantHdTbl holidayGrant) {
-		KshstGrantHdTblPK key = new KshstGrantHdTblPK(holidayGrant.getCompanyId(), holidayGrant.getGrantYearHolidayNo(), holidayGrant.getConditionNo(), holidayGrant.getYearHolidayCode().v());
+		KshstGrantHdTblPK key = new KshstGrantHdTblPK(holidayGrant.getCompanyId(), holidayGrant.getGrantNum().v(), holidayGrant.getConditionNo(), holidayGrant.getYearHolidayCode().v());
 		Optional<KshstGrantHdTbl> entity = this.queryProxy().find(key, KshstGrantHdTbl.class);
 		this.commandProxy().update(toEntity(holidayGrant, entity.get()));
 	}
 
 	@Override
-	public void remove(String companyId, int grantYearHolidayNo, int conditionNo, String yearHolidayCode) {
-		this.commandProxy().remove(KshstGrantHdTbl.class, new KshstGrantHdTblPK(companyId, grantYearHolidayNo, conditionNo, yearHolidayCode));
+	public void remove(String companyId, int grantNum, int conditionNo, String yearHolidayCode) {
+		this.commandProxy().remove(KshstGrantHdTbl.class, new KshstGrantHdTblPK(companyId, grantNum, conditionNo, yearHolidayCode));
 	}
 	
 	@Override
@@ -99,23 +99,15 @@ public class JpaGrantYearHolidayRepository extends JpaRepository implements Gran
 	}
 		
 	/**
-	 * Convert to domain
-	 * 
+	 * Convert from KshstGrantHdTbl entity to domain
 	 * @param KshstGrantHdTbl
 	 * @return
+	 * @author yennth
 	 */
 	private GrantHdTbl convertToDomain(KshstGrantHdTbl x) {
-		return GrantHdTbl.createFromJavaType(x.kshstGrantHdTblPK.companyId, 
-				x.kshstGrantHdTblPK.grantYearHolidayNo, 
-				x.kshstGrantHdTblPK.conditionNo, 
-				x.kshstGrantHdTblPK.yearHolidayCode, 
-				x.grantDays, 
-				x.limitedTimeHdDays, 
-				x.limitedHalfHdCnt, 
-				x.lengthOfServiceMonths, 
-				x.lengthOfServiceYears, 
-				x.grantReferenceDate, 
-				x.grantSimultaneity);
+		return GrantHdTbl.createFromJavaType(x.kshstGrantHdTblPK.companyId, x.kshstGrantHdTblPK.conditionNo, 
+											x.kshstGrantHdTblPK.yearHolidayCode, x.kshstGrantHdTblPK.grantNum, 
+											x.grantDay, x.limitTimeHd, x.limitDayYear);
 	}
 	
 	/**
@@ -128,14 +120,30 @@ public class JpaGrantYearHolidayRepository extends JpaRepository implements Gran
 		if (kshstGrantHdTbl == null) {
 			kshstGrantHdTbl = new KshstGrantHdTbl();
 		}
-		kshstGrantHdTbl.kshstGrantHdTblPK  =  new KshstGrantHdTblPK(holidayGrant.getCompanyId(), holidayGrant.getGrantYearHolidayNo(), holidayGrant.getConditionNo(), holidayGrant.getYearHolidayCode().v());
-		kshstGrantHdTbl.grantDays =	holidayGrant.getGrantDays().v();
-		kshstGrantHdTbl.limitedTimeHdDays = holidayGrant.getLimitedTimeHdDays() != null ? holidayGrant.getLimitedTimeHdDays().v() : 0;
-		kshstGrantHdTbl.limitedHalfHdCnt = holidayGrant.getLimitedHalfHdCnt() != null ? holidayGrant.getLimitedHalfHdCnt().v() : 0;
-		kshstGrantHdTbl.lengthOfServiceMonths = holidayGrant.getLengthOfServiceMonths() != null ? holidayGrant.getLengthOfServiceMonths().v() : 0;
-		kshstGrantHdTbl.lengthOfServiceYears = holidayGrant.getLengthOfServiceYears() != null ? holidayGrant.getLengthOfServiceYears().v() : 0;
-		kshstGrantHdTbl.grantReferenceDate = holidayGrant.getGrantReferenceDate().value;
-		kshstGrantHdTbl.grantSimultaneity = holidayGrant.getGrantSimultaneity().value;
+		kshstGrantHdTbl.kshstGrantHdTblPK  =  new KshstGrantHdTblPK(holidayGrant.getCompanyId(), holidayGrant.getGrantNum().v(), holidayGrant.getConditionNo(), holidayGrant.getYearHolidayCode().v());
+		kshstGrantHdTbl.grantDay =	holidayGrant.getGrantDays().v();
+		
+		if(holidayGrant.getLimitTimeHd() != null) {
+			if(holidayGrant.getLimitTimeHd().isPresent()) {
+				kshstGrantHdTbl.limitTimeHd = holidayGrant.getLimitTimeHd().get().v();
+			} else {
+				kshstGrantHdTbl.limitTimeHd = 0;
+			}			
+		} else {
+			kshstGrantHdTbl.limitTimeHd = 0;
+		}
+		
+		if(holidayGrant.getLimitDayYear() != null) {
+			if(holidayGrant.getLimitDayYear().isPresent()) {
+				kshstGrantHdTbl.limitDayYear = holidayGrant.getLimitDayYear().get().v();
+			} else {
+				kshstGrantHdTbl.limitDayYear = 0;
+			}			
+		} else {
+			kshstGrantHdTbl.limitDayYear = 0;
+		}
+		
 		return kshstGrantHdTbl;
 	}
+
 }

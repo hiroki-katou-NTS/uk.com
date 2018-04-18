@@ -84,6 +84,18 @@ public class KrcdtMonFlexTime extends UkJpaEntity implements Serializable {
 	@Column(name = "CONVENIENCE_TIME")
 	public int forConvenienceTime; 
 
+	/** 年休控除日数 */
+	@Column(name = "ANNUAL_DEDUCT_DAYS")
+	public double annualLeaveDeductDays; 
+	
+	/** 欠勤控除時間 */
+	@Column(name = "ABSENCE_DEDUCT_TIME")
+	public int absenceDeductTime; 
+	
+	/** 控除前のフレックス不足時間 */
+	@Column(name = "SHORT_TIME_BFR_DEDUCT")
+	public int shotTimeBeforeDeduct; 
+	
 	/** マッチング：月別実績の勤怠時間 */
 	@OneToOne
 	@JoinColumns({

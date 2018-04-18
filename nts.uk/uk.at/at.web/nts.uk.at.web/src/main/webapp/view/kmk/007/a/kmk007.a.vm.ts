@@ -37,7 +37,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                     workAtr: 0,
                     digestPublicHd: 0,
                     holidayAtr: 0,
-                    countHodiday: 0,
+                    countHodiday: 1,
                     closeAtr: 0,
                     sumAbsenseNo: 0,
                     sumSpHodidayNo: 0,
@@ -983,7 +983,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 this.workAtr = ko.observable(param.workAtr);
                 this.digestPublicHd = ko.observable(!!param.digestPublicHd);
                 this.holidayAtr = ko.observable(param.holidayAtr);
-                this.countHodiday = ko.observable(!!param.countHodiday);
+                this.countHodiday = ko.observable(param.countHodiday);
                 this.closeAtr = ko.observable(param.closeAtr);
                 this.sumAbsenseNo = ko.observable(param.sumAbsenseNo);
                 this.sumSpHodidayNo = ko.observable(param.sumSpHodidayNo);

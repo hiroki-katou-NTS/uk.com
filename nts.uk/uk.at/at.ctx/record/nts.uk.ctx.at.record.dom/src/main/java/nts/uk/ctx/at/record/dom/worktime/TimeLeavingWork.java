@@ -2,15 +2,12 @@ package nts.uk.ctx.at.record.dom.worktime;
 
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.record.dom.worktime.enums.TimeLeavingType;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -34,21 +31,14 @@ public class TimeLeavingWork extends DomainObject{
 	
 	private TimeSpanForCalc timespan;
 	
-//	private TimeLeavingType timeLeavingType;
-//	
-//	public TimeLeavingWork(WorkNo workNo, TimeActualStamp attendanceStamp, TimeActualStamp leaveStamp, TimeLeavingType timeLeavingType) {
-//		super();
-//		this.workNo = workNo;
-//		this.attendanceStamp = attendanceStamp;
-//		this.leaveStamp = leaveStamp;
-//		this.timeLeavingType = timeLeavingType;
-//	}
+
+
 	
-	public TimeLeavingWork(WorkNo workNo, Optional<TimeActualStamp> attendanceStamp, Optional<TimeActualStamp> leaveStamp) {
+	public TimeLeavingWork(WorkNo workNo, TimeActualStamp attendanceStamp, TimeActualStamp leaveStamp) {
 		super();
 		this.workNo = workNo;
-		this.attendanceStamp = attendanceStamp;
-		this.leaveStamp = leaveStamp;
+		this.attendanceStamp = Optional.ofNullable(attendanceStamp);
+		this.leaveStamp = Optional.ofNullable(leaveStamp);
 		
 		this.timespan = this.craeteTimeSpan();
 	}
@@ -103,7 +93,7 @@ public class TimeLeavingWork extends DomainObject{
 		if(isJustTimeLateAttendance) {
 			newLeave = leaveStamp.get().moveAheadStampTime(1);
 		}
-		return new TimeLeavingWork(this.workNo,Optional.ofNullable(newAttendance) , Optional.ofNullable(newLeave));
+		return new TimeLeavingWork(this.workNo, newAttendance , newLeave);
 	}
 
 	public void setTimeLeavingWork(WorkNo workNo, Optional<TimeActualStamp> attendanceStamp, Optional<TimeActualStamp> leaveStamp){

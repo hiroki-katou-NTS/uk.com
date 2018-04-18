@@ -4,6 +4,7 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.ConcurrentEmployeeRequest;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
@@ -39,4 +40,20 @@ public interface EmployeeRequestAdapter {
 	SEmpHistImport getEmpHist(String companyId, String employeeId,
 			GeneralDate baseDate);
 	SWkpHistImport getSWkpHistByEmployeeID(String employeeId, GeneralDate baseDate);
+	
+	/**
+	 * 承認状況社員メールアドレス取得
+	 * @param sIds 社員ID
+	 * @return 取得社員ID＜社員ID、社員名、メールアドレス＞
+	 */
+	List<EmployeeEmailImport> getApprovalStatusEmpMailAddr(List<String> sIds);
+	
+	/**
+	 * RequestList #120
+	 * @param workplaceId
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	List<String> getListSIdByWkpIdAndPeriod(String workplaceId, GeneralDate startDate, GeneralDate endDate);
 }

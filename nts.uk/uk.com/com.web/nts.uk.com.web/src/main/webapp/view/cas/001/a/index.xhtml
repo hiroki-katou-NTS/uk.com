@@ -34,7 +34,7 @@
 					<!-- <button id="A1_001">#{i18n.getText('CAS001_2')}</button> -->
 					<button id="A1_002" class="proceed" data-bind="click:saveData">#{i18n.getText('CAS001_3')}</button>
 					<button id="A1_003"
-						data-bind="click:OpenCModal,enable:(personRoleList().length &gt; 0)">#{i18n.getText('CAS001_4')}</button>
+						data-bind="click:openCModal,enable:(personRoleList().length &gt; 0)">#{i18n.getText('CAS001_4')}</button>
 					<!-- 	<button id="A1_004" class="danger">#{i18n.getText('CAS001_5')}</button> -->
 					<div class="float-right">
 						<a id="A1_005" class="goout "
@@ -60,7 +60,7 @@
 							searchMode: 'filter',
 							targetKey: 'categoryId',
 						 	comId: 'A2_008',
-						 	items: RoleCategoryList,
+						 	items: roleCategoryList,
 						 	selected: currentCategoryId,
 						 	selectedKey: 'categoryId',
 						 	fields: ['categoryName'],
@@ -69,7 +69,7 @@
 						 	" />
 							<table id="A2_008"
 								data-bind="ntsGridList: {	
-						dataSource: RoleCategoryList ,
+						dataSource: roleCategoryList ,
 						primaryKey: 'categoryId' ,
 						columns: [{ headerText: 'コード', key: 'categoryId', width: 200 ,hidden:true},
 								{ headerText: '#{i18n.getText('CAS001_10')}', key: 'categoryName', width: 165},
@@ -93,7 +93,7 @@
 									</div>
 								</div>
 								<div class="line_col_2" data-bind="with:$parent">
-									<button id="A3_004" data-bind="click:OpenDModal">#{i18n.getText('CAS001_13')}</button>
+									<button id="A3_004" data-bind="click:openDModal">#{i18n.getText('CAS001_13')}</button>
 								</div>
 							</div>
 							<div class="div_line">

@@ -32,7 +32,7 @@ public class JpaHdAppSetRepository extends JpaRepository implements HdAppSetRepo
 				entity.yearHdName, entity.regisNumYear, entity.furikyuName, entity.regisInsuff, 
 				entity.useGener, entity.useYear, entity.timeDigest, entity.absenteeism, 
 				entity.concheckOutLegal, entity.specialVaca, entity.concheckDateRelease, 
-				entity.appDateContra, entity.yearResig, entity.regisShortReser);
+				entity.appDateContra, entity.yearResig, entity.regisShortReser, entity.hdType, entity.displayUnselect);
 		return domain;
 	}
 	/**

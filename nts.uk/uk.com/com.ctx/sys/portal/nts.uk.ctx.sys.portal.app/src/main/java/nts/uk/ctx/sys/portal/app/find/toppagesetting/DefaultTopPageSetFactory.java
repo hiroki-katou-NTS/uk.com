@@ -148,6 +148,7 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 		String companyId = AppContexts.user().companyId();
 		// employeeId
 		String employeeId = AppContexts.user().employeeId();
+		//ログインユーザーの社員IDをもとに、ドメインモデル「本人トップページ設定」を取得する
 		TopPageSelfSettingDto tpSelfSet = topPageSelfSet.getTopPageSelfSet();
 		LayoutForTopPageDto layoutTopPage = null;
 		// check my page: use or not use

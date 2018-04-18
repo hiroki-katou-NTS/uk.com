@@ -49,4 +49,6 @@ public interface ErrorAlarmWorkRecordRepository {
 	
 	List<ErrorAlarmWorkRecord> getAllErAlCompany(String companyId);
 
+	// get all errors and alarms's settings of login company and  Category = Error
+    List<ErrorAlarmWorkRecord> getListErAlByListCodeError(String companyId,List<String> listCode);
 }

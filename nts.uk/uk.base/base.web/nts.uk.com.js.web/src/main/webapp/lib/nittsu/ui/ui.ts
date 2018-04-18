@@ -10,6 +10,7 @@ module nts.uk.ui {
         export let info = "情報";
         export let warn = "警告";
         export let error = "エラー";
+        export let confirm = "確認";
         export let unset = "未設定";
         export let errorContent = "エラー内容";
         export let errorCode = "エラーコード";
@@ -159,7 +160,7 @@ module nts.uk.ui {
                 // Check if contents is overflow
                 if ($label.outerWidth() < $label[0].scrollWidth) {
                     let $view = $('<div />').addClass('limited-label-view')
-                        .text($label.text())
+                        .text($label.text() || $label.val())
                         .appendTo('body')
                         .position({
                             my: 'left top',

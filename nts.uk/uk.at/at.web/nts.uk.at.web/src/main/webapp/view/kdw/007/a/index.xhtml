@@ -35,9 +35,20 @@
 					<button class="danger" data-bind="click: remove, enable: !isNewMode() &amp;&amp; selectedErrorAlarm().fixedAtr() != 1 ">#{i18n.getText('KDW007_4')}</button>
 				</div>
 				<div id="contents-area">
+					<com:ko-if bind="screenMode() == 0">
+						<div id="showtypeCbb" data-bind="ntsComboBox: {
+							options: enumShowTypeAtr,
+							optionsValue: 'code',
+							value: showTypeAtr,
+							optionsText: 'name',
+							enable: true,
+							columns: [
+								{ prop: 'name', length: 10 },
+							]}"></div><br/>
+					</com:ko-if>
 					<table id="lstErrorAlarm" data-bind="ntsGridList: {								
 						height: 370,
-						dataSource: lstErrorAlarm,
+						dataSource: lstFilteredData,
 						primaryKey: 'code',
 						columns: gridListColumns,
 						multiple: false,
@@ -100,7 +111,7 @@
 								    name: '#[KDW007_14]',
 									value: selectedErrorAlarm().displayMessage, 
 									constraint: 'DisplayMessage', 
-									required: true, 
+									required: false, 
 									resizeable: false,
 									enable: selectedErrorAlarm().typeAtr()!=2 }" /><br/>
 								<div id="boldAtr" data-bind="ntsCheckBox: { checked: selectedErrorAlarm().boldAtr, 

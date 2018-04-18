@@ -8,12 +8,14 @@ module nts.uk.com.view.cps009.b.viewmodel {
     import block = nts.uk.ui.block;
 
     export class ViewModel {
-        itemInitLst: KnockoutObservableArray<any> = ko.observableArray([]);
+        itemInitLst: Array<any> = [];
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
         categoryName: KnockoutObservable<string> = ko.observable('');
         itemColumns: Array<any> = [];
         currentItem: KnockoutObservableArray<any> = ko.observableArray([]);
+        state: Array<any> = [];
+        currentCtg: any;
         constructor() {
 
             let self = this;
@@ -35,10 +37,11 @@ module nts.uk.com.view.cps009.b.viewmodel {
         start(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            self.itemInitLst([]);
-            let param = getShared('CPS009B_PARAMS') || { ctgName: '', settingId: '', categoryId: '' };
-            self.categoryName(param.ctgName);
-            service.getAllItemByCtgId(param.settingId, param.categoryId).done(function(data) {
+            self.itemInitLst = [];
+            self.currentCtg = getShared('CPS009B_PARAMS') || { ctgName: '', settingId: '', categoryId: '', categoryType: 1 };
+            self.categoryName(self.currentCtg.ctgName);
+            
+            service.getAllItemByCtgId(self.currentCtg.settingId, self.currentCtg.categoryId).done(function(data) {
                 //ドメインモデル「個人情報項目定義」を取得できているかどうかをチェック (Kiểm tra 「個人情報項目定義」 có lấy được hay không)
                 if (data == null || data == undefined || data.length == 0) {
                     //データ件数＝０(Không)
@@ -47,10 +50,8 @@ module nts.uk.com.view.cps009.b.viewmodel {
                         close();
                     });
                 } else {
-                    
-                    self.itemInitLst(data);
-
-
+                    self.itemInitLst = data.itemLst;
+                    self.state = data.itemRequired;
                 }
                 dfd.resolve();
             });
@@ -62,12 +63,19 @@ module nts.uk.com.view.cps009.b.viewmodel {
          */
         registerItems() {
             let self = this,
-                obj = {
-                    isCancel: false,
-                    refMethodType: self.selectedRuleCode(),
-                    lstItem: self.currentItem()
-                };;
-            if (self.currentItem().length == 0) {
+                dataSource : Array<any> = $("#grid0").ntsGrid("updatedCells"),
+                itemList: Array<any>,
+                id: Array[any] = [],
+                obj: any;
+            
+            itemList = _.map(dataSource, function(x) { return x.rowId });
+            
+            obj = {
+                isCancel: false,
+                refMethodType: self.selectedRuleCode(),
+                lstItem: itemList
+            };
+            if (obj.lstItem.length == 0) {
                 //メッセージ（Msg_362)を表示 (Hiển thị Error Message Msg_362)
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_362' });
                 return;

@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.vacation.setting.compensatoryleave;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +29,9 @@ public class SaveCompensatoryLeaveCommand {
 
 	/** The company id. */
 	private String companyId;
+	
+	/** The employment code */
+	private String employmentCode;
 
 	/** The is managed. */
 	private Integer isManaged;
@@ -44,6 +48,18 @@ public class SaveCompensatoryLeaveCommand {
 	public CompensatoryLeaveComSetting toDomain(String companyId) {
 		return new CompensatoryLeaveComSetting(new CompensatoryLeaveComGetMementoImpl(companyId, this));
 	}
+	
+	/**
+	 * To domain CompensatoryOccurrenceSetting.
+	 * @return CompensatoryOccurrenceSetting
+	 */
+	public List<CompensatoryOccurrenceSetting> toDomainCompensatoryOccurrenceSetting(){
+		List<CompensatoryOccurrenceSetting> list = new ArrayList<CompensatoryOccurrenceSetting>();
+
+		this.compensatoryOccurrenceSetting.forEach(c -> list.add(c.toDomain()));
+		
+		return list;
+	}	
 
 	public class CompensatoryLeaveComGetMementoImpl implements CompensatoryLeaveComGetMemento {
 

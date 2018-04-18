@@ -8,8 +8,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantYearHolidayRepository;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.UseSimultaneousGrant;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -42,33 +42,25 @@ public class GrantHolidayTblFinder {
 	 * 
 	 * @return
 	 */
-	public List<GrantHolidayTblDto> calculateGrantDate(CalculateGrantHdTblParam param) {
-		String companyId = AppContexts.user().companyId();
-		
-		List<GrantHdTbl> grantHolidayList = param.getGrantHolidayTblList().stream()
-				.map(x -> GrantHdTbl.createFromJavaType(
-						companyId, 
-						x.getGrantYearHolidayNo(), 
-						x.getConditionNo(), 
-						x.getYearHolidayCode(), 
-						x.getGrantDays(), 
-						x.getLimitedTimeHdDays(), 
-						x.getLimitedHalfHdCnt(), 
-						x.getLengthOfServiceMonths(), 
-						x.getLengthOfServiceYears(), 
-						x.getGrantReferenceDate(), 
-						x.getGrantSimultaneity()))
-				.collect(Collectors.toList());
-		
-		GrantHdTbl.validateInput(grantHolidayList);
-		
-		List<GrantHolidayTblDto> result = new ArrayList<>();
+	public List<CalculateDateDto> calculateGrantDate(CalculateGrantHdTblParam param) {
+		List<CalculateDateDto> result = new ArrayList<>();
+		List<LengthServiceTbl> lengthServiceData = new ArrayList<>();
 		
 		// calculate date
-		for (GrantHdTbl item : grantHolidayList) {
-			item.calculateGrantDate(param.getReferDate(), param.getSimultaneousGrantDate(), EnumAdaptor.valueOf(param.getUseSimultaneousGrant(), UseSimultaneousGrant.class));
-			result.add(GrantHolidayTblDto.fromDomain(item));
+		for (CalculateDateDto item : param.getGrantHolidayTblList()) {
+			LengthServiceTbl lengthServiceTbl = LengthServiceTbl.createFromJavaType(item.getCompanyId(), item.getYearHolidayCode(), item.getGrantNum(), 
+					item.getAllowStatus(), item.getStandGrantDay(), item.getYear(), item.getMonth());
+			
+			lengthServiceData.add(lengthServiceTbl);
+			
+			lengthServiceTbl.calculateGrantDate(param.getReferDate(), param.getSimultaneousGrantDate(), EnumAdaptor.valueOf(param.getUseSimultaneousGrant(), UseSimultaneousGrant.class));
+			
+			item.setGrantDate(lengthServiceTbl.getGrantDate());
+			
+			result.add(item);
 		}
+		
+		LengthServiceTbl.validateInput(lengthServiceData);
 		
 		return result;
 	}

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
@@ -21,6 +22,7 @@ public class AggrPeriodEachActualClosure {
 	/** 年月 */
 	private YearMonth yearMonth;
 	/** 期間 */
+	@Setter
 	private DatePeriod period;
 	/** 本来の締め期間 */
 	private DatePeriod originalClosurePeriod;

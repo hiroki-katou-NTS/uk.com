@@ -2,17 +2,11 @@ package nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalHolidaySetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfLeaveEarlySetting;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfOverTime;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalculationSetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveAttr;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.SalaryCalAttr;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.SpecificSalaryCalAttr;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
@@ -20,7 +14,12 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 
 @Data
 @AttendanceItemRoot(rootName = "日別実績の計算区分")
@@ -63,7 +62,7 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 			result.setEmployeeId(domain.getEmployeeId());
 			result.setYmd(domain.getYmd());
 			result.setDivergenceTime(getDivergence(domain.getDivergenceTime()));
-			result.setFlexExcessTime(newAutoCalcSetting(domain.getFlexExcessTime()));
+			result.setFlexExcessTime(newAutoCalcSetting(domain.getFlexExcessTime().getFlexOtTime()));
 			result.setHolidayTimeSetting(newAutoCalcHolidaySetting(domain.getHolidayTimeSetting()));
 			result.setLeaveEarlySetting(newAutoCalcLeaveSetting(domain.getLeaveEarlySetting()));
 			result.setOvertimeSetting(getOverTimeSetting(domain.getOvertimeSetting()));
@@ -80,8 +79,8 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	private static AutoCalRaisingSalarySettingDto newAutoCalcSalarySetting(AutoCalRaisingSalarySetting domain) {
 		return domain == null ? null : new AutoCalRaisingSalarySettingDto(
-						domain.getSalaryCalSetting() == null ? 0 :domain.getSalaryCalSetting().value,
-						domain.getSpecificSalaryCalSetting() == null ? 0: domain.getSpecificSalaryCalSetting().value);
+						domain.isRaisingSalaryCalcAtr() ? 1 : 0,
+						domain.isSpecificRaisingSalaryCalcAtr() ? 1 : 0);
 	}
 
 	private static AutoCalOfLeaveEarlySettingDto newAutoCalcLeaveSetting(AutoCalOfLeaveEarlySetting domain) {
@@ -90,26 +89,26 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 						domain.getLeaveEarly() == null ? 0 : domain.getLeaveLate().value);
 	}
 
-	private static AutoCalHolidaySettingDto newAutoCalcHolidaySetting(AutoCalHolidaySetting domain) {
+	private static AutoCalHolidaySettingDto newAutoCalcHolidaySetting(AutoCalRestTimeSetting domain) {
 		return domain == null ? null : new AutoCalHolidaySettingDto(
-						newAutoCalcSetting(domain.getHolidayWorkTime()),
+						newAutoCalcSetting(domain.getRestTime()),
 						newAutoCalcSetting(domain.getLateNightTime()));
 	}
 
-	private static AutoCalOfOverTimeDto getOverTimeSetting(AutoCalOfOverTime domain) {
+	private static AutoCalOfOverTimeDto getOverTimeSetting(AutoCalOvertimeSetting domain) {
 		return domain == null ? null : new AutoCalOfOverTimeDto(
-						newAutoCalcSetting(domain.getEarlyOverTime()),
-						newAutoCalcSetting(domain.getEarlyMidnightOverTime()),
-						newAutoCalcSetting(domain.getNormalOverTime()),
-						newAutoCalcSetting(domain.getNormalMidnightOverTime()),
-						newAutoCalcSetting(domain.getLegalOverTime()),
-						newAutoCalcSetting(domain.getLegalMidnightOverTime()));
+						newAutoCalcSetting(domain.getEarlyOtTime()),
+						newAutoCalcSetting(domain.getEarlyMidOtTime()),
+						newAutoCalcSetting(domain.getNormalOtTime()),
+						newAutoCalcSetting(domain.getNormalMidOtTime()),
+						newAutoCalcSetting(domain.getLegalOtTime()),
+						newAutoCalcSetting(domain.getLegalMidOtTime()));
 	}
 
-	private static AutoCalculationSettingDto newAutoCalcSetting(AutoCalculationSetting domain) {
+	private static AutoCalculationSettingDto newAutoCalcSetting(AutoCalSetting domain) {
 		return domain == null ? null : new AutoCalculationSettingDto(
-					domain.getCalculationAttr() == null ?  0 : domain.getCalculationAttr().value, 
-					domain.getUpperLimitSetting() == null ? 0 : domain.getUpperLimitSetting().value);
+					domain.getCalAtr() == null ?  0 : domain.getCalAtr().value, 
+					domain.getUpLimitORtSet() == null ? 0 : domain.getUpLimitORtSet().value);
 	}
 
 	@Override
@@ -130,7 +129,7 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 		}
 		return new CalAttrOfDailyPerformance(
 				employeeId,  date, 
-				newAutoCalcSetting(this.flexExcessTime),
+				new AutoCalFlexOvertimeSetting(newAutoCalcSetting(this.flexExcessTime)),
 				createAutoCalcRaisingSalarySetting(),
 				createAutoCalcHolidaySetting(),
 				createAutoOverTimeSetting(),
@@ -140,12 +139,12 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	private AutoCalRaisingSalarySetting createAutoCalcRaisingSalarySetting() {
 		return this.rasingSalarySetting == null ? null : new AutoCalRaisingSalarySetting(
-				getEnum(this.rasingSalarySetting.getSalaryCalSetting(), SalaryCalAttr.class),
-				getEnum(this.rasingSalarySetting.getSpecificSalaryCalSetting(), SpecificSalaryCalAttr.class));
+						this.rasingSalarySetting.getSalaryCalSetting() == 1 ? true : false,
+						this.rasingSalarySetting.getSpecificSalaryCalSetting() == 1 ? true: false);
 	}
 
-	private AutoCalHolidaySetting createAutoCalcHolidaySetting() {
-		return this.holidayTimeSetting == null ? null : new AutoCalHolidaySetting(
+	private AutoCalRestTimeSetting createAutoCalcHolidaySetting() {
+		return this.holidayTimeSetting == null ? null : new AutoCalRestTimeSetting(
 				newAutoCalcSetting(this.holidayTimeSetting.getHolidayWorkTime()),
 				newAutoCalcSetting(this.holidayTimeSetting.getLateNightTime()));
 	}
@@ -156,8 +155,8 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 				getEnum(this.leaveEarlySetting.getLeaveLate(), LeaveAttr.class));
 	}
 
-	private AutoCalOfOverTime createAutoOverTimeSetting() {
-		return this.overtimeSetting == null ? null : new AutoCalOfOverTime(
+	private AutoCalOvertimeSetting createAutoOverTimeSetting() {
+		return this.overtimeSetting == null ? null : new AutoCalOvertimeSetting(
 				newAutoCalcSetting(this.overtimeSetting.getEarlyOverTime()),
 				newAutoCalcSetting(this.overtimeSetting.getEarlyMidnightOverTime()),
 				newAutoCalcSetting(this.overtimeSetting.getNormalOverTime()),
@@ -166,10 +165,10 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 				newAutoCalcSetting(this.overtimeSetting.getLegalMidnightOverTime()));
 	}
 	
-	private AutoCalculationSetting newAutoCalcSetting(AutoCalculationSettingDto dto) {
-		return dto == null ? null : new AutoCalculationSetting(
-				getEnum(dto.getCalculationAttr(), AutoCalAtrOvertime.class),
-				getEnum(dto.getUpperLimitSetting(), TimeLimitUpperLimitSetting.class));
+	private AutoCalSetting newAutoCalcSetting(AutoCalculationSettingDto dto) {
+		return dto == null ? null : new AutoCalSetting(
+												getEnum(dto.getUpperLimitSetting(), TimeLimitUpperLimitSetting.class),
+												getEnum(dto.getCalculationAttr(), AutoCalAtrOvertime.class));
 	}
 
 	private <T> T getEnum(int value, Class<T> enumType) {

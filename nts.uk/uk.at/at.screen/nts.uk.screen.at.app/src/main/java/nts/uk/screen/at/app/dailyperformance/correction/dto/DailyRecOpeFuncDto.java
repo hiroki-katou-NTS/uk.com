@@ -16,4 +16,14 @@ public class DailyRecOpeFuncDto {
 	 * エラーがある場合の本人確認
 	 */
 	private int yourselfConfirmError;
+	
+	/**
+	 * 上司確認を利用する
+	 */
+	private int useSupervisorConfirm;
+
+	/**
+	 * エラーがある場合の上司確認
+	 */
+	private int supervisorConfirmError;
 }

@@ -25,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 
+
 /** 日別実績の総労働時間 */
 @Data
 @NoArgsConstructor
@@ -119,7 +120,7 @@ public class TotalWorkingTimeDto {
 						ConvertHelper.mapTo(domain.getOutingTimeOfDailyPerformance(), c -> GoOutTimeSheetDailyPerformDto.toDto(c)),
 						ShortWorkTimeDto.toDto(domain.getShotrTimeOfDaily()), 
 						RaisingSalaryTimeDailyPerformDto.toDto(domain.getRaiseSalaryTimeOfDailyPerfor()), 
-						null, 
+						HolidayDailyPerformDto.from(domain.getHolidayOfDaily()), 
 						domain.getWorkTimes() == null ? null : domain.getWorkTimes().v());
 	}
 
@@ -165,7 +166,8 @@ public class TotalWorkingTimeDto {
 													new WorkTimes(shortWorkTime.getTimes()),
 													createDeductionTime(shortWorkTime.getTotalTime()),
 													createDeductionTime(shortWorkTime.getTotalDeductionTime()),
-													ConvertHelper.getEnum(shortWorkTime.getChildCareAttr(), ChildCareAttribute.class)));
+													ConvertHelper.getEnum(shortWorkTime.getChildCareAttr(), ChildCareAttribute.class)),
+				dailyOfHoliday == null ? null : dailyOfHoliday.toDomain());
 	}
 
 	private DeductionTotalTime createDeductionTime(TotalDeductionTimeDto dto) {

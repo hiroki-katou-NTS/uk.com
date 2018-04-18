@@ -210,6 +210,14 @@ module nts.uk.at.view.kdw001.b {
                 ];
                 self.activeStep = ko.observable(0);
 
+                self.activeStep.subscribe(newVal => {
+                    if (newVal == 0) {
+                        $('#hor-scroll-button-hide').hide();
+                        _.defer(() => {
+                            $('#hor-scroll-button-hide').show();
+                        });
+                    }
+                })
             }
 
             opendScreenD() {

@@ -49,7 +49,17 @@ public class HolidayWorkWebService extends WebService{
 	@POST
 	@Path("getcalculationresult")
 	public List<CaculationTime> getCalculationTime(ParamCalculationHolidayWork param){
-		return this.appHolidayWorkFinder.getCaculationValue(param.getBreakTimes(), param.getPrePostAtr(), param.getAppDate(), param.getSiftCD(), param.getWorkTypeCode(), param.getEmployeeID(), param.getInputDate() == null ? null :GeneralDateTime.fromString(param.getInputDate(), "yyyy/MM/dd HH:mm"));
+		return this.appHolidayWorkFinder.getCaculationValue(param.getBreakTimes(),
+															param.getPrePostAtr(),
+															param.getAppDate(),
+															param.getSiftCD(),
+															param.getWorkTypeCode(),
+															param.getEmployeeID(),
+															param.getInputDate() == null ? null :GeneralDateTime.fromString(param.getInputDate(), "yyyy/MM/dd HH:mm"),
+															param.getStartTime(),
+															param.getEndTime(),
+															param.getStartTimeRest(),
+															param.getEndTimeRest());
 	}
 	@POST
 	@Path("create")

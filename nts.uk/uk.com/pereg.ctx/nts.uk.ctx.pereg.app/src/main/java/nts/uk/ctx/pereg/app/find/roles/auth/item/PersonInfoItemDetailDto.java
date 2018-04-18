@@ -1,9 +1,11 @@
 package nts.uk.ctx.pereg.app.find.roles.auth.item;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemDetail;
 
-@Value
+@Data
+@AllArgsConstructor
 public class PersonInfoItemDetailDto {
 	private String roleId;
 
@@ -26,11 +28,13 @@ public class PersonInfoItemDetailDto {
 	private int requiredAtr;
 
 	private boolean setting;
+	
+	private int dataType;
 
-	public static PersonInfoItemDetailDto fromDomain(PersonInfoItemDetail domain) {
-		return new PersonInfoItemDetailDto(domain.getRoleId(), domain.getPersonInfoCategoryAuthId(),
-				domain.getPersonItemDefId(), domain.getSelfAuthType(), domain.getOtherPersonAuth(), domain.getItemCd(),
-				domain.getItemName(), domain.getItemParentCd(), domain.getAbolitionAtr(), domain.getRequiredAtr(),
-				domain.isSetting());
+	public static PersonInfoItemDetailDto createDto(PersonInfoItemDetail itemDetail) {
+		return new PersonInfoItemDetailDto(itemDetail.getRoleId(), itemDetail.getPersonInfoCategoryAuthId(),
+				itemDetail.getPersonItemDefId(), itemDetail.getSelfAuthType(), itemDetail.getOtherPersonAuth(), itemDetail.getItemCd(),
+				itemDetail.getItemName(), itemDetail.getItemParentCd(), itemDetail.getAbolitionAtr(), itemDetail.getRequiredAtr(),
+				itemDetail.isSetting(), itemDetail.getDataType());
 	}
 }

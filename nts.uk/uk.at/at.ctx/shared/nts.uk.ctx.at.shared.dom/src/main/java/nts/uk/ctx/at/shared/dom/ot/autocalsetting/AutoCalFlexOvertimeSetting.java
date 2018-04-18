@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.ot.autocalsetting;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
@@ -12,6 +13,7 @@ import nts.arc.layer.dom.DomainObject;
  */
 // フレックス超過時間の自動計算設定
 @Getter
+@AllArgsConstructor
 public class AutoCalFlexOvertimeSetting extends DomainObject {
 
 	/** The flex ot time. */

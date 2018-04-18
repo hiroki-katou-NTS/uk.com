@@ -38,10 +38,6 @@ public class KalmtAnnualPaidLeave extends UkJpaEntity implements Serializable {
     @Column(name = "CID")
     private String cid;
     
-    /** The permit atr. */
-    @Column(name = "PERMIT_ATR")
-    private Integer permitAtr;
-    
     /** The priority type. */
     @Column(name = "PRIORITY_TYPE")
     private Integer priorityType;

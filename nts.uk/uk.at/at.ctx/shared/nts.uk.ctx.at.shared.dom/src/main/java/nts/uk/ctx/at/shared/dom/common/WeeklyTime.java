@@ -8,8 +8,9 @@ import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;
 
 /**
- * 週間時間.
+ * The Class WeeklyTime.
  */
+// 週間時間
 @TimeRange(max = "168:00", min = "00:00")
 public class WeeklyTime extends TimeDurationPrimitiveValue<WeeklyTime> {
 
@@ -22,7 +23,8 @@ public class WeeklyTime extends TimeDurationPrimitiveValue<WeeklyTime> {
 	/**
 	 * Instantiates a new weekly time.
 	 *
-	 * @param timeAsMinutes the time as minutes
+	 * @param timeAsMinutes
+	 *            the time as minutes
 	 */
 	public WeeklyTime(int timeAsMinutes) {
 		super(timeAsMinutes);

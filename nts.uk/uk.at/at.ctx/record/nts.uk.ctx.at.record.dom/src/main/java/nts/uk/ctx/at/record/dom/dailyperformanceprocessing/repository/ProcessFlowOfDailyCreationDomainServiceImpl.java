@@ -17,17 +17,18 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationService;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationService;
-import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
-import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
-import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfo;
-import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfoRepository;
-import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
-import nts.uk.ctx.at.record.dom.workrecord.log.TargetPerson;
-import nts.uk.ctx.at.record.dom.workrecord.log.TargetPersonRepository;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ErrorPresent;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExeStateOfCalAndSum;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionStatus;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLogRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPerson;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ErrorPresent;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -52,6 +53,8 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 	
 	@Inject
 	private ErrMessageInfoRepository errMessageInfoRepository;
+	@Inject
+	private ExecutionLogRepository executionLogRepository;
 	
 //	@Inject
 //	private PersonInfoAdapter personInfoAdapter;
@@ -96,7 +99,9 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 		ProcessState finalStatus = ProcessState.SUCCESS;
 
 		// 実行ログを確認する
-		val executionLogs = empCalAndSumExeLog.get().getExecutionLogs();
+		
+		//val executionLogs = empCalAndSumExeLog.get().getExecutionLogs();
+		val executionLogs = this.executionLogRepository.getExecutionLogs(empCalAndSumExeLog.get().getEmpCalAndSumExecLogID());
 		Map<ExecutionContent, ExecutionLog> logsMap = new HashMap<>();
 		for (val executionLog : executionLogs){
 			logsMap.put(executionLog.getExecutionContent(), executionLog);
@@ -110,6 +115,10 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 					Optional.of(logsMap.get(ExecutionContent.DAILY_CREATION));
 			finalStatus = this.createDailyResultDomainService.createDailyResult(asyncContext, employeeIdList,
 					periodTime, executionAttr, companyId, empCalAndSumExecLogID, dailyCreationLog);
+			
+			//*****　更新タイミングが悪い。ここで書かずに、日別作成の中で書くべき。（2018.1.16 Shuichi Ishida）
+			//***** タイミング調整に関しては、実行ログの監視処理の完了判定も、念のため、確認が必要。
+			dataSetter.updateData("dailyCreateStatus", ExecutionStatus.DONE.nameId);
 		}
 		
 		//***** ↓　以下、仮実装。ログ制御全体を見直して、正確な手順に再修正要。（2018.1.16 Shuichi Ishida）
@@ -143,10 +152,6 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 			ExeStateOfCalAndSum executionStatus = this.updateExecutionState(dataSetter, empCalAndSumExecLogID);
 			this.empCalAndSumExeLogRepository.updateStatus(empCalAndSumExecLogID, executionStatus.value);
 		}
-		
-		//*****　更新タイミングが悪い。ここで書かずに、日別作成の中で書くべき。（2018.1.16 Shuichi Ishida）
-		//***** タイミング調整に関しては、実行ログの監視処理の完了判定も、念のため、確認が必要。
-		dataSetter.updateData("dailyCreateStatus", ExecutionStatus.DONE.nameId);
 		
 	}
 	

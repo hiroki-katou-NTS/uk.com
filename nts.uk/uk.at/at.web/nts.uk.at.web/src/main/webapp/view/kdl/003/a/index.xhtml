@@ -25,28 +25,31 @@
 
 		<ui:define name="content">
 			<div id="">
-					<div style="margin-bottom: 10px; margin-left: 10px;">#{i18n.getText('KDL003_2')}</div>
-					<!--  <div style="border: 0.5px solid; border-radius: 12px; padding-top: 15px; 
+				<div style="margin-bottom: 10px; margin-left: 10px;">#{i18n.getText('KDL003_2')}</div>
+				<!--  <div style="border: 0.5px solid; border-radius: 12px; padding-top: 15px; 
 						margin-left: 10px; margin-right: 10px;" class="caret-bottom kdl003-border">-->
-					<div style="margin-left: 10px;">
-						<table style="margin-bottom: 10px;">
-							<tr>
-								<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL003_3')}</div></td>
-								<td class="width200"></td>
-								<td style="border-left: solid #9a9a9a 1px; padding-left: 20px;" colspan="2"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL003_8')}</div></td>
-							</tr>
-							<tr>
-								<td><hr/></td>
-								<td style="padding-right: 20px"><hr/></td>
-								<td style="border-left: solid #9a9a9a 1px; padding-left: 20px;" colspan="2"><hr/></td>
-							</tr>
-							<tr>
-								<td colspan="2" style="vertical-align: top; padding-right: 20px;">
-									<div style="width: 300px; padding-top: 5px;" tabindex="1"
-										data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'workTypeCode', comId: 'list-worktype', 
+				<div style="margin-left: 10px;">
+					<table style="margin-bottom: 10px;">
+						<tr>
+							<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL003_3')}</div></td>
+							<td class="width200"></td>
+							<td style="border-left: solid #9a9a9a 1px; padding-left: 20px;"
+								colspan="2"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL003_8')}</div></td>
+						</tr>
+						<tr>
+							<td><hr /></td>
+							<td style="padding-right: 20px"><hr /></td>
+							<td style="border-left: solid #9a9a9a 1px; padding-left: 20px;"
+								colspan="2"><hr /></td>
+						</tr>
+						<tr>
+							<td colspan="2" style="vertical-align: top; padding-right: 20px;">
+								<div style="width: 300px; padding-top: 5px;" tabindex="1"
+									data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'workTypeCode', comId: 'list-worktype', 
 										items: listWorkType, selected: selectedWorkTypeCode, selectedKey: 'workTypeCode', fields: ['name', 'workTypeCode'], mode: 'igGrid'}" />
-									<table id="list-worktype" tabindex="2"
-										data-bind="ntsGridList: {
+								<table id="list-worktype" tabindex="2"
+									data-bind="ntsGridList: {
+											width: 380,
 											height: 235,
 											options: listWorkType,
 											optionsValue: 'workTypeCode',
@@ -55,20 +58,25 @@
 											value: selectedWorkTypeCode,
 											rows: 10
 										}"></table>
-								</td>
-								<td style="vertical-align: top; border-left: solid grey 1px;" colspan="2">
-									<div id="search-div" class="control-group valign-center">
-										<input id="inputStartTime" tabindex="5"
-										data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_12]', constraint:'TimeWithDayAttr', value: startTime, enable: true, readonly: false, required: false, option: { width: '100px', timeWithDay: true}}" />
-										<span>#{i18n.getText('KDL003_13')}</span>
-										<input id="inputEndTime" tabindex="7"
-										data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_15]', constraint:'TimeWithDayAttr', value: endTime, enable: true, readonly: false, required: false, option: { width: '100px', timeWithDay: true}}" />
-										<button tabindex="8" class="caret-bottom" data-bind="click: search">#{i18n.getText('KDL003_16')}</button>
-										<button tabindex="9" class="pull-right" data-bind="click: clearSearchCondition">#{i18n.getText('KDL003_17')}</button>
-									</div>
-									<div id="day-list-div">
-										<table id="day-list-tbl" tabindex="10"
-											data-bind="ntsGridList: {
+							</td>
+							<td style="vertical-align: top; border-left: solid grey 1px;"
+								colspan="2">
+								<div id="search-div" class="control-group valign-center">
+									<input id="inputStartTime" tabindex="5" style="margin-right:  10px;"
+										data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_12]', constraint:'TimeWithDayAttr', value: startTime, enable: true, 
+											readonly: false, required: false, option: { width: '100px', timeWithDay: true}}" />
+									<span>#{i18n.getText('KDL003_13')}</span> 
+									<input id="inputEndTime" tabindex="7"
+										data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_15]', constraint:'TimeWithDayAttr', value: endTime, enable: true, 
+										readonly: false, required: false, option: { width: '100px', timeWithDay: true}}" />
+									<button tabindex="8" class="caret-bottom"
+										data-bind="click: search">#{i18n.getText('KDL003_16')}</button>
+									<button tabindex="9" class="pull-right"
+										data-bind="click: clearSearchCondition">#{i18n.getText('KDL003_17')}</button>
+								</div>
+								<div id="day-list-div">
+									<table id="day-list-tbl" tabindex="10"
+										data-bind="ntsGridList: {
 											name: '#[KDL003_18]',
 											width: 810,
 											height: 235,
@@ -79,13 +87,13 @@
 											value: selectedWorkTimeCode,
 											rows: 10
 									}"></table>
-									</div>
-								</td>
-							</tr>
-						</table>
-					</div>
-					
-					<!-- </div>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+
+				<!-- </div>
 					<div style="margin-left: 10px; margin-top: 30px;">
 						<table style="margin-bottom: 10px;">
 							 <tr>
@@ -168,8 +176,8 @@
 							</tr>
 						</table>
 					</div>-->
-				</div>
-			<div id="functions-area-bottom" style="position: inherit !important;">
+			</div>
+			<div id="functions-area-bottom">
 				<button class="x-large proceed" tabindex="11"
 					data-bind="click: submit">#{i18n.getText('KDL003_22')}</button>
 				<button tabindex="12" data-bind="click: closeDialog">#{i18n.getText('KDL003_23')}</button>

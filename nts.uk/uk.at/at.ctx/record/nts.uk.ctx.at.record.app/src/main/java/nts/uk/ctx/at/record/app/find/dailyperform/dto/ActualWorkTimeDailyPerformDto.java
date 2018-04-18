@@ -49,7 +49,7 @@ public class ActualWorkTimeDailyPerformDto {
 	private TotalWorkingTimeDto totalWorkingTime;
 
 	/** 乖離時間: 日別実績の乖離時間 */
-	@AttendanceItemLayout(layout = "F", jpPropertyName = "乖離時間", listMaxLength = 5, indexField = "divergenceTimeNo")
+	@AttendanceItemLayout(layout = "F", jpPropertyName = "乖離時間", listMaxLength = 10, indexField = "divergenceTimeNo")
 	private List<DivergenceTimeDto> divergenceTime;
 
 	public static ActualWorkTimeDailyPerformDto toActualWorkTime(ActualWorkingTimeOfDaily domain) {

@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.retentionyearly;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionYearly;
@@ -60,8 +61,17 @@ public class JpaRetentionYearlySetMemento implements RetentionYearlySettingSetMe
 		}
 		else {
 			this.typeValue.setLeaveAsWorkDays((short) 0);
-		}
-		
+		}		
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * RetentionYearlySettingSetMemento#setManagementCategory
+	 * (nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct)
+	 */
+	@Override
+	public void setManagementCategory(ManageDistinct managementCategory) {
+		this.typeValue.setManagementYearlyAtr((short) managementCategory.value);		
+	}
 }

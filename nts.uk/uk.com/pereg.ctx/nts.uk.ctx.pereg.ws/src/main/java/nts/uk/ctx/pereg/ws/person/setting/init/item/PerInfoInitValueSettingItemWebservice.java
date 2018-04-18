@@ -9,7 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pereg.app.find.person.setting.init.item.ItemDto;
+import nts.uk.ctx.pereg.app.find.person.setting.init.category.CategoryStateDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.item.PerInfoInitValueSetItemFinder;
 import nts.uk.ctx.pereg.app.find.person.setting.init.item.PerInfoInitValueSettingItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.item.ReferenceHistoryDto;
@@ -26,16 +26,13 @@ public class PerInfoInitValueSettingItemWebservice extends WebService {
 	@POST
 	@Path("find/{settingId}/{perInfoCtgId}")
 	public List<PerInfoInitValueSettingItemDto> getAllItem(@PathParam("settingId") String settingId, @PathParam("perInfoCtgId") String perInfoCtgId) {
-		List<PerInfoInitValueSettingItemDto> x = this.finder.getAllItem(settingId, perInfoCtgId);
-		return x;
+		return this.finder.getAllItem(settingId, perInfoCtgId);
 	}
 	
-
 	@POST
 	@Path("findRequired/{settingId}/{perInfoCtgId}")
-	public List<ItemDto> getAllItemRequired(@PathParam("settingId") String settingId, @PathParam("perInfoCtgId") String perInfoCtgId) {
-		List<ItemDto> x = this.finder.getAllItemRequired(settingId, perInfoCtgId);
-		return x;
+	public CategoryStateDto getAllItemRequired(@PathParam("settingId") String settingId, @PathParam("perInfoCtgId") String perInfoCtgId) {
+		return  this.finder.getAllItemRequired(settingId, perInfoCtgId);
 	}
 
 	@POST

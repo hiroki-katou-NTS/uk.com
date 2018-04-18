@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition>
+		<!-- R 外部出力サマリー -->
+		<div class="contentR">
+			<!--R3 テキスト出力を行う-->
+			<div class="label" style="margin-bottom: 15px;">#{i18n.getText('CMF002_229')}</div>
+			<table style="margin-bottom: 15px">
+				<tr>
+					<td style="padding: 5px 20px 5px 0px;">
+						<!--R4 処理する年月日(ラベル)-->
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMF002_223')}</div>
+					</td>
+					<td>
+						<!--R4_1 処理期間開始日--> <label
+						data-bind="text: periodDateValue().startDate" /> <!--R4_3 接続記号-->
+						<label>#{i18n.getText('CMF002_235')}</label> <!--R4_2 処理期間終了日--> <label
+						data-bind="text: periodDateValue().endDate" />
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 5px 20px 5px 0px;">
+						<!--R5 条件コード/名称-->
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMF002_78')}</div>
+					</td>
+					<td>
+						<!--R5_1 条件設定名-->
+						<div class="label">
+							<span data-bind="text: selectedConditionCd"></span> <span
+								data-bind="text: selectedConditionName"></span>
+						</div>
+					</td>
+				</tr>
+			</table>
+
+			<table style="width: 100%">
+				<tr>
+					<td style="padding: 5px 0px">
+						<!--R6 出力項目-->
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_59')}</div>
+					</td>
+					<td style="padding: 5px 0px">
+						<!--R7 出力条件(ラベル)-->
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_230')}</div>
+					</td>
+				</tr>
+				<tr>
+					<td style="padding-right: 20px; vertical-align: top;">
+						<!--R6_1 出力項目一覧-->
+						<table id="single-list"
+							data-bind="ntsGridList: {								
+								height: 408,
+								dataSource: listOutputItem,
+								primaryKey: 'dispOutputItemCode',
+								columns: [ 
+									{ headerText: '#{i18n.getText('CMF002_60')}', key: 'dispOutputItemCode', width: 60},
+                					{ headerText: '#{i18n.getText('CMF002_61')}', key: 'dispOutputItemName', width: 170}
+                				],
+								multiple: false,
+								value: selectedOutputItemCode
+						}"></table>
+					</td>
+					<td style="vertical-align: top">
+						<!--R7_1 出力条件一覧-->
+						<table id="single-list"
+							data-bind="ntsGridList: {								
+								height: 168,
+								dataSource: listOutputCondition,
+								primaryKey: 'itemName',
+								columns: [ 
+									{ headerText: '#{i18n.getText('CMF002_231')}', key: 'itemName', width: 100},
+                					{ headerText: '#{i18n.getText('CMF002_232')}', key: 'condition', width: 380}
+                				],
+								multiple: false,
+								value: selectedOutputConditionItem
+						}"></table>
+					</td>
+				</tr>
+			</table>
+
+			<table style="width: 100%; margin-top: 20px">
+				<tr>
+					<td>
+						<!--R20_1 ←前の処理に戻る-->
+						<button class="large" data-bind="click: previous">#{i18n.getText('CMF002_233')}</button>
+						<!--R20_2 テキストを出力する-->
+						<button class="proceed x-large" style="margin-left: 10px"
+							data-bind="click: next">#{i18n.getText('CMF002_234')}</button>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</ui:composition>
+</body>
+</html>

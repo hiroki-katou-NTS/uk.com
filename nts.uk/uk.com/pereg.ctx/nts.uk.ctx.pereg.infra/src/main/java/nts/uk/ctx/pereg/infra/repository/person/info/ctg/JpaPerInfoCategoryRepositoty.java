@@ -31,7 +31,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND"
 			+ " ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid ORDER BY po.disporder";
-	
+
 	private final static String SELECT_CATEGORY_NO_MUL_DUP_BY_COMPANY_ID_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder"
@@ -39,7 +39,10 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
 			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND"
 			+ " ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid AND co.categoryParentCd IS NULL AND co.categoryType != 2 AND co.categoryType !=5  ORDER BY po.disporder";
+			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid"
+			+ " AND ca.abolitionAtr = 0 AND co.personEmployeeType = 2"
+			+ " AND co.categoryType != 2 AND co.categoryType !=5"
+			+ " AND co.initValMasterObjCls = 1 ORDER BY po.disporder";
 
 	private final static String SELECT_CATEGORY_BY_CATEGORY_ID_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr"
@@ -97,12 +100,12 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co"
 			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd" + " AND ca.categoryCd = :categoryCd"
 			+ " AND ca.cid = :cid";
-	
+
 	private final static String SELECT_ALL_CATEGORY_BY_CATEGORY_CD_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr"
 			+ " FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co"
 			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd" + " AND ca.categoryCd = :categoryCd";
-	
+
 	private final static String SELECT_NO_WHERE = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder"
@@ -112,17 +115,20 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	private final static String SELECT_CATEGORY_BY_COMPANY_ID_QUERY_1 = SELECT_NO_WHERE
 			+ " WHERE ca.cid = :cid AND co.categoryParentCd IS NULL ORDER BY po.disporder";
-	
+
 	private final static String SELECT_CTG_WITH_AUTH = SELECT_NO_WHERE
 			+ " INNER JOIN PpemtPersonCategoryAuth au ON ca.ppemtPerInfoCtgPK.perInfoCtgId = au.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId"
 			+ " WHERE ca.cid = :cid AND co.categoryParentCd IS NULL AND (au.allowPersonRef = :selfAuth or 0 = :selfAuth)"
 			+ " AND ca.abolitionAtr = 0 AND au.ppemtPersonCategoryAuthPk.roleId = :roleId"
-			+ " AND 0 != (SELECT COUNT(i) FROM PpemtPerInfoItem i WHERE i.abolitionAtr = 0 AND i.perInfoCtgId = ca.ppemtPerInfoCtgPK.perInfoCtgId)"
-			+ " AND (SELECT COUNT(c) FROM PpemtPersonItemAuth c WHERE c.ppemtPersonItemAuthPk.roleId = :roleId AND c.ppemtPersonItemAuthPk.personInfoCategoryAuthId = ca.ppemtPerInfoCtgPK.perInfoCtgId) "
-			+ " != (SELECT COUNT(c) FROM PpemtPersonItemAuth c WHERE c.ppemtPersonItemAuthPk.roleId = :roleId "
-			+ " AND c.ppemtPersonItemAuthPk.personInfoCategoryAuthId = ca.ppemtPerInfoCtgPK.perInfoCtgId AND (0 = :otherAuth or c.otherPersonAuthType = 1) "
-			+ " AND (0 = :selfAuth or c.selfAuthType = 1))";
-	
+			+ " AND 0 != (SELECT COUNT(i) FROM PpemtPerInfoItem i"
+			+ "	JOIN PpemtPersonItemAuth iau ON i.ppemtPerInfoItemPK.perInfoItemDefId = iau.ppemtPersonItemAuthPk.personItemDefId "
+			+ " AND i.perInfoCtgId = iau.ppemtPersonItemAuthPk.personInfoCategoryAuthId WHERE i.abolitionAtr = 0 AND i.perInfoCtgId = ca.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " AND iau.ppemtPersonItemAuthPk.roleId = :roleId AND (0 = :otherAuth or (1 = :otherAuth and iau.otherPersonAuthType != 1)) "
+			+ " AND (0 = :selfAuth or (1 = :selfAuth and iau.selfAuthType != 1)))"
+			+ " AND 0 != (SELECT COUNT(c) FROM PpemtPersonItemAuth c WHERE c.ppemtPersonItemAuthPk.roleId = :roleId "
+			+ " AND c.ppemtPersonItemAuthPk.personInfoCategoryAuthId = ca.ppemtPerInfoCtgPK.perInfoCtgId AND (0 = :otherAuth or (1 = :otherAuth and c.otherPersonAuthType != 1)) "
+			+ " AND (0 = :selfAuth or (1 = :selfAuth and c.selfAuthType != 1)))";
+
 	private final static String SELECT_CATEGORY_BY_COMPANY_ID_USED = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder"
@@ -131,6 +137,12 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " WHERE ca.cid = :cid AND ca.abolitionAtr = 0 AND co.categoryParentCd IS NULL ORDER BY po.disporder";
 
+	private final static String SELECT_CAT_ID_BY_CODE = String.join(" ", "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId",
+			"FROM PpemtPerInfoCtg c", "WHERE c.categoryCd = :categoryCd AND c.cid = :cId");
+	
+	private final static String SELECT_CTG_BY_CTGCD = String.join(" ","SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName",
+			"FROM PpemtPerInfoCtg c WHERE c.categoryCd in :lstCtgCd AND c.cid = :cid");
+
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd) {
 		return this.queryProxy().query(SELECT_CATEGORY_BY_COMPANY_ID_QUERY, Object[].class)
@@ -138,8 +150,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 					return createDomainFromEntity(c);
 				});
 	}
-	
-	
+
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategoryNoMulAndDupHist(String companyId, String contractCd) {
 		return this.queryProxy().query(SELECT_CATEGORY_NO_MUL_DUP_BY_COMPANY_ID_QUERY, Object[].class)
@@ -260,6 +271,10 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 				categoryName, personEmployeeType, abolitionAtr, categoryType, fixedAtr);
 
 	}
+	
+	private PersonInfoCategory createDomainWithAbolition(Object[] c){
+		return PersonInfoCategory.createDomainWithAbolition(c[0].toString(), c[1].toString(), c[2].toString());
+	}
 
 	private PpemtPerInfoCtg createPerInfoCtgFromDomain(PersonInfoCategory perInfoCtg) {
 		PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(perInfoCtg.getPersonInfoCategoryId());
@@ -280,7 +295,9 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 		String categoryParentCode = (perInfoCtg.getCategoryParentCode() == null
 				|| perInfoCtg.getCategoryParentCode().v().isEmpty()) ? null : perInfoCtg.getCategoryParentCode().v();
 		return new PpemtPerInfoCtgCm(perInfoCtgCmPK, categoryParentCode, perInfoCtg.getCategoryType().value,
-				perInfoCtg.getPersonEmployeeType().value, perInfoCtg.getIsFixed().value);
+				perInfoCtg.getPersonEmployeeType().value, perInfoCtg.getIsFixed().value,
+				perInfoCtg.getAddItemCls() == null ? 1 : perInfoCtg.getAddItemCls().value,
+				perInfoCtg.getInitValMasterCls() == null ? 1 : perInfoCtg.getInitValMasterCls().value);
 	}
 
 	private PpemtPerInfoCtgOrder createPerInfoCtgOrderFromDomain(String perInfoCtgId, String companyId, int disOrder) {
@@ -394,7 +411,6 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 				categoryName, personEmployeeType, abolitionAtr, categoryType, fixedAtr);
 	}
 
-
 	@Override
 	public List<String> getAllCategoryByCtgCD(String categoryCD) {
 		List<String> ctg = this.queryProxy().query(SELECT_ALL_CATEGORY_BY_CATEGORY_CD_QUERY, Object[].class)
@@ -412,26 +428,56 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 		// TODO Auto-generated method stub
 		return this.queryProxy().query(
 				"SELECT po.disporder FROM PpemtPerInfoCtgOrder po WHERE po.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId",
-				Integer.class)
-				.setParameter("perInfoCtgId", perInfoCtgId)
-				.getSingle(m -> m.intValue()).orElse(0);
+				Integer.class).setParameter("perInfoCtgId", perInfoCtgId).getSingle(m -> m.intValue()).orElse(0);
 	}
 
-
 	@Override
-	public List<PersonInfoCategory> getAllCtgWithAuth(String companyId, String roleId, int selfAuth, int otherAuth, boolean isOtherComapany) {
+	public List<PersonInfoCategory> getAllCtgWithAuth(String companyId, String roleId, int selfAuth, int otherAuth,
+			boolean isOtherComapany) {
 		String fullQuery = "";
-		if(isOtherComapany) {
-			fullQuery = SELECT_CTG_WITH_AUTH  + " AND ((au.allowOtherRef = :otherAuth AND au.allowOtherCompanyRef = 1) OR 0 = :otherAuth) ORDER BY po.disporder";
-		}else {
-			fullQuery = SELECT_CTG_WITH_AUTH  +  " AND (au.allowOtherRef = :otherAuth  OR 0 = :otherAuth) ORDER BY po.disporder";
+		if (isOtherComapany) {
+			fullQuery = SELECT_CTG_WITH_AUTH
+					+ " AND ((au.allowOtherRef = :otherAuth AND au.allowOtherCompanyRef = 1) OR 0 = :otherAuth) ORDER BY po.disporder";
+		} else {
+			fullQuery = SELECT_CTG_WITH_AUTH
+					+ " AND (au.allowOtherRef = :otherAuth  OR 0 = :otherAuth) ORDER BY po.disporder";
 		}
-		return this.queryProxy().query(fullQuery, Object[].class)
-				.setParameter("cid", companyId)
-				.setParameter("roleId", roleId)
-				.setParameter("selfAuth", selfAuth)
-				.setParameter("otherAuth", otherAuth).getList(c -> {
+		return this.queryProxy().query(fullQuery, Object[].class).setParameter("cid", companyId)
+				.setParameter("roleId", roleId).setParameter("selfAuth", selfAuth).setParameter("otherAuth", otherAuth)
+				.getList(c -> {
 					return createDomainPerInfoCtgFromEntity(c);
 				});
+	}
+
+	@Override
+	public String getCatId(String cId, String categoryCode) {
+		String abc = this.queryProxy().query(SELECT_CAT_ID_BY_CODE, String.class).setParameter("cId", cId)
+				.setParameter("categoryCd", categoryCode).getSingle().orElse("");
+
+		return abc;
+	}
+
+	@Override
+	public List<PersonInfoCategory> getPerCtgByListCtgCd(List<String> ctgCd, String companyId) {
+		List<PersonInfoCategory> lstEntity = this.queryProxy().query(SELECT_CTG_BY_CTGCD, Object[].class)
+				.setParameter("lstCtgCd", ctgCd)
+				.setParameter("cid", companyId)
+				.getList(x -> createDomainWithAbolition(x));
+		return lstEntity;
+	}
+
+	@Override
+	public void updateAbolition(List<PersonInfoCategory> ctg, String companyId) {
+		ctg.forEach(x -> {
+			Optional<PpemtPerInfoCtg> entityOpt = this.queryProxy().find(new PpemtPerInfoCtgPK(x.getPersonInfoCategoryId()), PpemtPerInfoCtg.class);
+			if(entityOpt.isPresent())
+			{
+				PpemtPerInfoCtg entity = entityOpt.get();
+				entity.categoryName = x.getCategoryName() == null ? null : x.getCategoryName().v();
+				entity.abolitionAtr = x.getIsAbolition().value;
+				this.commandProxy().update(entity);
+			}
+		});
+		
 	}
 }

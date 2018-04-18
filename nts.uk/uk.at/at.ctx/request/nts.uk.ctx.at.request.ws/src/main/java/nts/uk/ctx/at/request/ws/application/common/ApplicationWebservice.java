@@ -30,11 +30,14 @@ import nts.uk.ctx.at.request.app.find.application.common.ObjApprovalRootInput;
 import nts.uk.ctx.at.request.app.find.application.common.OutputDetailCheckDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDto;
+import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationRemandDto;
+import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSendDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.InputCommonData;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.OutputMessageDeadline;
 import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDeadlineDto;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InputGetDetailCheck;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
 
 @Path("at/request/application")
 @Produces("application/json")
@@ -103,7 +106,7 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("remandapp")
-	public String remandApp(RemandCommand command){
+	public MailSenderResult remandApp(RemandCommand command){
 		return remandApplicationHandler.handle(command);
 	}
 	
@@ -180,6 +183,18 @@ public class ApplicationWebservice extends WebService {
 	@Path("getAppInfoByAppID")
 	public ApplicationMetaDto getAppInfo(String appID){
 		return this.finderApp.getAppByID(appID);
+	}
+	
+	
+	@POST
+	@Path("getAppInfoForRemandByAppId")
+	public ApplicationRemandDto getAppInfoByAppIdForRemand(String appID){
+		return this.finderApp.getAppByIdForRemand(appID);
+	}
+	@POST
+	@Path("getApplicationForSendByAppID")
+	public ApplicationSendDto getApplicationForSendByAppID(String appID){
+		return finderApp.getAppByIdForSend(appID);
 	}
 	
 	@POST

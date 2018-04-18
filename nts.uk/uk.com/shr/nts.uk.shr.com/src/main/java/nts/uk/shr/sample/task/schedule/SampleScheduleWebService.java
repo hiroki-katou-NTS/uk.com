@@ -3,23 +3,27 @@ package nts.uk.shr.sample.task.schedule;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import lombok.val;
-import nts.arc.task.AsyncTaskInfoRepository;
-import nts.arc.time.GeneralDateTime;
+import nts.arc.layer.app.command.JavaTypeResult;
 
 @Path("/sample/schedule")
 @Produces("application/json")
 public class SampleScheduleWebService {
-
-	@Inject
-	private AsyncTaskInfoRepository repo;
 	
+	@Inject
+	private SampleScheduler scheduler;
+
 	@POST
-	@Path("test")
-	public void test() {
-		val baseDateTime = GeneralDateTime.ymdhms(2018, 2, 1, 0, 0, 0);
-		this.repo.removeOldTasks(baseDateTime);
+	@Path("schedule")
+	public JavaTypeResult<String> schedule() {
+		return new JavaTypeResult<>(this.scheduler.schedule());
+	}
+
+	@POST
+	@Path("unschedule/{id}")
+	public void unschedule(@PathParam("id") String scheduleId) {
+		this.scheduler.unschedule(scheduleId);
 	}
 }

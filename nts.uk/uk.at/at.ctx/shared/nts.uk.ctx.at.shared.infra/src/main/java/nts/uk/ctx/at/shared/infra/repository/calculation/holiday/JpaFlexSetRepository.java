@@ -33,7 +33,7 @@ public class JpaFlexSetRepository extends JpaRepository implements FlexSetReposi
 	 */
 	private FlexSet convertToDomain(KshstFlexSet kshstFlexSet) {
 		FlexSet flexSet = FlexSet.createFromJavaType(kshstFlexSet.kshstFlexSetPK.companyId, kshstFlexSet.missCalcHd,
-				kshstFlexSet.premiumCalcHd, kshstFlexSet.missCalcSubhd, kshstFlexSet.premiumCalcSubhd);
+				kshstFlexSet.premiumCalcHd, kshstFlexSet.missCalcSubhd, kshstFlexSet.premiumCalcSubhd, kshstFlexSet.flexDeductCalc, kshstFlexSet.flexNonwkingCalc);
 		
 		return flexSet;
 	}
@@ -82,6 +82,8 @@ public class JpaFlexSetRepository extends JpaRepository implements FlexSetReposi
 				entity.premiumCalcHd = flexSet.getPremiumCalcHd().value;
 				entity.missCalcSubhd = flexSet.getMissCalcSubhd().value;
 				entity.premiumCalcSubhd = flexSet.getPremiumCalcSubhd().value;
+				entity.flexDeductCalc = flexSet.getFlexDeductTimeCalc().value;
+				entity.flexNonwkingCalc = flexSet.getFlexNonworkingDayCalc().value;
 				
 				entity.kshstFlexSetPK = primaryKey;
 		this.commandProxy().update(entity);

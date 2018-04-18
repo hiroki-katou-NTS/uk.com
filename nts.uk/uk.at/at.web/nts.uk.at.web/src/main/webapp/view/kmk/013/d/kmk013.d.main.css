@@ -32,6 +32,7 @@ hr {
 
 .ntsRadioBox {
 	margin-left: 52px;
+	padding-top: 2px;
 }
 
 #left-table {
@@ -41,15 +42,38 @@ hr {
 }
 
 #right-table {
-	width: 320px;
+	width: 400px;
+	padding-left: 200px;
+	vertical-align: top;
 }
 
 #d4_1 {
-	margin-top: 86px;
+	margin-top: 50px;
+	padding-top: 8px;
 }
 
 #d4_1.form-label>label {
 	max-height: 100%;
 	font-size: 14px;
 	line-height: 0px;
+}
+
+.dateInput {
+	padding: 5px;
+}
+
+.d5_name {
+	margin-top: 50px;
+}
+
+.d7_name {
+	margin-top: 30px;
+}
+
+.d7_label {
+	padding: 10px 30px;
+}
+
+#dateInput {
+	width: 50px;
 }

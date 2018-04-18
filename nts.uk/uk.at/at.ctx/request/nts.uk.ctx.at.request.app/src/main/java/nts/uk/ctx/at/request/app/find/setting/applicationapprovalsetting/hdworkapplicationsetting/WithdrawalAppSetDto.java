@@ -3,6 +3,8 @@ package nts.uk.ctx.at.request.app.find.setting.applicationapprovalsetting.hdwork
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
 
 @AllArgsConstructor
@@ -54,11 +56,17 @@ public class WithdrawalAppSetDto {
 	/** 休出時間 **/
 	public int restTime;
 	
+	// 実績超過打刻優先設定
+	private int overrideSet;
+	// 打刻漏れ計算区分
+	private int calStampMiss;
+	
 	public static WithdrawalAppSetDto convertToDto(WithdrawalAppSet domain){
 		return new WithdrawalAppSetDto(domain.getCompanyId(), domain.getPrePerflex().value, 
 				domain.getBreakTime().value, domain.getWorkTime().value, domain.getCheckHdTime().value, 
 				domain.getTypePaidLeave().value, domain.getWorkChange().value, domain.getTimeInit().value, 
 				domain.getCheckOut().value, domain.getPrefixLeave().value, domain.getUnitTime().value, 
-				domain.getAppSimul(), domain.getBounSeg().value, domain.getDirectDivi().value, domain.getRestTime().value);
+				domain.getAppSimul(), domain.getBounSeg().value, domain.getDirectDivi().value, domain.getRestTime().value,
+				domain.getOverrideSet().value, domain.getCalStampMiss().value);
 	}
 }

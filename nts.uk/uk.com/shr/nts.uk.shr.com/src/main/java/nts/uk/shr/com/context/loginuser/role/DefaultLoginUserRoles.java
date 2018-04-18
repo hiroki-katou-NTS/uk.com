@@ -14,6 +14,7 @@ public class DefaultLoginUserRoles implements LoginUserRoles, Serializable {
 	private String forOfficeHelper = null;
 	private String forSystemAdmin = null;
 	private String forCompanyAdmin = null;
+	private String forGroupCompaniesAdmin = null;
 	
 	@Override
 	public String forAttendance() {
@@ -50,6 +51,11 @@ public class DefaultLoginUserRoles implements LoginUserRoles, Serializable {
 		return this.forCompanyAdmin;
 	}
 
+	@Override
+	public String forGroupCompaniesAdmin() {
+		return this.forGroupCompaniesAdmin;
+	}
+
 	public void setRoleIdForAttendance(String roleId) {
 		this.forAttendance = roleId;
 	}
@@ -77,6 +83,10 @@ public class DefaultLoginUserRoles implements LoginUserRoles, Serializable {
 	public void setRoleIdforCompanyAdmin(String roleId) {
 		this.forCompanyAdmin = roleId;
 	}
+
+	public void setRoleIdforGroupCompaniesAdmin(String roleId) {
+		this.forGroupCompaniesAdmin = roleId;
+	}
 	
 	public void restore(LoginUserRoles source) {
 		this.forAttendance = source.forAttendance();
@@ -86,5 +96,7 @@ public class DefaultLoginUserRoles implements LoginUserRoles, Serializable {
 		this.forOfficeHelper = source.forOfficeHelper();
 		this.forSystemAdmin = source.forSystemAdmin();
 		this.forCompanyAdmin = source.forCompanyAdmin();
+		this.forGroupCompaniesAdmin = source.forGroupCompaniesAdmin();
 	}
+
 }

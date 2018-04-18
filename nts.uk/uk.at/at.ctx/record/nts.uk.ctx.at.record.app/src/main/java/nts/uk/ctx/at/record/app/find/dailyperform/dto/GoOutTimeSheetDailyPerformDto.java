@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -23,27 +21,27 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 public class GoOutTimeSheetDailyPerformDto {
 
 	/** 時間休暇使用時間: 日別実績の時間休暇使用時間 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "休暇使用時間", needCheckIDWithMethod = "goOutReason", methodForEnumValues = "goOutReasons")
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "休暇使用時間", needCheckIDWithMethod = "goOutReason")
 	private ValicationUseDto valicationUseTime;
 
 	/** 控除用合計時間: 控除合計時間 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "控除用合計時間", needCheckIDWithMethod = "goOutReason", methodForEnumValues = "goOutReasons")
+	@AttendanceItemLayout(layout = "B", jpPropertyName = "控除用合計時間", needCheckIDWithMethod = "goOutReason")
 	private TotalDeductionTimeDto totalTimeForDeduction;
 
 	/** 計上用合計時間: 控除合計時間 */
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "計上用合計時間", needCheckIDWithMethod = "goOutReason", methodForEnumValues = "goOutReasons")
+	@AttendanceItemLayout(layout = "C", jpPropertyName = "計上用合計時間", needCheckIDWithMethod = "goOutReason")
 	private TotalDeductionTimeDto totalTimeForCalc;
 
 	/** 控除用コア外合計時間: 計算付き時間 */
-	@AttendanceItemLayout(layout = "D", jpPropertyName = "控除用コア外合計時間", needCheckIDWithMethod = "goOutReason", methodForEnumValues = "goOutReasons")
+	@AttendanceItemLayout(layout = "D", jpPropertyName = "控除用コア外合計時間", needCheckIDWithMethod = "goOutReason")
 	private CalcAttachTimeDto coreTotalTimeForDeduction;
 
 	/** 計上用コア外合計時間: 計算付き時間 */
-	@AttendanceItemLayout(layout = "E", jpPropertyName = "計上用コア外合計時間", needCheckIDWithMethod = "goOutReason", methodForEnumValues = "goOutReasons")
+	@AttendanceItemLayout(layout = "E", jpPropertyName = "計上用コア外合計時間", needCheckIDWithMethod = "goOutReason")
 	private CalcAttachTimeDto coreTotalTimeForCalc;
 
 	/** 回数: 休憩外出回数 */
-	@AttendanceItemLayout(layout = "F", jpPropertyName = "回数", needCheckIDWithMethod = "goOutReason", methodForEnumValues = "goOutReasons")
+	@AttendanceItemLayout(layout = "F", jpPropertyName = "回数", needCheckIDWithMethod = "goOutReason")
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer times;
 
@@ -69,22 +67,6 @@ public class GoOutTimeSheetDailyPerformDto {
 		default:
 			return "";
 		}
-	}
-	
-	public void goOutReason(String text){
-		if(text.contains("私用")){
-			this.goOutReason = 0;
-		} else if (text.contains("公用")){
-			this.goOutReason = 1;
-		} else if (text.contains("有償")){
-			this.goOutReason = 2;
-		} else if (text.contains("組合")){
-			this.goOutReason = 2;
-		}
-	}
-	
-	public List<String> goOutReasons(){
-		return Arrays.asList("私用", "公用", "有償", "組合");
 	}
 	
 	public static GoOutTimeSheetDailyPerformDto toDto(OutingTimeOfDaily domain){

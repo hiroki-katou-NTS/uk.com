@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.annualpaidleave;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxDayReference;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxTimeDay;
@@ -89,4 +90,8 @@ public class JpaTimeAnnualSettingGetMemento implements TimeAnnualSettingGetMemen
         return this.entity.getIsEnoughTimeOneDay() == 1 ? true : false;
     }
 
+	@Override
+	public TimeAnnualRoundProcesCla GetRoundProcessClassific() {		
+		return TimeAnnualRoundProcesCla.valueOf(this.entity.getRoundProcessCla());
+	}
 }

@@ -2,6 +2,8 @@ package nts.uk.ctx.sys.auth.infra.entity.grant.rolesetjob;
 
 import java.io.Serializable;
 
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -30,6 +32,10 @@ public class SacmtRoleSetGrantedJobTitleDetail extends UkJpaEntity implements Se
 	@EmbeddedId
 	public SacmtRoleSetGrantedJobTitleDetailPK roleSetGrantedJobTitleDetailPK;
 
+	@Basic(optional = false)
+	@Column(name = "ROLESET_CD")
+	public String roleSetCd;
+	
 	@ManyToOne
 	@JoinColumns({
         @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false)
@@ -43,7 +49,8 @@ public class SacmtRoleSetGrantedJobTitleDetail extends UkJpaEntity implements Se
 
 	public SacmtRoleSetGrantedJobTitleDetail(String roleSetCd, String jobTitleId, String companyId) {
 		super();
-		this.roleSetGrantedJobTitleDetailPK = new SacmtRoleSetGrantedJobTitleDetailPK(roleSetCd, jobTitleId, companyId);
+		this.roleSetGrantedJobTitleDetailPK = new SacmtRoleSetGrantedJobTitleDetailPK(jobTitleId, companyId);
+		this.roleSetCd = roleSetCd;
 	}
 	
 }

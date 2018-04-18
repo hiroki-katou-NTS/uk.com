@@ -3,13 +3,15 @@ package nts.uk.ctx.at.schedule.pubimp.appreflectprocess;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.ApplicationReflectParam;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.ApplyTimeAtr;
-import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.appforleave.AppForLeaveScheInfor;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.CommonReflectParamSche;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.appforleave.ForleaveReflectSche;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.gobacksche.ApplicationGobackScheInfor;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.gobacksche.ChangeAtrAppGoback;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.gobacksche.GoBackDirectlyReflectSche;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.gobacksche.GobackReflectParam;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.workchange.WorkChangeReflectServiceSche;
+import nts.uk.ctx.at.schedule.pub.appreflectprocess.CommonReflectSchePubParam;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.AppReflectProcessSchePub;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.ApplicationReflectParamScheDto;
 
@@ -19,6 +21,8 @@ public class AppReflectProcessSchePubImpl implements AppReflectProcessSchePub{
 	private GoBackDirectlyReflectSche goBackReflect;
 	@Inject
 	private ForleaveReflectSche leaveReflect;
+	@Inject
+	private WorkChangeReflectServiceSche workchangeReflect;
 
 	@Override
 	public boolean goBackDirectlyReflectSch(ApplicationReflectParamScheDto reflectPara) {
@@ -29,25 +33,34 @@ public class AppReflectProcessSchePubImpl implements AppReflectProcessSchePub{
 				reflectPara.getGobackInfor().getWorkTimeEnd1(),
 				reflectPara.getGobackInfor().getWorkTimeStart2(),
 				reflectPara.getGobackInfor().getWorkTimeEnd2()); 
-		ApplicationReflectParam data = new ApplicationReflectParam(reflectPara.getEmployeeId(), 
+		GobackReflectParam data = new GobackReflectParam(reflectPara.getEmployeeId(), 
 				reflectPara.getDatePara(), 
 				true,
 				gobackInfo, 
-				EnumAdaptor.valueOf(reflectPara.getApplyTimeAtr().value, ApplyTimeAtr.class),
-				new AppForLeaveScheInfor(null)); 
-		boolean reflectInfo = goBackReflect.goBackDirectlyReflectSch(data);	
-		return reflectInfo;
+				EnumAdaptor.valueOf(reflectPara.getApplyTimeAtr().value, ApplyTimeAtr.class)); 
+			
+		return  goBackReflect.goBackDirectlyReflectSch(data);
 	}
 
 	@Override
-	public void appForLeaveSche(ApplicationReflectParamScheDto reflectPara) {
-		ApplicationReflectParam para = new ApplicationReflectParam(reflectPara.getEmployeeId(),
-				reflectPara.getDatePara(),
-				reflectPara.isOutsetBreakReflectAtr(),
-				new ApplicationGobackScheInfor(null, null, null, null, null, null, null), 
-				ApplyTimeAtr.START, 
-				new AppForLeaveScheInfor(reflectPara.getLeaveInfo().getWorktypeCode()));
-		leaveReflect.forlearveReflectSche(para);
+	public boolean appForLeaveSche(CommonReflectSchePubParam appForleaverPara) {
+		return leaveReflect.forlearveReflectSche(this.toParamSche(appForleaverPara));
 	}
+
+	@Override
+	public boolean appWorkChangeReflect(CommonReflectSchePubParam workChangeParam) {
+		return workchangeReflect.reflectWorkChange(this.toParamSche(workChangeParam));
+	}
+	
+	private CommonReflectParamSche toParamSche(CommonReflectSchePubParam schePubParam) {
+		CommonReflectParamSche paramSche = new CommonReflectParamSche(schePubParam.getEmployeeId(), 
+				schePubParam.getDatePara(),
+				schePubParam.getWorktypeCode(),
+				schePubParam.getWorkTimeCode(),
+				schePubParam.getStartDate(),
+				schePubParam.getEndDate());
+		return paramSche;
+	}
+
 
 }

@@ -3,26 +3,30 @@ import org.gradle.api.Project
 apply plugin: 'java'
 
 buildscript {
-	repositories {
-		maven {
-			name 'nsvnmk'
-			url 'http://192.168.50.6:8081/artifactory/plugins-release'
-		}
+	ext {
+		version = "1.0.0"
+		localRepo = "${project(':base.web').projectDir}/../../uk.repo"
 	}
+	
+	repositories {
+		// use local repository
+		flatDir {
+			dirs localRepo
+	 	}
+	}
+	
 	dependencies {
-		//http://mvnrepository.com/artifact/de.aaschmid.gradle.plugins/gradle-cpd-plugin
-		classpath "de.aaschmid.gradle.plugins:gradle-cpd-plugin:0.5"
-
-		//http://mvnrepository.com/artifact/com.bmuschko/gradle-cargo-plugin
-		classpath "com.bmuschko:gradle-cargo-plugin:2.2.1"
-
-		//http://mvnrepository.com/artifact/com.eriwen/gradle-js-plugin
+		// compress js plugin
 		classpath 'com.eriwen:gradle-js-plugin:1.12.0'
+
+		classpath "com.bmuschko:gradle-cargo-plugin:2.2.1"
 		
-		//Check for the latest version here: http://plugins.gradle.org/plugin/com.jfrog.artifactory
-		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4+"
+		classpath "de.aaschmid.gradle.plugins:gradle-cpd-plugin:0.5"
 		
-		classpath 'de.richsource.gradle.plugins:typescript-gradle-plugin:1.8.0'
+		// compile typescript to js  plugin
+		classpath "com.moowork.gradle:gradle-node-plugin:1.2.0"
+		
+		classpath "de.richsource.gradle.plugins:typescript-gradle-plugin:1.8.0"
 	}
 }
 
@@ -30,7 +34,6 @@ buildscript {
 allprojects {
 	apply from: "$rootDir/gradle/properties.gradle"
 	apply from: "$rootDir/gradle/library_properties.gradle"
-	apply plugin: "com.jfrog.artifactory"
 
 	//ビルド及び実行は、Java8を対象とする
 	sourceCompatibility = "$javaVersion"
@@ -44,11 +47,11 @@ subprojects {
 	apply plugin: 'java'
 	apply plugin: 'eclipse'
 	apply plugin: 'eclipse-wtp'
+	
 	repositories {
-		maven {
-			name 'aspose'
-			url 'http://maven.aspose.com/artifactory/simple/ext-release-local/'
-		}
+		flatDir {
+			dirs localRepo
+	 	}
 	}
 	
 	//compileJavaとcompileTestJavaの実行時の文字コードをunicodeで指定
@@ -62,30 +65,30 @@ subprojects {
 //=====================nts.uk.com.js.web↓============================
 project (':base.web:nts.uk.com.js.web') {
 	apply plugin: 'war'
+	apply plugin: 'com.moowork.node'
+	apply plugin: 'de.richsource.gradle.plugins.typescript'
+	
 	war {
 		baseName= "nts.uk.com.js.web"
+	}		
+	
+	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
+		target = "ES5"
+		noLib = true
+		watch = false
+		sourcemap = true
+		include '**/*.ts'
+		source = new File('src/main/webapp/lib')
+		outFile = new File('src/main/webapp/lib/nittsu/nts.uk.com.web.nittsu.bundles.js')
 	}
-}
-//=====================nts.uk.com.js.web↑============================
-
-artifactory {
-	contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
-	publish {
-		repository {
-			repoKey = 'libs-release-local'
-			username = "${artifactory_user}"
-			password = "${artifactory_password}"
-			maven = true
-			
-		}
-	}
-	resolve {
-		repository {
-			repoKey = 'plugins-release'
-			username = "${artifactory_user}"
-			password = "${artifactory_password}"
-			maven = true
-			
-		}
+	
+	task tscw(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
+		target = "ES5"
+		noLib = true
+		watch = true
+		sourcemap = true
+		include '**/*.ts'
+		source = new File('src/main/webapp/lib')
+		outFile = new File('src/main/webapp/lib/nittsu/nts.uk.com.web.nittsu.bundles.js')
 	}
 }

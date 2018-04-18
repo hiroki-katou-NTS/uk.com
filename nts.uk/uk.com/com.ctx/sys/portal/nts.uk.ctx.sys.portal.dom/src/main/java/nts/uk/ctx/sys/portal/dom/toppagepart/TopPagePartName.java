@@ -4,6 +4,7 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
+ * トップページ部品名称
  * @author LamDT
  */
 @StringMaxLength(30)

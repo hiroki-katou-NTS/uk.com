@@ -26,8 +26,9 @@ import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccount;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccountRepository;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
-import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccount;
-import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccountRepository;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccount;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountInfo;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -46,7 +47,7 @@ public class UserInfoFinder {
 
 	/** The window account repository. */
 	@Inject
-	private WindowAccountRepository windowAccountRepository;
+	private WindowsAccountRepository windowAccountRepository;
 
 	/** The other sys account repository. */
 	@Inject
@@ -162,29 +163,32 @@ public class UserInfoFinder {
 
 			listUserMap.forEach(w -> {
 				OtherSysAccount otherSysAcc = mapOtherSysAccount.get(w.getUserId());
-				if (otherSysAcc != null && otherSysAcc.getUseAtr().value == UseAtr.Use.value) {
+				if (otherSysAcc != null && otherSysAcc.getAccountInfo().getUseAtr().value == UseAtr.Use.value) {
 					w.setIsSetting(true);
-				} else if (otherSysAcc == null || otherSysAcc.getUseAtr().value == UseAtr.NotUse.value) {
+				} else if (otherSysAcc == null || otherSysAcc.getAccountInfo().getUseAtr().value == UseAtr.NotUse.value) {
 					w.setIsSetting(false);
 				}
 			});
 
 
 		} else {
-
 			List<String> listUserID = listUserMap.stream().map(w -> w.getUserId()).collect(Collectors.toList());
 
-			List<WindowAccount> listWindowAccount = windowAccountRepository.findByListUserId(listUserID);
+			List<WindowsAccount> lstWindowAccount = windowAccountRepository.findByListUserId(listUserID);
 
-			listUserMap.forEach(w -> {
-				List<WindowAccount> winAcc = listWindowAccount.stream()
+			listUserMap.forEach(w -> {	
+				List<WindowsAccount> winAcc = lstWindowAccount.stream()
 						.filter(w2 -> w2.getUserId().equals(w.getUserId())).collect(Collectors.toList());
 
 				// list empty
 				if (CollectionUtil.isEmpty(winAcc)) {
 					w.setIsSetting(false);
 				} else {
-					Boolean isSetting = winAcc.stream().anyMatch(item -> item.isSetting());
+					List<WindowsAccountInfo> accountInfos = winAcc.stream()
+							.flatMap(infos -> infos.getAccountInfos().stream())
+							.collect(Collectors.toList());
+					
+					Boolean isSetting = accountInfos.stream().anyMatch(item -> item.isSetting());
 					w.setIsSetting(isSetting);
 				}
 			});

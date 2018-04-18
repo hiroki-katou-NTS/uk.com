@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -59,9 +59,9 @@ public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 	@Column(name = "CAL_EXECUTION_SET_INFO_ID")
 	public String calExecutionSetInfoID;
 	
-	@ManyToOne
-	@JoinColumn(name="EMP_EXECUTION_LOG_ID", referencedColumnName="EMP_EXECUTION_LOG_ID", insertable = false, updatable = false)
-	public KrcdtEmpExecutionLog empexecutionlog;
+//	@ManyToOne
+//	@JoinColumn(name="EMP_EXECUTION_LOG_ID", referencedColumnName="EMP_EXECUTION_LOG_ID", insertable = false, updatable = false)
+//	public KrcdtEmpExecutionLog empexecutionlog;
 	
 	@OneToOne(mappedBy="executionlog", cascade = CascadeType.ALL)
 	@JoinTable(name = "KRCST_CAL_EXE_SET_INFO")

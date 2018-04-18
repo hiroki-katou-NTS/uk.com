@@ -189,7 +189,7 @@ __viewContext.ready(function () {
         }, {
             key: "_4", width: "100px", handlerType: "input", dataType: "duration/duration", primitiveValue: "HolidayAppPrimitiveTime"
         }, {
-            key: "_5", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_5", width: "100px", handlerType: "input", dataType: "duration/duration", primitiveValue: "TimeWithDayAttr"
         }, {
             key: "_6", width: "100px", handlerType: "input", dataType: "time/time", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
         }, {
@@ -245,7 +245,8 @@ __viewContext.ready(function () {
         }];
     
     let leftmostColumns = [{ key: "empName", headerText: "社員名", width: "160px", icon: { for: "body", class: "ui-icon ui-icon-contact", width: "35px" }, 
-        css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { alert(rowIdx); } }];
+        css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { alert(rowIdx); }, 
+        headerControl: "link", headerHandler: function() { alert("Link!"); } }];
     let leftmostHeader = {
         columns: leftmostColumns,
         rowHeight: "75px",
@@ -263,7 +264,8 @@ __viewContext.ready(function () {
         }
     };
     let middleColumns = [
-        { headerText: "有資<br/>格者", key: "cert", width: "50px", handlerType: "tooltip", supplier: tts },
+        { headerText: "有資<br/>格者", key: "cert", width: "50px", handlerType: "tooltip", supplier: tts, 
+            headerControl: "link", headerHandler: function() { alert("有資格者"); } },
         { 
             headerText: "回数集計１",
             group: [
@@ -331,6 +333,7 @@ __viewContext.ready(function () {
         columns: detailColumns,
         dataSource: detailContentDs,
         primaryKey: "empId",
+//        highlight: false,
         features: [{
             name: "BodyCellStyle",
             decorator: detailContentDeco
@@ -424,7 +427,7 @@ __viewContext.ready(function () {
             updateMode: "edit",
             pasteOverWrite: true,
             stickOverWrite: true,
-            viewMode: "shortName",
+            viewMode: "time",
             secondaryTable: $("#subtable"),
             determination: {
                 rows: [0],
@@ -443,7 +446,6 @@ __viewContext.ready(function () {
         .LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent)
         .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent)
         .create();
-    
     
     let leftHorzColumns2 = [
         { headerText: "項目名", key: "itemName", width: "200px" },
@@ -491,6 +493,7 @@ __viewContext.ready(function () {
     let horizontalSumContent2 = {
         columns: detailColumns2,
         dataSource: horzSumContentDs,
+        highlight: false,
         primaryKey: "itemId"
     };
     new nts.uk.ui.exTable.ExTable($("#subtable"), { 

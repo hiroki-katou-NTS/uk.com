@@ -11,6 +11,7 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 
@@ -43,4 +44,12 @@ public interface OtherCommonAlgorithm {
 	 * @param appDate
 	 */
 	public InitValueAtr judgmentPrePostAtr(ApplicationType appType,GeneralDate appDate,boolean checkCaller);
+	/**
+	 * 9.同時申請された振休振出申請を取得する
+	 * @author hoatt
+	 * @param companyId
+	 * @param appId
+	 * @return
+	 */
+	public AppCompltLeaveSyncOutput getAppComplementLeaveSync(String companyId, String appId);
 }

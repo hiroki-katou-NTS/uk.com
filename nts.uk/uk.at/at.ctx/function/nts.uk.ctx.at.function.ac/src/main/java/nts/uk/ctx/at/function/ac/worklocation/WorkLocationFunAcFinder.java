@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.ac.worklocation;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -16,16 +18,24 @@ public class WorkLocationFunAcFinder implements RecordWorkInfoFunAdapter {
 	private RecordWorkInfoPub recordWorkInfoPub;
 
 	@Override
-	public RecordWorkInfoFunAdapterDto getInfoCheckNotRegister(String employeeId, GeneralDate ymd) {
-		return convertToExport(recordWorkInfoPub.getInfoCheckNotRegister(employeeId, ymd));
+	public Optional<RecordWorkInfoFunAdapterDto> getInfoCheckNotRegister(String employeeId, GeneralDate ymd) {
+		Optional<InfoCheckNotRegisterPubExport> data = recordWorkInfoPub.getInfoCheckNotRegister(employeeId, ymd);
+		if(data.isPresent())
+			return Optional.of(convertToExport(data.get()));
+		return Optional.empty();
 	}
 	
 	private RecordWorkInfoFunAdapterDto convertToExport(InfoCheckNotRegisterPubExport export) {
 		return new  RecordWorkInfoFunAdapterDto(
 					export.getEmployeeId(),
-					export.getWorkTimeCode(),
+					export.getWorkTimeCode()==null?null:export.getWorkTimeCode(),
 					export.getWorkTypeCode()
 				);
+	}
+
+	@Override
+	public Optional<String> getWorkTypeCode(String employeeId, GeneralDate ymd) {		
+		return recordWorkInfoPub.getWorkTypeCode(employeeId, ymd);
 	}
 
 

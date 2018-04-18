@@ -5,7 +5,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.ApplicationReflectParam;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.ScheduleEditState;
@@ -14,6 +13,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleStateRe
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -24,8 +24,11 @@ public class WorkTypeHoursReflectScheImpl implements WorkTypeHoursReflectSche{
 	private WorkTypeRepository workTypeRepo;
 	@Inject
 	private WorkScheduleStateRepository workScheReposi;
+	@Inject
+	private WorkTypeIsClosedService workTypeService;
 	@Override
-	public boolean isReflectFlag(ApplicationReflectParam gobackPara) {
+	public boolean isReflectFlag(GobackReflectParam gobackPara) {
+		//ドメインモデル「勤務予定基本情報」を取得する
 		//ドメインモデル「勤務予定基本情報」を取得する
 		Optional<BasicSchedule> optBasicScheOpt = basicSche.find(gobackPara.getEmployeeId(), gobackPara.getDatePara());		
 		if(!optBasicScheOpt.isPresent()) {
@@ -33,13 +36,8 @@ public class WorkTypeHoursReflectScheImpl implements WorkTypeHoursReflectSche{
 		}
 		BasicSchedule basicScheOpt = optBasicScheOpt.get();
 		if(this.isCheckReflect(gobackPara, basicScheOpt)) {
-			//ドメインモデル「勤務予定基本情報」を編集する
-			BasicSchedule dataUpdate = new BasicSchedule(gobackPara.getEmployeeId(), 
-					gobackPara.getDatePara(), 
-					gobackPara.getAppInfor().getWorkType(), 
-					gobackPara.getAppInfor().getWorkTime(), 
-					basicScheOpt.getConfirmedAtr());
-			basicSche.update(dataUpdate);
+			//ドメインモデル「勤務予定基本情報」を編集する			
+			basicSche.changeWorkTypeTime(gobackPara.getEmployeeId(), gobackPara.getDatePara(), gobackPara.getAppInfor().getWorkType(), gobackPara.getAppInfor().getWorkTime());
 			//ドメインモデル「勤務予定項目状態」を編集する id = 1
 			WorkScheduleState scheData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION,
 					1,
@@ -58,7 +56,7 @@ public class WorkTypeHoursReflectScheImpl implements WorkTypeHoursReflectSche{
 	}
 
 	@Override
-	public boolean isCheckReflect(ApplicationReflectParam gobackPara, BasicSchedule basicScheOpt) {
+	public boolean isCheckReflect(GobackReflectParam gobackPara, BasicSchedule basicScheOpt) {
 		boolean isFlag = false;
 		//INPUT．勤務を変更するをチェックする
 		if(gobackPara.getAppInfor().getChangeAtrAppGoback() == ChangeAtrAppGoback.CHANGE) {
@@ -67,7 +65,7 @@ public class WorkTypeHoursReflectScheImpl implements WorkTypeHoursReflectSche{
 				isFlag = true;
 			}else {				
 				//勤務種類が休出振出かの判断
-				if(this.outsetBreakJudgment(basicScheOpt.getWorkTypeCode())) {
+				if(workTypeService.checkWorkTypeIsClosed(basicScheOpt.getWorkTypeCode())) {
 					isFlag = false;
 				} else {
 					isFlag = true;
@@ -76,31 +74,5 @@ public class WorkTypeHoursReflectScheImpl implements WorkTypeHoursReflectSche{
 		}
 		return isFlag;
 	}
-	/**
-	 * 勤務種類が休出振出かの判断
-	 * @param workTypeCode
-	 * @return	true：休出振出である	false：休出振出でない
-	 */
-	private boolean outsetBreakJudgment(String workTypeCode) {
-		boolean isFlag = false;
-		String companyId = AppContexts.user().companyId();
-		//ドメインモデル「勤務種類」を取得する
-		Optional<WorkType> optWorkTypeData = workTypeRepo.findByPK(companyId, workTypeCode);
-		if(!optWorkTypeData.isPresent()) {
-			return false;
-		}
-		WorkType workTypeData = optWorkTypeData.get();
-		//「1日の勤務」．1日 in (休日出勤, 振出) ||
-		//「1日の勤務」．午前 = 振出 ||
-		//「1日の勤務」．午後 = 振出
-		if(workTypeData.getDailyWork().getOneDay() == WorkTypeClassification.HolidayWork
-				||workTypeData.getDailyWork().getOneDay() ==WorkTypeClassification.Shooting
-				||workTypeData.getDailyWork().getMorning() == WorkTypeClassification.Shooting
-				||workTypeData.getDailyWork().getAfternoon() == WorkTypeClassification.Shooting) {
-			isFlag = true;
-		} else {
-			isFlag = false;
-		}
-		return isFlag;
-	}
+	
 }

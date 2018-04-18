@@ -48,6 +48,8 @@ public class FlexSetFinder {
 		flexSetDto.setPremiumCalcHd(flexSet.getPremiumCalcHd().value);
 		flexSetDto.setMissCalcSubhd(flexSet.getMissCalcSubhd().value);
 		flexSetDto.setPremiumCalcSubhd(flexSet.getPremiumCalcSubhd().value);
+		flexSetDto.setFlexNonworkingDayCalc(flexSet.getFlexNonworkingDayCalc().value);
+		flexSetDto.setFlexDeductTimeCalc(flexSet.getFlexDeductTimeCalc().value);
 
 		return flexSetDto;
 	}

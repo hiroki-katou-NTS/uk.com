@@ -15,25 +15,86 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area"></div>
+			<!-- <div id="functions-area"></div> -->
 			<div id="contents-area" class="table">
+				<!-- floor 1  -->
 				<div>
+					<!-- A1_1 -->
 					<div class="panel panel-frame contents-area-middle boder-style">
-						<div class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMK013_244')}</div>
-						<button tabindex="1" class="btn-area-middle"  data-bind="click: openDialogB">#{i18n.getText('KMK013_237')}</button>
-						<button tabindex="2" class="btn-area-middle"
-							data-bind="click: openDialogH">#{i18n.getText('KMK013_241')}</button>
+						<!-- A1_2 -->
+						<!-- A1_3 -->
+						<div tabindex="-1" class="panel panel-gray-bg panel-custom-font-size label">#{i18n.getText('KMK013_424')}</div>
+						<!-- A1_4 -->
+						<button tabindex="1" class="btn-area-middle"  data-bind="click: openDialogG">#{i18n.getText('KMK013_425')}</button>
 					</div>
+					<!-- A6_1 -->
 					<div class="contents-area-caret-right">
-						<span class="caret-right outline" style="font-size: 3.4em;"></span>
+						<span tabindex="-1" class="caret-right outline" style="font-size: 3.4em;"></span>
 					</div>
+					<!-- A2_1 -->
 					<div class="panel panel-frame contents-area-right boder-style">
-						<div class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMK013_245')}</div>
-						<button tabindex="3" class="btn-area-middle" data-bind="click: openDialogC">#{i18n.getText('KMK013_238')}</button>
-						<button tabindex="4" class="btn-area-middle" data-bind="click: openDialogD">#{i18n.getText('KMK013_239')}</button>
-						<button tabindex="5" class="btn-area-middle" data-bind="click: openDialogE">#{i18n.getText('KMK013_240')}</button>
+						<!-- A2_2 -->
+						<!-- A2_3 -->
+						<div tabindex="-1" class="panel panel-gray-bg panel-custom-font-size class">#{i18n.getText('KMK013_426')}</div>
+						<!-- A2_4 -->
+						<button tabindex="2" id="a2_4" class="btn-area-middle" data-bind="click: openDialogB">#{i18n.getText('KMK013_427')}</button>
+						<!-- A2_5 -->
+						<button tabindex="3" class="btn-area-middle" data-bind="click: openDialogN">#{i18n.getText('KMK013_428')}</button>
+						<!-- A2_6 -->
+						<button tabindex="4" class="btn-area-middle" data-bind="click: openDialogH">#{i18n.getText('KMK013_429')}</button>
+						<!-- A2_7 -->
+						<button tabindex="5" class="btn-area-middle" data-bind="enable: enableScrL, click: openDialogL">#{i18n.getText('KMK013_430')}</button>
+					</div>
+					<!-- A6_2 -->
+					<div class="contents-area-caret-right">
+						<span tabindex="-1" class="caret-right outline" style="font-size: 3.4em;"></span>
+					</div>
+					<!-- A3_1 -->
+					<div class="panel panel-frame contents-area-right boder-style">
+						<!-- A3_2 -->
+						<!-- A3_3 -->
+						<div tabindex="-1" class="panel panel-gray-bg panel-custom-font-size class">#{i18n.getText('KMK013_431')}</div>
+						<!-- A3_4 -->
+						<button tabindex="6" class="btn-area-middle" data-bind="enable: enableScrI, click: openDialogI">#{i18n.getText('KMK013_432')}</button>
+						<!-- A3_5 -->
+						<button tabindex="7" class="btn-area-middle" data-bind="enable: enableScrD, click: openDialogD">#{i18n.getText('KMK013_433')}</button>
 					</div>
 				</div>
+				
+				<!-- floor 2  -->
+				<div>
+					<!-- A6_3 -->
+					<div class="contents-area-caret-right">
+						<span tabindex="-1" class="caret-right outline" style="font-size: 3.4em;"></span>
+					</div>
+					<!-- A4_1 -->
+					<div class="panel panel-frame contents-area-right boder-style">
+						<!-- A4_2 -->
+						<!-- A4_3 -->
+						<div tabindex="-1" class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMK013_434')}</div>
+						<!-- A4_4 -->
+						<button tabindex="8" class="btn-area-middle" data-bind="click: openDialogK">#{i18n.getText('KMK013_435')}</button>
+					</div>
+					<!-- A6_3 -->
+					<div class="contents-area-caret-right">
+						<span tabindex="-1" class="caret-right outline" style="font-size: 3.4em;"></span>
+					</div>
+					<!-- A5_1 -->
+					<div class="panel panel-frame contents-area-right boder-style">
+						<!-- A5_2 -->
+						<!-- A5_3 -->
+						<div tabindex="-1" class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMK013_436')}</div>
+						<!-- A5_4 -->
+						<button tabindex="9" class="btn-area-middle" data-bind="click: openDialogM">#{i18n.getText('KMK013_437')}</button>
+						<!-- A5_5 -->
+						<button tabindex="10" class="btn-area-middle" data-bind="click: openDialogC">#{i18n.getText('KMK013_438')}</button>
+						<!-- A5_6 -->
+						<button tabindex="11" class="btn-area-middle" data-bind="click: openDialogJ">#{i18n.getText('KMK013_439')}</button>
+						<!-- A5_7 -->
+						<button tabindex="12" class="btn-area-middle" data-bind="click: openDialogE">#{i18n.getText('KMK013_440')}</button>
+					</div>
+				</div>
+				
 			</div>
 		</ui:define>
 	</ui:composition>

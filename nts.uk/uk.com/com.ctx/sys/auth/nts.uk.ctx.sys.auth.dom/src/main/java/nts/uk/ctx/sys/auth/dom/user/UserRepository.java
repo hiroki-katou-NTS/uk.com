@@ -28,5 +28,7 @@ public interface UserRepository {
 	Optional<User> getListUserByDefUser(String userID , int defUser ,GeneralDate  expirationDate);
 	
 	void addNewUser(User newUser);
+	
+	void update (User user);
 
 }

@@ -75,7 +75,7 @@ public class EmpCopySettingFinder {
 		for (PersonInfoCategory obj : lstPerInfoCtg) {
 			// check whether category has already copied or not
 			// filter: category has items
-			if (pernfoItemDefRep.countPerInfoItemDefInCategory(obj.getPersonInfoCategoryId(), companyId) > 0) {
+			if (pernfoItemDefRep.countPerInfoItemDefInCategoryNo812(obj.getPersonInfoCategoryId(), companyId) > 0) {
 				lstFilter.add(obj);
 			}
 		}

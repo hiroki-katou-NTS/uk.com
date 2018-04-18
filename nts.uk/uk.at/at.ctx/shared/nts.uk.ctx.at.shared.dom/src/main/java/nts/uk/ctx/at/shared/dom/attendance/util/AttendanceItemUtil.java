@@ -55,52 +55,53 @@ public class AttendanceItemUtil {
 		Map<String, Field> fields = getFieldMap(attendanceItems, groups);
 		return groups.entrySet().stream().map(c -> {
 			Field field = fields.get(c.getKey());
-			if (field != null) {
-				AttendanceItemLayout layout = getLayoutAnnotation(field);
-				boolean isList = layout.listMaxLength() > 0;
-				Class<T> className = layout.isOptional() || isList ? getGenericType(field) : (Class<T>) field.getType();
-				String pathName = getPath(path, layout, getRootAnnotation(field)),
-						currentLayout = mergeLayout(layoutCode, layout.layout()),
-						exCon = getExCondition(extraCondition, attendanceItems, layout);
-				if (isList) {
-					List<T> list = getListAndSort(attendanceItems, field, className, layout);
-					return mapByPath(c.getValue(),
-									x -> layout.listNoIndex() ? getEValAsIdxPlus(x.path()) : getIdxInText(x.path())
-								).entrySet().stream().map(idx -> {
-										T idxValue = list.size() < idx.getKey() ? null : list.get(idx.getKey() - 1);
-										return getItemValues(
-													fieldValue(className, idxValue),  layoutIdx + 1,
-													layout.listNoIndex() ? currentLayout : currentLayout + idx.getKey(), 
-													pathName, exCon,  idx.getKey(),
-													mapByPath(idx.getValue(), id -> getCurrentPath(layoutIdx + 1, id.path(), false)));
-									}).flatMap(List::stream).collect(Collectors.toList());
-				} else {
-					T value = getOptionalFieldValue(attendanceItems, field, layout.isOptional());
-					AttendanceItemValue valueAnno = getItemValueAnnotation(field);
-					if (valueAnno != null) {
-						String currentPath = getKey(pathName, "", false, index);
-						String currentFullPath = getKey(pathName, exCon, index > 0, index);
-						return filterAndMap(
-									c.getValue(), 
-									id -> getTextWithNoCondition(id.path()).equals(currentPath),
-									item -> {
-										if(item.path().equals(currentFullPath)){
-											return item.value(value).valueType(valueAnno.type())
-														.layout(currentLayout + getTextWithCondition(item.path()))
-														.completed();
-										} else {
-											return item.layout(currentLayout + getTextWithCondition(item.path()))
-														.valueType(valueAnno.type()).completed();
-										}
-									});
-					} else {
-						return getItemValues(
-									fieldValue(className, value),  layoutIdx + 1, currentLayout, pathName, exCon, index,
-									mapByPath(c.getValue(), id -> getCurrentPath(layoutIdx + 1, id.path(), false)));
-					}
-				}
+			if (field == null) {
+				return new ArrayList<ItemValue>();
 			}
-			return new ArrayList<ItemValue>();
+			AttendanceItemLayout layout = getLayoutAnnotation(field);
+			boolean isList = layout.listMaxLength() > 0;
+			Class<T> className = layout.isOptional() || isList ? getGenericType(field) : (Class<T>) field.getType();
+			String pathName = getPath(path, layout, getRootAnnotation(field)),
+					currentLayout = mergeLayout(layoutCode, layout.layout()),
+					exCon = getExCondition(extraCondition, attendanceItems, layout);
+			if (isList) {
+				List<T> list = getListAndSort(attendanceItems, field, className, layout);
+				return mapByPath(c.getValue(),
+								x -> layout.listNoIndex() ? getEValAsIdxPlus(x.path()) : getIdxInText(x.path())
+							).entrySet().stream().map(idx -> {
+									boolean isNotHaveData = list.isEmpty() || list.size() < idx.getKey();
+         								T idxValue = isNotHaveData ? null : list.get(idx.getKey() - 1);
+									return getItemValues(
+												fieldValue(className, idxValue),  layoutIdx + 1,
+												layout.listNoIndex() ? currentLayout : currentLayout + idx.getKey(), 
+												pathName, exCon,  idx.getKey(),
+												mapByPath(idx.getValue(), id -> getCurrentPath(layoutIdx + 1, id.path(), false)));
+								}).flatMap(List::stream).collect(Collectors.toList());
+			} 
+			T value = getOptionalFieldValue(attendanceItems, field, layout.isOptional());
+			AttendanceItemValue valueAnno = getItemValueAnnotation(field);
+			if (valueAnno == null) {
+				return getItemValues(
+						fieldValue(className, value),  layoutIdx + 1, currentLayout, pathName, exCon, index,
+						mapByPath(c.getValue(), id -> getCurrentPath(layoutIdx + 1, id.path(), false)));
+				
+			} 
+			String currentPath = getKey(pathName, "", false, index);
+			String currentFullPath = getKey(pathName, exCon, index > 0, index);
+			return filterAndMap(
+						c.getValue(), 
+						id -> getTextWithNoCondition(id.path()).equals(currentPath),
+						item -> {
+							if(item.path().equals(currentFullPath)){
+								return item.value(value).valueType(valueAnno.type())
+											.layout(currentLayout + getTextWithCondition(item.path()))
+											.completed();
+							} else {
+								return item.layout(currentLayout + getTextWithCondition(item.path()))
+											.valueType(valueAnno.type()).completed();
+							}
+						});
+			
 		}).flatMap(List::stream).collect(Collectors.toList());
 	}
 
@@ -113,67 +114,67 @@ public class AttendanceItemUtil {
 		Map<String, Field> fields = getFieldMap(attendanceItems, groups);
 		groups.entrySet().stream().forEach(c -> {
 			Field field = fields.get(c.getKey());
-			if (field != null) {
-				AttendanceItemLayout layout = getLayoutAnnotation(field);
-				boolean isList = layout.listMaxLength() > 0;
-				Class<T> className = layout.isOptional() || isList ? getGenericType(field) : (Class<T>) field.getType();
-				String pathName = getPath(path, layout, getRootAnnotation(field)),
-						currentLayout = mergeLayout(layoutCode, layout.layout());
-				if (isList) {
-					boolean listNoIdx = layout.listNoIndex();
-					List<T> list = processListToMax(
-										ReflectionUtil.getFieldValue(field, attendanceItems),
-										layout, 
-										className, 
-										c.getValue().isEmpty() ? "" : c.getValue().get(0).path());
-					String idxFieldName = listNoIdx ? layout.enumField() : layout.indexField();
-					Field idxField = idxFieldName.isEmpty() ? null : getField(idxFieldName, className);
-					Map<Integer, List<ItemValue>> itemsForIdx = mapByPath(c.getValue(), 
-							x -> listNoIdx ? getEValAsIdxPlus(x.path()) : getIdxInText(x.path()));
-					list.stream().forEach(eVal -> {
-						Integer idx = idxField == null ? null : ReflectionUtil.getFieldValue(idxField, eVal);
-						List<ItemValue> subList = idx == null ? null : itemsForIdx.get(listNoIdx ? idx + 1 : idx);
-						if (subList != null) {
-							fromItemValues(
-									eVal, 
-									layoutIdx + 1,
-									listNoIdx ? currentLayout : currentLayout + (idx == null ? "" : idx), 
-									pathName,
-									idx, 
-									needCheckWithIdx || (isList && !listNoIdx),
-									mapByPath(subList, id -> getCurrentPath(layoutIdx + 1, id.path(), false)));
-
-							setValueEnumField(layout, className, eVal, subList);
-						}
-					});
-					ReflectionUtil.setFieldValue(field, attendanceItems, list);
-				} else {
-					T value = getOptionalFieldValue(attendanceItems, field, layout.isOptional());
-					AttendanceItemValue valueAnno = getItemValueAnnotation(field);
-					if (valueAnno != null) {
-						String enumText = getEnumTextFromList(c.getValue()), 
-								currentPath = getKey(pathName, enumText == null ? "" : enumText, needCheckWithIdx, index);
-						ItemValue itemValue = c.getValue().stream()
-														.filter(id -> id.path().equals(currentPath))
-														.findFirst().orElse(null);
-						if (itemValue != null) {
-							ReflectionUtil.setFieldValue(field, attendanceItems, itemValue.value());
-						}
-					} else {
-						T nVal = fromItemValues(
-										value == null ? ReflectionUtil.newInstance(className) : value,
-										layoutIdx + 1, 
-										currentLayout, 
-										pathName, 
-										index, 
-										needCheckWithIdx,
-										mapByPath(c.getValue(), id -> getCurrentPath(layoutIdx + 1, id.path(), false)));
-						setValueEnumField(layout, className, nVal, c.getValue());
-						ReflectionUtil.setFieldValue(field, attendanceItems, layout.isOptional() ? Optional.of(nVal) : nVal);
-					}
-				}
+			if (field == null) {
+				return;
 			}
+			AttendanceItemLayout layout = getLayoutAnnotation(field);
+			boolean isList = layout.listMaxLength() > 0;
+			Class<T> className = layout.isOptional() || isList ? getGenericType(field) : (Class<T>) field.getType();
+			String pathName = getPath(path, layout, getRootAnnotation(field)),
+					currentLayout = mergeLayout(layoutCode, layout.layout());
+			if (isList) {
+				boolean listNoIdx = layout.listNoIndex();
+				List<T> list = processListToMax(
+									ReflectionUtil.getFieldValue(field, attendanceItems),
+									layout, 
+									className, 
+									c.getValue().isEmpty() ? "" : c.getValue().get(0).path());
+				String idxFieldName = listNoIdx ? layout.enumField() : layout.indexField();
+				Field idxField = idxFieldName.isEmpty() ? null : getField(idxFieldName, className);
+				Map<Integer, List<ItemValue>> itemsForIdx = mapByPath(c.getValue(), 
+						x -> listNoIdx ? getEValAsIdxPlus(x.path()) : getIdxInText(x.path()));
+				list.stream().forEach(eVal -> {
+					Integer idx = idxField == null ? null : ReflectionUtil.getFieldValue(idxField, eVal);
+					List<ItemValue> subList = idx == null ? null : itemsForIdx.get(listNoIdx ? idx + 1 : idx);
+					if (subList != null) {
+						fromItemValues(
+								eVal, 
+								layoutIdx + 1,
+								listNoIdx ? currentLayout : currentLayout + (idx == null ? "" : idx), 
+								pathName,
+								idx, 
+								needCheckWithIdx || (isList && !listNoIdx),
+								mapByPath(subList, id -> getCurrentPath(layoutIdx + 1, id.path(), false)));
 
+						setValueEnumField(layout, className, eVal, subList);
+					}
+				});
+				ReflectionUtil.setFieldValue(field, attendanceItems, list);
+				return;
+			} 
+			T value = getOptionalFieldValue(attendanceItems, field, layout.isOptional());
+			AttendanceItemValue valueAnno = getItemValueAnnotation(field);
+			if (valueAnno != null) {
+				String enumText = getEnumTextFromList(c.getValue()), 
+						currentPath = getKey(pathName, enumText == null ? "" : enumText, needCheckWithIdx, index);
+				ItemValue itemValue = c.getValue().stream()
+												.filter(id -> id.path().equals(currentPath))
+												.findFirst().orElse(null);
+				if (itemValue != null) {
+					ReflectionUtil.setFieldValue(field, attendanceItems, itemValue.value());
+				}
+				return;
+			} 
+			T nVal = fromItemValues(
+							value == null ? ReflectionUtil.newInstance(className) : value,
+							layoutIdx + 1, 
+							currentLayout, 
+							pathName, 
+							index, 
+							needCheckWithIdx,
+							mapByPath(c.getValue(), id -> getCurrentPath(layoutIdx + 1, id.path(), false)));
+			setValueEnumField(layout, className, nVal, c.getValue());
+			ReflectionUtil.setFieldValue(field, attendanceItems, layout.isOptional() ? Optional.of(nVal) : nVal);
 		});
 
 		return attendanceItems;
@@ -181,17 +182,19 @@ public class AttendanceItemUtil {
 	
 	private static <T> void clearConflictEnumsInList(AttendanceItemLayout layout, Class<T> className, List<T> value,
 			String path) {
-		if (!layout.enumField().isEmpty() && layout.removeConflictEnum() && !path.isEmpty()) {
-			String enumText = getExConditionFromString(path);
-			if(!enumText.isEmpty()){
-				Field field = getField(layout.enumField(), className);
-				int eVal = AttendanceItemIdContainer.getEnumValue(enumText);
-				value.removeIf(c -> {
-					Integer currentEval = ReflectionUtil.getFieldValue(field, c); 
-					return currentEval != null && currentEval != eVal; 
-				});
-			}
+		if (layout.enumField().isEmpty() || !layout.removeConflictEnum() || path.isEmpty()) {
+			return;
 		}
+		String enumText = getExConditionFromString(path);
+		if(enumText.isEmpty()){
+			return;
+		}
+		Field field = getField(layout.enumField(), className);
+		int eVal = AttendanceItemIdContainer.getEnumValue(enumText);
+		value.removeIf(c -> {
+			Integer currentEval = ReflectionUtil.getFieldValue(field, c); 
+			return currentEval != null && currentEval != eVal; 
+		});
 	}
 
 	private static Integer getEValAsIdxPlus(String path) {
@@ -206,12 +209,13 @@ public class AttendanceItemUtil {
 
 	private static <T> void setValueEnumField(AttendanceItemLayout layout, Class<T> className, T value,
 			List<ItemValue> items) {
-		if (!layout.enumField().isEmpty()) {
-			String enumText = items.stream().filter(em -> em.path().indexOf("-") > 0)
-					.map(em -> getExConditionFromString(em.path())).findFirst().orElse(null);
-			ReflectionUtil.setFieldValue(getField(layout.enumField(), className), value,
-					AttendanceItemIdContainer.getEnumValue(enumText));
+		if (layout.enumField().isEmpty()) {
+			return;
 		}
+		String enumText = items.stream().filter(em -> em.path().indexOf("-") > 0)
+				.map(em -> getExConditionFromString(em.path())).findFirst().orElse(null);
+		ReflectionUtil.setFieldValue(getField(layout.enumField(), className), value,
+				AttendanceItemIdContainer.getEnumValue(enumText));
 	}
 
 	private static String getPath(String path, AttendanceItemLayout layout, AttendanceItemRoot root) {
@@ -429,524 +433,4 @@ public class AttendanceItemUtil {
 
 		return "";
 	}
-
-	// private static <T extends ConvertibleAttendanceItem> List<ItemValue>
-	// toItemValues(T attendanceItems,
-	// String rootLayout, List<Integer> itemIds, int idx) {
-	// AttendanceItemRoot rootAnno = getRootAnnotation(attendanceItems);
-	// String rootName = getRootName(rootAnno);
-	// if (rootAnno.isContainer()) {
-	// return fromContainer(attendanceItems, itemIds);
-	// }
-	// return getItemFromField(attendanceItems, rootLayout, idx, rootName, "",
-	// false, itemIds, new ArrayList<>());
-	// }
-
-	// @SuppressWarnings("unchecked")
-	// private static <T extends ConvertibleAttendanceItem> List<ItemValue>
-	// fromContainer(T attendanceItems,
-	// List<Integer> itemIds) {
-	// return getItemLayouFields(attendanceItems.getClass()).map(f -> {
-	// T fieldValue;
-	// AttendanceItemLayout layout =
-	// f.getAnnotation(AttendanceItemLayout.class);
-	//
-	// if (layout.listMaxLength() > 0) {
-	// List<T> listValue = (List<T>) ReflectionUtil.getFieldValue(f,
-	// attendanceItems);
-	// initNewList(f, layout, listValue);
-	// List<ItemValue> result = new ArrayList<>();
-	// for (int x = 0; x < listValue.size(); x++) {
-	// result.addAll(
-	// toItemValues(listValue.get(x), layout == null ? "" : layout.layout() + x,
-	// itemIds, 0));
-	// }
-	// return result;
-	// }
-	// if (layout.isOptional()) {
-	// Optional<T> fieldValueOpt = ((Optional<T>)
-	// ReflectionUtil.getFieldValue(f, attendanceItems));
-	// if (fieldValueOpt != null) {
-	// fieldValue =
-	// fieldValueOpt.orElse(ReflectionUtil.newInstance(getGenericType(f)));
-	// } else {
-	// fieldValue = ReflectionUtil.newInstance(getGenericType(f));
-	// }
-	//
-	// } else {
-	// fieldValue = (T) ReflectionUtil.getFieldValue(f, attendanceItems);
-	// }
-	// if (fieldValue == null) {
-	// fieldValue = ReflectionUtil.newInstance(f.getType());
-	// }
-	// return toItemValues(fieldValue, layout == null ? "" : layout.layout(),
-	// itemIds, 0);
-	// }).flatMap(List::stream).collect(Collectors.toList());
-	// }
-
-	// private static <T extends ConvertibleAttendanceItem, R extends
-	// ConvertibleAttendanceItem> T toConvertibleAttendanceItem(
-	// T object, List<ItemValue> attendanceItems, int layoutIdx) {
-	// AttendanceItemRoot rootAnno = getRootAnnotation(object);
-	// String rootName = getRootName(rootAnno);
-	// if (rootAnno.isContainer()) {
-	// return processContainer(object, attendanceItems);
-	// }
-	//
-	// return mergeToObject(object, attendanceItems, layoutIdx, 0, rootName, "",
-	// false, new ArrayList<>());
-	// }
-
-	// private static <T extends ConvertibleAttendanceItem> List<T>
-	// initNewList(Field f, AttendanceItemLayout layout,
-	// List<T> oldList) {
-	// if (oldList == null) {
-	// oldList = new ArrayList<>();
-	// }
-	// Class<T> listGenericType = getGenericType(f);
-	// int start = (oldList == null || oldList.isEmpty()) ? 0 : oldList.size();
-	// for (int i = start; i < layout.listMaxLength(); i++) {
-	// T newValue = ReflectionUtil.newInstance(listGenericType);
-	// if (!layout.indexField().isEmpty()) {
-	// ReflectionUtil.setFieldValue(getField(layout.indexField(),
-	// listGenericType), newValue, i);
-	// }
-	// oldList.add(newValue);
-	// }
-	// return oldList;
-	// }
-
-	// private static <T extends ConvertibleAttendanceItem, R extends
-	// ConvertibleAttendanceItem> T processContainer(
-	// T object, List<ItemValue> attendanceItems) {
-	// Map<String, Field> fieldMap = toFieldMapByLayout(object);
-	//
-	// groupMapLayout(attendanceItems, 0,
-	// false).entrySet().stream().forEach(group -> {
-	// Field field = fieldMap.get(group.getKey());
-	// if (field != null) {
-	// AttendanceItemLayout layout = getLayoutAnnotation(field);
-	// if (layout.listMaxLength() > 0) {
-	// processListProperty(object, group, field);
-	// } else {
-	// R fieldInstance = toConvertibleAttendanceItem(getInstance(object, field,
-	// layout.isOptional()),
-	// group.getValue(), 1);
-	// ReflectionUtil.setFieldValue(field, object,
-	// layout.isOptional() ? Optional.of(fieldInstance) : fieldInstance);
-	// }
-	// }
-	// });
-	// return object;
-	// }
-
-	// private static <R extends ConvertibleAttendanceItem, T extends
-	// ConvertibleAttendanceItem> R getInstance(T object,
-	// Field field, boolean isOptional) {
-	// if (isOptional) {
-	// Optional<R> optionalR = ReflectionUtil.getFieldValue(field, object);
-	// return optionalR == null ?
-	// ReflectionUtil.newInstance(getGenericType(field)) : optionalR.get();
-	// } else {
-	// R fieldInstance = ReflectionUtil.getFieldValue(field, object);
-	// return fieldInstance == null ?
-	// ReflectionUtil.newInstance(field.getType()) : fieldInstance;
-	// }
-	// }
-
-	// private static <R extends ConvertibleAttendanceItem, T extends
-	// ConvertibleAttendanceItem> void processListProperty(
-	// T object, Entry<String, List<ItemValue>> group, Field field) {
-	// Map<String, List<ItemValue>> listGroup = groupMapLayout(group.getValue(),
-	// 0, true);
-	// // if (!listGroup.isEmpty()) {
-	// AttendanceItemLayout layout = getLayoutAnnotation(field);
-	// List<R> value = ReflectionUtil.getFieldValue(field, object);
-	// // TODO: xu ly for multi index field
-	// initNewList(field, layout, value);
-	// ReflectionUtil.setFieldValue(field, object, getList(value, listGroup,
-	// layout.listMaxLength()));
-	// // }
-	// }
-
-	// private static <R extends ConvertibleAttendanceItem> List<R>
-	// getList(List<R> list,
-	// Map<String, List<ItemValue>> listGroup, int max) {
-	// return IntStream.range(0, max).mapToObj(idx -> {
-	// R oldValue = list.get(idx);
-	// List<ItemValue> values = listGroup.get(String.valueOf(idx));
-	// if (values != null) {
-	// return toConvertibleAttendanceItem(oldValue, values, 1);
-	// }
-	// return oldValue;
-	// }).filter(c -> c != null).collect(Collectors.toList());
-	// }
-	//
-	// private static <T> T mergeToObject(T object, List<ItemValue>
-	// attendanceItems, int layoutIdx, int idx,
-	// String rootName, String extraCondition, boolean needCheckWithIdx,
-	// List<String> subExConditions) {
-	// Map<String, Field> fieldMap = toFieldMapByLayout(object);
-	//
-	// groupMapLayout(attendanceItems, layoutIdx,
-	// false).entrySet().stream().forEach(group -> {
-	// Field field = fieldMap.get(group.getKey());
-	// if (field != null) {
-	// processGroup(object, layoutIdx, field, group.getValue(), rootName, idx,
-	// extraCondition,
-	// needCheckWithIdx, subExConditions);
-	// }
-	// });
-	//
-	// return object;
-	// }
-	//
-	// private static <T> void processGroup(T object, int layoutIdx, Field
-	// field, List<ItemValue> values, String path,
-	// int idx, String extraCondition, boolean checkWithIdx, List<String>
-	// subExConditions) {
-	// AttendanceItemLayout layout = getLayoutAnnotation(field);
-	// if (layout != null) {
-	// String newPathName = StringUtils.join(path, ".",
-	// layout.jpPropertyName());
-	// String newExCondition = getExCondition(extraCondition, object, layout);
-	// subExConditions.addAll(getSubExCondition(extraCondition, object,
-	// layout));
-	// boolean needCheckWIthIdx = checkWithIdx || layout.needCheckIDWithIndex();
-	// if (layout.listMaxLength() > 0) {
-	// validateFieldList(field);
-	// ReflectionUtil.setFieldValue(field, object, processFieldList(field,
-	// object, layout, values, layoutIdx,
-	// getGenericType(field), newPathName, newExCondition, needCheckWIthIdx,
-	// subExConditions));
-	// } else if (isItemValue(field)) {
-	// setFieldItemValue(object, values, field, newPathName, newExCondition,
-	// needCheckWIthIdx, idx,
-	// subExConditions, layout.needCheckIDWithMethod());
-	// } else {
-	// T value = ReflectionUtil.getFieldValue(field, object);
-	// if (value == null) {
-	// ReflectionUtil.setFieldValue(field, object, mergeToClass(field.getType(),
-	// values, layoutIdx + 1,
-	// idx, newPathName, newExCondition, needCheckWIthIdx, subExConditions));
-	// } else {
-	// ReflectionUtil.setFieldValue(field, object, mergeToObject(value, values,
-	// layoutIdx + 1, idx,
-	// newPathName, newExCondition, needCheckWIthIdx, subExConditions));
-	// }
-	// }
-	// }
-	// }
-	//
-	// private static <T> List<T> processFieldList(Field f, T object,
-	// AttendanceItemLayout layout,
-	// List<ItemValue> attendanceItems, int layoutIdx, Class<T> classType,
-	// String pathName, String extraCondition,
-	// boolean needCheckWithIdx, List<String> subExConditions) {
-	// List<T> value = getNotNullListValue(f, object);
-	// Map<String, List<ItemValue>> listGroup = groupMapLayout(attendanceItems,
-	// layoutIdx, true);
-	// String idxFieldName = layout.indexField();
-	// boolean isIndexField = !idxFieldName.isEmpty();
-	// processListToMax(value, layout.listMaxLength(), classType, idxFieldName);
-	// Field idxField = isIndexField ? getField(idxFieldName, classType) : null;
-	// return IntStream.range(0, layout.listMaxLength()).mapToObj(idx -> {
-	// List<ItemValue> values = listGroup.get(String.valueOf(idx));
-	// T v = value.get(idx);
-	// if (isIndexField) {
-	// ReflectionUtil.setFieldValue(idxField, v, idx + 1);
-	// }
-	// if (values != null) {
-	// // TODO: for multiple index (current, not need)
-	// return mergeToObject(v, values, layoutIdx + 1, idx, pathName,
-	// extraCondition, needCheckWithIdx,
-	// subExConditions);
-	// }
-	// return v;
-	// }).collect(Collectors.toList());
-	//
-	// }
-	//
-	// private static <T> void setFieldItemValue(T object, List<ItemValue>
-	// attendanceItems, Field field, String pathName,
-	// String extraCondition, boolean needCheckWithIdx, int idx, List<String>
-	// subExConditions,
-	// String enumSetMethod) {
-	// List<Integer> itemIds = getItemIds(getItemValueAnnotation(field),
-	// pathName, extraCondition, needCheckWithIdx,
-	// idx);
-	// if (!itemIds.isEmpty()) {
-	// Object value = attendanceItems.stream().filter(ivl ->
-	// itemIds.contains(ivl.getItemId())).findFirst()
-	// .orElseThrow(() -> new RuntimeException("Item Id is not
-	// consistent")).value();
-	// ReflectionUtil.setFieldValue(field, object, value);
-	// } else {
-	// subExConditions.stream().forEach(c -> {
-	// List<Integer> subItemIds = getItemIds(getItemValueAnnotation(field),
-	// pathName, c, needCheckWithIdx,
-	// idx);
-	// ItemValue iValue = attendanceItems.stream().filter(ivl ->
-	// subItemIds.contains(ivl.getItemId()))
-	// .findFirst().orElse(null);
-	// if (iValue != null && iValue.value() != null) {
-	// setEnumField(object, enumSetMethod, c);
-	// }
-	// });
-	// }
-	//
-	// }
-	//
-	// private static <T> void setEnumField(T object, String enumSetMethod,
-	// String c) {
-	// try {
-	// Method setEnum = object.getClass().getMethod(enumSetMethod,
-	// String.class);
-	// setEnum.invoke(object, c);
-	// } catch (NoSuchMethodException | SecurityException |
-	// IllegalAccessException | IllegalArgumentException
-	// | InvocationTargetException e) {
-	// e.printStackTrace();
-	// }
-	// }
-	//
-	// private static List<Integer> getItemIds(AttendanceItemValue
-	// itemValueAnno, String pathName, String extraCondition,
-	// boolean needCheckWithIdx, int idx) {
-	// Integer itemId = AttendanceItemIdContainer.getId(getKey(pathName,
-	// extraCondition, needCheckWithIdx, idx));
-	// if (itemId != null && itemId >= 0) {
-	// return Arrays.asList(itemId);
-	// }
-	//
-	// return Collections.emptyList();
-	// }
-	//
-	// private static <T> T mergeToClass(Class<T> classType, List<ItemValue>
-	// attendanceItems, int layoutIdx, int idx,
-	// String pathName, String extraCondition, boolean needCheckWithIdx,
-	// List<String> subExConditions) {
-	// return mergeToObject(ReflectionUtil.newInstance(classType),
-	// attendanceItems, layoutIdx, idx, pathName,
-	// extraCondition, needCheckWithIdx, subExConditions);
-	// }
-	//
-	// private static List<ItemValue> getItemFromField(Object attendanceItems,
-	// String currentLayout, int idx,
-	// String rootName, String extraCondition, boolean needCheckWithIdx,
-	// List<Integer> itemIds,
-	// List<String> newSubExCondition) {
-	//
-	// return getItemLayouFields(attendanceItems.getClass()).map(field -> {
-	// return processProperty(field, attendanceItems, currentLayout, idx,
-	// rootName, extraCondition,
-	// needCheckWithIdx, itemIds, newSubExCondition);
-	// }).flatMap(List::stream).collect(Collectors.toList());
-	// }
-	//
-	// @SuppressWarnings("unchecked")
-	// private static <T> List<ItemValue> processProperty(Field field, Object
-	// attendanceItems, String currentLayout,
-	// int idx, String pathName, String extraCondition, boolean
-	// needCheckWithIdx, List<Integer> itemIds,
-	// List<String> newSubExCondition) {
-	// T value = ReflectionUtil.getFieldValue(field, attendanceItems);
-	// AttendanceItemLayout layout = getLayoutAnnotation(field);
-	// String newPathName = StringUtils.join(pathName, ".",
-	// layout.jpPropertyName());
-	// String newExCondition = getExCondition(extraCondition, attendanceItems,
-	// layout);
-	// newSubExCondition.addAll(getSubExCondition(extraCondition,
-	// attendanceItems, layout));
-	// needCheckWithIdx = needCheckWithIdx || layout.needCheckIDWithIndex();
-	// if (layout.listMaxLength() > 0) {
-	// List<T> values = value == null ? new ArrayList<>() : (List<T>) value;
-	//
-	// if (values.size() < layout.listMaxLength()) {
-	// Class<T> className = getGenericType(field);
-	// Field idxField = layout.indexField().isEmpty() ? null
-	// : getField(layout.indexField(), className);
-	// IntStream.range(values.size(), layout.listMaxLength()).forEach(c -> {
-	// if (!className.equals(Integer.class)) {
-	// T newInstance = ReflectionUtil.newInstance(className);
-	// if (idxField != null) {
-	// ReflectionUtil.setFieldValue(idxField, newInstance, c + 1);
-	// }
-	// values.add(newInstance);
-	// } else {
-	// values.add(null);
-	// }
-	// });
-	// }
-	// return processList(currentLayout, layout.layout(), values, newPathName,
-	// newExCondition, needCheckWithIdx,
-	// itemIds, newSubExCondition);
-	// }
-	// if (value == null) {
-	// if (!field.getType().equals(Integer.class)) {
-	// value = ReflectionUtil.newInstance(field.getType());
-	// }
-	// }
-	// return processOne(currentLayout, field, layout.layout(), value, idx,
-	// newPathName, newExCondition,
-	// needCheckWithIdx, itemIds, newSubExCondition);
-	// }
-
-	// private static <T> List<ItemValue> processOne(String currentLayout, Field
-	// field, String layoutCode, T value,
-	// int idx, String pathName, String extraCondition, boolean
-	// needCheckWithIdx, List<Integer> itemIds,
-	// List<String> newSubExCondition) {
-	// if (isItemValue(field)) {
-	// return newItemValue(value, currentLayout, field, layoutCode, idx,
-	// pathName, extraCondition,
-	// needCheckWithIdx, itemIds, newSubExCondition);
-	// } else {
-	// return getItemFromField(value, mergeLayout(currentLayout, layoutCode),
-	// idx, pathName, extraCondition,
-	// needCheckWithIdx, itemIds, newSubExCondition);
-	// }
-	// }
-	//
-	// private static <T> List<ItemValue> processList(String currentLayout,
-	// String layoutCode, List<T> values,
-	// String pathName, String extraCondition, boolean needCheckWithIdx,
-	// List<Integer> itemIds,
-	// List<String> newSubExCondition) {
-	// return IntStream.range(0, values.size()).mapToObj(idx -> {
-	// return getItemFromField(values.get(idx), mergeLayout(currentLayout,
-	// layoutCode + idx), idx, pathName,
-	// extraCondition, needCheckWithIdx, itemIds, newSubExCondition);
-	// }).flatMap(List::stream).collect(Collectors.toList());
-	// }
-	//
-	// private static <T> List<ItemValue> newItemValue(T value, String
-	// currentLayout, Field field, String layoutCode,
-	// int idx, String pathName, String extraCondition, boolean
-	// needCheckWithIdx, List<Integer> onNeedItemIds,
-	// List<String> newSubExCondition) {
-	// AttendanceItemValue valueType = getItemValueAnnotation(field);
-	// List<Integer> itemIds = getItemIds(valueType, pathName, extraCondition,
-	// needCheckWithIdx, idx);
-	// Map<String, Integer> subItems = newSubExCondition.stream().filter(c ->
-	// !c.equals(extraCondition)).distinct()
-	// .collect(Collectors.toMap(c -> c, c -> {
-	// List<Integer> x = getItemIds(valueType, pathName, c, needCheckWithIdx,
-	// idx);
-	// return x.isEmpty() ? -1 : x.get(0);
-	// }));
-	// List<ItemValue> result = new ArrayList<>();
-	// if (!itemIds.isEmpty()) {
-	// int itemId = itemIds.get(0);
-	//
-	// if (onNeedItemIds.isEmpty() || onNeedItemIds.contains(itemId)) {
-	// Logger.getLogger(AttendanceItemUtil.class)
-	// .info(pathName + " - " + mergeLayout(currentLayout, layoutCode) + " - " +
-	// itemId);
-	// ItemValue itemValue = new ItemValue(valueType.type(),
-	// mergeLayout(currentLayout, layoutCode), itemId);
-	// itemValue.value(value);
-	// result.add(itemValue);
-	// }
-	// }
-	// result.addAll(subItems.entrySet().stream().filter(c -> c.getValue() >=
-	// 0).map(c -> {
-	// if (c.getValue() != null && (onNeedItemIds.isEmpty() ||
-	// onNeedItemIds.contains(c.getValue()))) {
-	// Logger.getLogger(AttendanceItemUtil.class)
-	// .info(pathName + " - " + mergeLayout(currentLayout, layoutCode) + " - " +
-	// c.getValue());
-	// return new ItemValue(valueType.type(), mergeLayout(currentLayout,
-	// layoutCode + c.getKey()),
-	// c.getValue());
-	// }
-	// return null;
-	// }).filter(c -> c != null).collect(Collectors.toList()));
-	// return result.stream().distinct().collect(Collectors.toList());
-	// }
-	//
-	// private static Map<String, List<ItemValue>>
-	// groupMapLayout(List<ItemValue> attendanceItems, int layoutIdx,
-	// boolean isList) {
-	// return attendanceItems.stream().collect(Collectors.groupingBy(c -> {
-	// return getCurrentLayout(layoutIdx, c.getLayoutCode(), isList);
-	// }, Collectors.toList()));
-	// }
-	//
-	// private static <T> Map<String, Field> toFieldMapByLayout(T object) {
-	// return getItemLayouFields(object.getClass())
-	// .collect(Collectors.toMap(f -> getLayoutAnnotation(f).layout(), f -> f));
-	// }
-	//
-	// private static AttendanceItemRoot getRootAnnotation(Object object) {
-	// return object.getClass().getAnnotation(AttendanceItemRoot.class);
-	// }
-	//
-	// private static boolean isItemValue(Field field) {
-	// return field.isAnnotationPresent(AttendanceItemValue.class);
-	// }
-	//
-	// private static String getCurrentLayout(int layoutIdx, String text,
-	// boolean isList) {
-	// String[] layouts = text.split("_");
-	// if (layouts.length <= layoutIdx) {
-	// return "";
-	// }
-	// String firstlayout = layouts[layoutIdx];
-	// if (isList) {
-	// String notIdx = firstlayout.replaceAll("[0-9]+$", "");
-	// return firstlayout.replaceAll(notIdx, "");
-	// }
-	// return firstlayout.replaceAll("[0-9]+$", "");
-	// }
-	//
-	// private static void validateFieldList(Field field) {
-	// if (!isFieldList(field)) {
-	// throw new RuntimeException("This Field is not Collection: " +
-	// field.getName());
-	// }
-	// }
-	//
-	// private static <T> List<String> getSubExCondition(String exCondition, T
-	// object, AttendanceItemLayout layout) {
-	// List<String> fieldExCondition = getSubExConditionField(object, layout);
-	// if (fieldExCondition != null) {
-	// return fieldExCondition.stream().map(c -> exCondition.isEmpty() ? c :
-	// StringUtils.join(exCondition, "-", c))
-	// .collect(Collectors.toList());
-	// }
-	// return new ArrayList<>();
-	// }
-	//
-	// private static String getRootName(AttendanceItemRoot rootAnno) {
-	// return rootAnno == null ? "" : rootAnno.rootName();
-	// }
-	//
-	// private static <T> List<String> getSubExConditionField(T object,
-	// AttendanceItemLayout layout) {
-	// if (!layout.methodForEnumValues().isEmpty()) {
-	// return ReflectionUtil.invoke(object.getClass(), object,
-	// layout.methodForEnumValues());
-	// }
-	//
-	// return null;
-	// }
-	//
-	// private static <T> FieldsWorkerStream getItemLayouFields(Class<T>
-	// classType) {
-	// return ReflectionUtil.getStreamOfFieldsAnnotated(classType,
-	// Condition.ALL, AttendanceItemLayout.class);
-	// }
-	//
-	// private static boolean isFieldList(Field field) {
-	// return List.class.isAssignableFrom(field.getType());
-	// }
-	//
-	// private static <T> List<T> getNotNullListValue(Field f, T object) {
-	// List<T> value = ReflectionUtil.getFieldValue(f, object);
-	// if (value == null) {
-	// value = new ArrayList<>();
-	// }
-	// return value;
-	// }
 }

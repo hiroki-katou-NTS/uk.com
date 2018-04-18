@@ -129,7 +129,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		// 振出
 		halfAtrs.add(7);
 		// 年休
-		halfAtrs.add(8);
+		halfAtrs.add(2);
 		// 出勤
 		halfAtrs.add(0);
 		//特別休暇

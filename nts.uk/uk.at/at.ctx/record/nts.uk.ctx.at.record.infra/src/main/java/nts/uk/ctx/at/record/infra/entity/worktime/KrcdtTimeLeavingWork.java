@@ -22,7 +22,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -97,18 +97,18 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 
 	public TimeLeavingWork toDomain() {
 		TimeLeavingWork domain = new TimeLeavingWork(new WorkNo(this.krcdtTimeLeavingWorkPK.workNo),
-				Optional.of(new TimeActualStamp(
+				new TimeActualStamp(
 						getWorkStamp(this.attendanceActualRoudingTime, this.attendanceActualTime, 
 								this.attendanceActualPlaceCode, this.attendanceActualSourceInfo),
 						getWorkStamp(this.attendanceStampRoudingTime, this.attendanceStampTime,
 								this.attendanceStampPlaceCode, this.attendanceStampSourceInfo),
-						this.attendanceNumberStamp)),
-				Optional.of(new TimeActualStamp(
+						this.attendanceNumberStamp),
+				new TimeActualStamp(
 						getWorkStamp(this.leaveWorkActualRoundingTime, this.leaveWorkActualTime,
 								this.leaveWorkActualPlaceCode, this.leaveActualSourceInfo),
 						getWorkStamp(this.leaveWorkStampRoundingTime, this.leaveWorkStampTime,
 								this.leaveWorkStampPlaceCode, this.leaveWorkStampSourceInfo),
-						this.leaveWorkNumberStamp)));
+						this.leaveWorkNumberStamp));
 		return domain;
 	}
 

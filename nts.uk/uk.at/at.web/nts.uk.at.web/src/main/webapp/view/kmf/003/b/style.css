@@ -10,6 +10,7 @@ tr {
 
 #contents-area {
 	padding: 17px 32px;
+	height: auto !important;
 }
 
 .cal-panel {
