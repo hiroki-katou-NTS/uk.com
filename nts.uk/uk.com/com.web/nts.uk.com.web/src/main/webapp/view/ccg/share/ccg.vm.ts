@@ -574,17 +574,18 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
 
                 /** Common properties */
-                self.showEmployeeSelection = options.showEmployeeSelection;
+                self.showEmployeeSelection = nts.uk.util.isNullOrUndefined(options.showEmployeeSelection) ? false : options.showEmployeeSelection;
                 self.systemType = options.systemType;
-                self.showQuickSearchTab = options.showQuickSearchTab;
-                self.showAdvancedSearchTab = options.showAdvancedSearchTab;
+                self.showQuickSearchTab = nts.uk.util.isNullOrUndefined(options.showQuickSearchTab) ? true : options.showQuickSearchTab;
+                self.showAdvancedSearchTab = nts.uk.util.isNullOrUndefined(options.showAdvancedSearchTab) ? false : options.showAdvancedSearchTab;
                 // showBaseDate and showPeriod can not hide at the same time
-                self.showBaseDate = !options.showBaseDate && !options.showPeriod ? true : options.showBaseDate;
-                self.showClosure = options.showClosure;
-                self.showAllClosure = options.showAllClosure;
-                self.showPeriod = options.showPeriod;
+                const isBaseDateAndPeriodHidden = !options.showBaseDate && !options.showPeriod;
+                self.showBaseDate = nts.uk.util.isNullOrUndefined(options.showBaseDate) ? true : (isBaseDateAndPeriodHidden ? true : options.showBaseDate);
+                self.showClosure = nts.uk.util.isNullOrUndefined(options.showClosure) ? false : options.showClosure;
+                self.showAllClosure = nts.uk.util.isNullOrUndefined(options.showAllClosure) ? false : options.showAllClosure;
+                self.showPeriod = nts.uk.util.isNullOrUndefined(options.showPeriod) ? false : options.showPeriod;
                 // if ShowPeriod = false then period accuracy must be false too. 
-                self.showPeriodYM = self.showPeriod ? options.periodFormatYM : false;
+                self.showPeriodYM = nts.uk.util.isNullOrUndefined(self.showPeriod) ? false : (self.showPeriod ? options.periodFormatYM : false);
 
                 /** Required parameter */
                 self.baseDate(moment.utc(options.baseDate));
@@ -598,21 +599,21 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.selectedRetirement(options.retirement);
 
                 /** Quick search tab options */
-                self.showAllReferableEmployee = options.showAllReferableEmployee;
+                self.showAllReferableEmployee = nts.uk.util.isNullOrUndefined(options.showAllReferableEmployee) ? true : options.showAllReferableEmployee;
                 self.showOnlyMe = true;
-                self.showSameWorkplace = options.showSameWorkplace;
-                self.showSameWorkplaceAndChild = options.showSameWorkplaceAndChild;
+                self.showSameWorkplace = nts.uk.util.isNullOrUndefined(options.showSameWorkplace) ? true : options.showSameWorkplace;
+                self.showSameWorkplaceAndChild = nts.uk.util.isNullOrUndefined(options.showSameWorkplaceAndChild) ? true : options.showSameWorkplaceAndChild;
 
                 /** Advanced search properties */
-                self.showEmployment = options.showEmployment;
-                self.showWorkplace = options.showWorkplace;
-                self.showClassification = options.showClassification;
-                self.showJobTitle = options.showJobTitle;
-                self.showWorktype = options.showWorktype;
-                self.isMultiple = options.isMutipleCheck;
+                self.showEmployment = nts.uk.util.isNullOrUndefined(options.showEmployment) ? true : options.showEmployment;
+                self.showWorkplace = nts.uk.util.isNullOrUndefined(options.showWorkplace) ? true : options.showWorkplace;
+                self.showClassification = nts.uk.util.isNullOrUndefined(options.showClassification) ? true : options.showClassification;
+                self.showJobTitle = nts.uk.util.isNullOrUndefined(options.showJobTitle) ? true : options.showJobTitle;
+                self.showWorktype = nts.uk.util.isNullOrUndefined(options.showWorktype) ? true : options.showWorktype;
+                self.isMultiple = nts.uk.util.isNullOrUndefined(options.isMutipleCheck) ? true : options.isMutipleCheck;
 
                 /** Optional properties */
-                self.isInDialog = options.isInDialog ? options.isInDialog : false;
+                self.isInDialog = nts.uk.util.isNullOrUndefined(options.isInDialog) ? false : options.isInDialog;
 
                 // return data function
                 self.returnDataFromCcg001 = options.returnDataFromCcg001;
@@ -635,6 +636,11 @@ module nts.uk.com.view.ccg.share.ccg {
                 } else {
                     const notIncluded = headerHeight + functionAreaHeight + (sidebarHeaderHeight ? sidebarHeaderHeight : 0) + buffer;
                     componentHeight = window.innerHeight - notIncluded;
+                }
+
+                const minHeight = 450;
+                if (componentHeight < minHeight) {
+                    componentHeight = minHeight;
                 }
 
                 // set component height
@@ -884,7 +890,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     // Fix component width if screen width is smaller than component
                     const componentWidth = window.innerWidth - $('#hor-scroll-button-hide').offset().left;
                     if (componentWidth <= $('#ccg001-tab-content-2').outerWidth()) {
-                        const margin = 30;
+                        const margin = 20;
                         // fix width and show scrollbar
                         $('.tab-content-2.height-maximum').outerWidth(componentWidth - margin);
                         $('.tab-content-2.height-maximum').css('overflow-x', 'auto');
@@ -978,7 +984,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.queryParam.retireEnd = self.statusPeriodEnd().format(CcgDateFormat.DEFAULT_FORMAT);
 
                 // reload advanced search tab.
-                self.reloadDataSearch();
+                self.setComponentOptions();
                 $.when(self.loadEmploymentPart(),
                     self.loadClassificationPart(),
                     self.loadJobTitlePart(),
@@ -1439,64 +1445,61 @@ module nts.uk.com.view.ccg.share.ccg {
             
 
             /**
-             * function reload page (init tab 2)
+             * Set component options (for advanced search tab)
              */
-            public reloadDataSearch(): void {
+            public setComponentOptions(): void {
                 var self = this;
-                if (self.showAdvancedSearchTab) {
-                    self.employments = {
-                        isShowAlreadySet: false,
-                        isMultiSelect: true,
-                        isMultipleUse: true,
-                        selectType: SelectType.SELECT_ALL,
-                        listType: ListType.EMPLOYMENT,
-                        selectedCode: self.selectedCodeEmployment,
-                        isDialog: true,
-                        isShowNoSelectRow: false,
-                        maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYMENT,
-                        selectedClosureId: self.showClosure ? self.selectedClosure : undefined,
-                        subscriptions: self.employmentSubscriptions
-                    };
+                self.employments = {
+                    isShowAlreadySet: false,
+                    isMultiSelect: true,
+                    isMultipleUse: true,
+                    selectType: SelectType.SELECT_ALL,
+                    listType: ListType.EMPLOYMENT,
+                    selectedCode: self.selectedCodeEmployment,
+                    isDialog: true,
+                    isShowNoSelectRow: false,
+                    maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYMENT,
+                    selectedClosureId: self.showClosure ? self.selectedClosure : undefined,
+                    subscriptions: self.employmentSubscriptions
+                };
 
-                    self.classifications = {
-                        isShowAlreadySet: false,
-                        isMultiSelect: true,
-                        isMultipleUse: true,
-                        listType: ListType.Classification,
-                        selectType: SelectType.SELECT_ALL,
-                        selectedCode: self.selectedCodeClassification,
-                        isDialog: true,
-                        isShowNoSelectRow: false,
-                        maxRows: ConfigCCGKCP.MAX_ROWS_CLASSIFICATION
-                    }
+                self.classifications = {
+                    isShowAlreadySet: false,
+                    isMultiSelect: true,
+                    isMultipleUse: true,
+                    listType: ListType.Classification,
+                    selectType: SelectType.SELECT_ALL,
+                    selectedCode: self.selectedCodeClassification,
+                    isDialog: true,
+                    isShowNoSelectRow: false,
+                    maxRows: ConfigCCGKCP.MAX_ROWS_CLASSIFICATION
+                }
 
-                    self.jobtitles = {
-                        isShowAlreadySet: false,
-                        isMultiSelect: true,
-                        isMultipleUse: true,
-                        listType: ListType.JOB_TITLE,
-                        selectType: SelectType.SELECT_ALL,
-                        selectedCode: self.selectedCodeJobtitle,
-                        isDialog: true,
-                        baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
-                        isShowNoSelectRow: false,
-                        maxRows: ConfigCCGKCP.MAX_ROWS_JOBTITLE
-                    }
+                self.jobtitles = {
+                    isShowAlreadySet: false,
+                    isMultiSelect: true,
+                    isMultipleUse: true,
+                    listType: ListType.JOB_TITLE,
+                    selectType: SelectType.SELECT_ALL,
+                    selectedCode: self.selectedCodeJobtitle,
+                    isDialog: true,
+                    baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
+                    isShowNoSelectRow: false,
+                    maxRows: ConfigCCGKCP.MAX_ROWS_JOBTITLE
+                }
 
-                    self.workplaces = {
-                        isShowAlreadySet: false,
-                        systemType: self.systemType,
-                        isMultipleUse: true,
-                        isMultiSelect: true,
-                        treeType: TreeType.WORK_PLACE,
-                        selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                        isShowSelectButton: true,
-                        selectedWorkplaceId: self.selectedCodeWorkplace,
-                        baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
-                        maxRows: ConfigCCGKCP.MAX_ROWS_WORKPLACE,
-                        isDialog: true
-                    }
-
+                self.workplaces = {
+                    isShowAlreadySet: false,
+                    systemType: self.systemType,
+                    isMultipleUse: true,
+                    isMultiSelect: true,
+                    treeType: TreeType.WORK_PLACE,
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    isShowSelectButton: true,
+                    selectedWorkplaceId: self.selectedCodeWorkplace,
+                    baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
+                    maxRows: ConfigCCGKCP.MAX_ROWS_WORKPLACE,
+                    isDialog: true
                 }
             }
         }
