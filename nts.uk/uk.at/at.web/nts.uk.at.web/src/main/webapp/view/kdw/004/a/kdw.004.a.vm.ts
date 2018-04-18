@@ -44,7 +44,14 @@ module nts.uk.at.view.kdw004.a.viewmodel {
             var self = this;
             self.selectedClosure.subscribe((val) => {
                 if (val) {
-                    service.getDateRange(val).done((dateRange) => {
+                  let currentYearMonth;
+                  let closures = self.lstClosure();
+                   closures.forEach(x=>{
+                       if(x.closureId==val){
+                        currentYearMonth =  x.currentYearMonth;  
+                       }
+                   });
+                    service.getDateRange(val,currentYearMonth).done((dateRange) => {
                         self.datePeriod({ startDate: moment(dateRange.startDate).format("YYYY/MM/DD"), endDate: moment(dateRange.endDate).format("YYYY/MM/DD") });
                         //disable tabIndex button date range
                         document.getElementsByClassName("ntsDateRangeButton")[0].tabIndex = -1;
@@ -110,7 +117,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
             lstEmpId.push(employeeId);
             let initParam = new DPCorrectionInitParam(DPCorrectionScreenMode.APPROVAL, lstEmpId, false, false, self.selectedClosure());
             initParam.transitionDesScreen = '/view/kdw/004/a/index.xhtml';
-            let extractionParam = new DPCorrectionExtractionParam(DPCorrectionDisplayFormat.ErrorAlarm, self.datePeriod().startDate, self.datePeriod().endDate, employeeId);
+            let extractionParam = new DPCorrectionExtractionParam(DPCorrectionDisplayFormat.INDIVIDUAl, self.datePeriod().startDate, self.datePeriod().endDate, employeeId);
             extractionParam.individualTarget = employeeId;
             nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
         }
@@ -240,6 +247,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
     export class Closure {
         closureId: number;
         closureName: string;
+        currentYearMonth: number;
     }
 
     export class ApprovalEmployee {
