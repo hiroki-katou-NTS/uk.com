@@ -1,6 +1,5 @@
 package nts.uk.ctx.pereg.app.command.person.info.item;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -11,7 +10,6 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.app.command.person.info.category.CheckNameSpace;
-import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.info.item.SystemRequired;
@@ -31,37 +29,12 @@ public class UpdateItemChangeCommandHandler extends CommandHandler<UpdateItemCha
 	protected void handle(CommandHandlerContext<UpdateItemChangeCommand> context) {
 		UpdateItemChangeCommand command = context.getCommand();
 		String itemName = command.getItemName();
-		if(CheckNameSpace.checkName(itemName)){
-			throw new BusinessException("Msg_928");
-		}
 		
 		PersonInfoItemDefinition itemDef = this.pernfoItemDefRep
 				.getPerInfoItemDefById(command.getId(), AppContexts.user().contractCode()).get();
-
-		if (!this.pernfoItemDefRep.checkItemNameIsUnique(itemDef.getPerInfoCategoryId(), itemName,
-				itemDef.getPerInfoItemDefId())) {
-			throw new BusinessException("Msg_358");
-		}
-
-		List<Selection> selection = new ArrayList<>();
-		if (command.getDataType() == 6) {
-			String selectionItemId = command.getSelectionItemId();
-			GeneralDate today = GeneralDate.today();
-			String companyId = AppContexts.user().companyId();
-			if (command.getPersonEmployeeType() == PersonEmployeeType.PERSON.value) {
-
-				selection = this.selectionRepo.getAllSelectionByHistoryId(companyId, selectionItemId, today, 0);
-
-			} else if (command.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE.value) {
-
-				selection = this.selectionRepo.getAllSelectionByHistoryId(companyId, selectionItemId, today, 1);
-			}
-			if (selection == null || selection.size() == 0) {
-
-				throw new BusinessException("Msg_587");
-
-			}
-		}
+		
+		validateInput(itemName, itemDef, command);
+		
 		PersonInfoItemDefinition itemDefDomain;
 		if (itemDef.getSystemRequired().equals(SystemRequired.REQUIRED)) {
 			itemDefDomain = PersonInfoItemDefinition.createFromEntity(itemDef.getPerInfoItemDefId(),
@@ -77,6 +50,28 @@ public class UpdateItemChangeCommandHandler extends CommandHandler<UpdateItemCha
 		}
 
 		this.pernfoItemDefRep.updatePerInfoItemDef(itemDefDomain);
+	}
+	
+	private void validateInput(String itemName, PersonInfoItemDefinition itemDef, UpdateItemChangeCommand command) {
+		if (CheckNameSpace.checkName(itemName)) {
+			throw new BusinessException("Msg_928");
+		}
+
+		if (!this.pernfoItemDefRep.checkItemNameIsUnique(itemDef.getPerInfoCategoryId(), itemName,
+				itemDef.getPerInfoItemDefId())) {
+			throw new BusinessException("Msg_358");
+		}
+
+		if (command.getDataType() == 6) {
+			List<Selection> selection = this.selectionRepo.getAllSelectionByCompanyId(
+					AppContexts.user().zeroCompanyIdInContract(), command.getSelectionItemId(), GeneralDate.today());
+
+			if (selection == null || selection.size() == 0) {
+
+				throw new BusinessException("Msg_587");
+
+			}
+		}
 	}
 	
 }

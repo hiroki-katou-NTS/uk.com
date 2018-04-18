@@ -49,12 +49,12 @@ public class HolidaySixProcessImpl implements HolidaySixProcess{
 		for(CaculationTime breakTime : breakTimeInputs){
 			for(Map.Entry<Integer,TimeWithCalculationImport> entry : holidayWorkCal.entrySet()){
 					if(breakTime.getFrameNo() == entry.getKey()){
-						if(breakTime.getApplicationTime() != null && breakTime.getApplicationTime() != entry.getValue().getCalTime()){
+						if(breakTime.getApplicationTime() != null && !breakTime.getApplicationTime().equals(entry.getValue().getCalTime())){
 							breakTime.setErrorCode(3); // 色定義名：計算値
 						}
-						if(entry.getValue().getCalTime()!= null && entry.getValue().getCalTime() == 0){
+						if(entry.getValue().getCalTime() != null && entry.getValue().getCalTime() == 0){
 							continue;
-						}else if(entry.getValue().getCalTime()!= null && entry.getValue().getCalTime() > 0){
+						}else if(entry.getValue().getCalTime() != null && entry.getValue().getCalTime() > 0){
 							// 03-01_事前申請超過チェック
 							OvertimeCheckResult overtimeCheckResult = this.holidayThreeProcess.preApplicationExceededCheck(companyID,
 									appDate, inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),AttendanceType.BREAKTIME.value, convert(breakTime));
@@ -71,7 +71,7 @@ public class HolidaySixProcessImpl implements HolidaySixProcess{
 	}
 	private List<HolidayWorkInput> convert(CaculationTime caculationTime){
 	List<HolidayWorkInput> holidayInputs = new ArrayList<>();
-		if(caculationTime .getApplicationTime() != null){
+		if(caculationTime.getApplicationTime() != null){
 			HolidayWorkInput holidayInput = HolidayWorkInput.createSimpleFromJavaType(caculationTime.getCompanyID(),
 					caculationTime.getAppID(),
 					caculationTime.getAttendanceID(), 
@@ -122,6 +122,33 @@ public class HolidaySixProcessImpl implements HolidaySixProcess{
 			}
 		}
 		return holidayWorks;
+	}
+	@Override
+	public List<CaculationTime> checkDisplayColorForApprover(List<CaculationTime> breakTimeInputs,
+			Map<Integer, TimeWithCalculationImport> holidayWorkCal, int prePostAtr, GeneralDateTime inputDate,
+			GeneralDate appDate, int appType, String employeeID, String companyID, String siftCD) {
+		for(CaculationTime breakTime : breakTimeInputs){
+			for(Map.Entry<Integer,TimeWithCalculationImport> entry : holidayWorkCal.entrySet()){
+					if(breakTime.getFrameNo() == entry.getKey()){
+						if(breakTime.getApplicationTime() != null && !breakTime.getApplicationTime().equals(entry.getValue().getCalTime())){
+							breakTime.setErrorCode(3); // 色定義名：計算値
+						}
+						if(entry.getValue().getCalTime() != null && entry.getValue().getCalTime() == 0){
+							continue;
+						}else if(entry.getValue().getCalTime() != null && entry.getValue().getCalTime() > 0){
+							// 03-01_事前申請超過チェック
+							OvertimeCheckResult overtimeCheckResult = this.holidayThreeProcess.preApplicationExceededCheck(companyID,
+									appDate, inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),AttendanceType.BREAKTIME.value, convert(breakTime));
+							if(overtimeCheckResult.getErrorCode() != 0){
+								breakTime.setErrorCode(overtimeCheckResult.getErrorCode());
+							}
+							// 03-02-a_実績超過チェック（承認者）
+							breakTime = this.holidayThreeProcess.checkCaculationActualExcessForApprover(prePostAtr, appType, employeeID, companyID, appDate, breakTime, siftCD,entry.getValue().getCalTime());
+						}
+					}
+			}
+		}
+		return breakTimeInputs;
 	}
 
 }

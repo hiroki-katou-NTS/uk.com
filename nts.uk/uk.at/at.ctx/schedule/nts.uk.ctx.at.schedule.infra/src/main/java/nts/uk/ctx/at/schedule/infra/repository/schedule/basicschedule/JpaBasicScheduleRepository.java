@@ -108,6 +108,9 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	@Override
 	public void changeWorkTypeTime(String sId, GeneralDate date, String workTypeCode, String workTimeCode) {
 		Optional<KscdtBasicSchedule> optionalEntity = this.findById(sId, date);
+		if(!optionalEntity.isPresent()) {
+			return;
+		}
 		KscdtBasicSchedule schedule = optionalEntity.get();
 		if(workTypeCode != null) {
 			schedule.workTypeCode = workTypeCode;	

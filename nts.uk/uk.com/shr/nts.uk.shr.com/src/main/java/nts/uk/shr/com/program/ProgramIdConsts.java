@@ -93,6 +93,8 @@ public class ProgramIdConsts {
 
 	public static final String KMK015A = "KMK015A";
 	
+	public static final String KMK015B = "KMK015B";
+	
 	public static final String KML001A = "KML001A";
 
 	public static final String KML001B = "KML001B";
@@ -741,6 +743,12 @@ public class ProgramIdConsts {
 	public static final String CMF002X = "CMF002X";
 	public static final String CMF002Y = "CMF002Y";
 	public static final String CMF002V2 = "CMF002V2";
+
+	/**
+	 * CMM053
+	 */
+	public static final String CMM053A = "CMM053A";
+	public static final String CMM053B = "CMM053B";
 
 
 }

@@ -122,19 +122,19 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 			if(findStartEndTimeReflect.isCountReflect1Atr()) {
 				//開始時刻の反映
 				TimeReflectParameter startTime = new TimeReflectParameter(para.getEmployeeId(), para.getDateInfo(), startEndTimeData.getStart1(), 1, true);
-				scheWorkUpdate.updateReflectStartEndTime(startTime);
+				scheWorkUpdate.updateRecordStartEndTime(startTime);
 				//終了時刻の反映
 				TimeReflectParameter endTime = new TimeReflectParameter(para.getEmployeeId(), para.getDateInfo(), startEndTimeData.getEnd1(), 1, false);
-				scheWorkUpdate.updateReflectStartEndTime(endTime);
+				scheWorkUpdate.updateRecordStartEndTime(endTime);
 			}
 			//２回勤務反映区分(output)をチェックする
 			if(findStartEndTimeReflect.isCountReflect2Atr()) {
 				//開始時刻２の反映
 				TimeReflectParameter startTime = new TimeReflectParameter(para.getEmployeeId(), para.getDateInfo(), startEndTimeData.getStart2(), 2, true);
-				scheWorkUpdate.updateReflectStartEndTime(startTime);
+				scheWorkUpdate.updateRecordStartEndTime(startTime);
 				//終了時刻２の反映
 				TimeReflectParameter endTime = new TimeReflectParameter(para.getEmployeeId(), para.getDateInfo(), startEndTimeData.getEnd2(), 2, false);
-				scheWorkUpdate.updateReflectStartEndTime(endTime);
+				scheWorkUpdate.updateRecordStartEndTime(endTime);
 			}
 		} else {
 			//１回勤務反映区分(output)をチェックする
@@ -142,12 +142,12 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 				//開始時刻を反映できるかチェックする
 				if(scheStartEndTimeReflect.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 1, timeTypeData.getWorkTypeCode(), true)) {
 					TimeReflectParameter startTime = new TimeReflectParameter(para.getEmployeeId(), para.getDateInfo(), startEndTimeData.getStart1(), 1, true);
-					scheWorkUpdate.updateReflectStartEndTime(startTime);
+					scheWorkUpdate.updateRecordStartEndTime(startTime);
 				}
 				//終了時刻を反映できるかチェックする
 				if(scheStartEndTimeReflect.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 1, timeTypeData.getWorkTypeCode(), false)) {
 					TimeReflectParameter endTime = new TimeReflectParameter(para.getEmployeeId(), para.getDateInfo(), startEndTimeData.getEnd1(), 1, false);
-					scheWorkUpdate.updateReflectStartEndTime(endTime);
+					scheWorkUpdate.updateRecordStartEndTime(endTime);
 				}
 			}
 			//２回勤務反映区分(output)をチェックする
@@ -155,12 +155,12 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 				//開始時刻2を反映できるかチェックする
 				if(scheStartEndTimeReflect.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 2, timeTypeData.getWorkTypeCode(), true)) {
 					TimeReflectParameter startTime = new TimeReflectParameter(para.getEmployeeId(), para.getDateInfo(), startEndTimeData.getStart2(), 2, true);
-					scheWorkUpdate.updateReflectStartEndTime(startTime);
+					scheWorkUpdate.updateRecordStartEndTime(startTime);
 				}
 				//終了時刻を反映できるかチェックする
 				if(scheStartEndTimeReflect.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 2, timeTypeData.getWorkTypeCode(), false)) {
 					TimeReflectParameter endTime = new TimeReflectParameter(para.getEmployeeId(), para.getDateInfo(), startEndTimeData.getEnd2(), 2, false);
-					scheWorkUpdate.updateReflectStartEndTime(endTime);
+					scheWorkUpdate.updateRecordStartEndTime(endTime);
 				}
 			}
 		}

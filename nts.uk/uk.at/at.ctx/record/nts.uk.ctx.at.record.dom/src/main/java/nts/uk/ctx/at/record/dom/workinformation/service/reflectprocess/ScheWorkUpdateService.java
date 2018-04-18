@@ -20,12 +20,12 @@ public interface ScheWorkUpdateService {
 	 * 予定時刻の反映
 	 * @param data
 	 */
-	public void updateStartTimeOfReflect(TimeReflectParameter data);
+	public void updateScheStartEndTime(TimeReflectPara data);
 	/**
 	 * 開始時刻の反映
 	 * @param data
 	 */
-	public void updateReflectStartEndTime(TimeReflectParameter para);
+	public void updateRecordStartEndTime(TimeReflectParameter para);
 	/**
 	 * 残業時間の反映
 	 * @param employeeId

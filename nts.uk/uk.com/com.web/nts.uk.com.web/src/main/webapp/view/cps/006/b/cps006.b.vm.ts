@@ -277,6 +277,12 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     return getText('Enum_DataTypeValue_SELECTION_BUTTON');
                 case 9:
                     return getText('Enum_DataTypeValue_READONLY');
+                case 10:
+                    return getText('Enum_DataTypeValue_RELATE_CATEGORY');
+                case 11:
+                    return getText('Enum_DataTypeValue_NUMBERIC_BUTTON');
+                case 12:
+                    return getText('Enum_DataTypeValue_READONLY_BUTTON');                     
             }
 
 
@@ -376,6 +382,21 @@ module nts.uk.com.view.cps006.b.viewmodel {
             return self.currentItem().itemTypeState.itemType;
 
         }
+        
+        
+    selectionType() {
+        let self = this;
+        if (self.itemType() === 2 && self.dataType() === 6) {
+            if(self.currentItem().itemTypeState.dataTypeState.referenceType === "CODE_NAME"){
+                return 2;
+            }
+        }else{
+            
+             return 1;
+        }
+        
+    }
+
         
         displayB2_48() {
             let self = this;
@@ -559,6 +580,8 @@ module nts.uk.com.view.cps006.b.viewmodel {
         }
 
     }
+    
+
 
 
 
