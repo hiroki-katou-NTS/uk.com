@@ -31,18 +31,26 @@ module nts.uk.com.view.cps017.a.viewmodel {
         checkCreateaaa: KnockoutObservable<boolean>;
         closeUp: KnockoutObservable<boolean> = ko.observable(false);
         isDialog: KnockoutObservable<boolean> = ko.observable(false);
-        //hoatt
+        
         selHistId: KnockoutObservable<string> = ko.observable('');
+        isGroupManager : KnockoutObservable<boolean>;
+        
+        // status of function-button
+        enableRegister: KnockoutObservable<boolean> = ko.observable(false);
+        enableRemove: KnockoutObservable<boolean> = ko.observable(false);
+        enableOpenDialogB: KnockoutObservable<boolean> = ko.observable(false);
+        enableCreateNew: KnockoutObservable<boolean> = ko.observable(false);
+        showRefecToAll: KnockoutObservable<boolean> = ko.observable(true);
+        
+        // status of history-function-button
+        enableAddUpdateHist: KnockoutObservable<boolean> = ko.observable(false);
         enableDelHist: KnockoutObservable<boolean> = ko.observable(false);
-        enableSelName: KnockoutObservable<boolean> = ko.observable(true);
-        enDisDelSelec: KnockoutObservable<boolean> = ko.observable(false);
-        revDisSel01: KnockoutObservable<boolean> = ko.observable(false);
-        revDisSel02: KnockoutObservable<boolean> = ko.observable(false);
-        revDisSel03: KnockoutObservable<boolean> = ko.observable(false);
-        revDisSel04: KnockoutObservable<boolean> = ko.observable(false);
-        disbleAdUpHist: KnockoutObservable<boolean> = ko.observable(true);
-        selectionCd: KnockoutObservable<boolean> = ko.observable(true);
-        refecToAll: KnockoutObservable<boolean> = ko.observable(true);
+        
+        // status of selection-name, selection-code
+        enableSelectionCd: KnockoutObservable<boolean> = ko.observable(true);
+        enableSelectionName: KnockoutObservable<boolean> = ko.observable(true);
+        
+        // constraints
         constraints: KnockoutObservable<any> = ko.observable();
 
         constructor() {
@@ -52,7 +60,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 historySelection: HistorySelection = self.historySelection(),
                 listHistorySelection: Array<HistorySelection> = self.listHistorySelection(),
                 selection: Selection = self.selection();
-
+            self.isGroupManager = ko.observable(false);
             //check insert/update
             self.checkCreate = ko.observable(true);
             self.checkCreateaaa = ko.observable(true);
@@ -61,177 +69,125 @@ module nts.uk.com.view.cps017.a.viewmodel {
             perInfoSelectionItem.selectionItemId.subscribe(x => {
                 if (x) {
 
-                    let selectedObject: ISelectionItem = _.find(self.listItems(), (item) => {
+                    let selectedObject: ISelectionItem1 = _.find(self.listItems(), (item) => {
                         return item.selectionItemId == x;
                     });
 
                     if (selectedObject != undefined) {
+                        
                         perInfoSelectionItem.selectionItemName(selectedObject.selectionItemName);
-                        perInfoSelectionItem.selectionCodeCharacter(selectedObject.formatSelection.selectionCodeCharacter);
+                        perInfoSelectionItem.selectionCodeCharacter(selectedObject.characterType);
                         perInfoSelectionItem.selectionItemClassification(selectedObject.selectionItemClassification);
-                        self.constraints.selectionCode = selectedObject.formatSelection.selectionCode;
-                        self.constraints.selectionName = selectedObject.formatSelection.selectionName;
-                        self.constraints.selectionExternalCode = selectedObject.formatSelection.selectionExternalCode;
+                        
+                        self.constraints.selectionCode = selectedObject.codeLength;
+                        self.constraints.selectionName = selectedObject.nameLength;
+                        self.constraints.selectionExternalCode = selectedObject.extraCodeLength;
+                        
                         let constraint = __viewContext.primitiveValueConstraints;
+                        
                         writeConstraint("SelectionCdNumeric", {
                             charType: constraint.SelectionCdNumeric.charType,
-                            maxLength: selectedObject.formatSelection.selectionCode,
+                            maxLength: self.constraints.selectionCode,
                             valueType: constraint.SelectionCdNumeric.valueType
                         });
+                        
                         writeConstraint("SelectionCdAlphaNumeric", {
                             charType: constraint.SelectionCdAlphaNumeric.charType,
-                            maxLength: selectedObject.formatSelection.selectionCode,
+                            maxLength: self.constraints.selectionCode,
                             valueType: constraint.SelectionCdAlphaNumeric.valueType
                         });
                         writeConstraint("SelectionName", {
                             charType: "Any",
-                            maxLength: selectedObject.formatSelection.selectionName,
+                            maxLength: self.constraints.selectionName,
                             valueType: constraint.SelectionName.valueType
                         });
 
                         writeConstraint("ExternalCdAlphalNumeric", {
                             charType: constraint.ExternalCdAlphalNumeric.charType,
-                            maxLength: selectedObject.formatSelection.selectionExternalCode,
+                            maxLength: self.constraints.selectionExternalCode,
                             valueType: constraint.ExternalCdAlphalNumeric.valueType
                         });
                         writeConstraint("ExternalCdNumeric", {
                             charType: constraint.ExternalCdNumeric.charType,
-                            maxLength: selectedObject.formatSelection.selectionExternalCode,
+                            maxLength: self.constraints.selectionExternalCode,
                             valueType: constraint.ExternalCdNumeric.valueType
                         });
 
-                        //self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
                     }
                     // システム管理者　かつ　選択している選択項目の「選択項目区分」＝社員のとき
-                    if (selectedObject.reflectedToAllCompanies === 1) {
-                        self.refecToAll(true);
+                    if (self.isGroupManager() === true && perInfoSelectionItem.selectionItemClassification() === 1 ) {
+                        self.showRefecToAll(true);
                     } else {
-                        self.refecToAll(false);
+                        self.showRefecToAll(false);
                     }
-                    //history
+                    
+                    // history
                     service.getAllPerInfoHistorySelection(x).done((_selectionItemList: IHistorySelection) => {
                         let changeData: Array<IHistorySelection> = _.each(_selectionItemList, (item) => {
                             item.displayDate = item.startDate + "  " + getText('CPS017_12') + "  " + item.endDate;
                             return item;
                         });
-
                         self.listHistorySelection(changeData);
-                        //self.historySelection().histId(self.listHistorySelection().length == 0 ? '' : self.listHistorySelection()[0].histId);
-                        if (self.listHistorySelection().length == 0 || self.listHistorySelection() == undefined) {
-                            self.disbleAdUpHist(false);
-                            self.enableDelHist(false);
-                            self.enableSelName(false);
-                            self.revDisSel02(false);
-                            self.revDisSel01(false);
-                            self.revDisSel03(false);
-                            self.revDisSel04(false);
-
-                            historySelection.histId(undefined);
-                            nts.uk.ui.errors.clearAll();
-                            self.selection().selectionID('');
-                            self.selection().externalCD('');
-                            self.selection().selectionCD('');
-                            self.selection().selectionName('');
-                            self.selection().memoSelection('');
-                            self.focusToInput();
-                        } else {
-                            self.historySelection().histId(self.listHistorySelection()[0].histId);
-                            self.focusToInput();
-                        }
+                        self.historySelection().histId(self.listHistorySelection()[0].histId);
+                        self.focusToInput();
                     });
 
                 } else {
                     //historySelection.histId(undefined);
-                    self.registerData();
+                    self.createNewData();
                 }
 
             });
+            
+            
+            
 
             //sub theo historyID:
             historySelection.histId.subscribe(x => {
                 if (x) {
                     let histCur = _.find(self.listHistorySelection(), a => a.histId == x);
+                    
                     if (histCur != undefined) {
-                        if (histCur.endDate !== '9999/12/31' || self.listHistorySelection().length <= 1) {
-                            self.enableDelHist(false);
-                            self.revDisSel02(false);
-                            self.revDisSel01(false);
-                            self.revDisSel03(false);
-                            self.revDisSel04(false);
-                            self.enableSelName(false);
-                        } else {
-                            self.enableDelHist(true);
-                            self.revDisSel01(true);
-                            self.revDisSel02(true);
-                            self.revDisSel03(true);
-                            self.revDisSel04(true);
-                            self.enableSelName(true);
-                            self.registerData();
+                        
+                        if (histCur.endDate !== '9999/12/31') {
+                            self.setEnableDisplay5(false);
+                            self.enableSelectionName(false);
+                        } else{
+                            self.setEnableDisplay5(true);
+                            self.enableSelectionName(true);
+                            // if it has only one history
+                            if (self.listHistorySelection().length === 1) {
+                                self.enableDelHist(false);
+                            }
                         }
+                        
+                        self.listSelection.removeAll();
+                        service.getAllOrderItemSelection(x).done((itemList: Array<ISelection>) => {                            if (itemList && itemList.length > 0) {
+                                self.checkCreateaaa(false);
+                                
+                                // fix responsive bug
+                                ko.utils.arrayPushAll(self.listSelection, itemList);
+    
+                                self.selection().selectionID(self.listSelection()[0].selectionID);
+                                self.focusToInput();
+                            } else {
+                                self.createNewData();
+                            }
+                            self.listSelection.valueHasMutated();
+                        });
+                        
+                        self.focusToInput();
+                    } else {
+                        self.listSelection.removeAll();
+                        self.createNewData();
                     }
-
-                    let adUpHist = _.find(self.listHistorySelection(), a => a.histId == x);
-                    if (adUpHist != undefined) {
-                        if (adUpHist.endDate !== '9999/12/31' || self.listHistorySelection().length == 0) {
-                            self.disbleAdUpHist(false);
-                            self.revDisSel02(false);
-                            self.revDisSel01(false);
-                            self.revDisSel03(false);
-                            self.revDisSel04(false);
-                            self.enableSelName(false);
-                        } else {
-                            self.disbleAdUpHist(true);
-                            self.revDisSel01(true);
-                            self.revDisSel02(true);
-                            self.revDisSel03(true);
-                            self.revDisSel04(true);
-                        }
-                    }
-
-                    self.listSelection.removeAll();
-                    service.getAllOrderItemSelection(x).done((itemList: Array<ISelection>) => {                        if (itemList && itemList.length > 0) {
-                            self.checkCreateaaa(false);
-                            //self.enableSelName(true);
-                            //self.revDisSel02(true);
-
-                            // fix responsive bug
-                            ko.utils.arrayPushAll(self.listSelection, itemList);
-                            //itemList.forEach(x => self.listSelection.push(x));
-
-                            self.selection().selectionID(self.listSelection()[0].selectionID);
-                            self.focusToInput();
-                        } else {
-                            //self.enableSelName(true);
-
-                            self.registerData();
-                            //$("#code").focus();
-                        }
-
-                        self.listSelection.valueHasMutated();
-
-                    });
-
-                    let ondeHisIdlits = _.find(self.listHistorySelection(), a => a.histId == x);
-                    if (ondeHisIdlits != undefined) {
-                        if (ondeHisIdlits.endDate == '9999/12/31') {
-                            self.enableSelName(true);
-                            //                            self.registerData();
-                        } else {
-                            self.enableSelName(false);
-                        }
-                    }
-                    self.focusToInput();
-                } else {
-                    self.listSelection.removeAll();
-                    self.registerData();
-                }
             });
 
             // sub theo selectionID: 
             selection.selectionID.subscribe(x => {
                 if (x) {
                     nts.uk.ui.errors.clearAll();
-                    let selectLists: ISelection = _.find(self.listSelection(), (item) => {
+                    let selectLists: ISelection1 = _.find(self.listSelection(), (item) => {
                         return item.selectionID == x;
                     });
                     selection.selectionCD(selectLists.selectionCD);
@@ -247,17 +203,17 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     self.focusToInput();
                     // $("#name").focus();
                 } else {
-                    self.registerData();
+                    self.createNewData();
                     //$("#code").focus();
                     //$("#name").focus();
                 }
 
-                if (x == undefined && self.enableSelName() == true) {
-                    self.selectionCd(true);
+                if (x == undefined && self.enableSelectionName() == true) {
+                    self.enableSelectionCd(true);
                     //$("#name").focus();
                     self.focusToInput();
                 } else {
-                    self.selectionCd(false);
+                    self.enableSelectionCd(false);
                     //$("#name").focus();
                     self.focusToInput();
                 }
@@ -280,8 +236,12 @@ module nts.uk.com.view.cps017.a.viewmodel {
             nts.uk.ui.errors.clearAll();
             //xu ly dialog: 
             let param = getShared('CPS017_PARAMS');
+            
+            // group manager;
+            self.isGroupManager(false);
+            
             // ドメインモデル「個人情報の選択項目」をすべて取得する
-            service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
+            service.getAllSelectionItems().done((itemList: Array<ISelectionItem1>) => {
                 if (itemList && itemList.length > 0) {
 
                     self.checkCreate(true);
@@ -300,18 +260,12 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     } else {
                         self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
                     }
-                    // システム管理者　かつ　選択している選択項目の「選択項目区分」＝社員のとき
-                    if (self.listItems()[0].reflectedToAllCompanies === 1) {
-                        self.refecToAll(true);
-                    } else {
-                        self.refecToAll(false);
-                    }
 
                 } else {
                     self.checkCreate(false);
                     alertError({ messageId: "Msg_455" });
-                    self.registerData();
-                    self.enableSelName(false);
+                    self.createNewData();
+                    self.enableSelectionName(false);
                     self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
                 }
                 dfd.resolve();
@@ -324,10 +278,10 @@ module nts.uk.com.view.cps017.a.viewmodel {
         }
 
         //新規ボタン
-        registerData() {
-            let self = this,
-                selection: Selection = self.selection(),
-                perSelection: any = ko.toJS(self.perInfoSelectionItem);
+        createNewData() {
+            let self = this;
+            let selection: Selection = self.selection();
+            let perSelection: any = ko.toJS(self.perInfoSelectionItem);
 
             nts.uk.ui.errors.clearAll();
             selection.selectionID(undefined);
@@ -343,19 +297,40 @@ module nts.uk.com.view.cps017.a.viewmodel {
             });
             self.checkCreateaaa(true);
 
-            if (self.enableSelName() == true) {
-                self.selectionCd(true);
+            if (self.enableSelectionName() == true) {
+                self.enableSelectionCd(true);
             } else {
-                self.selectionCd(false);
+                self.enableSelectionCd(false);
             }
 
-            self.revDisSel02(false);
-            self.revDisSel03(false);
-            self.revDisSel04(false);
+            self.enableCreateNew(false);
+            self.enableRegister(true);
+            self.enableRemove(false);
+            self.enableOpenDialogB(false);
+            
             self.focusToInput();
-
         }
-
+        
+        // enableFuctionArea
+        setEnableFuctionArea(value: boolean) {
+            let self = this;
+            self.enableCreateNew(value);
+            self.enableRemove(value);
+            self.enableRegister(value);
+            self.enableOpenDialogB(value);
+        }
+        
+        setEnableDisplay5(value: boolean) {
+            let self = this;
+            self.enableCreateNew(value);
+            self.enableRemove(value);
+            self.enableRegister(value);
+            self.enableOpenDialogB(value);
+            
+            self.enableAddUpdateHist(value);
+            self.enableDelHist(value);
+        }
+        
         //検証チェック 
         validate() {
             $(".nts-editor").trigger("validate");
@@ -366,7 +341,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
         }
 
         //登録ボタン
-        addData() {
+        register() {
             let self = this;
             if (self.validate()) {
                 if (self.checkCreateaaa() == true) {
@@ -410,9 +385,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
                                 if (itemSelected) {
                                     self.selection().selectionID(itemSelected.selectionID);
-                                    self.revDisSel02(true);
-                                    self.revDisSel03(true);
-                                    self.revDisSel04(true);
+                                    self.enableRemove(true);
+                                    self.enableOpenDialogB(true);
+                                    self.enableCreateNew(true);
                                 }
 
                                 //                                self.listSelection.valueHasMutated();
@@ -516,7 +491,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                                 //self.focusToInput();
 
                             } else {
-                                //self.registerData();
+                                //self.createNewData();
                                 histList.histId.valueHasMutated();
                                 //self.focusToInput();
                             }
@@ -679,7 +654,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 //reload lai History:
                 perInfoSelectionItem.selectionItemId.valueHasMutated();
                 block.clear();
-                this.focusToInput();
+                self.focusToInput();
             });
         }
         close() {
@@ -733,21 +708,38 @@ module nts.uk.com.view.cps017.a.viewmodel {
         //fixbug: 23.2.2018
         selectionItemClassification: number;
     }
+    
+    interface ISelectionItem1 {
+        
+        selectionItemId: string;
+        selectionItemName: string;
+        
+        characterType: number;
+        codeLength: number;
+        nameLength: number;
+        extraCodeLength: number;
+        
+        shareChecked : boolean;
+        
+        integrationCode?: string;
+        memo?: string;
+        
+    }
 
     class SelectionItem {
         selectionItemId: KnockoutObservable<string> = ko.observable('');
         selectionItemName: KnockoutObservable<string> = ko.observable('');
         selectionCodeCharacter: KnockoutObservable<number> = ko.observable(1);
         reflectedToAllCompanies: KnockoutObservable<number> = ko.observable();
-
         selectionItemClassification: KnockoutObservable<number> = ko.observable();
+        
         constructor(param: ISelectionItem) {
             let self = this;
             self.selectionItemId(param.selectionItemId || '');
             self.selectionItemName(param.selectionItemName || '');
             self.reflectedToAllCompanies(param.reflectedToAllCompanies || '');
 
-            self.selectionItemClassification(param.selectionItemClassification || '');
+            self.selectionItemClassification((param.shareChecked ? 0 : 1) || '');
         }
     }
 
