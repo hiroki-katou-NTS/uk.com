@@ -82,7 +82,7 @@ public class FixedStampReflectTimezonePolicyImpl implements FixedStampReflectTim
 			if (stampReflectTz.isEmpty()) {
 				return;
 			}
-			this.stampReflectTimezonePolicy.validate(be, false, stampReflectTz);
+			this.stampReflectTimezonePolicy.validate(be, false, stampReflectTz,predetemineTimeSetting);
 			
 			// Msg_516
 			if (stampReflectTz.getStartTime().lessThan(startTime) || stampReflectTz.getEndTime().greaterThan(endTime)) {

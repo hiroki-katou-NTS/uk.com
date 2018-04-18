@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezonePolicy;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**
  * The Class StampReflectTimezonePolicyImpl.
@@ -25,7 +26,7 @@ public class StampReflectTimezonePolicyImpl implements StampReflectTimezonePolic
 	 */
 	@Override
 	public void validate(BundledBusinessException bundledBusinessExceptions, boolean isFlow,
-			StampReflectTimezone timezone) {
+			StampReflectTimezone timezone,PredetemineTimeSetting predetemineTimeSetting) {
 		if (timezone.isEmpty()) {
 			return;
 		}
@@ -48,7 +49,9 @@ public class StampReflectTimezonePolicyImpl implements StampReflectTimezonePolic
 				}
 				// J1_7, J1_9
 				if (timezone.isGoWork2()) {
-					bundledBusinessExceptions.addMessage("Msg_770", "KMK003_272");
+					if (predetemineTimeSetting.getPrescribedTimezoneSetting().isUseShiftTwo()) {
+						bundledBusinessExceptions.addMessage("Msg_770", "KMK003_272");
+					}
 				}
 				// J1_12, J1_14
 				if (timezone.isLeaveWork1()) {
@@ -56,7 +59,9 @@ public class StampReflectTimezonePolicyImpl implements StampReflectTimezonePolic
 				}
 				// J1_16, J1_18
 				if (timezone.isLeaveWork2()) {
-					bundledBusinessExceptions.addMessage("Msg_770", "KMK003_275");
+					if (predetemineTimeSetting.getPrescribedTimezoneSetting().isUseShiftTwo()) {
+						bundledBusinessExceptions.addMessage("Msg_770", "KMK003_275");
+					}
 				}
 			}
 		}

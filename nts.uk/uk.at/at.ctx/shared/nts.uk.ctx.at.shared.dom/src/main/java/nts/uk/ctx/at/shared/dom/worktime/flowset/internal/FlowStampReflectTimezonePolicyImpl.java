@@ -61,7 +61,7 @@ public class FlowStampReflectTimezonePolicyImpl implements FlowStampReflectTimez
 			if (stampReflectTz.isEmpty()) {
 				return;
 			}			
-			this.stampReflectTimezonePolicy.validate(be, true, stampReflectTz);
+			this.stampReflectTimezonePolicy.validate(be, true, stampReflectTz,predetemineTimeSetting);
 			
 			if (stampReflectTz.getStartTime().lessThan(startTime) || stampReflectTz.getEndTime().greaterThan(endTime)) {
 				if (stampReflectTz.isGoWork1()) {
