@@ -40,12 +40,21 @@
 	display: inline-block;
 }
 
-#B4_12 {
-	margin-right: 20px; 
+#B4_12, #B4_30 {
+	width: 122px;
+}
+
+#B4_33 {
+	margin-left: 33px;
+    margin-right: 24px;
 }
 
 .space {
 	width: 122px;
     height: 10px;
     display: inline-block;
+}
+
+#ex_accept_wizard {
+	overflow: initial;
 }

@@ -8,6 +8,9 @@ module nts.uk.com.view.cmf003.b.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
 
     export class ScreenModel {
+        password: KnockoutObservable<string> = ko.observable('');
+        confirmPassword: KnockoutObservable<string> = ko.observable('');
+        
         //wizard
         stepList: Array<NtsWizardStep> = [];
         stepSelected: KnockoutObservable<NtsWizardStep> = ko.observable(null);
