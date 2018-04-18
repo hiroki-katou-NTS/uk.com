@@ -1308,6 +1308,7 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	private Map<String, ApproveRootStatusForEmpDto> getCheckApproval(List<String> employeeIds, DateRange dateRange, String employeeIdApproval){
 		//get check
+		if(employeeIds.isEmpty()) return Collections.emptyMap();
 		List<ApproveRootStatusForEmpImport> approveRootStatusForEmpImport = approvalStatusAdapter.getApprovalByListEmplAndListApprovalRecordDate(dateRange.getStartDate(), dateRange.getEndDate(), employeeIds, AppContexts.user().companyId(), 1);
 		
 		// get disable
