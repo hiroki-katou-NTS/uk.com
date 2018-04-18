@@ -7,6 +7,6 @@ import nts.arc.time.GeneralDate;
 
 @Value
 public class HolidaysRemainingReportQuery {
-	private GeneralDate baseDate;
-	private List<EmployeeQuery> lstEmpIds;
+	private String baseDate;
+	private List<String> lstEmpIds;
 }
