@@ -1,0 +1,46 @@
+.image-left{
+	float: left;
+	margin-right: 20px;
+}
+.image-right{
+	float: right;
+	margin-right: 20px;
+}
+
+.clear {
+	clear: both;
+}
+
+.navigation-label {
+	margin-left: 20px;
+	vertical-align: 12px;
+	padding-bottom: 20px;
+}
+
+.delete-data {
+	background-image: url("../resource/データ削除A1.jpg");
+	background-size: 100%;
+	height: 254px;
+	width: 257px;
+	background-repeat: no-repeat;
+	margin-left: 20px;
+}
+
+.setting-delete {
+	background-image: url("../resource/デ－タ削除A2.jpg");
+	background-size: 100%;
+	height: 254px;
+	width: 264px;
+	background-repeat: no-repeat;
+	margin-left: 20px;
+}
+
+.history-delete {
+	background-image: url("../resource/デ－タ削除A3.jpg");
+	background-size: 100%;
+	width: 286px;
+	height: 109px;
+	background-repeat: no-repeat;
+	margin-left: 20px;
+}
+
