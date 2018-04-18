@@ -86,10 +86,31 @@ public class KshstApprovalStatusMailTemp extends UkJpaEntity implements Serializ
 	}
 
 	public static KshstApprovalStatusMailTemp toEntity(ApprovalStatusMailTemp domain) {
+		int urlApprovalEmbed = 0;
+		int urlDayEmbed = 0;
+		int urlMonthEmbed = 0;
+
+		switch (domain.getMailType()) {
+		case APP_APPROVAL_UNAPPROVED:
+			urlApprovalEmbed = domain.getUrlApprovalEmbed().value;
+			break;
+		case DAILY_UNCONFIRM_BY_PRINCIPAL:
+			urlDayEmbed = domain.getUrlDayEmbed().value;
+			break;
+		case DAILY_UNCONFIRM_BY_CONFIRMER:
+			urlDayEmbed = domain.getUrlDayEmbed().value;
+			break;
+		case MONTHLY_UNCONFIRM_BY_CONFIRMER:
+			urlMonthEmbed = domain.getUrlMonthEmbed().value;
+			break;
+		case WORK_CONFIRMATION:
+			urlDayEmbed = domain.getUrlDayEmbed().value;
+			urlMonthEmbed = domain.getUrlMonthEmbed().value;
+			break;
+		}
 		return new KshstApprovalStatusMailTemp(
-				new KshstApprovalStatusMailTempPk(domain.getCid(), domain.getMailType().value),
-				domain.getUrlApprovalEmbed().value, domain.getUrlDayEmbed().value, domain.getUrlMonthEmbed().value,
-				domain.getMailSubject().v(), domain.getMailContent().v());
+				new KshstApprovalStatusMailTempPk(domain.getCid(), domain.getMailType().value), urlApprovalEmbed,
+				urlDayEmbed, urlMonthEmbed, domain.getMailSubject().v(), domain.getMailContent().v());
 	}
 
 }

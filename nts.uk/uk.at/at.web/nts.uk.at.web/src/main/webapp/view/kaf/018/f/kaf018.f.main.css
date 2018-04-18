@@ -1,16 +1,43 @@
-.align-right{
+.align-right {
 	text-align: right;
 }
 
 #contents-area {
-	margin: 20px;
+	padding: 10px 0px 0px 20px;
 }
 
 .tbl-control {
-	width: 1000px;
-	margin-bottom: 10px;
+	width: 1150px;
+	margin-bottom: 5px;
 }
 
 .tbl-control td {
-	padding: 5px;
+	padding: 0px 5px;
+}
+
+.fixed-table th {
+	text-align: center;
+	white-space: normal;
+}
+
+#extable td, #extable td>* {
+	font-size: 10.5px;
+}
+
+#extable .extable-header-leftmost td {
+	white-space: inherit !important;
+}
+
+.xheader *, .extable-body-detail *, .extable-body-leftmost tr td:NTH-CHILD(2),
+	.extable-body-leftmost tr td:NTH-CHILD(3), .extable-body-leftmost tr td:NTH-CHILD(4)
+	{
+	text-align: center;
+}
+.extable-header-leftmost tr td{
+	padding-left: 8px;
+	padding-right: 8px;
+}
+.extable-body-leftmost tr td:NTH-CHILD(1){
+	padding-left: 4px;
+	padding-right: 4px;
 }

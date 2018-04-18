@@ -1,5 +1,15 @@
 module nts.uk.at.view.kaf018.share.model {
 
+    export class ItemModel {
+        code: number;
+        name: string;
+
+        constructor(code: number, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }
+
     export class MailTemp {
         mailSubject: KnockoutObservable<string>;
         mailContent: KnockoutObservable<string>;
@@ -35,6 +45,44 @@ module nts.uk.at.view.kaf018.share.model {
         constructor(useDayApproverConfirm: boolean, useMonthApproverComfirm: boolean) {
             this.useMonthApproverComfirm = ko.observable(useMonthApproverComfirm);
             this.useDayApproverConfirm = ko.observable(useDayApproverConfirm);
+        }
+    }
+
+    export class UseSetting {
+        //月別確認を利用する
+        monthlyConfirm: boolean;
+        //上司確認を利用する
+        useBossConfirm: boolean;
+        //本人確認を利用する
+        usePersonConfirm: boolean;
+    }
+
+    export class CellColor {
+        columnKey: any;
+        rowId: any;
+        innerIdx: any;
+        clazz: any;
+        constructor(columnKey: any, rowId: any, clazz: any, innerIdx?: any) {
+            this.columnKey = columnKey;
+            this.rowId = rowId;
+            this.innerIdx = innerIdx;
+            this.clazz = clazz;
+        }
+    }
+
+    export class Time {
+        year: string;
+        month: string;
+        day: string;
+        weekDay: string;
+        yearMonthDay: string;
+
+        constructor(ymd: Date) {
+            this.year = moment(ymd).format('YYYY');
+            this.month = moment(ymd).format('M');
+            this.day = moment(ymd).format('D');
+            this.weekDay = moment(ymd).format('dd');
+            this.yearMonthDay = this.year + moment(ymd).format('MM') + moment(ymd).format('DD');
         }
     }
 }

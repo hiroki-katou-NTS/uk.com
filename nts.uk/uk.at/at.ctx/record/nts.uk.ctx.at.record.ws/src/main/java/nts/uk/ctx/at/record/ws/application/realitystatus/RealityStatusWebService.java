@@ -8,6 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.record.app.find.realitystatus.EmpPerformanceDto;
+import nts.uk.ctx.at.record.app.find.realitystatus.EmpPerformanceParam;
 import nts.uk.ctx.at.record.app.find.realitystatus.ExeSendUnconfirmMailParam;
 import nts.uk.ctx.at.record.app.find.realitystatus.RealityStatusActivityParam;
 import nts.uk.ctx.at.record.app.find.realitystatus.RealityStatusFinder;
@@ -33,16 +35,22 @@ public class RealityStatusWebService extends WebService {
 	public String checkSendUnconfirmedMail(List<WkpIdMailCheckParam> listWkp) {
 		return realityStatusFinder.checkSendUnconfirmedMail(listWkp);
 	}
-	
+
 	@POST
 	@Path("exeSendUnconfirmedMail")
 	public SendMailResultDto exeSendUnconfirmedMail(ExeSendUnconfirmMailParam obj) {
 		return realityStatusFinder.exeSendUnconfirmMail(obj);
 	}
-	
+
 	@POST
 	@Path("getUseSetting")
 	public UseSetingDto getUseSetting() {
 		return realityStatusFinder.getUseSetting();
+	}
+
+	@POST
+	@Path("getEmpPerformance")
+	public List<EmpPerformanceDto> getEmpPerformance(EmpPerformanceParam dto) {
+		return realityStatusFinder.getEmpPerformance(dto);
 	}
 }

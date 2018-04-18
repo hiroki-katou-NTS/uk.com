@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.realitystatus;
 import java.util.List;
 
 import lombok.Value;
+import nts.arc.time.GeneralDate;
 
 /**
  * @author dat.lh
@@ -18,7 +19,7 @@ public class ExeSendUnconfirmMailParam {
 	 * 職場一覧
 	 */
 	private List<WkpIdMailCheckParam> listWkp;
-	private String startDate;
-	private String endDate;
+	private GeneralDate startDate;
+	private GeneralDate endDate;
 	private List<String> listEmpCd;
 }

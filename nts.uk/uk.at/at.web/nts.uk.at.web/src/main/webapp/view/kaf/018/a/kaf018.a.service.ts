@@ -3,7 +3,8 @@ module nts.uk.at.view.kaf018.a.service {
     var paths: any = {
         getAll: "at/request/application/setting/workplace/getall",
         findAllClosure: "at/request/application/approvalstatus/findAllClosure",
-        getApprovalStatusPerior: "at/request/application/approvalstatus/getApprovalStatusPerior/{0}/{1}"
+        getApprovalStatusPerior: "at/request/application/approvalstatus/getApprovalStatusPerior/{0}/{1}",
+        getUseSetting: "at/record/application/realitystatus/getUseSetting"
     }
 
     export function getAll(lstWkpId): JQueryPromise<Array<any>> {
@@ -17,5 +18,9 @@ module nts.uk.at.view.kaf018.a.service {
     export function getApprovalStatusPerior(closureId: number, closureDate: number): JQueryPromise<any> {
         let path = format(paths.getApprovalStatusPerior, closureId, closureDate);
         return nts.uk.request.ajax(path);
+    }
+
+    export function getUseSetting(): JQueryPromise<any> {
+        return nts.uk.request.ajax(paths.getUseSetting);
     }
 }

@@ -11,6 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentAppTypeRequestImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentDataRequestPubImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRepresenterImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.RepresenterInformationImport;
@@ -70,6 +71,13 @@ public class AgentAdapterImp implements AgentAdapter {
 		return lstData;
 	}
 	
-	
+	@Override
+	public List<AgentInfoImport> findAgentByPeriod(String companyID, List<String> listApprover, 
+			GeneralDate startDate, GeneralDate endDate, Integer agentType) {
+		List<AgentInfoImport> listAgentInfor = AgentPub.findAgentByPeriod(companyID, listApprover, startDate, endDate, agentType)
+				.stream()
+				.map(x -> new AgentInfoImport(x.getApproverID(), x.getAgentID(), x.getStartDate(), x.getEndDate())).collect(Collectors.toList());
+		return listAgentInfor;
+	}
 
 }

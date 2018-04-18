@@ -71,7 +71,9 @@
 								value: selectedValue,
 								enable: enable}">
 					</div>
-					<div class ="format-checkbox" data-bind="ntsCheckBox: { checked: isDailyComfirm, enable: enable, text: '#{i18n.getText('KAF018_14')}' }"></div>
+					<com:ko-if bind="isVisibleComfirm">
+						<div class ="format-checkbox" data-bind="ntsCheckBox: { checked: isDailyComfirm, enable: isEnableDailyComfirm, text: '#{i18n.getText('KAF018_14')}' }"></div>
+					</com:ko-if>
 					<!-- A10抽出 -->
 					<button class ="btn-excute large" tabindex="5" data-bind="click: choiceNextScreen">#{i18n.getText('KAF018_16')}</button>
 				</div>

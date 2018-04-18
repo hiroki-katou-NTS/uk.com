@@ -12,11 +12,14 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.RegisterApprovalStatusMailTempCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusActivityData;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusByIdDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusFinder;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusMailTempDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusPeriorDto;
-import nts.uk.ctx.at.request.app.find.application.approvalstatus.EmployeeEmailDto;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalSttRequestContentDis;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.UnAppMailTransmisDto;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatusOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
 
@@ -88,10 +91,28 @@ public class ApprovalStatusWebservice extends WebService {
 		return finder.getAppSttByWorkpace(param);
 	}
 	
-/*	@POST
-	@Path("getCheckSendMail/")
-	public List<String> getAppSttSendingUnapprovedMail(int empId) {
+	@POST
+	@Path("getCheckSendMail")
+	public List<String> getAppSttSendingUnapprovedMail(List<ApprovalSttAppOutput> listAppSttApp) {
 		return this.finder.getAppSttSendingUnapprovedMail(listAppSttApp);
-	}*/
+	}
 	
+	@POST
+	@Path("exeSendUnconfirmedMail")
+	public void exeSendUnconfirmedMail(UnAppMailTransmisDto unAppMailTransmis) {
+		
+	}
+	
+	@POST
+	@Path("initApprovalSttByEmployee")
+	public List<DailyStatusOutput> initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById){
+		return this.finder.initApprovalSttByEmployee(appSttById);
+		
+	}
+	
+	@POST
+	@Path("initApprovalSttRequestContentDis")
+	public List<String> initApprovalSttRequestContentDis(ApprovalSttRequestContentDis appSttContent) {
+		return this.finder.initApprovalSttRequestContentDis(appSttContent);
+	}
 }
