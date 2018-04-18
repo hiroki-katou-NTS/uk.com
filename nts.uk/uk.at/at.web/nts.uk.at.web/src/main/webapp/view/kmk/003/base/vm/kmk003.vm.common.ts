@@ -2233,13 +2233,18 @@ module nts.uk.at.view.kmk003.a {
                     let lstWorkingTimezone: EmTimeZoneSetDto[] = _.map(this.lstWorkingTimezone(), (dataModel) => dataModel.toDto());
                     let lstOTTimezone: OverTimeOfTimeZoneSetDto[] = _.map(this.lstOTTimezone(), (dataModel) => dataModel.toDto());
 
+                    // get data from simple mode (tab2)
                     if (this.displayMode() == 1) {
                         const simple = this.lstWorkingTimezoneSimpleMode()[0];
-                        const detail = lstWorkingTimezone[0].timezone;
-                        detail.rounding.roundingTime = simple.roundingTime();
-                        detail.rounding.rounding = simple.rounding();
-                        detail.start = simple.timeRange().startTime;
-                        detail.end = simple.timeRange().endTime;
+                        const detail = <EmTimeZoneSetDto>{};
+                        detail.employmentTimeFrameNo = 1;
+                        detail.timezone = <TimeZoneRoundingDto>{};
+                        detail.timezone.rounding = <TimeRoundingSettingDto>{};
+                        detail.timezone.rounding.roundingTime = simple.roundingTime();
+                        detail.timezone.rounding.rounding = simple.rounding();
+                        detail.timezone.start = simple.timeRange().startTime;
+                        detail.timezone.end = simple.timeRange().endTime;
+                        lstWorkingTimezone = [detail];
                     }
 
                     let dataDTO: FixedWorkTimezoneSetDto = {

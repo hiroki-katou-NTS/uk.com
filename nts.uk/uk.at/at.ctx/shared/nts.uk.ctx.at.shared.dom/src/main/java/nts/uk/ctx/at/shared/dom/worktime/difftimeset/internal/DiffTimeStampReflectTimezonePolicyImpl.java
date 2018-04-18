@@ -64,7 +64,7 @@ public class DiffTimeStampReflectTimezonePolicyImpl implements DiffTimeStampRefl
 			if (stampReflectTz.isEmpty()) {
 				return;
 			}
-			this.stampReflectTimezonePolicy.validate(be, false, stampReflectTz);
+			this.stampReflectTimezonePolicy.validate(be, false, stampReflectTz,predetemineTimeSetting);
 
 			if (stampReflectTz.getStartTime().lessThan(startTime) || stampReflectTz.getEndTime().greaterThan(endTime)) {
 				if (stampReflectTz.isGoWork1()) {
