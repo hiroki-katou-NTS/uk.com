@@ -10,6 +10,8 @@ import javax.ws.rs.Produces;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.function.app.find.annualworkschedule.SetOutItemsWoScDto;
+import nts.uk.ctx.at.function.app.find.annualworkschedule.SetOutItemsWoScFinder;
 import nts.uk.ctx.at.function.dom.annualworkschedule.PageBreakIndicator;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
@@ -24,14 +26,26 @@ public class Kwr008WebService extends WebService {
 	@Inject
 	private I18NResourcesForUK i18n;
 	
+	@Inject
+	private SetOutItemsWoScFinder outputItemSetting; 
+	
 	/**
 	 * KWR008 A
 	 * 改頁選択 - Page break selection
 	 * 
 	 * */
 	@POST
-	@Path("get/enum/annualworkschedule/pagebreak")
+	@Path("get/enum/pagebreak")
 	public List<EnumConstant> getEnumPageBreakSelection(){
 		return EnumAdaptor.convertToValueNameList(PageBreakIndicator.class, i18n);
+	}
+	
+	/* *
+	 * 出力項目設定コード
+	 * */
+	@POST
+	@Path("get/outputitemsetting")
+	public List<SetOutItemsWoScDto> getOutputItemSetting(){
+		return outputItemSetting.getAllSetOutItemsWoSc();
 	}
 }

@@ -88,11 +88,11 @@ module nts.uk.at.view.kwr008.a {
             endDateString: KnockoutObservable<string>;
 
             //A4
-            outputItem: KnockoutObservableArray<string>;
+            outputItem: KnockoutObservable<string[]>;
             selectedOutputItem: KnockoutObservable<string>;
 
             //A6 
-            breakPage: KnockoutObservableArray<any>;
+            breakPage: KnockoutObservableArray<share.model.EnumConstantDto>;
             selectedBreakPage: KnockoutObservable<string>
 
             constructor() {
@@ -132,7 +132,7 @@ module nts.uk.at.view.kwr008.a {
                 self.selectedOutputItem = ko.observable('0');
 
                 // A6
-                self.breakPage = ko.observable();
+                self.breakPage = ko.observable([]);
                 
                 self.selectedBreakPage = ko.observable('0');
 
@@ -281,12 +281,12 @@ module nts.uk.at.view.kwr008.a {
                 var self = this;
                 var dfd = $.Deferred();
                 service.getPageBreakSelection().done((enumRes)=>{
-                    console.log(enumRes);
-                    self.breakPage = ko.observable(enumRes);
-                    console.log(self.breakPage);
+                    self.breakPage(enumRes);
                 }).fail((enumError)=>{
                     console.log(`fail : ${enumError}`);
                 });
+                
+                
                 dfd.resolve(self);
                 return dfd.promise();
             }

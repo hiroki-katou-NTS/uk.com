@@ -9,14 +9,16 @@
 		<ui:define name="htmlHead">
 			<script></script>
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
 			<com:stylefile path="kwr008.b.style.css" />
+			<com:scriptfile path="kwr008.b.service.js" />
 			<com:scriptfile path="kwr008.b.vm.js" />
 			<com:scriptfile path="kwr008.b.start.js" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button tabindex="1">#{i18n.getText('KWR008_18')}</button>
+				<button tabindex="1" data-bind="click: activeRegisterMode">#{i18n.getText('KWR008_18')}</button>
 				<button tabindex="2" class="proceed">#{i18n.getText('KWR008_19')}</button>
 				<button tabindex="3" class="danger">#{i18n.getText('KWR008_20')}</button>
 				<button tabindex="4">#{i18n.getText('KWR008_21')}</button>
@@ -26,16 +28,17 @@
 					style="padding-top: 20px; padding-left: 20px">
 					<div data-bind="ntsPanel:{width: '340px', height: '410px', showIcon: false, visible: true, direction: 'right'}">
 						<div id="B2_1">
-							<table id="B2_2" data-bind="ntsGridList: {								
+							<!-- B2_2 -->
+							<table id="listStandardImportSetting" data-bind="ntsGridList: {								
 								rows: 15,
 								columns: [
-					                { headerText: '#{i18n.getText('KWR008_22')}', key: 'dispConditionSettingCode', width: 60, formatter: _.escape },
-					                { headerText: '#{i18n.getText('KWR008_23')}', key: 'dispConditionSettingName', width: 260, formatter: _.escape }
+					                { headerText: '#{i18n.getText('KWR008_22')}', key: 'code', width: 60, formatter: _.escape },
+					                { headerText: '#{i18n.getText('KWR008_23')}', key: 'name', width: 260, formatter: _.escape }
 					            ],
 					            dataSource: listStandardImportSetting,
-								primaryKey: 'dispConditionSettingCode', 
+								primaryKey: 'code', 
 								multiple: false,
-								value: selectedStandardImportSettingCode,
+								value: selectedCode,
 								height: '390px' 
 							}">
 							</table>
