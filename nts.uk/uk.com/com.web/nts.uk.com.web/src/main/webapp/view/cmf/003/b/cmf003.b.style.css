@@ -1,0 +1,37 @@
+#ex_accept_wizard {
+	width: 1200px;
+	height: 480px;
+}
+
+#ex_accept_wizard>.steps {
+	width: 250px;
+	height: 485px;
+}
+
+#ex_accept_wizard>.content {
+	width: 940px;
+	height: 590px;
+	background: none;
+	margin-left: 5px;
+	margin-right: 0px;
+}
+#ex_accept_wizard > .content > .body {
+	padding-top: 0;
+}
+
+.title-right {
+	float: right;
+	margin-right: 20px;
+}
+
+.contentB {
+	display: flex;
+}
+
+.fixed-flex-layout-left {
+	width: 350px;
+}
+
+.pull-right {
+	float: right;
+}
