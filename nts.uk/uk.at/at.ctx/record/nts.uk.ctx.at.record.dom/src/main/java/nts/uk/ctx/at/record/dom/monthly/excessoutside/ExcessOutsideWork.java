@@ -50,4 +50,13 @@ public class ExcessOutsideWork {
 	public void addMinutesToExcessTime(int minutes){
 		this.excessTime = this.excessTime.addMinutes(minutes);
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(ExcessOutsideWork target){
+
+		this.excessTime = this.excessTime.addMinutes(target.excessTime.v());
+	}
 }

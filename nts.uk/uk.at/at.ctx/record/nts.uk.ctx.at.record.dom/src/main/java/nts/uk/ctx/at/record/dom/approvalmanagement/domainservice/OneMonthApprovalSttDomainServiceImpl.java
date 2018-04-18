@@ -104,6 +104,7 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 			approvalEmployee.setEmployeeName(lstEmployee.get(e).getEmployeeName());
 			List<DateApprovalStatusDto> lstDateApprovalStatusDto = new ArrayList<>();
 			List<ApprovalRootSituation> lstApproval = approvalRootOfEmployeeImport.getApprovalRootSituations();
+			boolean isSameEmpId=false;
 			for (int a = 0; a < lstApproval.size(); a++) {
 				if (lstEmployee.get(e).getEmployeeId().equals(lstApproval.get(a).getTargetID())) {
 					DateApprovalStatusDto dateApprovalStatusDto = new DateApprovalStatusDto();
@@ -129,10 +130,13 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 						dateApprovalStatusDto.setStatus(0);
 					}
 					lstDateApprovalStatusDto.add(dateApprovalStatusDto);
+					isSameEmpId=true;
 				}
 			}
-			approvalEmployee.setLstStatus(lstDateApprovalStatusDto);
-			lstApprovalEmployee.add(approvalEmployee);
+			if(isSameEmpId){
+				approvalEmployee.setLstStatus(lstDateApprovalStatusDto);
+				lstApprovalEmployee.add(approvalEmployee);	
+			}
 		}
 		return lstApprovalEmployee;
 	}
@@ -141,6 +145,13 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 		OneMonthApprovalStatusDto result = new OneMonthApprovalStatusDto();
 		YearMonth currentYearMonth = GeneralDate.today().yearMonth();
 		DatePeriod datePeriod = closureService.getClosurePeriod(closureId, currentYearMonth);
+		result.setStartDate(datePeriod.start());
+		result.setEndDate(datePeriod.end());
+		return result;
+	}
+	public OneMonthApprovalStatusDto getDatePeriod(int closureId,int currentYearMonth) {
+		OneMonthApprovalStatusDto result = new OneMonthApprovalStatusDto();
+		DatePeriod datePeriod = closureService.getClosurePeriod(closureId, YearMonth.of(currentYearMonth));
 		result.setStartDate(datePeriod.start());
 		result.setEndDate(datePeriod.end());
 		return result;
@@ -159,6 +170,7 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 			useDayApprovalComfirmCheck = approvalProcUseSet.get().getUseDayApproverConfirm();
 		}
 		if (useDayApprovalComfirmCheck) {
+			List<YearMonth> lstYearMonth = new ArrayList<>();
 			int currentClosure = 0;
 			if (closureIdParam == null) {
 				// ドメインモデル「締め」をすべて取得する
@@ -172,7 +184,8 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 					for (int h = 0; h < lstClosureHst.size(); h++) {
 						if (lstClosure.get(c).getClosureId().value == lstClosureHst.get(h).getClosureId().value) {
 							lstClosureDto.add(new ClosureDto(lstClosureHst.get(h).getClosureId().value,
-									lstClosureHst.get(h).getClosureName().v()));
+									lstClosureHst.get(h).getClosureName().v(),lstClosure.get(c).getClosureMonth().getProcessingYm().v().intValue()));
+							lstYearMonth.add(lstClosure.get(c).getClosureMonth().getProcessingYm());
 						}
 					}
 				}
@@ -185,7 +198,7 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 			DatePeriod datePeriod = null;
 			if (startDateParam == null) {
 				// アルゴリズム「当月の期間を算出する」を実行する
-				datePeriod = closureService.getClosurePeriod(currentClosure, currentYearMonth);
+				datePeriod = closureService.getClosurePeriod(currentClosure, lstYearMonth.isEmpty()? currentYearMonth:lstYearMonth.get(0));
 			} else {
 				datePeriod = new DatePeriod(startDateParam, endDateParam);
 			}
