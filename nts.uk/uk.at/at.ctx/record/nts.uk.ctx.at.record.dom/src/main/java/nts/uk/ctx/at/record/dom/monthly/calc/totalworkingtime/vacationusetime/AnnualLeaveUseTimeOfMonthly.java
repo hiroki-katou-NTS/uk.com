@@ -15,13 +15,12 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * 月別実績の年休使用時間
  * @author shuichi_ishida
  */
+@Getter
 public class AnnualLeaveUseTimeOfMonthly {
 	
 	/** 使用時間 */
-	@Getter
 	private AttendanceTimeMonth useTime;
 	/** 時系列ワーク */
-	@Getter
 	private Map<GeneralDate, AnnualLeaveUseTimeOfTimeSeries> timeSeriesWorks;
 	
 	/**
@@ -63,14 +62,12 @@ public class AnnualLeaveUseTimeOfMonthly {
 			// 「日別実績の年休」を取得する
 			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
-			//*****（未）　ここから先のドメインがまだない
-			//VacationOfDaily vacationOfDaily = totalWorkingTime.getVacation();
-			//annualLeaveOfDaily annualLeaveOfDaily = vacationOfDaily.getAnnualLeave();
+			val holidayOfDaily = totalWorkingTime.getHolidayOfDaily();
+			val annual = holidayOfDaily.getAnnual();
 			
 			// 取得した使用時間を「月別実績の年休使用時間」に入れる
-			//*****（未）　「日別実績の年休」クラスをnewして、値を入れて、それをset？
-			val annualLeaveUseTimeOfTimeSeries = AnnualLeaveUseTimeOfTimeSeries.of(ymd);
-			this.timeSeriesWorks.putIfAbsent(ymd, annualLeaveUseTimeOfTimeSeries);
+			val annualLeaveUseTime = AnnualLeaveUseTimeOfTimeSeries.of(ymd, annual);
+			this.timeSeriesWorks.putIfAbsent(ymd, annualLeaveUseTime);
 		}
 	}
 	
@@ -84,8 +81,7 @@ public class AnnualLeaveUseTimeOfMonthly {
 		
 		for (val timeSeriesWork : this.timeSeriesWorks.values()){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
-			//AnnualLeaveOfDaily annualLeaveUseTime = timeSeriesWork.getAnnualLeaveUseTime();
-			//this.useTime.addMinutes(annualLeaveUseTime.getUseTime().valueAsMinutes());
+			this.useTime.addMinutes(timeSeriesWork.getAnnualLeaveUseTime().getUseTime().v());
 		}
 	}
 	

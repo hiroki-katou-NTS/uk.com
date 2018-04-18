@@ -146,4 +146,17 @@ public class FlexTime {
 		}
 		return returnTime;
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(FlexTime target){
+		
+		this.flexTime = this.flexTime.addMinutes(
+				target.flexTime.getTime().v(), target.flexTime.getCalcTime().v());
+		this.beforeFlexTime = this.beforeFlexTime.addMinutes(target.beforeFlexTime.v());
+		this.legalFlexTime = this.legalFlexTime.addMinutes(target.legalFlexTime.v());
+		this.illegalFlexTime = this.illegalFlexTime.addMinutes(target.illegalFlexTime.v());
+	}
 }

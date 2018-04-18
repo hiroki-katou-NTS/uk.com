@@ -456,4 +456,28 @@ public class OverTimeOfMonthly {
 		return new AttendanceTimeMonth(this.totalOverTime.getTime().v() +
 				this.totalTransferOverTime.getTime().v());
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(OverTimeOfMonthly target){
+		
+		this.totalOverTime = this.totalOverTime.addMinutes(
+				target.totalOverTime.getTime().v(), target.totalOverTime.getCalcTime().v());
+		this.beforeOverTime = this.beforeOverTime.addMinutes(target.beforeOverTime.v());
+		this.totalTransferOverTime = this.totalTransferOverTime.addMinutes(
+				target.totalTransferOverTime.getTime().v(), target.totalTransferOverTime.getCalcTime().v());
+
+		for (val aggrOverTime : this.aggregateOverTimeMap.values()){
+			val frameNo = aggrOverTime.getOverTimeFrameNo();
+			if (target.aggregateOverTimeMap.containsKey(frameNo)){
+				aggrOverTime.sum(target.aggregateOverTimeMap.get(frameNo));
+			}
+		}
+		for (val targetAggrOverTime : target.aggregateOverTimeMap.values()){
+			val frameNo = targetAggrOverTime.getOverTimeFrameNo();
+			this.aggregateOverTimeMap.putIfAbsent(frameNo, targetAggrOverTime);
+		}
+	}
 }
