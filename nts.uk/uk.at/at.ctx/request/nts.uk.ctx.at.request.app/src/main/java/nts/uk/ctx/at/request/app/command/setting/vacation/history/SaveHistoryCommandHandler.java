@@ -43,15 +43,14 @@ public class SaveHistoryCommandHandler extends CommandHandler<VacationHistoryCom
 		String companyId = AppContexts.user().companyId();
 
 		// check conditional
-		if (command.getVacationHistory().getStartDate()
-				.after(command.getVacationHistory().getEndDate())) {
+		if (command.getVacationHistory().getStartDate().after(command.getVacationHistory().getEndDate())) {
 			throw new BusinessException("Msg_917");
 		}
 
 		DatePeriod period = new DatePeriod(command.getVacationHistory().getStartDate(),
 				command.getVacationHistory().getEndDate());
-		Integer count = this.vacationHistoryRepository.countByDatePeriod(companyId, command.getWorkTypeCode(),
-				period, command.getVacationHistory().getHistoryId());
+		Integer count = this.vacationHistoryRepository.countByDatePeriod(companyId, command.getWorkTypeCode(), period,
+				command.getVacationHistory().getHistoryId());
 
 		if (count.intValue() > 0) {
 			throw new BusinessException("Msg_106");
@@ -60,13 +59,13 @@ public class SaveHistoryCommandHandler extends CommandHandler<VacationHistoryCom
 		if (command.getVacationHistory().getStartDate().year() != command.getVacationHistory().getEndDate().year()) {
 			throw new BusinessException("Msg_967");
 		}
-		
-		//check isNewMode
+
+		// check isNewMode
 		if (command.getIsCreated()) {
 			if (this.vacationHistoryRepository.findByWorkTypeCode(companyId, command.getWorkTypeCode()).size() >= 20) {
 				throw new BusinessException("Msg_976");
 			}
-			
+
 			// Add
 			this.addVacationHistory(companyId, command);
 		} else {
@@ -82,24 +81,33 @@ public class SaveHistoryCommandHandler extends CommandHandler<VacationHistoryCom
 	 * @param command the command
 	 */
 	private void addVacationHistory(String companyId, VacationHistoryCommand command) {
-		//To Domain
-		PlanVacationHistory history = new PlanVacationHistory(companyId, command.getWorkTypeCode(), new OptionalMaxDay(command.getMaxDay()),
-				command.getVacationHistory().getStartDate(), command.getVacationHistory().getEndDate());
+		// To Domain
+		PlanVacationHistory history = new PlanVacationHistory(companyId, command.getWorkTypeCode(),
+				new OptionalMaxDay(command.getMaxDay()), command.getVacationHistory().getStartDate(),
+				command.getVacationHistory().getEndDate());
 
-		//insert
+		// insert
 		this.vacationHistoryRepository.add(history);
 	}
 
+	/**
+	 * Update vacation history.
+	 *
+	 * @param companyId the company id
+	 * @param command the command
+	 */
 	private void updateVacationHistory(String companyId, VacationHistoryCommand command) {
-	
+
 		// Get old historyId
-		List<PlanVacationHistory> hist = this.vacationHistoryRepository.findHistory(companyId, command.getVacationHistory().getHistoryId());
+		List<PlanVacationHistory> hist = this.vacationHistoryRepository.findHistory(companyId,
+				command.getVacationHistory().getHistoryId());
 		if (hist.isEmpty()) {
 			return;
 		}
-		PlanVacationHistory history = new PlanVacationHistory(companyId, command.getWorkTypeCode(), new OptionalMaxDay(command.getMaxDay()),
+		PlanVacationHistory history = new PlanVacationHistory(companyId, command.getWorkTypeCode(),
+				new OptionalMaxDay(command.getMaxDay()), command.getVacationHistory().getHistoryId(),
 				command.getVacationHistory().getStartDate(), command.getVacationHistory().getEndDate());
-		
+
 		this.vacationHistoryRepository.update(history);
-	 }
+	}
 }

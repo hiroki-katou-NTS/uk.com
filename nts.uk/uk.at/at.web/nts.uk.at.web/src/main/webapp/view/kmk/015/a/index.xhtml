@@ -40,11 +40,11 @@
 	                        <td><button data-bind="click: OpenDialogB">#{i18n.getText('KMK015_9')}</button></td>
 	                        <td>
 	                           <button data-bind="click: OpenDialogC" style="margin-left: 12px">#{i18n.getText('KMK015_10')}</button>
-	                           <button style="margin-left: 12px" data-bind="" class="danger">#{i18n.getText('KMK015_11')}</button>
+	                           <button style="margin-left: 12px" data-bind="click: removeHistory" class="danger">#{i18n.getText('KMK015_11')}</button>
 	                        </td>
 	                     </tr>
                 	  </table>
-                	  <table tabindex="2" id="tbl-master-list"
+                	  <table id="tbl-master-list"
                         data-bind="ntsGridList: {
                         name: '#[kmk015_15]',
                         width: 250,
@@ -74,7 +74,7 @@
 	                       <td></td>
 	                    </tr>
 	                    <tr>
-	                       <td style="display: -webkit-box;">
+	                       <td style="padding-top: 10px; display: -webkit-box;">
 	                          	<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK015_8')}</div>
 	                          	<div style="padding-top: 3px;padding-left: 30px;">
 									<input tabindex="3" id="number-1" data-bind="ntsNumberEditor: { 
