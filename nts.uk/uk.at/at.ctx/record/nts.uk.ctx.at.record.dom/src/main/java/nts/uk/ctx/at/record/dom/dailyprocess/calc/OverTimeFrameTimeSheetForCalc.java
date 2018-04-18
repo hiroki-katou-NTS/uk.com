@@ -106,6 +106,33 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 	public OverTimeFrameTimeSheet changeNotWorkFrameTimeSheet() {
 		return new OverTimeFrameTimeSheet(this.calcrange, new OverTimeFrameNo(this.overTimeWorkSheetNo.v()));
 	}
+	
+//	public OverTimeFrameTimeSheetForCalc changeFromPremiumTimeSheet(TimeSpanForCalc timeSpan) {
+//		List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
+//		List<TimeSheetOfDeductionItem> deductionTimeSheets, List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,
+//		List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet,
+//		Optional<MidNightTimeSheetForCalc> midNighttimeSheet, OverTimeFrameTime frameTime,
+//		StatutoryAtr withinStatutryAtr, boolean goEarly, EmTimezoneNo overTimeWorkSheetNo, boolean asTreatBindTime,
+//		Optional<SettlementOrder> payOrder, Optional<AttendanceTime> adjustTime) {
+//		return new OverTimeFrameTimeSheet(new TimeZoneRounding(timeSpan.getStart(), timeSpan.getEnd(), null)),
+//										  timeSpan,
+//										  ,
+//										  ,
+//										  ,
+//										  ,
+//										  ,
+//										  new OverTimeFrameTime(overWorkFrameNo, 
+//												  				overTimeWork, 
+//												  				transferTime, 
+//												  				beforeApplicationTime, 
+//												  				orderTime),
+//										  StatutoryAtr.Excess,
+//										  false,
+//										  new EmTimezoneNo(0),
+//										  false,
+//										  Optional.empty(),
+//										  new AttendanceTime(0));
+//	}
 	/**
 	 * 残業枠分ループし残業枠時間帯の作成
 	 * @param overTimeHourSetList 固定勤務の時間帯設定クラス

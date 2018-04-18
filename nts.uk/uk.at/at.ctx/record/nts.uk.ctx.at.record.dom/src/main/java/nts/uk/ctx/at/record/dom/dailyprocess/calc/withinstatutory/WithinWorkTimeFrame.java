@@ -66,6 +66,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	@Getter
 	private final EmTimeFrameNo workingHoursTimeNo;
 	
+	@Getter
 	private final Optional<TimeSpanForCalc> premiumTimeSheetInPredetermined;
 	
 	@Getter
@@ -75,9 +76,6 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	//早退時間帯・・・deductByLateLeaveEarlyを呼ぶまでは値が無い
 	private Optional<LeaveEarlyTimeSheet> leaveEarlyTimeSheet;
 	
-	public TimeSpanForCalc getPremiumTimeSheetInPredetermined() {
-		return this.premiumTimeSheetInPredetermined.get();
-	}
 	
 	/**
 	 * constructor

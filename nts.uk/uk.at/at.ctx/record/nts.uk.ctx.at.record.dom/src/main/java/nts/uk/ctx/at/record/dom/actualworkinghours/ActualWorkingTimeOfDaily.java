@@ -124,6 +124,7 @@ public class ActualWorkingTimeOfDaily {
 	 * @param schePreTimeSet 
 	 * @param schePreTimeSet 
 	 * @param ootsukaFixedCalcSet 
+	 * @param workScheduleTime 
 	 */
 	public static ActualWorkingTimeOfDaily calcRecordTime(CalculationRangeOfOneDay oneDay,AutoCalOvertimeSetting overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting,
 			   Optional<PersonalLaborCondition> personalCondition,
@@ -148,7 +149,7 @@ public class ActualWorkingTimeOfDaily {
 			   DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
 			   List<DivergenceTime> divergenceTimeList, Optional<PredetermineTimeSetForCalc> schePreTimeSet, 
 			   int breakTimeCount, Optional<FixedWorkCalcSetting> ootsukaFixedCalcSet,
-			   Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting
+			   Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting, WorkScheduleTimeOfDaily workScheduleTime
 				/*計画所定時間*/
 				/*実績所定労働時間*/) {
 
@@ -173,9 +174,7 @@ public class ActualWorkingTimeOfDaily {
 					calcAtrOfDaily,
 					eachWorkTimeSet,
 					eachCompanyTimeSet,
-					breakTimeCount
-					/*計画所定時間*/
-					/*実績所定労働時間*/);
+					breakTimeCount);
 		
 		val calcResultOotsuka = calcOotsuka(workingSystem,
 											totalWorkingTime,
@@ -203,9 +202,8 @@ public class ActualWorkingTimeOfDaily {
 													   timeDifferenceWorkingHours,
 													   premiumTime,
 													   forCalcDivergenceDto,
-													   divergenceTimeList
-														/*計画所定時間*/
-														/*実績所定労働時間*/
+													   divergenceTimeList,
+													   workScheduleTime
 													   );
 		
 		/*返値*/
@@ -227,11 +225,10 @@ public class ActualWorkingTimeOfDaily {
 			AttendanceTime constraintDifferenceTime, ConstraintTime constraintTime,
 			AttendanceTime timeDifferenceWorkingHours, PremiumTimeOfDailyPerformance premiumTime,
 			DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
-			List<DivergenceTime> divergenceTimeList
-			/*計画所定時間*/
-			/*実績所定労働時間*/) {
+			List<DivergenceTime> divergenceTimeList, WorkScheduleTimeOfDaily workScheduleTime) {
 		
 
+		//乖離時間計算用にDto作成
 		val replaceDto =  rePlaceIntegrationDto(forCalcDivergenceDto,
 				   								employeeId,
 				   								ymd,
@@ -239,7 +236,9 @@ public class ActualWorkingTimeOfDaily {
 				   								constraintDifferenceTime,
 				   								constraintTime,
 				   								timeDifferenceWorkingHours,
-				   								premiumTime); 	
+				   								premiumTime,
+				   								workScheduleTime);
+		//乖離時間の計算
 		val returnList = calcDivergenceTime(replaceDto, divergenceTimeList);
 		//returnする
 		return new DivergenceTimeOfDaily(returnList);
@@ -247,6 +246,7 @@ public class ActualWorkingTimeOfDaily {
 
 	/**
 	 * Dtoの中身(日別実績の勤怠時間)を入れ替える 
+	 * @param workScheduleTime 
 	 * @return
 	 */
 	private static DailyRecordToAttendanceItemConverter rePlaceIntegrationDto(DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
@@ -256,7 +256,8 @@ public class ActualWorkingTimeOfDaily {
 																		   AttendanceTime constraintDifferenceTime,
 																		   ConstraintTime constraintTime,
 																		   AttendanceTime timeDifferenceWorkingHours,
-																		   PremiumTimeOfDailyPerformance premiumTime) {
+																		   PremiumTimeOfDailyPerformance premiumTime, 
+																		   WorkScheduleTimeOfDaily workScheduleTime) {
 		//Dtoの中身になっている
 		val integrationOfDailyInDto = forCalcDivergenceDto.toDomain();
 		//integraionOfDailyを入れ替える
@@ -264,9 +265,7 @@ public class ActualWorkingTimeOfDaily {
 																			   ymd,
 																			   /*計画所定時間 引数の計画所定に入れ替える*/
 																			   //integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getWorkScheduleTimeOfDaily(),
-																			   new WorkScheduleTimeOfDaily(new WorkScheduleTime(new AttendanceTime(510),new AttendanceTime(0),new AttendanceTime(510)),
-																					   new AttendanceTime(0),
-																					   new AttendanceTime(0)),
+																			   workScheduleTime,
 																			   /*実績所定労働時間 引数の実績所定に入れ替える*/
 																			   new ActualWorkingTimeOfDaily(constraintDifferenceTime,
 																					   						constraintTime, 

@@ -40,7 +40,7 @@ public class AttendanceLeavingGateOfDailyTest {
 		WorkStamp a = new WorkStamp(new TimeWithDayAttr(510),new TimeWithDayAttr(510),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER);
 		WorkStamp b = new WorkStamp(new TimeWithDayAttr(1050),new TimeWithDayAttr(1050),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER);
 		
-		list.add(new TimeLeavingWork(new WorkNo(1),Optional.of(new TimeActualStamp(a,a, 1)),Optional.of(new TimeActualStamp(b,b, 1))));
+//		list.add(new TimeLeavingWork(new WorkNo(1),Optional.of(new TimeActualStamp(a,a, 1)),Optional.of(new TimeActualStamp(b,b, 1))));
 //		list.add(new TimeLeavingWork(new WorkNo(2),Optional.of(new TimeActualStamp(a,b, 1)),Optional.of(new TimeActualStamp(a,b, 1))));
 		
 		Optional<TimeLeavingOfDailyPerformance> attendanceLeave = Optional.of(new TimeLeavingOfDailyPerformance("",new WorkTimes(1),list,GeneralDate.today()));

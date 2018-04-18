@@ -264,6 +264,7 @@ public class CalculationRangeOfOneDay {
 				this.outsideWorkTimeSheet = Finally.of(createOutSideWorkTimeSheet);
 			}
 			else {
+				//残業
 				if(outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) {
 					List<OverTimeFrameTimeSheetForCalc> addOverList = createOutSideWorkTimeSheet.getOverTimeWorkSheet().isPresent()? createOutSideWorkTimeSheet.getOverTimeWorkSheet().get().getFrameTimeSheets():Collections.emptyList();
 					outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().getFrameTimeSheets().addAll(addOverList);
@@ -271,6 +272,7 @@ public class CalculationRangeOfOneDay {
 				else {
 					this.outsideWorkTimeSheet = Finally.of(new OutsideWorkTimeSheet(createOutSideWorkTimeSheet.getOverTimeWorkSheet(),this.outsideWorkTimeSheet.get().getHolidayWorkTimeSheet()));
 				}
+				//休出
 				if(outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
 					List<HolidayWorkFrameTimeSheetForCalc> addHolList = createOutSideWorkTimeSheet.getHolidayWorkTimeSheet().isPresent()? createOutSideWorkTimeSheet.getHolidayWorkTimeSheet().get().getWorkHolidayTime():Collections.emptyList();
 					outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get().getWorkHolidayTime().addAll(addHolList);
@@ -280,7 +282,12 @@ public class CalculationRangeOfOneDay {
 				}
 			}
 		}
-}
+		//if(this.withinWorkingTimeSheet.isPresent())
+			//val premiumTimeSheet = this.withinWorkingTimeSheet.get().getWithinWorkTimeFrame().stream()
+			//																				 .filter(tc -> tc.getPremiumTimeSheetInPredetermined().isPresent())
+			//																				 .map(tc -> tc.getPremiumTimeSheetInPredetermined().get())
+		
+	}
 
 
 

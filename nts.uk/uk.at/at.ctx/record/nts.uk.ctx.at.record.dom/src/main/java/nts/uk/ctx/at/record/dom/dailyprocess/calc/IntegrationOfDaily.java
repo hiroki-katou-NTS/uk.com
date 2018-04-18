@@ -59,6 +59,7 @@ public class IntegrationOfDaily {
 	//日別実績の作業別勤怠時間
 	private Optional<AttendanceTimeByWorkOfDaily> attendancetimeByWork;
 	//日別実績の出退勤
+	@Setter
 	private Optional<TimeLeavingOfDailyPerformance> attendanceLeave;
 	//日別実績の短時間勤務時間帯
 	@Setter
