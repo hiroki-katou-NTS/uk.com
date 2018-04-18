@@ -53,7 +53,7 @@ module nts.layout {
                 .map(x => x.items())
                 .flatten()
                 .flatten()
-                .filter((x: any) => x.required && x.type != ITEM_TYPE.SET)
+                .filter((x: any) => x.type != ITEM_TYPE.SET)
                 .map(x => ko.toJS(x))
                 .each(x => {
                     let id = x.itemDefId.replace(/[-_]/g, ''),
@@ -68,7 +68,10 @@ module nts.layout {
                         } else if (element.tagName.toUpperCase() == "BUTTON" || $element.hasClass('radio-wrapper')) {
                             if (nou(x.value) && x.required) {
                                 if (!getError($element).length) {
-                                    $element.ntsError('set', { messageId: "FND_E_REQ_SELECT", messageParams: [x.itemName] });
+                                    $element.ntsError('set', {
+                                        messageId: "FND_E_REQ_SELECT",
+                                        messageParams: [x.itemName]
+                                    });
                                 }
                             }
                         }
@@ -152,31 +155,39 @@ module nts.layout {
         check_start_end: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkStartEnd`, param),
         check_multi_time: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkMultiTime`, param),
         get_ro_data: (param: INextTimeParam) => ajax('at', `at/record/remainnumber/annlea/event/nextTime`, param),
-        get_annLeaNumber: (sid: string) => ajax('com', `ctx/pereg/layout/getAnnLeaNumber/${sid}`),
+        get_annLeaNumber: (sid: string) => ajax('at', `at/record/remainnumber/annlea/getAnnLeaNumber/${sid}`),
         get_resvLeaNumber: (sid: string) => ajax('com', `ctx/pereg/layout/getResvLeaNumber/${sid}`),
-        get_calDayTime: (sid: string, specialCd: number) => ajax('com', `ctx/pereg/layout/calDayTime/${sid}/${specialCd}`)
+        get_calDayTime: (sid: string, specialCd: number) => ajax('com', `ctx/pereg/layout/calDayTime/${sid}/${specialCd}`),
+        check_remain_days: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainDays/${sid}`),
+        check_remain_left: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainLeft/${sid}`)
     }
 
     export class validation {
         finder: IFinder = undefined;
-        constructor(lstCls: Array<any>) {
+        constructor(private lstCls: Array<any>) {
             let self = this;
             self.finder = new constraint(lstCls);
 
-            self.textBox();
-            self.radio();
-            self.button();
-            self.combobox();
-            self.grand_radio();
-            self.relate_radio();
-            self.relate_button();
+            setTimeout(() => {
+                self.textBox();
+                self.radio();
+                self.button();
+                self.combobox();
+                self.grand_radio();
+                //self.relate_radio();
+                self.relate_button();
 
-            self.dateTime();
-            self.setTable();
-            self.grantInformation();
-            self.specialLeaveInformation();
+                self.remain_day();
 
-            validate.initCheckError(lstCls);
+                self.dateTime();
+                self.setTable();
+                self.grantInformation();
+                self.specialLeaveInformation();
+
+                self.time_range();
+
+                validate.initCheckError(lstCls);
+            }, 500);
         }
 
         textBox = () => {
@@ -187,7 +198,7 @@ module nts.layout {
                 CS00002_IS00015: IFindData = finder.find('CS00002', 'IS00015'),
                 CS00002_IS00016: IFindData = finder.find('CS00002', 'IS00016'),
                 validateName = (item: IFindData) => {
-                    $(document).on('change', item.id, () => {
+                    $(item.id).on('blur', () => {
                         let value: string = ko.toJS(item.data.value),
                             index: number = value.indexOf('　'),
                             lindex: number = value.lastIndexOf('　'),
@@ -195,8 +206,11 @@ module nts.layout {
 
                         if (index > 0 && lindex < value.length - 1) {
                             rmError(dom, "Msg_924");
-                        } else if (!dom.parent().hasClass('error')) {
-                            !dom.is(':disabled') && dom.ntsError('set', { messageId: "Msg_924" });
+                        } else if (!dom.is(':disabled') && !dom.ntsError('hasError')) {
+                            dom.ntsError('set', {
+                                messageId: "Msg_924",
+                                messageParams: [item.data.itemName]
+                            });
                         }
                     });
                 };
@@ -254,107 +268,140 @@ module nts.layout {
             }
         }
 
+        remain_day = () => {
+            let self = this,
+                finder = self.finder,
+                empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
+                CS00035_IS00366: IFindData = finder.find('CS00035', 'IS00366'),
+                CS00035_IS00368: IFindData = finder.find('CS00035', 'IS00368');
+
+            if (!empId) {
+                return;
+            }
+
+            if (CS00035_IS00366) {
+                fetch.check_remain_days(empId).done(x => {
+                    CS00035_IS00366.data.editable(x);
+                });
+            }
+
+            if (CS00035_IS00368) {
+                fetch.check_remain_left(empId).done(x => {
+                    CS00035_IS00368.data.editable(x);
+                });
+            }
+        }
+
         grand_radio = () => {
             let self = this,
                 finder = self.finder,
                 radios: Array<IGrandRadio> = [{
                     ctgCode: 'CS00025',
                     radioCode: 'IS00296',
-                    comboboxCode: 'IS00297'
+                    relateCode: ['IS00297', 'IS00299', 'IS00299', 'IS00300', 'IS00301']
                 }, {
                         ctgCode: 'CS00026',
                         radioCode: 'IS00303',
-                        comboboxCode: 'IS00304'
+                        relateCode: ['IS00304', 'IS00305', 'IS00306', 'IS00307', 'IS00308']
                     }, {
                         ctgCode: 'CS00027',
                         radioCode: 'IS00310',
-                        comboboxCode: 'IS00311'
+                        relateCode: ['IS00311', 'IS00312', 'IS00313', 'IS00314', 'IS00315']
                     }, {
                         ctgCode: 'CS00028',
                         radioCode: 'IS00317',
-                        comboboxCode: 'IS00318'
+                        relateCode: ['IS00318', 'IS00319', 'IS00320', 'IS00321', 'IS00322']
                     }, {
                         ctgCode: 'CS00029',
                         radioCode: 'IS00324',
-                        comboboxCode: 'IS00325'
+                        relateCode: ['IS00325', 'IS00326', 'IS00327', 'IS00328', 'IS00329']
                     }, {
                         ctgCode: 'CS00030',
                         radioCode: 'IS00331',
-                        comboboxCode: 'IS00332'
+                        relateCode: ['IS00332', 'IS00333', 'IS00334', 'IS00335', 'IS00336']
                     }, {
                         ctgCode: 'CS00031',
                         radioCode: 'IS00338',
-                        comboboxCode: 'IS00339'
+                        relateCode: ['IS00339', 'IS00340', 'IS00341', 'IS00342', 'IS00343']
                     }, {
                         ctgCode: 'CS00032',
                         radioCode: 'IS00345',
-                        comboboxCode: 'IS00346'
+                        relateCode: ['IS00346', 'IS00347', 'IS00348', 'IS00349', 'IS00350']
                     }, {
                         ctgCode: 'CS00033',
                         radioCode: 'IS00352',
-                        comboboxCode: 'IS00353'
+                        relateCode: ['IS00353', 'IS00354', 'IS00355', 'IS00356', 'IS00357']
                     }, {
                         ctgCode: 'CS00034',
                         radioCode: 'IS00359',
-                        comboboxCode: 'IS00360'
+                        relateCode: ['IS00360', 'IS00361', 'IS00362', 'IS00363', 'IS00364']
                     }, {
                         ctgCode: 'CS00035',
                         radioCode: 'IS00311',
-                        comboboxCode: 'IS00371'
+                        relateCode: ['IS00371', 'IS00372', 'IS00374']
+                    }, {
+                        ctgCode: 'CS00036',
+                        rdctCode: 'CS00028',
+                        radioCode: 'IS00316',
+                        relateCode: ['IS00376', 'IS00377', 'IS00378', 'IS00379']
+                    }, {
+                        ctgCode: 'CS00036',
+                        rdctCode: 'CS00028',
+                        radioCode: 'IS00321',
+                        relateCode: ['IS00381', 'IS00382', 'IS00383', 'IS00384']
                     }, {
                         ctgCode: 'CS00049',
                         radioCode: 'IS00560',
-                        comboboxCode: 'IS00561'
+                        relateCode: ['IS00561', 'IS00562', 'IS00563', 'IS00564', 'IS00565']
                     }, {
                         ctgCode: 'CS00050',
                         radioCode: 'IS00567',
-                        comboboxCode: 'IS00568'
+                        relateCode: ['IS00568', 'IS00569', 'IS00570', 'IS00571', 'IS00572']
                     }, {
                         ctgCode: 'CS00051',
                         radioCode: 'IS00574',
-                        comboboxCode: 'IS00575'
+                        relateCode: ['IS00575', 'IS00576', 'IS00577', 'IS00578', 'IS00579']
                     }, {
                         ctgCode: 'CS00052',
                         radioCode: 'IS00581',
-                        comboboxCode: 'IS00582'
+                        relateCode: ['IS00582', 'IS00583', 'IS00584', 'IS00585', 'IS00586']
                     }, {
                         ctgCode: 'CS00053',
                         radioCode: 'IS00588',
-                        comboboxCode: 'IS00589'
+                        relateCode: ['IS00589', 'IS00590', 'IS00591', 'IS00592', 'IS00593']
                     }, {
                         ctgCode: 'CS00054',
                         radioCode: 'IS00595',
-                        comboboxCode: 'IS00596'
+                        relateCode: ['IS00596', 'IS00597', 'IS00598', 'IS00599', 'IS00600']
                     }, {
                         ctgCode: 'CS00055',
                         radioCode: 'IS00602',
-                        comboboxCode: 'IS00603'
+                        relateCode: ['IS00603', 'IS00604', 'IS00605', 'IS00606', 'IS00607']
                     }, {
                         ctgCode: 'CS00056',
                         radioCode: 'IS00609',
-                        comboboxCode: 'IS00610'
+                        relateCode: ['IS00610', 'IS00611', 'IS00612', 'IS00613', 'IS00614']
                     }, {
                         ctgCode: 'CS00057',
                         radioCode: 'IS00616',
-                        comboboxCode: 'IS00617'
+                        relateCode: ['IS00617', 'IS00618', 'IS00619', 'IS00620', 'IS00621']
                     }, {
                         ctgCode: 'CS00058',
                         radioCode: 'IS00623',
-                        comboboxCode: 'IS00624'
+                        relateCode: ['IS00624', 'IS00625', 'IS00626', 'IS00627', 'IS00628']
                     }, {
                         ctgCode: '',
                         radioCode: '',
-                        comboboxCode: ''
+                        relateCode: []
                     }],
                 validation = (radio: IGrandRadio) => {
-                    let rd: IFindData = finder.find(radio.ctgCode, radio.radioCode),
-                        cb: IFindData = finder.find(radio.ctgCode, radio.comboboxCode);
+                    let rd: IFindData = finder.find(radio.rdctCode || radio.ctgCode, radio.radioCode),
+                        ctrls: Array<IFindData> = _.map(radio.relateCode, x => finder.find(radio.ctgCode, x));
 
-                    if (rd && cb) {
+                    if (rd) {
                         rd.data.value.subscribe(v => {
-                            cb.data.editable(v == 1);
+                            _.each(ctrls, c => c.data.editable(v == 1));
                         });
-
                         rd.data.value.valueHasMutated();
                     }
                 };
@@ -666,7 +713,10 @@ module nts.layout {
                     }
                 ],
                 setData = (ctrl: IFindData, value?: any) => {
-                    ctrl && ctrl.data.value(value);
+                    if (ctrl) {
+                        ctrl.data.value(value);
+                        //ctrl.data.defValue = value;
+                    }
                 },
                 setDataText = (ctrl: IFindData, value?: any) => {
                     ctrl && ctrl.data.textValue(value || undefined);
@@ -686,7 +736,7 @@ module nts.layout {
 
                     if (firstTimes && secondTimes) {
                         if (firstTimes.end && secondTimes.start) {
-                            $(document).on('change', `${firstTimes.end.id}, ${secondTimes.start.id}`, () => {
+                            $(`${firstTimes.end.id}, ${secondTimes.start.id}`).on('blur', () => {
                                 setTimeout(() => {
                                     let dom1 = $(firstTimes.end.id),
                                         dom2 = $(secondTimes.start.id),
@@ -696,11 +746,17 @@ module nts.layout {
                                         tnt = typeof nv == 'number';
 
                                     if (tpt && tnt && pv > nv) {
-                                        if (!dom1.parent().hasClass('error')) {
-                                            dom1.ntsError('set', { messageId: "Msg_859" });
+                                        if (!dom1.ntsError('hasError')) {
+                                            dom1.ntsError('set', {
+                                                messageId: "Msg_859",
+                                                messageParams: [
+                                                    firstTimes.end.data.itemName,
+                                                    secondTimes.start.data.itemName
+                                                ]
+                                            });
                                         }
 
-                                        if (!dom2.parent().hasClass('error')) {
+                                        if (!dom2.ntsError('hasError')) {
                                             dom2.parent().addClass('error');
                                         }
                                     }
@@ -708,12 +764,8 @@ module nts.layout {
                                     if ((tpt && tnt && !(pv > nv)) || (!tpt || !tnt)) {
                                         rmError(dom1, "Msg_859");
 
-                                        if (!getError(dom2).length) {
+                                        if (!dom2.ntsError('hasError')) {
                                             dom2.parent().removeClass('error');
-                                        }
-
-                                        if (!getErrorList().length) {
-                                            clearError();
                                         }
                                     }
                                 }, 100);
@@ -796,7 +848,7 @@ module nts.layout {
                         setShared('parentCodes', {
                             workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
                             selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
-                            workTimeCodes: workTime && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
+                            workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
                             selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
                         }, true);
 
@@ -833,6 +885,7 @@ module nts.layout {
                 buttons: Array<IRelateButton> = [{
                     ctgCode: 'CS00024',
                     btnCode: 'IS00276',
+                    lblCode: 'IS00277',
                     dialogId: 'g'
                 }, {
                         ctgCode: 'CS00024',
@@ -942,20 +995,31 @@ module nts.layout {
                 ],
 
                 validation = (btn: IRelateButton) => {
-                    let button: IFindData = finder.find(btn.ctgCode, btn.btnCode);
+                    let button: IFindData = finder.find(btn.ctgCode, btn.btnCode),
+                        label: IFindData = finder.find(btn.ctgCode, btn.lblCode);
+
                     if (button) {
-                        $(document).on('click', button.id, () => {
+                        $(button.id).on('click', (evt) => {
+                            let sid = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId);
                             setShared('CPS001GHI_VALUES', {
-                                ctgCode: button.data.categoryCode
+                                ctgCode: button.data.categoryCode,
+                                sid: sid
                             });
 
                             modal('com', `/view/cps/001/${btn.dialogId}/index.xhtml`).onClosed(() => {
                                 // load lai du lieu
-                                let sid = ko.toJS(__viewContext.viewModel.employee.employeeId);
+
+                                if (!sid) {
+                                    return;
+                                }
+
                                 switch (btn.dialogId) {
                                     case "g":
                                         fetch.get_annLeaNumber(sid).done(data => {
-                                            button.data.value(data);
+                                            button.data.value(data.annualLeaveNumber);
+                                            if (label) {
+                                                label.data.value(data.lastGrantDate);
+                                            }
                                         });
                                         break;
                                     case "h":
@@ -1086,9 +1150,13 @@ module nts.layout {
 
             if (CS00016_IS00077 && CS00016_IS00079) {
                 CS00016_IS00077.data.value.subscribe(_date => {
-                    let empId = ko.toJS(__viewContext.viewModel.employee.employeeId),
+                    let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         data = ko.toJS(CS00016_IS00077.data),
                         comboData = ko.toJS(CS00016_IS00079.data);
+
+                    if (!empId) {
+                        return;
+                    }
 
                     fetch.get_cb_data({
                         comboBoxType: comboData.item.referenceType,
@@ -1108,9 +1176,13 @@ module nts.layout {
 
             if (CS00017_IS00082 && CS00017_IS00084) {
                 CS00017_IS00082.data.value.subscribe(_date => {
-                    let empId = ko.toJS(__viewContext.viewModel.employee.employeeId),
+                    let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         data = ko.toJS(CS00017_IS00082.data),
                         comboData = ko.toJS(CS00017_IS00084.data);
+
+                    if (!empId) {
+                        return;
+                    }
 
                     fetch.get_cb_data({
                         comboBoxType: comboData.item.referenceType,
@@ -1145,9 +1217,13 @@ module nts.layout {
                 CS00024_IS00282 &&
                 CS00024_IS00283) {
                 CS00024_IS00279.data.value.subscribe(x => {
-                    let employeeId = ko.toJS(__viewContext.viewModel.employee.employeeId),
+                    let employeeId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         standardDate = ko.toJS(CS00024_IS00279.data.value),
                         grantTable = ko.toJS(CS00024_IS00280.data.value);
+
+                    if (!employeeId) {
+                        return;
+                    }
 
                     fetch.get_ro_data({
                         employeeId: employeeId,
@@ -1299,11 +1375,15 @@ module nts.layout {
                     if (inp && cbx) {
                         inp.data.value.subscribe(x => {
                             // obj để get dữ liệu
-                            let sid = ko.toJS(__viewContext.viewModel.employee.employeeId),
+                            let sid = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                                 grantDate = ko.toJS(inp.data.value),
                                 appSet = ko.toJS(cbx.data.value),
                                 specialLeaveCD = specialLeaInfo.specialCd;
                             // 
+
+                            if (!sid) {
+                                return;
+                            }
 
                             let x = moment.utc(ko.toJS(inp.data.value));
                             if (x._isValid)
@@ -1319,9 +1399,67 @@ module nts.layout {
                 };
 
             _(specialLeaInfos).each(specialLeaInfo => validation(specialLeaInfo));
+        }
 
+        time_range = () => {
+            let self = this;
 
+            _(self.lstCls)
+                .filter(c => c.items && _.isFunction(c.items))
+                .filter(c => {
+                    let items = _.filter(ko.toJS(c.items), t => t.item && t.item.dataTypeValue);
 
+                    return _.filter(items, t => t.item.dataTypeValue == ITEM_SINGLE_TYPE.SEL_BUTTON).length == 2
+                        && [2, 4].indexOf(_.filter(items, t => [ITEM_SINGLE_TYPE.TIME, ITEM_SINGLE_TYPE.TIMEPOINT].indexOf(t.item.dataTypeValue) > -1).length) > -1;
+                })
+                .map(c => c.items())
+                .map(t => ({
+                    btns: _.filter(t, m => m.item && m.item.dataTypeValue == ITEM_SINGLE_TYPE.SEL_BUTTON),
+                    inps: _(t).filter(m => m.item && [ITEM_SINGLE_TYPE.TIME, ITEM_SINGLE_TYPE.TIMEPOINT].indexOf(m.item.dataTypeValue) > -1)
+                        .groupBy(m => m.itemParentCode)
+                        .map(g => g)
+                        .value()
+                }))
+                .each(c => {
+                    _.each(c.inps, group => {
+                        if (c.btns.length == 2 && group.length == 2) {
+                            let id1 = `#${group[0].itemDefId.replace(/[-_]/gi, '')}`,
+                                id2 = `#${group[1].itemDefId.replace(/[-_]/gi, '')}`;
+
+                            $(`${id1}, ${id2}`).on('blur', () => {
+                                let ctrl1 = $(id1),
+                                    ctrl2 = $(id2),
+                                    hvl = _.filter(c.btns, b => !!b.value()),
+                                    vl1 = ko.toJS(group[0].value),
+                                    vl2 = ko.toJS(group[1].value),
+                                    nnb = !_.isNumber(vl1) && !_.isNumber(vl2);
+
+                                setTimeout(() => {
+                                    if (hvl && nnb) {
+                                        if (!ctrl1.is(':disabled') && !ctrl1.ntsError('hasError')) {
+                                            ctrl1.ntsError('set', {
+                                                messageId: "Msg_998",
+                                                messageParams: [
+                                                    group[0].itemName,
+                                                    group[1].itemName
+                                                ]
+                                            });
+                                        }
+
+                                        if (!ctrl2.ntsError('hasError')) {
+                                            ctrl2.parent().addClass('error');
+                                        }
+                                    } else {
+                                        rmError(ctrl1, "Msg_435");
+                                        if (!ctrl2.ntsError('hasError')) {
+                                            ctrl2.parent().removeClass('error');
+                                        }
+                                    }
+                                }, 100);
+                            });
+                        }
+                    });
+                });
         }
     }
 
@@ -1375,6 +1513,7 @@ module nts.layout {
         'type': ITEM_TYPE;
         required: boolean;
         value: KnockoutObservable<any>;
+        defValue: any;
         textValue: KnockoutObservable<any>;
         item: any;
         editable: KnockoutObservable<boolean>;
@@ -1383,6 +1522,7 @@ module nts.layout {
         itemCode: string;
         lstComboBoxValue: KnockoutObservableArray<any>;
         itemParentCode?: string;
+        itemName?: string;
     }
 
     interface IComboboxItem {
@@ -1453,8 +1593,9 @@ module nts.layout {
 
     interface IGrandRadio {
         ctgCode: string;
+        rdctCode?: string;
         radioCode: string;
-        comboboxCode: string;
+        relateCode: Array<string>
     }
 
     interface IRelateRadio {
@@ -1468,6 +1609,7 @@ module nts.layout {
         btnCode: string;
         dialogId: string;
         specialCd?: number;
+        lblCode?: string;
     }
 
     interface ITimeTable {

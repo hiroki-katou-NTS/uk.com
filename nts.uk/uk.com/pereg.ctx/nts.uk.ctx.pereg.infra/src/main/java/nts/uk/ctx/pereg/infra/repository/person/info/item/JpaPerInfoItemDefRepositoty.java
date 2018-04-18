@@ -615,7 +615,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		BigDecimal selectionItemRefType = null;
 		String selectionItemRefCode = null;
 		String relatedCategoryCode = null;
-		String resourceId = perInfoItemDef.getResourceId().isPresent() ? perInfoItemDef.getResourceId().get() : null;
+		String resourceId = perInfoItemDef.getResourceId()!= null  ? (perInfoItemDef.getResourceId().isPresent()? perInfoItemDef.getResourceId().get(): null) : null;
 
 		if (itemType == ItemType.SINGLE_ITEM.value) {
 			SingleItem singleItem = (SingleItem) perInfoItemDef.getItemTypeState();

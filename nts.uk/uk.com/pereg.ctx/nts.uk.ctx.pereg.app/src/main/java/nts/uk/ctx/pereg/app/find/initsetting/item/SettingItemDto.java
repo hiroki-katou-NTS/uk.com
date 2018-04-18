@@ -139,7 +139,8 @@ public class SettingItemDto {
 	public void setData(Object value) {
 		
 		if (value == null ) {
-			this.setSaveData(new SaveDataDto(SaveDataType.STRING, null));
+			this.setSaveData(new SaveDataDto(SaveDataType.STRING, ""));
+			return;
 		}
 		
 		if (value.getClass().equals(Integer.class)) {

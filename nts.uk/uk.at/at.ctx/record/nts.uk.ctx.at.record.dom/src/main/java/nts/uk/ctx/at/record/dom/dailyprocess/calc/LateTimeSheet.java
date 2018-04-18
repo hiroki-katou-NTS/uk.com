@@ -87,7 +87,7 @@ public class LateTimeSheet{
 			LateDecisionClock lateDecisionClock,
 			TimeWithDayAttr attendance
 			,GraceTimeSetting graceTimeSetting
-			,EmTimeZoneSet duplicateTimeSheet
+			,WithinWorkTimeFrame duplicateTimeSheet
 			,DeductionTimeSheet deductionTimeSheet
 			,Optional<CoreTimeSetting> coreTimeSetting
 			,TimezoneUse predetermineTimeSet
@@ -123,7 +123,7 @@ public class LateTimeSheet{
 			TimeWithDayAttr attendance
 			,Optional<CoreTimeSetting> coreTimeSetting
 			,TimezoneUse predetermineTimeSet
-			,EmTimeZoneSet duplicateTimeSheet
+			,WithinWorkTimeFrame duplicateTimeSheet
 			,DeductionTimeSheet deductionTimeSheet){
 
 		//遅刻時間帯の作成
@@ -135,9 +135,11 @@ public class LateTimeSheet{
 				,deductionTimeSheet);
 			
 		//遅刻時間を計算
-		AttendanceTime lateTime = instance.get().calcTotalTime();
+		AttendanceTime lateTime = instance.isPresent()?instance.get().calcTotalTime():new AttendanceTime(0);
 		//遅刻時間帯を再度補正
-		
+		if(instance.isPresent()) {
+			instance = Optional.of(instance.get().collectionAgain(lateTime));
+		}
 		return instance;
 	}
 	
@@ -146,7 +148,7 @@ public class LateTimeSheet{
 			TimeWithDayAttr attendance
 			,Optional<CoreTimeSetting> coreTimeSetting
 			,TimezoneUse predetermineTimeSet
-			,EmTimeZoneSet duplicateTimeSheet
+			,WithinWorkTimeFrame duplicateTimeSheet
 			,DeductionTimeSheet deductionTimeSheet){
 		//控除区分を基に丸め設定を取得しておく
 		//TimeRoundingSetting timeRoundingSetting = lateLeaveEarlySettingOfWorkTime.getTimeRoundingSetting(deductionAtr);
@@ -155,7 +157,8 @@ public class LateTimeSheet{
 		TimeSpanForCalc calcRange = LateDecisionClock.getCalcRange(predetermineTimeSet, attendance, coreTimeSetting);
 		//遅刻時間帯の作成
 		TimeWithDayAttr start = calcRange.getStart();
-		TimeWithDayAttr end = duplicateTimeSheet.getTimezone().getEnd().greaterThanOrEqualTo(attendance)?attendance:duplicateTimeSheet.getTimezone().getEnd();
+//		TimeWithDayAttr end = duplicateTimeSheet.getTimezone().getEnd().greaterThanOrEqualTo(attendance)?attendance:duplicateTimeSheet.getTimezone().getEnd();
+		TimeWithDayAttr end = calcRange.getEnd().greaterThanOrEqualTo(attendance)?attendance:duplicateTimeSheet.getCalcrange().getEnd();
 		
 		LateLeaveEarlyTimeSheet timeSheet = new LateLeaveEarlyTimeSheet(
 								new TimeZoneRounding(start,end,new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN)),

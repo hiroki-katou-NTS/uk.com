@@ -121,4 +121,43 @@ module nts.uk.ui.jqueryExtentions {
                 return $this.data(dataName);
         }
     }
+    
+    $.fn.tooltipWhenReadonly = function () {
+        
+        let $this = $(this);
+        let border = 2;
+        
+        $this.mouseenter(e => {
+            if (!$this.prop("readonly") || !$this.isOverflowContent(border)) {
+                return;
+            }
+            
+            $this.showTextContentAsTooltip(() => $this.val());
+        });
+    };
+    
+    $.fn.isOverflowContent = function (border) {
+        let $this = $(this);
+        return $this.prop("offsetWidth") - border < $this.prop("scrollWidth");
+    };
+    
+    $.fn.showTextContentAsTooltip = function (textContentGetter) {
+        
+        let $this = $(this);
+        
+        let $view = $('<div />').addClass('limited-label-view')
+                    .text(textContentGetter())
+                    .appendTo('body')
+                    .position({
+                        my: 'left top',
+                        at: 'left bottom',
+                        of: $this,
+                        collision: 'flip'
+                    });
+        
+        $this.bind('mouseleave.limitedlabel', () => {
+            $this.unbind('mouseleave.limitedlabel');
+            $view.remove();
+        });
+    };
 }

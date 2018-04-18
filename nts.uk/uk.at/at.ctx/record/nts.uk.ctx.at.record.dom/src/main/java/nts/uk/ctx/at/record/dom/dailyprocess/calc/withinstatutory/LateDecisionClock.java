@@ -3,14 +3,17 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -57,11 +60,14 @@ public class LateDecisionClock {
 				// 猶予時間帯の作成
 				TimeSpanForCalc graceTimeSheet = new TimeSpanForCalc(predetermineTimeSet.getTimeSheets().get(workNo).getStart(),
 																	 predetermineTimeSet.getTimeSheets().get(workNo).getStart().backByMinutes(lateGraceTime.getGraceTime().minute()));
-	
 				// 重複している控除分をずらす
-				//TimeSpanForCalc dedtimesheet = graceTimeSheet.getDuplicatedWith(deductionTimeSheet.getForDeductionTimeZoneList());
-	//			int breakTime = deductionTimeSheet.sumBreakTimeIn(graceTimeSheet);
-	//			decisionClock = graceTimeSheet.getEnd().forwardByMinutes(breakTime);
+				List<TimeZoneRounding> breakTimeSheetList = deductionTimeSheet.getForDeductionTimeZoneList().stream().filter(t -> t.getDeductionAtr().isBreak()==true).map(t -> t.getTimeSheet()).collect(Collectors.toList());
+				for(TimeZoneRounding breakTime:breakTimeSheetList) {
+					TimeSpanForCalc deductTime = new TimeSpanForCalc(breakTime.getStart(),breakTime.getEnd());
+					if(deductTime.contains(graceTimeSheet.getEnd())){
+						graceTimeSheet = new TimeSpanForCalc(graceTimeSheet.getStart(), deductTime.getEnd());
+					}
+				}
 				decisionClock = graceTimeSheet.getEnd();
 			}
 		}

@@ -111,7 +111,9 @@ public class CheckBeforeRegisterHolidayWork {
 		// 03-02_実績超過チェック
 		for(CaculationTime breakTime : convertList(holidayWorkInputs)){
 			for(Map.Entry<Integer,TimeWithCalculationImport> entry : dailyAttendanceTimeCaculationImport.getHolidayWorkTime().entrySet()){
-				holidayThreeProcess.checkCaculationActualExcess(app.getPrePostAtr().value, ApplicationType.BREAK_TIME_APPLICATION.value, employeeId, appHolidayWork.getCompanyID(), app.getAppDate(), breakTime, appHolidayWork.getWorkTimeCode() == null ?"" : appHolidayWork.getWorkTimeCode().toString(), entry.getValue().getCalTime());
+				if(breakTime.getFrameNo() == entry.getKey()){
+					holidayThreeProcess.checkCaculationActualExcess(app.getPrePostAtr().value, ApplicationType.BREAK_TIME_APPLICATION.value, employeeId, appHolidayWork.getCompanyID(), app.getAppDate(), breakTime, appHolidayWork.getWorkTimeCode() == null ?"" : appHolidayWork.getWorkTimeCode().toString(), entry.getValue().getCalTime());
+				}
 			}
 		}
 		

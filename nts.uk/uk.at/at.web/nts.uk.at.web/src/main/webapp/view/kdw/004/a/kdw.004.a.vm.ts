@@ -95,11 +95,10 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                 nts.uk.ui.dialog.alert({ messageId: error.messageId });
             });
         }
-
         clickDateJumpToKdw003(date) {
             var self = this;
             let initParam = new DPCorrectionInitParam(DPCorrectionScreenMode.APPROVAL, self.lstData.map((data) => { return data.employeeId; }), false, false, self.selectedClosure());
-            initParam.transitionDesScreen = 'KDW004';
+            initParam.transitionDesScreen = '/view/kdw/004/a/index.xhtml';
             let extractionParam = new DPCorrectionExtractionParam(DPCorrectionDisplayFormat.DATE, self.datePeriod().startDate, self.datePeriod().endDate, self.lstData.map((data) => { return data.employeeId; }));
             extractionParam.dateTarget = moment(date).format("YYYY/MM/DD");
             nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
@@ -107,9 +106,11 @@ module nts.uk.at.view.kdw004.a.viewmodel {
 
         clickStatusJumpToKdw003(employeeId) {
             var self = this;
-            let initParam = new DPCorrectionInitParam(DPCorrectionScreenMode.APPROVAL, employeeId, false, false, self.selectedClosure());
-            initParam.transitionDesScreen = 'KDW004';
-            let extractionParam = new DPCorrectionExtractionParam(DPCorrectionDisplayFormat.INDIVIDUAl, self.datePeriod().startDate, self.datePeriod().endDate, employeeId);
+            let lstEmpId =[];
+            lstEmpId.push(employeeId);
+            let initParam = new DPCorrectionInitParam(DPCorrectionScreenMode.APPROVAL, lstEmpId, false, false, self.selectedClosure());
+            initParam.transitionDesScreen = '/view/kdw/004/a/index.xhtml';
+            let extractionParam = new DPCorrectionExtractionParam(DPCorrectionDisplayFormat.ErrorAlarm, self.datePeriod().startDate, self.datePeriod().endDate, employeeId);
             extractionParam.individualTarget = employeeId;
             nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
         }
@@ -117,7 +118,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
         clickNameJumpToKdw003(employeeId) {
             var self = this;
             let initParam = new DPCorrectionInitParam(DPCorrectionScreenMode.APPROVAL, self.lstData.map((data) => { return data.employeeId; }), false, false, self.selectedClosure());
-            initParam.transitionDesScreen = 'KDW004';
+            initParam.transitionDesScreen = '/view/kdw/004/a/index.xhtml';
             let extractionParam = new DPCorrectionExtractionParam(DPCorrectionDisplayFormat.INDIVIDUAl, self.datePeriod().startDate, self.datePeriod().endDate, employeeId);
             extractionParam.individualTarget = employeeId;
             nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
