@@ -182,8 +182,11 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 						|| !o1.getAttendanceStamp().get().getStamp().isPresent()) {
 					return -1;
 				}
-				int t1 = o1.getAttendanceStamp().get().getStamp().get().getTimeWithDay().v().intValue();
-				int t2 = o2.getAttendanceStamp().get().getStamp().get().getTimeWithDay().v().intValue();
+				//高須の応急処置
+				int t1 = o1.getAttendanceStamp().get().getStamp().get().getTimeWithDay()!=null?o1.getAttendanceStamp().get().getStamp().get().getTimeWithDay().v().intValue():0;
+				int t2 = o2.getAttendanceStamp().get().getStamp().get().getTimeWithDay()!=null?o2.getAttendanceStamp().get().getStamp().get().getTimeWithDay().v().intValue():0;
+//				int t1 = o1.getAttendanceStamp().get().getStamp().get().getTimeWithDay().v().intValue();
+//				int t2 = o2.getAttendanceStamp().get().getStamp().get().getTimeWithDay().v().intValue();
 				if (t1 == t2)
 					return 0;
 				return t1 < t2 ? -1 : 1;
@@ -195,8 +198,11 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 			// 重複の判断処理
 			TimeWithDayAttr startDate1 = timeZone.getStart();
 			TimeWithDayAttr endDate1 = timeZone.getEnd();
-			TimeWithDayAttr startDate2 = timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay();
-			TimeWithDayAttr endDate2 = timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay();
+			//高須の応急処置
+			TimeWithDayAttr startDate2 = timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay()!=null?timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay():new TimeWithDayAttr(0);
+			TimeWithDayAttr endDate2 = timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay()!=null?timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay():new TimeWithDayAttr(0);
+//			TimeWithDayAttr startDate2 = timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay();
+//			TimeWithDayAttr endDate2 = timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay();
 			TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(startDate1, endDate1);
 			TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(startDate2, endDate2);
 			DuplicateStateAtr duplicateStateAtr = this.rangeOfDayTimeZoneService
@@ -598,5 +604,49 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		}
 		return false;
 	}
+	
+	/**
+	 * 重複している控除時間帯を保持
+	 * @param companyId
+	 * @param employeeID
+	 * @param processingDate
+	 * @param WorkInfo
+	 * @return
+	 */
+	@Override
+	public Optional<BreakTimeOfDailyPerformance> getBreakTime(String companyId, String employeeID, GeneralDate processingDate,
+			WorkInfoOfDailyPerformance WorkInfo) {
+		Optional<BreakTimeOfDailyPerformance> breakOpt = this.breakTimeOfDailyPerformanceRepo.find(employeeID, processingDate, 0);
+		if(breakOpt.isPresent()){
+			Optional.empty();
+		}
+		BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut = new BreakTimeZoneSettingOutPut();
 
+		boolean checkBreakTimeSetting = this.checkBreakTimeSetting(companyId, employeeID, processingDate,
+																	null, WorkInfo, breakTimeZoneSettingOutPut);
+		if (!checkBreakTimeSetting) {
+			return null;
+		}
+		List<DeductionTime> lstTimezone = breakTimeZoneSettingOutPut.getLstTimezone();
+		Collections.sort(lstTimezone, new Comparator<DeductionTime>() {
+			public int compare(DeductionTime o1, DeductionTime o2) {
+				int t1 = o1.getStart().v();
+				int t2 = o2.getStart().v();
+				if (t1 == t2)
+					return 0;
+				return t1 < t2 ? -1 : 1;
+			}
+		});
+		List<BreakTimeSheet> lstBreakTime = new ArrayList<BreakTimeSheet>();
+		int size = lstTimezone.size();
+		for (int i = 0; i < size; i++) {
+			DeductionTime timeZone = lstTimezone.get(i);
+			// 時間帯．休憩枠NO
+			int frameNo = i + 1;
+			lstBreakTime.add(new BreakTimeSheet(new BreakFrameNo(frameNo), timeZone.getStart(), timeZone.getEnd(),
+					new AttendanceTime(0)));
+		}
+		// 休憩種類 ← 「就業時間帯から参照」
+		return Optional.of(new BreakTimeOfDailyPerformance(employeeID, BreakType.REFER_WORK_TIME, lstBreakTime, processingDate));
+	}
 }

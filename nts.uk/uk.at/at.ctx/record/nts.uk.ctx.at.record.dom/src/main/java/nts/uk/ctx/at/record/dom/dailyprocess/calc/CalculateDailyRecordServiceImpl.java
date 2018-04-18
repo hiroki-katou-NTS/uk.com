@@ -18,6 +18,7 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
@@ -71,6 +72,9 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorChe
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka.OotsukaProcessService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.statutoryworkinghours.DailyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.statutoryworkinghours.DailyStatutoryWorkingHoursImpl;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.statutoryworkinghours.monthly.MonAndWeekStatutoryTime;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.statutoryworkinghours.monthly.MonthlyFlexStatutoryLaborTime;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.statutoryworkinghours.monthly.MonthlyStatutoryWorkingHours;
 //import nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka.OotsukaProcessService;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
@@ -240,6 +244,14 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	@Inject
 	private DailyStatutoryWorkingHours dailyStatutoryWorkingHours;
 	
+	@Inject
+	private ReflectBreakTimeOfDailyDomainService reflectBreakTimeOfDailyDomainService;
+	
+	//test
+	@Inject
+	private MonthlyStatutoryWorkingHours monthlyStatutoryWorkingHours;
+	
+	
 	/**
 	 * 勤務情報を取得して計算
 	 * @return 日別実績(Work)
@@ -317,7 +329,21 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		val dailyUnit = dailyStatutoryWorkingHours.getDailyUnit(companyId, employmentCd, employeeId, targetDate, personalInfo.getWorkingSystem());
 		/*法定労働時間(日単位)_（仮）*/
 		//DailyUnit dailyUnit = new DailyUnit(new TimeOfDay(480));
-
+		
+		/*法定労働時間　月テスト　直ぐ消す*/
+		Optional<MonAndWeekStatutoryTime> test = monthlyStatutoryWorkingHours.getMonAndWeekStatutoryTime(companyId, employmentCd, employeeId, targetDate, YearMonth.of(2018, 5), WorkingSystem.REGULAR_WORK);
+		MonthlyFlexStatutoryLaborTime test2 = monthlyStatutoryWorkingHours.getFlexMonAndWeekStatutoryTime(companyId, employmentCd, employeeId, targetDate, YearMonth.of(2018, 5));
+		
+		
+		/*休憩時間帯（遅刻早退用）*/
+//		 List<TimeSheetOfDeductionItem> breakTimeList = new ArrayList<>();
+//		if(integrationOfDaily.getAttendanceLeave().isPresent()) {
+//			Optional<BreakTimeOfDailyPerformance> test = reflectBreakTimeOfDailyDomainService.getBreakTime(companyId, employeeId, targetDate,integrationOfDaily.getWorkInformation());
+//			if(test.isPresent()) {
+//				 breakTimeList = test.get().changeAllTimeSheetToDeductionItem();
+//			}
+//		}
+	
 		/*各加算設定取得用*/
 		Map<String, AggregateRoot> map = holidayAddtionRepository.findByCompanyId(companyId);
 		

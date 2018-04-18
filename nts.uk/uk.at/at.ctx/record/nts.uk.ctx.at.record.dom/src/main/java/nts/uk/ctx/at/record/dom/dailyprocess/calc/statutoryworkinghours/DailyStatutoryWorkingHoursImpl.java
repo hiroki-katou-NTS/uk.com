@@ -63,8 +63,7 @@ public class DailyStatutoryWorkingHoursImpl implements DailyStatutoryWorkingHour
 		return getWorkingTimeSetting(companyId,employmentCd,employeeId,baseDate,workingSystem)
 				.map(w -> w.getDailyTime())
 				.orElse(DailyUnit.zero());
-	}
-	
+	}	
 	
 	/**
 	 * 取得する単位を取得
