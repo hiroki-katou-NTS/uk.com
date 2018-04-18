@@ -1,7 +1,6 @@
 module nts.uk.at.view.kdr001.b.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-
         export class ScreenModel {
             textName1: KnockoutObservable<string>;
             textName2: KnockoutObservable<string>;
@@ -28,10 +27,6 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     { code: "3", name: '切り捨て' }
                 ]);
 
-                // Fire event.
-                $("#multi-list").on('itemDeleted', (function(e: Event) {
-                    alert("Item is deleted in multi grid is " + e["detail"]["target"]);
-                }));
 
                 self.currentCode.subscribe(cd => {
                     errors.clearAll();
@@ -54,15 +49,13 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                             self.currentHoliday(null);
                         }
                     }
-                });
-            }
-
+            });
         }
         
         /**
          * 開始
          **/
-        start(): JQueryPromise<any> {
+        private start() : JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
             nts.uk.ui.block.invisible();
