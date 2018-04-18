@@ -46,7 +46,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	private static final String SELECT_BY_COM_ID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId");
 
 	private final String GET_LAST_EMPLOYEE = "SELECT c.employeeCode FROM BsymtEmployeeDataMngInfo c "
-			+ " WHERE c.companyId = :companyId AND c.employeeCode LIKE CONCAT(:emlCode, '%')"
+			+ " WHERE c.companyId = :companyId AND c.delStatus = 0 AND c.employeeCode LIKE CONCAT(:emlCode, '%')"
 			+ " ORDER BY c.employeeCode DESC";
 
 	// Lanlt end
