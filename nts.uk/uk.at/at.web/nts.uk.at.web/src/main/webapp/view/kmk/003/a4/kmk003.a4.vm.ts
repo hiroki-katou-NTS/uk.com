@@ -192,10 +192,10 @@ module a4 {
                     dataObject.stampGoWork1End = oneDayEndTime;
                     dataObject.stampLeavingWork1Start = _self.mainSettingModel.predetemineTimeSetting.startDateClock();
                     dataObject.stampLeavingWork1End = oneDayEndTime;
-                    dataObject.stampGoWork2Start = _self.mainSettingModel.predetemineTimeSetting.startDateClock();
-                    dataObject.stampGoWork2End = oneDayEndTime;
-                    dataObject.stampLeavingWork2Start = _self.mainSettingModel.predetemineTimeSetting.startDateClock();
-                    dataObject.stampLeavingWork2End = oneDayEndTime;
+                    dataObject.stampGoWork2Start = 0;
+                    dataObject.stampGoWork2End = 1440;
+                    dataObject.stampLeavingWork2Start = 0;
+                    dataObject.stampLeavingWork2End = 1440;
                 } else {
                     dataObject.stampGoWork1Start = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getGoWork1Stamp().startTime();
                     dataObject.stampGoWork1End = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getGoWork1Stamp().endTime();
@@ -214,10 +214,10 @@ module a4 {
                     dataObject.stampGoWork1End = oneDayEndTime;
                     dataObject.stampLeavingWork1Start = _self.mainSettingModel.predetemineTimeSetting.startDateClock();
                     dataObject.stampLeavingWork1End = oneDayEndTime;
-                    dataObject.stampGoWork2Start = _self.mainSettingModel.predetemineTimeSetting.startDateClock();
-                    dataObject.stampGoWork2End = oneDayEndTime;
-                    dataObject.stampLeavingWork2Start = _self.mainSettingModel.predetemineTimeSetting.startDateClock();
-                    dataObject.stampLeavingWork2End = oneDayEndTime;
+                    dataObject.stampGoWork2Start = 0;
+                    dataObject.stampGoWork2End = 1440;
+                    dataObject.stampLeavingWork2Start = 0;
+                    dataObject.stampLeavingWork2End = 1440;
                 } else {
                     dataObject.stampGoWork1Start = _self.mainSettingModel.flexWorkSetting.getGoWork1Stamp().startTime();
                     dataObject.stampGoWork1End = _self.mainSettingModel.flexWorkSetting.getGoWork1Stamp().endTime();
