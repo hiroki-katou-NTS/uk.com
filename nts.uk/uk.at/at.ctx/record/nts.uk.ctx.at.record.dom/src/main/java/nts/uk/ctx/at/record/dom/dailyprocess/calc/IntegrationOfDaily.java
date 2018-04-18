@@ -70,6 +70,7 @@ public class IntegrationOfDaily {
 	//日別実績の任意項目
 	private Optional<AnyItemValueOfDaily> anyItemValue;
 	//日別実績の編集状態
+	@Setter
 	private List<EditStateOfDailyPerformance> editState;
 	//日別実績の臨時出退勤
 	private Optional<TemporaryTimeOfDailyPerformance> tempTime;
