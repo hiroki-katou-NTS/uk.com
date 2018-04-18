@@ -233,7 +233,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                             cwt.afternoonCls(itemWorkType.afternoonCls);
                             cwt.calculatorMethod(itemWorkType.calculatorMethod);
                         }
-
                         self.setWorkTypeSet(cwt.oneDay(), itemWorkType.oneDay);
                         self.setWorkTypeSet(cwt.morning(), itemWorkType.morning);
                         self.setWorkTypeSet(cwt.afternoon(), itemWorkType.afternoon);
@@ -297,7 +296,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             worktypeset.workTypeCode(itemWorkType.workTypeCode);
             worktypeset.attendanceTime(itemWorkType.attendanceTime);
             worktypeset.closeAtr(itemWorkType.closeAtr);
-            worktypeset.countHodiday(itemWorkType.countHodiday);
+            worktypeset.countHodiday(itemWorkType.countHodiday == 0 ? true : false);
             worktypeset.dayNightTimeAsk(itemWorkType.dayNightTimeAsk);
             worktypeset.digestPublicHd(itemWorkType.digestPublicHd);
             worktypeset.genSubHodiday(itemWorkType.genSubHodiday);
@@ -415,7 +414,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         private changeBooleanToNumber(wts: IWorkTypeSet): void {
             wts.digestPublicHd = Number(wts.digestPublicHd);
             wts.attendanceTime = Number(wts.attendanceTime);
-            wts.countHodiday = Number(wts.countHodiday);
+            wts.countHodiday = wts.countHodiday ? 0 : 1;
             wts.dayNightTimeAsk = Number(wts.dayNightTimeAsk);
             wts.genSubHodiday = Number(wts.genSubHodiday);
             wts.timeLeaveWork = Number(wts.timeLeaveWork);
@@ -519,16 +518,8 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 od = cwt.oneDay(),
                 mn = cwt.morning(),
                 af = cwt.afternoon(),
-                crod = self.currentOneDay(),
-                crmn = self.currentMorning(),
-                cratn = self.currentAfternoon(),
-                sod = self.oneDay();
 
             self.checkDisabled(true);
-            crmn.countHodiday = (false);
-            crod.countHodiday = (false);
-            cratn.countHodiday = (false);
-            sod.countHodiday(false);
             cwt.workTypeCode('');
             cwt.dispName('');
             cwt.dispAbName('');
