@@ -9,7 +9,7 @@ import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.uk.ctx.at.function.app.command.holidaysremaining.report.HolidaysRemainingReportHandler;
 import nts.uk.ctx.at.function.app.command.holidaysremaining.report.HolidaysRemainingReportQuery;
 
-@Path("holidaysremaining")
+@Path("at/function/holidaysremaining")
 @Produces("application/json") 
 public class HolidaysRemainingReportWebService {
 	
