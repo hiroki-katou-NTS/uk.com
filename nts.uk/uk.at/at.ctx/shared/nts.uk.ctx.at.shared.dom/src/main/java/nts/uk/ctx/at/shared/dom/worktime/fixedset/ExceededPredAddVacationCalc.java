@@ -14,15 +14,15 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  * The Class ExceededPredAddVacationCalc.
  */
 @Getter
-// 休暇加算時間が所定を超過した場合の計算
+// 休暇�算時間が所定を趁�した場合�計�
 public class ExceededPredAddVacationCalc extends WorkTimeDomainObject {
 
 	/** The calc method. */
-	// 計算方法
+	// 計算方�
 	private CalcMethodExceededPredAddVacation calcMethod;
 
 	/** The ot frame no. */
-	// 残業枠
+	// 残業�
 	private OTFrameNo otFrameNo;
 
 	/**

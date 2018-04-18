@@ -8,8 +8,8 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.TempAnnualLeaveManagement;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.TempAnnualLeaveMngRepository;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveManagement;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveMngRepository;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.annlea.KrcdtAnnleaMngTemp;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.annlea.KrcdtAnnleaMngTempPK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -27,6 +27,11 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 			+ "AND a.PK.ymd <= :endYmd "
 			+ "ORDER BY a.PK.ymd ";
 
+	private static final String DELETE_BY_PERIOD = "DELETE FROM KrcdtAnnleaMngTemp a "
+			+ "WHERE a.PK.employeeId = :employeeId "
+			+ "AND a.PK.ymd >= :startYmd "
+			+ "AND a.PK.ymd <= :endYmd ";
+	
 	private static final String DELETE_PAST_YMD = "DELETE FROM KrcdtAnnleaMngTemp a "
 			+ "WHERE a.PK.employeeId = :employeeId "
 			+ "AND a.PK.ymd <= :criteriaDate ";
@@ -75,6 +80,17 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 	public void remove(String employeeId, GeneralDate ymd) {
 
 		this.commandProxy().remove(KrcdtAnnleaMngTemp.class, new KrcdtAnnleaMngTempPK(employeeId, ymd));
+	}
+	
+	/** 削除　（期間） */
+	@Override
+	public void removeByPeriod(String employeeId, DatePeriod period) {
+		
+		this.getEntityManager().createQuery(DELETE_BY_PERIOD)
+				.setParameter("employeeId", employeeId)
+				.setParameter("startYmd", period.start())
+				.setParameter("endYmd", period.end())
+				.executeUpdate();
 	}
 	
 	/** 削除　（基準日以前） */

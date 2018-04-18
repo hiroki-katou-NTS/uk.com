@@ -28,7 +28,7 @@ public class SaveWkpMonthCalSetCommand implements WkpDeforLaborMonthActCalSetGet
 		WkpFlexMonthActCalSetGetMemento, WkpRegulaMonthActCalSetGetMemento {
 
 	/** The wkp id. */
-	private String wkpId;
+	private String workplaceId;
 
 	/** The flex aggr setting. */
 	private FlexMonthWorkTimeAggrSetDto flexAggrSetting;
@@ -58,7 +58,7 @@ public class SaveWkpMonthCalSetCommand implements WkpDeforLaborMonthActCalSetGet
 	 */
 	@Override
 	public WorkplaceId getWorkplaceId() {
-		return new WorkplaceId(this.wkpId);
+		return new WorkplaceId(this.workplaceId);
 	}
 
 	/*
@@ -92,5 +92,14 @@ public class SaveWkpMonthCalSetCommand implements WkpDeforLaborMonthActCalSetGet
 	@Override
 	public DeforWorkTimeAggrSet getDeforAggrSetting() {
 		return this.deforAggrSetting.toDomain();
+	}
+	
+	/**
+	 * Gets the wkp id.
+	 *
+	 * @return the wkp id
+	 */
+	public String getWkpId() {
+		return this.workplaceId;
 	}
 }

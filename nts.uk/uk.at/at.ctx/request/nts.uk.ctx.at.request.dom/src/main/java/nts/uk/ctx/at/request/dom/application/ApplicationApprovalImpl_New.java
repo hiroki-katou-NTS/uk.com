@@ -84,6 +84,7 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 			break;
 		case BREAK_TIME_APPLICATION:
 			appHolidayWorkRepository.delete(companyID, appID);
+			break;
 		case COMPLEMENT_LEAVE_APPLICATION:
 			absRepo.remove(appID);
 			recRepo.remove(appID);

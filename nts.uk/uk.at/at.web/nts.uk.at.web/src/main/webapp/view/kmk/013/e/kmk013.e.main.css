@@ -1,5 +1,5 @@
-.panel.panel-gray-bg {
-	width: 600px;
+.panel.panel-frame {
+	width: 610px;
 }
 
 #unit-combo-box {
@@ -13,8 +13,8 @@
 }
 
 .nts-fixed-table .nts-fixed-body-container {
-    height: 539px;
-    max-width: 590px !important;
+    height: 360px;
+    max-width: 600px !important;
 }
 
 .right-box {
@@ -23,14 +23,17 @@
 
 .round-box {
 	border-radius: 5px;
-	border: 1px solid;
 	width: 550px;
 	height: 100px;
 	padding: 20px 10px 0px 20px;
-	margin-left: 20px;
 	background-color: white;
 }
 
 .right-box-component {
 	margin-right: 10px;
+}
+
+.caret-helpbutton.caret-top:before,
+.caret-helpbutton.caret-top:after {
+	left: 0;
 }

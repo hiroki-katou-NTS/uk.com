@@ -10,6 +10,8 @@ public interface PersonInfoItemAuthRepository {
 	
 	List<PersonInfoItemAuth> getAllItemAuth(String roleId, String categoryId);
 	
+	Optional<PersonInfoItemAuth> getItemAuth(String roleId, String ctgCd, String itemCd, String companyId, String contractCd);
+	
 	boolean hasItemData(String itemCd, List<String> perInfoCtgId);
 	
 	Map<String, List<PersonInfoItemAuth>> getByRoleIdAndCategories(String roleId, List<String> categoryIdList);

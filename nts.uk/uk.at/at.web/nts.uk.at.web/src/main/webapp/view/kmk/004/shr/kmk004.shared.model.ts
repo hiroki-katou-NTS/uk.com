@@ -1,4 +1,22 @@
 module nts.uk.at.view.kmk004.shared.model {
+    import UsageUnitSettingService = nts.uk.at.view.kmk004.e.service;
+    
+    export function loadUsageUnitSetting(): JQueryPromise<any> {
+        return UsageUnitSettingService.findUsageUnitSetting();
+    }
+    
+    export class UsageUnitSetting {
+        employee: KnockoutObservable<boolean>;
+        employment: KnockoutObservable<boolean>;
+        workplace: KnockoutObservable<boolean>;
+
+        constructor() {
+            let self = this;
+            self.employee = ko.observable(true);
+            self.employment = ko.observable(true);
+            self.workplace = ko.observable(true);
+        }
+    }
 
     export class CompanyWTSetting {
         deformationLaborSetting: DeformationLaborSetting;
@@ -87,9 +105,9 @@ module nts.uk.at.view.kmk004.shared.model {
             self.normalWorktime().updateData(dto.regularLaborTime);
             self.deformLaborWorktime().updateData(dto.transLaborTime);
 
-            self.normalSetting().updateData(dto);
+            self.normalSetting().updateData(dto, SelectedSettingType.NORMAL_SETTING);
             self.flexSetting().updateData(dto);
-            self.deformLaborSetting().updateData(dto);
+            self.deformLaborSetting().updateData(dto, SelectedSettingType.DEFORM_LABOR_SETTING);
         }
 
         public updateDetailData(dto: MonthlyCalSettingDto): void {
@@ -135,7 +153,7 @@ module nts.uk.at.view.kmk004.shared.model {
             nts.uk.ui.windows.setShared('NORMAL_SET_PARAM', params, true);
 
             nts.uk.ui.windows.sub.modal("/view/kmk/004/f/index.xhtml").onClosed(() => {
-                $('#companyYearPicker').focus();
+                $('#worktimeYearPicker').focus();
 
                 // Get params
                 var normalSetOutput: NormalSetParams = nts.uk.ui.windows.getShared('NORMAL_SET_OUTPUT');
@@ -167,7 +185,7 @@ module nts.uk.at.view.kmk004.shared.model {
             nts.uk.ui.windows.setShared('FLEX_SET_PARAM', params, true);
 
             nts.uk.ui.windows.sub.modal("/view/kmk/004/g/index.xhtml").onClosed(() => {
-                $('#companyYearPicker').focus();
+                $('#worktimeYearPicker').focus();
 
                 // get params from dialog 
                 var flexSetOutput: FlexSetParams = nts.uk.ui.windows.getShared('FLEX_SET_OUTPUT');
@@ -209,7 +227,7 @@ module nts.uk.at.view.kmk004.shared.model {
             nts.uk.ui.windows.setShared('DEFORM_SET_PARAM', params, true);
 
             nts.uk.ui.windows.sub.modal("/view/kmk/004/h/index.xhtml").onClosed(() => {
-                $('#companyYearPicker').focus();
+                $('#worktimeYearPicker').focus();
 
                 // Get params
                 var deformSetOutput: DeformSetParams = nts.uk.ui.windows.getShared('DEFORM_SET_OUTPUT');
@@ -651,52 +669,26 @@ module nts.uk.at.view.kmk004.shared.model {
 
         public updateData(model: WorktimeFlexSetting1): void {
             let self = this;
-            self.statutorySetting.forEach(i => {
-                let flexData: FlexMonthlyTime = model.flexSettingDetail().filter(j => i.month == j.month())[0];
-                let updatedData: MonthlyTime = new MonthlyTime();
-                updatedData.month(flexData.month());
-                updatedData.time(flexData.statutoryTime());
 
-                i.updateData(updatedData);
-            });
+            // clear list
+            self.statutorySetting.length = 0;
+            self.specifiedSetting.length = 0;
 
-            self.specifiedSetting.forEach(i => {
-                let flexData: FlexMonthlyTime = model.flexSettingDetail().filter(j => i.month == j.month())[0];
-                let updatedData: MonthlyTime = new MonthlyTime();
-                updatedData.month(flexData.month());
-                updatedData.time(flexData.specifiedTime());
-                i.updateData(updatedData);
+            // to dto
+            model.flexSettingDetail().forEach(i => {
+                const statutory = new MonthlyUnitDto();
+                statutory.month = i.month();
+                statutory.monthlyTime = i.statutoryTime();
+                self.statutorySetting.push(statutory);
+
+                const specified = new MonthlyUnitDto();
+                specified.month = i.month();
+                specified.monthlyTime = i.specifiedTime();
+                self.specifiedSetting.push(specified);
             });
         }
-        //            public sortMonth(startMonth: number): void {
-        //                let self = this;
-        //                let sortedList: Array<any> = new Array<any>();
-        //                let flexSortedList: Array<any> = new Array<any>();
-        //                for (let i = 0; i < 12; i++) {
-        //                    if (startMonth > 12) {
-        //                        // reset month.
-        //                        startMonth = 1;
-        //                    }
-        //                    let flexValue = self.flexSettingDetail().filter(m => startMonth == m.month())[0];
-        //                    flexSortedList.push(flexValue);
-        //                    startMonth++;
-        //                }
-        //                self.flexSettingDetail(flexSortedList);
-        //            }
     }
 
-    //        export class FlexMonthlyTimeDto {
-    //            month: KnockoutObservable<number>;
-    //            statutoryTime: KnockoutObservable<number>;
-    ////            specifiedMonth: KnockoutObservable<number>;
-    //            specifiedTime: KnockoutObservable<number>;
-    //            constructor() {
-    //                let self = this;
-    //                self.month = ko.observable(new Date().getMonth());
-    //                self.statutoryTime = ko.observable(0);
-    //                self.specifiedTime = ko.observ
-    //            }
-    //        }
 
     /**
      * 通常勤務の法定内集計設定
@@ -856,14 +848,14 @@ module nts.uk.at.view.kmk004.shared.model {
      * 週開始
      */
     export class StartWeek {
-        static MONDAY = 2;
-        static TUESDAY = 3;
-        static WEDNESDAY = 4;
-        static THURSDAY = 5;
-        static FRIDAY = 6;
-        static SATURDAY = 7;
-        static SUNDAY = 0;
-        static CLOSURE_STR_DATE = 1;
+        static MONDAY = 0;
+        static TUESDAY = 1;
+        static WEDNESDAY = 2;
+        static THURSDAY = 3;
+        static FRIDAY = 4;
+        static SATURDAY = 5;
+        static SUNDAY = 6;
+        static CLOSURE_STR_DATE = 7;
     }
 
     /**
@@ -965,13 +957,21 @@ module nts.uk.at.view.kmk004.shared.model {
             }
         }
 
-        public updateData(dto: StatutoryWorktimeSettingDto): void {
+        public updateData(dto: StatutoryWorktimeSettingDto, key: number): void {
             let self = this;
             self.year(dto.year);
-            self.statutorySetting().forEach(i => {
-                let updatedData: MonthlyUnitDto = dto.normalSetting.statutorySetting.filter(j => i.month() == j.month)[0];
-                i.updateData(updatedData);
-            });
+            if (key == SelectedSettingType.NORMAL_SETTING) {
+                self.statutorySetting().forEach(i => {
+                    let updatedData: MonthlyUnitDto = dto.normalSetting.statutorySetting.filter(j => i.month() == j.month)[0];
+                    i.updateData(updatedData);
+                });
+            } else {
+                self.statutorySetting().forEach(i => {
+                    let updatedData: MonthlyUnitDto = dto.deforLaborSetting.statutorySetting.filter(j => i.month() == j.month)[0];
+                    i.updateData(updatedData);
+                });
+            }
+            
         }
 
         public sortMonth(startMonth: number): void {
@@ -990,49 +990,7 @@ module nts.uk.at.view.kmk004.shared.model {
             self.statutorySetting(sortedList);
         }
     }
-    /**
-     * 会社別フレックス勤務月間労働時間
-     */
-    export class WorktimeFlexSetting {
-        year: KnockoutObservable<number>;
-        // 法定時間: 月単位
-        statutorySetting: KnockoutObservableArray<MonthlyTime>;
-        // 所定時間: 月単位
-        specifiedSetting: KnockoutObservableArray<MonthlyTime>;
-
-        constructor() {
-            let self = this;
-            self.year = ko.observable(new Date().getFullYear());
-            self.statutorySetting = ko.observableArray([]);
-            self.specifiedSetting = ko.observableArray([]);
-            for (let i = 1; i < 13; i++) {
-                let m = new MonthlyTime();
-                m.month(i);
-                m.time(0);
-                self.statutorySetting.push(m);
-                self.statutorySetting.push(m);
-            }
-        }
-
-        public sortMonth(startMonth: number): void {
-            let self = this;
-            let statutorySortedList: Array<any> = new Array<any>();
-            let specifiedSortedList: Array<any> = new Array<any>();
-            for (let i = 0; i < 12; i++) {
-                if (startMonth > 12) {
-                    // reset month.
-                    startMonth = 1;
-                }
-                let statutoryValue = self.statutorySetting().filter(m => startMonth == m.month())[0];
-                let specifiedValue = self.specifiedSetting().filter(m => startMonth == m.month())[0];
-                statutorySortedList.push(statutoryValue);
-                specifiedSortedList.push(specifiedValue);
-                startMonth++;
-            }
-            self.statutorySetting(statutorySortedList);
-            self.specifiedSetting(specifiedSortedList);
-        }
-    }
+    
 
     /**
      * 会社別フレックス勤務月間労働時間
@@ -1245,5 +1203,10 @@ module nts.uk.at.view.kmk004.shared.model {
             self.isIncludeLegalExcessOutside = false;
             self.isIncludeHolidayExcessOutside = false;
         }
+    }
+    
+    export class SelectedSettingType {
+        static NORMAL_SETTING = 1;
+        static DEFORM_LABOR_SETTING = 2;
     }
 }

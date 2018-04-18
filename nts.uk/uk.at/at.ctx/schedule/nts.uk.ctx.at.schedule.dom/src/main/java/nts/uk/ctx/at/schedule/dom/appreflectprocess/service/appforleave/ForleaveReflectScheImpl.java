@@ -1,17 +1,25 @@
 package nts.uk.ctx.at.schedule.dom.appreflectprocess.service.appforleave;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.gobacksche.GobackReflectParam;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.CommonReflectParamSche;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.StartEndTimeReflectScheService;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.servicedto.TimeReflectScheDto;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.ScheduleEditState;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleStateRepository;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class ForleaveReflectScheImpl implements ForleaveReflectSche{
@@ -19,64 +27,39 @@ public class ForleaveReflectScheImpl implements ForleaveReflectSche{
 	private BasicScheduleRepository basicSche;
 	@Inject
 	private WorkScheduleStateRepository workScheReposi;
+	@Inject
+	private BasicScheduleService basicService;
+	@Inject
+	private StartEndTimeReflectScheService startEndTimeScheService;
 	@Override
-	public void forlearveReflectSche(ForleaveReflectParam reflectParam) {
-		//勤務種類を反映する
-		//ドメインモデル「勤務予定基本情報」を取得する
-		Optional<BasicSchedule> optBasicScheOpt = basicSche.find(reflectParam.getEmployeeId(), reflectParam.getDatePara());		
-		if(!optBasicScheOpt.isPresent()) {
-			return;
-		}
-		BasicSchedule basicScheOpt = optBasicScheOpt.get();
-		//ドメインモデル「勤務予定基本情報」を編集する
-		BasicSchedule dataUpdate = new BasicSchedule(basicScheOpt.getEmployeeId(), 
-				basicScheOpt.getDate(), 
-				reflectParam.getWorktypeCode(), 
-				basicScheOpt.getWorkTimeCode(),
-				basicScheOpt.getConfirmedAtr());
-		basicSche.update(dataUpdate);
-		//勤務種類の編集状態を更新する
-		getListItem().stream().forEach(x ->{
+	public boolean forlearveReflectSche(CommonReflectParamSche reflectParam) {
+		try {
+			//勤種の反映
+			//勤務種類を反映する
+			//ドメインモデル「勤務予定基本情報」を取得する			
+			basicSche.changeWorkTypeTime(reflectParam.getEmployeeId(), reflectParam.getDatePara(), reflectParam.getWorktypeCode(), reflectParam.getWorkTimeCode());
+			//勤務種類の編集状態を更新する
 			WorkScheduleState scheData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION,
-					x,
+					1,
 					reflectParam.getDatePara(),
 					reflectParam.getEmployeeId());
 			workScheReposi.updateScheduleEditState(scheData);
-		});
+			//時刻の反映
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+		
 		
 	}
-	private List<Integer> getListItem(){
-		//予定項目ID=勤務種類の項目ID
-		List<Integer> lstItemId = new ArrayList<>();
-		lstItemId.add(1);
-		lstItemId.add(2);
-		lstItemId.add(3);
-		lstItemId.add(4);
-		lstItemId.add(5);
-		lstItemId.add(6);
-		lstItemId.add(7);
-		lstItemId.add(8);
-		lstItemId.add(9);
-		lstItemId.add(10);
-		lstItemId.add(11);
-		lstItemId.add(12);
-		lstItemId.add(13);
-		lstItemId.add(14);
-		lstItemId.add(15);
-		lstItemId.add(16);
-		lstItemId.add(17);
-		lstItemId.add(18);
-		lstItemId.add(19);
-		lstItemId.add(20);
-		lstItemId.add(21);
-		lstItemId.add(22);
-		lstItemId.add(23);
-		lstItemId.add(24);
-		lstItemId.add(25);
-		lstItemId.add(26);
-		lstItemId.add(27);		
-		return lstItemId;
-	}
+	@Override
+	public void reflectTime(String employeeId, GeneralDate dateData, String workTypeCode, Integer startTime, Integer endTime) {
+		//1日半日出勤・1日休日系の判定
+		WorkStyle checkworkDay = basicService.checkWorkDay(workTypeCode);
+		if(checkworkDay == WorkStyle.ONE_DAY_REST) {
+			startEndTimeScheService.updateStartTimeRflect(new TimeReflectScheDto(employeeId, dateData, startTime, endTime, 1, true, true));
+		}
+	}	
 }
 
 

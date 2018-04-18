@@ -27,8 +27,8 @@ import nts.uk.shr.com.context.AppContexts;
 public class SaveEmpMonthCalSetCommand implements EmpDeforLaborMonthActCalSetGetMemento,
 		EmpFlexMonthActCalSetGetMemento, EmpRegulaMonthActCalSetGetMemento {
 
-	/** The emp code. */
-	private String empCode;
+	/** The employment code. */
+	private String employmentCode;
 
 	/** The flex aggr setting. */
 	private FlexMonthWorkTimeAggrSetDto flexAggrSetting;
@@ -58,7 +58,7 @@ public class SaveEmpMonthCalSetCommand implements EmpDeforLaborMonthActCalSetGet
 	 */
 	@Override
 	public EmploymentCode getEmploymentCode() {
-		return new EmploymentCode(this.empCode);
+		return new EmploymentCode(this.employmentCode);
 	}
 
 	/*
@@ -93,5 +93,15 @@ public class SaveEmpMonthCalSetCommand implements EmpDeforLaborMonthActCalSetGet
 	public DeforWorkTimeAggrSet getDeforAggrSetting() {
 		return this.deforAggrSetting.toDomain();
 	}
+	
+	/**
+	 * Gets the empl code.
+	 *
+	 * @return the empl code
+	 */
+	public String getEmplCode() {
+		return this.employmentCode;
+	}
+	
 
 }

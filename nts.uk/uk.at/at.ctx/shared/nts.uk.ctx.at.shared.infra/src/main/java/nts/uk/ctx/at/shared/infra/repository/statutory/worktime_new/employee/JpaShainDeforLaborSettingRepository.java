@@ -4,24 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.employee;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaDeforLarSet;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaDeforLarSetPK;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaDeforLarSetPK_;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaDeforLarSet_;
 
 /**
  * The Class JpaShainDeforLaborSettingRepository.
@@ -34,18 +25,15 @@ public class JpaShainDeforLaborSettingRepository extends JpaRepository implement
 	 */
 	@Override
 	public Optional<ShainDeforLaborSetting> find(String cid, String empId, int year) {
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<KshstShaDeforLarSet> cq = cb.createQuery(KshstShaDeforLarSet.class);
-		Root<KshstShaDeforLarSet> root = cq.from(KshstShaDeforLarSet.class);
+		
+		Optional<KshstShaDeforLarSet> optEntity = this.queryProxy().find(new KshstShaDeforLarSetPK(cid, empId, year), KshstShaDeforLarSet.class);
 
-		List<Predicate> predicateList = new ArrayList<Predicate>();
-		predicateList.add(cb.equal(root.get(KshstShaDeforLarSet_.kshstShaDeforLarSetPK).get(KshstShaDeforLarSetPK_.cid), cid));
-		predicateList.add(cb.equal(root.get(KshstShaDeforLarSet_.kshstShaDeforLarSetPK).get(KshstShaDeforLarSetPK_.year), year));
-		predicateList.add(cb.equal(root.get(KshstShaDeforLarSet_.kshstShaDeforLarSetPK).get(KshstShaDeforLarSetPK_.sid), empId));
+		// Check exist
+		if (!optEntity.isPresent()) {
+			return Optional.empty();
+		}
 
-		cq.where(predicateList.toArray(new Predicate[] {}));
-		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getSingleResult()));
+		return Optional.ofNullable(this.toDomain(optEntity.get()));
 	}
 
 	/* 
@@ -79,9 +67,6 @@ public class JpaShainDeforLaborSettingRepository extends JpaRepository implement
 	 * @return the shain defor labor setting
 	 */
 	private ShainDeforLaborSetting toDomain(KshstShaDeforLarSet entity) {
-		if (entity == null) {
-			return null;
-		}
 		return new ShainDeforLaborSetting(new JpaShainDeforLaborSettingGetMemento(entity));
 	}
 	

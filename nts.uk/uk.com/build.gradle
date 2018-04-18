@@ -67,6 +67,25 @@ subprojects {
         into "${project(':com.web').projectDir}/../../uk.repo"
         include "nts*.jar"
 	}
+
+	task initd (dependsOn: [
+		':shr:nts.uk.shr.com:upver',
+		':shr:nts.uk.shr.find:upver',
+		':query:nts.uk.query.pub:upver',
+		':wk.ctx:nts.uk.ctx.workflow.app:upver',
+		':wk.ctx:nts.uk.ctx.workflow.pub:upver',
+		':com.ctx:bs:company:nts.uk.ctx.bs.company.dom:upver',
+		':com.ctx:bs:company:nts.uk.ctx.bs.company.infra:upver',
+		':com.ctx:bs:company:nts.uk.ctx.bs.company.pub:upver',
+		':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom:upver',
+		':com.ctx:bs:employee:nts.uk.ctx.bs.employee.app:upver',
+		':com.ctx:bs:employee:nts.uk.ctx.bs.employee.infra:upver',
+		':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub:upver',
+		':com.ctx:bs:person:nts.uk.ctx.bs.person.dom:upver',
+		':com.ctx:bs:person:nts.uk.ctx.bs.person.infra:upver',
+		':com.ctx:bs:person:nts.uk.ctx.bs.person.pub:upver',
+		':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub:upver'
+	]) { }
 	
 	dependencies {
 	   // Apache commons lang
@@ -697,6 +716,9 @@ project (':com.screen:nts.uk.screen.com.app') {
 		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.dom')
 		compile project(':com.ctx:sys:env:nts.uk.ctx.sys.env.dom')
 		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
+		compile project(':wk.ctx:nts.uk.ctx.workflow.dom')
+		compile project(':wk.ctx:nts.uk.ctx.workflow.app')
+		
 		
 		compile project(':com.ctx:bs:company:nts.uk.ctx.bs.company.dom')
 	 	compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom')
@@ -704,6 +726,8 @@ project (':com.screen:nts.uk.screen.com.app') {
 		
 		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: version
 		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: version
+		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: version
+		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: version
 	}
 }
 
@@ -776,6 +800,61 @@ project (':com.ctx:sys:env:nts.uk.ctx.sys.env.pubimp') {
 	}
 }
 //========================sys:gateway �====================================
+
+
+//========================sys:assist=====================================
+project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.ws') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.app')
+	}
+}
+
+project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.dom') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
+
+project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.app') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':shr:nts.uk.shr.find')
+		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.dom')
+	}
+}
+
+project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.infra') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.dom')
+	}
+}
+
+project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.ac') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.dom')
+		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.app')
+	}
+}
+
+project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.pub') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
+
+project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.pubimp') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.pub')
+		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.dom')
+		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.app')
+		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.infra')
+	}
+}
+
 
 //=====================nts.uk.com.web�===========================
 project (':com.web:nts.uk.com.web') {
@@ -882,6 +961,14 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':com.ctx:sys:env:nts.uk.ctx.sys.env.pub')
 		runtime project (':com.ctx:sys:env:nts.uk.ctx.sys.env.pubimp')
 		runtime project (':com.ctx:sys:env:nts.uk.ctx.sys.env.ws')
+
+		runtime project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.ac')
+		runtime project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.app')
+		runtime project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.dom')
+		runtime project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.infra')
+		runtime project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.pub')
+		runtime project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.pubimp')
+		runtime project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.ws')
 		
 		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ac')
 		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.app')
@@ -923,6 +1010,7 @@ project (':com.web:nts.uk.com.web') {
 		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.infra', version: version
 		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pub', version: version
 		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pubimp', version: version
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.ws', version: version
 		
 		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.ac', version: version
 		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.app', version: version
@@ -1066,6 +1154,8 @@ project (':pereg.ctx:nts.uk.ctx.pereg.ac') {
 		compile project (':pereg.ctx:nts.uk.ctx.pereg.dom')
 		compile project (':pereg.ctx:nts.uk.ctx.pereg.app')
 		compile(group: 'at.shared', name: 'nts.uk.ctx.at.shared.pub', version: version)
+		
+		compile(group: 'bs.company', name: 'nts.uk.ctx.bs.company.pub', version: version)
 	}
 }
 
@@ -1291,6 +1381,7 @@ project (':query:nts.uk.query.pubimp') {
 project (':pub:nts.uk.pub.spr') {
 	dependencies {
 		compile group: 'at.request', name: 'nts.uk.ctx.at.request.pub', version: version
+		compile group: 'at.record', name: 'nts.uk.ctx.at.record.pub', version: version
 		compile project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 		compile project (':wk.ctx:nts.uk.ctx.workflow.pub')
 		compile project (':wk.ctx:nts.uk.ctx.workflow.pub')

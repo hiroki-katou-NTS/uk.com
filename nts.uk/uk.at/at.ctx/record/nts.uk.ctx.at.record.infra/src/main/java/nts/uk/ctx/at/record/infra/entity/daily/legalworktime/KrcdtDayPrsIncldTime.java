@@ -41,6 +41,10 @@ public class KrcdtDayPrsIncldTime extends UkJpaEntity implements Serializable{
 	/*休暇加算時間*/
 	@Column(name = "VACTN_ADD_TIME")
 	public int vactnAddTime;
+	/*所定内深夜乖離時間*/
+	@Column(name = "DIV_PRS_INCLD_MIDN_TIME")
+	public int divPrsIncldMidnTime;
+	
 	
 	@OneToOne(mappedBy="krcdtDayPrsIncldTime")
 	public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
@@ -64,7 +68,8 @@ public class KrcdtDayPrsIncldTime extends UkJpaEntity implements Serializable{
 			/*就業時間*/
 			this.workTime = domain.getWorkTime() == null ? 0 : domain.getWorkTime().valueAsMinutes();
 			/*実働就業時間*/
-			this.actWorkTime = domain.getWorkTimeIncludeVacationTime() == null ? 0 : domain.getWorkTimeIncludeVacationTime().valueAsMinutes();
+//			this.actWorkTime = domain.getWorkTimeIncludeVacationTime() == null ? 0 : domain.getWorkTimeIncludeVacationTime().valueAsMinutes();
+			this.actWorkTime = domain.getActualWorkTime() == null ? 0 : domain.getActualWorkTime().valueAsMinutes();
 			/*所定内割増時間*/
 			this.prsIncldPrmimTime = domain.getWithinPrescribedPremiumTime() == null ? 0 : domain.getWithinPrescribedPremiumTime().valueAsMinutes();
 			if(domain.getWithinStatutoryMidNightTime() != null){
@@ -72,6 +77,9 @@ public class KrcdtDayPrsIncldTime extends UkJpaEntity implements Serializable{
 				/*所定内深夜時間*/
 				this.prsIncldMidnTime = winthinTime == null || winthinTime.getCalcTime() == null ? 0 
 						: domain.getWithinStatutoryMidNightTime().getTime().getCalcTime().valueAsMinutes();	
+				/*所定内深夜乖離時間*/
+				this.divPrsIncldMidnTime = winthinTime == null || winthinTime.getDivergenceTime() == null ? 0
+						: domain.getWithinStatutoryMidNightTime().getTime().getDivergenceTime().valueAsMinutes();
 			}
 			/*休暇加算時間*/
 			this.vactnAddTime = domain.getVacationAddTime() == null ? 0 : domain.getVacationAddTime().valueAsMinutes();

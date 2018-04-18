@@ -4,11 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.persistence.Column;
-import javax.persistence.Id;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.subhdmana.KrcmtLeaveManaData;
@@ -18,13 +15,14 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 
 	private String QUERY_BYSID = "SELECT l FROM KrcmtLeaveManaData l WHERE l.cID = :cid AND l.sID =:employeeId ";
 	
-	private String QUERY_BYSIDWITHSUBHDATR = String.join(" ", QUERY_BYSID,"AND l.subHDAtr = 0");
+	private String QUERY_BYSIDWITHSUBHDATR = String.join(" ", QUERY_BYSID,"AND l.subHDAtr =:subHDAtr");
 	
 	@Override
-	public List<LeaveManagementData> getBySidWithsubHDAtr(String cid, String sid) {
+	public List<LeaveManagementData> getBySidWithsubHDAtr(String cid, String sid, int state) {
 		List<KrcmtLeaveManaData> listListMana = this.queryProxy().query(QUERY_BYSIDWITHSUBHDATR,KrcmtLeaveManaData.class)
 				.setParameter("cid", cid)
 				.setParameter("employeeId", sid)
+				.setParameter("subHDAtr", state)
 				.getList();
 		return listListMana.stream().map(i->toDomain(i)).collect(Collectors.toList());
 	}

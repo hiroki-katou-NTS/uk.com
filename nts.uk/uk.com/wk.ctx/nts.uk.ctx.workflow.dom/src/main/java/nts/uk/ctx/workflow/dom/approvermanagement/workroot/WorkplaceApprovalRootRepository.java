@@ -123,4 +123,6 @@ public interface WorkplaceApprovalRootRepository {
 	
 	List<WorkplaceApprovalRoot> getWpAppRoot(String companyID, GeneralDate date, 
 			Integer employmentRootAtr, Integer confirmRootAtr);
+	
+	List<WorkplaceApprovalRoot> findEmpByConfirm(String companyID, String workplaceID, ConfirmationRootType confirmType, GeneralDate date);
 }

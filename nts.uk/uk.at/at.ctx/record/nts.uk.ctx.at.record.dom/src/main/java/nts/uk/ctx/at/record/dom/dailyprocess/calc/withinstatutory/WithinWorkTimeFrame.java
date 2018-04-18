@@ -128,7 +128,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 			,TimeWithDayAttr attendance
 			,OtherEmTimezoneLateEarlySet otherEmTimezoneLateEarlySet
 			,LateDecisionClock lateDesClock
-			,EmTimeZoneSet duplicateTimeSheet
+			,WithinWorkTimeFrame duplicateTimeSheet
 			,DeductionTimeSheet deductionTimeSheet
 			,int workNo
 			,TimezoneUse predetermineTimeSet
@@ -166,7 +166,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 			,TimeWithDayAttr leave
 			,OtherEmTimezoneLateEarlySet otherEmTimezoneLateEarlySet
 			,LeaveEarlyDecisionClock leaveEarlyDesClock
-			,EmTimeZoneSet duplicateTimeSheet
+			,WithinWorkTimeFrame duplicateTimeSheet
 			,DeductionTimeSheet deductionTimeSheet
 			,int workNo
 			,TimezoneUse predetermineTimeSet
@@ -247,14 +247,14 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		//就業時間帯の設定を取得
 		NotUseAtr deductLateLeaveEarly = premiumAtr.isRegularWork()?holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getDetailSet().getDeductLateLeaveEarly()
 																   :holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getDetailSet().getDeductLateLeaveEarly();
-		if(jugmentDeductLateEarly(premiumAtr,deductLateLeaveEarly)) {
-			//遅刻控除時間を計算
-			int lateDeductTime = this.lateTimeSheet.get().calcDedctionTime(late, holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getDetailSet().getDeductLateLeaveEarly()).getTime().valueAsMinutes();
-			//早退控除時間を計算
-			int leaveEarlyDeductTime = this.leaveEarlyTimeSheet.get().calcDedctionTime(leaveEarly,holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getDetailSet().getDeductLateLeaveEarly()).getTime().valueAsMinutes();
-			int lateLeaveEarlySubtraction = lateDeductTime + leaveEarlyDeductTime;
-			workTime = new AttendanceTime(workTime.valueAsMinutes() - lateLeaveEarlySubtraction);
-		}
+//		if(jugmentDeductLateEarly(premiumAtr,deductLateLeaveEarly)) {
+//			//遅刻控除時間を計算
+//			int lateDeductTime = this.lateTimeSheet.get().calcDedctionTime(late, holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getDetailSet().getDeductLateLeaveEarly()).getTime().valueAsMinutes();
+//			//早退控除時間を計算
+//			int leaveEarlyDeductTime = this.leaveEarlyTimeSheet.get().calcDedctionTime(leaveEarly,holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getDetailSet().getDeductLateLeaveEarly()).getTime().valueAsMinutes();
+//			int lateLeaveEarlySubtraction = lateDeductTime + leaveEarlyDeductTime;
+//			workTime = new AttendanceTime(workTime.valueAsMinutes() - lateLeaveEarlySubtraction);
+//		}
 		
 		//時間休暇使用の残時間を計算 
 		//timevacationUseTimeOfDaily.subtractionDeductionOffSetTime(timeVacationOffSetTime);
@@ -282,7 +282,10 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	 * @return　実働時間
 	 */
 	public AttendanceTime calcActualTime() {
-		return new AttendanceTime(((CalculationTimeSheet)this).getTimeSheet().timeSpan().lengthAsMinutes());
+		return new AttendanceTime(((CalculationTimeSheet)this).getTimeSheet().timeSpan().lengthAsMinutes());	
+//		TimeZoneRounding a = ((CalculationTimeSheet)this).getTimeSheet();
+//		TimeSpanForCalc b = a.timeSpan();
+//		return new AttendanceTime(((CalculationTimeSheet)this).getTimeSheet().timeSpan().lengthAsMinutes());
 	}
 
 	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊↓高須
@@ -436,7 +439,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	 * @param midNightTimeSheet
 	 * @return
 	 */
-	public static WithinWorkTimeFrame createWithinWorkTimeFrame(EmTimeZoneSet duplicateTimeSheet,
+	public static WithinWorkTimeFrame createWithinWorkTimeFrame(WithinWorkTimeFrame duplicateTimeSheet,
 																DeductionTimeSheet deductionTimeSheet,
 																BonusPaySetting bonusPaySetting,
 																MidNightTimeSheet midNightTimeSheet,
@@ -450,6 +453,10 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 																Optional<CoreTimeSetting> coreTimeSetting
 																) {
 		
+		EmTimeZoneSet dupTimeSheet = new EmTimeZoneSet(duplicateTimeSheet.getWorkingHoursTimeNo(),   
+													   new TimeZoneRounding(duplicateTimeSheet.getTimeSheet().getStart(),
+															   				duplicateTimeSheet.getTimeSheet().getEnd(),
+															   				duplicateTimeSheet.getTimeSheet().getRounding()));
 		
 		//遅刻時間帯の作成
 		LateTimeSheet lateTimeSheet = createLateTimeSheet(workTimeCalcMethodDetailOfHoliday,
@@ -465,10 +472,13 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		//遅刻時間を計算する
 		AttendanceTime lateDeductTime = lateTimeSheet.getForDeducationTimeSheet().isPresent()?lateTimeSheet.getForDeducationTimeSheet().get().calcTotalTime():new AttendanceTime(0);		
 		//就業時間内時間帯から控除するか判断し控除する				
-		if(workTimeCalcMethodDetailOfHoliday.decisionLateDeductSetting(lateDeductTime, workTimezoneLateEarlySet.getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE).getGraceTimeSet())) {
+		if(workTimeCalcMethodDetailOfHoliday.decisionLateDeductSetting(lateDeductTime, workTimezoneLateEarlySet.getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE).getGraceTimeSet())) {				
 			//遅刻時間帯の終了時刻を開始時刻にする
-			duplicateTimeSheet = new EmTimeZoneSet(new EmTimeFrameNo(workNo), 
-												   new TimeZoneRounding(duplicateTimeSheet.getTimezone().getStart().forwardByMinutes(lateDeductTime.minute()),duplicateTimeSheet.getTimezone().getEnd(),duplicateTimeSheet.getTimezone().getRounding()));
+			dupTimeSheet = new EmTimeZoneSet(duplicateTimeSheet.getWorkingHoursTimeNo(), 
+											 new TimeZoneRounding(lateTimeSheet.getForDeducationTimeSheet().isPresent()?lateTimeSheet.getForDeducationTimeSheet().get().getTimeSheet().getEnd()
+														   															   :duplicateTimeSheet.getTimeSheet().getStart(),
+														   		  duplicateTimeSheet.getTimeSheet().getEnd(),
+														   		  duplicateTimeSheet.getTimeSheet().getRounding()));
 		}
 		
 		//早退時間帯の作成
@@ -487,27 +497,30 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		//就業時間内時間帯から控除するか判断し控除する
 		if(workTimeCalcMethodDetailOfHoliday.decisionLateDeductSetting(LeaveEarlyDeductTime, workTimezoneLateEarlySet.getOtherEmTimezoneLateEarlySet(LateEarlyAtr.EARLY).getGraceTimeSet())) {
 			//早退時間帯の開始時刻を終了時刻にする
-			duplicateTimeSheet = new EmTimeZoneSet(new EmTimeFrameNo(workNo), 
-												   new TimeZoneRounding(duplicateTimeSheet.getTimezone().getStart(),duplicateTimeSheet.getTimezone().getEnd().backByMinutes(LeaveEarlyDeductTime.minute()),duplicateTimeSheet.getTimezone().getRounding()));
+			dupTimeSheet = new EmTimeZoneSet(new EmTimeFrameNo(workNo), 
+											 new TimeZoneRounding(dupTimeSheet.getTimezone().getStart(),
+														   		  LeaveEarlyTimeSheet.getForDeducationTimeSheet().isPresent()?LeaveEarlyTimeSheet.getForDeducationTimeSheet().get().getTimeSheet().getStart()
+														   																	 :dupTimeSheet.getTimezone().getEnd(),
+														   		  dupTimeSheet.getTimezone().getRounding()));
 		}
 			
 		//控除時間帯
-		List<TimeSheetOfDeductionItem> dedTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(duplicateTimeSheet.getTimezone().timeSpan(), DeductionAtr.Deduction);
-		List<TimeSheetOfDeductionItem> recordTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(duplicateTimeSheet.getTimezone().timeSpan(), DeductionAtr.Appropriate);
+		List<TimeSheetOfDeductionItem> dedTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(dupTimeSheet.getTimezone().getTimeSpan(), DeductionAtr.Deduction);
+		List<TimeSheetOfDeductionItem> recordTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(dupTimeSheet.getTimezone().getTimeSpan(), DeductionAtr.Appropriate);
 		
 		/*加給*/
-		List<BonusPayTimeSheetForCalc> bonusPayTimeSheet = getBonusPayTimeSheetIncludeDedTimeSheet(bonusPaySetting, duplicateTimeSheet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);
+		List<BonusPayTimeSheetForCalc> bonusPayTimeSheet = getBonusPayTimeSheetIncludeDedTimeSheet(bonusPaySetting, dupTimeSheet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);
 		/*特定日*/
-		List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet = getSpecBonusPayTimeSheetIncludeDedTimeSheet(bonusPaySetting, duplicateTimeSheet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);
+		List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet = getSpecBonusPayTimeSheetIncludeDedTimeSheet(bonusPaySetting, dupTimeSheet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);
 
 		/*深夜*/
-		Optional<MidNightTimeSheetForCalc> duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(midNightTimeSheet, duplicateTimeSheet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);
-		return new WithinWorkTimeFrame(duplicateTimeSheet.getEmploymentTimeFrameNo(),
-									   duplicateTimeSheet.getTimezone(),
-									   duplicateTimeSheet.getTimezone().timeSpan(),
+		Optional<MidNightTimeSheetForCalc> duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(midNightTimeSheet, dupTimeSheet.getTimezone().getTimeSpan(), recordTimeSheet, recordTimeSheet);
+		return new WithinWorkTimeFrame(duplicateTimeSheet.getWorkingHoursTimeNo(),
+									   dupTimeSheet.getTimezone(),
+									   duplicateTimeSheet.getCalcrange(),
 									   recordTimeSheet,dedTimeSheet,bonusPayTimeSheet,duplicatemidNightTimeSheet,specifiedBonusPayTimeSheet,
-									   Optional.of(lateTimeSheet),
-									   Optional.of(LeaveEarlyTimeSheet));
+									   Optional.empty(),
+									   Optional.empty());
 	}
 	
 	/**
@@ -516,7 +529,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	 */
 	public boolean jugmentDeductLateEarly(PremiumAtr premiumAtr,NotUseAtr deductLateLeaveEarly) {
 		boolean result = false;
-		if(premiumAtr.isRegularWork()) {
+		if(premiumAtr.isRegularWork()&&deductLateLeaveEarly.isDonot()) {
 			return true;
 		}else if(premiumAtr.isPremium()&&deductLateLeaveEarly.isDonot()){
 			return true;

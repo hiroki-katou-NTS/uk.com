@@ -45,6 +45,11 @@ public class StdAcceptCondSetCommand {
 	 * CSVデータの取込開始行
 	 */
 	private Integer csvDataStartLine;
+	
+	/**
+	 * 文字コード
+	 */
+	private Integer characterCode;
 
 	/**
 	 * 既存データの削除方法
@@ -56,6 +61,6 @@ public class StdAcceptCondSetCommand {
 	public StdAcceptCondSet toDomain(String cid) {
 		return new StdAcceptCondSet(cid, this.systemType, this.conditionSettingCode, this.conditionSettingName,
 				this.deleteExistData, this.acceptMode, null, this.categoryId, this.csvDataItemLineNumber,
-				this.csvDataStartLine, this.deleteExistDataMethod);
+				this.csvDataStartLine, this.characterCode, this.deleteExistDataMethod);
 	}
 }

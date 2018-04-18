@@ -26,7 +26,7 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 
 	static {
 		StringBuilder builderString = new StringBuilder();
-		builderString.append("SELECT a ");
+		builderString.append("DELETE ");
 		builderString.append("FROM KrcdtDailyRecEditSet a ");
 		builderString.append("WHERE a.krcdtDailyRecEditSetPK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtDailyRecEditSetPK.processingYmd = :ymd ");
@@ -35,7 +35,7 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 		builderString = new StringBuilder();
 		builderString.append("DELETE ");
 		builderString.append("FROM KrcdtDailyRecEditSet a ");
-		builderString.append("WHERE WHERE a.krcdtDailyRecEditSetPK.employeeId IN :employeeIds ");
+		builderString.append("WHERE a.krcdtDailyRecEditSetPK.employeeId IN :employeeIds ");
 		builderString.append("AND a.krcdtDailyRecEditSetPK.processingYmd IN :processingYmds ");
 		DEL_BY_LIST_KEY = builderString.toString();
 	}
@@ -125,6 +125,19 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 	public void updateByKeyFlush(List<EditStateOfDailyPerformance> editStates) {
 		this.addAndUpdate(editStates);
 		this.getEntityManager().flush();
+	}
+
+	@Override
+	public List<EditStateOfDailyPerformance> findByItems(String employeeId, GeneralDate ymd, List<Integer> ids) {
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcdtDailyRecEditSet a ");
+		builderString.append("WHERE a.krcdtDailyRecEditSetPK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtDailyRecEditSetPK.processingYmd = :ymd ");
+		builderString.append("AND a.krcdtDailyRecEditSetPK.attendanceItemId IN :items ");
+		return this.queryProxy().query(builderString.toString(), KrcdtDailyRecEditSet.class)
+				.setParameter("employeeId", employeeId).setParameter("ymd", ymd).setParameter("items", ids)
+				.getList(c -> toDomain(c));
 	}
 
 }

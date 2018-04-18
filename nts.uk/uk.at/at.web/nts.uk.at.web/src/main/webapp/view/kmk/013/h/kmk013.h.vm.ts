@@ -131,6 +131,10 @@ module nts.uk.at.view.kmk013.h {
                 let dataOutManage = <any>{};
                 let dataManageEntryExit = <any>{};
                 
+                if (nts.uk.ui.errors.hasError()) {
+                    return;
+                }
+                
                 data.autoStampReflectionClass = self.selectedIdH3_2();
                 data.autoStampForFutureDayClass =self.selectedIdH4_2();
                 data.goBackOutCorrectionClass =self.selectedIdH7_2();

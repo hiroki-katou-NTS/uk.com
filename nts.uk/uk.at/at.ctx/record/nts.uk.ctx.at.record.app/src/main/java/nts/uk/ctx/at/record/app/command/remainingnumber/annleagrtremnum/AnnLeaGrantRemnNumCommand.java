@@ -8,7 +8,7 @@ import nts.uk.shr.pereg.app.PeregItem;
 @Getter
 public class AnnLeaGrantRemnNumCommand {
 	
-	private String annLeavId;
+	private String annLeavID;
 	
 	/**
 	 * 社員ID
@@ -44,7 +44,7 @@ public class AnnLeaGrantRemnNumCommand {
 	 * 付与時間
 	 */
 	@PeregItem("IS00391")
-	private int grantMinutes;
+	private Integer grantMinutes;
 
 
 	/**
@@ -57,7 +57,7 @@ public class AnnLeaGrantRemnNumCommand {
 	 * 使用時間
 	 */
 	@PeregItem("IS00394")
-	private int usedMinutes;
+	private Integer usedMinutes;
 
 
 	/**
@@ -70,6 +70,6 @@ public class AnnLeaGrantRemnNumCommand {
 	 * 残時間
 	 */
 	@PeregItem("IS00397")
-	private int remainingMinutes;
+	private Integer remainingMinutes;
 
 }

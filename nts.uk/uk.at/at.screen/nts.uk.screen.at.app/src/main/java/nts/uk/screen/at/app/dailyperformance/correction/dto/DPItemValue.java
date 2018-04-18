@@ -2,9 +2,11 @@ package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class DPItemValue {
 	
 	private String rowId;
@@ -30,11 +32,12 @@ public class DPItemValue {
 		this.itemId = itemId;
 	}
 	
-	public DPItemValue(String rowId, String employeeId, GeneralDate date, int itemId, String value){
+	public DPItemValue(String rowId, String employeeId, GeneralDate date, int itemId, String value, String message){
 		this.rowId = rowId;
 		this.employeeId = employeeId;
 		this.date = date;
 		this.itemId = itemId;
 		this.value = value;
+		this.valueType = message;
 	}
 }

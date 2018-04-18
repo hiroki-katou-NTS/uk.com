@@ -56,7 +56,7 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 			data.get().krcdtDaiWorkTypePK.ymd = workTypeOfDailyPerformance.getDate();
 			data.get().workTypeCode = workTypeOfDailyPerformance.getWorkTypeCode().v();
 			
-			this.commandProxy().update(data);
+			this.commandProxy().update(data.get());
 		}
 	}
 

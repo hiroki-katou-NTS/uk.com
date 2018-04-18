@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.daily.holidayworktime;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -16,6 +17,7 @@ public class HolidayWorkFrameTime {
 	private HolidayWorkFrameNo holidayFrameNo;
 	private Finally<TimeDivergenceWithCalculation> holidayWorkTime;
 	private Finally<TimeDivergenceWithCalculation> transferTime;
+	@Setter	
 	private Finally<AttendanceTime> beforeApplicationTime;
 	
 	/**
@@ -30,8 +32,8 @@ public class HolidayWorkFrameTime {
 		this.beforeApplicationTime = beforeApplicationTime;
 	}
 	
-	public void addHolidayTime(AttendanceTime holidayWorkTime) {
-		this.holidayWorkTime = Finally.of(this.holidayWorkTime.get().addMinutes(holidayWorkTime, holidayWorkTime));
+	public void addHolidayTime(AttendanceTime time,AttendanceTime calcTime) {
+		this.holidayWorkTime = Finally.of(this.holidayWorkTime.get().addMinutes(time, calcTime));
 	}
 	
 	//休出枠Noのみ指定した休出枠Noに更新する

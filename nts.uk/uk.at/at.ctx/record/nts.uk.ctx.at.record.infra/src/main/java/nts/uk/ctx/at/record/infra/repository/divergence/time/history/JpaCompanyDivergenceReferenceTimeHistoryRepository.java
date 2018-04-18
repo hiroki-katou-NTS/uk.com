@@ -173,6 +173,40 @@ public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepos
 		return this.toDomain(comDrtHists);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
+	 * CompanyDivergenceReferenceTimeHistoryRepository#findByDatePeriod(java.lang.
+	 * String, nts.uk.shr.com.time.calendar.period.DatePeriod, java.lang.String)
+	 */
+	@Override
+	public CompanyDivergenceReferenceTimeHistory findByDate(String companyId, GeneralDate date) {
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<KrcstComDrtHist> cq = criteriaBuilder.createQuery(KrcstComDrtHist.class);
+		Root<KrcstComDrtHist> root = cq.from(KrcstComDrtHist.class);
+
+		// Build query
+		cq.select(root);
+
+		// create where conditions
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(criteriaBuilder.equal(root.get(KrcstComDrtHist_.cid), companyId));
+
+		predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(KrcstComDrtHist_.strD), date));
+		predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KrcstComDrtHist_.endD), date));
+
+		// add where to query
+		cq.where(predicates.toArray(new Predicate[] {}));
+		cq.orderBy(criteriaBuilder.desc(root.get(KrcstComDrtHist_.endD)));
+
+		// query data
+		List<KrcstComDrtHist> comDrtHists = em.createQuery(cq).getResultList();
+
+		return this.toDomain(comDrtHists);
+	}
+
 	/**
 	 * To domain.
 	 *

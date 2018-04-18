@@ -32,7 +32,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
         targetBtnText: string = getText("KCP009_3");
         listComponentOption: ComponentOption;
         selectedItem: KnockoutObservable<string> = ko.observable(null);
-        tabindex: number = 1;
+        tabindex: number = -1;
         isInitDepartment: boolean = true;
         isInitdailyApproval: boolean = true;
 
@@ -44,7 +44,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             self.showinfoSelectedEmployee = ko.observable(false);
             self.ccgcomponent = {
                 /** Common properties */
-                systemType: 1,
+                systemType: 2,
                 showEmployeeSelection: true,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
@@ -98,23 +98,23 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             });
 
             //社員コードを入力する
-            self.settingManager().departmentCode.subscribe(result => {
-                if (result) {
-                    if (!self.isInitDepartment) {
-                        self.getEmployeeByCode(result, APPROVER_TYPE.DEPARTMENT_APPROVER);
+            self.settingManager().departmentCode.subscribe(value => {
+                if (value) {
+                    if (!self.isInitDepartment && value.length == 6) {
+                        self.getEmployeeByCode(value, APPROVER_TYPE.DEPARTMENT_APPROVER);
                     }
-                    self.isInitDepartment = false;
                 }
+                self.isInitDepartment = false;
             });
 
             //社員コードを入力する
             self.settingManager().dailyApprovalCode.subscribe(value => {
                 if (value) {
-                    if (!self.isInitdailyApproval) {
+                    if (!self.isInitdailyApproval && value.length == 6) {
                         self.getEmployeeByCode(value, APPROVER_TYPE.DAILY_APPROVER);
                     }
-                    self.isInitdailyApproval = false;
                 }
+                self.isInitdailyApproval = false;
             });
         }
 
@@ -178,10 +178,9 @@ module nts.uk.com.view.cmm053.a.viewmodel {
         //「登録」ボタンをクリックする
         regSettingManager_click(data) {
             let self = this;
-            block.invisible();
-            $("#A2_3").trigger("validate");
-            $("#A2_7").trigger("validate");
+            $('.nts-input').trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
+                block.invisible();
                 let startDate = new Date(self.settingManager().startDate());
                 let closingStartDate = new Date(self.settingManager().closingStartDate());
                 //開始日＜締めの開始日
@@ -191,22 +190,26 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                     dialog.alertError({ messageId: "Msg_1072", messageParams: [closingStartDate] });
                     block.clear();
                 } else {
-                    self.settingManager().executeMode(self.screenMode());
-                    let settingManager = ko.toJS(self.settingManager());
-                    settingManager.startDate = moment.utc(self.settingManager().startDate(), "YYYY/MM/DD").toISOString();
-                    settingManager.endDate   = moment.utc(self.settingManager().endDate(), "YYYY/MM/DD").toISOString();
-                    service.updateHistoryByManagerSetting(settingManager).done(result => {
-                        self.initScreen();
-                        //情報メッセージMsg_15
-                        dialog.info({ messageId: "Msg_15" });
-                    }).fail(error => {
-                        dialog.alertError({ messageId: error.messageId })
-                    }).always(function() {
-                        block.clear();
-                    });
+                    let command = ko.toJS(self.settingManager());
+                    command.startDate = moment.utc(self.settingManager().startDate(), "YYYY/MM/DD").toISOString();
+                    command.endDate   = moment.utc(self.settingManager().endDate(), "YYYY/MM/DD").toISOString();
+
+                    if(self.screenMode() == EXECUTE_MODE.NEW_MODE){
+                        self.callInsertHistoryService(command);
+                        return;
+                    }
+
+                    if (self.screenMode() == EXECUTE_MODE.UPDATE_MODE && self.settingManager().hasHistory()) {
+                        self.callUpdateHistoryService(command);
+                        return;
+                    }
+
+                    if (self.screenMode() == EXECUTE_MODE.UPDATE_MODE && !self.settingManager().hasHistory()) {
+                        self.callInsertHistoryService(command);
+                        return;
+                    }
                 }
             }
-            block.clear();
         }
 
         //削除する
@@ -216,19 +219,47 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             block.invisible();
             //確認メッセージ（Msg_18）を表示する
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                self.settingManager().executeMode(EXECUTE_MODE.DELETE_MODE);
                 self.settingManager().employeeId(self.selectedItem());
                 let settingManager = ko.toJS(self.settingManager());
                 settingManager.startDate = moment.utc(self.settingManager().startDate(), "YYYY/MM/DD").toISOString();
                 settingManager.endDate   = moment.utc(self.settingManager().endDate(), "YYYY/MM/DD").toISOString();
-                service.updateHistoryByManagerSetting(settingManager).done(result => {
-                    self.initScreen();
+                service.deleteHistoryByManagerSetting(settingManager).done(result => {
                     //情報メッセージ　Msg-16を表示する
-                    dialog.info({ messageId: "Msg_16" });
+                    dialog.info({ messageId: "Msg_16" }).then(() => {
+                        self.initScreen();
+                    });
                 }).always(function() {
                     block.clear();
                 });
             }).then(() => {
+                block.clear();
+            });
+        }
+
+        callInsertHistoryService(command) {
+            let self = this;
+            service.insertHistoryByManagerSetting(command).done(result => {
+                //情報メッセージMsg_15
+                dialog.info({ messageId: "Msg_15" }).then(() => {
+                    self.initScreen();
+                });
+            }).fail(error => {
+                dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                block.clear();
+            });
+        }
+
+        callUpdateHistoryService(command) {
+            let self = this;
+            service.updateHistoryByManagerSetting(command).done(result => {
+                //情報メッセージMsg_15
+                dialog.info({ messageId: "Msg_15" }).then(() => {
+                    self.initScreen();
+                });
+            }).fail(error => {
+                dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
                 block.clear();
             });
         }
@@ -244,17 +275,30 @@ module nts.uk.com.view.cmm053.a.viewmodel {
         //社員コードを入力する
         getEmployeeByCode(employeeCode: any, approverType:number) {
             let self = this;
-            service.getEmployeeByCode(employeeCode).done(result => {
+            let hasAuthority = self.settingManager().hasAuthority();
+            block.invisible();
+            service.getEmployeeByCode(employeeCode, hasAuthority).done(result => {
                 if (result) {
                     if (approverType == APPROVER_TYPE.DEPARTMENT_APPROVER) {
-                        self.settingManager().departmentName(result.employeeName);
+                        self.settingManager().departmentName(result.businessName);
+                        self.settingManager().departmentCode(result.employeeCD);
+                        self.settingManager().departmentApproverId(result.employeeID);
                     } else {
-                        self.settingManager().dailyApprovalName(result.employeeName);
+                        self.settingManager().dailyApprovalName(result.businessName);
+                        self.settingManager().dailyApprovalCode(result.employeeCD);
+                        self.settingManager().dailyApproverId(result.employeeID);
                     }
-                } else {
-                    self.settingManager().departmentName('');
-                    self.settingManager().dailyApprovalName(''); 
                 }
+            }).fail(error => {
+                if (approverType == APPROVER_TYPE.DEPARTMENT_APPROVER) {
+                    self.settingManager().departmentName('');
+                    $('#A2_7').ntsError('set', { messageId: error.messageId});
+                } else {
+                    self.settingManager().dailyApprovalName('');
+                    $('#A2_10').ntsError('set', { messageId: error.messageId});
+                }
+            }).always(() => {
+                block.clear();
             });
         }
 
@@ -275,11 +319,8 @@ module nts.uk.com.view.cmm053.a.viewmodel {
 
             //画面を新規モードにする
             self.screenMode(EXECUTE_MODE.NEW_MODE);
-
             //フォーカス制御
             $('#A2_3').focus();
-
-            
         }
 
         initKCP009() {
@@ -357,7 +398,6 @@ module nts.uk.com.view.cmm053.a.viewmodel {
         dailyApprovalName    :KnockoutObservable<string>  = ko.observable('');
         hasAuthority         :KnockoutObservable<boolean> = ko.observable(false);
         closingStartDate     :KnockoutObservable<string>  = ko.observable('');
-        executeMode          :KnockoutObservable<number>  = ko.observable(0);
         employeeId           :KnockoutObservable<string>  = ko.observable('');
         hasHistory           :KnockoutObservable<boolean> = ko.observable(false);
         constructor(param: ISettingManager) {

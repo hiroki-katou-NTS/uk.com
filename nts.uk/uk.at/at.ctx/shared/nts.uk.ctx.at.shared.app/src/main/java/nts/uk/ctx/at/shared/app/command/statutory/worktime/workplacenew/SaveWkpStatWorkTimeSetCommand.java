@@ -24,7 +24,7 @@ public class SaveWkpStatWorkTimeSetCommand{
 	private int year;
 	
 	/** The employee id. */
-	private String wkpId;
+	private String workplaceId;
 
 	/** The normal setting. */
 	private WkpNormalSettingDto normalSetting;

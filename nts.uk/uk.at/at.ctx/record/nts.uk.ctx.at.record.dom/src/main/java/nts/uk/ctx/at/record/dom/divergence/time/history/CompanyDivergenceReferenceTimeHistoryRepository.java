@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.divergence.time.history;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -40,6 +41,15 @@ public interface CompanyDivergenceReferenceTimeHistoryRepository {
 	 * @return the list
 	 */
 	CompanyDivergenceReferenceTimeHistory findAll(String companyId);
+	
+	/**
+	 * Find by date.
+	 *
+	 * @param companyId the company id
+	 * @param date the date
+	 * @return the company divergence reference time history
+	 */
+	CompanyDivergenceReferenceTimeHistory findByDate(String companyId, GeneralDate date);
 	
 	/**
 	 * Adds the.

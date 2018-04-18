@@ -13,10 +13,10 @@
 			<table style="margin: 0 20px 5px 20px; width: calc(100% - 40px)">
 				<colgroup>
 					<col width="110px" />
-					<col width="50px" />
+					<col width="30px" />
 					<col width="160px" />
-					<col width="160px" />
-					<col width="25px" />
+					<col width="130px" />
+					<col width="30px" />
 					<col width="150px" />
 				</colgroup>
 				<tr>
@@ -26,7 +26,7 @@
 					</td>
 					<td>
 						<!--P3_3 条件コード-->
-						<div class="label" data-bind="text: selectedConditionCd"></div>
+						<div style="width: 5px;" class="label" data-bind="text: selectedConditionCd"></div>
 					</td>
 					<td>
 						<!--P3_4 条件名称-->
@@ -52,7 +52,7 @@
 					</td>
 					<td colspan="2">
 						<!--P3_9 受入ファイル名-->
-						<div class="label" data-bind="text: fileName"></div>
+						<div class="limited-label" style="width: 250px;vertical-align: middle;" data-bind="text: fileName"></div>
 					</td>
 					<td style="">
 						<!--P3_10 取込開始行（ラベル）-->
@@ -74,7 +74,6 @@
 			<!--P4_1 取込項目一覧-->
 			<table id="grd_Accept">
 				<colgroup>
-					<col width="30px" />
 					<col width="140px" />
 					<col width="180px" />
 					<col width="120px" />
@@ -84,7 +83,6 @@
 				</colgroup>
 				<thead>
 					<tr>
-						<th class="ui-widget-header"></th>
 						<!--P4_2 取込項目名(ヘッダ)-->
 						<th class="ui-widget-header">#{i18n.getText('CMF001_471')}</th>
 						<!--P4_3 ＣＳＶ項目名(ヘッダ)-->
@@ -101,8 +99,6 @@
 				</thead>
 				<tbody data-bind="foreach: listAccept">
 					<tr>
-						<!--P4_8 行番号-->
-						<td class="increment-col"></td>
 						<!--P4_9 取込項目名-->
 						<td style="text-align: left;"><div class="label"
 								data-bind="text: acceptItemName"></div></td>
@@ -117,10 +113,10 @@
 								data-bind="text: $parent.getItemTypeName($data.itemType())"></div></td>
 						<!--P4_13 取込時の編集-->
 						<td style="text-align: center;"><i
-							data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click: function() {$parent.editIngestion($data)}"></i></td>
+							data-bind="ntsIcon: { no: 5, width: 23, height: 23 }, click: function() {$parent.editIngestion($data)}"></i></td>
 						<!--P4_14 受入条件-->
 						<td style="text-align: center;"><i
-							data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click: function() {$parent.receiveCondition($data)}"></i></td>
+							data-bind="ntsIcon: { no: 5, width: 23, height: 23 }, click: function() {$parent.receiveCondition($data)}"></i></td>
 					</tr>
 				</tbody>
 			</table>

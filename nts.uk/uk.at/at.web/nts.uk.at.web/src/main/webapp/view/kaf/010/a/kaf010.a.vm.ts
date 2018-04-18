@@ -135,10 +135,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 010a AFTER start 000_A
             self.startPage().done(function() {
-                self.kaf000_a.start(self.employeeID, 1, 0, moment(new Date()).format(self.DATE_FORMAT)).done(function() {                    
+                self.kaf000_a.start(self.employeeID, 1, 6, moment(new Date()).format(self.DATE_FORMAT)).done(function() {                    
                     $("#fixed-table-holiday").ntsFixedTable({ height: 120 });
                     $("#fixed-overtime-hour-table-holiday").ntsFixedTable({ height: self.heightOvertimeHours() });
-                    $("#fixed-break_time-table-holiday").ntsFixedTable({ height: 120 });
+                    $("#fixed-break_time-table-holiday").ntsFixedTable({ height: 119 });
+                    $("#fixed-break_time-table-holiday-pre").ntsFixedTable({ height: 119 });
                     $("#fixed-bonus_time-table-holiday").ntsFixedTable({ height: 120 });
                     $("#fixed-table-indicate-holiday").ntsFixedTable({ height: 120 });
                     $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC');
@@ -176,7 +177,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                             overtimeHours: ko.toJS(self.overtimeHours)    
                         }).done((data) =>{
                             self.findBychangeAppDateData(data);
-                            self.kaf000_a.getAppDataDate(0, moment(value).format(self.DATE_FORMAT), false);
+                            self.kaf000_a.getAppDataDate(6, moment(value).format(self.DATE_FORMAT), false);
                             //self.convertAppOvertimeReferDto(data);
                             nts.uk.ui.block.clear(); 
                             dfd.resolve(data);
@@ -194,27 +195,15 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     }
                     return dfd.promise();
                     });
-//                self.prePostSelected.subscribe(function(value){
-//                    let dfd =$.Deferred();
-//                        service.checkConvertPrePost({
-//                            prePostAtr: value,
-//                            appDate:  nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
-//                            siftCD: self.siftCD(),
-//                            overtimeHours: ko.toJS(self.overtimeHours) 
-//                        }).done((data) =>{
-//                            self.convertpreAppOvertimeDto(data);
-//                            self.convertAppOvertimeReferDto(data);
-//                            self.referencePanelFlg(data.referencePanelFlg);
-//                            self.allPreAppPanelFlg(data.allPreAppPanelFlg);
-//                            self.preAppPanelFlg(data.preAppPanelFlg);
-//                            self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
-//                            self.displayDivergenceReasonForm(data.displayDivergenceReasonForm);
-//                            self.displayDivergenceReasonInput(data.displayDivergenceReasonInput);
-//                        }).fail((res) =>{
-//                            dfd.reject(res);    
-//                        });
-//                     return dfd.promise();
-//                });
+                   self.prePostSelected.subscribe(function(value){
+                      if(value == 0){
+                           $("#fixed-break_time-table-holiday-pre").ntsFixedTable({ height: 119 });
+                      }else if(value == 1){
+                           $("#fixed-break_time-table-holiday").ntsFixedTable({ height: 119 });
+                      }
+                       
+                    });
+                
                 
                 //Check work content Changed
                 self.checkWorkContentChanged();
@@ -285,6 +274,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             self.instructInfor(data.holidayInstructInformation);
             self.referencePanelFlg(data.referencePanelFlg);
             self.preAppPanelFlg(data.preAppPanelFlg);
+            self.prePostEnable(data.prePostCanChangeFlg);
             self.allPreAppPanelFlg(data.allPreAppPanelFlg);
             self.indicationOvertimeFlg(data.extratimeDisplayFlag);
             self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
@@ -495,11 +485,33 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 let endTime = self.restTime()[i].endTime();
                 let attendanceId = self.restTime()[i].attendanceID();
                 let frameNo = self.restTime()[i].frameNo();
+                if( i != 9){
+                    let startTimeAdd = self.restTime()[i+1].startTime();
+                    let endTimeAdd = self.restTime()[i+1].endTime();
+                    let attendanceIdAdd = self.restTime()[i+1].attendanceID();
+                    let frameNoAdd = self.restTime()[i+1].frameNo();
+                }
+                if(nts.uk.util.isNullOrEmpty(startTime) && !nts.uk.util.isNullOrEmpty(endTime)){
+                    dialog.alertError({messageId:"Msg_307"})
+                    $('input#restTimeStart_'+attendanceId+'_'+frameNo).focus();
+                    return false;
+                }
                 if(!nts.uk.util.isNullOrEmpty(startTime) && startTime != ""){
-                    if(!self.validateTime(startTime, endTime, 'input#restTimeStart_'+attendanceId+'_'+frameNo)){
+                    if(!self.validateTime(startTime, endTime, 'input#restTimeEnd_'+attendanceId+'_'+frameNo)){
                         return false;
                     };
                 }
+                if(!nts.uk.util.isNullOrEmpty(startTimeAdd)){
+                    if (nts.uk.util.isNullOrEmpty(endTime)) {
+                                dialog.alertError({ messageId: "Msg_307" })
+                                $('input#restTimeEnd_' + attendanceId + '_' + frameNo).focus();
+                                return false;
+                    }
+                    if(!self.validateTime(endTime, startTimeAdd, 'input#restTimeStart_'+attendanceIdAdd+'_'+frameNoAdd)){
+                        return false;
+                    };
+                }
+                
             }
             return true;            
         }
@@ -905,16 +917,16 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 }
             });
             //休憩時間
-            for (let i = 0; i < self.breakTimes().length; i++) {
-                self.breakTimes()[i].applicationTime.subscribe(value => {
-                    if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
-                        if (self.preWorkContent.breakTimes[i].applicationTime != value) {
-                            //→エラーＭＳＧ
-                            self.calculateFlag(1);
-                        }
-                    }
-                });
-            }
+//            for (let i = 0; i < self.breakTimes().length; i++) {
+//                self.breakTimes()[i].applicationTime.subscribe(value => {
+//                    if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
+//                        if (self.preWorkContent.breakTimes[i].applicationTime != value) {
+//                            //→エラーＭＳＧ
+//                            self.calculateFlag(1);
+//                        }
+//                    }
+//                });
+//            }
         }
     }
 

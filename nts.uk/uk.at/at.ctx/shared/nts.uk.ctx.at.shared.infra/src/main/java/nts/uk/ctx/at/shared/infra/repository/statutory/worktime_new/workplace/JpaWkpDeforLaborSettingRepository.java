@@ -85,7 +85,7 @@ public class JpaWkpDeforLaborSettingRepository extends JpaRepository
 	 */
 	@Override
 	public void remove(String cid, String wkpId, int year) {
-		this.commandProxy().remove(KshstWkpDeforLarSetPK.class,
+		this.commandProxy().remove(KshstWkpDeforLarSet.class,
 				new KshstWkpDeforLarSetPK(cid, wkpId, year));
 	}
 

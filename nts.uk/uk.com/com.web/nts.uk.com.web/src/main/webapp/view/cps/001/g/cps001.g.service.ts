@@ -7,18 +7,17 @@ module nts.uk.com.view.cps001.g {
          *  Service paths
          */
         var servicePath: any = {
-            getAllList: 'record/remainnumber/resv-lea/get-resv-lea/{0}',
+            getAllList: "at/record/remainnumber/annlea/getAnnLea/{0}",
             getAllListByCheckState: "at/record/remainnumber/annlea/getAnnLeaByCheckState",
-            getDetails: "bs/employee/temporaryabsence/frame/getDetail",
+            getDetails: "at/record/remainnumber/annlea/getDetail",
             lostFocus: "at/record/remainnumber/annlea/lostFocus",
             add: "at/record/remainnumber/annlea/add",
             update: "at/record/remainnumber/annlea/update",
             deleteLeav: "at/record/remainnumber/annlea/delete",
         };
         
-        export function getAllList(): JQueryPromise<any> {
-            let employeeId: string = "a";
-            return ajax('at',format(servicePath.getAllList, employeeId));
+        export function getAllList(empId: string): JQueryPromise<any> {
+            return ajax('at', format(servicePath.getAllList, empId));
         }
         
         export function getAllListByCheckState(employeeId: string, checkState: boolean): JQueryPromise<any> {
@@ -29,11 +28,11 @@ module nts.uk.com.view.cps001.g {
             return ajax('at', servicePath.lostFocus, moment.utc(grantDate,"YYYY/MM/DD"));
         }
         
-        export function getDetail(grantDate: Date) {
-            return ajax(servicePath.getDetails,moment.utc(grantDate, "YYYY/MM/DD"));
+        export function getDetail(id: string) {
+            return ajax('at',servicePath.getDetails,id);
         }
         
-        export function add(command: any) {
+        export function add(command: any): JQueryPromise<any> {
             return ajax('at', servicePath.add, command);
         }
         export function update(command: any) {

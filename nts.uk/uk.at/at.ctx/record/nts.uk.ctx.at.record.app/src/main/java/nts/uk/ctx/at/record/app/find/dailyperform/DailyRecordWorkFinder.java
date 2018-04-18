@@ -24,6 +24,8 @@ import nts.uk.ctx.at.record.app.find.dailyperform.optionalitem.OptionalItemOfDai
 import nts.uk.ctx.at.record.app.find.dailyperform.optionalitem.dto.OptionalItemOfDailyPerformDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.pclogoninfor.PCLogOnInforOfDailyPerformFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.pclogoninfor.dto.PCLogOnInforOfDailyPerformDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.remark.RemarksOfDailyFinder;
+import nts.uk.ctx.at.record.app.find.dailyperform.remark.dto.RemarksOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.resttime.BreakTimeDailyFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto.BreakTimeDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.shorttimework.ShortTimeOfDailyFinder;
@@ -77,6 +79,9 @@ public class DailyRecordWorkFinder extends FinderFacade {
 	// private EmployeeDailyPerErrorFinder errorFinder;
 	@Inject
 	private AttendanceTimeByWorkOfDailyFinder attendanceTimeByWorkFinder;
+	
+	@Inject
+	private RemarksOfDailyFinder remarkFinder;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -98,6 +103,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 				.addEditStates(editStateFinder.finds(employeeId, baseDate))
 				.temporaryTime(temporaryTimeFinder.find(employeeId, baseDate))
 				.pcLogInfo(pcLogOnInfoFinder.find(employeeId, baseDate))
+				.remarks(remarkFinder.finds(employeeId, baseDate))
 				.complete();
 	}
 
@@ -136,27 +142,35 @@ public class DailyRecordWorkFinder extends FinderFacade {
 				temporaryTimeFinder.find(employeeId, baseDate));
 		Map<String, Map<GeneralDate, PCLogOnInforOfDailyPerformDto>> pcLogInfo = toMap(
 				pcLogOnInfoFinder.find(employeeId, baseDate));
+		Map<String, Map<GeneralDate, List<RemarksOfDailyDto>>> remarks = toMapList(remarkFinder.find(employeeId, baseDate));
 
 		return (List<T>) employeeId.stream().map(em -> {
 			List<DailyRecordDto> dtoByDates = new ArrayList<>();
 			GeneralDate start = baseDate.start();
 			while (start.beforeOrEquals(baseDate.end())) {
-				DailyRecordDto current = DailyRecordDto.builder().employeeId(em).workingDate(start)
-						.withWorkInfo(getValue(workInfos.get(em), start))
-						.withCalcAttr(getValue(calcAttrs.get(em), start))
-						.withAffiliationInfo(getValue(affiliInfo.get(em), start))
-						// .withErrors(getValue(errors.get(em), start))
-						.outingTime(getValue(outings.get(em), start)).addBreakTime(getListValue(breaks.get(em), start))
-						.attendanceTime(getValue(attendTime.get(em), start))
-						.attendanceTimeByWork(getValue(attendTimeByWork.get(em), start))
-						.timeLeaving(getValue(leaving.get(em), start)).shortWorkTime(getValue(shortWork.get(em), start))
-						.specificDateAttr(getValue(specificDateAttr.get(em), start))
-						.attendanceLeavingGate(getValue(attendLeavingGate.get(em), start))
-						.optionalItems(getValue(optionalItems.get(em), start))
-						.addEditStates(getListValue(editStates.get(em), start))
-						.temporaryTime(getValue(temporaryTime.get(em), start))
-						.pcLogInfo(getValue(pcLogInfo.get(em), start)).complete();
-				dtoByDates.add(current);
+				WorkInformationOfDailyDto workInfo = getValue(workInfos.get(em), start);
+				if(workInfo != null && workInfo.isHaveData()){
+					DailyRecordDto current = DailyRecordDto.builder().employeeId(em).workingDate(start)
+							.withWorkInfo(getValue(workInfos.get(em), start))
+							.withCalcAttr(getValue(calcAttrs.get(em), start))
+							.withAffiliationInfo(getValue(affiliInfo.get(em), start))
+							// .withErrors(getValue(errors.get(em), start))
+							.outingTime(getValue(outings.get(em), start))
+							.addBreakTime(getListValue(breaks.get(em), start))
+							.attendanceTime(getValue(attendTime.get(em), start))
+							.attendanceTimeByWork(getValue(attendTimeByWork.get(em), start))
+							.timeLeaving(getValue(leaving.get(em), start))
+							.shortWorkTime(getValue(shortWork.get(em), start))
+							.specificDateAttr(getValue(specificDateAttr.get(em), start))
+							.attendanceLeavingGate(getValue(attendLeavingGate.get(em), start))
+							.optionalItems(getValue(optionalItems.get(em), start))
+							.addEditStates(getListValue(editStates.get(em), start))
+							.temporaryTime(getValue(temporaryTime.get(em), start))
+							.pcLogInfo(getValue(pcLogInfo.get(em), start))
+							.remarks(getListValue(remarks.get(em), start))
+							.complete();
+					dtoByDates.add(current);
+				}
 				start = start.addDays(1);
 			}
 			return dtoByDates;

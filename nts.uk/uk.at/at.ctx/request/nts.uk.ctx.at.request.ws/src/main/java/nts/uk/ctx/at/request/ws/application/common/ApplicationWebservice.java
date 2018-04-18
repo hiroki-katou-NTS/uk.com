@@ -37,6 +37,7 @@ import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDet
 import nts.uk.ctx.at.request.app.find.application.requestofearch.OutputMessageDeadline;
 import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDeadlineDto;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InputGetDetailCheck;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
 
 @Path("at/request/application")
 @Produces("application/json")
@@ -105,7 +106,7 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("remandapp")
-	public String remandApp(RemandCommand command){
+	public MailSenderResult remandApp(RemandCommand command){
 		return remandApplicationHandler.handle(command);
 	}
 	
@@ -186,7 +187,7 @@ public class ApplicationWebservice extends WebService {
 	
 	
 	@POST
-	@Path("getAppInfoByAppIdForRemand")
+	@Path("getAppInfoForRemandByAppId")
 	public ApplicationRemandDto getAppInfoByAppIdForRemand(String appID){
 		return this.finderApp.getAppByIdForRemand(appID);
 	}

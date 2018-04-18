@@ -10,6 +10,8 @@ import nts.arc.time.GeneralDate;
  *
  */
 public interface ApprovalRootStateRepository {
+	
+	public Optional<ApprovalRootState> findByID(String rootStateID);
 	/**
 	 * @param startDate
 	 * @param endDate
@@ -32,6 +34,24 @@ public interface ApprovalRootStateRepository {
 	 * @return
 	 */
 	public List<ApprovalRootState> findAppByEmployeeIDRecordDate(GeneralDate startDate, GeneralDate endDate,String employeeID,Integer rootType);
+	/**
+	 * 対象者と期間から承認ルートインスタンスを取得する(for List EmployeeID)
+	 * @param startDate
+	 * @param endDate
+	 * @param employeeID
+	 * @param rootType
+	 * @return
+	 */
+	public List<ApprovalRootState> findAppByListEmployeeIDRecordDate(GeneralDate startDate, GeneralDate endDate,List<String> employeeID,Integer rootType);
+	
+	/**
+	 * 対象者リストと日付リストから承認ルートインスタンスを取得する
+	 * @param approvalRecordDates
+	 * @param employeeIDs
+	 * @param rootType
+	 * @return
+	 */
+	public List<ApprovalRootState> findAppByListEmployeeIDAndListRecordDate(List<GeneralDate> approvalRecordDates,List<String> employeeIDs,Integer rootType);
 	
 	public List<ApprovalRootState> findEmploymentApps(List<String> rootStateIDs);
 	

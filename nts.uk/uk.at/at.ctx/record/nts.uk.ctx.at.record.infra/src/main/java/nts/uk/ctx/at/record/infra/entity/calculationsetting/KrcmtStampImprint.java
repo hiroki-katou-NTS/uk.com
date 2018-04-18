@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.record.infra.entity.calculationsetting;
 
 import java.io.Serializable;
@@ -13,8 +17,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KrcmtStampImprint.
- *
- * @author nampt 打刻反映管理
  */
 @NoArgsConstructor
 @Entity
@@ -50,11 +52,25 @@ public class KrcmtStampImprint extends UkJpaEntity implements Serializable {
 	@Column(name = "AUTO_STAMP_FUTURE_DAY_ATR")
 	public int autoStampForFutureDayClass;
 
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
 	@Override
 	protected Object getKey() {
 		return this.krcdtStampReflectPK;
 	}
 
+	/**
+	 * Instantiates a new krcmt stamp imprint.
+	 *
+	 * @param krcdtStampReflectPK the krcdt stamp reflect PK
+	 * @param breakSwitchClass the break switch class
+	 * @param autoStampReflectionClass the auto stamp reflection class
+	 * @param actualStampOfPriorityClass the actual stamp of priority class
+	 * @param reflectWorkingTimeClass the reflect working time class
+	 * @param goBackOutCorrectionClass the go back out correction class
+	 * @param autoStampForFutureDayClass the auto stamp for future day class
+	 */
 	public KrcmtStampImprint(KrcmtStampImprintPK krcdtStampReflectPK, int breakSwitchClass,
 			int autoStampReflectionClass, int actualStampOfPriorityClass,
 			int reflectWorkingTimeClass, int goBackOutCorrectionClass, 
@@ -69,6 +85,12 @@ public class KrcmtStampImprint extends UkJpaEntity implements Serializable {
 		this.goBackOutCorrectionClass = goBackOutCorrectionClass;
 		this.autoStampForFutureDayClass = autoStampForFutureDayClass;
 	}
+	
+	/**
+	 * To domain.
+	 *
+	 * @return the stamp reflection management
+	 */
 	public StampReflectionManagement toDomain() {
 		return StampReflectionManagement.createJavaType(this.krcdtStampReflectPK.companyId, this.breakSwitchClass, this.autoStampReflectionClass, this.actualStampOfPriorityClass, this.reflectWorkingTimeClass, 
 				this.goBackOutCorrectionClass, 
@@ -76,6 +98,12 @@ public class KrcmtStampImprint extends UkJpaEntity implements Serializable {
 				);
 	}
 	
+	/**
+	 * To entity.
+	 *
+	 * @param domain the domain
+	 * @return the krcmt stamp imprint
+	 */
 	public static KrcmtStampImprint toEntity(StampReflectionManagement domain){
 		return new KrcmtStampImprint(
 				new KrcmtStampImprintPK(domain.getCompanyId()),

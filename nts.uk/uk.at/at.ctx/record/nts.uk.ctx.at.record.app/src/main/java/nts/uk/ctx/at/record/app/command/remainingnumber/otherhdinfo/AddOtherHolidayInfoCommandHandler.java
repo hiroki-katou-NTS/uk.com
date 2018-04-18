@@ -36,7 +36,7 @@ implements PeregAddCommandHandler<AddOtherHolidayInfoCommand> {
 		String cid = AppContexts.user().companyId();
 		
 		PublicHolidayRemain pubHD = new PublicHolidayRemain(cid, command.getEmployeeId(), command.getPubHdremainNumber());
-		ExcessLeaveInfo exLeav = new ExcessLeaveInfo(cid, command.getEmployeeId(), command.getUseAtr(), command.getOccurrenceUnit(), command.getPaymentMethod());
+		ExcessLeaveInfo exLeav = new ExcessLeaveInfo(cid, command.getEmployeeId(), command.getUseAtr().intValue(), command.getOccurrenceUnit().intValue(), command.getPaymentMethod().intValue());
 		otherHolidayInfoService.addOtherHolidayInfo(cid, pubHD, exLeav,command.getRemainNumber(),command.getRemainsLeft());
 
 		return new PeregAddCommandResult(command.getEmployeeId());

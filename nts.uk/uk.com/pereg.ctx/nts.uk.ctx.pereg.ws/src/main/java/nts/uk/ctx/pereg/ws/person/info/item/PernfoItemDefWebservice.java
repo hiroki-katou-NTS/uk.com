@@ -1,6 +1,5 @@
 package nts.uk.ctx.pereg.ws.person.info.item;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -181,69 +180,8 @@ public class PernfoItemDefWebservice extends WebService {
 	@POST
 	@Path("findby/ctg-cd/{ctgcd}")
 	public List<SimpleItemDef> getSimpleItemDefsByCtgCd(@PathParam("ctgcd") String ctgCd) {
-		/*List<SimpleItemDef> lstRe = new ArrayList<>();
-		switch(ctgCd){
-			case "CS00037":
-				lstRe = getItemsCS00037();
-			break;
-			case "CS00038":
-				lstRe = getItemsCS00038();
-			break;
-			case "CS00039":
-				lstRe = getItemsCS00039();
-			break;
-		}
-		return lstRe;*/
 		return itemDefFinder.getSingpleItemDef(ctgCd);
 	}
 	
-/*	private List<SimpleItemDef> getItemsCS00038(){
-		List<SimpleItemDef> lst = new ArrayList<>();
-		lst.add(new SimpleItemDef("IS00398", "積立年休付与日", true));
-		lst.add(new SimpleItemDef("IS00399", "積立年休期限日",  true));
-		lst.add(new SimpleItemDef("IS00400", "積立年休期限切れ状態", true));
-		lst.add(new SimpleItemDef("IS00401", "積立年休使用状況", true));
-		lst.add(new SimpleItemDef("IS00403", "付与数", true));
-		lst.add(new SimpleItemDef("IS00404", "使用数", true));
-		lst.add(new SimpleItemDef("IS00405", "使用日数", true));
-		lst.add(new SimpleItemDef("IS00406", "上限超過消滅日数", true));
-		lst.add(new SimpleItemDef("IS00408", "残数", true));
-		return lst;		
-	}
-	private List<SimpleItemDef> getItemsCS00039(){
-		List<SimpleItemDef> lst = new ArrayList<>();
-		lst.add(new SimpleItemDef("IS00409", "付与日", true));
-		lst.add(new SimpleItemDef("IS00410", "期限日",  true));
-		lst.add(new SimpleItemDef("IS00411", "期限切れ状態", true));
-		lst.add(new SimpleItemDef("IS00412", "使用状況", true));
-		lst.add(new SimpleItemDef("IS00413", "付与数", true));
-		lst.add(new SimpleItemDef("IS00414", "付与日数", true));
-		lst.add(new SimpleItemDef("IS00415", "付与時間", true));//
-		lst.add(new SimpleItemDef("IS00416", "使用数", true));
-		lst.add(new SimpleItemDef("IS00417", "使用日数", true));
-		lst.add(new SimpleItemDef("IS00418", "使用時間", true));//
-		lst.add(new SimpleItemDef("IS00419", "上限超過消滅日数", true));
-		lst.add(new SimpleItemDef("IS00420", "上限超過消滅時間", true));//
-		lst.add(new SimpleItemDef("IS00421", "残数", true));
-		lst.add(new SimpleItemDef("IS00422", "残日数", true));//
-		lst.add(new SimpleItemDef("IS00423", "残時間", true));
-		return lst;
-	}
-	private List<SimpleItemDef> getItemsCS00037(){
-		List<SimpleItemDef> lst = new ArrayList<>();
-		lst.add(new SimpleItemDef("IS00385", "年休付与日", true));
-		lst.add(new SimpleItemDef("IS00386", "年休期限日",  true));
-		lst.add(new SimpleItemDef("IS00387", "年休期限切れ状態", true));
-		lst.add(new SimpleItemDef("IS00388", "年休使用状況", true));
-		lst.add(new SimpleItemDef("IS00389", "付与数", true));
-		lst.add(new SimpleItemDef("IS00390", "付与日数", true));
-		lst.add(new SimpleItemDef("IS00391", "付与時間", false));
-		lst.add(new SimpleItemDef("IS00392", "使用数", true));
-		lst.add(new SimpleItemDef("IS00393", "使用日数", true));
-		lst.add(new SimpleItemDef("IS00394", "使用時間", false));
-		lst.add(new SimpleItemDef("IS00395", "残数", true));
-		lst.add(new SimpleItemDef("IS00396", "残日数", true));
-		lst.add(new SimpleItemDef("IS00397", "残時間", false));
-		return lst;
-	}*/
+	
 }

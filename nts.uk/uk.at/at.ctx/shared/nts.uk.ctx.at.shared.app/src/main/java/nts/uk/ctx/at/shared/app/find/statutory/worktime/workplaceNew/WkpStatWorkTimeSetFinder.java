@@ -65,7 +65,7 @@ public class WkpStatWorkTimeSetFinder {
 		WkpStatWorkTimeSetDtoBuilder dtoBuilder = WkpStatWorkTimeSetDto.builder();
 		
 		dtoBuilder.year(year);
-		dtoBuilder.wkpId(wkpId);
+		dtoBuilder.workplaceId(wkpId);
 
 		Optional<WkpNormalSetting> optWkpNormalSet = this.normalSettingRepository.find(companyId, wkpId, year);
 		if (optWkpNormalSet.isPresent()) {

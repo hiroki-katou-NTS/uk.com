@@ -2,17 +2,12 @@ package nts.uk.ctx.sys.auth.pubimp.grant;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.auth.dom.adapter.employee.JobTitleAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.WorkplaceAdapter;
-import nts.uk.ctx.sys.auth.dom.employee.dto.JobTitleValueImport;
-import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleRepository;
+import nts.uk.ctx.sys.auth.dom.algorithm.CanApprovalOnBaseDateService;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPerson;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPersonRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.ApprovalAuthority;
@@ -34,10 +29,10 @@ public class RoleSetGrantedEmployeePubImpl implements RoleSetGrantedEmployeePub 
 	@Inject
 	private WorkplaceAdapter wkpAdapter;
 
-	@Inject
-	private RoleSetGrantedJobTitleRepository roleSetGrantedJobTitleRepo;
 	
-	@Inject JobTitleAdapter jobTitleAdapter;
+	@Inject
+	private CanApprovalOnBaseDateService canApprovalOnBaseDateService;
+	
 	@Override
 	public List<String> findEmpGrantedInWorkplace(String workplaceId, DatePeriod period) {
 		String companyId = AppContexts.user().companyId();
@@ -64,26 +59,7 @@ public class RoleSetGrantedEmployeePubImpl implements RoleSetGrantedEmployeePub 
 
 	@Override
 	public boolean canApprovalOnBaseDate(String companyId, String employeeID, GeneralDate date) {
-		//Acquire domain model "Role set Individual Grant"
-		String roleSetCode = "";
-		Optional<RoleSetGrantedPerson> roleSetGrand = roleSetPersonRepo.findByIDAndDate(companyId, employeeID, date);
-		if(!roleSetGrand.isPresent()){
-			JobTitleValueImport  jobTitle =  jobTitleAdapter.findJobTitleBySid(employeeID, date);
-		
-			Optional<String> roleJobTitle = roleSetGrantedJobTitleRepo.getRoleSetCd(companyId, jobTitle.getPositionId());
-			roleSetCode = roleJobTitle.get();
-		}
-		else{
-			roleSetCode = roleSetGrand.get().getRoleSetCd().toString();
-		}
-		//Acquire domain model "Roll set"
-		Optional<RoleSet> roleSet =  roleSetRepo.findByCidRollSetCDAuthor(companyId, roleSetCode.toString(), ApprovalAuthority.HasRight.value);
-		if(roleSet.isPresent()){
-			return true;
-		}
-		else{
-			return false;
-		}
+		return canApprovalOnBaseDateService.canApprovalOnBaseDate(companyId, employeeID, date);
 	}
 
 }

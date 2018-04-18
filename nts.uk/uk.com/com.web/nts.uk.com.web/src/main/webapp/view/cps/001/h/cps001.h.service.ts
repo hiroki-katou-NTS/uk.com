@@ -5,18 +5,22 @@ module cps001.h.service {
     let paths: any = {
             getAll: "get-resv-lea/{0}/{1}",
             getById: "get-resv-lea-by-id/{0}",
+            generateDeadline: "generate-deadline",
             add: "add",
             update: "update",
             remove: "remove"
     };
     
-    export function getAll(isAll: boolean){
-        let employeeId: string = "a";
-        return ajax('at',format(parentPath + paths.getAll, employeeId, isAll));
+    export function getAll(emId: string, isAll: boolean){
+        return ajax('at',format(parentPath + paths.getAll, emId, isAll));
     }
     
     export function getByGrantDate(id: string){
         return ajax('at',format(parentPath + paths.getById, id));
+    }
+    
+    export function generateDeadline(grantDate: Date){
+        return ajax('at',parentPath + paths.generateDeadline,  grantDate);
     }
     
     export function remove(id: string){
@@ -24,10 +28,11 @@ module cps001.h.service {
         return ajax("at", parentPath + paths.remove, command);
     }
     
-    export function update(id: string, grantDate: Date, deadline: Date, expirationStatus: number,
+    export function update(id: string,employeeId: string, grantDate: Date, deadline: Date, expirationStatus: number,
         grantDays: string, useDays: string, overLimitDays: string, remainingDays: string){
         let command = {
             "rvsLeaId": id,
+            "employeeId": employeeId,
             "grantDate": grantDate,
             "deadline": deadline,
             "expirationStatus": expirationStatus,
@@ -36,12 +41,13 @@ module cps001.h.service {
             "overLimitDays": overLimitDays,
             "remainingDays": remainingDays
         };
-        return ajax("at", parentPath + paths.update, command);
+        return ajax('at', parentPath + paths.update, command);
     }
     
-    export function create(grantDate: string, deadline: string, expirationStatus: number,
+    export function create(employeeId: string, grantDate: string, deadline: string, expirationStatus: number,
         grantDays: string, useDays: string, overLimitDays: string, remainingDays: string){
         let command = {
+            "employeeId": employeeId,
             "grantDate": grantDate,
             "deadline": deadline,
             "expirationStatus": expirationStatus,
@@ -50,7 +56,7 @@ module cps001.h.service {
             "overLimitDays": overLimitDays,
             "remainingDays": remainingDays
         };
-        return ajax("at", parentPath + paths.add, command);
+        return ajax('at', parentPath + paths.add, command);
     }
     
     export function getItemDef(){

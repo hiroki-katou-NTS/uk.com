@@ -104,6 +104,23 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.updateScheduleBreakTime(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleBreaks());
 		this.updateScheduleTime(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleTime());
 	}
+	
+	@Override
+	public void changeWorkTypeTime(String sId, GeneralDate date, String workTypeCode, String workTimeCode) {
+		Optional<KscdtBasicSchedule> optionalEntity = this.findById(sId, date);
+		if(!optionalEntity.isPresent()) {
+			return;
+		}
+		KscdtBasicSchedule schedule = optionalEntity.get();
+		if(workTypeCode != null) {
+			schedule.workTypeCode = workTypeCode;	
+		}
+		if(workTimeCode != null) {
+			schedule.workTimeCode = workTimeCode;	
+		}		
+		this.commandProxy().update(schedule);
+		this.getEntityManager().flush();
+	}
 
 	/**
 	 * update work schedule time zone
@@ -733,7 +750,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * @param workScheduleTime
 	 */
 	private void updateScheduleTime(String employeeId, GeneralDate baseDate, Optional<WorkScheduleTime> workScheduleTime) {
-		if (!workScheduleTime.isPresent()) {
+		if (workScheduleTime == null || !workScheduleTime.isPresent()) {
 			return;
 		}
 		

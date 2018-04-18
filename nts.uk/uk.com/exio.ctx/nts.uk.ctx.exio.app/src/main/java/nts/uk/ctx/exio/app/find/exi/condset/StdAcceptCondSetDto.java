@@ -50,6 +50,11 @@ public class StdAcceptCondSetDto {
 	 * CSVデータの取込開始行
 	 */
 	private Integer csvDataStartLine;
+	
+	/**
+	 * 文字コード
+	 */
+	private Integer characterCode;
 
 	/**
 	 * 既存データの削除方法
@@ -63,6 +68,7 @@ public class StdAcceptCondSetDto {
 				domain.getCategoryId().isPresent() ? domain.getCategoryId().get() : null,
 				domain.getCsvDataLineNumber().isPresent() ? domain.getCsvDataLineNumber().get().v() : null,
 				domain.getCsvDataStartLine().isPresent() ? domain.getCsvDataStartLine().get().v() : null,
+				domain.getCharacterCode().isPresent() ? domain.getCharacterCode().get().value : null,
 				domain.getDeleteExtDataMethod().isPresent() ? domain.getDeleteExtDataMethod().get().value : null);
 	}
 

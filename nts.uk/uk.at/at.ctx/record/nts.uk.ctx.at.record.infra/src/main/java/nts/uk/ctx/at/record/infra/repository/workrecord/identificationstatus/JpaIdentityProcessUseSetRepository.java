@@ -34,7 +34,7 @@ public class JpaIdentityProcessUseSetRepository extends JpaRepository implements
 
 	private IdentityProcessUseSet toDomain(KrcmtIdentityProceSet entity) {
 		return new IdentityProcessUseSet(new CompanyId(entity.krcmtIdentityProceSetPK.cid),
-				entity.yourSelfConfirmError == 1 ? true : false, entity.useIdentityOfMonth == 1 ? true : false,
+				entity.useConfirmByYourself == 1 ? true : false, entity.useIdentityOfMonth == 1 ? true : false,
 				entity.yourSelfConfirmError == null ? Optional.empty()
 						: Optional.of(EnumAdaptor.valueOf(entity.yourSelfConfirmError, SelfConfirmError.class)));
 	}

@@ -39,14 +39,16 @@
 							<table tabindex="5" class="overtimeListQ5_1">
 								<tbody data-bind='foreach: overtimeList'>
 									 <tr >
+									    <td data-bind="text: overtimeNo"></td>
 									    <td data-bind="text: overtimeName"></td>
 									    <td>
-									    	<div tabindex="6" data-bind="ntsRadioBoxGroup: {
+									    	<div tabindex="6" data-bind=" ntsRadioBoxGroup: {
 															options: $parent.itemListQ5_5,
 															optionsValue: 'id',
 															optionsText: 'name',
 															value: otWorkRoleSelect,
-															enable: enable}"></div>
+															enable: enable}, 
+															attr: { 'posTab': $index }"></div>
 									    </td>
 									  </tr>
 								</tbody>
@@ -54,17 +56,27 @@
 						</div>
 						<!-- Q2_2 -->
 						<div class="constText1">
-							<!-- Q6_8 -->
-							<div>
-								<span class="caret-bottom"></span>
-							</div>
-							<!-- Q7_1 -->
-							<div class="panel panel-gray-bg">
-								<!-- Q7_2 -->
-								<span class="label" style="margin-bottom: 5px;">#{i18n.getText('KMK013_392')}</span>
-								<br/>
-								<!-- Q7_3 -->
-								<span class="label" style="margin-bottom: 5px;">#{i18n.getText('KMK013_393')}</span>
+							<!-- Q6_1 -->
+							<img id="imgq6_1" src="img/IMG_KMK013_13.png" alt=""/>
+							<!-- Q6_2 -->
+							<img id="imgq6_2" src="img/IMG_KMK013_14.png" alt=""/>
+							<!-- Q6_3 -->
+							<img id="imgq6_3" src="img/IMG_KMK013_15.png" alt=""/>
+							<!-- Q6_4 -->
+							<img id="imgq6_4" src="img/IMG_KMK013_16.png" alt=""/>
+							<div class="panel-caret-warpper">
+								<!-- Q6_8 -->
+								<div>
+									<span class="caret-bottom"></span>
+								</div>
+								<!-- Q7_1 -->
+								<div class="panel panel-gray-bg">
+									<!-- Q7_2 -->
+									<span class="label" style="margin-bottom: 5px;">#{i18n.getText('KMK013_392')}</span>
+									<br/>
+									<!-- Q7_3 -->
+									<span class="label" style="margin-bottom: 5px;">#{i18n.getText('KMK013_393')}</span>
+								</div>
 							</div>
 						</div>
 						
@@ -80,7 +92,7 @@
 											</td>
 											<td>
 												<!-- Q8_3 -->
-												<a class="hyperlink" href="../../004/a/index.xhtml">#{i18n.getText('KMK013_395')}</a>
+												<a tabindex="-1" class="hyperlink" href="../../004/a/index.xhtml">#{i18n.getText('KMK013_395')}</a>
 												<br/>
 												<!-- Q8_4 -->
 												<span class="label" style="margin-bottom: 5px;">#{i18n.getText('KMK013_396')}</span>
@@ -99,27 +111,17 @@
 							</div>
 						</div>
 						<div id="img-chart">
+							<!-- Q6_5 -->
+							<img id="imgq6_5" src="img/IMG_KMK013_17.png" alt=""/>
+							<!-- Q6_6 -->
+							<img id="imgq6_6" src="img/IMG_KMK013_18.png" alt=""/>
+							<!-- Q6_7 -->
+							<img id="imgq6_7" src="img/IMG_KMK013_19.png" alt=""/>
 							<!-- Q9_1 -->
 							<img id="imgq9_1" src="img/IMG_KMK013_4.png" alt=""/>
 							<!-- Q9_2 -->
 							<img id="imgq9_2" src="img/IMG_KMK013_5.png" alt=""/>
 						</div>
-						
-						
-						<!-- Q6_1 -->
-						<img id="imgq6_1" src="img/IMG_KMK013_13.png" alt=""/>
-						<!-- Q6_2 -->
-						<img id="imgq6_2" src="img/IMG_KMK013_14.png" alt=""/>
-						<!-- Q6_3 -->
-						<img id="imgq6_3" src="img/IMG_KMK013_15.png" alt=""/>
-						<!-- Q6_4 -->
-						<img id="imgq6_4" src="img/IMG_KMK013_16.png" alt=""/>
-						<!-- Q6_5 -->
-						<img id="imgq6_5" src="img/IMG_KMK013_17.png" alt=""/>
-						<!-- Q6_6 -->
-						<img id="imgq6_6" src="img/IMG_KMK013_18.png" alt=""/>
-						<!-- Q6_7 -->
-						<img id="imgq6_7" src="img/IMG_KMK013_19.png" alt=""/>
 					</div>
 					<!-- Q2_3 -->
 					<div class="tab-content-2 ">
@@ -134,31 +136,44 @@
 							<table tabindex="8" class="overtimeListQ5_1">
 								<tbody data-bind='foreach: roleFrameList'>
 									 <tr >
-									    <td data-bind="text: nameHDFrame"></td>
+									    <td data-bind="text: HDFrameNo"></td>
+									    <td data-bind="text: HDFrameName"></td>
 									    <td>
 									    	<div tabindex="9" data-bind="ntsRadioBoxGroup: {
 															options: $parent.itemListQ13_5,
 															optionsValue: 'id',
 															optionsText: 'name',
 															value: roleFrameSelect,
-															enable: enable}"></div>
+															enable: enable}, 
+															attr: { 'posTab': $index }"></div>
 									    </td>
 									  </tr>
 								</tbody>
 							</table>
 						</div>
 						<div class="constText1">
-							<!-- Q14_7 -->
-							<div>
-								<span class="caret-bottom"></span>
-							</div>
-							<!-- Q15_1 -->
-							<div class="panel panel-gray-bg">
-								<!-- Q15_2 -->
-								<span class="label" style="margin-bottom: 5px;">#{i18n.getText('KMK013_406')}</span>
-								<br/>
-								<!-- Q15_3 -->
-								<span class="label" style="margin-bottom: 5px;">#{i18n.getText('KMK013_407')}</span>
+							<!-- Q14_1 -->
+							<img id="imgq14_1" src="img/IMG_KMK013_13.png" alt=""/>
+							<!-- Q14_2 -->
+							<img id="imgq14_2" src="img/IMG_KMK013_14.png" alt=""/>
+							<!-- Q14_3 -->
+							<img id="imgq14_3" src="img/IMG_KMK013_15.png" alt=""/>
+							<!-- Q14_4 -->
+							<img id="imgq14_4" src="img/IMG_KMK013_16.png" alt=""/>
+						
+							<div class="panel-caret-warpper">
+								<!-- Q14_7 -->
+								<div>
+									<span class="caret-bottom"></span>
+								</div>
+								<!-- Q15_1 -->
+								<div class="panel panel-gray-bg">
+									<!-- Q15_2 -->
+									<span class="label" style="margin-bottom: 5px;">#{i18n.getText('KMK013_406')}</span>
+									<br/>
+									<!-- Q15_3 -->
+									<span class="label" style="margin-bottom: 5px;">#{i18n.getText('KMK013_407')}</span>
+								</div>
 							</div>
 						</div>
 						
@@ -174,7 +189,7 @@
 											</td>
 											<td>
 												<!-- Q16_3 -->
-												<a class="hyperlink" href="../../004/a/index.xhtml">#{i18n.getText('KMK013_408')}</a>
+												<a tabindex="-1" class="hyperlink" href="../../004/a/index.xhtml">#{i18n.getText('KMK013_408')}</a>
 												<br/>
 												<!-- Q16_4 -->
 												<span class="label" style="margin-bottom: 5px;">#{i18n.getText('KMK013_409')}</span>
@@ -236,19 +251,11 @@
 									<span class="label">#{i18n.getText('KMK013_418')}</span>
 								</div>
 							</div>
+							<!-- Q14_5 -->
+							<img id="imgq14_5" src="img/IMG_KMK013_20.png" alt=""/>
+							<!-- Q14_6 -->
+							<img id="imgq14_6" src="img/IMG_KMK013_21.png" alt=""/>
 						</div>
-						<!-- Q14_1 -->
-						<img id="imgq14_1" src="img/IMG_KMK013_13.png" alt=""/>
-						<!-- Q14_2 -->
-						<img id="imgq14_2" src="img/IMG_KMK013_14.png" alt=""/>
-						<!-- Q14_3 -->
-						<img id="imgq14_3" src="img/IMG_KMK013_15.png" alt=""/>
-						<!-- Q14_4 -->
-						<img id="imgq14_4" src="img/IMG_KMK013_16.png" alt=""/>
-						<!-- Q14_5 -->
-						<img id="imgq14_5" src="img/IMG_KMK013_20.png" alt=""/>
-						<!-- Q14_6 -->
-						<img id="imgq14_6" src="img/IMG_KMK013_21.png" alt=""/>
 					</div>
 				</div>
 			</div>

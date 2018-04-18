@@ -77,7 +77,9 @@ module nts.uk.at.view.kmk013.m {
                 data.specialHoliday = self.vacationOrder().special;
                 data.annualHoliday = self.vacationOrder().annual;
                 service.register(data).done(function() {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                        $('#upper-limit').focus();
+                    });
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
                 }).always(() => {

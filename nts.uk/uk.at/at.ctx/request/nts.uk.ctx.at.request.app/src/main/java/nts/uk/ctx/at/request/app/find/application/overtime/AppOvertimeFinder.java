@@ -13,6 +13,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
@@ -250,7 +251,7 @@ public class AppOvertimeFinder {
 		// 01-04_加給時間を取得: chua xong
 		Optional<AppOverTime> opAppOverTime = overtimeRepository.getFullAppOvertime(companyID, appID);
 		if(!opAppOverTime.isPresent()){
-			throw new RuntimeException("khong tim dc doi tuong");
+			throw new BusinessException("Msg_198");
 		}
 		AppOverTime appOverTime = opAppOverTime.get();
 		OverTimeDto overTimeDto = OverTimeDto.fromDomain(appOverTime);

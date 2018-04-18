@@ -44,12 +44,15 @@ public class Kmk004ShaDeleteCommandHandler extends CommandHandler<Kmk004ShaDelet
 		DeleteShainStatWorkTimeSetCommand delStatCommand = new DeleteShainStatWorkTimeSetCommand();
 		DelShaMonthCalSetCommand delMonthCommand = new DelShaMonthCalSetCommand();
 		
+		deleteCommand.setWTSettingCommonRemove(false);
 		delStatCommand.setYear(deleteCommand.getYear());
 		delStatCommand.setEmployeeId(deleteCommand.getSid());
 		delMonthCommand.setSid(deleteCommand.getSid());
 		
 		this.delStatCommand.handle(delStatCommand);
-		this.delMonthCommand.handle(delMonthCommand);
+		if (!delStatCommand.isOverOneYear()) {
+			this.delMonthCommand.handle(delMonthCommand);
+			deleteCommand.setWTSettingCommonRemove(true);
+		}	
 	}
-
 }

@@ -4,24 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.employment;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpDeforLaborSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpDeforLaborSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpDeforLarSet;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpDeforLarSetPK;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpDeforLarSetPK_;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpDeforLarSet_;
 
 /**
  * The Class JpaEmpDeforLaborSettingRepository.
@@ -58,18 +49,14 @@ public class JpaEmpDeforLaborSettingRepository extends JpaRepository implements 
 	 */
 	@Override
 	public Optional<EmpDeforLaborSetting> find(String cid, String emplCode, int year) {
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<KshstEmpDeforLarSet> cq = cb.createQuery(KshstEmpDeforLarSet.class);
-		Root<KshstEmpDeforLarSet> root = cq.from(KshstEmpDeforLarSet.class);
+		Optional<KshstEmpDeforLarSet> optEntity = this.queryProxy().find(new KshstEmpDeforLarSetPK(cid, emplCode, year), KshstEmpDeforLarSet.class);
 
-		List<Predicate> predicateList = new ArrayList<Predicate>();
-		predicateList.add(cb.equal(root.get(KshstEmpDeforLarSet_.kshstEmpDeforLarSetPK).get(KshstEmpDeforLarSetPK_.cid), cid));
-		predicateList.add(cb.equal(root.get(KshstEmpDeforLarSet_.kshstEmpDeforLarSetPK).get(KshstEmpDeforLarSetPK_.year), year));
-		predicateList.add(cb.equal(root.get(KshstEmpDeforLarSet_.kshstEmpDeforLarSetPK).get(KshstEmpDeforLarSetPK_.empCd), emplCode));
+		// Check exist
+		if (!optEntity.isPresent()) {
+			return Optional.empty();
+		}
 
-		cq.where(predicateList.toArray(new Predicate[] {}));
-		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getSingleResult()));
+		return Optional.ofNullable(this.toDomain(optEntity.get()));
 	}
 
 	/**
@@ -91,9 +78,6 @@ public class JpaEmpDeforLaborSettingRepository extends JpaRepository implements 
 	 * @return the emp defor labor setting
 	 */
 	private EmpDeforLaborSetting toDomain(KshstEmpDeforLarSet entity) {
-		if (entity == null) {
-			return null;
-		}
 		return new EmpDeforLaborSetting(new JpaEmpDeforLaborSettingGetMemento(entity));
 	}
 

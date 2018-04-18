@@ -68,8 +68,6 @@ public class PersonInfoCategory extends AggregateRoot {
 	 */
 	private AddItemObjCls addItemCls;
 
-	public final static String ROOT_COMPANY_ID = "000000000000-0000";
-
 	private PersonInfoCategory(String companyId, String categoryCode, String categoryName, int categoryType) {
 		super();
 		this.personInfoCategoryId = IdentifierUtil.randomUniqueId();
@@ -81,6 +79,8 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.isAbolition = IsAbolition.NOT_ABOLITION;
 		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
 		this.isFixed = IsFixed.NOT_FIXED;
+		this.initValMasterCls = InitValMasterObjCls.INIT;
+		this.addItemCls = AddItemObjCls.ENABLE;
 	}
 
 	private PersonInfoCategory(String personInfoCategoryId, String companyId, String categoryCode,
@@ -103,6 +103,10 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.companyId = companyId;
 		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
 	}
+	
+	private PersonInfoCategory(){
+		super();
+	}
 
 	public static PersonInfoCategory createFromJavaType(String companyId, String categoryCode, String categoryName,
 			int categoryType) {
@@ -119,6 +123,18 @@ public class PersonInfoCategory extends AggregateRoot {
 	public static PersonInfoCategory createFromJavaTypeUpdate(String personInfoCategoryId, String companyId,
 			int categoryType) {
 		return new PersonInfoCategory(personInfoCategoryId, companyId, categoryType);
+	}
+	
+	public static PersonInfoCategory createDomainWithAbolition(String ctgId, String ctgCd, String name){
+		PersonInfoCategory p = new PersonInfoCategory();
+		p.personInfoCategoryId = ctgId;
+		p.categoryName = new CategoryName(name);
+		p.categoryCode = new CategoryCode(ctgCd);
+		return p;
+	}
+	public void setDomainNameAndAbolition(CategoryName name, int isAbolition){
+		this.isAbolition = EnumAdaptor.valueOf(isAbolition, IsAbolition.class);
+		this.categoryName = name;
 	}
 	
 	public static List<PersonInfoCategory> getAllPerInfoCategoryWithCondition(List<PersonInfoCategory> lstObj){

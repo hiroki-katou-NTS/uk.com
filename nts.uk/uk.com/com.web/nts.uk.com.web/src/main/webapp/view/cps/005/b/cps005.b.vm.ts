@@ -21,8 +21,6 @@ module nts.uk.com.view.cps005.b {
                     dataItemModel = new ItemDataModel(null);
                 self.currentItemData = ko.observable(dataItemModel);
                 self.isEnableButtonProceed = ko.observable(true);
-
-
             }
 
             startPage(): JQueryPromise<any> {
@@ -83,7 +81,7 @@ module nts.uk.com.view.cps005.b {
 
                 newItemDef = new UpdateItemModel(self.currentItemData().currentItemSelected());
 
-                self.checkRequired(newItemDef);
+                if (self.checkRequired(newItemDef)) { return; };
 
                 if (self.isUpdate == true) {
 
@@ -93,14 +91,25 @@ module nts.uk.com.view.cps005.b {
                     }
                     new service.Service().updateItemDef(newItemDef).done(function(data: string) {
                         if (data) {
-                            info({ messageId: data }).then(() => { info({ messageId: "Msg_15" }).then(() => { block.clear(); }); });
-                        } else {
-                            info({ messageId: "Msg_15" }).then(() => { block.clear(); });
-                        }
-                        self.reloadData();
+                            info({ messageId: data }).then(() => {
+                                info({ messageId: "Msg_15" }).then(() => {
+                                    self.reloadData();
+                                    self.currentItemData().perInfoItemSelectCode(newItemDef.perInfoItemDefId);
+                                    self.currentItemData().perInfoItemSelectCode.valueHasMutated();
+                                    block.clear();
+                                }
 
-                        self.currentItemData().perInfoItemSelectCode(newItemDef.perInfoItemDefId);
-                        self.currentItemData().perInfoItemSelectCode.valueHasMutated();
+                                );
+                            });
+                        } else {
+                            info({ messageId: "Msg_15" }).then(() => {
+                                self.reloadData();
+                                self.currentItemData().perInfoItemSelectCode(newItemDef.perInfoItemDefId);
+                                self.currentItemData().perInfoItemSelectCode.valueHasMutated();
+                                block.clear();
+                            });
+                        }
+
                     }).fail(error => {
 
                         if (error.messageId == 'Msg_928') {
@@ -125,11 +134,17 @@ module nts.uk.com.view.cps005.b {
                         newItemDef.singleItem.decimalPart = 0;
                     }
                     new service.Service().addItemDef(newItemDef).done(function(data: string) {
-                        self.reloadData().done(() => {
-                            self.currentItemData().perInfoItemSelectCode(data);
-                            //  self.selectionItemId(params.selectionItemId);
+
+                        info({ messageId: "Msg_15" }).then(() => {
+
+                            self.reloadData().done(() => {
+                                self.currentItemData().perInfoItemSelectCode(data);
+                                //  self.selectionItemId(params.selectionItemId);
+                            });
+
+                            block.clear();
+
                         });
-                        info({ messageId: "Msg_15" }).then(() => { block.clear(); });
                     }).fail(error => {
                         if (error.messageId == 'Msg_928') {
                             alertError({
@@ -160,25 +175,27 @@ module nts.uk.com.view.cps005.b {
                             block.clear();
                             return;
                         }
-                        self.reloadData().done(() => {
-                            let itemListLength = self.currentItemData().personInfoItemList().length;
-                            if (itemListLength === 0) {
-                                self.register();
-                                block.clear();
-                                return;
-                            }
-                            if (itemListLength - 1 >= indexItemDelete) {
-                                self.currentItemData().perInfoItemSelectCode(self.currentItemData().personInfoItemList()[indexItemDelete].id);
-                                block.clear();
-                                return;
-                            }
-                            if (itemListLength - 1 < indexItemDelete) {
-                                self.currentItemData().perInfoItemSelectCode(self.currentItemData().personInfoItemList()[itemListLength - 1].id);
-                                block.clear();
-                                return;
-                            }
+
+                        info({ messageId: "Msg_16" }).then(() => {
+                            self.reloadData().done(() => {
+                                let itemListLength = self.currentItemData().personInfoItemList().length;
+                                if (itemListLength === 0) {
+                                    self.register();
+                                    block.clear();
+                                    return;
+                                }
+                                if (itemListLength - 1 >= indexItemDelete) {
+                                    self.currentItemData().perInfoItemSelectCode(self.currentItemData().personInfoItemList()[indexItemDelete].id);
+                                    block.clear();
+                                    return;
+                                }
+                                if (itemListLength - 1 < indexItemDelete) {
+                                    self.currentItemData().perInfoItemSelectCode(self.currentItemData().personInfoItemList()[itemListLength - 1].id);
+                                    block.clear();
+                                    return;
+                                }
+                            });
                         });
-                        info({ messageId: "Msg_16" }).then(() => { block.clear(); });
 
                     }).fail(error => {
                         alertError({ messageId: error.messageId });
@@ -194,13 +211,13 @@ module nts.uk.com.view.cps005.b {
                 nts.uk.ui.windows.close();
             }
 
-            checkRequired(newItemDef: any) {
+            checkRequired(newItemDef: any): boolean {
 
                 if (newItemDef.singleItem.dataType === 1) {
                     if (newItemDef.singleItem.stringItemLength === null) {
                         $("#stringItemLength").focus();
                         block.clear();
-                        return;
+                        return true;
                     }
                 }
 
@@ -208,7 +225,7 @@ module nts.uk.com.view.cps005.b {
                     if (newItemDef.singleItem.integerPart === null) {
                         $("#integerPart").focus();
                         block.clear();
-                        return;
+                        return true;
                     }
                 }
 
@@ -217,12 +234,12 @@ module nts.uk.com.view.cps005.b {
                         $("#timeItemMin").focus();
                         newItemDef.singleItem.hintTimeMin("");
                         block.clear();
-                        return;
+                        return true;
                     } else if (newItemDef.singleItem.timeItemMax === null) {
                         $("#timeItemMax").focus();
                         newItemDef.singleItem.hintTimeMax("");
                         block.clear();
-                        return;
+                        return true;
                     }
                 }
 
@@ -230,13 +247,15 @@ module nts.uk.com.view.cps005.b {
                     if (newItemDef.singleItem.timePointItemMin === undefined) {
                         $("#timePointItemMin").focus();
                         block.clear();
-                        return;
+                        return true;
                     } else if (newItemDef.singleItem.timePointItemMax === undefined) {
                         $("#timePointItemMax").focus();
                         block.clear();
-                        return;
+                        return true;
                     }
                 }
+
+                return false;
             }
 
             genTextTime(time) {
@@ -261,6 +280,7 @@ module nts.uk.com.view.cps005.b {
         isEnableButtonProceed: KnockoutObservable<boolean> = ko.observable(true);
         isEnableButtonDelete: KnockoutObservable<boolean> = ko.observable(true);
         dataTypeEnum: Array<any> = new Array();
+        dataTypeEnumFilter: Array<any> = new Array();
         //Enum : dataTypeEnum is selected value 1 - 文字列(String)
         stringItemTypeEnum: Array<any> = new Array();
         stringItemDataTypeEnum: Array<any> = new Array();
@@ -288,6 +308,9 @@ module nts.uk.com.view.cps005.b {
             if (params) {
                 self.personInfoItemList(_.map(params.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }));
                 self.dataTypeEnum = params.dataTypeEnum || new Array();
+                self.dataTypeEnumFilter = _.filter(params.dataTypeEnum, function(c) {
+                    return (c.value == 1 || c.value == 2 || c.value == 3 || c.value == 4 || c.value == 5 || c.value == 6);
+                });
                 self.stringItemTypeEnum = params.stringItemTypeEnum || new Array();
                 self.stringItemDataTypeEnum = params.stringItemDataTypeEnum || new Array();
                 self.stringItemDataTypeEnum.reverse();
@@ -406,10 +429,9 @@ module nts.uk.com.view.cps005.b {
                 nts.uk.ui.errors.clearAll();
                 if (value === 6) {
                     self.selectionItem().selectionItemRefType(2);
-                    let baseDate = moment(new Date()).format('YYYY-MM-DD');
                     if (ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()).length > 0) {
                         new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId),
-                            baseDate, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
+                            __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                                 if (data.length > 0) {
                                     self.selectionItem().selectionLst([]);
                                     self.selectionItem().selectionLst(data);
@@ -431,7 +453,7 @@ module nts.uk.com.view.cps005.b {
                         if (!value) {
                             return;
                         }
-                        new service.Service().getAllSelByHistory(value, baseDate, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
+                        new service.Service().getAllSelByHistory(value, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                             if (data.length > 0) {
                                 self.selectionItem().selectionLst([]);
                                 self.selectionItem().selectionLst(data);
@@ -450,7 +472,7 @@ module nts.uk.com.view.cps005.b {
                     $('#numericItemMin').blur(() => {
                         $(this).val(parseFloat($(this).val()));
                     });
-                    
+
                     self.numericItem().numericItemMinus.subscribe(function(data: number) {
                         self.numericItem().decimalPart.valueHasMutated();
                     })
@@ -546,7 +568,11 @@ module nts.uk.com.view.cps005.b {
             self.numericItemMax(data.numericItemMax);
             self.numericItemAmount(data.numericItemAmount);
             self.numericItemMinus(data.numericItemMinus);
-            self.decimalPart(data.decimalPart || null);
+            if (__viewContext['screenModelB'].currentItemData().currentItemSelected().fixedAtr() === ISFIXED.FIXED) {
+                self.decimalPart(data.decimalPart || 0);
+            } else {
+                self.decimalPart(data.decimalPart || null);
+            }
             self.integerPart(data.integerPart || null);
             self.numericItemMinus.subscribe(function(data) {
                 self.decimalPart.valueHasMutated();
@@ -685,12 +711,11 @@ module nts.uk.com.view.cps005.b {
             }
             self.selectionItemLst(data.selectionItemLst || []);
             self.selectionLst([]);
-            let baseDate = moment(new Date()).format('YYYY-MM-DD');
 
             if (self.selectionItemId() === undefined || self.selectionItemId() === "") {
                 if (ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()).length > 0) {
 
-                    new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId), baseDate,
+                    new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId),
                         __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                             if (data.length > 0) {
                                 self.selectionLst.removeAll();
@@ -709,7 +734,7 @@ module nts.uk.com.view.cps005.b {
                 }
             } else {
 
-                new service.Service().getAllSelByHistory(ko.toJS(self.selectionItemId), baseDate,
+                new service.Service().getAllSelByHistory(ko.toJS(self.selectionItemId),
                     __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                         if (data.length > 0) {
                             self.selectionLst.removeAll();
@@ -730,7 +755,7 @@ module nts.uk.com.view.cps005.b {
                 if (!value) {
                     return;
                 }
-                new service.Service().getAllSelByHistory(value, baseDate, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
+                new service.Service().getAllSelByHistory(value, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                     if (data.length > 0) {
                         self.selectionLst.removeAll();
                         self.selectionLst(data);
@@ -756,7 +781,7 @@ module nts.uk.com.view.cps005.b {
 
             setShared('CPS005B_PARAMS', params);
             let itemCurrent: string = ko.toJS(__viewContext.screenModelB.currentItemData().currentItemSelected().id);
-            modal('/view/cps/016/a/index.xhtml', { title: '', height: 850, width: 1200 }).onClosed(function(): any {
+            modal('/view/cps/016/a/index.xhtml', { title: '', height: 800, width: 1350 }).onClosed(function(): any {
                 __viewContext['screenModelB'].reloadData().done(() => {
                     __viewContext['screenModelB'].currentItemData().perInfoItemSelectCode(itemCurrent);
                     self.selectionItemId(params.selectionItemId);
@@ -941,6 +966,14 @@ module nts.uk.com.view.cps005.b {
         selectionId: string;
         selectionItemName?: string;
 
+    }
+
+    export enum ISFIXED {
+        // 0:固定なし(Not Fixed)
+        NOT_FIXED = 0,
+
+        // 1:固定(Fixed)
+        FIXED = 1
     }
 
 }

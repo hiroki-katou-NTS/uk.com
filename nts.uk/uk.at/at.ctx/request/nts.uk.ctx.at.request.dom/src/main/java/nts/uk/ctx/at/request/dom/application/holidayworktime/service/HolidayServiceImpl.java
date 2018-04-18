@@ -103,6 +103,10 @@ public class HolidayServiceImpl implements HolidayService {
 					}
 				}
 				workTypes.setWorkTypeCode(workTypeCode);
+			}else{
+				if(!CollectionUtil.isEmpty(workTypes.getWorkTypeCodes())){
+					workTypes.setWorkTypeCode(workTypes.getWorkTypeCodes().get(0));
+				}
 			}
 		}
 		

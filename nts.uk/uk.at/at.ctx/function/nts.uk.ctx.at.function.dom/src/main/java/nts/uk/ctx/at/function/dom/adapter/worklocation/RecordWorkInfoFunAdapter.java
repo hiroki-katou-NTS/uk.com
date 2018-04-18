@@ -6,4 +6,5 @@ import nts.arc.time.GeneralDate;
 
 public interface RecordWorkInfoFunAdapter {
 	public Optional<RecordWorkInfoFunAdapterDto>  getInfoCheckNotRegister(String employeeId, GeneralDate ymd);
+	public Optional<String> getWorkTypeCode(String employeeId, GeneralDate ymd);
 }

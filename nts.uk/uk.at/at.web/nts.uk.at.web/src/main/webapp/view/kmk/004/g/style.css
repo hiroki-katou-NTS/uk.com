@@ -8,3 +8,6 @@
 .gen-switch {
 	margin-left: 60px;
 }
+button.nts-switch-button {
+	min-width: 100px;
+}

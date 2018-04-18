@@ -49,13 +49,10 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	}
 
 	@Override
-	public List<AnnualLeaveGrantRemainingData> findByCheckState(String employeeId, Boolean checkState) {
-		if (checkState) {
-			return find(employeeId);
-		}
+	public List<AnnualLeaveGrantRemainingData> findByCheckState(String employeeId, int checkState) {
 		List<KRcmtAnnLeaRemain> entities = this.queryProxy().query(QUERY_WITH_EMPID_CHECKSTATE, KRcmtAnnLeaRemain.class)
 				.setParameter("employeeId", employeeId)
-				.setParameter("checkState", 0)
+				.setParameter("checkState", checkState)
 				.getList();
 		return entities.stream()
 				.map(ent -> AnnualLeaveGrantRemainingData.createFromJavaType(ent.annLeavID, ent.cid, ent.sid, ent.grantDate,
@@ -68,8 +65,9 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	@Override
 	public void add(AnnualLeaveGrantRemainingData data) {
 		KRcmtAnnLeaRemain entity = new KRcmtAnnLeaRemain();
+		entity.annLeavID = data.getAnnLeavID();
 		entity.sid = data.getEmployeeId();
-		entity.grantDate = data.getGrantDate();
+		entity.cid = data.getCid();
 		updateValue(entity, data);
 
 		this.commandProxy().insert(entity);
@@ -91,7 +89,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 		entity.deadline = data.getDeadline();
 		entity.expStatus = data.getExpirationStatus().value;
 		entity.registerType = data.getRegisterType().value;
-
+		entity.grantDate = data.getGrantDate();
 		AnnualLeaveNumberInfo details = data.getDetails();
 
 		// grant data
@@ -128,6 +126,23 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 		this.getEntityManager().createQuery(DELETE_QUERY)
 		.setParameter("employeeId", employeeId)
 		.setParameter("grantDate", grantDate);
+	}
+	
+	@Override
+	public void delete(String annaLeavID) {
+		Optional<KRcmtAnnLeaRemain> entity = this.queryProxy().find(annaLeavID, KRcmtAnnLeaRemain.class);
+		if (entity.isPresent()){
+			this.commandProxy().remove(KRcmtAnnLeaRemain.class, annaLeavID);
+		}
+	}
+
+	@Override
+	public Optional<AnnualLeaveGrantRemainingData> findByID(String id) {
+		Optional<KRcmtAnnLeaRemain> entity = this.queryProxy().find(id, KRcmtAnnLeaRemain.class);
+		if (entity.isPresent()){
+			return Optional.ofNullable(toDomain(entity.get()));
+		}
+		return Optional.empty();
 	}
 
 

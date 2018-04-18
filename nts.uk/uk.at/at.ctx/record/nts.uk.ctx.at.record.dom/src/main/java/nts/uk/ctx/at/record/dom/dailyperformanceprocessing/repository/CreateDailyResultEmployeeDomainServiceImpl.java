@@ -104,20 +104,20 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 					
 					if (employeeAndClosure.getLock() == 0) {
 						ExecutionType reCreateAttr = executionLog.get().getDailyCreationSetInfo().get().getExecutionType();
-//						
-//						if (reCreateAttr == ExecutionType.RERUN) {
-//							DailyRecreateClassification creationType = executionLog.get().getDailyCreationSetInfo().get().getCreationType();
-//							if (creationType == DailyRecreateClassification.PARTLY_MODIFIED) {
-//								// 再設定
-////								this.resetDailyPerforDomainService.resetDailyPerformance(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr);
-//							} else {
-//								this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
-//										empCalAndSumExecLogID, reCreateAttr, reCreateWorkType);
-//							}
-//						} else{
+						
+						if (reCreateAttr == ExecutionType.RERUN) {
+							DailyRecreateClassification creationType = executionLog.get().getDailyCreationSetInfo().get().getCreationType();
+							if (creationType == DailyRecreateClassification.PARTLY_MODIFIED) {
+//								 再設定
+								this.resetDailyPerforDomainService.resetDailyPerformance(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr);
+							} else {
+								this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
+										empCalAndSumExecLogID, reCreateAttr, reCreateWorkType);
+							}
+						} else{
 							this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
 									empCalAndSumExecLogID, reCreateAttr, reCreateWorkType);
-//						}
+						}
 					} 
 					if (asyncContext.hasBeenRequestedToCancel()) {
 						asyncContext.finishedAsCancelled();

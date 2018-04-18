@@ -38,4 +38,12 @@ public interface AppDetailInfoRepository {
 	 * @return
 	 */
 	public AppAbsenceFull getAppAbsenceInfo(String companyID, String appId, Integer day);
+	/**
+	 * get Application Complt Leave Info
+	 * @param companyID
+	 * @param appId
+	 * @param type
+	 * @return
+	 */
+	public AppCompltLeaveFull getAppCompltLeaveInfo(String companyID, String appId, int type);
 }

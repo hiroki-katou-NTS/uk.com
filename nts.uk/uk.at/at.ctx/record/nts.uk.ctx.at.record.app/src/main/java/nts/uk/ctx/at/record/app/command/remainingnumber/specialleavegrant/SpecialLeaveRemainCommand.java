@@ -10,12 +10,14 @@ import nts.arc.time.GeneralDate;
 @Data
 public class SpecialLeaveRemainCommand {
 
+	
+
 	private String specialid;
 	private String cid;
 	private String sid;
 	private int specialLeaCode;
-	private GeneralDate grantDate;
-	private GeneralDate deadlineDate;
+	private String grantDate;
+	private String deadlineDate;
 	private int expStatus;
 	private int registerType;
 	private int numberDayGrant;

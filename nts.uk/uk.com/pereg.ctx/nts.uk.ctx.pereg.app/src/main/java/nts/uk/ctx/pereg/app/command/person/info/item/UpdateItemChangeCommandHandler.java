@@ -1,6 +1,5 @@
 package nts.uk.ctx.pereg.app.command.person.info.item;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -30,52 +29,49 @@ public class UpdateItemChangeCommandHandler extends CommandHandler<UpdateItemCha
 	protected void handle(CommandHandlerContext<UpdateItemChangeCommand> context) {
 		UpdateItemChangeCommand command = context.getCommand();
 		String itemName = command.getItemName();
-		if(CheckNameSpace.checkName(itemName)){
-			throw new BusinessException("Msg_928");
-		}
 		
 		PersonInfoItemDefinition itemDef = this.pernfoItemDefRep
 				.getPerInfoItemDefById(command.getId(), AppContexts.user().contractCode()).get();
 		
-		if (!this.pernfoItemDefRep.checkItemNameIsUnique(itemDef.getPerInfoCategoryId(), command.getItemName(),
+		validateInput(itemName, itemDef, command);
+		
+		PersonInfoItemDefinition itemDefDomain;
+		if (itemDef.getSystemRequired().equals(SystemRequired.REQUIRED)) {
+			itemDefDomain = PersonInfoItemDefinition.createFromEntity(itemDef.getPerInfoItemDefId(),
+					itemDef.getPerInfoCategoryId(), itemDef.getItemCode().v(), itemDef.getItemParentCode().v(),
+					itemName, itemDef.getIsAbolition().value, itemDef.getIsFixed().value,
+					itemDef.getIsRequired().value, itemDef.getSystemRequired().value,
+					itemDef.getRequireChangable().value);
+		} else {
+			itemDefDomain = PersonInfoItemDefinition.createFromEntity(itemDef.getPerInfoItemDefId(),
+					itemDef.getPerInfoCategoryId(), itemDef.getItemCode().v(), itemDef.getItemParentCode().v(),
+					itemName, command.getIsAbolition(), itemDef.getIsFixed().value,
+					command.getIsRequired(), itemDef.getSystemRequired().value, itemDef.getRequireChangable().value);
+		}
+
+		this.pernfoItemDefRep.updatePerInfoItemDef(itemDefDomain);
+	}
+	
+	private void validateInput(String itemName, PersonInfoItemDefinition itemDef, UpdateItemChangeCommand command) {
+		if (CheckNameSpace.checkName(itemName)) {
+			throw new BusinessException("Msg_928");
+		}
+
+		if (!this.pernfoItemDefRep.checkItemNameIsUnique(itemDef.getPerInfoCategoryId(), itemName,
 				itemDef.getPerInfoItemDefId())) {
 			throw new BusinessException("Msg_358");
 		}
 
-		List<Selection> selection = new ArrayList<>();
 		if (command.getDataType() == 6) {
-			if (command.getPersonEmployeeType() == 1) {
+			List<Selection> selection = this.selectionRepo.getAllSelectionByCompanyId(
+					AppContexts.user().zeroCompanyIdInContract(), command.getSelectionItemId(), GeneralDate.today());
 
-				selection = this.selectionRepo.getAllSelectionByHistoryId(command.getSelectionItemId(),
-						GeneralDate.today(), 0);
-
-			} else if (command.getPersonEmployeeType() == 2) {
-
-				selection = this.selectionRepo.getAllSelectionByHistoryId(command.getSelectionItemId(),
-						GeneralDate.today(), 1);
-
-			}
 			if (selection == null || selection.size() == 0) {
 
 				throw new BusinessException("Msg_587");
 
 			}
 		}
-		PersonInfoItemDefinition itemDefDomain;
-		if (itemDef.getSystemRequired().equals(SystemRequired.REQUIRED)) {
-			itemDefDomain = PersonInfoItemDefinition.createFromEntity(itemDef.getPerInfoItemDefId(),
-					itemDef.getPerInfoCategoryId(), itemDef.getItemCode().v(), itemDef.getItemParentCode().v(),
-					command.getItemName(), itemDef.getIsAbolition().value, itemDef.getIsFixed().value,
-					itemDef.getIsRequired().value, itemDef.getSystemRequired().value,
-					itemDef.getRequireChangable().value);
-		} else {
-			itemDefDomain = PersonInfoItemDefinition.createFromEntity(itemDef.getPerInfoItemDefId(),
-					itemDef.getPerInfoCategoryId(), itemDef.getItemCode().v(), itemDef.getItemParentCode().v(),
-					command.getItemName(), command.getIsAbolition(), itemDef.getIsFixed().value,
-					command.getIsRequired(), itemDef.getSystemRequired().value, itemDef.getRequireChangable().value);
-		}
-
-		this.pernfoItemDefRep.updatePerInfoItemDef(itemDefDomain);
 	}
-
+	
 }

@@ -266,15 +266,12 @@ module nts.uk.ui.koExtentions {
                     
                     if (!result.isValid) {
                         let oldError: nts.uk.ui.errors.ErrorListItem[] = $input.ntsError('getError');
-                        if(nts.uk.util.isNullOrUndefined(oldError)){
+                        if(nts.uk.util.isNullOrEmpty(oldError)){
                            $input.ntsError('set', result.errorMessage, result.errorCode, false);
                         } else {
-                            let inListError = _.find(oldError, function (o){ return o.errorCode !== result.errorCode; });
+                            let inListError = _.find(oldError, function (o){ return o.errorCode === result.errorCode; });
                             if(nts.uk.util.isNullOrUndefined(inListError)){
-                                $input.ntsError('clearKibanError');
-                                setTimeout(function() {
-                                    $input.ntsError('set', result.errorMessage, result.errorCode, false);
-                                }, 10);
+                                $input.ntsError('set', result.errorMessage, result.errorCode, false);
                             }
                         }
                     } else {
@@ -318,6 +315,8 @@ module nts.uk.ui.koExtentions {
             
             let tabIndex = $input.attr("tabindex");
             $input.data("tabindex", tabIndex);
+            
+            $input.tooltipWhenReadonly();
         }
 
         update($input: JQuery, data: any) {

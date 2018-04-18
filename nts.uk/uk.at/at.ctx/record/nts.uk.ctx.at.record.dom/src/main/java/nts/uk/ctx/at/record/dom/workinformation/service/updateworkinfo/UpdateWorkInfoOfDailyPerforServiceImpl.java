@@ -6,11 +6,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoChangeEvent;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
 @Stateless
@@ -18,25 +19,30 @@ public class UpdateWorkInfoOfDailyPerforServiceImpl implements UpdateWorkInfoOfD
 
 	@Inject
 	private WorkTypeRepository workTypeRepository;
+	
+	@Inject
+	private WorkInformationRepository workInformationRepository;
 
 	@Override
 	public void updateWorkInfoOfDailyPerforService(String companyId, String employeeID, GeneralDate processingDate,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformance) {
-
-		// 就業時間帯を補正する
-		// 実績の勤務種類を取得
-		WorkTypeCode workTypeCode = workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode();
-
-		Optional<WorkType> workType = this.workTypeRepository.findByPK(companyId, workTypeCode.v());
+		Optional<WorkType> workType = this.workTypeRepository.findByPK(companyId,
+				workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode().v());
 
 		if (workType.isPresent()) {
 			WorkTypeClassification oneDay = workType.get().getDailyWork().getOneDay();
 			if (oneDay == WorkTypeClassification.Holiday || oneDay == WorkTypeClassification.Pause
 					|| oneDay == WorkTypeClassification.ContinuousWork
 					|| oneDay == WorkTypeClassification.LeaveOfAbsence || oneDay == WorkTypeClassification.Closure) {
-				WorkInformation recordWorkInformation = new WorkInformation(null,
-						workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode().v());
+				WorkInformation recordWorkInformation = new WorkInformation(
+						workInfoOfDailyPerformance.getRecordInfo().getWorkTimeCode().v(), null);
 				workInfoOfDailyPerformance.setRecordInfo(recordWorkInformation);
+				
+				// ドメインモデル「日別実績の勤務情報」を更新する(Update domain 「日別実績の勤務情報」)
+				this.workInformationRepository.updateByKeyFlush(workInfoOfDailyPerformance);
+				
+				// domain event
+				workInfoOfDailyPerformance.workInfoChange();
 			}
 		}
 	}

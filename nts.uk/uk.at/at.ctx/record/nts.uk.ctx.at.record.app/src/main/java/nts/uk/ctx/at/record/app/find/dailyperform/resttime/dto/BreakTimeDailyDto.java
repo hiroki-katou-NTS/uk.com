@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto;
 
-import java.util.Arrays;
 import java.util.List;
 
 import lombok.Data;
@@ -27,7 +26,7 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 	
 	private GeneralDate ymd;
 	
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "時間帯", needCheckIDWithMethod = "restTimeType", listMaxLength = 10, indexField = "timeSheetNo", methodForEnumValues = "restTime")
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "時間帯", needCheckIDWithMethod = "restTimeType", listMaxLength = 10, indexField = "timeSheetNo")
 	private List<TimeSheetDto> timeZone;
 
 	/** 休憩種類 */
@@ -42,18 +41,6 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 		default:
 			return "";
 		}
-	}
-	
-	public void restTimeType(String text) {
-		if(text.contains("就業時間帯から参照")){
-			this.restTimeType = 0;
-		} else if(text.contains("スケジュールから参照")){
-			this.restTimeType = 1;
-		}
-	}
-	
-	public List<String> restTime(){
-		return Arrays.asList("就業時間帯から参照", "スケジュールから参照");
 	}
 	
 	public static BreakTimeDailyDto getDto(BreakTimeOfDailyPerformance x) {

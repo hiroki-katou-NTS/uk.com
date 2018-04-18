@@ -31,7 +31,12 @@ public class AttendanceItemIdContainer {
 
 		ITEM_ID_CONTAINER = new HashMap<>();
 
-		ITEM_ID_CONTAINER.put(740, "日別実績の備考.備考");
+		//ITEM_ID_CONTAINER.put(740, "日別実績の備考.備考");
+		ITEM_ID_CONTAINER.put(833, "日別実績の備考.備考1");
+		ITEM_ID_CONTAINER.put(834, "日別実績の備考.備考2");
+		ITEM_ID_CONTAINER.put(835, "日別実績の備考.備考3");
+		ITEM_ID_CONTAINER.put(836, "日別実績の備考.備考4");
+		ITEM_ID_CONTAINER.put(837, "日別実績の備考.備考5");
 
 		ITEM_ID_CONTAINER.put(794, "日別実績のPCログオン情報.ログオン情報.ログオン1");
 		ITEM_ID_CONTAINER.put(795, "日別実績のPCログオン情報.ログオン情報.ログオフ1");
@@ -77,20 +82,29 @@ public class AttendanceItemIdContainer {
 		ITEM_ID_CONTAINER.put(425, "日別実績の特定日区分.特定日区分.特定日区分10");
 
 		ITEM_ID_CONTAINER.put(627, "日別実績の計算区分.残業時間.早出残業時間.計算区分");
+		ITEM_ID_CONTAINER.put(824, "日別実績の計算区分.残業時間.早出残業時間.上限の設定");
 		ITEM_ID_CONTAINER.put(628, "日別実績の計算区分.残業時間.早出深夜残業時間.計算区分");
+		ITEM_ID_CONTAINER.put(825, "日別実績の計算区分.残業時間.早出深夜残業時間.上限の設定");
 		ITEM_ID_CONTAINER.put(629, "日別実績の計算区分.残業時間.普通残業時間.計算区分");
+		ITEM_ID_CONTAINER.put(826, "日別実績の計算区分.残業時間.普通残業時間.上限の設定");
 		ITEM_ID_CONTAINER.put(630, "日別実績の計算区分.残業時間.普通深夜残業時間.計算区分");
+		ITEM_ID_CONTAINER.put(827, "日別実績の計算区分.残業時間.普通深夜残業時間.上限の設定");
 		ITEM_ID_CONTAINER.put(631, "日別実績の計算区分.残業時間.法定内残業時間.計算区分");
+		ITEM_ID_CONTAINER.put(828, "日別実績の計算区分.残業時間.法定内残業時間.上限の設定");
 		ITEM_ID_CONTAINER.put(632, "日別実績の計算区分.残業時間.法定内深夜残業時間.計算区分");
+		ITEM_ID_CONTAINER.put(829, "日別実績の計算区分.残業時間.法定内深夜残業時間.上限の設定");
 		ITEM_ID_CONTAINER.put(633, "日別実績の計算区分.休出時間.休出時間.計算区分");
+		ITEM_ID_CONTAINER.put(830, "日別実績の計算区分.休出時間.休出時間.上限の設定");
 		ITEM_ID_CONTAINER.put(634, "日別実績の計算区分.休出時間.休出深夜時間.計算区分");
+		ITEM_ID_CONTAINER.put(831, "日別実績の計算区分.休出時間.休出深夜時間.上限の設定");
 		ITEM_ID_CONTAINER.put(635, "日別実績の計算区分.フレックス超過時間.計算区分");
+		ITEM_ID_CONTAINER.put(832, "日別実績の計算区分.フレックス超過時間.上限の設定");
 		ITEM_ID_CONTAINER.put(636, "日別実績の計算区分.加給.加給");
 		ITEM_ID_CONTAINER.put(637, "日別実績の計算区分.加給.特定加給");
 		ITEM_ID_CONTAINER.put(638, "日別実績の計算区分.遅刻早退.遅刻");
 		ITEM_ID_CONTAINER.put(639, "日別実績の計算区分.遅刻早退.早退");
 		ITEM_ID_CONTAINER.put(640, "日別実績の計算区分.乖離時間");
-
+		
 		ITEM_ID_CONTAINER.put(76,  "日別実績の入退門.入退門時刻.終了時間.場所コード1");
 		ITEM_ID_CONTAINER.put(80,  "日別実績の入退門.入退門時刻.終了時間.場所コード2");
 		ITEM_ID_CONTAINER.put(84,  "日別実績の入退門.入退門時刻.終了時間.場所コード3");
@@ -420,6 +434,31 @@ public class AttendanceItemIdContainer {
 		ITEM_ID_CONTAINER.put(450, "日別実績の勤怠時間.実績時間.乖離時間.控除後乖離時間3");
 		ITEM_ID_CONTAINER.put(455, "日別実績の勤怠時間.実績時間.乖離時間.控除後乖離時間4");
 		ITEM_ID_CONTAINER.put(460, "日別実績の勤怠時間.実績時間.乖離時間.控除後乖離時間5");
+		ITEM_ID_CONTAINER.put(799, "日別実績の勤怠時間.実績時間.乖離時間.乖離時間6");
+		ITEM_ID_CONTAINER.put(800, "日別実績の勤怠時間.実績時間.乖離時間.乖離時間7");
+		ITEM_ID_CONTAINER.put(801, "日別実績の勤怠時間.実績時間.乖離時間.乖離時間8");
+		ITEM_ID_CONTAINER.put(802, "日別実績の勤怠時間.実績時間.乖離時間.乖離時間9");
+		ITEM_ID_CONTAINER.put(803, "日別実績の勤怠時間.実績時間.乖離時間.乖離時間10");
+		ITEM_ID_CONTAINER.put(804, "日別実績の勤怠時間.実績時間.乖離時間.控除時間6");
+		ITEM_ID_CONTAINER.put(805, "日別実績の勤怠時間.実績時間.乖離時間.控除時間7");
+		ITEM_ID_CONTAINER.put(806, "日別実績の勤怠時間.実績時間.乖離時間.控除時間8");
+		ITEM_ID_CONTAINER.put(807, "日別実績の勤怠時間.実績時間.乖離時間.控除時間9");
+		ITEM_ID_CONTAINER.put(808, "日別実績の勤怠時間.実績時間.乖離時間.控除時間10");
+		ITEM_ID_CONTAINER.put(809, "日別実績の勤怠時間.実績時間.乖離時間.乖離理由コード6");
+		ITEM_ID_CONTAINER.put(810, "日別実績の勤怠時間.実績時間.乖離時間.乖離理由コード7");
+		ITEM_ID_CONTAINER.put(811, "日別実績の勤怠時間.実績時間.乖離時間.乖離理由コード8");
+		ITEM_ID_CONTAINER.put(812, "日別実績の勤怠時間.実績時間.乖離時間.乖離理由コード9");
+		ITEM_ID_CONTAINER.put(813, "日別実績の勤怠時間.実績時間.乖離時間.乖離理由コード10");
+		ITEM_ID_CONTAINER.put(814, "日別実績の勤怠時間.実績時間.乖離時間.乖離理由6");
+		ITEM_ID_CONTAINER.put(815, "日別実績の勤怠時間.実績時間.乖離時間.乖離理由7");
+		ITEM_ID_CONTAINER.put(816, "日別実績の勤怠時間.実績時間.乖離時間.乖離理由8");
+		ITEM_ID_CONTAINER.put(817, "日別実績の勤怠時間.実績時間.乖離時間.乖離理由9");
+		ITEM_ID_CONTAINER.put(818, "日別実績の勤怠時間.実績時間.乖離時間.乖離理由10");
+		ITEM_ID_CONTAINER.put(819, "日別実績の勤怠時間.実績時間.乖離時間.控除後乖離時間6");
+		ITEM_ID_CONTAINER.put(820, "日別実績の勤怠時間.実績時間.乖離時間.控除後乖離時間7");
+		ITEM_ID_CONTAINER.put(821, "日別実績の勤怠時間.実績時間.乖離時間.控除後乖離時間8");
+		ITEM_ID_CONTAINER.put(822, "日別実績の勤怠時間.実績時間.乖離時間.控除後乖離時間9");
+		ITEM_ID_CONTAINER.put(823, "日別実績の勤怠時間.実績時間.乖離時間.控除後乖離時間10");
 		ITEM_ID_CONTAINER.put(547, "日別実績の勤怠時間.実績時間.総労働時間.休暇時間.積立年休");
 		ITEM_ID_CONTAINER.put(548, "日別実績の勤怠時間.実績時間.総労働時間.休暇時間.欠勤");
 		ITEM_ID_CONTAINER.put(539, "日別実績の勤怠時間.実績時間.総労働時間.休暇時間.年休.使用時間");

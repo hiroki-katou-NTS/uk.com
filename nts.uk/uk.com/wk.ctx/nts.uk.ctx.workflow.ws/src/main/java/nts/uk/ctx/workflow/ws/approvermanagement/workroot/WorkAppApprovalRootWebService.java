@@ -12,10 +12,12 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.DeleteHistoryCmm053CmdHandler;
+import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.HistoryCmm053Command;
+import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.InsertHistoryCmm053CmdHandler;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.RegisterAppApprovalRootCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.RegisterAppApprovalRootCommandHandler;
-import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateApprovalRootByManagerCommand;
-import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateApprovalRootByManagerCommandHandler;
+import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateHistoryCmm053CmdHandler;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkAppApprovalRByHistCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkAppApprovalRByHistCommandHandler;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRootDto;
@@ -24,7 +26,6 @@ import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.DataFullDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeRegisterApprovalRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeSearch;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeUnregisterFinder;
-import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ManagerSettingDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.MasterApproverRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ParamDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.PastHistoryDto;
@@ -34,6 +35,7 @@ import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
+import nts.uk.ctx.workflow.dom.adapter.employee.EmployeeWithRangeLoginImport;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
@@ -62,7 +64,11 @@ public class WorkAppApprovalRootWebService extends WebService{
 	@Inject
 	private EmployeeRegisterApprovalRoot registerApprovalRoot;
 	@Inject
-	private UpdateApprovalRootByManagerCommandHandler updateByManager;
+	private InsertHistoryCmm053CmdHandler insertByManager;
+	@Inject
+	private UpdateHistoryCmm053CmdHandler updateByManager;
+	@Inject
+	private DeleteHistoryCmm053CmdHandler deleteByManager;
 	
 	@POST
 	@Path("getbycom")
@@ -168,20 +174,13 @@ public class WorkAppApprovalRootWebService extends WebService{
 	public WorkplaceImport getWpInfo(String workplaceId){
 		return comFinder.getWpInfo(workplaceId);
 	}
-	
-	
+
 	@POST
-	@Path("find/settingOfManager/{employeeId}")
-	public ManagerSettingDto getPsAppRootBySettingOfManager(@PathParam("employeeId") String employeeId ){
-		return comFinder.getPsAppRootBySettingOfManager(employeeId);
+	@Path("find/getEmployeeByCode/{employeeCode}/{hasAuthority}")
+	public EmployeeWithRangeLoginImport getEmployeeByCode(@PathParam("employeeCode")String employeeCode, @PathParam("hasAuthority") boolean hasAuthority){
+		return comFinder.getEmployeeInfoByCode(employeeCode, hasAuthority);
 	}
-	
-	@POST
-	@Path("find/getEmployeeByCode/{employeeCode}")
-	public PersonImport getEmployeeByCode(@PathParam("employeeCode")String employeeCode){
-		return employeeAdapter.getEmployeeInformation(employeeCode);
-	}
-	
+
 	@POST
 	@Path("find/settingOfManager/getPastHistory/{employeeId}")
 	public List<PastHistoryDto> getPastHistory(@PathParam("employeeId") String employeeId) {
@@ -189,8 +188,20 @@ public class WorkAppApprovalRootWebService extends WebService{
 	}
 
 	@POST
-	@Path("updateHistoryByManagerSetting")
-	public void updateHistoryByManagerSetting(UpdateApprovalRootByManagerCommand command) {
+	@Path("managersetting/insert")
+	public void insertHistoryByManagerSetting(HistoryCmm053Command command) {
+		this.insertByManager.handle(command);
+	}
+	
+	@POST
+	@Path("managersetting/update")
+	public void updateHistoryByManagerSetting(HistoryCmm053Command command) {
 		this.updateByManager.handle(command);
+	}
+	
+	@POST
+	@Path("managersetting/delete")
+	public void deleteHistoryByManagerSetting(HistoryCmm053Command command) {
+		this.deleteByManager.handle(command);
 	}
 }

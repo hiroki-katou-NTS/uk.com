@@ -9,8 +9,8 @@ module nts.uk.com.view.cmf001.d.service {
         getAllCategory: "exio/exi/condset/getAllCategory",
         getCategoryItem: "exio/exi/condset/getCategoryItemData/{0}",
         getOneStdSettingData: "exio/exi/condset/getOneStdCondSet/{0}/{1}",
-        getNumberOfLine: "exio/exi/csvimport/getNumberOfLine/{0}",
-        getRecord: "exio/exi/csvimport/getRecord/{0}/{1}/{2}"
+        getNumberOfLine: "exio/exi/csvimport/getNumberOfLine/{0}/{1}",
+        getRecord: "exio/exi/csvimport/getRecord/{0}/{1}/{2}/{3}"
     }
 
     export function getAllData(sysType: number, condCode: string): JQueryPromise<any> {
@@ -40,13 +40,13 @@ module nts.uk.com.view.cmf001.d.service {
         return ajax("com", _path);
     };
     
-    export function getNumberOfLine(fileId: string): JQueryPromise<any> {
-        let _path = format(paths.getNumberOfLine, fileId);
+    export function getNumberOfLine(fileId: string, endCoding: number): JQueryPromise<any> {
+        let _path = format(paths.getNumberOfLine, fileId, endCoding);
         return ajax('com', _path);
     };
 
-    export function getRecord(fileId: string, dataLineNum: number, startLine: number): JQueryPromise<any> {
-        let _path = format(paths.getRecord, fileId, dataLineNum, startLine);
+    export function getRecord(fileId: string, dataLineNum: number, startLine: number, endCoding: number): JQueryPromise<any> {
+        let _path = format(paths.getRecord, fileId, dataLineNum, startLine, endCoding);
         return ajax('com', _path);
     };
     

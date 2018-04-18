@@ -15,19 +15,19 @@ import nts.uk.ctx.at.record.infra.entity.remainingnumber.resvlea.KrcmtReverseLea
 @Stateless
 public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLeaGrantRemDataRepository {
 
-	private String QUERY_WITH_EMP_ID = "SELECT a FROM KrcmtReverseLeaRemain a WHERE a.sid = :employeeId";
+	private String QUERY_WITH_EMP_ID = "SELECT a FROM KrcmtReverseLeaRemain a WHERE a.sid = :employeeId ORDER BY a.grantDate desc";
 
-	private String QUERY_WITH_EMP_ID_NOT_EXP = "SELECT a FROM KrcmtReverseLeaRemain a WHERE a.sid = :employeeId AND a.expStatus = 1 ORDER BY a.grantDate";
+	private String QUERY_WITH_EMP_ID_NOT_EXP = "SELECT a FROM KrcmtReverseLeaRemain a WHERE a.sid = :employeeId AND a.expStatus = 1 ORDER BY a.grantDate desc";
 
 	@Override
-	public List<ReserveLeaveGrantRemainingData> find(String employeeId) {
+	public List<ReserveLeaveGrantRemainingData> find(String employeeId, String cId) {
 		List<KrcmtReverseLeaRemain> entities = this.queryProxy().query(QUERY_WITH_EMP_ID, KrcmtReverseLeaRemain.class)
 				.setParameter("employeeId", employeeId).getList();
 		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<ReserveLeaveGrantRemainingData> findNotExp(String employeeId) {
+	public List<ReserveLeaveGrantRemainingData> findNotExp(String employeeId, String cId) {
 		List<KrcmtReverseLeaRemain> entities = this.queryProxy()
 				.query(QUERY_WITH_EMP_ID_NOT_EXP, KrcmtReverseLeaRemain.class).setParameter("employeeId", employeeId)
 				.getList();
@@ -40,8 +40,9 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 	}
 
 	@Override
-	public void add(ReserveLeaveGrantRemainingData data) {
+	public void add(ReserveLeaveGrantRemainingData data, String cId) {
 		KrcmtReverseLeaRemain e = new KrcmtReverseLeaRemain();
+		e.cid = cId;
 		e.rvsLeaId = data.getRsvLeaID();
 		updateDetail(e, data);
 		this.commandProxy().update(e);
@@ -77,6 +78,19 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 		if (entityOpt.isPresent()) {
 			this.commandProxy().remove(entityOpt.get());
 		}
+	}
+
+	@Override
+	public Optional<ReserveLeaveGrantRemainingData> getById(String id) {
+		Optional<KrcmtReverseLeaRemain> entityOpt = this.queryProxy().find(id, KrcmtReverseLeaRemain.class);
+		if(entityOpt.isPresent()){
+			KrcmtReverseLeaRemain entity = entityOpt.get();
+			return Optional.of(ReserveLeaveGrantRemainingData.createFromJavaType(id, entity.sid, 
+					entity.grantDate, entity.deadline, entity.expStatus, 
+					entity.registerType, entity.grantDays, entity.usedDays, 
+					entity.overLimitDays, entity.remainingDays));
+		}
+		return Optional.empty();
 	}
 
 }

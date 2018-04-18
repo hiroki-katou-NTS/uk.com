@@ -153,12 +153,18 @@ module nts.uk.at.view.kal001.a.model {
         
         public alarmCodeChange(): void{
             let self = this;
+            
             self.currentAlarmCode.subscribe((newCode)=>{
+                    $(".nts-input").ntsError("clear");
                     service.getCheckConditionTime(newCode).done((checkTimeData)=>{
                         self.periodByCategory(_.map((checkTimeData), (item) =>{
                             return new PeriodByCategory(item);
-                        }));
-                        self.periodByCategory(_.sortBy(self.periodByCategory(), 'category'));                        
+                        }));                        
+                        self.periodByCategory(_.sortBy(self.periodByCategory(), 'category'));
+                         
+                        let w4d4 = _.find(self.periodByCategory(), function(a) { return a.category == 2 });
+                        if(w4d4 && w4d4.dateValue().startDate==null && w4d4.dateValue().endDate==null)
+                           alertError({messageId : 'Msg_1193'});              
                     }).fail((errorTime)=>{
                         alertError(errorTime);
                     });
@@ -202,12 +208,23 @@ module nts.uk.at.view.kal001.a.model {
             let self = this;
             let listSelectedEmpployee : Array<UnitModel> = self.employeeList().filter(e => self.multiSelectedCode().indexOf(e.code)>-1);
             let listPeriodByCategory = self.periodByCategory().filter(x => x.checkBox()==true);
-            if(self.currentAlarmCode()=='' ) return;
           
             if(listSelectedEmpployee.length==0){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_834" });
                 return;
             }
+            if(self.currentAlarmCode()=='' ){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_1167" });
+                return;
+            }
+            if(listPeriodByCategory.length==0){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_1168" });
+                return;    
+            }    
+            
+            $(".nts-input").trigger("validate");
+            if ($(".nts-input").ntsError("hasError")) return;
+                                      
             block.invisible();
             service.extractAlarm(listSelectedEmpployee, self.currentAlarmCode(), listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto)=>{
                 
@@ -249,7 +266,10 @@ module nts.uk.at.view.kal001.a.model {
         dateValue: KnockoutObservable<DateValue>;
         checkBox: KnockoutObservable<boolean>;
         typeInput :  string;
+        required: KnockoutObservable<boolean>; 
+        
         constructor(dto:  service.CheckConditionTimeDto){
+            let self = this;
             this.category = dto.category;
             this.categoryName = dto.categoryName;
             if(dto.category==2 || dto.category==5){
@@ -260,6 +280,15 @@ module nts.uk.at.view.kal001.a.model {
                 this.typeInput = "yearmonth";   
             }
             this.checkBox = ko.observable(false);
+            
+            this.checkBox.subscribe((v)=>{
+                if(v ==false) 
+                {
+                     $("#fixed-table").find("tr[categorynumber='"+self.category+"']").find(".nts-input").ntsError("clear");    
+                }
+                
+            })
+            this.required = ko.computed(() =>{ return this.checkBox()}); 
         }
         
         public setClick() : void{

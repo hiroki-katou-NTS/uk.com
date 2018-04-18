@@ -36,11 +36,11 @@ public class PersonalTightCommandFacade {
 	public void insertPersonalTight(String employeeId, GeneralDate date) {
 		String companyId = AppContexts.user().companyId();
 		Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
-				.findByEmploymentCD(companyId, getEmploymentCode(new DateRange(null, GeneralDate.today()), employeeId));
+				.findByEmploymentCD(companyId, getEmploymentCode(new DateRange(null, date), employeeId));
 		if (closureEmploymentOptional.isPresent()) {
 			Optional<PresentClosingPeriodExport> closingPeriod = shClosurePub.find(companyId,
-					closureEmploymentOptional.get().getClosureId());
-			if (closingPeriod.isPresent()) {
+					closureEmploymentOptional.get().getClosureId(), date);
+			if (closingPeriod.isPresent() && (closingPeriod.get().getClosureStartDate().beforeOrEquals(date) && closingPeriod.get().getClosureEndDate().afterOrEquals(date))) {
 				registerConfirmationMonth.registerConfirmationMonth(new ParamRegisterConfirmMonth(
 						closingPeriod.get().getProcessingYm(), Arrays.asList(new SelfConfirm(employeeId, true)),
 						closureEmploymentOptional.get().getClosureId(), closingPeriod.get().getClosureEndDate().day(),

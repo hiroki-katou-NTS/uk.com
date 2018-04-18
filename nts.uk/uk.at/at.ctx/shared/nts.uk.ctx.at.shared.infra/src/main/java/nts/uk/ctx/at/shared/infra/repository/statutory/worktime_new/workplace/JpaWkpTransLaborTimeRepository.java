@@ -66,7 +66,7 @@ public class JpaWkpTransLaborTimeRepository extends JpaRepository
 	 */
 	@Override
 	public void remove(String cid, String wkpId) {
-		this.commandProxy().remove(KshstWkpTransLabTimePK.class,
+		this.commandProxy().remove(KshstWkpTransLabTime.class,
 				new KshstWkpTransLabTimePK(cid, wkpId));
 	}
 

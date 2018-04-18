@@ -7,6 +7,7 @@ import nts.arc.time.GeneralDate;
 public interface AppHdTimeNotReflectedPub {
 	/**
 	 * 社員、期間から未反映の申請休出時間を集計する
+	 * RequestList299
 	 * @param sId
 	 * @param startDate
 	 * @param endDate

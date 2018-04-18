@@ -20,5 +20,8 @@ public class DeleteShainStatWorkTimeSetCommand {
 	
 	/** The employee id. */
 	private String employeeId;
+	
+	/** The is over one year. */
+	private boolean isOverOneYear;
 
 }

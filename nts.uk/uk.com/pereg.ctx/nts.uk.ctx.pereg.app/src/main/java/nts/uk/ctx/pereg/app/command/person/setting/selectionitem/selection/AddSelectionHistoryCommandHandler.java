@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
@@ -62,8 +64,8 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 		String roleID = loginUserContext.roles().forGroupCompaniesAdmin();
 
 		// 個人情報共通アルゴリズム「ログイン者がグループ会社管理者かどうか判定する」を実行する
-		boolean result = roleID.isEmpty() ? false : true;
-		if (result) {
+		boolean result = StringUtils.isEmpty(roleID) ? false : true;
+		if (!result) {
 			// 共通アルゴリズム「契約内ゼロ会社の会社IDを取得する」を実行する
 			String cid = AppContexts.user().zeroCompanyIdInContract();
 

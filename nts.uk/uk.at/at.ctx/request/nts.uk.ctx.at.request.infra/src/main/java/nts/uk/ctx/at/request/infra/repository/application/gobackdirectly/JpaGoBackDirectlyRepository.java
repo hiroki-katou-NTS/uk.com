@@ -33,13 +33,13 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 				entity.workChangeAtr,
 				entity.goWorkAtr1,
 				entity.backHomeAtr1,
-				entity.workTimeStart1 == null ? -1 : entity.workTimeStart1,
-				entity.workTimeEnd1 == null ? -1 : entity.workTimeEnd1, 
+				entity.workTimeStart1,
+				entity.workTimeEnd1, 
 				entity.workLocationCd1,
 				entity.goWorkAtr2,
 				entity.backHomeAtr2,
-				entity.workTimeStart2 == null ? -1 : entity.workTimeStart2,
-				entity.workTimeEnd2 == null ? -1 : entity.workTimeEnd2, 
+				entity.workTimeStart2,
+				entity.workTimeEnd2, 
 				entity.workLocationCd2);
 		goBackDirectly.setVersion(entity.version);
 		return goBackDirectly;
@@ -55,19 +55,19 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 		entity.krqdtGoBackDirectlyPK.companyID = domain.getCompanyID();
 		entity.krqdtGoBackDirectlyPK.appID  = domain.getAppID();
 		entity.version = domain.getVersion();
-		entity.workTypeCD = domain.getWorkTypeCD().v();
-		entity.siftCD = domain.getSiftCD().v();
-		entity.workChangeAtr = domain.getWorkChangeAtr().value;
-		entity.workTimeStart1 = domain.getWorkTimeStart1().v() == -1 ? null : domain.getWorkTimeStart1().v();
-		entity.workTimeEnd1 = domain.getWorkTimeEnd1().v() == -1  ? null : domain.getWorkTimeEnd1().v();
+		entity.workTypeCD = domain.getWorkTypeCD().map(x -> x.v()).orElse(null);
+		entity.siftCD = domain.getSiftCD().map(x -> x.v()).orElse(null);
+		entity.workChangeAtr = domain.getWorkChangeAtr().map(x -> x.value).orElse(null);
+		entity.workTimeStart1 = domain.getWorkTimeStart1().map(x -> x.v()).orElse(null);
+		entity.workTimeEnd1 = domain.getWorkTimeEnd1().map(x -> x.v()).orElse(null);
 		entity.goWorkAtr1 = domain.getGoWorkAtr1().value;
 		entity.backHomeAtr1  = domain.getBackHomeAtr1().value;
-		entity.workLocationCd1 = domain.getWorkLocationCD1();
-		entity.workTimeStart2 = domain.getWorkTimeStart2().v() == -1  ? null : domain.getWorkTimeStart2().v();
-		entity.workTimeEnd2 = domain.getWorkTimeEnd2().v() == -1  ? null : domain.getWorkTimeEnd2().v();
-		entity.goWorkAtr2 = domain.getGoWorkAtr2().value;
-		entity.backHomeAtr2  = domain.getBackHomeAtr2().value;
-		entity.workLocationCd2 = domain.getWorkLocationCD2();
+		entity.workLocationCd1 = domain.getWorkLocationCD1().map(x -> x).orElse(null);
+		entity.workTimeStart2 = domain.getWorkTimeStart2().map(x -> x.v()).orElse(null);
+		entity.workTimeEnd2 = domain.getWorkTimeEnd2().map(x -> x.v()).orElse(null);
+		entity.goWorkAtr2 = domain.getGoWorkAtr2().map(x -> x.value).orElse(null);
+		entity.backHomeAtr2  = domain.getBackHomeAtr2().map(x -> x.value).orElse(null);
+		entity.workLocationCd2 = domain.getWorkLocationCD2().map(x -> x).orElse(null);
 		return entity;
 	}
 
@@ -93,18 +93,18 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 			KrqdtGoBackDirectly currentEntity = goBack.get();
 			currentEntity.setGoWorkAtr1(goBackDirectly.getGoWorkAtr1().value);
 			currentEntity.setBackHomeAtr1(goBackDirectly.getBackHomeAtr1().value);
-			currentEntity.setWorkTimeStart1(goBackDirectly.getWorkTimeStart1().v() == -1 ? null : goBackDirectly.getWorkTimeStart1().v());
-			currentEntity.setWorkTimeEnd1(goBackDirectly.getWorkTimeEnd1().v() == -1 ? null : goBackDirectly.getWorkTimeEnd1().v());
-			currentEntity.setGoWorkAtr2(goBackDirectly.getGoWorkAtr2().value);
-			currentEntity.setBackHomeAtr2(goBackDirectly.getBackHomeAtr2().value);
-			currentEntity.setWorkChangeAtr(goBackDirectly.getWorkChangeAtr().value);
-			currentEntity.setWorkTimeStart2(goBackDirectly.getWorkTimeStart2().v() == -1 ? null : goBackDirectly.getWorkTimeStart2().v());
-			currentEntity.setWorkTimeEnd2(goBackDirectly.getWorkTimeEnd2().v() == -1 ? null : goBackDirectly.getWorkTimeEnd2().v());
-			currentEntity.setWorkLocationCd1(goBackDirectly.getWorkLocationCD1());
-			currentEntity.setWorkLocationCd2(goBackDirectly.getWorkLocationCD2());
-			if(goBackDirectly.getWorkChangeAtr() == UseAtr.USE) {
-				currentEntity.setWorkTypeCD(goBackDirectly.getWorkTypeCD().v());
-				currentEntity.setSiftCD(goBackDirectly.getSiftCD().v());
+			currentEntity.setWorkTimeStart1(goBackDirectly.getWorkTimeStart1().map(x -> x.v()).orElse(null));
+			currentEntity.setWorkTimeEnd1(goBackDirectly.getWorkTimeEnd1().map(x -> x.v()).orElse(null));
+			currentEntity.setGoWorkAtr2(goBackDirectly.getGoWorkAtr2().map(x -> x.value).orElse(null));
+			currentEntity.setBackHomeAtr2(goBackDirectly.getBackHomeAtr2().map(x -> x.value).orElse(null));
+			currentEntity.setWorkChangeAtr(goBackDirectly.getWorkChangeAtr().map(x -> x.value).orElse(null));
+			currentEntity.setWorkTimeStart2(goBackDirectly.getWorkTimeStart2().map(x -> x.v()).orElse(null));
+			currentEntity.setWorkTimeEnd2(goBackDirectly.getWorkTimeEnd2().map(x -> x.v()).orElse(null));
+			currentEntity.setWorkLocationCd1(goBackDirectly.getWorkLocationCD1().map(x -> x).orElse(null));
+			currentEntity.setWorkLocationCd2(goBackDirectly.getWorkLocationCD2().map(x -> x).orElse(null));
+			if(goBackDirectly.getWorkChangeAtr().map(x -> x).orElse(UseAtr.NOTUSE) == UseAtr.USE) {
+				currentEntity.setWorkTypeCD(goBackDirectly.getWorkTypeCD().map(x -> x.v()).orElse(null));
+				currentEntity.setSiftCD(goBackDirectly.getSiftCD().map(x -> x.v()).orElse(null));
 			}
 			this.commandProxy().update(currentEntity);
 			

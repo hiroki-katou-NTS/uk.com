@@ -24,6 +24,7 @@ import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryOfEmployee
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem_;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist_;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
 import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 
 @Stateless
@@ -47,6 +48,10 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	private static final String SELECT_BY_EMPID = "SELECT ehi.sid, eh.strDate, eh.endDate, ehi.empCode FROM BsymtEmploymentHistItem ehi"
 			+ " INNER JOIN  BsymtEmploymentHist eh on eh.hisId = ehi.hisId"
 			+ " WHERE eh.sid = :sid ORDER BY eh.strDate";
+	
+	/** The Constant SELECT_BY_HISTIDS. */
+	private static final String SELECT_BY_HISTIDS = "SELECT aw FROM BsymtEmploymentHistItem aw"
+			+ " WHERE aw.hisId IN :historyId";
 	
 	@Override
 	public Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String companyId, String sid, GeneralDate date) {
@@ -389,6 +394,21 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		EmploymentHistoryOfEmployee emHisOfSid = new EmploymentHistoryOfEmployee(sID, startDate, endDate, empCD);
 		
 		return emHisOfSid;
+	}
+
+	@Override
+	public List<EmploymentHistoryItem> getByListHistoryId(List<String> historyIds) {
+		if (CollectionUtil.isEmpty(historyIds)) {
+			return new ArrayList<>();
+		}
+		List<BsymtEmploymentHistItem> listHistItem = new ArrayList<>();
+		CollectionUtil.split(historyIds, 1000, subList -> {
+			listHistItem.addAll(this.queryProxy().query(SELECT_BY_HISTIDS, BsymtEmploymentHistItem.class)
+					.setParameter("historyId", subList).getList());
+		});
+		return listHistItem.stream().map(item -> toDomain(item))
+				.collect(Collectors.toList());
+	
 	}
 
 }

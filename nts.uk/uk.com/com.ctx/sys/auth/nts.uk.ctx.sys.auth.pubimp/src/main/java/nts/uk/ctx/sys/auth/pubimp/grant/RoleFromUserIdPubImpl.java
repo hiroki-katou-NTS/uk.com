@@ -39,4 +39,9 @@ public class RoleFromUserIdPubImpl implements RoleFromUserIdPub{
 		return roleIndOpt.get().getRoleId();
 	}
 
+	@Override
+	public Optional<String> findByUserCompanyRoleType(String userID, String companyID, int roleType) {
+		return this.roleIndRepo.findByUserCompanyRoleType(userID, companyID, roleType).map(x -> x.getRoleId());
+	}
+
 }

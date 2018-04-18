@@ -8,7 +8,6 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
@@ -142,6 +141,7 @@ public class MonthlyDetail {
 		// 「日別実績の勤務情報」を取得
 		if (!workInformationOfDailyMap.containsKey(procDate)) return weeklyPTAfterAssign;
 		val workInfo = workInformationOfDailyMap.get(procDate);
+		if (workInfo.getWorkTimeCode() == null) return weeklyPTAfterAssign;
 		val workTimeCode = workInfo.getWorkTimeCode().v();
 
 		// 休出・振替の処理順序を取得する（逆時系列用）
@@ -260,6 +260,7 @@ public class MonthlyDetail {
 		// 「日別実績の勤務情報」を取得
 		if (!workInformationOfDailyMap.containsKey(procDate)) return weeklyPTAfterAssign;
 		val workInfo = workInformationOfDailyMap.get(procDate);
+		if (workInfo.getWorkTimeCode() == null) return weeklyPTAfterAssign;
 		val workTimeCode = workInfo.getWorkTimeCode().v();
 
 		// 残業・振替の処理順序を取得する（逆時系列用）
@@ -469,6 +470,7 @@ public class MonthlyDetail {
 		// 「日別実績の勤務情報」を取得
 		if (!workInformationOfDailyMap.containsKey(procDate)) return monthlyPTAfterAssign;
 		val workInfo = workInformationOfDailyMap.get(procDate);
+		if (workInfo.getWorkTimeCode() == null) return monthlyPTAfterAssign;
 		val workTimeCode = workInfo.getWorkTimeCode().v();
 
 		// 休出・振替の処理順序を取得する（逆時系列用）
@@ -589,6 +591,7 @@ public class MonthlyDetail {
 		// 「日別実績の勤務情報」を取得
 		if (!workInformationOfDailyMap.containsKey(procDate)) return monthlyPTAfterAssign;
 		val workInfo = workInformationOfDailyMap.get(procDate);
+		if (workInfo.getWorkTimeCode() == null) return monthlyPTAfterAssign;
 		val workTimeCode = workInfo.getWorkTimeCode().v();
 
 		// 残業・振替の処理順序を取得する（逆時系列用）

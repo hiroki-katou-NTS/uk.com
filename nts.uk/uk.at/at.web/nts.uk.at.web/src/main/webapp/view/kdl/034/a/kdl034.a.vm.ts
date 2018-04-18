@@ -11,7 +11,7 @@ module nts.uk.at.view.kdl034.a {
             returnReason: KnockoutObservable<string> = ko.observable("");
             version: number = 0;
             applicationContent: ApplicationDto;
-            appID: string = "03d4c33f-a20a-4002-8d0e-f5af490f4924";
+            appID: string = "0b5dc40d-37a6-43cc-b6af-e8fdeece973e";
             constructor() {
                 var self = this;
             }
@@ -30,7 +30,7 @@ module nts.uk.at.view.kdl034.a {
                         listApprover.push(applicant);
                         approvalFrame.forEach(function(approvalState) {
                             approvalState.listApprover.forEach(function(approver) {
-                                listApprover.push(new Approver(approver.approverID, approver.approverName, approvalState.phaseOrder, approvalState.approvalReason, approver.jobtitle, approver.representerName));
+                                listApprover.push(new Approver(approver.approverID, approver.approverName, approver.phaseOrder, approvalState.approvalReason, approver.jobtitle, approver.representerName));
                             });
                         });
                         self.listApprover(listApprover);
@@ -52,7 +52,6 @@ module nts.uk.at.view.kdl034.a {
             submitAndCloseDialog() {
                 var self = this;
                 dialog.confirm({ messageId: "Msg_384"}).ifYes(() => {
-                    if (self.errorFlag == 0){
                         //nts.uk.ui.block.invisible();
                         let currentApprover = _.find(self.listApprover(), x => { return x.id === self.selectedApproverId() });
                         let command = {
@@ -66,15 +65,11 @@ module nts.uk.at.view.kdl034.a {
                                 dialog.info({ messageId: "Msg_392", messageParams: result });
                                 setShared("KDL034_PARAM", {"returnReason": self.returnReason});
                             }).fail(function(res){
-                                dialog.alertError (res);
+                                dialog.alertError (res.errorMessage);
                             }).always(function(){
                                 nts.uk.ui.block.clear();
                                 nts.uk.ui.windows.close();
                             });
-                    }else{
-                        dialog.alertError({ messageId: "Msg_197"});
-                        nts.uk.ui.windows.close();
-                    }
                 }).ifNo(() => {
                     
                 });

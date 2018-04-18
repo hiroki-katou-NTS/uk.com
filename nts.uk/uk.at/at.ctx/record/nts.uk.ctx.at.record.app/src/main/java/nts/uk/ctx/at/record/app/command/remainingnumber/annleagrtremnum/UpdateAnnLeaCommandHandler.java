@@ -4,7 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.AsyncCommandHandler;
+import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
@@ -12,7 +12,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class UpdateAnnLeaCommandHandler extends AsyncCommandHandler<AnnLeaGrantRemnNumCommand> {
+public class UpdateAnnLeaCommandHandler extends CommandHandler<AnnLeaGrantRemnNumCommand> {
 
 	@Inject
 	private AnnLeaGrantRemDataRepository annLeaRepo;
@@ -26,7 +26,7 @@ public class UpdateAnnLeaCommandHandler extends AsyncCommandHandler<AnnLeaGrantR
 			throw new BusinessException("Msg_1023");
 		}
 		
-		AnnualLeaveGrantRemainingData data = AnnualLeaveGrantRemainingData.createFromJavaType(command.getAnnLeavId(),cid, command.getEmployeeId(), 
+		AnnualLeaveGrantRemainingData data = AnnualLeaveGrantRemainingData.createFromJavaType(command.getAnnLeavID(),cid, command.getEmployeeId(), 
 				command.getGrantDate(), command.getDeadline(), command.getExpirationStatus(), GrantRemainRegisterType.MANUAL.value,
 				command.getGrantDays(), command.getGrantMinutes(), command.getUsedDays(), command.getUsedMinutes(), 
 				null, command.getRemainingDays(), command.getRemainingMinutes(), 0d, null, null, null);

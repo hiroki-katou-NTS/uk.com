@@ -51,10 +51,9 @@ public class StatusOfEmploymentPubImp implements StatusOfEmploymentPub {
 				// tốn tại domain
 				// set LeaveHolidayType
 				int tempAbsenceFrNo = temporaryAbsenceDomain.get().getTempAbsenceFrNo().v().intValue();
-				int leaveHolidayType = tempAbsenceFrNo <= 6 ? tempAbsenceFrNo : 7;
-				statusOfEmploymentExport.setLeaveHolidayType(leaveHolidayType);
+				statusOfEmploymentExport.setTempAbsenceFrNo(tempAbsenceFrNo);
 
-				if (leaveHolidayType == 1) {
+				if (tempAbsenceFrNo == 1) {
 					// trường hợp 休職休業区分＝休職 LeaveHolidayState = TEMP_LEAVE(1)
 
 					// StatusOfEmployment = LEAVE_OF_ABSENCE

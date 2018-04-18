@@ -10,6 +10,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
@@ -90,6 +91,11 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 			 + " ORDER BY c.startDate DESC";
 	 private final String SELECT_PS_APR_BY_STARTDATE = FIN_BY_EMP
 			 + " AND c.startDate = :startDate";
+	 private final String FIND_BY_EMP_CONFIRM = FIN_BY_EMP
+			 + " AND c.startDate <= :baseDate"
+			 + " AND c.endDate >= :baseDate"
+			 + " AND c.confirmationRootType = :confirmationRootType"
+			 + " AND c.employmentRootAtr = 2";
 	/**
 	 * get all Person Approval Root
 	 * @param companyId
@@ -397,6 +403,16 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				.setParameter("companyId", companyId)
 				.setParameter("employeeId", employeeId)
 				.setParameter("startDate", startDate)
+				.getList(c->toDomainPsApR(c));
+	}
+	@Override
+	public List<PersonApprovalRoot> findEmpByConfirm(String companyID, String employeeID,
+			ConfirmationRootType confirmType, GeneralDate date) {
+		return this.queryProxy().query(FIND_BY_EMP_CONFIRM, WwfmtPsApprovalRoot.class)
+				.setParameter("companyId", companyID)
+				.setParameter("employeeId", employeeID)
+				.setParameter("baseDate", date)
+				.setParameter("confirmationRootType", confirmType.value)
 				.getList(c->toDomainPsApR(c));
 	}
 }

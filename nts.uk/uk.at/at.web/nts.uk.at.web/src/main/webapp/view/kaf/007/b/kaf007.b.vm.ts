@@ -67,9 +67,6 @@ module nts.uk.at.view.kaf007.b {
 
                         //A2_申請者 ID
                         self.employeeID = settingData.sid;
-                        //A2_1 申請者
-                        self.employeeName( settingData.employeeName );
-
                         //A3 事前事後区分
                         //事前事後区分 ※A１
                         self.prePostDisp( appCommonSettingDto.applicationSettingDto.displayPrePostFlg == 1 ? true : false );
@@ -104,6 +101,17 @@ module nts.uk.at.view.kaf007.b {
                             let backHomeAtr2 = self.appWorkChange().workChange().backHomeAtr2;
                             goWorkAtr2(nts.uk.util.isNullOrUndefined(goWorkAtr2()) ? 1: goWorkAtr2());
                             backHomeAtr2(nts.uk.util.isNullOrUndefined(backHomeAtr2()) ? 1: backHomeAtr2());
+                            //A2_1 申請者
+                            self.employeeName( detailData.employeeName );
+                            //就業時間帯名(A6_4、B6_4)で、「null」の場合は空白にしてください
+                            let typeCd = self.appWorkChange().workChange().workTypeCd;
+                            let typeName = self.appWorkChange().workChange().workTypeName;                
+                            let timeCd = self.appWorkChange().workChange().workTimeCd;
+                            let timeName = self.appWorkChange().workChange().workTimeName;
+                            typeCd(typeCd() === null ? '' : typeCd());
+                            typeName(typeName() === null ? '' : typeName());
+                            timeCd(timeCd() === null ? '' : timeCd());
+                            timeName(timeName() === null ? '' : timeName());
                             //application data
                             ko.mapping.fromJS( detailData.applicationDto, {}, self.appWorkChange().application );
                             //setting reason content
@@ -174,20 +182,18 @@ module nts.uk.at.view.kaf007.b {
                     self.selectedReason(),
                     self.reasonCombo(),
                     self.displayAppReasonContentFlg(),
-                    self.multilContent()
+                    self.multilContent().trim()
                 );
                 if(!appcommon.CommonProcess.checklenghtReason(appReason,"#inpReasonTextarea")){
                         return;
                 }
-                let appReasonError = !appcommon.CommonProcess.checkAppReason(true, self.typicalReasonDisplayFlg(), self.displayAppReasonContentFlg(), appReason);
+                let appReasonError = !appcommon.CommonProcess.checkAppReason(self.requiredReason(), self.typicalReasonDisplayFlg(), self.displayAppReasonContentFlg(), appReason);
                 if(appReasonError){
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function(){nts.uk.ui.block.clear();});    
                     return;    
                 }
                 //Approval phase
-                self.appWorkChange().appApprovalPhases = self.approvalList;
-                //application change date format
-                self.changeDateFormat();
+                self.appWorkChange().appApprovalPhases = self.approvalList;                
                 //申請理由
                 self.appWorkChange().application().applicationReason(appReason);                
                 //勤務を変更する
@@ -198,6 +204,8 @@ module nts.uk.at.view.kaf007.b {
                 self.changeUnregisterValue();
                 
                 let workChange = ko.toJS(self.appWorkChange());
+                //application change date format
+                self.changeDateFormat(workChange);
                 service.updateWorkChange(workChange).done(() => {
                     
                     dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -274,14 +282,14 @@ module nts.uk.at.view.kaf007.b {
             /**
              * Convert client date string to server GeneralDate
              */
-            private changeDateFormat() {
+            private changeDateFormat(data) {
                 let self = this,
-                    app = self.appWorkChange().application();
+                    app = data.application;
                 //Change application input date                
-                app.inputDate( moment.utc( app.inputDate(), self.dateTimeFormat ).toISOString() );
-                app.applicationDate( moment.utc( app.applicationDate(), self.dateFormat ).toISOString() );
-                app.startDate( moment.utc( app.startDate(), self.dateFormat ).toISOString() );
-                app.endDate( moment.utc( app.endDate(), self.dateFormat ).toISOString() );
+                app.inputDate = moment.utc( app.inputDate, self.dateTimeFormat ).toISOString() ;
+                app.applicationDate = moment.utc( app.applicationDate, self.dateFormat ).toISOString() ;
+                app.startDate = moment.utc( app.startDate, self.dateFormat ).toISOString() ;
+                app.endDate = moment.utc( app.endDate, self.dateFormat ).toISOString() ;
             }            
             /**
              * フォーカス制御
@@ -332,7 +340,7 @@ module nts.uk.at.view.kaf007.b {
                 if ( data == -1 || data === "" ) {
                     return null;
                 } else if ( data == 0 ) {
-                    hourMinute = "00:00";
+                    hourMinute = "";
                 } else if ( data != null ) {
                     let hour = Math.floor( data / 60 );
                     let minutes = Math.floor( data % 60 );

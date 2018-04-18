@@ -4,24 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.employment;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpFlexSet;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpFlexSetPK;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpFlexSetPK_;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpFlexSet_;
 
 /**
  * The Class JpaEmpFlexSettingRepository.
@@ -59,18 +50,14 @@ public class JpaEmpFlexSettingRepository extends JpaRepository implements EmpFle
 	 */
 	@Override
 	public Optional<EmpFlexSetting> find(String cid, String emplCode, int year) {
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<KshstEmpFlexSet> cq = cb.createQuery(KshstEmpFlexSet.class);
-		Root<KshstEmpFlexSet> root = cq.from(KshstEmpFlexSet.class);
+		Optional<KshstEmpFlexSet> optEntity = this.queryProxy().find(new KshstEmpFlexSetPK(cid, emplCode, year), KshstEmpFlexSet.class);
 
-		List<Predicate> predicateList = new ArrayList<Predicate>();
-		predicateList.add(cb.equal(root.get(KshstEmpFlexSet_.kshstEmpFlexSetPK).get(KshstEmpFlexSetPK_.cid), cid));
-		predicateList.add(cb.equal(root.get(KshstEmpFlexSet_.kshstEmpFlexSetPK).get(KshstEmpFlexSetPK_.year), year));
-		predicateList.add(cb.equal(root.get(KshstEmpFlexSet_.kshstEmpFlexSetPK).get(KshstEmpFlexSetPK_.empCd), emplCode));
+		// Check exist
+		if (!optEntity.isPresent()) {
+			return Optional.empty();
+		}
 
-		cq.where(predicateList.toArray(new Predicate[] {}));
-		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getResultList()));
+		return Optional.ofNullable(this.toDomain(optEntity.get()));
 	}
 
 	/**
@@ -88,14 +75,11 @@ public class JpaEmpFlexSettingRepository extends JpaRepository implements EmpFle
 	/**
 	 * To domain.
 	 *
-	 * @param entities the entities
+	 * @param entity the entities
 	 * @return the emp flex setting
 	 */
-	private EmpFlexSetting toDomain(List<KshstEmpFlexSet> entities) {
-		if (entities.isEmpty()) {
-			return null;
-		}
-		return new EmpFlexSetting(new JpaEmpFlexSettingGetMemento(entities.get(0)));
+	private EmpFlexSetting toDomain(KshstEmpFlexSet entity) {
+		return new EmpFlexSetting(new JpaEmpFlexSettingGetMemento(entity));
 	}
 
 }

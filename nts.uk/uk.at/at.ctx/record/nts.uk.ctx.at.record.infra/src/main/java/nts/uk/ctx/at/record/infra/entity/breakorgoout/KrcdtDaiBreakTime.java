@@ -54,9 +54,6 @@ public class KrcdtDaiBreakTime extends UkJpaEntity implements Serializable {
 	// @Column(name = "END_STAMP_SOURCE_INFO")
 	// public Integer endStampSourceInfo;
 
-	@Column(name = "BREAK_TIME")
-	public Integer breakTime;
-
 	@Override
 	protected Object getKey() {
 		return this.krcdtDaiBreakTimePK;
@@ -68,8 +65,7 @@ public class KrcdtDaiBreakTime extends UkJpaEntity implements Serializable {
 						new KrcdtDaiBreakTimePK(breakTime.getEmployeeId(), breakTime.getYmd(),
 								breakTime.getBreakType().value, c.getBreakFrameNo().v()),
 						c.getStartTime() == null ? null : c.getStartTime().valueAsMinutes(),
-						c.getEndTime() == null ? null : c.getEndTime().valueAsMinutes(),
-						c.getBreakTime() == null ? 0 : c.getBreakTime().valueAsMinutes()))
+						c.getEndTime() == null ? null : c.getEndTime().valueAsMinutes()))
 				.collect(Collectors.toList());
 	}
 }

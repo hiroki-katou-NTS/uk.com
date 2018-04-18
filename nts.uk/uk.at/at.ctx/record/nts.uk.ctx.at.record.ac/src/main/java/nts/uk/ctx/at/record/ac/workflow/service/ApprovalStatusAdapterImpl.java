@@ -70,4 +70,28 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 			return null;
 		}
 	}
+
+	@Override
+	public List<ApproveRootStatusForEmpImport> getApprovalByListEmplAndListApprovalRecordDate(
+			GeneralDate startDate, GeneralDate endDate,
+			List<String> employeeIDs, String companyID, Integer rootType) {
+		return approvalRootStatePub
+				.getApprovalByListEmplAndDate(startDate, endDate, employeeIDs, companyID, rootType).stream()
+				.map((pub) -> new ApproveRootStatusForEmpImport(pub.getEmployeeID(), pub.getAppDate(),
+						EnumAdaptor.valueOf(pub.getApprovalStatus().value, ApprovalStatusForEmployee.class)))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public boolean releaseApproval(String approverID, List<GeneralDate> approvalRecordDates, List<String> employeeID,
+			Integer rootType, String companyID) {
+		approvalRootStatePub.ReleaseApproval(approverID, approvalRecordDates, employeeID, rootType, companyID);
+		return false;
+	}
+
+	@Override
+	public void registerApproval(String approverID, List<GeneralDate> approvalRecordDates, List<String> employeeID,
+			Integer rootType, String companyID) {
+		approvalRootStatePub.RegisterApproval(approverID, approvalRecordDates, employeeID, rootType, companyID);
+	}
 }

@@ -21,4 +21,7 @@ public class Kmk004ShaDeleteCommand {
 	
 	/** The sid. */
 	private String sid;
+	
+	/** The is WT setting common remove. */
+	private boolean isWTSettingCommonRemove;
 }

@@ -13,6 +13,9 @@ import nts.uk.ctx.at.record.app.command.dailyperform.editstatecolor.EditStateCol
 import nts.uk.ctx.at.record.app.command.dailyperform.editstatecolor.EditStateColorOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
+import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.ContentApproval;
+import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.ParamDayApproval;
+import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.RegisterDayApproval;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.ParamIdentityConfirmDay;
@@ -41,6 +44,9 @@ public class DailyModifyCommandFacade {
 
 	@Inject
 	private RegisterIdentityConfirmDay registerIdentityConfirmDay;
+	
+	@Inject
+	private RegisterDayApproval registerDayApproval;
 
 	public void handleAdd(DailyModifyQuery query) {
 		DailyRecordDto dto = toDto(query);
@@ -85,6 +91,14 @@ public class DailyModifyCommandFacade {
 	public void insertSign(List<DPItemCheckBox> dataCheckSign) {
 		ParamIdentityConfirmDay day = new ParamIdentityConfirmDay(AppContexts.user().employeeId(), dataCheckSign
 				.stream().map(x -> new SelfConfirmDay(x.getDate(), x.isValue())).collect(Collectors.toList()));
-		registerIdentityConfirmDay.registerIdentity(day);
+		registerIdentityConfirmDay.registerIdentityOld(day);
+	}
+	
+	public void insertApproval(List<DPItemCheckBox> dataCheckApproval) {
+		ParamDayApproval param = new ParamDayApproval(AppContexts.user().employeeId(),
+				dataCheckApproval.stream()
+						.map(x -> new ContentApproval(x.getDate(), x.isValue(), x.getEmployeeId()))
+						.collect(Collectors.toList()));
+		registerDayApproval.registerDayApprovalOld(param);
 	}
 }

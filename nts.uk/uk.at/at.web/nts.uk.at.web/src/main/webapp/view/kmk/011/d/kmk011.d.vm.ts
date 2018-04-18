@@ -127,8 +127,8 @@ module nts.uk.at.view.kmk011.d {
 
                 for (let i = 1; i <= 10; i++) {
                     if (_self.mapObj.get(i).notUseAtr() == DivergenceTimeUseSet.USE) {
-                        $('#alarm_time_' + i).ntsError('set', { messageId: "Msg_913" });
-                        //                        $('#error_time_' + i).ntsEditor("validate");   
+                        $('#com_alarm_time_' + i).ntsError('set', { messageId: "Msg_913" });
+                        //                        $('#com_error_time_' + i).ntsEditor("validate");   
                     }
 
                 }
@@ -167,7 +167,7 @@ module nts.uk.at.view.kmk011.d {
              */
             public isDisableAllRow(diverNo: number): boolean {
                 let _self = this;
-                if (_self.mapObj2.get(diverNo).divergenceTimeUseSet == DivergenceTimeUseSet.NOT_USE || _self.selectedHist() == null) {
+                if (_self.mapObj2.get(diverNo).divergenceTimeUseSet == DivergenceTimeUseSet.NOT_USE || nts.uk.text.isNullOrEmpty( _self.selectedHist())) {
                     return false;
                 }
                 return true;
@@ -215,8 +215,8 @@ module nts.uk.at.view.kmk011.d {
                 _self.clearErrors();
                 for (let i = 1; i <= 10; i++) {
                     if (_self.mapObj.get(i).notUseAtr() == DivergenceTimeUseSet.USE) {
-                        $('#alarm_time_' + i).ntsEditor("validate");
-                        $('#error_time_' + i).ntsEditor("validate");
+                        $('#com_alarm_time_' + i).ntsEditor("validate");
+                        $('#com_error_time_' + i).ntsEditor("validate");
                     }
 
                 }
@@ -234,8 +234,8 @@ module nts.uk.at.view.kmk011.d {
                 // Clear errors
                 for (let i = 1; i <= 10; i++) {
                     if (_self.mapObj.get(i).notUseAtr() == DivergenceTimeUseSet.USE) {
-                        $('#alarm_time_' + i).ntsEditor("clear");
-                        $('#error_time_' + i).ntsEditor("clear");
+                        $('#com_alarm_time_' + i).ntsEditor("clear");
+                        $('#com_error_time_' + i).ntsEditor("clear");
                     }
                 }
 
@@ -251,7 +251,7 @@ module nts.uk.at.view.kmk011.d {
                 var dfd = $.Deferred<any>();
                 let dto: ComDivergenceTimeSettingDto;
                 service.getAllItemSetting(value).done((response: any) => {
-                    if (response != null) {
+                    if (response != null && response.length > 0) {
                         if (_self.mapObj.size == 0) {
                             response.forEach((item: any) => {
                                 dto = new ComDivergenceTimeSettingDto();
@@ -320,7 +320,7 @@ module nts.uk.at.view.kmk011.d {
                         _self.enableSaveDivergenceRefSetting(false);
                         _self.fillListItemSettingDefault();
                         _self.histList([]);
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1058" }).then(() => {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1191" }).then(() => {
                             $('#save-hist-com').focus();
                         });
                         blockUI.clear();
@@ -363,9 +363,10 @@ module nts.uk.at.view.kmk011.d {
                                 alarmTime: ''
                             }
                         };
-                        _self.mapObj.get(i).notUseAtr(item.notUseAtr);
-                        _self.mapObj.get(i).alarmTime(item.divergenceReferenceTimeValue.alarmTime);
-                        _self.mapObj.get(i).errorTime(item.divergenceReferenceTimeValue.errorTime);
+                        _self.mapObj.get(item.divergenceTimeNo).notUseAtr(item.notUseAtr);
+                        _self.mapObj.get(item.divergenceTimeNo).alarmTime(item.divergenceReferenceTimeValue.alarmTime);
+                        _self.mapObj.get(item.divergenceTimeNo).errorTime(item.divergenceReferenceTimeValue.errorTime);
+                        _self.isDisableAllRow(item.divergenceTimeNo);
                     }
                 }
             }

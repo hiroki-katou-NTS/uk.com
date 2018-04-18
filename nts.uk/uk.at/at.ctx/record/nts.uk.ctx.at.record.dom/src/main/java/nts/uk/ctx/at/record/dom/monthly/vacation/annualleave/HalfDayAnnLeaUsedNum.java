@@ -1,0 +1,48 @@
+package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
+
+import java.util.Optional;
+
+import lombok.Getter;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
+
+/**
+ * 半日年休使用数
+ * @author shuichu_ishida
+ */
+@Getter
+public class HalfDayAnnLeaUsedNum {
+
+	/** 回数 */
+	private UsedTimes times;
+	/** 回数付与前 */
+	private UsedTimes timesBeforeGrant;
+	/** 回数付与後 */
+	private Optional<UsedTimes> timesAfterGrant;
+
+	/**
+	 * コンストラクタ
+	 */
+	public HalfDayAnnLeaUsedNum(){
+		
+		this.times = new UsedTimes(0);
+		this.timesBeforeGrant = new UsedTimes(0);
+		this.timesAfterGrant = Optional.empty();
+	}
+
+	/**
+	 * ファクトリー
+	 * @param times 回数
+	 * @param timeBeforeGrant 回数付与前
+	 * @param timesAfterGrant 回数付与後
+	 * @return 半日年休使用数
+	 */
+	public static HalfDayAnnLeaUsedNum of(
+			UsedTimes times, UsedTimes timeBeforeGrant, Optional<UsedTimes> timesAfterGrant){
+		
+		HalfDayAnnLeaUsedNum domain = new HalfDayAnnLeaUsedNum();
+		domain.times = times;
+		domain.timesBeforeGrant = timeBeforeGrant;
+		domain.timesAfterGrant = timesAfterGrant;
+		return domain;
+	}
+}

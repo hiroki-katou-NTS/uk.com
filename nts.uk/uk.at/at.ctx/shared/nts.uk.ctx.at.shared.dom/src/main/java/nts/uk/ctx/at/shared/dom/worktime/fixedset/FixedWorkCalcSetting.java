@@ -14,15 +14,15 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  * The Class FixedWorkCalcSetting.
  */
 @Getter
-// 固定勤務の計算設定
+// 固定勤務�計算設�
 public class FixedWorkCalcSetting extends WorkTimeDomainObject {
 
 	/** The exceeded pred add vacation calc. */
-	// 休暇加算時間が所定を超過した場合の計算
+	// 休暇�算時間が所定を趁�した場合�計�
 	private ExceededPredAddVacationCalc exceededPredAddVacationCalc;
 
 	/** The over time calc no break. */
-	// 休憩未取得時の残業計算
+	// 休�未取得時の残業計�
 	private OverTimeCalcNoBreak overTimeCalcNoBreak;
 
 	/**

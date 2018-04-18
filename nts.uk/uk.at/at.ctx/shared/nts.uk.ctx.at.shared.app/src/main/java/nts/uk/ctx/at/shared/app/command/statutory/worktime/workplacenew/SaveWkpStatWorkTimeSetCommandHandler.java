@@ -59,7 +59,7 @@ public class SaveWkpStatWorkTimeSetCommandHandler extends CommandHandler<SaveWkp
 
 		SaveWkpStatWorkTimeSetCommand command = context.getCommand();
 		int year = command.getYear();
-		String wkpId = command.getWkpId();
+		String wkpId = command.getWorkplaceId();
 		String companyId = AppContexts.user().companyId();
 
 		WkpNormalSetting wkpNormalSetting = command.getNormalSetting().toWkpDomain(year, wkpId);

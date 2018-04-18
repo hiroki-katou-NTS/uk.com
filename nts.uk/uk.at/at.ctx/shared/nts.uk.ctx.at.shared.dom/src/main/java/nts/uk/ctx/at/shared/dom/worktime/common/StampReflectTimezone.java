@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
+import lombok.Builder;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
@@ -14,6 +15,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 //打刻反映時間帯
 @Getter
+@Builder
 public class StampReflectTimezone extends WorkTimeDomainObject {
 
 	/** The work no. */
@@ -21,11 +23,11 @@ public class StampReflectTimezone extends WorkTimeDomainObject {
 	private WorkNo workNo;
 
 	/** The classification. */
-	// 出退勤区分
+	// 出退勤区�
 	private GoLeavingWorkAtr classification;
 
 	/** The end time. */
-	// 終了時刻
+	// 終亙�刻
 	private TimeWithDayAttr endTime;
 
 	/** The start time. */
@@ -35,8 +37,23 @@ public class StampReflectTimezone extends WorkTimeDomainObject {
 	/**
 	 * Instantiates a new stamp reflect timezone.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param workNo the work no
+	 * @param classification the classification
+	 * @param endTime the end time
+	 * @param startTime the start time
+	 */
+	public StampReflectTimezone(WorkNo workNo, GoLeavingWorkAtr classification, TimeWithDayAttr endTime,
+			TimeWithDayAttr startTime) {
+		super();
+		this.workNo = workNo;
+		this.classification = classification;
+		this.endTime = endTime;
+		this.startTime = startTime;
+	}
+
+	/**
+	 * Instantiates a new stamp reflect timezone.
+	 *
 	 */
 	public StampReflectTimezone(StampReflectTimezoneGetMemento memento) {
 		this.workNo = memento.getWorkNo();

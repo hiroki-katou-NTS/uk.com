@@ -8,6 +8,10 @@ import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelect;
 
+/**
+ * The Class DivergenceReasonInputMethod.
+ */
+//乖離理由の入力方法
 @Getter
 @Setter
 @AllArgsConstructor

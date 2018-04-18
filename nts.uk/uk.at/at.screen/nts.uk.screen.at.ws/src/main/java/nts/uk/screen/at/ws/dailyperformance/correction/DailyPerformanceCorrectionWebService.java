@@ -82,7 +82,7 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("startScreen")
 	public DailyPerformanceCorrectionDto startScreen(DPParams params ) throws InterruptedException{
-		return this.processor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.displayFormat, params.correctionOfDaily, params.formatCodes);
+		return this.processor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.formatCodes, params.objectShare);
 	}
 	
 	@POST
@@ -153,13 +153,12 @@ public class DailyPerformanceCorrectionWebService {
 			if (!items.isEmpty()){
 				itemErrors.addAll(items);
 			}else{
-				//List<DPItemValue> itemInputs = validatorDataDaily.checkCareInputData(itemCovert);
-				//itemInputErors.addAll(itemInputs);
+				List<DPItemValue> itemInputs = validatorDataDaily.checkInputData(itemCovert);
+				itemInputErors.addAll(itemInputs);
 			}
 			
 		});
-		if (itemErrors.isEmpty()) {
-			if (itemInputErors.isEmpty()) {
+		if (itemErrors.isEmpty() && itemInputErors.isEmpty()) {
 				mapSidDate.entrySet().forEach(x -> {
 					List<ItemValue> itemCovert = x.getValue().stream()
 							.map(y -> new ItemValue(y.getValue(), ValueType.valueOf(y.getValueType()),
@@ -172,19 +171,19 @@ public class DailyPerformanceCorrectionWebService {
 				});
 				// insert cell edit
 				dailyModifyCommandFacade.handleEditCell(itemValueChild);
-			}else{
 				//resultError.put(1, itemInputErors);
 				//return resultError;
-			}
 		}else{
 			resultError.put(0, itemErrors);
+			resultError.put(1, itemInputErors);
 			//return resultError;
 		}
 		
 		// insert sign
 		dailyModifyCommandFacade.insertSign(dataParent.getDataCheckSign());
 		
-		//
+		// insert approval
+		dailyModifyCommandFacade.insertApproval(dataParent.getDataCheckApproval());
 		if(dataParent.getMode() == 0){
 			val dataCheck = validatorDataDaily.checkContinuousHolidays(dataParent.getEmployeeId(),
 					dataParent.getDateRange());

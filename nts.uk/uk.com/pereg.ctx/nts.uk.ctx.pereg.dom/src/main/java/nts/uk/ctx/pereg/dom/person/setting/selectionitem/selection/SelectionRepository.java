@@ -23,13 +23,9 @@ public interface SelectionRepository {
 
 	List<Selection> getAllSelectionBySelectionCdAndHistId(String selectionCd, String histId);
 
-	// Lanlt
-	List<Selection> getAllSelectionByHistoryId(String selectionItemId, GeneralDate baseDate, int selectionItemClsAtr);
-	
 	List<Selection> getAllSelectionByCompanyId(String companyId, String selectionItemId, GeneralDate baseDate);
 	
 	List<Selection> getAllSelectionByHistoryId(String selectionItemId, GeneralDate baseDate);
-	// Lanlt
 
 	// Tuan nv:
 	List<Selection> getAllSelectionBySelectionID(String selectionId);

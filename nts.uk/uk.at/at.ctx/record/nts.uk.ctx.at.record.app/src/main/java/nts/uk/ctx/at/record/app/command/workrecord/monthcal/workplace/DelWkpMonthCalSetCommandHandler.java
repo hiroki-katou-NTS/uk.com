@@ -52,7 +52,7 @@ public class DelWkpMonthCalSetCommandHandler extends CommandHandler<DelWkpMonthC
 
 		// get work place id
 		DelWkpMonthCalSetCommand command = context.getCommand();
-		String wkpId = command.getWkpId();
+		String wkpId = command.getWorkplaceId();
 
 		Optional<WkpDeforLaborMonthActCalSet> optWkpDeforLaborMonthActCalSet = deforLaborMonthActCalSetRepo.find(cid,
 				wkpId);

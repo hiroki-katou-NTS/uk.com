@@ -16,6 +16,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
+import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.result.ContinuousHolidayCheckResult;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQuery;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryAdapter;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryR;
@@ -128,16 +129,19 @@ public class ErAlWorkRecordCheckService {
 	}
 
 	/** 大塚用連続休暇チェック */
-	public Map<GeneralDate, Integer> checkContinuousHolidays(String employeeId, DatePeriod range) {
+	public ContinuousHolidayCheckResult checkContinuousHolidays(String employeeId, DatePeriod range) {
 		Optional<ContinuousHolCheckSet> settingOp = checkSetting.find(AppContexts.user().companyId());
-		Map<GeneralDate, Integer> result = new HashMap<>();
+		ContinuousHolidayCheckResult r = new ContinuousHolidayCheckResult();
 		settingOp.ifPresent(setting -> {
 			if(setting.isUseAtr()){
+				Map<GeneralDate, Integer> result = new HashMap<>();
 				processCheckContinuous(range.start(), range, result, setting, employeeId, null, 0, true);
+				r.message(setting.getDisplayMessege().v());
+				r.setErrorDate(result);
 			}
 		});
 
-		return result;
+		return r;
 	}
 
 	private void processCheckContinuous(GeneralDate endMark, DatePeriod range, Map<GeneralDate, Integer> result,

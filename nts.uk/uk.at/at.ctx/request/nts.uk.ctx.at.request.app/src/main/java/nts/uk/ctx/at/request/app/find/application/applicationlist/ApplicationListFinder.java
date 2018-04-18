@@ -14,6 +14,7 @@ import nts.uk.ctx.at.request.app.find.setting.company.request.approvallistsettin
 import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetDto;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
+import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppListInitialRepository;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppListOutPut;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppMasterInfo;
@@ -56,25 +57,16 @@ public class ApplicationListFinder {
 		//URパラメータが存在する-(Check param)
 		if(StringUtil.isNullOrEmpty(param.getStartDate(), false) || StringUtil.isNullOrEmpty(param.getEndDate(), false)){
 			//アルゴリズム「申請一覧初期日付期間」を実行する-(Thực hiện thuật toán lấy ngày　－12)
-			DatePeriod date = repoAppListInit.getInitialPeriod(companyId);
+			DatePeriod date = null;
+//			if(param.getAppListAtr().equals(ApplicationListAtr.APPROVER)){
+				date = repoAppListInit.getInitialPeriod(companyId);
+//			}else{
+//				date = repoAppListInit.getInitPeriodApp(companyId);
+//			}
 			param.setStartDate(date.start().toString());
 			param.setEndDate(date.end().toString());
 			
 		}
-//		if(param.getAppListAtr() != null){//存在する場合
-//			//期間（開始日、終了日）が存する場合
-//			if(StringUtil.isNullOrEmpty(param.getStartDate(), false) || StringUtil.isNullOrEmpty(param.getEndDate(), false)){
-//				//アルゴリズム「申請一覧初期日付期間」を実行する-(Thực hiện thuật toán lấy ngày　－12)
-//				DatePeriod date = repoAppListInit.getInitialPeriod(companyId);
-//				param.setStartDate(date.start().toString());
-//				param.setEndDate(date.end().toString());
-//			}
-//			// TODO Auto-generated method stub
-//		}else{//存在しない場合
-//			//ドメインモデル「申請一覧抽出条件」を取得する
-//			// TODO Auto-generated method stub
-//			//申請一覧抽出条件.社員IDリストが空白
-//		}
 		//ドメインモデル「申請一覧共通設定フォーマット.表の列幅」を取得-(Lấy 表の列幅)//xu ly o ui
 		//アルゴリズム「申請一覧リスト取得」を実行する-(Thực hiện thuật toán Application List get): 1-申請一覧リスト取得
 		AppListExtractCondition appListExCon = param.convertDtotoDomain(param);
@@ -106,7 +98,7 @@ public class ApplicationListFinder {
 		List<AppInfor> lstAppType = this.findListApp(lstApp.getLstMasterInfo());
 		return new ApplicationListDto(param.getStartDate(), param.getEndDate(), displaySet, lstApp.getLstMasterInfo(),this.sortById(lstAppDto),
 				lstApp.getLstAppOt(),lstApp.getLstAppGoBack(), lstApp.getAppStatusCount(), lstApp.getLstAppGroup(), lstAgent,
-				lstApp.getLstAppHdWork(), lstApp.getLstAppWorkChange(), lstApp.getLstAppAbsence(), lstAppType, hdAppSetDto);
+				lstApp.getLstAppHdWork(), lstApp.getLstAppWorkChange(), lstApp.getLstAppAbsence(), lstAppType, hdAppSetDto, lstApp.getLstAppCompltLeaveSync());
 	}
 	/**
 	 * find status approval

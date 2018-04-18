@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.flex;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -8,6 +10,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculationAndMinus;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateMonthlyValue;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
@@ -16,6 +19,7 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlx;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggregateSetting;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.CarryforwardSetInShortageFlex;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.FlexAggregateMethod;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.DeductDaysAndTime;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
@@ -24,8 +28,8 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacati
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetAddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetVacationAddTime;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.PremiumAtr;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.FlexWork;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtion;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -56,6 +60,8 @@ public class FlexTimeOfMonthly {
 	private AddedVacationUseTime addedVacationUseTime;
 	/** 控除の日数と時間 */
 	private DeductDaysAndTime deductDaysAndTime;
+	/** エラー情報リスト */
+	private List<MonthlyAggregationErrorInfo> errorInfos;
 	
 	/**
 	 * コンストラクタ
@@ -70,6 +76,9 @@ public class FlexTimeOfMonthly {
 		this.flexShortDeductTime = new FlexShortDeductTime();
 		
 		this.addedVacationUseTime = new AddedVacationUseTime();
+		this.deductDaysAndTime = new DeductDaysAndTime(
+				new AttendanceDaysMonth(0.0), new AttendanceTimeMonth(0));
+		this.errorInfos = new ArrayList<>();
 	}
 
 	/**
@@ -206,7 +215,7 @@ public class FlexTimeOfMonthly {
 			WorkingConditionItem workingConditionItem,
 			String workplaceId, String employmentCd,
 			AggrSettingMonthlyOfFlx aggrSetOfFlex,
-			Optional<HolidayAddtion> holidayAdditionOpt,
+			Optional<HolidayAddtionSet> holidayAdditionOpt,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			AttendanceTimeMonth prescribedWorkingTimeMonth,
 			AttendanceTimeMonth statutoryWorkingTimeMonth,
@@ -366,7 +375,7 @@ public class FlexTimeOfMonthly {
 			String employmentCd,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			AggrSettingMonthlyOfFlx aggrSetOfFlex,
-			Optional<HolidayAddtion> holidayAdditionOpt,
+			Optional<HolidayAddtionSet> holidayAdditionOpt,
 			AttendanceTimeMonth prescribedWorkingTimeMonth,
 			AttendanceTimeMonth statutoryWorkingTimeMonth,
 			RepositoriesRequiredByMonthlyAggr repositories){
@@ -383,10 +392,11 @@ public class FlexTimeOfMonthly {
 		val addSet = GetAddSet.get(WorkingSystem.FLEX_TIME_WORK, PremiumAtr.ONLY_LEGAL, holidayAdditionOpt);
 		
 		// フレックス勤務の加算設定　取得
-		Optional<FlexWork> flexWorkSetOpt = Optional.empty();
-		if (holidayAdditionOpt.isPresent()){
-			flexWorkSetOpt = Optional.of(holidayAdditionOpt.get().getFlexWork());
-		}
+		Optional<WorkFlexAdditionSet> flexWorkSetOpt = Optional.empty();
+		//*****（未）　ドメイン構成が変わったため、取得方法の変更が必要。2018.4.11 shuichi_ishida
+		//if (holidayAdditionOpt.isPresent()){
+		//	flexWorkSetOpt = Optional.of(holidayAdditionOpt.get().getFlexWork());
+		//}
 		
 		// フレックス対象時間と所定労働時間（代休控除後）を比較する
 		if (flexTargetTime.greaterThanOrEqualTo(compensatoryLeaveAfterDudection.v())){
@@ -505,7 +515,7 @@ public class FlexTimeOfMonthly {
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			AggrSettingMonthlyOfFlx aggrSetOfFlex,
 			AddSet addSet,
-			Optional<FlexWork> addSetOfFlexOpt,
+			Optional<WorkFlexAdditionSet> addSetOfFlexOpt,
 			AttendanceTimeMonth statutoryWorkingTimeMonth){
 
 		AddedVacationUseTime addedVacationUseTime = new AddedVacationUseTime();
@@ -600,7 +610,7 @@ public class FlexTimeOfMonthly {
 			AttendanceTimeMonthWithMinus compensatoryLeaveAfterDudection,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			AddSet addSet,
-			Optional<FlexWork> addSetOfFlexOpt){
+			Optional<WorkFlexAdditionSet> addSetOfFlexOpt){
 		
 		AddedVacationUseTime addedVacationUseTime = new AddedVacationUseTime();
 		
@@ -764,7 +774,8 @@ public class FlexTimeOfMonthly {
 		// 年休控除日数を時間換算する
 		this.deductDaysAndTime.timeConversionOfDeductAnnualLeaveDays(
 				companyId, employeeId, period, workingConditionItem, repositories);
-		if (this.deductDaysAndTime.getErrorMessageIds().size() > 0){
+		if (this.deductDaysAndTime.getErrorInfos().size() > 0){
+			this.errorInfos.addAll(this.deductDaysAndTime.getErrorInfos());
 			return;
 		}
 		

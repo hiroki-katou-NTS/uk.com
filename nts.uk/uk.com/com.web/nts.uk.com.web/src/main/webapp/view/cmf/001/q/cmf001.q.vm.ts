@@ -90,11 +90,10 @@ module nts.uk.com.view.cmf001.q {
                 // ドメインモデル「外部受入実行結果ログ」に登録する
                 let command: IExacExeResultLog = self.exacExeResultLog;
                 service.addErrorLog(command).done(function(data){
-                    console.log("PROCESS ID:" + data);
                     self.processId(data);
-                    
+                    self.executionCheck();
                 });
-                self.executionCheck();
+                
                 dfd.resolve();
                 return dfd.promise();
             }
@@ -125,12 +124,12 @@ module nts.uk.com.view.cmf001.q {
             public executionCheck(): void {
                 var self = this;
                 let command: CSVManager = new CSVManager(
+                    self.processId(),
                     self.totalRecord(),
                     self.currentRecord(),
                     self.numberFail(),
                     self.stopMode(),
                     self.stateBehavior());
-
                 // find task id
                 service.check(command).done(function(res: any) {
                     self.taskId(res.taskInfor.id);
@@ -154,6 +153,7 @@ module nts.uk.com.view.cmf001.q {
                 self.isStop(false);
                 $('#BTN_STOP').focus();
                 let command: CSVManager = new CSVManager(
+                    self.processId(),
                     self.totalRecord(),
                     self.currentRecord(),
                     self.numberFail(),
@@ -237,6 +237,7 @@ module nts.uk.com.view.cmf001.q {
                                     self.executionState(getListProcessing()[1].value);
                                 }else {
                                     self.executionState(getListProcessing()[3].value);
+                                    $('#BTN_ERROR').focus();
                                 }
 
                                 if (res.succeeded) {
@@ -255,7 +256,7 @@ module nts.uk.com.view.cmf001.q {
                 let self = this;
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_911" })
                 .ifYes(() => {
-                    self.isStop(true);
+                    
                     if (nts.uk.text.isNullOrEmpty(self.taskId())) {
                         return;
                     }
@@ -269,13 +270,15 @@ module nts.uk.com.view.cmf001.q {
     }
     // 対象アルゴリズム
     export class CSVManager {
+        processId: string;
         csvLine: number;
         currentLine: number;
         errorCount: number;
         stopMode: number;
         stateBehavior: number;
-        constructor(csvLine: number, currentLine: number, errorCount: number, stopMode: number, stateBehavior: number) {
+        constructor(processId: string, csvLine: number, currentLine: number, errorCount: number, stopMode: number, stateBehavior: number) {
             let self = this;
+            self.processId = processId;
             self.csvLine = csvLine;
             self.currentLine = currentLine;
             self.errorCount = errorCount;

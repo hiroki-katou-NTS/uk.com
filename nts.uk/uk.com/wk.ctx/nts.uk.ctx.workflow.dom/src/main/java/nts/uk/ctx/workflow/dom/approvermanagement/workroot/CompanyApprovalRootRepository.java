@@ -117,4 +117,6 @@ public interface CompanyApprovalRootRepository {
 	
 	List<CompanyApprovalRoot> getComAppRoot(String companyID, GeneralDate date, 
 			Integer employmentRootAtr, Integer confirmRootAtr);
+	
+	List<CompanyApprovalRoot> findEmpByConfirm(String companyID, ConfirmationRootType confirmType, GeneralDate date);
 }

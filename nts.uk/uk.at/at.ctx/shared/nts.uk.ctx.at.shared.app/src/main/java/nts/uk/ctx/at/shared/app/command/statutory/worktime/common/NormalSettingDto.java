@@ -121,6 +121,7 @@ public class NormalSettingDto {
 		public ShainNormalSettingMemento(int year, String employeeId, List<MonthlyUnitDto> statutorySetting) {
 			this.statutorySetting = statutorySetting;
 			this.year = year;
+			this.employeeId = employeeId;
 		}
 
 		@Override

@@ -60,7 +60,7 @@ public class JpaComDeforLaborSettingRepository extends JpaRepository
 	 */
 	@Override
 	public void remove(String companyId, int year) {
-		this.commandProxy().remove(KshstComDeforLarSetPK.class,
+		this.commandProxy().remove(KshstComDeforLarSet.class,
 				new KshstComDeforLarSetPK(companyId, year));
 	}
 

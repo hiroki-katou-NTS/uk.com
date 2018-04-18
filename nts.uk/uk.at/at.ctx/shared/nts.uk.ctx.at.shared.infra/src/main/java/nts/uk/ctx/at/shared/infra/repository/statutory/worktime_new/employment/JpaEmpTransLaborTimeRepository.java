@@ -18,6 +18,8 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpRegLaborTime;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpRegLaborTimePK;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpTransLabTime;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpTransLabTimePK;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpTransLabTimePK_;
@@ -58,17 +60,13 @@ public class JpaEmpTransLaborTimeRepository extends JpaRepository implements Emp
 	 */
 	@Override
 	public Optional<EmpTransLaborTime> find(String cid, String emplId) {
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<KshstEmpTransLabTime> cq = cb.createQuery(KshstEmpTransLabTime.class);
-		Root<KshstEmpTransLabTime> root = cq.from(KshstEmpTransLabTime.class);
+		Optional<KshstEmpTransLabTime> optEntity = this.queryProxy().find(new KshstEmpTransLabTimePK(cid, emplId), KshstEmpTransLabTime.class);
 
-		List<Predicate> predicateList = new ArrayList<Predicate>();
-		predicateList.add(cb.equal(root.get(KshstEmpTransLabTime_.kshstEmpTransLabTimePK).get(KshstEmpTransLabTimePK_.cid), cid));
-		predicateList.add(cb.equal(root.get(KshstEmpTransLabTime_.kshstEmpTransLabTimePK).get(KshstEmpTransLabTimePK_.empCd), emplId));
-
-		cq.where(predicateList.toArray(new Predicate[] {}));
-		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getSingleResult()));
+		// Check exist
+		if (!optEntity.isPresent()) {
+			return Optional.empty();
+		}
+		return Optional.ofNullable(this.toDomain(optEntity.get()));
 	}
 
 	/**
@@ -90,9 +88,6 @@ public class JpaEmpTransLaborTimeRepository extends JpaRepository implements Emp
 	 * @return the emp trans work time
 	 */
 	private EmpTransLaborTime toDomain(KshstEmpTransLabTime entity) {
-		if (entity == null) {
-			return null;
-		}
 		return new EmpTransLaborTime(new JpaEmpTransLaborTimeGetMemento(entity));
 	}
 

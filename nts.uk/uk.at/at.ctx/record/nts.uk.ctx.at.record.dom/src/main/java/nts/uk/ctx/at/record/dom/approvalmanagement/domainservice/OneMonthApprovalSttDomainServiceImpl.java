@@ -5,6 +5,7 @@ package nts.uk.ctx.at.record.dom.approvalmanagement.domainservice;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,6 +31,7 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.dtos.ClosureDto;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dtos.DateApprovalStatusDto;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dtos.OneMonthApprovalStatusDto;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -160,7 +162,7 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 			int currentClosure = 0;
 			if (closureIdParam == null) {
 				// ドメインモデル「締め」をすべて取得する
-				List<Closure> lstClosure = closureRepository.findAll(AppContexts.user().companyId());
+				List<Closure> lstClosure = closureRepository.findAllUse(AppContexts.user().companyId());
 				// アルゴリズム「当月の名前を取得する」を実行する
 				List<ClosureHistory> lstClosureHst = closureRepository
 						.findByCurrentMonth(AppContexts.user().companyId(), currentYearMonth);

@@ -9,7 +9,6 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
@@ -109,7 +108,7 @@ public class WorkTimeOfMonthly {
 			val workTimeOfTimeSeries = WorkTimeOfTimeSeries.of(ymd,
 					WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(
 							workTime,
-							withinPrescribedTimeOfDaily.getWorkTimeIncludeVacationTime(),
+							withinPrescribedTimeOfDaily.getActualWorkTime(),
 							withinPrescribedPremiumTime,
 							withinPrescribedTimeOfDaily.getWithinStatutoryMidNightTime(),
 							withinPrescribedTimeOfDaily.getVacationAddTime())

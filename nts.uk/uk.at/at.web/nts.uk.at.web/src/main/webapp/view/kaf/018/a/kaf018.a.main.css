@@ -19,15 +19,21 @@
 	float: left;
 }
 
+.fix-combobox {
+	margin-left: 10px;
+}
+
+
 .format-selected {
 	float: left;
-	padding: 20px;
-		
+	padding: 11px;
+	width: 140px;	
+	font-size: 12px;
 }
 
 .format-checkbox {
 	float: left;
-	margin-left: 35px;
+	margin-left: 25px;
 }
 
 .btn-excute {

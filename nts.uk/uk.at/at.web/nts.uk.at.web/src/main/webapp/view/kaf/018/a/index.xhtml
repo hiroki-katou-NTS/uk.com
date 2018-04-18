@@ -35,18 +35,19 @@
 								</td>
 								<td>
 									<!-- A3_1対象締め -->
-									<div id="combo-box" tabindex="2"
+									<div id="combo-box" tabindex="2" class="fix-combobox"
 										data-bind="ntsComboBox: {
-										        optionsValue: 'code',
+										        optionsValue: 'closureId',
 										        visibleItemsCount: 5,
-										        optionsText: 'name',
+										        optionsText: 'closeName',
 										        name: '#[KAF018_10]',
 										        required: true,
 										        value: selectTarget,
 										        options: targets,
 										        enable: true,
 										        columns: [
-										         { prop: 'name', length: 10 },
+										         { prop: 'closureId', length: 4},  
+										         { prop: 'closeName', length: 10},
 										        ]}">
 									</div>
 								</td>
@@ -55,29 +56,24 @@
 					</div>
 					<!-- A2職場リスト -->
 					<div  class ="content-bottom" tabindex="3">
-						<div id="wkp-list"></div>
+						<div id="tree-grid"></div>
 					</div>
 				</div>
 				<!-- A4形式選択 -->
 				<div class="content-area-right" tabindex="4">
 				 	<!-- A4_1申請承認 -->
-					<div class ="format-selected" data-bind="ntsRadioButton: {checked: selectedValue1 , 
- 			                enable: true,
- 			                option: items()[0],
-			                optionValue: 'code',
- 			                optionText: 'name',
- 			                group: 'effectDigitCls' }"></div>
 					<!-- A4_2日別・月別確認  -->
-			        <div class ="format-selected" data-bind="ntsRadioButton: {checked: selectedValue2 ,
-			                enable: true, 
-			                option: items()[1], 
-			                optionValue: 'code', 
-			                optionText: 'name',
-			                group: 'effectDigitCls'} "></div>
-			        <!-- A4_2_1日別・月別確認（チェック） -->
-			        <div class ="format-checkbox" data-bind="ntsCheckBox: { checked: true, enable: enable, text: '#{i18n.getText('KAF018_14')}' }"></div>
+					<div class = "format-selected"
+							data-bind="ntsRadioBoxGroup: {
+								options: items,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedValue,
+								enable: enable}">
+					</div>
+					<div class ="format-checkbox" data-bind="ntsCheckBox: { checked: isDailyComfirm, enable: enable, text: '#{i18n.getText('KAF018_14')}' }"></div>
 					<!-- A10抽出 -->
-					<button class ="btn-excute large" tabindex="5" data-bind="click: gotoB">#{i18n.getText('KAF018_16')}</button>
+					<button class ="btn-excute large" tabindex="5" data-bind="click: choiceNextScreen">#{i18n.getText('KAF018_16')}</button>
 				</div>
 				<div class="clear"></div>
 			</div>

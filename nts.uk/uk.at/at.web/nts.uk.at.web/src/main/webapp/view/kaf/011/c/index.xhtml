@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+
+		<ui:define name="htmlHead">
+			<script type='text/javascript'>
+				var dialogSize = {
+					width : 750,
+					height : 520
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+
+			<!-- kaf011 cm-->
+			<com:stylefile path="kaf011.c.style.css" />
+			<!-- kaf000 -->
+			<com:stylefile path="../../000/a/kaf000.a.main.css" />
+			<com:scriptfile path="../../000/shr/kaf000.shr.vm.js" />
+			<com:scriptfile path="../../000/a/kaf000.a.service.js" />
+			<com:scriptfile path="../../000/a/kaf000.a.vm.js" />
+			<!-- kaf011 shr-->
+			<com:scriptfile path="../shr/kaf011.shr.service.js" />
+			<!-- kaf011 c-->
+			<com:scriptfile path="kaf011.c.vm.js" />
+			<com:scriptfile path="kaf011.c.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+
+			<div id="contents-area" class="cf coverBlock">
+
+				<div class="div_line">#{i18n.getText('KAF011_63')}</div>
+
+				<div class="div_line" data-bind="if:displayPrePostFlg()!=0">
+					<div class="div_line_col_1">
+						<div data-bind="ntsFormLabel: {  }">#{i18n.getText('KAF011_13')}</div>
+					</div>
+					<div class="div_line_col_2">
+						<div id="swb_pre_post_type" class="cf" tabindex="2"
+							data-bind="ntsSwitchButton: {
+							options: prePostTypes ,
+							optionsValue: 'code',
+							optionsText: 'text',
+							value: prePostSelectedCode ,
+							enable: screenModeNew }"></div>
+
+					</div>
+
+				</div>
+
+				<div class="div_line">
+					<div class="div_line_col_1">
+						<div data-bind="ntsFormLabel: {  required:true}">#{i18n.getText('KAF011_22')}</div>
+					</div>
+					<div class="div_line_col_2">
+						<div
+							data-bind="ntsDatePicker: {value: appDate , dateFormat: 'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
+					</div>
+				</div>
+				<div class="div_line"
+					data-bind="if:appTypeSet().displayFixedReason !=0">
+					<div class="div_line_col_1">
+						<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_16')}</div>
+					</div>
+					<div class="div_line_col_2">
+						<div tabindex="6" class="combo-box"
+							data-bind="ntsComboBox: {
+										name: '#{i18n.getText('KAF011_28')}',
+										options: appReasons ,
+										optionsValue: 'reasonID' ,
+										visibleItemsCount: 5 ,
+										value: appReasonSelectedID ,
+										optionsText: 'reasonTemp',
+										editable: false,
+										enable: true,
+										columns: [
+											{ prop: 'reasonTemp', length: 10 },
+										]}">
+						</div>
+					</div>
+				</div>
+				<div class="div_line"
+					data-bind="if:appTypeSet().displayAppReason() !=0">
+					<!-- constraint: -->
+					<div class="div_line_col_1">
+						<div data-bind="ntsFormLabel: { constraint: 'AppReason' }">#{i18n.getText('KAF011_17')}</div>
+					</div>
+					<div class="div_line_col_2">
+						<textarea style="height: 100px" tabindex="6"
+							data-bind="ntsMultilineEditor: {
+					constraint: 'AppReason',
+					value: reason ,name: '#{i18n.getText('KAF011_17')}',
+									option: {
+									resizeable: false ,
+			                    	width: '500'
+			                    	}
+			                   	}" />
+					</div>
+				</div>
+				<!-- Footer -->
+				<div class="lstApprover" data-bind="with: kaf000_a">
+					<ui:include src="../../000/a/index2_new.xhtml" />
+					<BR />
+				</div>
+			</div>
+
+			<div id="functions-area-bottom">
+				<button class="x-large proceed" tabindex="11">#{i18n.getText('KDL003_22')}</button>
+				<button tabindex="12" data-bind="click: closeDialog">#{i18n.getText('KDL003_23')}</button>
+
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
+

@@ -57,6 +57,13 @@ public class OiomtStdAcceptCondSet extends UkJpaEntity implements Serializable {
 	public Integer csvDataStartLine;
 
 	/**
+	 * 文字コード
+	 */
+	@Basic(optional = true)
+	@Column(name = "CHARACTER_CODE")
+	public Integer characterCode;
+	
+	/**
 	 * 受入モード
 	 */
 	@Basic(optional = true)
@@ -91,13 +98,14 @@ public class OiomtStdAcceptCondSet extends UkJpaEntity implements Serializable {
 
 	public OiomtStdAcceptCondSet(String companyId, int systemType, String conditionSettingCode, String conditionSetName,
 			int deleteExistData, Integer acceptMode, Integer checkCompleted, String categoryId,
-			Integer csvDataLineNumber, Integer csvDataStartLine, Integer deleteExtDataMethod) {
+			Integer csvDataLineNumber, Integer csvDataStartLine, Integer characterCode, Integer deleteExtDataMethod) {
 		super();
 		this.stdAcceptCondSetPk = new OiomtStdAcceptCondSetPk(companyId, systemType, conditionSettingCode);
 		this.categoryId = categoryId;
 		this.csvDataLineNumber = csvDataLineNumber;
 		this.deleteExistData = deleteExistData;
 		this.csvDataStartLine = csvDataStartLine;
+		this.characterCode = characterCode;
 		this.acceptMode = acceptMode;
 		this.conditionSetName = conditionSetName;
 		this.checkCompleted = checkCompleted;
@@ -110,8 +118,9 @@ public class OiomtStdAcceptCondSet extends UkJpaEntity implements Serializable {
 				domain.getAcceptMode().isPresent() ? domain.getAcceptMode().get().value : null,
 				domain.getCheckCompleted().isPresent() ? domain.getCheckCompleted().get().value : null,
 				domain.getCategoryId().isPresent() ? domain.getCategoryId().get() : null,
-				domain.getCsvDataLineNumber().isPresent() ? domain.getCsvDataLineNumber().get().v() : null,
+				domain.getCsvDataLineNumber().isPresent() ? domain.getCsvDataLineNumber().get().v() : null,	
 				domain.getCsvDataStartLine().isPresent() ? domain.getCsvDataStartLine().get().v() : null,
+				domain.getCharacterCode().isPresent() ? domain.getCharacterCode().get().value : null,	
 				domain.getDeleteExtDataMethod().isPresent() ? domain.getDeleteExtDataMethod().get().value : null);
 	}
 
@@ -119,6 +128,6 @@ public class OiomtStdAcceptCondSet extends UkJpaEntity implements Serializable {
 		return new StdAcceptCondSet(entity.stdAcceptCondSetPk.cid, entity.stdAcceptCondSetPk.systemType,
 				entity.stdAcceptCondSetPk.conditionSetCd, entity.conditionSetName, entity.deleteExistData,
 				entity.acceptMode, entity.checkCompleted, entity.categoryId, entity.csvDataLineNumber,
-				entity.csvDataStartLine, entity.deleteExtDataMethod);
+				entity.csvDataStartLine, entity.characterCode, entity.deleteExtDataMethod);
 	}
 }

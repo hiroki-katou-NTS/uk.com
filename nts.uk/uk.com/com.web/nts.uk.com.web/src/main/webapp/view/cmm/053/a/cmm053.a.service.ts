@@ -2,12 +2,14 @@ module nts.uk.com.view.cmm053.a.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     var paths: any = {
-        getSettingManager: "workflow/approvermanagement/workroot/find/settingOfManager/{0}",
+        getSettingManager: "screen/com/cmm053/find/settingOfManager/{0}",
         getInfoEmLogin: "workflow/approvermanagement/workroot/getInforPsLogin",
         getWpName: "screen/com/kcp010/getLoginWkp",
-        getEmployeeByCode: "workflow/approvermanagement/workroot/find/getEmployeeByCode/{0}",
+        getEmployeeByCode: "workflow/approvermanagement/workroot/find/getEmployeeByCode/{0}/{1}",
         getPastHistory: "workflow/approvermanagement/workroot/find/settingOfManager/getPastHistory/{0}",
-        updateHistoryByManagerSetting: "workflow/approvermanagement/workroot/updateHistoryByManagerSetting"
+        insertHistoryByManagerSetting: "workflow/approvermanagement/workroot/managersetting/insert",
+        updateHistoryByManagerSetting: "workflow/approvermanagement/workroot/managersetting/update",
+        deleteHistoryByManagerSetting: "workflow/approvermanagement/workroot/managersetting/delete"
     }
 
     export function getSettingManager(employeeId: string): JQueryPromise<any> {
@@ -22,8 +24,8 @@ module nts.uk.com.view.cmm053.a.service {
         return ajax(paths.getWpName);
     }
 
-    export function getEmployeeByCode(employeeCode: string): JQueryPromise<any> {
-        return ajax(format(paths.getEmployeeByCode, employeeCode));
+    export function getEmployeeByCode(employeeCode, hasAuthority): JQueryPromise<any> {
+        return ajax(format(paths.getEmployeeByCode, employeeCode, hasAuthority));
     }
 
     export function getPastHistory(employeeId: string): JQueryPromise<any> {
@@ -32,5 +34,13 @@ module nts.uk.com.view.cmm053.a.service {
 
     export function updateHistoryByManagerSetting(command): JQueryPromise<any> {
         return ajax(paths.updateHistoryByManagerSetting, command);
+    }
+
+    export function insertHistoryByManagerSetting(command): JQueryPromise<any> {
+        return ajax(paths.insertHistoryByManagerSetting, command);
+    }
+
+    export function deleteHistoryByManagerSetting(command): JQueryPromise<any> {
+        return ajax(paths.deleteHistoryByManagerSetting, command);
     }
 }

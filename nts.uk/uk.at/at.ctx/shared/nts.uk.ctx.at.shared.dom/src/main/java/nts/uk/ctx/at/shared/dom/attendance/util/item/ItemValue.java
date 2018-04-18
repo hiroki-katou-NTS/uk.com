@@ -45,13 +45,15 @@ public class ItemValue {
 		}
 		switch (this.valueType) {
 		case INTEGER:
-			return this.value == null || this.value.isEmpty() ? null : (T) new Integer(this.value);
+			return this.value.isEmpty() ? null : (T) new Integer(this.value);
 		case STRING:
 			return (T) this.value;
+		case DOUBLE:
+			return this.value.isEmpty() ? null : (T) new Double(this.value);
 		case DECIMAL:
-			return this.value == null || this.value.isEmpty() ? null : (T) new BigDecimal(this.value);
+			return this.value.isEmpty() ? null : (T) new BigDecimal(this.value);
 		case DATE:
-			return this.value == null || this.value.isEmpty() ? null : (T) GeneralDate.fromString(this.value, "yyyyMMdd");
+			return this.value.isEmpty() ? null : (T) GeneralDate.fromString(this.value, "yyyyMMdd");
 		default:
 			throw new RuntimeException("invalid type: " + this.valueType);
 		}

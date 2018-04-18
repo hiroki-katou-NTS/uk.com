@@ -10,7 +10,6 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
@@ -165,6 +164,7 @@ public class OverTimeOfMonthly {
 		}
 	
 		// 残業・振替の処理順序を取得する
+		if (workInfo.getWorkTimeCode() == null) return;
 		val workTimeCode = workInfo.getWorkTimeCode().v();
 		val overTimeAndTransferAtrs = repositories.getOverTimeAndTransferOrder().get(
 				companyId, workTimeCode, false);
@@ -259,6 +259,7 @@ public class OverTimeOfMonthly {
 		AttendanceTime canLegalOverTime = new AttendanceTime(8 * 60);
 		//		new AttendanceTime(dailyCalculationPersonalInformation.getStatutoryWorkTime().v());
 		canLegalOverTime = canLegalOverTime.minusMinutes(legalTimeOfDaily.getWorkTime().v());
+		if (canLegalOverTime.lessThan(0)) canLegalOverTime = new AttendanceTime(0);
 		return canLegalOverTime;
 	}
 	
@@ -280,7 +281,7 @@ public class OverTimeOfMonthly {
 			Map<OverTimeFrameNo, OverTimeFrameTime> overTimeFrameTimeMap,
 			GeneralDate ymd){
 		
-		AttendanceTime returnTime = new AttendanceTime(0);
+		AttendanceTime timeAfterCalc = canLegalOverTime;
 		
 		// 残業枠時間分ループ
 		for (val legalOverTimeTransferOrder : legalOverTimeTransferOrderOfAggrMonthly.getLegalOverTimeTransferOrders()){
@@ -303,39 +304,41 @@ public class OverTimeOfMonthly {
 					AttendanceTime legalOverTimeWork =
 						new AttendanceTime(overTimeFrameTime.getOverTimeWork().getTime().v());
 					AttendanceTime overTimeWork = new AttendanceTime(0);
-					if (legalOverTimeWork.lessThanOrEqualTo(canLegalOverTime.v())){
+					if (legalOverTimeWork.lessThanOrEqualTo(timeAfterCalc.v())){
 						// 残業時間が法定内残業にできる時間以下の時
-						returnTime = new AttendanceTime(canLegalOverTime.v());
-						returnTime = returnTime.minusMinutes(legalOverTimeWork.valueAsMinutes());
+						timeAfterCalc = timeAfterCalc.minusMinutes(legalOverTimeWork.v());
 					}
 					else {
 						// 残業時間が法定内残業にできる時間を超える時
 						overTimeWork = new AttendanceTime(legalOverTimeWork.v());
-						overTimeWork = overTimeWork.minusMinutes(canLegalOverTime.valueAsMinutes());
-						legalOverTimeWork = new AttendanceTime(canLegalOverTime.v());
-						returnTime = new AttendanceTime(0);
+						overTimeWork = overTimeWork.minusMinutes(timeAfterCalc.v());
+						legalOverTimeWork = new AttendanceTime(timeAfterCalc.v());
+						timeAfterCalc = new AttendanceTime(0);
 					}
-					timeSeriesWork.addOverTimeInLegalOverTime(TimeDivergenceWithCalculation.sameTime(legalOverTimeWork));
-					timeSeriesWork.addOverTimeInOverTime(TimeDivergenceWithCalculation.sameTime(overTimeWork));
+					timeSeriesWork.addOverTimeInLegalOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
+							legalOverTimeWork, new AttendanceTime(0)));
+					timeSeriesWork.addOverTimeInOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
+							overTimeWork, new AttendanceTime(0)));
 					break;
 				case TRANSFER:
 					AttendanceTime legalTransferTimeWork =
 						new AttendanceTime(overTimeFrameTime.getTransferTime().getTime().v());
 					AttendanceTime transferTimeWork = new AttendanceTime(0);
-					if (legalTransferTimeWork.lessThanOrEqualTo(canLegalOverTime.v())){
+					if (legalTransferTimeWork.lessThanOrEqualTo(timeAfterCalc.v())){
 						// 振替時間が法定内残業にできる時間以下の時
-						returnTime = new AttendanceTime(canLegalOverTime.v());
-						returnTime = returnTime.minusMinutes(legalTransferTimeWork.valueAsMinutes());
+						timeAfterCalc = timeAfterCalc.minusMinutes(legalTransferTimeWork.v());
 					}
 					else {
 						// 振替時間が法定内残業にできる時間を超える時
 						transferTimeWork = new AttendanceTime(legalTransferTimeWork.v());
-						transferTimeWork = transferTimeWork.minusMinutes(canLegalOverTime.valueAsMinutes());
-						legalTransferTimeWork = new AttendanceTime(canLegalOverTime.v());
-						returnTime = new AttendanceTime(0);
+						transferTimeWork = transferTimeWork.minusMinutes(timeAfterCalc.v());
+						legalTransferTimeWork = new AttendanceTime(timeAfterCalc.v());
+						timeAfterCalc = new AttendanceTime(0);
 					}
-					timeSeriesWork.addTransferTimeInLegalOverTime(TimeDivergenceWithCalculation.sameTime(legalTransferTimeWork));
-					timeSeriesWork.addTransferTimeInOverTime(TimeDivergenceWithCalculation.sameTime(transferTimeWork));
+					timeSeriesWork.addTransferTimeInLegalOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
+							legalTransferTimeWork, new AttendanceTime(0)));
+					timeSeriesWork.addTransferTimeInOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
+							transferTimeWork, new AttendanceTime(0)));
 					break;
 				}
 			}
@@ -353,7 +356,7 @@ public class OverTimeOfMonthly {
 			}
 		}
 	
-		return returnTime;
+		return timeAfterCalc;
 	}
 	
 	/**

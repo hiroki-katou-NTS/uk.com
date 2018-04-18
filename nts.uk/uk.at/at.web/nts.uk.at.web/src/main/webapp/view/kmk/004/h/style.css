@@ -6,12 +6,12 @@
 }
 
 .padding-bottom {
-	padding-bottom: 10px;
+	padding-bottom: 5px;
 }
 .switch-btn-set {
 	padding-left: 20px;
 	padding-top: 5px;
-	padding-bottom: 7px;
+	padding-bottom: 1px;
 }
 #table-container {
 	padding-top: 20px;
@@ -21,7 +21,7 @@
 	padding-left: 35px;
 }
 .description-label {
-	padding-bottom: 10px;
+	padding-bottom: 5px;
 	padding-left: 20px;
 }
 .switch-alone {
@@ -44,4 +44,7 @@
 	/* padding-left: 10px; */
 	padding-right: 5px;
 	text-align: right;
+}
+button.nts-switch-button {
+	min-width: 100px;
 }

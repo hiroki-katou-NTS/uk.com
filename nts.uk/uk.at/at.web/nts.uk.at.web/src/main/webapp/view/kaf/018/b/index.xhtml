@@ -36,14 +36,12 @@
 						</td>
 						<td>
 							<!-- B2_1対象締め -->
-							<div class="limited-label label" style="width: 290px;">13123
-								21s 12321 312 sad asd q2</div>
+							<div class="limited-label label" style="width: 290px;"  data-bind="text: closureName"></div>
 						</td>
 						<td>
 							<!-- B3対象年月-->
 							<!-- B3_1対象期間-->
-							<div class="limited-label label" style="width: 490px;">2017/04(2017/01/01
-								~ 2017/04/30)</div>
+							<div class="limited-label label" style="width: 490px;" data-bind="text: getTargetDate()"></div>
 						</td>
 						<!-- B4未承認項目説明はてな -->
 						<td>
@@ -80,7 +78,8 @@
 							<td data-bind="text: $parent.getRecord(unapproved)"></td>
 							<td data-bind="text: $parent.getRecord(approved)"></td>
 							<td data-bind="text: $parent.getRecord(denail)"></td>
-							<td><div data-bind="ntsCheckBox: { checked: sendMail, enable:  $parent.enable }" /></td>
+							
+							<td><div data-bind="ntsCheckBox: { checked: isSendMail, enable:  enable }" /></td>
 						</tr>
 					</tbody>
 				</table>

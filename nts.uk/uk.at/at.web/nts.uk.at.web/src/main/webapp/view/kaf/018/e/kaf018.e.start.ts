@@ -1,7 +1,13 @@
-module nts.uk.at.view.kaf018.e.start {
+module nts.uk.at.view.kaf018.e {
     let __viewContext: any = window['__viewContext'] || {};
     __viewContext.ready(() => {
-        let screenModel = new kaf018.e.viewmodel.ScreenModel();
-        __viewContext.bind(screenModel);
+        __viewContext.transferred.ifPresent(data => {
+            nts.uk.ui.windows.setShared("KAF018E_PARAMS", data);
+        });
+        let screenModel = new kaf018.e.viewmodel.ScreenModel();        
+        screenModel.startPage().done(function(){
+            __viewContext.bind(screenModel);          
+            // $("#H3_1_1").focus(); 
+        })
     });
 }

@@ -59,7 +59,7 @@ public class SaveEmpStatWorkTimeSetCommandHandler extends CommandHandler<SaveEmp
 
 		SaveEmpStatWorkTimeSetCommand command = context.getCommand();
 		int year = command.getYear();
-		String emplCode = command.getEmplCode();
+		String emplCode = command.getEmploymentCode();
 		String companyId = AppContexts.user().companyId();
 
 		EmpNormalSetting empNormalSetting = command.getNormalSetting().toEmpDomain(year, emplCode);

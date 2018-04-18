@@ -4,24 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.employee;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTimeRepository;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaTransLabTime;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaTransLabTimePK;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaTransLabTimePK_;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaTransLabTime_;
 
 /**
  * The Class JpaShainTransLaborTimeRepository.
@@ -58,17 +49,14 @@ public class JpaShainTransLaborTimeRepository extends JpaRepository implements S
 	 */
 	@Override
 	public Optional<ShainTransLaborTime> find(String cid, String empId) {
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<KshstShaTransLabTime> cq = cb.createQuery(KshstShaTransLabTime.class);
-		Root<KshstShaTransLabTime> root = cq.from(KshstShaTransLabTime.class);
+		Optional<KshstShaTransLabTime> optEntity = this.queryProxy().find(new KshstShaTransLabTimePK(cid, empId), KshstShaTransLabTime.class);
 
-		List<Predicate> predicateList = new ArrayList<Predicate>();
-		predicateList.add(cb.equal(root.get(KshstShaTransLabTime_.kshstShaTransLabTimePK).get(KshstShaTransLabTimePK_.cid), cid));
-		predicateList.add(cb.equal(root.get(KshstShaTransLabTime_.kshstShaTransLabTimePK).get(KshstShaTransLabTimePK_.sid), empId));
+		// Check exist
+		if (!optEntity.isPresent()) {
+			return Optional.empty();
+		}
 
-		cq.where(predicateList.toArray(new Predicate[] {}));
-		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getSingleResult()));
+		return Optional.ofNullable(this.toDomain(optEntity.get()));
 	}
 
 	/**
@@ -90,9 +78,6 @@ public class JpaShainTransLaborTimeRepository extends JpaRepository implements S
 	 * @return the shain spe defor labor time
 	 */
 	private ShainTransLaborTime toDomain(KshstShaTransLabTime entity) {
-		if (entity == null) {
-			return null;
-		}
 		return new ShainTransLaborTime(new JpaShainTransLaborTimeGetMemento(entity));
 	}
 

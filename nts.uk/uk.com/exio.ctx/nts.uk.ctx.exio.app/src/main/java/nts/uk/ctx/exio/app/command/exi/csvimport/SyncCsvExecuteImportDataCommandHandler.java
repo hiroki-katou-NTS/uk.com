@@ -3,14 +3,19 @@ package nts.uk.ctx.exio.app.command.exi.csvimport;
 import java.util.concurrent.TimeUnit;
 
 import javax.ejb.Stateful;
+import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
+import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLog;
+import nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLogRepository;
 
 @Stateful
 public class SyncCsvExecuteImportDataCommandHandler extends AsyncCommandHandler<CsvImportDataCommand> {
+	
 	private static final String NUMBER_OF_ERROR = "エラー件数";
 	private static final String NUMBER_OF_SUCCESS = "処理カウント";
 	private static final String NUMBER_OF_TOTAL = "処理トータルカウント";
@@ -31,20 +36,22 @@ public class SyncCsvExecuteImportDataCommandHandler extends AsyncCommandHandler<
 		setter.setData(STOP_MODE, command.getStopMode());
 		setter.setData(STATUS, command.getStateBehavior());
 
-		for (int i = 1; i < command.getCsvLine(); i++) {
+		for (int i = 1; i <= command.getCsvLine(); i++) {
 			//TODO アルゴリズム「外部受入テスト本体」を実行する
 
+			// TODO	Dump data. delete after proccess pharse 2
+			if(i %5 == 0){
+				setter.updateData(NUMBER_OF_ERROR, i/5);
+			}
+			setter.updateData(NUMBER_OF_SUCCESS, i);
+			setter.updateData(STATUS, command.getStateBehavior());
+			
 			if (asyncTask.hasBeenRequestedToCancel()) {
 				// 外部受入動作管理の中断するしない区分を更新する
 				setter.updateData(STOP_MODE, 1);
 				asyncTask.finishedAsCancelled();
 				break;
 			}
-
-			// TODO	Dump data. delete after proccess pharse 2
-			setter.updateData(NUMBER_OF_SUCCESS, i);
-			setter.updateData(NUMBER_OF_ERROR, i/5);
-			setter.updateData(STATUS, command.getStateBehavior());
 			
 			try {
 				TimeUnit.SECONDS.sleep(1);

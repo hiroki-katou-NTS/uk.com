@@ -35,8 +35,8 @@
 								<th class="phase-app" style="width: 111px;">#{i18n.getText('KDL030_10')}</th>
 								<th class="order-app" style="width: 111px;">#{i18n.getText('KDL030_11')}</th>
 								<th class="name-app" style="width: 230px;">#{i18n.getText('KDL030_12')}</th>
-								<th class="status-app" style="width: 111px;">#{i18n.getText('KDL030_12')}</th>
-								<th class="isMail-app" style="width: 200px;">#{i18n.getText('KDL030_12')}</th>
+								<th class="status-app" style="width: 111px;">#{i18n.getText('KDL030_13')}</th>
+								<th class="isMail-app" style="width: 200px;">#{i18n.getText('KDL030_14')}</th>
 							</tr>
 						</thead>
 						<tbody data-bind="foreach: approvalRootState">
@@ -55,17 +55,20 @@
 											<div style="display: inline-block;" data-bind="if: $data.representerName().length > 0">
 												<label data-bind="text: '(' + $data.representerName() + ')'"></label>
 											</div>
-										</div>										
+											<div style="display: inline-block;" data-bind="if: $data.sMail().length > 0">
+												<label data-bind="text: '(' + '@' + ')'"></label>
+											</div>
+										</div>									
 									</td>
 									<td data-bind="text: $data.approvalAtr()" style="width: 111px; text-align: left; padding-left: 5px;"  ></td>
- 									<td> 
+ 									<td data-bind="foreach: $data.listApprover"> 
  										<div class="cf" data-bind="ntsSwitchButton: { 
    										name: 'Sample Switch',   
-   										options: $parents[1].optionList,   
+   										options: $parents[2].optionList,   
   										optionsValue: 'dispCode',  
   										optionsText: 'dispName',  
-  										value: $parents[1].selectedSendMail()[$index()].code, 
-  										enable: $parents[1].isHasMail()[$index()]==1 }"></div> 
+  										value: $data.isSend, 
+  										enable: $data.sMail().length >= 0 }"></div> 
 									</td>
 								</tr>
 							</com:ko>
@@ -74,9 +77,15 @@
 					</div>
 				</div>
 				<div class="table valign-center">
+					<div class="cell column1"></div>
+					<div class="cell column2">
+						<div id = "A3" data-bind="ntsCheckBox: { checked: isSendToApplicant, enable: applicant().smail.length >= 0, text: '#{i18n.getText('KDL030_4')}' }"></div>
+					</div>
+				</div>
+				<div class="table valign-center">
 					<div class="cell">
 						<div id="A4_1" class="column1"
-							data-bind="ntsFormLabel: { required : true }">#{i18n.getText('KDL030_6')}</div>
+							data-bind="ntsFormLabel: { required : true,  constraint: 'ApplicationEmailBody' }">#{i18n.getText('KDL030_6')}</div>
 					</div>
 					<div class="cell column2">
 						<textarea tabindex="2" id="A4_2"

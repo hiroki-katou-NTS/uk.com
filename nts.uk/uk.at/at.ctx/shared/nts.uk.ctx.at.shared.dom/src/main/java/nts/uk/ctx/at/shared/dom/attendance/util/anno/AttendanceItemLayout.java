@@ -15,13 +15,7 @@ public @interface AttendanceItemLayout {
 	
 	String jpPropertyName();
 	
-//	String needCheckIDWithField() default "";
-	
 	String needCheckIDWithMethod() default "";
-	
-	boolean needCheckIDWithIndex() default false;
-	
-//	boolean isList() default false;
 	
 	boolean listNoIndex() default false;
 	
@@ -31,9 +25,15 @@ public @interface AttendanceItemLayout {
 	
 	String indexField() default "";
 	
-	String methodForEnumValues() default "";
-	
 	String enumField() default "";
 	
 	boolean removeConflictEnum() default false;
+	
+//	String needCheckIDWithField() default "";
+	
+//	boolean needCheckIDWithIndex() default false;
+	
+//	boolean isList() default false;
+	
+//	String methodForEnumValues() default "";
 }

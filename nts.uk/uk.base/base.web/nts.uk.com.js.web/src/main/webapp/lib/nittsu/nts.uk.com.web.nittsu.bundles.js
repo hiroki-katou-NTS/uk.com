@@ -314,7 +314,7 @@ var nts;
                         case 'Time':
                         case 'Clock':
                         case 'Duration': // ValidatorScriptではない。DynamicConstraintで使う？
-                        case 'TimePoint':
+                        case 'TimePoint':// ValidatorScriptではない。DynamicConstraintで使う？
                             constraintText += (constraintText.length > 0) ? "/" : "";
                             constraintText += constraint.min + "～" + constraint.max;
                             break;
@@ -466,7 +466,7 @@ var nts;
                 }
                 return -1;
             }
-            var TreeObject = (function () {
+            var TreeObject = /** @class */ (function () {
                 function TreeObject(value, children, index, isOperator) {
                     var self = this;
                     self.value = value;
@@ -490,7 +490,7 @@ var nts;
                     return new Optional(null);
                 }
                 optional.empty = empty;
-                var Optional = (function () {
+                var Optional = /** @class */ (function () {
                     function Optional(value) {
                         this.value = orDefault(value, null);
                     }
@@ -530,7 +530,7 @@ var nts;
                 }());
                 optional.Optional = Optional;
             })(optional = util.optional || (util.optional = {}));
-            var Range = (function () {
+            var Range = /** @class */ (function () {
                 function Range(start, end) {
                     if (start > end) {
                         throw new Error('start is larger than end');
@@ -581,7 +581,7 @@ var nts;
                     });
                 }
                 value.reset = reset;
-                var DefaultValue = (function () {
+                var DefaultValue = /** @class */ (function () {
                     function DefaultValue() {
                     }
                     DefaultValue.prototype.onReset = function ($control, koValue) {
@@ -608,9 +608,9 @@ var nts;
                         if (immediateApply)
                             this.applyReset($control, koValue);
                     };
+                    DefaultValue.RESET_EVT = "reset";
                     return DefaultValue;
                 }());
-                DefaultValue.RESET_EVT = "reset";
                 value.DefaultValue = DefaultValue;
             })(value = util.value || (util.value = {}));
             var accessor;
@@ -619,7 +619,7 @@ var nts;
                     return new AccessorDefine(obj);
                 }
                 accessor.defineInto = defineInto;
-                var AccessorDefine = (function () {
+                var AccessorDefine = /** @class */ (function () {
                     function AccessorDefine(obj) {
                         this.obj = obj;
                     }
@@ -648,7 +648,7 @@ var nts;
                 exception_1.isBusinessError = isBusinessError;
             })(exception = util.exception || (util.exception = {}));
         })(util = uk.util || (uk.util = {}));
-        var WebStorageWrapper = (function () {
+        var WebStorageWrapper = /** @class */ (function () {
             function WebStorageWrapper(nativeStorage) {
                 this.nativeStorage = nativeStorage;
             }
@@ -710,7 +710,7 @@ var nts;
                     return new Configuration();
                 }
                 repeater.createConfiguration = createConfiguration;
-                var Configuration = (function () {
+                var Configuration = /** @class */ (function () {
                     function Configuration() {
                         this.pauseMilliseconds = 0;
                         this.runAfter = 0;
@@ -914,6 +914,29 @@ var nts;
             }
             types_1.matchArguments = matchArguments;
         })(types = uk.types || (uk.types = {}));
+        var cookie;
+        (function (cookie) {
+            function get(name) {
+                var value = asMap()[name];
+                return util.optional.of(value);
+            }
+            cookie.get = get;
+            function remove(name, attr) {
+                document.cookie = name + "=; path=" + attr.path + "; max-age=0";
+            }
+            cookie.remove = remove;
+            function asMap() {
+                var map = {};
+                document.cookie.split(";")
+                    .forEach(function (item) {
+                    var positionOfDelimiter = item.indexOf("=");
+                    var name = item.slice(0, positionOfDelimiter).trim();
+                    map[name] = item.slice(positionOfDelimiter + 1);
+                });
+                return map;
+            }
+            cookie.asMap = asMap;
+        })(cookie = uk.cookie || (uk.cookie = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 var nts;
@@ -922,7 +945,7 @@ var nts;
     (function (uk) {
         var format;
         (function (format) {
-            var NoFormatter = (function () {
+            var NoFormatter = /** @class */ (function () {
                 function NoFormatter() {
                 }
                 NoFormatter.prototype.format = function (source) {
@@ -1337,7 +1360,7 @@ var nts;
             /**
              * Type of characters
              */
-            var CharType = (function () {
+            var CharType = /** @class */ (function () {
                 function CharType(viewName, width, validator) {
                     this.viewName = viewName;
                     this.width = width;
@@ -1472,7 +1495,7 @@ var nts;
                 return format;
             }
             text_3.getISOFormat = getISOFormat;
-            var StringFormatter = (function () {
+            var StringFormatter = /** @class */ (function () {
                 function StringFormatter(args) {
                     this.args = args;
                 }
@@ -1493,7 +1516,7 @@ var nts;
                 return StringFormatter;
             }());
             text_3.StringFormatter = StringFormatter;
-            var NumberFormatter = (function () {
+            var NumberFormatter = /** @class */ (function () {
                 function NumberFormatter(option) {
                     this.option = option;
                 }
@@ -1505,7 +1528,7 @@ var nts;
                 return NumberFormatter;
             }());
             text_3.NumberFormatter = NumberFormatter;
-            var TimeFormatter = (function () {
+            var TimeFormatter = /** @class */ (function () {
                 function TimeFormatter(option) {
                     this.option = option;
                 }
@@ -1535,7 +1558,7 @@ var nts;
                 return TimeFormatter;
             }());
             text_3.TimeFormatter = TimeFormatter;
-            var TimeWithDayFormatter = (function () {
+            var TimeWithDayFormatter = /** @class */ (function () {
                 function TimeWithDayFormatter(option) {
                     this.option = option;
                 }
@@ -1549,7 +1572,7 @@ var nts;
                 return TimeWithDayFormatter;
             }());
             text_3.TimeWithDayFormatter = TimeWithDayFormatter;
-            var NumberUnit = (function () {
+            var NumberUnit = /** @class */ (function () {
                 function NumberUnit(unitID, unitText, position, language) {
                     this.unitID = unitID;
                     this.unitText = unitText;
@@ -1623,7 +1646,7 @@ var nts;
                     return year + "年 " + month + " 月";
                 return year;
             }
-            var JapanYearMonth = (function () {
+            var JapanYearMonth = /** @class */ (function () {
                 function JapanYearMonth(empire, year, month) {
                     this.empire = empire;
                     this.year = year;
@@ -1710,7 +1733,7 @@ var nts;
                 return new JapanYearMonth("平成 ", diff, month);
             }
             time_1.yearmonthInJapanEmpire = yearmonthInJapanEmpire;
-            var JapanDateMoment = (function () {
+            var JapanDateMoment = /** @class */ (function () {
                 function JapanDateMoment(date, outputFormat) {
                     var MomentResult = parseMoment(date, outputFormat);
                     var year = MomentResult.momentObject.year();
@@ -1820,14 +1843,14 @@ var nts;
                 return moment.utc(date, inputFormats).format(outputFormat);
             }
             time_1.formatPattern = formatPattern;
-            var ParseResult = (function () {
+            var ParseResult = /** @class */ (function () {
                 function ParseResult(success) {
                     this.success = success;
                 }
                 return ParseResult;
             }());
             time_1.ParseResult = ParseResult;
-            var ResultParseTime = (function (_super) {
+            var ResultParseTime = /** @class */ (function (_super) {
                 __extends(ResultParseTime, _super);
                 function ResultParseTime(success, minus, hours, minutes, msg) {
                     var _this = _super.call(this, success) || this;
@@ -1895,7 +1918,7 @@ var nts;
                 return ResultParseTime.succeeded(minusNumber, parseInt(hours), parseInt(minutes));
             }
             time_1.parseTime = parseTime;
-            var ResultParseYearMonth = (function (_super) {
+            var ResultParseYearMonth = /** @class */ (function (_super) {
                 __extends(ResultParseYearMonth, _super);
                 function ResultParseYearMonth(success, msg, year, month) {
                     var _this = _super.call(this, success) || this;
@@ -1950,7 +1973,7 @@ var nts;
                 return ResultParseYearMonth.succeeded(year, month);
             }
             time_1.parseYearMonth = parseYearMonth;
-            var ResultParseTimeOfTheDay = (function (_super) {
+            var ResultParseTimeOfTheDay = /** @class */ (function (_super) {
                 __extends(ResultParseTimeOfTheDay, _super);
                 function ResultParseTimeOfTheDay(success, msg, hour, minute) {
                     var _this = _super.call(this, success) || this;
@@ -2005,7 +2028,7 @@ var nts;
                 return ResultParseTimeOfTheDay.succeeded(hour, minute);
             }
             time_1.parseTimeOfTheDay = parseTimeOfTheDay;
-            var ResultParseYearMonthDate = (function (_super) {
+            var ResultParseYearMonthDate = /** @class */ (function (_super) {
                 __extends(ResultParseYearMonthDate, _super);
                 function ResultParseYearMonthDate(success, msg, year, month, date) {
                     var _this = _super.call(this, success) || this;
@@ -2090,7 +2113,7 @@ var nts;
                 return ResultParseYearMonthDate.succeeded(year, month, date);
             }
             time_1.parseYearMonthDate = parseYearMonthDate;
-            var MomentResult = (function (_super) {
+            var MomentResult = /** @class */ (function (_super) {
                 __extends(MomentResult, _super);
                 function MomentResult(momentObject, outputFormat) {
                     var _this = _super.call(this, true) || this;
@@ -2227,7 +2250,7 @@ var nts;
                 }
             }
             time_1.UTCDate = UTCDate;
-            var DateTimeFormatter = (function () {
+            var DateTimeFormatter = /** @class */ (function () {
                 function DateTimeFormatter() {
                     this.shortYmdPattern = /^\d{4}\/\d{1,2}\/\d{1,2}$/;
                     this.shortYmdwPattern = /^\d{4}\/\d{1,2}\/\d{1,2}\(\w+\)$/;
@@ -2368,7 +2391,7 @@ var nts;
                         return dateTime;
                 };
                 DateTimeFormatter.prototype.format = function (date) {
-                    return new Date(date).toLocaleDateString("ja-JP");
+                    return date; //new Date(date).toLocaleDateString("ja-JP");
                 };
                 return DateTimeFormatter;
             }());
@@ -2534,7 +2557,7 @@ var nts;
             (function (minutesBased) {
                 var duration;
                 (function (duration_1) {
-                    var ResultParseMiuntesBasedDuration = (function (_super) {
+                    var ResultParseMiuntesBasedDuration = /** @class */ (function (_super) {
                         __extends(ResultParseMiuntesBasedDuration, _super);
                         function ResultParseMiuntesBasedDuration(success, minus, hours, minutes, msg) {
                             var _this = _super.call(this, success) || this;
@@ -2692,11 +2715,24 @@ var nts;
                             : timeAsMinutes + (1 + Math.floor(-timeAsMinutes / minutesBased.MINUTES_IN_DAY)) * minutesBased.MINUTES_IN_DAY; };
                         var daysOffset = function () { return uk.ntsNumber.trunc(clock.isNegative ? (timeAsMinutes + 1) / minutesBased.MINUTES_IN_DAY - 1
                             : timeAsMinutes / minutesBased.MINUTES_IN_DAY); };
+                        var positiveMinutes = positivizedMinutes();
+                        var minuteStr = String(positiveMinutes);
+                        var pointIndex = minuteStr.indexOf('.');
+                        var minutePart;
+                        if (pointIndex > -1) {
+                            var fraction = minuteStr.substring(pointIndex + 1);
+                            positiveMinutes = Math.floor(positiveMinutes);
+                            minuteStr = String(positiveMinutes % 60) + "." + fraction;
+                            minutePart = Number(minuteStr);
+                        }
+                        else {
+                            minutePart = positivizedMinutes() % 60;
+                        }
                         uk.util.accessor.defineInto(clock)
                             .get("typeName", function () { return "ClockMinutesBasedTime"; })
                             .get("daysOffset", daysOffset)
                             .get("hourPart", function () { return Math.floor((positivizedMinutes() % minutesBased.MINUTES_IN_DAY) / 60); })
-                            .get("minutePart", function () { return positivizedMinutes() % 60; })
+                            .get("minutePart", function () { return minutePart; })
                             .get("dayAttr", function () { return DayAttr.fromDaysOffset(daysOffset()); })
                             .get("clockTextInDay", function () { return format.clockTextInDay(clock); });
                         clock.formatById = function (formatId) {
@@ -2800,7 +2836,7 @@ var nts;
                                 default: throw new Error("invalid value: " + dayAttr);
                             }
                         }
-                        var ResultParseTimeWithDayAttr = (function () {
+                        var ResultParseTimeWithDayAttr = /** @class */ (function () {
                             function ResultParseTimeWithDayAttr(success, asMinutes) {
                                 this.success = success;
                                 this.asMinutes = asMinutes;
@@ -2896,6 +2932,18 @@ var nts;
     (function (uk) {
         var request;
         (function (request) {
+            var csrf;
+            (function (csrf) {
+                var STORAGE_KEY_CSRF_TOKEN = "nts.uk.request.csrf.STORAGE_KEY_CSRF_TOKEN";
+                uk.cookie.get("nts.arc.CSRF_TOKEN")
+                    .ifPresent(function (csrfToken) {
+                    uk.sessionStorage.setItem(STORAGE_KEY_CSRF_TOKEN, csrfToken);
+                });
+                function getToken() {
+                    return uk.sessionStorage.getItem(STORAGE_KEY_CSRF_TOKEN).orElse("");
+                }
+                csrf.getToken = getToken;
+            })(csrf || (csrf = {}));
             request.STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
             request.WEB_APP_NAME = {
                 comjs: 'nts.uk.com.js.web',
@@ -2903,7 +2951,7 @@ var nts;
                 pr: 'nts.uk.pr.web',
                 at: 'nts.uk.at.web'
             };
-            var QueryString = (function () {
+            var QueryString = /** @class */ (function () {
                 function QueryString() {
                     this.items = {};
                 }
@@ -2966,7 +3014,7 @@ var nts;
             /**
              * URL and QueryString
              */
-            var Locator = (function () {
+            var Locator = /** @class */ (function () {
                 function Locator(url) {
                     this.rawUrl = url.split('?')[0];
                     this.queryString = QueryString.parseUrl(url);
@@ -3044,7 +3092,8 @@ var nts;
                         dataType: options.dataType || 'json',
                         data: data,
                         headers: {
-                            'PG-Path': location.current.serialize()
+                            'PG-Path': location.current.serialize(),
+                            "X-CSRF-TOKEN": csrf.getToken()
                         }
                     }).done(function (res) {
                         if (nts.uk.util.exception.isErrorToReject(res)) {
@@ -3057,9 +3106,7 @@ var nts;
                             dfd.resolve(res);
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        console.log("request failed");
-                        console.log(arguments);
-                        specials.errorPages.systemError(jqXHR.responseJSON);
+                        AjaxErrorHandlers.main(jqXHR, textStatus, errorThrown);
                     });
                 }
                 if (restoresSession && webAppId != nts.uk.request.location.currentAppId) {
@@ -3093,7 +3140,8 @@ var nts;
                         data: data,
                         async: false,
                         headers: {
-                            'PG-Path': location.current.serialize()
+                            'PG-Path': location.current.serialize(),
+                            "X-CSRF-TOKEN": csrf.getToken()
                         },
                         success: function (res) {
                             if (nts.uk.util.exception.isErrorToReject(res)) {
@@ -3107,7 +3155,7 @@ var nts;
                             }
                         },
                         error: function (xhr, status, error) {
-                            specials.errorPages.systemError(xhr.responseJSON);
+                            AjaxErrorHandlers.main(xhr, status, error);
                         }
                     });
                 }
@@ -3120,6 +3168,30 @@ var nts;
                 return dfd.promise();
             }
             request.syncAjax = syncAjax;
+            var AjaxErrorHandlers;
+            (function (AjaxErrorHandlers) {
+                function main(xhr, status, error) {
+                    switch (xhr.status) {
+                        case 401:
+                            handle401(xhr);
+                            break;
+                        default:
+                            handleUnknownError(xhr, status, error);
+                            break;
+                    }
+                }
+                AjaxErrorHandlers.main = main;
+                function handle401(xhr) {
+                    var res = xhr.responseJSON;
+                    // res.sessionTimeout || res.csrfError
+                    specials.errorPages.sessionTimeout();
+                }
+                function handleUnknownError(xhr, status, error) {
+                    console.log("request failed");
+                    console.log(arguments);
+                    specials.errorPages.systemError(xhr.responseJSON);
+                }
+            })(AjaxErrorHandlers || (AjaxErrorHandlers = {}));
             function doTaskShareingSesion(webAppId, task) {
                 login.keepSerializedSession()
                     .then(function () {
@@ -3346,8 +3418,12 @@ var nts;
             (function (login) {
                 var STORAGE_KEY_USED_LOGIN_PAGE = "nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE";
                 var STORAGE_KEY_SERIALIZED_SESSION = "nts.uk.request.login.STORAGE_KEY_SERIALIZED_SESSION";
-                function keepUsedLoginPage() {
-                    uk.sessionStorage.setItem(STORAGE_KEY_USED_LOGIN_PAGE, location.current.serialize());
+                function keepUsedLoginPage(url) {
+                    if (url === undefined) {
+                        keepUsedLoginPage(location.current.serialize());
+                        return;
+                    }
+                    uk.sessionStorage.setItem(STORAGE_KEY_USED_LOGIN_PAGE, url);
                 }
                 login.keepUsedLoginPage = keepUsedLoginPage;
                 function jumpToUsedLoginPage() {
@@ -3361,16 +3437,21 @@ var nts;
                 login.jumpToUsedLoginPage = jumpToUsedLoginPage;
                 function keepSerializedSession() {
                     var dfd = $.Deferred();
-                    request.ajax("/shr/web/session/serialize").done(function (res) {
-                        uk.sessionStorage.setItem(STORAGE_KEY_SERIALIZED_SESSION, res);
-                        dfd.resolve();
-                    });
+                    dfd.resolve();
+                    //            request.ajax("/shr/web/session/serialize").done(res => {
+                    //                uk.sessionStorage.setItem(STORAGE_KEY_SERIALIZED_SESSION, res);
+                    //                dfd.resolve();
+                    //            });
+                    //            
                     return dfd.promise();
                 }
                 login.keepSerializedSession = keepSerializedSession;
                 function restoreSessionTo(webAppId) {
-                    var serializedTicket = uk.sessionStorage.getItem(STORAGE_KEY_SERIALIZED_SESSION).get();
-                    return request.ajax(webAppId, "/shr/web/session/restore", serializedTicket, null, false);
+                    var dfd = $.Deferred();
+                    dfd.resolve();
+                    return dfd.promise();
+                    //            let serializedTicket = uk.sessionStorage.getItem(STORAGE_KEY_SERIALIZED_SESSION).get();
+                    //            return (<any>request).ajax(webAppId, "/shr/web/session/restore", serializedTicket, null, false);
                 }
                 login.restoreSessionTo = restoreSessionTo;
             })(login = request.login || (request.login = {}));
@@ -3419,7 +3500,7 @@ var nts;
             /** Event to notify ViewModel built to bind. */
             ui.viewModelBuilt = $.Callbacks();
             // Kiban ViewModel
-            var KibanViewModel = (function () {
+            var KibanViewModel = /** @class */ (function () {
                 function KibanViewModel(dialogOptions) {
                     var _this = this;
                     this.systemName = ko.observable("");
@@ -3476,26 +3557,30 @@ var nts;
                 };
                 var startP = function () {
                     _.defer(function () { return _start.call(__viewContext); });
+                    var onSamplePage = nts.uk.request.location.current.rawUrl.indexOf("/view/sample") >= 0;
                     // Menu
-                    if ($(document).find("#header").length > 0) {
-                        ui.menu.request();
-                    }
-                    else if (!uk.util.isInFrame() && !__viewContext.noHeader) {
-                        var header = "<div id='header'><div id='menu-header'>"
-                            + "<div id='logo-area' class='cf'>"
-                            + "<div id='logo'>勤次郎</div>"
-                            + "<div id='user-info' class='cf'>"
-                            + "<div id='company' class='cf' />"
-                            + "<div id='user' class='cf' />"
-                            + "</div></div>"
-                            + "<div id='nav-area' class='cf' />"
-                            + "<div id='pg-area' class='cf' />"
-                            + "</div></div>";
-                        $("#master-wrapper").prepend(header);
-                        ui.menu.request();
+                    if (!onSamplePage) {
+                        if ($(document).find("#header").length > 0) {
+                            ui.menu.request();
+                        }
+                        else if (!uk.util.isInFrame() && !__viewContext.noHeader) {
+                            var header = "<div id='header'><div id='menu-header'>"
+                                + "<div id='logo-area' class='cf'>"
+                                + "<div id='logo'>勤次郎</div>"
+                                + "<div id='user-info' class='cf'>"
+                                + "<div id='company' class='cf' />"
+                                + "<div id='user' class='cf' />"
+                                + "</div></div>"
+                                + "<div id='nav-area' class='cf' />"
+                                + "<div id='pg-area' class='cf' />"
+                                + "</div></div>";
+                            $("#master-wrapper").prepend(header);
+                            ui.menu.request();
+                        }
                     }
                 };
                 $(function () {
+                    __viewContext.noHeader = (__viewContext.noHeader === true) || $("body").hasClass("no-header");
                     console.log("call");
                     ui.documentReady.fire();
                     __viewContext.transferred = uk.sessionStorage.getItem(uk.request.STORAGE_KEY_TRANSFER_DATA)
@@ -3550,7 +3635,7 @@ var nts;
                 /**
                  * Menu item.
                  */
-                var MenuItem = (function () {
+                var MenuItem = /** @class */ (function () {
                     function MenuItem(name, path) {
                         this.name = name;
                         this.path = path;
@@ -3702,6 +3787,7 @@ var nts;
                                 $li.on(constants.CLICK, function () {
                                     // TODO: Jump to login screen and request logout to server
                                     nts.uk.request.ajax(constants.APP_ID, constants.Logout).done(function () {
+                                        nts.uk.cookie.remove("nts.uk.sescon", { path: "/" });
                                         nts.uk.request.login.jumpToUsedLoginPage();
                                     });
                                 });
@@ -3947,7 +4033,7 @@ var nts;
             var validation;
             (function (validation) {
                 var util = nts.uk.util;
-                var NoValidator = (function () {
+                var NoValidator = /** @class */ (function () {
                     function NoValidator() {
                     }
                     NoValidator.prototype.validate = function (inputText, option) {
@@ -3959,7 +4045,7 @@ var nts;
                     return NoValidator;
                 }());
                 validation.NoValidator = NoValidator;
-                var ValidationResult = (function () {
+                var ValidationResult = /** @class */ (function () {
                     function ValidationResult() {
                         this.errorMessage = 'error message';
                     }
@@ -3975,7 +4061,7 @@ var nts;
                     return ValidationResult;
                 }());
                 validation.ValidationResult = ValidationResult;
-                var DepartmentCodeValidator = (function () {
+                var DepartmentCodeValidator = /** @class */ (function () {
                     function DepartmentCodeValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4044,7 +4130,7 @@ var nts;
                     }
                     return inputText;
                 }
-                var WorkplaceCodeValidator = (function () {
+                var WorkplaceCodeValidator = /** @class */ (function () {
                     function WorkplaceCodeValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4087,7 +4173,7 @@ var nts;
                     return WorkplaceCodeValidator;
                 }());
                 validation.WorkplaceCodeValidator = WorkplaceCodeValidator;
-                var PostCodeValidator = (function () {
+                var PostCodeValidator = /** @class */ (function () {
                     function PostCodeValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4128,7 +4214,7 @@ var nts;
                     return PostCodeValidator;
                 }());
                 validation.PostCodeValidator = PostCodeValidator;
-                var PunchCardNoValidator = (function () {
+                var PunchCardNoValidator = /** @class */ (function () {
                     function PunchCardNoValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4169,7 +4255,7 @@ var nts;
                     return PunchCardNoValidator;
                 }());
                 validation.PunchCardNoValidator = PunchCardNoValidator;
-                var StringValidator = (function () {
+                var StringValidator = /** @class */ (function () {
                     function StringValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4227,7 +4313,7 @@ var nts;
                     return StringValidator;
                 }());
                 validation.StringValidator = StringValidator;
-                var NumberValidator = (function () {
+                var NumberValidator = /** @class */ (function () {
                     function NumberValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4305,7 +4391,7 @@ var nts;
                     return NumberValidator;
                 }());
                 validation.NumberValidator = NumberValidator;
-                var TimeValidator = (function () {
+                var TimeValidator = /** @class */ (function () {
                     function TimeValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4432,7 +4518,7 @@ var nts;
                     return TimeValidator;
                 }());
                 validation.TimeValidator = TimeValidator;
-                var TimeWithDayValidator = (function () {
+                var TimeWithDayValidator = /** @class */ (function () {
                     function TimeWithDayValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4463,7 +4549,8 @@ var nts;
                             maxValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(this.constraint.max).asMinutes);
                         }
                         var parsed = uk.time.minutesBased.clock.dayattr.parseString(inputText);
-                        if (!parsed.success || parsed.asMinutes < minValue || parsed.asMinutes > maxValue) {
+                        if (!parsed.success || parsed.asMinutes !== Math.round(parsed.asMinutes)
+                            || parsed.asMinutes < minValue || parsed.asMinutes > maxValue) {
                             result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minValue.fullText, maxValue.fullText]), "FND_E_CLOCK");
                         }
                         else {
@@ -4505,7 +4592,7 @@ var nts;
         (function (ui) {
             var errors;
             (function (errors_1) {
-                var ErrorsViewModel = (function () {
+                var ErrorsViewModel = /** @class */ (function () {
                     function ErrorsViewModel(dialogOptions) {
                         var _this = this;
                         this.title = "エラー一覧";
@@ -4658,7 +4745,7 @@ var nts;
                     return ErrorsViewModel;
                 }());
                 errors_1.ErrorsViewModel = ErrorsViewModel;
-                var ErrorViewModelMemento = (function () {
+                var ErrorViewModelMemento = /** @class */ (function () {
                     function ErrorViewModelMemento() {
                     }
                     ErrorViewModelMemento.prototype.setErrors = function (errors) {
@@ -4690,7 +4777,7 @@ var nts;
                     return ErrorViewModelMemento;
                 }());
                 errors_1.ErrorViewModelMemento = ErrorViewModelMemento;
-                var ErrorHeader = (function () {
+                var ErrorHeader = /** @class */ (function () {
                     function ErrorHeader(name, text, width, visible) {
                         this.name = name;
                         this.text = text;
@@ -4717,6 +4804,8 @@ var nts;
                 errors_1.hide = hide;
                 function add(error) {
                     errorsViewModel().addError(error);
+                    error.$control.data(nts.uk.ui.DATA_HAS_ERROR, true);
+                    (error.$control.data(nts.uk.ui.DATA_SET_ERROR_STYLE) || function () { error.$control.parent().addClass('error'); })();
                 }
                 errors_1.add = add;
                 function hasError() {
@@ -4730,14 +4819,26 @@ var nts;
                 errors_1.clearAll = clearAll;
                 function removeByElement($control) {
                     errorsViewModel().removeErrorByElement($control);
+                    $control.data(nts.uk.ui.DATA_HAS_ERROR, false);
+                    ($control.data(nts.uk.ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
                 }
                 errors_1.removeByElement = removeByElement;
                 function removeByCode($control, errorCode) {
                     errorsViewModel().removeErrorByCode($control, errorCode);
+                    var remainErrors = getErrorByElement($control);
+                    if (nts.uk.util.isNullOrEmpty(remainErrors)) {
+                        $control.data(nts.uk.ui.DATA_HAS_ERROR, false);
+                        ($control.data(nts.uk.ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
+                    }
                 }
                 errors_1.removeByCode = removeByCode;
                 function removeCommonError($control) {
                     errorsViewModel().removeKibanError($control);
+                    var remainErrors = getErrorByElement($control);
+                    if (nts.uk.util.isNullOrEmpty(remainErrors)) {
+                        $control.data(nts.uk.ui.DATA_HAS_ERROR, false);
+                        ($control.data(nts.uk.ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
+                    }
                 }
                 errors_1.removeCommonError = removeCommonError;
                 function getErrorByElement($element) {
@@ -4891,7 +4992,7 @@ var nts;
                     };
                 }
             })(block = ui.block || (ui.block = {}));
-            var DirtyChecker = (function () {
+            var DirtyChecker = /** @class */ (function () {
                 function DirtyChecker(targetViewModelObservable) {
                     this.targetViewModel = targetViewModelObservable;
                     this.initialState = this.getCurrentState();
@@ -4916,7 +5017,7 @@ var nts;
                         // Check if contents is overflow
                         if ($label.outerWidth() < $label[0].scrollWidth) {
                             var $view_1 = $('<div />').addClass('limited-label-view')
-                                .text($label.text())
+                                .text($label.text() || $label.val())
                                 .appendTo('body')
                                 .position({
                                 my: 'left top',
@@ -4979,12 +5080,13 @@ var nts;
                 /**
                  * Main or Sub Window(dialog)
                  */
-                var ScreenWindow = (function () {
+                var ScreenWindow = /** @class */ (function () {
                     function ScreenWindow(id, isRoot, parent) {
                         this.globalContext = null;
                         this.$dialog = null;
                         this.$iframe = null;
                         this.onClosedHandler = $.noop;
+                        this.onOpenedHandler = $.noop;
                         this.id = id;
                         this.isRoot = isRoot;
                         this.parent = parent;
@@ -5033,6 +5135,7 @@ var nts;
                     };
                     ScreenWindow.prototype.setupAsDialog = function (path, options) {
                         var _this = this;
+                        var self = this;
                         options.close = function () {
                             _this.dispose();
                         };
@@ -5094,6 +5197,9 @@ var nts;
                                             }
                                         }
                                     });
+                                    setTimeout(function () {
+                                        self.onOpenedHandler();
+                                    }, 100);
                                 },
                                 beforeClose: function () {
                                     //return dialogWindow.__viewContext.dialog.beforeClose();
@@ -5124,8 +5230,16 @@ var nts;
                     };
                     ScreenWindow.prototype.onClosed = function (callback) {
                         this.onClosedHandler = function () {
+                            var dataModel = ko.dataFor(this.$dialog[0]);
+                            dataModel.kiban.errorDialogViewModel.errors([]);
+                            //dataModel.kiban.errorDialogViewModel.errors.valueHasMutated();
                             callback();
                             windows.container.localShared = {};
+                        };
+                    };
+                    ScreenWindow.prototype.onOpened = function (callback) {
+                        this.onOpenedHandler = function () {
+                            callback();
                         };
                     };
                     ScreenWindow.prototype.close = function () {
@@ -5157,7 +5271,7 @@ var nts;
                  * All ScreenWindows are managed by this container.
                  * this instance is singleton in one browser-tab.
                  */
-                var ScreenWindowContainer = (function () {
+                var ScreenWindowContainer = /** @class */ (function () {
                     function ScreenWindowContainer() {
                         this.windows = {};
                         this.windows[windows.selfId] = ScreenWindow.createMainWindow();
@@ -5310,7 +5424,7 @@ var nts;
              * Using for display info or confirm dialog
              */
             var dialog;
-            (function (dialog) {
+            (function (dialog_2) {
                 function getMaxZIndex() {
                     var overlayElements = PS.$(".ui-widget-overlay");
                     var max = 12000;
@@ -5321,7 +5435,7 @@ var nts;
                     }
                     return max;
                 }
-                dialog.getMaxZIndex = getMaxZIndex;
+                dialog_2.getMaxZIndex = getMaxZIndex;
                 function createNoticeDialog(message, buttons, header) {
                     var $control = $('<div/>').addClass('control').addClass("pre");
                     var text;
@@ -5396,7 +5510,7 @@ var nts;
                         .appendTo('body')
                         .dialog({});
                 }
-                dialog.version = version;
+                dialog_2.version = version;
                 function simpleDialog(message, option) {
                     var then = $.noop;
                     var $dialog = PS.$('<div/>').hide();
@@ -5424,23 +5538,23 @@ var nts;
                 function info(message) {
                     return simpleDialog(message, { title: ui_1.toBeResource.info });
                 }
-                dialog.info = info;
+                dialog_2.info = info;
                 function caution(message) {
                     return simpleDialog(message, { title: ui_1.toBeResource.warn });
                 }
-                dialog.caution = caution;
+                dialog_2.caution = caution;
                 function error(message) {
                     return simpleDialog(message, { title: ui_1.toBeResource.error });
                 }
-                dialog.error = error;
+                dialog_2.error = error;
                 function alertError(message) {
                     return error(message);
                 }
-                dialog.alertError = alertError;
+                dialog_2.alertError = alertError;
                 function alert(message) {
                     return error(message);
                 }
-                dialog.alert = alert;
+                dialog_2.alert = alert;
                 ;
                 function confirm(message, option) {
                     var handleYes = $.noop;
@@ -5513,16 +5627,16 @@ var nts;
                     });
                     return handlers;
                 }
-                dialog.confirm = confirm;
+                dialog_2.confirm = confirm;
                 ;
                 function confirmDanger(message) {
                     return confirm(message);
                 }
-                dialog.confirmDanger = confirmDanger;
+                dialog_2.confirmDanger = confirmDanger;
                 function confirmProceed(message) {
                     return confirm(message, { buttonStyles: { yes: "proceed" } });
                 }
-                dialog.confirmProceed = confirmProceed;
+                dialog_2.confirmProceed = confirmProceed;
                 function addError(errorBody, error, idx) {
                     var row = $("<tr/>");
                     row.append("<td style='display: none;'>" + idx + "/td><td>" + error["message"] + "</td><td>" + error["messageId"] + "</td>");
@@ -5549,8 +5663,13 @@ var nts;
                                 additonalLeft = currentDialogOffset.left;
                             }
                             var currentControlOffset = element.offset();
-                            var top = additonalTop + currentControlOffset.top + element.outerHeight() - window.scrollY;
-                            var left = additonalLeft + currentControlOffset.left - window.scrollX;
+                            var doc = document.documentElement;
+                            var scrollX = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
+                            var scrollY = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+                            var top = additonalTop + currentControlOffset.top + element.outerHeight() - scrollY;
+                            //                    let top = additonalTop + currentControlOffset.top  + element.outerHeight() - window.scrollY;
+                            var left = additonalLeft + currentControlOffset.left - scrollX;
+                            //                    let left = additonalLeft + currentControlOffset.left - window.scrollX;
                             var $errorDialogOffset = $dialogContainer.offset();
                             var maxLeft = $errorDialogOffset.left + $dialogContainer.width();
                             var maxTop = $errorDialogOffset.top + $dialogContainer.height();
@@ -5586,6 +5705,7 @@ var nts;
                     else {
                         return alertError(errors);
                     }
+                    var dialogInfo = nts.uk.ui.windows.getSelf();
                     closeButton.appendTo(functionArea);
                     functionArea.appendTo(container);
                     errorBoard.appendTo(container);
@@ -5607,7 +5727,39 @@ var nts;
                                     container.remove();
                                     then();
                                 });
-                                container.closest("div[role='dialog']").position({ my: "center", at: "center", of: window.parent });
+                                var currentInfo = dialogInfo;
+                                var top = 0, left = 0;
+                                var dialog = container.closest("div[role='dialog']");
+                                if (dialogInfo.isRoot) {
+                                    top = (window.innerHeight - dialog.innerHeight()) / 2;
+                                    left = (window.innerWidth - dialog.innerWidth()) / 2;
+                                }
+                                else {
+                                    while (!nts.uk.util.isNullOrUndefined(currentInfo)) {
+                                        if (currentInfo.isRoot) {
+                                            currentInfo = null;
+                                        }
+                                        else {
+                                            var fullDialog = currentInfo.$dialog.closest("div[role='dialog']");
+                                            var offset = fullDialog.offset();
+                                            top += offset.top;
+                                            left += offset.left;
+                                            currentInfo = currentInfo.parent;
+                                        }
+                                    }
+                                }
+                                setTimeout(function () {
+                                    var dialogM = dialogInfo.$dialog.closest("div[role='dialog']");
+                                    var topDiff = (dialogM.innerHeight() - dialog.innerHeight()) / 2;
+                                    var leftDiff = (dialogM.innerWidth() - dialog.innerWidth()) / 2;
+                                    if (topDiff > 0) {
+                                        top += topDiff;
+                                    }
+                                    if (leftDiff > 0) {
+                                        left += leftDiff;
+                                    }
+                                    dialog.css({ top: top, left: left });
+                                }, 33);
                             },
                             close: function (event) {
                             }
@@ -5619,7 +5771,7 @@ var nts;
                         }
                     };
                 }
-                dialog.bundledErrors = bundledErrors;
+                dialog_2.bundledErrors = bundledErrors;
                 ;
             })(dialog = ui_1.dialog || (ui_1.dialog = {}));
         })(ui = uk.ui || (uk.ui = {}));
@@ -5796,14 +5948,14 @@ var nts;
         (function (ui_2) {
             var option;
             (function (option_1) {
-                var DialogOption = (function () {
+                var DialogOption = /** @class */ (function () {
                     function DialogOption() {
                         this.show = false;
                     }
                     return DialogOption;
                 }());
                 option_1.DialogOption = DialogOption;
-                var ConfirmDialogOption = (function (_super) {
+                var ConfirmDialogOption = /** @class */ (function (_super) {
                     __extends(ConfirmDialogOption, _super);
                     function ConfirmDialogOption(option) {
                         var _this = _super.call(this) || this;
@@ -5826,7 +5978,7 @@ var nts;
                     return ConfirmDialogOption;
                 }(DialogOption));
                 option_1.ConfirmDialogOption = ConfirmDialogOption;
-                var DelDialogOption = (function (_super) {
+                var DelDialogOption = /** @class */ (function (_super) {
                     __extends(DelDialogOption, _super);
                     function DelDialogOption(option) {
                         var _this = _super.call(this) || this;
@@ -5860,7 +6012,7 @@ var nts;
                     return DelDialogOption;
                 }(DialogOption));
                 option_1.DelDialogOption = DelDialogOption;
-                var OKDialogOption = (function (_super) {
+                var OKDialogOption = /** @class */ (function (_super) {
                     __extends(OKDialogOption, _super);
                     function OKDialogOption(option) {
                         var _this = _super.call(this) || this;
@@ -5894,7 +6046,7 @@ var nts;
                     return OKDialogOption;
                 }(DialogOption));
                 option_1.OKDialogOption = OKDialogOption;
-                var ErrorDialogOption = (function (_super) {
+                var ErrorDialogOption = /** @class */ (function (_super) {
                     __extends(ErrorDialogOption, _super);
                     function ErrorDialogOption(option) {
                         var _this = _super.call(this) || this;
@@ -5924,7 +6076,7 @@ var nts;
                     return ErrorDialogOption;
                 }(DialogOption));
                 option_1.ErrorDialogOption = ErrorDialogOption;
-                var ErrorDialogWithTabOption = (function (_super) {
+                var ErrorDialogWithTabOption = /** @class */ (function (_super) {
                     __extends(ErrorDialogWithTabOption, _super);
                     function ErrorDialogWithTabOption(option) {
                         var _this = _super.call(this) || this;
@@ -5955,7 +6107,7 @@ var nts;
                     return ErrorDialogWithTabOption;
                 }(ErrorDialogOption));
                 option_1.ErrorDialogWithTabOption = ErrorDialogWithTabOption;
-                var DialogButton = (function () {
+                var DialogButton = /** @class */ (function () {
                     function DialogButton() {
                     }
                     DialogButton.prototype.click = function (viewmodel, ui) { };
@@ -5980,13 +6132,13 @@ var nts;
                     "JPY": "left",
                     "USD": "right"
                 };
-                var EditorOptionBase = (function () {
+                var EditorOptionBase = /** @class */ (function () {
                     function EditorOptionBase() {
                     }
                     return EditorOptionBase;
                 }());
                 option_2.EditorOptionBase = EditorOptionBase;
-                var TextEditorOption = (function (_super) {
+                var TextEditorOption = /** @class */ (function (_super) {
                     __extends(TextEditorOption, _super);
                     function TextEditorOption(option) {
                         var _this = _super.call(this) || this;
@@ -6003,7 +6155,7 @@ var nts;
                     return TextEditorOption;
                 }(EditorOptionBase));
                 option_2.TextEditorOption = TextEditorOption;
-                var TimeEditorOption = (function (_super) {
+                var TimeEditorOption = /** @class */ (function (_super) {
                     __extends(TimeEditorOption, _super);
                     function TimeEditorOption(option) {
                         var _this = _super.call(this) || this;
@@ -6018,7 +6170,7 @@ var nts;
                     return TimeEditorOption;
                 }(EditorOptionBase));
                 option_2.TimeEditorOption = TimeEditorOption;
-                var NumberEditorOption = (function (_super) {
+                var NumberEditorOption = /** @class */ (function (_super) {
                     __extends(NumberEditorOption, _super);
                     function NumberEditorOption(option) {
                         var _this = _super.call(this) || this;
@@ -6039,7 +6191,7 @@ var nts;
                     return NumberEditorOption;
                 }(EditorOptionBase));
                 option_2.NumberEditorOption = NumberEditorOption;
-                var CurrencyEditorOption = (function (_super) {
+                var CurrencyEditorOption = /** @class */ (function (_super) {
                     __extends(CurrencyEditorOption, _super);
                     function CurrencyEditorOption(option) {
                         var _this = _super.call(this) || this;
@@ -6064,7 +6216,7 @@ var nts;
                 function getCurrencyPosition(currencyformat) {
                     return currenryPosition[currencyformat] === null ? "right" : currenryPosition[currencyformat];
                 }
-                var MultilineEditorOption = (function (_super) {
+                var MultilineEditorOption = /** @class */ (function (_super) {
                     __extends(MultilineEditorOption, _super);
                     function MultilineEditorOption(option) {
                         var _this = _super.call(this) || this;
@@ -6078,7 +6230,7 @@ var nts;
                     return MultilineEditorOption;
                 }(EditorOptionBase));
                 option_2.MultilineEditorOption = MultilineEditorOption;
-                var TimeWithDayAttrEditorOption = (function (_super) {
+                var TimeWithDayAttrEditorOption = /** @class */ (function (_super) {
                     __extends(TimeWithDayAttrEditorOption, _super);
                     function TimeWithDayAttrEditorOption(option) {
                         var _this = _super.call(this) || this;
@@ -6133,7 +6285,7 @@ var nts;
                 var STICK = "stick";
                 var Connector = {};
                 var _scrollWidth;
-                var ExTable = (function () {
+                var ExTable = /** @class */ (function () {
                     function ExTable($container, options) {
                         // dynamic or fixed
                         this.bodyHeightSetMode = DYNAMIC;
@@ -6800,7 +6952,7 @@ var nts;
                         });
                         return colspan !== 0 ? (colspan - noGroup) : undefined;
                     }
-                    var Conditional = (function () {
+                    var Conditional = /** @class */ (function () {
                         function Conditional(options) {
                             this.options = options;
                             var columns = helper.classifyColumns(options);
@@ -6811,7 +6963,7 @@ var nts;
                         }
                         return Conditional;
                     }());
-                    var Painter = (function (_super) {
+                    var Painter = /** @class */ (function (_super) {
                         __extends(Painter, _super);
                         function Painter($container, options) {
                             var _this = _super.call(this, options) || this;
@@ -6896,12 +7048,13 @@ var nts;
                                     innerDiv.innerHTML = data;
                                     td.appendChild(innerDiv);
                                 }
-                                else if (helper.containsBr(data)) {
+                                else if (!column.headerControl && helper.containsBr(data)) {
                                     td.innerHTML = data;
                                 }
-                                else {
+                                else if (!column.headerControl) {
                                     td.innerText = data;
                                 }
+                                controls.checkHeader(td, column, data, column.headerHandler);
                             }
                             else if (!self.options.isHeader) {
                                 if (!uk.util.isNullOrUndefined(column.icon) && column.icon.for === "body") {
@@ -7014,7 +7167,7 @@ var nts;
                          */
                         Painter.prototype.highlight = function (td) {
                             var self = this;
-                            if (self.options.isHeader || self.options.containerClass !== BODY_PRF + DETAIL)
+                            if (self.options.isHeader || self.options.containerClass !== BODY_PRF + DETAIL || self.options.highlight === false)
                                 return;
                             var $targetContainer = self.$container;
                             var targetHeader = helper.firstSibling($targetContainer, self.options.containerClass.replace(BODY_PRF, HEADER_PRF));
@@ -7129,7 +7282,7 @@ var nts;
                         return Painter;
                     }(Conditional));
                     render.Painter = Painter;
-                    var GroupHeaderPainter = (function (_super) {
+                    var GroupHeaderPainter = /** @class */ (function (_super) {
                         __extends(GroupHeaderPainter, _super);
                         function GroupHeaderPainter(options) {
                             var _this = _super.call(this, options) || this;
@@ -7151,6 +7304,7 @@ var nts;
                                 $td.setAttribute("colspan", cell.colspan);
                             else if (!self.visibleColumnsMap[cell.key])
                                 tdStyle += "; display: none;";
+                            var column = self.columnsMap[cell.key];
                             if (!uk.util.isNullOrUndefined(cell.icon) && cell.icon.for === "header") {
                                 var $icon = document.createElement("span");
                                 $icon.className = render.COL_ICON_CLS + " " + cell.icon.class;
@@ -7165,11 +7319,14 @@ var nts;
                                 $content.innerHTML = text;
                                 $td.appendChild($content);
                             }
-                            else if (helper.containsBr(text)) {
+                            else if ((!column || (column && !column.headerControl)) && helper.containsBr(text)) {
                                 $td.innerHTML = text;
                             }
-                            else {
+                            else if (!column || (column && !column.headerControl)) {
                                 $td.textContent = text;
+                            }
+                            if (column) {
+                                controls.checkHeader($td, column, text, column.headerHandler);
                             }
                             $td.style.cssText += tdStyle;
                             return $td;
@@ -7414,7 +7571,7 @@ var nts;
                     intan.TOP_SPACE = "top-space";
                     intan.BOTTOM_SPACE = "bottom-space";
                     intan.NULL = null;
-                    var Cloud = (function () {
+                    var Cloud = /** @class */ (function () {
                         function Cloud($container, dataSource, options) {
                             this.$container = $container;
                             this.options = options;
@@ -7834,7 +7991,7 @@ var nts;
                     update.EDITOR_CLS = "ex-editor";
                     update.EDITABLE_CLS = "ex-editable";
                     var EMPTY_TBL_HEIGHT = "1px";
-                    var Editor = (function () {
+                    var Editor = /** @class */ (function () {
                         function Editor($editor, land, rowIdx, columnKey, innerIdx, value) {
                             this.$editor = $editor;
                             this.land = land;
@@ -8749,14 +8906,14 @@ var nts;
                         Mode[Mode["SINGLE"] = 0] = "SINGLE";
                         Mode[Mode["MULTIPLE"] = 1] = "MULTIPLE";
                     })(Mode || (Mode = {}));
-                    var History = (function () {
+                    var History = /** @class */ (function () {
                         function History(cells) {
                             this.cells = cells;
                         }
                         return History;
                     }());
                     copy.History = History;
-                    var Printer = (function () {
+                    var Printer = /** @class */ (function () {
                         function Printer(options) {
                             this.options = options;
                         }
@@ -9057,7 +9214,7 @@ var nts;
                 (function (spread) {
                     spread.SINGLE = "single";
                     spread.MULTIPLE = "multiple";
-                    var Sticker = (function () {
+                    var Sticker = /** @class */ (function () {
                         function Sticker(data) {
                             this.mode = spread.MULTIPLE;
                             this.validate = function () { return true; };
@@ -9164,7 +9321,7 @@ var nts;
                     validation.DEF_HOUR_MIN = 0;
                     validation.DEF_MIN_MAXMIN = 0;
                     validation.DAY_MINS = 1439;
-                    var Result = (function () {
+                    var Result = /** @class */ (function () {
                         function Result(isValid, value) {
                             this.isValid = isValid;
                             this.value = value;
@@ -9532,7 +9689,7 @@ var nts;
                 (function (selection) {
                     selection.CELL_SELECTED_CLS = "x-cell-selected";
                     selection.ROW_SELECTED_CLS = "x-row-selected";
-                    var Cell = (function () {
+                    var Cell = /** @class */ (function () {
                         function Cell(rowIdx, columnKey, value, innerIdx) {
                             this.rowIndex = rowIdx;
                             this.columnKey = columnKey;
@@ -10003,7 +10160,7 @@ var nts;
                     resize.RESIZE_AREA = "resize-area";
                     resize.AREA_LINE = "ex-area-line";
                     resize.STAY_CLS = "x-stay";
-                    var ColumnAdjuster = (function () {
+                    var ColumnAdjuster = /** @class */ (function () {
                         function ColumnAdjuster($headerTable, $contentTable, options) {
                             this.$headerTable = $headerTable;
                             this.$contentTable = $contentTable;
@@ -10153,7 +10310,7 @@ var nts;
                         return ColumnAdjuster;
                     }());
                     resize.ColumnAdjuster = ColumnAdjuster;
-                    var AreaAdjuster = (function () {
+                    var AreaAdjuster = /** @class */ (function () {
                         function AreaAdjuster($container, headerWrappers, bodyWrappers, $follower) {
                             this.$container = $container;
                             this.headerWrappers = headerWrappers;
@@ -10639,7 +10796,7 @@ var nts;
                 (function (storage) {
                     storage.AREA_WIDTHS = "areawidths";
                     storage.TBL_HEIGHT = "tableheight";
-                    var Store = (function () {
+                    var Store = /** @class */ (function () {
                         function Store() {
                         }
                         /**
@@ -10668,7 +10825,7 @@ var nts;
                     }());
                     var area;
                     (function (area) {
-                        var Cache = (function (_super) {
+                        var Cache = /** @class */ (function (_super) {
                             __extends(Cache, _super);
                             function Cache() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -10759,7 +10916,7 @@ var nts;
                     })(area = storage.area || (storage.area = {}));
                     var tableHeight;
                     (function (tableHeight) {
-                        var Cache2 = (function (_super) {
+                        var Cache2 = /** @class */ (function (_super) {
                             __extends(Cache2, _super);
                             function Cache2() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -10932,6 +11089,25 @@ var nts;
                         }
                     }
                     controls.check = check;
+                    /**
+                     * Check header.
+                     */
+                    function checkHeader(td, column, data, action) {
+                        if (column.headerControl) {
+                            switch (column.headerControl) {
+                                case controls.LINK_BUTTON:
+                                    var a = document.createElement("a");
+                                    a.classList.add(controls.LINK_CLS);
+                                    a.addXEventListener(events.CLICK_EVT, function (evt) {
+                                        action();
+                                    });
+                                    a.innerHTML = data;
+                                    td.appendChild(a);
+                                    break;
+                            }
+                        }
+                    }
+                    controls.checkHeader = checkHeader;
                     /**
                      * Add checkbox def.
                      */
@@ -11259,7 +11435,7 @@ var nts;
                     style.DET_CLS = "xdet";
                     style.HIDDEN_CLS = "xhidden";
                     style.SEAL_CLS = "xseal";
-                    var CellStyleParam = (function () {
+                    var CellStyleParam = /** @class */ (function () {
                         function CellStyleParam($cell, cellData, rowData, rowIdx, columnKey) {
                             this.$cell = $cell;
                             this.cellData = cellData;
@@ -11270,7 +11446,7 @@ var nts;
                         return CellStyleParam;
                     }());
                     style.CellStyleParam = CellStyleParam;
-                    var Cell = (function () {
+                    var Cell = /** @class */ (function () {
                         function Cell(rowId, columnKey) {
                             this.rowId = rowId;
                             this.columnKey = columnKey;
@@ -12476,7 +12652,7 @@ var nts;
                         }
                     }
                     selector.siblingsLt = siblingsLt;
-                    var Manipulator = (function () {
+                    var Manipulator = /** @class */ (function () {
                         function Manipulator() {
                         }
                         Manipulator.prototype.addNodes = function (nodes) {
@@ -13401,7 +13577,7 @@ var nts;
                     /**
                      * Widget.
                      */
-                    var XWidget = (function () {
+                    var XWidget = /** @class */ (function () {
                         function XWidget($selector) {
                             this.$selector = $selector;
                         }
@@ -13416,7 +13592,7 @@ var nts;
                     /**
                      * Tooltip.
                      */
-                    var Tooltip = (function (_super) {
+                    var Tooltip = /** @class */ (function (_super) {
                         __extends(Tooltip, _super);
                         function Tooltip($selector, options) {
                             var _this = _super.call(this, $selector) || this;
@@ -13464,7 +13640,7 @@ var nts;
                     /**
                      * Popup.
                      */
-                    var Popup = (function (_super) {
+                    var Popup = /** @class */ (function (_super) {
                         __extends(Popup, _super);
                         function Popup($selector) {
                             var _this = _super.call(this, $selector) || this;
@@ -13488,7 +13664,7 @@ var nts;
                     /**
                      * Context menu.
                      */
-                    var ContextMenu = (function (_super) {
+                    var ContextMenu = /** @class */ (function (_super) {
                         __extends(ContextMenu, _super);
                         function ContextMenu($selector, items) {
                             var _this = _super.call(this, $selector) || this;
@@ -13550,7 +13726,7 @@ var nts;
                     /**
                      * Menu item.
                      */
-                    var MenuItem = (function () {
+                    var MenuItem = /** @class */ (function () {
                         function MenuItem(text, selectHandler, disabled, icon) {
                             this.text = text;
                             this.selectHandler = selectHandler ? selectHandler : $.noop();
@@ -13563,7 +13739,7 @@ var nts;
                     /**
                      * Popup panel.
                      */
-                    var PopupPanel = (function (_super) {
+                    var PopupPanel = /** @class */ (function (_super) {
                         __extends(PopupPanel, _super);
                         function PopupPanel($selector, provider, position) {
                             var _this = _super.call(this, $selector) || this;
@@ -13803,6 +13979,36 @@ var nts;
                             return $this.data(dataName);
                     }
                 };
+                $.fn.tooltipWhenReadonly = function () {
+                    var $this = $(this);
+                    var border = 2;
+                    $this.mouseenter(function (e) {
+                        if (!$this.prop("readonly") || !$this.isOverflowContent(border)) {
+                            return;
+                        }
+                        $this.showTextContentAsTooltip(function () { return $this.val(); });
+                    });
+                };
+                $.fn.isOverflowContent = function (border) {
+                    var $this = $(this);
+                    return $this.prop("offsetWidth") - border < $this.prop("scrollWidth");
+                };
+                $.fn.showTextContentAsTooltip = function (textContentGetter) {
+                    var $this = $(this);
+                    var $view = $('<div />').addClass('limited-label-view')
+                        .text(textContentGetter())
+                        .appendTo('body')
+                        .position({
+                        my: 'left top',
+                        at: 'left bottom',
+                        of: $this,
+                        collision: 'flip'
+                    });
+                    $this.bind('mouseleave.limitedlabel', function () {
+                        $this.unbind('mouseleave.limitedlabel');
+                        $view.remove();
+                    });
+                };
             })(jqueryExtentions = ui_4.jqueryExtentions || (ui_4.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -13819,7 +14025,7 @@ var nts;
                 /**
                  * CheckBox binding handler
                  */
-                var NtsCheckboxBindingHandler = (function () {
+                var NtsCheckboxBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor.
                      */
@@ -13911,7 +14117,7 @@ var nts;
                 /**
                  * MultiCheckbox binding handler
                  */
-                var NtsMultiCheckBoxBindingHandler = (function () {
+                var NtsMultiCheckBoxBindingHandler = /** @class */ (function () {
                     function NtsMultiCheckBoxBindingHandler() {
                     }
                     NtsMultiCheckBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -14080,7 +14286,7 @@ var nts;
                 /**
                  * ComboBox binding handler
                  */
-                var ComboBoxBindingHandler = (function () {
+                var ComboBoxBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor.
                      */
@@ -14318,7 +14524,7 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
-                var DatePickerBindingHandler = (function () {
+                var DatePickerBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor.
                      */
@@ -14421,6 +14627,9 @@ var nts;
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (result.isValid) {
+                                if (!validateMinMax(result.parsedValue)) {
+                                    return;
+                                }
                                 // Day of Week
                                 if (hasDayofWeek) {
                                     if (uk.util.isNullOrEmpty(result.parsedValue))
@@ -14446,6 +14655,9 @@ var nts;
                                 $input.ntsError('set', result.errorMessage, result.errorCode, false);
                             }
                             else if (acceptJapaneseCalendar) {
+                                if (!validateMinMax(result.parsedValue)) {
+                                    return;
+                                }
                                 // Day of Week
                                 if (hasDayofWeek) {
                                     if (uk.util.isNullOrEmpty(result.parsedValue))
@@ -14458,6 +14670,44 @@ var nts;
                                 //                    }
                             }
                         });
+                        var validateMinMax = function (parsedValue) {
+                            if (nts.uk.util.isNullOrEmpty(parsedValue)) {
+                                return true;
+                            }
+                            var mmRs = new nts.uk.time.MomentResult();
+                            var otFormat = nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat;
+                            var minDate = (data.startDate !== undefined) ? moment(ko.unwrap(data.startDate), otFormat) : mmRs.systemMin();
+                            var maxDate = (data.endDate !== undefined) ? moment(ko.unwrap(data.endDate), otFormat) : mmRs.systemMax();
+                            var momentCurrent = moment(parsedValue, otFormat);
+                            var error = false;
+                            if (momentCurrent.isBefore(minDate, 'day')) {
+                                error = true;
+                            }
+                            else if (momentCurrent.isAfter(maxDate, 'day')) {
+                                error = true;
+                            }
+                            if (error) {
+                                var isHasYear = (nts.uk.util.isNullOrEmpty(otFormat) ? false : otFormat.indexOf("Y") >= 0) || otFormat.indexOf("Y") >= 0;
+                                var isHasMonth = (nts.uk.util.isNullOrEmpty(otFormat) ? false : otFormat.indexOf("M") >= 0) || otFormat.indexOf("M") >= 0;
+                                var isHasDay = (nts.uk.util.isNullOrEmpty(otFormat) ? false : otFormat.indexOf("D") >= 0) || otFormat.indexOf("D") >= 0;
+                                var mesId = "FND_E_DATE_Y";
+                                var fm = "YYYY";
+                                if (isHasDay && isHasMonth && isHasYear) {
+                                    mesId = "FND_E_DATE_YMD", fm = "YYYY/MM/DD";
+                                }
+                                else if (isHasMonth && isHasYear) {
+                                    mesId = "FND_E_DATE_YM", fm = "YYYY/MM";
+                                }
+                                nts.uk.ui.dialog.error({ messageId: mesId, messageParams: [name, minDate.format(fm), maxDate.format(fm)] }).then(function () {
+                                    if (hasDayofWeek) {
+                                        $label.text("");
+                                    }
+                                    value(null);
+                                });
+                                return false;
+                            }
+                            return true;
+                        };
                         $input.on('validate', (function (e) {
                             var newText = $input.val();
                             var validator = new ui.validation.TimeValidator(name, constraintName, { required: $input.data("required"),
@@ -14548,7 +14798,7 @@ var nts;
                     ViewLocation[ViewLocation["CURRENT"] = 1] = "CURRENT";
                     ViewLocation[ViewLocation["NEXT"] = 2] = "NEXT";
                 })(ViewLocation || (ViewLocation = {}));
-                var DatePickerNormalizer = (function () {
+                var DatePickerNormalizer = /** @class */ (function () {
                     function DatePickerNormalizer() {
                         this.fiscalMonth = 1;
                         // Constants
@@ -15120,7 +15370,7 @@ var nts;
                 /**
                  * Dialog binding handler
                  */
-                var NtsDialogBindingHandler = (function () {
+                var NtsDialogBindingHandler = /** @class */ (function () {
                     function NtsDialogBindingHandler() {
                     }
                     /**
@@ -15185,7 +15435,7 @@ var nts;
                 /**
                  * Error Dialog binding handler
                  */
-                var NtsErrorDialogBindingHandler = (function () {
+                var NtsErrorDialogBindingHandler = /** @class */ (function () {
                     function NtsErrorDialogBindingHandler() {
                     }
                     /**
@@ -15297,8 +15547,14 @@ var nts;
                                         additonalLeft = currentDialogOffset.left;
                                     }
                                     var currentControlOffset = error.$control.offset();
-                                    var top = additonalTop + currentControlOffset.top + error.$control.outerHeight() - window.scrollY;
-                                    var left = additonalLeft + currentControlOffset.left - window.scrollX;
+                                    //change for compatibility with IE
+                                    var doc = document.documentElement;
+                                    var scrollX = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
+                                    var scrollY = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+                                    var top = additonalTop + currentControlOffset.top + error.$control.outerHeight() - scrollY;
+                                    //                    let top = additonalTop + currentControlOffset.top  + element.outerHeight() - window.scrollY;
+                                    var left = additonalLeft + currentControlOffset.left - scrollX;
+                                    //                    let left = additonalLeft + currentControlOffset.left - window.scrollX;
                                     var $errorDialogOffset = $dialogContainer.offset();
                                     var maxLeft = $errorDialogOffset.left + $dialogContainer.width();
                                     var maxTop = $errorDialogOffset.top + $dialogContainer.height();
@@ -15425,7 +15681,7 @@ var nts;
                 /**
                  * BaseEditor Processor
                  */
-                var EditorProcessor = (function () {
+                var EditorProcessor = /** @class */ (function () {
                     function EditorProcessor() {
                     }
                     EditorProcessor.prototype.init = function ($input, data) {
@@ -15569,7 +15825,7 @@ var nts;
                 /**
                  * TextEditor Processor
                  */
-                var TextEditorProcessor = (function (_super) {
+                var TextEditorProcessor = /** @class */ (function (_super) {
                     __extends(TextEditorProcessor, _super);
                     function TextEditorProcessor() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -15614,16 +15870,13 @@ var nts;
                                 var result = validator.validate(newText, { isCheckExpression: true });
                                 if (!result.isValid) {
                                     var oldError = $input.ntsError('getError');
-                                    if (nts.uk.util.isNullOrUndefined(oldError)) {
+                                    if (nts.uk.util.isNullOrEmpty(oldError)) {
                                         $input.ntsError('set', result.errorMessage, result.errorCode, false);
                                     }
                                     else {
-                                        var inListError = _.find(oldError, function (o) { return o.errorCode !== result.errorCode; });
+                                        var inListError = _.find(oldError, function (o) { return o.errorCode === result.errorCode; });
                                         if (nts.uk.util.isNullOrUndefined(inListError)) {
-                                            $input.ntsError('clearKibanError');
-                                            setTimeout(function () {
-                                                $input.ntsError('set', result.errorMessage, result.errorCode, false);
-                                            }, 10);
+                                            $input.ntsError('set', result.errorMessage, result.errorCode, false);
                                         }
                                     }
                                 }
@@ -15666,6 +15919,7 @@ var nts;
                         new nts.uk.util.value.DefaultValue().onReset($input, data.value);
                         var tabIndex = $input.attr("tabindex");
                         $input.data("tabindex", tabIndex);
+                        $input.tooltipWhenReadonly();
                     };
                     TextEditorProcessor.prototype.update = function ($input, data) {
                         _super.prototype.update.call(this, $input, data);
@@ -15710,7 +15964,7 @@ var nts;
                 /**
                  * MultilineEditor Processor
                  */
-                var MultilineEditorProcessor = (function (_super) {
+                var MultilineEditorProcessor = /** @class */ (function (_super) {
                     __extends(MultilineEditorProcessor, _super);
                     function MultilineEditorProcessor() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -15740,7 +15994,7 @@ var nts;
                 /**
                  * NumberEditor Processor
                  */
-                var NumberEditorProcessor = (function (_super) {
+                var NumberEditorProcessor = /** @class */ (function (_super) {
                     __extends(NumberEditorProcessor, _super);
                     function NumberEditorProcessor() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -15819,7 +16073,7 @@ var nts;
                 /**
                  * TimeEditor Processor
                  */
-                var TimeEditorProcessor = (function (_super) {
+                var TimeEditorProcessor = /** @class */ (function (_super) {
                     __extends(TimeEditorProcessor, _super);
                     function TimeEditorProcessor() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -15869,7 +16123,7 @@ var nts;
                 /**
                  * TimeWithDayAttrEditor Processor
                  */
-                var TimeWithDayAttrEditorProcessor = (function (_super) {
+                var TimeWithDayAttrEditorProcessor = /** @class */ (function (_super) {
                     __extends(TimeWithDayAttrEditorProcessor, _super);
                     function TimeWithDayAttrEditorProcessor() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -15917,7 +16171,7 @@ var nts;
                 /**
                  * Base Editor
                  */
-                var NtsEditorBindingHandler = (function () {
+                var NtsEditorBindingHandler = /** @class */ (function () {
                     function NtsEditorBindingHandler() {
                     }
                     /**
@@ -15937,7 +16191,7 @@ var nts;
                 /**
                  * TextEditor
                  */
-                var NtsTextEditorBindingHandler = (function (_super) {
+                var NtsTextEditorBindingHandler = /** @class */ (function (_super) {
                     __extends(NtsTextEditorBindingHandler, _super);
                     function NtsTextEditorBindingHandler() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -15959,7 +16213,7 @@ var nts;
                 /**
                  * NumberEditor
                  */
-                var NtsNumberEditorBindingHandler = (function () {
+                var NtsNumberEditorBindingHandler = /** @class */ (function () {
                     function NtsNumberEditorBindingHandler() {
                     }
                     /**
@@ -15979,7 +16233,7 @@ var nts;
                 /**
                  * TimeEditor
                  */
-                var NtsTimeEditorBindingHandler = (function () {
+                var NtsTimeEditorBindingHandler = /** @class */ (function () {
                     function NtsTimeEditorBindingHandler() {
                     }
                     /**
@@ -16000,7 +16254,7 @@ var nts;
                 /**
                  * MultilineEditor
                  */
-                var NtsMultilineEditorBindingHandler = (function (_super) {
+                var NtsMultilineEditorBindingHandler = /** @class */ (function (_super) {
                     __extends(NtsMultilineEditorBindingHandler, _super);
                     function NtsMultilineEditorBindingHandler() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -16022,7 +16276,7 @@ var nts;
                 /**
                  * TimeWithDayAttr
                  */
-                var NtsTimeWithDayAttrEditorBindingHandler = (function (_super) {
+                var NtsTimeWithDayAttrEditorBindingHandler = /** @class */ (function (_super) {
                     __extends(NtsTimeWithDayAttrEditorBindingHandler, _super);
                     function NtsTimeWithDayAttrEditorBindingHandler() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -16073,7 +16327,7 @@ var nts;
                 /**
                  * FormLabel
                  */
-                var NtsFormLabelBindingHandler = (function () {
+                var NtsFormLabelBindingHandler = /** @class */ (function () {
                     function NtsFormLabelBindingHandler() {
                     }
                     /**
@@ -16134,7 +16388,7 @@ var nts;
                 /**
                  * GridList binding handler
                  */
-                var NtsGridListBindingHandler = (function () {
+                var NtsGridListBindingHandler = /** @class */ (function () {
                     function NtsGridListBindingHandler() {
                     }
                     NtsGridListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -16396,7 +16650,7 @@ var nts;
                     return NtsGridListBindingHandler;
                 }());
                 ko.bindingHandlers['ntsGridList'] = new NtsGridListBindingHandler();
-                var SwapHandler = (function () {
+                var SwapHandler = /** @class */ (function () {
                     function SwapHandler() {
                     }
                     SwapHandler.prototype.setModel = function (model) {
@@ -16489,7 +16743,7 @@ var nts;
                     };
                     return SwapHandler;
                 }());
-                var SwapModel = (function () {
+                var SwapModel = /** @class */ (function () {
                     function SwapModel($grid, primaryKey) {
                         this.$grid = $grid;
                         this.primaryKey = primaryKey;
@@ -16497,7 +16751,7 @@ var nts;
                     }
                     return SwapModel;
                 }());
-                var GridSwapList = (function (_super) {
+                var GridSwapList = /** @class */ (function (_super) {
                     __extends(GridSwapList, _super);
                     function GridSwapList() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -16528,7 +16782,7 @@ var nts;
                     };
                     return GridSwapList;
                 }(SwapModel));
-                var ListItemTransporter = (function () {
+                var ListItemTransporter = /** @class */ (function () {
                     function ListItemTransporter() {
                     }
                     ListItemTransporter.prototype.primary = function (primaryKey) {
@@ -16591,7 +16845,7 @@ var nts;
                 /**
                  * ListBox binding handler
                  */
-                var ListBoxBindingHandler = (function () {
+                var ListBoxBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor.
                      */
@@ -16895,7 +17149,7 @@ var nts;
         (function (ui_8) {
             var koExtentions;
             (function (koExtentions) {
-                var NtsRadioBoxBindingHandler = (function () {
+                var NtsRadioBoxBindingHandler = /** @class */ (function () {
                     function NtsRadioBoxBindingHandler() {
                     }
                     /**
@@ -16989,7 +17243,7 @@ var nts;
                 /**
                  * RadioBoxGroup binding handler
                  */
-                var NtsRadioBoxGroupBindingHandler = (function () {
+                var NtsRadioBoxGroupBindingHandler = /** @class */ (function () {
                     function NtsRadioBoxGroupBindingHandler() {
                     }
                     /**
@@ -17165,7 +17419,7 @@ var nts;
                 /**
                 * SearchBox Binding Handler
                 */
-                var SearchBox = (function () {
+                var SearchBox = /** @class */ (function () {
                     function SearchBox(source, searchField, childField) {
                         this.childField = childField;
                         this.source = nts.uk.util.isNullOrEmpty(source) ? [] : this.cloneDeep(source);
@@ -17204,7 +17458,7 @@ var nts;
                     return SearchBox;
                 }());
                 koExtentions.SearchBox = SearchBox;
-                var SearchResult = (function () {
+                var SearchResult = /** @class */ (function () {
                     function SearchResult() {
                         this.options = [];
                         this.selectItems = [];
@@ -17212,7 +17466,7 @@ var nts;
                     return SearchResult;
                 }());
                 koExtentions.SearchResult = SearchResult;
-                var SearchPub = (function () {
+                var SearchPub = /** @class */ (function () {
                     function SearchPub(key, mode, source, searchField, childField) {
                         this.seachBox = new SearchBox(source, searchField, childField);
                         ;
@@ -17266,7 +17520,7 @@ var nts;
                     return SearchPub;
                 }());
                 koExtentions.SearchPub = SearchPub;
-                var NtsSearchBoxBindingHandler = (function () {
+                var NtsSearchBoxBindingHandler = /** @class */ (function () {
                     function NtsSearchBoxBindingHandler() {
                     }
                     /**
@@ -17496,7 +17750,7 @@ var nts;
                 /**
                  * SwapList binding handler
                  */
-                var NtsSwapListBindingHandler = (function () {
+                var NtsSwapListBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor.
                      */
@@ -17781,7 +18035,7 @@ var nts;
                     return NtsSwapListBindingHandler;
                 }());
                 ko.bindingHandlers['ntsSwapList'] = new NtsSwapListBindingHandler().makeBindings();
-                var SwapHandler = (function () {
+                var SwapHandler = /** @class */ (function () {
                     function SwapHandler() {
                     }
                     SwapHandler.prototype.setModel = function (model) {
@@ -17932,7 +18186,7 @@ var nts;
                     };
                     return SwapHandler;
                 }());
-                var SwapModel = (function () {
+                var SwapModel = /** @class */ (function () {
                     function SwapModel($container, swapParts) {
                         this.$container = $container;
                         this.swapParts = swapParts;
@@ -17941,14 +18195,14 @@ var nts;
                     }
                     return SwapModel;
                 }());
-                var SearchResult = (function () {
+                var SearchResult = /** @class */ (function () {
                     function SearchResult(results, indices) {
                         this.data = results;
                         this.indices = indices;
                     }
                     return SearchResult;
                 }());
-                var SwapPart = (function () {
+                var SwapPart = /** @class */ (function () {
                     function SwapPart() {
                         this.searchMode = "highlight"; // highlight & filter - Default: highlight
                         this.innerDrop = true;
@@ -18090,7 +18344,7 @@ var nts;
                     };
                     return SwapPart;
                 }());
-                var GridSwapPart = (function (_super) {
+                var GridSwapPart = /** @class */ (function (_super) {
                     __extends(GridSwapPart, _super);
                     function GridSwapPart() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -18140,7 +18394,7 @@ var nts;
                     };
                     return GridSwapPart;
                 }(SwapPart));
-                var GridSwapList = (function (_super) {
+                var GridSwapList = /** @class */ (function (_super) {
                     __extends(GridSwapList, _super);
                     function GridSwapList() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -18254,7 +18508,7 @@ var nts;
                     };
                     return GridSwapList;
                 }(SwapModel));
-                var ListItemTransporter = (function () {
+                var ListItemTransporter = /** @class */ (function () {
                     function ListItemTransporter(firstList, secondList) {
                         this.firstList = firstList;
                         this.secondList = secondList;
@@ -18394,7 +18648,7 @@ var nts;
                 /**
                  * SwitchButton binding handler
                  */
-                var NtsSwitchButtonBindingHandler = (function () {
+                var NtsSwitchButtonBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor.
                      */
@@ -18568,7 +18822,7 @@ var nts;
                 /**
                  * TabPanel Binding Handler
                  */
-                var TabPanelBindingHandler = (function () {
+                var TabPanelBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor.
                      */
@@ -18691,7 +18945,7 @@ var nts;
                 /**
                  * Panel binding handler
                  */
-                var NtsPanelBindingHandler = (function () {
+                var NtsPanelBindingHandler = /** @class */ (function () {
                     function NtsPanelBindingHandler() {
                     }
                     /**
@@ -18755,7 +19009,7 @@ var nts;
                 /**
                  * TreeGrid binding handler
                  */
-                var NtsTreeGridViewBindingHandler = (function () {
+                var NtsTreeGridViewBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor.
                      */
@@ -18977,7 +19231,7 @@ var nts;
                     return NtsTreeGridViewBindingHandler;
                 }());
                 var isEmpty = nts.uk.util.isNullOrEmpty;
-                var ExpandNodeHolder = (function () {
+                var ExpandNodeHolder = /** @class */ (function () {
                     function ExpandNodeHolder() {
                         this.nodes = [];
                     }
@@ -19062,7 +19316,7 @@ var nts;
                         }
                     }
                 })(Helper || (Helper = {}));
-                var ExpandNode = (function () {
+                var ExpandNode = /** @class */ (function () {
                     function ExpandNode(source, nodeKey, childKey, element, nodeLevel) {
                         this.nodeSource = source;
                         this.nodeLevel = nodeLevel;
@@ -19092,7 +19346,7 @@ var nts;
                 /**
                  * UpDownButton binding handler
                  */
-                var NtsUpDownBindingHandler = (function () {
+                var NtsUpDownBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor.
                      */
@@ -19157,7 +19411,7 @@ var nts;
                                     return item["index"] >= 0;
                                 });
                             }
-                            else if (singleSelectedRaw !== null) {
+                            else if (singleSelectedRaw !== null && singleSelectedRaw.index > -1) {
                                 selected.push(singleSelectedRaw);
                             }
                             else {
@@ -19367,7 +19621,7 @@ var nts;
                 /**
                  * Wizard binding handler
                  */
-                var WizardBindingHandler = (function () {
+                var WizardBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor.
                      */
@@ -19478,7 +19732,7 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
-                var NtsLegentButtonBindingHandler = (function () {
+                var NtsLegentButtonBindingHandler = /** @class */ (function () {
                     function NtsLegentButtonBindingHandler() {
                     }
                     /**
@@ -19603,7 +19857,7 @@ var nts;
                 /**
                  * Accordion binding handler
                  */
-                var NtsCharsetSettingBindingHandler = (function () {
+                var NtsCharsetSettingBindingHandler = /** @class */ (function () {
                     function NtsCharsetSettingBindingHandler() {
                     }
                     /**
@@ -19674,7 +19928,7 @@ var nts;
         (function (ui_16) {
             var contextmenu;
             (function (contextmenu) {
-                var ContextMenu = (function () {
+                var ContextMenu = /** @class */ (function () {
                     /**
                      * Create an instance of ContextMenu. Auto call init() method
                      *
@@ -19832,7 +20086,7 @@ var nts;
                     return ContextMenu;
                 }());
                 contextmenu.ContextMenu = ContextMenu;
-                var ContextMenuItem = (function () {
+                var ContextMenuItem = /** @class */ (function () {
                     function ContextMenuItem(key, text, handler, icon, visible, enable) {
                         this.key = key;
                         this.text = text;
@@ -19901,7 +20155,7 @@ var nts;
 /// <reference path="ui/ko-ext/wizard-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/legendbutton-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/charset-setting-ko-ext.ts"/>
-/// <reference path="ui/function-wrap/contextmenu.ts"/> 
+/// <reference path="ui/function-wrap/contextmenu.ts"/>
 /// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
@@ -19911,7 +20165,7 @@ var nts;
         (function (ui) {
             var file;
             (function (file_1) {
-                var FileDownload = (function () {
+                var FileDownload = /** @class */ (function () {
                     function FileDownload(servicePath, data) {
                         var self = this;
                         self.servicePath = servicePath;
@@ -20180,7 +20434,7 @@ var nts;
                         $element.data("builder", builder);
                         return;
                     };
-                    var TableBuildingConstructor = (function () {
+                    var TableBuildingConstructor = /** @class */ (function () {
                         function TableBuildingConstructor(container, option) {
                             this.container = container;
                             this.mode = option.mode;
@@ -20385,7 +20639,7 @@ var nts;
                         };
                         return TableBuildingConstructor;
                     }());
-                    var TableButtonEntity = (function () {
+                    var TableButtonEntity = /** @class */ (function () {
                         function TableButtonEntity(rowId, columnId, viewText, tooltipText) {
                             this.rowId = rowId;
                             this.columnId = columnId;
@@ -20594,6 +20848,8 @@ var nts;
         (function (ui) {
             ui.DATA_SET_ERROR_STYLE = "set-error-style";
             ui.DATA_CLEAR_ERROR_STYLE = "clear-error-style";
+            ui.DATA_HAS_ERROR = 'hasError';
+            ui.DATA_GET_ERROR = 'getError';
             var bindErrorStyle;
             (function (bindErrorStyle) {
                 function setError($element, callback) {
@@ -20622,14 +20878,12 @@ var nts;
             (function (jqueryExtentions) {
                 var ntsError;
                 (function (ntsError) {
-                    var DATA_HAS_ERROR = 'hasError';
-                    var DATA_GET_ERROR = 'getError';
                     $.fn.ntsError = function (action, message, errorCode, businessError) {
                         var $control = $(this);
-                        if (action === DATA_HAS_ERROR) {
+                        if (action === ui.DATA_HAS_ERROR) {
                             return _.some($control, function (c) { return hasError($(c)); });
                         }
-                        else if (action === DATA_GET_ERROR) {
+                        else if (action === ui.DATA_GET_ERROR) {
                             return getErrorByElement($control.first());
                         }
                         else {
@@ -20658,7 +20912,6 @@ var nts;
                         return ui.errors.getErrorByElement($control);
                     }
                     function setError($control, message, errorCode, businessError) {
-                        $control.data(DATA_HAS_ERROR, true);
                         ui.errors.add({
                             location: $control.data('name') || "",
                             message: message,
@@ -20666,35 +20919,22 @@ var nts;
                             $control: $control,
                             businessError: businessError
                         });
-                        ($control.data(ui.DATA_SET_ERROR_STYLE) || function () { $control.parent().addClass('error'); })();
                         return $control;
                     }
                     function clearErrors($control) {
-                        $control.data(DATA_HAS_ERROR, false);
                         ui.errors.removeByElement($control);
-                        ($control.data(ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
                         return $control;
                     }
                     function clearErrorByCode($control, errorCode) {
                         ui.errors.removeByCode($control, errorCode);
-                        var remainErrors = ui.errors.getErrorByElement($control);
-                        if (uk.util.isNullOrEmpty(remainErrors)) {
-                            $control.data(DATA_HAS_ERROR, false);
-                            ($control.data(ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
-                        }
                         return $control;
                     }
                     function clearKibanError($control) {
                         ui.errors.removeCommonError($control);
-                        var remainErrors = ui.errors.getErrorByElement($control);
-                        if (uk.util.isNullOrEmpty(remainErrors)) {
-                            $control.data(DATA_HAS_ERROR, false);
-                            ($control.data(ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
-                        }
                         return $control;
                     }
                     function hasError($control) {
-                        return $control.data(DATA_HAS_ERROR) === true;
+                        return $control.data(ui.DATA_HAS_ERROR) === true;
                     }
                 })(ntsError || (ntsError = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
@@ -21272,11 +21512,27 @@ var nts;
                         }
                         return dfd.promise();
                     }
-                    function downloadImage($element, fileId) {
-                        $element.trigger("srcchanging", { url: nts.uk.request.liveView(fileId), isOutSiteUrl: false });
+                    function downloadImage($element, option) {
+                        var fileId = option;
+                        var actionOnClose = $.noop;
+                        if (typeof option === 'object') {
+                            fileId = option.fileId;
+                            if (!nts.uk.util.isNullOrUndefined(option.actionOnClose)) {
+                                actionOnClose = option.actionOnClose;
+                            }
+                        }
+                        $element.trigger("srcchanging", { url: nts.uk.request.liveView(fileId), isOutSiteUrl: false, actionOnClose: actionOnClose });
                     }
-                    function viewByUrl($element, sourceUrl) {
-                        $element.trigger("srcchanging", { url: sourceUrl, isOutSiteUrl: true });
+                    function viewByUrl($element, option) {
+                        var fileId = option;
+                        var actionOnClose = $.noop;
+                        if (typeof option === 'object') {
+                            fileId = nts.uk.util.isNullOrEmpty(option.url) ? option.fileId : option.url;
+                            if (!nts.uk.util.isNullOrUndefined(option.actionOnClose)) {
+                                actionOnClose = option.actionOnClose;
+                            }
+                        }
+                        $element.trigger("srcchanging", { url: fileId, isOutSiteUrl: true, actionOnClose: actionOnClose });
                     }
                     function clear($element) {
                         var cropper = $element.data("cropper");
@@ -21359,7 +21615,7 @@ var nts;
                             }
                         }
                         dist.query = query;
-                        var Local = (function () {
+                        var Local = /** @class */ (function () {
                             function Local() {
                             }
                             /**
@@ -21382,7 +21638,7 @@ var nts;
                             return Local;
                         }());
                         dist.Local = Local;
-                        var Remote = (function () {
+                        var Remote = /** @class */ (function () {
                             function Remote(loadPath, savePath) {
                                 this.loadPath = loadPath;
                                 this.savePath = savePath;
@@ -21421,17 +21677,23 @@ var nts;
                             $self.igGrid(options);
                             return;
                         }
+                        dist.query(options.ntsFeatures);
                         if (options.hidePrimaryKey) {
                             _.forEach(options.columns, function (c) {
                                 if (c.key === options.primaryKey) {
                                     c.width = "1px";
+                                    if (columnSize.exists($self)) {
+                                        columnSize.save($self, c.key, 1);
+                                    }
+                                    feature.merge(options, feature.RESIZING, columnSize.createResizeOptions(c.key));
                                     return false;
                                 }
                             });
                         }
                         var flatCols = validation.scanValidators($self, options.columns);
                         // Cell color
-                        var cellFormatter = new color.CellFormatter($self, options.ntsFeatures);
+                        var cellFormatter = new color.CellFormatter($self, options.features, options.ntsFeatures, flatCols);
+                        $self.data(internal.CELL_FORMATTER, cellFormatter);
                         $self.addClass('compact-grid nts-grid');
                         if ($self.closest(".nts-grid-wrapper").length === 0) {
                             $self.wrap($("<div class='nts-grid-wrapper'/>"));
@@ -21458,7 +21720,8 @@ var nts;
                                     onSelect: function (value) {
                                         var fs = this;
                                         var hiddenCount = fs.hiddenRows ? fs.hiddenRows.length : 0;
-                                        if (value && ++fs.quantity === (options.dataSource.length - hiddenCount)) {
+                                        var disableCount = fs.disableRows ? fs.disableRows.size : 0;
+                                        if (value && ++fs.quantity === (options.dataSource.length - hiddenCount - disableCount)) {
                                             fs.th.find(".nts-grid-header-control-" + column.key).find("input[type='checkbox']").prop("checked", true);
                                             fs.selectAll = true;
                                         }
@@ -21521,8 +21784,10 @@ var nts;
                                 };
                                 // Delete row
                                 var deleteRow = function () {
-                                    if ($self.data("igGrid") !== null)
+                                    if ($self.data("igGrid") !== null) {
+                                        $self.data("ntsRowDeleting", true);
                                         $self.data("igGridUpdating").deleteRow(rowId);
+                                    }
                                 };
                                 // Get control
                                 var ntsControl = ntsControls.getControl(controlDef.controlType);
@@ -21601,7 +21866,6 @@ var nts;
                         updating.addFeature(options);
                         options.autoCommit = true;
                         options.tabIndex = -1;
-                        dist.query(options.ntsFeatures);
                         // Decorate editor border
                         events.onCellClick($self);
                         // Common settings
@@ -21674,6 +21938,28 @@ var nts;
                             options.features.splice(replaceId, 1, newFeature);
                         }
                         feature_2.replaceBy = replaceBy;
+                        /**
+                         * Merge feature.
+                         */
+                        function merge(options, featureName, feature) {
+                            var findId = -1;
+                            var obj;
+                            _.forEach(options.features, function (f, id) {
+                                if (f.name === featureName) {
+                                    obj = f;
+                                    findId = id;
+                                    return false;
+                                }
+                            });
+                            if (findId > -1) {
+                                _.merge(obj, feature);
+                                options.features.splice(findId, 1, obj);
+                            }
+                            else {
+                                options.features.push(feature);
+                            }
+                        }
+                        feature_2.merge = merge;
                         /**
                          * Check enable
                          */
@@ -22013,7 +22299,7 @@ var nts;
                             if (uk.util.isNullOrUndefined(idx))
                                 return;
                             var origData = origDs[idx]; //gridUpdate._getLatestValues(rId);
-                            grid.dataSource.updateRow(rId, $.extend({}, origData, updatedRowData), autoCommit);
+                            grid.dataSource.updateRow(rId, $.extend({}, gridUpdate._getLatestValues(rId), updatedRowData), autoCommit);
                             _.forEach(Object.keys(updatedRowData), function (key) {
                                 notifyUpdate($grid, rowId, key, updatedRowData[key], origData);
                                 var isControl = utils.isNtsControl($grid, key);
@@ -22601,7 +22887,7 @@ var nts;
                             if (!uk.util.isNullOrUndefined($targetGrid) && utils.selectable($targetGrid))
                                 $targetGrid.igGridSelection("clearSelection");
                         }
-                        var Direction = (function () {
+                        var Direction = /** @class */ (function () {
                             function Direction() {
                             }
                             Direction.prototype.bind = function (evt) {
@@ -22640,6 +22926,22 @@ var nts;
                             }
                             columnWidths[col.key] = parseInt(col.width);
                         }
+                        /**
+                         * Exists.
+                         */
+                        function exists($grid) {
+                            return uk.localStorage.getItem(getStorageKey($grid)).isPresent();
+                        }
+                        columnSize.exists = exists;
+                        /**
+                         * Create resize options.
+                         */
+                        function createResizeOptions(key) {
+                            var resizing = { name: feature.RESIZING };
+                            resizing.columnSettings = [{ columnKey: key, allowResizing: false, minimumWidth: 0 }];
+                            return resizing;
+                        }
+                        columnSize.createResizeOptions = createResizeOptions;
                         /**
                          * Load data
                          */
@@ -22766,6 +23068,7 @@ var nts;
                     (function (functions) {
                         functions.ERRORS = "errors";
                         functions.UPDATE_ROW = "updateRow";
+                        functions.SET_STATE = "setState";
                         functions.UPDATED_CELLS = "updatedCells";
                         functions.ENABLE_CONTROL = "enableNtsControlAt";
                         functions.ENABLE_ALL_CONTROLS = "enableNtsControls";
@@ -22785,17 +23088,20 @@ var nts;
                                     var autoCommit = $grid.data("igGrid") !== null && $grid.igGrid("option", "autoCommit") ? true : false;
                                     updateRow($grid, params[0], params[1], autoCommit);
                                     break;
+                                case functions.SET_STATE:
+                                    setState($grid, params[0], params[1], params[2]);
+                                    break;
                                 case functions.ENABLE_CONTROL:
                                     enableNtsControlAt($grid, params[0], params[1], params[2]);
                                     break;
                                 case functions.ENABLE_ALL_CONTROLS:
-                                    enableNtsControls($grid, params[0], params[1]);
+                                    enableNtsControls($grid, params[0], params[1], params[2]);
                                     break;
                                 case functions.DISABLE_CONTROL:
                                     disableNtsControlAt($grid, params[0], params[1], params[2]);
                                     break;
                                 case functions.DISABLE_ALL_CONTROLS:
-                                    disableNtsControls($grid, params[0], params[1]);
+                                    disableNtsControls($grid, params[0], params[1], params[2]);
                                     break;
                                 case functions.DIRECT_ENTER:
                                     var direction = $grid.data(internal.ENTER_DIRECT);
@@ -22847,11 +23153,86 @@ var nts;
                             }
                         }
                         /**
+                         * Set state.
+                         */
+                        function setState($grid, rowId, key, states) {
+                            var cellFormatter = $grid.data(internal.CELL_FORMATTER);
+                            var cellStateFeatureDef = cellFormatter.cellStateFeatureDef;
+                            if (cellFormatter.rowStates) {
+                                var row = cellFormatter.rowStates[rowId];
+                                if (row) {
+                                    var sts = row[key];
+                                    if (sts) {
+                                        if (sts[0][cellStateFeatureDef]) {
+                                            sts[0][cellStateFeatureDef] = states;
+                                        }
+                                    }
+                                    else {
+                                        var cellState = {};
+                                        cellState[cellStateFeatureDef.rowId] = rowId;
+                                        cellState[cellStateFeatureDef.columnKey] = key;
+                                        cellState[cellStateFeatureDef.state] = states;
+                                        row[key] = [cellState];
+                                    }
+                                }
+                                else {
+                                    cellFormatter.rowStates[rowId] = {};
+                                    var cellState = {};
+                                    cellState[cellStateFeatureDef.rowId] = rowId;
+                                    cellState[cellStateFeatureDef.columnKey] = key;
+                                    cellState[cellStateFeatureDef.state] = states;
+                                    cellFormatter.rowStates[rowId][key] = [cellState];
+                                }
+                            }
+                            else {
+                                cellFormatter.rowStates = {};
+                                var cellState = {};
+                                cellState[cellStateFeatureDef.rowId] = rowId;
+                                cellState[cellStateFeatureDef.columnKey] = key;
+                                cellState[cellStateFeatureDef.state] = states;
+                                var colState = {};
+                                colState[key] = [cellState];
+                                cellFormatter.rowStates[rowId] = colState;
+                            }
+                            updating.renderCell($grid, rowId, key);
+                        }
+                        /**
                          * Disable controls
                          */
-                        function disableNtsControls($grid, columnKey, controlType) {
+                        function disableNtsControls($grid, columnKey, controlType, header) {
                             var ds = $grid.igGrid("option", "dataSource");
                             var primaryKey = $grid.igGrid("option", "primaryKey");
+                            if (header && controlType === ntsControls.CHECKBOX) {
+                                var setting = $grid.data(internal.SETTINGS);
+                                if (setting && setting.descriptor && setting.descriptor.colIdxes) {
+                                    var key = setting.descriptor.colIdxes[columnKey];
+                                    var cellElm = void 0;
+                                    var headerCells = setting.descriptor.headerCells;
+                                    if (!headerCells) {
+                                        cellElm = setting.descriptor.headerParent.find("th").filter(function () {
+                                            var c = $(this);
+                                            var id = c.attr("id");
+                                            if (!id)
+                                                return false;
+                                            var parts = id.split("_");
+                                            id = parts[parts.length - 1];
+                                            return c.css("display") !== "none" && id === columnKey;
+                                        });
+                                    }
+                                    else {
+                                        var cells = headerCells.filter(function (c) {
+                                            return c.css("display") !== "none";
+                                        });
+                                        cellElm = cells[key];
+                                    }
+                                    if (cellElm) {
+                                        var control = ntsControls.getControl(controlType);
+                                        if (control) {
+                                            control.disable(cellElm);
+                                        }
+                                    }
+                                }
+                            }
                             for (var i = 0; i < ds.length; i++) {
                                 var id = ds[i][primaryKey];
                                 disableNtsControlAt($grid, id, columnKey, controlType);
@@ -22864,6 +23245,37 @@ var nts;
                         function enableNtsControls($grid, columnKey, controlType) {
                             var ds = $grid.igGrid("option", "dataSource");
                             var primaryKey = $grid.igGrid("option", "primaryKey");
+                            if (header && controlType === ntsControls.CHECKBOX) {
+                                var setting = $grid.data(internal.SETTINGS);
+                                if (setting && setting.descriptor && setting.descriptor.colIdxes) {
+                                    var key = setting.descriptor.colIdxes[columnKey];
+                                    var cellElm = void 0;
+                                    var headerCells = setting.descriptor.headerCells;
+                                    if (!headerCells) {
+                                        cellElm = setting.descriptor.headerParent.find("th").filter(function () {
+                                            var c = $(this);
+                                            var id = c.attr("id");
+                                            if (!id)
+                                                return false;
+                                            var parts = id.split("_");
+                                            id = parts[parts.length - 1];
+                                            return c.css("display") !== "none" && id === columnKey;
+                                        });
+                                    }
+                                    else {
+                                        var cells = headerCells.filter(function (c) {
+                                            return c.css("display") !== "none";
+                                        });
+                                        cellElm = cells[key];
+                                    }
+                                    if (cellElm) {
+                                        var control = ntsControls.getControl(controlType);
+                                        if (control) {
+                                            control.enable(cellElm);
+                                        }
+                                    }
+                                }
+                            }
                             for (var i = 0; i < ds.length; i++) {
                                 var id = ds[i][primaryKey];
                                 enableNtsControlAt($grid, id, columnKey, controlType);
@@ -22878,9 +23290,10 @@ var nts;
                             var control = ntsControls.getControl(controlType);
                             if (uk.util.isNullOrUndefined(control))
                                 return;
-                            control.disable($(cellContainer));
-                            if (!$(cellContainer).hasClass(color.Disable))
-                                $(cellContainer).addClass(color.Disable);
+                            var $cellContainer = $(cellContainer);
+                            control.disable($cellContainer);
+                            if (!$cellContainer.hasClass(color.Disable))
+                                $cellContainer.addClass(color.Disable);
                             color.pushDisable($grid, { id: rowId, columnKey: columnKey });
                         }
                         /**
@@ -22891,8 +23304,9 @@ var nts;
                             var control = ntsControls.getControl(controlType);
                             if (uk.util.isNullOrUndefined(control))
                                 return;
-                            control.enable($(cellContainer));
-                            $(cellContainer).removeClass(color.Disable);
+                            var $cellContainer = $(cellContainer);
+                            control.enable($cellContainer);
+                            $cellContainer.removeClass(color.Disable);
                             color.popDisable($grid, { id: rowId, columnKey: columnKey });
                         }
                         /**
@@ -22903,26 +23317,14 @@ var nts;
                             var primaryKey = $grid.igGrid("option", "primaryKey");
                             if (utils.getControlType($grid, key) !== ntsControls.CHECKBOX)
                                 return;
-                            var setting = $grid.data(internal.SETTINGS);
-                            var states = setting.disableStates;
-                            var _loop_3 = function (i) {
-                                var id = ds[i][primaryKey];
-                                var cols = void 0;
-                                if (states && (cols = states[id])) {
-                                    var found_1 = false;
-                                    cols.forEach(function (c, i) {
-                                        if (c === key) {
-                                            found_1 = true;
-                                            return false;
-                                        }
-                                    });
-                                    if (found_1)
-                                        return "continue";
-                                }
-                                updating.updateCell($grid, id, key, true, undefined, true);
-                            };
+                            var cbSelect = $grid.data(internal.CB_SELECTED);
+                            var colCb = cbSelect[key];
                             for (var i = 0; i < ds.length; i++) {
-                                _loop_3(i);
+                                var id = ds[i][primaryKey];
+                                if (colCb && colCb.disableRows
+                                    && colCb.disableRows.has(id))
+                                    continue;
+                                updating.updateCell($grid, id, key, true, undefined, true);
                             }
                         }
                         /**
@@ -22933,26 +23335,13 @@ var nts;
                             var primaryKey = $grid.igGrid("option", "primaryKey");
                             if (utils.getControlType($grid, key) !== ntsControls.CHECKBOX)
                                 return;
-                            var setting = $grid.data(internal.SETTINGS);
-                            var states = setting.disableStates;
-                            var _loop_4 = function (i) {
-                                var id = ds[i][primaryKey];
-                                var cols = void 0;
-                                if (states && (cols = states[id])) {
-                                    var found_2 = false;
-                                    cols.forEach(function (c, i) {
-                                        if (c === key) {
-                                            found_2 = true;
-                                            return false;
-                                        }
-                                    });
-                                    if (found_2)
-                                        return "continue";
-                                }
-                                updating.updateCell($grid, id, key, false, undefined, true);
-                            };
+                            var cbSelect = $grid.data(internal.CB_SELECTED);
+                            var colCb = cbSelect[key];
                             for (var i = 0; i < ds.length; i++) {
-                                _loop_4(i);
+                                var id = ds[i][primaryKey];
+                                if (colCb && colCb.disableRows && colCb.disableRows.has(id))
+                                    continue;
+                                updating.updateCell($grid, id, key, false, undefined, true);
                             }
                         }
                         /**
@@ -23146,23 +23535,26 @@ var nts;
                                     .on("change", function () {
                                     var $cb = $(this);
                                     var selected = $cb.is(":checked");
-                                    _.forEach(options.dataSource, function (r) {
-                                        if (!r)
-                                            return;
-                                        var id = r[options.primaryKey];
-                                        if (columnConf && columnConf.hiddenRows
-                                            && columnConf.hiddenRows.some(function (v) { return v === id; }))
-                                            return;
-                                        updating.updateCell($grid, id, ui.columnKey, selected, undefined, true);
-                                    });
                                     var cbSelectCols = $grid.data(internal.CB_SELECTED);
                                     var cbSelectConf = cbSelectCols[column[0]];
                                     if (!cbSelectConf)
                                         return;
+                                    _.forEach(options.dataSource, function (r) {
+                                        if (!r)
+                                            return;
+                                        var id = r[options.primaryKey];
+                                        if (cbSelectConf && (cbSelectConf.hiddenRows
+                                            && cbSelectConf.hiddenRows.some(function (v) { return v === id; }))
+                                            || (cbSelectConf.disableRows
+                                                && cbSelectConf.disableRows.has(id)))
+                                            return;
+                                        updating.updateCell($grid, id, ui.columnKey, selected, undefined, true);
+                                    });
                                     cbSelectConf.selectAll = selected;
                                     if (selected) {
                                         var hiddenCount = cbSelectConf.hiddenRows ? cbSelectConf.hiddenRows.length : 0;
-                                        cbSelectConf.quantity = options.dataSource.length - hiddenCount;
+                                        var disableCount = cbSelectConf.disableRows ? cbSelectConf.disableRows.size : 0;
+                                        cbSelectConf.quantity = options.dataSource.length - hiddenCount - disableCount;
                                         return;
                                     }
                                     cbSelectConf.quantity = 0;
@@ -23170,13 +23562,13 @@ var nts;
                             };
                         }
                         ntsControls.bindCbHeaderColumns = bindCbHeaderColumns;
-                        var NtsControlBase = (function () {
+                        var NtsControlBase = /** @class */ (function () {
                             function NtsControlBase() {
                                 this.readOnly = false;
                             }
                             return NtsControlBase;
                         }());
-                        var CheckBox = (function (_super) {
+                        var CheckBox = /** @class */ (function (_super) {
                             __extends(CheckBox, _super);
                             function CheckBox() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -23232,7 +23624,7 @@ var nts;
                             };
                             return CheckBox;
                         }(NtsControlBase));
-                        var SwitchButtons = (function (_super) {
+                        var SwitchButtons = /** @class */ (function (_super) {
                             __extends(SwitchButtons, _super);
                             function SwitchButtons() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -23276,7 +23668,17 @@ var nts;
                                         }
                                     }
                                 });
-                                _.forEach(options, function (opt) {
+                                var distinction = data.controlDef.distinction;
+                                var switchOptions;
+                                if (distinction && (switchOptions = distinction[data.rowId])) {
+                                    switchOptions = options.filter(function (o) {
+                                        return switchOptions.indexOf(o.value) > -1;
+                                    });
+                                }
+                                else {
+                                    switchOptions = options;
+                                }
+                                _.forEach(switchOptions, function (opt) {
                                     var value = opt[optionsValue];
                                     var text = opt[optionsText];
                                     var btn = $('<button>').text(text).css("height", "26px")
@@ -23308,7 +23710,7 @@ var nts;
                             };
                             return SwitchButtons;
                         }(NtsControlBase));
-                        var ComboBox = (function (_super) {
+                        var ComboBox = /** @class */ (function (_super) {
                             __extends(ComboBox, _super);
                             function ComboBox() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -23458,7 +23860,7 @@ var nts;
                             };
                             return ComboBox;
                         }(NtsControlBase));
-                        var Button = (function (_super) {
+                        var Button = /** @class */ (function (_super) {
                             __extends(Button, _super);
                             function Button() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -23484,7 +23886,7 @@ var nts;
                             };
                             return Button;
                         }(NtsControlBase));
-                        var DeleteButton = (function (_super) {
+                        var DeleteButton = /** @class */ (function (_super) {
                             __extends(DeleteButton, _super);
                             function DeleteButton() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -23498,7 +23900,7 @@ var nts;
                             };
                             return DeleteButton;
                         }(Button));
-                        var TextEditor = (function (_super) {
+                        var TextEditor = /** @class */ (function (_super) {
                             __extends(TextEditor, _super);
                             function TextEditor() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -23628,7 +24030,7 @@ var nts;
                             };
                             return TextEditor;
                         }(NtsControlBase));
-                        var Label = (function (_super) {
+                        var Label = /** @class */ (function (_super) {
                             __extends(Label, _super);
                             function Label(action) {
                                 var _this = _super.call(this) || this;
@@ -23658,7 +24060,7 @@ var nts;
                             };
                             return Label;
                         }(NtsControlBase));
-                        var LinkLabel = (function (_super) {
+                        var LinkLabel = /** @class */ (function (_super) {
                             __extends(LinkLabel, _super);
                             function LinkLabel() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -23682,7 +24084,7 @@ var nts;
                             };
                             return LinkLabel;
                         }(NtsControlBase));
-                        var FlexImage = (function (_super) {
+                        var FlexImage = /** @class */ (function (_super) {
                             __extends(FlexImage, _super);
                             function FlexImage() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -23711,7 +24113,7 @@ var nts;
                             };
                             return FlexImage;
                         }(NtsControlBase));
-                        var Image = (function (_super) {
+                        var Image = /** @class */ (function (_super) {
                             __extends(Image, _super);
                             function Image() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -23843,7 +24245,7 @@ var nts;
                             PasteMode[PasteMode["NEW"] = 0] = "NEW";
                             PasteMode[PasteMode["UPDATE"] = 1] = "UPDATE";
                         })(PasteMode || (PasteMode = {}));
-                        var Processor = (function () {
+                        var Processor = /** @class */ (function () {
                             function Processor(options) {
                                 this.pasteInMode = PasteMode.UPDATE;
                                 this.options = options;
@@ -24148,7 +24550,7 @@ var nts;
                                     var targetColumn = targetCol;
                                     // Errors
                                     var comboErrors = [];
-                                    var _loop_5 = function () {
+                                    var _loop_3 = function () {
                                         var nextColumn = void 0;
                                         var columnKey = targetColumn.key;
                                         var cellElement = self.$grid.igGrid("cellById", $gridRow.data("id"), columnKey);
@@ -24206,7 +24608,7 @@ var nts;
                                         targetIndex = nextColumn.index;
                                     };
                                     for (var i = 0; i < row.length; i++) {
-                                        var state_1 = _loop_5();
+                                        var state_1 = _loop_3();
                                         if (state_1 === "break")
                                             break;
                                     }
@@ -24265,7 +24667,7 @@ var nts;
                     })(copyPaste || (copyPaste = {}));
                     var events;
                     (function (events) {
-                        var Handler = (function () {
+                        var Handler = /** @class */ (function () {
                             function Handler($grid, options) {
                                 this.$grid = $grid;
                                 this.options = options;
@@ -24419,22 +24821,22 @@ var nts;
                                 });
                                 return this;
                             };
+                            Handler.KEY_DOWN = "keydown";
+                            Handler.KEY_UP = "keyup";
+                            Handler.FOCUS_IN = "focusin";
+                            Handler.BLUR = "blur";
+                            Handler.CLICK = "click";
+                            Handler.MOUSE_DOWN = "mousedown";
+                            Handler.SCROLL = "scroll";
+                            Handler.GRID_EDIT_CELL_STARTED = "iggridupdatingeditcellstarted";
+                            Handler.COLUMN_RESIZING = "iggridresizingcolumnresizing";
+                            Handler.RECORDS = "iggridvirtualrecordsrender";
+                            Handler.CELL_CLICK = "iggridcellclick";
+                            Handler.PAGE_INDEX_CHANGE = "iggridpagingpageindexchanging";
+                            Handler.PAGE_SIZE_CHANGE = "iggridpagingpagesizechanging";
+                            Handler.CONTROL_CHANGE = "ntsgridcontrolvaluechanged";
                             return Handler;
                         }());
-                        Handler.KEY_DOWN = "keydown";
-                        Handler.KEY_UP = "keyup";
-                        Handler.FOCUS_IN = "focusin";
-                        Handler.BLUR = "blur";
-                        Handler.CLICK = "click";
-                        Handler.MOUSE_DOWN = "mousedown";
-                        Handler.SCROLL = "scroll";
-                        Handler.GRID_EDIT_CELL_STARTED = "iggridupdatingeditcellstarted";
-                        Handler.COLUMN_RESIZING = "iggridresizingcolumnresizing";
-                        Handler.RECORDS = "iggridvirtualrecordsrender";
-                        Handler.CELL_CLICK = "iggridcellclick";
-                        Handler.PAGE_INDEX_CHANGE = "iggridpagingpageindexchanging";
-                        Handler.PAGE_SIZE_CHANGE = "iggridpagingpagesizechanging";
-                        Handler.CONTROL_CHANGE = "ntsgridcontrolvaluechanged";
                         events.Handler = Handler;
                         /**
                          * Post render process
@@ -24443,7 +24845,13 @@ var nts;
                             options.rendered = function (evt, ui) {
                                 var $grid = $(evt.target);
                                 events.Handler.pull($grid, options).turnOn();
-                                $(this).data(internal.CB_SELECTED, cbSelectionColumns);
+                                var cbSelect = $grid.data(internal.CB_SELECTED);
+                                if (cbSelect) {
+                                    _.merge(cbSelect, cbSelectionColumns);
+                                }
+                                else {
+                                    $grid.data(internal.CB_SELECTED, cbSelectionColumns);
+                                }
                                 // Bind events for fixed table part
                                 var $fixedTbl = fixedColumns.getFixedTable($grid);
                                 if ($fixedTbl.length > 0) {
@@ -24508,7 +24916,7 @@ var nts;
                     (function (validation) {
                         validation.VALIDATORS = "ntsValidators";
                         var H_M_MAX = 60;
-                        var ColumnFieldValidator = (function () {
+                        var ColumnFieldValidator = /** @class */ (function () {
                             function ColumnFieldValidator(name, primitiveValue, options) {
                                 this.name = name;
                                 this.primitiveValue = primitiveValue;
@@ -24556,7 +24964,7 @@ var nts;
                             return ColumnFieldValidator;
                         }());
                         validation.ColumnFieldValidator = ColumnFieldValidator;
-                        var NumberValidator = (function () {
+                        var NumberValidator = /** @class */ (function () {
                             function NumberValidator(name, displayType, primitiveValue, options) {
                                 this.name = name;
                                 this.displayType = displayType;
@@ -24616,7 +25024,7 @@ var nts;
                             };
                             return NumberValidator;
                         }());
-                        var Result = (function () {
+                        var Result = /** @class */ (function () {
                             function Result(isValid, formatted, messageId) {
                                 this.onSuccess = $.noop;
                                 this.onFail = $.noop;
@@ -24704,7 +25112,7 @@ var nts;
                         errors.ERROR_STL = { "border-color": "#ff6666" };
                         errors.NO_ERROR_STL = { "border-color": "" };
                         errors.EDITOR_SELECTOR = "div.ui-igedit-container";
-                        var GridCellError = (function () {
+                        var GridCellError = /** @class */ (function () {
                             function GridCellError(grid, rowId, columnKey, message) {
                                 this.grid = grid;
                                 this.rowId = rowId;
@@ -24914,27 +25322,81 @@ var nts;
                         color.Reflect = "ntsgrid-reflect";
                         color.Calculation = "ntsgrid-calc";
                         color.Disable = "ntsgrid-disable";
-                        var CellFormatter = (function () {
-                            function CellFormatter($grid, features) {
+                        var CellFormatter = /** @class */ (function () {
+                            function CellFormatter($grid, features, ntsFeatures, flatCols) {
                                 this.$grid = $grid;
                                 // Cell
-                                this.cellStateFeatureDef = feature.find(features, feature.CELL_STATE);
-                                this.setStatesTable(features);
+                                this.cellStateFeatureDef = feature.find(ntsFeatures, feature.CELL_STATE);
+                                this.setStatesTable(ntsFeatures);
                                 // Row
-                                this.rowDisableFeatureDef = feature.find(features, feature.ROW_STATE);
+                                this.rowDisableFeatureDef = feature.find(ntsFeatures, feature.ROW_STATE);
                                 if (!uk.util.isNullOrUndefined(this.rowDisableFeatureDef)
                                     && !uk.util.isNullOrUndefined(this.rowDisableFeatureDef.rows)) {
                                     this.disableRows = _.groupBy(this.rowDisableFeatureDef.rows, "rowId");
+                                    this.addDisableRows(features, ntsFeatures, flatCols);
                                 }
                                 // Text color
-                                this.textColorFeatureDef = feature.find(features, feature.TEXT_COLOR);
-                                this.setTextColorsTableMap(features);
+                                this.textColorFeatureDef = feature.find(ntsFeatures, feature.TEXT_COLOR);
+                                this.setTextColorsTableMap(ntsFeatures);
                             }
+                            /**
+                             * Add disable rows.
+                             */
+                            CellFormatter.prototype.addDisableRows = function (features, ntsFeatures, flatCols) {
+                                var self = this;
+                                var sheetMng = self.$grid.data(internal.SHEETS);
+                                var columns;
+                                if (sheetMng) {
+                                    columns = sheetMng.sheetColumns[sheetMng.currentSheet];
+                                }
+                                else {
+                                    var sheetFt_1 = feature.find(ntsFeatures, feature.SHEET);
+                                    if (sheetFt_1) {
+                                        var sheetDf_1 = sheetFt_1.sheets.filter(function (s) {
+                                            return s.name === sheetFt_1.initialDisplay;
+                                        })[0];
+                                        if (!sheetDf_1)
+                                            return;
+                                        self.rowDisableFeatureDef.rows.forEach(function (i) {
+                                            sheetDf_1.columns.forEach(function (c) {
+                                                self.addDisableState(i.rowId, c);
+                                            });
+                                        });
+                                        var columnFixingFt_1 = feature.find(features, feature.COLUMN_FIX);
+                                        if (columnFixingFt_1) {
+                                            self.rowDisableFeatureDef.rows.forEach(function (i) {
+                                                columnFixingFt_1.columnSettings.forEach(function (c) {
+                                                    self.addDisableState(i.rowId, c.columnKey);
+                                                });
+                                            });
+                                        }
+                                        return;
+                                    }
+                                    else {
+                                        columns = flatCols;
+                                    }
+                                }
+                                if (columns) {
+                                    var setCellDisable_1 = function (cols) {
+                                        cols.forEach(function (c) {
+                                            if (c.group) {
+                                                setCellDisable_1(c.group);
+                                                return;
+                                            }
+                                            self.rowDisableFeatureDef.rows.forEach(function (i) {
+                                                self.addDisableState(i.rowId, c.key);
+                                            });
+                                        });
+                                    };
+                                    setCellDisable_1(columns);
+                                }
+                            };
                             /**
                              * Set states table
                              */
                             CellFormatter.prototype.setStatesTable = function (features) {
                                 var _this = this;
+                                var self = this;
                                 if (uk.util.isNullOrUndefined(this.cellStateFeatureDef))
                                     return;
                                 var rowIdName = this.cellStateFeatureDef.rowId;
@@ -24944,6 +25406,9 @@ var nts;
                                 this.rowStates = _.groupBy(this.statesTable, rowIdName);
                                 _.forEach(this.rowStates, function (value, key) {
                                     _this.rowStates[key] = _.groupBy(_this.rowStates[key], function (item) {
+                                        if (item[stateName].indexOf(color.Disable) > -1) {
+                                            self.addDisableState(item[rowIdName], item[columnKeyName]);
+                                        }
                                         return item[columnKeyName];
                                     });
                                 });
@@ -25053,11 +25518,11 @@ var nts;
                                             var disableRow = self.disableRows[cell.id];
                                             if (!uk.util.isNullOrUndefined(disableRow) && disableRow.length > 0 && disableRow[0].disable) {
                                                 $gridCell.addClass(color.Disable);
-                                                self.addDisableState(cell.id, cell.columnKey);
+                                                //                                    self.addDisableState(cell.id, cell.columnKey);
                                             }
                                         }
                                         // Set cell states
-                                        if (!uk.util.isNullOrUndefined(statesTable) && !uk.util.isNullOrUndefined(rowIdName)
+                                        if (!uk.util.isNullOrUndefined(self.rowStates) && !uk.util.isNullOrUndefined(rowIdName)
                                             && !uk.util.isNullOrUndefined(columnKeyName) && !uk.util.isNullOrUndefined(stateName)
                                             && !uk.util.isNullOrUndefined(self.rowStates[cell.id])) {
                                             var cellState = self.rowStates[cell.id][column.key];
@@ -25065,8 +25530,7 @@ var nts;
                                                 return;
                                             _.forEach(cellState[0][stateName], function (stt) {
                                                 $gridCell.addClass(stt);
-                                                if (stt === color.Disable)
-                                                    self.addDisableState(cell.id, cell.columnKey);
+                                                //                                    if (stt === color.Disable) self.addDisableState(cell.id, cell.columnKey);
                                             });
                                         }
                                     }, 0);
@@ -25079,25 +25543,22 @@ var nts;
                              */
                             CellFormatter.prototype.addDisableState = function (id, key) {
                                 var self = this;
-                                var setting = self.$grid.data(internal.SETTINGS);
-                                if (!setting)
+                                var cbSelect = self.$grid.data(internal.CB_SELECTED);
+                                if (!cbSelect) {
+                                    cbSelect = {};
+                                    self.$grid.data(internal.CB_SELECTED, cbSelect);
+                                }
+                                var cbColConf = cbSelect[key];
+                                if (!cbColConf) {
+                                    var ds = new Set();
+                                    ds.add(id);
+                                    cbSelect[key] = { disableRows: ds };
                                     return;
-                                if (!setting.disableStates) {
-                                    setting.disableStates = {};
-                                    var cs = new Set();
-                                    cs.add(key);
-                                    setting.disableStates[id] = cs;
-                                    return;
                                 }
-                                var cols = setting.disableStates[id];
-                                if (!cols) {
-                                    var cs = new Set();
-                                    cs.add(key);
-                                    setting.disableStates[id] = cs;
+                                if (!cbColConf.disableRows) {
+                                    cbColConf.disableRows = new Set();
                                 }
-                                else {
-                                    setting.disableStates[id].add(key);
-                                }
+                                cbColConf.disableRows.add(id);
                             };
                             /**
                              * Style common controls.
@@ -25117,20 +25578,20 @@ var nts;
                                     if (!uk.util.isNullOrUndefined(disableRow) && disableRow.length > 0 && disableRow[0].disable) {
                                         cell.$element.addClass(color.Disable);
                                         utils.disableNtsControl($grid, cell, controlType);
-                                        self.addDisableState(cell.id, cell.columnKey);
+                                        //                            self.addDisableState(cell.id, cell.columnKey);
                                     }
                                 }
                                 // Set cell states
-                                if (!uk.util.isNullOrUndefined(statesTable) && !uk.util.isNullOrUndefined(rowIdName)
+                                if (!uk.util.isNullOrUndefined(self.rowStates) && !uk.util.isNullOrUndefined(rowIdName)
                                     && !uk.util.isNullOrUndefined(columnKeyName) && !uk.util.isNullOrUndefined(stateName)
-                                    && !uk.util.isNullOrUndefined(this.rowStates[cell.id])) {
-                                    var cellState = this.rowStates[cell.id][cell.columnKey];
+                                    && !uk.util.isNullOrUndefined(self.rowStates[cell.id])) {
+                                    var cellState = self.rowStates[cell.id][cell.columnKey];
                                     if (uk.util.isNullOrUndefined(cellState) || cellState.length === 0)
                                         return;
                                     _.forEach(cellState[0][stateName], function (stt) {
                                         if (stt === color.Disable && !cell.$element.hasClass(color.Disable)) {
                                             utils.disableNtsControl($grid, cell, controlType);
-                                            self.addDisableState(cell.id, cell.columnKey);
+                                            //                                self.addDisableState(cell.id, cell.columnKey);
                                         }
                                         cell.$element.addClass(stt);
                                     });
@@ -25348,7 +25809,7 @@ var nts;
                     (function (sheet_1) {
                         var normalStyles = { backgroundColor: '', color: '' };
                         var selectedStyles = { backgroundColor: '#00B050', color: '#fff' };
-                        var Configurator = (function () {
+                        var Configurator = /** @class */ (function () {
                             function Configurator(currentSheet, sheets) {
                                 this.currentSheet = currentSheet;
                                 this.sheets = sheets;
@@ -25656,7 +26117,7 @@ var nts;
                     })(sheet || (sheet = {}));
                     var onDemand;
                     (function (onDemand) {
-                        var Loader = (function () {
+                        var Loader = /** @class */ (function () {
                             function Loader(allKeysPath, pageRecordsPath) {
                                 this.allKeysPath = allKeysPath;
                                 this.pageRecordsPath = pageRecordsPath;
@@ -25843,7 +26304,7 @@ var nts;
                     (function (settings) {
                         settings.USER_M = "M";
                         settings.USER_O = "O";
-                        var Descriptor = (function () {
+                        var Descriptor = /** @class */ (function () {
                             function Descriptor(startRow, rowCount, elements, keyIdxes) {
                                 this.startRow = startRow;
                                 this.rowCount = rowCount;
@@ -25914,10 +26375,11 @@ var nts;
                                     setting.descriptor.fixedColumns = owner._fixedColumns;
                                     setting.descriptor.fixedTable = owner._fixedTable;
                                     setting.descriptor.headerCells = owner._headerCells;
+                                    setting.descriptor.headerParent = owner._headerParent;
                                     return;
                                 }
                                 setting.descriptor.update(startRow, owner._virtualRowCount, owner._virtualDom);
-                                if (!setting.descriptor.keyIdxes) {
+                                if (!setting.descriptor.keyIdxes || $grid.data("ntsRowDeleting")) {
                                     var pk_2 = owner.dataSource.settings.primaryKey;
                                     var keyIdxes_2 = {};
                                     if (owner.dataSource._origDs) {
@@ -25928,10 +26390,13 @@ var nts;
                                     setting.descriptor.keyIdxes = keyIdxes_2;
                                     setting.descriptor.fixedTable = owner._fixedTable;
                                     setting.descriptor.headerCells = owner._headerCells;
+                                    setting.descriptor.headerParent = owner._headerParent;
+                                    $grid.data("ntsRowDeleting", false);
                                 }
                                 if (rebuild) {
                                     setting.descriptor.fixedTable = owner._fixedTable;
                                     setting.descriptor.headerCells = owner._headerCells;
+                                    setting.descriptor.headerParent = owner._headerParent;
                                 }
                             });
                         }
@@ -25956,6 +26421,7 @@ var nts;
                         internal.UPDATED_CELLS = "ntsUpdatedCells";
                         internal.TARGET_EDITS = "ntsTargetEdits";
                         internal.OTHER_EDITS = "ntsOtherEdits";
+                        internal.CELL_FORMATTER = "ntsCellFormatter";
                         // Full columns options
                         internal.GRID_OPTIONS = "ntsGridOptions";
                         internal.SELECTED_CELL = "ntsSelectedCell";
@@ -26542,7 +27008,7 @@ var nts;
                         }
                         return control;
                     }
-                    var NtsPopupPanel = (function () {
+                    var NtsPopupPanel = /** @class */ (function () {
                         function NtsPopupPanel($panel, option) {
                             var parent = $panel.parent();
                             this.$panel = $panel
@@ -27186,7 +27652,7 @@ var nts;
                 /**
                  * Accordion binding handler
                  */
-                var NtsAccordionBindingHandler = (function () {
+                var NtsAccordionBindingHandler = /** @class */ (function () {
                     function NtsAccordionBindingHandler() {
                     }
                     /**
@@ -27281,7 +27747,7 @@ var nts;
                 /**
                  * Accordion binding handler
                  */
-                var NtsTableButtonBindingHandler = (function () {
+                var NtsTableButtonBindingHandler = /** @class */ (function () {
                     function NtsTableButtonBindingHandler() {
                     }
                     /**
@@ -27363,7 +27829,7 @@ var nts;
                 /**
                  * Dialog binding handler
                  */
-                var NtsColorPickerBindingHandler = (function () {
+                var NtsColorPickerBindingHandler = /** @class */ (function () {
                     function NtsColorPickerBindingHandler() {
                     }
                     /**
@@ -27532,7 +27998,7 @@ var nts;
                 /**
                  * Dialog binding handler
                  */
-                var NtsDateRangePickerBindingHandler = (function () {
+                var NtsDateRangePickerBindingHandler = /** @class */ (function () {
                     function NtsDateRangePickerBindingHandler() {
                     }
                     /**
@@ -27823,7 +28289,7 @@ var nts;
                 /**
                  * CheckBox binding handler
                  */
-                var NtsFileUploadBindingHandler = (function () {
+                var NtsFileUploadBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor..
                      */
@@ -27968,7 +28434,7 @@ var nts;
                 /**
                  * CheckBox binding handler
                  */
-                var NtsFunctionPanelBindingHandler = (function () {
+                var NtsFunctionPanelBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor.
                      */
@@ -28068,7 +28534,7 @@ var nts;
                 /**
                  * HelpButton binding handler
                  */
-                var NtsHelpButtonBindingHandler = (function () {
+                var NtsHelpButtonBindingHandler = /** @class */ (function () {
                     function NtsHelpButtonBindingHandler() {
                     }
                     NtsHelpButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -28166,7 +28632,7 @@ var nts;
                 /**
                  * HelpButton binding handler
                  */
-                var NtsIconBindingHandler = (function () {
+                var NtsIconBindingHandler = /** @class */ (function () {
                     function NtsIconBindingHandler() {
                     }
                     NtsIconBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -28213,7 +28679,7 @@ var nts;
                 /**
                  * Dialog binding handler
                  */
-                var NtsImageEditorBindingHandler = (function () {
+                var NtsImageEditorBindingHandler = /** @class */ (function () {
                     function NtsImageEditorBindingHandler() {
                     }
                     /**
@@ -28271,7 +28737,7 @@ var nts;
                     };
                     return NtsImageEditorBindingHandler;
                 }());
-                var ImageEditorConstructSite = (function () {
+                var ImageEditorConstructSite = /** @class */ (function () {
                     function ImageEditorConstructSite($root, helper) {
                         this.$root = $root;
                         this.helper = helper;
@@ -28400,7 +28866,7 @@ var nts;
                             var target = self.helper.getUrl(query);
                             var xhr = self.getXRequest();
                             if (xhr === null) {
-                                self.destroyImg();
+                                self.destroyImg(query);
                                 return;
                             }
                             xhr.open('GET', target);
@@ -28421,29 +28887,31 @@ var nts;
                                         };
                                     }
                                     else {
-                                        self.destroyImg();
+                                        self.destroyImg(query);
                                     }
                                 }
                                 else {
-                                    self.destroyImg();
+                                    self.destroyImg(query);
                                 }
                             };
                             xhr.send();
                         });
                     };
-                    ImageEditorConstructSite.prototype.destroyImg = function () {
+                    ImageEditorConstructSite.prototype.destroyImg = function (query) {
                         var self = this;
-                        nts.uk.ui.dialog.alert("画像データが正しくないです。。");
-                        self.$root.data("img-status", self.buildImgStatus("load fail", 3));
-                        self.backupData(null, "", "", 0);
-                        self.$imagePreview.attr("src", "");
-                        self.$imagePreview.closest(".image-holder").addClass(".image-upload-icon");
-                        self.$imagePreview.closest(".image-container").addClass(".container-no-upload-background");
-                        self.$imageSizeLbl.text("");
-                        if (!nts.uk.util.isNullOrUndefined(self.cropper)) {
-                            self.cropper.destroy();
-                        }
-                        self.$root.data("cropper", self.cropper);
+                        nts.uk.ui.dialog.alert("画像データが正しくないです。。").then(function () {
+                            self.$root.data("img-status", self.buildImgStatus("load fail", 3));
+                            self.backupData(null, "", "", 0);
+                            self.$imagePreview.attr("src", "");
+                            self.$imagePreview.closest(".image-holder").addClass(".image-upload-icon");
+                            self.$imagePreview.closest(".image-container").addClass(".container-no-upload-background");
+                            self.$imageSizeLbl.text("");
+                            if (!nts.uk.util.isNullOrUndefined(self.cropper)) {
+                                self.cropper.destroy();
+                            }
+                            self.$root.data("cropper", self.cropper);
+                            query.actionOnClose();
+                        });
                     };
                     ImageEditorConstructSite.prototype.getXRequest = function () {
                         return new XMLHttpRequest();
@@ -28478,7 +28946,7 @@ var nts;
                                 self.backupData(file, file.name, file.type.split("/")[1], file.size);
                             };
                             fr.onerror = function () {
-                                self.destroyImg();
+                                self.destroyImg({ actionOnClose: $.noop });
                             };
                             fr.readAsDataURL(file);
                         }
@@ -28493,7 +28961,7 @@ var nts;
                     };
                     return ImageEditorConstructSite;
                 }());
-                var ImageEditorHelper = (function () {
+                var ImageEditorHelper = /** @class */ (function () {
                     function ImageEditorHelper(extensions, msgIdForUnknownFile, query) {
                         this.IMAGE_EXTENSION = [".png", ".PNG", ".jpg", ".JPG", ".JPEG", ".jpeg"];
                         this.BYTE_SIZE = 1024;
@@ -28582,7 +29050,7 @@ var nts;
                 /**
                  * Let binding handler
                  */
-                var NtsLetBindingHandler = (function () {
+                var NtsLetBindingHandler = /** @class */ (function () {
                     function NtsLetBindingHandler() {
                         this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                             // Make a modified binding context, with extra properties, and apply it to descendant elements
@@ -28610,7 +29078,7 @@ var nts;
                 /**
                  * LinkButton
                  */
-                var NtsLinkButtonBindingHandler = (function () {
+                var NtsLinkButtonBindingHandler = /** @class */ (function () {
                     function NtsLinkButtonBindingHandler() {
                     }
                     /**
@@ -28655,7 +29123,7 @@ var nts;
                 /**
                  * Dialog binding handler
                  */
-                var NtsMonthDaysBindingHandler = (function () {
+                var NtsMonthDaysBindingHandler = /** @class */ (function () {
                     function NtsMonthDaysBindingHandler() {
                     }
                     /**
@@ -28770,7 +29238,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-var NtsSortableBindingHandler = (function () {
+var NtsSortableBindingHandler = /** @class */ (function () {
     function NtsSortableBindingHandler() {
         var _this = this;
         this.ITEMKEY = "ko_sortItem";
@@ -29101,7 +29569,7 @@ var nts;
                 /**
                  * Tree binding handler
                  */
-                var NtsTreeDragAndDropBindingHandler = (function () {
+                var NtsTreeDragAndDropBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor.
                      */
@@ -29306,7 +29774,7 @@ var nts;
         (function (ui) {
             var sharedvm;
             (function (sharedvm) {
-                var KibanTimer = (function () {
+                var KibanTimer = /** @class */ (function () {
                     function KibanTimer(target) {
                         var self = this;
                         self.elapsedSeconds = 0;

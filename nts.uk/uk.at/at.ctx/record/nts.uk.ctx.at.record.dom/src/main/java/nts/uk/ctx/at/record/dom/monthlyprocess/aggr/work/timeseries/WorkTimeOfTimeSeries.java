@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -60,7 +59,7 @@ public class WorkTimeOfTimeSeries {
 		
 		this.legalTime = WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(
 				this.legalTime.getWorkTime().addMinutes(addTime.getWorkTime().v()),
-				this.legalTime.getWorkTimeIncludeVacationTime().addMinutes(addTime.getWorkTimeIncludeVacationTime().v()),
+				this.legalTime.getActualWorkTime().addMinutes(addTime.getActualWorkTime().v()),
 				this.legalTime.getWithinPrescribedPremiumTime().addMinutes(addTime.getWithinPrescribedPremiumTime().v()),
 				new WithinStatutoryMidNightTime(
 						this.legalTime.getWithinStatutoryMidNightTime().getTime().addMinutes(

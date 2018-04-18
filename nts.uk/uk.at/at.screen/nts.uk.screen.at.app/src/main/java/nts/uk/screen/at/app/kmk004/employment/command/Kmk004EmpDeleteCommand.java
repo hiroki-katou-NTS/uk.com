@@ -20,5 +20,8 @@ public class Kmk004EmpDeleteCommand {
 	private Integer year;
 	
 	/** The emp code. */
-	private String empCode;
+	private String employmentCode;
+	
+	/** The is WT setting common remove. */
+	private boolean isWTSettingCommonRemove;
 }

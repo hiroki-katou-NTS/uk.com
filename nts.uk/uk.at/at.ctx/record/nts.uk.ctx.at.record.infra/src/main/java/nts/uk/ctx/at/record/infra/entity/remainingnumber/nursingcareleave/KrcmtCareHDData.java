@@ -12,7 +12,7 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
-@Table(name="KRCMT_CHILD_CARE_HD_DATA")
+@Table(name="KRCMT_CARE_HD_DATA")
 @Getter
 @Setter
 @AllArgsConstructor

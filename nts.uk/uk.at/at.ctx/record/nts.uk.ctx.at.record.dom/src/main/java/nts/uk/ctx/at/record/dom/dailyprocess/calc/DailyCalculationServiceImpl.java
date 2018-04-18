@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ErrorPresent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
@@ -57,7 +58,7 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 		val dataSetter = asyncContext.getDataSetter();
 		dataSetter.setData("dailyCalculateCount", 0);
 		dataSetter.setData("dailyCalculateStatus", ExecutionStatus.PROCESSING.nameId);
-		dataSetter.setData("dailyCalculateHasError", " ");
+		dataSetter.setData("dailyCalculateHasError", ErrorPresent.NO_ERROR.nameId );
 
 		// 設定情報を取得　（日別計算を実行するかチェックする）
 		//　※　実行しない時、終了状態＝正常終了

@@ -28,7 +28,7 @@ public class SaveShaMonthCalSetCommand implements ShaRegulaMonthActCalSetGetMeme
 		ShaDeforLaborMonthActCalSetGetMemento {
 
 	/** The sid. */
-	private String sid;
+	private String employeeId;
 	
 	/** The flex aggr setting. */
 	private FlexMonthWorkTimeAggrSetDto flexAggrSetting;
@@ -58,7 +58,7 @@ public class SaveShaMonthCalSetCommand implements ShaRegulaMonthActCalSetGetMeme
 	 */
 	@Override
 	public EmployeeId getEmployeeId() {
-		return new EmployeeId(this.sid);
+		return new EmployeeId(this.employeeId);
 	}
 
 	/*
@@ -92,6 +92,15 @@ public class SaveShaMonthCalSetCommand implements ShaRegulaMonthActCalSetGetMeme
 	@Override
 	public RegularWorkTimeAggrSet getRegularAggrSetting() {
 		return this.regAggrSetting.toDomain();
+	}
+	
+	/**
+	 * Gets the emp id.
+	 *
+	 * @return the emp id
+	 */
+	public String getEmpId() {
+		return this.employeeId;
 	}
 
 }

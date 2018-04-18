@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.ac.workflow.approvalrootstate;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -218,7 +217,5 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	public void doRemandForApplicant(String companyID, String rootStateID) {
 		approvalRootStatePub.doRemandForApplicant(companyID, rootStateID);
 	}
-
-	
 	
 }

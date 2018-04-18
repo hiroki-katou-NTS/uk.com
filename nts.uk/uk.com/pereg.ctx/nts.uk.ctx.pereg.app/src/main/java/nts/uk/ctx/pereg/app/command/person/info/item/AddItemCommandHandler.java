@@ -1,6 +1,5 @@
 package nts.uk.ctx.pereg.app.command.person.info.item;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -11,7 +10,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.app.command.person.info.category.CheckNameSpace;
-import nts.uk.ctx.pereg.app.command.person.info.category.GetListCompanyOfContract;
+import nts.uk.ctx.pereg.dom.company.ICompanyRepo;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
@@ -31,6 +30,9 @@ public class AddItemCommandHandler extends CommandHandlerWithResult<AddItemComma
 
 	@Inject
 	private SelectionRepository selectionRepo;
+	
+	@Inject
+	private ICompanyRepo companyRepo;
 
 	private final static String SPECIAL_ITEM_CODE = "IO";
 	private final static int ITEM_CODE_DEFAUT_NUMBER = 0;
@@ -62,7 +64,8 @@ public class AddItemCommandHandler extends CommandHandlerWithResult<AddItemComma
 		String perInfoItemId = this.pernfoItemDefRep.addPerInfoItemDefRoot(perInfoItemDef, contractCd, categoryCd);
 		
 		// add to companies in contract
-		List<String> companyIdList = GetListCompanyOfContract.LIST_COMPANY_OF_CONTRACT;
+		List<String> companyIdList = companyRepo.acquireAllCompany();
+		
 		List<String> ctgIdList = this.perInfoCtgRep.getPerInfoCtgIdList(companyIdList, categoryCd);
 		if (ctgIdList == null || ctgIdList.isEmpty()) {
 			return null;
@@ -98,14 +101,9 @@ public class AddItemCommandHandler extends CommandHandlerWithResult<AddItemComma
 		}
 
 		if (addItemCommand.getSingleItem().getDataType() == 6) {
-			List<Selection> selection = new ArrayList<>();
-			if (addItemCommand.getPersonEmployeeType() == 1) {
-				selection = this.selectionRepo.getAllSelectionByHistoryId(
-						addItemCommand.getSingleItem().getSelectionItemId(), GeneralDate.today(), 0);
-			} else if (addItemCommand.getPersonEmployeeType() == 2) {
-				selection = this.selectionRepo.getAllSelectionByHistoryId(
-						addItemCommand.getSingleItem().getSelectionItemId(), GeneralDate.today(), 1);
-			}
+			List<Selection> selection = this.selectionRepo.getAllSelectionByCompanyId(
+					AppContexts.user().zeroCompanyIdInContract(), addItemCommand.getSingleItem().getSelectionItemId(),
+					GeneralDate.today());
 			if (selection == null || selection.size() == 0) {
 
 				throw new BusinessException("Msg_587");

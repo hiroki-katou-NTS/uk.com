@@ -1,5 +1,13 @@
 module nts.uk.at.view.kal001.b {
     import getText = nts.uk.resource.getText;
+    import confirm = nts.uk.ui.dialog.confirm;
+    import alertError = nts.uk.ui.dialog.alertError;
+    import info = nts.uk.ui.dialog.info;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
+    import textUK = nts.uk.text;
+    import block = nts.uk.ui.block;
+    import errors = nts.uk.ui.errors;
     export module viewmodel {
         export class ScreenModel {
 
@@ -14,12 +22,12 @@ module nts.uk.at.view.kal001.b {
                 self.columns = ko.observableArray([
                     { headerText: '', key: 'guid', width: 1 ,hidden :true },
                     { headerText: getText('KAL001_20'), key: 'workplaceName', width: 100 },
-                    { headerText: getText('KAL001_13'), key: 'employeeCode', width: 150 },
+                    { headerText: getText('KAL001_13'), key: 'employeeCode', width: 110 },
                     { headerText: getText('KAL001_14'), key: 'employeeName', width: 150 },
-                    { headerText: getText('KAL001_15'), key: 'alarmValueDate', width: 100},
+                    { headerText: getText('KAL001_15'), key: 'alarmValueDate', width: 190},
                     { headerText: getText('KAL001_16'), key: 'categoryName', width: 120},
                     { headerText: getText('KAL001_17'), key: 'alarmItem', width: 150 },
-                    { headerText: getText('KAL001_18'), key: 'alarmValueMessage', width: 150 },
+                    { headerText: getText('KAL001_18'), key: 'alarmValueMessage', width: 200 },
                     { headerText: getText('KAL001_19'), key: 'comment', width: 200 }
                 ]);
 
@@ -27,26 +35,7 @@ module nts.uk.at.view.kal001.b {
 
             startPage(): JQueryPromise<any> {
                 let self = this;
-                let dfd = $.Deferred();
-                
-//                for (let i = 1; i < 100; i++) {
-//                    let temp = {
-//                                gUID: '' +i,
-//                                workplaceID : "workplaceID" +i,
-//                                hierarchyCd : "hierarchyCd"+i,
-//                                workplaceName : "workplaceName"+i,
-//                                employeeID : "employeeID"+i,
-//                                employeeCode : "employeeCode"+i,
-//                                employeeName : "employeeName" +i,
-//                                alarmValueDate : "alarmValueDate" +i,
-//                                category : i,
-//                                categoryName: "category" +i,
-//                                alarmItem : "alarmItem" +i,
-//                                alarmValueMessage : "alarmValueMessage" +i,
-//                                comment : "comment" +i,                                
-//                              };
-//                    self.dataSource.push(temp);
-//                }
+                let dfd = $.Deferred();               
                 
                 $("#grid").igGrid({ 
                         height: '500px',
@@ -54,7 +43,7 @@ module nts.uk.at.view.kal001.b {
                         primaryKey: 'guid',
                         columns: self.columns(), 
                         features: [
-                            { name: 'Paging', type: 'local', pageSize: 15 },
+                            { name: 'Paging', type: 'local', pageSize: 20 },
                             {
                               name: "Tooltips",
                               columnSettings: [ 
@@ -73,11 +62,25 @@ module nts.uk.at.view.kal001.b {
 
             exportExcel(): void {
                 let self = this;
-                service.saveAsExcel(self.dataSource);
+                block.invisible();
+                service.saveAsExcel(self.dataSource).done(()=>{
+                    
+                }).fail((errExcel) =>{
+                    alertError(errExcel);
+                }).always(()=>{
+                    block.clear();    
+                });
             }
             
             sendEmail(): void {
                 let self = this;
+                let shareEmployee = _.map(self.dataSource, (item) =>{
+                   return {employeeID: item.employeeID, workplaceID: item.workplaceID}; 
+                });
+                nts.uk.ui.windows.setShared("employeeList", _.uniqWith(shareEmployee, _.isEqual));
+                modal("/view/kal/001/c/index.xhtml").onClosed(() => {
+                    
+                });
                 
             }
             

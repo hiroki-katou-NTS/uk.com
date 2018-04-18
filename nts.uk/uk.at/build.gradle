@@ -66,6 +66,29 @@ subprojects {
         include "nts*.jar"
 	}
 	
+	task initd (dependsOn: [
+		':at.ctx:at.auth:nts.uk.ctx.at.auth.app:upver',
+		':at.ctx:at.auth:nts.uk.ctx.at.auth.dom:upver',
+		':at.ctx:at.auth:nts.uk.ctx.at.auth.infra:upver',
+		':at.ctx:shared:nts.uk.ctx.at.shared.app:upver',
+		':at.ctx:shared:nts.uk.ctx.at.shared.dom:upver',
+		':at.ctx:shared:nts.uk.ctx.at.shared.infra:upver',
+		':at.ctx:shared:nts.uk.ctx.at.shared.pub:upver',
+		':at.ctx:record:nts.uk.ctx.at.record.app:upver',
+		':at.ctx:record:nts.uk.ctx.at.record.dom:upver',
+		':at.ctx:record:nts.uk.ctx.at.record.infra:upver',
+		':at.ctx:request:nts.uk.ctx.at.request.app:upver',
+		':at.ctx:request:nts.uk.ctx.at.request.dom:upver',
+		':at.ctx:request:nts.uk.ctx.at.request.pub:upver',
+		':at.ctx:request:nts.uk.ctx.at.request.infra:upver',
+		':at.ctx:schedule:nts.uk.ctx.at.schedule.app:upver',
+		':at.ctx:schedule:nts.uk.ctx.at.schedule.dom:upver',
+		':at.ctx:schedule:nts.uk.ctx.at.schedule.infra:upver',
+		':at.ctx:function:nts.uk.ctx.at.function.app:upver',
+		':at.ctx:function:nts.uk.ctx.at.function.dom:upver',
+		':at.ctx:function:nts.uk.ctx.at.function.infra:upver'
+	]) { }
+	
 	dependencies {
 	   // Apache commons lang
 		compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
@@ -224,6 +247,7 @@ project (':at.ctx:shared:nts.uk.ctx.at.shared.ac') {
 		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.pub', version: version)
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: version)
 		compile(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.pub', version: version)
+		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: version)
 	}
 }
 
@@ -705,6 +729,13 @@ project (':at.web:nts.uk.at.web') {
 		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.pub', version: version)
 		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.pubimp', version: version)
 		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.ac', version: version)
+		
+		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.dom', version: version)
+		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.app', version: version)
+		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.infra', version: version)
+		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.pub', version: version)
+		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.pubimp', version: version)
+		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.ac', version: version)
 		
 		runtime(group: 'com.query', name: 'nts.uk.query.ac', version: version)
 		runtime(group: 'com.query', name: 'nts.uk.query.app', version: version)

@@ -13,13 +13,13 @@
 					width : 900,
 					height : 700
 				};
-			</script>
+			</script>   -->
 			<com:ValidatorScript>
 					nts.uk.ctx.at.shared.dom.common.Year
 					nts.uk.ctx.at.shared.dom.common.DailyTime
 					nts.uk.ctx.at.shared.dom.common.MonthlyTime
 					nts.uk.ctx.at.shared.dom.common.WeeklyTime
-   			</com:ValidatorScript>   -->
+   			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
@@ -28,6 +28,7 @@
 			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="../e/kmk004.e.service.js" />
+			<com:scriptfile path="../shr/kmk004.shared.model.js" />
 			<com:scriptfile path="../shr/kmk004.worktime.setting.service.js" />
 			<com:scriptfile path="../shr/kmk004.worktime.setting.vm.js" />
 			<com:scriptfile path="kmk004.b.service.js" />
@@ -38,25 +39,27 @@
 		<ui:define name="sidebar">
 			<ul class="navigator" data-bind="visible: true" style="display: none">
 				<li><a tabindex="-1"  href="#tabpanel-0" data-bind="click: function() { location.href='../a/index.xhtml'; }" >#{i18n.getText('Com_Company')}</a></li>
-				<li><a tabindex="-1" href="#tabpanel-0" data-bind="click: function() { location.href='../c/index.xhtml'; }" >#{i18n.getText('Com_Employment')}</a></li>
-				<li><a tabindex="-1" href="#tabpanel-0" data-bind="click: function() { location.href='../d/index.xhtml'; }" >#{i18n.getText('Com_Workplace')}</a></li>
-				<li><a tabindex="1" href="#tabpanel-0" data-bind="click: function() { location.href='../b/index.xhtml'; }" class="active" >#{i18n.getText('Com_Person')}</a></li>
+				<li><a tabindex="-1" href="#tabpanel-1" data-bind="click: function() { location.href='../c/index.xhtml'; }, visible: usageUnitSetting.employment()" >#{i18n.getText('Com_Employment')}</a></li>
+				<li><a tabindex="-1" href="#tabpanel-2" data-bind="click: function() { location.href='../d/index.xhtml'; }, visible: usageUnitSetting.workplace()" >#{i18n.getText('Com_Workplace')}</a></li>
+				<li><a tabindex="1" href="#tabpanel-3" data-bind="click: function() { location.href='../b/index.xhtml'; }, visible: usageUnitSetting.employee()">#{i18n.getText('Com_Person')}</a></li>
 			</ul>
 		</ui:define>
 		<ui:define name="sidebar-content">
 			<div class="sidebar-content-header">
 				<span class="title">#{i18n.getText('Com_Person')}</span>
 				<span class="action-bar">
-				<button tabindex="2" data-bind="click: saveEmployeeSetting, enable: (selectedEmployeeCode()) &amp;&amp; $root.errors.isEmpty" class="proceed">#{i18n.getText('KMK004_27')}</button>
-				<button tabindex="4" class="danger" data-bind="click: removeEmployeeSetting, disable: isNewMode() || !selectedEmployeeCode()">#{i18n.getText('KMK004_29')}</button>
+				<button tabindex="6" data-bind="click: saveEmployeeSetting, enable: (selectedEmployeeId()) &amp;&amp; $root.errors.isEmpty" class="proceed">#{i18n.getText('KMK004_27')}</button>
+				<button tabindex="7" class="danger" data-bind="click: removeEmployeeSetting, disable: worktimeVM.isNewMode() || !selectedEmployeeCode()">#{i18n.getText('KMK004_29')}</button>
 				</span>
 			</div>
 			<div class="contents-area cf fixed-flex-layout" style="margin-left: 0px;">
 				<div id="ccgcomponent"></div>
-				<div id="list-employee" class="pull-left fixed-flex-layout-left" style="margin-top: 10px; margin-left: 50px;"></div>
+				<div id="list-employee" class="pull-left fixed-flex-layout-left" style="margin-top: 30px; margin-left: 30px;"></div>
 				<div class="right-content pull-left fixed-flex-layout-right" data-bind="ifnot: isLoading">
-					<fieldset data-bind="with: worktimeSetting">
-						<ui:include src="../shr/kmk004.worktime.setting.xhtml" />					
+					<fieldset data-bind="with: worktimeVM">
+						<ui:include src="../shr/kmk004.worktime.setting.xhtml">
+							<ui:param name="baseTabIndex" value="5"></ui:param>
+						</ui:include>
 					</fieldset>
 				</div>
 			</div>

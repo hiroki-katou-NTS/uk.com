@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,4 +42,13 @@ public interface EmpNormalSettingRepository {
 	 * @param empNormalSetting the emp ment normal setting
 	 */
 	void delete(String cid, String emplCode, int year);
+	
+	/**
+	 * Find list.
+	 *
+	 * @param cid the cid
+	 * @param emplCode the empl code
+	 * @return the list
+	 */
+	List<EmpNormalSetting> findList(String cid, String emplCode);
 }

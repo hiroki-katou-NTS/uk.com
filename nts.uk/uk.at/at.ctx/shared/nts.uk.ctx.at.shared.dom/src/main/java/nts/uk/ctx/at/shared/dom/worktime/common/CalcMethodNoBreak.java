@@ -7,16 +7,16 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 /**
  * The Enum CalcMethodNoBreak.
  */
-// 休憩未取得時の計算方法
+// 休�未取得時の計算方�
 public enum CalcMethodNoBreak {
 
 	/** The calc as working. */
-	// 就業時間として計算
-	CALC_AS_WORKING(0, "Enum_CalcMethodNoBreak_CALC_AS_WORKING", "就業時間として計算"),
+	// 就業時間として計�
+	CALC_AS_WORKING(0, "Enum_CalcMethodNoBreak_CALC_AS_WORKING", "就業時間として計�),
 
 	/** The calc as overtime. */
-	// 残業時間として計算
-	CALC_AS_OVERTIME(1, "Enum_CalcMethodNoBreak_CALC_AS_OVERTIME", "残業時間として計算");
+	// 残業時間として計�
+	CALC_AS_OVERTIME(1, "Enum_CalcMethodNoBreak_CALC_AS_OVERTIME", "残業時間として計�);
 
 	/** The value. */
 	public final int value;
@@ -68,5 +68,13 @@ public enum CalcMethodNoBreak {
 
 		// Not found.
 		return null;
+	}
+	
+	/**
+	 * 就業時間から計算であるか判定す�
+	 * @return 就業時間から計算である
+	 */
+	public boolean isCalcAsWorking() {
+		return CALC_AS_WORKING.equals(this);
 	}
 }

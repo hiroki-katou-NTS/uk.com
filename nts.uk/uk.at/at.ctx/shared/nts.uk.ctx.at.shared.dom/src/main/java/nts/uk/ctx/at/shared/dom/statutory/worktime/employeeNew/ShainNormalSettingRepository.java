@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,4 +42,14 @@ public interface ShainNormalSettingRepository {
    * @param empNormalSetting the emp normal setting
    */
   void delete(String cid, String empId, int year);
+  
+
+  /**
+   * Find list.
+   *
+   * @param cid the cid
+   * @param empId the emp id
+   * @return the list
+   */
+  List<ShainNormalSetting> findList(String cid, String empId);
 }

@@ -10,6 +10,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.record.app.find.remainingnumber.rervleagrtremnum.ResvLeaRemainNumberFinder;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainService;
 import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
@@ -32,6 +34,12 @@ public class LayoutWebService extends WebService {
 	@Inject
 	private PeregProcessor layoutProcessor;
 
+	@Inject 
+	private SpecialLeaveGrantRemainService specialLeaveGrantRemainService;
+	
+	@Inject
+	private ResvLeaRemainNumberFinder resvLeaNumberFinder;
+	
 	@Path("getByCreateType")
 	@POST
 	public NewLayoutDto getByCreateType(AddEmployeeCommand command) {
@@ -76,5 +84,17 @@ public class LayoutWebService extends WebService {
 		return this.layoutProcessor.getSubDetailInCtgChild(query);
 	}
 	
+	@Path("calDayTime/{sid}/{specialCD}")
+	@POST
+	public Object calDayTime(@PathParam("sid")String sid , @PathParam("specialCD")int specialCD){
+		String dayTime = specialLeaveGrantRemainService.calDayTime(sid, specialCD);
+		return new Object[] {dayTime};
+	}
 	
+	@POST
+	@Path("getResvLeaNumber/{sid}")
+	public Object getResvLeaNumber(@PathParam("sid") String employeeId) {
+		String dayNumber = resvLeaNumberFinder.getResvLeaRemainNumber(employeeId);
+		return new Object[] {dayNumber};
+	}
 }

@@ -29,15 +29,15 @@
 					<!--A1_1 登録--> 
 					<button class="proceed" data-bind="enable: $root.errors.isEmpty, click: registerClick">#{i18n.getText('KAF007_54')}</button>
 					<!--A1_2 印刷（PDF）--> 
-					<button id="btnSpecSetting" data-bind="">#{i18n.getText('KAF007_55')}</button>
+					<button id="btnSpecSetting" data-bind=" visible: false">#{i18n.getText('KAF007_55')}</button>
 					<!--A1_3 実績参照--> 
-					<button data-bind="click: openKDL004Click">#{i18n.getText('KAF007_56')}</button>		
+					<button data-bind="click: openKDL004Click,visible: false">#{i18n.getText('KAF007_56')}</button>		
 					<!--A1_4 承認者変更ボタン--> 				
-					<button data-bind="click: openCMM018Click">#{i18n.getText('KAF005_12')}</button>				
+					<button data-bind="click: openCMM018Click,visible: false">#{i18n.getText('KAF005_12')}</button>				
 					<!--A1_5 登録時にメールを送信するしない区分--> 
 					<!--A1_5_1 登録時にメールを送信する--> 
 					<div class="btnSendMail"
-						data-bind="visible: enableSendMail, ntsCheckBox: { checked: manualSendMailAtr, enable: true, text: '#{i18n.getText('KAF007_45')}' }">
+						data-bind="visible: enableSendMail, ntsCheckBox: { checked: manualSendMailAtr, enable: true, text: '#{i18n.getText('KAF007_45')}' },if: false">
 					</div>
 				</div>
 			</div>
@@ -51,7 +51,7 @@
 						<ui:include src="../share/index.xhtml"></ui:include>
 					</div>
 					<!-- Footer -->
-					<div class="lstApprover" data-bind="with: kaf000_a">
+					<div class="lstApprover" data-bind="with: kaf000_a"  style="margin-bottom: 20px;">
 						<ui:include src="../../000/a/index2_New.xhtml" />
 					</div>
 			</div>

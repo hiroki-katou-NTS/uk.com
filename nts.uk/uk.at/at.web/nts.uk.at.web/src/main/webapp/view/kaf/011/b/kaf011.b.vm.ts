@@ -6,6 +6,8 @@ module nts.uk.at.view.kaf011.b.viewmodel {
     import common = nts.uk.at.view.kaf011.shr.common;
     import service = nts.uk.at.view.kaf011.shr.service;
     import block = nts.uk.ui.block;
+    import jump = nts.uk.request.jump;
+    import confirm = nts.uk.ui.dialog.confirm;
 
     export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
 
@@ -13,7 +15,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 
         employeeName: KnockoutObservable<string> = ko.observable('');
 
-        comment: KnockoutObservable<common.Comment> = ko.observable(new common.Comment(null));
+        drawalReqSet: KnockoutObservable<common.DrawalReqSet> = ko.observable(new common.DrawalReqSet(null));
 
         recWk: KnockoutObservable<common.AppItems> = ko.observable(new common.AppItems());
 
@@ -45,6 +47,11 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 
         version: KnockoutObservable<number> = ko.observable(0);
 
+        displayPrePostFlg: KnockoutObservable<number> = ko.observable(0);
+
+        appTypeSet: KnockoutObservable<common.AppTypeSet> = ko.observable(new common.AppTypeSet(null));
+
+
         update() {
             block.invisible();
             let self = this,
@@ -54,19 +61,20 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                     comType: self.appComSelectedCode(),
                     usedDays: 1,
                     appCmd: {
-                        appReasonID: self.appReasonSelectedID(),
+                        appReasonText: self.appReasonSelectedID(),
                         applicationReason: self.reason(),
                         prePostAtr: self.prePostSelectedCode(),
                         enteredPersonSID: self.employeeID(),
-                        version: self.version()
-                        ,
+                        appVersion: self.version(),
                     }
                 };
 
             saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;
 
             service.update(saveCmd).done(() => {
-                dialog({ messageId: 'Msg_15' });
+                dialog({ messageId: 'Msg_15' }).then(function() {
+                    location.reload();
+                });
 
 
             }).fail((error) => {
@@ -88,12 +96,14 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             var self = this,
                 dfd = $.Deferred(),
                 appParam = { appID: appID };
+            block.invisible();
             service.findById(appParam).done((data) => {
                 self.setDataFromStart(data);
 
             }).fail((error) => {
                 dialog({ messageId: error.messageId });
             }).always(() => {
+                block.clear();
                 dfd.resolve();
 
             });
@@ -103,13 +113,17 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             return dfd.promise();
 
         }
-        setDataFromStart(data) {
+        setDataFromStart(data: common.IHolidayShipment) {
             let self = this;
             if (data) {
-                self.comment(data.drawalReqSet || null);
+                self.drawalReqSet(new common.DrawalReqSet(data.drawalReqSet || null));
                 self.employeeName(data.employeeName || null);
                 self.employeeID(data.employeeID || null);
                 self.version(data.application.version || 0);
+                self.displayPrePostFlg(data.applicationSetting.displayPrePostFlg);
+                self.appTypeSet(new common.AppTypeSet(data.appTypeSet || null));
+                self.recWk().wkTypes(data.recWkTypes || []);
+                self.absWk().wkTypes(data.absWkTypes || []);
                 if (data.application) {
                     self.setDataCommon(data);
                 }
@@ -138,6 +152,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             self.prePostSelectedCode(app.prePostAtr);
             self.showReason(data.applicationSetting.appReasonDispAtr);
             self.reason(data.application.applicationReason);
+            self.appReasonSelectedID(data.application.applicationReason.split("\r\n")[0]);
 
         }
 
@@ -148,28 +163,78 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             self.setDataApp(self.recWk(), data.recApp);
         }
 
+        removeAbs() {
+            let self = __viewContext['viewModel'],
+                removeCmd = self.getHolidayCmd();
+            confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                block.invisible();
+                service.removeAbs(removeCmd).done(function(data) {
+                    location.reload();
+                }).fail(function(res: any) {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                    });
+                }).always(() => {
+                    block.clear();
+                });
+            });
+        }
+
+        cancelAbs() {
+            let self = __viewContext['viewModel'],
+                cancelCmd = self.getHolidayCmd();
+            confirm({ messageId: 'Msg_249' }).ifYes(function() {
+                block.invisible();
+                service.cancelAbs(cancelCmd).done(function(data) {
+                    location.reload();
+                }).fail(function(res: any) {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                    });
+                }).always(() => {
+                    block.clear();
+                });
+            });
+        }
+
+
+        getHolidayCmd() {
+            let self = this,
+                shipmentCmd;
+
+            shipmentCmd = {
+                absAppID: self.absWk().appID(),
+                recAppID: null,
+                appVersion: self.version(),
+                memo: ""
+            }
+
+            return shipmentCmd;
+
+        }
+
 
 
 
         setDataApp(control: common.AppItems, data, comType?) {
             let self = this;
-            control.wkTypeCD(data.workTypeCD);
-            control.wkTimeCD(data.workTimeCD);
-            control.changeWorkHoursType(data.changeWorkHoursType);
-            control.appDate(data.appDate);
-            control.appID(data.appID);
-            if (data.wkTime1) {
-                control.wkTime1().startTime(data.wkTime1.startTime);
-                control.wkTime1().endTime(data.wkTime1.endTime);
-                if (data.wkTime1.startType) {
-                    control.wkTime1().startType(data.wkTime1.startType);
-                    control.wkTime1().startTime(data.wkTime1.endType);
+            if (data) {
+                control.wkTypeCD(data.workTypeCD);
+                control.wkTimeCD(data.workTimeCD);
+                control.changeWorkHoursType(data.changeWorkHoursType);
+                control.appDate(data.appDate);
+                control.appID(data.appID);
+                if (data.wkTime1) {
+                    control.wkTime1().startTime(data.wkTime1.startTime);
+                    control.wkTime1().endTime(data.wkTime1.endTime);
+                    control.wkTime1().startType(data.wkTime1.startUseAtr);
+                    control.wkTime1().endType(data.wkTime1.endUseAtr);
                 }
-            }
-            if (comType) {
-                self.appComSelectedCode(comType);
+                if (comType) {
+                    self.appComSelectedCode(comType);
+                }
+                control.updateWorkingText();
             }
         }
+
     }
 
 

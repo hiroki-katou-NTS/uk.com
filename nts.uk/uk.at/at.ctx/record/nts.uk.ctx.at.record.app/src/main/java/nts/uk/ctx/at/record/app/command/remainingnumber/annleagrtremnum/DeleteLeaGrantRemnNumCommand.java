@@ -6,7 +6,7 @@ import nts.arc.time.GeneralDate;
 @Getter
 public class DeleteLeaGrantRemnNumCommand {
 	
-	private String annLeavId;
+	private String annLeavID;
 	
 	private String employeeId;
 	

@@ -88,7 +88,7 @@ public class AutoCalculationSetServiceImpl implements AutoCalculationSetService 
 							.getWkpJobAutoCalSetting(companyID, workPlaceImport.get().getWorkplaceId(),
 									jobTitleImport.get().getJobTitleId());
 
-					if (!wkpJobAutoCalSetting.isPresent()) {
+					if (wkpJobAutoCalSetting.isPresent()) {
 							baseAutoCalSetting = new BaseAutoCalSetting(wkpJobAutoCalSetting.get().getNormalOTTime(),
 									wkpJobAutoCalSetting.get().getFlexOTTime(), wkpJobAutoCalSetting.get().getRestTime());
 					} else {

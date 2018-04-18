@@ -6,7 +6,9 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalStatusOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalStatusOfDailyPerforRepository;
+import nts.uk.ctx.at.record.infra.entity.approvalmanagement.KrcdtDaiApprovalStatus;
 
 @Stateless
 public class JpaApprovalStatusOfDailyPerforRepository extends JpaRepository
@@ -18,7 +20,7 @@ public class JpaApprovalStatusOfDailyPerforRepository extends JpaRepository
 
 	static {
 		StringBuilder builderString = new StringBuilder();
-		builderString.append("SELECT a ");
+		builderString.append("DELETE ");
 		builderString.append("FROM KrcdtDaiApprovalStatus a ");
 		builderString.append("WHERE a.krcdtDaiApprovalPK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtDaiApprovalPK.ymd = :ymd ");
@@ -27,7 +29,7 @@ public class JpaApprovalStatusOfDailyPerforRepository extends JpaRepository
 		builderString = new StringBuilder();
 		builderString.append("DELETE ");
 		builderString.append("FROM KrcdtDaiApprovalStatus a ");
-		builderString.append("WHERE WHERE a.krcdtDaiApprovalPK.employeeId IN :employeeIds ");
+		builderString.append("WHERE a.krcdtDaiApprovalPK.employeeId IN :employeeIds ");
 		builderString.append("AND a.krcdtDaiApprovalPK.ymd IN :ymds ");
 		DEL_BY_LIST_KEY = builderString.toString();
 	}
@@ -43,6 +45,12 @@ public class JpaApprovalStatusOfDailyPerforRepository extends JpaRepository
 	public void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds) {
 		this.getEntityManager().createQuery(DEL_BY_LIST_KEY).setParameter("employeeIds", employeeIds)
 				.setParameter("ymds", ymds).executeUpdate();
+	}
+
+	@Override
+	public void insert(ApprovalStatusOfDailyPerfor approvalStatusOfDailyPerfor) {
+		this.commandProxy().insert(KrcdtDaiApprovalStatus.toEntity(approvalStatusOfDailyPerfor));
+		this.getEntityManager().flush();
 	}
 
 }

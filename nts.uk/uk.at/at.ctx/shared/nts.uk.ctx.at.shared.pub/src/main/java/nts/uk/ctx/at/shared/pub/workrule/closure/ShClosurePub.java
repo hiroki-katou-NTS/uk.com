@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.pub.workrule.closure;
 
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 /**
  * The Interface ShWorkTimeSettingPub.
  */
@@ -21,4 +23,6 @@ public interface ShClosurePub {
 	// 処理年月と締め期間を取得する
 	// RequestList 336.
 	Optional<PresentClosingPeriodExport> find(String cId, int closureId);
+	
+	Optional<PresentClosingPeriodExport> find(String cId, int closureId, GeneralDate date);
 }

@@ -4,7 +4,9 @@ module nts.uk.at.view.kmk013.n {
             start: KnockoutObservable<number>;
             end: KnockoutObservable<number>;
             isCreated: KnockoutObservable<boolean>;
+            timeEditor: any;
             data = {};
+            saveEnabled: KnockoutObservable<boolean>;
             constructor() {
                 let self = this;
                 
@@ -12,6 +14,31 @@ module nts.uk.at.view.kmk013.n {
                 self.end = ko.observable(60);
                 
                 self.isCreated = ko.observable(false);
+                
+                self.timeEditor = {
+                    value: ko.observable(60),
+                    option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
+                        inputFormat: 'time'
+                    }))
+                }
+                self.saveEnabled = ko.observable(true);
+                
+                self.start.subscribe(function(value) {
+                    $('#start').ntsError('check');
+                    $('#end').ntsError('check');
+                    
+                    if (!$('#start').ntsError('hasError') && !$('#end').ntsError('hasError')) {
+                        self.saveEnabled(true);
+                    } else self.saveEnabled(false);
+                });
+                self.end.subscribe(function(value) {
+                    $('#start').ntsError('check');
+                    $('#end').ntsError('check');
+                    
+                    if (!$('#start').ntsError('hasError') && !$('#end').ntsError('hasError')) {
+                        self.saveEnabled(true);
+                    } else self.saveEnabled(false);
+                });
             }
             startPage() {
                 let self = this;
@@ -49,27 +76,22 @@ module nts.uk.at.view.kmk013.n {
                     } else if (self.isCreated()){
                         service.update(data).done(
                             () => {
-                                nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
+                                nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(() => {
+                                    $("#start").focus();
+                                });
                             }
                         );
                     } else {
                         service.save(data).done(
                             () => {
-                                nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
+                                nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(() => {
+                                    $("#start").focus();
+                                });
                             }
                         );
                     }
                 }
             }
-            saveEnabled = ko.computed(() => {
-                let self = this;
-                $('#start').ntsError('check');
-                $('#end').ntsError('check');
-                
-                if (!$('#start').ntsError('hasError') && !$('#end').ntsError('hasError')) {
-                    return true;
-                } else return false;
-            });
         }
     }
 }

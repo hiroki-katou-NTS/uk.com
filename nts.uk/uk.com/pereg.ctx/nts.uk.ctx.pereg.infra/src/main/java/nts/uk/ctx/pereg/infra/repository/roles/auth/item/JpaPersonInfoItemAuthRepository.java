@@ -50,6 +50,20 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 			" INNER JOIN PpemtPerInfoCtg pc ON pi.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId",
 			" INNER JOIN PpemtPerInfoItemCm pm ON pi.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd",
 			" WHERE pm.ppemtPerInfoItemCmPK.itemCd =:itemCd", " AND pi.perInfoCtgId IN :perInfoCtgId");
+	
+	private final String IS_SELF_AUTH = String.join(" ",
+			" SELECT au  FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co, PpemtPerInfoItem i, PpemtPerInfoItemCm ic, PpemtPersonItemAuth au",
+			" WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd", 
+			" AND ca.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId  AND co.ppemtPerInfoCtgCmPK.categoryCd  = ic.ppemtPerInfoItemCmPK.categoryCd ",
+			" AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd",
+			" AND co.ppemtPerInfoCtgCmPK.contractCd = ic.ppemtPerInfoItemCmPK.contractCd ",
+			" AND i.ppemtPerInfoItemPK.perInfoItemDefId = au.ppemtPersonItemAuthPk.personItemDefId ",
+			" AND ca.ppemtPerInfoCtgPK.perInfoCtgId = au.ppemtPersonItemAuthPk.personInfoCategoryAuthId ",
+			" AND i.itemCd =:itemCd",
+			" AND ca.categoryCd =:categoryCd",	
+			" AND ca.cid =:cid  AND  co.ppemtPerInfoCtgCmPK.contractCd =:contractCd",
+			" AND au.ppemtPersonItemAuthPk.roleId =:roleId");
+
 
 	private static PpemtPersonItemAuth toEntity(PersonInfoItemAuth domain) {
 		PpemtPersonItemAuth entity = new PpemtPersonItemAuth();
@@ -195,6 +209,17 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public Optional<PersonInfoItemAuth> getItemAuth(String roleId, String ctgCd, String cid, String contractCd, String itemCd) {
+		return this.queryProxy().query(IS_SELF_AUTH, PpemtPersonItemAuth.class)
+		.setParameter("roleId", roleId)
+		.setParameter("categoryCd",  ctgCd)
+		.setParameter("itemCd", itemCd)
+		.setParameter("cid", cid)
+		.setParameter("contractCd", contractCd)
+		.getSingle(c -> toDomain(c));
 	}
 
 }

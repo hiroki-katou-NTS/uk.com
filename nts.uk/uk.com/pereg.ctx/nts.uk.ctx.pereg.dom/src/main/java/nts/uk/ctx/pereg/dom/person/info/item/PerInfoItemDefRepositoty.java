@@ -34,7 +34,7 @@ public interface PerInfoItemDefRepositoty {
 
 	List<String> getRequiredIds(String contractCd, String companyId);
 
-	void removePerInfoItemDefRoot(List<String> perInfoCtgIds, String categoryCd, String contractCd, String itemCode);
+	void removePerInfoItemDef(List<String> perInfoCtgIds, String categoryCd, String contractCd, String itemCode);
 
 	boolean checkItemNameIsUnique(String perInfoCtgId, String newItemName, String perInfoItemDefId);
 
@@ -107,4 +107,8 @@ public interface PerInfoItemDefRepositoty {
 	List<PersonInfoItemDefinition> getPerInfoItemByCtgCd(String ctgCd, String companyId);
 	
 	List<String> getAllItemIdsByCtgCode(String cid, String ctgCode);
+	
+	List<PersonInfoItemDefinition> getItemDefByCtgCdAndComId(String perInfoCtgCd, String CompanyId);
+	
+	void updateItemDefNameAndAbolition(List<PersonInfoItemDefinition> lst, String companyId);
 }

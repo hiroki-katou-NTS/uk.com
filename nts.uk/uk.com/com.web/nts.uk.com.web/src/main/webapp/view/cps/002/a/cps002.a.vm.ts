@@ -306,10 +306,12 @@ module cps002.a.vm {
         }
 
         getEmployeeCode(userSetting: IUserSetting): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred(),
-                genType = userSetting.employeeCodeType;
-
+            let self = this;
+            let dfd = $.Deferred();
+            let genType = userSetting.employeeCodeType;
+            // 1 = 頭文字指定
+            // 2 = 空白
+            // 3 = 最大値 
             if (genType === 3 || genType === 1) {
                 service.getEmployeeCode(genType === 1 ? userSetting.employeeCodeLetter : '').done((result) => {
 
@@ -418,15 +420,20 @@ module cps002.a.vm {
         }
 
         gotoStep2() {
-            let self = this,
-                command = ko.toJS(self.currentEmployee()),
-                layout = self.layout();
+            let self = this;
             self.currentStep(2);
-
+            let layout = self.layout();
+            layout.layoutCode('');
+            layout.layoutName('');
+            layout.listItemCls([]);
+            
+            let command = ko.toJS(self.currentEmployee());
+            
             //add atr
             command.employeeCopyId = self.copyEmployee().employeeId;
             command.initSettingId = self.currentInitSetting().itemId;
             command.createType = self.createTypeId();
+            
             service.getLayoutByCreateType(command).done((data: ILayout) => {
                 layout.layoutCode(data.layoutCode || '');
                 layout.layoutName(data.layoutName || '');
@@ -454,8 +461,7 @@ module cps002.a.vm {
 
 
         }
-
-
+        
         completeStep1() {
             let self = this;
             if (self.copyEmployee().employeeId === '' && !self.isUseInitValue()) {
@@ -575,21 +581,17 @@ module cps002.a.vm {
 
         prev() {
             let self = this;
+            nts.uk.ui.errors.clearAll();
             if (self.currentStep() === 1) {
                 $('#emp_reg_info_wizard').ntsWizard("prev");
             }
             if (self.currentStep() === 2　&& self.createTypeId() !== 3) {
                 self.gotoStep1();
-                nts.uk.ui.errors.clearAll();
             }
             if (self.createTypeId() === 3) {
                 $('#emp_reg_info_wizard').ntsWizard("goto", 0);
                 return;
             }
-
-
-
-
         }
 
         saveBasicInfo(command, employeeId) {
@@ -732,7 +734,7 @@ module cps002.a.vm {
         openInitModal() {
 
 
-            subModal('/view/cps/009/a/index.xhtml', { title: '', height: 700, width: 1400 }).onClosed(() => {
+            subModal('/view/cps/009/a/index.xhtml', { title: '', height: 680, width: 1250 }).onClosed(() => {
 
             });
         }

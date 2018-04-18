@@ -8,17 +8,20 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.extern.slf4j.Slf4j;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleAdapter;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleSidDto;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectStampOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectOnHolidayOutPut;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectRangeOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectTimezoneOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeZoneOutput;
+import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.stamp.StampItem;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
@@ -45,11 +48,8 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -62,9 +62,6 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 
 	@Inject
 	private BasicScheduleService basicScheduleService;
-
-	@Inject
-	private WorkTimeSettingRepository workTimeSettingRepository;
 
 	@Inject
 	private BasicScheduleAdapter basicScheduleAdapter;
@@ -119,16 +116,18 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 
 	@Inject
 	private PCLogOnOffIncorrectOrderCheck pCLogOnOffIncorrectOrderCheck;
-	
+
 	@Inject
-	private WorkTimeSettingService workTimeSettingService;
+	private ReflectBreakTimeOfDailyDomainService reflectBreakTimeOfDailyDomainService;
+
+	@Inject
+	private ReflectShortWorkingTimeDomainService reflectShortWorkingTimeDomainService;
 
 	@Override
 	public ReflectStampOutput reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
-			ExecutionType reCreateAttr, BreakTimeOfDailyPerformance breakTimeOfDailyPerformance) {
-
+			ExecutionType reCreateAttr) {
 		WorkTypeCode workTypeCode = workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode();
 
 		WorkTimeCode workTimeCode = workInfoOfDailyPerformance.getRecordInfo().getWorkTimeCode();
@@ -169,10 +168,23 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			reflectStamp = this.ReflectEmbossingDomainService.reflectStamp(workInfoOfDailyPerformance,
 					timeLeavingOfDailyPerformance, lstStampItem, stampReflectRangeOutput, processingDate, employeeID,
 					companyID);
+
+			// 就業時間帯の休憩時間帯を日別実績に反映する
+			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance = this.reflectBreakTimeOfDailyDomainService
+					.reflectBreakTime(companyID, employeeID, processingDate, empCalAndSumExecLogID,
+							timeLeavingOfDailyPerformance, workInfoOfDailyPerformance);
+			reflectStamp.setBreakTimeOfDailyPerformance(breakTimeOfDailyPerformance);
+
+			// 短時間勤務時間帯を反映する
+			ShortTimeOfDailyPerformance shortTimeOfDailyPerformance = this.reflectShortWorkingTimeDomainService
+					.reflect(companyID, processingDate, employeeID, workInfoOfDailyPerformance);
+			reflectStamp.setShortTimeOfDailyPerformance(shortTimeOfDailyPerformance);
+
 			// エラーチェック
 			this.errorCheck(companyID, employeeID, processingDate, workInfoOfDailyPerformance,
 					reflectStamp.getTimeLeavingOfDailyPerformance(), reflectStamp.getOutingTimeOfDailyPerformance(),
-					reflectStamp.getTemporaryTimeOfDailyPerformance(), breakTimeOfDailyPerformance, reflectStamp.getAttendanceLeavingGateOfDaily());
+					reflectStamp.getTemporaryTimeOfDailyPerformance(), breakTimeOfDailyPerformance,
+					reflectStamp.getAttendanceLeavingGateOfDaily(), reflectStamp.getPcLogOnInfoOfDaily());
 		}
 
 		if (lstStampItem != null && lstStampItem.isEmpty()) {
@@ -182,7 +194,6 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			// reflectStamp.setOutingTimeOfDailyPerformance(outingTimeOfDailyPerformance);
 			// reflectStamp.setTemporaryTimeOfDailyPerformance(temporaryTimeOfDailyPerformance);
 		}
-
 		return reflectStamp;
 	}
 
@@ -192,31 +203,27 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 	private StampReflectRangeOutput attendanSytemStampRange(WorkTimeCode workTimeCode, String companyID,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformance) {
 
-		StampReflectRangeOutput stampReflectRangeOutput = null;
+		StampReflectRangeOutput stampReflectRangeOutput = new StampReflectRangeOutput();
 
-		// ドメインモデル「就業時間帯の設定」を取得
-		// TODO - wait new wave
-		// Optional<WorkTimeSetting> workTimeSetting =
-		// workTimeSettingRepository.findByCode(companyID, workTimeCode.v());
-
-		// 1日分の打刻反映範囲を取得
-		// if (workTimeSetting.isPresent()) {
-		if (true) {
-//			
 //		// ドメインモデル「就業時間帯の設定」を取得
 //		Optional<WorkTimeSetting> workTimeSetting = workTimeSettingRepository.findByCode(companyID, workTimeCode.v());
 //
 //		// 1日分の打刻反映範囲を取得
 //		if (workTimeSetting.isPresent()) {
-
-			stampReflectRangeOutput = new StampReflectRangeOutput();
-
-//			// 打刻反映時間帯を取得する
-//			// TODO
-//			 List<StampReflectTimezone> stampReflectTimezones = this.workTimeSettingService.getStampReflectTimezone(companyID, workTimeCode.v()); 
 //
-//			if (!stampReflectTimezones.isEmpty()) {
-//				List<StampReflectTimezoneOutput> stampReflectRangeOutputs = new ArrayList<>();
+//			List<ScheduleTimeSheet> scheduleTimeSheets = workInfoOfDailyPerformance.getScheduleTimeSheets();
+//
+//			// 打刻反映時間帯を取得する
+//			List<StampReflectTimezone> stampReflectTimezones = this.workTimeSettingService.getStampReflectTimezone(
+//					companyID, workTimeCode.v(), 
+//					(!scheduleTimeSheets.isEmpty() && scheduleTimeSheets.get(0) != null) ? scheduleTimeSheets.get(0).getAttendance().valueAsMinutes() : null,
+//					(!scheduleTimeSheets.isEmpty() && scheduleTimeSheets.get(0) != null) ? scheduleTimeSheets.get(0).getLeaveWork().valueAsMinutes() : null,
+//					(scheduleTimeSheets.size() > 1 && scheduleTimeSheets.get(1) != null) ? scheduleTimeSheets.get(1).getAttendance().valueAsMinutes() : null,
+//					(scheduleTimeSheets.size() > 1 && scheduleTimeSheets.get(1) != null) ? scheduleTimeSheets.get(1).getLeaveWork().valueAsMinutes() : null);
+//
+//			 if (!stampReflectTimezones.isEmpty()) {
+//			 List<StampReflectTimezoneOutput> stampReflectRangeOutputs = new
+//			 ArrayList<>();
 //				stampReflectTimezones.stream().forEach(timezone -> {
 //					StampReflectTimezoneOutput stampReflectTimezoneOutput = new StampReflectTimezoneOutput(
 //							timezone.getWorkNo(), timezone.getClassification(), timezone.getEndTime(),
@@ -226,17 +233,17 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 //				stampReflectRangeOutput.setLstStampReflectTimezone(stampReflectRangeOutputs);
 //			} else {
 //				return stampReflectRangeOutput;
-//			}
-				// fake data
-				List<StampReflectTimezoneOutput> lstStampReflectTimezone = new ArrayList<>();
-				StampReflectTimezoneOutput stampReflectTimezoneOutput1 = new StampReflectTimezoneOutput(new WorkNo(1),
-						GoLeavingWorkAtr.GO_WORK, new TimeWithDayAttr(720), new TimeWithDayAttr(480));
-				StampReflectTimezoneOutput stampReflectTimezoneOutput2 = new StampReflectTimezoneOutput(new WorkNo(1),
-						GoLeavingWorkAtr.LEAVING_WORK, new TimeWithDayAttr(1320), new TimeWithDayAttr(1020));
-				lstStampReflectTimezone.add(stampReflectTimezoneOutput1);
-				lstStampReflectTimezone.add(stampReflectTimezoneOutput2);
-				stampReflectRangeOutput.setLstStampReflectTimezone(lstStampReflectTimezone);
-		}
+//			 }
+			// fake data
+			List<StampReflectTimezoneOutput> lstStampReflectTimezone = new ArrayList<>();
+			StampReflectTimezoneOutput stampReflectTimezoneOutput1 = new StampReflectTimezoneOutput(new WorkNo(1),
+					GoLeavingWorkAtr.GO_WORK, new TimeWithDayAttr(1440), new TimeWithDayAttr(0));
+			StampReflectTimezoneOutput stampReflectTimezoneOutput2 = new StampReflectTimezoneOutput(new WorkNo(1),
+					GoLeavingWorkAtr.LEAVING_WORK, new TimeWithDayAttr(1440), new TimeWithDayAttr(0));
+			lstStampReflectTimezone.add(stampReflectTimezoneOutput1);
+			lstStampReflectTimezone.add(stampReflectTimezoneOutput2);
+			stampReflectRangeOutput.setLstStampReflectTimezone(lstStampReflectTimezone);
+//		}
 		return stampReflectRangeOutput;
 	}
 
@@ -487,7 +494,8 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance,
 			OutingTimeOfDailyPerformance outingTimeOfDailyPerformance,
 			TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance,
-			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance, AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily) {
+			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance,
+			AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily, PCLogOnInfoOfDaily pcLogOnInfoOfDaily) {
 
 		// 出勤系打刻漏れをチェックする
 		this.lackOfStamping.lackOfStamping(companyID, employeeID, processingDate, workInfoOfDailyPerformance,
@@ -507,56 +515,51 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		if (useAtr == UseAtr.USE) {
 
 			// 臨時系打刻漏れをチェックする
-			// missingOfTemporaryStampChecking.missingOfTemporaryStampChecking(companyID,
-			// employeeID, processingDate, temporaryTimeOfDailyPerformance);
+			missingOfTemporaryStampChecking.missingOfTemporaryStampChecking(companyID, employeeID, processingDate,
+					temporaryTimeOfDailyPerformance);
 
 			// 臨時系打刻順序不正をチェックする
-			// temporaryStampOrderChecking.temporaryStampOrderChecking(employeeID,
-			// companyID, processingDate, temporaryTimeOfDailyPerformance);
+			temporaryStampOrderChecking.temporaryStampOrderChecking(employeeID, companyID, processingDate,
+					temporaryTimeOfDailyPerformance);
 
 			// 臨時系二重打刻をチェックする
-			// temporaryDoubleStampChecking.temporaryDoubleStampChecking(companyID,
-			// employeeID, processingDate, temporaryTimeOfDailyPerformance);
+			temporaryDoubleStampChecking.temporaryDoubleStampChecking(companyID, employeeID, processingDate,
+					temporaryTimeOfDailyPerformance);
 		}
 		// 外出系打刻漏れをチェックする
-		// goingOutStampLeakageChecking.goingOutStampLeakageChecking(companyID,
-		// employeeID, processingDate, outingTimeOfDailyPerformance);
+		goingOutStampLeakageChecking.goingOutStampLeakageChecking(companyID, employeeID, processingDate,
+				outingTimeOfDailyPerformance);
 
 		// 外出系打刻順序不正をチェックする
-		// goingOutStampOrderChecking.goingOutStampOrderChecking(companyID,
-		// employeeID, processingDate, outingTimeOfDailyPerformance,
-		// timeLeavingOfDailyPerformance, temporaryTimeOfDailyPerformance);
+		goingOutStampOrderChecking.goingOutStampOrderChecking(companyID, employeeID, processingDate,
+				outingTimeOfDailyPerformance, timeLeavingOfDailyPerformance, temporaryTimeOfDailyPerformance);
 
 		// 休憩系打刻漏れをチェックする
-//		 breakTimeStampLeakageChecking.breakTimeStampLeakageChecking(companyID,
-//		 employeeID, processingDate, breakTimeOfDailyPerformance);
+		breakTimeStampLeakageChecking.breakTimeStampLeakageChecking(companyID, employeeID, processingDate,
+				breakTimeOfDailyPerformance);
 
 		// 休憩系打刻順序不正をチェックする
-//		 breakTimeStampIncorrectOrderChecking.breakTimeStampIncorrectOrderChecking(companyID,
-//		 employeeID, processingDate, breakTimeOfDailyPerformance);
+		breakTimeStampIncorrectOrderChecking.breakTimeStampIncorrectOrderChecking(companyID, employeeID, processingDate,
+				breakTimeOfDailyPerformance);
 		UseAtr useAtr2 = UseAtr.USE;
 		if (useAtr2 == UseAtr.USE) {
 			// 入退門の打刻漏れをチェックする
-			// exitStampCheck.exitStampCheck(companyID, employeeID,
-			// processingDate, attendanceLeavingGateOfDaily,
-			// workInfoOfDailyPerformance);
+			exitStampCheck.exitStampCheck(companyID, employeeID, processingDate, attendanceLeavingGateOfDaily,
+					workInfoOfDailyPerformance);
 			// 入退門の打刻順序不正をチェックする
-			// exitStampIncorrectOrderCheck.exitStampIncorrectOrderCheck(companyID,
-			// employeeID, processingDate, attendanceLeavingGateOfDaily,
-			// timeLeavingOfDailyPerformance);
+			exitStampIncorrectOrderCheck.exitStampIncorrectOrderCheck(companyID, employeeID, processingDate,
+					attendanceLeavingGateOfDaily, timeLeavingOfDailyPerformance);
 		}
 
 		UseAtr useAtr3 = UseAtr.USE;
 		if (useAtr3 == UseAtr.USE) {
 			// PCログオンログオフの打刻漏れをチェックする
-			// this.pClogOnOffLackOfStamp.pClogOnOffLackOfStamp(companyID,
-			// employeeID, processingDate, pCLogOnInfoOfDaily,
-			// workInfoOfDailyPerformance);
+			this.pClogOnOffLackOfStamp.pClogOnOffLackOfStamp(companyID, employeeID, processingDate, pcLogOnInfoOfDaily,
+					workInfoOfDailyPerformance);
 
 			// PCログオンログオフの打刻順序不正をチェックする
-			// this.pCLogOnOffIncorrectOrderCheck.pCLogOnOffIncorrectOrderCheck(companyID,
-			// employeeID, processingDate, pCLogOnInfoOfDaily,
-			// timeLeavingOfDailyPerformance);
+			this.pCLogOnOffIncorrectOrderCheck.pCLogOnOffIncorrectOrderCheck(companyID, employeeID, processingDate,
+					pcLogOnInfoOfDaily, timeLeavingOfDailyPerformance);
 		}
 	}
 

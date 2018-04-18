@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.remainingnumber.annleagrtremnum;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -41,5 +42,13 @@ public class AnnLeaGrantRemnNumFinder {
 		GeneralDate expiredDate = grantDate.addYears(retentionYear).addDays(-1);
 		
 		return expiredDate;
+	}
+	
+	public AnnLeaGrantRemnNumDto getDetail(String id){
+		Optional<AnnualLeaveGrantRemainingData> annua = annLeaDataRepo.findByID(id);
+		if (annua.isPresent()){
+			return AnnLeaGrantRemnNumDto.createFromDomain(annua.get());
+		}
+		return null;
 	}
 }

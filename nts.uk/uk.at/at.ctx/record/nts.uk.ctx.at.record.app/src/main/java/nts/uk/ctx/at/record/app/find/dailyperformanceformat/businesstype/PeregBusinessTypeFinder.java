@@ -46,24 +46,33 @@ public class PeregBusinessTypeFinder implements PeregFinder<BusinessTypeDto> {
 	}
 
 	@Override
-	public PeregDomainDto getSingleData(PeregQuery query) {
+	public BusinessTypeDto getSingleData(PeregQuery query) {
 		// lịch sử liên tục nên 1 historyId chỉ nằm trong 1 khoảng startdate và
 		// enddate duy nhất.
 		String sId = query.getEmployeeId();
 		GeneralDate baseDate = query.getStandardDate();
-		Optional<BusinessTypeOfEmployeeHistory> optional;
+
+		Optional<BusinessTypeOfEmployeeHistory> oneHitoryOpt;
+
+		Optional<BusinessTypeOfEmployeeHistory> fullHistoryOpt = typeEmployeeOfHistoryRepos
+				.findByEmployee(AppContexts.user().companyId(), sId);
+
 		if (query.getInfoId() != null) {
-			optional = typeEmployeeOfHistoryRepos.findByHistoryId(query.getInfoId());
+			oneHitoryOpt = typeEmployeeOfHistoryRepos.findByHistoryId(query.getInfoId());
 		} else {
-			optional = typeEmployeeOfHistoryRepos.findByBaseDate(baseDate, sId);
+			oneHitoryOpt = typeEmployeeOfHistoryRepos.findByBaseDate(baseDate, sId);
 		}
 
-		if (optional.isPresent()) {
-			DateHistoryItem dateHistoryItem = optional.get().getHistory().get(0);
+		if (oneHitoryOpt.isPresent() && fullHistoryOpt.isPresent()) {
+			DateHistoryItem dateHistoryItem = oneHitoryOpt.get().getHistory().get(0);
+			DateHistoryItem latestItem = fullHistoryOpt.get().latestStartItem().get();
+			boolean isLatestHistory = dateHistoryItem.identifier().equals(latestItem.identifier());
+
 			Optional<BusinessTypeOfEmployee> optionalType = typeOfEmployeeRepos
 					.findByHistoryId(dateHistoryItem.identifier());
+
 			return new BusinessTypeDto(dateHistoryItem.identifier(), dateHistoryItem.start(), dateHistoryItem.end(),
-					optionalType.get().getBusinessTypeCode().v());
+					optionalType.get().getBusinessTypeCode().v(), isLatestHistory);
 		}
 		return null;
 	}

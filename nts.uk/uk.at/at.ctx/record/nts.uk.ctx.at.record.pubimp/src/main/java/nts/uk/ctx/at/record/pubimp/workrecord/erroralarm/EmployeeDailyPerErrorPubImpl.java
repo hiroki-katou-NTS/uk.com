@@ -19,10 +19,12 @@ public class EmployeeDailyPerErrorPubImpl implements EmployeeDailyPerErrorPub {
 	@Override
 	public List<EmployeeDailyPerErrorPubExport> getByErrorCode(String employeeId, DatePeriod datePeriod,
 			List<String> errorCodes) {
-		String companyID = AppContexts.programId();
-		List<EmployeeDailyPerError> employeeDailyList = repo.findByPeriodOrderByYmd(employeeId, datePeriod).stream()
-				.filter(e -> errorCodes.contains(e.getErrorAlarmWorkRecordCode().v())
-						&& e.getCompanyID().equals(companyID)).collect(Collectors.toList());
+		String companyID = AppContexts.user().companyId();
+		List<EmployeeDailyPerError> employeeDailyList = repo.findByPeriodOrderByYmd(employeeId, datePeriod);
+		
+		employeeDailyList = employeeDailyList.stream().filter(
+				e -> e.getCompanyID().equals(companyID) && errorCodes.contains(e.getErrorAlarmWorkRecordCode().v()))
+				.collect(Collectors.toList());
 		
 		return employeeDailyList.stream().map(e ->new EmployeeDailyPerErrorPubExport(e.getCompanyID(), e.getEmployeeID(), e.getDate(),
 				e.getErrorAlarmWorkRecordCode().v(), e.getAttendanceItemList(), e.getErrorCancelAble())).collect(Collectors.toList());

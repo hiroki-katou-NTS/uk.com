@@ -20,5 +20,9 @@ public class Kmk004WkpDeleteCommand {
 	private Integer year;
 	
 	/** The wkp id. */
-	private String wkpId;
+	private String workplaceId;
+	
+	/** The is WT setting common remove. */
+	private boolean isWTSettingCommonRemove;
+	
 }

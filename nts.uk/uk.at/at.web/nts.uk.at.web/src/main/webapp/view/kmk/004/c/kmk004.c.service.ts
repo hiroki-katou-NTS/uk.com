@@ -6,7 +6,7 @@ module nts.uk.at.view.kmk004.c {
          */
         var servicePath: any = {
             // Find AlreadySetting for component KCP001 (get all Domain "")
-            findAllEmploymentSetting: 'screen/at/kmk004/employment//findAll',
+            findAllEmploymentSetting: 'screen/at/kmk004/employment/findAll',
             
             findEmploymentSetting: 'screen/at/kmk004/employment/getDetails',
             saveEmploymentSetting: 'screen/at/kmk004/employment/save',

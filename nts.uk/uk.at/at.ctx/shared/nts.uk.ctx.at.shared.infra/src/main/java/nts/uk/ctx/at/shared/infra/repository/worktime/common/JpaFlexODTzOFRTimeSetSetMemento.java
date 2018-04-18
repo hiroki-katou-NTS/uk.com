@@ -47,6 +47,9 @@ public class JpaFlexODTzOFRTimeSetSetMemento implements TimezoneOfFixedRestTimeS
 		if (CollectionUtil.isEmpty(timzones)) {
 			this.entity.setKshmtFlexOdFixRests(new ArrayList<>());
 		} else {
+			if (CollectionUtil.isEmpty(this.entity.getKshmtFlexOdFixRests())) {
+				this.entity.setKshmtFlexOdFixRests(new ArrayList<>());
+			}
 			Map<KshmtFlexOdFixRestPK, KshmtFlexOdFixRest> mapEntity = this.entity.getKshmtFlexOdFixRests().stream()
 					.collect(Collectors.toMap(KshmtFlexOdFixRest::getKshmtFlexOdFixRestPK, Function.identity()));
 

@@ -125,56 +125,6 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 		this.errorAlarmCheckID = errorAlarmCheckID;
 	}
 	
-	/**
-	 * システム固定エラーチェック
-	 * @return 社員の日別実績エラー一覧
-	 */
-	public Optional<EmployeeDailyPerError> systemErrorCheck(IntegrationOfDaily integrationOfDaily) {
-		SystemFixedErrorAlarm fixedErrorAlarmCode = SystemFixedErrorAlarm.valueOf(this.code.toString());
-		switch(fixedErrorAlarmCode) {
-			//遅刻
-			case LATE:
-				break;
-			//早退
-			case LEAVE_EARLY:
-				break;
-			//事前残業申請超過
-			case PRE_OVERTIME_APP_EXCESS:
-				break;
-			//事前休出申請超過
-			case PRE_HOLIDAYWORK_APP_EXCESS:
-				break;
-			//事前フレックス申請超過
-			case PRE_FLEX_APP_EXCESS:
-				break;
-			//事前深夜申請超過
-			case PRE_MIDNIGHT_EXCESS:
-				break;
-			//残業時間実績超過
-			case OVER_TIME_EXCESS:
-				//checkOverTimeExcess(integrationOfDaily);
-				break;
-			//休出時間実績超過
-			case REST_TIME_EXCESS:
-				break;
-			//フレックス時間実績超過
-			case FLEX_OVER_TIME:
-				break;
-			//深夜時間実績超過
-			case MIDNIGHT_EXCESS:
-				break;
-			
-			//乖離時間のエラー	
-			case ERROR_OF_DIVERGENCE_TIME:
-				break;
-			//乖離時間のアラーム
-			case ALARM_OF_DIVERGENCE_TIME:
-				break;
-			//それ以外ルート
-			default:
-				return Optional.empty();
-		}
-		return Optional.empty();
-	}
+
 }
 

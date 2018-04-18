@@ -24,16 +24,12 @@ public class UpdateAnnuaLeaveCommandHandler extends CommandHandler<UpdateAnnuaLe
 	@Override
 	protected void handle(CommandHandlerContext<UpdateAnnuaLeaveCommand> context) {
 		UpdateAnnuaLeaveCommand c = context.getCommand();
-
 		AnnualLeaveEmpBasicInfo basicInfo = AnnualLeaveEmpBasicInfo.createFromJavaType(c.getEmployeeId(),
-				c.getWorkingDaysPerYear().intValue(), c.getWorkingDayBeforeIntro().intValue(), c.getGrantTable(),
-				c.getStandardDate());
+				c.getWorkingDaysPerYear(), c.getWorkingDayBeforeIntro(), c.getGrantTable(), c.getStandardDate());
 		annLeaBasicInfoRepo.update(basicInfo);
 
-		AnnualLeaveMaxData maxData = AnnualLeaveMaxData.createFromJavaType(c.getEmployeeId(),
-				c.getMaxTimes().intValue(), c.getUsedTimes().intValue(),
-				c.getMaxTimes().intValue() - c.getUsedTimes().intValue(), c.getMaxMinutes().intValue(),
-				c.getUsedMinutes().intValue(), c.getMaxMinutes().intValue() - c.getUsedMinutes().intValue());
+		AnnualLeaveMaxData maxData = AnnualLeaveMaxData.createFromJavaType(c.getEmployeeId(), c.getMaxTimes(),
+				c.getUsedTimes(), c.getMaxMinutes(), c.getUsedMinutes());
 		maxDataRepo.update(maxData);
 	}
 

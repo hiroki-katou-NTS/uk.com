@@ -21,7 +21,7 @@ public class EmpStatWorkTimeSetDto {
 	private int year;
 	
 	/** The employee id. */
-	private String emplCode;
+	private String employmentCode;
 
 	/** The defor labor setting. */
 	private EmpDeforLaborSettingDto deforLaborSetting;

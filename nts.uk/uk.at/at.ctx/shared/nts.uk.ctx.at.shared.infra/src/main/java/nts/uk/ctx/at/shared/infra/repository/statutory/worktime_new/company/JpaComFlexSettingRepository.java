@@ -59,7 +59,7 @@ public class JpaComFlexSettingRepository extends JpaRepository implements ComFle
 	 */
 	@Override
 	public void remove(String companyId, int year) {
-		this.commandProxy().remove(KshstComFlexSetPK.class, new KshstComFlexSetPK(companyId, year));
+		this.commandProxy().remove(KshstComFlexSet.class, new KshstComFlexSetPK(companyId, year));
 	}
 
 	/*

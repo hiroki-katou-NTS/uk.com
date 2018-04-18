@@ -83,6 +83,8 @@ module nts.uk.at.view.kmk011.e {
                         _self.isEnableListHist(false);
                         _self.enable_button_creat(false);
                         _self.enableSaveDivergenceRefSetting(false);
+                        _self.histList([]);
+                        _self.selectedHist(null);
                     } else {
                         _self.wkTypeCode(value);
                         _self.wkTypeName(_self.listWorkType().filter(e => e.code == value)[0].name);
@@ -180,7 +182,7 @@ module nts.uk.at.view.kmk011.e {
              */
             public isDisableAllRowWkType(diverNo: number): boolean {
                 let _self = this;
-                if (_self.mapObj2.get(diverNo).divergenceTimeUseSet == DivergenceTimeUseSet.NOT_USE || _self.selectedHist() == null) {
+                if (_self.mapObj2.get(diverNo).divergenceTimeUseSet == DivergenceTimeUseSet.NOT_USE || nts.uk.text.isNullOrEmpty( _self.selectedHist())) {
                     return false;
                 }
                 return true;
@@ -228,8 +230,8 @@ module nts.uk.at.view.kmk011.e {
                 _self.clearErrors();
                 for (let i = 1; i <= 10; i++) {
                     if (_self.mapObj.get(i).notUseAtr() == DivergenceTimeUseSet.USE) {
-                        $('#alarm_time_' + i).ntsEditor("validate");
-                        $('#error_time_' + i).ntsEditor("validate");
+                        $('#workType_alarm_time_' + i).ntsEditor("validate");
+                        $('#workType_error_time_' + i).ntsEditor("validate");
                     }
 
                 }
@@ -247,8 +249,8 @@ module nts.uk.at.view.kmk011.e {
                 // Clear errors
                 for (let i = 1; i <= 10; i++) {
                     if (_self.mapObj.get(i).notUseAtr() == DivergenceTimeUseSet.USE) {
-                        $('#alarm_time_' + i).ntsEditor("clear");
-                        $('#error_time_' + i).ntsEditor("clear");
+                        $('#workType_alarm_time_' + i).ntsEditor("clear");
+                        $('#workType_error_time_' + i).ntsEditor("clear");
                     }
                 }
 
@@ -265,19 +267,15 @@ module nts.uk.at.view.kmk011.e {
 
                 service.getAllWorkType().done((response: any) => {
                     if (response.length != 0) {
-                        if (_self.listWorkType().length == 0) {
-                            response.forEach((item: any) => {
-                                _self.listWorkType.push(new ItemModel(item.businessTypeCode, item.businessTypeName, "", false));
-                            });
-                        } else {
-                            response.forEach((item: any) => {
-                                if (_self.listWorkType().filter(e => e.code != item.businessTypeCode).length == 0) {
-                                    _self.listWorkType.push(new ItemModel(item.businessTypeCode, item.businessTypeName, "", false));
-                                }
-                            });
-                        }
+                        _self.listWorkType([]);
+                        response.forEach((item: any) => {
+                            _self.listWorkType.push(new ItemModel(item.businessTypeCode, item.businessTypeName, "", false));
+                        });
+                        
                         dfd.resolve();
                     } else {
+                        _self.listWorkType([]);
+                        _self.currentCode(null);
                         _self.wkTypeCode("");
                         _self.wkTypeName("");
                         _self.enable_button_edit(false);
@@ -286,6 +284,7 @@ module nts.uk.at.view.kmk011.e {
                         _self.enable_button_creat(false);
                         _self.enableSaveDivergenceRefSetting(false);
                         _self.histList([]);
+                        _self.selectedHist(null);
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_1051" }).then(() => {
                             nts.uk.request.jump("/view/kmk/011/d/index.xhtml");
                         });
@@ -304,7 +303,7 @@ module nts.uk.at.view.kmk011.e {
                 var dfd = $.Deferred<any>();
                 let dto: WorkTypeDivergenceTimeSettingDto;
                 service.getAllItemSetting(wkTypeCode, histId).done((response: any) => {
-                    if (response != null) {
+                    if (response != null  && response.length > 0) {
                         if (_self.mapObj.size == 0) {
                             response.forEach((item: any) => {
                                 dto = new WorkTypeDivergenceTimeSettingDto();
@@ -396,8 +395,8 @@ module nts.uk.at.view.kmk011.e {
                             divergenceTimeNo: i,
                             notUseAtr: 0,
                             divergenceReferenceTimeValue: {
-                                errorTime: 0,
-                                alarmTime: 0
+                                errorTime: '',
+                                alarmTime: ''
                             }
                         };
                         let itemDto = new WorkTypeDivergenceTimeSettingDto();
@@ -410,13 +409,13 @@ module nts.uk.at.view.kmk011.e {
                             divergenceTimeNo: i,
                             notUseAtr: 0,
                             divergenceReferenceTimeValue: {
-                                errorTime: 0,
-                                alarmTime: 0
+                                errorTime: '',
+                                alarmTime: ''
                             }
                         };
-                        _self.mapObj.get(i).notUseAtr(item.notUseAtr);
-                        _self.mapObj.get(i).alarmTime(item.divergenceReferenceTimeValue.alarmTime);
-                        _self.mapObj.get(i).errorTime(item.divergenceReferenceTimeValue.errorTime);
+                        _self.mapObj.get(item.divergenceTimeNo).notUseAtr(item.notUseAtr);
+                        _self.mapObj.get(item.divergenceTimeNo).alarmTime(item.divergenceReferenceTimeValue.alarmTime);
+                        _self.mapObj.get(item.divergenceTimeNo).errorTime(item.divergenceReferenceTimeValue.errorTime);
                     }
                 }
             }

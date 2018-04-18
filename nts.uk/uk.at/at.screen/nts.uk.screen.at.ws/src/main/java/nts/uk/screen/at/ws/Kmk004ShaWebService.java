@@ -72,8 +72,9 @@ public class Kmk004ShaWebService {
 	 */
 	@POST
 	@Path("delete")
-	public void delete(Kmk004ShaDeleteCommand cm) {
+	public Kmk004ShaDeleteCommand delete(Kmk004ShaDeleteCommand cm) {
 		this.delete.handle(cm);
+		return cm;
 	}
 	
 	/**

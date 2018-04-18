@@ -100,6 +100,7 @@ public interface DailyPerformanceScreenRepo {
 	/** Get list employee by jobTitle, employment, workplace, classification */
 	List<DailyPerformanceEmployeeDto> getListEmployee(List<String> lstJobTitle, List<String> lstEmployment,
 			Map<String, String> lstWorkplace, List<String> lstClassification);
+	List<DailyPerformanceEmployeeDto> getListEmployee(List<String> sids);
 	
 	/** Get list employee by sid*/
 	List<DailyPerformanceEmployeeDto> getListEmployeeWithSid(List<String> sid);
@@ -169,7 +170,7 @@ public interface DailyPerformanceScreenRepo {
 	
 	List<AuthorityFormatSheetDto> findAuthorityFormatSheet(String companyId, List<String> formatCode,  List<BigDecimal>sheetNo);
 	
-	Optional<DivergenceTimeDto> findDivergenceTime(String companyId, int divTimeId);
+	List<DivergenceTimeDto> findDivergenceTime(String companyId, List<Integer> divergenceNo);
 	
 	List<ReasonCodeName> findDivergenceReason(String companyId, int divTimeId);
 	
