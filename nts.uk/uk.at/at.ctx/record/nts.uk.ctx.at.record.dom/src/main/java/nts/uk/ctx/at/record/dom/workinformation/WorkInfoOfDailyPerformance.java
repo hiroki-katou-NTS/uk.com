@@ -65,6 +65,27 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 		recordInfo = scheduleInfo;
 	}
 	
+	/** <<Event>> 実績の就業時間帯が変更されたを発行する */
+	public void workTimeChanged() {
+		WorkInfoChangeEvent.builder().employeeId(employeeId).targetDate(ymd)
+				.newWorkTimeCode(recordInfo == null ? null : recordInfo.getWorkTimeCode()).build().toBePublished();
+	}
+	
+	/** <<Event>> 実績の勤務種類が変更されたを発行する */
+	public void workTypeChanged() {
+		WorkInfoChangeEvent.builder().employeeId(employeeId).targetDate(ymd)
+				.newWorkTypeCode(recordInfo == null ? null : recordInfo.getWorkTypeCode()).build().toBePublished();
+	}
+
+	/** <<Event>> 実績の就業時間帯が変更されたを発行する */
+	/** <<Event>> 実績の勤務種類が変更されたを発行する */
+	public void workInfoChanged() {
+		WorkInfoChangeEvent.builder().employeeId(employeeId).targetDate(ymd)
+				.newWorkTypeCode(recordInfo == null ? null : recordInfo.getWorkTypeCode())
+				.newWorkTimeCode(recordInfo == null ? null : recordInfo.getWorkTimeCode())
+				.build().toBePublished();
+	}
+
 	/**
 	 * 勤務予定の勤務情報と勤務実績の勤務情報が同じかどうか確認する
 	 * @param workNo
