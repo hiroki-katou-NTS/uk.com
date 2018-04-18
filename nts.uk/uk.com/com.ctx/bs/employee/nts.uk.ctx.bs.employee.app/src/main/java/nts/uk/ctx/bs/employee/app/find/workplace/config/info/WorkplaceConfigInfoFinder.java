@@ -86,10 +86,16 @@ public class WorkplaceConfigInfoFinder {
 			return Collections.emptyList();
 		}
 
+		WorkplaceIDImport workplaceIDImport = syRoleWorkplaceAdapter.findListWkpIdByRoleId(object.getSystemType());
+
 		// get list hierarchy
 		List<WorkplaceHierarchy> lstHierarchy = opWkpConfigInfo.get().getLstWkpHierarchy();
 
-		WorkplaceIDImport workplaceIDImport = syRoleWorkplaceAdapter.findListWkpIdByRoleId(object.getSystemType());
+		// filter list hierachy
+		if (object.getRestrictionOfReferenceRange() == null || object.getRestrictionOfReferenceRange()) {
+			lstHierarchy = lstHierarchy.stream().filter(item -> workplaceIDImport.getListWorkplaceIds().stream()
+					.anyMatch(id -> id.equals(item.getWorkplaceId()))).collect(Collectors.toList());
+		}
 
 		List<WorkplaceHierarchy> result = new ArrayList<>();
 
