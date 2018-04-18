@@ -98,7 +98,7 @@ module nts.uk.at.view.kmk004.a {
                 }
                 
                 let saveCommand: WorktimeSettingDtoSaveCommand = new WorktimeSettingDtoSaveCommand();
-                saveCommand.updateData(self.worktimeVM.worktimeSetting);
+                saveCommand.updateData(self.worktimeVM.worktimeSetting, self.worktimeVM.referenceFlexPred());
                 service.saveCompanySetting(ko.toJS(saveCommand)).done(() => {
                     self.worktimeVM.isNewMode(false);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
@@ -149,6 +149,8 @@ module nts.uk.at.view.kmk004.a {
                         }
                         // Sort month.
                         self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
+                        // update referenceFlexPred
+                        self.worktimeVM.setReferenceFlexPred(resultData.referenceFlexPred);
                         dfd.resolve();
                     }).always(() => {
                         nts.uk.ui.block.clear();

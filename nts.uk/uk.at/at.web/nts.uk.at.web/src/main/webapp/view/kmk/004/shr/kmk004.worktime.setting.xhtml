@@ -52,7 +52,35 @@
 				<div class="tab-content-2" id="worktime-tab-2">
 					<div class="control-group">
 						<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_45')}</div>
-						<table class="border-all tbl-monthly">
+												
+						<!-- for Com Flex setting -->
+						<table style="width: 100%; margin-top: 15px;" data-bind="if: #{showSetFlexPred}">
+							<tr>
+								<!-- A5_20 -->
+								<td><div class="label">#{i18n.getText('KMK004_17')}</div></td>
+								<td style="text-align: right; padding : 5px ">
+									<!-- A5_21 ~ A5_23 -->
+									<div data-bind="ntsSwitchButton: {
+											name: '#[KMK004_146]',
+											options: $parent.optReferenceFlexPred,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: $parent.referenceFlexPred,
+											required: true,
+											enable: true }">
+									</div></td>
+							</tr>
+							<tr>
+								<!-- A5_24 -->
+								<td colspan="2" style="padding-left: 30px;">
+									<div class="label">#{i18n.getText('KMK004_149')}</div>
+								</td>
+							</tr>
+						</table>
+
+						<!-- for Com Flex setting -->
+						
+						<table class="border-all" style="margin-top: 10px;">
 							<tr class="bg-dark-green">
 								<td>#{i18n.getText('KMK004_13')}</td>
 								<td>#{i18n.getText('KMK004_17')}</td>
@@ -64,7 +92,7 @@
 										<div data-bind="text: month()+'月度'"></div>
 									</td>
 									<td><input
-										data-bind="attr: {'tabindex': #{baseTabIndex} + 17 + $index()}, ntsTimeEditor: {value: specifiedTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
+										data-bind="attr: {'tabindex': #{baseTabIndex} + 17 + $index()}, ntsTimeEditor: {value: specifiedTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true, enable: $parents[1].referenceFlexPred() == 0}" />
 									</td>
 									<td><input
 										data-bind="attr: {'tabindex': #{baseTabIndex} + 29 + $index()}, ntsTimeEditor: {value: statutoryTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />

@@ -432,11 +432,14 @@ module nts.uk.at.view.kmk004.shared.model {
         statWorkTimeSetDto: StatutoryWorktimeSettingDto;
         // Cuc 3 cai
         monthCalSetDto: MonthlyCalSettingDto;
+        // GetFlexPred (update ver16)
+        referenceFlexPred: number; 
 
         constructor() {
             let self = this;
             self.statWorkTimeSetDto = new StatutoryWorktimeSettingDto();
             self.monthCalSetDto = new MonthlyCalSettingDto();
+            self.referenceFlexPred = ReferencePredTimeOfFlex.FROM_MASTER;
         }
 
         public updateYear(year: number): void {
@@ -444,10 +447,11 @@ module nts.uk.at.view.kmk004.shared.model {
             self.statWorkTimeSetDto.year = year;
         }
 
-        public updateData(model: WorktimeSetting): void {
+        public updateData(model: WorktimeSetting, referenceFlexPred? : number): void {
             let self = this;
             self.statWorkTimeSetDto.updateData(model);
             self.monthCalSetDto.updateData(model);
+            self.referenceFlexPred = referenceFlexPred;
         }
     }
 
@@ -458,6 +462,8 @@ module nts.uk.at.view.kmk004.shared.model {
 
         /** The save com flex command. */
         saveMonthCommand: MonthlyCalSettingDto;
+        
+        referenceFlexPred: boolean;
 
         constructor() {
             let self = this;
@@ -470,10 +476,11 @@ module nts.uk.at.view.kmk004.shared.model {
             self.saveStatCommand.year = year;
         }
 
-        public updateData(model: WorktimeSetting): void {
+        public updateData(model: WorktimeSetting, referenceFlexPred? : boolean): void {
             let self = this;
             self.saveStatCommand.updateData(model);
             self.saveMonthCommand.updateData(model);
+            self.referenceFlexPred = referenceFlexPred;
         }
     }
 
@@ -1209,4 +1216,23 @@ module nts.uk.at.view.kmk004.shared.model {
         static NORMAL_SETTING = 1;
         static DEFORM_LABOR_SETTING = 2;
     }
+    
+    export class ItemModelNumber {
+        code: number;
+        name: string;
+
+        constructor(code: number, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }
+    
+    /** フレックス勤務の所定時間参照 */
+    export class ReferencePredTimeOfFlex {
+        /** マスタから参照 */
+        static FROM_MASTER = 0;
+        /** 実績から参照 */
+        static FROM_RECORD = 1;
+    }
+
 }

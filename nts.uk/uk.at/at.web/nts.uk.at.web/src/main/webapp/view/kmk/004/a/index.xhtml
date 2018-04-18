@@ -55,6 +55,7 @@
 			<com:ko tag="with" bind="worktimeVM">
 				<div class="contents-area cf" data-bind="ifnot: isLoading, visible: true" style="display: none">
 					<ui:include src="../shr/kmk004.worktime.setting.xhtml">
+						<ui:param name="showSetFlexPred" value="true"></ui:param>
 						<ui:param name="baseTabIndex" value="5"></ui:param>
 					</ui:include>
 				</div>
