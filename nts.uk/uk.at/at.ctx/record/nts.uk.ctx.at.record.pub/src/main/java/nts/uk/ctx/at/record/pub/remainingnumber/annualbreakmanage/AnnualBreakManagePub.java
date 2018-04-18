@@ -2,7 +2,8 @@ package nts.uk.ctx.at.record.pub.remainingnumber.annualbreakmanage;
 
 import java.util.List;
 
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDate;import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 
 public interface AnnualBreakManagePub {
@@ -24,4 +25,12 @@ public interface AnnualBreakManagePub {
 	 * @return
 	 */
 	List<YearlyHolidaysTimeRemainingExport> getYearHolidayTimeAnnualRemaining(String employeeId, GeneralDate confirmDay);
+
+	/**
+	 * 次回年休付与を計算
+	 * @param employeeId
+	 * @param time
+	 * @return
+	 */
+	List<NextAnnualLeaveGrant> calculateNextHolidayGrant(String employeeId, DatePeriod time);
 }

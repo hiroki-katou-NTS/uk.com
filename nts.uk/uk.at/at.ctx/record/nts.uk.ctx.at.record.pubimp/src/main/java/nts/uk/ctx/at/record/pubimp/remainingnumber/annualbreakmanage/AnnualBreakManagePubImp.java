@@ -9,13 +9,16 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriod;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
 import nts.uk.ctx.at.record.pub.remainingnumber.annualbreakmanage.AnnualBreakManageExport;
 import nts.uk.ctx.at.record.pub.remainingnumber.annualbreakmanage.AnnualBreakManagePub;
 import nts.uk.ctx.at.record.pub.remainingnumber.annualbreakmanage.YearlyHolidaysTimeRemainingExport;
@@ -54,37 +57,7 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 		boolean isNull = false;
 		List<AnnualBreakManageExport> annualBreakManageExport = new ArrayList<>();
 		for (String emp : employeeId) {
-			// ○Imported(就業)「社員」を取得する
-			EmployeeRecordImport employeeRecordImport = pmployeeRecordAdapter.getPersonInfor(emp);
-			// ○パラメータ「期間」をチェック
-			Optional<GeneralDate> start_date = null;
-			if (startDate == null && endDate == null) {
-				isNull = true;
-				start_date = getClosureStartForEmployee.algorithm(emp);
-			}
-			
-			// ドメインモデル「年休付与テーブル設定」を取得する (Lấy domain 「年休付与テーブル設定」)
-			// ログインしている会社ID　取得
-			LoginUserContext loginUserContext = AppContexts.user();
-			String companyId = loginUserContext.companyId();
-			Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = annLeaEmpBasicInfoRepository.get(emp);
-			if (!annualLeaveEmpBasicInfo.isPresent()) {
-				return annualBreakManageExport;
-			}
-			val grantHdTblSetOpt = this.yearHolidayRepo.findByCode(
-					companyId, annualLeaveEmpBasicInfo.get().getGrantRule().getGrantTableCode().toString() );
-			if (!grantHdTblSetOpt.isPresent()){
-				return annualBreakManageExport;
-			}
-			val grantHdTblSet = grantHdTblSetOpt.get();
-			
-			List<NextAnnualLeaveGrant> nextAnnualLeaveGrant = getNextAnnualLeaveGrant
-					.algorithm(companyId, 
-							annualLeaveEmpBasicInfo.get().getGrantRule().getGrantTableCode().toString(), 
-							employeeRecordImport.getEntryDate(), 
-							annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate(), 
-							isNull == true ? new DatePeriod(start_date.get().addDays(1), GeneralDate.fromString("9999/12/31", "yyyy/mm/dd")) : new DatePeriod(startDate, endDate), 
-							isNull == true ? true: false);
+			List<NextAnnualLeaveGrant> nextAnnualLeaveGrant = calculateNextHolidayGrant(emp, new DatePeriod(startDate, endDate));
 			// 「年休付与がある社員IDList」に処理中の社員IDを追加
 			if (!nextAnnualLeaveGrant.isEmpty() ) {
 				annualBreakManageExport.add(new AnnualBreakManageExport(emp));
@@ -106,20 +79,110 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 		GeneralDate designatedDate = GeneralDate.ymd(startDate.get().year(), 1, 1);
 		
 		// 計算期間．終了日←パラメータ「指定日」
-		GeneralDate enDate = designatedDate;
+		GeneralDate endDate = designatedDate;
 		// ドメインモデル「年休社員基本情報」を取得
 		Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = annLeaEmpBasicInfoRepository.get(employeeId);
 		if (!annualLeaveEmpBasicInfo.isPresent()) {
 			return yearlyHolidaysTimeRemainingExport;
 		}
-		// TODO 次回年休付与を計算
-		// 期間中の年休残数を取得
+		// 次回年休付与を計算
+		List<NextAnnualLeaveGrant> nextAnnualLeaveGrant = calculateNextHolidayGrant(employeeId, new DatePeriod(startDate.get(), endDate));
 		// ログインしている会社ID　取得
 		LoginUserContext loginUserContext = AppContexts.user();
 		String companyId = loginUserContext.companyId();
-		
+		Optional<AnnualLeaveInfo> annualLeaveInfo = Optional.empty();
+		int count = 0;
+		for (NextAnnualLeaveGrant elementNextAnnualLeaveGrant : nextAnnualLeaveGrant) {
+			// 期間中の年休残数を取得
+			Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualLeave = 		
+					getAnnLeaRemNumWithinPeriod.
+					algorithm(companyId, 
+							employeeId, 
+							new DatePeriod(startDate.get(), elementNextAnnualLeaveGrant.getGrantDate().addDays(-1)), 
+							EnumAdaptor.valueOf(1, TempAnnualLeaveMngMode.class), 
+							elementNextAnnualLeaveGrant.getGrantDate().addDays(-1), 
+							false, 
+							false, 
+							null,
+							null,
+							annualLeaveInfo);
+			if (aggrResultOfAnnualLeave.isPresent()){
+				// 取得した年休の集計結果．年休情報(付与時点)でループ
+				for (AnnualLeaveInfo annualLeaveInfoe : aggrResultOfAnnualLeave.get().getAsOfGrant().get()) {
+					// 「年休の集計結果」で付与された年月日をチェック
+					if (annualLeaveInfoe.getYmd().before(startDate.get()) && annualLeaveInfoe.getYmd().after(endDate)) {
+						//  計算期間．開始日<=年休情報．年月日<=計算期間．終了日
+						YearlyHolidaysTimeRemainingExport yhtre = 
+								new YearlyHolidaysTimeRemainingExport(annualLeaveInfoe.getYmd(), 
+										null, 
+										annualLeaveInfoe.getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays());
+						yearlyHolidaysTimeRemainingExport.add(yhtre );
+					}
+				}
+				
+				// 年休計算開始日←次回年休付与．付与年月日
+				startDate = Optional.of(nextAnnualLeaveGrant.get(++count).getGrantDate());
+				annualLeaveInfo = Optional.of(aggrResultOfAnnualLeave.get().getAsOfPeriodEnd());
+			}
+			
+			// 期間中の年休残数を取得
+			Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualLeavee = 		
+					getAnnLeaRemNumWithinPeriod.
+					algorithm(companyId, 
+							employeeId, 
+							new DatePeriod(startDate.get(), elementNextAnnualLeaveGrant.getGrantDate().addDays(-1)), 
+							EnumAdaptor.valueOf(1, TempAnnualLeaveMngMode.class), 
+							elementNextAnnualLeaveGrant.getGrantDate().addDays(-1), 
+							false, 
+							false, 
+							null,
+							null,
+							annualLeaveInfo);
+			// List<指定日時点の年休残数>の年休残数を全て更新
+			for (YearlyHolidaysTimeRemainingExport yyearlyHolidaysTimeRemainingExport : yearlyHolidaysTimeRemainingExport) {
+				yyearlyHolidaysTimeRemainingExport.setAnnualRemaining(aggrResultOfAnnualLeavee.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays());
+			}
+		}
 		
 		return yearlyHolidaysTimeRemainingExport;
+	}
+
+	@Override
+	public List<NextAnnualLeaveGrant> calculateNextHolidayGrant(String employeeId, DatePeriod time) {
+		List<NextAnnualLeaveGrant> nextAnnualLeaveGrant = new ArrayList<>();
+		boolean isNull = false;
+		// ○Imported(就業)「社員」を取得する
+		EmployeeRecordImport employeeRecordImport = pmployeeRecordAdapter.getPersonInfor(employeeId);
+		// ○パラメータ「期間」をチェック
+			Optional<GeneralDate> start_date = null;
+			if (time == null) {
+				isNull = true;
+				start_date = getClosureStartForEmployee.algorithm(employeeId);
+			}
+			
+			// ドメインモデル「年休付与テーブル設定」を取得する (Lấy domain 「年休付与テーブル設定」)
+			// ログインしている会社ID　取得
+			LoginUserContext loginUserContext = AppContexts.user();
+			String companyId = loginUserContext.companyId();
+			Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = annLeaEmpBasicInfoRepository.get(employeeId);
+			if (!annualLeaveEmpBasicInfo.isPresent()) {
+				return nextAnnualLeaveGrant;
+			}
+			val grantHdTblSetOpt = this.yearHolidayRepo.findByCode(
+					companyId, annualLeaveEmpBasicInfo.get().getGrantRule().getGrantTableCode().toString() );
+			if (!grantHdTblSetOpt.isPresent()){
+				return nextAnnualLeaveGrant;
+			}
+			val grantHdTblSet = grantHdTblSetOpt.get();
+			
+			nextAnnualLeaveGrant = getNextAnnualLeaveGrant
+					.algorithm(companyId, 
+							annualLeaveEmpBasicInfo.get().getGrantRule().getGrantTableCode().toString(), 
+							employeeRecordImport.getEntryDate(), 
+							annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate(), 
+							isNull == true ? new DatePeriod(start_date.get().addDays(1), GeneralDate.fromString("9999/12/31", "yyyy/mm/dd")) : time, 
+							isNull == true ? true: false);
+		return nextAnnualLeaveGrant;
 	}
 	
 }

@@ -127,23 +127,23 @@ module nts.uk.at.view.kdm002.b {
                                 _.forEach(res.taskDatas, item => {
                                     if (item.key.substring(0, 10) == "ERROR_LIST") {
                                         let error = JSON.parse(item.valueAsString);
-                                        let errorContent : IErrorLog = {
-                                            employeeCode : error.employeeCode,
-                                            employeeName : error.employeeName,
-                                            errorMessage : nts.uk.resource.getMessage(error.errorMessage)
+                                        let errorContent: IErrorLog = {
+                                            employeeCode: error.employeeCode,
+                                            employeeName: error.employeeName,
+                                            errorMessage: nts.uk.resource.getMessage(error.errorMessage)
                                         }
                                         self.imErrorLog.push(errorContent);
                                     }
                                     // 処理カウント
                                     if (item.key == 'NUMBER_OF_SUCCESS') {
-                                        self.result(item.valueAsNumber+" / " + self.total() + "人");
+                                        self.result(item.valueAsNumber + " / " + self.total() + "人");
                                     }
                                 });
-                                
+
                                 if (res.running) {
                                     // 経過時間＝現在時刻－開始時刻
                                     self.timeNow = new Date();
-                                    let over = (self.timeNow.getSeconds()+self.timeNow.getMinutes()*60+ self.timeNow.getHours()*60) - (self.timeStartt.getSeconds()+self.timeStartt.getMinutes()*60+ self.timeStartt.getHours()*60);
+                                    let over = (self.timeNow.getSeconds() + self.timeNow.getMinutes() * 60 + self.timeNow.getHours() * 60) - (self.timeStartt.getSeconds() + self.timeStartt.getMinutes() * 60 + self.timeStartt.getHours() * 60);
                                     let time = new Date(null);
                                     time.setSeconds(over); // specify value for SECONDS here
                                     let result = time.toISOString().substr(11, 8);
@@ -153,14 +153,14 @@ module nts.uk.at.view.kdm002.b {
                             }
 
                             if (res.succeeded || res.failed || res.cancelled) {
-                                if (self.imErrorLog().length == 0 ) {
-                                    self.status('完了');  
+                                if (self.imErrorLog().length == 0) {
+                                    self.status('完了');
                                     $('#BTN_CLOSE').focus();
                                 }
                                 else {
                                     self.isError(true);
                                     self.isComplete(true);
-                                    self.status('完了　（エラーあり）'); 
+                                    self.status('完了　（エラーあり）');
                                     $('#BTN_ERROR_EXPORT').focus();
                                 }
                                 self.isStop(true);
