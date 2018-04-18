@@ -2391,7 +2391,7 @@ var nts;
                         return dateTime;
                 };
                 DateTimeFormatter.prototype.format = function (date) {
-                    return new Date(date).toLocaleDateString("ja-JP");
+                    return date; //new Date(date).toLocaleDateString("ja-JP");
                 };
                 return DateTimeFormatter;
             }());
@@ -4549,7 +4549,8 @@ var nts;
                             maxValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(this.constraint.max).asMinutes);
                         }
                         var parsed = uk.time.minutesBased.clock.dayattr.parseString(inputText);
-                        if (!parsed.success || parsed.asMinutes < minValue || parsed.asMinutes > maxValue) {
+                        if (!parsed.success || parsed.asMinutes !== Math.round(parsed.asMinutes)
+                            || parsed.asMinutes < minValue || parsed.asMinutes > maxValue) {
                             result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minValue.fullText, maxValue.fullText]), "FND_E_CLOCK");
                         }
                         else {
@@ -4803,6 +4804,8 @@ var nts;
                 errors_1.hide = hide;
                 function add(error) {
                     errorsViewModel().addError(error);
+                    error.$control.data(nts.uk.ui.DATA_HAS_ERROR, true);
+                    (error.$control.data(nts.uk.ui.DATA_SET_ERROR_STYLE) || function () { error.$control.parent().addClass('error'); })();
                 }
                 errors_1.add = add;
                 function hasError() {
@@ -4816,14 +4819,26 @@ var nts;
                 errors_1.clearAll = clearAll;
                 function removeByElement($control) {
                     errorsViewModel().removeErrorByElement($control);
+                    $control.data(nts.uk.ui.DATA_HAS_ERROR, false);
+                    ($control.data(nts.uk.ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
                 }
                 errors_1.removeByElement = removeByElement;
                 function removeByCode($control, errorCode) {
                     errorsViewModel().removeErrorByCode($control, errorCode);
+                    var remainErrors = getErrorByElement($control);
+                    if (nts.uk.util.isNullOrEmpty(remainErrors)) {
+                        $control.data(nts.uk.ui.DATA_HAS_ERROR, false);
+                        ($control.data(nts.uk.ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
+                    }
                 }
                 errors_1.removeByCode = removeByCode;
                 function removeCommonError($control) {
                     errorsViewModel().removeKibanError($control);
+                    var remainErrors = getErrorByElement($control);
+                    if (nts.uk.util.isNullOrEmpty(remainErrors)) {
+                        $control.data(nts.uk.ui.DATA_HAS_ERROR, false);
+                        ($control.data(nts.uk.ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
+                    }
                 }
                 errors_1.removeCommonError = removeCommonError;
                 function getErrorByElement($element) {
@@ -5002,7 +5017,7 @@ var nts;
                         // Check if contents is overflow
                         if ($label.outerWidth() < $label[0].scrollWidth) {
                             var $view_1 = $('<div />').addClass('limited-label-view')
-                                .text($label.text())
+                                .text($label.text() || $label.val())
                                 .appendTo('body')
                                 .position({
                                 my: 'left top',
@@ -5071,6 +5086,7 @@ var nts;
                         this.$dialog = null;
                         this.$iframe = null;
                         this.onClosedHandler = $.noop;
+                        this.onOpenedHandler = $.noop;
                         this.id = id;
                         this.isRoot = isRoot;
                         this.parent = parent;
@@ -5119,6 +5135,7 @@ var nts;
                     };
                     ScreenWindow.prototype.setupAsDialog = function (path, options) {
                         var _this = this;
+                        var self = this;
                         options.close = function () {
                             _this.dispose();
                         };
@@ -5180,6 +5197,9 @@ var nts;
                                             }
                                         }
                                     });
+                                    setTimeout(function () {
+                                        self.onOpenedHandler();
+                                    }, 100);
                                 },
                                 beforeClose: function () {
                                     //return dialogWindow.__viewContext.dialog.beforeClose();
@@ -5215,6 +5235,11 @@ var nts;
                             //dataModel.kiban.errorDialogViewModel.errors.valueHasMutated();
                             callback();
                             windows.container.localShared = {};
+                        };
+                    };
+                    ScreenWindow.prototype.onOpened = function (callback) {
+                        this.onOpenedHandler = function () {
+                            callback();
                         };
                     };
                     ScreenWindow.prototype.close = function () {
@@ -13954,6 +13979,36 @@ var nts;
                             return $this.data(dataName);
                     }
                 };
+                $.fn.tooltipWhenReadonly = function () {
+                    var $this = $(this);
+                    var border = 2;
+                    $this.mouseenter(function (e) {
+                        if (!$this.prop("readonly") || !$this.isOverflowContent(border)) {
+                            return;
+                        }
+                        $this.showTextContentAsTooltip(function () { return $this.val(); });
+                    });
+                };
+                $.fn.isOverflowContent = function (border) {
+                    var $this = $(this);
+                    return $this.prop("offsetWidth") - border < $this.prop("scrollWidth");
+                };
+                $.fn.showTextContentAsTooltip = function (textContentGetter) {
+                    var $this = $(this);
+                    var $view = $('<div />').addClass('limited-label-view')
+                        .text(textContentGetter())
+                        .appendTo('body')
+                        .position({
+                        my: 'left top',
+                        at: 'left bottom',
+                        of: $this,
+                        collision: 'flip'
+                    });
+                    $this.bind('mouseleave.limitedlabel', function () {
+                        $this.unbind('mouseleave.limitedlabel');
+                        $view.remove();
+                    });
+                };
             })(jqueryExtentions = ui_4.jqueryExtentions || (ui_4.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -14572,6 +14627,9 @@ var nts;
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (result.isValid) {
+                                if (!validateMinMax(result.parsedValue)) {
+                                    return;
+                                }
                                 // Day of Week
                                 if (hasDayofWeek) {
                                     if (uk.util.isNullOrEmpty(result.parsedValue))
@@ -14597,6 +14655,9 @@ var nts;
                                 $input.ntsError('set', result.errorMessage, result.errorCode, false);
                             }
                             else if (acceptJapaneseCalendar) {
+                                if (!validateMinMax(result.parsedValue)) {
+                                    return;
+                                }
                                 // Day of Week
                                 if (hasDayofWeek) {
                                     if (uk.util.isNullOrEmpty(result.parsedValue))
@@ -14609,6 +14670,44 @@ var nts;
                                 //                    }
                             }
                         });
+                        var validateMinMax = function (parsedValue) {
+                            if (nts.uk.util.isNullOrEmpty(parsedValue)) {
+                                return true;
+                            }
+                            var mmRs = new nts.uk.time.MomentResult();
+                            var otFormat = nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat;
+                            var minDate = ($input.data('startDate') !== undefined) ? moment($input.data('startDate'), otFormat) : mmRs.systemMin();
+                            var maxDate = ($input.data('endDate') !== undefined) ? moment($input.data('endDate'), otFormat) : mmRs.systemMax();
+                            var momentCurrent = moment(parsedValue, otFormat);
+                            var error = false;
+                            if (momentCurrent.isBefore(minDate, 'day')) {
+                                error = true;
+                            }
+                            else if (momentCurrent.isAfter(maxDate, 'day')) {
+                                error = true;
+                            }
+                            if (error) {
+                                var isHasYear = (nts.uk.util.isNullOrEmpty(otFormat) ? false : otFormat.indexOf("Y") >= 0) || otFormat.indexOf("Y") >= 0;
+                                var isHasMonth = (nts.uk.util.isNullOrEmpty(otFormat) ? false : otFormat.indexOf("M") >= 0) || otFormat.indexOf("M") >= 0;
+                                var isHasDay = (nts.uk.util.isNullOrEmpty(otFormat) ? false : otFormat.indexOf("D") >= 0) || otFormat.indexOf("D") >= 0;
+                                var mesId = "FND_E_DATE_Y";
+                                var fm = "YYYY";
+                                if (isHasDay && isHasMonth && isHasYear) {
+                                    mesId = "FND_E_DATE_YMD", fm = "YYYY/MM/DD";
+                                }
+                                else if (isHasMonth && isHasYear) {
+                                    mesId = "FND_E_DATE_YM", fm = "YYYY/MM";
+                                }
+                                nts.uk.ui.dialog.error({ messageId: mesId, messageParams: [name, minDate.format(fm), maxDate.format(fm)] }).then(function () {
+                                    if (hasDayofWeek) {
+                                        $label.text("");
+                                    }
+                                    value(null);
+                                });
+                                return false;
+                            }
+                            return true;
+                        };
                         $input.on('validate', (function (e) {
                             var newText = $input.val();
                             var validator = new ui.validation.TimeValidator(name, constraintName, { required: $input.data("required"),
@@ -14635,6 +14734,8 @@ var nts;
                         new nts.uk.util.value.DefaultValue().onReset($input, data.value);
                         container.data("init", false);
                         $input.ntsDatepicker("bindFlip");
+                        $input.data('startDate', startDate);
+                        $input.data('endDate', endDate);
                     };
                     /**
                      * Update
@@ -14680,6 +14781,8 @@ var nts;
                         // Properties Binding
                         $input.datepicker('setStartDate', startDate);
                         $input.datepicker('setEndDate', endDate);
+                        $input.data('startDate', startDate);
+                        $input.data('endDate', endDate);
                         if (enable !== undefined)
                             $input.prop("disabled", !enable);
                         else
@@ -15771,18 +15874,15 @@ var nts;
                                 var result = validator.validate(newText, { isCheckExpression: true });
                                 if (!result.isValid) {
                                     var oldError = $input.ntsError('getError');
-                                    if (nts.uk.util.isNullOrUndefined(oldError)) {
+                                    if (nts.uk.util.isNullOrEmpty(oldError)) {
                                         $input.ntsError('set', result.errorMessage, result.errorCode, false);
                                     }
-                                    //else {
-                                    //    let inListError = _.find(oldError, function (o){ return o.errorCode !== result.errorCode; });
-                                    //    if(nts.uk.util.isNullOrUndefined(inListError)){
-                                    //        $input.ntsError('clearKibanError');
-                                    //        setTimeout(function() {
-                                    //            $input.ntsError('set', result.errorMessage, result.errorCode, false);
-                                    //        }, 10);
-                                    //    }
-                                    //}
+                                    else {
+                                        var inListError = _.find(oldError, function (o) { return o.errorCode === result.errorCode; });
+                                        if (nts.uk.util.isNullOrUndefined(inListError)) {
+                                            $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                                        }
+                                    }
                                 }
                                 else {
                                     $input.ntsError('clearKibanError');
@@ -15823,6 +15923,7 @@ var nts;
                         new nts.uk.util.value.DefaultValue().onReset($input, data.value);
                         var tabIndex = $input.attr("tabindex");
                         $input.data("tabindex", tabIndex);
+                        $input.tooltipWhenReadonly();
                     };
                     TextEditorProcessor.prototype.update = function ($input, data) {
                         _super.prototype.update.call(this, $input, data);
@@ -19314,7 +19415,7 @@ var nts;
                                     return item["index"] >= 0;
                                 });
                             }
-                            else if (singleSelectedRaw !== null) {
+                            else if (singleSelectedRaw !== null && singleSelectedRaw.index > -1) {
                                 selected.push(singleSelectedRaw);
                             }
                             else {
@@ -20751,6 +20852,8 @@ var nts;
         (function (ui) {
             ui.DATA_SET_ERROR_STYLE = "set-error-style";
             ui.DATA_CLEAR_ERROR_STYLE = "clear-error-style";
+            ui.DATA_HAS_ERROR = 'hasError';
+            ui.DATA_GET_ERROR = 'getError';
             var bindErrorStyle;
             (function (bindErrorStyle) {
                 function setError($element, callback) {
@@ -20779,14 +20882,12 @@ var nts;
             (function (jqueryExtentions) {
                 var ntsError;
                 (function (ntsError) {
-                    var DATA_HAS_ERROR = 'hasError';
-                    var DATA_GET_ERROR = 'getError';
                     $.fn.ntsError = function (action, message, errorCode, businessError) {
                         var $control = $(this);
-                        if (action === DATA_HAS_ERROR) {
+                        if (action === ui.DATA_HAS_ERROR) {
                             return _.some($control, function (c) { return hasError($(c)); });
                         }
-                        else if (action === DATA_GET_ERROR) {
+                        else if (action === ui.DATA_GET_ERROR) {
                             return getErrorByElement($control.first());
                         }
                         else {
@@ -20815,7 +20916,6 @@ var nts;
                         return ui.errors.getErrorByElement($control);
                     }
                     function setError($control, message, errorCode, businessError) {
-                        $control.data(DATA_HAS_ERROR, true);
                         ui.errors.add({
                             location: $control.data('name') || "",
                             message: message,
@@ -20823,35 +20923,22 @@ var nts;
                             $control: $control,
                             businessError: businessError
                         });
-                        ($control.data(ui.DATA_SET_ERROR_STYLE) || function () { $control.parent().addClass('error'); })();
                         return $control;
                     }
                     function clearErrors($control) {
-                        $control.data(DATA_HAS_ERROR, false);
                         ui.errors.removeByElement($control);
-                        ($control.data(ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
                         return $control;
                     }
                     function clearErrorByCode($control, errorCode) {
                         ui.errors.removeByCode($control, errorCode);
-                        var remainErrors = ui.errors.getErrorByElement($control);
-                        if (uk.util.isNullOrEmpty(remainErrors)) {
-                            $control.data(DATA_HAS_ERROR, false);
-                            ($control.data(ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
-                        }
                         return $control;
                     }
                     function clearKibanError($control) {
                         ui.errors.removeCommonError($control);
-                        var remainErrors = ui.errors.getErrorByElement($control);
-                        if (uk.util.isNullOrEmpty(remainErrors)) {
-                            $control.data(DATA_HAS_ERROR, false);
-                            ($control.data(ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
-                        }
                         return $control;
                     }
                     function hasError($control) {
-                        return $control.data(DATA_HAS_ERROR) === true;
+                        return $control.data(ui.DATA_HAS_ERROR) === true;
                     }
                 })(ntsError || (ntsError = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
@@ -21429,11 +21516,27 @@ var nts;
                         }
                         return dfd.promise();
                     }
-                    function downloadImage($element, fileId) {
-                        $element.trigger("srcchanging", { url: nts.uk.request.liveView(fileId), isOutSiteUrl: false });
+                    function downloadImage($element, option) {
+                        var fileId = option;
+                        var actionOnClose = $.noop;
+                        if (typeof option === 'object') {
+                            fileId = option.fileId;
+                            if (!nts.uk.util.isNullOrUndefined(option.actionOnClose)) {
+                                actionOnClose = option.actionOnClose;
+                            }
+                        }
+                        $element.trigger("srcchanging", { url: nts.uk.request.liveView(fileId), isOutSiteUrl: false, actionOnClose: actionOnClose });
                     }
-                    function viewByUrl($element, sourceUrl) {
-                        $element.trigger("srcchanging", { url: sourceUrl, isOutSiteUrl: true });
+                    function viewByUrl($element, option) {
+                        var fileId = option;
+                        var actionOnClose = $.noop;
+                        if (typeof option === 'object') {
+                            fileId = nts.uk.util.isNullOrEmpty(option.url) ? option.fileId : option.url;
+                            if (!nts.uk.util.isNullOrUndefined(option.actionOnClose)) {
+                                actionOnClose = option.actionOnClose;
+                            }
+                        }
+                        $element.trigger("srcchanging", { url: fileId, isOutSiteUrl: true, actionOnClose: actionOnClose });
                     }
                     function clear($element) {
                         var cropper = $element.data("cropper");
@@ -22199,7 +22302,7 @@ var nts;
                             if (uk.util.isNullOrUndefined(idx))
                                 return;
                             var origData = origDs[idx]; //gridUpdate._getLatestValues(rId);
-                            grid.dataSource.updateRow(rId, $.extend({}, origData, updatedRowData), autoCommit);
+                            grid.dataSource.updateRow(rId, $.extend({}, gridUpdate._getLatestValues(rId), updatedRowData), autoCommit);
                             _.forEach(Object.keys(updatedRowData), function (key) {
                                 notifyUpdate($grid, rowId, key, updatedRowData[key], origData);
                                 var isControl = utils.isNtsControl($grid, key);
@@ -28717,7 +28820,7 @@ var nts;
                             var target = self.helper.getUrl(query);
                             var xhr = self.getXRequest();
                             if (xhr === null) {
-                                self.destroyImg();
+                                self.destroyImg(query);
                                 return;
                             }
                             xhr.open('GET', target);
@@ -28738,29 +28841,31 @@ var nts;
                                         };
                                     }
                                     else {
-                                        self.destroyImg();
+                                        self.destroyImg(query);
                                     }
                                 }
                                 else {
-                                    self.destroyImg();
+                                    self.destroyImg(query);
                                 }
                             };
                             xhr.send();
                         });
                     };
-                    ImageEditorConstructSite.prototype.destroyImg = function () {
+                    ImageEditorConstructSite.prototype.destroyImg = function (query) {
                         var self = this;
-                        nts.uk.ui.dialog.alert("画像データが正しくないです。。");
-                        self.$root.data("img-status", self.buildImgStatus("load fail", 3));
-                        self.backupData(null, "", "", 0);
-                        self.$imagePreview.attr("src", "");
-                        self.$imagePreview.closest(".image-holder").addClass(".image-upload-icon");
-                        self.$imagePreview.closest(".image-container").addClass(".container-no-upload-background");
-                        self.$imageSizeLbl.text("");
-                        if (!nts.uk.util.isNullOrUndefined(self.cropper)) {
-                            self.cropper.destroy();
-                        }
-                        self.$root.data("cropper", self.cropper);
+                        nts.uk.ui.dialog.alert("画像データが正しくないです。。").then(function () {
+                            self.$root.data("img-status", self.buildImgStatus("load fail", 3));
+                            self.backupData(null, "", "", 0);
+                            self.$imagePreview.attr("src", "");
+                            self.$imagePreview.closest(".image-holder").addClass(".image-upload-icon");
+                            self.$imagePreview.closest(".image-container").addClass(".container-no-upload-background");
+                            self.$imageSizeLbl.text("");
+                            if (!nts.uk.util.isNullOrUndefined(self.cropper)) {
+                                self.cropper.destroy();
+                            }
+                            self.$root.data("cropper", self.cropper);
+                            query.actionOnClose();
+                        });
                     };
                     ImageEditorConstructSite.prototype.getXRequest = function () {
                         return new XMLHttpRequest();
@@ -28795,7 +28900,7 @@ var nts;
                                 self.backupData(file, file.name, file.type.split("/")[1], file.size);
                             };
                             fr.onerror = function () {
-                                self.destroyImg();
+                                self.destroyImg({ actionOnClose: $.noop });
                             };
                             fr.readAsDataURL(file);
                         }

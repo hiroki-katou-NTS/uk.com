@@ -149,7 +149,7 @@ public class JpaAbsenceLeaveAppRepository extends JpaRepository implements Absen
 				new WorkTime(entity.getEndWorkTime1()));
 		AbsenceLeaveWorkingHour WorkTime2 = new AbsenceLeaveWorkingHour(new WorkTime(entity.getStartWorkTime2()),
 				new WorkTime(entity.getEndWorkTime2()));
-		return new AbsenceLeaveApp(entity.getAppID(), entity.getWorkTimeCD(),
+		return new AbsenceLeaveApp(entity.getAppID(), entity.getWorkTypeCD(),
 				EnumAdaptor.valueOf(entity.getChangeWorkHoursAtr(), NotUseAtr.class),
 				new WorkTimeCode(entity.getWorkTimeCD()), WorkTime1, WorkTime2, null, null);
 	}

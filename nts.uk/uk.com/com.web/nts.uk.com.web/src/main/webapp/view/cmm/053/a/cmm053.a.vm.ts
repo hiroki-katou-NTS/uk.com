@@ -103,8 +103,8 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                     if (!self.isInitDepartment && value.length == 6) {
                         self.getEmployeeByCode(value, APPROVER_TYPE.DEPARTMENT_APPROVER);
                     }
-                    self.isInitDepartment = false;
                 }
+                self.isInitDepartment = false;
             });
 
             //社員コードを入力する
@@ -113,8 +113,8 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                     if (!self.isInitdailyApproval && value.length == 6) {
                         self.getEmployeeByCode(value, APPROVER_TYPE.DAILY_APPROVER);
                     }
-                    self.isInitdailyApproval = false;
                 }
+                self.isInitdailyApproval = false;
             });
         }
 
@@ -196,7 +196,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                     command.endDate   = moment.utc(self.settingManager().endDate(), "YYYY/MM/DD").toISOString();
 
                     if(self.screenMode() == EXECUTE_MODE.NEW_MODE){
-                        self.callUpdateHistoryService(command);
+                        self.callInsertHistoryService(command);
                         return;
                     }
 
@@ -281,9 +281,13 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             service.getEmployeeByCode(employeeCode, hasAuthority).done(result => {
                 if (result) {
                     if (approverType == APPROVER_TYPE.DEPARTMENT_APPROVER) {
-                        self.settingManager().departmentName(result.employeeName);
+                        self.settingManager().departmentName(result.businessName);
+                        self.settingManager().departmentCode(result.employeeCD);
+                        self.settingManager().departmentApproverId(result.employeeID);
                     } else {
-                        self.settingManager().dailyApprovalName(result.employeeName);
+                        self.settingManager().dailyApprovalName(result.businessName);
+                        self.settingManager().dailyApprovalCode(result.employeeCD);
+                        self.settingManager().dailyApproverId(result.employeeID);
                     }
                 }
             }).fail(error => {

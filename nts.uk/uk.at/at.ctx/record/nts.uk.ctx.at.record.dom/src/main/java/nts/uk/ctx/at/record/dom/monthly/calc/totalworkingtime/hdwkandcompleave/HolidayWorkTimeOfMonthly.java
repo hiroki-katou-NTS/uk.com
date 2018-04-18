@@ -207,6 +207,7 @@ public class HolidayWorkTimeOfMonthly {
 		}
 	
 		// 休出・振替の処理順序を取得する
+		if (workInfo.getWorkTimeCode() == null) return;
 		val workTimeCode = workInfo.getWorkTimeCode().v();
 		val holidayWorkAndTransferAtrs = repositories.getHolidayWorkAndTransferOrder().get(
 				companyId, workTimeCode, false);
