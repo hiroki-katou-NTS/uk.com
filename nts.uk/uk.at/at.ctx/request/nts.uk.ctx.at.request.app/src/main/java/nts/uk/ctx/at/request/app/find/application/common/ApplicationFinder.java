@@ -103,4 +103,10 @@ public class ApplicationFinder {
 		String companyID = AppContexts.user().companyId();
 		return ApplicationMetaDto.fromDomain(detailAppCommonSetService.getDetailAppCommonSet(companyID, appID));
 	}
+	
+	public List<ApplicationMetaDto> getListAppInfo(List<String> listAppID){
+		String companyID = AppContexts.user().companyId();
+		return detailAppCommonSetService.getListDetailAppCommonSet(companyID, listAppID)
+				.stream().map(x -> ApplicationMetaDto.fromDomain(x)).collect(Collectors.toList());
+	}
 }
