@@ -60,7 +60,7 @@ public class BsymtWorkplaceInfo extends UkJpaEntity implements Serializable {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "WKPID", referencedColumnName = "WKPID"),
-			@PrimaryKeyJoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID") })
+			@PrimaryKeyJoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID") })
 	public BsymtWorkplaceHist bsymtWorkplaceHist;
 
 	/*
