@@ -41,12 +41,12 @@ public class BsymtWorkplaceHist extends UkJpaEntity implements Serializable {
 	protected BsymtWorkplaceHistPK bsymtWorkplaceHistPK;
 
 	/** The str D. */
-	@Column(name = "STR_D")
+	@Column(name = "START_DATE")
 	@Convert(converter = GeneralDateToDBConverter.class)
 	private GeneralDate strD;
 
 	/** The end D. */
-	@Column(name = "END_D")
+	@Column(name = "END_DATE")
 	@Convert(converter = GeneralDateToDBConverter.class)
 	private GeneralDate endD;
 
@@ -54,7 +54,7 @@ public class BsymtWorkplaceHist extends UkJpaEntity implements Serializable {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "WKPID", referencedColumnName = "WKPID"),
-			@PrimaryKeyJoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID") })
+			@PrimaryKeyJoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID") })
 	private BsymtWorkplaceInfo bsymtWorkplaceInfo;
 
 	/*
