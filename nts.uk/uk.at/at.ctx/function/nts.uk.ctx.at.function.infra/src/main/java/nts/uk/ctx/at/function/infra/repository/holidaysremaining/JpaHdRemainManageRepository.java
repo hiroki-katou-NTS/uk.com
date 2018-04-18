@@ -17,11 +17,13 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KfnmtHdRemainManage f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.hdRemainManagePk.cid =:cid AND  f.hdRemainManagePk.cd =:cd ";
+	private static final String SELECT_BY_COMPANY_ID = SELECT_ALL_QUERY_STRING
+			+ " WHERE  f.hdRemainManagePk.cid =:cid ";
 	@Override
-	public Optional<HolidaysRemainingManagement> getProcessExecutionByCidAndExecCd(String companyID, String code) {
+	public Optional<HolidaysRemainingManagement> getHolidayManagerByCidAndExecCd(String companyID, String code) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, KfnmtHdRemainManage.class)
-				.setParameter("code", code)
-				.setParameter("companyID", companyID).getSingle(c -> c.toDomain());
+				.setParameter("cd", code)
+				.setParameter("cid", companyID).getSingle(c -> c.toDomain());
 	}
 	@Override
 	public void insert(HolidaysRemainingManagement domain) {
@@ -42,9 +44,9 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 		
 	}
 	@Override
-	public List<HolidaysRemainingManagement> getProcessExecutionLogByCompanyId(String companyId) {
-		return this.queryProxy().query(SELECT_BY_KEY_STRING, KfnmtHdRemainManage.class)
-				.setParameter("companyId", companyId).getList(c -> c.toDomain());
+	public List<HolidaysRemainingManagement> getHolidayManagerLogByCompanyId(String companyId) {
+		return this.queryProxy().query(SELECT_BY_COMPANY_ID, KfnmtHdRemainManage.class)
+				.setParameter("cid", companyId).getList(c -> c.toDomain());
 	}
 
 }

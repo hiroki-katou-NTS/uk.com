@@ -7,9 +7,9 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 
 public interface HolidaysRemainingManagementRepository {
 
-	List<HolidaysRemainingManagement> getProcessExecutionLogByCompanyId(String companyId);
+	List<HolidaysRemainingManagement> getHolidayManagerLogByCompanyId(String companyId);
 
-	Optional<HolidaysRemainingManagement> getProcessExecutionByCidAndExecCd(String companyID, String code);
+	Optional<HolidaysRemainingManagement> getHolidayManagerByCidAndExecCd(String companyID, String code);
 
 	void insert(HolidaysRemainingManagement domain);
 

@@ -1,8 +1,5 @@
-module nts.uk.at.view.kdr001.a {
+module nts.uk.at.view.kdr001.b {
     export module service {
-        /**
-         * define path to service
-         */
         var path: any = {
                 findAll: "at/function/holidaysremaining/findAll",
             };
@@ -14,3 +11,4 @@ module nts.uk.at.view.kdr001.a {
         
     }
 }
+

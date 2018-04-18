@@ -156,7 +156,7 @@ public class KfnmtHdRemainManage extends UkJpaEntity implements Serializable {
 	}
 
 	public HolidaysRemainingManagement toDomain() {
-		return new HolidaysRemainingManagement(this.hdRemainManagePk.cd, this.hdRemainManagePk.cid, this.name,
+		return new HolidaysRemainingManagement( this.name, this.hdRemainManagePk.cid, this.hdRemainManagePk.cd,
 				new ItemOutputForm(
 						new NursingCareLeave(this.childCareLeave >0 ? true : false),
 						new ItemsOutputtedAlternate(this.remainChargeSub >0 ? true : false, this.representSub >0 ? true : false, this.outItemSub >0 ? true : false),

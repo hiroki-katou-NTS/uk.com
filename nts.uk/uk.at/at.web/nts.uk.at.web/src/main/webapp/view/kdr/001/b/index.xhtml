@@ -9,6 +9,7 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdr001.b.main.css" />
+			
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
@@ -17,6 +18,7 @@
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kdl/023/base/kdl023.base.service.js" />
 			<com:scriptfile path="kdr001.b.start.js" />
+			<com:scriptfile path="kdr001.b.service.js" />
 			<com:scriptfile path="kdr001.b.vm.js" />
 			<com:ValidatorScript>
 				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber
@@ -39,11 +41,16 @@
 						data-bind="ntsGridList: {
 							    multiple: false,
 								height: 371,
-								options: items,
-								optionsValue: 'code',
-								columns: columns2,
-								value: currentCodeList
-							}"></table>
+								options: lstHolidays,
+								optionsValue: 'displayCd',
+								
+								columns: [
+										{ headerText: '#{i18n.getText('KWD001_40')}', key: 'displayCd', width: 150 },
+										{ headerText: '#{i18n.getText('KWD001_41')}', key: 'displayName', width: 250 }
+										], 
+								
+								value: currentCode
+					}"></table>
 
 				</div>
 				<div class="employeeAction">
@@ -53,7 +60,7 @@
 						data-bind="ntsTextEditor: {value: textName1, enable: true, required: true, name: '#[KWD001_40]'}" />
 					<input style="width: 250px; margin: 20px;" tabindex="7"
 						data-bind="ntsTextEditor: {value: textName2, enable: true, required: true, name: '#[KWD001_41]'}" />
-					<div class="employeetable" style="margin-left: 50px;">
+					<div class="employeetable" style="margin-left: 50px;" data-bind="with: currentHoliday">
 						<div class="labelWork" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KWD001_43')}
 						</div>
 						<!-- B4_2  -->
@@ -62,56 +69,56 @@
 								<td>
 									<!-- B4_3  -->
 									<div tabindex="9"
-										data-bind="ntsCheckBox: {  enable: true, text: '#{i18n.getText('Com_PaidHoliday')}' }"></div>
+										data-bind="ntsCheckBox: { checked: yearlyHoliday ,  enable: true, text: '#{i18n.getText('Com_PaidHoliday')}' }"></div>
 								</td>
 							</tr>
 							<tr>
 								<td>
 									<!-- B4_5  -->
 									<div tabindex="11"
-										data-bind="ntsCheckBox: {  enable: true, text: '#{i18n.getText('Com_FundedPaidHoliday')}' }"></div>
+										data-bind="ntsCheckBox: { checked: yearlyReserved , enable: true, text: '#{i18n.getText('Com_FundedPaidHoliday')}' }"></div>
 								</td>
 							</tr>
 							<tr>
 								<td>
 									<!-- B4_7  -->
 									<div tabindex="13"
-										data-bind="ntsCheckBox: {  enable: true, text: '#{i18n.getText('Com_CompensationHoliday')}' }"></div>
+										data-bind="ntsCheckBox: { checked: outItemSub , enable: true, text: '#{i18n.getText('Com_CompensationHoliday')}' }"></div>
 									<!-- B4_8  -->
 									<div tabindex="14"
-										data-bind="ntsCheckBox: {  enable: true, text: '#{i18n.getText('Com_SubstituteHoliday')}' }"></div>
+										data-bind="ntsCheckBox: { checked: representSub , enable: true, text: '#{i18n.getText('Com_SubstituteHoliday')}' }"></div>
 									<!-- B4_9  -->
 									<div tabindex="15"
-										data-bind="ntsCheckBox: {  enable: true, text: '#{i18n.getText('Com_ExsessHoliday')}' }"></div>
+										data-bind="ntsCheckBox: { checked: remainChargeSub , enable: true, text: '#{i18n.getText('Com_ExsessHoliday')}' }"></div>
 								</td>
 							</tr>
 							<tr>
 								<td>
 									<!-- B4_10  -->
 									<div tabindex="16"
-										data-bind="ntsCheckBox: {  enable: true, text: '#{i18n.getText('Com_SubstituteHoliday')}' }"></div>
+										data-bind="ntsCheckBox: { checked: pauseItem , enable: true, text: '#{i18n.getText('Com_SubstituteHoliday')}' }"></div>
 
 									<!-- B4_11  -->
 									<div tabindex="17"
-										data-bind="ntsCheckBox: {  enable: true, text: '#{i18n.getText('Com_SubstituteHoliday')}' }"></div>
+										data-bind="ntsCheckBox: { checked: undigestedPause , enable: true, text: '#{i18n.getText('Com_SubstituteHoliday')}' }"></div>
 
 									<!-- B4_12  -->
 									<div tabindex="18"
-										data-bind="ntsCheckBox: {  enable: true, text: '#{i18n.getText('Com_ExsessHoliday')}' }"></div>
+										data-bind="ntsCheckBox: { checked: numRemainPause ,  enable: true, text: '#{i18n.getText('Com_ExsessHoliday')}' }"></div>
 								</td>
 							</tr>
 							<tr>
 								<td>
 									<!-- B4_20  -->
 									<div tabindex="26"
-										data-bind="ntsCheckBox: {  enable: true, text: '#{i18n.getText('KWD001_47')}' }"></div>
+										data-bind="ntsCheckBox: { checked: childCareLeave ,  enable: true, text: '#{i18n.getText('KWD001_47')}' }"></div>
 								</td>
 							</tr>
 							<tr>
 								<td>
 									<!-- B4_21  -->
 									<div tabindex="27"
-										data-bind="ntsCheckBox: {  enable: true, text: '#{i18n.getText('KWD001_48')}' }"></div>
+										data-bind="ntsCheckBox: { checked: nursingCareLeave , enable: true, text: '#{i18n.getText('KWD001_48')}' }"></div>
 								</td>
 							</tr>
 
