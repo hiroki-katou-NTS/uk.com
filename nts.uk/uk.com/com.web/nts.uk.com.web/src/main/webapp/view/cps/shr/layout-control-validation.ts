@@ -1162,7 +1162,7 @@ module nts.layout {
                         comboBoxType: comboData.item.referenceType,
                         categoryId: comboData.categoryId,
                         required: comboData.required,
-                        standardDate: _date,
+                        standardDate: moment.utc(_date).toDate(),
                         typeCode: comboData.item.typeCode,
                         masterType: comboData.item.masterType,
                         employeeId: empId,
