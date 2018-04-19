@@ -28,9 +28,9 @@
 			<div id="functions-area" tabindex="-1">
 				<!-- D1_1 -->
 				<a class="goback"
-					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF001_430')}</a>
+					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF003_80')}</a>
 				<!-- D1_2 -->
-				<a class="label area-text-right">#{i18n.getText('CMF003_081')}</a>
+				<a class="label area-text-right">#{i18n.getText('CMF003_81')}</a>
 			</div>
 			
 			<div class="cf" tabindex="-1" id="contents-area">
@@ -45,7 +45,7 @@
 						<div class="top-right-list-employee">
 							<div style="float: left; width: 50%;">
 								<!-- D4_1 -->
-								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF003_087')}</div>
+								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF003_87')}</div>
 							</div>
 							<div style="float: left; width: 40%;">
 
@@ -71,16 +71,17 @@
 						<div class="bot-right-list-employee">
 							<!-- D4_6 -->
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_100')}</div>
+							<!-- D4_7 -->
+							<span class="label" data-bind="ntsFormLabel: {text:dateDefaut}"></span>
 							<!-- D4_8 -->
-							<button
-								data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top'">?</button>
+							<button data-bind="ntsHelpButton: {textId: textHelp, position: 'right top', enable: enable }">?</button>
 
 							<div class="bot-button-action">
 								<!-- D5_1 -->
 								<button class="large prev_btn" id="prev_btn" data-bind="">#{i18n.getText('CMF003_101')}</button>
 								<!-- D5_2 -->
 								<button class="x-large proceed next_btn" id="next_btn"
-									data-bind="click: btnRightClick">#{i18n.getText('CMF003_102')}</button>
+									data-bind="click: btnSubmitClick">#{i18n.getText('CMF003_102')}</button>
 							</div>
 
 						</div>
