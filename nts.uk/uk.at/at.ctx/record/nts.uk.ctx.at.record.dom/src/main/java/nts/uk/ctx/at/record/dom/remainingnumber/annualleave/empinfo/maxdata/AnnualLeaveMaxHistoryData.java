@@ -22,6 +22,11 @@ public class AnnualLeaveMaxHistoryData extends AggregateRoot {
 	 * 社員ID
 	 */
 	private String employeeId;
+	
+	/**
+	 * 会社ID
+	 */
+	private String companyId;
 
 	/**
 	 * 半日年休上限
@@ -48,10 +53,11 @@ public class AnnualLeaveMaxHistoryData extends AggregateRoot {
 	 */
 	private ClosureDate closureDate;
 
-	public AnnualLeaveMaxHistoryData(String employeeId, HalfdayAnnualLeaveMax halfdayAnnualLeaveMax,
+	public AnnualLeaveMaxHistoryData(String employeeId, String companyId, HalfdayAnnualLeaveMax halfdayAnnualLeaveMax,
 			TimeAnnualLeaveMax timeAnnualLeaveMax, YearMonth yearMonth, int closureId, ClosureDate closureDate) {
 		super();
 		this.employeeId = employeeId;
+		this.companyId = companyId;
 		this.halfdayAnnualLeaveMax = Optional.ofNullable(halfdayAnnualLeaveMax);
 		this.timeAnnualLeaveMax = Optional.ofNullable(timeAnnualLeaveMax);
 		this.yearMonth = yearMonth;
@@ -63,6 +69,7 @@ public class AnnualLeaveMaxHistoryData extends AggregateRoot {
 			ClosureDate closureDate) {
 		super();
 		this.employeeId = maxData.getEmployeeId();
+		this.companyId = maxData.getCompanyId();
 		this.halfdayAnnualLeaveMax = maxData.getHalfdayAnnualLeaveMax();
 		this.timeAnnualLeaveMax = maxData.getTimeAnnualLeaveMax();
 		this.yearMonth = yearMonth;

@@ -46,7 +46,7 @@ module nts.uk.at.view.kmw006.e.viewmodel {
         private exportCsv(): void {
             let self = this;
             block.invisible();
-            service.exportCsv(ko.toJS(self.items)).always(() => {
+            service.exportCsv({executionDt: self.executionDt(), data: ko.toJS(self.items)}).always(() => {
                 block.clear();
             });
         }

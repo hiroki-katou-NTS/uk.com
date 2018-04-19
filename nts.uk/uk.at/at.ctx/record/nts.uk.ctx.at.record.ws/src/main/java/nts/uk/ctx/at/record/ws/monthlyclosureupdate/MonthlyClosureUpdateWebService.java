@@ -18,10 +18,10 @@ import nts.uk.ctx.at.record.app.command.monthlyclosureupdate.MonthlyClosureRespo
 import nts.uk.ctx.at.record.app.find.monthlyclosureupdate.Kmw006aResultDto;
 import nts.uk.ctx.at.record.app.find.monthlyclosureupdate.Kmw006cDto;
 import nts.uk.ctx.at.record.app.find.monthlyclosureupdate.Kmw006fResultDto;
-import nts.uk.ctx.at.record.app.find.monthlyclosureupdate.MonthlyClosureErrorInforDto;
 import nts.uk.ctx.at.record.app.find.monthlyclosureupdate.MonthlyClosureUpdateFinder;
 import nts.uk.ctx.at.record.app.find.monthlyclosureupdate.MonthlyClosureUpdateLogDto;
 import nts.uk.ctx.at.record.app.find.monthlyclosureupdate.exportcsv.MonthlyClosureUpdateLogExportService;
+import nts.uk.ctx.at.record.app.find.monthlyclosureupdate.exportcsv.MontlyClosureUpdateExportDto;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 
 /**
@@ -105,7 +105,7 @@ public class MonthlyClosureUpdateWebService extends WebService {
 
 	@POST
 	@Path("exportLog")
-	public ExportServiceResult exportCsvErrorInfor(List<MonthlyClosureErrorInforDto> command) {
+	public ExportServiceResult exportCsvErrorInfor(MontlyClosureUpdateExportDto command) {
 		return this.exportService.start(command);
 	}
 	

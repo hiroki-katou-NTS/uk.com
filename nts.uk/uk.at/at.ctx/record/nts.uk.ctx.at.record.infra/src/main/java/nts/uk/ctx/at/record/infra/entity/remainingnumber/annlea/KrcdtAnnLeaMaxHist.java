@@ -34,6 +34,9 @@ public class KrcdtAnnLeaMaxHist extends UkJpaEntity {
 	@Column(name = "SID")
 	public String sid;
 
+	@Column(name = "CID")
+	public String cid;
+
 	@Column(name = "MAX_TIMES")
 	@Basic(optional = true)
 	public Integer maxTimes;
@@ -83,11 +86,12 @@ public class KrcdtAnnLeaMaxHist extends UkJpaEntity {
 		return sid;
 	}
 
-	public KrcdtAnnLeaMaxHist(String sid, Integer maxTimes, Integer usedTimes, Integer remainingTimes,
+	public KrcdtAnnLeaMaxHist(String sid, String cid, Integer maxTimes, Integer usedTimes, Integer remainingTimes,
 			Integer maxMinutes, Integer usedMinutes, Integer remainingMinutes, int yearMonth, int closureId,
 			Integer closeDay, Integer isLastDay) {
 		super();
 		this.sid = sid;
+		this.cid = cid;
 		this.maxTimes = maxTimes;
 		this.usedTimes = usedTimes;
 		this.remainingTimes = remainingTimes;
@@ -101,7 +105,7 @@ public class KrcdtAnnLeaMaxHist extends UkJpaEntity {
 	}
 
 	public static KrcdtAnnLeaMaxHist fromDomain(AnnualLeaveMaxHistoryData domain) {
-		return new KrcdtAnnLeaMaxHist(domain.getEmployeeId(),
+		return new KrcdtAnnLeaMaxHist(domain.getEmployeeId(), domain.getCompanyId(),
 				domain.getHalfdayAnnualLeaveMax().isPresent()
 						? domain.getHalfdayAnnualLeaveMax().get().getMaxTimes().v() : null,
 				domain.getHalfdayAnnualLeaveMax().isPresent()
@@ -127,7 +131,7 @@ public class KrcdtAnnLeaMaxHist extends UkJpaEntity {
 		TimeAnnualLeaveMax timeMax = null;
 		if (this.maxMinutes != null && this.usedMinutes != null && this.remainingMinutes != null)
 			timeMax = new TimeAnnualLeaveMax(new MaxMinutes(1), new UsedMinutes(1), new RemainingMinutes(0));
-		return new AnnualLeaveMaxHistoryData(sid, halfdayMax, timeMax, new YearMonth(this.yearMonth), this.closureId,
-				new ClosureDate(this.closeDay, new Boolean(this.isLastDay == 1)));
+		return new AnnualLeaveMaxHistoryData(this.sid, this.cid, halfdayMax, timeMax, new YearMonth(this.yearMonth),
+				this.closureId, new ClosureDate(this.closeDay, new Boolean(this.isLastDay == 1)));
 	}
 }
