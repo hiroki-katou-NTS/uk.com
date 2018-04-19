@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ChangeWorkTypeDto {
+public class WorkTimeInfoDto {
 	private WorkTypeDto wkType;
 	private List<TimeZoneUseDto> TimezoneUseDtos;
 }
