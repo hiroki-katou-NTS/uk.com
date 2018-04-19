@@ -72,7 +72,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 				para.getScheTimeReflectAtr());
 		TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(), para.getDateData(), startTimeReflect.getTimeOfDay(), endTimeReflect.getTimeOfDay(), 1, startTimeReflect.isReflectFlg(), endTimeReflect.isReflectFlg());
 		scheUpdateService.updateScheStartEndTime(timeData1);		
-		//(開始時刻2)反映する時刻を求める
+		/*//(開始時刻2)反映する時刻を求める
 		TimeOfDayReflectOutput startTime2Reflect = this.getTimeOfDayReflect(timeTypeScheReflect, 
 				para.getGobackData().getStartTime2(), 
 				ApplyTimeAtr.START2, 
@@ -90,7 +90,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 				2, 
 				startTime2Reflect.isReflectFlg(), 
 				endTime2Reflect.isReflectFlg());
-		scheUpdateService.updateScheStartEndTime(timeData2);		
+		scheUpdateService.updateScheStartEndTime(timeData2);*/		
 	}
 	@Override
 	public TimeOfDayReflectOutput getTimeOfDayReflect(boolean timeTypeScheReflect, 
@@ -182,7 +182,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 		Integer endTime1 = isEnd1 ? this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getEndTime1(), 1, false) : null;		
 		TimeReflectPara timePara1 = new TimeReflectPara(para.getEmployeeId(), para.getDateData(), startTime1, endTime1, 1, isStart1, isEnd1);
 		scheUpdateService.updateRecordStartEndTimeReflect(timePara1);		
-		//出勤時刻２を反映できるか
+		/*//出勤時刻２を反映できるか
 		boolean startTime2 = this.checkAttendenceReflect(para, 2, true);
 		//ジャスト遅刻により時刻を編集する
 		Integer timeLate2 = startTime2 ? this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getStartTime2(), 2, true) : null;
@@ -191,7 +191,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 		//ジャスト早退により時刻を編集する
 		Integer timeLeave2 = endTime2 ? this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getEndTime2(), 2, false) : null;
 		TimeReflectPara timePara2 = new TimeReflectPara(para.getEmployeeId(), para.getDateData(), timeLate2, timeLeave2, 2, startTime2, endTime2);
-		scheUpdateService.updateRecordStartEndTimeReflect(timePara2);
+		scheUpdateService.updateRecordStartEndTimeReflect(timePara2);*/
 	}
 	@Override
 	public boolean checkAttendenceReflect(GobackReflectParameter para, Integer frameNo, boolean isPre) {

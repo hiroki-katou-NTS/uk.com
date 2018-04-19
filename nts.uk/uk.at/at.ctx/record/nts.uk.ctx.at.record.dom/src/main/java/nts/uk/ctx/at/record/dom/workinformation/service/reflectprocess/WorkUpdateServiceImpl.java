@@ -152,14 +152,14 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 					para.isStart() ? para.getStartTime(): 0,
 							para.isEnd() ? para.getEndTime() : 0);
 		} else {
-			List<ScheduleTimeSheet> lstTimeSheetFrameNo = dailyPerfor.getScheduleTimeSheets().stream()
+			List<ScheduleTimeSheet> lstTimeSheetFrameNo = dailyPerfor.getScheduleTimeSheets().stream()					
 					.filter(x -> x.getWorkNo().v() == para.getFrameNo()).collect(Collectors.toList());
-			ScheduleTimeSheet timeSheetFrameNo = lstTimeSheetFrameNo.get(0);
 			if(lstTimeSheetFrameNo.isEmpty()) {
-				timeSheet = new ScheduleTimeSheet(timeSheetFrameNo.getWorkNo().v(), 
+				timeSheet = new ScheduleTimeSheet(para.getFrameNo(), 
 						para.isStart() ? para.getStartTime() : 0,
 						para.isEnd() ? para.getEndTime() : 0);
 			} else {
+				ScheduleTimeSheet timeSheetFrameNo = lstTimeSheetFrameNo.get(0);
 				timeSheet = new ScheduleTimeSheet(timeSheetFrameNo.getWorkNo().v(), 
 						para.isStart() ? para.getStartTime() : timeSheetFrameNo.getAttendance().v(),
 						para.isEnd() ? para.getEndTime() : timeSheetFrameNo.getLeaveWork().v());
