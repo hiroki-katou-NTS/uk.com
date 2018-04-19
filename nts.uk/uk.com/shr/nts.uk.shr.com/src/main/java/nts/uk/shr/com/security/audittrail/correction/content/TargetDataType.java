@@ -1,4 +1,4 @@
-package nts.uk.shr.com.security.audittrail;
+package nts.uk.shr.com.security.audittrail.correction.content;
 
 import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;

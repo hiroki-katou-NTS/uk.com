@@ -5,18 +5,21 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.uk.shr.com.security.audittrail.jms.JmsAuditTrailProducer;
+import nts.uk.shr.sample.audittrail.correction.SampleCorrectionLogCommand;
+import nts.uk.shr.sample.audittrail.correction.SampleCorrectionLogCommandHandler;
 
 @Path("/sample/audit")
 @Produces("application/json")
 public class SampleAuditTrailWebService {
-
+	
 	@Inject
-	private JmsAuditTrailProducer producer;
+	private SampleCorrectionLogCommandHandler commandHandler;
 	
 	@POST
 	@Path("test")
 	public void test() {
-		this.producer.execute();
+		
+		this.commandHandler.handle(new SampleCorrectionLogCommand());
+		
 	}
 }

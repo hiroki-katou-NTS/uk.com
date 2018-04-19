@@ -8,16 +8,17 @@ import org.junit.Test;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
+import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
+import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
+import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
+import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
+import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
+import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 
 public class AuditTrailTest {
 
 	private UserInfoAdaptorForLog userInfoAdaptor = new UserInfoAdaptorForLog() {
-		
-		@Override
-		public UserInfo fingByPersonalId(String personalId) {
-			// TODO Auto-generated method stub
-			return null;
-		}
 		
 		@Override
 		public UserInfo findByUserId(String userId) {
@@ -39,7 +40,8 @@ public class AuditTrailTest {
 		val date = GeneralDate.ymd(2018, 4, 1);
 		String itemName = "遅刻回数";
 		
-		val targetInfo = new LogTargetInfo(
+		val targetInfo = new DataCorrectionLog(
+				"opid1",
 				userInfoAdaptor.findByEmployeeId(employeeId),
 				TargetDataType.DAILY_RECORD,
 				TargetDataKey.of(date),

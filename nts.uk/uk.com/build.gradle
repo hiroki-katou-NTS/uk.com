@@ -369,6 +369,7 @@ project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pubimp') {
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.app')
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.infra')
+		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 	}
 }
 //========================sys:auth �====================================

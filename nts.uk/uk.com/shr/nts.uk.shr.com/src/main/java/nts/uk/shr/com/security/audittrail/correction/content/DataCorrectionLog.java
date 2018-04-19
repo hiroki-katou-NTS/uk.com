@@ -1,11 +1,15 @@
-package nts.uk.shr.com.security.audittrail;
+package nts.uk.shr.com.security.audittrail.correction.content;
 
 import lombok.Getter;
 
 /**
- * 対象情報
+ * データ修正記録
  */
-public class LogTargetInfo {
+public class DataCorrectionLog implements DataCorrection {
+	
+	/** 操作ID */
+	@Getter
+	private final String operationId;
 	
 	/** 対象ユーザ */
 	@Getter
@@ -44,7 +48,8 @@ public class LogTargetInfo {
 	 * @param correctedItem
 	 * @param showOrder
 	 */
-	public LogTargetInfo(
+	public DataCorrectionLog(
+			String operationId,
 			UserInfo targetUser,
 			TargetDataType targetDataType,
 			TargetDataKey targetDataKey,
@@ -52,10 +57,11 @@ public class LogTargetInfo {
 			ItemInfo correctedItem,
 			int showOrder) {
 		
-		this(targetUser, targetDataType, targetDataKey, correctionAttr, correctedItem, showOrder, "");
+		this(operationId, targetUser, targetDataType, targetDataKey, correctionAttr, correctedItem, showOrder, "");
 	}
 	
-	public LogTargetInfo(
+	public DataCorrectionLog(
+			String operationId,
 			UserInfo targetUser,
 			TargetDataType targetDataType,
 			TargetDataKey targetDataKey,
@@ -64,6 +70,7 @@ public class LogTargetInfo {
 			int showOrder,
 			String remark) {
 		
+		this.operationId = operationId;
 		this.targetUser = targetUser;
 		this.targetDataType = targetDataType;
 		this.targetDataKey = targetDataKey;
@@ -71,5 +78,17 @@ public class LogTargetInfo {
 		this.correctedItem = correctedItem;
 		this.showOrder = showOrder;
 		this.remark = remark != null ? remark : ""; 
+	}
+	
+	public static DataCorrectionLog of(String operationId, DataCorrection correction) {
+		return new DataCorrectionLog(
+				operationId,
+				correction.getTargetUser(),
+				correction.getTargetDataType(),
+				correction.getTargetDataKey(),
+				correction.getCorrectionAttr(),
+				correction.getCorrectedItem(),
+				correction.getShowOrder(),
+				correction.getRemark());
 	}
 }

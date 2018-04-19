@@ -1,19 +1,23 @@
 package nts.uk.shr.com.security.audittrail.jms;
 
+import java.io.Serializable;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
-import javax.jms.Message;
 import javax.jms.MessageProducer;
 import javax.jms.Queue;
 import javax.jms.Session;
 
+import lombok.SneakyThrows;
 import lombok.val;
+import nts.uk.shr.com.security.audittrail.correction.CorrectionLoggingAgent;
+import nts.uk.shr.com.security.audittrail.correction.CorrectionProcessorId;
 
 @ApplicationScoped
-public class JmsAuditTrailProducer {
+public class JmsAuditTrailProducer implements CorrectionLoggingAgent {
 
     @Resource(lookup = "java:/ConnectionFactory")
     private static ConnectionFactory connectionFactory;
@@ -29,26 +33,16 @@ public class JmsAuditTrailProducer {
     
 
     @PostConstruct
+    @SneakyThrows
     private void initialize() {
-        try {
-            this.connection = connectionFactory.createConnection();
-            this.session = this.connection.createSession();
-            this.producer = this.session.createProducer(queue);
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
+        this.connection = connectionFactory.createConnection();
+        this.session = this.connection.createSession();
+        this.producer = this.session.createProducer(queue);
     }
     
-    public void execute() {
-    	
-        try {
-        	val message = this.session.createMapMessage();
-        	
-        	message.setString("k", "hoge");
-        	
-            this.producer.send(message);
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
+    @SneakyThrows
+    public void requestProcess(String operationId, CorrectionProcessorId processorId, Serializable parameter) {
+    	val message = new JmsAuditTrailMessage(operationId, processorId, parameter);
+        this.producer.send(message.toMapMessage(this.session));
     }
 }
