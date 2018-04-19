@@ -848,7 +848,7 @@ module nts.layout {
                         setShared('parentCodes', {
                             workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
                             selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
-                            workTimeCodes: workTime && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
+                            workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
                             selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
                         }, true);
 
