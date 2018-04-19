@@ -15,6 +15,10 @@ import java.math.BigDecimal;
 public class SspdtMastercopyData implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Id
+	@Column(name="MASTER_COPY_ID")
+	private String masterCopyId;
+
 	@Column(name="EXCLUS_VER")
 	private BigDecimal exclusVer;
 
@@ -29,9 +33,6 @@ public class SspdtMastercopyData implements Serializable {
 
 	@Column(name="INS_SCD")
 	private String insScd;
-
-	@Column(name="MASTER_COPY_ID")
-	private String masterCopyId;
 
 	@Column(name="MASTER_COPY_TARGET")
 	private Object masterCopyTarget;
@@ -49,6 +50,14 @@ public class SspdtMastercopyData implements Serializable {
 	private String updScd;
 
 	public SspdtMastercopyData() {
+	}
+
+	public String getMasterCopyId() {
+		return this.masterCopyId;
+	}
+
+	public void setMasterCopyId(String masterCopyId) {
+		this.masterCopyId = masterCopyId;
 	}
 
 	public BigDecimal getExclusVer() {
@@ -89,14 +98,6 @@ public class SspdtMastercopyData implements Serializable {
 
 	public void setInsScd(String insScd) {
 		this.insScd = insScd;
-	}
-
-	public String getMasterCopyId() {
-		return this.masterCopyId;
-	}
-
-	public void setMasterCopyId(String masterCopyId) {
-		this.masterCopyId = masterCopyId;
 	}
 
 	public Object getMasterCopyTarget() {
