@@ -77,4 +77,9 @@ public class TimeActualStamp {
 		this.stamp = stamp == null ? Optional.empty() : stamp;
 		this.numberOfReflectionStamp = numberOfReflectionStamp;
 	}
+	
+	/** 「打刻」を削除する */
+	public void removeStamp() {
+		this.stamp = Optional.empty();
+	}
 }
