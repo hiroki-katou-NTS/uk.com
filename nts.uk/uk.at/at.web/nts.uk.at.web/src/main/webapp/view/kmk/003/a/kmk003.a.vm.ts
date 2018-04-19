@@ -598,11 +598,13 @@ module nts.uk.at.view.kmk003.a {
                 self.screenMode(ScreenMode.COPY);
                 
                 // do interlock if simple mode
-                if (self.tabMode() === 1) {
+                if (self.tabMode() === TabMode.SIMPLE) {
                     self.mainSettingModel.isInterlockDialogJ(true);
                     self.mainSettingModel.updateStampValue();
                 }
-                
+                self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
+                self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
+                self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
                 // focus worktime atr
                 $('#search-daily-atr').focus();
             }
@@ -904,10 +906,10 @@ module nts.uk.at.view.kmk003.a {
             resetData(isNewMode?: boolean) {
                 let self = this;
                 self.useHalfDay(false);                
-                self.fixedWorkSetting.resetData();
+                self.fixedWorkSetting.resetData(isNewMode);
                 self.flowWorkSetting.resetData();
                 self.flexWorkSetting.resetData();
-                self.diffWorkSetting.resetData();
+                self.diffWorkSetting.resetData(isNewMode);
                 if (!isNewMode) {
                     //check change mode to convert data
                     self.commonSetting.resetData();

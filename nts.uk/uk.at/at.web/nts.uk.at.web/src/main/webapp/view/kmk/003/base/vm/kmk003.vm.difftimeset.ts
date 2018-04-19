@@ -646,7 +646,7 @@ module nts.uk.at.view.kmk003.a {
                     self.getHDWtzAfternoon().workTimezone.initSubscribeForTab2(timezone);
                 }
 
-                public resetData(): void {
+                public resetData(isNewMode?:boolean): void {
                     let self = this;
                     self.restSet.resetData();
                     self.dayoffWorkTimezone.resetData();
@@ -659,7 +659,9 @@ module nts.uk.at.view.kmk003.a {
                     self.stampReflectTimezone.resetData();
                     self.overtimeSetting(0);
                     // Update phase 2
-                    self.calculationSetting.resetData();
+                    if (!isNewMode) {
+                        self.calculationSetting.resetData();
+                    }
                 }
 
                 updateData(data: DiffTimeWorkSettingDto) {
