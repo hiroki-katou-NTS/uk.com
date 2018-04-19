@@ -31,4 +31,11 @@ public class PeregQuery {
 		this.standardDate = standardDate;
 	}
 	
+	public PeregQuery(String infoId, String categoryCode, String employeeId, String personId) {
+		this.infoId = infoId;
+		this.categoryCode = categoryCode;
+		this.employeeId = employeeId;
+		this.personId = personId;
+	}
+	
 }

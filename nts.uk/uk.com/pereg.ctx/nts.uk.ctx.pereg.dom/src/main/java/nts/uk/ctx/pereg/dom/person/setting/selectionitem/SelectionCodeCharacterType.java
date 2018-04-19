@@ -12,9 +12,10 @@ import nts.arc.primitive.constraint.IntegerRange;
  */
 
 // 選択肢コードの文字種
-public enum SelectionCodeCharacter {
+public enum SelectionCodeCharacterType {
 
 	NUMBER_TYPE(0), // 半角数字
+	
 	CHARATERS_TYPE(1);// 半角英数字
 
 	public final int value;

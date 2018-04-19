@@ -12,6 +12,8 @@ public interface SelectionRepository {
 	void update(Selection selection);
 
 	void remove(String selectionId);
+	
+	void removeInSelectionItemId(String selectionItemId);
 
 	List<Selection> getAllSelectByHistId(String histId);
 
@@ -27,7 +29,6 @@ public interface SelectionRepository {
 	
 	List<Selection> getAllSelectionByHistoryId(String selectionItemId, GeneralDate baseDate);
 
-	// Tuan nv:
 	List<Selection> getAllSelectionBySelectionID(String selectionId);
 
 }

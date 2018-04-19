@@ -9,8 +9,6 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -32,6 +30,7 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.LegalAggrS
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.LegalAggrSetOfReg;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.Year;
@@ -45,6 +44,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.flex.GetFlexPredWorkTime;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -123,6 +123,8 @@ public class MonthlyCalculation {
 	private Year year;
 	/** 管理期間の36協定時間 */
 	private AgreementTimeOfManagePeriod agreementTimeOfManagePeriod;
+	/** エラー情報 */
+	private List<MonthlyAggregationErrorInfo> errorInfos;
 	
 	/**
 	 * コンストラクタ
@@ -165,6 +167,7 @@ public class MonthlyCalculation {
 
 		this.year = new Year(0);
 		this.agreementTimeOfManagePeriod = new AgreementTimeOfManagePeriod(this.employeeId, this.yearMonth);
+		this.errorInfos = new ArrayList<>();
 	}
 
 	/**
@@ -229,8 +232,9 @@ public class MonthlyCalculation {
 		// 社員を取得する
 		EmployeeImport employee = repositories.getEmpEmployee().findByEmpId(employeeId);
 		if (employee == null){
-			String errMsg = "社員データが見つかりません。　社員ID：" + employeeId;
-			throw new BusinessException(new RawErrorMessage(errMsg));
+			this.errorInfos.add(new MonthlyAggregationErrorInfo(
+					"002", new ErrMessageContent(TextResource.localize("Msg_1156"))));
+			return;
 		}
 		
 		// 退職月か確認する　（変形労働勤務の月単位集計：精算月判定に利用）
@@ -308,17 +312,33 @@ public class MonthlyCalculation {
 		}
 
 		// 週間、月間法定・所定労働時間　取得
-		//*****（未）　日次での実装位置を確認して、合わせて実装する。
-		//*****（未）　参考（日次用）。このクラスか、別のクラスに、月・週用のメソッドを追加。仮に0設定。
-		//*****（未）　フレックスの場合、労働制を判断して、Month側だけに対象時間を入れる。
-		/*
-		repositories.getGetOfStatutoryWorkTime().getDailyTimeFromStaturoyWorkTime(WorkingSystem.RegularWork,
-				companyId, workplaceId, employmentCd, employeeId, datePeriod.end());
-		*/
-		this.statutoryWorkingTimeWeek = new AttendanceTimeMonth(40 * 60);
-		this.statutoryWorkingTimeMonth = new AttendanceTimeMonth(160 * 60);
-		this.prescribedWorkingTimeWeek = new AttendanceTimeMonth(40 * 60);
-		this.prescribedWorkingTimeMonth = new AttendanceTimeMonth(160 * 60);
+		switch (this.workingSystem){
+		case REGULAR_WORK:
+		case VARIABLE_WORKING_TIME_WORK:
+			val monAndWeekStatTimeOpt = repositories.getMonthlyStatutoryWorkingHours().getMonAndWeekStatutoryTime(
+					companyId, this.employmentCd, employeeId, procPeriod.end(), yearMonth, this.workingSystem);
+			if (!monAndWeekStatTimeOpt.isPresent()){
+				this.errorInfos.add(new MonthlyAggregationErrorInfo(
+						"XXX", new ErrMessageContent("法定労働時間が取得できません。")));
+				break;
+			}
+			val monAndWeekStatTime = monAndWeekStatTimeOpt.get();
+			this.statutoryWorkingTimeWeek = new AttendanceTimeMonth(monAndWeekStatTime.getWeeklyEstimateTime().v());
+			this.statutoryWorkingTimeMonth = new AttendanceTimeMonth(monAndWeekStatTime.getMonthlyEstimateTime().v());
+			break;
+		case FLEX_TIME_WORK:
+			val flexMonAndWeekStatTime = repositories.getMonthlyStatutoryWorkingHours().getFlexMonAndWeekStatutoryTime(
+					companyId, this.employmentCd, employeeId, procPeriod.end(), yearMonth);
+			this.statutoryWorkingTimeMonth = new AttendanceTimeMonth(flexMonAndWeekStatTime.getStatutorySetting().v());
+			this.prescribedWorkingTimeMonth = new AttendanceTimeMonth(flexMonAndWeekStatTime.getSpecifiedSetting().v());
+			break;
+		default:
+			this.statutoryWorkingTimeWeek = new AttendanceTimeMonth(40 * 60);
+			this.statutoryWorkingTimeMonth = new AttendanceTimeMonth(160 * 60);
+			this.prescribedWorkingTimeWeek = new AttendanceTimeMonth(40 * 60);
+			this.prescribedWorkingTimeMonth = new AttendanceTimeMonth(160 * 60);
+			break;
+		}
 		
 		// 月別実績の勤怠時間　既存データ　取得
 		this.originalData = repositories.getAttendanceTimeOfMonthly().find(
@@ -624,9 +644,9 @@ public class MonthlyCalculation {
 	 */
 	public List<MonthlyAggregationErrorInfo> getErrorInfos(){
 		
-		List<MonthlyAggregationErrorInfo> errorInfos = new ArrayList<>();
-		errorInfos.addAll(this.flexTime.getErrorInfos());
-		return errorInfos;
+		this.errorInfos.addAll(this.actualWorkingTime.getErrorInfos());
+		this.errorInfos.addAll(this.flexTime.getErrorInfos());
+		return this.errorInfos;
 	}
 	
 	/**
