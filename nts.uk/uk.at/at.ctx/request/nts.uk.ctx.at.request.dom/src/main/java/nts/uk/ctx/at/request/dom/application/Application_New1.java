@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -10,11 +11,13 @@ import lombok.val;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.request.dom.application.appabsence.AllDayHalfDayLeaveAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
-import nts.uk.ctx.at.request.dom.application.holidayinstruction.HolidayInstructRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
@@ -28,7 +31,7 @@ import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * @author hiep.ld Pending
+ * @author hiep.ld
  */
 @Stateless
 public class Application_New1 extends Application_New {
@@ -39,7 +42,7 @@ public class Application_New1 extends Application_New {
 	private GoBackDirectlyRepository goBackRepo;
 
 	@Inject
-	private HolidayInstructRepository holidayRepo;
+	private AppHolidayWorkRepository holidayRepo;
 
 	@Inject
 	private LateOrLeaveEarlyRepository lateLeaveEarlyRepo;
@@ -52,6 +55,9 @@ public class Application_New1 extends Application_New {
 
 	@Inject
 	private IAppWorkChangeRepository workChangeRepo;
+
+	@Inject
+	private ApplicationRepository_New repoApp;
 
 	public Application_New1(Long version, String companyID, String appID, PrePostAtr prePostAtr,
 			GeneralDateTime inputDate, String enteredPersonID, AppReason reversionReason, GeneralDate appDate,
@@ -70,32 +76,40 @@ public class Application_New1 extends Application_New {
 		String companyID = AppContexts.user().companyId();
 		switch (this.getAppType()) {
 		case OVER_TIME_APPLICATION: {
+			// OK
 			return this.getOverTimeAppContent(companyID, appID, appReason);
 		}
 		case ABSENCE_APPLICATION: {
+			// OK
 			return this.getAbsenAppContent(companyID, appID, appReason);
 		}
 		case WORK_CHANGE_APPLICATION: {
+			// OK
 			return this.getWorkChangeAppContent(companyID, appID, appReason);
 		}
 		case BUSINESS_TRIP_APPLICATION: {
-			return this.getBreakTimeAppContent(companyID, appID, appReason);
+			// Pending
+			return this.getBusinessTripContent(companyID, appID, appReason);
 		}
 		case GO_RETURN_DIRECTLY_APPLICATION: {
+			// OK
 			return this.getGoReturnDirectlyAppContent(companyID, appID, appReason);
 		}
 		case BREAK_TIME_APPLICATION: {
+			// Handling
 			return this.getBreakTimeAppContent(companyID, appID, appReason);
 		}
 		case STAMP_APPLICATION: {
+			// OK
 			return this.getStampAppContent(companyID, appID, appReason);
 		}
 		case ANNUAL_HOLIDAY_APPLICATION: {
+			// Pending
 			return this.getAnnualAppContent(companyID, appID, appReason);
 		}
 		case EARLY_LEAVE_CANCEL_APPLICATION: {
+			// OK
 			return getEarlyLeaveAppContent(companyID, appID, appReason);
-
 		}
 		case COMPLEMENT_LEAVE_APPLICATION: {
 			return this.getComplementLeaveAppContent(companyID, appID, appReason);
@@ -104,6 +118,7 @@ public class Application_New1 extends Application_New {
 			return this.getStampNrAppContent(companyID, appID, appReason);
 		}
 		case LONG_BUSINESS_TRIP_APPLICATION: {
+			// Pending
 			return this.getLongBusinessTripAppContent(companyID, appID, appReason);
 		}
 		case BUSINESS_TRIP_APPLICATION_OFFICE_HELPER: {
@@ -117,23 +132,46 @@ public class Application_New1 extends Application_New {
 	}
 
 	private String getOverTimeAppContent(String companyID, String appID, String appReason) {
+		// OK
 		String content = "";
 		Optional<AppOverTime> op_overTime = overtimeRepo.getAppOvertimeFrame(companyID, appID);
 		if (op_overTime.isPresent()) {
 			AppOverTime overTime = op_overTime.get();
-			content = "";
 			switch (this.getPrePostAtr()) {
 			case PREDICT: {
+				// OK
 				content += I18NText.getText("CMM045_268") + " " + clockShorHm(overTime.getWorkClockFrom1())
 						+ I18NText.getText("CMM045_100") + clockShorHm(overTime.getWorkClockTo1());
+				content += (!Objects.isNull(overTime.getWorkClockFrom1())
+						? overTime.getWorkClockFrom1() + I18NText.getText("CMM045_100") : "");
+				content += (!Objects.isNull(overTime.getWorkClockTo1()) ? overTime.getWorkClockTo1() : "");
 				String moreInf = "";
 				int count = 0;
 				int totalWorkUnit = 0;
 				for (val x : overTime.getOverTimeInput()) {
 					if (x.getApplicationTime().v() > 0) {
 						totalWorkUnit += x.getApplicationTime().v();
-						if (count < 3)
-							moreInf += x.getApplicationTime().v() + " ";
+						if (count < 3) {
+							String type = "";
+							switch (x.getAttendanceType()) {
+							case BONUSPAYTIME: {
+								type = "加給時間";
+							}
+							case BONUSSPECIALDAYTIME: {
+								type = "特定日加給時間";
+							}
+							case BREAKTIME: {
+								type = "休出時間";
+							}
+							case NORMALOVERTIME: {
+								type = "残業時間";
+							}
+							case RESTTIME: {
+								type = "休憩時間";
+							}
+							}
+							moreInf += type + " " + x.getApplicationTime().v() + " ";
+						}
 						count++;
 					}
 				}
@@ -149,40 +187,215 @@ public class Application_New1 extends Application_New {
 						moreInf += clockShorHm(overTime.getFlexExessTime()) + " ";
 					count++;
 				}
-				String otherFrame = "";
-				content += "残業合計" + totalWorkUnit + "（" + moreInf + (count>3 ? I18NText.getText("CMM045_279", count-3 + "") : "") + "）" + appReason;
+				String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_230", count - 3 + "") : "");
+				content += I18NText.getText("CMM045_269") + totalWorkUnit + I18NText.getText("CMM045_279", frameInfo);
 				break;
 			}
 			case POSTERIOR: {
-				// TODO
+				// PRE
+				List<Application_New> listPreApp = repoApp.getApp(this.getEmployeeID(), this.getAppDate(),
+						PrePostAtr.PREDICT.value, ApplicationType.OVER_TIME_APPLICATION.value);
+				Application_New preApp = (listPreApp.size() > 0 ? listPreApp.get(0) : null);
+				AppOverTime preOverTime = !Objects.isNull(preApp)
+						? overtimeRepo.getAppOvertimeFrame(companyID, preApp.getAppID()).orElse(null) : null;
+				if (!Objects.isNull(preOverTime)) {
+					content += I18NText.getText("CMM045_272") + " " + I18NText.getText("CMM045_268") + " " + clockShorHm(preOverTime.getWorkClockFrom1())
+							+ I18NText.getText("CMM045_100") + clockShorHm(preOverTime.getWorkClockTo1());
+					content += (!Objects.isNull(preOverTime.getWorkClockFrom1())
+							? preOverTime.getWorkClockFrom1() + I18NText.getText("CMM045_100") : "");
+					content += (!Objects.isNull(preOverTime.getWorkClockTo1()) ? preOverTime.getWorkClockTo1() : "");
+					String moreInf = "";
+					int count = 0;
+					int totalWorkUnit = 0;
+					for (val x : preOverTime.getOverTimeInput()) {
+						if (x.getApplicationTime().v() > 0) {
+							totalWorkUnit += x.getApplicationTime().v();
+							if (count < 3) {
+								String type = "";
+								switch (x.getAttendanceType()) {
+								case BONUSPAYTIME: {
+									type = "加給時間";
+								}
+								case BONUSSPECIALDAYTIME: {
+									type = "特定日加給時間";
+								}
+								case BREAKTIME: {
+									type = "休出時間";
+								}
+								case NORMALOVERTIME: {
+									type = "残業時間";
+								}
+								case RESTTIME: {
+									type = "休憩時間";
+								}
+								}
+								moreInf += type + " " + x.getApplicationTime().v() + " ";
+								count++;
+							}
+						}
+					}
+					if (preOverTime.getOverTimeShiftNight() > 0) {
+						totalWorkUnit += preOverTime.getOverTimeShiftNight();
+						if (count < 3)
+							moreInf += clockShorHm(preOverTime.getOverTimeShiftNight()) + " ";
+						count++;
+					}
+					if (preOverTime.getFlexExessTime() > 0) {
+						totalWorkUnit += preOverTime.getFlexExessTime();
+						if (count < 3)
+							moreInf += clockShorHm(preOverTime.getFlexExessTime()) + " ";
+						count++;
+					}
+					String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_230", count - 3 + "") : "");
+					content += I18NText.getText("CMM045_269") + totalWorkUnit
+							+ I18NText.getText("CMM045_279", frameInfo) ;
+				}
+				
+				//AFTER
+				content += "\n" + I18NText.getText("CMM045_274") + " " + I18NText.getText("CMM045_268") + clockShorHm(overTime.getWorkClockFrom1())
+				+ I18NText.getText("CMM045_100") + clockShorHm(overTime.getWorkClockTo1());
+				content += (!Objects.isNull(overTime.getWorkClockFrom1())
+						? overTime.getWorkClockFrom1() + I18NText.getText("CMM045_100") : "");
+				content += (!Objects.isNull(overTime.getWorkClockTo1()) ? overTime.getWorkClockTo1() : "");
+				String moreInf = "";
+				int count = 0;
+				int totalWorkUnit = 0;
+				for (val x : overTime.getOverTimeInput()) {
+					if (x.getApplicationTime().v() > 0) {
+						totalWorkUnit += x.getApplicationTime().v();
+						if (count < 3) {
+							String type = "";
+							switch (x.getAttendanceType()) {
+							case BONUSPAYTIME: {
+								type = "加給時間";
+							}
+							case BONUSSPECIALDAYTIME: {
+								type = "特定日加給時間";
+							}
+							case BREAKTIME: {
+								type = "休出時間";
+							}
+							case NORMALOVERTIME: {
+								type = "残業時間";
+							}
+							case RESTTIME: {
+								type = "休憩時間";
+							}
+							}
+							moreInf += type + " " + x.getApplicationTime().v() + " ";
+						}
+						count++;
+					}
+				}
+				if (overTime.getOverTimeShiftNight() > 0) {
+					totalWorkUnit += overTime.getOverTimeShiftNight();
+					if (count < 3)
+						moreInf += clockShorHm(overTime.getOverTimeShiftNight()) + " ";
+					count++;
+				}
+				if (overTime.getFlexExessTime() > 0) {
+					totalWorkUnit += overTime.getFlexExessTime();
+					if (count < 3)
+						moreInf += clockShorHm(overTime.getFlexExessTime()) + " ";
+					count++;
+				}
+				String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_230", count - 3 + "") : "");
+				content += I18NText.getText("CMM045_269") + totalWorkUnit + I18NText.getText("CMM045_279", frameInfo);
 			}
 			}
-
-			// app.prePostAtr == 0 ? '事前' : '事後';
 		}
 		return content + "\n" + appReason;
 	}
 
 	private String getAbsenAppContent(String companyID, String appID, String appReason) {
-
+		// OK
 		String content = I18NText.getText("CMM045_279");
 		Optional<AppAbsence> op_appAbsen = absenRepo.getAbsenceByAppId(companyID, appID);
 		if (op_appAbsen.isPresent()) {
 			AppAbsence appAbsen = op_appAbsen.get();
-			// TO-DO
-			// content += I18NText.getText("CMM045_248") +
-			// I18NText.getText("CMM045_230", appAbsen.get);
+			if (appAbsen.getAllDayHalfDayLeaveAtr() == AllDayHalfDayLeaveAtr.ALL_DAY_LEAVE) {
+				String holidayType = "";
+				if (Objects.isNull(appAbsen.getAppForSpecLeave().getRelationshipCD())) {
+					switch (appAbsen.getHolidayAppType()) {
+					case ANNUAL_PAID_LEAVE: {
+						holidayType = "年休名称";
+						break;
+					}
+					case SUBSTITUTE_HOLIDAY: {
+						holidayType = "代休名称";
+						break;
+					}
+					case REST_TIME: {
+						holidayType = "振休名称";
+						break;
+					}
+					case ABSENCE: {
+						holidayType = "欠勤名称";
+						break;
+					}
+					case SPECIAL_HOLIDAY: {
+						holidayType = "特別休暇名称";
+						break;
+					}
+					case YEARLY_RESERVE: {
+						holidayType = "積立年休名称";
+						break;
+					}
+					case HOLIDAY: {
+						holidayType = "休日名称";
+						break;
+					}
+					case DIGESTION_TIME: {
+						holidayType = "時間消化名称";
+						break;
+					}
+					}
+					content += I18NText.getText("CMM045_248") + I18NText.getText("CMM045_230", holidayType) + "\n"
+							+ appReason;
+				} else {
+					holidayType = "特別休暇";
+					content += holidayType + appAbsen.getAppForSpecLeave().getRelationshipCD().v();
+					if (appAbsen.getAppForSpecLeave().isMournerFlag()) {
+						content += (this.getStartDate().isPresent() && this.getEndDate().isPresent()
+								? this.getEndDate().get().compareTo(this.getStartDate().get())
+										+ I18NText.getText("CMM045_248")
+								: "");
+					}
+					content += "\n" + appReason;
+				}
+
+			} else {
+				content += I18NText.getText("CMM045_249")
+						+ I18NText.getText("CMM045_230", appAbsen.getWorkTimeCode().v())
+						+ (!Objects.isNull(appAbsen.getStartTime1())
+								? appAbsen.getStartTime1().v() + I18NText.getText("CMM045_100") : "")
+						+ (!Objects.isNull(appAbsen.getEndTime1()) ? appAbsen.getEndTime1().v() : "")
+						+ (!Objects.isNull(appAbsen.getStartTime2())
+								? appAbsen.getStartTime2().v() + I18NText.getText("CMM045_100") : "")
+						+ (!Objects.isNull(appAbsen.getEndTime2()) ? appAbsen.getEndTime2().v() : "");
+				content += "\n" + appReason;
+			}
 		}
 		return content + "\n" + appReason;
 	}
 
 	private String getWorkChangeAppContent(String companyID, String appID, String appReason) {
+		// OK
 		String content = I18NText.getText("CMM045_250");
 		Optional<AppWorkChange> op_appWork = workChangeRepo.getAppworkChangeById(companyID, appID);
 		if (op_appWork.isPresent()) {
 			AppWorkChange appWork = op_appWork.get();
-			if (appWork.getWorkTimeStart1() != 0 || appWork.getWorkTimeEnd1() != 0) {
-				content += I18NText.getText("CMM045_252");
+			content += appWork.getWorkTypeName() + appWork.getWorkTimeName();
+			if (!Objects.isNull(appWork.getWorkTimeStart1()) && !Objects.isNull(appWork.getWorkTimeEnd1())) {
+				content += (appWork.getGoWorkAtr1() == 1 ? I18NText.getText("CMM045_252") + appWork.getWorkTimeStart1()
+						+ I18NText.getText("CMM045_100") + appWork.getWorkTimeEnd1() : "");
+				content += (appWork.getGoWorkAtr2() == 1 ? I18NText.getText("CMM045_252") + appWork.getWorkTimeStart2()
+						+ I18NText.getText("CMM045_100") + appWork.getWorkTimeEnd2() : "");
+			}
+			if (!Objects.isNull(appWork.getBreakTimeStart1()) && !Objects.isNull(appWork.getBreakTimeEnd1())) {
+				content += I18NText.getText("CMM045_251")
+						+ (!Objects.isNull(appWork.getBreakTimeStart1()) ? appWork.getBreakTimeStart1()
+								: "" + (!Objects.isNull(appWork.getBreakTimeEnd1()) ? appWork.getBreakTimeEnd1() : ""));
 			}
 		}
 
@@ -190,25 +403,61 @@ public class Application_New1 extends Application_New {
 	}
 
 	private String getBusinessTripContent(String companyID, String appID, String appReason) {
-		String content = I18NText.getText("CMM045_254") + "\n" + appReason;
-		return content;
+		// Pending
+		String content = I18NText.getText("CMM045_254") + I18NText.getText("CMM045_255");
+		return content + "\n" + appReason;
 	}
 
 	private String getGoReturnDirectlyAppContent(String companyID, String appID, String appReason) {
+		// OK
 		Optional<GoBackDirectly> op_appGoBack = goBackRepo.findByApplicationID(companyID, appID);
-		String content = I18NText.getText("CMM045_258") + "\n" + appReason;
+		String content = I18NText.getText("CMM045_258");
 		if (op_appGoBack.isPresent()) {
 			GoBackDirectly appGoBack = op_appGoBack.get();
-			content += I18NText.getText("CMM045_259") + I18NText.getText("CMM045_258");
+			content += (appGoBack.getGoWorkAtr1() == UseAtr.USE
+					? I18NText.getText("CMM045_259") + appGoBack.getWorkTimeStart1() : "")
+					+ (appGoBack.getBackHomeAtr1() == UseAtr.USE
+							? I18NText.getText("CMM045_260") + appGoBack.getWorkTimeEnd1() : "");
+			content += (appGoBack.getGoWorkAtr2().isPresent() ? (appGoBack.getGoWorkAtr2().get() == UseAtr.USE
+					? I18NText.getText("CMM045_259") + appGoBack.getWorkTimeStart2() : "") : "");
+			content += (appGoBack.getBackHomeAtr2().isPresent() ? (appGoBack.getBackHomeAtr2().get() == UseAtr.USE
+					? I18NText.getText("CMM045_260") + appGoBack.getWorkTimeEnd2() : "") : "");
 		}
-		return content;
+		return content + "\n" + appReason;
 	}
 
 	private String getBreakTimeAppContent(String companyID, String appID, String appReason) {
+		Optional<AppHolidayWork> op_appWork = holidayRepo.getAppHolidayWork(companyID, appID);
+		String content = "";
+		if (op_appWork.isPresent()){
+			AppHolidayWork appWork = op_appWork.get();
+			switch (appWork.getApplication().getPrePostAtr()){
+			case PREDICT: {
+				content += I18NText.getText("CMM045_275") + " "
+						+ appWork.getWorkTypeCode() + appWork.getWorkTimeCode();
+				if (!Objects.isNull(appWork.getWorkClock1())){
+					if (!Objects.isNull(appWork.getWorkClock1().getStartTime()) && !Objects.isNull(appWork.getWorkClock1().getEndTime())){
+						content += appWork.getWorkClock1().getStartTime() + I18NText.getText("CMM045_100") + appWork.getWorkClock1().getStartTime();
+					}
+					if (!Objects.isNull(appWork.getWorkClock2().getStartTime()) && !Objects.isNull(appWork.getWorkClock2().getEndTime())){
+						content += appWork.getWorkClock2().getStartTime() + I18NText.getText("CMM045_100") + appWork.getWorkClock2().getStartTime();
+					}
+				}
+//						+ I18NText.getText("CMM045_230", x.getStampGoOutAtr().name) + " "
+//						+ (x.getStartTime().isPresent() ? x.getStartTime().get().toString() : "") + " "
+//						+ I18NText.getText("CMM045_100") + " "
+//						+ (x.getEndTime().isPresent() ? x.getEndTime().get().toString() : "") + " ";
+			}
+			case POSTERIOR: {
+				
+			}
+			}
+		}
 		return appReason;
 	}
 
 	private String getStampAppContent(String companyID, String appID, String appReason) {
+		// OK
 		String content = "";
 		AppStamp appStamp = appStampRepo.findByAppID(companyID, appID);
 		if (!Objects.isNull(appStamp)) {
@@ -272,7 +521,6 @@ public class Application_New1 extends Application_New {
 			}
 			case STAMP_ONLINE_RECORD: {
 				// TO-DO
-				int k = 0;
 				content += I18NText.getText("CMM045_240");
 				Optional<AppStampOnlineRecord> appStampRecord = appStamp.getAppStampOnlineRecord();
 				if (appStampRecord.isPresent()) {
@@ -367,11 +615,13 @@ public class Application_New1 extends Application_New {
 	}
 
 	private String getAnnualAppContent(String companyID, String appID, String appReason) {
+		// Pending
 		String content = I18NText.getText("CMM045_264") + "\n" + appReason;
 		return content;
 	}
 
 	private String getEarlyLeaveAppContent(String companyID, String appID, String appReason) {
+		// OK
 		String content = "";
 		Optional<LateOrLeaveEarly> op_leaveApp = lateLeaveEarlyRepo.findByCode(companyID, appID);
 		if (op_leaveApp.isPresent()) {
@@ -424,7 +674,8 @@ public class Application_New1 extends Application_New {
 	}
 
 	private String getLongBusinessTripAppContent(String companyID, String appID, String appReason) {
-		return null;
+		// Pending
+		return appReason;
 	}
 
 	private String getBusinessTripOfficeAppContent(String companyID, String appID, String appReason) {
