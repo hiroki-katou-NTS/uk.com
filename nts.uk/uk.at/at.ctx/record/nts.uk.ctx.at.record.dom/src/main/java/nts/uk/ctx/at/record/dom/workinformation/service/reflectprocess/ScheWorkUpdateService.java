@@ -29,10 +29,10 @@ public interface ScheWorkUpdateService {
 	
 	public IntegrationOfDaily updateScheStartEndTimeHoliday(TimeReflectPara data, IntegrationOfDaily dailyData);
 	/**
-	 * 開始時刻の反映
+	 * 開始時刻の反映, 終了時刻を反映
 	 * @param data
 	 */
-	public void updateRecordStartEndTime(TimeReflectParameter para);
+	public void updateRecordStartEndTimeReflect(TimeReflectPara data);
 	/**
 	 * 残業時間の反映
 	 * @param employeeId

@@ -42,8 +42,8 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 				reflectSche.getDatePara(),
 				reflectSche.getForLeave().getWorkTypeCode().v(), //勤務種類=INPUT．勤務種類コード chi update workType
 				null,
-				null,
-				null);
+				reflectSche.getAppInfor().getStartDate().isPresent() ? reflectSche.getAppInfor().getStartDate().get() : null,
+				reflectSche.getAppInfor().getEndDate().isPresent() ? reflectSche.getAppInfor().getEndDate().get() : null);
 		return appReflectSchePub.appForLeaveSche(leavePra);
 	}
 

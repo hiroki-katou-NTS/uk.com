@@ -2,10 +2,6 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ApplicationReflectOutput;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReasonNotReflectRecord;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReflectedStateRecord;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
 

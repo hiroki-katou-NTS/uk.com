@@ -6,13 +6,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ApplicationReflectOutput;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReasonNotReflectRecord;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReflectedStateRecord;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
@@ -23,7 +17,6 @@ import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationReposi
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectParameter;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;

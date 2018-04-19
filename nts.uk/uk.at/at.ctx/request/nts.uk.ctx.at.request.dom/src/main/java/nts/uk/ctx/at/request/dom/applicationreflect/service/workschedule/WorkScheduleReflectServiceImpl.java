@@ -8,8 +8,6 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
