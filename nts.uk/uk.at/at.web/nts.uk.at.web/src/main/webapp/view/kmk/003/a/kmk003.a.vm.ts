@@ -726,6 +726,7 @@ module nts.uk.at.view.kmk003.a {
                 self.useHalfDay = useHalfDay; // bind to useHalfDay of main screen
                 self.isInterlockDialogJ = ko.observable(true);
                 self.tabMode = tabMode;
+                
                 self.addMode = isNewOrCopyMode;
                 
                 self.workTimeSetting = new WorkTimeSettingModel();
@@ -770,7 +771,7 @@ module nts.uk.at.view.kmk003.a {
                 _.defer(() => nts.uk.ui.block.invisible());
                 
                 // do interlock if simple mode
-                if (self.tabMode() === 1) {
+                if (self.tabMode() === TabMode.SIMPLE) {
                     self.isInterlockDialogJ(true);
                     self.updateStampValue();
                 }
@@ -866,7 +867,7 @@ module nts.uk.at.view.kmk003.a {
             updateData(worktimeSettingInfo: WorkTimeSettingInfoDto): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                self.isInterlockDialogJ(true);   
+
                 self.workTimeSetting.updateData(worktimeSettingInfo.worktimeSetting);
                 self.predetemineTimeSetting.updateData(worktimeSettingInfo.predseting);    
                 self.manageEntryExit.updateData(worktimeSettingInfo.manageEntryExit);                          
@@ -931,7 +932,7 @@ module nts.uk.at.view.kmk003.a {
                         let endWork1: number = _self.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne.end();
                         let startWork2: number = _self.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.start();
                         
-                        if (_self.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.useAtr()) {
+                        if (_self.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.useAtr() && _self.tabMode() === TabMode.DETAIL) {
                             _self.fixedWorkSetting.getGoWork1Stamp().startTime(workStart);
                             _self.fixedWorkSetting.getLeaveWork1Stamp().startTime(workStart);                            
                             _self.fixedWorkSetting.getGoWork2Stamp().endTime(workEnd);
@@ -946,6 +947,11 @@ module nts.uk.at.view.kmk003.a {
                             _self.fixedWorkSetting.getLeaveWork1Stamp().startTime(workStart);                            
                             _self.fixedWorkSetting.getGoWork1Stamp().endTime(workEnd);
                             _self.fixedWorkSetting.getLeaveWork1Stamp().endTime(workEnd);
+                            
+                            _self.fixedWorkSetting.getGoWork2Stamp().startTime(0);
+                            _self.fixedWorkSetting.getLeaveWork2Stamp().startTime(0);                            
+                            _self.fixedWorkSetting.getGoWork2Stamp().endTime(1440);
+                            _self.fixedWorkSetting.getLeaveWork2Stamp().endTime(1440);
                         }
                     }   
                     if (_self.workTimeSetting.isFlex()) {
