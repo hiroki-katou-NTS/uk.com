@@ -1339,7 +1339,7 @@ public class DailyPerformanceCorrectionProcessor {
 			List<ApproveRootStatusForEmpImport> approvals = approvalStatusAdapter.getApprovalByListEmplAndListApprovalRecordDate(dateRange.toListDate(), employeeIds, 1);
 			Map<String, ApproveRootStatusForEmpDto> approvalRootMap = approvals.stream().collect(Collectors.toMap(x -> mergeString(x.getEmployeeID(), "|", x.getAppDate().toString()), x -> {
 				return new ApproveRootStatusForEmpDto(null, x.getApprovalStatus() == ApprovalStatusForEmployee.APPROVED);
-			}));
+			}, (x,y) ->x));
 			return approvalRootMap;
 		}
 	}
