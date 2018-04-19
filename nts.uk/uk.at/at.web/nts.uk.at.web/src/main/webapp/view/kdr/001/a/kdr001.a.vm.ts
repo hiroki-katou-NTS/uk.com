@@ -307,6 +307,14 @@ module nts.uk.at.view.kdr001.a {
              * function export excel button
              */
             private exportButton() {
+                var lstEmpIds : string[] = ["1","2"];
+                let data = new service.model.appInfor("",lstEmpIds);
+                service.saveAsExcel(data).done(()=>{
+                     nts.uk.ui.block.clear();   
+                }).fail(function(res: any){
+                    nts.uk.ui.dialog.alertError(res.messageId);
+                     nts.uk.ui.block.clear();
+                });
             }
 
 

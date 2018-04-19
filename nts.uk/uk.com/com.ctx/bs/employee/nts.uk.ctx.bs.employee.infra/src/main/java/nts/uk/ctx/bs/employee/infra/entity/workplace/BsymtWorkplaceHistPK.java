@@ -32,7 +32,7 @@ public class BsymtWorkplaceHistPK implements Serializable {
 	private String wkpid;
 
 	/** The history id. */
-	@Column(name = "HISTORY_ID")
+	@Column(name = "HIST_ID")
 	private String historyId;
 
 	/**
