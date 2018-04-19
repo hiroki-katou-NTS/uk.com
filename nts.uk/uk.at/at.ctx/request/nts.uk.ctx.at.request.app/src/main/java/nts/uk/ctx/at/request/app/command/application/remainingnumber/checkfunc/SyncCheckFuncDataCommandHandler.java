@@ -47,8 +47,8 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 	@Inject
 	private AnnualBreakManageAdapter annualBreakManageAdapter;
 
-	@Inject
-	private IVactionHistoryRulesService iVactionHistoryRulesService;
+//	@Inject
+//	private IVactionHistoryRulesService iVactionHistoryRulesService;
 	
 	@Inject
 	private VacationHistoryRepository vacationHistoryRepository;
@@ -151,8 +151,9 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 
 		// ドメインモデル「計画休暇のルールの履歴」を取得する (Lấy domain 「計画休暇のルールの履歴」)
 		String companyId = AppContexts.user().companyId();
-		List<PlanVacationHistory> planVacationHistory = iVactionHistoryRulesService
-				.getPlanVacationHistoryByDate(companyId, date);
+		List<PlanVacationHistory> planVacationHistory = new ArrayList<>();
+				//iVactionHistoryRulesService
+				//.getPlanVacationHistoryByDate(companyId, date);
 		if (planVacationHistory.isEmpty()) {
 			// 出力エラー情報に追加する
 			OutputErrorInfoCommand outputErrorInfo = new OutputErrorInfoCommand();
