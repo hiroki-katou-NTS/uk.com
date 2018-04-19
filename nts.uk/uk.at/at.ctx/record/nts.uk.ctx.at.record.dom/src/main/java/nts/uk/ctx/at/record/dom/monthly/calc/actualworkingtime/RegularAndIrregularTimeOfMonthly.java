@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -16,6 +18,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWork
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.AggrSettingMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.LegalAggrSetOfIrg;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.AddedVacationUseTime;
@@ -25,6 +28,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.TargetPre
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.AddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetAddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.PremiumAtr;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
@@ -33,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -59,6 +64,8 @@ public class RegularAndIrregularTimeOfMonthly {
 	private DatePeriod weekPermiumProcPeriod;
 	/** 週単位の週割増時間 */
 	private AttendanceTimeMonth weekPremiumTime;
+	/** エラー情報 */
+	private List<MonthlyAggregationErrorInfo> errorInfos;
 	
 	/**
 	 * コンストラクタ
@@ -73,6 +80,7 @@ public class RegularAndIrregularTimeOfMonthly {
 		this.addedVacationUseTime = new AddedVacationUseTime();
 		this.weekPermiumProcPeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		this.weekPremiumTime = new AttendanceTimeMonth(0);
+		this.errorInfos = new ArrayList<>();
 	}
 
 	/**
@@ -133,9 +141,13 @@ public class RegularAndIrregularTimeOfMonthly {
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 週開始を取得する
-		val weekStartOpt = repositories.getGetWeekStart().get(workingSystem);
+		val weekStartOpt = repositories.getGetWeekStart().algorithm(workingSystem);
 		WeekStart weekStart = WeekStart.TighteningStartDate;
-		if (weekStartOpt.isPresent()) weekStart = weekStartOpt.get();
+		if (!weekStartOpt.isPresent()) {
+			this.errorInfos.add(new MonthlyAggregationErrorInfo(
+					"005", new ErrMessageContent(TextResource.localize("Msg_1171"))));
+			return AggregateMonthlyValue.of(aggregateTotalWorkingTime, excessOutsideWorkMng);
+		}
 		
 		// 前月の最終週のループ
 		//*****（保留中）

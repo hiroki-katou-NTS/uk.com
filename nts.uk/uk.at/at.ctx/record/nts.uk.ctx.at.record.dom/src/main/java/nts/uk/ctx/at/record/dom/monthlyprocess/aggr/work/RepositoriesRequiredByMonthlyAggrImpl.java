@@ -20,6 +20,8 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerf
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
@@ -66,7 +68,7 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	@Inject
 	public SyEmploymentAdapter syEmployment;
 	
-	/** 社員の勤務種別の取得 */
+	/** 日別実績の勤務種別の取得 */
 	@Inject
 	public WorkTypeOfDailyPerforRepository workTypeOfDaily;
 	
@@ -105,6 +107,13 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 所定時間設定の取得 */
 	@Inject
 	public PredetemineTimeSettingRepository predetermineTimeSet;
+	
+	/** 日の法定労働時間の取得 */
+	@Inject
+	public DailyStatutoryWorkingHours dailyStatutoryWorkingHours;
+	/** 週・月の法定労働時間の取得*/
+	@Inject
+	public MonthlyStatutoryWorkingHours monthlyStatutoryWorkingHours;
 	
 	/** 締めの取得 */
 	@Inject
