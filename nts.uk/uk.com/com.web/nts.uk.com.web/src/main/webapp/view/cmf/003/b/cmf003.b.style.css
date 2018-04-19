@@ -21,7 +21,7 @@
 }
 
 #ex_accept_wizard, #ex_accept_wizard .content {
-	overflow: initial;
+	overflow: visible;
 }
 
 .title-right {

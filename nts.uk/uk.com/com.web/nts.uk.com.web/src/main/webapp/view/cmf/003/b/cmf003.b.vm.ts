@@ -46,6 +46,9 @@ module nts.uk.com.view.cmf003.b.viewmodel {
         yearStartDateString: KnockoutObservable<string>;
         yearEndDateString: KnockoutObservable<string>;
         
+        //Params received from C
+        params =  nts.uk.ui.windows.getShared("CMF001qParams");
+        
         constructor() {
             var self = this;
 
@@ -126,13 +129,24 @@ module nts.uk.com.view.cmf003.b.viewmodel {
             });
         }
         
-        
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+       
+>>>>>>> 3b6f7ee8737fe22fddae7467b9e1ae5da3852d43
+=======
+       
+>>>>>>> 6bda6e6bc74e10b21d453b9158bcf0d11499f720
         selectCategory() {
-           modal('../c/index.xhtml').onClosed(() => {
-                
-            });  
-         }
+           modal('../c/index.xhtml').onClosed(() => { 
+                $("#B4_2").focus();    
+           });
+        }
         
+        backToA() {
+            let self = this;
+            nts.uk.request.jump("/view/cmf/003/a/index.xhtml");
+        }
     }   
 }
 

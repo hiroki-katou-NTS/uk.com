@@ -7,7 +7,7 @@ module nts.uk.at.view.cmf003.d {
 
     export module viewmodel {
         export class ScreenModel {
-            
+
             //Help Button
             enable: KnockoutObservable<boolean>;
 
@@ -93,17 +93,18 @@ module nts.uk.at.view.cmf003.d {
             maxDaysCumulationByEmp: KnockoutObservable<number>;
             constructor() {
                 var self = this;
-
-
-
-
+                
+                //Defaut D4_7
+                self.dateDefaut = ko.observable("2018/04/19");
+                
                 //Help Button
                 self.enable = ko.observable(true);
-
+                self.textHelp = ko.observable("”基準日説明画像”");
+                
                 //Radio button
                 self.itemTitleAtr = ko.observableArray([
-                    { value: 0, titleAtrName: resource.getText('CMF003_088') },
-                    { value: 1, titleAtrName: resource.getText('CMF003_089') }]);
+                    { value: 0, titleAtrName: resource.getText('CMF003_88') },
+                    { value: 1, titleAtrName: resource.getText('CMF003_89') }]);
                 self.selectedTitleAtr = ko.observable(0);
                 self.enableGrid = ko.observable(false);
                 $("#titleSeach").prop("disabled", true);
@@ -170,8 +171,9 @@ module nts.uk.at.view.cmf003.d {
                 });
             }//end constructor
 
-
-
+            
+            
+            
             /**
              * Set default ccg001 options
              */
@@ -318,10 +320,19 @@ module nts.uk.at.view.cmf003.d {
                 return moment(strDate, 'YYYY/MM/DD').toDate();
             }
 
-            
-            btnRightClick() {
+            /**
+             * function submit button
+             */
+            private btnSubmitClick() {
                 let self = this;
-                nts.uk.ui.dialog.error({ messageId: "Msg_498", messageParams: ["X", "Y"] });
+                // check selection employee 
+                if (self.selectedEmployeeCode && self.selectedEmployee() && self.selectedEmployeeCode().length > 0) {
+                    
+                }else{
+                   nts.uk.ui.dialog.error({ messageId: "Msg_498", messageParams: ["X", "Y"] }); 
+                }
+                
+                
             }
         }//end screemodule
  
