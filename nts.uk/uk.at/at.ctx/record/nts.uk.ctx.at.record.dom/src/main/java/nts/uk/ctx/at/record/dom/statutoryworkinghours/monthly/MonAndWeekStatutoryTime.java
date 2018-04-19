@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.dailyprocess.calc.statutoryworkinghours.monthly;
+package nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly;
 
 import lombok.AllArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.MonthlyEstimateTime;

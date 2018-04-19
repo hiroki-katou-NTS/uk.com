@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.dailyprocess.calc.statutoryworkinghours.monthly;
+package nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,4 +47,5 @@ public class GetCompanyMonthlyLaborTimeImpl implements GetCompanyMonthlyLaborTim
 		}
 		return new ArrayList<>();
 	}
+	
 }

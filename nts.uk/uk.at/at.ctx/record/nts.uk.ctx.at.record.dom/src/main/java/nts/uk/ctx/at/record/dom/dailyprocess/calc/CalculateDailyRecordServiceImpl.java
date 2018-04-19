@@ -67,14 +67,14 @@ import nts.uk.ctx.at.record.dom.daily.vacationusetime.TimeDigestOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectBreakTimeOfDailyDomainService;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHoursImpl;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonAndWeekStatutoryTime;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyFlexStatutoryLaborTime;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka.OotsukaProcessService;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.statutoryworkinghours.DailyStatutoryWorkingHours;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.statutoryworkinghours.DailyStatutoryWorkingHoursImpl;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.statutoryworkinghours.monthly.MonAndWeekStatutoryTime;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.statutoryworkinghours.monthly.MonthlyFlexStatutoryLaborTime;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.statutoryworkinghours.monthly.MonthlyStatutoryWorkingHours;
 //import nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka.OotsukaProcessService;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
@@ -247,10 +247,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	@Inject
 	private ReflectBreakTimeOfDailyDomainService reflectBreakTimeOfDailyDomainService;
 	
-	//test
-	@Inject
-	private MonthlyStatutoryWorkingHours monthlyStatutoryWorkingHours;
-	
 	
 	/**
 	 * 勤務情報を取得して計算
@@ -329,11 +325,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		val dailyUnit = dailyStatutoryWorkingHours.getDailyUnit(companyId, employmentCd, employeeId, targetDate, personalInfo.getWorkingSystem());
 		/*法定労働時間(日単位)_（仮）*/
 		//DailyUnit dailyUnit = new DailyUnit(new TimeOfDay(480));
-		
-		/*法定労働時間　月テスト　直ぐ消す*/
-		Optional<MonAndWeekStatutoryTime> test = monthlyStatutoryWorkingHours.getMonAndWeekStatutoryTime(companyId, employmentCd, employeeId, targetDate, YearMonth.of(2018, 5), WorkingSystem.REGULAR_WORK);
-		MonthlyFlexStatutoryLaborTime test2 = monthlyStatutoryWorkingHours.getFlexMonAndWeekStatutoryTime(companyId, employmentCd, employeeId, targetDate, YearMonth.of(2018, 5));
-		
 		
 		/*休憩時間帯（遅刻早退用）*/
 //		 List<TimeSheetOfDeductionItem> breakTimeList = new ArrayList<>();

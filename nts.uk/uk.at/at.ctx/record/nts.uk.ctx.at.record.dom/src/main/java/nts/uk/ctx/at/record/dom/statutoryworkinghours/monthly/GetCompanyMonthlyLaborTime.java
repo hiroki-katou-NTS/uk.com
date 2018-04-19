@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.dailyprocess.calc.statutoryworkinghours.monthly;
+package nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly;
 
 import java.util.List;
 
@@ -9,5 +9,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 public interface GetCompanyMonthlyLaborTime {
 	
 	List<MonthlyUnit> getComWorkingTimeSetting(String companyId,YearMonth yearMonth,WorkingSystem workingSystem);
+	
 	
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.dailyprocess.calc.statutoryworkinghours.monthly;
+package nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.statutoryworkinghours.DailyStatutoryWorkingHours;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
 import nts.uk.ctx.at.shared.dom.common.MonthlyEstimateTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSettingRepository;
@@ -180,19 +180,21 @@ public class MonthlyStatutoryWorkingHoursImpl implements MonthlyStatutoryWorking
 	
 		if(usageUnitSetting.get().isEmployee()) {//社員の労働時間を管理する場合
 			val result = getShainMonthlySetting.getShainWorkingTimeSetting(companyId,employeeId,workingSystem,yearMonth);
-			if(result!=null) {
+			if(!result.isEmpty()) {
 				return result;
 			}
-		}else if(usageUnitSetting.get().isWorkPlace()) {//職場の労働時間を管理する場合
+		}
+		if(usageUnitSetting.get().isWorkPlace()) {//職場の労働時間を管理する場合
 			//職場の設定を取得
 			val result = getWorkingPlaceMonthlyLaborTime.getWkpWorkingTimeSetting(companyId,employeeId,baseDate,yearMonth,workingSystem);
-			if(result!=null) {
+			if(!result.isEmpty()) {
 				return result;
 			}
-		}else if(usageUnitSetting.get().isEmployment()) {//雇用の労働時間を管理する場合
+		}
+		if(usageUnitSetting.get().isEmployment()) {//雇用の労働時間を管理する場合
 			//雇用別設定の取得
 			val result = getEmploymentMonthlyLaborTime.getEmpWorkingTimeSetting(companyId,employmentCd,yearMonth,workingSystem);
-			if(result!=null) {
+			if(!result.isEmpty()) {
 				return result;
 			}
 		}
@@ -219,7 +221,8 @@ public class MonthlyStatutoryWorkingHoursImpl implements MonthlyStatutoryWorking
 				if(result.isPresent()) {
 					return Optional.of(new MonthlyFlexStatutoryLaborTimeList(result.get().getSpecifiedSetting(),result.get().getStatutorySetting()));
 				}
-			}else if(usageUnitSetting.get().isWorkPlace()) {//職場の労働時間を管理する場合
+			}
+			if(usageUnitSetting.get().isWorkPlace()) {//職場の労働時間を管理する場合
 				//所属職場を含む上位階層の職場IDを取得
 				List<String> workPlaceIdList = affWorkplaceAdapter.findAffiliatedWorkPlaceIdsToRoot(companyId, employeeId, baseDate);
 				for(String workPlaceId:workPlaceIdList) {
@@ -228,7 +231,8 @@ public class MonthlyStatutoryWorkingHoursImpl implements MonthlyStatutoryWorking
 						return Optional.of(new MonthlyFlexStatutoryLaborTimeList(result.get().getSpecifiedSetting(),result.get().getStatutorySetting()));
 					}
 				}
-			}else if(usageUnitSetting.get().isEmployment()) {//雇用の労働時間を管理する場合
+			}
+			if(usageUnitSetting.get().isEmployment()) {//雇用の労働時間を管理する場合
 				//雇用別設定の取得
 				val result = empFlexSettingRepository.find(companyId, employmentCd, yearMonth.year());
 				if(result.isPresent()) {
