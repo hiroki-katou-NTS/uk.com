@@ -1,6 +1,6 @@
-module nts.uk.com.view.cmf005.a {
+module nts.uk.com.view.cmf005.a.viewmodel {
     __viewContext.ready(function() {
-        let screenModel = new nts.uk.com.view.cmf005.a.viewmodel.ScreenModel();
+        let screenModel = new viewmodel.ScreenModel();
             __viewContext.bind(screenModel);
             $('#buttonDeleteData').focus();
     });

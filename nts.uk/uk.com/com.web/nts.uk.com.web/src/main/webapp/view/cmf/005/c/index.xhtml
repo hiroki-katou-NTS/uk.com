@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 400, height: 550 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="cmf005.c.vm.js" />
+			<com:stylefile path="cmf005.c.style.css" />
+			<com:scriptfile path="cmf005.c.start.js" />
+		<!-- 	<com:scriptfile path="cmf005.c.service.js" /> -->
+		</ui:define>
+
+		<ui:define name="content">
+			<div class="contents-area dialog-content">
+				<div id="C2_1" class="dialog-title" >#{i18n.getText('CMF005_45')}</div>
+				
+			</div>
+			<div id="functions-area-bottom">
+				<button id="C20_1" class="x-large proceed "
+					data-bind="click: selectConvertCode">#{i18n.getText('CMF005_48')}</button>
+				<button id="C20_2" class="large"
+					data-bind="click: cancelSelectConvertCode">#{i18n.getText('CMF005_49')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

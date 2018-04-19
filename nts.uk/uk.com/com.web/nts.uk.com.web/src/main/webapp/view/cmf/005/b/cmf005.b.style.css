@@ -1,0 +1,57 @@
+
+
+#titleModule {
+	float: right;
+	margin-top: 8px
+}
+
+#ex_accept_wizard {
+	width: 1200px;
+	height: 480px;
+}
+
+#ex_accept_wizard>.steps {
+	width: 250px;
+	height: 485px;
+}
+
+#ex_accept_wizard>.content {
+	width: 940px;
+	height: 590px;
+	background: none;
+	margin-left: 5px;
+	margin-right: 0px;
+}
+
+#contentAll{
+
+	width: 100%;
+}
+#contentL{
+	float :left;
+	width: 45%;
+}
+#contentR{
+	float:right;
+	width: 55%;
+}
+#tableContentL{
+	border-spacing: 10px;
+    border-collapse: separate;
+}
+#tableContentL{
+	border-spacing: 10px;
+    border-collapse: separate;
+}
+#B5_2_1{
+	margin-left: 200px;
+}
+
+#B5_2_2{
+	margin-top: 8px;
+}
+
+.flex {
+	margin-left: 0px;
+	margin-top: 10px;
+}

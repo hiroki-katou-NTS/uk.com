@@ -1,5 +1,5 @@
-module nts.uk.com.view.cmf005.a {
-    export module viewmodel {
+module nts.uk.com.view.cmf005.a.viewmodel {
+
         export class ScreenModel {
             constructor() {
             }
@@ -8,11 +8,8 @@ module nts.uk.com.view.cmf005.a {
              * request to delete data screen
              */
             deleteDataScreen(): void {
-                let self = this;
                 nts.uk.request.jump("/view/cmf/005/b/index.xhtml");
             }
             
-            
-        }
     }
 }
