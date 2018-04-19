@@ -416,7 +416,11 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 	@Override
 	public void updateRecordWorkType(String employeeId, GeneralDate dateData, String workTypeCode, boolean scheUpdate) {
 		//日別実績の勤務情報
-		WorkInfoOfDailyPerformance dailyPerfor = workRepository.find(employeeId, dateData).get();
+		Optional<WorkInfoOfDailyPerformance> optDailyPerfor = workRepository.find(employeeId, dateData);
+		if(!optDailyPerfor.isPresent()) {
+			return;
+		}
+		WorkInfoOfDailyPerformance dailyPerfor = optDailyPerfor.get();
 		List<Integer> lstItem = new ArrayList<>();
 		if(scheUpdate) {
 			lstItem.add(1);
