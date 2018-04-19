@@ -10,7 +10,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.settting.worktype.history.OptionalMaxDay;
@@ -62,16 +61,13 @@ public class SaveVacationHistCommandHandler extends CommandHandler<VacationHisto
 	 * @param command the command
 	 */
 	private void addVacationHistory(String companyId, VacationHistoryCommand command) {
-		//Validate
-		BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
-		
 		// To Domain
 		PlanVacationHistory history = new PlanVacationHistory(companyId, command.getWorkTypeCode(),
 				new OptionalMaxDay(command.getMaxDay()), command.getVacationHistory().getStartDate(),
 				command.getVacationHistory().getEndDate());
 		
 		//check validate
-		this.vacationPolicy.validate(bundledBusinessExceptions, command.getIsCreated(), history);
+		this.vacationPolicy.validate(command.getIsCreated(), history);
 
 		// insert
 		this.vacationHistoryRepository.add(history);
