@@ -12,4 +12,5 @@ public interface GetWorkingPlaceLaborTime {
 			 String employeeId,
 			 GeneralDate baseDate,
 			 WorkingSystem workingSystem);
+	
 }

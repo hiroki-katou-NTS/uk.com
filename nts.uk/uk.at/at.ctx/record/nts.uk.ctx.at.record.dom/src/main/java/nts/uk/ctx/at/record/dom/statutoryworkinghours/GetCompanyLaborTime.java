@@ -9,4 +9,5 @@ public interface GetCompanyLaborTime {
 
 	Optional<WorkingTimeSetting> getComWorkingTimeSetting(String companyId,
 			 WorkingSystem workingSystem);
+	
 }

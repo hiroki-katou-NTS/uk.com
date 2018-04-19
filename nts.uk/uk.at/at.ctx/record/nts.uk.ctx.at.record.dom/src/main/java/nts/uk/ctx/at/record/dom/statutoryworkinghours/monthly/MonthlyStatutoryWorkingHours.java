@@ -21,6 +21,5 @@ public interface MonthlyStatutoryWorkingHours {
 				GeneralDate baseDate,
 				YearMonth yearMonth
 				);
-	
 
 }

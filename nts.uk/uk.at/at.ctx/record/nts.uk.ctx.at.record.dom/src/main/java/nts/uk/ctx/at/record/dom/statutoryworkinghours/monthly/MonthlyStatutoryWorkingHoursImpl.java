@@ -83,7 +83,6 @@ public class MonthlyStatutoryWorkingHoursImpl implements MonthlyStatutoryWorking
 
 	}
 	
-	
 	/**
 	 * 週、月の法定労働時間を取得(フレックス用)
 	 * @return

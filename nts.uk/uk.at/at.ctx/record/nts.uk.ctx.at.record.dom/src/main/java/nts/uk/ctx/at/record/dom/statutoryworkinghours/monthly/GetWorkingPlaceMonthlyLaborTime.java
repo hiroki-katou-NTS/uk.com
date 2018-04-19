@@ -11,4 +11,5 @@ public interface GetWorkingPlaceMonthlyLaborTime {
 	
 	List<MonthlyUnit> getWkpWorkingTimeSetting(String companyId,String employeeId,GeneralDate baseDate,YearMonth yearMonth,WorkingSystem workingSystem);
 
+	
 }

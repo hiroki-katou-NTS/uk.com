@@ -65,6 +65,7 @@ public class DailyStatutoryWorkingHoursImpl implements DailyStatutoryWorkingHour
 				.orElse(DailyUnit.zero());
 	}	
 	
+	
 	/**
 	 * 取得する単位を取得
 	 * @return

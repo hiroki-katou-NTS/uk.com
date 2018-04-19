@@ -15,4 +15,5 @@ public class MonthlyFlexStatutoryLaborTimeList {
 	//法定時間:月単位（List）
 	private List<MonthlyUnit> statutoryList;
 
+	
 }

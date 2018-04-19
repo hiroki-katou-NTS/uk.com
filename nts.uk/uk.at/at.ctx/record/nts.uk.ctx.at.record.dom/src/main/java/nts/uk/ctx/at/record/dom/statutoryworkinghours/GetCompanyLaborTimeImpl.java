@@ -38,4 +38,5 @@ public class GetCompanyLaborTimeImpl implements GetCompanyLaborTime{
 		}
 		return Optional.empty();
 	}
+	
 }

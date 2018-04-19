@@ -22,5 +22,4 @@ public interface DailyStatutoryWorkingHours {
 			  GeneralDate baseDate,
 			  WorkingSystem workingSystem);
 	
-	
 }

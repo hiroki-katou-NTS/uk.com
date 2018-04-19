@@ -36,4 +36,5 @@ public class GetShainLaborTimeImpl implements GetShainLaborTime{
 		}
 		return Optional.empty();
 	}
+	
 }

@@ -8,4 +8,5 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 public interface GetShainLaborTime {
 
 	Optional<WorkingTimeSetting> getShainWorkingTimeSetting(String companyId, String employeeId, WorkingSystem workingSystem);
+	
 }

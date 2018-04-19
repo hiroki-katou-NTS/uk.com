@@ -11,4 +11,5 @@ public interface GetEmploymentLaborTime {
 			 String employmentCode,
 			 WorkingSystem workingSystem);
 	
+	
 }

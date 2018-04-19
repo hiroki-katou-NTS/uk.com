@@ -47,5 +47,6 @@ public class GetShainMonthlyLaborTimeImpl implements GetShainMonthlyLaborTime{
 		}
 		return new ArrayList<>();
 	}
+	
 
 }

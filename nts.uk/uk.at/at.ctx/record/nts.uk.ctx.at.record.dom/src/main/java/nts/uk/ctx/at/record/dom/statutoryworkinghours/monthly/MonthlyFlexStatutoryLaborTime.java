@@ -19,4 +19,5 @@ public class MonthlyFlexStatutoryLaborTime {
     public static MonthlyFlexStatutoryLaborTime zeroMonthlyFlexStatutoryLaborTime() {
     	return new MonthlyFlexStatutoryLaborTime(new MonthlyEstimateTime(0),new MonthlyEstimateTime(0));
     }
+    
 }

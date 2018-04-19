@@ -40,4 +40,5 @@ public class GetEmploymentLaborTimeImpl implements GetEmploymentLaborTime{
 		
 		return Optional.empty();
 	}
+	
 }

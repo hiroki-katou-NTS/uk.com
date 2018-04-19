@@ -10,5 +10,4 @@ public interface GetCompanyMonthlyLaborTime {
 	
 	List<MonthlyUnit> getComWorkingTimeSetting(String companyId,YearMonth yearMonth,WorkingSystem workingSystem);
 	
-	
 }

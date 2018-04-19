@@ -10,4 +10,5 @@ public interface GetShainMonthlyLaborTime {
 	
 	List<MonthlyUnit> getShainWorkingTimeSetting(String companyId, String employeeId, WorkingSystem workingSystem ,YearMonth yearMonth);
 
+	
 }

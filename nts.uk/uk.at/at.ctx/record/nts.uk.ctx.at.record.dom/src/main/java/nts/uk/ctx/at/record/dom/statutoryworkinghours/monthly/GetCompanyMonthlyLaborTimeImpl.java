@@ -48,4 +48,5 @@ public class GetCompanyMonthlyLaborTimeImpl implements GetCompanyMonthlyLaborTim
 		return new ArrayList<>();
 	}
 	
+	
 }
