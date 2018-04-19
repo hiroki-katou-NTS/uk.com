@@ -255,7 +255,13 @@ module nts.uk.ui.koExtentions {
             var init = container.data("init");
             var $input: any = container.find(".nts-input");
             var $label: any = container.find(".dayofweek-label");
-            
+
+            // Properties Binding
+            $input.datepicker('setStartDate', startDate);
+            $input.datepicker('setEndDate', endDate);
+            $input.data('startDate', startDate);
+            $input.data('endDate', endDate);
+
             // Value Binding
             if (value() !== $input.val()){
                 var dateFormatValue = (value() !== "") ? text.removeFromStart(time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
@@ -271,11 +277,7 @@ module nts.uk.ui.koExtentions {
             }
             
             $input.data("required", required);
-            // Properties Binding
-            $input.datepicker('setStartDate', startDate);
-            $input.datepicker('setEndDate', endDate);
-            $input.data('startDate', startDate);
-            $input.data('endDate', endDate);
+            
             if (enable !== undefined)
                $input.prop("disabled", !enable);
             else
