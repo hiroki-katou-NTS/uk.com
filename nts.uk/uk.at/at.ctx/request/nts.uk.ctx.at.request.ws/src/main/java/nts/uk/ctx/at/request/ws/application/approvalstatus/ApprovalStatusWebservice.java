@@ -37,9 +37,9 @@ public class ApprovalStatusWebservice extends WebService {
 	private ApprovalStatusFinder finder;
 
 	@POST
-	@Path("getMailBySetting")
-	public List<ApprovalStatusMailTempDto> findBySetting() {
-		return approvalMailFinder.findBySetting();
+	@Path("getMailTemp")
+	public List<ApprovalStatusMailTempDto> getMailTemp() {
+		return approvalMailFinder.getMailTemp();
 	}
 
 	@POST

@@ -2,17 +2,18 @@ module nts.uk.at.view.kaf018.h {
     import format = nts.uk.text.format;
     export module service {
         var paths: any = {
-            getMailBySetting: "at/request/application/approvalstatus/getMailBySetting",
+            getMailTemp: "at/request/application/approvalstatus/getMailTemp",
             registerMail: "at/request/application/approvalstatus/registerMail",
             confirmSenderMail: "at/request/application/approvalstatus/confirmSenderMail",
-            sendTestMail: "at/request/application/approvalstatus/sendTestMail/{0}"
+            sendTestMail: "at/request/application/approvalstatus/sendTestMail/{0}",
+            getUseSetting: "at/record/application/realitystatus/getUseSetting"
         }
 
         /**
          * アルゴリズム「承認状況本文起動」を実行する
          */
-        export function getMailBySetting(): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", paths.getMailBySetting);
+        export function getMailTemp(): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", paths.getMailTemp);
         }
 
         /**
@@ -35,6 +36,10 @@ module nts.uk.at.view.kaf018.h {
          */
         export function confirmSenderMail(): JQueryPromise<any> {
             return nts.uk.request.ajax("at", paths.confirmSenderMail);
+        }
+
+        export function getUseSetting(): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", paths.getUseSetting);
         }
     }
 }

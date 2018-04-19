@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.approvalstatus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -14,7 +15,6 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTempRepository;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatus;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatusOutput;
@@ -62,34 +62,33 @@ public class ApprovalStatusFinder {
 	/**
 	 * アルゴリズム「承認状況本文起動」を実行する
 	 */
-	public List<ApprovalStatusMailTempDto> findBySetting() {
+	public List<ApprovalStatusMailTempDto> getMailTemp() {
 		// 会社ID
 		String cid = AppContexts.user().companyId();
 		List<ApprovalStatusMailTempDto> listMail = new ArrayList<ApprovalStatusMailTempDto>();
-		UseSetingImport useSetting = realityStatusAdapter.getUseSetting(cid);
+
 		listMail.add(this.getApprovalStatusMailTemp(cid, 0));
-		if (useSetting.isUsePersonConfirm()) {
-			listMail.add(this.getApprovalStatusMailTemp(cid, 1));
-		}
-		if (useSetting.isUseBossConfirm()) {
-			listMail.add(this.getApprovalStatusMailTemp(cid, 2));
-		}
-		if (useSetting.isMonthlyConfirm()) {
-			listMail.add(this.getApprovalStatusMailTemp(cid, 3));
-		}
+		listMail.add(this.getApprovalStatusMailTemp(cid, 1));
+		listMail.add(this.getApprovalStatusMailTemp(cid, 2));
+		listMail.add(this.getApprovalStatusMailTemp(cid, 3));
 		listMail.add(this.getApprovalStatusMailTemp(cid, 4));
 		return listMail;
 	}
 
-	/**
-	 * 承認状況メール本文取得
-	 */
 	private ApprovalStatusMailTempDto getApprovalStatusMailTemp(String cid, int mailType) {
-		Optional<ApprovalStatusMailTemp> domain = approvalStatusMailTempRepo.getApprovalStatusMailTempById(cid, mailType);
-		return domain.isPresent() ? ApprovalStatusMailTempDto.fromDomain(domain.get())
-				: new ApprovalStatusMailTempDto(mailType, 1, 1, 1, "", "", 0);
+		// アルゴリズム「承認状況メール本文取得」を実行する
+		ApprovalStatusMailTemp domain = appSttService.getApprovalStatusMailTemp(mailType);
+		// ドメインの取得
+		if (Objects.isNull(domain)) {
+			// ドメインが取得できなかった場合
+			// 画面モード　＝　新規
+			return new ApprovalStatusMailTempDto(mailType, 1, 1, 1, "", "", 0);
+		}
+		// ドメインが取得できた場合(lấy được)
+		// 画面モード　＝　更新
+		return ApprovalStatusMailTempDto.fromDomain(domain);
 	}
-	
+
 	/**
 	 * 承認状況メールテスト送信
 	 */
