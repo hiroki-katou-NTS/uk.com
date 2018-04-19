@@ -1,5 +1,5 @@
-#combo-box {
-	margin-left: 50px;
+.D1_1{
+	width: 200px;
 }
 
 .row {
@@ -20,4 +20,12 @@
 
 button {
 	margin: 10px;
+}
+
+.D1_6 {
+	width: 30px;
+}
+
+#combo-box {
+	width: 250px;
 }

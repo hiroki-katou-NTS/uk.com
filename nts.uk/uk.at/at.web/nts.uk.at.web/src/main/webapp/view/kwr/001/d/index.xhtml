@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 500,
+					width : 600,
 					height : 250
 				};
 			</script>
@@ -24,8 +24,10 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div class="row">
-					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KWR001_78')}</div>
-					<div id="combo-box" data-bind="ntsComboBox: {
+					<!-- D1_1 -->
+					<div class="D1_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR001_78')}</div>
+					<!-- D1_2 -->
+					<div tabindex="1" id="combo-box" data-bind="ntsComboBox: {
 						name: 'Sample List',
 						options: itemList,
 						optionsValue: 'code',
@@ -39,15 +41,23 @@
 						]}"></div>
 				</div>
 				<div class="row">
-					<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">レイアウトコード</div>
-					<!-- <input tabindex="-1" class="txtWorkTypeList" data-bind="ntsTextEditor: {  readonly: true, enable: true }" />
-					<input tabindex="-1" class="txtWorkTypeList" data-bind="ntsTextEditor: {  readonly: true, enable: true }" /> -->
+					<!-- D1_5 -->
+					<div class="name" data-bind="ntsFormLabel: {constraint: '', require: true}">#{i18n.getText('KWR001_85')}</div>
+					<!-- D1_6 -->
+					<input tabindex="2" class="D1_6" data-bind="ntsTextEditor:{
+										name: '#[KWR001_81]',
+										value: D1_6_name}" />
+					<!-- D1_7 -->
+					<input tabindex="3" class="D1_7" data-bind="ntsTextEditor:{
+										name: '#[KWR001_82]',
+										value: D1_7_name}" />
 				</div>
-				
 				<hr/>
 				<div class="confirm">
-					<button class="proceed">Proceed</button>
-					<button>Proceed</button>
+					<!-- D1_9 -->
+					<button tabindex="4" class="proceed">#{i18n.getText('KWR001_83')}</button>
+					<!-- D1_10 -->
+					<button tabindex="5">#{i18n.getText('KWR001_45')}</button>
 				</div>
 			</div>
 		</ui:define>
