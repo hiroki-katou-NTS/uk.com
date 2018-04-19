@@ -9,30 +9,29 @@ import nts.arc.layer.dom.AggregateRoot;
 @Getter
 public class HolidaysRemainingManagement extends AggregateRoot {
 	/**
-	 * 名称
-	 */
-	private String name;
-
-	/**
 	 * 会社ID
 	 */
 	private String companyID;
-
+	
 	/**
 	 * コード
 	 */
-	private String code;
+	private HolidayRemainingCode code;
+	/**
+	 * 名称
+	 */
+	private HolidayRemainingName name;
 
 	/**
 	 * 出力する項目一覧
 	 */
 	private ItemOutputForm listItemsOutput;
 
-	public HolidaysRemainingManagement(String name, String companyID, String code, ItemOutputForm listItemsOutput) {
+	public HolidaysRemainingManagement(String companyID,  String code, String name, ItemOutputForm listItemsOutput) {
 		super();
-		this.name = name;
+		this.name = new HolidayRemainingName(name);
 		this.companyID = companyID;
-		this.code = code;
+		this.code = new HolidayRemainingCode(code);
 		this.listItemsOutput = listItemsOutput;
 	}
 	

@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.dom.holidaysremaining;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,9 +14,9 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ItemOutputForm extends DomainObject {
 
+	
 	// 時間外超過
 	private NursingCareLeave nursingcareLeave;
 
@@ -43,19 +42,39 @@ public class ItemOutputForm extends DomainObject {
 	private YearlyReserved yearlyReserved;
 
 	// 特別休暇
-	private List<SpecialHolidayOutput> specialHoliday;
+	private List<String> specialHoliday;
 
-	public ItemOutputForm(NursingCareLeave nursingcareLeave, ItemsOutputtedAlternate substituteHoliday,
-			ItemsPublicOutput holidays, ChildNursingLeave childNursingVacation, YearlyItemsOutput annualHoliday,
-			PauseItem pause, YearlyReserved yearlyReserved, List<SpecialHolidayOutput> specialHoliday) {
+	public ItemOutputForm(
+			boolean nursingcareLeave,
+			boolean remainingChargeSubstitute, boolean representSubstitute, boolean outputItemSubstitute,
+			boolean outputholidayforward, boolean monthlyPublic, boolean outputitemsholidays,
+			boolean childNursingVacation,
+			boolean yearlyHoliday, boolean insideHours, boolean insideHalfDay, 
+			boolean numberRemainingPause, boolean undigestedPause, boolean pauseItem,
+			boolean yearlyReserved,
+			List<String> listHolidayCds) {
 		super();
-		this.nursingcareLeave = nursingcareLeave;
-		this.substituteHoliday = substituteHoliday;
-		this.holidays = holidays;
-		this.childNursingVacation = childNursingVacation;
-		this.annualHoliday = annualHoliday;
-		this.pause = pause;
-		this.yearlyReserved = yearlyReserved;
+		this.nursingcareLeave = new NursingCareLeave(nursingcareLeave);
+		this.substituteHoliday = new ItemsOutputtedAlternate( remainingChargeSubstitute,representSubstitute, outputItemSubstitute);
+		this.holidays = new ItemsPublicOutput(outputholidayforward, monthlyPublic, outputitemsholidays);
+		this.childNursingVacation = new ChildNursingLeave(childNursingVacation);
+		this.annualHoliday = new YearlyItemsOutput(yearlyHoliday, insideHours, insideHalfDay);
+		this.pause = new PauseItem(numberRemainingPause, undigestedPause, pauseItem);
+		this.yearlyReserved = new YearlyReserved(yearlyReserved);
+		
+		this.specialHoliday = listHolidayCds;
 	}
+	
+	public boolean hasOutput(){
+		 return (nursingcareLeave.isNursingLeave() ||
+				 substituteHoliday.isRemainingChargeSubstitute() || substituteHoliday.isRepresentSubstitute() ||  substituteHoliday.isOutputItemSubstitute() ||
+				 holidays.isOutputholidayforward() || holidays.isMonthlyPublic() || holidays.isOutputitemsholidays() ||
+				 childNursingVacation.isChildNursingLeave()||
+				 annualHoliday.isYearlyHoliday() || annualHoliday.isInsideHours() || annualHoliday.isInsideHalfDay() || 
+				 pause.isNumberRemainingPause() || pause.isUndigestedPause() || pause.isPauseItem() ||
+				 yearlyReserved.isYearlyReserved() || specialHoliday.size() > 0 
+				 );
+	}
+	
 
 }

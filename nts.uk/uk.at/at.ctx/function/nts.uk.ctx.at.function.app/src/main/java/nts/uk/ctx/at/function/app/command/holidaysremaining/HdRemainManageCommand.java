@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.function.app.command.holidaysremaining;
 
+import java.util.List;
+
 import lombok.Value;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 @Value
 public class HdRemainManageCommand {
@@ -25,78 +25,178 @@ public class HdRemainManageCommand {
 	/**
 	 * 年休の項目出力する
 	 */
-	private int yearlyHoliday;
-
-	/**
-	 * ★内半日年休を出力する
-	 */
-	private int insideHalfDay;
-
-	/**
-	 * 内時間年休残数を出力する
-	 */
-	private int insideHours;
-
-	/**
-	 * 積立年休の項目を出力する
-	 */
-	private int yearlyReserved;
-
-	/**
-	 * 代休の項目を出力する
-	 */
-	private int outItemSub;
-
-	/**
-	 * 代休未消化出力する
-	 */
-	private int representSub;
-
-	/**
-	 * 代休残数を出力する
-	 */
-	private int remainChargeSub;
-
-	/**
-	 * 振休の項目を出力する
-	 */
-	private int pauseItem;
-
-	/**
-	 * 振休未消化を出力する
-	 */
-	private int undigestedPause;
-
-	/**
-	 * 振休残数を出力する
-	 */
-	private int numRemainPause;
-
-	/**
-	 * 公休の項目を出力する
-	 */
-	private int outputItemsHolidays;
-
-	/**
-	 * 公休繰越数を出力する
-	 */
-	private int outputHolidayForward;
-
-	/**
-	 * 公休月度残を出力する
-	 */
-	private int monthlyPublic;
-
-	/**
-	 * 子の看護休暇の項目を出力する
-	 */
-	private int childCareLeave;
+	// private boolean yearlyHoliday;
+	//
+	// /**
+	// * ★内半日年休を出力する
+	// */
+	// private boolean insideHalfDay;
+	//
+	// /**
+	// * 内時間年休残数を出力する
+	// */
+	// private boolean insideHours;
+	//
+	// /**
+	// * 積立年休の項目を出力する
+	// */
+	// private boolean yearlyReserved;
+	//
+	// /**
+	// * 代休の項目を出力する
+	// */
+	// private boolean outItemSub;
+	//
+	// /**
+	// * 代休未消化出力する
+	// */
+	// private boolean representSub;
+	//
+	// /**
+	// * 代休残数を出力する
+	// */
+	// private boolean remainChargeSub;
+	//
+	// /**
+	// * 振休の項目を出力する
+	// */
+	// private boolean pauseItem;
+	//
+	// /**
+	// * 振休未消化を出力する
+	// */
+	// private boolean undigestedPause;
+	//
+	// /**
+	// * 振休残数を出力する
+	// */
+	// private boolean numRemainPause;
+	//
+	// /**
+	// * 公休の項目を出力する
+	// */
+	// private boolean outputItemsHolidays;
+	//
+	// /**
+	// * 公休繰越数を出力する
+	// */
+	// private boolean outputHolidayForward;
+	//
+	// /**
+	// * 公休月度残を出力する
+	// */
+	// private boolean monthlyPublic;
+	//
+	// /**
+	// * 子の看護休暇の項目を出力する
+	// */
+	// private boolean childCareLeave;
+	//
+	// /**
+	// * 介護休暇の項目を出力する
+	// */
+	// private boolean nursingCareLeave;
+	//
+	// private Long version;
 
 	/**
 	 * 介護休暇の項目を出力する
 	 */
-	private int nursingCareLeave;
+	private boolean nursingLeave;
 
-	private Long version;
+	/**
+	 * 代休残数を出力する
+	 */
+	private boolean remainingChargeSubstitute;
+
+	/**
+	 * 代休未消化出力する
+	 */
+	private boolean representSubstitute;
+	/**
+	 * 代休の項目を出力する
+	 */
+	private boolean outputItemSubstitute;
+
+	/**
+	 * 公休繰越数を出力する
+	 */
+	private boolean outputholidayforward;
+	/**
+	 * 公休月度残を出力する
+	 */
+	private boolean monthlyPublic;
+	/**
+	 * 公休の項目を出力する
+	 */
+	private boolean outputitemsholidays;
+
+	/**
+	 * childNursingLeave
+	 */
+	private boolean ChildNursingLeave;
+
+	/**
+	 * 年休の項目出力する
+	 */
+	private boolean yearlyHoliday;
+
+	/**
+	 * 内時間年休残数を出力する
+	 */
+	private boolean insideHours;
+
+	/**
+	 * ★内半日年休を出力する
+	 */
+	private boolean insideHalfDay;
+
+	/**
+	 * 振休残数を出力する
+	 */
+	private boolean numberRemainingPause;
+	/**
+	 * 振休未消化を出力する
+	 */
+	private boolean undigestedPause;
+	/**
+	 * 振休の項目を出力する
+	 */
+	private boolean pauseItem;
+
+	/**
+	 * 積立年休の項目を出力する
+	 */
+	private boolean yearlyReserved;
+
+	List<String> specialHolidays;
+	
+
+	public HdRemainManageCommand(String cid, String cd, String name, boolean nursingLeave,
+			boolean remainingChargeSubstitute, boolean representSubstitute, boolean outputItemSubstitute,
+			boolean outputholidayforward, boolean monthlyPublic, boolean outputitemsholidays, boolean childNursingLeave,
+			boolean yearlyHoliday, boolean insideHours, boolean insideHalfDay, boolean numberRemainingPause,
+			boolean undigestedPause, boolean pauseItem, boolean yearlyReserved, List<String> specialHolidays ) {
+		super();
+		this.cid = cid;
+		this.cd = cd;
+		this.name = name;
+		this.nursingLeave = nursingLeave;
+		this.remainingChargeSubstitute = remainingChargeSubstitute;
+		this.representSubstitute = representSubstitute;
+		this.outputItemSubstitute = outputItemSubstitute;
+		this.outputholidayforward = outputholidayforward;
+		this.monthlyPublic = monthlyPublic;
+		this.outputitemsholidays = outputitemsholidays;
+		ChildNursingLeave = childNursingLeave;
+		this.yearlyHoliday = yearlyHoliday;
+		this.insideHours = insideHours;
+		this.insideHalfDay = insideHalfDay;
+		this.numberRemainingPause = numberRemainingPause;
+		this.undigestedPause = undigestedPause;
+		this.pauseItem = pauseItem;
+		this.yearlyReserved = yearlyReserved;
+		this.specialHolidays = specialHolidays;
+	}
 
 }
