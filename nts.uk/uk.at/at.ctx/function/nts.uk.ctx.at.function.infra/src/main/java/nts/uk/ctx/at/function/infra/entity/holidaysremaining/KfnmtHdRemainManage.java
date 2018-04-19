@@ -24,8 +24,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 休暇残数管理表の出力項目設定
  */
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "KFNMT_HD_REMAIN_MANAGE")
 public class KfnmtHdRemainManage extends UkJpaEntity implements Serializable {
@@ -36,7 +34,6 @@ public class KfnmtHdRemainManage extends UkJpaEntity implements Serializable {
 	 */
 	@EmbeddedId
 	public KfnmtHdRemainManagePk hdRemainManagePk;
-	
 
 	/**
 	 * 名称
@@ -156,23 +153,23 @@ public class KfnmtHdRemainManage extends UkJpaEntity implements Serializable {
 	}
 
 	public HolidaysRemainingManagement toDomain() {
-		return new HolidaysRemainingManagement( this.name, this.hdRemainManagePk.cid, this.hdRemainManagePk.cd,
-				new ItemOutputForm(
-						new NursingCareLeave(this.childCareLeave >0 ? true : false),
-						new ItemsOutputtedAlternate(this.remainChargeSub >0 ? true : false, this.representSub >0 ? true : false, this.outItemSub >0 ? true : false),
-						new ItemsPublicOutput(this.outputHolidayForward >0 ? true : false, this.monthlyPublic >0 ? true : false, this.outputItemsHolidays >0 ? true : false),
-						new ChildNursingLeave(this.childCareLeave >0 ? true : false),
-						new YearlyItemsOutput(this.yearlyHoliday >0 ? true : false, this.insideHours >0 ? true : false, this.insideHalfDay >0 ? true : false),
-						new PauseItem(this.numRemainPause >0 ? true : false, this.undigestedPause >0 ? true : false, this.pauseItem >0 ? true : false),
-						new YearlyReserved(this.yearlyReserved >0 ? true : false)
-						)
-		);
+		return new HolidaysRemainingManagement(this.name, this.hdRemainManagePk.cid, this.hdRemainManagePk.cd,
+				new ItemOutputForm(new NursingCareLeave(this.childCareLeave > 0 ? true : false),
+						new ItemsOutputtedAlternate(this.remainChargeSub > 0 ? true : false,
+								this.representSub > 0 ? true : false, this.outItemSub > 0 ? true : false),
+						new ItemsPublicOutput(this.outputHolidayForward > 0 ? true : false,
+								this.monthlyPublic > 0 ? true : false, this.outputItemsHolidays > 0 ? true : false),
+						new ChildNursingLeave(this.childCareLeave > 0 ? true : false),
+						new YearlyItemsOutput(this.yearlyHoliday > 0 ? true : false,
+								this.insideHours > 0 ? true : false, this.insideHalfDay > 0 ? true : false),
+						new PauseItem(this.numRemainPause > 0 ? true : false, this.undigestedPause > 0 ? true : false,
+								this.pauseItem > 0 ? true : false),
+						new YearlyReserved(this.yearlyReserved > 0 ? true : false)));
 	}
 
 	public static KfnmtHdRemainManage toEntity(HolidaysRemainingManagement domain) {
 		return new KfnmtHdRemainManage(new KfnmtHdRemainManagePk(domain.getCompanyID(), domain.getCode()),
-				domain.getName(), 
-				domain.getListItemsOutput().getAnnualHoliday().isYearlyHoliday() ? 1 : 0,
+				domain.getName(), domain.getListItemsOutput().getAnnualHoliday().isYearlyHoliday() ? 1 : 0,
 				domain.getListItemsOutput().getAnnualHoliday().isInsideHalfDay() ? 1 : 0,
 				domain.getListItemsOutput().getAnnualHoliday().isInsideHours() ? 1 : 0,
 				domain.getListItemsOutput().getYearlyReserved().isYearlyReserved() ? 1 : 0,
@@ -187,6 +184,30 @@ public class KfnmtHdRemainManage extends UkJpaEntity implements Serializable {
 				domain.getListItemsOutput().getHolidays().isMonthlyPublic() ? 1 : 0,
 				domain.getListItemsOutput().getChildNursingVacation().isChildNursingLeave() ? 1 : 0,
 				domain.getListItemsOutput().getNursingcareLeave().isNursingLeave() ? 1 : 0);
+	}
+
+	public KfnmtHdRemainManage(KfnmtHdRemainManagePk hdRemainManagePk, String name, int yearlyHoliday,
+			int insideHalfDay, int insideHours, int yearlyReserved, int outItemSub, int representSub,
+			int remainChargeSub, int pauseItem, int undigestedPause, int numRemainPause, int outputItemsHolidays,
+			int outputHolidayForward, int monthlyPublic, int childCareLeave, int nursingCareLeave) {
+		super();
+		this.hdRemainManagePk = hdRemainManagePk;
+		this.name = name;
+		this.yearlyHoliday = yearlyHoliday;
+		this.insideHalfDay = insideHalfDay;
+		this.insideHours = insideHours;
+		this.yearlyReserved = yearlyReserved;
+		this.outItemSub = outItemSub;
+		this.representSub = representSub;
+		this.remainChargeSub = remainChargeSub;
+		this.pauseItem = pauseItem;
+		this.undigestedPause = undigestedPause;
+		this.numRemainPause = numRemainPause;
+		this.outputItemsHolidays = outputItemsHolidays;
+		this.outputHolidayForward = outputHolidayForward;
+		this.monthlyPublic = monthlyPublic;
+		this.childCareLeave = childCareLeave;
+		this.nursingCareLeave = nursingCareLeave;
 	}
 
 }
