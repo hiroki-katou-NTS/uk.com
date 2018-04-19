@@ -11,9 +11,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.function.dom.holidaysremaining.ExecutionCode;
-import nts.uk.ctx.at.function.dom.holidaysremaining.SpecialHolidayOutput;
-import nts.uk.ctx.at.function.dom.processexecution.LastExecDateTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -32,21 +29,13 @@ public class KfnmtSpecialHoliday extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KfnmtSpecialHolidayPk kfnmtSpecialHolidayPk;
 	
+	@ManyToOne
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+			@PrimaryKeyJoinColumn(name = "CD", referencedColumnName = "CD") })
+	private KfnmtHdRemainManage kfnmtHdRemainManage;
+	
 	@Override
 	protected Object getKey() {
 		return kfnmtSpecialHolidayPk;
 	}
-
-	public static KfnmtSpecialHoliday toEntity(SpecialHolidayOutput domain) {
-		return new KfnmtSpecialHoliday(
-				new KfnmtSpecialHolidayPk(domain.getCode(), domain.getCompanyID(), domain.getHolidayCode()));
-	}
-
-	public SpecialHolidayOutput toDomain() {
-		return new SpecialHolidayOutput(this.kfnmtSpecialHolidayPk.cid,
-				this.kfnmtSpecialHolidayPk.cd,
-				this.kfnmtSpecialHolidayPk.specialCd);
-				
-	}
-
 }

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.repository.holidaysremaining;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -11,6 +12,8 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.HolidaysRemainingManagementRepository;
 import nts.uk.ctx.at.function.infra.entity.holidaysremaining.KfnmtHdRemainManage;
 import nts.uk.ctx.at.function.infra.entity.holidaysremaining.KfnmtHdRemainManagePk;
+import nts.uk.ctx.at.function.infra.entity.holidaysremaining.KfnmtSpecialHoliday;
+import nts.uk.ctx.at.function.infra.entity.holidaysremaining.KfnmtSpecialHolidayPk;
 
 @Stateless
 public class JpaHdRemainManageRepository extends JpaRepository implements HolidaysRemainingManagementRepository{
@@ -57,8 +60,8 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 	
 	private KfnmtHdRemainManage toEntity(HolidaysRemainingManagement domain) {
 		return new KfnmtHdRemainManage(new KfnmtHdRemainManagePk(
-				domain.getCompanyID(), 
-				domain.getCode()),
+											domain.getCompanyID(), 
+											domain.getCode()),
 				domain.getName(), 
 				domain.getListItemsOutput().getAnnualHoliday().isYearlyHoliday() ? 1 : 0,
 				domain.getListItemsOutput().getAnnualHoliday().isInsideHalfDay() ? 1 : 0,
@@ -74,6 +77,11 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 				domain.getListItemsOutput().getHolidays().isOutputholidayforward() ? 1 : 0,
 				domain.getListItemsOutput().getHolidays().isMonthlyPublic() ? 1 : 0,
 				domain.getListItemsOutput().getChildNursingVacation().isChildNursingLeave() ? 1 : 0,
-				domain.getListItemsOutput().getNursingcareLeave().isNursingLeave() ? 1 : 0);
+				domain.getListItemsOutput().getNursingcareLeave().isNursingLeave() ? 1 : 0,
+						domain.getListItemsOutput().getSpecialHoliday().stream().map(itemDetai -> {
+							return new KfnmtSpecialHoliday(
+								new KfnmtSpecialHolidayPk(itemDetai.getCompanyID(), 
+										itemDetai.getCode(), itemDetai.getHolidayCode()), null);
+						}).collect(Collectors.toList()));
 	}
 }

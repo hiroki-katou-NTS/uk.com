@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.dom.holidaysremaining;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class ItemOutputForm extends DomainObject {
 
 	// 時間外超過

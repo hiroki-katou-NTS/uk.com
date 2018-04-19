@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.entity.holidaysremaining;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -21,6 +22,7 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.ItemsOutputtedAlternate;
 import nts.uk.ctx.at.function.dom.holidaysremaining.ItemsPublicOutput;
 import nts.uk.ctx.at.function.dom.holidaysremaining.NursingCareLeave;
 import nts.uk.ctx.at.function.dom.holidaysremaining.PauseItem;
+import nts.uk.ctx.at.function.dom.holidaysremaining.SpecialHolidayOutput;
 import nts.uk.ctx.at.function.dom.holidaysremaining.YearlyItemsOutput;
 import nts.uk.ctx.at.function.dom.holidaysremaining.YearlyReserved;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -211,29 +213,4 @@ public class KfnmtHdRemainManage extends UkJpaEntity implements Serializable {
 								)
 			);
 	}
-
-	public KfnmtHdRemainManage(KfnmtHdRemainManagePk hdRemainManagePk, String name, int yearlyHoliday,
-			int insideHalfDay, int insideHours, int yearlyReserved, int outItemSub, int representSub,
-			int remainChargeSub, int pauseItem, int undigestedPause, int numRemainPause, int outputItemsHolidays,
-			int outputHolidayForward, int monthlyPublic, int childCareLeave, int nursingCareLeave) {
-		super();
-		this.hdRemainManagePk = hdRemainManagePk;
-		this.name = name;
-		this.yearlyHoliday = yearlyHoliday;
-		this.insideHalfDay = insideHalfDay;
-		this.insideHours = insideHours;
-		this.yearlyReserved = yearlyReserved;
-		this.outItemSub = outItemSub;
-		this.representSub = representSub;
-		this.remainChargeSub = remainChargeSub;
-		this.pauseItem = pauseItem;
-		this.undigestedPause = undigestedPause;
-		this.numRemainPause = numRemainPause;
-		this.outputItemsHolidays = outputItemsHolidays;
-		this.outputHolidayForward = outputHolidayForward;
-		this.monthlyPublic = monthlyPublic;
-		this.childCareLeave = childCareLeave;
-		this.nursingCareLeave = nursingCareLeave;
-	}
-
 }

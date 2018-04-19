@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.dom.holidaysremaining;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
