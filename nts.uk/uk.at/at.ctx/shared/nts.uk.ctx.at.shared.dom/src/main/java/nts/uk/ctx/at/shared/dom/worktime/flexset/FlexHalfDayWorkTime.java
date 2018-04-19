@@ -38,6 +38,9 @@ public class FlexHalfDayWorkTime extends WorkTimeDomainObject {
 	 */
 	@Override
 	public void validate() {
+		// set hidden data = null (tab3)
+		workTimezone.correctDefaultData();
+
 		if (!this.restTimezone.isFixRestTime() && this.hasNoNo1()) {
 			this.bundledBusinessExceptions.addMessage("Msg_847");
 		}
