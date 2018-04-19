@@ -96,6 +96,16 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                         self.changeExtractionDaily(data,categoryId);
                     }
                 });
+            }else if(categoryId ==12){
+                
+                nts.uk.ui.windows.setShared("categoryId", categoryId);
+                nts.uk.ui.windows.setShared("categoryName", ModelCheckConditonCode.categoryName);
+                nts.uk.ui.windows.sub.modal("../g/index.xhtml").onClosed(() => {
+                    let data = nts.uk.ui.windows.getShared("extractionDaily");
+                    if(!nts.uk.util.isNullOrUndefined(data)){
+                        
+                    }
+                });                
             }
         }
         private changeExtractionDaily(extractionDailyDto: share.ExtractionDailyDto, categoryId: number): void {
@@ -145,7 +155,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             this.categoryName = _.find(self.ListAlarmCategory, ['value', CheckCondition.alarmCategory]).name;
             if(nts.uk.util.isNullOrUndefined(CheckCondition.extractionPeriodDaily)  && CheckCondition.alarmCategory==2){
                 this.extractionPeriod = _.find(self.SegmentationOfCycle, ['value', CheckCondition.extractionPeriodUnit.segmentationOfCycle]).name; 
-            }else{
+            }else if(CheckCondition.alarmCategory==5 || CheckCondition.alarmCategory==13){
                 var str, end;
                 if(CheckCondition.extractionPeriodDaily.strSpecify == 0){ 
                     str = getText('KAL004_32') + CheckCondition.extractionPeriodDaily.strDay + getText('KAL004_34') + _.find(self.PreviousClassification, ['value', CheckCondition.extractionPeriodDaily.strPreviousDay]).name;
@@ -160,6 +170,8 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                     end = endMonth.name + getText('KAL004_43');
                 }  
                 this.extractionPeriod = str + ' ' + getText('KAL004_30') +  ' ' +end;
+            }else{
+                this.extractionPeriod="";
             }
             
             this.extractionPeriodDaily = CheckCondition.extractionPeriodDaily;

@@ -1,5 +1,5 @@
 module nts.uk.com.view.kal004.b.viewmodel {
-
+    import resource = nts.uk.resource;
 
     export class ScreenModel {
         getCategoryId: KnockoutObservable<number>;
