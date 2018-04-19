@@ -70,7 +70,4 @@ public class AffWorkplaceAdapterImpl implements AffWorkplaceAdapter {
 	}
 	
 	
-	
-	
-	
 }
