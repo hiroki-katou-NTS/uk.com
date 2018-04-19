@@ -2,7 +2,7 @@ package nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -50,32 +50,24 @@ public class SelectionFinder {
 				.map(i -> SelectionDto.fromDomainSelection(i)).collect(Collectors.toList());
 	}
 
-	// check history ID:
 	public List<SelectionItemOrderDto> getHistIdSelection(String histId) {
-		List<SelectionItemOrderDto> orderList = new ArrayList<SelectionItemOrderDto>();
-
+		
 		// lay selection
-		List<Selection> selectionList = this.selectionRepo.getAllSelectByHistId(histId);
-		Optional<PerInfoSelectionItem> sltItemOpt = selectionItemRpo.getSelectionItemByHistId(histId);
-		// kiem tra so luong item lay duoc
-		if (selectionList.isEmpty() || !sltItemOpt.isPresent()) {
-			return orderList;
-		} else {
-			String getByHisId = selectionList.get(0).getHistId();
-			List<SelectionItemOrder> orderDomainlst = this.selectionOrderRpo.getAllOrderSelectionByHistId(getByHisId);
-			PerInfoSelectionItem sltItem = sltItemOpt.get();
-			if (!orderDomainlst.isEmpty()) {
-				orderList = orderDomainlst.stream().map(i -> {
-					Selection selection = selectionList.stream()
-							.filter(s -> s.getSelectionID().equals(i.getSelectionID())).findFirst().orElse(null);
-					return SelectionItemOrderDto.fromSelectionOrder(i, selection,
-							sltItem.getFormatSelection().getSelectionCodeCharacter().value);
-				}).collect(Collectors.toList());
-			}
-
-			return orderList;
-		}
-
+		Map<String, Selection> selectionMap = this.selectionRepo.getAllSelectByHistId(histId).stream()
+				.collect(Collectors.toMap(selection -> selection.getSelectionID(), selection -> selection));
+		
+		if (selectionMap.isEmpty()) {
+			return new ArrayList<>();
+		} 
+		
+		List<SelectionItemOrder> selectionOrderList = this.selectionOrderRpo.getAllOrderSelectionByHistId(histId);
+		PerInfoSelectionItem selectionItem = selectionItemRpo.getSelectionItemByHistId(histId).get();
+		
+		return selectionOrderList.stream().map(selectionOrder -> {
+			Selection selection = selectionMap.get(selectionOrder.getSelectionID());
+			return SelectionItemOrderDto.fromSelectionOrder(selectionOrder, selection,
+					selectionItem.getFormatSelection().getCharacterType().value);
+		}).collect(Collectors.toList());
 	}
 
 	// Lanlt
