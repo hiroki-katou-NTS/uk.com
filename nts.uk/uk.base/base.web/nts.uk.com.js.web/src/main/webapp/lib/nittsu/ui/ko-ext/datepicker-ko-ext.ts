@@ -69,8 +69,10 @@ module nts.uk.ui.koExtentions {
             let fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
             let $prevButton, $nextButton;
             if (jumpButtonsDisplay) {
-                $prevButton = $("<button/>").text("◀").css("margin-right", "3px").attr("tabIndex", tabIndex);
-                $nextButton = $("<button/>").text("▶").css("margin-left", "3px").attr("tabIndex", tabIndex);
+                $prevButton = $("<button/>").addClass("ntsDateNextButton ntsButton ntsDatePickerButton ntsDatePicker_Component auto-height")
+                                .text("◀").css("margin-right", "3px").attr("tabIndex", tabIndex);
+                $nextButton = $("<button/>").addClass("ntsDatePrevButton ntsButton ntsDatePickerButton ntsDatePicker_Component auto-height")
+                                .text("▶").css("margin-left", "3px").attr("tabIndex", tabIndex);
                 $input.before($prevButton).after($nextButton);
             }
             if (data.dateFormat === "YYYY") {                
@@ -278,10 +280,13 @@ module nts.uk.ui.koExtentions {
             
             $input.data("required", required);
             
-            if (enable !== undefined)
+            if (enable !== undefined) {
                $input.prop("disabled", !enable);
-            else
+               $(".ntsDatePickerButton").prop("disabled", !enable);
+            } else{
                 $input.prop("disabled", disabled);
+                $(".ntsDatePickerButton").prop("disabled", disabled);
+            }
             if($input.prop("disabled") === true){
                 new nts.uk.util.value.DefaultValue().applyReset($input, value);
             }
