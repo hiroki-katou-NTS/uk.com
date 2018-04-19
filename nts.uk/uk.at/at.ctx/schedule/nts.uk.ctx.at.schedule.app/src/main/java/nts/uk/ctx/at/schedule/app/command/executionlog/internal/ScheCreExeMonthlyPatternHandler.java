@@ -411,7 +411,7 @@ public class ScheCreExeMonthlyPatternHandler {
 	 * @return
 	 */
 	private boolean isReWorkerTypeChangePerson(String empId, GeneralDate targetDate, Boolean reWorkTypeChange,
-			String workTypeCode) {
+			String businessTypeCd) {
 		if (!reWorkTypeChange)
 			return true;
 
@@ -426,7 +426,7 @@ public class ScheCreExeMonthlyPatternHandler {
 		if (!businessTypeOfEmp.isPresent())
 			return true;
 
-		if (!businessTypeOfEmp.get().getBusinessTypeCode().equals(workTypeCode))
+		if (!businessTypeOfEmp.get().getBusinessTypeCode().equals(businessTypeCd))
 			return true;
 
 		return false;
