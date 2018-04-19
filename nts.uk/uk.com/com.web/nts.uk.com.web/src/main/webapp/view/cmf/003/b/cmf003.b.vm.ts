@@ -48,7 +48,7 @@ module nts.uk.com.view.cmf003.b.viewmodel {
             this.currentCodeList = ko.observableArray([]);
         }
         
-        
+       
         selectCategory() {
            modal('../c/index.xhtml').onClosed(() => {
                 

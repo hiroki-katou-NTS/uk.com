@@ -24,9 +24,15 @@
 
 #ignore all js, map file
 **/*.js*
-
+**/base*
+**/time/*
+**/minutesbased*
 # except all js, map in base.web
 !**/base.web/**/*.js*
 **/base.web/**/*bundles.js*
 
 nts.uk/uk.repo/*
+*.js
+nts.uk/uk.base/base.web/nts.uk.com.js.web/src/main/webapp/lib/nittsu/time/minutesbased/minutesbased.js
+nts.uk/uk.base/base.web/nts.uk.com.js.web/src/main/webapp/lib/nittsu/time/minutesbased/minutesbased_clock.js
+nts.uk/uk.base/base.web/nts.uk.com.js.web/src/main/webapp/lib/nittsu/time/minutesbased/minutesbased_duration.js
