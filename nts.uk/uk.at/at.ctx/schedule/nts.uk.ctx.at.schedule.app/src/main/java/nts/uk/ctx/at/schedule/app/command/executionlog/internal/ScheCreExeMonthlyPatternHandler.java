@@ -312,13 +312,14 @@ public class ScheCreExeMonthlyPatternHandler {
 		boolean valueIsReWorkerTypeChangePerson = this.isReWorkerTypeChangePerson(workingConditionItem.getEmployeeId(),
 				command.getToDate(),
 				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getRecreateWorkTypeChange(),
-				basicSche.getWorkScheduleMaster().getWorkTypeCd());
+				basicSche.getWorkScheduleMaster().getBusinessTypeCd());
 		if (!valueIsReWorkerTypeChangePerson) {
 			return false;
 		}
 
 		// 手修正を保護するか判定する
-		boolean valueIsProtectHandCorrect = this.isProtectHandCorrect(workingConditionItem.getEmployeeId(), command.getToDate(),
+		boolean valueIsProtectHandCorrect = this.isProtectHandCorrect(workingConditionItem.getEmployeeId(),
+				command.getToDate(),
 				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getProtectHandCorrection());
 		if (!valueIsProtectHandCorrect) {
 			return false;
@@ -410,7 +411,7 @@ public class ScheCreExeMonthlyPatternHandler {
 	 * @return
 	 */
 	private boolean isReWorkerTypeChangePerson(String empId, GeneralDate targetDate, Boolean reWorkTypeChange,
-			String workTypeCode) {
+			String businessTypeCd) {
 		if (!reWorkTypeChange)
 			return true;
 
@@ -425,7 +426,7 @@ public class ScheCreExeMonthlyPatternHandler {
 		if (!businessTypeOfEmp.isPresent())
 			return true;
 
-		if (!businessTypeOfEmp.get().getBusinessTypeCode().equals(workTypeCode))
+		if (!businessTypeOfEmp.get().getBusinessTypeCode().equals(businessTypeCd))
 			return true;
 
 		return false;
