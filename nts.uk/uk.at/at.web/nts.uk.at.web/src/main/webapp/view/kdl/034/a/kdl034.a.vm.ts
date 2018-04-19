@@ -18,6 +18,9 @@ module nts.uk.at.view.kdl034.a {
                 var self = this;
                 let param = getShared("KDL034_PARAM");
                 self.appID = param.appID;
+                //let regex = "/<br\s*[\/]?>/gi";
+                //appContent = appContent.replace(regex, "\n");
+                //appContent = $("<div>").html(appContent).text();
             }
             startPage(): JQueryPromise<any> {
                 var self = this;
