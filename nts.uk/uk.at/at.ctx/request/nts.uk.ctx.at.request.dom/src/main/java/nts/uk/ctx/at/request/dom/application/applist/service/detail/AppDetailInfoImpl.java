@@ -27,6 +27,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.TimeItemTypeAtr;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
@@ -76,6 +77,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	private AbsenceLeaveAppRepository absRepo;
 	@Inject
 	private RecruitmentAppRepository recRepo;
+	@Inject
+	private BPTimeItemRepository bPTimeItemRepo;
 	/**
 	 * get Application Over Time Info
 	 * appType = 0;
@@ -93,11 +96,20 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 			List<Integer> lstFrameNo = new ArrayList<>();
 			if(overTime.getAttendanceType().equals(AttendanceType.BONUSPAYTIME)){
 				lstFrameNo.add(overTime.getFrameNo());
-				List<BonusPayTimeItem> lstFramBonus = repoBonusTime.getListBonusPayTimeItemName(companyId, lstFrameNo);
-				lstFrame.add(new OverTimeFrame(3, lstFramBonus.get(0).getId(),lstFramBonus.get(0).getTimeItemName().v(), 
-						lstFramBonus.get(0).getTimeItemTypeAtr().value, overTime.getApplicationTime().v(), 
-						overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
-						overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
+				if(overTime.getTimeItemTypeAtr().equals(TimeItemTypeAtr.NORMAL_TYPE)){
+					List<BonusPayTimeItem> lstFramBonus = repoBonusTime.getListBonusPayTimeItemName(companyId, lstFrameNo);
+					lstFrame.add(new OverTimeFrame(3, lstFramBonus.get(0).getId(),lstFramBonus.get(0).getTimeItemName().v(), 
+							lstFramBonus.get(0).getTimeItemTypeAtr().value, overTime.getApplicationTime().v(), 
+							overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
+							overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
+				}else{
+					List<BonusPayTimeItem> specs = bPTimeItemRepo
+							.getListSpecialBonusPayTimeItemName(companyId, lstFrameNo);
+					lstFrame.add(new OverTimeFrame(4, specs.get(0).getId(),specs.get(0).getTimeItemName().v(), 
+							specs.get(0).getTimeItemTypeAtr().value, overTime.getApplicationTime().v(), 
+							overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
+							overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
+				}
 			}
 			if(overTime.getAttendanceType().equals(AttendanceType.BREAKTIME)){
 				lstFrameNo.add(overTime.getFrameNo());
@@ -186,15 +198,12 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 			}
 			if(overTime.getAttendanceType().equals(AttendanceType.NORMALOVERTIME)){
 				String name = "";
-				if(overTime.getFrameNo() == 11){
-					name = "時間外深夜時間";
-				}else if(overTime.getFrameNo() == 12){
-					name = "ﾌﾚｯｸｽ超過";
-				}else{
+				if(overTime.getFrameNo() == 11 || overTime.getFrameNo() == 12){
+					continue;
+				}
 				lstFrameNo.add(overTime.getFrameNo());
 				List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(companyId, lstFrameNo);
 				name = lstFramOt.get(0).getOvertimeWorkFrName().v();
-				}
 				lstFrame.add(new OverTimeFrame(1, overTime.getFrameNo(), 
 						name, null, overTime.getApplicationTime().v(),
 						overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
