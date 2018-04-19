@@ -10,7 +10,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         currentHoliday: KnockoutObservable<HolidayRemaining> = ko.observable(new HolidayRemaining(null));
         switchOptions: KnockoutObservableArray<any>;
         isNewMode: KnockoutObservable<boolean> = ko.observable(true);
-        holidayCode : KnockoutObservableArray<String>;
+        holidayCode: KnockoutObservableArray<String>;
         constructor() {
             let self = this;
             let params = getShared("KDR001Params");
@@ -56,7 +56,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                             if (index === -1) index = 0;
                             let _holiday = lstHolidays[index];
                             if (_holiday && _holiday.cd) {
-        
+
                                 self.currentHoliday(_holiday);
                             } else {
                                 self.currentHoliday(null);
@@ -70,16 +70,16 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     }
                     nts.uk.ui.block.clear();
                     dfd.resolve();
-                    
+
                 })
                 .fail(function(res) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
                     nts.uk.ui.block.clear();
                     dfd.rejected();
-                    
+
                 });
             return dfd.promise();
-            
+
         }
 
         /**
@@ -123,17 +123,17 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     service.addHolidayRemaining(ko.toJS(currentHoliday)).done(() => {
                         dialog.info({ messageId: "Msg_15" });
                         // refresh - initial screen TODO
-                    service.findAll()
-                        .done(function(data: HolidayRemaining) {
-                            if (data.length > 0) {
-                                self.lstHolidays(data);
-                             }
-                            // no data
-                            else {
-                                self.lstHolidays([]);
-                                self.currentCode('');
-                            }
-                        });
+                        service.findAll()
+                            .done(function(data: HolidayRemaining) {
+                                if (data.length > 0) {
+                                    self.lstHolidays(data);
+                                }
+                                // no data
+                                else {
+                                    self.lstHolidays([]);
+                                    self.currentCode('');
+                                }
+                            });
                     }).fail(function(error) {
 
                         if (error.messageId == 'Msg_880') {
@@ -211,7 +211,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 block.clear();
             });;
         }
-        
+
         /**
          * close the dialog
          */
@@ -222,26 +222,90 @@ module nts.uk.at.view.kdr001.b.viewmodel {
 
     }
     class HolidayRemaining {
+
+        /**
+         * 会社ID
+         */
         cid: KnockoutObservable<String>;
+        /**
+          * コード
+        */
         cd: KnockoutObservable<String>;
+        /**
+         * 名称
+         */
         name: KnockoutObservable<String>;
         displayCd: String;
         displayName: String;
-        yearlyHoliday: KnockoutObservable<boolean>;
-        insideHalfDay: KnockoutObservable<boolean>;
-        insideHours: KnockoutObservable<boolean>;
-        yearlyReserved: KnockoutObservable<boolean>;
-        outItemSub: KnockoutObservable<boolean>;
-        representSub: KnockoutObservable<boolean>;
-        remainChargeSub: KnockoutObservable<boolean>;
-        pauseItem: KnockoutObservable<boolean>;
-        undigestedPause: KnockoutObservable<boolean>;
-        numRemainPause: KnockoutObservable<boolean>;
-        outputItemsHolidays: KnockoutObservable<boolean>;
-        outputHolidayForward: KnockoutObservable<boolean>;
+        /**
+         * 介護休暇の項目を出力する
+         */
+        nursingLeave: KnockoutObservable<boolean>;
+        /**
+     * 代休残数を出力する
+     */
+        remainingChargeSubstitute: KnockoutObservable<boolean>;
+
+        /**
+         * 代休未消化出力する
+         */
+        representSubstitute: KnockoutObservable<boolean>;
+        /**
+         * 代休の項目を出力する
+         */
+        outputItemSubstitute: KnockoutObservable<boolean>;
+
+        /**
+         * 公休繰越数を出力する
+         */
+        outputholidayforward: KnockoutObservable<boolean>;
+        /**
+         * 公休月度残を出力する
+         */
         monthlyPublic: KnockoutObservable<boolean>;
-        childCareLeave: KnockoutObservable<boolean>;
-        nursingCareLeave: KnockoutObservable<boolean>;
+        /**
+         * 公休の項目を出力する
+         */
+        outputitemsholidays: KnockoutObservable<boolean>;
+
+        /**
+         * childNursingLeave
+         */
+        ChildNursingLeave: KnockoutObservable<boolean>;
+
+        /**
+         * 年休の項目出力する
+         */
+        yearlyHoliday: KnockoutObservable<boolean>;
+
+        /**
+         * 内時間年休残数を出力する
+         */
+        insideHours: KnockoutObservable<boolean>;
+
+        /**
+         * ★内半日年休を出力する
+         */
+        insideHalfDay: KnockoutObservable<boolean>;
+
+        /**
+         * 振休残数を出力する
+         */
+        numberRemainingPause: KnockoutObservable<boolean>;
+        /**
+         * 振休未消化を出力する
+         */
+        undigestedPause: KnockoutObservable<boolean>;
+        /**
+         * 振休の項目を出力する
+         */
+        pauseItem: KnockoutObservable<boolean>;
+
+        /**
+         * 積立年休の項目を出力する
+         */
+        yearlyReserved: KnockoutObservable<boolean>;
+        specialHolidays: KnockoutObservableArray<string>;
         constructor(param: any) {
             let self = this;
             self.cid = ko.observable(param ? param.cid || '' : '');
@@ -249,21 +313,22 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.name = ko.observable(param ? param.name || '' : '');
             self.displayCd = param ? param.cd || '' : '';
             self.displayName = param ? param.name || '' : '';
-            self.yearlyHoliday = ko.observable(param ? param.yearlyHoliday || false : false);
-            self.insideHalfDay = ko.observable(param ? param.insideHalfDay || false : false);
-            self.insideHours = ko.observable(param ? param.insideHours || false : false);
-            self.yearlyReserved = ko.observable(param ? param.yearlyReserved || false : false);
-            self.outItemSub = ko.observable(param ? param.outItemSub || false : false);
-            self.representSub = ko.observable(param ? param.representSub || false : false);
-            self.remainChargeSub = ko.observable(param ? param.remainChargeSub || false : false);
-            self.pauseItem = ko.observable(param ? param.pauseItem || false : false);
-            self.undigestedPause = ko.observable(param ? param.undigestedPause || false : false);
-            self.numRemainPause = ko.observable(param ? param.numRemainPause || false : false);
-            self.outputItemsHolidays = ko.observable(param ? param.outputItemsHolidays || false : false);
-            self.outputHolidayForward = ko.observable(param ? param.outputHolidayForward || false : false);
+            self.nursingLeave = ko.observable(param ? param.nursingLeave || false : false);
+            self.remainingChargeSubstitute = ko.observable(param ? param.remainingChargeSubstitute || false : false);
+            self.representSubstitute = ko.observable(param ? param.representSubstitute || false : false);
+            self.outputItemSubstitute = ko.observable(param ? param.outputItemSubstitute || false : false);
+            self.outputholidayforward = ko.observable(param ? param.outputholidayforward || false : false);
             self.monthlyPublic = ko.observable(param ? param.monthlyPublic || false : false);
-            self.childCareLeave = ko.observable(param ? param.childCareLeave || false : false);
-            self.nursingCareLeave = ko.observable(param ? param.nursingCareLeave || false : false);
+            self.outputitemsholidays = ko.observable(param ? param.outputitemsholidays || false : false);
+            self.ChildNursingLeave = ko.observable(param ? param.ChildNursingLeave || false : false);
+            self.yearlyHoliday = ko.observable(param ? param.yearlyHoliday || false : false);
+            self.insideHours = ko.observable(param ? param.insideHours || false : false);
+            self.insideHalfDay = ko.observable(param ? param.insideHalfDay || false : false);
+            self.numberRemainingPause = ko.observable(param ? param.numberRemainingPause || false : false);
+            self.undigestedPause = ko.observable(param ? param.undigestedPause || false : false);
+            self.pauseItem = ko.observable(param ? param.pauseItem || false : false);
+            self.yearlyReserved = ko.observable(param ? param.yearlyReserved || false : false);
+            self.specialHolidays = ko.observableArray(param ? param.specialHolidays || [] : []);
         }
     }
 }

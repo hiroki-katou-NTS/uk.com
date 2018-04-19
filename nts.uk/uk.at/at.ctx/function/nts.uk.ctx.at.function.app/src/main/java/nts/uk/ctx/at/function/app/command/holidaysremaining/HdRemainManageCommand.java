@@ -23,83 +23,6 @@ public class HdRemainManageCommand {
 	private String name;
 
 	/**
-	 * 年休の項目出力する
-	 */
-	// private boolean yearlyHoliday;
-	//
-	// /**
-	// * ★内半日年休を出力する
-	// */
-	// private boolean insideHalfDay;
-	//
-	// /**
-	// * 内時間年休残数を出力する
-	// */
-	// private boolean insideHours;
-	//
-	// /**
-	// * 積立年休の項目を出力する
-	// */
-	// private boolean yearlyReserved;
-	//
-	// /**
-	// * 代休の項目を出力する
-	// */
-	// private boolean outItemSub;
-	//
-	// /**
-	// * 代休未消化出力する
-	// */
-	// private boolean representSub;
-	//
-	// /**
-	// * 代休残数を出力する
-	// */
-	// private boolean remainChargeSub;
-	//
-	// /**
-	// * 振休の項目を出力する
-	// */
-	// private boolean pauseItem;
-	//
-	// /**
-	// * 振休未消化を出力する
-	// */
-	// private boolean undigestedPause;
-	//
-	// /**
-	// * 振休残数を出力する
-	// */
-	// private boolean numRemainPause;
-	//
-	// /**
-	// * 公休の項目を出力する
-	// */
-	// private boolean outputItemsHolidays;
-	//
-	// /**
-	// * 公休繰越数を出力する
-	// */
-	// private boolean outputHolidayForward;
-	//
-	// /**
-	// * 公休月度残を出力する
-	// */
-	// private boolean monthlyPublic;
-	//
-	// /**
-	// * 子の看護休暇の項目を出力する
-	// */
-	// private boolean childCareLeave;
-	//
-	// /**
-	// * 介護休暇の項目を出力する
-	// */
-	// private boolean nursingCareLeave;
-	//
-	// private Long version;
-
-	/**
 	 * 介護休暇の項目を出力する
 	 */
 	private boolean nursingLeave;
@@ -168,10 +91,7 @@ public class HdRemainManageCommand {
 	 * 積立年休の項目を出力する
 	 */
 	private boolean yearlyReserved;
-
 	List<String> specialHolidays;
-	
-
 	public HdRemainManageCommand(String cid, String cd, String name, boolean nursingLeave,
 			boolean remainingChargeSubstitute, boolean representSubstitute, boolean outputItemSubstitute,
 			boolean outputholidayforward, boolean monthlyPublic, boolean outputitemsholidays, boolean childNursingLeave,
