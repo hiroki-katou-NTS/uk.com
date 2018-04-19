@@ -47,7 +47,7 @@ public class ItemOutputForm extends DomainObject {
 
 	public ItemOutputForm(NursingCareLeave nursingcareLeave, ItemsOutputtedAlternate substituteHoliday,
 			ItemsPublicOutput holidays, ChildNursingLeave childNursingVacation, YearlyItemsOutput annualHoliday,
-			PauseItem pause, YearlyReserved yearlyReserved) {
+			PauseItem pause, YearlyReserved yearlyReserved, List<SpecialHolidayOutput> specialHoliday) {
 		super();
 		this.nursingcareLeave = nursingcareLeave;
 		this.substituteHoliday = substituteHoliday;

@@ -187,30 +187,4 @@ public class KfnmtHdRemainManage extends UkJpaEntity implements Serializable {
 		this.nursingCareLeave = nursingCareLeave;
 		this.kfnmtSpecialHolidays = kfnmtSpecialHolidays;
 	}
-	
-	public HolidaysRemainingManagement toDomain() {
-		return new HolidaysRemainingManagement(
-			this.name, this.hdRemainManagePk.cid, this.hdRemainManagePk.cd,
-			new ItemOutputForm(	new NursingCareLeave(this.childCareLeave > 0 ? true : false),
-								new ItemsOutputtedAlternate(
-										this.remainChargeSub > 0 ? true : false,
-										this.representSub > 0 ? true : false, 
-										this.outItemSub > 0 ? true : false),
-								new ItemsPublicOutput(
-										this.outputHolidayForward > 0 ? true : false,		
-										this.monthlyPublic > 0 ? true : false, 
-										this.outputItemsHolidays > 0 ? true : false),
-								new ChildNursingLeave(this.childCareLeave > 0 ? true : false),
-								new YearlyItemsOutput(
-										this.yearlyHoliday > 0 ? true : false,
-										this.insideHours > 0 ? true : false, 
-										this.insideHalfDay > 0 ? true : false),
-								new PauseItem(
-										this.numRemainPause > 0 ? true : false, 
-										this.undigestedPause > 0 ? true : false,
-										this.pauseItem > 0 ? true : false),
-								new YearlyReserved(this.yearlyReserved > 0 ? true : false)
-								)
-			);
-	}
 }
