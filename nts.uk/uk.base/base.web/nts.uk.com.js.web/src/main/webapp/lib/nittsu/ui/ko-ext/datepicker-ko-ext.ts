@@ -282,10 +282,10 @@ module nts.uk.ui.koExtentions {
             
             if (enable !== undefined) {
                $input.prop("disabled", !enable);
-               $(".ntsDatePickerButton").prop("disabled", !enable);
+               container.find(".ntsDatePickerButton").prop("disabled", !enable);
             } else{
                 $input.prop("disabled", disabled);
-                $(".ntsDatePickerButton").prop("disabled", disabled);
+                container.find(".ntsDatePickerButton").prop("disabled", disabled);
             }
             if($input.prop("disabled") === true){
                 new nts.uk.util.value.DefaultValue().applyReset($input, value);
