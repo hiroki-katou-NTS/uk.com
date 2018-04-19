@@ -10,11 +10,9 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 
 @Stateless
 @Transactional
-public class AddHdRemainManageCommandHandler extends CommandHandler<HdRemainManageCommand>
-{
-    
-    @Override
-    protected void handle(CommandHandlerContext<HdRemainManageCommand> context) {
-    
-    }
+public class AddHdRemainManageCommandHandler extends CommandHandler<HdRemainManageCommand> {
+
+	@Override
+	protected void handle(CommandHandlerContext<HdRemainManageCommand> context) {
+	}
 }
