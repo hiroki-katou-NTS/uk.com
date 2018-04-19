@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.HolidaysRemainingManagementRepository;
@@ -27,15 +28,20 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 	}
 	@Override
 	public void insert(HolidaysRemainingManagement domain) {
-		this.commandProxy().insert(KfnmtHdRemainManage.toEntity(domain));
+		Optional<HolidaysRemainingManagement> duplicateDomain = getHolidayManagerByCidAndExecCd(domain.getCompanyID(), domain.getCode());
+		if(duplicateDomain.isPresent()) throw new BusinessException("Msg_3");
 		
+		this.commandProxy().insert(this.toEntity(domain));		
 	}
 	@Override
 	public void update(HolidaysRemainingManagement domain) {
-		KfnmtHdRemainManage updateData = KfnmtHdRemainManage.toEntity(domain);
-		KfnmtHdRemainManage oldData = this.queryProxy().find(updateData.hdRemainManagePk, KfnmtHdRemainManage.class).get();
-		this.commandProxy().update(oldData);
-		
+		Optional<HolidaysRemainingManagement> duplicateDomain = getHolidayManagerByCidAndExecCd(domain.getCompanyID(), domain.getCode());
+		if(duplicateDomain.isPresent()) 
+		{	
+			KfnmtHdRemainManage updateData = this.toEntity(domain);
+			KfnmtHdRemainManage oldData = this.queryProxy().find(updateData.hdRemainManagePk, KfnmtHdRemainManage.class).get();
+			this.commandProxy().update(oldData);
+		}
 	}
 	@Override
 	public void remove(String companyId, String code) {
@@ -48,5 +54,26 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 		return this.queryProxy().query(SELECT_BY_COMPANY_ID, KfnmtHdRemainManage.class)
 				.setParameter("cid", companyId).getList(c -> c.toDomain());
 	}
-
+	
+	private KfnmtHdRemainManage toEntity(HolidaysRemainingManagement domain) {
+		return new KfnmtHdRemainManage(new KfnmtHdRemainManagePk(
+				domain.getCompanyID(), 
+				domain.getCode()),
+				domain.getName(), 
+				domain.getListItemsOutput().getAnnualHoliday().isYearlyHoliday() ? 1 : 0,
+				domain.getListItemsOutput().getAnnualHoliday().isInsideHalfDay() ? 1 : 0,
+				domain.getListItemsOutput().getAnnualHoliday().isInsideHours() ? 1 : 0,
+				domain.getListItemsOutput().getYearlyReserved().isYearlyReserved() ? 1 : 0,
+				domain.getListItemsOutput().getSubstituteHoliday().isOutputItemSubstitute() ? 1 : 0,
+				domain.getListItemsOutput().getSubstituteHoliday().isRepresentSubstitute() ? 1 : 0,
+				domain.getListItemsOutput().getSubstituteHoliday().isRemainingChargeSubstitute() ? 1 : 0,
+				domain.getListItemsOutput().getPause().isPauseItem() ? 1 : 0,
+				domain.getListItemsOutput().getPause().isUndigestedPause() ? 1 : 0,
+				domain.getListItemsOutput().getPause().isNumberRemainingPause() ? 1 : 0,
+				domain.getListItemsOutput().getHolidays().isOutputitemsholidays() ? 1 : 0,
+				domain.getListItemsOutput().getHolidays().isOutputholidayforward() ? 1 : 0,
+				domain.getListItemsOutput().getHolidays().isMonthlyPublic() ? 1 : 0,
+				domain.getListItemsOutput().getChildNursingVacation().isChildNursingLeave() ? 1 : 0,
+				domain.getListItemsOutput().getNursingcareLeave().isNursingLeave() ? 1 : 0);
+	}
 }

@@ -1,14 +1,18 @@
 package nts.uk.ctx.at.function.infra.entity.holidaysremaining;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.holidaysremaining.ChildNursingLeave;
 import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
@@ -147,43 +151,65 @@ public class KfnmtHdRemainManage extends UkJpaEntity implements Serializable {
 	@Column(name = "NURSING_CARE_LEAVE")
 	public int nursingCareLeave;
 
+	@OneToMany(targetEntity = KfnmtSpecialHoliday.class, cascade = CascadeType.ALL, mappedBy = "kfnmtSpecialHoliday", orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "KFNMT_SPECIAL_HOLIDAY")
+	public List<KfnmtSpecialHoliday> kfnmtSpecialHolidays;
+
 	@Override
 	protected Object getKey() {
 		return hdRemainManagePk;
 	}
 
-	public HolidaysRemainingManagement toDomain() {
-		return new HolidaysRemainingManagement(this.name, this.hdRemainManagePk.cid, this.hdRemainManagePk.cd,
-				new ItemOutputForm(new NursingCareLeave(this.childCareLeave > 0 ? true : false),
-						new ItemsOutputtedAlternate(this.remainChargeSub > 0 ? true : false,
-								this.representSub > 0 ? true : false, this.outItemSub > 0 ? true : false),
-						new ItemsPublicOutput(this.outputHolidayForward > 0 ? true : false,
-								this.monthlyPublic > 0 ? true : false, this.outputItemsHolidays > 0 ? true : false),
-						new ChildNursingLeave(this.childCareLeave > 0 ? true : false),
-						new YearlyItemsOutput(this.yearlyHoliday > 0 ? true : false,
-								this.insideHours > 0 ? true : false, this.insideHalfDay > 0 ? true : false),
-						new PauseItem(this.numRemainPause > 0 ? true : false, this.undigestedPause > 0 ? true : false,
-								this.pauseItem > 0 ? true : false),
-						new YearlyReserved(this.yearlyReserved > 0 ? true : false)));
+	public KfnmtHdRemainManage(KfnmtHdRemainManagePk hdRemainManagePk, String name, int yearlyHoliday,
+			int insideHalfDay, int insideHours, int yearlyReserved, int outItemSub, int representSub,
+			int remainChargeSub, int pauseItem, int undigestedPause, int numRemainPause, int outputItemsHolidays,
+			int outputHolidayForward, int monthlyPublic, int childCareLeave, int nursingCareLeave,
+			List<KfnmtSpecialHoliday> kfnmtSpecialHolidays) {
+		super();
+		this.hdRemainManagePk = hdRemainManagePk;
+		this.name = name;
+		this.yearlyHoliday = yearlyHoliday;
+		this.insideHalfDay = insideHalfDay;
+		this.insideHours = insideHours;
+		this.yearlyReserved = yearlyReserved;
+		this.outItemSub = outItemSub;
+		this.representSub = representSub;
+		this.remainChargeSub = remainChargeSub;
+		this.pauseItem = pauseItem;
+		this.undigestedPause = undigestedPause;
+		this.numRemainPause = numRemainPause;
+		this.outputItemsHolidays = outputItemsHolidays;
+		this.outputHolidayForward = outputHolidayForward;
+		this.monthlyPublic = monthlyPublic;
+		this.childCareLeave = childCareLeave;
+		this.nursingCareLeave = nursingCareLeave;
+		this.kfnmtSpecialHolidays = kfnmtSpecialHolidays;
 	}
-
-	public static KfnmtHdRemainManage toEntity(HolidaysRemainingManagement domain) {
-		return new KfnmtHdRemainManage(new KfnmtHdRemainManagePk(domain.getCompanyID(), domain.getCode()),
-				domain.getName(), domain.getListItemsOutput().getAnnualHoliday().isYearlyHoliday() ? 1 : 0,
-				domain.getListItemsOutput().getAnnualHoliday().isInsideHalfDay() ? 1 : 0,
-				domain.getListItemsOutput().getAnnualHoliday().isInsideHours() ? 1 : 0,
-				domain.getListItemsOutput().getYearlyReserved().isYearlyReserved() ? 1 : 0,
-				domain.getListItemsOutput().getSubstituteHoliday().isOutputItemSubstitute() ? 1 : 0,
-				domain.getListItemsOutput().getSubstituteHoliday().isRepresentSubstitute() ? 1 : 0,
-				domain.getListItemsOutput().getSubstituteHoliday().isRemainingChargeSubstitute() ? 1 : 0,
-				domain.getListItemsOutput().getPause().isPauseItem() ? 1 : 0,
-				domain.getListItemsOutput().getPause().isUndigestedPause() ? 1 : 0,
-				domain.getListItemsOutput().getPause().isNumberRemainingPause() ? 1 : 0,
-				domain.getListItemsOutput().getHolidays().isOutputitemsholidays() ? 1 : 0,
-				domain.getListItemsOutput().getHolidays().isOutputholidayforward() ? 1 : 0,
-				domain.getListItemsOutput().getHolidays().isMonthlyPublic() ? 1 : 0,
-				domain.getListItemsOutput().getChildNursingVacation().isChildNursingLeave() ? 1 : 0,
-				domain.getListItemsOutput().getNursingcareLeave().isNursingLeave() ? 1 : 0);
+	
+	public HolidaysRemainingManagement toDomain() {
+		return new HolidaysRemainingManagement(
+			this.name, this.hdRemainManagePk.cid, this.hdRemainManagePk.cd,
+			new ItemOutputForm(	new NursingCareLeave(this.childCareLeave > 0 ? true : false),
+								new ItemsOutputtedAlternate(
+										this.remainChargeSub > 0 ? true : false,
+										this.representSub > 0 ? true : false, 
+										this.outItemSub > 0 ? true : false),
+								new ItemsPublicOutput(
+										this.outputHolidayForward > 0 ? true : false,		
+										this.monthlyPublic > 0 ? true : false, 
+										this.outputItemsHolidays > 0 ? true : false),
+								new ChildNursingLeave(this.childCareLeave > 0 ? true : false),
+								new YearlyItemsOutput(
+										this.yearlyHoliday > 0 ? true : false,
+										this.insideHours > 0 ? true : false, 
+										this.insideHalfDay > 0 ? true : false),
+								new PauseItem(
+										this.numRemainPause > 0 ? true : false, 
+										this.undigestedPause > 0 ? true : false,
+										this.pauseItem > 0 ? true : false),
+								new YearlyReserved(this.yearlyReserved > 0 ? true : false)
+								)
+			);
 	}
 
 	public KfnmtHdRemainManage(KfnmtHdRemainManagePk hdRemainManagePk, String name, int yearlyHoliday,
