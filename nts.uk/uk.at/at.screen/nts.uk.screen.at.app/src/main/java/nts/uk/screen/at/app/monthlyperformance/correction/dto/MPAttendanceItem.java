@@ -1,15 +1,9 @@
-/**
- * 5:44:29 PM Aug 23, 2017
- */
+
 package nts.uk.screen.at.app.monthlyperformance.correction.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-/**
- * @author hungnm
- *
- */
 @Data
 @AllArgsConstructor
 public class MPAttendanceItem {

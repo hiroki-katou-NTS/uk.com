@@ -9,6 +9,8 @@ public interface MonPfmCorrectionFormatRepository {
 	
 	Optional<MonPfmCorrectionFormat> getMonPfmCorrectionFormat(String companyID, String monthlyPfmFormatCode);
 	
+	List<MonPfmCorrectionFormat> getMonPfmCorrectionFormat(String companyID, List<String> monthlyPfmFormatCodes);
+	
 	void addMonPfmCorrectionFormat (MonPfmCorrectionFormat monPfmCorrectionFormat);
 	
 	void updateMonPfmCorrectionFormat (MonPfmCorrectionFormat monPfmCorrectionFormat);

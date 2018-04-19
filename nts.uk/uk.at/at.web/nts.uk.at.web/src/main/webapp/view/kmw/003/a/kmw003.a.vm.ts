@@ -1,4 +1,4 @@
-module nts.uk.at.view.kmw003.a.viewmodel {
+kmodule nts.uk.at.view.kmw003.a.viewmodel {
     export interface EmployeeSearchDto {
         employeeId: string;
         employeeCode: string;
@@ -18,13 +18,11 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         columnSettings: KnockoutObservableArray<any> = ko.observableArray([]);
         sheetsGrid: KnockoutObservableArray<any> = ko.observableArray([]);
         fixColGrid: KnockoutObservableArray<any>;
-        dailyPerfomanceData: KnockoutObservableArray<any> = ko.observableArray([]);
         cellStates: KnockoutObservableArray<any> = ko.observableArray([]);
         rowStates: KnockoutObservableArray<any> = ko.observableArray([]);
         dpData: Array<any> = [];
         headerColors: KnockoutObservableArray<any> = ko.observableArray([]);
-        textColors: KnockoutObservableArray<any> = ko.observableArray([]);
-        
+        textColors: KnockoutObservableArray<any> = ko.observableArray([]);        
         legendOptions: any;
         //grid user setting
         cursorMoveDirections: KnockoutObservableArray<any> = ko.observableArray([
@@ -38,13 +36,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         //ccg001 component: search employee
         ccg001: any;
         baseDate: KnockoutObservable<Date> = ko.observable(new Date());
-        //kcp009 component: employee picker
-        selectedEmployee: KnockoutObservable<any> = ko.observable(null);
         lstEmployee: KnockoutObservableArray<any> = ko.observableArray([]);
-        
-        
-        displayFormat: KnockoutObservable<number> = ko.observable(null);
-        
+        displayFormat: KnockoutObservable<number> = ko.observable(null);        
         lstDate: KnockoutObservableArray<any> = ko.observableArray([]);
         optionalHeader: Array<any> = [];
         employeeModeHeader: Array<any> = [];
@@ -57,25 +50,13 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         closureName: KnockoutObservable<string> = ko.observable('');
         // date ranger component
         dateRanger: KnockoutObservable<any> = ko.observable(null);
-       
-
         showButton: KnockoutObservable<AuthorityDetailModel> = ko.observable(null);
-
-        
-
         employmentCode: KnockoutObservable<any> = ko.observable("");
-
-        editValue: KnockoutObservableArray<InfoCellEdit> = ko.observableArray([]);
-        
-        itemValueAll: KnockoutObservableArray<any> = ko.observableArray([]);
-        
-        itemValueAllTemp: KnockoutObservableArray<any> = ko.observableArray([]);
-        
+        editValue: KnockoutObservableArray<InfoCellEdit> = ko.observableArray([]);        
+        itemValueAll: KnockoutObservableArray<any> = ko.observableArray([]);        
+        itemValueAllTemp: KnockoutObservableArray<any> = ko.observableArray([]);        
         lockMessage: KnockoutObservable<any> = ko.observable("");
-
         dataHoliday: KnockoutObservable<DataHoliday> =  ko.observable(new DataHoliday("0","0","0","0","0","0"));
-        
-
         comboColumns: KnockoutObservableArray<any> = ko.observableArray([{ prop: 'code', length: 1 },
             { prop: 'name', length: 2 }]);
         comboColumnsCalc: KnockoutObservableArray<any> = ko.observableArray([{ prop: 'code', length: 1 },
@@ -255,32 +236,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             self.fixColGrid = self.fixHeaders;
             
             self.loadHeader(self.displayFormat());
-            self.dailyPerfomanceData(self.filterData(self.displayFormat()));
         }
-        
-        filterData(mode: number) {
-            let self = this;
-            if (mode == 0) {
-                return _.filter(self.dpData, (data) => { return data.employeeId == self.selectedEmployee() });
-            } else if (mode == 1) {
-                return _.filter(self.dpData, (data) => { return data.date === moment(self.selectedDate()).format('YYYY/MM/DD') });
-            } else if (mode == 2) {
-                return _.filter(self.dpData, (data) => { return data.error !== '' });
-            }
-        }
-        //load kcp009 component: employee picker
-        loadKcp009() {
-            let self = this;
-            let kcp009Options = {
-                systemReference: 1,
-                isDisplayOrganizationName: true,
-                employeeInputList: self.lstEmployee,
-                targetBtnText: nts.uk.resource.getText("KCP009_3"),
-                selectedItem: self.selectedEmployee,
-                tabIndex: 1
-            };
-        }
-
         //init ccg001
         initCcg001() {
              let self = this;
@@ -329,7 +285,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
 
                 /** Return data */
                 returnDataFromCcg001: function(dataList: any) {
-                   // self.selectedEmployee(dataList.listEmployee);
                     self.lstEmployee(dataList.listEmployee.map((data: EmployeeSearchDto) => {
                         return {
                             id: data.employeeId,
@@ -341,10 +296,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                             isLoginUser: false
                         };
                     }));
-                    self.lstEmployee(_.orderBy(self.lstEmployee(), ['code'], ['asc']));
-                    self.selectedEmployee(self.lstEmployee()[0].id);
-                    self.loadKcp009();
-                    
+                    self.lstEmployee(_.orderBy(self.lstEmployee(), ['code'], ['asc']));                  
                     //Reload screen
                     self.monthlyParam().lstEmployees = self.lstEmployee();
                     self.initScreen();

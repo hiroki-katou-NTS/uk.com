@@ -158,7 +158,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 			
 			//アルゴリズム「表示フォーマットの取得」を実行する(Thực hiện 「Lấy format hiển thị」)
 			//TODO Data null
-			//DisplayItem dispItem = monthlyDisplay.getDisplayFormat(employeeIds, dateRange, formatCodes, correctionOfDaily, formatPerformance.get().getSettingUnitType(), screenDto);
+			DisplayItem dispItem = monthlyDisplay.getDisplayFormat(employeeIds, formatPerformance.get().getSettingUnitType(), screenDto);
 			
 			//TODO アルゴリズム「月別実績を表示する」を実行する Hiển thị monthly result
 			//this.displayMonthlyResult(screenDto, dispItem);

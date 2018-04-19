@@ -34,7 +34,12 @@ public class JpaMonthlyRecordWorkTypeRepo extends JpaRepository implements Month
 		Optional<MonthlyRecordWorkType> data = this.queryProxy().query(GET_MON_BY_CODE, KrcmtMonthlyRecordWorkType.class).setParameter("companyID", companyID).setParameter("businessTypeCode", businessTypeCode).getSingle(c -> c.toDomain());
 		return data;
 	}
-
+	@Override
+	public List<MonthlyRecordWorkType> getMonthlyRecordWorkTypeByListCode(String companyID,
+			List<String> businessTypeCodes) {
+		List<MonthlyRecordWorkType> data = this.queryProxy().query(GET_MON_BY_LIST_CODE, KrcmtMonthlyRecordWorkType.class).setParameter("companyID", companyID).setParameter("businessTypeCode", businessTypeCodes).getList(c -> c.toDomain());
+		return data;
+	}
 	@Override
 	public List<MonthlyRecordWorkType> getMonthlyRecordWorkTypeByListCode(String companyID, List<String> businessTypeCodes) {
 		List<MonthlyRecordWorkType> data = this.queryProxy().query(GET_MON_BY_LIST_CODE, KrcmtMonthlyRecordWorkType.class).setParameter("companyID", companyID).setParameter("businessTypeCode", businessTypeCodes).getList(c -> c.toDomain());

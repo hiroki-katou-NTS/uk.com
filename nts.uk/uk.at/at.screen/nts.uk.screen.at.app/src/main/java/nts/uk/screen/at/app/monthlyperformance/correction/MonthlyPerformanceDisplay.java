@@ -1,10 +1,14 @@
 package nts.uk.screen.at.app.monthlyperformance.correction;
 
+import java.security.cert.PKIXRevocationChecker.Option;
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -13,13 +17,20 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
-import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.function.dom.adapter.AffCompanyHistImport;
-import nts.uk.ctx.at.function.dom.adapter.EmployeeHistWorkRecordAdapter;
+import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.DisplayTimeItemDto;
+import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.MonPfmCorrectionFormatDto;
+import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.MonPfmCorrectionFormatFinder;
+import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.MonthlyActualResultsDto;
+import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.MonthlyRecordWorkTypeDto;
+import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.MonthlyRecordWorkTypeFinder;
+import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.SheetCorrectedMonthlyDto;
+import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.ColumnWidtgByMonthly;
+import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.ColumnWidtgByMonthlyRepository;
+import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.InitialDisplayMonthly;
+import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.InitialDisplayMonthlyRepository;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
-import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.AcquireActualStatus;
 import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.ApprovalStatus;
@@ -33,7 +44,6 @@ import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlB
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthFinder;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
-import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTimeState;
@@ -45,6 +55,8 @@ import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPSheetDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerformaceLockStatus;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerformanceParam;
+import nts.uk.screen.at.app.monthlyperformance.correction.param.PAttendanceItem;
+import nts.uk.screen.at.app.monthlyperformance.correction.param.PSheet;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -57,16 +69,26 @@ public class MonthlyPerformanceDisplay {
 	@Inject
 	ControlOfMonthlyFinder controlOfMonthlyFinder;
 	@Inject
-	private DailyPerformanceScreenRepo repo;
+	private MonthlyPerformanceScreenRepo repo;
 	@Inject
 	private MonthlyAttendanceItemRepository monthlyAttendanceItemRepo;
 	
-	@Inject
-	private EmployeeHistWorkRecordAdapter employeeHistWorkRecordAdapter;
 	@Inject 
 	private MonthlyActualSituationStatus monthlyActualStatus;
 	@Inject
 	AffWorkplaceAdapter affWorkplaceAdapter;
+	/** 月次の初期表示フォーマット */
+	@Inject
+	InitialDisplayMonthlyRepository initialDisplayMonthlyRepository;
+	/** 会社の月別実績の修正のフォーマット */
+	@Inject
+	MonPfmCorrectionFormatFinder monPfmCorrectionFormatFinder;
+	/** 月別実績のグリッドの列幅 */
+	@Inject
+	ColumnWidtgByMonthlyRepository columnWidtgByMonthlyRepository;
+	/** 勤務種別の月別実績の修正のフォーマット */
+	@Inject
+	MonthlyRecordWorkTypeFinder monthlyRecordWorkTypeFinder;
 	//@Inject
 	//private AttendanceItemLinkingRepository attendanceItemLinkingRepository;
 	/**
@@ -89,37 +111,33 @@ public class MonthlyPerformanceDisplay {
 		//パラメータ
 		MonthlyPerformanceParam param = screenDto.getParam();		
 		DateRange dateRange = new DateRange(screenDto.getSelectedActualTime().getStartDate(), screenDto.getSelectedActualTime().getEndDate());
-		DisplayItem dispItem;
+		DisplayItem dispItem = new DisplayItem();
 		//権限の場合 
 		if(unitType == SettingUnitType.AUTHORITY){
 			//アルゴリズム「社員の権限に対応する表示項目を取得する」を実行する
-			dispItem = getDisplayItemAuthority(cId, param.getFormatCodes(), param.getCorrectionOfMonthly());
+			getDisplayItemAuthority(cId, param, param.getCorrectionOfMonthly());
 		}
 		//勤務種別の場合
 		else{
 			//社員の勤務種別に対応する表示項目を取得する
 			//(Lấy các item hiển thị ứng với loại đi làm của employee)
-			dispItem = getDisplayItemBussiness(lstEmployeeIds, dateRange,  param.getFormatCodes(), param.getCorrectionOfMonthly());
+			getDisplayItemBussiness(cId, lstEmployeeIds, dateRange,  param);
 		}
 		//対応するドメインモデル「権限別月次項目制御」を取得する
 		MonthlyItemControlByAuthDto monthlyItemAuthDto = monthlyItemControlByAuthFinder.getMonthlyItemControlByRoleID(employmentRoleID);
 		//TODO check null monthlyItemAuthDto
 		//取得したドメインモデル「権限別月次項目制御」でパラメータ「表示する項目一覧」をしぼり込む
 		//Filter param 「表示する項目一覧」  by domain 「権限別月次項目制御」
-		Set<Integer> acceptableAttendanceId = monthlyItemAuthDto.getListDisplayAndInputMonthly().stream()
-				.map(DisplayAndInputMonthlyDto::getItemMonthlyId).collect(Collectors.toSet());
-		
-		List<Integer> lstAtdItemUnique = new ArrayList<>();		
-		lstAtdItemUnique = dispItem.getLstFormat().stream().
-				filter(c -> acceptableAttendanceId.contains(c.getAttendanceItemId()))
-				.map(item -> item.getAttendanceItemId())
-				.collect(Collectors.toList());
-		
-		dispItem.setLstAtdItemUnique(lstAtdItemUnique);
-		
-		if(!CollectionUtil.isEmpty(lstAtdItemUnique)){
+        Set<Integer> lstAtdItemUnique = new HashSet<>();        
+		for (PSheet sheet : param.getSheets()) {
+			sheet.getDisplayItems().retainAll(monthlyItemAuthDto.getListDisplayAndInputMonthly());
+			if(sheet.getDisplayItems() != null && sheet.getDisplayItems().size() > 0)
+				lstAtdItemUnique.addAll(sheet.getDisplayItems().stream().map(PAttendanceItem::getId).collect(Collectors.toSet()));
+		}
+		//絞り込んだ勤怠項目の件数をチェックする
+		if(lstAtdItemUnique.size() > 0){
 			//ドメインモデル「月次の勤怠項目」を取得する
-			List<MonthlyAttendanceItem> lstAttendanceIds = monthlyAttendanceItemRepo.findByAttendanceItemId(cId, lstAtdItemUnique);
+			List<MonthlyAttendanceItem> lstAttendanceIds = monthlyAttendanceItemRepo.findByAttendanceItemId(cId, lstAtdItemUnique.stream().collect(Collectors.toList()));
 			
 			//TODO 対応するドメインモデル「勤怠項目と枠の紐付け」を取得する  - attendanceItemLinkingRepository
 			//Domain hien tai dang nam trong function.
@@ -147,12 +165,10 @@ public class MonthlyPerformanceDisplay {
 	 * @param correctionOfMonthly
 	 * @return 表示する項目一覧
 	 */
-	private DisplayItem getDisplayItemAuthority(String cId, List<String> formatCodes, CorrectionOfMonthlyPerformance correctionOfMonthly){		
-		DisplayItem dispItem = new DisplayItem();
-		List<FormatMPCorrectionDto> lstFormat = new ArrayList<FormatMPCorrectionDto>();
-		List<MPSheetDto> lstSheet = new ArrayList<MPSheetDto>();
-		List<Integer> lstAtdItem = new ArrayList<>();
-		List<Integer> lstAtdItemUnique = new ArrayList<>();
+	private void getDisplayItemAuthority(String cId, MonthlyPerformanceParam param, CorrectionOfMonthlyPerformance correctionOfMonthly){		
+		//表示する項目一覧
+		List<PSheet> resultSheets = new ArrayList<>();		
+		List<String> formatCodes = param.getFormatCodes();
 		if(null == formatCodes){
 			//ユーザー固有情報「月別実績のの修正」．前回の表示項目が取得できたかチェックする			
 			if(null !=  correctionOfMonthly && !Strings.isEmpty(correctionOfMonthly.getPreviousDisplayItem())){
@@ -160,29 +176,62 @@ public class MonthlyPerformanceDisplay {
 				formatCodes = Arrays.asList(correctionOfMonthly.getPreviousDisplayItem());
 			}else{
 				//対応するドメインモデル「月次の初期表示フォーマット」を取得する
-				//TODO 月次の初期表示フォーマット
-				//Optional<MonthlyInitDisplayFormat> initDisp = initDisplay.getMonthlyInitDisplayFormat(cId);
-				//if(initDisp.isPresent()){
-					//取得したドメインモデル「月次の初期表示フォーマット」をパラメータ「使用するフォーマットコード」にセットする
-				//	formatCodes = Arrays.asList(initDisp.get().getCode());
-				//TODO Dummy data
-				formatCodes = Arrays.asList("001");
-				//}else{
+				//月次の初期表示フォーマット
+				List<InitialDisplayMonthly> initDisp = initialDisplayMonthlyRepository.getAllInitialDisMon(cId);
+				if(!initDisp.isEmpty()){
+					// 取得したドメインモデル「月次の初期表示フォーマット」をパラメータ「使用するフォーマットコード」にセットする
+					formatCodes = initDisp.stream().map(item -> {return item.getMonthlyPfmFormatCode().v();}).collect(Collectors.toList());
+				}else{
 					//アルゴリズム「表示項目の選択を起動する」を実行する
 					//ダイアログで選択していたフォーマットコードをパラメータ「使用するフォーマットコード」にセットする
 					throw new BusinessException(KMW003_SELECT_FORMATCODE);
-				//}
+				}
 			}
 		}		
-		//TODO 会社の月別実績の修正フォーマット
 		//対応するドメインモデル「会社の月別実績の修正フォーマット」を取得する
 		//Contains list of sheet (月別実績の修正のシート) and list of display item in sheet (表示する項目)
+		List<MonPfmCorrectionFormatDto> lstMPformats =  monPfmCorrectionFormatFinder.getMonPfmCorrectionFormat(cId, formatCodes);
+		if(lstMPformats.isEmpty()){			
+			//対応するドメインモデル「月別実績のグリッドの列幅」を取得する			
+			lstMPformats = getColumnWidtgByMonthly(cId);
+		}
+		//アルゴリズム「複数フォーマットの場合のフォーマットを生成する」を実行する
+		//補足資料A_7参照
+		//Merge sheet
+		Set<Integer> sheetNos = new HashSet<>();
+		lstMPformats.forEach(format ->{
+			sheetNos.addAll(format.getDisplayItem()
+					.getListSheetCorrectedMonthly()
+					.stream()
+					.map(sheet -> sheet.getSheetNo())
+					.collect(Collectors.toSet()));
+		});
+		//Merge Attendance Item in sheet
+		for (Integer sheet : sheetNos) {
+			PSheet pSheet = new PSheet(sheet.toString(), Strings.EMPTY, null);
+			Set<PAttendanceItem> displayItems = new HashSet<>();
+			lstMPformats.forEach(format ->{
+				SheetCorrectedMonthlyDto sheetDto = format.getDisplayItem()
+						.getListSheetCorrectedMonthly()
+						.stream()
+						.filter(item -> item.getSheetNo() == sheet)
+						.findAny()
+						.orElse(null);
+				if(sheetDto != null){
+					pSheet.setSheetName(sheetDto.getSheetName());
+					displayItems.addAll(sheetDto.getListDisplayTimeItem()
+							.stream()
+							.map(x -> 
+								new PAttendanceItem(x.getItemDaily(), x.getDisplayOrder(), x.getColumnWidthTable())
+							).collect(Collectors.toSet()));
+				}
+			});
+			pSheet.setDisplayItems(displayItems);
+			resultSheets.add(pSheet);
+		}
+		//表示する項目一覧
+		param.setSheets(resultSheets);
 		
-		
-		dispItem.setLstFormat(lstFormat);
-		dispItem.setLstSheet(lstSheet);
-		
-		return dispItem;
 	}
 	
 	/**
@@ -190,43 +239,91 @@ public class MonthlyPerformanceDisplay {
 	 * (Lấy các item hiển thị ứng với loại đi làm của employee)
 	 * @return
 	 */
-	private DisplayItem getDisplayItemBussiness(
-			List<String> lstEmployeeId,
-			DateRange dateRange, 
-			List<String> formatCodes, 
-			CorrectionOfMonthlyPerformance correctionOfDaily){
+	private void getDisplayItemBussiness(String cId, List<String> lstEmployeeId, DateRange dateRange, MonthlyPerformanceParam param) {
+		// 表示する項目一覧
+		List<PSheet> resultSheets = new ArrayList<>();
 		DisplayItem dispItem = new DisplayItem();
 		if (CollectionUtil.isEmpty(lstEmployeeId)) {
-			return dispItem;
-		}		
-		List<FormatMPCorrectionDto> lstFormat = new ArrayList<FormatMPCorrectionDto>();
-		List<MPSheetDto> lstSheet = new ArrayList<MPSheetDto>();
-		List<Integer> lstAtdItem = new ArrayList<>();
-		List<Integer> lstAtdItemUnique = new ArrayList<>();
-		
-		//特定の社員が所属する勤務種別をすべて取得する Lấy tất cả các loại đi làm của employee chỉ định
+			return ;
+		}
+
+		// 特定の社員が所属する勤務種別をすべて取得する Lấy tất cả các loại đi làm của employee chỉ định
 		List<String> lstBusinessTypeCode = this.repo.getListBusinessType(lstEmployeeId, dateRange);
-		List<MPBusinessTypeControl> lstMPBusinessTypeControl = new ArrayList<>();
 		// Create header & sheet
 		//取得したImported「（就業機能）勤務種別」の件数をチェックする
 		if (lstBusinessTypeCode.size() == 0) {
 			//エラーメッセージ（#）を表示する
 			//TODO missing message ID
 			throw new BusinessException("エラーメッセージ（#）を表示する");
-		}else if(lstBusinessTypeCode.size() == 1) {
-			//対応するドメインモデル「勤務種別の月別実績の修正のフォーマット」を取得する
-			//TODO Lấy domain 「勤務種別の月別実績の修正のフォーマット」
-		}else if(lstBusinessTypeCode.size() >= 2) {
-			//TODO 対応するドメインモデル「勤務種別の月別実績の修正のフォーマット」を取得する
 		}
-		
-		
+		//対応するドメインモデル「勤務種別の月別実績の修正のフォーマット」を取得する
+		List<MonthlyRecordWorkTypeDto> monthlyRecordWorkTypeDtos = monthlyRecordWorkTypeFinder.getMonthlyRecordWorkTypeByListCode(cId, lstBusinessTypeCode);
 		//取得した「勤務種別の月別実績の修正のフォーマット」に表示するすべての項目の列幅があるかチェックする
-		//Check xem tất cả item có hiển thị trong 「勤務種別の月別実績の修正のフォーマット」
-		
-		dispItem.setLstFormat(lstFormat);
-		dispItem.setLstSheet(lstSheet);
-		return dispItem;
+		if(monthlyRecordWorkTypeDtos.isEmpty()){
+			//対応するドメインモデル「月別実績のグリッドの列幅」を取得する			
+			monthlyRecordWorkTypeDtos = getColumnWidtgByMonthly(cId).stream()
+					.map(x -> new MonthlyRecordWorkTypeDto(x.getCompanyID(), Strings.EMPTY, x.getDisplayItem()))
+					.collect(Collectors.toList());
+		}
+		//アルゴリズム「複数フォーマットの場合のフォーマットを生成する」を実行する
+		//補足資料A_7参照
+		//Merge sheet
+		Set<Integer> sheetNos = new HashSet<>();
+		monthlyRecordWorkTypeDtos.forEach(format ->{
+			sheetNos.addAll(format.getDisplayItem()
+					.getListSheetCorrectedMonthly()
+					.stream()
+					.map(sheet -> sheet.getSheetNo())
+					.collect(Collectors.toSet()));
+		});
+		//Merge Attendance Item in sheet
+		for (Integer sheet : sheetNos) {
+			PSheet pSheet = new PSheet(sheet.toString(), Strings.EMPTY, null);
+			Set<PAttendanceItem> displayItems = new HashSet<>();
+			monthlyRecordWorkTypeDtos.forEach(format ->{
+				SheetCorrectedMonthlyDto sheetDto = format.getDisplayItem()
+						.getListSheetCorrectedMonthly()
+						.stream()
+						.filter(item -> item.getSheetNo() == sheet)
+						.findAny()
+						.orElse(null);
+				if(sheetDto != null){
+					pSheet.setSheetName(sheetDto.getSheetName());
+					displayItems.addAll(sheetDto.getListDisplayTimeItem()
+							.stream()
+							.map(x -> 
+								new PAttendanceItem(x.getItemDaily(), x.getDisplayOrder(), x.getColumnWidthTable())
+							).collect(Collectors.toSet()));
+				}
+			});
+			pSheet.setDisplayItems(displayItems);
+			resultSheets.add(pSheet);
+		}
+		// 表示する項目一覧
+		param.setSheets(resultSheets);
+	}
+	/**
+	 * 対応するドメインモデル「月別実績のグリッドの列幅」を取得する
+	 * @param cId
+	 * @return 表示する項目一覧
+	 */
+	private List<MonPfmCorrectionFormatDto> getColumnWidtgByMonthly(String cId){
+		List<MonPfmCorrectionFormatDto> lstMPformats = new ArrayList<>();
+		Optional<ColumnWidtgByMonthly> columnWidtgByMonthly = columnWidtgByMonthlyRepository.getColumnWidtgByMonthly(cId);
+		if(columnWidtgByMonthly.isPresent()){
+			List<DisplayTimeItemDto> dispItems = columnWidtgByMonthly.get()
+											.getListColumnWidthOfDisplayItem()
+											.stream()
+											.map(item -> {
+												return new DisplayTimeItemDto(0, item.getAttdanceItemID(), item.getColumnWidthTable());
+											})
+											.collect(Collectors.toList());
+			SheetCorrectedMonthlyDto sheet = new SheetCorrectedMonthlyDto(0, Strings.EMPTY, dispItems);
+			MonthlyActualResultsDto resultDto = new MonthlyActualResultsDto(Arrays.asList(sheet));
+			MonPfmCorrectionFormatDto formatDto = new MonPfmCorrectionFormatDto(columnWidtgByMonthly.get().getCompanyID(), Strings.EMPTY, Strings.EMPTY, resultDto);
+			lstMPformats = Arrays.asList(formatDto);
+		}
+		return lstMPformats;
 	}
 	/**
 	 * ロック状態をチェックする

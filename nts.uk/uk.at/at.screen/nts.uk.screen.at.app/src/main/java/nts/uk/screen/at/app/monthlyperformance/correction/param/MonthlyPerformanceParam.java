@@ -18,7 +18,7 @@ public class MonthlyPerformanceParam {
 	/**
 	 * 表示する項目一覧
 	 */
-	private List<String> dispItems;
+	private List<PSheet> sheets;
 	/**
 	 * 月別実績の修正
 	 */

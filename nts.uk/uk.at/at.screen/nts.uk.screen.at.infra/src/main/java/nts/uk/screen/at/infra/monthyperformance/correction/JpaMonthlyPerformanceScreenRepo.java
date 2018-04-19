@@ -21,7 +21,7 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 	private final static String SEL_EMPLOYEE;
 	private final static String SEL_PERSON = "SELECT p FROM BpsmtPerson p WHERE p.bpsmtPersonPk.pId IN :lstPersonId";
 	private final static String SEL_WORKPLACE;
-	
+	private final static String SEL_BUSINESS_TYPE;
 	static{
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT DISTINCT s FROM BsymtEmployeeDataMngInfo s ");
@@ -54,6 +54,16 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 		// builderString.append("AND w.bsymtWorkplaceHist.strD <= :baseDate ");
 		// builderString.append("AND w.bsymtWorkplaceHist.endD >= :baseDate");
 		SEL_WORKPLACE = builderString.toString();
+		
+		builderString.append("SELECT DISTINCT b.businessTypeCode");
+		builderString.append(" FROM KrcmtBusinessTypeOfEmployee b");
+		builderString.append(" JOIN KrcmtBusinessTypeOfHistory h");
+		builderString.append(" ON b.krcmtBusinessTypeOfEmployeePK.historyId = h.KrcmtBusinessTypeOfHistoryPK.historyId");
+		builderString.append(" WHERE b.sId IN :lstSID");
+		builderString.append(" AND h.startDate <= :endYmd");
+		builderString.append(" AND h.endDate >= :startYmd");
+		builderString.append(" ORDER BY b.businessTypeCode ASC");
+		SEL_BUSINESS_TYPE = builderString.toString();
 	}	
 	
 	@Override
@@ -97,5 +107,10 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 					"", false);
 		}).collect(Collectors.toList());
 	}
-
+	@Override
+	public List<String> getListBusinessType(List<String> lstEmployee, DateRange dateRange) {
+		return this.queryProxy().query(SEL_BUSINESS_TYPE, String.class).setParameter("lstSID", lstEmployee)
+				.setParameter("startYmd", dateRange.getStartDate()).setParameter("endYmd", dateRange.getEndDate())
+				.getList();
+	}
 }

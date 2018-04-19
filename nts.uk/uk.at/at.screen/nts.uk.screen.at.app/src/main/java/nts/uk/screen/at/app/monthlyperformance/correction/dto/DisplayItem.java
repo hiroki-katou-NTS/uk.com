@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import lombok.Data;
+import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.MonPfmCorrectionFormatDto;
 
 @Data
 public class DisplayItem {
@@ -23,6 +24,9 @@ public class DisplayItem {
 	private List<MPBusinessTypeControl> lstBusinessTypeCode;
 	
 	private int bussiness;
+	
+	/** 表示する項目一覧 */
+	private List<MonPfmCorrectionFormatDto> lstMPformats;
 	
 	public DisplayItem(){
 		this.formatCode = new HashSet<>();

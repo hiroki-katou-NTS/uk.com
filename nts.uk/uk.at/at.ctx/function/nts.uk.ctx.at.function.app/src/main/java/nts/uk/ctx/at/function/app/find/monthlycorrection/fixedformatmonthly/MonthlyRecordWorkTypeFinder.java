@@ -1,10 +1,8 @@
 package nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -38,5 +36,11 @@ public class MonthlyRecordWorkTypeFinder {
 				
 	}
 	
+	public List<MonthlyRecordWorkTypeDto> getMonthlyRecordWorkTypeByListCode(String companyID, List<String> businessTypeCodes){
+		return monthlyRecordWorkTypeRepo.getMonthlyRecordWorkTypeByListCode(companyID, businessTypeCodes)
+				.stream()
+				.map(item -> MonthlyRecordWorkTypeDto.fromDomain(item))
+				.collect(Collectors.toList());
+	}
 	
 }

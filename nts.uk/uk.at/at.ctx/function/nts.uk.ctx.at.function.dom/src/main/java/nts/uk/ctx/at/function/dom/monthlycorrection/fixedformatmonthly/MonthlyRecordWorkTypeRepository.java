@@ -8,6 +8,8 @@ public interface MonthlyRecordWorkTypeRepository {
 	
 	Optional<MonthlyRecordWorkType> getMonthlyRecordWorkTypeByCode(String companyID,String businessTypeCode);
 	
+	List<MonthlyRecordWorkType> getMonthlyRecordWorkTypeByListCode(String companyID,List<String> businessTypeCodes);
+	
 	void addMonthlyRecordWorkType(MonthlyRecordWorkType monthlyRecordWorkType);
 	
 	void updateMonthlyRecordWorkType(MonthlyRecordWorkType monthlyRecordWorkType);
