@@ -51,7 +51,7 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 			if(!errorItem.getUseAtr()) continue;
 			
 			//システム固定
-			if(errorItem.getUseAtr()) {
+			if(errorItem.getFixedAtr()) {
 				addItemList.addAll(systemErrorCheck(integrationOfDaily,errorItem,attendanceItemConverter));
 			}
 			//ユーザ設定
