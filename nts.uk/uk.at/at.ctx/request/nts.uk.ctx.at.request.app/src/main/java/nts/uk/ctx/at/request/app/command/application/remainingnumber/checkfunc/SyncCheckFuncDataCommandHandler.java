@@ -49,6 +49,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 
 	@Inject
 	private IVactionHistoryRulesService iVactionHistoryRulesService;
+	
 	@Inject
 	private VacationHistoryRepository vacationHistoryRepository;
 
