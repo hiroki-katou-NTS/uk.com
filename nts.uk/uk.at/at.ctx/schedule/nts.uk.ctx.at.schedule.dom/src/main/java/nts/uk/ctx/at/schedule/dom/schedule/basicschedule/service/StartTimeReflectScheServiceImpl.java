@@ -35,6 +35,9 @@ public class StartTimeReflectScheServiceImpl implements StartEndTimeReflectScheS
 		
 		BasicSchedule basicScheByDate = optBasicScheByDate.get();
 		List<WorkScheduleTimeZone> workScheduleTimeZones = basicScheByDate.getWorkScheduleTimeZones();
+		if(workScheduleTimeZones.isEmpty()) {
+			return;
+		}
 		List<WorkScheduleTimeZone> lstTimeZoneData = workScheduleTimeZones.stream()
 				.filter(x -> x.getScheduleCnt() == timeDto.getFrameNumber())
 				.collect(Collectors.toList());
