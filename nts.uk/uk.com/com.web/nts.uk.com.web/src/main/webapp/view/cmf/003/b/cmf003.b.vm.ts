@@ -8,8 +8,11 @@ module nts.uk.com.view.cmf003.b.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
 
     export class ScreenModel {
+        //input
         password: KnockoutObservable<string> = ko.observable('');
         confirmPassword: KnockoutObservable<string> = ko.observable('');
+        explanation: KnockoutObservable<string> = ko.observable('');
+        dataSaveSetName: KnockoutObservable<string> = ko.observable('');
         
         //wizard
         stepList: Array<NtsWizardStep> = [];
@@ -63,7 +66,7 @@ module nts.uk.com.view.cmf003.b.viewmodel {
  
             this.columns = ko.observableArray([
                 { headerText: '', key: 'code', width: 100, hidden: true },
-                { headerText: getText('CMF003_30'), key: 'name', width: 350 },
+                { headerText: getText('CMF003_30'), key: 'name', width: 320 },
                 { headerText: getText('CMF003_31'), key: 'period', width: 80 },
                 { headerText: getText('CMF003_32'), key: 'range', width: 80 }
             ]);
