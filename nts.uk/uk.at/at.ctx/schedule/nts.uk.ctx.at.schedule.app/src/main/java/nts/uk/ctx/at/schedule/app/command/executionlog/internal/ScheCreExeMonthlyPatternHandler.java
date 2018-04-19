@@ -312,13 +312,14 @@ public class ScheCreExeMonthlyPatternHandler {
 		boolean valueIsReWorkerTypeChangePerson = this.isReWorkerTypeChangePerson(workingConditionItem.getEmployeeId(),
 				command.getToDate(),
 				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getRecreateWorkTypeChange(),
-				basicSche.getWorkScheduleMaster().getWorkTypeCd());
+				basicSche.getWorkScheduleMaster().getBusinessTypeCd());
 		if (!valueIsReWorkerTypeChangePerson) {
 			return false;
 		}
 
 		// 手修正を保護するか判定する
-		boolean valueIsProtectHandCorrect = this.isProtectHandCorrect(workingConditionItem.getEmployeeId(), command.getToDate(),
+		boolean valueIsProtectHandCorrect = this.isProtectHandCorrect(workingConditionItem.getEmployeeId(),
+				command.getToDate(),
 				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getProtectHandCorrection());
 		if (!valueIsProtectHandCorrect) {
 			return false;
