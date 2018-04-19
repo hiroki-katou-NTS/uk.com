@@ -67,7 +67,7 @@ module nts.uk.at.view.kdm002.b {
                 self.currentCode = ko.observable(dataDump);
                 self.imErrorLog =  ko.observableArray([]);
                 self.columns = ko.observableArray([
-                    { headerText: '会社コード', key: 'employeeCode', width: 100 },
+                    { headerText: '会社コード', key: 'employeeCode', width: 140 },
                     { headerText: '会社名', key: 'employeeName', width: 150 },
                     { headerText: 'エラー内容', key: 'errorMessage', width: 300 }
                 ]);
