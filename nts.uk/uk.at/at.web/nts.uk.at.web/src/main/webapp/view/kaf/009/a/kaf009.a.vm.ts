@@ -35,9 +35,9 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         selectedBack: any = ko.observable(1);
         selectedGo: any = ko.observable(1);
         //Back Home 2
-        selectedBack2: any = ko.observable(1);
+        selectedBack2: any = ko.observable(null);
         //Go Work 2
-        selectedGo2: any = ko.observable(1);
+        selectedGo2: any = ko.observable(null);
         //TIME LINE 2
         timeStart2: KnockoutObservable<number> = ko.observable(null);
         timeEnd2: KnockoutObservable<number> = ko.observable(null);
@@ -66,6 +66,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         selectedReason: KnockoutObservable<string> = ko.observable('');
         displayTypicalReason: KnockoutObservable<boolean> = ko.observable(false);
         enableTypicalReason: KnockoutObservable<boolean> = ko.observable(false); 
+        requireTypicalReason: KnockoutObservable<boolean> = ko.observable(false);
         //MultilineEditor
         requiredReason: KnockoutObservable<boolean> = ko.observable(false);
         multilContent: KnockoutObservable<string> = ko.observable('');
@@ -92,6 +93,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         checkboxDisplay: KnockoutObservable<boolean> = ko.observable(false);
         checkboxEnable: KnockoutObservable<boolean> = ko.observable(false);
         workChangeBtnDisplay: KnockoutObservable<boolean> = ko.observable(false);
+        workLabelRequired: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
             //KAF000_A
@@ -148,8 +150,15 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     self.enableTypicalReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1 ? true : false);
                     self.displayReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false);
                     self.enableReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false);
+                    self.requireTypicalReason(
+                        (settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1)&&
+                        (settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1)
+                    );
                     //申請制限設定.申請理由が必須
-                    self.requiredReason(settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true : false);
+                    self.requiredReason(
+                        (settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1)&&
+                        (settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1)
+                    );
                     if (settingData.appCommonSettingDto.appTypeDiscreteSettingDtos.length > 0) {
                         //登録時にメールを送信する Visible
                         self.enableSendMail(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? false : true);
@@ -183,15 +192,16 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                             self.isWorkChange(false);
                             self.workChangeAtr(false);
                             self.checkboxDisplay(false);
-                            self.workChangeBtnDisplay(true);
+                            self.workChangeBtnDisplay(false);
                             self.checkboxEnable(false);
                         } else {//条件：直行直帰申請共通設定.勤務の変更　＝　変更する
                             self.workChangeAtr(true);
                             self.isWorkChange(true);
                             self.workState(false);
                             self.checkboxDisplay(false);
-                            self.workChangeBtnDisplay(false);
+                            self.workChangeBtnDisplay(true);
                             self.checkboxEnable(false);
+                            self.workLabelRequired(self.workChangeAtr());
                         }
 
                     }
@@ -249,9 +259,22 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          */
         insert() {
             let self = this;
-            //直行直帰登録前チェック (Kiểm tra trước khi đăng ký)
-            //直行直帰するチェック
-            $(".ntsControl , .nts-input").trigger("validate");
+//            if(self.requireTypicalReason()&&self.requiredReason()){
+//                if(nts.uk.util.isNullOrEmpty($("#combo-box").val())&&nts.uk.util.isNullOrEmpty($('#inpReasonTextarea').val())){
+//                    $("#combo-box").ntsError('set', '定型理由を入力してください');   
+//                    $("#inpReasonTextarea").ntsError('set', '申請理由を入力してください');               
+//                }        
+//            }
+//            else if(self.requireTypicalReason()){
+//                if(nts.uk.util.isNullOrEmpty($("#combo-box").val())){
+//                    $("#combo-box").ntsError('set', '定型理由を入力してください');    
+//                }    
+//            }
+//            else if(self.requiredReason()){
+//                if(nts.uk.util.isNullOrEmpty($("#inpReasonTextarea").val())){
+//                    $("#inpReasonTextarea").ntsError('set', '申請理由を入力してください');    
+//                }      
+//            }
             if (!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(self.getCommand().appCommand.appReasonID) ? self.getCommand().appCommand.appReasonID + "\n" + self.multilContent() : self.multilContent(), "#inpReasonTextarea") || nts.uk.ui.errors.hasError()) {
                 return;
             }
@@ -424,12 +447,12 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             goBackCommand.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
             goBackCommand.goWorkAtr1 = self.selectedGo();
             goBackCommand.backHomeAtr1 = self.selectedBack();
-            goBackCommand.workTimeStart1 = nts.uk.util.isNullOrEmpty(self.timeStart1()) ? -1 : self.timeStart1();
-            goBackCommand.workTimeEnd1 = nts.uk.util.isNullOrEmpty(self.timeEnd1()) ? -1 : self.timeEnd1();
+            goBackCommand.workTimeStart1 = self.timeStart1();
+            goBackCommand.workTimeEnd1 = self.timeEnd1();
             goBackCommand.goWorkAtr2 = self.selectedGo2();
             goBackCommand.backHomeAtr2 = self.selectedBack2();
-            goBackCommand.workTimeStart2 = nts.uk.util.isNullOrEmpty(self.timeStart2()) ? -1 : self.timeStart2();
-            goBackCommand.workTimeEnd2 = nts.uk.util.isNullOrEmpty(self.timeEnd2()) ? -1 : self.timeEnd2();
+            goBackCommand.workTimeStart2 = self.timeStart2();
+            goBackCommand.workTimeEnd2 = self.timeEnd2();
             goBackCommand.workLocationCD1 = self.workLocationCD();
             goBackCommand.workLocationCD2 = self.workLocationCD2();
             let txtReasonTmp = self.selectedReason();

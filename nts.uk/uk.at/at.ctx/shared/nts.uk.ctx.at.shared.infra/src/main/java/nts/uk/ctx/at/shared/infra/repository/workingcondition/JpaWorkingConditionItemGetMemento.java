@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
+import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeek;
@@ -48,8 +49,8 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	 * getScheduleManagementAtr()
 	 */
 	@Override
-	public NotUseAtr getScheduleManagementAtr() {
-		return NotUseAtr.valueOf(this.entity.getScheManagementAtr());
+	public ManageAtr getScheduleManagementAtr() {
+		return ManageAtr.valueOf(this.entity.getScheManagementAtr());
 	}
 
 	/*

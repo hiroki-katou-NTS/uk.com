@@ -1,5 +1,7 @@
 .contents-area{
 	margin:10px;
+	height : 540px;
+	width : 650px;
 }
 .kdm002_2{
 	margin-left: 15px;
@@ -8,7 +10,7 @@
 	background-color: #BFEA60;
 }
 .result{
-	margin-bottom: 15px;
+	margin-bottom: 10px;
 }
 
 .table_result {

@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly;
 
+import java.util.Optional;
+
+import org.apache.logging.log4j.util.Strings;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -27,15 +31,15 @@ public class GoBackDirectly extends AggregateRoot {
 	/**
 	 * 勤務種類
 	 */
-	private WorkTypeCode workTypeCD;
+	private Optional<WorkTypeCode> workTypeCD;
 	/**
 	 * 就業時間帯
 	 */
-	private WorkTimeCode siftCD;
+	private Optional<WorkTimeCode> siftCD;
 	/**
 	 * 勤務を変更する
 	 */
-	private UseAtr workChangeAtr;
+	private Optional<UseAtr> workChangeAtr;
 	/**
 	 * 勤務直行1
 	 */
@@ -47,59 +51,59 @@ public class GoBackDirectly extends AggregateRoot {
 	/**
 	 * 勤務時間開始1
 	 */
-	private WorkTimeGoBack workTimeStart1;
+	private Optional<WorkTimeGoBack> workTimeStart1;
 	/**
 	 * 勤務時間終了1
 	 */
-	private WorkTimeGoBack workTimeEnd1;
+	private Optional<WorkTimeGoBack> workTimeEnd1;
 	/**
 	 * 勤務場所選択1
 	 */
-	private String workLocationCD1;
+	private Optional<String> workLocationCD1;
 	/**
 	 * 勤務直行2
 	 */
-	private UseAtr goWorkAtr2;
+	private Optional<UseAtr> goWorkAtr2;
 	/**
 	 * 勤務直帰2
 	 */
-	private UseAtr backHomeAtr2;
+	private Optional<UseAtr> backHomeAtr2;
 	/**
 	 * 勤務時間開始2
 	 */
-	private WorkTimeGoBack workTimeStart2;
+	private Optional<WorkTimeGoBack> workTimeStart2;
 	/**
 	 * 勤務時間終了2
 	 */
-	private WorkTimeGoBack workTimeEnd2;
+	private Optional<WorkTimeGoBack> workTimeEnd2;
 	/**
 	 * 勤務場所選択２
 	 */
-	private String workLocationCD2;
+	private Optional<String> workLocationCD2;
 
-	public GoBackDirectly(String companyID, String appID, String workTypeCD, String siftCD, int workChangeAtr,
-			int goWorkAtr1, int backHomeAtr1, Integer workTimeStart1, Integer workTimeEnd1, String workLocationCD1,
-			int goWorkAtr2, int backHomeAtr2, Integer workTimeStart2, Integer workTimeEnd2, String workLocationCD2) {
+	public GoBackDirectly(String companyID, String appID, String workTypeCD, String siftCD, Integer workChangeAtr,
+			Integer goWorkAtr1, Integer backHomeAtr1, Integer workTimeStart1, Integer workTimeEnd1, String workLocationCD1,
+			Integer goWorkAtr2, Integer backHomeAtr2, Integer workTimeStart2, Integer workTimeEnd2, String workLocationCD2) {
 		this.companyID = companyID;
 		this.appID = appID;
-		this.workTypeCD = new WorkTypeCode(workTypeCD);
-		this.siftCD = new WorkTimeCode(siftCD);
-		this.workChangeAtr = EnumAdaptor.valueOf(workChangeAtr, UseAtr.class);
+		this.workTypeCD = Optional.ofNullable(Strings.isBlank(workTypeCD) ? null : new WorkTypeCode(workTypeCD));
+		this.siftCD = Optional.ofNullable(Strings.isBlank(siftCD) ? null : new WorkTimeCode(siftCD));
+		this.workChangeAtr = Optional.ofNullable(workChangeAtr == null ? null : EnumAdaptor.valueOf(workChangeAtr, UseAtr.class));
 		this.goWorkAtr1 = EnumAdaptor.valueOf(goWorkAtr1, UseAtr.class);
 		this.backHomeAtr1 = EnumAdaptor.valueOf(backHomeAtr1, UseAtr.class);
-		this.workTimeStart1 = new WorkTimeGoBack(workTimeStart1);
-		this.workTimeEnd1 = new WorkTimeGoBack(workTimeEnd1);
-		this.workLocationCD1 = workLocationCD1;
-		this.goWorkAtr2 = EnumAdaptor.valueOf(goWorkAtr2, UseAtr.class);
-		this.backHomeAtr2 = EnumAdaptor.valueOf(backHomeAtr2, UseAtr.class);
-		this.workTimeStart2 = new WorkTimeGoBack(workTimeStart2);
-		this.workTimeEnd2 = new WorkTimeGoBack(workTimeEnd2);
-		this.workLocationCD2 = workLocationCD2;
+		this.workTimeStart1 = Optional.ofNullable(workTimeStart1 == null ? null : new WorkTimeGoBack(workTimeStart1));
+		this.workTimeEnd1 = Optional.ofNullable(workTimeEnd1 == null ? null : new WorkTimeGoBack(workTimeEnd1));
+		this.workLocationCD1 = Optional.ofNullable(Strings.isBlank(workLocationCD1) ? null : workLocationCD1);
+		this.goWorkAtr2 = Optional.ofNullable(goWorkAtr2 == null ? null : EnumAdaptor.valueOf(goWorkAtr2, UseAtr.class));
+		this.backHomeAtr2 = Optional.ofNullable(backHomeAtr2 == null ? null : EnumAdaptor.valueOf(backHomeAtr2, UseAtr.class));
+		this.workTimeStart2 = Optional.ofNullable(workTimeStart2 == null ? null : new WorkTimeGoBack(workTimeStart2));
+		this.workTimeEnd2 = Optional.ofNullable(workTimeEnd2 == null ? null : new WorkTimeGoBack(workTimeEnd2));
+		this.workLocationCD2 = Optional.ofNullable(Strings.isBlank(workLocationCD2) ? null : workLocationCD2);
 	}
 
 	public GoBackDirectly createFromJavaType(String companyID, String appID, String workTypeCD, String siftCD,
-			int workChangeAtr, int goWorkAtr1, int backHomeAtr1, Integer workTimeStart1, Integer workTimeEnd1,
-			String workLocationCD1, int goWorkAtr2, int backHomeAtr2, Integer workTimeStart2, Integer workTimeEnd2,
+			Integer workChangeAtr, Integer goWorkAtr1, Integer backHomeAtr1, Integer workTimeStart1, Integer workTimeEnd1,
+			String workLocationCD1, Integer goWorkAtr2, Integer backHomeAtr2, Integer workTimeStart2, Integer workTimeEnd2,
 			String workLocationCD2) {
 		return new GoBackDirectly(companyID, appID, workTypeCD, siftCD, workChangeAtr, goWorkAtr1, backHomeAtr1,
 				workTimeStart1, workTimeEnd1, workLocationCD1, goWorkAtr2, backHomeAtr2, workTimeStart2, workTimeEnd2,

@@ -574,8 +574,8 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		AppRootStateConfirmOutput appRootStateConfirmOutput = generateApprovalRootStateService.getApprovalRootState(
 				companyID, 
 				employeeID, 
-				EnumAdaptor.valueOf(confirmAtr, ConfirmationRootType.class), 
-				EnumAdaptor.valueOf(appType, ApplicationType.class), 
+				EnumAdaptor.valueOf(confirmAtr-1, ConfirmationRootType.class), 
+				appType == null ? null : EnumAdaptor.valueOf(appType, ApplicationType.class), 
 				date);
 		return new AppRootStateConfirmExport(
 				appRootStateConfirmOutput.getIsError(), 

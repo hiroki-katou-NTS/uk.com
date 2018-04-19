@@ -21,15 +21,15 @@ public class InsertGoBackDirectlyCommand {
 	/**
 	 * 勤務を変更する
 	 */
-	int workChangeAtr;
+	Integer workChangeAtr;
 	/**
 	 * 勤務直行1
 	 */
-	int goWorkAtr1;
+	Integer goWorkAtr1;
 	/**
 	 * 勤務直帰1
 	 */
-	int backHomeAtr1;
+	Integer backHomeAtr1;
 	/**
 	 * 勤務時間開始1
 	 */
@@ -45,11 +45,11 @@ public class InsertGoBackDirectlyCommand {
 	/**
 	 * 勤務直行2
 	 */
-	int goWorkAtr2;
+	Integer goWorkAtr2;
 	/**
 	 * 勤務直帰2
 	 */
-	int backHomeAtr2;
+	Integer backHomeAtr2;
 	/**
 	 * 勤務時間開始2
 	 */
