@@ -45,15 +45,15 @@ public class PpemtSelectionItem extends UkJpaEntity implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "SELECTION_CD_LENGTH")
-	public int selectionCd;
+	public int codeLength;
 
 	@Basic(optional = false)
 	@Column(name = "SELECTION_NAME_LENGTH")
-	public int selectionName;
+	public int nameLength;
 
 	@Basic(optional = false)
 	@Column(name = "SELECTION_EXT_CD_LENGTH")
-	public int selectionExtCd;
+	public int extCodeLength;
 
 	@Basic(optional = false)
 	@Column(name = "CHARACTER_TYPE_ATR")
