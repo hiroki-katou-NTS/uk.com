@@ -439,7 +439,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					//条件 bo sung: phase truoc do phai duoc approval thi moi hien thi don
 					int phaseOrderCur = status.getPhaseOrder().intValue();
 					PhaseStatus statusPhase = this.convertStatusPhase(appFull.getApplication().getAppID(), appFull.getLstPhaseState());
-					if(phaseOrderCur == 1 || new Integer(1).equals(statusPhase.getPhaseAtr().get(phaseOrderCur -2))){//phase truoc do da approve
+					if(phaseOrderCur == 1 || this.checkApprove(statusPhase, phaseOrderCur)){//phase truoc do da approve
 						lstAppFilter3.add(appFull.getApplication());
 						lstAppFullFilter3.add(appFull);
 						if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
@@ -565,10 +565,25 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				lstAppAbsence, lstAppCompltLeaveSync, timeOutput.getAppStatus(),timeOutput.getLstAppFull(), timeOutput.getLstAppColor(), 
 				lstFrameUn, lstPhaseStatus, timeOutput.getLstAppGroup());
 	}
-//	private boolean findAppPre(String preAppID){
-//		return true;
-//	}
-	
+	/**
+	 * check phase cur is display??
+	 * @param statusPhase
+	 * @param phaseOrderCur
+	 * @return
+	 */
+	private boolean checkApprove(PhaseStatus statusPhase, int phaseOrderCur){
+		List<Integer> phaseAtr = statusPhase.getPhaseAtr();
+		Integer tmp = phaseOrderCur-2;
+		Integer stt = null;
+		if(tmp < 0){
+			return true;
+		}
+		do {
+			stt = phaseAtr.get(tmp);
+			tmp -= 1;
+        } while (tmp >= 0 && stt == null);
+		return stt == null ? false :  stt == 1 ? true : false;
+	}
 	/**
 	 * lam o ui
 	 * 4 - 申請一覧リスト取得承認件数
@@ -1025,23 +1040,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				}else{
 					minDate = start.afterOrEquals(minDate) ? minDate : start;
 				}
-//				lstDate.add(start);
 			}
 		}
-//		List<GeneralDate> lstFilter = lstDate.sort((x, y) -> x.equals(y));
-//		Closure histMin = this.findHistMin(lstClosureFil);
-//		CurrentMonth month = histMin.getClosureMonth();
-//		GeneralDate start = null;
-		//最小日付に＋１日－１ヵ月して開始日付とする
-//		if(histMin.getClosureHistories().get(0).getClosureDate().getLastDayOfMonth().booleanValue()==true){//締めが末締めの場合
-//			GeneralDate tmp = GeneralDate.ymd(month.getProcessingYm().year(), month.getProcessingYm().month() + 1, 1);
-//			start = tmp.addMonths(-1);
-//		}else{//末締めではない場合
-//			GeneralDate tmp = GeneralDate.
-//					ymd(month.getProcessingYm().year(), month.getProcessingYm().month(), histMin.getClosureHistories().get(0).getClosureDate().getClosureDay().v());
-//			GeneralDate date = tmp.addDays(1);
-//			start = date.addMonths(-1);
-//		}
 		//開始日付の4か月後を終了日付として取得
 		GeneralDate end = minDate.addMonths(4);
 		return new DatePeriod(minDate,end);
@@ -1517,23 +1517,23 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		String phaseStatus = "";
 		List<Integer> lstPhaseAtr = new ArrayList<>();
 		for (int i = 1; i<= 5; i++) {
-//			String phaseI = "";
-//			Integer status = this.findPhaseStatus(lstPhaseState, i);
-//			lstPhaseAtr.add(status);
-//			if(status != null){//phase exist
-//				phaseI = status == 1 ? "〇" : status == 2 ? "×" : "－";
-//			}
-//			phaseStatus += phaseI;
-			//Doi ung theo QA #90893
 			String phaseI = "";
 			Integer status = this.findPhaseStatus(lstPhaseState, i);
-			if(status == null){
-				continue;
-			}
-			//phase exist
 			lstPhaseAtr.add(status);
-			phaseI = status == 1 ? "〇" : status == 2 ? "×" : "－";
+			if(status != null){//phase exist
+				phaseI = status == 1 ? "〇" : status == 2 ? "×" : "－";
+			}
 			phaseStatus += phaseI;
+			//Doi ung theo QA #90893
+//			String phaseI = "";
+//			Integer status = this.findPhaseStatus(lstPhaseState, i);
+//			if(status == null){
+//				continue;
+//			}
+			//phase exist
+//			lstPhaseAtr.add(status);
+//			phaseI = status == 1 ? "〇" : status == 2 ? "×" : "－";
+//			phaseStatus += phaseI;
 		}
 		return new PhaseStatus(appId, phaseStatus, lstPhaseAtr);
 	}
