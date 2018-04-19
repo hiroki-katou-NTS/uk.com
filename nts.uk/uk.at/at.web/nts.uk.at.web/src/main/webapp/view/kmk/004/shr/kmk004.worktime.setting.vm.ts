@@ -68,11 +68,11 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                 
                 let userId = __viewContext.user.employeeId;
                 let year = nts.uk.sessionStorage.nativeStorage.getItem("nts-uk-" + userId + "-kmk004-worktime-year-selection");
-                if (year) {
+                if (!nts.uk.util.isNullOrEmpty(year) && "null" != year) {
                     self.worktimeSetting.normalSetting().year(parseInt(year));
                 }
                 self.worktimeSetting.normalSetting().year.subscribe((v) => {
-                    if ($('#worktimeYearPicker').ntsError('hasError')) {
+                    if (nts.uk.util.isNullOrEmpty(v) || $('#worktimeYearPicker').ntsError('hasError')) {
                         return;
                     } else {
                         nts.uk.sessionStorage.nativeStorage.setItem("nts-uk-" + userId + "-kmk004-worktime-year-selection", v);

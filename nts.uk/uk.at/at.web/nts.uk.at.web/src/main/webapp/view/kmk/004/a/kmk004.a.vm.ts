@@ -112,6 +112,11 @@ module nts.uk.at.view.kmk004.a {
              */
             public loadCompanySettingNewest(): JQueryPromise<void> {
                 let self = this;
+                let year = self.worktimeVM.worktimeSetting.normalSetting().year();
+                if(nts.uk.util.isNullOrEmpty(year)) {
+                    return;
+                }
+                
                 let dfd = $.Deferred<void>();
 //                if (self.isCompanySelected()) {
                     nts.uk.ui.block.invisible();
