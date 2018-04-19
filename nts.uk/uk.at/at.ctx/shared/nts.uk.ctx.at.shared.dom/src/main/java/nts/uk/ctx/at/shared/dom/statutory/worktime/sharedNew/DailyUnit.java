@@ -33,11 +33,4 @@ public class DailyUnit extends DomainObject {
 		this.dailyTime = dailyTime;
 	}
 
-<<<<<<< HEAD
-=======
-	public static DailyUnit zero() {
-		return new DailyUnit(new TimeOfDay(0));
-	}
-	
->>>>>>> 00781b2d29... 法定労働時間の取得処理に必要な処理を更新
 }
