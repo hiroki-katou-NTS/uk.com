@@ -8,9 +8,9 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="../share/model.js" />			
+			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf005.b.vm.js" />
-			<com:scriptfile path="cmf005.b.start.js" />			
+			<com:scriptfile path="cmf005.b.start.js" />
 			<com:stylefile path="cmf005.b.style.css" />
 		</ui:define>
 
@@ -50,7 +50,7 @@
 										</tr>
 										<tr>
 											<td><div id="btnOpenC">
-													<button id="C20_1" tabindex="2"
+													<button id="B3_5" tabindex="2"
 														class="vertical-align-center"
 														data-bind="click: openScreenC, enable: isEnableBtnOpenC()">#{i18n.getText('CMF005_17')}</button>
 												</div></td>
@@ -69,7 +69,7 @@
 												<!--B4_1-->
 												<div class="float_left display_block"
 													data-bind="ntsFormLabel: {required : true }">#{i18n.getText('CMF005_20')}</div>
-												<input tabindex="1" id="B4_2"
+												<input tabindex="4" id="B4_2"
 													data-bind="ntsTextEditor: {name: '#[CMF005_21]', value: deleteSetName, required: true, option: {width: '40px'}" />
 											</div>
 
@@ -102,23 +102,24 @@
 										</div> -->
 										<div class="flex">
 											<!--B6_1-->
-											<div data-bind="ntsFormLabel: {required : true }">#{i18n.getText('CMF005_27')}</div>
+											<div tabindex="5"
+												data-bind="ntsFormLabel: {required : true }">#{i18n.getText('CMF005_27')}</div>
 											<table>
 												<tr>
 													<td>
 														<div class="label">#{i18n.getText('CMF005_28')}</div>
 													</td>
-													<td><div id="daily" tabindex="1"
+													<td><div id="daily" tabindex="6"
 															data-bind="ntsDateRangePicker: { required: required, enable: enable, showNextPrevious: true, value: dateValue1, maxRange: 'oneMonth'}" /></td>
 												</tr>
 												<tr>
 													<td><div class="label">#{i18n.getText('CMF005_29')}</div></td>
-													<td><div id="mothly" tabindex="1"
+													<td><div id="mothly" tabindex="7"
 															data-bind="ntsDateRangePicker: { required: required, enable: enable, showNextPrevious: true, value: dateValue2, maxRange: 'oneMonth'}" /></td>
 												</tr>
 												<tr>
 													<td><div class="label">#{i18n.getText('CMF005_30')}</div></td>
-													<td><div id="yearly" tabindex="1"
+													<td><div id="yearly" tabindex="8"
 															data-bind="ntsDateRangePicker: { required: required, enable: enable, showNextPrevious: true, value: dateValue3, maxRange: 'oneYear',type: 'yearmonth'}" /></td>
 												</tr>
 											</table>
@@ -126,8 +127,8 @@
 										<div class="flex">
 											<!--B7_1-->
 											<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF005_34')}</div>
-											<div class="cf"
-														data-bind="ntsSwitchButton: {
+											<div class="cf" tabindex="9"
+												data-bind="ntsSwitchButton: {
 														options: saveBeforDeleteOption,
 														optionsValue: 'code',
 														optionsText: 'name',
@@ -137,16 +138,36 @@
 										<div class="flex">
 											<!--B8_1	-->
 											<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF005_37')}</div>
-											<div data-bind="ntsCheckBox: { checked: isExistCompressPasswordFlg, enable: isDisplayCompressPassword, text: '#{i18n.getText('CMF005_38')}' }"></div>
-											<input id="B8_2_2" data-bind="ntsTextEditor: {name: '#[CMF005_37]', value: passwordForCompressFile, required: isExistCompressPasswordFlg, option: {width: '40px'}" />
+											<table>
+												<tr>
+													<td><div tabindex="10"
+															data-bind="ntsCheckBox: { checked: isExistCompressPasswordFlg, enable: isDisplayCompressPassword, text: '#{i18n.getText('CMF005_38')}' }"></div></td>
+													<td><input id="B8_2_2" tabindex="11"
+														data-bind="ntsTextEditor: {name: '#[CMF005_37]', value: passwordForCompressFile, required: isExistCompressPasswordFlg, option: {width: '40px'}" /></td>
+												</tr>
+												<tr>
+													<td><div id="B8_3_1">#{i18n.getText('CMF005_138')}</div></td>
+													<td><input id="B8_3_2" tabindex="12"
+														data-bind="ntsTextEditor: {name: '#[CMF005_139]', value: confirmPasswordForCompressFile, required: isExistCompressPasswordFlg, option: {width: '40px'}" /></td>
+												</tr>
+											</table>
+
 										</div>
 										<div class="flex">
 											<!--B9_1-->
 											<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF005_39')}</div>
+											<input id="B9_2" tabindex="13"
+												data-bind="ntsTextEditor: {name: '#[CMF005_39]', value: supplementExplanation" />
 										</div>
-										<div class="flex">
-											
+
+										<div style="text-align: center;margin-top: 20px">
+											<button id="B20_1" class="large"
+												data-bind="click: backScreenA">#{i18n.getText('CMF005_42')}</button>
+
+											<button id="B20_2" class="x-large proceed"
+												data-bind="click: nextScreenD">#{i18n.getText('CMF005_43')}</button>
 										</div>
+
 									</div>
 
 

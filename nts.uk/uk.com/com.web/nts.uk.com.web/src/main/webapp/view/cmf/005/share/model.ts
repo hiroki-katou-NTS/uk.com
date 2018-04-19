@@ -10,7 +10,8 @@ module nts.uk.com.view.cmf005.share.model {
         YES = 0,
         NO = 1
     }
-     export class ItemModel {
+    
+    export class ItemModel {
         code: number;
         name: string;
 
@@ -19,6 +20,7 @@ module nts.uk.com.view.cmf005.share.model {
             this.name = name;
         }
     } 
+    
     //screen B
     export class AcceptanceCodeConvert {
         convertCode: KnockoutObservable<string>;

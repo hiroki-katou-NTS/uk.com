@@ -11,6 +11,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
     export class ScreenModel {
 
+
         //Radio button
         rdSelected: KnockoutObservable<any>;
         optionCategory: KnockoutObservable<any>;
@@ -48,16 +49,52 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         //B8_1
         isExistCompressPasswordFlg: KnockoutObservable<boolean>;
         isDisplayCompressPassword: KnockoutObservable<boolean>;
+        passwordForCompressFile: KnockoutObservable<string>;
+        confirmPasswordForCompressFile: KnockoutObservable<string>;
 
         constructor() {
             var self = this;
+
             self.initComponents();
+            self.setDefault();
 
         }
+        
+        setDefault() {
+            var self = this;
+            //set B3_1 "ON"
+            self.rdSelected = ko.observable(1);
+
+            //B6_2_2
+            var dateCurrent = moment.utc(new Date(), "YYYY/MM/DD");
+//            var dateCurrent = moment.utc("2019/3/28", "YYYY/MM/DD");
+            var dateNow = dateCurrent.add(1,"M");
+            console.log("Date now========Day:"+ dateNow.get('date') + "/Moth:" + dateNow.get('month') + "/Year :" + dateNow.get('year'));
+            var caculaterMoth = dateNow.add(-1, "M");
+            console.log("caculaterMoth========Day:"+ caculaterMoth.get('date') + "/Moth:" + caculaterMoth.get('month') + "/Year :" + caculaterMoth.get('year'));
+            var caculaterDay = caculaterMoth.add(1, "d");
+                     
+            
+            var getDay = caculaterMoth.get('date');
+            var getMoth = caculaterMoth.get('month');
+            var getYear = caculaterMoth.get('year');
+            console.log("caculaterDay========Day:"+ getDay + "/Moth:" + getMoth + "/Year :" + getYear);
+           
+
+           
+//            self.startDateDailyString = ko.observable(getYear+"/"+getMoth+"/"+getDay);
+//            self.endDateDailyString = ko.observable(getYear+"/"+getMoth+"/"+getDay);
+//
+//            self.startDateMothlyString = ko.observable(getDayStart);
+//            self.endDateMothlyString = ko.observable(dateNow);
+//
+//            self.startDateYearlyString = ko.observable(getDayStart);
+//            self.endDateYearlyString = ko.observable(dateNow);
+        }
+        
         initComponents() {
             var self = this;
-            // modal
-            //                self.codeConvertCode = ko.observable(new model.AcceptanceCodeConvert("", "", 0));
+
             //View menu step
             self.stepList = [
                 { content: '.step-1' },
@@ -70,7 +107,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             //Radio button
             self.optionCategory = ko.observable({ value: 1, text: nts.uk.resource.getText("CMF005_15") });
             self.optionDeleteSet = ko.observable({ value: 2, text: nts.uk.resource.getText("CMF005_16") });
-            self.rdSelected = ko.observable(1);
+
             //B5_3
             this.listDataCategory = ko.observableArray([]);
             this.listColumnHeader = ko.observableArray([
@@ -85,8 +122,10 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
             self.startDateDailyString = ko.observable("");
             self.endDateDailyString = ko.observable("");
+
             self.startDateMothlyString = ko.observable("");
             self.endDateMothlyString = ko.observable("");
+
             self.startDateYearlyString = ko.observable("");
             self.endDateYearlyString = ko.observable("");
 
@@ -127,23 +166,23 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 new model.ItemModel(model.SAVE_BEFOR_DELETE_ATR.YES, getText('CMF005_35')),
                 new model.ItemModel(model.SAVE_BEFOR_DELETE_ATR.NO, getText('CMF005_36'))
             ]);
-            self.isSaveBeforeDeleteFlg = model.SAVE_BEFOR_DELETE_ATR.YES;
+            self.isSaveBeforeDeleteFlg = ko.observable(model.SAVE_BEFOR_DELETE_ATR.YES);
 
             //B8_1
             self.isExistCompressPasswordFlg = ko.observable(true);
             self.isDisplayCompressPassword = ko.observable(true);
-
+            self.passwordForCompressFile = ko.observable("");
+            self.confirmPasswordForCompressFile = ko.observable("");
 
         }
         // get status display button select category
         isEnableBtnOpenC() {
             var self = this;
-            if (self.rdSelected == 1) {
-                console.log(1);
+            if (self.rdSelected() == 1) {
                 return true;
+            } else {
+                return false;
             }
-            console.log(2);
-            return false;
         }
 
         // Open screen C
@@ -161,6 +200,19 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 //                    $('#G4_2').focus();
             });
         }
+
+        // Open screen D
+        nextScreenD() {
+            nts.uk.request.jump("/view/cmf/005/d/index.xhtml");
+        }
+
+        // Open screen A
+        backScreenA() {
+            nts.uk.request.jump("/view/cmf/005/a/index.xhtml");
+        }
+
+
+
     }
 
     export class BoxModel {
