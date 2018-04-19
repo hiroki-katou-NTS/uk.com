@@ -606,7 +606,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 	}
 	
 	/**
-	 * 重複している控除時間帯を保持
+	 * 大塚モードの休憩時間帯取得
 	 * @param companyId
 	 * @param employeeID
 	 * @param processingDate
@@ -622,6 +622,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		}
 		BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut = new BreakTimeZoneSettingOutPut();
 
+		// 休憩時間帯設定を確認する
 		boolean checkBreakTimeSetting = this.checkBreakTimeSetting(companyId, employeeID, processingDate,
 																	null, WorkInfo, breakTimeZoneSettingOutPut);
 		if (!checkBreakTimeSetting) {
@@ -639,12 +640,15 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		});
 		List<BreakTimeSheet> lstBreakTime = new ArrayList<BreakTimeSheet>();
 		int size = lstTimezone.size();
-		for (int i = 0; i < size; i++) {
-			DeductionTime timeZone = lstTimezone.get(i);
-			// 時間帯．休憩枠NO
-			int frameNo = i + 1;
-			lstBreakTime.add(new BreakTimeSheet(new BreakFrameNo(frameNo), timeZone.getStart(), timeZone.getEnd(),
-					new AttendanceTime(0)));
+		//大塚モードの場合はこのifの中の処理を適用、現状は常に大塚モード
+		if(true) {
+			for (int i = 0; i < size; i++) {
+				DeductionTime timeZone = lstTimezone.get(i);
+				// 時間帯．休憩枠NO
+				int frameNo = i + 1;
+				lstBreakTime.add(new BreakTimeSheet(new BreakFrameNo(frameNo), timeZone.getStart(), timeZone.getEnd(),
+						new AttendanceTime(0)));
+			}
 		}
 		// 休憩種類 ← 「就業時間帯から参照」
 		return Optional.of(new BreakTimeOfDailyPerformance(employeeID, BreakType.REFER_WORK_TIME, lstBreakTime, processingDate));

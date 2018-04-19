@@ -327,13 +327,13 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//DailyUnit dailyUnit = new DailyUnit(new TimeOfDay(480));
 		
 		/*休憩時間帯（遅刻早退用）*/
-//		 List<TimeSheetOfDeductionItem> breakTimeList = new ArrayList<>();
-//		if(integrationOfDaily.getAttendanceLeave().isPresent()) {
-//			Optional<BreakTimeOfDailyPerformance> test = reflectBreakTimeOfDailyDomainService.getBreakTime(companyId, employeeId, targetDate,integrationOfDaily.getWorkInformation());
-//			if(test.isPresent()) {
-//				 breakTimeList = test.get().changeAllTimeSheetToDeductionItem();
-//			}
-//		}
+		 List<TimeSheetOfDeductionItem> breakTimeList = new ArrayList<>();
+		if(integrationOfDaily.getAttendanceLeave().isPresent()) {
+			Optional<BreakTimeOfDailyPerformance> test = reflectBreakTimeOfDailyDomainService.getBreakTime(companyId, employeeId, targetDate,integrationOfDaily.getWorkInformation());
+			if(test.isPresent()) {
+				 breakTimeList = test.get().changeAllTimeSheetToDeductionItem();
+			}
+		}
 	
 		/*各加算設定取得用*/
 		Map<String, AggregateRoot> map = holidayAddtionRepository.findByCompanyId(companyId);
@@ -471,7 +471,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 												holidayCalcMethodSet,
 												//new WorkTimeCalcMethodDetailOfHoliday(1,1),
 												Optional.of(flexWorkSetOpt.get().getCoreTimeSetting()),
-												dailyUnit);
+												dailyUnit,breakTimeList);
 		} else {
 			switch (workTime.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
 			case FIXED_WORK:
@@ -527,7 +527,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						Optional.empty(),
 						holidayCalcMethodSet,
 //						new WorkTimeCalcMethodDetailOfHoliday(1,1),
-						dailyUnit
+						dailyUnit,
+						breakTimeList
 						);
 				break;
 			case FLOW_WORK:
@@ -598,7 +599,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		WorkRegularAdditionSet regularAddSetting = workRegularAdditionSet!=null?(WorkRegularAdditionSet)workRegularAdditionSet:null;
 		//フレックス勤務の加算設定
 		WorkFlexAdditionSet flexAddSetting = workFlexAdditionSet!=null?(WorkFlexAdditionSet)workFlexAdditionSet:null;
-		// 変形労働勤務の加算設定
+		//変形労働勤務の加算設定
 		WorkDeformedLaborAdditionSet illegularAddSetting = workDeformedLaborAdditionSet!=null?(WorkDeformedLaborAdditionSet)workDeformedLaborAdditionSet:null;
 		//時給者の加算設定
 		HourlyPaymentAdditionSet hourlyPaymentAddSetting = hourlyPaymentAdditionSet!=null?(HourlyPaymentAdditionSet)hourlyPaymentAdditionSet:null;
