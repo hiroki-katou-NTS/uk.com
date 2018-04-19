@@ -65,11 +65,11 @@ public class KshmtFlexOtTimeSet extends UkJpaEntity implements Serializable {
 
 	/** The legal ot frame no. */
 	@Column(name = "LEGAL_OT_FRAME_NO")
-	private int legalOtFrameNo;
+	private Integer legalOtFrameNo;
 
 	/** The payoff order. */
 	@Column(name = "PAYOFF_ORDER")
-	private int payoffOrder;
+	private Integer payoffOrder;
 
 	/**
 	 * Instantiates a new kshmt flex ot time set.
