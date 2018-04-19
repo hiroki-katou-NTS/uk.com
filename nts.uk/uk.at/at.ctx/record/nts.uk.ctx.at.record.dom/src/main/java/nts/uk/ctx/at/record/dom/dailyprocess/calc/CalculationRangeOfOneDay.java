@@ -148,6 +148,7 @@ public class CalculationRangeOfOneDay {
 	 * @param autoCalculationSet
 	 * @param statutorySet
 	 * @param prioritySet
+	 * @param integrationOfDaily 
 	 */
 	public void createWithinWorkTimeSheet(WorkingSystem workingSystem, WorkTimeMethodSet setMethod,
 			RestClockManageAtr clockManage, OutingTimeOfDailyPerformance dailyGoOutSheet, CommonRestSetting commonSet,
@@ -215,6 +216,7 @@ public class CalculationRangeOfOneDay {
 	 *            法定内優先設定
 	 * @param deductionTimeSheet
 	 *            控除時間帯
+	 * @param integrationOfDaily 
 	 */
 	public void theDayOfWorkTimesLoop(WorkingSystem workingSystem, PredetermineTimeSetForCalc predetermineTimeSetForCalc,
 			CommonFixedWorkTimezoneSet lstHalfDayWorkTimezone,
@@ -451,6 +453,7 @@ public class CalculationRangeOfOneDay {
 
 	 /**
 	 * フレックスの時間帯作成
+	 * @param integrationOfDaily 
 	 */
 	 public void createTimeSheetAsFlex(
 			 		WorkingSystem workingSystem, PredetermineTimeSetForCalc predetermineTimeSetForCalc,

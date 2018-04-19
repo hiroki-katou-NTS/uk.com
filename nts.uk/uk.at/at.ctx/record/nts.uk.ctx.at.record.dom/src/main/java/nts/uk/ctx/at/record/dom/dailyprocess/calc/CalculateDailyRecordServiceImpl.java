@@ -399,12 +399,12 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 //			|| (integrationOfDaily.getCalAttr().getDivergenceTime() != null))
 //			return ManageReGetClass.cantCalc();
 		if(integrationOfDaily.getCalAttr() == null
-				|| (integrationOfDaily.getCalAttr().getRasingSalarySetting() != null)
-				|| (integrationOfDaily.getCalAttr().getOvertimeSetting() != null)
-				|| (integrationOfDaily.getCalAttr().getLeaveEarlySetting() != null)
-				|| (integrationOfDaily.getCalAttr().getHolidayTimeSetting() != null)
-				|| (integrationOfDaily.getCalAttr().getFlexExcessTime() != null)
-				|| (integrationOfDaily.getCalAttr().getDivergenceTime() != null))
+				|| (integrationOfDaily.getCalAttr().getRasingSalarySetting() == null)
+				|| (integrationOfDaily.getCalAttr().getOvertimeSetting() == null)
+				|| (integrationOfDaily.getCalAttr().getLeaveEarlySetting() == null)
+				|| (integrationOfDaily.getCalAttr().getHolidayTimeSetting() == null)
+				|| (integrationOfDaily.getCalAttr().getFlexExcessTime() == null)
+				|| (integrationOfDaily.getCalAttr().getDivergenceTime() == null))
 		{
 			val autoCalcSet = new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT,AutoCalAtrOvertime.CALCULATEMBOSS);
 			val calAttr = new CalAttrOfDailyPerformance(employeeId, 
@@ -471,7 +471,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 												holidayCalcMethodSet,
 												//new WorkTimeCalcMethodDetailOfHoliday(1,1),
 												Optional.of(flexWorkSetOpt.get().getCoreTimeSetting()),
-												dailyUnit);
+												dailyUnit, integrationOfDaily);
 		} else {
 			switch (workTime.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
 			case FIXED_WORK:
@@ -527,7 +527,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						Optional.empty(),
 						holidayCalcMethodSet,
 //						new WorkTimeCalcMethodDetailOfHoliday(1,1),
-						dailyUnit);
+						dailyUnit
+						);
 				break;
 			case FLOW_WORK:
 				/* 流動勤務 */
@@ -678,7 +679,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		val workType = manageReGetClass.getWorkType();
 		if(!workType.isPresent() || !workTime.isPresent()) return manageReGetClass.getIntegrationOfDaily();
-		
+		//予定時間帯が作成されるまでの一時対応
+		val scheWorkTypeCode = manageReGetClass.getCalculationRangeOfOneDay().getWorkInformationOfDaily().getScheduleInfo().getWorkTypeCode();
+		Optional<WorkType> scheWorkType = Optional.empty();
+		if(scheWorkTypeCode != null)
+			 scheWorkType = workTypeRepository.findByPK(companyId, scheWorkTypeCode.toString()); 
 		
 		//休暇加算時間設定
 		Optional<HolidayAddtionSet> holidayAddtionSetting = holidayAddtionRepository.findByCId(companyId);
@@ -701,39 +706,40 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		/*時間の計算*/
 		manageReGetClass.setIntegrationOfDaily(AttendanceTimeOfDailyPerformance.calcTimeResult(manageReGetClass.getCalculationRangeOfOneDay(),
-																				 			   manageReGetClass.getIntegrationOfDaily(),
-																				 			   sharedOtSet,
-																				 			   holidayAutoCalcSetting.getRestTime(),
-																				 			   Optional.empty(),//Optional.of(personalLabor),
-																				 			   vacation,
-																				 			   workType.get(),
-																				 			   lateLeave.getLeaveLate().isUse(),  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-																				 			   lateLeave.getLeaveEarly().isUse(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-																				 			   manageReGetClass.getPersonalInfo().getWorkingSystem(),
-																				 			   illegularAddSetting,
-																				 			   flexAddSetting,
-																				 			   regularAddSetting,
-																				 			   holidayAddtionSet,
-																				 			   AutoCalOverTimeAttr.CALCULATION_FROM_STAMP,
-																				 			   workTime.get(),
-																				 			   flexCalcMethod,
-																				 			   manageReGetClass.getHolidayCalcMethodSet(),
-																				 			   autoRaisingSet,
-																				 			   bonusPayAutoCalcSet,
-																				 			   calcAtrOfDaily,
-																				 			   manageReGetClass.getSubHolTransferSetList(),
-																				 			   eachCompanyTimeSet,
-																				 			   attendanceLeavingGateOfDaily,
-																				 			   pCLogOnInfoOfDaily,
-																				 			   attendanceLeave,
-																				 			   forCalcDivergenceDto,
-																				 			   divergenceTimeList,
-																				 			   calculateOfTotalConstraintTime, 
-																				 			   schePreTimeSet,
-																				 			   manageReGetClass.getOotsukaFixedWorkSet(),
-																				 			   manageReGetClass.getFixRestTimeSetting()
-																								));
-//																								schePreTimeSet));
+																				 manageReGetClass.getIntegrationOfDaily(),
+																				 sharedOtSet,
+																				 holidayAutoCalcSetting.getRestTime(),
+					Optional.empty(),//Optional.of(personalLabor),
+				    vacation,
+				    workType.get(),
+				    lateLeave.getLeaveLate().isUse(),  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
+				    lateLeave.getLeaveEarly().isUse(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退
+				    manageReGetClass.getPersonalInfo().getWorkingSystem(),
+				    illegularAddSetting,
+				    flexAddSetting,
+				    regularAddSetting,
+				    vacationAddSetting,
+				    AutoCalOverTimeAttr.CALCULATION_FROM_STAMP,
+				    workTime.get(),
+				    flexCalcMethod,
+				    holidaycalcMethodSet,
+				    autoRaisingSet,
+					bonusPayAutoCalcSet,
+					calcAtrOfDaily,
+					manageReGetClass.getSubHolTransferSetList(),
+					eachCompanyTimeSet,
+					attendanceLeavingGateOfDaily,
+					pCLogOnInfoOfDaily,
+					attendanceLeave,
+					forCalcDivergenceDto,
+					divergenceTimeList,
+					calculateOfTotalConstraintTime, 
+					schePreTimeSet,
+					manageReGetClass.getOotsukaFixedWorkSet(),
+					manageReGetClass.getFixRestTimeSetting(),
+					scheWorkType
+					));
+//					schePreTimeSet));
 	
 	//  // 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
 		  List<Integer> attendanceItemIdList = manageReGetClass.getIntegrationOfDaily().getEditState().stream().filter(editState -> editState.getEmployeeId().equals(copyIntegrationOfDaily.getAffiliationInfor().getEmployeeId())

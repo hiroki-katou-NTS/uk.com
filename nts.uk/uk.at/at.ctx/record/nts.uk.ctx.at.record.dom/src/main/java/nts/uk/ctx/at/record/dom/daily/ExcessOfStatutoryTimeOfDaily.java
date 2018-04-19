@@ -93,6 +93,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 	
 	/**
 	 * 各時間の計算を指示するクラス
+	 * @param integrationOfDaily 
 	 * @return
 	 */
 	public static ExcessOfStatutoryTimeOfDaily calculationExcessTime(CalculationRangeOfOneDay oneDay,AutoCalOvertimeSetting overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting,
@@ -109,7 +110,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 			   														 HolidayAddtionSet holidayAddtionSet,
 			   														 WorkTimeDailyAtr workTimeDailyAtr,
 			   														 List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-			   														 List<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+			   														 List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily) {
 		//残業時間
 		val overTime = calculationOverTime(oneDay,overTimeAutoCalcSet,calcMethod,holidayCalcMethodSet,autoCalcAtr,workType,flexCalcMethod,
 										   predetermineTimeSet,vacationClass,timevacationUseTimeOfDaily,
@@ -120,11 +121,13 @@ public class ExcessOfStatutoryTimeOfDaily {
 				   						   workingSystem,illegularAddSetting,flexAddSetting,regularAddSetting,
 				   						   holidayAddtionSet,workTimeDailyAtr,
 										   eachWorkTimeSet.stream().filter(tc -> tc.getOriginAtr().isOverTime()).findFirst(),
-										   eachCompanyTimeSet.stream().filter(tc -> tc.getOccurrenceType().isOverTime()).findFirst());
+										   eachCompanyTimeSet.stream().filter(tc -> tc.getOccurrenceType().isOverTime()).findFirst(),
+										   integrationOfDaily);
 		//休出時間
 		val workHolidayTime = calculationHolidayTime(oneDay,holidayAutoCalcSetting,workType,
 													 eachWorkTimeSet.stream().filter(tc -> !tc.getOriginAtr().isOverTime()).findFirst(),
-													 eachCompanyTimeSet.stream().filter(tc -> !tc.getOccurrenceType().isOverTime()).findFirst());
+													 eachCompanyTimeSet.stream().filter(tc -> !tc.getOccurrenceType().isOverTime()).findFirst(),
+													 integrationOfDaily);
 		//所定外深夜
 		val excessOfStatutoryMidNightTime = ExcessOfStatutoryMidNightTime.calcExcessTime(overTime,workHolidayTime);//.calcExcessMidNightTime(oneDay);//new ExcessOfStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0));
 		
@@ -136,6 +139,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 	/**
 	 * 残業時間の計算
 	 * @param oneDay 
+	 * @param integrationOfDaily 
 	 */
 	private static OverTimeOfDaily calculationOverTime(CalculationRangeOfOneDay oneDay,AutoCalOvertimeSetting overTimeAutoCalcSet,
 													   CalcMethodOfNoWorkingDay calcMethod,HolidayCalcMethodSet holidayCalcMethodSet,AutoCalOverTimeAttr autoCalcAtr,WorkType workType,
@@ -150,7 +154,7 @@ public class ExcessOfStatutoryTimeOfDaily {
  														 WorkRegularAdditionSet regularAddSetting,
  														HolidayAddtionSet holidayAddtionSet,WorkTimeDailyAtr workTimeDailyAtr,
 													   Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-													   Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+													   Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily) {
 		if(oneDay.getOutsideWorkTimeSheet().isPresent()) {
 			if(oneDay.getOutsideWorkTimeSheet().get().getOverTimeWorkSheet().isPresent()) {
 				return OverTimeOfDaily.calculationTime(oneDay.getOutsideWorkTimeSheet().get().getOverTimeWorkSheet().get(),
@@ -176,7 +180,8 @@ public class ExcessOfStatutoryTimeOfDaily {
 													   holidayAddtionSet,
 													   workTimeDailyAtr,
 													   eachWorkTimeSet,
-													   eachCompanyTimeSet);
+													   eachCompanyTimeSet,
+													   integrationOfDaily);
 			}
 		}
 		//残業時間帯が存在せず、時間を求められない場合
@@ -191,19 +196,21 @@ public class ExcessOfStatutoryTimeOfDaily {
 	
 	/**
 	 * 休出時間の計算
+	 * @param integrationOfDaily 
 	 * @return
 	 */
 	private static HolidayWorkTimeOfDaily calculationHolidayTime(CalculationRangeOfOneDay oneDay,AutoCalSetting holidayAutoCalcSetting,
 			 													 WorkType workType,
 			 													Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-			 													 Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+			 													 Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily) {
 		if(oneDay.getOutsideWorkTimeSheet().isPresent()) {
 			if(oneDay.getOutsideWorkTimeSheet().get().getHolidayWorkTimeSheet().isPresent()) {
 				return HolidayWorkTimeOfDaily.calculationTime(oneDay.getOutsideWorkTimeSheet().get().getHolidayWorkTimeSheet().get(), 
 															  holidayAutoCalcSetting,
 															  workType,
 															  eachWorkTimeSet,
-															  eachCompanyTimeSet);
+															  eachCompanyTimeSet,
+															  integrationOfDaily);
 			}
 		}
 		

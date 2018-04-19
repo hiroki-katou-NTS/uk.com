@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CheckExcessAtr;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
@@ -128,6 +129,7 @@ public class ActualWorkingTimeOfDaily {
 	 * @param schePreTimeSet 
 	 * @param schePreTimeSet 
 	 * @param ootsukaFixedCalcSet 
+	 * @param integrationOfDaily 
 	 */
 	public static ActualWorkingTimeOfDaily calcRecordTime(CalculationRangeOfOneDay oneDay,AutoCalOvertimeSetting overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting,
 			   Optional<PersonalLaborCondition> personalCondition,
@@ -152,7 +154,7 @@ public class ActualWorkingTimeOfDaily {
 			   DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
 			   List<DivergenceTime> divergenceTimeList, Optional<PredetermineTimeSetForCalc> schePreTimeSet, 
 			   int breakTimeCount, Optional<FixedWorkCalcSetting> ootsukaFixedCalcSet,
-			   Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting
+			   Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting, IntegrationOfDaily integrationOfDaily
 				/*計画所定時間*/
 				/*実績所定労働時間*/) {
 
@@ -177,7 +179,8 @@ public class ActualWorkingTimeOfDaily {
 					calcAtrOfDaily,
 					eachWorkTimeSet,
 					eachCompanyTimeSet,
-					breakTimeCount
+					breakTimeCount,
+					integrationOfDaily
 					/*計画所定時間*/
 					/*実績所定労働時間*/);
 		

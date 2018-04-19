@@ -31,6 +31,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlOverFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.FlexWithinWorkTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
@@ -287,6 +288,7 @@ public class OverTimeOfDaily {
 	
 	/**
 	 * メンバー変数の時間計算を指示するクラス
+	 * @param integrationOfDaily 
 	 * @return 計算結果
 	 */
 	public static OverTimeOfDaily calculationTime(OverTimeSheet overTimeSheet,
@@ -311,11 +313,11 @@ public class OverTimeOfDaily {
 												  WorkRegularAdditionSet regularAddSetting,
 												  HolidayAddtionSet holidayAddtionSet,WorkTimeDailyAtr workTimeDailyAtr,
 												  Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-												  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+												  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily) {
 		//枠時間帯入れる
 		val overTimeFrameTimeSheet = overTimeSheet.changeOverTimeFrameTimeSheet();
 		//枠時間計算
-		val overTimeFrame = overTimeSheet.collectOverTimeWorkTime(overTimeAutoCalcSet,workType,eachWorkTimeSet,eachCompanyTimeSet);
+		val overTimeFrame = overTimeSheet.collectOverTimeWorkTime(overTimeAutoCalcSet,workType,eachWorkTimeSet,eachCompanyTimeSet,integrationOfDaily);
 		//残業内の深夜時間計算
 		val excessOverTimeWorkMidNightTime = Finally.of(calcExcessMidNightTime(overTimeSheet,overTimeAutoCalcSet));
 		//変形法定内残業時間計算

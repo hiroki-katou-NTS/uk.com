@@ -102,11 +102,12 @@ public class OverTimeSheet {
 	/**
 	 * 残業時間枠時間帯をループさせ時間を計算する
 	 * @param autoCalcSet 時間外時間の自動計算設定
+	 * @param integrationOfDaily 
 	 */
 	public List<OverTimeFrameTime> collectOverTimeWorkTime(AutoCalOvertimeSetting autoCalcSet,
 														   WorkType workType,
 														   Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-														   Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+														   Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily) {
 		Map<Integer,OverTimeFrameTime> overTimeFrameList = new HashMap<Integer, OverTimeFrameTime>();
 		val forceAtr = AutoCalAtrOvertime.CALCULATEMBOSS;
 		//時間帯の計算
@@ -128,6 +129,29 @@ public class OverTimeSheet {
 			}
 		}
 		List<OverTimeFrameTime> calcOverTimeWorkTimeList = new ArrayList<>(overTimeFrameList.values()); 
+		
+		
+		//staticがついていなので、4末緊急対応
+		if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()
+			&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily() != null
+			&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null
+			&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime() != null
+			&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily() != null
+			&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
+			calcOverTimeWorkTimeList.forEach(ts -> {
+				val wantAddTime = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime()
+									.stream()
+									.filter(tc -> tc.getOverWorkFrameNo().equals(ts.getOverWorkFrameNo()))
+									.findFirst();
+				if(wantAddTime.isPresent())
+					ts.addBeforeTime(wantAddTime.get().getBeforeApplicationTime());
+							
+			});
+			
+		}
+		//staticがついていなので、4末緊急対応	
+		 
+		
 		//事前申請を上限とする制御
 		val afterCalcUpperTimeList = afterUpperControl(calcOverTimeWorkTimeList,autoCalcSet);
 		return afterCalcUpperTimeList; 
