@@ -63,4 +63,13 @@ public class AffWorkplaceAdapterImpl implements AffWorkplaceAdapter {
 		return Optional.of(affWorkPlaceSidImport);
 	}
 
+<<<<<<< HEAD
+=======
+	@Override
+	public List<String> findAffiliatedWorkPlaceIdsToRoot(String companyId,String employeeId, GeneralDate baseDate) {
+		return this.wkpPub.findWpkIdsBySid(companyId ,employeeId, baseDate);
+	}
+	
+	
+>>>>>>> 00781b2d29... 法定労働時間の取得処理に必要な処理を更新
 }

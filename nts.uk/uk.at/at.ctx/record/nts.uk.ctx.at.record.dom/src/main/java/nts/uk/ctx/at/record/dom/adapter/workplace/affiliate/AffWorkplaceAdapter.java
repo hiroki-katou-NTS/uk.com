@@ -29,4 +29,19 @@ public interface AffWorkplaceAdapter {
 	 * @return
 	 */
 	Optional<AffWorkPlaceSidImport> findBySidAndDate(String employeeId, GeneralDate baseDate);
+<<<<<<< HEAD
+=======
+	
+	
+	/**
+	 * 所属職場を含む上位階層の職場IDを取得
+	 * @param companyId
+	 * @param employeeId
+	 * @param baseDate
+	 * @return
+	 */
+	List<String> findAffiliatedWorkPlaceIdsToRoot(String companyId, String employeeId, GeneralDate baseDate);
+	
+	
+>>>>>>> 00781b2d29... 法定労働時間の取得処理に必要な処理を更新
 }
