@@ -6,6 +6,15 @@ module cps001.f {
         __viewContext['viewModel'].start().done(() => {
             init();
             __viewContext.bind(__viewContext['viewModel']);
+
+            $("#button").click(function() {
+                $("#custom-upload").ntsFileUpload({ stereoType: "avatarfile" }).done(function(res) {
+                    nts.uk.ui.dialog.info("Upload successfully!");
+                }).fail(function(err) {
+                    nts.uk.ui.dialog.alertError(err);
+                });
+            });
+
             service.getCurrentEmpPermision().done((data: IPersonAuth) => {
                 if (data && data.allowDocUpload != 1) {
                     $(".browser-button").attr('disabled', 'disabled');
@@ -66,6 +75,7 @@ function ButtonClick() {
     var rowItem = _.find(__viewContext['viewModel'].items, function(x: any) { return x.id == id; });
     __viewContext['viewModel'].deleteItem(rowItem);
     __viewContext['viewModel'].fileSize('');
+    __viewContext['viewModel'].filename('');
 
 }
 
