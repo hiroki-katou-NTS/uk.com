@@ -19,11 +19,26 @@ module nts.uk.at.view.kdr001.a {
         
         export module model {
             export class appInfor {
-                baseDate: any;
-                lstEmpIds: string[];
-                constructor(baseDate: any, lstEmpIds: string[]) {
-                    this.baseDate = baseDate;
+                holidayRemainingOutputCondition: any;
+                lstEmpIds: any[];
+                constructor(holidayRemainingOutputCondition: any, lstEmpIds: any[]) {
+                    this.holidayRemainingOutputCondition = holidayRemainingOutputCondition;
                     this.lstEmpIds = lstEmpIds;
+                }
+            }
+            
+            export class holidayRemainingOutputCondition
+            {
+                startMonth: string;
+                endMonth: string;
+                outputItemSettingCode: string;
+                pageBreak: number;
+                
+                constructor(startMonth: string, endMonth: string, outputItemSettingCode: string, pageBreak: number){
+                    this.startMonth = startMonth;
+                    this.endMonth = endMonth;
+                    this.outputItemSettingCode = outputItemSettingCode;
+                    this.pageBreak = pageBreak;
                 }
             }
         }

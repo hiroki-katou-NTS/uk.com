@@ -307,8 +307,14 @@ module nts.uk.at.view.kdr001.a {
              * function export excel button
              */
             private exportButton() {
-                var lstEmpIds : string[] = ["1","2"];
-                let data = new service.model.appInfor("",lstEmpIds);
+                var self = this;
+                let holidayRemainingOutputCondition = new service.model.holidayRemainingOutputCondition(
+                        "2018/01",
+                        "2018/08",
+                        "001",
+                        2
+                    );
+                let data = new service.model.appInfor(holidayRemainingOutputCondition, self.selectedEmployee());
                 service.saveAsExcel(data).done(()=>{
                      nts.uk.ui.block.clear();   
                 }).fail(function(res: any){

@@ -65,9 +65,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM");
 
-		cells.get(1, 0).setValue(TextResource.localize("KDR001_1") + 
+		cells.get(1, 0).setValue(TextResource.localize("KDR001_2") + 
 				start.format(formatter) + "　～　" + end.format(formatter));
-		cells.get(2, 0).setValue(TextResource.localize("KDR001_2"));
+		cells.get(2, 0).setValue(TextResource.localize("KDR001_3"));
 	}
 
 	private void printPerson(Worksheet worksheet) throws Exception {
