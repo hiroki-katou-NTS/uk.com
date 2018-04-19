@@ -116,8 +116,11 @@ module cmm045.shr {
             //事前、事後の後ろに#CMM045_101(※)を追加
             checkAddNote: boolean;
             checkTimecolor: number;
+            //ver14 + EA1360
+            detailSet: number;
             constructor(appID: string, appType: number, dispName: string, empName: string, inpEmpName: string,
-            workplaceName: string, statusFrameAtr: boolean, phaseStatus: string, checkAddNote: boolean, checkTimecolor: number)
+            workplaceName: string, statusFrameAtr: boolean, phaseStatus: string, checkAddNote: boolean, 
+            checkTimecolor: number, detailSet: number)
             {
                 this.appID = appID;
                 this.appType = appType;
@@ -129,6 +132,7 @@ module cmm045.shr {
                 this.phaseStatus = phaseStatus;
                 this.checkAddNote = checkAddNote;
                 this.checkTimecolor = checkTimecolor;
+                this.detailSet = detailSet;
             }
         }
         export class ApplicationDto_New{

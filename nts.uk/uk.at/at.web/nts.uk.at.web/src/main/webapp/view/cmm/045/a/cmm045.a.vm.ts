@@ -134,7 +134,7 @@ module cmm045.a.viewmodel {
                         });
                         _.each(data.lstMasterInfo, function(master) {
                             self.lstAppMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName,master.inpEmpName,
-                                master.workplaceName, master.statusFrameAtr, master.phaseStatus, master.checkAddNote, master.checkTimecolor));
+                                master.workplaceName, master.statusFrameAtr, master.phaseStatus, master.checkAddNote, master.checkTimecolor, master.detailSet));
                         });
                         _.each(data.lstAppGoBack, function(goback) {
                             lstGoBack.push(new vmbase.AppGoBackInfoFull(goback.appID, goback.goWorkAtr1, goback.workTimeStart1,
@@ -488,11 +488,13 @@ module cmm045.a.viewmodel {
             let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
             let time1 = overTime.workClockFrom1  == '' ? '' : overTime.workClockFrom1 + getText('CMM045_100') + overTime.workClockTo1;
             let time2 = overTime.workClockFrom2  == '' ? '' : overTime.workClockFrom2 + getText('CMM045_100') + overTime.workClockTo2;
-            let appContent1111: string = getText('CMM045_268') + ' ' + time1 + time2 + ' 残業合計' + self.convertFrameTime(overTime.lstFrame) + reason;
+            let contentv4 = getText('CMM045_268') + ' ' + time1 + time2;
+            let contentv42 = ' 残業合計' + self.convertFrameTime(overTime.lstFrame) + reason;
+            let appContent005Bf: string = masterInfo.detailSet == 1 ? contentv4 + contentv42 : contentv42;
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDateMDW(app.startDate), '',''), appContent1111, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
+                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDateMDW(app.startDate), '',''), appContent005Bf, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
                 self.mode() == 0 ? self.convertStatus(app.reflectPerState) : self.convertStatusAppv(app.reflectPerState), masterInfo.phaseStatus,
                 masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor,null, app.reflectPerState);
             return a;
@@ -507,21 +509,6 @@ module cmm045.a.viewmodel {
             let framName12 = '';
             let time = 0;
             let count = 0;
-//            let lstSort = _.sortBy(lstFrame, ["frameNo"], ["asc"]);
-//            //時間外深夜時間
-//            let frame11 = self.findFrameByNo(lstFrame, 11);
-//            if (frame11 !== undefined && frame11.applicationTime != 0) {
-//                framName11 = frame11.name + self.convertTime_Short_HM(frame11.applicationTime);
-//                time += frame11.applicationTime;
-//                count += 1;
-//            }
-//            //ﾌﾚｯｸｽ超過
-//            let frame12 = self.findFrameByNo(lstFrame, 12);
-//            if (frame12 !== undefined && frame12.applicationTime != 0) {
-//                framName12 = frame12.name + self.convertTime_Short_HM(frame12.applicationTime);
-//                time += frame12.applicationTime;
-//                count += 1;
-//            }
             let lstSort = self.sortFrameTime(lstFrame, 0);
             _.each(lstSort, function(item) {
                 if (item.applicationTime != 0) {//時間外深夜時間
@@ -681,7 +668,7 @@ module cmm045.a.viewmodel {
             let check: vmbase.AppPrePostGroup = self.findAppPre(lstAppGroup, app.applicationID);
             if (check !== undefined) {
                 if (check.preAppID != '') {
-                    let prRes = self.findContentPreOt(check.preAppID, check.lstFrameRes, check.appPre, check.reasonAppPre);
+                    let prRes = self.findContentPreOt(check.preAppID, check.lstFrameRes, check.appPre, check.reasonAppPre, masterInfo.detailSet);
                     contentPre = prRes.appPre == '' ? '' : '<br/>' + prRes.appPre;
                     contentResult = prRes.appRes == '' ? '' :'<br/>' + prRes.appRes;
                 }
@@ -691,7 +678,12 @@ module cmm045.a.viewmodel {
             let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
             let time1 = overTime.workClockFrom1  == '' ? '' : overTime.workClockFrom1 + getText('CMM045_100') + overTime.workClockTo1;
             let time2 = overTime.workClockFrom2  == '' ? '' : overTime.workClockFrom2 + getText('CMM045_100') + overTime.workClockTo2;
-            let appContentPost: string = getText('CMM045_272') + getText('CMM045_268') + '' + time1 + time2 + ' 残業合計' + self.convertFrameTime(overTime.lstFrame) + reason;
+            
+            //ver14
+            let contentv4 = getText('CMM045_272') + getText('CMM045_268') + '' + time1 + time2;
+            let contentv42 = ' 残業合計' + self.convertFrameTime(overTime.lstFrame) + reason;
+            let appContentPost: string = masterInfo.detailSet == 1 ? contentv4 + contentv42 : contentv42;
+            
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let contentFull = '<div class = "appContent-' + app.applicationID + '">'+ appContentPost + contentPre + contentResult + '</div>';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
@@ -710,13 +702,16 @@ module cmm045.a.viewmodel {
          * find content pre and result
          * 残業申請 - over time
          */
-        findContentPreOt(appId: string, lstFrameRes: Array<vmbase.OverTimeFrame>, appPreDB: any, reasonAppPre: string): any {
+        findContentPreOt(appId: string, lstFrameRes: Array<vmbase.OverTimeFrame>, appPreDB: any, reasonAppPre: string, detailSet: number): any {
             let self = this;
             let appPre = '';
             if(appPreDB != null){
                 let time1 = appPreDB.workClockFrom1  == '' ? '' : appPreDB.workClockFrom1 + getText('CMM045_100') + appPreDB.workClockTo1;
                 let time2 = appPreDB.workClockFrom2  == '' ? '' : appPreDB.workClockFrom2 + getText('CMM045_100') + appPreDB.workClockTo2;
-                appPre = getText('CMM045_268') + ' ' + time1 + time2 + ' 残業合計' + self.convertFrameTime(appPreDB.lstFrame) + '<br/>' + reasonAppPre;
+                //ver14
+                let content1 = getText('CMM045_268') + ' ' + time1 + time2;
+                let content2 = ' 残業合計' + self.convertFrameTime(appPreDB.lstFrame) + '<br/>' + reasonAppPre;
+                appPre = detailSet == 1 ? content1 + content2 : content2;
             }
             let appResContent = '';
             //thuc te
@@ -1324,7 +1319,7 @@ module cmm045.a.viewmodel {
                 });
                 _.each(data.lstMasterInfo, function(master) {
                     self.lstAppMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName, master.inpEmpName, master.workplaceName,
-                        master.statusFrameAtr, master.phaseStatus, master.checkAddNote, master.checkTimecolor));
+                        master.statusFrameAtr, master.phaseStatus, master.checkAddNote, master.checkTimecolor, master.detailSet));
                 });
                 _.each(data.lstAppGoBack, function(goback) {
                     lstGoBack.push(new vmbase.AppGoBackInfoFull(goback.appID, goback.goWorkAtr1, goback.workTimeStart1,
