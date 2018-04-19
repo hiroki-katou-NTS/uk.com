@@ -2,6 +2,8 @@ module nts.uk.at.view.kaf018.a.viewmodel {
     import text = nts.uk.resource.getText;
     import character = nts.uk.characteristics;
     import service = nts.uk.at.view.kaf018.a.service;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     var lstWkp = [];
     export class ScreenModel {
         targets: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -65,9 +67,6 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                 systemType: 2
             };
             self.isBindingTreeGrid = ko.observable(true);
-                
-            //character.save('NewWorkplaceListOption', kaf018WorkplaceListOption);
-            //TODO
             $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
                 self.reloadData();
                 $('#tree-grid').focusTreeGridComponent();
@@ -85,6 +84,8 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                         $('#tree-grid').focusTreeGridComponent();
                     });
                 });
+                
+                service.saveSelectedClosureId(value);
             });
         }
 
@@ -106,6 +107,9 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                     self.reloadData();
                     $('#tree-grid').focusTreeGridComponent();
                 });
+                service.restoreSelectedClosureId().done(value =>{
+                    self.selectTarget(value);
+                });
              dfd.resolve();
             });
             //Confirm checkbox A4_2_1
@@ -125,6 +129,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
             nts.uk.ui.block.invisible();
             service.getAll(lstWkp.map((wkp) => { return wkp.workplaceId; })).done((dataResults: Array<model.IApplicationApprovalSettingWkp>) => {
                 self.alreadySettingList(dataResults.map((data) => { return { workplaceId: data.wkpId, isAlreadySetting: true}; }));
+                self.multiSelectedWorkplaceId([]);
                 self.multiSelectedWorkplaceId.valueHasMutated();
                 nts.uk.ui.block.clear();
             });
@@ -156,7 +161,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
             })
             console.log(listWorkplace);
             let params = {
-                closureId: self.selectTarget(),
+                closureId: self.selectTarget,
                 processingYm: self.processingYm(),
                 startDate: self.startDate(),
                 endDate: self.endDate(),
@@ -164,6 +169,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                 listWorkplace: listWorkplace,
                 isConfirmData: self.isDailyComfirm(),
                 listEmployeeCode: self.listEmployeeCode(),
+                multiSelectedWorkplaceId: self.multiSelectedWorkplaceId()
             };
             if (self.multiSelectedWorkplaceId().length == 0) {
                 $('#tree-grid').ntsError('set', 'Msg_786');

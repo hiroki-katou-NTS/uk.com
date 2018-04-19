@@ -109,6 +109,13 @@ module nts.uk.at.view.kaf018.b.viewmodel {
             return self.processingYm +"("+ startDate +" ～ "+ endDate+")";
         }
         
+        backToA() {
+            var self = this;
+            let params = {
+                    
+            }
+        }
+        
         gotoC(index) {
             var self = this;
             
@@ -194,11 +201,11 @@ module nts.uk.at.view.kaf018.b.viewmodel {
             approvedNumOfCase: number, numOfUnreflected: number, numOfUnapproval: number, numOfDenials: number) {
                 this.workplaceId = workplaceId;
                 this.workplaceName = workplaceName;
-                this.numOfApp = numOfApp ? numOfApp : null;
-                this.approvedNumOfCase = approvedNumOfCase ? approvedNumOfCase : null;
-                this.numOfUnreflected =  numOfUnreflected ? numOfUnreflected : null;
-                this.numOfUnapproval = numOfUnapproval ? numOfUnapproval : null;
-                this.numOfDenials = numOfDenials ? numOfDenials : null;
+                this.numOfApp = numOfApp ? numOfApp : 0;
+                this.approvedNumOfCase = approvedNumOfCase ? approvedNumOfCase : 0;
+                this.numOfUnreflected =  numOfUnreflected ? numOfUnreflected : 0;
+                this.numOfUnapproval = numOfUnapproval ? numOfUnapproval : 0;
+                this.numOfDenials = numOfDenials ? numOfDenials : 0;
                 if(this.numOfUnapproval > 0) {
                     this.isEnabled = false;    
                 }else {

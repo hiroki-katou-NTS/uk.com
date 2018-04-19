@@ -37,6 +37,8 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApp
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.AttendanceResultImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.DailyAttendanceItemAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentDataRequestPubImport;
@@ -48,7 +50,9 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approve
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
+import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
@@ -96,6 +100,12 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	
 	@Inject
 	private CollectAchievement collectAchievement;
+	
+	@Inject
+	private DailyAttendanceItemAdapter dailyAttendanceItemAdapter; 
+	
+	@Inject
+	private OtherCommonAlgorithm otherCommonAlgorithm;
 	@Override
 	public List<ApprovalStatusEmployeeOutput> getApprovalStatusEmployee(String wkpId, GeneralDate closureStart,
 			GeneralDate closureEnd, List<String> listEmpCd) {
@@ -713,6 +723,12 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	 * 承認状況申請内容追加
 	 */
 	private List<ApproverOutput> getApprovalSttAppDetail(List<ApplicationApprContent> listAppContent) {
+		
+		List<Application_New> listApplication = listAppContent.stream()
+				.filter(x -> x.getApplication().getAppType().value == 10).map(x2 -> {
+					return x2.getApplication();
+				}).collect(Collectors.toList());
+		
 		for (ApplicationApprContent appContent : listAppContent) {
 			Application_New app = appContent.getApplication();
 			/// ドメインモデル「申請表示名」より申請表示名称を取得する
@@ -720,6 +736,11 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			// アルゴリズム「承認状況申請承認者取得」を実行する
 			List<ApproverOutput> listApprover = this.getApprovalSttApprover(appContent);
 			//アルゴリズム「承認状況申請内容取得実績」を実行する
+			List<AttendanceResultImport> getAttendaceResult = this.getApplicationDetailRecord(appContent);
+			//アルゴリズム「承認状況申請内容取得振休振出」を実行する
+			if(app.getAppType().value == 10) {
+			}
+			String noName = this.getAppliDetailAcquisitionOfBreakdown(app, listApplication);
 			
 		}
 		return null;
@@ -821,7 +842,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	/**
 	 * 承認状況申請内容取得実績
 	 */
-	private String getApplicationDetailRecord(ApplicationApprContent appContent) {
+	private List<AttendanceResultImport> getApplicationDetailRecord(ApplicationApprContent appContent) {
+		List<AttendanceResultImport> listAttendanceResult = new ArrayList<>();
 		String cId = AppContexts.user().companyId();
 		Application_New application = appContent.getApplication();
 		//ドメインモデル「打刻申請」を取得する
@@ -830,10 +852,42 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		if(stamp.getStampRequestMode().value == 2) {
 			//アルゴリズム「実績の取得」を実行する
 			AchievementOutput achievement = collectAchievement.getAchievement(cId, application.getAppID(), application.getAppDate());
+			
 			//アルゴリズム「勤務実績の取得」を実行する
-			
+			listAttendanceResult = this.getAttendanceResult(application);
 		} else {
-			
+			return null;
+		}
+		return listAttendanceResult;
+	}
+	
+	/**
+	 * 勤務実績の取得
+	 */
+	List<AttendanceResultImport> getAttendanceResult(Application_New application) {
+		int[] listKey = {30,40,31,41,33,43,3451,59,67,52,60,68,53,61,69,86,91,96,101,106,111,116,121,126,131,87,92,65,102,107,112,117,122,127,132,88,93,67,103,108,113,118,123,128,133,89,94,68,104,109,114,119,124,129,134,90,95,70,105,110,115,120,125,130,135};
+		List<Integer> itemIds = new ArrayList<>();
+		for(int x : listKey) {
+			itemIds.add(x);
+		}
+		DatePeriod workingDate = new DatePeriod( application.getAppDate(),  application.getAppDate());
+		List<String> listEmps = new ArrayList<>();
+		listEmps.add(application.getEmployeeID());
+		//Imported（申請承認）勤怠項目実績を取得
+		//RequestList6
+		List<AttendanceResultImport> listAttendanceResult = dailyAttendanceItemAdapter.getValueOf(listEmps, workingDate, itemIds);
+		return listAttendanceResult;
+	}
+	
+	/**
+	 * 承認状況申請内容取得振休振出
+	 */
+	private String getAppliDetailAcquisitionOfBreakdown(Application_New app, List<Application_New> listApplication) {
+		if(app.getAppType().value == 10) {
+			//アルゴリズム「同時申請された振休振出申請を取得する」を実行する
+			AppCompltLeaveSyncOutput sync = otherCommonAlgorithm.getAppComplementLeaveSync(app.getCompanyID(), app.getAppID());
+		} else {
+			return null;
 		}
 		return null;
 	}

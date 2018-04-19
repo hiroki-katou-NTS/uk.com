@@ -23,4 +23,18 @@ module nts.uk.at.view.kaf018.a.service {
     export function getUseSetting(): JQueryPromise<any> {
         return nts.uk.request.ajax(paths.getUseSetting);
     }
+    
+    /**
+     * save to client service MonthlyPatternSettingBatch
+     */
+    export function saveSelectedClosureId(data): void {
+        nts.uk.characteristics.save('StoreSelectedClosureId', data);
+    }
+
+    /**
+     * find data client service MonthlyPatternSettingBatch
+     */
+    export function restoreSelectedClosureId(): JQueryPromise<any> {
+        return nts.uk.characteristics.restore('StoreSelectedClosureId');
+    }
 }

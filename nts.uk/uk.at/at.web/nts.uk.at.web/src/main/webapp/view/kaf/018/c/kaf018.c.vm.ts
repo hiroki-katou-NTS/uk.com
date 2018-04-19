@@ -6,7 +6,6 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 
     export class ScreenModel {
         legendOptions: any;
-
         closureId: string;
         closureName: string;
         processingYm: string;
@@ -19,7 +18,6 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         selectedWplId: KnockoutObservable<string>;
         selectedWplName: KnockoutObservable<string>;
         listEmpCd: Array<string>;
-        selectedWplIdNext: KnockoutObservable<string>;
         listWkpId: Array<string> = [];
 
         enableNext: KnockoutObservable<boolean>;
@@ -86,11 +84,22 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             return dfd.promise();
         }
 
+        
+        getWkpName() {
+            var self = this;
+            self.enablePre(self.selectedWplIndex != 0)
+            self.enableNext(self.selectedWplIndex != (self.listWorkplace.length - 1))
+
+            let wkp = self.listWorkplace[self.selectedWplIndex];
+            self.selectedWplId(wkp.code);
+            self.selectedWplName(wkp.name);
+        }
+        
         getStatusSymbol() {
             var self = this;
             var dfd = $.Deferred();
             let obj = {
-                selectedWkpId: self.selectedWkpId,
+                selectedWkpId: self.selectedWplId(),
                 listWkpId: self.listWkpId,
                 startDate: self.startDate,
                 endDate: self.endDate,
@@ -100,16 +109,6 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                 dfd.resolve(data);
             });
             return dfd.promise();
-        }
-
-        getWkpName() {
-            var self = this;
-            self.enablePre(self.selectedWplIndex != 0)
-            self.enableNext(self.selectedWplIndex != (self.listWorkplace.length - 1))
-
-            let wkp = self.listWorkplace[self.selectedWplIndex];
-            self.selectedWplId(wkp.code);
-            self.selectedWplName(wkp.name);
         }
 
         nextWkp() {
@@ -198,7 +197,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                     key: "empName",
                     width: "150px",
                     control: "link",
-                    handler: function(rData, rowIdx, key) { alert(rowIdx); }
+                    handler: function() { self.goToD();}
                 }
             ];
             leftmostHeader = {
