@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdr001.b.main.css" />
-			
+
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
@@ -28,10 +28,17 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- A1_1 -->
-				<button tabindex="1">#{i18n.getText('KWD001_36')}</button>
-				<button tabindex="2" class="proceed">#{i18n.getText('KWD001_37')}</button>
-				<button tabindex="3" class="danger">#{i18n.getText('KWD001_38')}</button>
-				<button tabindex="4">#{i18n.getText('KWD001_39')}</button>
+				<button
+					data-bind="click: settingCreateMode,
+                        enable: !isNewMode()"
+					tabindex="1">#{i18n.getText('KWD001_36')}</button>
+				<button data-bind="click: saveHoliday, enable: $root.errors.isEmpty"
+					tabindex="2" class="proceed">#{i18n.getText('KWD001_37')}</button>
+				<button
+					data-bind="click: deleteHoliday,
+                        enable: !isNewMode()"
+					tabindex="3" class="danger">#{i18n.getText('KWD001_38')}</button>
+				<button data-bind="click: closeDialog" tabindex="4">#{i18n.getText('KWD001_39')}</button>
 			</div>
 
 			<div class="cf" id="contents-area">
@@ -42,25 +49,36 @@
 							    multiple: false,
 								height: 371,
 								options: lstHolidays,
-								optionsValue: 'displayCd',
+								optionsValue: 'cd',
 								
 								columns: [
-										{ headerText: '#{i18n.getText('KWD001_40')}', key: 'displayCd', width: 150 },
-										{ headerText: '#{i18n.getText('KWD001_41')}', key: 'displayName', width: 250 }
+										{ headerText: '#{i18n.getText('KWD001_40')}', key: 'cd', width: 150 },
+										{ headerText: '#{i18n.getText('KWD001_41')}', key: 'name', width: 250 }
 										], 
 								
 								value: currentCode
 					}"></table>
 
 				</div>
-				<div class="employeeAction">
+				<div class="employeeAction" data-bind="with: currentHoliday">
 					<div class="labelWork" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KWD001_42')}
 					</div>
-					<input style="width: 150px;" tabindex="6"
-						data-bind="ntsTextEditor: {value: textName1, enable: true, required: true, name: '#[KWD001_40]'}" />
+					<input style="width: 150px;" tabindex="6" id="holidayCode"
+						data-bind="ntsTextEditor: {
+						value: cd,  
+						enable: true,
+						 required: true,
+						  name: '#[KWD001_40]',
+						  enable: $parent.isNewMode()}" />
 					<input style="width: 250px; margin: 20px;" tabindex="7"
-						data-bind="ntsTextEditor: {value: textName2, enable: true, required: true, name: '#[KWD001_41]'}" />
-					<div class="employeetable" style="margin-left: 50px;" data-bind="with: currentHoliday">
+						id="holidayName"
+						data-bind="ntsTextEditor: {
+						value: name,
+						  enable: true,
+						   required: true,
+						    name: '#[KWD001_41]'
+						    }" />
+					<div class="employeetable" style="margin-left: 50px;">
 						<div class="labelWork" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KWD001_43')}
 						</div>
 						<!-- B4_2  -->

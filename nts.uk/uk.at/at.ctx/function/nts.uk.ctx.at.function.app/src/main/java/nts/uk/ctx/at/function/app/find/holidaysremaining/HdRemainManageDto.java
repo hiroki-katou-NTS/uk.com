@@ -7,7 +7,6 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 /**
  * 休暇残数管理表の出力項目設定
  */
-@AllArgsConstructor
 @Value
 public class HdRemainManageDto {
 
@@ -102,7 +101,8 @@ public class HdRemainManageDto {
 	private int nursingCareLeave;
 
 	public static HdRemainManageDto fromDomain(HolidaysRemainingManagement domain) {
-		return new HdRemainManageDto(domain.getCode(), domain.getCompanyID(), domain.getName(),
+		return new HdRemainManageDto(
+				domain.getCompanyID(), domain.getCode(), domain.getName(),
 				domain.getListItemsOutput().getAnnualHoliday().isYearlyHoliday() ? 1 : 0,
 				domain.getListItemsOutput().getAnnualHoliday().isInsideHalfDay() ? 1 : 0,
 				domain.getListItemsOutput().getAnnualHoliday().isInsideHours() ? 1 : 0,
@@ -119,5 +119,30 @@ public class HdRemainManageDto {
 				domain.getListItemsOutput().getChildNursingVacation().isChildNursingLeave() ? 1 : 0,
 				domain.getListItemsOutput().getNursingcareLeave().isNursingLeave() ? 1 : 0);
 
+	}
+
+	public HdRemainManageDto(String cid, String cd, String name, int yearlyHoliday, int insideHalfDay, int insideHours,
+			int yearlyReserved, int outItemSub, int representSub, int remainChargeSub, int pauseItem,
+			int undigestedPause, int numRemainPause, int outputItemsHolidays, int outputHolidayForward,
+			int monthlyPublic, int childCareLeave, int nursingCareLeave) {
+		super();
+		this.cid = cid;
+		this.cd = cd;
+		this.name = name;
+		this.yearlyHoliday = yearlyHoliday;
+		this.insideHalfDay = insideHalfDay;
+		this.insideHours = insideHours;
+		this.yearlyReserved = yearlyReserved;
+		this.outItemSub = outItemSub;
+		this.representSub = representSub;
+		this.remainChargeSub = remainChargeSub;
+		this.pauseItem = pauseItem;
+		this.undigestedPause = undigestedPause;
+		this.numRemainPause = numRemainPause;
+		this.outputItemsHolidays = outputItemsHolidays;
+		this.outputHolidayForward = outputHolidayForward;
+		this.monthlyPublic = monthlyPublic;
+		this.childCareLeave = childCareLeave;
+		this.nursingCareLeave = nursingCareLeave;
 	}
 }
