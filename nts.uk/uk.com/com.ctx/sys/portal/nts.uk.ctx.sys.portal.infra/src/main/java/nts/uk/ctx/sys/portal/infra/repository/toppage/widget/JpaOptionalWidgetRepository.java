@@ -1,12 +1,9 @@
 package nts.uk.ctx.sys.portal.infra.repository.toppage.widget;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -152,27 +149,17 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 		return optional.isPresent();
 	}
 	
+	private final String SELECT_BY_TOP_PAGE_PART_CODE = SELECT_BASE + " WHERE o.sptstOptionalWidgetPK.companyID = :companyID AND t.code =:topPagePartCode AND t.topPagePartType =:topPagePartType";
 	@Override
-	public List<OptionalWidget> getSelectedWidget(String companyId, String topPagePartCode, int topPagePartType) {
-		List<OptionalWidget> optionalWidgets = new ArrayList<OptionalWidget>();
+	public Optional<OptionalWidget> getSelectedWidget(String companyId, String topPagePartCode) {
 		
-		List<CcgmtTopPagePart> ccgmtTopPageParts = this.queryProxy()
-				.query(SELECT_ALL_TOPPAGEPART, CcgmtTopPagePart.class).setParameter("companyID", companyId).getList();
-		
-		ccgmtTopPageParts.stream().forEach(c -> {
-			List<WidgetDisplayItem> sptstOptionalWidgets = this.queryProxy()
-					.query(GET_SELECTED_WIDGET, SptstWidgetDisplay.class)
-					.setParameter("companyID", companyId)
-					.setParameter("code", topPagePartCode)
-					.setParameter("topPagePartType", topPagePartType)
-					.getList(s -> toDomainDisplayItem(s));
-			optionalWidgets.add(new OptionalWidget(c.ccgmtTopPagePartPK.companyID, c.ccgmtTopPagePartPK.topPagePartID,
-					new TopPagePartCode(c.code), new TopPagePartName(c.name),
-					TopPagePartType.valueOf(c.topPagePartType), Size.createFromJavaType(c.width, c.height),
-					sptstOptionalWidgets));
-		});
-		
-		return optionalWidgets;
+		Optional<OptionalWidget> ccgmtTopPageParts = this.queryProxy()
+				.query(SELECT_BY_TOP_PAGE_PART_CODE, Object[].class)
+				.setParameter("companyID", companyId)
+				.setParameter("topPagePartCode", topPagePartCode)
+				.setParameter("topPagePartType", TopPagePartType.OptionalWidget.value)
+				.getSingle(c ->joinObjectToDomain(c));
+		return ccgmtTopPageParts;
 	}
 	
 	@Override
