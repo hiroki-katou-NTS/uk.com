@@ -5,7 +5,7 @@
 
 #ex_accept_wizard>.steps {
 	width: 250px;
-	height: 485px;
+	height: 640px;
 }
 
 #ex_accept_wizard>.content {
@@ -15,8 +15,13 @@
 	margin-left: 5px;
 	margin-right: 0px;
 }
+
 #ex_accept_wizard > .content > .body {
 	padding-top: 0;
+}
+
+#ex_accept_wizard, #ex_accept_wizard .content {
+	overflow: initial;
 }
 
 .title-right {
@@ -35,3 +40,38 @@
 .pull-right {
 	float: right;
 }
+
+.space {
+    display: inline-block;
+}
+
+.button-bottom-area {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+#B3_15 {
+	margin-left: 10px;
+}
+
+#B4_4_container {
+	margin-left: 15px !important;
+}
+
+#B4_16, #B4_17, #B4_18 {
+	display: inline-block;
+}
+
+#B4_12, #B4_30, #B4_34, .space {
+	width: 125px;
+}
+
+#B4_33 {
+	margin-left: 33px;
+    margin-right: 24px;
+}
+
+#B4_35 {
+	width: 325px;
+}
+

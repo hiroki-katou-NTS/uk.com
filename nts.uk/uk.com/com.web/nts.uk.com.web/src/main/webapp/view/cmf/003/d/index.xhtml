@@ -30,12 +30,12 @@
 				<a class="goback"
 					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF001_430')}</a>
 				<!-- D1_2 -->
-				<a class="label area-text-right">#{i18n.getText('CMF003_081')}</a>			
+				<a class="label area-text-right">#{i18n.getText('CMF003_081')}</a>
 			</div>
-
+			
 			<div class="cf" tabindex="-1" id="contents-area">
-				
 
+				<!-- D3_1 -->
 				<div class="ccg001searchkcp005">
 					<div id="ccgcomponent" tabindex="2"></div>
 					<!--  -->
@@ -44,14 +44,15 @@
 
 						<div class="top-right-list-employee">
 							<div style="float: left; width: 50%;">
+								<!-- D4_1 -->
 								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF003_087')}</div>
 							</div>
-							<div style="float: left;width: 40%;">
+							<div style="float: left; width: 40%;">
 
-
+								<!-- D4_2 -->
+								<!-- D4_3 -->
 								<div tabindex="3"
-									data-bind="ntsRadioBoxGroup: {
-																		options: itemTitleAtr,
+									data-bind="ntsRadioBoxGroup: {options: itemTitleAtr,
 																		optionsValue: 'value',
 																		optionsText: 'titleAtrName',
 																		value: selectedTitleAtr,	
@@ -62,20 +63,26 @@
 							</div>
 							<div style="clear: both;"></div>
 						</div>
+						<!-- D4_4 -->
 						<div class="selectionEmployee" tabindex="3">
 							<div id="employeeSearch" tabindex="-1"></div>
 						</div>
-						
+
 						<div class="bot-right-list-employee">
+							<!-- D4_6 -->
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_100')}</div>
-							<button data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top'">?</button>
-														
+							<!-- D4_8 -->
+							<button
+								data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top'">?</button>
+
 							<div class="bot-button-action">
+								<!-- D5_1 -->
 								<button class="large prev_btn" id="prev_btn" data-bind="">#{i18n.getText('CMF003_101')}</button>
+								<!-- D5_2 -->
 								<button class="x-large proceed next_btn" id="next_btn"
-									data-bind="">#{i18n.getText('CMF003_102')}</button>
+									data-bind="click: btnRightClick">#{i18n.getText('CMF003_102')}</button>
 							</div>
-							
+
 						</div>
 					</div>
 				</div>
