@@ -202,7 +202,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 				kscdtScheMasterEntity.kscdtScheMasterInfoPk.generalDate, 
 				kscdtScheMasterEntity.employmentCd, 
 				kscdtScheMasterEntity.classificationCd, 
-				kscdtScheMasterEntity.workTypeCd, 
+				kscdtScheMasterEntity.businessTypeCd, 
 				kscdtScheMasterEntity.jobId, 
 				kscdtScheMasterEntity.workplaceId); 
 		return scheMasterInfo;
@@ -634,9 +634,9 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 				primaryKey,
 				scheMasterInfo.getEmploymentCd(),
 				scheMasterInfo.getClassificationCd(),
-				scheMasterInfo.getWorkTypeCd(),
+				scheMasterInfo.getBusinessTypeCd(),
 				scheMasterInfo.getJobId(),
-				scheMasterInfo.getWorkplaceId());
+				scheMasterInfo.getBusinessTypeCd());
 		this.commandProxy().insert(sscdtScheMasterInfo);
 	}
 
@@ -654,7 +654,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		
 		kscdtScheMasterInfo.employmentCd = scheMasterInfo.getEmploymentCd();
 		kscdtScheMasterInfo.classificationCd = scheMasterInfo.getClassificationCd();
-		kscdtScheMasterInfo.workTypeCd = scheMasterInfo.getWorkTypeCd();
+		kscdtScheMasterInfo.businessTypeCd = scheMasterInfo.getBusinessTypeCd();
 		kscdtScheMasterInfo.jobId = scheMasterInfo.getJobId();
 		kscdtScheMasterInfo.workplaceId = scheMasterInfo.getWorkplaceId();
 		
