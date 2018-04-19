@@ -320,10 +320,8 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     if (self.screenMode() == ScreenMode.Daily) {
                         service.update(data).done(() => {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                let i = self.selectedErrorAlarmCode();
                                 self.startPage(0, self.isNewMode() ? "U" + data.code : data.code).then(() => {
-                                    self.showTypeAtr.valueHasMutated();
-                                    self.selectedErrorAlarmCode(i);
+                                    self.showTypeAtr(0);
                                 });
                                 if (self.lstErrorAlarm().length > 0) {
                                     $("#errorAlarmWorkRecordName").focus();
@@ -335,10 +333,8 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     } else if (self.screenMode() == ScreenMode.Monthly) {
                         service.updateMonthlyCondition(data).done(() => {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                let i = self.selectedErrorAlarmCode();
                                 self.startPage(1, self.isNewMode() ? "U" + data.code : data.code).then(() => {
-                                    self.showTypeAtr.valueHasMutated();
-                                    self.selectedErrorAlarmCode(i);
+                                    self.showTypeAtr(0);
                                 });
                                 if (self.lstErrorAlarm().length > 0) {
                                     $("#errorAlarmWorkRecordName").focus();

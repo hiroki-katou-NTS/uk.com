@@ -106,7 +106,7 @@
 								<span id="color-display-target-item-span" data-bind="text: selectedErrorAlarm().errorDisplayItemName"></span><br/>
 								<div id="color-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_13')}</div>
 								<div id="colorpicker" data-bind="ntsColorPicker: {value: selectedErrorAlarm().messageColor, enable: selectedErrorAlarm().typeAtr() != 2, width: 100}"/><br/>
-								<div id="message-label" data-bind="ntsFormLabel: {constraint: 'DisplayMessage', required: true }">#{i18n.getText('KDW007_14')}</div>
+								<div id="message-label" data-bind="ntsFormLabel: {constraint: 'DisplayMessage', required: false }">#{i18n.getText('KDW007_14')}</div>
 								<textarea id="messageDisplay" class="need-check" data-bind="ntsMultilineEditor: { 
 								    name: '#[KDW007_14]',
 									value: selectedErrorAlarm().displayMessage, 
@@ -394,7 +394,7 @@
 			                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayRightCompare"></span></td>
 			                            	</com:ko-if>
 			                            	<td><button data-bind="click: $data.openAtdItemConditionDialog, enable: $root.content.selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_100')}</button></td>
-			                            	<td><button data-bind="click: $data.clear, enable: $root.content.selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_103')}</button></td>
+			                            	<td><button data-bind="click: $data.clear">#{i18n.getText('KDW007_103')}</button></td>
 		                            	</tr>
 		                            </com:ko-foreach>
 								</table>
@@ -455,7 +455,7 @@
 			                            		<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayRightCompare"></span></td>
 			                            	</com:ko-if>
 			                            	<td><button data-bind="click: $data.openAtdItemConditionDialog, enable: $root.content.selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_100')}</button></td>
-			                            	<td><button data-bind="click: $data.clear, enable: $root.content.selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_103')}</button></td>
+			                            	<td><button data-bind="click: $data.clear">#{i18n.getText('KDW007_103')}</button></td>
 		                            	</tr>
 		                            </com:ko-foreach>
 								</table>
