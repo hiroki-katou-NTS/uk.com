@@ -8,11 +8,16 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			
+			<com:scriptfile path="kwr001.c.start.js" />
+			<com:scriptfile path="kwr001.c.vm.js" />
+			<com:scriptfile path="kwr001.c.service.js" />
+			<com:stylefile path="kwr001.c.main.css" />
 		</ui:define>
 
 		<ui:define name="content">
-			
+		
+			<!-- C1_3 -->
+			<button data-bind="click: openScreenD">Open D screen</button>
 		</ui:define>
 	</ui:composition>
 </body>
