@@ -636,7 +636,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 				scheMasterInfo.getClassificationCd(),
 				scheMasterInfo.getBusinessTypeCd(),
 				scheMasterInfo.getJobId(),
-				scheMasterInfo.getBusinessTypeCd());
+				scheMasterInfo.getWorkplaceId());
 		this.commandProxy().insert(sscdtScheMasterInfo);
 	}
 
