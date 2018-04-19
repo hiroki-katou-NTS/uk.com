@@ -18,6 +18,7 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
@@ -66,11 +67,14 @@ import nts.uk.ctx.at.record.dom.daily.vacationusetime.TimeDigestOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectBreakTimeOfDailyDomainService;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHoursImpl;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonAndWeekStatutoryTime;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyFlexStatutoryLaborTime;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka.OotsukaProcessService;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.statutoryworkinghours.DailyStatutoryWorkingHours;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.statutoryworkinghours.DailyStatutoryWorkingHoursImpl;
 //import nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka.OotsukaProcessService;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
@@ -241,6 +245,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	@Inject
 	private DailyStatutoryWorkingHours dailyStatutoryWorkingHours;
 	
+	@Inject
+	private ReflectBreakTimeOfDailyDomainService reflectBreakTimeOfDailyDomainService;
+	
+	
 	/**
 	 * 勤務情報を取得して計算
 	 * @return 日別実績(Work)
@@ -318,7 +326,16 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		val dailyUnit = dailyStatutoryWorkingHours.getDailyUnit(companyId, employmentCd, employeeId, targetDate, personalInfo.getWorkingSystem());
 		/*法定労働時間(日単位)_（仮）*/
 		//DailyUnit dailyUnit = new DailyUnit(new TimeOfDay(480));
-
+		
+		/*休憩時間帯（遅刻早退用）*/
+		 List<TimeSheetOfDeductionItem> breakTimeList = new ArrayList<>();
+		if(integrationOfDaily.getAttendanceLeave().isPresent()) {
+			Optional<BreakTimeOfDailyPerformance> test = reflectBreakTimeOfDailyDomainService.getBreakTime(companyId, employeeId, targetDate,integrationOfDaily.getWorkInformation());
+			if(test.isPresent()) {
+				 breakTimeList = test.get().changeAllTimeSheetToDeductionItem();
+			}
+		}
+	
 		/*各加算設定取得用*/
 		Map<String, AggregateRoot> map = holidayAddtionRepository.findByCompanyId(companyId);
 		
@@ -455,7 +472,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 												holidayCalcMethodSet,
 												//new WorkTimeCalcMethodDetailOfHoliday(1,1),
 												Optional.of(flexWorkSetOpt.get().getCoreTimeSetting()),
-												dailyUnit);
+												dailyUnit,breakTimeList);
 		} else {
 			switch (workTime.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
 			case FIXED_WORK:
@@ -523,7 +540,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						Optional.empty(),
 						holidayCalcMethodSet,
 //						new WorkTimeCalcMethodDetailOfHoliday(1,1),
-						dailyUnit
+						dailyUnit,
+						breakTimeList
 						);
 				break;
 			case FLOW_WORK:
@@ -594,7 +612,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		WorkRegularAdditionSet regularAddSetting = workRegularAdditionSet!=null?(WorkRegularAdditionSet)workRegularAdditionSet:null;
 		//フレックス勤務の加算設定
 		WorkFlexAdditionSet flexAddSetting = workFlexAdditionSet!=null?(WorkFlexAdditionSet)workFlexAdditionSet:null;
-		// 変形労働勤務の加算設定
+		//変形労働勤務の加算設定
 		WorkDeformedLaborAdditionSet illegularAddSetting = workDeformedLaborAdditionSet!=null?(WorkDeformedLaborAdditionSet)workDeformedLaborAdditionSet:null;
 		//時給者の加算設定
 		HourlyPaymentAdditionSet hourlyPaymentAddSetting = hourlyPaymentAdditionSet!=null?(HourlyPaymentAdditionSet)hourlyPaymentAdditionSet:null;

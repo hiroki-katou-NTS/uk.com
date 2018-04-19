@@ -24,6 +24,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.FlexWithinWorkTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateLeaveEarlyManagementTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationAddTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
@@ -107,7 +108,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 													Optional<CoreTimeSetting> coreTimeSetting,
 													HolidayCalcMethodSet holidayCalcMethodSet,
 													WorkTimezoneLateEarlySet workTimezoneLateEarlySet,
-													DailyUnit dailyUnit) {
+													DailyUnit dailyUnit,List<TimeSheetOfDeductionItem> breakTimeList) {
 		
 		List<WithinWorkTimeFrame> timeFrames = new ArrayList<>();
 		
@@ -149,7 +150,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 										  holidayCalcMethodSet,
 										  workTimezoneLateEarlySet,
 										  coreTimeSetting,
-										  dailyUnit);
+										  dailyUnit,breakTimeList);
 		}
 		return new WithinWorkTimeSheet(timeFrames,lateDesClock,leaveEarlyDesClock);
 	}
@@ -179,7 +180,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			HolidayCalcMethodSet holidayCalcMethodSet,
 			WorkTimezoneLateEarlySet workTimezoneLateEarlySet,
 			Optional<CoreTimeSetting> coreTimeSetting,
-			DailyUnit dailyUnit
+			DailyUnit dailyUnit,List<TimeSheetOfDeductionItem> breakTimeList
 			) {
 		
 		val timeFrames = new ArrayList<WithinWorkTimeFrame>();
@@ -203,7 +204,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 																		 workNo,
 																		 workTimezoneLateEarlySet,
 																		 predetermineTimeForSet.getTimeSheets(workNo),
-																		 coreTimeSetting));
+																		 coreTimeSetting,breakTimeList));
 		}
 		/*所定内割増時間の時間帯作成*/
 		//この処理にある「法定労働時間を取得」＝dailyUnitです

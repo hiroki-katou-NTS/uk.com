@@ -136,7 +136,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 			,DeductionTimeSheet deductionTimeSheet
 			,int workNo
 			,TimezoneUse predetermineTimeSet
-			,Optional<CoreTimeSetting> coreTimeSetting) {
+			,Optional<CoreTimeSetting> coreTimeSetting,List<TimeSheetOfDeductionItem> breakTimeList) {
 
 		
 		//遅刻時間帯の作成
@@ -148,7 +148,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 				deductionTimeSheet,
 				coreTimeSetting,
 				predetermineTimeSet,
-				workNo);
+				workNo,breakTimeList);
 	
 		return latetimesheet;
 		
@@ -450,7 +450,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 																int workNo,
 																WorkTimezoneLateEarlySet workTimezoneLateEarlySet,
 																TimezoneUse predetermineTimeSet,
-																Optional<CoreTimeSetting> coreTimeSetting
+																Optional<CoreTimeSetting> coreTimeSetting,List<TimeSheetOfDeductionItem> breakTimeList
 																) {
 		
 		EmTimeZoneSet dupTimeSheet = new EmTimeZoneSet(duplicateTimeSheet.getWorkingHoursTimeNo(),   
@@ -466,7 +466,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 												   		  deductionTimeSheet,
 												   		  workNo,
 												   		  predetermineTimeSet,
-												   		  coreTimeSetting);
+												   		  coreTimeSetting,breakTimeList);
 		//遅刻時間を計算する
 		AttendanceTime lateDeductTime = lateTimeSheet.getForDeducationTimeSheet().isPresent()?lateTimeSheet.getForDeducationTimeSheet().get().calcTotalTime():new AttendanceTime(0);		
 		//就業時間内時間帯から控除するか判断し控除する				

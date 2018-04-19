@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.dailyprocess.calc.statutoryworkinghours;
+package nts.uk.ctx.at.record.dom.statutoryworkinghours;
 
 import java.util.Optional;
 
@@ -63,7 +63,7 @@ public class DailyStatutoryWorkingHoursImpl implements DailyStatutoryWorkingHour
 		return getWorkingTimeSetting(companyId,employmentCd,employeeId,baseDate,workingSystem)
 				.map(w -> w.getDailyTime())
 				.orElse(DailyUnit.zero());
-	}
+	}	
 	
 	
 	/**
@@ -87,13 +87,15 @@ public class DailyStatutoryWorkingHoursImpl implements DailyStatutoryWorkingHour
 			if (result.isPresent()) {
 				return result;
 			}
-		}else if(usageUnitSetting.get().isWorkPlace()) {//職場の労働時間を管理する場合
+		}
+		if(usageUnitSetting.get().isWorkPlace()) {//職場の労働時間を管理する場合
 			//職場の設定を取得
 			val result = getWorkingPlaceLaborTime.getWkpWorkingTimeSetting(companyId,employeeId,baseDate,workingSystem);
 			if(result.isPresent()) {
 				return result;
 			}
-		}else if(usageUnitSetting.get().isEmployment()) {//雇用の労働時間を管理する場合
+		}
+		if(usageUnitSetting.get().isEmployment()) {//雇用の労働時間を管理する場合
 			//雇用別設定の取得
 			val result = getEmploymentLaborTime.getEmpWorkingTimeSetting(companyId,employmentCd,workingSystem);
 			if(result.isPresent()) {

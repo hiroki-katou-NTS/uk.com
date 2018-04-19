@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.dailyprocess.calc.statutoryworkinghours;
+package nts.uk.ctx.at.record.dom.statutoryworkinghours;
 
 import java.util.Optional;
 
@@ -27,6 +27,7 @@ public class GetShainLaborTimeImpl implements GetShainLaborTime{
 	 * @param shainTransLaborTime
 	 * @return
 	 */
+	@Override
 	public Optional<WorkingTimeSetting> getShainWorkingTimeSetting(String companyId, String employeeId, WorkingSystem workingSystem) {
 		if(workingSystem.isRegularWork()) {//通常勤務　の場合
 			return shainRegularWorkTimeRepository.find(companyId, employeeId).map(t -> t.getWorkingTimeSet());
@@ -35,4 +36,5 @@ public class GetShainLaborTimeImpl implements GetShainLaborTime{
 		}
 		return Optional.empty();
 	}
+	
 }

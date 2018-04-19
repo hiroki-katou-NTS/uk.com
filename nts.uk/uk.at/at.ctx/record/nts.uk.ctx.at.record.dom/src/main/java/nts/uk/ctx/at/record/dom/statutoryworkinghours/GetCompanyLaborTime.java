@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.dailyprocess.calc.statutoryworkinghours;
+package nts.uk.ctx.at.record.dom.statutoryworkinghours;
 
 import java.util.Optional;
 
@@ -9,4 +9,5 @@ public interface GetCompanyLaborTime {
 
 	Optional<WorkingTimeSetting> getComWorkingTimeSetting(String companyId,
 			 WorkingSystem workingSystem);
+	
 }

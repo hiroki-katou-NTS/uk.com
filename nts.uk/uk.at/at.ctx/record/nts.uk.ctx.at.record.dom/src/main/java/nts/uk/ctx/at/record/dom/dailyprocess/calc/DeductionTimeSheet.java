@@ -666,4 +666,33 @@ public class DeductionTimeSheet {
 			return this.forRecordTimeZoneList;
 		}
 	}
+	
+	/**
+	 * 受け取った計算範囲へ控除時間帯を補正＆絞り込む(遅刻早退用)
+	 * 
+	 * @param timeSpan
+	 *            計算範囲
+	 * @param atr
+	 *            控除区分
+	 * @return 控除項目の時間帯リスト(控除区分に従ってＬｉｓｔ取得)
+	 */
+//	public List<TimeSheetOfDeductionItem> getDupliRangeTimeSheetAddBreakTime(TimeSpanForCalc timeSpan, DeductionAtr atr) {
+//		List<TimeSheetOfDeductionItem> dedList = getDedListWithAtr(atr);
+//		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
+//		for (TimeSheetOfDeductionItem timeSheet : dedList) {
+//			val dupCalcRange = timeSheet.calcrange.getDuplicatedWith(timeSpan);
+//			if (dupCalcRange.isPresent()) {
+//				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
+//						new TimeZoneRounding(dupCalcRange.get().getStart(), dupCalcRange.get().getEnd(),
+//								timeSheet.timeSheet.getRounding()),
+//						dupCalcRange.get(), timeSheet.getDeductionTimeSheet(), timeSheet.getRecordedTimeSheet(),
+//						timeSheet.getBonusPayTimeSheet(), timeSheet.getSpecBonusPayTimesheet(),
+//						timeSheet.getMidNightTimeSheet(), timeSheet.getGoOutReason(), timeSheet.getBreakAtr(),
+//						timeSheet.getDeductionAtr()));
+//			}
+//		}
+//		return returnList;
+//	}
+	
+	
 }

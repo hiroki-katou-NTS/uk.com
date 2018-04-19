@@ -1,5 +1,6 @@
-package nts.uk.ctx.at.record.dom.dailyprocess.calc.statutoryworkinghours;
+package nts.uk.ctx.at.record.dom.statutoryworkinghours;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,9 +63,6 @@ public class GetWorkingPlaceLaborTimeImpl implements GetWorkingPlaceLaborTime{
 		
 		return Optional.empty();
 	}
-	
-	
-	
 	
 	
 }
