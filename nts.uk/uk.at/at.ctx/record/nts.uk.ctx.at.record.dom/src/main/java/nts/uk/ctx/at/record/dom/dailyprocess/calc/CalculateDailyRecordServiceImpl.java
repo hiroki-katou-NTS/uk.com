@@ -471,7 +471,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 												holidayCalcMethodSet,
 												//new WorkTimeCalcMethodDetailOfHoliday(1,1),
 												Optional.of(flexWorkSetOpt.get().getCoreTimeSetting()),
-												dailyUnit, integrationOfDaily);
+												dailyUnit);
 		} else {
 			switch (workTime.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
 			case FIXED_WORK:
@@ -718,11 +718,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				    illegularAddSetting,
 				    flexAddSetting,
 				    regularAddSetting,
-				    vacationAddSetting,
+				    holidayAddtionSet,
 				    AutoCalOverTimeAttr.CALCULATION_FROM_STAMP,
 				    workTime.get(),
 				    flexCalcMethod,
-				    holidaycalcMethodSet,
+				    manageReGetClass.getHolidayCalcMethodSet(),
 				    autoRaisingSet,
 					bonusPayAutoCalcSet,
 					calcAtrOfDaily,
