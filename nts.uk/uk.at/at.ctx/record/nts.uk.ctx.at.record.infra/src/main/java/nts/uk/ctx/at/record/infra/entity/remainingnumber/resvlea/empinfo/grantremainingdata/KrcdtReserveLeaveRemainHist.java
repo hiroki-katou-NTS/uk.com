@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainHistoryData;
-import nts.uk.ctx.at.record.infra.entity.remainingnumber.resvlea.KrcmtReverseLeaRemain;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * 
@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_RVSLEA_REMAIN_HIST")
-public class KrcdtReserveLeaveRemainHist extends KrcmtReverseLeaRemain {
+public class KrcdtReserveLeaveRemainHist extends UkJpaEntity {
 
 	@Id
 	@Column(name = "RVSLEA_ID")
@@ -112,6 +112,11 @@ public class KrcdtReserveLeaveRemainHist extends KrcmtReverseLeaRemain {
 		this.closureId = closureId;
 		this.closeDay = closeDay;
 		this.isLastDay = isLastDay;
+	}
+
+	@Override
+	protected Object getKey() {
+		return this.rvsLeaId;
 	}
 
 }

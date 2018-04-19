@@ -47,7 +47,8 @@ public class RemainAnnualLeaveUpdating {
 	 * @param period
 	 * @param empId
 	 */
-	public void updateRemainAnnualLeave(AggrResultOfAnnualLeave output, AggrPeriodEachActualClosure period, String empId) {
+	public void updateRemainAnnualLeave(AggrResultOfAnnualLeave output, AggrPeriodEachActualClosure period,
+			String empId) {
 		updateRemainAnnualLeaveNumber(output, period, empId);
 		updateMaxAnnualLeaveNumber(output, period, empId);
 	}
@@ -86,11 +87,33 @@ public class RemainAnnualLeaveUpdating {
 			AnnualLeaveMaxHistoryData maxDataHist = new AnnualLeaveMaxHistoryData(maxData, period.getYearMonth(),
 					period.getClosureId(), period.getClosureDate());
 			annLeaveMaxHistRepo.addOrUpdate(maxDataHist);
-			AnnualLeaveMaxData maxData2 = output.getAsOfPeriodEnd().getMaxData();
-			annLeaveMaxRepo.update(maxData2);
+			AnnualLeaveMaxData maxDataOutput = output.getAsOfPeriodEnd().getMaxData();
+			maxData = AnnualLeaveMaxData.createFromJavaType(empId,
+					maxDataOutput.getHalfdayAnnualLeaveMax() != null
+							&& maxDataOutput.getHalfdayAnnualLeaveMax().isPresent()
+									? maxDataOutput.getHalfdayAnnualLeaveMax().get().getMaxTimes().v() : null,
+					maxDataOutput.getHalfdayAnnualLeaveMax() != null
+							&& maxDataOutput.getHalfdayAnnualLeaveMax().isPresent()
+									? maxDataOutput.getHalfdayAnnualLeaveMax().get().getUsedTimes().v() : null,
+					maxDataOutput.getTimeAnnualLeaveMax() != null && maxDataOutput.getTimeAnnualLeaveMax().isPresent()
+							? maxDataOutput.getTimeAnnualLeaveMax().get().getMaxMinutes().v() : null,
+					maxDataOutput.getTimeAnnualLeaveMax() != null && maxDataOutput.getTimeAnnualLeaveMax().isPresent()
+							? maxDataOutput.getTimeAnnualLeaveMax().get().getUsedMinutes().v() : null);
+			 annLeaveMaxRepo.update(maxData);
 		} else {
-			AnnualLeaveMaxData maxData2 = output.getAsOfPeriodEnd().getMaxData();
-			annLeaveMaxRepo.update(maxData2);
+			AnnualLeaveMaxData maxDataOutput = output.getAsOfPeriodEnd().getMaxData();
+			AnnualLeaveMaxData maxData = AnnualLeaveMaxData.createFromJavaType(empId,
+					maxDataOutput.getHalfdayAnnualLeaveMax() != null
+							&& maxDataOutput.getHalfdayAnnualLeaveMax().isPresent()
+									? maxDataOutput.getHalfdayAnnualLeaveMax().get().getMaxTimes().v() : null,
+					maxDataOutput.getHalfdayAnnualLeaveMax() != null
+							&& maxDataOutput.getHalfdayAnnualLeaveMax().isPresent()
+									? maxDataOutput.getHalfdayAnnualLeaveMax().get().getUsedTimes().v() : null,
+					maxDataOutput.getTimeAnnualLeaveMax() != null && maxDataOutput.getTimeAnnualLeaveMax().isPresent()
+							? maxDataOutput.getTimeAnnualLeaveMax().get().getMaxMinutes().v() : null,
+					maxDataOutput.getTimeAnnualLeaveMax() != null && maxDataOutput.getTimeAnnualLeaveMax().isPresent()
+							? maxDataOutput.getTimeAnnualLeaveMax().get().getUsedMinutes().v() : null);
+			annLeaveMaxRepo.update(maxData);
 		}
 	}
 

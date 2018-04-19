@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.command.monthlyclosureupdate;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -68,7 +69,7 @@ public class CheckMonthlyClosureCommandHandler extends CommandHandlerWithResult<
 				DatePeriod closurePeriod = closureService.getClosurePeriod(closureId,
 						closure.getClosureMonth().getProcessingYm());
 
-				List<String> listEmpId = employeeSearch.search(createQueryToFilterEmployees(closurePeriod)).stream()
+				List<String> listEmpId = employeeSearch.search(createQueryToFilterEmployees(closurePeriod, closureId)).stream()
 						.map(item -> item.getEmployeeId()).collect(Collectors.toList());
 
 				GeneralDateTime executionDT = GeneralDateTime.now();
@@ -126,22 +127,22 @@ public class CheckMonthlyClosureCommandHandler extends CommandHandlerWithResult<
 		return listClosureId.contains(ClosureId.valueOf(closureId));
 	}
 
-	private RegulationInfoEmployeeQuery createQueryToFilterEmployees(DatePeriod closurePeriod) {
+	private RegulationInfoEmployeeQuery createQueryToFilterEmployees(DatePeriod closurePeriod, int closureId) {
 		RegulationInfoEmployeeQuery query = new RegulationInfoEmployeeQuery();
 		query.setBaseDate(closurePeriod.end());
 		query.setReferenceRange(EmployeeReferenceRange.ALL_EMPLOYEE.value);
 		query.setFilterByEmployment(false);
-		query.setEmploymentCodes(Collections.emptyList());
+//		query.setEmploymentCodes(Collections.emptyList());
 		query.setFilterByDepartment(false);
-		query.setDepartmentCodes(Collections.emptyList());
+//		query.setDepartmentCodes(Collections.emptyList());
 		query.setFilterByWorkplace(false);
-		query.setWorkplaceCodes(Collections.emptyList());
+//		query.setWorkplaceCodes(Collections.emptyList());
 		query.setFilterByClassification(false);
-		query.setClassificationCodes(Collections.emptyList());
+//		query.setClassificationCodes(Collections.emptyList());
 		query.setFilterByJobTitle(false);
-		query.setJobTitleCodes(Collections.emptyList());
+//		query.setJobTitleCodes(Collections.emptyList());
 		query.setFilterByWorktype(false);
-		query.setWorktypeCodes(Collections.emptyList());
+//		query.setWorktypeCodes(Collections.emptyList());
 		query.setPeriodStart(closurePeriod.start());
 		query.setPeriodEnd(closurePeriod.end());
 		query.setIncludeIncumbents(true);
@@ -153,6 +154,8 @@ public class CheckMonthlyClosureCommandHandler extends CommandHandlerWithResult<
 		query.setSortOrderNo(1);
 		// query.setNameType(nameType);
 		query.setSystemType(2);
+		query.setFilterByClosure(true);
+		query.setClosureIds(Arrays.asList(closureId));
 		return query;
 	}
 

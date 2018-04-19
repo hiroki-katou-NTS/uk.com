@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantTimeRemainHistoryData;
-import nts.uk.ctx.at.record.infra.entity.remainingnumber.resvlea.KrcmtReverseLeaRemain;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * 
@@ -20,7 +20,7 @@ import nts.uk.ctx.at.record.infra.entity.remainingnumber.resvlea.KrcmtReverseLea
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_RVSLEA_TIME_RM_HIST")
-public class KrcdtReserveLeaveTimeRemainHist extends KrcmtReverseLeaRemain {
+public class KrcdtReserveLeaveTimeRemainHist extends UkJpaEntity {
 
 	@Id
 	@Column(name = "RVSLEA_ID")
@@ -94,5 +94,10 @@ public class KrcdtReserveLeaveTimeRemainHist extends KrcmtReverseLeaRemain {
 		this.overLimitDays = overLimitDays;
 		this.remainingDays = remainingDays;
 		this.grantProcessDate = grantProcessDate;
+	}
+
+	@Override
+	protected Object getKey() {
+		return this.rvsLeaId;
 	}
 }
