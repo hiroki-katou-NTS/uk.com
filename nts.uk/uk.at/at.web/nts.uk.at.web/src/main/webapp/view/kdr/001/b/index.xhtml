@@ -65,19 +65,18 @@
 					</div>
 					<input style="width: 150px;" tabindex="6" id="holidayCode"
 						data-bind="ntsTextEditor: {
-						value: cd,  
-						enable: true,
-						 required: true,
-						  name: '#[KWD001_40]',
-						  enable: $parent.isNewMode()}" />
+							name: '#[KWD001_40]',
+							value: cd,  
+							enable: true,
+						 	required: true,
+						  	enable: $parent.isNewMode()}" />
 					<input style="width: 250px; margin: 20px;" tabindex="7"
 						id="holidayName"
 						data-bind="ntsTextEditor: {
-						value: name,
-						  enable: true,
-						   required: true,
-						    name: '#[KWD001_41]'
-						    }" />
+							name: '#[KWD001_41]',
+							value: name,
+						  	enable: true,
+						    required: true}" />
 					<div class="employeetable" style="margin-left: 50px;">
 						<div class="labelWork" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KWD001_43')}
 						</div>
