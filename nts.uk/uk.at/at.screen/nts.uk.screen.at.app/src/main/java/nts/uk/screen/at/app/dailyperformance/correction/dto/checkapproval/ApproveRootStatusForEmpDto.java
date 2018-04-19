@@ -3,19 +3,21 @@ package nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalStatus;
-import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApproverEmployeeState;
 
 
 @NoArgsConstructor
 @Getter
-public class ApproveRootStatusForEmpDto extends ApproveRootStatusForEmpImport{
+public class ApproveRootStatusForEmpDto {
 	@Setter
-	private ApprovalStatus approvalStatusEmployee;
+	private ApproverEmployeeState approverEmployeeState;
+	
+	@Setter
+	private boolean checkApproval;
 
-	public ApproveRootStatusForEmpDto(ApproveRootStatusForEmpImport approve, ApprovalStatus approvalStatusEmployee) {
-		super(approve.getEmployeeID(), approve.getAppDate(), approve.getApprovalStatus());
-		this.approvalStatusEmployee = approvalStatusEmployee;
+	public ApproveRootStatusForEmpDto(ApproverEmployeeState approverEmployeeState, boolean checkBox) {
+		this.approverEmployeeState = approverEmployeeState;
+		this.checkApproval = checkBox;
 	}
 	
 }
