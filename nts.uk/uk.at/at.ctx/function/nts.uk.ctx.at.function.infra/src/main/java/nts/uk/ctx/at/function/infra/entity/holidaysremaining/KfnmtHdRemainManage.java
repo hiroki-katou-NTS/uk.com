@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.infra.entity.holidaysremaining;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -15,22 +14,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.function.dom.holidaysremaining.ChildNursingLeave;
-import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
-import nts.uk.ctx.at.function.dom.holidaysremaining.ItemOutputForm;
-import nts.uk.ctx.at.function.dom.holidaysremaining.ItemsOutputtedAlternate;
-import nts.uk.ctx.at.function.dom.holidaysremaining.ItemsPublicOutput;
-import nts.uk.ctx.at.function.dom.holidaysremaining.NursingCareLeave;
-import nts.uk.ctx.at.function.dom.holidaysremaining.PauseItem;
-import nts.uk.ctx.at.function.dom.holidaysremaining.SpecialHolidayOutput;
-import nts.uk.ctx.at.function.dom.holidaysremaining.YearlyItemsOutput;
-import nts.uk.ctx.at.function.dom.holidaysremaining.YearlyReserved;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * 休暇残数管理表の出力項目設定
  */
 @Entity
+@NoArgsConstructor
 @Table(name = "KFNMT_HD_REMAIN_MANAGE")
 public class KfnmtHdRemainManage extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -153,7 +143,7 @@ public class KfnmtHdRemainManage extends UkJpaEntity implements Serializable {
 	@Column(name = "NURSING_CARE_LEAVE")
 	public int nursingCareLeave;
 
-	@OneToMany(targetEntity = KfnmtSpecialHoliday.class, cascade = CascadeType.ALL, mappedBy = "kfnmtSpecialHoliday", orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(targetEntity = KfnmtSpecialHoliday.class, cascade = CascadeType.ALL, mappedBy = "kfnmtHdRemainManage", orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "KFNMT_SPECIAL_HOLIDAY")
 	public List<KfnmtSpecialHoliday> kfnmtSpecialHolidays;
 

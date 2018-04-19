@@ -11,10 +11,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 @Transactional
 public class AddSpecialHolidayOutputCommandHandler extends CommandHandler<SpecialHolidayOutputCommand>
 {
-	@Inject
-	private HdRemainManageCommand hdRemainManageCommand;
-    
-    @Override
+	@Override
     protected void handle(CommandHandlerContext<SpecialHolidayOutputCommand> context) {
     	
     }
