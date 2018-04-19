@@ -119,6 +119,8 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 		LoginUserContext loginUserContext = AppContexts.user();
 		
 		//TODO ドメインモデル「計画休暇のルールの履歴」を取得する (Lấy domain 「計画休暇のルールの履歴」)
+		
+		
 		//TODO ドメインモデル「計画休暇を取得できる上限日数」を取得する (Lấy domain 「計画休暇を取得できる上限日数」)
 		
 		// ドメインモデル「勤務種類」を取得する (lấy domain 「勤務種類」)

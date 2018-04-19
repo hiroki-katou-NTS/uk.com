@@ -11,7 +11,6 @@
 	border: 1px solid #ccc !important;
 	border-radius: 5px;
 	float: right;
-	width: 550px;
 	padding: 5px;
 	margin-top: 37px;
 	height: 511px;
@@ -51,9 +50,8 @@
 .selectionEmployee {
 	border: 1px solid #ccc !important;
 	border-radius: 5px;
-	margin: 0px 30px 0px 90px;
-	padding: 20px;
-	width: 600px;
+	margin: 0px 20px 0px 90px;
+	padding: 22px;
 }
 
 .labelRangeDate {
