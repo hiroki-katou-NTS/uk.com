@@ -13,7 +13,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.setting.vacation.history.RemoveVacationHistoryCommand;
 import nts.uk.ctx.at.request.app.command.setting.vacation.history.RemoveVacationHistoryCommandHandler;
@@ -23,7 +22,6 @@ import nts.uk.ctx.at.request.app.command.setting.vacation.history.dto.VacationHi
 import nts.uk.ctx.at.request.dom.settting.worktype.history.PlanVacationHistory;
 import nts.uk.ctx.at.request.dom.settting.worktype.history.VacationHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class VacationHistoryWebService.
@@ -93,34 +91,6 @@ public class VacationHistoryWebService extends WebService {
 	@POST
 	@Path("settingHistory")
 	public void settingHistory(VacationHistoryCommand command) {
-		
-		// Get companyId;
-		String companyId = AppContexts.user().companyId();
-		
-		// check conditional
-		if (command.getVacationHistory().getStartDate().after(command.getVacationHistory().getEndDate())) {
-			throw new BusinessException("Msg_917");
-		}
-
-		DatePeriod period = new DatePeriod(command.getVacationHistory().getStartDate(),
-				command.getVacationHistory().getEndDate());
-		Integer count = this.historyRepository.countByDatePeriod(companyId, command.getWorkTypeCode(), period,
-				command.getVacationHistory().getHistoryId());
-
-		if (count.intValue() > 0) {
-			throw new BusinessException("Msg_106");
-		}
-
-		if (command.getVacationHistory().getStartDate().year() != command.getVacationHistory().getEndDate().year()) {
-			throw new BusinessException("Msg_967");
-		}
-		
-		if (command.getIsCreated()) {
-			if (this.historyRepository.findByWorkTypeCode(companyId, command.getWorkTypeCode()).size() >= 20) {
-				throw new BusinessException("Msg_976");
-			}
-		}
-		
 		// Add VacationHistory
 		this.saveHistoryCommandHandler.handle(command);
 	}

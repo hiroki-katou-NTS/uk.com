@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.command.setting.vacation.history;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
@@ -10,6 +11,7 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * The Class RemoveVacationHistoryCommandHandler.
  */
+@Stateless
 public class RemoveVacationHistoryCommandHandler extends CommandHandler<RemoveVacationHistoryCommand>{
 	
 	/** The history repository. */
