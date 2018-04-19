@@ -94,6 +94,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         ];
         // date ranger component
         dateRanger: KnockoutObservable<any> = ko.observable(null);
+        
+        datePicker: KnockoutObservable<any> = ko.observable(null);
         // date picker component
         selectedDate: KnockoutObservable<any> = ko.observable(null);
 
@@ -261,15 +263,25 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var self = this;
             self.dateRanger.subscribe((dateRange) => {
                 if (dateRange && dateRange.startDate && dateRange.endDate) {
-                    self.selectedDate(dateRange.startDate);
+                    
                     var elementDate = dateRange.startDate;
                     if (moment(elementDate, "YYYY/MM/DD").isValid()) {
                         while (!moment(elementDate, "YYYY/MM/DD").isAfter(dateRange.endDate)) {
                             self.lstDate.push({ date: elementDate });
                             elementDate = moment(elementDate, "YYYY/MM/DD").add(1, 'd').format("YYYY/MM/DD");
                         }
+                    }
+                    if(self.displayFormat() == 1){
+                        self.datePicker().startDate = dateRange.startDate;
+                        self.datePicker().endDate = dateRange.endDate; 
+                        self.datePicker.valueHasMutated();
+                        self.selectedDate(dateRange.startDate);
+                    }
                 }
-                }
+            });
+            self.datePicker({
+                startDate: moment().add(-1, "M").add(1 ,"d").format("YYYY/MM/DD"),
+                endDate: moment().format("YYYY/MM/DD")
             });
             self.dateRanger({
                 startDate: moment().add(-1, "M").add(1 ,"d").format("YYYY/MM/DD"),
@@ -754,7 +766,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         checkInputCare(data: any, rowItemSelect : any){
             var self = this;
-            if(CHECK_INPUT[data.itemId] != undefined &&(!self.isNNUE(rowItemSelect["A"+CHECK_INPUT[data.itemId]]) || data.value =="")){
+            if(CHECK_INPUT[data.itemId] != undefined 
+            && ((self.isNNUE(rowItemSelect["A"+CHECK_INPUT[data.itemId]]) && data.value =="")  
+             || (data.value !="" && !self.isNNUE(rowItemSelect["A"+CHECK_INPUT[data.itemId]])))){
                 data["itemId"] = data.columnKey.substring(1, data.columnKey.length);
                 data["group"] = Number(CHECK_INPUT[data.itemId]);
                 self.listCareInputError.push(data); 
@@ -800,6 +814,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     }));
                 } else {
                     lstEmployee = self.lstEmployee();
+                }
+                 if (self.displayFormat() === 1) {
+                    self.datePicker().startDate = self.dateRanger().startDate;
+                    self.datePicker().endDate = self.dateRanger().endDate; 
+                    self.datePicker.valueHasMutated();
+                    self.selectedDate(self.dateRanger().startDate);
                 }
                 let param = {
                     dateRange: {
@@ -959,14 +979,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
                         return employee.id === self.selectedEmployee();
                     }));
-                } else {1
+                } else {
                     lstEmployee = self.lstEmployee();
                 }
-                //  let errorCodes =["0001","0002","003"];      
+                //  let errorCodes =["0001","0002","003"];     
+                let errorParam = { initMode: 0, selectedItems: [] };
+                nts.uk.ui.windows.setShared("KDW003D_ErrorParam", errorParam);  
                 nts.uk.ui.windows.sub.modal("/view/kdw/003/d/index.xhtml").onClosed(() => {
                     nts.uk.ui.block.clear();
-                    let errorCodes = nts.uk.ui.windows.getShared('errorAlarmList');
-                    if (errorCodes != undefined) {
+                    let errorCodes = nts.uk.ui.windows.getShared('KDW003D_Output');
+                    if (errorCodes != undefined && errorCodes.length > 0) {
                         let param = {
                             dateRange: {
                                 startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),

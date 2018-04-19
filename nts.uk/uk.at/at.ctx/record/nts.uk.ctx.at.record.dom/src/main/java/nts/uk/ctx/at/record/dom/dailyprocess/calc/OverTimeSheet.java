@@ -123,16 +123,16 @@ public class OverTimeSheet {
 		for(OverTimeFrameTimeSheetForCalc overTimeFrameTime : frameTimeSheets) {
 			AttendanceTime calcDedTime = overTimeFrameTime.correctCalculationTime(Optional.empty(), autoCalcSet,DeductionAtr.Deduction);
 			OverTimeFrameTime getListItem = calcOverTimeWorkTimeList.get(overTimeFrameTime.getFrameTime().getOverWorkFrameNo().v().intValue() - 1);
-			getListItem.addOverTime(forceAtr.isCalculateEmbossing()?calcDedTime:new AttendanceTime(0),calcDedTime);
-			calcOverTimeWorkTimeList.set(overTimeFrameTime.getFrameTime().getOverWorkFrameNo().v().intValue() - 1, getListItem);
+			val test = getListItem.addOverTime(forceAtr.isCalculateEmbossing()?calcDedTime:new AttendanceTime(0),calcDedTime);
+			calcOverTimeWorkTimeList.set(overTimeFrameTime.getFrameTime().getOverWorkFrameNo().v().intValue() - 1, test);
 		}
 		//事前申請を上限とする制御
 		val afterCalcUpperTimeList = afterUpperControl(calcOverTimeWorkTimeList,autoCalcSet);
 		//振替処理
-		val aftertransTimeList = transProcess(workType,
-											  afterCalcUpperTimeList,
-											  eachWorkTimeSet,
-											  eachCompanyTimeSet);
+		val aftertransTimeList = afterCalcUpperTimeList;//transProcess(workType,
+//											  afterCalcUpperTimeList,
+//											  eachWorkTimeSet,
+//											  eachCompanyTimeSet);
 		return aftertransTimeList;
 		
 	}
@@ -448,9 +448,9 @@ public class OverTimeSheet {
 	 */
 	private AttendanceTime calcTransferTimeOfPeriodTime(AttendanceTime periodTime,List<OverTimeFrameTime> afterCalcUpperTimeList, UseTimeAtr useTimeAtr) {
 		int totalFrameTime =  useTimeAtr.isTime()
-								?afterCalcUpperTimeList.stream().map(tc -> tc.getOverTimeWork().getTime().v()).collect(Collectors.summingInt(tc -> tc))
-								:afterCalcUpperTimeList.stream().map(tc -> tc.getOverTimeWork().getCalcTime().v()).collect(Collectors.summingInt(tc -> tc));
-		if(periodTime.greaterThanOrEqualTo(new AttendanceTime(totalFrameTime))) {
+								?afterCalcUpperTimeList.stream().map(tc -> tc.getOverTimeWork().getTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))
+								:afterCalcUpperTimeList.stream().map(tc -> tc.getOverTimeWork().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc));
+		if(totalFrameTime > periodTime.valueAsMinutes()) {
 			return new AttendanceTime(totalFrameTime).minusMinutes(periodTime.valueAsMinutes());
 		}
 		else {
@@ -540,14 +540,14 @@ public class OverTimeSheet {
 	 */
 	private AttendanceTime calsTransAllTime(OneDayTime oneDay,OneDayTime halfDay,List<OverTimeFrameTime> afterCalcUpperTimeList,UseTimeAtr useTimeAtr) {
 		int totalFrameTime = useTimeAtr.isTime()
-										?afterCalcUpperTimeList.stream().map(tc -> tc.getOverTimeWork().getTime().v()).collect(Collectors.summingInt(tc -> tc))
-										:afterCalcUpperTimeList.stream().map(tc -> tc.getOverTimeWork().getCalcTime().v()).collect(Collectors.summingInt(tc -> tc));
+										?afterCalcUpperTimeList.stream().map(tc -> tc.getOverTimeWork().getTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))
+										:afterCalcUpperTimeList.stream().map(tc -> tc.getOverTimeWork().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc));
 		if(totalFrameTime >= oneDay.valueAsMinutes()) {
-			return  new AttendanceTime(oneDay.v());
+			return  new AttendanceTime(oneDay.valueAsMinutes());
 		}
 		else {
 			if(totalFrameTime >= halfDay.valueAsMinutes()) {
-				return new AttendanceTime(halfDay.v());
+				return new AttendanceTime(halfDay.valueAsMinutes());
 			}
 			else {
 				return new AttendanceTime(0);

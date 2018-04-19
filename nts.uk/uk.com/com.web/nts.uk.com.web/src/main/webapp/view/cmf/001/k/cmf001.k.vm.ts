@@ -13,7 +13,6 @@ module nts.uk.com.view.cmf001.k.viewmodel {
 
         listConvertCode: KnockoutObservableArray<model.AcceptanceCodeConvert>
         selectedConvertCode: KnockoutObservable<string>
-        convertCodeListHeight: KnockoutObservable<number> = ko.observable(269);
         /* screen */
         constructor() {
             var self = this;
@@ -26,11 +25,6 @@ module nts.uk.com.view.cmf001.k.viewmodel {
             let convertCode = selectedConvertCode.dispConvertCode;
             let convertName = selectedConvertCode.dispConvertName;
             self.selectedConvertCode(convertCode);
-            // クロムブラウザを検出する
-            let browserInfo = navigator.userAgent.toLowerCase();
-            if( browserInfo.indexOf('chrome') > -1 && browserInfo .indexOf('edge') == -1 ){
-                self.convertCodeListHeight(265);
-            }
         }
         start(): JQueryPromise<any> {
             block.invisible();

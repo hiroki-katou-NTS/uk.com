@@ -20,7 +20,7 @@ public class PreWorkchangeReflectServiceImpl implements PreWorkchangeReflectServ
 	@Inject
 	private ScheWorkUpdateService workTimeUpdate;
 	@Override
-	public ApplicationReflectOutput workchangeReflect(CommonReflectParameter workchangePara, boolean isPre) {
+	public boolean workchangeReflect(CommonReflectParameter workchangePara, boolean isPre) {
 		try {
 			for(int i = 0; workchangePara.getStartDate().compareTo(workchangePara.getEndDate()) + i <= 0; i++){
 				GeneralDate loopDate = workchangePara.getStartDate().addDays(i);
@@ -34,10 +34,9 @@ public class PreWorkchangeReflectServiceImpl implements PreWorkchangeReflectServ
 						workchangePara.getWorkTypeCode());
 				workTimeUpdate.updateWorkTimeType(reflectPara, false);
 			}			
-			return new ApplicationReflectOutput(ReflectedStateRecord.REFLECTED, ReasonNotReflectRecord.ACTUAL_CONFIRMED);	
+			return true;	
 		}catch (Exception e) {
-			return new ApplicationReflectOutput(EnumAdaptor.valueOf(workchangePara.getReflectState().value, ReflectedStateRecord.class),
-					workchangePara.getReasoNotReflect() == null ? null : EnumAdaptor.valueOf(workchangePara.getReasoNotReflect().value, ReasonNotReflectRecord.class));
+			return false;
 		}
 	}
 

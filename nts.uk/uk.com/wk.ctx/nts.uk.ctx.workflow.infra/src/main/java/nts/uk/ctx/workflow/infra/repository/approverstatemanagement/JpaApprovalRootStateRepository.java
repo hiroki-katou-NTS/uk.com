@@ -119,6 +119,13 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		SELECT_BY_LIST_EMP_AND_DATES = builderString.toString();
 		
 	}
+	
+	@Override
+	public Optional<ApprovalRootState> findByID(String rootStateID) {
+		return this.queryProxy().query(SELECT_BY_ID, WwfdtApprovalRootState.class)
+				.setParameter("rootStateID", rootStateID).getSingle(x -> x.toDomain());
+	}
+	
 	@Override
 	public List<ApprovalRootState> findEmploymentApps(List<String> rootStateIDs) {
 		return this.queryProxy().query(SELECT_BY_TYPE_APPS, WwfdtApprovalRootState.class)
@@ -274,7 +281,4 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 				.setParameter("rootType", rootType)
 				.setParameter("employeeID", employeeIDs).getList(x -> x.toDomain());
 	}
-
-	
-
 }

@@ -669,7 +669,7 @@ public abstract class CalculationTimeSheet {
 	
 
 	/**
-	 * 深夜時間帯と重複している控除項目時間帯を加給時間帯へ保持させる 
+	 * 深夜時間帯と重複している控除項目時間帯を深夜時間帯へ保持させる 
 	 * (実働時間帯へ持っていきたい)
 	 */
 	public static Optional<MidNightTimeSheetForCalc> getMidNightTimeSheetIncludeDedTimeSheet(MidNightTimeSheet midNightTimeSheet,TimeSpanForCalc duplicateTimeSheet,

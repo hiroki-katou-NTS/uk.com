@@ -19,5 +19,9 @@ public class TimeReflectScheDto {
 	private Integer endTime;
 	/**	枠番号 */
 	private Integer frameNumber;
+	
+	private boolean isUpdateStart;
+	
+	private boolean isUpdateEnd;
 
 }
