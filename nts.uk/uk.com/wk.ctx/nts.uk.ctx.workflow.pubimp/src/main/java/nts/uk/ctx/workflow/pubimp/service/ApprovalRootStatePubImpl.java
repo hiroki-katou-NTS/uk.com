@@ -597,7 +597,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	}
 	@Override
 	// requestList347
-	public void RegisterApproval(String approverID, List<GeneralDate> approvalRecordDates, List<String> employeeIDs,
+	public void registerApproval(String approverID, List<GeneralDate> approvalRecordDates, List<String> employeeIDs,
 			Integer rootType,String companyID) {
 		// 対象者リストと日付リストから承認ルートインスタンスを取得する
 		List<ApprovalRootState> approvalRootSates = this.approvalRootStateRepository.findAppByListEmployeeIDAndListRecordDate(approvalRecordDates, employeeIDs, rootType);
@@ -609,7 +609,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	}
 	@Override
 	// requestList356
-	public boolean ReleaseApproval(String approverID, List<GeneralDate> approvalRecordDates, List<String> employeeIDs,
+	public boolean releaseApproval(String approverID, List<GeneralDate> approvalRecordDates, List<String> employeeIDs,
 			Integer rootType, String companyID) {
 		boolean result = true;
 		// 対象者リストと日付リストから承認ルートインスタンスを取得する
