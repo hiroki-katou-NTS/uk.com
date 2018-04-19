@@ -17,7 +17,7 @@ import nts.uk.ctx.at.function.app.find.holidaysremaining.HdRemainManageFinder;
 
 @Path("at/function/holidaysremaining")
 @Produces("application/json")
-public class HolidaysremainingWebService extends WebService {
+public class HolidaysRemainingWebService extends WebService {
 
 	/* Finder */
 	@Inject
