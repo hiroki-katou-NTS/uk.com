@@ -24,10 +24,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
 
 /** Event：休憩時間帯を補正する */
@@ -62,7 +59,7 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandler<Upda
 		workInfoRepo.find(command.getEmployeeId(), command.getWorkingDate()).ifPresent(wi -> {
 			String companyId = AppContexts.user().companyId();
 			workTypeRepo.findByPK(companyId, wi.getRecordInfo().getWorkTypeCode().v()).ifPresent(wt -> {
-				if (isWokingDay(wt.getDailyWork())) {
+				if (wt.isWokingDay()) {
 					BreakTimeOfDailyPerformance breakTime = getUpdateBreakTime(command.getEmployeeId(),
 							command.getWorkingDate(), wi, companyId);
 					/** 「日別実績の休憩時間帯」を更新する */
@@ -107,19 +104,6 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandler<Upda
 	/** 手修正の勤怠項目を判断する */
 	private boolean isInputByHands(EditStateSetting es) {
 		return es == EditStateSetting.HAND_CORRECTION_MYSELF || es == EditStateSetting.HAND_CORRECTION_OTHER;
-	}
-
-	/** 取得したドメインモデル「勤務種類．一日の勤務．一日」をチェックする */
-	private boolean isWokingDay(DailyWork wt) {
-		if (wt.getWorkTypeUnit() == WorkTypeUnit.OneDay) {
-			return isWorkingType(wt.getOneDay());
-		}
-		return isWorkingType(wt.getMorning()) || isWorkingType(wt.getAfternoon());
-	}
-
-	/** 出勤系かチェックする　*/
-	private boolean isWorkingType(WorkTypeClassification wt) {
-		return wt == WorkTypeClassification.Attendance || wt == WorkTypeClassification.Shooting;
 	}
 
 }

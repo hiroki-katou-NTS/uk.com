@@ -75,6 +75,20 @@ public class WorkType extends AggregateRoot {
 			}
 		}
 	}
+	
+	/** 取得したドメインモデル「勤務種類．一日の勤務．一日」をチェックする */
+	public boolean isWokingDay() {
+		if(dailyWork == null) { return false; }
+		if (dailyWork.getWorkTypeUnit() == WorkTypeUnit.OneDay) {
+			return isWorkingType(dailyWork.getOneDay());
+		}
+		return isWorkingType(dailyWork.getMorning()) || isWorkingType(dailyWork.getAfternoon());
+	}
+
+	/** 出勤系かチェックする　*/
+	private boolean isWorkingType(WorkTypeClassification wt) {
+		return wt == WorkTypeClassification.Attendance || wt == WorkTypeClassification.Shooting;
+	}
 
 	/**
 	 * 
