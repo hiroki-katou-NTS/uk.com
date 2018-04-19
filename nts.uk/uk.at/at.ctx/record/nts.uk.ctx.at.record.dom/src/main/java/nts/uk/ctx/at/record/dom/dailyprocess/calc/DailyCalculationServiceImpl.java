@@ -58,7 +58,7 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 		val dataSetter = asyncContext.getDataSetter();
 		dataSetter.setData("dailyCalculateCount", 0);
 		dataSetter.setData("dailyCalculateStatus", ExecutionStatus.PROCESSING.nameId);
-		dataSetter.setData("dailyCalculateHasError", ErrorPresent.NO_ERROR );
+		dataSetter.setData("dailyCalculateHasError", ErrorPresent.NO_ERROR.nameId );
 
 		// 設定情報を取得　（日別計算を実行するかチェックする）
 		//　※　実行しない時、終了状態＝正常終了

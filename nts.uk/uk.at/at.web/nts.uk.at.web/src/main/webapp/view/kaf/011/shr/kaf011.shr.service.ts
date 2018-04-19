@@ -9,6 +9,8 @@ module nts.uk.at.view.kaf011.shr.service {
         findById: "at/request/application/holidayshipment/find_by_id",
         update: "at/request/application/holidayshipment/update",
         start_c: "at/request/application/holidayshipment/start_c",
+        holidayShipmentRemove: "at/request/application/holidayshipment/remove",
+        holidayShipmentCancel: "at/request/application/holidayshipment/cancel",
 
 
     }
@@ -37,6 +39,12 @@ module nts.uk.at.view.kaf011.shr.service {
     }
     export function start_c(startParam: any) {
         return ajax(paths.start_c, startParam);
+    }
+    export function removeAbs(startParam: any) {
+        return ajax(paths.holidayShipmentRemove, startParam);
+    }
+    export function cancelAbs(startParam: any) {
+        return ajax(paths.holidayShipmentCancel, startParam);
     }
 
 

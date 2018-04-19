@@ -79,10 +79,11 @@ module cmm045.shr {
             version: number;
             checkTimecolor: number;
             appIdSub: string;
+            appStatusNo: number;
             constructor(appId: string,appType: number,  details: string, applicant: string,
                 appName: string, appAtr: string, appDate: string, appContent: string,
-                inputDate: string, appStatus: string, displayAppStatus: string,
-                checkAtr: boolean, version: number, checkTimecolor: number, appIdSub: string){
+                inputDate: string, appStatus: string, displayAppStatus: string, checkAtr: boolean,
+                version: number, checkTimecolor: number, appIdSub: string, appStatusNo: number){
                 this.appId = appId;
                 this.appType = appType;
                 this.check = false;
@@ -99,6 +100,7 @@ module cmm045.shr {
                 this.version = version;
                 this.checkTimecolor = checkTimecolor;
                 this.appIdSub = appIdSub;
+                this.appStatusNo = appStatusNo;
             }
         }  
         
@@ -493,15 +495,15 @@ module cmm045.shr {
         export class AppCompltLeaveFull {
             /**申請ID*/
             appID: string;
-            /**勤務種類*/
-            workTypeCD: string;
+            /**勤務種類Name*/
+            workTypeName: string;
             /**勤務時間1.開始時刻*/
             startTime: string;
             /**勤務時間1.終了時刻*/
             endTime: string;
-            constructor(appID: string, workTypeCD: string, startTime: string, endTime: string){
+            constructor(appID: string, workTypeName: string, startTime: string, endTime: string){
                 this.appID = appID;
-                this.workTypeCD = workTypeCD;
+                this.workTypeName = workTypeName;
                 this.startTime = startTime;
                 this.endTime = endTime;
             }

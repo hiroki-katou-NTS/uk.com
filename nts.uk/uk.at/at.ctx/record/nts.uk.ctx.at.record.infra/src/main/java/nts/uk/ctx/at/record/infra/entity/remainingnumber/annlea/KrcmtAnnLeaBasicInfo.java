@@ -16,6 +16,9 @@ public class KrcmtAnnLeaBasicInfo extends UkJpaEntity{
     @Column(name = "SID")
     public String sid;
 	
+	@Column(name = "CID")
+    public String cid;
+	
 	@Column(name = "WORK_DAYS_PER_YEAR")
     public Integer workDaysPerYear;
 	

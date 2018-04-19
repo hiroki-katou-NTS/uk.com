@@ -145,13 +145,13 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 		Optional<GoBackDirectly> appGoBackOp = repoGoBack.findByApplicationID(companyID, appId);
 		GoBackDirectly appGoBack = appGoBackOp.get();
 		return new AppGoBackInfoFull(appId, appGoBack.getGoWorkAtr1().value,
-				this.convertTime(appGoBack.getWorkTimeStart1().v()),
+				this.convertTime(appGoBack.getWorkTimeStart1().map(x -> x.v()).orElse(null)),
 				appGoBack.getBackHomeAtr1().value, 
-				this.convertTime(appGoBack.getWorkTimeEnd1().v()),
-				appGoBack.getGoWorkAtr2().value,
-				this.convertTime(appGoBack.getWorkTimeStart2().v()),
-				appGoBack.getBackHomeAtr2().value,
-				this.convertTime(appGoBack.getWorkTimeEnd2().v()));
+				this.convertTime(appGoBack.getWorkTimeEnd1().map(x -> x.v()).orElse(null)),
+				appGoBack.getGoWorkAtr2().map(x -> x.value).orElse(null),
+				this.convertTime(appGoBack.getWorkTimeStart2().map(x -> x.v()).orElse(null)),
+				appGoBack.getBackHomeAtr2().map(x -> x.value).orElse(null),
+				this.convertTime(appGoBack.getWorkTimeEnd2().map(x -> x.v()).orElse(null)));
 	}
 	/**
 	 * get Application Holiday Work Info
@@ -211,13 +211,6 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				workTimeName = workTime.get().getWorkTimeDisplayName().getWorkTimeName().v();
 			}
 		}
-//		String workTimeName =  hdWork.getWorkTimeCode() == null || hdWork.getWorkTimeCode().v().equals("000") ? "" :
-//			repoworkTime.findByCode(companyId,hdWork.getWorkTimeCode().v()).get().getWorkTimeDisplayName().getWorkTimeName().v();
-		
-//		     .orElseGet(()->{
-//		      return workTimeRepository.findByCompanyId(companyID).get(0);
-//		     });
-//		workTime.getWorkTimeDisplayName().getWorkTimeName().toString()
 		return new AppHolidayWorkFull(appId, workTypeName,workTimeName,
 				hdWork.getWorkClock1().getStartTime() == null ? "" : this.convertTime(hdWork.getWorkClock1().getStartTime().v()),
 				hdWork.getWorkClock1().getEndTime() == null ? "" : this.convertTime(hdWork.getWorkClock1().getEndTime().v()),
@@ -236,8 +229,17 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	public AppWorkChangeFull getAppWorkChangeInfo(String companyID, String appId) {
 		Optional<AppWorkChange> workChange = repoworkChange.getAppworkChangeById(companyID, appId);
 		AppWorkChange appWkChange = workChange.get();
-		return new AppWorkChangeFull(appId, appWkChange.getWorkTypeName() == null ? "" : appWkChange.getWorkTypeName(),
-				appWkChange.getWorkTimeName() == null ? "" : appWkChange.getWorkTimeName(),
+		String workTypeName = appWkChange.getWorkTypeCd() == null ||  Strings.isBlank(appWkChange.getWorkTypeCd()) ? "" : 
+					repoWorkType.findByPK(companyID, appWkChange.getWorkTypeCd()).get().getName().v();
+		String workTimeName = "";
+		if(appWkChange.getWorkTimeCd() != null && !appWkChange.getWorkTimeCd().equals("000")){
+			Optional<WorkTimeSetting> workTime =  repoworkTime.findByCode(companyID,appWkChange.getWorkTimeCd());
+			if(workTime.isPresent()){
+				workTimeName = workTime.get().getWorkTimeDisplayName().getWorkTimeName().v();
+			}
+		}
+		return new AppWorkChangeFull(appId, workTypeName,
+				workTimeName,
 				appWkChange.getGoWorkAtr1(),
 				this.convertTime(appWkChange.getWorkTimeStart1()),
 				appWkChange.getBackHomeAtr1(),
@@ -301,13 +303,15 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	public AppCompltLeaveFull getAppCompltLeaveInfo(String companyID, String appId, int type) {
 		if(type == 0){//xin nghi
 			AbsenceLeaveApp abs = absRepo.findByAppId(appId).get();
-			return new AppCompltLeaveFull(abs.getAppID(), type,abs.getWorkTypeCD(),
+			return new AppCompltLeaveFull(abs.getAppID(), type, 
+					repoWorkType.findByPK(companyID, abs.getWorkTypeCD()).get().getName().v(),
 					abs.getWorkTime1() == null ? null : this.convertTime(abs.getWorkTime1().getStartTime().v()),
 					abs.getWorkTime1() == null ? null : this.convertTime(abs.getWorkTime1().getEndTime().v()));
 		}
 		//di lam
 		RecruitmentApp rec = recRepo.findByAppId(appId).get();
-		return new AppCompltLeaveFull(rec.getAppID(), type, rec.getWorkTypeCD(),
+		return new AppCompltLeaveFull(rec.getAppID(), type, 
+				repoWorkType.findByPK(companyID, rec.getWorkTypeCD()).get().getName().v(),
 				this.convertTime(rec.getWorkTime1().getStartTime().v()),
 				this.convertTime(rec.getWorkTime1().getEndTime().v()));
 	}

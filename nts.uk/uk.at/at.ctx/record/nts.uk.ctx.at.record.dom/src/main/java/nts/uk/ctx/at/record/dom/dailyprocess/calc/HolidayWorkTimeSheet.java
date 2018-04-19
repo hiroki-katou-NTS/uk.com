@@ -86,10 +86,10 @@ public class HolidayWorkTimeSheet{
 		//事前申請を上限とする制御
 		val afterCalcUpperTimeList = afterUpperControl(calcHolidayTimeWorkTimeList,holidayAutoCalcSetting);
 		//振替処理
-		val aftertransTimeList = transProcess(workType,
-											  afterCalcUpperTimeList,
-											  eachWorkTimeSet,
-											  eachCompanyTimeSet);
+		val aftertransTimeList = afterCalcUpperTimeList;//transProcess(workType,
+											  //afterCalcUpperTimeList,
+											  //eachWorkTimeSet,
+											  //eachCompanyTimeSet);
 		return aftertransTimeList;
 	}
 	

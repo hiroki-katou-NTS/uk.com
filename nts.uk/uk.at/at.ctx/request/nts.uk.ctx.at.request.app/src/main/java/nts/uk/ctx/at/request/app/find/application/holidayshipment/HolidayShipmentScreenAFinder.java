@@ -431,7 +431,7 @@ public class HolidayShipmentScreenAFinder {
 		boolean masterUnregistered = true;
 
 		Optional<WorkType> WkTypeOpt = wkTypeRepo.findByPK(companyID, wkTypeCD);
-		if (WkTypeOpt.isPresent()) {
+		if (WkTypeOpt.isPresent() && !wkTypes.contains((WkTypeOpt.get()))) {
 			wkTypes.add(WkTypeOpt.get());
 			masterUnregistered = false;
 

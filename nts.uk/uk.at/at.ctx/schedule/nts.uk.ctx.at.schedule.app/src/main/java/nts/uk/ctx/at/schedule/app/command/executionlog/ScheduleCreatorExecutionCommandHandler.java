@@ -37,6 +37,7 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -344,7 +345,7 @@ public class ScheduleCreatorExecutionCommandHandler
 
 			// check is use manager
 			if (workingConditionItem.isPresent()
-					&& workingConditionItem.get().getScheduleManagementAtr() == NotUseAtr.USE
+					&& workingConditionItem.get().getScheduleManagementAtr() == ManageAtr.USE
 					&& workingConditionItem.get().getScheduleMethod().isPresent()
 					) {
 				if (workingConditionItem.get().getScheduleMethod().get()

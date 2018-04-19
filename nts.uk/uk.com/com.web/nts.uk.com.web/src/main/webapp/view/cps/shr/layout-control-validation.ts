@@ -174,6 +174,7 @@ module nts.layout {
             self.dateTime();
             self.setTable();
             self.grantInformation();
+            self.specialLeaveInformation();
 
             validate.initCheckError(lstCls);
         }
@@ -665,7 +666,7 @@ module nts.layout {
                     }
                 ],
                 setData = (ctrl: IFindData, value?: any) => {
-                    ctrl && ctrl.data.value(value || undefined);
+                    ctrl && ctrl.data.value(value);
                 },
                 setDataText = (ctrl: IFindData, value?: any) => {
                     ctrl && ctrl.data.textValue(value || undefined);
@@ -777,7 +778,7 @@ module nts.layout {
                     workType.ctrl.on('click', () => {
                         setShared("KDL002_Multiple", false, true);
                         setShared("KDL002_SelectedItemId", workType.data.value(), true);
-                        setShared("KDL002_AllItemObj", _.map(workType.data.lstComboBoxValue, x => x.optionValue), true);
+                        setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
 
                         modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
                             let childData: Array<any> = getShared('KDL002_SelectedNewItem');
@@ -793,10 +794,10 @@ module nts.layout {
 
                     workType.ctrl.on('click', () => {
                         setShared('parentCodes', {
-                            workTypeCodes: workType && _.map(workType.data.lstComboBoxValue, x => x.optionValue),
-                            selectedWorkTypeCode: workType && ko.toJS(workType.data.value),
-                            workTimeCodes: workTime && _.map(workTime.data.lstComboBoxValue, x => x.optionValue),
-                            selectedWorkTimeCode: workTime && ko.toJS(workTime.data.value)
+                            workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
+                            selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
+                            workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
+                            selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
                         }, true);
 
                         modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
@@ -953,18 +954,17 @@ module nts.layout {
                                 let sid = ko.toJS(__viewContext.viewModel.employee.employeeId);
                                 switch (btn.dialogId) {
                                     case "g":
-                                        let empId = __viewContext.user.employeeId;
-                                        ajax('at', `at/record/remainnumber/annlea/getAnnLeaNumber/${empId}"`).done(data => {
+                                        fetch.get_annLeaNumber(sid).done(data => {
                                             button.data.value(data);
                                         });
                                         break;
                                     case "h":
-                                        ajax('at', `at/record/remainnumber/annlea/getResvLeaNumber/${empId}"`).done(data => {
+                                        fetch.get_resvLeaNumber(sid).done(data => {
                                             button.data.value(data);
                                         });
                                         break;
                                     case "i":
-                                        ajax('com', `ctx/pereg/layout/calDayTime/${sid}/${btn.specialCd}`).done(data => {
+                                        fetch.get_calDayTime(sid, btn.specialCd).done(data => {
                                             button.data.value(data);
                                         });
                                 }

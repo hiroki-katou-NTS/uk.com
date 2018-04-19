@@ -7,6 +7,7 @@ module cps001.h.vm {
     import close = nts.uk.ui.windows.close;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import clearError = nts.uk.ui.errors.clearAll;
 
     let __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
@@ -21,7 +22,7 @@ module cps001.h.vm {
         resvLeaGrantRemNum: KnockoutObservable<ResvLeaGrantRemNum> = ko.observable(new ResvLeaGrantRemNum(<IResvLeaGrantRemNum>{}));
         enableRemoveBtn: KnockoutObservable<boolean> = ko.observable(true);
         isCreate: KnockoutObservable<boolean> = ko.observable(false);
-        ckbAll: KnockoutObservable<boolean> = ko.observable(true);
+        ckbAll: KnockoutObservable<boolean> = ko.observable(false);
         itemDefs: any = [];
 
         nameGrantDate: KnockoutObservable<string> = ko.observable('');
@@ -31,6 +32,7 @@ module cps001.h.vm {
         constructor() {
             let self = this;
             self.ckbAll.subscribe((data) => {
+                clearError();
                 service.getAll(__viewContext.user.employeeId, data).done((data) => {
                     if (data && data.length > 0) {
                         self.items(data);
@@ -39,6 +41,7 @@ module cps001.h.vm {
                         self.items([]);
                         self.create();
                     }
+                    $("#grantDate").focus();
                 });
             });
             self.currentItem.subscribe((id: string) => {
@@ -58,11 +61,11 @@ module cps001.h.vm {
                 { headerText: "", key: 'id', hidden: true },
                 { headerText: text("CPS001_118"), key: 'grantDate', width: 100, isDateColumn: true, format: 'YYYY/MM/DD' },
                 { headerText: text("CPS001_119"), key: 'deadline', width: 100, isDateColumn: true, format: 'YYYY/MM/DD' },
-                { headerText: text("CPS001_121"), key: 'grantDays', width: 70, formatter: self.formatterDate },
-                { headerText: text("CPS001_130"), key: 'useDays', width: 70, formatter: self.formatterDate },
-                { headerText: text("CPS001_123"), key: 'overLimitDays', width: 70, formatter: self.formatterDate },
-                { headerText: text("CPS001_129"), key: 'remainingDays', width: 70, formatter: self.formatterDate },
-                { headerText: text("CPS001_120"), key: 'expirationStatus', width: 70, formatter: self.formatterExState }
+                { headerText: text("CPS001_120"), key: 'grantDays', width: 70, formatter: self.formatterDate },
+                { headerText: text("CPS001_121"), key: 'useDays', width: 70, formatter: self.formatterDate },
+                { headerText: text("CPS001_130"), key: 'overLimitDays', width: 70, formatter: self.formatterDate },
+                { headerText: text("CPS001_123"), key: 'remainingDays', width: 70, formatter: self.formatterDate },
+                { headerText: text("CPS001_129"), key: 'expirationStatus', width: 70, formatter: self.formatterExState }
             ]);
         }
         load(): JQueryPromise<any> {
@@ -79,15 +82,19 @@ module cps001.h.vm {
             });
             return dfd.promise();
         }
-        start() {
-            let self = this;
+
+        start(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
             self.setDef();
             self.load().done(() => {
                 if (self.items().length > 0) {
                     self.currentItem(self.items()[0].id);
                 }
+                dfd.resolve();
             });
+            return dfd.promise();
         }
+
         setDef() {
             let self = this;
             if (self.itemDefs.length > 0) {
@@ -98,10 +105,10 @@ module cps001.h.vm {
                     self.setItemValue(self.itemDefs);
                 });
             }
-
         }
-        setItemValue(data: any) {
-            let self = this;    
+
+        setItemValue(data: any): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
             $("td[data-itemCode]").each(function() {
                 let itemCodes = $(this).attr('data-itemCode');
                 if (itemCodes) {
@@ -129,7 +136,9 @@ module cps001.h.vm {
                         }
                     });
                 }
+                dfd.resolve();
             });
+            return dfd.promise();
         }
 
         close() {
@@ -158,22 +167,24 @@ module cps001.h.vm {
                         } else {
                             self.currentItem(selectedId);
                         }
+                        self.ckbAll(false);
+                        alert({ messageId: "Msg_16" });
+                        unblock();
                     });
-                    alert({ messageId: "Msg_16" });
-                    unblock();
+
                 }).fail((mes) => {
                     unblock();
                 });
             });
         }
-        clearError(){
+        clearError() {
             $("#grantDate").ntsError("clear");
             $("#deadline").ntsError("clear");
             $("#grantDays").ntsError("clear");
             $("#useDays").ntsError("clear");
             $("#overLimitDays").ntsError("clear");
             $("#remainingDays").ntsError("clear");
-            }
+        }
         register() {
             let self = this;
 
@@ -201,6 +212,7 @@ module cps001.h.vm {
                                     let newId = _.difference(_.map(self.items(), (i) => { return i.id; }), _.map(currItem, (i) => { return i.id; }));
                                     self.currentItem(newId);
                                 }
+                                self.ckbAll(false);
                                 alert({ messageId: "Msg_15" });
                                 unblock();
                             });
@@ -215,6 +227,7 @@ module cps001.h.vm {
                                 if (self.items().length > 0) {
                                     self.currentItem(item.id());
                                 }
+                                self.ckbAll(false);
                                 alert({ messageId: "Msg_15" });
                                 unblock();
                             });
@@ -269,11 +282,11 @@ module cps001.h.vm {
             self.remainingDays(data && data.remainingDays || "");
 
             self.grantDate.subscribe((data) => {
-                if(data){
+                if (!nts.uk.ui.errors.hasError() && data) {
                     service.generateDeadline(moment.utc(data, "YYYY/MM/DD")).done((item) => {
                         self.deadline(item);
                     });
-                    }
+                }
             });
         }
     }

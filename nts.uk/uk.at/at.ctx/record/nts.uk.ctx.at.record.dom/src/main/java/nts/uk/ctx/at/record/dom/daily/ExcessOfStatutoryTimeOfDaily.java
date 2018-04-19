@@ -143,7 +143,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 			if(oneDay.getOutsideWorkTimeSheet().get().getOverTimeWorkSheet().isPresent()) {
 				return OverTimeOfDaily.calculationTime(oneDay.getOutsideWorkTimeSheet().get().getOverTimeWorkSheet().get(), overTimeAutoCalcSet,
 													   oneDay.getWithinWorkingTimeSheet().get(),calcMethod,holidayCalcMethodSet,autoCalcAtr,workType,flexCalcMethod,predetermineTimeSet,
-													   oneDay.getTemporaryDeductionTimeSheet(),vacationClass,timevacationUseTimeOfDaily,
+													   vacationClass,timevacationUseTimeOfDaily,
 													   statutoryDivision,siftCode,
 													   personalCondition,
 													   late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻

@@ -239,9 +239,10 @@ public class RegisterLayoutFinder {
 				List<ComboBoxObject> comboValues;
 
 				selectionItemDto = (SelectionItemDto) item.getItem();
-
+				boolean isDataType6 = dataTypeValue == DataTypeValue.SELECTION.value;
+				
 				comboValues = cbbfact.getComboBox(selectionItemDto, AppContexts.user().employeeId(),
-						command.getHireDate(), item.isRequired(), perInfoCategory.get().getPersonEmployeeType());
+						command.getHireDate(), item.isRequired(), perInfoCategory.get().getPersonEmployeeType(), isDataType6);
 
 				item.setLstComboBoxValue(comboValues);
 				PerInfoItemDefForLayoutDto dto = new PerInfoItemDefForLayoutDto();

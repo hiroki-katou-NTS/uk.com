@@ -101,7 +101,7 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 							// 配下の職場をすべて取得する
 							listWorkPlaceID3 = workplaceAdapter.findListWorkplaceIdByCidAndWkpIdAndBaseDate(AppContexts.user().companyId(), workPlaceID1, GeneralDate.today());
 						}
-						// 社員ID（List）と基準日から所属職場IDを取得
+						// 社員ID（List）と基準日から所属職場IDを取得 Lay request 227
 						List<AffiliationWorkplace> lisAfiliationWorkplace = workplaceAdapter.findByListEmpIDAndDate(listEmployeeID, GeneralDate.today());
 						List<String> resultWorkID = new ArrayList<>();
 						resultWorkID.add(workPlaceID1);
