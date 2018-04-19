@@ -42,7 +42,7 @@ public class UpdateWorkInfoOfDailyPerforServiceImpl implements UpdateWorkInfoOfD
 				this.workInformationRepository.updateByKeyFlush(workInfoOfDailyPerformance);
 				
 				// domain event
-				workInfoOfDailyPerformance.workInfoChange();
+				workInfoOfDailyPerformance.workInfoChanged();
 			}
 		}
 	}
