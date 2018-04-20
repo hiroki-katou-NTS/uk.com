@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
@@ -11,6 +11,12 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
  * The Class EmTimezoneLateEarlyCommonSet.
  */
 // 就業時間帯の遅刻・早退共通設定
+
+/**
+ * Checks if is del from em time.
+ *
+ * @return true, if is del from em time
+ */
 @Getter
 public class EmTimezoneLateEarlyCommonSet extends WorkTimeDomainObject {
 
@@ -48,5 +54,4 @@ public class EmTimezoneLateEarlyCommonSet extends WorkTimeDomainObject {
 	public void saveToMemento(EmTimezoneLateEarlyCommonSetSetMemento memento) {
 		memento.setDelFromEmTime(this.delFromEmTime);
 	}
-
 }

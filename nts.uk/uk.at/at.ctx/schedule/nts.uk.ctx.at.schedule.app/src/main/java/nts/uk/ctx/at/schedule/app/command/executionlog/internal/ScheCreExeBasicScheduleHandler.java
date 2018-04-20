@@ -117,12 +117,13 @@ public class ScheCreExeBasicScheduleHandler {
 									.collect(Collectors.toList()));
 		}
 
-		// 勤務予定マスタ情報を取得する
-		this.saveScheduleMaster(commandSave, command.getExecutionId());
-		// 休憩予定時間帯を取得する
-		this.saveBreakTime(command.getCompanyId(), commandSave);
 		// 勤務予定時間
 		this.saveScheduleTime(commandSave);
+		// 休憩予定時間帯を取得する
+		this.saveBreakTime(command.getCompanyId(), commandSave);
+		// 勤務予定マスタ情報を取得する
+		if (!this.saveScheduleMaster(commandSave, command.getExecutionId()))
+			return;
 
 		// check not exist error
 		if (!this.scheCreExeErrorLogHandler.checkExistError(command.toBaseCommand(), employeeId)) {
@@ -140,7 +141,8 @@ public class ScheCreExeBasicScheduleHandler {
 			}
 		}
 
-		if (worktypeDto.getWorktypeSet() != null && !commandSave.getWorkScheduleTimeZones().isEmpty()) {
+		if (worktypeDto.getWorktypeSet() != null && commandSave.getWorkScheduleTimeZones() != null
+				&& !commandSave.getWorkScheduleTimeZones().isEmpty()) {
 			Optional<BounceAtr> bounceAtrOpt = Optional.of(this.getBounceAtr(worktypeDto.getWorktypeSet()));
 
 			if (bounceAtrOpt.isPresent()) {
@@ -161,7 +163,6 @@ public class ScheCreExeBasicScheduleHandler {
 
 		// save command
 		this.saveBasicSchedule(commandSave);
-		;
 	}
 
 	/**
@@ -405,15 +406,19 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @param employeeId
 	 * @param toDate
 	 */
-	private BasicScheduleSaveCommand saveScheduleMaster(BasicScheduleSaveCommand commandSave, String executionId) {
+	private boolean saveScheduleMaster(BasicScheduleSaveCommand commandSave, String executionId) {
 		// 勤務予定マスタ情報を取得する
-		ScheduleMasterInformationDto scheduleMasterInfor = this.scheduleMasterInformationService
+		Optional<ScheduleMasterInformationDto> scheduleMasterInforOpt = this.scheduleMasterInformationService
 				.getScheduleMasterInformationDto(commandSave.getEmployeeId(), commandSave.getYmd(), executionId);
+		if (!scheduleMasterInforOpt.isPresent())
+			return false;
+		ScheduleMasterInformationDto scheduleMasterInfor = scheduleMasterInforOpt.get();
 		ScheMasterInfo workScheduleMaster = new ScheMasterInfo(commandSave.getEmployeeId(), commandSave.getYmd(),
 				scheduleMasterInfor.getEmployeeCode(), scheduleMasterInfor.getClassificationCode(),
-				commandSave.getWorktypeCode(), scheduleMasterInfor.getJobId(), scheduleMasterInfor.getWorkplaceId());
+				scheduleMasterInfor.getBusinessTypeCode(), scheduleMasterInfor.getJobId(),
+				scheduleMasterInfor.getWorkplaceId());
 		commandSave.setWorkScheduleMaster(workScheduleMaster);
-		return commandSave;
+		return true;
 	}
 
 	/**

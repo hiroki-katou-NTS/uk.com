@@ -62,6 +62,8 @@ import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
+import nts.uk.screen.com.app.find.systemresource.SystemResourceFinder;
+import nts.uk.screen.com.app.systemresource.dto.SystemResourceDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -122,6 +124,9 @@ public class ComboBoxRetrieveFactory {
 	
 	@Inject
 	private YearServicePerRepository yearServiceRepo;
+	
+	@Inject
+	private SystemResourceFinder systemResourceFinder;
 
 	private static Map<String, Class<?>> enumMap;
 	static {
@@ -364,14 +369,40 @@ public class ComboBoxRetrieveFactory {
 
 	@SuppressWarnings("unchecked")
 	private <E extends Enum<?>> List<ComboBoxObject> getEnumComboBox(String enumName) {
+
 		Class<?> enumClass = enumMap.get(enumName);
 		if (enumClass == null) {
 			return new ArrayList<>();
 		}
 		List<EnumConstant> enumConstants = EnumAdaptor.convertToValueNameList((Class<E>) enumClass);
+
+		if (enumName.equals("E00008")) { 
+			return specialWithE00008(enumConstants);
+		}
+
 		return enumConstants.stream()
 				.map(enumElement -> new ComboBoxObject(enumElement.getValue() + "", enumElement.getLocalizedName()))
 				.collect(Collectors.toList());
+	}
+	
+	private List<ComboBoxObject> specialWithE00008(List<EnumConstant> enumConstants) {
+		List<SystemResourceDto> resourceList = systemResourceFinder.findList();
+
+		List<ComboBoxObject> comboBoxList = new ArrayList<>();
+		for (EnumConstant enumElement : enumConstants) {
+			int value = enumElement.getValue();
+			String customText = "";
+			Optional<SystemResourceDto> resourceDto;
+			if (value == WorkScheduleMasterReferenceAtr.WORKPLACE.value) {
+				resourceDto = resourceList.stream().filter(x -> x.getResourceId().equals("Com_Workplace")).findFirst();
+				customText = resourceDto.isPresent() ? resourceDto.get().getResourceContent() : "職場";
+			} else if (value == WorkScheduleMasterReferenceAtr.CLASSIFICATION.value) {
+				resourceDto = resourceList.stream().filter(x -> x.getResourceId().equals("Com_Class")).findFirst();
+				customText = resourceDto.isPresent() ? resourceDto.get().getResourceContent() : "分類";
+			}
+			comboBoxList.add(new ComboBoxObject(value + "", customText));
+		}
+		return comboBoxList;
 	}
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(ReferenceTypes referenceType, String referenceCode,

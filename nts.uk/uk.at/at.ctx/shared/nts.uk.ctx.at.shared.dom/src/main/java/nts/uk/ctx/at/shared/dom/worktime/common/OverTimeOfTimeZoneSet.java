@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class OverTimeOfTimeZoneSet.
@@ -86,5 +87,13 @@ public class OverTimeOfTimeZoneSet extends WorkTimeDomainObject {
 		this.otFrameNo = other.getOtFrameNo();
 		this.legalOTframeNo = other.getLegalOTframeNo();
 		this.settlementOrder = other.getSettlementOrder();
+	}
+
+	/**
+	 * Correct default data.
+	 */
+	public void correctDefaultData() {
+		this.settlementOrder = null;
+		this.legalOTframeNo = null;
 	}
 }

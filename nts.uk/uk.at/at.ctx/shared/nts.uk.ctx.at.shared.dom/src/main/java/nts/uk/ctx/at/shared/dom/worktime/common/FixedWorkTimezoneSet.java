@@ -73,39 +73,9 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject {
 	@Override
 	public void validate() {
 		this.checkOverlap();
-		this.checkSetting();
 		this.checkOverTimeAndEmTimeOverlap();
 		
 		super.validate();
-	}
-	
-	/**
-	 * Check setting.
-	 */
-	private void checkSetting() {
-		if (CollectionUtil.isEmpty(this.lstWorkingTimezone) || CollectionUtil.isEmpty(this.lstOTTimezone)) {
-			return;
-		}
-
-		//TODO
-		// 開始 = 就業時間帯NO=1の場合の就業時間の時間帯設定.時間帯. 開始
-		EmTimeZoneSet enEmTimeZoneSet = this.getEmTimeZoneSet(EMPLOYMENT_TIME_FRAME_NO_ONE);
-		int startTimeZone = enEmTimeZoneSet.getTimezone().getStart().valueAsMinutes();
-		int endTimeZone = enEmTimeZoneSet.getTimezone().getEnd().valueAsMinutes();
-
-		// 開始 = 時間帯設定.時間帯. 開始
-		OverTimeOfTimeZoneSet overTimeOfTimeZoneSet = this.getOverTimeOfTimeZoneSet(WORK_TIME_ZONE_NO_ONE);
-		int startTimeOvertime = overTimeOfTimeZoneSet.getTimezone().getStart().valueAsMinutes();
-		int endTimeOvertime = overTimeOfTimeZoneSet.getTimezone().getEnd().valueAsMinutes();
-
-//		if (startTimeZone < startTimeOvertime) {
-//			this.bundledBusinessExceptions.addMessage("Msg_779");
-//		}
-		
-//		if (endTimeZone >= endTimeOvertime) {
-//			this.bundledBusinessExceptions.addMessage("Msg_780");
-//		}
-		
 	}
 
 	/**
@@ -219,5 +189,12 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject {
 	public void restoreDefaultData() {
 		this.lstWorkingTimezone = new ArrayList<>();
 		this.lstOTTimezone = new ArrayList<>();
+	}
+	
+	/**
+	 * Correct default data.
+	 */
+	public void correctDefaultData() {
+		this.lstOTTimezone.forEach(item -> item.correctDefaultData());
 	}
 }

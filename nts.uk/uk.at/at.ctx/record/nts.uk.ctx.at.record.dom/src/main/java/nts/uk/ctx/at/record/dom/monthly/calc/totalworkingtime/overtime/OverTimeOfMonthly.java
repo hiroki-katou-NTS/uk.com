@@ -231,15 +231,9 @@ public class OverTimeOfMonthly {
 			RepositoriesRequiredByMonthlyAggr repositories){
 	
 		// 日の法定労働時間を取得する
-		//*****（未）　正式な処理の作成待ち。
-		//DailyCalculationPersonalInformation dailyCalculationPersonalInformation =
-		//		repositories.getGetOfStatutoryWorkTime().getDailyTimeFromStaturoyWorkTime(
-		//			workingSystem,
-		//			companyId,
-		//			workplaceId,
-		//			employmentCd,
-		//			attendanceTimeOfDaily.getEmployeeId(),
-		//			attendanceTimeOfDaily.getYmd());
+		val dailyUnit = repositories.getDailyStatutoryWorkingHours().getDailyUnit(
+				companyId, employmentCd, attendanceTimeOfDaily.getEmployeeId(),
+				attendanceTimeOfDaily.getYmd(), workingSystem);
 		
 		// 日別実績の法定内時間を取得する
 		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
@@ -255,10 +249,9 @@ public class OverTimeOfMonthly {
 		}
 		
 		// 法定内残業にできる時間を計算する
-		//*****（未）　正式な処理が出来てから、代入。
-		AttendanceTime canLegalOverTime = new AttendanceTime(8 * 60);
-		//		new AttendanceTime(dailyCalculationPersonalInformation.getStatutoryWorkTime().v());
+		AttendanceTime canLegalOverTime = new AttendanceTime(dailyUnit.getDailyTime().v());
 		canLegalOverTime = canLegalOverTime.minusMinutes(legalTimeOfDaily.getWorkTime().v());
+		if (canLegalOverTime.lessThan(0)) canLegalOverTime = new AttendanceTime(0);
 		return canLegalOverTime;
 	}
 	
@@ -280,7 +273,7 @@ public class OverTimeOfMonthly {
 			Map<OverTimeFrameNo, OverTimeFrameTime> overTimeFrameTimeMap,
 			GeneralDate ymd){
 		
-		AttendanceTime returnTime = new AttendanceTime(0);
+		AttendanceTime timeAfterCalc = canLegalOverTime;
 		
 		// 残業枠時間分ループ
 		for (val legalOverTimeTransferOrder : legalOverTimeTransferOrderOfAggrMonthly.getLegalOverTimeTransferOrders()){
@@ -303,39 +296,41 @@ public class OverTimeOfMonthly {
 					AttendanceTime legalOverTimeWork =
 						new AttendanceTime(overTimeFrameTime.getOverTimeWork().getTime().v());
 					AttendanceTime overTimeWork = new AttendanceTime(0);
-					if (legalOverTimeWork.lessThanOrEqualTo(canLegalOverTime.v())){
+					if (legalOverTimeWork.lessThanOrEqualTo(timeAfterCalc.v())){
 						// 残業時間が法定内残業にできる時間以下の時
-						returnTime = new AttendanceTime(canLegalOverTime.v());
-						returnTime = returnTime.minusMinutes(legalOverTimeWork.valueAsMinutes());
+						timeAfterCalc = timeAfterCalc.minusMinutes(legalOverTimeWork.v());
 					}
 					else {
 						// 残業時間が法定内残業にできる時間を超える時
 						overTimeWork = new AttendanceTime(legalOverTimeWork.v());
-						overTimeWork = overTimeWork.minusMinutes(canLegalOverTime.valueAsMinutes());
-						legalOverTimeWork = new AttendanceTime(canLegalOverTime.v());
-						returnTime = new AttendanceTime(0);
+						overTimeWork = overTimeWork.minusMinutes(timeAfterCalc.v());
+						legalOverTimeWork = new AttendanceTime(timeAfterCalc.v());
+						timeAfterCalc = new AttendanceTime(0);
 					}
-					timeSeriesWork.addOverTimeInLegalOverTime(TimeDivergenceWithCalculation.sameTime(legalOverTimeWork));
-					timeSeriesWork.addOverTimeInOverTime(TimeDivergenceWithCalculation.sameTime(overTimeWork));
+					timeSeriesWork.addOverTimeInLegalOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
+							legalOverTimeWork, new AttendanceTime(0)));
+					timeSeriesWork.addOverTimeInOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
+							overTimeWork, new AttendanceTime(0)));
 					break;
 				case TRANSFER:
 					AttendanceTime legalTransferTimeWork =
 						new AttendanceTime(overTimeFrameTime.getTransferTime().getTime().v());
 					AttendanceTime transferTimeWork = new AttendanceTime(0);
-					if (legalTransferTimeWork.lessThanOrEqualTo(canLegalOverTime.v())){
+					if (legalTransferTimeWork.lessThanOrEqualTo(timeAfterCalc.v())){
 						// 振替時間が法定内残業にできる時間以下の時
-						returnTime = new AttendanceTime(canLegalOverTime.v());
-						returnTime = returnTime.minusMinutes(legalTransferTimeWork.valueAsMinutes());
+						timeAfterCalc = timeAfterCalc.minusMinutes(legalTransferTimeWork.v());
 					}
 					else {
 						// 振替時間が法定内残業にできる時間を超える時
 						transferTimeWork = new AttendanceTime(legalTransferTimeWork.v());
-						transferTimeWork = transferTimeWork.minusMinutes(canLegalOverTime.valueAsMinutes());
-						legalTransferTimeWork = new AttendanceTime(canLegalOverTime.v());
-						returnTime = new AttendanceTime(0);
+						transferTimeWork = transferTimeWork.minusMinutes(timeAfterCalc.v());
+						legalTransferTimeWork = new AttendanceTime(timeAfterCalc.v());
+						timeAfterCalc = new AttendanceTime(0);
 					}
-					timeSeriesWork.addTransferTimeInLegalOverTime(TimeDivergenceWithCalculation.sameTime(legalTransferTimeWork));
-					timeSeriesWork.addTransferTimeInOverTime(TimeDivergenceWithCalculation.sameTime(transferTimeWork));
+					timeSeriesWork.addTransferTimeInLegalOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
+							legalTransferTimeWork, new AttendanceTime(0)));
+					timeSeriesWork.addTransferTimeInOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
+							transferTimeWork, new AttendanceTime(0)));
 					break;
 				}
 			}
@@ -353,7 +348,7 @@ public class OverTimeOfMonthly {
 			}
 		}
 	
-		return returnTime;
+		return timeAfterCalc;
 	}
 	
 	/**
@@ -452,5 +447,29 @@ public class OverTimeOfMonthly {
 		
 		return new AttendanceTimeMonth(this.totalOverTime.getTime().v() +
 				this.totalTransferOverTime.getTime().v());
+	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(OverTimeOfMonthly target){
+		
+		this.totalOverTime = this.totalOverTime.addMinutes(
+				target.totalOverTime.getTime().v(), target.totalOverTime.getCalcTime().v());
+		this.beforeOverTime = this.beforeOverTime.addMinutes(target.beforeOverTime.v());
+		this.totalTransferOverTime = this.totalTransferOverTime.addMinutes(
+				target.totalTransferOverTime.getTime().v(), target.totalTransferOverTime.getCalcTime().v());
+
+		for (val aggrOverTime : this.aggregateOverTimeMap.values()){
+			val frameNo = aggrOverTime.getOverTimeFrameNo();
+			if (target.aggregateOverTimeMap.containsKey(frameNo)){
+				aggrOverTime.sum(target.aggregateOverTimeMap.get(frameNo));
+			}
+		}
+		for (val targetAggrOverTime : target.aggregateOverTimeMap.values()){
+			val frameNo = targetAggrOverTime.getOverTimeFrameNo();
+			this.aggregateOverTimeMap.putIfAbsent(frameNo, targetAggrOverTime);
+		}
 	}
 }

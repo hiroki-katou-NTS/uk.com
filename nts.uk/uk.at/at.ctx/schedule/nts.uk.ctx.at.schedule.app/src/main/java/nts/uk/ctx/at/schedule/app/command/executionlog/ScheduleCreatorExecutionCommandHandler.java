@@ -41,7 +41,6 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
-import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -183,6 +182,9 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		// update execution time to now
 		domain.setExecutionTimeToNow();
 
+		// set exeAtr is manual
+		domain.setExeAtrIsManual();
+
 		// update domain execution log
 		this.scheduleExecutionLogRepository.update(domain);
 
@@ -316,8 +318,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 					toDate);
 			if (optionalBasicSchedule.isPresent()) {
 
-				command.setWorkingCode(optionalBasicSchedule.get().getWorkTypeCode());
-				command.setWorkTypeCode(optionalBasicSchedule.get().getWorkTimeCode());
+				command.setWorkingCode(optionalBasicSchedule.get().getWorkTimeCode());
+				command.setWorkTypeCode(optionalBasicSchedule.get().getWorkTypeCode());
 
 				if (command.getReCreateAtr() == ReCreateAtr.ALL_CASE.value
 						|| optionalBasicSchedule.get().getConfirmedAtr() == ConfirmedAtr.UNSETTLED) {
@@ -398,7 +400,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				String errorContent = this.internationalization.localize("Msg_602", "#KSC001_87").get();
 				// ドメインモデル「スケジュール作成エラーログ」を登録する
 				ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, command.getExecutionId(),
-						command.getToDate(), command.getEmployeeId());
+						command.getToDate(), creator.getEmployeeId());
 				this.scheduleErrorLogRepository.add(scheduleErrorLog);
 			}
 
@@ -489,21 +491,14 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 */
 	private void createWorkScheduleByRecreate(ScheduleCreatorExecutionCommand command, BasicSchedule basicSchedule,
 			WorkingConditionItem workingConditionItem, EmploymentStatusDto employmentStatus) {
-
-		// 入力パラメータ「再作成区分」を判断
-		// check parameter ReCreateAtr onlyUnconfirm
-		if (command.getContent().getReCreateContent().getReCreateAtr().value == ReCreateAtr.ONLY_UNCONFIRM.value) {// ［未確定データのみ］
-			// 取得したドメインモデル「勤務予定基本情報」の「予定確定区分」を判断(kiểm tra thông tin 「予定確定区分」 của
-			// domain 「勤務予定基本情報」)
-			if (basicSchedule.getConfirmedAtr().equals(ConfirmedAtr.UNSETTLED)) {// 未確定
-				if (this.scheCreExeMonthlyPatternHandler.scheduleCreationDeterminationProcess(command, basicSchedule,
-						employmentStatus, workingConditionItem.getAutoStampSetAtr())) {
-					this.scheCreExeWorkTypeHandler.createWorkSchedule(command, workingConditionItem);
-				}
-			}
-		} else {
+		// 入力パラメータ「再作成区分」を判断 - check parameter ReCreateAtr onlyUnconfirm
+		// 取得したドメインモデル「勤務予定基本情報」の「予定確定区分」を判断
+		// (kiểm tra thông tin 「予定確定区分」 của domain 「勤務予定基本情報」)
+		if (command.getContent().getReCreateContent().getReCreateAtr() == ReCreateAtr.ALL_CASE
+				|| basicSchedule.getConfirmedAtr().equals(ConfirmedAtr.UNSETTLED)) {
+			// アルゴリズム「スケジュール作成判定処理」を実行する
 			if (this.scheCreExeMonthlyPatternHandler.scheduleCreationDeterminationProcess(command, basicSchedule,
-					employmentStatus, workingConditionItem.getAutoStampSetAtr())) {
+					employmentStatus, workingConditionItem)) {
 				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, workingConditionItem);
 			}
 		}
@@ -516,7 +511,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	private void registerPersonalSchedule(ScheduleCreatorExecutionCommand command,
 			ScheduleExecutionLog scheduleExecutionLog, CommandHandlerContext<ScheduleCreatorExecutionCommand> context) {
 		// パラメータ実施区分を判定 (phán đoán param 実施区分 )
-		if (scheduleExecutionLog.getExeAtr() == ExecutionAtr.AUTOMATIC) {
+		if (scheduleExecutionLog.getExeAtr() != ExecutionAtr.MANUAL) {
 			ScheduleCreateContent scheduleCreateContent = command.getContent();
 			// アルゴリズム「実行ログ作成処理」を実行する
 			this.executionLogCreationProcess(scheduleExecutionLog, scheduleCreateContent);
@@ -527,8 +522,11 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		val asyncTask = context.asAsync();
 
 		for (ScheduleCreator domain : scheduleCreators) {
-			// 実行ログ作成処理 - ドメインモデル「スケジュール作成対象者」を新規登録する
-			// this.scheduleCreatorRepository.add(domain);
+			// ドメインモデル「スケジュール作成対象者」を新規登録する
+			// relate to executionLogCreationProcess
+			if (scheduleExecutionLog.getExeAtr() == ExecutionAtr.AUTOMATIC) {
+				this.scheduleCreatorRepository.add(domain);
+			}
 
 			// check is client submit cancel
 			if (asyncTask.hasBeenRequestedToCancel()) {
@@ -622,12 +620,12 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				optionalClosure.get().getClosureMonth().getProcessingYm());
 		// Input「対象開始日」と、取得した「開始年月日」を比較
 		if (dateAfterCorrection.start().before(dateP.start())) {
-			dateAfterCorrection.newSpan(dateP.start(), dateAfterCorrection.end());
+			dateAfterCorrection.cutOffWithNewStart(dateP.start());
 		}
 		// Output「対象開始日(補正後)」に、取得した「締め期間. 開始日年月日」を設定する
-		if (dateAfterCorrection.start().beforeOrEquals(dateP.end())) {
+		if (dateAfterCorrection.start().beforeOrEquals(dateAfterCorrection.end())) {
 			// Out「対象終了日(補正後)」に、Input「対象終了日」を設定する
-			dateAfterCorrection.newSpan(dateP.start(), dateP.end());
+			dateAfterCorrection.cutOffWithNewEnd(dateAfterCorrection.end());
 			return true;
 		}
 

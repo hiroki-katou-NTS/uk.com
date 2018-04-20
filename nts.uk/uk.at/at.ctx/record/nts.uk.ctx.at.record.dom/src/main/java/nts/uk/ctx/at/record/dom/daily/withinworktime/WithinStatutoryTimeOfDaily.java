@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDay;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BreakTimeManagement;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
@@ -31,6 +32,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTime
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
@@ -46,6 +48,7 @@ import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 日別実績の所定内時間
@@ -56,8 +59,8 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 public class WithinStatutoryTimeOfDaily {
 	//就業時間
 	private AttendanceTime workTime;
-	//就業時間(休暇加算時間を含む)
-	private AttendanceTime workTimeIncludeVacationTime = new AttendanceTime(0);
+	//実働就業時間
+	private AttendanceTime actualWorkTime = new AttendanceTime(0);
 	//所定内割増時間
 	private AttendanceTime withinPrescribedPremiumTime = new AttendanceTime(0);
 	//所定内深夜時間
@@ -143,9 +146,6 @@ public class WithinStatutoryTimeOfDaily {
 			   												   TimeLimitUpperLimitSetting flexLimitSetting,
 			   												   WorkTimeDailyAtr workTimeDailyAtr, Optional<WorkTimeCode> workTimeCode) {
 		AttendanceTime workTime = new AttendanceTime(0);
-		Optional<DeductionTimeSheet> dedSheet = oneDay.getTemporaryDeductionTimeSheet().isPresent()
-												?oneDay.getTemporaryDeductionTimeSheet()
-												:Optional.of(new DeductionTimeSheet(Collections.emptyList(), Collections.emptyList()));
 		if(oneDay.getWithinWorkingTimeSheet().isPresent()) {
 			if(workTimeDailyAtr.isFlex()) {
 				FlexWithinWorkTimeSheet changedFlexTimeSheet = (FlexWithinWorkTimeSheet)oneDay.getWithinWorkingTimeSheet().get();
@@ -206,12 +206,12 @@ public class WithinStatutoryTimeOfDaily {
 	 * @return
 	 */
 	public static WithinStatutoryTimeOfDaily createWithinStatutoryTimeOfDaily(AttendanceTime workTime,
-																	   AttendanceTime workTimeIncludeVacationTime,
+																	   AttendanceTime actualWorkTime,
 																	   AttendanceTime withinPrescribedPremiumTime,
 																	   WithinStatutoryMidNightTime withinStatutoryMidNightTime,
 																	   AttendanceTime vacationAddTime) {
 		WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily = new WithinStatutoryTimeOfDaily(workTime,withinStatutoryMidNightTime);
-		withinStatutoryTimeOfDaily.workTimeIncludeVacationTime = workTimeIncludeVacationTime;
+		withinStatutoryTimeOfDaily.actualWorkTime = actualWorkTime;
 		withinStatutoryTimeOfDaily.withinPrescribedPremiumTime = withinPrescribedPremiumTime;
 		withinStatutoryTimeOfDaily.withinStatutoryMidNightTime = withinStatutoryMidNightTime;
 		withinStatutoryTimeOfDaily.vacationAddTime = vacationAddTime;
@@ -220,14 +220,25 @@ public class WithinStatutoryTimeOfDaily {
 	
 	public List<EmployeeDailyPerError> checkWithinMidNightExcess(String employeeId,
 			                                               		 GeneralDate targetDate,
-			                                               		 ErrorAlarmWorkRecordCode errorCode) {
+																 String searchWord,
+																 AttendanceItemDictionaryForCalc attendanceItemDictionary,
+																 ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
 		if(this.getWithinStatutoryMidNightTime().isOverLimitDivergenceTime()) {
-			//社員の日別実績エラー一覧取得↓へ入れる			
+			val itemId = attendanceItemDictionary.findId(searchWord);
+			if(itemId.isPresent())
+				returnErrorItem.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
+					
 		}
-
-			
-			
 		return returnErrorItem;
+	}
+	
+	/**
+	 * 就業時間から休憩未使用時間を減算(大塚モード専用処理)
+	 * @param unUseBreakTime 休憩未取得時間
+	 */
+	public void workTimeMinusUnUseBreakTimeForOotsuka(AttendanceTime unUseBreakTime) {
+		this.workTime = this.workTime.minusMinutes(unUseBreakTime.valueAsMinutes());
+		this.actualWorkTime = this.actualWorkTime.minusMinutes(unUseBreakTime.valueAsMinutes());
 	}
 }

@@ -4,8 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class FixedWorkCalcSetting.
@@ -42,5 +45,33 @@ public class FixedWorkCalcSetting extends WorkTimeDomainObject {
 	public void saveToMemento(FixedWorkCalcSettingSetMemento memento) {
 		memento.setExceededPredAddVacationCalc(this.exceededPredAddVacationCalc);
 		memento.setOverTimeCalcNoBreak(this.overTimeCalcNoBreak);
+	}
+
+	/**
+	 * Correct data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 * @param oldDomain
+	 *            the old domain
+	 */
+	public void correctData(ScreenMode screenMode, Optional<FixedWorkCalcSetting> oldDomain) {
+		if (oldDomain.isPresent()) {
+			this.exceededPredAddVacationCalc.correctData(screenMode, oldDomain.get().getExceededPredAddVacationCalc());
+			this.overTimeCalcNoBreak.correctData(screenMode, oldDomain.get().getOverTimeCalcNoBreak());
+		} else {
+			this.correctDefaultData(screenMode);
+		}
+	}
+
+	/**
+	 * Correct default data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 */
+	public void correctDefaultData(ScreenMode screenMode) {
+		this.exceededPredAddVacationCalc.correctDefaultData(screenMode);
+		this.overTimeCalcNoBreak.correctDefaultData(screenMode);
 	}
 }

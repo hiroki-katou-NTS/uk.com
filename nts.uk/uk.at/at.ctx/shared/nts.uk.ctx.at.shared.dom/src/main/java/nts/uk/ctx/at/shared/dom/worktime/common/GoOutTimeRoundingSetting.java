@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
@@ -17,100 +17,106 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 public class GoOutTimeRoundingSetting extends WorkTimeDomainObject {
 
 	/** The rounding method. */
-	//丸め方法
-	private GoOutTimeRoundingMethod roundingMethod;
-	
+	// 丸め方法
+	private RoundingGoOutTimeSheet roundingMethod;
+
 	/** The rounding setting. */
-	//丸め設定
+	// 丸め設定
 	private TimeRoundingSetting roundingSetting;
-	
+
 	/**
 	 * Instantiates a new go out time rounding setting.
 	 *
-	 * @param roundingMethod the rounding method
-	 * @param roundingSetting the rounding setting
+	 * @param roundingMethod
+	 *            the rounding method
+	 * @param roundingSetting
+	 *            the rounding setting
 	 */
-	public GoOutTimeRoundingSetting(GoOutTimeRoundingMethod roundingMethod,
-			TimeRoundingSetting roundingSetting) {
+	public GoOutTimeRoundingSetting(RoundingGoOutTimeSheet roundingMethod, TimeRoundingSetting roundingSetting) {
 		super();
 		this.roundingMethod = roundingMethod;
 		this.roundingSetting = roundingSetting;
 	}
-	
+
 	/**
 	 * Instantiates a new go out time rounding setting.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public GoOutTimeRoundingSetting(GoOutTimeRoundingSettingGetMemento memento) {
 		this.roundingMethod = memento.getRoundingMethod();
 		this.roundingSetting = memento.getRoundingSetting();
 	}
-	
+
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
-	public void saveToMemento(GoOutTimeRoundingSettingSetMemento memento){
+	public void saveToMemento(GoOutTimeRoundingSettingSetMemento memento) {
 		memento.setRoundingMethod(this.roundingMethod);
 		memento.setRoundingSetting(this.roundingSetting);
 	}
-	
+
 	/**
-	 * Restore data.
+	 * Correct data.
 	 *
-	 * @param screenMode the screen mode
-	 * @param oldDomain the old domain
+	 * @param screenMode
+	 *            the screen mode
+	 * @param oldDomain
+	 *            the old domain
 	 */
-	public void restoreData(ScreenMode screenMode, GoOutTimeRoundingSetting oldDomain) {
+	public void correctData(ScreenMode screenMode, GoOutTimeRoundingSetting oldDomain) {
 		// Simple mode
 		if (screenMode == ScreenMode.SIMPLE) {
-			this.roundingMethod = oldDomain.getRoundingMethod();
-			this.roundingSetting.restoreData(oldDomain.getRoundingSetting());			
+			this.roundingMethod = RoundingGoOutTimeSheet.REVERSE_ROUNDING_EACH_TIMEZONE;
+			this.roundingSetting.setDefaultDataRoundingDown();
 			return;
-		} 
-		
+		}
+
 		// Detail mode
-		switch (this.roundingMethod) {		
-			case TOTAL_AND_ROUNDING:
-				this.roundingSetting.restoreData(oldDomain.getRoundingSetting());
-				break;
-	
-			case ROUNDING_AND_TOTAL:
-				// Nothing change
-				break;
-	
-			default:
-				throw new RuntimeException("GoOutTimeRoundingMethod not found.");
+		switch (this.roundingMethod) {
+		case REVERSE_ROUNDING_EACH_TIMEZONE:
+			this.roundingSetting.correctData(oldDomain.getRoundingSetting());
+			break;
+
+		case INDIVIDUAL_ROUNDING:
+			// Nothing change
+			break;
+
+		default:
+			throw new RuntimeException("GoOutTimeRoundingMethod not found.");
 		}
 	}
-	
+
 	/**
-	 * Restore default data.
+	 * Correct default data.
 	 *
-	 * @param screenMode the screen mode
+	 * @param screenMode
+	 *            the screen mode
 	 */
-	public void restoreDefaultData(ScreenMode screenMode) {
+	public void correctDefaultData(ScreenMode screenMode) {
 		// Simple mode
 		if (screenMode == ScreenMode.SIMPLE) {
-			this.roundingMethod = GoOutTimeRoundingMethod.TOTAL_AND_ROUNDING;
-			this.roundingSetting.restoreDefaultData();			
+			this.roundingMethod = RoundingGoOutTimeSheet.REVERSE_ROUNDING_EACH_TIMEZONE;
+			this.roundingSetting.setDefaultDataRoundingUp();
 			return;
-		} 
-		
+		}
+
 		// Detail mode
-		switch (this.roundingMethod) {		
-			case TOTAL_AND_ROUNDING:
-				this.roundingSetting.restoreDefaultData();
-				break;
-	
-			case ROUNDING_AND_TOTAL:
-				// Nothing change
-				break;
-	
-			default:
-				throw new RuntimeException("GoOutTimeRoundingMethod not found.");
+		switch (this.roundingMethod) {
+		case REVERSE_ROUNDING_EACH_TIMEZONE:
+			this.roundingSetting.setDefaultDataRoundingUp();
+			break;
+
+		case INDIVIDUAL_ROUNDING:
+			// Nothing change
+			break;
+
+		default:
+			throw new RuntimeException("GoOutTimeRoundingMethod not found.");
 		}
 	}
 }

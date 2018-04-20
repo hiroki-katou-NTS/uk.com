@@ -26,8 +26,8 @@ public class GetVacationAddTime {
 		if (addSet.isAnnualLeave()){
 			
 			// 年休使用時間を取得する
-			//*****（未）　仮に0設定。日次側ドメインの作成待ち。
-			val annualLeaveUseTime = new AttendanceTimeMonth(0);
+			vacationUseTime.getAnnualLeave().aggregate(datePeriod);
+			val annualLeaveUseTime = vacationUseTime.getAnnualLeave().getUseTime();
 			
 			// 休暇加算時間に年休使用時間を加算する
 			vacationAddTime = vacationAddTime.addMinutes(annualLeaveUseTime.v());
@@ -36,8 +36,8 @@ public class GetVacationAddTime {
 		if (addSet.isRetentionYearly()){
 			
 			// 積立年休使用時間を取得する
-			//*****（未）　仮に0設定。日次側ドメインの作成待ち。
-			val retentionYearlyUseTime = new AttendanceTimeMonth(0);
+			vacationUseTime.getRetentionYearly().aggregate(datePeriod);
+			val retentionYearlyUseTime = vacationUseTime.getRetentionYearly().getUseTime();
 			
 			// 休暇使用時間に積立年休使用時間を加算する
 			vacationAddTime = vacationAddTime.addMinutes(retentionYearlyUseTime.v());
@@ -46,8 +46,8 @@ public class GetVacationAddTime {
 		if (addSet.isSpecialHoliday()){
 			
 			// 特別休暇使用時間を取得する
-			//*****（未）　仮に0設定。日次側ドメインの作成待ち。
-			val specialHolidayUseTime = new AttendanceTimeMonth(0);
+			vacationUseTime.getSpecialHoliday().aggregate(datePeriod);
+			val specialHolidayUseTime = vacationUseTime.getSpecialHoliday().getUseTime();
 			
 			// 休暇使用時間に特別休暇使用時間を加算する
 			vacationAddTime = vacationAddTime.addMinutes(specialHolidayUseTime.v());

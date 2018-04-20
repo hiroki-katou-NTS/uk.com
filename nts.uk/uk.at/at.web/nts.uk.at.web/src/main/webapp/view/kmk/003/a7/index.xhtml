@@ -15,10 +15,16 @@
 	</div>
 
 	<div class="tab-seperator">
-		<com:ko tag="if" bind="!isFlowOrFlex()">
-			<div tabindex="92" id="nts-fix-table-a7-fixed-difftime"
+		<com:ko tag="if" bind="isFixed()">
+			<div tabindex="92" id="nts-fix-table-a7-fixed"
 				data-bind="ntsFixTableCustom: {option: fixTableOptionForFixedOrDiffTime }"></div>
 		</com:ko>
+		
+		<com:ko tag="if" bind="isDiffTime()">
+			<div tabindex="92" id="nts-fix-table-a7-difftime"
+				data-bind="ntsFixTableCustom: {option: fixTableOptionForDiffTime }"></div>
+		</com:ko>
+		
 		<com:ko tag="if" bind="isFixedRestTime()">
 			<div tabindex="94" id="nts-fix-table-a7-flow-flex-use"
 				data-bind="ntsFixTableCustom: {option: fixTableOptionForFlowOrFlexUse }"></div>

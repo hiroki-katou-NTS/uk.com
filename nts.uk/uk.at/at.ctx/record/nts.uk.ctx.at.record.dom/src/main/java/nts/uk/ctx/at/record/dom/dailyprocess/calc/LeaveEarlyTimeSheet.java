@@ -80,7 +80,7 @@ public class LeaveEarlyTimeSheet {
 			LeaveEarlyDecisionClock leaveEarlyDecisionClock,
 			TimeWithDayAttr leave
 			,GraceTimeSetting graceTimeSetting
-			,EmTimeZoneSet duplicateTimeSheet
+			,WithinWorkTimeFrame duplicateTimeSheet
 			,DeductionTimeSheet deductionTimeSheet
 			,Optional<CoreTimeSetting> coreTimeSetting
 			,TimezoneUse predetermineTimeSet
@@ -116,7 +116,7 @@ public class LeaveEarlyTimeSheet {
 			TimeWithDayAttr leave
 			,Optional<CoreTimeSetting> coreTimeSetting
 			,TimezoneUse predetermineTimeSet
-			,EmTimeZoneSet duplicateTimeSheet
+			,WithinWorkTimeFrame duplicateTimeSheet
 			,DeductionTimeSheet deductionTimeSheet){
 
 		//早退時間帯の作成
@@ -140,7 +140,7 @@ public class LeaveEarlyTimeSheet {
 			TimeWithDayAttr leave
 			,Optional<CoreTimeSetting> coreTimeSetting
 			,TimezoneUse predetermineTimeSet
-			,EmTimeZoneSet duplicateTimeSheet
+			,WithinWorkTimeFrame duplicateTimeSheet
 			,DeductionTimeSheet deductionTimeSheet){
 		//控除区分を基に丸め設定を取得しておく
 		//TimeRoundingSetting timeRoundingSetting = lateLeaveEarlySettingOfWorkTime.getTimeRoundingSetting(deductionAtr);
@@ -148,7 +148,7 @@ public class LeaveEarlyTimeSheet {
 		//計算範囲の取得
 		TimeSpanForCalc calcRange = LeaveEarlyDecisionClock.getCalcRange(predetermineTimeSet, leave, coreTimeSetting);
 		//早退時間帯の作成
-		TimeWithDayAttr start = duplicateTimeSheet.getTimezone().getEnd().greaterThanOrEqualTo(leave)?duplicateTimeSheet.getTimezone().getEnd():leave;
+		TimeWithDayAttr start = duplicateTimeSheet.getCalcrange().getStart().greaterThanOrEqualTo(leave)?duplicateTimeSheet.getCalcrange().getStart():leave;
 		TimeWithDayAttr end = calcRange.getEnd();
 		
 		LateLeaveEarlyTimeSheet timeSheet = new LateLeaveEarlyTimeSheet(

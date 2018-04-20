@@ -97,6 +97,9 @@ public class OverTimeOfTimeZoneSetDto implements OverTimeOfTimeZoneSetGetMemento
 	 */
 	@Override
 	public SettlementOrder getSettlementOrder() {
+		if (this.settlementOrder == null) {
+			return null;
+		}
 		return new SettlementOrder(this.settlementOrder);
 	}
 
@@ -121,6 +124,9 @@ public class OverTimeOfTimeZoneSetDto implements OverTimeOfTimeZoneSetGetMemento
 	 */
 	@Override
 	public OTFrameNo getLegalOTframeNo() {
+		if (this.legalOTframeNo == null) {
+			return null;
+		}
 		return new OTFrameNo(this.legalOTframeNo);
 	}
 }
