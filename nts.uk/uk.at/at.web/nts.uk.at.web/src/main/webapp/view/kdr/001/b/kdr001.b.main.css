@@ -94,3 +94,6 @@ table, th, td {
 .ntsCheckBox{
 	width: 150px;
 }
+.multicheckbox-wrapper label{
+	margin-right: 5px;
+}

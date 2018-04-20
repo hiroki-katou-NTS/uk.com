@@ -91,7 +91,7 @@ public class HdRemainManageCommand {
 	 * 積立年休の項目を出力する
 	 */
 	private boolean yearlyReserved;
-	List<Integer> specialHolidays;
+	List<Integer> listSpecialHoliday;
 	public HdRemainManageCommand(String cid, String cd, String name, boolean nursingLeave,
 			boolean remainingChargeSubstitute, boolean representSubstitute, boolean outputItemSubstitute,
 			boolean outputholidayforward, boolean monthlyPublic, boolean outputitemsholidays, boolean childNursingLeave,
@@ -116,7 +116,7 @@ public class HdRemainManageCommand {
 		this.undigestedPause = undigestedPause;
 		this.pauseItem = pauseItem;
 		this.yearlyReserved = yearlyReserved;
-		this.specialHolidays = specialHolidays;
+		this.listSpecialHoliday = specialHolidays;
 	}
 
 }

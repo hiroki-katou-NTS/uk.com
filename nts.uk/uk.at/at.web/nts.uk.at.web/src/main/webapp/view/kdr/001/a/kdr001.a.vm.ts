@@ -6,6 +6,7 @@ module nts.uk.at.view.kdr001.a {
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import modal = nts.uk.ui.windows.sub.modal;
 
     export module viewmodel {
         export class ScreenModel {
@@ -105,21 +106,15 @@ module nts.uk.at.view.kdr001.a {
                     startDate: self.startDateString(),
                     endDate: self.endDateString()
                 });
-                self.checkReCreateAtrOnlyUnConfirm = ko.observable(false);
-                self.checkReCreateAtrAllCase = ko.observable(true);
-                self.checkProcessExecutionAtrRebuild = ko.observable(true);
-                self.checkProcessExecutionAtrReconfig = ko.observable(false);
+
                 self.resetWorkingHours = ko.observable(false);
                 self.resetDirectLineBounce = ko.observable(false);
                 self.resetMasterInfo = ko.observable(false);
                 self.resetTimeChildCare = ko.observable(false);
                 self.resetAbsentHolidayBusines = ko.observable(false);
                 self.resetTimeAssignment = ko.observable(false);
-                self.checkCreateMethodAtrPersonalInfo = ko.observable(true);
-                self.checkCreateMethodAtrPatternSchedule = ko.observable(false);
-                self.checkCreateMethodAtrCopyPastSchedule = ko.observable(false);
                 self.copyStartDate = ko.observable(new Date());
-
+                
                 self.startDateString.subscribe(function(value) {
                     self.periodDate().startDate = value;
                     self.periodDate.valueHasMutated();
@@ -145,21 +140,6 @@ module nts.uk.at.view.kdr001.a {
                 ]);
 
                 self.selectedCode = ko.observable('1');
-            }
-            /**
-              * Set default combo-box1 options
-              */
-            public setDefault() {
-                var self = this;
-                nts.uk.util.value.reset($("#combo-box1, #A_SEL_001"), self.defaultValue() !== '' ? self.defaultValue() : undefined);
-            }
-
-            /**
-              * Set default combo-box2 options
-              */
-            public setDefault() {
-                var self = this;
-                nts.uk.util.value.reset($("#combo-box2, #A_SEL_001"), self.defaultValue() !== '' ? self.defaultValue() : undefined);
             }
 
             /**
@@ -322,6 +302,13 @@ module nts.uk.at.view.kdr001.a {
                      nts.uk.ui.block.clear();
                 });
             }
+            
+            
+        openKDR001b() {
+            modal("/view/kdr/001/b/index.xhtml").onClosed(function() {
+
+            });
+        }
 
 
         }
