@@ -164,7 +164,7 @@ public class AppOvertimeFinder {
 		int overtimeAtr = overtimeService.checkOvertime(url);
 		result.setOvertimeAtr(overtimeAtr);
 		// 01_初期データ取得
-		getData(result,uiType,appDate,companyID,employeeID,appCommonSettingOutput,applicationDto,overtimeAtr,overTimeInputs,preAppOvertimeDto);
+		getData(result,uiType,appDate,companyID,employeeID,appCommonSettingOutput,applicationDto,overtimeAtr,overTimeInputs,preAppOvertimeDto,timeStart1,timeEnd1,reasonContent);
 		
 		result.setApplication(applicationDto);
 		String employeeName = "";
@@ -176,7 +176,6 @@ public class AppOvertimeFinder {
 			result.setEmployeeID(employeeID);
 		}
 		result.setEmployeeName(employeeName);
-		
 		return result;
 	}
 	
@@ -668,7 +667,7 @@ public class AppOvertimeFinder {
 	 */
 	private void getData(OverTimeDto result,int uiType,String appDate,String companyID,String employeeID,
 			AppCommonSettingOutput appCommonSettingOutput,ApplicationDto_New applicationDto,int overtimeAtr,
-			List<OvertimeInputDto> overTimeInputs,PreAppOvertimeDto preAppOvertimeDto){
+			List<OvertimeInputDto> overTimeInputs,PreAppOvertimeDto preAppOvertimeDto,Integer startTime1,Integer endTime1,String reasonContent){
 		//申請日付を取得 : lay thong tin lam them
 		applicationDto.setApplicationDate(appDate);
 		// 01-01_残業通知情報を取得
@@ -722,6 +721,12 @@ public class AppOvertimeFinder {
 				result.setWorkClockFrom2(recordWorkOutput.getStartTime2());
 				result.setWorkClockTo1(recordWorkOutput.getEndTime1());
 				result.setWorkClockTo2(recordWorkOutput.getEndTime2());
+				if(startTime1 != null){
+					result.setWorkClockFrom1(startTime1);
+				}
+				if(endTime1 != null){
+					result.setWorkClockTo1(endTime1);
+				}
 				
 				// 01-17_休憩時間取得(lay thoi gian nghi ngoi)
 				boolean displayRestTime = iOvertimePreProcess.getRestTime(approvalFunctionSetting);
@@ -796,6 +801,9 @@ public class AppOvertimeFinder {
 			}
 			//01-06_申請理由を取得
 			result.setDisplayAppReasonContentFlg(iOvertimePreProcess.displayAppReasonContentFlg(appTypeDiscreteSetting));
+			if(result.isDisplayAppReasonContentFlg()){
+				applicationDto.setApplicationReason(reasonContent);
+			}
 		}
 		if(overtimeRestAppCommonSet.isPresent()){
 			result.setDisplayDivergenceReasonForm(false);
@@ -859,8 +867,7 @@ public class AppOvertimeFinder {
 			}
 			
 		}
-		
-		
+		result.setApplication(applicationDto);
 	}
 
 	/**
