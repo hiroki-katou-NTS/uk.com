@@ -6,7 +6,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
     import dialog = nts.uk.ui.dialog;
     export class ScreenModel {
         lstHolidays: KnockoutObservableArray<HolidayRemaining> = ko.observableArray([]);
-        currentCode: KnockoutObservable<String>;
+        currentCode: KnockoutObservable<string>;
         currentHoliday: KnockoutObservable<HolidayRemaining> = ko.observable(new HolidayRemaining(null));
         switchOptions: KnockoutObservableArray<any>;
         isNewMode: KnockoutObservable<boolean> = ko.observable(true);
@@ -22,15 +22,17 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     let index: number = 0;
                     if (cd) {
                         index = _.findIndex(lstHolidays, function(x)
-                        { return x.cd == cd });
+                        { return x.cd === cd });
                         if (index === -1) index = 0;
                     }
                     let _holiday = lstHolidays[index];
                     if (_holiday && _holiday.cd) {
 
-                        self.currentHoliday(_holiday);
+                       // self.currentHoliday(_holiday);
+                        self.buildHolidayRemaining(_holiday);
                     } else {
-                        self.currentHoliday(null);
+                        //self.currentHoliday(null);
+                        self.buildHolidayRemaining(null);
                     }
                 }
             });
@@ -48,6 +50,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                         self.lstHolidays(data);
                         if (!self.currentCode()) {
                             self.currentCode(data[0].cd);
+                            
                         } else {
                             index = _.findIndex(lstHolidays, function(x)
                             { return x.cd == cd });
@@ -177,7 +180,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                         dialog.info({ messageId: "Msg_16" });
                         //select next Role Set
                         let index: number = _.findIndex(lstHolidays(), function(x)
-                        { return x.cd == currentHoliday.cd() });
+                        { return x.cd() == currentHoliday.cd() });
                         // remove the deleted item out of list
                         if (index > -1) {
                             self.lstHolidays.splice(index, 1);
@@ -186,6 +189,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                             }
                             if (lstHolidays().length > 0) {
                                 self.currentCode(lstHolidays[index].cd());
+                                
                                 //Setting update mode
                                 self.isNewMode(false);
                                 //focus
@@ -218,23 +222,27 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         }
 
 
+        buildHolidayRemaining(param : any) {
+            let self = this;
+            self.currentHoliday = ko.observable(new HolidayRemaining(param));
+        }
     }
     export class HolidayRemaining {
 
         /**
          * 会社ID
          */
-        cid: KnockoutObservable<String>;
+        cid: KnockoutObservable<string>;
         /**
           * コード
         */
-        cd: KnockoutObservable<String>;
+        cd: KnockoutObservable<string>;
         /**
          * 名称
          */
-        name: KnockoutObservable<String>;
-        displayCd: String;
-        displayName: String;
+        name: KnockoutObservable<string>;
+        displayCd: string;
+        displayName: string;
         /**
          * 介護休暇の項目を出力する
          */

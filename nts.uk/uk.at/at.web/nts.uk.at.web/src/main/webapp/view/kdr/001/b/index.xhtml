@@ -9,20 +9,9 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdr001.b.main.css" />
-
-			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js"
-				of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/kdl/023/base/kdl023.base.service.js" />
 			<com:scriptfile path="kdr001.b.start.js" />
 			<com:scriptfile path="kdr001.b.service.js" />
 			<com:scriptfile path="kdr001.b.vm.js" />
-			<com:ValidatorScript>
-				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber
-				</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
@@ -31,14 +20,14 @@
 				<button
 					data-bind="click: settingCreateMode,
                         enable: !isNewMode()"
-					tabindex="1">#{i18n.getText('KWD001_36')}</button>
+					tabindex="1">#{i18n.getText('KDR001_36')}</button>
 				<button data-bind="click: saveHoliday, enable: $root.errors.isEmpty"
-					tabindex="2" class="proceed">#{i18n.getText('KWD001_37')}</button>
+					tabindex="2" class="proceed">#{i18n.getText('KDR001_37')}</button>
 				<button
 					data-bind="click: deleteHoliday,
                         enable: !isNewMode()"
-					tabindex="3" class="danger">#{i18n.getText('KWD001_38')}</button>
-				<button data-bind="click: closeDialog" tabindex="4">#{i18n.getText('KWD001_39')}</button>
+					tabindex="3" class="danger">#{i18n.getText('KDR001_38')}</button>
+				<button data-bind="click: closeDialog" tabindex="4">#{i18n.getText('KDR001_39')}</button>
 			</div>
 
 			<div class="cf" id="contents-area">
@@ -52,8 +41,8 @@
 								optionsValue: 'cd',
 								
 								columns: [
-										{ headerText: '#{i18n.getText('KWD001_40')}', key: 'cd', width: 150 },
-										{ headerText: '#{i18n.getText('KWD001_41')}', key: 'name', width: 250 }
+										{ headerText: '#{i18n.getText('KDR001_40')}', key: 'cd', width: 150 },
+										{ headerText: '#{i18n.getText('KDR001_41')}', key: 'name', width: 250 }
 										], 
 								
 								value: currentCode
@@ -61,11 +50,11 @@
 
 				</div>
 				<div class="employeeAction" data-bind="with: currentHoliday">
-					<div class="labelWork" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KWD001_42')}
+					<div class="labelWork" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_42')}
 					</div>
 					<input style="width: 150px;" tabindex="6" id="holidayCode"
 						data-bind="ntsTextEditor: {
-							name: '#[KWD001_40]',
+							name: '#[KDR001_40]',
 							value: cd,  
 							enable: true,
 						 	required: true,
@@ -73,12 +62,12 @@
 					<input style="width: 250px; margin: 20px;" tabindex="7"
 						id="holidayName"
 						data-bind="ntsTextEditor: {
-							name: '#[KWD001_41]',
+							name: '#[KDR001_41]',
 							value: name,
 						  	enable: true,
 						    required: true}" />
 					<div class="employeetable" style="margin-left: 50px;">
-						<div class="labelWork" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KWD001_43')}
+						<div class="labelWork" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_43')}
 						</div>
 						<!-- B4_2  -->
 						<table tabindex="8">
@@ -128,14 +117,14 @@
 								<td>
 									<!-- B4_20  -->
 									<div tabindex="26"
-										data-bind="ntsCheckBox: { checked: ChildNursingLeave ,  enable: true, text: '#{i18n.getText('KWD001_47')}' }"></div>
+										data-bind="ntsCheckBox: { checked: ChildNursingLeave ,  enable: true, text: '#{i18n.getText('KDR001_47')}' }"></div>
 								</td>
 							</tr>
 							<tr>
 								<td>
 									<!-- B4_21  -->
 									<div tabindex="27"
-										data-bind="ntsCheckBox: { checked: nursingLeave , enable: true, text: '#{i18n.getText('KWD001_48')}' }"></div>
+										data-bind="ntsCheckBox: { checked: nursingLeave , enable: true, text: '#{i18n.getText('KDR001_48')}' }"></div>
 								</td>
 							</tr>
 
