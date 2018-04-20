@@ -471,6 +471,8 @@ module nts.uk.at.view.kdw008.b {
             }
 
             dialog() {
+                let self = this;
+                nts.uk.ui.windows.setShared("openC", self.isDaily);
                 nts.uk.ui.windows.sub.modal("../c/index.xhtml");
             }
 

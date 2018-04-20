@@ -11,7 +11,8 @@ module nts.uk.at.view.kdw008.c {
                 var self = this;
                 this.idList = ko.observable('');
                 this.businessTypeSortedList = ko.observableArray([]);
-                this.isDaily = ko.observable(true);
+                let param  = nts.uk.ui.windows.getShared("openC");
+                this.isDaily = ko.observable(param);
 
                 if (self.isDaily()) {
                     this.columns = ko.observableArray([
