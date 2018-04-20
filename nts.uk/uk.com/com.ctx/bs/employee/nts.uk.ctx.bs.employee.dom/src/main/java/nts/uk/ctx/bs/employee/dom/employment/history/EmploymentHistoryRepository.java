@@ -6,6 +6,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface EmploymentHistoryRepository {
 	/**
@@ -59,5 +60,5 @@ public interface EmploymentHistoryRepository {
 	void delete(String histId);
 	
 	// query from RequetsList 264
-	List<EmploymentHistory> getByListSid(List<String> employeeIds);
+	List<EmploymentHistory> getByListSid(List<String> employeeIds  ,  DatePeriod datePeriod);
 }
