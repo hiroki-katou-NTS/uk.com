@@ -140,8 +140,9 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			return;
 		}
 		//TODO 反映するかどうか判断 (Xác định để phản ánh)
-		//勤務予定へ反映処理	(Xử lý phản ánh đến kế hoạch công việc)		
-		ScheReflectedStatesInfo scheRelectStates = scheReflect.workscheReflect(reflectScheParam);
+		//勤務予定へ反映処理	(Xử lý phản ánh đến kế hoạch công việc)	
+		ScheReflectedStatesInfo scheRelectStates = null;
+//		ScheReflectedStatesInfo scheRelectStates = scheReflect.workscheReflect(reflectScheParam);
 		appInfor.getReflectionInformation().setStateReflection(scheRelectStates.getReflectedSate());
 		if(scheRelectStates.getNotReflectReson() != null) {
 			appInfor.getReflectionInformation().setNotReason(Optional.of(scheRelectStates.getNotReflectReson()));
@@ -154,7 +155,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				overTimeTmp, 
 				commonReflect, 
 				holidayworkInfor);
-		WorkReflectedStatesInfo workRecordreflect = workRecordReflect.workRecordreflect(appPara);
+//		WorkReflectedStatesInfo workRecordreflect = workRecordReflect.workRecordreflect(appPara);
+		WorkReflectedStatesInfo workRecordreflect = null;
 		appInfor.getReflectionInformation().setStateReflectionReal(workRecordreflect.getReflectedSate());
 		if(workRecordreflect.getNotReflectReson() != null) {
 			appInfor.getReflectionInformation().setNotReasonReal(Optional.of(workRecordreflect.getNotReflectReson()));
