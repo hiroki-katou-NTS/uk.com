@@ -6,7 +6,8 @@ module nts.uk.at.view.kdr001.a {
         var path: any = {
                 findAll: "at/function/holidaysremaining/findAll",
                 saveAsExcel: "at/function/holidaysremaining/employee",
-                getDate: "at/function/holidaysremaining/getDate"
+                getDate: "at/function/holidaysremaining/getDate",
+                getPermissionOfEmploymentForm: "at/function/holidaysremaining/getPermissionOfEmploymentForm"
             };
         
         
@@ -21,7 +22,10 @@ module nts.uk.at.view.kdr001.a {
         export function getDate() {
             return nts.uk.request.exportFile("at", path.getDate);
         }
-       
+        
+        export function getPermissionOfEmploymentForm() {
+            return nts.uk.request.exportFile("at", path.getPermissionOfEmploymentForm);
+        }
         
         
         export module model {

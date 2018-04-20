@@ -78,6 +78,9 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         selectedCode: KnockoutObservable<string> = ko.observable('1');
         holidayRemainingSelectedCd: KnockoutObservable<string> = ko.observable('');
         
+        permissionOfEmploymentForm : KnockoutObservable<PermissionOfEmploymentFormModel> 
+                                        = ko.observable(new PermissionOfEmploymentFormModel(
+                                            '', '', 1, true));
         constructor() {
             var self = this;
 
@@ -238,25 +241,62 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         public startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+/*
             service.findAll().done(function(data: Array<any>) {
                 self.loadAllHolidayRemaining(data);
-                nts.uk.ui.block.clear();
-                dfd.resolve();
+                service.getDate().done(function(data: IGetDate) {
+                    self.startDateString(moment.utc(data.startDate).format("YYYY/MM"));
+                    self.endDateString(moment.utc(data.endDate).format("YYYY/MM"));
+                    
+                    service.getPermissionOfEmploymentForm().done(function(permission: any) {
+                        self.permissionOfEmploymentForm(new PermissionOfEmploymentFormModel(
+                            permission.companyId,
+                            permission.roleId,
+                            permission.functionNo,
+                            permission.availability));
+                        
+                        nts.uk.ui.block.clear();
+                        dfd.resolve();
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
+                        nts.uk.ui.block.clear();
+                        dfd.reject();
+                    });
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
+                    nts.uk.ui.block.clear();
+                    dfd.reject();
+                });
+                
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
                 nts.uk.ui.block.clear();
                 dfd.reject();
             });
-            service.getDate().done(function(data: IGetDate) {
-                self.startDateString(moment.utc(data.startDate).format("YYYY/MM"));
-                self.endDateString(moment.utc(data.endDate).format("YYYY/MM"));
-                dfd.resolve();
-            }).fail(function(res) {
+            */
+            $.when(service.findAll(),
+                    //service.getDate(),
+                    service.getPermissionOfEmploymentForm()).done((
+                            holidayRemainings: Array<any>,
+                            //dateData: IGetDate,
+                            permission: any) => {
+                    self.loadAllHolidayRemaining(holidayRemainings);
+                    //self.startDateString(moment.utc(dateData.startDate).format("YYYY/MM"));
+                   // self.endDateString(moment.utc(dateData.endDate).format("YYYY/MM"));
+                    self.permissionOfEmploymentForm(new PermissionOfEmploymentFormModel(
+                            permission.companyId,
+                            permission.roleId,
+                            permission.functionNo,
+                            permission.availability));
+                        
+               }).fail(function(res) {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
                 nts.uk.ui.block.clear();
-                dfd.reject();
+            }).always(() => {
+                nts.uk.ui.block.clear();
+                dfd.resolve();
             });
-            dfd.resolve(self);
+            
             return dfd.promise();
         }
         
@@ -370,6 +410,22 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         }
     }
     
+    /**
+     * Permission Of Employment Form model
+     */
+    export class PermissionOfEmploymentFormModel {
+        companyId : string;
+        roleId : string;
+        functionNo : number;
+        availability : KnockoutObservable<boolean> = ko.observable(false);
+        constructor(companyId : string, roleId : string, functionNo : number, availability : boolean) {
+            let self = this;
+            self.companyId = companyId || '';
+            self.roleId = roleId || '';
+            self.functionNo = functionNo || 0;
+            self.availability(availability || false);
+        }
+    }
     // スケジュール一括修正設定
     export class ScheduleBatchCorrectSetting {
         // 勤務種類

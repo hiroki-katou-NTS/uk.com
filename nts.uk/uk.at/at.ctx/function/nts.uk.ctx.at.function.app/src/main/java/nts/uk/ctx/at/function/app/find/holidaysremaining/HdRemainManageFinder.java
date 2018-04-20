@@ -65,6 +65,7 @@ public class HdRemainManageFinder {
 		DatePeriod datePeriod = null ;
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
+		/*
 		GeneralDate baseDate = GeneralDate.today();
 		// Imported（就業）「所属雇用履歴」を取得する
 		Optional<EmploymentHistoryImported> employmentHisOptional = this.employmentAdapter.getEmpHistBySid(companyId, employeeId, baseDate);
@@ -77,6 +78,21 @@ public class HdRemainManageFinder {
 			datePeriod = closureService.getClosurePeriod(closureEmployment.get().getClosureId().intValue(), ym);
 		}
 		return new DateHolidayRemainingDto(datePeriod.start().toString(), datePeriod.end().toString());
+		*/
+		return null;
 	}
+	
+	/**
+	 * TODO: dum get permission for testing. It will be replace after created dom PermissionOfEmploymentForm 
+	 * @return
+	 */
+	public PermissionOfEmploymentFormDto getPermissionOfEmploymentForm() {
+		String companyId = AppContexts.user().companyId();
+		String employeeRoleId = AppContexts.user().roles().forAttendance();
+		PermissionOfEmploymentFormDto permissionDto = new PermissionOfEmploymentFormDto(
+				companyId, employeeRoleId, 1, true);
+		return permissionDto;
+	}
+	
 }
 
