@@ -12,12 +12,12 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 /** 月別実績の遅刻早退 */
 public class LateLeaveEarlyOfMonthlyDto {
 
-	@AttendanceItemLayout(jpPropertyName = "早退", layout = "A")
 	/** 早退: 早退 */
+	@AttendanceItemLayout(jpPropertyName = "早退", layout = "A")
 	private CommonTimeCountDto leaveEarly;
 
-	@AttendanceItemLayout(jpPropertyName = "遅刻", layout = "B")
 	/** 遅刻: 遅刻 */
+	@AttendanceItemLayout(jpPropertyName = "遅刻", layout = "B")
 	private CommonTimeCountDto late;
 
 	public static LateLeaveEarlyOfMonthlyDto from(LateLeaveEarlyOfMonthly domain) {

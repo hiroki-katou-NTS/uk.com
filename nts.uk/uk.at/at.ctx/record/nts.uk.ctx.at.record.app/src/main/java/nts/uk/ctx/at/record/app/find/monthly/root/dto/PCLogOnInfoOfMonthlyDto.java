@@ -11,11 +11,11 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 /** 月別実績のPCログオン情報 */
 public class PCLogOnInfoOfMonthlyDto {
 
-	@AttendanceItemLayout(jpPropertyName = "PCログオン時刻", layout = "A")
 	/** PCログオン時刻: 月別実績のPCログオン時刻 */
+	@AttendanceItemLayout(jpPropertyName = "PCログオン時刻", layout = "A")
 	private PCLogOnTimeOfMonthly pcLogOnTime;
 
-	@AttendanceItemLayout(jpPropertyName = "PCログオン乖離", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = "PCログオン乖離", layout = "B")
 	/** PCログオン乖離: 月別実績のPCログオン乖離 */
 	private PCLogOnTimeOfMonthly pcLogOnDivergence;
 }

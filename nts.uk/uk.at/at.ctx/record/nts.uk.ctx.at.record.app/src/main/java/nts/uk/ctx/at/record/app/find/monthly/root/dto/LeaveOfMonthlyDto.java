@@ -22,10 +22,8 @@ public class LeaveOfMonthlyDto {
 	@AttendanceItemLayout(jpPropertyName = "固定休業日数", layout = "A", listMaxLength = 5, listNoIndex = true, enumField = "leaveAtr")
 	private List<AggregateLeaveDaysDto> fixLeaveDays;
 
-	/** TODO: check list max length */
 	/** 任意休業日数: 任意休業 */
-	// @AttendanceItemLayout(jpPropertyName = "固定休業日数", layout = "A", listMaxLength
-	// = ??, indexField = "anyLeaveNo")
+	 @AttendanceItemLayout(jpPropertyName = "任意休業日数", layout = "A", listMaxLength = 4, indexField = "anyLeaveNo")
 	private List<AnyLeaveDto> anyLeaveDays;
 
 	public static LeaveOfMonthlyDto from(LeaveOfMonthly domain) {

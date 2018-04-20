@@ -21,7 +21,7 @@ public class ExcessOutsideWorkDto {
 
 	/** 超過時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "超過時間", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = "時間", layout = "A")
 	private Integer breakdown;
 
 	/** 内訳NO: int */
@@ -34,11 +34,11 @@ public class ExcessOutsideWorkDto {
 		this.excessNo = excessNo;
 		this.breakdown = breakdown;
 		this.breakdownNo = breakdownNo;
-		this.fakeNo = breakdownNo * 10 + excessNo;
+		this.fakeNo = (breakdownNo-1) * 10 + excessNo;
 	}
 
 	public ExcessOutsideWork toDomain() {
-		return ExcessOutsideWork.of(fakeNo / 10, fakeNo % 10,
+		return ExcessOutsideWork.of((fakeNo / 10) + 1, (fakeNo % 10) + 1,
 				breakdown == null ? null : new AttendanceTimeMonth(breakdown));
 	}
 

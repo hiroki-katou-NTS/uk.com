@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.CommonDaysOfMonthlyDto;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
@@ -60,7 +61,7 @@ public class WorkDaysOfMonthlyDto {
 
 	/** 欠勤日数: 月別実績の欠勤日数 */
 	@AttendanceItemLayout(jpPropertyName = "欠勤日数", layout = "G")
-	private AbsenceDaysOfMonthlyDto absenceDays;
+	private CommonDaysOfMonthlyDto absenceDays;
 
 	/** 出勤日数: 月別実績の出勤日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)
@@ -85,6 +86,15 @@ public class WorkDaysOfMonthlyDto {
 	@AttendanceItemLayout(jpPropertyName = "臨時勤務回数", layout = "L")
 	private Integer temporaryWorkTimes;
 	
+	/** 振出日数: 月別実績の振出日数 */
+	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemLayout(jpPropertyName = "振出日数", layout = "M")
+	private Double transferdays;
+
+	/** 特別休暇日数: 月別実績の特別休暇日数 */
+	@AttendanceItemLayout(jpPropertyName = "特別休暇日数", layout = "N")
+	private CommonDaysOfMonthlyDto specialHolidays;
+	
 	public static WorkDaysOfMonthlyDto from(WorkDaysOfMonthly domain) {
 		WorkDaysOfMonthlyDto dto = new WorkDaysOfMonthlyDto();
 		if(domain != null) {
@@ -98,7 +108,7 @@ public class WorkDaysOfMonthlyDto {
 					? null : domain.getWorkTimes().getTimes().v());
 			dto.setWorkDays(domain.getWorkDays() == null || domain.getWorkDays().getDays() == null 
 					? null : domain.getWorkDays().getDays().v());
-			dto.setAbsenceDays(AbsenceDaysOfMonthlyDto.from(domain.getAbsenceDays()));
+			dto.setAbsenceDays(CommonDaysOfMonthlyDto.from(domain.getAbsenceDays()));
 			dto.setAttendanceDays(domain.getAttendanceDays() == null || domain.getAttendanceDays().getDays() == null 
 					? null : domain.getAttendanceDays().getDays().v());
 			dto.setPredetermineDays(PredeterminedDaysOfMonthlyDto.from(domain.getPredetermineDays()));
@@ -131,8 +141,8 @@ public class WorkDaysOfMonthlyDto {
 	private AbsenceDaysOfMonthly toAbsenceDays() {
 		return absenceDays == null ? null : AbsenceDaysOfMonthly.of(
 						absenceDays.getTotalAbsenceDays() == null ? null : new AttendanceDaysMonth(absenceDays.getTotalAbsenceDays()),
-						ConvertHelper.mapTo(absenceDays.getAbsenceDaysList(),
-								c -> AggregateAbsenceDays.of(c.getAbsenceFrameNo(),
+						ConvertHelper.mapTo(absenceDays.getDaysList(),
+								c -> AggregateAbsenceDays.of(c.getFrameNo(),
 										c.getDays() == null ? null : new AttendanceDaysMonth(c.getDays()))));
 	}
 }

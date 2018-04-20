@@ -17,24 +17,24 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 /** 月別実績の乖離時間 -> 集計乖離時間 */
 public class DivergenceTimeOfMonthlyDto {
 
-	@AttendanceItemLayout(jpPropertyName = "控除後乖離時間", layout = "A")
-	@AttendanceItemValue(type = ValueType.INTEGER)
 	/** 控除後乖離時間: 勤怠月間時間 */
+	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(jpPropertyName = "控除後乖離時間", layout = "A")
 	private Integer divergenceTimeAfterDeduction;
 
-	@AttendanceItemLayout(jpPropertyName = "控除時間", layout = "B")
-	@AttendanceItemValue(type = ValueType.INTEGER)
 	/** 控除時間: 勤怠月間時間 */
+	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(jpPropertyName = "控除時間", layout = "B")
 	private Integer deductionTime;
 
-	@AttendanceItemLayout(jpPropertyName = "乖離フラグ", layout = "C")
-	@AttendanceItemValue(type = ValueType.INTEGER)
 	/** 乖離フラグ: 月別実績の乖離フラグ */
+	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(jpPropertyName = "乖離フラグ", layout = "C")
 	private Integer divergenceAtr;
 
-	@AttendanceItemLayout(jpPropertyName = "乖離時間", layout = "D")
-	@AttendanceItemValue(type = ValueType.INTEGER)
 	/** 乖離時間: 勤怠月間時間 */
+	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(jpPropertyName = "乖離時間", layout = "D")
 	private Integer divergenceTime;
 
 	/** 乖離時間NO: 乖離時間NO */

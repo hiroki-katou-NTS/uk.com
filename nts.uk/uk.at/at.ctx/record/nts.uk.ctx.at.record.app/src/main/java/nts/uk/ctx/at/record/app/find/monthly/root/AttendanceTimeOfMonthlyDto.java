@@ -54,7 +54,7 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 	private DatePeriodDto datePeriod;
 
 	/** 回数集計: 期間別の回数集計 */
-	@AttendanceItemLayout(jpPropertyName = "回数集計", layout = "D", listMaxLength = 10, indexField = "no")
+	@AttendanceItemLayout(jpPropertyName = "回数集計", layout = "D", listMaxLength = 30, indexField = "no")
 	private List<AggregateTimesDto> aggregateTimes;
 
 	/** 月の計算: 月別実績の月の計算 */

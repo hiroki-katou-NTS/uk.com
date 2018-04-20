@@ -14,8 +14,8 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 public class AggregateLeaveDaysDto {
 
 	/** 休業区分: 休業区分 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "休業区分", layout = "A", needCheckIDWithMethod = "leaveAtr")
+//	@AttendanceItemValue(type = ValueType.INTEGER)
+//	@AttendanceItemLayout(jpPropertyName = "休業区分", layout = "A", needCheckIDWithMethod = "leaveAtr")
 	private int leaveAtr;
 
 	/** 日数: 勤怠月間日数 */

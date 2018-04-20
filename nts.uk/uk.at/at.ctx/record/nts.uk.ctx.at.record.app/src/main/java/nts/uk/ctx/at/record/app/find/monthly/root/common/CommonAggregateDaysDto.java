@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.find.monthly.root.dto;
+package nts.uk.ctx.at.record.app.find.monthly.root.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,12 +9,14 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 @Data
 /** 集計欠勤日数 */
+/** 集計特別休暇日数 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class AggregateAbsenceDaysDto {
+public class CommonAggregateDaysDto {
 
 	/** 欠勤枠NO: 欠勤枠NO */
-	private int absenceFrameNo;
+	/** 特別休暇枠NO: 特別休暇枠NO */
+	private int frameNo;
 
 	/** 日数: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DOUBLE)

@@ -19,8 +19,8 @@ import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 public class GoOutForChildCareDto {
 
 	/** 育児介護区分: 育児介護区分 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "育児介護区分", layout = "A", needCheckIDWithMethod = "childCareAtr")
+//	@AttendanceItemValue(type = ValueType.INTEGER)
+//	@AttendanceItemLayout(jpPropertyName = "育児介護区分", layout = "A", needCheckIDWithMethod = "childCareAtr")
 	private int childCareAtr;
 	
 	/** 回数: 勤怠月間回数 */
