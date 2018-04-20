@@ -1640,7 +1640,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                  for (let i =1 ; i< lock.length ; i++){
                                      if(lock[i]=="D" || lock[i]=="M") tempD +=  nts.uk.resource.getText("KDW003_66")+'<br/>'; 
                                      if(lock[i]=="C") tempD += nts.uk.resource.getText("KDW003_67")+'<br/>'; 
-                                     if(lock[i]=="A") tempD += nts.uk.resource.getText("KDW003_70")+'</span>'; 
+                                     if(lock[i]=="A") tempD += nts.uk.resource.getText("KDW003_69")+'</span>'; 
                                      $('#textLock').html(tempD);
                                 }
                                 }

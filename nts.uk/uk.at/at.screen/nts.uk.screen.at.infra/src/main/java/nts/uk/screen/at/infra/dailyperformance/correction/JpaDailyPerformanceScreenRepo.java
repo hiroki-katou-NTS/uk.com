@@ -722,7 +722,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				.stream().map(e -> {
 					return new DPErrorDto(e.errorCode, "", e.employeeId,
 							e.processingDate, 
-							!e.erAttendanceItem.isEmpty() ? e.erAttendanceItem.get(0).krcdtErAttendanceItemPK.attendanceItemId : null,
+							!e.erAttendanceItem.isEmpty() ? e.erAttendanceItem.stream().map(x -> x.krcdtErAttendanceItemPK.attendanceItemId).collect(Collectors.toList()) : Collections.emptyList(),
 							e.errorCancelable.intValue() == 1 ? true : false);
 				}).collect(Collectors.toList());
 	}
@@ -734,7 +734,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				.setParameter("errorCodes", errorCodes).getList().stream().map(e -> {
 					return new DPErrorDto(e.errorCode, "", e.employeeId,
 							e.processingDate,
-							!e.erAttendanceItem.isEmpty() ? e.erAttendanceItem.get(0).krcdtErAttendanceItemPK.attendanceItemId : null,
+							!e.erAttendanceItem.isEmpty() ? e.erAttendanceItem.stream().map(x -> x.krcdtErAttendanceItemPK.attendanceItemId).collect(Collectors.toList()) : Collections.emptyList(),
 							e.errorCancelable.intValue() == 1 ? true : false);
 				}).collect(Collectors.toList());
 	}

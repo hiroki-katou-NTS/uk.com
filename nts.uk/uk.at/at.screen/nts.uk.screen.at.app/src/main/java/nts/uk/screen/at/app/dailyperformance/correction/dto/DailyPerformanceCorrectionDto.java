@@ -177,8 +177,10 @@ public class DailyPerformanceCorrectionDto {
 						data.setError(errorType);
 					}
 					// add error alarm cell state
-					setCellStateCheck(data.getId(), error.getAttendanceItemId().toString(),
-							errorType.equals("ER") ? "ntsgrid-error" : "ntsgrid-alarm", mapDP);
+					error.getAttendanceItemId().stream().forEach(x ->{
+						setCellStateCheck(data.getId(), x.toString(),
+								errorType.equals("ER") ? "ntsgrid-error" : "ntsgrid-alarm", mapDP);
+					});
 				}
 			});
 		});
