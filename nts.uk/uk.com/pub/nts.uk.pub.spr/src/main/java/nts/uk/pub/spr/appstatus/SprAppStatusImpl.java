@@ -98,7 +98,7 @@ public class SprAppStatusImpl implements SprAppStatusService {
 	public List<AppStatusSpr> getOverTimeAppStatus(String employeeID, GeneralDate startDate, GeneralDate endDate) {
 		List<AppStatusSpr> appOvertimeStatusSprList = new ArrayList<>();
 		// 取得期間を日単位でループする（開始日～終了日）　MAX 31日
-		for(int i = 0; startDate.compareTo(endDate) + i <= 0; i++){
+		for(int i = 0; startDate.addDays(i).compareTo(endDate) <= 0; i++){
 			GeneralDate loopDate = startDate.addDays(i);
 			// 早出残業申請状況確認
 			AppOvertimeStatusSprExport appOvertimeStatusSpr1 = this.getOverTimeAppInfo(loopDate, employeeID, 0);
