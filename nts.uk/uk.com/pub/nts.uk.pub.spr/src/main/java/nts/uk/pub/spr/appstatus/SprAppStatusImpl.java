@@ -109,7 +109,7 @@ public class SprAppStatusImpl implements SprAppStatusService {
 					appOvertimeStatusSpr1.getStatus(), 
 					appOvertimeStatusSpr2.getStatus(), 
 					Optional.ofNullable(appOvertimeStatusSpr1.getApplicationID()), 
-					Optional.ofNullable(appOvertimeStatusSpr1.getApplicationID())));
+					Optional.ofNullable(appOvertimeStatusSpr2.getApplicationID())));
 		}
 		return appOvertimeStatusSprList;
 	}
