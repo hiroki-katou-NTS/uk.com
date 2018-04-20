@@ -22,7 +22,7 @@ module nts.uk.at.view.kaf000.test.viewmodel {
             data.endDate = self.endDate();
             service.getAppId(data).done(function(values: any) {
                 if (values.length != 0) {
-                    self.listAppMeta = values;
+                    self.listAppMeta = _.map(values, x => { return x.appID;});
                     self.currentApp = self.listAppMeta[0];
                     nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': self.listAppMeta, 'currentApp': self.currentApp });
                 }
@@ -32,11 +32,7 @@ module nts.uk.at.view.kaf000.test.viewmodel {
         openSingle() {
             var self = this;
             let data = $("#appID-input").val();
-            service.getAppInfoByAppID(data).done(function(values: any) {
-                if (values.length != 0) {
-                    nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'appID': values.appID });
-                }
-            });
+            nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': [data], 'currentApp': data });
         }
     }
     export class Application {
