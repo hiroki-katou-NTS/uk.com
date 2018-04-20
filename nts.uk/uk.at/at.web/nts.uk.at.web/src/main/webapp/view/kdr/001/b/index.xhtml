@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1200, height: 540 };</script>
+			<script>var dialogSize = { width: 1200, height: 530 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdr001.b.main.css" />
 			<com:scriptfile path="kdr001.b.start.js" />
@@ -36,25 +36,26 @@
 			</div>
 
 			<div class="cf" id="contents-area">
-				<div class="selectionEmployee">
+				<div class="selectionHoliday">
 					<div class="panel" style="text-align: center;">一覧パネル</div>
 					<table id="multi-list" tabindex="5"
 						data-bind="ntsGridList: {
 							    multiple: false,
 								height: 371,
 								options: lstHolidays,
-								optionsValue: 'displayCd',
+								optionsValue: 'cd',
 								
 								columns: [
-										{ headerText: '#{i18n.getText('KDR001_40')}', key: 'displayCd', width: 150 },
-										{ headerText: '#{i18n.getText('KDR001_41')}', key: 'displayName', width: 250 }
+										{ headerText: '#{i18n.getText('KDR001_40')}', key: 'displayCd', width: 30 },
+										{ headerText: '#{i18n.getText('KDR001_41')}', key: 'displayName', width: 300 }
 										], 
 								
 								value: currentCode
 					}"></table>
 
 				</div>
-				<div class="employeeAction" data-bind="with: currentHoliday">
+				<div class="holidayAction" data-bind="with: currentHoliday">
+					<div class="holiday-button">
 					<div class="labelWork" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_42')}
 					</div>
 					<input style="width: 150px;" tabindex="6" id="holidayCode"
@@ -73,7 +74,9 @@
 							value: name,
 						  	enable: true,
 						    required: true}" />
-					<div class="employeetable" style="margin-left: 50px;">
+						    
+					</div>
+					<div class="holidaytable" style="margin-left: 50px;">
 						<div class="labelWork" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_43')}
 						</div>
 						<!-- B4_2  -->
@@ -141,10 +144,7 @@
 								<td>
 									<!-- B4_21  -->
 									<div tabindex="27"
-										data-bind="ntsCheckBox: {
-										 checked: nursingLeave,
-										 enable: true,
-										 text: '#{i18n.getText('KDR001_48')}' }"></div>
+										data-bind="ntsCheckBox: { checked: nursingLeave , enable: true, text: '#{i18n.getText('KDR001_48')}' }"></div>
 								</td>
 							</tr>
 
