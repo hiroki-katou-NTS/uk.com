@@ -1,0 +1,13 @@
+.confirm {
+	width: fit-content;
+	display: block;
+	margin: auto;
+}
+
+#multi-list_container {
+	margin: auto !important;
+}
+
+.label, hr {
+	margin: 15px;
+}
