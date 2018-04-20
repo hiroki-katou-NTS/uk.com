@@ -193,10 +193,13 @@ module nts.uk.at.view.kmk015.a {
                 //check isNewMode
                 if (!self.isCreated()) {
                     historyId = self.historyId();
+                    let history: SaveHistory = new SaveHistory(historyId, new Date(self.startforC().format("YYYY/MM/DD")), new Date(self.endforC().format("YYYY/MM/DD")));
+                } else {
+                    let history: SaveHistory = new SaveHistory(historyId, new Date(self.startTime().format("YYYY/MM/DD")), new Date(self.endTime().format("YYYY/MM/DD")));
                 }
 
                 //Add command
-                let history: SaveHistory = new SaveHistory(historyId, new Date(self.startTime().format("YYYY/MM/DD")), new Date(self.endTime().format("YYYY/MM/DD")));
+                
                 let command: SaveVacationHistoryCommand = new SaveVacationHistoryCommand(self.isCreated(), self.selectedCode(), self.numberDay(), history);
                 // Loading, block ui.
                 nts.uk.ui.block.invisible();
@@ -216,6 +219,9 @@ module nts.uk.at.view.kmk015.a {
                                 self.selectedCodeHistory(item.historyId);
                             }
                         });
+                        
+                        self.isCreated(false);
+                        
                         dfd.resolve();
                     }).fail(function(res) { nts.uk.ui.dialog.alertError(res) });
                 }).fail(function(res) { nts.uk.ui.dialog.alertError(res) });
