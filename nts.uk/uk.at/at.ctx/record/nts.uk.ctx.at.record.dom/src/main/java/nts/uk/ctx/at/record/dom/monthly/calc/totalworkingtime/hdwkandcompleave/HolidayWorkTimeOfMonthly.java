@@ -260,20 +260,12 @@ public class HolidayWorkTimeOfMonthly {
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 日の法定労働時間を取得する
-		//*****（未）　正式な処理の作成待ち。
-		//DailyCalculationPersonalInformation dailyCalculationPersonalInformation =
-		//		repositories.getGetOfStatutoryWorkTime().getDailyTimeFromStaturoyWorkTime(
-		//			workingSystem,
-		//			companyId,
-		//			placeId,
-		//			employmentCd,
-		//			attendanceTimeOfDaily.getEmployeeId(),
-		//			attendanceTimeOfDaily.getYmd());
+		val dailyUnit = repositories.getDailyStatutoryWorkingHours().getDailyUnit(
+				companyId, employmentCd, attendanceTimeOfDaily.getEmployeeId(),
+				attendanceTimeOfDaily.getYmd(), workingSystem);
 		
 		// 法定内休出にできる時間
-		//*****（未）　正式な処理が出来てから、代入。
-		AttendanceTime canLegalHolidayWork = new AttendanceTime(8 * 60);
-		//		new AttendanceTime(dailyCalculationPersonalInformation.getStatutoryWorkTime().v());
+		AttendanceTime canLegalHolidayWork = new AttendanceTime(dailyUnit.getDailyTime().v());
 		return canLegalHolidayWork;
 	}
 	

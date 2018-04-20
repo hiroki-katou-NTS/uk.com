@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -114,9 +112,15 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			// 月別実績の勤怠時間　初期設定
 			val attendanceTime = new AttendanceTimeOfMonthly(employeeId, yearMonth, closureId, closureDate, procPeriod);
 			attendanceTime.prepareAggregation(companyId, procPeriod, workingConditionItem, this.repositories);
+			val monthlyCalculation = attendanceTime.getMonthlyCalculation();
+			if (monthlyCalculation.getErrorInfos().size() > 0) {
+				for (val errorInfo : monthlyCalculation.getErrorInfos()){
+					this.errorInfos.putIfAbsent(errorInfo.getResourceId(), errorInfo);
+				}
+				continue;
+			}
 			
 			// 月の計算
-			val monthlyCalculation = attendanceTime.getMonthlyCalculation();
 			monthlyCalculation.aggregate(procPeriod, MonthlyAggregateAtr.MONTHLY,
 					Optional.empty(), Optional.empty(), this.repositories);
 			
