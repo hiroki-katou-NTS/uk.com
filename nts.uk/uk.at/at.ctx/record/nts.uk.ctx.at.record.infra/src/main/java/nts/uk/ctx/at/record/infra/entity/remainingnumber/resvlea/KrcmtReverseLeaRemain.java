@@ -41,7 +41,7 @@ public class KrcmtReverseLeaRemain extends UkJpaEntity {
 	public double usedDays;
 
 	@Column(name = "OVER_LIMIT_DAYS")
-	public Double overLimitDays;
+	public double overLimitDays;
 	
 	@Column(name = "REMAINING_DAYS")
 	public double remainingDays;
