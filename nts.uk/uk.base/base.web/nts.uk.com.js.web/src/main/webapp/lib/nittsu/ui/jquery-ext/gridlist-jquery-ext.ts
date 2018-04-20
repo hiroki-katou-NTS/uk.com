@@ -97,7 +97,6 @@ module nts.uk.ui.jqueryExtentions {
                         
                         if($grid.data('igGrid')) {
                             let $scrollContainer: any = $grid.igGrid("scrollContainer");
-                        
                             _.defer(() => {
                                 if ($scrollContainer.length > 0){
                                     let firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
