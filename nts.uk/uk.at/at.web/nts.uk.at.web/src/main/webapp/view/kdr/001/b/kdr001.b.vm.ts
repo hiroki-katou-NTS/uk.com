@@ -54,7 +54,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             nts.uk.ui.block.invisible();
-            service.findAllSpecialHoliday().done(function(data : Array<any>) {
+            service.findAllSpecialHoliday().done(function(data : Array<SpecialHoliday>) {
                 if (data && data.length > 0) {
                     self.allSpecialHolidays(data);
                 }
@@ -62,7 +62,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 else {
                     self.allSpecialHolidays([]);
                 }
-                service.findAll().done(function(data: Array<any>) {
+                service.findAll().done(function(data: Array<HolidayRemaining>) {
                     if (data && data.length > 0) {
                         for(var i = 0; i < data.length; i++) {
                             self.lstHolidays().push(new HolidayRemaining(data[i]));
@@ -275,7 +275,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             let specialHolidays: Array<number> = [];
             for(var i = 0; i < self.allSpecialHolidays.length; i++) {
                 if (self.allSpecialHolidays[i].statusCheck()) {
-                    specialHolidays.push(self.allSpecialHolidays[i].specialHolidayCode());
+                    specialHolidays.push(+self.allSpecialHolidays[i].specialHolidayCode());
                 }
             }
             self.currentHoliday().listSpecialHoliday.removeAll();
