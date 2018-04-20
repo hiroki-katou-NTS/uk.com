@@ -12,11 +12,9 @@ import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.InitialDi
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.InitialDisplayMonthlyRepository;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonPfmCorrectionFormat;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonPfmCorrectionFormatRepository;
-import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyPerformanceFormatCode;
 import nts.uk.shr.com.context.AppContexts;
-
 @Stateless
-public class UpdateMonPfmCorrectionFormatCmdHandler extends CommandHandler<MonPfmCorrectionFormatCmd> {
+public class DeleteMonPfmCorrectionFormatCmdHandler extends CommandHandler<DeleteMonPfmCorrectionFormatCmd> {
 
 	@Inject
 	private MonPfmCorrectionFormatRepository repo;
@@ -25,27 +23,22 @@ public class UpdateMonPfmCorrectionFormatCmdHandler extends CommandHandler<MonPf
 	private InitialDisplayMonthlyRepository initialRepo;
 	
 	@Override
-	protected void handle(CommandHandlerContext<MonPfmCorrectionFormatCmd> context) {
+	protected void handle(CommandHandlerContext<DeleteMonPfmCorrectionFormatCmd> context) {
 		String companyID = AppContexts.user().companyId();
-		MonPfmCorrectionFormatCmd command = context.getCommand();
+		DeleteMonPfmCorrectionFormatCmd command = context.getCommand();
 		command.setCompanyID(companyID);
 		Optional<MonPfmCorrectionFormat> data = repo.getMonPfmCorrectionFormat(companyID, command.getMonthlyPfmFormatCode());
-		
 		if(data.isPresent()) {
-			repo.updateMonPfmCorrectionFormat(MonPfmCorrectionFormatCmd.fromCommand(command));
-			//if A9_1 = true
+			repo.deleteMonPfmCorrectionFormat(companyID, command.getMonthlyPfmFormatCode());
+			
 			Optional<InitialDisplayMonthly> initialDisplayMonthly = initialRepo.getInitialDisplayMon(companyID, command.getMonthlyPfmFormatCode());
 			if(initialDisplayMonthly.isPresent()) {
 				initialRepo.deleteInitialDisplayMonthly(companyID, command.getMonthlyPfmFormatCode());
-			}
-			if(command.isSetFormatToDefault()) {
-				initialRepo.addInitialDisplayMonthly(new InitialDisplayMonthly(companyID,new MonthlyPerformanceFormatCode( command.getMonthlyPfmFormatCode())));
 			}
 		}
 		else {
 			throw new BusinessException("Msg_3");
 		}
-		
 	}
 
 }

@@ -26,7 +26,7 @@ public class DisplayTimeItemDto {
 		return new DisplayTimeItemDto(
 				domain.getDisplayOrder(),
 				domain.getItemDaily(),
-				domain.getColumnWidthTable()==null?null:domain.getColumnWidthTable().get()
+				!domain.getColumnWidthTable().isPresent()?null:domain.getColumnWidthTable().get()
 				);
 	}
 

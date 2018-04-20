@@ -60,7 +60,7 @@ public class KfnmtDisplayTimeItemPfm  extends UkJpaEntity implements Serializabl
 						domain.getItemDaily()
 						),
 				domain.getDisplayOrder(),
-				domain.getColumnWidthTable()==null?null:domain.getColumnWidthTable().get()
+				!domain.getColumnWidthTable().isPresent()?null:domain.getColumnWidthTable().get()
 				);
 	}
 	public DisplayTimeItem toDomain() {

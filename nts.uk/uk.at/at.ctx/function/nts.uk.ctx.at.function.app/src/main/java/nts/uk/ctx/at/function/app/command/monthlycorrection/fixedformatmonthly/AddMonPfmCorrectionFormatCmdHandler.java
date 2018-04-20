@@ -8,8 +8,11 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.InitialDisplayMonthly;
+import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.InitialDisplayMonthlyRepository;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonPfmCorrectionFormat;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonPfmCorrectionFormatRepository;
+import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyPerformanceFormatCode;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -18,16 +21,31 @@ public class AddMonPfmCorrectionFormatCmdHandler extends CommandHandler<MonPfmCo
 	@Inject
 	private MonPfmCorrectionFormatRepository repo;
 	
+	@Inject
+	private InitialDisplayMonthlyRepository initialRepo;
+	
 	@Override
 	protected void handle(CommandHandlerContext<MonPfmCorrectionFormatCmd> context) {
 		String companyID = AppContexts.user().companyId();
 		MonPfmCorrectionFormatCmd command = context.getCommand();
 		command.setCompanyID(companyID);
 		Optional<MonPfmCorrectionFormat> data = repo.getMonPfmCorrectionFormat(companyID, command.getMonthlyPfmFormatCode());
-		if(!data.isPresent())
+		if(!data.isPresent()){
 			repo.addMonPfmCorrectionFormat(MonPfmCorrectionFormatCmd.fromCommand(command));
-		else
+			//if A9_1 = true
+			Optional<InitialDisplayMonthly> initialDisplayMonthly = initialRepo.getInitialDisplayMon(companyID, command.getMonthlyPfmFormatCode());
+			if(initialDisplayMonthly.isPresent()) {
+				initialRepo.deleteInitialDisplayMonthly(companyID, command.getMonthlyPfmFormatCode());
+			}
+			if(command.isSetFormatToDefault()) {
+				initialRepo.addInitialDisplayMonthly(new InitialDisplayMonthly(companyID,new MonthlyPerformanceFormatCode( command.getMonthlyPfmFormatCode())));
+			}
+			
+		}	
+		else {
 			throw new BusinessException("Msg_3");
+		}
+			
 	}
 	
 

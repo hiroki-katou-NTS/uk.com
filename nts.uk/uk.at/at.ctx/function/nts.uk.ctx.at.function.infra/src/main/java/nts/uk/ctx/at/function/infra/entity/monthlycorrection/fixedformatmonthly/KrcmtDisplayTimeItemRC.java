@@ -34,7 +34,7 @@ public class KrcmtDisplayTimeItemRC extends UkJpaEntity implements Serializable 
 	@JoinColumns( {
 		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
         @JoinColumn(name = "BUSINESS_TYPE_CODE", referencedColumnName = "BUSINESS_TYPE_CODE", insertable = false, updatable = false),
-        @JoinColumn(name = "SHEET_NO", referencedColumnName = "SHEET_NO", insertable = false, updatable = false),
+        @JoinColumn(name = "SHEET_NO", referencedColumnName = "SHEET_NO", insertable = false, updatable = false)
         
     })
 	public KrcmtMonthlyActualResultRC monthlyacresult;
@@ -60,7 +60,7 @@ public class KrcmtDisplayTimeItemRC extends UkJpaEntity implements Serializable 
 						domain.getItemDaily()
 						),
 				domain.getDisplayOrder(),
-				domain.getColumnWidthTable()==null?null:domain.getColumnWidthTable().get()
+				!domain.getColumnWidthTable().isPresent()?null:domain.getColumnWidthTable().get()
 				);
 	}
 	public DisplayTimeItem toDomain() {

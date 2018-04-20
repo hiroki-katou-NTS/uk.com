@@ -12,7 +12,11 @@ module nts.uk.at.view.kdw008.b {
                 getDailyPerformance: "at/record/businesstype/find/businessTypeDetail/{0}/{1}",
                 
                 //monthly
-                getListMonthlyAttdItem:"at/record/attendanceitem/monthly/findall"
+                getListMonthlyAttdItem:"at/record/attendanceitem/monthly/findall",
+                
+                // monthly tab3
+                getListMonthRight: "at/function/monthlycorrection/findbycode/{0}",
+                updateMonthly :"at/function/monthlycorrection/updatemonthly"
             }
 
             constructor() {
@@ -26,7 +30,10 @@ module nts.uk.at.view.kdw008.b {
             updateDailyDetail(UpdateBusTypeCommand: any): JQueryPromise<any> {
                 return nts.uk.request.ajax("at", this.paths.updateDailyDetail, UpdateBusTypeCommand);
             };
-
+            //monthly
+            updateMonthly(command: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("at", this.paths.updateMonthly, command);
+            };
 //            addMonthlyDetail(AddBusinessTypeMonthlyCommand: any): JQueryPromise<any> {
 //                return nts.uk.request.ajax("at", this.paths.addMonthlyDetail, AddBusinessTypeMonthlyCommand);
 //            };
@@ -42,6 +49,11 @@ module nts.uk.at.view.kdw008.b {
 
             getDailyPerformance(businessTypeCode: string, sheetNo: number): JQueryPromise<any> {
                 let _path = nts.uk.text.format(this.paths.getDailyPerformance, businessTypeCode, sheetNo);
+                return nts.uk.request.ajax("at", _path);
+            };
+            
+            getListMonthRight(businessTypeCode: string): JQueryPromise<any> {
+                let _path = nts.uk.text.format(this.paths.getListMonthRight, businessTypeCode);
                 return nts.uk.request.ajax("at", _path);
             };
             
