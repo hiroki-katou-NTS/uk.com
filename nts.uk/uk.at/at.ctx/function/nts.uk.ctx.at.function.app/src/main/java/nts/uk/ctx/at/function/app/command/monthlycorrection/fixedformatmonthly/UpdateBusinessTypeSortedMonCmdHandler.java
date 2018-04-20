@@ -27,7 +27,7 @@ public class UpdateBusinessTypeSortedMonCmdHandler extends  CommandHandler<Busin
 		if(data.isPresent())
 			repo.updateBusinessTypeSortedMon(BusinessTypeSortedMonCmd.fromCommand(command));
 		else
-			throw new BusinessException("Msg_3");
+			repo.addBusinessTypeSortedMon(BusinessTypeSortedMonCmd.fromCommand(command));
 		
 	}
 	
