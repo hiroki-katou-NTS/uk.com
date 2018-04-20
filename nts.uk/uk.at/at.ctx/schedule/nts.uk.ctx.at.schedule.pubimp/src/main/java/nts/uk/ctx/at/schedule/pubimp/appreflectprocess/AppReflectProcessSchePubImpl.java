@@ -10,6 +10,7 @@ import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.gobacksche.Applicati
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.gobacksche.ChangeAtrAppGoback;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.gobacksche.GoBackDirectlyReflectSche;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.gobacksche.GobackReflectParam;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.holidaywork.HolidayWorkReflectSche;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.workchange.WorkChangeReflectServiceSche;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.CommonReflectSchePubParam;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.AppReflectProcessSchePub;
@@ -23,7 +24,8 @@ public class AppReflectProcessSchePubImpl implements AppReflectProcessSchePub{
 	private ForleaveReflectSche leaveReflect;
 	@Inject
 	private WorkChangeReflectServiceSche workchangeReflect;
-
+	@Inject
+	private HolidayWorkReflectSche holidayWorkReflect;
 	@Override
 	public boolean goBackDirectlyReflectSch(ApplicationReflectParamScheDto reflectPara) {
 		ApplicationGobackScheInfor gobackInfo = new ApplicationGobackScheInfor(EnumAdaptor.valueOf(reflectPara.getGobackInfor().getChangeAtrAppGoback().value, ChangeAtrAppGoback.class),
@@ -60,6 +62,11 @@ public class AppReflectProcessSchePubImpl implements AppReflectProcessSchePub{
 				schePubParam.getStartDate(),
 				schePubParam.getEndDate());
 		return paramSche;
+	}
+
+	@Override
+	public boolean holidayWorkReflectSche(CommonReflectSchePubParam holidayWorkParam) {		
+		return holidayWorkReflect.holidayWorkReflect(this.toParamSche(holidayWorkParam));
 	}
 
 

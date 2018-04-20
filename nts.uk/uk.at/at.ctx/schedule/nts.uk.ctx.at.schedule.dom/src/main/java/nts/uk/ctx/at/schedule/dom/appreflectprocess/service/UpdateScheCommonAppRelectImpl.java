@@ -1,12 +1,9 @@
 package nts.uk.ctx.at.schedule.dom.appreflectprocess.service;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.ScheduleEditState;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;

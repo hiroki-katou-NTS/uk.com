@@ -27,7 +27,12 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 
 	@Override
 	public boolean workscheReflect(ReflectScheDto reflectParam) {
-		Application_New application = reflectParam.getAppInfor();		
+		Application_New application = reflectParam.getAppInfor();
+		
+		if(application.getPrePostAtr() != PrePostAtr.PREDICT) {
+			return false;
+		}
+				
 		//反映チェック処理(Xử lý check phản ánh)
 		//TODO: tam thoi chua goi den xu ly nay
 		/*if(!this.checkBeforeReflected(application)) {
@@ -41,24 +46,26 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 				application,
 				null, 
 				null, 
+				null,
 				null);
 		boolean isReflect = false;
 		if(application.getAppType() == ApplicationType.OVER_TIME_APPLICATION) {			
 			return false;
-		}  else if (application.getAppType() == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION //直行直帰申請
-				&& application.getPrePostAtr() == PrePostAtr.PREDICT){			
+		}  else if (application.getAppType() == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION){			
 			GoBackDirectly gobackData = reflectParam.getGoBackDirectly();
 			reflectSchePara.setGoBackDirectly(gobackData);
 			isReflect = processScheReflect.goBackDirectlyReflect(reflectSchePara);
-		} else if(application.getAppType() == ApplicationType.WORK_CHANGE_APPLICATION
-				&& application.getPrePostAtr() == PrePostAtr.PREDICT) {			
+		} else if(application.getAppType() == ApplicationType.WORK_CHANGE_APPLICATION) {
 			AppWorkChange appWorkChangeData = reflectParam.getWorkChange();
 			reflectSchePara.setWorkChange(appWorkChangeData);
 			isReflect = processScheReflect.workChangeReflect(reflectSchePara);
-		} else if(application.getAppType() == ApplicationType.ABSENCE_APPLICATION
-				&& application.getPrePostAtr() == PrePostAtr.PREDICT) {
+		} else if(application.getAppType() == ApplicationType.ABSENCE_APPLICATION) {
 			reflectSchePara.setForLeave(reflectParam.getForLeave());
-			processScheReflect.forleaveReflect(reflectSchePara);
+			isReflect = processScheReflect.forleaveReflect(reflectSchePara);
+		} else if (application.getAppType() == ApplicationType.BREAK_TIME_APPLICATION) {
+			/**TODO chua doi ung lan nay
+			/*reflectSchePara.setHolidayWork(reflectParam.getHolidayWork());
+			isReflect = processScheReflect.holidayWorkReflect(reflectSchePara);*/
 		}
 		return isReflect;
 	}

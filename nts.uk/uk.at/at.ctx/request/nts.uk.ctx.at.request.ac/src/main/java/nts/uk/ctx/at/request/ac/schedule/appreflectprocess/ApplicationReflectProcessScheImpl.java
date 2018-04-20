@@ -58,6 +58,17 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 		
 		return appReflectSchePub.appWorkChangeReflect(workChangePara);
 	}
+
+	@Override
+	public boolean holidayWorkReflect(ReflectScheDto relectSche) {
+		CommonReflectSchePubParam holidayWork = new CommonReflectSchePubParam(relectSche.getEmployeeId(), 
+				relectSche.getDatePara(), 
+				relectSche.getHolidayWork().getWorkTimeCode().v(),
+				relectSche.getHolidayWork().getWorkTypeCode().v(),
+				null, 
+				null);		
+		return appReflectSchePub.holidayWorkReflectSche(holidayWork);
+	}
 	
 	
 

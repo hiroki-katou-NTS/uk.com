@@ -78,6 +78,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				appInfor,
 				null,
 				null,
+				null,
 				null);
 		// TODO 再実行かどうか判断する (xác nhận xem có thực hiện lại hay k)
 		//申請を取得 (lấy đơn)
@@ -120,7 +121,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			if(!getFullAppHolidayWork.isPresent()) {
 				return;
 			}
-			AppHolidayWork holidayWorkData = getFullAppHolidayWork.get();				
+			AppHolidayWork holidayWorkData = getFullAppHolidayWork.get();
+			reflectScheParam.setHolidayWork(holidayWorkData);
 			holidayworkInfor = this.getHolidayWork(appInfor, holidayWorkData);
 			if(holidayworkInfor == null) {
 				return;

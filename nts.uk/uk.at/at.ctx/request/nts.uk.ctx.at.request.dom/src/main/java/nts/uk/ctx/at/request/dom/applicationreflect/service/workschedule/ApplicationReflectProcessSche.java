@@ -18,5 +18,11 @@ public interface ApplicationReflectProcessSche {
 	 * @return
 	 */
 	public boolean workChangeReflect(ReflectScheDto reflectSche);
+	/**
+	 * 休日出勤申請
+	 * @param relectSche
+	 * @return
+	 */
+	public boolean holidayWorkReflect(ReflectScheDto relectSche);
 
 }
