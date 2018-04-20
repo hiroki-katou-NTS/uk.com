@@ -4,7 +4,12 @@ module nts.uk.at.view.kwr008.a.service{
     var paths = {
         getPeriod : "at/function/annualworkschedule/get/period",
         getPageBreakSelection : "at/function/annualworkschedule/get/enum/pagebreak",
-        getOutputItemSetting : "at/function/annualworkschedule/get/outputitemsetting"
+        getOutputItemSetting : "at/function/annualworkschedule/get/outputitemsetting",
+        getPermissionOfEmploymentForm: "at/function/holidaysremaining/getPermissionOfEmploymentForm"
+    }
+
+    export function getPermissionOfEmploymentForm() : JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getPermissionOfEmploymentForm);
     }
 
     export function getPeriod(): JQueryPromise<any>{

@@ -50,6 +50,7 @@ module nts.uk.at.view.kwr008.a {
             alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
             ccgcomponentPerson: GroupOption;
 
+            permissionOfEmploymentForm : KnockoutObservable<model.PermissionOfEmploymentFormModel> = ko.observable(null);
             // date
             date: KnockoutObservable<string>;
             maxDaysCumulationByEmp: KnockoutObservable<number>;
@@ -83,6 +84,13 @@ module nts.uk.at.view.kwr008.a {
                     }
                 });
 
+                service.getPermissionOfEmploymentForm().done((permission: any) => {
+                    self.permissionOfEmploymentForm(new model.PermissionOfEmploymentFormModel(
+                            permission.companyId,
+                            permission.roleId,
+                            permission.functionNo,
+                            permission.availability));
+                });
                 //A3
                 service.getPeriod().done((data) => {
                     self.startDateString(data.startYearMonth);
@@ -371,6 +379,23 @@ module nts.uk.at.view.kwr008.a {
 
         /** model */
         export module model {
+            /**
+             * Permission Of Employment Form model
+             */
+            export class PermissionOfEmploymentFormModel {
+                companyId : string;
+                roleId : string;
+                functionNo : number;
+                availability : KnockoutObservable<boolean> = ko.observable(false);
+                constructor(companyId : string, roleId : string, functionNo : number, availability : boolean) {
+                    let self = this;
+                    self.companyId = companyId || '';
+                    self.roleId = roleId || '';
+                    self.functionNo = functionNo || 0;
+                    self.availability(availability || false);
+                }
+            }
+
             export interface PeriodDto {
                 startYearMonth: Date;
                 endYearMonth: Date;
