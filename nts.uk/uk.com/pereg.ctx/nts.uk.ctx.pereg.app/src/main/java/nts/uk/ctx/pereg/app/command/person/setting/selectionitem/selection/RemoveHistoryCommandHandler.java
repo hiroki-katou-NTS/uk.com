@@ -50,33 +50,33 @@ public class RemoveHistoryCommandHandler extends CommandHandler<RemoveHistoryCom
 			throw new BusinessException(new RawErrorMessage("Msg_57"));
 		}
 
-		//hoatt
-		//update history previous
+		// hoatt
+		// update history previous
 		Optional<PerInfoHistorySelection> histLastOp = perInfoHistSeleRepo.getHistSelByHistId(command.getHistId());
 		PerInfoHistorySelection histLast = histLastOp.get();
 		GeneralDate sDateLast = histLast.getPeriod().start();
 		GeneralDate eDatePr = sDateLast.addDays(-1);
-		//get history previous
-		List<PerInfoHistorySelection> lstHist = perInfoHistSeleRepo.getHistSelByEndDate(histLast.getSelectionItemId(), histLast.getCompanyId(), eDatePr);
-		if(!lstHist.isEmpty()){
+		// get history previous
+		List<PerInfoHistorySelection> lstHist = perInfoHistSeleRepo.getHistSelByEndDate(histLast.getSelectionItemId(),
+				histLast.getCompanyId(), eDatePr);
+		if (!lstHist.isEmpty()) {
 			PerInfoHistorySelection histUpdate = lstHist.get(0);
-			DatePeriod periodNew = new DatePeriod(histUpdate.getPeriod().start(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"));
+			DatePeriod periodNew = new DatePeriod(histUpdate.getPeriod().start(),
+					GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"));
 			histUpdate.updateDate(periodNew);
 			perInfoHistSeleRepo.update(histUpdate);
 		}
-		
+
 		// Xoa domain: history
 		this.perInfoHistSeleRepo.remove(getHistId);
 		// Xoa Selection:
 		List<Selection> selectionList = this.selectionRepo.getAllSelectByHistId(getHistId);
 		selectionList.stream().forEach(x -> this.selectionRepo.remove(x.getSelectionID()));
-		
+
 		// Xoa domain: Selection Order
 		List<SelectionItemOrder> orderList = this.selectionOrderRepo.getAllOrderSelectionByHistId(getHistId);
 		orderList.stream().forEach(x -> this.selectionOrderRepo.remove(x.getSelectionID()));
 
-		
-		
 	}
 
 }

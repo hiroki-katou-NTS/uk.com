@@ -751,6 +751,9 @@ project (':at.web:nts.uk.at.web') {
 		runtime group: 'com.basic.company', name: 'nts.uk.ctx.basic.pub', version: version
 		runtime group: 'com.basic.company', name: 'nts.uk.ctx.basic.pubimp', version: version
 		runtime group: 'com.basic.company', name: 'nts.uk.ctx.basic.ac', version: version
+		
+		runtime group: 'com.screen', name: 'nts.uk.screen.com.app', version: version
+		runtime group: 'com.screen', name: 'nts.uk.screen.com.infra', version: version
 	}	
 	
 	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {

@@ -276,8 +276,25 @@ module cmm045.a.viewmodel {
             $("#grid2").on("click", ".ntsButton", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
-                nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { appID: id });
+                let a = self.findDataModeAppByID(id, self.items());
+                let lstAppId = self.findListAppType(a.appType);
+                nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': id });
             });
+        }
+        findDataModeAppByID(appId: string, lstAppCommon: Array<vmbase.DataModeApp>){
+            return _.find(lstAppCommon, function(app) {
+                return app.appId == appId;
+            });
+        }
+        findListAppType(appType: number){
+            let self = this;
+            let lstAppId = [];
+            _.each(self.items(), function(item){
+                if(item.appType == appType){
+                    lstAppId.push(item.appId);
+                }
+            });
+            return lstAppId;
         }
 
         fillColorbackGr(): Array<vmbase.CellState>{
@@ -428,7 +445,9 @@ module cmm045.a.viewmodel {
             $("#grid1").on("click", ".ntsButton", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
-                nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { appID: id });
+                let a = self.findDataModeAppByID(id, self.items());
+                let lstAppId = self.findListAppType(a.appType);
+                nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': id });
             });
 
             $("#grid1").setupSearchScroll("igGrid", true);
@@ -488,23 +507,24 @@ module cmm045.a.viewmodel {
             let framName12 = '';
             let time = 0;
             let count = 0;
-            let lstSort = _.sortBy(lstFrame, ["frameNo"], ["asc"]);
-            //時間外深夜時間
-            let frame11 = self.findFrameByNo(lstFrame, 11);
-            if (frame11 !== undefined && frame11.applicationTime != 0) {
-                framName11 = frame11.name + self.convertTime_Short_HM(frame11.applicationTime);
-                time += frame11.applicationTime;
-                count += 1;
-            }
-            //ﾌﾚｯｸｽ超過
-            let frame12 = self.findFrameByNo(lstFrame, 12);
-            if (frame12 !== undefined && frame12.applicationTime != 0) {
-                framName12 = frame12.name + self.convertTime_Short_HM(frame12.applicationTime);
-                time += frame12.applicationTime;
-                count += 1;
-            }
+//            let lstSort = _.sortBy(lstFrame, ["frameNo"], ["asc"]);
+//            //時間外深夜時間
+//            let frame11 = self.findFrameByNo(lstFrame, 11);
+//            if (frame11 !== undefined && frame11.applicationTime != 0) {
+//                framName11 = frame11.name + self.convertTime_Short_HM(frame11.applicationTime);
+//                time += frame11.applicationTime;
+//                count += 1;
+//            }
+//            //ﾌﾚｯｸｽ超過
+//            let frame12 = self.findFrameByNo(lstFrame, 12);
+//            if (frame12 !== undefined && frame12.applicationTime != 0) {
+//                framName12 = frame12.name + self.convertTime_Short_HM(frame12.applicationTime);
+//                time += frame12.applicationTime;
+//                count += 1;
+//            }
+            let lstSort = self.sortFrameTime(lstFrame, 0);
             _.each(lstSort, function(item) {
-                if (item.frameNo != 11 && item.frameNo != 12 && item.applicationTime != 0) {//時間外深夜時間
+                if (item.applicationTime != 0) {//時間外深夜時間
                     if (count < 3) {
                         framName += item.name + self.convertTime_Short_HM(item.applicationTime);
                     }
@@ -514,7 +534,74 @@ module cmm045.a.viewmodel {
             });
             let other = count > 3 ? count - 3 : 0;
             let otherInfo = other > 0 ? '他' + other + '枠' : '';
-            let result = self.convertTime_Short_HM(time) + '(' + framName11 + framName12 + framName + otherInfo + ')';
+            let result = self.convertTime_Short_HM(time) + '(' + framName + otherInfo + ')';
+            return result;
+        }
+        sortFrameTime(lstFrame: Array<vmbase.OverTimeFrame>, appType: number): any {
+            let result: Array<vmbase.OverTimeFrame> = [];
+            let lstA0: Array<vmbase.OverTimeFrame> = [];
+            let lstA1: Array<vmbase.OverTimeFrame> = [];
+            let lstA2: Array<vmbase.OverTimeFrame> = [];
+            let lstA3: Array<vmbase.OverTimeFrame> = [];
+            let lstA4: Array<vmbase.OverTimeFrame> = [];
+            _.each(lstFrame, function(obj){
+                if(obj.attendanceType == 0){//RESTTIME
+                    lstA0.push(obj);
+                }
+                if(obj.attendanceType == 1){//NORMALOVERTIME
+                    lstA1.push(obj);
+                }
+                if(obj.attendanceType == 2){//BREAKTIME
+                    lstA2.push(obj);
+                }
+                if(obj.attendanceType == 3){//BONUSPAYTIME
+                    lstA3.push(obj);
+                }
+                if(obj.attendanceType == 4){//BONUSSPECIALDAYTIME
+                    lstA4.push(obj);
+                }
+            });
+            let sortByA0 =  _.orderBy(lstA0, ["frameNo"], ["asc"]);
+            let sortByA1 =  _.orderBy(lstA1, ["frameNo"], ["asc"]);
+            let sortByA2 =  _.orderBy(lstA2, ["frameNo"], ["asc"]);
+            let sortByA3 =  _.orderBy(lstA3, ["frameNo"], ["asc"]);
+            let sortByA4 =  _.orderBy(lstA4, ["frameNo"], ["asc"]);
+            if(appType == 0){//overtime
+                //push list A0 (休憩時間)
+//                _.each(sortByA0, function(obj){
+//                    result.push(obj);
+//                });
+                //push list A1 (残業時間)
+                _.each(sortByA1, function(obj){
+                    result.push(obj);
+                });
+                //push list A2 (休出時間)
+                _.each(sortByA2, function(obj){
+                    result.push(obj);
+                });
+                //push list A3 (加給時間)
+                _.each(sortByA3, function(obj){
+                    result.push(obj);
+                });
+                //push list A4 (特定日加給時間)
+                _.each(sortByA4, function(obj){
+                    result.push(obj);
+                });
+            }else{//holiday
+               
+                //push list A2 (休出時間)
+                _.each(sortByA2, function(obj){
+                    result.push(obj);
+                });
+                //push list A1 (残業時間)
+                _.each(sortByA1, function(obj){
+                    result.push(obj);
+                });
+                //push list A3 (加給時間)
+                _.each(sortByA3, function(obj){
+                    result.push(obj);
+                });
+            }
             return result;
         }
         /**
@@ -525,7 +612,7 @@ module cmm045.a.viewmodel {
             let framName = '';
             let time = 0;
             let count = 0;
-            let lstSort = _.sortBy(lstFrame, ["frameNo"], ["asc"]);
+            let lstSort = self.sortFrameTime(lstFrame, 6);
             _.each(lstSort, function(item, index) {
                 if (item.applicationTime != 0) {
                     if (count <= 1) {
@@ -604,7 +691,7 @@ module cmm045.a.viewmodel {
             let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
             let time1 = overTime.workClockFrom1  == '' ? '' : overTime.workClockFrom1 + getText('CMM045_100') + overTime.workClockTo1;
             let time2 = overTime.workClockFrom2  == '' ? '' : overTime.workClockFrom2 + getText('CMM045_100') + overTime.workClockTo2;
-            let appContentPost: string = getText('CMM045_272') + getText('CMM045_268') + ' ' + time1 + time2 + ' 残業合計' + self.convertFrameTime(overTime.lstFrame) + reason;
+            let appContentPost: string = getText('CMM045_272') + getText('CMM045_268') + '' + time1 + time2 + ' 残業合計' + self.convertFrameTime(overTime.lstFrame) + reason;
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let contentFull = '<div class = "appContent-' + app.applicationID + '">'+ appContentPost + contentPre + contentResult + '</div>';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
@@ -1187,10 +1274,15 @@ module cmm045.a.viewmodel {
             }
             let self = this;
             //check filter
-            if (self.dateValue().startDate == null || self.dateValue().endDate == null) {//期間開始日付または期間終了日付が入力されていない
-//                $('.ntsStartDate').set
+            //check startDate
+            if (self.dateValue().startDate == null || self.dateValue().startDate == '') {//期間開始日付または期間終了日付が入力されていない
                 $('.ntsDatepicker.nts-input.ntsStartDatePicker.ntsDateRange_Component').ntsError('set', {messageId:"Msg_359"});
-//                nts.uk.ui.dialog.error({ messageId: "Msg_359" });
+                block.clear();
+                return;
+            }
+            //check endDate
+            if (self.dateValue().endDate == null || self.dateValue().endDate == '') {//期間開始日付または期間終了日付が入力されていない
+                $('.ntsDatepicker.nts-input.ntsEndDatePicker.ntsDateRange_Component').ntsError('set', {messageId:"Msg_359"});
                 block.clear();
                 return;
             }
@@ -1438,22 +1530,32 @@ module cmm045.a.viewmodel {
             let remandNumner = 0;
             let denialNumber = 0;
             _.each(lstApp, function(app){
-                if(app.appStatus == '未'){ unApprovalNumber += 1; }//UNAPPROVED:5
-                if(app.appStatus == '承認済み'){//APPROVED: 4
+                let add = self.checkSync(self.lstAppCompltSync(), app.appId) ? 2 : 1;
+                if(app.appStatusNo == 5){ unApprovalNumber += 1; }//UNAPPROVED:5
+                if(app.appStatusNo == 4){//APPROVED: 4
                     let agent = self.findAgent(app.appId);
                     if(agent != undefined && agent.agentId != null && agent.agentId != ''){
-                        approvalAgentNumber += 1;
+                        approvalAgentNumber += add;
                     }else{
-                        approvalNumber += 1;
+                        approvalNumber += add;
                     }
                 }
-//                if(app.appStatus == '-'){ approvalAgentNumber += 1; }//-: 0 
-                if(app.appStatus == '取消'){ cancelNumber += 1; }//CANCELED: 3
-                if(app.appStatus == '差戻'){ remandNumner += 1; }//REMAND: 2
-                if(app.appStatus == '否'){ denialNumber += 1; }//DENIAL: 1
+                if(app.appStatusNo == 3){ cancelNumber += add; }//CANCELED: 3
+                if(app.appStatusNo == 2){ remandNumner += add; }//REMAND: 2
+                if(app.appStatusNo == 1){ denialNumber += add; }//DENIAL: 1
             })
             return new vmbase.ApplicationStatus(unApprovalNumber, approvalNumber,
                 approvalAgentNumber, cancelNumber, remandNumner,denialNumber);
+        }
+        checkSync(lstSync: Array<vmbase.AppCompltLeaveSync>, appId: string): boolean{
+            let check: boolean = false;
+            _.each(lstSync, function(appSync){
+                if(appSync.appMain.appID == appId && appSync.sync){
+                    check = true;
+                    return;
+                }
+            });
+            return check;
         }
         findAgent(appId: string): any{
             return _.find(this.lstListAgent(), function(agent){

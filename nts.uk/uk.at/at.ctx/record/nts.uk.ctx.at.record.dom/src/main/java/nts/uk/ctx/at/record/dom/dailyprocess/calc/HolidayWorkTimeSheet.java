@@ -57,12 +57,13 @@ public class HolidayWorkTimeSheet{
 		
 	/**
 	 * 休出枠時間帯をループさせ時間計算をする
+	 * @param integrationOfDaily 
 	 * @return
 	 */
 	public List<HolidayWorkFrameTime> collectHolidayWorkTime(AutoCalSetting holidayAutoCalcSetting,
 															 WorkType workType,
 															 Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-															 Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet){
+															 Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily){
 		Map<Integer,HolidayWorkFrameTime> holidayTimeFrameList = new HashMap<Integer, HolidayWorkFrameTime>();
 		val forceAtr = AutoCalAtrOvertime.CALCULATEMBOSS;
 		for(HolidayWorkFrameTimeSheetForCalc holidayWorkFrameTime:workHolidayTime) {
@@ -84,6 +85,25 @@ public class HolidayWorkTimeSheet{
 		}
 		//Map→List変換
 		List<HolidayWorkFrameTime> calcHolidayTimeWorkTimeList = new ArrayList<>(holidayTimeFrameList.values()); 
+		//staticがついていなので、4末緊急対応
+		if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()
+			&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily() != null
+			&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null
+			&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime() != null
+			&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily() != null
+			&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()) {
+			calcHolidayTimeWorkTimeList.forEach(ts -> {
+				val wantAddTime = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime()
+									.stream()
+									.filter(tc -> tc.getHolidayFrameNo().equals(ts.getHolidayFrameNo()))
+									.findFirst();
+				if(wantAddTime.isPresent())
+					ts.addBeforeTime(wantAddTime.get().getBeforeApplicationTime().isPresent()?wantAddTime.get().getBeforeApplicationTime().get():new AttendanceTime(0));
+							
+			});
+			
+		}
+		//staticがついていなので、4末緊急対応	
 		//事前申請を上限とする制御
 		val afterCalcUpperTimeList = afterUpperControl(calcHolidayTimeWorkTimeList,holidayAutoCalcSetting);
 		//振替処理

@@ -114,7 +114,7 @@ public class ScheCreExeMonthlyPatternHandler {
 
 			// アルゴリズム「スケジュール作成判定処理」を実行する
 			if (!this.scheduleCreationDeterminationProcess(command, basicSche, employmentStatus,
-					workingConditionItem.getAutoStampSetAtr())) {
+					workingConditionItem)) {
 				return;
 			}
 			// 登録前削除区分をTrue（削除する）とする(chuyển 登録前削除区分 = true)
@@ -273,13 +273,13 @@ public class ScheCreExeMonthlyPatternHandler {
 	 * アルゴリズム「スケジュール作成判定処理」を実行する
 	 */
 	public boolean scheduleCreationDeterminationProcess(ScheduleCreatorExecutionCommand command,
-			BasicSchedule basicSche, EmploymentStatusDto employmentStatus, NotUseAtr autoStampSetAtr) {
+			BasicSchedule basicSche, EmploymentStatusDto employmentStatus, WorkingConditionItem workingConditionItem) {
 		// 再作成対象区分を判定する
 		if (command.getContent().getReCreateContent().getRebuildTargetAtr() == RebuildTargetAtr.ALL) {
 			return true;
 		}
 		// 異動者を再作成するか判定する
-		boolean valueIsCreate = this.isCreate(command.getEmployeeId(), command.getToDate(),
+		boolean valueIsCreate = this.isCreate(workingConditionItem.getEmployeeId(), command.getToDate(),
 				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getRecreateConverter(),
 				basicSche.getWorkScheduleMaster().getWorkplaceId());
 		if (!valueIsCreate)
@@ -296,29 +296,30 @@ public class ScheCreExeMonthlyPatternHandler {
 		// 直行直帰者を再作成するか判定する
 		boolean valueIsReDirectBounceBackEmp = this.isReDirectBounceBackEmp(
 				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getRecreateDirectBouncer(),
-				autoStampSetAtr);
+				workingConditionItem.getAutoStampSetAtr());
 		if (!valueIsReDirectBounceBackEmp) {
 			return false;
 		}
 
 		// 短時間勤務者を再作成するか判定する
-		boolean valueIsReShortTime = this.isReShortTime(command.getEmployeeId(), command.getToDate(),
+		boolean valueIsReShortTime = this.isReShortTime(workingConditionItem.getEmployeeId(), command.getToDate(),
 				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getRecreateShortTermEmployee());
 		if (!valueIsReShortTime) {
 			return false;
 		}
 
 		// 勤務種別変更者を再作成するか判定する
-		boolean valueIsReWorkerTypeChangePerson = this.isReWorkerTypeChangePerson(command.getEmployeeId(),
+		boolean valueIsReWorkerTypeChangePerson = this.isReWorkerTypeChangePerson(workingConditionItem.getEmployeeId(),
 				command.getToDate(),
 				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getRecreateWorkTypeChange(),
-				basicSche.getWorkScheduleMaster().getWorkTypeCd());
+				basicSche.getWorkScheduleMaster().getBusinessTypeCd());
 		if (!valueIsReWorkerTypeChangePerson) {
 			return false;
 		}
 
 		// 手修正を保護するか判定する
-		boolean valueIsProtectHandCorrect = this.isProtectHandCorrect(command.getEmployeeId(), command.getToDate(),
+		boolean valueIsProtectHandCorrect = this.isProtectHandCorrect(workingConditionItem.getEmployeeId(),
+				command.getToDate(),
 				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getProtectHandCorrection());
 		if (!valueIsProtectHandCorrect) {
 			return false;
@@ -410,7 +411,7 @@ public class ScheCreExeMonthlyPatternHandler {
 	 * @return
 	 */
 	private boolean isReWorkerTypeChangePerson(String empId, GeneralDate targetDate, Boolean reWorkTypeChange,
-			String workTypeCode) {
+			String businessTypeCd) {
 		if (!reWorkTypeChange)
 			return true;
 
@@ -425,7 +426,7 @@ public class ScheCreExeMonthlyPatternHandler {
 		if (!businessTypeOfEmp.isPresent())
 			return true;
 
-		if (!businessTypeOfEmp.get().getBusinessTypeCode().equals(workTypeCode))
+		if (!businessTypeOfEmp.get().getBusinessTypeCode().equals(businessTypeCd))
 			return true;
 
 		return false;

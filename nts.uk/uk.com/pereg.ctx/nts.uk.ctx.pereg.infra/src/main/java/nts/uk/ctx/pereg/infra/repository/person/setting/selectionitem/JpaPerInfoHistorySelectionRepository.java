@@ -85,6 +85,14 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 		return this.queryProxy().query(SELECT_ALL_HISTORY_SELECTION, PpemtHistorySelection.class)
 				.setParameter("selectionItemId", selectionItemId).getList(c -> toDomain(c));
 	}
+	
+	@Override
+	public void removeInSelectionItemId(String selectionItemId) {
+		List<PpemtHistorySelection> historyList = this.queryProxy()
+				.query(SELECT_ALL_HISTORY_SELECTION, PpemtHistorySelection.class)
+				.setParameter("selectionItemId", selectionItemId).getList();
+		this.commandProxy().removeAll(historyList);
+	}
 
 	public Optional<PerInfoHistorySelection> getAllHistoryByHistId(String histId) {
 		PpemtHistorySelectionPK pkHistorySelection = new PpemtHistorySelectionPK(histId);
@@ -107,8 +115,7 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 	}
 
 	@Override
-	public List<PerInfoHistorySelection> getAllHistoryBySelectionItemIdAndCompanyId(String selectionItemId,
-			String companyId) {
+	public List<PerInfoHistorySelection> getAllBySelecItemIdAndCompanyId(String selectionItemId, String companyId) {
 
 		return this.queryProxy().query(SELECT_ALL_HISTORY_COMPANYID_SELECTION, PpemtHistorySelection.class)
 				.setParameter("selectionItemId", selectionItemId).setParameter("companyId", companyId)
