@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.GetVacationAddSet;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.PayItemCountOfMonthlyRepository;
@@ -123,9 +124,13 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	@Inject
 	public EmployeeDailyPerErrorRepository employeeDailyError;
 	
-	/** 月別実績の勤怠時間の取得 */
+	/** 月別実績の勤怠時間 */
 	@Inject
 	public AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthly;
+	
+	/** 月別実績の任意項目 */
+	@Inject
+	public AnyItemOfMonthlyRepository anyItemOfMonthly;
 	
 	/** 月別実績集計設定の取得 */
 	@Inject

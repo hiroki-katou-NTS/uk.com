@@ -66,7 +66,7 @@ public class FlexTimeOfMonthly {
 	/** 休暇加算時間設定 */
 	private Map<String, AggregateRoot> holidayAdditionMap;
 	/** 月次法定内のみ加算 */
-	boolean addMonthlyWithinStatutory;
+	private boolean addMonthlyWithinStatutory;
 	/** フレックス勤務の月別集計設定 */
 	private Optional<MonthlyAggrSetOfFlex> monthlyAggrSetOfFlexOpt;
 	/** フレックス勤務所定労働時間取得 */
