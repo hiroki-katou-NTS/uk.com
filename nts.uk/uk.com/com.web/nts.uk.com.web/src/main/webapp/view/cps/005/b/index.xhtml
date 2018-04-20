@@ -91,7 +91,7 @@
 										immediate: false}" />
 							</div>
 
-							<div data-bind="visible: itemType() == 2  &amp; dataType !=10">
+							<div data-bind="visible: itemType() == 2  &amp; dataType() !==10">
 								<div
 									class="valign-center control-group control-group-margin-custom">
 									<div data-bind="ntsFormLabel: { required: true }"
@@ -609,7 +609,7 @@
 								<span class="label" data-bind="text: itemName"></span>
 							</div>
 
-							<div data-bind="visible: itemType() == 2">
+							<div data-bind="visible: itemType() == 2 &amp; dataType() !== 10">
 								<div
 									class="valign-center control-group control-group-margin-custom">
 									<div data-bind="ntsFormLabel: {}"

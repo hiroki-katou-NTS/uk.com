@@ -201,6 +201,18 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 				approvableFlag = false;
 			}
 		}
+		Optional<ApprovalFrame> opDenyFrame = approvalPhaseState.getListApprovalFrame()
+			.stream().filter(x -> x.getApprovalAtr().equals(ApprovalBehaviorAtr.DENIAL))
+			.findAny();
+		if(opDenyFrame.isPresent()){
+			ApprovalFrame denyFrame = opDenyFrame.get();
+			if((Strings.isNotBlank(denyFrame.getApproverID()) && denyFrame.getApproverID().equals(employeeID)) || 
+			(Strings.isNotBlank(denyFrame.getRepresenterID()) && denyFrame.getRepresenterID().equals(employeeID))){
+				approvableFlag = true;
+			} else {
+				approvableFlag = false;
+			}
+		}
 		return new ApprovalStatusOutput(approvalFlag, approvalAtr, approvableFlag, subExpFlag);
 	}
 
