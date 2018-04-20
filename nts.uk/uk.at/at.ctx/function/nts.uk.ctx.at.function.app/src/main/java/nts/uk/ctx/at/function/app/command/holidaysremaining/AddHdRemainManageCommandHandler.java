@@ -32,7 +32,7 @@ public class AddHdRemainManageCommandHandler extends CommandHandler<HdRemainMana
 				command.isChildNursingLeave(),
 				command.isYearlyHoliday(), command.isInsideHours(), command.isInsideHalfDay(), 
 				command.isNumberRemainingPause(), command.isUndigestedPause(), command.isPauseItem(),
-				command.isYearlyReserved(), command.getSpecialHolidays());
+				command.isYearlyReserved(), command.getListSpecialHoliday());
 		
 		if(!itemOutputForm.hasOutput()){
 			throw new BusinessException("Msg_880");
