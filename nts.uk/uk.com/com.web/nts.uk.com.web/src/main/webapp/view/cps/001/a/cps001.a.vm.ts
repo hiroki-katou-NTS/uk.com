@@ -345,7 +345,7 @@ module cps001.a.vm {
                     if (params && params.employeeId) {
                         $('#ccg001-btn-search-all').trigger('click');
                     } else {
-                        $('#ccg001-btn-only-me').trigger('click');
+                        $('#ccg001-btn-only-me>div').trigger('click');
                     }
 
                     $.when((() => {

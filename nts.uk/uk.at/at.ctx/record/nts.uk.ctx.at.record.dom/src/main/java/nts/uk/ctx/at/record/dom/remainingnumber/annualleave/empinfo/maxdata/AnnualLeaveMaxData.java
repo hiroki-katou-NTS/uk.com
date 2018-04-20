@@ -70,6 +70,35 @@ public class AnnualLeaveMaxData extends AggregateRoot {
 		return createFromJavaType(employeeId, toInteger(maxTimes), toInteger(usedTimes), toInteger(maxMinutes),
 				toInteger(usedMinutes));
 	}
+	
+	public void updateData(BigDecimal maxTimesBig, BigDecimal usedTimesBig, BigDecimal maxMinutesBig,
+			BigDecimal usedMinutesBig) {
+		Integer maxTimes = toInteger(maxTimesBig);
+		Integer usedTimes = toInteger(usedTimesBig);
+		Integer maxMinutes = toInteger(maxMinutesBig);
+		Integer usedMinutes = toInteger(usedMinutesBig);
+
+		if (this.halfdayAnnualLeaveMax.isPresent()) {
+			if (maxTimes != null && usedTimes != null) {
+				this.halfdayAnnualLeaveMax.get().update(new MaxTimes(maxTimes), new UsedTimes(usedTimes));
+			} else if (maxTimes != null) {
+				this.halfdayAnnualLeaveMax.get().updateMaxTimes(new MaxTimes(maxTimes));
+			} else if (usedTimes != null) {
+				this.halfdayAnnualLeaveMax.get().updateUsedTimes(new UsedTimes(usedTimes));
+			}
+		}
+
+		if (this.timeAnnualLeaveMax.isPresent()) {
+			if (maxMinutes != null && usedMinutes != null) {
+				this.timeAnnualLeaveMax.get().update(new MaxMinutes(maxMinutes), new UsedMinutes(usedMinutes));
+			} else if (maxMinutes != null) {
+				this.timeAnnualLeaveMax.get().updateMaxMinutes(new MaxMinutes(maxMinutes));
+			} else if (usedMinutes != null) {
+				this.timeAnnualLeaveMax.get().updateUsedMinutes(new UsedMinutes(usedMinutes));
+			}
+		}
+
+	}
 
 	private static Integer toInteger(BigDecimal bigNumber) {
 		return bigNumber != null ? bigNumber.intValue() : null;
