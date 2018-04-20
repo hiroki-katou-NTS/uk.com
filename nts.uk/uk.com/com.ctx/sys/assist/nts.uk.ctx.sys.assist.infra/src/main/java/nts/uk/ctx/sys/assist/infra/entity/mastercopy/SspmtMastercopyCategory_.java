@@ -13,6 +13,5 @@ public class SspmtMastercopyCategory_ {
     public static volatile SingularAttribute<SspmtMastercopyCategory, Object> masterCopyCategory;
     public static volatile SingularAttribute<SspmtMastercopyCategory, BigDecimal> systemType;
     public static volatile SingularAttribute<SspmtMastercopyCategory, String> masterCopyId;
-    public static volatile SingularAttribute<SspmtMastercopyCategory, String> cid;
 
 }

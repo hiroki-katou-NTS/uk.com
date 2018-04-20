@@ -5,10 +5,10 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 @Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-04-19T13:30:10")
-@StaticMetamodel(SspdtMastercopyData.class)
-public class SspdtMastercopyData_ { 
+@StaticMetamodel(SspmtMastercopyData.class)
+public class SspmtMastercopyData_ { 
 
-    public static volatile SingularAttribute<SspdtMastercopyData, Object> masterCopyTarget;
-    public static volatile SingularAttribute<SspdtMastercopyData, String> masterCopyId;
+    public static volatile SingularAttribute<SspmtMastercopyData, Object> masterCopyTarget;
+    public static volatile SingularAttribute<SspmtMastercopyData, String> masterCopyId;
 
 }

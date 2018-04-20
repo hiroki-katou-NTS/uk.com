@@ -19,8 +19,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name="SSPDT_MASTERCOPY_DATA")
-public class SspdtMastercopyData extends UkJpaEntity implements Serializable {
+@Table(name="SSPMT_MASTERCOPY_DATA")
+public class SspmtMastercopyData extends UkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
