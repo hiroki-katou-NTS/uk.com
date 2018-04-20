@@ -155,6 +155,7 @@ import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetOfStatutoryWorkTime;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.CalcMethodExceededPredAddVacation;
 import nts.uk.ctx.at.shared.dom.worktime.common.CalcMethodNoBreak;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
@@ -329,10 +330,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		/*休憩時間帯（遅刻早退用）*/
 		 List<TimeSheetOfDeductionItem> breakTimeList = new ArrayList<>();
 		if(integrationOfDaily.getAttendanceLeave().isPresent()) {
-			Optional<BreakTimeOfDailyPerformance> test = reflectBreakTimeOfDailyDomainService.getBreakTime(companyId, employeeId, targetDate,integrationOfDaily.getWorkInformation());
-			if(test.isPresent()) {
-				 breakTimeList = test.get().changeAllTimeSheetToDeductionItem();
-			}
+//			Optional<BreakTimeOfDailyPerformance> test = reflectBreakTimeOfDailyDomainService.getBreakTime(companyId, employeeId, targetDate,integrationOfDaily.getWorkInformation());
+//			if(test.isPresent()) {
+//				 breakTimeList = test.get().changeAllTimeSheetToDeductionItem();
+//			}
 		}
 	
 		/*各加算設定取得用*/
@@ -477,6 +478,18 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			case FIXED_WORK:
 				/* 固定 */
 				val fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordInfo().getWorkTimeCode().v());
+				List<OverTimeOfTimeZoneSet> fixOtSetting = Collections.emptyList();
+				if(workType.get().getAttendanceHolidayAttr().isFullTime()) {
+					fixOtSetting = fixedWorkSetting.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getDayAtr().equals(AmPmAtr.ONE_DAY)).findFirst().get().getWorkTimezone().getLstOTTimezone();
+				}
+				else if(workType.get().getAttendanceHolidayAttr().isMorning()) {
+					fixOtSetting = fixedWorkSetting.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getDayAtr().equals(AmPmAtr.AM)).findFirst().get().getWorkTimezone().getLstOTTimezone();
+				}
+				else if(workType.get().getAttendanceHolidayAttr().isAfternoon()) {
+					fixOtSetting = fixedWorkSetting.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getDayAtr().equals(AmPmAtr.PM)).findFirst().get().getWorkTimezone().getLstOTTimezone();
+				}
+					
+				
 				AggregateRoot aggregateRoot = map.get("regularWork");
 				//通常勤務の加算設定
 				WorkRegularAdditionSet WorkRegularAdditionSet = aggregateRoot!=null?(WorkRegularAdditionSet)aggregateRoot:null;
@@ -507,7 +520,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						Collections.emptyList(),
 						Collections.emptyList()
 						)
-						, fixedWorkSetting.get().getLstHalfDayWorkTimezone().get(0).getWorkTimezone().getLstOTTimezone(),
+						,fixOtSetting ,
 						fixedWorkSetting.get().getOffdayWorkTimezone().getLstWorkTimezone(), 
 						overDayEndCalcSet, 
 						Collections.emptyList(), 

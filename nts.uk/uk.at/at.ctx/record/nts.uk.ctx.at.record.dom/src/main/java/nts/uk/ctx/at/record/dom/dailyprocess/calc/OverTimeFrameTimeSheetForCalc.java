@@ -249,7 +249,10 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
         	if(ableRangeTime.greaterThan(0))
         		return reclassified(ableRangeTime,overTimeWorkFrameTimeSheetList.stream()
         									   								    .filter(tc -> tc.getPayOrder().isPresent())
-        									   								    .sorted((first,second) -> first.getPayOrder().get().compareTo(second.getPayOrder().get()))
+        									   								    .sorted((first,second) -> first.getPayOrder().get().compareTo(second.getPayOrder().isPresent()
+        									   								    																?second.getPayOrder().get()
+        									   								    																:new SettlementOrder(99)
+        									   								    																))
         									   								    .collect(Collectors.toList()),
         									   								    autoCalculationSet,
         									   								    overTimeHourSetList,
