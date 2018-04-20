@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDail
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
+import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.AggregateMonthlyRecordService;
@@ -46,6 +47,9 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	/** リポジトリ：月別実績の所属情報 */
 	@Inject
 	private AffiliationInfoOfMonthlyRepository affiliationInfoRepository;
+	/** リポジトリ：月別実績の任意項目 */
+	@Inject
+	private AnyItemOfMonthlyRepository anyItemRepository;
 	/** リポジトリ：管理時間の36協定時間 */
 	@Inject
 	private AgreementTimeOfManagePeriodRepository agreementTimeRepository;
@@ -126,6 +130,9 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			}
 			for (val affiliationInfo : value.getAffiliationInfoList()){
 				this.affiliationInfoRepository.persistAndUpdate(affiliationInfo);
+			}
+			for (val anyItem : value.getAnyItemList()){
+				this.anyItemRepository.persistAndUpdate(anyItem);
 			}
 			for (val agreementTime : value.getAgreementTimeList()){
 				this.agreementTimeRepository.persistAndUpdate(agreementTime);
