@@ -381,7 +381,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.outputHolidayForward = ko.observable(param ? param.outputholidayforward || false : false);
             self.monthlyPublic = ko.observable(param ? param.monthlyPublic || false : false);
             self.outputItemsHolidays = ko.observable(param ? param.outputitemsholidays || false : false);
-            self.childNursingLeave = ko.observable(param ? param.ChildNursingLeave || false : false);
+            self.childNursingLeave = ko.observable(param ? param.childNursingLeave || false : false);
             self.yearlyHoliday = ko.observable(param ? param.yearlyHoliday || false : false);
             self.insideHours = ko.observable(param ? param.insideHours || false : false);
             self.insideHalfDay = ko.observable(param ? param.insideHalfDay || false : false);
