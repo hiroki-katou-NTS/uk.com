@@ -20,9 +20,6 @@ public class DiffTimeWorkSettingSaveCommand extends WorkTimeCommonSaveCommand {
 	/** The diff time work setting dto. */
 	private DiffTimeWorkSettingDto diffTimeWorkSetting;
 
-	/** The screen mode. */
-	private Integer screenMode;
-	
 	/**
 	 * To domain diff time work setting.
 	 *

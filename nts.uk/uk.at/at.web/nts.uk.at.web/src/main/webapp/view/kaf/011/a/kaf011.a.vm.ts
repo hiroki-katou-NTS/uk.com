@@ -99,20 +99,11 @@ module nts.uk.at.view.kaf011.a.screenModel {
             self.recWk().wkTimeName('');
             self.recWk().wkTimeCD('');
             self.recWk().wkText('');
-
-            self.absWk().wkTime1(new common.WorkingHour());
-            self.absWk().wkTime2(new common.WorkingHour());
-            self.absWk().wkTimeName('');
-            self.absWk().wkTimeCD('');
-            self.absWk().wkText('');
-            self.reason('');
         }
 
         openCMM018() {
             let self = this;
-            nts.uk.sessionStorage.removeItem(nts.uk.request.STORAGE_KEY_TRANSFER_DATA);
-            nts.uk.sessionStorage.setItemAsJson(nts.uk.request.STORAGE_KEY_TRANSFER_DATA, { screen: 'Application', employeeId: self.employeeID() });
-            nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml");
+            jump("com", "/view/cmm/018/a/index.xhtml", { screen: "Application", employeeId: self.employeeID() });
         }
 
         setDataFromStart(data: common.IHolidayShipment) {
@@ -120,9 +111,9 @@ module nts.uk.at.view.kaf011.a.screenModel {
             if (data) {
                 self.employeeName(data.employeeName);
                 self.prePostSelectedCode(data.preOrPostType);
-                self.recWk().wkTypes(data.recWkTypes || []);
-                self.absWk().wkTypes(data.absWkTypes || []);
-                self.appReasons(data.appReasons || []);
+                self.recWk().setWkTypes(data.recWkTypes || []);
+                self.absWk().setWkTypes(data.absWkTypes || []);
+                self.appReasons(data.appReasonComboItems || []);
                 self.employeeID(data.employeeID);
                 self.manualSendMailAtr(data.applicationSetting.manualSendMailAtr);
                 self.drawalReqSet(new common.DrawalReqSet(data.drawalReqSet || null));

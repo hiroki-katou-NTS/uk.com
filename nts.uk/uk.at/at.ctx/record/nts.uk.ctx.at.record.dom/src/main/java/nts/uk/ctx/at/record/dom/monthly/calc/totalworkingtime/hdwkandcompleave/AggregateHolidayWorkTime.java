@@ -146,4 +146,19 @@ public class AggregateHolidayWorkTime {
 					timeSeriesWork.getLegalHolidayWorkTime().getTransferTime().get().getTime().v());
 		}
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(AggregateHolidayWorkTime target){
+		
+		this.holidayWorkTime = this.holidayWorkTime.addMinutes(
+				target.holidayWorkTime.getTime().v(), target.holidayWorkTime.getCalcTime().v());
+		this.beforeHolidayWorkTime = this.beforeHolidayWorkTime.addMinutes(target.beforeHolidayWorkTime.v());
+		this.transferTime = this.transferTime.addMinutes(
+				target.transferTime.getTime().v(), target.transferTime.getCalcTime().v());
+		this.legalHolidayWorkTime = this.legalHolidayWorkTime.addMinutes(target.legalHolidayWorkTime.v());
+		this.legalTransferHolidayWorkTime = this.legalTransferHolidayWorkTime.addMinutes(target.legalTransferHolidayWorkTime.v());
+	}
 }

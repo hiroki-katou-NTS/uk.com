@@ -20,9 +20,6 @@ public class FlexWorkSettingSaveCommand extends WorkTimeCommonSaveCommand {
 	/** The flex work setting. */
 	private FlexWorkSettingDto flexWorkSetting;
 	
-	/** The screen mode. */
-	private Integer screenMode;
-	
 	/**
 	 * To domain flex work setting.
 	 *

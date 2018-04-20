@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,12 +17,14 @@ import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 
@@ -33,6 +36,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 @Getter
 public class IntegrationOfDaily {
 	//日別実績の勤務情報
+	@Setter
 	private WorkInfoOfDailyPerformance workInformation;
 	//日別実績の計算区分
 	@Setter
@@ -57,6 +61,7 @@ public class IntegrationOfDaily {
 	//日別実績の作業別勤怠時間
 	private Optional<AttendanceTimeByWorkOfDaily> attendancetimeByWork;
 	//日別実績の出退勤
+	@Setter
 	private Optional<TimeLeavingOfDailyPerformance> attendanceLeave;
 	//日別実績の短時間勤務時間帯
 	@Setter
@@ -68,6 +73,7 @@ public class IntegrationOfDaily {
 	//日別実績の任意項目
 	private Optional<AnyItemValueOfDaily> anyItemValue;
 	//日別実績の編集状態
+	@Setter
 	private List<EditStateOfDailyPerformance> editState;
 	//日別実績の臨時出退勤
 	private Optional<TemporaryTimeOfDailyPerformance> tempTime;
@@ -121,20 +127,19 @@ public class IntegrationOfDaily {
 	}
 	
 	
-	
 	/**
 	 * 残業時間実績超過の取得
+	 * @param attendanceItemConverter 
 	 * @param integrationOfDaily
 	 */
-	public  Optional<EmployeeDailyPerError> getErrorList(String employeeId,
+	public  List<EmployeeDailyPerError> getErrorList(String employeeId,
 			   											 GeneralDate targetDate,
-			   											 ErrorAlarmWorkRecordCode errorCode,
+			   											 SystemFixedErrorAlarm fixedErrorAlarmCode,
 			   											 CheckExcessAtr checkAtr) {
-		Optional<EmployeeDailyPerError> returnErrorItem = Optional.empty();
 		if(this.getAttendanceTimeOfDailyPerformance().isPresent()) {
-			this.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily();
+			return this.getAttendanceTimeOfDailyPerformance().get().getErrorList(employeeId, targetDate, fixedErrorAlarmCode, checkAtr);
 		}
-		return returnErrorItem;
+		return Collections.emptyList();
 	}
 	
 }

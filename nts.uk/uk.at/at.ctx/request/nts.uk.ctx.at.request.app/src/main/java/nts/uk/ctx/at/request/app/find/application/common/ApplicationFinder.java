@@ -21,7 +21,6 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.JobtitleSearchSetAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.shr.com.context.AppContexts;
@@ -91,5 +90,11 @@ public class ApplicationFinder {
 	public ApplicationMetaDto getAppByID(String appID){
 		String companyID = AppContexts.user().companyId();
 		return ApplicationMetaDto.fromDomain(detailAppCommonSetService.getDetailAppCommonSet(companyID, appID));
+	}
+	
+	public List<ApplicationMetaDto> getListAppInfo(List<String> listAppID){
+		String companyID = AppContexts.user().companyId();
+		return detailAppCommonSetService.getListDetailAppCommonSet(companyID, listAppID)
+				.stream().map(x -> ApplicationMetaDto.fromDomain(x)).collect(Collectors.toList());
 	}
 }

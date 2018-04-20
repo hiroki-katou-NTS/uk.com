@@ -42,7 +42,7 @@ public class BasicSchedule extends AggregateRoot {
 	private String workTimeCode;
 
 	/** The confirmed atr. */
-	// 確定区分
+	// 予定確定区分
 	private ConfirmedAtr confirmedAtr;
 
 	/** The work schedule time zones. */

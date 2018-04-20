@@ -32,8 +32,8 @@ public class HolidayWorkFrameTime {
 		this.beforeApplicationTime = beforeApplicationTime;
 	}
 	
-	public void addHolidayTime(AttendanceTime holidayWorkTime) {
-		this.holidayWorkTime = Finally.of(this.holidayWorkTime.get().addMinutes(holidayWorkTime, holidayWorkTime));
+	public void addHolidayTime(AttendanceTime time,AttendanceTime calcTime) {
+		this.holidayWorkTime = Finally.of(this.holidayWorkTime.get().addMinutes(time, calcTime));
 	}
 	
 	//休出枠Noのみ指定した休出枠Noに更新する
@@ -68,6 +68,15 @@ public class HolidayWorkFrameTime {
 									 this.holidayWorkTime,
 									 Finally.of(transTime),
 									 this.getBeforeApplicationTime());
+	}
+	
+	/**
+	 * 事前申請を足す(4末納品きんきゅうたいおうby 保科)
+	 * @param addTime
+	 */
+	public void addBeforeTime(AttendanceTime addTime) {
+		if(this.getBeforeApplicationTime().isPresent())
+			this.beforeApplicationTime = Finally.of(this.getBeforeApplicationTime().get().addMinutes(addTime.valueAsMinutes()));
 	}
 	
 	/**

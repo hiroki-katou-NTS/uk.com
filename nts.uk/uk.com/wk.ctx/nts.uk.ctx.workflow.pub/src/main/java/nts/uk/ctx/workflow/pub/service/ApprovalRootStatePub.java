@@ -27,7 +27,7 @@ public interface ApprovalRootStatePub {
 	 * @param rootType
 	 * @return
 	 */
-	public boolean ReleaseApproval(String approverID, List<GeneralDate> approvalRecordDates, List<String> employeeID,Integer rootType,String companyID);
+	public boolean releaseApproval(String approverID, List<GeneralDate> approvalRecordDates, List<String> employeeID,Integer rootType,String companyID);
 	/**
 	 * RequestList347
 	 * 実績の承認を登録する
@@ -37,7 +37,7 @@ public interface ApprovalRootStatePub {
 	 * @param rootType
 	 * @return
 	 */
-	public void RegisterApproval(String approverID, List<GeneralDate> approvalRecordDates, List<String> employeeID,Integer rootType,String companyID);
+	public void registerApproval(String approverID, List<GeneralDate> approvalRecordDates, List<String> employeeID,Integer rootType,String companyID);
 	/**
 	 * RequestList155
 	 * [No.155]承認対象者リストと日付リストから承認状況を取得する

@@ -108,7 +108,7 @@ public class WorkTimeOfMonthly {
 			val workTimeOfTimeSeries = WorkTimeOfTimeSeries.of(ymd,
 					WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(
 							workTime,
-							withinPrescribedTimeOfDaily.getWorkTimeIncludeVacationTime(),
+							withinPrescribedTimeOfDaily.getActualWorkTime(),
 							withinPrescribedPremiumTime,
 							withinPrescribedTimeOfDaily.getWithinStatutoryMidNightTime(),
 							withinPrescribedTimeOfDaily.getVacationAddTime())
@@ -184,5 +184,16 @@ public class WorkTimeOfMonthly {
 	public AttendanceTimeMonth getTotalWorkingTargetTime(){
 		
 		return new AttendanceTimeMonth(this.workTime.v() + this.withinPrescribedPremiumTime.v());
+	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(WorkTimeOfMonthly target){
+		
+		this.workTime = this.workTime.addMinutes(target.workTime.v());
+		this.withinPrescribedPremiumTime = this.withinPrescribedPremiumTime.addMinutes(
+				target.withinPrescribedPremiumTime.v());
 	}
 }

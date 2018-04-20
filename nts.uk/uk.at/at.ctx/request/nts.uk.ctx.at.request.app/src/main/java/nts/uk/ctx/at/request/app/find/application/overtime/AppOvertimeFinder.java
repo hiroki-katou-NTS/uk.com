@@ -72,6 +72,8 @@ import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -129,6 +131,8 @@ public class AppOvertimeFinder {
 	private DailyAttendanceTimeCaculation dailyAttendanceTimeCaculation;
 	@Inject
 	private AppOvertimeSettingRepository appOvertimeSettingRepository;
+	@Inject
+	private WorkingConditionItemRepository workingConditionItemRepository;
 	
 	/**
 	 * @param url
@@ -136,7 +140,7 @@ public class AppOvertimeFinder {
 	 * @param uiType
 	 * @return
 	 */
-	public OverTimeDto getOvertimeByUIType(String url,String appDate,int uiType){
+	public OverTimeDto getOvertimeByUIType(String url,String appDate,int uiType,Integer timeStart1,Integer timeEnd1,String reasonContent){
 		
 		OverTimeDto result = new OverTimeDto();
 		ApplicationDto_New applicationDto = new ApplicationDto_New();
@@ -160,7 +164,7 @@ public class AppOvertimeFinder {
 		int overtimeAtr = overtimeService.checkOvertime(url);
 		result.setOvertimeAtr(overtimeAtr);
 		// 01_初期データ取得
-		getData(result,uiType,appDate,companyID,employeeID,appCommonSettingOutput,applicationDto,overtimeAtr,overTimeInputs,preAppOvertimeDto);
+		getData(result,uiType,appDate,companyID,employeeID,appCommonSettingOutput,applicationDto,overtimeAtr,overTimeInputs,preAppOvertimeDto,timeStart1,timeEnd1,reasonContent);
 		
 		result.setApplication(applicationDto);
 		String employeeName = "";
@@ -172,7 +176,6 @@ public class AppOvertimeFinder {
 			result.setEmployeeID(employeeID);
 		}
 		result.setEmployeeName(employeeName);
-		
 		return result;
 	}
 	
@@ -228,11 +231,12 @@ public class AppOvertimeFinder {
 	}
 	private List<OvertimeInputCaculation> convertMaptoList(Map<Integer,TimeWithCalculationImport> overTime,TimeWithCalculationImport flexTime,TimeWithCalculationImport midNightTime){
 		List<OvertimeInputCaculation> result = new ArrayList<>();
+		
 		for(Map.Entry<Integer,TimeWithCalculationImport> entry : overTime.entrySet()){
 			OvertimeInputCaculation overtimeCal = new OvertimeInputCaculation(AttendanceType.NORMALOVERTIME.value, entry.getKey(), entry.getValue().getCalTime());
 			result.add(overtimeCal);
 		}
-		OvertimeInputCaculation flexTimeCal = new OvertimeInputCaculation(AttendanceType.NORMALOVERTIME.value, 12, flexTime.getCalTime());
+		OvertimeInputCaculation flexTimeCal = new OvertimeInputCaculation(AttendanceType.NORMALOVERTIME.value, 12,(flexTime.getCalTime() == null || flexTime.getCalTime() < 0)? null : flexTime.getCalTime());
 		OvertimeInputCaculation midNightTimeCal = new OvertimeInputCaculation(AttendanceType.NORMALOVERTIME.value, 11, midNightTime.getCalTime());
 		result.add(flexTimeCal);
 		result.add(midNightTimeCal);
@@ -468,14 +472,22 @@ public class AppOvertimeFinder {
 			}
 		}
 		// display flex
-		if (appOvertimeSettingRepository.getAppOver().isPresent()) {
-			if (appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr()
-					.equals(FlexExcessUseSetAtr.NOTDISPLAY)) {
+		if(appOvertimeSettingRepository.getAppOver().isPresent()){
+			if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.NOTDISPLAY)){
 				overTimeDto.setFlexFLag(false);
-			} else {
+			}else if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.DISPLAY)){
+				GeneralDate baseDate = appCommonSettingOutput.generalDate;
+				Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(appOverTime.getApplication().getEmployeeID(),baseDate);
+				if(personalLablorCodition.isPresent()){
+					if(personalLablorCodition.get().getLaborSystem().isFlexTimeWork()){
+						overTimeDto.setFlexFLag(true);
+					}else{
+						overTimeDto.setFlexFLag(false);
+					}
+				}
+			}else{
 				overTimeDto.setFlexFLag(true);
 			}
-
 		}
 		return overTimeDto;
 	} 
@@ -655,7 +667,7 @@ public class AppOvertimeFinder {
 	 */
 	private void getData(OverTimeDto result,int uiType,String appDate,String companyID,String employeeID,
 			AppCommonSettingOutput appCommonSettingOutput,ApplicationDto_New applicationDto,int overtimeAtr,
-			List<OvertimeInputDto> overTimeInputs,PreAppOvertimeDto preAppOvertimeDto){
+			List<OvertimeInputDto> overTimeInputs,PreAppOvertimeDto preAppOvertimeDto,Integer startTime1,Integer endTime1,String reasonContent){
 		//申請日付を取得 : lay thong tin lam them
 		applicationDto.setApplicationDate(appDate);
 		// 01-01_残業通知情報を取得
@@ -709,6 +721,12 @@ public class AppOvertimeFinder {
 				result.setWorkClockFrom2(recordWorkOutput.getStartTime2());
 				result.setWorkClockTo1(recordWorkOutput.getEndTime1());
 				result.setWorkClockTo2(recordWorkOutput.getEndTime2());
+				if(startTime1 != null){
+					result.setWorkClockFrom1(startTime1);
+				}
+				if(endTime1 != null){
+					result.setWorkClockTo1(endTime1);
+				}
 				
 				// 01-17_休憩時間取得(lay thoi gian nghi ngoi)
 				boolean displayRestTime = iOvertimePreProcess.getRestTime(approvalFunctionSetting);
@@ -783,6 +801,9 @@ public class AppOvertimeFinder {
 			}
 			//01-06_申請理由を取得
 			result.setDisplayAppReasonContentFlg(iOvertimePreProcess.displayAppReasonContentFlg(appTypeDiscreteSetting));
+			if(result.isDisplayAppReasonContentFlg()){
+				applicationDto.setApplicationReason(reasonContent);
+			}
 		}
 		if(overtimeRestAppCommonSet.isPresent()){
 			result.setDisplayDivergenceReasonForm(false);
@@ -831,13 +852,22 @@ public class AppOvertimeFinder {
 		if(appOvertimeSettingRepository.getAppOver().isPresent()){
 			if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.NOTDISPLAY)){
 				result.setFlexFLag(false);
+			}else if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.DISPLAY)){
+				GeneralDate baseDate = appCommonSettingOutput.generalDate;
+				Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(employeeID,baseDate);
+				if(personalLablorCodition.isPresent()){
+					if(personalLablorCodition.get().getLaborSystem().isFlexTimeWork()){
+						result.setFlexFLag(true);
+					}else{
+						result.setFlexFLag(false);
+					}
+				}
 			}else{
 				result.setFlexFLag(true);
 			}
 			
 		}
-		
-		
+		result.setApplication(applicationDto);
 	}
 
 	/**

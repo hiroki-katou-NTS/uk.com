@@ -28,9 +28,9 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
 import nts.uk.ctx.at.record.infra.entity.approvalmanagement.KrcstAppProUseSet;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessFormatSheet;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDaily;
+import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReason;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
 import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceReason;
-import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceTime;
-import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceTimePK;
 import nts.uk.ctx.at.record.infra.entity.editstate.KrcdtDailyRecEditSet;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDaiPerWorkInfo;
 import nts.uk.ctx.at.record.infra.entity.worklocation.KwlmtWorkLocation;
@@ -184,6 +184,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	
 	private final static String SEL_FIND_ER_AL_APP;
 	
+	private final static String FIND_DVGC_TIME;
+	
 
 	private final String GET_DAI_PER_AUTH_WITH_ROLE = "SELECT da FROM KrcmtDaiPerformanceAut da WHERE da.pk.roleId =:roleId";
 
@@ -199,8 +201,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	
 	private final String SELECT_WORKTYPE = " SELECT c FROM KshmtWorkType c WHERE c.kshmtWorkTypePK.companyId = :companyId";
 	
-	private final String SELECT_ALL_DIVREASON = "SELECT c FROM KmkmtDivergenceReason c"
-			+ " WHERE c.kmkmtDivergenceReasonPK.companyId = :companyId";
+	private final String SELECT_ALL_DIVREASON = "SELECT c FROM KrcstDvgcReason c"
+			+ " WHERE c.id.cid = :companyId";
 	
 	private final String SELECT_CONFIRM_DAY = "SELECT c FROM KrcdtIdentificationStatus c"
 			+ " WHERE c.krcdtIdentificationStatusPK.companyID = :companyID"
@@ -312,15 +314,15 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e FROM KrcdtSyainDpErList e ");
-		builderString.append("WHERE e.krcdtSyainDpErListPK.processingDate IN :lstDate ");
-		builderString.append("AND e.krcdtSyainDpErListPK.employeeId IN :lstEmployee");
+		builderString.append("WHERE e.processingDate IN :lstDate ");
+		builderString.append("AND e.employeeId IN :lstEmployee");
 		SEL_DP_ERROR_EMPLOYEE = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e FROM KrcdtSyainDpErList e ");
-		builderString.append("WHERE e.krcdtSyainDpErListPK.processingDate IN :lstDate ");
-		builderString.append("AND e.krcdtSyainDpErListPK.employeeId IN :lstEmployee ");
-		builderString.append("AND e.krcdtSyainDpErListPK.errorCode IN :errorCodes");
+		builderString.append("WHERE e.processingDate IN :lstDate ");
+		builderString.append("AND e.employeeId IN :lstEmployee ");
+		builderString.append("AND e.errorCode IN :errorCodes");
 		SEL_DP_ERROR_EMPLOYEE_CONDITION_ERRORS = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -460,6 +462,12 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("WHERE e.krcstErAlApplicationPK.cid = :cid ");
 		builderString.append("AND e.krcstErAlApplicationPK.errorCd IN :errorCd ");
 		SEL_FIND_ER_AL_APP = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT d FROM KrcstDvgcTime d ");
+		builderString.append("WHERE d.id.cid = :cid ");
+		builderString.append("AND d.id.no IN :no");
+		FIND_DVGC_TIME = builderString.toString();
 
 	}
 
@@ -712,8 +720,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		return this.queryProxy().query(SEL_DP_ERROR_EMPLOYEE, KrcdtSyainDpErList.class)
 				.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", lstEmployee).getList()
 				.stream().map(e -> {
-					return new DPErrorDto(e.krcdtSyainDpErListPK.errorCode, "", e.krcdtSyainDpErListPK.employeeId,
-							e.krcdtSyainDpErListPK.processingDate, e.attendanceItemId.intValue(),
+					return new DPErrorDto(e.errorCode, "", e.employeeId,
+							e.processingDate, 
+							!e.erAttendanceItem.isEmpty() ? e.erAttendanceItem.get(0).krcdtErAttendanceItemPK.attendanceItemId : null,
 							e.errorCancelable.intValue() == 1 ? true : false);
 				}).collect(Collectors.toList());
 	}
@@ -723,8 +732,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		return this.queryProxy().query(SEL_DP_ERROR_EMPLOYEE_CONDITION_ERRORS, KrcdtSyainDpErList.class)
 				.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", lstEmployee)
 				.setParameter("errorCodes", errorCodes).getList().stream().map(e -> {
-					return new DPErrorDto(e.krcdtSyainDpErListPK.errorCode, "", e.krcdtSyainDpErListPK.employeeId,
-							e.krcdtSyainDpErListPK.processingDate, e.attendanceItemId.intValue(),
+					return new DPErrorDto(e.errorCode, "", e.employeeId,
+							e.processingDate,
+							!e.erAttendanceItem.isEmpty() ? e.erAttendanceItem.get(0).krcdtErAttendanceItemPK.attendanceItemId : null,
 							e.errorCancelable.intValue() == 1 ? true : false);
 				}).collect(Collectors.toList());
 	}
@@ -802,9 +812,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
     
 	@Override
 	public List<CodeName> findReason(String companyId) {
-		return this.queryProxy().query(SELECT_ALL_DIVREASON, KmkmtDivergenceReason.class)
+		return this.queryProxy().query(SELECT_ALL_DIVREASON, KrcstDvgcReason.class)
 				.setParameter("companyId", companyId)
-				.getList(c -> new CodeName(c.kmkmtDivergenceReasonPK.divReasonCode, c.divReason, String.valueOf(c.kmkmtDivergenceReasonPK.divTimeId)));
+				.getList(c -> new CodeName(c.getId().getReasonCd(), c.getReason(), String.valueOf(c.getId().getNo())));
 	}
 	
 	@Override
@@ -907,15 +917,13 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public Optional<DivergenceTimeDto> findDivergenceTime(String companyId, int divTimeId) {
-		Optional<KmkmtDivergenceTime> entity = this.queryProxy().find(new KmkmtDivergenceTimePK(companyId, divTimeId),
-				KmkmtDivergenceTime.class);
-		if (entity.isPresent()) {
-			return Optional.of(new DivergenceTimeDto(companyId, divTimeId, entity.get().divTimeName,
-					entity.get().divTimeUseSet, entity.get().alarmTime, entity.get().errTime, entity.get().selectUseSet,
-					entity.get().cancelErrInputReason, entity.get().inputUseSet, entity.get().cancelErrInputReason));
-		} else
-			return Optional.empty();
+	public List<DivergenceTimeDto> findDivergenceTime(String companyId, List<Integer> divergenceNo) {
+		return this.queryProxy().query(FIND_DVGC_TIME, KrcstDvgcTime.class).setParameter("cid", companyId)
+				.setParameter("no", divergenceNo)
+				.getList(x -> new DivergenceTimeDto(x.getId().getNo(), companyId, x.getDvgcTimeUseSet().intValue(),
+						x.getDvgcReasonInputed().intValue() == 1 ? true : false,
+						x.getDvgcReasonSelected().intValue() == 1 ? true : false));
+
 	}
 
 	@Override
