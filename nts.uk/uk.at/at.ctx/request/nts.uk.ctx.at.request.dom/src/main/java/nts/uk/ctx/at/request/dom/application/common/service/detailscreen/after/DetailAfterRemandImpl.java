@@ -8,8 +8,9 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import org.apache.logging.log4j.util.Strings;
-import nts.arc.enums.EnumAdaptor;
+
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.gul.mail.send.MailContents;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
+import nts.uk.ctx.at.request.dom.application.overtime.service.IApplicationContentService;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbedded;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedRepository;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.remandsetting.ContentOfRemandMail;
@@ -31,7 +33,6 @@ import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.url.RegisterEmbededURL;
-import nts.uk.shr.com.url.UrlExecInfo;
 
 /**
  * 
@@ -61,9 +62,12 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 
 	@Inject
 	private ContentOfRemandMailRepository remandRepo;
-	
+
 	@Inject
 	private UrlEmbeddedRepository urlEmbeddedRepo;
+
+	@Inject 
+	private IApplicationContentService appContentService;
 	
 	@Override
 	public MailSenderResult doRemand(String companyID, String appID, Long version, Integer order, String returnReason) {
@@ -71,7 +75,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 		application.setReversionReason(new AppReason(returnReason));
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository
 				.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
-		MailSenderResult mailSenderResult = null; 
+		MailSenderResult mailSenderResult = null;
 		if (order != null) {
 			List<String> employeeList = approvalRootStateAdapter.doRemandForApprover(companyID, appID, order);
 			if (appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)) {
@@ -85,7 +89,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 			application.getReflectionInformation().setStateReflection(ReflectedState_New.REMAND);
 			if (appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)) {
 				mailSenderResult = this.getMailSenderResult(application, Arrays.asList(application.getEmployeeID()));
-			} else{
+			} else {
 				mailSenderResult = new MailSenderResult(null, null);
 			}
 		}
@@ -100,12 +104,12 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 		String cid = AppContexts.user().companyId();
 		Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(AppContexts.user().companyId());
 		String urlInfo = "";
-		if (urlEmbedded.isPresent()){
+		if (urlEmbedded.isPresent()) {
 			int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
 			NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
 			if (checkUrl == NotUseAtr.USE) {
-				urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(application.getAppID(), application.getAppType().value,
-						application.getPrePostAtr().value, application.getEmployeeID());
+				urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(application.getAppID(),
+						application.getAppType().value, application.getPrePostAtr().value, application.getEmployeeID());
 			}
 		}
 		ContentOfRemandMail remandTemp = remandRepo.getRemandMailById(cid).orElse(null);
@@ -114,22 +118,23 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 			mailBody = remandTemp.getMailBody().v();
 		}
 		String emp = employeeAdapter.empEmail(AppContexts.user().employeeId());
-		if (Strings.isEmpty(emp)){
+		if (Strings.isEmpty(emp)) {
 			emp = employeeAdapter.getEmployeeName(AppContexts.user().employeeId());
 		}
-		String appContent = "app content"; 
-		if (!Strings.isBlank(urlInfo)){
+		String appContent = appContentService.getApplicationContent(application);
+		if (!Strings.isBlank(urlInfo)) {
 			appContent += "\n" + "#KDL030_30" + " " + application.getAppID() + "\n" + urlInfo;
 		}
 		String mailContentToSend = I18NText.getText("Msg_1060",
 				employeeAdapter.getEmployeeName(AppContexts.user().employeeId()), mailBody,
 				GeneralDate.today().toString(), application.getAppType().nameId,
-				employeeAdapter.getEmployeeName(application.getEmployeeID()), application.getAppDate().toLocalDate().toString(),
-				appContent, employeeAdapter.getEmployeeName(AppContexts.user().employeeId()), emp);
-		
+				employeeAdapter.getEmployeeName(application.getEmployeeID()),
+				application.getAppDate().toLocalDate().toString(), appContent,
+				employeeAdapter.getEmployeeName(AppContexts.user().employeeId()), emp);
+
 		List<String> successList = new ArrayList<>();
 		List<String> errorList = new ArrayList<>();
-		for(String employee: employeeList){
+		for (String employee : employeeList) {
 			String employeeName = employeeAdapter.getEmployeeName(employee);
 			String employeeMail = employeeAdapter.empEmail(employee);
 			employeeMail = "hiep.ld@3si.vn";
@@ -138,14 +143,16 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 				continue;
 			} else {
 				// TODO
-				mailsender.send("tarou@nittsusystem.co.jp", employeeMail, new MailContents(mailTitle, mailContentToSend));
+				mailsender.send("tarou@nittsusystem.co.jp", employeeMail,
+						new MailContents(mailTitle, mailContentToSend));
 				successList.add(employeeName);
 			}
 		}
 		return new MailSenderResult(successList, errorList);
 	}
+
 	public static void main(String[] args) {
-		int i =1;
+		int i = 1;
 		List<Integer> list = new ArrayList();
 		list.add(new Integer(1));
 		list.add(new Integer(1));
