@@ -40,7 +40,11 @@ public class ApplicationSprPubImpl implements ApplicationSprPub {
 				.collect(Collectors.toList());
 		List<AppOverTimeSprExport> resultList = listPreApp.stream()
 			.filter(x -> {
-				AppOverTime appOverTime = overtimeRepository.getAppOvertime(x.getCompanyID(), x.getAppID()).get();
+				Optional<AppOverTime> opAppOverTime = overtimeRepository.getAppOvertime(x.getCompanyID(), x.getAppID());
+				if(!opAppOverTime.isPresent()){
+					return false;
+				}
+				AppOverTime appOverTime = opAppOverTime.get();
 				if(appOverTime.getOverTimeAtr().value==overTimeAtr){
 					return true;
 				}

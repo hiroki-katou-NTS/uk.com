@@ -1,5 +1,6 @@
 package nts.uk.pub.spr;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ import nts.uk.pub.spr.appstatus.SprAppStatusService;
 import nts.uk.pub.spr.dailystatus.SprDailyStatusService;
 import nts.uk.pub.spr.login.SprLoginFormService;
 import nts.uk.pub.spr.login.output.LoginUserContextSpr;
+import nts.uk.pub.spr.login.output.RoleInfoSpr;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
 @Path("public/spr_") // <- plz fix when discard SptWebServiceStub
@@ -69,6 +71,38 @@ public class SprWebService {
 				loginUserContextSpr.getCompanyCD(), 
 				loginUserContextSpr.getEmployeeID(), 
 				loginUserContextSpr.getEmployeeCD());
+		for(RoleInfoSpr roleInfor : loginUserContextSpr.getRoleList()){
+			switch (roleInfor.getRoleType()) {
+			case COMPANY_MANAGER:
+				loginUserContextManager.roleIdSetter().forCompanyAdmin(roleInfor.getRoleID());
+				break;
+			case EMPLOYMENT:
+				loginUserContextManager.roleIdSetter().forAttendance(roleInfor.getRoleID());
+				break;
+			case GROUP_COMAPNY_MANAGER:
+				loginUserContextManager.roleIdSetter().forGroupCompaniesAdmin(roleInfor.getRoleID());
+				break;
+			case HUMAN_RESOURCE:
+				loginUserContextManager.roleIdSetter().forPersonnel(roleInfor.getRoleID());
+				break;
+			case MY_NUMBER:
+				break;
+			case OFFICE_HELPER:
+				loginUserContextManager.roleIdSetter().forOfficeHelper(roleInfor.getRoleID());
+				break;
+			case PERSONAL_INFO:
+				loginUserContextManager.roleIdSetter().forPersonalInfo(roleInfor.getRoleID());
+				break;
+			case SALARY:
+				loginUserContextManager.roleIdSetter().forPayroll(roleInfor.getRoleID());
+				break;
+			case SYSTEM_MANAGER:
+				loginUserContextManager.roleIdSetter().forSystemAdmin(roleInfor.getRoleID());
+				break;
+			default:
+				break;
+			}
+		}
 		val paramsMap = new LinkedHashMap<String, String>();
 		paramsMap.put("menu", SprStubHelper.formatParam(menuCode));
 		paramsMap.put("loginemployeeCode", SprStubHelper.formatParam(loginEmployeeCode));
@@ -95,7 +129,7 @@ public class SprWebService {
 		paramsValue.put("companyCD", loginUserContextSpr.getCompanyCD());
 		paramsValue.put("personID", loginUserContextSpr.getPersonID());
 		paramsValue.put("loginEmployeeID", loginUserContextSpr.getLoginEmployeeID());
-		paramsValue.put("roleID", loginUserContextSpr.getRoleID());
+		paramsValue.put("roleID", "");
 		paramsValue.put("employeeID", loginUserContextSpr.getEmployeeID());
 		
 		val html = new StringBuilder()
