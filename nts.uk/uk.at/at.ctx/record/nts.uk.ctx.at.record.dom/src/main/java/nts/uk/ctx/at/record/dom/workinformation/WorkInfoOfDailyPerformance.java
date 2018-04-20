@@ -56,7 +56,7 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 		this.backStraightAtr = backStraightAtr;
 		this.ymd = ymd;
 		this.scheduleTimeSheets = scheduleTimeSheets; 
-	}
+	} 
 	
 	/**
 	 * 勤務予定を実績に移す
