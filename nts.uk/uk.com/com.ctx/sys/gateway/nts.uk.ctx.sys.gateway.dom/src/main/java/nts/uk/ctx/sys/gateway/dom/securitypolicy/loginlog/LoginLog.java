@@ -15,21 +15,27 @@ import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
 public class LoginLog extends AggregateRoot{
 	
 	/** The user id. */
+	//ユーザID
 	private String userId;
 	
 	/** The contract code. */
+	//契約コード
 	private ContractCode contractCode;
 	
 	/** The program id. */
+	//プログラムID
 	private String programId;
 	
 	/** The process date time. */
+	//処理日時
 	private GeneralDateTime processDateTime;
 	
 	/** The success or fail. */
+	//成功失敗区分
 	private SuccessFailureClassification successOrFail;
 	
 	/** The operation. */
+	//操作区分
 	private OperationSection operation;
 	
 	/**
