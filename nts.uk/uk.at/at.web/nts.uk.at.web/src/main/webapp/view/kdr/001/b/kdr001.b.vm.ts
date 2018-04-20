@@ -10,12 +10,10 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         currentHoliday: KnockoutObservable<HolidayRemaining> = ko.observable(new HolidayRemaining(null));
         switchOptions: KnockoutObservableArray<any>;
         isNewMode: KnockoutObservable<boolean> = ko.observable(true);
-        holidayCode: KnockoutObservableArray<String>;
         constructor() {
             let self = this;
             let params = getShared("KDR001Params");
             //TODO
-            self.holidayCode = ko.observable('aaa');
             self.currentCode = ko.observable(params || '');
             self.currentCode.subscribe(cd => {
                 errors.clearAll();
@@ -221,7 +219,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
 
 
     }
-    class HolidayRemaining {
+    export class HolidayRemaining {
 
         /**
          * 会社ID
@@ -242,8 +240,8 @@ module nts.uk.at.view.kdr001.b.viewmodel {
          */
         nursingLeave: KnockoutObservable<boolean>;
         /**
-     * 代休残数を出力する
-     */
+         * 代休残数を出力する
+         */
         remainingChargeSubstitute: KnockoutObservable<boolean>;
 
         /**
