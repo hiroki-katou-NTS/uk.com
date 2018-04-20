@@ -158,10 +158,10 @@ public class LateTimeSheet{
 				,deductionTimeSheet,breakTimeList);
 			
 		//遅刻時間を計算
-		AttendanceTime lateTime = instance.isPresent()?instance.get().calcTotalTime():new AttendanceTime(0);
+//		AttendanceTime lateTime = instance.isPresent()?instance.get().calcTotalTime():new AttendanceTime(0);
 		//遅刻時間帯を再度補正
 		if(instance.isPresent()) {
-			instance = Optional.of(instance.get().collectionAgain(lateTime));
+			instance = Optional.of(instance.get().collectionAgainOfLate(instance.get()));
 		}
 		return instance;
 	}
@@ -190,21 +190,17 @@ public class LateTimeSheet{
 			if(calcRange.isPresent()) {
 				//遅刻時間帯の作成
 				TimeWithDayAttr start = calcRange.get().getStart();
-//				TimeWithDayAttr end = duplicateTimeSheet.getTimezone().getEnd().greaterThanOrEqualTo(attendance)?attendance:duplicateTimeSheet.getTimezone().getEnd();
 				TimeWithDayAttr end = calcRange.get().getStart().lessThanOrEqualTo(attendance)?attendance:calcRange.get().getStart();
 				
 				LateLeaveEarlyTimeSheet lateLeaveEarlytimeSheet = new LateLeaveEarlyTimeSheet(
 										new TimeZoneRounding(start,end,new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN)),
 										new TimeSpanForCalc(start,end));
 				
-				List<TimeSheetOfDeductionItem> dudctionList = deductionTimeSheet.getDupliRangeTimeSheet(new TimeSpanForCalc(start,end), deductionAtr);
-				if(!breakTimeList.isEmpty()) {
-					for(TimeSheetOfDeductionItem breakTime:breakTimeList) {
-						dudctionList.add(breakTime);
-					}
-					//時系列順にソート
-					dudctionList = dudctionList.stream().sorted((time1,time2) -> time1.getTimeSheet().getStart().compareTo(time2.getTimeSheet().getStart())).collect(Collectors.toList());
+				//大塚モードか判断_現状は常に大塚モード
+				if(true) {
+					deductionTimeSheet = new DeductionTimeSheet(breakTimeList,breakTimeList);
 				}
+				List<TimeSheetOfDeductionItem> dudctionList = deductionTimeSheet.getDupliRangeTimeSheet(new TimeSpanForCalc(start,end), deductionAtr);
 				lateLeaveEarlytimeSheet.setDeductionTimeSheet(dudctionList);
 				return Optional.of(lateLeaveEarlytimeSheet);
 			}
@@ -244,7 +240,6 @@ public class LateTimeSheet{
 		}
 		return lateDeductionTime;
 	}
-	
 	
 	
 //	/**

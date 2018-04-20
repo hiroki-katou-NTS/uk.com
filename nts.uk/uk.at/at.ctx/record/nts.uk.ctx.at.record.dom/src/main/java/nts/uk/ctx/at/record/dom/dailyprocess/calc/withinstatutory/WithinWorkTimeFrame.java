@@ -173,7 +173,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 			,DeductionTimeSheet deductionTimeSheet
 			,int workNo
 			,TimezoneUse predetermineTimeSet
-			,Optional<CoreTimeSetting> coreTimeSetting) {
+			,Optional<CoreTimeSetting> coreTimeSetting,List<TimeSheetOfDeductionItem> breakTimeList) {
 
 		
 		//早退時間帯の作成
@@ -185,7 +185,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 				deductionTimeSheet,
 				coreTimeSetting,
 				predetermineTimeSet,
-				workNo);
+				workNo,breakTimeList);
 	
 		return leaveEarlytimesheet;
 		
@@ -489,7 +489,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 														  					deductionTimeSheet,
 														  					workNo,
 														  					predetermineTimeSet,
-														  					coreTimeSetting);		
+														  					coreTimeSetting, breakTimeList);		
 		//早退時間を計算する
 		AttendanceTime LeaveEarlyDeductTime = LeaveEarlyTimeSheet.getForDeducationTimeSheet().isPresent()?LeaveEarlyTimeSheet.getForDeducationTimeSheet().get().calcTotalTime():new AttendanceTime(0);
 		//就業時間内時間帯から控除するか判断し控除する
