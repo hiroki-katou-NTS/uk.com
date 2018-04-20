@@ -9,6 +9,7 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheduleErrorLogGeterCommand;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 
 /**
  * The Class ScheduleCreatorExecutionCommand.
@@ -16,29 +17,34 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
 @Getter
 @Setter
 public class ScheduleCreatorExecutionCommand {
-	
+
 	/** The employee id. */
 	private String employeeId;
-	
+
 	/** The execution id. */
 	private String executionId;
-	
+
 	/** The company id. */
 	private String companyId;
-	
+
 	/** The to date. */
 	private GeneralDate toDate;
-	
+
 	/** The content. */
 	private ScheduleCreateContent content;
-	
+
 	/** The is confirm. */
-	private Boolean confirm; 
-	
-	/** The is delete befor insert. */
+	private Boolean confirm;
+
+	/** The is delete before insert. */
 	private Boolean isDeleteBeforInsert;
-	
-	
+
+	private ScheduleExecutionLog scheduleExecutionLog;
+
+	private PersonalSchedule personalSchedule;
+
+	private boolean isAutomatic;
+
 	/**
 	 * To base command.
 	 *

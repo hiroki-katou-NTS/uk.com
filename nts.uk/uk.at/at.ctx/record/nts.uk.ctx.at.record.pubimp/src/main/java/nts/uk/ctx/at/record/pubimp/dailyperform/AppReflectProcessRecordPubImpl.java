@@ -65,19 +65,13 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	}
 
 	@Override
-	public AppReflectPubOutput preGobackReflect(GobackReflectPubParameter para) {
-		ApplicationReflectOutput reflectInfor = preGobackReflect.gobackReflect(this.toDomainGobackReflect(para));
-		AppReflectPubOutput reflectOutput = new AppReflectPubOutput(EnumAdaptor.valueOf(reflectInfor.getReflectedState().value, ReflectedStatePubRecord.class), 
-				reflectInfor.getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(reflectInfor.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
-		return reflectOutput;
+	public boolean preGobackReflect(GobackReflectPubParameter para) {
+		return preGobackReflect.gobackReflect(this.toDomainGobackReflect(para));		
 	}
 
 	@Override
-	public AppReflectPubOutput afterGobackReflect(GobackReflectPubParameter para) {		
-		ApplicationReflectOutput reflectInfor = preGobackReflect.afterGobackReflect(this.toDomainGobackReflect(para));
-		AppReflectPubOutput reflectOutput = new AppReflectPubOutput(EnumAdaptor.valueOf(reflectInfor.getReflectedState().value, ReflectedStatePubRecord.class), 
-				reflectInfor.getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(reflectInfor.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
-		return reflectOutput;
+	public boolean afterGobackReflect(GobackReflectPubParameter para) {		
+		return preGobackReflect.afterGobackReflect(this.toDomainGobackReflect(para));		
 	}
 	private GobackReflectParameter toDomainGobackReflect(GobackReflectPubParameter para) {
 		GobackAppParameter appPara = new GobackAppParameter(EnumAdaptor.valueOf(para.getGobackData().getChangeAppGobackAtr().value, ChangeAppGobackAtr.class),
@@ -102,19 +96,13 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	}
 
 	@Override
-	public AppReflectPubOutput preOvertimeReflect(PreOvertimePubParameter param) {
-		ApplicationReflectOutput reflect = preOvertimeReflect.overtimeReflect(this.toDomainOvertimeReflect(param));
-		AppReflectPubOutput reflectOutput = new AppReflectPubOutput(EnumAdaptor.valueOf(reflect.getReflectedState().value, ReflectedStatePubRecord.class),
-				reflect.getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(reflect.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
-		return reflectOutput;
+	public boolean preOvertimeReflect(PreOvertimePubParameter param) {
+		return preOvertimeReflect.overtimeReflect(this.toDomainOvertimeReflect(param));		
 	}
 
 	@Override
-	public AppReflectPubOutput afterOvertimeReflect(PreOvertimePubParameter param) {
-		ApplicationReflectOutput reflect = afterOvertimeReflect.reflectAfterOvertime(this.toDomainOvertimeReflect(param));
-		AppReflectPubOutput reflectOutput = new AppReflectPubOutput(EnumAdaptor.valueOf(reflect.getReflectedState().value, ReflectedStatePubRecord.class),
-				reflect.getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(reflect.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
-		return reflectOutput;
+	public boolean afterOvertimeReflect(PreOvertimePubParameter param) {
+		return afterOvertimeReflect.reflectAfterOvertime(this.toDomainOvertimeReflect(param));		
 	}
 
 	private OvertimeParameter toDomainOvertimeReflect(PreOvertimePubParameter param) {
@@ -150,7 +138,7 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	}
 
 	@Override
-	public AppReflectPubOutput holidayWorkReflect(HolidayWorkReflectPubPara param) {
+	public boolean holidayWorkReflect(HolidayWorkReflectPubPara param) {
 		HolidayWorktimeAppPara appPara = new HolidayWorktimeAppPara(param.getHolidayWorkPara().getWorkTypeCode(),
 				param.getHolidayWorkPara().getWorkTimeCode(),
 				param.getHolidayWorkPara().getMapWorkTimeFrame(),
@@ -165,19 +153,14 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				EnumAdaptor.valueOf(param.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangeFlg.class),
 				param.isScheReflectFlg(),
 				appPara);
-		ApplicationReflectOutput outputData = holidayworkService.preHolidayWorktimeReflect(para);		
-		return new AppReflectPubOutput(EnumAdaptor.valueOf(outputData.getReflectedState().value, ReflectedStatePubRecord.class),
-				outputData.getReflectedState() == null ? null : EnumAdaptor.valueOf(outputData.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
+		return holidayworkService.preHolidayWorktimeReflect(para);
 	}
 
 	@Override
-	public AppReflectPubOutput workChangeReflect(CommonReflectPubParameter param, boolean isPre) {
+	public boolean workChangeReflect(CommonReflectPubParameter param, boolean isPre) {
 		
-		ApplicationReflectOutput workChangeOut = workChangeService.workchangeReflect(this.toRecordPara(param), isPre);
-		AppReflectPubOutput outPutData = new AppReflectPubOutput(EnumAdaptor.valueOf(workChangeOut.getReflectedState().value, ReflectedStatePubRecord.class),
-				workChangeOut.getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(workChangeOut.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
+		return workChangeService.workchangeReflect(this.toRecordPara(param), isPre);
 		
-		return outPutData;
 	}
 	
 	private CommonReflectParameter toRecordPara(CommonReflectPubParameter param) {
