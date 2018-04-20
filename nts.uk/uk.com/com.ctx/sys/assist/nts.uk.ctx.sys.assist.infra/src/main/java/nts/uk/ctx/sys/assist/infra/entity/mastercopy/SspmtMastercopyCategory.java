@@ -36,10 +36,6 @@ public class SspmtMastercopyCategory extends UkJpaEntity implements Serializable
 	@Column(name="CATEGORY_ORDER")
 	private BigDecimal categoryOrder;
 
-	/** The cid. */
-	@Column(name="CID")
-	private String cid;
-
 	/** The master copy category. */
 	@Column(name="MASTER_COPY_CATEGORY")
 	private Object masterCopyCategory;
