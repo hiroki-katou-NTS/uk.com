@@ -96,7 +96,7 @@ public class HdRemainManageCommand {
 			boolean remainingChargeSubstitute, boolean representSubstitute, boolean outputItemSubstitute,
 			boolean outputholidayforward, boolean monthlyPublic, boolean outputitemsholidays, boolean childNursingLeave,
 			boolean yearlyHoliday, boolean insideHours, boolean insideHalfDay, boolean numberRemainingPause,
-			boolean undigestedPause, boolean pauseItem, boolean yearlyReserved, List<Integer> specialHolidays ) {
+			boolean undigestedPause, boolean pauseItem, boolean yearlyReserved, List<Integer> listSpecialHoliday ) {
 		super();
 		this.cid = cid;
 		this.cd = cd;
@@ -116,7 +116,7 @@ public class HdRemainManageCommand {
 		this.undigestedPause = undigestedPause;
 		this.pauseItem = pauseItem;
 		this.yearlyReserved = yearlyReserved;
-		this.listSpecialHoliday = specialHolidays;
+		this.listSpecialHoliday = listSpecialHoliday;
 	}
 
 }
