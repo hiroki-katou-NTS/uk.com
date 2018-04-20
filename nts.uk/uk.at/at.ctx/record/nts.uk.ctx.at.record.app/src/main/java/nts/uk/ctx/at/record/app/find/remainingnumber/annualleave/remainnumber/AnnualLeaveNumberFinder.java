@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.find.remainingnumber.annleagrtremnum;
+package nts.uk.ctx.at.record.app.find.remainingnumber.annualleave.remainnumber;
 
 import java.util.List;
 
@@ -19,9 +19,17 @@ public class AnnualLeaveNumberFinder {
 	@Inject
 	private AnnLeaEmpBasicInfoDomService annLeaDomainService;
 	
-	public String getAnnualLeaveNumber(String employeeId) {
+	public RemainNumberInfoDto getAnnualLeaveNumber(String employeeId) {
+		String companyId = AppContexts.user().companyId();
+		
+		// get data
 		List<AnnualLeaveGrantRemainingData> annualLeaveDataList = annLeaDataRepo.findNotExp(employeeId);
-		return annLeaDomainService.calculateAnnualLeaveNumber(AppContexts.user().companyId(), annualLeaveDataList);
+		
+		// compute result with data
+		RemainNumberInfoDto dto = new RemainNumberInfoDto();
+		dto.setAnnualLeaveNumber(annLeaDomainService.calculateAnnualLeaveNumber(companyId, annualLeaveDataList));
+		dto.setLastGrantDate(annLeaDomainService.calculateLastGrantDate(annualLeaveDataList));
+		return dto;
 	}
 
 }
