@@ -61,7 +61,7 @@
 				            }))}" />
 	                   </td>
 	                   <td style ="text-align: center;">
-	                       <button data-bind="click: function() {$parent.btnSettingCheckCondition_click(rowId)},enable: true">#{i18n.getText('KAL003_14')}</button>
+	                       <button data-bind="click: $parent.btnSettingCheckCondition_click.bind($parent, rowId),enable: true">#{i18n.getText('KAL003_14')}</button>
 	                   </td>
 	                   <td>
 	                   		<div data-bind="with: errorAlarmCondition">

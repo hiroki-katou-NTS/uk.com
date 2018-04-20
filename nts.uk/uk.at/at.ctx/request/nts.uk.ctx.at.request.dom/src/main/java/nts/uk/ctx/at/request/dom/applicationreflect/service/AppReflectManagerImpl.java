@@ -11,6 +11,10 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
+import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
@@ -66,7 +70,6 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	public void reflectEmployeeOfApp(Application_New appInfor) {
 		GobackReflectPara appGobackTmp = null;
 		OvertimeReflectPara overTimeTmp = null;
-		AppOverTime appOvertimeData = null;
 		CommonReflectPara commonReflect = null;
 		HolidayWorkReflectPara holidayworkInfor = null;
 		ReflectScheDto reflectScheParam = new ReflectScheDto(appInfor.getEmployeeID(), 
@@ -102,19 +105,20 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			if(appGobackTmp == null) {
 				return;
 			}
-		//} else if (appInfor.getAppType() == ApplicationType.ABSENCE_APPLICATION) {
-			/*Optional<AppAbsence> optAbsence = absenceRepo.getAbsenceByAppId(appInfor.getCompanyID(), appInfor.getAppID());
+		}
+		else if (appInfor.getAppType() == ApplicationType.ABSENCE_APPLICATION) {
+			Optional<AppAbsence> optAbsence = absenceRepo.getAbsenceByAppId(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!optAbsence.isPresent()) {
 				return;
 			}
 			AppAbsence absenceAppData = optAbsence.get();
 			reflectScheParam.setForLeave(absenceAppData);
-			//TODO lam trong lan giao hang tiep theo
 			commonReflect = this.getAbsence(appInfor, absenceAppData);
 			if(commonReflect == null) {
 				return;
-			}*/
-		} else if (appInfor.getAppType() == ApplicationType.BREAK_TIME_APPLICATION) {			
+			}
+		} else if (appInfor.getAppType() == ApplicationType.BREAK_TIME_APPLICATION
+				&& appInfor.getPrePostAtr() == PrePostAtr.PREDICT) {			
 			Optional<AppHolidayWork> getFullAppHolidayWork = holidayWorkRepo.getFullAppHolidayWork(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!getFullAppHolidayWork.isPresent()) {
 				return;
@@ -140,12 +144,10 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		}
 		//TODO 反映するかどうか判断 (Xác định để phản ánh)
 		//勤務予定へ反映処理	(Xử lý phản ánh đến kế hoạch công việc)		
-		ScheReflectedStatesInfo scheRelectStates = scheReflect.workscheReflect(reflectScheParam);
-		appInfor.getReflectionInformation().setStateReflection(scheRelectStates.getReflectedSate());
-		if(scheRelectStates.getNotReflectReson() != null) {
-			appInfor.getReflectionInformation().setNotReason(Optional.of(scheRelectStates.getNotReflectReson()));
+		if(scheReflect.workscheReflect(reflectScheParam)) {
+			appInfor.getReflectionInformation().setStateReflection(ReflectedState_New.REFLECTED);
+			appInfor.getReflectionInformation().setNotReason(Optional.of(ReasonNotReflect_New.WORK_CONFIRMED));
 		}
-		
 		//勤務実績へ反映処理(xử lý phản ảnh thành tích thực chuyên cần)
 		ReflectRecordInfor reflectRecordInfor = new ReflectRecordInfor(AppDegreeReflectionAtr.RECORD, AppExecutionType.EXCECUTION, appInfor);		
 		AppReflectRecordPara appPara = new AppReflectRecordPara(reflectRecordInfor, 
@@ -153,10 +155,9 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				overTimeTmp, 
 				commonReflect, 
 				holidayworkInfor);
-		WorkReflectedStatesInfo workRecordreflect = workRecordReflect.workRecordreflect(appPara);
-		appInfor.getReflectionInformation().setStateReflectionReal(workRecordreflect.getReflectedSate());
-		if(workRecordreflect.getNotReflectReson() != null) {
-			appInfor.getReflectionInformation().setNotReasonReal(Optional.of(workRecordreflect.getNotReflectReson()));
+		if(workRecordReflect.workRecordreflect(appPara)) {
+			appInfor.getReflectionInformation().setStateReflectionReal(ReflectedState_New.REFLECTED);
+			appInfor.getReflectionInformation().setNotReasonReal(Optional.of(ReasonNotReflectDaily_New.ACTUAL_CONFIRMED));
 		}
 		appRepo.updateWithVersion(appInfor);
 	}
@@ -194,8 +195,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				holidayWorkData.getHolidayShiftNight(),
 				appInfor.getReflectionInformation().getStateReflectionReal(), 
 				!appInfor.getReflectionInformation().getNotReasonReal().isPresent() ? null : appInfor.getReflectionInformation().getNotReasonReal().get(),
-						holidayWorkData.getWorkClock1().getStartTime().v(),
-						holidayWorkData.getWorkClock1().getEndTime().v()); 
+						holidayWorkData.getWorkClock1().getStartTime() == null ? null : holidayWorkData.getWorkClock1().getStartTime().v(),
+						holidayWorkData.getWorkClock1().getEndTime() == null ? null : holidayWorkData.getWorkClock1().getEndTime().v()); 
 		holidayPara = new HolidayWorkReflectPara(appInfor.getEmployeeID(), appInfor.getAppDate(), true, ScheAndRecordSameChangeFlg.ALWAY, true, appPara);
 		return holidayPara;
 		
@@ -219,15 +220,15 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	
 	
 	private GobackReflectPara getGobackReflectPara(Application_New appInfor, GoBackDirectly gobackInfo) {
-		GobackReflectPara appGobackTmp = null;
-		
-		GobackAppRequestPara gobackReques = new GobackAppRequestPara(gobackInfo.getWorkChangeAtr(), 
-				gobackInfo.getSiftCD().v(), 
-				gobackInfo.getWorkTypeCD().v(), 
-				gobackInfo.getWorkTimeStart1().v(), 
-				gobackInfo.getWorkTimeEnd1().v(), 
-				gobackInfo.getWorkTimeStart2().v(), 
-				gobackInfo.getWorkTimeEnd2().v(), 
+		GobackReflectPara appGobackTmp = null;		
+		GobackAppRequestPara gobackReques = new GobackAppRequestPara(
+				gobackInfo.getWorkChangeAtr().isPresent() ? gobackInfo.getWorkChangeAtr().get() : null,
+				gobackInfo.getSiftCD().isPresent() ? gobackInfo.getSiftCD().get().v() : null, 
+				gobackInfo.getWorkTypeCD().isPresent() ? gobackInfo.getWorkTypeCD().get().v() : null, 
+				gobackInfo.getWorkTimeStart1().isPresent() ? gobackInfo.getWorkTimeStart1().get().v() : null, 
+				gobackInfo.getWorkTimeEnd1().isPresent() ? gobackInfo.getWorkTimeEnd1().get().v() : null, 
+				gobackInfo.getWorkTimeStart2().isPresent() ? gobackInfo.getWorkTimeStart2().get().v() : null, 
+				gobackInfo.getWorkTimeEnd2().isPresent() ? gobackInfo.getWorkTimeEnd2().get().v() : null, 
 				appInfor.getReflectionInformation().getStateReflectionReal(),
 				appInfor.getReflectionInformation().getNotReasonReal().isPresent() ? appInfor.getReflectionInformation().getNotReasonReal().get() : null);
 		appGobackTmp = new GobackReflectPara(appInfor.getEmployeeID(), appInfor.getAppDate(), true, PriorStampRequestAtr.GOBACKPRIOR,

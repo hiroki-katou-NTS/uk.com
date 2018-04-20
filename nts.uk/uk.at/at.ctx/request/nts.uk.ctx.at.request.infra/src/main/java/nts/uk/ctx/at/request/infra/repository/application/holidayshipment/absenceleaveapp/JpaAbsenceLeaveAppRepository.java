@@ -15,10 +15,10 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Man
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.SubDigestion;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.SubTargetDigestion;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTime;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTimeCode;
 import nts.uk.ctx.at.request.infra.entity.application.holidayshipment.absenceleaveapp.KrqdtAbsenceLeaveApp;
 import nts.uk.ctx.at.request.infra.entity.application.holidayshipment.subdigestion.KrqdtSubDigestion;
 import nts.uk.ctx.at.request.infra.entity.application.holidayshipment.subtargetdigestion.KrqdtSubTargetDigestion;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -64,7 +64,7 @@ public class JpaAbsenceLeaveAppRepository extends JpaRepository implements Absen
 		List<SubTargetDigestion> subTargetDigestions = this.queryProxy()
 				.query(FIND_SUB_TAG_DIG_BY_ABS_ID, KrqdtSubTargetDigestion.class)
 				.setParameter("appID", entity.getAppID()).getList(x -> toSubTagDigestion(x));
-		return new AbsenceLeaveApp(entity.getAppID(), entity.getWorkTimeCD(),
+		return new AbsenceLeaveApp(entity.getAppID(), entity.getWorkTypeCD(),
 				EnumAdaptor.valueOf(entity.getChangeWorkHoursAtr(), NotUseAtr.class),
 				new WorkTimeCode(entity.getWorkTimeCD()), WorkTime1, WorkTime2, subTargetDigestions, subDigestions);
 	}
@@ -100,7 +100,7 @@ public class JpaAbsenceLeaveAppRepository extends JpaRepository implements Absen
 		entity.setAppID(absApp.getAppID());
 		entity.setWorkTypeCD(absApp.getWorkTypeCD());
 		entity.setChangeWorkHoursAtr(absApp.getChangeWorkHoursType().value);
-		entity.setWorkTimeCD(absApp.getWorkTimeCD().v());
+		entity.setWorkTimeCD(absApp.getWorkTimeCD());
 		AbsenceLeaveWorkingHour workTime1 = absApp.getWorkTime1();
 		if (workTime1 != null) {
 			entity.setStartWorkTime1(workTime1.getStartTime().v());
@@ -127,6 +127,7 @@ public class JpaAbsenceLeaveAppRepository extends JpaRepository implements Absen
 
 	/**
 	 * find AbsenceLeaveApp By AppId
+	 * 
 	 * @author hoatt
 	 * @param applicationID
 	 * @return
@@ -135,8 +136,10 @@ public class JpaAbsenceLeaveAppRepository extends JpaRepository implements Absen
 	public Optional<AbsenceLeaveApp> findByAppId(String applicationID) {
 		return this.queryProxy().find(applicationID, KrqdtAbsenceLeaveApp.class).map(x -> toDomainMain(x));
 	}
+
 	/**
 	 * convert entity to domain
+	 * 
 	 * @author hoatt
 	 * @param entity
 	 * @return
@@ -146,7 +149,7 @@ public class JpaAbsenceLeaveAppRepository extends JpaRepository implements Absen
 				new WorkTime(entity.getEndWorkTime1()));
 		AbsenceLeaveWorkingHour WorkTime2 = new AbsenceLeaveWorkingHour(new WorkTime(entity.getStartWorkTime2()),
 				new WorkTime(entity.getEndWorkTime2()));
-		return new AbsenceLeaveApp(entity.getAppID(), entity.getWorkTimeCD(),
+		return new AbsenceLeaveApp(entity.getAppID(), entity.getWorkTypeCD(),
 				EnumAdaptor.valueOf(entity.getChangeWorkHoursAtr(), NotUseAtr.class),
 				new WorkTimeCode(entity.getWorkTimeCD()), WorkTime1, WorkTime2, null, null);
 	}

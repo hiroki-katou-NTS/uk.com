@@ -556,7 +556,12 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//アルゴリズム「申請一覧リスト取得マスタ情報」を実行する(get List App Master Info): 9 - 申請一覧リスト取得マスタ情報
 		List<AppMasterInfo> lstMaster = this.getListAppMasterInfo(lstAppFilter, companyId);
 		//アルゴリズム「申請一覧リスト取得実績」を実行する-(get App List Achievement): 5 - 申請一覧リスト取得実績
-		AppListAtrOutput timeOutput = this.getAppListAchievement(lstAppFullFilter3, displaySet, companyId, sID);
+		//loai bo nhung don dong bo
+		List<ApplicationFullOutput> lstCount = lstAppFullFilter3.stream()
+				.filter(c -> !lstSyncId.contains(c.getApplication().getAppID())).collect(Collectors.toList());
+		List<AppCompltLeaveSync> lstSync = lstAppCompltLeaveSync.stream()
+				.filter(c -> c.isSync()).collect(Collectors.toList());
+		AppListAtrOutput timeOutput = this.getAppListAchievement(lstCount, displaySet, companyId, sID, lstSync);
 //		long start5 = System.currentTimeMillis();
 //		System.out.println("Thời gian chạy đoạn lệnh getDetailFull: " + (start5 - start4) + "Millis");
 		//承認一覧に稟議書リスト追加し、申請日付順に整列する - phu thuoc vao request
@@ -574,7 +579,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * 4 - 申請一覧リスト取得承認件数
 	 */
 	@Override
-	public AppInfoStatus countAppListApproval(List<ApplicationFullOutput> lstAppFull, String sID) {
+	public AppInfoStatus countAppListApproval(List<ApplicationFullOutput> lstAppFull, String sID, List<AppCompltLeaveSync> lstSync) {
 		ApplicationStatus appStatus = new ApplicationStatus(0,0,0,0,0,0);
 //		List<ApplicationFullOutput> lstAppFull = mergeAppAndPhase(lstApp);
 		for (ApplicationFullOutput appFull : lstAppFull) {
@@ -591,29 +596,32 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		
 		List<ApplicationFullOutput> listApp = lstAppFull.stream().filter(c -> c.getStatus() != null).collect(Collectors.toList());
 		for (ApplicationFullOutput appFull : listApp) {
+			//check co sync k?
+			boolean check = this.checkSync(lstSync, appFull.getApplication().getAppID());
+			int add = check ? 2 : 1;
 			switch(appFull.getStatus()){
 				case 1://承認状況＝否
 					//否認件数に＋１する
-					appStatus.setDenialNumber(appStatus.getDenialNumber() + 1);
+					appStatus.setDenialNumber(appStatus.getDenialNumber() + add);
 					break;
 				case 2://承認状況＝差戻
 					//差戻件数に＋１する
-					appStatus.setRemandNumner(appStatus.getRemandNumner() + 1);
+					appStatus.setRemandNumner(appStatus.getRemandNumner() + add);
 					break;
 				case 3://承認状況＝取消
 					//取消件数に＋１する
-					appStatus.setCancelNumber(appStatus.getCancelNumber() + 1);
+					appStatus.setCancelNumber(appStatus.getCancelNumber() + add);
 					break;
 				case 4://承認状況＝承認済み/反映済み
 					if(StringUtil.isNullOrEmpty(appFull.getAgentId(), true) || appFull.getAgentId().equals(sID)){//代行者＝未登録　または　代行者＝ログインID
-						appStatus.setApprovalNumber(appStatus.getApprovalNumber() + 1);
+						appStatus.setApprovalNumber(appStatus.getApprovalNumber() + add);
 					}else{//代行者≠ログインID
-						appStatus.setApprovalAgentNumber(appStatus.getApprovalAgentNumber() + 1);
+						appStatus.setApprovalAgentNumber(appStatus.getApprovalAgentNumber() + add);
 					}
 					break;
 				case 5://承認状況＝未
 					//未承認件数に＋１する
-					appStatus.setUnApprovalNumber(appStatus.getUnApprovalNumber() + 1);
+					appStatus.setUnApprovalNumber(appStatus.getUnApprovalNumber() + add);
 					break;
 				default:
 					break;
@@ -621,12 +629,19 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		return new AppInfoStatus(lstAppFull, appStatus);
 	}
-
+	private boolean checkSync(List<AppCompltLeaveSync> lstSync, String appId){
+		for (AppCompltLeaveSync appSync : lstSync) {
+			if(appSync.getAppMain().getAppID().equals(appId)){
+				return true;
+			}
+		}
+		return false;
+	}
 	/**
 	 * 5 - 申請一覧リスト取得実績
 	 */
 	@Override
-	public AppListAtrOutput getAppListAchievement(List<ApplicationFullOutput> lstAppFull, ApprovalListDisplaySetting displaySet, String companyId, String sIDLogin) {
+	public AppListAtrOutput getAppListAchievement(List<ApplicationFullOutput> lstAppFull, ApprovalListDisplaySetting displaySet, String companyId, String sIDLogin, List<AppCompltLeaveSync> lstSync) {
 		List<ApplicationFullOutput> lstOtPost = lstAppFull.stream().filter(c -> c.getApplication().isAppOverTime())
 				.filter(c->c.getApplication().getPrePostAtr().equals(PrePostAtr.POSTERIOR))
 				.collect(Collectors.toList());
@@ -648,6 +663,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				String reasonAppPre = "";
 				if(displaySet.getOtAdvanceDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
 					//ドメインモデル「申請」を取得する
+					//※2018/04/17
+					//複数存在する場合は、最後に新規登録された内容を対象とする
 					List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr.PREDICT.value, ApplicationType.OVER_TIME_APPLICATION.value);
 					if(lstAppPre.isEmpty()){
 //						lstColorTime.add(new CheckColorTime(appID, 1));
@@ -779,7 +796,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 //			this.getListAppAbsence(appDif);
 //		}
 		//アルゴリズム「申請一覧リスト取得承認件数」を実行する(countAppListApproval): 4 -   申請一覧リスト取得承認件数
-		AppInfoStatus appStatus = this.countAppListApproval(lstAppFull, sIDLogin);
+		AppInfoStatus appStatus = this.countAppListApproval(lstAppFull, sIDLogin, lstSync);
 		// TODO Auto-generated method stub
 		return new AppListAtrOutput(appStatus.getLstAppFull(), appStatus.getCount(), lstColorTime, lstAppGroup);
 	}
@@ -1158,6 +1175,12 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		FrameOutput statusFrame = new FrameOutput();
 		for (ApprovalFrameImport_New frame : lstFrame) {
 			if(this.checkExistEmp(frame.getListApprover(), sID)){
+				statusFrame.setFrameStatus(frame.getApprovalAtr().value);
+				statusFrame.setAgentId(frame.getRepresenterID());
+				break;
+			}
+			//TH login la agent va da approval
+			if(frame.getRepresenterID() != null && frame.getRepresenterID().equals(sID)){
 				statusFrame.setFrameStatus(frame.getApprovalAtr().value);
 				statusFrame.setAgentId(frame.getRepresenterID());
 				break;

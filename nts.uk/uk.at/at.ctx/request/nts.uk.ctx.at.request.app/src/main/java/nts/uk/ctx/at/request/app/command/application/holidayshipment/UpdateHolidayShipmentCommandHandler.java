@@ -25,7 +25,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Wor
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentWorkingHour;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTimeCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -83,7 +83,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 			Optional<AbsenceLeaveApp> absAppOpt = this.absRepo.findByID(appCmd.getAppID());
 			if (absAppOpt.isPresent()) {
 				AbsenceLeaveApp absApp = absAppOpt.get();
-				absApp.setWorkTimeCD(new WorkTimeCode(appCmd.getWkTypeCD()));
+				absApp.setWorkTimeCD(new WorkTimeCode(appCmd.getWkTimeCD()));
 				WkTimeCommand wkTime1 = appCmd.getWkTime1();
 				absApp.setWorkTime1(new AbsenceLeaveWorkingHour(new WorkTime(wkTime1.getStartTime()),
 						new WorkTime(wkTime1.getEndTime())));
@@ -119,7 +119,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 			Optional<RecruitmentApp> recAppOpt = this.recRepo.findByID(appCmd.getAppID());
 			if (recAppOpt.isPresent()) {
 				RecruitmentApp recApp = recAppOpt.get();
-				recApp.setWorkTimeCD(new WorkTimeCode(appCmd.getWkTypeCD()));
+				recApp.setWorkTimeCD(new WorkTimeCode(appCmd.getWkTimeCD()));
 				WkTimeCommand wkTime1 = appCmd.getWkTime1();
 				recApp.setWorkTime1(new RecruitmentWorkingHour(new WorkTime(wkTime1.getStartTime()),
 						EnumAdaptor.valueOf(wkTime1.getStartType(), NotUseAtr.class),

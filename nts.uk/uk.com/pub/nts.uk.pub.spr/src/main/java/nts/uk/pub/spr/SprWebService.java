@@ -19,7 +19,7 @@ import nts.uk.pub.spr.dailystatus.SprDailyStatusService;
 import nts.uk.pub.spr.login.SprLoginFormService;
 import nts.uk.pub.spr.login.output.LoginUserContextSpr;
 
-@Path("public/spr")
+@Path("public/spr_") // <- plz fix when discard SptWebServiceStub
 public class SprWebService {
 	
 	@Inject

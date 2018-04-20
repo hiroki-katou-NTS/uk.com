@@ -287,7 +287,7 @@ public class ScheBatchCorrectExecutionCommandHandler
 	 * @param baseDate
 	 * @return
 	 */
-	private Optional<String> checkClosePeriod(String companyId, String employeeId, GeneralDate baseDate) {
+	public Optional<String> checkClosePeriod(String companyId, String employeeId, GeneralDate baseDate) {
 		/**
 		 * 特定の日付の締めを取得する
 		 */

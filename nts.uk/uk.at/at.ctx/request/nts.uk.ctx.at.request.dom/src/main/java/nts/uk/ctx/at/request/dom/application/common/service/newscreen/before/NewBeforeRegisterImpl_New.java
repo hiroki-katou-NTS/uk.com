@@ -81,7 +81,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 			
 			// 登録する期間のチェック
 			//((TimeSpan)(申請する終了日 - 申請する開始日)).Days > 31がtrue
-			if(ChronoUnit.DAYS.between(startDate.localDate(), endDate.localDate()) > 31){
+			if((ChronoUnit.DAYS.between(startDate.localDate(), endDate.localDate()) + 1)  > 31){
 				throw new BusinessException("Msg_277");
 			}
 			// 登録可能期間のチェック(１年以内)

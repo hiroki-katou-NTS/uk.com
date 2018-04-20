@@ -136,7 +136,7 @@ public class AppOvertimeFinder {
 	 * @param uiType
 	 * @return
 	 */
-	public OverTimeDto getOvertimeByUIType(String url,String appDate,int uiType){
+	public OverTimeDto getOvertimeByUIType(String url,String appDate,int uiType,Integer timeStart1,Integer timeEnd1,String reasonContent){
 		
 		OverTimeDto result = new OverTimeDto();
 		ApplicationDto_New applicationDto = new ApplicationDto_New();

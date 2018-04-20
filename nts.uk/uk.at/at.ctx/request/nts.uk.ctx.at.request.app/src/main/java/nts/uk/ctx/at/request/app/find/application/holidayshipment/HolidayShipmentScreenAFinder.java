@@ -17,9 +17,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeSetDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.ChangeWorkTypeDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
@@ -89,7 +89,7 @@ public class HolidayShipmentScreenAFinder {
 	@Inject
 	private StartupErrorCheckService startupErrorCheckService;
 	@Inject
-	private WorkplaceAdapter wpAdapter;
+	private WorkplaceAdapter wkPlaceAdapter;
 	@Inject
 	private EmpSubstVacationRepository empSubrepo;
 	@Inject
@@ -122,6 +122,8 @@ public class HolidayShipmentScreenAFinder {
 	private BasicScheduleService basicService;
 	@Inject
 	private RequestSettingRepository reqSetRepo;
+	@Inject
+	private WorkTimeSettingRepository wkTimeSetRepo;
 	ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 	AppCommonSettingOutput appCommonSettingOutput;
 	RecruitmentApp recApp;
@@ -140,89 +142,111 @@ public class HolidayShipmentScreenAFinder {
 	 * @return HolidayShipmentDto
 	 */
 	// Screen A Start
-	public HolidayShipmentDto startPage(String employeeID, GeneralDate initDate, int uiType) {
+	public HolidayShipmentDto startPageA(String employeeID, GeneralDate initDate, int uiType) {
 		employeeID = employeeID == null ? AppContexts.user().employeeId() : employeeID;
 		String companyID = AppContexts.user().companyId();
 		// アルゴリズム「起動前共通処理（新規）」を実行する
-		HolidayShipmentDto output = commonProcessBeforeStart(appType, companyID, employeeID, initDate);
+		HolidayShipmentDto result = commonProcessBeforeStart(appType, companyID, employeeID, initDate);
 
-		GeneralDate refDate = output.getRefDate();
+		GeneralDate refDate = result.getRefDate();
 
 		// アルゴリズム「事前事後区分の判断」を実行する
-		output.setPreOrPostType(
+		result.setPreOrPostType(
 				otherCommonAlgorithm.judgmentPrePostAtr(appType, refDate, uiType == 0 ? true : false).value);
 
 		// アルゴリズム「平日時就業時間帯の取得」を実行する
-		PersonalLaborCondition perLaborCond = getWorkingHourOnWeekDays(employeeID, refDate);
-		String wkTimeCD = null;
-		if (perLaborCond != null) {
-			Optional<WorkTimeCode> WorkTimeCodeOpt = perLaborCond.getWorkCategory().getWeekdayTime().getWorkTimeCode();
-			wkTimeCD = WorkTimeCodeOpt.isPresent() ? WorkTimeCodeOpt.get().v() : "";
-		}
+		PersonalLaborCondition perLaborCondition = getWorkingHourOnWeekDays(employeeID, refDate);
+
+		String wkTimeCD = getWkTimeCD(perLaborCondition);
+
 		GeneralDate appDate, deadDate;
+
 		String takingOutWkTypeCD, takingOutWkTimeCD, holiDayWkTypeCD, holidayWkTimeCD;
+
 		appDate = deadDate = null;
+
 		takingOutWkTypeCD = takingOutWkTimeCD = holiDayWkTypeCD = holidayWkTimeCD = null;
+
 		// アルゴリズム「振休振出申請起動時の共通処理」を実行する
 		commonProcessAtStartup(companyID, employeeID, refDate, appDate, takingOutWkTypeCD, takingOutWkTimeCD, deadDate,
-				holiDayWkTypeCD, holidayWkTimeCD, output, appCommonSettingOutput);
+				holiDayWkTypeCD, holidayWkTimeCD, result, appCommonSettingOutput);
 		// アルゴリズム「勤務時間初期値の取得」を実行する
 		if (wkTimeCD != null) {
-			String wkTypeCD = output.getRecWkTypes().size() > 0 ? output.getRecWkTypes().get(0).getWorkTypeCode() : "";
-			if (!wkTypeCD.equals("")) {
-				output.setChangeWkType(getWkTimeInitValue(companyID, wkTypeCD, wkTimeCD));
+			String wkTypeCD = result.getRecWkTypes().size() > 0 ? result.getRecWkTypes().get(0).getWorkTypeCode() : "";
+			if (StringUtils.isNoneEmpty(wkTypeCD)) {
+				result.setWorkTimeInfo(getWkTimeInfoInitValue(companyID, wkTypeCD, wkTimeCD));
 			}
 
 		}
 
-		return output;
+		return result;
 	}
 
-	public ChangeWorkTypeDto changeWorkType(String workTypeCD, String wkTimeCD) {
+	public WorkTimeInfoDto changeWorkType(String workTypeCD, String wkTimeCD) {
 		String companyID = AppContexts.user().companyId();
-		return getWkTimeInitValue(companyID, workTypeCD, wkTimeCD);
+		return getWkTimeInfoInitValue(companyID, workTypeCD, wkTimeCD);
 
 	}
 
-	public HolidayShipmentDto changeDay(GeneralDate recDate, GeneralDate absDate, int comType, int uiType) {
+	public HolidayShipmentDto changeAppDate(GeneralDate recDate, GeneralDate absDate, int comType, int uiType) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		GeneralDate baseDate = comType == ApplicationCombination.Abs.value ? absDate : recDate;
-		// アルゴリズム「実績の取得」を実行する
+
 		HolidayShipmentDto output = commonProcessBeforeStart(appType, companyID, employeeID, baseDate);
 		// AchievementOutput achievementOutput = getAchievement(companyID,
 		// employeeID, baseDate);
-
-		changeAppDate(recDate, absDate, companyID, employeeID, uiType, output);
+		// アルゴリズム「実績の取得」を実行する
+		setChangeAppDateData(recDate, absDate, companyID, employeeID, uiType, output);
 
 		return output;
 	}
 
-	private void changeAppDate(GeneralDate recDate, GeneralDate absDate, String companyID, String employeeID,
+	private String getWkTimeCD(PersonalLaborCondition perLaborCondition) {
+		if (perLaborCondition != null) {
+			Optional<WorkTimeCode> wkTimeCodeOpt = perLaborCondition.getWorkCategory().getWeekdayTime()
+					.getWorkTimeCode();
+
+			if (wkTimeCodeOpt.isPresent()) {
+
+				return wkTimeCodeOpt.get().v();
+
+			} else {
+
+				return "";
+			}
+
+		} else {
+			return "";
+		}
+	}
+
+	private void setChangeAppDateData(GeneralDate recDate, GeneralDate absDate, String companyID, String employeeID,
 			int uiType, HolidayShipmentDto output) {
 		// アルゴリズム「基準申請日の決定」を実行する
-		GeneralDate baseDate = DetRefDate(recDate, absDate);
+		GeneralDate referenceDate = DetRefDate(recDate, absDate);
 		int rootAtr = EmploymentRootAtr.APPLICATION.value;
 		AppCommonSettingOutput appCommonSet = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID,
-				employeeID, rootAtr, ApplicationType.BREAK_TIME_APPLICATION, baseDate);
+				employeeID, rootAtr, appType, referenceDate);
 
 		ApplicationSetting appSet = appCommonSet.applicationSetting;
 		// 承認ルート基準日をチェックする
 		GeneralDate inputDate;
-		if (appSet.getBaseDateFlg().equals(BaseDateFlg.APP_DATE)) {
-			// アルゴリズム「社員の対象申請の承認ルートを取得する」を実行する
-			inputDate = baseDate;
+		if (!appSet.getBaseDateFlg().equals(BaseDateFlg.APP_DATE)) {
+
+			inputDate = referenceDate;
 		} else {
 			inputDate = GeneralDate.today();
 		}
+		// アルゴリズム「社員の対象申請の承認ルートを取得する」を実行する
 		List<ApprovalRootImport> approvalRoots = rootAdapter.getApprovalRootOfSubjectRequest(companyID, employeeID,
-				rootAtr, appType.value, baseDate);
+				rootAtr, appType.value, referenceDate);
 
 		// アルゴリズム「基準日別設定の取得」を実行する
 		getDateSpecificSetting(companyID, employeeID, inputDate, true, null, null, null, null, appCommonSet, output);
 		// アルゴリズム「事前事後区分の最新化」を実行する
 		output.setPreOrPostType(
-				otherCommonAlgorithm.judgmentPrePostAtr(appType, baseDate, uiType == 0 ? true : false).value);
+				otherCommonAlgorithm.judgmentPrePostAtr(appType, referenceDate, uiType == 0 ? true : false).value);
 
 		output.setRefDate(inputDate);
 
@@ -252,21 +276,26 @@ public class HolidayShipmentScreenAFinder {
 
 	}
 
-	private ChangeWorkTypeDto getWkTimeInitValue(String companyID, String wkTypeCD, String wkTimeCode) {
+	private WorkTimeInfoDto getWkTimeInfoInitValue(String companyID, String wkTypeCode, String wkTimeCode) {
 		// ドメインモデル「勤務種類」を取得する
-		ChangeWorkTypeDto result = new ChangeWorkTypeDto();
+		WorkTimeInfoDto result = new WorkTimeInfoDto();
 
-		Optional<WorkType> WkTypeOpt = wkTypeRepo.findByPK(companyID, wkTypeCD);
-		if (WkTypeOpt.isPresent()) {
+		Optional<WorkType> wkTypeOpt = wkTypeRepo.findByPK(companyID, wkTypeCode);
+		if (wkTypeOpt.isPresent()) {
 
-			WorkType wkType = WkTypeOpt.get();
+			WorkType wkType = wkTypeOpt.get();
 			result.setWkType(WorkTypeDto.fromDomain(wkType));
 			// アルゴリズム「1日半日出勤・1日休日系の判定」を実行する
-			basicService.checkWorkDay(wkTypeCD);
-			if (!wkType.getAttendanceHolidayAttr().equals(AttendanceHolidayAttr.HOLIDAY)) {
+			basicService.checkWorkDay(wkTypeCode);
+			AttendanceHolidayAttr wkTypeAttendance = wkType.getAttendanceHolidayAttr();
+
+			if (!wkTypeAttendance.equals(AttendanceHolidayAttr.HOLIDAY)) {
+
 				// アルゴリズム「所定時間帯を取得する」を実行する
-				result.setTimezoneUseDtos(getPreTimeZone(companyID, wkTimeCode, wkType).stream()
-						.map(x -> TimeZoneUseDto.fromDomain(x)).collect(Collectors.toList()));
+				List<TimezoneUse> timeZones = getTimeZones(companyID, wkTimeCode, wkTypeAttendance);
+
+				result.setTimezoneUseDtos(
+						timeZones.stream().map(x -> TimeZoneUseDto.fromDomain(x)).collect(Collectors.toList()));
 
 			}
 
@@ -276,34 +305,40 @@ public class HolidayShipmentScreenAFinder {
 	}
 
 	@SuppressWarnings("incomplete-switch")
-	private List<TimezoneUse> getPreTimeZone(String companyID, String wkTimeCode, WorkType wkType) {
+	private List<TimezoneUse> getTimeZones(String companyID, String wkTimeCode,
+			AttendanceHolidayAttr wkTypeAttendance) {
+
+		List<TimezoneUse> timeZones = new ArrayList<TimezoneUse>();
+
 		Optional<WorkTimeSetting> workTimeOpt = wkTimeRepo.findByCode(companyID, wkTimeCode);
-		List<TimezoneUse> result = new ArrayList<TimezoneUse>();
+
 		if (workTimeOpt.isPresent()) {
-			WorkTimeSetting workTimeSet = workTimeOpt.get();
-			Optional<PredetemineTimeSetting> preTimeSetOpt = preTimeSetRepo.findByWorkTimeCode(companyID,
-					workTimeSet.getWorktimeCode().v());
+
+			wkTimeCode = workTimeOpt.get().getWorktimeCode().v();
+
+			Optional<PredetemineTimeSetting> preTimeSetOpt = preTimeSetRepo.findByWorkTimeCode(companyID, wkTimeCode);
+
 			if (preTimeSetOpt.isPresent()) {
 
 				PredetemineTimeSetting preTimeSet = preTimeSetOpt.get();
 
-				List<TimezoneUse> timezones = preTimeSet.getPrescribedTimezoneSetting().getLstTimezone();
-				switch (wkType.getAttendanceHolidayAttr()) {
+				List<TimezoneUse> timeZonesInPreTimeSet = preTimeSet.getPrescribedTimezoneSetting().getLstTimezone();
+				switch (wkTypeAttendance) {
 				case MORNING:
-					timezones.stream().forEach(
+					timeZonesInPreTimeSet.stream().forEach(
 							x -> x.updateEndTime(preTimeSet.getPrescribedTimezoneSetting().getMorningEndTime()));
 					break;
 				case AFTERNOON:
-					timezones.stream().forEach(
+					timeZonesInPreTimeSet.stream().forEach(
 							x -> x.updateStartTime(preTimeSet.getPrescribedTimezoneSetting().getAfternoonStartTime()));
 					break;
 				}
 
-				result = timezones;
+				timeZones = timeZonesInPreTimeSet;
 			}
 
 		}
-		return result;
+		return timeZones;
 	}
 
 	public void commonProcessAtStartup(String companyID, String employeeID, GeneralDate refDate, GeneralDate recDate,
@@ -314,10 +349,12 @@ public class HolidayShipmentScreenAFinder {
 		if (withDrawalReqSetOpt.isPresent()) {
 			output.setDrawalReqSet(WithDrawalReqSetDto.fromDomain(withDrawalReqSetOpt.get()));
 		}
+
 		// アルゴリズム「振休振出申請定型理由の取得」を実行する
 
-		output.setAppReasons(appResonRepo.getReasonByCompanyId(companyID).stream()
+		output.setAppReasonComboItems(appResonRepo.getReasonByCompanyId(companyID).stream()
 				.map(x -> ApplicationReasonDto.convertToDto(x)).collect(Collectors.toList()));
+
 		// アルゴリズム「基準日別設定の取得」を実行する
 		getDateSpecificSetting(companyID, employeeID, refDate, false, recWkTypeCD, recWkTimeCD, absWkTypeCD,
 				absWkTimeCD, appSetOutput, output);
@@ -338,10 +375,10 @@ public class HolidayShipmentScreenAFinder {
 	}
 
 	public void getDateSpecificSetting(String companyID, String employeeID, GeneralDate refDate, boolean getSetting,
-			String recWkTypeCD, String recWkTimeCode, String absWkTypeCD, String absWkTimeCD,
+			String recWkTypeCD, String recWkTimeCode, String absWkTypeCD, String absWkTimeCode,
 			AppCommonSettingOutput appCommonSet, HolidayShipmentDto output) {
 		// Imported(就業.shared.組織管理.社員情報.所属雇用履歴)「所属雇用履歴」を取得する
-		Optional<EmploymentHistoryImported> empImpOpt = wpAdapter.getEmpHistBySid(companyID, employeeID, refDate);
+		Optional<EmploymentHistoryImported> empImpOpt = wkPlaceAdapter.getEmpHistBySid(companyID, employeeID, refDate);
 		// アルゴリズム「所属職場を含む上位職場を取得」を実行する
 		List<String> wpkIds = empAdaptor.findWpkIdsBySid(companyID, employeeID, refDate);
 		if (empImpOpt.isPresent()) {
@@ -373,14 +410,50 @@ public class HolidayShipmentScreenAFinder {
 			// アルゴリズム「振出用勤務種類の取得」を実行する
 			output.setRecWkTypes(
 					getWorkTypeFor(companyID, employmentCD, recWkTypeCD, appCommonSet, BreakOutType.WORKING_DAY)
-							.stream().map(x -> WorkTypeDto.fromDomainWorkTypeLanguage(x)).collect(Collectors.toList()));
+							.stream().map(x -> WorkTypeDto.fromDomain(x)).collect(Collectors.toList()));
 
 			// INPUT.振出就業時間帯コード＝設定なし
 			// アルゴリズム「振休用勤務種類の取得」を実行する
 			output.setAbsWkTypes(
 					getWorkTypeFor(companyID, employmentCD, absWkTypeCD, appCommonSet, BreakOutType.HOLIDAY).stream()
-							.map(x -> WorkTypeDto.fromDomainWorkTypeLanguage(x)).collect(Collectors.toList()));
+							.map(x -> WorkTypeDto.fromDomain(x)).collect(Collectors.toList()));
 			// INPUT.振休就業時間帯コード＝設定なし
+		}
+
+		// アルゴリズム「選択済の就業時間帯の取得」を実行する rec
+
+		setSelectedWkHourInfo(companyID, recWkTimeCode, output.getRecApp());
+		// アルゴリズム「選択済の就業時間帯の取得」を実行する abs
+
+		setSelectedWkHourInfo(companyID, absWkTimeCode, output.getAbsApp());
+
+	}
+
+	private void setSelectedWkHourInfo(String companyID, String wkTimeCode, HolidayShipmentAppDto appDto) {
+		// アルゴリズム「就業時間帯表示情報（単体）の取得」を実行する
+		if (wkTimeCode != null && appDto != null) {
+			setWkTimeZoneDisplayInfo(companyID, wkTimeCode, true, appDto);
+		}
+
+	}
+
+	private void setWkTimeZoneDisplayInfo(String companyID, String wkTimeCode, boolean isGetHiddenItems,
+			HolidayShipmentAppDto appDto) {
+		if (isGetHiddenItems) {
+			Optional<WorkTimeSetting> wkTimeOpt = this.wkTimeSetRepo.findByCode(companyID, wkTimeCode);
+
+			if (wkTimeOpt.isPresent()) {
+
+				appDto.updateFromWkTimeSet(wkTimeOpt.get());
+
+				wkTimeCode = wkTimeOpt.get().getWorktimeCode().v();
+
+				Optional<PredetemineTimeSetting> preTimeSetOpt = preTimeSetRepo.findByWorkTimeCode(companyID,
+						wkTimeCode);
+				if (preTimeSetOpt.isPresent()) {
+					appDto.updateFromPreTimeSet(preTimeSetOpt.get());
+				}
+			}
 		}
 
 	}
@@ -431,7 +504,7 @@ public class HolidayShipmentScreenAFinder {
 		boolean masterUnregistered = true;
 
 		Optional<WorkType> WkTypeOpt = wkTypeRepo.findByPK(companyID, wkTypeCD);
-		if (WkTypeOpt.isPresent()) {
+		if (WkTypeOpt.isPresent() && !wkTypes.contains((WkTypeOpt.get()))) {
 			wkTypes.add(WkTypeOpt.get());
 			masterUnregistered = false;
 
@@ -442,7 +515,10 @@ public class HolidayShipmentScreenAFinder {
 
 	private List<WorkType> extractTargetWkTypes(String companyID, String employmentCode, int breakOutType,
 			List<WorkType> wkTypes, AppCommonSettingOutput appCommonSet) {
+
+		// ドメインモデル「申請別対象勤務種類」を取得する
 		Optional<AppEmploymentSetting> empSetOpt = appCommonSet.appEmploymentWorkType.stream()
+				.filter(x -> x.getEmploymentCode().equals(employmentCode))
 				.filter(x -> x.getHolidayOrPauseType() == breakOutType).findFirst();
 		if (empSetOpt.isPresent()) {
 			AppEmploymentSetting empSet = empSetOpt.get();
@@ -507,7 +583,7 @@ public class HolidayShipmentScreenAFinder {
 				approvalRootPattern.getApprovalRootContentImport());
 		// アルゴリズム「振休管理チェック」を実行する
 		// Imported(就業.shared.組織管理.社員情報.所属雇用履歴)「所属雇用履歴」を取得する
-		Optional<EmploymentHistoryImported> empImpOpt = wpAdapter.getEmpHistBySid(companyID, employeeID, baseDate);
+		Optional<EmploymentHistoryImported> empImpOpt = wkPlaceAdapter.getEmpHistBySid(companyID, employeeID, baseDate);
 		if (empImpOpt.isPresent()) {
 			// アルゴリズム「振休管理設定の取得」を実行する
 			EmploymentHistoryImported empImp = empImpOpt.get();
@@ -529,175 +605,5 @@ public class HolidayShipmentScreenAFinder {
 		}
 		return result;
 	}
-	// Screen A End
 
-	// Screen B Start
-	// public HolidayShipmentDto findByID(String applicationID) {
-	// output = new HolidayShipmentDto();
-	// companyID = AppContexts.user().companyId();
-	// String employeeID = AppContexts.user().employeeId();
-	// boolean isRecApp = isRecApp(applicationID);
-	// // 14-1.詳細画面起動前申請共通設定を取得する
-	// Optional<Application_New> appOutputOpt = appRepo.findByID(companyID,
-	// applicationID);
-	// // 14-2.詳細画面起動前モードの判断
-	// if (appOutputOpt.isPresent()) {
-	// Application_New appOutput = appOutputOpt.get();
-	//
-	// output.setApplication(ApplicationDto_New.fromDomain(appOutput));
-	// DetailedScreenPreBootModeOutput bootOutput =
-	// bootMode.judgmentDetailScreenMode(companyID, employeeID,
-	// applicationID, appOutput.getAppDate());
-	//
-	// if (bootOutput != null) {
-	// // 14-3.詳細画面の初期モード
-	// Optional<ApplicationSetting> appSetOpt =
-	// appSetRepo.getApplicationSettingByComID(companyID);
-	// if (appSetOpt.isPresent()) {
-	// ApplicationSetting appSet = appSetOpt.get();
-	// output.setApplicationSetting(ApplicationSettingDto.convertToDto(appSet));
-	// }
-	// if (isRecApp) {
-	// // 申請＝振出申請
-	// // アルゴリズム「振出申請に対応する振休情報の取得」を実行する
-	// getRecApp(applicationID);
-	//
-	// } else {
-	// // 申請＝振休申請
-	// // アルゴリズム「振休申請に対応する振出情報の取得」を実行する
-	// getAbsApp(applicationID);
-	// }
-	// // アルゴリズム「基準申請日の決定」を実行する
-	//
-	// GeneralDate recAppDate = recAppOutput != null ? recAppOutput.getAppDate()
-	// : null;
-	// GeneralDate absAppDate = absAppOutput != null ? absAppOutput.getAppDate()
-	// : null;
-	// GeneralDate refDate = HolidayShipmentFinder.DetRefDate(recAppDate,
-	// absAppDate);
-	// // アルゴリズム「振休振出申請起動時の共通処理」を実行する
-	// commonProcessAtStartup(employeeID, employeeID, refDate, recAppDate,
-	// recApp.getWorkTypeCD(),
-	// recApp.getWorkTimeCD().v(), absAppDate, absApp.getWorkTypeCD(),
-	// absApp.getWorkTimeCD().v(),
-	// output);
-	//
-	// }
-	// }
-	//
-	// return output;
-	//
-	// }
-	//
-	// private void getAbsApp(String applicationID) {
-	// // アルゴリズム「振休申請に同期された振出申請の取得」を実行する
-	// SyncState syncState = getCompltLeaveSimMngFromAbsID(applicationID);
-	// if (syncState.equals(SyncState.SYNCHRONIZING)) {
-	// // アルゴリズム「振休申請と関連付けた振出情報の取得」を実行する
-	// absApp.getSubDigestions().forEach(x -> {
-	// if (x.getPayoutMngDataID() != null) {
-	// // TODO Imported(就業.申請承認.休暇残数.振出振休)「振出情報」を取得する chưa có ai
-	// // làm domain 振出データID指定
-	// } else {
-	// // TODO Imported(就業.申請承認.休暇残数.振出振休)「振出情報」を取得する chưa có ai
-	// // làm domain 暫定振出管理データ
-	//
-	// }
-	// });
-	//
-	// }
-	// }
-	//
-	// private SyncState getCompltLeaveSimMngFromAbsID(String applicationID) {
-	// // ドメインモデル「振休振出同時申請管理」を1件取得する
-	// SyncState result = SyncState.ASYNCHRONOUS;
-	// Optional<CompltLeaveSimMng> CompltLeaveSimMngOpt =
-	// CompLeaveRepo.findByRecID(applicationID);
-	// if (CompltLeaveSimMngOpt.isPresent()) {
-	// CompltLeaveSimMng compltLeaveSimMng = CompltLeaveSimMngOpt.get();
-	// result = compltLeaveSimMng.getSyncing();
-	// Optional<RecruitmentApp> recAppOpt =
-	// recRepo.findByID(compltLeaveSimMng.getRecAppID());
-	// if (recAppOpt.isPresent()) {
-	// setRecApp(recAppOpt.get());
-	// } else {
-	//
-	// throw new BusinessException("");
-	// }
-	//
-	// }
-	// return result;
-	// }
-	//
-	// private void getRecApp(String applicationID) {
-	// // アルゴリズム「振出申請に同期された振休申請の取得」を実行する
-	// SyncState syncState = getCompltLeaveSimMngFromRecID(applicationID);
-	// if (syncState.equals(SyncState.SYNCHRONIZING)) {
-	// // アルゴリズム「振出日に関連付いた振休情報の取得」を実行する
-	// // TODO chưa có ai làm domain 暫定振出管理データ
-	// }
-	//
-	// }
-	//
-	// private SyncState getCompltLeaveSimMngFromRecID(String applicationID) {
-	// // ドメインモデル「振休振出同時申請管理」を1件取得する
-	// SyncState result = SyncState.ASYNCHRONOUS;
-	// Optional<CompltLeaveSimMng> CompltLeaveSimMngOpt =
-	// CompLeaveRepo.findByRecID(applicationID);
-	// if (CompltLeaveSimMngOpt.isPresent()) {
-	// CompltLeaveSimMng compltLeaveSimMng = CompltLeaveSimMngOpt.get();
-	// result = compltLeaveSimMng.getSyncing();
-	// Optional<AbsenceLeaveApp> absAppOpt =
-	// absRepo.findByID(compltLeaveSimMng.getAbsenceLeaveAppID());
-	// if (absAppOpt.isPresent()) {
-	// setAbsApp(absAppOpt.get());
-	//
-	// } else {
-	//
-	// throw new BusinessException("");
-	// }
-	//
-	// }
-	// return result;
-	//
-	// }
-	//
-	// private boolean isRecApp(String applicationID) {
-	// boolean result = false;
-	// Optional<RecruitmentApp> recAppOpt = recRepo.findByID(applicationID);
-	// if (recAppOpt.isPresent()) {
-	// setRecApp(recAppOpt.get());
-	//
-	// result = true;
-	//
-	// } else {
-	// Optional<AbsenceLeaveApp> absAppOpt = absRepo.findByID(applicationID);
-	// if (absAppOpt.isPresent()) {
-	// setAbsApp(absAppOpt.get());
-	// }
-	//
-	// }
-	// return result;
-	//
-	// }
-	//
-	// private void setRecApp(RecruitmentApp recruitmentApp) {
-	//
-	// recApp = recruitmentApp;
-	// recAppOutput = detailService.getDetailAppCommonSet(companyID,
-	// recruitmentApp.getAppID());
-	// output.setRecApp(RecruitmentAppDto.fromDomain(recruitmentApp,
-	// recAppOutput.getAppDate()));
-	//
-	// }
-	//
-	// private void setAbsApp(AbsenceLeaveApp absenceLeaveApp) {
-	// absApp = absenceLeaveApp;
-	// absAppOutput = detailService.getDetailAppCommonSet(companyID,
-	// absenceLeaveApp.getAppID());
-	// output.setAbsApp(AbsenceLeaveAppDto.fromDomain(absenceLeaveApp,
-	// absAppOutput.getAppDate()));
-	//
-	// }
-	// Screen B End
 }

@@ -33,6 +33,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 @Getter
 public class IntegrationOfDaily {
 	//日別実績の勤務情報
+	@Setter
 	private WorkInfoOfDailyPerformance workInformation;
 	//日別実績の計算区分
 	@Setter
@@ -57,6 +58,7 @@ public class IntegrationOfDaily {
 	//日別実績の作業別勤怠時間
 	private Optional<AttendanceTimeByWorkOfDaily> attendancetimeByWork;
 	//日別実績の出退勤
+	@Setter
 	private Optional<TimeLeavingOfDailyPerformance> attendanceLeave;
 	//日別実績の短時間勤務時間帯
 	@Setter
@@ -68,6 +70,7 @@ public class IntegrationOfDaily {
 	//日別実績の任意項目
 	private Optional<AnyItemValueOfDaily> anyItemValue;
 	//日別実績の編集状態
+	@Setter
 	private List<EditStateOfDailyPerformance> editState;
 	//日別実績の臨時出退勤
 	private Optional<TemporaryTimeOfDailyPerformance> tempTime;
@@ -119,7 +122,6 @@ public class IntegrationOfDaily {
 		this.editState = editState;
 		this.tempTime = tempTime;
 	}
-	
 	
 	
 	/**

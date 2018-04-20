@@ -36,6 +36,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveWorkingHour;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTime;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTimeCode;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
@@ -60,7 +61,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -147,20 +147,20 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 				RegRecApp(command);
 			}
 			if (isSaveAbs()) {
-				RegAbsenceLeaveApp(command);
+				RegAbsApp(command);
 			}
 
 		}
 	}
 
-	private void RegAbsenceLeaveApp(SaveHolidayShipmentCommand command) {
-		String wkTypeCD = command.getRecCmd().getWkTypeCD();
+	private void RegAbsApp(SaveHolidayShipmentCommand command) {
+		String wkTypeCD = command.getAbsCmd().getWkTypeCD();
 		// アルゴリズム「振休消化管理データ更新と消化対象の決定」を実行する
 		updateDigestionTarget(command);
 		// アルゴリズム「代休消化管理データ更新と消化対象の決定」を実行する
 		updateOfSubstitution(command, wkTypeCD);
 		// ドメイン「振休申請」を1件登録する
-		createNewAbsenceLeaveApp(command);
+		createNewAbsApp(command);
 
 	}
 
@@ -228,7 +228,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 		String recAppID = createNewRecApp(command);
 
-		String absAppID = createNewAbsenceLeaveApp(command);
+		String absAppID = createNewAbsApp(command);
 		// ドメイン「振休振出同時申請管理」を1件登録する
 		createNewComLeaveSilMng(recAppID, absAppID);
 
@@ -240,7 +240,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 	}
 
-	private String createNewAbsenceLeaveApp(SaveHolidayShipmentCommand command) {
+	private String createNewAbsApp(SaveHolidayShipmentCommand command) {
 		Application_New absApplication = Application_New.firstCreate(companyID,
 				EnumAdaptor.valueOf(command.getAppCmd().getPrePostAtr(), PrePostAtr.class), absDate, appType, sID,
 				new AppReason(appReason));
@@ -257,8 +257,8 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 				new WorkTime(wkTime2Cmd.getEndTime()));
 		AbsenceLeaveApp absApp = new AbsenceLeaveApp(absAppID, absAppCmd.getWkTypeCD(),
 				EnumAdaptor.valueOf(absAppCmd.getChangeWorkHoursType(), NotUseAtr.class),
-				new WorkTimeCode(absAppCmd.getWkTimeCD()), workTime1, workTime2, Collections.emptyList(),
-				Collections.emptyList());
+				absAppCmd.getWkTimeCD() == null ? null : new WorkTimeCode(absAppCmd.getWkTimeCD()), workTime1,
+				workTime2, Collections.emptyList(), Collections.emptyList());
 		appImp.insert(absApplication);
 		absRepo.insert(absApp);
 		// アルゴリズム「新規画面登録時承認反映情報の整理」を実行する
@@ -285,11 +285,11 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 				new RecruitmentWorkingHour(new WorkTime(wkTime1Cmd.getStartTime()),
 						EnumAdaptor.valueOf(wkTime1Cmd.getStartType(), NotUseAtr.class),
 						new WorkTime(wkTime1Cmd.getEndTime()),
-						EnumAdaptor.valueOf(wkTime1Cmd.getStartType(), NotUseAtr.class)),
+						EnumAdaptor.valueOf(wkTime1Cmd.getEndType(), NotUseAtr.class)),
 				new RecruitmentWorkingHour(new WorkTime(wkTime2Cmd.getStartTime()),
 						EnumAdaptor.valueOf(wkTime2Cmd.getStartType(), NotUseAtr.class),
 						new WorkTime(wkTime2Cmd.getEndTime()),
-						EnumAdaptor.valueOf(wkTime2Cmd.getStartType(), NotUseAtr.class)),
+						EnumAdaptor.valueOf(wkTime2Cmd.getEndType(), NotUseAtr.class)),
 				Collections.emptyList());
 		appImp.insert(recApplication);
 		recRepo.insert(recApp);
