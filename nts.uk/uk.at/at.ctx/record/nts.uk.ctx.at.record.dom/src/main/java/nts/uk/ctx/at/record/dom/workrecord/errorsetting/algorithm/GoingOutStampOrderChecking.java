@@ -153,15 +153,19 @@ public class GoingOutStampOrderChecking {
 						}
 
 						if (newList.stream().allMatch(item -> item == DuplicationStatusOfTimeZone.NON_OVERLAPPING)) {
-							createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId,
-									processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIDList);
+							if (!attendanceItemIDList.isEmpty()) {
+								createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId,
+										processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIDList);
+							}
 						} else {
 							// 出退勤時間帯に包含されているか確認する
 							CheckState checkState = checkConjugation(companyId, employeeId, processingDate,
 									outingTimeSheet, timeLeavingOfDailyPerformance, temporaryTimeOfDailyPerformance);
 							if (checkState == CheckState.NON_INCLUSION) {
-								createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId,
-										processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIDList);
+								if (!attendanceItemIDList.isEmpty()) {
+									createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId,
+											processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIDList);
+								}
 							}
 						}
 					}

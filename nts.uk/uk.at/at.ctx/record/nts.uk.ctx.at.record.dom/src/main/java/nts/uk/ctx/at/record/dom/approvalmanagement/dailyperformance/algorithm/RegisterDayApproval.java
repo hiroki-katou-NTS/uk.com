@@ -49,7 +49,7 @@ public class RegisterDayApproval {
 				}else{
 					param.getContentApproval().forEach(data -> {
 						List<EmployeeDailyPerError> employeeDailyPerErrors = employeeDailyPerErrorRepository
-								.findAll(param.getEmployeeId(), data.getDate());
+								.find(param.getEmployeeId(), data.getDate());
 						if (!employeeDailyPerErrors.isEmpty()) {
 							List<ErrorAlarmWorkRecord> errorAlarmWorkRecords = errorAlarmWorkRecordRepository
 									.getListErAlByListCodeError(companyId,
@@ -80,7 +80,7 @@ public class RegisterDayApproval {
 				} else {
 					param.getContentApproval().forEach(data -> {
 						List<EmployeeDailyPerError> employeeDailyPerErrors = employeeDailyPerErrorRepository
-								.findAll(param.getEmployeeId(), data.getDate());
+								.find(param.getEmployeeId(), data.getDate());
 						if (!employeeDailyPerErrors.isEmpty()) {
 							List<ErrorAlarmWorkRecord> errorAlarmWorkRecords = errorAlarmWorkRecordRepository
 									.getListErAlByListCodeError(companyId,

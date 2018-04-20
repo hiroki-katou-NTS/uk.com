@@ -82,8 +82,10 @@ public class ExitStampCheck {
 							attendanceItemIDList.add(81);
 						}
 					}
-					createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId, processingDate,
-							new ErrorAlarmWorkRecordCode("S003"), attendanceItemIDList);
+					if (!attendanceItemIDList.isEmpty()) {
+						createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId, processingDate,
+								new ErrorAlarmWorkRecordCode("S003"), attendanceItemIDList);
+					}
 				}
 
 			}
