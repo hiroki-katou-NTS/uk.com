@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,12 +18,14 @@ import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 
@@ -109,7 +113,7 @@ public class IntegrationOfDaily {
 		this.calAttr = calAttr;
 		this.affiliationInfor = affiliationInfor;
 		this.pcLogOnInfo = pcLogOnInfo;
-		this.employeeError = employeeError;
+		this.employeeError = new ArrayList<>(employeeError);
 		this.outingTime = outingTime;
 		this.breakTime = breakTime;
 		this.attendanceTimeOfDailyPerformance = attendanceTimeOfDailyPerformance;
@@ -126,17 +130,17 @@ public class IntegrationOfDaily {
 	
 	/**
 	 * 残業時間実績超過の取得
+	 * @param attendanceItemConverter 
 	 * @param integrationOfDaily
 	 */
-	public  Optional<EmployeeDailyPerError> getErrorList(String employeeId,
+	public  List<EmployeeDailyPerError> getErrorList(String employeeId,
 			   											 GeneralDate targetDate,
-			   											 ErrorAlarmWorkRecordCode errorCode,
+			   											 SystemFixedErrorAlarm fixedErrorAlarmCode,
 			   											 CheckExcessAtr checkAtr) {
-		Optional<EmployeeDailyPerError> returnErrorItem = Optional.empty();
 		if(this.getAttendanceTimeOfDailyPerformance().isPresent()) {
-			this.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily();
+			return this.getAttendanceTimeOfDailyPerformance().get().getErrorList(employeeId, targetDate, fixedErrorAlarmCode, checkAtr);
 		}
-		return returnErrorItem;
+		return Collections.emptyList();
 	}
 	
 }
