@@ -67,9 +67,9 @@ module nts.uk.at.view.kdm002.b {
                 self.currentCode = ko.observable(dataDump);
                 self.imErrorLog =  ko.observableArray([]);
                 self.columns = ko.observableArray([
-                    { headerText: '会社コード', key: 'employeeCode', width: 140 },
-                    { headerText: '会社名', key: 'employeeName', width: 150 },
-                    { headerText: 'エラー内容', key: 'errorMessage', width: 300 }
+                    { headerText: nts.uk.resource.getText("KDM002_25"), key: 'employeeCode', width: 140 },
+                    { headerText: nts.uk.resource.getText("KDM002_26"), key: 'employeeName', width: 150 },
+                    { headerText: nts.uk.resource.getText("KDM002_27"), key: 'errorMessage', width: 300 }
                 ]);
             }
             
@@ -158,6 +158,13 @@ module nts.uk.at.view.kdm002.b {
                                     $('#BTN_CLOSE').focus();
                                 }
                                 else {
+                                    // resize windows
+                                    var windowSize = nts.uk.ui.windows.getSelf();
+                                    windowSize.$dialog.dialog('option', {
+                                        width: 650,
+                                        height: 550
+                                    });
+                                    windowSize.$dialog.resize();
                                     self.isError(true);
                                     self.isComplete(true);
                                     self.status('完了　（エラーあり）');
