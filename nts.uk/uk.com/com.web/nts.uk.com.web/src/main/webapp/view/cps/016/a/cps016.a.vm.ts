@@ -161,7 +161,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                         }
                         setShared('CPS017_PARAMS', params);
 
-                        modal('/view/cps/017/a/index.xhtml', { title: '', height: 800, width: 1260 }).onClosed(function(): any {
+                        modal('/view/cps/017/a/index.xhtml', { title: '', height: 750, width: 1260 }).onClosed(function(): any {
                         });
 
                         self.listItems.valueHasMutated();
@@ -246,7 +246,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 }
             setShared('CPS017_PARAMS', params);
 
-            modal('/view/cps/017/a/index.xhtml', { title: '', height: 800, width: 1260 }).onClosed(function(): any {
+            modal('/view/cps/017/a/index.xhtml', { title: '', height: 750, width: 1260 }).onClosed(function(): any {
             });
             $("#selectionItemName").focus();
         }
