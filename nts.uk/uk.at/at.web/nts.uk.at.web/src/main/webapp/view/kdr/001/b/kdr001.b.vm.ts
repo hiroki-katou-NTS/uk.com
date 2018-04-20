@@ -18,12 +18,21 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.currentCode = ko.observable(params || '');
             self.currentCode.subscribe(cd => {
                 errors.clearAll();
+                if (!cd) {
+                    self.buildHolidayRemaining(null);
+                    // Set new mode
+                    self.isNewMode(true);
+
+                    //focus
+                    self.setFocus();
+                    return;
+                }
                 let lstHolidays = self.lstHolidays();
                 if (cd && lstHolidays && lstHolidays.length > 0) {
                     let index: number = 0;
                     if (cd) {
                         index = _.findIndex(lstHolidays, function(x)
-                        { return x.cd === cd });
+                        { return x.cd() === cd });
                         if (index === -1) index = 0;
                     }
                     let _holiday = lstHolidays[index];
@@ -32,16 +41,16 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                         self.currentHoliday(_holiday);
                         // Set new mode
                         self.isNewMode(false);
-            
+
                         //focus
-                        self.setFocus();            
+                        self.setFocus();
                     } else {
                         self.buildHolidayRemaining(null);
                         // Set new mode
                         self.isNewMode(true);
-            
+
                         //focus
-                        self.setFocus();   
+                        self.setFocus();
                     }
                     self.buildSpecialHoliday();
                 }
@@ -54,7 +63,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             nts.uk.ui.block.invisible();
-            service.findAllSpecialHoliday().done(function(data : Array<SpecialHoliday>) {
+            service.findAllSpecialHoliday().done(function(data: Array<SpecialHoliday>) {
                 if (data && data.length > 0) {
                     self.allSpecialHolidays(data);
                 }
@@ -64,7 +73,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 }
                 service.findAll().done(function(data: Array<HolidayRemaining>) {
                     if (data && data.length > 0) {
-                        for(var i = 0; i < data.length; i++) {
+                        for (var i = 0; i < data.length; i++) {
                             self.lstHolidays().push(new HolidayRemaining(data[i]));
                         }
                         if (!self.currentCode()) {
@@ -102,7 +111,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 dfd.rejected();
 
             });
-            
+
             return dfd.promise();
 
         }
@@ -151,8 +160,24 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                         // refresh - initial screen TODO
                         service.findAll()
                             .done(function(data: HolidayRemaining) {
-                                if (data.length > 0) {
-                                    self.lstHolidays(data);
+                                if (data && data.length > 0) {
+                                    for (var i = 0; i < data.length; i++) {
+                                        self.lstHolidays().push(new HolidayRemaining(data[i]));
+                                    }
+                                    if (!self.currentCode()) {
+                                        self.currentCode(data[0].cd);
+
+                                    } else {
+                                        index = _.findIndex(lstHolidays, function(x)
+                                        { return x.cd == cd });
+                                        if (index === -1) index = 0;
+                                        let _holiday = lstHolidays[index];
+                                        if (_holiday && _holiday.cd) {
+                                            self.currentCode(_holiday.cd);
+                                        } else {
+                                            self.currentCode('');
+                                        }
+                                    }
                                 }
                                 // no data
                                 else {
@@ -197,7 +222,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 lstHolidays = self.lstHolidays,
                 currentHoliday: HolidayRemaining = self.currentHoliday();
             block.invisible();
-            
+
             dialog.confirmDanger({ messageId: "Msg_18" }).ifYes(() => {
                 if (currentHoliday.cd()) {
                     var object: any = { roleSetCd: currentHoliday.cd() };
@@ -249,18 +274,18 @@ module nts.uk.at.view.kdr001.b.viewmodel {
 
         buildHolidayRemaining(param: any) {
             let self = this;
-            self.currentHoliday = ko.observable(new HolidayRemaining(param));
+            self.currentHoliday(new HolidayRemaining(param));
         }
-        
+
         buildSpecialHoliday() {
             let self = this;
-            for(var i = 0; i < self.allSpecialHolidays.length; i++) {
+            for (var i = 0; i < self.allSpecialHolidays.length; i++) {
                 self.allSpecialHolidays[i].statusCheck(false);
             }
             let _specialHolidays = self.currentHoliday().listSpecialHoliday();
             if (_specialHolidays && _specialHolidays.length > 0) {
                 var index = -1;
-                for(var i = 0; i < _specialHolidays.length; i++) {
+                for (var i = 0; i < _specialHolidays.length; i++) {
                     index = _.findIndex(self.allSpecialHolidays, function(x)
                     { return x.specialHolidayCode == _specialHolidays[i] });
                     if (index > -1) {
@@ -269,11 +294,11 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 }
             }
         }
-        
+
         setSpecialHoliday() {
             let self = this;
             let specialHolidays: Array<number> = [];
-            for(var i = 0; i < self.allSpecialHolidays.length; i++) {
+            for (var i = 0; i < self.allSpecialHolidays.length; i++) {
                 if (self.allSpecialHolidays[i].statusCheck()) {
                     specialHolidays.push(+self.allSpecialHolidays[i].specialHolidayCode());
                 }
@@ -399,16 +424,16 @@ module nts.uk.at.view.kdr001.b.viewmodel {
 
         /*特別休暇名称*/
         specialHolidayName: KnockoutObservable<string>;
-        
+
         statusCheck: KnockoutObservable<boolean>;
-        
-        constructor(param: any){
+
+        constructor(param: any) {
             let self = this;
-            self.specialHolidayCode = ko.observable(param ? param.specialHolidayCode || null : null );
-            self.specialHolidayName = ko.observable(param ? param.specialHolidayName || '' : '' );
-            self.statusCheck = ko.observable(param ? param.statusCheck || false : false );
+            self.specialHolidayCode = ko.observable(param ? param.specialHolidayCode || null : null);
+            self.specialHolidayName = ko.observable(param ? param.specialHolidayName || '' : '');
+            self.statusCheck = ko.observable(param ? param.statusCheck || false : false);
         }
-        
+
     }
 
 }
