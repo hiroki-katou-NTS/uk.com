@@ -61,7 +61,6 @@ public class ItemOutputForm extends DomainObject {
 		this.annualHoliday = new YearlyItemsOutput(yearlyHoliday, insideHours, insideHalfDay);
 		this.pause = new PauseItem(numberRemainingPause, undigestedPause, pauseItem);
 		this.yearlyReserved = new YearlyReserved(yearlyReserved);
-		
 		this.specialHoliday = listHolidayCds;
 	}
 	
