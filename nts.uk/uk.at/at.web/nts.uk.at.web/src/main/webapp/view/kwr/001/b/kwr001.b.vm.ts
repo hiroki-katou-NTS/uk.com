@@ -23,6 +23,7 @@ module nts.uk.at.view.kwr001.b {
              startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                var data = nts.uk.ui.windows.getShared('KWR001_B');
                 dfd.resolve();
                 return dfd.promise();
             }

@@ -20,6 +20,13 @@ module nts.uk.at.view.kwr001.a {
                     nts.uk.ui.windows.getShared('KWR001_B');
                 });
             }
+            openScreenC () {
+                var self = this;
+                nts.uk.ui.windows.setShared('KWR001_C', self.data(), true);
+                nts.uk.ui.windows.sub.modal('/view/kwr/001/c/index.xhtml').onClosed(function(): any {
+                    nts.uk.ui.windows.getShared('KWR001_C');
+                });
+            }
         }
     }
 }
