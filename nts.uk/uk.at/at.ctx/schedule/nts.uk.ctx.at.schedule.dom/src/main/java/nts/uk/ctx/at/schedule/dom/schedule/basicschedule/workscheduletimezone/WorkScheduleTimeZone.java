@@ -4,10 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone;
 
+import javax.inject.Inject;
+
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
  * The Class WorkScheduleTimeZone.
@@ -15,6 +18,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 // 勤務予定時間帯
 public class WorkScheduleTimeZone extends DomainObject {
+
+	@Inject
+	private I18NResourcesForUK internationalization;
 
 	/** The schedule cnt. */
 	// 予定勤務回数
@@ -36,10 +42,14 @@ public class WorkScheduleTimeZone extends DomainObject {
 	public void validate() {
 		super.validate();
 	}
-	
+
 	public void validateTime() {
-		if (this.scheduleStartClock == null || this.scheduleEndClock == null) {
-			throw new BusinessException("Msg_438");
+		if (this.scheduleStartClock == null) {
+			throw new BusinessException("Msg_438", "73"); //#KSU001_73
+		}
+
+		if (this.scheduleEndClock == null) {
+			throw new BusinessException("Msg_438", "74"); //#KSU001_74
 		}
 	}
 
@@ -77,9 +87,10 @@ public class WorkScheduleTimeZone extends DomainObject {
 		this.scheduleEndClock = scheduleEndClock;
 		this.bounceAtr = bounceAtr;
 	}
-	
+
 	/**
 	 * Update again start time and end time
+	 * 
 	 * @param scheduleStartClock
 	 * @param scheduleEndClock
 	 */
@@ -90,6 +101,7 @@ public class WorkScheduleTimeZone extends DomainObject {
 
 	/**
 	 * Update 直行直帰区分
+	 * 
 	 * @param bounceAtr2
 	 */
 	public void updateBounceAtr(BounceAtr bounceAtr) {

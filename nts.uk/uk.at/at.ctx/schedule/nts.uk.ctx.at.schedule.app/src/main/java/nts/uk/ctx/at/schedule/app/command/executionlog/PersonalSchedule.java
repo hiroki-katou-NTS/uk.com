@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.app.command.executionlog;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
@@ -10,8 +12,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.setting.UseAtr;
  * @author sonnh1
  *
  */
-@Getter
-@Setter
+@Data
 public class PersonalSchedule {
 	// パターンコード
 	private String patternCd;
