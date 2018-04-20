@@ -2,7 +2,7 @@ package nts.uk.ctx.sys.assist.infra.repository.mastercopy;
 
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataSetMemento;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyTarget;
-import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspdtMastercopyData;
+import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyData;
 
 /**
  * @author NWS_LINHTP_PC
@@ -11,7 +11,7 @@ import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspdtMastercopyData;
 public class JpaMasterCopyDataSetMemento implements MasterCopyDataSetMemento {
 
 	/** The entity. */
-	private SspdtMastercopyData entity;
+	private SspmtMastercopyData entity;
 
 	/**
 	 * Instantiates a new jpa master copy data set memento.
@@ -26,7 +26,7 @@ public class JpaMasterCopyDataSetMemento implements MasterCopyDataSetMemento {
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaMasterCopyDataSetMemento(SspdtMastercopyData entity) {
+	public JpaMasterCopyDataSetMemento(SspmtMastercopyData entity) {
 		this.entity = entity;
 	}
 
