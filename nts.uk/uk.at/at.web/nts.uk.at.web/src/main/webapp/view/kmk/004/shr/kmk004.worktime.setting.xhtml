@@ -10,7 +10,8 @@
 			<!-- YEAR -->
 			<div class="control-group ">
 				<div tabindex="#{baseTabIndex + 3}" id="worktimeYearPicker" 
-					data-bind="ntsDatePicker: {name:'#[KMK004_31]', 
+					data-bind="ntsDatePicker: {name:'#[KMK004_31]',
+											required: true,
 											value: normalSetting().year, 
 											dateFormat: 'YYYY', 
 											valueFormat: 'YYYY', 
