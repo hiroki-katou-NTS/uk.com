@@ -16,7 +16,7 @@ module nts.uk.at.view.kaf011.c.screenModel {
 
         reason: KnockoutObservable<string> = ko.observable('');
 
-        appReasons = ko.observableArray([]);
+        appReasonComboItems = ko.observableArray([]);
 
         appReasonSelectedID: KnockoutObservable<string> = ko.observable('');
 
@@ -32,6 +32,22 @@ module nts.uk.at.view.kaf011.c.screenModel {
 
         appTypeSet: KnockoutObservable<common.AppTypeSet> = ko.observable(new common.AppTypeSet(null));
 
+        appComItems: KnockoutObservable<any> = ko.observableArray([]);
+
+        screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
+
+        absWk: KnockoutObservable<common.AppItems> = ko.observable(new common.AppItems());
+
+        recWk: KnockoutObservable<common.AppItems> = ko.observable(new common.AppItems());
+
+        appComSelectedCode: KnockoutObservable<number> = ko.observable(2);
+
+        version: KnockoutObservable<number> = ko.observable(0);
+
+        employeeID: KnockoutObservable<string> = ko.observable('');
+
+
+
         constructor() {
             let self = this;
             let param = nts.uk.ui.windows.getShared('KAF_011_PARAMS');
@@ -39,7 +55,8 @@ module nts.uk.at.view.kaf011.c.screenModel {
                 self.prePostSelectedCode(param.prePostSelectedCode);
                 self.reason(param.reason);
                 self.appReasonSelectedID(param.appReasonSelectedID);
-                self.appDate(param.appDate);
+                self.absWk(new common.AppItems(param.absApp));
+                self.version(param.version);
             }
         }
 
@@ -50,7 +67,7 @@ module nts.uk.at.view.kaf011.c.screenModel {
                 startParam = {
                     sID: null,
                     appDate: self.appDate(),
-                    uiType: 0
+                    uiType: 10
                 };
 
             service.start_c(startParam).done((data: common.IHolidayShipment) => {
@@ -65,15 +82,48 @@ module nts.uk.at.view.kaf011.c.screenModel {
             return dfd.promise();
         }
 
+        saveAbs() {
+            let self = this,
+                saveCmd: common.ISaveHolidayShipmentCommand = {
+                    recCmd: ko.mapping.toJS(self.recWk()),
+                    absCmd: ko.mapping.toJS(self.absWk()),
+                    comType: self.appComSelectedCode(),
+                    usedDays: 1,
+                    appCmd: {
+                        appReasonText: self.appReasonSelectedID(),
+                        applicationReason: self.reason(),
+                        prePostAtr: self.prePostSelectedCode(),
+                        enteredPersonSID: self.employeeID(),
+                        appVersion: self.version(),
+                    }
+                };
+
+            saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;;
+            block.invisible();
+            service.changeAbsDate(saveCmd).done((data) => {
+                dialog({ messageId: 'Msg_15' }).then(function() {
+                    nts.uk.ui.windows.setShared('KAF_011_C_PARAMS', data);
+                    nts.uk.ui.windows.close();
+                });
+            }).fail((error) => {
+                dialog({ messageId: error.messageId });
+
+            }).always(() => {
+                block.clear();
+            });
+
+        }
+
         setDataFromStart(data: common.IHolidayShipment) {
             let self = this;
             if (data) {
                 self.prePostSelectedCode(data.preOrPostType);
-                self.appReasons(data.appReasons || []);
+                self.appReasonComboItems(data.appReasonComboItems || []);
                 self.drawalReqSet(new common.DrawalReqSet(data.drawalReqSet || null));
                 self.showReason(data.applicationSetting.appReasonDispAtr);
                 self.displayPrePostFlg(data.applicationSetting.displayPrePostFlg);
                 self.appTypeSet(new common.AppTypeSet(data.appTypeSet || null));
+                self.employeeID(data.employeeID || '');
             }
         }
 

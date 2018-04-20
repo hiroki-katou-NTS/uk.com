@@ -107,9 +107,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 dfd.resolve();
 
             });
-
-
-
+            
             return dfd.promise();
 
         }
