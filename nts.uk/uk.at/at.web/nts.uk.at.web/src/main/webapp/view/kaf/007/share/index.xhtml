@@ -38,8 +38,8 @@
 			<div data-bind="if: !$parent.screenModeNew()" class="mode-style">
 				<span data-bind="text: application().startDate"></span>
 				<!--A4_2 ~-->
-				<label class="valign-center link-app-date-label-kaf007">#{i18n.getText('KAF007_14')}</label>
-				<span data-bind="text: application().endDate"></span>
+				<label data-bind= "visible: application().startDate() != application().endDate()" class="valign-center link-app-date-label-kaf007">#{i18n.getText('KAF007_14')}</label>
+				<span data-bind="text: application().endDate, visible: application().startDate() != application().endDate()"></span>
 			</div>
 		</div>
 		<!--A5 勤務を変更する--> 
