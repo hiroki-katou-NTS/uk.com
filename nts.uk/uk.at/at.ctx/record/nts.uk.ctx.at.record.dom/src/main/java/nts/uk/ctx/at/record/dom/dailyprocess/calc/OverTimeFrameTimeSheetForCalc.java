@@ -224,7 +224,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 				//変形できる時間計算
 				AttendanceTime ableRangeTime = new AttendanceTime(dailyUnit.getDailyTime().valueAsMinutes() - breakdownTimeDay.getPredetermineWorkTime());
 				if(ableRangeTime.greaterThan(0))
-					return reclassified(ableRangeTime, createTimeSheet, autoCalculationSet,overTimeHourSetList,holidayCalcMethodSet);
+					return reclassified(ableRangeTime, createTimeSheet, autoCalculationSet,overTimeHourSetList);
 			}
 		}
 		return createTimeSheet;
@@ -268,7 +268,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 * @param autoCalculationSet　時間外の自動計算設定
 	 */
 	public static List<OverTimeFrameTimeSheetForCalc> reclassified(AttendanceTime ableRangeTime,List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheetList,
-			AutoCalOvertimeSetting autoCalculationSet,List<OverTimeOfTimeZoneSet> overTimeHourSetList,HolidayCalcMethodSet holidayCalcMethodSet) {
+			AutoCalOvertimeSetting autoCalculationSet,List<OverTimeOfTimeZoneSet> overTimeHourSetList) {
 		boolean forceAtr = true;
 		AttendanceTime overTime = new AttendanceTime(0);
 		AttendanceTime transTime = new AttendanceTime(0);

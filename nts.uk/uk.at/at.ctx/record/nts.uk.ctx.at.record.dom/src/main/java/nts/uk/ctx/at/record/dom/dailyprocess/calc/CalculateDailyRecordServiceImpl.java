@@ -478,6 +478,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			case FIXED_WORK:
 				/* 固定 */
 				val fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordInfo().getWorkTimeCode().v());
+				
+				ootsukaFixedWorkSet = fixedWorkSetting.get().getCalculationSetting();
 				List<OverTimeOfTimeZoneSet> fixOtSetting = Collections.emptyList();
 				if(workType.get().getAttendanceHolidayAttr().isFullTime()) {
 					fixOtSetting = fixedWorkSetting.get().getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getDayAtr().equals(AmPmAtr.ONE_DAY)).findFirst().get().getWorkTimezone().getLstOTTimezone();
