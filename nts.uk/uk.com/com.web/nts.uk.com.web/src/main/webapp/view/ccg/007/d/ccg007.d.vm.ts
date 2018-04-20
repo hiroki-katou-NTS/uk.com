@@ -66,15 +66,26 @@ module nts.uk.pr.view.ccg007.d {
                 }).onClosed(() => {
                     var contractCode = nts.uk.ui.windows.getShared('contractCode');
                     var contractPassword = nts.uk.ui.windows.getShared('contractPassword');
+                    var isSubmit = nts.uk.ui.windows.getShared('isSubmit');
                     self.contractCode(contractCode);
                     self.contractPassword(contractPassword);
-                    service.getAllCompany().done(function(data: Array<CompanyItemModel>) {
-                        //get list company from server 
-                        self.companyList(data);
-                        if (data.length > 0) {
-                            self.selectedCompanyCode(self.companyList()[0].companyCode);
-                        }
-                    });
+                    
+                    //get url
+                    let url = _.toLower(_.trim(_.trim($(location).attr('href')), '%20'));
+                    let isSignOn = url.indexOf('signon=on') >= 0;
+                    
+                    //Check signon
+                    if (isSubmit && isSignOn){
+                        self.submitLogin(isSignOn);
+                    } else {
+                        service.getAllCompany().done(function(data: Array<CompanyItemModel>) {
+                            //get list company from server 
+                            self.companyList(data);
+                            if (data.length > 0) {
+                                self.selectedCompanyCode(self.companyList()[0].companyCode);
+                            }
+                        });
+                    }
                 });
             }
 

@@ -106,8 +106,18 @@ module nts.uk.pr.view.ccg007.c {
                 }).onClosed(() => {
                     var contractCode = nts.uk.ui.windows.getShared('contractCode');
                     var contractPassword = nts.uk.ui.windows.getShared('contractPassword');
+                    var isSubmit = nts.uk.ui.windows.getShared('isSubmit');
                     self.contractCode(contractCode);
                     self.contractPassword(contractPassword);
+                    
+                    //get url
+                    let url = _.toLower(_.trim(_.trim($(location).attr('href')), '%20'));
+                    let isSignOn = url.indexOf('signon=on') >= 0;
+                    
+                    //Check signon
+                    if (isSubmit && isSignOn){
+                        self.submitLogin(isSignOn);
+                    }
                 });
             }
 
