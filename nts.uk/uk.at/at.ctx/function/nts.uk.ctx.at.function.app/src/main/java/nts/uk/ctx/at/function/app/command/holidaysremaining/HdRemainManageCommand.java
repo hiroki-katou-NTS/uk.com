@@ -2,9 +2,9 @@ package nts.uk.ctx.at.function.app.command.holidaysremaining;
 
 import java.util.List;
 
-import lombok.Value;
+import lombok.Data;
 
-@Value
+@Data
 public class HdRemainManageCommand {
 
 	/**
@@ -44,7 +44,7 @@ public class HdRemainManageCommand {
 	/**
 	 * 公休繰越数を出力する
 	 */
-	private boolean outputholidayforward;
+	private boolean outputHolidayForward;
 	/**
 	 * 公休月度残を出力する
 	 */
@@ -52,12 +52,12 @@ public class HdRemainManageCommand {
 	/**
 	 * 公休の項目を出力する
 	 */
-	private boolean outputitemsholidays;
+	private boolean outputItemsHolidays;
 
 	/**
 	 * childNursingLeave
 	 */
-	private boolean ChildNursingLeave;
+	private boolean childNursingLeave;
 
 	/**
 	 * 年休の項目出力する
@@ -81,7 +81,7 @@ public class HdRemainManageCommand {
 	/**
 	 * 振休未消化を出力する
 	 */
-	private boolean undigestedPause;
+	private boolean unDigestedPause;
 	/**
 	 * 振休の項目を出力する
 	 */
@@ -105,15 +105,15 @@ public class HdRemainManageCommand {
 		this.remainingChargeSubstitute = remainingChargeSubstitute;
 		this.representSubstitute = representSubstitute;
 		this.outputItemSubstitute = outputItemSubstitute;
-		this.outputholidayforward = outputholidayforward;
+		this.outputHolidayForward = outputholidayforward;
 		this.monthlyPublic = monthlyPublic;
-		this.outputitemsholidays = outputitemsholidays;
-		ChildNursingLeave = childNursingLeave;
+		this.outputItemsHolidays = outputitemsholidays;
+		this.childNursingLeave = childNursingLeave;
 		this.yearlyHoliday = yearlyHoliday;
 		this.insideHours = insideHours;
 		this.insideHalfDay = insideHalfDay;
 		this.numberRemainingPause = numberRemainingPause;
-		this.undigestedPause = undigestedPause;
+		this.unDigestedPause = undigestedPause;
 		this.pauseItem = pauseItem;
 		this.yearlyReserved = yearlyReserved;
 		this.listSpecialHoliday = listSpecialHoliday;

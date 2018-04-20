@@ -70,7 +70,7 @@ public class HdRemainManageDto {
 	/**
 	 * 振休未消化を出力する
 	 */
-	private boolean undigestedPause;
+	private boolean unDigestedPause;
 
 	/**
 	 * 振休残数を出力する
@@ -145,7 +145,7 @@ public class HdRemainManageDto {
 		this.representSub = representSub;
 		this.remainChargeSub = remainChargeSub;
 		this.pauseItem = pauseItem;
-		this.undigestedPause = undigestedPause;
+		this.unDigestedPause = undigestedPause;
 		this.numRemainPause = numRemainPause;
 		this.outputItemsHolidays = outputItemsHolidays;
 		this.outputHolidayForward = outputHolidayForward;

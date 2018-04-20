@@ -28,10 +28,10 @@ public class UpdateHdRemainManageCommandHandler extends CommandHandler<HdRemainM
 		
 		ItemOutputForm itemOutputForm = new ItemOutputForm(command.isNursingLeave(),
 				command.isRemainingChargeSubstitute(), command.isRepresentSubstitute(),
-				command.isOutputItemSubstitute(), command.isOutputholidayforward(), command.isMonthlyPublic(),
-				command.isOutputitemsholidays(), command.isChildNursingLeave(), command.isYearlyHoliday(),
+				command.isOutputItemSubstitute(), command.isOutputHolidayForward(), command.isMonthlyPublic(),
+				command.isOutputItemsHolidays(), command.isChildNursingLeave(), command.isYearlyHoliday(),
 				command.isInsideHours(), command.isInsideHalfDay(), command.isNumberRemainingPause(),
-				command.isUndigestedPause(), command.isPauseItem(), command.isYearlyReserved(),
+				command.isUnDigestedPause(), command.isPauseItem(), command.isYearlyReserved(),
 			    command.getListSpecialHoliday());
 
 		if (!itemOutputForm.hasOutput()) {
