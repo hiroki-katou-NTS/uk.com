@@ -150,17 +150,4 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 		}
 		return new MailSenderResult(successList, errorList);
 	}
-
-	public static void main(String[] args) {
-		int i = 1;
-		List<Integer> list = new ArrayList();
-		list.add(new Integer(1));
-		list.add(new Integer(1));
-		list.add(new Integer(1));
-		list.add(new Integer(1));
-		list.add(new Integer(1));
-		list.forEach(x -> {
-			x = 2;
-		});
-	}
 }
