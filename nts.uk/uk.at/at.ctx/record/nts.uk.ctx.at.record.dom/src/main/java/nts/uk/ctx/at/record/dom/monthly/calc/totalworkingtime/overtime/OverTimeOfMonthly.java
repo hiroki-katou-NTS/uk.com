@@ -231,15 +231,9 @@ public class OverTimeOfMonthly {
 			RepositoriesRequiredByMonthlyAggr repositories){
 	
 		// 日の法定労働時間を取得する
-		//*****（未）　正式な処理の作成待ち。
-		//DailyCalculationPersonalInformation dailyCalculationPersonalInformation =
-		//		repositories.getGetOfStatutoryWorkTime().getDailyTimeFromStaturoyWorkTime(
-		//			workingSystem,
-		//			companyId,
-		//			workplaceId,
-		//			employmentCd,
-		//			attendanceTimeOfDaily.getEmployeeId(),
-		//			attendanceTimeOfDaily.getYmd());
+		val dailyUnit = repositories.getDailyStatutoryWorkingHours().getDailyUnit(
+				companyId, employmentCd, attendanceTimeOfDaily.getEmployeeId(),
+				attendanceTimeOfDaily.getYmd(), workingSystem);
 		
 		// 日別実績の法定内時間を取得する
 		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
@@ -255,9 +249,7 @@ public class OverTimeOfMonthly {
 		}
 		
 		// 法定内残業にできる時間を計算する
-		//*****（未）　正式な処理が出来てから、代入。
-		AttendanceTime canLegalOverTime = new AttendanceTime(8 * 60);
-		//		new AttendanceTime(dailyCalculationPersonalInformation.getStatutoryWorkTime().v());
+		AttendanceTime canLegalOverTime = new AttendanceTime(dailyUnit.getDailyTime().v());
 		canLegalOverTime = canLegalOverTime.minusMinutes(legalTimeOfDaily.getWorkTime().v());
 		if (canLegalOverTime.lessThan(0)) canLegalOverTime = new AttendanceTime(0);
 		return canLegalOverTime;

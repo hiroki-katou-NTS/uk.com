@@ -761,15 +761,6 @@ public class ExcessOutsideWorkMng {
 		for (val settlementMonth : settlementMonths){
 			boolean isCurrentMonth = settlementMonth.equals(this.yearMonth);
 			
-			// 法定労働時間を取得する　（月間法定労働時間）
-			//*****（未）　日次での実装位置を確認して、合わせて実装する。
-			//*****（未）　参考（日次用）。このクラスか、別のクラスに、月・週用のメソッドを追加。仮に0設定。
-			/*
-			repositories.getGetOfStatutoryWorkTime().getDailyTimeFromStaturoyWorkTime(WorkingSystem.RegularWork,
-					companyId, workplaceId, employmentCd, employeeId, datePeriod.end());
-			*/
-			val statutoryWorkingTimeMonth = new AttendanceTimeMonth(160 * 60);
-			
 			// 確認中年月の月別実績を確認する　（当月除く）
 			List<AttendanceTimeOfMonthly> attendanceTimes = new ArrayList<>();
 			if (!isCurrentMonth){
@@ -778,13 +769,13 @@ public class ExcessOutsideWorkMng {
 			}
 			
 			// 取得した法令労働時間を法定労働時間累計に加算する
-			totalStatutoryWorkingMinutes += statutoryWorkingTimeMonth.v();
+			totalStatutoryWorkingMinutes += this.statutoryWorkingTimeMonth.v();
 			
 			// 当月以外の過去月の時間を元に実績累計に加算する
 			if (!isCurrentMonth){
 				
 				// 取得した法定労働時間を確認する
-				if (statutoryWorkingTimeMonth.lessThanOrEqualTo(0)){
+				if (this.statutoryWorkingTimeMonth.lessThanOrEqualTo(0)){
 					
 					// 就業時間＋変形期間繰越時間を実績累計に加算する
 					for (val attendanceTime : attendanceTimes){
@@ -799,7 +790,7 @@ public class ExcessOutsideWorkMng {
 				else {
 					
 					// 法定労働時間＋変形期間繰越時間を実績累計に加算する
-					totalRecordMinutes += statutoryWorkingTimeMonth.v();
+					totalRecordMinutes += this.statutoryWorkingTimeMonth.v();
 					for (val attendanceTime : attendanceTimes){
 						val monthlyCalculation = attendanceTime.getMonthlyCalculation();
 						val irregTime = monthlyCalculation.getActualWorkingTime().getIrregularWorkingTime();

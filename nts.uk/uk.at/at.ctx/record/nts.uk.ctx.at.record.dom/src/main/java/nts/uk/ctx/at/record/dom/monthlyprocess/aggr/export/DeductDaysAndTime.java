@@ -71,7 +71,7 @@ public class DeductDaysAndTime {
 		val workTimeCdOpt = workingConditionItem.getWorkCategory().getWeekdayTime().getWorkTimeCode();
 		if (!workTimeCdOpt.isPresent()){
 			this.errorInfos.add(new MonthlyAggregationErrorInfo(
-					"099", new ErrMessageContent("not exist WorkTimeCode")));
+					"XXX", new ErrMessageContent(TextResource.localize("Msg_1142"))));
 			return;
 		}
 		val workTimeCd = workTimeCdOpt.get().v();
@@ -83,7 +83,7 @@ public class DeductDaysAndTime {
 			
 			// エラー処理
 			this.errorInfos.add(new MonthlyAggregationErrorInfo(
-					"099", new ErrMessageContent(TextResource.localize("Msg_1142"))));
+					"XXX", new ErrMessageContent(TextResource.localize("Msg_1142"))));
 			return;
 		}
 		val predetermineTimeSet = this.predetermineTimeSetOfWeekDay.get();

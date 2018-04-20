@@ -43,10 +43,10 @@ import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQue
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryR;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootOfEmployeeImport;
-import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalStatus;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByEmpl;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApproverEmployeeState;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ReleasedProprietyDivision;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
@@ -187,6 +187,7 @@ public class DailyPerformanceCorrectionProcessor {
 	private static final String LOCK_EDIT_CELL_DAY = "D";
 	private static final String LOCK_EDIT_CELL_MONTH = "M";
 	private static final String LOCK_EDIT_CELL_WORK = "C";
+	private static final String LOCK_EDIT_APPROVAL = "A";
 	private static final String DATE_FORMAT = "yyyy-MM-dd";
 	private static final String LOCK_APPLICATION = "Application";
 	private static final String COLUMN_SUBMITTED = "Submitted";
@@ -283,7 +284,6 @@ public class DailyPerformanceCorrectionProcessor {
 		/**
 		 * システム日付を基準に1ヵ月前の期間を設定する | Set date range one month before system date
 		 */
-		screenDto.setDateRange(dateRange);
 		/** 画面制御に関する情報を取得する | Acquire information on screen control */
 		// アルゴリズム「社員の日別実績の権限をすべて取得する」を実行する | Execute "Acquire all permissions of
 		// employee's daily performance"--
@@ -292,6 +292,7 @@ public class DailyPerformanceCorrectionProcessor {
 		if(initScreen == 0 && objectShare != null && objectShare.getDisplayFormat() == 1){
 			dateRange = new DateRange(objectShare.getDateTarget(), objectShare.getDateTarget());
 		}
+		screenDto.setDateRange(dateRange);
 		///TODO 社員一覧を変更する -- Lấy nhân viên từ màn hinh khác hoặc lấy từ lần khởi động đầu tiên
 		List<String> changeEmployeeIds = new ArrayList<>();
 		if (lstEmployee.isEmpty()) {
@@ -315,7 +316,7 @@ public class DailyPerformanceCorrectionProcessor {
 //			changeEmployeeIds = changeEmployeeIds.stream().filter(x -> x.equals((objectShare== null && initScreen == 0)  ? sId : objectShare.getIndividualTarget())).collect(Collectors.toList());
 //		}
 		System.out.println("time get data employee" + (System.currentTimeMillis() - timeStart));
-		List<WorkPlaceHistImport> wPH = workplaceWorkRecordAdapter.getWplByListSidAndPeriod(changeEmployeeIds, new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+		List<WorkPlaceHistImport> wPH = changeEmployeeIds.isEmpty() ? Collections.emptyList() : workplaceWorkRecordAdapter.getWplByListSidAndPeriod(changeEmployeeIds, new DatePeriod(GeneralDate.min(), GeneralDate.max()));
 		System.out.println("time get data wplhis" + (System.currentTimeMillis() - timeStart));//slow
 		List<DailyPerformanceEmployeeDto> lstEmployeeData = extractEmployeeData(initScreen, sId,
 				screenDto.getLstEmployee(), objectShare);
@@ -328,7 +329,7 @@ public class DailyPerformanceCorrectionProcessor {
 		screenDto.setLstData(getListData(lstEmployeeData, dateRange, displayFormat));
 		//get employee 
 		System.out.println("time before lay con ty hist:" + (System.currentTimeMillis() - timeStart));
-		List<AffCompanyHistImport> affCompany = employeeHistWorkRecordAdapter.getWplByListSidAndPeriod(changeEmployeeIds, new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+		List<AffCompanyHistImport> affCompany = changeEmployeeIds.isEmpty() ? Collections.emptyList() : employeeHistWorkRecordAdapter.getWplByListSidAndPeriod(changeEmployeeIds, new DatePeriod(GeneralDate.min(), GeneralDate.max()));
 		System.out.println("time before map data wplhis, date:" + (System.currentTimeMillis() - timeStart)); //slow
 		screenDto.setLstData(setWorkPlace(wPH, affCompany, screenDto.getLstData()));
 		/// 対応する「日別実績」をすべて取得する | Acquire all corresponding "daily performance"
@@ -442,7 +443,7 @@ public class DailyPerformanceCorrectionProcessor {
 		});
 		//get  check box sign(Confirm day)
 		Map<String, Boolean> signDayMap = repo.getConfirmDay(companyId, listEmployeeId, dateRange);
-		Map<String, ApproveRootStatusForEmpDto> approvalDayMap =  mode == ScreenMode.APPROVAL.value ? getCheckApproval(listEmployeeId, dateRange, sId) : Collections.emptyMap();
+		Map<String, ApproveRootStatusForEmpDto> approvalDayMap =  getCheckApproval(listEmployeeId, dateRange, sId, mode);
 		System.out.println("time create HashMap: " + (System.currentTimeMillis() - startTime2));
 		start = System.currentTimeMillis();
 		screenDto.markLoginUser();
@@ -474,7 +475,7 @@ public class DailyPerformanceCorrectionProcessor {
 			//get status check box 
 			ApproveRootStatusForEmpDto approveRootStatus =  approvalDayMap.get(data.getEmployeeId() + "|" + data.getDate());
 			if(mode == ScreenMode.APPROVAL.value){
-				data.setApproval(approveRootStatus == null ? false : approveRootStatus.getApprovalStatus() != null && approveRootStatus.getApprovalStatus().equals(ApprovalStatusForEmployee.APPROVED));
+				data.setApproval(approveRootStatus == null ? false : approveRootStatus.isCheckApproval());
 			}
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
 			if (resultOfOneRow != null) {
@@ -484,6 +485,9 @@ public class DailyPerformanceCorrectionProcessor {
 
 				if (lock || data.isApproval()) {
 					lockCell(screenDto, data);
+					val typeLock = data.getState();
+					if(typeLock.equals("")) data.setState("lock|"+ LOCK_EDIT_APPROVAL);
+					else data.setState(typeLock+"|"+LOCK_EDIT_APPROVAL);
 					lock = true;
 				}
 				if (resultOfOneRow != null) {
@@ -743,15 +747,11 @@ public class DailyPerformanceCorrectionProcessor {
 				}
 				
 				// disable, enable checkbox with approveRootStatus
-				if(approveRootStatus == null) return;
-				if(data.isApproval()){
-					if(approveRootStatus.getApprovalStatusEmployee() != null && approveRootStatus.getApprovalStatusEmployee().getReleaseDivision() == ReleasedProprietyDivision.NOT_RELEASE){
-						screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
-					}
-				}else{
-					if(approveRootStatus.getApprovalStatusEmployee() != null && approveRootStatus.getApprovalStatusEmployee().getApprovalActionByEmpl() == ApprovalActionByEmpl.NOT_APPROVAL){
-						screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
-					}
+				if (approveRootStatus == null)
+					return;
+				if (approveRootStatus.getApproverEmployeeState() != null
+						&& approveRootStatus.getApproverEmployeeState() != ApproverEmployeeState.PHASE_DURING) {
+					screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
 				}
 			}
 		}
@@ -1235,8 +1235,8 @@ public class DailyPerformanceCorrectionProcessor {
 				return employeeIds;
 			}
 		} else if (mode == ScreenMode.APPROVAL.value) {
-			ApprovalRootOfEmployeeImport approvalRoot= approvalStatusAdapter.getApprovalRootOfEmloyee(range.getStartDate(), range.getEndDate(), employeeIdLogin, companyId, 1);
-			List<String> emloyeeIdApp = approvalRoot.getApprovalRootSituations().stream().map(x -> x.getTargetID()).collect(Collectors.toSet()).stream().collect(Collectors.toList());
+			ApprovalRootOfEmployeeImport approvalRoot = approvalStatusAdapter.getApprovalRootOfEmloyee(range.getStartDate(), range.getEndDate(), employeeIdLogin, companyId, 1);
+			List<String> emloyeeIdApp = approvalRoot == null ? Collections.emptyList() : approvalRoot.getApprovalRootSituations().stream().map(x -> x.getTargetID()).collect(Collectors.toSet()).stream().collect(Collectors.toList());
 			if(employeeIds.isEmpty()){
 			   return emloyeeIdApp;
 			}else{
@@ -1306,19 +1306,41 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 	}
 	
-	private Map<String, ApproveRootStatusForEmpDto> getCheckApproval(List<String> employeeIds, DateRange dateRange, String employeeIdApproval){
-		//get check
-		if(employeeIds.isEmpty()) return Collections.emptyMap();
-		List<ApproveRootStatusForEmpImport> approveRootStatusForEmpImport = approvalStatusAdapter.getApprovalByListEmplAndListApprovalRecordDate(dateRange.getStartDate(), dateRange.getEndDate(), employeeIds, AppContexts.user().companyId(), 1);
-		
+	private Map<String, ApproveRootStatusForEmpDto> getCheckApproval(List<String> employeeIds, DateRange dateRange, String employeeIdApproval, int mode){
+		// get check
+		if (employeeIds.isEmpty())
+			return Collections.emptyMap();
+
 		// get disable
-		ApprovalRootOfEmployeeImport approvalRoot = approvalStatusAdapter.getApprovalRootOfEmloyee(
-				dateRange.getStartDate(), dateRange.getEndDate(), employeeIdApproval, AppContexts.user().companyId(),
-				1);
-		Map<String, ApprovalStatus> approvalRootMap = approvalRoot == null ? Collections.emptyMap() : approvalRoot.getApprovalRootSituations().stream()
-				.collect(Collectors.toMap(x -> mergeString(x.getTargetID(), "|", x.getAppDate().toString()), x -> x.getApprovalStatus()));
-		List<ApproveRootStatusForEmpDto> dtos = approveRootStatusForEmpImport.stream().
-				                                map(x -> new ApproveRootStatusForEmpDto(x, approvalRootMap.get(mergeString(x.getEmployeeID(), "|", x.getAppDate().toString())))).collect(Collectors.toList());
-		return dtos.stream().collect(Collectors.toMap(x -> mergeString(x.getEmployeeID(), "|", x.getAppDate().toString()), x -> x));
+		if (mode == ScreenMode.APPROVAL.value) {
+			ApprovalRootOfEmployeeImport approvalRoot = approvalStatusAdapter.getApprovalRootOfEmloyee(
+					dateRange.getStartDate(), dateRange.getEndDate(), employeeIdApproval,
+					AppContexts.user().companyId(), 1);
+			Map<String, ApproveRootStatusForEmpDto> approvalRootMap = approvalRoot == null ? Collections.emptyMap()
+					: approvalRoot.getApprovalRootSituations().stream().collect(
+							Collectors.toMap(x -> mergeString(x.getTargetID(), "|", x.getAppDate().toString()), x -> {
+								ApproveRootStatusForEmpDto dto = new ApproveRootStatusForEmpDto();
+								if (x.getApprovalStatus() == null
+										|| x.getApprovalStatus().getApprovalActionByEmpl() == null) {
+									dto.setCheckApproval(false);
+								} else {
+									if (x.getApprovalStatus()
+											.getApprovalActionByEmpl() == ApprovalActionByEmpl.APPROVALED) {
+										dto.setCheckApproval(true);
+									} else {
+										dto.setCheckApproval(false);
+									}
+								}
+								dto.setApproverEmployeeState(x.getApprovalAtr());
+								return dto;
+							}));
+			return approvalRootMap;
+		} else {
+			List<ApproveRootStatusForEmpImport> approvals = approvalStatusAdapter.getApprovalByListEmplAndListApprovalRecordDate(dateRange.toListDate(), employeeIds, 1);
+			Map<String, ApproveRootStatusForEmpDto> approvalRootMap = approvals.stream().collect(Collectors.toMap(x -> mergeString(x.getEmployeeID(), "|", x.getAppDate().toString()), x -> {
+				return new ApproveRootStatusForEmpDto(null, x.getApprovalStatus() == ApprovalStatusForEmployee.APPROVED);
+			}, (x,y) ->x));
+			return approvalRootMap;
+		}
 	}
 }
