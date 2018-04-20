@@ -60,38 +60,41 @@
                   <div class="pull-left opt-item-detail fixed-flex-layout-right layout-right-kmk015">
                   	<table class="control-group">
 	                    <tr>
-	                       <td style="display: -webkit-box;">
+	                       <td>
 	                          <div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK015_6')}</div>
+	                       </td>
+	                       <td style="display: -webkit-box;">
 	                          <div data-bind="text: selectedCode" class="padding-text-code"></div>
 	                          <div data-bind="text: nameWorkType" class="padding-text-name"></div>
 	                       </td>
 	                    </tr>
 	                    <tr>
-	                       <td style="padding-top: 10px; display: -webkit-box;">
+	                       <td style="padding-top: 10px;">
 	                          <div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK015_7')}</div>
+	                       </td>
+	                       <td>
 	                          <div data-bind="text: timeHistory" class="padding-text-code"></div>
 	                       </td>
-	                       <td></td>
 	                    </tr>
 	                    <tr>
-	                       <td style="padding-top: 10px; display: -webkit-box;">
+	                       <td style="padding-top: 10px;">
 	                          	<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK015_8')}</div>
-	                          	<div style="padding-top: 3px;padding-left: 30px;">
-									<input tabindex="3" id="number-1" data-bind="ntsNumberEditor: { 
-										name: 'Number', 
-										value: numberDay, 
-										constraint: 'OptionalMaxDay', 
-										option: {
-					                        width: '50',
-					                        defaultValue: 0,
-					                        unitID: 'DAYS'
-					                    }, 
-										required: true, 
-										enable: true, 
-										readonly: false}" />
-								</div>
+	                          	
 	                       </td>
-	                       <td></td>
+	                       <td><div style="padding-top: 10px;padding-left: 30px;">
+								<input tabindex="3" id="number-1" data-bind="ntsNumberEditor: { 
+									name: 'Number', 
+									value: numberDay, 
+									constraint: 'OptionalMaxDay', 
+									option: {
+				                        width: '50',
+				                        defaultValue: 0,
+				                        unitID: 'DAYS'
+				                    }, 
+									required: true, 
+									enable: true, 
+									readonly: false}" />
+							</div></td>
 	                    </tr>
                   	</table>
                   </div>

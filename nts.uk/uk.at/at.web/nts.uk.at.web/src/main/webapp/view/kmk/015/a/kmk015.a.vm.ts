@@ -28,7 +28,7 @@ module nts.uk.at.view.kmk015.a {
                 let self = this;
                 self.listWorkType = ko.observableArray([]);
                 self.numberDay = ko.observable(0);
-                self.isCreated = ko.observable(true);
+                self.isCreated = ko.observable(false);
 
                 self.selectedCode = ko.observable('');
                 self.historyId = ko.observable('');
@@ -120,7 +120,7 @@ module nts.uk.at.view.kmk015.a {
                         self.selectedCodeHistory(data[0].historyId);
                     });
                     dfd.resolve();
-                }).fail(function(res) { nts.uk.ui.dialog.alert(res.message) })
+                }).fail(function(res) { nts.uk.ui.dialog.alertError(res) })
                     .always(() => nts.uk.ui.block.clear()); // clear block ui.
 
                 return dfd.promise();
@@ -217,8 +217,8 @@ module nts.uk.at.view.kmk015.a {
                             }
                         });
                         dfd.resolve();
-                    }).fail(function(res) { nts.uk.ui.dialog.alert(res.message) });
-                }).fail(function(res) { nts.uk.ui.dialog.alert(res.message) });
+                    }).fail(function(res) { nts.uk.ui.dialog.alertError(res) });
+                }).fail(function(res) { nts.uk.ui.dialog.alertError(res) });
 
                 //clear blockUI
                 nts.uk.ui.block.clear();
@@ -265,7 +265,7 @@ module nts.uk.at.view.kmk015.a {
                                     self.selectedCodeHistory(self.listHistory()[index].historyId);
                                 }
                             }
-                        }).fail(function(res) { nts.uk.ui.dialog.alert(res.message) });
+                        }).fail(function(res) { nts.uk.ui.dialog.alertError(res) });
 
                     }).fail((res: any) => {
                         nts.uk.ui.dialog.bundledErrors(res);
