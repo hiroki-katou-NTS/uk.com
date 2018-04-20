@@ -66,7 +66,7 @@ public class RegisterIdentityConfirmDay {
 						}
 					} else {
 						List<EmployeeDailyPerError> employeeDailyPerErrors = employeeDailyPerErrorRepository
-								.findAll(employeeId, data.getDate());
+								.find(employeeId, data.getDate());
 						if (!employeeDailyPerErrors.isEmpty()) {
 							List<ErrorAlarmWorkRecord> errorAlarmWorkRecords = errorAlarmWorkRecordRepository
 									.getListErAlByListCodeError(companyId,
@@ -107,7 +107,7 @@ public class RegisterIdentityConfirmDay {
 						}
 					} else {
 						List<EmployeeDailyPerError> employeeDailyPerErrors = employeeDailyPerErrorRepository
-								.findAll(employeeId, data.getDate());
+								.find(employeeId, data.getDate());
 						if (!employeeDailyPerErrors.isEmpty()) {
 							List<ErrorAlarmWorkRecord> errorAlarmWorkRecords = errorAlarmWorkRecordRepository
 									.getListErAlByListCodeError(companyId,
