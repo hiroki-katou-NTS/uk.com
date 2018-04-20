@@ -6,6 +6,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
@@ -51,6 +52,9 @@ public class ManageReGetClass {
 	//大塚要ケインで使用する固定計算設定クラス
 	Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet;
 	
+	//休暇の計算方法の設定
+	HolidayCalcMethodSet holidayCalcMethodSet;
+	
 	//計算処理に入ることができるかフラグ
 	//(造語)
 	Boolean calculatable;
@@ -63,7 +67,8 @@ public class ManageReGetClass {
 			List<WorkTimezoneOtherSubHolTimeSet> subHolTransferSetList,
 			DailyCalculationPersonalInformation personalInfo, DailyUnit dailyUnit,
 			Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSeting,
-			Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet,Boolean calculatable) {
+			Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet,
+			HolidayCalcMethodSet holidayCalcMethodSet,Boolean calculatable) {
 		super();
 		this.calculationRangeOfOneDay = calculationRangeOfOneDay;
 		this.integrationOfDaily = integrationOfDaily;
@@ -73,6 +78,7 @@ public class ManageReGetClass {
 		this.personalInfo = personalInfo;
 		this.fixRestTimeSetting = fixRestTimeSeting;
 		this.dailyUnit = dailyUnit;
+		this.holidayCalcMethodSet = holidayCalcMethodSet;
 		this.calculatable = calculatable;
 	}
 	
@@ -89,6 +95,7 @@ public class ManageReGetClass {
 									null,
 									Optional.empty(),
 									Optional.empty(),
+									null,
 									false);
 				
 	}
@@ -101,7 +108,8 @@ public class ManageReGetClass {
 										  List<WorkTimezoneOtherSubHolTimeSet> subHolTransferSetList,
 										  DailyCalculationPersonalInformation personalInfo, DailyUnit dailyUnit,
 										  Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSeting,
-										  Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet) {
+										  Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet,
+										  HolidayCalcMethodSet holidayCalcMethodSet) {
 		return new ManageReGetClass(calculationRangeOfOneDay,
 									integrationOfDaily,
 									workTimeSetting,
@@ -111,6 +119,7 @@ public class ManageReGetClass {
 									dailyUnit,
 									fixRestTimeSeting,
 									ootsukaFixedWorkSet,
+									holidayCalcMethodSet,
 									true);
 	
 	}

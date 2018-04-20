@@ -37,7 +37,7 @@ public class InsertWorkInfoOfDailyPerforServiceImpl implements InsertWorkInfoOfD
 		} else {
 			// ドメインモデル「日別実績の勤務情報」を登録 - insert
 			this.workInformationRepository.insert(workInfoOfDailyPerformanceUpdate);
-			this.createApprovalStaOfDailyPerforService.createApprovalStaOfDailyPerforService(companyId, employeeID, processingDate);
+//			this.createApprovalStaOfDailyPerforService.createApprovalStaOfDailyPerforService(companyId, employeeID, processingDate);
 		}
 
 	}

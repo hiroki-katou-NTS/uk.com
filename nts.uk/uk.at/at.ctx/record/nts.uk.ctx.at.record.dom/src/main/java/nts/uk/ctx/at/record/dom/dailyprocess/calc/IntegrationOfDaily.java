@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -129,15 +130,14 @@ public class IntegrationOfDaily {
 	 * @param attendanceItemConverter 
 	 * @param integrationOfDaily
 	 */
-	public  Optional<EmployeeDailyPerError> getErrorList(String employeeId,
+	public  List<EmployeeDailyPerError> getErrorList(String employeeId,
 			   											 GeneralDate targetDate,
 			   											 SystemFixedErrorAlarm fixedErrorAlarmCode,
 			   											 CheckExcessAtr checkAtr) {
-		Optional<EmployeeDailyPerError> returnErrorItem = Optional.empty();
 		if(this.getAttendanceTimeOfDailyPerformance().isPresent()) {
-			this.getAttendanceTimeOfDailyPerformance().get().getErrorList(employeeId, targetDate, fixedErrorAlarmCode, checkAtr);
+			return this.getAttendanceTimeOfDailyPerformance().get().getErrorList(employeeId, targetDate, fixedErrorAlarmCode, checkAtr);
 		}
-		return returnErrorItem;
+		return Collections.emptyList();
 	}
 	
 }
