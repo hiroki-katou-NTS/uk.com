@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.ac.record.dailyattendanceitem;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.pub.dailyattendanceitem.AttendanceItemService;
@@ -16,6 +17,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author Anh.BD
  *
  */
+@Stateless
 public class DailyAttendanceItemImpl implements DailyAttendanceItemAdapter {
 
 	@Inject

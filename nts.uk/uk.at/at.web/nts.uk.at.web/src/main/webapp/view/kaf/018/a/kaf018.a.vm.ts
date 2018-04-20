@@ -108,7 +108,11 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                     $('#tree-grid').focusTreeGridComponent();
                 });
                 service.restoreSelectedClosureId().done(value =>{
-                    self.selectTarget(value);
+                    if(value) {
+                        self.selectTarget(value); 
+                        }else {
+                        self.selectTarget(1);    
+                    }   
                 });
              dfd.resolve();
             });
