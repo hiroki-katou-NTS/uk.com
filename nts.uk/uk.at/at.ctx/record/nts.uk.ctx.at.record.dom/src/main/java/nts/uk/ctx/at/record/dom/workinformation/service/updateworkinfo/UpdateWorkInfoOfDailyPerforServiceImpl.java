@@ -41,7 +41,7 @@ public class UpdateWorkInfoOfDailyPerforServiceImpl implements UpdateWorkInfoOfD
 				// ドメインモデル「日別実績の勤務情報」を更新する(Update domain 「日別実績の勤務情報」)
 				this.workInformationRepository.updateByKeyFlush(workInfoOfDailyPerformance);
 				
-				// domain event
+				// domain event 
 				workInfoOfDailyPerformance.workInfoChanged();
 			}
 		}
