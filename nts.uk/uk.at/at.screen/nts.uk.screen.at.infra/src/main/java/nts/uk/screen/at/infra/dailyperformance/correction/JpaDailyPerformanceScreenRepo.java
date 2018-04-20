@@ -314,15 +314,15 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e FROM KrcdtSyainDpErList e ");
-		builderString.append("WHERE e.krcdtSyainDpErListPK.processingDate IN :lstDate ");
-		builderString.append("AND e.krcdtSyainDpErListPK.employeeId IN :lstEmployee");
+		builderString.append("WHERE e.processingDate IN :lstDate ");
+		builderString.append("AND e.employeeId IN :lstEmployee");
 		SEL_DP_ERROR_EMPLOYEE = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e FROM KrcdtSyainDpErList e ");
-		builderString.append("WHERE e.krcdtSyainDpErListPK.processingDate IN :lstDate ");
-		builderString.append("AND e.krcdtSyainDpErListPK.employeeId IN :lstEmployee ");
-		builderString.append("AND e.krcdtSyainDpErListPK.errorCode IN :errorCodes");
+		builderString.append("WHERE e.processingDate IN :lstDate ");
+		builderString.append("AND e.employeeId IN :lstEmployee ");
+		builderString.append("AND e.errorCode IN :errorCodes");
 		SEL_DP_ERROR_EMPLOYEE_CONDITION_ERRORS = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -720,8 +720,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		return this.queryProxy().query(SEL_DP_ERROR_EMPLOYEE, KrcdtSyainDpErList.class)
 				.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", lstEmployee).getList()
 				.stream().map(e -> {
-					return new DPErrorDto(e.krcdtSyainDpErListPK.errorCode, "", e.krcdtSyainDpErListPK.employeeId,
-							e.krcdtSyainDpErListPK.processingDate, e.attendanceItemId.intValue(),
+					return new DPErrorDto(e.errorCode, "", e.employeeId,
+							e.processingDate, 
+							!e.erAttendanceItem.isEmpty() ? e.erAttendanceItem.get(0).krcdtErAttendanceItemPK.attendanceItemId : null,
 							e.errorCancelable.intValue() == 1 ? true : false);
 				}).collect(Collectors.toList());
 	}
@@ -731,8 +732,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		return this.queryProxy().query(SEL_DP_ERROR_EMPLOYEE_CONDITION_ERRORS, KrcdtSyainDpErList.class)
 				.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", lstEmployee)
 				.setParameter("errorCodes", errorCodes).getList().stream().map(e -> {
-					return new DPErrorDto(e.krcdtSyainDpErListPK.errorCode, "", e.krcdtSyainDpErListPK.employeeId,
-							e.krcdtSyainDpErListPK.processingDate, e.attendanceItemId.intValue(),
+					return new DPErrorDto(e.errorCode, "", e.employeeId,
+							e.processingDate,
+							!e.erAttendanceItem.isEmpty() ? e.erAttendanceItem.get(0).krcdtErAttendanceItemPK.attendanceItemId : null,
 							e.errorCancelable.intValue() == 1 ? true : false);
 				}).collect(Collectors.toList());
 	}
