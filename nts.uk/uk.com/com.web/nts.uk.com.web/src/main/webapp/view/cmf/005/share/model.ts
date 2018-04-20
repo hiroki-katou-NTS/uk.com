@@ -21,6 +21,20 @@ module nts.uk.com.view.cmf005.share.model {
         }
     } 
     
+    export class ItemDate {
+        startDate: string;
+        endDate: string;
+        startYear: string;
+        endYear: string;
+
+        constructor(startDate: string, endDate: string,startYear: string,endYear: string,) {
+            this.startDate = startDate;
+            this.endDate = endDate;
+            this.startYear = startYear;
+            this.endYear = endYear;
+        }
+    } 
+    
     //screen B
     export class AcceptanceCodeConvert {
         convertCode: KnockoutObservable<string>;

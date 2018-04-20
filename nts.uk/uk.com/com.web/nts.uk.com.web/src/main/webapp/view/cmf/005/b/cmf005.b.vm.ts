@@ -48,50 +48,16 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
         //B8_1
         isExistCompressPasswordFlg: KnockoutObservable<boolean>;
-        isDisplayCompressPassword: KnockoutObservable<boolean>;
         passwordForCompressFile: KnockoutObservable<string>;
         confirmPasswordForCompressFile: KnockoutObservable<string>;
 
         constructor() {
             var self = this;
-
             self.initComponents();
             self.setDefault();
 
         }
-        
-        setDefault() {
-            var self = this;
-            //set B3_1 "ON"
-            self.rdSelected = ko.observable(1);
 
-            //B6_2_2
-            var dateCurrent = moment.utc(new Date(), "YYYY/MM/DD");
-//            var dateCurrent = moment.utc("2019/3/28", "YYYY/MM/DD");
-            var dateNow = dateCurrent.add(1,"M");
-            console.log("Date now========Day:"+ dateNow.get('date') + "/Moth:" + dateNow.get('month') + "/Year :" + dateNow.get('year'));
-            var caculaterMoth = dateNow.add(-1, "M");
-            console.log("caculaterMoth========Day:"+ caculaterMoth.get('date') + "/Moth:" + caculaterMoth.get('month') + "/Year :" + caculaterMoth.get('year'));
-            var caculaterDay = caculaterMoth.add(1, "d");
-                     
-            
-            var getDay = caculaterMoth.get('date');
-            var getMoth = caculaterMoth.get('month');
-            var getYear = caculaterMoth.get('year');
-            console.log("caculaterDay========Day:"+ getDay + "/Moth:" + getMoth + "/Year :" + getYear);
-           
-
-           
-//            self.startDateDailyString = ko.observable(getYear+"/"+getMoth+"/"+getDay);
-//            self.endDateDailyString = ko.observable(getYear+"/"+getMoth+"/"+getDay);
-//
-//            self.startDateMothlyString = ko.observable(getDayStart);
-//            self.endDateMothlyString = ko.observable(dateNow);
-//
-//            self.startDateYearlyString = ko.observable(getDayStart);
-//            self.endDateYearlyString = ko.observable(dateNow);
-        }
-        
         initComponents() {
             var self = this;
 
@@ -103,11 +69,11 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             ];
             self.activeStep = ko.observable(0);
             self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
-
+            
             //Radio button
             self.optionCategory = ko.observable({ value: 1, text: nts.uk.resource.getText("CMF005_15") });
             self.optionDeleteSet = ko.observable({ value: 2, text: nts.uk.resource.getText("CMF005_16") });
-
+            self.deleteSetName = ko.observable('');
             //B5_3
             this.listDataCategory = ko.observableArray([]);
             this.listColumnHeader = ko.observableArray([
@@ -166,15 +132,30 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 new model.ItemModel(model.SAVE_BEFOR_DELETE_ATR.YES, getText('CMF005_35')),
                 new model.ItemModel(model.SAVE_BEFOR_DELETE_ATR.NO, getText('CMF005_36'))
             ]);
-            self.isSaveBeforeDeleteFlg = ko.observable(model.SAVE_BEFOR_DELETE_ATR.YES);
 
             //B8_1
-            self.isExistCompressPasswordFlg = ko.observable(true);
-            self.isDisplayCompressPassword = ko.observable(true);
             self.passwordForCompressFile = ko.observable("");
             self.confirmPasswordForCompressFile = ko.observable("");
 
         }
+
+        setDefault() {
+            var self = this;
+            //set B3_1 "ON"
+            self.rdSelected = ko.observable(1);
+
+            //B6_2_2
+            let startEndDate = self.getDate();
+            self.dateValue1 = ko.observable({ startDate: startEndDate.startDate, endDate: startEndDate.endDate });
+            self.dateValue2 = ko.observable({ startDate: startEndDate.startDate, endDate: startEndDate.endDate });
+            self.dateValue3 = ko.observable({ startDate: startEndDate.startYear, endDate: startEndDate.endYear });
+
+            //B7_2_1
+            self.isSaveBeforeDeleteFlg = ko.observable(model.SAVE_BEFOR_DELETE_ATR.YES);
+            //B8_2_1
+            self.isExistCompressPasswordFlg = ko.observable(true);
+        }
+
         // get status display button select category
         isEnableBtnOpenC() {
             var self = this;
@@ -203,7 +184,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
         // Open screen D
         nextScreenD() {
-            nts.uk.request.jump("/view/cmf/005/d/index.xhtml");
+            let self = this;
+            $('#ex_accept_wizard').ntsWizard("next");
         }
 
         // Open screen A
@@ -211,7 +193,52 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             nts.uk.request.jump("/view/cmf/005/a/index.xhtml");
         }
 
+        /**
+         * return 本日(NOW）－　１ヵ月　＋　１日
+         */
+        getDate() {
+            var timeCurrent = moment.utc(new Date(), "YYYY/MM/DD");
+            //            let dateCurrent = moment.utc("2000/3/28", "YYYY/MM/DD");
+            var dateNow = timeCurrent.add(1, "M");
+            let currentYear = timeCurrent.get('year');
+            let date = dateNow.get('date');
+            let moth = dateNow.get('month');
+            let year = dateNow.get('year');
 
+            let newMonth = moth - 1 == 0 ? 12 : moth - 1;
+            var newYear = newMonth == 12 ? year - 1 : year;
+            let newDate = date + 1;
+            if (newMonth == 4 || newMonth == 6 || newMonth == 9 || newMonth == 11) {
+                newDate = newDate - 30 > 0 ? newDate - 30 : newDate;
+                newMonth = newDate - 30 > 0 ? newMonth + 1 : newMonth;
+            } else {
+                newDate = newDate - 31 > 0 ? newDate - 31 : newDate;
+                newMonth = newDate - 31 > 0 ? newMonth + 1 : newMonth;
+            }
+
+            //if current year is a leap year
+            if (moment([currentYear]).isLeapYear()) {
+
+                if (newMonth == 2) {
+                    let sub = newDate - 29;
+                    if (sub > 0) {
+                        newMonth = newMonth + 1;
+                        newDate = sub;
+                    }
+                }
+            }
+            //if current year is not a leap year
+            else {
+                if (newMonth == 2) {
+                    let sub = newDate - 28;
+                    if (sub > 0) {
+                        newMonth = newMonth + 1;
+                        newDate = sub;
+                    }
+                }
+            }
+            return new model.ItemDate(newYear + "/" + newMonth + "/" + newDate, year + "/" + moth + "/" + date, newYear, year);
+        }
 
     }
 
