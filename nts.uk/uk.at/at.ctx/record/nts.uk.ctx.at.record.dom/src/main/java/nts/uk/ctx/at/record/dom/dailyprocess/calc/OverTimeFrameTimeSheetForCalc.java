@@ -251,8 +251,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
         									   								    																))
         									   								    .collect(Collectors.toList()),
         									   								    autoCalculationSet,
-        									   								    overTimeHourSetList,
-        									   								    holidayCalcMethodSet);
+        									   								    overTimeHourSetList);
         }
         return overTimeWorkFrameTimeSheetList;
     }
