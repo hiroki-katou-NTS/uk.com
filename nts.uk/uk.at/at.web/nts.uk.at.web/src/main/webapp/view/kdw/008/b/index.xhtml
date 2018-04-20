@@ -98,7 +98,7 @@
 											enable: true}">
 										</div>
 										<div id="label2" data-bind="ntsFormLabel: { constraint: 'DailyPerFormatSheetName', inline: true, required: true, enable: true}">#{i18n.getText('KDW008_8')}</div>
-										<input class="need-check" data-bind="ntsTextEditor: {value: selectedSheetName,
+										<input class="need-check" data-bind="ntsTextEditor: {value: selectedSheetName, immediate: true,
 																	   	  constraint: 'DailyPerFormatSheetName',
 																	   	  name: '#[KDW008_8]',
 																	   	  required: true}"></input>
@@ -145,7 +145,7 @@
 											enable: true}">
 										</div>
 										<div id="label2" data-bind="ntsFormLabel: { constraint: 'DailyPerFormatSheetName', inline: true, required: true, enable: true}">#{i18n.getText('KDW008_8')}</div>
-										<input class="need-check" data-bind="ntsTextEditor: {value: selectedSheetName,
+										<input  id="selectedSheetName"  data-bind="ntsTextEditor: {value: selectedSheetName,
 																	   	  constraint: 'DailyPerFormatSheetName',
 																	   	  name: '#[KDW008_8]',
 																	   	  required: true}"></input>
@@ -171,7 +171,7 @@
 										}"></div>
 									<div id="up-down"
 										data-bind="ntsUpDown: {
-													targetSource: valuesMonthly,
+													targetSource: valuesMonth,
 													primaryKey: 'attendanceItemId',
 													comId: '#swap-list3',
 													type: 'swap',

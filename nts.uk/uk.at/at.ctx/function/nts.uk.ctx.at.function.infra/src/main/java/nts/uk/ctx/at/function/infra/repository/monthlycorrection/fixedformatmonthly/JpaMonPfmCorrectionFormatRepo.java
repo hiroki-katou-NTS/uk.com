@@ -59,6 +59,7 @@ public class JpaMonPfmCorrectionFormatRepo extends JpaRepository implements MonP
 				.getSingle().get();
 
 		
+		
 		List<KfnmtMonthlyActualResultPrm> toInsertM = new ArrayList<>();
 		List<KfnmtMonthlyActualResultPrm> toUpdateC = new ArrayList<>();
 		newEntity.listKrcmtMonthlyActualResultPfm.stream().forEach(nE-> {
@@ -73,60 +74,86 @@ public class JpaMonPfmCorrectionFormatRepo extends JpaRepository implements MonP
 				toInsertM.add(nE);
 			}
 		});
-		commandProxy().insertAll(toInsertM);
-		//update list Item
-		List<KfnmtDisplayTimeItemPfm> newItem = toUpdateC.stream().map(c -> c.listKrcmtDisplayTimeItemPfm).flatMap(List::stream).collect(Collectors.toList());
-		List<KfnmtDisplayTimeItemPfm> updateItem = updateEntity.listKrcmtMonthlyActualResultPfm.stream().map(c -> c.listKrcmtDisplayTimeItemPfm).flatMap(List::stream).collect(Collectors.toList());
-
-		List<KfnmtDisplayTimeItemPfm> toRemove = new ArrayList<>();
-		List<KfnmtDisplayTimeItemPfm> toUpdate = new ArrayList<>();
-		List<KfnmtDisplayTimeItemPfm> toAdd = new ArrayList<>();
 		
-		//check add and update
-		for(KfnmtDisplayTimeItemPfm nItem : newItem) {
-			boolean checkItem = false;
-			for(KfnmtDisplayTimeItemPfm uItem : updateItem) {
-				if(nItem.kfnmtDisplayTimeItemPfmPK.monthlyPfmFormatCode.equals(uItem.kfnmtDisplayTimeItemPfmPK.monthlyPfmFormatCode)
-						&& nItem.kfnmtDisplayTimeItemPfmPK.companyID.equals(uItem.kfnmtDisplayTimeItemPfmPK.companyID)
-						&& nItem.kfnmtDisplayTimeItemPfmPK.sheetNo == uItem.kfnmtDisplayTimeItemPfmPK.sheetNo
-						&& nItem.kfnmtDisplayTimeItemPfmPK.itemDisplay == uItem.kfnmtDisplayTimeItemPfmPK.itemDisplay) {
-					checkItem = true;
-					toUpdate.add(nItem);	
-				}
-			}
-			if(!checkItem) {
-				toAdd.add(nItem);
-			}
-				
+		if(!toInsertM.isEmpty()) {
+			commandProxy().insertAll(toInsertM);
+			updateEntity.sheetName = newEntity.sheetName;
+			this.commandProxy().update(updateEntity);
 		}
-		//check remove
-		for(KfnmtDisplayTimeItemPfm uItem : updateItem ) {
-			boolean checkItem = false;
+		
+		
+		if(!toUpdateC.isEmpty()) {
+			toUpdateC.stream().forEach(nE -> {
+				nE.sheetName = newEntity.listKrcmtMonthlyActualResultPfm.stream().filter(oE -> {
+						return  oE.kfnmtMonthlyActualResultPrmPK.monthlyPfmFormatCode.equals(nE.kfnmtMonthlyActualResultPrmPK.monthlyPfmFormatCode)
+							&& oE.kfnmtMonthlyActualResultPrmPK.companyID.equals(nE.kfnmtMonthlyActualResultPrmPK.companyID)
+							&& oE.kfnmtMonthlyActualResultPrmPK.sheetNo == nE.kfnmtMonthlyActualResultPrmPK.sheetNo;
+				}).findFirst().get().sheetName;
+			});
+			List<KfnmtDisplayTimeItemPfm> newItem = toUpdateC.stream().map(c -> c.listKrcmtDisplayTimeItemPfm).flatMap(List::stream).collect(Collectors.toList());
+			List<KfnmtDisplayTimeItemPfm> updateItem = updateEntity.listKrcmtMonthlyActualResultPfm.stream().filter(c -> {
+				return toUpdateC.stream().filter(n -> {
+					return n.kfnmtMonthlyActualResultPrmPK.monthlyPfmFormatCode.equals(c.kfnmtMonthlyActualResultPrmPK.monthlyPfmFormatCode)
+							&& n.kfnmtMonthlyActualResultPrmPK.companyID.equals(c.kfnmtMonthlyActualResultPrmPK.companyID)
+							&& n.kfnmtMonthlyActualResultPrmPK.sheetNo == c.kfnmtMonthlyActualResultPrmPK.sheetNo;
+				}).findFirst().isPresent();
+			}).map(c -> c.listKrcmtDisplayTimeItemPfm).flatMap(List::stream).collect(Collectors.toList());
+			List<KfnmtDisplayTimeItemPfm> toRemove = new ArrayList<>();
+			List<KfnmtDisplayTimeItemPfm> toUpdate = new ArrayList<>();
+			List<KfnmtDisplayTimeItemPfm> toAdd = new ArrayList<>();
+			
+			//check add and update
 			for(KfnmtDisplayTimeItemPfm nItem : newItem) {
-				if(nItem.kfnmtDisplayTimeItemPfmPK.monthlyPfmFormatCode.equals(uItem.kfnmtDisplayTimeItemPfmPK.monthlyPfmFormatCode)
-						&& nItem.kfnmtDisplayTimeItemPfmPK.companyID.equals(uItem.kfnmtDisplayTimeItemPfmPK.companyID)
-						&& nItem.kfnmtDisplayTimeItemPfmPK.sheetNo == uItem.kfnmtDisplayTimeItemPfmPK.sheetNo
-						&& nItem.kfnmtDisplayTimeItemPfmPK.itemDisplay == uItem.kfnmtDisplayTimeItemPfmPK.itemDisplay) {
-					checkItem = true;
-					break;
+				boolean checkItem = false;
+				for(KfnmtDisplayTimeItemPfm uItem : updateItem) {
+					if(nItem.kfnmtDisplayTimeItemPfmPK.monthlyPfmFormatCode.equals(uItem.kfnmtDisplayTimeItemPfmPK.monthlyPfmFormatCode)
+							&& nItem.kfnmtDisplayTimeItemPfmPK.companyID.equals(uItem.kfnmtDisplayTimeItemPfmPK.companyID)
+							&& nItem.kfnmtDisplayTimeItemPfmPK.sheetNo == uItem.kfnmtDisplayTimeItemPfmPK.sheetNo
+							&& nItem.kfnmtDisplayTimeItemPfmPK.itemDisplay == uItem.kfnmtDisplayTimeItemPfmPK.itemDisplay) {
+						checkItem = true;
+						toUpdate.add(nItem);	
+					}
 				}
+				if(!checkItem) {
+					toAdd.add(nItem);
+				}
+					
 			}
-			if(!checkItem) {
-				toRemove.add(uItem);
+			//check remove
+			for(KfnmtDisplayTimeItemPfm uItem : updateItem ) {
+				boolean checkItem = false;
+				for(KfnmtDisplayTimeItemPfm nItem : newItem) {
+					if(nItem.kfnmtDisplayTimeItemPfmPK.monthlyPfmFormatCode.equals(uItem.kfnmtDisplayTimeItemPfmPK.monthlyPfmFormatCode)
+							&& nItem.kfnmtDisplayTimeItemPfmPK.companyID.equals(uItem.kfnmtDisplayTimeItemPfmPK.companyID)
+							&& nItem.kfnmtDisplayTimeItemPfmPK.sheetNo == uItem.kfnmtDisplayTimeItemPfmPK.sheetNo
+							&& nItem.kfnmtDisplayTimeItemPfmPK.itemDisplay == uItem.kfnmtDisplayTimeItemPfmPK.itemDisplay) {
+						checkItem = true;
+						break;
+					}
+				}
+				if(!checkItem) {
+					toRemove.add(uItem);
+				}
+					
 			}
-				
+			
+			this.commandProxy().updateAll(toUpdateC);
+			this.commandProxy().insertAll(toAdd);
+			this.commandProxy().updateAll(toUpdate);
+			this.commandProxy().removeAll(toRemove);
 		}
-		
-		this.commandProxy().insertAll(toAdd);
-		this.commandProxy().update(toUpdate);
-		this.commandProxy().removeAll(toRemove);
-		
+//		//update list Item
+//		List<KfnmtDisplayTimeItemPfm> newItem = toUpdateC.stream().map(c -> c.listKrcmtDisplayTimeItemPfm).flatMap(List::stream).collect(Collectors.toList());
+//		List<KfnmtDisplayTimeItemPfm> updateItem = updateEntity.listKrcmtMonthlyActualResultPfm.stream().map(c -> c.listKrcmtDisplayTimeItemPfm).flatMap(List::stream).collect(Collectors.toList());
 	}
 
 	@Override
 	public void deleteMonPfmCorrectionFormat(String companyID, String monthlyPfmFormatCode) {
-		// TODO Auto-generated method stub
-		
+		KrcmtMonPfmCorrectionFormat newEntity = this.queryProxy().query(GET_MON_PRM_BY_CODE, KrcmtMonPfmCorrectionFormat.class)
+				.setParameter("companyID", companyID)
+				.setParameter("monthlyPfmFormatCode", monthlyPfmFormatCode)
+				.getSingle().get();
+		this.commandProxy().remove(newEntity);
 	}
 
 }

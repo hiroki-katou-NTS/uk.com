@@ -61,54 +61,74 @@ public class JpaMonthlyRecordWorkTypeRepo extends JpaRepository implements Month
 				toInsertM.add(nE);
 			}
 		});
-		commandProxy().insertAll(toInsertM);
-		//update list Item
-		List<KrcmtDisplayTimeItemRC> newItem = toUpdateC.stream().map(c -> c.listKrcmtDisplayTimeItemRC).flatMap(List::stream).collect(Collectors.toList());
-		List<KrcmtDisplayTimeItemRC> updateItem = updateEntity.listKrcmtMonthlyActualResultRC.stream().map(c -> c.listKrcmtDisplayTimeItemRC).flatMap(List::stream).collect(Collectors.toList());
-
-		List<KrcmtDisplayTimeItemRC> toRemove = new ArrayList<>();
-		List<KrcmtDisplayTimeItemRC> toUpdate = new ArrayList<>();
-		List<KrcmtDisplayTimeItemRC> toAdd = new ArrayList<>();
 		
-		//check add and update
-		for(KrcmtDisplayTimeItemRC nItem : newItem) {
-			boolean checkItem = false;
-			for(KrcmtDisplayTimeItemRC uItem : updateItem) {
-				if(nItem.krcmtDisplayTimeItemRCPK.businessTypeCode.equals(uItem.krcmtDisplayTimeItemRCPK.businessTypeCode)
-						&& nItem.krcmtDisplayTimeItemRCPK.companyID.equals(uItem.krcmtDisplayTimeItemRCPK.companyID)
-						&& nItem.krcmtDisplayTimeItemRCPK.sheetNo == uItem.krcmtDisplayTimeItemRCPK.sheetNo
-						&& nItem.krcmtDisplayTimeItemRCPK.itemDisplay == uItem.krcmtDisplayTimeItemRCPK.itemDisplay) {
-					checkItem = true;
-					toUpdate.add(nItem);	
-				}
-			}
-			if(!checkItem) {
-				toAdd.add(nItem);
-			}
-				
+		if(!toInsertM.isEmpty()) {
+			commandProxy().insertAll(toInsertM);
+			this.commandProxy().update(updateEntity);
 		}
-		//check remove
-		for(KrcmtDisplayTimeItemRC uItem : updateItem ) {
-			boolean checkItem = false;
+		
+		if(!toUpdateC.isEmpty()) {
+			toUpdateC.stream().forEach(nE -> {
+				nE.sheetName = newEntity.listKrcmtMonthlyActualResultRC.stream().filter(oE -> {
+						return  oE.krcmtMonthlyActualResultRCPK.businessTypeCode.equals(nE.krcmtMonthlyActualResultRCPK.businessTypeCode)
+							&& oE.krcmtMonthlyActualResultRCPK.companyID.equals(nE.krcmtMonthlyActualResultRCPK.companyID)
+							&& oE.krcmtMonthlyActualResultRCPK.sheetNo == nE.krcmtMonthlyActualResultRCPK.sheetNo;
+				}).findFirst().get().sheetName;
+			});
+			
+			//update list Item
+			List<KrcmtDisplayTimeItemRC> newItem = toUpdateC.stream().map(c -> c.listKrcmtDisplayTimeItemRC).flatMap(List::stream).collect(Collectors.toList());
+			List<KrcmtDisplayTimeItemRC> updateItem = updateEntity.listKrcmtMonthlyActualResultRC.stream().filter(c -> {
+				return toUpdateC.stream().filter(n -> {
+					return n.krcmtMonthlyActualResultRCPK.businessTypeCode.equals(c.krcmtMonthlyActualResultRCPK.businessTypeCode)
+							&& n.krcmtMonthlyActualResultRCPK.companyID.equals(c.krcmtMonthlyActualResultRCPK.companyID)
+							&& n.krcmtMonthlyActualResultRCPK.sheetNo == c.krcmtMonthlyActualResultRCPK.sheetNo;
+				}).findFirst().isPresent();
+			}).map(c -> c.listKrcmtDisplayTimeItemRC).flatMap(List::stream).collect(Collectors.toList());
+
+			List<KrcmtDisplayTimeItemRC> toRemove = new ArrayList<>();
+			List<KrcmtDisplayTimeItemRC> toUpdate = new ArrayList<>();
+			List<KrcmtDisplayTimeItemRC> toAdd = new ArrayList<>();
+			
+			//check add and update
 			for(KrcmtDisplayTimeItemRC nItem : newItem) {
-				if(nItem.krcmtDisplayTimeItemRCPK.businessTypeCode.equals(uItem.krcmtDisplayTimeItemRCPK.businessTypeCode)
-						&& nItem.krcmtDisplayTimeItemRCPK.companyID.equals(uItem.krcmtDisplayTimeItemRCPK.companyID)
-						&& nItem.krcmtDisplayTimeItemRCPK.sheetNo == uItem.krcmtDisplayTimeItemRCPK.sheetNo
-						&& nItem.krcmtDisplayTimeItemRCPK.itemDisplay == uItem.krcmtDisplayTimeItemRCPK.itemDisplay) {
-					checkItem = true;
-					break;
+				boolean checkItem = false;
+				for(KrcmtDisplayTimeItemRC uItem : updateItem) {
+					if(nItem.krcmtDisplayTimeItemRCPK.businessTypeCode.equals(uItem.krcmtDisplayTimeItemRCPK.businessTypeCode)
+							&& nItem.krcmtDisplayTimeItemRCPK.companyID.equals(uItem.krcmtDisplayTimeItemRCPK.companyID)
+							&& nItem.krcmtDisplayTimeItemRCPK.sheetNo == uItem.krcmtDisplayTimeItemRCPK.sheetNo
+							&& nItem.krcmtDisplayTimeItemRCPK.itemDisplay == uItem.krcmtDisplayTimeItemRCPK.itemDisplay) {
+						checkItem = true;
+						toUpdate.add(nItem);	
+					}
 				}
+				if(!checkItem) {
+					toAdd.add(nItem);
+				}
+					
 			}
-			if(!checkItem) {
-				toRemove.add(uItem);
+			//check remove
+			for(KrcmtDisplayTimeItemRC uItem : updateItem ) {
+				boolean checkItem = false;
+				for(KrcmtDisplayTimeItemRC nItem : newItem) {
+					if(nItem.krcmtDisplayTimeItemRCPK.businessTypeCode.equals(uItem.krcmtDisplayTimeItemRCPK.businessTypeCode)
+							&& nItem.krcmtDisplayTimeItemRCPK.companyID.equals(uItem.krcmtDisplayTimeItemRCPK.companyID)
+							&& nItem.krcmtDisplayTimeItemRCPK.sheetNo == uItem.krcmtDisplayTimeItemRCPK.sheetNo
+							&& nItem.krcmtDisplayTimeItemRCPK.itemDisplay == uItem.krcmtDisplayTimeItemRCPK.itemDisplay) {
+						checkItem = true;
+						break;
+					}
+				}
+				if(!checkItem) {
+					toRemove.add(uItem);
+				}
+					
 			}
-				
+			this.commandProxy().updateAll(toUpdateC);
+			this.commandProxy().insertAll(toAdd);
+			this.commandProxy().updateAll(toUpdate);
+			this.commandProxy().removeAll(toRemove);
 		}
-		
-		this.commandProxy().insertAll(toAdd);
-		this.commandProxy().update(toUpdate);
-		this.commandProxy().removeAll(toRemove);
-
 	}
 
 }

@@ -23,7 +23,7 @@ public class UpdateMonthlyRecordWorkTypeCmdHandler  extends CommandHandler<Month
 		MonthlyRecordWorkTypeCmd command = context.getCommand();
 		command.setCompanyID(companyID);
 		Optional<MonthlyRecordWorkType> data = repo.getMonthlyRecordWorkTypeByCode(companyID, command.getBusinessTypeCode());
-		if(data.isPresent()) {
+		if(!data.isPresent()) {
 			repo.addMonthlyRecordWorkType(MonthlyRecordWorkTypeCmd.fromCommand(command));
 		}else {
 			repo.updateMonthlyRecordWorkType(MonthlyRecordWorkTypeCmd.fromCommand(command));
