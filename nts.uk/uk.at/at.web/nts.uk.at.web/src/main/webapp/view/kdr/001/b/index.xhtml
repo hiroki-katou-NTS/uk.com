@@ -12,6 +12,10 @@
 			<com:scriptfile path="kdr001.b.start.js" />
 			<com:scriptfile path="kdr001.b.service.js" />
 			<com:scriptfile path="kdr001.b.vm.js" />
+			<com:ValidatorScript>
+		        nts.uk.ctx.at.function.dom.holidaysremaining.ExecutionCode
+		        nts.uk.ctx.at.function.dom.holidaysremaining.ExecutionName
+		    </com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
@@ -54,6 +58,7 @@
 					</div>
 					<input style="width: 150px;" tabindex="6" id="holidayCode"
 						data-bind="ntsTextEditor: {
+							constraint: ['ExecutionCode'], 
 							name: '#[KDR001_40]',
 							value: cd,  
 							enable: true,
@@ -62,6 +67,7 @@
 					<input style="width: 250px; margin: 20px;" tabindex="7"
 						id="holidayName"
 						data-bind="ntsTextEditor: {
+							constraint: ['ExecutionName'],
 							name: '#[KDR001_41]',
 							value: name,
 						  	enable: true,

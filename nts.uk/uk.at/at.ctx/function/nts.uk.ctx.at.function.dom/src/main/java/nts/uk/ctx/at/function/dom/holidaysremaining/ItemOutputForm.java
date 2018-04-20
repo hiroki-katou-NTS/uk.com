@@ -42,7 +42,7 @@ public class ItemOutputForm extends DomainObject {
 	private YearlyReserved yearlyReserved;
 
 	// 特別休暇
-	private List<String> specialHoliday;
+	private List<Integer> specialHoliday;
 
 	public ItemOutputForm(
 			boolean nursingcareLeave,
@@ -52,7 +52,7 @@ public class ItemOutputForm extends DomainObject {
 			boolean yearlyHoliday, boolean insideHours, boolean insideHalfDay, 
 			boolean numberRemainingPause, boolean undigestedPause, boolean pauseItem,
 			boolean yearlyReserved,
-			List<String> listHolidayCds) {
+			List<Integer> listHolidayCds) {
 		super();
 		this.nursingcareLeave = new NursingCareLeave(nursingcareLeave);
 		this.substituteHoliday = new ItemsOutputtedAlternate( remainingChargeSubstitute,representSubstitute, outputItemSubstitute);

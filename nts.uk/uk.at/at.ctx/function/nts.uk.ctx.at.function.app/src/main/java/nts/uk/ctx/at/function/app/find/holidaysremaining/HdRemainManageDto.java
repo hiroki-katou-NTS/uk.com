@@ -102,7 +102,7 @@ public class HdRemainManageDto {
 	 */
 	private boolean nursingCareLeave;
 	
-	private List<String> listSpecialHoliday;
+	private List<Integer> listSpecialHoliday;
 
 	public static HdRemainManageDto fromDomain(HolidaysRemainingManagement domain) {
 		return new HdRemainManageDto(
@@ -122,7 +122,8 @@ public class HdRemainManageDto {
 				domain.getListItemsOutput().getHolidays().isMonthlyPublic(),
 				domain.getListItemsOutput().getChildNursingVacation().isChildNursingLeave(),
 				domain.getListItemsOutput().getNursingcareLeave().isNursingLeave(),
-				domain.getListItemsOutput().getSpecialHoliday());
+				domain.getListItemsOutput().getSpecialHoliday()
+				);
 
 	}
 
@@ -130,7 +131,7 @@ public class HdRemainManageDto {
 			boolean insideHours, boolean yearlyReserved, boolean outItemSub, boolean representSub,
 			boolean remainChargeSub, boolean pauseItem, boolean undigestedPause, boolean numRemainPause,
 			boolean outputItemsHolidays, boolean outputHolidayForward, boolean monthlyPublic, boolean childCareLeave,
-			boolean nursingCareLeave, List<String> specHolidays
+			boolean nursingCareLeave, List<Integer> specHolidays
 			) {
 		super();
 		this.cid = cid;

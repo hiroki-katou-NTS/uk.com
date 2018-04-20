@@ -38,6 +38,6 @@ public class KfnmtSpecialHolidayPk implements Serializable {
 	 */
 	@Basic(optional = false)
 	@Column(name = "SPECIAL_CD")
-	public String specialCd;
+	public int specialCd;
 
 }
