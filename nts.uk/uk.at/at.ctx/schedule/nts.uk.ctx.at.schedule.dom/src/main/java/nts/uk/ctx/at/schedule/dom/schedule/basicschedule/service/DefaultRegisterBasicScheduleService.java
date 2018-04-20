@@ -168,7 +168,18 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				return false;
 			}
 		} catch (BusinessException ex) {
-			addMessage(errList, ex.getMessageId());
+			int param = Integer.parseInt(ex.getParameters().get(0));
+			String paramStr = null;
+			if (param == 73) {
+				paramStr = "KSU001_73";
+			}
+
+			if (param == 74) {
+				paramStr = "KSU001_74";
+			}
+
+			String msgError = ex.getMessageId() + "," + paramStr;
+			addMessage(errList, msgError);
 			return false;
 		}
 
