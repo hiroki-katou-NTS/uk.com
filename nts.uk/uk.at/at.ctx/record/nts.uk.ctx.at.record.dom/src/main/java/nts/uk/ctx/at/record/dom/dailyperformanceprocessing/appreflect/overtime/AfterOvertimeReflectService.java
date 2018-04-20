@@ -13,5 +13,5 @@ public interface AfterOvertimeReflectService {
 	 * @param overtimePara
 	 * @return
 	 */
-	public ApplicationReflectOutput reflectAfterOvertime(OvertimeParameter overtimePara);
+	public boolean reflectAfterOvertime(OvertimeParameter overtimePara);
 }
