@@ -243,13 +243,16 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
             /*振替処理   法定内基準時間を計算する*/
         	AttendanceTime ableRangeTime = new AttendanceTime(dailyUnit.getDailyTime().valueAsMinutes() - breakdownTimeDay.getPredetermineWorkTime());
         	if(ableRangeTime.greaterThan(0))
-        		returnList.addAll(reclassified(ableRangeTime,
-        									   overTimeWorkFrameTimeSheetList.stream()
-        									   								 .filter(tc -> tc.getPayOrder().isPresent())
-        									   								 .sorted((first,second) -> first.getPayOrder().get().compareTo(second.getPayOrder().get()))
-        									   								 .collect(Collectors.toList()),
-        									   autoCalculationSet,
-        									   overTimeHourSetList));
+        		return reclassified(ableRangeTime,overTimeWorkFrameTimeSheetList.stream()
+        									   								    .filter(tc -> tc.getPayOrder().isPresent())
+        									   								    .sorted((first,second) -> first.getPayOrder().get().compareTo(second.getPayOrder().isPresent()
+        									   								    																?second.getPayOrder().get()
+        									   								    																:new SettlementOrder(99)
+        									   								    																))
+        									   								    .collect(Collectors.toList()),
+        									   								    autoCalculationSet,
+        									   								    overTimeHourSetList,
+        									   								    holidayCalcMethodSet);
         }
         return overTimeWorkFrameTimeSheetList;
     }

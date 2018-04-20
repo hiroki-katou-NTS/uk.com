@@ -60,7 +60,7 @@ public class AnnLeaEmpBasicInfoDomService{
 		for (ReserveLeaveGrantRemainingData data : listData) {
 			remainingDays += data.getDetails().getRemainingNumber().v();
 		}
-		return remainingDays + "日と　" +  "0 : 00";
+		return remainingDays + "日";
 	}
 	
 	private String convertWithMinutes(int minutes) {

@@ -10,11 +10,11 @@ module nts.uk.at.view.kdw004.a.viewmodel {
         CannotApproved = 2,
         Disable = 3
     }
-    var getTemplateDisplayStt = (headerTxtId) => {
+    var getTemplateDisplayStt = (headerTxtId,startDate) => {
         return "{{if ${" + headerTxtId + "} == '" + ApprovalStatus.Approved + "' }}" +
-            "<a class='approved' href='#' data-bind=\"click: clickStatusJumpToKdw003.bind($data,'${employeeId}')\">○</a>" +
+            "<a class='approved' href='#' data-bind=\"click: clickStatusJumpToKdw003.bind($data,'${employeeId}','"+startDate+"')\">○</a>" +
             "{{elseif ${" + headerTxtId + "} == '" + ApprovalStatus.UnApproved + "' }}" +
-            "<a class='unapproved' href='#' data-bind=\"click: clickStatusJumpToKdw003.bind($data,'${employeeId}')\">！</a>" +
+            "<a class='unapproved' href='#' data-bind=\"click: clickStatusJumpToKdw003.bind($data,'${employeeId}','"+startDate+"')\">！</a>" +
             "{{elseif ${" + headerTxtId + "} == '" + ApprovalStatus.CannotApproved + "' }}" +
             "<a class='cannotApproved'>＿</a>" +
             "{{elseif ${" + headerTxtId + "} == '" + ApprovalStatus.Disable + "' }}" +
@@ -91,11 +91,15 @@ module nts.uk.at.view.kdw004.a.viewmodel {
             };
             nts.uk.ui.block.grayout();
             service.extractApprovalStatusData(param).done((result: OneMonthApprovalStatus) => {
+                var igridContent = $("#approvalSttGrid")[0];
+                ko.cleanNode(igridContent) ;
                 self.lstData = self.convertToGridData(result.lstEmployee);
                 self.generateColumns();
                 self.loadGrid();
                 self.setHeadersColor();
                 self.addClickEventDateHeader();
+                ko.applyBindings(self,igridContent);
+                ko.applyBindings(self,approvalSttGrid_headers);
                 nts.uk.ui.block.clear();
             }).fail((error) => {
                 nts.uk.ui.block.clear();
@@ -106,18 +110,18 @@ module nts.uk.at.view.kdw004.a.viewmodel {
             var self = this;
             let initParam = new DPCorrectionInitParam(DPCorrectionScreenMode.APPROVAL, self.lstData.map((data) => { return data.employeeId; }), false, false, self.selectedClosure());
             initParam.transitionDesScreen = '/view/kdw/004/a/index.xhtml';
-            let extractionParam = new DPCorrectionExtractionParam(DPCorrectionDisplayFormat.DATE, self.datePeriod().startDate, self.datePeriod().endDate, self.lstData.map((data) => { return data.employeeId; }));
+            let extractionParam = new DPCorrectionExtractionParam(DPCorrectionDisplayFormat.DATE, date, date, self.lstData.map((data) => { return data.employeeId; }));
             extractionParam.dateTarget = moment(date).format("YYYY/MM/DD");
             nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
         }
 
-        clickStatusJumpToKdw003(employeeId) {
+        clickStatusJumpToKdw003(employeeId,startDate) {
             var self = this;
             let lstEmpId =[];
             lstEmpId.push(employeeId);
             let initParam = new DPCorrectionInitParam(DPCorrectionScreenMode.APPROVAL, lstEmpId, false, false, self.selectedClosure());
             initParam.transitionDesScreen = '/view/kdw/004/a/index.xhtml';
-            let extractionParam = new DPCorrectionExtractionParam(DPCorrectionDisplayFormat.INDIVIDUAl, self.datePeriod().startDate, self.datePeriod().endDate, employeeId);
+            let extractionParam = new DPCorrectionExtractionParam(DPCorrectionDisplayFormat.INDIVIDUAl, startDate, startDate, employeeId);
             extractionParam.individualTarget = employeeId;
             nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
         }
@@ -207,7 +211,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                 self.lstColumns.push(
                     {
                         key: headerNoId, width: "30px", headerText: index.format("D"), dataType: "string", group: [
-                            { key: headerTxtId, width: "30px", headerText: dayName, dataType: "string", template: getTemplateDisplayStt(headerTxtId) }
+                            { key: headerTxtId, width: "30px", headerText: dayName, dataType: "string", template: getTemplateDisplayStt(headerTxtId,index.format("YYYY/MM/DD")) }
                         ]
                     }
                 );
@@ -226,6 +230,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
 
         addClickEventDateHeader() {
             var self = this;
+            ko.cleanNode(approvalSttGrid_headers);
             let index = moment(self.datePeriod().startDate);
             while (!index.isAfter(self.datePeriod().endDate)) {
                 let header = document.getElementById("approvalSttGrid_" + moment(index).format("YYYYMMDD") + "i").firstChild;

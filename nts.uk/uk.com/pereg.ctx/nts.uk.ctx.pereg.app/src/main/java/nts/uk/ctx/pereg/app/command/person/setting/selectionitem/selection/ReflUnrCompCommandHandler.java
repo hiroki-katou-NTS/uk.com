@@ -54,7 +54,7 @@ public class ReflUnrCompCommandHandler extends CommandHandlerWithResult<ReflUnrC
 		for (String cid : companyIdList) {
 			// History:
 			List<PerInfoHistorySelection> historyList = this.historyRepo
-					.getAllHistoryBySelectionItemIdAndCompanyId(selectionItemId, cid);
+					.getAllBySelecItemIdAndCompanyId(selectionItemId, cid);
 			historyList.stream().forEach(x -> {
 				String histId = x.getHistId();
 

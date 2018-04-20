@@ -365,7 +365,9 @@
 																readonly: false}" />
 
 													</com:ko-if>
-												</com:ko-if> <!-- 	 timepoint   --> <com:ko-if bind="(dataType() === 5)">
+												</com:ko-if> 
+												<!-- 	 timepoint   --> 
+												<com:ko-if bind="(dataType() === 5)">
 													<com:ko-if bind="(isRequired() === 1)">
 														<input id="timePoint" class="sub-input-units save-error"
 															data-bind="ntsTimeWithDayEditor: { 
@@ -487,9 +489,12 @@
 															optionsText: 'optionText',
 															value: selectedCode,
 															enable: true}"></div>
-												</com:ko-if> <com:ko-if bind="(dataType() === 8)">
-													<button>#{i18n.getText('CPS009_37')}</button>
+												</com:ko-if> 
+												
+												<com:ko-if bind="(dataType() === 8)">
+													<button data-bind='click: clickButtonCS00020'>#{i18n.getText('CPS009_37')}</button>
 													<span class="caret-right caret-inline"></span>
+													<span data-bind="text: selectionName"></span>
 												</com:ko-if>
 											</td>
 										</com:ko-if>

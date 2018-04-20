@@ -20,7 +20,8 @@ public interface IPerInfoSelectionItemRepository {
 
 	Optional<PerInfoSelectionItem> getSelectionItemBySelectionItemId(String selectionItemId);
 
-	Optional<PerInfoSelectionItem> getSelectionItemByName(String selectionItemName);
+	Optional<PerInfoSelectionItem> getSelectionItemByName(String contractCode, String selectionItemName,
+			String selectionItemId);
 
 	/**
 	 * getAllSelection
