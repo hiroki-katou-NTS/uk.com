@@ -698,7 +698,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 						}
 					}
 					if(!lstAppPre.isEmpty()){
-						group = new AppPrePostGroup(lstAppPre.get(0).getAppID(), appID, null, appPre, reasonAppPre, null);
+						group = new AppPrePostGroup(lstAppPre.get(0).getAppID(), appID, null,"","","","", appPre, reasonAppPre, null);
 					}
 				}
 				//承認一覧表示設定.残業の実績
@@ -722,8 +722,13 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					}
 					if(group != null){
 						group.setTime(result.getLstFrameResult());
+						group.setStrTime1(result.getStrTime1());
+						group.setEndTime1(result.getEndTime1());
+						group.setStrTime2(result.getStrTime2());
+						group.setEndTime2(result.getEndTime2());
+						//NOTE
 					}else{
-						group = new AppPrePostGroup("", appID, result.getLstFrameResult(), appPre, reasonAppPre, null);
+						group = new AppPrePostGroup("", appID, result.getLstFrameResult(),"","","","", appPre, reasonAppPre, null);
 					}
 				}
 				if(group != null){
@@ -762,7 +767,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					}
 				}
 				if(!lstAppPre.isEmpty()){
-					group = new AppPrePostGroup(lstAppPre.get(0).getAppID(), appID, null, null, reasonAppPre, appPre);
+					group = new AppPrePostGroup(lstAppPre.get(0).getAppID(), appID, null,"","","","", null, reasonAppPre, appPre);
 				}
 			}
 			//承認一覧表示設定.休出の実績
@@ -787,7 +792,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				if(group != null){
 					group.setTime(result.getLstFrameResult());
 				}else{
-					group = new AppPrePostGroup("", appID, result.getLstFrameResult(), null, reasonAppPre, appPre);
+					group = new AppPrePostGroup("", appID, result.getLstFrameResult(),"","","","", null, reasonAppPre, appPre);
 				}
 			}
 			if(group != null){
@@ -904,7 +909,9 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				}
 			}
 		}
-		return new TimeResultOutput(checkColor, lstFrameResult);
+		return new TimeResultOutput(checkColor, lstFrameResult, repoAppDetail.convertTime(record.getAttendanceStampTimeFirst()),
+				repoAppDetail.convertTime(record.getLeaveStampTimeFirst()),	repoAppDetail.convertTime(record.getAttendanceStampTimeSecond()),
+				repoAppDetail.convertTime(record.getLeaveStampTimeSecond()));
 	}
 	/**
 	 * 6 - 申請一覧リスト取得振休振出

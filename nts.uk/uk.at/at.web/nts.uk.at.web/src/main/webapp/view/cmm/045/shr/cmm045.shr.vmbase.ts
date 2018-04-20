@@ -359,14 +359,27 @@ module cmm045.shr {
             postAppID: string;
             //実績
             lstFrameRes: Array<vmbase.OverTimeFrame>;
+            /**出勤時刻  - 開始時刻1*/
+            strTime1: string;
+            /**退勤時刻  - 終了時刻1*/
+            endTime1: string;
+            /**出勤時刻2  - 開始時刻2*/
+            strTime2: string;
+            /**退勤時刻2  - 終了時刻2*/
+            endTime2: string;
             appPre: any;
             reasonAppPre: string;
             appPreHd: any;
             constructor(preAppID: string, postAppID: string, lstFrameRes: Array<vmbase.OverTimeFrame>,
+                strTime1: string, endTime1: string, strTime2: string, endTime2: string,
                 appPre: any, reasonAppPre: string, appPreHd: any){
                 this.preAppID = preAppID;
                 this.postAppID = postAppID;
                 this.lstFrameRes = lstFrameRes;
+                this.strTime1 = strTime1;
+                this.endTime1 = endTime1;
+                this.strTime2 = strTime2;
+                this.endTime2 = endTime2;
                 this.appPre = appPre;
                 this.reasonAppPre = reasonAppPre;
                 this.appPreHd = appPreHd;
