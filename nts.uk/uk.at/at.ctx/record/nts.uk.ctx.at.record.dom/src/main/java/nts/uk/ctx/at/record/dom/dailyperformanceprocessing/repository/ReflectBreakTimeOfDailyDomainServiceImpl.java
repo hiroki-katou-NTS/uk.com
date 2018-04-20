@@ -106,14 +106,13 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 	private BreakTimeOfDailyPerformanceRepository breakTimeOfDailyPerformanceRepo;
 
 	@Override
-	public BreakTimeOfDailyPerformance reflectBreakTime(String companyId, String employeeID, GeneralDate processingDate,
+	public BreakTimeOfDailyPerformance reflectBreakTimeZone(String companyId, String employeeID, GeneralDate processingDate,
 			String empCalAndSumExecLogID, TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance,
 			WorkInfoOfDailyPerformance WorkInfo) {
 		Optional<BreakTimeOfDailyPerformance> breakOpt = this.breakTimeOfDailyPerformanceRepo.find(employeeID, processingDate, 0);
 		if(breakOpt.isPresent()){
 			return null;
 		}
-		BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut = new BreakTimeZoneSettingOutPut();
 		// 休憩時間帯設定を確認する
 		List<TimeLeavingWork> timeLeavingWorks = null;
 		if (timeLeavingOfDailyPerformance != null && timeLeavingOfDailyPerformance.getTimeLeavingWorks() != null
@@ -130,6 +129,24 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 				}
 			}
 		}
+		if (timeLeavingWorks == null) {
+			return null;
+		}
+		return this.reflectBreakTime(companyId, employeeID, processingDate, empCalAndSumExecLogID, timeLeavingOfDailyPerformance, WorkInfo);
+	}
+	
+	@Override
+	public BreakTimeOfDailyPerformance reflectBreakTime(String companyId, String employeeID, GeneralDate processingDate,
+			String empCalAndSumExecLogID, TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance,
+			WorkInfoOfDailyPerformance WorkInfo){
+		BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut = new BreakTimeZoneSettingOutPut();
+		// 休憩時間帯設定を確認する
+		List<TimeLeavingWork> timeLeavingWorks = null;
+		if (timeLeavingOfDailyPerformance != null && timeLeavingOfDailyPerformance.getTimeLeavingWorks() != null
+				&& !timeLeavingOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
+			timeLeavingWorks = timeLeavingOfDailyPerformance.getTimeLeavingWorks();
+		} 
+		
 		if (timeLeavingWorks == null) {
 			return null;
 		}
@@ -164,8 +181,12 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		}
 		// 休憩種類 ← 「就業時間帯から参照」
 		return new BreakTimeOfDailyPerformance(employeeID, BreakType.REFER_WORK_TIME, lstBreakTime, processingDate);
-
 	}
+	
+	
+	
+	
+	
 
 	// 出退勤と重複する休憩時間帯のみ追加する
 	public boolean checkAddBreakTime(List<TimeLeavingWork> timeLeavingWorks, DeductionTime timeZone, int frameNo) {
@@ -174,12 +195,12 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 			public int compare(TimeLeavingWork o1, TimeLeavingWork o2) {
 				if (o2 == null || o2.getAttendanceStamp() == null || !o2.getAttendanceStamp().isPresent()
 						|| o2.getAttendanceStamp().get().getStamp() == null
-						|| !o2.getAttendanceStamp().get().getStamp().isPresent()) {
+						|| !o2.getAttendanceStamp().get().getStamp().isPresent()||o2.getAttendanceStamp().get().getStamp().get().getTimeWithDay()==null) {
 					return 1;
 				}
 				if (o1 == null || o1.getAttendanceStamp() == null || !o1.getAttendanceStamp().isPresent()
 						|| o1.getAttendanceStamp().get().getStamp() == null
-						|| !o1.getAttendanceStamp().get().getStamp().isPresent()) {
+						|| !o1.getAttendanceStamp().get().getStamp().isPresent()||o1.getAttendanceStamp().get().getStamp().get().getTimeWithDay()==null) {
 					return -1;
 				}
 				int t1 = o1.getAttendanceStamp().get().getStamp().get().getTimeWithDay().v().intValue();
