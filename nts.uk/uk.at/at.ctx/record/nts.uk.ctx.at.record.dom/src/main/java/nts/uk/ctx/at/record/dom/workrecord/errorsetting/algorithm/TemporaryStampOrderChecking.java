@@ -99,8 +99,10 @@ public class TemporaryStampOrderChecking {
 						duplicationStateAttr = confirmDuplication(employeeID, processingDate, timeLeavingWork,
 								temporaryTimeOfDailyPerformance);
 						if (duplicationStateAttr == StateAttr.DUPLICATION) {
-							this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID,
-									processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIDList);
+							if(!attendanceItemIDList.isEmpty()){
+								this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID,
+										processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIDList);
+							}
 						}
 					}
 				}
