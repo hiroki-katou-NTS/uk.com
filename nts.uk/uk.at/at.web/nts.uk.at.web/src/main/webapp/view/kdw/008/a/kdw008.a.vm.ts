@@ -263,8 +263,8 @@ module nts.uk.at.view.kdw008.a {
                             if (self.listMonPfmCorrectionFormat().length > 0) {
                                 self.selectedCode(self.listMonPfmCorrectionFormat()[0].monthlyPfmFormatCode);
                                 self.selectedCode.valueHasMutated();
-                            }else{
-                                self.setNewMode();    
+                            } else {
+                                self.setNewMode();
                             }
                             dfd.resolve();
                         });
@@ -467,20 +467,20 @@ module nts.uk.at.view.kdw008.a {
                         .ifYes(() => {
                             new service.Service().deleteMonPfmCorrectionFormat(deleteMonPfmCmd).done(function() {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                                    let indexOfItemOld = _.findIndex(self.listDataCommom(), { monthlyPfmFormatCode : self.currentDailyFormatCode() });
+                                    let indexOfItemOld = _.findIndex(self.listDataCommom(), { monthlyPfmFormatCode: self.currentDailyFormatCode() });
                                     let indexNext = 0;
-                                    if((indexOfItemOld) == self.listDataCommom().length-1){
-                                        indexNext = self.listDataCommom().length-2;        
-                                    }else {
-                                        indexNext = (indexOfItemOld+1);
+                                    if ((indexOfItemOld) == self.listDataCommom().length - 1) {
+                                        indexNext = self.listDataCommom().length - 2;
+                                    } else {
+                                        indexNext = (indexOfItemOld + 1);
                                     }
-                                    if(self.listDataCommom().length >1){
+                                    if (self.listDataCommom().length > 1) {
                                         let code = self.listDataCommom()[indexNext].monthlyPfmFormatCode;
                                     }
                                     self.getListMonPfmCorrectionFormat().done(function(data) {
-                                        if(self.listDataCommom().length ==0){
-                                            self.setNewMode();    
-                                        }else{  
+                                        if (self.listDataCommom().length == 0) {
+                                            self.setNewMode();
+                                        } else {
                                             self.selectedCode(code);
                                             self.selectedCode.valueHasMutated();
                                         }
@@ -488,20 +488,18 @@ module nts.uk.at.view.kdw008.a {
                                     $("#currentName").focus();
                                 })
                             }).fail(function(error) {
-                            });;
-                        }
+                            });
+                        });
                 }
                 
             }
 
             addOrUpdateClick() {
                 let self = this;
-
                 $("#currentName").trigger("validate");
-                
                 if (!nts.uk.ui.errors.hasError()) {
                     if (self.isDaily()) {
-                        if (self.valuesMonthly().length <= 0)){
+                        if (self.valuesMonthly().length <= 0){
                             nts.uk.ui.dialog.alert({ messageId: "Msg_920" });
                         }else{
                             self.register();
@@ -515,9 +513,9 @@ module nts.uk.at.view.kdw008.a {
                                 nts.uk.ui.dialog.alert({ messageId: "Msg_920" });
                             } else {
                                 self.register();
-                            }    
+                            }
                         }
-                        
+
                     }
                 }
             }
