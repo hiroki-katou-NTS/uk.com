@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -112,7 +113,7 @@ public class IntegrationOfDaily {
 		this.calAttr = calAttr;
 		this.affiliationInfor = affiliationInfor;
 		this.pcLogOnInfo = pcLogOnInfo;
-		this.employeeError = employeeError;
+		this.employeeError = new ArrayList<>(employeeError);
 		this.outingTime = outingTime;
 		this.breakTime = breakTime;
 		this.attendanceTimeOfDailyPerformance = attendanceTimeOfDailyPerformance;
