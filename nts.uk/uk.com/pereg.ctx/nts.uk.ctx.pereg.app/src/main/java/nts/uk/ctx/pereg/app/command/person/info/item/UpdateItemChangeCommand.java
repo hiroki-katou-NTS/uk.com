@@ -4,11 +4,19 @@ import lombok.Value;
 
 @Value
 public class UpdateItemChangeCommand {
+	
 	private String id;
+	
 	private String itemName;
+	
 	private int isAbolition;
+	
 	private int isRequired;
-	private int dataType;
+	
+	private Integer dataType;
+	
 	private String selectionItemId;
+	
 	private int personEmployeeType;
+	
 }

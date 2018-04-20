@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2018 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.pubimp.worktime.predset;
 
 import java.util.Optional;
@@ -5,11 +9,14 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.worktime.predset.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
+import nts.uk.ctx.at.shared.pub.worktime.predset.BreakDownTimeDayExport;
 import nts.uk.ctx.at.shared.pub.worktime.predset.PredetemineTimeSettingPub;
+import nts.uk.ctx.at.shared.pub.worktime.predset.PredeterminedTimeExport;
 
 /**
  * The Class PredetemineTimeSettingPubImpl.
@@ -46,6 +53,35 @@ public class PredetemineTimeSettingPubImpl implements PredetemineTimeSettingPub{
 		}else {
 			return false;
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.pub.worktime.predset.PredetemineTimeSettingPub#
+	 * acquirePredeterminedTime(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Optional<PredeterminedTimeExport> acquirePredeterminedTime(String companyId, String workTimeCode) {
+		Optional<PredetemineTimeSetting> pred = this.predetemineTimeSettingRepository.findByWorkTimeCode(companyId,
+				workTimeCode);
+
+		if (pred.isPresent()) {
+			BreakDownTimeDay predTime = pred.get().getPredTime().getPredTime();
+			BreakDownTimeDay addTime = pred.get().getPredTime().getAddTime();
+
+			return Optional.of(PredeterminedTimeExport.builder()
+					.predTime(BreakDownTimeDayExport.builder()
+							.morning(predTime.getMorning().v())
+							.afternoon(predTime.getAfternoon().v())
+							.oneDay(predTime.getOneDay().v()).build())
+					.addTime(BreakDownTimeDayExport.builder()
+							.morning(addTime.getMorning().v())
+							.afternoon(addTime.getAfternoon().v())
+							.oneDay(addTime.getOneDay().v()).build()).build());
+		}
+
+		return Optional.empty();
 	}
 
 }

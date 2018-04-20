@@ -62,8 +62,10 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandler<Upda
 				if (wt.isWokingDay()) {
 					BreakTimeOfDailyPerformance breakTime = getUpdateBreakTime(command.getEmployeeId(),
 							command.getWorkingDate(), wi, companyId);
-					/** 「日別実績の休憩時間帯」を更新する */
-					this.breakTimeRepo.update(breakTime);
+					if(breakTime != null) {
+						/** 「日別実績の休憩時間帯」を更新する */
+						this.breakTimeRepo.update(breakTime);
+					}
 				} else {
 					/** 「日別実績の休憩時間帯」を削除する */
 					this.breakTimeRepo.delete(command.getEmployeeId(), command.getWorkingDate());

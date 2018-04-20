@@ -14,7 +14,7 @@ public interface PreWorkchangeReflectService {
 	 * @param workchangePara
 	 * @return
 	 */
-	public ApplicationReflectOutput workchangeReflect(CommonReflectParameter workchangePara, boolean isPre); 
+	public boolean workchangeReflect(CommonReflectParameter workchangePara, boolean isPre); 
 	
 	
 

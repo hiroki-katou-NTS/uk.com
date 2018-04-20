@@ -362,12 +362,11 @@ module nts.uk.com.view.cps006.b.viewmodel {
         dataType() {
             let self = this;
 
-            if (self.itemType() === 1) {
-
-                return;
+            if (self.itemType() === 2) {
+                return self.currentItem().itemTypeState.dataTypeState.dataTypeValue;
             }
 
-            return self.currentItem().itemTypeState.dataTypeState.dataTypeValue;
+            return null;
 
         }
 
