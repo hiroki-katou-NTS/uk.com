@@ -90,3 +90,7 @@ table, th, td {
     border: 1px solid black;
    
 }
+
+.ntsCheckBox{
+	width: 150px;
+}

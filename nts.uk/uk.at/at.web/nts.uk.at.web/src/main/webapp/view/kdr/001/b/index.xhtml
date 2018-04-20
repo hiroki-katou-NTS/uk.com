@@ -121,6 +121,16 @@
 							</tr>
 							<tr>
 								<td>
+									<div tabindex="25" data-bind="ntsMultiCheckBox: {
+											options: $parent.listSpecialHolidays,
+											optionsValue: 'specialHolidayCode',
+											optionsText: 'specialHolidayName',
+											value: specialHolidays,
+											enable: true}"></div>
+								</td>
+							</tr>							
+							<tr>
+								<td>
 									<!-- B4_20  -->
 									<div tabindex="26"
 										data-bind="ntsCheckBox: { checked: ChildNursingLeave ,  enable: true, text: '#{i18n.getText('KDR001_47')}' }"></div>
