@@ -7,14 +7,15 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 1200, height: 540 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdr001.b.main.css" />
 			<com:scriptfile path="kdr001.b.start.js" />
 			<com:scriptfile path="kdr001.b.service.js" />
 			<com:scriptfile path="kdr001.b.vm.js" />
 			<com:ValidatorScript>
-		        nts.uk.ctx.at.function.dom.holidaysremaining.ExecutionCode
-		        nts.uk.ctx.at.function.dom.holidaysremaining.ExecutionName
+		        nts.uk.ctx.at.function.dom.holidaysremaining.HolidayRemainingCode
+		        nts.uk.ctx.at.function.dom.holidaysremaining.HolidayRemainingName
 		    </com:ValidatorScript>
 		</ui:define>
 
@@ -58,7 +59,7 @@
 					</div>
 					<input style="width: 150px;" tabindex="6" id="holidayCode"
 						data-bind="ntsTextEditor: {
-							constraint: ['ExecutionCode'], 
+							constraint: 'HolidayRemainingCode', 
 							name: '#[KDR001_40]',
 							value: cd,  
 							enable: true,
@@ -67,7 +68,7 @@
 					<input style="width: 250px; margin: 20px;" tabindex="7"
 						id="holidayName"
 						data-bind="ntsTextEditor: {
-							constraint: ['ExecutionName'],
+							constraint: 'HolidayRemainingName',
 							name: '#[KDR001_41]',
 							value: name,
 						  	enable: true,

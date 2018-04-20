@@ -4,14 +4,13 @@
 }
 
 
-.employeeAction {
+.holidayAction {
 	border: 1px solid #ccc !important;
 	border-radius: 5px;
 	float: right;
-	width: 772px;
+	width: 750px;
 	padding: 5px;
 	height: 443px;
-	padding-top: 35px;
 }
 
 
@@ -42,11 +41,11 @@
 	margin-top: 5px;
 }
 
-.selectionEmployee {
+.selectionHoliday {
 	border: 1px solid #ccc !important;
 	border-radius: 5px;
 	padding: 20px;
-	width: 415px;
+	width: 350px;
 	float:left;
 }
 
@@ -57,16 +56,15 @@
 }
 
 .labelWork {
-	margin-top: 30px;
-	margin-left: 15px;
 	width: 120px;
+	margin: 10px 0px;
 }
 .employeeWorkSetting{
 	padding-left: 40px;
 }
 
 #contents-area { 
-	overflow-x: hidden;
+	overflow: hidden;
 	
 }
 #A3_2 {
@@ -96,4 +94,9 @@ table, th, td {
 }
 .multicheckbox-wrapper label{
 	margin-right: 5px;
+}
+
+
+.holiday-button{
+	margin-left: 50px;
 }
