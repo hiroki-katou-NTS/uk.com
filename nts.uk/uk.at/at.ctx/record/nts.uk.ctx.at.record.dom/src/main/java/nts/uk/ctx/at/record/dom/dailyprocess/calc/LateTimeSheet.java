@@ -93,19 +93,21 @@ public class LateTimeSheet{
 			,TimezoneUse predetermineTimeSet
 			,int workNo) {
 
-		//出勤時刻と遅刻判断時刻を比較	
-		if(lateDecisionClock.getLateDecisionClock().greaterThan(attendance)
-				||!graceTimeSetting.isIncludeWorkingHour()){//猶予時間を加算しない場合
-			
-			//遅刻控除時間帯の作成
-			Optional<LateLeaveEarlyTimeSheet> lateDeductTimeSheet = createLateLeaveEarlyTimeSheet(DeductionAtr.Deduction,attendance,coreTimeSetting,predetermineTimeSet,duplicateTimeSheet,deductionTimeSheet);
-			//遅刻時間帯の作成
-			Optional<LateLeaveEarlyTimeSheet> lateAppTimeSheet = createLateLeaveEarlyTimeSheet(DeductionAtr.Appropriate,attendance,coreTimeSetting,predetermineTimeSet,duplicateTimeSheet,deductionTimeSheet);
-			
-			LateTimeSheet lateTimeSheet = new LateTimeSheet(lateAppTimeSheet,lateDeductTimeSheet, workNo, Optional.empty());
-			
-			return lateTimeSheet;
-		}	
+		if(attendance!=null) {
+			//出勤時刻と遅刻判断時刻を比較	
+			if(lateDecisionClock.getLateDecisionClock().greaterThan(attendance)
+					||!graceTimeSetting.isIncludeWorkingHour()){//猶予時間を加算しない場合
+				
+				//遅刻控除時間帯の作成
+				Optional<LateLeaveEarlyTimeSheet> lateDeductTimeSheet = createLateLeaveEarlyTimeSheet(DeductionAtr.Deduction,attendance,coreTimeSetting,predetermineTimeSet,duplicateTimeSheet,deductionTimeSheet);
+				//遅刻時間帯の作成
+				Optional<LateLeaveEarlyTimeSheet> lateAppTimeSheet = createLateLeaveEarlyTimeSheet(DeductionAtr.Appropriate,attendance,coreTimeSetting,predetermineTimeSet,duplicateTimeSheet,deductionTimeSheet);
+				
+				LateTimeSheet lateTimeSheet = new LateTimeSheet(lateAppTimeSheet,lateDeductTimeSheet, workNo, Optional.empty());
+				
+				return lateTimeSheet;
+			}	
+		}
 		return LateTimeSheet.createAsNotLate();//遅刻していない
 	}
 	
