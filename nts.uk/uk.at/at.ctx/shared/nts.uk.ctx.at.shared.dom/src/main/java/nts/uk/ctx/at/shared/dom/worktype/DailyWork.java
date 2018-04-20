@@ -114,6 +114,31 @@ public class DailyWork extends DomainObject { // 1日の勤務
 			}
 		}
 	}
+	
+	/**
+	 * 所定時間の取得先を判定する
+	 * @return　出勤休出区分
+	 */
+	public AttendanceHolidayAttr decisionNeedPredTime() {
+		if (this.workTypeUnit == WorkTypeUnit.OneDay) {
+			if (this.oneDay.isHoliday()) {
+				return AttendanceHolidayAttr.HOLIDAY;
+			} else {
+				return AttendanceHolidayAttr.FULL_TIME;
+			}
+		} else {
+			if (this.morning.isWeekDayAttendance() && this.afternoon.isWeekDayAttendance()) {
+				return AttendanceHolidayAttr.FULL_TIME;
+			} else if (this.morning.isWeekDayAttendance() && this.afternoon.isHoliday()) {
+				return AttendanceHolidayAttr.MORNING;
+			} else if (this.morning.isHoliday() && this.afternoon.isWeekDayAttendance()) {
+				return AttendanceHolidayAttr.AFTERNOON;
+			} else {
+				return AttendanceHolidayAttr.HOLIDAY;
+			}
+		}
+	}
+	
 
 	/**
 	 * 平日出勤か判定
