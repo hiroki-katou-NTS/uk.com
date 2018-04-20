@@ -7,7 +7,9 @@ module nts.uk.com.view.cps009.a.service {
         getAllItemByCtgId: "ctx/pereg/person/info/setting/init/item/find/{0}/{1}",
         deleteInitVal: "ctx/pereg/person/info/setting/init/delete",
         update: "ctx/pereg/person/info/setting/init/ctg/update",
-        filterHisSel: "ctx/pereg/person/info/setting/selection/findAllCombox"
+        filterHisSel: "ctx/pereg/person/info/setting/selection/findAllCombox",
+        checkItemWorkType: "ctx/pereg/person/common/checkStartEnd",
+        checkItemWorkTime: "ctx/pereg/person/common/checkAllMutilTime"
     }
     /**
      * Get all init value setting
@@ -53,6 +55,16 @@ module nts.uk.com.view.cps009.a.service {
 
     export function getAllComboxByHistory(query: any) {
         return ajax(paths.filterHisSel, query);
+    }
+
+
+    export function checkStartEnd(params: any) {
+        return ajax(paths.checkItemWorkType, params);
+    }
+
+
+    export function checkMutiTime(params: any) {
+        return ajax(paths.checkItemWorkTime, params);
     }
 
 
