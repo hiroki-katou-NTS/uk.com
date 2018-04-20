@@ -166,10 +166,19 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandler<TimeL
 							as.removeStamp();
 						}
 					});
+					tlw.getLeaveStamp().ifPresent(as -> {
+						if (as.getStamp().isPresent() && !as.getStamp().get().isFromSPR()) {
+							as.removeStamp();
+						}
+					});
 				});
 			} else {
 				tl.getTimeLeavingWorks().stream().forEach(tlw -> {
 					tlw.getAttendanceStamp().ifPresent(as -> {
+						as.removeStamp();
+					});
+
+					tlw.getLeaveStamp().ifPresent(as -> {
 						as.removeStamp();
 					});
 				});
