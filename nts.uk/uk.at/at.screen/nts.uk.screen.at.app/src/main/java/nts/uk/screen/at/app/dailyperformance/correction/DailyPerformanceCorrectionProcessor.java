@@ -960,28 +960,27 @@ public class DailyPerformanceCorrectionProcessor {
 			List<DPErrorSettingDto> lstErrorSetting = this.repo
 					.getErrorSetting(lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
 			// convert to list error reference
-			for (int id = 0; id < lstError.size(); id++) {
+			IntStream.range(0, lstError.size()).forEach(id -> {
 				for (DPErrorSettingDto errorSetting : lstErrorSetting) {
 					if (lstError.get(id).getErrorCode().equals(errorSetting.getErrorAlarmCode())) {
-						lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(id), lstError.get(id).getEmployeeId(),
-								"", "", lstError.get(id).getProcessingDate(), lstError.get(id).getErrorCode(),
-								errorSetting.getMessageDisplay(), lstError.get(id).getAttendanceItemId(), "",
-								errorSetting.isBoldAtr(), errorSetting.getMessageColor()));
+						lstError.get(id).getAttendanceItemId().forEach(x -> {
+							lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(id),
+									lstError.get(id).getEmployeeId(), "", "", lstError.get(id).getProcessingDate(),
+									lstError.get(id).getErrorCode(), errorSetting.getMessageDisplay(), x, "",
+									errorSetting.isBoldAtr(), errorSetting.getMessageColor()));
+						});
 					}
 				}
-			}
+			});
 			// get list item to add item name
-			List<DPAttendanceItem> lstAttendanceItem = this.repo.getListAttendanceItem(
-					lstError.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList()));
-			for (ErrorReferenceDto errorRefer : lstErrorRefer) {
-				for (DPAttendanceItem atdItem : lstAttendanceItem) {
-					if (errorRefer.getItemId().equals(atdItem.getId())) {
-						errorRefer.setItemName(atdItem.getName());
-					}
-				}
-			}
+			Set<Integer> itemIds = lstError.stream().flatMap(x -> x.getAttendanceItemId().stream()).collect(Collectors.toSet());
+			
+			Map<Integer, String> lstAttendanceItem = this.repo.getListAttendanceItem(
+					new ArrayList<>(itemIds)).stream().collect(Collectors.toMap(x -> x.getId(), x -> x.getName()));
 			// add employee code & name
 			for (ErrorReferenceDto errorRefer : lstErrorRefer) {
+				String name = lstAttendanceItem.get(errorRefer.getItemId());
+				errorRefer.setItemName(name == null ? "" : name);
 				for (DailyPerformanceEmployeeDto employee : lstEmployee) {
 					if (errorRefer.getEmployeeId().equals(employee.getId())) {
 						errorRefer.setEmployeeCode(employee.getCode());
