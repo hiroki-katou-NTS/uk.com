@@ -10,7 +10,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         currentHoliday: KnockoutObservable<HolidayRemaining> = ko.observable(new HolidayRemaining(null));
         switchOptions: KnockoutObservableArray<any>;
         isNewMode: KnockoutObservable<boolean> = ko.observable(true);
-        listSpecialHolidays: KnockoutObservableArray<SpecialHoliday> = ko.observableArray([]);
+        allSpecialHolidays: KnockoutObservableArray<SpecialHoliday> = ko.observableArray([]);
         constructor() {
             let self = this;
             let params = getShared("KDR001Params");
@@ -28,12 +28,20 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     }
                     let _holiday = lstHolidays[index];
                     if (_holiday && _holiday.cd) {
-
-                        // self.currentHoliday(_holiday);
-                        self.buildHolidayRemaining(_holiday);
+                        //self.buildHolidayRemaining(_holiday);
+                        self.currentHoliday(_holiday);
+                        // Set new mode
+                        self.isNewMode(false);
+            
+                        //focus
+                        self.setFocus();            
                     } else {
-                        //self.currentHoliday(null);
                         self.buildHolidayRemaining(null);
+                        // Set new mode
+                        self.isNewMode(true);
+            
+                        //focus
+                        self.setFocus();   
                     }
                     self.buildSpecialHoliday();
                 }
@@ -46,10 +54,19 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             nts.uk.ui.block.invisible();
-            service.findAll()
-                .done(function(data: Array<HolidayRemaining>) {
-                    if (data.length > 0) {
-                        self.lstHolidays(data);
+            service.findAllSpecialHoliday().done(function(data : Array<any>) {
+                if (data && data.length > 0) {
+                    self.allSpecialHolidays(data);
+                }
+                // no data
+                else {
+                    self.allSpecialHolidays([]);
+                }
+                service.findAll().done(function(data: Array<any>) {
+                    if (data && data.length > 0) {
+                        for(var i = 0; i < data.length; i++) {
+                            self.lstHolidays().push(new HolidayRemaining(data[i]));
+                        }
                         if (!self.currentCode()) {
                             self.currentCode(data[0].cd);
 
@@ -59,10 +76,9 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                             if (index === -1) index = 0;
                             let _holiday = lstHolidays[index];
                             if (_holiday && _holiday.cd) {
-
-                                self.buildHolidayRemaining(_holiday);
+                                self.currentCode(_holiday.cd);
                             } else {
-                                self.buildHolidayRemaining(null);
+                                self.currentCode('');
                             }
                         }
                     }
@@ -72,33 +88,21 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                         self.currentCode('');
                     }
                     // get special holiday
-                    service.findAllSpecialHoliday().done(function(data : any) {
-                            if (data.length > 0) {
-                                self.listSpecialHolidays(data);
-                                ddd
-                            }
-                            // no data
-                            else {
-                                self.listSpecialHolidays([]);
-                            }
-                            nts.uk.ui.block.clear();
-                            dfd.resolve();
-        
-                        })
-                        .fail(function(res) {
-                            nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
-                            nts.uk.ui.block.clear();
-                            dfd.rejected();
-        
-                        });
-
-                })
-                .fail(function(res) {
+                    nts.uk.ui.block.clear();
+                    dfd.resolve();
+                }).fail(function(res) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
                     nts.uk.ui.block.clear();
                     dfd.rejected();
 
                 });
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
+                nts.uk.ui.block.clear();
+                dfd.rejected();
+
+            });
+            
             return dfd.promise();
 
         }
@@ -250,17 +254,17 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         
         buildSpecialHoliday() {
             let self = this;
-            for(var i = 0; i < self.listSpecialHolidays.length; i++) {
-                self.listSpecialHolidays[i].statusCheck(false);
+            for(var i = 0; i < self.allSpecialHolidays.length; i++) {
+                self.allSpecialHolidays[i].statusCheck(false);
             }
-            let _specialHolidays = self.currentHoliday().specialHolidays();
+            let _specialHolidays = self.currentHoliday().listSpecialHoliday();
             if (_specialHolidays && _specialHolidays.length > 0) {
                 var index;
                 for(var i = 0; i < _specialHolidays.length; i++) {
-                    index = _.findIndex(self.listSpecialHolidays, function(x)
+                    index = _.findIndex(self.allSpecialHolidays, function(x)
                     { return x.specialHolidayCode == _specialHolidays[i] });
                     if (index > -1) {
-                        self.listSpecialHolidays[index].statusCheck(true);
+                        self.allSpecialHolidays[index].statusCheck(true);
                     }
                 }
             }
@@ -269,13 +273,13 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         setSpecialHoliday() {
             let self = this;
             let specialHolidays: Array<number> = [];
-            for(var i = 0; i < self.listSpecialHolidays.length; i++) {
-                if (self.listSpecialHolidays[i].statusCheck()) {
-                    specialHolidays.push(self.listSpecialHolidays[i].specialHolidayCode());
+            for(var i = 0; i < self.allSpecialHolidays.length; i++) {
+                if (self.allSpecialHolidays[i].statusCheck()) {
+                    specialHolidays.push(self.allSpecialHolidays[i].specialHolidayCode());
                 }
             }
-            self.currentHoliday().specialHolidays().clearAll();
-            self.currentHoliday().specialHolidays(specialHolidays);
+            self.currentHoliday().listSpecialHoliday.removeAll();
+            self.currentHoliday().listSpecialHoliday(specialHolidays);
         }
     }
     export class HolidayRemaining {
@@ -362,7 +366,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
          * 積立年休の項目を出力する
          */
         yearlyReserved: KnockoutObservable<boolean>;
-        specialHolidays: KnockoutObservableArray<number>;
+        listSpecialHoliday: KnockoutObservableArray<number>;
         constructor(param: any) {
             let self = this;
             self.cid = ko.observable(param ? param.cid || '' : '');
@@ -385,7 +389,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.undigestedPause = ko.observable(param ? param.undigestedPause || false : false);
             self.pauseItem = ko.observable(param ? param.pauseItem || false : false);
             self.yearlyReserved = ko.observable(param ? param.yearlyReserved || false : false);
-            self.specialHolidays = ko.observableArray(param ? param.specialHolidays || [] : []);
+            self.listSpecialHoliday = ko.observableArray(param ? param.listSpecialHoliday || [] : []);
         }
     }
 
