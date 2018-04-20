@@ -143,41 +143,35 @@ module nts.uk.com.view.cps017.a.viewmodel {
             historySelection.histId.subscribe(x => {
                 if (x) {
                     let histCur = _.find(self.listHistorySelection(), a => a.histId == x);
-                    
-                    if (histCur != undefined) {
-                        
-                        if (histCur.endDate !== '9999/12/31') {
-                            self.setEnableDisplay5(false);
-                            self.enableSelectionName(false);
-                        } else{
-                            self.setEnableDisplay5(true);
-                            self.enableSelectionName(true);
-                            // if it has only one history
-                            if (self.listHistorySelection().length === 1) {
-                                self.enableDelHist(false);
-                            }
+                    if (histCur.endDate !== '9999/12/31') {
+                        self.setEnableDisplay5(false);
+                        self.enableSelectionName(false);
+                    } else{
+                        self.setEnableDisplay5(true);
+                        self.enableSelectionName(true);
+                        // if it has only one history
+                        if (self.listHistorySelection().length === 1) {
+                            self.enableDelHist(false);
                         }
-                        
-                        self.listSelection.removeAll();
-                        service.getAllOrderItemSelection(x).done((itemList: Array<ISelection>) => {                            if (itemList && itemList.length > 0) {
-                                self.checkCreateaaa(false);
-                                
-                                // fix responsive bug
-                                ko.utils.arrayPushAll(self.listSelection, itemList);
-    
-                                self.selection().selectionID(self.listSelection()[0].selectionID);
-                                self.focusToInput();
-                            } else {
-                                self.createNewData();
-                            }
-                            self.listSelection.valueHasMutated();
-                        });
-                        
-                        self.focusToInput();
-                    } else {
-                        self.listSelection.removeAll();
-                        self.createNewData();
                     }
+                    
+                    self.listSelection.removeAll();
+                    service.getAllOrderItemSelection(x).done((itemList: Array<ISelection>) => {                        if (itemList && itemList.length > 0) {
+                            self.checkCreateaaa(false);
+                            
+                            // fix responsive bug
+                            ko.utils.arrayPushAll(self.listSelection, itemList);
+
+                            self.selection().selectionID(self.listSelection()[0].selectionID);
+                            self.focusToInput();
+                        } else {
+                            self.createNewData();
+                        }
+                        self.listSelection.valueHasMutated();
+                    });
+                    
+                    self.focusToInput();
+                }
             });
 
             // sub theo selectionID: 
