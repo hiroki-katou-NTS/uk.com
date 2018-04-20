@@ -20,7 +20,7 @@ public class KrcmtBusinessTypeSortedMon extends UkJpaEntity implements Serializa
 	@EmbeddedId
 	public KrcmtBusinessTypeSortedMonPK krcmtBusinessTypeSortedMonPK;
 	
-	@Column(name = "ORDER")
+	@Column(name = "DISP_ORDER")
 	public int order;
 	
 	@Override

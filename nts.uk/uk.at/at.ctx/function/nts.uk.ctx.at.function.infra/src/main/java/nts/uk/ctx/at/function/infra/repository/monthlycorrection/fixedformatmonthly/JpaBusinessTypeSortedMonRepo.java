@@ -59,6 +59,7 @@ public class JpaBusinessTypeSortedMonRepo extends JpaRepository implements Busin
 						&& nBusiness.krcmtBusinessTypeSortedMonPK.attendanceItemID == uBusiness.krcmtBusinessTypeSortedMonPK.attendanceItemID) {
 					checkExist=true;
 					toupdate.add(nBusiness);
+					break;
 				}
 			}
 			if(!checkExist) {

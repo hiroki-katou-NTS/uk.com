@@ -10,7 +10,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.function.app.command.monthlycorrection.fixedformatmonthly.BusinessTypeSortedMonCmd;
 import nts.uk.ctx.at.function.app.command.monthlycorrection.fixedformatmonthly.MonthlyRecordWorkTypeCmd;
+import nts.uk.ctx.at.function.app.command.monthlycorrection.fixedformatmonthly.UpdateBusinessTypeSortedMonCmdHandler;
 import nts.uk.ctx.at.function.app.command.monthlycorrection.fixedformatmonthly.UpdateMonthlyRecordWorkTypeCmdHandler;
 import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.BusinessTypeSortedMonDto;
 import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.BusinessTypeSortedMonFinder;
@@ -21,7 +23,7 @@ import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.Mont
  * The Class LinkPlanTimeItemWS.
  */
 @Path("at/function/monthlycorrection")
-@Produces(MediaType.APPLICATION_JSON)
+@Produces("application/json")
 public class MonthlyRecordWorkTypeWS extends WebService {
 
 	@Inject
@@ -30,6 +32,8 @@ public class MonthlyRecordWorkTypeWS extends WebService {
 	@Inject
 	private UpdateMonthlyRecordWorkTypeCmdHandler updateHandler;
 	
+	@Inject
+	private UpdateBusinessTypeSortedMonCmdHandler updateMonth;
 	
 	@Inject
 	private BusinessTypeSortedMonFinder businessFinder;
@@ -52,6 +56,11 @@ public class MonthlyRecordWorkTypeWS extends WebService {
 		this.updateHandler.handle(command);
 	}
 	
+	@POST
+	@Path("updatebusinessMonth")
+	public void updatebusinessMonth(BusinessTypeSortedMonCmd command){
+		this.updateMonth.handle(command);
+	}
 	
 	@POST
 	@Path("getallbusiness")
