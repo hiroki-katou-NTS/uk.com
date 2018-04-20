@@ -328,9 +328,9 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 		//勤務予定時間を計算
 		//val schedulePredWorkTime = (scheduleOneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode() == null)?new AttendanceTime(0):recordOneDay.getPredetermineTimeSetForCalc().getpredetermineTime(workType.getDailyWork());
 		//実績所定労働時間の計算
-		val actualPredWorkTime = (recordOneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode() == null)?new AttendanceTime(0):recordOneDay.getPredetermineTimeSetForCalc().getPredetermineTimeByAttendanceAtr(workType.getAttendanceHolidayAttr());
+		val actualPredWorkTime = (recordOneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode() == null)?new AttendanceTime(0):recordOneDay.getPredetermineTimeSetForCalc().getPredetermineTimeByAttendanceAtr(workType.getDailyWork().decisionNeedPredTime());
 		//計画所定時間の計算
-		val shedulePreWorkTime = (schePreTime.isPresent()&&scheWorkType.isPresent())? schePreTime.get().getPredetermineTimeByAttendanceAtr(scheWorkType.get().getAttendanceHolidayAttr()):new AttendanceTime(0);
+		val shedulePreWorkTime = (schePreTime.isPresent()&&scheWorkType.isPresent())? schePreTime.get().getPredetermineTimeByAttendanceAtr(scheWorkType.get().getDailyWork().decisionNeedPredTime()):new AttendanceTime(0);
 		//val workSheduleTime
 		return new WorkScheduleTimeOfDaily(new WorkScheduleTime(new AttendanceTime(510),new AttendanceTime(0),new AttendanceTime(510)),shedulePreWorkTime,actualPredWorkTime);
 	}

@@ -330,10 +330,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		/*休憩時間帯（遅刻早退用）*/
 		 List<TimeSheetOfDeductionItem> breakTimeList = new ArrayList<>();
 		if(integrationOfDaily.getAttendanceLeave().isPresent()) {
-			Optional<BreakTimeOfDailyPerformance> test = reflectBreakTimeOfDailyDomainService.getBreakTime(companyId, employeeId, targetDate,integrationOfDaily.getWorkInformation());
-			if(test.isPresent()) {
-				 breakTimeList = test.get().changeAllTimeSheetToDeductionItem();
-			}
+//			Optional<BreakTimeOfDailyPerformance> test = reflectBreakTimeOfDailyDomainService.getBreakTime(companyId, employeeId, targetDate,integrationOfDaily.getWorkInformation());
+//			if(test.isPresent()) {
+//				 breakTimeList = test.get().changeAllTimeSheetToDeductionItem();
+//			}
 		}
 	
 		/*各加算設定取得用*/
