@@ -241,7 +241,8 @@ module cmm045.a.viewmodel {
                     { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '110px' },
                     { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '80px' },
                     { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '160px'},
-                    { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '280px' },
+                    { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '280px', 
+                        formatter: (v) => (v.replace(/(<|<)script>/gi, '&lt;script&gt;').replace(/(<\/)script>/gi, '&lt;/script&gt;'))}
                     { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '180px'},
                     { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '100px'}
                 ],
