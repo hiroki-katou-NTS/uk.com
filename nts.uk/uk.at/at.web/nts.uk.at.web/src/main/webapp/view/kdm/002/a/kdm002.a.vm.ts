@@ -280,7 +280,7 @@ module nts.uk.at.view.kdm002.a {
                     maxWidth: 550,
                     maxRows: 15
                 };
-
+                self.selectedEmployee().clear();
             }
             
             

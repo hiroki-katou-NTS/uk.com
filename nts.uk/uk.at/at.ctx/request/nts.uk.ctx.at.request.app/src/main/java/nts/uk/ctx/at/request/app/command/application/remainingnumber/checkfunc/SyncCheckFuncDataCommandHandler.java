@@ -1,9 +1,10 @@
 package nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
 import javax.inject.Inject;
@@ -18,6 +19,12 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.SyEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.AnnualBreakManageAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.AnnualBreakManageImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.YearlyHolidaysTimeRemainingImport;
+import nts.uk.ctx.at.request.dom.settting.worktype.history.IVactionHistoryRulesService;
+import nts.uk.ctx.at.request.dom.settting.worktype.history.OptionalMaxDay;
+import nts.uk.ctx.at.request.dom.settting.worktype.history.PlanVacationHistory;
+import nts.uk.ctx.at.request.dom.settting.worktype.history.VacationHistoryRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -25,57 +32,68 @@ import nts.uk.shr.com.context.LoginUserContext;
 
 @Stateful
 public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFuncDataCommand> {
-	
+
 	private static final String NUMBER_OF_SUCCESS = "NUMBER_OF_SUCCESS";
 	private static final String NUMBER_OF_ERROR = "NUMBER_OF_ERROR";
 	private static final String MSG_1116 = "Msg_1116";
 	private static final String ERROR_LIST = "ERROR_LIST";
-	
+
 	@Inject
 	private SyEmployeeAdapter employeeRecordAdapter;
-	
-	@Inject 
+
+	@Inject
 	private WorkTypeRepository workTypeRepository;
-	
-	@Inject 
+
+	@Inject
 	private AnnualBreakManageAdapter annualBreakManageAdapter;
-	
+
+	@Inject
+	private IVactionHistoryRulesService iVactionHistoryRulesService;
+	@Inject
+	private VacationHistoryRepository vacationHistoryRepository;
+
 	@Override
 	protected void handle(CommandHandlerContext<CheckFuncDataCommand> context) {
 		val asyncTask = context.asAsync();
 		TaskDataSetter setter = asyncTask.getDataSetter();
-		
-		
+
 		// employee export list, error export list
 		List<EmployeeSearchCommand> employeeListResult = new ArrayList<>();
 		List<OutputErrorInfoCommand> outputErrorInfoCommand = new ArrayList<>();
-		
+
 		// get data from client to server
 		CheckFuncDataCommand command = context.getCommand();
 		List<EmployeeSearchCommand> employeeSearchCommand = command.getEmployeeList();
 		setter.setData(NUMBER_OF_SUCCESS, command.getPass());
 		setter.setData(NUMBER_OF_ERROR, command.getError());
 
-		//アルゴリズム「社員ID、期間をもとに期間内に年休付与日がある社員を抽出する」を実行する
-		// TODO RequestList　要求No304. Result from RequestList 304 waiting from team A
-		List<String> employeeIdRq304 = new ArrayList<>();
-		
+		// アルゴリズム「社員ID、期間をもとに期間内に年休付与日がある社員を抽出する」を実行する
+		// TODO RequestList 要求No304. Result from RequestList 304 waiting from
+		// team A
+		List<String> employeeList = command.getEmployeeList().stream().map(f -> f.getEmployeeId())
+				.collect(Collectors.toList());
+
+		List<AnnualBreakManageImport> employeeIdRq304 = annualBreakManageAdapter.getEmployeeId(employeeList,
+				command.getStartTime(), command.getEndTime());
+
 		// パラメータ.社員Listと取得した年休付与がある社員ID(List)を比較する
 		checkEmployeeListId(setter, employeeIdRq304, employeeListResult, outputErrorInfoCommand, employeeSearchCommand);
 
-		// TODO 計画休暇一覧を取得する 
-		List<PlannedVacationListCommand> plannedVacationList = getPlannedVacationList(command.getDate(), outputErrorInfoCommand );
+		// TODO 計画休暇一覧を取得する
+		List<PlannedVacationListCommand> plannedVacationList = getPlannedVacationList(command.getDate(),
+				outputErrorInfoCommand);
 		if (outputErrorInfoCommand.size() > 0) {
 			// エラーがあった場合
-			for(int i=0; i< outputErrorInfoCommand.size(); i++) {
-				JsonObject value = Json.createObjectBuilder().add("employeeCode", outputErrorInfoCommand.get(i).getEmployeeCode())
-						.add("employeeName",  outputErrorInfoCommand.get(i).getEmployeeName())
+			for (int i = 0; i < outputErrorInfoCommand.size(); i++) {
+				JsonObject value = Json.createObjectBuilder()
+						.add("employeeCode", outputErrorInfoCommand.get(i).getEmployeeCode())
+						.add("employeeName", outputErrorInfoCommand.get(i).getEmployeeName())
 						.add("errorMessage", outputErrorInfoCommand.get(i).getErrorMessage()).build();
 				setter.setData(ERROR_LIST + i, value);
 				setter.updateData(NUMBER_OF_SUCCESS, outputErrorInfoCommand.size());
+				setter.updateData(NUMBER_OF_ERROR, outputErrorInfoCommand.size());
 			}
-		}
-		else {
+		} else {
 			// エラーがなかった場合
 			// TODO アルゴリズム「Excel出力データ取得」を実行する
 			List<ExcelInforCommand> excelInforList = new ArrayList<>();
@@ -85,58 +103,81 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 					break;
 				}
 				// Imported(就業)「社員」を取得する
-				SyEmployeeImport employeeRecordImport = 
-						employeeRecordAdapter.getPersonInfor(employeeSearchCommand.get(i).getEmployeeId());
-				
-				if (employeeRecordImport== null) {
+				SyEmployeeImport employeeRecordImport = employeeRecordAdapter
+						.getPersonInfor(employeeSearchCommand.get(i).getEmployeeId());
+
+				if (employeeRecordImport == null) {
 					// 取得失敗
 					continue;
 				}
 				// 取得成功
-				// TODO  RequestList　要求No327 waiting from customer
-				// TODO  RequestList　要求No328 waiting from team Luong Bong
+				// RequestList 要求No327 waiting from customer
+				List<YearlyHolidaysTimeRemainingImport> yearlyHolidaysTimeRemainingImport = annualBreakManageAdapter
+						.getYearHolidayTimeAnnualRemaining(employeeSearchCommand.get(i).getEmployeeId(), command.getDate());
 				
-				setter.updateData(NUMBER_OF_SUCCESS, i+1);
-				
+				if (yearlyHolidaysTimeRemainingImport.isEmpty()) {
+					//取得失敗
+					continue;
+				}
+				// 取得成功
+				// TODO RequestList 要求No328 waiting from team Luong Bong
+
+				setter.updateData(NUMBER_OF_SUCCESS, i + 1);
+
 				try {
 					TimeUnit.SECONDS.sleep(1);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
-			//Excel出力情報ListをもとにExcel出力をする (Xuất ra file excel)
-			
-			
+			// Excel出力情報ListをもとにExcel出力をする (Xuất ra file excel)
+
 		}
-		
+
 	}
 
 	/**
-	 * waiting from team E
 	 * 計画休暇一覧を取得する
-	 * @param outputErrorInfoCommand 
-	 * @param maxDay 
+	 * 
+	 * @param outputErrorInfoCommand
+	 * @param maxDay
 	 * @return
 	 */
-	private List<PlannedVacationListCommand> getPlannedVacationList(GeneralDate date, List<OutputErrorInfoCommand> outputErrorInfoCommand) {
+	private List<PlannedVacationListCommand> getPlannedVacationList(GeneralDate date,
+			List<OutputErrorInfoCommand> outputErrorInfoCommand) {
 		List<PlannedVacationListCommand> plannedVacationListCommand = new ArrayList<>();
 		LoginUserContext loginUserContext = AppContexts.user();
-		
-		//TODO ドメインモデル「計画休暇のルールの履歴」を取得する (Lấy domain 「計画休暇のルールの履歴」)
-		
-		
-		//TODO ドメインモデル「計画休暇を取得できる上限日数」を取得する (Lấy domain 「計画休暇を取得できる上限日数」)
-		
-		// ドメインモデル「勤務種類」を取得する (lấy domain 「勤務種類」)
-		String workTypeCd = "";
-		Optional<WorkType> workType = workTypeRepository.findByDeprecated(loginUserContext.companyId(), workTypeCd);
-		if (workType.isPresent()){
-			PlannedVacationListCommand plannedVacation = new PlannedVacationListCommand();
-			plannedVacation.setWorkTypeCode(workType.get().getWorkTypeCode().toString());
-			plannedVacation.setWorkTypeName(workType.get().getName().toString());
-			
-			plannedVacationListCommand.add(plannedVacation);
+
+		// ドメインモデル「計画休暇のルールの履歴」を取得する (Lấy domain 「計画休暇のルールの履歴」)
+		String companyId = AppContexts.user().companyId();
+		List<PlanVacationHistory> planVacationHistory = iVactionHistoryRulesService
+				.getPlanVacationHistoryByDate(companyId, date);
+		if (planVacationHistory.isEmpty()) {
+			// 出力エラー情報に追加する
+			OutputErrorInfoCommand outputErrorInfo = new OutputErrorInfoCommand();
+			outputErrorInfo.setEmployeeCode(null);
+			outputErrorInfo.setEmployeeName(null);
+			outputErrorInfo.setErrorMessage("Msg_1138");
+
+			outputErrorInfoCommand.add(outputErrorInfo);
+			return plannedVacationListCommand;
 		}
+		for (PlanVacationHistory element : planVacationHistory) {
+			// TODO ドメインモデル「計画休暇を取得できる上限日数」を取得する (Lấy domain 「計画休暇を取得できる上限日数」)
+			List<PlanVacationHistory> planVacationHistoryMaxDay = vacationHistoryRepository.findHistory(companyId,
+					element.getWorkTypeCode());
+			// ドメインモデル「勤務種類」を取得する (lấy domain 「勤務種類」)
+			String workTypeCd = "";
+			Optional<WorkType> workType = workTypeRepository.findByDeprecated(loginUserContext.companyId(), workTypeCd);
+			if (workType.isPresent()) {
+				PlannedVacationListCommand plannedVacation = new PlannedVacationListCommand();
+				plannedVacation.setWorkTypeCode(workType.get().getWorkTypeCode().toString());
+				plannedVacation.setWorkTypeName(workType.get().getName().toString());
+				plannedVacation.setMaxNumberDays(planVacationHistoryMaxDay.get(0).getMaxDay().v());
+				plannedVacationListCommand.add(plannedVacation);
+			}
+		}
+
 		return plannedVacationListCommand;
 	}
 
@@ -147,32 +188,26 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 	 * @param outputErrorInfoCommand
 	 * @param employeeSearchCommand
 	 */
-	private void checkEmployeeListId(TaskDataSetter setter, List<String> employeeIdRq304, List<EmployeeSearchCommand> employeeListResult,
-			List<OutputErrorInfoCommand> outputErrorInfoCommand, List<EmployeeSearchCommand> employeeSearchCommand) {
+	private void checkEmployeeListId(TaskDataSetter setter, List<AnnualBreakManageImport> employeeIdRq304,
+			List<EmployeeSearchCommand> employeeListResult, List<OutputErrorInfoCommand> outputErrorInfoCommand,
+			List<EmployeeSearchCommand> employeeSearchCommand) {
 		for (EmployeeSearchCommand employee : employeeSearchCommand) {
-			String findEmployeeById = employeeIdRq304.stream()
-					.filter(x -> employee.getEmployeeId().equals(x))
-					.findAny()
-					.orElse(null);  
+			AnnualBreakManageImport findEmployeeById = employeeIdRq304.stream()
+					.filter(x -> employee.getEmployeeId().equals(x)).findAny().orElse(null);
 			if (findEmployeeById == null) {
 				// パラメータ.社員Listにのみ存在する社員の場合
 				OutputErrorInfoCommand outputErrorInfo = new OutputErrorInfoCommand();
 				outputErrorInfo.setEmployeeCode(employee.getEmployeeCode());
 				outputErrorInfo.setEmployeeName(employee.getEmployeeName());
 				outputErrorInfo.setErrorMessage(MSG_1116);
-				
+
 				outputErrorInfoCommand.add(outputErrorInfo);
-				setter.updateData(NUMBER_OF_ERROR, outputErrorInfoCommand.size());
-				
-			}
-			else {
+			} else {
 				// 社員が両方に存在する場合
 				employeeListResult.add(employee);
 			}
 		}
-		
+
 	}
-	
 
 }
-
