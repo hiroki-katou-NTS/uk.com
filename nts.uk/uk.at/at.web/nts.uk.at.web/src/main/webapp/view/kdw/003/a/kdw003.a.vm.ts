@@ -159,6 +159,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         })
         calcFlex: KnockoutObservable<CalcFlex> = ko.observable(null);
         breakTimeDay: KnockoutObservable<BreakTimeDay> = ko.observable(null);
+        canFlex:  KnockoutObservable<any> = ko.observable(false);
         constructor(dataShare:any) {
             var self = this;
             self.initLegendButton();
@@ -428,6 +429,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.breakTimeDay(data.flexShortage.breakTimeDay);
                     self.calcFlex(new CalcFlex(data.flexShortage.value18, data.flexShortage.value21, data.flexShortage.value189, data.flexShortage.value190, data.flexShortage.value191));
                     self.flexShortage(new FlexShortage(self, self.calcFlex(),  self.breakTimeDay()));
+                    // アルゴリズム「フレックス不足の相殺が実施できるかチェックする」
+                    self.calcFlex(data.flexShortage.canflex);
                 }else{
                     $("#flex").remove();
                 }

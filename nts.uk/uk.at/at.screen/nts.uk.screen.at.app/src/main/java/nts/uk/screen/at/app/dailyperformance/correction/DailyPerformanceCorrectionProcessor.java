@@ -474,9 +474,9 @@ public class DailyPerformanceCorrectionProcessor {
 			data.setSign(signDayMap.containsKey(data.getEmployeeId() + "|" + data.getDate()));
 			//get status check box 
 			ApproveRootStatusForEmpDto approveRootStatus =  approvalDayMap.get(data.getEmployeeId() + "|" + data.getDate());
-			if(mode == ScreenMode.APPROVAL.value){
+		//	if(mode == ScreenMode.APPROVAL.value){
 				data.setApproval(approveRootStatus == null ? false : approveRootStatus.isCheckApproval());
-			}
+		//	}
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
 			if (resultOfOneRow != null) {
 				lockDataCheckbox(sId, screenDto, dailyRecOpeFun, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, approveRootStatus);
@@ -966,7 +966,7 @@ public class DailyPerformanceCorrectionProcessor {
 						lstError.get(id).getAttendanceItemId().forEach(x -> {
 							lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(id),
 									lstError.get(id).getEmployeeId(), "", "", lstError.get(id).getProcessingDate(),
-									lstError.get(id).getErrorCode(), errorSetting.getMessageDisplay(), x, "",
+									lstError.get(id).getErrorCode(), lstError.get(id).getErrorAlarmMessage() == null ? errorSetting.getMessageDisplay() : lstError.get(id).getErrorAlarmMessage(), x, "",
 									errorSetting.isBoldAtr(), errorSetting.getMessageColor()));
 						});
 					}
@@ -1230,7 +1230,7 @@ public class DailyPerformanceCorrectionProcessor {
 				 List<RegulationInfoEmployeeQueryR> regulationRs= regulationInfoEmployeePub.search(createQueryEmployee(new ArrayList<>(), range.getStartDate(), range.getEndDate()));
 				 return regulationRs.stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
 			}else{
-				// No 338
+				// TODO No 338
 				return employeeIds;
 			}
 		} else if (mode == ScreenMode.APPROVAL.value) {
@@ -1337,7 +1337,7 @@ public class DailyPerformanceCorrectionProcessor {
 		} else {
 			List<ApproveRootStatusForEmpImport> approvals = approvalStatusAdapter.getApprovalByListEmplAndListApprovalRecordDate(dateRange.toListDate(), employeeIds, 1);
 			Map<String, ApproveRootStatusForEmpDto> approvalRootMap = approvals.stream().collect(Collectors.toMap(x -> mergeString(x.getEmployeeID(), "|", x.getAppDate().toString()), x -> {
-				return new ApproveRootStatusForEmpDto(null, x.getApprovalStatus() == ApprovalStatusForEmployee.APPROVED);
+				return new ApproveRootStatusForEmpDto(null, x.getApprovalStatus() != ApprovalStatusForEmployee.UNAPPROVED);
 			}, (x,y) ->x));
 			return approvalRootMap;
 		}
