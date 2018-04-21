@@ -46,7 +46,7 @@ public class FlexInfoDisplay {
 		 if(!predertermineOpt.isPresent()) return null;
 		 //TODO フレックス不足の相殺が実施できるかチェックする
 		 boolean checkFlex = checkShortageFlex.checkShortageFlex(employeeId, baseDate);
-		 BreakDownTimeDayExport time = predertermineOpt.get().getAddTime();
+		 BreakDownTimeDayExport time = predertermineOpt.get().getPredTime();
 		 return new FlexShortage(value18, value21, value189, value190, value191, new BreakTimeDay(time.getOneDay(), time.getMorning(), time.getAfternoon()), checkFlex);
 	}
 
