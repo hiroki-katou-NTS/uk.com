@@ -55,12 +55,12 @@ public class CareLeaveInfoFinder implements PeregFinder<CareLeaveInfoDto>{
 			NursingCareLeaveRemainingData careDataDomain = careDataDomainOpt.get();
 			NursingCareLeaveRemainingData childCareDataDomain = childCareDataDomainOpt.get();
 			return CareLeaveInfoDto.createDomain(query.getEmployeeId(), childCareInfoDomain.isUseClassification() ? 1: 0, childCareInfoDomain.getUpperlimitSetting().value,
-					childCareInfoDomain.getMaxDayForThisFiscalYear().isPresent() ? childCareInfoDomain.getMaxDayForThisFiscalYear().get() : null, 
-					childCareInfoDomain.getMaxDayForNextFiscalYear().isPresent() ? childCareInfoDomain.getMaxDayForNextFiscalYear().get() : null,  
-					childCareDataDomain.getNumOfUsedDay(), careInfoDomain.isUseClassification()?1:0, careInfoDomain.getUpperlimitSetting().value, 
-					careInfoDomain.getMaxDayForThisFiscalYear().isPresent() ? careInfoDomain.getMaxDayForThisFiscalYear().get() : null, 
-					careInfoDomain.getMaxDayForNextFiscalYear().isPresent() ? careInfoDomain.getMaxDayForNextFiscalYear().get() : null, 
-							careDataDomain.getNumOfUsedDay());
+					childCareInfoDomain.getMaxDayForThisFiscalYear().isPresent() ? childCareInfoDomain.getMaxDayForThisFiscalYear().get().v() : null, 
+					childCareInfoDomain.getMaxDayForNextFiscalYear().isPresent() ? childCareInfoDomain.getMaxDayForNextFiscalYear().get().v() : null,  
+					childCareDataDomain.getNumOfUsedDay().v(), careInfoDomain.isUseClassification()?1:0, careInfoDomain.getUpperlimitSetting().value, 
+					careInfoDomain.getMaxDayForThisFiscalYear().isPresent() ? careInfoDomain.getMaxDayForThisFiscalYear().get().v() : null, 
+					careInfoDomain.getMaxDayForNextFiscalYear().isPresent() ? careInfoDomain.getMaxDayForNextFiscalYear().get().v() : null, 
+							careDataDomain.getNumOfUsedDay().v());
 		} else {
 			return null;
 		}
