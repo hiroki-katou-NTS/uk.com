@@ -293,7 +293,7 @@ public class DailyPerformanceCorrectionProcessor {
 			dateRange = new DateRange(objectShare.getDateTarget(), objectShare.getDateTarget());
 		}
 		screenDto.setDateRange(dateRange);
-		///TODO 社員一覧を変更する -- Lấy nhân viên từ màn hinh khác hoặc lấy từ lần khởi động đầu tiên
+		/// 社員一覧を変更する -- Lấy nhân viên từ màn hinh khác hoặc lấy từ lần khởi động đầu tiên
 		List<String> changeEmployeeIds = new ArrayList<>();
 		if (lstEmployee.isEmpty()) {
 			val employeeIds = objectShare == null
@@ -303,7 +303,7 @@ public class DailyPerformanceCorrectionProcessor {
 		} else {
 			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
 		}
-		//TODO アルゴリズム「通常モードで起動する」を実行する
+		// アルゴリズム「通常モードで起動する」を実行する
 		/**
 		 * アルゴリズム「表示形式に従って情報を取得する」を実行する | Execute "Get information according to
 		 * display format"
@@ -312,9 +312,11 @@ public class DailyPerformanceCorrectionProcessor {
 		//List<EmployeeInfoFunAdapterDto> employeeInfoAdapter = changeEmployeeIds.isEmpty() ? Collections.emptyList() :  employeeInfoFunAdapter.getListPersonInfor(changeEmployeeIds);
 		//screenDto.setLstEmployee(converEmployeeList(employeeInfoAdapter));
 		screenDto.setLstEmployee(repo.getListEmployee(changeEmployeeIds));
-//		if(displayFormat == 0 && !changeEmployeeIds.isEmpty()){
-//			changeEmployeeIds = changeEmployeeIds.stream().filter(x -> x.equals((objectShare== null && initScreen == 0)  ? sId : objectShare.getIndividualTarget())).collect(Collectors.toList());
-//		}
+		// only get detail infomation employee when mode 2, 3 extract
+		if(displayFormat == 0){
+			String employeeSelect = objectShare == null ?  (lstEmployee.isEmpty() ? sId : lstEmployee.get(0).getId()) : objectShare. getIndividualTarget();
+			changeEmployeeIds = changeEmployeeIds.stream().filter(x -> x.equals(employeeSelect)).collect(Collectors.toList());
+		}
 		System.out.println("time get data employee" + (System.currentTimeMillis() - timeStart));
 		List<WorkPlaceHistImport> wPH = changeEmployeeIds.isEmpty() ? Collections.emptyList() : workplaceWorkRecordAdapter.getWplByListSidAndPeriod(changeEmployeeIds, new DatePeriod(GeneralDate.min(), GeneralDate.max()));
 		System.out.println("time get data wplhis" + (System.currentTimeMillis() - timeStart));//slow
