@@ -169,10 +169,10 @@ module nts.uk.at.view.kdr001.a {
                 self.retirement = ko.observable(true); // 退職区分
                 self.systemType = ko.observable(2);
                 self.showClosure = ko.observable(true); // 就業締め日利用
-                self.showBaseDate = ko.observable(true); // 基準日利用
+                self.showBaseDate = ko.observable(false); // 基準日利用
                 self.showAllClosure = ko.observable(true); // 全締め表示
                 self.showPeriod = ko.observable(true); // 対象期間利用
-                self.periodFormatYM = ko.observable(false); // 対象期間精度
+                self.periodFormatYM = ko.observable(true); // 対象期間精度
             }
 
             /**

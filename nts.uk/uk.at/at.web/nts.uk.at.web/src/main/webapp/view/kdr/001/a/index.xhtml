@@ -38,13 +38,13 @@
 
 					<!-- A2_2  -->
 					<div class="employeeInfoSearch">
-						<div class="selectionEmployee" tabindex="2">
+						<div class="selectionHoliday" tabindex="2">
 							<div id="employeeSearch"></div>
 						</div>
 					</div>
 
 				</div>
-				<div class="employeeAction">
+				<div class="holidayAction">
 					<div class="periodCovered">
 						<!-- A3_1 -->
 						<div class="labelRangeDate"
@@ -81,7 +81,7 @@
 							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_30')}
 						</div>
 						<!-- A4_2  -->
-						<div id="combo-box1" tabindex="6"
+						<div id="combo-box1" tabindex="6" style="margin-left: 50px;"
 							data-bind="ntsComboBox: {
 							    name:'#[KDR001_30]',
 								options: itemListcbb1,
@@ -97,13 +97,13 @@
 						<!-- A4_3  -->
 						<button data-bind="click: openKDR001b" tabindex="7" class="large" style="margin-left: 20px;">#{i18n.getText('KDR001_31')}</button>
 					</div>
-					<div id="A6_1" class="periodCovered">
+					<div class="periodCovered" style="margin-top: 25px;">
 						<!-- A6_1  -->
-						<div class="labelRangeDate" style="margin-top: 40px;"
+						<div class="labelRangeDate" 
 							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_35')}
 						</div>
 						<!-- A6_2  -->
-						<div id="combo-box2" tabindex="9" style="margin-top: 40px;"
+						<div id="combo-box2" tabindex="9"  style="margin-left: 77px;"
 							data-bind="ntsComboBox: {
 								options: itemListcbb2,
 								optionsValue: 'code',
