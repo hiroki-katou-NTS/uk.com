@@ -1209,7 +1209,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
             self.loadHeader(self.displayFormat());
               let start = performance.now();
-            self.dailyPerfomanceData(self.filterData(self.displayFormat()));
+            self.dailyPerfomanceData(self.dpData);
             console.log("tg load filter :" + (performance.now() - start));
         }
         
