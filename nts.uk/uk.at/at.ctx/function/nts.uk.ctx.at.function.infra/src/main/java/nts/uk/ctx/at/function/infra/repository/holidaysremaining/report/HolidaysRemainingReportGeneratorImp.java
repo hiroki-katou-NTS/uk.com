@@ -12,6 +12,7 @@ import com.aspose.cells.WorksheetCollection;
 
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingReportGenerator;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
@@ -25,17 +26,20 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 	private final int numberRowOfPage = 36;
 
 	@Override
-	public void generate(FileGeneratorContext generatorContext) {
+	public void generate(FileGeneratorContext generatorContext, HolidaysRemainingManagement hdManagement) {
 		try (val reportContext = this.createContext(TEMPLATE_FILE)) {
 
 			val designer = this.createContext(TEMPLATE_FILE);
 			Workbook workbook = designer.getWorkbook();
 			WorksheetCollection worksheets = workbook.getWorksheets();
 			Worksheet worksheet = worksheets.get(0);
+			Cells cells = worksheet.getCells();
 
 			printTemplate(worksheet);
 
 			printPerson(worksheet);
+
+			removeTemplate(worksheet);
 
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
@@ -65,9 +69,31 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM");
 
-		cells.get(1, 0).setValue(TextResource.localize("KDR001_2") + 
-				start.format(formatter) + "　～　" + end.format(formatter));
+		// B1_1, B1_2
+		cells.get(1, 0).setValue(TextResource.localize("KDR001_2") 
+				+ start.format(formatter) + "　～　" + end.format(formatter));
+		// B1_3
 		cells.get(2, 0).setValue(TextResource.localize("KDR001_3"));
+		// C1_1
+		cells.get(3, 2).setValue(TextResource.localize("KDR001_4"));
+		// C1_2
+		cells.get(3, 4).setValue(TextResource.localize("KDR001_5"));
+		// C1_3
+		cells.get(3, 9).setValue(TextResource.localize("KDR001_6"));
+		// C1_4
+		cells.get(4, 4).setValue(TextResource.localize("KDR001_7"));
+		// C1_5
+		cells.get(4, 5).setValue(TextResource.localize("KDR001_8"));
+		// C1_6
+		cells.get(4, 6).setValue(TextResource.localize("KDR001_9"));
+		// C1_7
+		cells.get(4, 7).setValue(TextResource.localize("KDR001_10"));
+		// C1_8
+		cells.get(4, 8).setValue(TextResource.localize("KDR001_11"));
+		// C1_9
+		for (int i = 0; i <= after + before; i++) {
+			cells.get(4, 10 + i).setValue(String.valueOf(start.plusMonths(i).getMonthValue()) + "月");
+		}
 	}
 
 	private void printPerson(Worksheet worksheet) throws Exception {
@@ -84,6 +110,12 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		cells.copyRows(cells, firstRow, firstRow + numOfPageEachPerson * numberRowOfPage,
 				numOfPageEachPerson * numberRowOfPage);
 		return firstRow + numOfPageEachPerson * numberRowOfPage;
+	}
+
+	private void removeTemplate(Worksheet worksheet) {
+		worksheet.getShapes().removeAt(0);
+		Cells cells = worksheet.getCells();
+		cells.deleteRows(0, numberRowOfPage);
 	}
 
 	private int totalMonths(LocalDateTime start, LocalDateTime end) {

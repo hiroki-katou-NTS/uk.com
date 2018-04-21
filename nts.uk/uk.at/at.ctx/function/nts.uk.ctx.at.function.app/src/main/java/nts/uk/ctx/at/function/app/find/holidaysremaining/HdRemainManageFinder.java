@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.function.app.find.holidaysremaining;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.HolidaysRemainingManagementRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -25,6 +27,9 @@ public class HdRemainManageFinder {
 					return dto;
 				}).collect(Collectors.toList());
 	}
-
+	
+	public Optional<HolidaysRemainingManagement> findByCode(String code) {
+		return this.hdRemainingManagementRepo.getHolidayManagerByCidAndExecCd(AppContexts.user().companyId(), code);
+	}
 }
 
