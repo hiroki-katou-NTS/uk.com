@@ -5,7 +5,6 @@
 
 
 .holidayAction {
-	border: 1px solid #ccc !important;
 	border-radius: 5px;
 	float: right;
 	width: 750px;
@@ -14,7 +13,7 @@
 }
 
 
-.periodCovered {
+.periodCovered { 	
 	display: inline-flex;
 	margin-bottom: 10px;
 	padding-left: 40px;
@@ -42,9 +41,8 @@
 }
 
 .selectionHoliday {
-	border: 1px solid #ccc !important;
 	border-radius: 5px;
-	padding: 20px;
+	margin-left: 20px;
 	width: 350px;
 	float:left;
 }
