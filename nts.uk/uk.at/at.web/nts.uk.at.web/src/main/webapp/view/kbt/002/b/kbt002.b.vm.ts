@@ -6,6 +6,7 @@ module nts.uk.at.view.kbt002.b {
         import getShared = nts.uk.ui.windows.getShared;
         import block = nts.uk.ui.block;
         import dialog = nts.uk.ui.dialog;
+        import getText = nts.uk.resource.getText;
         
         export class ScreenModel {
             execItemList: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -260,15 +261,17 @@ module nts.uk.at.view.kbt002.b {
                 var endTargetDate;
                 let today = moment();
                 var currentDate = moment([today.year(), today.month(), today.date()]);
-                let targetDateStr = '今日' + today.format("YYYY/MM/DD") + '実行すると、作成期間は';
+                let targetDateStr = getText('KBT002_25') + today.format("YYYY/MM/DD") + getText('KBT002_26');
 
                 // Calculate start target date
                 if (execItem.targetMonth == 0) {
                     // If target date < current date then set date by current date
                     startTargetDate = moment([today.year(), today.month(), execItem.targetDate]);
+                    /*
                     if (startTargetDate.diff(currentDate, 'days') < 0) {
                         startTargetDate = currentDate;
                     }
+                    */
                 } else if (execItem.targetMonth == 1) {
                     startTargetDate = moment([today.year(), today.month(), execItem.targetDate]).add(1, 'months');
                     
@@ -276,16 +279,18 @@ module nts.uk.at.view.kbt002.b {
                     startTargetDate = moment([today.year(), today.month(), execItem.targetDate]).add(2, 'months');
                 }
                 targetDateStr += startTargetDate.format("YYYY/MM/DD");
-                
                 // Calculate end target date
-                if (execItem.creationPeriod == 1 && startTargetDate.date() == 1) {
-                    endTargetDate = startTargetDate.endOf('month');
+                if (self.currentExecItem().targetDate() == 1) {
+                    if(execItem.creationPeriod == 1){
+                        endTargetDate = startTargetDate.endOf('month');
+                    }else{
+                        endTargetDate = startTargetDate.add(execItem.creationPeriod-1, 'months').endOf('month');
+                    }
                 } else {
                     endTargetDate = startTargetDate.add(execItem.creationPeriod, 'months');
                 }
                 targetDateStr += '～'
                 targetDateStr += endTargetDate.format("YYYY/MM/DD") + 'です';
-                
                 return targetDateStr;
             }
             
