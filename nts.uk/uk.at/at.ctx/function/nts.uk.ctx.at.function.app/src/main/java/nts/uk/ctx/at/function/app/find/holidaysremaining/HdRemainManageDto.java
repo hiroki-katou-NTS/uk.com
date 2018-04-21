@@ -50,17 +50,17 @@ public class HdRemainManageDto {
 	/**
 	 * 代休の項目を出力する
 	 */
-	private boolean outItemSub;
+	private boolean outputItemSubstitute;
 
 	/**
 	 * 代休未消化出力する
 	 */
-	private boolean representSub;
+	private boolean representSubstitute;
 
 	/**
 	 * 代休残数を出力する
 	 */
-	private boolean remainChargeSub;
+	private boolean remainingChargeSubstitute;
 
 	/**
 	 * 振休の項目を出力する
@@ -75,7 +75,7 @@ public class HdRemainManageDto {
 	/**
 	 * 振休残数を出力する
 	 */
-	private boolean numRemainPause;
+	private boolean numberRemainingPause;
 
 	/**
 	 * 公休の項目を出力する
@@ -95,12 +95,12 @@ public class HdRemainManageDto {
 	/**
 	 * 子の看護休暇の項目を出力する
 	 */
-	private boolean childCareLeave;
+	private boolean childNursingLeave;
 
 	/**
 	 * 介護休暇の項目を出力する
 	 */
-	private boolean nursingCareLeave;
+	private boolean nursingLeave;
 	
 	private List<Integer> listSpecialHoliday;
 
@@ -141,17 +141,17 @@ public class HdRemainManageDto {
 		this.insideHalfDay = insideHalfDay;
 		this.insideHours = insideHours;
 		this.yearlyReserved = yearlyReserved;
-		this.outItemSub = outItemSub;
-		this.representSub = representSub;
-		this.remainChargeSub = remainChargeSub;
+		this.outputItemSubstitute = outItemSub;
+		this.representSubstitute = representSub;
+		this.remainingChargeSubstitute = remainChargeSub;
 		this.pauseItem = pauseItem;
 		this.unDigestedPause = undigestedPause;
-		this.numRemainPause = numRemainPause;
+		this.numberRemainingPause = numRemainPause;
 		this.outputItemsHolidays = outputItemsHolidays;
 		this.outputHolidayForward = outputHolidayForward;
 		this.monthlyPublic = monthlyPublic;
-		this.childCareLeave = childCareLeave;
-		this.nursingCareLeave = nursingCareLeave;
+		this.childNursingLeave = childCareLeave;
+		this.nursingLeave = nursingCareLeave;
 		this.listSpecialHoliday = specHolidays;
 	}
 

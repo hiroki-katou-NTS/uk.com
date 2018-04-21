@@ -41,12 +41,11 @@
 					<table id="multi-list" tabindex="5"
 						data-bind="ntsGridList: {
 							    multiple: false,
-								height: 371,
 								options: lstHolidays,
 								optionsValue: 'displayCd',
-								
+								rows: 15,
 								columns: [
-										{ headerText: '#{i18n.getText('KDR001_40')}', key: 'displayCd', width: 30 },
+										{ headerText: '#{i18n.getText('KDR001_40')}', key: 'displayCd', width: 40 },
 										{ headerText: '#{i18n.getText('KDR001_41')}', key: 'displayName', width: 300 }
 										], 
 								
@@ -80,7 +79,7 @@
 						<div class="labelWork" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_43')}
 						</div>
 						<!-- B4_2  -->
-						<table tabindex="8">
+						<table tabindex="8" style="width: 666px">
 							<tr>
 								<td>
 									<!-- B4_3  -->

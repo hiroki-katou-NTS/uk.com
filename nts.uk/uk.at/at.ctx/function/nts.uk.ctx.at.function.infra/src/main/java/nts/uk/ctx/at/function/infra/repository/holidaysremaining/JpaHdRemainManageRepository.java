@@ -47,8 +47,24 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 				domain.getCode().v());
 		if (duplicateDomain.isPresent()) {
 			KfnmtHdRemainManage updateData = this.toEntity(domain);
-			KfnmtHdRemainManage oldData = this.queryProxy().find(updateData.hdRemainManagePk, KfnmtHdRemainManage.class)
-					.get();
+			KfnmtHdRemainManage oldData = this.queryProxy().find(updateData.hdRemainManagePk, KfnmtHdRemainManage.class).get();
+			oldData.name = updateData.name;
+			oldData.yearlyHoliday = updateData.yearlyHoliday;
+			oldData.insideHalfDay = updateData.insideHalfDay;
+			oldData.insideHours = updateData.insideHours;
+			oldData.yearlyReserved = updateData.yearlyReserved;
+			oldData.outItemSub = updateData.outItemSub;
+			oldData.representSub = updateData.representSub;
+			oldData.remainChargeSub = updateData.remainChargeSub;
+			oldData.pauseItem = updateData.pauseItem;
+			oldData.undigestedPause = updateData.undigestedPause;
+			oldData.numRemainPause = updateData.numRemainPause;
+			oldData.outputItemsHolidays = updateData.outputItemsHolidays;
+			oldData.outputHolidayForward = updateData.outputHolidayForward;
+			oldData.monthlyPublic = updateData.monthlyPublic;
+			oldData.childCareLeave = updateData.childCareLeave;
+			oldData.nursingCareLeave = updateData.nursingCareLeave;
+			oldData.kfnmtSpecialHolidays = updateData.kfnmtSpecialHolidays;
 			this.commandProxy().update(oldData);
 		}
 	}
