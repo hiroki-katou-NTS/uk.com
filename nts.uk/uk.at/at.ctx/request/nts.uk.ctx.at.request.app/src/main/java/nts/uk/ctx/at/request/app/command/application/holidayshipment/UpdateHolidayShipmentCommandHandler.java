@@ -25,7 +25,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Wor
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentWorkingHour;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTimeCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -205,7 +205,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 
 	private void errorCheckBeforeRegister(SaveHolidayShipmentCommand command) {
 		// アルゴリズム「事前条件チェック」を実行する
-		appReason = saveHanler.preconditionCheck(command, companyID, appType);
+		appReason = saveHanler.preconditionCheck(command, companyID, appType, comType);
 
 	}
 

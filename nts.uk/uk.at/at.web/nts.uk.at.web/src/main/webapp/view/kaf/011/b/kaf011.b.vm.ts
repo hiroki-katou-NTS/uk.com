@@ -8,6 +8,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
     import block = nts.uk.ui.block;
     import jump = nts.uk.request.jump;
     import confirm = nts.uk.ui.dialog.confirm;
+    import alError = nts.uk.ui.dialog.alertError;
 
     export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
 
@@ -78,7 +79,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 
 
             }).fail((error) => {
-                dialog({ messageId: error.messageId });
+                alError({ messageId: error.messageId, messageParams: error.parameterIds });
 
             }).always(() => {
                 block.clear();
@@ -101,14 +102,12 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 self.setDataFromStart(data);
 
             }).fail((error) => {
-                dialog({ messageId: error.messageId });
+                alError({ messageId: error.messageId, messageParams: error.parameterIds });
             }).always(() => {
                 block.clear();
                 dfd.resolve();
 
             });
-
-
 
             return dfd.promise();
 
@@ -122,8 +121,8 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 self.version(data.application.version || 0);
                 self.displayPrePostFlg(data.applicationSetting.displayPrePostFlg);
                 self.appTypeSet(new common.AppTypeSet(data.appTypeSet || null));
-                self.recWk().wkTypes(data.recWkTypes || []);
-                self.absWk().wkTypes(data.absWkTypes || []);
+                self.recWk().setWkTypes(data.recWkTypes || []);
+                self.absWk().setWkTypes(data.absWkTypes || []);
                 if (data.application) {
                     self.setDataCommon(data);
                 }
@@ -148,7 +147,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         setDataCommon(data) {
             let self = this,
                 app = data.application;
-            self.appReasons(data.appReasons || []);
+            self.appReasons(data.appReasonComboItems || []);
             self.prePostSelectedCode(app.prePostAtr);
             self.showReason(data.applicationSetting.appReasonDispAtr);
             self.reason(data.application.applicationReason);
@@ -171,7 +170,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 service.removeAbs(removeCmd).done(function(data) {
                     location.reload();
                 }).fail(function(res: any) {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                    alError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
                     });
                 }).always(() => {
                     block.clear();
@@ -187,7 +186,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 service.cancelAbs(cancelCmd).done(function(data) {
                     location.reload();
                 }).fail(function(res: any) {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                    alError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
                     });
                 }).always(() => {
                     block.clear();
@@ -222,11 +221,19 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 control.changeWorkHoursType(data.changeWorkHoursType);
                 control.appDate(data.appDate);
                 control.appID(data.appID);
+                control.wkTimeName(data.workTimeName);
                 if (data.wkTime1) {
                     control.wkTime1().startTime(data.wkTime1.startTime);
                     control.wkTime1().endTime(data.wkTime1.endTime);
                     control.wkTime1().startType(data.wkTime1.startUseAtr);
                     control.wkTime1().endType(data.wkTime1.endUseAtr);
+
+                }
+
+                if (data.timeZoneUseDtos && data.timeZoneUseDtos.length) {
+                    let timeZone1 = data.timeZoneUseDtos[0];
+                    control.wkTime1().startTimeDisplay(timeZone1.startTime);
+                    control.wkTime1().endTimeDisplay(timeZone1.endTime);
                 }
                 if (comType) {
                     self.appComSelectedCode(comType);

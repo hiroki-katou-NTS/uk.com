@@ -25,9 +25,13 @@
 			<com:scriptfile path="../../000/a/kaf000.a.vm.js" />
 			<!-- kaf011 shr-->
 			<com:scriptfile path="../shr/kaf011.shr.service.js" />
+			<com:scriptfile path="../shr/kaf011.shr.vm.js" />
 			<!-- kaf011 c-->
 			<com:scriptfile path="kaf011.c.vm.js" />
 			<com:scriptfile path="kaf011.c.start.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.request.dom.application.AppReason
+			</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
@@ -47,7 +51,7 @@
 							optionsValue: 'code',
 							optionsText: 'text',
 							value: prePostSelectedCode ,
-							enable: screenModeNew }"></div>
+							enable: true }"></div>
 
 					</div>
 
@@ -59,7 +63,7 @@
 					</div>
 					<div class="div_line_col_2">
 						<div
-							data-bind="ntsDatePicker: {value: appDate , dateFormat: 'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
+							data-bind="ntsDatePicker: {value: absWk().appDate ,valueFormat:'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
 					</div>
 				</div>
 				<div class="div_line"
@@ -71,7 +75,7 @@
 						<div tabindex="6" class="combo-box"
 							data-bind="ntsComboBox: {
 										name: '#{i18n.getText('KAF011_28')}',
-										options: appReasons ,
+										options: appReasonComboItems ,
 										optionsValue: 'reasonID' ,
 										visibleItemsCount: 5 ,
 										value: appReasonSelectedID ,
@@ -79,8 +83,8 @@
 										editable: false,
 										enable: true,
 										columns: [
-											{ prop: 'reasonTemp', length: 10 },
-										]}">
+											{ prop: 'reasonTemp', length: 10 },]
+											}">
 						</div>
 					</div>
 				</div>
@@ -93,8 +97,9 @@
 					<div class="div_line_col_2">
 						<textarea style="height: 100px" tabindex="6"
 							data-bind="ntsMultilineEditor: {
-					constraint: 'AppReason',
-					value: reason ,name: '#{i18n.getText('KAF011_17')}',
+									constraint: 'AppReason',
+									value: reason ,
+									name: '#{i18n.getText('KAF011_17')}',
 									option: {
 									resizeable: false ,
 			                    	width: '500'
@@ -110,7 +115,8 @@
 			</div>
 
 			<div id="functions-area-bottom">
-				<button class="x-large proceed" tabindex="11">#{i18n.getText('KDL003_22')}</button>
+				<button class="x-large proceed" data-bind="click:saveAbs"
+					tabindex="11">#{i18n.getText('KDL003_22')}</button>
 				<button tabindex="12" data-bind="click: closeDialog">#{i18n.getText('KDL003_23')}</button>
 
 			</div>
