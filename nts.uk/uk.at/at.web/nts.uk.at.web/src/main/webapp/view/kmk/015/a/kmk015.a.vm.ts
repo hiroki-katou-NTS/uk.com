@@ -145,7 +145,7 @@ module nts.uk.at.view.kmk015.a {
             OpenDialogB() {
                 let self = this;
 
-                if (self.listHistory().length >= 20) {
+                if (self.listHistory().length >= 19) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_976" });
                     return;
                 }

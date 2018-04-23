@@ -42,7 +42,7 @@ public class VacationHistoryPolicyImpl implements VacationHistoryPolicy {
 		if (isCreated) {
 			if (this.historyRepository
 					.findByWorkTypeCode(vacationHistory.getCompanyId(), vacationHistory.getWorkTypeCode())
-					.size() >= 20) {
+					.size() >= 19) {
 				throw new BusinessException("Msg_976");
 			}
 		}
