@@ -400,7 +400,11 @@ module nts.layout {
 
                     if (rd) {
                         rd.data.value.subscribe(v => {
-                            _.each(ctrls, c => c.data.editable(v == 1));
+                            _.each(ctrls, c => {
+                                if (c && c.data) {
+                                    c.data.editable(v == 1);
+                                }
+                            });
                         });
                         rd.data.value.valueHasMutated();
                     }
@@ -1146,7 +1150,9 @@ module nts.layout {
                 CS00016_IS00077: IFindData = finder.find('CS00016', 'IS00077'),
                 CS00016_IS00079: IFindData = finder.find('CS00016', 'IS00079'),
                 CS00017_IS00082: IFindData = finder.find('CS00017', 'IS00082'),
-                CS00017_IS00084: IFindData = finder.find('CS00017', 'IS00084');
+                CS00017_IS00084: IFindData = finder.find('CS00017', 'IS00084'),
+                CS00020_IS00130: IFindData = finder.find('CS00020', 'IS00130'),
+                CS00020_IS00131: IFindData = finder.find('CS00020', 'IS00131');
 
             if (CS00016_IS00077 && CS00016_IS00079) {
                 CS00016_IS00077.data.value.subscribe(_date => {
@@ -1197,6 +1203,45 @@ module nts.layout {
                     }).done((cbx: Array<IComboboxItem>) => {
                         CS00017_IS00084.data.lstComboBoxValue(cbx);
                     });
+                });
+            }
+
+            if (CS00017_IS00084 && (CS00020_IS00130 || CS00020_IS00131)) {
+                CS00017_IS00084.data.value.subscribe(wc => {
+                    if (CS00020_IS00130) {
+                        let comboData = ko.toJS(CS00020_IS00130.data);
+
+                        fetch.get_cb_data({
+                            comboBoxType: comboData.item.referenceType,
+                            categoryId: comboData.categoryId,
+                            required: comboData.required,
+                            standardDate: undefined,
+                            typeCode: undefined,
+                            masterType: comboData.item.masterType,
+                            employeeId: undefined,
+                            cps002: true,
+                            workplaceId: CS00017_IS00084.data.value()
+                        }).done(data => {
+                            CS00020_IS00130.data.lstComboBoxValue(data);
+                        });;
+                    }
+                    if (CS00020_IS00131) {
+                        let comboData = ko.toJS(CS00020_IS00131.data);
+
+                        fetch.get_cb_data({
+                            comboBoxType: comboData.item.referenceType,
+                            categoryId: comboData.categoryId,
+                            required: comboData.required,
+                            standardDate: undefined,
+                            typeCode: undefined,
+                            masterType: comboData.item.masterType,
+                            employeeId: undefined,
+                            cps002: true,
+                            workplaceId: CS00017_IS00084.data.value()
+                        }).done(data => {
+                            CS00020_IS00131.data.lstComboBoxValue(data);
+                        });;
+                    }
                 });
             }
         }
