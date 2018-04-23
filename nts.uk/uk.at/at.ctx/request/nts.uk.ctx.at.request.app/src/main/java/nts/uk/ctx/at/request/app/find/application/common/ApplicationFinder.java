@@ -13,16 +13,12 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationRemandDt
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSendDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalFrameForRemandDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
-import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationContentService;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationForRemandService;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationForSendService;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForRemandOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForSendOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
-import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApprovalTempRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -36,18 +32,6 @@ public class ApplicationFinder {
 
 	@Inject
 	private EmployeeRequestAdapter employeeRequestAdapter;
-
-	@Inject
-	private ApprovalRootStateAdapter approvalRootStateAdapter;
-
-	// @Inject
-	// private JobtitleSearchSetAdapter jobtitleSearchSetAdapter;
-
-	@Inject
-	private ApprovalTempRepository appRep;
-
-	@Inject
-	private IApplicationContentService appContentService;
 
 	@Inject
 	private IApplicationForSendService appForSendService;
