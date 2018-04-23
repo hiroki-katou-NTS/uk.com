@@ -26,6 +26,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforIm
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
+import nts.uk.ctx.at.request.dom.application.overtime.service.IApplicationContentService;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApprovalTemp;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApprovalTempRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -50,6 +51,9 @@ public class ApplicationFinder {
 	
 	@Inject
 	private ApprovalTempRepository appRep;
+	
+	@Inject 
+	private IApplicationContentService appContentService;
 	
 	public List<ApplicationMetaDto> getAppbyDate(ApplicationPeriodDto dto){
 		String companyID = AppContexts.user().companyId();
@@ -98,7 +102,7 @@ public class ApplicationFinder {
 			String loginName = "D00001";
 			String loginMail = "D00001@nittsusystime.co.jp";
 			String empName = "D00001 name";
-			String appContent = "";
+			String appContent = appContentService.getApplicationContent(application_New.get());
 			String mailContentToSend = I18NText.getText("Msg_703",
 					loginName, appTempAsStr,
 					GeneralDate.today().toString(), app.getAppType().nameId,
