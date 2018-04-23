@@ -3,19 +3,26 @@ module nts.uk.at.view.kdr001.a {
         /**
          * define path to service
          */
-        var paths: any = {
+        var path: any = {
                 findAll: "at/function/holidaysremaining/findAll",
-                saveAsExcel: "at/function/holidaysremaining/employee"
+                saveAsExcel: "at/function/holidaysremaining/employee",
+                getDate: "at/function/holidaysremaining/getDate"
             };
         
         
         export function findAll(): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", paths.findAll);
+            return nts.uk.request.ajax("at", path.findAll);
         }
         
         export function saveAsExcel(data: model.appInfor) {
-            return nts.uk.request.exportFile("at", paths.saveAsExcel, data);
+            return nts.uk.request.exportFile("at", path.saveAsExcel, data);
         }
+        
+        export function getDate() {
+            return nts.uk.request.exportFile("at", path.getDate);
+        }
+       
+        
         
         export module model {
             export class appInfor {
@@ -26,6 +33,16 @@ module nts.uk.at.view.kdr001.a {
                     this.lstEmpIds = lstEmpIds;
                 }
             }
+            
+            export class date{
+                startDate : string;
+                endDate : string;
+                
+                constructor(startDate : string, endDate : string){
+                        this.startDate = startDate;
+                        this.endDate = endDate;
+                    }
+                }
             
             export class holidayRemainingOutputCondition
             {

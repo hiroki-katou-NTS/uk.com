@@ -12,6 +12,7 @@ import nts.uk.ctx.at.function.app.command.holidaysremaining.AddHdRemainManageCom
 import nts.uk.ctx.at.function.app.command.holidaysremaining.HdRemainManageCommand;
 import nts.uk.ctx.at.function.app.command.holidaysremaining.RemoveHdRemainManageCommandHandler;
 import nts.uk.ctx.at.function.app.command.holidaysremaining.UpdateHdRemainManageCommandHandler;
+import nts.uk.ctx.at.function.app.find.holidaysremaining.DateHolidayRemainingDto;
 import nts.uk.ctx.at.function.app.find.holidaysremaining.HdRemainManageDto;
 import nts.uk.ctx.at.function.app.find.holidaysremaining.HdRemainManageFinder;
 
@@ -55,6 +56,12 @@ public class HolidaysRemainingWebService extends WebService {
 	@Path("remove")
 	public void removerHdRemainManage(HdRemainManageCommand comand) {
 		this.removeHdRemainManageCommandHandler.handle(comand);
+	}
+	
+	@POST
+	@Path("getDate")
+	public DateHolidayRemainingDto getDate() {
+		return this.hdRemainManageFinder.getDate();
 	}
 
 }
