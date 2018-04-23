@@ -122,6 +122,7 @@ module nts.uk.at.view.kmw006.f.viewmodel {
                 self.items(listErr);
                 $("#single-list").igGrid("option", "dataSource", self.items());
                 self.isComplete(true);
+                $("#F3_2").focus();
                 self.endTime(taskInfor.finishedAt);
                 self.elapseTime.end();
                 self.completeStatus(result.updateLog.completeStatus);
