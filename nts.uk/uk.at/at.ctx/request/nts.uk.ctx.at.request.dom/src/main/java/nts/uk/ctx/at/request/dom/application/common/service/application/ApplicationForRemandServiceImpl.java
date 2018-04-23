@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.application.output.A
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.DetailApproverOutput;
 import nts.uk.shr.com.context.AppContexts;
 
+@Stateless
 public class ApplicationForRemandServiceImpl implements IApplicationForRemandService{
 	
 	@Inject
