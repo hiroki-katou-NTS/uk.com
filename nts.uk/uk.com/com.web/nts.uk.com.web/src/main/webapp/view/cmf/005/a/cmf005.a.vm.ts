@@ -7,7 +7,7 @@ module nts.uk.com.view.cmf005.a.viewmodel {
             /**
              * request to delete data screen
              */
-            deleteDataScreen(): void {
+            openDeleteDataScreen(): void {
                 nts.uk.request.jump("/view/cmf/005/b/index.xhtml");
             }
             
