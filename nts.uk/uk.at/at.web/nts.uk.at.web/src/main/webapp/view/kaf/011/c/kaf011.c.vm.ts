@@ -17,7 +17,7 @@ module nts.uk.at.view.kaf011.c.screenModel {
 
         reason: KnockoutObservable<string> = ko.observable('');
 
-        appReasonComboItems = ko.observableArray([]);
+        appReasons = ko.observableArray([]);
 
         appReasonSelectedID: KnockoutObservable<string> = ko.observable('');
 
@@ -74,7 +74,7 @@ module nts.uk.at.view.kaf011.c.screenModel {
             service.start_c(startParam).done((data: common.IHolidayShipment) => {
                 self.setDataFromStart(data);
             }).fail((error) => {
-               alError({ messageId: error.messageId, messageParams: error.parameterIds });
+                alError({ messageId: error.messageId, messageParams: error.parameterIds });
             }).always(() => {
                 block.clear();
                 dfd.resolve();
@@ -97,7 +97,18 @@ module nts.uk.at.view.kaf011.c.screenModel {
                         enteredPersonSID: self.employeeID(),
                         appVersion: self.version(),
                     }
-                };
+                },
+                selectedReason = _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() }),
+                appReason = self.getReason();;
+
+            saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;
+            if (selectedReason) {
+                saveCmd.appCmd.appReasonText = selectedReason.reasonTemp;
+            }
+            let isCheckLengthError: boolean = !nts.uk.at.view.kaf000.shr.model.CommonProcess.checklenghtReason(appReason, "#appReason");
+            if (isCheckLengthError) {
+                return;
+            };
 
             saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;;
             block.invisible();
@@ -114,12 +125,31 @@ module nts.uk.at.view.kaf011.c.screenModel {
             });
 
         }
+        getReason(): string {
+            let appReason = '',
+                self = this,
+                inputReasonID = self.appReasonSelectedID(),
+                inputReasonList = self.appReasons(),
+                detailReason = self.reason();
+            let inputReason: string = '';
+            if (!nts.uk.util.isNullOrEmpty(inputReasonID)) {
+                inputReason = _.find(inputReasonList, { 'reasonID': inputReasonID }).reasonTemp;
+            }
+            if (!nts.uk.util.isNullOrEmpty(inputReason) && !nts.uk.util.isNullOrEmpty(detailReason)) {
+                appReason = inputReason + ":" + detailReason;
+            } else if (!nts.uk.util.isNullOrEmpty(inputReason) && nts.uk.util.isNullOrEmpty(detailReason)) {
+                appReason = inputReason;
+            } else if (nts.uk.util.isNullOrEmpty(inputReason) && !nts.uk.util.isNullOrEmpty(detailReason)) {
+                appReason = detailReason;
+            }
+            return appReason;
+        }
 
         setDataFromStart(data: common.IHolidayShipment) {
             let self = this;
             if (data) {
                 self.prePostSelectedCode(data.preOrPostType);
-                self.appReasonComboItems(data.appReasonComboItems || []);
+                self.appReasons(data.appReasonComboItems || []);
                 self.drawalReqSet(new common.DrawalReqSet(data.drawalReqSet || null));
                 self.showReason(data.applicationSetting.appReasonDispAtr);
                 self.displayPrePostFlg(data.applicationSetting.displayPrePostFlg);

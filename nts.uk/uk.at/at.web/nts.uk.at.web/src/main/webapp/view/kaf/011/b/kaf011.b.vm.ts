@@ -68,9 +68,18 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                         enteredPersonSID: self.employeeID(),
                         appVersion: self.version(),
                     }
-                };
+                },
+                selectedReason = _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() }),
+                appReason = self.getReason();;
 
             saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;
+            if (selectedReason) {
+                saveCmd.appCmd.appReasonText = selectedReason.reasonTemp;
+            }
+            let isCheckLengthError: boolean = !nts.uk.at.view.kaf000.shr.model.CommonProcess.checklenghtReason(appReason, "#appReason");
+            if (isCheckLengthError) {
+                return;
+            }
 
             service.update(saveCmd).done(() => {
                 dialog({ messageId: 'Msg_15' }).then(function() {
@@ -84,6 +93,25 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             }).always(() => {
                 block.clear();
             });
+        }
+        getReason(): string {
+            let appReason = '',
+                self = this,
+                inputReasonID = self.appReasonSelectedID(),
+                inputReasonList = self.appReasons(),
+                detailReason = self.reason();
+            let inputReason: string = '';
+            if (!nts.uk.util.isNullOrEmpty(inputReasonID)) {
+                inputReason = _.find(inputReasonList, { 'reasonID': inputReasonID }).reasonTemp;
+            }
+            if (!nts.uk.util.isNullOrEmpty(inputReason) && !nts.uk.util.isNullOrEmpty(detailReason)) {
+                appReason = inputReason + ":" + detailReason;
+            } else if (!nts.uk.util.isNullOrEmpty(inputReason) && nts.uk.util.isNullOrEmpty(detailReason)) {
+                appReason = inputReason;
+            } else if (nts.uk.util.isNullOrEmpty(inputReason) && !nts.uk.util.isNullOrEmpty(detailReason)) {
+                appReason = detailReason;
+            }
+            return appReason;
         }
 
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
@@ -151,7 +179,9 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             self.prePostSelectedCode(app.prePostAtr);
             self.showReason(data.applicationSetting.appReasonDispAtr);
             self.reason(data.application.applicationReason);
-            self.appReasonSelectedID(data.application.applicationReason.split("\r\n")[0]);
+            if (data.appReasonComboItems) {
+                self.appReasonSelectedID(data.appReasonComboItems[0].reasonID);
+            }
 
         }
 

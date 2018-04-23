@@ -151,8 +151,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
             if (selectedReason) {
                 saveCmd.appCmd.appReasonText = selectedReason.reasonTemp;
             }
-            let isHasErrorWhenCheckLengthReason: boolean = !nts.uk.at.view.kaf000.shr.model.CommonProcess.checklenghtReason(appReason, "#appReason");
-            if (isHasErrorWhenCheckLengthReason) {
+            let isCheckLengthError: boolean = !nts.uk.at.view.kaf000.shr.model.CommonProcess.checklenghtReason(appReason, "#appReason");
+            if (isCheckLengthError) {
                 return;
             }
             saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;
