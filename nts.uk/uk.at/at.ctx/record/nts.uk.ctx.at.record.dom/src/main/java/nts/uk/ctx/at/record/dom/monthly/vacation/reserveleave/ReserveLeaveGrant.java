@@ -12,8 +12,6 @@ import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremain
 @Setter
 public class ReserveLeaveGrant {
 
-	/** 付与区分 */
-	private boolean grantAtr;
 	/** 付与日数 */
 	private ReserveLeaveGrantDayNumber grantDays;
 	
@@ -22,22 +20,18 @@ public class ReserveLeaveGrant {
 	 */
 	public ReserveLeaveGrant(){
 		
-		this.grantAtr = false;
 		this.grantDays = new ReserveLeaveGrantDayNumber(0.0);
 	}
 	
 	/**
 	 * ファクトリー
-	 * @param grantAtr 付与区分
 	 * @param grantDays 付与日数
 	 * @return 積立年休付与ｊ方法
 	 */
 	public static ReserveLeaveGrant of(
-			boolean grantAtr,
 			ReserveLeaveGrantDayNumber grantDays){
 		
 		ReserveLeaveGrant domain = new ReserveLeaveGrant();
-		domain.grantAtr = grantAtr;
 		domain.grantDays = grantDays;
 		return domain;
 	}
