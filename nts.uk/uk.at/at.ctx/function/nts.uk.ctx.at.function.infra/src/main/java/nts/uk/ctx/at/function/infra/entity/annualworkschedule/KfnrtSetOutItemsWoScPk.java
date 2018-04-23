@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.infra.repository.annualworkschedule;
+package nts.uk.ctx.at.function.infra.entity.annualworkschedule;
 
 import java.io.Serializable;
 
@@ -11,13 +11,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
-* 帳表に出力する項目: 主キー情報
+* 年間勤務表（36チェックリスト）の出力項目設定: 主キー情報
 */
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KrcmtItemOutTblBookPk implements Serializable {
+public class KfnrtSetOutItemsWoScPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -31,13 +31,6 @@ public class KrcmtItemOutTblBookPk implements Serializable {
 	* コード
 	*/
 	@Basic(optional = false)
-	@Column(name = "CODE")
-	public int code;
-
-	/**
-	* 並び順
-	*/
-	@Basic(optional = false)
-	@Column(name = "SORT_BY")
-	public int sortBy;
+	@Column(name = "CD")
+	public int cd;
 }

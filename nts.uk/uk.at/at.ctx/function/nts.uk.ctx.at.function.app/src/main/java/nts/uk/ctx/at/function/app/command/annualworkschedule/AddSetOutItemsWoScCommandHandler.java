@@ -6,18 +6,19 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.function.dom.annualworkschedule.repostory.SetOutItemsWoScRepository;
+import nts.uk.ctx.at.function.dom.annualworkschedule.SetOutItemsWoScRepository;
 import nts.uk.ctx.at.function.dom.annualworkschedule.SetOutItemsWoSc;
 
 @Stateless
 @Transactional
 public class AddSetOutItemsWoScCommandHandler extends CommandHandler<SetOutItemsWoScCommand> {
+	
 	@Inject
 	private SetOutItemsWoScRepository repository;
-
+	
 	@Override
 	protected void handle(CommandHandlerContext<SetOutItemsWoScCommand> context) {
 		SetOutItemsWoScCommand addCommand = context.getCommand();
-		repository.add(new SetOutItemsWoSc(addCommand.getCid(), addCommand.getCd(), addCommand.getDispSettAgr36(), addCommand.getName(), addCommand.getOutNumExceedTime36Agr(), addCommand.getDisplayFormat()));
+		repository.add(new SetOutItemsWoSc(addCommand.getCid(), addCommand.getCd(), addCommand.getName(), addCommand.getOutNumExceedTime36Agr(), addCommand.getDisplayFormat()));
 	}
 }

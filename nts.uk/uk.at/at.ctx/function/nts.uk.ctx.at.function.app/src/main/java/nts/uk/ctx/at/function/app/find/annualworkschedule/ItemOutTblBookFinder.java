@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import nts.uk.ctx.at.function.dom.annualworkschedule.repostory.ItemOutTblBookRepository;
+import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBookRepository;
 
 @Stateless
 /**
@@ -17,6 +17,6 @@ public class ItemOutTblBookFinder {
 
 	public List<ItemOutTblBookDto> getAllItemOutTblBook(){
 		return finder.getAllItemOutTblBook().stream().map(item -> ItemOutTblBookDto.fromDomain(item))
-					.collect(Collectors.toList());
+				.collect(Collectors.toList());
 	}
 }

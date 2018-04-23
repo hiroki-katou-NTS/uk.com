@@ -7,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -19,23 +21,15 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_SET_OUT_ITEMS_WO_SC")
-public class KrcmtSetOutItemsWoSc extends UkJpaEntity implements Serializable
-{
+@Table(name = "KFNRT_SET_OUT_ITEMS_WO_SC")
+public class KfnrtSetOutItemsWoSc extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	* ID
 	*/
 	@EmbeddedId
-	public KrcmtSetOutItemsWoScPk setOutItemsWoScPk;
-
-	/**
-	* 36協定の表示設定
-	*/
-	@Basic(optional = false)
-	@Column(name = "DISP_SETT_AGR_36")
-	public int dispSettAgr36;
+	public KfnrtSetOutItemsWoScPk setOutItemsWoScPk;
 
 	/**
 	* 名称
@@ -45,14 +39,14 @@ public class KrcmtSetOutItemsWoSc extends UkJpaEntity implements Serializable
 	public String name;
 
 	/**
-	* 
+	* 36協定時間を超過した月数を出力する
 	*/
 	@Basic(optional = false)
 	@Column(name = "OUT_NUM_EXCEED_TIME_36_AGR")
 	public int outNumExceedTime36Agr;
 
 	/**
-	* 
+	* 表示形式
 	*/
 	@Basic(optional = false)
 	@Column(name = "DISPLAY_FORMAT")
@@ -64,10 +58,10 @@ public class KrcmtSetOutItemsWoSc extends UkJpaEntity implements Serializable
 	}
 
 	public SetOutItemsWoSc toDomain() {
-		return new SetOutItemsWoSc(this.setOutItemsWoScPk.cid, this.setOutItemsWoScPk.cd, this.dispSettAgr36, this.name, this.outNumExceedTime36Agr, this.displayFormat);
+		return new SetOutItemsWoSc(this.setOutItemsWoScPk.cid, this.setOutItemsWoScPk.cd, this.name, this.outNumExceedTime36Agr, this.displayFormat);
 	}
-	public static KrcmtSetOutItemsWoSc toEntity(SetOutItemsWoSc domain) {
-		return new KrcmtSetOutItemsWoSc(new KrcmtSetOutItemsWoScPk(domain.getCid(), domain.getCd()), domain.getDispSettAgr36(), domain.getName(), domain.getOutNumExceedTime36Agr(), domain.getDisplayFormat());
+	public static KfnrtSetOutItemsWoSc toEntity(SetOutItemsWoSc domain) {
+		return new KfnrtSetOutItemsWoSc(new KfnrtSetOutItemsWoScPk(domain.getCid(), domain.getCd()), domain.getName(), domain.getOutNumExceedTime36Agr(), domain.getDisplayFormat());
 	}
 
 }

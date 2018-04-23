@@ -6,7 +6,9 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.function.dom.annualworkschedule.repostory.SetOutItemsWoScRepository;
+import javax.transaction.Transactional;
+import nts.uk.ctx.at.function.dom.annualworkschedule.SetOutItemsWoScRepository;
+import nts.uk.ctx.at.function.dom.annualworkschedule.SetOutItemsWoSc;
 
 @Stateless
 @Transactional

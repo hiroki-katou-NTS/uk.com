@@ -6,7 +6,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.function.dom.annualworkschedule.repostory.ItemOutTblBookRepository;
+import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBookRepository;
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBook;
 
 @Stateless
@@ -18,6 +18,6 @@ public class UpdateItemOutTblBookCommandHandler extends CommandHandler<ItemOutTb
 	@Override
 	protected void handle(CommandHandlerContext<ItemOutTblBookCommand> context) {
 		ItemOutTblBookCommand updateCommand = context.getCommand();
-		repository.update(new ItemOutTblBook(updateCommand.getCid(), updateCommand.getCode(), updateCommand.getSortBy(), updateCommand.getUseClass(), updateCommand.getValOutFormat(), updateCommand.getHeadingName()));
+		repository.update(new ItemOutTblBook(updateCommand.getCid(), updateCommand.getCd(), updateCommand.getSetOutCd(), updateCommand.getItemOutCd(), updateCommand.getUseClass(), updateCommand.getValOutFormat()));
 	}
 }

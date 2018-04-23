@@ -5,7 +5,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 
 @Value
-public class SetOutItemsWoScCommand {
+public class CalcFormulaItemCommand {
 	/**
 	* 会社ID
 	*/
@@ -14,22 +14,22 @@ public class SetOutItemsWoScCommand {
 	/**
 	* コード
 	*/
-	private int cd;
+	private int setOutCd;
 
 	/**
-	* 名称
+	* コード
 	*/
-	private String name;
+	private int itemOutCd;
 
 	/**
-	* 36協定時間を超過した月数を出力する
+	* 勤怠項目ID
 	*/
-	private int outNumExceedTime36Agr;
+	private String attendanceItemId;
 
 	/**
-	* 表示形式
+	* 加, 減
 	*/
-	private int displayFormat;
+	private int operation;
 
 	private Long version;
 

@@ -16,29 +16,28 @@ public class SetOutItemsWoScDto {
 	* 会社ID
 	*/
 	private String cid;
+
 	/**
 	* コード
 	*/
 	private int cd;
-	/**
-	* 36協定の表示設定
-	*/
-	private int dispSettAgr36;
+
 	/**
 	* 名称
 	*/
 	private String name;
+
 	/**
-	* 
+	* 36協定時間を超過した月数を出力する
 	*/
 	private int outNumExceedTime36Agr;
+
 	/**
-	* 
+	* 表示形式
 	*/
 	private int displayFormat;
-	
-	
+
 	public static SetOutItemsWoScDto fromDomain(SetOutItemsWoSc domain) {
-		return new SetOutItemsWoScDto(domain.getCid(), domain.getCd(), domain.getDispSettAgr36(), domain.getName(), domain.getOutNumExceedTime36Agr(), domain.getDisplayFormat());
+		return new SetOutItemsWoScDto(domain.getCid(), domain.getCd(), domain.getName(), domain.getOutNumExceedTime36Agr(), domain.getDisplayFormat());
 	}
 }

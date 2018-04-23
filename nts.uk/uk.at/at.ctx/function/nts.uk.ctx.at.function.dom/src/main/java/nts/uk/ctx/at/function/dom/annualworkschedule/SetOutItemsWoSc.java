@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.annualworkschedule;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -8,47 +9,35 @@ import nts.arc.layer.dom.AggregateRoot;
 */
 @Getter
 public class SetOutItemsWoSc extends AggregateRoot {
-
 	/**
 	* 会社ID
 	*/
 	private String cid;
+
 	/**
 	* コード
 	*/
 	private int cd;
-	/**
-	* 36協定の表示設定
-	*/
-	private int dispSettAgr36;
+
 	/**
 	* 名称
 	*/
 	private String name;
+
 	/**
-	* 
+	* 36協定時間を超過した月数を出力する
 	*/
 	private int outNumExceedTime36Agr;
+
 	/**
-	* 
+	* 表示形式
 	*/
 	private int displayFormat;
 
-	/**
-	 * 
-	 * @param cid 会社ID
-	 * @param cd コード
-	 * @param dispSettAgr36 36協定の表示設定
-	 * @param name 名称
-	 * @param outNumExceedTime36Agr
-	 * @param displayFormat
-	 */
-	public SetOutItemsWoSc(String cid, int cd, int dispSettAgr36, String name,
-			int outNumExceedTime36Agr, int displayFormat) {
+	public SetOutItemsWoSc(String cid, int cd, String name, int outNumExceedTime36Agr, int displayFormat) {
 		super();
 		this.cid = cid;
 		this.cd = cd;
-		this.dispSettAgr36 = dispSettAgr36;
 		this.name = name;
 		this.outNumExceedTime36Agr = outNumExceedTime36Agr;
 		this.displayFormat = displayFormat;

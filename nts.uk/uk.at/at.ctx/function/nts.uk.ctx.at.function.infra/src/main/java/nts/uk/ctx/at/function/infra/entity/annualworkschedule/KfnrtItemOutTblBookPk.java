@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KrcmtItemOutTblBookPk implements Serializable {
+public class KfnrtItemOutTblBookPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -31,13 +31,6 @@ public class KrcmtItemOutTblBookPk implements Serializable {
 	* コード
 	*/
 	@Basic(optional = false)
-	@Column(name = "CODE")
-	public int code;
-
-	/**
-	* 並び順
-	*/
-	@Basic(optional = false)
-	@Column(name = "SORT_BY")
-	public int sortBy;
+	@Column(name = "CD")
+	public int cd;
 }

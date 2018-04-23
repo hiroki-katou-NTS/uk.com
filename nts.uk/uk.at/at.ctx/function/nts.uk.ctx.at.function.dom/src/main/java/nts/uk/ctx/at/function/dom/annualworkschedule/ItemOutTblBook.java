@@ -8,39 +8,43 @@ import nts.arc.layer.dom.AggregateRoot;
 */
 @Getter
 public class ItemOutTblBook extends AggregateRoot {
-
 	/**
 	* 会社ID
 	*/
 	private String cid;
+
 	/**
 	* コード
 	*/
-	private int code;
+	private int cd;
+
 	/**
-	* 並び順
+	* コード
 	*/
-	private int sortBy;
+	private int setOutCd;
+
+	/**
+	* コード
+	*/
+	private int itemOutCd;
+
 	/**
 	* 使用区分
 	*/
 	private int useClass;
+
 	/**
 	* 値の出力形式
 	*/
 	private int valOutFormat;
-	/**
-	* 見出し名称
-	*/
-	private String headingName;
 
-	public ItemOutTblBook(String cid, int code, int sortBy, int useClass, int valOutFormat, String headingName) {
+	public ItemOutTblBook(String cid, int cd, int setOutCd, int itemOutCd, int useClass, int valOutFormat) {
 		super();
 		this.cid = cid;
-		this.code = code;
-		this.sortBy = sortBy;
+		this.cd = cd;
+		this.setOutCd = setOutCd;
+		this.itemOutCd = itemOutCd;
 		this.useClass = useClass;
 		this.valOutFormat = valOutFormat;
-		this.headingName = headingName;
 	}
 }

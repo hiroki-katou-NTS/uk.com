@@ -14,28 +14,33 @@ public class ItemOutTblBookDto {
 	* 会社ID
 	*/
 	private String cid;
+	
 	/**
 	* コード
 	*/
-	private int code;
+	private int cd;
+	
 	/**
-	* 並び順
+	* コード
 	*/
-	private int sortBy;
+	private int setOutCd;
+	
+	/**
+	* コード
+	*/
+	private int itemOutCd;
+	
 	/**
 	* 使用区分
 	*/
 	private int useClass;
+	
 	/**
 	* 値の出力形式
 	*/
 	private int valOutFormat;
-	/**
-	* 見出し名称
-	*/
-	private String headingName;
 
 	public static ItemOutTblBookDto fromDomain(ItemOutTblBook domain) {
-		return new ItemOutTblBookDto(domain.getCid(), domain.getCode(), domain.getSortBy(), domain.getUseClass(), domain.getValOutFormat(), domain.getHeadingName());
+		return new ItemOutTblBookDto(domain.getCid(), domain.getCd(), domain.getSetOutCd(), domain.getItemOutCd(), domain.getUseClass(), domain.getValOutFormat());
 	}
 }

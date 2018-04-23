@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.function.app.command.annualworkschedule;
 
 import lombok.Value;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 @Value
 public class ItemOutTblBookCommand {
@@ -8,26 +10,31 @@ public class ItemOutTblBookCommand {
 	* 会社ID
 	*/
 	private String cid;
+
 	/**
 	* コード
 	*/
-	private int code;
+	private int cd;
+
 	/**
-	* 並び順
+	* コード
 	*/
-	private int sortBy;
+	private int setOutCd;
+
+	/**
+	* コード
+	*/
+	private int itemOutCd;
+
 	/**
 	* 使用区分
 	*/
 	private int useClass;
+
 	/**
 	* 値の出力形式
 	*/
 	private int valOutFormat;
-	/**
-	* 見出し名称
-	*/
-	private String headingName;
 
 	private Long version;
 }

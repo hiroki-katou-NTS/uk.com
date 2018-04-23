@@ -5,8 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import nts.uk.ctx.at.function.dom.annualworkschedule.repostory.SetOutItemsWoScRepository;
+import nts.uk.ctx.at.function.dom.annualworkschedule.SetOutItemsWoScRepository;
 
 @Stateless
 /**

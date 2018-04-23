@@ -11,14 +11,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
-* 年間勤務表（36チェックリスト）の出力項目設定: 主キー情報
+* 項目の算出式: 主キー情報
 */
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KrcmtSetOutItemsWoScPk implements Serializable
-{
+public class KfnrtCalcFormulaItemPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -27,11 +26,4 @@ public class KrcmtSetOutItemsWoScPk implements Serializable
 	@Basic(optional = false)
 	@Column(name = "CID")
 	public String cid;
-
-	/**
-	* コード
-	*/
-	@Basic(optional = false)
-	@Column(name = "CD")
-	public int cd;
 }
