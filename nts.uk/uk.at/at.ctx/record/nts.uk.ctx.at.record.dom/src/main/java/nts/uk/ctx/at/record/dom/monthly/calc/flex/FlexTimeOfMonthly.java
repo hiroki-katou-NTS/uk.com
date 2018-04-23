@@ -125,6 +125,7 @@ public class FlexTimeOfMonthly {
 		domain.flexShortageTime = flexShortageTime;
 		domain.flexCarryforwardTime = flexCarryforwardTime;
 		domain.flexTimeOfExcessOutsideTime = flexTimeOfExcessOutsideWork;
+		domain.flexShortDeductTime = flexShortDeductTime;
 		return domain;
 	}
 	
