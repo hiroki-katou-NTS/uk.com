@@ -81,12 +81,12 @@
 							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_30')}
 						</div>
 						<!-- A4_2  -->
-						<div id="combo-box1" tabindex="6" style="margin-left: 50px;"
+						<div id="comboBx-HolidayRemaining" tabindex="6" style="margin-left: 50px;"
 							data-bind="ntsComboBox: {
 							    name:'#[KDR001_30]',
-								options: itemListcbb1,
-								optionsValue: 'code',
-								value: selectedCode,
+								options: lstHolidayRemaining,
+								optionsValue: 'cd',
+								value: holidayRemainingSelectedCd,
 								optionsText: 'name',
 								editable: false,
 								enable: true,
