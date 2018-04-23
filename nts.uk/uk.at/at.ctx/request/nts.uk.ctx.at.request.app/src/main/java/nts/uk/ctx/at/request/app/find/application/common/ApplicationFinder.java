@@ -1,9 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.common;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -14,14 +12,14 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDt
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationRemandDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSendDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalFrameForRemandDto;
-import nts.uk.ctx.at.request.app.find.application.common.dto.DetailApproverDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationContentService;
+import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationForRemandService;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationForSendService;
+import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForRemandOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForSendOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApprovalTempRepository;
@@ -53,6 +51,9 @@ public class ApplicationFinder {
 
 	@Inject
 	private IApplicationForSendService appForSendService;
+	
+	@Inject 
+	private IApplicationForRemandService appForRemandService;
 
 	public List<ApplicationMetaDto> getAppbyDate(ApplicationPeriodDto dto) {
 		String companyID = AppContexts.user().companyId();
@@ -63,28 +64,13 @@ public class ApplicationFinder {
 	}
 
 	public ApplicationRemandDto getAppByIdForRemand(String appID) {
-		String companyID = AppContexts.user().companyId();
-		Optional<Application_New> application_New = this.applicationRepository.findByID(companyID, appID);
-		ApprovalRootContentImport_New approvalRootContentImport = approvalRootStateAdapter
-				.getApprovalRootContent(companyID, null, null, null, appID, false);
-		String applicantPosition = "主任";
-		List<ApprovalFrameForRemandDto> listApprovalFrame = new ArrayList<ApprovalFrameForRemandDto>();
-		approvalRootContentImport.getApprovalRootState().getListApprovalPhaseState().forEach(x -> {
-			x.getListApprovalFrame().forEach(y -> {
-				List<DetailApproverDto> listApprover = new ArrayList<DetailApproverDto>();
-				y.getListApprover().forEach(z -> {
-					listApprover.add(new DetailApproverDto(z.getApproverID(), z.getApproverName(), z.getRepresenterID(),
-							z.getRepresenterName(), "課長"));
-				});
-				listApprovalFrame
-						.add(new ApprovalFrameForRemandDto(y.getPhaseOrder(), y.getApprovalReason(), listApprover));
-			});
-		});
-		return ApplicationRemandDto.fromDomain(appID, application_New.get().getVersion(),
-				approvalRootContentImport.getErrorFlag().value, applicantPosition,
-				application_New.isPresent() ? employeeRequestAdapter
-						.getEmployeeInfor(application_New.map(Application_New::getEmployeeID).orElse("")) : null,
-				listApprovalFrame);
+		ApplicationForRemandOutput appOutput = appForRemandService.getApplicationForRemand(appID);
+		return ApplicationRemandDto.fromDomain(appID, appOutput.getVersion(),
+				appOutput.getErrorFlag(), appOutput.getApplicantPosition(),
+				appOutput.getApplicant(),
+				appOutput.getApprovalFrameDtoForRemand().stream().map(x ->{
+					return ApprovalFrameForRemandDto.fromDomain(x);
+				}).collect(Collectors.toList()));
 	}
 
 	public ApplicationSendDto getAppByIdForSend(String appID){
