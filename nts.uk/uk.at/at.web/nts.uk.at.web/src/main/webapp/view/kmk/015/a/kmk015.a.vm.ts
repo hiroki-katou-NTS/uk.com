@@ -62,6 +62,17 @@ module nts.uk.at.view.kmk015.a {
                     self.listWorkType().forEach(function(item) {
                         if (item.workTypeCode == code) { self.nameWorkType(item.name); }
                     });
+                    
+                    service.getHistoryByWorkType(code).done(data => {
+                        //clear list history
+                        self.listHistory.removeAll();
+                        
+                        //push listHistory
+                        self.addList(data);
+
+                        //set focus 
+                        self.selectedCodeHistory(data[0].historyId);
+                    });
                 });
 
                 if (nts.uk.util.isNullOrEmpty(self.listHistory())) {
@@ -120,7 +131,11 @@ module nts.uk.at.view.kmk015.a {
                         self.selectedCodeHistory(data[0].historyId);
                     });
                     dfd.resolve();
-                }).fail(function(res) { nts.uk.ui.dialog.alertError(res) })
+                }).fail(function(res) { 
+                    nts.uk.ui.dialog.alert({ messageId: res.messageId }).then(function () {
+                        nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");
+                    });
+                })
                     .always(() => nts.uk.ui.block.clear()); // clear block ui.
 
                 return dfd.promise();
@@ -189,18 +204,19 @@ module nts.uk.at.view.kmk015.a {
                 }
 
                 let historyId = "";
+                let history: SaveHistory;
 
                 //check isNewMode
                 if (!self.isCreated()) {
                     historyId = self.historyId();
-                    let history: SaveHistory = new SaveHistory(historyId, new Date(self.startforC().format("YYYY/MM/DD")), new Date(self.endforC().format("YYYY/MM/DD")));
+                    history = new SaveHistory(historyId, new Date(self.startforC().format("YYYY/MM/DD")), new Date(self.endforC().format("YYYY/MM/DD")));
                 } else {
-                    let history: SaveHistory = new SaveHistory(historyId, new Date(self.startTime().format("YYYY/MM/DD")), new Date(self.endTime().format("YYYY/MM/DD")));
+                    history = new SaveHistory(historyId, new Date(self.startTime().format("YYYY/MM/DD")), new Date(self.endTime().format("YYYY/MM/DD")));
                 }
-
+               
                 //Add command
-                
                 let command: SaveVacationHistoryCommand = new SaveVacationHistoryCommand(self.isCreated(), self.selectedCode(), self.numberDay(), history);
+                
                 // Loading, block ui.
                 nts.uk.ui.block.invisible();
                 service.insertHistory(command).done(function() {

@@ -7,8 +7,8 @@ module nts.uk.at.view.kmk015.b {
             
             constructor() {
                 let self = this;
-                self.periodStart = ko.observable(moment());
-                self.periodEnd = ko.observable(moment());
+                self.periodStart = ko.observable(moment(null));
+                self.periodEnd = ko.observable(moment(null));
             }
             
             /**
