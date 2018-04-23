@@ -77,6 +77,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         itemSelected: KnockoutObservableArray<ItemModel>;
         selectedCode: KnockoutObservable<string> = ko.observable('1');
         holidayRemainingSelectedCd: KnockoutObservable<string> = ko.observable('');
+        
         constructor() {
             var self = this;
 
@@ -246,6 +247,15 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 nts.uk.ui.block.clear();
                 dfd.reject();
             });
+            service.getDate().done(function(data: IGetDate) {
+                self.startDateString(moment.utc(data.startDate).format("YYYY/MM"));
+                self.endDateString(moment.utc(data.endDate).format("YYYY/MM"));
+                dfd.resolve();
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
+                nts.uk.ui.block.clear();
+                dfd.reject();
+            });
             dfd.resolve(self);
             return dfd.promise();
         }
@@ -385,6 +395,20 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             self.startDate = '';
             self.worktimeCode = '';
         }
+    }
+    
+    export class IGetDate{
+        startDate : string;
+        endDate : string;
+    }
+    
+    export class GetDate{
+        startDate : string;
+        endDate : string;
+        constructor(startDate : string, endDate : string ){
+            this.startDate = startDate;
+            this.endDate = endDate;
+        }    
     }
 
     export class ListType {
