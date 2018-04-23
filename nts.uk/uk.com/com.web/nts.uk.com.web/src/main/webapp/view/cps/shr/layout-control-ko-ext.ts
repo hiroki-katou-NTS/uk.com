@@ -18,6 +18,9 @@ module nts.custombinding {
         writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'],
         writeConstraints = window['nts']['uk']['ui']['validation']['writeConstraints'],
         parseTimeWidthDay = window['nts']['uk']['time']['minutesBased']['clock']['dayattr']['create'];
+    
+    // add support virtual element to let control
+    ko.virtualElements.allowedBindings.let = true;
 
     export class LayoutControl implements KnockoutBindingHandler {
         private style = `<style type="text/css" rel="stylesheet" id="layout_style">
@@ -904,12 +907,6 @@ module nts.custombinding {
                         <button id="cps007_btn_line"></button>
                     </div>
                 </div>
-                <script type="text/html" id="set_template">
-                    
-                </script>
-                <script type="text/html" id="single_template">
-                    
-                </script>
                 <script type="text/html" id="set_table_template">
                     <table>
                         <thead>
@@ -931,9 +928,7 @@ module nts.custombinding {
                     <!-- ko if: resourceId -->
                         <button class="inline" data-bind="attr: { title: resourceId }">？</button>
                     <!-- /ko -->                    
-                    <div data-bind="let: {
-                            nameid : itemDefId.replace(/[-_]/g, '')
-                        }" class="inline">
+                    <!-- ko let: { nameid : itemDefId.replace(/[-_]/g, '') } -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.STRING -->
                         <!-- ko if: item.stringItemType == STRING_TYPE.NUMERIC || item.stringItemLength < 40 || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80) -->
                         <input data-bind=" ntsTextEditor: {
@@ -1230,7 +1225,7 @@ module nts.custombinding {
                                  }, text: text('CPS001_106'), enable: editable">選択</button>
                             </div>
                         <!-- /ko -->
-                    </div>
+                    <!-- /ko -->
                 </script>`;
 
         private services = {

@@ -1,5 +1,7 @@
 package nts.uk.ctx.pereg.ws.employee.person;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -10,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeToDeleteDto;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeInfo;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeSimpleInfo;
 import nts.uk.ctx.pereg.app.find.employee.GetHeaderOfCPS001Finder;
 import nts.uk.ctx.pereg.app.find.person.info.PersonDto;
 import nts.uk.ctx.pereg.app.find.person.info.PersonFinder;
@@ -42,5 +45,11 @@ public class PersonWebService extends WebService {
 	@Path("get-header/{employeeId}")
 	public EmployeeInfo getEmployeeInfo(@PathParam(value = "employeeId") String employeeId) {
 		return this.empFinder.getEmployeeInfo(employeeId);
+	}
+	
+	@POST
+	@Path("get-list-emps")
+	public List<EmployeeSimpleInfo> getEmployeeInfo(List<String> lstId) {
+		return this.empFinder.getList(lstId);
 	}
 }
