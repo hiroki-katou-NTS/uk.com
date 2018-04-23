@@ -71,6 +71,15 @@ public class HolidayWorkFrameTime {
 	}
 	
 	/**
+	 * 事前申請を足す(4末納品きんきゅうたいおうby 保科)
+	 * @param addTime
+	 */
+	public void addBeforeTime(AttendanceTime addTime) {
+		if(this.getBeforeApplicationTime().isPresent())
+			this.beforeApplicationTime = Finally.of(this.getBeforeApplicationTime().get().addMinutes(addTime.valueAsMinutes()));
+	}
+	
+	/**
 	 * 実績超過乖離時間の計算
 	 * @return
 	 */

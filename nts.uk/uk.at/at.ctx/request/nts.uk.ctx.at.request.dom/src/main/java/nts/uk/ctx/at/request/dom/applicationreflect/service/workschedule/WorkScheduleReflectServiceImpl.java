@@ -28,10 +28,8 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 	private ApplicationReflectProcessSche processScheReflect;
 
 	@Override
-	public ScheReflectedStatesInfo workscheReflect(ReflectScheDto reflectParam) {
-		Application_New application = reflectParam.getAppInfor();
-		ScheReflectedStatesInfo reflectedStatesInfo = new ScheReflectedStatesInfo(application.getReflectionInformation().getStateReflection(),
-				application.getReflectionInformation().getNotReason().isPresent() ? application.getReflectionInformation().getNotReason().get() : null);
+	public boolean workscheReflect(ReflectScheDto reflectParam) {
+		Application_New application = reflectParam.getAppInfor();		
 		//反映チェック処理(Xử lý check phản ánh)
 		//TODO: tam thoi chua goi den xu ly nay
 		/*if(!this.checkBeforeReflected(application)) {
@@ -47,10 +45,8 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 				null, 
 				null);
 		boolean isReflect = false;
-		if(application.getAppType() == ApplicationType.OVER_TIME_APPLICATION) {
-			reflectedStatesInfo = new ScheReflectedStatesInfo(application.getReflectionInformation().getStateReflection(),
-					application.getReflectionInformation().getNotReason().isPresent() ? application.getReflectionInformation().getNotReason().get() : null);
-			return reflectedStatesInfo;
+		if(application.getAppType() == ApplicationType.OVER_TIME_APPLICATION) {			
+			return false;
 		}  else if (application.getAppType() == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION //直行直帰申請
 				&& application.getPrePostAtr() == PrePostAtr.PREDICT){			
 			GoBackDirectly gobackData = reflectParam.getGoBackDirectly();
@@ -66,11 +62,7 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 			reflectSchePara.setForLeave(reflectParam.getForLeave());
 			processScheReflect.forleaveReflect(reflectSchePara);
 		}
-		if(isReflect){
-			reflectedStatesInfo.setReflectedSate(ReflectedState_New.REFLECTED);
-			reflectedStatesInfo.setNotReflectReson(ReasonNotReflect_New.WORK_FIXED);
-		}
-		return reflectedStatesInfo;
+		return isReflect;
 	}
 
 	@Override

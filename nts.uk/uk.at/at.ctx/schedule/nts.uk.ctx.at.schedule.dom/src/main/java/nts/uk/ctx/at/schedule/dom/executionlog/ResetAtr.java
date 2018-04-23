@@ -53,4 +53,25 @@ public class ResetAtr extends DomainObject {
 		memento.setResetStartEndTime(this.resetStartEndTime);
 	}
 
+	public void setResetWorkingHours(Boolean resetWorkingHours) {
+		this.resetWorkingHours = resetWorkingHours;
+	}
+
+	public void setResetStartEndTime(Boolean resetStartEndTime) {
+		this.resetStartEndTime = resetStartEndTime;
+	}
+
+	public void setResetMasterInfo(Boolean resetMasterInfo) {
+		this.resetMasterInfo = resetMasterInfo;
+	}
+
+	public void setResetTimeAssignment(Boolean resetTimeAssignment) {
+		this.resetTimeAssignment = resetTimeAssignment;
+	}
+
+	public ResetAtr() {
+	}
+	
+	
+
 }

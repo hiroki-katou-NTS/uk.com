@@ -40,7 +40,7 @@
 													}
 												} else {
 													var s = '';
-													$data.listApprover().forEach((data, index)=>{
+													_.forEach($data.listApprover(),function(data,index){
 														if(index != 0){
 															s = s + ',';
 														}

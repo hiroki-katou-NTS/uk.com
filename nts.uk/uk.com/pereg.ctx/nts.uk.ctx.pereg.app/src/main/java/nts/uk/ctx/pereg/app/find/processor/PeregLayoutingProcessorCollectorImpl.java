@@ -84,51 +84,50 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 			new TypeLiteral<PeregFinder<EmpInfoContactDto>>(){},
 			// CS00024 年休情報
 			new TypeLiteral<PeregFinder<AnnualLeaveDto>>(){},
-			// CS00025
+			// CS00025 特別休暇１情報
 			new TypeLiteral<PeregFinder<Specialleave1InformationDto>>(){},
-			// CS00026
+			// CS00026 特別休暇２情報
 			new TypeLiteral<PeregFinder<Specialleave2informationDto>>(){},
-			// CS00027
+			// CS00027 特別休暇３情報
 			new TypeLiteral<PeregFinder<Specialleave3informationDto>>(){},
-			// CS00028
+			// CS00028 特別休暇４情報
 			new TypeLiteral<PeregFinder<Specialleave4informationDto>>(){},
-			// CS00029
+			// CS00029 特別休暇５情報
 			new TypeLiteral<PeregFinder<Specialleave5informationDto>>(){},
-			// CS00030
+			// CS00030 特別休暇６情報
 			new TypeLiteral<PeregFinder<Specialleave6informationDto>>(){},
-			// CS00031
+			// CS00031 特別休暇７情報
 			new TypeLiteral<PeregFinder<Specialleave7informationDto>>(){},
-			// CS00032
+			// CS00032 特別休暇８情報
 			new TypeLiteral<PeregFinder<Specialleave8informationDto>>(){},
-			// CS00033
+			// CS00033 特別休暇９情報
 			new TypeLiteral<PeregFinder<Specialleave9informationDto>>(){},
-			// CS00034
+			// CS00034 特別休暇１０情報
 			new TypeLiteral<PeregFinder<Specialleave10informationDto>>(){},
-			
+			// CS00035 その他休暇情報
+			new TypeLiteral<PeregFinder<OtherHolidayInfoDto>>(){},
 			// CS00036 子の看護・介護休暇管理
 			new TypeLiteral<PeregFinder<CareLeaveInfoDto>>(){},
-			// CS00049
+			// CS00049 特別休暇１１情報
 			new TypeLiteral<PeregFinder<Specialleave11informationDto>>(){},
-			// CS00050
+			// CS00050 特別休暇１２情報
 			new TypeLiteral<PeregFinder<Specialleave12informationDto>>(){},
-			// CS00051
+			// CS00051 特別休暇１３情報
 			new TypeLiteral<PeregFinder<Specialleave13informationDto>>(){},
-			// CS00052
+			// CS00052 特別休暇１４情報
 			new TypeLiteral<PeregFinder<Specialleave14informationDto>>(){},
-			// CS00053
+			// CS00053 特別休暇１５情報
 			new TypeLiteral<PeregFinder<Specialleave15informationDto>>(){},
-			// CS00054
+			// CS00054 特別休暇１６情報
 			new TypeLiteral<PeregFinder<Specialleave16informationDto>>(){},
-			// CS00055
+			// CS00055 特別休暇１７情報
 			new TypeLiteral<PeregFinder<Specialleave17informationDto>>(){},
-			// CS00056
+			// CS00056 特別休暇１８情報
 			new TypeLiteral<PeregFinder<Specialleave18informationDto>>(){},
-			// CS00057
+			// CS00057 特別休暇１９情報
 			new TypeLiteral<PeregFinder<Specialleave19informationDto>>(){},
-			// CS00058
-			new TypeLiteral<PeregFinder<Specialleave20informationDto>>(){},
-			// CS00037
-			new TypeLiteral<PeregFinder<OtherHolidayInfoDto>>(){}
+			// CS00058 特別休暇２０情報
+			new TypeLiteral<PeregFinder<Specialleave20informationDto>>(){}
 			);
 
 	@Override

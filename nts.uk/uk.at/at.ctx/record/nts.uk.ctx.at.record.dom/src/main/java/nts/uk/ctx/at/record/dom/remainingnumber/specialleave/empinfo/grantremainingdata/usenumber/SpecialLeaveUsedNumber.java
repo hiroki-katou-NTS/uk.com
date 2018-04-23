@@ -28,7 +28,6 @@ public class SpecialLeaveUsedNumber {
 				: Optional.empty();
 		this.specialLeaveOverLimitNumber = Optional
 				.of(SpecialLeaveOverNumber.createFromJavaType(dayNumberOfExeeded, timeOfExeeded));
-
 	}
 
 	public static SpecialLeaveUsedNumber createFromJavaType(Double dayNumberOfUse, Integer timeOfUse,

@@ -42,6 +42,7 @@ module cps001.h.vm {
 
                 service.getAll(self.sid(), data).done((data) => {
                     if (data && data.length > 0) {
+                        self.isCreate(false);
                         self.items(data);
                         let index = _.findIndex(self.items(), (item) => { return item.id == self.currentItem(); });
 
@@ -123,6 +124,7 @@ module cps001.h.vm {
             self.setDef().done(() => {
                 self.load().done(() => {
                     if (self.items().length > 0) {
+                        self.isCreate(false);
                         self.currentItem(self.items()[0].id);
                     }
                     dfd.resolve();
@@ -355,7 +357,7 @@ module cps001.h.vm {
 
             self.grantDate.subscribe((data) => {
 
-                if (data && !(nts.uk.ui.errors.hasError())) {
+                if (data && __viewContext.viewModel.isCreate()) {
                     service.generateDeadline(moment.utc(data, "YYYY/MM/DD")).done((item) => {
                         self.deadline(item);
                     });

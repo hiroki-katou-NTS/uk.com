@@ -34,7 +34,7 @@ public class AfterOvertimeReflectServiceImpl implements AfterOvertimeReflectServ
 	@Inject
 	private AttendanceTimeRepository attendanceTime;
 	@Override
-	public ApplicationReflectOutput reflectAfterOvertime(OvertimeParameter overtimePara) {
+	public boolean reflectAfterOvertime(OvertimeParameter overtimePara) {
 		try {
 			ApplicationReflectOutput output = new ApplicationReflectOutput(overtimePara.getOvertimePara().getReflectedState(), 
 					overtimePara.getOvertimePara().getReasonNotReflect());
@@ -47,7 +47,7 @@ public class AfterOvertimeReflectServiceImpl implements AfterOvertimeReflectServ
 			Optional<WorkInfoOfDailyPerformance> optDailyData = workRepository.find(overtimePara.getEmployeeId(),
 					overtimePara.getDateInfo());		
 			if(!optDailyData.isPresent()) {
-				return output;
+				return false;
 			}
 			WorkInfoOfDailyPerformance dailyData = optDailyData.get();
 			//予定開始終了時刻の反映
@@ -73,11 +73,10 @@ public class AfterOvertimeReflectServiceImpl implements AfterOvertimeReflectServ
 			
 			output.setReflectedState(ReflectedStateRecord.REFLECTED);
 			output.setReasonNotReflect(ReasonNotReflectRecord.ACTUAL_CONFIRMED);
-			return output;
+			return true;
 			
 		} catch (Exception e) {
-			return new ApplicationReflectOutput(overtimePara.getOvertimePara().getReflectedState(), 
-					overtimePara.getOvertimePara().getReasonNotReflect());
+			return false;
 		}
 		
 	}

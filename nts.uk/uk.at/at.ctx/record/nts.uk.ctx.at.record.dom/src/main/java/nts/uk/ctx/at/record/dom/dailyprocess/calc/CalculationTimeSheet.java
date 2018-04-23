@@ -159,6 +159,18 @@ public abstract class CalculationTimeSheet {
 		return new AttendanceTime(forCalcList.stream().map(tc -> tc.calcTotalTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
 	}
 	
+	
+	/**
+	 * 控除時間の合計を算出する（指定なし)
+	 * @param dedAtr
+	 * @param conditionAtr
+	 * @return
+	 */
+	public AttendanceTime calcDedTimeByAtr(DeductionAtr dedAtr) {
+		val forCalcList = (dedAtr.isDeduction())?this.deductionTimeSheet:this.recordedTimeSheet;
+		return new AttendanceTime(forCalcList.stream().map(tc -> tc.calcTotalTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
+	}
+	
 	/**
 	 * 条件、控除区分に従って控除項目の時間帯取得
 	 * @param dedAtr 控除区分
@@ -221,10 +233,12 @@ public abstract class CalculationTimeSheet {
 	 * @return　控除の合計時間
 	 */
 	public AttendanceTime recursiveTotalTime() {
-		if(deductionTimeSheet.isEmpty()) return new AttendanceTime(0) ;
+//		if(deductionTimeSheet.isEmpty()) return new AttendanceTime(0) ;
+		if(deductionTimeSheet.isEmpty()) return new AttendanceTime(calcrange.lengthAsMinutes());
 		AttendanceTime totalDedTime = new AttendanceTime(0);
 		for(TimeSheetOfDeductionItem dedTimeSheet : deductionTimeSheet) {
-			totalDedTime.addMinutes(dedTimeSheet.recursiveTotalTime().valueAsMinutes());
+			totalDedTime = new AttendanceTime(totalDedTime.valueAsMinutes()+dedTimeSheet.recursiveTotalTime().valueAsMinutes());
+//			totalDedTime.addMinutes(dedTimeSheet.recursiveTotalTime().valueAsMinutes());
 		}
 		//return 丸め処理(calcrange.lengthAsMinutes() - totalDedTime); ←丸め処理実装後こちらに変える
 		return new AttendanceTime(calcrange.lengthAsMinutes() - totalDedTime.valueAsMinutes());

@@ -16,5 +16,5 @@ public class FlexShortage {
 	private String value190;
 	private String value191;
 	private BreakTimeDay breakTimeDay;
-	
+	private boolean canflex;
 }

@@ -293,7 +293,7 @@ public class DailyPerformanceCorrectionProcessor {
 			dateRange = new DateRange(objectShare.getDateTarget(), objectShare.getDateTarget());
 		}
 		screenDto.setDateRange(dateRange);
-		///TODO 社員一覧を変更する -- Lấy nhân viên từ màn hinh khác hoặc lấy từ lần khởi động đầu tiên
+		/// 社員一覧を変更する -- Lấy nhân viên từ màn hinh khác hoặc lấy từ lần khởi động đầu tiên
 		List<String> changeEmployeeIds = new ArrayList<>();
 		if (lstEmployee.isEmpty()) {
 			val employeeIds = objectShare == null
@@ -303,7 +303,7 @@ public class DailyPerformanceCorrectionProcessor {
 		} else {
 			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
 		}
-		//TODO アルゴリズム「通常モードで起動する」を実行する
+		// アルゴリズム「通常モードで起動する」を実行する
 		/**
 		 * アルゴリズム「表示形式に従って情報を取得する」を実行する | Execute "Get information according to
 		 * display format"
@@ -312,9 +312,11 @@ public class DailyPerformanceCorrectionProcessor {
 		//List<EmployeeInfoFunAdapterDto> employeeInfoAdapter = changeEmployeeIds.isEmpty() ? Collections.emptyList() :  employeeInfoFunAdapter.getListPersonInfor(changeEmployeeIds);
 		//screenDto.setLstEmployee(converEmployeeList(employeeInfoAdapter));
 		screenDto.setLstEmployee(repo.getListEmployee(changeEmployeeIds));
-//		if(displayFormat == 0 && !changeEmployeeIds.isEmpty()){
-//			changeEmployeeIds = changeEmployeeIds.stream().filter(x -> x.equals((objectShare== null && initScreen == 0)  ? sId : objectShare.getIndividualTarget())).collect(Collectors.toList());
-//		}
+		// only get detail infomation employee when mode 2, 3 extract
+		if(displayFormat == 0){
+			String employeeSelect = objectShare == null ?  (lstEmployee.isEmpty() ? sId : lstEmployee.get(0).getId()) : objectShare. getIndividualTarget();
+			changeEmployeeIds = changeEmployeeIds.stream().filter(x -> x.equals(employeeSelect)).collect(Collectors.toList());
+		}
 		System.out.println("time get data employee" + (System.currentTimeMillis() - timeStart));
 		List<WorkPlaceHistImport> wPH = changeEmployeeIds.isEmpty() ? Collections.emptyList() : workplaceWorkRecordAdapter.getWplByListSidAndPeriod(changeEmployeeIds, new DatePeriod(GeneralDate.min(), GeneralDate.max()));
 		System.out.println("time get data wplhis" + (System.currentTimeMillis() - timeStart));//slow
@@ -474,9 +476,9 @@ public class DailyPerformanceCorrectionProcessor {
 			data.setSign(signDayMap.containsKey(data.getEmployeeId() + "|" + data.getDate()));
 			//get status check box 
 			ApproveRootStatusForEmpDto approveRootStatus =  approvalDayMap.get(data.getEmployeeId() + "|" + data.getDate());
-			if(mode == ScreenMode.APPROVAL.value){
+		//	if(mode == ScreenMode.APPROVAL.value){
 				data.setApproval(approveRootStatus == null ? false : approveRootStatus.isCheckApproval());
-			}
+		//	}
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
 			if (resultOfOneRow != null) {
 				lockDataCheckbox(sId, screenDto, dailyRecOpeFun, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, approveRootStatus);
@@ -960,28 +962,27 @@ public class DailyPerformanceCorrectionProcessor {
 			List<DPErrorSettingDto> lstErrorSetting = this.repo
 					.getErrorSetting(lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
 			// convert to list error reference
-			for (int id = 0; id < lstError.size(); id++) {
+			IntStream.range(0, lstError.size()).forEach(id -> {
 				for (DPErrorSettingDto errorSetting : lstErrorSetting) {
 					if (lstError.get(id).getErrorCode().equals(errorSetting.getErrorAlarmCode())) {
-						lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(id), lstError.get(id).getEmployeeId(),
-								"", "", lstError.get(id).getProcessingDate(), lstError.get(id).getErrorCode(),
-								errorSetting.getMessageDisplay(), lstError.get(id).getAttendanceItemId(), "",
-								errorSetting.isBoldAtr(), errorSetting.getMessageColor()));
+						lstError.get(id).getAttendanceItemId().forEach(x -> {
+							lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(id),
+									lstError.get(id).getEmployeeId(), "", "", lstError.get(id).getProcessingDate(),
+									lstError.get(id).getErrorCode(), lstError.get(id).getErrorAlarmMessage() == null ? errorSetting.getMessageDisplay() : lstError.get(id).getErrorAlarmMessage(), x, "",
+									errorSetting.isBoldAtr(), errorSetting.getMessageColor()));
+						});
 					}
 				}
-			}
+			});
 			// get list item to add item name
-			List<DPAttendanceItem> lstAttendanceItem = this.repo.getListAttendanceItem(
-					lstError.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList()));
-			for (ErrorReferenceDto errorRefer : lstErrorRefer) {
-				for (DPAttendanceItem atdItem : lstAttendanceItem) {
-					if (errorRefer.getItemId().equals(atdItem.getId())) {
-						errorRefer.setItemName(atdItem.getName());
-					}
-				}
-			}
+			Set<Integer> itemIds = lstError.stream().flatMap(x -> x.getAttendanceItemId().stream()).collect(Collectors.toSet());
+			
+			Map<Integer, String> lstAttendanceItem = this.repo.getListAttendanceItem(
+					new ArrayList<>(itemIds)).stream().collect(Collectors.toMap(x -> x.getId(), x -> x.getName()));
 			// add employee code & name
 			for (ErrorReferenceDto errorRefer : lstErrorRefer) {
+				String name = lstAttendanceItem.get(errorRefer.getItemId());
+				errorRefer.setItemName(name == null ? "" : name);
 				for (DailyPerformanceEmployeeDto employee : lstEmployee) {
 					if (errorRefer.getEmployeeId().equals(employee.getId())) {
 						errorRefer.setEmployeeCode(employee.getCode());
@@ -1231,7 +1232,7 @@ public class DailyPerformanceCorrectionProcessor {
 				 List<RegulationInfoEmployeeQueryR> regulationRs= regulationInfoEmployeePub.search(createQueryEmployee(new ArrayList<>(), range.getStartDate(), range.getEndDate()));
 				 return regulationRs.stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
 			}else{
-				// No 338
+				// TODO No 338
 				return employeeIds;
 			}
 		} else if (mode == ScreenMode.APPROVAL.value) {
@@ -1338,7 +1339,7 @@ public class DailyPerformanceCorrectionProcessor {
 		} else {
 			List<ApproveRootStatusForEmpImport> approvals = approvalStatusAdapter.getApprovalByListEmplAndListApprovalRecordDate(dateRange.toListDate(), employeeIds, 1);
 			Map<String, ApproveRootStatusForEmpDto> approvalRootMap = approvals.stream().collect(Collectors.toMap(x -> mergeString(x.getEmployeeID(), "|", x.getAppDate().toString()), x -> {
-				return new ApproveRootStatusForEmpDto(null, x.getApprovalStatus() == ApprovalStatusForEmployee.APPROVED);
+				return new ApproveRootStatusForEmpDto(null, x.getApprovalStatus() != ApprovalStatusForEmployee.UNAPPROVED);
 			}, (x,y) ->x));
 			return approvalRootMap;
 		}

@@ -9,6 +9,8 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -60,5 +62,40 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject{
 															? null 
 															: NotUseAtr.valueOf(minusAbsenceTime));
 	}
+	
+	
+	
+	/**
+	 * 就業時間内時間帯から控除するか判断
+	 * @param deductTime
+	 * @param graceTimeSetting
+	 * @return
+	 */
+	public boolean decisionLateDeductSetting(AttendanceTime deductTime, GraceTimeSetting graceTimeSetting) {
+		if(this.notDeductLateLeaveEarly==NotUseAtr.USE) {//早退設定を控除項目にするかをチェックする
+			if(deductTime.greaterThan(0) || !graceTimeSetting.isIncludeWorkingHour()) {
+				return true;
+			}
+		}
+		return false;	
+	}
+	
+	/**
+	 * 遅刻・早退を控除するか判断する
+	 * @return
+	 */
+	public boolean isDeductLateLeaveEarly() {
+		switch(this.notDeductLateLeaveEarly) {
+			case USE:
+				return true;
+			case NOT_USE:
+				return false;
+			default:
+				throw new RuntimeException("unknown notDeductLateLeaveEarly");
+		}	
+	}
+	
+	
+	
 }
 

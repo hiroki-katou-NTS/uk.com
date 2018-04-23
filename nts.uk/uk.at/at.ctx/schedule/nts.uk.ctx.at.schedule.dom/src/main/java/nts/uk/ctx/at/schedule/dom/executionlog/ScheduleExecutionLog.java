@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.schedule.dom.executionlog;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
@@ -16,6 +17,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 // スケジュール作成実行ログ
 @Getter
+@NoArgsConstructor
 public class ScheduleExecutionLog extends AggregateRoot {
 
 	/** The company id. */
@@ -141,5 +143,15 @@ public class ScheduleExecutionLog extends AggregateRoot {
 			return false;
 		return true;
 	}
+
+	public void setPeriod(DatePeriod period) {
+		this.period = period;
+	}
+
+	public void setExeAtr(ExecutionAtr exeAtr) {
+		this.exeAtr = exeAtr;
+	}
+	
+	
 
 }
