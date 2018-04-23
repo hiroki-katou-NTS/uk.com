@@ -31,9 +31,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 
 	private static final String SELECT_BY_LISTSID = "SELECT a FROM BsymtEmploymentHist a"
 			+ " INNER JOIN BsymtEmploymentHistItem b on a.hisId = b.hisId" + " WHERE a.sid IN :listSid "
-			+ " AND ( a.strDate >= start AND a.strDate <= end AND a.endDate >= start AND a.endDate <= end ) "
-			+ " OR  ( a.strDate >= start AND a.strDate <= end AND a.endDate > start )"
-			+ " OR  ( a.endDate >= start AND a.endDate <= end AND a.strDate < start )";
+			+ " AND ( a.strDate <= :end AND a.endDate >= :start ) ";
 
 	/**
 	 * Convert from BsymtEmploymentHist to domain EmploymentHistory
