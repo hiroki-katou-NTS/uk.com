@@ -261,6 +261,7 @@ module nts.uk.at.view.kmk015.a {
                         });
 
                         self.isCreated(false);
+                        self.isEnable(true);
 
                         dfd.resolve();
                     }).fail(function(res) { nts.uk.ui.dialog.alertError(res) });
@@ -310,6 +311,10 @@ module nts.uk.at.view.kmk015.a {
                                 } else {
                                     self.selectedCodeHistory(self.listHistory()[index].historyId);
                                 }
+                            } else {
+                                self.isEnable(false);    
+                                self.isEnableNumber(false);  
+                                self.timeHistory(null);
                             }
                         }).fail(function(res) { nts.uk.ui.dialog.alertError(res) });
 
