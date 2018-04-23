@@ -238,7 +238,7 @@ module nts.custom.component {
                                         <td class="bg-calendar-ym-set" data-bind="text: text('CPS001_12')"></td>
                                         <td>
                                             <div class="info first" data-bind="text: person.age"></div>
-                                            <div class="info bg-calendar-ym-set" data-bind="text: text('CPS001_12')"></div>
+                                            <div class="info bg-calendar-ym-set" data-bind="text: text('CPS001_13')"></div>
                                             <div class="info" data-bind="text: employee.entire"></div>
                                         </td>
                                     </tr>
