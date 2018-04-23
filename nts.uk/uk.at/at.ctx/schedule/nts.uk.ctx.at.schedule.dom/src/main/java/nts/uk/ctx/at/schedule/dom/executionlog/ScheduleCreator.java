@@ -101,5 +101,12 @@ public class ScheduleCreator extends AggregateRoot{
 		return true;
 	}
 
+	public ScheduleCreator(String executionId, ExecutionStatus executionStatus, String employeeId) {
+		super();
+		this.executionId = executionId;
+		this.executionStatus = executionStatus;
+		this.employeeId = employeeId;
+	}
+
 	
 }
