@@ -79,7 +79,7 @@ module nts.uk.at.view.kmk004.a {
                 
                 self.worktimeVM.worktimeSetting.referenceFlexPred.subscribe((val : number) => {
                     if(ReferencePredTimeOfFlex.FROM_RECORD == val) {
-                        self.worktimeVM.worktimeSetting.valiateSpecifiedTime();
+                        self.worktimeVM.worktimeSetting.resetFlexSpecifiedTime();
                     }
                 });
             }

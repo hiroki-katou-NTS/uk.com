@@ -24,6 +24,7 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
         import ItemModelNumber = nts.uk.at.view.kmk004.shared.model.ItemModelNumber;
         import ReferencePredTimeOfFlex = nts.uk.at.view.kmk004.shared.model.ReferencePredTimeOfFlex;
         import FlexMonthlyTime = nts.uk.at.view.kmk004.shared.model.FlexMonthlyTime;
+        import PureFlexMonthlyTime = nts.uk.at.view.kmk004.shared.model.PureFlexMonthlyTime;
         
         export class ScreenModel {
             
@@ -219,6 +220,7 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
             // Com Flex TAB Get Pred
             optReferenceFlexPred: KnockoutObservableArray<any>;
             referenceFlexPred: KnockoutObservable<number>;
+            originFlexMonthlyTime: PureFlexMonthlyTime[];
     
             constructor() {
                 let self = this;
@@ -249,8 +251,16 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                 }    
             }
                         
-            public valiateSpecifiedTime(): void {
+            public resetFlexSpecifiedTime(): void {
                 let specifiedTime : FlexMonthlyTime[] = this.flexSetting().flexSettingDetail();
+                specifiedTime.forEach((monthlyTime: FlexMonthlyTime) => {
+                    let origin: PureFlexMonthlyTime = _.find(this.originFlexMonthlyTime, (originMonthlyTime) => originMonthlyTime.month == monthlyTime.month());
+                    let textOrigin = nts.uk.time.format.byId("Clock_Short_HM", origin.specifiedTime)
+                    monthlyTime.specifiedTime(textOrigin);
+                });
+                // clear input monthly error
+                $('#tab-2 .tbl-monthly tr td:nth-child(2) input').ntsError('clear');
+                
             }
     
             public sortMonth(startMonth: number): void {
@@ -268,6 +278,7 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                 self.normalSetting().updateData(dto, SelectedSettingType.NORMAL_SETTING);
                 self.flexSetting().updateData(dto);
                 self.deformLaborSetting().updateData(dto, SelectedSettingType.DEFORM_LABOR_SETTING);
+                self.originFlexMonthlyTime = ko.toJS(self.flexSetting().flexSettingDetail());
             }
     
             public updateDetailData(dto: MonthlyCalSettingDto): void {

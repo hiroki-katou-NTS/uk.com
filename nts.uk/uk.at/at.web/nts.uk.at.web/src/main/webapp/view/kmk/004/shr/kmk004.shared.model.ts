@@ -892,7 +892,8 @@ module nts.uk.at.view.kmk004.shared.model {
     export class MonthlyTime {
         month: KnockoutObservable<number>;
         time: KnockoutObservable<number>;
-
+        monthMsgNormal: string;
+        monthMsgDefor: string;
         constructor() {
             let self = this;
             self.month = ko.observable(new Date().getMonth());
@@ -902,14 +903,17 @@ module nts.uk.at.view.kmk004.shared.model {
             let self = this;
             self.month(dto.month);
             self.time(dto.monthlyTime);
+            self.monthMsgNormal = nts.uk.resource.getText("KMK004_14", [self.month()]);
+            self.monthMsgDefor = nts.uk.resource.getText("KMK004_26", [self.month()]);
         }
     }
 
     export class FlexMonthlyTime {
         month: KnockoutObservable<number>;
         statutoryTime: KnockoutObservable<number>;
-        //            specifiedMonth: KnockoutObservable<number>;
         specifiedTime: KnockoutObservable<number>;
+        monthMsgSpecified: string;
+        monthMsgStatutory: string;
         constructor() {
             let self = this;
             self.month = ko.observable(new Date().getMonth());
@@ -920,6 +924,12 @@ module nts.uk.at.view.kmk004.shared.model {
         //            public updateData(dto: ): void {
         //                let self = this;
         //            }
+    }
+    
+    export class PureFlexMonthlyTime {
+        month: number;
+        statutoryTime: number;
+        specifiedTime: number;
     }
 
     export class NormalWorktime {
@@ -1034,7 +1044,11 @@ module nts.uk.at.view.kmk004.shared.model {
                 let specifiedData: MonthlyUnitDto = dto.flexSetting.specifiedSetting.filter(j => i.month() == j.month)[0];
 
                 i.month(stutoryData.month);
+                
+                i.monthMsgStatutory = nts.uk.resource.getText("KMK004_22", [i.month()]);
                 i.statutoryTime(stutoryData.monthlyTime);
+                
+                i.monthMsgSpecified = nts.uk.resource.getText("KMK004_21", [i.month()]);
                 i.specifiedTime(specifiedData.monthlyTime);
 
             });
