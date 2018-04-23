@@ -16,7 +16,7 @@ public class FlexTime {
 	private AttendanceTime beforeApplicationTime; 
 	
 	public TimeWithCalculation getNotMinusFlexTime() {
-		return TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.flexTime.getCalcTime() == null ? 0 :this.flexTime.getCalcTime().valueAsMinutes()),
+		return TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.flexTime.getTime() == null ? 0 :this.flexTime.getTime().valueAsMinutes()),
 				 new AttendanceTime(this.flexTime.getCalcTime()==null ? 0 : this.flexTime.getCalcTime().valueAsMinutes()));
 	}
 	

@@ -47,6 +47,7 @@ public class IntegrationOfDaily {
 	//日別実績のPCログオン情報
 	private Optional<PCLogOnInfoOfDaily> pcLogOnInfo;
 	//社員の日別実績エラー一覧
+	@Setter
 	private List<EmployeeDailyPerError> employeeError;
 	//日別実績の外出時間帯
 	@Setter
