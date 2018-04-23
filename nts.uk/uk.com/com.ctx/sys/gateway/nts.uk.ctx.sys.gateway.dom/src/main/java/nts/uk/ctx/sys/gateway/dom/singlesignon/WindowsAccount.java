@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 
 /**
  * The Class WindowAccount.
@@ -41,7 +42,9 @@ public class WindowsAccount extends AggregateRoot{
 		super.validate();
 		// check duplicate account host name & user name
 		this.accountInfos.forEach(acc -> {
-			if (this.accountInfos.stream().anyMatch(dup -> dup.getHostName().equals(acc.getHostName())
+			boolean isNameNotNull = !StringUtil.isNullOrEmpty(acc.getHostName().v(), true)
+					&& !StringUtil.isNullOrEmpty(acc.getUserName().v(), true);
+			if (isNameNotNull && this.accountInfos.stream().anyMatch(dup -> dup.getHostName().equals(acc.getHostName())
 					&& dup.getUserName().equals(acc.getUserName()))) {
 				BundledBusinessException exceptions = BundledBusinessException.newInstance();
 				exceptions.addMessage("Msg_616");
