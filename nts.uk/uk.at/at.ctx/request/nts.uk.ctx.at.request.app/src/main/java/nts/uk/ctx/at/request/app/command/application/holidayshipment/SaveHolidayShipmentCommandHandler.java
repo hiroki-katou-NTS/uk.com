@@ -667,10 +667,9 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 	}
 
 	private void checkTime(Integer startTime, Integer endTime) {
-		boolean isBothTimeNotNull = startTime != null && endTime != null;
-		boolean isStartAfterEndTime = startTime > endTime;
+		boolean isStartAfterEndTime = (startTime != null && endTime != null) && (startTime > endTime);
 
-		if (isBothTimeNotNull && isStartAfterEndTime) {
+		if (isStartAfterEndTime) {
 
 			throw new BusinessException("Msg_966");
 
