@@ -324,7 +324,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let command = {appID: self.appID()};
             setShared("KDL034_PARAM", command);
             nts.uk.ui.windows.sub.modal("/view/kdl/034/a/index.xhtml").onClosed(() => {
-                location.reload();
                 let res = getShared("KDL034_PARAM_RES", command);
                 if (res){
                     self.reasonApp(res.returnReason);
