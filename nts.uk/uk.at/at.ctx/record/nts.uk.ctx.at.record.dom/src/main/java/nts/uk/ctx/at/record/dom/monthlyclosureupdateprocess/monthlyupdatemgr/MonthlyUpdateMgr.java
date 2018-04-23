@@ -138,7 +138,7 @@ public class MonthlyUpdateMgr {
 	// 月締め更新処理
 	private void monthlyClosureUpdateProc(AggrPeriodEachActualClosure period, String empId) {
 		remainNumberProc.remainNumberProcess(period, empId);
-		closureSttMng.closureStatusManage(period);
+		closureSttMng.closureStatusManage(period, empId);
 	}
 
 }

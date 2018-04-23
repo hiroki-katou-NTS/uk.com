@@ -6,7 +6,6 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -20,9 +19,8 @@ public class ClosureStatusMng {
 	@Inject
 	private ClosureStatusManagementRepository closureSttRepo;
 
-	public void closureStatusManage(AggrPeriodEachActualClosure period) {
-		String employeeId = AppContexts.user().employeeId();
-		ClosureStatusManagement statusMng = new ClosureStatusManagement(period.getYearMonth(), employeeId,
+	public void closureStatusManage(AggrPeriodEachActualClosure period, String empId) {
+		ClosureStatusManagement statusMng = new ClosureStatusManagement(period.getYearMonth(), empId,
 				period.getClosureId().value, period.getClosureDate(), period.getPeriod());
 		closureSttRepo.add(statusMng);
 	}

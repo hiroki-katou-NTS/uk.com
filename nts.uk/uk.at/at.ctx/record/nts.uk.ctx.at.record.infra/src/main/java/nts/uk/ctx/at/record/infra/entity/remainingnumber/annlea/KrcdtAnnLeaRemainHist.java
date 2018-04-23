@@ -147,7 +147,7 @@ public class KrcdtAnnLeaRemainHist extends UkJpaEntity {
 				domain.getDetails().getUsedNumber().getDays().v(),
 				domain.getDetails().getUsedNumber().getMinutes().isPresent()
 						? domain.getDetails().getUsedNumber().getMinutes().get().v() : null,
-				domain.getDetails().getUsedNumber().getMinutes().isPresent()
+				domain.getDetails().getUsedNumber().getStowageDays().isPresent()
 						? domain.getDetails().getUsedNumber().getStowageDays().get().v() : null,
 				domain.getDetails().getRemainingNumber().getDays().v(),
 				domain.getDetails().getRemainingNumber().getMinutes().isPresent()
