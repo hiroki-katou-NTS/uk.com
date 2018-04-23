@@ -16,6 +16,9 @@ module nts.uk.ui {
         export let errorCode = "エラーコード";
         export let errorList = "エラー一覧";
         export let plzWait = "お待ちください";
+        export let targetNotFound = "対象データがありません";
+        export let clear = "解除";
+        export let searchBox = "検索テキストボックス";
     }
 
 

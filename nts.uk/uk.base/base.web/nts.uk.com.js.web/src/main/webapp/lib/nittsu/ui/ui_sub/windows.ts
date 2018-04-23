@@ -184,8 +184,9 @@ module nts.uk.ui {
             }
 
             onClosed(callback: () => void) {
+                var dialogElement = this.$dialog[0];
                 this.onClosedHandler = function() {
-                    var dataModel = ko.dataFor(this.$dialog[0]);
+                    var dataModel = ko.dataFor(dialogElement);
                     dataModel.kiban.errorDialogViewModel.errors([]);
                     //dataModel.kiban.errorDialogViewModel.errors.valueHasMutated();
                     callback();

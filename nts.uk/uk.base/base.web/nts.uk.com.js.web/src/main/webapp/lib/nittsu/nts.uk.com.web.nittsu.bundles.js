@@ -4888,6 +4888,9 @@ var nts;
                 toBeResource.errorCode = "エラーコード";
                 toBeResource.errorList = "エラー一覧";
                 toBeResource.plzWait = "お待ちください";
+                toBeResource.targetNotFound = "対象データがありません";
+                toBeResource.clear = "解除";
+                toBeResource.searchBox = "検索テキストボックス";
             })(toBeResource = ui.toBeResource || (ui.toBeResource = {}));
             function localize(textId) {
                 return textId;
@@ -5229,8 +5232,9 @@ var nts;
                         this.setGlobal(this.$iframe[0].contentWindow);
                     };
                     ScreenWindow.prototype.onClosed = function (callback) {
+                        var dialogElement = this.$dialog[0];
                         this.onClosedHandler = function () {
-                            var dataModel = ko.dataFor(this.$dialog[0]);
+                            var dataModel = ko.dataFor(dialogElement);
                             dataModel.kiban.errorDialogViewModel.errors([]);
                             //dataModel.kiban.errorDialogViewModel.errors.valueHasMutated();
                             callback();
@@ -5730,6 +5734,7 @@ var nts;
                                 var currentInfo = dialogInfo;
                                 var top = 0, left = 0;
                                 var dialog = container.closest("div[role='dialog']");
+                                dialog.addClass("disappear");
                                 if (dialogInfo.isRoot) {
                                     top = (window.innerHeight - dialog.innerHeight()) / 2;
                                     left = (window.innerWidth - dialog.innerWidth()) / 2;
@@ -5759,12 +5764,23 @@ var nts;
                                         left += leftDiff;
                                     }
                                     dialog.css({ top: top, left: left });
+                                    dialog.removeClass("disappear");
                                 }, 33);
                             },
                             close: function (event) {
                             }
                         }).dialogPositionControl();
                     }, 0);
+                    if (!dialogInfo.isRoot) {
+                        var normalClose = dialogInfo.onClosedHandler;
+                        var onCloseAuto = function () {
+                            normalClose();
+                            if (container.dialog("isOpen")) {
+                                container.dialog("close");
+                            }
+                        };
+                        dialogInfo.onClosedHandler = onCloseAuto;
+                    }
                     return {
                         then: function (callback) {
                             then = callback;
@@ -14588,8 +14604,10 @@ var nts;
                         var fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
                         var $prevButton, $nextButton;
                         if (jumpButtonsDisplay) {
-                            $prevButton = $("<button/>").text("◀").css("margin-right", "3px").attr("tabIndex", tabIndex);
-                            $nextButton = $("<button/>").text("▶").css("margin-left", "3px").attr("tabIndex", tabIndex);
+                            $prevButton = $("<button/>").addClass("ntsDateNextButton ntsButton ntsDatePickerButton ntsDatePicker_Component auto-height")
+                                .text("◀").css("margin-right", "3px").attr("tabIndex", tabIndex);
+                            $nextButton = $("<button/>").addClass("ntsDatePrevButton ntsButton ntsDatePickerButton ntsDatePicker_Component auto-height")
+                                .text("▶").css("margin-left", "3px").attr("tabIndex", tabIndex);
                             $input.before($prevButton).after($nextButton);
                         }
                         if (data.dateFormat === "YYYY") {
@@ -14676,8 +14694,8 @@ var nts;
                             }
                             var mmRs = new nts.uk.time.MomentResult();
                             var otFormat = nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat;
-                            var minDate = (data.startDate !== undefined) ? moment(ko.unwrap(data.startDate), otFormat) : mmRs.systemMin();
-                            var maxDate = (data.endDate !== undefined) ? moment(ko.unwrap(data.endDate), otFormat) : mmRs.systemMax();
+                            var minDate = !nts.uk.util.isNullOrUndefined($input.data('startDate')) ? moment($input.data('startDate'), otFormat) : mmRs.systemMin();
+                            var maxDate = !nts.uk.util.isNullOrUndefined($input.data('endDate')) ? moment($input.data('endDate'), otFormat) : mmRs.systemMax();
                             var momentCurrent = moment(parsedValue, otFormat);
                             var error = false;
                             if (momentCurrent.isBefore(minDate, 'day')) {
@@ -14734,6 +14752,8 @@ var nts;
                         new nts.uk.util.value.DefaultValue().onReset($input, data.value);
                         container.data("init", false);
                         $input.ntsDatepicker("bindFlip");
+                        $input.data('startDate', startDate);
+                        $input.data('endDate', endDate);
                     };
                     /**
                      * Update
@@ -14762,6 +14782,11 @@ var nts;
                         var init = container.data("init");
                         var $input = container.find(".nts-input");
                         var $label = container.find(".dayofweek-label");
+                        // Properties Binding
+                        $input.datepicker('setStartDate', startDate);
+                        $input.datepicker('setEndDate', endDate);
+                        $input.data('startDate', startDate);
+                        $input.data('endDate', endDate);
                         // Value Binding
                         if (value() !== $input.val()) {
                             var dateFormatValue = (value() !== "") ? uk.text.removeFromStart(uk.time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
@@ -14776,13 +14801,14 @@ var nts;
                             }
                         }
                         $input.data("required", required);
-                        // Properties Binding
-                        $input.datepicker('setStartDate', startDate);
-                        $input.datepicker('setEndDate', endDate);
-                        if (enable !== undefined)
+                        if (enable !== undefined) {
                             $input.prop("disabled", !enable);
-                        else
+                            container.find(".ntsDatePickerButton").prop("disabled", !enable);
+                        }
+                        else {
                             $input.prop("disabled", disabled);
+                            container.find(".ntsDatePickerButton").prop("disabled", disabled);
+                        }
                         if ($input.prop("disabled") === true) {
                             new nts.uk.util.value.DefaultValue().applyReset($input, value);
                         }
@@ -17565,7 +17591,7 @@ var nts;
                         var $input = $container.find("input.ntsSearchBox");
                         minusWidth += $button.outerWidth(true);
                         if (searchMode === "filter") {
-                            $container.append("<button class='clear-btn ntsSearchBox_Component'>解除</button>");
+                            $container.append("<button class='clear-btn ntsSearchBox_Component'>" + nts.uk.ui.toBeResource.clear + "</button>");
                             var $clearButton = $container.find("button.clear-btn");
                             minusWidth += $clearButton.outerWidth(true);
                             $clearButton.click(function (evt, ui) {
@@ -17585,7 +17611,7 @@ var nts;
                             });
                         }
                         $input.attr("placeholder", placeHolder);
-                        $input.attr("data-name", "検索テキストボックス");
+                        $input.attr("data-name", nts.uk.ui.toBeResource.searchBox);
                         $input.outerWidth($container.outerWidth(true) - minusWidth);
                         var primaryKey = ko.unwrap(data.targetKey);
                         var searchObject = new SearchPub(primaryKey, searchMode, dataSource, fields, childField);
@@ -17611,8 +17637,15 @@ var nts;
                                 }
                                 var srh_1 = $container.data("searchObject");
                                 var result_1 = srh_1.search(searchKey, selectedItems);
-                                if (nts.uk.util.isNullOrEmpty(result_1.options) && searchMode === "highlight") {
-                                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT")).then(function () {
+                                if (nts.uk.util.isNullOrEmpty(result_1.options)) {
+                                    var mes = '';
+                                    if (searchMode === "highlight") {
+                                        mes = nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT");
+                                    }
+                                    else {
+                                        mes = nts.uk.ui.toBeResource.targetNotFound;
+                                    }
+                                    nts.uk.ui.dialog.alert(mes).then(function () {
                                         $input.focus();
                                         $input.select();
                                     });
@@ -21212,18 +21245,20 @@ var nts;
                                     if (!nts.uk.util.isNullOrEmpty(selected)) {
                                         selected = oldSelected;
                                     }
-                                    var $scrollContainer = $grid.igGrid("scrollContainer");
-                                    _.defer(function () {
-                                        if ($scrollContainer.length > 0) {
-                                            var firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
-                                            var selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
-                                            $scrollContainer.scrollTop(selectRowOffset - firstRowOffset);
-                                        }
-                                        else {
-                                            var index = $(selected["element"]).attr("data-row-idx");
-                                            $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
-                                        }
-                                    });
+                                    if ($grid.data('igGrid')) {
+                                        var $scrollContainer_1 = $grid.igGrid("scrollContainer");
+                                        _.defer(function () {
+                                            if ($scrollContainer_1.length > 0) {
+                                                var firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
+                                                var selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
+                                                $scrollContainer_1.scrollTop(selectRowOffset - firstRowOffset);
+                                            }
+                                            else {
+                                                var index = $(selected["element"]).attr("data-row-idx");
+                                                $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
+                                            }
+                                        });
+                                    }
                                 });
                             }
                         });
@@ -28015,6 +28050,7 @@ var nts;
                         var endName = ko.unwrap(data.endName);
                         var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
                         var showNextPrevious = data.showNextPrevious === undefined ? false : ko.unwrap(data.showNextPrevious);
+                        var jumpUnit = data.jumpUnit === undefined ? false : ko.unwrap(data.jumpUnit);
                         var required = ko.unwrap(data.required);
                         var id = nts.uk.util.randomId();
                         var tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
@@ -28037,36 +28073,12 @@ var nts;
                             var $nextButton = $container.find(".ntsDateNextButton").text("▶").css("margin-left", "3px");
                             var $prevButton = $container.find(".ntsDatePrevButton").text("◀").css("margin-right", "3px");
                             $nextButton.click(function (evt, ui) {
-                                var $startDate = $container.find(".ntsStartDatePicker");
-                                var $endDate = $container.find(".ntsEndDatePicker");
-                                var oldValue = value();
-                                var currentStart = $startDate.val();
-                                var currentEnd = $endDate.val();
-                                if (!nts.uk.util.isNullOrEmpty(currentStart)) {
-                                    var startDate = moment(currentStart, dateFormat);
-                                    if (startDate.isValid()) {
-                                        var isEndOfMonth = startDate.daysInMonth() === startDate.date();
-                                        startDate.month(startDate.month() + 1);
-                                        if (isEndOfMonth) {
-                                            startDate.endOf("month");
-                                        }
-                                        oldValue.startDate = startDate.format(dateFormat);
-                                    }
-                                }
-                                if (!nts.uk.util.isNullOrEmpty(currentEnd)) {
-                                    var endDate = moment(currentEnd, dateFormat);
-                                    if (endDate.isValid()) {
-                                        var isEndOfMonth = endDate.daysInMonth() === endDate.date();
-                                        endDate.month(endDate.month() + 1);
-                                        if (isEndOfMonth) {
-                                            endDate.endOf("month");
-                                        }
-                                        oldValue.endDate = endDate.format(dateFormat);
-                                    }
-                                }
-                                value(oldValue);
+                                jump(true);
                             });
                             $prevButton.click(function (evt, ui) {
+                                jump(false);
+                            });
+                            var jump = function (isNext) {
                                 var $startDate = $container.find(".ntsStartDatePicker");
                                 var $endDate = $container.find(".ntsEndDatePicker");
                                 var oldValue = value();
@@ -28075,10 +28087,15 @@ var nts;
                                 if (!nts.uk.util.isNullOrEmpty(currentStart)) {
                                     var startDate = moment(currentStart, dateFormat);
                                     if (startDate.isValid()) {
-                                        var isEndOfMonth = startDate.daysInMonth() === startDate.date();
-                                        startDate.month(startDate.month() - 1);
-                                        if (isEndOfMonth) {
-                                            startDate.endOf("month");
+                                        if (jumpUnit === "year") {
+                                            startDate.year(startDate.year() + (isNext ? 1 : -1));
+                                        }
+                                        else {
+                                            var isEndOfMonth = startDate.daysInMonth() === startDate.date();
+                                            startDate.month(startDate.month() + (isNext ? 1 : -1));
+                                            if (isEndOfMonth) {
+                                                startDate.endOf("month");
+                                            }
                                         }
                                         oldValue.startDate = startDate.format(dateFormat);
                                     }
@@ -28086,16 +28103,21 @@ var nts;
                                 if (!nts.uk.util.isNullOrEmpty(currentEnd)) {
                                     var endDate = moment(currentEnd, dateFormat);
                                     if (endDate.isValid()) {
-                                        var isEndOfMonth = endDate.daysInMonth() === endDate.date();
-                                        endDate.month(endDate.month() - 1);
-                                        if (isEndOfMonth) {
-                                            endDate.endOf("month");
+                                        if (jumpUnit === "year") {
+                                            endDate.year(endDate.year() + (isNext ? 1 : -1));
+                                        }
+                                        else {
+                                            var isEndOfMonth = endDate.daysInMonth() === endDate.date();
+                                            endDate.month(endDate.month() + (isNext ? 1 : -1));
+                                            if (isEndOfMonth) {
+                                                endDate.endOf("month");
+                                            }
                                         }
                                         oldValue.endDate = endDate.format(dateFormat);
                                     }
                                 }
                                 value(oldValue);
-                            });
+                            };
                         }
                         var $startDateArea = $datePickerArea.find(".ntsStartDate");
                         var $endDateArea = $datePickerArea.find(".ntsEndDate");
@@ -29061,6 +29083,7 @@ var nts;
                     }
                     return NtsLetBindingHandler;
                 }());
+                ko.virtualElements.allowedBindings.let = true;
                 ko.bindingHandlers['let'] = new NtsLetBindingHandler();
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
