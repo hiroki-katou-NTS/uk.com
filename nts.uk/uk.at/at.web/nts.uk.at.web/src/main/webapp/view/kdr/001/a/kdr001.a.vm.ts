@@ -256,6 +256,16 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 nts.uk.ui.block.clear();
                 dfd.reject();
             });
+
+            let user: any = __viewContext.user;
+            nts.uk.characteristics.restore("UserSpecific_" + user.employeeId).done(function(userSpecific) {
+                if (userSpecific) {
+                    self.holidayRemainingSelectedCd(userSpecific.outputItemSettingCode);
+                    self.selectedCode(userSpecific.pageBreakAtr);
+                }
+                dfd.resolve();
+            });
+
             dfd.resolve(self);
             return dfd.promise();
         }
@@ -316,6 +326,19 @@ module nts.uk.at.view.kdr001.a.viewmodel {
          */
         private exportButton() {
             let self = this;
+            let startMonth = moment.utc(self.startDateString());
+            let endMonth = moment.utc(self.endDateString());
+            let totalMonths = (parseInt(startMonth.format("YYYY"))*12 + parseInt(startMonth.format("MM")))
+                             - (parseInt(endMonth.format("YYYY"))*12 + parseInt(endMonth.format("MM")));
+            if (totalMonths > 13){
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_1173' });
+                return;
+            }
+            if (!self.selectedEmployee() || self.selectedEmployee().length === 0){
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_884' });
+                return;
+            }
+            
             let user: any = __viewContext.user;
             let userSpecificInformation = new UserSpecificInformation(
                 user.employeeId,
@@ -323,16 +346,16 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 self.holidayRemainingSelectedCd(),
                 self.selectedCode()
             );
-            nts.uk.characteristics.save("PersonalSchedule_" + user.employeeId, userSpecificInformation);
+            nts.uk.characteristics.save("UserSpecific_" + user.employeeId, userSpecificInformation);
 
-            let holidayRemainingOutputCondition = new self.HolidayRemainingOutputCondition(
-                self.startDateString(),
-                self.endDateString(),
+            let holidayRemainingOutputCondition = new HolidayRemainingOutputCondition(
+                startMonth.format("YYYY/MM"),
+                endMonth.format("YYYY/MM"),
                 self.holidayRemainingSelectedCd(),
                 self.selectedCode()
             );
 
-            let data = new self.AppInfor(holidayRemainingOutputCondition, self.selectedEmployee());
+            let data = new AppInfor(holidayRemainingOutputCondition, self.selectedEmployee());
             service.saveAsExcel(data).done(() => {
                 nts.uk.ui.block.clear();
             }).fail(function(res: any) {
@@ -520,9 +543,9 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         startMonth: string;
         endMonth: string;
         outputItemSettingCode: string;
-        pageBreak: number;
+        pageBreak: string;
 
-        constructor(startMonth: string, endMonth: string, outputItemSettingCode: string, pageBreak: number) {
+        constructor(startMonth: string, endMonth: string, outputItemSettingCode: string, pageBreak: string) {
             this.startMonth = startMonth;
             this.endMonth = endMonth;
             this.outputItemSettingCode = outputItemSettingCode;
