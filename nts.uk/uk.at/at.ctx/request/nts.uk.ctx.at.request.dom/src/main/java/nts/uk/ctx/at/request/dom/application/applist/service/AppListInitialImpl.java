@@ -38,6 +38,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmploymentHisImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.closure.PresentClosingPeriodImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.closure.RqClosureAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
@@ -774,14 +775,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			if(displaySet.getHwActualDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
 				//アルゴリズム「申請一覧リスト取得実績残業申請」を実行する-(5.2)
 				List<OverTimeFrame> time = appHdPost.getLstFrame();
-				OverTimeFrame frameRestTime = this.findRestTime(time);
-				Integer restStart = null;
-				Integer restEnd = null;
-				if(frameRestTime != null){
-					restStart = frameRestTime.getStartTime();
-					restEnd = frameRestTime.getEndTime();
-				}
-				TimeResultOutput result = this.getAppListAchievementOverTime(sID, appDate, time, restStart, restEnd);
+				TimeResultOutput result = this.getAppListAchievementBreak(sID, appDate, time);
 				if(result.isCheckColor()){
 					if(this.checkExistColor(lstColorTime, appID)){
 						checkColor.setColorAtr(2);
@@ -831,15 +825,42 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	}
 	/**
 	 * 5.1 - 申請一覧リスト取得実績休出申請
+	 * sID: 申請者ID
+	 * date: 申請日付
 	 */
 	@Override
-	public Boolean getAppListAchievementBreak(String sID, GeneralDate date) {
+	public TimeResultOutput getAppListAchievementBreak(String sID, GeneralDate date, List<OverTimeFrame> time) {
 		// TODO Auto-generated method stub
 		//Imported(申請承認)「勤務実績」を取得する - req #5
 		RecordWorkInfoImport record = recordWkpInfoAdapter.getRecordWorkInfo(sID, date);
 		//Imported(申請承認)「勤務予定」を取得する - req #4
-		Optional<ScBasicScheduleImport> scBsSchedule = scBasicScheduleAdapter.findByID(sID, date);
-		
+//		Optional<ScBasicScheduleImport> scBsSchedule = scBasicScheduleAdapter.findByID(sID, date);
+		//計算休日出勤
+		List<OvertimeInputCaculation> lstHdCal = record.getOvertimeHolidayCaculation();
+		boolean checkColor = false;
+		List<OverTimeFrame> lstFrameResult = new ArrayList<>();
+		for (OvertimeInputCaculation timeCal : lstHdCal) {
+			OverTimeFrame a = this.findFrameTime(time, timeCal.getFrameNo(), timeCal.getAttendanceID());
+			if(a == null){
+				continue;
+			}
+			if(timeCal.getResultCaculation() < a.getApplicationTime()){
+				checkColor = true;
+			}
+			OverTimeFrame frameRes = a;
+			frameRes.setApplicationTime(timeCal.getResultCaculation());
+			lstFrameResult.add(frameRes);
+		}
+		return new TimeResultOutput(checkColor, lstFrameResult, repoAppDetail.convertTime(record.getAttendanceStampTimeFirst()),
+				repoAppDetail.convertTime(record.getLeaveStampTimeFirst()),	repoAppDetail.convertTime(record.getAttendanceStampTimeSecond()),
+				repoAppDetail.convertTime(record.getLeaveStampTimeSecond()));
+	}
+	private OverTimeFrame findFrameTime(List<OverTimeFrame> time, int frameNo, int attendanceType){
+		for (OverTimeFrame overTimeFrame : time) {
+			if(overTimeFrame.getFrameNo() == frameNo && overTimeFrame.getAttendanceType() == attendanceType){
+				return overTimeFrame;
+			}
+		}
 		return null;
 	}
 	/**
