@@ -146,6 +146,9 @@ module nts.uk.at.view.kmk015.a {
 
                     //get List History
                     service.getHistoryByWorkType(self.selectedCode()).done(data => {
+                        //clear list history
+                        self.listHistory.removeAll();
+                        
                         //push listHistory
                         self.addList(data);
 
