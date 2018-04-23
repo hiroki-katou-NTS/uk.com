@@ -49,7 +49,7 @@ public class CheckTranmissionImpl implements CheckTransmission {
 		Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(cid);
 		List<String> successList = new ArrayList<>();
 		List<String> errorList = new ArrayList<>();
-		String appContent = "app contents";
+		// URL is pending
 		if (urlEmbedded.isPresent()) {
 			int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
 			NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
@@ -57,18 +57,11 @@ public class CheckTranmissionImpl implements CheckTransmission {
 				String urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(appId, application.getAppType().value,
 						application.getPrePostAtr().value, application.getEmployeeID());
 				if (!Strings.isEmpty(urlInfo)){
-					appContent += "\n" + "#KDL030_30" + " " + application.getAppID() + "\n" + urlInfo;
+//					appContent += "\n" + "#KDL030_30" + " " + application.getAppID() + "\n" + urlInfo;
 				}
 			}
 		}
-		String loginName = "D00001";
-		String loginMail = "D00001@nittsusystime.co.jp";
-		String empName = "D00001 name";
-		String mailContentToSend = I18NText.getText("Msg_703",
-				loginName, mailBody,
-				GeneralDate.today().toString(), application.getAppType().nameId,
-				empName, application.getAppDate().toLocalDate().toString(),
-				appContent, loginName, loginMail);
+		String mailContentToSend = mailBody;
 		// TO - DO
 		// request list 225
 		// request list 228
