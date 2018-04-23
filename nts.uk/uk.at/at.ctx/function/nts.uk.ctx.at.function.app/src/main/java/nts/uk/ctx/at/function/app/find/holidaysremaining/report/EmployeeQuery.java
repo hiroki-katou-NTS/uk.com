@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.app.command.holidaysremaining.report;
+package nts.uk.ctx.at.function.app.find.holidaysremaining.report;
 
 import lombok.Value;
 

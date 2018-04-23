@@ -13,6 +13,7 @@ import com.aspose.cells.WorksheetCollection;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
+import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingDataSource;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingReportGenerator;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
@@ -26,7 +27,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 	private final int numberRowOfPage = 36;
 
 	@Override
-	public void generate(FileGeneratorContext generatorContext, HolidaysRemainingManagement hdManagement) {
+	public void generate(FileGeneratorContext generatorContext, HolidayRemainingDataSource dataSource) {
 		try (val reportContext = this.createContext(TEMPLATE_FILE)) {
 
 			val designer = this.createContext(TEMPLATE_FILE);
