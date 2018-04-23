@@ -7,6 +7,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import lombok.Getter;
 import lombok.Value;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
@@ -226,7 +227,7 @@ public class ApplicationWebservice extends WebService {
 
 }
 
-@Value
+@Getter
 class AppDateParam {
 	private Integer appTypeValue; 
 	private String appDate;
@@ -235,7 +236,7 @@ class AppDateParam {
 }
 
 
-@Value
+@Getter
 class ClosureParam {
 	private List<Integer> closureId;
 }
