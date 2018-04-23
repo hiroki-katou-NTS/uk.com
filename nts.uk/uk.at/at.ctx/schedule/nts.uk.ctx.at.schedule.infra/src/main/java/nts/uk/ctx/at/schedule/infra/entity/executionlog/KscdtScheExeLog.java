@@ -59,6 +59,10 @@ public class KscdtScheExeLog extends UkJpaEntity implements Serializable {
     @Convert(converter = GeneralDateTimeToDBConverter.class)
     private GeneralDateTime exeEndD;
     
+    /** The re exe atr. */
+    @Column(name = "EXE_ATR")
+    private int exeAtr;
+    
     /** The start ymd. */
     @Basic(optional = false)
     @NotNull

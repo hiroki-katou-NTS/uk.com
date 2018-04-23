@@ -221,7 +221,7 @@ public class LateTimeSheet{
 		//インターバル免除時間を控除する
 		
 		//遅刻計上時間の作成
-		TimeWithCalculation lateTime = late?TimeWithCalculation.sameTime(calcforRecordTime):TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(0),calcforRecordTime);	
+		TimeWithCalculation lateTime = late?TimeWithCalculation.sameTime(new AttendanceTime(calcforRecordTime.minute())):TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(0),new AttendanceTime(calcforRecordTime.minute()));	
 		return lateTime;
 	}
 	
