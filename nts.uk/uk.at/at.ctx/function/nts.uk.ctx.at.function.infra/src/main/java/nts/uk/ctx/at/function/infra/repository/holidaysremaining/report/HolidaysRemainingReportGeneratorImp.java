@@ -107,12 +107,12 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 	private int printEachPerson(Worksheet worksheet, int firstRow, HolidaysRemainingEmployee employee)
 			throws Exception {
 		Cells cells = worksheet.getCells();
+		int rowIndexD = firstRow + 5;
 		// D index
 		// print Header
 		cells.copyRows(cells, 0, firstRow, 6);
 		firstRow += 6;
-		int totalRowDetails = 0;
-		int rowIndexD = firstRow + 5;
+		int totalRowDetails = 0;		
 
 		// 年休
 		if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getAnnualHoliday().isYearlyHoliday()) {
@@ -161,10 +161,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			totalRowDetails += 2;
 		}
 
-		if (totalRowDetails < minRowDetails) {
-			cells.copyRows(cells, 25, firstRow, minRowDetails - totalRowDetails);
-			firstRow += (minRowDetails - totalRowDetails);
-		}
+//		if (totalRowDetails < minRowDetails) {
+//			cells.copyRows(cells, 25, firstRow, minRowDetails - totalRowDetails);
+//			firstRow += (minRowDetails - totalRowDetails);
+//		}
 		// print D
 		// D1_1, D1_2
 		cells.get(rowIndexD, 0).setValue(

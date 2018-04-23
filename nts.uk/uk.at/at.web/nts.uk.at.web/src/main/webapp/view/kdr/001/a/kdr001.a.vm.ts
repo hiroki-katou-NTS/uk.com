@@ -355,12 +355,12 @@ module nts.uk.at.view.kdr001.a.viewmodel {
          * function export excel button
          */
         private exportButton() {
-                        let self = this;
+            let self = this;
             let startMonth = moment.utc(self.startDateString());
             let endMonth = moment.utc(self.endDateString());
-            let totalMonths = (parseInt(startMonth.format("YYYY"))*12 + parseInt(startMonth.format("MM")))
-                             - (parseInt(endMonth.format("YYYY"))*12 + parseInt(endMonth.format("MM")));
-            if (totalMonths > 13){
+            let totalMonths = (parseInt(endMonth.format("YYYY"))*12 + parseInt(endMonth.format("MM")))
+                             - (parseInt(startMonth.format("YYYY"))*12 + parseInt(startMonth.format("MM")));
+            if (totalMonths > 12){
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_1173' });
                 return;
             }
