@@ -69,8 +69,10 @@ module nts.uk.ui.koExtentions {
             let fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
             let $prevButton, $nextButton;
             if (jumpButtonsDisplay) {
-                $prevButton = $("<button/>").text("◀").css("margin-right", "3px").attr("tabIndex", tabIndex);
-                $nextButton = $("<button/>").text("▶").css("margin-left", "3px").attr("tabIndex", tabIndex);
+                $prevButton = $("<button/>").addClass("ntsDateNextButton ntsButton ntsDatePickerButton ntsDatePicker_Component auto-height")
+                                .text("◀").css("margin-right", "3px").attr("tabIndex", tabIndex);
+                $nextButton = $("<button/>").addClass("ntsDatePrevButton ntsButton ntsDatePickerButton ntsDatePicker_Component auto-height")
+                                .text("▶").css("margin-left", "3px").attr("tabIndex", tabIndex);
                 $input.before($prevButton).after($nextButton);
             }
             if (data.dateFormat === "YYYY") {                
@@ -163,8 +165,8 @@ module nts.uk.ui.koExtentions {
                 }
                 var mmRs = new nts.uk.time.MomentResult();
                 var otFormat = nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat;
-                var minDate = (data.startDate !== undefined) ? moment(ko.unwrap(data.startDate), otFormat) : mmRs.systemMin();
-                var maxDate = (data.endDate !== undefined) ? moment(ko.unwrap(data.endDate), otFormat) : mmRs.systemMax();
+                var minDate = !nts.uk.util.isNullOrUndefined($input.data('startDate')) ? moment($input.data('startDate'), otFormat) : mmRs.systemMin();
+                var maxDate = !nts.uk.util.isNullOrUndefined($input.data('endDate')) ? moment($input.data('endDate'), otFormat) : mmRs.systemMax();
                 var momentCurrent = moment(parsedValue, otFormat);
                 var error = false;
                 if(momentCurrent.isBefore(minDate, 'day')){
@@ -223,6 +225,8 @@ module nts.uk.ui.koExtentions {
             container.data("init", false);
             
             $input.ntsDatepicker("bindFlip");
+            $input.data('startDate', startDate);
+            $input.data('endDate', endDate);
         }
 
         /**
@@ -253,7 +257,13 @@ module nts.uk.ui.koExtentions {
             var init = container.data("init");
             var $input: any = container.find(".nts-input");
             var $label: any = container.find(".dayofweek-label");
-            
+
+            // Properties Binding
+            $input.datepicker('setStartDate', startDate);
+            $input.datepicker('setEndDate', endDate);
+            $input.data('startDate', startDate);
+            $input.data('endDate', endDate);
+
             // Value Binding
             if (value() !== $input.val()){
                 var dateFormatValue = (value() !== "") ? text.removeFromStart(time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
@@ -269,13 +279,14 @@ module nts.uk.ui.koExtentions {
             }
             
             $input.data("required", required);
-            // Properties Binding
-            $input.datepicker('setStartDate', startDate);
-            $input.datepicker('setEndDate', endDate);
-            if (enable !== undefined)
+            
+            if (enable !== undefined) {
                $input.prop("disabled", !enable);
-            else
+               container.find(".ntsDatePickerButton").prop("disabled", !enable);
+            } else{
                 $input.prop("disabled", disabled);
+                container.find(".ntsDatePickerButton").prop("disabled", disabled);
+            }
             if($input.prop("disabled") === true){
                 new nts.uk.util.value.DefaultValue().applyReset($input, value);
             }
