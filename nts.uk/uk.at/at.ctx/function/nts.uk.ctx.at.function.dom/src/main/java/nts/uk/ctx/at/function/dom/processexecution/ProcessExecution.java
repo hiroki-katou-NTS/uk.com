@@ -40,8 +40,8 @@ public class ProcessExecution extends AggregateRoot {
 		}
 		// 画面項目「B7_20:異動者・新入社員のみ作成」がTRUEの場合、B7_21かB7_22かB7_24のどれかがTRUEでなければならない。
 		if (execSetting.getPerSchedule().getTarget().getCreationTarget().value == TargetClassification.CONDITIONS.value) {
-			if (!(execSetting.getPerSchedule().getTarget().getTargetSetting().isRecreateTransfer() ||
-					execSetting.getPerSchedule().getTarget().getTargetSetting().isCreateEmployee())) {
+			if (!execSetting.getPerSchedule().getTarget().getTargetSetting().isRecreateTransfer() &&
+					!execSetting.getPerSchedule().getTarget().getTargetSetting().isCreateEmployee()&&!execSetting.getPerSchedule().getTarget().getTargetSetting().isRecreateWorkType()) {
 				throw new BusinessException("Msg_867");
 			}
 		}
