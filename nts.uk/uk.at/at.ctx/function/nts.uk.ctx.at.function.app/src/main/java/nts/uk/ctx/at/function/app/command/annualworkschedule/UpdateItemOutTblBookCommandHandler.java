@@ -11,13 +11,16 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBook;
 
 @Stateless
 @Transactional
-public class UpdateItemOutTblBookCommandHandler extends CommandHandler<ItemOutTblBookCommand> {
-	@Inject
-	private ItemOutTblBookRepository repository;
-
-	@Override
-	protected void handle(CommandHandlerContext<ItemOutTblBookCommand> context) {
-		ItemOutTblBookCommand updateCommand = context.getCommand();
-		repository.update(new ItemOutTblBook(updateCommand.getCid(), updateCommand.getCd(), updateCommand.getSetOutCd(), updateCommand.getItemOutCd(), updateCommand.getUseClass(), updateCommand.getValOutFormat()));
-	}
+public class UpdateItemOutTblBookCommandHandler extends CommandHandler<ItemOutTblBookCommand>
+{
+    
+    @Inject
+    private ItemOutTblBookRepository repository;
+    
+    @Override
+    protected void handle(CommandHandlerContext<ItemOutTblBookCommand> context) {
+        ItemOutTblBookCommand updateCommand = context.getCommand();
+        repository.update(new ItemOutTblBook(updateCommand.getCid(), updateCommand.getCd(), updateCommand.getSetOutCd(), updateCommand.getItemOutCd(), updateCommand.getUseClass(), updateCommand.getValOutFormat()));
+    
+    }
 }

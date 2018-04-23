@@ -11,12 +11,15 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBookRepository;
 /**
 * 帳表に出力する項目
 */
-public class ItemOutTblBookFinder {
-	@Inject
-	private ItemOutTblBookRepository finder;
+public class ItemOutTblBookFinder
+{
 
-	public List<ItemOutTblBookDto> getAllItemOutTblBook(){
-		return finder.getAllItemOutTblBook().stream().map(item -> ItemOutTblBookDto.fromDomain(item))
-				.collect(Collectors.toList());
-	}
+    @Inject
+    private ItemOutTblBookRepository finder;
+
+    public List<ItemOutTblBookDto> getAllItemOutTblBook(){
+        return finder.getAllItemOutTblBook().stream().map(item -> ItemOutTblBookDto.fromDomain(item))
+                .collect(Collectors.toList());
+    }
+
 }

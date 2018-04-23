@@ -11,14 +11,16 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.SetOutItemsWoSc;
 
 @Stateless
 @Transactional
-public class AddSetOutItemsWoScCommandHandler extends CommandHandler<SetOutItemsWoScCommand> {
-	
-	@Inject
-	private SetOutItemsWoScRepository repository;
-	
-	@Override
-	protected void handle(CommandHandlerContext<SetOutItemsWoScCommand> context) {
-		SetOutItemsWoScCommand addCommand = context.getCommand();
-		repository.add(new SetOutItemsWoSc(addCommand.getCid(), addCommand.getCd(), addCommand.getName(), addCommand.getOutNumExceedTime36Agr(), addCommand.getDisplayFormat()));
-	}
+public class AddSetOutItemsWoScCommandHandler extends CommandHandler<SetOutItemsWoScCommand>
+{
+    
+    @Inject
+    private SetOutItemsWoScRepository repository;
+    
+    @Override
+    protected void handle(CommandHandlerContext<SetOutItemsWoScCommand> context) {
+        SetOutItemsWoScCommand addCommand = context.getCommand();
+        repository.add(new SetOutItemsWoSc(addCommand.getCid(), addCommand.getCd(), addCommand.getName(), addCommand.getOutNumExceedTime36Agr(), addCommand.getDisplayFormat()));
+    
+    }
 }

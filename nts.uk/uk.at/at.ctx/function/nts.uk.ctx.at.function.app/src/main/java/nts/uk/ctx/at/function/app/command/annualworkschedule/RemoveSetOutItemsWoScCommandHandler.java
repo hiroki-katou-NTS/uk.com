@@ -12,14 +12,16 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.SetOutItemsWoSc;
 
 @Stateless
 @Transactional
-public class RemoveSetOutItemsWoScCommandHandler extends CommandHandler<SetOutItemsWoScCommand> {
-	@Inject
-	private SetOutItemsWoScRepository repository;
-
-	@Override
-	protected void handle(CommandHandlerContext<SetOutItemsWoScCommand> context) {
-		String cid = context.getCommand().getCid();
-		int cd = context.getCommand().getCd();
-		repository.remove(cid, cd);
-	}
+public class RemoveSetOutItemsWoScCommandHandler extends CommandHandler<SetOutItemsWoScCommand>
+{
+    
+    @Inject
+    private SetOutItemsWoScRepository repository;
+    
+    @Override
+    protected void handle(CommandHandlerContext<SetOutItemsWoScCommand> context) {
+        String cid = context.getCommand().getCid();
+        int cd = context.getCommand().getCd();
+        repository.remove(cid, cd);
+    }
 }

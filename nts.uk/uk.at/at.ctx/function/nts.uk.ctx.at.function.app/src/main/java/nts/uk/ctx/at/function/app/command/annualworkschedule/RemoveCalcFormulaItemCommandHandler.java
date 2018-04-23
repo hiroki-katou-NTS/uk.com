@@ -12,14 +12,15 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.CalcFormulaItem;
 
 @Stateless
 @Transactional
-public class RemoveCalcFormulaItemCommandHandler extends CommandHandler<CalcFormulaItemCommand> {
-
-	@Inject
-	private CalcFormulaItemRepository repository;
-
-	@Override
-	protected void handle(CommandHandlerContext<CalcFormulaItemCommand> context) {
-		String cid = context.getCommand().getCid();
-		repository.remove(cid);
-	}
+public class RemoveCalcFormulaItemCommandHandler extends CommandHandler<CalcFormulaItemCommand>
+{
+    
+    @Inject
+    private CalcFormulaItemRepository repository;
+    
+    @Override
+    protected void handle(CommandHandlerContext<CalcFormulaItemCommand> context) {
+        String cid = context.getCommand().getCid();
+        repository.remove(cid);
+    }
 }

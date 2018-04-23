@@ -6,15 +6,17 @@ import java.util.List;
 /**
 * 項目の算出式
 */
-public interface CalcFormulaItemRepository {
+public interface CalcFormulaItemRepository
+{
 
-	List<CalcFormulaItem> getAllCalcFormulaItem();
+    List<CalcFormulaItem> getAllCalcFormulaItem();
 
-	Optional<CalcFormulaItem> getCalcFormulaItemById(String cid);
+    Optional<CalcFormulaItem> getCalcFormulaItemById(String cid);
 
-	void add(CalcFormulaItem domain);
+    void add(CalcFormulaItem domain);
 
-	void update(CalcFormulaItem domain);
+    void update(CalcFormulaItem domain);
 
-	void remove(String cid);
+    void remove(String cid);
+
 }

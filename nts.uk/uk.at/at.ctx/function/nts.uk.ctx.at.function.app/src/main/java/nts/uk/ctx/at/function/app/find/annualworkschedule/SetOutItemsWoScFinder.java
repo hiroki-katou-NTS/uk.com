@@ -11,12 +11,15 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.SetOutItemsWoScRepository;
 /**
 * 年間勤務表（36チェックリスト）の出力項目設定
 */
-public class SetOutItemsWoScFinder {
-	@Inject
-	private SetOutItemsWoScRepository finder;
+public class SetOutItemsWoScFinder
+{
 
-	public List<SetOutItemsWoScDto> getAllSetOutItemsWoSc(){
-		return finder.getAllSetOutItemsWoSc().stream().map(item -> SetOutItemsWoScDto.fromDomain(item))
-				.collect(Collectors.toList());
-	}
+    @Inject
+    private SetOutItemsWoScRepository finder;
+
+    public List<SetOutItemsWoScDto> getAllSetOutItemsWoSc(){
+        return finder.getAllSetOutItemsWoSc().stream().map(item -> SetOutItemsWoScDto.fromDomain(item))
+                .collect(Collectors.toList());
+    }
+
 }

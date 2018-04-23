@@ -17,13 +17,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KfnrtCalcFormulaItemPk implements Serializable {
-	private static final long serialVersionUID = 1L;
-
-	/**
-	* 会社ID
-	*/
-	@Basic(optional = false)
-	@Column(name = "CID")
-	public String cid;
+public class KfnrtCalcFormulaItemPk implements Serializable
+{
+    private static final long serialVersionUID = 1L;
+    
+    /**
+    * 会社ID
+    */
+    @Basic(optional = false)
+    @Column(name = "CID")
+    public String cid;
+    
 }

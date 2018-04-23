@@ -49,7 +49,7 @@ public class KfnrtCalcFormulaItem extends UkJpaEntity implements Serializable
     */
     @Basic(optional = false)
     @Column(name = "ATTENDANCE_ITEM_ID")
-    public String attendanceItemId;
+    public int attendanceItemId;
     
     /**
     * 加, 減

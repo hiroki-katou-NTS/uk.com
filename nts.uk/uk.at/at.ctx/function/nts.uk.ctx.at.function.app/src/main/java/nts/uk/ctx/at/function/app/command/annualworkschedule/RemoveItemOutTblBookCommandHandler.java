@@ -12,14 +12,16 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBook;
 
 @Stateless
 @Transactional
-public class RemoveItemOutTblBookCommandHandler extends CommandHandler<ItemOutTblBookCommand> {
-	@Inject
-	private ItemOutTblBookRepository repository;
-
-	@Override
-	protected void handle(CommandHandlerContext<ItemOutTblBookCommand> context) {
-		String cid = context.getCommand().getCid();
-		int cd = context.getCommand().getCd();
-		repository.remove(cid, cd);
-	}
+public class RemoveItemOutTblBookCommandHandler extends CommandHandler<ItemOutTblBookCommand>
+{
+    
+    @Inject
+    private ItemOutTblBookRepository repository;
+    
+    @Override
+    protected void handle(CommandHandlerContext<ItemOutTblBookCommand> context) {
+        String cid = context.getCommand().getCid();
+        int cd = context.getCommand().getCd();
+        repository.remove(cid, cd);
+    }
 }

@@ -1,50 +1,49 @@
 package nts.uk.ctx.at.function.dom.annualworkschedule;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 /**
 * 帳表に出力する項目
 */
+@AllArgsConstructor
 @Getter
-public class ItemOutTblBook extends AggregateRoot {
-	/**
-	* 会社ID
-	*/
-	private String cid;
-
-	/**
-	* コード
-	*/
-	private int cd;
-
-	/**
-	* コード
-	*/
-	private int setOutCd;
-
-	/**
-	* コード
-	*/
-	private int itemOutCd;
-
-	/**
-	* 使用区分
-	*/
-	private int useClass;
-
-	/**
-	* 値の出力形式
-	*/
-	private int valOutFormat;
-
-	public ItemOutTblBook(String cid, int cd, int setOutCd, int itemOutCd, int useClass, int valOutFormat) {
-		super();
-		this.cid = cid;
-		this.cd = cd;
-		this.setOutCd = setOutCd;
-		this.itemOutCd = itemOutCd;
-		this.useClass = useClass;
-		this.valOutFormat = valOutFormat;
-	}
+public class ItemOutTblBook extends AggregateRoot
+{
+    
+    /**
+    * 会社ID
+    */
+    private String cid;
+    
+    /**
+    * コード
+    */
+    private int cd;
+    
+    /**
+    * コード
+    */
+    private int setOutCd;
+    
+    /**
+    * コード
+    */
+    private int itemOutCd;
+    
+    /**
+    * 使用区分
+    */
+    private int useClass;
+    
+    /**
+    * 値の出力形式
+    */
+    private int valOutFormat;
+    
+    
 }

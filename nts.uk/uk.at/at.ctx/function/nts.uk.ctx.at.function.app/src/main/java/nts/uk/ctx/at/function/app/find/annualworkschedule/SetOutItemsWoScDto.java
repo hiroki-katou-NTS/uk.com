@@ -11,33 +11,38 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.SetOutItemsWoSc;
 */
 @AllArgsConstructor
 @Value
-public class SetOutItemsWoScDto {
-	/**
-	* 会社ID
-	*/
-	private String cid;
-
-	/**
-	* コード
-	*/
-	private int cd;
-
-	/**
-	* 名称
-	*/
-	private String name;
-
-	/**
-	* 36協定時間を超過した月数を出力する
-	*/
-	private int outNumExceedTime36Agr;
-
-	/**
-	* 表示形式
-	*/
-	private int displayFormat;
-
-	public static SetOutItemsWoScDto fromDomain(SetOutItemsWoSc domain) {
-		return new SetOutItemsWoScDto(domain.getCid(), domain.getCd(), domain.getName(), domain.getOutNumExceedTime36Agr(), domain.getDisplayFormat());
-	}
+public class SetOutItemsWoScDto
+{
+    
+    /**
+    * 会社ID
+    */
+    private String cid;
+    
+    /**
+    * コード
+    */
+    private int cd;
+    
+    /**
+    * 名称
+    */
+    private String name;
+    
+    /**
+    * 36協定時間を超過した月数を出力する
+    */
+    private int outNumExceedTime36Agr;
+    
+    /**
+    * 表示形式
+    */
+    private int displayFormat;
+    
+    
+    public static SetOutItemsWoScDto fromDomain(SetOutItemsWoSc domain)
+    {
+        return new SetOutItemsWoScDto(domain.getCid(), domain.getCd(), domain.getName(), domain.getOutNumExceedTime36Agr(), domain.getDisplayFormat());
+    }
+    
 }
