@@ -375,7 +375,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						breakTimeOfDailyList,
 						midNightTimeSheet,
 						personalInfo,
-						flexWorkSetOpt.get().getCoreTimeSetting(),
+						flexWorkSetOpt.get().getCoreTimeSetting()
 						);
 				break;
 			case FLOW_WORK:
