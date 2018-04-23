@@ -15,6 +15,7 @@ import nts.uk.ctx.at.function.app.command.holidaysremaining.UpdateHdRemainManage
 import nts.uk.ctx.at.function.app.find.holidaysremaining.DateHolidayRemainingDto;
 import nts.uk.ctx.at.function.app.find.holidaysremaining.HdRemainManageDto;
 import nts.uk.ctx.at.function.app.find.holidaysremaining.HdRemainManageFinder;
+import nts.uk.ctx.at.function.app.find.holidaysremaining.PermissionOfEmploymentFormDto;
 
 @Path("at/function/holidaysremaining")
 @Produces("application/json")
@@ -64,4 +65,9 @@ public class HolidaysRemainingWebService extends WebService {
 		return this.hdRemainManageFinder.getDate();
 	}
 
+	@POST
+	@Path("getPermissionOfEmploymentForm")
+	public PermissionOfEmploymentFormDto getPermissionOfEmploymentForm() {
+		return this.hdRemainManageFinder.getPermissionOfEmploymentForm();
+	}
 }

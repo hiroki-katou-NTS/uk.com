@@ -62,7 +62,7 @@
 										editable: false,
 										enable: true,
 										columns: [
-											{ prop: 'name', length: 5}]}" style="width: 150px;">
+											{ prop: 'name', length: 5}]}" style="width: 135px;">
 								</div>
 							</div>
 							
@@ -70,12 +70,12 @@
 						<div class="line-number" style="display: inline-block;">
 							<div class="valign-center control-group" data-bind="with: stdCondSet">
 								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_139')}</div>
-								<input id="D3_2" tabindex="5" data-bind="ntsNumberEditor: {name: '#[CMF001_140]', value: csvDataItemLineNumber, required: true, constraint: 'AcceptanceLineNumber', option: {width: '10px'}}" />
+								<input id="D3_2" tabindex="5" data-bind="ntsNumberEditor: {name: '#[CMF001_140]', value: csvDataItemLineNumber, required: true, constraint: 'AcceptanceLineNumber', option: {width: '20px'}}" />
 								<span class="label">#{i18n.getText('CMF001_141')}</span>
 							</div>
 							<div class="valign-center control-group" data-bind="with: stdCondSet">
 								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_142')}</div>
-								<input id="D3_5" tabindex="6" data-bind="ntsNumberEditor: {name: '#[CMF001_143]', value: csvDataStartLine, required: true, constraint: 'AcceptanceLineNumber', option: {width: '10px'}}" />
+								<input id="D3_5" tabindex="6" data-bind="ntsNumberEditor: {name: '#[CMF001_143]', value: csvDataStartLine, required: true, constraint: 'AcceptanceLineNumber', option: {width: '20px'}}" />
 								<span class="label">#{i18n.getText('CMF001_144')}</span>
 							</div>
 						</div>
