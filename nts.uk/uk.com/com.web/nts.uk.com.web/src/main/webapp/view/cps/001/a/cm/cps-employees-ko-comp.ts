@@ -453,40 +453,42 @@ module nts.custom.component {
 
             params.employeeIds.subscribe(ids => {
                 if (!ids || !ids.length) {
-                    params.employeeId(__viewContext.user.employeeId);
                     params.employeeIds([__viewContext.user.employeeId]);
                     return;
                 }
 
                 fetch.get_list(ids).done((datas: Array<any>) => {
+                    if (!datas.length) {
+                        params.employeeIds([__viewContext.user.employeeId]);
+                        return;
+                    }
+
                     datas = _(datas).map(d => ({ i: ids.indexOf(d.employeeId), v: d }))
                         .orderBy(o => o.i)
                         .map(m => m.v)
                         .value();
 
                     params.employees(datas || []);
-
-                    setTimeout(() => {
-                        let _ids = _.map(datas, m => m.employeeId);
-                        if (_ids.length) {
-                            if (_ids.indexOf(params.employeeId()) > -1) {
-                                params.employeeId.valueHasMutated();
-                            } else {
-                                let oidx = _.indexOf(ids, params.employeeId());
-                                if (oidx > -1) {
-                                    if (oidx < ids.length - 1) {
-                                        params.employeeId(ids[oidx + 1]);
-                                    } else {
-                                        params.employeeId(ids[oidx - 1]);
-                                    }
-                                } else {
-                                    params.employeeId(_ids[0]);
-                                }
-                            }
+                    
+                    let _ids = _.map(datas, m => m.employeeId);
+                    if (_ids.length) {
+                        if (_ids.indexOf(params.employeeId()) > -1) {
+                            params.employeeId.valueHasMutated();
                         } else {
-                            params.employeeId(undefined);
+                            let oidx = _.indexOf(ids, params.employeeId());
+                            if (oidx > -1) {
+                                if (oidx < ids.length - 1) {
+                                    params.employeeId(ids[oidx + 1]);
+                                } else {
+                                    params.employeeId(ids[oidx - 1]);
+                                }
+                            } else {
+                                params.employeeId(_ids[0]);
+                            }
                         }
-                    }, 300);
+                    } else {
+                        params.employeeId(undefined);
+                    }
                 });
             });
 
