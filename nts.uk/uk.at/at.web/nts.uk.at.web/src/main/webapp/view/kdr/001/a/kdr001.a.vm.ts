@@ -73,11 +73,11 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         date: KnockoutObservable<string>;
 
         //combo-box
-        lstHolidayRemaining: KnockoutObservableArray<HolidayRemainingModel> = ko.observableArray([]) ;
+        lstHolidayRemaining: KnockoutObservableArray<HolidayRemainingModel> = ko.observableArray([]);
         itemSelected: KnockoutObservableArray<ItemModel>;
         selectedCode: KnockoutObservable<string> = ko.observable('1');
         holidayRemainingSelectedCd: KnockoutObservable<string> = ko.observable('');
-        
+
         constructor() {
             var self = this;
 
@@ -116,7 +116,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             self.resetAbsentHolidayBusines = ko.observable(false);
             self.resetTimeAssignment = ko.observable(false);
             self.copyStartDate = ko.observable(new Date());
-            
+
             self.startDateString.subscribe(function(value) {
                 self.periodDate().startDate = value;
                 self.periodDate.valueHasMutated();
@@ -259,7 +259,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             dfd.resolve(self);
             return dfd.promise();
         }
-        
+
         /**
          * load and set item selected
          */
@@ -275,7 +275,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 self.holidayRemainingSelectedCd('');
             }
         }
-        
+
         /**
         * apply ccg001 search data to kcp005
         */
@@ -316,21 +316,31 @@ module nts.uk.at.view.kdr001.a.viewmodel {
          */
         private exportButton() {
             let self = this;
-            let holidayRemainingOutputCondition = new service.model.holidayRemainingOutputCondition(
-                    "2018/01",
-                    "2018/08",
-                    "001",
-                    2
-                );
-            let data = new service.model.appInfor(holidayRemainingOutputCondition, self.selectedEmployee());
-            service.saveAsExcel(data).done(()=>{
-                 nts.uk.ui.block.clear();   
-            }).fail(function(res: any){
+            let user: any = __viewContext.user;
+            let userSpecificInformation = new UserSpecificInformation(
+                user.employeeId,
+                user.companyId,
+                self.holidayRemainingSelectedCd(),
+                self.selectedCode()
+            );
+            nts.uk.characteristics.save("PersonalSchedule_" + user.employeeId, userSpecificInformation);
+
+            let holidayRemainingOutputCondition = new self.HolidayRemainingOutputCondition(
+                self.startDateString(),
+                self.endDateString(),
+                self.holidayRemainingSelectedCd(),
+                self.selectedCode()
+            );
+
+            let data = new self.AppInfor(holidayRemainingOutputCondition, self.selectedEmployee());
+            service.saveAsExcel(data).done(() => {
+                nts.uk.ui.block.clear();
+            }).fail(function(res: any) {
                 nts.uk.ui.dialog.alertError(res.messageId);
-                 nts.uk.ui.block.clear();
+                nts.uk.ui.block.clear();
             });
         }
-        
+
         /**
          * Open dialog B
          */
@@ -344,7 +354,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                     nts.uk.ui.block.clear();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
-                    nts.uk.ui.block.clear();    
+                    nts.uk.ui.block.clear();
                 });
             });
         }
@@ -369,7 +379,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             this.name = name;
         }
     }
-    
+
     // スケジュール一括修正設定
     export class ScheduleBatchCorrectSetting {
         // 勤務種類
@@ -396,19 +406,19 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             self.worktimeCode = '';
         }
     }
-    
-    export class IGetDate{
-        startDate : string;
-        endDate : string;
+
+    export interface IGetDate {
+        startDate: string;
+        endDate: string;
     }
-    
-    export class GetDate{
-        startDate : string;
-        endDate : string;
-        constructor(startDate : string, endDate : string ){
+
+    export class GetDate {
+        startDate: string;
+        endDate: string;
+        constructor(startDate: string, endDate: string) {
             this.startDate = startDate;
             this.endDate = endDate;
-        }    
+        }
     }
 
     export class ListType {
@@ -495,5 +505,41 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
 
         onApplyEmployee: (data: EmployeeSearchDto[]) => void;
+    }
+
+    export class AppInfor {
+        holidayRemainingOutputCondition: any;
+        lstEmpIds: any[];
+        constructor(holidayRemainingOutputCondition: any, lstEmpIds: any[]) {
+            this.holidayRemainingOutputCondition = holidayRemainingOutputCondition;
+            this.lstEmpIds = lstEmpIds;
+        }
+    }
+
+    export class HolidayRemainingOutputCondition {
+        startMonth: string;
+        endMonth: string;
+        outputItemSettingCode: string;
+        pageBreak: number;
+
+        constructor(startMonth: string, endMonth: string, outputItemSettingCode: string, pageBreak: number) {
+            this.startMonth = startMonth;
+            this.endMonth = endMonth;
+            this.outputItemSettingCode = outputItemSettingCode;
+            this.pageBreak = pageBreak;
+        }
+    }
+
+    export class UserSpecificInformation {
+        userId: string;
+        companyId: string;
+        outputItemSettingCode: string;
+        pageBreakAtr: string;
+        constructor(userId: string, companyId: string, outputItemSettingCode: string, pageBreakAtr: string) {
+            this.userId = userId;
+            this.companyId = companyId;
+            this.outputItemSettingCode = outputItemSettingCode;
+            this.pageBreakAtr = pageBreakAtr;
+        }
     }
 }
