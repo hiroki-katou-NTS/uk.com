@@ -19,6 +19,10 @@
 			<com:scriptfile path="kwr001.c.vm.js" />
 			<com:scriptfile path="kwr001.c.service.js" />
 			<com:stylefile path="kwr001.c.main.css" />
+			
+			<com:ValidatorScript>
+				nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode
+			</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
@@ -30,33 +34,147 @@
 				<!-- C1_3 -->
 				<button tabindex="3" data-bind="click: openScreenD">#{i18n.getText('KWR001_48')}</button>
 				<!-- C1_4 -->
-				<button tabindex="4" class="danger">#{i18n.getText('KWR001_49')}</button>
+				<button tabindex="4" class="danger C1_4">#{i18n.getText('KWR001_49')}</button>
 				<!-- C1_5 -->
 				<button tabindex="5">#{i18n.getText('KWR001_50')}</button>
 				
 				<!-- C1_6 -->
 				<hr/>
-				<!-- C2_1 -->
-				<div class="panel" data-bind="ntsPanel:{width: '280px', height: '400px', direction: 'right', showIcon: true, visible: true}">
-					<div style="width: 260px" data-bind="ntsSearchBox: { searchMode: 'highlight', 
-							targetKey: 'code', 
-							comId: 'multi-list2', 
-							items: items, 
-							selectedKey: 'code', 
-							fields: ['name', 'code'], 
-							mode: 'listbox'}" />																																														
-					<table id="multi-list2" data-bind="ntsListBox: {
-							options: items,
-							optionsValue: 'code',
-							multiple: true,
-							value: currentCodeList,
-							rows: 15,
-							columns: [
-								{ key: 'code', length: 5 },
-								{ key: 'name', length: 10 }
-							]
-						}"></table>
-				</div>
+				
+				<table>
+					<tr>
+						<td class="td-left">
+							<!-- C2_1 -->
+							<div class="panel" data-bind="ntsPanel:{width: '260px', height: '360px', direction: 'right', showIcon: true, visible: true}">
+								<!-- C2_2 -->
+								<div style="width: 250px" data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list', 
+											items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />																																														
+								<!-- C2_3 -->
+								<table tabindex="6" id="multi-list" data-bind="ntsGridList: {
+										height: 300,
+										options: items,
+										optionsValue: 'code', 
+										columns: columns,
+										multiple: false,
+										value: currentCodeList
+									}"></table>
+							</div>
+						</td>
+						<td class="td-right">
+							<div class="right">
+								<div class="row">
+									<!-- C3_1 -->
+									<div class="label-name" data-bind="ntsFormLabel: { constraint: '', required: true }">#{i18n.getText('KWR001_54')}</div>
+									<!-- C3_2 -->
+									<input tabindex="7" class="C3_2" data-bind="ntsTextEditor:{
+											name: '#[KWR001_55]',
+											constraint: 'OutputItemSettingCode',
+											require: true,
+											value: C3_2_value}" />
+									<!-- C3_3 -->
+									<input class="C3_3" tabindex="8" data-bind="ntsTextEditor:{
+											name: '#[KWR001_56]',
+											constraint: 'OutputItemSettingName',
+											require: true,
+											value: C3_3_value}" />
+								</div>
+								
+								<div class="row">
+									<!-- C4_1 -->
+									<div class="label-name" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR001_57')}</div>
+									<!-- C4_2 -->
+									<div tabindex="9" class="cf" data-bind="ntsSwitchButton: {
+											name: '#[KWR001_57]',
+											options: roundingRules,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedRuleCode }"></div>
+								</div>
+								
+								<div class="row">
+									<div>
+										<div class="C5">
+											<!-- C5_1 -->
+											<div class="label-name" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR001_60')}</div>
+											<!-- C5_2 -->
+											<hr/>
+										</div><!--
+									 --><div class="C6">
+											<!-- C6_1 -->
+											<div class="label-name" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR001_61')}</div>
+											<!-- C6_2 -->
+											<hr/>
+										</div>
+									</div>
+								
+									<div>
+										<!-- C7_1 -->
+										<div tabindex="10" id="swap-list" data-bind="ntsSwapList: {
+											showSearchBox: { showLeft : true, showRight: true},
+											height: 300,
+											dataSource: items,
+											disableMoveButton: false,
+											primaryKey: 'code',
+											columns: columns,
+											value: currentCodeListSwap,
+											searchMode: 'filter',
+											searchCriterion: ['code'],
+											draggable: true,
+											enableRowNumbering: false,
+											multipleDrag: { left: true, right: false },
+											innerDrag: { left: false, right: true },
+											outerDrag: { left: true, right: true } 
+										}"></div><!-- 
+											Updown Button 
+									--><div id="up-down"
+											data-bind="ntsUpDown: {
+													targetSource: currentCodeListSwap,
+													primaryKey: 'code',
+													comId: '#swap-list',
+													type: 'swap',
+													swapTarget: 'right'
+												}"></div>
+									</div>
+								</div>
+								
+								<!-- C7_13 -->
+								<div class="label C7_13">#{i18n.getText('KWR001_65')}</div>
+								
+								<div class="C8">
+									<!-- C8_13 -->
+									<div class="label-name" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR001_66')}</div>
+									<!-- C8_2 -->
+									<hr/>
+									
+									<div class="check-box-list">
+										<!-- C8_3 -->
+										<div tabindex="12" data-bind="ntsCheckBox: { checked: false }">#{i18n.getText('KWR001_67')}</div>
+										<!-- C8_4 -->
+										<div tabindex="13" data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KWR001_68')}</div>
+										<!-- C8_5 -->
+										<div tabindex="14" data-bind="ntsCheckBox: { checked: false }">#{i18n.getText('KWR001_69')}</div>
+										<!-- C8_6 -->
+										<div tabindex="15" data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KWR001_70')}</div>
+										<!-- C8_7 -->
+										<div tabindex="16" data-bind="ntsCheckBox: { checked: false }">#{i18n.getText('KWR001_71')}</div>
+										<!-- C8_8 -->
+										<div tabindex="17" data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KWR001_72')}</div>
+										<!-- C8_9 -->
+										<div tabindex="18" data-bind="ntsCheckBox: { checked: false }">#{i18n.getText('KWR001_73')}</div>
+										<!-- C8_10 -->
+										<div tabindex="19" data-bind="ntsCheckBox: { checked: false }">#{i18n.getText('KWR001_74')}</div>
+										<!-- C8_11 -->
+										<div tabindex="20" data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KWR001_75')}</div>
+										<!-- C8_12 -->
+										<div tabindex="21" data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KWR001_76')}</div>
+										<!-- C8_13 -->
+										<div tabindex="22" data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KWR001_77')}</div>
+									</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</table>
 			</div>
 		</ui:define>
 	</ui:composition>

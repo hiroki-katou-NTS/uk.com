@@ -1,3 +1,73 @@
-.panel{
+.panel {
 	margin: 30px;
+	width: 50%;
+}
+
+.bottom {
+	float: left;'
+}
+
+.td-right, .td-left {
+	vertical-align: top;
+}
+
+.right {
+	margin-top: 30px;
+}
+
+.C3_2 {
+	width: 50px;
+}
+
+.label-name {
+	width: 130px;
+}
+
+.row {
+	margin: 10px;
+}
+
+.C5, .C6 {
+	display: inline-block;
+	width: 30%;
+}
+
+.C5 {
+	margin-right: 6%;
+}
+
+.C6 {
+	margin-left: 2%;
+}
+
+.move-button {
+	margin: 10px !important;
+}
+
+#swap-list_container {
+	display: inline-block;
+	width: 70%;
+}
+
+#up-down {
+	display: inline-block;
+	width: 5%;
+}
+
+.C1_4 {
+	margin-left: 10px;
+}
+
+.C7_13 {
+	text-align: right;
+	width: 67% !important;
+}
+
+.C8 {
+	width: 50%;
+}
+
+.check-box-list {
+	width: 80%;
+	float: right;
 }

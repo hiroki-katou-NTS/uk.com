@@ -5,8 +5,8 @@ module nts.uk.at.view.kwr001.d {
             selectedCode: KnockoutObservable<string>;
             isEnable: KnockoutObservable<boolean>;
             isEditable: KnockoutObservable<boolean>;
-            D1_6_name: KnockoutObservable<string>;
-            D1_7_name: KnockoutObservable<string>;
+            D1_6_value: KnockoutObservable<string>;
+            D1_7_value: KnockoutObservable<string>;
         
             /**
              * Constructor.
@@ -22,8 +22,8 @@ module nts.uk.at.view.kwr001.d {
                 self.selectedCode = ko.observable('1');
                 self.isEnable = ko.observable(true);
                 self.isEditable = ko.observable(true);
-                self.D1_6_name = ko.observable('');
-                self.D1_7_name = ko.observable('');
+                self.D1_6_value = ko.observable('');
+                self.D1_7_value = ko.observable('');
             }
             
             startPage() {

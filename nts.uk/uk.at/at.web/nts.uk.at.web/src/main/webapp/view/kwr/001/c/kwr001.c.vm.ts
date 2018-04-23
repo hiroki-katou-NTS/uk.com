@@ -2,29 +2,57 @@ module nts.uk.at.view.kwr001.c {
     export module viewmodel {
         export class ScreenModel {
             data: KnockoutObservable<number>;
+            
+            // list
             items: KnockoutObservableArray<ItemModel>;
-            columns: KnockoutObservableArray<any>;
             currentCode: KnockoutObservable<any>;
             currentCodeList: KnockoutObservableArray<any>;
+            columns: KnockoutObservableArray<any>;
+            
+            C3_2_value: KnockoutObservable<string>;
+            C3_3_value: KnockoutObservable<string>;
+            
+            // switch button
+            roundingRules: KnockoutObservableArray<any>;
+            selectedRuleCode: any;
+            
+            currentCodeListSwap: KnockoutObservableArray<any>;
+            test: KnockoutObservableArray<any>;
+
             
             constructor() {
                 var self = this;
                 self.data = ko.observable(1);
                 
-                this.items = ko.observableArray([]);
+                self.items = ko.observableArray([]);
                 var str = ['a0', 'b0', 'c0', 'd0'];
                 for(var j = 0; j < 4; j++) {
                     for(var i = 1; i < 51; i++) {    
                         var code = i < 10 ? str[j] + '0' + i : str[j] + i;         
-                        this.items.push(new ItemModel(code,code));
+                        self.items.push(new ItemModel(code,code));
                     } 
                 }
-                this.columns = ko.observableArray([
-                    { headerText: 'コード', prop: 'code', width: 100 },
-                    { headerText: '名称', prop: 'name', width: 230 }
+                self.columns = ko.observableArray([
+                    { headerText: nts.uk.resource.getText("#KWR001_52"), prop: 'code', width: 70 },
+                    { headerText: nts.uk.resource.getText("#KWR001_53"), prop: 'name', width: 180 }
                 ]);
-                this.currentCode = ko.observable();
-                this.currentCodeList = ko.observableArray([]);
+                self.currentCode = ko.observable();
+                self.currentCodeList = ko.observableArray([]);
+                self.C3_2_value = ko.observable("");
+                self.C3_3_value = ko.observable("");
+                
+                self.roundingRules = ko.observableArray([
+                    { code: '1', name: nts.uk.resource.getText("#KWR001_58") },
+                    { code: '2', name: nts.uk.resource.getText("#KWR001_59") }
+                ]);
+                self.selectedRuleCode = ko.observable(1);
+                self.currentCodeListSwap = ko.observableArray([]);
+                self.test = ko.observableArray([]);
+            }
+            
+            remove(){
+                var self = this;
+                self.items.shift();            
             }
             
             public startPage(): JQueryPromise<void>  {
@@ -50,20 +78,6 @@ module nts.uk.at.view.kwr001.c {
                 return dfd.promise();
             }
         }
-        
-        class Node {
-            code: string;
-            name: string;
-            nodeText: string;
-            childs: any;
-            constructor(code: string, name: string, childs: Array<Node>) {
-                var self = this;
-                self.code = code;
-                self.name = name;
-                self.nodeText = self.code + ' ' + self.name;
-                self.childs = childs;         
-            }
-        } 
         class ItemModel {
             code: string;
             name: string;
