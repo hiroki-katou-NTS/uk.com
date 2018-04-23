@@ -227,7 +227,7 @@ public class ActualWorkingTimeOfDaily {
 		
 	}
 	
-	private static DivergenceTimeOfDaily createDivergenceTimeOfDaily(
+	public static DivergenceTimeOfDaily createDivergenceTimeOfDaily(
 			String employeeId,
 			GeneralDate ymd,
 			TotalWorkingTime totalWorkingTime,
