@@ -1,8 +1,11 @@
 package nts.uk.ctx.workflow.app.command.approvermanagement.workroot;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Value;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ApprovalPhaseDto;
-@Value
+@Data
+@AllArgsConstructor
 public class CompanyAppRootADto {
 
 	private boolean color;
