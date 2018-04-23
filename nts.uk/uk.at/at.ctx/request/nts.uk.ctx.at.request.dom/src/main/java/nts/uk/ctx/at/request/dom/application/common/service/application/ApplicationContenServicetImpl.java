@@ -206,13 +206,13 @@ public class ApplicationContenServicetImpl implements IApplicationContentService
 				if (overTime.getOverTimeShiftNight() > 0) {
 					totalWorkUnit += overTime.getOverTimeShiftNight();
 					if (count < 3)
-						moreInf += clockShorHm(overTime.getOverTimeShiftNight()) + " ";
+						moreInf += I18NText.getText("CMM045_270") + " " + clockShorHm(overTime.getOverTimeShiftNight()) + " ";
 					count++;
 				}
 				if (overTime.getFlexExessTime() > 0) {
 					totalWorkUnit += overTime.getFlexExessTime();
 					if (count < 3)
-						moreInf += clockShorHm(overTime.getFlexExessTime()) + " ";
+						moreInf += I18NText.getText("CMM045_271") + " " + clockShorHm(overTime.getFlexExessTime()) + " ";
 					count++;
 				}
 				String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + " ") : "");
@@ -269,13 +269,13 @@ public class ApplicationContenServicetImpl implements IApplicationContentService
 					if (preOverTime.getOverTimeShiftNight() > 0) {
 						totalWorkUnit += preOverTime.getOverTimeShiftNight();
 						if (count < 3)
-							moreInf += clockShorHm(preOverTime.getOverTimeShiftNight()) + " ";
+							moreInf += I18NText.getText("CMM045_270") + " " + clockShorHm(preOverTime.getOverTimeShiftNight()) + " ";
 						count++;
 					}
 					if (preOverTime.getFlexExessTime() > 0) {
 						totalWorkUnit += preOverTime.getFlexExessTime();
 						if (count < 3)
-							moreInf += clockShorHm(preOverTime.getFlexExessTime()) + " ";
+							moreInf += I18NText.getText("CMM045_271") + " " + clockShorHm(preOverTime.getFlexExessTime()) + " ";
 						count++;
 					}
 					String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + " ") : "");
@@ -324,13 +324,13 @@ public class ApplicationContenServicetImpl implements IApplicationContentService
 				if (overTime.getOverTimeShiftNight() > 0) {
 					totalWorkUnit += overTime.getOverTimeShiftNight();
 					if (count < 3)
-						moreInf += clockShorHm(overTime.getOverTimeShiftNight()) + " ";
+						moreInf += I18NText.getText("CMM045_270") + " " + clockShorHm(overTime.getOverTimeShiftNight()) + " ";
 					count++;
 				}
 				if (overTime.getFlexExessTime() > 0) {
 					totalWorkUnit += overTime.getFlexExessTime();
 					if (count < 3)
-						moreInf += clockShorHm(overTime.getFlexExessTime()) + " ";
+						moreInf += I18NText.getText("CMM045_271") + " " + clockShorHm(overTime.getFlexExessTime()) + " ";
 					count++;
 				}
 				String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + " ") : "");
@@ -531,11 +531,11 @@ public class ApplicationContenServicetImpl implements IApplicationContentService
 									}
 									count++;
 								}
-								String frameInfo = moreInf
-										+ (count > 3 ? I18NText.getText("CMM045_230", count - 3 + "") : "");
-								content += I18NText.getText("CMM045_276") + totalWorkUnit
-										+ I18NText.getText("CMM045_279", frameInfo);
 							}
+							String frameInfo = moreInf
+									+ (count > 3 ? I18NText.getText("CMM045_230", count - 3 + "") : "");
+							content += I18NText.getText("CMM045_276") + totalWorkUnit
+									+ I18NText.getText("CMM045_279", frameInfo);
 						}
 					}
 					break;
