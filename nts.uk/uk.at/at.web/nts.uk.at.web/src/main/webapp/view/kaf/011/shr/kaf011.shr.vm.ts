@@ -4,6 +4,7 @@ module nts.uk.at.view.kaf011.shr {
     import text = nts.uk.resource.getText;
     import formatDate = nts.uk.time.formatDate;
     import block = nts.uk.ui.block;
+    import alError = nts.uk.ui.dialog.alertError;
 
     export module common {
 
@@ -403,8 +404,7 @@ module nts.uk.at.view.kaf011.shr {
                 service.changeAbsDateToHoliday(saveCmd).done(() => {
                     // nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { appID: self.absWk().appID() });
                 }).fail((error) => {
-                    dialog({ messageId: error.messageId });
-
+                    alError({ messageId: error.messageId, messageParams: error.parameterIds });
                 }).always(() => {
                     block.clear();
                 });

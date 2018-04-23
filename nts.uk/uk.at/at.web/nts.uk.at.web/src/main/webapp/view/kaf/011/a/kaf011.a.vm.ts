@@ -7,6 +7,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
     import service = nts.uk.at.view.kaf011.shr.service;
     import block = nts.uk.ui.block;
     import jump = nts.uk.request.jump;
+    import alError = nts.uk.ui.dialog.alertError;
 
     export class ViewModel {
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
@@ -81,7 +82,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.setDataFromStart(data);
 
             }).fail((error) => {
-                dialog({ messageId: error.messageId });
+                alError({ messageId: error.messageId, messageParams: error.parameterIds });
             }).always(() => {
                 block.clear();
                 dfd.resolve();
@@ -163,7 +164,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                     location.reload();
                 });
             }).fail((error) => {
-                dialog({ messageId: error.messageId, messageParams: error.parameterIds });
+                alError({ messageId: error.messageId, messageParams: error.parameterIds });
             }).always(() => {
                 block.clear();
                 $("#recDatePicker").focus();

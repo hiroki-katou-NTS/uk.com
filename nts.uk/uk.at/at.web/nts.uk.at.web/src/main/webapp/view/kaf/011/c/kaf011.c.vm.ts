@@ -6,6 +6,7 @@ module nts.uk.at.view.kaf011.c.screenModel {
     import common = nts.uk.at.view.kaf011.shr.common;
     import service = nts.uk.at.view.kaf011.shr.service;
     import block = nts.uk.ui.block;
+    import alError = nts.uk.ui.dialog.alertError;
 
     export class ViewModel {
         prePostTypes = ko.observableArray([
@@ -73,7 +74,7 @@ module nts.uk.at.view.kaf011.c.screenModel {
             service.start_c(startParam).done((data: common.IHolidayShipment) => {
                 self.setDataFromStart(data);
             }).fail((error) => {
-                dialog({ messageId: error.messageId });
+               alError({ messageId: error.messageId, messageParams: error.parameterIds });
             }).always(() => {
                 block.clear();
                 dfd.resolve();
@@ -106,7 +107,7 @@ module nts.uk.at.view.kaf011.c.screenModel {
                     nts.uk.ui.windows.close();
                 });
             }).fail((error) => {
-                dialog({ messageId: error.messageId });
+                alError({ messageId: error.messageId, messageParams: error.parameterIds });
 
             }).always(() => {
                 block.clear();

@@ -8,6 +8,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
     import block = nts.uk.ui.block;
     import jump = nts.uk.request.jump;
     import confirm = nts.uk.ui.dialog.confirm;
+    import alError = nts.uk.ui.dialog.alertError;
 
     export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
 
@@ -78,7 +79,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 
 
             }).fail((error) => {
-                dialog({ messageId: error.messageId });
+                alError({ messageId: error.messageId, messageParams: error.parameterIds });
 
             }).always(() => {
                 block.clear();
@@ -101,13 +102,13 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 self.setDataFromStart(data);
 
             }).fail((error) => {
-                dialog({ messageId: error.messageId });
+                alError({ messageId: error.messageId, messageParams: error.parameterIds });
             }).always(() => {
                 block.clear();
                 dfd.resolve();
 
             });
-            
+
             return dfd.promise();
 
         }
@@ -169,7 +170,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 service.removeAbs(removeCmd).done(function(data) {
                     location.reload();
                 }).fail(function(res: any) {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                    alError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
                     });
                 }).always(() => {
                     block.clear();
@@ -185,7 +186,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 service.cancelAbs(cancelCmd).done(function(data) {
                     location.reload();
                 }).fail(function(res: any) {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                    alError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
                     });
                 }).always(() => {
                     block.clear();
