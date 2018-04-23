@@ -55,7 +55,6 @@ module nts.uk.at.view.kmw006.f.viewmodel {
             service.getMonthlyClosureLog(self.params ? self.params.monthlyClosureUpdateLogId : sessionStorage.getItem("MonthlyClosureUpdateLogId").value).done((result) => {
                 self.startTime(result.executionDateTime);
                 self.completeStatus(result.completeStatus);
-                self.elapseTime.start();
                 if (self.params)
                     self.processMonthlyUpdate();
                 else {
@@ -75,6 +74,7 @@ module nts.uk.at.view.kmw006.f.viewmodel {
         private processMonthlyUpdate(): void {
             var self = this;
             var command = self.params;
+            self.elapseTime.start();
             service.executeMonthlyClosure(command).done(res => {
                 self.taskId(res.id);
                 sessionStorage.setItem("MonthlyClosureTaskId", res.id);
@@ -89,6 +89,7 @@ module nts.uk.at.view.kmw006.f.viewmodel {
                     return nts.uk.request.asyncTask.getInfo(self.taskId()).done(info => {
                         self.processedCount(self.getAsyncData(info.taskDatas, "processed").valueAsNumber);
                         if (!info.pending && !info.running) {
+                            if (info.status == "COMPLETED") self.processedCount(self.totalCount());
                             self.checkResult(info);
                             if (info.error) {
                                 alertError(info.error);
@@ -111,6 +112,7 @@ module nts.uk.at.view.kmw006.f.viewmodel {
 
         private checkResult(taskInfor) {
             let self = this;
+            block.invisible();
             service.getResults(self.params ? self.params.monthlyClosureUpdateLogId : sessionStorage.getItem("MonthlyClosureUpdateLogId").value).done((result) => {
                 let listErr: Array<MonthlyClosureErrorInfor> = [];
                 for (let i = 0; i < result.listErrorInfor.length; i++) {
@@ -125,6 +127,8 @@ module nts.uk.at.view.kmw006.f.viewmodel {
                 self.completeStatus(result.updateLog.completeStatus);
             }).fail((error) => {
                 alertError(error);
+            }).always(() => {
+                block.clear();
             });
         }
 
@@ -148,7 +152,7 @@ module nts.uk.at.view.kmw006.f.viewmodel {
         private initIGrid() {
             let self = this;
             $("#single-list").ntsGrid({
-                height: '300px',
+                height: '429px',
                 dataSource: self.items(),
                 primaryKey: 'employeeCode',
                 columns: [
