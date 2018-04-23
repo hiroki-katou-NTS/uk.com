@@ -1,6 +1,3 @@
-/**
- * 
- */
 package nts.uk.ctx.at.function.dom.annualworkschedule;
 
 /**

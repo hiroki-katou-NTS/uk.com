@@ -10,9 +10,14 @@ import javax.ws.rs.Produces;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.function.app.command.annualworkschedule.AddSetOutItemsWoScCommandHandler;
+import nts.uk.ctx.at.function.app.command.annualworkschedule.RemoveSetOutItemsWoScCommandHandler;
+import nts.uk.ctx.at.function.app.command.annualworkschedule.SetOutItemsWoScCommand;
+import nts.uk.ctx.at.function.app.command.annualworkschedule.UpdateSetOutItemsWoScCommandHandler;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.SetOutItemsWoScDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.SetOutItemsWoScFinder;
 import nts.uk.ctx.at.function.dom.annualworkschedule.PageBreakIndicator;
+import nts.uk.ctx.at.function.dom.annualworkschedule.ValueOuputFormat;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
@@ -29,6 +34,15 @@ public class Kwr008WebService extends WebService {
 	@Inject
 	private SetOutItemsWoScFinder outputItemSetting; 
 	
+	@Inject
+	private RemoveSetOutItemsWoScCommandHandler rmOutputItemSetting;
+	
+	@Inject
+	private AddSetOutItemsWoScCommandHandler addOutputItemSetting;
+	
+	@Inject
+	private UpdateSetOutItemsWoScCommandHandler updateOutputItemSetting;
+	
 	/**
 	 * KWR008 A
 	 * 改頁選択 - Page break selection
@@ -40,6 +54,16 @@ public class Kwr008WebService extends WebService {
 		return EnumAdaptor.convertToValueNameList(PageBreakIndicator.class, i18n);
 	}
 	
+	/*
+	 * 値の出力形式
+	 * Enum
+	 * */
+	@POST
+	@Path("get/enum/valueoutputformat")
+	public List<EnumConstant> getEnumValueOutputFormat(){
+		return EnumAdaptor.convertToValueNameList(ValueOuputFormat.class, i18n);
+	}
+	
 	/* *
 	 * 出力項目設定コード
 	 * */
@@ -47,5 +71,26 @@ public class Kwr008WebService extends WebService {
 	@Path("get/outputitemsetting")
 	public List<SetOutItemsWoScDto> getOutputItemSetting(){
 		return outputItemSetting.getAllSetOutItemsWoSc();
+	}
+	
+	/*
+	 * ドメインモデル「年間勤務表（36チェックリスト）」を削除する
+	 */
+	@POST
+	@Path("delete/outputitemsetting")
+	public void deleteOutputItemSetting(SetOutItemsWoScCommand command){
+		this.rmOutputItemSetting.handle(command);
+	}
+	
+	@POST
+	@Path("add/outputitemsetting")
+	public void addOutputItemSetting(SetOutItemsWoScCommand command){
+		this.addOutputItemSetting.handle(command);
+	}
+	
+	@POST
+	@Path("update/outputitemsetting")
+	public void updateOutputItemSetting(SetOutItemsWoScCommand command){
+		this.updateOutputItemSetting.handle(command);
 	}
 }
