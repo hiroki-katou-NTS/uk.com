@@ -239,15 +239,12 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             var dfd = $.Deferred();
             service.findAll().done(function(data: Array<any>) {
                 self.loadAllHolidayRemaining(data);
-
-                // get special holiday
                 nts.uk.ui.block.clear();
                 dfd.resolve();
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
                 nts.uk.ui.block.clear();
                 dfd.reject();
-
             });
             dfd.resolve(self);
             return dfd.promise();
@@ -259,13 +256,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         loadAllHolidayRemaining(data: Array<HolidayRemainingModel>) {
             let self = this;
             if (data && data.length > 0) {
-                self.lstHolidayRemaining([]);
-                for (let i = 0; i < data.length; i++) {
-                    self.lstHolidayRemaining().push(new HolidayRemainingModel(data[i]));
-                }
-                //if (!self.currentCode()) {
-                //    self.currentCode(data[0].cd);
-                //}
+                self.lstHolidayRemaining(data);
             }
             // no data
             else {
@@ -328,20 +319,17 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                  nts.uk.ui.block.clear();
             });
         }
-            
+        
+        /**
+         * Open dialog B
+         */
         openKDR001b() {
             let self = this;
             nts.uk.ui.block.invisible();
-           /* let param = {
-                    cd : holidayRemainingSelectedCd,
-                };
-            */
             setShared('KDR001Params', self.holidayRemainingSelectedCd());
             modal("/view/kdr/001/b/index.xhtml").onClosed(function() {
                 service.findAll().done(function(data: Array<any>) {
                     self.loadAllHolidayRemaining(data);
-    
-                    // get special holiday
                     nts.uk.ui.block.clear();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
