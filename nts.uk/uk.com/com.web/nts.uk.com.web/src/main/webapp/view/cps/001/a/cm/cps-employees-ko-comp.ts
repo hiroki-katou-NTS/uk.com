@@ -466,16 +466,27 @@ module nts.custom.component {
 
                     params.employees(datas || []);
 
-                    let _ids = _.map(datas, m => m.employeeId);
-                    if (_ids.length) {
-                        if (_ids.indexOf(params.employeeId()) > -1) {
-                            params.employeeId.valueHasMutated();
+                    setTimeout(() => {
+                        let _ids = _.map(datas, m => m.employeeId);
+                        if (_ids.length) {
+                            if (_ids.indexOf(params.employeeId()) > -1) {
+                                params.employeeId.valueHasMutated();
+                            } else {
+                                let oidx = _.indexOf(ids, params.employeeId());
+                                if (oidx > -1) {
+                                    if (oidx < ids.length - 1) {
+                                        params.employeeId(ids[oidx + 1]);
+                                    } else {
+                                        params.employeeId(ids[oidx - 1]);
+                                    }
+                                } else {
+                                    params.employeeId(_ids[0]);
+                                }
+                            }
                         } else {
-                            params.employeeId(_ids[0]);
+                            params.employeeId(undefined);
                         }
-                    } else {
-                        params.employeeId(undefined);
-                    }
+                    }, 300);
                 });
             });
 

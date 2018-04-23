@@ -106,7 +106,8 @@ module nts.custom.component {
                             showHist: [
                                 CAT_TYPE.CONTI, 
                                 CAT_TYPE.CONTIWED, 
-                                CAT_TYPE.DUPLI, CAT_TYPE.NODUP
+                                CAT_TYPE.DUPLI, 
+                                CAT_TYPE.NODUP
                             ].indexOf(combobox.object.categoryType()) > -1 && 
                             ['CS00003'].indexOf(combobox.object.categoryCode()) == -1,
                             showMult: combobox.object.categoryType() == CAT_TYPE.MULTI
@@ -251,7 +252,10 @@ module nts.custom.component {
                     'delete': () => {
                         let rid = ko.toJS(params.roleId),
                             cid = ko.toJS(params.combobox.value),
-                            is_self = params.employeeId() == params.loginId();
+                            is_self = params.employeeId() == params.loginId(),
+                            got = ko.toJS(params.gridlist.options).map(m => m.optionValue),
+                            gov = ko.toJS(params.gridlist.value),
+                            gidx = _.indexOf(got, gov);
 
                         fetch.category.perm(rid, cid).done((perm: ICatAuth) => {
                             if (perm && !!(is_self ? perm.selfAllowDelHis : perm.otherAllowDelHis)) {
@@ -267,7 +271,11 @@ module nts.custom.component {
 
                                     fetch.category.delete(query).done(x => {
                                         info({ messageId: "Msg_16" }).then(() => {
-                                            params.gridlist.value(undefined);
+                                            if (gov != got[got.length - 1]) {
+                                                params.gridlist.value(got[gidx + 1]);
+                                            } else {
+                                                params.gridlist.value(got[gidx - 1]);
+                                            }
                                             params.combobox.value.valueHasMutated();
                                         });
                                     }).fail(msg => {
