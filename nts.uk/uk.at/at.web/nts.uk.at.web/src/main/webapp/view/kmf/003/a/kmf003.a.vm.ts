@@ -185,6 +185,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                                 
                 if (self.items().length > 0) {
                     self.singleSelectedCode(self.items()[0].code);
+                } else {
+                    self.cleanForm();
                 }
                 
                 dfd.resolve();
