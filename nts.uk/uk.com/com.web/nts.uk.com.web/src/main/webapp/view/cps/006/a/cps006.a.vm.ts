@@ -318,19 +318,18 @@ module nts.uk.com.view.cps006.a.viewmodel {
             block.invisible();
             setShared('CDL020_PARAMS', cats);
             nts.uk.ui.windows.sub.modal('/view/cdl/022/a/index.xhtml', { title: '' }).onClosed(function(): any {
-                let CTGlist: Array<any> = getShared('CDL020_VALUES'),
-                    i: number = 0,
-                    CTGsorrList = _.map(CTGlist, x => {
-                        return {
-                            id: x.id,
-                            order: i++
-                        }
+                let CTGlist: Array<any> = getShared('CDL020_VALUES');
+                if (CTGlist) {
+                    let CTGsorrList = _.map(CTGlist, (x, i) => ({
+                        id: x.id,
+                        order: i + 1
+                    }));
+                    service.updateCtgOrder(CTGsorrList).done(function(data: Array<any>) {
+                        self.start(self.id()).done(() => {
+                            block.clear();
+                        });
                     });
-                service.updateCtgOrder(CTGsorrList).done(function(data: Array<any>) {
-                    self.start(self.id()).done(() => {
-                        block.clear();
-                    });
-                })
+                }
             });
         }
 

@@ -196,6 +196,8 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 		if (checkExit) {
 			// get Old Layout
 			MaintenanceLayout oldLayout = this.repo.getByCode(companyId, command.getCode()).get();
+			String layoutID_old = oldLayout.getMaintenanceLayoutID();
+			
 			// xoa layout cu
 			repo.remove(oldLayout);
 
@@ -206,7 +208,7 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 			clsDefRepo.removeAllByLayoutId(oldLayout.getMaintenanceLayoutID());
 
 			// insert vao bang MaintenanceLayout
-			MaintenanceLayout newLayout = new MaintenanceLayout(companyId, newLayoutId,
+			MaintenanceLayout newLayout = new MaintenanceLayout(companyId, layoutID_old,
 					new LayoutCode(command.getCode()), new LayoutName(command.getName()));
 			
 			this.repo.add(newLayout);
@@ -214,7 +216,7 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 			List<ClassificationCommand> classCommands = command.getClassifications();
 			if (classCommands != null) {
 				// add all classification on client to db
-				classfRepo.addClassifications(classCommands.stream().map(m -> toClassificationDomain(m, newLayoutId))
+				classfRepo.addClassifications(classCommands.stream().map(m -> toClassificationDomain(m,layoutID_old))
 						.collect(Collectors.toList()));
 
 				// add all item definition relation with classification to db
@@ -222,7 +224,7 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 					List<ClassificationItemDfCommand> clsIDfs = classCommand.getListItemClsDf();
 					if (clsIDfs != null) {
 						clsDefRepo.addClassificationItemDefines(clsIDfs.stream()
-								.map(m -> toClassItemDefDomain(m, newLayoutId, classCommand.getDispOrder()))
+								.map(m -> toClassItemDefDomain(m, layoutID_old, classCommand.getDispOrder()))
 								.collect(Collectors.toList()));
 					}
 				}

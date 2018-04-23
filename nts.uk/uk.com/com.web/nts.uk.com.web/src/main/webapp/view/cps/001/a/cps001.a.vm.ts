@@ -295,7 +295,7 @@ module cps001.a.vm {
 
                 self.employees.removeAll();
 
-                $('#ccg001-btn-search-all').trigger('click');
+                $('#ccg001-btn-search-all>div').trigger('click');
 
                 $.when((() => {
                     let def = $.Deferred(),
@@ -343,9 +343,9 @@ module cps001.a.vm {
             } else {
                 $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
                     if (params && params.employeeId) {
-                        $('#ccg001-btn-search-all').trigger('click');
+                        $('#ccg001-btn-search-all>div').trigger('click');
                     } else {
-                        $('#ccg001-btn-only-me').trigger('click');
+                        $('#ccg001-btn-only-me>div').trigger('click');
                     }
 
                     $.when((() => {

@@ -115,6 +115,7 @@ module nts.uk.com.view.cps001.i.vm {
                     });
                 }
                 self.activeBtn();
+                clearError();
             });
 
             // Subscribe checkbox
@@ -257,7 +258,7 @@ module nts.uk.com.view.cps001.i.vm {
                 grantDate = moment.utc(self.dateGrantInp(), "YYYY/MM/DD"),
                 deadline = moment.utc(self.deadlineDateInp(), "YYYY/MM/DD"),
                 ctgCode: IData = self.genSpecialCode(self.categoryCode());
-            
+
             $("#idDateGrantInp").trigger("validate");
             $("#idDeadline").trigger("validate");
             $("#dayNumberOfGrants").trigger("validate");
