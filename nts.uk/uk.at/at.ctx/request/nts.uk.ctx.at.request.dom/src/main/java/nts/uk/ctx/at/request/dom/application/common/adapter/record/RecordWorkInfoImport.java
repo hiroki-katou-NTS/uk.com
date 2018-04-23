@@ -49,7 +49,7 @@ public class RecordWorkInfoImport {
 	/**
 	 * 計算フレックス
 	 */
-	private int flexCaculation;
+	private Integer flexCaculation;
 	
 	/**
 	 * 計算残業
