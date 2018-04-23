@@ -878,10 +878,20 @@ module nts.uk.at.view.kmk003.a {
 
                     // set useHalfDay to mainScreen model
                     self.useHalfDay(worktimeSettingInfo.flexWorkSetting.useHalfDayShift);
+
+                    // reset data of other mode
+                    self.flowWorkSetting.resetData();
+                    self.diffWorkSetting.resetData();
+                    self.fixedWorkSetting.resetData();
                 }
                 if (self.workTimeSetting.isFlow()) {
                     self.flowWorkSetting.updateData(worktimeSettingInfo.flowWorkSetting);
                     self.commonSetting.updateData(worktimeSettingInfo.flowWorkSetting.commonSetting);
+
+                    // reset data of other mode
+                    self.flexWorkSetting.resetData();
+                    self.diffWorkSetting.resetData();
+                    self.fixedWorkSetting.resetData();
                 }
                 if (self.workTimeSetting.isFixed()) {
                     self.fixedWorkSetting.updateData(worktimeSettingInfo.fixedWorkSetting);
@@ -889,6 +899,11 @@ module nts.uk.at.view.kmk003.a {
 
                     // set useHalfDay to mainScreen model
                     self.useHalfDay(worktimeSettingInfo.fixedWorkSetting.useHalfDayShift);
+
+                    // reset data of other mode
+                    self.flowWorkSetting.resetData();
+                    self.diffWorkSetting.resetData();
+                    self.flexWorkSetting.resetData();
                 }
                 
                 if (self.workTimeSetting.isDiffTime()) {
@@ -897,6 +912,11 @@ module nts.uk.at.view.kmk003.a {
 
                     // set useHalfDay to mainScreen model
                     self.useHalfDay(worktimeSettingInfo.diffTimeWorkSetting.useHalfDayShift);
+
+                    // reset data of other mode
+                    self.flowWorkSetting.resetData();
+                    self.flexWorkSetting.resetData();
+                    self.fixedWorkSetting.resetData();
                 }      
                 
                 self.updateInterlockDialogJ();
