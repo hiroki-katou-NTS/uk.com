@@ -21245,18 +21245,20 @@ var nts;
                                     if (!nts.uk.util.isNullOrEmpty(selected)) {
                                         selected = oldSelected;
                                     }
-                                    var $scrollContainer = $grid.igGrid("scrollContainer");
-                                    _.defer(function () {
-                                        if ($scrollContainer.length > 0) {
-                                            var firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
-                                            var selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
-                                            $scrollContainer.scrollTop(selectRowOffset - firstRowOffset);
-                                        }
-                                        else {
-                                            var index = $(selected["element"]).attr("data-row-idx");
-                                            $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
-                                        }
-                                    });
+                                    if ($grid.data('igGrid')) {
+                                        var $scrollContainer_1 = $grid.igGrid("scrollContainer");
+                                        _.defer(function () {
+                                            if ($scrollContainer_1.length > 0) {
+                                                var firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
+                                                var selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
+                                                $scrollContainer_1.scrollTop(selectRowOffset - firstRowOffset);
+                                            }
+                                            else {
+                                                var index = $(selected["element"]).attr("data-row-idx");
+                                                $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
+                                            }
+                                        });
+                                    }
                                 });
                             }
                         });
