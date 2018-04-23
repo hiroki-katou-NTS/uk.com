@@ -71,12 +71,12 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             var dfd = $.Deferred();
             block.invisible();
             let params = getShared("KAF018F_PARAMS");
-            /*if (params) {
+            if (params) {
                 self.closureId = params.closureId;
                 self.closureName = params.closureName;
                 self.processingYm = params.processingYm;
-                self.currentMonth = params.processingYm.split('/')[1],
-                    self.startDateFormat = formatDate(new Date(params.startDate), 'yyyy/MM/dd');
+                self.currentMonth = params.processingYm.split('/')[1];
+                self.startDateFormat = formatDate(new Date(params.startDate), 'yyyy/MM/dd');
                 self.endDateFormat = formatDate(new Date(params.endDate), 'yyyy/MM/dd');
                 self.startDate = params.startDate;
                 self.endDate = params.endDate;
@@ -84,20 +84,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 self.isConfirmData = params.isConfirmData;
                 self.selectedWplIndex = params.selectedWplIndex;
                 self.listEmpCd = params.listEmployeeCode;
-            }*/
-
-            self.closureId = "123abc";
-            self.closureName = "aaabbb";
-            self.processingYm = "2018/01";
-            self.currentMonth = "01";
-            self.startDateFormat = "2018/01/01";
-            self.endDateFormat = "2018/01/31";
-            self.startDate = new Date("2018/01/01");
-            self.endDate = new Date("2018/01/31");
-            self.listWkp = [{ code: "01", name: "wkp1" }, { code: "02", name: "wkp2" }, { code: "03", name: "wkp13" }];
-            self.isConfirmData = false;
-            self.selectedWplIndex = 1;
-            self.listEmpCd = ["01", "02"]
+            }
 
             self.dtPrev(new Date(self.startDateFormat));
             self.dtAft(new Date(self.endDateFormat));
@@ -320,31 +307,36 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             let leftmostColumns = [];
             let leftmostHeader = {};
             let leftmostContent = {};
+            let leftmostHeaderWidth = 0;
 
             let detailHeaderColumns = [];
             let detailHeader = {};
             let detailContentColumns = [];
             let detailContent = {};
 
-            //create leftMost Header and Content
+            //create leftMost Header and Content            
             leftmostColumns = [
-                { headerText: text("KAF018_60"), key: "sName", width: "150px", control: "link", handler: function(rData, rowIdx, key) { } }
+                { headerText: text("KAF018_60"), key: "sName", width: "160px", control: "link", handler: function(rData, rowIdx, key) { } }
             ];
+            leftmostHeaderWidth += 160;
 
             if (self.useSetting.monthlyConfirm) {
                 leftmostColumns.push({ headerText: formatText(text("KAF018_61"), self.currentMonth), key: "monthConfirm", width: "40px", headerControl: "link", headerHandler: function() { } });
+                leftmostHeaderWidth += 40;
             }
             if (self.useSetting.usePersonConfirm) {
-                leftmostColumns.push({ headerText: text("KAF018_62"), key: "personConfirm", width: "40px" });
+                leftmostColumns.push({ headerText: text("KAF018_62"), key: "personConfirm", width: "50px" });
+                leftmostHeaderWidth += 50;
             }
             if (self.useSetting.useBossConfirm) {
-                leftmostColumns.push({ headerText: text("KAF018_63"), key: "bossConfirm", width: "40px" });
+                leftmostColumns.push({ headerText: text("KAF018_63"), key: "bossConfirm", width: "50px" });
+                leftmostHeaderWidth += 50;
             }
 
             leftmostHeader = {
                 columns: leftmostColumns,
                 rowHeight: "50px",
-                width: "300px"
+                width: leftmostHeaderWidth + "px"
             };
             leftmostContent = {
                 columns: leftmostColumns,

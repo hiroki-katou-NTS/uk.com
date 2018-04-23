@@ -7,7 +7,7 @@
 }
 
 .tbl-control {
-	width: 1150px;
+	width: 1160px;
 	margin-bottom: 5px;
 }
 
@@ -34,8 +34,8 @@
 	text-align: center;
 }
 .extable-header-leftmost tr td{
-	padding-left: 8px;
-	padding-right: 8px;
+	padding-left: 5px;
+	padding-right: 5px;
 }
 .extable-body-leftmost tr td:NTH-CHILD(1){
 	padding-left: 4px;
