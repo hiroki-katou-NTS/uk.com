@@ -22,6 +22,8 @@ module nts.uk.at.view.kmk015.a {
             endforC: KnockoutObservable<moment.Moment>;
             isCreated: KnockoutObservable<boolean>;
             historyId: KnockoutObservable<string>;
+            isEnable: KnockoutObservable<boolean>;
+            isEnableNumber: KnockoutObservable<boolean>;
 
 
             constructor() {
@@ -29,6 +31,8 @@ module nts.uk.at.view.kmk015.a {
                 self.listWorkType = ko.observableArray([]);
                 self.numberDay = ko.observable(0);
                 self.isCreated = ko.observable(false);
+                self.isEnable = ko.observable(true);
+                self.isEnableNumber = ko.observable(true);
 
                 self.selectedCode = ko.observable('');
                 self.historyId = ko.observable('');
@@ -62,17 +66,35 @@ module nts.uk.at.view.kmk015.a {
                     self.listWorkType().forEach(function(item) {
                         if (item.workTypeCode == code) { self.nameWorkType(item.name); }
                     });
-                    
-                    service.getHistoryByWorkType(code).done(data => {
-                        //clear list history
-                        self.listHistory.removeAll();
-                        
-                        //push listHistory
-                        self.addList(data);
+                    if (code) {
+                        service.getHistoryByWorkType(code).done(data => {
+                            //clear list history
+                            self.listHistory.removeAll();
 
-                        //set focus 
-                        self.selectedCodeHistory(data[0].historyId);
-                    });
+                            if (!nts.uk.util.isNullOrEmpty(data)){
+                                //push listHistory
+                                self.addList(data);
+                                
+                                //set focus 
+                                self.selectedCodeHistory(data[0].historyId);
+                            }
+                            
+                            //set Enable
+                            if (nts.uk.util.isNullOrEmpty(self.listHistory()) 
+                                || nts.uk.util.isNullOrEmpty(self.selectedCodeHistory())) {
+                                self.isEnable(false);
+                                self.isEnableNumber(false);
+                                self.timeHistory(null);
+                            } else {
+                                self.isEnable(true);
+                            }
+                        });
+                    } else {
+                        self.listHistory.removeAll();
+                        self.timeHistory(null);
+                        self.isEnable(false);
+                        self.isEnableNumber(false);
+                    }
                 });
 
                 if (nts.uk.util.isNullOrEmpty(self.listHistory())) {
@@ -131,8 +153,8 @@ module nts.uk.at.view.kmk015.a {
                         self.selectedCodeHistory(data[0].historyId);
                     });
                     dfd.resolve();
-                }).fail(function(res) { 
-                    nts.uk.ui.dialog.alert({ messageId: res.messageId }).then(function () {
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert({ messageId: res.messageId }).then(function() {
                         nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");
                     });
                 })
@@ -160,6 +182,8 @@ module nts.uk.at.view.kmk015.a {
                         self.endTime(childData.end);
                     }
                 })
+                
+                self.isEnableNumber(true);
             }
 
 
@@ -213,10 +237,10 @@ module nts.uk.at.view.kmk015.a {
                 } else {
                     history = new SaveHistory(historyId, new Date(self.startTime().format("YYYY/MM/DD")), new Date(self.endTime().format("YYYY/MM/DD")));
                 }
-               
+
                 //Add command
                 let command: SaveVacationHistoryCommand = new SaveVacationHistoryCommand(self.isCreated(), self.selectedCode(), self.numberDay(), history);
-                
+
                 // Loading, block ui.
                 nts.uk.ui.block.invisible();
                 service.insertHistory(command).done(function() {
@@ -235,9 +259,9 @@ module nts.uk.at.view.kmk015.a {
                                 self.selectedCodeHistory(item.historyId);
                             }
                         });
-                        
+
                         self.isCreated(false);
-                        
+
                         dfd.resolve();
                     }).fail(function(res) { nts.uk.ui.dialog.alertError(res) });
                 }).fail(function(res) { nts.uk.ui.dialog.alertError(res) });

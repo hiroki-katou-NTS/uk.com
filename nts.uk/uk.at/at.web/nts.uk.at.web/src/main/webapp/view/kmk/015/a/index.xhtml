@@ -39,13 +39,13 @@
                      	<tr>
 	                        <td><button data-bind="click: OpenDialogB">#{i18n.getText('KMK015_9')}</button></td>
 	                        <td>
-	                           <button data-bind="click: OpenDialogC" style="margin-left: 12px">#{i18n.getText('KMK015_10')}</button>
-	                           <button style="margin-left: 12px" data-bind="click: removeHistory" class="danger">#{i18n.getText('KMK015_11')}</button>
+	                           <button data-bind="enable: isEnable, click: OpenDialogC" style="margin-left: 12px">#{i18n.getText('KMK015_10')}</button>
+	                           <button style="margin-left: 12px" data-bind="enable: isEnable, click: removeHistory" class="danger">#{i18n.getText('KMK015_11')}</button>
 	                        </td>
 	                     </tr>
                 	  </table>
                 	  <table id="tbl-master-list"
-                        data-bind="ntsGridList: {
+                        data-bind="enable: isEnable, ntsGridList: {
                         name: '#[kmk015_15]',
                         width: 250,
                         dataSource: listHistory,
@@ -82,7 +82,7 @@
 	                          	
 	                       </td>
 	                       <td><div style="padding-top: 10px;padding-left: 30px;">
-								<input tabindex="3" id="number-1" data-bind="ntsNumberEditor: { 
+								<input tabindex="3" id="number-1" data-bind="enable: isEnableNumber, ntsNumberEditor: { 
 									name: 'Number', 
 									value: numberDay, 
 									constraint: 'OptionalMaxDay', 
