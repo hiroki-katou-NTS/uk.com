@@ -94,7 +94,7 @@
 									value: $parent.selectedDataCondition,
 									enable: true}"></div>
 							</div>
-							<div class="valign-center control-group">
+							<div class="valign-center control-group" data-bind="visible: category() != 5">
 								<label class="flabel">#{i18n.getText('KAL003_13')}</label> 
 								<input data-bind="ntsTextEditor: {name: '#[KAL003_13]', value: displayAvailableRoles, readonly: true}" />
 								<button tabindex="10">#{i18n.getText('KAL003_14')}</button>
