@@ -1115,6 +1115,7 @@ module nts.custombinding {
                                     enable: editable,
                                     required: required,
                                     visibleItemsCount: 5,
+                                    selectFirstIfNull: false,
                                     dropDownAttachedToBody: true,
                                     columns: [{ prop: 'optionText', length: 10 }]
                                 }, attr: {
@@ -2262,12 +2263,12 @@ module nts.custombinding {
                 if (ko.toJS(access.editAble) != 2) {
                     opts.sortable.outData(_(data || []).map((item, i) => {
                         return {
-                            dispOrder: i + 1,
+                            dispOrder: Number(i) + 1,
                             personInfoCategoryID: item.personInfoCategoryID,
                             layoutItemType: _(IT_CLA_TYPE).map(x => x).indexOf(item.layoutItemType),
                             listItemClsDf: _(item.listItemDf || []).map((def, j) => {
                                 return {
-                                    dispOrder: j + 1,
+                                    dispOrder: Number(j) + 1,
                                     personInfoItemDefinitionID: def.id
                                 };
                             }).value()
