@@ -12,7 +12,6 @@ module nts.uk.at.view.kaf018.f.service {
     export function getEmpPerformance(obj): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getEmpPerformance, obj);
     }
-
     export function getUseSetting(): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getUseSetting);
     }

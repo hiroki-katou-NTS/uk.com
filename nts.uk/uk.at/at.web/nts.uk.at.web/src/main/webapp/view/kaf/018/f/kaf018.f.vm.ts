@@ -37,14 +37,23 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         dataComSpecificDate: KnockoutObservableArray<any> = ko.observableArray([]);
         dataPublicHoliday: KnockoutObservableArray<any> = ko.observableArray([]);
 
+        // 実績確認済
+        colorConfirmed = 'bg-unapproved-application';
+        // 実績上司未確認
+        colorBossUnconfirm = 'bg-actual-superior-unverified';
+        // 本人未確認
+        colorPersonUnconfirm = 'bg-canceled-application';
+        // 実績対象外
+        colorEexcluded = 'bg-weekdays';
+
         constructor() {
             var self = this;
             this.legendOptions = {
                 items: [
-                    { cssClass: { className: 'bg-canceled-application', colorPropertyName: 'background-color' }, labelText: text("KAF018_87") },
-                    { cssClass: { className: 'bg-updating-cell', colorPropertyName: 'background-color' }, labelText: text("KAF018_66") },
-                    { cssClass: { className: 'bg-unapproved-application', colorPropertyName: 'background-color' }, labelText: text("KAF018_89") },
-                    { cssClass: { className: 'bg-weekdays', colorPropertyName: 'background-color' }, labelText: text("KAF018_88") }
+                    { cssClass: { className: self.colorConfirmed, colorPropertyName: 'background-color' }, labelText: text("KAF018_89") },
+                    { cssClass: { className: self.colorBossUnconfirm, colorPropertyName: 'background-color' }, labelText: text("KAF018_66") },
+                    { cssClass: { className: self.colorPersonUnconfirm, colorPropertyName: 'background-color' }, labelText: text("KAF018_87") },
+                    { cssClass: { className: self.colorEexcluded, colorPropertyName: 'background-color' }, labelText: text("KAF018_88") }
                 ]
             };
             self.listWkp = [];
@@ -62,7 +71,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             var dfd = $.Deferred();
             block.invisible();
             let params = getShared("KAF018F_PARAMS");
-            if (params) {
+            /*if (params) {
                 self.closureId = params.closureId;
                 self.closureName = params.closureName;
                 self.processingYm = params.processingYm;
@@ -75,7 +84,21 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 self.isConfirmData = params.isConfirmData;
                 self.selectedWplIndex = params.selectedWplIndex;
                 self.listEmpCd = params.listEmployeeCode;
-            }
+            }*/
+
+            self.closureId = "123abc";
+            self.closureName = "aaabbb";
+            self.processingYm = "2018/01";
+            self.currentMonth = "01";
+            self.startDateFormat = "2018/01/01";
+            self.endDateFormat = "2018/01/31";
+            self.startDate = new Date("2018/01/01");
+            self.endDate = new Date("2018/01/31");
+            self.listWkp = [{ code: "01", name: "wkp1" }, { code: "02", name: "wkp2" }, { code: "03", name: "wkp13" }];
+            self.isConfirmData = false;
+            self.selectedWplIndex = 1;
+            self.listEmpCd = ["01", "02"]
+
             self.dtPrev(new Date(self.startDateFormat));
             self.dtAft(new Date(self.endDateFormat));
             self.setArrDate();
@@ -150,41 +173,94 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 endDate: self.endDate,
                 listEmpCd: self.listEmpCd
             };
-            service.getEmpPerformance(obj).done(function(data: any) {
-                let list = self.convertToEmpPerformance(data);
-                dfd.resolve(list);
+            service.getEmpPerformance(obj).done(function(data: Array<EmpPerformanceDto>) {
+                dfd.resolve(self.convertToEmpPerformance(data));
             });
             return dfd.promise();
         }
 
-        convertToEmpPerformance(data): Array<EmpPerformance> {
+        convertToEmpPerformance(data: Array<EmpPerformanceDto>): Array<EmpPerformance> {
             let self = this;
             let index = 0;
             let listEmpPerformance = Array<EmpPerformance>();
             _.each(data, function(item) {
-                let monthConfirm, personConfirm, bossConfirm;
+                let monthConfirm, personConfirm, bossConfirm, dailyPerformance: Array<DailyPerformance> = [];
 
-                if (item.monthConfirm) {
+                if (item.approvalStatus == ApprovalStatusForEmployee.APPROVED) {
                     monthConfirm = text("KAF018_92");
-                } else {
+                }
+                else {
                     monthConfirm = "";
                 }
 
-                if (item.personConfirm) {
+                if (_.filter(item.listDailyConfirm, { personConfirm: false }).length == 0) {
                     personConfirm = text("KAF018_92");
-                } else {
+                }
+                else {
                     personConfirm = "";
                 }
 
-                if (item.bossConfirm) {
+                if (_.filter(item.listDailyConfirm, { bossConfirm: false }).length == 0) {
                     bossConfirm = text("KAF018_92");
-                } else {
+                }
+                else {
                     bossConfirm = "";
                 }
-                item.dailyPerformance = _.sortBy(item.dailyPerformance, [function(o) { return o.targetDate; }]);
-                listEmpPerformance.push(new EmpPerformance(index.toString(), item.sid, item.sname, monthConfirm, personConfirm, bossConfirm, item.dailyPerformance));
+
+                let performancePeriod = -1;
+                if (self.useSetting.usePersonConfirm) {
+                    performancePeriod = Performance.PERSON_UNCONFIRM;
+                } else if (!self.useSetting.usePersonConfirm && self.useSetting.useBossConfirm) {
+                    performancePeriod = Performance.BOSS_UNCONFIRM;
+                } else if (!self.useSetting.usePersonConfirm && !self.useSetting.useBossConfirm) {
+                    performancePeriod = Performance.CONFIRMED;
+                }
+
+                let currentDay = new Date(self.dtPrev().toString());
+                while (currentDay <= self.dtAft()) {
+                    let objDaily = _.find(item.listDailyConfirm, { targetDate: formatDate(currentDay, 'yyyy/MM/dd') });
+                    let performance = performancePeriod;
+                    let hasError = false;
+
+                    if (objDaily == null) {
+                        performance = Performance.EXCLUDED;
+                        hasError = false;
+
+                    } else {
+                        if (self.useSetting.usePersonConfirm && self.useSetting.useBossConfirm) {
+                            if (!objDaily.personConfirm && !objDaily.bossConfirm) {
+                                performance = Performance.PERSON_UNCONFIRM;
+                            } else if (objDaily.personConfirm && !objDaily.bossConfirm) {
+                                performance = Performance.BOSS_UNCONFIRM;
+                            } else if (objDaily.personConfirm && objDaily.bossConfirm) {
+                                performance = Performance.CONFIRMED;
+                            }
+                        } else if (self.useSetting.usePersonConfirm && !self.useSetting.useBossConfirm) {
+                            if (!objDaily.personConfirm) {
+                                performance = Performance.PERSON_UNCONFIRM;
+                            } else if (objDaily.personConfirm) {
+                                performance = Performance.CONFIRMED;
+                            }
+                        } else if (!self.useSetting.usePersonConfirm && self.useSetting.useBossConfirm) {
+                            if (!objDaily.personConfirm) {
+                                performance = Performance.BOSS_UNCONFIRM;
+                            } else if (objDaily.personConfirm) {
+                                performance = Performance.CONFIRMED;
+                            }
+                        }
+
+                        let objError = _.find(item.listErrorStatus, function(x) { return x == formatDate(currentDay, 'yyyy/MM/dd'); });
+                        if (objError != null) {
+                            hasError = true;
+                        }
+                    }
+                    dailyPerformance.push(new DailyPerformance(currentDay, performance, hasError));
+                    currentDay.setDate(currentDay.getDate() + 1);
+                }
+                listEmpPerformance.push(new EmpPerformance(index.toString(), item.sid, item.sname, monthConfirm, personConfirm, bossConfirm, dailyPerformance));
                 index++;
             })
+            console.log(listEmpPerformance)
             return listEmpPerformance;
         }
 
@@ -403,22 +479,22 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                     let key = "__" + time.yearMonthDay;
                     let clazz = "";
                     switch (listData[i].dailyReport[j].performance) {
-                        case 0:
-                            clazz = "bg-canceled-application";
+                        case Performance.CONFIRMED:
+                            clazz = self.colorConfirmed;
                             break;
-                        case 1:
-                            clazz = "bg-updating-cell";
+                        case Performance.BOSS_UNCONFIRM:
+                            clazz = self.colorBossUnconfirm;
                             break;
-                        case 2:
-                            clazz = "bg-unapproved-application";
+                        case Performance.PERSON_UNCONFIRM:
+                            clazz = self.colorPersonUnconfirm;
                             break;
-                        case 3:
-                            clazz = "bg-weekdays";
+                        case Performance.EXCLUDED:
+                            clazz = self.colorEexcluded;
                             break;
                     }
                     detailContentDeco.push(new shareModel.CellColor(key, i.toString(), clazz));
                     if (listData[i].dailyReport[j].hasError) {
-                        listData[i][key] = "ER";
+                        listData[i][key] = text("KAF018_90");
                     }
                     else {
                         listData[i][key] = "";
@@ -455,12 +531,45 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 
     class DailyPerformance {
         targetDate: Date;
-        performance: number;
+        performance: Performance;
         hasError: boolean;
         constructor(targetDate: Date, performance: number, hasError: boolean) {
             this.targetDate = targetDate;
             this.performance = performance;
             this.hasError = hasError;
         }
+    }
+
+    enum Performance {
+        // 実績確認済
+        CONFIRMED = 0,
+        // 実績上司未確認
+        BOSS_UNCONFIRM = 1,
+        // 本人未確認
+        PERSON_UNCONFIRM = 2,
+        // 実績対象外
+        EXCLUDED = 3
+    }
+
+    class EmpPerformanceDto {
+        sid: String;
+        sname: String;
+        startDate: Date;
+        endDate: Date;
+        approvalStatus: ApprovalStatusForEmployee;
+        listDailyConfirm: Array<DailyConfirmDto>;
+        listErrorStatus: Array<Date>;
+    }
+
+    class DailyConfirmDto {
+        targetDate: Date;
+        personConfirm: boolean;
+        bossConfirm: boolean;
+    }
+
+    enum ApprovalStatusForEmployee {
+        UNAPPROVED = 0,
+        DURING_APPROVAL = 1,
+        APPROVED = 2
     }
 }

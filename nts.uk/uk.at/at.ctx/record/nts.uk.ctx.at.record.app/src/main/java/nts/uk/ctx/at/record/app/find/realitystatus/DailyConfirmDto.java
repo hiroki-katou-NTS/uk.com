@@ -10,8 +10,17 @@ import nts.arc.time.GeneralDate;
  */
 @Value
 @AllArgsConstructor
-public class DailyPerformanceDto {
+public class DailyConfirmDto {
+	/**
+	 * 対象日
+	 */
 	private GeneralDate targetDate;
-	private int performance;
-	private boolean hasError;
+	/**
+	 * 本人確認
+	 */
+	private boolean personConfirm;
+	/**
+	 * 上司確認
+	 */
+	private boolean bossConfirm;
 }

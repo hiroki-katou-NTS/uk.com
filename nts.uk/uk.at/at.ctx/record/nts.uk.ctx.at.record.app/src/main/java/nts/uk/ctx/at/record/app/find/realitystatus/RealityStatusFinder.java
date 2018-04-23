@@ -1,11 +1,9 @@
 package nts.uk.ctx.at.record.app.find.realitystatus;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -13,7 +11,6 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.adapter.request.application.dto.EmployeeUnconfirmImport;
 import nts.uk.ctx.at.record.dom.adapter.request.application.dto.SendMailResultImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
@@ -71,67 +68,31 @@ public class RealityStatusFinder {
 	}
 
 	public List<EmpPerformanceDto> getEmpPerformance(EmpPerformanceParam dto) {
-		List<EmpPerformanceDto> listData = this.convertToDto(dto, this.getSampleDate(dto));
+		List<EmpPerformanceDto> listData = this.convertToDto(this.getSampleDate(dto));
 		return listData;
 	}
 
-	private List<EmpPerformanceDto> convertToDto(EmpPerformanceParam dto,
-			List<EmpPerformanceOutput> listEmpPerformance) {
+	private List<EmpPerformanceDto> convertToDto(List<EmpPerformanceOutput> listEmpPerformance) {
 		List<EmpPerformanceDto> listEmp = new ArrayList<>();
 		for (EmpPerformanceOutput emp : listEmpPerformance) {
-			boolean isMonthConfirmed;
-			boolean isPersonConfirmed;
-			boolean isBossConfirmed;
-			List<DailyPerformanceDto> dailyPerformance = new ArrayList<>();
+			Integer approvalStatus;
+			List<DailyConfirmDto> listDailyConfirm = new ArrayList<>();
+			List<GeneralDate> listErrorStatus = new ArrayList<>();
 
-			if (!Objects.isNull(emp.getRouteStatus())
-					&& ApprovalStatusForEmployee.APPROVED.equals(emp.getRouteStatus().getApprovalStatus())) {
-				isMonthConfirmed = true;
+			if (Objects.isNull(emp.getRouteStatus())) {
+				approvalStatus = null;
 			} else {
-				isMonthConfirmed = false;
+				approvalStatus = emp.getRouteStatus().getApprovalStatus().value;
 			}
-
-			if (emp.getListDailyConfirm().stream().filter(x -> !x.isPersonConfirm()).count() == 0) {
-				isPersonConfirmed = true;
-			} else {
-				isPersonConfirmed = false;
+			for (DailyConfirmOutput daily : emp.getListDailyConfirm()) {
+				listDailyConfirm.add(
+						new DailyConfirmDto(daily.getTargetDate(), daily.isPersonConfirm(), daily.isBossConfirm()));
 			}
-
-			if (emp.getListDailyConfirm().stream().filter(x -> !x.isBossConfirm()).count() == 0) {
-				isBossConfirmed = true;
-			} else {
-				isBossConfirmed = false;
+			for (ErrorStatusOutput error : emp.getListErrorStatus()) {
+				listErrorStatus.add(error.getTargetDate());
 			}
-
-			for (DailyConfirmOutput dailyConfirm : emp.getListDailyConfirm()) {
-				GeneralDate targetDate = dailyConfirm.getTargetDate();
-				boolean hasError = !emp.getListErrorStatus().stream().filter(x -> x.getTargetDate().equals(targetDate))
-						.findFirst().isPresent();
-				int performance;
-				if (!dailyConfirm.isPersonConfirm()) {
-					performance = 0;
-				} else if (!dailyConfirm.isBossConfirm()) {
-					performance = 1;
-				} else {
-					performance = 2;
-				}
-
-				dailyPerformance.add(new DailyPerformanceDto(targetDate, performance, hasError));
-			}
-
-			GeneralDate currentDate = dto.getStartDate();
-			while (currentDate.beforeOrEquals(dto.getEndDate())) {
-				GeneralDate date = currentDate;
-				if (dailyPerformance.stream().filter(x -> x.getTargetDate().equals(date)).count() == 0) {
-					dailyPerformance.add(new DailyPerformanceDto(date, 3, false));
-				}
-				currentDate = currentDate.addDays(1);
-			}
-			dailyPerformance = dailyPerformance.stream()
-					.sorted(Comparator.comparing(DailyPerformanceDto::getTargetDate)).collect(Collectors.toList());
-			EmpPerformanceDto empPer = new EmpPerformanceDto(emp.getSId(), emp.getSName(), isMonthConfirmed,
-					isPersonConfirmed, isBossConfirmed, dailyPerformance);
-			listEmp.add(empPer);
+			listEmp.add(new EmpPerformanceDto(emp.getSId(), emp.getSName(), emp.getStartDate(), emp.getEndDate(),
+					approvalStatus, listDailyConfirm, listErrorStatus));
 		}
 		return listEmp;
 	}

@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import nts.arc.time.GeneralDate;
 
 /**
  * @author dat.lh
@@ -20,11 +21,24 @@ public class EmpPerformanceDto {
 	 * 社員名
 	 */
 	private String sName;
-	private boolean monthConfirm;
-	private boolean personConfirm;
-	private boolean bossConfirm;
 	/**
-	 * 日別実績
+	 * 社員ID.期間
 	 */
-	List<DailyPerformanceDto> dailyPerformance;
+	private GeneralDate startDate;
+	/**
+	 * 社員ID.期間
+	 */
+	private GeneralDate endDate;	
+	/**
+	 * 承認状況
+	 */
+	private Integer approvalStatus;
+	/**
+	 * 日別確認
+	 */
+	List<DailyConfirmDto> listDailyConfirm;
+	/**
+	 * エラー状況
+	 */
+	List<GeneralDate> listErrorStatus;
 }
