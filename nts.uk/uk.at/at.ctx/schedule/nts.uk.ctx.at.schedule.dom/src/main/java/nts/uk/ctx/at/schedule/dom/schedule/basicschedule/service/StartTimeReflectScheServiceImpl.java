@@ -34,9 +34,16 @@ public class StartTimeReflectScheServiceImpl implements StartEndTimeReflectScheS
 		
 		BasicSchedule basicScheByDate = optBasicScheByDate.get();
 		List<WorkScheduleTimeZone> workScheduleTimeZones = basicScheByDate.getWorkScheduleTimeZones();
-		WorkScheduleTimeZone timeZoneData = workScheduleTimeZones.stream()
+		if(workScheduleTimeZones.isEmpty()) {
+			return;
+		}
+		List<WorkScheduleTimeZone> lstTimeZoneData = workScheduleTimeZones.stream()
 				.filter(x -> x.getScheduleCnt() == timeDto.getFrameNumber())
-				.collect(Collectors.toList()).get(0);
+				.collect(Collectors.toList());
+		if(lstTimeZoneData.isEmpty()) {
+			return;
+		}
+		WorkScheduleTimeZone timeZoneData = lstTimeZoneData.get(0);
 		//開始時刻を反映する
 		//終了時刻の反映
 		timeZoneData.updateTime(timeDto.isUpdateStart() ? new TimeWithDayAttr(timeDto.getStartTime()) : timeZoneData.getScheduleStartClock(), 

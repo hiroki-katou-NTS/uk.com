@@ -348,6 +348,7 @@ module nts.uk.ui {
                         let currentInfo = dialogInfo;
                         let top=0, left=0;
                         let dialog = container.closest("div[role='dialog']");
+                        dialog.addClass("disappear");
                         if(dialogInfo.isRoot){
                             top = (window.innerHeight - dialog.innerHeight()) / 2;
                             left = (window.innerWidth - dialog.innerWidth()) / 2;
@@ -376,12 +377,24 @@ module nts.uk.ui {
                                 left += leftDiff;
                             }
                             dialog.css({top: top, left: left});
+                            dialog.removeClass("disappear");
                         }, 33);
                     },
                     close: function(event) {
                     }
                 }).dialogPositionControl();
             }, 0);
+            
+            if(!dialogInfo.isRoot){
+                var normalClose = dialogInfo.onClosedHandler;
+                var onCloseAuto = function(){
+                    normalClose();
+                    if(container.dialog("isOpen")){
+                        container.dialog("close");
+                    }
+                }
+                dialogInfo.onClosedHandler = onCloseAuto;
+            }
             
             return {
                 then: function(callback) {

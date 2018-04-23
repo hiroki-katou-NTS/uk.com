@@ -144,4 +144,14 @@ public class ScheduleExecutionLog extends AggregateRoot {
 		return true;
 	}
 
+	public void setPeriod(DatePeriod period) {
+		this.period = period;
+	}
+
+	public void setExeAtr(ExecutionAtr exeAtr) {
+		this.exeAtr = exeAtr;
+	}
+	
+	
+
 }
