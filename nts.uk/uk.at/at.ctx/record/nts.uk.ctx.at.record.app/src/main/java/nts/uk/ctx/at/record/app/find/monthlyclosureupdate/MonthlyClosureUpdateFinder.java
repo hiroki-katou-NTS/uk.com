@@ -80,6 +80,7 @@ public class MonthlyClosureUpdateFinder {
 				listResult.add(result);
 			}
 		}
+		listResult.sort((i1, i2) -> i1.getEmployeeCode().compareToIgnoreCase(i2.getEmployeeCode())); 
 		Kmw006fResultDto dto = new Kmw006fResultDto(listResult, domainToDto(updateLog));
 		return dto;
 	}
@@ -209,6 +210,7 @@ public class MonthlyClosureUpdateFinder {
 			EmployeeRecordImport empImport = empImportAdapter.getPersonInfor(id);
 			result.add(empImport);
 		}
+		result.sort((e1, e2) -> e1.getEmployeeCode().compareToIgnoreCase(e2.getEmployeeCode()));
 		return result;
 	}
 
