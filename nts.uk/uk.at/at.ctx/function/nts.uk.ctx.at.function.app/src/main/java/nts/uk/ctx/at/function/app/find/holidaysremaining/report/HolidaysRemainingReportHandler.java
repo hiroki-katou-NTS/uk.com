@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.app.command.holidaysremaining.report;
+package nts.uk.ctx.at.function.app.find.holidaysremaining.report;
 
 import java.util.Optional;
 
@@ -24,7 +24,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
 		// todo get data here
 		HolidaysRemainingReportQuery query = context.getQuery();
-		Optional<HolidaysRemainingManagement> hdManagement = hdFinder.findByCode(query.getHdRemOutCondQuery().getOutputItemSettingCode());
+		Optional<HolidaysRemainingManagement> hdManagement = hdFinder.findByCode(query.getHolidayRemainingOutputCondition().getOutputItemSettingCode());
 		if (hdManagement.isPresent()){
 			this.reportGenerator.generate(context.getGeneratorContext(), hdManagement.get());
 		}
