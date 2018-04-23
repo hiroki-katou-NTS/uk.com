@@ -17,7 +17,7 @@ public class HolidaysRemainingReportWebService {
 	private HolidaysRemainingReportHandler reportHandler;
 	
 	@POST
-	@Path("employee")
+	@Path("report")
 	public ExportServiceResult generate(HolidaysRemainingReportQuery query) {
 		return this.reportHandler.start(query);
 	}

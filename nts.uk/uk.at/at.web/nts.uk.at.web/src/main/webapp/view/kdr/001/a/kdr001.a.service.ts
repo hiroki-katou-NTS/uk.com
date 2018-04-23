@@ -5,7 +5,7 @@ module nts.uk.at.view.kdr001.a {
          */
         var path: any = {
                 findAll: "at/function/holidaysremaining/findAll",
-                saveAsExcel: "at/function/holidaysremaining/employee",
+                saveAsExcel: "at/function/holidaysremaining/report",
                 getDate: "at/function/holidaysremaining/getDate",
                 getPermissionOfEmploymentForm: "at/function/holidaysremaining/getPermissionOfEmploymentForm"
             };

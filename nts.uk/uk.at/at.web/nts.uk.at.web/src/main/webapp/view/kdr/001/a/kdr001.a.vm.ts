@@ -355,19 +355,42 @@ module nts.uk.at.view.kdr001.a.viewmodel {
          * function export excel button
          */
         private exportButton() {
-            let self = this;
-            let holidayRemainingOutputCondition = new service.model.holidayRemainingOutputCondition(
-                    "2018/01",
-                    "2018/08",
-                    "001",
-                    2
-                );
-            let data = new service.model.appInfor(holidayRemainingOutputCondition, self.selectedEmployee());
-            service.saveAsExcel(data).done(()=>{
-                 nts.uk.ui.block.clear();   
-            }).fail(function(res: any){
+                        let self = this;
+            let startMonth = moment.utc(self.startDateString());
+            let endMonth = moment.utc(self.endDateString());
+            let totalMonths = (parseInt(startMonth.format("YYYY"))*12 + parseInt(startMonth.format("MM")))
+                             - (parseInt(endMonth.format("YYYY"))*12 + parseInt(endMonth.format("MM")));
+            if (totalMonths > 13){
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_1173' });
+                return;
+            }
+            if (!self.selectedEmployee() || self.selectedEmployee().length === 0){
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_884' });
+                return;
+            }
+            
+            let user: any = __viewContext.user;
+            let userSpecificInformation = new UserSpecificInformation(
+                user.employeeId,
+                user.companyId,
+                self.holidayRemainingSelectedCd(),
+                self.selectedCode()
+            );
+            nts.uk.characteristics.save("UserSpecific_" + user.employeeId, userSpecificInformation);
+
+            let holidayRemainingOutputCondition = new HolidayRemainingOutputCondition(
+                startMonth.format("YYYY/MM"),
+                endMonth.format("YYYY/MM"),
+                self.holidayRemainingSelectedCd(),
+                self.selectedCode()
+            );
+
+            let data = new ReportInfor(holidayRemainingOutputCondition, self.selectedEmployee());
+            service.saveAsExcel(data).done(() => {
+                nts.uk.ui.block.clear();
+            }).fail(function(res: any) {
                 nts.uk.ui.dialog.alertError(res.messageId);
-                 nts.uk.ui.block.clear();
+                nts.uk.ui.block.clear();
             });
         }
         
@@ -453,7 +476,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         }
     }
     
-    export class IGetDate{
+    export interface IGetDate{
         startDate : string;
         endDate : string;
     }
@@ -551,5 +574,41 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
 
         onApplyEmployee: (data: EmployeeSearchDto[]) => void;
+    }
+    
+    export class ReportInfor {
+        holidayRemainingOutputCondition: any;
+        lstEmpIds: any[];
+        constructor(holidayRemainingOutputCondition: any, lstEmpIds: any[]) {
+            this.holidayRemainingOutputCondition = holidayRemainingOutputCondition;
+            this.lstEmpIds = lstEmpIds;
+        }
+    }
+
+    export class HolidayRemainingOutputCondition {
+        startMonth: string;
+        endMonth: string;
+        outputItemSettingCode: string;
+        pageBreak: string;
+
+        constructor(startMonth: string, endMonth: string, outputItemSettingCode: string, pageBreak: string) {
+            this.startMonth = startMonth;
+            this.endMonth = endMonth;
+            this.outputItemSettingCode = outputItemSettingCode;
+            this.pageBreak = pageBreak;
+        }
+    }
+
+    export class UserSpecificInformation {
+        userId: string;
+        companyId: string;
+        outputItemSettingCode: string;
+        pageBreakAtr: string;
+        constructor(userId: string, companyId: string, outputItemSettingCode: string, pageBreakAtr: string) {
+            this.userId = userId;
+            this.companyId = companyId;
+            this.outputItemSettingCode = outputItemSettingCode;
+            this.pageBreakAtr = pageBreakAtr;
+        }
     }
 }
