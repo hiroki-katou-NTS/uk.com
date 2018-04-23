@@ -1282,9 +1282,10 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 											.lessThanOrEqualTo(currentMinuteOfDay))) {
 
 						if (timeLeavingOptional.getTimeLeavingWorks() == null || leavingStamp == null
-								|| (leavingStamp != null && !leavingStamp.getAttendanceStamp().isPresent())
-								|| (leavingStamp != null && leavingStamp.getAttendanceStamp().isPresent()
-										&& leavingStamp.getAttendanceStamp().get().getStamp() == null)) {
+								|| (!leavingStamp.getAttendanceStamp().isPresent())
+								|| (leavingStamp.getAttendanceStamp().get().getStamp() == null)
+								|| (leavingStamp.getAttendanceStamp().get().getStamp().isPresent() && 
+										leavingStamp.getAttendanceStamp().get().getStamp().get().getTimeWithDay() == null) ) {
 
 							WorkStamp stamp = new WorkStamp(
 									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime(),
@@ -1317,9 +1318,10 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 									&& timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay()
 											.lessThanOrEqualTo(currentMinuteOfDay))) {
 						if (timeLeavingOptional.getTimeLeavingWorks() == null || leavingStamp == null
-								|| (leavingStamp != null && !leavingStamp.getLeaveStamp().isPresent())
-								|| (leavingStamp != null && leavingStamp.getLeaveStamp().isPresent()
-										&& leavingStamp.getLeaveStamp().get().getStamp() == null)) {
+								|| (!leavingStamp.getLeaveStamp().isPresent())
+								|| (leavingStamp.getLeaveStamp().get().getStamp() == null)
+								|| (leavingStamp.getLeaveStamp().get().getStamp().isPresent() && 
+										leavingStamp.getLeaveStamp().get().getStamp().get().getTimeWithDay() == null) ) {
 
 							WorkStamp stamp = new WorkStamp(
 									timeLeavingWork.getLeaveStamp().get().getStamp().get().getAfterRoundingTime(),
