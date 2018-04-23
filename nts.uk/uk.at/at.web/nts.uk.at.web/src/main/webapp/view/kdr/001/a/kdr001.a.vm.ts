@@ -7,6 +7,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import modal = nts.uk.ui.windows.sub.modal;
+    import getText = nts.uk.resource.getText;
 
     export class ScreenModel {
 
@@ -73,7 +74,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
 
         //combo-box
         lstHolidayRemaining: KnockoutObservableArray<HolidayRemainingModel> = ko.observableArray([]) ;
-        itemListcbb2: KnockoutObservableArray<ItemModel>;
+        itemSelected: KnockoutObservableArray<ItemModel>;
         selectedCode: KnockoutObservable<string> = ko.observable('1');
         holidayRemainingSelectedCd: KnockoutObservable<string> = ko.observable('');
         constructor() {
@@ -126,11 +127,10 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             });
 
             //combo-box2
-            self.itemListcbb2 = ko.observableArray([
-                new ItemModel('2', '役職手当'),
-                new ItemModel('3', '基本給'),
-                new ItemModel('1', '基本給'),
-                new ItemModel('4', '基本給')
+            self.itemSelected = ko.observableArray([
+                new ItemModel('0', getText("Enum_BreakSelection_WORKPLACE")),
+                new ItemModel('1', getText("Enum_BreakSelection_INDIVIDUAL")),
+                new ItemModel('2', getText("Enum_BreakSelection_NONE"))
             ]);
 
         }
