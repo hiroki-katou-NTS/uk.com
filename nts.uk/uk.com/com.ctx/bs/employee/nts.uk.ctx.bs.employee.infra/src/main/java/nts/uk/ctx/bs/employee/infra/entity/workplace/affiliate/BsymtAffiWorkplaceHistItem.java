@@ -33,7 +33,7 @@ public class BsymtAffiWorkplaceHistItem extends UkJpaEntity implements Serializa
 
 	/** The historyid -  PK. */
 	@Id
-	@Column(name = "HISTORY_ID")
+	@Column(name = "HIST_ID")
 	private String hisId;
 
 	/** The employeeId. */

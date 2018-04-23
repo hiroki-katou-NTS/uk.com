@@ -23,6 +23,7 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
         import SelectedSettingType = nts.uk.at.view.kmk004.shared.model.SelectedSettingType;
         import ItemModelNumber = nts.uk.at.view.kmk004.shared.model.ItemModelNumber;
         import ReferencePredTimeOfFlex = nts.uk.at.view.kmk004.shared.model.ReferencePredTimeOfFlex;
+        import FlexMonthlyTime = nts.uk.at.view.kmk004.shared.model.FlexMonthlyTime;
         
         export class ScreenModel {
             
@@ -40,21 +41,10 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
             
             worktimeSetting: WorktimeSetting;
             
-            // Com Flex TAB Get Pred
-            optReferenceFlexPred: KnockoutObservableArray<any>;
-            referenceFlexPred: KnockoutObservable<number>;
-            
             constructor() {
                 let self = this;
                 self.isNewMode = ko.observable(true);
                 self.isLoading = ko.observable(true);
-                
-                // Com Flex TAB Get Pred
-                self.optReferenceFlexPred = ko.observableArray([
-                    new ItemModelNumber(ReferencePredTimeOfFlex.FROM_MASTER, nts.uk.resource.getText("KMK004_147")),
-                    new ItemModelNumber(ReferencePredTimeOfFlex.FROM_RECORD, nts.uk.resource.getText("KMK004_148"))
-                ]);
-                self.referenceFlexPred = ko.observable(ReferencePredTimeOfFlex.FROM_MASTER);
                 
                 // Datasource.
                 self.tabs = ko.observableArray([
@@ -78,6 +68,7 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                         nts.uk.sessionStorage.nativeStorage.setItem("nts-uk-" + userId + "-kmk004-worktime-year-selection", v);
                     }
                 });
+
                 
                 // Update
                 self.aggrSelectionItemList = ko.observableArray([
@@ -180,15 +171,6 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
             public hasError(): boolean {
                 return $('.nts-editor').ntsError('hasError');
             }
-            
-            /**
-             * Update reference Flex Pred
-             */
-            public setReferenceFlexPred(value? : number) : void {
-                if(!nts.uk.util.isNullOrEmpty(value)) {
-                    this.referenceFlexPred = ko.observable(value);
-                }    
-            }
                 
             
         } // --- end ScreenModel
@@ -233,6 +215,10 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
             deformAggrSetting: KnockoutObservable<DeformWorktimeAggrSetting>;
             // フレックス会社別月別実績集計設定
             flexAggrSetting: KnockoutObservable<FlexWorktimeAggrSetting>;
+                        
+            // Com Flex TAB Get Pred
+            optReferenceFlexPred: KnockoutObservableArray<any>;
+            referenceFlexPred: KnockoutObservable<number>;
     
             constructor() {
                 let self = this;
@@ -247,7 +233,24 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                 self.normalAggrSetting = ko.observable(new NormalWorktimeAggrSetting());
                 self.deformAggrSetting = ko.observable(new DeformWorktimeAggrSetting());
                 self.flexAggrSetting = ko.observable(new FlexWorktimeAggrSetting());
+                
+                // Com Flex TAB Get Pred
+                self.optReferenceFlexPred = ko.observableArray([
+                    new ItemModelNumber(ReferencePredTimeOfFlex.FROM_MASTER, nts.uk.resource.getText("KMK004_147")),
+                    new ItemModelNumber(ReferencePredTimeOfFlex.FROM_RECORD, nts.uk.resource.getText("KMK004_148"))
+                ]);
+                self.referenceFlexPred = ko.observable(ReferencePredTimeOfFlex.FROM_MASTER);
     
+            }
+            
+            public setReferenceFlexPred(value? : number) : void {
+                if(!nts.uk.util.isNullOrEmpty(value)) {
+                    this.referenceFlexPred = ko.observable(value);
+                }    
+            }
+                        
+            public valiateSpecifiedTime(): void {
+                let specifiedTime : FlexMonthlyTime[] = this.flexSetting().flexSettingDetail();
             }
     
             public sortMonth(startMonth: number): void {

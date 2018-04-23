@@ -19,6 +19,7 @@ module nts.uk.at.view.kmk004.a {
         import WorktimeSettingDtoSaveCommand = nts.uk.at.view.kmk004.shared.model.WorktimeSettingDtoSaveCommand;
         import WorktimeNormalDeformSettingDto = nts.uk.at.view.kmk004.shared.model.WorktimeNormalDeformSettingDto;
         import WorktimeFlexSetting1Dto = nts.uk.at.view.kmk004.shared.model.WorktimeFlexSetting1Dto;
+        import ReferencePredTimeOfFlex = nts.uk.at.view.kmk004.shared.model.ReferencePredTimeOfFlex;
         
         export class ScreenModel {
             
@@ -75,6 +76,12 @@ module nts.uk.at.view.kmk004.a {
                 let self = this;
                 
                 self.worktimeVM.postBindingHandler();
+                
+                self.worktimeVM.worktimeSetting.referenceFlexPred.subscribe((val : number) => {
+                    if(ReferencePredTimeOfFlex.FROM_RECORD == val) {
+                        self.worktimeVM.worktimeSetting.valiateSpecifiedTime();
+                    }
+                });
             }
             
             private loadUsageUnitSetting(): JQueryPromise<void> {
@@ -98,7 +105,7 @@ module nts.uk.at.view.kmk004.a {
                 }
                 
                 let saveCommand: WorktimeSettingDtoSaveCommand = new WorktimeSettingDtoSaveCommand();
-                saveCommand.updateData(self.worktimeVM.worktimeSetting, self.worktimeVM.referenceFlexPred());
+                saveCommand.updateData(self.worktimeVM.worktimeSetting, self.worktimeVM.worktimeSetting.referenceFlexPred());
                 service.saveCompanySetting(ko.toJS(saveCommand)).done(() => {
                     self.worktimeVM.isNewMode(false);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
@@ -155,7 +162,7 @@ module nts.uk.at.view.kmk004.a {
                         // Sort month.
                         self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
                         // update referenceFlexPred
-                        self.worktimeVM.setReferenceFlexPred(resultData.referenceFlexPred);
+                        self.worktimeVM.worktimeSetting.setReferenceFlexPred(resultData.referenceFlexPred);
                         dfd.resolve();
                     }).always(() => {
                         nts.uk.ui.block.clear();

@@ -463,7 +463,7 @@ module nts.uk.at.view.kmk004.shared.model {
         /** The save com flex command. */
         saveMonthCommand: MonthlyCalSettingDto;
         
-        referenceFlexPred: boolean;
+        referenceFlexPred: number;
 
         constructor() {
             let self = this;
@@ -476,7 +476,7 @@ module nts.uk.at.view.kmk004.shared.model {
             self.saveStatCommand.year = year;
         }
 
-        public updateData(model: WorktimeSetting, referenceFlexPred? : boolean): void {
+        public updateData(model: WorktimeSetting, referenceFlexPred? : number): void {
             let self = this;
             self.saveStatCommand.updateData(model);
             self.saveMonthCommand.updateData(model);

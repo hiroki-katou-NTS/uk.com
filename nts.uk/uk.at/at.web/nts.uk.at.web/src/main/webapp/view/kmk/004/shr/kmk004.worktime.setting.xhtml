@@ -60,14 +60,14 @@
 								<tr>
 									<!-- A5_20 -->
 									<td style="text-align: right;"><div class="label">#{i18n.getText('KMK004_17')}</div></td>
-									<td style="text-align: right; padding : 5px; width: 53%;">
+									<td style="text-align: right; padding : 5px; width: 58%;">
 										<!-- A5_21 ~ A5_23 -->
 										<div data-bind="ntsSwitchButton: {
 												name: '#[KMK004_146]',
-												options: $parent.optReferenceFlexPred,
+												options: optReferenceFlexPred,
 												optionsValue: 'code',
 												optionsText: 'name',
-												value: $parent.referenceFlexPred,
+												value: referenceFlexPred,
 												required: true,
 												enable: true }">
 										</div></td>
@@ -78,7 +78,7 @@
 						</div>
 						<!-- for Com Flex setting -->
 						
-						<table class="border-all" style="margin-top: 20px;">
+						<table class="border-all tbl-monthly" style="margin-top: 20px;">
 							<tr class="bg-dark-green">
 								<td>#{i18n.getText('KMK004_13')}</td>
 								<td>#{i18n.getText('KMK004_17')}</td>
@@ -90,7 +90,7 @@
 										<div data-bind="text: month()+'月度'"></div>
 									</td>
 									<td><input
-										data-bind="attr: {'tabindex': #{baseTabIndex} + 17 + $index()}, ntsTimeEditor: {value: specifiedTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true, enable: $parents[1].referenceFlexPred() == 0}" />
+										data-bind="attr: {'tabindex': #{baseTabIndex} + 17 + $index()}, ntsTimeEditor: {value: specifiedTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true, enable: $parent.referenceFlexPred() == 0}" />
 									</td>
 									<td><input
 										data-bind="attr: {'tabindex': #{baseTabIndex} + 29 + $index()}, ntsTimeEditor: {value: statutoryTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
