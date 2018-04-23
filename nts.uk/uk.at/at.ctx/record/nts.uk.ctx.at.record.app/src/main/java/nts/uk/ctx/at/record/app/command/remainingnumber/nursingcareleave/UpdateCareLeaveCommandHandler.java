@@ -41,19 +41,19 @@ implements PeregUpdateCommandHandler<UpdateCareLeaveCommand>{
 	protected void handle(CommandHandlerContext<UpdateCareLeaveCommand> context) {
 		String cId = AppContexts.user().companyId();
 		UpdateCareLeaveCommand data = context.getCommand();
-		NursingCareLeaveRemainingData childCareData = NursingCareLeaveRemainingData.getChildCareHDRemaining(data.getSId(), data.getChildCareUsedDays().intValue());
-		NursingCareLeaveRemainingData careData = NursingCareLeaveRemainingData.getCareHDRemaining(data.getSId(), data.getCareUsedDays().intValue());
+		NursingCareLeaveRemainingData childCareData = NursingCareLeaveRemainingData.getChildCareHDRemaining(data.getSId(), data.getChildCareUsedDays().doubleValue());
+		NursingCareLeaveRemainingData careData = NursingCareLeaveRemainingData.getCareHDRemaining(data.getSId(), data.getCareUsedDays().doubleValue());
 		dataRepo.update(childCareData, cId);
 		dataRepo.update(careData, cId);
 		
 		NursingCareLeaveRemainingInfo childCareInfo = NursingCareLeaveRemainingInfo.createChildCareLeaveInfo(data.getSId(), data.getChildCareUseArt().intValue(), 
 				data.getChildCareUpLimSet().intValue(), 
-				data.getChildCareThisFiscal() == null ? Optional.empty() : Optional.of(data.getChildCareThisFiscal().intValue()), 
-				data.getChildCareNextFiscal() == null ? Optional.empty() : Optional.of(data.getChildCareNextFiscal().intValue()));
+				data.getChildCareThisFiscal().doubleValue(), 
+				data.getChildCareNextFiscal().doubleValue());
 		NursingCareLeaveRemainingInfo careInfo= NursingCareLeaveRemainingInfo.createCareLeaveInfo(data.getSId(), data.getCareUseArt().intValue(), 
 				data.getCareUpLimSet().intValue(), 
-				data.getCareThisFiscal() == null ? Optional.empty() : Optional.of(data.getCareThisFiscal().intValue()), 
-				data.getCareNextFiscal() == null ? Optional.empty() : Optional.of(data.getCareNextFiscal().intValue()));
+				data.getCareThisFiscal().doubleValue(), 
+				data.getCareNextFiscal().doubleValue());
 		infoRepo.update(childCareInfo, cId);
 		infoRepo.update(careInfo, cId);
 		
