@@ -14,7 +14,6 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         constructor() {
             let self = this;
             let params = getShared("KDR001Params");
-            //TODO
             self.currentCode = ko.observable(params || '');
             self.currentCode.subscribe(cd => {
                 errors.clearAll();
@@ -29,29 +28,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 }
                 let lstHolidays = self.lstHolidays();
                 if (cd && lstHolidays && lstHolidays.length > 0) {
-                    let index: number = 0;
-                    if (cd) {
-                        index = _.findIndex(lstHolidays, function(x)
-                        { return x.cd() === cd });
-                        if (index === -1) index = 0;
-                    }
-                    let _holiday = lstHolidays[index];
-                    if (_holiday && _holiday.cd) {
-                        //self.buildHolidayRemaining(_holiday);
-                        self.currentHoliday(_holiday);
-                        // Set new mode
-                        self.isNewMode(false);
-
-                        //focus
-                        self.setFocus();
-                    } else {
-                        self.buildHolidayRemaining(null);
-                        // Set new mode
-                        self.isNewMode(true);
-
-                        //focus
-                        self.setFocus();
-                    }
+                    self.settingSelectedHolidayRemaining(cd);
                     self.buildSpecialHoliday();
                 }
             });
@@ -120,16 +97,45 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             }
             errors.clearAll();
         }
+        
+        //setting when selected holiday remaining
+        settingSelectedHolidayRemaining(cd : string) {
+            let self = this, 
+                lstHolidays = self.lstHolidays();
+            let index: number = 0;
+            if (cd) {
+                index = _.findIndex(lstHolidays, function(x)
+                { return x.cd() === cd });
+                if (index === -1) index = 0;
+            }
+            let _holiday = lstHolidays[index];
+            if (_holiday && _holiday.cd) {
+                self.currentHoliday(_holiday);
+                // Set new mode
+                self.isNewMode(false);
+                //focus
+                self.setFocus();
+            } else {
+                self.buildHolidayRemaining(null);
+                // Set new mode
+                self.isNewMode(true);
 
+                //focus
+                self.setFocus();
+            }
+        }
         loadAllHolidayRemaining(data: Array<HolidayRemaining>) {
             let self = this;
             if (data && data.length > 0) {
-                self.lstHolidays([]);
+                self.lstHolidays.removeAll();
+                data = _.sortBy(data, ['cd']);
                 for (let i = 0; i < data.length; i++) {
                     self.lstHolidays().push(new HolidayRemaining(data[i]));
                 }
                 if (!self.currentCode()) {
                     self.currentCode(data[0].cd);
+                } else {
+                    self.settingSelectedHolidayRemaining(self.currentCode());
                 }
             }
             // no data

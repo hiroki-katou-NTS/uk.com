@@ -256,6 +256,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         loadAllHolidayRemaining(data: Array<HolidayRemainingModel>) {
             let self = this;
             if (data && data.length > 0) {
+                data = _.sortBy(data, ['cd']);
                 self.lstHolidayRemaining(data);
             }
             // no data
