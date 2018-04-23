@@ -340,7 +340,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 											   new BreakDownTimeDay(new AttendanceTime(4),new AttendanceTime(4),new AttendanceTime(8)),
 												personalInfo.getStatutoryWorkTime(),sharedOtSet,LegalOTSetting.LEGAL_INTERNAL_TIME,StatutoryPrioritySet.priorityNormalOverTimeWork,
 												workTime.get(),flexWorkSetOpt.get(),goOutTimeSheetList,oneRange.getOneDayOfRange(),oneRange.getAttendanceLeavingWork(),
-												workTime.get().getWorkTimeDivision(),breakTimeOfDailyList,midNightTimeSheet,personalInfo,flexWorkSetOpt.get().getCoreTimeSetting(),
+												workTime.get().getWorkTimeDivision(),breakTimeOfDailyList,midNightTimeSheet,personalInfo,flexWorkSetOpt.get().getCoreTimeSetting()
 											   );
 		} else {
 			switch (workTime.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
