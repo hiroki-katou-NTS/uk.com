@@ -31,6 +31,10 @@ public class JpaTempReserveLeaveMngRepo extends JpaRepository implements TempRes
 			+ "WHERE a.PK.employeeId = :employeeId "
 			+ "AND a.PK.ymd <= :criteriaDate ";
 	
+	private static final String SELECT_BY_EMPLOYEEID = "SELECT a FROM KrcdtRsvleaMngTemp a "
+			+ "WHERE a.PK.employeeId = :employeeId "
+			+ "ORDER BY a.PK.ymd ";
+	
 	/** 検索 */
 	@Override
 	public Optional<TempReserveLeaveManagement> find(String employeeId, GeneralDate ymd) {
@@ -86,4 +90,13 @@ public class JpaTempReserveLeaveMngRepo extends JpaRepository implements TempRes
 				.setParameter("criteriaDate", criteriaDate)
 				.executeUpdate();
 	}
+
+	@Override
+	public List<TempReserveLeaveManagement> findByEmployeeId(String employeeId) {
+		return this.queryProxy().query(SELECT_BY_EMPLOYEEID, KrcdtRsvleaMngTemp.class)
+				.setParameter("employeeId", employeeId)
+				.getList(c -> c.toDomain());
+	}
+	
+	
 }
