@@ -98,8 +98,29 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 });
             }else if(categoryId ==12){
                 
+                let param = ModelCheckConditonCode.extractionPeriodDaily;
+                let extractionDailyDto = {
+                    extractionId: param.extractionId,
+                    extractionRange: param.extractionRange,
+                    strSpecify: param.strSpecify,
+                    strPreviousDay: param.strPreviousDay,
+                    strMakeToDay: param.strMakeToDay,
+                    strDay: param.strDay,
+                    strPreviousMonth: param.strPreviousMonth,
+                    strCurrentMonth: param.strCurrentMonth,
+                    strMonth: param.strMonth,
+                    endSpecify: param.endSpecify,
+                    endPreviousDay: param.endPreviousDay,
+                    endMakeToDay: param.endMakeToDay,
+                    endDay: param.endDay,
+                    endPreviousMonth: param.endPreviousMonth,
+                    endCurrentMonth: param.endCurrentMonth,
+                    endMonth: param.endMonth
+                };                
+                
                 nts.uk.ui.windows.setShared("categoryId", categoryId);
                 nts.uk.ui.windows.setShared("categoryName", ModelCheckConditonCode.categoryName);
+                nts.uk.ui.windows.setShared("extractionDailyDto", extractionDailyDto);
                 nts.uk.ui.windows.sub.modal("../g/index.xhtml").onClosed(() => {
                     let data = nts.uk.ui.windows.getShared("extractionDaily");
                     if(!nts.uk.util.isNullOrUndefined(data)){

@@ -8,7 +8,15 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 650, height: 580 };</script>
+			<script>var dialogSize = { width: 720, height: 560 };</script>			
+			<com:ValidatorScript>
+				nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Day
+            </com:ValidatorScript>
+			<com:EnumScript>
+				nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.SpecifiedMonth
+				nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification
+			</com:EnumScript>            			
+
 			<com:stylefile path="kal004.g.style.css" />
 			<com:scriptfile path="kal004.g.start.js" />
 			<com:scriptfile path="kal004.g.vm.js" />
@@ -22,18 +30,151 @@
 				<hr></hr>
 				
 				<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-					<div class="tab-content-1" >				
-					</div>
-					<div class="tab-content-2"  >
+				
+					<div class="tab-content-1 cf tab-size" >					
+						<div class="valign-center control-group start">
+							<span >#{i18n.getText('KAL004_74')}</span>
+							<div class="day">
+								<div
+									data-bind="ntsRadioButton: {checked: strSelected, enable: true, option: dateSpecify()[0], optionValue: 'value', optionText: 'name', group: 'strRadio'}"></div>
+								<input class ='input-box'
+									data-bind="ntsNumberEditor: {value:strDay, name: '#[KAL004_78]', constraint:'Day', required: true, enable: (strSelected() == 0)}" /> 
+								<span class ='lableDay'>#{i18n.getText('KAL004_79')}</span>
+								<span class ='lableDay'>#{i18n.getText('KAL004_35')}</span>
+								
+							</div>
+							<div class="month">
+								<div class="checkMonth"
+									data-bind="ntsRadioButton: {checked: strSelected, enable: true, option: dateSpecify()[1], optionValue: 'value', optionText: '', group: 'strRadio'}"></div>
+								<div  class='comboboxMonth'
+									data-bind="ntsComboBox: {
+											options: strComboMonth,
+											optionsValue: 'value',
+											value: strMonth,
+											visibleItemsCount: 7,
+											optionsText: 'name',
+											enable: (strSelected() == 1),
+											columns: [
+												{ prop: 'name', length: 5 }
+											]}"></div>
+								<span class ='lableMonth' >#{i18n.getText('KAL004_81')}</span>
+							</div>
+						</div>
+						<div class="centerSys">#{i18n.getText('KAL004_30')}</div>
 						
+						<div class="valign-center control-group end">
+							<span >#{i18n.getText('KAL004_76')}</span>
+							<div class="day">
+								<div
+									data-bind="ntsRadioButton: {checked: endSelected, enable: true, option: dateSpecify()[0], optionValue: 'value', optionText: 'name', group: 'endRadio'}"></div>
+								<input class ='input-box'
+									data-bind="ntsNumberEditor: {value:endDay, name: '#[KAL004_78]', constraint:'Day', required: true, enable: (endSelected() == 0)}" /> 
+								<span class ='lableDay'>#{i18n.getText('KAL004_84')}</span>
+								<span class ='lableDay'>#{i18n.getText('KAL004_41')}</span>
+								
+							</div>
+							<div class="month">
+								<div class="checkMonth"
+									data-bind="ntsRadioButton: {checked: endSelected, enable: true, option: dateSpecify()[1], optionValue: 'value', optionText: '', group: 'endRadio'}"></div>
+								<div  class='comboboxMonth'
+									data-bind="ntsComboBox: {
+											options: endComboMonth,
+											optionsValue: 'value',
+											value: endMonth,
+											visibleItemsCount: 7,
+											optionsText: 'name',
+											enable: (endSelected() == 1),
+											columns: [
+												{ prop: 'name', length: 5 }
+											]}"></div>
+								<span class ='lableMonth' >#{i18n.getText('KAL004_86')}</span>
+							</div>
+						</div>																											
 					</div>
-					<div class="tab-content-3"  >
 					
+					
+					<div class="tab-content-2 tab-size"  >
+						<div class="valign-center control-group start2">
+							<div><span >#{i18n.getText('KAL004_87')}</span></div>
+							<div  class='comboboxMonth2'
+								data-bind="ntsComboBox: {
+										options: strComboMonth2,
+										optionsValue: 'value',
+										value: strMonth2,
+										visibleItemsCount: 7,
+										optionsText: 'name',
+										enable: true,
+										columns: [
+											{ prop: 'name', length: 5 }
+										]}"></div>							
+						</div>
+						<div class="centerSys2">#{i18n.getText('KAL004_88')}</div>
+						<div class="valign-center control-group end2">
+							<div><span >#{i18n.getText('KAL004_89')}</span> </div>
+							<div  class='comboboxMonth2'
+								data-bind="ntsComboBox: {
+										options: endComboMonth2,
+										optionsValue: 'value',
+										value: endMonth2,
+										visibleItemsCount: 7,
+										optionsText: 'name',
+										enable: true,
+										columns: [
+											{ prop: 'name', length: 5 }
+										]}"></div>										
+						</div>			
 					</div>
-					<div class="tab-content-4"  >
+					
+					
+					<div class="tab-content-3 tab-size"  >
+						<div class="valign-center control-group start3">
+							<div><span >#{i18n.getText('KAL004_92')}</span></div>
+							<div class = 'month3'>
+								<div class ='checkMonth'
+									data-bind="ntsRadioButton: {checked: strSelected3, enable: true, option: monthSpecify()[0], optionValue: 'value', optionText: 'name', group: 'strRadio3'}"></div>
+								<div  class='comboboxMonth3'
+									data-bind="ntsComboBox: {
+											options: strComboMonth3,
+											optionsValue: 'value',
+											value: strMonth3,
+											visibleItemsCount: 7,
+											optionsText: 'name',
+											enable: (strSelected3() == 1),
+											columns: [
+												{ prop: 'name', length: 5 }
+											]}"></div>							
+							</div>										
+							<div class="year3">
+								<div
+									data-bind="ntsRadioButton: {checked: strSelected3, enable: true, option: monthSpecify()[1], optionValue: 'value', optionText: 'name', group: 'strRadio3'}"></div>
+								<input class ='input-box'
+									data-bind="ntsNumberEditor: {value:strMonthy3, name: '#[KAL004_97]', constraint:'Day', required: true, enable: (strSelected3() == 0)}" /> 
+								<span>#{i18n.getText('KAL004_98')}</span>
+								
+							</div>																									
+						</div>
+						<div class="centerSys3">#{i18n.getText('KAL004_93')}</div>
+						<div class="valign-center control-group end3">
+							<div><span >#{i18n.getText('KAL004_94')}</span> </div>
+							<div class = 'month3'>
+								<div  class='comboboxMonth3'
+									data-bind="ntsComboBox: {
+											options: endComboMonth3,
+											optionsValue: 'value',
+											value: endMonth3,
+											visibleItemsCount: 7,
+											optionsText: 'name',
+											enable: true,
+											columns: [
+												{ prop: 'name', length: 5 }
+											]}"></div>
+							</div>										
+						</div>												
+					</div>
+					<div class="tab-content-4 tab-size"  >
 						
 					</div>
-					<div class="tab-content-5"  >
+					<div class="tab-content-5 tab-size"  >
 					
 					</div>					
 				</div>						
