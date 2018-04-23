@@ -2,19 +2,15 @@ package nts.uk.ctx.sys.assist.infra.repository.mastercopy;
 
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataGetMemento;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyTarget;
-import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspdtMastercopyData;
+import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyData;
 
+/**
+ * The Class JpaMasterCopyDataGetMemento.
+ */
 public class JpaMasterCopyDataGetMemento implements MasterCopyDataGetMemento {
 
 	/** The entity. */
-	private SspdtMastercopyData entity;
-
-	/**
-	 * Instantiates a new jpa master copy data get memento.
-	 */
-	public JpaMasterCopyDataGetMemento() {
-
-	}
+	private SspmtMastercopyData entity;
 
 	/**
 	 * Instantiates a new jpa master copy data get memento.
@@ -22,7 +18,7 @@ public class JpaMasterCopyDataGetMemento implements MasterCopyDataGetMemento {
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaMasterCopyDataGetMemento(SspdtMastercopyData entity) {
+	public JpaMasterCopyDataGetMemento(SspmtMastercopyData entity) {
 		this.entity = entity;
 	}
 

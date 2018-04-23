@@ -4,9 +4,9 @@ module nts.uk.com.view.cmm001.f {
          * define path to service
          */
         var path: any = {
-            executionMasterCopyData: "ctx/at/schedule/processbatch/execution",
-            exportFileError: "ctx/at/schedule/processbatch/log/export",
-            interrupt: "ctx/at/schedule/processbatch/interrupt"
+            executionMasterCopyData: "sys/assist/mastercopy/data/execute",
+            exportFileError: "sys/assist/mastercopy/data/log/export",
+            interrupt: "sys/assist/mastercopy/data/interrupt"
             };
         
         /**
