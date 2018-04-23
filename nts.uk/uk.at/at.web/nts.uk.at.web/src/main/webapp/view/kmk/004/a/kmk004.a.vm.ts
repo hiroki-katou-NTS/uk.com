@@ -77,11 +77,11 @@ module nts.uk.at.view.kmk004.a {
                 
                 self.worktimeVM.postBindingHandler();
                 
-                self.worktimeVM.worktimeSetting.referenceFlexPred.subscribe((val : number) => {
-                    if(ReferencePredTimeOfFlex.FROM_RECORD == val) {
+                self.worktimeVM.worktimeSetting.referenceFlexPred.subscribe((previousValue : number) => {
+                    if(ReferencePredTimeOfFlex.FROM_RECORD != previousValue) {
                         self.worktimeVM.worktimeSetting.resetFlexSpecifiedTime();
                     }
-                });
+                }, self, "beforeChange");
             }
             
             private loadUsageUnitSetting(): JQueryPromise<void> {

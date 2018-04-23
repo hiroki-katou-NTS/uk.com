@@ -91,7 +91,13 @@
 									</td>
 									<td><input
 										data-bind="attr: {'tabindex': #{baseTabIndex} + 17 + $index()}, 
-										ntsTimeEditor: {value: specifiedTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true, enable: $parent.referenceFlexPred() == 0, name: monthMsgSpecified }" />
+										ntsTimeEditor: {value: specifiedTime, 
+														constraint:'MonthlyTime', 
+														inputFormat: 'time', 
+														mode: 'time', required: true, 
+														enable: $parent.referenceFlexPred() == 0, 
+														name: monthMsgSpecified
+														}" />
 									</td>
 									<td><input
 										data-bind="attr: {'tabindex': #{baseTabIndex} + 29 + $index()}, 

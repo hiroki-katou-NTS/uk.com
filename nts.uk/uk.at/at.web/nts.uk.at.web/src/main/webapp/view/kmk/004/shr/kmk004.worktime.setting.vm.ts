@@ -255,8 +255,7 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                 let specifiedTime : FlexMonthlyTime[] = this.flexSetting().flexSettingDetail();
                 specifiedTime.forEach((monthlyTime: FlexMonthlyTime) => {
                     let origin: PureFlexMonthlyTime = _.find(this.originFlexMonthlyTime, (originMonthlyTime) => originMonthlyTime.month == monthlyTime.month());
-                    let textOrigin = nts.uk.time.format.byId("Clock_Short_HM", origin.specifiedTime)
-                    monthlyTime.specifiedTime(textOrigin);
+                    monthlyTime.specifiedTime(origin.specifiedTime);
                 });
                 // clear input monthly error
                 $('#tab-2 .tbl-monthly tr td:nth-child(2) input').ntsError('clear');
