@@ -38,13 +38,13 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         dataPublicHoliday: KnockoutObservableArray<any> = ko.observableArray([]);
 
         // 実績確認済
-        colorConfirmed = 'bg-unapproved-application';
+        colorConfirmed = 'bg-actual-verified';
         // 実績上司未確認
         colorBossUnconfirm = 'bg-actual-superior-unverified';
         // 本人未確認
-        colorPersonUnconfirm = 'bg-canceled-application';
+        colorPersonUnconfirm = 'bg-actual-person-unverified';
         // 実績対象外
-        colorEexcluded = 'bg-weekdays';
+        colorExcluded = 'bg-actual-excluded';
 
         constructor() {
             var self = this;
@@ -53,7 +53,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                     { cssClass: { className: self.colorConfirmed, colorPropertyName: 'background-color' }, labelText: text("KAF018_89") },
                     { cssClass: { className: self.colorBossUnconfirm, colorPropertyName: 'background-color' }, labelText: text("KAF018_66") },
                     { cssClass: { className: self.colorPersonUnconfirm, colorPropertyName: 'background-color' }, labelText: text("KAF018_87") },
-                    { cssClass: { className: self.colorEexcluded, colorPropertyName: 'background-color' }, labelText: text("KAF018_88") }
+                    { cssClass: { className: self.colorExcluded, colorPropertyName: 'background-color' }, labelText: text("KAF018_88") }
                 ]
             };
             self.listWkp = [];
@@ -212,7 +212,6 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                     if (objDaily == null) {
                         performance = Performance.EXCLUDED;
                         hasError = false;
-
                     } else {
                         if (self.useSetting.usePersonConfirm && self.useSetting.useBossConfirm) {
                             if (!objDaily.personConfirm && !objDaily.bossConfirm) {
@@ -265,7 +264,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                     new nts.uk.ui.exTable.ExTable($("#extable"), {
                         headerHeight: "50px", bodyRowHeight: "18px", bodyHeight: "324px",
                         horizontalSumBodyRowHeight: "0px",
-                        areaResize: true,
+                        areaResize: false,
                         bodyHeightMode: "fixed",
                         windowXOccupation: 50,
                         windowYOccupation: 20,
@@ -481,7 +480,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                             clazz = self.colorPersonUnconfirm;
                             break;
                         case Performance.EXCLUDED:
-                            clazz = self.colorEexcluded;
+                            clazz = self.colorExcluded;
                             break;
                     }
                     detailContentDeco.push(new shareModel.CellColor(key, i.toString(), clazz));
