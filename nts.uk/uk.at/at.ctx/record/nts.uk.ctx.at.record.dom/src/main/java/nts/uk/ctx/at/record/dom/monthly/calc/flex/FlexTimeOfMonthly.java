@@ -194,8 +194,9 @@ public class FlexTimeOfMonthly {
 				}
 			
 				// 日別実績を集計する　（フレックス時間勤務用）
-				val flexTimeDaily = aggregateTotalWorkingTime.aggregateDailyForFlex(attendanceTimeOfDaily, companyId,
-						workplaceId, employmentCd, workingSystem, aggregateAtr, aggrSetOfFlex, repositories);
+				val flexTimeDaily = aggregateTotalWorkingTime.aggregateDailyForFlex(attendanceTimeOfDaily,
+						companyId, workplaceId, employmentCd, workingSystem, aggregateAtr,
+						aggrSetOfFlex, monthlyAggrSetOfFlexOpt);
 				
 				// フレックス時間への集計結果を取得する
 				for (val timeSeriesWork : flexTimeDaily.getTimeSeriesWorks().values()){
