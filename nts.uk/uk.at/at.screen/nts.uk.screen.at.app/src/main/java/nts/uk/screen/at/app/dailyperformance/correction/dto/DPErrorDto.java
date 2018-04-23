@@ -22,4 +22,5 @@ public class DPErrorDto {
 	private GeneralDate processingDate;
 	private List<Integer> attendanceItemId;
 	private boolean errorCancelable;
+	private String errorAlarmMessage;
 }
