@@ -18,8 +18,8 @@ module nts.uk.com.view.cmf001.r.viewmodel {
         MESSENGE: string = getText("CMF001_522");
         
         // result log
-        imExExecuteResultLog: IImExExecuteResultLogR;
-        datetime : string;
+        imExExecuteResultLog: KnockoutObservable<IImExExecuteResultLogR>;
+        datetime : KnockoutObservable<string>;
         
         // gridList
         imExErrorLog: KnockoutObservableArray<IImExErrorLog>;
@@ -43,8 +43,8 @@ module nts.uk.com.view.cmf001.r.viewmodel {
             self.imexProcessID = paramReceived.imexProcessId;
             self.nameSetting = ko.observable(paramReceived.nameSetting);
             
-            self.datetime = '';
-            self.imExExecuteResultLog = {
+            self.datetime = ko.observable('');
+            self.imExExecuteResultLog = ko.observable({
                 cid: '',
                 conditionSetCd: '',
                 externalProcessId: '',
@@ -60,7 +60,7 @@ module nts.uk.com.view.cmf001.r.viewmodel {
                 resultStatus: null,
                 processEndDatetime: '',
                 processAtr: null,
-            };
+            });
             
             // grid list constructor
             self.imExErrorLog =  ko.observableArray([]);
@@ -101,10 +101,11 @@ module nts.uk.com.view.cmf001.r.viewmodel {
             nts.uk.ui.block.invisible();
             // ドメインモデル「外部受入実行結果ログ」を取得する
             service.getLogResults(self.imexProcessID).done((itemList: Array<IImExExecuteResultLogR>) => {
-
+                console.log("KET QUA" + itemList.length);
                 if (itemList && itemList.length > 0) {
-                    self.imExExecuteResultLog = itemList[0];
-                    self.datetime = moment.utc(self.imExExecuteResultLog.processStartDatetime).format("YYYY/MM/DD H:mm:ss"); 
+                    self.imExExecuteResultLog(itemList[0]);
+                    self.datetime(moment.utc(self.imExExecuteResultLog.processStartDatetime).format("YYYY/MM/DD H:mm:ss")); 
+                    console.log("DATE TIME" +  self.datetime);
                     self.itemDataError().resultLog = itemList[0];
                 }
                 else {
