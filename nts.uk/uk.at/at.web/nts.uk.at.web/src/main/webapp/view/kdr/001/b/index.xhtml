@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1200, height: 500 };</script>
+			<script>var dialogSize = { width: 1200, height: 530 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdr001.b.main.css" />
 			<com:scriptfile path="kdr001.b.start.js" />
@@ -38,7 +38,7 @@
 			<div class="cf" id="contents-area" style="display: flex;">
 				<div class="selectionHoliday">
 					<div class="panel"
-						data-bind="ntsPanel:{width: '350px', height: '370px', direction: 'right',  visible: true}">
+						data-bind="ntsPanel:{width: '375px', height: '370px', direction: 'right',  visible: true}">
 						<table id="multi-list" tabindex="5"
 							data-bind="ntsGridList: {
 							    multiple: false,
@@ -46,8 +46,8 @@
 								optionsValue: 'displayCd',
 								rows: 15,
 								columns: [
-										{ headerText: '#{i18n.getText('KDR001_40')}', key: 'displayCd', width: 40 },
-										{ headerText: '#{i18n.getText('KDR001_41')}', key: 'displayName', width: 300 }
+										{ headerText: '#{i18n.getText('KDR001_40')}', key: 'displayCd', width: 60, formatter: _.escape, columnCssClass: 'halign-center', headerCssClass: 'center-align' },
+										{ headerText: '#{i18n.getText('KDR001_41')}', key: 'displayName', width: 300, formatter: _.escape, columnCssClass: 'halign-left', headerCssClass: 'center-align'  }
 										], 
 								
 								value: currentCode

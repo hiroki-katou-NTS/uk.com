@@ -56,7 +56,8 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 service.findAll().done(function(data: Array<HolidayRemaining>) {
                     self.loadAllHolidayRemaining(data);
                     nts.uk.ui.block.clear();
-                    dfd.resolve();
+                    
+                    dfd.resolve(self);
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
                     nts.uk.ui.block.clear();
@@ -69,8 +70,6 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 dfd.reject();
 
             });
-            // focus
-            self.setFocus();
 
             return dfd.promise();
 
