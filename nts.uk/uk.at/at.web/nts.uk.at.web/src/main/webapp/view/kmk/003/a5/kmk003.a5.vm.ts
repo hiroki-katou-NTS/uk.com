@@ -463,7 +463,7 @@ module a5 {
                         settingMethod:SettingMethod.FLOW,
                         lstEnum: self.enumSetting,
                         //1勤務目と2勤務目の間を休憩として扱うか
-                        useRest: self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime(),
+                        useRest: self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime()?1:0,
                         //休憩として扱う場合の単位
                         roundUnit: self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.roundingTime(),
                         //休憩として扱う場合の端数処理
@@ -477,7 +477,7 @@ module a5 {
                         workForm: EnumWorkForm.FLEX,
                         settingMethod:SettingMethod.FLOW,
                         lstEnum: self.enumSetting,
-                        useRest: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime(),
+                        useRest: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime()?1:0,
                         roundUnit: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.roundingTime(),
                         roundType: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.rounding(),
                         calcMethod: self.mainSettingModel.flexWorkSetting.restSetting.commonRestSetting.calculateMethod()
@@ -488,14 +488,14 @@ module a5 {
                     var returnObject = nts.uk.ui.windows.getShared('KMK003_DIALOG_G_OUTPUT_DATA');
                     //if case flex
                     if (self.isFlex()) {
-                        self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime(returnObject.useRest);
+                        self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime(returnObject.useRest==1?true:false);
                         self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.rounding(returnObject.roundType);
                         self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.roundingTime(returnObject.roundUnit);
                         self.mainSettingModel.flexWorkSetting.restSetting.commonRestSetting.calculateMethod(returnObject.calcMethod);
                     }
                     else//case flow
                     {
-                        self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime(returnObject.useRest);
+                        self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime(returnObject.useRest==1?true:false);
                         self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.rounding(returnObject.roundType);
                         self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.roundingTime(returnObject.roundUnit);
                         self.mainSettingModel.flowWorkSetting.restSetting.commonRestSetting.calculateMethod(returnObject.calcMethod);
