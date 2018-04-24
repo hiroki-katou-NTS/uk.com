@@ -6,6 +6,7 @@ package nts.uk.ctx.bs.employee.pubimp.employment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,7 @@ import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemReposi
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
 import nts.uk.ctx.bs.employee.pub.employment.EmpCdNameExport;
 import nts.uk.ctx.bs.employee.pub.employment.EmploymentHisExport;
+import nts.uk.ctx.bs.employee.pub.employment.EmploymentCodeAndPeriod;
 import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.ShEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
@@ -116,52 +118,36 @@ public class EmploymentPubImp implements SyEmploymentPub {
 	public List<EmploymentHisExport> findByListSidAndPeriod(List<String> sids, DatePeriod datePeriod) {
 
 		if (sids.isEmpty() || datePeriod.start() == null || datePeriod.end() == null)
-			return null;
-		
-		List<EmploymentHisExport> result = new ArrayList<EmploymentHisExport>();
+			return new ArrayList<>();
 
+		List<EmploymentHistory> lstEmpHist = employmentHistoryRepository.getByListSid(sids, datePeriod);
 
-		List<EmploymentHistory> lstEmpHist = employmentHistoryRepository.getByListSid(sids);
 		if (lstEmpHist.isEmpty())
-			return null;
+			return new ArrayList<>();
 
 		List<String> historyIds = new ArrayList<>();
 
 		lstEmpHist.stream().forEach(x -> {
-
-			List<DateHistoryItem> historyItemList = x.items();
+			
+			List<DateHistoryItem> historyItemList = x.getHistoryItems();
 			List<String> hists = new ArrayList<>();
 			if (!historyItemList.isEmpty()) {
-				hists = historyItemList.stream().filter(itemHist -> {
-					return (itemHist.start().afterOrEquals(datePeriod.start())
-							&& itemHist.start().beforeOrEquals(datePeriod.end())
-							&& itemHist.end().afterOrEquals(datePeriod.start())
-							&& itemHist.end().beforeOrEquals(datePeriod.end()))
-							|| (itemHist.start().afterOrEquals(datePeriod.start())
-									&& itemHist.start().beforeOrEquals(datePeriod.end())
-									&& itemHist.end().after(datePeriod.end()))
-							|| (itemHist.end().afterOrEquals(datePeriod.start())
-									&& itemHist.end().beforeOrEquals(datePeriod.end())
-									&& itemHist.start().before(datePeriod.start()));
-
-				}).map(y -> y.identifier()).collect(Collectors.toList());
-
+				hists = historyItemList.stream().map(y -> y.identifier()).collect(Collectors.toList());
 				historyIds.addAll(hists);
 			}
-
 		});
 
 		if (historyIds.isEmpty())
-			return null;
+			return new ArrayList<>();
 
 		List<EmploymentHistoryItem> empHistItems = employmentHistoryItemRepository.getByListHistoryId(historyIds);
-
-		return result = empHistItems.stream().map(x -> {
+		Map<String, String> mapHistIdToEmpCode = empHistItems.stream().collect(Collectors.toMap( x -> x.getHistoryId(), x -> x.getEmploymentCode() == null ? null : x.getEmploymentCode().v()));
+		
+		return lstEmpHist.stream().map(x-> {
 			EmploymentHisExport emp = new EmploymentHisExport();
 			emp.setEmployeeId(x.getEmployeeId());
-			emp.setHistoryID(x.getHistoryId());
-			emp.setEmploymentCode(x.getEmploymentCode().v());
-			emp.setSalarySegment(x.getSalarySegment() == null ? null : x.getSalarySegment().value);
+			List<EmploymentCodeAndPeriod> lst = x.getHistoryItems().stream().map(c -> new EmploymentCodeAndPeriod(c.identifier(), new DatePeriod(c.start(), c.end()), mapHistIdToEmpCode.get(c.identifier()))).collect(Collectors.toList());
+			emp.setLstEmpCodeandPeriod(lst);
 			return emp;
 		}).collect(Collectors.toList());
 	}

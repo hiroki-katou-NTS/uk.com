@@ -16,6 +16,9 @@ module nts.uk.ui {
         export let errorCode = "エラーコード";
         export let errorList = "エラー一覧";
         export let plzWait = "お待ちください";
+        export let targetNotFound = "対象データがありません";
+        export let clear = "解除";
+        export let searchBox = "検索テキストボックス";
     }
 
 
@@ -160,7 +163,7 @@ module nts.uk.ui {
                 // Check if contents is overflow
                 if ($label.outerWidth() < $label[0].scrollWidth) {
                     let $view = $('<div />').addClass('limited-label-view')
-                        .text($label.text())
+                        .text($label.text() || $label.val())
                         .appendTo('body')
                         .position({
                             my: 'left top',

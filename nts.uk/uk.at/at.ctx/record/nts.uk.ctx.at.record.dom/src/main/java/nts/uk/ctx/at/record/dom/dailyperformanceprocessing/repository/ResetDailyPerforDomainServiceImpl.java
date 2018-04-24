@@ -122,7 +122,7 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 						if (executionLog.get().getDailyCreationSetInfo().get().getPartResetClassification().get()
 								.getResetTimeChildOrNurseCare() == true) {
 							shortTimeOfDailyPerformance = reflectShortWorkingTimeDomainService.reflect(companyID,
-									processingDate, employeeID, workInfoOfDailyPerformanceUpdate);
+									processingDate, employeeID, workInfoOfDailyPerformanceUpdate, null);
 						}
 						// 休業再設定(reSetting 休業)
 						if (executionLog.get().getDailyCreationSetInfo().get().getPartResetClassification().get()

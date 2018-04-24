@@ -25,6 +25,7 @@ module cps001.f.vm {
         fileSize: KnockoutObservable<string>;
         uploadFinished: (fileInfo) => void;
         onfilenameclick: (fileId) => void;
+        stereoType: KnockoutObservable<string>;
 
 
         items: Array<GridItem> = [];
@@ -43,6 +44,7 @@ module cps001.f.vm {
             self.asLink = ko.observable(true);
             self.enable = ko.observable(true);
             self.fileSize = ko.observable("");
+            self.stereoType = ko.observable("avatarfile");
             self.uploadFinished = (fileInfo) => {
                 console.log("change");
                 console.log(fileInfo);

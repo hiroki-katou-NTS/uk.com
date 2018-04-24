@@ -3,7 +3,9 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidaywo
 import java.util.Map;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 
 public interface HolidayWorkReflectProcess {
 	/**
@@ -15,12 +17,13 @@ public interface HolidayWorkReflectProcess {
 	 * @param scheReflectFlg
 	 * @param scheAndRecordSameChangeFlg
 	 */
-	public void updateScheWorkTimeType(String employeeId, 
+	public IntegrationOfDaily updateScheWorkTimeType(String employeeId, 
 			GeneralDate baseDate, 
 			String workTypeCode, 
 			String workTimeCode, 
 			boolean scheReflectFlg, 
-			ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg);
+			ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg,
+			IntegrationOfDaily dailyData);
 	/**
 	 * 予定勤種・就時を反映できるかチェックする
 	 * @param employeeId
@@ -41,6 +44,9 @@ public interface HolidayWorkReflectProcess {
 	 * @param baseDate
 	 * @param mapWorkTimeFrame 休出時間1～10
 	 */
-	public void reflectWorkTimeFrame(String employeeId, GeneralDate baseDate, Map<Integer, Integer> mapWorkTimeFrame);
+	public IntegrationOfDaily reflectWorkTimeFrame(String employeeId, 
+			GeneralDate baseDate, 
+			Map<Integer, Integer> mapWorkTimeFrame, 
+			IntegrationOfDaily dailyData);
 
 }
