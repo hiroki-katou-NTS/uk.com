@@ -11,10 +11,12 @@
 			<script>var dialogSize = { width: 720, height: 560 };</script>			
 			<com:ValidatorScript>
 				nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Day
+				nts.uk.ctx.at.shared.dom.common.Month
+				nts.uk.ctx.at.function.dom.alarm.extractionrange.agreement.YearOfAgreement
             </com:ValidatorScript>
 			<com:EnumScript>
 				nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.SpecifiedMonth
-				nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification
+				nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification				
 			</com:EnumScript>            			
 
 			<com:stylefile path="kal004.g.style.css" />
@@ -130,8 +132,8 @@
 						<div class="valign-center control-group start3">
 							<div><span >#{i18n.getText('KAL004_92')}</span></div>
 							<div class = 'month3'>
-								<div class ='checkMonth'
-									data-bind="ntsRadioButton: {checked: strSelected3, enable: true, option: monthSpecify()[0], optionValue: 'value', optionText: 'name', group: 'strRadio3'}"></div>
+								<div class ='checkMonth3'
+									data-bind="ntsRadioButton: {checked: strSelected3, enable: true, option: yearSpecify()[0], optionValue: 'value', optionText: 'name', group: 'strRadio3'}"></div>
 								<div  class='comboboxMonth3'
 									data-bind="ntsComboBox: {
 											options: strComboMonth3,
@@ -146,9 +148,9 @@
 							</div>										
 							<div class="year3">
 								<div
-									data-bind="ntsRadioButton: {checked: strSelected3, enable: true, option: monthSpecify()[1], optionValue: 'value', optionText: 'name', group: 'strRadio3'}"></div>
+									data-bind="ntsRadioButton: {checked: strSelected3, enable: true, option: yearSpecify()[1], optionValue: 'value', optionText: 'name', group: 'strRadio3'}"></div>
 								<input class ='input-box'
-									data-bind="ntsNumberEditor: {value:strMonthy3, name: '#[KAL004_97]', constraint:'Day', required: true, enable: (strSelected3() == 0)}" /> 
+									data-bind="ntsNumberEditor: {value:strMonthy3, name: '#[KAL004_97]', constraint:'Month', required: true, enable: (strSelected3() == 0)}" /> 
 								<span>#{i18n.getText('KAL004_98')}</span>
 								
 							</div>																									
@@ -172,10 +174,60 @@
 						</div>												
 					</div>
 					<div class="tab-content-4 tab-size"  >
-						
+						<div class="valign-center control-group start4">
+							<div><span >#{i18n.getText('KAL004_100')}</span></div>
+							<div class = 'month4'>
+								<div class ='checkMonth4'
+									data-bind="ntsRadioButton: {checked: strSelected4, enable: true, option: yearSpecify()[0], optionValue: 'value', optionText: 'name', group: 'strRadio4'}"></div>
+								<div  class='comboboxMonth4'
+									data-bind="ntsComboBox: {
+											options: strComboMonth4,
+											optionsValue: 'value',
+											value: strMonth4,
+											visibleItemsCount: 7,
+											optionsText: 'name',
+											enable: (strSelected4() == 1),
+											columns: [
+												{ prop: 'name', length: 5 }
+											]}"></div>							
+							</div>										
+							<div class="year4">
+								<div
+									data-bind="ntsRadioButton: {checked: strSelected4, enable: true, option: yearSpecify()[1], optionValue: 'value', optionText: 'name', group: 'strRadio4'}"></div>
+								<input class ='input-box'
+									data-bind="ntsNumberEditor: {value:strMonthy4, name: '#[KAL004_97]', constraint:'Month', required: true, enable: (strSelected4() == 0)}" /> 
+								<span>#{i18n.getText('KAL004_106')}</span>
+								
+							</div>																									
+						</div>
+						<div class="centerSys4">#{i18n.getText('KAL004_101')}</div>
+						<div class="valign-center control-group end4">
+							<div><span >#{i18n.getText('KAL004_102')}</span> </div>
+							<div class = 'month4'>
+								<div  class='comboboxMonth4'
+									data-bind="ntsComboBox: {
+											options: endComboMonth4,
+											optionsValue: 'value',
+											value: endMonth4,
+											visibleItemsCount: 7,
+											optionsText: 'name',
+											enable: true,
+											columns: [
+												{ prop: 'name', length: 5 }
+											]}"></div>
+							</div>										
+						</div>							
 					</div>
 					<div class="tab-content-5 tab-size"  >
-					
+						<div class ='radioButton5'>
+								<div
+									data-bind="ntsRadioButton: {checked: strSelected5, enable: true, option: yearSpecify()[0], optionValue: 'value', optionText: 'name', group: 'strRadio5'}"></div>							
+								<input class ='input-box5'
+									data-bind="ntsNumberEditor: {value:strYear5, name: '#[KAL004_108]', constraint:'YearOfAgreement', required: true, enable: (strSelected5() == 0)}" /> 
+								<span>#{i18n.getText('KAL004_109')}</span>							
+						</div>
+						<div class ='radioButton5'
+							data-bind="ntsRadioButton: {checked: strSelected5, enable: true, option: yearSpecify()[1], optionValue: 'value', optionText: 'name', group: 'strRadio5'}"></div>														
 					</div>					
 				</div>						
 			</div>

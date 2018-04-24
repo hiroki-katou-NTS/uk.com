@@ -43,13 +43,25 @@ module nts.uk.at.view.kal004.g.viewmodel {
         endComboMonth2: KnockoutObservableArray<any>;
             
         // tab3
-        monthSpecify: KnockoutObservableArray<any>;
+        yearSpecify: KnockoutObservableArray<any>;
         strSelected3: KnockoutObservable<number>;
         strMonthy3: KnockoutObservable<number>;   
         strMonth3: KnockoutObservable<number>;     
         strComboMonth3: KnockoutObservableArray<any>;           
         endMonth3: KnockoutObservable<number>;
-        endComboMonth3: KnockoutObservableArray<any>;                                
+        endComboMonth3: KnockoutObservableArray<any>;
+        
+        // tab4        
+        strSelected4: KnockoutObservable<number>;
+        strMonthy4: KnockoutObservable<number>;   
+        strMonth4: KnockoutObservable<number>;     
+        strComboMonth4: KnockoutObservableArray<any>;           
+        endMonth4: KnockoutObservable<number>;
+        endComboMonth4: KnockoutObservableArray<any>;          
+        
+        //tab5
+        strSelected5: KnockoutObservable<number>;
+        strYear5: KnockoutObservable<number>;        
         constructor() {
             var self = this;
             self.textlabel = ko.observable(nts.uk.ui.windows.getShared("categoryName"));
@@ -94,7 +106,7 @@ module nts.uk.at.view.kal004.g.viewmodel {
                         
             
             //tab3:
-            self.monthSpecify = ko.observableArray([
+            self.yearSpecify = ko.observableArray([
                 {value: 0, name: ''},
                 {value: 1, name: getText('KAL004_96')}
                 ]);
@@ -103,7 +115,19 @@ module nts.uk.at.view.kal004.g.viewmodel {
             self.strMonth3 = ko.observable(self.getParam.strMonth);
             self.strComboMonth3 = ko.observableArray(__viewContext.enums.SpecifiedMonth);
             self.endMonth3 = ko.observable(self.getParam.endMonth);    
-            self.endComboMonth3 = ko.observableArray(__viewContext.enums.SpecifiedMonth);                                                  
+            self.endComboMonth3 = ko.observableArray(__viewContext.enums.SpecifiedMonth);  
+
+            //tab4:
+            self.strSelected4 = ko.observable(self.getParam.strSpecify);
+            self.strMonthy4 = ko.observable(self.getParam.strDay);
+            self.strMonth4 = ko.observable(self.getParam.strMonth);
+            self.strComboMonth4 = ko.observableArray(__viewContext.enums.SpecifiedMonth);
+            self.endMonth4 = ko.observable(self.getParam.endMonth);    
+            self.endComboMonth4 = ko.observableArray(__viewContext.enums.SpecifiedMonth);
+            
+            //tab5
+            self.strSelected5 = ko.observable(self.getParam.strSpecify);
+            self.strYear5 = ko.observable(self.getParam.strDay);
         }
 
         startPage(): JQueryPromise<any> {
