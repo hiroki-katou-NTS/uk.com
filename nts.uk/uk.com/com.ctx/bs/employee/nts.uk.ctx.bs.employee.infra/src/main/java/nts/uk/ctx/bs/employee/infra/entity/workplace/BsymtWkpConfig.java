@@ -39,12 +39,12 @@ public class BsymtWkpConfig extends UkJpaEntity implements Serializable {
 	protected BsymtWkpConfigPK bsymtWkpConfigPK;
 
 	/** The str D. */
-	@Column(name = "STR_D")
+	@Column(name = "START_DATE")
 	@Convert(converter = GeneralDateToDBConverter.class)
 	private GeneralDate strD;
 
 	/** The end D. */
-	@Column(name = "END_D")
+	@Column(name = "END_DATE")
 	@Convert(converter = GeneralDateToDBConverter.class)
 	private GeneralDate endD;
 

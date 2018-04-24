@@ -59,7 +59,9 @@ public class MissingOfTemporaryStampChecking {
 						attendanceItemIds.add(69);
 					}
 				}
-				createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate, new ErrorAlarmWorkRecordCode("S001"), attendanceItemIds);
+				if (!attendanceItemIds.isEmpty()) {
+					createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate, new ErrorAlarmWorkRecordCode("S001"), attendanceItemIds);	
+				}
 			}
 		}
 	}

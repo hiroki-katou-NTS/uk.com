@@ -69,4 +69,23 @@ public enum GoLeavingWorkAtr {
 		// Not found.
 		return null;
 	}
+	
+	
+	/**
+	 * 出勤か判定する
+	 * @return 使用する
+	 */
+	public boolean isGO_WORK() {
+		return GO_WORK.equals(this);
+	}
+	
+	/**
+	 * 退勤か判定する
+	 * @return 
+	 */
+	public boolean isLEAVING_WORK() {
+		return LEAVING_WORK.equals(this);
+	}
+	
+	
 }

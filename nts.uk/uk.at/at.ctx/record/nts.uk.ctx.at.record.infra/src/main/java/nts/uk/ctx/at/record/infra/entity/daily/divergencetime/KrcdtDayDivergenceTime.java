@@ -229,7 +229,7 @@ public class KrcdtDayDivergenceTime extends UkJpaEntity implements Serializable{
 		else {
 			setPerDivergenceTimeData("divergenceTime",number,0);
 			setPerDivergenceTimeData("deductionTime",number,0);
-			setPerDivergenceTimeData("reasonCode",number,0);
+			setPerDivergenceTimeData("afterDeductionTime",number,0);
 			setPerDivergenceTimeData("reasonCode",number,"");
 			setPerDivergenceTimeData("reason",number,"");
 		}
