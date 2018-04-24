@@ -376,7 +376,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             let endMonth = moment.utc(self.endDateString());
             let totalMonths = (parseInt(endMonth.format("YYYY"))*12 + parseInt(endMonth.format("MM")))
                              - (parseInt(startMonth.format("YYYY"))*12 + parseInt(startMonth.format("MM")));
-            if (startMonth < 0){
+            if (totalMonths < 0){
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_1217' });
                 nts.uk.ui.block.clear();  
                 return;
@@ -418,7 +418,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 self.selectedCode()
             );
 
-            let data = new ReportInfor(holidayRemainingOutputCondition, self.selectedEmployee());
+            let data = new ReportInfor(holidayRemainingOutputCondition, lstSelectedEployee);
             service.saveAsExcel(data).done(() => {
                 nts.uk.ui.block.clear();
             }).fail(function(res: any) {
