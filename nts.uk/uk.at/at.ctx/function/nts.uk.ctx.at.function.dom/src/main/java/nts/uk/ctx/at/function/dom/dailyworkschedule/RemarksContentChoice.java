@@ -44,11 +44,11 @@ public enum RemarksContentChoice {
 	
 	/** The not calculated. */
 	// 未計算
-	NOT_CALCULATED(8, "Enum_notCalculated"),
+	NOT_CALCULATED(8, "Enum_NotCalculated"),
 	
 	/** The exceed by application. */
 	// 事前申請超過
-	EXCEED_BY_APPLICATION(9, "Enum_exceedByApplication");
+	EXCEED_BY_APPLICATION(9, "Enum_ExceedByApplication");
 
 	/** The value. */
 	public final int value;

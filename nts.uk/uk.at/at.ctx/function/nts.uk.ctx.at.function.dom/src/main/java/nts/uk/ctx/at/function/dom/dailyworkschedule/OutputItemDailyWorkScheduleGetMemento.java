@@ -12,6 +12,13 @@ import java.util.List;
 public interface OutputItemDailyWorkScheduleGetMemento {
 	
 	/**
+	 * Gets the company ID.
+	 *
+	 * @return the company ID
+	 */
+	String getCompanyID();
+	
+	/**
 	 * Gets the item code.
 	 *
 	 * @return the item code
@@ -30,7 +37,7 @@ public interface OutputItemDailyWorkScheduleGetMemento {
 	 *
 	 * @return the lst displayed attendance
 	 */
-	List<TimeItemTobeDisplay> getLstDisplayedAttendance();
+	List<AttendanceItemsDisplay> getLstDisplayedAttendance();
 	
 	/**
 	 * Gets the lst remark content.

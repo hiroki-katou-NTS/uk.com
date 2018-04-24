@@ -16,7 +16,7 @@ public enum NameWorkTypeOrHourZone {
 
 	/** The short name. */
 	// 略称
-	SHORT_NAME(0, "Enum_ShortName"),;
+	SHORT_NAME(1, "Enum_ShortName"),;
 
 	/** The value. */
 	public final int value;

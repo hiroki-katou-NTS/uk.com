@@ -28,9 +28,12 @@ public class PrintRemarksContent extends DomainObject{
 	 * @param usedClassification the used classification
 	 * @param printitem the printitem
 	 */
-	public PrintRemarksContent(boolean usedClassification, RemarksContentChoice printitem) {
+	public PrintRemarksContent(int usedClassification, int printitem) {
 		super();
-		this.usedClassification = usedClassification;
-		this.printitem = printitem;
+		this.usedClassification = usedClassification == USE ? true : false;
+		this.printitem = RemarksContentChoice.valueOf(printitem);
 	}
+	
+	/** The Constant USE. */
+	private static final int USE = 1;
 }

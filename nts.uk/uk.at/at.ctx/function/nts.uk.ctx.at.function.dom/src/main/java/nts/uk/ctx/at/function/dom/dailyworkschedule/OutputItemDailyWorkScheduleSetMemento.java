@@ -12,6 +12,13 @@ import java.util.List;
 public interface OutputItemDailyWorkScheduleSetMemento {
 	
 	/**
+	 * Sets the company ID.
+	 *
+	 * @param companyID the new company ID
+	 */
+	void setCompanyID(String companyID);
+	
+	/**
 	 * Sets the item code.
 	 *
 	 * @param itemCode the new item code
@@ -30,7 +37,7 @@ public interface OutputItemDailyWorkScheduleSetMemento {
 	 *
 	 * @param lstDisplayAttendance the new lst displayed attendance
 	 */
-	void setLstDisplayedAttendance(List<TimeItemTobeDisplay> lstDisplayAttendance);
+	void setLstDisplayedAttendance(List<AttendanceItemsDisplay> lstDisplayAttendance);
 	
 	/**
 	 * Sets the lst remark content.
