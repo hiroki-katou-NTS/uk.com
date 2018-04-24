@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
+import nts.uk.ctx.at.record.dom.calculationattribute.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
@@ -43,7 +43,7 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.RaisingSalaryCalcAtr;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
@@ -365,7 +365,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			startTime = duplicateCoreTimeList.stream().sorted((first,second)-> first.getStart().compareTo(second.getStart())).collect(Collectors.toList()).get(0).getStart();
 			endTime = duplicateCoreTimeList.stream().sorted((first,second)-> first.getStart().compareTo(second.getStart())).collect(Collectors.toList()).get(duplicateCoreTimeList.size() - 1).getEnd();
 			/*フレックス時間帯に入れる*/
-			return new FlexWithinWorkTimeSheet(this.withinWorkTimeFrame,new TimeSpanForCalc(startTime, endTime));
+			return new FlexWithinWorkTimeSheet(this.withinWorkTimeFrame,Optional.of(new TimeSpanForCalc(startTime, endTime)));
 		}
 		else {
 			return this;
@@ -434,10 +434,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 									   PredetermineTimeSetForCalc predetermineTimeSet,
 									   Optional<WorkTimeCode> siftCode,
 									   Optional<PersonalLaborCondition> personalCondition, 
-									   LateTimeSheet lateTimeSheet,
-									   LeaveEarlyTimeSheet leaveEarlyTimeSheet,
-									   LateTimeOfDaily lateTimeOfDaily,
-									   LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
 									   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 									   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 									   WorkingSystem workingSystem,
@@ -505,10 +501,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 																							  addSettingOfRegularWork,
 																							  addSettingOfIrregularWork, 
 																							  addSettingOfFlexWork,
-																							  lateTimeSheet,
-																							  leaveEarlyTimeSheet,
-																							  lateTimeOfDaily,
-																							  leaveEarlyTimeOfDaily,
 																							  holidayAddtionSet,
 																							  late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 																							  leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
@@ -745,7 +737,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	/**
 	 * 就業時間内時間帯に入っている加給時間の計算
 	 */
-	public List<BonusPayTime> calcBonusPayTimeInWithinWorkTime(RaisingSalaryCalcAtr raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
+	public List<BonusPayTime> calcBonusPayTimeInWithinWorkTime(AutoCalRaisingSalarySetting raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		for(WithinWorkTimeFrame timeFrame : withinWorkTimeFrame) {
 			bonusPayList.addAll(timeFrame.calcBonusPay(ActualWorkTimeSheetAtr.WithinWorkTime,raisingAutoCalcSet,bonusPayAutoCalcSet,calcAtrOfDaily,bonusPayAtr));
@@ -756,7 +748,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	/**
 	 * 就業時間内時間帯に入っている特定加給時間の計算
 	 */
-	public List<BonusPayTime> calcSpecifiedBonusPayTimeInWithinWorkTime(RaisingSalaryCalcAtr raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
+	public List<BonusPayTime> calcSpecifiedBonusPayTimeInWithinWorkTime(AutoCalRaisingSalarySetting raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		for(WithinWorkTimeFrame timeFrame : withinWorkTimeFrame) {
 			bonusPayList.addAll(timeFrame.calcSpacifiedBonusPay(ActualWorkTimeSheetAtr.WithinWorkTime,raisingAutoCalcSet,bonusPayAutoCalcSet, calcAtrOfDaily,bonusPayAtr));

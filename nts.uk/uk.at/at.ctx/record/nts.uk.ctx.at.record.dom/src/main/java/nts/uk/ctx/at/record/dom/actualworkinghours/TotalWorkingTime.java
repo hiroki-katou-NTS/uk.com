@@ -9,10 +9,11 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.temporarytime.TemporaryTimeOfDaily;
-import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.calculationattribute.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.AutoCalOverTimeAttr;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
@@ -26,9 +27,11 @@ import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDay;
 import nts.uk.ctx.at.record.dom.daily.latetime.IntervalExemptionTime;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.HolidayOfDaily;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.CheckExcessAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
@@ -39,6 +42,8 @@ import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
@@ -49,18 +54,22 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfIrregularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfRegularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.RaisingSalaryCalcAtr;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -112,6 +121,8 @@ public class TotalWorkingTime {
 	/*短時間勤務時間*/
 	private ShortWorkTimeOfDaily shotrTimeOfDaily;
 	
+	/*日別実績の休暇時間*/
+	private HolidayOfDaily holidayOfDaily;
 	
 	/**
 	 * 
@@ -145,7 +156,7 @@ public class TotalWorkingTime {
 			List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily, BreakTimeOfDaily breakTimeOfDaily,
 			List<OutingTimeOfDaily> outingTimeOfDailyPerformance,
 			RaiseSalaryTimeOfDailyPerfor raiseSalaryTimeOfDailyPerfor, WorkTimes workTimes,
-			TemporaryTimeOfDaily temporaryTime, ShortWorkTimeOfDaily shotrTime) {
+			TemporaryTimeOfDaily temporaryTime, ShortWorkTimeOfDaily shotrTime,HolidayOfDaily holidayOfDaily) {
 		super();
 		this.totalTime = totalTime;
 		this.totalCalcTime = totalCalcTime;
@@ -160,22 +171,20 @@ public class TotalWorkingTime {
 		this.workTimes = workTimes;
 		this.temporaryTime = temporaryTime;
 		this.shotrTimeOfDaily = shotrTime;
+		this.holidayOfDaily = holidayOfDaily;
 	}
 	
 	/**
 	 * 日別実績の総労働時間の計算
 	 * @param breakTimeCount 
 	 * @param integrationOfDaily 
+	 * @param flexSetting 
 	 * @return 
 	 */
 	public static TotalWorkingTime calcAllDailyRecord(CalculationRangeOfOneDay oneDay,AutoCalOvertimeSetting overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting,
 			   Optional<PersonalLaborCondition> personalCondition,
 			   VacationClass vacationClass,
 			   WorkType workType,
-			   LateTimeSheet lateTimeSheet,
-			   LeaveEarlyTimeSheet leaveEarlyTimeSheet,
-			   LateTimeOfDaily lateTimeOfDaily,
-			   LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
 			   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 			   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			   WorkingSystem workingSystem,
@@ -187,24 +196,30 @@ public class TotalWorkingTime {
 			   Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 			   Optional<SettingOfFlexWork> flexCalcMethod,
 			   HolidayCalcMethodSet holidayCalcMethodSet,
-			   RaisingSalaryCalcAtr raisingAutoCalcSet,
+			   AutoCalRaisingSalarySetting raisingAutoCalcSet,
 			   BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			   CalAttrOfDailyPerformance calcAtrOfDaily,
 			   List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, 
-			   int breakTimeCount, IntegrationOfDaily integrationOfDaily
+			   int breakTimeCount, IntegrationOfDaily integrationOfDaily, 
+			   AutoCalFlexOvertimeSetting flexSetting
+			   
 			   ) {
 		
 
+		Optional<WorkTimeCode> workTimeCode = Optional.empty();
+		//日別実績の所定外時間
+		if(oneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode() != null) {
+			workTimeCode = oneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode().v() == null
+																		?Optional.empty()
+																		:Optional.of(new WorkTimeCode(oneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode().v().toString()));
+		}
+		
 		/*日別実績の法定内時間(就業時間)*/
 		val withinStatutoryTimeOfDaily = WithinStatutoryTimeOfDaily.calcStatutoryTime(oneDay,
 				   																      personalCondition,
 				   																      vacationClass,
 				   																      workType,
-				   																      lateTimeSheet,
-				   																      leaveEarlyTimeSheet,
-				   																      lateTimeOfDaily,
-				   																      leaveEarlyTimeOfDaily,
 				   																      late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 				   																      leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 				   																      workingSystem,
@@ -212,15 +227,16 @@ public class TotalWorkingTime {
 				   																      flexAddSetting,
 				   																      regularAddSetting,
 				   																      holidayAddtionSet,
-				   																      AutoCalAtrOvertime.CALCULATEMBOSS,
-				   																      holidayCalcMethodSet);
-		Optional<WorkTimeCode> workTimeCode = Optional.empty();
-		//日別実績の所定外時間
-		if(oneDay.getWorkInformationOfDaily().getRecordWorkInformation().getWorkTimeCode() != null) {
-			workTimeCode = oneDay.getWorkInformationOfDaily().getRecordWorkInformation().getWorkTimeCode().v() == null
-																		?Optional.empty()
-																		:Optional.of(new WorkTimeCode(oneDay.getWorkInformationOfDaily().getRecordWorkInformation().getWorkTimeCode().v().toString()));
-		}
+				   																      flexSetting.getFlexOtTime().getCalAtr(),
+				   																      holidayCalcMethodSet,
+				   																      CalcMethodOfNoWorkingDay.isCalculateFlexTime,
+				   																      overTimeAutoCalcAtr,
+				   																      flexCalcMethod,
+				   																      flexSetting.getFlexOtTime().getUpLimitORtSet(),
+				   																      workTimeDailyAtr.get(),
+				   																      workTimeCode
+																					  );
+
 		
 		ExcessOfStatutoryTimeOfDaily excesstime =ExcessOfStatutoryTimeOfDaily.calculationExcessTime(oneDay, overTimeAutoCalcSet,holidayAutoCalcSetting,
 																									CalcMethodOfNoWorkingDay.isCalculateFlexTime,
@@ -230,11 +246,11 @@ public class TotalWorkingTime {
 																									,vacationClass,oneDay.getTimeVacationAdditionRemainingTime().get(),
 																									StatutoryDivision.Nomal,
 																									workTimeCode,
-																									personalCondition, lateTimeSheet,leaveEarlyTimeSheet,lateTimeOfDaily,
-																									leaveEarlyTimeOfDaily,late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
+																									personalCondition,
+																									late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 																									leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 																									workingSystem,illegularAddSetting,flexAddSetting,regularAddSetting,
-																									holidayAddtionSet,workTimeDailyAtr,
+																									holidayAddtionSet,workTimeDailyAtr.get(),
 																									eachWorkTimeSet,
 																									eachCompanyTimeSet,
 																									integrationOfDaily);
@@ -313,7 +329,8 @@ public class TotalWorkingTime {
 									raiseTime,
 									workTimes,
 									tempTime,
-									shotrTime);
+									shotrTime,
+									vacationOfDaily);
 	}
 
 	/**

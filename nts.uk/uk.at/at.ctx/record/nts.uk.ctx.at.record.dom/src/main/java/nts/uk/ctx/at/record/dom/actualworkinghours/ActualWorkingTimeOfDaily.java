@@ -39,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfFlexWork;
@@ -130,6 +131,7 @@ public class ActualWorkingTimeOfDaily {
 	 * @param schePreTimeSet 
 	 * @param ootsukaFixedCalcSet 
 	 * @param integrationOfDaily 
+	 * @param flexSetting 
 	 */
 	public static ActualWorkingTimeOfDaily calcRecordTime(CalculationRangeOfOneDay oneDay,AutoCalOvertimeSetting overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting,
 			   Optional<PersonalLaborCondition> personalCondition,
@@ -143,7 +145,7 @@ public class ActualWorkingTimeOfDaily {
 			   WorkRegularAdditionSet regularAddSetting,
 			   HolidayAddtionSet holidayAddtionSet,
 			   AutoCalOverTimeAttr overTimeAutoCalcAtr,
-		       WorkTimeDailyAtr workTimeDailyAtr,
+		       Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 			   Optional<SettingOfFlexWork> flexCalcMethod,
 			   HolidayCalcMethodSet holidayCalcMethodSet,
 			   AutoCalRaisingSalarySetting raisingAutoCalcSet,
@@ -154,7 +156,7 @@ public class ActualWorkingTimeOfDaily {
 			   DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
 			   List<DivergenceTime> divergenceTimeList, Optional<PredetermineTimeSetForCalc> schePreTimeSet, 
 			   int breakTimeCount, Optional<FixedWorkCalcSetting> ootsukaFixedCalcSet,
-			   Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting, IntegrationOfDaily integrationOfDaily
+			   Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting, IntegrationOfDaily integrationOfDaily, AutoCalFlexOvertimeSetting flexSetting
 				/*計画所定時間*/
 				/*実績所定労働時間*/) {
 
@@ -180,7 +182,8 @@ public class ActualWorkingTimeOfDaily {
 					eachWorkTimeSet,
 					eachCompanyTimeSet,
 					breakTimeCount,
-					integrationOfDaily
+					integrationOfDaily,
+					flexSetting
 					/*計画所定時間*/
 					/*実績所定労働時間*/);
 		
