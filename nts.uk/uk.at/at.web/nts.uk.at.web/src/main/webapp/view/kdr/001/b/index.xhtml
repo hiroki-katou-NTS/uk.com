@@ -81,34 +81,34 @@
 						</div>
 						<!-- B4_2  -->
 						<table tabindex="8" style="width: 666px">
-							<tr>
+							<tr id="rowYearlyHoliday">
 								<td>
 									<!-- B4_3  -->
 									<div tabindex="9"
 										data-bind="ntsCheckBox: { checked: yearlyHoliday ,  enable: true, text: '#{i18n.getText('Com_PaidHoliday')}' }"></div>
 								</td>
 							</tr>
-							<tr>
+							<tr id="rowYearlyReserved">
 								<td>
 									<!-- B4_5  -->
 									<div tabindex="11"
 										data-bind="ntsCheckBox: { checked: yearlyReserved , enable: true, text: '#{i18n.getText('Com_FundedPaidHoliday')}' }"></div>
 								</td>
 							</tr>
-							<tr>
+							<tr id="rowSubstituteHoliday">
 								<td>
 									<!-- B4_7  -->
 									<div tabindex="13"
 										data-bind="ntsCheckBox: { checked: outputItemSubstitute , enable: true, text: '#{i18n.getText('Com_CompensationHoliday')}' }"></div>
 									<!-- B4_8  -->
 									<div tabindex="14"
-										data-bind="ntsCheckBox: { checked: representSubstitute , enable: true, text: '#{i18n.getText('KDR001_53')}' }"></div>
+										data-bind="ntsCheckBox: { checked: representSubstitute , enable: outputItemSubstitute, text: '#{i18n.getText('KDR001_53')}' }"></div>
 									<!-- B4_9  -->
 									<div tabindex="15"
-										data-bind="ntsCheckBox: { checked: remainingChargeSubstitute , enable: true, text: '#{i18n.getText('KDR001_54')}' }"></div>
+										data-bind="ntsCheckBox: { checked: remainingChargeSubstitute , enable: outputItemSubstitute, text: '#{i18n.getText('KDR001_54')}' }"></div>
 								</td>
 							</tr>
-							<tr>
+							<tr  id="rowPauseItemHoliday">
 								<td>
 									<!-- B4_10  -->
 									<div tabindex="16"
@@ -116,14 +116,14 @@
 
 									<!-- B4_11  -->
 									<div tabindex="17"
-										data-bind="ntsCheckBox: { checked: unDigestedPause , enable: true, text: '#{i18n.getText('KDR001_53')}' }"></div>
+										data-bind="ntsCheckBox: { checked: unDigestedPause , enable: pauseItem, text: '#{i18n.getText('KDR001_53')}' }"></div>
 
 									<!-- B4_12  -->
 									<div tabindex="18"
-										data-bind="ntsCheckBox: { checked: numberRemainingPause ,  enable: true, text: '#{i18n.getText('KDR001_54')}' }"></div>
+										data-bind="ntsCheckBox: { checked: numberRemainingPause ,  enable: pauseItem, text: '#{i18n.getText('KDR001_54')}' }"></div>
 								</td>
 							</tr>
-							<tr>
+							<tr id="rowSpecialHoliday">
 								<td>
 									<div tabindex="25"
 										data-bind="ntsMultiCheckBox: {

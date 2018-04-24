@@ -46,12 +46,15 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 }
                 // no data
                 else {
-                    self.allSpecialHolidays([]);
+                     self.allSpecialHolidays([]);   
+                     $('#rowSpecialHoliday').addClass("hidden");
                 }
                 service.findAll().done(function(data: Array<HolidayRemaining>) {
                     self.loadAllHolidayRemaining(data);
-
-                    // get special holiday
+                    self.displayYearlyHoliday();
+                    self.displayYearlyReserved();
+                    self.displaySubstituteHoliday();
+                    self.displayPauseItemHoliday(); 
                     nts.uk.ui.block.clear();
                     dfd.resolve();
                 }).fail(function(res) {
@@ -70,7 +73,47 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             return dfd.promise();
 
         }
-
+        
+        displayYearlyHoliday() {
+            service.findAnnualPaidLeave().done(function(data: AnnualPaidLeaveSetting) {
+                if (!data || data.annualManage === 0) {
+                     $('#rowYearlyHoliday').addClass("hidden");
+                }
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
+            });
+        }
+        
+        displayYearlyReserved() {
+            service.findRetentionYearly().done(function(data: RetentionYearlySetting) {
+                if (!data || data.managementCategory === 0) {
+                     $('#rowYearlyReserved').addClass("hidden");
+                }
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
+            });
+        }
+        
+        displaySubstituteHoliday() {
+            service.findCompensatory().done(function(data: CompensatoryLeaveComSetting) {
+                if (!data || data.isManaged === 0) {
+                     $('#rowSubstituteHoliday').addClass("hidden");
+                }
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
+            });
+        }
+        
+        displayPauseItemHoliday() {
+            service.findSubstVacation().done(function(data: SubstVacationSetting) {
+                if (!data || data.isManage === 0) {
+                     $('#rowPauseItemHoliday').addClass("hidden");
+                }
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
+            });
+        }
+    
         /**
          * create a new Holiday Remaining
          * 
@@ -97,10 +140,10 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             }
             errors.clearAll();
         }
-        
+
         //setting when selected holiday remaining
-        settingSelectedHolidayRemaining(cd : string) {
-            let self = this, 
+        settingSelectedHolidayRemaining(cd: string) {
+            let self = this,
                 lstHolidays = self.lstHolidays();
             let index: number = 0;
             if (cd) {
@@ -406,7 +449,22 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.specialHolidayName = ko.observable(param ? param.specialHolidayName || '' : '');
             self.statusCheck = ko.observable(param ? param.statusCheck || false : false);
         }
-
     }
 
+    export class AnnualPaidLeaveSetting {
+        /** The annual manage. */
+        annualManage: number;
+    }
+    
+    export class RetentionYearlySetting {
+        managementCategory: number;
+    }
+    
+    export class CompensatoryLeaveComSetting {
+        isManaged: number;
+    }
+    
+    export class SubstVacationSetting {
+        isManage: number;
+    }
 }
