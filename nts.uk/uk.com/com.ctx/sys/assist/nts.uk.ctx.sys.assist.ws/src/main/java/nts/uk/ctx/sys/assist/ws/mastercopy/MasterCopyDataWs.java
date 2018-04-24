@@ -7,8 +7,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.task.AsyncTaskInfo;
 import nts.uk.ctx.sys.assist.app.command.mastercopy.MasterCopyDataCommand;
 import nts.uk.ctx.sys.assist.app.command.mastercopy.MasterCopyDataCommandHanlder;
+import nts.uk.ctx.sys.assist.app.command.mastercopy.MasterCopyDataExecutionRespone;
 
 /**
  * The Class MasterCopyDataWs.
@@ -28,7 +30,21 @@ public class MasterCopyDataWs extends WebService{
 	 */
 	@POST
 	@Path("execute")
-	public void executeMasterCopyData(MasterCopyDataCommand command){
-		this.asyncHandler.handle(command);
+	public MasterCopyDataExecutionRespone executeMasterCopyData(MasterCopyDataCommand command){
+		AsyncTaskInfo taskInfor = this.asyncHandler.handle(command);
+		MasterCopyDataExecutionRespone response = new MasterCopyDataExecutionRespone();
+		response.setTaskInfo(taskInfor);
+		return response;
+	}
+	
+	/**
+	 * Interrupt.
+	 *
+	 * @param interrupt the execution
+	 */
+	@POST
+	@Path("interrupt")
+	public void interrupt() {
+		this.asyncHandler.interrupt();
 	}
 }

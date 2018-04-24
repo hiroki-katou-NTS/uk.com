@@ -12,14 +12,14 @@ module nts.uk.com.view.cmm001.f {
         /**
          * execution process copy
          */
-        export function executionMasterCopyData(): JQueryPromise<any>{
+        export function executionMasterCopyData(data: model.MasterCopyDataCommand): JQueryPromise<any>{
             return nts.uk.request.ajax(path.executionMasterCopyData);
         }
         
         /**
          *  export error to csv service
          */
-        export function exportFileError(): JQueryPromise<any> {
+        export function exportFileError(data: model.ErrorContentDto[]): JQueryPromise<any> {
             return nts.uk.request.ajax(path.exportFileError);
         }
         
@@ -32,6 +32,26 @@ module nts.uk.com.view.cmm001.f {
     }
     
     export module model {
+        // error
+        export interface ErrorContentDto {
+            message: string;
+            categoryName: string;
+            order: number;
+            systemType: string;
+        }
         
+        // copy data command
+        export interface MasterCopyDataCommand {
+            companyId: string;
+            masterDataList: MasterCopyCategoryDto[];
+        }
+        
+        // master category dto
+        export interface MasterCopyCategoryDto {
+            categoryName: string;
+            order: number;
+            systemType: string;
+            copyMethod: number;
+        }
     } 
 }
