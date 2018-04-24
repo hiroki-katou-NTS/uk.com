@@ -945,7 +945,7 @@ module nts.custombinding {
                             },  attr: {
                                 id: nameid,
                                 nameid: nameid,
-                                title: itemName,
+                                title: itemCode + ': ' + itemName,
                                 'data-code': itemCode,
                                 'data-category': categoryCode,
                                 'data-required': required,
@@ -967,7 +967,7 @@ module nts.custombinding {
                             }, attr: { 
                                 id: nameid, 
                                 nameid: nameid,
-                                title: itemName,
+                                title: itemCode + ': ' + itemName,
                                 'data-code': itemCode,
                                 'data-category': categoryCode,
                                 'data-required': required,
@@ -991,7 +991,7 @@ module nts.custombinding {
                                 }, attr: {
                                     id: nameid, 
                                     nameid: nameid,
-                                    title: itemName,
+                                    title: itemCode + ': ' + itemName,
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
@@ -1012,7 +1012,7 @@ module nts.custombinding {
                             }, attr: { 
                                 id: nameid, 
                                 nameid: nameid,
-                                title: itemName,
+                                title: itemCode + ': ' + itemName,
                                 'data-code': itemCode,
                                 'data-category': categoryCode,
                                 'data-required': required,
@@ -1037,7 +1037,7 @@ module nts.custombinding {
                                 }, attr: { 
                                     id: nameid, 
                                     nameid: nameid,
-                                    title: itemName,
+                                    title: itemCode + ': ' + itemName,
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
@@ -1058,7 +1058,7 @@ module nts.custombinding {
                                 }, attr: { 
                                     id: nameid, 
                                     nameid: nameid,
-                                    title: itemName,
+                                    title: itemCode + ': ' + itemName,
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
@@ -1080,7 +1080,7 @@ module nts.custombinding {
                                 }, attr: {
                                     id: nameid, 
                                     nameid: nameid,
-                                    title: itemName,
+                                    title: itemCode + ': ' + itemName,
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
@@ -1098,7 +1098,7 @@ module nts.custombinding {
                                 }, attr: {
                                     id: nameid, 
                                     nameid: nameid,
-                                    title: itemName,
+                                    title: itemCode + ': ' + itemName,
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
@@ -1117,11 +1117,11 @@ module nts.custombinding {
                                     visibleItemsCount: 5,
                                     selectFirstIfNull: false,
                                     dropDownAttachedToBody: true,
-                                    columns: [{ prop: 'optionText', length: 10 }]
+                                    columns: [{ prop: 'optionText', length: 10, lengthDropDown: 20 }]
                                 }, attr: {
                                     id: nameid,
                                     nameid: nameid,
-                                    title: itemName,
+                                    title: itemCode + ': ' + itemName,
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
@@ -1141,13 +1141,14 @@ module nts.custombinding {
                                 'data-code': itemCode,
                                 'data-category': categoryCode,
                                 'data-required': required,
-                                'data-defv': defValue
+                                'data-defv': defValue,
+                                title: itemCode + ': ' + itemName
                             }"></div>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SEL_BUTTON -->
                             <button data-bind="attr: { 
                                 id: nameid, 
-                                title: itemName,
+                                title: itemCode + ': ' + itemName,
                                 'data-code': itemCode,
                                 'data-category': categoryCode,
                                 'data-required': required,
@@ -1160,7 +1161,7 @@ module nts.custombinding {
                                 text: value,
                                 attr: { 
                                     id: nameid, 
-                                    title: itemName,
+                                    title: itemCode + ': ' + itemName,
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
@@ -1172,7 +1173,7 @@ module nts.custombinding {
                                 <label class="value-text" data-bind="text: value"></label>
                                 <button data-bind="attr: { 
                                     id: nameid, 
-                                    title: itemName,
+                                    title: itemCode + ': ' + itemName,
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
@@ -1197,7 +1198,7 @@ module nts.custombinding {
                                         }, attr: {
                                             id: nameid, 
                                             nameid: nameid,
-                                            title: itemName,
+                                            title: itemCode + ': ' + itemName,
                                             'data-code': itemCode,
                                             'data-category': categoryCode,
                                             'data-required': required,
@@ -1205,7 +1206,7 @@ module nts.custombinding {
                                         }" />                            
                                 <button data-bind="attr: { 
                                     id: nameid, 
-                                    title: itemName,
+                                    title: itemCode + ': ' + itemName,
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
@@ -1218,7 +1219,7 @@ module nts.custombinding {
                                 <label class="value-text" class="value-text" data-bind="text: value"></label>
                                 <button data-bind="attr: { 
                                     id: nameid, 
-                                    title: itemName,
+                                    title: itemCode + ': ' + itemName,
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,

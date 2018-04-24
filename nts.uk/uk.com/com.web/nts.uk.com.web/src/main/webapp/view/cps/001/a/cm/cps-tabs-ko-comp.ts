@@ -97,7 +97,11 @@ module nts.custom.component {
                                     textKey: 'categoryName',
                                     valueKey: 'id',
                                     visibleItemsCount: 10,
-                                    tabIndex: 9
+                                    tabIndex: 9,
+                                    columns: [
+                                        { prop: 'categoryCode', class: 'hidden' },
+                                        { prop: 'categoryName'}
+                                    ]
                                  }"
                             tabindex="9"></div>
                     </div>
