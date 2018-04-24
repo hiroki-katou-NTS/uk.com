@@ -80,7 +80,7 @@ module nts.uk.ui.koExtentions {
                     selected = _.filter(multiSelectedRaw, function(item) {
                         return item["index"] >= 0;
                     });
-                } else if (singleSelectedRaw !== null) {
+                } else if (singleSelectedRaw !== null && singleSelectedRaw.index > -1) {
                     selected.push(singleSelectedRaw);
                 } else {
                     return;

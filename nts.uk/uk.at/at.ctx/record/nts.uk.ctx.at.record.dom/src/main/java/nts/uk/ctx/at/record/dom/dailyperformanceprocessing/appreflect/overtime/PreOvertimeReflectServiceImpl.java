@@ -88,7 +88,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 	private CalculateDailyRecordService calculate;
 	
 	@Override
-	public ApplicationReflectOutput overtimeReflect(OvertimeParameter param) {
+	public boolean overtimeReflect(OvertimeParameter param) {
 		try {
 			ApplicationReflectOutput output = new ApplicationReflectOutput(param.getOvertimePara().getReflectedState(), param.getOvertimePara().getReasonNotReflect());
 			
@@ -97,7 +97,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			//勤種・就時反映後の予定勤種・就時を取得する
 			Optional<WorkInfoOfDailyPerformance> optDailyData = workRepository.find(param.getEmployeeId(), param.getDateInfo());
 			if(!optDailyData.isPresent()) {
-				return output;
+				return false;
 			}
 			//予定勤種・就時の反映
 			priorProcess.workTimeWorkTimeUpdate(param);
@@ -127,10 +127,10 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			
 			output.setReflectedState(ReflectedStateRecord.REFLECTED);
 			output.setReasonNotReflect(ReasonNotReflectRecord.ACTUAL_CONFIRMED);
-			return output;
+			return true;
 	
 		} catch (Exception ex) {
-			return new ApplicationReflectOutput(param.getOvertimePara().getReflectedState(), param.getOvertimePara().getReasonNotReflect());
+			return false;
 		}
 	}
 

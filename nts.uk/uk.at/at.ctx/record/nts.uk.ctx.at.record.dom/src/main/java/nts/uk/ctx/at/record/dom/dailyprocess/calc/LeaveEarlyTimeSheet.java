@@ -144,9 +144,9 @@ public class LeaveEarlyTimeSheet {
 				,duplicateTimeSheet
 				,deductionTimeSheet,breakTimeList);
 			
-		//早退時間を計算
+		//遅刻時間を計算
 
-		//早退時間帯を再度補正
+		//遅刻時間帯を再度補正
 		if(instance.isPresent()) {
 			instance = Optional.of(instance.get().collectionAgainOfEarly(instance.get()));
 		}

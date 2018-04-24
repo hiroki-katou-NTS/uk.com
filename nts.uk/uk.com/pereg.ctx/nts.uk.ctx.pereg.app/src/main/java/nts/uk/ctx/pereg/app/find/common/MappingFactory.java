@@ -120,10 +120,10 @@ public class MappingFactory {
 		});
 
 		// map from option data
-		if (peregDto.getDataType() == DataClassification.EMPLOYEE) {
+		if (peregDto.getDataType() == DataClassification.EMPLOYEE && peregDto.getEmpOptionalData() != null) {
 			peregDto.getEmpOptionalData()
 					.forEach(empData -> itemCodeValueMap.put(empData.getItemCode(), empData.getValue()));
-		} else {
+		} else if (peregDto.getPerOptionalData() != null){
 			peregDto.getPerOptionalData()
 					.forEach(perData -> itemCodeValueMap.put(perData.getItemCode(), perData.getValue()));
 		}

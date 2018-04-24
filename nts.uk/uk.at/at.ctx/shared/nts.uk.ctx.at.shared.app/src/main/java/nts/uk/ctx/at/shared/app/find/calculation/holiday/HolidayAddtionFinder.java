@@ -67,6 +67,9 @@ public class HolidayAddtionFinder {
 	 * @return the holiday addtion dto
 	 */
 	private HolidayAddtionDto convertToDbType(Map<String, AggregateRoot> mapAggre) {
+		if (mapAggre.isEmpty() || mapAggre == null) {
+			return null;
+		}
 		HolidayAddtionSet holidayAddtime = (HolidayAddtionSet) mapAggre.get("holidayAddtionSet");
 		AddSetManageWorkHour addSetManageWorkHour = (AddSetManageWorkHour) mapAggre.get("addSetManageWorkHour");
 		WorkFlexAdditionSet workFlexAdditionSet = (WorkFlexAdditionSet) mapAggre.get("flexWork");

@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.sys.auth.pubimp.role;
@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.app.find.role.workplace.RoleWorkplaceIDFinder;
 import nts.uk.ctx.sys.auth.app.find.role.workplace.WorkplaceIdDto;
@@ -36,6 +35,7 @@ public class RoleExportRepoImpl implements RoleExportRepo{
 	@Inject
 	private RoleRepository roleRepo;
 	
+	/** The role workplace ID finder. */
 	@Inject
 	private RoleWorkplaceIDFinder roleWorkplaceIDFinder;
 	
@@ -85,6 +85,9 @@ public class RoleExportRepoImpl implements RoleExportRepo{
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.auth.pub.role.RoleExportRepo#findWorkPlaceIdNoRole(java.lang.Integer)
+	 */
 	@Override
 	public WorkplaceIdExport findWorkPlaceIdNoRole(Integer systemType) {
 		WorkplaceIdDto workplaceIdDto = roleWorkplaceIDFinder.findListWokplaceIdNoCheckRole(systemType);
@@ -117,6 +120,9 @@ public class RoleExportRepoImpl implements RoleExportRepo{
 		return this.roleWorkplaceIDFinder.findRoleIdBySystemType(systemType);
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.auth.pub.role.RoleExportRepo#getWhetherLoginerCharge()
+	 */
 	@Override
 	public RoleWhetherLoginPubExport getWhetherLoginerCharge() {
 		String employmentRoleID = AppContexts.user().roles().forAttendance(); 

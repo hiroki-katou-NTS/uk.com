@@ -16,6 +16,7 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.actualworkinghours.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
@@ -633,14 +634,14 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			}
 		}
 		
-		Optional<WorkTimeDailyAtr> workTime = Optional.empty();
+		Optional<WorkTimeDailyAtr> workTimeDailyAtr = Optional.empty();
 		if(manageReGetClass.getIntegrationOfDaily().getWorkInformation().getRecordInfo().getWorkTimeCode() != null) {
 			val workTimeSetting = workTimeSettingRepository.findByCode(companyId,manageReGetClass.getIntegrationOfDaily().getWorkInformation().getRecordInfo().getWorkTimeCode().toString());
-			workTime = workTimeSetting.isPresent()?Optional.of(workTimeSetting.get().getWorkTimeDivision().getWorkTimeDailyAtr()):Optional.empty();
+			workTimeDailyAtr = workTimeSetting.isPresent()?Optional.of(workTimeSetting.get().getWorkTimeDivision().getWorkTimeDailyAtr()):Optional.empty();
 		}
 		
 		val workType = manageReGetClass.getWorkType();
-		if(!workType.isPresent() || !workTime.isPresent()) return manageReGetClass.getIntegrationOfDaily();
+		if(!workType.isPresent() || !workTimeDailyAtr.isPresent()) return manageReGetClass.getIntegrationOfDaily();
 		//予定時間帯が作成されるまでの一時対応
 		val scheWorkTypeCode = manageReGetClass.getCalculationRangeOfOneDay().getWorkInformationOfDaily().getScheduleInfo().getWorkTypeCode();
 		Optional<WorkType> scheWorkType = Optional.empty();
@@ -682,7 +683,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				    regularAddSetting,
 				    holidayAddtionSet,
 				    AutoCalOverTimeAttr.CALCULATION_FROM_STAMP,
-				    workTime.get(),
+				    workTimeDailyAtr,
 				    flexCalcMethod,
 				    manageReGetClass.getHolidayCalcMethodSet(),
 				    autoRaisingSet,
@@ -699,7 +700,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					schePreTimeSet,
 					manageReGetClass.getOotsukaFixedWorkSet(),
 					manageReGetClass.getFixRestTimeSetting(),
-					scheWorkType
+					scheWorkType,
+					manageReGetClass.getIntegrationOfDaily().getCalAttr().getFlexExcessTime(),
+					manageReGetClass.getDailyUnit()
 					));
 //					schePreTimeSet));
 	
@@ -718,10 +721,52 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		   afterDailyRecordDto.merge(itemValueList);
 		   //手修正された項目の値を計算前に戻す   
 		   calcResultIntegrationOfDaily = afterDailyRecordDto.toDomain();
+		   
+		   calcResultIntegrationOfDaily = reCalc(calcResultIntegrationOfDaily, companyId);
+		   
 		  }
+		  
 			
 		/*日別実績への項目移送*/
 		//return integrationOfDaily;
+		return calcResultIntegrationOfDaily;
+	}
+
+
+	private IntegrationOfDaily reCalc(IntegrationOfDaily calcResultIntegrationOfDaily,String companyId) {
+		//乖離時間(AggregateRoot)取得
+		List<DivergenceTime> divergenceTimeList = divergenceTimeRepository.getAllDivTime(companyId);
+		
+		//乖離時間計算用　勤怠項目ID紐づけDto作成
+		DailyRecordToAttendanceItemConverter forCalcDivergenceDto = this.dailyRecordToAttendanceItemConverter.setData(calcResultIntegrationOfDaily);
+		
+		if(calcResultIntegrationOfDaily != null && calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			val reCalcDivergence = ActualWorkingTimeOfDaily.createDivergenceTimeOfDaily(calcResultIntegrationOfDaily.getAffiliationInfor().getEmployeeId(),
+																												 calcResultIntegrationOfDaily.getAffiliationInfor().getYmd(),
+																												 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime(),
+																												 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintDifferenceTime(),
+																												 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintTime(),
+																												 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTimeDifferenceWorkingHours(),
+																												 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance(),
+																											     forCalcDivergenceDto,
+																											     divergenceTimeList,
+																											     calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getWorkScheduleTimeOfDaily());
+			val reCreateActual = ActualWorkingTimeOfDaily.of(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintDifferenceTime(),
+												 			 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintTime(),
+												 			 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTimeDifferenceWorkingHours(),
+												 			 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime(),
+												 			 reCalcDivergence,
+												 			 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance());
+			val reCreateAttendanceTime = new AttendanceTimeOfDailyPerformance(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getEmployeeId(),
+																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getYmd(),
+																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getWorkScheduleTimeOfDaily(),
+																			  reCreateActual,
+																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getStayingTime(),
+																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getUnEmployedTime(),
+																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getBudgetTimeVariance(),
+																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getMedicalCareTime());
+			calcResultIntegrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(reCreateAttendanceTime));
+		}
 		return calcResultIntegrationOfDaily;
 	}
 

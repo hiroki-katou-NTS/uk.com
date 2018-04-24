@@ -26,7 +26,7 @@ public class SpecialLeaveGrantRemainService {
 		hours = Math.abs(minute) / 60 + hours;
 		minute = Math.abs(minute) % 60;
 		
-		return result.toString() + "日と　" + (hours) + ":" + (minute < 10 ? ("0"+ minute) : (minute + "")) ;
+		return result.toString() + "日と　" + (hours) + " : " + (minute < 10 ? ("0"+ minute) : (minute + "")) ;
 	}
 
 }

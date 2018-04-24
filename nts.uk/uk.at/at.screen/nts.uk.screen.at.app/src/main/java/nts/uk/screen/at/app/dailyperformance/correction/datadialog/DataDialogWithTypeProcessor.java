@@ -17,6 +17,7 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
+import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.shr.com.context.AppContexts;
@@ -114,7 +115,7 @@ public class DataDialogWithTypeProcessor {
 		case 4:
 			// KDL032
 			codeName = this.getReason(companyId).getCodeNames().stream()
-					.filter(x -> x.getCode().equals(param.getSelectCode())).findFirst();
+					.filter(x -> x.getCode().equals(param.getSelectCode()) && Integer.parseInt(x.getId()) == (DailyPerformanceCorrectionProcessor.DEVIATION_REASON_MAP.get(Integer.parseInt(param.getWorkTypeCode())))).findFirst();
 			return codeName.isPresent() ? codeName.get() : null;
 		case 5:
 			// CDL008
@@ -187,7 +188,7 @@ public class DataDialogWithTypeProcessor {
 				return toMap(this.getServicePlace(companyId).getCodeNames());
 			case 4:
 				// KDL032
-				return toMap(this.getReason(companyId).getCodeNames());
+				return new HashMap<>();
 			case 5:
 				// CDL008
 				return new HashMap<>();
@@ -228,8 +229,8 @@ public class DataDialogWithTypeProcessor {
 	}
 	
 	// get application NO19
-	public List<EnumConstant> getNameAppliction(List<String> errorCodes){
+	public List<EnumConstant> getNameAppliction(){
 		String companyId = AppContexts.user().companyId();
-		return repo.findErAlApplication(companyId, errorCodes);
+		return repo.findApplicationCall(companyId);
 	}
 }

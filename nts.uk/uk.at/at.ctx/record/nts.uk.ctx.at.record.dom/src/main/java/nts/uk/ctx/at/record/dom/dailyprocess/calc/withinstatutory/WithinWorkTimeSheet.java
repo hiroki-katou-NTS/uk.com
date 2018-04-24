@@ -185,9 +185,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		
 		val timeFrames = new ArrayList<WithinWorkTimeFrame>();
 		//所定時間と就業時間帯の重複部分取得
-		//→勤務種類の出勤休日区分を見て就業時間帯取得
-		List<EmTimeZoneSet> workingHourSet = getWorkingHourSetByAmPmClass(lstHalfDayWorkTimezone,workType.getAttendanceHolidayAttr());
-				//createWorkingHourSet(workType, predetermineTimeForSet , lstHalfDayWorkTimezone, workNo);
+		List<EmTimeZoneSet> workingHourSet = createWorkingHourSet(workType, predetermineTimeForSet , lstHalfDayWorkTimezone, workNo);
 		//出退勤時刻と↑の重複時間帯と重複部分取得
 		List<WithinWorkTimeFrame> withinWorkTimeFrame = duplicatedByStamp(workingHourSet,timeLeavingWork);
 		
@@ -363,16 +361,14 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		}
 		TimeWithDayAttr startTime = new TimeWithDayAttr(0);
 		TimeWithDayAttr endTime = new TimeWithDayAttr(0);
-		//コアタイムの設定があった時
 		if(!duplicateCoreTimeList.isEmpty()) {
 			startTime = duplicateCoreTimeList.stream().sorted((first,second)-> first.getStart().compareTo(second.getStart())).collect(Collectors.toList()).get(0).getStart();
 			endTime = duplicateCoreTimeList.stream().sorted((first,second)-> first.getStart().compareTo(second.getStart())).collect(Collectors.toList()).get(duplicateCoreTimeList.size() - 1).getEnd();
 			/*フレックス時間帯に入れる*/
 			return new FlexWithinWorkTimeSheet(this.withinWorkTimeFrame,Optional.of(new TimeSpanForCalc(startTime, endTime)));
 		}
-		//ない時
 		else {
-			return new FlexWithinWorkTimeSheet(this.withinWorkTimeFrame,Optional.empty());
+			return this;
 		}
 	}
 	
@@ -505,10 +501,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 																							  addSettingOfRegularWork,
 																							  addSettingOfIrregularWork, 
 																							  addSettingOfFlexWork,
-//																							  lateTimeSheet,
-//																							  leaveEarlyTimeSheet,
-//																							  lateTimeOfDaily,
-//																							  leaveEarlyTimeOfDaily,
 																							  holidayAddtionSet,
 																							  late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 																							  leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
@@ -834,12 +826,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			totalTime = totalTime.addMinutes(addTime);
 		}
 		return totalTime;
-	}
-
-
-	public AttendanceTime calcWorkTimeBeforeDeductPremium() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 //	/**

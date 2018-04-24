@@ -14,6 +14,6 @@ public interface PreHolidayWorktimeReflectService {
 	 * @param holidayWorkPara
 	 * @return
 	 */
-	public ApplicationReflectOutput preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara);
+	public boolean preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara);
 	
 }
