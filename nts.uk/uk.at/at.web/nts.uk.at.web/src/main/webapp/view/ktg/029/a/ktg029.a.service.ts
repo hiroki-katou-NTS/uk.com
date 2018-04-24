@@ -3,16 +3,16 @@ module nts.uk.at.view.ktg029.a {
     export module service {
         export class Service {
             paths = {
-                getAllMailSet: "at/function/alarm/mailsetting/getinformailseting",
-                addMailSet: "at/function/alarm/mailSetting/addMailSetting"
+                getPeriod: "screen/at/OptionalWidget/getCurrentMonth",
+                getOptionalWidget: "screen/at/OptionalWidget/getOptionalWidget"
             }
             constructor() {}
             
-            getAllMailSet(): JQueryPromise<any> {
-                return ajax("at", this.paths.getAllMailSet);
+            getPeriod(): JQueryPromise<any> {
+                return ajax("at", this.paths.getPeriod);
             }
-            addMailSet(mailSet: any): JQueryPromise<any> {
-                return ajax("at", this.paths.addMailSet, mailSet);
+            getOptionalWidget(code: any): JQueryPromise<any> {
+                return ajax("at", this.paths.getOptionalWidget, code);
             }
             
         }
