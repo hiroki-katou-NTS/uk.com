@@ -363,13 +363,28 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
                     										,this.getAdjustTime()));
         }
         else {
-            returnList.add(new OverTimeFrameTimeSheetForCalc(this.timeSheet
+        	//控除の控除時間帯
+        	val beforeRec = this.getRecordedTimeSheet().stream()
+        										.filter(tc -> tc.createDuplicateRange(new TimeSpanForCalc(this.calcrange.getStart(), baseTime)).isPresent())
+        										.map(tc -> tc.createDuplicateRange(new TimeSpanForCalc(this.calcrange.getStart(), baseTime)).get())
+        										.collect(Collectors.toList());
+        	//計上の控除時間帯
+        	val beforeDed = this.getDeductionTimeSheet().stream()
+												.filter(tc -> tc.createDuplicateRange(new TimeSpanForCalc(this.calcrange.getStart(), baseTime)).isPresent())
+												.map(tc -> tc.createDuplicateRange(new TimeSpanForCalc(this.calcrange.getStart(), baseTime)).get())
+												.collect(Collectors.toList());
+        	//深夜時間帯
+        	Optional<MidNightTimeSheetForCalc> beforeMid = this.getMidNightTimeSheet().isPresent()
+        													?this.getMidNightTimeSheet().get().getDuplicateRangeTimeSheet(new TimeSpanForCalc(this.calcrange.getStart(), baseTime))
+        													:Optional.empty();
+        	
+            returnList.add(new OverTimeFrameTimeSheetForCalc(new TimeZoneRounding(this.calcrange.getStart(), baseTime, this.timeSheet.getRounding())
                                                          ,new TimeSpanForCalc(this.calcrange.getStart(), baseTime)
-                                                         ,this.recreateDeductionItemBeforeBase(baseTime, true,DeductionAtr.Appropriate)
-                                                         ,this.recreateDeductionItemBeforeBase(baseTime, true,DeductionAtr.Deduction )
-                                                         ,this.recreateBonusPayListBeforeBase(baseTime, true)
-                                                         ,this.recreateSpecifiedBonusPayListBeforeBase(baseTime, true)
-                                                         ,this.recreateMidNightTimeSheetBeforeBase(baseTime, true)
+                                                         ,beforeRec
+                                                         ,beforeDed
+                                                         ,Collections.emptyList()
+                                                         ,Collections.emptyList()
+                                                         ,beforeMid
                                                          ,this.getFrameTime().changeFrameNo(statutoryOverFrameNo.isPresent()?statutoryOverFrameNo.get().getLegalOTframeNo().v():this.getFrameTime().getOverWorkFrameNo().v())
                                                          ,StatutoryAtr.DeformationCriterion
                                                          ,this.goEarly
@@ -378,13 +393,28 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
                                                          ,this.payOrder
                                                          ,this.getAdjustTime()));
             
-            returnList.add(new OverTimeFrameTimeSheetForCalc(this.timeSheet
+        	//控除の控除時間帯
+        	val afterRec = this.getRecordedTimeSheet().stream()
+        										.filter(tc -> tc.createDuplicateRange(new TimeSpanForCalc(baseTime, this.calcrange.getEnd())).isPresent())
+        										.map(tc -> tc.createDuplicateRange(new TimeSpanForCalc(baseTime, this.calcrange.getEnd())).get())
+        										.collect(Collectors.toList());
+        	//計上の控除時間帯
+        	val afterDed = this.getDeductionTimeSheet().stream()
+												.filter(tc -> tc.createDuplicateRange(new TimeSpanForCalc(baseTime, this.calcrange.getEnd())).isPresent())
+												.map(tc -> tc.createDuplicateRange(new TimeSpanForCalc(baseTime, this.calcrange.getEnd())).get())
+												.collect(Collectors.toList());
+        	//深夜時間帯
+        	Optional<MidNightTimeSheetForCalc> afterMid = this.getMidNightTimeSheet().isPresent()
+        													?this.getMidNightTimeSheet().get().getDuplicateRangeTimeSheet(new TimeSpanForCalc(baseTime, this.calcrange.getEnd()))
+        													:Optional.empty();
+            
+            returnList.add(new OverTimeFrameTimeSheetForCalc(new TimeZoneRounding(baseTime, this.calcrange.getEnd(), this.timeSheet.getRounding())
                                                           ,new TimeSpanForCalc(baseTime, this.calcrange.getEnd())
-                                                         ,this.recreateDeductionItemBeforeBase(baseTime, false, DeductionAtr.Appropriate)
-                                                         ,this.recreateDeductionItemBeforeBase(baseTime, false, DeductionAtr.Deduction)
-                                                         ,this.recreateBonusPayListBeforeBase(baseTime, false)
-                                                         ,this.recreateSpecifiedBonusPayListBeforeBase(baseTime, false)
-                                                         ,this.recreateMidNightTimeSheetBeforeBase(baseTime, false)
+                                                         ,afterRec
+                                                         ,afterDed
+                                                         ,Collections.emptyList()
+                                                         ,Collections.emptyList()
+                                                         ,afterMid
                                                          ,this.getFrameTime()
                                                          ,StatutoryAtr.DeformationCriterion
                                                          ,this.goEarly
