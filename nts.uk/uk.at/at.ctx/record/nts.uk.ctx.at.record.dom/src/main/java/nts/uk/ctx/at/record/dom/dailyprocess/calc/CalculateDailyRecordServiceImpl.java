@@ -20,6 +20,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.actualworkinghours.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
@@ -768,10 +769,36 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		   afterDailyRecordDto.merge(itemValueList);
 		   //手修正された項目の値を計算前に戻す   
 		   calcResultIntegrationOfDaily = afterDailyRecordDto.toDomain();
+		   
+		   val reCalcIntegration = reCalc(calcResultIntegrationOfDaily, companyId);
 		  }
 			
 		/*日別実績への項目移送*/
 		//return integrationOfDaily;
+		return calcResultIntegrationOfDaily;
+	}
+
+
+	private IntegrationOfDaily reCalc(IntegrationOfDaily calcResultIntegrationOfDaily,String companyId) {
+		//乖離時間(AggregateRoot)取得
+		List<DivergenceTime> divergenceTimeList = divergenceTimeRepository.getAllDivTime(companyId);
+		
+		//乖離時間計算用　勤怠項目ID紐づけDto作成
+		DailyRecordToAttendanceItemConverter forCalcDivergenceDto = this.dailyRecordToAttendanceItemConverter.setData(calcResultIntegrationOfDaily);
+		
+		if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			ActualWorkingTimeOfDaily.createDivergenceTimeOfDaily(calcResultIntegrationOfDaily.getAffiliationInfor().getEmployeeId(),
+																												 calcResultIntegrationOfDaily.getAffiliationInfor().getYmd(),
+																												 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime(),
+																												 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintDifferenceTime(),
+																												 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintTime(),
+																												 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTimeDifferenceWorkingHours(),
+																												 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance(),
+																											     forCalcDivergenceDto,
+																											     divergenceTimeList);
+			//val a = new AttendanceTimeOfDailyPerformance
+			//return 
+		}
 		return calcResultIntegrationOfDaily;
 	}
 
