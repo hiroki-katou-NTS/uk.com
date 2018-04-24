@@ -3,6 +3,7 @@
 	border-radius: 5px;
 	width: 810px;
 	padding: 5px;	
+	margin: -10px;
 }
 
 
@@ -45,4 +46,5 @@
 
 .holiday-button{
 	margin-left: 50px;
+	height: 50px;
 }
