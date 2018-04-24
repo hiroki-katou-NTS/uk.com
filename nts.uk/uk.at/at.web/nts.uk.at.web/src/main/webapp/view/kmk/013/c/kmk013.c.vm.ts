@@ -160,8 +160,71 @@ module nts.uk.at.view.kmk013.c {
                         });
                     }
                 );
-
+                
+                // catch event press tab, shift+tab to change tab-panel
+                self.changeTabPanel();
             }
+            
+            changeTabPanel(): void {
+                let self = this;
+                $( document ).keydown(function( event ) {
+                    // catch event press tab button
+                    if (event.which == 9) {
+                        // catch event when stand up manual button, return tab-panel 3
+                       if ($( "*:focus" ).attr("class") == 'manual-button') {
+                            if (event.shiftKey) {
+                                self.selectedTab("tab-3");
+                            }    
+                       }
+                       else {
+                           switch(_.toNumber($( "*:focus" ).attr("tabindex"))) {
+                               case 16: { 
+                                    // jump into tab-panel 1
+                                    self.selectedTab("tab-1");
+                                    break;
+                               }
+                               case 19: { 
+                                    if (!event.shiftKey) {
+                                        // jump into tab-panel 2
+                                        if (9 == _.toNumber($("*:focus").closest( "#combo-box" ).attr("posTab"))) {
+                                            self.selectedTab("tab-2");
+                                        }    
+                                    }
+                                    break; 
+                               }
+                               case 20: {
+                                    // jump return tab-panel 1
+                                    if (event.shiftKey) {
+                                        if (0 == _.toNumber($("*:focus").closest( "#combo-box" ).attr("posTab"))) {
+                                            self.selectedTab("tab-1");
+                                        }
+                                    } 
+                                    // // jump into tab-panel 3
+                                    else {
+                                        if (9 == _.toNumber($("*:focus").closest( "#combo-box" ).attr("posTab"))) {
+                                            self.selectedTab("tab-3");
+                                        }    
+                                    } 
+                                    break; 
+                               }
+                               case 21: {
+                                   if (event.shiftKey) {
+                                       // jump return tab-panel 2
+                                       if (0 == _.toNumber($("*:focus").closest( "#combo-box" ).attr("posTab"))) {
+                                            self.selectedTab("tab-2");
+                                        }
+                                   }
+                                   break;
+                               } 
+                               default: { 
+                               } 
+                            }
+                       }
+                       
+                    }
+                });
+            }
+            
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
@@ -233,9 +296,11 @@ module nts.uk.at.view.kmk013.c {
                 service.save(data).done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     blockUI.clear();
+                    $(".radio-btn-left-content").focus();
                 }).fail((error) => {
                     console.log(error);
                     blockUI.clear();
+                    $(".radio-btn-left-content").focus();
                 });
             }
             initData(): JQueryPromise<any> {
