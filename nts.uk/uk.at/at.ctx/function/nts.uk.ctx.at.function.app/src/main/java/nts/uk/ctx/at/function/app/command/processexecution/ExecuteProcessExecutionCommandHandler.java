@@ -589,6 +589,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			LoginUserContext loginContext, DatePeriod calculateSchedulePeriod , List<String> empIds) {
 		ScheduleCreatorExecutionCommand scheduleCommand = new ScheduleCreatorExecutionCommand();
 		scheduleCommand.setConfirm(false);
+		scheduleCommand.setExecutionId(execId);
 		scheduleCommand.setAutomatic(true);
 		scheduleCommand.setEmployeeIds(empIds);
 		//2-対象開始日　＝　「期間の計算」で作成した開始日とする
