@@ -55,7 +55,6 @@ module nts.custom.component {
                     }">
                 <div class="layouttab" data-bind="if: ko.toJS(tab) == TABS.LAYOUT">
                     <div data-bind="ntsSearchBox: {
-                            searchMode: 'filter',
                             targetKey: 'maintenanceLayoutID',
                             comId: 'layout-data',
                             items: gridlist.options,
