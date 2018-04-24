@@ -11,20 +11,20 @@ module nts.uk.at.view.kdr001.a {
             };
         
         
-        export function findAll(): JQueryPromise<any> {
+        export function findAll() : JQueryPromise<any> {
             return nts.uk.request.ajax("at", path.findAll);
         }
         
-        export function saveAsExcel(data) {
+        export function saveAsExcel(data){
             return nts.uk.request.exportFile("at", path.saveAsExcel, data);
         }
         
-        export function getDate() {
-            return nts.uk.request.exportFile("at", path.getDate);
+        export function getDate() : JQueryPromise<any>{
+            return nts.uk.request.ajax("at", path.getDate);
         }
         
-        export function getPermissionOfEmploymentForm() {
-            return nts.uk.request.exportFile("at", path.getPermissionOfEmploymentForm);
+        export function getPermissionOfEmploymentForm() : JQueryPromise<any> {
+            return nts.uk.request.ajax("at", path.getPermissionOfEmploymentForm);
         }
     }
 }

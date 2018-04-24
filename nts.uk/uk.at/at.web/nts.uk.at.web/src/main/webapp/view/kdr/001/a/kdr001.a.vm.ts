@@ -241,6 +241,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         public startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            /*
             service.findAll().done(function(data: Array<any>) {
                 self.loadAllHolidayRemaining(data);
                 nts.uk.ui.block.clear();
@@ -269,8 +270,43 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 }
                 dfd.resolve();
             });
-
-            dfd.resolve(self);
+            */
+            //let user: any = __viewContext.user;
+            $.when(service.findAll(),
+                    //service.getDate(),
+                    service.getPermissionOfEmploymentForm()
+                   // nts.uk.characteristics.restore("UserSpecific_" + user.employeeId)
+                    ).done((
+                            holidayRemainings: Array<any>,
+                            //dateData: IGetDate,
+                            permission: any
+                            //userSpecific
+                            ) => {
+                    self.loadAllHolidayRemaining(holidayRemainings);
+                    /*
+                        let cDate = new Date(Date.now()); //get local date
+                        let startDate = dateData ? dateData.startDate || "20180101" : "20180101";
+                        
+                    let endDate = dateData ? dateData.endDate || "20181231" : "20181231";
+                    self.startDateString(moment.utc(startDate).format("YYYY/MM"));
+                    self.endDateString(moment.utc(endDate).format("YYYY/MM"));
+                        */
+                    self.permissionOfEmploymentForm(new PermissionOfEmploymentFormModel(
+                            permission.companyId,
+                            permission.roleId,
+                            permission.functionNo,
+                            permission.availability));
+                  /* if (userSpecific) {
+                        self.holidayRemainingSelectedCd(userSpecific.outputItemSettingCode);
+                        self.selectedCode(userSpecific.pageBreakAtr);
+                    }
+*/
+               }).fail(function(res) {
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
+            }).always(() => {
+                nts.uk.ui.block.clear();
+                dfd.resolve(self);
+            });
             return dfd.promise();
         }
         

@@ -10,6 +10,13 @@ module nts.uk.at.view.kdr001.a {
                 $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption).done(function() {
                 });
             });
+            let user: any = __viewContext.user;
+            nts.uk.characteristics.restore("UserSpecific_" + user.employeeId).done(function(userSpecific) {
+                if (userSpecific) {
+                    self.holidayRemainingSelectedCd(userSpecific.outputItemSettingCode);
+                    self.selectedCode(userSpecific.pageBreakAtr);
+                }
+            });
         });
     });
 }
