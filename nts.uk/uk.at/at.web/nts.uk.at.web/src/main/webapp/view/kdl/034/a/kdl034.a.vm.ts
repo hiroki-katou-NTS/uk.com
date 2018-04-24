@@ -41,10 +41,6 @@ module nts.uk.at.view.kdl034.a {
                                     listApprover.push(new Approver(approver.approverID, approver.approverName, approvalState.phaseOrder, approvalState.approvalReason, approver.jobtitle, approver.representerName));
                                 });
                             });
-                            listApprover = _.uniqBy(listApprover, function (approver) {
-                              return approver.id;
-                            });
-                            
                             self.listApprover(listApprover);
                             self.selectedApproverId(applicant.pid);
                         }
@@ -62,14 +58,15 @@ module nts.uk.at.view.kdl034.a {
                 var self = this;
                 dialog.confirm({ messageId: "Msg_384"}).ifYes(() => {
                         nts.uk.ui.block.invisible();
-                        let currentApprover = _.find(self.listApprover(), x => { return x.id === self.selectedApproverId() });
+                        let idSelected = self.selectedApproverId().split('__');
+                        let currentApprover = _.find(self.listApprover(), x => { return x.id === idSelected[0] &&  x.phaseOrder+"" === idSelected[1]});
                         let command = {
                             appID: self.appID,
                             version: self.version,
                             order: currentApprover.phaseOrder,
                             returnReason: self.returnReason()
                         }
-                        nts.uk.at.view.kdl034.a.service.remand(command)
+                        nts.uk.at.view.kdl034.a.service.remand(command) 
                             .done(function(result){
                                 let successList: Array<string> = [];
                                 let failedList: Array<string> = [];
@@ -144,6 +141,7 @@ module nts.uk.at.view.kdl034.a {
             approvalReson: string;
             jobTitle: string;
             dispApprover: string;
+            idAndPhase: string;
             constructor(id: string, name: string, phaseOrder: number, approvalReason: string, jobTitle: string, representerName: string) {
                 this.id = id;
                 this.name = name;
@@ -157,6 +155,7 @@ module nts.uk.at.view.kdl034.a {
                 } else {
                     this.dispApprover = "フェーズ" + phaseOrder + "の承認者：　" + jobTitle + "　" + name;
                 }
+                this.idAndPhase = id + "__" + phaseOrder;
             }
 
         }
