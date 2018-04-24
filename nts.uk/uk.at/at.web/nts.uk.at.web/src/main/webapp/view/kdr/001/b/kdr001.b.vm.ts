@@ -427,7 +427,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.insideHours = ko.observable(param ? param.insideHours || false : false);
             self.insideHalfDay = ko.observable(param ? param.insideHalfDay || false : false);
             self.numberRemainingPause = ko.observable(param ? param.numberRemainingPause || false : false);
-            self.unDigestedPause = ko.observable(param ? param.undigestedPause || false : false);
+            self.unDigestedPause = ko.observable(param ? param.unDigestedPause || false : false);
             self.pauseItem = ko.observable(param ? param.pauseItem || false : false);
             self.yearlyReserved = ko.observable(param ? param.yearlyReserved || false : false);
             self.listSpecialHoliday = ko.observableArray(param ? param.listSpecialHoliday || [] : []);
