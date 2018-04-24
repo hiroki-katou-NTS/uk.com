@@ -37,9 +37,10 @@
 
 			<div class="cf" id="contents-area">
 				<div class="selectionHoliday">
-					<div class="panel" style="text-align: center;">一覧パネル</div>
-					<table id="multi-list" tabindex="5"
-						data-bind="ntsGridList: {
+					<div class="panel"
+						data-bind="ntsPanel:{width: '350px', height: '370px', direction: 'right', showIcon: true, visible: true}">
+						<table id="multi-list" tabindex="5"
+							data-bind="ntsGridList: {
 							    multiple: false,
 								options: lstHolidays,
 								optionsValue: 'displayCd',
@@ -51,29 +52,29 @@
 								
 								value: currentCode
 					}"></table>
-
+					</div>
 				</div>
 				<div class="holidayAction" data-bind="with: currentHoliday">
 					<div class="holiday-button">
-					<div class="labelWork" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_42')}
-					</div>
-					<input style="width: 150px;" tabindex="6" id="holidayCode"
-						data-bind="ntsTextEditor: {
+						<div class="labelWork" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_42')}
+						</div>
+						<input style="width: 150px;" tabindex="6" id="holidayCode"
+							data-bind="ntsTextEditor: {
 							constraint: 'HolidayRemainingCode', 
 							name: '#[KDR001_40]',
 							value: cd,  
 							enable: true,
 						 	required: true,
 						  	enable: $parent.isNewMode()}" />
-					<input style="width: 250px; margin: 20px;" tabindex="7"
-						id="holidayName"
-						data-bind="ntsTextEditor: {
+						<input style="width: 250px; margin: 20px;" tabindex="7"
+							id="holidayName"
+							data-bind="ntsTextEditor: {
 							constraint: 'HolidayRemainingName',
 							name: '#[KDR001_41]',
 							value: name,
 						  	enable: true,
 						    required: true}" />
-						    
+
 					</div>
 					<div class="holidaytable" style="margin-left: 50px;">
 						<div class="labelWork" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_43')}
@@ -101,10 +102,10 @@
 										data-bind="ntsCheckBox: { checked: outputItemSubstitute , enable: true, text: '#{i18n.getText('Com_CompensationHoliday')}' }"></div>
 									<!-- B4_8  -->
 									<div tabindex="14"
-										data-bind="ntsCheckBox: { checked: representSubstitute , enable: true, text: '#{i18n.getText('Com_SubstituteHoliday')}' }"></div>
+										data-bind="ntsCheckBox: { checked: representSubstitute , enable: true, text: '#{i18n.getText('KDR001_53')}' }"></div>
 									<!-- B4_9  -->
 									<div tabindex="15"
-										data-bind="ntsCheckBox: { checked: remainingChargeSubstitute , enable: true, text: '#{i18n.getText('Com_ExsessHoliday')}' }"></div>
+										data-bind="ntsCheckBox: { checked: remainingChargeSubstitute , enable: true, text: '#{i18n.getText('KDR001_54')}' }"></div>
 								</td>
 							</tr>
 							<tr>
@@ -115,23 +116,24 @@
 
 									<!-- B4_11  -->
 									<div tabindex="17"
-										data-bind="ntsCheckBox: { checked: unDigestedPause , enable: true, text: '#{i18n.getText('Com_SubstituteHoliday')}' }"></div>
+										data-bind="ntsCheckBox: { checked: unDigestedPause , enable: true, text: '#{i18n.getText('KDR001_53')}' }"></div>
 
 									<!-- B4_12  -->
 									<div tabindex="18"
-										data-bind="ntsCheckBox: { checked: numberRemainingPause ,  enable: true, text: '#{i18n.getText('Com_ExsessHoliday')}' }"></div>
+										data-bind="ntsCheckBox: { checked: numberRemainingPause ,  enable: true, text: '#{i18n.getText('KDR001_54')}' }"></div>
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<div tabindex="25" data-bind="ntsMultiCheckBox: {
+									<div tabindex="25"
+										data-bind="ntsMultiCheckBox: {
 											options: $parent.allSpecialHolidays,
 											optionsValue: 'specialHolidayCode',
 											optionsText: 'specialHolidayName',
 											value: listSpecialHoliday,
 											enable: true}"></div>
 								</td>
-							</tr>							
+							</tr>
 							<tr>
 								<td>
 									<!-- B4_20  -->
