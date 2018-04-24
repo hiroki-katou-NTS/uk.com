@@ -80,4 +80,27 @@ public class RealAnnualLeave {
 			this.remainingNumberBeforeGrant = this.remainingNumber;
 		}
 	}
+	
+	/**
+	 * 使用数を加算する
+	 * @param days 日数
+	 * @param afterGrantAtr 付与後フラグ
+	 */
+	public void addUsednumber(double days, boolean afterGrantAtr){
+	
+		// 使用数．使用日数．使用日数に加算
+		this.usedNumber.getUsedDays().addUsedDays(days);
+		
+		// 「付与後フラグ」をチェック
+		if (afterGrantAtr){
+		
+			// 使用数．使用日数．使用日数付与後に加算
+			this.usedNumber.getUsedDays().addUsedDaysAfterGrant(days);
+		}
+		else {
+			
+			// 使用数．使用日数．使用日数付与前に加算
+			this.usedNumber.getUsedDays().addUsedDaysBeforeGrant(days);
+		}
+	}
 }
