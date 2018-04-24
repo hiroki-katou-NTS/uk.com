@@ -139,13 +139,12 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 	}
 
 	@Override
-	public Optional<EmpWithRangeLogin> getByComIDAndEmpCD(String companyID, String employeeCD) {
-
+	public Optional<EmpWithRangeLogin> getByComIDAndEmpCD(String companyID, String employeeCD, GeneralDate referenceDate) {
 		// imported（権限管理）「社員」を取得する Lấy request List No.18
 		Optional<EmpInfoImport> empInfor = employeeInfoAdapter.getByComnyIDAndEmployeeCD(companyID, employeeCD);
 		if (empInfor.isPresent()) {
 			// 指定社員が基準日に承認権限を持っているかチェックする Lay request 305 tu domain service
-			boolean result = canApprovalOnBaseDateService.canApprovalOnBaseDate(empInfor.get().getCompanyId(), empInfor.get().getEmployeeId(), GeneralDate.today());
+			boolean result = canApprovalOnBaseDateService.canApprovalOnBaseDate(empInfor.get().getCompanyId(), empInfor.get().getEmployeeId(), referenceDate);
 			if (result == true) {
 				return Optional.of((new EmpWithRangeLogin(
 						empInfor.get().getPerName(),
@@ -159,4 +158,6 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 		return Optional.empty();
 	}
 
+	
+	
 }

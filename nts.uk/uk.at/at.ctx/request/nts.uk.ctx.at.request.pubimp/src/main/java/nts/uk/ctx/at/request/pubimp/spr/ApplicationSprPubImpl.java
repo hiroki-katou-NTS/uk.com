@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
@@ -36,11 +37,15 @@ public class ApplicationSprPubImpl implements ApplicationSprPub {
 	public Optional<AppOverTimeSprExport> getAppOvertimeByDate(GeneralDate appDate, String employeeID, Integer overTimeAtr) {
 		List<Application_New> listApplication = applicationRepository_New.getApplicationBySIDs(Arrays.asList(employeeID), appDate, appDate);
 		List<Application_New> listPreApp = listApplication.stream()
-				.filter(x -> x.getPrePostAtr().equals(PrePostAtr.PREDICT))
+				.filter(x -> x.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)&&x.getPrePostAtr().equals(PrePostAtr.PREDICT))
 				.collect(Collectors.toList());
 		List<AppOverTimeSprExport> resultList = listPreApp.stream()
 			.filter(x -> {
-				AppOverTime appOverTime = overtimeRepository.getAppOvertime(x.getCompanyID(), x.getAppID()).get();
+				Optional<AppOverTime> opAppOverTime = overtimeRepository.getAppOvertime(x.getCompanyID(), x.getAppID());
+				if(!opAppOverTime.isPresent()){
+					return false;
+				}
+				AppOverTime appOverTime = opAppOverTime.get();
 				if(appOverTime.getOverTimeAtr().value==overTimeAtr){
 					return true;
 				}
