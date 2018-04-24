@@ -12,6 +12,9 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.RecordDate;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepository;
@@ -33,6 +36,9 @@ public class StartupErrorCheckImpl implements StartupErrorCheckService {
 	
 	@Inject
 	private RequestOfEachCompanyRepository requestOfEachCompanyRepository;
+	
+	@Inject
+	private RequestSettingRepository requestSettingRepository;
 	
 	@Override
 	public void startupErrorCheck(GeneralDate baseDate, int appType, ApprovalRootContentImport_New approvalRootContentImport) {
@@ -65,8 +71,10 @@ public class StartupErrorCheckImpl implements StartupErrorCheckService {
 			throw new BusinessException("Msg_323");
 		}
 		// ドメインモデル「申請設定」．承認ルートの基準日をチェックする
-		BaseDateFlg baseDateFlg = BaseDateFlg.SYSTEM_DATE;
-		if(baseDateFlg.equals(BaseDateFlg.APP_DATE)){
+		RecordDate baseDateFlg = RecordDate.SYSTEM_DATE;
+		RequestSetting requestSetting = requestSettingRepository.findByCompany(companyID).get();
+		baseDateFlg = requestSetting.getApplicationSetting().getRecordDate();
+		if(baseDateFlg.equals(RecordDate.APP_DATE)){
 			return;
 		}
 		switch (approvalRootContentImport.getErrorFlag()) {

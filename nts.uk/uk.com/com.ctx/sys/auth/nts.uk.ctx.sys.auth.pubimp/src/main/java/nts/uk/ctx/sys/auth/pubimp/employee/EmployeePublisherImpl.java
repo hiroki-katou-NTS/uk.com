@@ -145,6 +145,12 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 		return Optional.empty();
 	}
 
+	@Override
+	public List<String> getListWorkPlaceID(String employeeID, GeneralDate referenceDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 	
 }

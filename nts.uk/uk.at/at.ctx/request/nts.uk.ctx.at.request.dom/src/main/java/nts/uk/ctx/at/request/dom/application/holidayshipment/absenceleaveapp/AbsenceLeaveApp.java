@@ -55,4 +55,5 @@ public class AbsenceLeaveApp extends AggregateRoot {
 	public String getWorkTimeCD() {
 		return this.workTimeCD == null ? null : this.workTimeCD.v();
 	}
+
 }
