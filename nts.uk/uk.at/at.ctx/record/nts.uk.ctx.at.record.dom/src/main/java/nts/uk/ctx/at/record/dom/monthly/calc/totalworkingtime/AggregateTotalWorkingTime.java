@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime;
 
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.HolidayWorkTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.OverTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlex;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.AggrSettingMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlx;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
@@ -183,7 +185,7 @@ public class AggregateTotalWorkingTime {
 	 * @param workingSystem 労働制
 	 * @param aggregateAtr 集計区分
 	 * @param aggrSetOfFlex フレックス時間勤務の月の集計設定
-	 * @param repositories 月次集計が必要とするリポジトリ
+	 * @param monthlyAggrSetOfFlexOpt フレックス勤務の月別集計設定
 	 * @return フレックス時間　（当日分のみ）
 	 */
 	public FlexTime aggregateDailyForFlex(
@@ -191,17 +193,19 @@ public class AggregateTotalWorkingTime {
 			String companyId, String workplaceId, String employmentCd,
 			WorkingSystem workingSystem, MonthlyAggregateAtr aggregateAtr,
 			AggrSettingMonthlyOfFlx aggrSetOfFlex,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			Optional<MonthlyAggrSetOfFlex> monthlyAggrSetOfFlexOpt){
 		
-		FlexTime returnClass = new FlexTime();
+		FlexTime flexTime = new FlexTime();
 		
 		// 残業時間を集計する　（フレックス時間勤務用）
-		returnClass = this.overTime.aggregateForFlex(attendanceTimeOfDaily, companyId, aggregateAtr, aggrSetOfFlex);
+		flexTime = this.overTime.aggregateForFlex(attendanceTimeOfDaily, companyId, aggregateAtr,
+				aggrSetOfFlex, monthlyAggrSetOfFlexOpt, flexTime);
 		
 		// 休出時間を集計する　（フレックス時間勤務用）
-		this.holidayWorkTime.aggregateForFlex(attendanceTimeOfDaily, companyId, aggregateAtr, aggrSetOfFlex);
+		flexTime = this.holidayWorkTime.aggregateForFlex(attendanceTimeOfDaily, companyId, aggregateAtr,
+				aggrSetOfFlex, monthlyAggrSetOfFlexOpt, flexTime);
 		
-		return returnClass;
+		return flexTime;
 	}
 	
 	/**

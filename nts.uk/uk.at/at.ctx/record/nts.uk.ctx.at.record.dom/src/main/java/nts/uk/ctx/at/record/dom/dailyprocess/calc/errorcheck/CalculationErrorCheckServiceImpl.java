@@ -44,6 +44,8 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 		
 		val errorItemList = errorAlarmWorkRecordRepository.getListErrorAlarmWorkRecord(AppContexts.user().companyId());
 		List<EmployeeDailyPerError> addItemList = new ArrayList<>();
+//		if(!integrationOfDaily.getEmployeeError().isEmpty() &&  integrationOfDaily.getEmployeeError() != null)
+//			addItemList = integrationOfDaily.getEmployeeError();
 		DailyRecordToAttendanceItemConverter attendanceItemConverter = this.dailyRecordToAttendanceItemConverter.setData(integrationOfDaily);
 		//勤務実績のエラーアラーム数分ループ
 		for(ErrorAlarmWorkRecord errorItem : errorItemList) {
@@ -52,15 +54,18 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 			
 			//システム固定
 			if(errorItem.getFixedAtr()) {
-				addItemList.addAll(systemErrorCheck(integrationOfDaily,errorItem,attendanceItemConverter));
+				val addItems = systemErrorCheck(integrationOfDaily,errorItem,attendanceItemConverter);
+				if(!addItems.isEmpty() && addItems != null)
+					addItemList.addAll(addItems);
 			}
 			//ユーザ設定
 			else {
-				addItemList.addAll(erAlCheckService.checkErrorFor(integrationOfDaily.getAffiliationInfor().getEmployeeId()
-												, integrationOfDaily.getAffiliationInfor().getYmd()));
+				val addItems = erAlCheckService.checkErrorFor(integrationOfDaily.getAffiliationInfor().getEmployeeId(), integrationOfDaily.getAffiliationInfor().getYmd());
+				if(!addItems.isEmpty() && addItems != null)
+					addItemList.addAll(addItems);
 			}
 		}
-		integrationOfDaily.getEmployeeError().addAll(addItemList);
+		integrationOfDaily.setEmployeeError(addItemList);
 		return integrationOfDaily;
 	}
 
