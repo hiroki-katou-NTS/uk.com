@@ -192,6 +192,8 @@ public interface DailyPerformanceScreenRepo {
 	
 	List<EnumConstant> findErAlApplication(String companyId, List<String> errorCode);
 	
+	List<EnumConstant> findApplicationCall(String companyId);
+	
 	Optional<IdentityProcessUseSetDto> findIdentityProcessUseSet(String comapnyId);
 	
 	Optional<ApprovalUseSettingDto> findApprovalUseSettingDto(String comapnyId);

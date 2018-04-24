@@ -20,6 +20,7 @@ import nts.arc.enums.EnumConstant;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.function.infra.entity.dailymodification.KfnmtApplicationCall;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityDailyItem;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityDailyItemPK;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityFormSheet;
@@ -219,6 +220,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	private static final String SELECT_BY_EMPLOYEE_ID_AFF_COM = "SELECT c FROM BsymtAffCompanyHist c WHERE c.bsymtAffCompanyHistPk.sId IN :sIds and c.companyId = :cid ORDER BY c.startDate ";
 	
 	private static final String SELECT_BY_LISTSID_WPH;
+	
+	private final static String FIND_APPLICATION_CALL = "SELECT a FROM KfnmtApplicationCall a WHERE a.kfnmtApplicationCallPK.companyId = :companyId";
 	static {
 		StringBuilder builderString = new StringBuilder();		
 		builderString.append("SELECT DISTINCT b.businessTypeCode");
@@ -1161,5 +1164,20 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		});
 		 return resultList.stream().collect(Collectors.groupingBy(AffComHistItemAtScreen :: getEmployeeId, Collectors
 		           .mapping(x -> x, Collectors.toList())));
+	}
+
+	@Override
+	public List<EnumConstant> findApplicationCall(String companyId) {
+		List<KfnmtApplicationCall> entities =  this.queryProxy().query(FIND_APPLICATION_CALL, KfnmtApplicationCall.class).setParameter("companyId", companyId).getList();
+		if (!entities.isEmpty()) {
+			return entities.stream().map(x -> {
+				return new EnumConstant(
+						x.kfnmtApplicationCallPK.applicationType, EnumAdaptor
+								.valueOf(x.kfnmtApplicationCallPK.applicationType, ApplicationType.class).nameId,
+						"");
+			}).collect(Collectors.toList());
+		} else {
+			return Collections.emptyList();
+		}
 	}
 }
