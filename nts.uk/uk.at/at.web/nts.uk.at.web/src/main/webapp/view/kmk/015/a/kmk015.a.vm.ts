@@ -63,6 +63,9 @@ module nts.uk.at.view.kmk015.a {
                     { headerText: nts.uk.resource.getText('KMK015_12'), key: 'time', width: 270 },
                 ]);
                 self.selectedCode.subscribe(code => {
+                    //clear Error
+                    nts.uk.ui.errors.clearAll();
+                    
                     self.listWorkType().forEach(function(item) {
                         if (item.workTypeCode == code) { self.nameWorkType(item.name); }
                     });
