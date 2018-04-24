@@ -26,7 +26,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         periodStartDate: KnockoutObservable<moment.Moment>;
         periodEndDate: KnockoutObservable<moment.Moment>;
         baseDate: KnockoutObservable<moment.Moment>;
-        selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
+        lstSearchEmployee: KnockoutObservableArray<EmployeeSearchDto>;
         showEmployment: KnockoutObservable<boolean>; // 雇用条件
         showWorkplace: KnockoutObservable<boolean>; // 職場条件
         showClassification: KnockoutObservable<boolean>; // 分類条件
@@ -89,7 +89,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 { name: 'システム管理者', value: 1 }, // PERSONAL_INFORMATION
                 { name: '就業', value: 2 } // EMPLOYMENT
             ]);
-            self.selectedEmployee = ko.observableArray([]);
+            self.lstSearchEmployee = ko.observableArray([]);
 
             // initial ccg options
             self.setDefaultCcg001Option();
@@ -227,7 +227,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
 
                 /** Return data */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-                    self.selectedEmployee(data.listEmployee);
+                    self.lstSearchEmployee(data.listEmployee);
                     self.applyKCP005ContentSearch(data.listEmployee);
                 }
             }
@@ -339,7 +339,18 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 nts.uk.ui.block.clear();  
                 return;
             }
-            if (!self.selectedEmployee() || self.selectedEmployee().length === 0){
+            self.selectedEmployeeCode()
+            let lstSelectedEployee : Array<EmployeeSearchDto> = [];
+            var index = -1;
+            for (var i = 0; i < self.selectedEmployeeCode().length; i++) {
+                index = _.findIndex(self.lstSearchEmployee(), function(x)
+                { return x.employeeCode === self.selectedEmployeeCode()[i] });
+                if (index > -1) {
+                    lstSelectedEployee.push(self.lstSearchEmployee()[index]);
+                }
+            }
+                lstSelectedEployee
+            if (!lstSelectedEployee || lstSelectedEployee.length === 0){
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_884' });
                 nts.uk.ui.block.clear();  
                 return;
