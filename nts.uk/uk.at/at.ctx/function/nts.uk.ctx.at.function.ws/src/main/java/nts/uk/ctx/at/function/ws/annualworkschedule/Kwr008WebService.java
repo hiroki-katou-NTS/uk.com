@@ -16,8 +16,9 @@ import nts.uk.ctx.at.function.app.command.annualworkschedule.SetOutItemsWoScComm
 import nts.uk.ctx.at.function.app.command.annualworkschedule.UpdateSetOutItemsWoScCommandHandler;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.SetOutItemsWoScDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.SetOutItemsWoScFinder;
-import nts.uk.ctx.at.function.dom.annualworkschedule.PageBreakIndicator;
-import nts.uk.ctx.at.function.dom.annualworkschedule.ValueOuputFormat;
+import nts.uk.ctx.at.function.dom.annualworkschedule.enums.OutputAgreementTime;
+import nts.uk.ctx.at.function.dom.annualworkschedule.enums.PageBreakIndicator;
+import nts.uk.ctx.at.function.dom.annualworkschedule.enums.ValueOuputFormat;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
@@ -46,7 +47,7 @@ public class Kwr008WebService extends WebService {
 	/**
 	 * KWR008 A
 	 * 改頁選択 - Page break selection
-	 * 
+	 * enum
 	 * */
 	@POST
 	@Path("get/enum/pagebreak")
@@ -62,6 +63,16 @@ public class Kwr008WebService extends WebService {
 	@Path("get/enum/valueoutputformat")
 	public List<EnumConstant> getEnumValueOutputFormat(){
 		return EnumAdaptor.convertToValueNameList(ValueOuputFormat.class, i18n);
+	}
+	
+	/*
+	 * 36協定時間を出力する場合の表示形式
+	 * Enum
+	 * */
+	@POST
+	@Path("get/enum/outputagreementtime")
+	public List<EnumConstant> getEnumOutputAgreementTime(){
+		return EnumAdaptor.convertToValueNameList(OutputAgreementTime.class, i18n);
 	}
 	
 	/* *

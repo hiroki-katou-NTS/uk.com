@@ -19,7 +19,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button tabindex="1" data-bind="click: registerMode">#{i18n.getText('KWR008_18')}</button>
-				<button tabindex="2" data-bind="click: doRegister, enable: screenMode() == nts.uk.at.view.kwr008.share.model.SCREEN_MODE.NEW" class="proceed">#{i18n.getText('KWR008_19')}</button>
+				<button tabindex="2" data-bind="click: doRegister" class="proceed">#{i18n.getText('KWR008_19')}</button>
 				<button tabindex="3" data-bind="click: doDelete, enable: screenMode() == nts.uk.at.view.kwr008.share.model.SCREEN_MODE.UPDATE" class="danger">#{i18n.getText('KWR008_20')}</button>
 				<button tabindex="4" data-bind="click: doCancel, enable: screenMode() == nts.uk.at.view.kwr008.share.model.SCREEN_MODE.NEW">#{i18n.getText('KWR008_21')}</button>
 			</div>
@@ -32,11 +32,11 @@
 							<table id="listStandardImportSetting" data-bind="ntsGridList: {								
 								rows: 15,
 								columns: [
-					                { headerText: '#{i18n.getText('KWR008_22')}', key: 'code', width: 60, formatter: _.escape },
+					                { headerText: '#{i18n.getText('KWR008_22')}', key: 'cd', width: 60, formatter: _.escape },
 					                { headerText: '#{i18n.getText('KWR008_23')}', key: 'name', width: 260, formatter: _.escape }
 					            ],
 					            dataSource: listStandardImportSetting,
-								primaryKey: 'code', 
+								primaryKey: 'cd', 
 								multiple: false,
 								value: selectedCode,
 								height: '390px' 
@@ -66,16 +66,18 @@
 
 					</div>
 					<div style="margin-top: 15px;">
-						<div tabindex="9" id="B5_1" data-bind="ntsCheckBox: { checked: true, enable: true }">${i18n.getText('KWR008_35')}</div>
+						<!-- B5_1 -->
+						<div tabindex="9" data-bind="ntsCheckBox: { checked: excessTime }">${i18n.getText('KWR008_35')}</div>
 					</div>
 					<div style="margin-top: 15px; margin-bottom:30px">
-						<label id="B5_2">#{i18n.getText('KWR008_36')}</label>
-						<div tabindex="10" id="B5_3" data-bind="ntsRadioBoxGroup: {
+						<!-- B5_2 -->
+						<div data-bind ="ntsFormLabel: { }">#{i18n.getText('KWR008_36')}</div> 
+						<!-- B5_3 -->
+						<div tabindex="10"  data-bind="ntsRadioBoxGroup: {
 							options: itemRadio,
-							optionsValue: 'id',
+							optionsValue: 'code',
 							optionsText: 'name',
-							value: selectedItemRadio,
-							enable: enable}">
+							value: selectedItemRadio}">
 						</div>
 					</div>
 				</div>

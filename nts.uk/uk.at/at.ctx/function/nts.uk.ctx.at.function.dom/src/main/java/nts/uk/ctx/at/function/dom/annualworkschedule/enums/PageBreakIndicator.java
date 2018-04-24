@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.annualworkschedule;
+package nts.uk.ctx.at.function.dom.annualworkschedule.enums;
 
 /**
  * 改頁区分

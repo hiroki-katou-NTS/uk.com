@@ -5,7 +5,9 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import nts.uk.ctx.at.function.dom.annualworkschedule.SetOutItemsWoScRepository;
+
+import nts.uk.ctx.at.function.dom.annualworkschedule.repository.SetOutItemsWoScRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 /**
@@ -18,7 +20,8 @@ public class SetOutItemsWoScFinder
     private SetOutItemsWoScRepository finder;
 
     public List<SetOutItemsWoScDto> getAllSetOutItemsWoSc(){
-        return finder.getAllSetOutItemsWoSc().stream().map(item -> SetOutItemsWoScDto.fromDomain(item))
+    	String companyId = AppContexts.user().companyId();
+        return finder.getAllSetOutItemsWoSc(companyId).stream().map(item -> SetOutItemsWoScDto.fromDomain(item))
                 .collect(Collectors.toList());
     }
 

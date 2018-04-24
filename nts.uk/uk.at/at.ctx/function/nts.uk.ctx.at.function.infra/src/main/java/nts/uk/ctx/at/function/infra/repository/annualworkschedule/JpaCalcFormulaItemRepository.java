@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.annualworkschedule.CalcFormulaItem;
-import nts.uk.ctx.at.function.dom.annualworkschedule.CalcFormulaItemRepository;
+import nts.uk.ctx.at.function.dom.annualworkschedule.repository.CalcFormulaItemRepository;
 import nts.uk.ctx.at.function.infra.entity.annualworkschedule.KfnrtCalcFormulaItem;
 import nts.uk.ctx.at.function.infra.entity.annualworkschedule.KfnrtCalcFormulaItemPk;
 

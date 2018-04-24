@@ -11,12 +11,24 @@ module nts.uk.at.view.kwr008.share.model {
     }
 
     export interface OutputSettingCodeDto {
-        cid: string;
         cd: number;
-        dispSettAgr36: number;
         name: string;
-        outNumExceedTime36Agr: number;
+        outNumExceedTime36Agr: boolean;
         displayFormat: number;
+    }
+    
+    export class setOutputSettingCode implements OutputSettingCodeDto{
+        cd: number;
+        name: string;
+        outNumExceedTime36Agr: boolean;
+        displayFormat: number;
+        
+        constructor(cd: number, name: string, outNumExceedTime36Agr: boolean, displayFormat: number){
+            this.cd = cd;
+            this.name = name;
+            this.outNumExceedTime36Agr = outNumExceedTime36Agr;
+            this.displayFormat = displayFormat;
+        }
     }
 
     export class ItemModel {

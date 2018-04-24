@@ -7,8 +7,9 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import javax.transaction.Transactional;
-import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBookRepository;
+
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBook;
+import nts.uk.ctx.at.function.dom.annualworkschedule.repository.ItemOutTblBookRepository;
 
 @Stateless
 @Transactional

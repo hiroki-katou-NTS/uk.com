@@ -20,12 +20,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         valueOutputFormat: KnockoutObservableArray<any>;
 
         //B5_1
-        checked: KnockoutObservable<boolean>;
-        enable: KnockoutObservable<boolean>;
-
+        excessTime: KnockoutObservable<boolean>;
 
         //B2_2
-        listStandardImportSetting: KnockoutObservableArray<model.ItemModel>;
+        listStandardImportSetting: KnockoutObservableArray<model.OutputSettingCodeDto>;
         selectedCode: KnockoutObservable<any>;
 
         //B3_2 B3_3
@@ -50,8 +48,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.selectedCode = ko.observable();
 
             //B5_1
-            self.checked = ko.observable(true);
-            self.enable = ko.observable(true);
+            self.excessTime = ko.observable(0);
 
             //B3_2 B3_3
             self.inputSettingCode = ko.observable('');
@@ -59,11 +56,11 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             //B5_3
             self.itemRadio = ko.observableArray([
-                { id: 0, name: getText('CMF001_37') },
-                { id: 1, name: getText('CMF001_38') },
-                { id: 2, name: getText('CMF001_39') },
+                new model.ItemModel(0, getText('CMF001_37')),
+                new model.ItemModel(1, getText('CMF001_38')),
+                new model.ItemModel(2, getText('CMF001_39'))
             ]);
-            self.selectedItemRadio = ko.observable(1);
+            self.selectedItemRadio = ko.observable(-1);
 
             //B4
             self.outputItem = ko.observableArray([]);
@@ -78,21 +75,11 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             var dfd = $.Deferred();
 
             //fill data B2_2
-            self.listStandardImportSetting([
-                new model.ItemModel(2, 'a'),
-                new model.ItemModel(3, 'b'),
-                new model.ItemModel(4, 'c'),
-                new model.ItemModel(5, 'd'),
-                new model.ItemModel(6, 'e'),
-                new model.ItemModel(7, 'f'),
-                new model.ItemModel(8, 'g'),
-                new model.ItemModel(9, 'h'),
-                new model.ItemModel(10, 'i'),
-                new model.ItemModel(11, 'k'),
-                new model.ItemModel(12, 'l'),
-                new model.ItemModel(13, 'm'),
-                new model.ItemModel(14, 'n')
-            ]);
+            service.getOutItemSettingCode().done((data) => {
+                for (let i = 0, count = data.length; i < count; i++) {
+                    self.listStandardImportSetting.push(new model.setOutputSettingCode(data[i].cd, data[i].name, data[i].outNumExceedTime36Agr, data[i].displayFormat));
+                }
+            });
 
             //fill data B3
             self.outputItem([
@@ -114,8 +101,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     virtualization: true,
                     virtualizationMode: 'continuous',
                     columns: [
-                        { headerText: '', key: 'useClassification', dataType: 'boolean', width: '35px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
                         { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
+                        { headerText: '', key: 'useClassification', dataType: 'boolean', width: '35px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
                         { headerText: getText('CMF001_27'), key: 'headingName', dataType: 'string', width: '160px' },
                         { headerText: '', key: 'open', dataType: 'string', width: '55px', unbound: true, ntsControl: 'Button' },
                         { headerText: getText('CMF001_30'), key: 'valueOutputFormat', dataType: 'string', width: '205px', ntsControl: 'Combobox', tabIndex: 0 },
@@ -124,7 +111,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     features: [],
                     ntsControls: [
                         { name: 'Checkbox', options: { value: 1 }, optionsValue: 'value', controlType: 'CheckBox', enable: true },
-                        { name: 'Button', text: getText('CMF001_34'), click: data => {self.openKDW007(data)}, controlType: 'Button' },
+                        { name: 'Button', text: getText('CMF001_34'), click: data => { self.openKDW007(data) }, controlType: 'Button' },
                         { name: 'Combobox', options: self.valueOutputFormat, optionsValue: 'code', optionsText: 'name', columns: [{ prop: 'name', length: 1 }], controlType: 'ComboBox', enable: true },
                     ]
                 });
@@ -139,11 +126,11 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             dfd.resolve(self);
             return dfd.promise();
         }
-        
+
         //Open dialog KDW007
-        openKDW007(data){
+        openKDW007(data) {
             var self = this;
-            
+
             console.log(data);
         }
 
@@ -156,8 +143,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 self.registerMode();
             } else {
                 self.screenMode(model.SCREEN_MODE.UPDATE);
-                self.selectedCode(self.listStandardImportSetting()[0].code);
-                self.updateMode(self.listStandardImportSetting()[0].code);
+                self.selectedCode(self.listStandardImportSetting()[0].cd);
+                self.updateMode(self.listStandardImportSetting()[0].cd);
                 $('#B3_2').attr('disabled', 'disabled');
             }
         }
@@ -166,15 +153,21 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         updateMode(data: number) {
             var self = this;
 
-            let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.code == data; });
+            let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd == data; });
 
             self.screenMode(model.SCREEN_MODE.UPDATE);
 
             //B3_2
-            self.inputSettingCode(self.listStandardImportSetting()[selectedIndex].code);
+            self.inputSettingCode(self.listStandardImportSetting()[selectedIndex].cd + '');
 
             //B3_3
-            self.inputProjectName(self.listStandardImportSetting()[selectedIndex].code);
+            self.inputProjectName(self.listStandardImportSetting()[selectedIndex].name);
+
+            //B5_1
+            self.excessTime(self.listStandardImportSetting()[selectedIndex].outNumExceedTime36Agr);
+
+            //B5_2
+            self.selectedItemRadio(self.listStandardImportSetting()[selectedIndex].displayFormat);
 
             $('#B3_2').attr('disabled', 'disabled');
         }
@@ -184,9 +177,11 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         registerMode() {
             var self = this;
 
-            $('#B3_2').removeAttr('disabled');
+            self.screenMode(model.SCREEN_MODE.NEW);
 
-            $('#B3_2').focus();
+            $("#B3_2").removeAttr("disabled");
+
+            $("#B3_2").focus();
 
             $('#listStandardImportSetting').ntsGridList('deselectAll');
 
@@ -196,14 +191,27 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             //B3_3
             self.inputProjectName('');
 
-            self.screenMode(model.SCREEN_MODE.NEW);
+            //B5_1
+            self.excessTime(0);
+
+            //B5_2
+            self.selectedItemRadio(-1);
         }
 
         //do register
         doRegister() {
             var self = this;
-            self.listStandardImportSetting().push(new model.ItemModel(+self.inputSettingCode(), self.inputProjectName()));
-            self.updateMode(+self.inputSettingCode());
+            let data: model.OutputSettingCodeDto = new model.setOutputSettingCode(
+                +self.inputSettingCode(),
+                self.inputProjectName(),
+                (self.excessTime()) ? 1 : 0,
+                self.selectedItemRadio()
+            );
+
+            service.registerOutputItemSetting(data).done(() => {
+                self.listStandardImportSetting.push(data);
+                self.updateMode(+self.inputSettingCode());
+            })
         }
 
         //do delete
@@ -211,20 +219,19 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             var self = this;
 
             confirm({ messageId: 'Msg_18' }).ifYes(() => {
-                // send request remove item
-                //call to webservice
 
-                let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.code == self.selectedCode(); });
+                let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd == self.selectedCode(); });
 
-                self.listStandardImportSetting.splice(selectedIndex, 1);
-
-                self.screenMode(model.SCREEN_MODE.NEW);
-
-                info({ messageId: 'Msg_35' });
-
+                info({ messageId: 'Msg_35' }).then(() => {
+                    let data = ko.toJS(self.listStandardImportSetting()[selectedIndex]);
+                    // send request remove item
+                    service.deleteOutputItemSetting(data).done(() => {
+                        self.checkListItemOutput();
+                        info({ messageId: 'Msg_16' });
+                        self.listStandardImportSetting.splice(selectedIndex, 1);
+                    })
+                });
             }).ifNo(() => {
-                self.screenMode(model.SCREEN_MODE.UPDATE);
-
                 info({ messageId: 'Msg_36' });
             });
         }
@@ -233,10 +240,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         doCancel() {
             var self = this;
             self.screenMode(model.SCREEN_MODE.UPDATE);
-            self.selectedCode(self.listStandardImportSetting()[0].code);
-            self.updateMode(self.listStandardImportSetting()[0].code);
+            self.selectedCode(self.listStandardImportSetting()[0].cd);
+            self.updateMode(self.listStandardImportSetting()[0].cd);
         }
-        
+
 
     }
 

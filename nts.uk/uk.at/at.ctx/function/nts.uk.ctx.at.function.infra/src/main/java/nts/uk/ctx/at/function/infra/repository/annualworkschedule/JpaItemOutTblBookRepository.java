@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.function.infra.entity.annualworkschedule.KfnrtItemOutTblBook;
 import nts.uk.ctx.at.function.infra.entity.annualworkschedule.KfnrtItemOutTblBookPk;
-import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBookRepository;
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBook;
+import nts.uk.ctx.at.function.dom.annualworkschedule.repository.ItemOutTblBookRepository;
 import nts.arc.layer.infra.data.JpaRepository;
 
 @Stateless

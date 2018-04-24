@@ -5,7 +5,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import nts.uk.ctx.at.function.dom.annualworkschedule.CalcFormulaItemRepository;
+
+import nts.uk.ctx.at.function.dom.annualworkschedule.repository.CalcFormulaItemRepository;
 
 @Stateless
 /**
