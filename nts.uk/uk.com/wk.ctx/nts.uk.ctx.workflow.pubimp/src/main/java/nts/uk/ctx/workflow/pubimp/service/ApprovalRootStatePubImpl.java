@@ -486,7 +486,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 					}else{
 						unapprovedPhasePresent = true;
 						if(checkApproverOfFrame(approvalPhaseState.getListApprovalFrame())){
-							status = approvalPhaseState.getApprovalAtr().value;
+							status = ApprovalStatusForEmployee.DURING_APPROVAL.value;
 							break;
 						}
 					}
@@ -617,6 +617,40 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		if(approvalRootSates != null){
 			for(ApprovalRootState approvalRootState : approvalRootSates){
 				result = this.doRelease(companyID, approvalRootState.getRootStateID(), approverID);
+				if(!result){
+					return result;
+				}
+			}
+		}
+		return result;
+	}
+	@Override
+	// requestList356
+	public boolean ReleaseApproval(String approverID, List<GeneralDate> approvalRecordDates, List<String> employeeIDs,
+			Integer rootType, String companyID) {
+		boolean result = true;
+		// 対象者リストと日付リストから承認ルートインスタンスを取得する
+		List<ApprovalRootState> approvalRootSates = this.approvalRootStateRepository.findAppByListEmployeeIDAndListRecordDate(approvalRecordDates, employeeIDs, rootType);
+		if(approvalRootSates != null){
+			for(ApprovalRootState approvalRootState : approvalRootSates){
+				result = this.doRelease(companyID, approvalRootState.getRootStateID(), approvalRootState.getEmployeeID());
+				if(!result){
+					return result;
+				}
+			}
+		}
+		return result;
+	}
+	@Override
+	// requestList356
+	public boolean ReleaseApproval(String approverID, List<GeneralDate> approvalRecordDates, List<String> employeeIDs,
+			Integer rootType, String companyID) {
+		boolean result = true;
+		// 対象者リストと日付リストから承認ルートインスタンスを取得する
+		List<ApprovalRootState> approvalRootSates = this.approvalRootStateRepository.findAppByListEmployeeIDAndListRecordDate(approvalRecordDates, employeeIDs, rootType);
+		if(approvalRootSates != null){
+			for(ApprovalRootState approvalRootState : approvalRootSates){
+				result = this.doRelease(companyID, approvalRootState.getRootStateID(), approvalRootState.getEmployeeID());
 				if(!result){
 					return result;
 				}
