@@ -9,11 +9,17 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveGrant;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.UndigestedTimeAnnualLeaveTime;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveManagement;
+import nts.uk.ctx.at.record.dom.remainingnumber.base.GrantRemainRegisterType;
+import nts.uk.ctx.at.record.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.record.dom.remainingnumber.base.ManagementDays;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPriority;
 
 /**
  * 年休情報
@@ -39,6 +45,11 @@ public class AnnualLeaveInfo {
 	private UsedMinutes usedTime;
 	/** 付与後フラグ */
 	private boolean afterGrantAtr;
+	
+	/** 年休設定 */
+	private AnnualPaidLeaveSetting annualPaidLeaveSet;
+	/** 取得した全ての年休付与残数データリスト */
+	private List<AnnualLeaveGrantRemainingData> grantRemainingDatas;
 
 	/**
 	 * コンストラクタ
@@ -54,6 +65,9 @@ public class AnnualLeaveInfo {
 		this.usedDays = new AnnualLeaveUsedDayNumber(0.0);
 		this.usedTime = new UsedMinutes(0);
 		this.afterGrantAtr = false;
+		
+		this.annualPaidLeaveSet = null;
+		this.grantRemainingDatas = new ArrayList<>();
 	}
 	
 	/**
@@ -106,6 +120,8 @@ public class AnnualLeaveInfo {
 	 * @param isGetNextMonthData 翌月管理データ取得フラグ
 	 * @param isCalcAttendanceRate 出勤率計算フラグ
 	 * @param aggrResult 年休の集計結果
+	 * @param annualPaidLeaveSet 年休設定
+	 * @param grantRemainingDatas 年休付与残数データリスト
 	 * @return 年休の集計結果
 	 */
 	public AggrResultOfAnnualLeave lapsedGrantDigest(
@@ -115,7 +131,12 @@ public class AnnualLeaveInfo {
 			List<TempAnnualLeaveManagement> tempAnnualLeaveMngs,
 			boolean isGetNextMonthData,
 			boolean isCalcAttendanceRate,
-			AggrResultOfAnnualLeave aggrResult){
+			AggrResultOfAnnualLeave aggrResult,
+			AnnualPaidLeaveSetting annualPaidLeaveSet,
+			List<AnnualLeaveGrantRemainingData> grantRemainingDatas){
+		
+		this.annualPaidLeaveSet = annualPaidLeaveSet;
+		this.grantRemainingDatas = grantRemainingDatas;
 		
 		// 期間終了日時点の年休情報を付与消滅前に退避するかチェック
 		if (aggregatePeriodWork.isNextDayAfterPeriodEnd() && !isGetNextMonthData){
@@ -134,7 +155,8 @@ public class AnnualLeaveInfo {
 		aggrResult = this.lapsedProcess(aggregatePeriodWork, aggrResult);
 		
 		// 付与処理
-		aggrResult = this.grantProcess(aggregatePeriodWork, isCalcAttendanceRate, aggrResult);
+		aggrResult = this.grantProcess(companyId, employeeId,
+				aggregatePeriodWork, isCalcAttendanceRate, aggrResult);
 		
 		// 期間終了日翌日時点の期間かチェック
 		if (!aggregatePeriodWork.isNextDayAfterPeriodEnd()){
@@ -191,21 +213,94 @@ public class AnnualLeaveInfo {
 			AggregatePeriodWork aggregatePeriodWork,
 			AggrResultOfAnnualLeave aggrResult){
 		
+		// 消滅フラグを取得
+		if (!aggregatePeriodWork.isLapsedAtr()) return aggrResult;
+		
+		// 「付与残数データ」を取得
+		val itrGrantRemainingNumber = this.grantRemainingNumberList.listIterator();
+		while (itrGrantRemainingNumber.hasNext()){
+			val grantRemainingNumber = itrGrantRemainingNumber.next();
+			
+			// 処理中の付与残数データを期限切れにする
+			grantRemainingNumber.setExpirationStatus(LeaveExpirationStatus.EXPIRED);
+			
+			// 未消化数を更新
+			val targetUndigestNumber = this.remainingNumber.getAnnualLeaveNoMinus().getUndigestedNumber();
+			val remainingNumber = grantRemainingNumber.getDetails().getRemainingNumber();
+			targetUndigestNumber.getUndigestedDays().addDays(remainingNumber.getDays().v());
+			if (remainingNumber.getMinutes().isPresent()){
+				if (!targetUndigestNumber.getUndigestedTime().isPresent()){
+					targetUndigestNumber.setUndigestedTime(Optional.of(new UndigestedTimeAnnualLeaveTime()));
+				}
+				targetUndigestNumber.getUndigestedTime().get().addMinutes(remainingNumber.getMinutes().get().v());
+			}
+		}
+		
+		// 年休情報残数を更新
+		this.updateRemainingNumber();
+		
+		// 年休情報を「年休の集計結果．年休情報（消滅）」に追加
+		if (!aggrResult.getLapsed().isPresent()) aggrResult.setLapsed(Optional.of(new ArrayList<>()));
+		aggrResult.getLapsed().get().add(this);
+		
 		// 「年休の集計結果」を返す
 		return aggrResult;
 	}
 	
 	/**
 	 * 付与処理
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
 	 * @param aggregatePeriodWork 処理中の年休集計期間WORK
 	 * @param isCalcAttendanceRate 出勤率計算フラグ
 	 * @param aggrResult 年休の集計結果
 	 * @return 年休の集計結果
 	 */
 	private AggrResultOfAnnualLeave grantProcess(
+			String companyId,
+			String employeeId,
 			AggregatePeriodWork aggregatePeriodWork,
 			boolean isCalcAttendanceRate,
 			AggrResultOfAnnualLeave aggrResult){
+		
+		// 「付与フラグ」をチェック
+		if (!aggregatePeriodWork.isGrantAtr()) return aggrResult;
+		
+		// 付与日から期限日を計算
+		if (!aggregatePeriodWork.getAnnualLeaveGrant().isPresent()) return aggrResult;
+		val annualLeaveGrant = aggregatePeriodWork.getAnnualLeaveGrant().get();
+		val grantDate = annualLeaveGrant.getGrantDate();
+		val retentionYears = this.annualPaidLeaveSet.getManageAnnualSetting().getRemainingNumberSetting().retentionYear.v();
+		val deadline = grantDate.addYears(retentionYears).addDays(-1);
+		
+		// 付与日数を計算する
+		double grantDays = 0.0;
+		
+		// 「年休付与残数データ」を作成する
+		val newRemainData = AnnualLeaveGrantRemainingData.createFromJavaType(
+				"",
+				companyId, employeeId, grantDate, deadline,
+				LeaveExpirationStatus.AVAILABLE.value, GrantRemainRegisterType.MONTH_CLOSE.value,
+				grantDays, null,
+				0.0, null, null,
+				0.0, null,
+				0.0,
+				null, null, null);
+		
+		// 作成した「年休付与残数データ」を付与残数データリストに追加
+		this.grantRemainingNumberList.add(newRemainData);
+
+		// 上限データを作成
+		
+		// 付与後フラグ　←　true
+		this.afterGrantAtr = true;
+		
+		// 年休情報残数を更新
+		this.updateRemainingNumber();
+		
+		// 「年休情報（付与時点）」に「年休情報」を追加
+		if (!aggrResult.getAsOfGrant().isPresent()) aggrResult.setAsOfGrant(Optional.of(new ArrayList<>()));
+		aggrResult.getAsOfGrant().get().add(this);
 		
 		// 「年休の集計結果」を返す
 		return aggrResult;
@@ -222,6 +317,55 @@ public class AnnualLeaveInfo {
 			AggregatePeriodWork aggregatePeriodWork,
 			List<TempAnnualLeaveManagement> tempAnnualLeaveMngs,
 			AggrResultOfAnnualLeave aggrResult){
+		
+		// 「暫定年休管理データリスト」を取得する
+		for (val tempAnnualLeaveMng : tempAnnualLeaveMngs){
+			// 年休を消化する
+			
+			// 年休使用数WORK
+			ManagementDays useDaysWork = tempAnnualLeaveMng.getAnnualLeaveUse();
+			// 年休使用残数WORK
+			ManagementDays remainDaysWork = tempAnnualLeaveMng.getAnnualLeaveUse();
+			
+			// 年休付与残数を取得
+			List<AnnualLeaveGrantRemainingData> targetRemainingDatas = new ArrayList<>();
+			for (val remainingData : this.grantRemainingDatas){
+				if (tempAnnualLeaveMng.getYmd().before(remainingData.getGrantDate())) continue;
+				if (tempAnnualLeaveMng.getYmd().after(remainingData.getDeadline())) continue;
+				targetRemainingDatas.add(remainingData);
+			}
+			
+			// 取得設定をチェック
+			if (this.annualPaidLeaveSet.getAcquisitionSetting().annualPriority == AnnualPriority.FIFO){
+
+				// 当年付与分から消化する　（付与日　降順(DESC)）
+				targetRemainingDatas.sort((a, b) -> -a.getGrantDate().compareTo(b.getGrantDate()));
+			}
+			else {
+				
+				// 繰越分から消化する　（付与日　昇順(ASC)）
+				targetRemainingDatas.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
+			}
+			
+			for (val targetRemainingData : targetRemainingDatas){
+				
+				// 年休を指定日数消化する
+				remainDaysWork = new ManagementDays(targetRemainingData.digest(remainDaysWork.v(), false));
+			}
+			
+			// 消化しきれなかった分を強制的に消化
+			if (targetRemainingDatas.size() > 0){
+				val targetRemainingData = targetRemainingDatas.get(targetRemainingDatas.size() - 1);
+				remainDaysWork = new ManagementDays(targetRemainingData.digest(remainDaysWork.v(), true));
+			}
+			
+			// 実年休（年休（マイナスあり））に使用数を加算する
+			this.remainingNumber.getAnnualLeaveWithMinus().addUsednumber(
+					useDaysWork.v(), aggregatePeriodWork.isAfterGrant());
+			
+			// 年休情報残数を更新
+			this.updateRemainingNumber();
+		}
 		
 		// 「年休の集計結果」を返す
 		return aggrResult;
