@@ -304,7 +304,6 @@ public class ActualWorkingTimeOfDaily {
 																					   						constraintTime, 
 																					   						timeDifferenceWorkingHours, 
 																					   						totalWorkingTime,
-																					   						new DivergenceTimeOfDaily(Collections.emptyList()),
 																					   						//integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime(),
 																					   						//new DivergenceTimeOfDaily(Collections.emptyList()),
 //																					   						new DivergenceTimeOfDaily(Collections.emptyList()),
