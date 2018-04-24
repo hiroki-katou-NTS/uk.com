@@ -75,7 +75,7 @@ public class LocalContractFormCommandHandler
 		String contractCode = command.getContractCode();
 		String contractPassword = command.getContractPassword();
 
-		if (contractCode == null || contractCode.isEmpty()) {
+		if (contractCode.isEmpty() || contractCode == null) {
 			return true;
 		}
 		// get domain contract

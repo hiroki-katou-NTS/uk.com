@@ -121,7 +121,4 @@ public class EmployeeDataView_ {
 	/** The com end date. */
 	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> comEndDate;
 
-	/** The closure id. */
-	public static volatile SingularAttribute<EmployeeDataView, Integer> closureId;
-
 }
