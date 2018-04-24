@@ -105,7 +105,7 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		}
 	}
 	
-	private List<EditStateOfDailyPerformance> updateEditStateOfDailyPerHoliday(String employeeId, 
+	/*private List<EditStateOfDailyPerformance> updateEditStateOfDailyPerHoliday(String employeeId, 
 			GeneralDate dateData, 
 			List<Integer> lstItem, List<EditStateOfDailyPerformance> lstDaily){
 		lstItem.stream().forEach(z -> {	
@@ -131,7 +131,7 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 			dailyReposiroty.updateByKeyFlush(lstDaily);
 		}
 		return lstDaily;
-	}
+	}*/
 	
 	@Override
 	public void updateScheStartEndTime(TimeReflectPara para) {
@@ -557,7 +557,8 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 			}	
 		}
 		
-		List<EditStateOfDailyPerformance> lstEdit = this.updateEditStateOfDailyPerHoliday(employeeId, dateData, lstWorktimeFrameTemp, dailyData.getEditState());
+		//List<EditStateOfDailyPerformance> lstEdit = this.updateEditStateOfDailyPerHoliday(employeeId, dateData, lstWorktimeFrameTemp, dailyData.getEditState());
+		this.updateEditStateOfDailyPerformance(employeeId, dateData, lstWorktimeFrameTemp);
 		return dailyData;
 	}
 	
@@ -609,7 +610,8 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 			workRepository.updateByKeyFlush(dailyPerfor);
 		}
 		//日別実績の編集状態
-		this.updateEditStateOfDailyPerHoliday(para.getEmployeeId(), para.getDateData(), lstItem, dailyData.getEditState());		
+		//this.updateEditStateOfDailyPerHoliday(para.getEmployeeId(), para.getDateData(), lstItem, dailyData.getEditState());		
+		this.updateEditStateOfDailyPerformance(para.getEmployeeId(), para.getDateData(), lstItem);
 		return dailyData;
 	}
 	@Override
@@ -661,7 +663,8 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 				lstItem.add(6);	
 			}
 		}
-		this.updateEditStateOfDailyPerHoliday(para.getEmployeeId(), para.getDateData(), lstItem, dailyData.getEditState());
+		//this.updateEditStateOfDailyPerHoliday(para.getEmployeeId(), para.getDateData(), lstItem, dailyData.getEditState());
+		this.updateEditStateOfDailyPerformance(para.getEmployeeId(), para.getDateData(), lstItem);
 		return dailyData;
 	}
 	@Override
@@ -693,7 +696,8 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 			lstNightItem.add(563);
 		}
 				
-		this.updateEditStateOfDailyPerHoliday(employeeId, dateData, lstNightItem, dailyData.getEditState());
+		//this.updateEditStateOfDailyPerHoliday(employeeId, dateData, lstNightItem, dailyData.getEditState());
+		this.updateEditStateOfDailyPerformance(employeeId, dateData, lstNightItem);
 		return dailyData;
 	}
 
