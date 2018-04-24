@@ -64,6 +64,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepositor
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.ctx.at.shared.dom.worktype.holidayset.HolidaySetting;
@@ -270,9 +271,9 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 				new WorkTime(wkTime1Cmd.getEndTime()));
 		AbsenceLeaveWorkingHour workTime2 = new AbsenceLeaveWorkingHour(new WorkTime(wkTime2Cmd.getStartTime()),
 				new WorkTime(wkTime2Cmd.getEndTime()));
-		AbsenceLeaveApp absApp = new AbsenceLeaveApp(absAppID, absCmd.getWkTypeCD(),
+		AbsenceLeaveApp absApp = new AbsenceLeaveApp(absAppID, new WorkTypeCode(absCmd.getWkTypeCD()),
 				EnumAdaptor.valueOf(absCmd.getChangeWorkHoursType(), NotUseAtr.class),
-				absCmd.getWkTimeCD() == null ? null : new WorkTimeCode(absCmd.getWkTimeCD()), workTime1, workTime2,
+				absCmd.getWkTimeCD(), workTime1, workTime2,
 				Collections.emptyList(), Collections.emptyList());
 		return absApp;
 	}
@@ -299,7 +300,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 	private RecruitmentApp createNewRecDomainFromCmd(String recAppID, RecruitmentAppCommand appCmd) {
 		WkTimeCommand wkTime1Cmd = appCmd.getWkTime1();
 		WkTimeCommand wkTime2Cmd = appCmd.getWkTime2();
-		RecruitmentApp recApp = new RecruitmentApp(recAppID, appCmd.getWkTypeCD(),
+		RecruitmentApp recApp = new RecruitmentApp(recAppID, new WorkTypeCode(appCmd.getWkTypeCD()),
 				new WorkTimeCode(appCmd.getWkTimeCD()),
 				new RecruitmentWorkingHour(new WorkTime(wkTime1Cmd.getStartTime()),
 						EnumAdaptor.valueOf(wkTime1Cmd.getStartType(), NotUseAtr.class),
