@@ -130,8 +130,8 @@ public class SprLoginFormImpl implements SprLoginFormService {
 				"000000000000-0001", // 固定
 				"0001", // 固定
 				personID, 
-				loginEmployeeCD, 
 				loginEmployeeID, 
+				loginEmployeeCD, 
 				roleList,
 				employeeID);
 		
