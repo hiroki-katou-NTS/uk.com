@@ -281,7 +281,8 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 					integrationOfDaily,
 					scheWorkType, 
 					flexSetting, 
-					dailyUnit);
+					dailyUnit,
+					workScheduleTime);
 		
 
 		/*滞在時間の計算*/
