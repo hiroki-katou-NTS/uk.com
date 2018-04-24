@@ -1,14 +1,11 @@
-package nts.uk.ctx.at.record.pub.remainingnumber.annualbreakmanage;
+package nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Value;
 import nts.arc.time.GeneralDate;
-
 @AllArgsConstructor
-@Getter
-@Setter
-public class YearlyHolidaysTimeRemainingExport {
+@Value
+public class YearlyHolidaysTimeRemainingImport {
 	private GeneralDate annualHolidayGrantDay;
 	private Double annualRemaining;
 	private Double annualRemainingGrantTime;

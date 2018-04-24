@@ -4,8 +4,8 @@ module nts.uk.at.view.kdm002.b {
     
     export module service {
         var paths = {
-            execution: "at/record/remainnumber/checkFunc/execution",
-            exportDatatoCsv: "at/record/remainnumber/checkFunc/export"
+            execution: "at/request/application/remainnumber/checkFunc/execution",
+            exportDatatoCsv: "at/request/application/remainnumber/checkFunc/export"
         }
         /**
          * call service execution 

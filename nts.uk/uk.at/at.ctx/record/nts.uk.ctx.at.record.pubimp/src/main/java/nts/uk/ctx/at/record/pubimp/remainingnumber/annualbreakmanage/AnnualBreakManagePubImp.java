@@ -115,7 +115,7 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 						YearlyHolidaysTimeRemainingExport yhtre = 
 								new YearlyHolidaysTimeRemainingExport(annualLeaveInfoe.getYmd(), 
 										null, 
-										annualLeaveInfoe.getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays());
+										annualLeaveInfoe.getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v());
 						yearlyHolidaysTimeRemainingExport.add(yhtre );
 					}
 				}
@@ -140,7 +140,7 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 							annualLeaveInfo);
 			// List<指定日時点の年休残数>の年休残数を全て更新
 			for (YearlyHolidaysTimeRemainingExport yyearlyHolidaysTimeRemainingExport : yearlyHolidaysTimeRemainingExport) {
-				yyearlyHolidaysTimeRemainingExport.setAnnualRemaining(aggrResultOfAnnualLeavee.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays());
+				yyearlyHolidaysTimeRemainingExport.setAnnualRemaining(aggrResultOfAnnualLeavee.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v());
 			}
 		}
 		

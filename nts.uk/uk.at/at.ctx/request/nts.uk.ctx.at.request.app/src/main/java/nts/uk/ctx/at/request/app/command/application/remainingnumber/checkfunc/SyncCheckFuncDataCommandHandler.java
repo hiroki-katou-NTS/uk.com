@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.command.remainingnumber.checkfunc;
+package nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,8 +15,9 @@ import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
-import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.SyEmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.AnnualBreakManageAdapter;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -27,14 +28,17 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 	
 	private static final String NUMBER_OF_SUCCESS = "NUMBER_OF_SUCCESS";
 	private static final String NUMBER_OF_ERROR = "NUMBER_OF_ERROR";
-	private static final String MSG_1116 = "MSG_1116";
+	private static final String MSG_1116 = "Msg_1116";
 	private static final String ERROR_LIST = "ERROR_LIST";
 	
 	@Inject
-	private EmployeeRecordAdapter employeeRecordAdapter;
+	private SyEmployeeAdapter employeeRecordAdapter;
 	
 	@Inject 
 	private WorkTypeRepository workTypeRepository;
+	
+	@Inject 
+	private AnnualBreakManageAdapter annualBreakManageAdapter;
 	
 	@Override
 	protected void handle(CommandHandlerContext<CheckFuncDataCommand> context) {
@@ -81,7 +85,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 					break;
 				}
 				// Imported(就業)「社員」を取得する
-				EmployeeRecordImport employeeRecordImport = 
+				SyEmployeeImport employeeRecordImport = 
 						employeeRecordAdapter.getPersonInfor(employeeSearchCommand.get(i).getEmployeeId());
 				
 				if (employeeRecordImport== null) {

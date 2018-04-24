@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.ws.remaingnumber;
+package nts.uk.ctx.at.request.ws.application.remainingnumber;
 
 import java.util.List;
 
@@ -9,13 +9,13 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.remainingnumber.checkfunc.CheckFuncDataCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.checkfunc.CheckFuncExecutionRespone;
-import nts.uk.ctx.at.record.app.command.remainingnumber.checkfunc.ErrorInfoExportService;
-import nts.uk.ctx.at.record.app.command.remainingnumber.checkfunc.OutputErrorInfoCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.checkfunc.SyncCheckFuncDataCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc.CheckFuncDataCommand;
+import nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc.CheckFuncExecutionRespone;
+import nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc.ErrorInfoExportService;
+import nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc.OutputErrorInfoCommand;
+import nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc.SyncCheckFuncDataCommandHandler;
 
-@Path("at/record/remainnumber/checkFunc")
+@Path("at/request/application/remainnumber/checkFunc")
 @Produces("application/json")
 public class CheckFunctionWebService extends WebService{
 
