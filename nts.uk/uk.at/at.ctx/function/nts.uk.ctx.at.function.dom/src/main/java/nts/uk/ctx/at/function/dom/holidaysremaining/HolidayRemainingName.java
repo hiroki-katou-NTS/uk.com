@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * コード変換名称
  */
-@StringMaxLength(10)
+@StringMaxLength(20)
 public class HolidayRemainingName extends StringPrimitiveValue<PrimitiveValue<String>> {
 
 	/**
