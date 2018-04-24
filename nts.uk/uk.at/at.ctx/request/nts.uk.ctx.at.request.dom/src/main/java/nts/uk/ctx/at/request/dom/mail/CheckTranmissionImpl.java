@@ -19,7 +19,6 @@ import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetti
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedRepository;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.shr.com.context.AppContexts;
-//import nts.uk.ctx.sys.gateway.dom.mail.service.RegisterEmbededURL;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.url.RegisterEmbededURL;
 
@@ -57,7 +56,7 @@ public class CheckTranmissionImpl implements CheckTransmission {
 				String urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(appId, application.getAppType().value,
 						application.getPrePostAtr().value, application.getEmployeeID());
 				if (!Strings.isEmpty(urlInfo)){
-//					appContent += "\n" + "#KDL030_30" + " " + application.getAppID() + "\n" + urlInfo;
+//					appContent += "\n" + I18NText.getText("KDL030_30") + " " + application.getAppID() + "\n" + urlInfo;
 				}
 			}
 		}
@@ -72,7 +71,7 @@ public class CheckTranmissionImpl implements CheckTransmission {
 			if (Strings.isBlank(mail)) {
 				errorList.add(mail);
 			} else {
-				mailSender.send("tarou@nittsusystem.co.jp", employeeMail, new MailContents("", mailContentToSend));
+				mailSender.send("mailadmin@uk.com", employeeMail, new MailContents("", mailContentToSend));
 				successList.add(employeeToSendId);
 				
 			}

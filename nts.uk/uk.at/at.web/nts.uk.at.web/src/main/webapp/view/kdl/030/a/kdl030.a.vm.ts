@@ -43,7 +43,12 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                                 for (let listApprover = listApprovalFrame[j].listApprover, k = 0; k < listApprover.length; k++) {
                                     let sMail = result.listApprover[index].smail;
                                     let employeeId = result.listApprover[index].employeeId;
-                                    listApprover[k]['sMail'] = "mail@gmail.com";
+                                    let mail = "mail@gmail.com";
+                                    listApprover[k]['sMail'] = mail
+                                    if (mail.length >0){
+                                        listApprover[k].approverName += '(@)';
+                                    }
+                                    
                                     listApprover[k]['isSend'] = 1;
                                     index++;
                                 }
