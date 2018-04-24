@@ -838,10 +838,13 @@ module nts.uk.at.view.kmk003.a {
             toFlexCommannd(): FlexWorkSettingSaveCommand {
                 let self = this;
                 let command: FlexWorkSettingSaveCommand;
+                const oneDayFlex = _.map(self.flexWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezone(),item=>item.toDto());
+                const flexWorkSetting = self.flexWorkSetting.toDto(self.commonSetting);
+                flexWorkSetting.lstHalfDayWorkTimezone[0].workTimezone.lstWorkingTimezone = oneDayFlex;
                 command = {
                     addMode: self.addMode(),
                     screenMode: self.tabMode(),
-                    flexWorkSetting: self.flexWorkSetting.toDto(self.commonSetting),
+                    flexWorkSetting: flexWorkSetting,
                     predseting: self.predetemineTimeSetting.toDto(),
                     worktimeSetting: self.workTimeSetting.toDto(),
                 };
