@@ -290,6 +290,10 @@ public class ActualWorkingTimeOfDaily {
 		//Dtoの中身になっている
 		val integrationOfDailyInDto = forCalcDivergenceDto.toDomain();
 		//integraionOfDailyを入れ替える
+		DivergenceTimeOfDaily diver = new DivergenceTimeOfDaily(Collections.emptyList());
+		if(integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			diver = integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime();
+		}
 		val attendanceTimeForDivergence = new AttendanceTimeOfDailyPerformance(employeeId, 
 																			   ymd,
 																			   /*計画所定時間 引数の計画所定に入れ替える*/
@@ -304,7 +308,7 @@ public class ActualWorkingTimeOfDaily {
 																					   						//integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime(),
 																					   						//new DivergenceTimeOfDaily(Collections.emptyList()),
 //																					   						new DivergenceTimeOfDaily(Collections.emptyList()),
-																					   						integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime(),
+																					   						diver,
 																					   						premiumTime),
 																			   //滞在時間
 																			   new StayingTimeOfDaily(new AttendanceTime(0),
