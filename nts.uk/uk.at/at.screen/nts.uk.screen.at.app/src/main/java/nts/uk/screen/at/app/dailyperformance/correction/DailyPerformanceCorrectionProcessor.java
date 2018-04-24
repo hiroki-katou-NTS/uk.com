@@ -639,7 +639,8 @@ public class DailyPerformanceCorrectionProcessor {
 							}
 							int hours = minute / 60;
 							int minutes = Math.abs(minute) % 60;
-							cellDatas.add(new DPCellDataDto(anyChar, String.format(FORMAT_HH_MM, hours, minutes),
+							String valueConvert = (minute < 0 && hours == 0) ?  "-"+String.format(FORMAT_HH_MM, hours, minutes) : String.format(FORMAT_HH_MM, hours, minutes);
+							cellDatas.add(new DPCellDataDto(anyChar, valueConvert,
 									attendanceAtrAsString, TYPE_LABEL));
 						} else {
 							cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, TYPE_LABEL));
