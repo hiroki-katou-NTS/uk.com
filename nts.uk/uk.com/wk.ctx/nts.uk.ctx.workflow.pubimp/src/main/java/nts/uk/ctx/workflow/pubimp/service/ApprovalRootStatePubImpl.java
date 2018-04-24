@@ -320,24 +320,54 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	@Override
 	public ApprovalRootOfEmployeeExport getApprovalRootOfEmloyee(GeneralDate startDate, GeneralDate endDate,
 			String approverID,String companyID,Integer rootType) {
+		List<ApprovalRootState> approvalRootStates = new ArrayList<>();
 		// 承認者と期間から承認ルートインスタンスを取得する
-		List<ApprovalRootState> approvalRootStates = this.approvalRootStateRepository.findEmployeeAppByApprovalRecordDate(startDate, endDate, approverID,rootType);
+		long start = System.currentTimeMillis();
+		List<ApprovalRootState> resultApprovalRootState = this.approvalRootStateRepository.findEmployeeAppByApprovalRecordDate(startDate, endDate, approverID,rootType);
+		if(!CollectionUtil.isEmpty(resultApprovalRootState)){
+			for(ApprovalRootState approvalRootState : resultApprovalRootState){
+				for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
+					for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()){
+						for(ApproverState approverState : approvalFrame.getListApproverState()){
+							if(approverState.getApproverID().equals(approverID)){
+								approvalRootStates.add(approvalRootState);
+							}
+						}
+					}
+				}
+			}
+		}	
+		long end = System.currentTimeMillis();
+		System.out.println("Thời gian chạy đoạn lệnh: " + (end - start) + "Millis");
 		// ドメインモデル「代行承認」を取得する
 		List<Agent> agents = this.agentRepository.findByApproverAndDate(companyID, approverID, startDate, endDate);
 		List<String> employeeApproverID = new ArrayList<>();
 		employeeApproverID.add(approverID);
+		
 		if (!CollectionUtil.isEmpty(agents)) {
 			for(Agent agent : agents){
 				// ドメインモデル「承認ルートインスタンス」を取得する
 				employeeApproverID.add(agent.getEmployeeId());
-				List<ApprovalRootState> approvalRootStateAgents = this.approvalRootStateRepository.findEmployeeAppByApprovalRecordDate(startDate, endDate, agent.getEmployeeId(),rootType);
-				if(!CollectionUtil.isEmpty(approvalRootStateAgents)){
-					for(ApprovalRootState approver : approvalRootStateAgents){
-						approvalRootStates.add(approver);
+				if(!CollectionUtil.isEmpty(resultApprovalRootState)){
+					for(ApprovalRootState approvalRootState : resultApprovalRootState){
+						if(approvalRootState.getApprovalRecordDate().afterOrEquals(agent.getStartDate()) && approvalRootState.getApprovalRecordDate().beforeOrEquals(agent.getEndDate())){
+							for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
+								for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()){
+									for(ApproverState approverState : approvalFrame.getListApproverState()){
+										if(approverState.getApproverID().equals(agent.getEmployeeId())){
+											approvalRootStates.add(approvalRootState);
+										}
+									}
+								}
+							}
+						}
+						
 					}
 				}
 			}
 		}
+		long end1 = System.currentTimeMillis();
+		System.out.println("Thời gian chạy đoạn lệnh: " + (end1 - end) + "Millis");
 		ApprovalRootOfEmployeeExport result = new ApprovalRootOfEmployeeExport();
 		
 		if(CollectionUtil.isEmpty(approvalRootStates)){
@@ -381,7 +411,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 					// フェーズ承認区分＝ループ中のフェーズ．承認区分
 					int approverPhaseIndicator = listApprovalPhaseState.get(i).getApprovalAtr().value;
 					//1.承認状況の判断
-					ApprovalStatusOutput approvalStatusOutput = judgmentApprovalStatusService.judmentApprovalStatus(companyID, listApprovalPhaseState.get(i), approverID);
+					ApprovalStatusOutput approvalStatusOutput = judgmentApprovalStatusService.judmentApprovalStatusNodataDatabaseAcess(companyID, listApprovalPhaseState.get(i), approverID,agents);
 					if(approverPhaseFlag == true && approvalStatusOutput.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
 						break;
 					}
@@ -425,6 +455,8 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 			}
 			approvalRootSituations.add(approvalRootSituation);
 		}
+		long end2 = System.currentTimeMillis();
+		System.out.println("Thời gian chạy đoạn lệnh2: " + (end2 - end1) + "Millis");
 		result.setEmployeeStandard(approverID);
 		result.setApprovalRootSituations(approvalRootSituations);
 		return result;
