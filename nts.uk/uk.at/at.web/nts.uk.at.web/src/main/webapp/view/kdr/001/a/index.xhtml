@@ -51,7 +51,7 @@
 							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_26')}
 						</div>
 						<!-- A3_2 -->
-						<div tabindex="3" style="width: 162px;margin-left: 52px;"
+						<div tabindex="3" style="width: 154px;margin-left: 75px;"
 							data-bind="ntsDatePicker: {
 									showJumpButtons: true,
 									value: startDateString,
@@ -61,7 +61,7 @@
 						</div>
 						<!-- A3_3 -->
 						<div class="ntsDateRangeComponent ntsRangeLabel"
-							style="margin-top: 11px; width: 40px;">
+							style="margin-top: 11px; width: 30px;">
 							<label style="margin: 6px">～</label>
 						</div>
 						<!-- A3_4 -->
@@ -81,7 +81,7 @@
 							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_30')}
 						</div>
 						<!-- A4_2  -->
-						<div id="comboBx-HolidayRemaining" tabindex="6" style="margin-left: -3px;"
+						<div id="comboBx-HolidayRemaining" tabindex="6" style="margin-left: 18px;"
 							data-bind="ntsComboBox: {
 							    name:'#[KDR001_30]',
 								options: lstHolidayRemaining,
@@ -91,12 +91,13 @@
 								editable: false,
 								enable: true,
 								columns: [
-									{ prop: 'name', length: 20 }
+									{ prop: 'cd', length: 1 },
+									{ prop: 'name', length: 12 }
 								]}">
 						</div>
 						<!-- A4_3  -->
 						<button data-bind="click: openKDR001b, 
-								enable: permissionOfEmploymentForm().availability()" tabindex="7" class="large" style="margin-left: 20px;">#{i18n.getText('KDR001_31')}</button>
+								enable: permissionOfEmploymentForm().availability()" tabindex="7"  style="margin-left: 20px;">#{i18n.getText('KDR001_31')}</button>
 					</div>
 					<div class="periodCovered" style="margin-top: 15px;">
 						<!-- A6_1  -->
@@ -104,7 +105,7 @@
 							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_35')}
 						</div>
 						<!-- A6_2  -->
-						<div id="combo-box2" tabindex="9"  style="margin-left: 25px;"
+						<div id="combo-box2" tabindex="9"  style="margin-left: 45px;"
 							data-bind="ntsComboBox: {
 								options: itemSelected,
 								optionsValue: 'code',

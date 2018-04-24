@@ -75,7 +75,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         //combo-box
         lstHolidayRemaining: KnockoutObservableArray<HolidayRemainingModel> = ko.observableArray([]) ;
         itemSelected: KnockoutObservableArray<ItemModel>;
-        selectedCode: KnockoutObservable<string> = ko.observable('1');
+        selectedCode: KnockoutObservable<string> = ko.observable('0');
         holidayRemainingSelectedCd: KnockoutObservable<string> = ko.observable('');
         
         permissionOfEmploymentForm : KnockoutObservable<PermissionOfEmploymentFormModel> 
