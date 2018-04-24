@@ -1,4 +1,6 @@
-package nts.uk.ctx.at.record.dom.workinformation;
+package nts.uk.ctx.at.record.dom.worktime;
+
+import java.util.Optional;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -7,10 +9,11 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
+/** Event：出退勤時刻を補正する */
 @Builder
 @Getter
-public class WorkInfoChangeEvent extends DomainEvent {
-
+public class TimeLeaveUpdateEvent extends DomainEvent {
+	
 	/** 年月日: 年月日 */
 	private String employeeId;
 	
@@ -21,5 +24,5 @@ public class WorkInfoChangeEvent extends DomainEvent {
 	private WorkTypeCode newWorkTypeCode;
 	
 	/** 新しい就業時間帯コード: 就業時間帯コード */
-	private WorkTimeCode newWorkTimeCode;
+	private Optional<WorkTimeCode> newWorkTimeCode;
 }

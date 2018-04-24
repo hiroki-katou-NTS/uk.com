@@ -1,15 +1,16 @@
-package nts.uk.ctx.at.record.dom.workinformation;
+package nts.uk.ctx.at.record.app.command.dailyperform.workrecord;
+
+import java.util.Optional;
 
 import lombok.Builder;
-import lombok.Getter;
-import nts.arc.layer.dom.event.DomainEvent;
+import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 @Builder
-@Getter
-public class WorkInfoChangeEvent extends DomainEvent {
+@Data
+public class TimeLeaveUpdateByWorkInfoChangeCommand {
 
 	/** 年月日: 年月日 */
 	private String employeeId;
@@ -21,5 +22,5 @@ public class WorkInfoChangeEvent extends DomainEvent {
 	private WorkTypeCode newWorkTypeCode;
 	
 	/** 新しい就業時間帯コード: 就業時間帯コード */
-	private WorkTimeCode newWorkTimeCode;
+	private Optional<WorkTimeCode> newWorkTimeCode;
 }

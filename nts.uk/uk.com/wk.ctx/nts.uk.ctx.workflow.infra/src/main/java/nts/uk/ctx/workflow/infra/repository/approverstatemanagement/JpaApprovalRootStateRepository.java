@@ -202,23 +202,10 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	public List<ApprovalRootState> findEmployeeAppByApprovalRecordDate(GeneralDate startDate, GeneralDate endDate,
 			String approverID,Integer rootType) {
 		List<ApprovalRootState> result  = new ArrayList<>();
-		List<ApprovalRootState> approvalRootStates = this.queryProxy().query(SELECT_BY_DATE, WwfdtApprovalRootState.class)
+		result = this.queryProxy().query(SELECT_BY_DATE, WwfdtApprovalRootState.class)
 				.setParameter("startDate", startDate)
 				.setParameter("endDate", endDate)
 				.setParameter("rootType", rootType).getList(x -> x.toDomain());
-		if(!CollectionUtil.isEmpty(approvalRootStates)){
-			for(ApprovalRootState approvalRootState : approvalRootStates){
-				for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
-					for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()){
-						for(ApproverState approverState : approvalFrame.getListApproverState()){
-							if(approverState.getApproverID().equals(approverID)){
-								result.add(approvalRootState);
-							}
-						}
-					}
-				}
-			}
-		}	
 		return result;
 	}
 
