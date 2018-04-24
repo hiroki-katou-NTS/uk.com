@@ -9,11 +9,11 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
-import nts.arc.i18n.I18NText;
-import nts.arc.time.GeneralDate;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.employee.AtEmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.employee.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbedded;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedRepository;
@@ -39,6 +39,9 @@ public class CheckTranmissionImpl implements CheckTransmission {
 
 	@Inject
 	private RegisterEmbededURL registerEmbededURL;
+	
+	@Inject
+	private AtEmployeeRequestAdapter employeeRequestAdapter;
 	
 	@Override
 	public MailSenderResult doCheckTranmission(String appId, int appType, int prePostAtr, List<String> employeeIdList,
@@ -66,10 +69,12 @@ public class CheckTranmissionImpl implements CheckTransmission {
 		// request list 228
 		// get mail (may be get from client but re-get here)
 		for(String employeeToSendId: employeeIdList){
+			List<EmployeeInfoImport> listEmpName = employeeRequestAdapter.getByListSID(employeeIdList);
+			String empName = (!listEmpName.isEmpty() ? listEmpName.get(0).getBussinessName() : "");
 			String mail = employeeToSendId;
 			String employeeMail = "hiep.ld@3si.vn";
 			if (Strings.isBlank(mail)) {
-				errorList.add(mail);
+				errorList.add(empName);
 			} else {
 				mailSender.send("mailadmin@uk.com", employeeMail, new MailContents("", mailContentToSend));
 				successList.add(employeeToSendId);
