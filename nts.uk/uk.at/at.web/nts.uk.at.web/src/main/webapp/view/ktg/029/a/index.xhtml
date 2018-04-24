@@ -20,16 +20,15 @@
 			<div id="contents-area">
 				<table class="widget-table">
 					<tr>
-						<td>06/01#{i18n.getText('KTG029_3')}06/03 #{i18n.getText('KTG029_5')}</td>
-						<td><button class="small">#{i18n.getText('KTG029_6')}</button></td>
+						<td data-bind="text: txtDatePeriod"></td>
+						<td><button class="small" data-bind="click:switchMonth">#{i18n.getText('KTG029_6')}</button></td>
 					</tr>
-					<tr>
+					<tr Class="">
 						<td>#{i18n.getText('KTG029_9')}</td>
 						<td>
 							<table class="detail">
 								<tr>
-									<td>0o</td>
-									<td>#{i18n.getText('KTG029_33')}</td>
+									<td>Data #{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
 										<button class = "overtime-work-no">
 											<i data-bind="click: openKAF015Dialog, ntsIcon: { no: 144 }"></i>
@@ -44,8 +43,7 @@
 						<td>
 							<table class="detail">
 								<tr>
-									<td>0o</td>
-									<td>#{i18n.getText('KTG029_33')}</td>
+									<td>Data #{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
 										<button class = "instruction-hd-no">
 											<i data-bind="click: openKAF015Dialog, ntsIcon: { no: 144 }"></i>
@@ -60,8 +58,7 @@
 						<td>
 							<table class="detail">
 								<tr>
-									<td>0o</td>
-									<td>#{i18n.getText('KTG029_33')}</td>
+									<td>Data #{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
 										<button class = "approved-no">
 											<i data-bind="click: openCMM045Dialog, ntsIcon: { no: 144 }"></i>
@@ -76,8 +73,7 @@
 						<td>
 							<table class="detail">
 								<tr>
-									<td>0o</td>
-									<td>#{i18n.getText('KTG029_33')}</td>
+									<td>Data #{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
 										<button>
 											<i data-bind="click: openCMM045Dialog, ntsIcon: { no: 144 }"></i>
@@ -92,8 +88,7 @@
 						<td>
 							<table class="detail">
 								<tr>
-									<td>0o</td>
-									<td>#{i18n.getText('KTG029_33')}</td>
+									<td>Data #{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
 										<button>
 											<i data-bind="click: openCMM045Dialog, ntsIcon: { no: 144 }"></i>
@@ -108,8 +103,7 @@
 						<td>
 							<table class="detail">
 								<tr>
-									<td>0o</td>
-									<td>#{i18n.getText('KTG029_33')}</td>
+									<td>Data #{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
 										<button>
 											<i data-bind="click: openCMM045Dialog, ntsIcon: { no: 144 }"></i>
@@ -122,7 +116,7 @@
 					<!-- A9 -->
 					<tr>
 						<td>#{i18n.getText('KTG029_15')}</td>
-						<td>Sever</td>
+						<td>MM/DD</td>
 					</tr>
 					<!-- A10 -->
 					<tr>
@@ -130,7 +124,7 @@
 						<td>
 							<table class="detail">
 								<tr>
-									<td>Sever</td>
+									<td>No Data</td>
 									<td class="go-button">
 										<button>
 											<i data-bind="click: openKDW003Dialog, ntsIcon: { no: 144 }"></i>
@@ -188,62 +182,75 @@
 					</tr>
 					<!-- A17 -->
 					<tr>
-						<td class="tab" colspan="2">#{i18n.getText('KTG029_23')}</td>
+						<td>#{i18n.getText('KTG029_23')}</td>
+						<td>
+							<table class="detail">
+								<tr>
+									<td></td>
+									<td class="go-button">
+										<button>
+											<i data-bind="click: openKDL033Dialog, ntsIcon: { no: 144 }"></i>
+										</button>
+									</td>
+								</tr>
+							</table>	
+						</td>
 					</tr>
+					
 					<!-- A17_1 -->
 					<tr>
-						<td>#{i18n.getText('KTG029_40')}</td>
-						<td>XX : XX</td>
+						<td class="tab">#{i18n.getText('KTG029_40')}</td>
+						<td>data data #{i18n.getText('KTG029_42')}</td>
 					</tr>
 					<!-- A17_2 -->
 					<tr>
 						<td class="tab" >#{i18n.getText('KTG029_23')}</td>
-						<td>XX : XX</td>
+						<td>data #{i18n.getText('KTG029_42')} data</td>
 					</tr>
 					<!-- A17_3 -->
 					<tr>
 						<td class="tab" >#{i18n.getText('KTG029_43')}</td>
-						<td>XX : XX</td>
+						<td>#{i18n.getText('KTG029_44')} data #{i18n.getText('KTG029_45')}</td>
 					</tr>
 					<!-- A17_4 -->
 					<tr>
 						<td class="tab" >#{i18n.getText('KTG029_46')}</td>
-						<td>XX : XX</td>
+						<td>#{i18n.getText('KTG029_47')} data #{i18n.getText('KTG029_48')}</td>
 					</tr>
 					<!-- A17_5 -->
 					<tr>
 						<td class="tab" >#{i18n.getText('KTG029_49')}</td>
-						<td>XX : XX</td>
+						<td>yy/mm/dd</td>
 					</tr>
 					<!-- A17_6 -->
 					<tr>
 						<td class="tab" >#{i18n.getText('KTG029_50')}</td>
-						<td>XX : XX</td>
+						<td>data #{i18n.getText('KTG029_42')} data</td>
 					</tr>
 					<!-- A17_7 -->
 					<tr>
 						<td class="tab" >#{i18n.getText('KTG029_51')}</td>
-						<td>XX : XX</td>
+						<td>#{i18n.getText('KTG029_44')} data #{i18n.getText('KTG029_45')}</td>
 					</tr>
 					<!-- A17_8 -->
 					<tr>
 						<td class="tab" >#{i18n.getText('KTG029_52')}</td>
-						<td>XX : XX</td>
+						<td>#{i18n.getText('KTG029_47')} data #{i18n.getText('KTG029_48')}</td>
 					</tr>
 					<!-- A17_9 -->
 					<tr>
 						<td class="tab" >#{i18n.getText('KTG029_53')}</td>
-						<td>XX : XX</td>
+						<td>data #{i18n.getText('KTG029_42')} data</td>
 					</tr>
 					<!-- A17_10 -->
 					<tr>
 						<td class="tab" >#{i18n.getText('KTG029_54')}</td>
-						<td>XX : XX</td>
+						<td>#{i18n.getText('KTG029_44')} data #{i18n.getText('KTG029_45')}</td>
 					</tr>
 					<!-- A17_11 -->
 					<tr>
 						<td class="tab" >#{i18n.getText('KTG029_55')}</td>
-						<td>XX : XX</td>
+						<td>#{i18n.getText('KTG029_47')} data #{i18n.getText('KTG029_48')}</td>
 					</tr>
 					<!-- A17_12 -->
 					<tr>
@@ -252,12 +259,12 @@
 					<!-- A17_13 -->
 					<tr>
 						<td class="tab" >#{i18n.getText('KTG029_57')}</td>
-						<td>XX : XX</td>
+						<td>data #{i18n.getText('KTG029_58')}</td>
 					</tr>
 					<!-- A17_14 -->
 					<tr>
 						<td class="tab" >#{i18n.getText('KTG029_59')}</td>
-						<td>XX : XX</td>
+						<td>data #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A18 -->
 					<tr>
@@ -265,7 +272,7 @@
 						<td>
 							<table class="detail">
 								<tr>
-									<td>0o #{i18n.getText('KTG029_60')}</td>
+									<td>data #{i18n.getText('KTG029_60')}</td>
 									<td class="go-button">
 										<button>
 											<i data-bind="click: openKDL029Dialog, ntsIcon: { no: 144 }"></i>
@@ -282,27 +289,27 @@
 					<!-- A19_1 -->
 					<tr>
 						<td class="tab" >#{i18n.getText('KTG029_25')}(1)</td>
-						<td>XX : XX</td>
+						<td>data #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A19_2 -->
 					<tr>
-						<td class="tab" >#{i18n.getText('KTG029_25')}(2)</td>
-						<td>XX : XX</td>
+						<td class="tab" >#{i18n.getText('KTG029_25')} (2)</td>
+						<td>data #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A19_3 -->
 					<tr>
-						<td class="tab" >#{i18n.getText('KTG029_25')}(3)</td>
-						<td>XX : XX</td>
+						<td class="tab" >#{i18n.getText('KTG029_25')} (3)</td>
+						<td>data #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A19_4 -->
 					<tr>
-						<td class="tab" >#{i18n.getText('KTG029_25')}(4)</td>
-						<td>XX : XX</td>
+						<td class="tab" >#{i18n.getText('KTG029_25')} (4)</td>
+						<td>data #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A19_5 -->
 					<tr>
-						<td class="tab" >#{i18n.getText('KTG029_25')}(5)</td>
-						<td>XX : XX</td>
+						<td class="tab" >#{i18n.getText('KTG029_25')} (5)</td>
+						<td>data #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A20 -->
 					<tr>
@@ -315,7 +322,7 @@
 						<td>
 							<table class="detail">
 								<tr>
-									<td>0o #{i18n.getText('KTG029_60')}</td>
+									<td>data #{i18n.getText('KTG029_60')}</td>
 									<td class="go-button">
 										<button>
 											<i data-bind="click: openKDL009Dialog, ntsIcon: { no: 144 }"></i>
@@ -328,22 +335,22 @@
 					<!-- A22 -->
 					<tr>
 						<td>#{i18n.getText('KTG029_28')}</td>
-						<td>XX : XX</td>
+						<td>data #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A23 -->
 					<tr>
 						<td>#{i18n.getText('KTG029_29')}</td>
-						<td>XX : XX</td>
+						<td>data #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A24 -->
 					<tr>
 						<td>#{i18n.getText('KTG029_30')}</td>
-						<td>XX : XX</td>
+						<td>data #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A25 -->
 					<tr>
 						<td>#{i18n.getText('KTG029_31')}</td>
-						<td>XX : XX</td>
+						<td>data #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A26 -->
 					<tr>

@@ -111,7 +111,11 @@ module nts.uk.com.view.ccg.model {
             }else if(this.type == ENUM_OPTIONAL_WIDGET) {
                 this.topPagePart = new OptionalWidget(placementPartDto);
                 this.name = placementPartDto.topPageName;
-                this.url = this.origin + "/nts.uk.at.web/view/ktg/029/a/index.xhtml";
+                this.url = this.origin + "/nts.uk.at.web/view/ktg/029/a/index.xhtml?code="+this.topPagePart.topPageCode();
+                
+                //this.url = this.origin + "/nts.uk.at.web/view/kal/002/b/index.xhtml";
+                
+                //this.url = this.origin + "/nts.uk.com.web/view/cas/012/a/index.xhtml";
             }
         }
         
