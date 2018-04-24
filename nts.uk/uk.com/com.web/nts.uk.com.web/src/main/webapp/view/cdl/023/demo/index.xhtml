@@ -8,10 +8,13 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-
+			<com:EnumScript>
+				nts.uk.ctx.sys.auth.dom.role.RoleType
+			</com:EnumScript>
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="../../../sample/catalog/catalog.css" />
-			<com:scriptfile path="../../../sample/catalog/catalog.js" />
+			<com:stylefile path="/view/sample/catalog/catalog.css" />
+			<com:scriptfile path="/view/sample/catalog/start.js" />
+			<com:scriptfile path="/view/sample/catalog/catalog.js" />
 			<com:scriptfile path="cdl023.demo.start.js" />
 			<com:scriptfile path="cdl023.demo.vm.js" />
 
@@ -63,6 +66,21 @@
 								enable: true,
 								readonly: false}" /></td>
 						</tr>
+						<com:ko tag="if" bind="requiredRoleType">
+							<tr>
+								<td>ロールの種類</td>
+								<td><div data-bind="ntsComboBox: {
+											options: listRoleType,
+											optionsValue: 'value',
+											value: roleType,
+											optionsText: 'value',
+											editable: false,
+											enable: true,
+											columns: [ { prop: 'name', length: 10 }]}">
+									</div>
+								</td>
+							</tr>
+						</com:ko>
 						<tr>
 							<td>選択対象区分</td>
 							<td><div
@@ -113,6 +131,7 @@ interface IObjectDuplication {
     targetType: TargetType;
     itemListSetting: Array<string>;
     baseDate?: Date; // needed when target type: 職場 or 部門 or 職場個人 or 部門個人
+    roleType?: number; // needed when target type: ロール
 }
 
 class TargetType {
@@ -130,6 +149,10 @@ class TargetType {
     static WORKPLACE_PERSONAL = 6;
     // 部門個人
     static DEPARTMENT_PERSONAL = 7;
+    // ロール
+    static ROLE = 8;
+    // 勤務種別
+    static WORK_TYPE = 9;
 }
 
 // create object has data type IObjectDuplication and use:
