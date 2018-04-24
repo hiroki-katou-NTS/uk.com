@@ -77,6 +77,7 @@ module nts.layout {
                         }
                         else {
                             $element
+                                .trigger('validate')
                                 .find('.nts-input')
                                 .trigger('blur')
                                 .trigger('change');
