@@ -232,4 +232,11 @@ public interface ApprovalRootStatePub {
 	public AppRootStateConfirmExport getApprovalRootState(String companyID, String employeeID, 
 			Integer confirmAtr, Integer appType, GeneralDate date);
 	
+	/**
+	 * RequestList 403
+	 * 承認状態をすべてクリアする
+	 * @param rootStateID
+	 */
+	public void cleanApprovalRootState(String rootStateID);
+	
 }
