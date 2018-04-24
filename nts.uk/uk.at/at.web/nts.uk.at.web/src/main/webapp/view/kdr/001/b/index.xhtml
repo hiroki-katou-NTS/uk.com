@@ -58,15 +58,16 @@
 					<div class="holiday-button">
 						<div class="labelWork" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_42')}
 						</div>
-						<input style="width: 150px;" tabindex="6" id="holidayCode"
+						<input tabindex="6" id="holidayCode"
 							data-bind="ntsTextEditor: {
 							constraint: 'HolidayRemainingCode', 
 							name: '#[KDR001_40]',
 							value: cd,  
 							enable: true,
 						 	required: true,
-						  	enable: $parent.isNewMode()}" />
-						<input style="width: 250px; margin: 20px;" tabindex="7"
+						  	enable: $parent.isNewMode(),
+						  	option: {width : '22px'}}" />
+						<input style="margin: 20px;" tabindex="7"
 							id="holidayName"
 							data-bind="ntsTextEditor: {
 							constraint: 'HolidayRemainingName',
