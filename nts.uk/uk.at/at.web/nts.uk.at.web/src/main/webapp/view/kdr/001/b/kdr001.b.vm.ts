@@ -40,6 +40,10 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             nts.uk.ui.block.invisible();
+            self.displayYearlyHoliday();
+            self.displayYearlyReserved();
+            self.displaySubstituteHoliday();
+            self.displayPauseItemHoliday(); 
             service.findAllSpecialHoliday().done(function(data: Array<SpecialHoliday>) {
                 if (data && data.length > 0) {
                     self.allSpecialHolidays(data);
@@ -51,10 +55,6 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 }
                 service.findAll().done(function(data: Array<HolidayRemaining>) {
                     self.loadAllHolidayRemaining(data);
-                    self.displayYearlyHoliday();
-                    self.displayYearlyReserved();
-                    self.displaySubstituteHoliday();
-                    self.displayPauseItemHoliday(); 
                     nts.uk.ui.block.clear();
                     dfd.resolve();
                 }).fail(function(res) {
@@ -69,6 +69,8 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 dfd.reject();
 
             });
+            // focus
+            self.setFocus();
 
             return dfd.promise();
 
