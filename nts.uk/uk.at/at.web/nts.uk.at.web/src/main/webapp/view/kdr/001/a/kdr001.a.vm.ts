@@ -270,16 +270,16 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 dfd.resolve();
             });
             */
-            //let user: any = __viewContext.user;
+            let user: any = __viewContext.user;
             $.when(service.findAll(),
                     //service.getDate(),
-                    service.getPermissionOfEmploymentForm()
-                   // nts.uk.characteristics.restore("UserSpecific_" + user.employeeId)
+                    service.getPermissionOfEmploymentForm(),
+                    nts.uk.characteristics.restore("UserSpecific_" + user.employeeId)
                     ).done((
                             holidayRemainings: Array<any>,
                             //dateData: IGetDate,
-                            permission: any
-                            //userSpecific
+                            permission: any,
+                            userSpecific
                             ) => {
                     self.loadAllHolidayRemaining(holidayRemainings);
                     /*
@@ -295,11 +295,11 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                             permission.roleId,
                             permission.functionNo,
                             permission.availability));
-                  /* if (userSpecific) {
+                    if (userSpecific) {
                         self.holidayRemainingSelectedCd(userSpecific.outputItemSettingCode);
                         self.selectedCode(userSpecific.pageBreakAtr);
                     }
-*/
+
                }).fail(function(res) {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
             }).always(() => {
