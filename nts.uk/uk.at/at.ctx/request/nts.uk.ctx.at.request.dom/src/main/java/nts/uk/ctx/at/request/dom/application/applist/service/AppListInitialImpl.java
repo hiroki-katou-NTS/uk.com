@@ -14,6 +14,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
@@ -38,6 +39,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmploymentHisImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.closure.PresentClosingPeriodImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.closure.RqClosureAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
@@ -774,14 +776,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			if(displaySet.getHwActualDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
 				//アルゴリズム「申請一覧リスト取得実績残業申請」を実行する-(5.2)
 				List<OverTimeFrame> time = appHdPost.getLstFrame();
-				OverTimeFrame frameRestTime = this.findRestTime(time);
-				Integer restStart = null;
-				Integer restEnd = null;
-				if(frameRestTime != null){
-					restStart = frameRestTime.getStartTime();
-					restEnd = frameRestTime.getEndTime();
-				}
-				TimeResultOutput result = this.getAppListAchievementOverTime(sID, appDate, time, restStart, restEnd);
+				TimeResultOutput result = this.getAppListAchievementBreak(sID, appDate, time);
 				if(result.isCheckColor()){
 					if(this.checkExistColor(lstColorTime, appID)){
 						checkColor.setColorAtr(2);
@@ -831,15 +826,42 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	}
 	/**
 	 * 5.1 - 申請一覧リスト取得実績休出申請
+	 * sID: 申請者ID
+	 * date: 申請日付
 	 */
 	@Override
-	public Boolean getAppListAchievementBreak(String sID, GeneralDate date) {
+	public TimeResultOutput getAppListAchievementBreak(String sID, GeneralDate date, List<OverTimeFrame> time) {
 		// TODO Auto-generated method stub
 		//Imported(申請承認)「勤務実績」を取得する - req #5
 		RecordWorkInfoImport record = recordWkpInfoAdapter.getRecordWorkInfo(sID, date);
 		//Imported(申請承認)「勤務予定」を取得する - req #4
-		Optional<ScBasicScheduleImport> scBsSchedule = scBasicScheduleAdapter.findByID(sID, date);
-		
+//		Optional<ScBasicScheduleImport> scBsSchedule = scBasicScheduleAdapter.findByID(sID, date);
+		//計算休日出勤
+		List<OvertimeInputCaculation> lstHdCal = record.getOvertimeHolidayCaculation();
+		boolean checkColor = false;
+		List<OverTimeFrame> lstFrameResult = new ArrayList<>();
+		for (OvertimeInputCaculation timeCal : lstHdCal) {
+			OverTimeFrame a = this.findFrameTime(time, timeCal.getFrameNo(), timeCal.getAttendanceID());
+			if(a == null){
+				continue;
+			}
+			if(timeCal.getResultCaculation() < a.getApplicationTime()){
+				checkColor = true;
+			}
+			OverTimeFrame frameRes = a;
+			frameRes.setApplicationTime(timeCal.getResultCaculation());
+			lstFrameResult.add(frameRes);
+		}
+		return new TimeResultOutput(checkColor, lstFrameResult, repoAppDetail.convertTime(record.getAttendanceStampTimeFirst()),
+				repoAppDetail.convertTime(record.getLeaveStampTimeFirst()),	repoAppDetail.convertTime(record.getAttendanceStampTimeSecond()),
+				repoAppDetail.convertTime(record.getLeaveStampTimeSecond()));
+	}
+	private OverTimeFrame findFrameTime(List<OverTimeFrame> time, int frameNo, int attendanceType){
+		for (OverTimeFrame overTimeFrame : time) {
+			if(overTimeFrame.getFrameNo() == frameNo && overTimeFrame.getAttendanceType() == attendanceType){
+				return overTimeFrame;
+			}
+		}
 		return null;
 	}
 	/**
@@ -1047,44 +1069,62 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//ドメイン「締め」を取得する
 		List<Closure> lstClosure = repoClosure.findAllActive(companyId, UseClassification.UseClass_Use);
 		//list clourse hist
+		// 締め開始日
+		GeneralDate startDate = null;
+		// 締め終了日
+		GeneralDate endDate = null;
 		for (Closure closure : lstClosure) {
-			//find clourse Hist trong khoang thoi gian
-			ClosureHistory closureHist = this.findHistClosure(closure.getClosureHistories(), closure.getClosureMonth());
-			List<ClosureHistory> lstClosureHist = new ArrayList<>();
-			if(closureHist != null){
-				lstClosureHist.add(closureHist);
-				closure.setClosureHistories(lstClosureHist);
-			}else{
-				closure.setClosureHistories(null);
+			//アルゴリズム「処理年月と締め期間を取得する」を実行する
+			Optional<PresentClosingPeriodImport> closureA = closureAdapter.getClosureById(companyId, closure.getClosureId().value);
+			PresentClosingPeriodImport priod = closureA.get();
+			if(startDate == null || startDate.after(priod.getClosureStartDate())){
+				startDate = priod.getClosureStartDate();
+				endDate	= priod.getClosureEndDate();
 			}
 		}
-		List<Closure> lstClosureFil = lstClosure.stream().filter(c-> c.getClosureHistories() != null).collect(Collectors.toList());
-		//取得した、締め日及び当月より、締め日付を作成
-		GeneralDate start = null;
-		GeneralDate minDate = null;
-		for (Closure closure : lstClosureFil) {
-			List<ClosureHistory> closureHist = closure.getClosureHistories();
-			CurrentMonth month = closure.getClosureMonth();
-			for (ClosureHistory closureHistory : closureHist) {
-				if(closureHistory.getClosureDate().getLastDayOfMonth().booleanValue()==true){//締めが末締めの場合
-					GeneralDate tmp = GeneralDate.ymd(month.getProcessingYm().year(), month.getProcessingYm().month() + 1, 1);
-					start = tmp.addMonths(-1);
-				}else{//末締めではない場合
-					GeneralDate tmp = GeneralDate.
-							ymd(month.getProcessingYm().year(), month.getProcessingYm().month(), closure.getClosureHistories().get(0).getClosureDate().getClosureDay().v());
-					GeneralDate date = tmp.addDays(1);
-					start = date.addMonths(-1);
-				}
-				if(minDate == null){
-					minDate = start;
-				}else{
-					minDate = start.afterOrEquals(minDate) ? minDate : start;
-				}
-			}
-		}
-		//開始日付の4か月後を終了日付として取得
-		GeneralDate end = minDate.addMonths(4);
-		return new DatePeriod(minDate,end);
+		
+		
+//		//ドメイン「締め」を取得する
+//		List<Closure> lstClosure = repoClosure.findAllActive(companyId, UseClassification.UseClass_Use);
+//		//list clourse hist
+//		for (Closure closure : lstClosure) {
+//			//find clourse Hist trong khoang thoi gian
+//			ClosureHistory closureHist = this.findHistClosure(closure.getClosureHistories(), closure.getClosureMonth());
+//			List<ClosureHistory> lstClosureHist = new ArrayList<>();
+//			if(closureHist != null){
+//				lstClosureHist.add(closureHist);
+//				closure.setClosureHistories(lstClosureHist);
+//			}else{
+//				closure.setClosureHistories(null);
+//			}
+//		}
+//		List<Closure> lstClosureFil = lstClosure.stream().filter(c-> c.getClosureHistories() != null).collect(Collectors.toList());
+//		//取得した、締め日及び当月より、締め日付を作成
+//		GeneralDate start = null;
+//		GeneralDate minDate = null;
+//		for (Closure closure : lstClosureFil) {
+//			List<ClosureHistory> closureHist = closure.getClosureHistories();
+//			CurrentMonth month = closure.getClosureMonth();
+//			for (ClosureHistory closureHistory : closureHist) {
+//				if(closureHistory.getClosureDate().getLastDayOfMonth().booleanValue()==true){//締めが末締めの場合
+//					GeneralDate tmp = GeneralDate.ymd(month.getProcessingYm().year(), month.getProcessingYm().month() + 1, 1);
+//					start = tmp.addMonths(-1);
+//				}else{//末締めではない場合
+//					GeneralDate tmp = GeneralDate.
+//							ymd(month.getProcessingYm().year(), month.getProcessingYm().month(), closure.getClosureHistories().get(0).getClosureDate().getClosureDay().v());
+//					GeneralDate date = tmp.addDays(1);
+//					start = date.addMonths(-1);
+//				}
+//				if(minDate == null){
+//					minDate = start;
+//				}else{
+//					minDate = start.afterOrEquals(minDate) ? minDate : start;
+//				}
+//			}
+//		}
+//		//開始日付の4か月後を終了日付として取得
+//		GeneralDate end = minDate.addMonths(4);
+		return new DatePeriod(startDate,endDate.addMonths(3));
 	}
 	/**
 	 * 12.1 - 申請一覧初期日付期間_申請
