@@ -39,7 +39,7 @@ public class LeaveEarlyDecisionClock {
 			TimeLeavingWork timeLeavingWork,
 			Optional<CoreTimeSetting> coreTimeSetting) {
 		
-		val predetermineTimeSheet = predetermineTimeSet.getTimeSheets().get(workNo);
+		val predetermineTimeSheet = predetermineTimeSet.getTimeSheets(workNo);
 		TimeWithDayAttr decisionClock = new TimeWithDayAttr(0);
 		
 		//計算範囲の取得
