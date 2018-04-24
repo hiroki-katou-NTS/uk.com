@@ -641,4 +641,21 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		}
 		return result;
 	}
+	@Override
+	// requestList356
+	public boolean ReleaseApproval(String approverID, List<GeneralDate> approvalRecordDates, List<String> employeeIDs,
+			Integer rootType, String companyID) {
+		boolean result = true;
+		// 対象者リストと日付リストから承認ルートインスタンスを取得する
+		List<ApprovalRootState> approvalRootSates = this.approvalRootStateRepository.findAppByListEmployeeIDAndListRecordDate(approvalRecordDates, employeeIDs, rootType);
+		if(approvalRootSates != null){
+			for(ApprovalRootState approvalRootState : approvalRootSates){
+				result = this.doRelease(companyID, approvalRootState.getRootStateID(), approvalRootState.getEmployeeID());
+				if(!result){
+					return result;
+				}
+			}
+		}
+		return result;
+	}
 }
