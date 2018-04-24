@@ -62,6 +62,12 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 		if(!this.isHaveData()) {
 			return null;
 		}
+		if (emp == null) {
+			emp = this.employeeId();
+		}
+		if (date == null) {
+			date = this.workingDate();
+		}
 		return new ShortTimeOfDailyPerformance(
 					emp,
 					ConvertHelper.mapTo(shortWorkingTimeSheets,
