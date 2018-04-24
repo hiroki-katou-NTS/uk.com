@@ -101,10 +101,24 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 		if (DisplayMode.DETAIL.equals(displayMode.getDisplayMode())) {
 			this.diffTimeStampReflectTimezonePolicy.validate(be, pred, diffTimeWorkSetting);
 		}
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.difftimeset.policy.
+	 * DiffTimeWorkSettingPolicy#filterTimezone(nts.uk.ctx.at.shared.dom.
+	 * worktime.predset.PredetemineTimeSetting,
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode,
+	 * nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting)
+	 */
+	@Override
+	public void filterTimezone(PredetemineTimeSetting pred, WorkTimeDisplayMode displayMode,
+			DiffTimeWorkSetting diffTimeWorkSetting) {
 		// Filter AM PM
 		diffTimeWorkSetting.getHalfDayWorkTimezones().forEach(diffTime -> {
-			this.diffTimeHalfPolicy.filterTimezone(pred, diffTime, displayMode.getDisplayMode(), diffTimeWorkSetting.isUseHalfDayShift());
+			this.diffTimeHalfPolicy.filterTimezone(pred, diffTime, displayMode.getDisplayMode(),
+					diffTimeWorkSetting.isUseHalfDayShift());
 		});
 	}
 
@@ -348,4 +362,5 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 					diffTimeWorkSetting.isUseHalfDayShift());
 		});
 	}
+
 }

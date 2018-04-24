@@ -120,8 +120,10 @@ public class DiffTimezoneSetting extends WorkTimeDomainObject {
 	 * Check over time and em time overlap.
 	 */
 	private void checkOverTimeAndEmTimeOverlap() {
-		if (this.oTTimezones.stream().anyMatch(ot -> CollectionUtil.isEmpty(this.employmentTimezones)
-				|| this.employmentTimezones.stream().anyMatch(em -> ot.getTimezone().isOverlap(em.getTimezone())))) {
+		if (CollectionUtil.isEmpty(this.employmentTimezones) || CollectionUtil.isEmpty(this.oTTimezones)) {
+			return;
+		}		
+		if (this.oTTimezones.stream().anyMatch(ot -> this.employmentTimezones.stream().anyMatch(em -> ot.getTimezone().isOverlap(em.getTimezone())))) {
 			this.bundledBusinessExceptions.addMessage("Msg_845", "KMK003_89");
 		}
 	}

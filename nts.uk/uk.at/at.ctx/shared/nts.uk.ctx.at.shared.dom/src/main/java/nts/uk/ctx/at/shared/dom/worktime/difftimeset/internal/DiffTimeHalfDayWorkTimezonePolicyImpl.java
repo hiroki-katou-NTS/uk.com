@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BundledBusinessException;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.policy.DiffTimeHalfDayWorkTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.policy.DiffTimezoneSettingPolicy;
@@ -41,6 +42,15 @@ public class DiffTimeHalfDayWorkTimezonePolicyImpl implements DiffTimeHalfDayWor
 			DiffTimeHalfDayWorkTimezone halfDayWork, boolean isUseHalfDayShift) {
 		this.diffTimezonePolicy.validate(be, predTime, halfDayWork.getWorkTimezone(), displayMode.getDisplayMode(),
 				halfDayWork.getAmPmAtr(), isUseHalfDayShift);
+		
+		// Msg_755
+		if ((AmPmAtr.AM.equals(halfDayWork.getAmPmAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
+				|| (AmPmAtr.PM.equals(halfDayWork.getAmPmAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)) {
+			return;
+		}	
+		if (halfDayWork.restInWork()) {
+			be.addMessage("Msg_755");
+		}
 	}
 
 	/**

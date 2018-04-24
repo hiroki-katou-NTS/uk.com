@@ -44,10 +44,6 @@ public class FlexHalfDayWorkTime extends WorkTimeDomainObject {
 		if (!this.restTimezone.isFixRestTime() && this.hasNoNo1()) {
 			this.bundledBusinessExceptions.addMessage("Msg_847");
 		}
-
-		if (this.restTimezone.isFixRestTime() && !this.isInFixedWork(this.restTimezone)) {
-			this.bundledBusinessExceptions.addMessage("Msg_755");
-		}
 		
 		// validate 770 for list work
 		this.workTimezone.getLstWorkingTimezone().stream().forEach(item -> {
@@ -79,7 +75,7 @@ public class FlexHalfDayWorkTime extends WorkTimeDomainObject {
 	 * @param flowRest the flow rest
 	 * @return true, if is in fixed work
 	 */
-	private boolean isInFixedWork(FlowWorkRestTimezone flowRest) {
+	public boolean isInFixedWork(FlowWorkRestTimezone flowRest) {
 		return flowRest.getFixedRestTimezone().getTimezones().stream().allMatch(
 				dedTime -> this.workTimezone.isInEmTimezone(dedTime) || this.workTimezone.isInOverTimezone(dedTime));
 	}

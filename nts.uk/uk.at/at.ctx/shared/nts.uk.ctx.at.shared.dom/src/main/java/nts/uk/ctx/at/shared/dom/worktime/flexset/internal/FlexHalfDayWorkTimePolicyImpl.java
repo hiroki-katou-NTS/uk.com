@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BundledBusinessException;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.policy.FixedWorkTimezoneSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.policy.FlexHalfDayWorkTimePolicy;
@@ -47,6 +48,15 @@ public class FlexHalfDayWorkTimePolicyImpl implements FlexHalfDayWorkTimePolicy 
 
 		// validate FlowWorkRestTimezone
 		this.flowRestPolicy.validate(be, predTime, halfDayWork.getRestTimezone());
+		
+		// Msg_755
+		if ((AmPmAtr.AM.equals(halfDayWork.getAmpmAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
+				|| (AmPmAtr.PM.equals(halfDayWork.getAmpmAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)) {
+			return;
+		}		
+		if (halfDayWork.getRestTimezone().isFixRestTime() && !halfDayWork.isInFixedWork(halfDayWork.getRestTimezone())) {
+			be.addMessage("Msg_755");
+		}
 	}
 
 	/*
