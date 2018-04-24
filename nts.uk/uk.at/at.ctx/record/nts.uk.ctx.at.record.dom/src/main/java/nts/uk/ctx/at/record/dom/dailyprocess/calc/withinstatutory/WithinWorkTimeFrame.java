@@ -416,14 +416,24 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 																	WorkRegularAdditionSet addSettingOfRegularWork,
 																	WorkDeformedLaborAdditionSet addSettingOfIrregularWork, 
 																	WorkFlexAdditionSet addSettingOfFlexWork) {
+		
 		switch (workingSystem) {
 		case REGULAR_WORK:
+			if(addSettingOfRegularWork == null){
+				return CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME;
+			}
 			return addSettingOfRegularWork.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation();
-
+			
 		case FLEX_TIME_WORK:
+			if(addSettingOfFlexWork == null) {
+				return CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME;
+			}
 			return addSettingOfFlexWork.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday().getCalculateActualOperation();
 
 		case VARIABLE_WORKING_TIME_WORK:
+			if(addSettingOfIrregularWork == null) {
+				return CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME;
+			}
 			return addSettingOfIrregularWork.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation();
 
 		case EXCLUDED_WORKING_CALCULATE:
