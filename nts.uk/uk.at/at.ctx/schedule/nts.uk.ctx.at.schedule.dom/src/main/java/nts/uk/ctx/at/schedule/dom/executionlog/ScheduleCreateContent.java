@@ -87,6 +87,10 @@ public class ScheduleCreateContent extends DomainObject{
 	public void setCreateMethodAtr(CreateMethodAtr createMethodAtr) {
 		this.createMethodAtr = createMethodAtr;
 	}
+
+	public void setExecutionId(String executionId) {
+		this.executionId = executionId;
+	}
 	
 	
 }
