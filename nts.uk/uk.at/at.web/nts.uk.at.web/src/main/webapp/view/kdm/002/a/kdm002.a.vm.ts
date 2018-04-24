@@ -110,7 +110,7 @@ module nts.uk.at.view.kdm002.a {
                 self.endDateString = ko.observable(new Date().getFullYear() + "1231");
                 self.selectedEmployeeCode = ko.observableArray([]);
                 self.alreadySettingPersonal = ko.observableArray([]);
-                self.maxDaysCumulationByEmp = ko.observable(0);
+                self.maxDaysCumulationByEmp = ko.observable(null);
                 self.periodDate = ko.observable({
                     startDate: self.startDateString(),
                     endDate: self.endDateString()
