@@ -148,26 +148,29 @@ public class DailyRecordWorkFinder extends FinderFacade {
 			List<DailyRecordDto> dtoByDates = new ArrayList<>();
 			GeneralDate start = baseDate.start();
 			while (start.beforeOrEquals(baseDate.end())) {
-				DailyRecordDto current = DailyRecordDto.builder().employeeId(em).workingDate(start)
-						.withWorkInfo(getValue(workInfos.get(em), start))
-						.withCalcAttr(getValue(calcAttrs.get(em), start))
-						.withAffiliationInfo(getValue(affiliInfo.get(em), start))
-						// .withErrors(getValue(errors.get(em), start))
-						.outingTime(getValue(outings.get(em), start))
-						.addBreakTime(getListValue(breaks.get(em), start))
-						.attendanceTime(getValue(attendTime.get(em), start))
-						.attendanceTimeByWork(getValue(attendTimeByWork.get(em), start))
-						.timeLeaving(getValue(leaving.get(em), start))
-						.shortWorkTime(getValue(shortWork.get(em), start))
-						.specificDateAttr(getValue(specificDateAttr.get(em), start))
-						.attendanceLeavingGate(getValue(attendLeavingGate.get(em), start))
-						.optionalItems(getValue(optionalItems.get(em), start))
-						.addEditStates(getListValue(editStates.get(em), start))
-						.temporaryTime(getValue(temporaryTime.get(em), start))
-						.pcLogInfo(getValue(pcLogInfo.get(em), start))
-						.remarks(getListValue(remarks.get(em), start))
-						.complete();
-				dtoByDates.add(current);
+				WorkInformationOfDailyDto workInfo = getValue(workInfos.get(em), start);
+				if(workInfo != null && workInfo.isHaveData()){
+					DailyRecordDto current = DailyRecordDto.builder().employeeId(em).workingDate(start)
+							.withWorkInfo(getValue(workInfos.get(em), start))
+							.withCalcAttr(getValue(calcAttrs.get(em), start))
+							.withAffiliationInfo(getValue(affiliInfo.get(em), start))
+							// .withErrors(getValue(errors.get(em), start))
+							.outingTime(getValue(outings.get(em), start))
+							.addBreakTime(getListValue(breaks.get(em), start))
+							.attendanceTime(getValue(attendTime.get(em), start))
+							.attendanceTimeByWork(getValue(attendTimeByWork.get(em), start))
+							.timeLeaving(getValue(leaving.get(em), start))
+							.shortWorkTime(getValue(shortWork.get(em), start))
+							.specificDateAttr(getValue(specificDateAttr.get(em), start))
+							.attendanceLeavingGate(getValue(attendLeavingGate.get(em), start))
+							.optionalItems(getValue(optionalItems.get(em), start))
+							.addEditStates(getListValue(editStates.get(em), start))
+							.temporaryTime(getValue(temporaryTime.get(em), start))
+							.pcLogInfo(getValue(pcLogInfo.get(em), start))
+							.remarks(getListValue(remarks.get(em), start))
+							.complete();
+					dtoByDates.add(current);
+				}
 				start = start.addDays(1);
 			}
 			return dtoByDates;

@@ -2,9 +2,12 @@ package nts.uk.ctx.exio.dom.exi.item;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
@@ -32,7 +35,9 @@ public class StdAcceptItemServiceImpl implements StdAcceptItemService {
 		StdAcceptCondSet condSet = acceptCondRepo.getStdAcceptCondSetById(conditionSetting.getCid(),
 				conditionSetting.getSystemType().value, conditionSetting.getConditionSetCd().v()).get();
 		condSet.updateWhenSettingItems(conditionSetting.getCategoryId().get(),
-				conditionSetting.getCsvDataLineNumber().get().v(), conditionSetting.getCsvDataStartLine().get().v());
+				conditionSetting.getCsvDataLineNumber().get().v(), 
+				conditionSetting.getCsvDataStartLine().get().v(),
+				conditionSetting.getCharacterCode().get().value);
 		acceptItemRepo.removeAll(conditionSetting.getCid(), conditionSetting.getSystemType().value,
 				conditionSetting.getConditionSetCd().v());
 		acceptItemRepo.addList(listItem);
@@ -41,28 +46,30 @@ public class StdAcceptItemServiceImpl implements StdAcceptItemService {
 	}
 
 	@Override
-	public void registerAndReturn(List<StdAcceptItem> listItem, StdAcceptCondSet conditionSetting) {
+	public void registerAndReturn(List<Pair<StdAcceptItem, String>> listItem, StdAcceptCondSet conditionSetting) {
 		StdAcceptCondSet condSet = acceptCondRepo.getStdAcceptCondSetById(conditionSetting.getCid(),
 				conditionSetting.getSystemType().value, conditionSetting.getConditionSetCd().v()).get();
 		condSet.updateWhenSettingItems(conditionSetting.getCategoryId().get(),
-				conditionSetting.getCsvDataLineNumber().get().v(), conditionSetting.getCsvDataStartLine().get().v());
+				conditionSetting.getCsvDataLineNumber().get().v(), 
+				conditionSetting.getCsvDataStartLine().get().v(),
+				conditionSetting.getCharacterCode().get().value);
 		acceptCondRepo.updateFromD(condSet);
 		acceptItemRepo.removeAll(conditionSetting.getCid(), conditionSetting.getSystemType().value,
 				conditionSetting.getConditionSetCd().v());
-		acceptItemRepo.addList(listItem);
+		acceptItemRepo.addList(listItem.stream().map(i -> i.getLeft()).collect(Collectors.toList()));
 		inputCheck(listItem, condSet);
 	}
 
-	private void inputCheck(List<StdAcceptItem> listItem, StdAcceptCondSet condSet) {
+	private void inputCheck(List<Pair<StdAcceptItem, String>> listItem, StdAcceptCondSet condSet) {
 		List<String> errorList = new ArrayList<>();
-		for (StdAcceptItem item : listItem) {
-			if (!item.getCsvItemName().isPresent()) {
+		for (Pair<StdAcceptItem, String> item : listItem) {
+			if (!item.getLeft().getCsvItemName().isPresent()) {
 				// add msg 902
-				errorList.add(TextResource.localize("Msg_902", "" + item.getAcceptItemNumber()));
+				errorList.add(TextResource.localize("Msg_902", item.getRight()));
 			}
-			if (!item.getDataFormatSetting().isPresent()) {
+			if (!item.getLeft().getDataFormatSetting().isPresent()) {
 				// add msg 903
-				errorList.add(TextResource.localize("Msg_903", "" + item.getAcceptItemNumber()));
+				errorList.add(TextResource.localize("Msg_903", item.getRight()));
 			}
 		}
 		if (errorList.isEmpty()) {

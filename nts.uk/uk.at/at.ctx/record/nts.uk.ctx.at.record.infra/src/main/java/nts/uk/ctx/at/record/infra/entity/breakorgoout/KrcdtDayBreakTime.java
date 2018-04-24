@@ -64,7 +64,7 @@ public class KrcdtDayBreakTime extends UkJpaEntity implements Serializable{
 	public Integer calDeductionOutTime;
 	
 	@Column(name ="DURINGWORK_TIME")
-	public Integer duringworkTime;
+	public int duringworkTime;
 	
 	@Column(name ="COUNT")
 	public Integer count;
@@ -111,12 +111,15 @@ public class KrcdtDayBreakTime extends UkJpaEntity implements Serializable{
 		this.deductionOutTime = 0;
 		this.calDeductionOutTime = 0;
 		
+		this.duringworkTime = 0;
+		
 		this.count = 0;
 		
 		if(attendanceTime != null) {
 			if(attendanceTime.getActualWorkingTimeOfDaily() != null) {
 				if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
-					if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily() != null) {
+					//if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily() != null) {
+					if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily() != null) {
 						val recordTime = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getToRecordTotalTime();
 						val dedTime = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getDeductionTotalTime();
 						val duringTime = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getWorkTime();

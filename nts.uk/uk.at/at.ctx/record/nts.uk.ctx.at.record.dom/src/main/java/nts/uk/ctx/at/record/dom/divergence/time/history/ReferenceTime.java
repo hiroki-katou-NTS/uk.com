@@ -1,17 +1,15 @@
 package nts.uk.ctx.at.record.dom.divergence.time.history;
 
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
-
 /**
  * The Enum ReferenceTime.
  */
-//基準時間の種類
+// 基準時間の種類
 public enum ReferenceTime {
-	
+
 	/** The company. */
 	// 会社
 	COMPANY(0, "ENUM_COMPANY"),
-	
+
 	/** The worktype. */
 	// 勤務種別
 	WORKTYPE(1, "ENUM_WORKTYPE");
@@ -27,8 +25,10 @@ public enum ReferenceTime {
 	/**
 	 * Instantiates a new rounding.
 	 *
-	 * @param value            the value
-	 * @param name the name
+	 * @param value
+	 *            the value
+	 * @param name
+	 *            the name
 	 */
 	private ReferenceTime(int value, String name) {
 		this.value = value;

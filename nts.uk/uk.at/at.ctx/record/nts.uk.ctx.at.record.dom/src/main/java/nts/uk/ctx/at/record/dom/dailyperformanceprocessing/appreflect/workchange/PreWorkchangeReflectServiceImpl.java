@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ApplicationReflectOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
@@ -21,14 +22,18 @@ public class PreWorkchangeReflectServiceImpl implements PreWorkchangeReflectServ
 	@Override
 	public ApplicationReflectOutput workchangeReflect(CommonReflectParameter workchangePara, boolean isPre) {
 		try {
-			//予定勤種就時の反映
-			commonService.reflectScheWorkTimeWorkType(workchangePara, isPre);
-			//勤種・就時の反映
-			ReflectParameter reflectPara = new ReflectParameter(workchangePara.getEmployeeId(),
-					workchangePara.getBaseDate(),
-					workchangePara.getWorkTimeCode(),
-					workchangePara.getWorkTypeCode());
-			workTimeUpdate.updateWorkTimeType(reflectPara, isPre);
+			for(int i = 0; workchangePara.getStartDate().compareTo(workchangePara.getEndDate()) + i <= 0; i++){
+				GeneralDate loopDate = workchangePara.getStartDate().addDays(i);
+				workchangePara.setBaseDate(loopDate);
+				//予定勤種就時の反映
+				commonService.reflectScheWorkTimeWorkType(workchangePara, isPre);
+				//勤種・就時の反映
+				ReflectParameter reflectPara = new ReflectParameter(workchangePara.getEmployeeId(),
+						loopDate,
+						workchangePara.getWorkTimeCode(),
+						workchangePara.getWorkTypeCode());
+				workTimeUpdate.updateWorkTimeType(reflectPara, false);
+			}			
 			return new ApplicationReflectOutput(ReflectedStateRecord.REFLECTED, ReasonNotReflectRecord.ACTUAL_CONFIRMED);	
 		}catch (Exception e) {
 			return new ApplicationReflectOutput(EnumAdaptor.valueOf(workchangePara.getReflectState().value, ReflectedStateRecord.class),

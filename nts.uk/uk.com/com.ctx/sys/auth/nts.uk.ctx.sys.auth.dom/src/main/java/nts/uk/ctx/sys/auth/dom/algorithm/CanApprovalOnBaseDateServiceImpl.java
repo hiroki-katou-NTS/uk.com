@@ -39,10 +39,7 @@ public class CanApprovalOnBaseDateServiceImpl implements CanApprovalOnBaseDateSe
 			JobTitleValueImport jobTitle = jobTitleAdapter.findJobTitleBySid(employeeID, date);
 
 			Optional<String> roleJobTitle = roleSetGrantedJobTitleRepo.getRoleSetCd(companyId, jobTitle.getPositionId());
-			if (!roleJobTitle.isPresent()) {
-				throw new RuntimeException("Not found RoleSetGrantedJobTitle by employeeId:" + jobTitle.getPositionId());
-			}
-			else{
+			if (roleJobTitle.isPresent()) {
 				roleSetCode = roleJobTitle.get();
 			}
 		} else {

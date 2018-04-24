@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 
 /**
  * 
- * @author nampt
  * 未来日の自動打刻セット区分
  */
 @AllArgsConstructor

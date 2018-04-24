@@ -33,6 +33,8 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectRa
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectTimezoneOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimePrintDestinationOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeZoneOutput;
+import nts.uk.ctx.at.record.dom.goout.OutingManagement;
+import nts.uk.ctx.at.record.dom.goout.repository.OutingManagementRepository;
 import nts.uk.ctx.at.record.dom.stamp.ReflectedAtr;
 import nts.uk.ctx.at.record.dom.stamp.StampAtr;
 import nts.uk.ctx.at.record.dom.stamp.StampItem;
@@ -40,6 +42,7 @@ import nts.uk.ctx.at.record.dom.stamp.StampMethod;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
+import nts.uk.ctx.at.record.dom.workrecord.temporarywork.ManageWorkTemporaryRepository;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -51,6 +54,8 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerforma
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.employmentrules.temporarywork.TemporaryWorkUseManage;
+import nts.uk.ctx.at.shared.dom.employmentrules.temporarywork.repository.TempWorkUseManageRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
@@ -68,6 +73,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
 //import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
@@ -94,6 +100,12 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 	private PCLogOnInfoOfDailyRepo PCLogOnInfoOfDailyRepo;
 	@Inject
 	private GetCommonSet getCommonSet;
+	@Inject
+	private OutingManagementRepository outingManagementRepo;
+	@Inject
+	private TempWorkUseManageRepository tempWorkUseManageRepo;
+	@Inject
+	private ManageWorkTemporaryRepository temporaryWorkManageRepo;
 
 	@Override
 	public ReflectStampOutput reflectStamp(WorkInfoOfDailyPerformance WorkInfo,
@@ -366,8 +378,15 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					// 9* ドメインモデル「臨時勤務管理」を取得する (Lấy về domain model "臨時勤務管理")
 					// chưa sử lý (fixed) sửa dụng
 					// 9*
-				String check = "used";
-				if ("used".equals(check)) {
+				boolean isUse = true;
+				//Optional<TemporaryWorkUseManage> temporaryWorkUseManageOptional = this.tempWorkUseManageRepo.findByKey(companyId);
+				//DungDT
+				/*if(temporaryWorkUseManageOptional.isPresent()){
+					NotUseAtr useClassification = temporaryWorkUseManageOptional.get().getUseClassification();
+					isUse = (useClassification.value ==1) ? true :false;
+				}
+				*/
+				if (isUse) {
 					// 10* Chuyển thời gian check tay đang xử lý sang thời gian
 					// tương ứng với ngày tháng năm đang xử lý
 					ProcessTimeOutput processTimeOutput1 = new ProcessTimeOutput();
@@ -603,6 +622,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 		// 反映するか判断する
 		boolean determineReflect = this.determineReflect(inOrOutClass, x, pcLogonLogoffReflectOuput);
+		
 		if (determineReflect) {
 			// 反映する
 			pcLogOnInfoOfDaily = this.refect(pcLogOnInfoOfDaily, indexPCLogOnInfo, x, lstStamp, worktNo, inOrOutClass);
@@ -756,7 +776,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				attendanceLeavingGates.add(new AttendanceLeavingGate(
 						new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(worktNo), null, null));
 				attendanceLeavingGateOfDaily = new AttendanceLeavingGateOfDaily(employeeId, date,
-						new ArrayList<AttendanceLeavingGate>());
+						attendanceLeavingGates);
 				indexAttendanceLeavingGate = 0;
 			}
 		} else {
@@ -871,7 +891,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				return	this.confirmReflectFirstOrAfterPriority(companyId, attendanceClass, stamp, reflectEntryGateOutput, date, employeeId);
 			}
 		} else {
-			return false;
+			return true;
 		}
 	}
 
@@ -1006,7 +1026,16 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// lượng phần tử lớn nhất)
 		// 臨時勤務管理 chưa có (fixed)
 		// 最大使用回数 = 11;
-		int Maxcount = 11;
+		int Maxcount = 3;
+		
+		/* DungDT
+		Optional<TemporaryWorkManage> TemporaryWorkManageOptional = this.temporaryWorkManageRepo.findByKey(companyId);
+		if(TemporaryWorkManageOptional.isPresent()){
+			Maxcount = 	TemporaryWorkManageOptional.get().getMaxUseCount();
+		}
+		*/
+		
+		
 		int timeLeavingSize = timeLeavingWorks.size();
 		if (timeLeavingSize < Maxcount) {
 			for (int i = 0; i < Maxcount - timeLeavingSize; i++) {
@@ -1032,6 +1061,16 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				// 臨時勤務管理 chưa có (fixed) true (đồng nhất thời gian) false
 				// (k đồng nhất)
 				boolean equal = true;
+				/* DUNGDT
+				TimeWithDayAttr tempTime = timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay();
+		 		TimeWithDayAttr stamp = processTimeOutput.getTimeOfDay();
+		 		int timeTreatTempSame=0;
+				Optional<TemporaryWorkManage> TemporaryWorkManageOptional = this.temporaryWorkManageRepo.findByKey(companyId);
+				if(TemporaryWorkManageOptional.isPresent()){
+					timeTreatTempSame = TemporaryWorkManageOptional.get().getTemporatyStampTime();
+				}
+				equal = this.confirmStampAndTempTimeSame(stamp, tempTime, timeTreatTempSame);
+				*/	
 				// 8*
 				if (equal) {
 					// 打刻を出退勤．退勤．実打刻に入れる (Set 打刻 vào 退勤．退勤．実打刻)
@@ -1160,7 +1199,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 		int numberOfReflectionStamp = 0;
 		if (timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent()) {
-			numberOfReflectionStamp = timeLeavingWork.getLeaveStamp().get().getNumberOfReflectionStamp();
+			numberOfReflectionStamp = timeLeavingWork.getLeaveStamp().get().getNumberOfReflectionStamp()==null?0:timeLeavingWork.getLeaveStamp().get().getNumberOfReflectionStamp();
 		}
 
 		return new TimeLeavingWork(timeLeavingWork.getWorkNo(), timeLeavingWork.getAttendanceStamp(),
@@ -1234,7 +1273,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			}
 			int numberOfReflectionStamp = 0;
 			if (timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent()) {
-				numberOfReflectionStamp = timeLeavingWork.getLeaveStamp().get().getNumberOfReflectionStamp();
+				numberOfReflectionStamp = timeLeavingWork.getLeaveStamp().get().getNumberOfReflectionStamp()==null?0: timeLeavingWork.getLeaveStamp().get().getNumberOfReflectionStamp();
 			}
 
 			return new TimeLeavingWork(timeLeavingWork.getWorkNo(), timeLeavingWork.getAttendanceStamp(),
@@ -1255,7 +1294,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 		int numberOfReflectionStamp = 0;
 		if (timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent()) {
-			numberOfReflectionStamp = timeLeavingWork.getLeaveStamp().get().getNumberOfReflectionStamp();
+			numberOfReflectionStamp = timeLeavingWork.getLeaveStamp().get().getNumberOfReflectionStamp()==null?0:timeLeavingWork.getLeaveStamp().get().getNumberOfReflectionStamp();
 		}
 
 		return new TimeLeavingWork(timeLeavingWork.getWorkNo(),
@@ -1337,7 +1376,13 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// lượng phần tử lớn nhất)
 		// 臨時勤務管理 chưa có (fixed)
 		// 最大使用回数 = 11;
-		int Maxcount = 11;
+		int Maxcount = 3;
+		/* DungDT
+		Optional<TemporaryWorkManage> TemporaryWorkManageOptional = this.temporaryWorkManageRepo.findByKey(companyId);
+		if(TemporaryWorkManageOptional.isPresent()){
+			Maxcount = 	TemporaryWorkManageOptional.get().getMaxUseCount();
+		}
+		*/
 		int timeLeavingSize = timeLeavingWorks.size();
 		if (timeLeavingSize < Maxcount) {
 			for (int i = 0; i < Maxcount - timeLeavingSize; i++) {
@@ -1363,6 +1408,17 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				// 臨時勤務管理 chưa có (fixed) true (đồng nhất thời gian) false
 				// (k đồng nhất)
 				boolean equal = true;
+				/* DUNGDT
+				TimeWithDayAttr tempTime = timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay();
+		 		TimeWithDayAttr stamp = processTimeOutput.getTimeOfDay();
+		 		int timeTreatTempSame=0;
+				Optional<TemporaryWorkManage> TemporaryWorkManageOptional = this.temporaryWorkManageRepo.findByKey(companyId);
+				if(TemporaryWorkManageOptional.isPresent()){
+					timeTreatTempSame = TemporaryWorkManageOptional.get().getTemporatyStampTime();
+				}
+				equal = this.confirmStampAndTempTimeSame(stamp, tempTime, timeTreatTempSame);
+				*/
+				
 				// 8*
 				if (equal) {
 					// tiếp
@@ -1476,7 +1532,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 		int numberOfReflectionStamp = 0;
 		if (timeLeavingWork.getAttendanceStamp() != null && timeLeavingWork.getAttendanceStamp().isPresent()) {
-			numberOfReflectionStamp = timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp();
+			numberOfReflectionStamp = timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp()==null?0:timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp();
 		}
 
 		return new TimeLeavingWork(timeLeavingWork.getWorkNo(),
@@ -1549,7 +1605,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			}
 			int numberOfReflectionStamp = 0;
 			if (timeLeavingWork.getAttendanceStamp() != null) {
-				numberOfReflectionStamp = timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp();
+				numberOfReflectionStamp = timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp()==null?0:timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp();
 			}
 			return new TimeLeavingWork(timeLeavingWork.getWorkNo(), Optional.ofNullable(new TimeActualStamp(
 					newActualStamp,
@@ -1567,7 +1623,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 		int numberOfReflectionStamp = 0;
 		if (timeLeavingWork.getAttendanceStamp() != null && timeLeavingWork.getAttendanceStamp().isPresent()) {
-			numberOfReflectionStamp = timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp();
+			numberOfReflectionStamp = timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp()==null?0:timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp();
 		}
 
 		return new TimeLeavingWork(timeLeavingWork.getWorkNo(), Optional.ofNullable(new TimeActualStamp(actualStamp,
@@ -1646,10 +1702,11 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			StampReflectionManagement stampReflectionManagement = stampOptional.get();
 			// stampReflectionManagement sẽ gọi .外出管理.最大使用回数
 			// (outingManager)
-			// fixed outingManager =11
-			int outingManager = 11;
-			// thiếu điều kiện giữa outingManager và
-			// lstOutingTimeSheet.size();
+			Optional<OutingManagement> OutingManagementOptional = this.outingManagementRepo.findByKey(companyId);
+			int outingManager =3;
+			if(OutingManagementOptional.isPresent()){
+				outingManager = OutingManagementOptional.get().getMaximumUsageCount();
+			}
 			int outingTimeSize = lstOutingTimeSheet.size();
 			if (outingTimeSize < outingManager) {
 				for (int i = 0; i < outingManager - outingTimeSize; i++) {
@@ -1798,8 +1855,11 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			StampReflectionManagement stampReflectionManagement = stampOptional.get();
 			// stampReflectionManagement sẽ gọi .外出管理.最大使用回数
 			// (outingManager)
-			// fixed outingManager =11
-			int outingManager = 11;
+			Optional<OutingManagement> OutingManagementOptional = this.outingManagementRepo.findByKey(companyId);
+			int outingManager =3;
+			if(OutingManagementOptional.isPresent()){
+				outingManager = OutingManagementOptional.get().getMaximumUsageCount();
+			}
 			// thiếu điều kiện giữa outingManager và
 			// lstOutingTimeSheet.size();
 			int outingTimeSize = lstOutingTimeSheet.size();
@@ -2044,7 +2104,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			return new OutingTimeSheet(o.getOutingFrameNo(), Optional.ofNullable(new TimeActualStamp(newActualStamp,
 					(o.getGoOut() != null && o.getGoOut().isPresent() && o.getGoOut().get().getStamp() != null
 							&& o.getGoOut().get().getStamp().isPresent()) ? o.getGoOut().get().getStamp().get() : null,
-					(o.getGoOut() != null && o.getGoOut().isPresent()) ? o.getGoOut().get().getNumberOfReflectionStamp()
+					(o.getGoOut() != null && o.getGoOut().isPresent()&& o.getGoOut().get().getNumberOfReflectionStamp()!=null) ? o.getGoOut().get().getNumberOfReflectionStamp()
 							: 0)),
 					o.getOutingTimeCalculation(), o.getOutingTime(),
 					EnumAdaptor.valueOf(x.getGoOutReason().value, GoingOutReason.class), o.getComeBack());
@@ -2061,7 +2121,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 								: null,
 				(o.getGoOut() != null && o.getGoOut().isPresent() && o.getGoOut().get().getStamp() != null
 						&& o.getGoOut().get().getStamp().isPresent()) ? o.getGoOut().get().getStamp().get() : null,
-				(o.getGoOut() != null && o.getGoOut().isPresent()) ? o.getGoOut().get().getNumberOfReflectionStamp() + 1
+				(o.getGoOut() != null && o.getGoOut().isPresent()&&  o.getGoOut().get().getNumberOfReflectionStamp()!=null) ? o.getGoOut().get().getNumberOfReflectionStamp() + 1
 						: 0)),
 				o.getOutingTimeCalculation(), o.getOutingTime(),
 				EnumAdaptor.valueOf(x.getGoOutReason().value, GoingOutReason.class), o.getComeBack());
@@ -2130,7 +2190,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			}
 			int numberOfReflectionStamp = 0;
 			if (o.getComeBack() != null && o.getComeBack().isPresent()) {
-				numberOfReflectionStamp = o.getComeBack().get().getNumberOfReflectionStamp();
+				numberOfReflectionStamp = o.getComeBack().get().getNumberOfReflectionStamp()==null?0:o.getComeBack().get().getNumberOfReflectionStamp();
 			}
 
 			return new OutingTimeSheet(o.getOutingFrameNo(), o.getGoOut(), o.getOutingTimeCalculation(),
@@ -2152,7 +2212,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 		int numberOfReflectionStamp = 0;
 		if (o.getComeBack() != null && o.getComeBack().isPresent()) {
-			numberOfReflectionStamp = o.getComeBack().get().getNumberOfReflectionStamp();
+			numberOfReflectionStamp = o.getComeBack().get().getNumberOfReflectionStamp()!=null?0:o.getComeBack().get().getNumberOfReflectionStamp();
 		}
 
 		return new OutingTimeSheet(
@@ -2243,7 +2303,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		lstStamp.add(stampItem);
 		int numberOfReflectionStamp = 0;
 		if (o.getComeBack() != null && o.getComeBack().isPresent()) {
-			numberOfReflectionStamp = o.getComeBack().get().getNumberOfReflectionStamp();
+			numberOfReflectionStamp = o.getComeBack().get().getNumberOfReflectionStamp()!=null?0:o.getComeBack().get().getNumberOfReflectionStamp();
 		}
 
 		return new OutingTimeSheet(o.getOutingFrameNo(), o.getGoOut(), o.getOutingTimeCalculation(), o.getOutingTime(),
@@ -2318,7 +2378,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		int numberOfReflectionStamp = 0;
 
 		if (o.getGoOut() != null && o.getGoOut().isPresent()) {
-			numberOfReflectionStamp = o.getGoOut().get().getNumberOfReflectionStamp();
+			numberOfReflectionStamp = o.getGoOut().get().getNumberOfReflectionStamp()==null?0:o.getGoOut().get().getNumberOfReflectionStamp();
 		}
 
 		return new OutingTimeSheet(o.getOutingFrameNo(),
@@ -2542,7 +2602,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// 打刻反映回数を更新
 		if ("実打刻".equals(actualStampClass)) {
 			timeActualStamp.setPropertyTimeActualStamp(timeActualStamp.getActualStamp(), timeActualStamp.getStamp(),
-					timeActualStamp.getNumberOfReflectionStamp() + 1);
+					timeActualStamp.getNumberOfReflectionStamp()==null?1:timeActualStamp.getNumberOfReflectionStamp() + 1);
 		}
 		// 6*
 
@@ -2557,26 +2617,26 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						Optional.ofNullable(new TimeActualStamp(stampOrActualStamp,
 								(timeActualStamp.getStamp() != null && timeActualStamp.getStamp().isPresent())
 										? timeActualStamp.getStamp().get() : null,
-								timeActualStamp.getNumberOfReflectionStamp())),
+								timeActualStamp.getNumberOfReflectionStamp()==null?0:timeActualStamp.getNumberOfReflectionStamp())),
 						null));
 
 			} else if ("出勤".equals(attendanceClass) && !"実打刻".equals(actualStampClass)) {
 				lstTimeLeave.add(new TimeLeavingWork(new WorkNo(worktNo), Optional.ofNullable(new TimeActualStamp(
 						(timeActualStamp.getActualStamp() != null && timeActualStamp.getActualStamp().isPresent())
 								? timeActualStamp.getActualStamp().get() : null,
-						stampOrActualStamp, timeActualStamp.getNumberOfReflectionStamp())), null));
+						stampOrActualStamp, timeActualStamp.getNumberOfReflectionStamp()==null?0:timeActualStamp.getNumberOfReflectionStamp())), null));
 			} else if (!"出勤".equals(attendanceClass) && "実打刻".equals(actualStampClass)) {
 				lstTimeLeave.add(new TimeLeavingWork(new WorkNo(worktNo), null,
 						Optional.ofNullable(new TimeActualStamp(stampOrActualStamp,
 								(timeActualStamp.getStamp() != null && timeActualStamp.getStamp().isPresent())
 										? timeActualStamp.getStamp().get() : null,
-								timeActualStamp.getNumberOfReflectionStamp()))));
+								timeActualStamp.getNumberOfReflectionStamp()==null?0:timeActualStamp.getNumberOfReflectionStamp()))));
 			} else {
 				lstTimeLeave.add(new TimeLeavingWork(new WorkNo(worktNo), null,
 						Optional.ofNullable(new TimeActualStamp(
 								(timeActualStamp.getStamp() != null && timeActualStamp.getStamp().isPresent())
 										? timeActualStamp.getStamp().get() : null,
-								stampOrActualStamp, timeActualStamp.getNumberOfReflectionStamp()))));
+								stampOrActualStamp, timeActualStamp.getNumberOfReflectionStamp()==null?0:timeActualStamp.getNumberOfReflectionStamp()))));
 			}
 
 			return new TimeLeavingOfDailyPerformance(employeeId, null, lstTimeLeave, date);
@@ -2592,12 +2652,12 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 								&& timeLeavingWorks.get(i).getAttendanceStamp().isPresent()) {
 							timeLeavingWorks.get(i).getAttendanceStamp().get().setPropertyTimeActualStamp(
 									Optional.ofNullable(stampOrActualStamp), timeActualStamp.getStamp(),
-									timeActualStamp.getNumberOfReflectionStamp());
+									timeActualStamp.getNumberOfReflectionStamp()==null?0:timeActualStamp.getNumberOfReflectionStamp());
 						} else {
 							TimeActualStamp timeActualStamp2 = new TimeActualStamp(stampOrActualStamp,
 									(timeActualStamp.getStamp() != null && timeActualStamp.getStamp().isPresent())
 											? timeActualStamp.getStamp().get() : null,
-									timeActualStamp.getNumberOfReflectionStamp());
+									timeActualStamp.getNumberOfReflectionStamp()==null?0:timeActualStamp.getNumberOfReflectionStamp());
 							timeLeavingWorks.get(i).setTimeLeavingWork(timeLeavingWorks.get(i).getWorkNo(),
 									Optional.ofNullable(timeActualStamp2), timeLeavingWorks.get(i).getLeaveStamp());
 						}
@@ -2608,13 +2668,13 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 								&& timeLeavingWorks.get(i).getAttendanceStamp().isPresent()) {
 							timeLeavingWorks.get(i).getAttendanceStamp().get().setPropertyTimeActualStamp(
 									timeActualStamp.getActualStamp(), Optional.ofNullable(stampOrActualStamp),
-									timeActualStamp.getNumberOfReflectionStamp());
+									timeActualStamp.getNumberOfReflectionStamp()==null?0:timeActualStamp.getNumberOfReflectionStamp());
 						} else {
 							TimeActualStamp timeActualStamp2 = new TimeActualStamp(
 									(timeActualStamp.getActualStamp() != null
 											&& timeActualStamp.getActualStamp().isPresent())
 													? timeActualStamp.getActualStamp().get() : null,
-									stampOrActualStamp, timeActualStamp.getNumberOfReflectionStamp());
+									stampOrActualStamp, timeActualStamp.getNumberOfReflectionStamp()==null?0:timeActualStamp.getNumberOfReflectionStamp());
 							timeLeavingWorks.get(i).setTimeLeavingWork(timeLeavingWorks.get(i).getWorkNo(),
 									Optional.ofNullable(timeActualStamp2), timeLeavingWorks.get(i).getLeaveStamp());
 						}
@@ -2624,13 +2684,13 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 								&& timeLeavingWorks.get(i).getLeaveStamp().isPresent()) {
 							timeLeavingWorks.get(i).getLeaveStamp().get().setPropertyTimeActualStamp(
 									Optional.ofNullable(stampOrActualStamp), timeActualStamp.getStamp(),
-									timeActualStamp.getNumberOfReflectionStamp());
+									timeActualStamp.getNumberOfReflectionStamp()==null?0:timeActualStamp.getNumberOfReflectionStamp());
 						} else {
 
 							TimeActualStamp timeActualStamp2 = new TimeActualStamp(stampOrActualStamp,
 									(timeActualStamp.getStamp() != null && timeActualStamp.getStamp().isPresent())
 											? timeActualStamp.getStamp().get() : null,
-									timeActualStamp.getNumberOfReflectionStamp());
+									timeActualStamp.getNumberOfReflectionStamp()==null?0:timeActualStamp.getNumberOfReflectionStamp());
 							timeLeavingWorks.get(i).setTimeLeavingWork(timeLeavingWorks.get(i).getWorkNo(),
 									timeLeavingWorks.get(i).getAttendanceStamp(),
 									Optional.ofNullable(timeActualStamp2));
@@ -2641,13 +2701,13 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 								&& timeLeavingWorks.get(i).getLeaveStamp().isPresent()) {
 							timeLeavingWorks.get(i).getLeaveStamp().get().setPropertyTimeActualStamp(
 									timeActualStamp.getActualStamp(), Optional.ofNullable(stampOrActualStamp),
-									timeActualStamp.getNumberOfReflectionStamp());
+									timeActualStamp.getNumberOfReflectionStamp()==null?0:timeActualStamp.getNumberOfReflectionStamp());
 						} else {
 							TimeActualStamp timeActualStamp2 = new TimeActualStamp(
 									(timeActualStamp.getActualStamp() != null
 											&& timeActualStamp.getActualStamp().isPresent())
 													? timeActualStamp.getActualStamp().get() : null,
-									stampOrActualStamp, timeActualStamp.getNumberOfReflectionStamp());
+									stampOrActualStamp, timeActualStamp.getNumberOfReflectionStamp()==null?0:timeActualStamp.getNumberOfReflectionStamp());
 							timeLeavingWorks.get(i).setTimeLeavingWork(timeLeavingWorks.get(i).getWorkNo(),
 									timeLeavingWorks.get(i).getAttendanceStamp(),
 									Optional.ofNullable(timeActualStamp2));
@@ -2975,7 +3035,13 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		return true;
 	}
 	
-	
+	//true is same
+	private boolean confirmStampAndTempTimeSame(TimeWithDayAttr stamp, TimeWithDayAttr tempTime,int timeTreatTempSame){
+		if(tempTime.v() <=stamp.v() && stamp.v() <= tempTime.v()+timeTreatTempSame  ){
+			return true;
+		}
+		return false;
+	}
 	
 
 }

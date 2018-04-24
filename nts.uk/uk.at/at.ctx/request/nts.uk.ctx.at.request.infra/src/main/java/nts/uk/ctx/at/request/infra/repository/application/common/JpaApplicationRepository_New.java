@@ -38,10 +38,12 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			+ " AND a.appDate = :appDate "
 			+ " AND a.appType = :applicationType "
 			+ " AND a.prePostAtr = :prePostAtr ORDER BY a.inputDate DESC";
+	//hoatt
 	private final String SELECT_APP_BY_SID = SELECT_FROM_APPLICATION + " AND ( a.employeeID = :employeeID Or a.enteredPersonID = :employeeID )"
-			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate and a.appType IN (0,2,4,6)";
+			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate and a.appType IN (0,1,2,4,6)";
+	//hoatt
 	private final String SELECT_APP_BY_REFLECT = SELECT_FROM_APPLICATION + " AND a.stateReflectionReal != 5"
-			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate and a.appType IN (0,2,4,6)";
+			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate and a.appType IN (0,1,2,4,6)";
 	private final String SELECT_APP_BY_SIDS = "SELECT a FROM KrqdtApplication_New a" + " WHERE a.employeeID IN :employeeID" + " AND a.appDate >= :startDate AND a.appDate <= :endDate";
 	private final String SELECT_APPLICATION_BY_ID = "SELECT a FROM KrqdtApplication_New a"
 			+ " WHERE a.krqdpApplicationPK.appID = :appID AND a.krqdpApplicationPK.companyID = :companyID";
@@ -49,6 +51,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	private final String SELECT_APP_BY_CONDS = "SELECT a FROM KrqdtApplication_New a WHERE a.employeeID IN :employeeID AND a.appDate >= :startDate AND a.appDate <= :endDate"
 			+ " AND a.prePostAtr = 1 AND (a.stateReflectionReal = 0 OR a.stateReflectionReal = 1) ORDER BY a.appDate ASC, a.inputDate DESC";
 	
+	private final String SELECT_APP_BY_ID = SELECT_BY_DATE + " and a.stateReflectionReal IN (0,1,2,5,6) ORDER BY a.appDate , a.appType";
 	@Override
 	public Optional<Application_New> findByID(String companyID, String appID) {
 		return this.queryProxy().query(SELECT_APPLICATION_BY_ID, KrqdtApplication_New.class)
@@ -174,6 +177,19 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	public List<Application_New> getListApp(String sID, GeneralDate startDate, GeneralDate endDate) {
 		List<Application_New> data = this.queryProxy().query(SELECT_APP_BY_CONDS, KrqdtApplication_New.class)
 				.setParameter("employeeID", sID)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.getList(c -> c.toDomain());
+		
+		return data;
+	}
+	
+	//TODO
+	@Override
+	public List<Application_New> getListAppById(String sID, String empId, GeneralDate startDate, GeneralDate endDate) {
+		List<Application_New> data = this.queryProxy().query(SELECT_APP_BY_ID, KrqdtApplication_New.class)
+				.setParameter("employeeID", empId)
+				.setParameter("companyID", sID)
 				.setParameter("startDate", startDate)
 				.setParameter("endDate", endDate)
 				.getList(c -> c.toDomain());

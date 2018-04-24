@@ -444,6 +444,13 @@ module nts.uk.at.view.kmk003.a {
                             }
                             return key;
                         });
+
+                        // close current error dialog
+                        const buttonCloseDialog = $('#functions-area-bottom>.ntsClose');
+                        if (!nts.uk.util.isNullOrEmpty(buttonCloseDialog)) {
+                            buttonCloseDialog.click();
+                        }
+
                         err.errors = errors;
                         self.showMessageError(err);
                     });

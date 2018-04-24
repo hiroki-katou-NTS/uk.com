@@ -11,12 +11,8 @@
 	clear: both;
 }
 
-.button-image {
-	margin-left: 100px;
-}
-
 .navigation-label {
-	margin-left: 150px;
+	margin-left: 20px;
 	vertical-align: 12px;
 	padding-bottom: 20px;
 }
@@ -27,7 +23,7 @@
 	height: 254px;
 	width: 257px;
 	background-repeat: no-repeat;
-	margin-left: 50px;
+	margin-left: 20px;
 }
 
 .setting-creation {
@@ -36,7 +32,7 @@
 	height: 254px;
 	width: 264px;
 	background-repeat: no-repeat;
-	margin-left: 50px;
+	margin-left: 20px;
 }
 
 .history-reference {
@@ -45,6 +41,6 @@
 	width: 286px;
 	height: 109px;
 	background-repeat: no-repeat;
-	margin-right: 50px;
+	margin-left: 20px;
 }
 

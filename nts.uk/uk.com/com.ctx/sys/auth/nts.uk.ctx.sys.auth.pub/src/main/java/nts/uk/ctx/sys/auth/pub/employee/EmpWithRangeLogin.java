@@ -1,8 +1,13 @@
 package nts.uk.ctx.sys.auth.pub.employee;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class EmpWithRangeLogin {
 
 	/** ビジネスネーム */
@@ -16,9 +21,4 @@ public class EmpWithRangeLogin {
 	/** 社員ID */
 	private String employeeID;
 
-	public EmpWithRangeLogin (String companyID , String employeeCD){
-		this.companyID = companyID;
-		this.employeeCD = employeeCD;
-	
-	}
 }

@@ -1,7 +1,10 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.calculation.holiday;
 
 /**
- * @author phongtq
  * The class Holiday Addtime Finder
  */
 import java.util.List;
@@ -10,14 +13,17 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.calculation.holiday.FlexWork;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtion;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HourlyPaymentAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDepLabor;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.RegularWork;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class HolidayAddtionFinder.
+ */
 @Stateless
 public class HolidayAddtionFinder {
 	@Inject
@@ -41,20 +47,20 @@ public class HolidayAddtionFinder {
 	 * @param holidayAddtime
 	 * @return
 	 */
-	private HolidayAddtionDto convertToDbType(HolidayAddtion holidayAddtime) {
+	private HolidayAddtionDto convertToDbType(HolidayAddtionSet holidayAddtime) {
 		HolidayAddtionDto holidayAddtimeDto = new HolidayAddtionDto();
 			holidayAddtimeDto.setReferComHolidayTime(holidayAddtime.getReferComHolidayTime());
 			holidayAddtimeDto.setOneDay(holidayAddtime.getOneDay());
 			holidayAddtimeDto.setMorning(holidayAddtime.getMorning());
 			holidayAddtimeDto.setAfternoon(holidayAddtime.getAfternoon());
 			holidayAddtimeDto.setReferActualWorkHours(holidayAddtime.getReferActualWorkHours());
-			holidayAddtimeDto.setNotReferringAch(holidayAddtime.getNotReferringAch().value);
+			holidayAddtimeDto.setNotReferringAch(holidayAddtime.getNotReferringAch().get().value);
 			holidayAddtimeDto.setAnnualHoliday(holidayAddtime.getAnnualHoliday());
 			holidayAddtimeDto.setSpecialHoliday(holidayAddtime.getSpecialHoliday());
 			holidayAddtimeDto.setYearlyReserved(holidayAddtime.getYearlyReserved());
 			holidayAddtimeDto.setRegularWork(convertToDbTypeRegularWork(holidayAddtime.getRegularWork()));
 			holidayAddtimeDto.setFlexWork(convertToDbTypeFlexWork(holidayAddtime.getFlexWork()));
-			holidayAddtimeDto.setIrregularWork(convertToDbTypeIrregularWork(holidayAddtime.getIrregularWork()));
+			holidayAddtimeDto.setIrregularWork(convertToDbTypeIrregularWork(holidayAddtime.getWorkDeformLabor()));
 			holidayAddtimeDto.setHourlyPaymentAdditionSet(convertToDbTypeHourlyPaymentAdditionSet(holidayAddtime.getHourPaymentAddition()));
 			holidayAddtimeDto.setAddSetManageWorkHour(holidayAddtime.getAdditionSettingOfOvertime() == null ? 0 : holidayAddtime.getAdditionSettingOfOvertime().getAdditionSettingOfOvertime().value);
 			holidayAddtimeDto.setAddingMethod1(holidayAddtime.getTimeHolidayAddition().get(0).getAddingMethod().value);
@@ -71,7 +77,7 @@ public class HolidayAddtionFinder {
 	 * @param regularWork
 	 * @return
 	 */
-	private RegularWorkDto convertToDbTypeRegularWork(RegularWork regularWork) {
+	private RegularWorkDto convertToDbTypeRegularWork(WorkRegularAdditionSet regularWork) {
 		if (regularWork == null) {
 			return null;
 		}
@@ -99,7 +105,7 @@ public class HolidayAddtionFinder {
 	 * @param flexWork
 	 * @return
 	 */
-	private FlexWorkDto convertToDbTypeFlexWork(FlexWork flexWork) {
+	private FlexWorkDto convertToDbTypeFlexWork(WorkFlexAdditionSet flexWork) {
 		if (flexWork == null) {
 			return null;
 		}
@@ -130,7 +136,7 @@ public class HolidayAddtionFinder {
 	 * @param labor
 	 * @return
 	 */
-	private WorkDepLaborDto convertToDbTypeIrregularWork(WorkDepLabor labor) {
+	private WorkDepLaborDto convertToDbTypeIrregularWork(WorkDeformedLaborAdditionSet labor) {
 		if (labor == null) {
 			return null;
 		}

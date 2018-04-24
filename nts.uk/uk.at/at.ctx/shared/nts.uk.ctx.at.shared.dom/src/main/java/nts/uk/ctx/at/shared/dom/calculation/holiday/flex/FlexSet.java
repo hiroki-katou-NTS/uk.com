@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday.flex;
 
 import lombok.AllArgsConstructor;
@@ -6,9 +10,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
- * 
- * @author phongtq
- *
+ * The Class FlexSet.
  */
 @AllArgsConstructor
 @Getter

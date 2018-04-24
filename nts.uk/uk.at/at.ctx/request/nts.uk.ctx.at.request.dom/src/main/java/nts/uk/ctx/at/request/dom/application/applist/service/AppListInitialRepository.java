@@ -99,4 +99,10 @@ public interface AppListInitialRepository {
 	 * @return
 	 */
 	public DatePeriod getInitialPeriod(String companyId);
+	/**
+	 * 12.1 - 申請一覧初期日付期間_申請
+	 * @param companyId
+	 * @return
+	 */
+	public DatePeriod getInitPeriodApp(String companyId);
 }

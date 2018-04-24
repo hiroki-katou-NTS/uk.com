@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.calculation.holiday;
 
 import java.io.Serializable;
@@ -11,13 +15,10 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.CalcActualOperationAtr;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.DeformatExcValueAtr;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * 時給者の加算設定
+ * The Class KshstHourPayAaddSet.
  */
 @AllArgsConstructor
 @NoArgsConstructor

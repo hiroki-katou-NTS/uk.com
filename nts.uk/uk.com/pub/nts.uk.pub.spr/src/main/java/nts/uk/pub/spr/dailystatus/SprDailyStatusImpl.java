@@ -11,11 +11,14 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.pub.workrecord.identificationstatus.IndentificationPub;
 import nts.uk.ctx.bs.employee.pub.spr.EmployeeSprPub;
 import nts.uk.ctx.bs.employee.pub.spr.export.EmpSprExport;
 import nts.uk.ctx.workflow.pub.spr.SprAppRootStatePub;
 import nts.uk.ctx.workflow.pub.spr.export.AppRootStateStatusSprExport;
 import nts.uk.pub.spr.dailystatus.output.DailyStatusSpr;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -25,11 +28,16 @@ import nts.uk.pub.spr.dailystatus.output.DailyStatusSpr;
 @Stateless
 public class SprDailyStatusImpl implements SprDailyStatusService {
 
+	private final String DATE_FORMAT = "yyyy/MM/dd";
+	
 	@Inject
 	private EmployeeSprPub employeeSprPub;
 	
 	@Inject
 	private SprAppRootStatePub sprAppRootStateService;
+	
+	@Inject
+	private IndentificationPub indentificationPub;
 	
 	@Override
 	public List<DailyStatusSpr> getStatusOfDaily(String loginEmpCD, String employeeCD, String startDate,
@@ -45,8 +53,8 @@ public class SprDailyStatusImpl implements SprDailyStatusService {
 		// アルゴリズム「実績残業報告の有無」を実行する
 		return getEmpDailyStatus(
 				opEmployeeSpr.get().getEmployeeID(), 
-				GeneralDate.fromString(startDate, "yyyy/mm/dd"), 
-				GeneralDate.fromString(endDate, "yyyy/mm/dd"));
+				GeneralDate.fromString(startDate, DATE_FORMAT), 
+				GeneralDate.fromString(endDate, DATE_FORMAT));
 	}
 
 	@Override
@@ -70,7 +78,7 @@ public class SprDailyStatusImpl implements SprDailyStatusService {
 		GeneralDate startD;
 		// 取得期間の開始日(startdate)の形式をチェックする　日付型（yyyy/mm/dd）
 		try {
-			startD = GeneralDate.fromString(startDate, "yyyy/mm/dd");
+			startD = GeneralDate.fromString(startDate, DATE_FORMAT);
 		} catch (Exception e) {
 			throw new BusinessException("Msg_1001", startDate);
 		}
@@ -81,7 +89,7 @@ public class SprDailyStatusImpl implements SprDailyStatusService {
 		GeneralDate endD;
 		// 取得期間の終了日(enddate)の形式をチェックする　日付型（yyyy/mm/dd）
 		try {
-			endD = GeneralDate.fromString(endDate, "yyyy/mm/dd");
+			endD = GeneralDate.fromString(endDate, DATE_FORMAT);
 		} catch (Exception e) {
 			throw new BusinessException("Msg_1002", endDate);
 		}
@@ -96,11 +104,12 @@ public class SprDailyStatusImpl implements SprDailyStatusService {
 	public List<DailyStatusSpr> getEmpDailyStatus(String employeeID, GeneralDate startDate, GeneralDate endDate) {
 		List<DailyStatusSpr> resultList = new ArrayList<>();
 		// 取得期間を日単位でループする（開始日～終了日）　MAX 31日
-		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate.addDays(1)){
+		for(int i = 0; startDate.compareTo(endDate) + i <= 0; i++){
+			GeneralDate loopDate = startDate.addDays(i);
 			// 本人確認状況
 			Integer status1 = this.getEmployeeStatus(loopDate, employeeID);
 			// 上司承認状況
-			Integer status2 = this.getEmployeeStatus(loopDate, employeeID);
+			Integer status2 = this.getManagerStatus(loopDate, employeeID);
 			resultList.add(new DailyStatusSpr(loopDate, status1, status2));
 		}
 		return resultList;
@@ -108,19 +117,32 @@ public class SprDailyStatusImpl implements SprDailyStatusService {
 
 	@Override
 	public Integer getEmployeeStatus(GeneralDate appDate, String employeeID) {
-		// TODO Auto-generated method stub
-		return null;
+		List<GeneralDate> dateList = indentificationPub.getResovleDateIdentify(employeeID, new DatePeriod(appDate, appDate));
+		if(CollectionUtil.isEmpty(dateList)){
+			return 0;
+		} else {
+			return 1;
+		}
 	}
 
 	@Override
 	public Integer getManagerStatus(GeneralDate appDate, String employeeID) {
+		// （ワークフローExport）アルゴリズム「承認対象者と期間から承認状況を取得する」を実行する
 		List<AppRootStateStatusSprExport> appRootStateStatusSprList = sprAppRootStateService.getStatusByEmpAndDate(
 				employeeID, 
 				appDate, 
 				appDate,
 				1);
-		
-		return null;
+		if(CollectionUtil.isEmpty(appRootStateStatusSprList)){
+			return 0;
+		}
+		if(appRootStateStatusSprList.get(0).getDailyConfirmAtr()==2){
+			// 承認済」の場合
+			return 1;
+		} else {
+			// 未承認」又は「承認中」の場合
+			return 0;
+		}
 	}
 
 }

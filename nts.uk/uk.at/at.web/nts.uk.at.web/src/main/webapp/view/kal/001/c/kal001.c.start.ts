@@ -1,10 +1,10 @@
 module nts.uk.at.view.kal001.c {  
     __viewContext.ready(function() {
-        let screenModel = new viewmodel.ScreenModel();
-         let shareEmployee : Array<model.ShareEmployee> =  nts.uk.ui.windows.getShared("shareEmployee");
-        screenModel.shareEmployee = ko.observableArray(shareEmployee);
-        screenModel.startPage().done(function() {
+        let shareEmployees : Array<model.ShareEmployee> =  nts.uk.ui.windows.getShared("employeeList");
+        let screenModel = new viewmodel.ScreenModel(shareEmployees); 
+
+        screenModel.startPage().done(() =>{
             __viewContext.bind(screenModel); 
-        });
+        });      
     });
 }

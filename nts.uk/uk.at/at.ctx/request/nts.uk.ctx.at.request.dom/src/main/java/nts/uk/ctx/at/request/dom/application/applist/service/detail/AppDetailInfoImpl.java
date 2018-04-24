@@ -32,6 +32,7 @@ import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -195,8 +196,15 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 		}
 		String workTypeName = hdWork.getWorkTypeCode() == null ||  Strings.isBlank(hdWork.getWorkTypeCode().v()) ? "" : 
 						repoWorkType.findByPK(companyId, hdWork.getWorkTypeCode().v()).get().getName().v();
-		String workTimeName =  hdWork.getWorkTimeCode() == null || hdWork.getWorkTimeCode().v().equals("000") ? "" :
-			repoworkTime.findByCode(companyId,hdWork.getWorkTimeCode().v()).get().getWorkTimeDisplayName().getWorkTimeName().v();
+		String workTimeName = "";
+		if(hdWork.getWorkTimeCode() != null && !hdWork.getWorkTimeCode().v().equals("000")){
+			Optional<WorkTimeSetting> workTime =  repoworkTime.findByCode(companyId,hdWork.getWorkTimeCode().v());
+			if(workTime.isPresent()){
+				workTimeName = workTime.get().getWorkTimeDisplayName().getWorkTimeName().v();
+			}
+		}
+//		String workTimeName =  hdWork.getWorkTimeCode() == null || hdWork.getWorkTimeCode().v().equals("000") ? "" :
+//			repoworkTime.findByCode(companyId,hdWork.getWorkTimeCode().v()).get().getWorkTimeDisplayName().getWorkTimeName().v();
 		
 //		     .orElseGet(()->{
 //		      return workTimeRepository.findByCompanyId(companyID).get(0);
@@ -251,19 +259,23 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 		if(appSpec.isPresent()){
 			appAbsence.setAppForSpecLeave(appSpec.get());
 		}
-		
-//		String workTypeName = appAbsence.getWorkTypeCode() == null ||  Strings.isBlank(appAbsence.getWorkTypeCode().v()) ? "" : 
-//			repoWorkType.findByPK(companyId, appAbsence.getWorkTypeCode().v()).get().getName().v();
-		String workTimeName = appAbsence.getWorkTimeCode().v().equals("000") ? "" :
-			repoworkTime.findByCode(companyId,appAbsence.getWorkTimeCode().v()).get().getWorkTimeDisplayName().getWorkTimeName().v();
+		String workTimeName = "";
+		if(appAbsence.getWorkTimeCode() != null){
+			Optional<WorkTimeSetting> workTime =  repoworkTime.findByCode(companyId,appAbsence.getWorkTimeCode().v());
+			if(workTime.isPresent()){
+				workTimeName = workTime.get().getWorkTimeDisplayName().getWorkTimeName().v();
+			}
+		}
+//		String workTimeName = appAbsence.getWorkTimeCode() == null ? "" :
+//			repoworkTime.findByCode(companyId,appAbsence.getWorkTimeCode().v()).get().getWorkTimeDisplayName().getWorkTimeName().v();
 		String startTime1 = appAbsence.getStartTime1() == null ? "" : appAbsence.getStartTime1().getDayDivision().description 
 				+ appAbsence.getStartTime1().getInDayTimeWithFormat();
-		String endTime1 = appAbsence.getStartTime1() == null ? "" : appAbsence.getStartTime1().getDayDivision().description 
-				+ appAbsence.getStartTime1().getInDayTimeWithFormat();
-		String startTime2 = appAbsence.getStartTime1() == null ? "" : appAbsence.getStartTime1().getDayDivision().description 
-				+ appAbsence.getStartTime1().getInDayTimeWithFormat();
-		String endTime2 = appAbsence.getStartTime1() == null ? "" : appAbsence.getStartTime1().getDayDivision().description 
-				+ appAbsence.getStartTime1().getInDayTimeWithFormat();
+		String endTime1 = appAbsence.getEndTime1() == null ? "" : appAbsence.getEndTime1().getDayDivision().description 
+				+ appAbsence.getEndTime1().getInDayTimeWithFormat();
+		String startTime2 = appAbsence.getStartTime2() == null ? "" : appAbsence.getStartTime2().getDayDivision().description 
+				+ appAbsence.getStartTime2().getInDayTimeWithFormat();
+		String endTime2 = appAbsence.getEndTime2() == null ? "" : appAbsence.getEndTime2().getDayDivision().description 
+				+ appAbsence.getEndTime2().getInDayTimeWithFormat();
 		AppForSpecLeave appForSpec = appAbsence.getAppForSpecLeave();
 		String relaCode = appForSpec == null ? "" : appForSpec.getRelationshipCD() == null ? "" : appForSpec.getRelationshipCD().v();
 		String relaName = relaCode.equals("") ? "" : repoRelationship.findByCode(companyId, relaCode).get().getRelationshipName().v();

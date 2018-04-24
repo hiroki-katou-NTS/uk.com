@@ -20,7 +20,7 @@ public class MailWebservice extends WebService{
 	
 	@POST
 	@Path("send")
-	public List<Integer> getAppSet(SendMailCommand command){
+	public List<Integer> sendMail(SendMailCommand command){
 		 return sendMail.handle(command);
 	}
 }

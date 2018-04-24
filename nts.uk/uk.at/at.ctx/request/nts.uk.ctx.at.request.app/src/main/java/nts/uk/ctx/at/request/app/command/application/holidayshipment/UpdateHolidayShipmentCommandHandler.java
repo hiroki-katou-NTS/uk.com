@@ -124,12 +124,12 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 				recApp.setWorkTime1(new RecruitmentWorkingHour(new WorkTime(wkTime1.getStartTime()),
 						EnumAdaptor.valueOf(wkTime1.getStartType(), NotUseAtr.class),
 						new WorkTime(wkTime1.getEndTime()),
-						EnumAdaptor.valueOf(wkTime1.getEndTime(), NotUseAtr.class)));
+						EnumAdaptor.valueOf(wkTime1.getEndType(), NotUseAtr.class)));
 				WkTimeCommand wkTime2 = appCmd.getWkTime2();
 				recApp.setWorkTime2(new RecruitmentWorkingHour(new WorkTime(wkTime2.getStartTime()),
 						EnumAdaptor.valueOf(wkTime2.getStartType(), NotUseAtr.class),
 						new WorkTime(wkTime2.getEndTime()),
-						EnumAdaptor.valueOf(wkTime2.getEndTime(), NotUseAtr.class)));
+						EnumAdaptor.valueOf(wkTime2.getEndType(), NotUseAtr.class)));
 				recApp.setWorkTypeCD(appCmd.getWkTypeCD());
 				this.recRepo.update(recApp);
 
@@ -176,10 +176,9 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 		RecruitmentAppCommand recCmd = command.getRecCmd();
 		if (isSaveRec()) {
 			// アルゴリズム「登録前共通処理（更新）」を実行する
-			preRegisComonProcessing(companyID, command.getAppCmd().getEnteredPersonSID(),
-					GeneralDate.fromString(recCmd.getAppDate(), DATE_FORMAT), EmploymentRootAtr.APPLICATION.value,
-					appType, command.getAppCmd().getPrePostAtr(), recCmd.getAppID(),
-					command.getAppCmd().getAppVersion());
+			preRegisComonProcessing(companyID, command.getAppCmd().getEnteredPersonSID(), recCmd.getAppDate(),
+					EmploymentRootAtr.APPLICATION.value, appType, command.getAppCmd().getPrePostAtr(),
+					recCmd.getAppID(), command.getAppCmd().getAppVersion());
 
 			// ドメイン「振出申請」を1件更新する
 			Application_New recApp = updateRecDomain(command);
@@ -191,10 +190,9 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 
 		if (isSaveAbs()) {
 			// アルゴリズム「登録前共通処理（更新）」を実行する
-			preRegisComonProcessing(companyID, command.getAppCmd().getEnteredPersonSID(),
-					GeneralDate.fromString(absCmd.getAppDate(), DATE_FORMAT), EmploymentRootAtr.APPLICATION.value,
-					appType, command.getAppCmd().getPrePostAtr(), absCmd.getAppID(),
-					command.getAppCmd().getAppVersion());
+			preRegisComonProcessing(companyID, command.getAppCmd().getEnteredPersonSID(), absCmd.getAppDate(),
+					EmploymentRootAtr.APPLICATION.value, appType, command.getAppCmd().getPrePostAtr(),
+					absCmd.getAppID(), command.getAppCmd().getAppVersion());
 			// ドメイン「振休申請」を1件更新する
 			Application_New absApp = updateAbsDomain(command);
 			// アルゴリズム「詳細画面登録後の処理」を実行する

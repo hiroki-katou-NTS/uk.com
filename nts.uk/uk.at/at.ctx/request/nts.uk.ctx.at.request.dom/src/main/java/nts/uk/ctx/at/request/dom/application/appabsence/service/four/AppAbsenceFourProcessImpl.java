@@ -28,7 +28,6 @@ public class AppAbsenceFourProcessImpl implements AppAbsenceFourProcess{
 				}else if(hdAppSet.get().getWrkHours().equals(WorkUse.USE)){
 					return true;
 				}else if(hdAppSet.get().getWrkHours().equals(WorkUse.USE_ONLY_HALF_HD)){
-					//TODO
 					// lấy những worktype dạng làm nửa ngày
 					List<Integer> halfAtrs = new ArrayList<>();
 					// 出勤

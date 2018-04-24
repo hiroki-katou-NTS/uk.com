@@ -206,6 +206,73 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 	/*事前申請フレックス時間*/
 	@Column(name = "PRE_APP_FLEX_TIME")
 	public int preAppFlexTime;
+	/*残業乖離時間1*/
+	@Column(name = "DIVERGENCE_TIME_1")
+	public int divergenceTime1;
+	/*残業乖離時間2*/
+	@Column(name = "DIVERGENCE_TIME_2")
+	public int divergenceTime2;
+	/*残業乖離時間3*/
+	@Column(name = "DIVERGENCE_TIME_3")
+	public int divergenceTime3;
+	/*残業乖離時間4*/
+	@Column(name = "DIVERGENCE_TIME_4")
+	public int divergenceTime4;
+	/*残業乖離時間5*/
+	@Column(name = "DIVERGENCE_TIME_5")
+	public int divergenceTime5;
+	/*残業乖離時間6*/
+	@Column(name = "DIVERGENCE_TIME_6")
+	public int divergenceTime6;
+	/*残業乖離時間7*/
+	@Column(name = "DIVERGENCE_TIME_7")
+	public int divergenceTime7;
+	/*残業乖離時間8*/
+	@Column(name = "DIVERGENCE_TIME_8")
+	public int divergenceTime8;
+	/*残業乖離時間9*/
+	@Column(name = "DIVERGENCE_TIME_9")
+	public int divergenceTime9;
+	/*残業乖離時間10*/
+	@Column(name = "DIVERGENCE_TIME_10")
+	public int divergenceTime10;
+	/*振替乖離時間１*/
+	@Column(name = "DIVERGENCE_TRANS_TIME_1")
+	public int divergenceTransTime1;
+	/*振替乖離時間2*/
+	@Column(name = "DIVERGENCE_TRANS_TIME_2")
+	public int divergenceTransTime2;
+	/*振替乖離時間3*/
+	@Column(name = "DIVERGENCE_TRANS_TIME_3")
+	public int divergenceTransTime3;
+	/*振替乖離時間4*/
+	@Column(name = "DIVERGENCE_TRANS_TIME_4")
+	public int divergenceTransTime4;
+	/*振替乖離時間5*/
+	@Column(name = "DIVERGENCE_TRANS_TIME_5")
+	public int divergenceTransTime5;
+	/*振替乖離時間6*/
+	@Column(name = "DIVERGENCE_TRANS_TIME_6")
+	public int divergenceTransTime6;
+	/*振替乖離時間7*/
+	@Column(name = "DIVERGENCE_TRANS_TIME_7")
+	public int divergenceTransTime7;
+	/*振替乖離時間8*/
+	@Column(name = "DIVERGENCE_TRANS_TIME_8")
+	public int divergenceTransTime8;
+	/*振替乖離時間9*/
+	@Column(name = "DIVERGENCE_TRANS_TIME_9")
+	public int divergenceTransTime9;
+	/*振替乖離時間１0*/
+	@Column(name = "DIVERGENCE_TRANS_TIME_10")
+	public int divergenceTransTime10;
+	/*フレックス乖離時間*/
+	@Column(name = "DIVERGENCE_FLEX_TIME")
+	public int divergenceFlexTime;
+	/*法定外残業深夜乖離時間*/
+	@Column(name = "DIV_ILEGL_MIDN_OVER_TIME")
+	public int divIleglMidnOverTime;
+
 	
 	@OneToOne(mappedBy="krcdtDayOvertimework")
 	public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
@@ -299,13 +366,37 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 		this.preOverTimeAppTime8 = frame8.getBeforeApplicationTime() == null ? 0 : frame8.getBeforeApplicationTime().valueAsMinutes();
 		this.preOverTimeAppTime9 = frame9.getBeforeApplicationTime() == null ? 0 : frame9.getBeforeApplicationTime().valueAsMinutes();
 		this.preOverTimeAppTime10 = frame10.getBeforeApplicationTime() == null ? 0 : frame10.getBeforeApplicationTime().valueAsMinutes();
+		//残業乖離時間
+		this.divergenceTime1  = frame1.getOverTimeWork() == null || frame1.getOverTimeWork().getTime() == null ? 0 : frame1.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+		this.divergenceTime2  = frame2.getOverTimeWork() == null || frame2.getOverTimeWork().getTime() == null ? 0 : frame2.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+		this.divergenceTime3  = frame3.getOverTimeWork() == null || frame3.getOverTimeWork().getTime() == null ? 0 : frame3.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+		this.divergenceTime4  = frame4.getOverTimeWork() == null || frame4.getOverTimeWork().getTime() == null ? 0 : frame4.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+		this.divergenceTime5  = frame5.getOverTimeWork() == null || frame5.getOverTimeWork().getTime() == null ? 0 : frame5.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+		this.divergenceTime6  = frame6.getOverTimeWork() == null || frame6.getOverTimeWork().getTime() == null ? 0 : frame6.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+		this.divergenceTime7  = frame7.getOverTimeWork() == null || frame7.getOverTimeWork().getTime() == null ? 0 : frame7.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+		this.divergenceTime8  = frame8.getOverTimeWork() == null || frame8.getOverTimeWork().getTime() == null ? 0 : frame8.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+		this.divergenceTime9  = frame9.getOverTimeWork() == null || frame9.getOverTimeWork().getTime() == null ? 0 : frame9.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+		this.divergenceTime10 = frame10.getOverTimeWork() == null || frame10.getOverTimeWork().getTime() == null ? 0 : frame10.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+		//振替乖離時間
+		this.divergenceTransTime1 = frame1.getTransferTime() == null || frame1.getTransferTime().getTime() == null ? 0 : frame1.getTransferTime().getDivergenceTime().valueAsMinutes();
+		this.divergenceTransTime2 = frame2.getTransferTime() == null || frame2.getTransferTime().getTime() == null ? 0 : frame2.getTransferTime().getDivergenceTime().valueAsMinutes();
+		this.divergenceTransTime3 = frame3.getTransferTime() == null || frame3.getTransferTime().getTime() == null ? 0 : frame3.getTransferTime().getDivergenceTime().valueAsMinutes();
+		this.divergenceTransTime4 = frame4.getTransferTime() == null || frame4.getTransferTime().getTime() == null ? 0 : frame4.getTransferTime().getDivergenceTime().valueAsMinutes();
+		this.divergenceTransTime5 = frame5.getTransferTime() == null || frame5.getTransferTime().getTime() == null ? 0 : frame5.getTransferTime().getDivergenceTime().valueAsMinutes();
+		this.divergenceTransTime6 = frame6.getTransferTime() == null || frame6.getTransferTime().getTime() == null ? 0 : frame6.getTransferTime().getDivergenceTime().valueAsMinutes();
+		this.divergenceTransTime7 = frame7.getTransferTime() == null || frame7.getTransferTime().getTime() == null ? 0 : frame7.getTransferTime().getDivergenceTime().valueAsMinutes();
+		this.divergenceTransTime8 = frame8.getTransferTime() == null || frame8.getTransferTime().getTime() == null ? 0 : frame8.getTransferTime().getDivergenceTime().valueAsMinutes();
+		this.divergenceTransTime9 = frame9.getTransferTime() == null || frame9.getTransferTime().getTime() == null ? 0 : frame9.getTransferTime().getDivergenceTime().valueAsMinutes();
+		this.divergenceTransTime10= frame10.getTransferTime() == null || frame10.getTransferTime().getTime() == null ? 0 : frame10.getTransferTime().getDivergenceTime().valueAsMinutes();
 		
 		Finally<ExcessOverTimeWorkMidNightTime> excessOver = overTimeOfDaily.getExcessOverTimeWorkMidNightTime();
 		//法定外
 		this.ileglMidntOverTime = excessOver.get().getTime().getTime() == null ? 0 : excessOver.get().getTime().getTime().valueAsMinutes();
 		//計算法定外
 		this.calcIleglMidNOverTime = excessOver.get().getTime().getCalcTime() == null ? 0 : excessOver.get().getTime().getCalcTime().valueAsMinutes();
-
+		//法定外残業深夜乖離時間
+		this.divIleglMidnOverTime = excessOver.get().getTime().getDivergenceTime() == null ? 0 : excessOver.get().getTime().getDivergenceTime().valueAsMinutes();
+		
 		//拘束時間
 		this.overTimeBindTime = overTimeOfDaily.getOverTimeWorkSpentAtWork() == null ? 0 : overTimeOfDaily.getOverTimeWorkSpentAtWork().valueAsMinutes();
 		//変形法定内残業
@@ -316,6 +407,8 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 		this.calcFlexTime = overTimeOfDaily.getFlexTime().getFlexTime().getCalcTime().valueAsMinutes();
 		//事前フレックス時間
 		this.preAppFlexTime = overTimeOfDaily.getFlexTime().getBeforeApplicationTime().valueAsMinutes();
+		//フレックス乖離時間
+		this.divergenceFlexTime = overTimeOfDaily.getFlexTime().getFlexTime().getDivergenceTime().valueAsMinutes();
 	}
 
 	private OverTimeFrameTime getOverTimeFrame(List<OverTimeFrameTime> overTimeFrame, int frameNo) {

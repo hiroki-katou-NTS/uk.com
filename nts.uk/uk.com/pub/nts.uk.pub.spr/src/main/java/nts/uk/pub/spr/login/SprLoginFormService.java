@@ -51,7 +51,7 @@ public interface SprLoginFormService {
 	 * @param personID 個人ID
 	 * @return ログインユーザコンテキスト
 	 */
-	public LoginUserContextSpr generateSession(String employeeCD, String employeeID, String personID);
+	public LoginUserContextSpr generateSession(String loginEmployeeCD, String loginEmployeeID, String personID, String employeeID);
 	
 	/**
 	 * 権限情報取得

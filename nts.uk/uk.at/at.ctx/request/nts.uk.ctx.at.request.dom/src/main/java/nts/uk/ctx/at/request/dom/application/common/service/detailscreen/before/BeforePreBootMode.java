@@ -8,9 +8,12 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
  *
  */
 public interface BeforePreBootMode {
+	
 	/**
 	 * 詳細画面起動前モードの判断
-	 * @param applicationData
+	 * @param companyID
+	 * @param employeeID login
+	 * @param appID
 	 * @param baseDate
 	 * @return
 	 */

@@ -21,7 +21,7 @@ public class ApprovalStatusPeriorDto {
 	/**
 	 * list employee code
 	 */
-	private List<ClosureEmployment> employeesCode;
+	private List<String> employeesCode;
 	
 	private int yearMonth;
 }

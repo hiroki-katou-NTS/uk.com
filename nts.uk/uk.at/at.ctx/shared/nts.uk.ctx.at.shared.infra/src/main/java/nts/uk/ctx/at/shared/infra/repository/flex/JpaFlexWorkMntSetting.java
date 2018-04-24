@@ -5,8 +5,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.flex.FlexWorkMntSetRepository;
-import nts.uk.ctx.at.shared.dom.flex.FlexWorkSet;
+import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkMntSetRepository;
+import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.flex.KshstFlexWorkSetting;
 import nts.uk.ctx.at.shared.infra.entity.flex.KshstFlexWorkSettingPK;
 
@@ -66,7 +66,17 @@ public class JpaFlexWorkMntSetting extends JpaRepository implements FlexWorkMntS
 	 */
 	@Override
 	public void update(FlexWorkSet flexWorkSetting) {
-		KshstFlexWorkSetting setting = convertToDbType(flexWorkSetting);
+		Optional<KshstFlexWorkSetting> optEntity = this.queryProxy().find(new KshstFlexWorkSettingPK(flexWorkSetting.getCompanyId().v()), KshstFlexWorkSetting.class);
+		
+		KshstFlexWorkSetting setting;
+		if (optEntity.isPresent()) {
+			setting = optEntity.get();
+			setting.setManageFlexWork(flexWorkSetting.getUseFlexWorkSetting().value);
+		}
+		else {
+			setting = convertToDbType(flexWorkSetting);
+		}
+				
 		this.commandProxy().update(setting);
 	}
 	

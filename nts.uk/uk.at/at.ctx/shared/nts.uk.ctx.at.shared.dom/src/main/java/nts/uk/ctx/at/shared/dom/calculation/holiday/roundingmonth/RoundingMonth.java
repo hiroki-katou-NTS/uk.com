@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday.roundingmonth;
 
 import lombok.AllArgsConstructor;
@@ -8,9 +12,7 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTimeUnit;
 
 /**
- * 
- * @author phongtq
- *
+ * The Class RoundingMonth.
  */
 @AllArgsConstructor
 @Getter

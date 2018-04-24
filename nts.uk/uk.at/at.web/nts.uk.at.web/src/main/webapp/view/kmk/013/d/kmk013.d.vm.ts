@@ -100,6 +100,10 @@ module nts.uk.at.view.kmk013.d {
                 var dfd = $.Deferred();
                 self.initData();
                 dfd.resolve();
+                
+                // Focus on D1_1 by default
+                $('.goback').focus();
+                
                 return dfd.promise();
             }
             initData(): void {

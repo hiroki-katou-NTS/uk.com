@@ -28,13 +28,14 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.A
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OvertimeAppParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OvertimeParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.workchange.PreWorkchangeReflectService;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppCommonPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppReflectProcessRecordPub;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppReflectPubOutput;
+import nts.uk.ctx.at.record.pub.dailyperform.appreflect.CommonReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.HolidayWorkReflectPubPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ReasonNotReflectPubRecord;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ReflectedStatePubRecord;
-import nts.uk.ctx.at.record.pub.dailyperform.appreflect.absence.AbsenceReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.GobackReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.PreOvertimePubParameter;
 
@@ -52,6 +53,8 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	private AbsenceReflectService absenceReflect;
 	@Inject
 	private PreHolidayWorktimeReflectService holidayworkService;
+	@Inject
+	private PreWorkchangeReflectService workChangeService;
 	@Override
 	public boolean appReflectProcess(AppCommonPara para) {
 		CommonCheckParameter paraTemp = new CommonCheckParameter(EnumAdaptor.valueOf(para.getDegressAtr().value, DegreeReflectionAtr.class),
@@ -139,16 +142,8 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	}
 
 	@Override
-	public AppReflectPubOutput absenceReflect(AbsenceReflectPubParameter param, boolean isPre) {
-		CommonReflectParameter absencePara = new CommonReflectParameter(param.getEmployeeId(), 
-				param.getBaseDate(), 
-				EnumAdaptor.valueOf(param.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangeFlg.class), 
-				param.isScheTimeReflectAtr(), 
-				param.getWorkTypeCode(), 
-				"",
-				EnumAdaptor.valueOf(param.getReflectState().value, ReflectedStateRecord.class), 
-				EnumAdaptor.valueOf(param.getReasoNotReflect().value, ReasonNotReflectRecord.class)); 
-		ApplicationReflectOutput dataReflect = absenceReflect.absenceReflect(absencePara, isPre);
+	public AppReflectPubOutput absenceReflect(CommonReflectPubParameter param, boolean isPre) {
+		ApplicationReflectOutput dataReflect = absenceReflect.absenceReflect(this.toRecordPara(param), isPre);
 		AppReflectPubOutput dataOutput = new AppReflectPubOutput(EnumAdaptor.valueOf(dataReflect.getReflectedState().value, ReflectedStatePubRecord.class), 
 				EnumAdaptor.valueOf(dataReflect.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
 		return dataOutput;
@@ -169,9 +164,31 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				param.isScheReflectFlg(),
 				appPara);
 		ApplicationReflectOutput outputData = holidayworkService.preHolidayWorktimeReflect(para);
-		
+		ReasonNotReflectPubRecord tem = outputData.getReflectedState() == null ? ReasonNotReflectPubRecord.ACTUAL_CONFIRMED : ReasonNotReflectPubRecord.NOT_PROBLEM;
 		return new AppReflectPubOutput(EnumAdaptor.valueOf(outputData.getReflectedState().value, ReflectedStatePubRecord.class),
-				outputData.getReflectedState() == null? null : EnumAdaptor.valueOf(outputData.getReflectedState().value, ReasonNotReflectPubRecord.class));
+				outputData.getReflectedState() == null ? null : EnumAdaptor.valueOf(outputData.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
+	}
+
+	@Override
+	public AppReflectPubOutput workChangeReflect(CommonReflectPubParameter param, boolean isPre) {
+		
+		ApplicationReflectOutput workChangeOut = workChangeService.workchangeReflect(this.toRecordPara(param), isPre);
+		AppReflectPubOutput outPutData = new AppReflectPubOutput(EnumAdaptor.valueOf(workChangeOut.getReflectedState().value, ReflectedStatePubRecord.class),
+				EnumAdaptor.valueOf(workChangeOut.getReasonNotReflect().value, ReasonNotReflectPubRecord.class));
+		
+		return outPutData;
+	}
+	
+	private CommonReflectParameter toRecordPara(CommonReflectPubParameter param) {
+		CommonReflectParameter workchangePara = new CommonReflectParameter(param.getEmployeeId(), param.getBaseDate(), EnumAdaptor.valueOf(param.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangeFlg.class),
+			 	param.isScheTimeReflectAtr(),
+			 	param.getWorkTypeCode(),
+			 	param.getWorkTimeCode(),
+			 	EnumAdaptor.valueOf(param.getReflectState().value, ReflectedStateRecord.class),
+			 	param.getReasoNotReflect() == null ? null : EnumAdaptor.valueOf(param.getReasoNotReflect().value, ReasonNotReflectRecord.class),
+			 	param.getStartDate(),
+			 	param.getEndDate());
+		return workchangePara;
 	}
 
 }

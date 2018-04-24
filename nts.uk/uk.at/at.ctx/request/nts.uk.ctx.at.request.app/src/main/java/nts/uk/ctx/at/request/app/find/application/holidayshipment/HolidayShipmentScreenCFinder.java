@@ -53,10 +53,9 @@ public class HolidayShipmentScreenCFinder {
 	ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 	final static String DATE_FORMAT = "yyyy/MM/dd";
 
-	public HolidayShipmentDto startPage(String sid, String appDate, int uiType) {
+	public HolidayShipmentDto startPage(String sid, GeneralDate baseDate, int uiType) {
 		companyID = AppContexts.user().companyId();
 		employeeID = AppContexts.user().employeeId();
-		baseDate = GeneralDate.fromString(appDate, DATE_FORMAT);
 
 		HolidayShipmentDto output = aFinder.commonProcessBeforeStart(appType, companyID, employeeID, baseDate);
 		// アルゴリズム「事前事後区分の判断」を実行する
@@ -110,10 +109,6 @@ public class HolidayShipmentScreenCFinder {
 		output.setPreOrPostType(otherCommonAlgorithm.judgmentPrePostAtr(appType, baseDate, true).value);
 
 		return output;
-
-	}
-
-	public void save(String appDate) {
 
 	}
 

@@ -42,12 +42,13 @@
 									    <td data-bind="text: overtimeNo"></td>
 									    <td data-bind="text: overtimeName"></td>
 									    <td>
-									    	<div tabindex="6" data-bind="ntsRadioBoxGroup: {
+									    	<div tabindex="6" data-bind=" ntsRadioBoxGroup: {
 															options: $parent.itemListQ5_5,
 															optionsValue: 'id',
 															optionsText: 'name',
 															value: otWorkRoleSelect,
-															enable: enable}"></div>
+															enable: enable}, 
+															attr: { 'posTab': $index }"></div>
 									    </td>
 									  </tr>
 								</tbody>
@@ -143,7 +144,8 @@
 															optionsValue: 'id',
 															optionsText: 'name',
 															value: roleFrameSelect,
-															enable: enable}"></div>
+															enable: enable}, 
+															attr: { 'posTab': $index }"></div>
 									    </td>
 									  </tr>
 								</tbody>

@@ -31,6 +31,8 @@
 						name: '#{i18n.getText('KMK013_365')}',
 						constraint:'TimeWithDayAttr', 
 						value: start,
+						inputFormat: 'time', 
+						mode: 'time',
 						enable: true, 
 						required: true }" />
 				</div>
@@ -39,7 +41,9 @@
 					<input id="end" class="input-time" tabindex="4" data-bind="ntsTimeWithDayEditor: { 
 						name: '#{i18n.getText('KMK013_367')}', 
 						constraint:'TimeWithDayAttr', 
-						value: end, 
+						value: end,
+						inputFormat: 'time', 
+						mode: 'time',
 						enable: true, 
 						required: true }" />
 				</div>

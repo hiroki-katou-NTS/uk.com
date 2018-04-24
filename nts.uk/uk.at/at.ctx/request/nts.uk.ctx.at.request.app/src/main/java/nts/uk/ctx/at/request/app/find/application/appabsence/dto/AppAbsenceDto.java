@@ -139,6 +139,11 @@ public class AppAbsenceDto {
 	 */
 	private boolean mailFlg;
 	
+	/**
+	 * displayWorkChangeFlg : dùng cho màn B
+	 */
+	private boolean displayWorkChangeFlg;
+	
 	public static AppAbsenceDto fromDomain(AppAbsence app){
 		return new AppAbsenceDto(app.getVersion(),
 								ApplicationDto_New.fromDomain(app.getApplication()),
@@ -147,9 +152,9 @@ public class AppAbsenceDto {
 								app.getApplication().getEmployeeID(),
 								"",
 								app.getHolidayAppType().value,
-								app.getWorkTimeCode().toString(),
+								app.getWorkTypeCode() == null ? null : app.getWorkTypeCode().toString(),
 								"",
-								app.getWorkTimeCode().toString(),
+								app.getWorkTimeCode() == null ? null : app.getWorkTimeCode().toString(),
 								"",
 								app.isHalfDayFlg(),
 								app.isChangeWorkHour(),
@@ -169,6 +174,7 @@ public class AppAbsenceDto {
 								null,
 								null,
 								0,
+								false,
 								false);
 	}
 }

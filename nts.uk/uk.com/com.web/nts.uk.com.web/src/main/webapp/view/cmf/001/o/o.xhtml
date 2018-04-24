@@ -38,7 +38,7 @@
 							<div class="" style="width: 460px; float: left;">
 								<!--O4_1 条件設定選択(パネル)-->
 								<div
-									data-bind="ntsPanel:{width: '425px', height: '430px', direction: 'none', showIcon: true, visible: true}">
+									data-bind="ntsPanel:{width: '425px', height: '325px', direction: 'none', showIcon: true, visible: true}">
 									<div class="valign-center control-group cf">
 										<!--O4_2 コード/名称-->
 										<div class="pull-left"
@@ -56,15 +56,14 @@
 									<!--O4_4 条件設定一覧-->
 									<table id="grd_Condition"
 										data-bind="ntsGridList: {											
-											rows: 15,
+											rows: 10,
 											name: '#[CMF001_439]', 
 				 							dataSource: listCondition,
-											primaryKey: 'dispConditionSettingCode', 
-											showNumbering: true,
+											primaryKey: 'dispConditionSettingCode',
 				 							columns: [
-										    	{ headerText: '#{i18n.getText('CMF001_440')}', key: 'dispConditionSettingCode', width: 40, formatter: _.escape },
-										    	{ headerText: '#{i18n.getText('CMF001_441')}', key: 'dispConditionSettingName', width: 345, formatter: _.escape }
-										    ], 
+												{ headerText: '#{i18n.getText('CMF001_440')}', key: 'dispConditionSettingCode', width: 40, formatter: _.escape },
+												{ headerText: '#{i18n.getText('CMF001_441')}', key: 'dispConditionSettingName', width: 365, formatter: _.escape }
+											], 
 											multiple: false,
 											value: selectedConditionCd}">
 									</table>
@@ -105,6 +104,7 @@
 											<div id="file-upload" class="form_step0" tabindex="4"
 												style="display: inline-block;"
 												data-bind="ntsFileUpload:{
+													stereoType: 'csvfile',
 													name: '#[CMF001_446]', 
 													text: '#{i18n.getText('CMF001_447')}',
 													filename: fileName,
@@ -112,8 +112,25 @@
 													aslink: false,
 													enable: true,
 													required: true,
-													immediateUpload: false,
-													onchange: uploadFile.bind($data)}">
+													immediateUpload: true,
+													uploadFinished: uploadFile}">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td></td>
+										<td colspan="2">
+											<label>#{i18n.getText('CMF001_146')}</label>									
+											<div style="display: inline-table; margin-left: 30px;"  
+													data-bind="ntsComboBox: {
+													options: encodingList,
+													optionsValue: 'value',
+													value: selectedEncoding,
+													optionsText: 'name',
+													editable: false,
+													enable: true,
+													columns: [
+														{ prop: 'name', length: 5}]}">
 											</div>
 										</td>
 									</tr>

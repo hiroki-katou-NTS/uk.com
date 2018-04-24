@@ -6,6 +6,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
     import common = nts.uk.at.view.kaf011.shr.common;
     import service = nts.uk.at.view.kaf011.shr.service;
     import block = nts.uk.ui.block;
+    import jump = nts.uk.request.jump;
 
     export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
 
@@ -59,7 +60,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                     comType: self.appComSelectedCode(),
                     usedDays: 1,
                     appCmd: {
-                        appReasonID: self.appReasonSelectedID(),
+                        appReasonText: self.appReasonSelectedID(),
                         applicationReason: self.reason(),
                         prePostAtr: self.prePostSelectedCode(),
                         enteredPersonSID: self.employeeID(),
@@ -70,7 +71,9 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;
 
             service.update(saveCmd).done(() => {
-                dialog({ messageId: 'Msg_15' });
+                dialog({ messageId: 'Msg_15' }).then(function() {
+                    location.reload();
+                });
 
 
             }).fail((error) => {
@@ -162,21 +165,23 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 
         setDataApp(control: common.AppItems, data, comType?) {
             let self = this;
-            control.wkTypeCD(data.workTypeCD);
-            control.wkTimeCD(data.workTimeCD);
-            control.changeWorkHoursType(data.changeWorkHoursType);
-            control.appDate(data.appDate);
-            control.appID(data.appID);
-            if (data.wkTime1) {
-                control.wkTime1().startTime(data.wkTime1.startTime);
-                control.wkTime1().endTime(data.wkTime1.endTime);
-                if (data.wkTime1.startType) {
-                    control.wkTime1().startType(data.wkTime1.startType);
-                    control.wkTime1().startTime(data.wkTime1.endType);
+            if (data) {
+                control.wkTypeCD(data.workTypeCD);
+                control.wkTimeCD(data.workTimeCD);
+                control.changeWorkHoursType(data.changeWorkHoursType);
+                control.appDate(data.appDate);
+                control.appID(data.appID);
+                if (data.wkTime1) {
+                    control.wkTime1().startTime(data.wkTime1.startTime);
+                    control.wkTime1().endTime(data.wkTime1.endTime);
+                    if (data.wkTime1.startType) {
+                        control.wkTime1().startType(data.wkTime1.startType);
+                        control.wkTime1().startTime(data.wkTime1.endType);
+                    }
                 }
-            }
-            if (comType) {
-                self.appComSelectedCode(comType);
+                if (comType) {
+                    self.appComSelectedCode(comType);
+                }
             }
         }
 

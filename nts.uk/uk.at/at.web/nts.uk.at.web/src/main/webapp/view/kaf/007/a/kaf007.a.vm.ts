@@ -39,6 +39,9 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         dateFormat: string = 'YYYY/MM/DD';
         //画面モード(表示/編集)
         editable: KnockoutObservable<boolean> = ko.observable( true );
+        
+         // Valid Period
+        datePeriod: KnockoutObservable<any> = ko.observable({});
         constructor() {
             let self = this,
             application = self.appWorkChange().application();
@@ -57,20 +60,14 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             
             // 申請日を変更する          
             //Start Date
-            application.startDate.subscribe(value => {
-                $("#inputdatestart").trigger("validate");
+            self.datePeriod.subscribe(value => {
+                nts.uk.ui.errors.clearAll();
+                $(".ntsStartDatePicker").trigger("validate");
+                $(".ntsEndDatePicker").trigger("validate");
                 if (nts.uk.ui.errors.hasError()) {
                     return;
                 }
-                self.changeApplicationDate(value, common.AppDateType.StartDate);
-            });
-            //End Date
-            application.endDate.subscribe(value => {
-                $("#inputdateend").trigger("validate");
-                if (nts.uk.ui.errors.hasError()) {
-                    return;
-                }
-                self.changeApplicationDate(value, common.AppDateType.EndDate);
+                self.changeApplicationDate(value.startDate, value.endDate);
             });
         }
         /**
@@ -133,7 +130,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 //Focus process
                 self.selectedReason.subscribe(value => {  $("#inpReasonTextarea").focus(); });
                 //フォーカス制御
-                self.changeFocus('#inputdatestart'); 
+                self.changeFocus('.ntsStartDatePicker'); 
                               
                 dfd.resolve();
             }).fail((res) => {
@@ -166,10 +163,10 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 self.selectedReason(),
                 self.reasonCombo(),
                 self.displayAppReasonContentFlg(),
-                self.multilContent()
+                self.multilContent().trim()
             );
-            if(!appcommon.CommonProcess.checklenghtReason(appReason,"#inpReasonTextarea")){
-                        return;
+            if (!appcommon.CommonProcess.checklenghtReason(appReason, "#inpReasonTextarea")) {
+                return;
             }
             let appReasonError = !appcommon.CommonProcess.checkAppReason(true, self.typicalReasonDisplayFlg(), self.displayAppReasonContentFlg(), appReason);
             if(appReasonError){
@@ -177,7 +174,9 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 return;    
             }
             //申請日付
-            self.appWorkChange().application().applicationDate(self.appWorkChange().application().startDate());
+            self.appWorkChange().application().applicationDate(moment.utc(self.datePeriod().startDate, self.dateFormat).toISOString());
+            self.appWorkChange().application().startDate(moment.utc(self.datePeriod().startDate, self.dateFormat).toISOString());
+            self.appWorkChange().application().endDate(moment.utc(self.datePeriod().endDate, self.dateFormat).toISOString());
             //申請理由
             self.appWorkChange().application().applicationReason(appReason);
             //勤務を変更する
@@ -206,7 +205,9 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         private validateInputTime(): boolean{
             let self = this,
             workchange = self.appWorkChange().workChange();
-            
+            nts.uk.ui.errors.clearAll();
+            $(".ntsStartDatePicker").trigger("validate");
+            $(".ntsEndDatePicker").trigger("validate");
             $("#inpStartTime1").trigger("validate");
             $("#inpEndTime1").trigger("validate");
             
@@ -256,32 +257,22 @@ module nts.uk.at.view.kaf007.a.viewmodel {
          * @param date: 申請日
          * @param dateType (Start or End type)
          */
-        private changeApplicationDate(date:any, dateType: common.AppDateType){
+        private changeApplicationDate(startDate : any, endDate : any){
             let self = this,
-            startDate: string,
-            endDate: string,
+            tmpStartDate : string = moment(startDate).format(self.dateFormat),
+            tmpEndDate : string = moment(endDate).format(self.dateFormat),
             application = self.appWorkChange().application();
-            switch(dateType){
-                case common.AppDateType.StartDate:
-                    startDate = date;
-                    endDate = application.endDate();
-                    break;
-                case common.AppDateType.EndDate:
-                    startDate = application.startDate();
-                    endDate = date;
-                    break;
-            }
             //申請日付開始日を基準に共通アルゴリズム「申請日を変更する」を実行する
             //self.checkChangeAppDate(date);
             //申請日付分　（開始日～終了日）
             //基準日　≦　終了日
-            while(moment(startDate, self.dateFormat).isSameOrBefore(moment(endDate, self.dateFormat))){
-                self.checkChangeAppDate(startDate);
+            while(moment(tmpStartDate, self.dateFormat).isSameOrBefore(moment(tmpEndDate, self.dateFormat))){
+                self.checkChangeAppDate(tmpStartDate);
                 //基準日　＝　基準日　＋　１
-                startDate = moment(startDate).add(1, 'day');
+                tmpStartDate = moment(tmpStartDate).add(1, 'day').format(self.dateFormat);
             }
             //実績の内容
-            service.getRecordWorkInfoByDate(moment(date).format(self.dateFormat)).done((recordWorkInfo) => {
+            service.getRecordWorkInfoByDate(moment(endDate === null ? startDate : endDate).format(self.dateFormat)).done((recordWorkInfo) => {
                 //Binding data
                 ko.mapping.fromJS( recordWorkInfo, {}, self.recordWorkInfo );
             }).fail((res) => {
@@ -353,7 +344,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             if ( data == -1 || data === "" ) {
                 return null;
             } else if ( data == 0 ) {
-                hourMinute = "00:00";
+                //hourMinute = "00:00";
+                hourMinute = "";
             } else if ( data != null ) {
                 let hour = Math.floor( data / 60 );
                 let minutes = Math.floor( data % 60 );

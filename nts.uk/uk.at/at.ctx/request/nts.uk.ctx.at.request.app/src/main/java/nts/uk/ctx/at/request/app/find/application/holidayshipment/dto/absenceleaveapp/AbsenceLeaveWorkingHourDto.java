@@ -5,8 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @author sonnlb
- * 勤務時間Dto
+ * @author sonnlb 勤務時間Dto
  */
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,9 +14,9 @@ public class AbsenceLeaveWorkingHourDto {
 	/**
 	 * 開始時刻
 	 */
-	private int startTime;
+	private Integer startTime;
 	/**
 	 * 終了時刻
 	 */
-	private int endTime;
+	private Integer endTime;
 }

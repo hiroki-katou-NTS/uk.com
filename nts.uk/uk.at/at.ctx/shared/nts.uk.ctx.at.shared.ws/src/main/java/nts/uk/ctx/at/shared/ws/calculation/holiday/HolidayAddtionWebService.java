@@ -1,6 +1,9 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.ws.calculation.holiday;
 /**
- * @author phongtq
  */
 import java.util.List;
 
@@ -15,6 +18,9 @@ import nts.uk.ctx.at.shared.app.command.calculation.holiday.AddHolidayAddtimeCom
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.HolidayAddtionDto;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.HolidayAddtionFinder;
 
+/**
+ * The Class HolidayAddtionWebService.
+ */
 @Path("shared/caculation/holiday")
 @Produces("application/json")
 public class HolidayAddtionWebService extends WebService{

@@ -5,6 +5,7 @@ import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.GetVacationAddSet;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.PayItemCountOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.GetAggrSettingMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthlyRepository;
@@ -19,8 +20,6 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -123,14 +122,8 @@ public interface RepositoriesRequiredByMonthlyAggr {
 	/** 休日加算設定 */
 	HolidayAddtionRepository getHolidayAddition();
 	
-	/** 年休設定 */
-	AnnualPaidLeaveSettingRepository getAnnualPaidLeaveSet();
-	
-	/** 積立年休設定 */
-	RetentionYearlySettingRepository getRetentionYearlySet();
-	
-	/** 特別休暇設定 */
-	//SpecialHolidayRepository getSpecialHolidaySet();
+	/** 休暇加算設定を取得する */
+	GetVacationAddSet getVacationAddSet();
 	
 	/** 週開始の取得 */
 	GetWeekStart getGetWeekStart();

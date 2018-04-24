@@ -17,6 +17,17 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implements AttendanceLeavingGateOfDailyRepo {
 
+	private static final String REMOVE_BY_KEY;
+
+	static {
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("DELETE ");
+		builderString.append("FROM KrcdtDayLeaveGate a ");
+		builderString.append("WHERE a.id.sid = :employeeId ");
+		builderString.append("AND a.id.ymd = :ymd ");
+		REMOVE_BY_KEY = builderString.toString();
+	}
+
 	@Override
 	public Optional<AttendanceLeavingGateOfDaily> find(String employeeId, GeneralDate baseDate) {
 		return this.queryProxy().find(new KrcdtDayLeaveGatePK(employeeId, baseDate), KrcdtDayLeaveGate.class)
@@ -75,6 +86,13 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 				.ifPresent(entity -> {
 					this.commandProxy().remove(entity);
 				});
+	}
+
+	@Override
+	public void removeByKey(String employeeId, GeneralDate baseDate) {
+		this.getEntityManager().createQuery(REMOVE_BY_KEY).setParameter("employeeId", employeeId)
+				.setParameter("ymd", baseDate).executeUpdate();
+		this.getEntityManager().flush();
 	}
 
 }

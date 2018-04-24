@@ -54,7 +54,7 @@ public class ExiExecLogWebService extends WebService {
 
 	@POST
 	@Path("export")
-	public ExportServiceResult exportCsvError(List<ErrorContentDto> command) {
+	public ExportServiceResult exportCsvError(ErrorContentDto command) {
 		return this.exportService.start(command);
 	}
 }

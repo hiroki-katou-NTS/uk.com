@@ -28,4 +28,10 @@ public class KrcdtConfirmationMonthPK implements Serializable{
 	
 	@Column(name = "CLOSURE_ID")
 	public int closureId;
+	
+	@Column(name = "CLOSURE_DAY")
+	public int closureDay;
+	
+	@Column(name = "PROCESS_YM")
+	public int processYM;
 }

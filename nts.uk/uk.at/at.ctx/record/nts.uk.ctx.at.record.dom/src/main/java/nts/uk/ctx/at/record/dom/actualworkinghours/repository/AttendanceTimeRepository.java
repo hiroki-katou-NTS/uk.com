@@ -19,4 +19,6 @@ public interface AttendanceTimeRepository {
 	List<AttendanceTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd);
 	void updateFlush(AttendanceTimeOfDailyPerformance attendanceTime);
 	
+	void deleteByEmployeeIdAndDate(String employeeId, GeneralDate ymd);
+	
 }

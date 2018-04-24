@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.app.find.calculation.holiday;
 import java.math.BigDecimal;
 
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.AddSetManageWorkHour;
 @Data
 public class HolidayAddtionDto {
 	/** 会社ID */

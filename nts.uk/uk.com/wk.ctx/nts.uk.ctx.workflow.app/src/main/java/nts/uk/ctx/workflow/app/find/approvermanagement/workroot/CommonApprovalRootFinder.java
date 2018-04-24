@@ -18,6 +18,8 @@ import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
+import nts.uk.ctx.workflow.dom.adapter.employee.EmployeeWithRangeAdapter;
+import nts.uk.ctx.workflow.dom.adapter.employee.EmployeeWithRangeLoginImport;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
@@ -59,6 +61,8 @@ public class CommonApprovalRootFinder {
 	private SyJobTitleAdapter adapterJobtitle;
 	@Inject
 	private EmployeeAdapter employeeAdapter;
+	@Inject
+	private EmployeeWithRangeAdapter employeeWithRangeAdapter;
 	private final int COMPANY = 0;
 	private final int WORKPLACE = 1;
 	/**
@@ -507,25 +511,27 @@ public class CommonApprovalRootFinder {
 	 * @param employeeCode
 	 * @return
 	 */
-	public PersonImport getEmployeeInfoByCode(String employeeCode, boolean hasAuthority){
-		PersonImport employeeInfor = employeeAdapter.getEmployeeInformation(employeeCode);
-		//承認権限がある社員
+	public EmployeeWithRangeLoginImport getEmployeeInfoByCode(String employeeCode, boolean hasAuthority){
+		String companyId = AppContexts.user().companyId();
+		Optional<EmployeeWithRangeLoginImport> employeeWithRange = null;
+		// 承認権限がある社員
 		if (hasAuthority) {
-			//ログイン者の社員参照範囲で社員コードから社員を取得する
-			//RequestList314
+			// ログイン者の社員参照範囲で社員コードから社員を取得する
+			// RequestList314
+			employeeWithRange = this.employeeWithRangeAdapter.findEmployeeByAuthorizationAuthority(companyId, employeeCode);
 		} else {
-			//社員コードから承認権限ありの社員のみ取得する
-			//RequestList315
+			// 社員コードから承認権限ありの社員のみ取得する
+			// RequestList315
+			employeeWithRange = this.employeeWithRangeAdapter.findByEmployeeByLoginRange(companyId, employeeCode);
 		}
 
-		// 社員がある場合
-		if (!StringUtil.isNullOrEmpty(employeeInfor.getSID(), true)) {
-		} else {
-			// エラーメッセージ（Msg_1078）
-			// 該当する{#Com_Person}が見つかりません。 承認権限がないか参照できない{#Com_Person}の可能性があります。
+		if (!employeeWithRange.isPresent())
 			throw new BusinessException("Msg_1078");
-		}
-		return employeeInfor;
+
+		return employeeWithRange.map(x -> {
+			return new EmployeeWithRangeLoginImport(x.getBusinessName(), x.getPersonID(), x.getEmployeeCD(),
+					x.getEmployeeID());
+		}).orElse(null);
 	}
 
 	/**

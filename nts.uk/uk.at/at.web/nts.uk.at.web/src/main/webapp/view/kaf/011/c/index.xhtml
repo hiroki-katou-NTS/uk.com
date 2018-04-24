@@ -85,7 +85,7 @@
 					</div>
 				</div>
 				<div class="div_line"
-					data-bind="if:appTypeSet().displayAppReason !=0">
+					data-bind="if:appTypeSet().displayAppReason() !=0">
 					<!-- constraint: -->
 					<div class="div_line_col_1">
 						<div data-bind="ntsFormLabel: { constraint: 'AppReason' }">#{i18n.getText('KAF011_17')}</div>

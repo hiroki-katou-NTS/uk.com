@@ -69,7 +69,6 @@
 								                			],
 		                                            multiple: false,
 		                                            value: $parent.selectedConditionSetting,
-		                                            showNumbering: true,
 		                                            enable: true}">
 								</table>
 							</div>
@@ -198,11 +197,10 @@
 													primaryKey: 'outputItemCode',
 													columns: [
 																{headerText: '#{i18n.getText('CMF002_60')}', key: 'outputItemCode', width: 50, formatter: _.escape},
-								                				{headerText: '#{i18n.getText('CMF002_61')}', key: 'outputItemName', width: 170, formatter: _.escape}
-								                			],
+																{headerText: '#{i18n.getText('CMF002_61')}', key: 'outputItemName', width: 170, formatter: _.escape}
+															],
 													value: outputItemCode,
-													multiple: false,
-													showNumbering: true
+													multiple: false
 												}"></table>
 										</div>
 										<div class="cell">
