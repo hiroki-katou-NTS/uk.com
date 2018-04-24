@@ -577,6 +577,7 @@ public class DailyPerformanceCorrectionProcessor {
 									value = !optCodeName.isPresent() ? NAME_NOT_FOUND : optCodeName.get().getName();
 								}else if(groupType == TypeLink.REASON.value){
 									int group = DEVIATION_REASON_MAP.get(item.getId());
+									cellDatas.add(new DPCellDataDto(codeColKey, value,attendanceAtrAsString, TYPE_LABEL));
 									value = mapReasonName.containsKey(value+"|"+group) ? mapReasonName.get(value+"|"+group).getName() : NAME_NOT_FOUND;
 								}
 								else {
