@@ -310,43 +310,51 @@ module nts.custom.component {
                 if (t == TABS.LAYOUT) {
                     params.gridlist.row(10);
                     fetch.get_layout(sid).done((data: Array<any>) => {
-                        params.gridlist.options(data);
+                        if (data.length) {
+                            params.gridlist.options(data);
 
-                        let id = ko.toJS(params.gridlist.value),
-                            ids = _.map(data, d => d.maintenanceLayoutID);
+                            let id = ko.toJS(params.gridlist.value),
+                                ids = _.map(data, d => d.maintenanceLayoutID);
 
-                        if (otab == t) {
-                            if (ids.indexOf(id) == -1) {
-                                params.gridlist.value(ids[0]);
+                            if (otab == t) {
+                                if (ids.indexOf(id) == -1) {
+                                    params.gridlist.value(ids[0]);
+                                } else {
+                                    params.gridlist.value.valueHasMutated();
+                                }
                             } else {
-                                params.gridlist.value.valueHasMutated();
+                                if (ids[0] != id) {
+                                    params.gridlist.value(ids[0]);
+                                } else {
+                                    params.gridlist.value.valueHasMutated();
+                                }
                             }
                         } else {
-                            if (ids[0] != id) {
-                                params.gridlist.value(ids[0]);
-                            } else {
-                                params.gridlist.value.valueHasMutated();
-                            }
+                            __viewContext.viewModel.unblock();
                         }
                     });
                 } else {
                     fetch.get_category(sid).done((data: Array<ICategory>) => {
-                        params.combobox.options(data);
-                        let id = ko.toJS(params.combobox.value),
-                            ids = _.map(data, d => d.id);
+                        if (data.length) {
+                            params.combobox.options(data);
+                            let id = ko.toJS(params.combobox.value),
+                                ids = _.map(data, d => d.id);
 
-                        if (otab == t) {
-                            if (ids.indexOf(id) == -1) {
-                                params.combobox.value(ids[0]);
+                            if (otab == t) {
+                                if (ids.indexOf(id) == -1) {
+                                    params.combobox.value(ids[0]);
+                                } else {
+                                    params.combobox.value.valueHasMutated();
+                                }
                             } else {
-                                params.combobox.value.valueHasMutated();
+                                if (ids[0] != id) {
+                                    params.combobox.value(ids[0]);
+                                } else {
+                                    params.combobox.value.valueHasMutated();
+                                }
                             }
                         } else {
-                            if (ids[0] != id) {
-                                params.combobox.value(ids[0]);
-                            } else {
-                                params.combobox.value.valueHasMutated();
-                            }
+                            __viewContext.viewModel.unblock();
                         }
                     });
                 }
@@ -356,7 +364,6 @@ module nts.custom.component {
 
             params.combobox.value.subscribe(v => {
                 let oval = params.combobox.oval;
-
                 __viewContext.viewModel.block();
 
                 if (v) {
@@ -448,12 +455,15 @@ module nts.custom.component {
                     } else {
                         params.combobox.value(undefined);
                     }
+                } else {
+                    __viewContext.viewModel.unblock();
                 }
                 params.combobox.oval = v;
             });
 
             params.gridlist.value.subscribe(v => {
                 if (!v) {
+                    __viewContext.viewModel.unblock();
                     return;
                 }
 
@@ -509,9 +519,9 @@ module nts.custom.component {
             });
 
             params.employeeId.subscribe(id => {
-                params.tab.valueHasMutated();
                 fetch.get_layout(id).done((data: Array<any>) => {
                     params.hasLayout(!!data.length);
+                    params.tab.valueHasMutated();
                 });
             });
 
