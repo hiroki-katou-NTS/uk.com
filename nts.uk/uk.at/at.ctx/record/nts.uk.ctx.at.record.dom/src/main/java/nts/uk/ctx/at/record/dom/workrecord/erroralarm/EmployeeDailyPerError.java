@@ -90,5 +90,4 @@ public class EmployeeDailyPerError extends AggregateRoot {
 		this.attendanceItemList = attendanceItemList;
 		this.errorAlarmMessage = Optional.empty();
 	}
-	
 }

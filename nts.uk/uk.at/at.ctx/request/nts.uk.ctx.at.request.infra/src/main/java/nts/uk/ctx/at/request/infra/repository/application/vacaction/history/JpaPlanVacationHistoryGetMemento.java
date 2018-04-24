@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.request.infra.repository.application.vacaction.history;
 
+import nts.uk.ctx.at.request.dom.settting.worktype.history.OptionalMaxDay;
 import nts.uk.ctx.at.request.dom.settting.worktype.history.PlanVacationHistoryGetMemento;
 import nts.uk.ctx.at.request.infra.entity.valication.history.KrqmtVacationHistory;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -53,8 +54,8 @@ public class JpaPlanVacationHistoryGetMemento implements PlanVacationHistoryGetM
 	 * @see nts.uk.ctx.at.request.dom.settting.worktype.history.PlanVacationHistoryGetMemento#getMaxDay()
 	 */
 	@Override
-	public Integer getMaxDay() {
-		return this.entity.getMaxDay();
+	public OptionalMaxDay getMaxDay() {
+		return new OptionalMaxDay(this.entity.getMaxDay());
 	}
 
 	/* (non-Javadoc)

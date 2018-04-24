@@ -298,7 +298,10 @@ public class ActualWorkingTimeOfDaily {
 																					   						constraintTime, 
 																					   						timeDifferenceWorkingHours, 
 																					   						totalWorkingTime,
+																					   						new DivergenceTimeOfDaily(Collections.emptyList()),
+																					   						//integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime(),
 																					   						//new DivergenceTimeOfDaily(Collections.emptyList()),
+//																					   						new DivergenceTimeOfDaily(Collections.emptyList()),
 																					   						integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime(),
 																					   						premiumTime),
 																			   //滞在時間
@@ -337,18 +340,21 @@ public class ActualWorkingTimeOfDaily {
 		//乖離時間算出のアルゴリズム実装
 		for(DivergenceTime divergenceTimeClass : divergenceTimeList) {
 			if(divergenceTimeClass.getDivTimeUseSet().isUse()) {
-				Optional<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> toAddItem = divergenceTimeInIntegrationOfDaily.getDivergenceTime().stream()
-																																	  .filter(tc -> tc.getDivTimeId() == divergenceTimeClass.getDivergenceTimeNo())
-																																				.findFirst();
-				if(toAddItem.isPresent()) {
-					int totalTime = divergenceTimeClass.totalDivergenceTimeWithAttendanceItemId(forCalcDivergenceDto);
-					returnList.add(new nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime(new AttendanceTime(totalTime - toAddItem.get().getDeductionTime().valueAsMinutes()), 
-																								 	 toAddItem.get().getDeductionTime(), 
-																								 	 new AttendanceTime(totalTime), 
-																								 	 toAddItem.get().getDivTimeId(), 
-																								 	 toAddItem.get().getDivReason(), 
-																								 	 toAddItem.get().getDivResonCode()));
-				}
+				divergenceTimeInIntegrationOfDaily.getDivergenceTime().stream()
+										.filter(tc -> tc.getDivTimeId() == divergenceTimeClass.getDivergenceTimeNo())
+										.findFirst().ifPresent(tdi -> {
+											int totalTime = divergenceTimeClass.totalDivergenceTimeWithAttendanceItemId(forCalcDivergenceDto);
+											int deductionTime = (tdi.getDeductionTime() == null ?  0 : tdi.getDeductionTime().valueAsMinutes());
+											returnList.add(new nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime(new AttendanceTime(totalTime - deductionTime), 
+																																tdi.getDeductionTime(), 
+																																new AttendanceTime(totalTime), 
+																																tdi.getDivTimeId(), 
+																														 		tdi.getDivReason(), 
+																														 		tdi.getDivResonCode()));
+										});
+//				if(toAddItem.isPresent()) {
+					
+//				}
 			}
 		}
 		return (returnList.size()>0)?returnList:divergenceTimeInIntegrationOfDaily.getDivergenceTime();

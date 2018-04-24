@@ -7,6 +7,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.event.DomainEvent;
 import nts.arc.time.GeneralDate;
 
+/**　<<Event>> 実績の出退勤が変更された　*/
 @Builder
 @Getter
 public class TimeLeaveChangeEvent extends DomainEvent {
