@@ -48,6 +48,18 @@ public class ScheduleExecutionLog extends AggregateRoot {
 	// 実行区分
 	private ExecutionAtr exeAtr;
 
+	public ScheduleExecutionLog(CompanyId companyId, CompletionStatus completionStatus, String executionId,
+			ExecutionDateTime executionDateTime, String executionEmployeeId, DatePeriod period, ExecutionAtr exeAtr) {
+		super();
+		this.companyId = companyId;
+		this.completionStatus = completionStatus;
+		this.executionId = executionId;
+		this.executionDateTime = executionDateTime;
+		this.executionEmployeeId = executionEmployeeId;
+		this.period = period;
+		this.exeAtr = exeAtr;
+	}
+
 	/**
 	 * To domain.
 	 *
@@ -151,7 +163,20 @@ public class ScheduleExecutionLog extends AggregateRoot {
 	public void setExeAtr(ExecutionAtr exeAtr) {
 		this.exeAtr = exeAtr;
 	}
-	
-	
+
+	public static ScheduleExecutionLog creator(String companyId, String executionId, String executionEmployeeId,
+			DatePeriod period, ExecutionAtr exeAtr) {
+		return new ScheduleExecutionLog(new CompanyId(companyId), CompletionStatus.INCOMPLETE, executionId,
+				new ExecutionDateTime(GeneralDateTime.now(), GeneralDateTime.now()), executionEmployeeId, period,
+				exeAtr);
+	}
+
+	public void setExecutionId(String executionId) {
+		this.executionId = executionId;
+	}
+
+	public void setCompanyId(CompanyId companyId) {
+		this.companyId = companyId;
+	}
 
 }

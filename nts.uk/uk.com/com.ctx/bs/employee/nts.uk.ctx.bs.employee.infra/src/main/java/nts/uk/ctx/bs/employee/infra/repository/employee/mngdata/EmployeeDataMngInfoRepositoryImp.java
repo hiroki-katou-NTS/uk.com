@@ -5,7 +5,6 @@
 package nts.uk.ctx.bs.employee.infra.repository.employee.mngdata;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -390,21 +389,6 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	}
 
 	// sonnlb code end
-
-	// laitv code start
-
-	@Override
-	public List<EmployeeDataMngInfo> getByListEmployeeId(List<String> listSid) {
-		// check exist input
-		if (CollectionUtil.isEmpty(listSid)) {
-			return Collections.emptyList();
-		}
-
-		List<EmployeeDataMngInfo> result = this.queryProxy().query(SELECT_BY_SIDS, BsymtEmployeeDataMngInfo.class)
-				.setParameter("listSid", listSid).getList(c -> toDomain(c));
-
-		return result;
-	}
 
 	@Override
 	public void updateAfterRemove(EmployeeDataMngInfo domain) {
