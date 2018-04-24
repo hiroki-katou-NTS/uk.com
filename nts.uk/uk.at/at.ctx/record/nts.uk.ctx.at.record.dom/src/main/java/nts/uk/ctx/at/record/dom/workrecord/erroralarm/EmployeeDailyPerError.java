@@ -90,19 +90,5 @@ public class EmployeeDailyPerError extends AggregateRoot {
 		this.attendanceItemList = attendanceItemList;
 		this.errorAlarmMessage = Optional.empty();
 	}
-
-	public EmployeeDailyPerError(String companyID, String employeeID, GeneralDate date,
-			ErrorAlarmWorkRecordCode errorAlarmWorkRecordCode, Integer attendanceItem) {
-		super();
-		this.companyID = companyID;
-		this.employeeID = employeeID;
-		this.date = date;
-		this.errorAlarmWorkRecordCode = errorAlarmWorkRecordCode;
-		List<Integer> attendanceItemList = new ArrayList<>();
-		attendanceItemList.add(attendanceItem);
-		this.attendanceItemList = attendanceItemList;
-		this.errorCancelAble = 0;
-	}
-	
 	
 }
