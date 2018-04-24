@@ -80,6 +80,10 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 				|| application.getAppType().equals(ApplicationType.WORK_CHANGE_APPLICATION)){
 				appReflectManager.reflectEmployeeOfApp(application);
 			}
+		} else {
+			// ドメインモデル「申請」と紐付き「反映情報」．実績反映状態 = 反映状態．未反映
+			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
+			applicationRepository.update(application);
 		}
 		AppTypeDiscreteSetting discreteSetting = discreteRepo.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
 		// 承認処理時に自動でメールを送信するが trueの場合
