@@ -53,7 +53,9 @@ public class PCLogOnInfoOfDaily {
 					}
 				}
 			}
-			resultList.add(new AttendanceTime(pcLogOn-stamp));
+			//出勤なら「出勤-ログオン」、退勤なら「ログオフ-退勤」
+			int calcResult = goLeavingWorkAtr.isGO_WORK()?stamp-pcLogOn:pcLogOn-stamp;
+			resultList.add(new AttendanceTime(calcResult));
 		}
 		AttendanceTime result = new AttendanceTime(resultList.stream().filter(t -> t != null).mapToInt(t -> t.valueAsMinutes()).sum());	
 		if(result==null||result.lessThan(0)) {

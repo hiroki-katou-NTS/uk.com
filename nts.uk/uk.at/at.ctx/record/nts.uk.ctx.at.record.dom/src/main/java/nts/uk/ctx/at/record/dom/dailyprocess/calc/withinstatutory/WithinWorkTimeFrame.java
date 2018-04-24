@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
@@ -427,7 +429,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		case EXCLUDED_WORKING_CALCULATE:
 			return CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME;
 		default:
-			throw new RuntimeException("不正な労働制です");
+			throw new BusinessException(new RawErrorMessage("不正な労働制です"));
 		}
 	}
 
