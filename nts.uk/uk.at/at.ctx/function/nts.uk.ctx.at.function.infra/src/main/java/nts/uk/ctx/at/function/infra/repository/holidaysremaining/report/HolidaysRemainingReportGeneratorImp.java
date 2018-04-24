@@ -3,10 +3,14 @@ package nts.uk.ctx.at.function.infra.repository.holidaysremaining.report;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 
 import com.aspose.cells.Cell;
 import com.aspose.cells.Cells;
+import com.aspose.cells.Shape;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
@@ -25,8 +29,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 	private static final String TEMPLATE_FILE = "report/休暇残数管理票_テンプレート.xlsx";
 	private static final String REPORT_FILE_NAME = "休暇残数管理票.xlsx";
-	private final int numberRowOfPage = 36;
-	private final int minRowDetails = 4;
+	private final int numberRowOfPage = 37;
+	// private final int minRowDetails = 4;
 	private HolidayRemainingDataSource dataSource;
 
 	@Override
@@ -40,7 +44,13 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 			printTemplate(worksheet);
 
-			printPerson(worksheet);
+			if (dataSource.getPageBreak() == 0) {
+				printNoneBreakPage(worksheet);
+			} else if (dataSource.getPageBreak() == 1) {
+				printWorkplaceBreakPage(worksheet);
+			} else if (dataSource.getPageBreak() == 2) {
+				printPersonBreakPage(worksheet);
+			}
 
 			removeTemplate(worksheet);
 
@@ -84,10 +94,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		// C1_8
 		cells.get(4, 8).setValue(TextResource.localize("KDR001_11"));
 		if (end.compareTo(currentMonth) > 0 && currentMonth.compareTo(start) > 0) {
-			Cell cell1 = cells.get(4, 21);
-			Cell cell2 = cells.get(4, 10 + totalMonths(start, currentMonth));
-			cell2.copy(cell1);
-			worksheet.getShapes().removeAt(0);
+			Shape shape = worksheet.getShapes().get(0);
 		}
 		// C1_9
 		for (int i = 0; i <= totalMonths(start, end); i++) {
@@ -96,7 +103,60 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 	}
 
-	private void printPerson(Worksheet worksheet) throws Exception {
+	private void printNoneBreakPage(Worksheet worksheet) throws Exception {
+		int firstRow = numberRowOfPage;
+
+		Cells cells = worksheet.getCells();
+		// D index
+		// print Header
+		cells.copyRows(cells, 0, firstRow, 5);
+		firstRow += 5;
+
+		for (HolidaysRemainingEmployee employee : dataSource.getListEmployee()) {
+			// D1_1, D1_2
+			cells.get(firstRow, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode() + "　"
+					+ employee.getWorkplaceName());
+			firstRow += 1;
+			firstRow = this.printHolidayRemainingEachPerson(worksheet, firstRow, employee);
+		}
+	}
+
+	private void printWorkplaceBreakPage(Worksheet worksheet) throws Exception {
+		int firstRow = numberRowOfPage;
+
+		Map<String, List<HolidaysRemainingEmployee>> map = dataSource.getListEmployee().stream()
+				.collect(Collectors.groupingBy(HolidaysRemainingEmployee::getWorkplaceId));
+
+		for (List<HolidaysRemainingEmployee> employees : map.values()) {
+			firstRow = printEachWorkplace(worksheet, firstRow, employees);
+		}
+	}
+
+	private int printEachWorkplace(Worksheet worksheet, int firstRow, List<HolidaysRemainingEmployee> employees)
+			throws Exception {
+		if (employees.size() == 0) {
+			return firstRow;
+		}
+		Cells cells = worksheet.getCells();
+		// D index
+		// print Header
+		cells.copyRows(cells, 0, firstRow, 6);
+		// D1_1, D1_2
+		cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + employees.get(0).getWorkplaceCode()
+				+ "　" + employees.get(0).getWorkplaceName());
+		firstRow += 6;
+
+		for (HolidaysRemainingEmployee employee : employees) {
+			firstRow = printHolidayRemainingEachPerson(worksheet, firstRow, employee);
+		}
+		if (firstRow % numberRowOfPage != 0) {
+			firstRow += (numberRowOfPage - firstRow % numberRowOfPage);
+		}
+
+		return firstRow;
+	}
+
+	private void printPersonBreakPage(Worksheet worksheet) throws Exception {
 		int firstRow = numberRowOfPage;
 
 		for (HolidaysRemainingEmployee employee : dataSource.getListEmployee()) {
@@ -107,13 +167,28 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 	private int printEachPerson(Worksheet worksheet, int firstRow, HolidaysRemainingEmployee employee)
 			throws Exception {
 		Cells cells = worksheet.getCells();
-		int rowIndexD = firstRow + 5;
 		// D index
 		// print Header
 		cells.copyRows(cells, 0, firstRow, 6);
+		// D1_1, D1_2
+		cells.get(firstRow + 5, 0).setValue(
+				TextResource.localize("KDR001_12") + employee.getWorkplaceCode() + "　" + employee.getWorkplaceName());
 		firstRow += 6;
-		int totalRowDetails = 0;		
 
+		firstRow = printHolidayRemainingEachPerson(worksheet, firstRow, employee);
+
+		if (firstRow % numberRowOfPage != 0) {
+			firstRow += (numberRowOfPage - firstRow % numberRowOfPage);
+		}
+
+		return firstRow;
+	}
+
+	private int printHolidayRemainingEachPerson(Worksheet worksheet, int firstRow, HolidaysRemainingEmployee employee)
+			throws Exception {
+		int rowIndexD = firstRow;
+		Cells cells = worksheet.getCells();
+		int totalRowDetails = 0;
 		// 年休
 		if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getAnnualHoliday().isYearlyHoliday()) {
 			cells.copyRows(cells, 6, firstRow, 2);
@@ -161,31 +236,23 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			totalRowDetails += 2;
 		}
 
-//		if (totalRowDetails < minRowDetails) {
-//			cells.copyRows(cells, 25, firstRow, minRowDetails - totalRowDetails);
-//			firstRow += (minRowDetails - totalRowDetails);
-//		}
-		// print D
-		// D1_1, D1_2
-		cells.get(rowIndexD, 0).setValue(
-				TextResource.localize("KDR001_12") + employee.getWorkplaceCode() + "　" + employee.getWorkplaceName());
+		// if (totalRowDetails < minRowDetails) {
+		// cells.copyRows(cells, 25, firstRow, minRowDetails - totalRowDetails);
+		// firstRow += (minRowDetails - totalRowDetails);
+		// }
+
 		// D2_1
-		cells.get(rowIndexD + 1, 0).setValue(employee.getEmployeeCode());
+		cells.get(rowIndexD, 0).setValue(employee.getEmployeeCode());
 		// D2_2
-		cells.get(rowIndexD + 1, 1).setValue(employee.getEmployeeName());
+		cells.get(rowIndexD, 1).setValue(employee.getEmployeeName());
 		// D2_3 Todo rql No.369
-		
 
 		cells.copyRows(cells, 24, firstRow, 1);
-
-		if (firstRow % numberRowOfPage != 0) {
-			firstRow += (numberRowOfPage - firstRow % numberRowOfPage);
-		}
-
 		return firstRow;
 	}
 
 	private void removeTemplate(Worksheet worksheet) {
+		worksheet.getShapes().removeAt(0);
 		Cells cells = worksheet.getCells();
 		cells.deleteRows(0, numberRowOfPage);
 	}

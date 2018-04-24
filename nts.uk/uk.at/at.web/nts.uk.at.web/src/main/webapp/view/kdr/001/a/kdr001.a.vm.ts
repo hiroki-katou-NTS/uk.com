@@ -235,68 +235,41 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         }
 
 
-        /**
+               /**
        * start page data 
        */
         public startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-/*
             service.findAll().done(function(data: Array<any>) {
                 self.loadAllHolidayRemaining(data);
-                service.getDate().done(function(data: IGetDate) {
-                    self.startDateString(moment.utc(data.startDate).format("YYYY/MM"));
-                    self.endDateString(moment.utc(data.endDate).format("YYYY/MM"));
-                    
-                    service.getPermissionOfEmploymentForm().done(function(permission: any) {
-                        self.permissionOfEmploymentForm(new PermissionOfEmploymentFormModel(
-                            permission.companyId,
-                            permission.roleId,
-                            permission.functionNo,
-                            permission.availability));
-                        
-                        nts.uk.ui.block.clear();
-                        dfd.resolve();
-                    }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
-                        nts.uk.ui.block.clear();
-                        dfd.reject();
-                    });
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
-                    nts.uk.ui.block.clear();
-                    dfd.reject();
-                });
-                
+                nts.uk.ui.block.clear();
+                dfd.resolve();
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
                 nts.uk.ui.block.clear();
                 dfd.reject();
             });
-            */
-            $.when(service.findAll(),
-                    //service.getDate(),
-                    service.getPermissionOfEmploymentForm()).done((
-                            holidayRemainings: Array<any>,
-                            //dateData: IGetDate,
-                            permission: any) => {
-                    self.loadAllHolidayRemaining(holidayRemainings);
-                    //self.startDateString(moment.utc(dateData.startDate).format("YYYY/MM"));
-                   // self.endDateString(moment.utc(dateData.endDate).format("YYYY/MM"));
-                    self.permissionOfEmploymentForm(new PermissionOfEmploymentFormModel(
-                            permission.companyId,
-                            permission.roleId,
-                            permission.functionNo,
-                            permission.availability));
-                        
-               }).fail(function(res) {
+            service.getDate().done(function(data: IGetDate) {
+                self.startDateString(moment.utc(data.startDate).format("YYYY/MM"));
+                self.endDateString(moment.utc(data.endDate).format("YYYY/MM"));
+                dfd.resolve();
+            }).fail(function(res) {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
                 nts.uk.ui.block.clear();
-            }).always(() => {
-                nts.uk.ui.block.clear();
+                dfd.reject();
+            });
+
+            let user: any = __viewContext.user;
+            nts.uk.characteristics.restore("UserSpecific_" + user.employeeId).done(function(userSpecific) {
+                if (userSpecific) {
+                    self.holidayRemainingSelectedCd(userSpecific.outputItemSettingCode);
+                    self.selectedCode(userSpecific.pageBreakAtr);
+                }
                 dfd.resolve();
             });
-            
+
+            dfd.resolve(self);
             return dfd.promise();
         }
         
@@ -356,16 +329,19 @@ module nts.uk.at.view.kdr001.a.viewmodel {
          */
         private exportButton() {
             let self = this;
+            nts.uk.ui.block.invisible();
             let startMonth = moment.utc(self.startDateString());
             let endMonth = moment.utc(self.endDateString());
             let totalMonths = (parseInt(endMonth.format("YYYY"))*12 + parseInt(endMonth.format("MM")))
                              - (parseInt(startMonth.format("YYYY"))*12 + parseInt(startMonth.format("MM")));
             if (totalMonths > 12){
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_1173' });
+                nts.uk.ui.block.clear();  
                 return;
             }
             if (!self.selectedEmployee() || self.selectedEmployee().length === 0){
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_884' });
+                nts.uk.ui.block.clear();  
                 return;
             }
             
