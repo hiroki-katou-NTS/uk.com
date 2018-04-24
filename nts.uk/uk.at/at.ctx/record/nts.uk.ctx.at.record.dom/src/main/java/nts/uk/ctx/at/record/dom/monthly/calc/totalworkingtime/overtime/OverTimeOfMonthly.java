@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,11 +17,13 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
+import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlex;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlx;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalOverTimeTransferOrderOfAggrMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.TreatOverTimeOfLessThanCriteriaPerDay;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -357,11 +360,12 @@ public class OverTimeOfMonthly {
 	 * @param companyId 会社ID
 	 * @param aggregateAtr 集計区分
 	 * @param aggrSetOfFlex フレックス時間勤務の月の集計設定
+	 * @param monthlyAggrSetOfFlexOpt フレックス勤務の月別集計設定
+	 * @param flexTime フレックス時間
 	 */
 	public FlexTime aggregateForFlex(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
-			String companyId, MonthlyAggregateAtr aggregateAtr, AggrSettingMonthlyOfFlx aggrSetOfFlex){
-
-		FlexTime returnClass = new FlexTime();
+			String companyId, MonthlyAggregateAtr aggregateAtr, AggrSettingMonthlyOfFlx aggrSetOfFlex,
+			Optional<MonthlyAggrSetOfFlex> monthlyAggrSetOfFlexOpt, FlexTime flexTime){
 		
 		// 「残業枠時間」を取得する
 		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
@@ -369,7 +373,7 @@ public class OverTimeOfMonthly {
 		val excessPrescribedTimeOfDaily = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
 		val overTimeOfDaily = excessPrescribedTimeOfDaily.getOverTimeWork();
 		// 残業時間がない時、集計しない
-		if (!overTimeOfDaily.isPresent()) return returnClass;
+		if (!overTimeOfDaily.isPresent()) return flexTime;
 		
 		val ymd = attendanceTimeOfDaily.getYmd();
 		
@@ -379,19 +383,27 @@ public class OverTimeOfMonthly {
 			
 			// 「設定．残業を含める」を確認する
 			if (aggrSetOfFlex.isIncludeOverTime()){
-				
-				// 取得した残業枠時間を「フレックス時間」に入れる
-				returnClass.addOverTimeFrameTime(ymd, overTimeFrameSrc);
+
+				// 残業フレックス加算を確認
+				if (monthlyAggrSetOfFlexOpt.isPresent()) {
+					val overTimeMap = monthlyAggrSetOfFlexOpt.get().getOutsideTimeAddSet().getOverTimeMap();
+					if (overTimeMap.containsKey(overTimeFrameNo)){
+						if (overTimeMap.get(overTimeFrameNo).getAddition() == UseAtr.USE){
+					
+							// 取得した残業枠時間を「フレックス時間」に入れる
+							flexTime.addOverTimeFrameTime(ymd, overTimeFrameSrc);
+							continue;
+						}
+					}
+				}
 			}
-			else {
 				
-				// 取得した残業枠時間を「集計残業時間」に入れる
-				val targetAggregateOverTime = this.getTargetAggregateOverTime(overTimeFrameNo);
-				targetAggregateOverTime.addOverTimeInTimeSeriesWork(ymd, overTimeFrameSrc);
-			}
+			// 取得した残業枠時間を「集計残業時間」に入れる
+			val targetAggregateOverTime = this.getTargetAggregateOverTime(overTimeFrameNo);
+			targetAggregateOverTime.addOverTimeInTimeSeriesWork(ymd, overTimeFrameSrc);
 		}
 		
-		return returnClass;
+		return flexTime;
 	}
 	
 	/**
