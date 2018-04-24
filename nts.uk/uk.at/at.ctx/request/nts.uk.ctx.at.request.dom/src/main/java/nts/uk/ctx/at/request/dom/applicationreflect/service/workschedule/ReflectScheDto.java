@@ -7,6 +7,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 @AllArgsConstructor
@@ -38,4 +40,12 @@ public class ReflectScheDto {
 	 * 	休日出勤申請
 	 */
 	private AppHolidayWork holidayWork;
+	/**
+	 * 振休申請
+	 */
+	private AbsenceLeaveApp absenceLeave;
+	/**
+	 * 振出申請
+	 */
+	private RecruitmentApp recruitment;
 }

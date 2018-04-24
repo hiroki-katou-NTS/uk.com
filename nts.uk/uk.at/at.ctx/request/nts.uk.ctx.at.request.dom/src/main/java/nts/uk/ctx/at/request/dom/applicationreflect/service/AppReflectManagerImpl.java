@@ -18,6 +18,10 @@ import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
@@ -63,6 +67,10 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	private IAppWorkChangeRepository workChangeRepo;
 	@Inject
 	private WorkScheduleReflectService scheReflect;
+	@Inject
+	private AbsenceLeaveAppRepository absenceLeaveRepo;
+	@Inject
+	private RecruitmentAppRepository recruitmentRepo;
 	@Override
 	public void reflectEmployeeOfApp(Application_New appInfor) {
 		GobackReflectPara appGobackTmp = null;
@@ -76,6 +84,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				true,
 				ApplyTimeRequestAtr.START,
 				appInfor,
+				null,
+				null,
 				null,
 				null,
 				null,
@@ -138,7 +148,23 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			if(workchangeData == null) {
 				return;
 			}
-		} else {
+		} else if (appInfor.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION) {
+			Optional<AbsenceLeaveApp> optAbsenceLeaveData = absenceLeaveRepo.findByAppId(appInfor.getAppID());
+			if(optAbsenceLeaveData.isPresent()) {
+				AbsenceLeaveApp absenceLeave = optAbsenceLeaveData.get();
+				reflectScheParam.setAbsenceLeave(absenceLeave);
+			} else {
+				Optional<RecruitmentApp> optRecruitmentData = recruitmentRepo.findByAppId(appInfor.getAppID());
+				if(optRecruitmentData.isPresent()) {
+					RecruitmentApp recruitmentData = optRecruitmentData.get();
+					reflectScheParam.setRecruitment(recruitmentData);
+				}
+			}
+		
+		} 
+		
+		
+		else {
 			return;
 		}
 		//TODO 反映するかどうか判断 (Xác định để phản ánh)

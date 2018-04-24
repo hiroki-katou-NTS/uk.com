@@ -38,7 +38,7 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 		/*if(!this.checkBeforeReflected(application)) {
 			return reflectedStatesInfo;
 		}*/
-		ReflectScheDto reflectSchePara = new ReflectScheDto(application.getEmployeeID(),
+	/*	ReflectScheDto reflectSchePara = new ReflectScheDto(application.getEmployeeID(),
 				application.getAppDate(),
 				ExecutionType.NORMALECECUTION, 
 				true, 
@@ -47,25 +47,28 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 				null, 
 				null, 
 				null,
-				null);
+				null,
+				null,
+				null);*/
 		boolean isReflect = false;
 		if(application.getAppType() == ApplicationType.OVER_TIME_APPLICATION) {			
 			return false;
-		}  else if (application.getAppType() == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION){			
-			GoBackDirectly gobackData = reflectParam.getGoBackDirectly();
-			reflectSchePara.setGoBackDirectly(gobackData);
-			isReflect = processScheReflect.goBackDirectlyReflect(reflectSchePara);
+		}  else if (application.getAppType() == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION){
+			isReflect = processScheReflect.goBackDirectlyReflect(reflectParam);
 		} else if(application.getAppType() == ApplicationType.WORK_CHANGE_APPLICATION) {
-			AppWorkChange appWorkChangeData = reflectParam.getWorkChange();
-			reflectSchePara.setWorkChange(appWorkChangeData);
-			isReflect = processScheReflect.workChangeReflect(reflectSchePara);
+			isReflect = processScheReflect.workChangeReflect(reflectParam);
 		} else if(application.getAppType() == ApplicationType.ABSENCE_APPLICATION) {
-			reflectSchePara.setForLeave(reflectParam.getForLeave());
-			isReflect = processScheReflect.forleaveReflect(reflectSchePara);
+			isReflect = processScheReflect.forleaveReflect(reflectParam);
 		} else if (application.getAppType() == ApplicationType.BREAK_TIME_APPLICATION) {
 			/**TODO chua doi ung lan nay
 			/*reflectSchePara.setHolidayWork(reflectParam.getHolidayWork());
 			isReflect = processScheReflect.holidayWorkReflect(reflectSchePara);*/
+		} else if (application.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION) {
+			if(reflectParam.getAbsenceLeave() != null) {
+				isReflect = processScheReflect.ebsenceLeaveReflect(reflectParam);
+			} else if(reflectParam.getRecruitment() != null) {
+				isReflect = processScheReflect.recruitmentReflect(reflectParam);
+			}
 		}
 		return isReflect;
 	}

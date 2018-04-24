@@ -75,6 +75,32 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 				null);		
 		return appReflectSchePub.holidayWorkReflectSche(holidayWork);
 	}
+
+	@Override
+	public boolean ebsenceLeaveReflect(ReflectScheDto relectSche) {
+		CommonReflectSchePubParam absenceLeave = new CommonReflectSchePubParam(relectSche.getEmployeeId(),
+				relectSche.getDatePara(),
+				relectSche.getAbsenceLeave().getWorkTypeCD(),
+				relectSche.getAbsenceLeave().getWorkTimeCD().v(), 
+				relectSche.getAppInfor().getStartDate().isPresent() ? relectSche.getAppInfor().getStartDate().get() : null,
+				relectSche.getAppInfor().getEndDate().isPresent() ? relectSche.getAppInfor().getEndDate().get() : null,
+				relectSche.getAbsenceLeave().getWorkTime1().getStartTime().v(),
+				relectSche.getAbsenceLeave().getWorkTime1().getEndTime().v());
+		return appReflectSchePub.absenceLeaveReflectSche(absenceLeave);
+	}
+
+	@Override
+	public boolean recruitmentReflect(ReflectScheDto relectSche) {
+		CommonReflectSchePubParam recruitment = new CommonReflectSchePubParam(relectSche.getEmployeeId(), 
+				relectSche.getDatePara(), 
+				relectSche.getRecruitment().getWorkTypeCD(), 
+				relectSche.getRecruitment().getWorkTimeCD().v(), 
+				relectSche.getAppInfor().getStartDate().isPresent() ? relectSche.getAppInfor().getStartDate().get() : null, 
+				relectSche.getAppInfor().getEndDate().isPresent() ? relectSche.getAppInfor().getEndDate().get() : null, 
+				relectSche.getRecruitment().getWorkTime1().getStartTime().v(), 
+				relectSche.getRecruitment().getWorkTime1().getEndTime().v());
+		return appReflectSchePub.recruitmentReflectSche(recruitment);
+	}
 	
 	
 
