@@ -45,7 +45,8 @@ public class DiffTimeHalfDayWorkTimezonePolicyImpl implements DiffTimeHalfDayWor
 		
 		// Msg_755
 		if ((AmPmAtr.AM.equals(halfDayWork.getAmPmAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
-				|| (AmPmAtr.PM.equals(halfDayWork.getAmPmAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)) {
+				|| (AmPmAtr.PM.equals(halfDayWork.getAmPmAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
+				|| ((AmPmAtr.AM.equals(halfDayWork.getAmPmAtr()) || AmPmAtr.PM.equals(halfDayWork.getAmPmAtr())) && DisplayMode.SIMPLE.equals(displayMode))) {
 			return;
 		}	
 		if (halfDayWork.restInWork()) {

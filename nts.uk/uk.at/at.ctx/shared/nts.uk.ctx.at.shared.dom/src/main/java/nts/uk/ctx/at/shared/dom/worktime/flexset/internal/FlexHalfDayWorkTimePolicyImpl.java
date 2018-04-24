@@ -51,7 +51,8 @@ public class FlexHalfDayWorkTimePolicyImpl implements FlexHalfDayWorkTimePolicy 
 		
 		// Msg_755
 		if ((AmPmAtr.AM.equals(halfDayWork.getAmpmAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
-				|| (AmPmAtr.PM.equals(halfDayWork.getAmpmAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)) {
+				|| (AmPmAtr.PM.equals(halfDayWork.getAmpmAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
+				|| ((AmPmAtr.AM.equals(halfDayWork.getAmpmAtr()) || AmPmAtr.PM.equals(halfDayWork.getAmpmAtr())) && DisplayMode.SIMPLE.equals(displayMode))) {
 			return;
 		}		
 		if (halfDayWork.getRestTimezone().isFixRestTime() && !halfDayWork.isInFixedWork(halfDayWork.getRestTimezone())) {

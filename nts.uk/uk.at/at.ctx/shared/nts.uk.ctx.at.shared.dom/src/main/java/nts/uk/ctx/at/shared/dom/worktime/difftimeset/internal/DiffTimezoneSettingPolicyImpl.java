@@ -82,7 +82,8 @@ public class DiffTimezoneSettingPolicyImpl implements DiffTimezoneSettingPolicy 
 		TimeWithDayAttr afternoonStartTime = predTime.getPrescribedTimezoneSetting().getAfternoonStartTime();
 
 		// Filter AM timezone
-		if (AmPmAtr.AM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode) && !useHalfDayShift) {
+		if ((AmPmAtr.AM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode) && !useHalfDayShift)
+				|| (AmPmAtr.AM.equals(dayAtr) && DisplayMode.SIMPLE.equals(displayMode))) {
 
 			// Filter work timezone
 			List<EmTimeZoneSet> employmentTimezones = origin.getEmploymentTimezones().stream()
@@ -119,7 +120,8 @@ public class DiffTimezoneSettingPolicyImpl implements DiffTimezoneSettingPolicy 
 		}
 
 		// Filter PM timezone
-		if (AmPmAtr.PM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode) && !useHalfDayShift) {
+		if ((AmPmAtr.PM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode) && !useHalfDayShift)
+				|| (AmPmAtr.PM.equals(dayAtr) && DisplayMode.SIMPLE.equals(displayMode))) {
 
 			// Filter work timezone
 			List<EmTimeZoneSet> employmentTimezones = origin.getEmploymentTimezones().stream()
