@@ -62,10 +62,12 @@ module nts.layout {
 
                     if (element) {
                         if (element.tagName.toUpperCase() == "INPUT") {
-                            $element
-                                .trigger('blur')
-                                .trigger('change');
-                        } else if (element.tagName.toUpperCase() == "BUTTON" || $element.hasClass('radio-wrapper')) {
+                            if (!$element.is(':disabled')) {
+                                $element
+                                    .trigger('blur')
+                                    .trigger('change');
+                            }
+                        } else if ((element.tagName.toUpperCase() == "BUTTON" || $element.hasClass('radio-wrapper')) && !$element.is(':disabled')) {
                             if (nou(x.value) && x.required) {
                                 if (!getError($element).length) {
                                     $element.ntsError('set', {
@@ -78,7 +80,7 @@ module nts.layout {
                         else {
                             $element
                                 .trigger('validate')
-                                .find('.nts-input')
+                                .find('.nts-input:not(:disabled)')
                                 .trigger('blur')
                                 .trigger('change');
                         }
