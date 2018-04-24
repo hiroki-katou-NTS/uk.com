@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.app.command.monthlyclosureupdate;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -132,25 +131,17 @@ public class CheckMonthlyClosureCommandHandler extends CommandHandlerWithResult<
 		query.setBaseDate(closurePeriod.end());
 		query.setReferenceRange(EmployeeReferenceRange.ALL_EMPLOYEE.value);
 		query.setFilterByEmployment(false);
-//		query.setEmploymentCodes(Collections.emptyList());
 		query.setFilterByDepartment(false);
-//		query.setDepartmentCodes(Collections.emptyList());
 		query.setFilterByWorkplace(false);
-//		query.setWorkplaceCodes(Collections.emptyList());
 		query.setFilterByClassification(false);
-//		query.setClassificationCodes(Collections.emptyList());
 		query.setFilterByJobTitle(false);
-//		query.setJobTitleCodes(Collections.emptyList());
 		query.setFilterByWorktype(false);
-//		query.setWorktypeCodes(Collections.emptyList());
 		query.setPeriodStart(closurePeriod.start());
 		query.setPeriodEnd(closurePeriod.end());
 		query.setIncludeIncumbents(true);
 		query.setIncludeWorkersOnLeave(true);
 		query.setIncludeOccupancy(true);
 		query.setIncludeRetirees(false);
-		// query.setRetireStart(retireStart);
-		// query.setRetireEnd(retireEnd);
 		query.setSortOrderNo(1);
 		// query.setNameType(nameType);
 		query.setSystemType(2);
