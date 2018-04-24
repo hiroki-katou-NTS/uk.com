@@ -25,7 +25,7 @@
 			<ui:define name="content">
 				<div id="functions-area" tabindex="-1">
 				<!-- A1_1 -->
-					<button tabindex="1" class="proceed" data-bind="click: exportButton">#{i18n.getText('KDM002_2')}</button>
+					<button tabindex="1" class="proceed" data-bind="click: exportButton, enable: !nts.uk.ui.errors.hasError()">#{i18n.getText('KDM002_2')}</button>
 				</div>
 				
 				<div class="cf" tabindex="-1" id="contents-area">
