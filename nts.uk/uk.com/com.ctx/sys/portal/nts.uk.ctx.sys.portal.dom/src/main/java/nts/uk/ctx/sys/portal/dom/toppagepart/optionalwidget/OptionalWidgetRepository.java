@@ -19,5 +19,5 @@ public interface OptionalWidgetRepository {
 	
 	List<OptionalWidget> findByCode(String companyId, List<String> listOptionalWidgetID);
 
-	List<OptionalWidget> getSelectedWidget(String companyId, String topPagePartCode, int TopPagePartType);
+	Optional<OptionalWidget> getSelectedWidget(String companyId, String topPagePartCode);
 }
