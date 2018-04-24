@@ -559,20 +559,20 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				// 対象社員を絞り込み
 				DatePeriod filterPeriod = this.filterEmployeeList(procExec, empIds, period, reEmployeeList, newEmployeeList);
 				if(!CollectionUtil.isEmpty(reEmployeeList)&& !CollectionUtil.isEmpty(newEmployeeList)){
-					ScheduleCreatorExecutionCommand scheduleCreatorExecutionRe = this.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext, filterPeriod,reEmployeeList);
+					ScheduleCreatorExecutionCommand scheduleCreatorExecutionRe = this.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext, calculateSchedulePeriod,reEmployeeList);
 					this.scheduleExecution.handle(scheduleCreatorExecutionRe);
-					ScheduleCreatorExecutionCommand scheduleCreatorExecutionNew = this.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext, filterPeriod,newEmployeeList);
+					ScheduleCreatorExecutionCommand scheduleCreatorExecutionNew = this.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext, calculateSchedulePeriod,newEmployeeList);
 					this.scheduleExecution.handle(scheduleCreatorExecutionNew);
 				}else{
 					// 社員ID（新入社員）（List）のみ
 					if (!CollectionUtil.isEmpty(newEmployeeList)) {
-						ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp = this.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext, filterPeriod,newEmployeeList);
+						ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp = this.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext, calculateSchedulePeriod,newEmployeeList);
 						this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp);
 					}
 				
 					// 社員ID（異動者、勤務種別変更者）（List）のみ
 					if (!CollectionUtil.isEmpty(reEmployeeList)) {
-						ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp = this.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext, filterPeriod,reEmployeeList);
+						ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp = this.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext, calculateSchedulePeriod,reEmployeeList);
 						this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp);
 					}
 				}
@@ -588,6 +588,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	private ScheduleCreatorExecutionCommand getScheduleCreatorExecutionAllEmp(String execId, ProcessExecution procExec,
 			LoginUserContext loginContext, DatePeriod calculateSchedulePeriod , List<String> empIds) {
 		ScheduleCreatorExecutionCommand scheduleCommand = new ScheduleCreatorExecutionCommand();
+		scheduleCommand.setConfirm(false);
 		scheduleCommand.setAutomatic(true);
 		scheduleCommand.setEmployeeIds(empIds);
 		//2-対象開始日　＝　「期間の計算」で作成した開始日とする
@@ -705,6 +706,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	private ScheduleCreatorExecutionCommand getScheduleCreatorExecutionOneEmp(String execId, ProcessExecution procExec,
 			LoginUserContext loginContext, DatePeriod calculateSchedulePeriod, List<String> empIds) {
 		ScheduleCreatorExecutionCommand scheduleCommand = new ScheduleCreatorExecutionCommand();
+		scheduleCommand.setConfirm(false);
 		scheduleCommand.setAutomatic(true);
 		scheduleCommand.setEmployeeIds(empIds);
 		//1-実行ID　＝　取得した実行ID
@@ -1093,6 +1095,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	 * @return 期間
 	 */
 	private DatePeriod calculateSchedulePeriod(ProcessExecution procExec, ProcessExecutionLog procExecLog) {
+		/*
 		GeneralDate today = GeneralDate.today();
 		// Add month
 		GeneralDate startDate = today.addMonths(procExec.getExecSetting().getPerSchedule().getPeriod().getTargetMonth().value);
@@ -1126,6 +1129,43 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 									  endDate.localDate().lengthOfMonth());
 		}
 		procExecLog.getEachProcPeriod().setScheduleCreationPeriod(new DatePeriod(startDate, endDate));
+		return new DatePeriod(startDate, endDate);
+		*/
+		GeneralDate today = GeneralDate.today();
+		int targetMonth = procExec.getExecSetting().getPerSchedule().getPeriod().getTargetMonth().value;
+		int targetDate = procExec.getExecSetting().getPerSchedule().getPeriod().getTargetDate().v().intValue();
+		int startMonth = today.month();
+		GeneralDate startDate ;
+		switch (targetMonth) {
+		case 0:
+			startMonth = today.month();
+			startDate =	GeneralDate.ymd(today.year(), startMonth, targetDate);
+			break;
+		case 1:
+			startMonth = today.month()+1;
+			startDate =	GeneralDate.ymd(today.year(), startMonth, targetDate);
+			break;
+		case 2:
+			startMonth = today.month()+2;
+			startDate =	GeneralDate.ymd(today.year(), startMonth, targetDate);
+			break;
+		default:
+			startDate =	GeneralDate.ymd(today.year(), startMonth, targetDate);
+			break;
+		}
+		int createPeriod = procExec.getExecSetting().getPerSchedule().getPeriod().getCreationPeriod().v().intValue();
+		GeneralDate endDate ;
+		if(targetDate==1){
+			if(createPeriod==1){
+				endDate =	GeneralDate.ymd(today.year(), startMonth, startDate.localDate().getMonth().maxLength());
+				endDate = GeneralDate.ymd(today.year(), startMonth, endDate.localDate().getMonth().maxLength());
+			}else{
+				endDate =	GeneralDate.ymd(today.year(), startMonth+createPeriod-1, startDate.localDate().getMonth().maxLength());
+				endDate =	GeneralDate.ymd(today.year(), startMonth+createPeriod-1, endDate.localDate().getMonth().maxLength());
+			}
+		}else{
+			endDate =	GeneralDate.ymd(today.year(), startMonth+createPeriod, targetDate);
+		}
 		return new DatePeriod(startDate, endDate);
 	}
 	
@@ -1217,11 +1257,14 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			// ドメインモデル「就業締め日」を取得する
 			List<Closure> closureList = this.closureRepo.findAllActive(companyId, UseClassification.UseClass_Use);
 			DatePeriod closurePeriod = this.findClosurePeriod(companyId, closureList);
+			
+			DatePeriod newClosurePeriod =  new DatePeriod(closurePeriod.start(), GeneralDate.ymd(9999, 12, 31));
+			
 			TargetSetting setting = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting();
 			// 異動者を再作成するか判定
 			if (setting.isRecreateTransfer()) {
 				// Imported(勤務実績)「所属職場履歴」を取得する
-				List<WorkPlaceHistImport> wkpImportList = this.workplaceAdapter.getWplByListSidAndPeriod(employeeIdList, datePeriod);
+				List<WorkPlaceHistImport> wkpImportList = this.workplaceAdapter.getWplByListSidAndPeriod(employeeIdList, newClosurePeriod);
 				
 				// 「全締めの期間.開始日年月日」以降に「所属職場履歴.期間.開始日」が存在する
 				wkpImportList.forEach(emp-> {
@@ -1245,7 +1288,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					if (optional.isPresent()) {
 						for (DateHistoryItem history : optional.get().getHistory()) {
 							// 「全締めの期間.開始日年月日」以降に「社員の勤務種別の履歴.履歴.期間.開始日」が存在する
-							if (history.start().afterOrEquals(datePeriod.start())) {
+							if (history.start().afterOrEquals(newClosurePeriod.start())) {
 								// 取得したImported（勤務実績）「所属職場履歴」.社員IDを異動者とする
 								reEmployeeList.add(optional.get().getEmployeeId());
 								break;
@@ -1257,8 +1300,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			
 			// 新入社員を作成するか判定
 			if (setting.isCreateEmployee()) {
+				//request 211
 				// Imported「所属会社履歴（社員別）」を取得する
-				List<AffCompanyHistImport> employeeHistList = this.employeeHistAdapter.getWplByListSidAndPeriod(employeeIdList, datePeriod);
+				List<AffCompanyHistImport> employeeHistList = this.employeeHistAdapter.getWplByListSidAndPeriod(employeeIdList, newClosurePeriod);
 				
 				// 取得したドメインモデル「所属開始履歴（社員別）」.社員IDを新入社員とする
 				employeeHistList.forEach(x->newEmployeeList.add(x.getEmployeeId()));
