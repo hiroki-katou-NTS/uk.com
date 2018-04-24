@@ -20,25 +20,54 @@ module nts.uk.com.view.cmf003.c {
            isEditable: KnockoutObservable<boolean>;
            selected_comobox: string = getText("CMF003_59");
            constructor() {
-               
                var self = this;
-               
-               
-               
-               
-                self.itemList = ko.observableArray([
-                    new ItemModelCombo('1',self.selected_comobox),
-                    new ItemModelCombo('2',' 役職手当'),
-                    new ItemModelCombo('3', ' 基本給ながい文字列ながい文字列ながい文字列')
+                
+               self.itemList = ko.observableArray([
+                    new ItemModelCombo('0',self.selected_comobox)
+                    
                 ]);
-        
-                self.selectedCode = ko.observable('1');
-                self.isEnable = ko.observable(true);
-                self.isEditable = ko.observable(true);
-               
-               self.itemsSwap = ko.observableArray([]);
-               self.selectedCode.subscribe(value=>{
-                    self.currentItem = _.find(self.itemList(), a => a.code === value);    
+               service.getSysTypes().done(function(data: Array<any>) {
+                    if (data && data.length) {
+                        _.forOwn(data, function(index) {
+                            self.itemList.push(new ItemModelCombo(index.type,index.name));
+                          });
+                         
+                    } else {
+                       
+                    }
+                   
+                }).fail(function(error) {
+                    alertError(error);
+                   
+                }).always(() => {
+                    
+                });
+                
+                
+                    self.selectedCode = ko.observable('0');
+                    self.isEnable = ko.observable(true);
+                    self.isEditable = ko.observable(true);
+                   
+                    self.itemsSwap = ko.observableArray([]);
+                    self.selectedCode.subscribe(value=>{
+                    self.currentItem = _.find(self.itemList(), a => a.code === value);
+                    
+                   console.log(self.selectedCode());
+                   service.getConditionList(self.selectedCode()).done(function(data: Array<any>) {
+                    
+                       console.log(data);
+                       
+                   }).fail(function(error) {
+                        alertError(error);
+                   }).always(() => {
+                       
+                        _.defer(() => {
+                            $("#grd_Condition tr:first-child").focus();
+                        });
+                    });
+                   
+                   
+                   
                })
                var array = [];
                for (var i = 0; i < 10000; i++) {
