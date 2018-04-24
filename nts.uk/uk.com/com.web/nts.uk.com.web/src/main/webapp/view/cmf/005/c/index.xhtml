@@ -13,14 +13,71 @@
 			<com:scriptfile path="cmf005.c.vm.js" />
 			<com:stylefile path="cmf005.c.style.css" />
 			<com:scriptfile path="cmf005.c.start.js" />
-		<!-- 	<com:scriptfile path="cmf005.c.service.js" /> -->
+			<com:scriptfile path="cmf005.c.service.js" />
 		</ui:define>
 
 		<ui:define name="content">
-			<div class="contents-area dialog-content">
-				<div id="C2_1" class="dialog-title" >#{i18n.getText('CMF005_45')}</div>
-				
+
+			<div class="contents-area">
+				<!--C_1-->
+							<table id="tbl-control">
+					<tr>
+						<td>
+							<div id="combo-box" tabindex="1" class="cbb-system-data"
+								data-bind="ntsComboBox: {
+							options: systemList,
+							optionsValue: 'systemCode',
+							value: selectedSystemCode,
+							optionsText: 'systemName',
+							editable: false,
+							enable: true,
+							dropDownAttachedToBody: true,
+							columns: [
+								{ prop: 'systemName', length: 10 }
+							]}"></div>
+						</td>
+
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<!--C3_1-->
+							<div id="C3_1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF005_46')}</div>
+						</td>
+
+						<td>
+							<!--C3_2-->
+							<div id="C3_2" data-bind="ntsFormLabel: {required : true}">#{i18n.getText('CMF005_47')}</div>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+						<div id="swap-list" class="pad_left_5px"
+							data-bind="ntsSwapList: {
+                            name: '#[CMF005_145]',
+                            height: 300,
+                            width: 280,
+                            dataSource: listCategorys,
+                            disableMoveButton: false,
+                            primaryKey: 'categoryId',
+                            value: currentListCategorys,
+                            columns: swapColumns,
+                            showSearchBox: { showLeft : true, showRight: false},
+                            searchMode: 'filter',
+                            searchCriterion: ['categoryId','categoryName'],
+                            draggable: true,
+                            enableRowNumbering: false,
+                            multipleDrag: { left: true, right: false },
+                            innerDrag: { left: false, right: true },
+                            outerDrag: { left: true, right: true }
+                        }">
+						</div>
+						</td>
+					</tr>
+				</table>
+
 			</div>
+
 			<div id="functions-area-bottom">
 				<button id="C20_1" class="x-large proceed "
 					data-bind="click: selectConvertCode">#{i18n.getText('CMF005_48')}</button>

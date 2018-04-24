@@ -20,15 +20,17 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         //information category
         deleteSetName: KnockoutObservable<string>;
 
-        // dialog
-        codeConvertCode: KnockoutObservable<model.AcceptanceCodeConvert>;
+               
+        // B5_2_2
+        systemType: KnockoutObservable<string>;
 
         //B5_3
-        listDataCategory: KnockoutObservableArray<ItemModel>;
+        listDataCategory: KnockoutObservableArray<ItemCategory>;
         listColumnHeader: KnockoutObservableArray<NtsGridListColumn>;
         selectedCsvItemNumber: KnockoutObservable<number> = ko.observable(null);
         count: number = 100;
         switchOptions: KnockoutObservableArray<any>;
+        
         //datepicker
         enable: KnockoutObservable<boolean>;
         required: KnockoutObservable<boolean>;
@@ -51,6 +53,9 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         passwordForCompressFile: KnockoutObservable<string>;
         confirmPasswordForCompressFile: KnockoutObservable<string>;
 
+        //B9_2
+        supplementExplanation: KnockoutObservable<string>;
+
         constructor() {
             var self = this;
             self.initComponents();
@@ -69,20 +74,28 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             ];
             self.activeStep = ko.observable(0);
             self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
-            
+
             //Radio button
             self.optionCategory = ko.observable({ value: 1, text: nts.uk.resource.getText("CMF005_15") });
             self.optionDeleteSet = ko.observable({ value: 2, text: nts.uk.resource.getText("CMF005_16") });
             self.deleteSetName = ko.observable('');
+            
+            //B5_2_2
+            self.systemType= ko.observable('');
             //B5_3
-            this.listDataCategory = ko.observableArray([]);
-            this.listColumnHeader = ko.observableArray([
-                { headerText: nts.uk.resource.getText("CMF005_24"), key: 'code', width: 150, hidden: true },
-                { headerText: nts.uk.resource.getText("CMF005_25"), key: 'name', width: 20, hidden: true },
-                { headerText: nts.uk.resource.getText("CMF005_26"), key: 'description', width: 30 }
+            self.listDataCategory = ko.observableArray([]);
+            for(let i = 1; i < 5; i++) {
+                self.listDataCategory.push(new model.ItemCategory(i, '00'+i, 'catename' + i, 'aaaa', 'all'));
+            }
+            self.listColumnHeader = ko.observableArray([
+                { headerText: '', key: 'cateItemNumber', width: 10, hidden: false },
+                { headerText: '', key: 'cateId', width: 10, hidden: true },
+                { headerText: 'abc', key: 'cateName', width: 150, hidden: false },
+                { headerText: '123', key: 'timeDeletion', width: 20, hidden: false },
+                { headerText: '456', key: 'rangeDeletion', width: 30 }
             ]);
 
-            //DatePcicker
+            //DatePcicker B6_1
             self.enable = ko.observable(true);
             self.required = ko.observable(true);
 
@@ -137,6 +150,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.passwordForCompressFile = ko.observable("");
             self.confirmPasswordForCompressFile = ko.observable("");
 
+            //B9_2
+            supplementExplanation = ko.observable("");
         }
 
         setDefault() {
@@ -169,16 +184,16 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         // Open screen C
         openScreenC() {
             var self = this;
-            //                let codeConvertCode = self.codeConvertCode();
-            //                setShared("CMF005cParams", { selectedConvertCode: ko.toJS(codeConvertCode) });
-            modal("/view/cmf/005/c/index.xhtml").onClosed(() => {
-                //                    let params = getShared("CMF005cOutput");
-                //                    if (!nts.uk.util.isNullOrUndefined(params)) {
-                //                        let codeConvertCodeSelected = params.selectedConvertCodeShared;
-                //                        self.codeConvertCode(codeConvertCodeSelected);
-                //                        self.numDataFormatSetting().codeConvertCode(codeConvertCodeSelected.dispConvertCode);
-                //                    }
-                //                    $('#G4_2').focus();
+            let param = {
+                lstCategory:self.listDataCategory,
+                systemType: self.systemType
+            };
+            setShared("paramCmf005b", param);
+            modal("/view/cmf/005/c/index.xhtml",{ width: 800, title: "カテゴリの選択" }).onClosed(() => {
+                let data = getShared("paramCmf005b");
+                if (!nts.uk.util.isNullOrUndefined(data))
+                    self.listDataCategory(data.lstDataCategoryChose);
+                self.systemType(data.systemType);
             });
         }
 
