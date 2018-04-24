@@ -39,8 +39,10 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfIrregularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfRegularWork;
@@ -123,6 +125,13 @@ public class ActualWorkingTimeOfDaily {
                 new AttendanceTime(diffTimeWork), totalWorkTime, divTime, premiumTime);
     }
     
+    public static ActualWorkingTimeOfDaily of(AttendanceTime constraintDiffTime, ConstraintTime constraintTime,
+			AttendanceTime timeDiff, TotalWorkingTime totalWorkingTime, DivergenceTimeOfDaily divTime,
+			PremiumTimeOfDailyPerformance premiumTime) {
+    	return new ActualWorkingTimeOfDaily(constraintDiffTime,constraintTime,
+    										timeDiff,totalWorkingTime,divTime,premiumTime);
+    }
+    
 	/**
 	 * 日別実績の実働時間の計算
 	 * @param breakTimeCount 
@@ -130,6 +139,7 @@ public class ActualWorkingTimeOfDaily {
 	 * @param schePreTimeSet 
 	 * @param ootsukaFixedCalcSet 
 	 * @param integrationOfDaily 
+	 * @param dailyUnit 
 	 */
 	public static ActualWorkingTimeOfDaily calcRecordTime(CalculationRangeOfOneDay oneDay,AutoCalOvertimeSetting overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting,
 			   Optional<PersonalLaborCondition> personalCondition,
@@ -154,7 +164,8 @@ public class ActualWorkingTimeOfDaily {
 			   DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
 			   List<DivergenceTime> divergenceTimeList, Optional<PredetermineTimeSetForCalc> schePreTimeSet, 
 			   int breakTimeCount, Optional<FixedWorkCalcSetting> ootsukaFixedCalcSet,
-			   Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting, IntegrationOfDaily integrationOfDaily
+			   Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting, IntegrationOfDaily integrationOfDaily,
+			   AutoCalFlexOvertimeSetting flexAutoCalSet, DailyUnit dailyUnit
 				/*計画所定時間*/
 				/*実績所定労働時間*/) {
 
@@ -180,7 +191,8 @@ public class ActualWorkingTimeOfDaily {
 					eachWorkTimeSet,
 					eachCompanyTimeSet,
 					breakTimeCount,
-					integrationOfDaily
+					integrationOfDaily,
+					flexAutoCalSet
 					/*計画所定時間*/
 					/*実績所定労働時間*/);
 		
@@ -189,7 +201,8 @@ public class ActualWorkingTimeOfDaily {
 											fixRestTimeSetting,
 											oneDay.getPredetermineTimeSetForCalc().getAdditionSet().getPredTime().getOneDay(),
 											ootsukaFixedCalcSet,
-											overTimeAutoCalcSet);
+											overTimeAutoCalcSet,
+											dailyUnit);
 		
 		/*拘束差異時間*/
 		val constraintDifferenceTime = new AttendanceTime(0);
@@ -332,7 +345,7 @@ public class ActualWorkingTimeOfDaily {
 				}
 			}
 		}
-		return returnList;
+		return (returnList.size()>0)?returnList:divergenceTimeInIntegrationOfDaily.getDivergenceTime();
 	}
 
 	/**
@@ -352,13 +365,14 @@ public class ActualWorkingTimeOfDaily {
 	 * @param totalWorkingTime
 	 * @param fixRestTimeSetting 固定休憩時間の時間帯設定
 	 * @param predetermineTime 所定時間
+	 * @param dailyUnit 
 	 * @return
 	 */
 	private static TotalWorkingTime calcOotsuka(WorkingSystem workingSystem, TotalWorkingTime totalWorkingTime,
 									Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting,
 									AttendanceTime predetermineTime,
 									Optional<FixedWorkCalcSetting> ootsukaFixedCalcSet,
-									AutoCalOvertimeSetting autoCalcSet) {
+									AutoCalOvertimeSetting autoCalcSet, DailyUnit dailyUnit) {
 		if((workingSystem.isRegularWork() || workingSystem.isVariableWorkingTimeWork())&&fixRestTimeSetting.isPresent()) {
 			//休憩未取得時間の計算
 			val unUseBreakTime = workingSystem.isRegularWork()?totalWorkingTime.getBreakTimeOfDaily().calcUnUseBrekeTime(fixRestTimeSetting.get()):new AttendanceTime(0);
@@ -373,7 +387,8 @@ public class ActualWorkingTimeOfDaily {
 						vacationAddTime,/*休暇加算時間*/
 						predetermineTime, 
 						ootsukaFixedCalcSet,
-						autoCalcSet
+						autoCalcSet,
+						dailyUnit
 						);
 				
 			}

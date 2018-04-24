@@ -72,6 +72,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	@Getter
 	//遅刻時間帯・・・deductByLateLeaveEarlyを呼ぶまでは値が無い
 	private Optional<LateTimeSheet> lateTimeSheet;
+	@Getter
 	//早退時間帯・・・deductByLateLeaveEarlyを呼ぶまでは値が無い
 	private Optional<LeaveEarlyTimeSheet> leaveEarlyTimeSheet;
 	
@@ -210,10 +211,6 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 														WorkRegularAdditionSet addSettingOfRegularWork,
 														WorkDeformedLaborAdditionSet addSettingOfIrregularWork, 
 														WorkFlexAdditionSet addSettingOfFlexWork,
-														LateTimeSheet lateTimeSheet,
-														LeaveEarlyTimeSheet leaveEarlyTimeSheet,
-														LateTimeOfDaily lateTimeOfDaily,
-														LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
 														HolidayAddtionSet holidayAddtionSet,
 														boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 														boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退

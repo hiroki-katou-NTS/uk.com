@@ -110,7 +110,8 @@ public class ExcessOfStatutoryTimeOfDaily {
 			   														 HolidayAddtionSet holidayAddtionSet,
 			   														 WorkTimeDailyAtr workTimeDailyAtr,
 			   														 List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-			   														 List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily) {
+			   														 List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, 
+			   														 IntegrationOfDaily integrationOfDaily) {
 		//残業時間
 		val overTime = calculationOverTime(oneDay,overTimeAutoCalcSet,calcMethod,holidayCalcMethodSet,autoCalcAtr,workType,flexCalcMethod,
 										   predetermineTimeSet,vacationClass,timevacationUseTimeOfDaily,

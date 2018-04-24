@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.daily;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +19,9 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmW
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
@@ -67,28 +71,39 @@ public class LateTimeOfDaily {
 			) {
 					 
 		//勤務Noに一致する遅刻時間をListで取得する
-		List<LateTimeSheet> lateTimeSheetList = oneDay.getWithinWorkingTimeSheet().get().getWithinWorkTimeFrame().stream()
-																												 .filter(t -> new WorkNo(t.getLateTimeSheet().get().getWorkNo()).equals(workNo))
-																												 .map(t -> t.getLateTimeSheet().get())
-																												 .filter(t -> t.getForDeducationTimeSheet().isPresent())
-																												 .sorted((lateTimeSheet1,lateTimeSheet2) -> lateTimeSheet1.getForDeducationTimeSheet().get().getTimeSheet().getStart()
-																												 .compareTo(lateTimeSheet2.getForDeducationTimeSheet().get().getTimeSheet().getStart()))
-																												 .collect(Collectors.toList());
+		  List<LateTimeSheet> lateTimeSheetList = oneDay.getWithinWorkingTimeSheet().isPresent()?oneDay.getWithinWorkingTimeSheet().get().getWithinWorkTimeFrame().stream()
+		                             .filter(t -> new WorkNo(t.getLateTimeSheet().get().getWorkNo()).equals(workNo))
+		                             .map(t -> t.getLateTimeSheet().get())
+		                             .filter(t -> t.getForDeducationTimeSheet().isPresent())
+		                             .sorted((lateTimeSheet1,lateTimeSheet2) -> lateTimeSheet1.getForDeducationTimeSheet().get().getTimeSheet().getStart()
+		                             .compareTo(lateTimeSheet2.getForDeducationTimeSheet().get().getTimeSheet().getStart()))
+		                             .collect(Collectors.toList()):new ArrayList<>();
+		  LateLeaveEarlyTimeSheet forRecordTimeSheet = new LateLeaveEarlyTimeSheet(new TimeZoneRounding(new TimeWithDayAttr(0),new TimeWithDayAttr(0),new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN)),
+		                           new TimeSpanForCalc(new TimeWithDayAttr(0),new TimeWithDayAttr(0)));
 
-		LateLeaveEarlyTimeSheet forDeductTimeSheet = new LateLeaveEarlyTimeSheet(new TimeZoneRounding(new TimeWithDayAttr(0),new TimeWithDayAttr(0),new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN)),
-				  																new TimeSpanForCalc(new TimeWithDayAttr(0),new TimeWithDayAttr(0)));
-		
-		forRecordTimeSheet.setDeductionTimeSheet(lateTimeSheetList.stream().flatMap(t -> t.getForRecordTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
-		
-		LateLeaveEarlyTimeSheet forDeductTimeSheet = new LateLeaveEarlyTimeSheet(new TimeZoneRounding(lateTimeSheetList.get(0).getForDeducationTimeSheet().get().getTimeSheet().getStart(),
-																									  lateTimeSheetList.get(lateTimeSheetList.size()-1).getForDeducationTimeSheet().get().getTimeSheet().getEnd(),
-																									  lateTimeSheetList.get(0).getForDeducationTimeSheet().get().getTimeSheet().getRounding()),
-																				new TimeSpanForCalc(lateTimeSheetList.get(0).getForDeducationTimeSheet().get().getTimeSheet().getStart(),
-																									lateTimeSheetList.get(lateTimeSheetList.size()-1).getForDeducationTimeSheet().get().getTimeSheet().getEnd()));
-		
-		forDeductTimeSheet.setDeductionTimeSheet(lateTimeSheetList.stream().flatMap(t -> t.getForDeducationTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
-		
-		LateTimeSheet lateTimeSheet = new LateTimeSheet(Optional.of(forRecordTimeSheet), Optional.of(forDeductTimeSheet), workNo.v(), Optional.empty());
+		  LateLeaveEarlyTimeSheet forDeductTimeSheet = new LateLeaveEarlyTimeSheet(new TimeZoneRounding(new TimeWithDayAttr(0),new TimeWithDayAttr(0),new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN)),
+		                      new TimeSpanForCalc(new TimeWithDayAttr(0),new TimeWithDayAttr(0)));
+		  
+		  if(!lateTimeSheetList.isEmpty()) {
+		   //遅刻時間帯を１つの時間帯にする。
+		   forRecordTimeSheet = new LateLeaveEarlyTimeSheet(new TimeZoneRounding(lateTimeSheetList.get(0).getForRecordTimeSheet().get().getTimeSheet().getStart(),
+		                                lateTimeSheetList.get(lateTimeSheetList.size()-1).getForRecordTimeSheet().get().getTimeSheet().getEnd(),
+		                                lateTimeSheetList.get(0).getForRecordTimeSheet().get().getTimeSheet().getRounding()),
+		               new TimeSpanForCalc(lateTimeSheetList.get(0).getForRecordTimeSheet().get().getTimeSheet().getStart(),
+		                    lateTimeSheetList.get(lateTimeSheetList.size()-1).getForRecordTimeSheet().get().getTimeSheet().getEnd()));
+		  
+		   forRecordTimeSheet.setDeductionTimeSheet(lateTimeSheetList.stream().flatMap(t -> t.getForRecordTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
+		  
+		   forDeductTimeSheet = new LateLeaveEarlyTimeSheet(new TimeZoneRounding(lateTimeSheetList.get(0).getForDeducationTimeSheet().get().getTimeSheet().getStart(),
+		                      lateTimeSheetList.get(lateTimeSheetList.size()-1).getForDeducationTimeSheet().get().getTimeSheet().getEnd(),
+		                      lateTimeSheetList.get(0).getForDeducationTimeSheet().get().getTimeSheet().getRounding()),
+		               new TimeSpanForCalc(lateTimeSheetList.get(0).getForDeducationTimeSheet().get().getTimeSheet().getStart(),
+		                       lateTimeSheetList.get(lateTimeSheetList.size()-1).getForDeducationTimeSheet().get().getTimeSheet().getEnd()));
+		  
+		   forDeductTimeSheet.setDeductionTimeSheet(lateTimeSheetList.stream().flatMap(t -> t.getForDeducationTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
+		  }
+		  
+		  LateTimeSheet lateTimeSheet = new LateTimeSheet(Optional.of(forRecordTimeSheet), Optional.of(forDeductTimeSheet), workNo.v(), Optional.empty());
 		
 		//遅刻・早退を控除する
 		NotUseAtr notDeductLateLeaveEarly = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()?holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly()

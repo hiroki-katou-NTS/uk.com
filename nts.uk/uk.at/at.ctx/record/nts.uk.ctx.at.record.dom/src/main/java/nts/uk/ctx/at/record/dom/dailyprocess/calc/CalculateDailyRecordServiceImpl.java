@@ -691,7 +691,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					schePreTimeSet,
 					manageReGetClass.getOotsukaFixedWorkSet(),
 					manageReGetClass.getFixRestTimeSetting(),
-					scheWorkType
+					scheWorkType,
+					manageReGetClass.getIntegrationOfDaily().getCalAttr().getFlexExcessTime()
 					));
 //					schePreTimeSet));
 	
@@ -711,8 +712,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		   //手修正された項目の値を計算前に戻す   
 		   calcResultIntegrationOfDaily = afterDailyRecordDto.toDomain();
 		   
-		   val reCalcIntegration = reCalc(calcResultIntegrationOfDaily, companyId);
+		   calcResultIntegrationOfDaily = reCalc(calcResultIntegrationOfDaily, companyId);
+		   
 		  }
+		  
 			
 		/*日別実績への項目移送*/
 		//return integrationOfDaily;
@@ -728,7 +731,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		DailyRecordToAttendanceItemConverter forCalcDivergenceDto = this.dailyRecordToAttendanceItemConverter.setData(calcResultIntegrationOfDaily);
 		
 		if(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
-			ActualWorkingTimeOfDaily.createDivergenceTimeOfDaily(calcResultIntegrationOfDaily.getAffiliationInfor().getEmployeeId(),
+			val reCalcDivergence = ActualWorkingTimeOfDaily.createDivergenceTimeOfDaily(calcResultIntegrationOfDaily.getAffiliationInfor().getEmployeeId(),
 																												 calcResultIntegrationOfDaily.getAffiliationInfor().getYmd(),
 																												 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime(),
 																												 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintDifferenceTime(),
@@ -737,8 +740,21 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																												 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance(),
 																											     forCalcDivergenceDto,
 																											     divergenceTimeList);
-			//val a = new AttendanceTimeOfDailyPerformance
-			//return 
+			val reCreateActual = ActualWorkingTimeOfDaily.of(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintDifferenceTime(),
+												 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintTime(),
+												 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTimeDifferenceWorkingHours(),
+												 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime(),
+												 reCalcDivergence,
+												 calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance());
+			val reCreateAttendanceTime = new AttendanceTimeOfDailyPerformance(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getEmployeeId(),
+																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getYmd(),
+																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getWorkScheduleTimeOfDaily(),
+																			  reCreateActual,
+																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getStayingTime(),
+																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getUnEmployedTime(),
+																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getBudgetTimeVariance(),
+																			  calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getMedicalCareTime());
+			calcResultIntegrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(reCreateAttendanceTime));
 		}
 		return calcResultIntegrationOfDaily;
 	}

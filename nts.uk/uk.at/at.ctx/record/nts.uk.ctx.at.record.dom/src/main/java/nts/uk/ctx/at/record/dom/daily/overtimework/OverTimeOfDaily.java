@@ -57,6 +57,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfIrregularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfRegularWork;
@@ -460,6 +461,7 @@ public class OverTimeOfDaily {
 	/**
 	 * 
 	 * @param actualWorkTime 実働就業時間
+	 * @param dailyUnit 
 	 * @param unUseBreakTime　休憩未取得時間
 	 * @param predetermineTime 1日の所定時間
 	 * @param ootsukaFixedCalcSet　大塚固定計算設定
@@ -467,10 +469,10 @@ public class OverTimeOfDaily {
 	public void calcOotsukaOverTime(AttendanceTime actualWorkTime, AttendanceTime unUseBreakTime,
 									AttendanceTime annualAddTime,AttendanceTime predTime,
 									Optional<FixedWorkCalcSetting> ootsukaFixedCalcSet,
-									AutoCalOvertimeSetting autoCalcSet) {
+									AutoCalOvertimeSetting autoCalcSet, DailyUnit dailyUnit) {
 		if(ootsukaFixedCalcSet.isPresent()) {
 			//休憩未取得時間から残業時間計算
-			calcOverTimeFromUnuseTime(actualWorkTime, unUseBreakTime, ootsukaFixedCalcSet.get().getOverTimeCalcNoBreak());
+			calcOverTimeFromUnuseTime(actualWorkTime, unUseBreakTime, ootsukaFixedCalcSet.get().getOverTimeCalcNoBreak(),dailyUnit);
 			//所定時間を超過した残業時間を計算
 			calcOverTimeFromOverPredTime(actualWorkTime, unUseBreakTime, annualAddTime, predTime, ootsukaFixedCalcSet.get().getExceededPredAddVacationCalc(), autoCalcSet);
 		}
@@ -478,9 +480,10 @@ public class OverTimeOfDaily {
 
 	/**
 	 *  休憩未取得時間から残業時間計算 
+	 * @param dailyUnit 
 	 */
 	private void calcOverTimeFromUnuseTime(AttendanceTime actualWorkTime, AttendanceTime unUseBreakTime,
-										   OverTimeCalcNoBreak ootsukaFixedCalcSet
+										   OverTimeCalcNoBreak ootsukaFixedCalcSet, DailyUnit dailyUnit
 										   ) {
 		//仮法定労働時間
 		AttendanceTime predetermineTime = new AttendanceTime(480);
@@ -489,7 +492,7 @@ public class OverTimeOfDaily {
 		if(ootsukaFixedCalcSet.getCalcMethod().isCalcAsWorking())
 			return;
 		//法定労働時間を取得
-		val statutoryTime = new AttendanceTime(480);
+		val statutoryTime = dailyUnit.getDailyTime();
 		
 		//実働就業<=法定労働(法定内)
 		if(actualWorkTime.lessThanOrEqualTo(statutoryTime)) {
