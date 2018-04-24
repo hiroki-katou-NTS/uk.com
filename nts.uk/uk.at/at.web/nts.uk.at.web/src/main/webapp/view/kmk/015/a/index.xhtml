@@ -39,15 +39,15 @@
                      	<tr>
 	                        <td><button data-bind="click: OpenDialogB">#{i18n.getText('KMK015_9')}</button></td>
 	                        <td>
-	                           <button data-bind="enable: isEnable, click: OpenDialogC" style="margin-left: 12px">#{i18n.getText('KMK015_10')}</button>
-	                           <button style="margin-left: 12px" data-bind="enable: isEnable, click: removeHistory" class="danger">#{i18n.getText('KMK015_11')}</button>
+	                           <button data-bind="enable: isEnable, click: OpenDialogC" style="margin-left: 20px">#{i18n.getText('KMK015_10')}</button>
+	                           <button style="margin-left: 20px" data-bind="enable: isEnable, click: removeHistory" class="danger">#{i18n.getText('KMK015_11')}</button>
 	                        </td>
 	                     </tr>
                 	  </table>
                 	  <table id="tbl-master-list"
                         data-bind="enable: isEnable, ntsGridList: {
                         name: '#[kmk015_15]',
-                        width: 250,
+                        width: 300,
                         dataSource: listHistory,
                         optionsValue: 'historyId',
                         columns: columnsHistory,

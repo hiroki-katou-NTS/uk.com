@@ -60,7 +60,7 @@ module nts.uk.at.view.kmk015.a {
                 ]);
                 self.columnsHistory = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KMK015_12'), key: 'historyId', hidden: true },
-                    { headerText: nts.uk.resource.getText('KMK015_12'), key: 'time', width: 200 },
+                    { headerText: nts.uk.resource.getText('KMK015_12'), key: 'time', width: 270 },
                 ]);
                 self.selectedCode.subscribe(code => {
                     self.listWorkType().forEach(function(item) {
@@ -82,17 +82,19 @@ module nts.uk.at.view.kmk015.a {
                             //set Enable
                             if (nts.uk.util.isNullOrEmpty(self.listHistory()) 
                                 || nts.uk.util.isNullOrEmpty(self.selectedCodeHistory())) {
-                                self.isEnable(false);
-                                self.isEnableNumber(false);
-                                self.timeHistory(null);
+                                this.newMode();
                             } else {
                                 self.isEnable(true);
                             }
                         });
                     } else {
                         self.listHistory.removeAll();
-                        self.timeHistory(null);
-                        self.isEnable(false);
+                        this.newMode();
+                    }
+                    
+                    if (!nts.uk.util.isNullOrEmpty(self.timeHistory())){
+                        self.isEnableNumber(true);
+                    } else {
                         self.isEnableNumber(false);
                     }
                 });
@@ -112,6 +114,19 @@ module nts.uk.at.view.kmk015.a {
                         }
                     });
                 });
+                
+                
+            }
+            
+            /**
+             * set NewMode
+             */
+            private newMode() {
+                let self = this;
+                self.numberDay(0);
+                self.timeHistory(null);
+                self.isEnable(false);
+                self.isEnableNumber(false);
             }
 
             /**
@@ -184,9 +199,13 @@ module nts.uk.at.view.kmk015.a {
                         self.startTime(childData.start);
                         self.endTime(childData.end);
                     }
+                    
+                    if (!nts.uk.util.isNullOrEmpty(self.timeHistory())){
+                        self.isEnableNumber(true);
+                    } else {
+                        self.isEnableNumber(false);
+                    }
                 })
-                
-                self.isEnableNumber(true);
             }
 
 
