@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -48,6 +49,7 @@ public class IntegrationOfDaily {
 	//日別実績のPCログオン情報
 	private Optional<PCLogOnInfoOfDaily> pcLogOnInfo;
 	//社員の日別実績エラー一覧
+	@Setter
 	private List<EmployeeDailyPerError> employeeError;
 	//日別実績の外出時間帯
 	@Setter
@@ -112,7 +114,7 @@ public class IntegrationOfDaily {
 		this.calAttr = calAttr;
 		this.affiliationInfor = affiliationInfor;
 		this.pcLogOnInfo = pcLogOnInfo;
-		this.employeeError = employeeError;
+		this.employeeError = new ArrayList<>(employeeError);
 		this.outingTime = outingTime;
 		this.breakTime = breakTime;
 		this.attendanceTimeOfDailyPerformance = attendanceTimeOfDailyPerformance;

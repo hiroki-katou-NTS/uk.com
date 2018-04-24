@@ -118,6 +118,11 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 							? null : attendanceActualS.getLocationCode().get().v();
 					krcdtTimeLeavingWork.attendanceActualSourceInfo = attendanceActualS.getStampSourceInfo() == null 
 							? 0 : attendanceActualS.getStampSourceInfo().value;
+				} else {
+					krcdtTimeLeavingWork.attendanceActualRoudingTime = null;
+					krcdtTimeLeavingWork.attendanceActualTime = null;
+					krcdtTimeLeavingWork.attendanceActualPlaceCode = null;
+					krcdtTimeLeavingWork.attendanceActualSourceInfo = null;
 				}
 				if (attendanceS != null) {
 					krcdtTimeLeavingWork.attendanceStampRoudingTime = attendanceS.getAfterRoundingTime() == null ? null
@@ -128,6 +133,11 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 							? null : attendanceS.getLocationCode().get().v();
 					krcdtTimeLeavingWork.attendanceStampSourceInfo = attendanceS.getStampSourceInfo() == null 
 							? 0 : attendanceS.getStampSourceInfo().value;
+				}else {
+					krcdtTimeLeavingWork.attendanceStampRoudingTime = null;
+					krcdtTimeLeavingWork.attendanceStampTime = null;
+					krcdtTimeLeavingWork.attendanceStampPlaceCode = null;
+					krcdtTimeLeavingWork.attendanceStampSourceInfo = null;
 				}
 				krcdtTimeLeavingWork.attendanceNumberStamp = attendanceStamp.getNumberOfReflectionStamp();
 			}
@@ -145,6 +155,11 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 							.getLocationCode().isPresent() ? null : as.getLocationCode().get().v();
 					krcdtTimeLeavingWork.leaveActualSourceInfo = as
 							.getStampSourceInfo() == null ? 0 : as.getStampSourceInfo().value;
+				}else {
+					krcdtTimeLeavingWork.leaveWorkActualRoundingTime = null;
+					krcdtTimeLeavingWork.leaveWorkActualTime = null;
+					krcdtTimeLeavingWork.leaveWorkActualPlaceCode = null;
+					krcdtTimeLeavingWork.leaveActualSourceInfo = null;
 				}
 				if (s != null) {
 					krcdtTimeLeavingWork.leaveWorkStampRoundingTime = s
@@ -156,6 +171,11 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 							.getLocationCode().isPresent() ? null : s.getLocationCode().get().v();
 					krcdtTimeLeavingWork.leaveWorkStampSourceInfo = s
 							.getStampSourceInfo() == null ? 0 : s.getStampSourceInfo().value;
+				}else {
+					krcdtTimeLeavingWork.leaveWorkStampRoundingTime = null;
+					krcdtTimeLeavingWork.leaveWorkStampTime = null;
+					krcdtTimeLeavingWork.leaveWorkStampPlaceCode = null;
+					krcdtTimeLeavingWork.leaveWorkStampSourceInfo = null;
 				}
 				krcdtTimeLeavingWork.leaveWorkNumberStamp = ls.getNumberOfReflectionStamp();
 				

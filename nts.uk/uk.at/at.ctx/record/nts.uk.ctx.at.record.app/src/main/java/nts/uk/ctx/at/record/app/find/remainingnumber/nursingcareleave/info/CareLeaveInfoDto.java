@@ -26,15 +26,15 @@ public class CareLeaveInfoDto extends PeregDomainDto{
 	
 	@PeregItem("IS00377")
 	//本年度の子の看護上限日数
-	private Integer childCareThisFiscal;
+	private Double childCareThisFiscal;
 	
 	@PeregItem("IS00378")
 	//次年度の子の看護上限日数
-	private Integer childCareNextFiscal;
+	private Double childCareNextFiscal;
 	
 	//子の看護休暇管理
 	@PeregItem("IS00379")
-	private int childCareUsedDays;
+	private double childCareUsedDays;
 	
 	//介護休暇管理
 	@PeregItem("IS00380")
@@ -46,19 +46,19 @@ public class CareLeaveInfoDto extends PeregDomainDto{
 	
 	@PeregItem("IS00382")
 	//本年度の介護上限日数
-	private Integer careThisFiscal;
+	private Double careThisFiscal;
 	
 	@PeregItem("IS00383")
 	//次年度の介護上限日数
-	private Integer careNextFiscal;
+	private Double careNextFiscal;
 	
 	//介護使用日数
 	@PeregItem("IS00384")
-	private int careUsedDays;
+	private double careUsedDays;
 	
 	public static CareLeaveInfoDto createDomain(String sId, int childCareUseArt, int childCareUpLimSet, 
-			Integer childCareThisFiscal, Integer childCareNextFiscal, int childCareUsedDays, 
-			int careUseArt, int careUpLimSet, Integer careThisFiscal, Integer careNextFiscal, int careUsedDays){
+			Double childCareThisFiscal, Double childCareNextFiscal, double childCareUsedDays, 
+			int careUseArt, int careUpLimSet, Double careThisFiscal, Double careNextFiscal, double careUsedDays){
 		CareLeaveInfoDto domain = new CareLeaveInfoDto(sId, childCareUseArt, childCareUpLimSet, 
 				childCareThisFiscal, childCareNextFiscal, childCareUsedDays, 
 				careUseArt, careUpLimSet, careThisFiscal, careNextFiscal, careUsedDays);
