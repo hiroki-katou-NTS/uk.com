@@ -53,6 +53,19 @@ public class EmployeeDailyPerError extends AggregateRoot {
 		this.errorCancelAble = errorCancelAble;
 		this.errorAlarmMessage = errorAlarmMessage == null ? Optional.empty() : Optional.of(new ErrorAlarmMessage(errorAlarmMessage));
 	}
+	
+	public EmployeeDailyPerError(String companyID, String employeeID, GeneralDate date,
+			ErrorAlarmWorkRecordCode errorAlarmWorkRecordCode, List<Integer> attendanceItemList, int errorCancelAble,
+			String errorAlarmMessage) {
+		super();
+		this.companyID = companyID;
+		this.employeeID = employeeID;
+		this.date = date;
+		this.errorAlarmWorkRecordCode = errorAlarmWorkRecordCode;
+		this.attendanceItemList = attendanceItemList == null ? new ArrayList<>() : attendanceItemList;
+		this.errorCancelAble = errorCancelAble;
+		this.errorAlarmMessage = errorAlarmMessage == null ? Optional.empty() : Optional.of(new ErrorAlarmMessage(errorAlarmMessage));
+	}
 
 	public EmployeeDailyPerError(String companyID, String employeeID, GeneralDate date,
 			ErrorAlarmWorkRecordCode errorAlarmWorkRecordCode, List<Integer> attendanceItemList, int errorCancelAble) {
@@ -90,7 +103,4 @@ public class EmployeeDailyPerError extends AggregateRoot {
 		this.attendanceItemList = attendanceItemList;
 		this.errorAlarmMessage = Optional.empty();
 	}
-
-
-	
 }
