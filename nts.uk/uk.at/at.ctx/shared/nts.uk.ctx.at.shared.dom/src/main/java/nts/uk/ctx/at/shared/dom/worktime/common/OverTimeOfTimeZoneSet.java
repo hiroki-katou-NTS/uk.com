@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
  */
 // 残業時間の時間帯設定
 @Getter
+@Setter
 public class OverTimeOfTimeZoneSet extends WorkTimeDomainObject {
 
 	/** The work timezone no. */

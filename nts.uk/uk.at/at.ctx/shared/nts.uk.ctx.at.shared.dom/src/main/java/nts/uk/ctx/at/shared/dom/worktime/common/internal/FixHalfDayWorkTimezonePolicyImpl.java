@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FixHalfDayWorkTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.policy.FixedWorkTimezoneSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode;
 
 /**
@@ -58,5 +59,22 @@ public class FixHalfDayWorkTimezonePolicyImpl implements FixHalfDayWorkTimezoneP
 			WorkTimeDisplayMode displayMode, FixHalfDayWorkTimezone halfDayWork, boolean isUseHalfDayShift) {
 		this.fixedWtzPolicy.validateFlex(be, predTime, halfDayWork.getWorkTimezone(), displayMode.getDisplayMode(),
 				halfDayWork.getDayAtr(), isUseHalfDayShift);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.FixHalfDayWorkTimezonePolicy#
+	 * filterTimezone(nts.uk.ctx.at.shared.dom.worktime.predset.
+	 * PredetemineTimeSetting,
+	 * nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone,
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode, boolean)
+	 */
+	@Override
+	public void filterTimezone(PredetemineTimeSetting predTime, FixHalfDayWorkTimezone origin, DisplayMode displayMode,
+			boolean useHalfDayShift) {
+		this.fixedWtzPolicy.filterTimezone(predTime, origin.getWorkTimezone(), displayMode, origin.getDayAtr(),
+				useHalfDayShift);
 	}
 }
