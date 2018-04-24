@@ -338,9 +338,7 @@ module nts.uk.at.view.kmk015.a {
                                     self.selectedCodeHistory(self.listHistory()[index].historyId);
                                 }
                             } else {
-                                self.isEnable(false);    
-                                self.isEnableNumber(false);  
-                                self.timeHistory(null);
+                                this.newMode();
                             }
                         }).fail(function(res) { nts.uk.ui.dialog.alertError(res) });
 
