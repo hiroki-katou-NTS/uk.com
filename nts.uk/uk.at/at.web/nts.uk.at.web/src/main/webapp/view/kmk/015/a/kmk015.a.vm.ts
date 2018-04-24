@@ -243,12 +243,16 @@ module nts.uk.at.view.kmk015.a {
             public submit() {
                 let self = this;
                 let dfd = $.Deferred<void>();
+                
+                if (nts.uk.ui.errors.hasError()) {
+                    return;                   
+                }
 
                 if (nts.uk.util.isNullOrEmpty(self.timeHistory())) {
                     nts.uk.ui.dialog.alertError("Please Setup History!");
                     return;
                 }
-
+                
                 let historyId = "";
                 let history: SaveHistory;
 
