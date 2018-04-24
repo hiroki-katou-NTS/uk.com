@@ -260,6 +260,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 dfd.reject();
             });
 
+            
             let user: any = __viewContext.user;
             nts.uk.characteristics.restore("UserSpecific_" + user.employeeId).done(function(userSpecific) {
                 if (userSpecific) {
@@ -329,17 +330,27 @@ module nts.uk.at.view.kdr001.a.viewmodel {
          */
         private exportButton() {
             let self = this;
+            $('.nts-input').trigger("validate");
+            if (errors.hasError()) {
+                return;
+            }
             nts.uk.ui.block.invisible();
+            
             let startMonth = moment.utc(self.startDateString());
             let endMonth = moment.utc(self.endDateString());
             let totalMonths = (parseInt(endMonth.format("YYYY"))*12 + parseInt(endMonth.format("MM")))
                              - (parseInt(startMonth.format("YYYY"))*12 + parseInt(startMonth.format("MM")));
+            if (startMonth < 0){
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_1217' });
+                nts.uk.ui.block.clear();  
+                return;
+            }
             if (totalMonths > 12){
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_1173' });
                 nts.uk.ui.block.clear();  
                 return;
             }
-            self.selectedEmployeeCode()
+            // get and build selected employee
             let lstSelectedEployee : Array<EmployeeSearchDto> = [];
             var index = -1;
             for (var i = 0; i < self.selectedEmployeeCode().length; i++) {
@@ -349,7 +360,6 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                     lstSelectedEployee.push(self.lstSearchEmployee()[index]);
                 }
             }
-                lstSelectedEployee
             if (!lstSelectedEployee || lstSelectedEployee.length === 0){
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_884' });
                 nts.uk.ui.block.clear();  

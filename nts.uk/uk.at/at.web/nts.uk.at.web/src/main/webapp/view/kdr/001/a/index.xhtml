@@ -30,7 +30,7 @@
 				<button tabindex="1" class="proceed" data-bind="click: exportButton">#{i18n.getText('KDR001_25')}</button>
 			</div>
 
-			<div class="cf" id="contents-area" style="display: flex;">
+			<div class="cf" id="contents-area" >
 				<!-- A2_1  CCG001-->
 
 				<div class="ccg001searchkcp005">
@@ -51,7 +51,7 @@
 							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_26')}
 						</div>
 						<!-- A3_2 -->
-						<div tabindex="3" style="width: 162px;"
+						<div tabindex="3" style="width: 162px;margin-left: 52px;"
 							data-bind="ntsDatePicker: {
 									showJumpButtons: true,
 									value: startDateString,
@@ -81,7 +81,7 @@
 							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_30')}
 						</div>
 						<!-- A4_2  -->
-						<div id="comboBx-HolidayRemaining" tabindex="6" style="margin-left: 50px;"
+						<div id="comboBx-HolidayRemaining" tabindex="6" style="margin-left: -3px;"
 							data-bind="ntsComboBox: {
 							    name:'#[KDR001_30]',
 								options: lstHolidayRemaining,
@@ -91,19 +91,20 @@
 								editable: false,
 								enable: true,
 								columns: [
-									{ prop: 'name', length: 10 }
+									{ prop: 'name', length: 20 }
 								]}">
 						</div>
 						<!-- A4_3  -->
-						<button data-bind="click: openKDR001b" tabindex="7" class="large" style="margin-left: 20px;">#{i18n.getText('KDR001_31')}</button>
+						<button data-bind="click: openKDR001b, 
+								enable: permissionOfEmploymentForm().availability()" tabindex="7" class="large" style="margin-left: 20px;">#{i18n.getText('KDR001_31')}</button>
 					</div>
-					<div class="periodCovered" style="margin-top: 25px;">
+					<div class="periodCovered" style="margin-top: 15px;">
 						<!-- A6_1  -->
 						<div class="labelRangeDate" 
 							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_35')}
 						</div>
 						<!-- A6_2  -->
-						<div id="combo-box2" tabindex="9"  style="margin-left: 77px;"
+						<div id="combo-box2" tabindex="9"  style="margin-left: 25px;"
 							data-bind="ntsComboBox: {
 								options: itemSelected,
 								optionsValue: 'code',
