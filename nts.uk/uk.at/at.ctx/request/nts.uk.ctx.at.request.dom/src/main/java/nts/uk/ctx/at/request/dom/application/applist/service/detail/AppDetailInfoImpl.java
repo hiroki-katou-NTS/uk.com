@@ -312,15 +312,15 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	public AppCompltLeaveFull getAppCompltLeaveInfo(String companyID, String appId, int type) {
 		if(type == 0){//xin nghi
 			AbsenceLeaveApp abs = absRepo.findByAppId(appId).get();
-			return new AppCompltLeaveFull(abs.getAppID(), type, 
-					repoWorkType.findByPK(companyID, abs.getWorkTypeCD()).get().getName().v(),
+
+			return new AppCompltLeaveFull(abs.getAppID(), type,abs.getWorkTypeCD().v(),
 					abs.getWorkTime1() == null ? null : this.convertTime(abs.getWorkTime1().getStartTime().v()),
 					abs.getWorkTime1() == null ? null : this.convertTime(abs.getWorkTime1().getEndTime().v()));
 		}
 		//di lam
 		RecruitmentApp rec = recRepo.findByAppId(appId).get();
-		return new AppCompltLeaveFull(rec.getAppID(), type, 
-				repoWorkType.findByPK(companyID, rec.getWorkTypeCD()).get().getName().v(),
+
+		return new AppCompltLeaveFull(rec.getAppID(), type, rec.getWorkTypeCD().v(),
 				this.convertTime(rec.getWorkTime1().getStartTime().v()),
 				this.convertTime(rec.getWorkTime1().getEndTime().v()));
 	}

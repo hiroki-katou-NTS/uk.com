@@ -74,7 +74,7 @@
 					<div class="div_line_col_2">
 						<div tabindex="6" class="combo-box"
 							data-bind="ntsComboBox: {
-										name: '#{i18n.getText('KAF011_28')}',
+										name: '#{i18n.getText('KAF011_16')}',
 										options: appReasons ,
 										optionsValue: 'reasonID' ,
 										visibleItemsCount: 5 ,
@@ -92,14 +92,14 @@
 					data-bind="if:appTypeSet().displayAppReason() !=0">
 					<!-- constraint: -->
 					<div class="div_line_col_1">
-						<div data-bind="ntsFormLabel: { constraint: 'AppReason' }">#{i18n.getText('KAF011_17')}</div>
+						<div data-bind="ntsFormLabel: { constraint: 'AppReason' }">#{i18n.getText('KAF011_25')}</div>
 					</div>
 					<div class="div_line_col_2">
 						<textarea style="height: 100px" tabindex="6"
 							data-bind="ntsMultilineEditor: {
 									constraint: 'AppReason',
 									value: reason ,
-									name: '#{i18n.getText('KAF011_17')}',
+									name: '#{i18n.getText('KAF011_25')}',
 									option: {
 									resizeable: false ,
 			                    	width: '500'
@@ -116,8 +116,8 @@
 
 			<div id="functions-area-bottom">
 				<button class="x-large proceed" data-bind="click:saveAbs"
-					tabindex="11">#{i18n.getText('KDL003_22')}</button>
-				<button tabindex="12" data-bind="click: closeDialog">#{i18n.getText('KDL003_23')}</button>
+					tabindex="11">#{i18n.getText('KAF011_3')}</button>
+				<button tabindex="12" data-bind="click: closeDialog">#{i18n.getText('KAF011_4')}</button>
 
 			</div>
 		</ui:define>

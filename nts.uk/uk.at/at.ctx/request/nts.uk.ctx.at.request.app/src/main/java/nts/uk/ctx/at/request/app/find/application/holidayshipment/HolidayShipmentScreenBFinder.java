@@ -138,8 +138,8 @@ public class HolidayShipmentScreenBFinder {
 
 				GeneralDate recAppDate = recAppOutput != null ? recAppOutput.getAppDate() : null;
 				GeneralDate absAppDate = absAppOutput != null ? absAppOutput.getAppDate() : null;
-				String recWorkTypeCD = recApp != null ? recApp.getWorkTypeCD() : null;
-				String absWorkTypeCD = absApp != null ? absApp.getWorkTypeCD() : null;
+				String recWorkTypeCD = recApp != null ? recApp.getWorkTypeCD().v() : null;
+				String absWorkTypeCD = absApp != null ? absApp.getWorkTypeCD().v() : null;
 				String recWorkTimeCD = recApp != null ? recApp.getWorkTimeCD().v() : null;
 				String absWorkTimeCD = absApp != null ? absApp.getWorkTimeCD() : null;
 				GeneralDate refDate = HolidayShipmentScreenAFinder.DetRefDate(recAppDate, absAppDate);
