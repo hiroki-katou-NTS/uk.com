@@ -367,7 +367,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         private exportButton() {
             let self = this;
             $('.nts-input').trigger("validate");
-            if (errors.hasError()) {
+            if (nts.uk.ui.errors.hasError()) {
                 return;
             }
             nts.uk.ui.block.invisible();

@@ -27,7 +27,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- A1_1 -->
-				<button tabindex="1" class="proceed" data-bind="click: exportButton">#{i18n.getText('KDR001_25')}</button>
+				<button tabindex="1" class="proceed" data-bind="click: exportButton, enable: !nts.uk.ui.errors.hasError()">#{i18n.getText('KDR001_25')}</button>
 			</div>
 
 			<div class="cf" id="contents-area" >
@@ -53,6 +53,7 @@
 						<!-- A3_2 -->
 						<div tabindex="3" style="width: 154px;margin-left: 75px;"
 							data-bind="ntsDatePicker: {
+									required: true,
 									showJumpButtons: true,
 									value: startDateString,
 									dateFormat: 'yearmonth',
@@ -67,6 +68,7 @@
 						<!-- A3_4 -->
 						<div tabindex="4" style="width: 162px;"
 							data-bind="ntsDatePicker: {
+									required: true,
 									showJumpButtons: true,
 									value: endDateString,
 									dateFormat: 'yearmonth',
