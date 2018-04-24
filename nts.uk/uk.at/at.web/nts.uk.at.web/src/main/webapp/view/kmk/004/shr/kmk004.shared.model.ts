@@ -903,8 +903,6 @@ module nts.uk.at.view.kmk004.shared.model {
             let self = this;
             self.month(dto.month);
             self.time(dto.monthlyTime);
-            self.monthMsgNormal = nts.uk.resource.getText("KMK004_14", [self.month()]);
-            self.monthMsgDefor = nts.uk.resource.getText("KMK004_26", [self.month()]);
         }
     }
 
@@ -921,9 +919,6 @@ module nts.uk.at.view.kmk004.shared.model {
             self.specifiedTime = ko.observable(0);
         }
 
-        //            public updateData(dto: ): void {
-        //                let self = this;
-        //            }
     }
     
     export class PureFlexMonthlyTime {
@@ -970,6 +965,8 @@ module nts.uk.at.view.kmk004.shared.model {
                 let m = new MonthlyTime();
                 m.month(i);
                 m.time(0);
+                m.monthMsgNormal = nts.uk.resource.getText("KMK004_14", [i]);
+                m.monthMsgDefor = nts.uk.resource.getText("KMK004_26", [i]);
                 self.statutorySetting.push(m);
             }
         }
@@ -1030,6 +1027,8 @@ module nts.uk.at.view.kmk004.shared.model {
                 mFlex.month(i);
                 mFlex.statutoryTime(0);
                 mFlex.specifiedTime(0);
+                mFlex.monthMsgStatutory = nts.uk.resource.getText("KMK004_22", [i]);
+                mFlex.monthMsgSpecified = nts.uk.resource.getText("KMK004_21", [i]);
                 self.flexSettingDetail.push(mFlex);
             }
         }
@@ -1042,15 +1041,9 @@ module nts.uk.at.view.kmk004.shared.model {
                 let stutoryData: MonthlyUnitDto = dto.flexSetting.statutorySetting.filter(j => i.month() == j.month)[0];//WorktimeFlexSetting1Dto
                 // Specified
                 let specifiedData: MonthlyUnitDto = dto.flexSetting.specifiedSetting.filter(j => i.month() == j.month)[0];
-
                 i.month(stutoryData.month);
-                
-                i.monthMsgStatutory = nts.uk.resource.getText("KMK004_22", [i.month()]);
                 i.statutoryTime(stutoryData.monthlyTime);
-                
-                i.monthMsgSpecified = nts.uk.resource.getText("KMK004_21", [i.month()]);
                 i.specifiedTime(specifiedData.monthlyTime);
-
             });
         }
 
