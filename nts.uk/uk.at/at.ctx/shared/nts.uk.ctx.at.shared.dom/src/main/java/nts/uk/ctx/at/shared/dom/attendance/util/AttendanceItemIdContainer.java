@@ -31,7 +31,7 @@ public class AttendanceItemIdContainer {
 
 		ITEM_ID_CONTAINER = new HashMap<>();
 
-		ITEM_ID_CONTAINER.put(740, "日別実績の備考.備考");
+		//ITEM_ID_CONTAINER.put(740, "日別実績の備考.備考");
 		ITEM_ID_CONTAINER.put(833, "日別実績の備考.備考1");
 		ITEM_ID_CONTAINER.put(834, "日別実績の備考.備考2");
 		ITEM_ID_CONTAINER.put(835, "日別実績の備考.備考3");

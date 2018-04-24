@@ -30,7 +30,7 @@ public interface AppReflectProcessRecord {
 	 * @param isPre True: 事前, False: 事後
 	 * @return
 	 */
-	public WorkReflectedStatesInfo absenceReflectRecor(AbsenceReflectPara para, boolean isPre);
+	public WorkReflectedStatesInfo absenceReflectRecor(CommonReflectPara para, boolean isPre);
 	/**
 	 * 勤務実績に反映: 事前申請の処理(休日出勤申請)
 	 * @param para
@@ -38,4 +38,11 @@ public interface AppReflectProcessRecord {
 	 * @return
 	 */
 	public WorkReflectedStatesInfo holidayWorkReflectRecord(HolidayWorkReflectPara para, boolean isPre);
+	/**
+	 * 勤務変更申請
+	 * @param para
+	 * @param isPre
+	 * @return
+	 */
+	public WorkReflectedStatesInfo workChangeReflectRecord(CommonReflectPara para, boolean isPre);
 }

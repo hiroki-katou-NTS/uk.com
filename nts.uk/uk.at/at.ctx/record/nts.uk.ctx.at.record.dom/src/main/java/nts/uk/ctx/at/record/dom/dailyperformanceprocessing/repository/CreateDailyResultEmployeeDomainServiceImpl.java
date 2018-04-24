@@ -108,8 +108,8 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 						if (reCreateAttr == ExecutionType.RERUN) {
 							DailyRecreateClassification creationType = executionLog.get().getDailyCreationSetInfo().get().getCreationType();
 							if (creationType == DailyRecreateClassification.PARTLY_MODIFIED) {
-								// 再設定
-//								this.resetDailyPerforDomainService.resetDailyPerformance(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr);
+//								 再設定
+								this.resetDailyPerforDomainService.resetDailyPerformance(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr);
 							} else {
 								this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
 										empCalAndSumExecLogID, reCreateAttr, reCreateWorkType);

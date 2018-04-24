@@ -115,6 +115,10 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 					Optional.of(logsMap.get(ExecutionContent.DAILY_CREATION));
 			finalStatus = this.createDailyResultDomainService.createDailyResult(asyncContext, employeeIdList,
 					periodTime, executionAttr, companyId, empCalAndSumExecLogID, dailyCreationLog);
+			
+			//*****　更新タイミングが悪い。ここで書かずに、日別作成の中で書くべき。（2018.1.16 Shuichi Ishida）
+			//***** タイミング調整に関しては、実行ログの監視処理の完了判定も、念のため、確認が必要。
+			dataSetter.updateData("dailyCreateStatus", ExecutionStatus.DONE.nameId);
 		}
 		
 		//***** ↓　以下、仮実装。ログ制御全体を見直して、正確な手順に再修正要。（2018.1.16 Shuichi Ishida）
@@ -148,10 +152,6 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 			ExeStateOfCalAndSum executionStatus = this.updateExecutionState(dataSetter, empCalAndSumExecLogID);
 			this.empCalAndSumExeLogRepository.updateStatus(empCalAndSumExecLogID, executionStatus.value);
 		}
-		
-		//*****　更新タイミングが悪い。ここで書かずに、日別作成の中で書くべき。（2018.1.16 Shuichi Ishida）
-		//***** タイミング調整に関しては、実行ログの監視処理の完了判定も、念のため、確認が必要。
-		dataSetter.updateData("dailyCreateStatus", ExecutionStatus.DONE.nameId);
 		
 	}
 	

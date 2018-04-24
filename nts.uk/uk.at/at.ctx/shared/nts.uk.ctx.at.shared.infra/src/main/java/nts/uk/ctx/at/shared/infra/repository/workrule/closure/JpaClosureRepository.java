@@ -44,6 +44,7 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 
 	/** The Constant FIRST_LENGTH. */
 	public static final int FIRST_LENGTH = 1;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -114,7 +115,6 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 				.collect(Collectors.toList());
 	}
 
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -141,19 +141,18 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// equal company id
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.cid), companyId));
-		
-		// is use closure 
-		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KclmtClosure_.useClass),
-				UseClassification.UseClass_Use.value));
+		lstpredicateWhere
+				.add(criteriaBuilder.equal(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.cid), companyId));
+
+		// is use closure
+		lstpredicateWhere
+				.add(criteriaBuilder.equal(root.get(KclmtClosure_.useClass), UseClassification.UseClass_Use.value));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// order by closure id asc
-		cq.orderBy(criteriaBuilder
-				.asc(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.closureId)));
+		cq.orderBy(criteriaBuilder.asc(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.closureId)));
 
 		// create query
 		TypedQuery<KclmtClosure> query = em.createQuery(cq);
@@ -164,6 +163,7 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 						this.findHistoryByClosureId(companyId, entity.getKclmtClosurePK().getClosureId())))
 				.collect(Collectors.toList());
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -176,7 +176,7 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 		return this.queryProxy().find(new KclmtClosurePK(companyId, closureId), KclmtClosure.class)
 				.map(c -> this.toDomain(c, this.findHistoryByClosureId(companyId, closureId)));
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -233,7 +233,8 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	/**
 	 * To domain.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 * @return the closure
 	 */
 	private Closure toDomain(KclmtClosure entity, List<KclmtClosureHist> entityHistorys) {
@@ -243,7 +244,8 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	/**
 	 * To entity.
 	 *
-	 * @param domain the domain
+	 * @param domain
+	 *            the domain
 	 * @return the kclmt closure
 	 */
 	private KclmtClosure toEntity(Closure domain) {
@@ -255,7 +257,8 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	/**
 	 * To entity update.
 	 *
-	 * @param domain the domain
+	 * @param domain
+	 *            the domain
 	 * @return the kclmt closure
 	 */
 	private KclmtClosure toEntityUpdate(Closure domain) {
@@ -317,7 +320,6 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 				.collect(Collectors.toList());
 	}
 
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -345,8 +347,10 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	/**
 	 * Find history by closure id.
 	 *
-	 * @param companyId the company id
-	 * @param closureId the closure id
+	 * @param companyId
+	 *            the company id
+	 * @param closureId
+	 *            the closure id
 	 * @return the list
 	 */
 	private List<KclmtClosureHist> findHistoryByClosureId(String companyId, int closureId) {
@@ -386,6 +390,7 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 		// exclude select
 		return query.getResultList();
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -413,7 +418,8 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	/**
 	 * To domain.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 * @return the closure history
 	 */
 	private ClosureHistory toDomain(KclmtClosureHist entity) {
@@ -423,7 +429,8 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	/**
 	 * To entity.
 	 *
-	 * @param domain the domain
+	 * @param domain
+	 *            the domain
 	 * @return the kclmt closure hist
 	 */
 	private KclmtClosureHist toEntity(ClosureHistory domain) {
@@ -435,7 +442,8 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	/**
 	 * To entity update.
 	 *
-	 * @param domain the domain
+	 * @param domain
+	 *            the domain
 	 * @return the kclmt closure hist
 	 */
 	private KclmtClosureHist toEntityUpdate(ClosureHistory domain) {
@@ -683,8 +691,11 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 		return Optional.ofNullable(this.toDomain(resData.get(FIRST_DATA)));
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository#findByCurrentMonth(nts.arc.time.YearMonth)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository#
+	 * findByCurrentMonth(nts.arc.time.YearMonth)
 	 */
 	@Override
 	public List<ClosureHistory> findByCurrentMonth(String companyId, YearMonth closureYm) {
@@ -709,7 +720,8 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
 				root.get(KclmtClosureHist_.kclmtClosureHistPK).get(KclmtClosureHistPK_.strYM), closureYm.v()));
 		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KclmtClosureHist_.endYM), closureYm.v()));
-		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KclmtClosureHist_.kclmtClosureHistPK).get(KclmtClosureHistPK_.cid), companyId));
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KclmtClosureHist_.kclmtClosureHistPK).get(KclmtClosureHistPK_.cid), companyId));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -785,4 +797,36 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 		return query.getResultList().stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 
+	public List<Closure> getClosureList(String companyId){
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<KclmtClosure> cq = criteriaBuilder.createQuery(KclmtClosure.class);
+		Root<KclmtClosure> root = cq.from(KclmtClosure.class);
+
+		// select root
+		cq.select(root);
+
+		List<KclmtClosure> resultList = new ArrayList<>();
+		
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		
+		lstpredicateWhere.add(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.cid)
+				.in(companyId));
+		
+		lstpredicateWhere.add(root.get(KclmtClosure_.useClass).in(UseClassification.UseClass_Use.value));
+		
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		resultList.addAll(em.createQuery(cq).getResultList());
+
+		if (CollectionUtil.isEmpty(resultList)) {
+			return null;
+		}
+		
+		return resultList.stream().map(item -> this.toDomain(item, this.findHistoryByClosureId(companyId, 
+				item.getKclmtClosurePK().getClosureId()))).collect(Collectors.toList());
+	}
 }

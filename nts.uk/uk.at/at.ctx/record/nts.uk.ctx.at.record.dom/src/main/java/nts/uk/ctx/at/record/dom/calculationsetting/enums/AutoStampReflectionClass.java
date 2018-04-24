@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 
 /**
  * 
- * @author nampt
  * 自動打刻反映区分
  */
 @AllArgsConstructor

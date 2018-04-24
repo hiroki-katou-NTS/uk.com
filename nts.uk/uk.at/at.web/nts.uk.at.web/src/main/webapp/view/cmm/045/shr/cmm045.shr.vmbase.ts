@@ -489,6 +489,22 @@ module cmm045.shr {
                 this.mournerFlag = mournerFlag;    
             }
         }
+        export class AppCompltLeaveFull {
+            /**申請ID*/
+            appID: string;
+            /**勤務種類*/
+            workTypeCD: string;
+            /**勤務時間1.開始時刻*/
+            startTime: string;
+            /**勤務時間1.終了時刻*/
+            endTime: string;
+            constructor(appID: string, workTypeCD: string, startTime: string, endTime: string){
+                this.appID = appID;
+                this.workTypeCD = workTypeCD;
+                this.startTime = startTime;
+                this.endTime = endTime;
+            }
+        }
         export class HdAppSet{
             // 代表者名 - 1
             obstacleName: string;
@@ -508,14 +524,14 @@ module cmm045.shr {
             yearResig: string;
             constructor(obstacleName: string, hdName: string, yearHdName: string, furikyuName: string,
                 timeDigest: string, absenteeism: string, specialVaca: string, yearResig: string){
-                this.obstacleName = obstacleName;
-                this.hdName = hdName;
-                this.yearHdName = yearHdName;
-                this.furikyuName = furikyuName;
-                this.timeDigest = timeDigest;
-                this.absenteeism = absenteeism;
-                this.specialVaca = specialVaca;
-                this.yearResig = yearResig;
+                this.obstacleName = obstacleName == null ? '' : obstacleName;
+                this.hdName = hdName == null ? '' : hdName;
+                this.yearHdName = yearHdName == null ? '' : yearHdName;
+                this.furikyuName = furikyuName == null ? '' : furikyuName;
+                this.timeDigest = timeDigest == null ? '' : timeDigest;
+                this.absenteeism = absenteeism == null ? '' : absenteeism;
+                this.specialVaca = specialVaca == null ? '' : specialVaca;
+                this.yearResig = yearResig == null ? '' : yearResig;
             }
         }
         export class CellState {
@@ -537,7 +553,7 @@ module cmm045.shr {
                 this.columnKey = columnKey;
                 this.color = color;
             } 
-        }      
+        }
         export class ProcessHandler {
             /**
              * sort by appType and appDate

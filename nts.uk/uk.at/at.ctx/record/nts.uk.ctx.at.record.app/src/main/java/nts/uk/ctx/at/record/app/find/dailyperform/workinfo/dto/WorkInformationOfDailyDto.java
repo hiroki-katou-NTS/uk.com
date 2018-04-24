@@ -104,6 +104,6 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 	}
 
 	private WorkInformation getWorkInfo(WorkInfoDto dto) {
-		return dto == null ? null : new WorkInformation(dto.getWorkTimeCode(), dto.getWorkTypeCode());
+		return dto == null ? null : new WorkInformation(dto.getWorkTimeCode() == null || dto.getWorkTimeCode().isEmpty() ? null : dto.getWorkTimeCode(), dto.getWorkTypeCode());
 	}
 }

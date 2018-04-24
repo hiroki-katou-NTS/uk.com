@@ -76,6 +76,10 @@ public interface LoginUserContextManager {
 	
 	void restore(DataTicket ticket);
 	
+	String toBase64();
+	
+	void restoreBase64(String base64);
+	
 	void loggedOut();
 	
 	public static interface RoleIdSetter {

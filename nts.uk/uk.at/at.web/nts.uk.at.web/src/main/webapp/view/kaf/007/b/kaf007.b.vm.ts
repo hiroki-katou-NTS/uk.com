@@ -184,7 +184,7 @@ module nts.uk.at.view.kaf007.b {
                     self.selectedReason(),
                     self.reasonCombo(),
                     self.displayAppReasonContentFlg(),
-                    self.multilContent()
+                    self.multilContent().trim()
                 );
                 if(!appcommon.CommonProcess.checklenghtReason(appReason,"#inpReasonTextarea")){
                         return;
@@ -195,9 +195,7 @@ module nts.uk.at.view.kaf007.b {
                     return;    
                 }
                 //Approval phase
-                self.appWorkChange().appApprovalPhases = self.approvalList;
-                //application change date format
-                self.changeDateFormat();
+                self.appWorkChange().appApprovalPhases = self.approvalList;                
                 //申請理由
                 self.appWorkChange().application().applicationReason(appReason);                
                 //勤務を変更する
@@ -208,6 +206,8 @@ module nts.uk.at.view.kaf007.b {
                 self.changeUnregisterValue();
                 
                 let workChange = ko.toJS(self.appWorkChange());
+                //application change date format
+                self.changeDateFormat(workChange);
                 service.updateWorkChange(workChange).done(() => {
                     
                     dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -284,14 +284,14 @@ module nts.uk.at.view.kaf007.b {
             /**
              * Convert client date string to server GeneralDate
              */
-            private changeDateFormat() {
+            private changeDateFormat(data) {
                 let self = this,
-                    app = self.appWorkChange().application();
+                    app = data.application;
                 //Change application input date                
-                app.inputDate( moment.utc( app.inputDate(), self.dateTimeFormat ).toISOString() );
-                app.applicationDate( moment.utc( app.applicationDate(), self.dateFormat ).toISOString() );
-                app.startDate( moment.utc( app.startDate(), self.dateFormat ).toISOString() );
-                app.endDate( moment.utc( app.endDate(), self.dateFormat ).toISOString() );
+                app.inputDate = moment.utc( app.inputDate, self.dateTimeFormat ).toISOString() ;
+                app.applicationDate = moment.utc( app.applicationDate, self.dateFormat ).toISOString() ;
+                app.startDate = moment.utc( app.startDate, self.dateFormat ).toISOString() ;
+                app.endDate = moment.utc( app.endDate, self.dateFormat ).toISOString() ;
             }            
             /**
              * フォーカス制御

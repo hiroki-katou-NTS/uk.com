@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
@@ -80,7 +81,8 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 			return;
 		}
 		//予定勤種の反映
-		workTimeUpdate.updateRecordWorkType(commonPara.getEmployeeId(), commonPara.getBaseDate(), commonPara.getWorkTypeCode(), true);
+		ReflectParameter reflectPara = new ReflectParameter(commonPara.getEmployeeId(), commonPara.getBaseDate(), commonPara.getWorkTimeCode(), commonPara.getWorkTypeCode());
+		workTimeUpdate.updateWorkTimeType(reflectPara, true);
 	}
 
 	@Override

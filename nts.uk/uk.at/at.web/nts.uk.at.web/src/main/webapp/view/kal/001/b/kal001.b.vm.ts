@@ -68,7 +68,7 @@ module nts.uk.at.view.kal001.b {
             sendEmail(): void {
                 let self = this;
                 let shareEmployee = _.map(self.dataSource, (item) =>{
-                   return {employeeId: item.employeeID, workplaceId: item.workplaceID, workplaceName: item.workplaceName}; 
+                   return {employeeId: item.employeeID, employeeCode: item.employeeCode, employeeName: item.employeeName, workplaceId: item.workplaceID, workplaceName: item.workplaceName}; 
                 });
                 nts.uk.ui.windows.setShared("employeeList", _.uniqWith(shareEmployee, _.isEqual));
                 modal("/view/kal/001/c/index.xhtml").onClosed(() => {

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 
 /**
  * The Interface WorkplaceInfoRepository.
@@ -109,6 +108,6 @@ public interface WorkplaceInfoRepository {
 	 * @param historyId the history id
 	 * @return the list
 	 */
-	List<WorkplaceInfo> findByHistory(List<Workplace> workplace);
+	List<WorkplaceInfo> findByHistory(List<String> historyList, String companyId);
 	
 }

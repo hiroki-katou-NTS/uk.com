@@ -64,11 +64,12 @@
 								<div class="child-lb">#{i18n.getText('KMK013_216')}</div>
 							</td>
 							<td class="td-content">
-   								<div data-bind="ntsSwitchButton: {
-   												options: tempWorkOpt,     
-   												optionsValue: 'id',     
-   												optionsText: 'name',     
-   												value: tempWorkSet}"></div>     
+								<div data-bind="ntsSwitchButton: {
+	    												options: multipleWorkOpt,     
+	    												optionsValue: 'id',     
+	    												optionsText: 'name',     
+	    												value: multipleWorkSet}"></div>     
+   								
 							</td>
 						</tr>
 						<tr>
@@ -76,11 +77,11 @@
 								<div class="child-lb">#{i18n.getText('KMK013_220')}</div>
 							</td>
 							<td class="td-content">
-    								<div data-bind="ntsSwitchButton: {
-    												options: multipleWorkOpt,     
-    												optionsValue: 'id',     
-    												optionsText: 'name',     
-    												value: multipleWorkSet}"></div>     
+   								<div data-bind="ntsSwitchButton: {
+  												options: tempWorkOpt,     
+  												optionsValue: 'id',     
+  												optionsText: 'name',     
+  												value: tempWorkSet}"></div>     
 							</td>
 						</tr>
 					</TBODY>

@@ -56,11 +56,6 @@ public class HolidayShipmentScreenBFinder {
 	@Inject
 	private EmployeeRequestAdapter empAdaptor;
 
-	/**
-	 * find by Id
-	 * 
-	 * @param applicationID
-	 */
 	RecruitmentApp recApp;
 	AbsenceLeaveApp absApp;
 	ApplicationMetaOutput recAppOutput;
@@ -70,6 +65,11 @@ public class HolidayShipmentScreenBFinder {
 	ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 	HolidayShipmentDto output;
 
+	/**
+	 * find by Id
+	 * 
+	 * @param applicationID
+	 */
 	public HolidayShipmentDto findByID(String applicationID) {
 		output = new HolidayShipmentDto();
 		companyID = AppContexts.user().companyId();
@@ -88,12 +88,12 @@ public class HolidayShipmentScreenBFinder {
 		if (appOutputOpt.isPresent()) {
 			Application_New appOutput = appOutputOpt.get();
 			String employeeName = "";
-			if (appOutput.getEmployeeID().equals(employeeID)) {
+			if (appOutput.getEmployeeID().equals(appOutput.getEnteredPersonID())) {
 				employeeName = empAdaptor.getEmployeeName(employeeID);
 			} else {
 
 				employeeName = empAdaptor.getEmployeeName(appOutput.getEmployeeID()) + " (入力者 : "
-						+ empAdaptor.getEmployeeName(employeeID) + ")";
+						+ empAdaptor.getEmployeeName(appOutput.getEnteredPersonID()) + ")";
 
 			}
 
@@ -130,7 +130,7 @@ public class HolidayShipmentScreenBFinder {
 				GeneralDate refDate = HolidayShipmentScreenAFinder.DetRefDate(recAppDate, absAppDate);
 				// アルゴリズム「振休振出申請起動時の共通処理」を実行する
 				aFinder.commonProcessAtStartup(companyID, employeeID, refDate, recAppDate, recWorkTypeCD, recWorkTimeCD,
-						absAppDate, absWorkTypeCD, absWorkTimeCD, output,appCommonSettingOutput);
+						absAppDate, absWorkTypeCD, absWorkTimeCD, output, appCommonSettingOutput);
 
 			}
 		}

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import nts.arc.layer.ws.ProducedRequest;
+import nts.arc.security.csrf.CsrfToken;
 import nts.uk.shr.com.context.loginuser.SessionLowLayer;
 
 @Stateless
@@ -21,6 +22,7 @@ public class ServletSessionLowLayer implements SessionLowLayer {
 	@Override
 	public void loggedIn() {
 		this.getSession().ifPresent(s -> s.setAttribute(LOGGED_IN_FLAG, true));
+		CsrfToken.loggedIn();
 	}
 
 	@Override

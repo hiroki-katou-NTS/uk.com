@@ -50,6 +50,7 @@ public class StdAcceptCondSetServiceImpl implements StdAcceptCondSetService {
 				sourceCondSet.getSystemType(), 
 				sourceCondSet.getDeleteExistData(),
 				sourceCondSet.getCsvDataStartLine(), 
+				sourceCondSet.getCharacterCode(),
 				sourceCondSet.getAcceptMode(),
 				new AcceptanceConditionName(param.getDestCondSetName()), 
 				sourceCondSet.getCheckCompleted(),

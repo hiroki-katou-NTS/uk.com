@@ -216,10 +216,10 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 		//INPUT．打刻優先区分をチェックする
 		if(para.getPriorStampAtr() == PriorStampAtr.GOBACKPRIOR) {
 			//INPUT．申請する時刻に値があるかチェックする
-			if(isPre && frameNo == 1 && para.getGobackData().getStartTime1() != null
-					|| isPre && frameNo == 2 && para.getGobackData().getStartTime2() != null
-					|| !isPre && frameNo == 1 && para.getGobackData().getEndTime1() != null
-					|| !isPre && frameNo == 2 && para.getGobackData().getEndTime2() != null) {
+			if(isPre && frameNo == 1 && para.getGobackData().getStartTime1() != null && para.getGobackData().getStartTime1() > 0
+					|| isPre && frameNo == 2 && para.getGobackData().getStartTime2() != null && para.getGobackData().getStartTime2() > 0
+					|| !isPre && frameNo == 1 && para.getGobackData().getEndTime1() != null && para.getGobackData().getEndTime1() > 0
+					|| !isPre && frameNo == 2 && para.getGobackData().getEndTime2() != null && para.getGobackData().getEndTime2() > 0) {
 				return true;
 			} else {
 				return false;

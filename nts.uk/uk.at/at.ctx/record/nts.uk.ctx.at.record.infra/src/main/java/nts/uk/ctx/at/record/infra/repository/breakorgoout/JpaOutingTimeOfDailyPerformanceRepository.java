@@ -92,12 +92,14 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 	public void delete(String employeeId, GeneralDate ymd) {
 		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
 				.setParameter("ymd", ymd).executeUpdate();
+		this.getEntityManager().flush();
 	}
 
 	@Override
 	public void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds) {
 		this.getEntityManager().createQuery(DEL_BY_LIST_KEY).setParameter("employeeIds", employeeIds)
 				.setParameter("ymds", ymds).executeUpdate();
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -121,6 +123,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		commandProxy().insertAll(outing.getOutingTimeSheets().stream()
 				.map(c -> KrcdtDaiOutingTime.toEntity(outing.getEmployeeId(), outing.getYmd(), c))
 				.collect(Collectors.toList()));
+		this.getEntityManager().flush();
 	}
 
 	// @Override

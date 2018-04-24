@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
+import nts.arc.error.BusinessException;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
@@ -47,25 +48,26 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 	private MailSender mailsender;
 	
 	@Override
-	public String doRemand(String companyID, String appID, Long version, Integer order, String returnReason) {
+	public MailSenderResult doRemand(String companyID, String appID, Long version, Integer order, String returnReason) {
 		Application_New application = applicationRepository.findByID(companyID, appID).get();
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
+		MailSenderResult mailSenderResult = null;
 		if(order!=null){
 			List<String> employeeList = approvalRootStateAdapter.doRemandForApprover(companyID, appID, order);
 			if(appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)){
-				this.getMailSenderResult(employeeList);
+				mailSenderResult = this.getMailSenderResult(employeeList);
 			}
 		} else {
 			approvalRootStateAdapter.doRemandForApplicant(companyID, appID);
 			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.REMAND);
 			application.getReflectionInformation().setStateReflection(ReflectedState_New.REMAND);
 			if(appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)){
-				this.getMailSenderResult(Arrays.asList(application.getEmployeeID()));
+				mailSenderResult = this.getMailSenderResult(Arrays.asList(application.getEmployeeID()));
 			}
 		}
 		application.setReversionReason(new AppReason(returnReason));
 		applicationRepository.updateWithVersion(application);
-		return null;
+		return mailSenderResult;
 	}
 
 	@Override
@@ -82,8 +84,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 				try {
 					mailsender.send("nts", employeeMail, new MailContents("nts mail", "approval mail from NTS"));
 				} catch (SendMailFailedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					throw new BusinessException("Msg_223");
 				}
 				successList.add(employeeName);
 			}

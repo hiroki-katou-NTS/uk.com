@@ -106,7 +106,8 @@ public class ApplicationWebservice extends WebService {
 	@POST
 	@Path("remandapp")
 	public String remandApp(RemandCommand command){
-		return remandApplicationHandler.handle(command);
+		//return remandApplicationHandler.handle(command);
+		return null;
 	}
 	
 	/**
@@ -186,7 +187,7 @@ public class ApplicationWebservice extends WebService {
 	
 	
 	@POST
-	@Path("getAppInfoByAppIdForRemand")
+	@Path("getAppInfoForRemandByAppId")
 	public ApplicationRemandDto getAppInfoByAppIdForRemand(String appID){
 		return this.finderApp.getAppByIdForRemand(appID);
 	}

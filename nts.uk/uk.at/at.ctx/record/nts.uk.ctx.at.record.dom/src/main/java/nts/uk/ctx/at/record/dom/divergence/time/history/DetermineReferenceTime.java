@@ -1,53 +1,51 @@
 package nts.uk.ctx.at.record.dom.divergence.time.history;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import nts.arc.layer.dom.DomainObject;
+
+@Getter
+@Setter
+@AllArgsConstructor
 /**
  * The Class DetermineReferenceTime.
  */
-//基準時間の判定内容
-public class DetermineReferenceTime {
-	
+// 基準時間の判定内容
+public class DetermineReferenceTime extends DomainObject {
+
 	/** The reference time. */
-	//判定した基準時間
+	// 判定した基準時間
 	ReferenceTime referenceTime;
-	//閾値
+	// 閾値
 	/** The threshold. */
-	int threshold;
+	DivergenceReferenceTime threshold;
 
 	/**
 	 * Instantiates a new determine reference time.
-	 *
-	 * @param memento the memento
 	 */
-	public DetermineReferenceTime(DetermineReferrenceTimeGetMemento memento) {
-
-		this.referenceTime = memento.getRefergenceTime();
-		this.threshold = memento.getThreshold();
+	public DetermineReferenceTime() {
+		super();
 	}
 
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(DetermineReferrenceTimeSetMemento memento) {
-
-		memento.setReferenceTime(this.referenceTime);
-		memento.setThreshold(this.threshold);
-	}
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((referenceTime == null) ? 0 : referenceTime.hashCode());
-		result = prime * result + threshold;
+		result = prime * result + ((threshold == null) ? 0 : threshold.hashCode());
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -61,7 +59,10 @@ public class DetermineReferenceTime {
 		DetermineReferenceTime other = (DetermineReferenceTime) obj;
 		if (referenceTime != other.referenceTime)
 			return false;
-		if (threshold != other.threshold)
+		if (threshold == null) {
+			if (other.threshold != null)
+				return false;
+		} else if (!threshold.equals(other.threshold))
 			return false;
 		return true;
 	}

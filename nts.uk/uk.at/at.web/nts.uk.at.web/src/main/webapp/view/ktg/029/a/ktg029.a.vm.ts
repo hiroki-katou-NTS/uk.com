@@ -38,9 +38,9 @@ module nts.uk.at.view.ktg029.a.viewmodel {
 
         }
         
-        openKDL003Dialog() {
+        openKDL033Dialog() {
             let self = this;
-            nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/kdl/033/a/index.xhtml').onClosed(function(): any {
             });
 
         }
@@ -59,9 +59,9 @@ module nts.uk.at.view.ktg029.a.viewmodel {
 
         }
         
-        openKDL007Dialog() {
+        openKDL017Dialog() {
             let self = this;
-            nts.uk.ui.windows.sub.modal('/view/kdl/007/a/index.xhtml').onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/kdl/017/a/index.xhtml').onClosed(function(): any {
             });
 
         }

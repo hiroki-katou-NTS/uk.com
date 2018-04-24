@@ -7,7 +7,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.ApplicationGobackScheInforDto;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ApplicationReflectProcessSche;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ReflectScheDto;
-import nts.uk.ctx.at.schedule.pub.appreflectprocess.AppForLeavePubDto;
+import nts.uk.ctx.at.schedule.pub.appreflectprocess.CommonReflectSchePubParam;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.AppReflectProcessSchePub;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.ApplyTimeAtrPub;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.ChangeAtrAppGobackPub;
@@ -24,7 +24,7 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 				reflectSche.getGoBackDirectly().getWorkTypeCD().v(),
 				reflectSche.getGoBackDirectly().getSiftCD().v(),
 				reflectSche.getGoBackDirectly().getWorkTimeStart1().v(),
-				reflectSche.getGoBackDirectly().getWorkTimeEnd2().v(),
+				reflectSche.getGoBackDirectly().getWorkTimeEnd1().v(),
 				reflectSche.getGoBackDirectly().getWorkTimeStart2().v(),
 				reflectSche.getGoBackDirectly().getWorkTimeEnd2().v());
 		ApplicationReflectParamScheDto dto = new ApplicationReflectParamScheDto(reflectSche.getEmployeeId(), 
@@ -37,8 +37,25 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 
 	@Override
 	public void forleaveReflect(ReflectScheDto reflectSche) {
-		AppForLeavePubDto leavePra = new AppForLeavePubDto(reflectSche.getEmployeeId(), reflectSche.getDatePara(), reflectSche.getForLeave().getWorkTypeCode().v());
+		CommonReflectSchePubParam leavePra = new CommonReflectSchePubParam(reflectSche.getEmployeeId(),
+				reflectSche.getDatePara(),
+				reflectSche.getForLeave().getWorkTypeCode().v(),
+				reflectSche.getForLeave().getWorkTimeCode().v(),
+				null,
+				null);
 		appReflectSchePub.appForLeaveSche(leavePra);
+	}
+
+	@Override
+	public boolean workChangeReflect(ReflectScheDto reflectSche) {
+		CommonReflectSchePubParam workChangePara = new CommonReflectSchePubParam(reflectSche.getEmployeeId(), 
+				reflectSche.getDatePara(), 
+				reflectSche.getWorkChange().getWorkTypeCd(), 
+				reflectSche.getWorkChange().getWorkTimeCd(),
+				reflectSche.getAppInfor().getStartDate() == null ? null : reflectSche.getAppInfor().getStartDate().get(),
+				reflectSche.getAppInfor().getEndDate() == null ? null : reflectSche.getAppInfor().getEndDate().get());
+		
+		return appReflectSchePub.appWorkChangeReflect(workChangePara);
 	}
 	
 	

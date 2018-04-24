@@ -124,15 +124,18 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 		Optional<EmpInfoImport> empInfor = employeeInfoAdapter.getByComnyIDAndEmployeeCD(companyID, employeeCD);
 		if (empInfor.isPresent()) {
 			// 参照可能な社員かを判定する（職場）
-			List<Integer> param = new ArrayList<>();
-			param.add(RoleType.EMPLOYMENT.value);
-			boolean result = determineEmpCanRefer.checkDetermineEmpCanRefer(GeneralDate.today(), empInfor.get().getEmployeeId(), param);
+			boolean result = determineEmpCanRefer.checkDetermineEmpCanRefer(GeneralDate.today(), empInfor.get().getEmployeeId(), RoleType.EMPLOYMENT.value);
 			if (result == true) {
-				return Optional.of((new EmpWithRangeLogin(companyID, employeeCD)));
+				return Optional.of((new EmpWithRangeLogin(
+						empInfor.get().getPerName(),
+						empInfor.get().getCompanyId(),
+						empInfor.get().getPersonId(),
+						empInfor.get().getEmployeeCode(),
+						empInfor.get().getEmployeeId())));
 			} else
 				return Optional.empty();
 		}
-		return this.findByCompanyIDAndEmpCD(companyID, employeeCD);
+		return Optional.empty();
 	}
 
 	@Override
@@ -144,11 +147,16 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 			// 指定社員が基準日に承認権限を持っているかチェックする Lay request 305 tu domain service
 			boolean result = canApprovalOnBaseDateService.canApprovalOnBaseDate(empInfor.get().getCompanyId(), empInfor.get().getEmployeeId(), GeneralDate.today());
 			if (result == true) {
-				return Optional.of((new EmpWithRangeLogin(companyID, employeeCD)));
+				return Optional.of((new EmpWithRangeLogin(
+						empInfor.get().getPerName(),
+						empInfor.get().getCompanyId(),
+						empInfor.get().getPersonId(),
+						empInfor.get().getEmployeeCode(),
+						empInfor.get().getEmployeeId())));
 			} else
 				return Optional.empty();
 		}
-		return this.getByComIDAndEmpCD(companyID, employeeCD);
+		return Optional.empty();
 	}
 
 }

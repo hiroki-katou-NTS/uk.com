@@ -8,6 +8,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
         items: KnockoutObservableArray<any>;
         selectedId: KnockoutObservable<number>;
         enable: KnockoutObservable<boolean>;
+        checked: KnockoutObservable<boolean>;
         selectedValue: KnockoutObservable<number> = ko.observable(0);
         isDailyComfirm: KnockoutObservable<boolean>;
         startDate: KnockoutObservable<Date>;
@@ -20,7 +21,6 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 
         //Control component
         baseDate: KnockoutObservable<Date>;
-        selectedWorkplaceId: KnockoutObservableArray<String>;
         selectType: KnockoutObservable<number> = ko.observable(1);
         multiSelectedWorkplaceId: KnockoutObservableArray<string>;
         alreadySettingList: KnockoutObservableArray<any>;
@@ -43,7 +43,6 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 
             //Control component
             self.baseDate = ko.observable(new Date());
-            self.selectedWorkplaceId = ko.observable('');
             self.multiSelectedWorkplaceId = ko.observableArray([]);
             self.alreadySettingList = ko.observableArray([]);
             self.treeGrid = {
@@ -106,9 +105,9 @@ module nts.uk.at.view.kaf018.a.viewmodel {
             var self = this;
             lstWkp = self.flattenWkpTree(_.cloneDeep($('#tree-grid').getDataList()));
             nts.uk.ui.block.invisible();
-            nts.uk.at.view.kaf018.a.service.getAll(lstWkp.map((wkp) => { return wkp.workplaceId; })).done((dataResults: Array<IApplicationApprovalSettingWkp>) => {
-                self.alreadySettingList(dataResults.map((data) => { return { workplaceId: data.wkpId, isAlreadySetting: true, }; }));
-                self.selectedWorkplaceId.valueHasMutated();
+            nts.uk.at.view.kaf018.a.service.getAll(lstWkp.map((wkp) => { return wkp.workplaceId; })).done((dataResults: Array<model.IApplicationApprovalSettingWkp>) => {
+                self.alreadySettingList(dataResults.map((data) => { return { workplaceId: data.wkpId, isAlreadySetting: true}; }));
+                self.multiSelectedWorkplaceId.valueHasMutated();
                 nts.uk.ui.block.clear();
             });
         }
@@ -139,7 +138,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                 closureName: self.closureName(),
                 listWorkplaceId: self.multiSelectedWorkplaceId(),
                 isConfirmData: self.isDailyComfirm,
-                listEmployeeCode: self.listEmployeeCode()
+                listEmployeeCode: self.listEmployeeCode(),
             };
             if (self.selectedValue() == 0) {
                 nts.uk.request.jump('/view/kaf/018/b/index.xhtml', params);
@@ -177,6 +176,58 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                 this.closureDate = closureDate;
                 this.employeeCodes = employeeCodes;
             }
+        }
+        
+        export interface IApplicationApprovalSettingWkp {
+            // 会社ID
+            companyId: string;
+            // 職場ID
+            wkpId: string;
+            // 選択
+            selectionFlg: number;
+            // 申請承認機能設定
+            approvalFunctionSettingDtoLst: Array<IApprovalFunctionSetting>;
+        }
+        
+        export interface IApprovalFunctionSetting {
+        //申請種類
+        appType: number;
+        //備考
+        memo: string;
+        //利用区分
+        useAtr: number;
+        //休出時間申請の事前必須設定
+        prerequisiteForpauseFlg: number;
+        // 残業申請の事前必須設定
+        otAppSettingFlg: number;
+        //時間年休申請の時刻計算を利用する
+        holidayTimeAppCalFlg: number;
+        // 遅刻早退取消申請の実績取消
+        lateOrLeaveAppCancelFlg: number;
+        //遅刻早退取消申請の実績取消を申請時に選択
+        lateOrLeaveAppSettingFlg: number;
+        //休憩入力欄を表示する
+        breakInputFieldDisFlg: number;
+        //休憩時間を表示する
+        breakTimeDisFlg: number;
+        //出退勤時刻初期表示区分
+        atworkTimeBeginDisFlg: number;
+        //実績から外出を初期表示する
+        goOutTimeBeginDisFlg: number;
+        // 時刻計算利用区分
+        timeCalUseAtr: number;
+        //時間入力利用区分
+        timeInputUseAtr: number;
+        //退勤時刻初期表示区分
+        timeEndDispFlg: number;
+        //指示が必須
+        requiredInstructionFlg: number;
+        //指示利用設定 - 指示区分
+        instructionAtr: number;
+        //指示利用設定 - 備考
+        instructionMemo: string;
+        //指示利用設定 - 利用区分
+        instructionUseAtr: number;
         }
     }
 }

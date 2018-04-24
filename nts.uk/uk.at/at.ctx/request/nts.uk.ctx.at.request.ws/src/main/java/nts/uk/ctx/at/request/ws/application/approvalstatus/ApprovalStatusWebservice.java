@@ -11,14 +11,14 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.RegisterApprovalStatusMailTempCommandHandler;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusActivityData;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusFinder;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusMailTempDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusPeriorDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.EmployeeEmailDto;
-import nts.uk.ctx.at.shared.app.find.workrule.closure.ClosureFinder;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
-import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusActivityDto;
-import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusActivityData;
 
 @Path("at/request/application/approvalstatus")
 @Produces("application/json")
@@ -54,19 +54,13 @@ public class ApprovalStatusWebservice extends WebService {
 	@POST
 	@Path("getEmpMail")
 	public EmployeeEmailDto getEmpMail() {
-		return approvalMailTempFinder.findEmpMailAddr();
+		return null;
 	}
 	
 	@POST
 	@Path("sendTestMail/{mailType}")
-	public boolean sendTestMail(@PathParam("mailType") int mailType) {
+	public SendMailResultOutput sendTestMail(@PathParam("mailType") int mailType) {
 		return approvalMailTempFinder.sendTestMail(mailType);
-	}
-	
-	@POST
-	@Path("getStatusActivity")
-	public List<ApprovalStatusActivityDto> getStatusActivity(ApprovalStatusActivityData wkpInfoDto) {
-		return approvalMailTempFinder.getStatusActivity(wkpInfoDto);
 	}
 	
 	/**
@@ -90,4 +84,20 @@ public class ApprovalStatusWebservice extends WebService {
 	public ApprovalStatusPeriorDto getApprovalStatusPerior(@PathParam("closureId") int closureId, @PathParam("closureDate") int closureDate) {
 		return this.finder.getApprovalStatusPerior(closureId, closureDate);
 	}
+	
+	/**
+	 * getAppSttByWorkpace
+	 */
+	@POST
+	@Path("getAppSttByWorkpace")
+	public List<ApprovalSttAppOutput> getAppSttByWorkpace(ApprovalStatusActivityData param){
+		return finder.getAppSttByWorkpace(param);
+	}
+	
+/*	@POST
+	@Path("getCheckSendMail/")
+	public List<String> getAppSttSendingUnapprovedMail(int empId) {
+		return this.finder.getAppSttSendingUnapprovedMail(listAppSttApp);
+	}*/
+	
 }

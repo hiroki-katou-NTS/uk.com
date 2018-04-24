@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
+import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.BreakTimeZoneSettingOutPut;
 import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -33,14 +34,15 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
+import nts.uk.ctx.at.shared.dom.worktime.algorithm.caltimediff.CalculateTimeDiffService;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicateStateAtr;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicationStatusOfTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDayTimeZoneService;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDeductTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
@@ -53,8 +55,16 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -85,11 +95,24 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 	private ErrMessageInfoRepository errRepo;
 	@Inject
 	private WorkingConditionItemService workingConditionItemService;
+	@Inject 
+	private CalculateTimeDiffService calculateTimeDiffService; 
+	@Inject
+	private WorkTypeRepository workTypeRepo;
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeSettingRepo;
+	
+	@Inject
+	private BreakTimeOfDailyPerformanceRepository breakTimeOfDailyPerformanceRepo;
 
 	@Override
 	public BreakTimeOfDailyPerformance reflectBreakTime(String companyId, String employeeID, GeneralDate processingDate,
 			String empCalAndSumExecLogID, TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance,
 			WorkInfoOfDailyPerformance WorkInfo) {
+		Optional<BreakTimeOfDailyPerformance> breakOpt = this.breakTimeOfDailyPerformanceRepo.find(employeeID, processingDate, 0);
+		if(breakOpt.isPresent()){
+			return null;
+		}
 		BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut = new BreakTimeZoneSettingOutPut();
 		// 休憩時間帯設定を確認する
 		List<TimeLeavingWork> timeLeavingWorks = null;
@@ -202,12 +225,10 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		if (checkWorkDay.value == 0) {
 			return false;
 		} else {
-			Optional<SingleDaySchedule> holidayWorkScheduleOptional = this.workingConditionItemService
-					.getHolidayWorkSchedule(companyId, WorkInfo.getEmployeeId(), WorkInfo.getYmd(),
-							WorkInfo.getRecordInfo().getWorkTypeCode().v());
-
+			//休出かどうかの判断
+			boolean checkHolidayOrNot = this.checkHolidayOrNot(companyId,WorkInfo.getRecordInfo().getWorkTypeCode().v());
 			String weekdayHolidayClassification = null;
-			if (!holidayWorkScheduleOptional.isPresent()) {
+			if (!checkHolidayOrNot) {
 				weekdayHolidayClassification = "平日";
 			} else {
 				weekdayHolidayClassification = "休日";
@@ -324,9 +345,10 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 			GeneralDate processingDate, String empCalAndSumExecLogID, String weekdayHolidayClassification,
 			WorkInfoOfDailyPerformance WorkInfo, BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut,
 			WorkStyle checkWorkDay) {
-
+		
 		if (WorkInfo != null && WorkInfo.getScheduleTimeSheets() != null
 				&& !WorkInfo.getScheduleTimeSheets().isEmpty()) {
+			TimeWithDayAttr attendance =null;
 			boolean workNoIsOne = false;
 			List<ScheduleTimeSheet> scheduleTimeSheets = WorkInfo.getScheduleTimeSheets();
 			int size = scheduleTimeSheets.size();
@@ -334,12 +356,38 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 				ScheduleTimeSheet scheduleTimeSheet = scheduleTimeSheets.get(i);
 				if (scheduleTimeSheet.getWorkNo().v() == 1) {
 					workNoIsOne = true;
+					//日別実績の勤務情報．勤務予定時間帯．出勤
+					 attendance = scheduleTimeSheet.getAttendance();
 					break;
 				}
 			}
-			if (workNoIsOne) {
+			WorkTypeCode workTypeCode = WorkInfo.getRecordInfo().getWorkTypeCode();
+			DailyWork dailyWork =null;
+			Optional<WorkType> findByPK = this.workTypeRepo.findByPK(companyId,workTypeCode.v());
+			if(findByPK.isPresent()){
+				//勤務種類．1日の勤務
+				 dailyWork = findByPK.get().getDailyWork();
+			}
+			WorkTimeCode workTimeCode = WorkInfo.getRecordInfo().getWorkTimeCode();
+			Optional<PredetemineTimeSetting> findByWorkTimeCode = this.predetemineTimeSettingRepo.findByWorkTimeCode(companyId, workTimeCode.v());
+			PrescribedTimezoneSetting prescribedTimezoneSetting = null;
+			if(findByWorkTimeCode.isPresent()){
+				//所定時間設定．所定時間帯
+				prescribedTimezoneSetting=	findByWorkTimeCode.get().getPrescribedTimezoneSetting();
+				
+			}
+			Optional<DiffTimeWorkSetting> DiffTimeWorkSetting = this.diffTimeWorkSettingRepo.find(companyId, workTimeCode.v());
+			boolean isHasDiffTimeWorkSetting = false;
+			if(DiffTimeWorkSetting.isPresent()){
+				isHasDiffTimeWorkSetting=true;
+			}
+			
+			if (workNoIsOne && dailyWork!=null && prescribedTimezoneSetting!=null && isHasDiffTimeWorkSetting) {
 
 				// 時差勤務時間の計算 xử ly chung newwaves
+				calculateTimeDiffService.caculateJoggingWorkTime(attendance, dailyWork, prescribedTimezoneSetting);
+				
+				
 				// 時差勤務の時刻補正 xu ly chung newwaves
 				// fixed errorAlarm = false
 				boolean errorAlarm = false;
@@ -531,6 +579,24 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		}
 		breakTimeZoneSettingOutPut.setLstTimezone(lstTimezone);
 		return true;
+	}
+	
+	
+	// 休出かどうかの判断
+	public boolean checkHolidayOrNot(String companyId, String workTypeCd) {
+		Optional<WorkType> WorkTypeOptional = this.workTypeRepo.findByPK(companyId, workTypeCd);
+		if (!WorkTypeOptional.isPresent()) {
+			return false;
+		}
+		// check null?
+		WorkType workType = WorkTypeOptional.get();
+		DailyWork dailyWork = workType.getDailyWork();
+		WorkTypeClassification oneDay = dailyWork.getOneDay();
+		// 休日出勤
+		if (oneDay.value == 11) {
+			return true;
+		}
+		return false;
 	}
 
 }

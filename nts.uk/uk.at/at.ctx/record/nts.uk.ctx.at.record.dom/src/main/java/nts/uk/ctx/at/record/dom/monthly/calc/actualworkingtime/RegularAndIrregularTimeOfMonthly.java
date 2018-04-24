@@ -25,7 +25,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacati
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetAddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtion;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
@@ -124,7 +124,7 @@ public class RegularAndIrregularTimeOfMonthly {
 			MonthlyAggregateAtr aggregateAtr,
 			AggrSettingMonthly aggrSettingMonthly,
 			LegalTransferOrderSetOfAggrMonthly legalTransferOrderSet,
-			Optional<HolidayAddtion> holidayAdditionOpt,
+			Optional<HolidayAddtionSet> holidayAdditionOpt,
 			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
 			Map<GeneralDate, WorkInformation> workInformationOfDailyMap,
 			AttendanceTimeMonth statutoryWorkingTimeWeek,
@@ -281,7 +281,7 @@ public class RegularAndIrregularTimeOfMonthly {
 			MonthlyAggregateAtr aggregateAtr,
 			GeneralDate procYmd,
 			AggrSettingMonthly aggrSettingMonthly,
-			Optional<HolidayAddtion> holidayAdditionOpt,
+			Optional<HolidayAddtionSet> holidayAdditionOpt,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			AttendanceTimeMonth statutoryWorkingTimeWeek,
 			WeekStart weekStart){
@@ -471,7 +471,7 @@ public class RegularAndIrregularTimeOfMonthly {
 			String workplaceId,
 			String employmentCd,
 			AggrSettingMonthly aggrSettingMonthly,
-			Optional<HolidayAddtion> holidayAdditionOpt,
+			Optional<HolidayAddtionSet> holidayAdditionOpt,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			AttendanceTimeMonth statutoryWorkingTimeMonth,
 			RepositoriesRequiredByMonthlyAggr repositories){
@@ -576,7 +576,7 @@ public class RegularAndIrregularTimeOfMonthly {
 			DatePeriod datePeriod,
 			boolean isRetireMonth,
 			LegalAggrSetOfIrg legalAggrSetOfIrg,
-			Optional<HolidayAddtion> holidayAdditionOpt,
+			Optional<HolidayAddtionSet> holidayAdditionOpt,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			AttendanceTimeMonth statutoryWorkingTimeMonth,
 			RepositoriesRequiredByMonthlyAggr repositories){

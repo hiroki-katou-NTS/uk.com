@@ -67,6 +67,25 @@ subprojects {
         into "${project(':com.web').projectDir}/../../uk.repo"
         include "nts*.jar"
 	}
+
+	task initd (dependsOn: [
+		':shr:nts.uk.shr.com:upver',
+		':shr:nts.uk.shr.find:upver',
+		':query:nts.uk.query.pub:upver',
+		':wk.ctx:nts.uk.ctx.workflow.app:upver',
+		':wk.ctx:nts.uk.ctx.workflow.pub:upver',
+		':com.ctx:bs:company:nts.uk.ctx.bs.company.dom:upver',
+		':com.ctx:bs:company:nts.uk.ctx.bs.company.infra:upver',
+		':com.ctx:bs:company:nts.uk.ctx.bs.company.pub:upver',
+		':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom:upver',
+		':com.ctx:bs:employee:nts.uk.ctx.bs.employee.app:upver',
+		':com.ctx:bs:employee:nts.uk.ctx.bs.employee.infra:upver',
+		':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub:upver',
+		':com.ctx:bs:person:nts.uk.ctx.bs.person.dom:upver',
+		':com.ctx:bs:person:nts.uk.ctx.bs.person.infra:upver',
+		':com.ctx:bs:person:nts.uk.ctx.bs.person.pub:upver',
+		':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub:upver'
+	]) { }
 	
 	dependencies {
 	   // Apache commons lang
@@ -1298,6 +1317,7 @@ project (':query:nts.uk.query.pubimp') {
 project (':pub:nts.uk.pub.spr') {
 	dependencies {
 		compile group: 'at.request', name: 'nts.uk.ctx.at.request.pub', version: version
+		compile group: 'at.record', name: 'nts.uk.ctx.at.record.pub', version: version
 		compile project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 		compile project (':wk.ctx:nts.uk.ctx.workflow.pub')
 		compile project (':wk.ctx:nts.uk.ctx.workflow.pub')

@@ -87,8 +87,8 @@ public class JpaCompanyDivergenceReferenceTimeSetMemento implements CompanyDiver
 	 */
 	@Override
 	public void setDivergenceReferenceTimeValue(Optional<DivergenceReferenceTimeValue> divergenceReferenceTimeValue) {
-		BigDecimal alarmTime = BigDecimal.ZERO;
-		BigDecimal errorTime = BigDecimal.ZERO;
+		BigDecimal alarmTime = null;
+		BigDecimal errorTime = null;
 
 		if (divergenceReferenceTimeValue.isPresent()) {
 			if (divergenceReferenceTimeValue.get().getAlarmTime().isPresent()) {

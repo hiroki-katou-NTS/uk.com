@@ -143,7 +143,7 @@ module nts.uk.com.view.cmf001.r.viewmodel {
             let self = this;
             confirm({ messageId: "Msg_912" }).ifYes(() => {
                 nts.uk.ui.block.invisible();
-                service.exportDatatoCsv(self.dataError()).fail(function(res: any) {
+                service.exportDatatoCsv(self.dataError()[0]).fail(function(res: any) {
                     alertError({ messageId: res.messageId });
                 }).always(function() {
                     nts.uk.ui.block.clear();

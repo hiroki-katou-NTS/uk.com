@@ -40,14 +40,14 @@ public class SprLoginFormImpl implements SprLoginFormService {
 		String companyID = "000000000000-0001";
 		
 		// アルゴリズム「パラメータチェック」を実行する
-		this.paramCheck(menuCD, loginEmployeeCD, employeeCD, startTime, endTime, date, selectType, appID, reason);
+		String employeeID = this.paramCheck(menuCD, loginEmployeeCD, employeeCD, startTime, endTime, date, selectType, appID, reason);
 		
 		// （基幹・社員Export）アルゴリズム「「会社ID」「社員コード」より社員基本情報を取得」を実行する　RequestList No.18
 		Optional<EmpSprExport> opEmployeeSpr = employeeSprPub.getEmployeeID(companyID, loginEmployeeCD);
 		if(!opEmployeeSpr.isPresent()){
 			throw new BusinessException("Msg_301");
 		}
-		return this.generateSession(loginEmployeeCD, opEmployeeSpr.get().getEmployeeID(), opEmployeeSpr.get().getPersonID());
+		return this.generateSession(loginEmployeeCD, opEmployeeSpr.get().getEmployeeID(), opEmployeeSpr.get().getPersonID(), employeeID);
 	}
 
 	@Override
@@ -61,15 +61,15 @@ public class SprLoginFormImpl implements SprLoginFormService {
 		switch (menuValue) {
 		case 1:
 			// アルゴリズム「パラメータチェック（事前早出申請）」を実行する
-			loginParamCheck.checkParamPreApp(employeeCD, startTime, date, reason);
+			employeeID = loginParamCheck.checkParamPreApp(employeeCD, startTime, date, reason);
 			break;
 		case 2:
 			// アルゴリズム「パラメータチェック（事前残業申請）」を実行する
-			loginParamCheck.checkParamOvertime(employeeCD, endTime, date, reason);
+			employeeID = loginParamCheck.checkParamOvertime(employeeCD, endTime, date, reason);
 			break;
 		case 3: 
 			// アルゴリズム「パラメータチェック（日別実績の修正）」を実行する
-			loginParamCheck.checkParamAdjustDaily(employeeCD, startTime, endTime, date, reason);
+			employeeID = loginParamCheck.checkParamAdjustDaily(employeeCD, startTime, endTime, date, reason);
 			break;
 		case 4: 
 			// アルゴリズム「パラメータチェック（承認一覧）」を実行する
@@ -111,7 +111,7 @@ public class SprLoginFormImpl implements SprLoginFormService {
 	}
 
 	@Override
-	public LoginUserContextSpr generateSession(String employeeCD, String employeeID, String personID) {
+	public LoginUserContextSpr generateSession(String loginEmployeeCD, String loginEmployeeID, String personID, String employeeID) {
 		// （権限管理Export）アルゴリズム「紐付け先個人IDからユーザを取得する」を実行する(thuc hien thuat toan 「紐付け先個人IDからユーザを取得する」 )
 		Optional<UserSprExport> opUserSpr = userSprPub.getUserSpr(personID);
 		if(!opUserSpr.isPresent()){
@@ -126,9 +126,10 @@ public class SprLoginFormImpl implements SprLoginFormService {
 				"000000000000-0001", // 固定
 				"0001", // 固定
 				personID, 
-				employeeID, 
-				employeeCD, 
-				roleID);
+				loginEmployeeCD, 
+				loginEmployeeID, 
+				roleID,
+				employeeID);
 		
 	}
 

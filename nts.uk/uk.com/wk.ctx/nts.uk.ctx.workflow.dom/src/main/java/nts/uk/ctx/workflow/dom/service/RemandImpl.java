@@ -65,7 +65,7 @@ public class RemandImpl implements RemandService {
 		});
 		approvalRootStateRepository.update(approvalRootState);
 		// 送信者ID＝送信先リスト
-		ApprovalPhaseState approvalPhaseState = approvalRootState.getListApprovalPhaseState().get(5-order);
+		ApprovalPhaseState approvalPhaseState = approvalRootState.getListApprovalPhaseState().get(listApprovalPhase.size()-order);
 		List<String> approvers = judgmentApprovalStatusService.getApproverFromPhase(approvalPhaseState);
 		ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, approvers);
 		approvers.addAll(approvalRepresenterOutput.getListAgent());

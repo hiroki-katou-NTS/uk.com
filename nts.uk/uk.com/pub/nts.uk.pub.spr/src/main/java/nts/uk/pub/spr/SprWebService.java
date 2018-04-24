@@ -61,25 +61,47 @@ public class SprWebService {
 		paramsMap.put("menu", SprStubHelper.formatParam(menuCode));
 		paramsMap.put("loginemployeeCode", SprStubHelper.formatParam(loginEmployeeCode));
 		paramsMap.put("employeeCode", SprStubHelper.formatParam(targetEmployeeCode));
-		paramsMap.put("starttime", SprStubHelper.formatParamTime(startTime));
+		paramsMap.put("", SprStubHelper.formatParamTime(startTime));
 		paramsMap.put("endtime", SprStubHelper.formatParamTime(endTime));
 		paramsMap.put("date", SprStubHelper.formatParam(targetDate));
 		paramsMap.put("selecttype", SprStubHelper.formatParam(selectType));
 		paramsMap.put("applicationID", SprStubHelper.formatParam(applicationID));
+		
+		val paramsValue = new LinkedHashMap<String, String>();
+		paramsValue.put("menu", menuCode);
+		paramsValue.put("loginemployeeCode", loginEmployeeCode);
+		paramsValue.put("employeeCode", targetEmployeeCode);
+		paramsValue.put("starttime", startTime);
+		paramsValue.put("endtime", endTime);
+		paramsValue.put("date", targetDate);
+		paramsValue.put("selecttype", selectType);
+		paramsValue.put("applicationID", applicationID);
+		paramsValue.put("reason", reason);
+		paramsValue.put("userID", loginUserContextSpr.getUserID());
+		paramsValue.put("contractCD", loginUserContextSpr.getContractCD());
+		paramsValue.put("companyID", loginUserContextSpr.getCompanyID());
+		paramsValue.put("companyCD", loginUserContextSpr.getCompanyCD());
+		paramsValue.put("personID", loginUserContextSpr.getPersonID());
+		paramsValue.put("loginEmployeeID", loginUserContextSpr.getLoginEmployeeID());
+		paramsValue.put("roleID", loginUserContextSpr.getRoleID());
+		paramsValue.put("employeeID", loginUserContextSpr.getEmployeeID());
 		
 		val html = new StringBuilder()
 				.append("<!DOCTYPE html>")
 				.append("<html><body>");
 		paramsMap.forEach((name, value) -> {
 			html.append(name + " : " + value + "<br/>");
+			
 		});
+		
+		val paramStringValue = new StringBuilder();
+		paramsValue.forEach((name,value)->{
+			paramStringValue.append(name+":'"+value+"',");
+		});
+		
 		html.append("<script>");
-		html.append("window.location.href = \"http://localhost:8080/nts.uk.at.web/view/kdw/003/a/index.xhtml"
-				+ "?contractCode=000000000000"
-				+ "&password=123456"
-				+ "&companyCode=0001"
-				+ "&employeeCode=000001"
-				+ "$password=0\";");
+		html.append("window.sessionStorage.setItem(\"paramSPR\", JSON.stringify({"+paramStringValue+"}));");
+		html.append("window.location.href = '../../../../view/spr/index.xhtml'");
 		html.append("</script>");
 		html.append("</body></html>");
 		

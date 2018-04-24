@@ -2675,6 +2675,9 @@ module nts.uk.com.view.cmm018.a {
                 let self = this;
                 let histLast = self.findHistBestNew(appType, employRootAtr, self.tabSelectedB());
                 let value = vmbase.ProcessHandler.findAppbyValue(appType, employRootAtr, self.lstNameAppType());
+                if(value == undefined){
+                    value = new vmbase.ApplicationType(null, '共通ルート',0 );
+                }
                 let b = new vmbase.ApprovalPhaseDto([],'','',0,'',0,0);
                 if(histLast == null){
                     self.comRoot(new vmbase.CompanyAppRootADto(false, value.employRootAtr, value.value, value.localizedName, '', '','', b, b, b, b, b)); 

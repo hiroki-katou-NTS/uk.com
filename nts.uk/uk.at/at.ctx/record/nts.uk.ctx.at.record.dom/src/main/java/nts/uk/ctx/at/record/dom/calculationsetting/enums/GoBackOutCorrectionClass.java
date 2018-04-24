@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 
 /**
  * 
- * @author nampt
  * 直行直帰外出補正区分
  */
 @AllArgsConstructor

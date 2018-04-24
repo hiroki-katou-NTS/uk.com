@@ -82,7 +82,7 @@
 							<!-- L2_6条件値１_1 --> 
 							<com:ko-if
 								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.NUMERIC">
-								<input tabindex="2" class="numberCondition"
+								<input tabindex="2" class="numberCondition condition1"
 									data-bind="ntsNumberEditor: {value: numberConditionValue1, 
 														     enable: inputMode &amp;&amp; enabledCond1,
 														     constraint: 'AcceptanceConditionValue', 
@@ -93,10 +93,10 @@
 														     optionsText: 'name'}" />
 							</com:ko-if> 
 							
-							<!-- L2_8条件値1_2--> 
+							<!-- L2_9条件値1_2--> 
 							<com:ko-if
 								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.CHARACTER">
-								<input tabindex="4" class="characterCondition"
+								<input tabindex="4" class="characterCondition condition1"
 									data-bind="ntsTextEditor: {value: characterConditionValue1, 
 															 enable: inputMode &amp;&amp; enabledCond1,
 															 option: {width: '177px'},
@@ -106,10 +106,10 @@
 															 optionsText: 'name'}" />
 							</com:ko-if> 
 							
-							<!-- L2_8条件値1_3 --> 
+							<!-- L2_11条件値1_3 --> 
 							<com:ko-if
 								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.DATE">
-								<div tabindex="6" class="dateCondition"
+								<div tabindex="6" class="dateCondition condition1"
 									data-bind="ntsDatePicker: {value: dateConditionValue1, 
 							                                 enable: inputMode &amp;&amp; enabledCond1,
 							                                 dateFormat: 'YYYY/MM/DD', 
@@ -118,10 +118,10 @@
 							                                 name: '#[CMF001_390]' }" />
 							</com:ko-if> 
 							
-							<!-- L2_8条件値1_4 --> 
+							<!-- L2_13条件値1_4 --> 
 							<com:ko-if
 								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.INS_TIME">
-								<input tabindex="8" class="timeMomentCondition"
+								<input tabindex="8" class="timeMomentCondition condition1"
 									data-bind="ntsTimeEditor: {value: timeMomentConditionValue1, 
 														     inputFormat: 'time',
 														     mode: 'time',
@@ -132,10 +132,10 @@
 															 optionsText: 'name'}" />
 							</com:ko-if> 
 							
-							<!-- L2_8条件値1_5 --> 
+							<!-- L2_15条件値1_5 --> 
 							<com:ko-if
 								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.TIME">
-								<input tabindex="10" class="timeCondition"
+								<input tabindex="10" class="timeCondition condition1"
 									data-bind="ntsTimeEditor: {value: timeConditionValue1, 
 														     inputFormat: 'time',
 														     mode: 'time',
@@ -150,7 +150,7 @@
 					<!-- row4 -->
 					<tr>
 						<td>
-							<!-- L2_7条件値２（ラベル） -->
+							<!-- L2_8条件値２（ラベル） -->
 							<div class="form-label enable}">
 								<label>#{i18n.getText('CMF001_391')}</label>
 							</div>
@@ -159,7 +159,7 @@
 							<!-- L2_8条件値２_1 --> 
 							<com:ko-if
 								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.NUMERIC">
-								<input tabindex="3" class="numberCondition"
+								<input tabindex="3" class="numberCondition condition2"
 									data-bind="ntsNumberEditor: {value: numberConditionValue2, 
 															 enable: inputMode &amp;&amp; enabledCond2,
 															 constraint: 'AcceptanceConditionValue',  
@@ -170,10 +170,10 @@
 
 							</com:ko-if> 
 							
-							<!-- L2_8条件値２_2 --> 
+							<!-- L2_10条件値２_2 --> 
 							<com:ko-if
 								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.CHARACTER">
-								<input tabindex="5" class="characterCondition"
+								<input tabindex="5" class="characterCondition condition2"
 									data-bind="ntsTextEditor: {value: characterConditionValue2, 
 															 enable: inputMode &amp;&amp; enabledCond2,
 															 option: {width: '177px'},
@@ -182,10 +182,10 @@
 															 required: requiredCond2}" />
 							</com:ko-if> 
 							
-							<!-- L2_8条件値２_3 --> 
+							<!-- L2_12条件値２_3 --> 
 							<com:ko-if
 								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.DATE">
-								<div tabindex="7" class="dateCondition"
+								<div tabindex="7" class="dateCondition condition2"
 									data-bind="ntsDatePicker: {value: dateConditionValue2, 
 							                                 enable: inputMode &amp;&amp; enabledCond2,
 							                                 dateFormat: 'YYYY/MM/DD',
@@ -194,10 +194,10 @@
 							                                 required: requiredCond2}" />
 							</com:ko-if> 
 							
-							<!-- L2_8条件値２_4 --> 
+							<!-- L2_14条件値２_4 --> 
 							<com:ko-if
 								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.INS_TIME">
-								<input tabindex="9" class="timeMomentCondition"
+								<input tabindex="9" class="timeMomentCondition condition2"
 									data-bind="ntsTimeEditor: {value: timeMomentConditionValue2, 
 															 inputFormat: 'time', 
 															 mode: 'time',
@@ -207,10 +207,10 @@
 															 required: requiredCond2}" />
 							</com:ko-if> 
 							
-							<!-- L2_8条件値２_5 --> 
+							<!-- L2_16条件値２_5 --> 
 							<com:ko-if
 								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.TIME">
-								<input tabindex="11" class="timeCondition"
+								<input tabindex="11" class="timeCondition condition2"
 									data-bind="ntsTimeEditor: {value: timeConditionValue2,
 															 inputFormat: 'time', 
 															 mode: 'time',

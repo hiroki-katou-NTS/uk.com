@@ -6,6 +6,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
     import common = nts.uk.at.view.kaf011.shr.common;
     import service = nts.uk.at.view.kaf011.shr.service;
     import block = nts.uk.ui.block;
+    import jump = nts.uk.request.jump;
 
     export class ViewModel {
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
@@ -22,7 +23,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
         ]);
         appComSelectedCode: KnockoutObservable<number> = ko.observable(0);
 
-        appDate: KnockoutObservable<String> = ko.observable(moment().format('yyyy/MM/dd'));
+        appDate: KnockoutObservable<Date> = ko.observable(moment().toDate());
 
         recWk: KnockoutObservable<common.AppItems> = ko.observable(new common.AppItems());
 
@@ -52,7 +53,17 @@ module nts.uk.at.view.kaf011.a.screenModel {
 
         constructor() {
             let self = this;
+            self.appComSelectedCode.subscribe((newCode) => {
+                if (newCode == 0) { return; };
+                if (newCode == 1) {
+                    $("#absDatePinker").ntsError("clear");
+                }
+                if (newCode == 2) {
+                    $("#recDatePicker").ntsError("clear");
+                    $("#recTime1Start ,#recTime1End").ntsError("clear");
+                }
 
+            });
         }
 
 
@@ -74,15 +85,26 @@ module nts.uk.at.view.kaf011.a.screenModel {
             }).always(() => {
                 block.clear();
                 dfd.resolve();
-
+                $("#recDatePicker").focus();
             });
             return dfd.promise();
         }
 
+
+
         clearData() {
             let self = this;
-            self.recWk(new common.AppItems());
-            self.absWk(new common.AppItems());
+            self.recWk().wkTime1(new common.WorkingHour());
+            self.recWk().wkTime2(new common.WorkingHour());
+            self.recWk().wkTimeName('');
+            self.recWk().wkTimeCD('');
+            self.recWk().wkText('');
+
+            self.absWk().wkTime1(new common.WorkingHour());
+            self.absWk().wkTime2(new common.WorkingHour());
+            self.absWk().wkTimeName('');
+            self.absWk().wkTimeCD('');
+            self.absWk().wkText('');
             self.reason('');
         }
 
@@ -111,13 +133,11 @@ module nts.uk.at.view.kaf011.a.screenModel {
         }
         validate() {
 
-            $(".combo-box").trigger("validate");
+            $(".combo-box ,.nts-input").trigger("validate");
 
         }
 
         register() {
-
-
             let self = this,
                 saveCmd: common.ISaveHolidayShipmentCommand = {
                     recCmd: ko.mapping.toJS(self.recWk()),
@@ -125,29 +145,58 @@ module nts.uk.at.view.kaf011.a.screenModel {
                     comType: self.appComSelectedCode(),
                     usedDays: 1,
                     appCmd: {
-                        appReasonID: self.appReasonSelectedID(),
+                        appReasonText: '',
                         applicationReason: self.reason(),
                         prePostAtr: self.prePostSelectedCode(),
                         enteredPersonSID: self.employeeID(),
                         appVersion: 0
                         ,
                     }
-                };
+                },
+                selectedReason = _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() }),
+                appReason = self.getReason(self.appReasonSelectedID(),
+                    self.appReasons(),
+                    self.reason());
 
+            if (selectedReason) {
+                saveCmd.appCmd.appReasonText = selectedReason.reasonTemp
+            }
+
+            if (!nts.uk.at.view.kaf000.shr.model.CommonProcess.checklenghtReason(appReason, "#appReason")) {
+                return;
+            }
             saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;
+
+
             self.validate();
             if (nts.uk.ui.errors.hasError()) { return; }
             block.invisible();
             service.save(saveCmd).done(() => {
                 dialog({ messageId: 'Msg_15' }).then(function() {
-                    self.clearData();
+                    location.reload();
                 });
             }).fail((error) => {
                 dialog({ messageId: error.messageId, messageParams: error.parameterIds });
-
             }).always(() => {
                 block.clear();
+                $("#recDatePicker").focus();
             });
+        }
+
+        getReason(inputReasonID: string, inputReasonList: Array<any>, detailReason: string): string {
+            let appReason = '';
+            let inputReason: string = '';
+            if (!nts.uk.util.isNullOrEmpty(inputReasonID)) {
+                inputReason = _.find(inputReasonList, { 'reasonID': inputReasonID }).reasonTemp;
+            }
+            if (!nts.uk.util.isNullOrEmpty(inputReason) && !nts.uk.util.isNullOrEmpty(detailReason)) {
+                appReason = inputReason + ":" + detailReason;
+            } else if (!nts.uk.util.isNullOrEmpty(inputReason) && nts.uk.util.isNullOrEmpty(detailReason)) {
+                appReason = inputReason;
+            } else if (nts.uk.util.isNullOrEmpty(inputReason) && !nts.uk.util.isNullOrEmpty(detailReason)) {
+                appReason = detailReason;
+            }
+            return appReason;
         }
 
         openKDL009() {

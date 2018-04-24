@@ -27,13 +27,16 @@ public class LoginUserContextSpr {
 	/** 個人ID */
 	private String personID;
 	
-	/** 社員ID */
-	private String employeeID;
+	/** ログイン社員ID */
+	private String loginEmployeeID;
 	
 	/** 社員コード */
 	private String employeeCD;
 	
 	/** 個人情報のロールID */
 	private String roleID;
+	
+	/** 社員ID */
+	private String employeeID;
 	
 }

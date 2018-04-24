@@ -1,5 +1,4 @@
 package nts.uk.ctx.at.record.pub.dailyperform.appreflect;
-import nts.uk.ctx.at.record.pub.dailyperform.appreflect.absence.AbsenceReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.GobackReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.PreOvertimePubParameter;
 
@@ -46,12 +45,19 @@ public interface AppReflectProcessRecordPub {
 	 * @param isPre : true: 事前申請処理, false: 事後申請処理
 	 * @return
 	 */
-	public AppReflectPubOutput absenceReflect(AbsenceReflectPubParameter param, boolean isPre);
+	public AppReflectPubOutput absenceReflect(CommonReflectPubParameter param, boolean isPre);
 	/**
 	 * 	勤務実績に反映: 事前申請の処理(休日出勤申請)
 	 * @param param
 	 * @return
 	 */
 	public AppReflectPubOutput holidayWorkReflect(HolidayWorkReflectPubPara param);
+	/**
+	 * 勤務変更申請
+	 * @param param
+	 * @param isPre : true: 事前申請処理, false: 事後申請処理
+	 * @return
+	 */
+	public AppReflectPubOutput workChangeReflect(CommonReflectPubParameter param, boolean isPre);
 	
 }

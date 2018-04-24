@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.app.command.application.appabsence;
 import java.util.List;
 
 import lombok.Data;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppForSpecLeaveDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppTimeDigestDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SubDigestionDto;
@@ -31,12 +30,12 @@ public class UpdateAppAbsenceCommand {
 	/**
 	 * 申請.申請日
 	 */
-	private GeneralDate startDate;
+	private String startDate;
 	
 	/**
 	 * 申請.申請日
 	 */
-	private GeneralDate endDate;
+	private String endDate;
 
 	/**
 	 * 申請.申請者

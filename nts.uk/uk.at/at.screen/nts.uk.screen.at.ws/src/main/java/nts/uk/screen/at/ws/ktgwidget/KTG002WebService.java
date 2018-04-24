@@ -15,8 +15,9 @@ public class KTG002WebService {
 	private KTG002QueryProcessor queryProcessor; 
 	
 	@POST
-	@Path("checkDisplay")
-	public boolean checkDisplay(){
-		return queryProcessor.confirmDailyActual();
+	@Path("checkApproved")
+	public boolean checkDataApprove(){
+		return queryProcessor.checkDataApprove();
+		//return true;
 	}
 }

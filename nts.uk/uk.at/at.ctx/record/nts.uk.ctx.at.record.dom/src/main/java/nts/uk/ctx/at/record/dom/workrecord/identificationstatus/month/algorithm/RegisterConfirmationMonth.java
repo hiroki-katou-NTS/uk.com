@@ -26,14 +26,14 @@ public class RegisterConfirmationMonth {
 		param.getSelfConfirm().stream().forEach(data -> {
 			if (data.isSelfConfirm()) {
 				Optional<ConfirmationMonth> confirmMonthOpt = confirmationMonthRepository.findByKey(companyId,
-						data.getEmployeeID(), ClosureId.valueOf(param.getClosureId()));
+						data.getEmployeeID(), ClosureId.valueOf(param.getClosureId()), new Day(param.getClosureDay()), param.getYearMonth());
 				if (!confirmMonthOpt.isPresent()) {
 					confirmationMonthRepository.insert(new ConfirmationMonth(new CompanyId(companyId),
 							data.getEmployeeID(), ClosureId.valueOf(param.getClosureId()),
 							new Day(param.getClosureDay()), param.getYearMonth(), param.getIndentifyYmd()));
 				}
 			} else {
-				confirmationMonthRepository.delete(companyId, data.getEmployeeID(), param.getClosureId());
+				confirmationMonthRepository.delete(companyId, data.getEmployeeID(), param.getClosureId(), param.getClosureDay(), param.getYearMonth().v());
 			}
 		});
 	}

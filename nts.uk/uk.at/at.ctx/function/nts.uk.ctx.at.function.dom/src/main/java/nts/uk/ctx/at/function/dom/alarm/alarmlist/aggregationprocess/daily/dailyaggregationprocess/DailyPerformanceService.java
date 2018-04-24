@@ -149,94 +149,100 @@ public class DailyPerformanceService {
 	
 	
 	
-	private AlarmContentMessage calculateAlarmContentMessage(EmployeeDailyPerErrorImport eDaily, String companyID, Map<String, ErrorAlarmWorkRecordAdapterDto> errorAlarmMap ) {
-		// Attendance name			
-					Map<Integer, DailyAttendanceItem> attendanceNameMap = dailyAttendanceItemNameService.getNameOfDailyAttendanceItem(eDaily.getAttendanceItemList()).stream()
-							.collect(Collectors.toMap(DailyAttendanceItem::getAttendanceItemId, x -> x));
-					// Attendance value
-					AttendanceResultImport attendanceResult= attendanceItemAdapter.getValueOf(eDaily.getEmployeeID(), eDaily.getDate(), eDaily.getAttendanceItemList());
-					List<AttendanceItemValueImport> attendanceValue = attendanceResult.getAttendanceItems()==null? new ArrayList<AttendanceItemValueImport>(): attendanceResult.getAttendanceItems();
-					Map<Integer, AttendanceItemValueImport> mapAttendance = attendanceValue.stream().collect(Collectors.toMap( AttendanceItemValueImport::getItemId, x->x));
-					
-					// アラーム値メッセージ 
-					String alarmItem ="";
-					String alarmContent = "";
-					
-					if(eDaily.getErrorAlarmWorkRecordCode().equals("S001")) {		
-						
-						alarmItem = TextResource.localize("KAL010_2");
-						
-						eDaily.getAttendanceItemList().sort((a, b) ->a.compareTo(b));
-						for(Integer id: eDaily.getAttendanceItemList()) {
-							alarmContent +="/"+ attendanceNameMap.get(id).getAttendanceItemName();
-						}
-						if(alarmContent.length()>0) alarmContent = alarmContent.substring(1, alarmContent.length());
-						
-					}else if(eDaily.getErrorAlarmWorkRecordCode().equals("S004")) {
-						
-						alarmItem = TextResource.localize("KAL010_3");
-						eDaily.getAttendanceItemList().sort((a, b) ->a.compareTo(b));
-						int i=0;
-						for(Integer id: eDaily.getAttendanceItemList()) {
-							i+=1;
-							if(i%2 != 0) {
-								alarmContent +="/"+ attendanceNameMap.get(id).getAttendanceItemName() + ": " + mapAttendance.get(id).getValue();						
-							}else {
-								alarmContent +="、　"+ attendanceNameMap.get(id).getAttendanceItemName() + ": " + mapAttendance.get(id).getValue();
-							}					
-						}
-						if(alarmContent.length()>0) alarmContent = alarmContent.substring(1, alarmContent.length());
-						
-					}else if(eDaily.getErrorAlarmWorkRecordCode().equals("S005")) {
+	private AlarmContentMessage calculateAlarmContentMessage(EmployeeDailyPerErrorImport eDaily, String companyID, Map<String, ErrorAlarmWorkRecordAdapterDto> errorAlarmMap) {
+		// Attendance name
+		Map<Integer, DailyAttendanceItem> attendanceNameMap = dailyAttendanceItemNameService.getNameOfDailyAttendanceItem(eDaily.getAttendanceItemList()).stream()
+				.collect(Collectors.toMap(DailyAttendanceItem::getAttendanceItemId, x -> x));
+		// Attendance value
+		AttendanceResultImport attendanceResult = attendanceItemAdapter.getValueOf(eDaily.getEmployeeID(), eDaily.getDate(), eDaily.getAttendanceItemList());
+		List<AttendanceItemValueImport> attendanceValue = attendanceResult.getAttendanceItems() == null ? new ArrayList<AttendanceItemValueImport>() : attendanceResult.getAttendanceItems();
+		Map<Integer, AttendanceItemValueImport> mapAttendance = attendanceValue.stream().collect(Collectors.toMap(AttendanceItemValueImport::getItemId, x -> x));
 
-						alarmItem = TextResource.localize("KAL010_4");
+		// アラーム値メッセージ
+		String alarmItem = "";
+		String alarmContent = "";
 
-						Optional<String> optWorkTypeCode = recordWorkInfoFunAdapter.getWorkTypeCode(eDaily.getEmployeeID(), eDaily.getDate());
-						if (!optWorkTypeCode.isPresent())
-							throw new RuntimeException("Not found work type code!");
-						Optional<WorkType> optWorkType = workTypeRepository.findByPK(companyID, optWorkTypeCode.get());
-						if (!optWorkType.isPresent())
-							throw new RuntimeException(" WorkType domain not found!");
-						
-						alarmContent =TextResource.localize("KAL010_5", optWorkType.get().getName().v(), mapAttendance.get(16).getValue(), mapAttendance.get(19).getValue());
+		if (eDaily.getErrorAlarmWorkRecordCode().equals("S001")) {
 
-					}else if(eDaily.getErrorAlarmWorkRecordCode().equals("S003")) {
-						
-						alarmItem = TextResource.localize("KAL010_12");
-						eDaily.getAttendanceItemList().sort((a, b) ->a.compareTo(b));
-						
-						
-						int i=0;
-						for(Integer id: eDaily.getAttendanceItemList()) {
-							i+=1;
-							if(i%2 != 0) {
-								alarmContent +="/"+ attendanceNameMap.get(id).getAttendanceItemName();						
-							}else {
-								alarmContent +="、　"+ attendanceNameMap.get(id).getAttendanceItemName();
-							}					
-						}
-						if(alarmContent.length()>0) alarmContent = TextResource.localize("KAL010_2") +" " + alarmContent.substring(1, alarmContent.length());
-						
-						
-					}else if(eDaily.getErrorAlarmWorkRecordCode().equals("S007")) {
-						alarmItem = TextResource.localize("KAL010_68");
-						Integer id = eDaily.getAttendanceItemList().get(0);
-						alarmItem= TextResource.localize("KAL010_69", attendanceNameMap.get(id).getAttendanceItemName(), mapAttendance.get(id).getValue());
-						
-					}else if(eDaily.getErrorAlarmWorkRecordCode().equals("S008")) {
-						alarmItem = TextResource.localize("KAL010_70");
-						Integer id = eDaily.getAttendanceItemList().get(0);
-						alarmItem= TextResource.localize("KAL010_71", attendanceNameMap.get(id).getAttendanceItemName(), mapAttendance.get(id).getValue());
-						
-					}else if(eDaily.getErrorAlarmWorkRecordCode().equals("S006")) {
-						alarmItem = TextResource.localize("KAL010_17");
-						alarmContent = TextResource.localize("KAL010_18");
-					}else {
-						alarmItem = errorAlarmMap.get(eDaily.getErrorAlarmWorkRecordCode()).getName();
-					}
-		
+			alarmItem = TextResource.localize("KAL010_2");
+
+			eDaily.getAttendanceItemList().sort((a, b) -> a.compareTo(b));
+			for (Integer id : eDaily.getAttendanceItemList()) {
+				alarmContent += "/" + attendanceNameMap.get(id).getAttendanceItemName();
+			}
+			if (alarmContent.length() > 0)
+				alarmContent = alarmContent.substring(1, alarmContent.length());
+
+		} else if (eDaily.getErrorAlarmWorkRecordCode().equals("S004")) {
+
+			alarmItem = TextResource.localize("KAL010_3");
+			eDaily.getAttendanceItemList().sort((a, b) -> a.compareTo(b));
+			int i = 0;
+			for (Integer id : eDaily.getAttendanceItemList()) {
+				i += 1;
+				if (i % 2 != 0) {
+					alarmContent += "/" + attendanceNameMap.get(id).getAttendanceItemName() + ": " + formatValueAttendance(mapAttendance.get(id).getValue());
+				} else {
+					alarmContent += "、　" + attendanceNameMap.get(id).getAttendanceItemName() + ": " + formatValueAttendance(mapAttendance.get(id).getValue());
+				}
+			}
+			if (alarmContent.length() > 0)
+				alarmContent = alarmContent.substring(1, alarmContent.length());
+
+		} else if (eDaily.getErrorAlarmWorkRecordCode().equals("S005")) {
+
+			alarmItem = TextResource.localize("KAL010_4");
+
+			Optional<String> optWorkTypeCode = recordWorkInfoFunAdapter.getWorkTypeCode(eDaily.getEmployeeID(), eDaily.getDate());
+			if (!optWorkTypeCode.isPresent())
+				throw new RuntimeException("Not found work type code!");
+			Optional<WorkType> optWorkType = workTypeRepository.findByPK(companyID, optWorkTypeCode.get());
+			if (!optWorkType.isPresent())
+				throw new RuntimeException(" WorkType domain not found!");
+
+			alarmContent = TextResource.localize("KAL010_5", optWorkType.get().getName().v(), formatValueAttendance(mapAttendance.get(16).getValue()),
+					formatValueAttendance(mapAttendance.get(19).getValue()));
+
+		} else if (eDaily.getErrorAlarmWorkRecordCode().equals("S003")) {
+
+			alarmItem = TextResource.localize("KAL010_12");
+			eDaily.getAttendanceItemList().sort((a, b) -> a.compareTo(b));
+
+			int i = 0;
+			for (Integer id : eDaily.getAttendanceItemList()) {
+				i += 1;
+				if (i % 2 != 0) {
+					alarmContent += "/" + attendanceNameMap.get(id).getAttendanceItemName();
+				} else {
+					alarmContent += "、　" + attendanceNameMap.get(id).getAttendanceItemName();
+				}
+			}
+			if (alarmContent.length() > 0)
+				alarmContent = TextResource.localize("KAL010_2") + " " + alarmContent.substring(1, alarmContent.length());
+
+		} else if (eDaily.getErrorAlarmWorkRecordCode().equals("S007")) {
+			alarmItem = TextResource.localize("KAL010_68");
+			Integer id = eDaily.getAttendanceItemList().get(0);
+			alarmItem = TextResource.localize("KAL010_69", attendanceNameMap.get(id).getAttendanceItemName(), formatValueAttendance(mapAttendance.get(id).getValue()));
+
+		} else if (eDaily.getErrorAlarmWorkRecordCode().equals("S008")) {
+			alarmItem = TextResource.localize("KAL010_70");
+			Integer id = eDaily.getAttendanceItemList().get(0);
+			alarmItem = TextResource.localize("KAL010_71", attendanceNameMap.get(id).getAttendanceItemName(), formatValueAttendance(mapAttendance.get(id).getValue()));
+
+		} else if (eDaily.getErrorAlarmWorkRecordCode().equals("S006")) {
+			alarmItem = TextResource.localize("KAL010_17");
+			alarmContent = TextResource.localize("KAL010_18");
+		} else {
+			alarmItem = errorAlarmMap.get(eDaily.getErrorAlarmWorkRecordCode()).getName();
+		}
+
 		return new AlarmContentMessage(alarmItem, alarmContent);
 	}
 	
+	private String formatValueAttendance(String attendanceValue) {
+		if(attendanceValue.length()<4) attendanceValue = "0" + attendanceValue;
+		return attendanceValue.substring(0,  2) + ":" + attendanceValue.substring(2, 4);		
+	}
 
 }

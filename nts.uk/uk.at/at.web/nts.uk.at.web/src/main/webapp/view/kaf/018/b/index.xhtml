@@ -78,7 +78,8 @@
 							<td data-bind="text: $parent.getRecord(unapproved)"></td>
 							<td data-bind="text: $parent.getRecord(approved)"></td>
 							<td data-bind="text: $parent.getRecord(denail)"></td>
-							<td><div data-bind="ntsCheckBox: { checked: sendMail, enable:  $parent.enable }" /></td>
+							
+							<td><div data-bind="ntsCheckBox: { checked: isSendMail, enable:  enable }" /></td>
 						</tr>
 					</tbody>
 				</table>

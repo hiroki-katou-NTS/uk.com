@@ -26,6 +26,11 @@ public class StdAcceptItemCommand {
 	private int acceptItemNumber;
 
 	/**
+	 * 受入項目名
+	 */
+	private String acceptItemName;
+
+	/**
 	 * CSV項目番号
 	 */
 	private Integer csvItemNumber;

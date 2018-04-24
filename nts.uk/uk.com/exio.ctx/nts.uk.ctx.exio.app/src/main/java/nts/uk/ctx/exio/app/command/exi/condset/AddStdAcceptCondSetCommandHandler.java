@@ -25,7 +25,7 @@ public class AddStdAcceptCondSetCommandHandler extends CommandHandler<StdAcceptC
 		StdAcceptCondSet domain = new StdAcceptCondSet(companyId, addCommand.getSystemType(),
 				addCommand.getConditionSettingCode(), addCommand.getConditionSettingName(),
 				addCommand.getDeleteExistData(), addCommand.getAcceptMode(), null, addCommand.getCategoryId(),
-				addCommand.getCsvDataItemLineNumber(), addCommand.getCsvDataStartLine(),
+				addCommand.getCsvDataItemLineNumber(), addCommand.getCsvDataStartLine(), addCommand.getCharacterCode(), 
 				addCommand.getDeleteExistDataMethod());
 		this.condsetService.registerConditionSetting(domain);
 	}

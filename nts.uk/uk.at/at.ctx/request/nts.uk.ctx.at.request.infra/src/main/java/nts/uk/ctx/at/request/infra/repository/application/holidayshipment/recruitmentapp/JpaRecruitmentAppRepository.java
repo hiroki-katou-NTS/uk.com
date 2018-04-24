@@ -66,11 +66,16 @@ public class JpaRecruitmentAppRepository extends JpaRepository implements Recrui
 		entity.setWorkTimeCD(recApp.getWorkTimeCD().v());
 
 		RecruitmentWorkingHour wkTime1 = recApp.getWorkTime1();
-		if (wkTime1 != null) {
+		if (wkTime1 != null && wkTime1.getStartTime().v() != null) {
 			entity.setStartWorkTime1(wkTime1.getStartTime().v());
 			entity.setStartUseAtr1(wkTime1.getStartUseAtr().value);
 			entity.setEndWorkTime1(wkTime1.getEndTime().v());
 			entity.setEndUseAtr1(wkTime1.getEndUseAtr().value);
+		} else {
+			entity.setStartWorkTime1(0);
+			entity.setStartUseAtr1(NotUseAtr.NOT_USE.value);
+			entity.setEndWorkTime1(0);
+			entity.setEndUseAtr1(NotUseAtr.NOT_USE.value);
 		}
 		RecruitmentWorkingHour wkTime2 = recApp.getWorkTime2();
 		if (wkTime2 != null) {
@@ -101,6 +106,7 @@ public class JpaRecruitmentAppRepository extends JpaRepository implements Recrui
 
 	/**
 	 * find RecruitmentApp By AppId
+	 * 
 	 * @author hoatt
 	 * @param appId
 	 * @return
@@ -109,8 +115,10 @@ public class JpaRecruitmentAppRepository extends JpaRepository implements Recrui
 	public Optional<RecruitmentApp> findByAppId(String appId) {
 		return this.queryProxy().find(appId, KrqdtRecruitmentApp.class).map(x -> toDomainMain(x));
 	}
+
 	/**
 	 * convert entity to domain
+	 * 
 	 * @author hoatt
 	 * @param entity
 	 * @return

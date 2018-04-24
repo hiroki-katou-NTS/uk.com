@@ -50,6 +50,14 @@ public interface BasicScheduleRepository {
 	 */
 	void update(BasicSchedule bSchedule);
 	
+	/**
+	 * Change work type code and work time code ( code for Du Do)
+	 * @param sId employee id
+	 * @param date date
+	 * @param workTypeCode work type code
+	 * @param workTimeCode work time code
+	 */
+	void changeWorkTypeTime(String sId, GeneralDate date, String workTypeCode, String workTimeCode);
 	
 	/**
 	 * Delete.

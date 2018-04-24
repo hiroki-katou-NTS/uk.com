@@ -198,7 +198,8 @@ module cmm045.a.viewmodel {
                                 data.appStatusCount.denialNumber));
                         }
                         let colorBackGr = self.fillColorbackGr();
-                        let colorsText = self.fillColorText();
+//                        let colorsText = self.fillColorText();
+                        let colorsText = [];
                         if (self.mode() == 1) {
                              let lstHidden: Array<any> = self.findRowHidden(self.items());
                              self.reloadGridApproval(lstHidden,colorBackGr,colorsText);
@@ -336,7 +337,7 @@ module cmm045.a.viewmodel {
         reloadGridApproval(lstHidden: Array<any>, colorBackGr: any, colorsText: any) {
             var self = this;
             $("#grid1").ntsGrid({
-                width: '1320px',
+                width: '1175px',
                 height: '530px',
                 dataSource: self.items(),
                 primaryKey: 'appId',
@@ -346,17 +347,17 @@ module cmm045.a.viewmodel {
                 rows: 8,
                 virtualizationMode: 'continuous',
                 columns: [
-                    { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: '90px', 
+                    { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: '80px', 
                             showHeaderCheckbox: true, ntsControl: 'Checkbox',  hiddenRows: lstHidden},
-                    { headerText: getText('CMM045_50'), key: 'details', dataType: 'string', width: '70px', unbound: false, ntsControl: 'Button' },
+                    { headerText: getText('CMM045_50'), key: 'details', dataType: 'string', width: '60px', unbound: false, ntsControl: 'Button' },
                     { headerText: getText('CMM045_51'), key: 'applicant', dataType: 'string', width: '120px' },
-                    { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '120px' },
-                    { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '90px' },
-                    { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '150px', ntsControl: 'Label'},
+                    { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '100px' },
+                    { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '70px' },
+                    { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '130px'},
                     { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '240px'},
-                    { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '180px', ntsControl: 'Label'},
-                    { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '120px', ntsControl: 'Label' },
-                    { headerText: getText('CMM045_58'), key: 'displayAppStatus', dataType: 'string', width: '120px' },
+                    { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '165px', ntsControl: 'Label'},
+                    { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '83px', ntsControl: 'Label' },
+                    { headerText: getText('CMM045_58'), key: 'displayAppStatus', dataType: 'string', width: '105px' },
                     { headerText: 'ID', key: 'appId', dataType: 'string', width: '0px', ntsControl: 'Label', hidden: true }
                 ],
                 features: [{ name: 'Resizing' },
@@ -540,6 +541,7 @@ module cmm045.a.viewmodel {
                 masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor);
             return a;
         }
+
         /**
          * ※承認モード(事後)用レイアウト
          * format data: over time after
@@ -559,7 +561,6 @@ module cmm045.a.viewmodel {
             }
             let reason = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + app.applicationReason : '';
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
-//            let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
             let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
             let appContentPost: string = getText('CMM045_272') + getText('CMM045_268') + ' ' + overTime.workClockFrom1 + getText('CMM045_100') + overTime.workClockTo1 + ' 残業合計' + self.convertFrameTime(overTime.lstFrame) + reason;
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
@@ -685,13 +686,13 @@ module cmm045.a.viewmodel {
             let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
             let reason = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + app.applicationReason : '';
             let appContent006 = '';
-            if(absence.allDayHalfDayLeaveAtr == 1 && absence.relationshipCode == ''){//終日休暇 (ALL_DAY_LEAVE) 且 特別休暇申請.続柄コード　＝　未入力（NULL)
+            if(absence.allDayHalfDayLeaveAtr == 0 && absence.relationshipCode == ''){//終日休暇 (ALL_DAY_LEAVE) 且 特別休暇申請.続柄コード　＝　未入力（NULL)
                 appContent006 = self.convertAbsenceAllDay(absence);
             }
             if(absence.relationshipCode != ''){//特別休暇申請.続柄コード　＝　入力ありの場合
                 appContent006 = self.convertAbsenceSpecial(absence);
             }
-            if(absence.allDayHalfDayLeaveAtr == 0){//休暇申請.終日半日休暇区分　＝　半日休暇
+            if(absence.allDayHalfDayLeaveAtr == 1){//休暇申請.終日半日休暇区分　＝　半日休暇
                 appContent006 = self.convertAbsenceHalfDay(absence);
             }
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
@@ -752,52 +753,86 @@ module cmm045.a.viewmodel {
          * kaf011 - appType = 10
          * TO DO
          */
-        formatComplementLeave(){
+        formatCompltLeave(app: vmbase.ApplicationDto_New, overTime: vmbase.AppCompltLeaveFull, masterInfo: vmbase.AppMasterInfo, lstAppGroup: Array<vmbase.AppPrePostGroup>): vmbase.DataModeApp{
+            let self = this;
+            let contentPre = '';
+            let contentResult = '';
+            //find don lien ket
+            let check: vmbase.AppPrePostGroup = self.findAppPre(lstAppGroup, app.applicationID);
+            if (check !== undefined) {
+                if (check.preAppID != '') {
+                    let prRes = self.findContentPreOt(check.preAppID, check.lstFrameRes, check.appPre, check.reasonAppPre);
+                    contentPre = prRes.appPre == '' ? '' : '<br/>' + prRes.appPre;
+                    contentResult = prRes.appRes == '' ? '' :'<br/>' + prRes.appRes;
+                }
+            }
+            let reason = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + app.applicationReason : '';
+            let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
+            let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
+            let appContentPost: string = getText('CMM045_272') + getText('CMM045_268') + ' ' + overTime.workClockFrom1 + getText('CMM045_100') + overTime.workClockTo1 + ' 残業合計' + self.convertFrameTime(overTime.lstFrame) + reason;
             
+            let prePost = app.prePostAtr == 0 ? '事前' : '事後';
+            let contentFull = '<div class = "appContent-' + app.applicationID + '">'+ appContentPost + contentPre + contentResult + '</div>';
+            let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
+            let date1 = '<div class = "saturdayCell " >' + self.convertDate(app.applicationDate) + '</div>';
+            let date2 = '<div class = "sundayCell " >' + self.convertDate(app.applicationDate) + '</div>';
+            let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
+                masterInfo.dispName, prePostApp, date1 + date2, contentFull, self.convertDateTime(app.inputDate),
+                self.mode() == 0 ? self.convertStatus(app.reflectPerState) : self.convertStatusAppv(app.reflectPerState), masterInfo.phaseStatus,
+                masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor);
+            return a; 
         }
         //※振出申請のみ同期なし・紐付けなし
         //申請/承認モード
         //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
-        convertA(){
-            
+        convertA(compltLeave: vmbase.AppCompltLeaveFull, date: string, reason: string){
+            let time = compltLeave.startTime + getText('CMM045_262') + compltLeave.endTime;
+            return getText('CMM045_262') + date + getText('CMM045_231', [compltLeave.workTypeCD]) + time + reason;
         }
         //※振休申請のみ同期なし・紐付けなし
         //申請/承認モード
         //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
-        convertB(){
-            
+        convertB(compltLeave: vmbase.AppCompltLeaveFull, date: string, reason: string){
+            let time = compltLeave.startTime + getText('CMM045_262') + compltLeave.endTime;
+            return getText('CMM045_263') + date + getText('CMM045_231', [compltLeave.workTypeCD]) + time + reason;
         }
         //※振休振出申請　同期（あり/なし）・紐付けあり
         //申請モード
         //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)表示（２段）
-        convertC(){
+        convertC(compltLeave: vmbase.AppCompltLeaveFull, date: string, reason: string){
+            let time = compltLeave.startTime + getText('CMM045_262') + compltLeave.endTime;
+            let a = getText('CMM045_262') + date + getText('CMM045_2631', [compltLeave.workTypeCD]) + time + reason;
+            //find don lien ket
+            let b = getText('CMM045_263') + date + getText('CMM045_2631', [compltLeave.workTypeCD]) + time + reason;
             
         }
         //※振休振出申請　同期あり・紐付けあり
         //承認モード
         //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
         //※同じ承認状態
-        convertD(){
+        convertD(compltLeave: vmbase.AppCompltLeaveFull, date: string, reason: string){
+            let time = compltLeave.startTime + getText('CMM045_262') + compltLeave.endTime;
             
         }
         //※振休振出申請　同期なし・紐付けあり
         //承認モード（振出の場合）
         //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
-        convertE(){
-            
+        convertE(compltLeave: vmbase.AppCompltLeaveFull, date: string, reason: string){
+            let time = compltLeave.startTime + getText('CMM045_262') + compltLeave.endTime;
         }
         //※振休振出申請　同期なし・紐付けあり
         //承認モード（振休の場合）
         //申請日付(A6_C2_6)、入力日(A6_C2_8)、承認状況(A6_C2_9)の表示はない（１段）
-        convertF(){
-            
+        convertF(compltLeave: vmbase.AppCompltLeaveFull, date: string, reason: string){
+            let time = compltLeave.startTime + getText('CMM045_262') + compltLeave.endTime;
         }
         /**
          * map data -> fill in grid list
          */
         mapData(lstApp: Array<vmbase.ApplicationDto_New>, lstMaster: Array<vmbase.AppMasterInfo>, lstGoBack: Array<vmbase.AppGoBackInfoFull>,
             lstOverTime: Array<vmbase.AppOverTimeInfoFull>, lstAppGroup: Array<vmbase.AppPrePostGroup>, lstHdWork: Array<vmbase.AppHolidayWorkFull>,
-            lstWorkChange: Array<vmbase.AppWorkChangeFull>, lstAppAbsence: Array<vmbase.AppAbsenceFull>): Array<vmbase.DataModeApp> {
+            lstWorkChange: Array<vmbase.AppWorkChangeFull>, lstAppAbsence: Array<vmbase.AppAbsenceFull>,
+            lstCompltLeave: Array<vmbase.AppCompltLeaveFull>): Array<vmbase.DataModeApp> {
             let self = this;
             let lstData: Array<vmbase.DataModeApp> = [];
             _.each(lstApp, function(app: vmbase.ApplicationDto_New) {
@@ -831,9 +866,21 @@ module cmm045.a.viewmodel {
                     let absence = self.findAbsence(app.applicationID, lstAppAbsence);
                     data = self.formatAbsence(app, absence, masterInfo);
                 }
+                if(app.applicationType == 10){//Complement Leave
+                    let complt = self.findCompltLeave(app.applicationID, lstCompltLeave);
+                    data = self.formatAbsence(app, complt, masterInfo);
+                }
                 lstData.push(data);
             });
             return lstData;
+        }
+        /**
+         * find application holiday work by id
+         */
+        findCompltLeave(appId: string, lstCompltLeave: Array<vmbase.AppCompltLeaveFull>){
+            return _.find(lstCompltLeave, function(complt){
+                return complt.appID == appId;
+        });
         }
         /**
          * find application holiday work by id
@@ -1061,6 +1108,7 @@ module cmm045.a.viewmodel {
                     }
                     let colorBackGr = self.fillColorbackGr();
                     let colorsText = self.fillColorText();
+//                    let colorsText = [];
                     if (self.mode() == 1) {
                         $("#grid1").ntsGrid("destroy");
                         let lstHidden: Array<any> = self.findRowHidden(self.items());
@@ -1156,6 +1204,7 @@ module cmm045.a.viewmodel {
             }
             let colorBackGr = self.fillColorbackGr();
             let colorsText = self.fillColorText();
+//            let colorsText = [];
             if (self.mode() == 1) {
                 self.approvalCount(self.countStatus(self.items()));
                 if($("#grid1").data("igGrid") !== undefined){

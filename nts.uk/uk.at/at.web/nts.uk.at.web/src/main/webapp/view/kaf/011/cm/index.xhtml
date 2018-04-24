@@ -42,7 +42,7 @@
 			</div>
 
 		</div>
-		<div class="div_line" data-bind="if:screenModeNew">
+		<div class="div_line" data-bind="if:screenModeNew()==true">
 			<div class="div_line_col_1">
 				<div data-bind="ntsFormLabel: {  }">#{i18n.getText('KAF011_18')}</div>
 			</div>
@@ -75,12 +75,12 @@
 					</div>
 					<div class="div_line_col_2"
 						data-bind="if:$parent.screenModeNew()==true">
-						<div tabindex="4"
-							data-bind="ntsDatePicker: {value: appDate , dateFormat: 'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
+						<div tabindex="4" id="recDatePicker"
+							data-bind="ntsDatePicker: {value: appDate ,valueFormat:'YYYY/MM/DD',required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
 					</div>
 					<div data-bind="if:$parent.screenModeNew() ==false"
 						class="div_line_col_2 app_date">
-						<label class="text_line" data-bind="text:parseText(appDate)"></label>
+						<label class="text_line" data-bind="text:appDate"></label>
 					</div>
 
 				</div>
@@ -122,9 +122,9 @@
 						<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_31')}</div>
 					</div>
 					<div class="div_line_col_2 working_hour" data-bind='with: wkTime1 '>
-						<input tabindex="4"
+						<input tabindex="4" id="recTime1Start"
 							data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
-							value: startTime , enable: $parents[1].drawalReqSet().permissionDivision!=0 , readonly: false , required: false ,option: timeOption }" />
+							value: startTime , enable: $parents[1].drawalReqSet().permissionDivision()!=0 , readonly: false , required: true ,option: timeOption }" />
 						<div class="cf" tabindex="4"
 							data-bind="ntsSwitchButton: {
 							options: startTypes ,
@@ -133,9 +133,9 @@
 							value: startType ,
 							enable: true }"></div>
 						<div>#{i18n.getText('KAF011_37')}</div>
-						<input tabindex="4"
+						<input tabindex="4" id="recTime1End"
 							data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
-							value: endTime , enable: $parents[1].drawalReqSet().permissionDivision!=0 , readonly: false , required: false,option: timeOption }" />
+							value: endTime , enable: $parents[1].drawalReqSet().permissionDivision()!=0 , readonly: false , required: true ,option: timeOption }" />
 
 						<div class="cf" tabindex="4"
 							data-bind="ntsSwitchButton: {
@@ -152,7 +152,7 @@
 					<div class="div_line"
 						data-bind="text:
 					 pickUpComment
-					,css: { 'bold': pickUpBold }"></div>
+					,css: { 'bold': pickUpBold  },style:{color:pickUpLettleColor}"></div>
 				</div>
 
 			</div>
@@ -175,26 +175,29 @@
 
 					<div class="div_line_col_2"
 						data-bind="if:$parent.screenModeNew()==true">
-						<div tabindex="5"
-							data-bind="ntsDatePicker: {value: appDate , dateFormat: 'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
+						<div tabindex="5" id="absDatePinker"
+							data-bind="ntsDatePicker: {value: appDate ,valueFormat:'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
 					</div>
 
 					<div data-bind="if:$parent.screenModeNew() ==false"
 						class="div_line_col_2 app_date">
-						<label class="text_line" data-bind="text:parseText(appDate)"></label>
+						<label class="text_line" data-bind="text:appDate"></label>
 					</div>
-
-					<div data-bind="if:$parent.screenModeNew() ==false"
-						class="div_line_col_3">
-						<button class="danger" tabindex="1">#{i18n.getText('KAF011_24')}</button>
-						<button tabindex="1">#{i18n.getText('KAF011_25')}</button>
-
-						<button tabindex="1">#{i18n.getText('KAF011_26')}</button>
-
-						<button tabindex="1" data-bind="click:openCDialog">#{i18n.getText('KAF011_27')}</button>
-						<span class="caret-right caret-inline"></span>
+					<div data-bind="if:$parent.screenModeNew() ==false">
+						<div class="div_line_col_3">
+							<div data-bind="if:$parent.appComSelectedCode() ==0"
+								style="display: inline-block;">
+								<button class="danger" tabindex="1">#{i18n.getText('KAF011_24')}</button>
+								<button tabindex="1">#{i18n.getText('KAF011_25')}</button>
+							</div>
+							<button style="display: inline-block;" tabindex="1">#{i18n.getText('KAF011_26')}</button>
+							<div style="display: inline-block;"
+								data-bind="if:wkType().workAtr() == 0">
+								<button tabindex="1" data-bind="click:openCDialog">#{i18n.getText('KAF011_27')}</button>
+								<span class="caret-right caret-inline"></span>
+							</div>
+						</div>
 					</div>
-
 				</div>
 				<div class="div_line">
 					<div class="div_line_col_1">
@@ -220,7 +223,7 @@
 					</div>
 				</div>
 				<div class="div_line change_woking_hours"
-					data-bind="if:showWorkTimeZone()==true">
+					data-bind="if:showAbsWorkTimeZone()">
 					<div class="div_line">
 						<div tabindex="5"
 							data-bind="ntsCheckBox: { checked: changeWorkHoursType }">#{i18n.getText('KAF011_29')}</div>
@@ -237,21 +240,22 @@
 							<div data-bind='text:wkText'></div>
 						</div>
 					</div>
-					<div class="div_line">
-						<div class="div_line_col_1">
-							<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_31')}</div>
-						</div>
-						<div data-bind="if:showWorkTimeZone() ==true">
-							<div class="div_line_col_2 working_hour"
-								data-bind='with: wkTime1 '>
-								<input tabindex="5"
-									data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
+					<div data-bind="if:showWorkingTime1()">
+						<div class="div_line">
+							<div class="div_line_col_1">
+								<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_31')}</div>
+							</div>
+							<div>
+								<div class="div_line_col_2 working_hour"
+									data-bind='with: wkTime1 '>
+									<input tabindex="5"
+										data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
 							value: startTime , enable:$parent.enableWkTime()==true , readonly: false , required: false,option: timeOption }" />
-
-								<div>#{i18n.getText('KAF011_37')}</div>
-								<input tabindex="5"
-									data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
+									<div>#{i18n.getText('KAF011_37')}</div>
+									<input tabindex="5"
+										data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
 							value: endTime , enable:$parent.enableWkTime()==true , readonly: false , required: false  ,option: timeOption}" />
+								</div>
 							</div>
 						</div>
 					</div>
@@ -261,21 +265,18 @@
 					<div class="div_line"
 						data-bind="text:
 					 deferredComment
-					,css: { 'bold': deferredBold }"></div>
-
-
-
+					,css: { 'bold': deferredBold } ,style:{color:deferredLettleColor}"></div>
 				</div>
 			</div>
 		</div>
-		<div class="div_line"
-			data-bind="if:appTypeSet().displayFixedReason !=0">
-			<div class="div_line_col_1">
-				<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_16')}</div>
-			</div>
-			<div class="div_line_col_2">
-				<div tabindex="6" class="combo-box"
-					data-bind="ntsComboBox: {
+		<div data-bind="if:appTypeSet().displayFixedReason() !=0">
+			<div class="div_line">
+				<div class="div_line_col_1">
+					<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_16')}</div>
+				</div>
+				<div class="div_line_col_2">
+					<div tabindex="6" class="combo-box"
+						data-bind="ntsComboBox: {
 										name: '#{i18n.getText('KAF011_28')}',
 										options: appReasons ,
 										optionsValue: 'reasonID' ,
@@ -284,20 +285,23 @@
 										optionsText: 'reasonTemp',
 										editable: false,
 										enable: true,
+										required:appTypeSet().displayFixedReason() !=0,
 										columns: [
 											{ prop: 'reasonTemp', length: 10 },
 										]}">
+					</div>
 				</div>
 			</div>
 		</div>
-		<div class="div_line" data-bind="if:appTypeSet().displayAppReason !=0">
-			<!-- constraint: -->
-			<div class="div_line_col_1">
-				<div data-bind="ntsFormLabel: { constraint: 'AppReason' }">#{i18n.getText('KAF011_17')}</div>
-			</div>
-			<div class="div_line_col_2">
-				<textarea style="height: 100px" tabindex="6"
-					data-bind="ntsMultilineEditor: {
+		<div data-bind="if:appTypeSet().displayAppReason() !=0">
+			<div class="div_line">
+				<!-- constraint: -->
+				<div class="div_line_col_1">
+					<div data-bind="ntsFormLabel: { constraint: 'AppReason' }">#{i18n.getText('KAF011_17')}</div>
+				</div>
+				<div class="div_line_col_2">
+					<textarea style="height: 100px" tabindex="6" id="appReason"
+						data-bind="ntsMultilineEditor: {
 					constraint: 'AppReason',
 					value: reason ,name: '#{i18n.getText('KAF011_17')}',
 									option: {
@@ -305,6 +309,7 @@
 			                    	width: '500'
 			                    	}
 			                   	}" />
+				</div>
 			</div>
 		</div>
 	</div>
