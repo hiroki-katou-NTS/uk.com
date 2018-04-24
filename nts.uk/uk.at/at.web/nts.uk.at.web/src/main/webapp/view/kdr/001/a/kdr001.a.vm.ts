@@ -94,8 +94,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             // initial ccg options
             self.setDefaultCcg001Option();
 
-            // Init component.
-            self.reloadCcg001();
+            
 
             self.periodFormatYM.subscribe(item => {
                 if (item) {
@@ -103,7 +102,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 }
             });
 
-            self.startDateString = ko.observable("20180101");
+            self.startDateString = ko.observable("20180102");
             self.endDateString = ko.observable("20181230");
             self.selectedEmployeeCode = ko.observableArray([]);
             self.alreadySettingPersonal = ko.observableArray([]);
@@ -123,11 +122,15 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             self.startDateString.subscribe(function(value) {
                 self.periodDate().startDate = value;
                 self.periodDate.valueHasMutated();
+                self.periodStartDate(moment(value));
+                self.periodStartDate.valueHasMutated();
             });
 
             self.endDateString.subscribe(function(value) {
                 self.periodDate().endDate = value;
                 self.periodDate.valueHasMutated();
+                self.periodEndDate(moment(value));
+                self.periodEndDate.valueHasMutated();
             });
 
             //combo-box2
@@ -290,6 +293,10 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                     self.startDateString(moment.utc(startDate).format("YYYY/MM"));
                     self.endDateString(moment.utc(endDate).format("YYYY/MM"));
                         */
+                    //TODO dump
+                    self.startDateString("20180101");
+                    self.endDateString("20181231");
+                        
                     self.permissionOfEmploymentForm(new PermissionOfEmploymentFormModel(
                             permission.companyId,
                             permission.roleId,
@@ -299,7 +306,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                         self.holidayRemainingSelectedCd(userSpecific.outputItemSettingCode);
                         self.selectedCode(userSpecific.pageBreakAtr);
                     }
-
+                    // Init component.
+                    self.reloadCcg001();
                }).fail(function(res) {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
             }).always(() => {
