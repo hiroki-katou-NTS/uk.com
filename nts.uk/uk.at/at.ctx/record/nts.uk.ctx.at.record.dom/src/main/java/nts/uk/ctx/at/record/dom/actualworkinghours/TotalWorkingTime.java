@@ -332,6 +332,10 @@ public class TotalWorkingTime {
 									shotrTime,
 									vacationOfDaily);
 	}
+	
+	public Optional<LeaveEarlyTimeOfDaily> getLeaveEarlyTimeNo(int no){
+		return leaveEarlyTimeOfDaily.stream().filter(c -> c.getWorkNo().v() == no).findFirst();
+	}
 
 	/**
 	 * エラーチェック(乖離以外)への分岐 
