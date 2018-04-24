@@ -1705,39 +1705,39 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                     switch (screen.code) {
                                         case 0:
                                             //KAF005-残業申請
-                                            nts.uk.request.jump("/view/kaf/005/a/index.xhtml", { date: date });
+                                            nts.uk.request.jump("/view/kaf/005/a/index.xhtml", { appDate: dataShare.date });
                                             break;
                                         case 1:
                                             //KAF006-休暇
-                                            nts.uk.request.jump("/view/kaf/006/a/index.xhtml", { date: date });
+                                            nts.uk.request.jump("/view/kaf/006/a/index.xhtml", { appDate: dataShare.date });
                                             break;
                                         case 2:
                                             //KAF007-勤務変更申請
-                                            nts.uk.request.jump("/view/kaf/007/a/index.xhtml", { date: date });
+                                            nts.uk.request.jump("/view/kaf/007/a/index.xhtml", { appDate: dataShare.date });
                                             break;
                                         case 3:
                                             //KAF008-出張申請
-                                            nts.uk.request.jump("/view/kaf/008/a/index.xhtml", { date: date });
+                                            nts.uk.request.jump("/view/kaf/008/a/index.xhtml", { appDate: dataShare.date });
                                             break;
                                         case 4:
                                             //KAF009-直行直帰申請
-                                            nts.uk.request.jump("/view/kaf/009/a/index.xhtml", { date: date });
+                                            nts.uk.request.jump("/view/kaf/009/a/index.xhtml", { appDate: dataShare.date });
                                             break;
                                         case 6:
                                             //KAF010-休日出勤時間申請
-                                            nts.uk.request.jump("/view/kaf/010/a/index.xhtml", { date: date });
+                                            nts.uk.request.jump("/view/kaf/010/a/index.xhtml", { appDate: dataShare.date });
                                             break;
                                         case 7:
                                             //KAF002-打刻申請
-                                            nts.uk.request.jump("/view/kaf/002/a/index.xhtml", { date: date });
+                                            nts.uk.request.jump("/view/kaf/002/a/index.xhtml", { appDate: dataShare.date });
                                             break;
                                         case 9:
                                             //KAF004-遅刻早退取消申請
-                                            nts.uk.request.jump("/view/kaf/004/a/index.xhtml", { date: date });
+                                            nts.uk.request.jump("/view/kaf/004/a/index.xhtml", { appDate: dataShare.date });
                                             break;
                                         case 10:
                                             //KAF011-振休振出申請
-                                            nts.uk.request.jump("/view/kaf/011/a/index.xhtml", { date: date });
+                                            nts.uk.request.jump("/view/kaf/011/a/index.xhtml", { appDate: dataShare.date });
                                             break;
                                         default:
                                             break;
