@@ -202,6 +202,8 @@ public class ActualWorkingTimeOfDaily {
 					/*計画所定時間*/
 					/*実績所定労働時間*/);
 		
+		
+		/*大塚残業*/
 		val calcResultOotsuka = calcOotsuka(workingSystem,
 											totalWorkingTime,
 											fixRestTimeSetting,
@@ -288,6 +290,10 @@ public class ActualWorkingTimeOfDaily {
 		//Dtoの中身になっている
 		val integrationOfDailyInDto = forCalcDivergenceDto.toDomain();
 		//integraionOfDailyを入れ替える
+		DivergenceTimeOfDaily diver = new DivergenceTimeOfDaily(Collections.emptyList());
+		if(integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			diver = integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime();
+		}
 		val attendanceTimeForDivergence = new AttendanceTimeOfDailyPerformance(employeeId, 
 																			   ymd,
 																			   /*計画所定時間 引数の計画所定に入れ替える*/
@@ -298,8 +304,11 @@ public class ActualWorkingTimeOfDaily {
 																					   						constraintTime, 
 																					   						timeDifferenceWorkingHours, 
 																					   						totalWorkingTime,
+																					   						new DivergenceTimeOfDaily(Collections.emptyList()),
+																					   						//integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime(),
 																					   						//new DivergenceTimeOfDaily(Collections.emptyList()),
-																					   						integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime(),
+//																					   						new DivergenceTimeOfDaily(Collections.emptyList()),
+																					   						diver,
 																					   						premiumTime),
 																			   //滞在時間
 																			   new StayingTimeOfDaily(new AttendanceTime(0),
@@ -337,18 +346,21 @@ public class ActualWorkingTimeOfDaily {
 		//乖離時間算出のアルゴリズム実装
 		for(DivergenceTime divergenceTimeClass : divergenceTimeList) {
 			if(divergenceTimeClass.getDivTimeUseSet().isUse()) {
-				Optional<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> toAddItem = divergenceTimeInIntegrationOfDaily.getDivergenceTime().stream()
-																																	  .filter(tc -> tc.getDivTimeId() == divergenceTimeClass.getDivergenceTimeNo())
-																																				.findFirst();
-				if(toAddItem.isPresent()) {
-					int totalTime = divergenceTimeClass.totalDivergenceTimeWithAttendanceItemId(forCalcDivergenceDto);
-					returnList.add(new nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime(new AttendanceTime(totalTime - toAddItem.get().getDeductionTime().valueAsMinutes()), 
-																								 	 toAddItem.get().getDeductionTime(), 
-																								 	 new AttendanceTime(totalTime), 
-																								 	 toAddItem.get().getDivTimeId(), 
-																								 	 toAddItem.get().getDivReason(), 
-																								 	 toAddItem.get().getDivResonCode()));
-				}
+				divergenceTimeInIntegrationOfDaily.getDivergenceTime().stream()
+										.filter(tc -> tc.getDivTimeId() == divergenceTimeClass.getDivergenceTimeNo())
+										.findFirst().ifPresent(tdi -> {
+											int totalTime = divergenceTimeClass.totalDivergenceTimeWithAttendanceItemId(forCalcDivergenceDto);
+											int deductionTime = (tdi.getDeductionTime() == null ?  0 : tdi.getDeductionTime().valueAsMinutes());
+											returnList.add(new nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime(new AttendanceTime(totalTime - deductionTime), 
+																																tdi.getDeductionTime(), 
+																																new AttendanceTime(totalTime), 
+																																tdi.getDivTimeId(), 
+																														 		tdi.getDivReason(), 
+																														 		tdi.getDivResonCode()));
+										});
+//				if(toAddItem.isPresent()) {
+					
+//				}
 			}
 		}
 		return (returnList.size()>0)?returnList:divergenceTimeInIntegrationOfDaily.getDivergenceTime();
@@ -383,7 +395,7 @@ public class ActualWorkingTimeOfDaily {
 			//休憩未取得時間の計算
 			val unUseBreakTime = workingSystem.isRegularWork()?totalWorkingTime.getBreakTimeOfDaily().calcUnUseBrekeTime(fixRestTimeSetting.get()):new AttendanceTime(0);
 			//日別実績の総労働からとってくる
-			AttendanceTime vacationAddTime = new AttendanceTime(0);
+			AttendanceTime vacationAddTime = totalWorkingTime.getWithinStatutoryTimeOfDaily().getVacationAddTime();
 			//残業時間
 			if(totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
 				//休憩未取得時間から残業時間計算

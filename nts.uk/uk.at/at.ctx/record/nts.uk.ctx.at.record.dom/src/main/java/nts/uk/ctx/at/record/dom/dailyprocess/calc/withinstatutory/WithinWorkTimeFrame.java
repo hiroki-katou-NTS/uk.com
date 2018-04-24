@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
@@ -410,26 +412,30 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 																	WorkRegularAdditionSet addSettingOfRegularWork,
 																	WorkDeformedLaborAdditionSet addSettingOfIrregularWork, 
 																	WorkFlexAdditionSet addSettingOfFlexWork) {
-		if(addSettingOfRegularWork == null || addSettingOfFlexWork == null || addSettingOfIrregularWork == null || 
-				addSettingOfRegularWork.getVacationCalcMethodSet() == null || addSettingOfFlexWork.getVacationCalcMethodSet() == null
-				|| addSettingOfIrregularWork.getVacationCalcMethodSet() == null || addSettingOfRegularWork.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday() == null
-				|| addSettingOfFlexWork.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday() == null || addSettingOfIrregularWork.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday() == null){
-			return CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME;
-		}
+		
 		switch (workingSystem) {
 		case REGULAR_WORK:
+			if(addSettingOfRegularWork == null){
+				return CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME;
+			}
 			return addSettingOfRegularWork.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation();
-
+			
 		case FLEX_TIME_WORK:
+			if(addSettingOfFlexWork == null) {
+				return CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME;
+			}
 			return addSettingOfFlexWork.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday().getCalculateActualOperation();
 
 		case VARIABLE_WORKING_TIME_WORK:
+			if(addSettingOfIrregularWork == null) {
+				return CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME;
+			}
 			return addSettingOfIrregularWork.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation();
 
 		case EXCLUDED_WORKING_CALCULATE:
 			return CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME;
 		default:
-			throw new RuntimeException("不正な労働制です");
+			throw new BusinessException(new RawErrorMessage("不正な労働制です"));
 		}
 	}
 

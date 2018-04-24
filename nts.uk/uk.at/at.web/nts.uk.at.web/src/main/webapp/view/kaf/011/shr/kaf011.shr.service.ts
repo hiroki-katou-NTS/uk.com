@@ -11,6 +11,9 @@ module nts.uk.at.view.kaf011.shr.service {
         start_c: "at/request/application/holidayshipment/start_c",
         holidayShipmentRemove: "at/request/application/holidayshipment/remove",
         holidayShipmentCancel: "at/request/application/holidayshipment/cancel",
+        changeAbsDate: "at/request/application/holidayshipment/change_abs_date",
+        changeAbsDateToHoliday: "at/request/application/holidayshipment/change_abs_date_to_holiday",
+
 
 
     }
@@ -46,6 +49,16 @@ module nts.uk.at.view.kaf011.shr.service {
     export function cancelAbs(startParam: any) {
         return ajax(paths.holidayShipmentCancel, startParam);
     }
+
+    export function changeAbsDate(saveCmd: common.ISaveHolidayShipmentCommand) {
+        return ajax(paths.changeAbsDate, saveCmd);
+    }
+    
+    export function changeAbsDateToHoliday(saveCmd: common.ISaveHolidayShipmentCommand) {
+        return ajax(paths.changeAbsDateToHoliday, saveCmd);
+    }
+
+
 
 
 }

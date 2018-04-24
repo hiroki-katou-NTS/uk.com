@@ -129,6 +129,9 @@ public class DivergenceTime extends AggregateRoot {
 	 * @return
 	 */
 	public int totalDivergenceTimeWithAttendanceItemId(DailyRecordToAttendanceItemConverter idConverter) {
+		if(this.targetItems == null) {
+			return 0;
+		}
 		val getValueList = this.targetItems.stream()
 							   .filter(tc -> idConverter.convert(tc.intValue()).isPresent())
 							   .map(tc -> idConverter.convert(tc.intValue()).get())
