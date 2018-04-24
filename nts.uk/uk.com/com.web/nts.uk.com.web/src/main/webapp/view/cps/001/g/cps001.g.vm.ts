@@ -233,7 +233,7 @@ module nts.uk.com.view.cps001.g.vm {
                 { headerText: getText('CPS001_124'), type: 'string', key: 'remainingMinutes', formatter: formatTime, width: 100, hidden: self.remainingMinutesH()},
                 { headerText: getText('CPS001_129'), type: 'number', formatter: formatEnum, key: 'expirationStatus', width: 100 }
             ]);
-                    let table: string = '<table tabindex="6" id="single-list" data-bind="ntsGridList: { dataSource: listAnnualLeaveGrantRemainData,  primaryKey: \'annLeavID\', columns: columns, multiple: false,value: currentValue, showNumbering: true,rows:10}"></table>';
+                    let table: string = '<table tabindex="6" id="single-list" data-bind="ntsGridList: { dataSource: listAnnualLeaveGrantRemainData,  primaryKey: \'annLeavID\', columns: columns, multiple: false,value: currentValue, rows:10}"></table>';
                     $("#tbl").html(table);
                     ko.applyBindings(self, $("#tbl")[0]);
         }
