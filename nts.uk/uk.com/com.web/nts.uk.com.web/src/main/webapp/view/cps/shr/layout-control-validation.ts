@@ -301,7 +301,7 @@ module nts.layout {
                 radios: Array<IGrandRadio> = [{
                     ctgCode: 'CS00025',
                     radioCode: 'IS00296',
-                    relateCode: ['IS00297', 'IS00299', 'IS00299', 'IS00300', 'IS00301']
+                    relateCode: ['IS00297', 'IS00298', 'IS00299', 'IS00300', 'IS00301']
                 }, {
                         ctgCode: 'CS00026',
                         radioCode: 'IS00303',
