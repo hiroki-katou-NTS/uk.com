@@ -60,7 +60,9 @@ public class AppReflectProcessSchePubImpl implements AppReflectProcessSchePub{
 				schePubParam.getWorktypeCode(),
 				schePubParam.getWorkTimeCode(),
 				schePubParam.getStartDate(),
-				schePubParam.getEndDate());
+				schePubParam.getEndDate(),
+				schePubParam.getStartTime(),
+				schePubParam.getEndTime());
 		return paramSche;
 	}
 

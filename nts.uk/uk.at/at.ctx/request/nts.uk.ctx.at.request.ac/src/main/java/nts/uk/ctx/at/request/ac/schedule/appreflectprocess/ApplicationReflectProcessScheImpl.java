@@ -43,7 +43,9 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 				reflectSche.getForLeave().getWorkTypeCode().v(), //勤務種類=INPUT．勤務種類コード chi update workType
 				null,
 				reflectSche.getAppInfor().getStartDate().isPresent() ? reflectSche.getAppInfor().getStartDate().get() : null,
-				reflectSche.getAppInfor().getEndDate().isPresent() ? reflectSche.getAppInfor().getEndDate().get() : null);
+				reflectSche.getAppInfor().getEndDate().isPresent() ? reflectSche.getAppInfor().getEndDate().get() : null,
+				reflectSche.getForLeave().getStartTime1().v(),
+				reflectSche.getForLeave().getEndTime1().v());
 		return appReflectSchePub.appForLeaveSche(leavePra);
 	}
 
@@ -54,7 +56,9 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 				reflectSche.getWorkChange().getWorkTypeCd(), 
 				reflectSche.getWorkChange().getWorkTimeCd(),
 				reflectSche.getAppInfor().getStartDate() == null ? null : reflectSche.getAppInfor().getStartDate().get(),
-				reflectSche.getAppInfor().getEndDate() == null ? null : reflectSche.getAppInfor().getEndDate().get());
+				reflectSche.getAppInfor().getEndDate() == null ? null : reflectSche.getAppInfor().getEndDate().get(),
+				null,
+				null);
 		
 		return appReflectSchePub.appWorkChangeReflect(workChangePara);
 	}
@@ -66,6 +70,8 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 				relectSche.getHolidayWork().getWorkTimeCode().v(),
 				relectSche.getHolidayWork().getWorkTypeCode().v(),
 				null, 
+				null,
+				null,
 				null);		
 		return appReflectSchePub.holidayWorkReflectSche(holidayWork);
 	}
