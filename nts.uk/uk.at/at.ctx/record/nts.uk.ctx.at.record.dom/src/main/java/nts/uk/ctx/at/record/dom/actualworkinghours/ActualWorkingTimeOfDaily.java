@@ -184,6 +184,8 @@ public class ActualWorkingTimeOfDaily {
 					/*計画所定時間*/
 					/*実績所定労働時間*/);
 		
+		
+		/*大塚残業*/
 		val calcResultOotsuka = calcOotsuka(workingSystem,
 											totalWorkingTime,
 											fixRestTimeSetting,
@@ -363,7 +365,7 @@ public class ActualWorkingTimeOfDaily {
 			//休憩未取得時間の計算
 			val unUseBreakTime = workingSystem.isRegularWork()?totalWorkingTime.getBreakTimeOfDaily().calcUnUseBrekeTime(fixRestTimeSetting.get()):new AttendanceTime(0);
 			//日別実績の総労働からとってくる
-			AttendanceTime vacationAddTime = new AttendanceTime(0);
+			AttendanceTime vacationAddTime = totalWorkingTime.getWithinStatutoryTimeOfDaily().getVacationAddTime();
 			//残業時間
 			if(totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
 				//休憩未取得時間から残業時間計算
