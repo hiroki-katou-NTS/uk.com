@@ -38,8 +38,7 @@ public class RoleSetGrantedEmployeePubImpl implements RoleSetGrantedEmployeePub 
 		String companyId = AppContexts.user().companyId();
 
 		// Execute the algorithm "Acquire Employees from the Workplace"
-		List<String> empIds = wkpAdapter.findListSIdByCidAndWkpIdAndPeriod(workplaceId, period.start(), period.end())
-				.stream().map(item -> item.getEmployeeId()).collect(Collectors.toList());
+		List<String> empIds = wkpAdapter.findListSIdByCidAndWkpIdAndPeriod(workplaceId, period.start(), period.end());
 
 		// Acquire the domain model "Role set"
 		List<RoleSet> roleSets = roleSetRepo.findByCompanyId(companyId).stream().filter(item -> item.getApprovalAuthority() == ApprovalAuthority.HasRight).collect(Collectors.toList());
