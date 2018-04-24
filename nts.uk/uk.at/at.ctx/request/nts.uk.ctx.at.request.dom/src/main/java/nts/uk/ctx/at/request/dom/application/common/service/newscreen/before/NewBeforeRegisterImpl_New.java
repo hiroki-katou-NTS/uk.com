@@ -129,9 +129,13 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		
 		// アルゴリズム「申請の受付制限をチェック」を実施する
 		applicationAcceptanceRestrictionsCheck(application.getCompanyID(), application.getAppType(), application.getPrePostAtr(), startDate, endDate);
+		if(application.getAppDate().equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr.PREDICT)){
+			
+		}else{
+			// アルゴリズム「確定チェック」を実施する
+			confirmationCheck(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
+		}
 		
-		// アルゴリズム「確定チェック」を実施する
-		confirmationCheck(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
 	}
 	
 	// moi nguoi chi co the o mot cty vao mot thoi diem

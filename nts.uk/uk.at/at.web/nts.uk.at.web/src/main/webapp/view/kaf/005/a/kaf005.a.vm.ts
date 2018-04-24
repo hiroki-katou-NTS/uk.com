@@ -374,6 +374,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         }
 
                     }
+
+                }
+                //
+                if (data.appOvertimeNightFlg == 1 && data.overtimeAtr != 0) {
+                    self.overtimeHours.push(new common.OvertimeCaculation("", "", 1, "", 11, 0, nts.uk.resource.getText("KAF005_63"), null, null, null, "#[KAF005_64]", "", ""));
+                }
+                if (data.flexFLag && data.overtimeAtr != 0) {
+                    self.overtimeHours.push(new common.OvertimeCaculation("", "", 1, "", 12, 0, nts.uk.resource.getText("KAF005_65"), null, null, null, "#[KAF005_66]", "", ""));
                 }
             }else{
                 let dataOverTime = _.filter(data.caculationTimes, {'attendanceID': 1});
@@ -445,15 +453,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         item.applicationTime, 
                         null, 
                         null, "","",""));
-                });  
+                }); 
+                //勤務内容を変更後に計算ボタン押下。計算フラグ=0にする。 
+                if(!self.isEmptyOverTimeInput(ko.toJS(self.overtimeHours()))){
+                    self.calculateFlag(0);
+                } 
             }
-            //
-            if (data.appOvertimeNightFlg == 1 && data.overtimeAtr != 0) {
-                self.overtimeHours.push(new common.OvertimeCaculation("", "", 1, "", 11,0, nts.uk.resource.getText("KAF005_63"), null, null, null,"#[KAF005_64]","",""));
-            }
-            if(data.flexFLag && data.overtimeAtr != 0){
-               self.overtimeHours.push(new common.OvertimeCaculation("", "", 1, "", 12,0, nts.uk.resource.getText("KAF005_65"), null, null, null,"#[KAF005_66]","","")); 
-            }
+            
             self.overtimeAtr(data.overtimeAtr);
             if(data.overtimeAtr == 0){
                 self.heightOvertimeHours(56);   

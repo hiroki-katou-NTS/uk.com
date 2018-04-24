@@ -134,22 +134,36 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			//xin sau 事前事後区分= 事後
 			prePostAtr = PrePostAtr.POSTERIOR;
 		}else{ // if appDate = systemDate
-			// if RetrictPreUseFlg = notuse ->prePostAtr = POSTERIOR
-			if(appTypeDisc.get().getRetrictPreUseFlg() == UseAtr.NOTUSE) {
-				prePostAtr = PrePostAtr.POSTERIOR;
-			}else {
-				//「事前の受付制限」．チェック方法が日数でチェック
+//			// if RetrictPreUseFlg = notuse ->prePostAtr = POSTERIOR
+//			if(appTypeDisc.get().getRetrictPreUseFlg() == UseAtr.NOTUSE) {
+//				prePostAtr = PrePostAtr.POSTERIOR;
+//			}else {
+//				//「事前の受付制限」．チェック方法が日数でチェック
+//				if(appTypeDisc.get().getRetrictPreMethodFlg() == CheckMethod.DAYCHECK) {
+//					prePostAtr = PrePostAtr.POSTERIOR;
+//				}else {//システム日時と受付制限日時と比較する
+//					if(systemTime.compareTo(appTypeDisc.get().getRetrictPreTimeDay().v())==1) {
+//						
+//						prePostAtr = PrePostAtr.POSTERIOR;
+//					}else { // if systemDateTime <=  RetrictPreTimeDay - > xin truoc
+//						prePostAtr = PrePostAtr.PREDICT;
+//					}
+//				}
+//			}
+			if(appType.equals(ApplicationType.OVER_TIME_APPLICATION)){
 				if(appTypeDisc.get().getRetrictPreMethodFlg() == CheckMethod.DAYCHECK) {
 					prePostAtr = PrePostAtr.POSTERIOR;
-				}else {//システム日時と受付制限日時と比較する
+				}else{
 					if(systemTime.compareTo(appTypeDisc.get().getRetrictPreTimeDay().v())==1) {
-						
 						prePostAtr = PrePostAtr.POSTERIOR;
 					}else { // if systemDateTime <=  RetrictPreTimeDay - > xin truoc
 						prePostAtr = PrePostAtr.PREDICT;
 					}
 				}
+			}else{
+				prePostAtr = PrePostAtr.POSTERIOR;
 			}
+			
 		}
 			
 		return prePostAtr;
