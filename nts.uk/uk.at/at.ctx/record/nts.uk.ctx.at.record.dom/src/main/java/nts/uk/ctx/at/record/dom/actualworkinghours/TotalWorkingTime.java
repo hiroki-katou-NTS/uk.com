@@ -27,6 +27,7 @@ import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDay;
 import nts.uk.ctx.at.record.dom.daily.latetime.IntervalExemptionTime;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.HolidayOfDaily;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
@@ -56,6 +57,7 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfIrregularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfRegularWork;
@@ -119,6 +121,8 @@ public class TotalWorkingTime {
 	/*短時間勤務時間*/
 	private ShortWorkTimeOfDaily shotrTimeOfDaily;
 	
+	/*日別実績の休暇時間*/
+	private HolidayOfDaily holidayOfDaily;
 	
 	/**
 	 * 
@@ -152,7 +156,7 @@ public class TotalWorkingTime {
 			List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily, BreakTimeOfDaily breakTimeOfDaily,
 			List<OutingTimeOfDaily> outingTimeOfDailyPerformance,
 			RaiseSalaryTimeOfDailyPerfor raiseSalaryTimeOfDailyPerfor, WorkTimes workTimes,
-			TemporaryTimeOfDaily temporaryTime, ShortWorkTimeOfDaily shotrTime) {
+			TemporaryTimeOfDaily temporaryTime, ShortWorkTimeOfDaily shotrTime,HolidayOfDaily holidayOfDaily) {
 		super();
 		this.totalTime = totalTime;
 		this.totalCalcTime = totalCalcTime;
@@ -167,12 +171,14 @@ public class TotalWorkingTime {
 		this.workTimes = workTimes;
 		this.temporaryTime = temporaryTime;
 		this.shotrTimeOfDaily = shotrTime;
+		this.holidayOfDaily = holidayOfDaily;
 	}
 	
 	/**
 	 * 日別実績の総労働時間の計算
 	 * @param breakTimeCount 
 	 * @param integrationOfDaily 
+	 * @param flexSetting 
 	 * @return 
 	 */
 	public static TotalWorkingTime calcAllDailyRecord(CalculationRangeOfOneDay oneDay,AutoCalOvertimeSetting overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting,
@@ -199,6 +205,7 @@ public class TotalWorkingTime {
 			   AutoCalFlexOvertimeSetting flexAutoCalSet
 			   ) {
 		
+
 		Optional<WorkTimeCode> workTimeCode = Optional.empty();
 		//日別実績の所定外時間
 		if(oneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode() != null) {
@@ -206,7 +213,7 @@ public class TotalWorkingTime {
 																		?Optional.empty()
 																		:Optional.of(new WorkTimeCode(oneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode().v().toString()));
 		}
-
+		
 		/*日別実績の法定内時間(就業時間)*/
 		val withinStatutoryTimeOfDaily = WithinStatutoryTimeOfDaily.calcStatutoryTime(oneDay,
 				   																      personalCondition,
@@ -323,7 +330,8 @@ public class TotalWorkingTime {
 									raiseTime,
 									workTimes,
 									tempTime,
-									shotrTime);
+									shotrTime,
+									vacationOfDaily);
 	}
 
 	/**

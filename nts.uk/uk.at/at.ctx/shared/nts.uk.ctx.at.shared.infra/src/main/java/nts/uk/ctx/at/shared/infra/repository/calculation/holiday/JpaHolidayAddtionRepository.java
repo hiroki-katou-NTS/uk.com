@@ -509,6 +509,8 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 		kshstHolidayAddtimeSet.workClass1 = holidayAddtime.getTimeHolidayAddition().get(0).getWorkClass().value;
 		kshstHolidayAddtimeSet.addingMethod2 = holidayAddtime.getTimeHolidayAddition().get(1).getAddingMethod().value;
 		kshstHolidayAddtimeSet.workClass2 = holidayAddtime.getTimeHolidayAddition().get(1).getWorkClass().value;
+		
+		this.commandProxy().insert(kshstHolidayAddtimeSet);
 	}
 
 	/* (non-Javadoc)

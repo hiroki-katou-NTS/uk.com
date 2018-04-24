@@ -153,7 +153,7 @@ public class ActualWorkingTimeOfDaily {
 			   WorkRegularAdditionSet regularAddSetting,
 			   HolidayAddtionSet holidayAddtionSet,
 			   AutoCalOverTimeAttr overTimeAutoCalcAtr,
-		       WorkTimeDailyAtr workTimeDailyAtr,
+		       Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 			   Optional<SettingOfFlexWork> flexCalcMethod,
 			   HolidayCalcMethodSet holidayCalcMethodSet,
 			   AutoCalRaisingSalarySetting raisingAutoCalcSet,
@@ -192,7 +192,7 @@ public class ActualWorkingTimeOfDaily {
 					eachCompanyTimeSet,
 					breakTimeCount,
 					integrationOfDaily,
-					flexAutoCalSet
+					flexSetting
 					/*計画所定時間*/
 					/*実績所定労働時間*/);
 		

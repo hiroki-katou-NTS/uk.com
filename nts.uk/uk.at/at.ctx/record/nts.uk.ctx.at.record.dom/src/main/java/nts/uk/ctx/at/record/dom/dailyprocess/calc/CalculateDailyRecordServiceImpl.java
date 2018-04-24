@@ -625,14 +625,14 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			}
 		}
 		
-		Optional<WorkTimeDailyAtr> workTime = Optional.empty();
+		Optional<WorkTimeDailyAtr> workTimeDailyAtr = Optional.empty();
 		if(manageReGetClass.getIntegrationOfDaily().getWorkInformation().getRecordInfo().getWorkTimeCode() != null) {
 			val workTimeSetting = workTimeSettingRepository.findByCode(companyId,manageReGetClass.getIntegrationOfDaily().getWorkInformation().getRecordInfo().getWorkTimeCode().toString());
-			workTime = workTimeSetting.isPresent()?Optional.of(workTimeSetting.get().getWorkTimeDivision().getWorkTimeDailyAtr()):Optional.empty();
+			workTimeDailyAtr = workTimeSetting.isPresent()?Optional.of(workTimeSetting.get().getWorkTimeDivision().getWorkTimeDailyAtr()):Optional.empty();
 		}
 		
 		val workType = manageReGetClass.getWorkType();
-		if(!workType.isPresent() || !workTime.isPresent()) return manageReGetClass.getIntegrationOfDaily();
+		if(!workType.isPresent() || !workTimeDailyAtr.isPresent()) return manageReGetClass.getIntegrationOfDaily();
 		//予定時間帯が作成されるまでの一時対応
 		val scheWorkTypeCode = manageReGetClass.getCalculationRangeOfOneDay().getWorkInformationOfDaily().getScheduleInfo().getWorkTypeCode();
 		Optional<WorkType> scheWorkType = Optional.empty();
@@ -674,7 +674,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				    regularAddSetting,
 				    holidayAddtionSet,
 				    AutoCalOverTimeAttr.CALCULATION_FROM_STAMP,
-				    workTime.get(),
+				    workTimeDailyAtr,
 				    flexCalcMethod,
 				    manageReGetClass.getHolidayCalcMethodSet(),
 				    autoRaisingSet,

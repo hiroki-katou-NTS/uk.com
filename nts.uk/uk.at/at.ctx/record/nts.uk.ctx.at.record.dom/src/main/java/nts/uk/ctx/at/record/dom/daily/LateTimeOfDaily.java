@@ -38,7 +38,7 @@ public class LateTimeOfDaily {
 	
 	private TimeWithCalculation lateTime;
 	private TimeWithCalculation lateDeductionTime;
-	private WorkNo workNo;//workNo型で作り直す必要がある
+	private WorkNo workNo;
 	private TimevacationUseTimeOfDaily timePaidUseTime;
 	private IntervalExemptionTime exemptionTime;
 	
@@ -46,8 +46,7 @@ public class LateTimeOfDaily {
 
 
 	public LateTimeOfDaily(TimeWithCalculation lateTime, TimeWithCalculation lateDeductionTime, WorkNo workNo,
-			TimevacationUseTimeOfDaily timePaidUseTime, IntervalExemptionTime exemptionTime) {
-		super();
+			TimevacationUseTimeOfDaily timePaidUseTime, IntervalExemptionTime exemptionTime) {		
 		this.lateTime = lateTime;
 		this.lateDeductionTime = lateDeductionTime;
 		this.workNo = workNo;
