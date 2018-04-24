@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1200, height: 530 };</script>
+			<script>var dialogSize = { width: 1200, height: 500 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdr001.b.main.css" />
 			<com:scriptfile path="kdr001.b.start.js" />
@@ -35,10 +35,10 @@
 				<button data-bind="click: closeDialog" tabindex="4">#{i18n.getText('KDR001_39')}</button>
 			</div>
 
-			<div class="cf" id="contents-area">
+			<div class="cf" id="contents-area" style="display: flex;">
 				<div class="selectionHoliday">
 					<div class="panel"
-						data-bind="ntsPanel:{width: '350px', height: '370px', direction: 'right', showIcon: true, visible: true}">
+						data-bind="ntsPanel:{width: '350px', height: '370px', direction: 'right',  visible: true}">
 						<table id="multi-list" tabindex="5"
 							data-bind="ntsGridList: {
 							    multiple: false,

@@ -1,8 +1,7 @@
 
 .holidayAction {
 	border-radius: 5px;
-	float: right;
-	width: 750px;
+	width: 810px;
 	padding: 5px;
 	height: 443px;
 }
@@ -23,7 +22,7 @@
 .selectionHoliday {
 	border-radius: 5px;
 	margin-left: 20px;
-	width: 430px;
+	width: 420px;
 	float:left;
 }
 
@@ -38,7 +37,7 @@
 	
 }
 
-table, th, td {
+.holidaytable table, th, td {
     border: 1px solid black;
    
 }
