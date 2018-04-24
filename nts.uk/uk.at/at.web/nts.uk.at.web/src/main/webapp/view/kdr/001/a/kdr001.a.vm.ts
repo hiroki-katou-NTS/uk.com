@@ -132,11 +132,10 @@ module nts.uk.at.view.kdr001.a.viewmodel {
 
             //combo-box2
             self.itemSelected = ko.observableArray([
-                new ItemModel('0', getText("Enum_BreakSelection_WORKPLACE")),
-                new ItemModel('1', getText("Enum_BreakSelection_INDIVIDUAL")),
-                new ItemModel('2', getText("Enum_BreakSelection_NONE"))
+                new ItemModel('0', getText("Enum_BreakSelection_NONE")),
+                new ItemModel('1', getText("Enum_BreakSelection_WORKPLACE")),
+                new ItemModel('2', getText("Enum_BreakSelection_INDIVIDUAL"))
             ]);
-
         }
 
         /**
