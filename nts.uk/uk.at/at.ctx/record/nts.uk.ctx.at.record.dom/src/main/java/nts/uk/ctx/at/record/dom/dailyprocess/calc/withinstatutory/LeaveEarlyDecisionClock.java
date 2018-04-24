@@ -50,8 +50,8 @@ public class LeaveEarlyDecisionClock {
 				decisionClock = calｃRange.get().getEnd();
 			} else {
 				// 猶予時間帯の作成
-				TimeSpanForCalc graceTimeSheet = new TimeSpanForCalc(predetermineTimeSet.getTimeSheets().get(workNo).getEnd().forwardByMinutes(leaveEarlyGraceTime.getGraceTime().minute()),
-																	 predetermineTimeSet.getTimeSheets().get(workNo).getEnd());
+				TimeSpanForCalc graceTimeSheet = new TimeSpanForCalc(predetermineTimeSheet.getEnd().forwardByMinutes(leaveEarlyGraceTime.getGraceTime().minute()),
+																	 predetermineTimeSheet.getEnd());
 				
 				// 重複している控除分をずらす
 				List<TimeZoneRounding> breakTimeSheetList = deductionTimeSheet.getForDeductionTimeZoneList().stream().filter(t -> t.getDeductionAtr().isBreak()==true).map(t -> t.getTimeSheet()).collect(Collectors.toList());
