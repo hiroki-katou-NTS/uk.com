@@ -154,6 +154,7 @@ module nts.uk.at.view.kaf018.h.viewmodel {
                 //画面モード　＝　更新
                 self.screenEditMode(true);
                 self.appApprovalUnapproved.editMode(true);
+                self.workConfirmation.editMode(true);
                 if (self.checkH3()) {
                     self.dailyUnconfirmByPrincipal.editMode(true);
                 }
@@ -163,6 +164,7 @@ module nts.uk.at.view.kaf018.h.viewmodel {
                 if (self.checkH1()) {
                     self.monthlyUnconfirmByConfirmer.editMode(true);
                 }
+
                 block.clear();
             });
         }
