@@ -140,6 +140,7 @@ public class ActualWorkingTimeOfDaily {
 	 * @param ootsukaFixedCalcSet 
 	 * @param integrationOfDaily 
 	 * @param dailyUnit 
+	 * @param flexSetting 
 	 */
 	public static ActualWorkingTimeOfDaily calcRecordTime(CalculationRangeOfOneDay oneDay,AutoCalOvertimeSetting overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting,
 			   Optional<PersonalLaborCondition> personalCondition,
@@ -164,11 +165,15 @@ public class ActualWorkingTimeOfDaily {
 			   DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
 			   List<DivergenceTime> divergenceTimeList, Optional<PredetermineTimeSetForCalc> schePreTimeSet, 
 			   int breakTimeCount, Optional<FixedWorkCalcSetting> ootsukaFixedCalcSet,
-			   Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting, IntegrationOfDaily integrationOfDaily,
-			   AutoCalFlexOvertimeSetting flexAutoCalSet, DailyUnit dailyUnit
+			   Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting, 
+			   IntegrationOfDaily integrationOfDaily,
+			   Optional<WorkType> scheWorkType,
+			   AutoCalFlexOvertimeSetting flexAutoCalSet,
+			   DailyUnit dailyUnit
 				/*計画所定時間*/
 				/*実績所定労働時間*/) {
 
+		
 		/* 総労働時間の計算 */
 		val totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(oneDay,overTimeAutoCalcSet,holidayAutoCalcSetting,
 				    personalCondition,
@@ -192,7 +197,7 @@ public class ActualWorkingTimeOfDaily {
 					eachCompanyTimeSet,
 					breakTimeCount,
 					integrationOfDaily,
-					flexSetting
+					flexAutoCalSet
 					/*計画所定時間*/
 					/*実績所定労働時間*/);
 		
@@ -398,4 +403,6 @@ public class ActualWorkingTimeOfDaily {
 		}
 		return totalWorkingTime;
 	}
+
+
 }

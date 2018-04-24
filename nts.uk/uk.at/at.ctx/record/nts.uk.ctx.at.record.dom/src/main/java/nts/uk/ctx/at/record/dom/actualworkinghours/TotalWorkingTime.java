@@ -193,7 +193,7 @@ public class TotalWorkingTime {
 			   WorkRegularAdditionSet regularAddSetting,
 			   HolidayAddtionSet holidayAddtionSet,
 			   AutoCalOverTimeAttr overTimeAutoCalcAtr,
-			   WorkTimeDailyAtr workTimeDailyAtr,
+			   Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 			   Optional<SettingOfFlexWork> flexCalcMethod,
 			   HolidayCalcMethodSet holidayCalcMethodSet,
 			   AutoCalRaisingSalarySetting raisingAutoCalcSet,
@@ -232,7 +232,7 @@ public class TotalWorkingTime {
 				   																      overTimeAutoCalcAtr, 
 				   																      flexCalcMethod, 
 				   																      flexAutoCalSet.getFlexOtTime().getUpLimitORtSet(),
-				   																      workTimeDailyAtr, 
+				   																      workTimeDailyAtr.get(), 
 				   																      workTimeCode);
 
 		
@@ -251,7 +251,7 @@ public class TotalWorkingTime {
 																									leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 																									workingSystem,illegularAddSetting,flexAddSetting,regularAddSetting,
 																									holidayAddtionSet,
-																									workTimeDailyAtr,
+																									workTimeDailyAtr.get(),
 																									eachWorkTimeSet,
 																									eachCompanyTimeSet,
 																									integrationOfDaily);

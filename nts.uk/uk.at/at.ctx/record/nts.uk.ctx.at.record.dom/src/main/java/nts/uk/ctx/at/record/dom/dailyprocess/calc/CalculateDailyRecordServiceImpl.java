@@ -692,7 +692,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					manageReGetClass.getOotsukaFixedWorkSet(),
 					manageReGetClass.getFixRestTimeSetting(),
 					scheWorkType,
-					manageReGetClass.getIntegrationOfDaily().getCalAttr().getFlexExcessTime()
+					manageReGetClass.getIntegrationOfDaily().getCalAttr().getFlexExcessTime(),
+					manageReGetClass.getDailyUnit()
 					));
 //					schePreTimeSet));
 	

@@ -44,6 +44,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfIrregularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfRegularWork;
@@ -163,8 +164,8 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   CalculateOfTotalConstraintTime calculateOfTotalConstraintTime, 
 			   Optional<PredetermineTimeSetForCalc> schePreTimeSet, Optional<FixedWorkCalcSetting> ootsukaFixCalsSet,
 			   Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting,Optional<WorkType> scheWorkType,
-			   AutoCalFlexOvertimeSetting flexAutoCalSet) {
-			   AutoCalFlexOvertimeSetting flexSetting) {
+			   AutoCalFlexOvertimeSetting flexAutoCalSet,
+			   DailyUnit dailyUnit) {
 		integrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(collectCalculationResult(oneDay,oneDay, overTimeAutoCalcSet,holidayAutoCalcSetting,
 				   																		personalCondition,
 				   																		 vacationClass,
@@ -195,9 +196,10 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				   																	     integrationOfDaily.getBreakTime().size(),
 				   																	     ootsukaFixCalsSet,
 				   																	     fixRestTimeSetting,
-				   																	  integrationOfDaily, scheWorkType,
-				   																	  flexAutoCalSet
-				   																	     flexSetting
+				   																	     integrationOfDaily, 
+				   																	     scheWorkType,
+				   																	     flexAutoCalSet,
+				   																	     dailyUnit
 				   																	     )));
 		
 		return integrationOfDaily;
@@ -242,9 +244,9 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   CalculateOfTotalConstraintTime calculateOfTotalConstraintTime, Optional<PredetermineTimeSetForCalc> schePreTimeSet, int breakTimeCount,
 			   Optional<FixedWorkCalcSetting> ootsukaFixCalsSet,
 			   Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting, IntegrationOfDaily integrationOfDaily,
-			   Optional<WorkType> scheWorkType
-			   Optional<WorkType> scheWorkType,AutoCalFlexOvertimeSetting flexAutoCalSet
-			   Optional<WorkType> scheWorkType, AutoCalFlexOvertimeSetting flexSetting
+			   Optional<WorkType> scheWorkType, 
+			   AutoCalFlexOvertimeSetting flexSetting,
+			   DailyUnit dailyUnit
 			   ) {
 		
 		/*日別実績の勤務予定時間の計算*/
@@ -271,17 +273,15 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 					eachWorkTimeSet,
 					eachCompanyTimeSet,
 					forCalcDivergenceDto,
-					divergenceTimeList
-					/*計画所定時間*/
-					/*実績所定労働時間*/
-					/*勤務予定時間の計算*/,
+					divergenceTimeList,
 					schePreTimeSet,
 					breakTimeCount,
 					ootsukaFixCalsSet,
 					fixRestTimeSetting,
 					integrationOfDaily,
-					flexAutoCalSet);
-					flexSetting);
+					scheWorkType, 
+					flexSetting, 
+					dailyUnit);
 		
 
 		/*滞在時間の計算*/
