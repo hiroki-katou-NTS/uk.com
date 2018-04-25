@@ -58,8 +58,8 @@ public class StartTimeReflectScheServiceImpl implements StartEndTimeReflectScheS
 			timeZoneData = lstTimeZoneData.get(0);	
 			//開始時刻を反映する
 			//終了時刻の反映
-			timeZoneData.updateTime(timeDto.isUpdateStart() ? new TimeWithDayAttr(timeDto.getStartTime()) : timeZoneData.getScheduleStartClock(), 
-					timeDto.isUpdateEnd() ? new TimeWithDayAttr(timeDto.getEndTime()) : timeZoneData.getScheduleEndClock());
+			timeZoneData.updateTime(timeDto.isUpdateStart() ? new TimeWithDayAttr(timeDto.getStartTime() == null ? 0 : timeDto.getStartTime()) : timeZoneData.getScheduleStartClock(), 
+					timeDto.isUpdateEnd() ? new TimeWithDayAttr(timeDto.getEndTime() == null ? 0 : timeDto.getEndTime()) : timeZoneData.getScheduleEndClock());
 		}
 		
 		

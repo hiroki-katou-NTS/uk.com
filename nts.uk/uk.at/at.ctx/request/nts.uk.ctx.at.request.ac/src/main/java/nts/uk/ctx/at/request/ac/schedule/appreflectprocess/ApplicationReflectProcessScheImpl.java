@@ -94,7 +94,7 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 		CommonReflectSchePubParam recruitment = new CommonReflectSchePubParam(relectSche.getEmployeeId(), 
 				relectSche.getDatePara(), 
 				relectSche.getRecruitment().getWorkTypeCD(), 
-				relectSche.getAbsenceLeave().getWorkTimeCD() != null ? relectSche.getAbsenceLeave().getWorkTimeCD().v() : null, 
+				relectSche.getRecruitment().getWorkTimeCD() != null ? relectSche.getRecruitment().getWorkTimeCD().v() : null, 
 				relectSche.getAppInfor().getStartDate().isPresent() ? relectSche.getAppInfor().getStartDate().get() : null, 
 				relectSche.getAppInfor().getEndDate().isPresent() ? relectSche.getAppInfor().getEndDate().get() : null, 
 				relectSche.getRecruitment().getWorkTime1().getStartTime() != null ? relectSche.getRecruitment().getWorkTime1().getStartTime().v() : null, 
