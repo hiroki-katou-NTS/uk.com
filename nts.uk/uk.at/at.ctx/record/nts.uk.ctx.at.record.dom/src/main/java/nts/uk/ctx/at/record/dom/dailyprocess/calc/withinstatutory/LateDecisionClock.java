@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -48,6 +49,7 @@ public class LateDecisionClock {
 			Optional<CoreTimeSetting> coreTimeSetting) {
 
 		TimezoneUse predetermineTimeSheet = predetermineTimeSet.getTimeSheets(workNo);
+//		TimezoneUse predetermineTimeSheet = new TimezoneUse(new TimeWithDayAttr(0), new TimeWithDayAttr(0), UseSetting.NOT_USE , workNo);
 		TimeWithDayAttr decisionClock = new TimeWithDayAttr(0);
 
 		//計算範囲取得
