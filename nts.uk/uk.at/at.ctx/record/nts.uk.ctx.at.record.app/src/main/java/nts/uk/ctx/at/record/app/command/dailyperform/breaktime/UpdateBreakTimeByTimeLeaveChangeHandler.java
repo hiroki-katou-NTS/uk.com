@@ -95,8 +95,10 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandler<Upda
 		if (!inputByHandItems.isEmpty()) {
 			List<ItemValue> ipByHandValues = AttendanceItemUtil.toItemValues(BreakTimeDailyDto.getDto(breakTimeRecord),
 					inputByHandItems);
-			return AttendanceItemUtil.fromItemValues(BreakTimeDailyDto.getDto(breakTime), ipByHandValues)
+			if(ipByHandValues != null){
+				return AttendanceItemUtil.fromItemValues(BreakTimeDailyDto.getDto(breakTime), ipByHandValues.stream().filter(c -> c != null).collect(Collectors.toList()))
 					.toDomain(employeeId, workingDate);
+			}
 		}
 		return breakTime;
 	}
