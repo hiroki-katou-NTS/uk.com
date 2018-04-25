@@ -750,9 +750,9 @@ public class DailyPerformanceCorrectionProcessor {
 				//int supervisorConfirmError = approvalUseSettingDto.get().getSupervisorConfirmErrorAtr();
 				int supervisorConfirmError = dailyRecOpeFun.getSupervisorConfirmError();
 				if (supervisorConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
-					if (data.getError().contains("ER")) {
+					if (data.getError().contains("ER") && data.isApproval()) {
 						screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_ERROR);
-					} else {
+					} else if(data.getError().contains("ER") && !data.isApproval()) {
 						screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
 					}
 					// thieu check khi co data
