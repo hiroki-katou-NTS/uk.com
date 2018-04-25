@@ -1,18 +1,25 @@
 
 .ccg001searchkcp005{
 	float:left;
-	width: 745px;
 }
 
 .holidayAction {
 	/* border: 1px solid #ccc !important; */
-	width:40%;
 	margin-top: 37px;
 	/* 
 	padding: 5px;
 	border-radius: 5px;
 	height: 511px;
 	margin-left: 10px; */
+}
+
+.holidayAction table tr {
+	display: flex;
+	margin-bottom: 10px;
+}
+
+.holidayAction table tr td {
+	display: inline-flex;
 }
 
 .periodCovered {
