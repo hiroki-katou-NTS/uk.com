@@ -38,18 +38,6 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 		/*if(!this.checkBeforeReflected(application)) {
 			return reflectedStatesInfo;
 		}*/
-	/*	ReflectScheDto reflectSchePara = new ReflectScheDto(application.getEmployeeID(),
-				application.getAppDate(),
-				ExecutionType.NORMALECECUTION, 
-				true, 
-				ApplyTimeRequestAtr.START, 
-				application,
-				null, 
-				null, 
-				null,
-				null,
-				null,
-				null);*/
 		boolean isReflect = false;
 		if(application.getAppType() == ApplicationType.OVER_TIME_APPLICATION) {			
 			return false;
@@ -66,7 +54,8 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 		} else if (application.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION) {
 			if(reflectParam.getAbsenceLeave() != null) {
 				isReflect = processScheReflect.ebsenceLeaveReflect(reflectParam);
-			} else if(reflectParam.getRecruitment() != null) {
+			} 
+			if(reflectParam.getRecruitment() != null) {
 				isReflect = processScheReflect.recruitmentReflect(reflectParam);
 			}
 		}

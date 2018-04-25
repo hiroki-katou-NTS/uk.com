@@ -153,13 +153,14 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			if(optAbsenceLeaveData.isPresent()) {
 				AbsenceLeaveApp absenceLeave = optAbsenceLeaveData.get();
 				reflectScheParam.setAbsenceLeave(absenceLeave);
-			} else {
-				Optional<RecruitmentApp> optRecruitmentData = recruitmentRepo.findByAppId(appInfor.getAppID());
-				if(optRecruitmentData.isPresent()) {
-					RecruitmentApp recruitmentData = optRecruitmentData.get();
-					reflectScheParam.setRecruitment(recruitmentData);
-				}
+			} 
+			
+			Optional<RecruitmentApp> optRecruitmentData = recruitmentRepo.findByAppId(appInfor.getAppID());
+			if(optRecruitmentData.isPresent()) {
+				RecruitmentApp recruitmentData = optRecruitmentData.get();
+				reflectScheParam.setRecruitment(recruitmentData);
 			}
+			
 		
 		} 
 		

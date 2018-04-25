@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,6 +11,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.servicedto.TimeReflectScheDto;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.BounceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.ScheduleEditState;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
@@ -35,20 +37,32 @@ public class StartTimeReflectScheServiceImpl implements StartEndTimeReflectScheS
 		
 		BasicSchedule basicScheByDate = optBasicScheByDate.get();
 		List<WorkScheduleTimeZone> workScheduleTimeZones = basicScheByDate.getWorkScheduleTimeZones();
+		WorkScheduleTimeZone timeZoneData = null;
 		if(workScheduleTimeZones.isEmpty()) {
-			return;
+			if(timeDto.isUpdateStart() && timeDto.isUpdateEnd()) {
+				timeZoneData = new WorkScheduleTimeZone(1, new TimeWithDayAttr(timeDto.getStartTime()), new TimeWithDayAttr(timeDto.getEndTime()), BounceAtr.DIRECT_BOUNCE);
+				List<WorkScheduleTimeZone> lstTimeZoneData = new ArrayList<>();
+				lstTimeZoneData.add(timeZoneData);
+				basicScheByDate.setWorkScheduleTimeZones(lstTimeZoneData);
+			} else {
+				return;
+			}
+			
+		} else {
+			List<WorkScheduleTimeZone> lstTimeZoneData = workScheduleTimeZones.stream()
+					.filter(x -> x.getScheduleCnt() == timeDto.getFrameNumber())
+					.collect(Collectors.toList());
+			if(lstTimeZoneData.isEmpty()) {
+				return;
+			}
+			timeZoneData = lstTimeZoneData.get(0);	
+			//開始時刻を反映する
+			//終了時刻の反映
+			timeZoneData.updateTime(timeDto.isUpdateStart() ? new TimeWithDayAttr(timeDto.getStartTime()) : timeZoneData.getScheduleStartClock(), 
+					timeDto.isUpdateEnd() ? new TimeWithDayAttr(timeDto.getEndTime()) : timeZoneData.getScheduleEndClock());
 		}
-		List<WorkScheduleTimeZone> lstTimeZoneData = workScheduleTimeZones.stream()
-				.filter(x -> x.getScheduleCnt() == timeDto.getFrameNumber())
-				.collect(Collectors.toList());
-		if(lstTimeZoneData.isEmpty()) {
-			return;
-		}
-		WorkScheduleTimeZone timeZoneData = lstTimeZoneData.get(0);
-		//開始時刻を反映する
-		//終了時刻の反映
-		timeZoneData.updateTime(timeDto.isUpdateStart() ? new TimeWithDayAttr(timeDto.getStartTime()) : timeZoneData.getScheduleStartClock(), 
-				timeDto.isUpdateEnd() ? new TimeWithDayAttr(timeDto.getEndTime()) : timeZoneData.getScheduleEndClock());
+		
+		
 		basicReposi.update(basicScheByDate);
 		
 		//開始時刻の編集状態を更新する  勤務予定項目状態
