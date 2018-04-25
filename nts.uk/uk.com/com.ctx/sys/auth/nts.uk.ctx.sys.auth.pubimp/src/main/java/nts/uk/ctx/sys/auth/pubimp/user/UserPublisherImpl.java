@@ -61,13 +61,4 @@ public class UserPublisherImpl implements UserPublisher {
 			return Collections.emptyList();
 		return listUser;
 	}
-
-	@Override
-	public Optional<UserExport> getByUserId(String userId) {
-		Optional<User> optUser = userRepo.getByUserID(userId);
-		if (optUser.isPresent()) {
-			return Optional.of(this.fromDomain(optUser.get()));
-		}
-		return Optional.empty();
-	}
 }

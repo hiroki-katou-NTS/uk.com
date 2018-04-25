@@ -180,7 +180,6 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 /** Optional properties */
                 isInDialog?: boolean;
-                showOnStart?: boolean;
 
                 /** Data returned */
                 returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
@@ -220,8 +219,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 jobTitleCodes: Array<string>;
                 filterByWorktype: boolean;
                 worktypeCodes: Array<string>;
-                filterByClosure: boolean;
-                closureIds: Array<number>;
 
                 periodStart: string;
                 periodEnd: string;

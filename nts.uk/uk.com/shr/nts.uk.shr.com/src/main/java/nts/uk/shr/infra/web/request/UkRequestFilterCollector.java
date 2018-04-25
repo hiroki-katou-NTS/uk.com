@@ -30,8 +30,8 @@ public class UkRequestFilterCollector implements RequestFilterCollector {
 			RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new SharingSessionFilter()),
 			RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new ProgramIdDetector()),
 			RequestFilterMapping.map(PathPattern.ALL_SCREENS, new ScreenLoginSessionValidator()),
-			RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new WebApiLoginSessionValidator())//,
-//			RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new CsrfProtectionFilter(PathsNoSession.WEB_APIS))
+			RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new WebApiLoginSessionValidator()),
+			RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new CsrfProtectionFilter(PathsNoSession.WEB_APIS))
 			);
 
 	@Override

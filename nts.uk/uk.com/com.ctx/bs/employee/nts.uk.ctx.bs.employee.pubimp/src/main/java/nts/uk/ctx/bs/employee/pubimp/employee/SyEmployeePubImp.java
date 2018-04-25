@@ -264,7 +264,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.getByListEmployeeId(sIds);
 
 		if (CollectionUtil.isEmpty(emps)) {
-			return Collections.emptyList();
+			return null;
 		}
 
 		List<String> pIds = emps.stream().map(EmployeeDataMngInfo::getPersonId).collect(Collectors.toList());
