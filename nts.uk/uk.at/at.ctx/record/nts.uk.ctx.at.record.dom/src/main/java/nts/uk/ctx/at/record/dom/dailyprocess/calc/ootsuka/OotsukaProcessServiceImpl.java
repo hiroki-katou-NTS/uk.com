@@ -105,8 +105,8 @@ public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 		//休暇時の計算を取得
 		if(workType != null && false) {//calcMethodOfFixWork.isPresent()) {
 			return workType.getDailyWork().isOneOrHalfAnnualHoliday()
-					&& workType.getDailyWork().isOneOrHalfDaySpecHoliday()
-					&& workType.getDailyWork().isOneOrHalfDayYearlyReserved();
+					|| workType.getDailyWork().isOneOrHalfDaySpecHoliday()
+					|| workType.getDailyWork().isOneOrHalfDayYearlyReserved();
 		}
 		//しない
 		else {
