@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -47,7 +48,8 @@ public class LateDecisionClock {
 			TimeLeavingWork timeLeavingWork,
 			Optional<CoreTimeSetting> coreTimeSetting) {
 
-		TimezoneUse predetermineTimeSheet = predetermineTimeSet.getTimeSheets().get(workNo);
+		TimezoneUse predetermineTimeSheet = predetermineTimeSet.getTimeSheets(workNo);
+//		TimezoneUse predetermineTimeSheet = new TimezoneUse(new TimeWithDayAttr(0), new TimeWithDayAttr(0), UseSetting.NOT_USE , workNo);
 		TimeWithDayAttr decisionClock = new TimeWithDayAttr(0);
 
 		//計算範囲取得
@@ -58,8 +60,8 @@ public class LateDecisionClock {
 				decisionClock = calｃRange.get().getStart();
 			} else {
 				// 猶予時間帯の作成
-				TimeSpanForCalc graceTimeSheet = new TimeSpanForCalc(predetermineTimeSet.getTimeSheets().get(workNo).getStart(),
-																	 predetermineTimeSet.getTimeSheets().get(workNo).getStart().backByMinutes(lateGraceTime.getGraceTime().minute()));
+				TimeSpanForCalc graceTimeSheet = new TimeSpanForCalc(predetermineTimeSheet.getStart(),
+																	 predetermineTimeSheet.getStart().backByMinutes(lateGraceTime.getGraceTime().minute()));
 				// 重複している控除分をずらす
 				List<TimeZoneRounding> breakTimeSheetList = deductionTimeSheet.getForDeductionTimeZoneList().stream().filter(t -> t.getDeductionAtr().isBreak()==true).map(t -> t.getTimeSheet()).collect(Collectors.toList());
 				for(TimeZoneRounding breakTime:breakTimeSheetList) {
