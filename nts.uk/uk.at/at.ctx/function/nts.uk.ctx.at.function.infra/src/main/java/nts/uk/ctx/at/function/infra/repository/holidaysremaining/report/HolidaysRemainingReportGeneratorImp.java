@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import com.aspose.cells.Cell;
 import com.aspose.cells.Cells;
 import com.aspose.cells.Shape;
 import com.aspose.cells.Workbook;
@@ -64,7 +63,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		}
 	}
 
-	private void printTemplate(Worksheet worksheet) {
+	private void printTemplate(Worksheet worksheet) throws Exception {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM");
 		YearMonth start = YearMonth.parse(dataSource.getStartMonth(), formatter);
 		YearMonth end = YearMonth.parse(dataSource.getEndMonth(), formatter);
@@ -95,6 +94,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		cells.get(4, 8).setValue(TextResource.localize("KDR001_11"));
 		if (end.compareTo(currentMonth) > 0 && currentMonth.compareTo(start) > 0) {
 			Shape shape = worksheet.getShapes().get(0);
+			shape.setUpperLeftColumn(shape.getUpperLeftColumn() - totalMonths(currentMonth, end));
 		}
 		// C1_9
 		for (int i = 0; i <= totalMonths(start, end); i++) {
@@ -114,8 +114,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 		for (HolidaysRemainingEmployee employee : dataSource.getListEmployee()) {
 			// D1_1, D1_2
-			cells.get(firstRow, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode() + "　"
-					+ employee.getWorkplaceName());
+			cells.get(firstRow, 0).setValue(TextResource.localize("KDR001_12") + ": " 
+					+ employee.getWorkplaceCode() + "　" + employee.getWorkplaceName());
 			firstRow += 1;
 			firstRow = this.printHolidayRemainingEachPerson(worksheet, firstRow, employee);
 		}
@@ -142,8 +142,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		// print Header
 		cells.copyRows(cells, 0, firstRow, 6);
 		// D1_1, D1_2
-		cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + employees.get(0).getWorkplaceCode()
-				+ "　" + employees.get(0).getWorkplaceName());
+		cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + ": " 
+				+ employees.get(0).getWorkplaceCode() + "　" + employees.get(0).getWorkplaceName());
 		firstRow += 6;
 
 		for (HolidaysRemainingEmployee employee : employees) {
@@ -171,8 +171,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		// print Header
 		cells.copyRows(cells, 0, firstRow, 6);
 		// D1_1, D1_2
-		cells.get(firstRow + 5, 0).setValue(
-				TextResource.localize("KDR001_12") + employee.getWorkplaceCode() + "　" + employee.getWorkplaceName());
+		cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + ": "
+				+ employee.getWorkplaceCode() + "　" + employee.getWorkplaceName());
 		firstRow += 6;
 
 		firstRow = printHolidayRemainingEachPerson(worksheet, firstRow, employee);
@@ -192,12 +192,24 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		// 年休
 		if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getAnnualHoliday().isYearlyHoliday()) {
 			cells.copyRows(cells, 6, firstRow, 2);
+			// E1_1
+			cells.get(firstRow, 2).setValue(TextResource.localize("Com_PaidHoliday"));
+			// E2_1
+			cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_14"));
+			// E3_1
+			cells.get(firstRow + 1, 9).setValue(TextResource.localize("KDR001_15"));
 			firstRow += 2;
 			totalRowDetails += 2;
 		}
 		// 積立年休
 		if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getYearlyReserved().isYearlyReserved()) {
 			cells.copyRows(cells, 8, firstRow, 2);
+			// H1_1
+			cells.get(firstRow, 2).setValue(TextResource.localize("Com_FundedPaidHoliday"));
+			// H2_1
+			cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_14"));
+			// H2_2
+			cells.get(firstRow + 1, 9).setValue(TextResource.localize("KDR001_15"));
 			firstRow += 2;
 			totalRowDetails += 2;
 		}
@@ -205,12 +217,32 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getSubstituteHoliday()
 				.isOutputItemSubstitute()) {
 			cells.copyRows(cells, 10, firstRow, 4);
+			// I1_1
+			cells.get(firstRow, 2).setValue(TextResource.localize("Com_CompensationHoliday"));
+			// I2_1
+			cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_16"));
+			// I3_1
+			cells.get(firstRow + 1, 9).setValue(TextResource.localize("KDR001_17"));
+			// I4_1
+			cells.get(firstRow + 2, 9).setValue(TextResource.localize("KDR001_17"));
+			// I5_1
+			cells.get(firstRow + 3, 9).setValue(TextResource.localize("KDR001_18"));
 			firstRow += 4;
 			totalRowDetails += 4;
 		}
 		// 振休
 		if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getPause().isPauseItem()) {
 			cells.copyRows(cells, 14, firstRow, 4);
+			// J1_1
+			cells.get(firstRow, 2).setValue(TextResource.localize("Com_SubstituteHoliday"));
+			// J2_1
+			cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_16"));
+			// J2_2
+			cells.get(firstRow + 1, 9).setValue(TextResource.localize("KDR001_17"));
+			// J2_3
+			cells.get(firstRow + 2, 9).setValue(TextResource.localize("KDR001_11"));
+			// J2_4
+			cells.get(firstRow + 3, 9).setValue(TextResource.localize("KDR001_18"));
 			firstRow += 4;
 			totalRowDetails += 4;
 		}
@@ -219,6 +251,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 				.getSpecialHoliday();
 		for (int i = 0; i < specialHoliday.size(); i++) {
 			cells.copyRows(cells, 18, firstRow, 2);
+			// M2_1
+			cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_17"));
+			// M2_3
+			cells.get(firstRow + 1, 9).setValue(TextResource.localize("KDR001_18"));
 			firstRow += 2;
 			totalRowDetails += 2;
 		}
@@ -226,12 +262,24 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getChildNursingVacation()
 				.isChildNursingLeave()) {
 			cells.copyRows(cells, 20, firstRow, 2);
+			// N1_1
+			cells.get(firstRow, 2).setValue(TextResource.localize("KDR001_47"));
+			// N2_1
+			cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_9"));
+			// N2_2
+			cells.get(firstRow + 1, 9).setValue(TextResource.localize("KDR001_18"));
 			firstRow += 2;
 			totalRowDetails += 2;
 		}
 		// 介護休暇
 		if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getNursingcareLeave().isNursingLeave()) {
 			cells.copyRows(cells, 22, firstRow, 2);
+			// O1_1
+			cells.get(firstRow, 2).setValue(TextResource.localize("KDR001_48"));
+			// O2_1
+			cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_9"));
+			// O2_2
+			cells.get(firstRow + 1, 9).setValue(TextResource.localize("KDR001_18"));
 			firstRow += 2;
 			totalRowDetails += 2;
 		}
