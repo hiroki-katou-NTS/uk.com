@@ -39,13 +39,5 @@ public interface UserAdapter {
 	 */
 	List<UserImport> getListUsersByListPersonIds(List<String> listPersonIds);
 	
-	
-	/**
-	 * Find by user id.
-	 *
-	 * @param userId the user id
-	 * @return the optional
-	 */
-	Optional<UserImport> findByUserId(String userId);
 
 }

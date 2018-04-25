@@ -101,10 +101,4 @@ public class EmployeeSearchQuery implements Serializable {
 	/** The system type. */
 	private Integer systemType;
 	
-	/** The filter by closure. */
-	private Boolean filterByClosure;
-
-	/** The closure ids. */
-	private List<Integer> closureIds;
-	
 }

@@ -4,13 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.dom.singlesignon;
 
-import java.util.Collections;
 import java.util.List;
 
 import lombok.Getter;
-import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.gul.text.StringUtil;
 
 /**
  * The Class WindowAccount.
@@ -38,25 +35,6 @@ public class WindowsAccount extends AggregateRoot{
 		this.accountInfos = memento.getAccountInfos();
 	}
 
-	@Override
-	public void validate() {
-		super.validate();
-		final Integer MAX_FREQUENCY = 1;
-
-		// check duplicate account host name & user name
-		this.accountInfos.forEach(acc -> {
-			boolean isNameNotNull = !StringUtil.isNullOrEmpty(acc.getHostName().v(), true)
-					&& !StringUtil.isNullOrEmpty(acc.getUserName().v(), true);
-
-			boolean isDuplicated = Collections.frequency(this.accountInfos, acc) > MAX_FREQUENCY;
-
-			if (isNameNotNull && isDuplicated) {
-				BundledBusinessException exceptions = BundledBusinessException.newInstance();
-				exceptions.addMessage("Msg_616");
-				exceptions.throwExceptions();
-			}
-		});
-	}
 	/**
 	 * Save to memento.
 	 *

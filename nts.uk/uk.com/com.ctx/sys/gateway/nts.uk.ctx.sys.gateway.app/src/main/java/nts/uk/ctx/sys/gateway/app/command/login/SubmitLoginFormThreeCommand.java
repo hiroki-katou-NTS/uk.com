@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.app.command.login;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * The Class SubmitLoginFormThreeCommand.
  */
@@ -26,11 +24,6 @@ public class SubmitLoginFormThreeCommand {
 	/** The contract password. */
 	private String contractPassword;
 
-	/** The is sign on. */
-	private boolean signOn;
-	
-	/** The request. */
-	private HttpServletRequest request;
 	/**
 	 * Instantiates a new submit login form three command.
 	 */
@@ -131,41 +124,5 @@ public class SubmitLoginFormThreeCommand {
 	 */
 	public void setContractPassword(String contractPassword) {
 		this.contractPassword = contractPassword;
-	}
-	
-	/**
-	 * Checks if is sign on.
-	 *
-	 * @return true, if is sign on
-	 */
-	public boolean isSignOn() {
-        return signOn;
-    }
-
-    /**
-     * Sets the sign on.
-     *
-     * @param signOn the new sign on
-     */
-    public void setSignOn(boolean signOn) {
-        this.signOn = signOn;
-    }
-
-	/**
-	 * Gets the request.
-	 *
-	 * @return the request
-	 */
-	public HttpServletRequest getRequest() {
-		return request;
-	}
-
-	/**
-	 * Sets the request.
-	 *
-	 * @param request the new request
-	 */
-	public void setRequest(HttpServletRequest request) {
-		this.request = request;
 	}
 }

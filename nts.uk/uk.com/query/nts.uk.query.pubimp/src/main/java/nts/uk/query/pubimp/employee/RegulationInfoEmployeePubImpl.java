@@ -73,8 +73,6 @@ public class RegulationInfoEmployeePubImpl implements RegulationInfoEmployeePub 
 			.jobTitleCodes(query.getJobTitleCodes())
 			.filterByWorktype(query.getFilterByWorktype())
 			.worktypeCodes(query.getWorktypeCodes())
-			.filterByClosure(query.getFilterByClosure())
-			.closureIds(query.getClosureIds())
 			.nameType(query.getNameType())
 			.periodEnd(query.getPeriodEnd())
 			.periodStart(query.getPeriodStart())

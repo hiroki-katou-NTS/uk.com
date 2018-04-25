@@ -6,15 +6,9 @@ package nts.uk.ctx.at.request.dom.settting.worktype.history;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.shr.com.history.GeneralHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
-/**
- * Gets the max day.
- *
- * @return the max day
- */
 @Getter
 //計画休暇のルールの履歴
 public class PlanVacationHistory extends GeneralHistoryItem<PlanVacationHistory, DatePeriod, GeneralDate> {
@@ -26,7 +20,7 @@ public class PlanVacationHistory extends GeneralHistoryItem<PlanVacationHistory,
 	private String workTypeCode;
 	
 	/** The max day. */
-	private OptionalMaxDay maxDay;
+	private Integer maxDay;
 
 	/**
 	 * Instantiates a new plan vacation history.
@@ -35,9 +29,6 @@ public class PlanVacationHistory extends GeneralHistoryItem<PlanVacationHistory,
 	 */
 	public PlanVacationHistory(PlanVacationHistoryGetMemento memento) {
 		super(memento.getHistoryId(), memento.getPeriod());
-		this.companyId = memento.getCompanyId();
-		this.maxDay = memento.getMaxDay();
-		this.workTypeCode = memento.getWorkTypeCode();
 	}
 
 	/**
@@ -48,7 +39,7 @@ public class PlanVacationHistory extends GeneralHistoryItem<PlanVacationHistory,
 	public void saveToMemento(PlanVacationHistorySetMemento memento) {
 		memento.setHistoryId(this.identifier());
 		memento.setCompanyId(this.companyId);
-		memento.setMaxDay(this.maxDay.v());
+		memento.setMaxDay(this.maxDay);
 		memento.setWorkTypeCode(this.workTypeCode);
 		memento.setPeriod(this.span());
 	}
@@ -69,23 +60,5 @@ public class PlanVacationHistory extends GeneralHistoryItem<PlanVacationHistory,
 	 */
 	public void updateEndDate(GeneralDate newEndDate) {
 		this.changeSpan(this.newSpan(this.span().start(), newEndDate));
-	}
-	
-	
-	/**
-	 * Instantiates a new plan vacation history.
-	 *
-	 * @param companyId the company id
-	 * @param workTypeCode the work type code
-	 * @param maxDay the max day
-	 * @param startDate the start date
-	 * @param endDate the end date
-	 */
-	public PlanVacationHistory(String companyId, String workTypeCode, OptionalMaxDay maxDay,
-			GeneralDate startDate, GeneralDate endDate){
-		super(IdentifierUtil.randomUniqueId(), new DatePeriod(startDate, endDate));
-		this.companyId = companyId;
-		this.maxDay = maxDay;
-		this.workTypeCode = workTypeCode;
 	}
 }
