@@ -1,7 +1,6 @@
 .master-list-select {
 	width: 500px;
 	padding: 30px;
-	padding-left: 70px;
 	height: 1000px;
 	float: left;
 }
@@ -24,6 +23,17 @@
 	margin-right: 15px;
 	width: 500px;
 	height: 600px;
+}
+
+.reference-date {
+	padding-left: 28px;
+	padding-top: 24px;
+	padding-right: 28px;
+	padding-bottom: 5px;
+}
+
+.reference-date .form-label {
+	border-color: #FAC002;
 }
 
 .switch-button {

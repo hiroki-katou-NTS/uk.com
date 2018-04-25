@@ -125,9 +125,6 @@ module nts.uk.com.view.ccg.share.ccg {
             // Acquired baseDate
             acquiredBaseDate: KnockoutObservable<string>;
 
-            employmentSubscriptions: Array<KnockoutSubscription> = [];
-            employeeSubscriptions: Array<KnockoutSubscription> = [];
-
             /**
              * Init screen model
              */
@@ -288,8 +285,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 param.jobTitleCodes = [];
                 param.filterByWorktype = false;
                 param.worktypeCodes = [];
-                param.filterByClosure = false;
-                param.closureIds = [];
                 param.includeIncumbents = true;
                 param.includeWorkersOnLeave = true;
                 param.includeOccupancy = true;
@@ -486,9 +481,6 @@ module nts.uk.com.view.ccg.share.ccg {
                         _.defer(() => self.applyDataSearch().always(() => {
                             // Set acquired base date to status period end date
                             self.statusPeriodEnd(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT));
-                            if (data.showOnStart) {
-                                self.showComponent();
-                            }
                             dfd.resolve();
                         }));
                     });
@@ -546,7 +538,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 param.filterByJobTitle = self.showJobTitle;
                 // only consider show worktype if sytemType = employment
                 param.filterByWorktype = self.systemType == ConfigEnumSystemType.EMPLOYMENT ? self.showWorktype : false;
-                param.filterByClosure = self.showClosure && self.selectedClosure() != ConfigEnumClosure.CLOSURE_ALL;
 
                 // filter status of employment
                 param.includeIncumbents = self.selectedIncumbent();
@@ -564,7 +555,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 // only consider list worktype if sytemType = employment
                 self.queryParam.worktypeCodes = self.systemType ==
                     ConfigEnumSystemType.EMPLOYMENT && self.showWorktype ? self.selectedWorkTypeCode() : [];
-                self.queryParam.closureIds = self.showClosure ? [self.selectedClosure()] : [];
             }
 
             /**
@@ -860,8 +850,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     selectedCode: self.selectedCodeEmployee,
                     isDialog: true,
                     isShowNoSelectRow: false,
-                    maxRows: rows,
-                    subscriptions: self.employeeSubscriptions
+                    maxRows: rows
                 }
 
                 // Show KCP005
@@ -1454,8 +1443,7 @@ module nts.uk.com.view.ccg.share.ccg {
                         isDialog: true,
                         isShowNoSelectRow: false,
                         maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYMENT,
-                        selectedClosureId: self.showClosure ? self.selectedClosure : undefined,
-                        subscriptions: self.employmentSubscriptions
+                        selectedClosureId: self.showClosure ? self.selectedClosure : undefined
                     };
 
                     self.classifications = {

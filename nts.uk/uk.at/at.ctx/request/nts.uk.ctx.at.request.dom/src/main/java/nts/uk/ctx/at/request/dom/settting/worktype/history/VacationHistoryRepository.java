@@ -6,8 +6,6 @@ package nts.uk.ctx.at.request.dom.settting.worktype.history;
 
 import java.util.List;
 
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
-
 /**
  * The Interface VacationHistoryRepository.
  */
@@ -39,21 +37,9 @@ public interface VacationHistoryRepository {
      * Find by work type code.
      *
      * @param companyId the company id
-     * @param workTypeCode the work type code
-     * @return the list
+     * @param historyId the history id
+     * @return the optional
      */
     List<PlanVacationHistory> findByWorkTypeCode(String companyId, String workTypeCode);
-    
-    /**
-     * Count by date period.
-     *
-     * @param companyId the company id
-     * @param workTypeCode the work type code
-     * @param datePeriod the date period
-     * @param histId the hist id
-     * @return the integer
-     */
-    public Integer countByDatePeriod(String companyId, String workTypeCode, DatePeriod datePeriod,
-			String histId);
 
 }

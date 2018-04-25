@@ -196,10 +196,6 @@ public class EmployeeDataView implements Serializable {
 	@Convert(converter = GeneralDateTimeToDBConverter.class)
 	private GeneralDateTime wplStrDate;
 
-	/** The closure id. */
-	@Column(name="CLOSURE_ID")
-	private Integer closureId;
-
 	/**
 	 * Instantiates a new employee data view.
 	 */

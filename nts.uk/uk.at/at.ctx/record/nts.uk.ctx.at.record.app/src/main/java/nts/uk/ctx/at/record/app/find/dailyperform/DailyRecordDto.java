@@ -270,7 +270,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				this.calcAttr == null ? null : this.calcAttr.toDomain(employeeId, date), 
 				this.affiliationInfo == null ? null : this.affiliationInfo.toDomain(employeeId, date),
 				this.pcLogInfo.map(pc -> pc.toDomain(employeeId, date)),
-				this.errors == null ? null : Arrays.asList(this.errors.toDomain(employeeId, date)),
+				this.errors == null ? new ArrayList<>() : Arrays.asList(this.errors.toDomain(employeeId, date)),
 				this.outingTime.map(ot -> ot.toDomain(employeeId, date)),
 				this.breakTime.stream().map(bt -> bt.toDomain(employeeId, date)).collect(Collectors.toList()),
 				this.attendanceTime.map(at -> at.toDomain(employeeId, date)),

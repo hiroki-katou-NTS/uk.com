@@ -68,12 +68,6 @@ public class EmployeeSearchQueryDto implements Serializable {
 	/** The worktype codes. */
 	private List<String> worktypeCodes; // 勤務種別コード一覧
 
-	/** The filter by closure. */
-	private Boolean filterByClosure;
-
-	/** The closure ids. */
-	private List<Integer> closureIds;
-
 	/** The period start. */
 	private String periodStart; // 在職・休職・休業のチェック期間
 
@@ -140,8 +134,6 @@ public class EmployeeSearchQueryDto implements Serializable {
 				.jobTitleCodes(this.jobTitleCodes)
 				.filterByWorktype(this.filterByWorktype)
 				.worktypeCodes(this.worktypeCodes)
-				.filterByClosure(this.filterByClosure)
-				.closureIds(this.closureIds)
 				.nameType(this.nameType)
 				.periodEnd(this.periodEnd == null ? null : GeneralDateTime.fromString(this.periodEnd + TIME_DAY_START, DATE_TIME_FORMAT))
 				.periodStart(this.periodStart == null ? null : GeneralDateTime.fromString(this.periodStart + TIME_DAY_START, DATE_TIME_FORMAT))

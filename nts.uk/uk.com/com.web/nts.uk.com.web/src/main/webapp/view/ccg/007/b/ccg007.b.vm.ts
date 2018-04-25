@@ -3,7 +3,6 @@ module nts.uk.pr.view.ccg007.b {
         import SystemConfigDto = service.SystemConfigDto;
         import ContractDto = service.ContractDto;
         import blockUI = nts.uk.ui.block;
-        import SubmitData = service.SubmitData;
         export class ScreenModel {
             loginId: KnockoutObservable<string>;
             password: KnockoutObservable<string>;
@@ -21,48 +20,35 @@ module nts.uk.pr.view.ccg007.b {
             start(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                let url = _.toLower(_.trim(_.trim($(location).attr('href')), '%20'));
-                let isSignOn = url.indexOf('signon=on') >= 0;
-
-                blockUI.invisible();
                 //get system config
                 //get local contract info
+                blockUI.invisible();
                 nts.uk.characteristics.restore("contractInfo").done(function(data) {
-                    //Set ContractInfo
-                    self.contractCode(data ? data.contractCode : "");
-                    self.contractPassword(data ? data.contractPassword : "");
-
-                    //check Contract
-                    service.checkContract({ contractCode: data ? data.contractCode : "", contractPassword: data ? data.contractPassword : "" })
-                        .done(function(data: any) {
-                            //check ShowContract
+                    self.contractCode(data?data.contractCode:"");
+                    self.contractPassword(data?data.contractPassword:"");
+                    service.checkContract({ contractCode: data ? data.contractCode : "", contractPassword: data ? data.contractPassword : "" }).done(function(data: any) {
+                        if (data) {
                             if (data.showContract) {
                                 self.openContractAuthDialog();
                             }
                             else {
-                                //シングルサインオン（Active DirectorySSO）かをチェックする
-                                if (isSignOn) {
-                                    self.submitLogin(isSignOn);
-                                }
-                                else {
-                                    //Get login ID and set here
-                                    nts.uk.characteristics.restore("form1LoginInfo").done(function(loginInfo) {
-                                        if (loginInfo) {
-                                            self.loginId(loginInfo.loginId);
-                                        }
-                                    });
-                                }
+                                //Get login ID and set here
+                                nts.uk.characteristics.restore("form1LoginInfo").done(function(loginInfo) {
+                                    if (loginInfo) {
+                                        self.loginId(loginInfo.loginId);
+                                    }
+                                });
                             }
-                            //clear block
-                            blockUI.clear();
-                            dfd.resolve();
-                        }).fail(function() {
-                            //clear block
-                            dfd.resolve();
-                            blockUI.clear();
-                        });
+                        }
+                        else {
+                        }
+                        blockUI.clear();
+                        dfd.resolve();
+                    }).fail(function() {
+                        dfd.resolve();
+                        blockUI.clear();
+                    });
                 }).fail(function() {
-                    //clear block
                     dfd.resolve();
                     blockUI.clear();
                 });
@@ -80,57 +66,38 @@ module nts.uk.pr.view.ccg007.b {
                 }).onClosed(() => {
                     var contractCode = nts.uk.ui.windows.getShared('contractCode');
                     var contractPassword = nts.uk.ui.windows.getShared('contractPassword');
-                    var isSubmit = nts.uk.ui.windows.getShared('isSubmit');
                     self.contractCode(contractCode);
                     self.contractPassword(contractPassword);
-                    
-                    //get url
-                    let url = _.toLower(_.trim(_.trim($(location).attr('href')), '%20'));
-                    let isSignOn = url.indexOf('signon=on') >= 0;
-                    
-                    //Check signon
-                    if (isSubmit && isSignOn){
-                        self.submitLogin(isSignOn);
-                    }
                 });
             }
 
-            private submitLogin(isSignOn : boolean) {
+            private submitLogin() {
                 var self = this;
-                var submitData = <SubmitData>{};
-
-                //Set SubmitData
+                var submitData: any = {};
                 submitData.loginId = nts.uk.text.padRight(_.escape(self.loginId()), " ", 12);
                 submitData.password = _.escape(self.password());
                 submitData.contractCode = _.escape(self.contractCode());
                 submitData.contractPassword = _.escape(self.contractPassword());
-
+                
                 blockUI.invisible();
-                service.submitLogin(submitData).done(function(isError) {
-                    //check MsgError
-                    if (!nts.uk.util.isNullOrEmpty(isError)) {
-                        nts.uk.ui.dialog.alertError({ messageId: isError });
-                    } else {
-                        nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/b/index.xhtml");
-                        //Remove LoginInfo
+                if (!nts.uk.ui.errors.hasError()) {
+                    service.submitLogin(submitData).done(function() {
+                        nts.uk.request.login.keepUsedLoginPage();
                         nts.uk.characteristics.remove("form1LoginInfo").done(function() {
-                            //check SaveLoginInfo
                             if (self.isSaveLoginInfo()) {
-                                //Save LoginInfo
                                 nts.uk.characteristics.save("form1LoginInfo", { loginId: _.escape(self.loginId()) }).done(function() {
-                                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
+                                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml", {screen: 'login'});
                                 });
                             } else {
-                                nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
+                                nts.uk.request.jump("/view/ccg/008/a/index.xhtml", {screen: 'login'});
                             }
                         });
-                    }
-                    blockUI.clear();
-                }).fail(function(res) {
-                    //Return Dialog Error
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-                    blockUI.clear();
-                });
+                        blockUI.clear();
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                        blockUI.clear();
+                    });
+                }
             }
         }
     }
