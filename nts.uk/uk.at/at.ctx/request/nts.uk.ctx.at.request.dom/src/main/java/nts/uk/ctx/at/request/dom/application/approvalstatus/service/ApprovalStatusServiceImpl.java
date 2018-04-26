@@ -149,7 +149,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			// 雇用（リスト）
 			for (EmploymentHisImport empHist : listEmpHist) {
 				// 取得した雇用コードが雇用コード(リスト)に存在する
-				if (listEmpCd.contains(empHist.getEmploymentCode())) {
+				if (!listEmpCd.contains(empHist.getEmploymentCode())) {
 					// 存在しない場合
 					continue;
 				}
@@ -158,6 +158,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				PeriodOutput sttPeriod = this.getApprovalSttPeriod(empInOut.getSId(), empHist.getDatePeriod().start(),
 						empHist.getDatePeriod().end(), closureStart, closureEnd, empInOut.getJobEntryDate(),
 						empInOut.getRetirementDate());
+				// 社員ID＜社員ID、期間＞(リスト)を追加する
 				listEmp.add(new ApprovalStatusEmployeeOutput(empInOut.getSId(), sttPeriod.getStartDate(),
 						sttPeriod.getEndDate()));
 			}
