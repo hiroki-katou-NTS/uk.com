@@ -81,7 +81,7 @@ public class SaveChangeAbsDateCommandHandler extends CommandHandlerWithResult<Sa
 		// アルゴリズム「事前条件チェック」を実行する
 		appReason = saveHanler.preconditionCheck(command, companyID, appType, ApplicationCombination.Abs.value);
 		// アルゴリズム「同日申請存在チェック」を実行する
-		saveHanler.dateCheck(command);
+		saveHanler.dateCheck(employeeID, null, absCmd.getAppDate(), command);
 
 	}
 
