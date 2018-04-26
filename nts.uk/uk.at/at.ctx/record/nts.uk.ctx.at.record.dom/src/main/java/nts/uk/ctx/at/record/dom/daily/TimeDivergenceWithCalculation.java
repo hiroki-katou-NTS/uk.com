@@ -20,7 +20,12 @@ public class TimeDivergenceWithCalculation {
 	private TimeDivergenceWithCalculation(AttendanceTime time,AttendanceTime calcTime) {
 		this.time = time;
 		this.calcTime = calcTime;
-		this.divergenceTime = calcTime.minusMinutes(time.valueAsMinutes());
+		if(calcTime != null && time != null) {
+			this.divergenceTime = calcTime.minusMinutes(time.valueAsMinutes());
+		}
+		else {
+			this.divergenceTime = new AttendanceTime(0);
+		}
 	}
 	
 	/**

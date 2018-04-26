@@ -412,7 +412,18 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 	}
 
 	private OverTimeFrameTime getOverTimeFrame(List<OverTimeFrameTime> overTimeFrame, int frameNo) {
-		return overTimeFrame.stream().filter(tc -> tc.getOverWorkFrameNo().v() == frameNo).findFirst().get();
+		val getFrame = overTimeFrame.stream().filter(tc -> tc.getOverWorkFrameNo().v() == frameNo).findFirst();
+		if(getFrame.isPresent()) {
+			return getFrame.get();
+		}
+		else {
+			return new OverTimeFrameTime(new OverTimeFrameNo(frameNo),
+										 TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),
+										 TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),
+										 new AttendanceTime(0),
+										 new AttendanceTime(0));
+		}
+			
 	}
 
 	public OverTimeOfDaily toDomain() {

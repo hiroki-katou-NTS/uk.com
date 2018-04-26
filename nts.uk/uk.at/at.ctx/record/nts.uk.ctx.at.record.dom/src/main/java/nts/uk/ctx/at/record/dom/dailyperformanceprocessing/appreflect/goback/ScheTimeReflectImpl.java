@@ -103,7 +103,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 		//INPUT．予定時刻反映区分をチェックする
 		if(scheTimeReflectAtr == ScheTimeReflectAtr.APPTIME) {
 			//INPUT．申請する時刻をチェックする
-			if(timeData > 0) {
+			if(timeData != null && timeData > 0) {
 				reflectOutput.setReflectFlg(true);
 				reflectOutput.setTimeOfDay(timeData);
 				return reflectOutput;	

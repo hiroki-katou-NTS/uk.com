@@ -55,11 +55,12 @@ public class HolidayShipmentScreenCFinder {
 		}
 
 		// アルゴリズム「振休振出申請定型理由の取得」を実行する
-
-		output.setAppReasons(appResonRepo.getReasonByCompanyId(companyID).stream()
+		output.setAppReasonComboItems(appResonRepo.getReasonByCompanyId(companyID).stream()
 				.map(x -> ApplicationReasonDto.convertToDto(x)).collect(Collectors.toList()));
 
 		return output;
 	}
+	
+	
 
 }

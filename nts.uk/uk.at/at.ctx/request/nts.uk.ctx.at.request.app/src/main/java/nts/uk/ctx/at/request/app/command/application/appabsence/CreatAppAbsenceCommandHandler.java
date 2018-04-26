@@ -51,7 +51,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		GeneralDate endDate = command.getEndDate() == null ? null : GeneralDate.fromString(command.getEndDate(), DATE_FORMAT);
 		Application_New appRoot = iFactoryApplication.buildApplication(appID, startDate,
 				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason().replaceFirst(":", System.lineSeparator()),
-				ApplicationType.ABSENCE_APPLICATION, startDate, command.isDisplayEndDateFlg() ? endDate : null,command.getEmployeeID());
+				ApplicationType.ABSENCE_APPLICATION, startDate, endDate, command.getEmployeeID());
 		AppAbsence appAbsence = new AppAbsence(companyID,
 				appID,
 				command.getHolidayAppType(),

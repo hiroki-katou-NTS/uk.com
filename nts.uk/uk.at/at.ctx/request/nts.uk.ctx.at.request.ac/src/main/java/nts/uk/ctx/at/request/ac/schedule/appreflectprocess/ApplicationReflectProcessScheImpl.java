@@ -20,14 +20,14 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 
 	@Override
 	public boolean goBackDirectlyReflect(ReflectScheDto reflectSche) {
-		ApplicationGobackScheInforDto appInfo = new ApplicationGobackScheInforDto(EnumAdaptor.valueOf(
-				reflectSche.getGoBackDirectly().getWorkChangeAtr().get().value, ChangeAtrAppGobackPub.class),
-				reflectSche.getGoBackDirectly().getWorkTypeCD().get().v(),
-				reflectSche.getGoBackDirectly().getSiftCD().get().v(),
-				reflectSche.getGoBackDirectly().getWorkTimeStart1().get().v(),
-				reflectSche.getGoBackDirectly().getWorkTimeEnd1().get().v(),
-				reflectSche.getGoBackDirectly().getWorkTimeStart2().get().v(),
-				reflectSche.getGoBackDirectly().getWorkTimeEnd2().get().v());
+		ApplicationGobackScheInforDto appInfo = new ApplicationGobackScheInforDto(
+				reflectSche.getGoBackDirectly().getWorkChangeAtr().isPresent() ? EnumAdaptor.valueOf(reflectSche.getGoBackDirectly().getWorkChangeAtr().get().value, ChangeAtrAppGobackPub.class) : null,
+				reflectSche.getGoBackDirectly().getWorkTypeCD().isPresent() ? reflectSche.getGoBackDirectly().getWorkTypeCD().get().v() : null,
+				reflectSche.getGoBackDirectly().getSiftCD().isPresent() ? reflectSche.getGoBackDirectly().getSiftCD().get().v() : null,
+				reflectSche.getGoBackDirectly().getWorkTimeStart1().isPresent() ? reflectSche.getGoBackDirectly().getWorkTimeStart1().get().v() : null,
+				reflectSche.getGoBackDirectly().getWorkTimeEnd1().isPresent() ? reflectSche.getGoBackDirectly().getWorkTimeEnd1().get().v() : null,
+				reflectSche.getGoBackDirectly().getWorkTimeStart2().isPresent() ? reflectSche.getGoBackDirectly().getWorkTimeStart2().get().v() : null,
+				reflectSche.getGoBackDirectly().getWorkTimeEnd2().isPresent() ? reflectSche.getGoBackDirectly().getWorkTimeEnd2().get().v() : null);
 		ApplicationReflectParamScheDto dto = new ApplicationReflectParamScheDto(reflectSche.getEmployeeId(), 
 				reflectSche.getDatePara(),
 				true,

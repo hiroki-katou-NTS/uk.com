@@ -45,7 +45,7 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 		e.cid = cId;
 		e.rvsLeaId = data.getRsvLeaID();
 		updateDetail(e, data);
-		this.commandProxy().update(e);
+		this.commandProxy().insert(e);
 	}
 
 	private void updateDetail(KrcmtReverseLeaRemain e, ReserveLeaveGrantRemainingData data) {
@@ -58,7 +58,7 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 		e.grantDays = details.getGrantNumber().v();
 		e.usedDays = details.getUsedNumber().getDays().v();
 		e.overLimitDays = details.getUsedNumber().getOverLimitDays().isPresent()
-				? details.getUsedNumber().getOverLimitDays().get().v() : null;
+				? details.getUsedNumber().getOverLimitDays().get().v() : 0;
 		e.remainingDays = details.getRemainingNumber().v();
 	}
 
@@ -67,8 +67,9 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 		Optional<KrcmtReverseLeaRemain> entityOpt = this.queryProxy().find(data.getRsvLeaID(),
 				KrcmtReverseLeaRemain.class);
 		if (entityOpt.isPresent()) {
-			updateDetail(entityOpt.get(), data);
-			this.commandProxy().update(entityOpt.get());
+			KrcmtReverseLeaRemain entity = entityOpt.get();
+			updateDetail(entity, data);
+			this.commandProxy().update(entity);
 		}
 	}
 

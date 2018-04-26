@@ -95,6 +95,12 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 		if (!this.isHaveData()) {
 			return null;
 		}
+		if (employeeId == null) {
+			employeeId = this.employeeId();
+		}
+		if (date == null) {
+			date = this.workingDate();
+		}
 		return new WorkInfoOfDailyPerformance(employeeId, getWorkInfo(actualWorkInfo), getWorkInfo(planWorkInfo),
 				calculationState, goStraightAtr, backStraightAtr, date, dayOfWeek,
 				ConvertHelper.mapTo(this.getScheduleTimeZone(), 

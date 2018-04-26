@@ -14,7 +14,7 @@ module cps008.a.viewmodel {
 
     export class ViewModel {
         layouts: KnockoutObservableArray<ILayout> = ko.observableArray([]);
-        layout: KnockoutObservable<Layout> = ko.observable(new Layout({ id: '', code: '', name: '' }));
+        layout: KnockoutObservable<Layout> = ko.observable(new Layout({ id: '', code: null, name: null }));
 
         constructor() {
             let self = this,
@@ -91,8 +91,8 @@ module cps008.a.viewmodel {
                 layouts = self.layouts;
 
             layout.id(undefined);
-            layout.code('');
-            layout.name('');
+            layout.code(null);
+            layout.name(null);
             layout.classifications([]);
             layout.action(LAYOUT_ACTION.INSERT);
             $("#A_INP_CODE").focus();
@@ -109,13 +109,11 @@ module cps008.a.viewmodel {
                     classifications: data.outData
                 };
 
-            // check input
-            if (data.code == '' || data.name == '') {
-                if (data.code == '') {
-                    $("#A_INP_CODE").focus();
-                } else {
-                    $("#A_INP_NAME").focus();
-                }
+            // validate
+            $("#A_INP_CODE").trigger("validate");
+            $("#A_INP_NAME").trigger("validate");
+
+            if (nts.uk.ui.errors.hasError()) {
                 return;
             }
 
@@ -151,37 +149,9 @@ module cps008.a.viewmodel {
             modal('../c/index.xhtml').onClosed(() => {
                 let _data = getShared('CPS008C_RESPONE');
                 if (_data) {
-                    var command: any = {
-                        id: data.id,
-                        code: _data.code,
-                        name: _data.name,
-                        classifications: data.outData
-                    };
-
-                    if (_data.action) {
-                        command.action = LAYOUT_ACTION.OVERRIDE;
-                    } else {
-                        command.action = LAYOUT_ACTION.COPY;
-                    }
-
-                    // call saveData service
-                    invisible();
-                    service.saveData(command).done((data: any) => {
-                        showDialog.info({ messageId: "Msg_20" }).then(function() {
-                            unblock();
-                            self.start(_data.code);
-                        });
-                    }).fail((error: any) => {
-                        if (error.message == 'Msg_3') {
-                            showDialog.alert({ messageId: "Msg_3" }).then(function() {
-                                unblock();
-                                self.start(data.code);
-                            });
-                        }
-                    });
-
+                    self.start(_data);
                 } else {
-                    $("#A_INP_NAME").focus();
+                    self.start(data.code);
                 }
             });
         }
@@ -208,23 +178,23 @@ module cps008.a.viewmodel {
                 let itemListLength = self.layouts().length;
                 service.saveData(command).done((data: any) => {
 
-                    if (itemListLength === 1) {
-                        self.start().done(() => {
-                            unblock();
-                        });
-                    } else if (itemListLength - 1 === indexItemDelete) {
-                        self.start(layouts[indexItemDelete - 1].code).done(() => {
-                            unblock();
-                        });
-                    } else if (itemListLength - 1 > indexItemDelete) {
-                        self.start(layouts[indexItemDelete + 1].code).done(() => {
-                            unblock();
-                        });
-                    }
 
                     showDialog.info({ messageId: "Msg_16" }).then(function() {
-                        unblock();
+                        if (itemListLength === 1) {
+                            self.start().done(() => {
+                                unblock();
+                            });
+                        } else if (itemListLength - 1 === indexItemDelete) {
+                            self.start(layouts[indexItemDelete - 1].code).done(() => {
+                                unblock();
+                            });
+                        } else if (itemListLength - 1 > indexItemDelete) {
+                            self.start(layouts[indexItemDelete + 1].code).done(() => {
+                                unblock();
+                            });
+                        }
                     });
+                    unblock();
                 }).fail((error: any) => {
                     unblock();
                 });
@@ -277,9 +247,9 @@ module cps008.a.viewmodel {
     }
 
     class Layout {
-        id: KnockoutObservable<string> = ko.observable('');
-        code: KnockoutObservable<string> = ko.observable('');
-        name: KnockoutObservable<string> = ko.observable('');
+        id: KnockoutObservable<string> = ko.observable(null);
+        code: KnockoutObservable<string> = ko.observable(null);
+        name: KnockoutObservable<string> = ko.observable(null);
         classifications: KnockoutObservableArray<any> = ko.observableArray([]);
         action: KnockoutObservable<LAYOUT_ACTION> = ko.observable(LAYOUT_ACTION.INSERT);
         outData: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -288,9 +258,9 @@ module cps008.a.viewmodel {
             let self = this;
 
             if (param) {
-                self.id(param.id || '');
-                self.code(param.code || '');
-                self.name(param.name || '');
+                self.id(param.id || null);
+                self.code(param.code || null);
+                self.name(param.name || null);
 
                 self.classifications(param.classifications || []);
             }

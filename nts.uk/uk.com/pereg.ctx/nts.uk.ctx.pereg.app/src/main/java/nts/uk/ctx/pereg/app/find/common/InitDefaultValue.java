@@ -95,6 +95,8 @@ public class InitDefaultValue {
 					case "IS00616":
 					case "IS00623":
 					case "IS00370":
+					case "IS00375":
+					case "IS00380":
 						valueItem.setValue(String.valueOf(UseAtr.NotUse.value));
 						break;
 					case "IS00121":
