@@ -16,9 +16,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetPolicy;
-import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetPolicy;
-import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeOTTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.policy.DiffTimezoneSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -102,20 +100,20 @@ public class DiffTimezoneSettingPolicyImpl implements DiffTimezoneSettingPolicy 
 			origin.setEmploymentTimezones(this.updateTimeFrameNo(employmentTimezones));
 
 			// Filter OT timezone
-			List<DiffTimeOTTimezoneSet> oTTimezones = origin.getOTTimezones().stream()
-					.filter(timezone -> timezone.getTimezone().getStart().lessThanOrEqualTo(morningEndTime))
-					.map(item -> {
-						if (item.getTimezone().getStart().equals(morningEndTime)) {
-							return null;
-						}
-						if (item.getTimezone().getStart().lessThan(morningEndTime)
-								&& item.getTimezone().getEnd().greaterThan(morningEndTime)) {
-							item.getTimezone().setEnd(morningEndTime);
-							return item;
-						}
-						return item;
-					}).filter(Objects::nonNull).collect(Collectors.toList());
-			origin.setOTTimezones(this.updateTimeZoneNo(oTTimezones));
+//			List<DiffTimeOTTimezoneSet> oTTimezones = origin.getOTTimezones().stream()
+//					.filter(timezone -> timezone.getTimezone().getStart().lessThanOrEqualTo(morningEndTime))
+//					.map(item -> {
+//						if (item.getTimezone().getStart().equals(morningEndTime)) {
+//							return null;
+//						}
+//						if (item.getTimezone().getStart().lessThan(morningEndTime)
+//								&& item.getTimezone().getEnd().greaterThan(morningEndTime)) {
+//							item.getTimezone().setEnd(morningEndTime);
+//							return item;
+//						}
+//						return item;
+//					}).filter(Objects::nonNull).collect(Collectors.toList());
+//			origin.setOTTimezones(this.updateTimeZoneNo(oTTimezones));
 			return;
 		}
 
@@ -140,20 +138,20 @@ public class DiffTimezoneSettingPolicyImpl implements DiffTimezoneSettingPolicy 
 			origin.setEmploymentTimezones(this.updateTimeFrameNo(employmentTimezones));
 
 			// Filter OT timezone
-			List<DiffTimeOTTimezoneSet> oTTimezones = origin.getOTTimezones().stream()
-					.filter(timezone -> timezone.getTimezone().getEnd().greaterThanOrEqualTo(afternoonStartTime))
-					.map(item -> {
-						if (item.getTimezone().getEnd().equals(afternoonStartTime)) {
-							return null;
-						}
-						if (item.getTimezone().getStart().lessThan(afternoonStartTime)
-								&& item.getTimezone().getEnd().greaterThan(afternoonStartTime)) {
-							item.getTimezone().setStart(afternoonStartTime);
-							return item;
-						}
-						return item;
-					}).filter(Objects::nonNull).collect(Collectors.toList());
-			origin.setOTTimezones(this.updateTimeZoneNo(oTTimezones));
+//			List<DiffTimeOTTimezoneSet> oTTimezones = origin.getOTTimezones().stream()
+//					.filter(timezone -> timezone.getTimezone().getEnd().greaterThanOrEqualTo(afternoonStartTime))
+//					.map(item -> {
+//						if (item.getTimezone().getEnd().equals(afternoonStartTime)) {
+//							return null;
+//						}
+//						if (item.getTimezone().getStart().lessThan(afternoonStartTime)
+//								&& item.getTimezone().getEnd().greaterThan(afternoonStartTime)) {
+//							item.getTimezone().setStart(afternoonStartTime);
+//							return item;
+//						}
+//						return item;
+//					}).filter(Objects::nonNull).collect(Collectors.toList());
+//			origin.setOTTimezones(this.updateTimeZoneNo(oTTimezones));
 			return;
 		}
 	}
@@ -181,12 +179,12 @@ public class DiffTimezoneSettingPolicyImpl implements DiffTimezoneSettingPolicy 
 	 *            the list item
 	 * @return the list
 	 */
-	private List<DiffTimeOTTimezoneSet> updateTimeZoneNo(List<DiffTimeOTTimezoneSet> listItem) {
-		int timeZoneNo = 0;
-		for (DiffTimeOTTimezoneSet item : listItem) {
-			timeZoneNo++;
-			item.setWorkTimezoneNo(new EmTimezoneNo(timeZoneNo));
-		}
-		return listItem;
-	}
+//	private List<DiffTimeOTTimezoneSet> updateTimeZoneNo(List<DiffTimeOTTimezoneSet> listItem) {
+//		int timeZoneNo = 0;
+//		for (DiffTimeOTTimezoneSet item : listItem) {
+//			timeZoneNo++;
+//			item.setWorkTimezoneNo(new EmTimezoneNo(timeZoneNo));
+//		}
+//		return listItem;
+//	}
 }
