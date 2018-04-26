@@ -7,11 +7,10 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBook;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

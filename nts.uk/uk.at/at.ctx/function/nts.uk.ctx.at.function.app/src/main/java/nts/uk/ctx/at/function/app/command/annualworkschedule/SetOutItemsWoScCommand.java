@@ -16,7 +16,7 @@ public class SetOutItemsWoScCommand
     /**
     * コード
     */
-    private int cd;
+    private String cd;
     
     /**
     * 名称

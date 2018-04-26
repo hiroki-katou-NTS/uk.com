@@ -22,7 +22,7 @@ public class SetOutItemsWoScDto
     /**
     * コード
     */
-    private int cd;
+    private String cd;
     
     /**
     * 名称

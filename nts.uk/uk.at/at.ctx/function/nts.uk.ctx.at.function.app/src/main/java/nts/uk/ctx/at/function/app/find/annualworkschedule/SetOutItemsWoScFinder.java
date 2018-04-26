@@ -19,9 +19,9 @@ public class SetOutItemsWoScFinder
     @Inject
     private SetOutItemsWoScRepository finder;
 
-    public List<SetOutItemsWoScDto> getAllSetOutItemsWoSc(){
-    	String companyId = AppContexts.user().companyId();
-        return finder.getAllSetOutItemsWoSc(companyId).stream().map(item -> SetOutItemsWoScDto.fromDomain(item))
+    public List<SetOutItemsWoScDto> getAllSetOutItemsWoSc() {
+    	String cid = AppContexts.user().companyId();
+        return finder.getAllSetOutItemsWoSc(cid).stream().map(item -> SetOutItemsWoScDto.fromDomain(item))
                 .collect(Collectors.toList());
     }
 

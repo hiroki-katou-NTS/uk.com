@@ -23,7 +23,7 @@ public class SetOutItemsWoSc extends AggregateRoot
     /**
     * コード
     */
-    private int cd;
+    private String cd;
     
     /**
     * 名称

@@ -22,12 +22,12 @@ public class JpaSetOutItemsWoScRepository extends JpaRepository implements SetOu
     @Override
     public List<SetOutItemsWoSc> getAllSetOutItemsWoSc(String companyId){
         return this.queryProxy().query(SELECT_ALL_BY_COMPANY, KfnrtSetOutItemsWoSc.class)
-        		.setParameter("cid", companyId)
+          .setParameter("cid", companyId)
                 .getList(item -> item.toDomain());
     }
 
     @Override
-    public Optional<SetOutItemsWoSc> getSetOutItemsWoScById(String cid, int cd){
+    public Optional<SetOutItemsWoSc> getSetOutItemsWoScById(String cid, String cd){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, KfnrtSetOutItemsWoSc.class)
         .setParameter("cid", cid)
         .setParameter("cd", cd)
@@ -45,7 +45,7 @@ public class JpaSetOutItemsWoScRepository extends JpaRepository implements SetOu
     }
 
     @Override
-    public void remove(String cid, int cd){
+    public void remove(String cid, String cd){
         this.commandProxy().remove(KfnrtSetOutItemsWoSc.class, new KfnrtSetOutItemsWoScPk(cid, cd)); 
     }
 }

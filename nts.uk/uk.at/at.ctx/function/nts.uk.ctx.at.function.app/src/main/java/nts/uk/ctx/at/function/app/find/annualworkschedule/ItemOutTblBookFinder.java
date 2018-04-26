@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.annualworkschedule.repository.ItemOutTblBookRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 /**
@@ -18,8 +19,9 @@ public class ItemOutTblBookFinder
     @Inject
     private ItemOutTblBookRepository finder;
 
-    public List<ItemOutTblBookDto> getAllItemOutTblBook(){
-        return finder.getAllItemOutTblBook().stream().map(item -> ItemOutTblBookDto.fromDomain(item))
+    public List<ItemOutTblBookDto> getAllItemOutTblBook() {
+        String cid = AppContexts.user().companyId();
+        return finder.getAllItemOutTblBook(cid).stream().map(item -> ItemOutTblBookDto.fromDomain(item))
                 .collect(Collectors.toList());
     }
 
