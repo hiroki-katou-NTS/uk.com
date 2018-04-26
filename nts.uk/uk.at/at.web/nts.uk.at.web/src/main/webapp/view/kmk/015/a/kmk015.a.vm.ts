@@ -126,7 +126,7 @@ module nts.uk.at.view.kmk015.a {
              */
             private newMode() {
                 let self = this;
-                self.numberDay(0);
+                self.numberDay(null);
                 self.timeHistory(null);
                 self.isEnable(false);
                 self.isEnableNumber(false);
