@@ -74,6 +74,10 @@ module nts.uk.at.view.kal004.g.viewmodel {
                 
             ]);
             self.selectedTab = ko.observable('tab-1'); 
+            self.selectedTab.subscribe(()=>{
+                    nts.uk.ui.errors.clearAll();
+            });
+            
             
             self.getParam = nts.uk.ui.windows.getShared("extractionDailyDto");
             self.categoryName = nts.uk.ui.windows.getShared("categoryName");
