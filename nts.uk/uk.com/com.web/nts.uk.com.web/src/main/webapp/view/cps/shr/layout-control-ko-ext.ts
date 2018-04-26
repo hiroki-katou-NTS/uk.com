@@ -1124,6 +1124,7 @@ module nts.custombinding {
                                     enable: editable,
                                     required: required,
                                     visibleItemsCount: 5,
+                                    selectFirstIfNull: false,
                                     dropDownAttachedToBody: true,
                                     columns: [{ prop: 'optionText', length: 10, lengthDropDown: 20 }]
                                 }, attr: {
