@@ -6,6 +6,7 @@ package nts.uk.ctx.at.schedule.app.command.executionlog;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
 import javax.inject.Inject;
@@ -26,6 +27,7 @@ import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
 import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
 import nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionAtr;
+import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionStatus;
 import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ProcessExecutionAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
@@ -171,9 +173,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		// get command
 		ScheduleCreatorExecutionCommand command = context.getCommand();
 
-		ScheduleExecutionLog scheduleExecutionLog = new ScheduleExecutionLog();
-
 		if (!command.isAutomatic()) {
+			ScheduleExecutionLog scheduleExecutionLog = new ScheduleExecutionLog();
 
 			// update command
 			command.setCompanyId(companyId);
@@ -199,12 +200,15 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 			command.setConfirm(scheCreContent.getConfirm());
 			// register personal schedule
-		} else {
-			scheduleExecutionLog = command.getScheduleExecutionLog();
+
+			this.registerPersonalSchedule(command, scheduleExecutionLog, context);
+			return;
 		}
 
-		this.registerPersonalSchedule(command, scheduleExecutionLog, context);
-
+		ScheduleExecutionLog scheduleExecutionLogAuto = ScheduleExecutionLog.creator(companyId,
+				command.getScheduleExecutionLog().getExecutionId(), loginUserContext.employeeId(),
+				command.getScheduleExecutionLog().getPeriod(), command.getScheduleExecutionLog().getExeAtr());
+		this.registerPersonalSchedule(command, scheduleExecutionLogAuto, context);
 	}
 
 	/**
@@ -440,23 +444,26 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 */
 	private void registerPersonalSchedule(ScheduleCreatorExecutionCommand command,
 			ScheduleExecutionLog scheduleExecutionLog, CommandHandlerContext<ScheduleCreatorExecutionCommand> context) {
+
+		String exeId = command.getExecutionId();
+
 		// パラメータ実施区分を判定 (phán đoán param 実施区分 )
-		if (scheduleExecutionLog.getExeAtr() != ExecutionAtr.MANUAL) {
+		if (scheduleExecutionLog.getExeAtr() == ExecutionAtr.AUTOMATIC) {
 			ScheduleCreateContent scheduleCreateContent = command.getContent();
+			List<ScheduleCreator> scheduleCreators = command.getEmployeeIds().stream()
+					.map(sId -> new ScheduleCreator(exeId, ExecutionStatus.NOT_CREATED, sId))
+					.collect(Collectors.toList());
 			// アルゴリズム「実行ログ作成処理」を実行する
-			this.executionLogCreationProcess(scheduleExecutionLog, scheduleCreateContent);
+			this.executionLogCreationProcess(scheduleExecutionLog, scheduleCreateContent, scheduleCreators);
 		}
+
 		// get all data creator
-		List<ScheduleCreator> scheduleCreators = this.scheduleCreatorRepository.findAll(command.getExecutionId());
+		List<ScheduleCreator> scheduleCreators = this.scheduleCreatorRepository.findAll(exeId);
+
 		// get info by context
 		val asyncTask = context.asAsync();
 
-		for (ScheduleCreator domain : scheduleCreators) {
-			// ドメインモデル「スケジュール作成対象者」を新規登録する
-			// relate to executionLogCreationProcess
-			if (scheduleExecutionLog.getExeAtr() == ExecutionAtr.AUTOMATIC) {
-				this.scheduleCreatorRepository.add(domain);
-			}
+		for (ScheduleCreator scheduleCreator : scheduleCreators) {
 
 			// check is client submit cancel
 			if (asyncTask.hasBeenRequestedToCancel()) {
@@ -469,7 +476,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			DatePeriod dateAfterCorrection = new DatePeriod(scheduleExecutionLog.getPeriod().start(),
 					scheduleExecutionLog.getPeriod().end());
 			boolean isTargetPeriod = this.correctTargetPeriodAfterClosingStartDate(command.getCompanyId(),
-					command.getEmployeeId(), dateAfterCorrection);
+					scheduleCreator.getEmployeeId(), dateAfterCorrection);
 			if (!isTargetPeriod)
 				continue;
 
@@ -478,8 +485,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				BasicScheduleResetCommand commandReset = new BasicScheduleResetCommand();
 				commandReset.setCompanyId(command.getCompanyId());
 				commandReset.setConfirm(command.getContent().getConfirm());
-				commandReset.setEmployeeId(domain.getEmployeeId());
-				commandReset.setExecutionId(command.getExecutionId());
+				commandReset.setEmployeeId(scheduleCreator.getEmployeeId());
+				commandReset.setExecutionId(exeId);
 				commandReset.setReCreateAtr(command.getContent().getReCreateContent().getReCreateAtr().value);
 				commandReset.setResetAtr(command.getContent().getReCreateContent().getResetAtr());
 				commandReset.setTargetStartDate(scheduleExecutionLog.getPeriod().start());
@@ -489,11 +496,11 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			} else {
 				// 入力パラメータ「作成方法区分」を判断-check parameter CreateMethodAtr
 				if (command.getContent().getCreateMethodAtr() == CreateMethodAtr.PERSONAL_INFO) {
-					this.createScheduleBasedPerson(command, domain, scheduleExecutionLog, context, dateAfterCorrection);
+					this.createScheduleBasedPerson(command, scheduleCreator, scheduleExecutionLog, context, dateAfterCorrection);
 				}
 			}
-			domain.updateToCreated();
-			this.scheduleCreatorRepository.update(domain);
+			scheduleCreator.updateToCreated();
+			this.scheduleCreatorRepository.update(scheduleCreator);
 		}
 
 		// find execution log by id
@@ -508,16 +515,15 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 	/**
 	 * 実行ログ作成処理
-	 * 
-	 * not include ドメインモデル「スケジュール作成対象者」を新規登録する because need insert
-	 * ドメインモデル「スケジュール作成対 follow list employee
 	 */
 	private void executionLogCreationProcess(ScheduleExecutionLog scheduleExecutionLog,
-			ScheduleCreateContent scheduleCreateContent) {
+			ScheduleCreateContent scheduleCreateContent, List<ScheduleCreator> scheduleCreators) {
 		// ドメインモデル「スケジュール作成実行ログ」を新規登録する
 		this.scheduleExecutionLogRepository.add(scheduleExecutionLog);
 		// ドメインモデル「スケジュール作成内容」を新規登録する
 		this.scheduleCreateContentRepository.add(scheduleCreateContent);
+		// ドメインモデル「スケジュール作成対象者」を新規登録する
+		this.scheduleCreatorRepository.saveAll(scheduleCreators);
 	}
 
 	/**

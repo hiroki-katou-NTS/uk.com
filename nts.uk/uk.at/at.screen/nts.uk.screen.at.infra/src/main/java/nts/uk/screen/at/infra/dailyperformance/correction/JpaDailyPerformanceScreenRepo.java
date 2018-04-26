@@ -20,6 +20,7 @@ import nts.arc.enums.EnumConstant;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.function.infra.entity.dailymodification.KfnmtApplicationCall;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityDailyItem;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityDailyItemPK;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityFormSheet;
@@ -60,6 +61,7 @@ import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureEmployment
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkType;
 import nts.uk.ctx.bs.employee.infra.entity.classification.BsymtClassification;
+import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHist;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employment.BsymtEmployment;
 import nts.uk.ctx.bs.employee.infra.entity.employment.BsymtEmploymentPK;
@@ -102,14 +104,18 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.YearHolidaySettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHistItemAtScreen;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.reasondiscrepancy.ReasonCodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.CalculationStateDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.NotUseAttributeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.ScheduleTimeSheetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInfoOfDailyPerformanceDetailDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInformationDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceIdPeriodAtScreen;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * @author hungnm
@@ -210,7 +216,12 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	        + " AND c.krcdtIdentificationStatusPK.processingYmd IN :processingYmds";
 	
 	public final String SELECT_BY_LIST_EMPID = "SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid ";
-
+	
+	private static final String SELECT_BY_EMPLOYEE_ID_AFF_COM = "SELECT c FROM BsymtAffCompanyHist c WHERE c.bsymtAffCompanyHistPk.sId IN :sIds and c.companyId = :cid ORDER BY c.startDate ";
+	
+	private static final String SELECT_BY_LISTSID_WPH;
+	
+	private final static String FIND_APPLICATION_CALL = "SELECT a FROM KfnmtApplicationCall a WHERE a.kfnmtApplicationCallPK.companyId = :companyId";
 	static {
 		StringBuilder builderString = new StringBuilder();		
 		builderString.append("SELECT DISTINCT b.businessTypeCode");
@@ -468,6 +479,15 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("WHERE d.id.cid = :cid ");
 		builderString.append("AND d.id.no IN :no");
 		FIND_DVGC_TIME = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT NEW ");
+		builderString.append(WorkPlaceHistTemp.class.getName());
+		builderString.append("(aw.sid , awit.workPlaceId, aw.strDate, aw.endDate)");
+		builderString.append(" FROM BsymtAffiWorkplaceHist aw ");
+		builderString.append(" LEFT JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId");
+		builderString.append(" WHERE aw.sid IN :listSid");
+		SELECT_BY_LISTSID_WPH = builderString.toString();
 
 	}
 
@@ -1119,4 +1139,45 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 						x.comfirmErrorAtr != null ? x.comfirmErrorAtr.intValue() : null));
 	}
 
+	@Override
+	public Map<String, List<WorkPlaceIdPeriodAtScreen>> getWplByListSidAndPeriod(List<String> sids) {
+		// Split query.
+		if(sids.isEmpty()) return Collections.emptyMap();
+		List<WorkPlaceHistTemp> resultList = new ArrayList<>();
+		CollectionUtil.split(sids, 1000, (subList) -> {
+			resultList.addAll(this.queryProxy().query(SELECT_BY_LISTSID_WPH, WorkPlaceHistTemp.class)
+					.setParameter("listSid", subList).getList());
+		});
+	 return resultList.stream().collect(Collectors.groupingBy(WorkPlaceHistTemp :: getEmployeeId, Collectors
+			           .mapping(x -> new WorkPlaceIdPeriodAtScreen(new DatePeriod(x.getStartDate(), x.getEndDate()), x.getWorkplaceId()), Collectors.toList())));
+	}
+
+	@Override
+	public Map<String, List<AffComHistItemAtScreen>> getAffCompanyHistoryOfEmployee(String cid,
+			List<String> employeeIds) {
+		if(employeeIds.isEmpty()) return Collections.emptyMap();
+		List<AffComHistItemAtScreen> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, 1000, (subList) -> {
+			resultList.addAll(this.queryProxy()
+					.query(SELECT_BY_EMPLOYEE_ID_AFF_COM, BsymtAffCompanyHist.class).setParameter("sIds", employeeIds)
+					.setParameter("cid", cid).getList(x -> new AffComHistItemAtScreen(x.bsymtAffCompanyHistPk.sId, new DatePeriod(x.startDate, x.endDate))));
+		});
+		 return resultList.stream().collect(Collectors.groupingBy(AffComHistItemAtScreen :: getEmployeeId, Collectors
+		           .mapping(x -> x, Collectors.toList())));
+	}
+
+	@Override
+	public List<EnumConstant> findApplicationCall(String companyId) {
+		List<KfnmtApplicationCall> entities =  this.queryProxy().query(FIND_APPLICATION_CALL, KfnmtApplicationCall.class).setParameter("companyId", companyId).getList();
+		if (!entities.isEmpty()) {
+			return entities.stream().map(x -> {
+				return new EnumConstant(
+						x.kfnmtApplicationCallPK.applicationType, EnumAdaptor
+								.valueOf(x.kfnmtApplicationCallPK.applicationType, ApplicationType.class).nameId,
+						"");
+			}).collect(Collectors.toList());
+		} else {
+			return Collections.emptyList();
+		}
+	}
 }

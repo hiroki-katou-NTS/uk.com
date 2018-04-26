@@ -81,4 +81,13 @@ public interface SyEmployeePub {
 	// Redmine #87534
 	Optional<EmployeeDataMngInfoExport> getSdataMngInfo(String sid);
 	
+	/**
+	 * Find by emp ids.
+	 * 社員ID（List）から社員コードと表示名を取得
+	 * @param sIds the sids
+	 * @return the list
+	 */
+	// RequestList228
+	List<EmployeeInfoExport> getByListSid(List<String> sIds);
+	
 }

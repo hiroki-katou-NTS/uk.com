@@ -5232,9 +5232,9 @@ var nts;
                         this.setGlobal(this.$iframe[0].contentWindow);
                     };
                     ScreenWindow.prototype.onClosed = function (callback) {
-                        var dialogElement = this.$dialog[0];
+                        var _this = this;
                         this.onClosedHandler = function () {
-                            var dataModel = ko.dataFor(dialogElement);
+                            var dataModel = ko.dataFor(_this.$dialog[0]);
                             dataModel.kiban.errorDialogViewModel.errors([]);
                             //dataModel.kiban.errorDialogViewModel.errors.valueHasMutated();
                             callback();
@@ -28062,7 +28062,16 @@ var nts;
                             "<div class='ntsDateRangeComponent ntsStartDate ntsControl nts-datepicker-wrapper'/><div class='ntsDateRangeComponent ntsRangeLabel'><label>～</label></div>" +
                             "<div class='ntsDateRangeComponent ntsEndDate ntsControl nts-datepicker-wrapper' /></div>");
                         $datePickerArea.data("required", required);
-                        var dateFormat = (dateType !== 'yearmonth') ? "YYYY/MM/DD" : 'YYYY/MM';
+                        var dateFormat;
+                        if (dateType === 'year') {
+                            dateFormat = 'YYYY';
+                        }
+                        else if (dateType === 'yearmonth') {
+                            dateFormat = 'YYYY/MM';
+                        }
+                        else {
+                            dateFormat = 'YYYY/MM/DD';
+                        }
                         var ISOFormat = uk.text.getISOFormat(dateFormat);
                         ISOFormat = ISOFormat.replace(/d/g, "").trim();
                         if (showNextPrevious === true) {
@@ -28173,8 +28182,11 @@ var nts;
                                             maxDate = maxDate.date(currentDate - 1);
                                         }
                                     }
-                                    else {
+                                    else if (dateFormat === "YYYY/MM") {
                                         maxDate = maxDate.add(1, 'year').add(-1, "months");
+                                    }
+                                    else {
+                                        maxDate = maxDate.add(1, 'year');
                                     }
                                     if (endDate.isAfter(maxDate)) {
                                         $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_OVER_YEAR", [rangeName]), "FND_E_SPAN_OVER_YEAR");
@@ -28244,7 +28256,16 @@ var nts;
                         var dataName = ko.unwrap(data.name);
                         var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
                         var required = ko.unwrap(data.required);
-                        var dateFormat = (dateType !== 'yearmonth') ? "YYYY/MM/DD" : 'YYYY/MM';
+                        var dateFormat;
+                        if (dateType === 'year') {
+                            dateFormat = 'YYYY';
+                        }
+                        else if (dateType === 'yearmonth') {
+                            dateFormat = 'YYYY/MM';
+                        }
+                        else {
+                            dateFormat = 'YYYY/MM/DD';
+                        }
                         var ISOFormat = uk.text.getISOFormat(dateFormat);
                         ISOFormat = ISOFormat.replace(/d/g, "").trim();
                         var $input = $container.find(".ntsDatepicker");

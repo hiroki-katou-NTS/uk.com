@@ -2257,6 +2257,7 @@ module nts.uk.at.view.kmk003.a {
                 resetData() {
                     this.lstWorkingTimezone([]);
                     this.lstOTTimezone([]);
+                    this.lstWorkingTimezoneSimpleMode([]);
                 }
             }
 

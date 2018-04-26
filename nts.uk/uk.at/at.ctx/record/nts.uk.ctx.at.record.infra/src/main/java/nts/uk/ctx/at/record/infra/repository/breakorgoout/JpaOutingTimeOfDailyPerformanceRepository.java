@@ -219,7 +219,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 					: stamp.getLocationCode().get().v();
 			krcdtDaiOutingTime.backActualRoundingTimeDay = stamp.getAfterRoundingTime() == null ? null
 					: stamp.getAfterRoundingTime().valueAsMinutes();
-			krcdtDaiOutingTime.backActualSourceInfo = stamp.getStampSourceInfo().value;
+			krcdtDaiOutingTime.backActualSourceInfo = stamp.getStampSourceInfo() == null ? null : stamp.getStampSourceInfo().value;
 			krcdtDaiOutingTime.backActualTime = stamp.getTimeWithDay() == null ? null
 					: stamp.getTimeWithDay().valueAsMinutes();
 		} else {
@@ -233,7 +233,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 					: stamp.getLocationCode().get().v();
 			krcdtDaiOutingTime.backStampRoundingTimeDay = stamp.getAfterRoundingTime() == null ? null
 					: stamp.getAfterRoundingTime().valueAsMinutes();
-			krcdtDaiOutingTime.backStampSourceInfo = stamp.getStampSourceInfo().value;
+			krcdtDaiOutingTime.backStampSourceInfo = stamp.getStampSourceInfo() ==null ? null : stamp.getStampSourceInfo().value;
 			krcdtDaiOutingTime.backStampTime = stamp.getTimeWithDay() == null ? null
 					: stamp.getTimeWithDay().valueAsMinutes();
 		} else {
@@ -275,7 +275,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 					: stamp.getLocationCode().get().v();
 			krcdtDaiOutingTime.outActualRoundingTimeDay = stamp.getAfterRoundingTime() == null ? null
 					: stamp.getAfterRoundingTime().valueAsMinutes();
-			krcdtDaiOutingTime.outActualSourceInfo = stamp.getStampSourceInfo().value;
+			krcdtDaiOutingTime.outActualSourceInfo = stamp.getStampSourceInfo() == null ? null : stamp.getStampSourceInfo().value;
 			krcdtDaiOutingTime.outActualTime = stamp.getTimeWithDay() == null ? null
 					: stamp.getTimeWithDay().valueAsMinutes();
 		} else {
@@ -295,7 +295,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 			krcdtDaiOutingTime.outStampPlaceCode = !stamp.getLocationCode().isPresent() ? null : stamp.getLocationCode().get().v();
 			krcdtDaiOutingTime.outStampRoundingTimeDay = stamp.getAfterRoundingTime() == null ? null
 					: stamp.getAfterRoundingTime().valueAsMinutes();
-			krcdtDaiOutingTime.outStampSourceInfo = stamp.getStampSourceInfo().value;
+			krcdtDaiOutingTime.outStampSourceInfo = stamp.getStampSourceInfo() == null ? null : stamp.getStampSourceInfo().value;
 			krcdtDaiOutingTime.outStampTime = stamp.getTimeWithDay() == null ? null
 					: stamp.getTimeWithDay().valueAsMinutes();
 		} else {
