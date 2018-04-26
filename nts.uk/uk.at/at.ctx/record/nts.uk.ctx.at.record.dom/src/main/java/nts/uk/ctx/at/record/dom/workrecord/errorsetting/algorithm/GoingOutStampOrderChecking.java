@@ -83,7 +83,9 @@ public class GoingOutStampOrderChecking {
 			for (OutingTimeSheet outingTimeSheet : outingTimeSheets) {
 				if (outingTimeSheet.getComeBack() != null && outingTimeSheet.getComeBack().isPresent()
 						&& outingTimeSheet.getComeBack().get().getStamp() != null && outingTimeSheet.getComeBack().get().getStamp().isPresent()
-						&& outingTimeSheet.getGoOut().get().getStamp() != null && outingTimeSheet.getGoOut().get().getStamp().isPresent()) {
+						&& outingTimeSheet.getGoOut().get().getStamp() != null && outingTimeSheet.getGoOut().get().getStamp().isPresent()
+						&& outingTimeSheet.getComeBack().get().getStamp().get().getTimeWithDay() != null
+						&& outingTimeSheet.getGoOut().get().getStamp().get().getTimeWithDay() != null) {
 					if (outingTimeSheet.getGoOut().get().getStamp().get().getTimeWithDay()
 							.lessThanOrEqualTo(outingTimeSheet.getComeBack().get().getStamp().get().getTimeWithDay())) {
 

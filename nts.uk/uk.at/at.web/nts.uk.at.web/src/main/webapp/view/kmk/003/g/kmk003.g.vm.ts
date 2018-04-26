@@ -21,6 +21,7 @@ module nts.uk.at.view.kmk003.g {
             selectedActual: KnockoutObservable<number>;
             dataObject: KnockoutObservable<any>;
             updateRounding : KnockoutObservable<boolean>;
+            isFlow: KnockoutObservable<boolean>;
             constructor() {
                 let self = this;
 
@@ -66,6 +67,7 @@ module nts.uk.at.view.kmk003.g {
                     }
                     self.updateRounding.notifySubscribers(self.updateRounding());
                 });
+                self.isFlow = ko.observable(false);
             }
 
             /**
@@ -96,6 +98,10 @@ module nts.uk.at.view.kmk003.g {
                 //check mode
                 if ((dataObject.workForm == EnumWorkForm.FLEX) || ((dataObject.workForm == EnumWorkForm.REGULAR) && (dataObject.settingMethod == SettingMethod.FLOW)))//case flex
                 {
+                    //check is Flex
+                    if (dataObject.workForm != EnumWorkForm.FLEX) {
+                        _self.isFlow(true);
+                    }
                     //get list enum
                     let arrayUnit: any = [];
                     dataObject.lstEnum.roundingTimeUnit.forEach(function(item: any, index: number) {
@@ -145,12 +151,23 @@ module nts.uk.at.view.kmk003.g {
                 let returnData: any = null;
                 if ((data.workForm == EnumWorkForm.FLEX) || ((data.workForm == EnumWorkForm.REGULAR) && (data.settingMethod == SettingMethod.FLOW)))//case flex
                 {
-                    returnData = {
-                        useRest: _self.switchValue(),
-                        roundUnit: _self.unitValue(),
-                        roundType: _self.roundingValue(),
-                        calcMethod: _self.selectedRest()
-                    };
+                    if (data.workForm == EnumWorkForm.FLEX) {
+                        returnData = {
+                            //default values
+                            useRest: 0,
+                            roundUnit: 0,
+                            roundType: 0,
+                            calcMethod: _self.selectedRest()
+                        };    
+                    }
+                    else {
+                        returnData = {
+                            useRest: _self.switchValue(),
+                            roundUnit: _self.unitValue(),
+                            roundType: _self.roundingValue(),
+                            calcMethod: _self.selectedRest()
+                        };
+                    }
                 }
                 else {
                     returnData = {

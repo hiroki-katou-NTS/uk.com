@@ -43,8 +43,8 @@ module nts.uk.at.view.kdw003.a.service {
          
     }
     
-    export function getApplication(param) {
-        return nts.uk.request.ajax(paths.getApplication, param);
+    export function getApplication() {
+        return nts.uk.request.ajax(paths.getApplication);
          
     }
     
