@@ -1438,15 +1438,19 @@ public class ProgramsManager {
 			"/view/kmk/003/d/index.xhtml");
 	public static final Program KMK003E = new Program(WebAppId.AT, ProgramIdConsts.KMK003E, null,
 			"/view/kmk/003/e/index.xhtml");
-	public static final Program KMK003F = new Program(WebAppId.AT, ProgramIdConsts.KMK003F, null,
+	public static final Program KMK003F = new Program(WebAppId.AT, ProgramIdConsts.KMK003F, "KMK003_287",
 			"/view/kmk/003/f/index.xhtml");
-	public static final Program KMK003G = new Program(WebAppId.AT, ProgramIdConsts.KMK003G, null,
+	public static final Program KMK003G = new Program(WebAppId.AT, ProgramIdConsts.KMK003G, "KMK003_288",
 			"/view/kmk/003/g/index.xhtml");
-	public static final Program KMK003H = new Program(WebAppId.AT, ProgramIdConsts.KMK003H, null,
+	public static final Program KMK003X = new Program(WebAppId.AT, ProgramIdConsts.KMK003X, "KMK003_288",
+			"/view/kmk/003/g/index2.xhtml");
+	public static final Program KMK003H = new Program(WebAppId.AT, ProgramIdConsts.KMK003H, "KMK003_289",
 			"/view/kmk/003/h/index.xhtml");
-	public static final Program KMK003I = new Program(WebAppId.AT, ProgramIdConsts.KMK003I, null,
+	public static final Program KMK003Y = new Program(WebAppId.AT, ProgramIdConsts.KMK003Y, "KMK003_290",
+			"/view/kmk/003/h/index2.xhtml");
+	public static final Program KMK003I = new Program(WebAppId.AT, ProgramIdConsts.KMK003I, "KMK003_291",
 			"/view/kmk/003/i/index.xhtml");
-	public static final Program KMK003J = new Program(WebAppId.AT, ProgramIdConsts.KMK003J, null,
+	public static final Program KMK003J = new Program(WebAppId.AT, ProgramIdConsts.KMK003J, "KMK003_292",
 			"/view/kmk/003/j/index.xhtml");
 	public static final Program KMK003K = new Program(WebAppId.AT, ProgramIdConsts.KMK003K, null,
 			"/view/kmk/003/k/index.xhtml");

@@ -21,7 +21,7 @@ module a8 {
      */
     class ScreenModel {
 
-        selectedTab: KnockoutObservable<string>;
+        isNewMode: KnockoutObservable<boolean>;
         
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
@@ -60,9 +60,23 @@ module a8 {
         /**
          * Constructor.
          */
-        constructor(selectedTab: KnockoutObservable<string>, screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
+        constructor(isNewMode: KnockoutObservable<boolean>, screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
             let _self = this;
-            _self.selectedTab = selectedTab;
+            _self.isNewMode = isNewMode;
+            _self.isNewMode.subscribe((v) => {
+                // Set default value for switch button
+                if (v) {
+                    if (!nts.uk.util.isNullOrUndefined(_self.otTimePersonApproTimeSetting)) _self.otTimePersonApproTimeSetting.setDefaultRounding();
+                    if (!nts.uk.util.isNullOrUndefined(_self.workTimePersonApproTimeSetting)) _self.workTimePersonApproTimeSetting.setDefaultRounding();
+                    if (!nts.uk.util.isNullOrUndefined(_self.pubHolWorkTimePersonApproTimeSetting)) _self.pubHolWorkTimePersonApproTimeSetting.setDefaultRounding();
+                    if (!nts.uk.util.isNullOrUndefined(_self.otTimePersonDeductTimeSetting)) _self.otTimePersonDeductTimeSetting.setDefaultRounding();
+                    if (!nts.uk.util.isNullOrUndefined(_self.workTimePersonDeductTimeSetting)) _self.workTimePersonDeductTimeSetting.setDefaultRounding();
+                    if (!nts.uk.util.isNullOrUndefined(_self.pubHolWorkTimePersonDeductTimeSetting)) _self.pubHolWorkTimePersonDeductTimeSetting.setDefaultRounding();
+                    if (!nts.uk.util.isNullOrUndefined(_self.otTimePublicApproTimeSetting)) _self.otTimePublicApproTimeSetting.setDefaultRounding();
+                    if (!nts.uk.util.isNullOrUndefined(_self.workTimePublicApproTimeSetting)) _self.workTimePublicApproTimeSetting.setDefaultRounding();
+                    if (!nts.uk.util.isNullOrUndefined(_self.pubHolWorkTimePublicApproTimeSetting)) _self.pubHolWorkTimePublicApproTimeSetting.setDefaultRounding();
+                }    
+            });
             
             // Check exist
             if (nts.uk.util.isNullOrUndefined(model) || nts.uk.util.isNullOrUndefined(settingEnum)) {
@@ -96,8 +110,8 @@ module a8 {
             _self.pubHolWorkTimePublicApproTimeSetting = new TimeRoundingSetting(settingEnum);          
             
             _self.listRoundingBreakTimezone = ko.observableArray([
-                { value: 0, localizedName: nts.uk.resource.getText("KMK003_198") },
-                { value: 1, localizedName: nts.uk.resource.getText("KMK003_199") }
+                { value: 1, localizedName: nts.uk.resource.getText("KMK003_198") },
+                { value: 0, localizedName: nts.uk.resource.getText("KMK003_199") }
             ]);          
             //_self.listRoundingBreakTimezone(_self.settingEnum.roundingBreakTimezone);  
             
@@ -201,7 +215,13 @@ module a8 {
             _self.isEnable = ko.observable(false);
         }
         
-        updateBinding(modelValue: GoOutTimeRoundingSettingModel) {
+        public setDefaultRounding() {
+            let _self = this;
+            
+            _self.timeRounding(1);
+        }
+        
+        public updateBinding(modelValue: GoOutTimeRoundingSettingModel) {
             let _self = this;
             
             // Get model value into view model
@@ -250,7 +270,7 @@ module a8 {
             let model = input.model;
             let settingEnum = input.enum;
 
-            let screenModel = new ScreenModel(input.selectedTab, screenMode, model, settingEnum);
+            let screenModel = new ScreenModel(input.isNewMode, screenMode, model, settingEnum);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);

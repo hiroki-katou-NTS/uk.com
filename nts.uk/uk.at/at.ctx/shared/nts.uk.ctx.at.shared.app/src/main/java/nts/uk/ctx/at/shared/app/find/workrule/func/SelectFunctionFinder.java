@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2018 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.workrule.func;
 
 import java.util.Optional;
@@ -5,6 +9,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
 import nts.uk.ctx.at.shared.dom.workrule.deformed.AggDeformedLaborSetting;
@@ -77,5 +82,19 @@ public class SelectFunctionFinder {
 		}
 		
 		return dto;
+	}
+
+	/**
+	 * Find setting flex work.
+	 *
+	 * @return the setting flex work dto
+	 */
+	public SettingFlexWorkDto findSettingFlexWork() {
+		Optional<FlexWorkSet> domain = this.flexWorkRepo.find(AppContexts.user().companyId());
+		if (domain.isPresent()) {
+			return SettingFlexWorkDto.builder().flexWorkManaging(domain.get().getUseFlexWorkSetting().value).build();
+		}
+		// default value
+		return SettingFlexWorkDto.builder().flexWorkManaging(UseAtr.NOTUSE.value).build();
 	}
 }

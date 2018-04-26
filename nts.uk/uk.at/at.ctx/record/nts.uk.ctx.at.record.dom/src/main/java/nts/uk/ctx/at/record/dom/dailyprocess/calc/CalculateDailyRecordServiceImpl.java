@@ -63,7 +63,6 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
-import nts.uk.ctx.at.record.dom.workrule.specific.CalculationMethodOfConstraintTime;
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -102,7 +101,6 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSetOfExce
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSetOfExcessSpecialHoliday;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSetOfStatutoryHoliday;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSetOfWeekDay;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetOfStatutoryWorkTime;
@@ -113,6 +111,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.CalcMethodNoBreak;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
@@ -452,8 +451,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 //				ootsukaFixedWorkSet = Optional.of(new FixedWorkCalcSetting(new ExceededPredAddVacationCalc(CalcMethodExceededPredAddVacation.CALC_AS_WORKING,new OverTimeFrameNo(1)),
 //														   new OverTimeCalcNoBreak(CalcMethodNoBreak.CALC_AS_WORKING,new OverTimeFrameNo(2),new OverTimeFrameNo(3))));
 				//パターン2
-				ootsukaFixedWorkSet = Optional.of(new FixedWorkCalcSetting(new ExceededPredAddVacationCalc(CalcMethodExceededPredAddVacation.CALC_AS_OVERTIME,new OverTimeFrameNo(1)),
-						   								   new OverTimeCalcNoBreak(CalcMethodNoBreak.CALC_AS_OVERTIME,new OverTimeFrameNo(2),new OverTimeFrameNo(3))));
+				ootsukaFixedWorkSet = Optional.of(new FixedWorkCalcSetting(new ExceededPredAddVacationCalc(CalcMethodExceededPredAddVacation.CALC_AS_OVERTIME,new OTFrameNo(1)),
+						   								   new OverTimeCalcNoBreak(CalcMethodNoBreak.CALC_AS_OVERTIME,new OTFrameNo(2),new OTFrameNo(3))));
 				List<nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime> a = new ArrayList<>();
 				if(workType.get().getDailyWork().getAttendanceHolidayAttr().isHoliday()) {
 					a = fixedWorkSetting.get().getOffdayWorkTimezone().getRestTimezone().getLstTimezone();
