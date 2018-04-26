@@ -43,15 +43,14 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 	@Inject
 	ILayoutPersonInfoClsDefRepository clsDefRepo;
 
-	String companyId = AppContexts.user().companyId();
-	Boolean checkExit = false;
-	MaintenanceLayout oldLayout = null;
+
 
 	@Override
 	protected void handle(CommandHandlerContext<MaintenanceLayoutCommand> context) {
-
+		String companyId = AppContexts.user().companyId();
+		Boolean checkExit = false;
+		MaintenanceLayout oldLayout = null;
 		MaintenanceLayoutCommand command = context.getCommand();
-
 		String newLayoutId = IdentifierUtil.randomUniqueId();
 
 		// kiem tra newLayoutcode da ton tai chua.
@@ -65,25 +64,25 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 		switch (command.getAction()) {
 		case 0: // insert
 			// set new layoutID for insert object
-			insertLayout(command, newLayoutId);
+			insertLayout(command, newLayoutId, checkExit, companyId);
 			break;
 		case 1: // update
-			updateLayout(command);
+			updateLayout(command, checkExit, companyId);
 			break;
 		case 2: // copy
-			this.coppyLayout(command, newLayoutId);
+			this.coppyLayout(command, newLayoutId, checkExit, companyId );
 			break;
 		case 3: // clone and override
-			this.overrideLayout(command, newLayoutId);
+			this.overrideLayout(command, newLayoutId, checkExit, companyId);
 			break;
 		case 4: // remove
-			this.deleteLayout(command);
+			this.deleteLayout(command, checkExit, companyId, oldLayout);
 			break;
 		}
 
 	}
 
-	private void insertLayout(MaintenanceLayoutCommand command, String newLayoutId) {
+	private void insertLayout(MaintenanceLayoutCommand command, String newLayoutId, boolean checkExit, String companyId) {
 		if (checkExit) {
 			// throw Error Message #Msg_3
 			throw new BusinessException(new RawErrorMessage("Msg_3"));
@@ -96,7 +95,7 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 		}
 	}
 
-	private void deleteLayout(MaintenanceLayoutCommand command) {
+	private void deleteLayout(MaintenanceLayoutCommand command, boolean checkExit, String companyId, MaintenanceLayout oldLayout) {
 
 		if (!checkExit) {
 			// throw Error Message #Msg_3
@@ -109,7 +108,7 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 
 	}
 
-	private void updateLayout(MaintenanceLayoutCommand command) {
+	private void updateLayout(MaintenanceLayoutCommand command, boolean checkExit, String companyId) {
 		if (checkExit) {
 			String layoutId = command.getId();
 			// get Old Layout
@@ -191,7 +190,7 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 
 	}
 
-	private void overrideLayout(MaintenanceLayoutCommand command, String newLayoutId) {
+	private void overrideLayout(MaintenanceLayoutCommand command, String newLayoutId, boolean checkExit, String companyId) {
 		//truong hop layout nay da ton tai roi thi se ghi đè
 		if (checkExit) {
 			// get Old Layout
@@ -231,14 +230,14 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 			}
 		}else {
 			// chưa tồn tại thì insert
-			this.insertForCoppyOrOvveride(command, newLayoutId);
+			this.insertForCoppyOrOvveride(command, newLayoutId, companyId);
 		}
 	}
 
-	private void coppyLayout(MaintenanceLayoutCommand command, String newLayoutId) {
+	private void coppyLayout(MaintenanceLayoutCommand command, String newLayoutId, boolean checkExit, String companyId) {
 
 		if (!checkExit) {
-			insertForCoppyOrOvveride(command, newLayoutId);
+			insertForCoppyOrOvveride(command, newLayoutId, companyId);
 		} else {
 			// throw Error Message #Msg_3
 			throw new BusinessException(new RawErrorMessage("Msg_3"));
@@ -249,7 +248,7 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 	 * @param command
 	 * @param newLayoutId
 	 */
-	private void insertForCoppyOrOvveride(MaintenanceLayoutCommand command, String newLayoutId) {
+	private void insertForCoppyOrOvveride(MaintenanceLayoutCommand command, String newLayoutId, String companyId) {
 		// insert vao bang MaintenanceLayout
 		MaintenanceLayout newLayout = MaintenanceLayout.createFromJavaType(companyId, newLayoutId,
 				command.getCode(), command.getName());
