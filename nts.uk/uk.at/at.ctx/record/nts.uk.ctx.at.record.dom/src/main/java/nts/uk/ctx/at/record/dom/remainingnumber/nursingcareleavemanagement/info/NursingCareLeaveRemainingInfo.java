@@ -68,7 +68,7 @@ public class NursingCareLeaveRemainingInfo extends AggregateRoot {
 		super();
 		this.sId = sId;
 		this.leaveType = EnumAdaptor.valueOf(2, LeaveType.class);
-		this.useClassification = true;
+		this.useClassification = false;
 		this.upperlimitSetting = UpperLimitSetting.FAMILY_INFO;
 		this.maxDayForThisFiscalYear = maxDayForThisFiscalYear;
 		this.maxDayForNextFiscalYear = maxDayForNextFiscalYear;
