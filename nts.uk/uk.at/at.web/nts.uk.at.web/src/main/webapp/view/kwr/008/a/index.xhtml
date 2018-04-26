@@ -44,13 +44,13 @@
 				<div class="fixed-flex-layout-right" style="padding-top: 20px; margin-left:20px;">
 					<div>
 						<!-- A3 -->
-						<div class="valign-center control-group">
+						<div id="range-date" class="valign-center control-group ntsControl">
 							
 							<!-- A3_1 -->
 							<span class="label">#{i18n.getText('KWR008_4')}</span>
 								
 							<!-- A3_2 -->
-							<div class="valign-center" tabindex="3" data-bind="ntsDatePicker: {
+							<div class="valign-center range-export" tabindex="3" data-bind="ntsDatePicker: {
 							value: startDateString, 
 							dateFormat: 'yearmonth', 
 							valueFormat: 'YYYYMM', 
@@ -59,10 +59,10 @@
 							}"></div>
 							
 							<!-- A3_3 -->
-							<label>~</label>
+							<label class="rangeLabel">~</label>
 							
 							<!-- A3_4 -->
-							<div tabindex="4" data-bind="ntsDatePicker: {
+							<div class="range-export" tabindex="4" data-bind="ntsDatePicker: {
 							value: endDateString, 
 							dateFormat: 'yearmonth', 
 							valueFormat: 'YYYYMM', 
