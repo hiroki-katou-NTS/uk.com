@@ -305,6 +305,8 @@ module nts.uk.at.view.kdr001.b.viewmodel {
          * close the dialog
          */
         closeDialog() {
+            let self = this;
+            setShared('KDR001Params', self.currentCode());
             nts.uk.ui.windows.close()
         }
 

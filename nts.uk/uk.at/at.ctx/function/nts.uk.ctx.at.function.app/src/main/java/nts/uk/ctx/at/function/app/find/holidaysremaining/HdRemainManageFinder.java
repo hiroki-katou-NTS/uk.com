@@ -1,26 +1,29 @@
 package nts.uk.ctx.at.function.app.find.holidaysremaining;
 
-import java.util.Calendar;
+//import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
+/*
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.adapter.employment.EmploymentAdapter;
 import nts.uk.ctx.at.function.dom.adapter.employment.EmploymentHistoryImported;
-import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
+
 import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
+*/
+import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.HolidaysRemainingManagementRepository;
-import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
+/*import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+*/
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -32,7 +35,7 @@ public class HdRemainManageFinder {
 
 	@Inject
 	private HolidaysRemainingManagementRepository hdRemainingManagementRepo;
-
+/*
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
 
@@ -47,9 +50,9 @@ public class HdRemainManageFinder {
 
 	@Inject
 	private ClosureRepository closureRepository;
-
-	@Inject
-	private PermissionOfEmploymentFormRepository permissionOfEmploymentFormRepository;
+*/
+	//@Inject
+	//private PermissionOfEmploymentFormRepository permissionOfEmploymentFormRepository;
 
 	public List<HdRemainManageDto> findAll() {
 		return this.hdRemainingManagementRepo.getHolidayManagerLogByCompanyId(AppContexts.user().companyId()).stream()
@@ -60,6 +63,7 @@ public class HdRemainManageFinder {
 	}
 
 	public Optional<HolidaysRemainingManagement> findByCode(String code) {
+		
 		return this.hdRemainingManagementRepo.getHolidayManagerByCidAndExecCd(AppContexts.user().companyId(), code);
 	}
 
@@ -99,6 +103,7 @@ public class HdRemainManageFinder {
 	public PermissionOfEmploymentFormDto getPermissionOfEmploymentForm() {
 		String companyId = AppContexts.user().companyId();
 		String employeeRoleId = AppContexts.user().roles().forAttendance();
+		/*
 		Optional<PermissionOfEmploymentForm> permissionDto = this.permissionOfEmploymentFormRepository.find(companyId,
 				employeeRoleId, 1);
 		if (permissionDto.isPresent()) {
@@ -106,8 +111,10 @@ public class HdRemainManageFinder {
 					permissionDto.get().getRoleId(), permissionDto.get().getFunctionNo(),
 					permissionDto.get().isAvailable());
 		}
-
-		return null;
+*/
+		return new PermissionOfEmploymentFormDto("r434",
+				"r434", 1,
+				true);
 	}
 
 }
