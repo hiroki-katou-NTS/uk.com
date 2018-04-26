@@ -139,7 +139,6 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             } else {
                 $('#holidayName').focus();
             }
-            errors.clearAll();
         }
 
         //setting when selected holiday remaining
