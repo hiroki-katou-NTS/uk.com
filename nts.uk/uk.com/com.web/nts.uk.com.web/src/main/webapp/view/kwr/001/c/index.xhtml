@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 1000,
-					height : 1000
+					width : 1200,
+					height : 770
 				};
 			</script>
 		
@@ -67,7 +67,7 @@
 									<div class="label-name" data-bind="ntsFormLabel: { constraint: '', required: true }">#{i18n.getText('KWR001_54')}</div>
 									<!-- C3_2 -->
 									<input tabindex="7" class="C3_2" data-bind="ntsTextEditor:{
-											name: '#[KWR001_55]',
+											name: '#{i18n.getText('KWR001_55')}',
 											constraint: 'OutputItemSettingCode',
 											require: true,
 											value: C3_2_value}" />
@@ -84,7 +84,7 @@
 									<div class="label-name" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR001_57')}</div>
 									<!-- C4_2 -->
 									<div tabindex="9" class="cf" data-bind="ntsSwitchButton: {
-											name: '#[KWR001_57]',
+											name: '#{i18n.getText('KWR001_57')}',
 											options: roundingRules,
 											optionsValue: 'code',
 											optionsText: 'name',

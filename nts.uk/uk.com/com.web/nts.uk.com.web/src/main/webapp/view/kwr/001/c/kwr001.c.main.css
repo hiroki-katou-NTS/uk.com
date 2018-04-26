@@ -1,5 +1,5 @@
 .panel {
-	margin: 30px;
+	margin: 20px;
 	width: 50%;
 }
 
@@ -12,7 +12,7 @@
 }
 
 .right {
-	margin-top: 30px;
+	margin-top: 20px;
 }
 
 .C3_2 {
@@ -29,15 +29,15 @@
 
 .C5, .C6 {
 	display: inline-block;
-	width: 30%;
+	width: 40%;
 }
 
 .C5 {
-	margin-right: 6%;
+	margin-right: 8%;
 }
 
 .C6 {
-	margin-left: 2%;
+	margin-left: 5%;
 }
 
 .move-button {
@@ -46,12 +46,12 @@
 
 #swap-list_container {
 	display: inline-block;
-	width: 70%;
+	width: 97%;
 }
 
 #up-down {
 	display: inline-block;
-	width: 5%;
+	width: 1%;
 }
 
 .C1_4 {
@@ -60,14 +60,14 @@
 
 .C7_13 {
 	text-align: right;
-	width: 67% !important;
+	width: 93% !important;
 }
 
 .C8 {
-	width: 50%;
+	width: 60%;
 }
 
 .check-box-list {
-	width: 80%;
+	width: 90%;
 	float: right;
 }
