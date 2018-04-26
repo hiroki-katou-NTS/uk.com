@@ -19,7 +19,6 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeInfo;
-import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeSimpleInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfoPk;
 
@@ -60,13 +59,6 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			+ " AND d.bsymtDepartmentInfoPK.histId = h.bsymtDepartmentHistPK.histId "
 			+ " AND d.bsymtDepartmentInfoPK.cid = h.bsymtDepartmentHistPK.cid"
 			+ " WHERE  d.bsymtDepartmentInfoPK.depId =:depId" + " AND h.strD <= :date" + " AND h.endD >= :date";
-
-	private static final String SELECT_INFO_BY_IDS = String.join(" ",
-			"SELECT e.bsymtEmployeeDataMngInfoPk.sId, e.employeeCode, p.businessName",
-			"FROM BsymtEmployeeDataMngInfo e INNER JOIN BpsmtPerson p",
-			"ON e.bsymtEmployeeDataMngInfoPk.pId = p.bpsmtPersonPk.pId",
-			"WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :lstId AND e.delStatus = 0",
-			"ORDER BY e.bsymtEmployeeDataMngInfoPk.sId ASC");
 
 	// Lanlt end
 	private static final String GET_ALL_BY_CID = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid AND e.delStatus = 1 ORDER BY  e.employeeCode ASC";
@@ -245,15 +237,6 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		Optional<EmployeeInfo> emp = queryProxy().query(SELECT_BY_SID_1, Object[].class).setParameter("sid", sid)
 				.getSingle(c -> toDomain(c, 0));
 		return emp;
-	}
-
-	@Override
-	public List<EmployeeSimpleInfo> findByIds(List<String> lstId) {
-		List<EmployeeSimpleInfo> emps = queryProxy().query(SELECT_INFO_BY_IDS, Object[].class)
-				.setParameter("lstId", lstId)
-				.getList(m -> new EmployeeSimpleInfo(m[0].toString(), m[1].toString(), m[2].toString()));
-		
-		return emps;
 	}
 
 	@Override
