@@ -3,6 +3,7 @@ module nts.uk.com.view.cmf003.c {
     import close = nts.uk.ui.windows.close;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import alertError = nts.uk.ui.dialog.alertError;
     export module viewmodel {
         export class ScreenModel {
             
@@ -52,10 +53,10 @@ module nts.uk.com.view.cmf003.c {
                     self.selectedCode.subscribe(value=>{
                     self.currentItem = _.find(self.itemList(), a => a.code === value);
                     
-                   console.log(self.selectedCode());
+                   
                    service.getConditionList(self.selectedCode()).done(function(data: Array<any>) {
                     
-                       console.log(data);
+                       self.itemsSwap(data);
                        
                    }).fail(function(error) {
                         alertError(error);
@@ -69,11 +70,6 @@ module nts.uk.com.view.cmf003.c {
                    
                    
                })
-               var array = [];
-               for (var i = 0; i < 10000; i++) {
-                   array.push(new ItemModel(i, '基本給', "description","period","range"));
-               }
-               self.itemsSwap(array);
                 
                self.columns = ko.observableArray([
                    { headerText: 'コード', key: 'code', width: 70 },
@@ -94,9 +90,13 @@ module nts.uk.com.view.cmf003.c {
             
             submit() {
                 let self = this;
-                setShared("result",self.currentCodeListSwap());
-                setShared("currentItem",self.currentItem);
-                close();
+                if(self.currentCodeListSwap().length == 0){
+                     alertError({ messageId: "Msg_577" });
+                } else {
+                    setShared("result",self.currentCodeListSwap());
+                    setShared("currentItem",self.currentItem);
+                    close();
+                }
             }
             
         }

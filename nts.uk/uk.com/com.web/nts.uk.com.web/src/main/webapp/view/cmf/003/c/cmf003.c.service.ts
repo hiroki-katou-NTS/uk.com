@@ -5,7 +5,7 @@ module nts.uk.com.view.cmf003.c {
     export module service {
             var paths = {
                 //TODO: Fake ws
-                getConditionList: "exio/exi/condset/getStdAcceptCondSetBySysType/{0}",
+                getCategoryBySytem: "ctx/sys/assist/app/findCategory/{0}",
                 getSystemType: "exio/exi/condset/getSysType"
             }
         
@@ -15,7 +15,7 @@ module nts.uk.com.view.cmf003.c {
             }
         
             export function getConditionList(systemType: number): JQueryPromise<any> {
-                let _path = format(paths.getConditionList, systemType);
+                let _path = format(paths.getCategoryBySytem, systemType);
                 return ajax('com', _path);
             };
         
