@@ -355,7 +355,7 @@ public class FlexTimeOfMonthly {
 		if (carryforwardTime.lessThan(carryforwardTimeBeforeOffset.v())){
 			
 			// フレックス繰越時間をフレックス繰越勤務時間に加算する
-			this.flexCarryforwardTime.setFlexCarryforwardTime(
+			this.flexCarryforwardTime.setFlexCarryforwardWorkTime(
 					carryforwardWorkTime.addMinutes(carryforwardTime.v()));
 			
 			// 繰越時間相殺前とフレックス繰越時間の差分をフレックス超過時間・フレックス時間に加算する
@@ -394,8 +394,11 @@ public class FlexTimeOfMonthly {
 		this.flexCarryforwardTime.setFlexCarryforwardShortageTime(
 				carryforwardShortageTime.addMinutes(carryforwardTime.v()));
 		
-		// 繰越時間相殺前をフレックス不足時間・フレックス時間に加算する
-		this.flexShortageTime = this.flexShortageTime.addMinutes(carryforwardTimeBeforeOffset.v());
+		// 繰越時間相殺前をフレックス不足時間に加算する
+		// ※　繰越時間相殺前はマイナス値なので、減算により、加算扱いにする。
+		this.flexShortageTime = this.flexShortageTime.minusMinutes(carryforwardTimeBeforeOffset.v());
+		
+		// 繰越時間相殺前をフレックス時間に加算する
 		this.flexTime.setFlexTime(this.flexTime.getFlexTime().addMinutes(
 				carryforwardTimeBeforeOffset.v(), 0));
 	}
@@ -591,7 +594,7 @@ public class FlexTimeOfMonthly {
 		if (carryforwardTime.lessThan(carryforwardTimeBeforeOffset.v())){
 			
 			// フレックス繰越時間をフレックス繰越勤務時間に加算する
-			this.flexCarryforwardTime.setFlexCarryforwardTime(
+			this.flexCarryforwardTime.setFlexCarryforwardWorkTime(
 					carryforwardWorkTime.addMinutes(carryforwardTime.v()));
 			
 			// 繰越時間相殺前とフレックス繰越時間の差分をフレックス超過時間・フレックス時間に加算する
