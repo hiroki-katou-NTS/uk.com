@@ -40,8 +40,8 @@ public class AddCareLeaveCommandHandler extends CommandHandlerWithResult<AddCare
 	protected PeregAddCommandResult handle(CommandHandlerContext<AddCareLeaveCommand> context) {
 		String cId = AppContexts.user().companyId();
 		AddCareLeaveCommand data = context.getCommand();
-		NursingCareLeaveRemainingData childCareData = NursingCareLeaveRemainingData.getChildCareHDRemaining(data.getSId(), data.getChildCareUsedDays() == null? 0: data.getChildCareUsedDays().doubleValue());
-		NursingCareLeaveRemainingData careData = NursingCareLeaveRemainingData.getCareHDRemaining(data.getSId(), data.getCareUsedDays() == null? 0: data.getCareUsedDays().doubleValue());
+		NursingCareLeaveRemainingData childCareData = NursingCareLeaveRemainingData.getChildCareHDRemaining(data.getSId(), data.getChildCareUsedDays() == null? 0.0: data.getChildCareUsedDays().doubleValue());
+		NursingCareLeaveRemainingData careData = NursingCareLeaveRemainingData.getCareHDRemaining(data.getSId(), data.getCareUsedDays() == null? 0.0: data.getCareUsedDays().doubleValue());
 		dataRepo.add(childCareData, cId);
 		dataRepo.add(careData, cId);
 		

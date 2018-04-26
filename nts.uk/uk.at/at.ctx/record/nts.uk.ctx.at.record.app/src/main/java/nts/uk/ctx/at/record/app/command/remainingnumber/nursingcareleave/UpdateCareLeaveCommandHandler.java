@@ -40,8 +40,8 @@ implements PeregUpdateCommandHandler<UpdateCareLeaveCommand>{
 	protected void handle(CommandHandlerContext<UpdateCareLeaveCommand> context) {
 		String cId = AppContexts.user().companyId();
 		UpdateCareLeaveCommand data = context.getCommand();
-		NursingCareLeaveRemainingData childCareData = NursingCareLeaveRemainingData.getChildCareHDRemaining(data.getSId(), data.getChildCareUsedDays()== null? 0: data.getChildCareUsedDays().doubleValue());
-		NursingCareLeaveRemainingData careData = NursingCareLeaveRemainingData.getCareHDRemaining(data.getSId(), data.getCareUsedDays() == null? 0: data.getCareUsedDays().doubleValue());
+		NursingCareLeaveRemainingData childCareData = NursingCareLeaveRemainingData.getChildCareHDRemaining(data.getSId(), data.getChildCareUsedDays()== null? 0.0: data.getChildCareUsedDays().doubleValue());
+		NursingCareLeaveRemainingData careData = NursingCareLeaveRemainingData.getCareHDRemaining(data.getSId(), data.getCareUsedDays() == null? 0.0: data.getCareUsedDays().doubleValue());
 		dataRepo.update(childCareData, cId);
 		dataRepo.update(careData, cId);
 		
