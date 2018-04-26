@@ -26,9 +26,6 @@ import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
 import nts.uk.ctx.sys.gateway.dom.login.Contract;
 import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
-import nts.uk.ctx.sys.gateway.dom.login.InstallForm;
-import nts.uk.ctx.sys.gateway.dom.login.SystemConfig;
-import nts.uk.ctx.sys.gateway.dom.login.SystemConfigRepository;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.CompanyInformationAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.ListCompanyAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleFromUserIdAdapter;
@@ -55,6 +52,7 @@ import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountInfo;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
+import nts.uk.shr.com.system.config.InstallationType;
 
 /**
  * The Class LoginBaseCommandHandler.
@@ -80,10 +78,6 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	/** The manager. */
 	@Inject
 	private LoginUserContextManager manager;
-
-	/** The system config repository. */
-	@Inject
-	private SystemConfigRepository systemConfigRepository;
 
 	/** The contract repository. */
 	@Inject
@@ -145,9 +139,9 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the contract password
 	 */
 	protected void reCheckContract(String contractCode, String contractPassword) {
-		SystemConfig systemConfig = this.getSystemConfig();
+		InstallationType systemConfig = AppContexts.system().getInstallationType();
 		// case Cloud
-		if (systemConfig.getInstallForm().value == InstallForm.Cloud.value) {
+		if (systemConfig.value == InstallationType.CLOUD.value) {
 			// reCheck contract
 			// pre check contract
 			this.checkContractInput(contractCode, contractPassword);
@@ -333,19 +327,6 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			return null;
 		}
 		return roleId;
-	}
-
-	/**
-	 * Gets the system config.
-	 *
-	 * @return the system config
-	 */
-	private SystemConfig getSystemConfig() {
-		Optional<SystemConfig> systemConfig = systemConfigRepository.getSystemConfig();
-		if (systemConfig.isPresent()) {
-			return systemConfig.get();
-		}
-		return null;
 	}
 
 	/**
