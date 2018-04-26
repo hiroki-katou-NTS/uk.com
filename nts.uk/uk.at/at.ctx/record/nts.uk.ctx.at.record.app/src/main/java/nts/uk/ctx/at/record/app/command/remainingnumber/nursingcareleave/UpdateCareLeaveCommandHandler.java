@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.nursingcareleavemanagement.data.
 import nts.uk.ctx.at.record.dom.remainingnumber.nursingcareleavemanagement.data.NursingCareLeaveRemainingData;
 import nts.uk.ctx.at.record.dom.remainingnumber.nursingcareleavemanagement.info.NursCareLevRemainInfoRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.nursingcareleavemanagement.info.NursingCareLeaveRemainingInfo;
+import nts.uk.ctx.at.record.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
@@ -41,19 +42,19 @@ implements PeregUpdateCommandHandler<UpdateCareLeaveCommand>{
 	protected void handle(CommandHandlerContext<UpdateCareLeaveCommand> context) {
 		String cId = AppContexts.user().companyId();
 		UpdateCareLeaveCommand data = context.getCommand();
-		NursingCareLeaveRemainingData childCareData = NursingCareLeaveRemainingData.getChildCareHDRemaining(data.getSId(), data.getChildCareUsedDays().doubleValue());
-		NursingCareLeaveRemainingData careData = NursingCareLeaveRemainingData.getCareHDRemaining(data.getSId(), data.getCareUsedDays().doubleValue());
+		NursingCareLeaveRemainingData childCareData = NursingCareLeaveRemainingData.getChildCareHDRemaining(data.getSId(), data.getChildCareUsedDays()== null? 0: data.getChildCareUsedDays().doubleValue());
+		NursingCareLeaveRemainingData careData = NursingCareLeaveRemainingData.getCareHDRemaining(data.getSId(), data.getCareUsedDays() == null? 0: data.getCareUsedDays().doubleValue());
 		dataRepo.update(childCareData, cId);
 		dataRepo.update(careData, cId);
 		
 		NursingCareLeaveRemainingInfo childCareInfo = NursingCareLeaveRemainingInfo.createChildCareLeaveInfo(data.getSId(), data.getChildCareUseArt().intValue(), 
 				data.getChildCareUpLimSet().intValue(), 
-				data.getChildCareThisFiscal().doubleValue(), 
-				data.getChildCareNextFiscal().doubleValue());
+				data.getChildCareThisFiscal() == null? UpperLimitSetting.FAMILY_INFO.value : data.getChildCareThisFiscal().doubleValue(), 
+				data.getChildCareNextFiscal() == null? null: data.getChildCareNextFiscal().doubleValue());
 		NursingCareLeaveRemainingInfo careInfo= NursingCareLeaveRemainingInfo.createCareLeaveInfo(data.getSId(), data.getCareUseArt().intValue(), 
 				data.getCareUpLimSet().intValue(), 
-				data.getCareThisFiscal().doubleValue(), 
-				data.getCareNextFiscal().doubleValue());
+				data.getCareThisFiscal() == null? UpperLimitSetting.FAMILY_INFO.value: data.getCareThisFiscal().doubleValue(), 
+				data.getCareNextFiscal() == null? null: data.getChildCareNextFiscal().doubleValue());
 		infoRepo.update(childCareInfo, cId);
 		infoRepo.update(careInfo, cId);
 		
