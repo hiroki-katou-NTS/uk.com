@@ -32,7 +32,7 @@ module nts.uk.at.view.kmk015.a {
                 self.numberDay = ko.observable(0);
                 self.isCreated = ko.observable(false);
                 self.isEnable = ko.observable(true);
-                self.isEnableNumber = ko.observable(true);
+                self.isEnableNumber = ko.observable(false);
 
                 self.selectedCode = ko.observable('');
                 self.historyId = ko.observable('');
@@ -170,9 +170,16 @@ module nts.uk.at.view.kmk015.a {
                         //push listHistory
                         self.addList(data);
 
-                        //set focus 
-                        self.selectedCodeHistory(data[0].historyId);
+                        if(nts.uk.util.isNullOrEmpty(self.timeHistory())){
+                            self.isEnableNumber(false);   
+                        }
+                        
+                        if (!nts.uk.util.isNullOrEmpty(data)){
+                            //set focus 
+                            self.selectedCodeHistory(data[0].historyId);
+                        }
                     });
+                    
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert({ messageId: res.messageId }).then(function() {
@@ -205,6 +212,7 @@ module nts.uk.at.view.kmk015.a {
                     
                     if (!nts.uk.util.isNullOrEmpty(self.timeHistory())){
                         self.isEnableNumber(true);
+                        self.numberDay(null);
                     } else {
                         self.isEnableNumber(false);
                     }
@@ -247,10 +255,12 @@ module nts.uk.at.view.kmk015.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 
+                $("#number-1").ntsEditor("validate");
+                
                 if (nts.uk.ui.errors.hasError()) {
                     return;                   
                 }
-
+                
                 if (nts.uk.util.isNullOrEmpty(self.timeHistory())) {
                     nts.uk.ui.dialog.alertError("Please Setup History!");
                     return;
