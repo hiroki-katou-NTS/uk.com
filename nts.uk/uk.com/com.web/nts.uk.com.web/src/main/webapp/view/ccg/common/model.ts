@@ -102,9 +102,9 @@ module nts.uk.com.view.ccg.model {
                 this.topPagePart = new StandardWidget(placementPartDto);
                 this.name = placementPartDto.topPageName;
                 if(placementPartDto.topPageCode === "0001"){
-                    this.url = this.origin + "/nts.uk.at.web/view/ktg/002/a/index.xhtml"; 
-                }else if(placementPartDto.topPageCode === "0002"){
                     this.url = this.origin + "/nts.uk.at.web/view/ktg/001/a/index.xhtml"; 
+                }else if(placementPartDto.topPageCode === "0002"){
+                    this.url = this.origin + "/nts.uk.at.web/view/ktg/002/a/index.xhtml"; 
                 }else if(placementPartDto.topPageCode === "0003"){
                     this.url = this.origin + ""; 
                 }
@@ -112,10 +112,6 @@ module nts.uk.com.view.ccg.model {
                 this.topPagePart = new OptionalWidget(placementPartDto);
                 this.name = placementPartDto.topPageName;
                 this.url = this.origin + "/nts.uk.at.web/view/ktg/029/a/index.xhtml?code="+this.topPagePart.topPageCode();
-                
-                //this.url = this.origin + "/nts.uk.at.web/view/kal/002/b/index.xhtml";
-                
-                //this.url = this.origin + "/nts.uk.com.web/view/cas/012/a/index.xhtml";
             }
         }
         
