@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
@@ -83,4 +85,13 @@ public class TimezoneOfFixedRestTimeSet extends WorkTimeDomainObject {
 		memento.setTimezones(this.timezones);
 	}
 
+	/**
+	 * 休憩時間の合計時間を計算
+	 * @return　休憩合計時間
+	 */
+	public AttendanceTime calcTotalTime() {
+		return new AttendanceTime(this.timezones.stream()
+							 					.map(tc -> tc.timeSpan().lengthAsMinutes())
+							 					.collect(Collectors.summingInt(tc -> tc)));
+	}
 }

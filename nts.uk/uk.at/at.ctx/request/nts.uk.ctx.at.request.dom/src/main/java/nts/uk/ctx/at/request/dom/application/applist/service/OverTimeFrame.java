@@ -9,7 +9,12 @@ import lombok.Setter;
 public class OverTimeFrame {
 
 	/**
-	 * 勤怠種類
+	 * 勤怠種類:
+	 * 休憩時間 - 0
+	 * 残業時間 - 1
+	 * 休出時間 - 2
+	 * 加給時間 - 3
+	 * 特定日加給時間 - 4
 	 */
 	private int attendanceType;
 	/**

@@ -19,7 +19,7 @@
 				<a class="goback"
 					data-bind="ntsLinkButton: { jump: '/view/kmk/013/a/index.xhtml' }"
 					tabindex="1"> #{i18n.getText('KMK013_87')} </a>
-				<button class="proceed save" data-bind="click:saveData">#{i18n.getText('KMK013_88')}</button>
+				<button tabindex="2" class="proceed save" data-bind="click:saveData">#{i18n.getText('KMK013_88')}</button>
 			</div>
 			<div id="contents-area">
 				<table>
@@ -30,164 +30,177 @@
 							<div>
 								<hr />
 							</div>
-							<label class="ntsRadioBox"> <input type="radio"
-								name="textRadioC23"
-								data-bind="checkedValue: 1, checked: selectedValueC23" />
-								<span class="box"></span>
-								<span class="label"
-								data-bind="text: '#{i18n.getText('KMK013_91')}'"></span>
-							</label>
-							<div id="c3_1">#{i18n.getText('KMK013_93')}</div>
-							<hr />
-							<div class="group-label-switch">
-								<span class="label label-width">#{i18n.getText('KMK013_94')}</span>
-								<div class="cf" data-bind="ntsSwitchButton: {
-								        name:'#{i18n.getText('KMK013_95')}',
-								        enable:enableC23,
-										options: roundingC34,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: selectedC34 }">
+							<div tabindex="3" class="radio-btn-left-content">
+								<label class="ntsRadioBox"> <input type="radio"
+									name="textRadioC23"
+									data-bind="checkedValue: 1, checked: selectedValueC23" />
+									<span class="box"></span>
+									<span class="label"
+									data-bind="text: '#{i18n.getText('KMK013_91')}'"></span>
+								</label>
+								<div id="c3_1">#{i18n.getText('KMK013_93')}</div>
+								<hr />
+								<div class="group-label-switch">
+									<span class="label label-width">#{i18n.getText('KMK013_94')}</span>
+									<!-- C3_4 -->
+									<div tabindex="4" class="cf" data-bind="ntsSwitchButton: {
+									        name:'#{i18n.getText('KMK013_95')}',
+									        enable:enableC23,
+											options: roundingC34,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedC34 }">
+									</div>
 								</div>
-							</div>
-							<div class="group-label-switch">
-							<span class="label label-width">#{i18n.getText('KMK013_98')}</span>
-								<div class="cf" data-bind="ntsSwitchButton: {
-								        name:'#{i18n.getText('KMK013_99')}',
-								        enable:enableC23,
-										options: roundingC38,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: selectedC38 }">
+								<div class="group-label-switch">
+									<span class="label label-width">#{i18n.getText('KMK013_98')}</span>
+									<!-- C3_8 -->
+									<div tabindex="5" class="cf" data-bind="ntsSwitchButton: {
+									        name:'#{i18n.getText('KMK013_99')}',
+									        enable:enableC23,
+											options: roundingC38,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedC38 }">
+									</div>
 								</div>
-							</div>
-							<div class="group-label-switch">
-							<span class="label label-width">#{i18n.getText('KMK013_102')}</span>
-								<div class="cf" data-bind="ntsSwitchButton: {
-								        name:'#{i18n.getText('KMK013_103')}',
-								        enable:enableC23,
-										options: roundingC312,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: selectedC312 }">
+								<div class="group-label-switch">
+									<span class="label label-width">#{i18n.getText('KMK013_102')}</span>
+									<!-- C3_12 -->
+									<div tabindex="6" class="cf" data-bind="ntsSwitchButton: {
+									        name:'#{i18n.getText('KMK013_103')}',
+									        enable:enableC23,
+											options: roundingC312,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedC312 }">
+									</div>
 								</div>
-							</div>
-							<div id="c4_1">#{i18n.getText('KMK013_106')}</div>
-							<hr />
-							<div class="group-label-switch">
-								<span class="label label-width">#{i18n.getText('KMK013_107')}</span>
-								<div class="cf" data-bind="ntsSwitchButton: {
-								        name:'#{i18n.getText('KMK013_108')}',
-								        enable:enableC23,
-										options: roundingC44,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: selectedC44 }">
+								<div id="c4_1">#{i18n.getText('KMK013_106')}</div>
+								<hr />
+								<div class="group-label-switch">
+									<span class="label label-width">#{i18n.getText('KMK013_107')}</span>
+									<!-- C4_4 -->
+									<div tabindex="7" class="cf" data-bind="ntsSwitchButton: {
+									        name:'#{i18n.getText('KMK013_108')}',
+									        enable:enableC23,
+											options: roundingC44,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedC44 }">
+									</div>
 								</div>
-							</div>
-							<div class="group-label-switch">
-							<span class="label label-width">#{i18n.getText('KMK013_111')}</span>
-								<div class="cf" data-bind="ntsSwitchButton: {
-								        name:'#{i18n.getText('KMK013_112')}',
-								        enable:enableC23,
-										options: roundingC48,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: selectedC48 }">
+								<div class="group-label-switch">
+									<span class="label label-width">#{i18n.getText('KMK013_111')}</span>
+									<!-- C4_8 -->
+									<div tabindex="8" class="cf" data-bind="ntsSwitchButton: {
+									        name:'#{i18n.getText('KMK013_112')}',
+									        enable:enableC23,
+											options: roundingC48,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedC48 }">
+									</div>
 								</div>
-							</div>
-							<div class="group-label-switch">
-							<span class="label label-width">#{i18n.getText('KMK013_115')}</span>
-								<div class="cf" data-bind="ntsSwitchButton: {
-								        name:'#{i18n.getText('KMK013_116')}',
-								        enable:enableC23,
-										options: roundingC412,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: selectedC412 }">
+								<div class="group-label-switch">
+									<span class="label label-width">#{i18n.getText('KMK013_115')}</span>
+									<!-- C4_12 -->
+									<div tabindex="9" class="cf" data-bind="ntsSwitchButton: {
+									        name:'#{i18n.getText('KMK013_116')}',
+									        enable:enableC23,
+											options: roundingC412,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedC412 }">
+									</div>
 								</div>
-							</div>
-							<div id="c5_1">#{i18n.getText('KMK013_119')}</div>
-							<hr />
-							<div class="group-label-switch">
-								<span class="label label-width">#{i18n.getText('KMK013_120')}</span>
-								<div class="cf" data-bind="ntsSwitchButton: {
-								        name:'#{i18n.getText('KMK013_121')}',
-								        enable:enableC23,
-										options: roundingC54,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: selectedC54 }">
+								<div id="c5_1">#{i18n.getText('KMK013_119')}</div>
+								<hr />
+								<div class="group-label-switch">
+									<span class="label label-width">#{i18n.getText('KMK013_120')}</span>
+									<!-- C5_4 -->
+									<div tabindex="10" class="cf" data-bind="ntsSwitchButton: {
+									        name:'#{i18n.getText('KMK013_121')}',
+									        enable:enableC23,
+											options: roundingC54,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedC54 }">
+									</div>
 								</div>
-							</div>
-							<div class="group-label-switch">
-							<span class="label label-width">#{i18n.getText('KMK013_124')}</span>
-								<div class="cf" data-bind="ntsSwitchButton: {
-								        name:'#{i18n.getText('KMK013_125')}',
-								        enable:enableC23,
-										options: roundingC58,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: selectedC58 }">
+								<div class="group-label-switch">
+									<span class="label label-width">#{i18n.getText('KMK013_124')}</span>
+									<!-- C5_8 -->
+									<div tabindex="11" class="cf" data-bind="ntsSwitchButton: {
+									        name:'#{i18n.getText('KMK013_125')}',
+									        enable:enableC23,
+											options: roundingC58,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedC58 }">
+									</div>
 								</div>
-							</div>
-							<div class="group-label-switch">
-							<span class="label label-width">#{i18n.getText('KMK013_128')}</span>
-								<div class="cf" data-bind="ntsSwitchButton: {
-								        name:'#{i18n.getText('KMK013_129')}',
-								        enable:enableC23,
-										options: roundingC512,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: selectedC512 }">
+								<div class="group-label-switch">
+									<span class="label label-width">#{i18n.getText('KMK013_128')}</span>
+									<!-- C5_12 -->
+									<div tabindex="12" class="cf" data-bind="ntsSwitchButton: {
+									        name:'#{i18n.getText('KMK013_129')}',
+									        enable:enableC23,
+											options: roundingC512,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedC512 }">
+									</div>
 								</div>
-							</div>
-							<div id="c6_1">#{i18n.getText('KMK013_132')}</div>
-							<hr />
-							<div class="group-label-switch">
-								<span class="label label-width">#{i18n.getText('KMK013_133')}</span>
-								<div class="cf" data-bind="ntsSwitchButton: {
-								        name:'#{i18n.getText('KMK013_134')}',
-								        enable:enableC23,
-										options: roundingC64,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: selectedC64 }">
+								<div id="c6_1">#{i18n.getText('KMK013_132')}</div>
+								<hr />
+								<div class="group-label-switch">
+									<span class="label label-width">#{i18n.getText('KMK013_133')}</span>
+									<!-- C6_4 -->
+									<div tabindex="13" class="cf" data-bind="ntsSwitchButton: {
+									        name:'#{i18n.getText('KMK013_134')}',
+									        enable:enableC23,
+											options: roundingC64,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedC64 }">
+									</div>
 								</div>
-							</div>
-							<div class="group-label-switch">
-							<span class="label label-width">#{i18n.getText('KMK013_137')}</span>
-								<div class="cf" data-bind="ntsSwitchButton: {
-								        name:'#{i18n.getText('KMK013_138')}',
-								        enable:enableC23,
-										options: roundingC68,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: selectedC68 }">
+								<div class="group-label-switch">
+									<span class="label label-width">#{i18n.getText('KMK013_137')}</span>
+									<!-- C6_8 -->
+									<div tabindex="14" class="cf" data-bind="ntsSwitchButton: {
+									        name:'#{i18n.getText('KMK013_138')}',
+									        enable:enableC23,
+											options: roundingC68,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedC68 }">
+									</div>
 								</div>
-							</div>
-							<div class="group-label-switch">
-							<span class="label label-width">#{i18n.getText('KMK013_141')}</span>
-								<div class="cf" data-bind="ntsSwitchButton: {
-								        name:'#{i18n.getText('KMK013_142')}',
-								        enable:enableC23,
-										options: roundingC612,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: selectedC612 }">
+								<div class="group-label-switch">
+									<span class="label label-width">#{i18n.getText('KMK013_141')}</span>
+									<!-- C6_12 -->
+									<div tabindex="15" class="cf" data-bind="ntsSwitchButton: {
+									        name:'#{i18n.getText('KMK013_142')}',
+									        enable:enableC23,
+											options: roundingC612,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedC612 }">
+									</div>
 								</div>
+								<label class="ntsRadioBox"> <input type="radio"
+									name="textRadioC23"
+									data-bind="checkedValue: 0, checked: selectedValueC23" />
+									<span class="box"></span>
+									<span class="label"
+									data-bind="text: '#{i18n.getText('KMK013_92')}'"></span>
+								</label> 
 							</div>
-							<label class="ntsRadioBox"> <input type="radio"
-								name="textRadioC23"
-								data-bind="checkedValue: 0, checked: selectedValueC23" />
-								<span class="box"></span>
-								<span class="label"
-								data-bind="text: '#{i18n.getText('KMK013_92')}'"></span>
-							</label> 
-							
 						</td>
 						<td class="right-contents">
-							<div id="tab-panel"
+							<div tabindex="16" id="tab-panel"
 								data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab,width:300, height : 500}">
 								<div class="tab-content-1">
 									<table class="fixed-table">
@@ -209,7 +222,7 @@
 											<tr>
 												<td class="col1" data-bind="text:col1"></td>
 												<td>
-													<div id="combo-box"
+													<div tabindex="17" id="combo-box"
 														data-bind="ntsComboBox: {
 															   options: $parent.comboItemsWorkOff,
 													           optionsValue: 'code',
@@ -217,11 +230,12 @@
 													           optionsText: 'name',
 													           columns: [
 													             { prop: 'name', length: 8 },
-													           ]}">
+													           ]},
+													           attr: { 'posTab': $index }">
 													</div>
 												</td>
 												<td>
-													<div id="combo-box"
+													<div tabindex="18" id="combo-box"
 														data-bind="ntsComboBox: {
 															   options: $parent.comboItemsWorkOff,
 													           optionsValue: 'code',
@@ -233,7 +247,7 @@
 													</div>
 												</td>
 												<td>
-													<div id="combo-box"
+													<div tabindex="19" id="combo-box"
 														data-bind="ntsComboBox: {
 															   options: $parent.comboItemsWorkOff,
 													           optionsValue: 'code',
@@ -241,7 +255,8 @@
 													           optionsText: 'name',
 													           columns: [
 													             { prop: 'name', length: 8 },
-													           ]}">
+													           ]},
+													           attr: { 'posTab': $index }">
 													</div>
 												</td>
 											</tr>
@@ -252,7 +267,7 @@
 									<table class="fixed-table">
 										<colgroup>
 											<col width="250px" />
-											<col width="200px" />
+											<col width="180px" />
 											
 										</colgroup>
 										<thead>
@@ -266,7 +281,7 @@
 											<tr>
 												<td class="col1" data-bind="text:col1"></td>
 												<td>
-													<div id="combo-box"
+													<div tabindex="20" id="combo-box"
 														data-bind="ntsComboBox: {
 															   options: $parent.comboItemOvertime,
 													           optionsValue: 'code',
@@ -274,7 +289,8 @@
 													           optionsText: 'name',
 													           columns: [
 													             { prop: 'name', length: 8 },
-													           ]}">
+													           ]},
+													           attr: { 'posTab': $index }">
 													</div>
 												</td>
 											</tr>
@@ -301,7 +317,7 @@
 											<tr>
 												<td class="col1" data-bind="text:col1"></td>
 												<td>
-													<div id="combo-box"
+													<div tabindex="21" id="combo-box"
 														data-bind="ntsComboBox: {
 															   options: $parent.comboItemsWorkOff,
 													           optionsValue: 'code',
@@ -309,11 +325,12 @@
 													           optionsText: 'name',
 													           columns: [
 													             { prop: 'name', length: 8 },
-													           ]}">
+													           ]},
+													           attr: { 'posTab': $index }">
 													</div>
 												</td>
 												<td>
-													<div id="combo-box"
+													<div tabindex="22" id="combo-box"
 														data-bind="ntsComboBox: {
 															   options: $parent.comboItemsWorkOff,
 													           optionsValue: 'code',
@@ -325,7 +342,7 @@
 													</div>
 												</td>
 												<td>
-													<div id="combo-box"
+													<div tabindex="23" id="combo-box"
 														data-bind="ntsComboBox: {
 															   options: $parent.comboItemsWorkOff,
 													           optionsValue: 'code',
@@ -333,7 +350,8 @@
 													           optionsText: 'name',
 													           columns: [
 													             { prop: 'name', length: 8 },
-													           ]}">
+													           ]},
+													           attr: { 'posTab': $index }">
 													</div>
 												</td>
 											</tr>

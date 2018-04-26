@@ -50,7 +50,7 @@ public class WwfdtApprovalRootState extends UkJpaEntity {
 	@Column(name="APPROVAL_RECORD_DATE")
 	public GeneralDate recordDate;
 	
-	@OneToMany(targetEntity=WwfdtApprovalPhaseState.class, cascade = CascadeType.ALL, mappedBy = "wwfdtApprovalRootState", orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(targetEntity=WwfdtApprovalPhaseState.class, cascade = CascadeType.ALL, mappedBy = "wwfdtApprovalRootState", orphanRemoval = true, fetch = FetchType.EAGER)
 	@JoinTable(name = "WWFDT_APPROVAL_PHASE_ST")
 	public List<WwfdtApprovalPhaseState> listWwfdtApprovalPhaseState;
 

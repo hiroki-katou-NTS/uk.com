@@ -59,6 +59,7 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 	 * @return
 	 */
 	private void updateEntity(SpecialLeaveBasicInfo domain, KrcmtSpecialLeaveInfo entity){
+		entity.useCls = domain.getUsed().value;
 		entity.appSetting = domain.getApplicationSet().value;
 		entity.grantDate = domain.getGrantSetting().getGrantDate();
 		if (domain.getGrantSetting().getGrantDays().isPresent()){
@@ -79,6 +80,7 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 		entity.cID= domain.getCID();
 		KrcmtSpecialLeaveInfoPK key  = new KrcmtSpecialLeaveInfoPK(domain.getSID(), domain.getSpecialLeaveCode().v());
 		entity.key = key;
+		entity.useCls = domain.getUsed().value;
 		entity.appSetting = domain.getApplicationSet().value;
 		entity.grantDate = domain.getGrantSetting().getGrantDate();
 		if (domain.getGrantSetting().getGrantDays().isPresent()){

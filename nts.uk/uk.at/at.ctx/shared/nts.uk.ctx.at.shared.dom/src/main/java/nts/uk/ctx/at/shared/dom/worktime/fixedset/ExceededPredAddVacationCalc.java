@@ -58,4 +58,15 @@ public class ExceededPredAddVacationCalc extends WorkTimeDomainObject {
 
 		super.validate();
 	}
+
+	/**
+	 * Constructor 
+	 */
+	public ExceededPredAddVacationCalc(CalcMethodExceededPredAddVacation calcMethod, OverTimeFrameNo otFrameNo) {
+		super();
+		this.calcMethod = calcMethod;
+		this.otFrameNo = otFrameNo;
+	}
+	
+	
 }

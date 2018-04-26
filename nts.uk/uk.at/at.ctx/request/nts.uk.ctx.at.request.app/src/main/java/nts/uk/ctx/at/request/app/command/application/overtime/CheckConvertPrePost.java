@@ -252,7 +252,7 @@ public class CheckConvertPrePost {
 			OvertimeInputCaculation overtimeCal = new OvertimeInputCaculation(AttendanceType.NORMALOVERTIME.value, entry.getKey(), entry.getValue().getCalTime());
 			result.add(overtimeCal);
 		}
-		OvertimeInputCaculation flexTimeCal = new OvertimeInputCaculation(AttendanceType.NORMALOVERTIME.value, 12, flexTime.getCalTime());
+		OvertimeInputCaculation flexTimeCal = new OvertimeInputCaculation(AttendanceType.NORMALOVERTIME.value, 12, (flexTime.getCalTime() == null || flexTime.getCalTime() < 0)? null : flexTime.getCalTime());
 		OvertimeInputCaculation midNightTimeCal = new OvertimeInputCaculation(AttendanceType.NORMALOVERTIME.value, 11, midNightTime.getCalTime());
 		result.add(flexTimeCal);
 		result.add(midNightTimeCal);

@@ -7,6 +7,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
     import service = nts.uk.at.view.kaf011.shr.service;
     import block = nts.uk.ui.block;
     import jump = nts.uk.request.jump;
+    import alError = nts.uk.ui.dialog.alertError;
 
     export class ViewModel {
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
@@ -81,7 +82,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.setDataFromStart(data);
 
             }).fail((error) => {
-                dialog({ messageId: error.messageId });
+                alError({ messageId: error.messageId, messageParams: error.parameterIds });
             }).always(() => {
                 block.clear();
                 dfd.resolve();
@@ -99,20 +100,11 @@ module nts.uk.at.view.kaf011.a.screenModel {
             self.recWk().wkTimeName('');
             self.recWk().wkTimeCD('');
             self.recWk().wkText('');
-
-            self.absWk().wkTime1(new common.WorkingHour());
-            self.absWk().wkTime2(new common.WorkingHour());
-            self.absWk().wkTimeName('');
-            self.absWk().wkTimeCD('');
-            self.absWk().wkText('');
-            self.reason('');
         }
 
         openCMM018() {
             let self = this;
-            nts.uk.sessionStorage.removeItem(nts.uk.request.STORAGE_KEY_TRANSFER_DATA);
-            nts.uk.sessionStorage.setItemAsJson(nts.uk.request.STORAGE_KEY_TRANSFER_DATA, { screen: 'Application', employeeId: self.employeeID() });
-            nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml");
+            jump("com", "/view/cmm/018/a/index.xhtml", { screen: "Application", employeeId: self.employeeID() });
         }
 
         setDataFromStart(data: common.IHolidayShipment) {
@@ -120,9 +112,9 @@ module nts.uk.at.view.kaf011.a.screenModel {
             if (data) {
                 self.employeeName(data.employeeName);
                 self.prePostSelectedCode(data.preOrPostType);
-                self.recWk().wkTypes(data.recWkTypes || []);
-                self.absWk().wkTypes(data.absWkTypes || []);
-                self.appReasons(data.appReasons || []);
+                self.recWk().setWkTypes(data.recWkTypes || []);
+                self.absWk().setWkTypes(data.absWkTypes || []);
+                self.appReasons(data.appReasonComboItems || []);
                 self.employeeID(data.employeeID);
                 self.manualSendMailAtr(data.applicationSetting.manualSendMailAtr);
                 self.drawalReqSet(new common.DrawalReqSet(data.drawalReqSet || null));
@@ -154,20 +146,16 @@ module nts.uk.at.view.kaf011.a.screenModel {
                     }
                 },
                 selectedReason = _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() }),
-                appReason = self.getReason(self.appReasonSelectedID(),
-                    self.appReasons(),
-                    self.reason());
+                appReason = self.getReason();
 
             if (selectedReason) {
-                saveCmd.appCmd.appReasonText = selectedReason.reasonTemp
+                saveCmd.appCmd.appReasonText = selectedReason.reasonTemp;
             }
-
-            if (!nts.uk.at.view.kaf000.shr.model.CommonProcess.checklenghtReason(appReason, "#appReason")) {
+            let isCheckLengthError: boolean = !nts.uk.at.view.kaf000.shr.model.CommonProcess.checklenghtReason(appReason, "#appReason");
+            if (isCheckLengthError) {
                 return;
             }
             saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;
-
-
             self.validate();
             if (nts.uk.ui.errors.hasError()) { return; }
             block.invisible();
@@ -176,15 +164,19 @@ module nts.uk.at.view.kaf011.a.screenModel {
                     location.reload();
                 });
             }).fail((error) => {
-                dialog({ messageId: error.messageId, messageParams: error.parameterIds });
+                alError({ messageId: error.messageId, messageParams: error.parameterIds });
             }).always(() => {
                 block.clear();
                 $("#recDatePicker").focus();
             });
         }
 
-        getReason(inputReasonID: string, inputReasonList: Array<any>, detailReason: string): string {
-            let appReason = '';
+        getReason(): string {
+            let appReason = '',
+                self = this,
+                inputReasonID = self.appReasonSelectedID(),
+                inputReasonList = self.appReasons(),
+                detailReason = self.reason();
             let inputReason: string = '';
             if (!nts.uk.util.isNullOrEmpty(inputReasonID)) {
                 inputReason = _.find(inputReasonList, { 'reasonID': inputReasonID }).reasonTemp;

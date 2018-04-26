@@ -44,8 +44,10 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.YearHolidaySettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHistItemAtScreen;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.reasondiscrepancy.ReasonCodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInfoOfDailyPerformanceDetailDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceIdPeriodAtScreen;
 
 /**
  * @author hungnm
@@ -170,7 +172,7 @@ public interface DailyPerformanceScreenRepo {
 	
 	List<AuthorityFormatSheetDto> findAuthorityFormatSheet(String companyId, List<String> formatCode,  List<BigDecimal>sheetNo);
 	
-	Optional<DivergenceTimeDto> findDivergenceTime(String companyId, int divTimeId);
+	List<DivergenceTimeDto> findDivergenceTime(String companyId, List<Integer> divergenceNo);
 	
 	List<ReasonCodeName> findDivergenceReason(String companyId, int divTimeId);
 	
@@ -190,10 +192,15 @@ public interface DailyPerformanceScreenRepo {
 	
 	List<EnumConstant> findErAlApplication(String companyId, List<String> errorCode);
 	
+	List<EnumConstant> findApplicationCall(String companyId);
+	
 	Optional<IdentityProcessUseSetDto> findIdentityProcessUseSet(String comapnyId);
 	
 	Optional<ApprovalUseSettingDto> findApprovalUseSettingDto(String comapnyId);
 	
 	Map<String, Boolean> getConfirmDay(String companyId, List<String> sids, DateRange dates);
 	
+	Map<String, List<WorkPlaceIdPeriodAtScreen>> getWplByListSidAndPeriod(List<String> sids);
+	
+	Map<String, List<AffComHistItemAtScreen>>getAffCompanyHistoryOfEmployee(String cid, List<String> employeeIds);
  }

@@ -126,9 +126,18 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         flexExessTimeRefer: KnockoutObservable<string> = ko.observable(null);
         //　初期起動時、計算フラグ=1とする。
         calculateFlag: KnockoutObservable<number> = ko.observable(1);
+        uiType: KnockoutObservable<number> = ko.observable(0);
         preWorkContent: common.WorkContent;
-        constructor() {
-            let self = this;             
+        constructor(transferData :any) {
+            let self = this;
+            if(transferData != null){
+                 self.timeStart1(transferData.startTime);
+                self.timeEnd1(transferData.endTime);
+                self.appDate(transferData.appDate);
+                self.multilContent(transferData.applicationReason); 
+                self.uiType(1); 
+            }
+                    
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 005a AFTER start 000_A
@@ -158,7 +167,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             service.getOvertimeByUI({
                 url: urlParam,
                 appDate: nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
-                uiType: 0
+                uiType: self.uiType(),
+                timeStart1: self.timeStart1(),
+                timeEnd1: self.timeEnd1(),
+                reasonContent: self.multilContent()
             }).done((data) => {
                 self.initData(data);
                 $("#inputdate").focus();
@@ -999,17 +1011,17 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     }
                 }
             });
-            //休憩時間
-            for (let i = 0; i < self.overtimeHours().length; i++) {
-                self.overtimeHours()[i].applicationTime.subscribe(value => {
-                    if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
-                        if (self.preWorkContent.overtimeHours[i].applicationTime != value) {
-                            //→エラーＭＳＧ
-                            self.calculateFlag(1);
-                        }
-                    }
-                });
-            }
+//            //休憩時間
+//            for (let i = 0; i < self.overtimeHours().length; i++) {
+//                self.overtimeHours()[i].applicationTime.subscribe(value => {
+//                    if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
+//                        if (self.preWorkContent.overtimeHours[i].applicationTime != value) {
+//                            //→エラーＭＳＧ
+//                            self.calculateFlag(1);
+//                        }
+//                    }
+//                });
+//            }
         }
         private changeOvertimeHours(data){
             let self = this;
