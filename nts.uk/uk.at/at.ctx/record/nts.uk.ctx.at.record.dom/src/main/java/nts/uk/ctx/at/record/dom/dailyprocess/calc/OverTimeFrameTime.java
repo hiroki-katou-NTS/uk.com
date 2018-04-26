@@ -85,6 +85,14 @@ public class OverTimeFrameTime {
 	}
 	
 	/**
+	 * 事前申請を足す(4末納品きんきゅうたいおうby 保科)
+	 * @param addTime
+	 */
+	public void addBeforeTime(AttendanceTime addTime) {
+		this.BeforeApplicationTime = this.getBeforeApplicationTime().addMinutes(addTime.valueAsMinutes());
+	}
+	
+	/**
 	 * 実績超過乖離時間の計算
 	 * @return
 	 */

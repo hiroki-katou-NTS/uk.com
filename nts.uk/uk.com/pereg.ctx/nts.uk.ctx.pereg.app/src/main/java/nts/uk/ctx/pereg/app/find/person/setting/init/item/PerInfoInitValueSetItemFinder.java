@@ -18,6 +18,8 @@ import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.category.CategoryStateDto;
 import nts.uk.ctx.pereg.dom.common.PredetemineTimeSettingRepo;
 import nts.uk.ctx.pereg.dom.common.WorkTimeSettingRepo;
+import nts.uk.ctx.pereg.dom.copysetting.item.IsRequired;
+import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCtgByCompanyRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
@@ -105,7 +107,7 @@ public class PerInfoInitValueSetItemFinder {
 			} else {
 				item.stream().forEach(c -> {
 					boolean checkDisable = c.getItemName().equals("終了日")
-							&& (ctg != null ? (ctg.getCategoryType().value == 3 ? true : false) : false);
+							&& (ctg != null ? (ctg.getCategoryType() == CategoryType.CONTINUOUSHISTORY ? true : false) : false);
 					itemDto.add(new ItemDto(c.getPerInfoItemDefId(), c.getItemName(), false, c.getIsRequired().value));
 					ItemRequiredBackGroud itemNamebackGroud = new ItemRequiredBackGroud();
 					ItemRequiredBackGroud disablebackGroud = new ItemRequiredBackGroud();
@@ -116,19 +118,14 @@ public class PerInfoInitValueSetItemFinder {
 
 					if (checkDisable) {
 						disablebackGroud.setState(toList("ntsgrid-disable"));
-						if (c.getIsRequired().value == 1) {
+						if (c.getIsRequired().value == IsRequired.REQUIRED.value) {
 							itemNamebackGroud.setState(toList("requiredCell"));
-						} else {
-							itemNamebackGroud.setState(toList("notrequiredCell"));
-						}
+						} 
 					} else {
-						if (c.getIsRequired().value == 1) {
+						if (c.getIsRequired().value == IsRequired.REQUIRED.value) {
 							itemNamebackGroud.setState(toList("requiredCell"));
 							disablebackGroud.setState(toList("requiredCell"));
-						} else {
-							itemNamebackGroud.setState(toList("notrequiredCell"));
-							disablebackGroud.setState(toList("notrequiredCell"));
-						}
+						} 
 					}
 					itemRequired.add(itemNamebackGroud);
 					itemRequired.add(disablebackGroud);
@@ -163,6 +160,7 @@ public class PerInfoInitValueSetItemFinder {
 		String companyId = AppContexts.user().companyId();
 		// Get Command
 		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategoryByCtgCD(ctgCode,companyId);
+		boolean  isContinious = perInfoCategory.isPresent()? (perInfoCategory.get().getCategoryType() == CategoryType.CONTINUOUSHISTORY ? true : false): false;
 		
 		if (!perInfoCategory.isPresent()){
 			throw new RuntimeException("invalid PersonInfoCategory");
@@ -175,6 +173,10 @@ public class PerInfoInitValueSetItemFinder {
 				PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(item);
 				boolean isEven = itemEven.contains(item.getItemCode());
 				boolean isOld = itemOld.contains(item.getItemCode());
+				
+				if(item.getItemName().equals("終了日") && isContinious) {
+					dto.setDisableCombox(true);
+				}
 				if (isOld || isEven) {
 					dto.setDisableCombox(true);
 				} else {
@@ -205,11 +207,17 @@ public class PerInfoInitValueSetItemFinder {
 				return !c.getItemCode().equals("IS00001");
 			}).map(c -> {
 				PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(c);
+				if(c.getItemName().equals("終了日") && isContinious) {
+					dto.setDisableCombox(true);
+				}
 				return getInitItemDto(dto, personEmployeeType);
 			}).collect(Collectors.toList());
 		} else {
 			itemDto = items.stream().map(c -> {
 				PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(c);
+				if(c.getItemName().equals("終了日") && isContinious) {
+					dto.setDisableCombox(true);
+				}
 				return getInitItemDto(dto, personEmployeeType);
 			}).collect(Collectors.toList());;
 		}

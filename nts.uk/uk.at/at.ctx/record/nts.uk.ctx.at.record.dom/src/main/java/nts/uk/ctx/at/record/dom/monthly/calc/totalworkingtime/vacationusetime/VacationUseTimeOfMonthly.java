@@ -96,4 +96,16 @@ public class VacationUseTimeOfMonthly {
 		// 代休使用時間を集計する
 		this.compensatoryLeave.aggregate(datePeriod);
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(VacationUseTimeOfMonthly target){
+		
+		this.annualLeave.addMinuteToUseTime(target.annualLeave.getUseTime().v());
+		this.retentionYearly.addMinuteToUseTime(target.retentionYearly.getUseTime().v());
+		this.specialHoliday.addMinuteToUseTime(target.specialHoliday.getUseTime().v());
+		this.compensatoryLeave.addMinuteToUseTime(target.compensatoryLeave.getUseTime().v());
+	}
 }

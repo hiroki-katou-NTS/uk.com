@@ -26,4 +26,13 @@ public class SettlementOrder extends IntegerPrimitiveValue<SettlementOrder> {
 		super(rawValue);
 	}
 
+	/**
+	 * Gets the default data.
+	 *
+	 * @return the default data
+	 */
+	public static SettlementOrder getDefaultData() {
+		return new SettlementOrder(1);
+	}
+
 }

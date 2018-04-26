@@ -72,7 +72,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 				para.getScheTimeReflectAtr());
 		TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(), para.getDateData(), startTimeReflect.getTimeOfDay(), endTimeReflect.getTimeOfDay(), 1, startTimeReflect.isReflectFlg(), endTimeReflect.isReflectFlg());
 		scheUpdateService.updateScheStartEndTime(timeData1);		
-		//(開始時刻2)反映する時刻を求める
+		/*//(開始時刻2)反映する時刻を求める
 		TimeOfDayReflectOutput startTime2Reflect = this.getTimeOfDayReflect(timeTypeScheReflect, 
 				para.getGobackData().getStartTime2(), 
 				ApplyTimeAtr.START2, 
@@ -90,7 +90,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 				2, 
 				startTime2Reflect.isReflectFlg(), 
 				endTime2Reflect.isReflectFlg());
-		scheUpdateService.updateScheStartEndTime(timeData2);		
+		scheUpdateService.updateScheStartEndTime(timeData2);*/		
 	}
 	@Override
 	public TimeOfDayReflectOutput getTimeOfDayReflect(boolean timeTypeScheReflect, 
@@ -186,7 +186,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 			TimeReflectParameter timeData = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), timeLeave, 1, false);
 			scheUpdateService.updateRecordStartEndTime(timeData);
 		}
-		//出勤時刻２を反映できるか
+		/*//出勤時刻２を反映できるか
 		if(this.checkAttendenceReflect(para, 2, true)) {
 			//ジャスト遅刻により時刻を編集する
 			Integer timeLate2 = this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getStartTime2(), 2, true);
@@ -201,7 +201,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 			//終了時刻の反映
 			TimeReflectParameter timeData = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), timeLeave2, 2, false);
 			scheUpdateService.updateRecordStartEndTime(timeData);
-		}
+		}*/
 	}
 	@Override
 	public boolean checkAttendenceReflect(GobackReflectParameter para, Integer frameNo, boolean isPre) {

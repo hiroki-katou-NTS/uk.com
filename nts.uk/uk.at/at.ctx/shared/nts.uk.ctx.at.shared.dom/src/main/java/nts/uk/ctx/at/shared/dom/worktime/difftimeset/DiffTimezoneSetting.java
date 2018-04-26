@@ -56,7 +56,7 @@ public class DiffTimezoneSetting extends WorkTimeDomainObject {
 	 * @param other
 	 *            the other
 	 */
-	public void restoreData(DiffTimezoneSetting other) {
+	public void correctData(DiffTimezoneSetting other) {
 		// restore 就業時間帯
 		Map<EmTimeFrameNo, EmTimeZoneSet> mapEmTimezone = other.getEmploymentTimezones().stream().collect(
 				Collectors.toMap(item -> ((EmTimeZoneSet) item).getEmploymentTimeFrameNo(), Function.identity()));
@@ -68,9 +68,15 @@ public class DiffTimezoneSetting extends WorkTimeDomainObject {
 		this.oTTimezones = other.getOTTimezones();
 	}
 	
+	/**
+	 * Correct default data.
+	 */
+	public void correctDefaultData() {
+		this.oTTimezones.forEach(item -> item.correctDefaultData());
+	}
+	
 	@Override
 	public void validate() {
-		super.validate();
 		
 		// Validate overlap employmentTimezones
 		for (int i = 0; i < this.employmentTimezones.size(); i++) {
@@ -98,7 +104,8 @@ public class DiffTimezoneSetting extends WorkTimeDomainObject {
 		
 		// validate worktime vs OT time
 		//validate msg_845
-		 this.checkOverTimeAndEmTimeOverlap();
+		this.checkOverTimeAndEmTimeOverlap();
+		super.validate();
 	}
 	
 	/**

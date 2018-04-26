@@ -79,7 +79,7 @@
 						</table>
 					</div>
 					<div id="content-right">
-						<div>
+						<div data-bind="template: { afterRender: function(){ $('#ctgName').focus();}}">
 							<!-- A3_001: label コード/名称 -->
 							<div
 								data-bind="ntsFormLabel: {required: true, constraint: ['ValueSettingCode' , 'ValueSettingName']}"
@@ -194,24 +194,7 @@
 											<abbr data-bind="attr:{'title': getTitle}"><span
 												class="months-input" data-bind="text: itemName" /></abbr>
 										</td>
-										<td class="input-units-2"><com:ko-if
-												bind="(categoryType === 3) &amp; (indexItem === 2) ">
-												<div id="combo-box"
-													data-bind="ntsComboBox: {
-														options: listComboItem,
-														optionsValue: 'code',
-														value: selectedRuleCode,
-														optionsText: 'name',
-														editable: false,
-														visibleItemsCount: 5,
-														enable: false,
-														dropDownAttachedToBody:true,
-														columns: [
-															{ prop: 'name', length: 10 },
-														]}">
-												</div>
-											</com:ko-if> <com:ko-if
-												bind="(categoryType === 3) &amp; (indexItem !== 2) ">
+										<td class="input-units-2">
 												<div id="combo-box"
 													data-bind="ntsComboBox: {
 														options: listComboItem,
@@ -226,23 +209,7 @@
 															{ prop: 'name', length: 10 },
 														]}">
 												</div>
-											</com:ko-if> <com:ko-if
-												bind="[ 1, 2, 4, 5, 6, undefined].indexOf(categoryType) >  -1 ">
-												<div id="combo-box"
-													data-bind="ntsComboBox: {
-														options: listComboItem,
-														optionsValue: 'code',
-														value: selectedRuleCode,
-														optionsText: 'name',
-														editable: false,
-														visibleItemsCount: 5,
-														enable: true,
-														dropDownAttachedToBody:true,
-														columns: [
-															{ prop: 'name', length: 10 },
-														]}">
-												</div>
-											</com:ko-if></td>
+										</td>
 
 										<com:ko-if
 											bind="[0, 1, 3, 4, 5, 6, 7, 8, undefined].indexOf(selectedRuleCode()) > -1">
@@ -398,7 +365,9 @@
 																readonly: false}" />
 
 													</com:ko-if>
-												</com:ko-if> <!-- 	 timepoint   --> <com:ko-if bind="(dataType() === 5)">
+												</com:ko-if> 
+												<!-- 	 timepoint   --> 
+												<com:ko-if bind="(dataType() === 5)">
 													<com:ko-if bind="(isRequired() === 1)">
 														<input id="timePoint" class="sub-input-units save-error"
 															data-bind="ntsTimeWithDayEditor: { 
@@ -520,9 +489,12 @@
 															optionsText: 'optionText',
 															value: selectedCode,
 															enable: true}"></div>
-												</com:ko-if> <com:ko-if bind="(dataType() === 8)">
-													<button>#{i18n.getText('CPS009_37')}</button>
+												</com:ko-if> 
+												
+												<com:ko-if bind="(dataType() === 8)">
+													<button data-bind='click: clickButtonCS00020'>#{i18n.getText('CPS009_37')}</button>
 													<span class="caret-right caret-inline"></span>
+													<span data-bind="text: selectionName"></span>
 												</com:ko-if>
 											</td>
 										</com:ko-if>

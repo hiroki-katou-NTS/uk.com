@@ -6,6 +6,7 @@ module nts.uk.at.view.kbt002.b {
         import getShared = nts.uk.ui.windows.getShared;
         import block = nts.uk.ui.block;
         import dialog = nts.uk.ui.dialog;
+        import getText = nts.uk.resource.getText;
         
         export class ScreenModel {
             execItemList: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -25,7 +26,6 @@ module nts.uk.at.view.kbt002.b {
             targetDailyPerfItemList : KnockoutObservableArray<EnumConstantDto> = ko.observableArray([]);
             repeatContentItemList : KnockoutObservableArray<EnumConstantDto> = ko.observableArray([]);
             monthDaysList : KnockoutObservableArray<EnumConstantDto> = ko.observableArray([]);
-            
             settingEnum: ExecItemEnumDto;
             constructor() {
                 var self = this;
@@ -43,13 +43,15 @@ module nts.uk.at.view.kbt002.b {
 //                            self.wkpListText(self.buildWorkplaceStr(_.sortBy(self.currentExecItem().workplaceList())));
                             self.buildWorkplaceStr(self.currentExecItem().workplaceList());
                             if (self.currentExecItem().perScheduleCls()) {
-                                self.targetDateText(self.buildTargetDateStr(data[0]));
+                                self.targetDateText(self.buildTargetDateStr(self.currentExecItem()));
                             }
                         }
                     }
                     setTimeout(function(){self.focusInput();},100);
 //                    self.currentExecItem().refDate(moment(new Date()).toDate());
                 });
+                
+               
             }
             
             // Start page
@@ -254,38 +256,42 @@ module nts.uk.at.view.kbt002.b {
 //                return '';
             }
             
-            private buildTargetDateStr(execItem : IExecutionItem) {
+            private buildTargetDateStr(execItem : any) {
                 let self = this;
                 var startTargetDate;
                 var endTargetDate;
                 let today = moment();
                 var currentDate = moment([today.year(), today.month(), today.date()]);
-                let targetDateStr = '今日' + today.format("YYYY/MM/DD") + '実行すると、作成期間は';
+                let targetDateStr = getText('KBT002_25') + today.format("YYYY/MM/DD") + getText('KBT002_26');
 
                 // Calculate start target date
-                if (execItem.targetMonth == 0) {
+                if (execItem.targetMonth() == 0) {
                     // If target date < current date then set date by current date
-                    startTargetDate = moment([today.year(), today.month(), execItem.targetDate]);
+                    startTargetDate = moment([today.year(), today.month(), execItem.targetDate()]);
+                    /*
                     if (startTargetDate.diff(currentDate, 'days') < 0) {
                         startTargetDate = currentDate;
                     }
-                } else if (execItem.targetMonth == 1) {
-                    startTargetDate = moment([today.year(), today.month(), execItem.targetDate]).add(1, 'months');
+                    */
+                } else if (execItem.targetMonth() == 1) {
+                    startTargetDate = moment([today.year(), today.month(), execItem.targetDate()]).add(1, 'months');
                     
-                } else if (execItem.targetMonth == 2) {
-                    startTargetDate = moment([today.year(), today.month(), execItem.targetDate]).add(2, 'months');
+                } else if (execItem.targetMonth() == 2) {
+                    startTargetDate = moment([today.year(), today.month(), execItem.targetDate()]).add(2, 'months');
                 }
                 targetDateStr += startTargetDate.format("YYYY/MM/DD");
-                
                 // Calculate end target date
-                if (execItem.creationPeriod == 1 && startTargetDate.date() == 1) {
-                    endTargetDate = startTargetDate.endOf('month');
+                if (self.currentExecItem().targetDate() == 1) {
+                    if(execItem.creationPeriod() == 1){
+                        endTargetDate = startTargetDate.endOf('month');
+                    }else{
+                        endTargetDate = startTargetDate.add(execItem.creationPeriod()-1, 'months').endOf('month');
+                    }
                 } else {
-                    endTargetDate = startTargetDate.add(execItem.creationPeriod, 'months');
+                    endTargetDate = startTargetDate.add(execItem.creationPeriod(), 'months');
                 }
                 targetDateStr += '～'
                 targetDateStr += endTargetDate.format("YYYY/MM/DD") + 'です';
-                
                 return targetDateStr;
             }
             
@@ -494,6 +500,19 @@ module nts.uk.at.view.kbt002.b {
                     self.refDate(moment().format("YYYY/MM/DD"));
                     self.workplaceList([]);
                 }
+                
+                  self.targetDate.subscribe(x=>{
+                    var data =  this;
+                       __viewContext.viewModel.targetDateText(__viewContext.viewModel.buildTargetDateStr(data)); 
+                });
+                   self.creationPeriod.subscribe(x=>{
+                    var data =  this;
+                       __viewContext.viewModel.targetDateText(__viewContext.viewModel.buildTargetDateStr(data)); 
+                });
+                 self.targetMonth.subscribe(x=>{
+                    var data =  this;
+                       __viewContext.viewModel.targetDateText(__viewContext.viewModel.buildTargetDateStr(data)); 
+                });
             }
         }
         

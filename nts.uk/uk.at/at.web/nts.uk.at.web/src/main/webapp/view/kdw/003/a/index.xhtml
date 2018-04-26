@@ -136,6 +136,7 @@
 							data-bind="ntsDatePicker: {value: selectedDate, 
 											dateFormat: 'YYYY/MM/DD', 
 											showJumpButtons: true, 
+											enable: showDateRange, 
 											startDate: datePicker().startDate, 
 											endDate: datePicker().endDate}">
 						</div>
@@ -196,12 +197,12 @@
 											data-bind="text: flexShortage().nextMonthTransferredMoneyTime"></span></td>
 										<td class="ui-widget-body"><span class="text-holiday">
 												<input style="width: 55px"
-												data-bind="ntsNumberEditor: { name:'Deci', value: flexShortage().noOfHolidays, constraint: 'CommonAmount', option:  optionNoOfHolidays, required: true, enable: true, readonly: false} ">
+												data-bind="ntsNumberEditor: { name:'Deci', value: flexShortage().noOfHolidays, constraint: 'CommonAmount', option:  optionNoOfHolidays, required: true, enable: canFlex, readonly: false} ">
 											</input>
 										</span></td>
 										<td class="ui-widget-body"><span class="text-holiday">
 												<input style="width: 55px"
-												data-bind="ntsTimeEditor: {name: 'Duration', constraint: 'SampleTimeDuration', value: flexShortage().absentDeductionTime, inputFormat: 'time', mode: 'time', enable: true, readonly: false, required: true}"></input>
+												data-bind="ntsTimeEditor: {name: 'Duration', constraint: 'SampleTimeDuration', value: flexShortage().absentDeductionTime, inputFormat: 'time', mode: 'time', enable: canFlex, readonly: false, required: true}"></input>
 										</span></td>
 									</tr>
 								</tbody>

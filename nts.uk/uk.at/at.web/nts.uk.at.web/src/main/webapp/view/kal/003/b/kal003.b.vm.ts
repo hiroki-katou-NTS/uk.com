@@ -272,7 +272,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
             }
             return dfd.promise();
         }
-        
+         
         /**
          * initial in case check item : Time, Times, Amount of money, Time of day
          */
@@ -627,7 +627,8 @@ module nts.uk.at.view.kal003.b.viewmodel{
         btnSettingBA2_2_click() {
             let self = this;
             let currentAtdItemCondition = self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0];
-            self.getListItemByAtr(self.workRecordExtractingCondition().checkItem()).done((lstItem) => {
+            //fixbug select item 111
+            self.getListItemByAtr(currentAtdItemCondition.conditionAtr()).done((lstItem) => {
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                 if (currentAtdItemCondition.conditionAtr() === 2) {
                     //Open dialog KDL021

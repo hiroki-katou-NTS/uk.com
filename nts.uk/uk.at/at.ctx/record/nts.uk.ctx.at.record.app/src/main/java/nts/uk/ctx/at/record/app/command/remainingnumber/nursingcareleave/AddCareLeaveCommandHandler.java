@@ -41,19 +41,20 @@ public class AddCareLeaveCommandHandler extends CommandHandlerWithResult<AddCare
 	protected PeregAddCommandResult handle(CommandHandlerContext<AddCareLeaveCommand> context) {
 		String cId = AppContexts.user().companyId();
 		AddCareLeaveCommand data = context.getCommand();
-		NursingCareLeaveRemainingData childCareData = NursingCareLeaveRemainingData.getChildCareHDRemaining(data.getSId(), data.getChildCareUsedDays().intValue());
-		NursingCareLeaveRemainingData careData = NursingCareLeaveRemainingData.getCareHDRemaining(data.getSId(), data.getCareUsedDays().intValue());
+		NursingCareLeaveRemainingData childCareData = NursingCareLeaveRemainingData.getChildCareHDRemaining(data.getSId(), data.getChildCareUsedDays().doubleValue());
+		NursingCareLeaveRemainingData careData = NursingCareLeaveRemainingData.getCareHDRemaining(data.getSId(), data.getCareUsedDays().doubleValue());
 		dataRepo.add(childCareData, cId);
 		dataRepo.add(careData, cId);
 		
 		NursingCareLeaveRemainingInfo childCareInfo = NursingCareLeaveRemainingInfo.createChildCareLeaveInfo(data.getSId(), data.getChildCareUseArt().intValue(), 
 				data.getChildCareUpLimSet().intValue(), 
-				data.getChildCareThisFiscal() == null ? Optional.empty() : Optional.of(data.getChildCareThisFiscal().intValue()), 
-				data.getChildCareNextFiscal() == null ? Optional.empty() : Optional.of(data.getChildCareNextFiscal().intValue()));
+				data.getChildCareThisFiscal().doubleValue(), 
+				data.getChildCareNextFiscal().doubleValue());
+		
 		NursingCareLeaveRemainingInfo careInfo= NursingCareLeaveRemainingInfo.createCareLeaveInfo(data.getSId(), data.getCareUseArt().intValue(), 
 				data.getCareUpLimSet().intValue(), 
-				data.getCareThisFiscal() == null ? Optional.empty() : Optional.of(data.getCareThisFiscal().intValue()), 
-				data.getCareNextFiscal() == null ? Optional.empty() : Optional.of(data.getCareNextFiscal().intValue()));
+				data.getCareThisFiscal().doubleValue(), 
+				data.getCareNextFiscal().doubleValue());
 		infoRepo.add(childCareInfo, cId);
 		infoRepo.add(careInfo, cId);
 		return new PeregAddCommandResult(data.getSId());

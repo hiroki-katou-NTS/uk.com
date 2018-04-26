@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
@@ -12,12 +13,15 @@ import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
+import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
+import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlex;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlx;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalHolidayWorkTransferOrderOfAggrMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.ExcessOutsideTimeSet;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.TreatHolidayWorkTimeOfLessThanCriteriaPerWeek;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -260,20 +264,12 @@ public class HolidayWorkTimeOfMonthly {
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 日の法定労働時間を取得する
-		//*****（未）　正式な処理の作成待ち。
-		//DailyCalculationPersonalInformation dailyCalculationPersonalInformation =
-		//		repositories.getGetOfStatutoryWorkTime().getDailyTimeFromStaturoyWorkTime(
-		//			workingSystem,
-		//			companyId,
-		//			placeId,
-		//			employmentCd,
-		//			attendanceTimeOfDaily.getEmployeeId(),
-		//			attendanceTimeOfDaily.getYmd());
+		val dailyUnit = repositories.getDailyStatutoryWorkingHours().getDailyUnit(
+				companyId, employmentCd, attendanceTimeOfDaily.getEmployeeId(),
+				attendanceTimeOfDaily.getYmd(), workingSystem);
 		
 		// 法定内休出にできる時間
-		//*****（未）　正式な処理が出来てから、代入。
-		AttendanceTime canLegalHolidayWork = new AttendanceTime(8 * 60);
-		//		new AttendanceTime(dailyCalculationPersonalInformation.getStatutoryWorkTime().v());
+		AttendanceTime canLegalHolidayWork = new AttendanceTime(dailyUnit.getDailyTime().v());
 		return canLegalHolidayWork;
 	}
 	
@@ -379,9 +375,12 @@ public class HolidayWorkTimeOfMonthly {
 	 * @param companyId 会社ID
 	 * @param aggregateAtr 集計区分
 	 * @param aggrSetOfFlex フレックス時間勤務の月の集計設定
+	 * @param monthlyAggrSetOfFlexOpt フレックス勤務の月別集計設定
+	 * @param flexTime フレックス時間
 	 */
-	public void aggregateForFlex(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
-			String companyId, MonthlyAggregateAtr aggregateAtr, AggrSettingMonthlyOfFlx aggrSetOfFlex){
+	public FlexTime aggregateForFlex(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
+			String companyId, MonthlyAggregateAtr aggregateAtr, AggrSettingMonthlyOfFlx aggrSetOfFlex,
+			Optional<MonthlyAggrSetOfFlex> monthlyAggrSetOfFlexOpt, FlexTime flexTime){
 		
 		// 「休出枠時間」を取得する
 		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
@@ -389,17 +388,37 @@ public class HolidayWorkTimeOfMonthly {
 		val excessOfStatutoryTimeOfDaily = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
 		val holidayWorkTimeOfDaily = excessOfStatutoryTimeOfDaily.getWorkHolidayTime();
 		// 休出時間がない時、集計しない
-		if (!holidayWorkTimeOfDaily.isPresent()) return;
-		val holidayWorkFrameTimeSrcs = holidayWorkTimeOfDaily.get().getHolidayWorkFrameTime();
+		if (!holidayWorkTimeOfDaily.isPresent()) return flexTime;
 		
 		val ymd = attendanceTimeOfDaily.getYmd();
 		
-		// 取得した休出枠時間を「集計休出時間」に入れる
+		val holidayWorkFrameTimeSrcs = holidayWorkTimeOfDaily.get().getHolidayWorkFrameTime();
 		for (val holidayWorkFrameTimeSrc : holidayWorkFrameTimeSrcs){
 			val holidayWorkFrameNo = holidayWorkFrameTimeSrc.getHolidayFrameNo();
+			
+			// 「設定．残業を含める」を確認する
+			if (aggrSetOfFlex.isIncludeOverTime()){
+
+				// 休日出勤フレックス加算を確認
+				if (monthlyAggrSetOfFlexOpt.isPresent()) {
+					val holidayWorkMap = monthlyAggrSetOfFlexOpt.get().getOutsideTimeAddSet().getHolidayWorkMap();
+					if (holidayWorkMap.containsKey(holidayWorkFrameNo)){
+						if (holidayWorkMap.get(holidayWorkFrameNo).getAddition() == UseAtr.USE){
+					
+							// 取得した休出枠時間を「フレックス時間」に入れる
+							flexTime.addHolidayWorkTimeFrameTime(ymd, holidayWorkFrameTimeSrc);
+							continue;
+						}
+					}
+				}
+			}
+				
+			// 取得した休出枠時間を「集計休出時間」に入れる
 			val targetHolidayWorkTime = this.getTargetAggregateHolidayWorkTime(holidayWorkFrameNo);
 			targetHolidayWorkTime.addHolidayWorkTimeInTimeSeriesWork(ymd, holidayWorkFrameTimeSrc);
 		}
+		
+		return flexTime;
 	}
 	
 	/**
@@ -455,5 +474,29 @@ public class HolidayWorkTimeOfMonthly {
 		
 		return new AttendanceTimeMonth(this.totalHolidayWorkTime.getTime().v() +
 				this.totalTransferTime.getTime().v());
+	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(HolidayWorkTimeOfMonthly target){
+		
+		this.totalHolidayWorkTime = this.totalHolidayWorkTime.addMinutes(
+				target.totalHolidayWorkTime.getTime().v(), target.totalHolidayWorkTime.getCalcTime().v());
+		this.beforeHolidayWorkTime = this.beforeHolidayWorkTime.addMinutes(target.beforeHolidayWorkTime.v());
+		this.totalTransferTime = this.totalTransferTime.addMinutes(
+				target.totalTransferTime.getTime().v(), target.totalTransferTime.getCalcTime().v());
+		
+		for (val aggrHolidayWorkTime : this.aggregateHolidayWorkTimeMap.values()){
+			val frameNo = aggrHolidayWorkTime.getHolidayWorkFrameNo();
+			if (target.aggregateHolidayWorkTimeMap.containsKey(frameNo)){
+				aggrHolidayWorkTime.sum(target.aggregateHolidayWorkTimeMap.get(frameNo));
+			}
+		}
+		for (val targetAggrHolidayWorkTime : target.aggregateHolidayWorkTimeMap.values()){
+			val frameNo = targetAggrHolidayWorkTime.getHolidayWorkFrameNo();
+			this.aggregateHolidayWorkTimeMap.putIfAbsent(frameNo, targetAggrHolidayWorkTime);
+		}
 	}
 }

@@ -22,6 +22,7 @@ module nts.uk.ui.koExtentions {
             let endName = ko.unwrap(data.endName);
             let enable = data.enable === undefined ? true : ko.unwrap(data.enable);
             let showNextPrevious = data.showNextPrevious === undefined ? false : ko.unwrap(data.showNextPrevious);
+            let jumpUnit = data.jumpUnit === undefined ? false : ko.unwrap(data.jumpUnit);
             let required = ko.unwrap(data.required);
             
             let id = nts.uk.util.randomId();
@@ -53,39 +54,14 @@ module nts.uk.ui.koExtentions {
                 let $prevButton = $container.find(".ntsDatePrevButton").text("◀").css("margin-right", "3px");
                 
                 $nextButton.click(function (evt, ui){
-                    let $startDate = $container.find(".ntsStartDatePicker");
-                    let $endDate = $container.find(".ntsEndDatePicker");
-                    
-                    let oldValue = value(); 
-                    let currentStart = $startDate.val();
-                    let currentEnd = $endDate.val();   
-                    if (!nts.uk.util.isNullOrEmpty(currentStart)){
-                        let startDate = moment(currentStart, dateFormat);   
-                        if(startDate.isValid()) {
-                            let isEndOfMonth = startDate.daysInMonth() === startDate.date();
-                            startDate.month(startDate.month() + 1);   
-                            if(isEndOfMonth){
-                                startDate.endOf("month");           
-                            }
-                            oldValue.startDate = startDate.format(dateFormat);          
-                        }     
-                    }    
-                    
-                    if (!nts.uk.util.isNullOrEmpty(currentEnd)){
-                        let endDate = moment(currentEnd, dateFormat);   
-                        if(endDate.isValid()) { 
-                            let isEndOfMonth = endDate.daysInMonth() === endDate.date();
-                            endDate.month(endDate.month() + 1);   
-                            if(isEndOfMonth){
-                                endDate.endOf("month");           
-                            }
-                            oldValue.endDate = endDate.format(dateFormat);         
-                        }     
-                    } 
-                    value(oldValue);       
+                    jump(true);      
                 });
                 
                 $prevButton.click(function (evt, ui){
+                    jump(false);     
+                });
+                
+                var jump = function(isNext: boolean){
                     let $startDate = $container.find(".ntsStartDatePicker");
                     let $endDate = $container.find(".ntsEndDatePicker");
                     
@@ -95,11 +71,15 @@ module nts.uk.ui.koExtentions {
                     if (!nts.uk.util.isNullOrEmpty(currentStart)){
                         let startDate = moment(currentStart, dateFormat);   
                         if(startDate.isValid()) {
-                            let isEndOfMonth = startDate.daysInMonth() === startDate.date();
-                            startDate.month(startDate.month() - 1);   
-                            if(isEndOfMonth){
-                                startDate.endOf("month");           
-                            }
+                            if(jumpUnit === "year"){
+                                startDate.year(startDate.year() + (isNext ? 1 : -1));   
+                            } else {
+                                let isEndOfMonth = startDate.daysInMonth() === startDate.date();
+                                startDate.month(startDate.month() + (isNext ? 1 : -1));    
+                                if(isEndOfMonth){
+                                    startDate.endOf("month");           
+                                }      
+                            } 
                             oldValue.startDate = startDate.format(dateFormat);         
                         }     
                     }    
@@ -107,16 +87,20 @@ module nts.uk.ui.koExtentions {
                     if (!nts.uk.util.isNullOrEmpty(currentEnd)){
                         let endDate = moment(currentEnd, dateFormat);   
                         if(endDate.isValid()) {
-                            let isEndOfMonth = endDate.daysInMonth() === endDate.date();
-                            endDate.month(endDate.month() - 1);   
-                            if(isEndOfMonth){
-                                endDate.endOf("month");           
+                            if(jumpUnit === "year"){
+                                endDate.year(endDate.year() + (isNext ? 1 : -1));   
+                            } else {
+                                let isEndOfMonth = endDate.daysInMonth() === endDate.date();
+                                endDate.month(endDate.month() + (isNext ? 1 : -1));    
+                                if(isEndOfMonth){
+                                    endDate.endOf("month");           
+                                }   
                             }
                             oldValue.endDate = endDate.format(dateFormat);         
                         }     
                     } 
-                    value(oldValue);      
-                });
+                    value(oldValue);    
+                }
             }
               
             let $startDateArea = $datePickerArea.find(".ntsStartDate");

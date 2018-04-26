@@ -76,11 +76,6 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
 		// Add company condition 
 		conditions.add(cb.equal(root.get(EmployeeDataView_.cid), comId));
-//		conditions.add(cb.or(
-//				cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.comStrDate), paramQuery.getPeriodStart()),
-//						cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodStart())),
-//				cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.comStrDate), paramQuery.getPeriodEnd()),
-//						cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodEnd()))));
 
 		// Add NOT_DELETED condition
 		conditions.add(cb.equal(root.get(EmployeeDataView_.delStatusAtr), NOT_DELETED));
@@ -155,24 +150,23 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 				conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.workTypeEndDate),
 						GeneralDate.localDate(paramQuery.getBaseDate().toLocalDate())));
 			}
-			// TODO: AnhNM pls recheck.
-//			if (paramQuery.getFilterByClosure()) {
-//				// return empty list if condition code list is empty
-//				if (closureIds.isEmpty()) {
-//					return Collections.emptyList();
-//				}
-//
-//				// update query conditions
-//				conditions.add(root.get(EmployeeDataView_.closureId).in(closureIds));
-//
-//				// check exist before add employment conditions
-//				if (!paramQuery.getFilterByEmployment()) {
-//					conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.employmentStrDate),
-//							paramQuery.getBaseDate()));
-//					conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.employmentEndDate),
-//							paramQuery.getBaseDate()));
-//				}
-//			}
+			if (paramQuery.getFilterByClosure()) {
+				// return empty list if condition code list is empty
+				if (closureIds.isEmpty()) {
+					return Collections.emptyList();
+				}
+
+				// update query conditions
+				conditions.add(root.get(EmployeeDataView_.closureId).in(closureIds));
+
+				// check exist before add employment conditions
+				if (!paramQuery.getFilterByEmployment()) {
+					conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.employmentStrDate),
+							paramQuery.getBaseDate()));
+					conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.employmentEndDate),
+							paramQuery.getBaseDate()));
+				}
+			}
 		}
 		cq.where(conditions.toArray(new Predicate[] {}));
 
