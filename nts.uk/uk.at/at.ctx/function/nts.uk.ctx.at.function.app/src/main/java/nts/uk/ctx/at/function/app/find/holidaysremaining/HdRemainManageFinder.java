@@ -35,24 +35,21 @@ public class HdRemainManageFinder {
 
 	@Inject
 	private HolidaysRemainingManagementRepository hdRemainingManagementRepo;
-/*
-	@Inject
-	private ClosureEmploymentRepository closureEmploymentRepository;
-
-	@Inject
-	private EmploymentAdapter employmentAdapter;
-
-	@Inject
-	private PublicHolidaySettingRepository publicHolidaySettingRepository;
-
-	@Inject
-	private ClosureService closureService;
-
-	@Inject
-	private ClosureRepository closureRepository;
-*/
-	//@Inject
-	//private PermissionOfEmploymentFormRepository permissionOfEmploymentFormRepository;
+	/*
+	 * @Inject private ClosureEmploymentRepository closureEmploymentRepository;
+	 * 
+	 * @Inject private EmploymentAdapter employmentAdapter;
+	 * 
+	 * @Inject private PublicHolidaySettingRepository
+	 * publicHolidaySettingRepository;
+	 * 
+	 * @Inject private ClosureService closureService;
+	 * 
+	 * @Inject private ClosureRepository closureRepository;
+	 */
+	// @Inject
+	// private PermissionOfEmploymentFormRepository
+	// permissionOfEmploymentFormRepository;
 
 	public List<HdRemainManageDto> findAll() {
 		return this.hdRemainingManagementRepo.getHolidayManagerLogByCompanyId(AppContexts.user().companyId()).stream()
@@ -63,8 +60,17 @@ public class HdRemainManageFinder {
 	}
 
 	public Optional<HolidaysRemainingManagement> findByCode(String code) {
-		
+
 		return this.hdRemainingManagementRepo.getHolidayManagerByCidAndExecCd(AppContexts.user().companyId(), code);
+	}
+
+	public HdRemainManageDto findDtoByCode(String code) {
+		Optional<HolidaysRemainingManagement> hdManagement = this.hdRemainingManagementRepo
+				.getHolidayManagerByCidAndExecCd(AppContexts.user().companyId(), code);
+		if (hdManagement.isPresent()) {
+			return HdRemainManageDto.fromDomain(hdManagement.get());
+		}
+		return null;
 	}
 
 	/**
@@ -104,17 +110,14 @@ public class HdRemainManageFinder {
 		String companyId = AppContexts.user().companyId();
 		String employeeRoleId = AppContexts.user().roles().forAttendance();
 		/*
-		Optional<PermissionOfEmploymentForm> permissionDto = this.permissionOfEmploymentFormRepository.find(companyId,
-				employeeRoleId, 1);
-		if (permissionDto.isPresent()) {
-			return new PermissionOfEmploymentFormDto(permissionDto.get().getCompanyId(),
-					permissionDto.get().getRoleId(), permissionDto.get().getFunctionNo(),
-					permissionDto.get().isAvailable());
-		}
-*/
-		return new PermissionOfEmploymentFormDto("r434",
-				"r434", 1,
-				true);
+		 * Optional<PermissionOfEmploymentForm> permissionDto =
+		 * this.permissionOfEmploymentFormRepository.find(companyId,
+		 * employeeRoleId, 1); if (permissionDto.isPresent()) { return new
+		 * PermissionOfEmploymentFormDto(permissionDto.get().getCompanyId(),
+		 * permissionDto.get().getRoleId(), permissionDto.get().getFunctionNo(),
+		 * permissionDto.get().isAvailable()); }
+		 */
+		return new PermissionOfEmploymentFormDto("r434", "r434", 1, true);
 	}
 
 }

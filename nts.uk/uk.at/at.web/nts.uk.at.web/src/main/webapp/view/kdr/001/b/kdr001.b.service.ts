@@ -2,6 +2,7 @@ module nts.uk.at.view.kdr001.b {
     export module service {
         var paths: any = {
             findAll: "at/function/holidaysremaining/findAll",
+            findByCode: "at/function/holidaysremaining/findByCode/{0}",
             addHoliday: "at/function/holidaysremaining/add",
             updateHoliday: "at/function/holidaysremaining/update",
             removeHoliday: "at/function/holidaysremaining/remove",
@@ -14,6 +15,11 @@ module nts.uk.at.view.kdr001.b {
 
         export function findAll(): JQueryPromise<any> {
             return nts.uk.request.ajax("at", paths.findAll);
+        }
+        
+        export function findByCode(code: string) : JQueryPromise<any> {
+            let _path = nts.uk.text.format(paths.findByCode, code);
+            return nts.uk.request.ajax("at", _path);
         }
         //insert
         export function addHolidayRemaining(command): JQueryPromise<any> {
