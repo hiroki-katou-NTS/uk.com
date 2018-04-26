@@ -50,13 +50,17 @@ module nts.uk.at.view.kdw008.b {
 
             // monthly tab 3
             valuesMonth: KnockoutObservableArray<any>;
-
+            sideBar :  KnockoutObservable<number>;
+            enableSheetNo: KnockoutObservable<boolean>;
 
             constructor(dataShare: any) {
                 var self = this;
                 //check daily
                 self.isDaily = dataShare.ShareObject;
-                self.isDaily = false;
+                self.sideBar =  ko.observable(1);
+                if(!self.isDaily){
+                    self.sideBar(2);
+                }
 
                 //monthly
                 self.listMonthlyAttdItem = ko.observableArray([]);
@@ -69,6 +73,7 @@ module nts.uk.at.view.kdw008.b {
                 self.newMode = ko.observable(false);
                 self.isUpdate = true;
                 self.hasdata = true;
+                self.enableSheetNo = ko.observable(false);
 
                 self.currentBusinessTypeCode = ko.observable('');
                 self.currentBusinessTypeName = ko.observable('');
@@ -85,24 +90,24 @@ module nts.uk.at.view.kdw008.b {
                 this.selectedCode = ko.observable();
 
                 self.columns4 = ko.observableArray([
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', hidden: true, width: 100 },
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', width: 70 },
+                    { headerText: 'number', key: 'attendanceItemDisplayNumber', hidden: true, width: 100 },
                     { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 150 }
                 ]);
                 self.columns3 = ko.observableArray([
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', hidden: true, width: 100 },
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', width: 70 },
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', hidden: true, width: 100 },
                     { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 150 }
                 ]);
                 self.columns2 = ko.observableArray([
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', hidden: true, width: 100 },
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', width: 70 },
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', hidden: true, width: 100 },
                     { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 150 }
                 ]);
 
                 self.columns5 = ko.observableArray([
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', hidden: true, width: 100 },
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', width: 70 },
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', hidden: true, width: 100 },
                     { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 150 }
                 ]);
 
@@ -117,9 +122,9 @@ module nts.uk.at.view.kdw008.b {
                     console.log(value);
                 });
                 self.tabs = ko.observableArray([
-                    { id: 'tab-1', title: '月次項目', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(self.isDaily) },
-                    { id: 'tab-2', title: '日次項目', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(self.isDaily) },
-                    { id: 'tab-3', title: '月次項目', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(!self.isDaily) },
+                    { id: 'tab-1', title: getText('KDW008_14'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(self.isDaily) },
+                    { id: 'tab-2', title: getText('KDW008_13'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(self.isDaily) },
+                    { id: 'tab-3', title: getText('KDW008_13'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(!self.isDaily) },
                 ]);
                 self.selectedTab = ko.observable('tab-1');
 
@@ -138,6 +143,11 @@ module nts.uk.at.view.kdw008.b {
                 ]);
                 self.selectedSheetNo = ko.observable(1);
                 self.selectedSheetNo.subscribe((value) => {
+                    if (value == 1) {
+                        self.enableSheetNo(false);
+                    } else {
+                        self.enableSheetNo(true);
+                    }
                     if (self.isDaily) {
                         nts.uk.ui.errors.clearAll();
                         self.getDetail(self.selectedCode());
@@ -146,6 +156,7 @@ module nts.uk.at.view.kdw008.b {
                         self.listMonthlyAttdItem(_.cloneDeep(self.listMonthlyAttdItemFullData()));
                         self.getMonthRight(self.selectedCode(), value);
                     }
+                    nts.uk.ui.errors.clearAll();
                 });
 
                 //swaplist 2
@@ -237,6 +248,54 @@ module nts.uk.at.view.kdw008.b {
                 });
 
                 return dfd.promise();
+            }
+            
+            btnSheetNo() {
+                let self = this;
+                if (self.isDaily) {
+                    let deleteBySheet = {
+                        businessTypeCode : self.selectedCode(),
+                        sheetNo : self.selectedSheetNo()                            
+                    };
+                    nts.uk.ui.block.invisible();
+                    new service.Service().deleteBusiFormatBySheet(deleteBySheet).done(function() {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
+                           self.reloadData(self.currentBusinessTypeCode());
+                        });
+                    }).always(function() {
+                        nts.uk.ui.block.clear();
+                    }).fail(function(error) {
+                        $('#currentCode').ntsError('set', error);
+                    });
+                } else {
+                    //monthly
+                   let listDisplayTimeItem = [];
+
+
+                    let listSheetMonthly = [new SheetCorrectedMonthly(
+                        self.selectedSheetNo(),
+                        "",
+                        listDisplayTimeItem
+                    )];
+
+                    let temp = new MonthlyRecordWorkType("", self.currentBusinessTypeCode(),
+                        new MonthlyActualResults(listSheetMonthly)
+                    );
+                    nts.uk.ui.block.invisible();
+                    new service.Service().updateMonthly(temp).done(function() {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
+                            nts.uk.ui.block.clear();
+                            self.getMonthRight(self.currentBusinessTypeCode(), self.selectedSheetNo());
+                            self.selectedCode(self.currentBusinessTypeCode());
+                            self.selectedCode.valueHasMutated();
+                        });
+                        $("#currentName").focus();
+                    }).always(function() {
+                    }).fail(function(error) {
+                        nts.uk.ui.block.clear();
+                        $('#currentCode').ntsError('set', error);
+                    });
+                }
             }
 
             setNewMode() {
@@ -348,7 +407,7 @@ module nts.uk.at.view.kdw008.b {
                                 };
                                 return new AttendanceItemModel(obj);
                             });
-                            self.valuesMonth(attendanceItemModelMonth);
+                            self.valuesMonth(_.sortBy(attendanceItemModelMonth, ["attendanceItemDisplayNumber"]));
 
                         } else self.valuesMonth([]);
                     } else {
@@ -361,6 +420,11 @@ module nts.uk.at.view.kdw008.b {
                 });
                 dfd.resolve();
             }
+            
+            jumpTo(sidebar){
+                let self = this;
+                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject : sidebar() });
+            }
 
             addOrUpdateClick() {
                 let self = this;
@@ -371,19 +435,27 @@ module nts.uk.at.view.kdw008.b {
                     }
                     self.register();
                 } else {
-                    self.registerMonthly();
+                    $("#selectedSheetName").trigger("validate");
+                    if (!nts.uk.ui.errors.hasError()) {
+                        if (self.valuesMonth().length <= 0) {
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_920" });
+                        } else {
+                            self.registerMonthly();
+                        }
+                    }                    
                 }
             }
 
             registerMonthly() {
                 let self = this; 
 //                $(".need-check").trigger("validate");
-                $("#selectedSheetName").trigger("validate");
+                
                 if (!nts.uk.ui.errors.hasError()) {
                     let listDisplayTimeItem = [];
                     for (let i = 0; i < self.valuesMonth().length; i++) {
+                        var indexOfItem = _.findIndex(self.valuesMonth(), { attendanceItemId: self.valuesMonth()[i].attendanceItemId });
                         let obj = new DisplayTimeItem(
-                            self.valuesMonth()[i].attendanceItemDisplayNumber,
+                            indexOfItem,
                             self.valuesMonth()[i].attendanceItemId,
                             null
                         );
@@ -404,9 +476,9 @@ module nts.uk.at.view.kdw008.b {
                     new service.Service().updateMonthly(temp).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                             nts.uk.ui.block.clear();
-                            self.getMonthRight(self.currentBusinessTypeCode(), 1);
-                            self.selectedCode(self.currentBusinessTypeCode());
-                            self.selectedCode.valueHasMutated();
+//                            self.getMonthRight(self.currentBusinessTypeCode(), 1);
+                            self.selectedSheetNo(1);
+                            self.selectedSheetNo.valueHasMutated();
                         });
                         $("#currentName").focus();
                     }).always(function() {

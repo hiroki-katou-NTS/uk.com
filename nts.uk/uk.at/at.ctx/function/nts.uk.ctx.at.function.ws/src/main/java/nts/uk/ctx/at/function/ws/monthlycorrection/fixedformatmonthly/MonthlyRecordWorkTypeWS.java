@@ -12,6 +12,8 @@ import javax.ws.rs.core.MediaType;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.monthlycorrection.fixedformatmonthly.MonthlyRecordWorkTypeCmd;
 import nts.uk.ctx.at.function.app.command.monthlycorrection.fixedformatmonthly.UpdateMonthlyRecordWorkTypeCmdHandler;
+import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.BusinessTypeSortedMonDto;
+import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.BusinessTypeSortedMonFinder;
 import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.MonthlyRecordWorkTypeDto;
 import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.MonthlyRecordWorkTypeFinder;
 
@@ -29,6 +31,9 @@ public class MonthlyRecordWorkTypeWS extends WebService {
 	private UpdateMonthlyRecordWorkTypeCmdHandler updateHandler;
 	
 	
+	@Inject
+	private BusinessTypeSortedMonFinder businessFinder;
+	
 	@POST
 	@Path("findall")
 	public List<MonthlyRecordWorkTypeDto> findAll(){
@@ -45,6 +50,14 @@ public class MonthlyRecordWorkTypeWS extends WebService {
 	@Path("updatemonthly")
 	public void updateMonthly(MonthlyRecordWorkTypeCmd command){
 		this.updateHandler.handle(command);
+	}
+	
+	
+	@POST
+	@Path("getallbusiness")
+	public BusinessTypeSortedMonDto getAllBusiness(){
+		BusinessTypeSortedMonDto data = this.businessFinder.getBusinessTypeSortedMon();
+		return data;
 	}
 	
 	

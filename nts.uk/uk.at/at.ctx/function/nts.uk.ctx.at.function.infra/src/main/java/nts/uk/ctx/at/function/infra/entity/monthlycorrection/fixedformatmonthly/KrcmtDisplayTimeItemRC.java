@@ -65,8 +65,8 @@ public class KrcmtDisplayTimeItemRC extends UkJpaEntity implements Serializable 
 	}
 	public DisplayTimeItem toDomain() {
 		return new DisplayTimeItem(
-				this.krcmtDisplayTimeItemRCPK.itemDisplay,
 				this.displayOrder,
+				this.krcmtDisplayTimeItemRCPK.itemDisplay,
 				this.columnWidthTable
 				);
 	}

@@ -40,19 +40,21 @@ public class JpaInitialDisplayMonthlyRepo extends JpaRepository implements Initi
 	public void deleteInitialDisplayMonthly(String companyID, String monthlyPfmFormatCode) {
 		KfnmtInitialDisplayMonthly newEntity = this.queryProxy().find(new KfnmtInitialDisplayMonthlyPK(companyID,monthlyPfmFormatCode), KfnmtInitialDisplayMonthly.class).get();
 		this.commandProxy().remove(newEntity);
+		this.getEntityManager().flush();
 	}
 
 	@Override
 	public void updateInitialDisplayMonthly(InitialDisplayMonthly initialDisplayMonthly) {
 		KfnmtInitialDisplayMonthly newEntity = KfnmtInitialDisplayMonthly.toEntity(initialDisplayMonthly);
 		this.commandProxy().update(newEntity);
-		
+		this.getEntityManager().flush();
 	}
 
 	@Override
 	public void addInitialDisplayMonthly(InitialDisplayMonthly initialDisplayMonthly) {
 		KfnmtInitialDisplayMonthly newEntity = KfnmtInitialDisplayMonthly.toEntity(initialDisplayMonthly);
 		this.commandProxy().insert(newEntity);
+		this.getEntityManager().flush();
 	}
 
 }

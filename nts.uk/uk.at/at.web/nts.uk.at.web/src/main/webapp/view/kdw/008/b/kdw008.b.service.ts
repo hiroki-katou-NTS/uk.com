@@ -16,7 +16,10 @@ module nts.uk.at.view.kdw008.b {
                 
                 // monthly tab3
                 getListMonthRight: "at/function/monthlycorrection/findbycode/{0}",
-                updateMonthly :"at/function/monthlycorrection/updatemonthly"
+                updateMonthly :"at/function/monthlycorrection/updatemonthly",
+                
+                //delete by sheet
+                deleteBusiFormatBySheet:"at/record/businesstype/deletebysheet"
             }
 
             constructor() {
@@ -33,6 +36,11 @@ module nts.uk.at.view.kdw008.b {
             //monthly
             updateMonthly(command: any): JQueryPromise<any> {
                 return nts.uk.request.ajax("at", this.paths.updateMonthly, command);
+            };
+            
+            //delete by sheet 
+            deleteBusiFormatBySheet(command: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("at", this.paths.deleteBusiFormatBySheet, command);
             };
 //            addMonthlyDetail(AddBusinessTypeMonthlyCommand: any): JQueryPromise<any> {
 //                return nts.uk.request.ajax("at", this.paths.addMonthlyDetail, AddBusinessTypeMonthlyCommand);

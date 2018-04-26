@@ -18,11 +18,16 @@ module nts.uk.at.view.kdw002.a {
             //
             isDaily: boolean;
             isSave : KnockoutObservable<boolean>;
+            sideBar :  KnockoutObservable<number>;
             constructor(dataShare: any) {
                 var self = this;
                 //
                 self.isSave = ko.observable(true);
                 self.isDaily = dataShare.ShareObject;
+                self.sideBar =  ko.observable(1);
+                if(!self.isDaily){
+                    self.sideBar(2);
+                }                
                 self.headerColorValue = ko.observable('');
                 self.linebreak = ko.observable(0);
                 self.unitRoundings = ko.observableArray([]);
@@ -125,9 +130,14 @@ module nts.uk.at.view.kdw002.a {
             }
 
             navigateView(): void {
-                var self = this;
+                var self = this; 
                 var path = "/view/kdw/006/a/index.xhtml";
                 href(path);
+            }
+            
+            jumpToHome(sidebar): void {
+                let self = this;
+                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject : sidebar() });
             }
 
             submitData(): void {

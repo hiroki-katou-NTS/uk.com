@@ -16,7 +16,10 @@ module nts.uk.at.view.kdw008.a {
                 getMonPfmCorrectionFormat:"at/function/monthlycorrection/kdw008a/findbycode/{0}",
                 addMonPfmCorrectionFormat:"at/function/monthlycorrection/kdw008a/add",
                 updateMonPfmCorrectionFormat:"at/function/monthlycorrection/kdw008a/update",
-                deleteMonPfmCorrectionFormat:"at/function/monthlycorrection/kdw008a/delete"
+                deleteMonPfmCorrectionFormat:"at/function/monthlycorrection/kdw008a/delete",
+                
+                //delete by sheet no
+                deleteAuthBySheet:"at/function/dailyperformanceformat/deletebysheet"
             }
 
             constructor() {
@@ -69,6 +72,10 @@ module nts.uk.at.view.kdw008.a {
             
             deleteMonPfmCorrectionFormat(command: any): JQueryPromise<any> {
                 return nts.uk.request.ajax("at", this.paths.deleteMonPfmCorrectionFormat, command);
+            };
+            //delete by sheet
+            deleteAuthBySheet(command: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("at", this.paths.deleteAuthBySheet, command);
             };
         }
     }

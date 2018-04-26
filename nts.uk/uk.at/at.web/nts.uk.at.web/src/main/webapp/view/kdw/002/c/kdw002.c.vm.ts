@@ -17,7 +17,7 @@ module nts.uk.at.view.kdw002.c {
             txtSearch: KnockoutObservable<string>;
             //isDaily
             isDaily :boolean;
-            
+            sideBar :  KnockoutObservable<number>;
             //datasource
             datasources :KnockoutObservableArray<any>;
             selectedList: any;
@@ -28,6 +28,10 @@ module nts.uk.at.view.kdw002.c {
                 self.listAttdItem = [];
                 self.dailyServiceTypeControl = ko.observable(null);
                 self.isDaily = dataShare.ShareObject;
+                self.sideBar =  ko.observable(1);
+                if(!self.isDaily){
+                    self.sideBar(2);
+                } 
                 //
                 self.datasources = ko.observableArray([]);
                 self.selectedList = ko.observableArray([]);
@@ -160,6 +164,11 @@ module nts.uk.at.view.kdw002.c {
                     }
                 });
                 self.txtSearch = ko.observable("");
+            }
+            
+            jumpToHome(sidebar): void {
+                let self = this;
+                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject : sidebar() });
             }
             
             copy(): void {

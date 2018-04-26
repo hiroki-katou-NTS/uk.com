@@ -65,8 +65,8 @@ public class KfnmtDisplayTimeItemPfm  extends UkJpaEntity implements Serializabl
 	}
 	public DisplayTimeItem toDomain() {
 		return new DisplayTimeItem(
-				this.kfnmtDisplayTimeItemPfmPK.itemDisplay,
 				this.displayOrder,
+				this.kfnmtDisplayTimeItemPfmPK.itemDisplay,
 				this.columnWidthTable
 				);
 	}

@@ -32,6 +32,7 @@ module nts.uk.at.view.kdw008.a {
             monthlyDetailList: KnockoutObservableArray<DailyAttendanceAuthorityDetailDto>;
             columns3: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             columns4: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+            columns5: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             currentCodeListSwapMonthly: KnockoutObservableArray<any>;
             authorityFormatMonthlyValue: KnockoutObservableArray<AttendanceItemModel>;
             monthlyDataSource: KnockoutObservableArray<AttendanceItemModel>;
@@ -58,11 +59,15 @@ module nts.uk.at.view.kdw008.a {
 
             listMonPfmCorrectionFormat: KnockoutObservableArray<any>;
             valuesMonthlyTab3: KnockoutObservableArray<any>;
+            enableSheetNo: KnockoutObservable<boolean>;
+
+            isSetFormatToDefault: KnockoutObservable<boolean>;
 
             //data commom
             listDataCommom: KnockoutObservableArray<any>;
             primaryKey: string;
 
+            sideBar: KnockoutObservable<number>;
             constructor(dataShare: any) {
 
                 var self = this;
@@ -73,10 +78,15 @@ module nts.uk.at.view.kdw008.a {
 
                 self.listMonPfmCorrectionFormat = ko.observableArray([]);
                 self.valuesMonthlyTab3 = ko.observableArray([]);
+                self.enableSheetNo = ko.observable(false);
 
-
+                self.isSetFormatToDefault = ko.observable(true);
+                self.sideBar = ko.observable(1);
                 //isdaily
                 self.isDaily = ko.observable(dataShare.ShareObject);
+                if (!self.isDaily()) {
+                    self.sideBar(2);
+                }
 
                 self.newMode = ko.observable(false);
                 self.isUpdate = ko.observable(true);
@@ -115,19 +125,25 @@ module nts.uk.at.view.kdw008.a {
                 this.selectedCode = ko.observable();
 
                 self.columns3 = ko.observableArray([
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
-                    { headerText: 'ID', key: 'attendanceItemId', hidden: true, width: 100 },
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', width: 70 },
+                    { headerText: 'number', key: 'attendanceItemDisplayNumber', hidden: true, width: 100 },
                     { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100 }
                 ]);
                 self.columns4 = ko.observableArray([
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
-                    { headerText: 'ID', key: 'attendanceItemId', hidden: true, width: 100 },
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', width: 70 },
+                    { headerText: 'number', key: 'attendanceItemDisplayNumber', hidden: true, width: 100 },
                     { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100 }
                 ]);
                 self.columns2 = ko.observableArray([
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
-                    { headerText: 'ID', key: 'attendanceItemId', hidden: true, width: 100 },
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', width: 70 },
+                    { headerText: 'number', key: 'attendanceItemDisplayNumber', hidden: true, width: 100 },
                     { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100 }
+                ]);
+
+                self.columns5 = ko.observableArray([
+                    { headerText: getText('KDW008_7'), key: 'attendanceItemId', width: 70 },
+                    { headerText: 'number', key: 'attendanceItemDisplayNumber', hidden: true, width: 100 },
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 140 }
                 ]);
 
                 //swap list 2
@@ -140,9 +156,9 @@ module nts.uk.at.view.kdw008.a {
                     console.log(value);
                 });
                 self.tabs = ko.observableArray([
-                    { id: 'tab-1', title: '日次項目', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(self.isDaily()) },
-                    { id: 'tab-2', title: '月次項目', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(self.isDaily()) },
-                    { id: 'tab-3', title: '月次項目', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(!self.isDaily()) }
+                    { id: 'tab-1', title: getText('KDW008_14'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(self.isDaily()) },
+                    { id: 'tab-2', title: getText('KDW008_13'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(self.isDaily()) },
+                    { id: 'tab-3', title: getText('KDW008_13'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(!self.isDaily()) }
                 ]);
                 self.selectedTab = ko.observable('tab-1');
 
@@ -161,16 +177,25 @@ module nts.uk.at.view.kdw008.a {
                 ]);
                 self.selectedSheetNo = ko.observable(1);
                 self.selectedSheetNo.subscribe((value) => {
+                    if (value == 1) {
+                        self.enableSheetNo(false);
+                    } else {
+                        self.enableSheetNo(true);
+                    }
                     if (self.isDaily()) {
                         nts.uk.ui.errors.clearAll();
-                        self.getDetail(self.selectedCode());
+                        self.getDetail(self.selectedCode(),self.sele);
                     } else {
                         let empSelect = _.find(self.listMonPfmCorrectionFormat(), format => {
                             return format.monthlyPfmFormatCode == self.selectedCode();
                         });
 
                         if (empSelect) {
-                            self.checked(empSelect.setFormatToDefault);
+
+                            self.isSetFormatToDefault(empSelect.setFormatToDefault);
+
+
+                            self.checked(!empSelect.setFormatToDefault);
                             self.currentDailyFormatCode(empSelect.monthlyPfmFormatCode);
                             self.currentDailyFormatName(empSelect.monPfmCorrectionFormatName);
                             let index = _.findIndex(empSelect.displayItem.listSheetCorrectedMonthly, function(o) { return o.sheetNo == value; });
@@ -202,6 +227,7 @@ module nts.uk.at.view.kdw008.a {
                             self.listMonthlyAttdItem(_.cloneDeep(self.listMonthlyAttdItemFullData()));
                         }
                     }
+                    nts.uk.ui.errors.clearAll();
                 });
                 //swaplist 1
                 var x = [];
@@ -217,6 +243,7 @@ module nts.uk.at.view.kdw008.a {
                     self.isUpdate(true);
                     self.showCode(false);
                     if (nts.uk.text.isNullOrEmpty(CodeMonthly)) return;
+                    _.defer(() => { $("#currentName").focus(); });
                     if (self.isDaily()) {
                         let empSelect = _.find(self.businessTypeList(), bus => {
                             return bus.dailyPerformanceFormatCode == CodeMonthly;
@@ -236,6 +263,7 @@ module nts.uk.at.view.kdw008.a {
                         //                            self.getDetail(self.currentDailyFormatCode(), 1);
                     }
 
+
                     //                    self.selectedTab('tab-1');
                 });
                 self.selectedSheetNo.subscribe(sheetno => {
@@ -244,6 +272,10 @@ module nts.uk.at.view.kdw008.a {
 
             }
 
+            jumpTo(sidebar) {
+                let self = this;
+                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });
+            }
 
             startPage(): JQueryPromise<any> {
                 let self = this;
@@ -346,6 +378,7 @@ module nts.uk.at.view.kdw008.a {
                 self.isRemove(false);
 
                 if (!self.isDaily()) {
+                    self.isSetFormatToDefault(true);
                     self.selectedSheetName("");
                     self.valuesMonthlyTab3([]);
                     self.listMonthlyAttdItem(_.cloneDeep(self.listMonthlyAttdItemFullData()));
@@ -353,6 +386,54 @@ module nts.uk.at.view.kdw008.a {
                 }
 
                 nts.uk.ui.errors.clearAll();
+            }
+
+            btnSheetNo() {
+                let self = this;
+                if (self.isDaily()) {
+                    //add or update Monthly
+                    let deleteBySheet = {
+                        dailyPerformanceFormatCode : self.selectedCode(),
+                        sheetNo : self.selectedSheetNo()                            
+                    };
+                    nts.uk.ui.block.invisible();
+                    new service.Service().deleteAuthBySheet(deleteBySheet).done(function() {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
+                           self.reloadData(self.currentDailyFormatCode());
+                        });
+                    }).always(function() {
+                        nts.uk.ui.block.clear();
+                    }).fail(function(error) {
+                        $('#currentCode').ntsError('set', error);
+                    });
+                } else {
+                    //monthly
+                    let listDisplayTimeItem = [];
+                    let listSheetMonthly = [new SheetCorrectedMonthly(
+                        self.selectedSheetNo(),
+                        "",
+                        listDisplayTimeItem
+                    )];
+
+                    let temp = new MonPfmCorrectionFormat("", self.currentDailyFormatCode(), self.currentDailyFormatName(),
+                        new MonthlyActualResults(listSheetMonthly),
+                        self.checked()
+                    );
+                    nts.uk.ui.block.invisible();
+                    new service.Service().updateMonPfmCorrectionFormat(temp).done(function() {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
+                            self.getListMonPfmCorrectionFormat().done(function(data) {
+                                self.selectedSheetNo(self.selectedSheetNo())
+                                self.selectedSheetNo.valueHasMutated();
+                            });
+                        });
+                    }).always(function() {
+                        nts.uk.ui.block.clear();
+                    }).fail(function(error) {
+                        $('#currentCode').ntsError('set', error);
+                    });
+
+                }
             }
 
             getDetail(dailyPerformanceFormatCode: string, selectedSheetNo?: number) {
@@ -491,17 +572,17 @@ module nts.uk.at.view.kdw008.a {
                             });
                         });
                 }
-                
+
             }
 
             addOrUpdateClick() {
                 let self = this;
                 $("#currentName").trigger("validate");
+                
                 if (!nts.uk.ui.errors.hasError()) {
                     if (self.isDaily()) {
-                        if (self.valuesMonthly().length <= 0){
-                            nts.uk.ui.dialog.alert({ messageId: "Msg_920" });
-                        }else{
+                        $("#checkSheetNameIsDaily").trigger("validate");
+                        if (!nts.uk.ui.errors.hasError()) {
                             self.register();
                         }
                     } else {
@@ -591,10 +672,11 @@ module nts.uk.at.view.kdw008.a {
                     //monthly
                     let listDisplayTimeItem = [];
                     for (let i = 0; i < self.valuesMonthlyTab3().length; i++) {
+                        var indexOfItem = _.findIndex(self.valuesMonthlyTab3(), { attendanceItemId: self.valuesMonthlyTab3()[i].attendanceItemId });
                         let obj = new DisplayTimeItem(
-                            self.valuesMonthlyTab3()[i].attendanceItemDisplayNumber,
+                            indexOfItem,
                             self.valuesMonthlyTab3()[i].attendanceItemId,
-                            self.valuesMonthlyTab3()[i].null
+                            null
                         );
                         listDisplayTimeItem.push(obj);
                     }
