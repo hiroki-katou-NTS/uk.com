@@ -202,12 +202,17 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 if (self.isNewMode()) {
                     // create new holiday
                     service.addHolidayRemaining(ko.toJS(currentHoliday)).done(() => {
-                        dialog.info({ messageId: "Msg_15" });
-                        // refresh - initial screen TODO
-                        service.findAll().done(function(data: Array<HolidayRemaining>) {
-                            self.loadAllHolidayRemaining(data);
-                            self.currentCode(currentHoliday.cd());
+                        dialog.info({ messageId: "Msg_15" }).then(() => {
+                            // refresh - initial screen TODO
+                            service.findAll().done(function(data: Array<HolidayRemaining>) {
+                                self.loadAllHolidayRemaining(data);
+                                self.currentCode(currentHoliday.cd());
+                            }).always(function() {
+                                self.setFocus();
+                                block.clear();
+                            });
                         });
+                        
                     }).fail(function(error) {
 
                         if (error.messageId == 'Msg_880') {
@@ -218,16 +223,19 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                             dialog.alertError({ messageId: error.messageId });
                         }
                     }).always(function() {
+                        self.setFocus();
                         block.clear();
                     });
                 } else {
                     // update
                     service.updateHolidayRemaining(ko.toJS(currentHoliday)).done(() => {
-                        dialog.info({ messageId: "Msg_15" });
-                        service.findAll().done(function(data: Array<HolidayRemaining>) {
-                            self.loadAllHolidayRemaining(data);
-                            self.currentCode("");
-                            self.currentCode(currentHoliday.cd());
+                        dialog.info({ messageId: "Msg_15" }).then(() => {
+                            service.findAll().done(function(data: Array<HolidayRemaining>) {
+                                self.loadAllHolidayRemaining(data);
+                                self.currentCode("");
+                                self.currentCode(currentHoliday.cd());
+                                self.setFocus();
+                            });
                         });
                     }).fail(function(error) {
                         if (error.messageId == 'Msg_880') {
@@ -236,6 +244,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                             dialog.alertError({ messageId: error.messageId });
                         }
                     }).always(function() {
+                        self.setFocus();
                         block.clear();
                     });
                 }
