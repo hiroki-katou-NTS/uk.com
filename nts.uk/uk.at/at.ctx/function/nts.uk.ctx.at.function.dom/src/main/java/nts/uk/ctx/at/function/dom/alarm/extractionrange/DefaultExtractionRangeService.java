@@ -133,7 +133,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				String processingMonth = yearMonth.toString();				
 				sDate = LocalDate.of(Integer.valueOf(processingMonth.substring(0, 4)).intValue(), Integer.valueOf(processingMonth.substring(4, 6)).intValue(), 1);
 				eDate = sDate.plusMonths(1);
-				eDate.minusDays(1);
+				eDate = eDate.minusDays(1);
 				
 			}else {
 				DatePeriod datePeriod = closureService.getClosurePeriod(closureId, yearMonth);
