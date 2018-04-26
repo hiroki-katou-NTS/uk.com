@@ -373,6 +373,7 @@ project (':at.ctx:function:nts.uk.ctx.at.function.ac') {
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: version)
 		compile(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: version)
 		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
+		compile(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.pub', version: version)
 	}
 }
 
