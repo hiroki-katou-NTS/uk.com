@@ -1,8 +1,10 @@
 package nts.uk.screen.at.app.monthlyperformance.correction.param;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.Data;
+import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyAttdItemSharedDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.CorrectionOfMonthlyPerformance;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceEmployeeDto;
 @Data
@@ -43,4 +45,6 @@ public class MonthlyPerformanceParam {
 	 * ロック状態一覧：List＜月の実績のロック状態＞
 	 */
 	private List<MonthlyPerformaceLockStatus> lstLockStatus;
+		
+	private Map<Integer, PAttendanceItem> lstAtdItemUnique;
 }

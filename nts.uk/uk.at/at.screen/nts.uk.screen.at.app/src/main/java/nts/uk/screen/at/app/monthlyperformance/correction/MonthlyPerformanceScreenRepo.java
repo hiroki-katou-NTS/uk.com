@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyAttendanceItemDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceEmployeeDto;
 
 public interface MonthlyPerformanceScreenRepo {
@@ -14,4 +15,6 @@ public interface MonthlyPerformanceScreenRepo {
 			Map<String, String> lstWorkplace, List<String> lstClassification);
 	/** Get list business type of list employee (no duplicated) */
 	List<String> getListBusinessType(List<String> lstEmployee, DateRange dateRange);
+	
+	List<MonthlyAttendanceItemDto> findByAttendanceItemId(String companyId, List<Integer> attendanceItemIds);
 }

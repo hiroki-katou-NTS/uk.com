@@ -1,12 +1,11 @@
 package nts.uk.screen.at.app.monthlyperformance.correction;
 
-import java.security.cert.PKIXRevocationChecker.Option;
-import java.text.Format;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -38,20 +37,14 @@ import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.EmploymentFixed
 import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.MonthlyActualSituationOutput;
 import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.MonthlyActualSituationStatus;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
-import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyFinder;
-import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.DisplayAndInputMonthlyDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthFinder;
-import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
-import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTimeState;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.CorrectionOfMonthlyPerformance;
-import nts.uk.screen.at.app.monthlyperformance.correction.dto.DisplayItem;
-import nts.uk.screen.at.app.monthlyperformance.correction.dto.FormatMPCorrectionDto;
-import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPBusinessTypeControl;
-import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPSheetDto;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyAttendanceItemDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerformaceLockStatus;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerformanceParam;
@@ -65,13 +58,8 @@ public class MonthlyPerformanceDisplay {
 	/** 権限別月次項目制御 */
 	@Inject
 	MonthlyItemControlByAuthFinder monthlyItemControlByAuthFinder;
-	/** 月次の勤怠項目の制御 */
-	@Inject
-	ControlOfMonthlyFinder controlOfMonthlyFinder;
 	@Inject
 	private MonthlyPerformanceScreenRepo repo;
-	@Inject
-	private MonthlyAttendanceItemRepository monthlyAttendanceItemRepo;
 	
 	@Inject 
 	private MonthlyActualSituationStatus monthlyActualStatus;
@@ -96,6 +84,8 @@ public class MonthlyPerformanceDisplay {
 	 */
 	@Inject 
 	private MonthlyPerformanceCheck monthlyCheck;
+    @Inject
+    private DailyAttendanceItemNameAdapter dailyAttendanceItemNameAdapter;
 	private static final String KMW003_SELECT_FORMATCODE = "KMW003_SELECT_FORMATCODE";
 	/**
 	 * 表示フォーマットの取得
@@ -103,7 +93,7 @@ public class MonthlyPerformanceDisplay {
 	 * @param formatCodes: 使用するフォーマットコード：月別実績フォーマットコード
 	 * 表示する項目一覧
 	 */
-	public DisplayItem getDisplayFormat(List<String> lstEmployeeIds, SettingUnitType unitType, MonthlyPerformanceCorrectionDto screenDto){
+	public void getDisplayFormat(List<String> lstEmployeeIds, SettingUnitType unitType, MonthlyPerformanceCorrectionDto screenDto){
 		//会社ID：ログイン会社に一致する
 		String cId = AppContexts.user().companyId();
 		//ロールID：ログイン社員の就業ロールに一致する
@@ -111,7 +101,6 @@ public class MonthlyPerformanceDisplay {
 		//パラメータ
 		MonthlyPerformanceParam param = screenDto.getParam();		
 		DateRange dateRange = new DateRange(screenDto.getSelectedActualTime().getStartDate(), screenDto.getSelectedActualTime().getEndDate());
-		DisplayItem dispItem = new DisplayItem();
 		//権限の場合 
 		if(unitType == SettingUnitType.AUTHORITY){
 			//アルゴリズム「社員の権限に対応する表示項目を取得する」を実行する
@@ -120,7 +109,6 @@ public class MonthlyPerformanceDisplay {
 		//勤務種別の場合
 		else{
 			//社員の勤務種別に対応する表示項目を取得する
-			//(Lấy các item hiển thị ứng với loại đi làm của employee)
 			getDisplayItemBussiness(cId, lstEmployeeIds, dateRange,  param);
 		}
 		//対応するドメインモデル「権限別月次項目制御」を取得する
@@ -128,33 +116,36 @@ public class MonthlyPerformanceDisplay {
 		//TODO check null monthlyItemAuthDto
 		//取得したドメインモデル「権限別月次項目制御」でパラメータ「表示する項目一覧」をしぼり込む
 		//Filter param 「表示する項目一覧」  by domain 「権限別月次項目制御」
-        Set<Integer> lstAtdItemUnique = new HashSet<>();        
+        Map<Integer, PAttendanceItem> lstAtdItemUnique = new HashMap<>();        
 		for (PSheet sheet : param.getSheets()) {
 			sheet.getDisplayItems().retainAll(monthlyItemAuthDto.getListDisplayAndInputMonthly());
 			if(sheet.getDisplayItems() != null && sheet.getDisplayItems().size() > 0)
-				lstAtdItemUnique.addAll(sheet.getDisplayItems().stream().map(PAttendanceItem::getId).collect(Collectors.toSet()));
+				lstAtdItemUnique.putAll(sheet.getDisplayItems().stream().collect(Collectors.toMap(PAttendanceItem::getId, x->x)));
 		}
-		//絞り込んだ勤怠項目の件数をチェックする
-		if(lstAtdItemUnique.size() > 0){
-			//ドメインモデル「月次の勤怠項目」を取得する
-			List<MonthlyAttendanceItem> lstAttendanceIds = monthlyAttendanceItemRepo.findByAttendanceItemId(cId, lstAtdItemUnique.stream().collect(Collectors.toList()));
-			
-			//TODO 対応するドメインモデル「勤怠項目と枠の紐付け」を取得する  - attendanceItemLinkingRepository
-			//Domain hien tai dang nam trong function.
-			
-			//TODO 取得したドメインモデルの名称をドメインモデル「勤怠項目．名称」に埋め込む 
-			//Update Attendance Name
-			
-			//ドメインモデル「月次の勤怠項目の制御」を取得する
-			//Setting Header color & time input
-			//ControlOfMonthlyDto ctrOfMonthlyDto = controlOfMonthlyFinder.getControlOfAttendanceItem(1);
-			
+		// 絞り込んだ勤怠項目の件数をチェックする
+		if (lstAtdItemUnique.size() > 0) {
+			// ドメインモデル「月次の勤怠項目」を取得する
+			List<Integer> attdanceIds = lstAtdItemUnique.keySet().stream().collect(Collectors.toList());
+			List<MonthlyAttendanceItemDto> lstAttendanceData = repo.findByAttendanceItemId(cId, attdanceIds);
+
+			// 対応するドメインモデル「勤怠項目と枠の紐付け」を取得する - attendanceItemLinkingRepository
+			// 取得したドメインモデルの名称をドメインモデル「勤怠項目．名称」に埋め込む
+			// Update Attendance Name
+			Map<Integer, String> attdanceNames = dailyAttendanceItemNameAdapter
+					.getDailyAttendanceItemNameAsMapName(attdanceIds);
+			lstAttendanceData.forEach(c -> {
+				PAttendanceItem item = lstAtdItemUnique.get(c.getAttendanceItemId());
+				item.setDisplayNumber(c.getDisplayNumber());
+				item.setAttendanceAtr(c.getMonthlyAttendanceAtr());
+				item.setName(attdanceNames.get(c.getAttendanceItemId()));
+				item.setUserCanChange(c.getNameLineFeedPosition() == 1 ? true : false);
+				item.setUserCanUpdateAtr(c.getUserCanUpdateAtr());
+			});
+			param.setLstAtdItemUnique(lstAtdItemUnique);
 		}
 		//アルゴリズム「ロック状態をチェックする」を実行する
 		List<MonthlyPerformaceLockStatus> lstLockStatus = checkLockStatus(cId, lstEmployeeIds, screenDto.getProcessDate(), screenDto.getClosureId(), new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), param.getInitScreenMode());
 		param.setLstLockStatus(lstLockStatus);
-		
-		return dispItem;
 	}
 
 	/**
@@ -169,7 +160,7 @@ public class MonthlyPerformanceDisplay {
 		//表示する項目一覧
 		List<PSheet> resultSheets = new ArrayList<>();		
 		List<String> formatCodes = param.getFormatCodes();
-		if(null == formatCodes){
+		if(CollectionUtil.isEmpty(formatCodes)){
 			//ユーザー固有情報「月別実績のの修正」．前回の表示項目が取得できたかチェックする			
 			if(null !=  correctionOfMonthly && !Strings.isEmpty(correctionOfMonthly.getPreviousDisplayItem())){
 				//取得したユーザー固有情報「月別実績の修正．前回の表示項目」をパラメータ「使用するフォーマットコード」にセットする
@@ -242,7 +233,6 @@ public class MonthlyPerformanceDisplay {
 	private void getDisplayItemBussiness(String cId, List<String> lstEmployeeId, DateRange dateRange, MonthlyPerformanceParam param) {
 		// 表示する項目一覧
 		List<PSheet> resultSheets = new ArrayList<>();
-		DisplayItem dispItem = new DisplayItem();
 		if (CollectionUtil.isEmpty(lstEmployeeId)) {
 			return ;
 		}
@@ -394,7 +384,7 @@ public class MonthlyPerformanceDisplay {
 	 * @return ロック状態：ロック or アンロック
 	 */
 	private LockStatus editLockOfPastResult(Integer processDateYM, Integer closureId, ActualTime actualTime){
-		ActualTimeState actualTimeState = monthlyCheck.checkActualTime(processDateYM, closureId, actualTime);
+		ActualTimeState actualTimeState = monthlyCheck.checkActualTime(closureId, processDateYM, actualTime);
 		if (actualTimeState.equals(ActualTimeState.Past)) {
 			return LockStatus.LOCK;
 		}

@@ -1,4 +1,4 @@
-kmodule nts.uk.at.view.kmw003.a.viewmodel {
+module nts.uk.at.view.kmw003.a.viewmodel {
     export interface EmployeeSearchDto {
         employeeId: string;
         employeeCode: string;
@@ -676,7 +676,7 @@ kmodule nts.uk.at.view.kmw003.a.viewmodel {
         updateDate(date: any){
             let self = this;
             self.monthlyParam().yearMonth = date;
-            self.initScreen();
+            //self.initScreen();
         }
         /**
          * 実績期間を変更する
@@ -685,7 +685,7 @@ kmodule nts.uk.at.view.kmw003.a.viewmodel {
             let self = this;
             self.monthlyParam().actualTime = self.actualTimeSelectedDat();
             //self.actualTimeSelectedDat
-            self.initScreen();
+            //self.initScreen();
         }
         /**
          * Check all CheckBox

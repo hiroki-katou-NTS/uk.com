@@ -43,15 +43,6 @@ public class MPControlDisplayItem {
 		this.lstHeader = new ArrayList<>();
 		this.columnSettings = new ArrayList<>();
 		this.itemIds = new ArrayList<>();
-		
-		//Dummy lstSheet
-		MPSheetDto sheet1 = new MPSheetDto("Sheet1","Sheet1");
-		sheet1.addColumn("time");
-		MPSheetDto sheet2 = new MPSheetDto("sheet2","sheet2");
-		sheet2.addColumn("time");
-		sheet2.addColumn("alert");
-		lstSheet.add(sheet1);
-		lstSheet.add(sheet2);
 	}
 	
 	private boolean isExistHeader(MPHeaderDto header) {

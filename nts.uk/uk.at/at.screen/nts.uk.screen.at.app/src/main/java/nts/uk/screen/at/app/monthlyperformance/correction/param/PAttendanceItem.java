@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.monthlyperformance.correction.param;
 
 import lombok.Data;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.DisplayAndInputMonthlyDto;
+import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 
 @Data
 public class PAttendanceItem {
@@ -37,6 +38,9 @@ public class PAttendanceItem {
 	private String headerColor;
 	/**時間項目の入力単位: 時間入力単位*/
 	private Integer timeInput;
+	/** The user can update atr. */
+	// TODO 使用区分
+	private Integer userCanUpdateAtr;
 	/**
 	 * 1: 勤務種類 2: 就業時間帯 3: 勤務場所 4: 乖離理由 5: 職場 6: 分類 7: 職位 8: 雇用 9: するしない区分 10:
 	 * 時間外の自動計算区分 11: 外出理由"

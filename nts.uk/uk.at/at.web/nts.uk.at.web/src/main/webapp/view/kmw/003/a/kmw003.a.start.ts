@@ -12,7 +12,6 @@ module nts.uk.at.view.kmw003.a {
                     $("#dpGrid").ntsGrid("directEnter", "right", "");
                 }
             });
-            screenModel.loadKcp009();
             __viewContext.bind(screenModel);
         });
     });

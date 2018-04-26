@@ -8,12 +8,15 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
+import nts.uk.ctx.at.shared.infra.entity.monthlyattditem.KrcmtMonAttendanceItem;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
 import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.monthlyperformance.correction.MonthlyPerformanceScreenRepo;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyAttendanceItemDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceEmployeeDto;
 @Stateless
 public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements MonthlyPerformanceScreenRepo {
@@ -55,6 +58,7 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 		// builderString.append("AND w.bsymtWorkplaceHist.endD >= :baseDate");
 		SEL_WORKPLACE = builderString.toString();
 		
+		builderString = new StringBuilder();
 		builderString.append("SELECT DISTINCT b.businessTypeCode");
 		builderString.append(" FROM KrcmtBusinessTypeOfEmployee b");
 		builderString.append(" JOIN KrcmtBusinessTypeOfHistory h");
@@ -112,5 +116,21 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 		return this.queryProxy().query(SEL_BUSINESS_TYPE, String.class).setParameter("lstSID", lstEmployee)
 				.setParameter("startYmd", dateRange.getStartDate()).setParameter("endYmd", dateRange.getEndDate())
 				.getList();
+	}
+
+	@Override
+	public List<MonthlyAttendanceItemDto> findByAttendanceItemId(String companyId, List<Integer> attendanceItemIds) {
+		StringBuilder builderString = new StringBuilder();		
+		builderString.append("SELECT b");
+		builderString.append(" FROM KrcmtMonAttendanceItem b");
+		builderString.append(" WHERE b.krcmtMonAttendanceItemPK.mAtdItemId IN :attendanceItemIds");
+		builderString.append(" AND b.krcmtMonAttendanceItemPK.cid = :companyId");
+		
+		return this.queryProxy().query(builderString.toString(), KrcmtMonAttendanceItem.class)
+				.setParameter("attendanceItemIds", attendanceItemIds)
+				.setParameter("companyId", companyId)
+				.getList().stream().map(c->new MonthlyAttendanceItemDto(c.getKrcmtMonAttendanceItemPK().getCid(), c.getKrcmtMonAttendanceItemPK().getMAtdItemId(), c.getMAtdItemName(),
+						c.getDispNo(), c.getIsAllowChange(), c.getMAtdItemAtr(), c.getLineBreakPosName()))
+				.collect(Collectors.toList());
 	}
 }
