@@ -5232,9 +5232,9 @@ var nts;
                         this.setGlobal(this.$iframe[0].contentWindow);
                     };
                     ScreenWindow.prototype.onClosed = function (callback) {
-                        var dialogElement = this.$dialog[0];
+                        var _this = this;
                         this.onClosedHandler = function () {
-                            var dataModel = ko.dataFor(dialogElement);
+                            var dataModel = ko.dataFor(_this.$dialog[0]);
                             dataModel.kiban.errorDialogViewModel.errors([]);
                             //dataModel.kiban.errorDialogViewModel.errors.valueHasMutated();
                             callback();
