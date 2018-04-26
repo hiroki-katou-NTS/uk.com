@@ -1530,6 +1530,10 @@ module nts.custombinding {
                                     });
                                 }
 
+                                if (dups.length == 1 && ((dups[0].itemTypeState || {}).dataTypeState || {}).dataTypeValue == ITEM_SINGLE_TYPE.RELATE_CATEGORY) {
+                                    return;
+                                }
+
                                 opts.sortable.pushItems(nodups);
                             }
 
