@@ -2178,13 +2178,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let codeName: any;
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
-            let dfd = $.Deferred();
             item = _.find(self.data, function(data) {
                 return data.id == self.attendenceId;
             })
             switch (item.typeGroup) {
                 case 1:
                     // KDL002  
+                    let dfd = $.Deferred();
                     let param1 = {
                         typeDialog: 1,
                         param: {
@@ -2205,28 +2205,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         nts.uk.ui.windows.setShared('KDL002_SelectedItemId', [self.selectedCode()], true);
                         nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
                             var lst = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
-                            if (lst) {
-                                var objectName = {};
-                                objectName["Name" + self.attendenceId] = lst[0].name;
-                                var objectCode = {};
-                                objectCode["Code" + self.attendenceId] = lst[0].code;
-
-                                $.when($("#dpGrid").ntsGrid("updateRow", self.rowId(), objectName),
-                                    $("#dpGrid").ntsGrid("updateRow", self.rowId(), objectCode)
-                                ).done(() => {
-                                    nts.uk.ui.block.clear();
-                                    dfd.resolve();
-                                })
+                            if (lst != undefined && lst[0].code != "") {
+                                self.updateCodeName(self.rowId(), self.attendenceId, lst[0].name, lst[0].code);
                             } else {
-                                 nts.uk.ui.block.clear();
-                                dfd.resolve();
+                                self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");
                             }
                         })
+                        dfd.resolve();
                     });
                     dfd.promise();
                     break;
                 case 2:
                     //KDL001 
+                    let dfd = $.Deferred();
                     let employeeIdSelect: any = _.find(selfParent.dailyPerfomanceData(), function(item: any) {
                         return item.id == self.rowId().substring(1, self.rowId().length);
                     });
@@ -2252,32 +2243,26 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 codeName = _.find(data, (item: any) => {
                                     return item.code == codes[0];
                                 });
-                                if (codeName != undefined) {
-                                    var objectName = {};
-                                    objectName["Name" + self.attendenceId] = codeName.name;
-                                    var objectCode = {};
-                                    objectCode["Code" + self.attendenceId] = codeName.code;
-
-                                    $.when($("#dpGrid").ntsGrid("updateRow", self.rowId(), objectName),
-                                        $("#dpGrid").ntsGrid("updateRow", self.rowId(), objectCode)
-                                    ).done(() => {
-                                        nts.uk.ui.block.clear();
-                                        dfd.resolve();
-                                    })
+                                if (codeName != undefined && codes[0] != "") {
+                                    self.updateCodeName(self.rowId(), self.attendenceId, codeName.name, codeName.code);
+                                }else{
+                                    self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), ""); 
                                 }
                             }
                         });
+                         dfd.resolve();
                     });
                     dfd.promise()
                     break;
                 case 3:
                     //KDL010 
+                    let dfd = $.Deferred();
                     nts.uk.ui.block.invisible();
                     nts.uk.ui.windows.setShared('KDL010SelectWorkLocation', self.selectedCode());
                     nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
                         var self = this;
                         var returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
-                        if (returnWorkLocationCD !== undefined) {
+                        if (returnWorkLocationCD !== undefined && returnWorkLocationCD != "") {
                             let dataKDL: any;
                             let param3 = {
                                 typeDialog: 3
@@ -2286,27 +2271,22 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 codeName = _.find(data, (item: any) => {
                                     return item.code == returnWorkLocationCD;
                                 });
-                                var objectName = {};
-                                objectName["Name" + self.attendenceId] = codeName.name;
-                                var objectCode = {};
-                                objectCode["Code" + self.attendenceId] = codeName.code;
-
-                                $.when($("#dpGrid").ntsGrid("updateRow", self.rowId(), objectName),
-                                    $("#dpGrid").ntsGrid("updateRow", self.rowId(), objectCode)
-                                ).done(() => {
-                                    nts.uk.ui.block.clear();
-                                    dfd.resolve();
-                                })
+                                if (codeName != undefined) {
+                                    self.updateCodeName(self.rowId(), self.attendenceId, codeName.name, codeName.code);
+                                }
+                                dfd.resolve();
                             });
                         }
                         else {
-                            nts.uk.ui.block.clear();
+                            self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");  
+                            dfd.resolve();
                         }
                     });
                     dfd.promise()
                     break;
                 case 4:
-                    //KDL032  
+                    //KDL032
+                    let dfd = $.Deferred();
                     let no = DEVIATION_REASON_MAP[self.attendenceId];
                     nts.uk.ui.block.invisible();
                     let dataSetShare = {
@@ -2317,32 +2297,27 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     nts.uk.ui.windows.sub.modal("/view/kdl/032/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
                         var self = this;
                         var returnData = nts.uk.ui.windows.getShared("ReturnData");
-                        if (returnData !== undefined) {
-                            if (returnData !== undefined) {
-                                let dataKDL: any;
-                                let param3 = {
-                                    typeDialog: 4,
-                                    param: {
-                                        workTypeCode: no,
-                                        selectCode: self.selectedCode()
-                                    }
-                                };
-                                service.findAllCodeName(param3).done((data: any) => {
-                                   let  codeName = _.find(data, (item: any) => {
-                                        return item.code == returnData && item.id == ""+no;
-                                    });
-                                    var objectName = {};
-                                    objectName["Name" + self.attendenceId] = codeName.name;
-                                    var objectCode = {};
-                                    objectCode["Code" + self.attendenceId] = codeName.code;
-                                    $("#dpGrid").ntsGrid("updateRow", self.rowId(), objectName);
-                                    $("#dpGrid").ntsGrid("updateRow", self.rowId(), objectCode);
+                        if (returnData !== undefined && returnData != "") {
+                            let dataKDL: any;
+                            let param3 = {
+                                typeDialog: 4,
+                                param: {
+                                    workTypeCode: no,
+                                    selectCode: self.selectedCode()
+                                }
+                            };
+                            service.findAllCodeName(param3).done((data: any) => {
+                                let codeName = _.find(data, (item: any) => {
+                                    return item.code == returnData && item.id == "" + no;
                                 });
-                            }
-                            nts.uk.ui.block.clear();
+                                self.updateCodeName(self.rowId(), self.attendenceId, codeName.name, codeName.code);
+                                  dfd.resolve();
+                            });
                         }
                         else {
+                            self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");
                             nts.uk.ui.block.clear();
+                              dfd.resolve();
                         }
                     });
                     dfd.promise()
@@ -2381,24 +2356,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                         //view all code of selected item 
                         var output = nts.uk.ui.windows.getShared('outputCDL008');
+                        if (output != "") {
                             codeName = _.find(data5, (item: any) => {
                                 return item.id == output;
                             });
-                            var objectName = {};
-                            objectName["Name" + self.attendenceId] = codeName.name;
-                            var objectCode = {};
-                            objectCode["Code" + self.attendenceId] = codeName.code;
-
-                            $.when($("#dpGrid").ntsGrid("updateRow", self.rowId(), objectName),
-                                $("#dpGrid").ntsGrid("updateRow", self.rowId(), objectCode)
-                            ).done(() => {
-                                nts.uk.ui.block.clear();
-                                dfd.resolve();
-                            })
+                            self.updateCodeName(self.rowId(), self.attendenceId, codeName.name, codeName.code);
+                        } else {
+                            self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");  
+                        }
                     })
                     break;
                 case 6:
                     //KCP002
+                    let dfd = $.Deferred();
                     nts.uk.ui.windows.setShared('inputCDL003', {
                         selectedCodes: self.selectedCode(),
                         showNoSelection: false,
@@ -2408,7 +2378,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     nts.uk.ui.windows.sub.modal('com', '/view/cdl/003/a/index.xhtml').onClosed(function(): any {
                         //view all code of selected item 
                         var output = nts.uk.ui.windows.getShared('outputCDL003');
-                        if (output) {
+                        if (output != undefined && output != "") {
                             let param6 = {
                                 typeDialog: 6
                             }
@@ -2416,20 +2386,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 codeName = _.find(data, (item: any) => {
                                     return item.code == output;
                                 });
-                                var objectName = {};
-                                objectName["Name" + self.attendenceId] = codeName.name;
-                                var objectCode = {};
-                                objectCode["Code" + self.attendenceId] = codeName.code;
-
-                                $.when($("#dpGrid").ntsGrid("updateRow", self.rowId(), objectName),
-                                    $("#dpGrid").ntsGrid("updateRow", self.rowId(), objectCode)
-                                ).done(() => {
-                                    nts.uk.ui.block.clear();
-                                    dfd.resolve();
-                                })
+                                self.updateCodeName(self.rowId(), self.attendenceId, codeName.name, codeName.code);
+                                dfd.resolve()
                             });
+                        } else {
+                            self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");
+                            dfd.resolve()
                         }
                     })
+                    dfd.promise();
                     break;
                 case 7:
                     //KCP003 
@@ -2464,23 +2429,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             return;
                         }
                         var output = nts.uk.ui.windows.getShared('outputCDL004');
+                        if (output != "") {
                             codeName = _.find(data7, (item: any) => {
                                 return item.id == output;
                             });
-                            var objectName = {};
-                            objectName["Name" + self.attendenceId] = codeName.name;
-                            var objectCode = {};
-                            objectCode["Code" + self.attendenceId] = codeName.code;
-
-                            $.when($("#dpGrid").ntsGrid("updateRow", self.rowId(), objectName),
-                                $("#dpGrid").ntsGrid("updateRow", self.rowId(), objectCode)
-                            ).done(() => {
-                                nts.uk.ui.block.clear();
-                                dfd.resolve();
-                            })
+                            self.updateCodeName(self.rowId(), self.attendenceId, codeName.name, codeName.code);
+                        } else {
+                            self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");
+                        }
                     })
                     break;
                 case 8:
+                     let dfd = $.Deferred();
                     nts.uk.ui.windows.setShared('CDL002Params', {
                         isMultiple: false,
                         selectedCodes: self.selectedCode(),
@@ -2493,31 +2453,37 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         if (isCancel) {
                             return;
                         }
-                        var output = nts.uk.ui.windows.getShared('CDL002Output');
-                        let param8 = {
-                            typeDialog: 8,
-                        }
-                        service.findAllCodeName(param8).done((data: any) => {
-                            nts.uk.ui.block.clear();
-                            codeName = _.find(data, (item: any) => {
-                                return item.code == output;
-                            });
-                            var objectName = {};
-                            objectName["Name" + self.attendenceId] = codeName.name;
-                            var objectCode = {};
-                            objectCode["Code" + self.attendenceId] = codeName.code;
-
-                            $.when($("#dpGrid").ntsGrid("updateRow", self.rowId(), objectName),
-                                $("#dpGrid").ntsGrid("updateRow", self.rowId(), objectCode)
-                            ).done(() => {
+                        var output = nts.uk.ui.windows.getShared('CDL002Output'); 
+                        if (output != "") {
+                            let param8 = {
+                                typeDialog: 8,
+                            }
+                            service.findAllCodeName(param8).done((data: any) => {
                                 nts.uk.ui.block.clear();
-                                dfd.resolve();
-                            })
-                        });
+                                codeName = _.find(data, (item: any) => {
+                                    return item.code == output;
+                                });
+                                self.updateCodeName(self.rowId(), self.attendenceId, codeName.name, codeName.code);
+                                 dfd.resolve();
+                            });
+                        } else {
+                            self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");
+                            dfd.resolve();
+                        }
                     })
+                    dfd.promise();
                     break;
             }
             nts.uk.ui.block.clear();
+        }
+        
+        updateCodeName(rowId: any, itemId: any, name: any, code: any) {
+            let objectName = {};
+            objectName["Name" + itemId] = name;
+            let objectCode = {};
+            objectCode["Code" + itemId] = code;
+            $("#dpGrid").ntsGrid("updateRow", rowId, objectName)
+            $("#dpGrid").ntsGrid("updateRow", rowId, objectCode);
         }
     }
     export interface DPAttendanceItem {
