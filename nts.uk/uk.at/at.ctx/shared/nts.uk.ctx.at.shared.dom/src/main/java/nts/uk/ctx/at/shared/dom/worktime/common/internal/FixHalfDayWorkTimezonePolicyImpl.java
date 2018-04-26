@@ -8,10 +8,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BundledBusinessException;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixHalfDayWorkTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.policy.FixedWorkTimezoneSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode;
 
 /**
@@ -40,6 +42,16 @@ public class FixHalfDayWorkTimezonePolicyImpl implements FixHalfDayWorkTimezoneP
 			WorkTimeDisplayMode displayMode, FixHalfDayWorkTimezone halfDayWork, boolean isUseHalfDayShift) {
 		this.fixedWtzPolicy.validateFixedAndDiff(be, predTime, halfDayWork.getWorkTimezone(),
 				displayMode.getDisplayMode(), halfDayWork.getDayAtr(), isUseHalfDayShift);
+		
+		// Msg_755
+		if ((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
+				|| (AmPmAtr.PM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
+				|| ((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) || AmPmAtr.PM.equals(halfDayWork.getDayAtr())) && DisplayMode.SIMPLE.equals(displayMode))) {
+			return;
+		}		
+		if (!halfDayWork.isInFixedWork() ) {
+			be.addMessage("Msg_755");
+		}
 	}
 
 	/*
@@ -58,5 +70,32 @@ public class FixHalfDayWorkTimezonePolicyImpl implements FixHalfDayWorkTimezoneP
 			WorkTimeDisplayMode displayMode, FixHalfDayWorkTimezone halfDayWork, boolean isUseHalfDayShift) {
 		this.fixedWtzPolicy.validateFlex(be, predTime, halfDayWork.getWorkTimezone(), displayMode.getDisplayMode(),
 				halfDayWork.getDayAtr(), isUseHalfDayShift);
+		
+		// Msg_755
+		if ((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
+				|| (AmPmAtr.PM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
+				|| ((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) || AmPmAtr.PM.equals(halfDayWork.getDayAtr())) && DisplayMode.SIMPLE.equals(displayMode))) {
+			return;
+		}		
+		if (!halfDayWork.isInFixedWork() ) {
+			be.addMessage("Msg_755");
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.FixHalfDayWorkTimezonePolicy#
+	 * filterTimezone(nts.uk.ctx.at.shared.dom.worktime.predset.
+	 * PredetemineTimeSetting,
+	 * nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone,
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode, boolean)
+	 */
+	@Override
+	public void filterTimezone(PredetemineTimeSetting predTime, FixHalfDayWorkTimezone origin, DisplayMode displayMode,
+			boolean useHalfDayShift) {
+		this.fixedWtzPolicy.filterTimezone(predTime, origin.getWorkTimezone(), displayMode, origin.getDayAtr(),
+				useHalfDayShift);
 	}
 }
