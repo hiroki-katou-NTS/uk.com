@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 
@@ -8,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -26,6 +30,7 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -57,6 +62,11 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 	/** 締め日 */
 	private ClosureDate closureDate;
 	
+	/** 労働条件項目 */
+	private List<WorkingConditionItem> workingConditionItems;
+	/** 労働条件 */
+	private Map<String, DatePeriod> workingConditions;
+	
 	/**
 	 * 集計処理　（アルゴリズム）
 	 * @param companyId 会社ID
@@ -81,12 +91,15 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		this.closureDate = closureDate;
 		
 		// 「労働条件項目」を取得
-		val workingConditionItems = this.repositories.getWorkingConditionItem().getBySidAndPeriodOrderByStrD(
-				employeeId, datePeriod);
+		List<WorkingConditionItem> workingConditionItems = this.repositories.getWorkingConditionItem()
+				.getBySidAndPeriodOrderByStrD(employeeId, datePeriod);
 		if (workingConditionItems.isEmpty()){
 			this.aggregateResult.addErrorInfos("001", new ErrMessageContent(TextResource.localize("Msg_430")));
 			return this.aggregateResult;
 		}
+		
+		// 同じ労働制の履歴を統合
+		this.IntegrateHistoryOfSameWorkSys(workingConditionItems);
 		
 		// 社員を取得する
 		EmployeeImport employee = null;
@@ -97,7 +110,7 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		}
 		
 		// 項目の数だけループ
-		for (val workingConditionItem : workingConditionItems){
+		for (val workingConditionItem : this.workingConditionItems){
 
 			// 月別実績の勤怠時間を集計
 			val attendanceTime = this.aggregateAttendanceTime(datePeriod, workingConditionItem, employee);
@@ -138,6 +151,61 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 	}	
 	
 	/**
+	 * 同じ労働制の履歴を統合
+	 * @param target 労働条件項目リスト　（統合前）
+	 * @return 労働条件項目リスト　（統合後）
+	 */
+	private void IntegrateHistoryOfSameWorkSys(List<WorkingConditionItem> target){
+
+		this.workingConditionItems = new ArrayList<>();
+		this.workingConditions = new HashMap<>();
+		
+		val itrTarget = target.listIterator();
+		while (itrTarget.hasNext()){
+			
+			// 要素[n]を取得
+			WorkingConditionItem startItem = itrTarget.next();
+			val startHistoryId = startItem.getHistoryId();
+			val startConditionOpt = this.repositories.getWorkingCondition().getByHistoryId(startHistoryId);
+			if (!startConditionOpt.isPresent()) continue;
+			val startCondition = startConditionOpt.get();
+			if (startCondition.getDateHistoryItem().isEmpty()) continue;
+			DatePeriod startPeriod = startCondition.getDateHistoryItem().get(0).span();
+			
+			// 要素[n]と要素[n+1]以降を順次比較
+			WorkingConditionItem endItem = null;
+			while (itrTarget.hasNext()){
+				WorkingConditionItem nextItem = target.get(itrTarget.nextIndex());
+				if (startItem.getLaborSystem() != nextItem.getLaborSystem() ||
+					startItem.getHourlyPaymentAtr() != nextItem.getHourlyPaymentAtr()){
+					
+					// 労働制または時給者区分が異なる履歴が見つかった時点で、労働条件の統合をやめる
+					break;
+				}
+			
+				// 労働制と時給者区分が同じ履歴の要素を順次取得
+				endItem = itrTarget.next();
+			}
+			
+			// 次の要素がなくなった、または、異なる履歴が見つかれば、集計要素を確定する
+			if (endItem == null){
+				this.workingConditionItems.add(startItem);
+				this.workingConditions.putIfAbsent(startHistoryId, startPeriod);
+				continue;
+			}
+			val endHistoryId = endItem.getHistoryId();
+			val endConditionOpt = this.repositories.getWorkingCondition().getByHistoryId(endHistoryId);
+			if (!endConditionOpt.isPresent()) continue;;
+			val endCondition = endConditionOpt.get();
+			if (endCondition.getDateHistoryItem().isEmpty()) continue;
+			this.workingConditionItems.add(endItem);
+			this.workingConditions.putIfAbsent(endHistoryId,
+					new DatePeriod(startPeriod.start(), endCondition.getDateHistoryItem().get(0).end()));
+		}
+	}
+	
+	
+	/**
 	 * 月別実績の勤怠時間を集計
 	 * @param datePeriod 期間
 	 * @param workingConditionItem 労働条件項目
@@ -151,14 +219,10 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		
 		// 「労働条件」の該当履歴から期間を取得
 		val historyId = workingConditionItem.getHistoryId();
-		val workingConditionOpt = this.repositories.getWorkingCondition().getByHistoryId(historyId);
-		if (!workingConditionOpt.isPresent()) return null;
-		val workingCondition = workingConditionOpt.get();
+		if (!this.workingConditions.containsKey(historyId)) return null;
 
 		// 処理期間を計算　（処理期間と労働条件履歴期間の重複を確認する）
-		val dateHistoryItems = workingCondition.getDateHistoryItem();
-		if (dateHistoryItems.isEmpty()) return null;
-		val term = dateHistoryItems.get(0).span();
+		val term = this.workingConditions.get(historyId);
 		DatePeriod procPeriod = this.confirmProcPeriod(datePeriod, term);
 		if (procPeriod == null) {
 			// 履歴の期間と重複がない時
