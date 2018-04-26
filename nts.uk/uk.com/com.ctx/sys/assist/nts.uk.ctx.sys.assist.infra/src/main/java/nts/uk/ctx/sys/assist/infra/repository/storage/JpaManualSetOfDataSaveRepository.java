@@ -9,6 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSave;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSaveRepository;
 import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtManualSetOfDataSave;
+import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtManualSetOfDataSavePk;
 
 @Stateless
 public class JpaManualSetOfDataSaveRepository extends JpaRepository implements ManualSetOfDataSaveRepository {
@@ -29,6 +30,17 @@ public class JpaManualSetOfDataSaveRepository extends JpaRepository implements M
 				entity.compressedPassword, entity.executionDateAndTime, entity.daySaveEndDate, entity.daySaveStartDate,
 				entity.monthSaveEndDate, entity.monthSaveStartDate, entity.suppleExplanation, entity.endYear,
 				entity.startYear, entity.presenceOfEmployee, entity.identOfSurveyPre, entity.practitioner);
+	}
+
+	private SspmtManualSetOfDataSave toEntity(ManualSetOfDataSave dom) {
+		return new SspmtManualSetOfDataSave(
+				new SspmtManualSetOfDataSavePk(dom.getCid(), dom.getStoreProcessingId()), dom.getSystemType().value,
+				dom.getPasswordAvailability().value, dom.getSaveSetName().toString(), dom.getReferenceDate(),
+				dom.getCompressedPassword().toString(), dom.getExecutionDateAndTime(), dom.getDaySaveEndDate(),
+				dom.getDaySaveStartDate(), dom.getMonthSaveEndDate(),
+				dom.getMonthSaveStartDate(), dom.getSuppleExplanation().toString(), dom.getEndYear().v().intValue(),
+				dom.getStartYear().v().intValue(), dom.getPresenceOfEmployee().value, dom.getIdentOfSurveyPre().value,
+				dom.getPractitioner());
 	}
 
 	@Override

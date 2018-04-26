@@ -1,8 +1,5 @@
 package nts.uk.ctx.sys.assist.dom.storage;
 
-import javax.persistence.EnumType;
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;

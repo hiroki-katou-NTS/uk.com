@@ -1,15 +1,15 @@
-package nts.uk.ctx.sys.assist.infra.repository;
+package nts.uk.ctx.sys.assist.infra.repository.storage;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.sys.assist.infra.entity.SspmtTargetEmployees;
-import nts.uk.ctx.sys.assist.infra.entity.SspmtTargetEmployeesPk;
-import nts.uk.ctx.sys.assist.dom.TargetEmployeesRepository;
-import nts.uk.ctx.sys.assist.dom.TargetEmployees;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.sys.assist.dom.storage.TargetEmployees;
+import nts.uk.ctx.sys.assist.dom.storage.TargetEmployeesRepository;
+import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtTargetEmployees;
+import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtTargetEmployeesPk;
 
 @Stateless
 public class JpaTargetEmployeesRepository extends JpaRepository implements TargetEmployeesRepository

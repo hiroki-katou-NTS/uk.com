@@ -12,7 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSave;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

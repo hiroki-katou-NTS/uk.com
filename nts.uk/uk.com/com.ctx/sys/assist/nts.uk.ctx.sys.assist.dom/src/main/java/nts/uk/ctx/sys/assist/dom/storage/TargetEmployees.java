@@ -2,10 +2,12 @@ package nts.uk.ctx.sys.assist.dom.storage;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
 * データ保存の対象社員
 */
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class TargetEmployees

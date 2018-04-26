@@ -1,15 +1,15 @@
-package nts.uk.ctx.sys.assist.infra.repository;
+package nts.uk.ctx.sys.assist.infra.repository.storage;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.sys.assist.infra.entity.SspmtTargetCategory;
-import nts.uk.ctx.sys.assist.infra.entity.SspmtTargetCategoryPk;
-import nts.uk.ctx.sys.assist.dom.TargetCategoryRepository;
-import nts.uk.ctx.sys.assist.dom.TargetCategory;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.sys.assist.dom.storage.TargetCategory;
+import nts.uk.ctx.sys.assist.dom.storage.TargetCategoryRepository;
+import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtTargetCategory;
+import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtTargetCategoryPk;
 
 @Stateless
 public class JpaTargetCategoryRepository extends JpaRepository implements TargetCategoryRepository

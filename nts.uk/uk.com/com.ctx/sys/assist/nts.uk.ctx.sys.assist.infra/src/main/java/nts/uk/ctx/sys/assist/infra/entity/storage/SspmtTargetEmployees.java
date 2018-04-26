@@ -7,11 +7,10 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.sys.assist.dom.storage.TargetEmployees;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -45,10 +44,10 @@ public class SspmtTargetEmployees extends UkJpaEntity implements Serializable
     }
 
     public TargetEmployees toDomain() {
-        return new TargetEmployees(this.targetEmployeesPk.storeProcessingId, this.targetEmployeesPk.employeeId, this.businessname);
+        return new TargetEmployees();
     }
     public static SspmtTargetEmployees toEntity(TargetEmployees domain) {
-        return new SspmtTargetEmployees(new SspmtTargetEmployeesPk(domain.getStoreProcessingId(), domain.getEmployeeId()), domain.getBusinessname());
+        return new SspmtTargetEmployees();
     }
 
 }
