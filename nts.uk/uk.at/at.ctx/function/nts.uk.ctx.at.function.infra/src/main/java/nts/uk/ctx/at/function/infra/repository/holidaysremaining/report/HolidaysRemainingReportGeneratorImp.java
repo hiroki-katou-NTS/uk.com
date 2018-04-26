@@ -2,8 +2,10 @@ package nts.uk.ctx.at.function.infra.repository.holidaysremaining.report;
 
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -112,10 +114,14 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		cells.copyRows(cells, 0, firstRow, 5);
 		firstRow += 5;
 
-		for (HolidaysRemainingEmployee employee : dataSource.getListEmployee()) {
+		// Order by Employee Code
+		List<HolidaysRemainingEmployee> employees = dataSource.getListEmployee().stream()
+				.sorted(Comparator.comparing(HolidaysRemainingEmployee::getEmployeeCode))
+				.collect(Collectors.toList());
+		for (HolidaysRemainingEmployee employee : employees) {
 			// D1_1, D1_2
-			cells.get(firstRow, 0).setValue(TextResource.localize("KDR001_12") + ": " 
-					+ employee.getWorkplaceCode() + "　" + employee.getWorkplaceName());
+			cells.get(firstRow, 0).setValue(TextResource.localize("KDR001_12") + ": " + employee.getWorkplaceCode()
+					+ "　" + employee.getWorkplaceName());
 			firstRow += 1;
 			firstRow = this.printHolidayRemainingEachPerson(worksheet, firstRow, employee);
 		}
@@ -127,7 +133,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		Map<String, List<HolidaysRemainingEmployee>> map = dataSource.getListEmployee().stream()
 				.collect(Collectors.groupingBy(HolidaysRemainingEmployee::getWorkplaceId));
 
-		for (List<HolidaysRemainingEmployee> employees : map.values()) {
+		for (List<HolidaysRemainingEmployee> listEmployee : map.values()) {
+			List<HolidaysRemainingEmployee> employees = listEmployee.stream()
+					.sorted(Comparator.comparing(HolidaysRemainingEmployee::getEmployeeCode))
+					.collect(Collectors.toList());
 			firstRow = printEachWorkplace(worksheet, firstRow, employees);
 		}
 	}
@@ -142,7 +151,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		// print Header
 		cells.copyRows(cells, 0, firstRow, 6);
 		// D1_1, D1_2
-		cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + ": " 
+		cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + ": "
 				+ employees.get(0).getWorkplaceCode() + "　" + employees.get(0).getWorkplaceName());
 		firstRow += 6;
 
@@ -159,7 +168,11 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 	private void printPersonBreakPage(Worksheet worksheet) throws Exception {
 		int firstRow = numberRowOfPage;
 
-		for (HolidaysRemainingEmployee employee : dataSource.getListEmployee()) {
+		// Order by Employee Code
+		List<HolidaysRemainingEmployee> employees = dataSource.getListEmployee().stream()
+				.sorted(Comparator.comparing(HolidaysRemainingEmployee::getEmployeeCode))
+				.collect(Collectors.toList());
+		for (HolidaysRemainingEmployee employee : employees) {
 			firstRow = this.printEachPerson(worksheet, firstRow, employee);
 		}
 	}
@@ -171,8 +184,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		// print Header
 		cells.copyRows(cells, 0, firstRow, 6);
 		// D1_1, D1_2
-		cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + ": "
-				+ employee.getWorkplaceCode() + "　" + employee.getWorkplaceName());
+		cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + ": " + employee.getWorkplaceCode()
+				+ "　" + employee.getWorkplaceName());
 		firstRow += 6;
 
 		firstRow = printHolidayRemainingEachPerson(worksheet, firstRow, employee);
