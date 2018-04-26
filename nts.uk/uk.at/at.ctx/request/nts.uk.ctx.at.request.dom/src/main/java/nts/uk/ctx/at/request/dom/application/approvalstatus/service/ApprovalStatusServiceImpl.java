@@ -322,7 +322,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	@Override
 	public List<EmployeeEmailImport> findEmpMailAddr(List<String> listsId) {
 		List<EmployeeEmailImport> listEmployee = employeeRequestAdapter.getApprovalStatusEmpMailAddr(listsId);
-		// TODO 225
+		// TODO 419
 		// Imported（申請承認）「社員メールアドレス」を取得する
 
 		return listEmployee;

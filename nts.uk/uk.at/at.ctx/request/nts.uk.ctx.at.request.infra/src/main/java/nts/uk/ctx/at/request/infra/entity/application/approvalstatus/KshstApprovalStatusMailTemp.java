@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.infra.entity.application.approvalstatus;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -39,23 +40,23 @@ public class KshstApprovalStatusMailTemp extends UkJpaEntity implements Serializ
 	/**
 	 * URL承認埋込
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "URL_APPROVAL_EMBED")
-	public int urlApprovalEmbed;
+	public Integer urlApprovalEmbed;
 
 	/**
 	 * URL日別埋込
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "URL_DAY_EMBED")
-	public int urlDayEmbed;
+	public Integer urlDayEmbed;
 
 	/**
 	 * URL月別埋込
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "URL_MONTH_EMBED")
-	public int urlMonthEmbed;
+	public Integer urlMonthEmbed;
 
 	/**
 	 * メール件名
@@ -79,16 +80,17 @@ public class KshstApprovalStatusMailTemp extends UkJpaEntity implements Serializ
 	public ApprovalStatusMailTemp toDomain() {
 		return new ApprovalStatusMailTemp(this.approvalStatusMailTempPk.cid,
 				EnumAdaptor.valueOf(this.approvalStatusMailTempPk.type, ApprovalStatusMailType.class),
-				EnumAdaptor.valueOf(this.urlApprovalEmbed, NotUseAtr.class),
-				EnumAdaptor.valueOf(this.urlDayEmbed, NotUseAtr.class),
-				EnumAdaptor.valueOf(this.urlMonthEmbed, NotUseAtr.class), new Subject(this.subject),
-				new Content(this.text));
+				Objects.isNull(this.urlApprovalEmbed) ? null
+						: EnumAdaptor.valueOf(this.urlApprovalEmbed, NotUseAtr.class),
+				Objects.isNull(this.urlDayEmbed) ? null : EnumAdaptor.valueOf(this.urlDayEmbed, NotUseAtr.class),
+				Objects.isNull(this.urlMonthEmbed) ? null : EnumAdaptor.valueOf(this.urlMonthEmbed, NotUseAtr.class),
+				new Subject(this.subject), new Content(this.text));
 	}
 
 	public static KshstApprovalStatusMailTemp toEntity(ApprovalStatusMailTemp domain) {
-		int urlApprovalEmbed = 0;
-		int urlDayEmbed = 0;
-		int urlMonthEmbed = 0;
+		Integer urlApprovalEmbed = null;
+		Integer urlDayEmbed = null;
+		Integer urlMonthEmbed = null;
 
 		switch (domain.getMailType()) {
 		case APP_APPROVAL_UNAPPROVED:
