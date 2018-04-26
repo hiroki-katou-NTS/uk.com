@@ -258,7 +258,7 @@ module nts.uk.at.view.kaf011.shr {
                             uiType: 0
                         }
 
-                    if (!vm.screenModeNew() || nts.uk.ui.errors.hasError()) { return; }
+                    if (!newDate || !vm.screenModeNew() || nts.uk.ui.errors.hasError()) { return; }
                     block.invisible();
                     service.changeDay(changeDateParam).done((data: IHolidayShipment) => {
                         vm.recWk().setWkTypes(data.recWkTypes || []);
@@ -402,7 +402,7 @@ module nts.uk.at.view.kaf011.shr {
                 };
                 block.invisible();
                 service.changeAbsDateToHoliday(saveCmd).done((payoutType) => {
-                     nts.uk.request.jump("/view/kaf/010/a/index.xhtml", { appID: self.absWk().appID() , appDate :self.absWk().appDate(), payoutType:payoutType, applicant : self.employeeID()});
+                    nts.uk.request.jump("/view/kaf/010/a/index.xhtml", { appID: self.absWk().appID(), appDate: self.absWk().appDate(), payoutType: payoutType, applicant: self.employeeID() });
                 }).fail((error) => {
                     alError({ messageId: error.messageId, messageParams: error.parameterIds });
                 }).always(() => {

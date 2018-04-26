@@ -55,10 +55,19 @@ module nts.uk.at.view.kaf011.c.screenModel {
             if (param) {
                 self.prePostSelectedCode(param.prePostSelectedCode);
                 self.reason(param.reason);
-                self.appReasonSelectedID(param.appReasonSelectedID);
                 self.absWk(new common.AppItems(param.absApp));
                 self.version(param.version);
             }
+
+            self.appReasons.subscribe((appReasons) => {
+                if (appReasons) {
+                    let defaultReasonId = _.find(appReasons, { 'defaultFlg': 1 }).reasonID;
+                    if (defaultReasonId) {
+                        self.appReasonSelectedID(defaultReasonId);
+                    }
+                }
+
+            });
         }
 
         start(): JQueryPromise<any> {
@@ -155,6 +164,7 @@ module nts.uk.at.view.kaf011.c.screenModel {
                 self.displayPrePostFlg(data.applicationSetting.displayPrePostFlg);
                 self.appTypeSet(new common.AppTypeSet(data.appTypeSet || null));
                 self.employeeID(data.employeeID || '');
+                self.absWk().appDate('');
             }
         }
 
