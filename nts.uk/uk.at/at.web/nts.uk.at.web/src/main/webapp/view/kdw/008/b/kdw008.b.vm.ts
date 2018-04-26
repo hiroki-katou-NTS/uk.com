@@ -285,9 +285,11 @@ module nts.uk.at.view.kdw008.b {
                     new service.Service().updateMonthly(temp).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
                             nts.uk.ui.block.clear();
-                            self.getMonthRight(self.currentBusinessTypeCode(), self.selectedSheetNo());
-                            self.selectedCode(self.currentBusinessTypeCode());
-                            self.selectedCode.valueHasMutated();
+                            self.selectedSheetNo(1);
+                            self.selectedSheetNo.valueHasMutated();
+//                            self.getMonthRight(self.currentBusinessTypeCode(), self.selectedSheetNo());
+//                            self.selectedCode(self.currentBusinessTypeCode());
+//                            self.selectedCode.valueHasMutated();
                         });
                         $("#currentName").focus();
                     }).always(function() {

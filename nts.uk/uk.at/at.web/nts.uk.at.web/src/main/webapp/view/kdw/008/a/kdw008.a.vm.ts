@@ -423,7 +423,7 @@ module nts.uk.at.view.kdw008.a {
                     new service.Service().updateMonPfmCorrectionFormat(temp).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
                             self.getListMonPfmCorrectionFormat().done(function(data) {
-                                self.selectedSheetNo(self.selectedSheetNo())
+                                self.selectedSheetNo(1)
                                 self.selectedSheetNo.valueHasMutated();
                             });
                         });
