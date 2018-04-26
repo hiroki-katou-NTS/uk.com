@@ -15,16 +15,20 @@ module a7 {
 
         mainSettingModel: MainSettingModel;
         fixTableOptionForFixedOrDiffTime: any;
+        fixTableOptionForDiffTime: any;
         fixTableOptionForFlowOrFlexUse: any;
         fixTableOptionForFlowOrFlexNotUse1: any;
         fixTableOptionForFlowOrFlexNotUse2: any;
 
-        dataSourceForFixedOrDiffTime: KnockoutObservableArray<TimeRangeModel>;
+        dataSourceForFixedOrDiffTime: KnockoutObservableArray<any>;
+        dataSourceForDiffTime: KnockoutObservableArray<any>;
         dataSourceForFlowOrFlexUse: KnockoutObservableArray<any>;
         dataSourceForFlowOrFlexNotUse1: KnockoutObservableArray<any>;
         dataSourceForFlowOrFlexNotUse2: KnockoutObservableArray<any>;
 
         isFlowOrFlex: KnockoutObservable<boolean>;
+        isFixed: KnockoutObservable<boolean>;
+        isDiffTime: KnockoutObservable<boolean>;
 
         useFixedRestTimeOptions: KnockoutObservableArray<any>;
         useFixedRestTime: KnockoutObservable<number>;
@@ -69,6 +73,18 @@ module a7 {
                 tabindex: 92
             };
             
+            self.dataSourceForDiffTime = ko.observableArray([]);
+            /////////////
+            self.fixTableOptionForDiffTime = {
+                maxRow: 10,
+                minRow: 0,
+                maxRowDisplay: 10,
+                isShowButton: true,
+                dataSource: self.dataSourceForDiffTime,
+                isMultipleSelect: true,
+                columns: self.difftimeColumnSetting(),
+                tabindex: 92
+            };
             self.loadDataToScreen();
             /////////////
             self.dataSourceForFlowOrFlexUse = ko.observableArray([]);
@@ -114,7 +130,15 @@ module a7 {
 
                 return mainSettingModel.workTimeSetting.isFlex() || mainSettingModel.workTimeSetting.isFlow();
             });
+            
+            self.isFixed = ko.computed(() => {
+                return mainSettingModel.workTimeSetting.isFixed();
+            });
 
+            self.isDiffTime = ko.computed(() => {
+                return mainSettingModel.workTimeSetting.isDiffTime();
+            });
+            
             self.useFixedRestTimeOptions = ko.observableArray([
                 { code: UseDivision.USE, name: nts.uk.resource.getText("KMK003_142") },
                 { code: UseDivision.NOTUSE, name: nts.uk.resource.getText("KMK003_143") },
@@ -191,16 +215,18 @@ module a7 {
                         deduct.end(item.column1().endTime);
                         listDeductionTimeModel.push(deduct);
                     }
-                    self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone(listDeductionTimeModel);
+                    self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.timezones(listDeductionTimeModel);
                 }
 
+            });
+            self.dataSourceForDiffTime.subscribe((newDataSource: any) => {
                 if (self.mainSettingModel.workTimeSetting.isDiffTime()) {
                     let listDiffTimeDeductTimezoneModel: DiffTimeDeductTimezoneModel[] = [];
                     for (let item of newDataSource) {
                         let deduct = new DiffTimeDeductTimezoneModel();
                         deduct.start(item.column1().startTime);
                         deduct.end(item.column1().endTime);
-                        //is update start time ??
+                        deduct.isUpdateStartTime(item.column2());
                         listDiffTimeDeductTimezoneModel.push(deduct);
                     }
                     self.mainSettingModel.diffWorkSetting.dayoffWorkTimezone.restTimezone.restTimezones(listDiffTimeDeductTimezoneModel);
@@ -348,20 +374,22 @@ module a7 {
             {
                 let data: any = [];
                 if (self.mainSettingModel.workTimeSetting.isFixed()) {
-                    for (let item of self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone()) {
+                    for (let item of self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.timezones()) {
                         data.push({
                             column1: ko.observable({ startTime: item.start(), endTime: item.end() })
                         });
                     }
+                    self.dataSourceForFixedOrDiffTime(data);
                 }
                 if (self.mainSettingModel.workTimeSetting.isDiffTime()) {
                     for (let item of self.mainSettingModel.diffWorkSetting.dayoffWorkTimezone.restTimezone.restTimezones()) {
                         data.push({
-                            column1: ko.observable({ startTime: item.start(), endTime: item.end() })
+                            column1: ko.observable({ startTime: item.start(), endTime: item.end() }),
+                            column2: ko.observable(item.isUpdateStartTime())
                         });
                     }
+                    self.dataSourceForDiffTime(data);
                 }
-                self.dataSourceForFixedOrDiffTime(data);
             }
         }
 
@@ -371,6 +399,7 @@ module a7 {
         private refreshColumnSet() {
             let self = this;
             self.fixTableOptionForFixedOrDiffTime.columns = self.columnSetting();
+            self.fixTableOptionForDiffTime.columns = self.difftimeColumnSetting();
             self.fixTableOptionForFlowOrFlexUse.columns = self.columnSetting();
             self.fixTableOptionForFlowOrFlexNotUse1.columns = self.columnSetting2();
             self.fixTableOptionForFlowOrFlexNotUse2.columns = self.columnSetting2();
@@ -394,6 +423,30 @@ module a7 {
                             "/>`
                 }
             ];
+            }
+        
+        private difftimeColumnSetting(): Array<any> {
+            let self = this;
+            return [{
+                headerText: nts.uk.resource.getText("KMK003_54"), key: "column1", defaultValue: ko.observable({ startTime: 0, endTime: 0 }),
+                width: 243, template:
+                `<div data-bind="ntsTimeRangeEditor: {required: true,
+                            enable: true,
+                            inputFormat: 'time',
+                            startTimeNameId: '#[KMK003_163]',
+                            endTimeNameId: '#[KMK003_164]',
+                            startConstraint: 'TimeWithDayAttr',
+                            endConstraint: 'TimeWithDayAttr',
+                            paramId: 'KMK003_21'
+                                }
+                            "/>`
+            }, {
+                    headerText: nts.uk.resource.getText("KMK003_129"),
+                    key: "column2",
+                    defaultValue: ko.observable(false),
+                    width: 50,
+                    template: `<div data-bind="ntsCheckBox: { enable: true }">`
+                }];
         }
 
         private columnSetting2(): Array<any> {
@@ -453,9 +506,12 @@ module a7 {
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
                 screenModel.isFlowOrFlex.subscribe((v) => {
                     if (!v) {
-                        document.getElementById('nts-fix-table-a7-fixed-difftime').addEventListener('timerangedatachange', e => {
-                            screenModel.dataSourceForFixedOrDiffTime.valueHasMutated();
-                        });
+//                        document.getElementById('nts-fix-table-a7-fixed').addEventListener('timerangedatachange', e => {
+//                            screenModel.dataSourceForFixedOrDiffTime.valueHasMutated();
+//                        });
+//                        document.getElementById('nts-fix-table-a7-difftime').addEventListener('timerangedatachange', e => {
+//                            screenModel.dataSourceForDiffTime.valueHasMutated();
+//                        });
                     }
                 });
                 
@@ -480,6 +536,7 @@ module a7 {
                 isClickNew.subscribe((v) => {
                     if (v) {
                         screenModel.dataSourceForFixedOrDiffTime([]);
+                        screenModel.dataSourceForDiffTime([]);
                         screenModel.dataSourceForFlowOrFlexUse([]);
                         screenModel.dataSourceForFlowOrFlexNotUse1([]);
                         screenModel.dataSourceForFlowOrFlexNotUse2([{
