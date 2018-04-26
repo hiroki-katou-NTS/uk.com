@@ -368,7 +368,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			return new FlexWithinWorkTimeSheet(this.withinWorkTimeFrame,Optional.of(new TimeSpanForCalc(startTime, endTime)));
 		}
 		else {
-			return this;
+			return new FlexWithinWorkTimeSheet(this.withinWorkTimeFrame,Optional.empty());
 		}
 	}
 	
