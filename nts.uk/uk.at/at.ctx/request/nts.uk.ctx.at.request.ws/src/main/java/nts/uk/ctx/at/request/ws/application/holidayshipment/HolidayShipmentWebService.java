@@ -138,8 +138,8 @@ public class HolidayShipmentWebService extends WebService {
 
 	@POST
 	@Path("change_abs_date_to_holiday")
-	public void changeAbsDate(SaveHolidayShipmentCommand command) {
-		this.changeDateAbsToHolidayHanler.handle(command);
+	public JavaTypeResult<Integer> changeAbsDate(SaveHolidayShipmentCommand command) {
+		return new JavaTypeResult<Integer>(this.changeDateAbsToHolidayHanler.handle(command));
 	}
 
 }
