@@ -427,7 +427,7 @@ public class ApprovalStatusFinder {
 		List<OverTimeFrame> lstFrame = appHoliday.getLstFrame();
 		Integer totalTime;
 		for(OverTimeFrame overTime : lstFrame) {
-			if(overTime.getAttendanceType())
+			//if(overTime.getAttendanceType())
 		}
 		return appContent;
 	}

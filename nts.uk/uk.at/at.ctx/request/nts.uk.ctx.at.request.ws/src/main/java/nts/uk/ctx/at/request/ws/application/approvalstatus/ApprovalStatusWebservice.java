@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.RegisterApprovalStatusMailTempCommandHandler;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApplicationsListDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusActivityData;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusByIdDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusFinder;
@@ -112,7 +113,7 @@ public class ApprovalStatusWebservice extends WebService {
 	
 	@POST
 	@Path("initApprovalSttRequestContentDis")
-	public List<String> initApprovalSttRequestContentDis(ApprovalSttRequestContentDis appSttContent) {
+	public ApplicationsListDto initApprovalSttRequestContentDis(ApprovalSttRequestContentDis appSttContent) {
 		return this.finder.initApprovalSttRequestContentDis(appSttContent);
 	}
 }
