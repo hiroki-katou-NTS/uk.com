@@ -69,7 +69,7 @@ public class SprWebService {
 				loginUserContextSpr.getContractCD(), 
 				loginUserContextSpr.getCompanyID(), 
 				loginUserContextSpr.getCompanyCD(), 
-				loginUserContextSpr.getEmployeeID(), 
+				loginUserContextSpr.getLoginEmployeeID(), 
 				loginUserContextSpr.getEmployeeCD());
 		for(RoleInfoSpr roleInfor : loginUserContextSpr.getRoleList()){
 			switch (roleInfor.getRoleType()) {

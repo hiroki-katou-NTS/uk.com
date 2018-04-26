@@ -342,8 +342,7 @@ public class SprApprovalRootImpl implements SprApprovalRootService {
 			if(personInfoSpr==null){
 				return;
 			}
-			int length = personInfoSpr.getEmployeeId().length();
-			empIDList.add(personInfoSpr.getEmployeeId().substring(length - 6, length));
+			empIDList.add(personInfoSpr.getEmployeeId());
 		});
 		return empIDList;
 	}

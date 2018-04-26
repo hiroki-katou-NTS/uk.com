@@ -103,7 +103,6 @@ public abstract class CalculationTimeSheet {
 	public TimeSpanForCalc reCreateTreatAsSiteiTimeEnd(AttendanceTime transTime,OverTimeFrameTimeSheetForCalc overTimeWork) {
 		TimeSpanForCalc copySpan = calcrange;
 		return overTimeWork.reduceUntilSpecifiedTime(new AttendanceTime(copySpan.lengthAsMinutes() - transTime.valueAsMinutes()));
-		//return copySpan;
 	}
 	
 	/**
@@ -157,6 +156,18 @@ public abstract class CalculationTimeSheet {
 	 */
 	public AttendanceTime calcDedTimeByAtr(DeductionAtr dedAtr,ConditionAtr conditionAtr) {
 		val forCalcList = getDedTimeSheetByAtr(dedAtr,conditionAtr);
+		return new AttendanceTime(forCalcList.stream().map(tc -> tc.calcTotalTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
+	}
+	
+	
+	/**
+	 * 控除時間の合計を算出する（指定なし)
+	 * @param dedAtr
+	 * @param conditionAtr
+	 * @return
+	 */
+	public AttendanceTime calcDedTimeByAtr(DeductionAtr dedAtr) {
+		val forCalcList = (dedAtr.isDeduction())?this.deductionTimeSheet:this.recordedTimeSheet;
 		return new AttendanceTime(forCalcList.stream().map(tc -> tc.calcTotalTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
 	}
 	
@@ -222,15 +233,39 @@ public abstract class CalculationTimeSheet {
 	 * @return　控除の合計時間
 	 */
 	public AttendanceTime recursiveTotalTime() {
-		if(deductionTimeSheet.isEmpty()) return new AttendanceTime(0) ;
+//		if(deductionTimeSheet.isEmpty()) return new AttendanceTime(0) ;
+		if(deductionTimeSheet.isEmpty()) return new AttendanceTime(calcrange.lengthAsMinutes());
 		AttendanceTime totalDedTime = new AttendanceTime(0);
 		for(TimeSheetOfDeductionItem dedTimeSheet : deductionTimeSheet) {
-			totalDedTime.addMinutes(dedTimeSheet.recursiveTotalTime().valueAsMinutes());
+			totalDedTime = new AttendanceTime(totalDedTime.valueAsMinutes()+dedTimeSheet.recursiveTotalTime().valueAsMinutes());
+//			totalDedTime.addMinutes(dedTimeSheet.recursiveTotalTime().valueAsMinutes());
 		}
 		//return 丸め処理(calcrange.lengthAsMinutes() - totalDedTime); ←丸め処理実装後こちらに変える
 		return new AttendanceTime(calcrange.lengthAsMinutes() - totalDedTime.valueAsMinutes());
 	}
 
+	
+	public AttendanceTime afterMinusDeductionTime(DeductionAtr dedAtr) {
+		//休憩時間
+		AttendanceTime calcBreakTime = calcDedTimeByAtr(dedAtr,ConditionAtr.BREAK);
+		//組合外出時間
+		AttendanceTime calcUnionGoOutTime = calcDedTimeByAtr(dedAtr,ConditionAtr.UnionGoOut);
+		//私用外出時間
+		AttendanceTime calcPrivateGoOutTime = calcDedTimeByAtr(dedAtr,ConditionAtr.PrivateGoOut);
+		//介護
+		AttendanceTime calcCareTime = calcDedTimeByAtr(dedAtr,ConditionAtr.Care);
+		//育児時間
+		AttendanceTime calcChildTime = calcDedTimeByAtr(dedAtr,ConditionAtr.Child);
+		
+		//計算処理
+		return new AttendanceTime(this.calcrange.lengthAsMinutes()
+								 -calcBreakTime.valueAsMinutes()
+								 -calcUnionGoOutTime.valueAsMinutes()
+								 -calcPrivateGoOutTime.valueAsMinutes()
+								 -calcCareTime.valueAsMinutes()
+								 -calcChildTime.valueAsMinutes());
+		
+	}
 	/**
 	 * 指定時間に従って時間帯の縮小
 	 * @return 縮小後の時間帯

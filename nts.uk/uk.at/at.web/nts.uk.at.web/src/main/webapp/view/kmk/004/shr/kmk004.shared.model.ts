@@ -432,11 +432,14 @@ module nts.uk.at.view.kmk004.shared.model {
         statWorkTimeSetDto: StatutoryWorktimeSettingDto;
         // Cuc 3 cai
         monthCalSetDto: MonthlyCalSettingDto;
+        // GetFlexPred (update ver16)
+        referenceFlexPred: number; 
 
         constructor() {
             let self = this;
             self.statWorkTimeSetDto = new StatutoryWorktimeSettingDto();
             self.monthCalSetDto = new MonthlyCalSettingDto();
+            self.referenceFlexPred = ReferencePredTimeOfFlex.FROM_MASTER;
         }
 
         public updateYear(year: number): void {
@@ -444,10 +447,11 @@ module nts.uk.at.view.kmk004.shared.model {
             self.statWorkTimeSetDto.year = year;
         }
 
-        public updateData(model: WorktimeSetting): void {
+        public updateData(model: WorktimeSetting, referenceFlexPred? : number): void {
             let self = this;
             self.statWorkTimeSetDto.updateData(model);
             self.monthCalSetDto.updateData(model);
+            self.referenceFlexPred = referenceFlexPred;
         }
     }
 
@@ -458,6 +462,8 @@ module nts.uk.at.view.kmk004.shared.model {
 
         /** The save com flex command. */
         saveMonthCommand: MonthlyCalSettingDto;
+        
+        referenceFlexPred: number;
 
         constructor() {
             let self = this;
@@ -470,10 +476,11 @@ module nts.uk.at.view.kmk004.shared.model {
             self.saveStatCommand.year = year;
         }
 
-        public updateData(model: WorktimeSetting): void {
+        public updateData(model: WorktimeSetting, referenceFlexPred? : number): void {
             let self = this;
             self.saveStatCommand.updateData(model);
             self.saveMonthCommand.updateData(model);
+            self.referenceFlexPred = referenceFlexPred;
         }
     }
 
@@ -885,7 +892,8 @@ module nts.uk.at.view.kmk004.shared.model {
     export class MonthlyTime {
         month: KnockoutObservable<number>;
         time: KnockoutObservable<number>;
-
+        monthMsgNormal: string;
+        monthMsgDefor: string;
         constructor() {
             let self = this;
             self.month = ko.observable(new Date().getMonth());
@@ -901,8 +909,9 @@ module nts.uk.at.view.kmk004.shared.model {
     export class FlexMonthlyTime {
         month: KnockoutObservable<number>;
         statutoryTime: KnockoutObservable<number>;
-        //            specifiedMonth: KnockoutObservable<number>;
         specifiedTime: KnockoutObservable<number>;
+        monthMsgSpecified: string;
+        monthMsgStatutory: string;
         constructor() {
             let self = this;
             self.month = ko.observable(new Date().getMonth());
@@ -910,9 +919,12 @@ module nts.uk.at.view.kmk004.shared.model {
             self.specifiedTime = ko.observable(0);
         }
 
-        //            public updateData(dto: ): void {
-        //                let self = this;
-        //            }
+    }
+    
+    export class PureFlexMonthlyTime {
+        month: number;
+        statutoryTime: number;
+        specifiedTime: number;
     }
 
     export class NormalWorktime {
@@ -953,6 +965,8 @@ module nts.uk.at.view.kmk004.shared.model {
                 let m = new MonthlyTime();
                 m.month(i);
                 m.time(0);
+                m.monthMsgNormal = nts.uk.resource.getText("KMK004_14", [i]);
+                m.monthMsgDefor = nts.uk.resource.getText("KMK004_26", [i]);
                 self.statutorySetting.push(m);
             }
         }
@@ -1013,6 +1027,8 @@ module nts.uk.at.view.kmk004.shared.model {
                 mFlex.month(i);
                 mFlex.statutoryTime(0);
                 mFlex.specifiedTime(0);
+                mFlex.monthMsgStatutory = nts.uk.resource.getText("KMK004_22", [i]);
+                mFlex.monthMsgSpecified = nts.uk.resource.getText("KMK004_21", [i]);
                 self.flexSettingDetail.push(mFlex);
             }
         }
@@ -1025,11 +1041,9 @@ module nts.uk.at.view.kmk004.shared.model {
                 let stutoryData: MonthlyUnitDto = dto.flexSetting.statutorySetting.filter(j => i.month() == j.month)[0];//WorktimeFlexSetting1Dto
                 // Specified
                 let specifiedData: MonthlyUnitDto = dto.flexSetting.specifiedSetting.filter(j => i.month() == j.month)[0];
-
                 i.month(stutoryData.month);
                 i.statutoryTime(stutoryData.monthlyTime);
                 i.specifiedTime(specifiedData.monthlyTime);
-
             });
         }
 
@@ -1209,4 +1223,23 @@ module nts.uk.at.view.kmk004.shared.model {
         static NORMAL_SETTING = 1;
         static DEFORM_LABOR_SETTING = 2;
     }
+    
+    export class ItemModelNumber {
+        code: number;
+        name: string;
+
+        constructor(code: number, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }
+    
+    /** フレックス勤務の所定時間参照 */
+    export class ReferencePredTimeOfFlex {
+        /** マスタから参照 */
+        static FROM_MASTER = 0;
+        /** 実績から参照 */
+        static FROM_RECORD = 1;
+    }
+
 }

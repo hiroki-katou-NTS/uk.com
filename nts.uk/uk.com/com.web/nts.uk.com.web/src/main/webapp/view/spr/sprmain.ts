@@ -71,5 +71,6 @@ __viewContext.ready(function() {
 	case 6:
 		break;
 	default:
+        nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
 	}
 })
