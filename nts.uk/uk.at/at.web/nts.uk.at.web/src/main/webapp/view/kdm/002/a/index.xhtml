@@ -63,11 +63,11 @@
 							</div>
 							<div class="employeeWorkSetting">
 							<!-- A3_7 -->
-								<div class="labelWork" tabindex="5" 
+								<div class="labelWork" 
 									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDM002_6')}
 								</div>
-								<div class="infoButtonSetting" tabindex="6" >
-									<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+								<div class="infoButtonSetting" >
+									<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"  tabindex="5"></div>
 									<div class="label">#{i18n.getText('KDM002_7')}</div>
 								</div>
 							</div>
@@ -86,7 +86,7 @@
 													textalign: 'right'
 													},
 													required: true,
-													readonly: false}" tabindex="8"/>
+													readonly: false}" tabindex="6"/>
 											</div>
 											<div class="label">#{i18n.getText('KDM002_18')}</div>
 							</div>
