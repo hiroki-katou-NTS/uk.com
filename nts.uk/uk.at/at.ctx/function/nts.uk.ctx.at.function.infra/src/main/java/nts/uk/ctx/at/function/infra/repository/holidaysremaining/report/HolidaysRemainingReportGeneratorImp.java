@@ -5,7 +5,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -111,7 +110,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		Cells cells = worksheet.getCells();
 		// D index
 		// print Header
-		cells.copyRows(cells, 0, firstRow, 5);
+		cells.copyRows(cells, 0, firstRow, 6);
 		firstRow += 5;
 
 		// Order by Employee Code
