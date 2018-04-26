@@ -16,7 +16,9 @@ import nts.uk.ctx.at.function.dom.adapter.employment.EmploymentHistoryImported;
 import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
 */
 import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
+import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.HolidaysRemainingManagementRepository;
+import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
 /*import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
@@ -47,9 +49,8 @@ public class HdRemainManageFinder {
 	 * 
 	 * @Inject private ClosureRepository closureRepository;
 	 */
-	// @Inject
-	// private PermissionOfEmploymentFormRepository
-	// permissionOfEmploymentFormRepository;
+	@Inject
+	private PermissionOfEmploymentFormRepository permissionOfEmploymentFormRepository;
 
 	public List<HdRemainManageDto> findAll() {
 		return this.hdRemainingManagementRepo.getHolidayManagerLogByCompanyId(AppContexts.user().companyId()).stream()
@@ -109,15 +110,15 @@ public class HdRemainManageFinder {
 	public PermissionOfEmploymentFormDto getPermissionOfEmploymentForm() {
 		String companyId = AppContexts.user().companyId();
 		String employeeRoleId = AppContexts.user().roles().forAttendance();
-		/*
-		 * Optional<PermissionOfEmploymentForm> permissionDto =
-		 * this.permissionOfEmploymentFormRepository.find(companyId,
-		 * employeeRoleId, 1); if (permissionDto.isPresent()) { return new
-		 * PermissionOfEmploymentFormDto(permissionDto.get().getCompanyId(),
-		 * permissionDto.get().getRoleId(), permissionDto.get().getFunctionNo(),
-		 * permissionDto.get().isAvailable()); }
-		 */
-		return new PermissionOfEmploymentFormDto("r434", "r434", 1, true);
+
+		Optional<PermissionOfEmploymentForm> permission = this.permissionOfEmploymentFormRepository.find(companyId,
+				employeeRoleId, 1);
+		if (permission.isPresent()) {
+			return new PermissionOfEmploymentFormDto(permission.get().getCompanyId(), permission.get().getRoleId(),
+					permission.get().getFunctionNo(), permission.get().isAvailable());
+		}
+
+		return new PermissionOfEmploymentFormDto(companyId, employeeRoleId, 1, false);
 	}
 
 }
