@@ -10,6 +10,11 @@
 			<com:stylefile path="cmf003.b.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="cmf003.b.start.js" />
 			<com:scriptfile path="cmf003.b.service.js" />
 			<com:scriptfile path="cmf003.b.vm.js" />
@@ -19,8 +24,8 @@
 			<div id="functions-area">
 				<a class="goback"
 					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }"
-					tabindex="1">#{i18n.getText('CMF003_13')}</a>
-				<label class="title-right">#{i18n.getText('CMF003_14')}</label>
+					tabindex="1">#{i18n.getText('CMF003_13')}</a> <label
+					class="title-right">#{i18n.getText('CMF003_14')}</label>
 			</div>
 			<div id="contents-area">
 				<div id="ex_accept_wizard"
@@ -43,10 +48,11 @@
 							<ui:include src="b.xhtml" />
 						</div>
 						<div class="step-2">
-<!-- 							<ui:include src="../d/index.xhtml" /> -->
+						
+ 							<ui:include src="d.xhtml" />
 						</div>
 						<div class="step-3">
-							
+  						<ui:include src="e.xhtml" />
 						</div>
 					</div>
 				</div>
