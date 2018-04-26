@@ -133,20 +133,21 @@ public class IrregularPeriodCarryforwardsTimeOfCurrent {
 	
 		// 変形労働勤務の加算設定を取得する
 		if (!holidayAdditionOpt.isPresent()) return ProcAtrAddMethod.ADD;
-		val addSetOfIrg = holidayAdditionOpt.get().getWorkDeformLabor();
+		//*****（未）　加算設定のドメイン構成が変更されたため、修正要。2018.4.11 shuichi_ishida
+		//val addSetOfIrg = holidayAdditionOpt.get().getWorkDeformLabor();
 		
 		// 割増計算方法．加算する＝「加算しない」
-		if (addSetOfIrg.getAdditionTime1() == 0){
-			// 就業時間計算方法．加算する＝「加算する」
-			if (addSetOfIrg.getAdditionTime2() == 1){
-				// 不足時加算
-				return ProcAtrAddMethod.ADD_FOR_SHORTAGE;
-			}
-			else {
-				// 加算しない
-				return ProcAtrAddMethod.NOT_ADD;
-			}
-		}
+		//if (addSetOfIrg.getAdditionTime1() == 0){
+		//	// 就業時間計算方法．加算する＝「加算する」
+		//	if (addSetOfIrg.getAdditionTime2() == 1){
+		//		// 不足時加算
+		//		return ProcAtrAddMethod.ADD_FOR_SHORTAGE;
+		//	}
+		//	else {
+		//		// 加算しない
+		//		return ProcAtrAddMethod.NOT_ADD;
+		//	}
+		//}
 		// 加算する
 		return ProcAtrAddMethod.ADD;
 	}

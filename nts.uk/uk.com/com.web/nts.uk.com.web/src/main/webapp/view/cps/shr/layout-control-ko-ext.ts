@@ -232,6 +232,14 @@ module nts.custombinding {
                         background-color: #fff;
                         border-left: 1px solid #aaa;
                     }
+
+                    .layout-control .item-control td div,
+                    .layout-control .item-controls td div {
+                        background-color: rgb(217, 217, 217);
+                        height: 31px;
+                        width: 100%;
+                        display: block;
+                    }
                 
                     .layout-control .item-control td,
                     .layout-control .item-control th,
@@ -292,6 +300,11 @@ module nts.custombinding {
                     .layout-control .item-controls td textarea {
                         border: 1px solid transparent;
                         border-radius: 0;
+                    }
+
+                    .layout-control .item-control td .ntsControl.error input,
+                    .layout-control .item-control td .ntsControl.error textarea{
+                        border-style: dashed;
                     }
 
                     .layout-control .item-control td input:focus,
@@ -395,10 +408,21 @@ module nts.custombinding {
                         position: absolute;
                     }
 
-                    .layout-control .item-classification .relate-button .value-text,
-                    .layout-control .item-classification .readonly-button .value-text,
                     .layout-control .item-classification .numeric-button .nts-editor.nts-input {
                         width: 65px;
+                    }
+
+                    .layout-control .item-classification .value-text.readonly,
+                    .layout-control .item-classification .relate-button .value-text,
+                    .layout-control .item-classification .readonly-button .value-text {
+                        padding: 0;
+                        min-width: 65px;
+                        line-height: 30px;
+                    }
+
+                    .layout-control .item-classification .set-table-items .value-text.readonly {
+                        padding-left: 15px;
+                        width: 100%;
                     }
 
                     .layout-control .item-classification .ui-igcombo-wrapper {
@@ -474,6 +498,17 @@ module nts.custombinding {
                     .layout-control.dragable .color-operation-case-character,
                     .layout-control.readonly:not(.inputable) .color-operation-case-character {
                         color: #000 !important;
+                    }
+
+                    .layout-control .inline {
+                        display: inline-block;
+                    }
+
+                    .layout-control button.inline {
+                        height: 28px;    
+                        margin-left: -50px;
+                        vertical-align: top;
+                        margin-right: 15px;
                     }
                 </style>`;
 
@@ -893,9 +928,12 @@ module nts.custombinding {
                     </table>
                 </script>
                 <script type="text/html" id="ctr_template">
+                    <!-- ko if: resourceId -->
+                        <button class="inline" data-bind="attr: { title: resourceId }">？</button>
+                    <!-- /ko -->                    
                     <div data-bind="let: {
                             nameid : itemDefId.replace(/[-_]/g, '')
-                        }">
+                        }" class="inline">
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.STRING -->
                         <!-- ko if: item.stringItemType == STRING_TYPE.NUMERIC || item.stringItemLength < 40 || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80) -->
                         <input data-bind=" ntsTextEditor: {
@@ -1076,7 +1114,7 @@ module nts.custombinding {
                         <div data-bind="ntsComboBox: {
                                     name: itemName,
                                     value: value,
-                                    options: ko.observableArray(lstComboBoxValue || []),
+                                    options: lstComboBoxValue,
                                     optionsText: 'optionText',
                                     optionsValue: 'optionValue',
                                     enable: editable,
@@ -1098,7 +1136,7 @@ module nts.custombinding {
                             <div data-bind="ntsRadioBoxGroup: {
                                 name: itemName,
                                 value: value,
-                                options: ko.observableArray(lstComboBoxValue || []),
+                                options: lstComboBoxValue,
                                 optionsText: 'optionText',
                                 optionsValue: 'optionValue',
                                 enable: editable
@@ -1122,11 +1160,20 @@ module nts.custombinding {
                             <label class="value-text" data-bind="text: ko.computed(function() { return (value() || '') + '&nbsp;&nbsp;&nbsp;' + (textValue() || ''); })"></label>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.READONLY -->
-                            <label class="value-text" data-bind="text: ko.computed(function() { return (value() || ''); })"></label>
+                            <label class="value-text readonly" data-bind="
+                                text: value,
+                                attr: { 
+                                    id: nameid, 
+                                    title: itemName,
+                                    'data-code': itemCode,
+                                    'data-category': categoryCode,
+                                    'data-required': required,
+                                    'data-defv': defValue
+                                 }"></label>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.RELATE_CATEGORY -->
                             <div class="relate-button">
-                                <label class="value-text" data-bind="text: ko.computed(function() { return (value() || ''); })"></label>
+                                <label class="value-text" data-bind="text: value"></label>
                                 <button data-bind="attr: { 
                                     id: nameid, 
                                     title: itemName,
@@ -1134,7 +1181,7 @@ module nts.custombinding {
                                     'data-category': categoryCode,
                                     'data-required': required,
                                     'data-defv': defValue
-                                 }, text: text('CPS001_106'), enable: editable">選択</button>
+                                 }, text: text('CPS001_127'), enable: editable">選択</button>
                             </div>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.NUMBERIC_BUTTON -->
@@ -1172,7 +1219,7 @@ module nts.custombinding {
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.READONLY_BUTTON -->
                             <div class="readonly-button">
-                                <label class="value-text" class="value-text" data-bind="text: ko.computed(function() { return (value() || ''); })"></label>
+                                <label class="value-text" class="value-text" data-bind="text: value"></label>
                                 <button data-bind="attr: { 
                                     id: nameid, 
                                     title: itemName,
@@ -1656,32 +1703,31 @@ module nts.custombinding {
                                         let id1 = '#' + prev.itemDefId.replace(/[-_]/g, ""),
                                             id2 = '#' + next.itemDefId.replace(/[-_]/g, "");
 
-                                        $(document).on('change', `${id1}, ${id2}`, (evt) => {
+                                        $(document).on('blur', `${id1}, ${id2}`, (evt) => {
                                             setTimeout(() => {
                                                 let dom1 = $(id1),
                                                     dom2 = $(id2),
                                                     pv = ko.toJS(prev.value),
                                                     nv = ko.toJS(next.value),
-                                                    tpt = typeof pv == 'number',
-                                                    tnt = typeof nv == 'number';
+                                                    tpt = _.isNumber(pv),
+                                                    tnt = _.isNumber(nv);
 
-                                                if (!tpt && tnt && !dom1.parent().hasClass('error')) {
-                                                    !dom1.is(':disabled') && dom1.ntsError('set', { messageId: "Msg_858" });
-                                                }
-
-                                                if (tpt && !tnt && !dom2.parent().hasClass('error')) {
-                                                    !dom2.is(':disabled') && dom2.ntsError('set', { messageId: "Msg_858" });
-                                                }
-
-                                                if (!(tpt && tnt) || (tpt && tnt)) {
-                                                    rmError(dom1, "Msg_858");
-                                                    rmError(dom2, "Msg_858");
-
-                                                    if (!getError().length) {
-                                                        clearError();
+                                                if (!tpt && tnt) {
+                                                    if (!dom1.is(':disabled') && !dom1.ntsError('hasError')) {
+                                                        dom1.ntsError('set', { messageId: "Msg_858" });
                                                     }
+                                                } else {
+                                                    rmError(dom1, "Msg_858");
                                                 }
-                                            }, 0);
+
+                                                if (tpt && !tnt) {
+                                                    if (!dom2.is(':disabled') && !dom2.ntsError('hasError')) {
+                                                        dom2.ntsError('set', { messageId: "Msg_858" });
+                                                    }
+                                                } else {
+                                                    rmError(dom2, "Msg_858");
+                                                }
+                                            }, 50);
                                         });
                                     };
 
@@ -1690,11 +1736,15 @@ module nts.custombinding {
                                         case ITEM_SINGLE_TYPE.DATE:
                                             first.startDate = ko.observable();
                                             first.endDate = ko.computed(() => {
-                                                return moment.utc(ko.toJS(second.value) || '9999/12/31', "YYYY/MM/DD").add(ko.toJS(second.value) ? -1 : 0, "days").toDate();
+                                                return moment.utc(ko.toJS(second.value) || '9999/12/31', "YYYY/MM/DD")
+                                                    //.add(ko.toJS(second.value) ? -1 : 0, "days")
+                                                    .toDate();
                                             });
 
                                             second.startDate = ko.computed(() => {
-                                                return moment.utc(ko.toJS(first.value) || '1900/01/01', "YYYY/MM/DD").add(ko.toJS(first.value) ? 1 : 0, "days").toDate();
+                                                return moment.utc(ko.toJS(first.value) || '1900/01/01', "YYYY/MM/DD")
+                                                    //.add(ko.toJS(first.value) ? 1 : 0, "days")
+                                                    .toDate();
                                             });
                                             second.endDate = ko.observable();
                                             break;
@@ -1774,6 +1824,11 @@ module nts.custombinding {
                     }
                 },
                 modifitem = (def: any, item?: any) => {
+                    let lstItem = [
+                        { optionValue: '1', optionText: text('CPS001_100') },
+                        { optionValue: '0', optionText: text('CPS001_99') }
+                    ];
+
                     if (!item) {
                         item = {};
                     }
@@ -1783,14 +1838,13 @@ module nts.custombinding {
                     def.itemDefId = _.has(def, "itemDefId") && def.itemDefId || item.id;
                     def.required = _.has(def, "required") && def.required || !!item.isRequired;
 
+                    def.resourceId = _.has(def, "resourceId") && def.resourceId || undefined;
+
                     def.itemParentCode = _.has(def, "itemParentCode") && def.itemParentCode || item.itemParentCode;
 
                     def.categoryCode = _.has(def, "categoryCode") && def.categoryCode || '';
 
-                    def.lstComboBoxValue = _.has(def, "lstComboBoxValue") ? def.lstComboBoxValue : [
-                        { optionValue: '1', optionText: text('CPS001_100') },
-                        { optionValue: '0', optionText: text('CPS001_99') }
-                    ];
+                    def.lstComboBoxValue = _.has(def, "lstComboBoxValue") ? (ko.isObservable(def.lstComboBoxValue) ? def.lstComboBoxValue : ko.observableArray(def.lstComboBoxValue || lstItem)) : ko.observableArray(lstItem);
 
                     def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
                     def.readonly = ko.observable(_.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.VIEW_ONLY : !!opts.sortable.isEnabled());
@@ -1805,6 +1859,8 @@ module nts.custombinding {
                     def.textValue = ko.isObservable(def.textValue) ? def.textValue : ko.observable(isStr(def.item) && def.textValue ? String(def.textValue) : def.textValue);
 
                     def.defValue = ko.toJS(def.value);
+
+                    def.editable.subscribe(x => { if (!x) { def.value(def.defValue); } });
 
                     if (ko.toJS(access.editAble) == 2) {
                         def.value.subscribe(x => {
@@ -2083,6 +2139,7 @@ module nts.custombinding {
             $.extend(opts.sortable, { data: access.data });
 
             opts.sortable.data.subscribe((data: Array<IItemClassification>) => {
+                let startt = new Date().getTime();
                 opts.sortable.isEditable.valueHasMutated();
                 _.each(data, (x, i) => {
                     x.dispOrder = i + 1;
@@ -2222,6 +2279,8 @@ module nts.custombinding {
                         };
                     }).value());
                 }
+                let endt = new Date().getTime();
+                console.log(endt - startt);
             });
             opts.sortable.data.valueHasMutated();
 

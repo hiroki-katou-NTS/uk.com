@@ -7,6 +7,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import lombok.Getter;
 import lombok.Value;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
@@ -37,6 +38,7 @@ import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDet
 import nts.uk.ctx.at.request.app.find.application.requestofearch.OutputMessageDeadline;
 import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDeadlineDto;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InputGetDetailCheck;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
 
 @Path("at/request/application")
 @Produces("application/json")
@@ -105,9 +107,8 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("remandapp")
-	public String remandApp(RemandCommand command){
-		//return remandApplicationHandler.handle(command);
-		return null;
+	public MailSenderResult remandApp(RemandCommand command){
+		return remandApplicationHandler.handle(command);
 	}
 	
 	/**
@@ -185,6 +186,12 @@ public class ApplicationWebservice extends WebService {
 		return this.finderApp.getAppByID(appID);
 	}
 	
+	@POST
+	@Path("getAppInfoByListAppID")
+	public List<ApplicationMetaDto> getListAppInfo(List<String> listAppID){
+		return this.finderApp.getListAppInfo(listAppID);
+	}
+	
 	
 	@POST
 	@Path("getAppInfoForRemandByAppId")
@@ -226,7 +233,7 @@ public class ApplicationWebservice extends WebService {
 
 }
 
-@Value
+@Getter
 class AppDateParam {
 	private Integer appTypeValue; 
 	private String appDate;
@@ -235,7 +242,7 @@ class AppDateParam {
 }
 
 
-@Value
+@Getter
 class ClosureParam {
 	private List<Integer> closureId;
 }

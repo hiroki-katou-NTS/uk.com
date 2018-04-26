@@ -18,7 +18,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 
 	private String QUERY_WITH_SPECIALID = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.specialLeaID = :specialLeaId";
 
-	private String GET_ALL_BY_SID_SPECIALCODE_STATUS = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.employeeId = :employeeId AND a.specialLeaCode = :specialLeaCode AND e.expStatus = :expStatus order by a.grantDate";
+	private String GET_ALL_BY_SID_SPECIALCODE_STATUS = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.employeeId = :employeeId AND a.specialLeaCode = :specialLeaCode AND a.expStatus = :expStatus order by a.grantDate";
 
 	private String DELETE_QUERY = "DELETE FROM KrcmtSpecialLeaveReam a" + " WHERE a.specialLeaID = :specialid ";
 
@@ -123,7 +123,6 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	 */
 	private KrcmtSpecialLeaveReam toEntity(SpecialLeaveGrantRemainingData data) {
 		KrcmtSpecialLeaveReam entity = new KrcmtSpecialLeaveReam();
-		System.out.println(data);
 		entity.cId = data.getCId();
 		entity.specialLeaID = data.getSpecialId();
 		entity.employeeId = data.getEmployeeId();
@@ -177,11 +176,11 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 
 	@Override
 	public List<SpecialLeaveGrantRemainingData> getAllByExpStatus(String employeeId, int specialCode,
-			boolean expirationStatus) {
+			int expirationStatus) {
 		List<KrcmtSpecialLeaveReam> entities = this.queryProxy()
 				.query(GET_ALL_BY_SID_SPECIALCODE_STATUS, KrcmtSpecialLeaveReam.class)
 				.setParameter("employeeId", employeeId).setParameter("specialLeaCode", specialCode)
-				.setParameter("expStatus", expirationStatus ? 1 : 0).getList();
+				.setParameter("expStatus",expirationStatus).getList();
 
 		return entities.stream()
 				.map(x -> SpecialLeaveGrantRemainingData.createFromJavaType(x.specialLeaID, x.cId, x.employeeId,

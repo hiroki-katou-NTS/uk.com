@@ -26,8 +26,10 @@ module nts.uk.at.view.ktg001.a.viewmodel {
                     self.text = ko.observable(getText('KTG001_5'));
                     self.visible = ko.observable(false);
                 }
+                dfd.resolve();
+            }).always(function () {
+                nts.uk.ui.block.clear();
             });
-            dfd.resolve();
             return dfd.promise();
         }
 

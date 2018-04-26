@@ -2,12 +2,10 @@ package nts.uk.ctx.pereg.app.find.roles.auth.item;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemDetail;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class PersonInfoItemDetailDto {
 	private String roleId;
 

@@ -10,11 +10,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "PPEMT_PER_INFO_ITEM_CM")
@@ -102,10 +100,49 @@ public class PpemtPerInfoItemCm extends UkJpaEntity implements Serializable {
 	
 	@Column(name = "RELATED_CATEGORY_CD")
 	public String relatedCategoryCode;
+	
+	@Column(name ="RESOURCE_ID")
+	public String resourceId;
 
 	@Override
 	protected Object getKey() {
 		return ppemtPerInfoItemCmPK;
+	}
+
+	public PpemtPerInfoItemCm(PpemtPerInfoItemCmPK ppemtPerInfoItemCmPK, String itemParentCd, int systemRequiredAtr,
+			int requireChangabledAtr, int fixedAtr, int itemType, BigDecimal dataType, BigDecimal timeItemMin,
+			BigDecimal timeItemMax, BigDecimal timepointItemMin, BigDecimal timepointItemMax, BigDecimal dateItemType,
+			BigDecimal stringItemType, BigDecimal stringItemLength, BigDecimal stringItemDataType,
+			BigDecimal numericItemMin, BigDecimal numericItemMax, BigDecimal numericItemAmountAtr,
+			BigDecimal numericItemMinusAtr, BigDecimal numericItemDecimalPart, BigDecimal numericItemIntegerPart,
+			BigDecimal selectionItemRefType, String selectionItemRefCode, String relatedCategoryCode,
+			String resourceId) {
+		super();
+		this.ppemtPerInfoItemCmPK = ppemtPerInfoItemCmPK;
+		this.itemParentCd = itemParentCd;
+		this.systemRequiredAtr = systemRequiredAtr;
+		this.requireChangabledAtr = requireChangabledAtr;
+		this.fixedAtr = fixedAtr;
+		this.itemType = itemType;
+		this.dataType = dataType;
+		this.timeItemMin = timeItemMin;
+		this.timeItemMax = timeItemMax;
+		this.timepointItemMin = timepointItemMin;
+		this.timepointItemMax = timepointItemMax;
+		this.dateItemType = dateItemType;
+		this.stringItemType = stringItemType;
+		this.stringItemLength = stringItemLength;
+		this.stringItemDataType = stringItemDataType;
+		this.numericItemMin = numericItemMin;
+		this.numericItemMax = numericItemMax;
+		this.numericItemAmountAtr = numericItemAmountAtr;
+		this.numericItemMinusAtr = numericItemMinusAtr;
+		this.numericItemDecimalPart = numericItemDecimalPart;
+		this.numericItemIntegerPart = numericItemIntegerPart;
+		this.selectionItemRefType = selectionItemRefType;
+		this.selectionItemRefCode = selectionItemRefCode;
+		this.relatedCategoryCode = relatedCategoryCode;
+		this.resourceId = resourceId;
 	}
 
 }

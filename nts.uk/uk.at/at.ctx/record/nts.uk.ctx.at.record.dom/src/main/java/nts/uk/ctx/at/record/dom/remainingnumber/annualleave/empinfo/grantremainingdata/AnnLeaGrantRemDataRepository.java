@@ -11,7 +11,7 @@ public interface AnnLeaGrantRemDataRepository {
 	
 	Optional<AnnualLeaveGrantRemainingData> findByID(String id);
 	
-	List<AnnualLeaveGrantRemainingData> findByCheckState(String employeeId, Boolean checkState);
+	List<AnnualLeaveGrantRemainingData> findByCheckState(String employeeId, int checkState);
 	
 	List<AnnualLeaveGrantRemainingData> findNotExp(String employeeId);
 	

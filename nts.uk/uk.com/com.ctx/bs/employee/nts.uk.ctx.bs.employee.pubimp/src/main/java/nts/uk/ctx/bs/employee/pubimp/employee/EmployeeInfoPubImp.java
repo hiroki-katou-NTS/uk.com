@@ -52,9 +52,12 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 			return Optional.empty();
 		} else {
 			EmployeeDataMngInfo emp = empInfo.get();
+			
+			Optional<Person> person = personRepo.getByPId(emp.getPersonId());
+			
 			EmployeeInfoDtoExport result = new EmployeeInfoDtoExport(emp.getCompanyId(),
 					emp.getEmployeeCode() == null ? null : emp.getEmployeeCode().v(), emp.getEmployeeId(),
-					emp.getPersonId(), "");
+					emp.getPersonId(), (person.isPresent() && person.get().getPersonNameGroup().getBusinessName() != null) ? person.get().getPersonNameGroup().getPersonName().getFullName().v() : null);
 			return Optional.of(result);
 
 		}

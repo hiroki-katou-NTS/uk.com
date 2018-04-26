@@ -23,7 +23,7 @@ public interface WorkingConditionItemSetMemento {
 	 *
 	 * @param scheduleManagementAtr the new schedule management atr
 	 */
-	void setScheduleManagementAtr(NotUseAtr scheduleManagementAtr);
+	void setScheduleManagementAtr(ManageAtr scheduleManagementAtr);
 
 	/**
 	 * Sets the vacation added time atr.

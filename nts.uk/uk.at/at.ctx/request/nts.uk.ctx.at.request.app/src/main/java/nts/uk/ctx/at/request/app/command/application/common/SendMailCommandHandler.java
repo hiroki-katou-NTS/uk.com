@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.at.request.dom.mail.service.after.CheckTransmission;
+import nts.uk.ctx.at.request.dom.mail.CheckTransmission;
 
 @Stateless
 public class SendMailCommandHandler extends CommandHandlerWithResult<SendMailCommand, List<Integer>>{

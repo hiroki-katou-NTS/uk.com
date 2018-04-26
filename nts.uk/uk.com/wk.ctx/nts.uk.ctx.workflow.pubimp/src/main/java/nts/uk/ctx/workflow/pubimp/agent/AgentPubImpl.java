@@ -8,13 +8,14 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.agent.Agent;
 import nts.uk.ctx.workflow.dom.agent.AgentRepository;
 import nts.uk.ctx.workflow.dom.agent.ApprovalAgencyInfoService;
 import nts.uk.ctx.workflow.dom.agent.output.ApprovalAgencyInfoOutput;
 import nts.uk.ctx.workflow.pub.agent.AgentAppTypeExport;
 import nts.uk.ctx.workflow.pub.agent.AgentDataPubExport;
-import nts.uk.ctx.workflow.dom.agent.Agent;
 import nts.uk.ctx.workflow.pub.agent.AgentExport;
+import nts.uk.ctx.workflow.pub.agent.AgentInfoExport;
 import nts.uk.ctx.workflow.pub.agent.AgentPub;
 import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
 import nts.uk.ctx.workflow.pub.agent.ApproverRepresenterExport;
@@ -83,5 +84,21 @@ public class AgentPubImpl implements AgentPub {
 					.agentAppType4(x.getAgentAppType4().value)
 					.build();
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<AgentInfoExport> findAgentByPeriod(String companyID, List<String> listApprover, GeneralDate startDate,
+			GeneralDate endDate, Integer agentType) {
+		return agentRepository.findAgentByPeriod(companyID, listApprover, startDate, endDate, agentType)
+				.stream()
+				.map(x -> {
+					if(x == null) return null;
+					return new AgentInfoExport(
+						x.getApproverID(), 
+						x.getAgentID(), 
+						x.getStartDate(), 
+						x.getEndDate());
+				})
+				.collect(Collectors.toList());
 	}
 }

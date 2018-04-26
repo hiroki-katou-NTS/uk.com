@@ -38,8 +38,8 @@
 			<div data-bind="if: !$parent.screenModeNew()" class="mode-style">
 				<span data-bind="text: application().startDate"></span>
 				<!--A4_2 ~-->
-				<label class="valign-center link-app-date-label-kaf007">#{i18n.getText('KAF007_14')}</label>
-				<span data-bind="text: application().endDate"></span>
+				<label data-bind= "visible: application().startDate() != application().endDate()" class="valign-center link-app-date-label-kaf007">#{i18n.getText('KAF007_14')}</label>
+				<span data-bind="text: application().endDate, visible: application().startDate() != application().endDate()"></span>
 			</div>
 		</div>
 		<!--A5 勤務を変更する--> 
@@ -103,7 +103,7 @@
 					</div>
 				</div>
 			</div>			
-			<div class="table">
+			<div class="table" data-bind="if : false">
 				<div class="cell valign-top lblTitle-kaf007">
 				</div>				
 				<div class="cell valign-center row-width">
@@ -143,7 +143,8 @@
 			</div>
 		</div>
 		<!--A8 勤務時間２--> 	
-		<div class="valign-center control-group-kaf007" data-bind="if: $parent.isMultipleTime">
+		<!-- <div class="valign-center control-group-kaf007" data-bind="if: $parent.isMultipleTime"> -->
+		<div class="valign-center control-group-kaf007" data-bind="if: false">
 			<div class="table">				
 				<div class="cell valign-center">
 					<div class="lblTitle-kaf007" data-bind="ntsFormLabel: {required:false}">#{i18n.getText('KAF007_20')}</div>
@@ -210,7 +211,7 @@
 			</div>		
 		</div>		
 		<!--A9 休憩時間--> 
-		<div class="valign-center control-group-kaf007">
+		<div class="valign-center control-group-kaf007" data-bind="if: false">
 			<div class="table">
 				<div class="cell valign-center">
 					<div class="lblTitle-kaf007" data-bind="ntsFormLabel: {required:false}">#{i18n.getText('KAF007_40')}</div>

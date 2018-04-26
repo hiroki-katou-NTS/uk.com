@@ -141,6 +141,7 @@ public class MonthlyDetail {
 		// 「日別実績の勤務情報」を取得
 		if (!workInformationOfDailyMap.containsKey(procDate)) return weeklyPTAfterAssign;
 		val workInfo = workInformationOfDailyMap.get(procDate);
+		if (workInfo.getWorkTimeCode() == null) return weeklyPTAfterAssign;
 		val workTimeCode = workInfo.getWorkTimeCode().v();
 
 		// 休出・振替の処理順序を取得する（逆時系列用）
@@ -259,6 +260,7 @@ public class MonthlyDetail {
 		// 「日別実績の勤務情報」を取得
 		if (!workInformationOfDailyMap.containsKey(procDate)) return weeklyPTAfterAssign;
 		val workInfo = workInformationOfDailyMap.get(procDate);
+		if (workInfo.getWorkTimeCode() == null) return weeklyPTAfterAssign;
 		val workTimeCode = workInfo.getWorkTimeCode().v();
 
 		// 残業・振替の処理順序を取得する（逆時系列用）
@@ -468,6 +470,7 @@ public class MonthlyDetail {
 		// 「日別実績の勤務情報」を取得
 		if (!workInformationOfDailyMap.containsKey(procDate)) return monthlyPTAfterAssign;
 		val workInfo = workInformationOfDailyMap.get(procDate);
+		if (workInfo.getWorkTimeCode() == null) return monthlyPTAfterAssign;
 		val workTimeCode = workInfo.getWorkTimeCode().v();
 
 		// 休出・振替の処理順序を取得する（逆時系列用）
@@ -588,6 +591,7 @@ public class MonthlyDetail {
 		// 「日別実績の勤務情報」を取得
 		if (!workInformationOfDailyMap.containsKey(procDate)) return monthlyPTAfterAssign;
 		val workInfo = workInformationOfDailyMap.get(procDate);
+		if (workInfo.getWorkTimeCode() == null) return monthlyPTAfterAssign;
 		val workTimeCode = workInfo.getWorkTimeCode().v();
 
 		// 残業・振替の処理順序を取得する（逆時系列用）

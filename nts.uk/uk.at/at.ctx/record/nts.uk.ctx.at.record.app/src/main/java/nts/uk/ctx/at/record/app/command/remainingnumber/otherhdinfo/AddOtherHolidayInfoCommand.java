@@ -26,18 +26,14 @@ public class AddOtherHolidayInfoCommand {
 
 	// 60H超休管理
 	@PeregItem("IS00370")
-	private int useAtr;
+	private BigDecimal useAtr;
 
 	// 発生単位
 	@PeregItem("IS00371")
-	private int occurrenceUnit;
+	private BigDecimal occurrenceUnit;
 
 	// 精算方法
 	@PeregItem("IS00372")
-	private int paymentMethod;
-
-	// 60H超休残数
-	@PeregItem("IS00374")
-	private int extraHours;
+	private BigDecimal paymentMethod;
 
 }

@@ -7,6 +7,7 @@ import nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ProcessExecutionAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
+import nts.uk.ctx.at.schedule.dom.executionlog.RebuildTargetAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentSetMemento;
 
 /**
@@ -32,6 +33,9 @@ public class ScheduleCreateContentDto implements ScheduleCreateContentSetMemento
 
 	/** The process execution atr. */
 	public Integer processExecutionAtr;
+	
+	/** The rebuild target atr. */
+	public Integer rebuildTargetAtr;
 
 	/** The re create atr. */
 	public Integer reCreateAtr;
@@ -39,20 +43,32 @@ public class ScheduleCreateContentDto implements ScheduleCreateContentSetMemento
 	/** The reset master info. */
 	public Boolean resetMasterInfo;
 
-	/** The reset absent holiday business. */
-	public Boolean resetAbsentHolidayBusines;
-
 	/** The reset working hours. */
 	public Boolean resetWorkingHours;
 
 	/** The reset time assignment. */
 	public Boolean resetTimeAssignment;
-
-	/** The reset direct line bounce. */
-	public Boolean resetDirectLineBounce;
-
-	/** The reset time child care. */
-	public Boolean resetTimeChildCare;
+	
+	/** The resetStartEndTime. */
+	public Boolean resetStartEndTime;
+	
+	/** The resetStartEndTime. */
+	public Boolean recreateConverter;
+	
+	/** The recreateEmployeeOffWork. */
+	public Boolean recreateEmployeeOffWork;
+	
+	/** The recreateDirectBouncer. */
+	public Boolean recreateDirectBouncer;
+	
+	/** The recreateShortTermEmployee. */
+	public Boolean recreateShortTermEmployee;
+	
+	/** The recreateWorkTypeChange. */
+	public Boolean recreateWorkTypeChange;
+	
+	/** The protectHandCorrection. */
+	public Boolean protectHandCorrection;
 	
 	/** The start date. */
 	public GeneralDate startDate;
@@ -125,11 +141,6 @@ public class ScheduleCreateContentDto implements ScheduleCreateContentSetMemento
 	}
 
 	@Override
-	public void setResetAbsentHolidayBusines(Boolean resetAbsentHolidayBusines) {
-		this.resetAbsentHolidayBusines = resetAbsentHolidayBusines;
-	}
-
-	@Override
 	public void setResetWorkingHours(Boolean resetWorkingHours) {
 		this.resetWorkingHours = resetWorkingHours;
 	}
@@ -140,13 +151,46 @@ public class ScheduleCreateContentDto implements ScheduleCreateContentSetMemento
 	}
 
 	@Override
-	public void setResetDirectLineBounce(Boolean resetDirectLineBounce) {
-		this.resetDirectLineBounce = resetDirectLineBounce;
+	public void setResetStartEndTime(Boolean resetStartEndTime) {
+		this.resetStartEndTime = resetStartEndTime;
 	}
 
 	@Override
-	public void setResetTimeChildCare(Boolean resetTimeChildCare) {
-		this.resetTimeChildCare = resetTimeChildCare;
+	public void setRebuildTargetAtr(RebuildTargetAtr rebuildTargetAtr) {
+		if (rebuildTargetAtr == null) {
+			this.rebuildTargetAtr = null;
+		} else {
+			this.rebuildTargetAtr = rebuildTargetAtr.value;
+		}
 	}
 
+	@Override
+	public void setRecreateConverter(Boolean recreateConverter) {
+		this.recreateConverter = recreateConverter;
+	}
+
+	@Override
+	public void setRecreateEmployeeOffWork(Boolean recreateEmployeeOffWork) {
+		this.recreateEmployeeOffWork = recreateEmployeeOffWork;
+	}
+
+	@Override
+	public void setRecreateDirectBouncer(Boolean recreateDirectBouncer) {
+		this.recreateDirectBouncer = recreateDirectBouncer;
+	}
+
+	@Override
+	public void setRecreateShortTermEmployee(Boolean recreateShortTermEmployee) {
+		this.recreateShortTermEmployee = recreateShortTermEmployee;
+	}
+
+	@Override
+	public void setRecreateWorkTypeChange(Boolean recreateWorkTypeChange) {
+		this.recreateWorkTypeChange = recreateWorkTypeChange;
+	}
+
+	@Override
+	public void setProtectHandCorrection(Boolean protectHandCorrection) {
+		this.protectHandCorrection = protectHandCorrection;
+	}
 }

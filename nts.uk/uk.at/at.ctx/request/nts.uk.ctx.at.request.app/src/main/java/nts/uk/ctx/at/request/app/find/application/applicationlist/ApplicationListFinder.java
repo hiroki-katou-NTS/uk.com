@@ -58,11 +58,11 @@ public class ApplicationListFinder {
 		if(StringUtil.isNullOrEmpty(param.getStartDate(), false) || StringUtil.isNullOrEmpty(param.getEndDate(), false)){
 			//アルゴリズム「申請一覧初期日付期間」を実行する-(Thực hiện thuật toán lấy ngày　－12)
 			DatePeriod date = null;
-//			if(param.getAppListAtr().equals(ApplicationListAtr.APPROVER)){
+			if(param.getAppListAtr().equals(ApplicationListAtr.APPROVER.value)){
 				date = repoAppListInit.getInitialPeriod(companyId);
-//			}else{
-//				date = repoAppListInit.getInitPeriodApp(companyId);
-//			}
+			}else{
+				date = repoAppListInit.getInitPeriodApp(companyId);
+			}
 			param.setStartDate(date.start().toString());
 			param.setEndDate(date.end().toString());
 			

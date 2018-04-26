@@ -5,7 +5,8 @@ module nts.uk.at.view.kdw003.d.viewmodel {
     export class ScreenModel {
         gridListColumns: KnockoutObservableArray<any>;
         lstErrorAlarm: KnockoutObservableArray<any>;
-
+        lstSelectedErrorAlarm: KnockoutObservableArray<any>;
+        errorParam: ErrorParam = null;
         constructor() {
             let self = this;
             self.gridListColumns = ko.observableArray([
@@ -13,19 +14,44 @@ module nts.uk.at.view.kdw003.d.viewmodel {
                 { headerText: nts.uk.resource.getText("KDW003_59"), key: 'name', width: 280 }
             ]);
             self.lstErrorAlarm = ko.observableArray([]);
+            self.lstSelectedErrorAlarm = ko.observableArray([]);
+            //パラメータ            
+            self.errorParam =  nts.uk.ui.windows.getShared("KDW003D_ErrorParam");
+            if(nts.uk.util.isNullOrUndefined(self.errorParam)){
+                self.errorParam = new ErrorParam(0,[]);
+            }
+            //選択済項目
+            self.lstSelectedErrorAlarm(self.errorParam.selectedItems);
         }
         
         /**
          * 起動する
          */
         startPage(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            service.getErrorList().done((lstData) => {
-                let sortedData = _.orderBy(lstData, ['code'], ['asc']);
-                self.lstErrorAlarm(sortedData);
-                dfd.resolve();
-            });
+            let self = this;
+            let dfd = $.Deferred();
+            //日別
+            if(self.errorParam.initMode == 0){
+                service.getErrorList().done((lstData) => {
+                    let sortedData = _.orderBy(lstData, ['code'], ['asc']);
+                    self.lstErrorAlarm(sortedData);
+                    dfd.resolve();
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alert(error.message);
+                    dfd.reject();
+                });
+            }
+            //月別
+            else if(self.errorParam.initMode == 1){
+                service.getMonthlyErrorList().done((lstData) => {
+                    let sortedData = _.orderBy(lstData, ['code'], ['asc']);
+                    self.lstErrorAlarm(sortedData);
+                    dfd.resolve();
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alert(error.message);
+                    dfd.reject();
+                });
+            }
             return dfd.promise();
         }
         
@@ -34,10 +60,8 @@ module nts.uk.at.view.kdw003.d.viewmodel {
          */
         extract() {
             let self = this;
-
-            // set return value
-            setShared('errorAlarmList', self.lstErrorAlarm());
-
+            //選択されたエラーコード一覧
+            setShared('KDW003D_Output', self.lstSelectedErrorAlarm());
             // close dialog.
             windows.close();
         }
@@ -48,8 +72,22 @@ module nts.uk.at.view.kdw003.d.viewmodel {
         closeDialog(): void {
             windows.close();
         }
+    }  
+    /**
+     * パラメータ  
+     */
+    export class ErrorParam{
+        //起動モード：日別=0 or 月別=1
+        initMode : number;
+        //選択済項目：    勤務実績のエラーアラームコード
+　　　　　　　//           or 月別実績のエラーアラームコード
+        selectedItems : Array<string>;
+        constructor(initMode : number, selectedItems : Array<string>){
+            let self = this;
+            self.initMode = initMode;
+            self.selectedItems = selectedItems;
+        }
     }
-
     export class ErrorAlarmWorkRecord {
         /* 会社ID */
         companyId: string;

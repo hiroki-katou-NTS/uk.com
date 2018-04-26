@@ -10,7 +10,6 @@ module cps001.a.vm {
     import hasError = nts.uk.ui.errors.hasError;
     import clearError = nts.uk.ui.errors.clearAll;
     import liveView = nts.uk.request.liveView;
-    import permision = service.getCurrentEmpPermision;
     import permision4Cat = service.getPermision4Cat;
     import format = nts.uk.text.format;
     import lv = nts.layout.validate;
@@ -63,28 +62,32 @@ module cps001.a.vm {
 
             /** Return data */
             returnDataFromCcg001: (data: any) => {
-                let self = this;
+                let self = this,
+                    id = ko.toJS(self.employee.employeeId),
+                    emps = data.listEmployee,
+                    exits = !!_.find(emps, m => m.employeeId == id);
 
-                self.employees(data.listEmployee);
+                self.employees(emps);
+                if (emps.length > 0) {
+                    if (!exits) {
+                        self.employee.employeeId(emps[0].employeeId);
+                    }
+                } else {
+                    self.employee.employeeId(undefined);
+                }
             }
         };
 
         // current tab active id (layout/category)
         tab: KnockoutObservable<TABS> = ko.observable(TABS.LAYOUT);
 
-        // permision of current employee (current login).
-        auth: KnockoutObservable<PersonAuth> = ko.observable(new PersonAuth());
-
         // for employee info.
         employees: KnockoutObservableArray<IEmployee> = ko.observableArray([]);
-        employee: KnockoutObservable<Employee> = ko.observable(new Employee());
-
-        person: KnockoutComputed<PersonInfo> = ko.computed(() => {
-            let self = this,
-                employee = self.employee();
-
-            return employee.personInfo();
-        });
+        employee: any = {
+            roleId: ko.observable(''),
+            personId: ko.observable(''),
+            employeeId: ko.observable('')
+        };
 
         // output data on category changed
         multipleData: KnockoutObservableArray<MultiData> = ko.observableArray([new MultiData()]);
@@ -106,26 +109,10 @@ module cps001.a.vm {
 
         constructor() {
             let self = this,
-                auth = self.auth(),
-                employee = self.employee(),
-                person = employee.personInfo(),
+                employee = self.employee,
                 list = self.multipleData;
 
             self.block();
-
-            permision().done((data: IPersonAuth) => {
-                if (data) {
-                    auth.roleId(data.roleId);
-                    auth.allowDocRef(!!data.allowDocRef);
-                    auth.allowAvatarRef(!!data.allowAvatarRef);
-                    auth.allowMapBrowse(!!data.allowMapBrowse);
-                } else {
-                    auth.roleId(undefined);
-                    auth.allowDocRef(false);
-                    auth.allowAvatarRef(false);
-                    auth.allowMapBrowse(false);
-                }
-            });
 
             self.hasLayout.subscribe(x => {
                 if (!x) {
@@ -136,7 +123,7 @@ module cps001.a.vm {
             self.tab.subscribe(tab => {
                 self.block();
                 let loadData: IReloadData = getShared(RELOAD_DT_KEY),
-                    personId: string = person.personId(),
+                    personId: string = employee.personId(),
                     employeeId: string = employee.employeeId(),
                     selectFirstId = (sources: Array<any>, layoutData: any) => {
                         if (loadData) {
@@ -184,7 +171,7 @@ module cps001.a.vm {
                     }
 
                     layoutData.mode(tab);
-                    layoutData.roleId(self.auth().roleId());
+                    layoutData.roleId(employee.roleId());
 
                     switch (tab) {
                         default:
@@ -242,14 +229,18 @@ module cps001.a.vm {
                 }
             });
 
+            employee.personId.subscribe(id => {
+                _.each(list(), l => {
+                    l.personId(employee.personId());
+                });
+            });
+
             employee.employeeId.subscribe(id => {
                 self.block();
                 let reload = getShared(RELOAD_KEY);
-
                 if (id) {
                     _.each(list(), l => {
                         l.employeeId(id);
-                        l.personId(person.personId());
                     });
 
                     if (reload) {
@@ -292,18 +283,19 @@ module cps001.a.vm {
             let self = this,
                 reload = getShared(RELOAD_KEY),
                 reloadData = getShared(RELOAD_DT_KEY),
-                employee = self.employee(),
+                employee = self.employee,
                 logInId: string = __viewContext.user.employeeId,
                 params: IParam = getShared("CPS001A_PARAMS") || { employeeId: undefined };
 
             if (reload) {
                 let emps = self.employees(),
                     single = emps.length == 1,
+                    ids = _.map(emps, x => x.employeeId),
                     old_index = _.indexOf(emps.map(x => x.employeeId), employee.employeeId());
 
                 self.employees.removeAll();
 
-                $('#ccg001-btn-search-all').trigger('click');
+                $('#ccg001-btn-search-all>div').trigger('click');
 
                 $.when((() => {
                     let def = $.Deferred(),
@@ -323,6 +315,8 @@ module cps001.a.vm {
                             self.employees(_.filter(employees, m => m.employeeId == logInId));
                             employee.employeeId(logInId);
                         }
+                    } else {
+                        self.employees(_.filter(employees, m => ids.indexOf(m.employeeId) > -1));
                     }
 
                     let first = _.find(self.employees(), x => x.employeeId == employee.employeeId());
@@ -349,9 +343,9 @@ module cps001.a.vm {
             } else {
                 $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
                     if (params && params.employeeId) {
-                        $('#ccg001-btn-search-all').trigger('click');
+                        $('#ccg001-btn-search-all>div').trigger('click');
                     } else {
-                        $('#ccg001-btn-only-me').trigger('click');
+                        $('#ccg001-btn-only-me>div').trigger('click');
                     }
 
                     $.when((() => {
@@ -387,18 +381,18 @@ module cps001.a.vm {
 
         deleteEmployee() {
             let self = this,
-                emp = self.employee(),
-                person = self.person(),
+                emp = self.employee,
                 logInId: string = __viewContext.user.employeeId;
 
             if (emp.employeeId() == logInId) {
                 // show message if delete self
+                alert({ messageId: 'Msg_1109' });
                 return;
             }
 
             setShared('CPS001B_PARAMS', {
                 sid: emp.employeeId(),
-                pid: person.personId()
+                pid: emp.personId()
             });
 
             modal('../b/index.xhtml').onClosed(() => {
@@ -406,79 +400,22 @@ module cps001.a.vm {
             });
         }
 
-        chooseAvatar() {
-            let self = this,
-                employee: Employee = self.employee(),
-                iemp: IEmployee = ko.toJS(employee);
-
-            if (!iemp || !iemp.employeeId) {
-                return;
-            }
-
-            permision().done((perm: IPersonAuth) => {
-                if (!!perm.allowAvatarRef) {
-                    setShared("CPS001D_PARAMS", {
-                        employeeId: iemp.employeeId
-                    });
-                    modal('../d/index.xhtml').onClosed(() => {
-                        let data = getShared("CPS001D_VALUES");
-
-                        if (data) {
-                            employee.avatar(data.fileId ? liveView(data.fileId) : undefined);
-                        }
-                    });
-                }
-            });
-        }
-
         unManagerEmployee() {
-            let self = this,
-                employee: Employee = self.employee(),
-                iemp: IEmployee = ko.toJS(employee);
+            let self = this;
 
             modal('../c/index.xhtml').onClosed(() => {
                 self.start();
             });
         }
 
-        pickLocation() {
-            let self = this,
-                employee: Employee = self.employee(),
-                iemp: IEmployee = ko.toJS(employee);
-
-            permision().done((perm: IPersonAuth) => {
-                if (!!perm.allowMapBrowse) {
-                    setShared("CPS001E_PARAMS", {
-                        employeeId: iemp.employeeId
-                    });
-                    modal('../e/index.xhtml').onClosed(() => { });
-                }
-            });
-        }
-
-        uploadebook() {
-            let self = this,
-                person = self.person();
-
-            permision().done((perm: IPersonAuth) => {
-                if (!!perm.allowDocRef) {
-                    setShared("CPS001F_PARAMS", {
-                        pid: person.personId()
-                    });
-                    modal('../f/index.xhtml').onClosed(() => { });
-                }
-            });
-        }
-
         saveData() {
             let self = this,
-                emp = self.employee(),
-                person = emp.personInfo(),
+                emp = self.employee,
                 layouts = self.multipleData().map(x => x.layout()),
                 controls = _.flatten(layouts.map(x => x.listItemCls())),
                 inputs = _.flatten(layouts.map(x => x.outData())),
                 command: IPeregCommand = {
-                    personId: person.personId(),
+                    personId: emp.personId(),
                     employeeId: emp.employeeId(),
                     inputs: inputs
                 };
@@ -743,6 +680,8 @@ module cps001.a.vm {
                         }
                     }
                     self.categoryId.valueHasMutated();
+                } else {
+                    unblock();
                 }
             });
 
@@ -898,6 +837,8 @@ module cps001.a.vm {
                                 break;
                         }
                     }
+                } else {
+                    unblock();
                 }
             });
 
@@ -1015,6 +956,8 @@ module cps001.a.vm {
                     } else {
                         setShared(REPL_KEY, REPL_KEYS.NORMAL);
                     }
+                } else {
+                    unblock();
                 }
             });
         }
@@ -1072,213 +1015,6 @@ module cps001.a.vm {
         hasChildrens: KnockoutObservable<boolean> = ko.observable(false);
     }
 
-    interface IEmployee {
-        pid?: string;
-        employeeId: string;
-        gender?: string;
-        birthday?: string;
-
-        employeeCode?: string;
-        employeeName?: string;
-
-        numberOfWork?: number;
-        numberOfTempHist?: number;
-
-        departmentCode?: string;
-        departmentName?: string;
-
-        avatar?: string;
-
-        position?: string;
-        contractCodeType?: string;
-    }
-
-    class Employee {
-        employeeId: KnockoutObservable<string> = ko.observable('');
-        employeeCode: KnockoutObservable<string> = ko.observable('');
-        employeeName: KnockoutObservable<string> = ko.observable('');
-        departmentCode: KnockoutObservable<string> = ko.observable('');
-        departmentName: KnockoutObservable<string> = ko.observable('');
-
-        position: KnockoutObservable<string> = ko.observable('');
-        contractType: KnockoutObservable<string> = ko.observable('');
-
-        numberOfWork: KnockoutObservable<number> = ko.observable(0);
-
-        avatar: KnockoutObservable<string> = ko.observable(DEF_AVATAR);
-        personInfo: KnockoutObservable<PersonInfo> = ko.observable(new PersonInfo());
-
-        // calc days of work process
-        entire: KnockoutComputed<string> = ko.computed(() => {
-            let self = this,
-                days = self.numberOfWork(),
-                duration = moment.duration(days, "days");
-
-            return duration.days() != 0 && format("{0}{1}{2}{3}", duration.years(), text('CPS001_67'), duration.months(), text('CPS001_88')) || '';
-        });
-
-        constructor(param?: IEmployee) {
-            let self = this,
-                person = self.personInfo();
-
-            if (param) {
-                self.employeeId(param.employeeId);
-                self.employeeCode(param.employeeCode);
-                self.employeeName(param.employeeName);
-
-                self.avatar(param.avatar || DEF_AVATAR);
-            }
-
-            self.employeeId.subscribe(id => {
-                if (id) {
-                    // get employee && employment info
-                    service.getEmpInfo(id).done((data: IEmployee) => {
-                        if (data) {
-                            person.personId(data.pid);
-                            self.employeeCode(data.employeeCode);
-                            self.employeeName(data.employeeName);
-
-                            // set entire days with data receive
-                            self.numberOfWork(data.numberOfWork - data.numberOfTempHist);
-
-                            self.position(data.position);
-                            self.contractType(data.contractCodeType);
-
-                            person.gender(data.gender);
-                            if (data.birthday) {
-                                person.birthDate(moment.utc(data.birthday, "YYYY/MM/DD").toDate());
-                            } else {
-                                person.birthDate(undefined);
-                            }
-
-                            self.departmentCode(data.departmentCode);
-                            self.departmentName(data.departmentName);
-                        } else {
-                            self.employeeCode(undefined);
-                            self.employeeName(undefined);
-
-                            // set entire days is zero
-                            self.numberOfWork(0);
-
-                            self.position(undefined);
-                            self.contractType(undefined);
-
-                            self.departmentCode(undefined);
-                            self.departmentName(undefined);
-                        }
-                    }).fail(() => {
-                        self.employeeCode(undefined);
-                        self.employeeName(undefined);
-
-                        // set entire days is zero
-                        self.numberOfWork(0);
-
-                        self.position(undefined);
-                        self.contractType(undefined);
-
-                        self.departmentCode(undefined);
-                        self.departmentName(undefined);
-                    });
-
-                    permision().done((perm: IPersonAuth) => {
-                        service.getAvatar(id).done((data: any) => {
-                            self.avatar(data.fileId ? liveView(data.fileId) : undefined);
-                        });
-                    });
-                } else {
-                    person.gender(undefined);
-                    person.personId(undefined);
-                    person.birthDate(undefined);
-                }
-            });
-
-            self.avatar.subscribe(x => {
-                if (!x) {
-                    self.avatar(DEF_AVATAR);
-                }
-            });
-        }
-    }
-
-    interface IPersonInfo {
-        pid: string;
-        birthDate?: Date;
-        gender?: string;
-        countryId?: number;
-        mailAddress?: string;
-        personMobile?: string;
-        code?: string;
-        bloodType?: number;
-        personNameGroup?: IPersonNameGroup;
-    }
-
-    interface IPersonNameGroup {
-        businessEnglishName?: string;
-        businessName?: string;
-        businessOtherName?: string;
-        oldName?: string;
-        personName?: string;
-        personNameKana?: string;
-        personRomanji?: string;
-        todokedeFullName?: string;
-        todokedeOldFullName?: string;
-    }
-
-    class PersonInfo {
-        personId: KnockoutObservable<string> = ko.observable('');
-        gender: KnockoutObservable<string> = ko.observable('');
-        code: KnockoutObservable<string> = ko.observable('');
-        fullName: KnockoutObservable<string> = ko.observable('');
-        birthDate: KnockoutObservable<Date> = ko.observable(undefined);
-        constructor(param?: IPersonInfo) {
-            let self = this;
-
-            if (param) {
-                self.personId(param.pid || '');
-                self.code(param.code || '');
-                self.fullName(param.personNameGroup ? param.personNameGroup.businessName : '');
-                self.gender(param.gender || '');
-            }
-        }
-
-        age: KnockoutComputed<string> = ko.computed(() => {
-            let self = this,
-                now = moment.utc(),
-                birthDay = self.birthDate(),
-                birth = moment.utc(birthDay),
-                duration = moment.duration(now.diff(birth));
-
-            return birthDay && (duration.years() + text('CPS001_66')) || '';
-        });
-    }
-
-    interface IPersonAuth {
-        roleId: string;
-        allowMapUpload: number;
-        allowMapBrowse: number;
-        allowDocRef: number;
-        allowDocUpload: number;
-        allowAvatarUpload: number;
-        allowAvatarRef: number;
-    }
-
-    class PersonAuth {
-        roleId: KnockoutObservable<string> = ko.observable('');
-        allowAvatarRef: KnockoutObservable<boolean> = ko.observable(false);
-        allowDocRef: KnockoutObservable<boolean> = ko.observable(false);
-        allowMapBrowse: KnockoutObservable<boolean> = ko.observable(false);
-
-        constructor(param?: IPersonAuth) {
-            let self = this;
-            if (param) {
-                self.roleId(param.roleId);
-                self.allowAvatarRef(!!param.allowAvatarRef);
-                self.allowDocRef(!!param.allowDocRef);
-                self.allowMapBrowse(!!param.allowMapBrowse);
-            }
-        }
-    }
-
     interface ICatAuth {
         roleId: string;
         personInfoCategoryAuthId: string;
@@ -1297,10 +1033,6 @@ module cps001.a.vm {
         selfAllowDelMulti: number;
         otherAllowAddMulti: number;
         otherAllowDelMulti: number;
-    }
-
-    class CatAuth {
-
     }
 
     enum ATCS {
