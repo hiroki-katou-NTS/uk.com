@@ -35,16 +35,16 @@
                         value: selectedCode,
                         rows: 10}">
                      </table>
-                     <table style="margin-top: 15px; margin-bottom: 15px;">
+                     <table tabindex="-1" style="margin-top: 15px; margin-bottom: 15px;">
                      	<tr>
-	                        <td><button data-bind="click: OpenDialogB">#{i18n.getText('KMK015_9')}</button></td>
+	                        <td><button tabindex="-1" data-bind="click: OpenDialogB">#{i18n.getText('KMK015_9')}</button></td>
 	                        <td>
-	                           <button data-bind="enable: isEnable, click: OpenDialogC" style="margin-left: 20px">#{i18n.getText('KMK015_10')}</button>
-	                           <button style="margin-left: 20px" data-bind="enable: isEnable, click: removeHistory" class="danger">#{i18n.getText('KMK015_11')}</button>
+	                           <button tabindex="-1" data-bind="enable: isEnable, click: OpenDialogC" style="margin-left: 20px">#{i18n.getText('KMK015_10')}</button>
+	                           <button tabindex="-1" style="margin-left: 20px" data-bind="enable: isEnable, click: removeHistory" class="danger">#{i18n.getText('KMK015_11')}</button>
 	                        </td>
 	                     </tr>
                 	  </table>
-                	  <table id="tbl-master-list"
+                	  <table tabindex="-1" id="tbl-master-list"
                         data-bind="enable: isEnable, ntsGridList: {
                         name: '#[kmk015_15]',
                         width: 300,
@@ -58,31 +58,31 @@
                   </div>
                   <!-- Optional Item view model -->
                   <div class="pull-left opt-item-detail fixed-flex-layout-right layout-right-kmk015">
-                  	<table class="control-group">
+                  	<table tabindex="-1" class="control-group">
 	                    <tr>
 	                       <td>
-	                          <div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK015_6')}</div>
+	                          <div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK015_6')}</div>
 	                       </td>
 	                       <td style="display: -webkit-box;">
-	                          <div data-bind="text: selectedCode" class="padding-text-code"></div>
-	                          <div data-bind="text: nameWorkType" class="padding-text-name"></div>
+	                          <div tabindex="-1" data-bind="text: selectedCode" class="padding-text-code"></div>
+	                          <div tabindex="-1" data-bind="text: nameWorkType" class="padding-text-name"></div>
 	                       </td>
 	                    </tr>
 	                    <tr>
 	                       <td style="padding-top: 10px;">
-	                          <div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK015_7')}</div>
+	                          <div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK015_7')}</div>
 	                       </td>
 	                       <td>
-	                          <div data-bind="text: timeHistory" class="padding-text-code"></div>
+	                          <div tabindex="-1" data-bind="text: timeHistory" class="padding-text-code"></div>
 	                       </td>
 	                    </tr>
 	                    <tr>
-	                       <td style="padding-top: 10px;">
+	                       <td tabindex="-1" style="padding-top: 10px;">
 	                          	<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK015_8')}</div>
 	                          	
 	                       </td>
 	                       <td><div style="padding-top: 10px;padding-left: 30px;">
-								<input tabindex="3" id="number-1" data-bind="enable: isEnableNumber, ntsNumberEditor: { 
+								<input tabindex="3" id="number-1" data-bind="ntsNumberEditor: { 
 									name: 'Number', 
 									value: numberDay, 
 									constraint: 'OptionalMaxDay', 
@@ -92,7 +92,7 @@
 				                        unitID: 'DAYS'
 				                    }, 
 									required: true, 
-									enable: true, 
+									enable: isEnableNumber, 
 									readonly: false}" />
 							</div></td>
 	                    </tr>

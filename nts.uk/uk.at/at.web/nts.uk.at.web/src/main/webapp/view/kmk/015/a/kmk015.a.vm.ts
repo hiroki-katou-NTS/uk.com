@@ -107,6 +107,9 @@ module nts.uk.at.view.kmk015.a {
                 }
 
                 self.selectedCodeHistory.subscribe(code => {
+                    //clear Error
+                    nts.uk.ui.errors.clearAll();
+                   
                     self.listHistory().forEach(function(item) {
                         if (item.historyId == code) {
                             self.historyId(code);
