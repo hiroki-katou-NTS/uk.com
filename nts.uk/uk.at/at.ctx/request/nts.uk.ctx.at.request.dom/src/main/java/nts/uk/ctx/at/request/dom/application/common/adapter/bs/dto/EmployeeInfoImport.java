@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.application.common.adapter.bs.employee.dto;
+package nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

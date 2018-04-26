@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.mail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,8 +13,8 @@ import org.apache.logging.log4j.util.Strings;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.employee.AtEmployeeRequestAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.employee.dto.EmployeeInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbedded;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedRepository;
@@ -41,7 +42,7 @@ public class CheckTranmissionImpl implements CheckTransmission {
 	private RegisterEmbededURL registerEmbededURL;
 	
 	@Inject
-	private AtEmployeeRequestAdapter employeeRequestAdapter;
+	private AtEmployeeAdapter employeeRequestAdapter;
 	
 	@Override
 	public MailSenderResult doCheckTranmission(String appId, int appType, int prePostAtr, List<String> employeeIdList,
@@ -68,9 +69,10 @@ public class CheckTranmissionImpl implements CheckTransmission {
 		// request list 225
 		// request list 228
 		// get mail (may be get from client but re-get here)
+		List<EmployeeInfoImport> listEmpName = employeeRequestAdapter.getByListSID(employeeIdList);
 		for(String employeeToSendId: employeeIdList){
-			List<EmployeeInfoImport> listEmpName = employeeRequestAdapter.getByListSID(employeeIdList);
-			String empName = (!listEmpName.isEmpty() ? listEmpName.get(0).getBussinessName() : "");
+			List<EmployeeInfoImport> listEmpName1 = employeeRequestAdapter.getByListSID(Arrays.asList(employeeToSendId));
+			String empName = (!listEmpName1.isEmpty() ? listEmpName1.get(0).getBussinessName() : "");
 			String mail = employeeToSendId;
 			String employeeMail = "hiep.ld@3si.vn";
 			if (Strings.isBlank(mail)) {
