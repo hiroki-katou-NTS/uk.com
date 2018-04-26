@@ -402,7 +402,7 @@ module nts.uk.at.view.kaf011.shr {
                 };
                 block.invisible();
                 service.changeAbsDateToHoliday(saveCmd).done((payoutType) => {
-                     nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { appID: self.absWk().appID() , appDate :self.absWk().appDate(), payoutType:payoutType, applicant : self.employeeID()});
+                     nts.uk.request.jump("/view/kaf/010/a/index.xhtml", { appID: self.absWk().appID() , appDate :self.absWk().appDate(), payoutType:payoutType, applicant : self.employeeID()});
                 }).fail((error) => {
                     alError({ messageId: error.messageId, messageParams: error.parameterIds });
                 }).always(() => {
