@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+				<script>var dialogSize = { width: 160, height: 250 };</script>
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="cmf004.c.vm.js" />
+				<com:scriptfile path="cmf004.c.start.js" />
+				<com:stylefile path="cmf004.c.style.css" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div class="contents-area dialog-content"  >
+					<div data-bind="ntsFormLabel: {}" class = "label-left">#{i18n.getText('CMF004_50')}</div>
+					<span>復旧ファイル名(tên file khô phục)</span>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>
