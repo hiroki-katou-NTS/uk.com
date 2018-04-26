@@ -1346,7 +1346,7 @@ public class DailyPerformanceCorrectionProcessor {
 								}
 								dto.setApproverEmployeeState(x.getApprovalAtr());
 								return dto;
-							}));
+							}, (x, y) -> x));
 			return approvalRootMap;
 		} else {
 			List<ApproveRootStatusForEmpImport> approvals = approvalStatusAdapter.getApprovalByListEmplAndListApprovalRecordDate(dateRange.toListDate(), employeeIds, 1);
