@@ -442,6 +442,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             nts.uk.ui.block.invisible();
             setShared('KDR001Params', self.holidayRemainingSelectedCd());
             modal("/view/kdr/001/b/index.xhtml").onClosed(function() {
+                self.holidayRemainingSelectedCd(getShared('KDR001Params'));
                 service.findAll().done(function(data: Array<any>) {
                     self.loadAllHolidayRemaining(data);
                     nts.uk.ui.block.clear();
