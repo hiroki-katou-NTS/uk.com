@@ -1,0 +1,49 @@
+package nts.uk.ctx.sys.assist.infra.repository;
+
+import java.util.Optional;
+import java.util.List;
+
+import javax.ejb.Stateless;
+
+import nts.uk.ctx.sys.assist.infra.entity.SspmtTargetCategory;
+import nts.uk.ctx.sys.assist.infra.entity.SspmtTargetCategoryPk;
+import nts.uk.ctx.sys.assist.dom.TargetCategoryRepository;
+import nts.uk.ctx.sys.assist.dom.TargetCategory;
+import nts.arc.layer.infra.data.JpaRepository;
+
+@Stateless
+public class JpaTargetCategoryRepository extends JpaRepository implements TargetCategoryRepository
+{
+
+    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspmtTargetCategory f";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.targetCategoryPk.storeProcessingId =:storeProcessingId AND  f.targetCategoryPk.categoryId =:categoryId ";
+
+    @Override
+    public List<TargetCategory> getAllTargetCategory(){
+        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, SspmtTargetCategory.class)
+                .getList(item -> item.toDomain());
+    }
+
+    @Override
+    public Optional<TargetCategory> getTargetCategoryById(String storeProcessingId, String categoryId){
+        return this.queryProxy().query(SELECT_BY_KEY_STRING, SspmtTargetCategory.class)
+        .setParameter("storeProcessingId", storeProcessingId)
+        .setParameter("categoryId", categoryId)
+        .getSingle(c->c.toDomain());
+    }
+
+    @Override
+    public void add(TargetCategory domain){
+        this.commandProxy().insert(SspmtTargetCategory.toEntity(domain));
+    }
+
+    @Override
+    public void update(TargetCategory domain){
+        this.commandProxy().update(SspmtTargetCategory.toEntity(domain));
+    }
+
+    @Override
+    public void remove(String storeProcessingId, String categoryId){
+        this.commandProxy().remove(SspmtTargetCategory.class, new SspmtTargetCategoryPk(storeProcessingId, categoryId)); 
+    }
+}
