@@ -423,9 +423,9 @@ module nts.uk.com.view.cps001.i.vm {
                 let hour = Math.floor(Math.abs(value) / 60);
                 let minutes = Math.floor(Math.abs(value) % 60);
                 let result =  hour + ':' + (minutes < 10 ? ("0" + minutes) : minutes);
-                return value >= 0 ? result : '-'+result;
+                return value >= 0 ? ' '+result : '-'+result;
             } else {
-                return '0:00';
+                return ' 0:00';
             }
         }
 
