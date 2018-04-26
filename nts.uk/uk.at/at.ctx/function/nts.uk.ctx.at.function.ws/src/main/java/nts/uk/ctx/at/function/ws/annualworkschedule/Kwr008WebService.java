@@ -14,6 +14,8 @@ import nts.uk.ctx.at.function.app.command.annualworkschedule.AddSetOutItemsWoScC
 import nts.uk.ctx.at.function.app.command.annualworkschedule.RemoveSetOutItemsWoScCommandHandler;
 import nts.uk.ctx.at.function.app.command.annualworkschedule.SetOutItemsWoScCommand;
 import nts.uk.ctx.at.function.app.command.annualworkschedule.UpdateSetOutItemsWoScCommandHandler;
+import nts.uk.ctx.at.function.app.find.annualworkschedule.PeriodDto;
+import nts.uk.ctx.at.function.app.find.annualworkschedule.PeriodFinder;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.SetOutItemsWoScDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.SetOutItemsWoScFinder;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.OutputAgreementTime;
@@ -31,7 +33,10 @@ public class Kwr008WebService extends WebService {
 	
 	@Inject
 	private I18NResourcesForUK i18n;
-	
+
+	@Inject
+	private PeriodFinder periodFinder;
+
 	@Inject
 	private SetOutItemsWoScFinder outputItemSetting; 
 	
@@ -43,7 +48,13 @@ public class Kwr008WebService extends WebService {
 	
 	@Inject
 	private UpdateSetOutItemsWoScCommandHandler updateOutputItemSetting;
-	
+
+	@POST
+	@Path("get/period")
+	public PeriodDto getList() {
+		return this.periodFinder.getPeriod();
+	}
+
 	/**
 	 * KWR008 A
 	 * 改頁選択 - Page break selection

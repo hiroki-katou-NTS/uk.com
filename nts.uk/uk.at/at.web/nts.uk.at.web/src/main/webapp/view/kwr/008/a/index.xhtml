@@ -25,7 +25,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- A1_1 -->
-				<button tabindex="1" class="proceed">#{i18n.getText('KWR008_3')}</button>
+				<button tabindex="1" class="proceed" data-bind="click: exportReport">#{i18n.getText('KWR008_3')}</button>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<!-- A2_1  CCG001-->
@@ -41,13 +41,13 @@
 						</div>
 					</div>
 				</div>
-				<div class="fixed-flex-layout-right" style="padding-top: 20px; margin-left:100px;">
+				<div class="fixed-flex-layout-right" style="padding-top: 20px; margin-left:20px;">
 					<div>
 						<!-- A3 -->
 						<div class="valign-center control-group">
 							
 							<!-- A3_1 -->
-							<div class="form-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR008_4')}</div>
+							<span class="label">#{i18n.getText('KWR008_4')}</span>
 								
 							<!-- A3_2 -->
 							<div class="valign-center" tabindex="3" data-bind="ntsDatePicker: {
@@ -75,7 +75,7 @@
 						<!-- A4 -->
 						<div class="valign-center control-group" style="margin-top:100px">
 							<!-- A4_1 -->
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KWR008_11')}</div>
+							<span class="label">#{i18n.getText('KWR008_11')}</span>
 							<!-- A4_2 -->
 							<div tabindex="6" data-bind="ntsComboBox: {
 								name: '#{i18n.getText('KWR008_12')}',
@@ -94,7 +94,7 @@
 						
 						<!-- A6 -->
 						<div class="valign-center control-group" style="margin-top: 100px">
-							<div id="A6_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR008_17')}</div>
+							<span class="label">#{i18n.getText('KWR008_17')}</span>
 							<div tabindex="7" id="A4_2" data-bind="ntsComboBox: {
 								options: breakPage,
 								optionsValue: 'value',

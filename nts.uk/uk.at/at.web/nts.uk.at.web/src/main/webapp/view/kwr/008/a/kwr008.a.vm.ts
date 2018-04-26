@@ -1,9 +1,9 @@
 module nts.uk.at.view.kwr008.a {
 
-    import ScheduleBatchCorrectSettingSave = service.model.ScheduleBatchCorrectSettingSave;
     import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
+    import share = nts.uk.at.view.kwr008.share.model;
 
     export module viewmodel {
         export class ScreenModel {
@@ -40,30 +40,6 @@ module nts.uk.at.view.kwr008.a {
             showPeriod: KnockoutObservable<boolean>; // 対象期間利用
             periodFormatYM: KnockoutObservable<boolean>; // 対象期間精度
 
-            selectedImplementAtrCode: KnockoutObservable<number>;
-            checkReCreateAtrAllCase: KnockoutObservable<boolean>;
-            checkReCreateAtrOnlyUnConfirm: KnockoutObservable<boolean>;
-            checkProcessExecutionAtrRebuild: KnockoutObservable<boolean>;
-            checkProcessExecutionAtrReconfig: KnockoutObservable<boolean>;
-            checkCreateMethodAtrPersonalInfo: KnockoutObservable<boolean>;
-            checkCreateMethodAtrPatternSchedule: KnockoutObservable<boolean>;
-            checkCreateMethodAtrCopyPastSchedule: KnockoutObservable<boolean>;
-            resetWorkingHours: KnockoutObservable<boolean>;
-            resetDirectLineBounce: KnockoutObservable<boolean>;
-            resetMasterInfo: KnockoutObservable<boolean>;
-            resetTimeChildCare: KnockoutObservable<boolean>;
-            resetAbsentHolidayBusines: KnockoutObservable<boolean>;
-            resetTimeAssignment: KnockoutObservable<boolean>;
-            workTypeInfo: KnockoutObservable<string>;
-            workTypeCode: KnockoutObservable<string>;
-            workTimeInfo: KnockoutObservable<string>;
-            workTimeCode: KnockoutObservable<string>;
-
-            lstLabelInfomation: KnockoutObservableArray<string>;
-            infoCreateMethod: KnockoutObservable<string>;
-            infoPeriodDate: KnockoutObservable<string>;
-            lengthEmployeeSelected: KnockoutObservable<string>;
-
             // Employee tab
             lstPersonComponentOption: any;
             selectedEmployeeCode: KnockoutObservableArray<string>;
@@ -72,38 +48,26 @@ module nts.uk.at.view.kwr008.a {
             alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
             ccgcomponentPerson: GroupOption;
 
-            //for control field
-            isReCreate: KnockoutObservable<boolean>;
-            isReSetting: KnockoutObservable<boolean>;
-
-
             // date
             date: KnockoutObservable<string>;
             maxDaysCumulationByEmp: KnockoutObservable<number>;
-            
             periodDate: KnockoutObservable<any>;
-
-            //A3_1
-            startDateString: KnockoutObservable<string>;
-            endDateString: KnockoutObservable<string>;
-
+            //A3
+            startDateString: KnockoutObservable<string> = ko.observable('');
+            endDateString: KnockoutObservable<string> = ko.observable('');
             //A4
-            outputItem: KnockoutObservable<string[]>;
-            selectedOutputItem: KnockoutObservable<string>;
+            outputItem: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+            selectedOutputItem: KnockoutObservable<ItemModel> = ko.observable(null);
 
             //A6 
             breakPage: KnockoutObservableArray<share.model.EnumConstantDto>;
-            selectedBreakPage: KnockoutObservable<string>
+            selectedBreakPage: KnockoutObservable<string>;
 
             constructor() {
                 var self = this;
 
                 // dump
                 self.date = ko.observable('20181231');
-                self.systemTypes = ko.observableArray([
-                    { name: 'システム管理者', value: 1 }, // PERSONAL_INFORMATION
-                    { name: '就業', value: 2 } // EMPLOYMENT
-                ]);
                 self.selectedEmployee = ko.observableArray([]);
 
                 // initial ccg options
@@ -118,63 +82,35 @@ module nts.uk.at.view.kwr008.a {
                     }
                 });
 
-                //A3                
-                self.startDateString = ko.observable("20180101");
-                self.endDateString = ko.observable("20181230");
+                //A3
+                service.getPeriod().done((data: model.PeriodDto) => {
+                    self.startDateString(data.startYearMonth);
+                    self.endDateString(data.endYearMonth);
+                });
 
                 //A4
-                self.outputItem = ko.observable([
-                    { "code": 0, "name": "a" },
-                    { "code": 1, "name": "b" },
-                    { "code": 2, "name": "c" }
-                ]);
+                service.getOutItemSettingCode().done((dataArr: Array<share.OutputSettingCodeDto>) => {
+                    _.forEach(dataArr, data => {
+                        self.outputItem.push(new ItemModel(data.cd, data.name));
+                    });
+                });
 
                 self.selectedOutputItem = ko.observable('0');
-
                 // A6
                 self.breakPage = ko.observable([]);
-                
                 self.selectedBreakPage = ko.observable('0');
-
 
                 self.selectedEmployeeCode = ko.observableArray([]);
                 self.alreadySettingPersonal = ko.observableArray([]);
                 self.maxDaysCumulationByEmp = ko.observable(0);
-                //                self.periodDate = ko.observable({
-                //                    startDate: self.startDateString(),
-                //                    endDate: self.endDateString()
-                //                });
-                self.checkReCreateAtrOnlyUnConfirm = ko.observable(false);
-                self.checkReCreateAtrAllCase = ko.observable(true);
-                self.checkProcessExecutionAtrRebuild = ko.observable(true);
-                self.checkProcessExecutionAtrReconfig = ko.observable(false);
-                self.resetWorkingHours = ko.observable(false);
-                self.resetDirectLineBounce = ko.observable(false);
-                self.resetMasterInfo = ko.observable(false);
-                self.resetTimeChildCare = ko.observable(false);
-                self.resetAbsentHolidayBusines = ko.observable(false);
-                self.resetTimeAssignment = ko.observable(false);
-                self.checkCreateMethodAtrPersonalInfo = ko.observable(true);
-                self.checkCreateMethodAtrPatternSchedule = ko.observable(false);
-                self.checkCreateMethodAtrCopyPastSchedule = ko.observable(false);
-
-                self.workTypeInfo = ko.observable('');
-                self.workTypeCode = ko.observable('');
-                self.workTimeInfo = ko.observable('');
-                self.workTimeCode = ko.observable('');
-
-                //                self.startDateString.subscribe(function(value){
-                //                    self.periodDate().startDate = value;
-                //                    self.periodDate.valueHasMutated();        
-                //                });
-                //                
-                //                self.endDateString.subscribe(function(value){
-                //                    self.periodDate().endDate = value;   
-                //                    self.periodDate.valueHasMutated();      
-                //                });
             }
-            
-                        
+
+            exportReport() {
+                nts.uk.request.exportFile('at/function/annualworkschedule/export').done(() => {
+                    console.log('DONE!!');
+                });
+            }
+
             redirectKWR008B(){
                 nts.uk.request.jump("/view/kwr/008/b/index.xhtml");
             }
@@ -285,8 +221,7 @@ module nts.uk.at.view.kwr008.a {
                 }).fail((enumError)=>{
                     console.log(`fail : ${enumError}`);
                 });
-                
-                
+
                 dfd.resolve(self);
                 return dfd.promise();
             }
@@ -322,34 +257,6 @@ module nts.uk.at.view.kwr008.a {
                     maxRows: 15
                 };
 
-            }
-
-
-            /**
-             * function export excel button
-             */
-            private exportButton() {
-                var self = this;
-                // check selection employee 
-                if (self.selectedEmployeeCode && self.selectedEmployee() && self.selectedEmployeeCode().length > 0) {
-                    if (new Date(self.date()) >= new Date(self.periodDate().endDate)) {
-                        nts.uk.ui.windows.setShared('KDM002Params', {
-                            empployeeList: self.selectedEmployee(),
-                            periodDate: self.periodDate(),
-                            date: self.date(),
-                            maxday: self.maxDaysCumulationByEmp()
-                        });
-
-                        nts.uk.ui.windows.sub.modal("/view/kdm/002/b/index.xhtml");
-                    }
-                    else {
-                        nts.uk.ui.dialog.alertError({ messageId: 'Msg_1064' });
-                    }
-                }
-                else {
-                    // show message by not choose employee of kcp005
-                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1063' });
-                }
             }
 
             /**
@@ -453,6 +360,14 @@ module nts.uk.at.view.kwr008.a {
             constructor(code: number, name: string) {
                 this.code = code;
                 this.name = name;
+            }
+        }
+
+        /** model */
+        export module model {
+            export interface PeriodDto {
+                startYearMonth: Date;
+                endYearMonth: Date;
             }
         }
     }
