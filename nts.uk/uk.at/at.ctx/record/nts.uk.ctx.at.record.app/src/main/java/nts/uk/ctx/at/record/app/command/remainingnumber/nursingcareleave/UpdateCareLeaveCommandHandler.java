@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.app.command.remainingnumber.nursingcareleave;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -48,12 +46,12 @@ implements PeregUpdateCommandHandler<UpdateCareLeaveCommand>{
 		dataRepo.update(careData, cId);
 		
 		NursingCareLeaveRemainingInfo childCareInfo = NursingCareLeaveRemainingInfo.createChildCareLeaveInfo(data.getSId(), data.getChildCareUseArt().intValue(), 
-				data.getChildCareUpLimSet().intValue(), 
-				data.getChildCareThisFiscal() == null? UpperLimitSetting.FAMILY_INFO.value : data.getChildCareThisFiscal().doubleValue(), 
+				data.getChildCareUpLimSet() == null? UpperLimitSetting.FAMILY_INFO.value: data.getChildCareUpLimSet().intValue(), 
+				data.getChildCareThisFiscal() == null? null : data.getChildCareThisFiscal().doubleValue(), 
 				data.getChildCareNextFiscal() == null? null: data.getChildCareNextFiscal().doubleValue());
 		NursingCareLeaveRemainingInfo careInfo= NursingCareLeaveRemainingInfo.createCareLeaveInfo(data.getSId(), data.getCareUseArt().intValue(), 
-				data.getCareUpLimSet().intValue(), 
-				data.getCareThisFiscal() == null? UpperLimitSetting.FAMILY_INFO.value: data.getCareThisFiscal().doubleValue(), 
+				data.getCareUpLimSet() == null? UpperLimitSetting.FAMILY_INFO.value:data.getCareUpLimSet().intValue(), 
+				data.getCareThisFiscal() == null? null: data.getChildCareThisFiscal().doubleValue(), 
 				data.getCareNextFiscal() == null? null: data.getChildCareNextFiscal().doubleValue());
 		infoRepo.update(childCareInfo, cId);
 		infoRepo.update(careInfo, cId);
