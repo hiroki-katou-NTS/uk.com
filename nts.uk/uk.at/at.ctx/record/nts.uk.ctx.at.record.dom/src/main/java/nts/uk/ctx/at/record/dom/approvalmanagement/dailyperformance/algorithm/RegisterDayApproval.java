@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,118 +49,108 @@ public class RegisterDayApproval {
 
 	public void registerDayApproval(ParamDayApproval param) {
 		String companyId = AppContexts.user().companyId();
-		boolean canUpdate = false;
-		Map<String, GeneralDate> employeeIdInsert = new HashMap<>();
-		Map<String, GeneralDate> employeeIdRealse = new HashMap<>();
+		Map<Pair<String, GeneralDate>, GeneralDate> employeeIdInsert = new HashMap<>();
+		Map<Pair<String, GeneralDate>, GeneralDate> employeeIdRealse = new HashMap<>();
 		Optional<ApprovalProcessingUseSetting> approvalSetting = approvalProcessingRepository
 				.findByCompanyId(companyId);
-		if (approvalSetting.isPresent()) {
-			Optional<ConfirmationOfManagerOrYouself> checkOpt = checkApprovalOperation
-					.checkApproval(approvalSetting.get());
-			if (checkOpt.isPresent()) {
-				if (checkOpt.get().value == ConfirmationOfManagerOrYouself.CAN_CHECK.value) {
-					// TODO insert column
-					param.getContentApproval().forEach(x -> {
-						if (x.isStatus()) {
-							employeeIdInsert.put(x.getEmployeeId(), x.getDate());
-						} else {
-							employeeIdRealse.put(x.getEmployeeId(), x.getDate());
-						}
-					});
-					canUpdate = true;
+		if (!approvalSetting.isPresent())
+			return;
+		Optional<ConfirmationOfManagerOrYouself> checkOpt = checkApprovalOperation.checkApproval(approvalSetting.get());
+		if (!checkOpt.isPresent())
+			return;
+		if (checkOpt.get().value == ConfirmationOfManagerOrYouself.CAN_CHECK.value) {
+			param.getContentApproval().forEach(x -> {
+				if (x.isStatus()) {
+					employeeIdInsert.put(Pair.of(x.getEmployeeId(), x.getDate()), x.getDate());
 				} else {
-					for (ContentApproval data : param.getContentApproval()) {
-						List<EmployeeDailyPerError> employeeDailyPerErrors = employeeDailyPerErrorRepository
-								.find(param.getEmployeeId(), data.getDate());
-						if (!employeeDailyPerErrors.isEmpty()) {
-							List<ErrorAlarmWorkRecord> errorAlarmWorkRecords = errorAlarmWorkRecordRepository
-									.getListErAlByListCodeError(companyId,
-											employeeDailyPerErrors.stream()
-													.map(x -> x.getErrorAlarmWorkRecordCode().v())
-													.collect(Collectors.toList()));
-							if (errorAlarmWorkRecords.isEmpty()) {
-								canUpdate = true;
-								if (data.isStatus()) {
-									employeeIdInsert.put(data.getEmployeeId(), data.getDate());
-								} else {
-									employeeIdRealse.put(data.getEmployeeId(), data.getDate());
-								}
-							}
-						}
+					employeeIdRealse.put(Pair.of(x.getEmployeeId(), x.getDate()), x.getDate());
+				}
+			});
+		} else {
+			for (ContentApproval data : param.getContentApproval()) {
+				List<EmployeeDailyPerError> employeeDailyPerErrors = employeeDailyPerErrorRepository
+						.find(param.getEmployeeId(), data.getDate());
+				boolean isNotError = true;
+				if (!employeeDailyPerErrors.isEmpty()) {
+					List<ErrorAlarmWorkRecord> errorAlarmWorkRecords = errorAlarmWorkRecordRepository
+							.getListErAlByListCodeError(companyId, employeeDailyPerErrors.stream()
+									.map(x -> x.getErrorAlarmWorkRecordCode().v()).collect(Collectors.toList()));
+					if (!errorAlarmWorkRecords.isEmpty()) {
+						isNotError = false;
 					}
-					;
+				}
+				if (isNotError) {
+					if (data.isStatus()) {
+						employeeIdInsert.put(Pair.of(data.getEmployeeId(), data.getDate()), data.getDate());
+					} else {
+						employeeIdRealse.put(Pair.of(data.getEmployeeId(), data.getDate()), data.getDate());
+					}
 				}
 			}
 		}
-		if (canUpdate) {
-			// release status == false
-			if (!employeeIdRealse.isEmpty())
-				approvalStatusAdapter.releaseApproval(param.getEmployeeId(),
-						employeeIdRealse.values().stream().collect(Collectors.toList()),
-						employeeIdRealse.keySet().stream().collect(Collectors.toList()), 1, companyId);
-			// register status == true
-			if (!employeeIdInsert.isEmpty())
-				approvalStatusAdapter.registerApproval(param.getEmployeeId(),
-						employeeIdInsert.values().stream().collect(Collectors.toList()),
-						employeeIdInsert.keySet().stream().collect(Collectors.toList()), 1, companyId);
-		}
+		// release status == false
+		if (!employeeIdRealse.isEmpty())
+			approvalStatusAdapter.releaseApproval(param.getEmployeeId(),
+					employeeIdRealse.values().stream().collect(Collectors.toList()),
+					employeeIdRealse.keySet().stream().map(x -> x.getKey()).collect(Collectors.toList()), 1, companyId);
+		// register status == true
+		if (!employeeIdInsert.isEmpty())
+			approvalStatusAdapter.registerApproval(param.getEmployeeId(),
+					employeeIdInsert.values().stream().collect(Collectors.toList()),
+					employeeIdInsert.keySet().stream().map(x -> x.getKey()).collect(Collectors.toList()), 1, companyId);
 	}
 
 	public void registerDayApprovalOld(ParamDayApproval param) {
 		String companyId = AppContexts.user().companyId();
 		Optional<ApprovalProcessingUseSetting> approvalSetting = approvalProcessingRepository
 				.findByCompanyId(companyId);
-		boolean canUpdate = false;
 		Map<Pair<String, GeneralDate>, GeneralDate> employeeIdInsert = new HashMap<>();
 		Map<Pair<String, GeneralDate>, GeneralDate> employeeIdRealse = new HashMap<>();
-		if (approvalSetting.isPresent()) {
-			OperationOfDailyPerformance operation = opOfDailyPerformance.find(new CompanyId(companyId));
-			if (operation != null && operation.getFunctionalRestriction() != null) {
-				if (operation.getFunctionalRestriction()
-						.getSupervisorConfirmError().value == ConfirmationOfManagerOrYouself.CAN_CHECK.value) {
-					// TODO insert column
-					param.getContentApproval().forEach(x -> {
-						if (x.isStatus()) {
-							employeeIdInsert.put(Pair.of(x.getEmployeeId(), x.getDate()), x.getDate());
-						} else {
-							employeeIdRealse.put(Pair.of(x.getEmployeeId(), x.getDate()), x.getDate());
-						}
-					});
-					canUpdate = true;
+		if (!approvalSetting.isPresent())
+			return;
+		OperationOfDailyPerformance operation = opOfDailyPerformance.find(new CompanyId(companyId));
+		if (operation == null || operation.getFunctionalRestriction() == null)
+			return;
+		if (operation.getFunctionalRestriction()
+				.getSupervisorConfirmError().value == ConfirmationOfManagerOrYouself.CAN_CHECK.value) {
+			param.getContentApproval().forEach(x -> {
+				if (x.isStatus()) {
+					employeeIdInsert.put(Pair.of(x.getEmployeeId(), x.getDate()), x.getDate());
 				} else {
-					for (ContentApproval data : param.getContentApproval()) {
-						List<EmployeeDailyPerError> employeeDailyPerErrors = employeeDailyPerErrorRepository
-								.find(param.getEmployeeId(), data.getDate());
-						if (!employeeDailyPerErrors.isEmpty()) {
-							List<ErrorAlarmWorkRecord> errorAlarmWorkRecords = errorAlarmWorkRecordRepository
-									.getListErAlByListCodeError(companyId,
-											employeeDailyPerErrors.stream()
-													.map(x -> x.getErrorAlarmWorkRecordCode().v())
-													.collect(Collectors.toList()));
-							if (errorAlarmWorkRecords.isEmpty()) {
-								canUpdate = true;
-								if (data.isStatus()) {
-									employeeIdInsert.put(Pair.of(data.getEmployeeId(), data.getDate()), data.getDate());
-								} else {
-									employeeIdRealse.put(Pair.of(data.getEmployeeId(), data.getDate()), data.getDate());
-								}
-							}
-						}
+					employeeIdRealse.put(Pair.of(x.getEmployeeId(), x.getDate()), x.getDate());
+				}
+			});
+		} else {
+			for (ContentApproval data : param.getContentApproval()) {
+				List<EmployeeDailyPerError> employeeDailyPerErrors = employeeDailyPerErrorRepository
+						.find(param.getEmployeeId(), data.getDate());
+				boolean isNotError = true;
+				if (!employeeDailyPerErrors.isEmpty()) {
+					List<ErrorAlarmWorkRecord> errorAlarmWorkRecords = errorAlarmWorkRecordRepository
+							.getListErAlByListCodeError(companyId, employeeDailyPerErrors.stream()
+									.map(x -> x.getErrorAlarmWorkRecordCode().v()).collect(Collectors.toList()));
+					if (!errorAlarmWorkRecords.isEmpty()) {
+						isNotError = false;
+					}
+				}
+				if (isNotError) {
+					if (data.isStatus()) {
+						employeeIdInsert.put(Pair.of(data.getEmployeeId(), data.getDate()), data.getDate());
+					} else {
+						employeeIdRealse.put(Pair.of(data.getEmployeeId(), data.getDate()), data.getDate());
 					}
 				}
 			}
 		}
-		if (canUpdate) {
-			// release status == false
-			if (!employeeIdRealse.isEmpty())
-				approvalStatusAdapter.releaseApproval(param.getEmployeeId(),
-						employeeIdRealse.values().stream().collect(Collectors.toList()),
-						employeeIdRealse.keySet().stream().map(x -> x.getKey()).collect(Collectors.toList()), 1, companyId);
-			// register status == true
-			if (!employeeIdInsert.isEmpty())
-				approvalStatusAdapter.registerApproval(param.getEmployeeId(),
-						employeeIdInsert.values().stream().collect(Collectors.toList()),
-						employeeIdInsert.keySet().stream().map(x -> x.getKey()).collect(Collectors.toList()), 1, companyId);
-		}
+		// release status == false
+		if (!employeeIdRealse.isEmpty())
+			approvalStatusAdapter.releaseApproval(param.getEmployeeId(),
+					employeeIdRealse.values().stream().collect(Collectors.toList()),
+					employeeIdRealse.keySet().stream().map(x -> x.getKey()).collect(Collectors.toList()), 1, companyId);
+		// register status == true
+		if (!employeeIdInsert.isEmpty())
+			approvalStatusAdapter.registerApproval(param.getEmployeeId(),
+					employeeIdInsert.values().stream().collect(Collectors.toList()),
+					employeeIdInsert.keySet().stream().map(x -> x.getKey()).collect(Collectors.toList()), 1, companyId);
 	}
 }
