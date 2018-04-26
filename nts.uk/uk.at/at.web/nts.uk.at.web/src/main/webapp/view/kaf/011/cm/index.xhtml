@@ -112,7 +112,7 @@
 						<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_30')}</div>
 					</div>
 					<div class="div_line_col_2 working_hour">
-						<button data-bind=" click: openKDL003">#{i18n.getText('KAF011_5')}</button>
+						<button id="recTimeBtn" data-bind=" click: openKDL003">#{i18n.getText('KAF011_5')}</button>
 						<div data-bind='text:wkText'></div>
 					</div>
 				</div>
@@ -189,7 +189,8 @@
 								<button data-bind="click:$parent.removeAbs" class="danger">#{i18n.getText('KAF011_24')}</button>
 								<button data-bind="click:$parent.cancelAbs">#{i18n.getText('KAF011_25')}</button>
 							</div>
-							<button style="display: inline-block;" data-bind="click:openCDialog">#{i18n.getText('KAF011_26')}</button>
+							<button style="display: inline-block;"
+								data-bind="click:openCDialog">#{i18n.getText('KAF011_26')}</button>
 							<div style="display: inline-block;"
 								data-bind="if:wkType().workAtr() == 0">
 								<button data-bind="click:changeAbsDateToHoliday">#{i18n.getText('KAF011_27')}</button>
@@ -232,7 +233,7 @@
 							<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_30')}</div>
 						</div>
 						<div class="div_line_col_2 working_hour">
-							<button
+							<button id="absTimeBtn"
 								data-bind=" enable: changeWorkHoursType ,click:openKDL003 ">#{i18n.getText('KAF011_5')}</button>
 							<div data-bind='text:wkText'></div>
 						</div>
@@ -247,11 +248,11 @@
 									data-bind='with: wkTime1 '>
 									<input
 										data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
-							value: startTime , enable:$parent.enableWkTime()==true , readonly: false , required: false,option: timeOption }" />
+							value: startTime , enable:$parent.enableWkTime()==true , readonly: false , required: $parent.changeWorkHoursType ,option: timeOption }" />
 									<div>#{i18n.getText('KAF011_37')}</div>
 									<input
 										data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
-							value: endTime , enable:$parent.enableWkTime()==true , readonly: false , required: false  ,option: timeOption}" />
+							value: endTime , enable:$parent.enableWkTime()==true , readonly: false , required: $parent.changeWorkHoursType  ,option: timeOption}" />
 								</div>
 							</div>
 						</div>

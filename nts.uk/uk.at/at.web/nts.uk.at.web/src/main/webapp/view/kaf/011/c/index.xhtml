@@ -45,7 +45,7 @@
 						<div data-bind="ntsFormLabel: {  }">#{i18n.getText('KAF011_13')}</div>
 					</div>
 					<div class="div_line_col_2">
-						<div id="swb_pre_post_type" class="cf" tabindex="2"
+						<div id="swb_pre_post_type" class="cf"
 							data-bind="ntsSwitchButton: {
 							options: prePostTypes ,
 							optionsValue: 'code',
@@ -72,7 +72,7 @@
 						<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_16')}</div>
 					</div>
 					<div class="div_line_col_2">
-						<div tabindex="6" class="combo-box"
+						<div class="combo-box"
 							data-bind="ntsComboBox: {
 										name: '#{i18n.getText('KAF011_16')}',
 										options: appReasons ,
@@ -95,7 +95,7 @@
 						<div data-bind="ntsFormLabel: { constraint: 'AppReason' }">#{i18n.getText('KAF011_25')}</div>
 					</div>
 					<div class="div_line_col_2">
-						<textarea style="height: 100px" tabindex="6"
+						<textarea style="height: 100px"
 							data-bind="ntsMultilineEditor: {
 									constraint: 'AppReason',
 									value: reason ,
@@ -116,9 +116,8 @@
 			</div>
 
 			<div id="functions-area-bottom">
-				<button class="x-large proceed" data-bind="click:saveAbs"
-					tabindex="11">#{i18n.getText('KAF011_3')}</button>
-				<button tabindex="12" data-bind="click: closeDialog">#{i18n.getText('KAF011_4')}</button>
+				<button class="x-large proceed" data-bind="click:saveAbs">#{i18n.getText('KAF011_3')}</button>
+				<button data-bind="click: closeDialog">#{i18n.getText('KAF011_4')}</button>
 
 			</div>
 		</ui:define>
