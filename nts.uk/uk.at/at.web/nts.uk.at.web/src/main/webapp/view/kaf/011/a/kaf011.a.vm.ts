@@ -133,9 +133,40 @@ module nts.uk.at.view.kaf011.a.screenModel {
             }
         }
         validate() {
-
+            let self = this;
             $(".kaf-011-combo-box ,.nts-input").trigger("validate");
+            self.checkRecTime();
+            self.checkAbsTime();
+        }
+        checkRecTime() {
+            let self = this,
+                comCode = self.appComSelectedCode(),
+                isRecCreate = comCode == 1 || comCode == 0;
+            if (isRecCreate) {
+                let wkTimeCd = self.recWk().wkTimeCD();
+                if (!wkTimeCd) {
+                    $('#recTimeBtn').ntsError('set', '');
+                } else {
+                    $('#recTimeBtn').ntsError('clear');
+                }
+            }
 
+        }
+        checkAbsTime() {
+            let self = this,
+                comCode = self.appComSelectedCode(),
+                isAbsCreate = comCode == 2 || comCode == 0;
+            if (isAbsCreate) {
+                let isUseWkTime = self.absWk().changeWorkHoursType();
+                if (isUseWkTime) {
+                    let wkTimeCd = self.absWk().wkTimeCD();
+                    if (!wkTimeCd) {
+                        $('#absTimeBtn').ntsError('set', '');
+                    } else {
+                        $('#absTimeBtn').ntsError('clear');
+                    }
+                }
+            }
         }
 
         register() {

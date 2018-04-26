@@ -77,7 +77,7 @@ module nts.uk.at.view.kaf011.c.screenModel {
                 startParam = {
                     sID: null,
                     appDate: self.appDate(),
-                    uiType: 10
+                    uiType: 0
                 };
 
             service.start_c(startParam).done((data: common.IHolidayShipment) => {
