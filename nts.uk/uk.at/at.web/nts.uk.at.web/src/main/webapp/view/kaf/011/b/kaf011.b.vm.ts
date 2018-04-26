@@ -119,6 +119,16 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             let self = this;
 
             self.startPage(self.appID());
+
+            self.appReasons.subscribe((appReasons) => {
+                if (appReasons) {
+                    let defaultReasonId = _.find(appReasons, { 'defaultFlg': 1 }).reasonID;
+                    if (defaultReasonId) {
+                        self.appReasonSelectedID(defaultReasonId);
+                    }
+                }
+
+            });
         }
 
         startPage(appID: string): JQueryPromise<any> {
@@ -179,10 +189,6 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             self.prePostSelectedCode(app.prePostAtr);
             self.showReason(data.applicationSetting.appReasonDispAtr);
             self.reason(data.application.applicationReason);
-            if (data.appReasonComboItems) {
-                self.appReasonSelectedID(data.appReasonComboItems[0].reasonID);
-            }
-
         }
 
         setDataBothApp(data) {
