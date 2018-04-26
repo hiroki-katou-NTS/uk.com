@@ -31,18 +31,8 @@
     </context-param>
     
     <filter>
-    	<filter-name>RequestPreProcessor</filter-name>
-    	<filter-class>nts.arc.layer.ws.preprocess.RequestPreProcessor</filter-class>
-    </filter>
-    
-    <filter-mapping>
-    	<filter-name>RequestPreProcessor</filter-name>
-    	<url-pattern>*</url-pattern>
-    </filter-mapping>
-    
-    <filter>
 		<filter-name>SecurityFilter</filter-name>
-		<filter-class>waffle.servlet.NegotiateSecurityFilter</filter-class>
+		<filter-class>nts.uk.shr.infra.application.auth.SSOSecurityFilter</filter-class>
 		<init-param>
 			<param-name>authProvider</param-name>
 			<param-value>waffle.windows.auth.impl.WindowsAuthProviderImpl</param-value>
@@ -59,21 +49,24 @@
 		
 	<filter-mapping>
 		<filter-name>SecurityFilter</filter-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/view/ccg/007/*</url-pattern>
 	</filter-mapping>
+	
+    <filter>
+    	<filter-name>RequestPreProcessor</filter-name>
+    	<filter-class>nts.arc.layer.ws.preprocess.RequestPreProcessor</filter-class>
+    </filter>
+    
+    <filter-mapping>
+    	<filter-name>RequestPreProcessor</filter-name>
+    	<url-pattern>*</url-pattern>
+    </filter-mapping>
+	
 	<login-config>
 		<auth-method>BASIC</auth-method>
 		<realm-name>authentication-policy</realm-name>
 	</login-config>
 	
-	<filter>
-		<filter-name>WindowsAccountCatcher</filter-name>
-		<filter-class>nts.uk.shr.infra.application.auth.WindowsAccountCatcher</filter-class>
-	</filter>
-    <filter-mapping>
-    	<filter-name>WindowsAccountCatcher</filter-name>
-    	<url-pattern>/*</url-pattern>
-    </filter-mapping>
     <servlet>
     	<servlet-name>nts.uk.shr.infra.web.WebApiSetting</servlet-name>
     </servlet>
