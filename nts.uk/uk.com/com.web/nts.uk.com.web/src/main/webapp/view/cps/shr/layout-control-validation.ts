@@ -340,7 +340,7 @@ module nts.layout {
                         relateCode: ['IS00360', 'IS00361', 'IS00362', 'IS00363', 'IS00364']
                     }, {
                         ctgCode: 'CS00035',
-                        radioCode: 'IS00311',
+                        radioCode: 'IS00370',
                         relateCode: ['IS00371', 'IS00372', 'IS00374']
                     }, {
                         ctgCode: 'CS00036',
