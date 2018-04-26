@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -21,13 +20,16 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppDetailInfoRepository;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTempRepository;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailType;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.AppCompltSyncOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationApprContent;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationsListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppDetail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttDetailRecord;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatus;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatusOutput;
@@ -60,7 +62,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceA
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
@@ -130,7 +131,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 
 	@Inject
 	private AtEmploymentAdapter atEmploymentAdapter;
-
+	
 	@Override
 	public List<ApprovalStatusEmployeeOutput> getApprovalStatusEmployee(String wkpId, GeneralDate closureStart,
 			GeneralDate closureEnd, List<String> listEmpCd) {
@@ -713,8 +714,11 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		return listDailyStatus;
 	}
 
+	
+	
+	
 	@Override
-	public List<String> initApprovalSttRequestContentDis(List<ApprovalStatusEmployeeOutput> listStatusEmp,
+	public ApplicationsListOutput initApprovalSttRequestContentDis(List<ApprovalStatusEmployeeOutput> listStatusEmp,
 			String selectedWkpId, String selectedEmpId) {
 		List<ApplicationApprContent> listAppContents = new ArrayList<>();
 		// 期間（リスト）
@@ -724,21 +728,18 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			listAppContents.addAll(listAppContent);
 		}
 		// アルゴリズム「承認状況申請内容追加」を実行する
-		List<ApproverOutput> listApprovalAppDetail = this.getApprovalSttAppDetail(listAppContents);
+		List<ApprovalSttAppDetail> listApprovalAppDetail = this.getApprovalSttAppDetail(listAppContents);
 		// ドメインモデル「休暇申請設定」を取得する
 		Optional<HdAppSet> lstHdAppSet = repoHdAppSet.getAll();
-
-		return null;
+		
+		return new ApplicationsListOutput(listApprovalAppDetail, lstHdAppSet.get());
 	}
 
 	/**
 	 * 承認状況申請内容追加
 	 */
-	private List<ApproverOutput> getApprovalSttAppDetail(List<ApplicationApprContent> listAppContent) {
-		List<Application_New> listApplication = listAppContent.stream().map(x2 -> {
-			return x2.getApplication();
-		}).collect(Collectors.toList());
-
+	private List<ApprovalSttAppDetail> getApprovalSttAppDetail(List<ApplicationApprContent> listAppContent) {
+		List<ApprovalSttAppDetail> listApprovalSttAppDetail = new ArrayList<>();
 		for (ApplicationApprContent appContent : listAppContent) {
 			Application_New app = appContent.getApplication();
 			/// ドメインモデル「申請表示名」より申請表示名称を取得する
@@ -746,13 +747,14 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			// アルゴリズム「承認状況申請承認者取得」を実行する
 			List<ApproverOutput> listApprover = this.getApprovalSttApprover(appContent);
 			// アルゴリズム「承認状況申請内容取得実績」を実行する
-			List<AttendanceResultImport> getAttendaceResult = this.getApplicationDetailRecord(appContent);
+			ApprovalSttDetailRecord approvalSttDetail = this.getApplicationDetailRecord(appContent);
 			// アルゴリズム「承認状況申請内容取得振休振出」を実行する
-			AppCompltSyncOutput noName = this.getAppliDetailAcquisitionOfBreakdown(app, listApplication);
+			//AppCompltSyncOutput noName = this.getAppliDetailAcquisitionOfBreakdown(app, listApplication);
 			// アルゴリズム「承認状況申請内容取得休暇」を実行する
 			String relationshipName = this.getApprovalSttDetailVacation(app);
+			listApprovalSttAppDetail.add(new ApprovalSttAppDetail(appContent, appDispName.get(), listApprover, approvalSttDetail, relationshipName));
 		}
-		return null;
+		return listApprovalSttAppDetail;
 	}
 
 	/**
@@ -765,7 +767,6 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		GeneralDate appDate = appContent.getApplication().getStartDate().get();
 		// クラス：承認フェーズ
 		for (ApprovalPhaseStateImport_New appPhase : listAppPhaseState) {
-
 			List<ApprovalFrameImport_New> listApprovalFrame = appPhase.getListApprovalFrame();
 			List<String> listEmployee = new ArrayList<>();
 			String empName = "";
@@ -793,10 +794,10 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 					}
 					numOfPeople += countPerson;
 				}
-				ApproverOutput approver = new ApproverOutput(appPhase, empName, numOfPeople);
+				ApproverOutput approver = new ApproverOutput(appPhase.getPhaseOrder(), empName, numOfPeople);
 				listApprover.add(approver);
 			} else {
-				ApproverOutput approver = new ApproverOutput(appPhase, null, null);
+				ApproverOutput approver = new ApproverOutput(appPhase.getPhaseOrder(), null, null);
 				listApprover.add(approver);
 			}
 		}
@@ -849,8 +850,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	/**
 	 * 承認状況申請内容取得実績
 	 */
-	private List<AttendanceResultImport> getApplicationDetailRecord(ApplicationApprContent appContent) {
-		List<AttendanceResultImport> listAttendanceResult = new ArrayList<>();
+	private ApprovalSttDetailRecord getApplicationDetailRecord(ApplicationApprContent appContent) {
 		String cId = AppContexts.user().companyId();
 		Application_New application = appContent.getApplication();
 		// 打刻申請の場合
@@ -867,8 +867,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		AchievementOutput achievement = collectAchievement.getAchievement(cId, application.getAppID(),
 				application.getAppDate());
 		// アルゴリズム「勤務実績の取得」を実行する
-		listAttendanceResult = this.getAttendanceResult(application);
-		return listAttendanceResult;
+		List<AttendanceResultImport> listAttendanceResult = this.getAttendanceResult(application);
+		return new ApprovalSttDetailRecord(listAttendanceResult, achievement);
 	}
 
 	/**
@@ -892,10 +892,11 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		return listAttendanceResult;
 	}
 
+	//DELETE
 	/**
 	 * 承認状況申請内容取得振休振出
 	 */
-	private AppCompltSyncOutput getAppliDetailAcquisitionOfBreakdown(Application_New app,
+	/*private AppCompltSyncOutput getAppliDetailAcquisitionOfBreakdown(Application_New app,
 			List<Application_New> listApplication) {
 		AppCompltSyncOutput appCompltSync = new AppCompltSyncOutput();
 		if (!app.isAppCompltLeave()) {
@@ -912,7 +913,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			}
 		}
 		return appCompltSync;
-	}
+	}*/
 
 	/**
 	 * 承認状況申請内容取得休暇

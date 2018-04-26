@@ -61,21 +61,6 @@ module nts.uk.at.view.kaf018.d.viewmodel {
             return dfd.promise();
         }
 
-        //        getStatusSymbol() {
-        //            var self = this;
-        //            var dfd = $.Deferred();
-        //            let obj = {
-        //                selectedWkpId: self.selectedWplId(),
-        //                listWkpId: self.listWkpId,
-        //                startDate: self.startDate,
-        //                endDate: self.endDate,
-        //                listEmpCode: self.listEmpCd,
-        //            };
-        //            service.initApprovalSttByEmployee(obj).done(function(data: any) {
-        //                dfd.resolve(data);
-        //            });
-        //            return dfd.promise();
-        //        }
         /**
          * Create exTable
          */
@@ -175,31 +160,6 @@ module nts.uk.at.view.kaf018.d.viewmodel {
          */
         setSymbolForCellContentDetail(): JQueryPromise<any> {
             var self = this, dfd = $.Deferred();
-            //            _.each(listData, function(emp) {
-            //               
-            //                while (currentDay <= self.dtAft()) {
-            //                    let time = new shareModel.Time(currentDay);
-            //                    let key = "__" + time.yearMonthDay;
-            //                    let curentDayConvert = nts.uk.time.formatDate(currentDay, 'yyyy/MM/dd');
-            //                    let daily = _.find(emp.listDaily, { date: curentDayConvert });
-            //                    if (daily != null) {
-            //                        daily.stateSymbol = daily.stateSymbol.sort();
-            //                        let valueSb = "";
-            //                        _.each(daily.stateSymbol, function(sb) {
-            //                            switch (sb) {
-            //                                case 0: valueSb += "◎"; break;
-            //                                case 1: valueSb += "〇"; break;
-            //                                case 2: valueSb += "×"; break;
-            //                                case 3: valueSb += "－"; break;
-            //                            }
-            //                        })
-            //                        emp[key] = valueSb;
-            //                    } else {
-            //                        emp[key] = "";
-            //                    }
-            //                    currentDay.setDate(currentDay.getDate() + 1);
-            //                }
-            //            });
             dfd.resolve();
             return dfd.promise();
         }

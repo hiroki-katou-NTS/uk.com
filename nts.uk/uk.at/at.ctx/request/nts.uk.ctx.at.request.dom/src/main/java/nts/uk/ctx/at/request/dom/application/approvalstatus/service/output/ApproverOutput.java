@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.request.dom.application.approvalstatus.service.output;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 /**
  * 
  * @author Anh.Bd
@@ -12,9 +12,10 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
+@Getter
 public class ApproverOutput {
 	//フェーズ
-	ApprovalPhaseStateImport_New phase;
+	Integer phase;
 	//社員名
 	String empName;
 	//人数
