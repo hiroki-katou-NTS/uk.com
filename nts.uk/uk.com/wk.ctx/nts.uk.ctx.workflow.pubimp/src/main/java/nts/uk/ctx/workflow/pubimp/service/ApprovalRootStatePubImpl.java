@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -655,5 +656,26 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 			}
 		}
 		return result;
+	}
+	@Override
+	public void cleanApprovalRootState(String rootStateID) {
+		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID);
+		if(!opApprovalRootState.isPresent()){
+			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
+		}
+		ApprovalRootState approvalRootState = opApprovalRootState.get();
+		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
+		approvalRootState.getListApprovalPhaseState().stream().forEach(approvalPhaseState -> {
+			approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
+				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
+				approvalFrame.setApproverID(null);
+				approvalFrame.setRepresenterID(null);
+				approvalFrame.setApprovalDate(null);
+				approvalFrame.setApprovalReason(null);
+			});
+			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
+		});
+		approvalRootStateRepository.update(approvalRootState);
+		
 	}
 }

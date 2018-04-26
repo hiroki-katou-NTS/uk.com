@@ -38,12 +38,11 @@ public class FlexHalfDayWorkTime extends WorkTimeDomainObject {
 	 */
 	@Override
 	public void validate() {
+		// set hidden data = null (tab3)
+		workTimezone.correctDefaultData();
+
 		if (!this.restTimezone.isFixRestTime() && this.hasNoNo1()) {
 			this.bundledBusinessExceptions.addMessage("Msg_847");
-		}
-
-		if (this.restTimezone.isFixRestTime() && !this.isInFixedWork(this.restTimezone)) {
-			this.bundledBusinessExceptions.addMessage("Msg_755");
 		}
 		
 		// validate 770 for list work
@@ -76,7 +75,7 @@ public class FlexHalfDayWorkTime extends WorkTimeDomainObject {
 	 * @param flowRest the flow rest
 	 * @return true, if is in fixed work
 	 */
-	private boolean isInFixedWork(FlowWorkRestTimezone flowRest) {
+	public boolean isInFixedWork(FlowWorkRestTimezone flowRest) {
 		return flowRest.getFixedRestTimezone().getTimezones().stream().allMatch(
 				dedTime -> this.workTimezone.isInEmTimezone(dedTime) || this.workTimezone.isInOverTimezone(dedTime));
 	}

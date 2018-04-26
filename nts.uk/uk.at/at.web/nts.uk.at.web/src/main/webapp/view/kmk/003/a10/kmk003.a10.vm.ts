@@ -86,8 +86,13 @@ module a10 {
             let _self = this;
             if (!nts.uk.util.isNullOrUndefined(code) && (code != "") && (typeof code == 'string')) {
                 //filter to get name by code
-                let itemPaySetting: any = _.filter(_self.lstBonusPaysetting(), item => item.code == code);
-                _self.bonusPaySettingName(itemPaySetting[0].name);
+                let itemPaySetting: Array<any> = _.filter(_self.lstBonusPaysetting(), item => item.code == code);
+                if (itemPaySetting.length > 0) {
+                    _self.bonusPaySettingName(itemPaySetting[0].name);
+                }
+                else {
+                    _self.bonusPaySettingName("マスタ未登録");
+                }
             }
             else {
                 _self.bonusPaySettingName("");

@@ -201,7 +201,7 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="11" class="x-large proceed" data-bind="click: decideData">#{i18n.getText('KMK004_36')}</button>
+				<button tabindex="11" class="x-large proceed" data-bind="click: decideData, enable: $root.errors.isEmpty">#{i18n.getText('KMK004_36')}</button>
 				<button tabindex="12" data-bind="click: cancel">#{i18n.getText('KMK004_37')}</button>
 			</div>
 		</ui:define>

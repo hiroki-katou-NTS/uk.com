@@ -4,6 +4,7 @@ module nts.uk.at.view.kaf011.shr {
     import text = nts.uk.resource.getText;
     import formatDate = nts.uk.time.formatDate;
     import block = nts.uk.ui.block;
+    import alError = nts.uk.ui.dialog.alertError;
 
     export module common {
 
@@ -195,8 +196,17 @@ module nts.uk.at.view.kaf011.shr {
             appDate: KnockoutObservable<Date> = ko.observable(null);
             changeWorkHoursType: KnockoutObservable<any> = ko.observable(false);
 
-            constructor() {
+            constructor(data) {
                 let self = this;
+                if (data) {
+                    self.appID(data.appID);
+                    self.wkTypeCD(data.wkTypeCD);
+                    self.wkTimeCD(data.wkTimeCD);
+                    self.wkTime1(new WorkingHour(data.wkTime1));
+                    self.wkTime2(new WorkingHour(data.wkTime2));
+                    self.appDate(data.appDate);
+                    self.changeWorkHoursType(data.changeWorkHoursType);
+                }
                 self.wkTypeCD.subscribe((newWkType) => {
                     let vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
                     let changeWkTypeParam = {
@@ -297,11 +307,13 @@ module nts.uk.at.view.kaf011.shr {
                 if (wkTimeSelect == 1) {
                     //午前と午後
                     if (workAtr == 1) {
-                        if ((afternoonType == Attendance && morningType == Pause) || (afternoonType == Pause && morningType == Attendance)) {
+                        let isAHalfWorkDay = (afternoonType == Attendance && morningType == Pause) || (afternoonType == Pause && morningType == Attendance);
+                        if (isAHalfWorkDay) {
                             return true;
                         } else {
-                            let wktype = "1234569";
-                            if ((wktype.indexOf(afternoonType) != -1 && morningType == Pause) || (wktype.indexOf(morningType) != -1 && afternoonType == Pause)) {
+                            let wkType = "1234569",
+                                isAHalfDayOff = (wkType.indexOf(afternoonType) != -1 && morningType == Pause) || (wkType.indexOf(morningType) != -1 && afternoonType == Pause);
+                            if (isAHalfDayOff) {
                                 return true;
                             } else {
                                 return false;
@@ -314,7 +326,7 @@ module nts.uk.at.view.kaf011.shr {
                 if (wkTimeSelect == 2) {
                     //午前と午後
                     if (workAtr == 1) {
-                        if (afternoonType != 0 && morningType != 0) {
+                        if (self.isBothTypeNotAttendance(afternoonType, morningType)) {
                             return false;
                         }
                     } else {
@@ -339,9 +351,10 @@ module nts.uk.at.view.kaf011.shr {
                     Attendance = 0;
                 //半休時のみ利用する
                 //利用する
-                if (wkTimeSelect == 1 || wkTimeSelect == 2) {
+                let isWkTimeIsHoliday = wkTimeSelect == 1 || wkTimeSelect == 2;
+                if (isWkTimeIsHoliday) {
                     if (workAtr == 1) {
-                        if (afternoonType != 0 && morningType != 0) {
+                        if (self.isBothTypeNotAttendance(afternoonType, morningType)) {
                             return false;
                         }
                     } else {
@@ -349,6 +362,10 @@ module nts.uk.at.view.kaf011.shr {
                     }
                 }
                 return true;
+            }
+            isBothTypeNotAttendance(afternoonType, morningType) {
+                let Attendance = 0;
+                return afternoonType != Attendance && morningType != Attendance;
             }
 
             parseTime(value) {
@@ -369,23 +386,57 @@ module nts.uk.at.view.kaf011.shr {
 
             }
 
+            changeAbsDateToHoliday() {
+                let self = __viewContext['viewModel'], saveCmd: common.ISaveHolidayShipmentCommand = {
+                    recCmd: ko.mapping.toJS(self.recWk()),
+                    absCmd: ko.mapping.toJS(self.absWk()),
+                    comType: self.appComSelectedCode(),
+                    usedDays: 1,
+                    appCmd: {
+                        appReasonText: self.appReasonSelectedID(),
+                        applicationReason: self.reason(),
+                        prePostAtr: self.prePostSelectedCode(),
+                        enteredPersonSID: self.employeeID(),
+                        appVersion: self.version(),
+                    }
+                };
+                block.invisible();
+                service.changeAbsDateToHoliday(saveCmd).done(() => {
+                    // nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { appID: self.absWk().appID() });
+                }).fail((error) => {
+                    alError({ messageId: error.messageId, messageParams: error.parameterIds });
+                }).always(() => {
+                    block.clear();
+                });
+
+
+            }
+
 
             openCDialog() {
                 let self = this,
                     vm = nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
                 nts.uk.ui.windows.setShared('KAF_011_PARAMS', {
-                    prePostSelectedCode: vm.appComSelectedCode(),
+                    prePostSelectedCode: vm.prePostSelectedCode(),
                     appReasons: vm.appReasons(),
                     reason: vm.reason(),
                     appReasonSelectedID: vm.appReasonSelectedID(),
-                    appDate: self.appDate()
+                    absApp: ko.mapping.toJS(vm.absWk()),
+                    version: vm.version()
                 }, true);
 
                 nts.uk.ui.windows.sub.modal('/view/kaf/011/c/index.xhtml').onClosed(function(): any {
 
+                    let newAbsAppID = nts.uk.ui.windows.getShared('KAF_011_C_PARAMS');
+                    if (newAbsAppID) {
+                        vm.startPage(newAbsAppID);
+                    }
+
                 });
 
             }
+
+
 
             openKDL003() {
                 let self = this,

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.YearMonth;
@@ -14,4 +15,6 @@ public interface ConfirmationMonthRepository {
 	void insert(ConfirmationMonth confirmationMonth);
 	
 	void delete(String companyId, String employeeId, int closureId, int closureDay, int processYM);
+	
+	List<ConfirmationMonth> findBySidAndYM(String employeeId, int processYM);
 }

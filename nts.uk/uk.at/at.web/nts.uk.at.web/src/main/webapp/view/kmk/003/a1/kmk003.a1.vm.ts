@@ -105,6 +105,11 @@ module a1 {
                 }
                 self.linkedWithDialogF(self.checkLinked(self.collectDialog()));
             });
+            self.mainSettingModel.workTimeSetting.worktimeCode.subscribe((v) => {
+                if (!nts.uk.util.isNullOrUndefined(v)) {
+                    self.linkedWithDialogF(false);
+                }
+            });
         }
 
         /**

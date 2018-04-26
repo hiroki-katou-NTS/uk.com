@@ -100,6 +100,10 @@ public class DiffTimeWorkSettingSaveCommandHandler extends CommandHandler<DiffTi
 			}
 		}
 
+		// Filter timezone
+		this.difftimePolicy.filterTimezone(command.toDomainPredetemineTimeSetting(), command.toWorkTimeDisplayMode(),
+				diffTimeWorkSetting);
+
 		// Check domain
 		try {
 			diffTimeWorkSetting.validate();

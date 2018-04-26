@@ -159,6 +159,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         })
         calcFlex: KnockoutObservable<CalcFlex> = ko.observable(null);
         breakTimeDay: KnockoutObservable<BreakTimeDay> = ko.observable(null);
+        canFlex:  KnockoutObservable<any> = ko.observable(false);
         constructor(dataShare:any) {
             var self = this;
             self.initLegendButton();
@@ -427,6 +428,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.breakTimeDay(data.flexShortage.breakTimeDay);
                     self.calcFlex(new CalcFlex(data.flexShortage.value18, data.flexShortage.value21, data.flexShortage.value189, data.flexShortage.value190, data.flexShortage.value191));
                     self.flexShortage(new FlexShortage(self, self.calcFlex(),  self.breakTimeDay()));
+                    // アルゴリズム「フレックス不足の相殺が実施できるかチェックする」
+                    self.calcFlex(data.flexShortage.canflex);
                 }else{
                     $("#flex").remove();
                 }
@@ -1022,6 +1025,38 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     }
                 });
             }
+//            if (!nts.uk.ui.errors.hasError()) {
+//                self.hideComponent();
+//                let lstEmployee = [];
+//                if (self.displayFormat() === 0) {
+//                    lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
+//                        return employee.id === self.selectedEmployee();
+//                    }));
+//                } else {
+//                    lstEmployee = self.lstEmployee();
+//                }
+//                //  let errorCodes =["0001","0002","003"];     
+//                let errorParam = { initMode: 0, selectedItems: [] };
+//                nts.uk.ui.windows.setShared("KDW003D_ErrorParam", errorParam);
+//                nts.uk.ui.windows.sub.modal("/view/kdw/003/d/index.xhtml").onClosed(() => {
+//                    nts.uk.ui.block.clear();
+//                    let errorCodes = nts.uk.ui.windows.getShared('KDW003D_Output');
+//                    if (errorCodes != undefined && errorCodes.length > 0) {
+//                        let lstCondition = _.map(_.filter(self.dPErrorDto(), (v) => _.includes(errorCodes, v.errorCode)), data => {
+//                            return data.employeeId + "|" + data.processingDate;
+//                        });
+//                        let dataSource = self.formatDate(self.dailyPerfomanceData());
+//                        let dataSourceFilter = _.filter(dataSource, (v) => _.includes(lstCondition, v.employeeId + "|" + v.dateDetail._i);
+//                        if (dataSourceFilter.length == 0) {
+//                            nts.uk.ui.dialog.alertError({ messageId: "Msg_672" })
+//                        } else {
+//                            setTimeout(function() {
+//                                $("#dpGrid").igGrid("option", "dataSource", dataSourceFilter);
+//                            }, 100);
+//                        }
+//                    }
+//                });
+//            }
         }
 
         selectDisplayItem() {
@@ -1206,7 +1241,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
             self.loadHeader(self.displayFormat());
               let start = performance.now();
-            self.dailyPerfomanceData(self.filterData(self.displayFormat()));
+            self.dailyPerfomanceData(self.dpData);
             console.log("tg load filter :" + (performance.now() - start));
         }
         
@@ -1654,74 +1689,61 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             let rowItemSelect: any = _.find(source, function(value: any) {
                                 return value.id == data.id;
                             })
-                            let errorCode = _.map(_.filter(self.dPErrorDto(), (value: any) => {
-                                return value.employeeId == rowItemSelect.employeeId && value.processingDate == rowItemSelect.dateDetail.format("YYYY/MM/DD");
-                            }), value => {
-                                return value.errorCode;
-                            });
                             let dfd = $.Deferred();
                             let dataShare: any = {
                                 date: rowItemSelect.dateDetail.format("YYYY/MM/DD"),
                                 listValue: []
                             }
                             let date = moment(dataShare.date, "YYYY/MM/DD");
-                            if (errorCode.length > 0) {
-                                $.when(service.getApplication(errorCode)).done((data) => {
-                                    dataShare.listValue = data;
-                                    nts.uk.ui.windows.setShared("shareToKdw003e", dataShare);
-                                    nts.uk.ui.windows.sub.modal("/view/kdw/003/e/index.xhtml").onClosed(() => {
-                                        let screen = nts.uk.ui.windows.getShared("shareToKdw003a");
-                                        if(screen == undefined) screen = 1905;
-                                        switch (screen.code) {
-                                            case 0:
-                                                //KAF005-残業申請
-                                                nts.uk.request.jump("/view/kaf/005/a/index.xhtml", { date: date });
-                                             break;
-                                            case 1:
-                                                //KAF006-休暇
-                                                nts.uk.request.jump("/view/kaf/006/a/index.xhtml", { date: date });
-                                                break;
-                                            case 2:
-                                                //KAF007-勤務変更申請
-                                                nts.uk.request.jump("/view/kaf/007/a/index.xhtml", { date: date });
-                                                break;
-                                            case 3:
-                                                //KAF008-出張申請
-                                                nts.uk.request.jump("/view/kaf/008/a/index.xhtml", { date: date });
-                                                break;
-                                            case 4:
-                                                //KAF009-直行直帰申請
-                                                nts.uk.request.jump("/view/kaf/009/a/index.xhtml", { date: date });
-                                                break;
-                                            case 6:
-                                                //KAF010-休日出勤時間申請
-                                                nts.uk.request.jump("/view/kaf/010/a/index.xhtml", { date: date });
-                                                break;
-                                            case 7:
-                                                //KAF002-打刻申請
-                                                nts.uk.request.jump("/view/kaf/002/a/index.xhtml", { date: date });
-                                                break;
-                                            case 9:
-                                                //KAF004-遅刻早退取消申請
-                                                nts.uk.request.jump("/view/kaf/004/a/index.xhtml", { date: date });
-                                                break;
-                                            case 10:
-                                                //KAF011-振休振出申請
-                                                nts.uk.request.jump("/view/kaf/011/a/index.xhtml", { date: date });
-                                                break;
-                                            default:
-                                                break;
-                                        }
-                                     });
-                                    dfd.resolve();
-                                });
-                            } else {
-                                dataShare.listValue = [];
+                            $.when(service.getApplication()).done((data) => {
+                                dataShare.listValue = data;
                                 nts.uk.ui.windows.setShared("shareToKdw003e", dataShare);
                                 nts.uk.ui.windows.sub.modal("/view/kdw/003/e/index.xhtml").onClosed(() => {
+                                    let screen = nts.uk.ui.windows.getShared("shareToKdw003a");
+                                    if (screen == undefined) screen = 1905;
+                                    switch (screen.code) {
+                                        case 0:
+                                            //KAF005-残業申請
+                                            nts.uk.request.jump("/view/kaf/005/a/index.xhtml", { appDate: dataShare.date });
+                                            break;
+                                        case 1:
+                                            //KAF006-休暇
+                                            nts.uk.request.jump("/view/kaf/006/a/index.xhtml", { appDate: dataShare.date });
+                                            break;
+                                        case 2:
+                                            //KAF007-勤務変更申請
+                                            nts.uk.request.jump("/view/kaf/007/a/index.xhtml", { appDate: dataShare.date });
+                                            break;
+                                        case 3:
+                                            //KAF008-出張申請
+                                            nts.uk.request.jump("/view/kaf/008/a/index.xhtml", { appDate: dataShare.date });
+                                            break;
+                                        case 4:
+                                            //KAF009-直行直帰申請
+                                            nts.uk.request.jump("/view/kaf/009/a/index.xhtml", { appDate: dataShare.date });
+                                            break;
+                                        case 6:
+                                            //KAF010-休日出勤時間申請
+                                            nts.uk.request.jump("/view/kaf/010/a/index.xhtml", { appDate: dataShare.date });
+                                            break;
+                                        case 7:
+                                            //KAF002-打刻申請
+                                            nts.uk.request.jump("/view/kaf/002/a/index.xhtml", { appDate: dataShare.date });
+                                            break;
+                                        case 9:
+                                            //KAF004-遅刻早退取消申請
+                                            nts.uk.request.jump("/view/kaf/004/a/index.xhtml", { appDate: dataShare.date });
+                                            break;
+                                        case 10:
+                                            //KAF011-振休振出申請
+                                            nts.uk.request.jump("/view/kaf/011/a/index.xhtml", { appDate: dataShare.date });
+                                            break;
+                                        default:
+                                            break;
+                                    }
                                 });
                                 dfd.resolve();
-                            }
+                            });
                             dfd.promise();
                         }
                     }
@@ -2284,7 +2306,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     dfd.promise()
                     break;
                 case 4:
-                    //KDL032 
+                    //KDL032  
                     let no = DEVIATION_REASON_MAP[self.attendenceId];
                     nts.uk.ui.block.invisible();
                     let dataSetShare = {
@@ -2306,10 +2328,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                     }
                                 };
                                 service.findAllCodeName(param3).done((data: any) => {
+                                   let  codeName = _.find(data, (item: any) => {
+                                        return item.code == returnData && item.id == ""+no;
+                                    });
                                     var objectName = {};
-                                    objectName["Name" + self.attendenceId] = data.name;
+                                    objectName["Name" + self.attendenceId] = codeName.name;
                                     var objectCode = {};
-                                    objectCode["Code" + self.attendenceId] = data.code;
+                                    objectCode["Code" + self.attendenceId] = codeName.code;
                                     $("#dpGrid").ntsGrid("updateRow", self.rowId(), objectName);
                                     $("#dpGrid").ntsGrid("updateRow", self.rowId(), objectCode);
                                 });
