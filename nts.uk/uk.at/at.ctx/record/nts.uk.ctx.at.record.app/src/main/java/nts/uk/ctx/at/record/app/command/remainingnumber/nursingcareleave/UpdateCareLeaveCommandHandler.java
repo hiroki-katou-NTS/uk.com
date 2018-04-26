@@ -51,8 +51,8 @@ implements PeregUpdateCommandHandler<UpdateCareLeaveCommand>{
 				data.getChildCareNextFiscal() == null? null: data.getChildCareNextFiscal().doubleValue());
 		NursingCareLeaveRemainingInfo careInfo= NursingCareLeaveRemainingInfo.createCareLeaveInfo(data.getSId(), data.getCareUseArt().intValue(), 
 				data.getCareUpLimSet() == null? UpperLimitSetting.FAMILY_INFO.value:data.getCareUpLimSet().intValue(), 
-				data.getCareThisFiscal() == null? null: data.getChildCareThisFiscal().doubleValue(), 
-				data.getCareNextFiscal() == null? null: data.getChildCareNextFiscal().doubleValue());
+				data.getCareThisFiscal() == null? null: data.getCareThisFiscal().doubleValue(), 
+				data.getCareNextFiscal() == null? null: data.getCareNextFiscal().doubleValue());
 		infoRepo.update(childCareInfo, cId);
 		infoRepo.update(careInfo, cId);
 		
