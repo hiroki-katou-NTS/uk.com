@@ -1,6 +1,9 @@
 package nts.uk.pub.spr.login;
 
+import java.util.List;
+
 import nts.uk.pub.spr.login.output.LoginUserContextSpr;
+import nts.uk.pub.spr.login.output.RoleInfoSpr;
 /**
  * 01 勤怠システムへ
  * @author Doan Duy Hung
@@ -58,6 +61,6 @@ public interface SprLoginFormService {
 	 * @param userID ユーザID
 	 * @return role
 	 */
-	public String getRoleInfo(String userID);
+	public List<RoleInfoSpr> getRoleInfo(String userID);
 	
 }

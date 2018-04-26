@@ -598,11 +598,13 @@ module nts.uk.at.view.kmk003.a {
                 self.screenMode(ScreenMode.COPY);
                 
                 // do interlock if simple mode
-                if (self.tabMode() === 1) {
+                if (self.tabMode() === TabMode.SIMPLE) {
                     self.mainSettingModel.isInterlockDialogJ(true);
                     self.mainSettingModel.updateStampValue();
                 }
-                
+                self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
+                self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
+                self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
                 // focus worktime atr
                 $('#search-daily-atr').focus();
             }
@@ -724,6 +726,7 @@ module nts.uk.at.view.kmk003.a {
                 self.useHalfDay = useHalfDay; // bind to useHalfDay of main screen
                 self.isInterlockDialogJ = ko.observable(true);
                 self.tabMode = tabMode;
+                
                 self.addMode = isNewOrCopyMode;
                 
                 self.workTimeSetting = new WorkTimeSettingModel();
@@ -768,7 +771,7 @@ module nts.uk.at.view.kmk003.a {
                 _.defer(() => nts.uk.ui.block.invisible());
                 
                 // do interlock if simple mode
-                if (self.tabMode() === 1) {
+                if (self.tabMode() === TabMode.SIMPLE) {
                     self.isInterlockDialogJ(true);
                     self.updateStampValue();
                 }
@@ -835,10 +838,13 @@ module nts.uk.at.view.kmk003.a {
             toFlexCommannd(): FlexWorkSettingSaveCommand {
                 let self = this;
                 let command: FlexWorkSettingSaveCommand;
+                const oneDayFlex = _.map(self.flexWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezone(),item=>item.toDto());
+                const flexWorkSetting = self.flexWorkSetting.toDto(self.commonSetting);
+                flexWorkSetting.lstHalfDayWorkTimezone[0].workTimezone.lstWorkingTimezone = oneDayFlex;
                 command = {
                     addMode: self.addMode(),
                     screenMode: self.tabMode(),
-                    flexWorkSetting: self.flexWorkSetting.toDto(self.commonSetting),
+                    flexWorkSetting: flexWorkSetting,
                     predseting: self.predetemineTimeSetting.toDto(),
                     worktimeSetting: self.workTimeSetting.toDto(),
                 };
@@ -864,7 +870,7 @@ module nts.uk.at.view.kmk003.a {
             updateData(worktimeSettingInfo: WorkTimeSettingInfoDto): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                self.isInterlockDialogJ(true);   
+
                 self.workTimeSetting.updateData(worktimeSettingInfo.worktimeSetting);
                 self.predetemineTimeSetting.updateData(worktimeSettingInfo.predseting);    
                 self.manageEntryExit.updateData(worktimeSettingInfo.manageEntryExit);                          
@@ -875,10 +881,20 @@ module nts.uk.at.view.kmk003.a {
 
                     // set useHalfDay to mainScreen model
                     self.useHalfDay(worktimeSettingInfo.flexWorkSetting.useHalfDayShift);
+
+                    // reset data of other mode
+                    self.flowWorkSetting.resetData();
+                    self.diffWorkSetting.resetData();
+                    self.fixedWorkSetting.resetData();
                 }
                 if (self.workTimeSetting.isFlow()) {
                     self.flowWorkSetting.updateData(worktimeSettingInfo.flowWorkSetting);
                     self.commonSetting.updateData(worktimeSettingInfo.flowWorkSetting.commonSetting);
+
+                    // reset data of other mode
+                    self.flexWorkSetting.resetData();
+                    self.diffWorkSetting.resetData();
+                    self.fixedWorkSetting.resetData();
                 }
                 if (self.workTimeSetting.isFixed()) {
                     self.fixedWorkSetting.updateData(worktimeSettingInfo.fixedWorkSetting);
@@ -886,6 +902,11 @@ module nts.uk.at.view.kmk003.a {
 
                     // set useHalfDay to mainScreen model
                     self.useHalfDay(worktimeSettingInfo.fixedWorkSetting.useHalfDayShift);
+
+                    // reset data of other mode
+                    self.flowWorkSetting.resetData();
+                    self.diffWorkSetting.resetData();
+                    self.flexWorkSetting.resetData();
                 }
                 
                 if (self.workTimeSetting.isDiffTime()) {
@@ -894,6 +915,11 @@ module nts.uk.at.view.kmk003.a {
 
                     // set useHalfDay to mainScreen model
                     self.useHalfDay(worktimeSettingInfo.diffTimeWorkSetting.useHalfDayShift);
+
+                    // reset data of other mode
+                    self.flowWorkSetting.resetData();
+                    self.flexWorkSetting.resetData();
+                    self.fixedWorkSetting.resetData();
                 }      
                 
                 self.updateInterlockDialogJ();
@@ -904,10 +930,10 @@ module nts.uk.at.view.kmk003.a {
             resetData(isNewMode?: boolean) {
                 let self = this;
                 self.useHalfDay(false);                
-                self.fixedWorkSetting.resetData();
+                self.fixedWorkSetting.resetData(isNewMode);
                 self.flowWorkSetting.resetData();
                 self.flexWorkSetting.resetData();
-                self.diffWorkSetting.resetData();
+                self.diffWorkSetting.resetData(isNewMode);
                 if (!isNewMode) {
                     //check change mode to convert data
                     self.commonSetting.resetData();
@@ -929,7 +955,7 @@ module nts.uk.at.view.kmk003.a {
                         let endWork1: number = _self.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne.end();
                         let startWork2: number = _self.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.start();
                         
-                        if (_self.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.useAtr()) {
+                        if (_self.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.useAtr() && _self.tabMode() === TabMode.DETAIL) {
                             _self.fixedWorkSetting.getGoWork1Stamp().startTime(workStart);
                             _self.fixedWorkSetting.getLeaveWork1Stamp().startTime(workStart);                            
                             _self.fixedWorkSetting.getGoWork2Stamp().endTime(workEnd);
@@ -944,6 +970,11 @@ module nts.uk.at.view.kmk003.a {
                             _self.fixedWorkSetting.getLeaveWork1Stamp().startTime(workStart);                            
                             _self.fixedWorkSetting.getGoWork1Stamp().endTime(workEnd);
                             _self.fixedWorkSetting.getLeaveWork1Stamp().endTime(workEnd);
+                            
+                            _self.fixedWorkSetting.getGoWork2Stamp().startTime(0);
+                            _self.fixedWorkSetting.getLeaveWork2Stamp().startTime(0);                            
+                            _self.fixedWorkSetting.getGoWork2Stamp().endTime(1440);
+                            _self.fixedWorkSetting.getLeaveWork2Stamp().endTime(1440);
                         }
                     }   
                     if (_self.workTimeSetting.isFlex()) {

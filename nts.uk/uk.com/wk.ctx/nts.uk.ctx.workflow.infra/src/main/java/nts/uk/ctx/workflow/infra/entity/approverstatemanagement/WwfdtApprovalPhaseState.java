@@ -55,7 +55,7 @@ public class WwfdtApprovalPhaseState extends UkJpaEntity {
 	})
 	private WwfdtApprovalRootState wwfdtApprovalRootState;
 	
-	@OneToMany(targetEntity=WwfdtApprovalFrame.class, cascade = CascadeType.ALL, mappedBy = "wwfdtApprovalPhaseState", orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(targetEntity=WwfdtApprovalFrame.class, cascade = CascadeType.ALL, mappedBy = "wwfdtApprovalPhaseState", orphanRemoval = true, fetch = FetchType.EAGER)
 	@JoinTable(name = "WWFDT_APPROVAL_FRAME")
 	public List<WwfdtApprovalFrame> listWwfdtApprovalFrame;
 

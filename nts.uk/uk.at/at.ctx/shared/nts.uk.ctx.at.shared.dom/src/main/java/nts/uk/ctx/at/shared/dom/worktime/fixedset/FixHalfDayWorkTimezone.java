@@ -7,7 +7,6 @@ package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -124,11 +123,7 @@ public class FixHalfDayWorkTimezone extends WorkTimeDomainObject {
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
 	@Override
-	public void validate() {		
-		if (!this.isInFixedWork()) {
-			this.bundledBusinessExceptions.addMessage("Msg_755");
-		}
-		
+	public void validate() {				
 		//validate Msg_770 for list work
 		this.workTimezone.getLstWorkingTimezone().stream().forEach(item->{
 			item.getTimezone().validateRange("KMK003_86");
@@ -155,7 +150,7 @@ public class FixHalfDayWorkTimezone extends WorkTimeDomainObject {
 	 *
 	 * @return true, if is in fixed work
 	 */
-	private boolean isInFixedWork() {
+	public boolean isInFixedWork() {
 		return this.restTimezone.getLstTimezone().stream().allMatch(
 				dedTime -> this.workTimezone.isInEmTimezone(dedTime) || this.workTimezone.isInOverTimezone(dedTime));
 	}

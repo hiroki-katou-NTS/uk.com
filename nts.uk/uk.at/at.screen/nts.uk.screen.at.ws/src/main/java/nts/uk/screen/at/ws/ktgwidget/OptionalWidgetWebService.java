@@ -6,7 +6,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetImport;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
+import nts.uk.screen.at.app.ktgwidget.find.DatePeriodDto;
 import nts.uk.screen.at.app.ktgwidget.find.OptionalWidgetKtgFinder;
 
 @Path("screen/at/OptionalWidget")
@@ -24,7 +26,13 @@ public class OptionalWidgetWebService extends WebService {
 	
 	@POST
 	@Path("getCurrentMonth")
-	public ClosurePeriod getCurrentMonth(String employmentCode){
-		return OptionalWidgetFinder.getCurrentMonth(employmentCode);
+	public DatePeriodDto getCurrentMonth(){
+		return OptionalWidgetFinder.getCurrentMonth();
+	}
+	
+	@POST
+	@Path("getOptionalWidget")
+	public OptionalWidgetImport findOptionalWidgetByCode(String topPagePartCode){
+		return OptionalWidgetFinder.findOptionalWidgetByCode(topPagePartCode);
 	}
 }

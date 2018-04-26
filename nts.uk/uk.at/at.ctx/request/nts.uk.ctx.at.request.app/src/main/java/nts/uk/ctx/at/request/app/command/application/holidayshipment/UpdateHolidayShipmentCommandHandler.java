@@ -205,7 +205,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 
 	private void errorCheckBeforeRegister(SaveHolidayShipmentCommand command) {
 		// アルゴリズム「事前条件チェック」を実行する
-		appReason = saveHanler.preconditionCheck(command, companyID, appType);
+		appReason = saveHanler.preconditionCheck(command, companyID, appType, comType);
 
 	}
 
