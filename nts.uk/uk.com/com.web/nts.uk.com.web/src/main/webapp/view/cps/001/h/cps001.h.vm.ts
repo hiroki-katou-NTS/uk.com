@@ -42,6 +42,7 @@ module cps001.h.vm {
 
                 service.getAll(self.sid(), data).done((data) => {
                     if (data && data.length > 0) {
+                        self.isCreate(false);
                         self.items(data);
                         let index = _.findIndex(self.items(), (item) => { return item.id == self.currentItem(); });
 
@@ -75,11 +76,11 @@ module cps001.h.vm {
                 { headerText: "", key: 'id', hidden: true },
                 { headerText: text("CPS001_118"), key: 'grantDate', width: 100, isDateColumn: true, format: 'YYYY/MM/DD' },
                 { headerText: text("CPS001_119"), key: 'deadline', width: 100, isDateColumn: true, format: 'YYYY/MM/DD' },
-                { headerText: text("CPS001_121"), key: 'grantDays', width: 70, formatter: self.formatterDate },
-                { headerText: text("CPS001_130"), key: 'useDays', width: 70, formatter: self.formatterDate },
-                { headerText: text("CPS001_123"), key: 'overLimitDays', width: 70, formatter: self.formatterDate },
-                { headerText: text("CPS001_129"), key: 'remainingDays', width: 70, formatter: self.formatterDate },
-                { headerText: text("CPS001_120"), key: 'expirationStatus', width: 70, formatter: self.formatterExState }
+                { headerText: text("CPS001_120"), key: 'grantDays', width: 70, formatter: self.formatterDate },
+                { headerText: text("CPS001_121"), key: 'useDays', width: 70, formatter: self.formatterDate },
+                { headerText: text("CPS001_130"), key: 'overLimitDays', width: 70, formatter: self.formatterDate },
+                { headerText: text("CPS001_123"), key: 'remainingDays', width: 70, formatter: self.formatterDate },
+                { headerText: text("CPS001_129"), key: 'expirationStatus', width: 70, formatter: self.formatterExState }
             ]);
         }
 
@@ -123,6 +124,7 @@ module cps001.h.vm {
             self.setDef().done(() => {
                 self.load().done(() => {
                     if (self.items().length > 0) {
+                        self.isCreate(false);
                         self.currentItem(self.items()[0].id);
                     }
                     dfd.resolve();
@@ -355,7 +357,7 @@ module cps001.h.vm {
 
             self.grantDate.subscribe((data) => {
 
-                if (data && !(nts.uk.ui.errors.hasError())) {
+                if (data && __viewContext.viewModel.isCreate()) {
                     service.generateDeadline(moment.utc(data, "YYYY/MM/DD")).done((item) => {
                         self.deadline(item);
                     });

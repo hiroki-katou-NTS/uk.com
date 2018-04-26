@@ -64,4 +64,14 @@ public class PayDaysOfMonthly {
 		this.payAbsenceDays = this.payAbsenceDays.addDays(
 				payItemCount.getDays(PayItemCountAtr.PAY_ABSENCE_DAYS, workTypeCode));
 	}
+
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(PayDaysOfMonthly target){
+		
+		this.payAttendanceDays = this.payAttendanceDays.addDays(target.payAttendanceDays.v());
+		this.payAbsenceDays = this.payAbsenceDays.addDays(target.payAbsenceDays.v());
+	}
 }

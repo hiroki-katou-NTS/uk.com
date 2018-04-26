@@ -146,4 +146,19 @@ public class AggregateOverTime {
 					timeSeriesWork.getLegalOverTime().getTransferTime().getTime().v());
 		}
 	}
+	
+	/**
+	 * 合算する
+	 * @param target　加算対象
+	 */
+	public void sum(AggregateOverTime target){
+		
+		this.overTime = this.overTime.addMinutes(
+				target.overTime.getTime().v(), target.overTime.getCalcTime().v());
+		this.beforeOverTime = this.beforeOverTime.addMinutes(target.beforeOverTime.v());
+		this.transferOverTime = this.transferOverTime.addMinutes(
+				target.transferOverTime.getTime().v(), target.transferOverTime.getCalcTime().v());
+		this.legalOverTime = this.legalOverTime.addMinutes(target.legalOverTime.v());
+		this.legalTransferOverTime = this.legalTransferOverTime.addMinutes(target.legalTransferOverTime.v());
+	}
 }

@@ -144,7 +144,7 @@ public class HolidayShipmentScreenBFinder {
 				String recWorkTypeCD = recApp != null ? recApp.getWorkTypeCD() : null;
 				String absWorkTypeCD = absApp != null ? absApp.getWorkTypeCD() : null;
 				String recWorkTimeCD = recApp != null ? recApp.getWorkTimeCD().v() : null;
-				String absWorkTimeCD = absApp != null ? absApp.getWorkTimeCD().v() : null;
+				String absWorkTimeCD = absApp != null ? absApp.getWorkTimeCD() : null;
 				GeneralDate refDate = HolidayShipmentScreenAFinder.DetRefDate(recAppDate, absAppDate);
 				// アルゴリズム「振休振出申請起動時の共通処理」を実行する
 				aFinder.commonProcessAtStartup(companyID, employeeID, refDate, recAppDate, recWorkTypeCD, recWorkTimeCD,
@@ -215,7 +215,7 @@ public class HolidayShipmentScreenBFinder {
 			Optional<AbsenceLeaveApp> absAppOpt = absRepo.findByID(compltLeaveSimMng.getAbsenceLeaveAppID());
 			if (absAppOpt.isPresent()) {
 				setAbsApp(absAppOpt.get());
-			} 
+			}
 
 		}
 		return result;

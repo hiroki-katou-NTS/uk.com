@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.command.dailyperform.workinfo;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -7,8 +9,10 @@ import nts.arc.layer.dom.event.DomainEventSubscriber;
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.UpdateBreakTimeByTimeLeaveChangeCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.UpdateBreakTimeByTimeLeaveChangeHandler;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoChangeEvent;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeaveUpdateEvent;
 
-/**　<<Event>> 実績の就業時間帯が変更された　*/
+/** <<Event>> 実績の就業時間帯が変更された */
+/** <<Event>> 実績の勤務種類が変更された */
 @Stateless
 public class WorkInfoChangeEventSubscriber implements DomainEventSubscriber<WorkInfoChangeEvent> {
 
@@ -23,8 +27,11 @@ public class WorkInfoChangeEventSubscriber implements DomainEventSubscriber<Work
 	@Override
 	public void handle(WorkInfoChangeEvent domainEvent) {
 		handler.handle(UpdateBreakTimeByTimeLeaveChangeCommand.builder().employeeId(domainEvent.getEmployeeId())
-				.workingDate(domainEvent.getTargetDate()).newWorkTimeCode(domainEvent.getNewWorkTimeCode())
-				.build());
+				.workingDate(domainEvent.getTargetDate()).newWorkTimeCode(domainEvent.getNewWorkTimeCode()).build());
+		
+		TimeLeaveUpdateEvent.builder().employeeId(domainEvent.getEmployeeId()).targetDate(domainEvent.getTargetDate())
+				.newWorkTimeCode(Optional.ofNullable(domainEvent.getNewWorkTimeCode()))
+				.newWorkTypeCode(domainEvent.getNewWorkTypeCode()).build().toBePublished();
 	}
 
 }

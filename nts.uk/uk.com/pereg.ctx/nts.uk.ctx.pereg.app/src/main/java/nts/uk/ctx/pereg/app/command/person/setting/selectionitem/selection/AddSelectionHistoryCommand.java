@@ -10,15 +10,11 @@ import nts.arc.time.GeneralDate;
  */
 @Value
 public class AddSelectionHistoryCommand {
-	private String companyId;
-	private GeneralDate startDate;
-	private String histId;
+	
 	private String selectionItemId;
-	private String selectionCD;
-	private String selectionName;
-	private String externalCD;
-	private String memoSelection;
-	private int disporder;
-	private int initSelection;
-
+	
+	private String selectingHistId;
+	
+	private GeneralDate startDate;
+	
 }

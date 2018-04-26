@@ -1,14 +1,11 @@
 package nts.uk.ctx.pereg.dom.person.setting.selectionitem;
 
-import lombok.AllArgsConstructor;
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.ExternalCD;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.MemoSelection;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionCD;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionName;
 
 /**
  * 
@@ -16,54 +13,81 @@ import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionName
  *
  */
 
-@AllArgsConstructor
 @Getter
 @Setter
-// 個人情報の選択項目ドメイン
-public class PerInfoSelectionItem extends AggregateRoot{
-	private String selectionItemId;
-	private SelectionItemName selectionItemName;
-	private Memo Memo;
-	private SelectionItemClassification selectionItemClassification;
+// 個人情報の選択項目
+public class PerInfoSelectionItem extends AggregateRoot {
+
+	/**
+	 * 契約コード
+	 */
 	private String contractCode;
-	private IntegrationCode integrationCode;
+
+	/**
+	 * ID
+	 */
+	private String selectionItemId;
+
+	/**
+	 * 区分
+	 */
+	private SelectionItemClassification classification;
+
+	/**
+	 * 名称
+	 */
+	private SelectionItemName selectionItemName;
+
+	/**
+	 * 選択肢の形式
+	 */
 	private FormatSelection formatSelection;
 
-	public static PerInfoSelectionItem createFromJavaType(
-			String selectionItemId, 
-			String selectionItemName, 
-			String memo,
-			int selectionItemClsAtr, 
-			String contractCd, 
-			String integrationCd, 
-			int selectionCd, 
-			int characterTypeAtr,
-			int selectionName, 
-			int selectionExtCd) {
+	/**
+	 * 統合コード
+	 */
+	private Optional<IntegrationCode> integrationCode;
 
-		// 個人情報の選択項目パラメーター帰還
-		return new PerInfoSelectionItem(
-				selectionItemId, 
-				new SelectionItemName(selectionItemName), 
-				new Memo(memo),
-				EnumAdaptor.valueOf(selectionItemClsAtr, SelectionItemClassification.class), 
-				contractCd,
-				new IntegrationCode(integrationCd),
-				FormatSelection.createFromJavaType(selectionCd, characterTypeAtr, selectionName, selectionExtCd));
+	/**
+	 * メモ
+	 */
+	private Optional<Memo> memo;
+
+	private PerInfoSelectionItem() {
+		super();
+	}
+
+	public static PerInfoSelectionItem createFromJavaType(String contractCode, String selectionItemId,
+			int selectionItemClsAtr, String selectionItemName, int characterTypeAtr, int codeLength, int nameLength,
+			int extraCodeLenth, String integrationCd, String memo) {
+		PerInfoSelectionItem selectionItem = new PerInfoSelectionItem();
+		selectionItem.contractCode = contractCode;
+		selectionItem.selectionItemId = selectionItemId;
+		selectionItem.classification = EnumAdaptor.valueOf(selectionItemClsAtr, SelectionItemClassification.class);
+		selectionItem.selectionItemName = new SelectionItemName(selectionItemName);
+		selectionItem.formatSelection = FormatSelection.createFromJavaType(characterTypeAtr, codeLength, nameLength,
+				extraCodeLenth);
+		selectionItem.integrationCode = integrationCd != null ? Optional.of(new IntegrationCode(integrationCd))
+				: Optional.empty();
+		selectionItem.memo = memo != null ? Optional.of(new Memo(memo)) : Optional.empty();
+		return selectionItem;
 
 	}
 
-//	public PerInfoSelectionItem(String selectionItemId, SelectionItemName selectionItemName,
-//			Memo Memo, SelectionItemClassification selectionItemClassification, String contractCode,
-//			IntegrationCode integrationCode, FormatSelection formatSelection){
-//		super();
-//		this.selectionItemId = selectionItemId;
-//		this.selectionItemName = selectionItemName;
-//		this.Memo = Memo;
-//		this.selectionItemClassification = selectionItemClassification;
-//		this.contractCode = contractCode;
-//		this.integrationCode = integrationCode;
-//		this.formatSelection.getSelectionName();
-//		
-//	}
+	public static PerInfoSelectionItem createFromJavaType(String contractCode, String selectionItemId,
+			boolean shareChecked, String selectionItemName, boolean characterType, int codeLength, int nameLength,
+			int extraCodeLenth, String integrationCd, String memo) {
+		int selectionItemClsAtr = shareChecked ? 0 : 1;
+		int characterTypeAtr = characterType ? 1 : 0;
+		return createFromJavaType(contractCode, selectionItemId, selectionItemClsAtr, selectionItemName,
+				characterTypeAtr, codeLength, nameLength, extraCodeLenth, integrationCd, memo);
+	}
+
+	public void updateDomain(String selectionItemName, String integrationCd, String memo) {
+		this.selectionItemName = new SelectionItemName(selectionItemName);
+		this.integrationCode = integrationCd != null ? Optional.of(new IntegrationCode(integrationCd))
+				: Optional.empty();
+		this.memo = memo != null ? Optional.of(new Memo(memo)) : Optional.empty();
+	}
+
 }

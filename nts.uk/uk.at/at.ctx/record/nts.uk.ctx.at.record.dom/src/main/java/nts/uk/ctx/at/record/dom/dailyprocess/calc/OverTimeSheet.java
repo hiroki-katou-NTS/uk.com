@@ -102,18 +102,21 @@ public class OverTimeSheet {
 	/**
 	 * 残業時間枠時間帯をループさせ時間を計算する
 	 * @param autoCalcSet 時間外時間の自動計算設定
+	 * @param integrationOfDaily 
 	 */
 	public List<OverTimeFrameTime> collectOverTimeWorkTime(AutoCalOvertimeSetting autoCalcSet,
 														   WorkType workType,
 														   Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-														   Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+														   Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily) {
 		Map<Integer,OverTimeFrameTime> overTimeFrameList = new HashMap<Integer, OverTimeFrameTime>();
 		val forceAtr = AutoCalAtrOvertime.CALCULATEMBOSS;
 		//時間帯の計算
 		for(OverTimeFrameTimeSheetForCalc overTimeFrameTime : frameTimeSheets) {
-			//控除時間算出
+			//val forceAtr = autoCalcSet.decisionUseCalcSetting(overTimeFrameTime.getWithinStatutryAtr(), overTimeFrameTime.isGoEarly());
+			//残業時間　－　控除時間算出
 			AttendanceTime calcDedTime = overTimeFrameTime.correctCalculationTime(Optional.empty(), autoCalcSet,DeductionAtr.Deduction);
 			AttendanceTime calcRecTime = overTimeFrameTime.correctCalculationTime(Optional.empty(), autoCalcSet,DeductionAtr.Appropriate);
+			
 			//加算だけ
 			if(overTimeFrameList.containsKey(overTimeFrameTime.getFrameTime().getOverWorkFrameNo().v())) {
 				val frame = overTimeFrameList.get(overTimeFrameTime.getFrameTime().getOverWorkFrameNo().v());
@@ -127,14 +130,38 @@ public class OverTimeSheet {
 			}
 		}
 		List<OverTimeFrameTime> calcOverTimeWorkTimeList = new ArrayList<>(overTimeFrameList.values()); 
+		
+		
+		//staticがついていなので、4末緊急対応
+		if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()
+			&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily() != null
+			&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null
+			&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime() != null
+			&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily() != null
+			&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
+			calcOverTimeWorkTimeList.forEach(ts -> {
+				val wantAddTime = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime()
+									.stream()
+									.filter(tc -> tc.getOverWorkFrameNo().equals(ts.getOverWorkFrameNo()))
+									.findFirst();
+				if(wantAddTime.isPresent())
+					ts.addBeforeTime(wantAddTime.get().getBeforeApplicationTime());
+							
+			});
+			
+		}
+		//staticがついていなので、4末緊急対応	
+		 
+		
 		//事前申請を上限とする制御
 		val afterCalcUpperTimeList = afterUpperControl(calcOverTimeWorkTimeList,autoCalcSet);
+		return afterCalcUpperTimeList; 
 		//振替処理
-		val aftertransTimeList = afterCalcUpperTimeList;//transProcess(workType,
+//		val aftertransTimeList = transProcess(workType,
 //											  afterCalcUpperTimeList,
 //											  eachWorkTimeSet,
 //											  eachCompanyTimeSet);
-		return aftertransTimeList;
+//		return aftertransTimeList;
 		
 	}
 	
@@ -149,30 +176,30 @@ public class OverTimeSheet {
 	private List<OverTimeFrameTime> afterUpperControl(List<OverTimeFrameTime> calcOverTimeWorkTimeList,AutoCalOvertimeSetting autoCalcSet) {
 		List<OverTimeFrameTime> returnList = new ArrayList<>();
 		for(OverTimeFrameTime loopOverTimeFrame:calcOverTimeWorkTimeList) {
-			AttendanceTime upperTime = new AttendanceTime(0);
-			switch(autoCalcSet.decisionUseCalcSetting(StatutoryAtr.Excess,false).getUpLimitORtSet()) {
-				//上限なし
-				case NOUPPERLIMIT:
-					upperTime = loopOverTimeFrame.getOverTimeWork().getCalcTime();
-					break;
-				//指示時間を上限とする
-				case INDICATEDYIMEUPPERLIMIT:
-					upperTime = loopOverTimeFrame.getOrderTime();
-					break;
-				//事前申請を上限とする
-				case LIMITNUMBERAPPLICATION:
-					upperTime = loopOverTimeFrame.getBeforeApplicationTime();
-					break;
-				default:
-					throw new RuntimeException("uknown AutoCalcAtr Over Time When Ot After Upper Control");
-			}
-			//上限制御
-			if(upperTime.lessThanOrEqualTo(loopOverTimeFrame.getOverTimeWork().getCalcTime())) 
-				loopOverTimeFrame = loopOverTimeFrame.changeOverTime(TimeDivergenceWithCalculation.sameTime(upperTime));
-			
+			AttendanceTime upperTime = desictionUseUppserTime(autoCalcSet, loopOverTimeFrame);
+			AttendanceTime upperCalcTime = desictionUseUppserTime(autoCalcSet,  loopOverTimeFrame);
+			loopOverTimeFrame = loopOverTimeFrame.changeOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(upperTime.greaterThan(loopOverTimeFrame.getOverTimeWork().getTime())?loopOverTimeFrame.getOverTimeWork().getTime():upperTime,
+																														 upperCalcTime.greaterThan(loopOverTimeFrame.getOverTimeWork().getCalcTime())?loopOverTimeFrame.getOverTimeWork().getCalcTime():upperCalcTime));
 			returnList.add(loopOverTimeFrame);
 		}
 		return returnList;
+	}
+	
+	
+	public AttendanceTime desictionUseUppserTime(AutoCalOvertimeSetting autoCalcSet, OverTimeFrameTime loopOverTimeFrame) {
+		switch(autoCalcSet.decisionUseCalcSetting(StatutoryAtr.Excess,false).getUpLimitORtSet()) {
+		//上限なし
+		case NOUPPERLIMIT:
+			return loopOverTimeFrame.getOverTimeWork().getCalcTime();
+		//指示時間を上限とする
+		case INDICATEDYIMEUPPERLIMIT:
+			return loopOverTimeFrame.getOrderTime();
+		//事前申請を上限とする
+		case LIMITNUMBERAPPLICATION:
+			return loopOverTimeFrame.getBeforeApplicationTime();
+		default:
+			throw new RuntimeException("uknown AutoCalcAtr Over Time When Ot After Upper Control");
+		}
 	}
 
 

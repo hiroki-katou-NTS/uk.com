@@ -62,7 +62,7 @@ public class DiffTimeHalfDayWorkTimezone extends WorkTimeDomainObject {
 	 * @param diffTimeWorkSet the diff time work set
 	 * @param other the other
 	 */
-	public void restoreData(ScreenMode screenMode, DiffTimeWorkSetting diffTimeWorkSet,
+	public void correctData(ScreenMode screenMode, DiffTimeWorkSetting diffTimeWorkSet,
 			DiffTimeHalfDayWorkTimezone other) {
 		switch (screenMode) {
 		case SIMPLE:
@@ -76,6 +76,20 @@ public class DiffTimeHalfDayWorkTimezone extends WorkTimeDomainObject {
 		}
 	}
 	
+	public void correctDefaultData(ScreenMode screenMode) {
+		if (screenMode.equals(ScreenMode.SIMPLE) && this.getAmPmAtr() != AmPmAtr.ONE_DAY) {
+			this.restTimezone.correctDefaultData();
+			this.workTimezone.correctDefaultData();
+		}
+	}
+
+	/**
+	 * Correct default data.
+	 */
+	public void correctDefaultData() {
+		this.workTimezone.correctDefaultData();
+	}
+	
 	/**
 	 * Restore simple mode.
 	 *
@@ -83,8 +97,8 @@ public class DiffTimeHalfDayWorkTimezone extends WorkTimeDomainObject {
 	 */
 	private void restoreSimpleMode(DiffTimeHalfDayWorkTimezone other) {
 		if (other.getAmPmAtr() != AmPmAtr.ONE_DAY) {
-			this.workTimezone.restoreData(other.getWorkTimezone());
-			this.restTimezone.restoreData(other.getRestTimezone());
+			this.workTimezone.correctData(other.getWorkTimezone());
+			this.restTimezone.correctData(other.getRestTimezone());
 		}
 	}
 	
@@ -97,8 +111,8 @@ public class DiffTimeHalfDayWorkTimezone extends WorkTimeDomainObject {
 	private void restoreDetailMode(DiffTimeWorkSetting diffTimeWorkSet, DiffTimeHalfDayWorkTimezone other) {
 		// restore data of dayAtr = AM, PM
 		if (!diffTimeWorkSet.isUseHalfDayShift() && other.getAmPmAtr() != AmPmAtr.ONE_DAY) {
-			this.workTimezone.restoreData(other.getWorkTimezone());
-			this.restTimezone.restoreData(other.getRestTimezone());
+			this.workTimezone.correctData(other.getWorkTimezone());
+			this.restTimezone.correctData(other.getRestTimezone());
 		}
 	}
 	

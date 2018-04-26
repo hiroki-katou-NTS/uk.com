@@ -56,4 +56,24 @@ public class CheckEnableWebService extends WebService {
 	public boolean checkEnableRemainLeft(@PathParam(value = "sid") String sid) {
 		return otherHolidayInfoService.checkEnablePayout(sid);
 	}
+	
+	@POST
+	@Path("checkAllMutilTime")
+	public boolean checkAllMultiTime(CheckEnableParam param) {
+		boolean isWorkType = true;
+		boolean isWorkTime = true;
+		if (param.getWorkTimeCode() != null) {
+			isWorkType =  predetemineTimeSettingRepo.isWorkingTwice(param.getWorkTimeCode());
+		} else {
+			isWorkType =  false;
+		}
+		
+		if (param.getWorkTimeCode() != null) {
+			isWorkTime =  workTimeSettingRepo.isFlowWork(param.getWorkTimeCode());
+		} else {
+			isWorkTime =  false;
+		}
+		
+		return isWorkTime && isWorkType;
+	}
 }

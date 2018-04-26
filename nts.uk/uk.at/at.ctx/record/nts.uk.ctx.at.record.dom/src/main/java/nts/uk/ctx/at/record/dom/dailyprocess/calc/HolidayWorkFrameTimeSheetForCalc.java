@@ -82,6 +82,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	
 	/**
 	 * 計算用休出枠時間帯リストの作成
+	 * @param integrationOfDaily 
 	 * @return
 	 */
 	public static List<HolidayWorkFrameTimeSheetForCalc> createHolidayTimeWorkFrame(TimeLeavingWork attendanceLeave,List<HDWorkTimeSheetSetting> holidayWorkTimeList,WorkType todayWorkType
@@ -107,6 +108,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	/**
 	 * 計算用休出枠ｔ時間帯(WORK)の作成
 	 * @param timeSpan 就業時間帯の休出和時間帯と打刻時間の重複時間帯
+	 * @param integrationOfDaily 
 	 * @return
 	 */
 	public static HolidayWorkFrameTimeSheetForCalc createHolidayTimeWorkFrameTimeSheet(TimeSpanForCalc timeSpan,HDWorkTimeSheetSetting holidayWorkFrameTimeSheet,WorkType today
@@ -128,6 +130,12 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 		/*深夜*/
 		val duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(midNightTimeSheet, timeSpan, recordTimeSheet, recordTimeSheet);
 		
+		
+		HolidayWorkFrameTime holidayTimeFrame = new HolidayWorkFrameTime(new HolidayWorkFrameNo(breakFrameNo.v().intValue()),
+																			Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
+																			Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
+																			Finally.of(new AttendanceTime(0)));
+		
 		return new HolidayWorkFrameTimeSheetForCalc(new TimeZoneRounding(timeSpan.getStart(),timeSpan.getEnd(),holidayWorkFrameTimeSheet.getTimezone().getRounding()),
 													timeSpan,
 													dedTimeSheet.stream().map(tc ->tc.createWithExcessAtr()).collect(Collectors.toList()),
@@ -135,10 +143,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 													duplibonusPayTimeSheet,
 													duplispecifiedBonusPayTimeSheet,
 													duplicatemidNightTimeSheet,
-													new HolidayWorkFrameTime(new HolidayWorkFrameNo(breakFrameNo.v().intValue()),
-										  					Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
-										  					Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
-										  					Finally.of(new AttendanceTime(0))),
+													holidayTimeFrame,
 													false,
 													new EmTimezoneNo(holidayWorkFrameTimeSheet.getWorkTimeNo()),
 													Finally.of(StaturoryAtrOfHolidayWork.deicisionAtrByHolidayAtr(today.getWorkTypeSetList().get(0).getHolidayAtr())));

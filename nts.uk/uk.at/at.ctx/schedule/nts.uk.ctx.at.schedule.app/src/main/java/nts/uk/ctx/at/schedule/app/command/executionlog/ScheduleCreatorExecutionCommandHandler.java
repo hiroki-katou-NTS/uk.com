@@ -171,30 +171,39 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		// get command
 		ScheduleCreatorExecutionCommand command = context.getCommand();
 
-		// update command
-		command.setCompanyId(companyId);
-		command.setIsDeleteBeforInsert(false);
+		ScheduleExecutionLog scheduleExecutionLog = new ScheduleExecutionLog();
 
-		// find execution log by id
-		ScheduleExecutionLog domain = this.scheduleExecutionLogRepository.findById(companyId, command.getExecutionId())
-				.get();
+		if (!command.isAutomatic()) {
 
-		// update execution time to now
-		domain.setExecutionTimeToNow();
+			// update command
+			command.setCompanyId(companyId);
+			command.setIsDeleteBeforInsert(false);
 
-		// set exeAtr is manual
-		domain.setExeAtrIsManual();
+			// find execution log by id
+			scheduleExecutionLog = this.scheduleExecutionLogRepository.findById(companyId, command.getExecutionId())
+					.get();
 
-		// update domain execution log
-		this.scheduleExecutionLogRepository.update(domain);
+			// update execution time to now
+			scheduleExecutionLog.setExecutionTimeToNow();
 
-		// find execution content by id
-		ScheduleCreateContent scheCreContent = this.contentRepository.findByExecutionId(command.getExecutionId()).get();
-		command.setContent(scheCreContent);
+			// set exeAtr is manual
+			scheduleExecutionLog.setExeAtrIsManual();
 
-		command.setConfirm(scheCreContent.getConfirm());
-		// register personal schedule
-		this.registerPersonalSchedule(command, domain, context);
+			// update domain execution log
+			this.scheduleExecutionLogRepository.update(scheduleExecutionLog);
+
+			// find execution content by id
+			ScheduleCreateContent scheCreContent = this.contentRepository.findByExecutionId(command.getExecutionId())
+					.get();
+			command.setContent(scheCreContent);
+
+			command.setConfirm(scheCreContent.getConfirm());
+			// register personal schedule
+		} else {
+			scheduleExecutionLog = command.getScheduleExecutionLog();
+		}
+
+		this.registerPersonalSchedule(command, scheduleExecutionLog, context);
 
 	}
 
@@ -207,85 +216,6 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 */
 	public GeneralDate nextDay(GeneralDate day) {
 		return day.addDays(NEXT_DAY_MONTH);
-	}
-
-	/**
-	 * Register personal schedule. -> old version. it will be delete
-	 *
-	 * @param command
-	 *            the command
-	 * @param scheduleExecutionLog
-	 *            the schedule execution log
-	 * @param scheduleCreators
-	 *            the schedule creators
-	 * @param context
-	 *            the context
-	 */
-	// 個人スケジュールを登録する
-	private void registerPersonalSchedule_old(ScheduleCreatorExecutionCommand command,
-			ScheduleExecutionLog scheduleExecutionLog, CommandHandlerContext<ScheduleCreatorExecutionCommand> context) {
-		// パラメータ実施区分を判定 (phán đoán param 実施区分 )
-		if (scheduleExecutionLog.getExeAtr() == ExecutionAtr.AUTOMATIC) {
-			ScheduleCreateContent scheduleCreateContent = command.getContent();
-			// アルゴリズム「実行ログ作成処理」を実行する
-			this.executionLogCreationProcess(scheduleExecutionLog, scheduleCreateContent);
-		}
-
-		// get all data creator
-		List<ScheduleCreator> scheduleCreators = this.scheduleCreatorRepository.findAll(command.getExecutionId());
-
-		// get info by context
-		val asyncTask = context.asAsync();
-
-		for (ScheduleCreator domain : scheduleCreators) {
-
-			// check is client submit cancel
-			if (asyncTask.hasBeenRequestedToCancel()) {
-				asyncTask.finishedAsCancelled();
-				// ドメインモデル「スケジュール作成実行ログ」を更新する(update domain 「スケジュール作成実行ログ」)
-				this.updateStatusScheduleExecutionLog(scheduleExecutionLog, CompletionStatus.INTERRUPTION);
-				break;
-			}
-
-			// アルゴリズム「対象期間を締め開始日以降に補正する」を実行する
-			DatePeriod dateAfterCorrection = new DatePeriod(scheduleExecutionLog.getPeriod().start(),
-					scheduleExecutionLog.getPeriod().end());
-			boolean isTargetPeriod = this.correctTargetPeriodAfterClosingStartDate(command.getCompanyId(),
-					command.getEmployeeId(), dateAfterCorrection);
-			if (!isTargetPeriod)
-				continue;
-
-			// check processExecutionAtr reconfig
-			if (command.getContent().getReCreateContent().getProcessExecutionAtr() == ProcessExecutionAtr.RECONFIG) {
-				BasicScheduleResetCommand commandReset = new BasicScheduleResetCommand();
-				commandReset.setCompanyId(command.getCompanyId());
-				commandReset.setConfirm(command.getContent().getConfirm());
-				commandReset.setEmployeeId(domain.getEmployeeId());
-				commandReset.setExecutionId(command.getExecutionId());
-				commandReset.setReCreateAtr(command.getContent().getReCreateContent().getReCreateAtr().value);
-				commandReset.setResetAtr(command.getContent().getReCreateContent().getResetAtr());
-				commandReset.setTargetStartDate(scheduleExecutionLog.getPeriod().start());
-				commandReset.setTargetEndDate(scheduleExecutionLog.getPeriod().end());
-				this.resetSchedule(commandReset, context, dateAfterCorrection);
-			} else {
-				// check parameter CreateMethodAtr
-				if (command.getContent().getCreateMethodAtr() == CreateMethodAtr.PERSONAL_INFO) {
-					this.createScheduleBasedPerson(command, domain, scheduleExecutionLog, context, dateAfterCorrection);
-				}
-			}
-
-			domain.updateToCreated();
-			this.scheduleCreatorRepository.update(domain);
-		}
-
-		// find execution log by id
-		ScheduleExecutionLog scheExeLog = this.scheduleExecutionLogRepository
-				.findById(command.getCompanyId(), scheduleExecutionLog.getExecutionId()).get();
-		if (scheExeLog.getCompletionStatus() != CompletionStatus.INTERRUPTION) {
-			System.out.println("not hasBeenRequestedToCancel: " + asyncTask.hasBeenRequestedToCancel() + "&exeid="
-					+ scheduleExecutionLog.getExecutionId());
-			this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
-		}
 	}
 
 	/**
@@ -400,7 +330,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				String errorContent = this.internationalization.localize("Msg_602", "#KSC001_87").get();
 				// ドメインモデル「スケジュール作成エラーログ」を登録する
 				ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, command.getExecutionId(),
-						command.getToDate(), command.getEmployeeId());
+						command.getToDate(), creator.getEmployeeId());
 				this.scheduleErrorLogRepository.add(scheduleErrorLog);
 			}
 
@@ -496,15 +426,16 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		// (kiểm tra thông tin 「予定確定区分」 của domain 「勤務予定基本情報」)
 		if (command.getContent().getReCreateContent().getReCreateAtr() == ReCreateAtr.ALL_CASE
 				|| basicSchedule.getConfirmedAtr().equals(ConfirmedAtr.UNSETTLED)) {
+			// アルゴリズム「スケジュール作成判定処理」を実行する
 			if (this.scheCreExeMonthlyPatternHandler.scheduleCreationDeterminationProcess(command, basicSchedule,
-					employmentStatus, workingConditionItem.getAutoStampSetAtr())) {
+					employmentStatus, workingConditionItem)) {
 				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, workingConditionItem);
 			}
 		}
 	}
 
 	/**
-	 * 個人スケジュールを登録する: register Personal Schedule -> new version
+	 * 個人スケジュールを登録する: register Personal Schedule
 	 * 
 	 */
 	private void registerPersonalSchedule(ScheduleCreatorExecutionCommand command,

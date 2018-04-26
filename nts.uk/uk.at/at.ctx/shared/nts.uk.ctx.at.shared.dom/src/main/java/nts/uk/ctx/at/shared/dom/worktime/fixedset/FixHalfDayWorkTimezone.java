@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -58,7 +59,7 @@ public class FixHalfDayWorkTimezone extends WorkTimeDomainObject {
 	 * @param fixedWorkSet the fixed work set
 	 * @param other the other
 	 */
-	public void restoreData(ScreenMode screenMode, FixedWorkSetting fixedWorkSet,
+	public void correctData(ScreenMode screenMode, FixedWorkSetting fixedWorkSet,
 			FixHalfDayWorkTimezone other) {
 		switch (screenMode) {
 		case SIMPLE:
@@ -103,11 +104,18 @@ public class FixHalfDayWorkTimezone extends WorkTimeDomainObject {
 	 *
 	 * @param screenMode the screen mode
 	 */
-	public void restoreDefaultData(ScreenMode screenMode) {
+	public void correctDefaultData(ScreenMode screenMode) {
 		if (screenMode.equals(ScreenMode.SIMPLE) && this.getDayAtr() != AmPmAtr.ONE_DAY) {
 			this.restTimezone.restoreDefaultData();
 			this.workTimezone.restoreDefaultData();
 		}
+	}
+	
+	/**
+	 * Correct default data.
+	 */
+	public void correctDefaultData() {
+		this.workTimezone.correctDefaultData();
 	}
 
 	/*

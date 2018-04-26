@@ -517,7 +517,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 cwt = self.currentWorkType(),
                 od = cwt.oneDay(),
                 mn = cwt.morning(),
-                af = cwt.afternoon(),
+                af = cwt.afternoon();
 
             self.checkDisabled(true);
             cwt.workTypeCode('');

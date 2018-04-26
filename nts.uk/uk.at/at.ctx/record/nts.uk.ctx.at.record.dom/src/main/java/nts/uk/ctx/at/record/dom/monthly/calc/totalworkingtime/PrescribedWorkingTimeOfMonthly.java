@@ -94,6 +94,22 @@ public class PrescribedWorkingTimeOfMonthly {
 	}
 
 	/**
+	 * 計画所定労働合計時間を取得する
+	 * @param datePeriod 期間
+	 * @return 計画所定労働合計時間
+	 */
+	public AttendanceTimeMonth getTotalSchedulePrescribedWorkingTime(DatePeriod datePeriod){
+		
+		AttendanceTimeMonth returnTime = new AttendanceTimeMonth(0);
+		for (val timeSeriesWork : this.timeSeriesWorks){
+			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
+			val prescribedWorkingTime = timeSeriesWork.getPrescribedWorkingTime();
+			returnTime = returnTime.addMinutes(prescribedWorkingTime.getSchedulePrescribedLaborTime().v());
+		}
+		return returnTime;
+	}
+
+	/**
 	 * 実績所定労働合計時間を取得する
 	 * @param datePeriod 期間
 	 * @return 実績所定労働合計時間
@@ -107,5 +123,17 @@ public class PrescribedWorkingTimeOfMonthly {
 			returnTime = returnTime.addMinutes(prescribedWorkingTime.getRecordPrescribedLaborTime().v());
 		}
 		return returnTime;
+	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(PrescribedWorkingTimeOfMonthly target){
+		
+		this.schedulePrescribedWorkingTime = this.schedulePrescribedWorkingTime.addMinutes(
+				target.schedulePrescribedWorkingTime.v());
+		this.recordPrescribedWorkingTime = this.recordPrescribedWorkingTime.addMinutes(
+				target.recordPrescribedWorkingTime.v());
 	}
 }

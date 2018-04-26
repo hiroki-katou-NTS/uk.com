@@ -225,13 +225,13 @@ module nts.uk.com.view.cps001.g.vm {
                 {type: 'string', key: 'annLeavID', hidden: true },
                 { headerText: getText('CPS001_118'), type: 'date', key: 'grantDate', width: 100 },
                 { headerText: getText('CPS001_119'), type: 'date', key: 'deadline', width: 100 },
-                { headerText: getText('CPS001_120'), type: 'string', formatter: formatDate, key: 'grantDays', width: 60 },
+                { headerText: getText('CPS001_120'), type: 'string', formatter: formatDate, key: 'grantDays', width: 70 },
                 { headerText: getText('CPS001_128'), key: 'grantMinutes', formatter: formatTime, width: 70, hidden: self.grantMinutesH()},
-                { headerText: getText('CPS001_121'), type: 'string', formatter: formatDate, key: 'usedDays', width: 80 },
+                { headerText: getText('CPS001_121'), type: 'string', formatter: formatDate, key: 'usedDays', width: 70 },
                 { headerText: getText('CPS001_122'), key: 'usedMinutes', formatter: formatTime, width: 70, hidden: self.usedMinutesH()},
-                { headerText: getText('CPS001_123'), type: 'string', formatter: formatDate, key: 'remainingDays', width: 80 },
-                { headerText: getText('CPS001_124'), type: 'string', key: 'remainingMinutes', formatter: formatTime, width: 70, hidden: self.remainingMinutesH()},
-                { headerText: getText('CPS001_129'), type: 'number', formatter: formatEnum, key: 'expirationStatus', width: 80 }
+                { headerText: getText('CPS001_123'), type: 'string', formatter: formatDate, key: 'remainingDays', width: 70 },
+                { headerText: getText('CPS001_124'), type: 'string', key: 'remainingMinutes', formatter: formatTime, width: 100, hidden: self.remainingMinutesH()},
+                { headerText: getText('CPS001_129'), type: 'number', formatter: formatEnum, key: 'expirationStatus', width: 100 }
             ]);
                     let table: string = '<table tabindex="6" id="single-list" data-bind="ntsGridList: { dataSource: listAnnualLeaveGrantRemainData,  primaryKey: \'annLeavID\', columns: columns, multiple: false,value: currentValue, showNumbering: true,rows:10}"></table>';
                     $("#tbl").html(table);
@@ -374,20 +374,20 @@ module nts.uk.com.view.cps001.g.vm {
               data: any = getShared('CPS001GHI_VALUES');
             if (param) {
                 self.annLeavID(param.annLeavID || null);
-                self.grantDate(moment.utc(param.grantDate,"YYYY/MM/DD") || null);
-                self.deadline(moment.utc(param.deadline,"YYYY/MM/DD") || null);
+                self.grantDate(moment.utc(param.grantDate,"YYYY/MM/DD"));
+                self.deadline(moment.utc(param.deadline,"YYYY/MM/DD"));
                 self.expirationStatus(param.expirationStatus);
-                self.grantDays(param.grantDays || null);
-                self.grantMinutes(param.grantMinutes || null);
-                self.usedDays(param.usedDays || null);
-                self.usedMinutes(param.usedMinutes || null);
-                self.remainingDays(param.remainingDays || null);
-                self.remainingMinutes(param.remainingMinutes || null);
+                self.grantDays(param.grantDays);
+                self.grantMinutes(param.grantMinutes);
+                self.usedDays(param.usedDays);
+                self.usedMinutes(param.usedMinutes);
+                self.remainingDays(param.remainingDays);
+                self.remainingMinutes(param.remainingMinutes);
                 self.employeeId(data.sid);
             }
             // Subcribe grantDate
             self.grantDate.subscribe(value => {
-                if (value && __viewContext.viewModel.createMode() && !nts.uk.ui.errors.hasError())  {
+                if (value && __viewContext.viewModel.createMode())  {
                     service.lostFocus(value).done((data: Date) => {
                         if (data){
                             self.deadline(moment.utc(data,"YYYY/MM/DD"));                            
