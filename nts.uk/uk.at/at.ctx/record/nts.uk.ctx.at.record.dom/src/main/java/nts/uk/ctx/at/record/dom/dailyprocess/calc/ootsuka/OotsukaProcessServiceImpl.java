@@ -153,7 +153,7 @@ public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 	 */
 	private boolean decisionAbleCalc(WorkType workType,Optional<FixedWorkCalcSetting> calcMethodOfFixWork) {
 		//休暇時の計算を取得
-		if(workType != null && true) {//calcMethodOfFixWork.isPresent()) {
+		if(workType != null && false) {//calcMethodOfFixWork.isPresent()) {
 			return workType.getDailyWork().isOneOrHalfAnnualHoliday()
 					|| workType.getDailyWork().isOneOrHalfDaySpecHoliday()
 					|| workType.getDailyWork().isOneOrHalfDayYearlyReserved();
