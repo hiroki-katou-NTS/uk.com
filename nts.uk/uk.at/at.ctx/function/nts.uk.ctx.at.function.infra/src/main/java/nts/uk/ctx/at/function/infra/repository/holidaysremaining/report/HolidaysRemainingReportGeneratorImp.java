@@ -263,7 +263,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 				.isChildNursingLeave()) {
 			cells.copyRows(cells, 20, firstRow, 2);
 			// N1_1
-			cells.get(firstRow, 2).setValue(TextResource.localize("KDR001_47"));
+			cells.get(firstRow, 2).setValue(TextResource.localize("KDR001_23"));
 			// N2_1
 			cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_9"));
 			// N2_2
@@ -275,7 +275,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getNursingcareLeave().isNursingLeave()) {
 			cells.copyRows(cells, 22, firstRow, 2);
 			// O1_1
-			cells.get(firstRow, 2).setValue(TextResource.localize("KDR001_48"));
+			cells.get(firstRow, 2).setValue(TextResource.localize("KDR001_24"));
 			// O2_1
 			cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_9"));
 			// O2_2
