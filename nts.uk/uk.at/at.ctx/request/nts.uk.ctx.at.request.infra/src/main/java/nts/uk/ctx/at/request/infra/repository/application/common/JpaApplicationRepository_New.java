@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.infra.repository.application.common;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +10,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdpApplicationPK_New;
@@ -39,14 +42,24 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			+ " AND a.appType = :applicationType "
 			+ " AND a.prePostAtr = :prePostAtr ORDER BY a.inputDate DESC";
 	//hoatt
+//	private final String SELECT_APP_BY_SID = SELECT_FROM_APPLICATION + " AND ( a.employeeID = :employeeID Or a.enteredPersonID = :employeeID )"
+//			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate and a.appType IN (0,1,2,4,6,10)";
 	private final String SELECT_APP_BY_SID = SELECT_FROM_APPLICATION + " AND ( a.employeeID = :employeeID Or a.enteredPersonID = :employeeID )"
-			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate and a.appType IN (0,1,2,4,6,10)";
+			+ " AND ((a.startDate >= :startDate and a.endDate <= :endDate)"
+			+ " OR (a.endDate IS null and a.startDate >= :startDate AND a.startDate <= :endDate))" 
+			+ " AND a.appType IN (0,1,2,4,6,10)";
 	//hoatt
 	private final String SELECT_APP_BY_REFLECT = SELECT_FROM_APPLICATION + " AND a.stateReflectionReal != 5"
-			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate and a.appType IN (0,1,2,4,6,10)";
+			+ " AND ((a.startDate >= :startDate and a.endDate <= :endDate)"
+			+ " OR (a.endDate IS null and a.startDate >= :startDate AND a.startDate <= :endDate))" 
+			+ " AND a.appType IN (0,1,2,4,6,10)";
 	private final String SELECT_APP_BY_SIDS = "SELECT a FROM KrqdtApplication_New a" + " WHERE a.employeeID IN :employeeID" + " AND a.appDate >= :startDate AND a.appDate <= :endDate";
 	private final String SELECT_APPLICATION_BY_ID = "SELECT a FROM KrqdtApplication_New a"
 			+ " WHERE a.krqdpApplicationPK.appID = :appID AND a.krqdpApplicationPK.companyID = :companyID";
+	
+	private final String SELECT_APP_BY_LIST_ID = "SELECT a FROM KrqdtApplication_New a"
+			+ " WHERE a.krqdpApplicationPK.appID IN :listAppID AND a.krqdpApplicationPK.companyID = :companyID"
+			+ " ORDER BY a.appDate";
 	
 	private final String SELECT_APP_BY_CONDS = "SELECT a FROM KrqdtApplication_New a WHERE a.employeeID IN :employeeID AND a.appDate >= :startDate AND a.appDate <= :endDate"
 			+ " AND a.prePostAtr = 1 AND (a.stateReflectionReal = 0 OR a.stateReflectionReal = 1) ORDER BY a.appDate ASC, a.inputDate DESC";
@@ -195,5 +208,15 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 				.getList(c -> c.toDomain());
 		
 		return data;
+	}
+	@Override
+	public List<Application_New> findByListID(String companyID, List<String> listAppID) {
+		if(CollectionUtil.isEmpty(listAppID)){
+			return Collections.emptyList();
+		}
+		return this.queryProxy().query(SELECT_APP_BY_LIST_ID, KrqdtApplication_New.class)
+				.setParameter("listAppID", listAppID)
+				.setParameter("companyID", companyID)
+				.getList(x -> x.toDomain());
 	}
 }

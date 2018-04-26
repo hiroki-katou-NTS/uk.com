@@ -3,6 +3,9 @@ package nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess;
 import java.util.Map;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 
 /**
  * 反映処理
@@ -16,16 +19,20 @@ public interface ScheWorkUpdateService {
 	 * scheUpdate: true: 予定勤種就時を反映, false: 勤種就時を反映
 	 */
 	public void updateWorkTimeType(ReflectParameter para, boolean scheUpdate);
+	
+	public IntegrationOfDaily updateWorkTimeTypeHoliwork(ReflectParameter para, boolean scheUpdate, IntegrationOfDaily dailyData);
 	/**
 	 * 予定時刻の反映
 	 * @param data
 	 */
-	public void updateStartTimeOfReflect(TimeReflectParameter data);
+	public void updateScheStartEndTime(TimeReflectPara data);
+	
+	public IntegrationOfDaily updateScheStartEndTimeHoliday(TimeReflectPara data, IntegrationOfDaily dailyData);
 	/**
 	 * 開始時刻の反映
 	 * @param data
 	 */
-	public void updateReflectStartEndTime(TimeReflectParameter para);
+	public void updateRecordStartEndTime(TimeReflectParameter para);
 	/**
 	 * 残業時間の反映
 	 * @param employeeId
@@ -42,6 +49,8 @@ public interface ScheWorkUpdateService {
 	 * @param isPre : true 事前申請、false 事後申請
 	 */
 	public void updateTimeShiftNight(String employeeId, GeneralDate dateData, Integer timeNight, boolean isPre);
+	
+	public IntegrationOfDaily updateTimeShiftNightHoliday(String employeeId, GeneralDate dateData, Integer timeNight, boolean isPre, IntegrationOfDaily dailyData);
 	/**
 	 * 休出時間(深夜)の反映
 	 * @param employeeId
@@ -70,6 +79,6 @@ public interface ScheWorkUpdateService {
 	 * @param worktimeFrame
 	 * @param isPre
 	 */
-	public void updateWorkTimeFrame(String employeeId, GeneralDate dateData, Map<Integer, Integer> worktimeFrame, boolean isPre);
+	public IntegrationOfDaily updateWorkTimeFrame(String employeeId, GeneralDate dateData, Map<Integer, Integer> worktimeFrame, boolean isPre, IntegrationOfDaily dailyData);
 
 }

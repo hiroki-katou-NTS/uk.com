@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -35,7 +36,7 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 	@Override
 	public DailyAttendanceTimePubExport calcDailyAttendance(DailyAttendanceTimePubImport imp) {
 
-		if(imp.getEmployeeid() == null || imp.getYmd() == null || imp.getWorkEndTime() == null || imp.getWorkStartTime() == null)
+		if(imp.getEmployeeid() == null || imp.getYmd() == null || imp.getWorkEndTime() == null || imp.getWorkStartTime() == null || imp.getWorkTypeCode() == null)
 			return notPresentValue();
 		
 		//時間帯の作成
@@ -80,12 +81,31 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 		val holidayWorkFrames = new HashMap<HolidayWorkFrameNo,TimeWithCalculation>();
 		val bonusPays = new HashMap<Integer,AttendanceTime>();
 		val specBonusPays = new HashMap<Integer,AttendanceTime>();
+		TimeWithCalculation flexTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
+		TimeWithCalculation excessTimeMidNightTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
+		
+		
 		if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily() != null){
+				if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()!= null) {
+					if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily() != null) {
+						if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime() != null)
+							 excessTimeMidNightTime = TimeWithCalculation.convertFromTimeDivergence(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime().getTime());
+						if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
+							flexTime = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getNotMinusFlexTime();
+						}
+					}
+				}
+			}
+				
 			for(int loopNumber = 1 ; loopNumber <=10 ; loopNumber++ ) {
+				final int loop = loopNumber;
 				//残業
 				if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
-					if(loopNumber < integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime().size()) {
-						overTimeFrames.put(new OverTimeFrameNo(loopNumber), TimeWithCalculation.convertFromTimeDivergence(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime().get(loopNumber - 1).getOverTimeWork()));
+					val getOver = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime()
+									.stream().filter(tc -> tc.getOverWorkFrameNo().v().intValue() == loop).findFirst();
+					if(getOver.isPresent()) {
+						overTimeFrames.put(new OverTimeFrameNo(loopNumber), TimeWithCalculation.convertFromTimeDivergence(getOver.get().getOverTimeWork()));
 					}
 					else {
 						overTimeFrames.put(new OverTimeFrameNo(loopNumber),TimeWithCalculation.sameTime(new AttendanceTime(0)));
@@ -93,8 +113,10 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 				}
 				//休出
 				if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()) {
-					if(loopNumber < integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime().size()) {
-						holidayWorkFrames.put(new HolidayWorkFrameNo(loopNumber), TimeWithCalculation.convertFromTimeDivergence(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime().get(loopNumber - 1).getHolidayWorkTime().get()));
+					val getHol = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime()
+									.stream().filter(tc -> tc.getHolidayFrameNo().v().intValue() == loop).findFirst();
+					if(getHol.isPresent()) {
+						holidayWorkFrames.put(new HolidayWorkFrameNo(loopNumber), TimeWithCalculation.convertFromTimeDivergence(getHol.get().getHolidayWorkTime().get()));
 					}
 					else {
 						holidayWorkFrames.put(new HolidayWorkFrameNo(loopNumber),TimeWithCalculation.sameTime(new AttendanceTime(0)));
@@ -124,8 +146,8 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 				holidayWorkFrames,
 				bonusPays,
 				specBonusPays,
-				integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getNotMinusFlexTime(),
-				TimeWithCalculation.convertFromTimeDivergence(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime().getTime())
+				flexTime,
+				excessTimeMidNightTime
 			);
 	}
 

@@ -1,42 +1,48 @@
 package nts.uk.screen.at.app.dailyperformance.correction.selecterrorcode;
 
 import java.math.BigDecimal;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ConfirmOfManagerOrYouself;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
+import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationExportDto;
+import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListForScreen;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
-import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
+import nts.uk.screen.at.app.dailyperformance.correction.GetDataDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
-import nts.uk.screen.at.app.dailyperformance.correction.datadialog.ParamDialog;
+import nts.uk.screen.at.app.dailyperformance.correction.datadialog.classification.EnumCodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ActualLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalUseSettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFomatDailyDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatInitialDisplayDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatSheetDto;
@@ -55,8 +61,13 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPHeaderDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPSheetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecEditSetDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecOpeFuncDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DisplayItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.FormatDPCorrectionDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ObjectShare;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
@@ -71,28 +82,33 @@ public class DailyPerformanceErrorCodeProcessor {
 
 	@Inject
 	private DailyPerformanceScreenRepo repo;
-	
+
 	@Inject
 	private ClosureService closureService;
-	
+
 	@Inject
 	private DailyModifyQueryProcessor dailyModifyQueryProcessor;
-	
+
 	@Inject
 	private DailyAttendanceItemNameAdapter dailyAttendanceItemNameAdapter;
-	
+
 	@Inject
 	private DataDialogWithTypeProcessor dataDialogWithTypeProcessor;
+
+	@Inject
+	private ApplicationListForScreen applicationListFinder;
 	
 	private static final String CODE = "Code";
 	private static final String NAME = "Name";
 	private static final String NO = "NO";
-    private static final String LOCK_DATE = "date";
+	private static final String LOCK_DATE = "date";
 	private static final String LOCK_EMP_CODE = "employeeCode";
 	private static final String LOCK_EMP_NAME = "employeeName";
 	private static final String LOCK_ERROR = "error";
 	private static final String LOCK_SIGN = "sign";
+	private static final String LOCK_APPROVAL = "approval";
 	private static final String LOCK_PIC = "picture-person";
+	private static final String SCREEN_KDW003 = "KDW/003/a";
 	private static final String ADD_CHARACTER = "A";
 	private static final String PX = "px";
 	private static final String TYPE_LABEL = "label";
@@ -101,13 +117,30 @@ public class DailyPerformanceErrorCodeProcessor {
 	private static final String LOCK_EDIT_CELL_DAY = "D";
 	private static final String LOCK_EDIT_CELL_MONTH = "M";
 	private static final String LOCK_EDIT_CELL_WORK = "C";
+	private static final String DATE_FORMAT = "yyyy-MM-dd";
+	private static final String LOCK_APPLICATION = "Application";
+	private static final String COLUMN_SUBMITTED = "Submitted";
+	public static final int MINUTES_OF_DAY = 24 * 60;
 	private static final String STATE_DISABLE = "ntsgrid-disable";
+	private static final String HAND_CORRECTION_MYSELF = "ntsgrid-manual-edit-target";
+	private static final String HAND_CORRECTION_OTHER = "ntsgrid-manual-edit-other";
+	private static final String REFLECT_APPLICATION = "ntsgrid-reflect";
+	private static final String STATE_ERROR ="ntsgrid-error";
 
 	public DailyPerformanceCorrectionDto generateData(DateRange dateRange,
 			List<DailyPerformanceEmployeeDto> lstEmployee, Integer initScreen, Integer displayFormat, CorrectionOfDailyPerformance correct,
 			List<String> errorCodes, List<String> formatCodes) {
 		String sId = AppContexts.user().employeeId();
+		String companyId = AppContexts.user().companyId();
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
+		String NAME_EMPTY = TextResource.localize("KDW003_82");
+		String NAME_NOT_FOUND = TextResource.localize("KDW003_81");
+		// identityProcessDto show button A2_6
+		// アルゴリズム「本人確認処理の利用設定を取得する」を実行する
+		Optional<IdentityProcessUseSetDto> identityProcessDtoOpt = repo.findIdentityProcessUseSet(companyId);
+		screenDto.setIdentityProcessDto(identityProcessDtoOpt.isPresent() ? identityProcessDtoOpt.get()
+				: new IdentityProcessUseSetDto(false, false, null));
+		Optional<ApprovalUseSettingDto> approvalUseSettingDtoOpt = repo.findApprovalUseSettingDto(companyId);
 
 		/**
 		 * システム日付を基準に1ヵ月前の期間を設定する | Set date range one month before system date
@@ -132,9 +165,6 @@ public class DailyPerformanceErrorCodeProcessor {
 		// get employmentCode
 		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(sId, dateRange);
 		screenDto.setEmploymentCode(employment == null ? "" : employment.getEmploymentCode());
-		// アルゴリズム「休暇の管理状況をチェックする」を実行する | Get holiday setting data
-		getHolidaySettingData(screenDto);
-
 		/**
 		 * アルゴリズム「表示形式に従って情報を取得する」を実行する | Execute "Get information according to
 		 * display format"
@@ -158,12 +188,38 @@ public class DailyPerformanceErrorCodeProcessor {
 		// date + Acquire personalized information + Acquire error alarm
 		// information
 		screenDto.setLstData(getListData(screenDto.getLstEmployee(), dateRange));
+		// Lấy thành tích nhân viên theo ngày 
 		/// アルゴリズム「対象日に対応する社員の実績の編集状態を取得する」を実行する | Execute "Acquire edit status
 		/// of employee's record corresponding to target date"| lay ve trang
 		/// thai sua cua thanh tich nhan vien tuong ung
-		// --List<DailyRecEditSetDto> dailyRecEditSets =
-		/// repo.getDailyRecEditSet(listEmployeeId, dateRange);
+		List<DailyRecEditSetDto> dailyRecEditSets = repo.getDailyRecEditSet(listEmployeeId, dateRange);
+		Map<String, Integer> dailyRecEditSetsMap = dailyRecEditSets.stream()
+				.collect(Collectors.toMap(x -> mergeString(String.valueOf(x.getAttendanceItemId()), "|",
+						x.getEmployeeId(), "|", converDateToString(x.getProcessingYmd())), x -> x.getEditState()));
+		
+		// check show column 本人
+		// check show column 承認
+		DailyRecOpeFuncDto dailyRecOpeFun = findDailyRecOpeFun(screenDto, companyId).orElse(null);
+		Map<String, DatePeriod> employeeAndDateRange = extractEmpAndRange(dateRange, companyId, listEmployeeId);
+		long start = System.currentTimeMillis();
+		// No 19, 20 show/hide button
+		boolean showButton = true;
+		if (displayFormat == 0) {
+			if (!listEmployeeId.isEmpty() && !sId.equals(listEmployeeId.get(0))) {
+				showButton = false;
+			}
+		}
+		DisplayItem disItem = getDisplayItems(correct, formatCodes, companyId, screenDto, listEmployeeId, showButton);
+		List<DailyModifyResult> results = new ArrayList<>();
+		results = new GetDataDaily(listEmployeeId, dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor).call();
+		DPControlDisplayItem dPControlDisplayItem = this.getItemIdNames(disItem, showButton);
+		/// アルゴリズム「対象日に対応する社員の実績の編集状態を取得する」を実行する | Execute "Acquire edit status
+		/// of employee's record corresponding to target date"| lay ve trang
 		/// アルゴリズム「実績エラーをすべて取得する」を実行する | Execute "Acquire all actual errors"
+		Map<Integer, DPAttendanceItem> mapDP = dPControlDisplayItem.getLstAttendanceItem() != null
+				? dPControlDisplayItem.getLstAttendanceItem().stream()
+						.collect(Collectors.toMap(DPAttendanceItem::getId, x -> x))
+				: new HashMap<>();
 		if (screenDto.getLstEmployee().size() > 0) {
 			/// ドメインモデル「社員の日別実績エラー一覧」をすべて取得する +
 			/// 対応するドメインモデル「勤務実績のエラーアラーム」をすべて取得する
@@ -175,76 +231,16 @@ public class DailyPerformanceErrorCodeProcessor {
 				List<DPErrorSettingDto> lstErrorSetting = this.repo
 						.getErrorSetting(lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
 				// Seperate Error and Alarm
-				//screenDto.addErrorToResponseData(lstError, lstErrorSetting);
+				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
 			}
 		}
-
-		// アルゴリズム「社員に対応する処理締めを取得する」を実行する | Execute "Acquire Process Tightening
-		// Corresponding to Employees"--
-		List<ClosureDto> closureDtos = repo.getClosureId(listEmployeeId, dateRange.getEndDate());
-		/// TODO : アルゴリズム「対象日に対応する承認者確認情報を取得する」を実行する | Execute "Acquire Approver
-		/// Confirmation Information Corresponding to Target Date"
-		// アルゴリズム「就業確定情報を取得する」を実行する
-		/// アルゴリズム「日別実績のロックを取得する」を実行する (Tiến hành xử lý "Lấy về lock của thành
-		/// tích theo ngày")
-		Map<String, DatePeriod> employeeAndDateRange = new HashMap<>();
-		if(!closureDtos.isEmpty()){
-			closureDtos.forEach(x ->{
-				DatePeriod datePeriod = closureService.getClosurePeriod(x.getClosureId(), new YearMonth(x.getClosureMonth()));
-				Optional<ActualLockDto> actualLockDto = repo.findAutualLockById(AppContexts.user().companyId(), x.getClosureId());
-				if(actualLockDto.isPresent()){
-					if(actualLockDto.get().getDailyLockState()==1){
-						employeeAndDateRange.put(x.getSid()+"|"+x.getClosureId()+"|"+LOCK_EDIT_CELL_DAY, datePeriod);
-					};
-					if(actualLockDto.get().getMonthlyLockState()==1){
-						employeeAndDateRange.put(x.getSid()+"|"+x.getClosureId()+"|"+LOCK_EDIT_CELL_MONTH, datePeriod);
-					}
-				}
-				//アルゴリズム「表示項目を制御する」を実行する | Execute "control display items"
-				Optional<WorkFixedDto> workFixedOp =repo.findWorkFixed(x.getClosureId(), x.getClosureMonth());
-				if(workFixedOp.isPresent()){
-					employeeAndDateRange.put(x.getSid()+"|"+x.getClosureId()+"|"+workFixedOp.get().getWkpId()+"|"+LOCK_EDIT_CELL_WORK, datePeriod);
-				}
-			});
-		}
-
-		OperationOfDailyPerformanceDto dailyPerformanceDto = repo.findOperationOfDailyPerformance();
-		//dailyPerformanceDto.setSettingUnit(SettingUnit.BUSINESS_TYPE);
-		//dailyPerformanceDto.setSettingUnit(SettingUnit.BUSINESS_TYPE);
-		screenDto.setComment(dailyPerformanceDto != null && dailyPerformanceDto.getComment() != null
-				? dailyPerformanceDto.getComment() : null);
-		DPControlDisplayItem dPControlDisplayItem = getControlDisplayItems(listEmployeeId, screenDto.getDateRange(),
-				correct, formatCodes, dailyPerformanceDto);
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
-		screenDto.getLstFixedHeader().forEach(column ->{
-			screenDto.getLstControlDisplayItem().getColumnSettings().add(new ColumnSetting(column.getKey(), false));
-		});
-		if (displayFormat == 2) {
-			// only filter data error
-			Map<String, String> listEmployeeError = new HashMap<>();
-			for(DPErrorDto dto: lstError){
-				listEmployeeError.put(dto.getEmployeeId(), "");
-			}
-			listEmployeeId = listEmployeeId.stream().filter(x -> listEmployeeError.containsKey(x))
-					.collect(Collectors.toList());
-			screenDto.setLstData(screenDto.getLstData().stream().filter(x -> listEmployeeError.containsKey(x.getEmployeeId())).collect(Collectors.toList()));
-		}
-		/// 対応する「日別実績」をすべて取得する-- lay tat ca thanh tich theo ngay tuong ung
-		//// 日別実績の勤務情報
-		List<DailyModifyResult> results = new ArrayList<>();
-		if(!dPControlDisplayItem.getItemIds().isEmpty()){
-			for (int i = 0; i < listEmployeeId.size(); i++) {
-				for (int j = 0; j < dateRange.toListDate().size(); j++) {
-					DailyModifyResult result = dailyModifyQueryProcessor.initScreen(
-							new DailyModifyQuery(listEmployeeId.get(i), dateRange.toListDate().get(j), null),
-							dPControlDisplayItem.getItemIds());
-					if (result != null)
-						results.add(result);
-				}
-			}
-		}
-		Map<String, DailyModifyResult> resultDailyMap = results.stream()
-				.collect(Collectors.toMap((x) -> x.getEmployeeId() + "|" + x.getDate(), Function.identity()));
+		screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
+
+		System.out.println("time get data and map name : " + (System.currentTimeMillis() - start));
+		long startTime2 = System.currentTimeMillis();
+		Map<String, DailyModifyResult> resultDailyMap = results.stream().collect(Collectors
+				.toMap(x -> mergeString(x.getEmployeeId(), "|", x.getDate().toString()), Function.identity(), (x, y) -> x));
 		//// 11. Excel: 未計算のアラームがある場合は日付又は名前に表示する
 		// Map<Integer, Integer> typeControl =
 		//// lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::
@@ -252,148 +248,97 @@ public class DailyPerformanceErrorCodeProcessor {
 		List<WorkInfoOfDailyPerformanceDto> workInfoOfDaily = repo.getListWorkInfoOfDailyPerformance(listEmployeeId,
 				dateRange);
 		List<DPDataDto> lstData = new ArrayList<DPDataDto>();
-		Map<Integer, DPAttendanceItem> mapDP = dPControlDisplayItem.getLstAttendanceItem() != null
-				? dPControlDisplayItem.getLstAttendanceItem().stream()
-						.collect(Collectors.toMap(DPAttendanceItem::getId, x -> x))
-				: new HashMap<>();
-	    Map<String, ItemValue> itemValueMap = new HashMap<>();
-		for (DPDataDto data : screenDto.getLstData()) {
-			boolean lock = false;
-			if(!employeeAndDateRange.isEmpty()){
-				for(int i = 1; i<= 5 ; i++){
-					DatePeriod dateD = employeeAndDateRange.get(data.getEmployeeId()+"|"+i+"|"+LOCK_EDIT_CELL_DAY);
-					DatePeriod dateM = employeeAndDateRange.get(data.getEmployeeId()+"|"+i+"|"+LOCK_EDIT_CELL_MONTH);
-					DatePeriod dateC = employeeAndDateRange.get(data.getEmployeeId()+"|"+i+"|"+data.getWorkplaceId()+"|"+LOCK_EDIT_CELL_WORK);
-					String lockD="";
-					String lockM="";
-					String lockC="";
-					if((dateD != null && (data.getDate().afterOrEquals(dateD.start()) && data.getDate().beforeOrEquals(dateD.end())))){
-						lockD ="|"+LOCK_EDIT_CELL_DAY;
-					}
-					if((dateM != null && (data.getDate().afterOrEquals(dateM.start()) && data.getDate().beforeOrEquals(dateM.end())))){
-						lockM ="|"+LOCK_EDIT_CELL_MONTH;
-					}
-					if((dateC != null && (data.getDate().afterOrEquals(dateC.start()) && data.getDate().beforeOrEquals(dateC.end())))){
-						lockC ="|"+LOCK_EDIT_CELL_WORK;
-					}
-					if(!lockD.equals("")|| !lockM.equals("")|| !lockC.equals("")){
-						data.setState("lock"+lockD+lockM+lockC);
-					    lock = true;
-					}
-				}
+		// set error, alarm
+		if (screenDto.getLstEmployee().size() > 0) {
+			if (lstError.size() > 0) {
+				// Get list error setting
+				List<DPErrorSettingDto> lstErrorSetting = this.repo
+						.getErrorSetting(lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+				// Seperate Error and Alarm
+				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
 			}
-			if(lock){
-				screenDto.setLock(data.getId(), LOCK_DATE, STATE_DISABLE);
-			    screenDto.setLock(data.getId(), LOCK_EMP_CODE, STATE_DISABLE);
-			    screenDto.setLock(data.getId(), LOCK_EMP_NAME, STATE_DISABLE);
-			    screenDto.setLock(data.getId(), LOCK_ERROR, STATE_DISABLE);
-			    screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
-			    screenDto.setLock(data.getId(), LOCK_PIC, STATE_DISABLE);
-			}
-			DailyModifyResult resultOfOneRow = resultDailyMap.isEmpty() ? null : resultDailyMap.get(data.getEmployeeId()+"|"+data.getDate());
-			if(resultOfOneRow != null){
-				//List<ItemValue> attendanceTimes = resultOfOneRow.getItems().get("AttendanceTimeOfDailyPerformance");
-				List<ItemValue> attendanceTimes = new ArrayList<>();
-				resultOfOneRow.getItems().forEach(x ->{
-					attendanceTimes.add(x);
-				});
-				screenDto.getItemValues().addAll(attendanceTimes);
-				itemValueMap = attendanceTimes.isEmpty()? Collections.emptyMap(): attendanceTimes.stream().collect(Collectors.toMap(x -> x.itemId()+"|"+data.getEmployeeId()+"|"+data.getDate(), x -> x));
-			}
-			Set<DPCellDataDto> cellDatas = new HashSet<>();
-			if (dPControlDisplayItem.getLstAttendanceItem() != null) {
-				for (DPAttendanceItem item : dPControlDisplayItem.getLstAttendanceItem()){
-					//int a = 1;
-					int attendanceAtr = mapDP.get(item.getId()).getAttendanceAtr();
-					String key = item.getId()+"|"+data.getEmployeeId()+"|"+data.getDate();
-					String value = (itemValueMap.containsKey(key) && itemValueMap.get(key).value() != null) ? itemValueMap.get(key).value().toString() : "";
-					if (attendanceAtr == DailyAttendanceAtr.Code.value
-							|| attendanceAtr == DailyAttendanceAtr.Classification.value) {
-						if(attendanceAtr == DailyAttendanceAtr.Code.value){
-							if(lock){
-								screenDto.setLock(data.getId(), CODE + String.valueOf(item.getId()), STATE_DISABLE);
-								screenDto.setLock(data.getId(), NAME + String.valueOf(item.getId()), STATE_DISABLE);
-							}
-							cellDatas.add(new DPCellDataDto(CODE + String.valueOf(item.getId()), value ,
-									String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
-							if(value.equals("")){
-								value = TextResource.localize("KDW003_82");
-							}else{
-								CodeName codeName = dataDialogWithTypeProcessor.getTypeDialog(TypeLink.valueOf(item.getTypeGroup()).value, new ParamDialog("", screenDto.getEmploymentCode(), data.getWorkplaceId(), data.getDate(), value));
-								//CodeName codeName = null;
-								value = (codeName == null) ? TextResource.localize("KDW003_81") : codeName.getName();
-							}
-							cellDatas.add(new DPCellDataDto(NAME + String.valueOf(item.getId()),
-									value , String.valueOf(item.getAttendanceAtr()), TYPE_LINK));
-							
-						}else{
-							if(lock){
-								screenDto.setLock(data.getId(), NO + String.valueOf(item.getId()), STATE_DISABLE);
-								screenDto.setLock(data.getId(), NAME + String.valueOf(item.getId()), STATE_DISABLE);
-							}
-							cellDatas.add(new DPCellDataDto(NO + String.valueOf(item.getId()), value ,
-									String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
-							cellDatas.add(new DPCellDataDto(NAME + String.valueOf(item.getId()),
-									value , String.valueOf(item.getAttendanceAtr()), TYPE_LINK));
-						}
-						
-					} else {
-						if (lock) {
-							screenDto.setLock(data.getId(), ADD_CHARACTER + String.valueOf(item.getId()), STATE_DISABLE);
-						}
-						if (attendanceAtr == DailyAttendanceAtr.Time.value
-								|| attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
-							if (!value.equals("")) {
-								// convert HH:mm
-								int minute = Integer.parseInt(value);
-								int hours = Math.abs(minute / 60); 
-								int minutes =  Math.abs(minute) % 60;
-								value = String.format(FORMAT_HH_MM, minute >0 ? hours : 0-hours, minutes);
-								cellDatas.add(new DPCellDataDto(ADD_CHARACTER + String.valueOf(item.getId()), value,
-										String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
-							}else{
-								cellDatas.add(new DPCellDataDto(ADD_CHARACTER + String.valueOf(item.getId()), value,
-										String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
-							}
-						} else {
-							cellDatas.add(new DPCellDataDto(ADD_CHARACTER + String.valueOf(item.getId()), value,
-									String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
-						}
-					}
-				};
-			}
-			data.setCellDatas(cellDatas);
-			lstData.add(data);
-			// DPCellDataDto bPCellDataDto = new DPCellDataDto(columnKey, value,
-			// dataType, type);
-			Optional<WorkInfoOfDailyPerformanceDto> optWorkInfoOfDailyPerformanceDto = workInfoOfDaily.stream()
-					.filter(w -> w.getEmployeeId().equals(data.getEmployeeId()) && w.getYmd().equals(data.getDate()))
-					.findFirst();
-			if (optWorkInfoOfDailyPerformanceDto.isPresent()
-					&& optWorkInfoOfDailyPerformanceDto.get().getState() == CalculationState.No_Calculated)
-				screenDto.setAlarmCellForFixedColumn(data.getId());
 		}
-		Set<ItemValue> set = screenDto.getItemValues().stream()
-	            .collect(Collectors.toCollection(() -> 
-	                 new TreeSet<>(Comparator.comparing(ItemValue::getItemId))));
-		screenDto.getItemValues().clear();
-		screenDto.getItemValues().addAll(set);
-		// screenDto.setLstData(lstData);
-		screenDto.markLoginUser();
-		screenDto.createAccessModifierCellState(mapDP);
-		return screenDto;
-	}
 
-	/** アルゴリズム「休暇の管理状況をチェックする」を実行する */
-	private void getHolidaySettingData(DailyPerformanceCorrectionDto dailyPerformanceCorrectionDto) {
-		// アルゴリズム「年休設定を取得する」を実行する
-		dailyPerformanceCorrectionDto.setYearHolidaySettingDto(this.repo.getYearHolidaySetting());
-		// アルゴリズム「振休管理設定を取得する」を実行する
-		dailyPerformanceCorrectionDto.setSubstVacationDto(this.repo.getSubstVacationDto());
-		// アルゴリズム「代休管理設定を取得する」を実行する
-		dailyPerformanceCorrectionDto.setCompensLeaveComDto(this.repo.getCompensLeaveComDto());
-		// アルゴリズム「60H超休管理設定を取得する」を実行する
-		dailyPerformanceCorrectionDto.setCom60HVacationDto(this.repo.getCom60HVacationDto());
+		Set<Integer> types = dPControlDisplayItem.getLstAttendanceItem() == null ? new HashSet<>()
+				: dPControlDisplayItem.getLstAttendanceItem().stream().map(x -> x.getTypeGroup()).filter(x -> x != null)
+						.collect(Collectors.toSet());
+		Map<Integer, Map<String, String>> mapGetName = dataDialogWithTypeProcessor
+				.getAllCodeName(new ArrayList<>(types), companyId);
+		// No 20 get submitted application
+		List<ApplicationExportDto> appplication = listEmployeeId.isEmpty() ? Collections.emptyList() : applicationListFinder.getApplicationBySID(listEmployeeId,
+				dateRange.getStartDate(), dateRange.getEndDate());
+		Map<String, String> appMapDateSid = new HashMap<>();
+		appplication.forEach(x -> {
+			String key = x.getEmployeeID() + "|" + x.getAppDate();
+			if (appMapDateSid.containsKey(key)) {
+				appMapDateSid.put(key, appMapDateSid.get(key) + "  " + x.getAppTypeName());
+			} else {
+				appMapDateSid.put(key, x.getAppTypeName());
+			}
+		});
+		//get  check box sign(Confirm day)
+		Map<String, Boolean> signDayMap = repo.getConfirmDay(companyId, listEmployeeId, dateRange);
+		
+		System.out.println("time create HashMap: " + (System.currentTimeMillis() - startTime2));
+		start = System.currentTimeMillis();
+		screenDto.markLoginUser();
+		long start1 = System.currentTimeMillis();
+		screenDto.createAccessModifierCellState(mapDP);
+		screenDto.getLstFixedHeader().forEach(column -> {
+			screenDto.getLstControlDisplayItem().getColumnSettings().add(new ColumnSetting(column.getKey(), false));
+		});
+		System.out.println("time disable : " + (System.currentTimeMillis() - start1));
+		// set cell data
+		Map<String, ItemValue> itemValueMap = new HashMap<>();
+		for (DPDataDto data : screenDto.getLstData()) {
+			data.setEmploymentCode(screenDto.getEmploymentCode());
+			if (!sId.equals(data.getEmployeeId())) {
+				screenDto.setLock(data.getId(), LOCK_APPLICATION, STATE_DISABLE);
+			}
+			// map name submitted into cell
+			if (appMapDateSid.containsKey(data.getEmployeeId() + "|" + data.getDate())) {
+				data.addCellData(new DPCellDataDto(COLUMN_SUBMITTED,
+						appMapDateSid.get(data.getEmployeeId() + "|" + data.getDate()), "", ""));
+			} else {
+				data.addCellData(new DPCellDataDto(COLUMN_SUBMITTED, "", "", ""));
+			}
+			data.addCellData(new DPCellDataDto(COLUMN_SUBMITTED, "", "", ""));
+			data.addCellData(new DPCellDataDto(LOCK_APPLICATION, "", "", ""));
+			//set checkbox sign
+			data.setSign(signDayMap.containsKey(data.getEmployeeId() + "|" + data.getDate()));
+			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
+			if (resultOfOneRow != null && !data.getError().equals("")) {
+				lockData(sId, screenDto, dailyRecOpeFun, data, identityProcessDtoOpt, approvalUseSettingDtoOpt);
+
+				boolean lock = checkLockAndSetState(employeeAndDateRange, data);
+
+				if (lock) {
+					lockCell(screenDto, data);
+				}
+				if (resultOfOneRow != null) {
+					// List<ItemValue> attendanceTimes =
+					// resultOfOneRow.getItems().get("AttendanceTimeOfDailyPerformance");
+					itemValueMap = resultOfOneRow.getItems().stream()
+							.collect(Collectors.toMap(x -> mergeString(String.valueOf(x.getItemId()), "|",
+									data.getEmployeeId(), "|", data.getDate().toString()), x -> x));
+				}
+				processCellData(NAME_EMPTY, NAME_NOT_FOUND, screenDto, dPControlDisplayItem, mapDP, mapGetName,
+						itemValueMap, data, lock, dailyRecEditSetsMap, null);
+				lstData.add(data);
+				// DPCellDataDto bPCellDataDto = new DPCellDataDto(columnKey,
+				// value,
+				// dataType, type);
+				Optional<WorkInfoOfDailyPerformanceDto> optWorkInfoOfDailyPerformanceDto = workInfoOfDaily.stream()
+						.filter(w -> w.getEmployeeId().equals(data.getEmployeeId())
+								&& w.getYmd().equals(data.getDate()))
+						.findFirst();
+				if (optWorkInfoOfDailyPerformanceDto.isPresent()
+						&& optWorkInfoOfDailyPerformanceDto.get().getState() == CalculationState.No_Calculated)
+					screenDto.setAlarmCellForFixedColumn(data.getId());
+			}
+		}
+		screenDto.setLstData(lstData);
+		return screenDto;
 	}
 
 	/**
@@ -418,26 +363,374 @@ public class DailyPerformanceErrorCodeProcessor {
 		return result;
 	}
 
+	private Map<String, DatePeriod> extractEmpAndRange(DateRange dateRange, String companyId,
+			List<String> listEmployeeId) {
+		Map<String, DatePeriod> employeeAndDateRange = new HashMap<>();
+		List<ClosureDto> closureDtos = repo.getClosureId(listEmployeeId, dateRange.getEndDate());
+		if (!closureDtos.isEmpty()) {
+			closureDtos.forEach(x -> {
+				DatePeriod datePeriod = closureService.getClosurePeriod(x.getClosureId(),
+						new YearMonth(x.getClosureMonth()));
+				Optional<ActualLockDto> actualLockDto = repo.findAutualLockById(companyId, x.getClosureId());
+				if (actualLockDto.isPresent()) {
+					if (actualLockDto.get().getDailyLockState() == 1 || actualLockDto.get().getMonthlyLockState() == 1) {
+						employeeAndDateRange.put(
+								mergeString(x.getSid(), "|", x.getClosureId().toString(), "|", LOCK_EDIT_CELL_DAY),
+								datePeriod);
+					}
+
+//					if (actualLockDto.get().getMonthlyLockState() == 1) {
+//						employeeAndDateRange.put(
+//								mergeString(x.getSid(), "|", x.getClosureId().toString(), "|", LOCK_EDIT_CELL_MONTH),
+//								datePeriod);
+//					}
+				}
+				// アルゴリズム「表示項目を制御する」を実行する | Execute "control display items"
+				Optional<WorkFixedDto> workFixedOp = repo.findWorkFixed(x.getClosureId(), x.getClosureMonth());
+				if (workFixedOp.isPresent()) {
+					employeeAndDateRange.put(mergeString(x.getSid(), "|", x.getClosureId().toString(),
+							"|" + workFixedOp.get().getWkpId(), "|", LOCK_EDIT_CELL_WORK), datePeriod);
+				}
+			});
+		}
+		return employeeAndDateRange;
+	}
+	
+	private DisplayItem getDisplayItems(CorrectionOfDailyPerformance correct, List<String> formatCodes,
+			String companyId, DailyPerformanceCorrectionDto screenDto, List<String> listEmployeeId,
+			boolean showButton) {
+		OperationOfDailyPerformanceDto dailyPerformanceDto = repo.findOperationOfDailyPerformance();
+		screenDto.setComment(dailyPerformanceDto != null ? dailyPerformanceDto.getComment() : null);
+		screenDto.setTypeBussiness(dailyPerformanceDto != null ? dailyPerformanceDto.getSettingUnit().value : 1);
+		DisplayItem disItem = this.getItemIds(listEmployeeId, screenDto.getDateRange(), correct, formatCodes,
+				dailyPerformanceDto, companyId, showButton);
+		return disItem;
+	}
+	
 	/**
 	 * アルゴリズム「表示項目を制御する」を実行する | Execute the algorithm "control display items"
 	 */
-	private DPControlDisplayItem getControlDisplayItems(List<String> lstEmployeeId, DateRange dateRange,
-			CorrectionOfDailyPerformance correct, List<String> formatCodeSelects,
-			OperationOfDailyPerformanceDto dailyPerformanceDto) {
+	private DPControlDisplayItem getItemIdNames(DisplayItem disItem, boolean showButton) {
 		DPControlDisplayItem result = new DPControlDisplayItem();
-		String companyId = AppContexts.user().companyId();
+		result.setFormatCode(disItem.getFormatCode());
+		result.setSettingUnit(disItem.isSettingUnit());
+		List<DPAttendanceItem> lstAttendanceItem = new ArrayList<>();
+		Map<Integer, DPAttendanceItem> mapDP = new HashMap<>();
+		List<Integer> lstAtdItemUnique = disItem.getLstAtdItemUnique();
+		List<FormatDPCorrectionDto> lstFormat = disItem.getLstFormat();
+		if (!lstAtdItemUnique.isEmpty()) {
+			Map<Integer, String> itemName = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(lstAtdItemUnique)
+					.stream().collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
+							x -> x.getAttendanceItemName())); // 9s
+			lstAttendanceItem = lstAtdItemUnique.isEmpty() ? Collections.emptyList()
+					: this.repo.getListAttendanceItem(lstAtdItemUnique).stream().map(x -> {
+						x.setName(itemName.get(x.getId()));
+						return x;
+					}).collect(Collectors.toList());
+		}
+		result.createSheets(disItem.getLstSheet());
+		mapDP = lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
+		result.addColumnsToSheet(lstFormat, mapDP, showButton);
+		List<DPHeaderDto> lstHeader = new ArrayList<>();
+		for (FormatDPCorrectionDto dto : lstFormat) {
+			lstHeader.add(DPHeaderDto.createSimpleHeader(
+					mergeString(ADD_CHARACTER, String.valueOf(dto.getAttendanceItemId())),
+					String.valueOf(dto.getColumnWidth()) + PX, mapDP));
+		}
+		if (showButton) {
+			lstHeader.add(DPHeaderDto.addHeaderSubmitted());
+			lstHeader.add(DPHeaderDto.addHeaderApplication());
+		}
+		result.setLstHeader(lstHeader);
+		if (!disItem.isSettingUnit()) {
+			if (disItem.getLstBusinessTypeCode().size() > 0) {
+				// set header access modifier
+				// only user are login can edit or others can edit
+				result.setColumnsAccessModifier(disItem.getLstBusinessTypeCode());
+			}
+		}
+		for (DPHeaderDto key : result.getLstHeader()) {
+			ColumnSetting columnSetting = new ColumnSetting(key.getKey(), false);
+			if (!key.getKey().equals("Application") && !key.getKey().equals("Submitted")) {
+				if (!key.getGroup().isEmpty()) {
+					result.getColumnSettings().add(new ColumnSetting(key.getGroup().get(0).getKey(), false));
+					result.getColumnSettings().add(new ColumnSetting(key.getGroup().get(1).getKey(), false));
+				} else {
+					/*
+					 * 時間 - thoi gian hh:mm 5, 回数: so lan 2, 金額 : so tien 3, 日数:
+					 * so ngay -
+					 */
+					DPAttendanceItem dPItem = mapDP
+							.get(Integer.parseInt(key.getKey().substring(1, key.getKey().length()).trim()));
+					columnSetting.setTypeFormat(dPItem.getAttendanceAtr());
+				}
+			}
+			result.getColumnSettings().add(columnSetting);
+
+		}
+		if (!lstAttendanceItem.isEmpty()) {
+			// set text to header
+			result.setHeaderText(lstAttendanceItem);
+			// set color to header
+			List<DPAttendanceItemControl> lstAttendanceItemControl = this.repo
+					.getListAttendanceItemControl(lstAtdItemUnique);
+			result.setLstAttendanceItem(lstAttendanceItem);
+			result.getLstAttendanceItem().stream().forEach(c -> c.setName(""));
+			result.setHeaderColor(lstAttendanceItemControl);
+		} else {
+			result.setLstAttendanceItem(lstAttendanceItem);
+		}
+		// set combo box
+		result.setComboItemCalc(EnumCodeName.getCalcHours());
+		result.setComboItemDoWork(EnumCodeName.getDowork());
+		result.setComboItemReason(EnumCodeName.getReasonGoOut());
+		result.setItemIds(lstAtdItemUnique);
+		return result;
+	}
+
+	private String mergeString(String... x) {
+		return StringUtils.join(x);
+	}
+	
+	private DailyModifyResult getRow(Map<String, DailyModifyResult> resultDailyMap, String sId, GeneralDate date) {
+		return resultDailyMap.isEmpty() ? null : resultDailyMap.get(mergeString(sId, "|", date.toString()));
+	}
+	
+	private Optional<DailyRecOpeFuncDto> findDailyRecOpeFun(DailyPerformanceCorrectionDto screenDto, String companyId) {
+		Optional<DailyRecOpeFuncDto> findDailyRecOpeFun = repo.findDailyRecOpeFun(companyId);
+		if (findDailyRecOpeFun.isPresent()) {
+			screenDto.setShowPrincipal(findDailyRecOpeFun.get().getUseConfirmByYourself() == 0 ? false : true);
+			screenDto.setShowSupervisor(findDailyRecOpeFun.get().getUseSupervisorConfirm() == 0 ? false : true);
+		} else {
+			screenDto.setShowPrincipal(false);
+			screenDto.setShowSupervisor(false);
+		}
+		
+		return findDailyRecOpeFun;
+	}
+	
+	private void lockData(String sId, DailyPerformanceCorrectionDto screenDto, DailyRecOpeFuncDto dailyRecOpeFun,
+			DPDataDto data, Optional<IdentityProcessUseSetDto> identityProcessUseSetDto, Optional<ApprovalUseSettingDto> approvalUseSettingDto) {
+		// disable, enable check sign no 10
+		if (dailyRecOpeFun != null) {
+			if (!sId.equals(data.getEmployeeId())) {
+				screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
+				screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
+			} else {
+				//if (identityProcessUseSetDto.isPresent()) {
+				if (dailyRecOpeFun != null) {
+					//int selfConfirmError = identityProcessUseSetDto.get().getYourSelfConfirmError();
+					int selfConfirmError = dailyRecOpeFun.getYourselfConfirmError();
+					// lock sign
+					if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
+						if (data.getError().contains("ER") && data.isSign()) {
+							screenDto.setLock(data.getId(), LOCK_SIGN, STATE_ERROR);
+						} else if(data.getError().contains("ER") && !data.isSign()){
+							screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
+						}
+						// thieu check khi co data
+					} else if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_REGISTER_WHEN_ERROR.value) {
+						// co the dang ky data nhưng ko đăng ký được check box
+					}
+				}
+
+				//if (approvalUseSettingDto.isPresent()) {
+				if (dailyRecOpeFun != null) {
+					// lock approval
+					//int supervisorConfirmError = approvalUseSettingDto.get().getSupervisorConfirmErrorAtr();
+					int supervisorConfirmError = dailyRecOpeFun.getSupervisorConfirmError();
+					if (supervisorConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
+						if (data.getError().contains("ER")) {
+							screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_ERROR);
+						} else {
+							screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
+						}
+						// thieu check khi co data
+					} else if (supervisorConfirmError == ConfirmOfManagerOrYouself.CANNOT_REGISTER_WHEN_ERROR.value) {
+						// co the dang ky data nhưng ko đăng ký được check box
+					}
+				}
+			}
+		}
+	}
+	
+	private boolean checkLockAndSetState(Map<String, DatePeriod> employeeAndDateRange, DPDataDto data) {
+		boolean lock = false;
+		if (!employeeAndDateRange.isEmpty()) {
+			for (int i = 1; i <= 5; i++) {
+				String idxAsString = String.valueOf(i);
+				DatePeriod dateD = employeeAndDateRange
+						.get(mergeString(data.getEmployeeId(), "|", idxAsString, "|", LOCK_EDIT_CELL_DAY));
+				DatePeriod dateM = employeeAndDateRange
+						.get(mergeString(data.getEmployeeId(), "|", idxAsString, "|", LOCK_EDIT_CELL_MONTH));
+				DatePeriod dateC = employeeAndDateRange.get(mergeString(data.getEmployeeId(), "|", idxAsString, "|",
+						data.getWorkplaceId(), "|", LOCK_EDIT_CELL_WORK));
+				String lockD = "", lockM = "", lockC = "";
+				if (dateD != null && inRange(data, dateD)) {
+					lockD = mergeString("|", LOCK_EDIT_CELL_DAY);
+				}
+				if (dateM != null && inRange(data, dateM)) {
+					lockM = mergeString("|", LOCK_EDIT_CELL_MONTH);
+				}
+				if (dateC != null && inRange(data, dateC)) {
+					lockC = mergeString("|", LOCK_EDIT_CELL_WORK);
+				}
+				if (!lockD.isEmpty() || !lockM.isEmpty() || !lockC.isEmpty()) {
+					data.setState(mergeString("lock", lockD, lockM, lockC));
+					lock = true;
+				}
+			}
+		}
+		return lock;
+	}
+	
+	private void lockCell(DailyPerformanceCorrectionDto screenDto, DPDataDto data) {
+		screenDto.setLock(data.getId(), LOCK_DATE, STATE_DISABLE);
+		screenDto.setLock(data.getId(), LOCK_EMP_CODE, STATE_DISABLE);
+		screenDto.setLock(data.getId(), LOCK_EMP_NAME, STATE_DISABLE);
+		screenDto.setLock(data.getId(), LOCK_ERROR, STATE_DISABLE);
+		screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
+		screenDto.setLock(data.getId(), LOCK_PIC, STATE_DISABLE);
+		screenDto.setLock(data.getId(), LOCK_APPLICATION, STATE_DISABLE);
+		screenDto.setLock(data.getId(), COLUMN_SUBMITTED, STATE_DISABLE);
+	}
+	
+	private String converDateToString(GeneralDate genDate) {
+		Format formatter = new SimpleDateFormat(DATE_FORMAT);
+		return formatter.format(genDate.date());
+	}
+	
+	private void processCellData(String NAME_EMPTY, String NAME_NOT_FOUND, DailyPerformanceCorrectionDto screenDto,
+			DPControlDisplayItem dPControlDisplayItem, Map<Integer, DPAttendanceItem> mapDP,
+			Map<Integer, Map<String, String>> mapGetName, Map<String, ItemValue> itemValueMap, DPDataDto data,
+			boolean lock, Map<String, Integer> dailyRecEditSetsMap, ObjectShare share) {
+		Set<DPCellDataDto> cellDatas = data.getCellDatas();
+		String typeGroup = "";
+		Integer cellEdit;
+		if (dPControlDisplayItem.getLstAttendanceItem() != null) {
+			for (DPAttendanceItem item : dPControlDisplayItem.getLstAttendanceItem()) {
+				DPAttendanceItem dpAttenItem = mapDP.get(item.getId());
+				String itemIdAsString = item.getId().toString();
+				// int a = 1;
+				int attendanceAtr = dpAttenItem.getAttendanceAtr();
+				String attendanceAtrAsString = String.valueOf(item.getAttendanceAtr());
+				Integer groupType = dpAttenItem.getTypeGroup();
+				String key = mergeString(itemIdAsString, "|", data.getEmployeeId(), "|" + data.getDate().toString());
+				String value = itemValueMap.get(key) != null && itemValueMap.get(key).value() != null
+						? itemValueMap.get(key).value().toString() : "";
+				cellEdit = dailyRecEditSetsMap.get(mergeString(itemIdAsString, "|", data.getEmployeeId(), "|" + converDateToString(data.getDate())));
+				
+				if (attendanceAtr == DailyAttendanceAtr.Code.value
+						|| attendanceAtr == DailyAttendanceAtr.Classification.value) {
+					String nameColKey = mergeString(NAME, itemIdAsString);
+					if (attendanceAtr == DailyAttendanceAtr.Code.value) {
+						String codeColKey = mergeString(CODE, itemIdAsString);
+						typeGroup = typeGroup
+								+ mergeString(String.valueOf(item.getId()), ":", String.valueOf(groupType), "|");
+						if (lock) {
+							screenDto.setLock(data.getId(), codeColKey, STATE_DISABLE);
+							screenDto.setLock(data.getId(), nameColKey, STATE_DISABLE);
+						}
+						if (value.isEmpty()) {
+							cellDatas.add(new DPCellDataDto(mergeString(CODE, itemIdAsString), value,
+									attendanceAtrAsString, TYPE_LABEL));
+							value = NAME_EMPTY;
+						} else {
+							if (groupType != null) {
+								if (groupType == TypeLink.WORKPLACE.value || groupType == TypeLink.POSSITION.value) {
+									Optional<CodeName> optCodeName = dataDialogWithTypeProcessor
+											.getCodeNameWithId(groupType, data.getDate(), value);
+									cellDatas.add(new DPCellDataDto(codeColKey,
+											optCodeName.isPresent() ? optCodeName.get().getCode() : value,
+											attendanceAtrAsString, TYPE_LABEL));
+									value = !optCodeName.isPresent() ? NAME_NOT_FOUND : optCodeName.get().getName();
+								} else {
+									cellDatas.add(
+											new DPCellDataDto(codeColKey, value, attendanceAtrAsString, TYPE_LABEL));
+									value = mapGetName.get(groupType).containsKey(value)
+											? mapGetName.get(groupType).get(value) : NAME_NOT_FOUND;
+								}
+							}
+						}
+						cellDatas.add(new DPCellDataDto(nameColKey, value, attendanceAtrAsString, TYPE_LINK));
+						// set color edit
+						cellEditColor(screenDto, data.getId(), nameColKey, cellEdit);
+						cellEditColor(screenDto, data.getId(), codeColKey, cellEdit);
+					} else {
+						String noColKey = mergeString(NO, itemIdAsString);
+						if (lock) {
+							screenDto.setLock(data.getId(), noColKey, STATE_DISABLE);
+							screenDto.setLock(data.getId(), nameColKey, STATE_DISABLE);
+						}
+						cellDatas.add(new DPCellDataDto(noColKey, value, attendanceAtrAsString, TYPE_LABEL));
+						cellDatas.add(new DPCellDataDto(nameColKey, value, attendanceAtrAsString, TYPE_LINK));
+						cellEditColor(screenDto, data.getId(), nameColKey, cellEdit);
+						cellEditColor(screenDto, data.getId(), noColKey, cellEdit);
+					}
+
+				} else {
+					String anyChar = mergeString(ADD_CHARACTER, itemIdAsString);
+					// set color edit
+					cellEditColor(screenDto, data.getId(), anyChar, cellEdit);
+					if (lock) {
+						screenDto.setLock(data.getId(), anyChar, STATE_DISABLE);
+					}
+					if (attendanceAtr == DailyAttendanceAtr.Time.value
+							|| attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
+						//set SPR
+						if(share != null && share.getInitClock() != null && share.getDisplayFormat() == 0){
+							if(item.getId() == 31 && data.getEmployeeId().equals(share.getInitClock().getEmployeeId()) && data.getDate().equals(share.getInitClock().getDateSpr())){
+								value = share.getInitClock().getGoOut() != null ?  share.getInitClock().getGoOut() : "";
+							}else if(item.getId() == 41 && data.getEmployeeId().equals(share.getInitClock().getEmployeeId()) && data.getDate().equals(share.getInitClock().getDateSpr())){
+								value = share.getInitClock().getLiveTime() != null ?  share.getInitClock().getLiveTime() : "";
+							}
+						}
+						if (!value.isEmpty()) {
+							// convert HH:mm
+							int minute =0 ;
+							if(Integer.parseInt(value) >= 0){
+								minute = Integer.parseInt(value);
+							}else{
+								if (attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
+									minute = (Integer.parseInt(value)+ (1 + -Integer.parseInt(value) / MINUTES_OF_DAY) * MINUTES_OF_DAY);
+								} else {
+									minute = Integer.parseInt(value);
+								}
+							}
+							int hours = minute / 60;
+							int minutes = Math.abs(minute) % 60;
+							cellDatas.add(new DPCellDataDto(anyChar, String.format(FORMAT_HH_MM, hours, minutes),
+									attendanceAtrAsString, TYPE_LABEL));
+						} else {
+							cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, TYPE_LABEL));
+						}
+					} else {
+						cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, TYPE_LABEL));
+					}
+				}
+			}
+		}
+		data.setTypeGroup(typeGroup);
+		data.setCellDatas(cellDatas);
+	}
+	
+	/**
+	 * アルゴリズム「表示項目を制御する」を実行する | Execute the algorithm "control display items"
+	 */
+	private DisplayItem getItemIds(List<String> lstEmployeeId, DateRange dateRange,
+			CorrectionOfDailyPerformance correct, List<String> formatCodeSelects,
+			OperationOfDailyPerformanceDto dailyPerformanceDto, String companyId, boolean showButton) {
+		DisplayItem result = new DisplayItem();
 		if (lstEmployeeId.size() > 0) {
-			// 対応するドメインモデル「日別実績の運用」を取得する | Acquire corresponding domain model
-			// "Operation of daily performance"
 			// 取得したドメインモデル「日別実績の運用」をチェックする | Check the acquired domain model
 			// "Operation of daily performance"
 			List<FormatDPCorrectionDto> lstFormat = new ArrayList<FormatDPCorrectionDto>();
 			List<DPSheetDto> lstSheet = new ArrayList<DPSheetDto>();
 			List<Integer> lstAtdItem = new ArrayList<>();
 			List<Integer> lstAtdItemUnique = new ArrayList<>();
-			List<DPAttendanceItem> lstAttendanceItem = new ArrayList<>();
-			Map<Integer, DPAttendanceItem> mapDP = new HashMap<>();
 			if (dailyPerformanceDto != null && dailyPerformanceDto.getSettingUnit() == SettingUnit.AUTHORITY) {
+				// setting button A2_4
+				result.setSettingUnit(true);
 				List<AuthorityFomatDailyDto> authorityFomatDailys = new ArrayList<>();
 				List<AuthorityFormatSheetDto> authorityFormatSheets = new ArrayList<>();
 				// アルゴリズム「社員の権限に対応する表示項目を取得する」を実行する
@@ -449,13 +742,22 @@ public class DailyPerformanceErrorCodeProcessor {
 						if (!initialDisplayDtos.isEmpty()) {
 							List<String> formatCodes = initialDisplayDtos.stream()
 									.map(x -> x.getDailyPerformanceFormatCode()).collect(Collectors.toList());
+							result.setFormatCode(formatCodes.stream().collect(Collectors.toSet()));
 							// Lấy về domain model "会社の日別実績の修正のフォーマット" tương ứng
 							authorityFomatDailys = repo.findAuthorityFomatDaily(companyId, formatCodes);
 							List<BigDecimal> sheetNos = authorityFomatDailys.stream().map(x -> x.getSheetNo())
 									.collect(Collectors.toList());
-							authorityFormatSheets = repo.findAuthorityFormatSheet(companyId, formatCodes, sheetNos);
+							authorityFormatSheets = sheetNos.isEmpty() ? Collections.emptyList()
+									: repo.findAuthorityFormatSheet(companyId, formatCodes, sheetNos);
+						} else {
+							// アルゴリズム「表示項目の選択を起動する」を実行する
+							/// 画面「表示フォーマットの選択」をモーダルで起動する(Chạy màn hình "Select
+							// display format" theo cách thức) -- chay man hinh
+							// C
+							throw new BusinessException(SCREEN_KDW003);
 						}
 					} else {
+						result.setFormatCode(formatCodeSelects.stream().collect(Collectors.toSet()));
 						authorityFomatDailys = repo.findAuthorityFomatDaily(companyId, formatCodeSelects);
 						List<BigDecimal> sheetNos = authorityFomatDailys.stream().map(x -> x.getSheetNo())
 								.collect(Collectors.toList());
@@ -464,20 +766,23 @@ public class DailyPerformanceErrorCodeProcessor {
 				} else {
 					// Lấy về domain model "会社の日別実績の修正のフォーマット" tương ứng
 					List<String> formatCodes = Arrays.asList(correct.getPreviousDisplayItem());
+					result.setFormatCode(formatCodes.stream().collect(Collectors.toSet()));
 					authorityFomatDailys = repo.findAuthorityFomatDaily(companyId, formatCodes);
 					List<BigDecimal> sheetNos = authorityFomatDailys.stream().map(x -> x.getSheetNo())
 							.collect(Collectors.toList());
-					authorityFormatSheets = repo.findAuthorityFormatSheet(companyId, formatCodes, sheetNos);
+					authorityFormatSheets = sheetNos.isEmpty() ? Collections.emptyList()
+							: repo.findAuthorityFormatSheet(companyId, formatCodes, sheetNos);
 				}
 				if (!authorityFomatDailys.isEmpty()) {
-					lstFormat = new ArrayList<FormatDPCorrectionDto>();
-					lstSheet = new ArrayList<DPSheetDto>();
 					// set FormatCode for button A2_4
-					result.setFormatCode(authorityFomatDailys.stream().map(x -> x.getDailyPerformanceFormatCode())
-							.collect(Collectors.toSet()));
 					lstSheet = authorityFormatSheets.stream()
 							.map(x -> new DPSheetDto(x.getSheetNo().toString(), x.getSheetName().toString()))
 							.collect(Collectors.toList());
+					Set<String> lstSheetNo = lstSheet.stream().map(DPSheetDto::getName).collect(Collectors.toSet());
+					if (lstSheetNo.size() != lstSheet.size()) {
+						lstSheet = lstSheet.stream().map(x -> new DPSheetDto(x.getName(), x.getName()))
+								.collect(Collectors.toList());
+					}
 					lstFormat = authorityFomatDailys.stream()
 							.map(x -> new FormatDPCorrectionDto(companyId, x.getDailyPerformanceFormatCode(),
 									x.getAttendanceItemId(), x.getSheetNo().toString(), x.getDisplayOrder(),
@@ -485,99 +790,60 @@ public class DailyPerformanceErrorCodeProcessor {
 							.collect(Collectors.toList());
 					lstAtdItem = lstFormat.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList());
 					lstAtdItemUnique = new HashSet<Integer>(lstAtdItem).stream().collect(Collectors.toList());
-					if (!lstAtdItemUnique.isEmpty()) {
-						Map<Integer, DailyAttendanceItemNameAdapterDto> itemName = dailyAttendanceItemNameAdapter
-								.getDailyAttendanceItemName(lstAtdItemUnique).stream().collect(Collectors
-										.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId, x -> x));
-						lstAttendanceItem = lstAtdItemUnique.isEmpty() ? Collections.emptyList()
-								: this.repo.getListAttendanceItem(lstAtdItemUnique).stream()
-										.map(x -> new DPAttendanceItem(x.getId(),
-												itemName.get(x.getId()).getAttendanceItemName(), x.getDisplayNumber(),
-												x.isUserCanSet(), x.getLineBreakPosition(), x.getAttendanceAtr(),
-												x.getTypeGroup()))
-										.collect(Collectors.toList());
-						mapDP = lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
-					}
-					List<DPHeaderDto> lstHeader = new ArrayList<>();
-					for (FormatDPCorrectionDto dto : lstFormat) {
-						// chia cot con code name cua AttendanceItemId chinh va
-						// set
-						lstHeader.add(DPHeaderDto.createSimpleHeader(ADD_CHARACTER + String.valueOf(dto.getAttendanceItemId()),
-								String.valueOf(dto.getColumnWidth()) + PX, mapDP));
-					}
-					result.setLstHeader(lstHeader);
-					// result.setLstSheet(lstSheet);
-					result.createSheets(lstSheet);
-					result.addColumnsToSheet(lstFormat, mapDP, true);
+
 				}
 			} else {
+				// setting button A2_4
+				result.setSettingUnit(false);
 				// アルゴリズム「社員の勤務種別に対応する表示項目を取得する」を実行する
 				/// アルゴリズム「社員の勤務種別をすべて取得する」を実行する
 				List<String> lstBusinessTypeCode = this.repo.getListBusinessType(lstEmployeeId, dateRange);
-
+				List<DPBusinessTypeControl> lstDPBusinessTypeControl = new ArrayList<>();
 				// Create header & sheet
 				if (lstBusinessTypeCode.size() > 0) {
-
-					lstSheet = this.repo.getFormatSheets(lstBusinessTypeCode);
-					/// 対応するドメインモデル「勤務種別日別実績の修正のフォーマット」を取得する
-					lstFormat = this.repo.getListFormatDPCorrection(lstBusinessTypeCode);
+                    // List item hide 
+					lstFormat = this.repo.getListFormatDPCorrection(lstBusinessTypeCode).stream().collect(Collectors.toList()); // 10s
 					lstAtdItem = lstFormat.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList());
-					lstAtdItemUnique = new HashSet<Integer>(lstAtdItem).stream().collect(Collectors.toList());
-					result.createSheets(lstSheet);
-					if (!lstAtdItemUnique.isEmpty()) {
-						Map<Integer, DailyAttendanceItemNameAdapterDto> itemName = dailyAttendanceItemNameAdapter
-								.getDailyAttendanceItemName(lstAtdItemUnique).stream().collect(Collectors
-										.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId, x -> x));
-						lstAttendanceItem = lstAtdItemUnique.isEmpty() ? Collections.emptyList()
-								: this.repo.getListAttendanceItem(lstAtdItemUnique).stream()
-										.map(x -> new DPAttendanceItem(x.getId(),
-												itemName.get(x.getId()).getAttendanceItemName(), x.getDisplayNumber(),
-												x.isUserCanSet(), x.getLineBreakPosition(), x.getAttendanceAtr(),
-												x.getTypeGroup()))
-										.collect(Collectors.toList());
-						mapDP = lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
+					lstAtdItemUnique = new HashSet<Integer>(lstAtdItem).stream().collect(Collectors.toList());//.filter(x -> !itemHide.containsKey(x))
+					if (lstFormat.size() > 0) {
+						lstDPBusinessTypeControl = this.repo.getListBusinessTypeControl(lstBusinessTypeCode,
+								lstAtdItemUnique);
 					}
-					result.addColumnsToSheet(lstFormat, mapDP, true);
-					List<DPHeaderDto> lstHeader = new ArrayList<>();
-					for (FormatDPCorrectionDto dto : lstFormat) {
-						lstHeader.add(DPHeaderDto.createSimpleHeader(ADD_CHARACTER + String.valueOf(dto.getAttendanceItemId()),
-								String.valueOf(dto.getColumnWidth()) + PX, mapDP));
+					Map<Integer, String> itemHide = lstDPBusinessTypeControl.stream().filter(x -> x.isUseAtr()).collect(Collectors.toMap(DPBusinessTypeControl :: getAttendanceItemId, x -> "", (x, y) -> x));
+					lstSheet = this.repo.getFormatSheets(lstBusinessTypeCode);
+					Set<String> lstSheetNo = lstSheet.stream().map(DPSheetDto::getName).collect(Collectors.toSet());
+					if (lstSheetNo.size() != lstSheet.size()) {
+						lstSheet = lstSheet.stream().map(x -> new DPSheetDto(x.getName(), x.getName()))
+								.collect(Collectors.toList());
 					}
-					result.setLstHeader(lstHeader);
+					/// 対応するドメインモデル「勤務種別日別実績の修正のフォーマット」を取得する
+					lstFormat = lstFormat.stream().filter(x -> itemHide.containsKey(x.getAttendanceItemId())).collect(Collectors.toList()); // 10s
 				}
-
-				List<DPBusinessTypeControl> lstDPBusinessTypeControl = new ArrayList<>();
-				if (lstFormat.size() > 0) {
-					lstDPBusinessTypeControl = this.repo.getListBusinessTypeControl(lstBusinessTypeCode,
-							lstAtdItemUnique);
-				}
-				if (lstDPBusinessTypeControl.size() > 0) {
-					// set header access modifier
-					// only user are login can edit or others can edit
-					result.setColumnsAccessModifier(lstDPBusinessTypeControl);
-				}
+				result.setLstBusinessTypeCode(lstDPBusinessTypeControl);
 			}
-			for (DPHeaderDto key : result.getLstHeader()) {
-				ColumnSetting columnSetting = new ColumnSetting(key.getKey(), false);
-				if(!key.getGroup().isEmpty()){
-					result.getColumnSettings().add(new ColumnSetting(key.getGroup().get(0).getKey(), false));
-					result.getColumnSettings().add(new ColumnSetting(key.getGroup().get(1).getKey(), false));
-				}else{
-					DPAttendanceItem dPItem  = mapDP.get(Integer.parseInt(key.getKey().substring(1, key.getKey().length()).trim()));
-					columnSetting.setTypeFormat(dPItem.getAttendanceAtr());
-				}
-				result.getColumnSettings().add(columnSetting);
-
-			}
-			;
-			// set text to header
-			result.setHeaderText(lstAttendanceItem);
-			// set color to header
-			List<DPAttendanceItemControl> lstAttendanceItemControl = this.repo
-					.getListAttendanceItemControl(lstAtdItemUnique);
-			result.setLstAttendanceItem(lstAttendanceItem);
-			result.setHeaderColor(lstAttendanceItemControl);
+			result.setLstFormat(lstFormat);
+			result.setLstSheet(lstSheet);
+			result.setLstAtdItemUnique(lstAtdItemUnique);
+			result.setBussiness(dailyPerformanceDto.getSettingUnit().value);
 		}
 		return result;
 	}
+
+	private boolean inRange(DPDataDto data, DatePeriod dateM) {
+		return data.getDate().afterOrEquals(dateM.start()) && data.getDate().beforeOrEquals(dateM.end());
+	}
+	
+	private void cellEditColor(DailyPerformanceCorrectionDto screenDto, String rowId, String columnKey, Integer cellEdit ){
+		// set color edit
+		if(cellEdit != null){
+			if(cellEdit == 0){
+				screenDto.setLock(rowId, columnKey, HAND_CORRECTION_MYSELF);
+			}else if(cellEdit == 1){
+				screenDto.setLock(rowId, columnKey, HAND_CORRECTION_OTHER);
+			}else{
+				screenDto.setLock(rowId, columnKey, REFLECT_APPLICATION);
+			}
+		}
+	}
+	
 }

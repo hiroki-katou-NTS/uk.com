@@ -84,6 +84,7 @@ public class ItemValue {
 		case TIME:
 		case TIMEPOINT:
 		case SELECTION_RADIO:
+		case NUMBERIC_BUTTON:
 			this.value = obj.toString();
 			break;
 		case STRING:

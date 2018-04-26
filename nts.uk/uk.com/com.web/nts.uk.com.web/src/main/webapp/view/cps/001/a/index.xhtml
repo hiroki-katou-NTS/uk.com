@@ -18,6 +18,7 @@
 
 			<com:stylefile path="cps001.a.style.css" />
 
+			<com:scriptfile path="/view/cps/shr/cps-header-ko-ext.js" />
 			<com:scriptfile path="/view/cps/shr/cbx-control-ko-ext.js" />
 			<com:scriptfile path="/view/cps/shr/layout-control-validation.js" />
 			<com:scriptfile path="/view/cps/shr/layout-control-ko-ext.js" />
@@ -60,14 +61,13 @@
 					}">
 				<div id="ccgcomponent" tabindex="6"></div>
 				<div class="left-area">
-					<div class="bg-green caret-right caret-background"
-						data-bind="let: { emp: employee() }">
+					<div class="bg-green caret-right caret-background">
 						<div
 							data-bind="template: {	
 								name: 'list-data',
 								data: {
 									rows: 10,
-									value: emp.employeeId,
+									value: employee.employeeId,
 									dataSource: employees,
 									primaryKey: 'employeeId',
 									columns: [
@@ -136,7 +136,7 @@
 							<div data-bind="foreach: { data: multipleData, as: 'multiple' }">
 								<div data-bind="if: !$index()">
 									<div class="form-group search-box" data-bind="let: { _cid: nts.uk.util.randomId().replace(/-/g, '') }">
-										<button type="button"
+										<button type="button" class="hidden"
 											data-bind="click: function() { multiple.id.valueHasMutated() }"
 											tabindex="8">#{i18n.getText('CPS001_27')}</button>
 										<div
@@ -216,83 +216,15 @@
 						</div>
 					</div>
 				</div>
-				<div class="right-area"
-					data-bind="let: {
-							_auth: auth(),
-							_pers: person(), 
-							_emp: employee()
-						}">
-					<div class="top-right-area cf">
-						<div class="avatar-group">
-							<div class="active-panel" data-bind="click: chooseAvatar">
-								<img data-bind="attr: { src: _emp.avatar}" class="avatar"
-									tabindex="13" />
-							</div>
-						</div>
-						<div class="person-group">
-							<div class="active-panel">
-								<table class="person-info">
-									<tbody>
-										<tr>
-											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_11')}</td>
-											<td>
-												<div class="info">
-													<span
-														data-bind="text: _emp.employeeCode, attr: { title: _emp.employeeCode }"></span>
-													<span
-														data-bind="text:  _emp.employeeName, attr: { title: _emp.employeeName }"></span>
-													<span
-														data-bind="text:  _pers.gender() ? ('(' + _pers.gender() + ')') : ''"></span>
-												</div>
-											</td>
-										</tr>
-										<tr>
-											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_12')}</td>
-											<td>
-												<div class="info first" data-bind="text: _pers.age()"></div>
-												<div class="info bg-calendar-ym-set">#{i18n.getText('CPS001_13')}</div>
-												<div class="info" data-bind="text: _emp.entire()"></div>
-											</td>
-										</tr>
-										<tr>
-											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_14')}</td>
-											<td><span data-bind="text: _emp.departmentCode"></span>
-												<span data-bind="text: _emp.departmentName"></span></td>
-										</tr>
-										<tr>
-											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_15')}</td>
-											<td>
-												<div class="info first" data-bind="text: _emp.position"></div>
-												<div class="info bg-calendar-ym-set">#{i18n.getText('CPS001_16')}</div>
-												<div class="info" data-bind="text: _emp.contractType"></div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-						<div class="action-group">
-							<div class="active-panel cf">
-								<div class="column">
-									<button class="btn btn-location" type="button"
-										data-bind="click: pickLocation, style: { visibility: _auth.allowMapBrowse() ? 'visible' : 'hidden' }"
-										tabindex="16">#{i18n.getText('CPS001_20')}</button>
-									<button class="btn btn-details" type="button"
-										data-bind="click: uploadebook,  style: { visibility: _auth.allowDocRef() ? 'visible' : 'hidden' }"
-										tabindex="15">#{i18n.getText('CPS001_19')}</button>
-								</div>
-								<div class="column">
-									<button class="btn btn-print hidden" type="button"
-										tabindex="14">#{i18n.getText('CPS001_17')}</button>
-								</div>
-							</div>
-							<div class="active-panel">
-								<a class="btn-goout hidden">出向に来ています</a>
-							</div>
-						</div>
-					</div>
+				<div class="right-area">
+					<div class="top-right-area cf" 
+						data-bind="ntsHeaderControl: {
+							roleId: employee.roleId,
+							personId: employee.personId,
+							employeeId: employee.employeeId
+						}"></div>
 					<div class="bottom-right-area"
-						data-bind="let: { 
+						data-bind="let: {
 								cats: categories,
 								layouts: multipleData 
 							}">

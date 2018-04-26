@@ -18,4 +18,12 @@ public enum ValueType {
 		this.name = name;
 		this.description = description;
 	}
+	
+	/**
+	 * INTEGERであるか判定する
+	 * @return　INTEGERである
+	 */
+	public boolean isInteger() {
+		return INTEGER.equals(this);
+	}
 }

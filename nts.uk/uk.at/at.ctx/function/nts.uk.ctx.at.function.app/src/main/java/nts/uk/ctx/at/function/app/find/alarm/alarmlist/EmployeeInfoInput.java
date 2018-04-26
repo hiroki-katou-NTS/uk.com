@@ -1,14 +1,8 @@
 package nts.uk.ctx.at.function.app.find.alarm.alarmlist;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Value;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Value
 public class EmployeeInfoInput {
 	
 	String employeeID;

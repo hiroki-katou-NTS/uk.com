@@ -1,10 +1,8 @@
 package nts.uk.ctx.at.function.app.find.alarm.alarmlist;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 
-@Data
-@Builder
+@Value
 public class EmployeeSendEmail {
 	private String workplaceId;
 	private String workplaceName;

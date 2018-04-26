@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
+import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 
 /**
@@ -20,12 +21,11 @@ import nts.uk.shr.pereg.app.ComboBoxObject;
 @NoArgsConstructor
 public class PerInfoItemDefForLayoutDto extends PerInfoItemDefDto{
 	
-	private String perInfoCtgCd;
-	private int ctgType;
-	
-	private int itemDefType;
-	
 	private String recordId;
+	
+	private String perInfoCtgCd;
+	
+	private int ctgType;
 	
 	/**
 	 * combo box value list when item type selection
@@ -37,5 +37,9 @@ public class PerInfoItemDefForLayoutDto extends PerInfoItemDefDto{
 	private int row;
 	
 	private ActionRole actionRole;
+	
+	public PerInfoItemDefForLayoutDto(PersonInfoItemDefinition itemDefinition) {
+		super(itemDefinition);
+	}
 	
 }

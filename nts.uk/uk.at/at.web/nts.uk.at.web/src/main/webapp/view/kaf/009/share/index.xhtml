@@ -231,10 +231,10 @@
 			<div class="table clsWorkType" data-bind="if: workChangeBtnDisplay">
 				<div class="cell valign-center ">
 					<div class="valign-center control-group"
-						data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_22')}</div>
+						data-bind="ntsFormLabel:{ required: true }">#{i18n.getText('KAF009_22')}</div>
 					<BR />
 					<div class="valign-center control-group"
-						data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_23')}</div>
+						data-bind="ntsFormLabel:{ required: true }">#{i18n.getText('KAF009_23')}</div>
 				</div>
 				<div class="cell valign-center">
 					<button id="workSelect"
@@ -272,7 +272,6 @@
 				<textarea id="inpReasonTextarea"
 					data-bind="ntsMultilineEditor: { value: multilContent,
 													option: multiOption, 
-													required : requiredReason, 
 													name: '#[KAF009_29]',
 													enable: enableReason,
 													}" />

@@ -35,7 +35,15 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 
 	@Override
 	public void update(SpecialLeaveBasicInfo domain) {
-		this.commandProxy().update(toEntity(domain));
+		KrcmtSpecialLeaveInfoPK key  = new KrcmtSpecialLeaveInfoPK(domain.getSID(), domain.getSpecialLeaveCode().v());
+		Optional<KrcmtSpecialLeaveInfo> entity = this.queryProxy().find(key, KrcmtSpecialLeaveInfo.class);
+		if (!entity.isPresent()){
+			return;
+		}
+		
+		updateEntity(domain, entity.get());
+		
+		this.commandProxy().update(entity.get());
 		
 	}
 
@@ -46,6 +54,23 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 	}
 	
 	/**
+	 * Update to entity
+	 * @param domain
+	 * @return
+	 */
+	private void updateEntity(SpecialLeaveBasicInfo domain, KrcmtSpecialLeaveInfo entity){
+		entity.useCls = domain.getUsed().value;
+		entity.appSetting = domain.getApplicationSet().value;
+		entity.grantDate = domain.getGrantSetting().getGrantDate();
+		if (domain.getGrantSetting().getGrantDays().isPresent()){
+			entity.grantNumber = domain.getGrantSetting().getGrantDays().get().v();
+		}
+		if (domain.getGrantSetting().getGrantTable().isPresent()){
+			entity.grantTable = domain.getGrantSetting().getGrantTable().get().v();
+		}
+	}
+	
+	/**
 	 * Convert to entity
 	 * @param domain
 	 * @return
@@ -53,8 +78,9 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 	private KrcmtSpecialLeaveInfo toEntity(SpecialLeaveBasicInfo domain){
 		KrcmtSpecialLeaveInfo entity = new KrcmtSpecialLeaveInfo();
 		entity.cID= domain.getCID();
-		entity.key.employeeId = domain.getSID();
-		entity.key.spLeaveCD = domain.getSpecialLeaveCode().v();
+		KrcmtSpecialLeaveInfoPK key  = new KrcmtSpecialLeaveInfoPK(domain.getSID(), domain.getSpecialLeaveCode().v());
+		entity.key = key;
+		entity.useCls = domain.getUsed().value;
 		entity.appSetting = domain.getApplicationSet().value;
 		entity.grantDate = domain.getGrantSetting().getGrantDate();
 		if (domain.getGrantSetting().getGrantDays().isPresent()){

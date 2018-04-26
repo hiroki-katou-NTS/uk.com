@@ -39,7 +39,7 @@
 							<td class="fix-width" rowspan="4">#{i18n.getText('KDW001_27')}</td>
 							<td data-bind="css: {disappear: visibleDailiCreate()}" >
 								<span class="process-name">#{i18n.getText('KDW001_9')}</span>
-								<span class="process-count"><span data-bind="text: dailyCreateCount">0</span> / <span data-bind="text: dailyCreateTotal">0</span>人</span>
+								<span class="process-count"><span data-bind="text: dailyCreateCount">0</span> / <span data-bind="text: numberEmployee">0</span>人</span>
 								<span class="process-status" data-bind="text: dailyCreateStatus"></span>
 								<span class="process-error" data-bind="text: dailyCreateHasError"></span>
 							</td>
@@ -47,23 +47,23 @@
 						<tr data-bind="css: {disappear: visibleDailiCalculation()}">
 							<td>
 								<span class="process-name">#{i18n.getText('KDW001_10')}</span>
-								<span class="process-count"><span >0</span> / <span>0</span>人</span>
-								<span class="process-status" ></span>
-								<span class="process-error" ></span>
+								<span class="process-count"><span data-bind="text: dailyCalculateCount">0</span> / <span data-bind="text: numberEmployee">0</span>人</span>
+								<span class="process-status" data-bind="text: dailyCalculateStatus"></span>
+								<span class="process-error" data-bind="text: dailyCalculateHasError"></span>
 							</td>
 						</tr>
 						<tr data-bind="css: {disappear: visibleApproval()}">
 							<td>
 								<span class="process-name">#{i18n.getText('KDW001_11')}</span>
-								<span class="process-count"><span data-bind="text: dailyCalculateCount">0</span> / <span data-bind="text: dailyCreateTotal">0</span>人</span>
-								<span class="process-status" data-bind="text: dailyCalculateStatus"></span>
-								<span class="process-error" data-bind="text: dailyCalculateHasError"></span>
+								<span class="process-count"><span >0</span> / <span >0</span>人</span>
+								<span class="process-status" ></span>
+								<span class="process-error" ></span>
 							</td>
 						</tr>
 						<tr data-bind="css: {disappear: visibleMonthly()}">
 							<td>
 								<span class="process-name">#{i18n.getText('KDW001_12')}</span>
-								<span class="process-count"><span data-bind="text: monthlyAggregateCount">0</span> / <span data-bind="text: dailyCreateTotal">0</span>人</span>
+								<span class="process-count"><span data-bind="text: monthlyAggregateCount">0</span> / <span data-bind="text: numberEmployee">0</span>人</span>
 								<span class="process-status" data-bind="text: monthlyAggregateStatus"></span>
 								<span class="process-error" data-bind="text: monthlyAggregateHasError"></span>
 							</td>

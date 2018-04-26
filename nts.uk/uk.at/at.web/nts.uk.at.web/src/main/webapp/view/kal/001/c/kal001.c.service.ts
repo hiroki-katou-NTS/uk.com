@@ -1,16 +1,13 @@
 module nts.uk.at.view.kal001.c {
     export module service {
         var paths = {
-            getAllEmpCalAndSumExeLog : "at/record/log/getallbydate" 
+            getEmployeeSendEmail : "at/function/alarm/kal/001/get/employee/sendEmail" 
         }
-        
-        /**
-         * get all EmpCalAndSumExeLog by startDate and endDate
-         */
-        export function getAllEmpCalAndSumExeLog(inputEmpCalAndSumByDate: any ) : JQueryPromise<Array<any>>{
-            return nts.uk.request.ajax("at",paths.getAllEmpCalAndSumExeLog,inputEmpCalAndSumByDate);
+            
+        export function getEmployeeSendEmail(query: any ) : JQueryPromise<Array<any>>{
+            return nts.uk.request.ajax("at",paths.getEmployeeSendEmail, query);
         }
+
     
-    
-    }//end module service
-}//end module
+    }
+}

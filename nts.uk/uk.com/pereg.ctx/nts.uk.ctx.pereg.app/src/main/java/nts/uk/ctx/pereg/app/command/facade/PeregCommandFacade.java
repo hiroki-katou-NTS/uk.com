@@ -165,16 +165,18 @@ public class PeregCommandFacade {
 			// Add item invisible to list
 			for (ItemsByCategory itemByCategory : updateInputs) {
 				
-				PeregQuery query = new PeregQuery(itemByCategory.getCategoryCd(), inputContainer.getEmployeeId(),inputContainer.getPersonId(),null);
-				query.setInfoId(itemByCategory.getRecordId());
+				PeregQuery query = new PeregQuery(itemByCategory.getRecordId(), itemByCategory.getCategoryCd(),
+						inputContainer.getEmployeeId(), inputContainer.getPersonId());
+
 				List<ItemValue> fullItems = itemDefFinder.getFullListItemDef(query);
-				List<String> itemVisible = itemByCategory.getItems().stream().map(ItemValue::itemCode).collect(Collectors.toList());
-				
+				List<String> visibleItemCodes = itemByCategory.getItems().stream().map(ItemValue::itemCode)
+						.collect(Collectors.toList());
+
 				// List item invisible
-				List<ItemValue> itemInvisible = fullItems.stream().filter(i->!itemVisible.contains(i.itemCode()) && i.itemCode().charAt(1) == 'S').collect(Collectors.toList());
-				itemInvisible.addAll(itemByCategory.getItems());
-				
-				itemByCategory.setItems(itemInvisible);
+				List<ItemValue> itemInvisible = fullItems.stream().filter(i -> !visibleItemCodes.contains(i.itemCode()))
+						.collect(Collectors.toList());
+
+				itemByCategory.getItems().addAll(itemInvisible);
 			}
 			
 			

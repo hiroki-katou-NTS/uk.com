@@ -12,12 +12,12 @@ public interface PreGoBackReflectService {
 	 * @param para
 	 * @return
 	 */
-	public ApplicationReflectOutput gobackReflect(GobackReflectParameter para);
+	public boolean gobackReflect(GobackReflectParameter para);
 	/**
 	 * 事後申請の処理
 	 * @param para
 	 * @return
 	 */
-	public ApplicationReflectOutput afterGobackReflect(GobackReflectParameter para);
+	public boolean afterGobackReflect(GobackReflectParameter para);
 
 }

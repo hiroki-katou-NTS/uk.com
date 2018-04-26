@@ -44,7 +44,7 @@ public class AnnLeaEmpBasicInfoDomService{
 		int remainingHours = remainingMinutes / 60;
 		remainingMinutes -= remainingHours * 60;
 		
-		return remainingDays + "日と　" + remainingHours + " : " + remainingMinutes;
+		return remainingDays + "日と　" + remainingHours + " : " + convertWithMinutes(remainingMinutes);
 	}
 	
 	public String calculateLastGrantDate(List<AnnualLeaveGrantRemainingData> listData) {
@@ -60,7 +60,14 @@ public class AnnLeaEmpBasicInfoDomService{
 		for (ReserveLeaveGrantRemainingData data : listData) {
 			remainingDays += data.getDetails().getRemainingNumber().v();
 		}
-		return remainingDays + "日と　" + 0 + " : " + 0;
+		return remainingDays + "日";
+	}
+	
+	private String convertWithMinutes(int minutes) {
+		if ( minutes < 10) {
+			return "0" + minutes;
+		}
+		return "" + minutes;
 	}
 	
 }

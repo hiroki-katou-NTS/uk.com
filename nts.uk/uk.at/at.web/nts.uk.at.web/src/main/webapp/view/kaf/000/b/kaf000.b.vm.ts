@@ -238,12 +238,15 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         btnBefore() {
             let self = this;
             var prevAppInfo = self.getPrevAppInfo();
-            nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': self.listAppMeta, 'currentApp': prevAppInfo });
+            nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 
+                'listAppMeta':  _.map(self.listAppMeta, x => { return x.appID}), 
+                'currentApp': prevAppInfo.appID 
+            });
         }
 
         private getPrevAppInfo(): shrvm.model.ApplicationMetadata {
             let self = this;
-            let index = _.findIndex(self.listAppMeta, ["appID", self.appID()]);
+            let index = _.findIndex(self.listAppMeta, x => {return x.appID == self.appID()});
             if (index > 0) {
                 return new shrvm.model.ApplicationMetadata(self.listAppMeta[index - 1].appID, self.listAppMeta[index - 1].appType, self.listAppMeta[index - 1].appDate);
             }
@@ -256,12 +259,15 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         btnAfter() {
             let self = this;
             var nextAppInfo = self.getNextAppInfo();
-            nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': self.listAppMeta, 'currentApp': nextAppInfo });
+            nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 
+                'listAppMeta':  _.map(self.listAppMeta, x => {return x.appID}), 
+                'currentApp': nextAppInfo.appID
+            });
         }
 
         private getNextAppInfo(): shrvm.model.ApplicationMetadata {
             let self = this;
-            let index = _.findIndex(self.listAppMeta, ["appID", self.appID()]);
+            let index = _.findIndex(self.listAppMeta, x => {return x.appID == self.appID()});
             if (index < self.listAppMeta.length - 1) {
                 return new shrvm.model.ApplicationMetadata(self.listAppMeta[index + 1].appID, self.listAppMeta[index + 1].appType, self.listAppMeta[index + 1].appDate);
             }
@@ -370,7 +376,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             nts.uk.ui.block.invisible();
             let self = this;
             self.inputCommandEvent(new model.InputCommandEvent(self.inputCommandEvent().version, self.appID(), self.appReasonEvent()));
-            let deleteCmd = self.appType() != 10 ? self.inputCommandEvent() : self.getHolidayShipmentCmd();
+            let deleteCmd = self.appType() != 10 ? self.inputCommandEvent() : self.getHolidayShipmentCmd(self.appReasonEvent());
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                 service.deleteApp(deleteCmd, self.appType()).done(function(data) {
                     nts.uk.ui.dialog.info({ messageId: 'Msg_16' }).then(function() {
@@ -392,12 +398,12 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 });
             }).ifNo(function() {
                 nts.uk.ui.block.clear();
-                });
+            });
 
 
         }
 
-        getHolidayShipmentCmd(memo?) {
+        getHolidayShipmentCmd(memo) {
             let self = this,
                 shipmentCmd,
                 vm: nts.uk.at.view.kaf011.b.viewmodel.ScreenModel = __viewContext['viewModel'];
@@ -451,7 +457,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             nts.uk.ui.block.invisible();
             let self = this;
             self.inputCommandEvent(new model.InputCommandEvent(self.inputCommandEvent().version, self.appID(), self.appReasonEvent()));
-            let cancelCmd = self.appType() == 10 ? self.getHolidayShipmentCmd() : self.inputCommandEvent();
+            let cancelCmd = self.appType() != 10 ? self.inputCommandEvent() : self.getHolidayShipmentCmd(self.appReasonEvent());
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_249' }).ifYes(function() {
                 service.cancelApp(cancelCmd, self.appType()).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_224" }).then(() => {

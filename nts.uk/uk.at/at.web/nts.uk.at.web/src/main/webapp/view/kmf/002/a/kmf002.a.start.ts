@@ -5,6 +5,7 @@ module nts.uk.at.view.kmf002.a {
         let mainTab = new viewmodel.ScreenModel();
         mainTab.start_page(0).done(function(screenModel){
             __viewContext.bind(screenModel);
+            $ ("#managePubHD").focus();
         });
     });
 }
