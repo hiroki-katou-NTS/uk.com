@@ -57,6 +57,7 @@ import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
@@ -162,8 +163,10 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
 			   List<DivergenceTime> divergenceTimeList,
 			   CalculateOfTotalConstraintTime calculateOfTotalConstraintTime, 
-			   Optional<PredetermineTimeSetForCalc> schePreTimeSet, Optional<FixedWorkCalcSetting> ootsukaFixCalsSet,
-			   Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting,Optional<WorkType> scheWorkType,
+			   Optional<PredetermineTimeSetForCalc> schePreTimeSet, 
+			   Optional<FixedWorkCalcSetting> ootsukaFixCalsSet,
+			   Optional<FixRestTimezoneSet> fixRestTimeSetting,
+			   Optional<WorkType> scheWorkType,
 			   AutoCalFlexOvertimeSetting flexAutoCalSet,
 			   DailyUnit dailyUnit) {
 		integrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(collectCalculationResult(oneDay,oneDay, overTimeAutoCalcSet,holidayAutoCalcSetting,
@@ -243,7 +246,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   List<DivergenceTime> divergenceTimeList,
 			   CalculateOfTotalConstraintTime calculateOfTotalConstraintTime, Optional<PredetermineTimeSetForCalc> schePreTimeSet, int breakTimeCount,
 			   Optional<FixedWorkCalcSetting> ootsukaFixCalsSet,
-			   Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting, IntegrationOfDaily integrationOfDaily,
+			   Optional<FixRestTimezoneSet> fixRestTimeSetting, IntegrationOfDaily integrationOfDaily,
 			   Optional<WorkType> scheWorkType, 
 			   AutoCalFlexOvertimeSetting flexSetting,
 			   DailyUnit dailyUnit

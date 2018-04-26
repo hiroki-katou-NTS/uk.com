@@ -54,6 +54,9 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka.OotsukaProcessService;
 //import nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka.OotsukaProcessService;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
+import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethod;
+import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfEachPremiumHalfWork;
+import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfHalfWork;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -118,6 +121,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.ExceededPredAddVacationCalc;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.OverTimeCalcNoBreak;
@@ -275,9 +279,15 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		/*休憩時間帯（遅刻早退用）*/
 		 List<TimeSheetOfDeductionItem> breakTimeList = new ArrayList<>();
 		 Optional<BreakTimeOfDailyPerformance> test = reflectBreakTimeOfDailyDomainService.getBreakTime(companyId, employeeId, targetDate,integrationOfDaily.getWorkInformation());
-		if(test.isPresent()) {
-			breakTimeList = test.get().changeAllTimeSheetToDeductionItem();
-		}	
+		if(test != null) {
+			if(test.isPresent()) {
+				breakTimeList = test.get().changeAllTimeSheetToDeductionItem();
+			}
+		}
+		else {
+			test = Optional.empty();
+		}
+		
 
 	
 		/*各加算設定取得用*/
@@ -374,10 +384,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		AutoCalSetting sharedCalcSet = new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS);
 		AutoCalOvertimeSetting sharedOtSet = new AutoCalOvertimeSetting(sharedCalcSet,sharedCalcSet, sharedCalcSet, sharedCalcSet, sharedCalcSet, sharedCalcSet);
 		
-		Optional<SettingOfFlexWork> flexCalcMethod = Optional.empty();
 		List<WorkTimezoneOtherSubHolTimeSet> subhol = new ArrayList<>();
 		HolidayCalcMethodSet holidayCalcMethodSet = HolidayCalcMethodSet.emptyHolidayCalcMethodSet();
-		Optional<TimezoneOfFixedRestTimeSet>fixRestTimeSet = Optional.empty();
+		Optional<FixRestTimezoneSet>fixRestTimeSet = Optional.empty();
 		Optional<FixedWorkCalcSetting>ootsukaFixedWorkSet = Optional.empty();
 		//---------------------------------Repositoryが整理されるまでの一時的な作成-------------------------------------------
 		if (workTime.get().getWorkTimeDivision().getWorkTimeDailyAtr().isFlex()) {
@@ -439,8 +448,36 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				WorkRegularAdditionSet WorkRegularAdditionSet = aggregateRoot!=null?(WorkRegularAdditionSet)aggregateRoot:null;
 				//通常勤務の加算設定.休暇の計算方法の設定
 				holidayCalcMethodSet = WorkRegularAdditionSet!=null?WorkRegularAdditionSet.getVacationCalcMethodSet():holidayCalcMethodSet;
-				ootsukaFixedWorkSet = Optional.of(new FixedWorkCalcSetting(new ExceededPredAddVacationCalc(CalcMethodExceededPredAddVacation.CALC_AS_WORKING,new OverTimeFrameNo(1)),
-														   new OverTimeCalcNoBreak(CalcMethodNoBreak.CALC_AS_WORKING,new OverTimeFrameNo(2),new OverTimeFrameNo(3))));
+				//パターン１
+//				ootsukaFixedWorkSet = Optional.of(new FixedWorkCalcSetting(new ExceededPredAddVacationCalc(CalcMethodExceededPredAddVacation.CALC_AS_WORKING,new OverTimeFrameNo(1)),
+//														   new OverTimeCalcNoBreak(CalcMethodNoBreak.CALC_AS_WORKING,new OverTimeFrameNo(2),new OverTimeFrameNo(3))));
+				//パターン2
+				ootsukaFixedWorkSet = Optional.of(new FixedWorkCalcSetting(new ExceededPredAddVacationCalc(CalcMethodExceededPredAddVacation.CALC_AS_OVERTIME,new OverTimeFrameNo(1)),
+						   								   new OverTimeCalcNoBreak(CalcMethodNoBreak.CALC_AS_OVERTIME,new OverTimeFrameNo(2),new OverTimeFrameNo(3))));
+				List<nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime> a = new ArrayList<>();
+				if(workType.get().getDailyWork().getAttendanceHolidayAttr().isHoliday()) {
+					a = fixedWorkSetting.get().getOffdayWorkTimezone().getRestTimezone().getLstTimezone();
+				}
+				else {
+					if(workType.get().getDailyWork().getWorkTypeUnit().isOneDay()) {
+						a = fixedWorkSetting.get().getLstHalfDayWorkTimezone().stream()
+								  .filter(tc -> tc.getDayAtr().equals(AmPmAtr.ONE_DAY))
+								  .map(tc -> tc.getRestTimezone().getLstTimezone())
+								  .flatMap(tc -> tc.stream())
+								  .collect(Collectors.toList());
+					}
+					else {
+						a = fixedWorkSetting.get().getLstHalfDayWorkTimezone().stream()
+								  .filter(tc -> tc.getDayAtr().equals(AmPmAtr.AM)
+										  		 || tc.getDayAtr().equals(AmPmAtr.PM))
+								  .map(tc -> tc.getRestTimezone().getLstTimezone())
+								  .flatMap(tc -> tc.stream())
+								  .collect(Collectors.toList());
+					}
+
+				}
+				fixRestTimeSet = Optional.of(new FixRestTimezoneSet(a));
+						
 				/*大塚モード*/
 				workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), ootsukaFixedWorkSet, oneRange.getAttendanceLeavingWork()));
 				
@@ -598,7 +635,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//個人労働条件
 		//PersonalLaborCondition personalLabor = new PersonalLaborCondition(manageReGetClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getAdditionSet());
 		
-		Optional<SettingOfFlexWork> flexCalcMethod = Optional.empty();
+		Optional<SettingOfFlexWork> flexCalcMethod = Optional.of(new SettingOfFlexWork(new FlexCalcMethodOfHalfWork(new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.OneDay, FlexCalcMethod.OneDay),
+																													new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.OneDay, FlexCalcMethod.OneDay))));
 		
 	    //日別実績の入退門　　　　
 		Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGateOfDaily = manageReGetClass.getIntegrationOfDaily().getAttendanceLeavingGate();

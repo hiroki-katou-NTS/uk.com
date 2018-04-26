@@ -54,6 +54,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySet
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
@@ -166,7 +167,7 @@ public class ActualWorkingTimeOfDaily {
 			   DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
 			   List<DivergenceTime> divergenceTimeList, Optional<PredetermineTimeSetForCalc> schePreTimeSet, 
 			   int breakTimeCount, Optional<FixedWorkCalcSetting> ootsukaFixedCalcSet,
-			   Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting, 
+			   Optional<FixRestTimezoneSet> fixRestTimeSetting, 
 			   IntegrationOfDaily integrationOfDaily,
 			   Optional<WorkType> scheWorkType,
 			   AutoCalFlexOvertimeSetting flexAutoCalSet,
@@ -386,7 +387,7 @@ public class ActualWorkingTimeOfDaily {
 	 * @return
 	 */
 	private static TotalWorkingTime calcOotsuka(WorkingSystem workingSystem, TotalWorkingTime totalWorkingTime,
-									Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting,
+									Optional<FixRestTimezoneSet> fixRestTimeSetting,
 									AttendanceTime predetermineTime,
 									Optional<FixedWorkCalcSetting> ootsukaFixedCalcSet,
 									AutoCalOvertimeSetting autoCalcSet, DailyUnit dailyUnit) {
