@@ -8,34 +8,31 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="../share/model.js" />
-			<com:scriptfile path="cmf005.b.vm.js" />
-			<com:scriptfile path="cmf005.b.start.js" />
-			<com:stylefile path="cmf005.b.style.css" />
+			<com:scriptfile path="cmf005.d.vm.js" />
+			<com:scriptfile path="cmf005.d.start.js" />
+			<com:stylefile path="cmf005.d.style.css" />
 		</ui:define>
-
 		<ui:define name="content">
-			<div id="functions-area">
+			<div tabindex="1" id="functions-area">
 				<a class="goback"
-					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }"
-					tabindex="1">#{i18n.getText('CMF005_9')}</a>
-				<div id="titleModule">#{i18n.getText('CMF005_2')}</div>
+					data-bind="ntsLinkButton: { jump: '../b/index.xhtml' }">#{i18n.getText('CMF005_9')}</a>
+				<div id="titleModule" class="float_right">#{i18n.getText('CMF005_2')}</div>
 			</div>
 			<div id="contents-area">
-				<div id="ex_accept_wizard"
+				<div id="ex_output_wizard"
 					data-bind="ntsWizard: {active: activeStep, steps: stepList, theme: 'yellow'}"
 					class="cf">
 					<div class="header">
-						<div class="image" data-icon="../resource/データ保存アイコン.jpg"></div>
+						<div class="image" data-icon="../resource/データ削除A1.jpg"></div>
 						<div class="content">#{i18n.getText('CMF005_2')}</div>
 					</div>
 					<div class="steps">
-
 						<div class="step-1">
 							<span>#{i18n.getText('CMF005_10')}</span> <br />
 							└#{i18n.getText('CMF005_11')}
@@ -43,12 +40,12 @@
 						<div class="step-2">#{i18n.getText('CMF005_12')}</div>
 						<div class="end step-3">#{i18n.getText('CMF005_13')}</div>
 					</div>
+
 					<div class="contents">
-						<div class="step-1">
-							<ui:include src="b.xhtml" />
-						</div>
 						<div class="step-2">
-							<ui:include src="d.xhtml" />
+							<div id="content" class="cf">
+								<div id="com-ccg001"></div>
+							</div>
 						</div>
 					</div>
 				</div>

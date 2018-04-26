@@ -9,6 +9,10 @@ module nts.uk.com.view.cmf005.b.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
 
+    import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
+    import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
+    import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
+    
     export class ScreenModel {
 
 
@@ -56,6 +60,10 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         //B9_2
         supplementExplanation: KnockoutObservable<string>;
 
+        
+        //D
+        ccg001ComponentOption: GroupOption;
+        
         constructor() {
             var self = this;
             self.initComponents();
@@ -200,6 +208,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         // Open screen D
         nextScreenD() {
             let self = this;
+            self.loadScreenD();
             $('#ex_accept_wizard').ntsWizard("next");
         }
 
@@ -253,6 +262,57 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 }
             }
             return new model.ItemDate(newYear + "/" + newMonth + "/" + newDate, year + "/" + moth + "/" + date, newYear, year);
+        }
+        
+        
+        //load D screen
+        loadScreenD() {
+            let self = this;
+            // Set component option
+            self.ccg001ComponentOption = {
+                /** Common properties */
+                systemType: 1,
+                showEmployeeSelection: true,
+                showQuickSearchTab: true,
+                showAdvancedSearchTab: true,
+                showBaseDate: false,
+                showClosure: true,
+                showAllClosure: true,
+                showPeriod: true,
+                periodFormatYM: false,
+
+                /** Required parameter */
+                baseDate: moment().toISOString(),
+                periodStartDate: moment().toISOString(),
+                periodEndDate: moment().toISOString(),
+                inService: true,
+                leaveOfAbsence: true,
+                closed: true,
+                retirement: true,
+
+                /** Quick search tab options */
+                showAllReferableEmployee: true,
+                showOnlyMe: true,
+                showSameWorkplace: true,
+                showSameWorkplaceAndChild: true,
+
+                /** Advanced search properties */
+                showEmployment: true,
+                showWorkplace: true,
+                showClassification: true,
+                showJobTitle: true,
+                showWorktype: true,
+                isMutipleCheck: true,
+
+                /**
+                * Self-defined function: Return data from CCG001
+                * @param: data: the data return from CCG001
+                */
+                returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                }
+            }
+
+            $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);
         }
 
     }
