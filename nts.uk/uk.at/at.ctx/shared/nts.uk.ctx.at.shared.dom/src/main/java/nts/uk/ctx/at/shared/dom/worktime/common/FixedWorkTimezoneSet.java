@@ -75,7 +75,6 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject {
 	@Override
 	public void validate() {
 		this.checkOverlap();
-		this.checkOverTimeAndEmTimeOverlap();
 		
 		super.validate();
 	}
@@ -103,17 +102,13 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject {
 	/**
 	 * Check over time and em time overlap.
 	 */
-	private void checkOverTimeAndEmTimeOverlap() {
-		if (CollectionUtil.isEmpty(this.lstWorkingTimezone) ||  CollectionUtil.isEmpty(this.lstOTTimezone)) {
-			return;
+	public boolean isOverTimeAndEmTimeOverlap() {
+		if (CollectionUtil.isEmpty(this.lstWorkingTimezone) || CollectionUtil.isEmpty(this.lstOTTimezone)) {
+			return false;
 		}
 		
-		boolean isOverlap = this.lstOTTimezone.stream()
+		return this.lstOTTimezone.stream()
 				.anyMatch(ot -> this.lstWorkingTimezone.stream().anyMatch(em -> ot.getTimezone().isOverlap(em.getTimezone())));
-		
-		if (isOverlap) {
-			this.bundledBusinessExceptions.addMessage("Msg_845", "KMK003_89");
-		}
 	}
 
 	/**
