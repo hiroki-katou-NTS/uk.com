@@ -639,7 +639,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 			WorkInfoOfDailyPerformance WorkInfo) {
 		Optional<BreakTimeOfDailyPerformance> breakOpt = this.breakTimeOfDailyPerformanceRepo.find(employeeID, processingDate, 0);
 		if(breakOpt.isPresent()){
-			Optional.empty();
+			return Optional.empty();
 		}
 		BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut = new BreakTimeZoneSettingOutPut();
 
@@ -647,7 +647,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		boolean checkBreakTimeSetting = this.checkBreakTimeSetting(companyId, employeeID, processingDate,
 																	null, WorkInfo, breakTimeZoneSettingOutPut);
 		if (!checkBreakTimeSetting) {
-			return null;
+			return Optional.empty();
 		}
 		List<DeductionTime> lstTimezone = breakTimeZoneSettingOutPut.getLstTimezone();
 		Collections.sort(lstTimezone, new Comparator<DeductionTime>() {
