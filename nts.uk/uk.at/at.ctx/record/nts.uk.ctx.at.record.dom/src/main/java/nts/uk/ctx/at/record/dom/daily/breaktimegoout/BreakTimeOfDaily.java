@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetRoundingAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 
 /**
  * 日別実績の休憩時間
@@ -107,10 +108,10 @@ public class BreakTimeOfDaily {
 	 * 休憩未使用時間の計算
 	 * @return 休憩未使用時間
 	 */
-	public AttendanceTime calcUnUseBrekeTime(TimezoneOfFixedRestTimeSet fixRestTimeSetting) {
+	public AttendanceTime calcUnUseBrekeTime(FixRestTimezoneSet fixRestTimezoneSet) {
 		//実績の休憩時間を取得
 		val recordTotalTime = this.getToRecordTotalTime().getWithinStatutoryTotalTime();
-		val totalBreakTime = fixRestTimeSetting.calcTotalTime();
+		val totalBreakTime = fixRestTimezoneSet.calcTotalTime();
 		return totalBreakTime.minusMinutes(recordTotalTime.getCalcTime().valueAsMinutes());
 	}
 	

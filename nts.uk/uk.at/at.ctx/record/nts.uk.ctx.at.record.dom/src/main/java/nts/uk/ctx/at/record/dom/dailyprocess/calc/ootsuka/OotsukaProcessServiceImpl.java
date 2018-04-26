@@ -41,16 +41,16 @@ public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 	 * @return 作成した勤務種類
 	 */
 	private WorkType createOotsukaWorkType(WorkType workType) {
+		if(workType.getDailyWork().getWorkTypeUnit().isOneDay()) {
+			val workTypeSet = workType.getWorkTypeSetByAtr(WorkAtr.OneDay);
 		
-		val workTypeSet = workType.getWorkTypeSetByAtr(WorkAtr.OneDay);
-		
-		val dailyWork = new DailyWork(WorkTypeUnit.OneDay, 
+			val dailyWork = new DailyWork(WorkTypeUnit.OneDay, 
 									  WorkTypeClassification.Attendance, 
 									  workType.getDailyWork().getMorning(), 
 									  workType.getDailyWork().getAfternoon());
 		
 		
-		val createWorkType = new WorkType(workType.getCompanyId(), 
+			val createWorkType = new WorkType(workType.getCompanyId(), 
 									workType.getWorkTypeCode(), 
 									workType.getSymbolicName(), 
 									workType.getName(), 
@@ -59,7 +59,7 @@ public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 									dailyWork, 
 									workType.getDeprecate(), 
 									workType.getCalculateMethod());
-		WorkTypeSet createWorkTypeSet = new WorkTypeSet(workTypeSet.getCompanyId(), 
+			WorkTypeSet createWorkTypeSet = new WorkTypeSet(workTypeSet.getCompanyId(), 
 														workTypeSet.getWorkTypeCd(), 
 														workTypeSet.getWorkAtr(), 
 														workTypeSet.getDigestPublicHd(), 
@@ -73,11 +73,61 @@ public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 														workTypeSet.getGenSubHodiday(),
 														WorkTypeSetCheck.NO_CHECK
 														);
-		createWorkType.getWorkTypeSetList().add(createWorkTypeSet);
-		createWorkType.getWorkTypeSetList().add(workType.getWorkTypeSetByAtr(WorkAtr.Monring));
-		createWorkType.getWorkTypeSetList().add(workType.getWorkTypeSetByAtr(WorkAtr.Afternoon));
-		
-		return null;
+			createWorkType.addWorkTypeSet(createWorkTypeSet);
+			return createWorkType;
+		}
+		else {
+			val workTypeSetMorning = workType.getWorkTypeSetByAtr(WorkAtr.Monring);
+			val workTypeSetAfternoon = workType.getWorkTypeSetByAtr(WorkAtr.Afternoon);
+			
+			val dailyWork = new DailyWork(WorkTypeUnit.MonringAndAfternoon, 
+										  workType.getDailyWork().getOneDay(), 
+										  WorkTypeClassification.Attendance, 
+										  WorkTypeClassification.Attendance);
+
+
+			val createWorkType = new WorkType(workType.getCompanyId(), 
+											  workType.getWorkTypeCode(), 
+											  workType.getSymbolicName(), 
+											  workType.getName(), 
+											  workType.getAbbreviationName(), 
+											  workType.getMemo(), 
+											  dailyWork, 
+											  workType.getDeprecate(), 
+											  workType.getCalculateMethod());
+			WorkTypeSet createWorkTypeSetMorning = new WorkTypeSet(workTypeSetMorning.getCompanyId(), 
+																   workTypeSetMorning.getWorkTypeCd(), 
+																   workTypeSetMorning.getWorkAtr(), 
+																   workTypeSetMorning.getDigestPublicHd(), 
+																   workTypeSetMorning.getHolidayAtr(), 
+																   workTypeSetMorning.getCountHodiday(), 
+																   workTypeSetMorning.getCloseAtr(), 
+																   workTypeSetMorning.getSumAbsenseNo(), 
+																   workTypeSetMorning.getSumSpHodidayNo(), 
+																   WorkTypeSetCheck.NO_CHECK, 
+																   WorkTypeSetCheck.NO_CHECK, 
+																   workTypeSetMorning.getGenSubHodiday(),
+																   WorkTypeSetCheck.NO_CHECK
+																	);			
+			
+			WorkTypeSet createWorkTypeSetAfternoon = new WorkTypeSet(workTypeSetAfternoon.getCompanyId(), 
+																	 workTypeSetAfternoon.getWorkTypeCd(), 
+																	 workTypeSetAfternoon.getWorkAtr(), 
+																	 workTypeSetAfternoon.getDigestPublicHd(), 
+																	 workTypeSetAfternoon.getHolidayAtr(), 
+																	 workTypeSetAfternoon.getCountHodiday(), 
+																	 workTypeSetAfternoon.getCloseAtr(), 
+																	 workTypeSetAfternoon.getSumAbsenseNo(), 
+																	 workTypeSetAfternoon.getSumSpHodidayNo(), 
+																	 WorkTypeSetCheck.NO_CHECK, 
+																	 WorkTypeSetCheck.NO_CHECK, 
+																	 workTypeSetAfternoon.getGenSubHodiday(),
+																	 WorkTypeSetCheck.NO_CHECK
+																	 );
+			createWorkType.addWorkTypeSet(createWorkTypeSetMorning);
+			createWorkType.addWorkTypeSet(createWorkTypeSetAfternoon);
+			return createWorkType;
+		}
 	}
 
 	/**
@@ -88,7 +138,7 @@ public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 										Optional<FixedWorkCalcSetting> calcMethodOfFixWork,
 										TimeLeavingOfDailyPerformance attendanceLeaving) {
 		//勤務計算をする　＆＆　打刻漏れをしていない
-		if(decisionAbleCalc(workType,calcMethodOfFixWork) && attendanceLeaving.isLeakageStamp()) {
+		if(decisionAbleCalc(workType,calcMethodOfFixWork) && !attendanceLeaving.isLeakageStamp()) {
 			return true;
 		}
 		return false;
@@ -103,7 +153,7 @@ public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 	 */
 	private boolean decisionAbleCalc(WorkType workType,Optional<FixedWorkCalcSetting> calcMethodOfFixWork) {
 		//休暇時の計算を取得
-		if(workType != null && false) {//calcMethodOfFixWork.isPresent()) {
+		if(workType != null && true) {//calcMethodOfFixWork.isPresent()) {
 			return workType.getDailyWork().isOneOrHalfAnnualHoliday()
 					|| workType.getDailyWork().isOneOrHalfDaySpecHoliday()
 					|| workType.getDailyWork().isOneOrHalfDayYearlyReserved();
