@@ -108,7 +108,7 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 	private static HolidaysRemainingManagement toDomain(KfnmtHdRemainManage entity) {
 		return new HolidaysRemainingManagement(entity.hdRemainManagePk.cid, entity.hdRemainManagePk.cd, entity.name,
 				new ItemOutputForm(
-						entity.childCareLeave > 0 ? true : false,
+						entity.nursingCareLeave > 0 ? true : false,
 						entity.remainChargeSub > 0 ? true : false, entity.representSub > 0 ? true : false, entity.outItemSub > 0 ? true : false,
 						entity.outputHolidayForward > 0 ? true : false,
 								entity.monthlyPublic > 0 ? true : false, entity.outputItemsHolidays > 0 ? true : false,
