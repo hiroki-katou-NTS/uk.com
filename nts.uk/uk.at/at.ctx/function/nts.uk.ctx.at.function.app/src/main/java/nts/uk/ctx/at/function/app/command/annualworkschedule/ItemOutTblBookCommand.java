@@ -16,12 +16,12 @@ public class ItemOutTblBookCommand
     /**
     * コード
     */
-    private int cd;
+    private String cd;
     
     /**
     * コード
     */
-    private int setOutCd;
+    private String setOutCd;
     
     /**
     * 並び順

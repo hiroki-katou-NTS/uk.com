@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.function.infra.entity.annualworkschedule.KfnrtItemOutTblBook;
 import nts.uk.ctx.at.function.infra.entity.annualworkschedule.KfnrtItemOutTblBookPk;
+import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBookRepository;
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBook;
-import nts.uk.ctx.at.function.dom.annualworkschedule.repository.ItemOutTblBookRepository;
 import nts.arc.layer.infra.data.JpaRepository;
 
 @Stateless
@@ -25,7 +25,7 @@ public class JpaItemOutTblBookRepository extends JpaRepository implements ItemOu
     }
 
     @Override
-    public Optional<ItemOutTblBook> getItemOutTblBookById(String cid, int cd){
+    public Optional<ItemOutTblBook> getItemOutTblBookById(String cid, String cd){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, KfnrtItemOutTblBook.class)
         .setParameter("cid", cid)
         .setParameter("cd", cd)
@@ -43,7 +43,7 @@ public class JpaItemOutTblBookRepository extends JpaRepository implements ItemOu
     }
 
     @Override
-    public void remove(String cid, int cd){
+    public void remove(String cid, String cd){
         this.commandProxy().remove(KfnrtItemOutTblBook.class, new KfnrtItemOutTblBookPk(cid, cd)); 
     }
 }

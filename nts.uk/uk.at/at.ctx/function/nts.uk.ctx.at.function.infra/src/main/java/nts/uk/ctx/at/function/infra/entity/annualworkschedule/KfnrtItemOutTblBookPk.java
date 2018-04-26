@@ -33,6 +33,6 @@ public class KfnrtItemOutTblBookPk implements Serializable
     */
     @Basic(optional = false)
     @Column(name = "CD")
-    public int cd;
+    public String cd;
     
 }
