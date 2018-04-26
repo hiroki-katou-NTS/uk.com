@@ -13,6 +13,9 @@ module nts.custombinding {
                         : (_.isArray(access.dataSource) ? ko.observableArray(access.dataSource)
                             : ko.observableArray([access.dataSource])))
                     : ko.observableArray([]),
+                enable: KnockoutObservable<boolean> = _.has(access, "enable") ?
+                    (ko.isObservable(access.enable) ? access.enable : ko.observable(access.enable))
+                    : ko.observable(true),
                 columns: Array<any> = _.has(access, 'columns') ? ko.unwrap(access.columns) : [],
                 textKey: string = _.has(access, 'textKey') ? access.textKey : 'text',
                 valueKey: string = _.has(access, 'valueKey') ? access.valueKey : 'value',
@@ -29,6 +32,7 @@ module nts.custombinding {
                 textKey: textKey,
                 valueKey: valueKey,
                 mode: "dropdown",
+                disabled: !ko.toJS(enable),
                 enableClearButton: false,
                 visibleItemsCount: visibleItemsCount,
                 selectionChanged: function(evt, ui) {
@@ -82,6 +86,11 @@ module nts.custombinding {
                 }
             });
             dataSource.valueHasMutated();
+
+            enable.subscribe(e => {
+                $element.igCombo('option', 'disabled', !e);
+            });
+            //enable.valueHasMutated();
 
             $(document).on('keydown', (evt) => {
                 if (evt.ctrlKey) {

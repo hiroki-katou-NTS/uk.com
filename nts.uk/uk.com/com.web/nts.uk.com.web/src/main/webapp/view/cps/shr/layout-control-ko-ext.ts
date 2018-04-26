@@ -18,7 +18,7 @@ module nts.custombinding {
         writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'],
         writeConstraints = window['nts']['uk']['ui']['validation']['writeConstraints'],
         parseTimeWidthDay = window['nts']['uk']['time']['minutesBased']['clock']['dayattr']['create'];
-    
+
     // add support virtual element to let control
     ko.virtualElements.allowedBindings.let = true;
 
@@ -945,7 +945,8 @@ module nts.custombinding {
                             },  attr: {
                                 id: nameid,
                                 nameid: nameid,
-                                title: itemCode + ': ' + itemName,
+                                title: itemName,
+                                'data-title': itemName,
                                 'data-code': itemCode,
                                 'data-category': categoryCode,
                                 'data-required': required,
@@ -967,7 +968,8 @@ module nts.custombinding {
                             }, attr: { 
                                 id: nameid, 
                                 nameid: nameid,
-                                title: itemCode + ': ' + itemName,
+                                title: itemName,
+                                'data-title': itemName,
                                 'data-code': itemCode,
                                 'data-category': categoryCode,
                                 'data-required': required,
@@ -991,7 +993,8 @@ module nts.custombinding {
                                 }, attr: {
                                     id: nameid, 
                                     nameid: nameid,
-                                    title: itemCode + ': ' + itemName,
+                                    title: itemName,
+                                    'data-title': itemName,
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
@@ -1012,7 +1015,8 @@ module nts.custombinding {
                             }, attr: { 
                                 id: nameid, 
                                 nameid: nameid,
-                                title: itemCode + ': ' + itemName,
+                                title: itemName,
+                                'data-title': itemName,
                                 'data-code': itemCode,
                                 'data-category': categoryCode,
                                 'data-required': required,
@@ -1037,7 +1041,8 @@ module nts.custombinding {
                                 }, attr: { 
                                     id: nameid, 
                                     nameid: nameid,
-                                    title: itemCode + ': ' + itemName,
+                                    title: itemName,
+                                    'data-title': itemName,
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
@@ -1058,7 +1063,8 @@ module nts.custombinding {
                                 }, attr: { 
                                     id: nameid, 
                                     nameid: nameid,
-                                    title: itemCode + ': ' + itemName,
+                                    title: itemName,
+                                    'data-title': itemName,
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
@@ -1080,7 +1086,8 @@ module nts.custombinding {
                                 }, attr: {
                                     id: nameid, 
                                     nameid: nameid,
-                                    title: itemCode + ': ' + itemName,
+                                    title: itemName,
+                                    'data-title': itemName,
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
@@ -1098,7 +1105,8 @@ module nts.custombinding {
                                 }, attr: {
                                     id: nameid, 
                                     nameid: nameid,
-                                    title: itemCode + ': ' + itemName,
+                                    title: itemName,
+                                    'data-title': itemName,
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
@@ -1112,6 +1120,7 @@ module nts.custombinding {
                                     options: lstComboBoxValue,
                                     optionsText: 'optionText',
                                     optionsValue: 'optionValue',
+                                    editable: true,
                                     enable: editable,
                                     required: required,
                                     visibleItemsCount: 5,
@@ -1121,7 +1130,8 @@ module nts.custombinding {
                                 }, attr: {
                                     id: nameid,
                                     nameid: nameid,
-                                    title: itemCode + ': ' + itemName,
+                                    title: itemName,
+                                    'data-title': itemName,
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
@@ -1142,13 +1152,15 @@ module nts.custombinding {
                                 'data-category': categoryCode,
                                 'data-required': required,
                                 'data-defv': defValue,
-                                title: itemCode + ': ' + itemName
+                                title: itemName,
+                                'data-title': itemName,
                             }"></div>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SEL_BUTTON -->
                             <button data-bind="attr: { 
-                                id: nameid, 
-                                title: itemCode + ': ' + itemName,
+                                id: nameid,
+                                title: itemName,
+                                'data-title': itemName,
                                 'data-code': itemCode,
                                 'data-category': categoryCode,
                                 'data-required': required,
@@ -1161,7 +1173,8 @@ module nts.custombinding {
                                 text: value,
                                 attr: { 
                                     id: nameid, 
-                                    title: itemCode + ': ' + itemName,
+                                    title: itemName,
+                                    'data-title': itemName,
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
@@ -1173,7 +1186,8 @@ module nts.custombinding {
                                 <label class="value-text" data-bind="text: value"></label>
                                 <button data-bind="attr: { 
                                     id: nameid, 
-                                    title: itemCode + ': ' + itemName,
+                                    title: itemName,
+                                    'data-title': itemName,
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
@@ -1198,7 +1212,8 @@ module nts.custombinding {
                                         }, attr: {
                                             id: nameid, 
                                             nameid: nameid,
-                                            title: itemCode + ': ' + itemName,
+                                            title: itemName,
+                                            'data-title': itemName,
                                             'data-code': itemCode,
                                             'data-category': categoryCode,
                                             'data-required': required,
@@ -1206,7 +1221,8 @@ module nts.custombinding {
                                         }" />                            
                                 <button data-bind="attr: { 
                                     id: nameid, 
-                                    title: itemCode + ': ' + itemName,
+                                    title: itemName,
+                                    'data-title': itemName,
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
@@ -1219,7 +1235,8 @@ module nts.custombinding {
                                 <label class="value-text" class="value-text" data-bind="text: value"></label>
                                 <button data-bind="attr: { 
                                     id: nameid, 
-                                    title: itemCode + ': ' + itemName,
+                                    title: itemName,
+                                    'data-title': itemName,
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
@@ -1511,6 +1528,10 @@ module nts.custombinding {
                                         messageId: 'Msg_202',
                                         messageParams: dups.map((x: IItemDefinition) => x.itemName)
                                     });
+                                }
+
+                                if (dups.length == 1 && ((dups[0].itemTypeState || {}).dataTypeState || {}).dataTypeValue == ITEM_SINGLE_TYPE.RELATE_CATEGORY) {
+                                    return;
                                 }
 
                                 opts.sortable.pushItems(nodups);
@@ -1895,12 +1916,12 @@ module nts.custombinding {
                                             switch (data.item.referenceType) {
                                                 case ITEM_SELECT_TYPE.ENUM:
                                                     return {
-                                                        value: !nou(data.value) ? String(data.value) : undefined,
+                                                        value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
                                                         typeData: 2
                                                     };
                                                 case ITEM_SELECT_TYPE.CODE_NAME:
                                                     return {
-                                                        value: !nou(data.value) ? String(data.value) : undefined,
+                                                        value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
                                                         typeData: 1
                                                     };
                                                 case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
@@ -1908,18 +1929,18 @@ module nts.custombinding {
                                                     if (!nou(value)) {
                                                         if (String(value) == String(data.value)) {
                                                             return {
-                                                                value: !nou(data.value) ? String(data.value) : undefined,
+                                                                value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
                                                                 typeData: 2
                                                             };
                                                         } else {
                                                             return {
-                                                                value: !nou(data.value) ? String(data.value) : undefined,
+                                                                value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
                                                                 typeData: 1
                                                             };
                                                         }
                                                     } else {
                                                         return {
-                                                            value: !nou(data.value) ? String(data.value) : undefined,
+                                                            value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
                                                             typeData: 1
                                                         };
                                                     }
@@ -2643,13 +2664,42 @@ module nts.custombinding {
             // init radio box group
             ko.bindingHandlers['ntsRadioBoxGroup'].init(ctrls.radios, () => opts.radios, allBindingsAccessor, viewModel, bindingContext);
 
-            ko.bindingHandlers['ntsComboBox'].init(ctrls.combobox, () => opts.combobox, allBindingsAccessor, viewModel, bindingContext);
+            //ko.bindingHandlers['ntsComboBox'].init(ctrls.combobox, () => opts.combobox, allBindingsAccessor, viewModel, bindingContext);
+            ko.bindingHandlers['ntsDropDownList'].init(ctrls.combobox, () => ({
+                value: opts.combobox.value,
+                dataSource: opts.combobox.options,
+                textKey: opts.combobox.optionsText,
+                valueKey: opts.combobox.optionsValue,
+                visibleItemsCount: 10,
+                enable: opts.combobox.enable,
+                columns: [
+                    { prop: 'categoryCode', 'class': 'hidden' },
+                    { prop: 'categoryName' }
+                ]
+            }), allBindingsAccessor, viewModel, bindingContext);
 
             ko.bindingHandlers['ntsSearchBox'].init(ctrls.searchbox, () => opts.searchbox, allBindingsAccessor, viewModel, bindingContext);
 
             ko.bindingHandlers['ntsListBox'].init(ctrls.listbox, () => opts.listbox, allBindingsAccessor, viewModel, bindingContext);
 
             ko.bindingHandlers['ntsSortable'].init(ctrls.sortable, () => opts.sortable, allBindingsAccessor, viewModel, bindingContext);
+
+            $(document).on('keydown', (evt) => {
+                if (evt.ctrlKey) {
+                    $('[data-code][data-title]')
+                        .each((i, e) => {
+                            let $e = $(e);
+                            if ($e.data('showCode')) {
+                                $e.data('showCode', false);
+                                $e.attr('title', $e.data('title'));
+                            } else {
+                                $e.data('showCode', true);
+                                $e.attr('title', `${$e.data('code')}: ${$e.data('title')}`);
+                            }
+                        });
+                }
+            });
+
             // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
             return { controlsDescendantBindings: true };
         }
@@ -2663,7 +2713,19 @@ module nts.custombinding {
 
             ko.bindingHandlers['ntsRadioBoxGroup'].update(ctrls.radios, () => opts.radios, allBindingsAccessor, viewModel, bindingContext);
 
-            ko.bindingHandlers['ntsComboBox'].update(ctrls.combobox, () => opts.combobox, allBindingsAccessor, viewModel, bindingContext);
+            //ko.bindingHandlers['ntsComboBox'].update(ctrls.combobox, () => opts.combobox, allBindingsAccessor, viewModel, bindingContext);
+            ko.bindingHandlers['ntsDropDownList'].update(ctrls.combobox, () => ({
+                value: opts.combobox.value,
+                dataSource: opts.combobox.options,
+                textKey: opts.combobox.optionsText,
+                valueKey: opts.combobox.optionsValue,
+                visibleItemsCount: 10,
+                enable: opts.combobox.enable,
+                columns: [
+                    { prop: 'categoryCode', 'class': 'hidden' },
+                    { prop: 'categoryName' }
+                ]
+            }), allBindingsAccessor, viewModel, bindingContext);
 
             ko.bindingHandlers['ntsSearchBox'].update(ctrls.searchbox, () => opts.searchbox, allBindingsAccessor, viewModel, bindingContext);
 
@@ -2866,6 +2928,14 @@ module nts.custombinding {
         VIEW_ONLY = <any>"VIEW_ONLY",
         EDIT = <any>"EDIT"
     }
+}
+
+let scripts = $("script[src*='cbx-control-ko-ext.js']");
+if (scripts.length == 0) {
+    $('head').append($('<script>', {
+        'type': 'text/javascript',
+        'src': '/nts.uk.com.web/view/cps/shr/cbx-control-ko-ext.js'
+    }));
 }
 
 ko.bindingHandlers["ntsLayoutControl"] = new nts.custombinding.LayoutControl();

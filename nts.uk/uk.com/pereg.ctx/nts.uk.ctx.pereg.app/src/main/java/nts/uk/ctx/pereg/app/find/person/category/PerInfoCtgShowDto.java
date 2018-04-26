@@ -7,6 +7,7 @@ public class PerInfoCtgShowDto {
 	private String id;
 	private String categoryName;
 	private int categoryType;
+	private String categoryCode;
 	private int isAbolition;
 	private String categoryParentCode;
 	private int initValMasterObjCls;
