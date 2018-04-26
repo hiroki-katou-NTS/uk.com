@@ -16,9 +16,10 @@ import nts.gul.security.hash.password.PasswordHash;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckContractDto;
 import nts.uk.ctx.sys.gateway.dom.login.Contract;
 import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
-import nts.uk.ctx.sys.gateway.dom.login.InstallForm;
 import nts.uk.ctx.sys.gateway.dom.login.SystemConfig;
 import nts.uk.ctx.sys.gateway.dom.login.SystemConfigRepository;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.system.config.InstallationType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -47,10 +48,11 @@ public class LocalContractFormCommandHandler
 	protected CheckContractDto handle(CommandHandlerContext<LocalContractFormCommand> context) {
 		LocalContractFormCommand command = context.getCommand();
 		try {
-			SystemConfig systemConfig = this.getSystemConfig();
+//			SystemConfig systemConfig = this.getSystemConfig();
+			InstallationType systemConfig = AppContexts.system().getInstallationType();
 
 			// case Cloud
-			if (systemConfig.getInstallForm().value == InstallForm.Cloud.value) {
+			if (systemConfig.value == InstallationType.CLOUD.value) {
 				if (this.isShowContract(command)) {
 					return new CheckContractDto(true);
 				}
