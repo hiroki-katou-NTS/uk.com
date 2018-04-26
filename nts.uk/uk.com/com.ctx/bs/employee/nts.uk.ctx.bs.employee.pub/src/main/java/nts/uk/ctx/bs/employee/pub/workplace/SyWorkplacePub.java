@@ -108,7 +108,7 @@ public interface SyWorkplacePub {
 	 * @return the list
 	 */
 	// RequestList120
-	List<String> findListSIdByCidAndWkpIdAndPeriod(String workplaceId, GeneralDate startDate,GeneralDate endDate);
+	List<AffWorkplaceExport> findListSIdByCidAndWkpIdAndPeriod(String workplaceId, GeneralDate startDate,GeneralDate endDate);
 	
 	/**
 	 * Gets the wpl by list sid and period.

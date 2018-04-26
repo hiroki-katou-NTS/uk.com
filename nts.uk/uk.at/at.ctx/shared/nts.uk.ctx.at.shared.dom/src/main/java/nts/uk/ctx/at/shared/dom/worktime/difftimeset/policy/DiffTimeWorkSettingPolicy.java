@@ -23,4 +23,13 @@ public interface DiffTimeWorkSettingPolicy {
 	 * @param diffTimeWorkSetting the diff time work setting
 	 */
 	void validate(BundledBusinessException bundledBusinessExceptions, PredetemineTimeSetting pred, WorkTimeDisplayMode displayMode, DiffTimeWorkSetting diffTimeWorkSetting);
+
+	/**
+	 * Filter timezone.
+	 *
+	 * @param pred the pred
+	 * @param displayMode the display mode
+	 * @param diffTimeWorkSetting the diff time work setting
+	 */
+	void filterTimezone(PredetemineTimeSetting pred, WorkTimeDisplayMode displayMode, DiffTimeWorkSetting diffTimeWorkSetting);
 }
