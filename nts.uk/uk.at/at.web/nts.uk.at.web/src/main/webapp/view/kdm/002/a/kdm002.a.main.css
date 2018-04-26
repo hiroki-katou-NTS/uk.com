@@ -55,8 +55,13 @@
 }
 
 .labelRangeDate {
+	/*margin-top: 30px;*/
 	margin-left: 15px;
-	margin-right: 5px;
+	width: 120px;
+}
+.labelRangeDate1 {
+	/*padding-top: 30px;*/
+	margin-left: 15px;
 	width: 120px;
 }
 

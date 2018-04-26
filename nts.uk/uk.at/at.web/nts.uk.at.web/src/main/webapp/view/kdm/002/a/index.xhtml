@@ -75,20 +75,20 @@
 								<div class="labelRangeDate"  tabindex="-1" 
 									data-bind="ntsFormLabel: {}">#{i18n.getText('KDM002_9')}
 								</div>
-								<div style="padding-left:41px;">
-												<input id='max-days-emp' data-bind="ntsNumberEditor: {
-													value: maxDaysCumulationByEmp,
-													name: '#[KDM002_9]',
-													constraint: 'AnnualLeaveRemainingDayNumber',
-													option: {
-													width: '60px',
-													unitID: 'DAYS',
-													textalign: 'right'
-													},
-													required: true,
-													readonly: false}" tabindex="6"/>
-											</div>
-											<div class="label">#{i18n.getText('KDM002_18')}</div>
+								<div class="infoButtonSetting" >
+									<input id='max-days-emp' data-bind="ntsNumberEditor: {
+										value: maxDaysCumulationByEmp,
+										name: '#[KDM002_9]',
+										constraint: 'AnnualLeaveRemainingDayNumber',
+										option: {
+										width: '60px',
+										unitID: 'DAYS',
+										textalign: 'right'
+										},
+										required: true,
+										readonly: false}" tabindex="6"/>
+									<div class="label">#{i18n.getText('KDM002_18')}</div>
+								</div>
 							</div>
 						</div>
 						</div>
