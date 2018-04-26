@@ -32,7 +32,7 @@ module nts.uk.at.view.kmk015.a {
                 self.numberDay = ko.observable(0);
                 self.isCreated = ko.observable(false);
                 self.isEnable = ko.observable(true);
-                self.isEnableNumber = ko.observable(false);
+                self.isEnableNumber = ko.observable(true);
 
                 self.selectedCode = ko.observable('');
                 self.historyId = ko.observable('');
@@ -88,6 +88,7 @@ module nts.uk.at.view.kmk015.a {
                                 this.newMode();
                             } else {
                                 self.isEnable(true);
+                                self.isEnableNumber(true);
                             }
                         });
                     } else {
@@ -172,10 +173,6 @@ module nts.uk.at.view.kmk015.a {
                         
                         //push listHistory
                         self.addList(data);
-
-                        if(nts.uk.util.isNullOrEmpty(self.timeHistory())){
-                            self.isEnableNumber(false);   
-                        }
                         
                         if (!nts.uk.util.isNullOrEmpty(data)){
                             //set focus 
