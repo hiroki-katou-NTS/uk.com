@@ -30,9 +30,14 @@ public class ItemOutTblBookDto
     private int setOutCd;
     
     /**
-    * コード
+    * 並び順
     */
-    private int itemOutCd;
+    private int sortBy;
+    
+    /**
+    * 見出し名称
+    */
+    private String headingName;
     
     /**
     * 使用区分
@@ -47,7 +52,7 @@ public class ItemOutTblBookDto
     
     public static ItemOutTblBookDto fromDomain(ItemOutTblBook domain)
     {
-        return new ItemOutTblBookDto(domain.getCid(), domain.getCd(), domain.getSetOutCd(), domain.getItemOutCd(), domain.getUseClass(), domain.getValOutFormat());
+        return new ItemOutTblBookDto(domain.getCid(), domain.getCd(), domain.getSetOutCd(), domain.getSortBy(), domain.getHeadingName(), domain.getUseClass(), domain.getValOutFormat());
     }
     
 }

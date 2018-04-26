@@ -31,9 +31,14 @@ public class ItemOutTblBook extends AggregateRoot
     private int setOutCd;
     
     /**
-    * コード
+    * 並び順
     */
-    private int itemOutCd;
+    private int sortBy;
+    
+    /**
+    * 見出し名称
+    */
+    private String headingName;
     
     /**
     * 使用区分

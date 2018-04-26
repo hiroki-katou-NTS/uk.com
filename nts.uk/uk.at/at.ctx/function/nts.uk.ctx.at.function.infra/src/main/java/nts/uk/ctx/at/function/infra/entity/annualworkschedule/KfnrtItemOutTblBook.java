@@ -38,11 +38,18 @@ public class KfnrtItemOutTblBook extends UkJpaEntity implements Serializable
     public int setOutCd;
     
     /**
-    * コード
+    * 並び順
     */
     @Basic(optional = false)
-    @Column(name = "ITEM_OUT_CD")
-    public int itemOutCd;
+    @Column(name = "SORT_BY")
+    public int sortBy;
+    
+    /**
+    * 見出し名称
+    */
+    @Basic(optional = false)
+    @Column(name = "HEADING_NAME")
+    public String headingName;
     
     /**
     * 使用区分
@@ -65,10 +72,10 @@ public class KfnrtItemOutTblBook extends UkJpaEntity implements Serializable
     }
 
     public ItemOutTblBook toDomain() {
-        return new ItemOutTblBook(this.itemOutTblBookPk.cid, this.itemOutTblBookPk.cd, this.setOutCd, this.itemOutCd, this.useClass, this.valOutFormat);
+        return new ItemOutTblBook(this.itemOutTblBookPk.cid, this.itemOutTblBookPk.cd, this.setOutCd, this.sortBy, this.headingName, this.useClass, this.valOutFormat);
     }
     public static KfnrtItemOutTblBook toEntity(ItemOutTblBook domain) {
-        return new KfnrtItemOutTblBook(new KfnrtItemOutTblBookPk(domain.getCid(), domain.getCd()), domain.getSetOutCd(), domain.getItemOutCd(), domain.getUseClass(), domain.getValOutFormat());
+        return new KfnrtItemOutTblBook(new KfnrtItemOutTblBookPk(domain.getCid(), domain.getCd()), domain.getSetOutCd(), domain.getSortBy(), domain.getHeadingName(), domain.getUseClass(), domain.getValOutFormat());
     }
 
 }
