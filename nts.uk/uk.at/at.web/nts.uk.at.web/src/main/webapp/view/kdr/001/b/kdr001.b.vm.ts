@@ -234,6 +234,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                                 self.loadAllHolidayRemaining(data);
                                 self.currentCode("");
                                 self.currentCode(currentHoliday.cd());
+                                self.setFocus();
                             });
                         });
                     }).fail(function(error) {
