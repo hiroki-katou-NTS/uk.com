@@ -31,19 +31,4 @@ public class JpaTargetCategoryRepository extends JpaRepository implements Target
         .setParameter("categoryId", categoryId)
         .getSingle(c->c.toDomain());
     }
-
-    @Override
-    public void add(TargetCategory domain){
-        this.commandProxy().insert(SspmtTargetCategory.toEntity(domain));
-    }
-
-    @Override
-    public void update(TargetCategory domain){
-        this.commandProxy().update(SspmtTargetCategory.toEntity(domain));
-    }
-
-    @Override
-    public void remove(String storeProcessingId, String categoryId){
-        this.commandProxy().remove(SspmtTargetCategory.class, new SspmtTargetCategoryPk(storeProcessingId, categoryId)); 
-    }
 }

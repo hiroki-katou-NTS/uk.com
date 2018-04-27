@@ -32,7 +32,7 @@ public class SspmtTargetEmployeesPk implements Serializable
     * 社員ID
     */
     @Basic(optional = false)
-    @Column(name = "EMPLOYEE_ID")
-    public String employeeId;
+    @Column(name = "SID")
+    public String Sid;
     
 }

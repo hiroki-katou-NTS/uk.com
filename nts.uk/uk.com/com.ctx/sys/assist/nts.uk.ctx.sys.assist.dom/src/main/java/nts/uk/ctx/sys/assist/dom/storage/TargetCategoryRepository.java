@@ -13,10 +13,4 @@ public interface TargetCategoryRepository
 
     Optional<TargetCategory> getTargetCategoryById(String storeProcessingId, String categoryId);
 
-    void add(TargetCategory domain);
-
-    void update(TargetCategory domain);
-
-    void remove(String storeProcessingId, String categoryId);
-
 }

@@ -6,6 +6,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -26,11 +27,19 @@ public class SspmtManualSetOfDataSave extends UkJpaEntity implements Serializabl
     private static final long serialVersionUID = 1L;
     
     /**
-    * ID
-    */
-    @EmbeddedId
-    public SspmtManualSetOfDataSavePk manualSetOfDataSavePk;
-    
+     * 会社ID
+     */
+     @Basic(optional = false)
+     @Column(name = "CID")
+     public String cid;
+     
+     /**
+     * データ保存処理ID
+     */
+     @Id
+     @Basic(optional = false)
+     @Column(name = "STORE_PROCESSING_ID")
+     public String storeProcessingId;
     /**
     * システム種類
     */

@@ -10,6 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.sys.assist.dom.storage.BusinessName;
 import nts.uk.ctx.sys.assist.dom.storage.TargetEmployees;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -44,10 +45,11 @@ public class SspmtTargetEmployees extends UkJpaEntity implements Serializable
     }
 
     public TargetEmployees toDomain() {
-        return new TargetEmployees();
+        return new TargetEmployees(targetEmployeesPk.storeProcessingId, targetEmployeesPk.Sid, new BusinessName(businessname));
     }
+    
     public static SspmtTargetEmployees toEntity(TargetEmployees domain) {
-        return new SspmtTargetEmployees();
+        return new SspmtTargetEmployees(new SspmtTargetEmployeesPk(domain.getStoreProcessingId(), domain.getSid()), domain.getBusinessname().v());
     }
 
 }
