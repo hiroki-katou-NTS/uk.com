@@ -401,6 +401,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			holidayCalcMethodSet = WorkRegularAdditionSet!=null?WorkRegularAdditionSet.getVacationCalcMethodSet():holidayCalcMethodSet;
 			/*大塚モード*/
 //			workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), oneRange.getAttendanceLeavingWork()));
+			workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), ootsukaFixedWorkSet, oneRange.getAttendanceLeavingWork(),flexWorkSetOpt.get().getCommonSetting().getHolidayCalculation()));
 			
 			/*前日の勤務情報取得  */
 			WorkInfoOfDailyPerformance yestarDayWorkInfo = workInformationRepository.find(employeeId, targetDate.addDays(-1)).orElse(workInfo);
@@ -451,11 +452,14 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				//通常勤務の加算設定.休暇の計算方法の設定
 				holidayCalcMethodSet = WorkRegularAdditionSet!=null?WorkRegularAdditionSet.getVacationCalcMethodSet():holidayCalcMethodSet;
 				//パターン１
-				ootsukaFixedWorkSet = Optional.of(new FixedWorkCalcSetting(new ExceededPredAddVacationCalc(CalcMethodExceededPredAddVacation.CALC_AS_WORKING,new OverTimeFrameNo(1)),
-														   new OverTimeCalcNoBreak(CalcMethodNoBreak.CALC_AS_WORKING,new OverTimeFrameNo(2),new OverTimeFrameNo(3))));
+//				ootsukaFixedWorkSet = Optional.of(new FixedWorkCalcSetting(new ExceededPredAddVacationCalc(CalcMethodExceededPredAddVacation.CALC_AS_WORKING,new OTFrameNo(1)),
+//														   new OverTimeCalcNoBreak(CalcMethodNoBreak.CALC_AS_WORKING,new OTFrameNo(2),new OTFrameNo(3))));
 				//パターン2
 //				ootsukaFixedWorkSet = Optional.of(new FixedWorkCalcSetting(new ExceededPredAddVacationCalc(CalcMethodExceededPredAddVacation.CALC_AS_OVERTIME,new OverTimeFrameNo(1)),
 //						   								   new OverTimeCalcNoBreak(CalcMethodNoBreak.CALC_AS_OVERTIME,new OverTimeFrameNo(2),new OverTimeFrameNo(3))));
+				
+				ootsukaFixedWorkSet = fixedWorkSetting.get().getCalculationSetting();
+				
 				List<nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime> a = new ArrayList<>();
 				if(workType.get().getDailyWork().getAttendanceHolidayAttr().isHoliday()) {
 					a = fixedWorkSetting.get().getOffdayWorkTimezone().getRestTimezone().getLstTimezone();
@@ -481,7 +485,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				fixRestTimeSet = Optional.of(new FixRestTimezoneSet(a));
 						
 				/*大塚モード*/
-				workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), ootsukaFixedWorkSet, oneRange.getAttendanceLeavingWork()));
+				workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), ootsukaFixedWorkSet, oneRange.getAttendanceLeavingWork(),fixedWorkSetting.get().getCommonSetting().getHolidayCalculation()));
 				
 				
 				/*前日の勤務情報取得  */

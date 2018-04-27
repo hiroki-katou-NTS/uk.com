@@ -408,13 +408,6 @@ public class TotalWorkingTime {
 		return this.outingTimeOfDailyPerformance.stream().filter(o -> o.getReason().value == reason).findFirst();
 	}
 
-	/**
-	 * 総労働時間のセッタ―(4末納品緊急対応) 
-	 */
-	public void setTotalTime(AttendanceTime totalTime) {
-		this.totalTime = totalTime;
-	}
-
 	public void setWithinWorkTime(AttendanceTime predetermineTime) {
 		if(this.withinStatutoryTimeOfDaily != null)
 			this.withinStatutoryTimeOfDaily.setWorkTime(predetermineTime);
