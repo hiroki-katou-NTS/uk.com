@@ -44,6 +44,22 @@ public class RetentionYearlyUseTimeOfMonthly {
 		domain.useTime = useTime;
 		return domain;
 	}
+
+	/**
+	 * 複写
+	 * @param useTime 使用時間
+	 * @param timeSeriesWorks 時系列ワーク
+	 * @return 月別実績の積立年休使用時間
+	 */
+	public static RetentionYearlyUseTimeOfMonthly copyFrom(
+			AttendanceTimeMonth useTime,
+			Map<GeneralDate, RetentionYearlyUseTimeOfTimeSeries> timeSeriesWorks){
+		
+		val domain = new RetentionYearlyUseTimeOfMonthly();
+		domain.useTime = new AttendanceTimeMonth(useTime.valueAsMinutes());
+		domain.timeSeriesWorks = timeSeriesWorks;
+		return domain;
+	}
 	
 	/**
 	 * 積立年休使用時間を確認する
