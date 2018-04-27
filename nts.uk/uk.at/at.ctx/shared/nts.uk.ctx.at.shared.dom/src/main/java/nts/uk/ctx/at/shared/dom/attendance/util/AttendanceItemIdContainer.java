@@ -848,111 +848,137 @@ public class AttendanceItemIdContainer {
 		DAY_ITEM_ID_CONTAINER.put(394, "日別実績の勤怠時間.実績時間.総労働時間.加給時間.特定加給時間.法定内加給時間.時間9");
 		DAY_ITEM_ID_CONTAINER.put(395, "日別実績の勤怠時間.実績時間.総労働時間.加給時間.特定加給時間.法定内加給時間.時間10");
 
+		DAY_ITEM_ID_CONTAINER.put(767, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.残業時間.残業枠時間.残業時間.乖離時間1");
+		DAY_ITEM_ID_CONTAINER.put(768, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.残業時間.残業枠時間.残業時間.乖離時間2");
+		DAY_ITEM_ID_CONTAINER.put(769, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.残業時間.残業枠時間.残業時間.乖離時間3");
+		DAY_ITEM_ID_CONTAINER.put(770, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.残業時間.残業枠時間.残業時間.乖離時間4");
+		DAY_ITEM_ID_CONTAINER.put(771, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.残業時間.残業枠時間.残業時間.乖離時間5");
+		DAY_ITEM_ID_CONTAINER.put(772, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.残業時間.残業枠時間.残業時間.乖離時間6");
+		DAY_ITEM_ID_CONTAINER.put(773, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.残業時間.残業枠時間.残業時間.乖離時間7");
+		DAY_ITEM_ID_CONTAINER.put(774, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.残業時間.残業枠時間.残業時間.乖離時間8");
+		DAY_ITEM_ID_CONTAINER.put(775, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.残業時間.残業枠時間.残業時間.乖離時間9");
+		DAY_ITEM_ID_CONTAINER.put(776, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.残業時間.残業枠時間.残業時間.乖離時間10");
+		DAY_ITEM_ID_CONTAINER.put(777, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.休出時間.休出枠時間.休出時間.乖離時間1");
+		DAY_ITEM_ID_CONTAINER.put(778, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.休出時間.休出枠時間.休出時間.乖離時間2");
+		DAY_ITEM_ID_CONTAINER.put(779, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.休出時間.休出枠時間.休出時間.乖離時間3");
+		DAY_ITEM_ID_CONTAINER.put(780, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.休出時間.休出枠時間.休出時間.乖離時間4");
+		DAY_ITEM_ID_CONTAINER.put(781, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.休出時間.休出枠時間.休出時間.乖離時間5");
+		DAY_ITEM_ID_CONTAINER.put(782, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.休出時間.休出枠時間.休出時間.乖離時間6");
+		DAY_ITEM_ID_CONTAINER.put(783, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.休出時間.休出枠時間.休出時間.乖離時間7");
+		DAY_ITEM_ID_CONTAINER.put(784, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.休出時間.休出枠時間.休出時間.乖離時間8");
+		DAY_ITEM_ID_CONTAINER.put(785, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.休出時間.休出枠時間.休出時間.乖離時間9");
+		DAY_ITEM_ID_CONTAINER.put(786, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.休出時間.休出枠時間.休出時間.乖離時間10");
+		DAY_ITEM_ID_CONTAINER.put(788, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.残業時間.フレックス時間.フレックス時間.乖離時間");
+		DAY_ITEM_ID_CONTAINER.put(789, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.残業時間.所定外深夜時間.時間.乖離時間");
+		DAY_ITEM_ID_CONTAINER.put(790, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.休出時間.休出深夜.法定内休出.乖離時間");
+		DAY_ITEM_ID_CONTAINER.put(791, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.休出時間.休出深夜.法定外休出.乖離時間");
+		DAY_ITEM_ID_CONTAINER.put(792, "日別実績の勤怠時間.実績時間.総労働時間.所定外時間.休出時間.休出深夜.祝日休出.乖離時間");
+
 		MONTHLY_ITEM_ID_CONTAINER = new HashMap<>();
-		
-		MONTHLY_ITEM_ID_CONTAINER.put(1,   "月別実績の勤怠時間.期間.開始日");
-		MONTHLY_ITEM_ID_CONTAINER.put(2,   "月別実績の勤怠時間.期間.終了日");
-		MONTHLY_ITEM_ID_CONTAINER.put(3,   "月別実績の勤怠時間.集計日数");
-		MONTHLY_ITEM_ID_CONTAINER.put(4,   "月別実績の勤怠時間.月の計算.法定労働時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(5,   "月別実績の勤怠時間.月の計算.実働時間.週割増合計時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(6,   "月別実績の勤怠時間.月の計算.実働時間.月割増合計時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(7,   "月別実績の勤怠時間.月の計算.実働時間.変形労働時間.変形労働不足時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(8,   "月別実績の勤怠時間.月の計算.実働時間.変形労働時間.変形期間繰越時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(9,   "月別実績の勤怠時間.月の計算.実働時間.変形労働時間.複数月変形途中時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(10,  "月別実績の勤怠時間.月の計算.実働時間.変形労働時間.変形法定内残業時間.時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(11,  "月別実績の勤怠時間.月の計算.実働時間.変形労働時間.変形法定内残業時間.計算時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(12,  "月別実績の勤怠時間.月の計算.フレックス時間.フレックス時間.フレックス時間.時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(13,  "月別実績の勤怠時間.月の計算.フレックス時間.フレックス時間.フレックス時間.計算時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(14,  "月別実績の勤怠時間.月の計算.フレックス時間.フレックス時間.事前フレックス時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(15,  "月別実績の勤怠時間.月の計算.フレックス時間.フレックス時間.法定内フレックス時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(16,  "月別実績の勤怠時間.月の計算.フレックス時間.フレックス時間.法定外フレックス時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(17,  "月別実績の勤怠時間.月の計算.フレックス時間.フレックス超過時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(18,  "月別実績の勤怠時間.月の計算.フレックス時間.フレックス不足時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(19,  "月別実績の勤怠時間.月の計算.フレックス時間.フレックス繰越時間.フレックス繰越時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(20,  "月別実績の勤怠時間.月の計算.フレックス時間.フレックス繰越時間.フレックス繰越勤務時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(21,  "月別実績の勤怠時間.月の計算.フレックス時間.フレックス繰越時間.フレックス繰越不足時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(22,  "月別実績の勤怠時間.月の計算.フレックス時間.時間外超過のフレックス時間.超過フレ区分");
-		MONTHLY_ITEM_ID_CONTAINER.put(23,  "月別実績の勤怠時間.月の計算.フレックス時間.時間外超過のフレックス時間.原則時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(24,  "月別実績の勤怠時間.月の計算.フレックス時間.時間外超過のフレックス時間.便宜上時間");
+
+		MONTHLY_ITEM_ID_CONTAINER.put(1, "月別実績の勤怠時間.期間.開始日");
+		MONTHLY_ITEM_ID_CONTAINER.put(2, "月別実績の勤怠時間.期間.終了日");
+		MONTHLY_ITEM_ID_CONTAINER.put(3, "月別実績の勤怠時間.集計日数");
+		MONTHLY_ITEM_ID_CONTAINER.put(4, "月別実績の勤怠時間.月の計算.法定労働時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(5, "月別実績の勤怠時間.月の計算.実働時間.週割増合計時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(6, "月別実績の勤怠時間.月の計算.実働時間.月割増合計時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(7, "月別実績の勤怠時間.月の計算.実働時間.変形労働時間.変形労働不足時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(8, "月別実績の勤怠時間.月の計算.実働時間.変形労働時間.変形期間繰越時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(9, "月別実績の勤怠時間.月の計算.実働時間.変形労働時間.複数月変形途中時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(10, "月別実績の勤怠時間.月の計算.実働時間.変形労働時間.変形法定内残業時間.時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(11, "月別実績の勤怠時間.月の計算.実働時間.変形労働時間.変形法定内残業時間.計算時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(12, "月別実績の勤怠時間.月の計算.フレックス時間.フレックス時間.フレックス時間.時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(13, "月別実績の勤怠時間.月の計算.フレックス時間.フレックス時間.フレックス時間.計算時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(14, "月別実績の勤怠時間.月の計算.フレックス時間.フレックス時間.事前フレックス時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(15, "月別実績の勤怠時間.月の計算.フレックス時間.フレックス時間.法定内フレックス時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(16, "月別実績の勤怠時間.月の計算.フレックス時間.フレックス時間.法定外フレックス時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(17, "月別実績の勤怠時間.月の計算.フレックス時間.フレックス超過時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(18, "月別実績の勤怠時間.月の計算.フレックス時間.フレックス不足時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(19, "月別実績の勤怠時間.月の計算.フレックス時間.フレックス繰越時間.フレックス繰越時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(20, "月別実績の勤怠時間.月の計算.フレックス時間.フレックス繰越時間.フレックス繰越勤務時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(21, "月別実績の勤怠時間.月の計算.フレックス時間.フレックス繰越時間.フレックス繰越不足時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(22, "月別実績の勤怠時間.月の計算.フレックス時間.時間外超過のフレックス時間.超過フレ区分");
+		MONTHLY_ITEM_ID_CONTAINER.put(23, "月別実績の勤怠時間.月の計算.フレックス時間.時間外超過のフレックス時間.原則時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(24, "月別実績の勤怠時間.月の計算.フレックス時間.時間外超過のフレックス時間.便宜上時間");
 		MONTHLY_ITEM_ID_CONTAINER.put(189, "月別実績の勤怠時間.月の計算.フレックス時間.フレックス不足控除時間.年休控除日数");
 		MONTHLY_ITEM_ID_CONTAINER.put(190, "月別実績の勤怠時間.月の計算.フレックス時間.フレックス不足控除時間.欠勤控除時間");
 		MONTHLY_ITEM_ID_CONTAINER.put(191, "月別実績の勤怠時間.月の計算.フレックス時間.フレックス不足控除時間.控除前のフレックス不足時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(25,  "月別実績の勤怠時間.月の計算.総拘束時間.拘束残業時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(26,  "月別実績の勤怠時間.月の計算.総拘束時間.拘束休出時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(27,  "月別実績の勤怠時間.月の計算.総拘束時間.拘束深夜時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(28,  "月別実績の勤怠時間.月の計算.総拘束時間.総拘束時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(29,  "月別実績の勤怠時間.月の計算.総拘束時間.拘束差異時間");
-		
-		MONTHLY_ITEM_ID_CONTAINER.put(30,  "月別実績の勤怠時間.月の計算.総労働時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(31,  "月別実績の勤怠時間.月の計算.集計時間.就業時間.就業時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(32,  "月別実績の勤怠時間.月の計算.集計時間.就業時間.所定内割増時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(33,  "月別実績の勤怠時間.月の計算.集計時間.所定労働時間.計画所定労働時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(34,  "月別実績の勤怠時間.月の計算.集計時間.所定労働時間.実績所定労働時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(45,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.残業合計時間.時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(56,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.残業合計時間.計算時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(67,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.事前残業時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(78,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.振替残業合計時間.時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(89,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.振替残業合計時間.計算時間");
-		MONTHLY_ITEM_ID_CONTAINER.put(35,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.時間1");
-		MONTHLY_ITEM_ID_CONTAINER.put(36,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.時間2");
-		MONTHLY_ITEM_ID_CONTAINER.put(37,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.時間3");
-		MONTHLY_ITEM_ID_CONTAINER.put(38,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.時間4");
-		MONTHLY_ITEM_ID_CONTAINER.put(39,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.時間5");
-		MONTHLY_ITEM_ID_CONTAINER.put(40,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.時間6");
-		MONTHLY_ITEM_ID_CONTAINER.put(41,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.時間7");
-		MONTHLY_ITEM_ID_CONTAINER.put(42,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.時間8");
-		MONTHLY_ITEM_ID_CONTAINER.put(43,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.時間9");
-		MONTHLY_ITEM_ID_CONTAINER.put(44,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.時間10");
-		MONTHLY_ITEM_ID_CONTAINER.put(46,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.計算時間1");
-		MONTHLY_ITEM_ID_CONTAINER.put(47,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.計算時間2");
-		MONTHLY_ITEM_ID_CONTAINER.put(48,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.計算時間3");
-		MONTHLY_ITEM_ID_CONTAINER.put(49,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.計算時間4");
-		MONTHLY_ITEM_ID_CONTAINER.put(50,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.計算時間5");
-		MONTHLY_ITEM_ID_CONTAINER.put(51,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.計算時間6");
-		MONTHLY_ITEM_ID_CONTAINER.put(52,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.計算時間7");
-		MONTHLY_ITEM_ID_CONTAINER.put(53,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.計算時間8");
-		MONTHLY_ITEM_ID_CONTAINER.put(54,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.計算時間9");
-		MONTHLY_ITEM_ID_CONTAINER.put(55,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.計算時間10");
-		MONTHLY_ITEM_ID_CONTAINER.put(57,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.事前残業時間1");
-		MONTHLY_ITEM_ID_CONTAINER.put(58,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.事前残業時間2");
-		MONTHLY_ITEM_ID_CONTAINER.put(59,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.事前残業時間3");
-		MONTHLY_ITEM_ID_CONTAINER.put(60,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.事前残業時間4");
-		MONTHLY_ITEM_ID_CONTAINER.put(61,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.事前残業時間5");
-		MONTHLY_ITEM_ID_CONTAINER.put(62,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.事前残業時間6");
-		MONTHLY_ITEM_ID_CONTAINER.put(63,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.事前残業時間7");
-		MONTHLY_ITEM_ID_CONTAINER.put(64,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.事前残業時間8");
-		MONTHLY_ITEM_ID_CONTAINER.put(65,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.事前残業時間9");
-		MONTHLY_ITEM_ID_CONTAINER.put(66,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.事前残業時間10");
-		MONTHLY_ITEM_ID_CONTAINER.put(68,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.時間1");
-		MONTHLY_ITEM_ID_CONTAINER.put(69,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.時間2");
-		MONTHLY_ITEM_ID_CONTAINER.put(70,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.時間3");
-		MONTHLY_ITEM_ID_CONTAINER.put(71,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.時間4");
-		MONTHLY_ITEM_ID_CONTAINER.put(72,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.時間5");
-		MONTHLY_ITEM_ID_CONTAINER.put(73,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.時間6");
-		MONTHLY_ITEM_ID_CONTAINER.put(74,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.時間7");
-		MONTHLY_ITEM_ID_CONTAINER.put(75,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.時間8");
-		MONTHLY_ITEM_ID_CONTAINER.put(76,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.時間9");
-		MONTHLY_ITEM_ID_CONTAINER.put(77,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.時間10");
-		MONTHLY_ITEM_ID_CONTAINER.put(79,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.計算時間1");
-		MONTHLY_ITEM_ID_CONTAINER.put(80,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.計算時間2");
-		MONTHLY_ITEM_ID_CONTAINER.put(81,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.計算時間3");
-		MONTHLY_ITEM_ID_CONTAINER.put(82,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.計算時間4");
-		MONTHLY_ITEM_ID_CONTAINER.put(83,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.計算時間5");
-		MONTHLY_ITEM_ID_CONTAINER.put(84,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.計算時間6");
-		MONTHLY_ITEM_ID_CONTAINER.put(85,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.計算時間7");
-		MONTHLY_ITEM_ID_CONTAINER.put(86,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.計算時間8");
-		MONTHLY_ITEM_ID_CONTAINER.put(87,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.計算時間9");
-		MONTHLY_ITEM_ID_CONTAINER.put(88,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.計算時間10");
-		MONTHLY_ITEM_ID_CONTAINER.put(90,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.法定内残業時間1");
-		MONTHLY_ITEM_ID_CONTAINER.put(91,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.法定内残業時間2");
-		MONTHLY_ITEM_ID_CONTAINER.put(92,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.法定内残業時間3");
-		MONTHLY_ITEM_ID_CONTAINER.put(93,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.法定内残業時間4");
-		MONTHLY_ITEM_ID_CONTAINER.put(94,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.法定内残業時間5");
-		MONTHLY_ITEM_ID_CONTAINER.put(95,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.法定内残業時間6");
-		MONTHLY_ITEM_ID_CONTAINER.put(96,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.法定内残業時間7");
-		MONTHLY_ITEM_ID_CONTAINER.put(97,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.法定内残業時間8");
-		MONTHLY_ITEM_ID_CONTAINER.put(98,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.法定内残業時間9");
-		MONTHLY_ITEM_ID_CONTAINER.put(99,  "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.法定内残業時間10");
+		MONTHLY_ITEM_ID_CONTAINER.put(25, "月別実績の勤怠時間.月の計算.総拘束時間.拘束残業時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(26, "月別実績の勤怠時間.月の計算.総拘束時間.拘束休出時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(27, "月別実績の勤怠時間.月の計算.総拘束時間.拘束深夜時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(28, "月別実績の勤怠時間.月の計算.総拘束時間.総拘束時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(29, "月別実績の勤怠時間.月の計算.総拘束時間.拘束差異時間");
+
+		MONTHLY_ITEM_ID_CONTAINER.put(30, "月別実績の勤怠時間.月の計算.総労働時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(31, "月別実績の勤怠時間.月の計算.集計時間.就業時間.就業時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(32, "月別実績の勤怠時間.月の計算.集計時間.就業時間.所定内割増時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(33, "月別実績の勤怠時間.月の計算.集計時間.所定労働時間.計画所定労働時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(34, "月別実績の勤怠時間.月の計算.集計時間.所定労働時間.実績所定労働時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(45, "月別実績の勤怠時間.月の計算.集計時間.残業時間.残業合計時間.時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(56, "月別実績の勤怠時間.月の計算.集計時間.残業時間.残業合計時間.計算時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(67, "月別実績の勤怠時間.月の計算.集計時間.残業時間.事前残業時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(78, "月別実績の勤怠時間.月の計算.集計時間.残業時間.振替残業合計時間.時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(89, "月別実績の勤怠時間.月の計算.集計時間.残業時間.振替残業合計時間.計算時間");
+		MONTHLY_ITEM_ID_CONTAINER.put(35, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.時間1");
+		MONTHLY_ITEM_ID_CONTAINER.put(36, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.時間2");
+		MONTHLY_ITEM_ID_CONTAINER.put(37, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.時間3");
+		MONTHLY_ITEM_ID_CONTAINER.put(38, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.時間4");
+		MONTHLY_ITEM_ID_CONTAINER.put(39, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.時間5");
+		MONTHLY_ITEM_ID_CONTAINER.put(40, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.時間6");
+		MONTHLY_ITEM_ID_CONTAINER.put(41, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.時間7");
+		MONTHLY_ITEM_ID_CONTAINER.put(42, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.時間8");
+		MONTHLY_ITEM_ID_CONTAINER.put(43, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.時間9");
+		MONTHLY_ITEM_ID_CONTAINER.put(44, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.時間10");
+		MONTHLY_ITEM_ID_CONTAINER.put(46, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.計算時間1");
+		MONTHLY_ITEM_ID_CONTAINER.put(47, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.計算時間2");
+		MONTHLY_ITEM_ID_CONTAINER.put(48, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.計算時間3");
+		MONTHLY_ITEM_ID_CONTAINER.put(49, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.計算時間4");
+		MONTHLY_ITEM_ID_CONTAINER.put(50, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.計算時間5");
+		MONTHLY_ITEM_ID_CONTAINER.put(51, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.計算時間6");
+		MONTHLY_ITEM_ID_CONTAINER.put(52, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.計算時間7");
+		MONTHLY_ITEM_ID_CONTAINER.put(53, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.計算時間8");
+		MONTHLY_ITEM_ID_CONTAINER.put(54, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.計算時間9");
+		MONTHLY_ITEM_ID_CONTAINER.put(55, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.残業時間.計算時間10");
+		MONTHLY_ITEM_ID_CONTAINER.put(57, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.事前残業時間1");
+		MONTHLY_ITEM_ID_CONTAINER.put(58, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.事前残業時間2");
+		MONTHLY_ITEM_ID_CONTAINER.put(59, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.事前残業時間3");
+		MONTHLY_ITEM_ID_CONTAINER.put(60, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.事前残業時間4");
+		MONTHLY_ITEM_ID_CONTAINER.put(61, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.事前残業時間5");
+		MONTHLY_ITEM_ID_CONTAINER.put(62, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.事前残業時間6");
+		MONTHLY_ITEM_ID_CONTAINER.put(63, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.事前残業時間7");
+		MONTHLY_ITEM_ID_CONTAINER.put(64, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.事前残業時間8");
+		MONTHLY_ITEM_ID_CONTAINER.put(65, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.事前残業時間9");
+		MONTHLY_ITEM_ID_CONTAINER.put(66, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.事前残業時間10");
+		MONTHLY_ITEM_ID_CONTAINER.put(68, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.時間1");
+		MONTHLY_ITEM_ID_CONTAINER.put(69, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.時間2");
+		MONTHLY_ITEM_ID_CONTAINER.put(70, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.時間3");
+		MONTHLY_ITEM_ID_CONTAINER.put(71, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.時間4");
+		MONTHLY_ITEM_ID_CONTAINER.put(72, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.時間5");
+		MONTHLY_ITEM_ID_CONTAINER.put(73, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.時間6");
+		MONTHLY_ITEM_ID_CONTAINER.put(74, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.時間7");
+		MONTHLY_ITEM_ID_CONTAINER.put(75, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.時間8");
+		MONTHLY_ITEM_ID_CONTAINER.put(76, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.時間9");
+		MONTHLY_ITEM_ID_CONTAINER.put(77, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.時間10");
+		MONTHLY_ITEM_ID_CONTAINER.put(79, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.計算時間1");
+		MONTHLY_ITEM_ID_CONTAINER.put(80, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.計算時間2");
+		MONTHLY_ITEM_ID_CONTAINER.put(81, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.計算時間3");
+		MONTHLY_ITEM_ID_CONTAINER.put(82, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.計算時間4");
+		MONTHLY_ITEM_ID_CONTAINER.put(83, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.計算時間5");
+		MONTHLY_ITEM_ID_CONTAINER.put(84, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.計算時間6");
+		MONTHLY_ITEM_ID_CONTAINER.put(85, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.計算時間7");
+		MONTHLY_ITEM_ID_CONTAINER.put(86, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.計算時間8");
+		MONTHLY_ITEM_ID_CONTAINER.put(87, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.計算時間9");
+		MONTHLY_ITEM_ID_CONTAINER.put(88, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.振替残業時間.計算時間10");
+		MONTHLY_ITEM_ID_CONTAINER.put(90, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.法定内残業時間1");
+		MONTHLY_ITEM_ID_CONTAINER.put(91, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.法定内残業時間2");
+		MONTHLY_ITEM_ID_CONTAINER.put(92, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.法定内残業時間3");
+		MONTHLY_ITEM_ID_CONTAINER.put(93, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.法定内残業時間4");
+		MONTHLY_ITEM_ID_CONTAINER.put(94, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.法定内残業時間5");
+		MONTHLY_ITEM_ID_CONTAINER.put(95, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.法定内残業時間6");
+		MONTHLY_ITEM_ID_CONTAINER.put(96, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.法定内残業時間7");
+		MONTHLY_ITEM_ID_CONTAINER.put(97, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.法定内残業時間8");
+		MONTHLY_ITEM_ID_CONTAINER.put(98, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.法定内残業時間9");
+		MONTHLY_ITEM_ID_CONTAINER.put(99, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.法定内残業時間10");
 		MONTHLY_ITEM_ID_CONTAINER.put(100, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.法定内振替残業時間1");
 		MONTHLY_ITEM_ID_CONTAINER.put(101, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.法定内振替残業時間2");
 		MONTHLY_ITEM_ID_CONTAINER.put(102, "月別実績の勤怠時間.月の計算.集計時間.残業時間.集計残業時間.法定内振替残業時間3");
@@ -1045,7 +1071,7 @@ public class AttendanceItemIdContainer {
 	}
 
 	public static String getPath(int key, AttendanceItemType type) {
-		if(type == AttendanceItemType.MONTHLY_ITEM){
+		if (type == AttendanceItemType.MONTHLY_ITEM) {
 			return MONTHLY_ITEM_ID_CONTAINER.get(key);
 		}
 		return DAY_ITEM_ID_CONTAINER.get(key);
@@ -1074,10 +1100,10 @@ public class AttendanceItemIdContainer {
 		if (values == null || values.isEmpty()) {
 			return getFullPair(type);
 		}
-		Map<Integer, String> source = type == AttendanceItemType.MONTHLY_ITEM ? MONTHLY_ITEM_ID_CONTAINER : DAY_ITEM_ID_CONTAINER;
-		
-		return values.stream().filter(c -> source.get(c) != null)
-				.map(c -> ItemValue.build(source.get(c), c));
+		Map<Integer, String> source = type == AttendanceItemType.MONTHLY_ITEM ? MONTHLY_ITEM_ID_CONTAINER
+				: DAY_ITEM_ID_CONTAINER;
+
+		return values.stream().filter(c -> source.get(c) != null).map(c -> ItemValue.build(source.get(c), c));
 	}
 
 	// public static Stream<Entry<String, Integer>> getIdMapStream(Set<Integer>
@@ -1089,7 +1115,7 @@ public class AttendanceItemIdContainer {
 	// }
 
 	public static Stream<ItemValue> getFullPair(AttendanceItemType type) {
-		if(type == AttendanceItemType.MONTHLY_ITEM){
+		if (type == AttendanceItemType.MONTHLY_ITEM) {
 			return MONTHLY_ITEM_ID_CONTAINER.entrySet().stream().map(c -> ItemValue.build(c.getValue(), c.getKey()));
 		}
 		return DAY_ITEM_ID_CONTAINER.entrySet().stream().map(c -> ItemValue.build(c.getValue(), c.getKey()));

@@ -50,6 +50,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryO
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -477,22 +478,52 @@ public class OverTimeOfDaily {
 			return;
 		//法定労働時間を取得
 		val statutoryTime = dailyUnit.getDailyTime();
-		
+		val frameNoList = this.overTimeWorkFrameTime.stream().map(tc -> tc.getOverWorkFrameNo()).collect(Collectors.toList());
 		//実働就業<=法定労働(法定内)
 		if(actualWorkTime.lessThanOrEqualTo(statutoryTime)) {
-			this.overTimeWorkFrameTime.forEach(tc -> {if(tc.getOverWorkFrameNo().v().equals(ootsukaFixedCalcSet.getInLawOT().v())) 
-														 	tc.setOverTimeWork(TimeDivergenceWithCalculation.createTimeWithCalculation(unUseBreakTime, tc.getOverTimeWork().getCalcTime()));
-													 }
-											  );
+			if(frameNoList.contains(new OverTimeFrameNo(ootsukaFixedCalcSet.getInLawOT().v()))) {
+				this.overTimeWorkFrameTime.forEach(tc -> {if(tc.getOverWorkFrameNo().v().equals(ootsukaFixedCalcSet.getInLawOT().v())) 
+					 									     tc.setOverTimeWork(TimeDivergenceWithCalculation.createTimeWithCalculation(unUseBreakTime, tc.getOverTimeWork().getCalcTime()));
+														 });
+			}
+			else {
+				this.overTimeWorkFrameTime.add(new OverTimeFrameTime(new OverTimeFrameNo(ootsukaFixedCalcSet.getInLawOT().v()), 
+																	 TimeDivergenceWithCalculation.createTimeWithCalculation(unUseBreakTime,unUseBreakTime), 
+																	 TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), 
+																     new AttendanceTime(0), 
+																     new AttendanceTime(0)));
+			}
 		}
 		//実働就業>法定労働(法定外)
 		else {
-			this.overTimeWorkFrameTime.forEach(tc -> {if(tc.getOverWorkFrameNo().v().equals(ootsukaFixedCalcSet.getNotInLawOT().v()))
-															tc.setOverTimeWork(TimeDivergenceWithCalculation.createTimeWithCalculation(actualWorkTime.minusMinutes(predetermineTime.valueAsMinutes()), tc.getOverTimeWork().getCalcTime()));
-													  if(tc.getOverWorkFrameNo().v().equals(ootsukaFixedCalcSet.getInLawOT().v()))
-														  	tc.setOverTimeWork(TimeDivergenceWithCalculation.createTimeWithCalculation(unUseBreakTime.minusMinutes(actualWorkTime.valueAsMinutes() + predetermineTime.valueAsMinutes()), tc.getOverTimeWork().getCalcTime()));
-													 }
-											  );
+			//法内
+			if(frameNoList.contains(new OverTimeFrameNo(ootsukaFixedCalcSet.getInLawOT().v()))) {
+				this.overTimeWorkFrameTime.forEach(tc -> {if(tc.getOverWorkFrameNo().v().equals(ootsukaFixedCalcSet.getInLawOT().v())) 
+					 									     tc.setOverTimeWork(TimeDivergenceWithCalculation.createTimeWithCalculation(unUseBreakTime.minusMinutes(actualWorkTime.valueAsMinutes() - statutoryTime.valueAsMinutes()), tc.getOverTimeWork().getCalcTime()));
+														 });
+			}
+			else {
+				this.overTimeWorkFrameTime.add(new OverTimeFrameTime(new OverTimeFrameNo(ootsukaFixedCalcSet.getInLawOT().v()), 
+																	 TimeDivergenceWithCalculation.sameTime(unUseBreakTime.minusMinutes(actualWorkTime.valueAsMinutes() - statutoryTime.valueAsMinutes())),
+																	 TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), 
+																     new AttendanceTime(0), 
+																     new AttendanceTime(0)));
+			}
+			frameNoList.add(new OverTimeFrameNo(ootsukaFixedCalcSet.getInLawOT().v()));
+			
+			//法外
+			if(frameNoList.contains(new OverTimeFrameNo(ootsukaFixedCalcSet.getNotInLawOT().v()))) {
+				this.overTimeWorkFrameTime.forEach(tc -> {if(tc.getOverWorkFrameNo().v().equals(ootsukaFixedCalcSet.getNotInLawOT().v())) 
+															tc.setOverTimeWork(TimeDivergenceWithCalculation.createTimeWithCalculation(actualWorkTime.minusMinutes(statutoryTime.valueAsMinutes()), tc.getOverTimeWork().getCalcTime()));
+														 });
+			}
+			else {
+				this.overTimeWorkFrameTime.add(new OverTimeFrameTime(new OverTimeFrameNo(ootsukaFixedCalcSet.getNotInLawOT().v()), 
+																	 TimeDivergenceWithCalculation.sameTime( actualWorkTime.minusMinutes(statutoryTime.valueAsMinutes())),
+																	 TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), 
+																     new AttendanceTime(0), 
+																     new AttendanceTime(0)));
+			}
 		}
 	}
 	
@@ -513,24 +544,67 @@ public class OverTimeOfDaily {
 				  						+ unUseBreakTime.valueAsMinutes()
 				  						+ annualAddTime.valueAsMinutes());
 
+		AttendanceTime a = totalWorkTime.minusMinutes(oneDayPredTime.valueAsMinutes());
+		AttendanceTime b = new AttendanceTime(0);
+		
 		AttendanceTime withinOverTime = totalWorkTime.greaterThan(oneDayPredTime.valueAsMinutes())
-										?totalWorkTime.minusMinutes(actualWorkTime.valueAsMinutes())
-										:new AttendanceTime(0);
+										?a
+										:b;
+		
+		//就業時間として計算か判定
+		if(ootsukaFixedCalcSet.getCalcMethod().isCalcAsWorking())
+				return;
+		
+		val frameNoList = this.overTimeWorkFrameTime.stream().map(tc -> tc.getOverWorkFrameNo()).collect(Collectors.toList());
+										
 		//一旦、普通を見るようにする　
 		if(autoCalcSet.decisionCalcAtr(StatutoryAtr.Statutory, false)) {
-			this.overTimeWorkFrameTime.forEach(tc ->{if(tc.getOverWorkFrameNo().equals(ootsukaFixedCalcSet.getOtFrameNo()))
+			if(frameNoList.contains(new OverTimeFrameNo(ootsukaFixedCalcSet.getOtFrameNo().v()))) {
+				this.overTimeWorkFrameTime.forEach(tc ->{if(tc.getOverWorkFrameNo().equals(new OverTimeFrameNo(ootsukaFixedCalcSet.getOtFrameNo().v())))
 														tc.setOverTimeWork(TimeDivergenceWithCalculation.createTimeWithCalculation(withinOverTime, withinOverTime));
-													} 
-	  );
+											    });
+			}
+			else {
+				this.overTimeWorkFrameTime.add(new OverTimeFrameTime(new OverTimeFrameNo(ootsukaFixedCalcSet.getOtFrameNo().v()), 
+																	 TimeDivergenceWithCalculation.sameTime(withinOverTime),
+																	 TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), 
+																	 new AttendanceTime(0), 
+																	 new AttendanceTime(0)));
+			}
 		}
 		else {
-			this.overTimeWorkFrameTime.forEach(tc ->{if(tc.getOverWorkFrameNo().equals(ootsukaFixedCalcSet.getOtFrameNo()))
-														tc.setOverTimeWork(TimeDivergenceWithCalculation.createTimeWithCalculation(withinOverTime, tc.getOverTimeWork().getCalcTime()));
-													} 
-											  );
+			if(frameNoList.contains(new OverTimeFrameNo(ootsukaFixedCalcSet.getOtFrameNo().v()))) {
+				this.overTimeWorkFrameTime.forEach(tc ->{if(tc.getOverWorkFrameNo().equals(new OverTimeFrameNo(ootsukaFixedCalcSet.getOtFrameNo().v())))
+															tc.setOverTimeWork(TimeDivergenceWithCalculation.createTimeWithCalculation(withinOverTime, tc.getOverTimeWork().getCalcTime()));
+												   });
+			}
+			else {
+				this.overTimeWorkFrameTime.add(new OverTimeFrameTime(new OverTimeFrameNo(ootsukaFixedCalcSet.getOtFrameNo().v()), 
+						 					   						 TimeDivergenceWithCalculation.sameTime(withinOverTime),
+						 					   						 TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), 
+						 					   						 new AttendanceTime(0), 
+						 					   						 new AttendanceTime(0)));
+			}
+
 		}
 		
 	}
 	
+	
+	/**
+	 * 乖離時間のみ再計算
+	 * @return
+	 */
+	public OverTimeOfDaily calcDiverGenceTime() {
+		List<OverTimeFrameTime> OverTimeFrameList = new ArrayList<>();
+		for(OverTimeFrameTime overTimeFrameTime:this.overTimeWorkFrameTime) {
+			overTimeFrameTime.calcDiverGenceTime();
+			OverTimeFrameList.add(overTimeFrameTime);
+		}
+		FlexTime flexTime = this.flexTime!=null?this.flexTime.calcDiverGenceTime():this.flexTime;
+		Finally<ExcessOverTimeWorkMidNightTime> excessOverTimeMidNight = this.excessOverTimeWorkMidNightTime.isPresent()?Finally.of(this.excessOverTimeWorkMidNightTime.get().calcDiverGenceTime())
+																																:this.excessOverTimeWorkMidNightTime;
+		return new OverTimeOfDaily(this.overTimeWorkFrameTimeSheet,OverTimeFrameList,excessOverTimeMidNight,this.irregularWithinPrescribedOverTimeWork,flexTime,this.overTimeWorkSpentAtWork);
+	}
 	
 }
