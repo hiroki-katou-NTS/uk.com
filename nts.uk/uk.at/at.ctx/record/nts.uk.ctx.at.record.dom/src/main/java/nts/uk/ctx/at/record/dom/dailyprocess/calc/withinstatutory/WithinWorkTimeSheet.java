@@ -78,10 +78,14 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	
 	
 	
-	public WithinWorkTimeSheet(List<WithinWorkTimeFrame> withinWorkTimeFrame,LateDecisionClock lateDecisionClock,LeaveEarlyDecisionClock leaveEarlyDecisionClock) {
+	public WithinWorkTimeSheet(List<WithinWorkTimeFrame> withinWorkTimeFrame,Optional<LateDecisionClock> lateDecisionClock,Optional<LeaveEarlyDecisionClock> leaveEarlyDecisionClock) {
 		this.withinWorkTimeFrame = withinWorkTimeFrame;
-		this.lateDecisionClock.add(lateDecisionClock);
-		this.leaveEarlyDecisionClock.add(leaveEarlyDecisionClock);
+		if(lateDecisionClock != null
+			&& lateDecisionClock.isPresent())
+			this.lateDecisionClock.add(lateDecisionClock.get());
+		if(lateDecisionClock != null
+			&& leaveEarlyDecisionClock.isPresent())
+			this.leaveEarlyDecisionClock.add(leaveEarlyDecisionClock.get());
 	}
 	
 	
