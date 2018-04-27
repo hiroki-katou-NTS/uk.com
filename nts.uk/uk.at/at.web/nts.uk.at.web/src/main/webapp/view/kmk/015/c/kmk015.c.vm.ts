@@ -37,6 +37,13 @@ module nts.uk.at.view.kmk015.c {
             public submit() {
                 let self = this;
                 let dfd = $.Deferred<void>();
+                
+                $("#inp-period-startYMD").ntsEditor("validate");
+                $("#inp-period-endYMD").ntsEditor("validate");
+                
+                if (nts.uk.ui.errors.hasError()) {
+                    return;                   
+                }
 
                 if (moment(self.periodStart()).isAfter(moment(self.periodEnd()))) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_917" });

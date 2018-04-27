@@ -70,12 +70,12 @@
 							<td>
 								<div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK015_6')}</div>
 							</td>
-							<td>
+							<td class="td-style">
 								<div tabindex="-1" data-bind="text: selectedCode"
 									class="padding-text-code"></div>
 							</td>
-							<td>
-								<div tabindex="-1" data-bind="text: nameWorkType" style="padding-right: 45px;"></div>
+							<td class="td-style">
+								<div tabindex="-1" data-bind="text: nameWorkType"></div>
 							</td>
 						</tr>
 						<tr>
@@ -92,7 +92,7 @@
 								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK015_8')}</div>
 
 							</td>
-							<td colspan="2"><div style="padding-top: 10px; padding-left: 30px;">
+							<td><div style="padding-top: 10px; padding-left: 30px;">
 									<input tabindex="3" id="number-1"
 										data-bind="ntsNumberEditor: { 
 									name: 'Number', 
