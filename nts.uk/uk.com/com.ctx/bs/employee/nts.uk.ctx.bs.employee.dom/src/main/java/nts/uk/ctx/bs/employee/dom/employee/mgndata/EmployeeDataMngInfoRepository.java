@@ -108,11 +108,4 @@ public interface EmployeeDataMngInfoRepository {
 	 */
 	Optional<String> findLastEml(String companyId, String startLetters);
 
-	/**
-	 * Get List EmployeeDataMngInfo By List Sid
-	 * 
-	 * @param listSid
-	 * @return
-	 */
-	List<EmployeeDataMngInfo> getByListEmployeeId(List<String> listSid);
 }
