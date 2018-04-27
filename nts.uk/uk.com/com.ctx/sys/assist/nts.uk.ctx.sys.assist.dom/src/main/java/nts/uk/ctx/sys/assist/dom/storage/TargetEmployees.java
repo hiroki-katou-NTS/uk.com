@@ -21,7 +21,7 @@ public class TargetEmployees
     /**
     * 社員ID
     */
-    private String employeeId;
+    private String Sid;
     
     /**
     * ビジネスネーム

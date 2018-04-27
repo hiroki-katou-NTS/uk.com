@@ -9,7 +9,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.storage.TargetEmployees;
 import nts.uk.ctx.sys.assist.dom.storage.TargetEmployeesRepository;
 import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtTargetEmployees;
-import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtTargetEmployeesPk;
 
 @Stateless
 public class JpaTargetEmployeesRepository extends JpaRepository implements TargetEmployeesRepository
@@ -32,18 +31,4 @@ public class JpaTargetEmployeesRepository extends JpaRepository implements Targe
         .getSingle(c->c.toDomain());
     }
 
-    @Override
-    public void add(TargetEmployees domain){
-        this.commandProxy().insert(SspmtTargetEmployees.toEntity(domain));
-    }
-
-    @Override
-    public void update(TargetEmployees domain){
-        this.commandProxy().update(SspmtTargetEmployees.toEntity(domain));
-    }
-
-    @Override
-    public void remove(String storeProcessingId, String employeeId){
-        this.commandProxy().remove(SspmtTargetEmployees.class, new SspmtTargetEmployeesPk(storeProcessingId, employeeId)); 
-    }
 }

@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.assist.dom.storage;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
@@ -104,12 +106,16 @@ public class ManualSetOfDataSave extends AggregateRoot {
 	 * 実行者
 	 */
 	private String practitioner;
+	private List<TargetEmployees> employees;
+	private List<TargetCategory> category;
+
 
 	public ManualSetOfDataSave(String cid, String storeProcessingId, int systemType, int passwordAvailability,
 			String saveSetName, GeneralDate referenceDate, String compressedPassword,
 			GeneralDateTime executionDateAndTime, GeneralDate daySaveEndDate, GeneralDate daySaveStartDate,
 			GeneralDate monthSaveEndDate, GeneralDate monthSaveStartDate, String suppleExplanation, int endYear,
 			int startYear, int presenceOfEmployee, int identOfSurveyPre, String practitioner) {
+
 		super();
 		this.cid = cid;
 		this.storeProcessingId = storeProcessingId;
@@ -129,6 +135,36 @@ public class ManualSetOfDataSave extends AggregateRoot {
 		this.presenceOfEmployee = EnumAdaptor.valueOf(presenceOfEmployee, NotUseAtr.class);
 		this.identOfSurveyPre = EnumAdaptor.valueOf(identOfSurveyPre, NotUseAtr.class);
 		this.practitioner = practitioner;
+	}
+
+	public ManualSetOfDataSave(String cid, String storeProcessingId, int systemType, int passwordAvailability,
+			String saveSetName, GeneralDate referenceDate, String compressedPassword,
+			GeneralDateTime executionDateAndTime, GeneralDate daySaveEndDate, GeneralDate daySaveStartDate,
+			GeneralDate monthSaveEndDate, GeneralDate monthSaveStartDate, String suppleExplanation, int endYear,
+			int startYear, int presenceOfEmployee, int identOfSurveyPre, String practitioner,
+			List<TargetEmployees> employees, List<TargetCategory> category) {
+
+		super();
+		this.cid = cid;
+		this.storeProcessingId = storeProcessingId;
+		this.systemType = EnumAdaptor.valueOf(systemType, SystemType.class);
+		this.passwordAvailability = EnumAdaptor.valueOf(passwordAvailability, NotUseAtr.class);
+		this.saveSetName = new SaveSetName(saveSetName);
+		this.referenceDate = referenceDate;
+		this.compressedPassword = new FileCompressionPassword(compressedPassword);
+		this.executionDateAndTime = executionDateAndTime;
+		this.daySaveEndDate = daySaveEndDate;
+		this.daySaveStartDate = daySaveStartDate;
+		this.monthSaveEndDate = monthSaveEndDate;
+		this.monthSaveStartDate = monthSaveStartDate;
+		this.suppleExplanation = new Explanation(suppleExplanation);
+		this.endYear = new Year(endYear);
+		this.startYear = new Year(startYear);
+		this.presenceOfEmployee = EnumAdaptor.valueOf(presenceOfEmployee, NotUseAtr.class);
+		this.identOfSurveyPre = EnumAdaptor.valueOf(identOfSurveyPre, NotUseAtr.class);
+		this.practitioner = practitioner;
+		this.employees = employees;
+		this.category = category;
 	}
 
 }

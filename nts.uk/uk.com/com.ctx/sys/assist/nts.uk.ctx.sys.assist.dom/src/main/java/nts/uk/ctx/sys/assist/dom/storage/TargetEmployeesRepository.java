@@ -13,10 +13,4 @@ public interface TargetEmployeesRepository
 
     Optional<TargetEmployees> getTargetEmployeesById(String storeProcessingId, String employeeId);
 
-    void add(TargetEmployees domain);
-
-    void update(TargetEmployees domain);
-
-    void remove(String storeProcessingId, String employeeId);
-
 }

@@ -35,10 +35,11 @@ public class SspmtTargetCategory extends UkJpaEntity implements Serializable
     }
 
     public TargetCategory toDomain() {
-        return new TargetCategory();
+        return new TargetCategory(targetCategoryPk.storeProcessingId, targetCategoryPk.categoryId);
     }
+    
     public static SspmtTargetCategory toEntity(TargetCategory domain) {
-        return new SspmtTargetCategory();
+        return new SspmtTargetCategory(new SspmtTargetCategoryPk(domain.getStoreProcessingId(), domain.getCategoryId()));
     }
 
 }
