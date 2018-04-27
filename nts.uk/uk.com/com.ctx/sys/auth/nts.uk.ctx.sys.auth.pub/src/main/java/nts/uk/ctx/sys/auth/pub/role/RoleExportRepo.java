@@ -5,6 +5,8 @@
 package nts.uk.ctx.sys.auth.pub.role;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.OptionalInt;
 
 import nts.arc.time.GeneralDate;
 
@@ -77,4 +79,8 @@ public interface RoleExportRepo {
 	 * @return
 	 */
 	OperableSystemExport  getOperableSystem();
+	/**
+	 * 社員参照範囲を取得する
+	 */
+	OptionalInt findEmpRangeByRoleID(String roleID);
 }

@@ -143,9 +143,11 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 	}
 
 	@Override
-	public boolean isExist(String companyId, String code) {
-		Optional<CcgmtTopPagePart> optional = this.queryProxy().query(FIND_BY_CODE, CcgmtTopPagePart.class)
-				.setParameter("companyID", companyId).setParameter("code", code).getSingle();
+	public boolean isExist(String companyId, String code, int type) {
+		Optional<CcgmtTopPagePart> optional = this.queryProxy().query(GET_SELECTED_WIDGET, CcgmtTopPagePart.class)
+				.setParameter("companyID", companyId)
+				.setParameter("code", code)
+				.setParameter("topPagePartType", type).getSingle();
 		return optional.isPresent();
 	}
 	

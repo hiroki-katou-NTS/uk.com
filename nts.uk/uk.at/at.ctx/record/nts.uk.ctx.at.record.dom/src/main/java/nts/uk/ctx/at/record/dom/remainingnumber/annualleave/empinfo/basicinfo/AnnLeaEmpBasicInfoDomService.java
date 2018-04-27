@@ -20,7 +20,10 @@ public class AnnLeaEmpBasicInfoDomService{
 	
 	@Inject
 	private AnnualPaidLeaveSettingRepository annPaidLeaSettingRepo;
-	
+
+	@Inject
+	private AnnLeaGrantRemDataRepository annLeaDataRepo;
+		
 	private static final String not_grant = "未付与";
 	
 	public AnnLeaRemNumValueObject getAnnLeaveNumber(String companyId, String employeeId) {
