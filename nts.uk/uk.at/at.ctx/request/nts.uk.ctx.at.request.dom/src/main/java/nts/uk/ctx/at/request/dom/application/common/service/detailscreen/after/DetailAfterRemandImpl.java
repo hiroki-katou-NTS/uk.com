@@ -122,8 +122,9 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 			emp = employeeAdapter.getEmployeeName(AppContexts.user().employeeId());
 		}
 		String appContent = appContentService.getApplicationContent(application);
+		//Pending
 		if (!Strings.isBlank(urlInfo)) {
-			appContent += "\n" + "#KDL030_30" + " " + application.getAppID() + "\n" + urlInfo;
+//			appContent += "\n" + I18NText.getText("KDL030_30") + " " + application.getAppID() + "\n" + urlInfo;
 		}
 		String mailContentToSend = I18NText.getText("Msg_1060",
 				employeeAdapter.getEmployeeName(AppContexts.user().employeeId()), mailBody,
