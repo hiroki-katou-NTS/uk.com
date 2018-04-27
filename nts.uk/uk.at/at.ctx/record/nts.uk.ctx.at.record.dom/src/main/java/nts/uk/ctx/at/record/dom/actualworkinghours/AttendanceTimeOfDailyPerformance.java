@@ -174,7 +174,8 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   Optional<FixRestTimezoneSet> fixRestTimeSetting,
 			   Optional<WorkType> scheWorkType,
 			   AutoCalFlexOvertimeSetting flexAutoCalSet,
-			   DailyUnit dailyUnit) {
+			   DailyUnit dailyUnit,
+			   int breakCount) {
 		integrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(collectCalculationResult(oneDay,oneDay, overTimeAutoCalcSet,holidayAutoCalcSetting,
 				   																		personalCondition,
 				   																		 vacationClass,
@@ -202,7 +203,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				   																	     divergenceTimeList,
 				   																	     calculateOfTotalConstraintTime,
 				   																	     schePreTimeSet,
-				   																	     integrationOfDaily.getBreakTime().size(),
+				   																	     breakCount,
 				   																	     ootsukaFixCalsSet,
 				   																	     fixRestTimeSetting,
 				   																	     integrationOfDaily, 

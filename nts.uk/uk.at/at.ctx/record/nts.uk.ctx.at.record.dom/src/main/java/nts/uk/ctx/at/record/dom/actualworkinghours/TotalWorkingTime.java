@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.temporarytime.TemporaryTimeOfDaily;
@@ -107,16 +108,9 @@ public class TotalWorkingTime {
 	/*日別実績の休暇時間*/
 	private HolidayOfDaily holidayOfDaily;
 	
-	/**
-	 * 
-	 * @param withinStatutory
-	 * @param breakTime
-	 * @return
-	 */
-	private TotalWorkingTime(WithinStatutoryTimeOfDaily withinStatutory,BreakTimeOfDaily breakTime) {
-		this.withinStatutoryTimeOfDaily = withinStatutory;
-		this.breakTimeOfDaily = breakTime;
-	}
+	/*休暇加算時間*/
+	@Setter
+	private AttendanceTime vacationAddTime = new AttendanceTime(0);
 	
 	/**
 	 * Construtor
@@ -284,8 +278,17 @@ public class TotalWorkingTime {
 															outingList,
 															lateTime,
 															leaveEarlyTime);
-				//new  HolidayOfDaily();
-				//
+		//休暇加算時間の計算
+		val vacationAddTime =  vacationClass.calcVacationAddTime(nts.uk.ctx.at.shared.dom.PremiumAtr.RegularWork,
+																 workingSystem,
+																 holidayAddtionSet,
+																 workType,
+																 oneDay.getPredetermineTimeSetForCalc(),
+																 workTimeCode,
+																 personalCondition,
+																 holidayCalcMethodSet);
+				
+				
 		
 		//総労働時間
 		val totalWorkTime = new AttendanceTime(withinStatutoryTimeOfDaily.getWorkTime().valueAsMinutes()
@@ -296,25 +299,28 @@ public class TotalWorkingTime {
 		
 		//総計算時間
 		val totalCalcTime = new AttendanceTime(0);
+		
 		//実働時間
-		val actualTime = new AttendanceTime(0);
+		val actualTime = withinStatutoryTimeOfDaily.getActualWorkTime();
 		
-
+		TotalWorkingTime returnTotalWorkingTimereturn = new TotalWorkingTime(totalWorkTime,
+																				totalCalcTime,
+																				actualTime,
+																				withinStatutoryTimeOfDaily,
+																				excesstime,
+																				lateTime,
+																				leaveEarlyTime,
+																				breakTime,
+																				outingList,
+																				raiseTime,
+																				workTimes,
+																				tempTime,
+																				shotrTime,
+																				vacationOfDaily);
+		returnTotalWorkingTimereturn.setVacationAddTime(new AttendanceTime(vacationAddTime.calcTotaladdVacationAddTime()));
 		
-		return new TotalWorkingTime(totalWorkTime,
-									totalCalcTime,
-									actualTime,
-									withinStatutoryTimeOfDaily,
-									excesstime,
-									lateTime,
-									leaveEarlyTime,
-									breakTime,
-									outingList,
-									raiseTime,
-									workTimes,
-									tempTime,
-									shotrTime,
-									vacationOfDaily);
+		
+		return returnTotalWorkingTimereturn;
 	}
 	
 	public Optional<LeaveEarlyTimeOfDaily> getLeaveEarlyTimeNo(int no){
@@ -414,7 +420,18 @@ public class TotalWorkingTime {
 									this.outingTimeOfDailyPerformance,
 									this.raiseSalaryTimeOfDailyPerfor, this.workTimes, this.temporaryTime, this.shotrTimeOfDaily, this.holidayOfDaily); 
 	}
-	
-	
+
+	/**
+	 * 総労働時間のセッタ―(4末納品緊急対応) 
+	 */
+	public void setTotalTime(AttendanceTime totalTime) {
+		this.totalTime = totalTime;
+	}
+
+	public void setWithinWorkTime(AttendanceTime predetermineTime) {
+		if(this.withinStatutoryTimeOfDaily != null)
+			this.withinStatutoryTimeOfDaily.setWorkTime(predetermineTime);
+	}
+		
 
 }

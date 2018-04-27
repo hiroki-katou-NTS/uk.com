@@ -133,11 +133,11 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	public static LateTimeSheet createLateTimeSheet(
 			TimeLeavingWork timeLeavingWork
 			,OtherEmTimezoneLateEarlySet otherEmTimezoneLateEarlySet
-			,LateDecisionClock lateDesClock
+			,Optional<LateDecisionClock> lateDesClock
 			,WithinWorkTimeFrame duplicateTimeSheet
 			,DeductionTimeSheet deductionTimeSheet
 			,int workNo
-			,TimezoneUse predetermineTimeSet
+			,Optional<TimezoneUse> optional
 			,Optional<CoreTimeSetting> coreTimeSetting,List<TimeSheetOfDeductionItem> breakTimeList) {
 
 		
@@ -149,7 +149,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 				duplicateTimeSheet,
 				deductionTimeSheet,
 				coreTimeSetting,
-				predetermineTimeSet,
+				optional,
 				workNo,breakTimeList);
 	
 		return latetimesheet;
@@ -170,11 +170,11 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	public static LeaveEarlyTimeSheet createLeaveEarlyTimeSheet(
 			TimeLeavingWork timeLeavingWork
 			,OtherEmTimezoneLateEarlySet otherEmTimezoneLateEarlySet
-			,LeaveEarlyDecisionClock leaveEarlyDesClock
+			,Optional<LeaveEarlyDecisionClock> leaveEarlyDesClock
 			,WithinWorkTimeFrame duplicateTimeSheet
 			,DeductionTimeSheet deductionTimeSheet
 			,int workNo
-			,TimezoneUse predetermineTimeSet
+			,Optional<TimezoneUse> optional
 			,Optional<CoreTimeSetting> coreTimeSetting,List<TimeSheetOfDeductionItem> breakTimeList) {
 
 		
@@ -186,7 +186,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 				duplicateTimeSheet,
 				deductionTimeSheet,
 				coreTimeSetting,
-				predetermineTimeSet,
+				optional,
 				workNo,breakTimeList);
 	
 		return leaveEarlytimesheet;
@@ -451,13 +451,13 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 																DeductionTimeSheet deductionTimeSheet,
 																BonusPaySetting bonusPaySetting,
 																MidNightTimeSheet midNightTimeSheet,
-																LateDecisionClock lateDesClock,
-																LeaveEarlyDecisionClock leaveEarlyDecisionClock,
+																Optional<LateDecisionClock> lateDesClock,
+																Optional<LeaveEarlyDecisionClock> leaveEarlyDesClock,
 																TimeLeavingWork timeLeavingWork,
 																HolidayCalcMethodSet holidayCalcMethodSet,
 																int workNo,
 																WorkTimezoneLateEarlySet workTimezoneLateEarlySet,
-																TimezoneUse predetermineTimeSet,
+																Optional<TimezoneUse> optional,
 																Optional<CoreTimeSetting> coreTimeSetting,List<TimeSheetOfDeductionItem> breakTimeList
 																) {
 		
@@ -472,7 +472,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
                    duplicateTimeSheet,
                    deductionTimeSheet,
                    workNo,
-                   predetermineTimeSet,
+                   optional,
                    coreTimeSetting,breakTimeList);
   		//遅刻時間を計算する
   		AttendanceTime lateDeductTime = lateTimeSheet.getForDeducationTimeSheet().isPresent()?lateTimeSheet.getForDeducationTimeSheet().get().calcTotalTime():new AttendanceTime(0);  
@@ -491,11 +491,11 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
   		//早退時間帯の作成
   		LeaveEarlyTimeSheet LeaveEarlyTimeSheet = createLeaveEarlyTimeSheet(timeLeavingWork,
                      workTimezoneLateEarlySet.getOtherEmTimezoneLateEarlySet(LateEarlyAtr.EARLY),
-                     leaveEarlyDecisionClock,
+                     leaveEarlyDesClock,
                      duplicateTimeSheet,
                      deductionTimeSheet,
                      workNo,
-                     predetermineTimeSet,
+                     optional,
                      coreTimeSetting, breakTimeList);  
   		//早退時間を計算する
   		AttendanceTime LeaveEarlyDeductTime = LeaveEarlyTimeSheet.getForDeducationTimeSheet().isPresent()?LeaveEarlyTimeSheet.getForDeducationTimeSheet().get().calcTotalTime():new AttendanceTime(0);

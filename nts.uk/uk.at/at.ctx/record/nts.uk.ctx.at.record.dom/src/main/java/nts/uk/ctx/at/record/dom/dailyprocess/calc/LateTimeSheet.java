@@ -80,17 +80,17 @@ public class LateTimeSheet{
 	 * @param goWorkTime
 	 * @param workNo
 	 * @param classification
-	 * @param lateDecisionClock
+	 * @param lateDesClock
 	 * @return
 	 */
 	public static LateTimeSheet createLateTimeSheet(
-			LateDecisionClock lateDecisionClock,
+			Optional<LateDecisionClock> lateDesClock,
 			TimeLeavingWork timeLeavingWork
 			,GraceTimeSetting graceTimeSetting
 			,WithinWorkTimeFrame duplicateTimeSheet
 			,DeductionTimeSheet deductionTimeSheet
 			,Optional<CoreTimeSetting> coreTimeSetting
-			,TimezoneUse predetermineTimeSet
+			,Optional<TimezoneUse> optional
 			,int workNo,List<TimeSheetOfDeductionItem> breakTimeList) {
 		
 		//出勤時刻
@@ -102,16 +102,16 @@ public class LateTimeSheet{
 				}
 			}
 		}
-		if(attendance != null) {
+		if(attendance != null && lateDesClock.isPresent()) {
 			//出勤時刻と遅刻判断時刻を比較	
-			if(lateDecisionClock.getLateDecisionClock().greaterThan(attendance)
+			if(lateDesClock.get().getLateDecisionClock().greaterThan(attendance)
 					||!graceTimeSetting.isIncludeWorkingHour()){//猶予時間を加算しない場合
 				
 				//遅刻控除時間帯の作成
 				Optional<LateLeaveEarlyTimeSheet> lateDeductTimeSheet = createLateLeaveEarlyTimeSheet(DeductionAtr.Deduction,
 																									  timeLeavingWork,
 																									  coreTimeSetting,
-																									  predetermineTimeSet,
+																									  optional.get(),
 																									  duplicateTimeSheet,
 																									  deductionTimeSheet,
 																									  breakTimeList);
@@ -119,7 +119,7 @@ public class LateTimeSheet{
 				Optional<LateLeaveEarlyTimeSheet> lateAppTimeSheet = createLateLeaveEarlyTimeSheet(DeductionAtr.Appropriate,
 																								   timeLeavingWork,
 																								   coreTimeSetting,
-																								   predetermineTimeSet,
+																								   optional.get(),
 																								   duplicateTimeSheet,
 																								   deductionTimeSheet,
 																								   breakTimeList);

@@ -79,6 +79,7 @@ public class ManageReGetClass {
 		this.personalInfo = personalInfo;
 		this.fixRestTimeSetting = fixRestTimeSeting;
 		this.dailyUnit = dailyUnit;
+		this.ootsukaFixedWorkSet = ootsukaFixedWorkSet;
 		this.holidayCalcMethodSet = holidayCalcMethodSet;
 		this.calculatable = calculatable;
 	}

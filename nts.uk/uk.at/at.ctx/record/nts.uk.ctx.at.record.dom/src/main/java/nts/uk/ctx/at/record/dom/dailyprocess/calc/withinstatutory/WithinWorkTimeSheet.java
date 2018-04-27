@@ -78,10 +78,12 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	
 	
 	
-	public WithinWorkTimeSheet(List<WithinWorkTimeFrame> withinWorkTimeFrame,LateDecisionClock lateDecisionClock,LeaveEarlyDecisionClock leaveEarlyDecisionClock) {
+	public WithinWorkTimeSheet(List<WithinWorkTimeFrame> withinWorkTimeFrame,Optional<LateDecisionClock> lateDecisionClock,Optional<LeaveEarlyDecisionClock> leaveEarlyDecisionClock) {
 		this.withinWorkTimeFrame = withinWorkTimeFrame;
-		this.lateDecisionClock.add(lateDecisionClock);
-		this.leaveEarlyDecisionClock.add(leaveEarlyDecisionClock);
+		if(lateDecisionClock.isPresent())
+			this.lateDecisionClock.add(lateDecisionClock.get());
+		if(leaveEarlyDecisionClock.isPresent())
+			this.leaveEarlyDecisionClock.add(leaveEarlyDecisionClock.get());
 	}
 	
 	
@@ -113,9 +115,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		List<WithinWorkTimeFrame> timeFrames = new ArrayList<>();
 		
 		//遅刻判断時刻
-		LateDecisionClock lateDesClock = null;
+		Optional<LateDecisionClock> lateDesClock = null;
 		//遅刻判断時刻
-		LeaveEarlyDecisionClock leaveEarlyDesClock = null;
+		Optional<LeaveEarlyDecisionClock> leaveEarlyDesClock = null;
 	
 		if(workType.isWeekDayAttendance()) {
 			//遅刻判断時刻を求める
@@ -175,8 +177,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			BonusPaySetting bonusPaySetting,
 			MidNightTimeSheet midNightTimeSheet,
 			int workNo,
-			LateDecisionClock lateDesClock,
-			LeaveEarlyDecisionClock leaveEarlyDecisionClock,
+			Optional<LateDecisionClock> lateDesClock,
+			Optional<LeaveEarlyDecisionClock> leaveEarlyDesClock,
 			HolidayCalcMethodSet holidayCalcMethodSet,
 			WorkTimezoneLateEarlySet workTimezoneLateEarlySet,
 			Optional<CoreTimeSetting> coreTimeSetting,
@@ -196,7 +198,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 																		 bonusPaySetting,
 																		 midNightTimeSheet,
 																		 lateDesClock,
-																		 leaveEarlyDecisionClock,
+																		 leaveEarlyDesClock,
 																		 timeLeavingWork,
 																		 holidayCalcMethodSet,
 																		 workNo,
