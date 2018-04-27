@@ -86,12 +86,14 @@ public class AddAutDaiFormatCommandHandler extends CommandHandler<AddAuthorityDa
 		AuthorityFormatInitialDisplay authorityFormatInitialDisplay = new AuthorityFormatInitialDisplay(companyId,
 				new DailyPerformanceFormatCode(command.getAuthorityDailyCommand().getDailyPerformanceFormatCode()));
 		if (command.getAuthorityDailyCommand().getIsDefaultInitial() == 1) {
-			if (!this.authorityFormatInitialDisplayRepository.checkExistDataByCompanyId(companyId)) {
-				this.authorityFormatInitialDisplayRepository.add(authorityFormatInitialDisplay);
-			} else {
-				this.authorityFormatInitialDisplayRepository.update(companyId,
-						new DailyPerformanceFormatCode(command.getAuthorityDailyCommand().getDailyPerformanceFormatCode()));
-			}
+			authorityFormatInitialDisplayRepository.removeByCid(companyId);
+			this.authorityFormatInitialDisplayRepository.add(authorityFormatInitialDisplay);
+//			if (!this.authorityFormatInitialDisplayRepository.checkExistDataByCompanyId(companyId)) {
+//				this.authorityFormatInitialDisplayRepository.add(authorityFormatInitialDisplay);
+//			} else {
+//				this.authorityFormatInitialDisplayRepository.update(companyId,
+//						new DailyPerformanceFormatCode(command.getAuthorityDailyCommand().getDailyPerformanceFormatCode()));
+//			}
 		}
 		
 		// add Format monthly	

@@ -72,8 +72,12 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             { headerText: 'コード', key: 'code', width: 100, hidden: true },
             { headerText: nts.uk.resource.getText("KDW007_82"), key: 'name', width: 300 },
         ]);
+        
+        sideBar: KnockoutObservable<number>;
         constructor() {
             let self = this;
+            self.sideBar = ko.observable(2);
+            
             self.selectedErrorAlarmCode.subscribe((code) => {
                 if (code) {
                     let foundItem = _.find(self.lstErrorAlarm(), (item) => {
@@ -145,9 +149,12 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             nts.uk.ui.block.grayout();
-            if (isDaily != null)
+            if (isDaily != null){
+                
                 self.screenMode(isDaily);
+                }
             if (self.screenMode() == ScreenMode.Daily) {
+                self.sideBar(1);
                 service.getAll().done((lstData) => {
                     if (lstData && lstData.length > 0) {
                         let sortedData = _.orderBy(lstData, ['code'], ['asc']);
@@ -168,6 +175,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     dfd.resolve();
                 });
             } else if (self.screenMode() == ScreenMode.Monthly) {
+                self.sideBar(2);
                 service.getAllMonthlyCondition().done((lstData) => {
                     if (lstData && lstData.length > 0) {
                         let sortedData = _.orderBy(lstData, ['code'], ['asc']);
@@ -190,6 +198,11 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         }
 
         /* Function Area */
+
+        jumpTo(sidebar) {
+                let self = this;
+                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });
+            }
 
         setNewMode() {
             let self = this;

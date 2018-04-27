@@ -34,11 +34,8 @@ public class UpdateMonPfmCorrectionFormatCmdHandler extends CommandHandler<MonPf
 		if(data.isPresent()) {
 			repo.updateMonPfmCorrectionFormat(MonPfmCorrectionFormatCmd.fromCommand(command));
 			//if A9_1 = true
-			Optional<InitialDisplayMonthly> initialDisplayMonthly = initialRepo.getInitialDisplayMon(companyID, command.getMonthlyPfmFormatCode());
-			if(initialDisplayMonthly.isPresent()) {
-				initialRepo.deleteInitialDisplayMonthly(companyID, command.getMonthlyPfmFormatCode());
-			}
 			if(command.isSetFormatToDefault()) {
+				initialRepo.deleteByCid(companyID);
 				initialRepo.addInitialDisplayMonthly(new InitialDisplayMonthly(companyID,new MonthlyPerformanceFormatCode( command.getMonthlyPfmFormatCode())));
 			}
 		}

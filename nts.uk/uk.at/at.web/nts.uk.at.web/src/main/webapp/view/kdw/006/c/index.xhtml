@@ -23,7 +23,7 @@
 			<div id="functions-area">
 				<!-- C1_1 -->
 				<a class="goback" tabindex="1"
-					data-bind="ntsLinkButton: { jump: '../../006/a/index.xhtml' }">#{i18n.getText('KDW006_25')}</a>
+					data-bind="ntsLinkButton: { action: jumpTo.bind($data, sideBar) }">#{i18n.getText('KDW006_25')}</a>
 				<!-- C1_2 -->
 				<button id="register-button" class="proceed" tabindex="2"
 					data-bind="click: saveData" style="margin-left: 85px;">#{i18n.getText('KDW006_26')}</button>

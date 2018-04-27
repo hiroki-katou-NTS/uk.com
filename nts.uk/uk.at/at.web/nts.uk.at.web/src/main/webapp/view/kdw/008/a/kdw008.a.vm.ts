@@ -80,7 +80,7 @@ module nts.uk.at.view.kdw008.a {
                 self.valuesMonthlyTab3 = ko.observableArray([]);
                 self.enableSheetNo = ko.observable(false);
 
-                self.isSetFormatToDefault = ko.observable(true);
+                self.isSetFormatToDefault = ko.observable(false);
                 self.sideBar = ko.observable(1);
                 //isdaily
                 self.isDaily = ko.observable(dataShare.ShareObject);
@@ -184,7 +184,7 @@ module nts.uk.at.view.kdw008.a {
                     }
                     if (self.isDaily()) {
                         nts.uk.ui.errors.clearAll();
-                        self.getDetail(self.selectedCode(),self.sele);
+                        self.getDetail(self.selectedCode(),self.selectedSheetNo());
                     } else {
                         let empSelect = _.find(self.listMonPfmCorrectionFormat(), format => {
                             return format.monthlyPfmFormatCode == self.selectedCode();
@@ -330,7 +330,6 @@ module nts.uk.at.view.kdw008.a {
                         self.selectedCode(self.businessTypeList()[0].dailyPerformanceFormatCode);
                         self.getDetail(self.businessTypeList()[0].dailyPerformanceFormatCode);
                     } else {
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_242" });
                         self.setNewMode();
                     }
                     self.listDataCommom(self.businessTypeList());
@@ -447,8 +446,10 @@ module nts.uk.at.view.kdw008.a {
 
                         if (data) {
                             if (data.isDefaultInitial == 1) {
+                                self.isSetFormatToDefault(false);
                                 self.checked(true);
                             } else {
+                                self.isSetFormatToDefault(true);
                                 self.checked(false);
                             }
                             self.valuesMonthly([]);

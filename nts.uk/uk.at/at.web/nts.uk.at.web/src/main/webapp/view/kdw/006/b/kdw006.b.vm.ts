@@ -20,6 +20,7 @@ module nts.uk.at.view.kdw006.b {
             monPerformanceFunDto: KnockoutObservable<MonPerformanceFunDto>;
             roundingRules: KnockoutObservableArray<ItemModel>;
 
+            sideBar: KnockoutObservable<number>;
             constructor() {
                 let self = this;
                 self.settingUnit = ko.observable(0);
@@ -27,6 +28,9 @@ module nts.uk.at.view.kdw006.b {
                 self.commentMonthly = ko.observable(null);
                 self.roundingRules = ko.observableArray([]);
                 let listRest = __viewContext.enums.SettingUnitType;
+                
+                self.sideBar = ko.observable(0);
+                
                 _.forEach(listRest, (a) => {
                     self.roundingRules.push(new ItemModel(a.value, a.name));
                 });
@@ -113,6 +117,11 @@ module nts.uk.at.view.kdw006.b {
                     }
                 });
                 return dfd.promise();
+            }
+            
+            jumpTo(sidebar) : JQueryPromise<any>  {
+                let self = this;
+                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });
             }
 
             getMonPerformanceFunById(): JQueryPromise<any> {

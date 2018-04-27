@@ -29,7 +29,7 @@
 			
 			<ui:define name="content">
 				<div id="functions-area">
-					<a class="goback" tabindex="1" data-bind="ntsLinkButton: { jump: '../../006/a/index.xhtml' }">#{i18n.getText('KDW007_17')}</a>
+					<a class="goback" tabindex="1" data-bind="ntsLinkButton: { action: jumpTo.bind($data, sideBar) }">#{i18n.getText('KDW007_17')}</a>
 					<button data-bind="click: setNewMode">#{i18n.getText('KDW007_2')}</button>
 					<button id="register-button" class="proceed" data-bind="click: update, enable: $root.errors.isEmpty">#{i18n.getText('KDW007_3')}</button>
 					<button id = "delete-button" class="danger" data-bind="click: remove, enable: !isNewMode() &amp;&amp; selectedErrorAlarm().fixedAtr() != 1 ">#{i18n.getText('KDW007_4')}</button>

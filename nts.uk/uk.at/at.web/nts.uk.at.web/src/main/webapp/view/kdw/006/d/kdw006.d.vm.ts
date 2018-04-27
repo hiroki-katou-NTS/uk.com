@@ -6,13 +6,15 @@ module nts.uk.at.view.kdw006.d.viewmodel {
         selectedItem: KnockoutObservable<any>;
         columns1: KnockoutObservableArray<NtsGridListColumn>;
         columns2: KnockoutObservableArray<NtsGridListColumn>;
-
+        sideBar: KnockoutObservable<number>;
         constructor() {
             var self = this;
             self.roleItems = ko.observableArray([]);
             self.functionalRestriction = ko.observableArray([]);
             self.selectedItem = ko.observable();
 
+            self.sideBar = ko.observable(0);
+            
             self.columns1 = ko.observableArray([
                 { headerText: 'ID', key: 'roleId', width: 100, hidden: true },
                 { headerText: getText('KDW006_44'), key: 'roleCode', width: 100 },
@@ -57,6 +59,12 @@ module nts.uk.at.view.kdw006.d.viewmodel {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
             });
         }
+        
+        jumpTo(sidebar) {
+                let self = this;
+                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });
+            }
+
 
         start(): JQueryPromise<any> {
             let self = this;

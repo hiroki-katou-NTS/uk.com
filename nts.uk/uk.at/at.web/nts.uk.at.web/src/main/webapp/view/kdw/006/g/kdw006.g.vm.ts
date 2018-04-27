@@ -17,6 +17,8 @@ module nts.uk.at.view.kdw006.g.viewmodel {
         employmentList: KnockoutObservableArray<UnitModel>;
 
         listSetting: KnockoutObservableArray<any>;
+        
+        sideBar: KnockoutObservable<number>;
         constructor() {
             let self = this;
             self.fullWorkTypeList = ko.observableArray([]);
@@ -44,9 +46,11 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             self.employmentList = ko.observableArray<UnitModel>([]);
 
             self.selectedCode.subscribe(function(newValue) {
-                if (nts.uk.text.isNullOrEmpty(newValue)) return;
+                if (nts.uk.text.isNullOrEmpty(newValue)) return; 
                 self.getWorkType(newValue);
             });
+            
+            self.sideBar = ko.observable(1);
         }
 
         start(): JQueryPromise<any> {
@@ -68,6 +72,12 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             });
             return dfd.promise();
         }
+        
+        jumpTo(sidebar): JQueryPromise<any> {
+                let self = this;
+                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });
+            }
+
 
         getFullWorkTypeList(): JQueryPromise<any> {
             let self = this;

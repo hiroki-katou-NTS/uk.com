@@ -57,4 +57,13 @@ public class JpaInitialDisplayMonthlyRepo extends JpaRepository implements Initi
 		this.getEntityManager().flush();
 	}
 
+	@Override
+	public void deleteByCid(String companyID) {
+		List<KfnmtInitialDisplayMonthly> data = this.queryProxy().query(Get_ALL_DIS_MON,KfnmtInitialDisplayMonthly.class)
+				.setParameter("companyID", companyID)
+				.getList();
+		this.commandProxy().removeAll(data);
+		this.getEntityManager().flush();
+	}
+
 }

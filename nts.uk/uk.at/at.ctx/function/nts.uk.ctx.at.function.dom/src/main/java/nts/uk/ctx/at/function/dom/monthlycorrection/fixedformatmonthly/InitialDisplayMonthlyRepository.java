@@ -14,4 +14,6 @@ public interface InitialDisplayMonthlyRepository {
 	void updateInitialDisplayMonthly(InitialDisplayMonthly initialDisplayMonthly);
 	
 	void addInitialDisplayMonthly(InitialDisplayMonthly initialDisplayMonthly);
+	
+	void deleteByCid(String companyID);
 }
