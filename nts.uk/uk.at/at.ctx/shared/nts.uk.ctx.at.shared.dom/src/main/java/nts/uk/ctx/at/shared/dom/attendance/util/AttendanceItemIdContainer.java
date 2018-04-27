@@ -33,7 +33,6 @@ public class AttendanceItemIdContainer {
 
 		DAY_ITEM_ID_CONTAINER = new HashMap<>();
 
-		DAY_ITEM_ID_CONTAINER.put(740, "日別実績の備考.備考");
 		DAY_ITEM_ID_CONTAINER.put(833, "日別実績の備考.備考1");
 		DAY_ITEM_ID_CONTAINER.put(834, "日別実績の備考.備考2");
 		DAY_ITEM_ID_CONTAINER.put(835, "日別実績の備考.備考3");
@@ -379,6 +378,7 @@ public class AttendanceItemIdContainer {
 		DAY_ITEM_ID_CONTAINER.put(737, "日別実績の任意項目.任意項目値.値97");
 		DAY_ITEM_ID_CONTAINER.put(738, "日別実績の任意項目.任意項目値.値98");
 		DAY_ITEM_ID_CONTAINER.put(739, "日別実績の任意項目.任意項目値.値99");
+		DAY_ITEM_ID_CONTAINER.put(740, "日別実績の任意項目.任意項目値.値100");
 
 		DAY_ITEM_ID_CONTAINER.put(552, "日別実績の勤怠時間.予実差異時間");
 		DAY_ITEM_ID_CONTAINER.put(554, "日別実績の勤怠時間.不就労時間");

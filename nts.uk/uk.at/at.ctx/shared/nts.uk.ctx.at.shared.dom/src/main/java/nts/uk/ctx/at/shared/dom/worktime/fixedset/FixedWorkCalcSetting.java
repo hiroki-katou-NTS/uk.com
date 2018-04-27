@@ -35,13 +35,6 @@ public class FixedWorkCalcSetting extends WorkTimeDomainObject {
 		this.exceededPredAddVacationCalc = memento.getExceededPredAddVacationCalc();
 		this.overTimeCalcNoBreak = memento.getOverTimeCalcNoBreak();
 	}
-	
-	public FixedWorkCalcSetting(ExceededPredAddVacationCalc exceededPredAddVacationCalc,
-			OverTimeCalcNoBreak overTimeCalcNoBreak) {
-		super();
-		this.exceededPredAddVacationCalc = exceededPredAddVacationCalc;
-		this.overTimeCalcNoBreak = overTimeCalcNoBreak;
-	}
 
 	/**
 	 * Save to memento.
