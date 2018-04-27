@@ -348,8 +348,11 @@ public class ActualWorkingTimeOfDaily {
 	 */
 	private static List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime>   calcDivergenceTime(DailyRecordToAttendanceItemConverter forCalcDivergenceDto,List<DivergenceTime> divergenceTimeList) {
 		val integrationOfDailyInDto = forCalcDivergenceDto.toDomain();
-		val divergenceTimeInIntegrationOfDaily = integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime();
 		val returnList = new ArrayList<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime>(); 
+		if(!integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			return returnList;
+		}
+		val divergenceTimeInIntegrationOfDaily = integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime();	
 		//乖離時間算出のアルゴリズム実装
 		for(DivergenceTime divergenceTimeClass : divergenceTimeList) {
 			if(divergenceTimeClass.getDivTimeUseSet().isUse()) {
