@@ -4,6 +4,7 @@ module nts.uk.at.view.kmk015.b {
             
             periodStart: KnockoutObservable<moment.Moment>;
             periodEnd: KnockoutObservable<moment.Moment>;
+            isSubmit: KnockoutObservable<boolean>;
             
             constructor() {
                 let self = this;
@@ -29,6 +30,13 @@ module nts.uk.at.view.kmk015.b {
             public submit() {
                 let self = this;
                 let dfd = $.Deferred<void>();
+                
+                $("#inp-period-startYMD").ntsEditor("validate");
+                $("#inp-period-endYMD").ntsEditor("validate");
+                
+                if (nts.uk.ui.errors.hasError()) {
+                    return;                   
+                }
 
                 if (self.periodStart().isAfter(self.periodEnd())) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_917" });

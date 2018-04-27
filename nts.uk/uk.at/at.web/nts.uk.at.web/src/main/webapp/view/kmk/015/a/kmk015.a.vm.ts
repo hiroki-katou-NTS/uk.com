@@ -212,9 +212,13 @@ module nts.uk.at.view.kmk015.a {
                     
                     if (!nts.uk.util.isNullOrEmpty(self.timeHistory())){
                         self.isEnableNumber(true);
-                        self.numberDay(null);
                     } else {
                         self.isEnableNumber(false);
+                    }
+                    
+                    //set numberDay
+                    if (self.isCreated()){
+                        self.numberDay(null);
                     }
                 })
             }
