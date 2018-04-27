@@ -43,11 +43,10 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 
 	@Override
 	public void update(HolidaysRemainingManagement domain) {
-		Optional<HolidaysRemainingManagement> duplicateDomain = getHolidayManagerByCidAndExecCd(domain.getCompanyID(),
-				domain.getCode().v());
-		if (duplicateDomain.isPresent()) {
-			KfnmtHdRemainManage updateData = this.toEntity(domain);
-			KfnmtHdRemainManage oldData = this.queryProxy().find(updateData.hdRemainManagePk, KfnmtHdRemainManage.class).get();
+		KfnmtHdRemainManage updateData = this.toEntity(domain);
+		Optional<KfnmtHdRemainManage> optOldData = this.queryProxy().find(updateData.hdRemainManagePk, KfnmtHdRemainManage.class);
+		if (optOldData.isPresent()) {
+			KfnmtHdRemainManage oldData = optOldData.get();
 			oldData.name = updateData.name;
 			oldData.yearlyHoliday = updateData.yearlyHoliday;
 			oldData.insideHalfDay = updateData.insideHalfDay;
@@ -72,8 +71,10 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 	@Override
 	public void remove(String companyId, String code) {
 		KfnmtHdRemainManagePk kfnmtSpecialHolidayPk = new KfnmtHdRemainManagePk(companyId, code);
-		this.commandProxy().remove(KfnmtHdRemainManage.class, kfnmtSpecialHolidayPk);
-
+		Optional<KfnmtHdRemainManage> optOldData = this.queryProxy().find(kfnmtSpecialHolidayPk, KfnmtHdRemainManage.class);
+		if (optOldData.isPresent()) {
+			this.commandProxy().remove(KfnmtHdRemainManage.class, kfnmtSpecialHolidayPk);
+		}
 	}
 
 	@Override

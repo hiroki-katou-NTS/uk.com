@@ -160,7 +160,6 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     self.currentCode('');
                     self.currentHoliday(new HolidayRemaining(null));
                     self.isNewMode(true);
-                    $("#holidayCode").focus();
                 }
                 block.clear();
                 dfd.resolve(self);
@@ -178,8 +177,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
          */
         settingCreateMode() {
             let self = this;
-            $('.nts-input').ntsError('clear');
-            nts.uk.ui.errors.clearAll();
+
             // clear selected holiday set
             self.currentCode('');
             // clear holiday setting
@@ -188,6 +186,8 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.isNewMode(true);
             //focus
             self.setFocus();
+            $('.nts-input').ntsError('clear');
+            nts.uk.ui.errors.clearAll();
         }
 
         setFocus() {
@@ -266,26 +266,27 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 if (currentHoliday.cd()) {
                     let index: number = _.findIndex(lstHolidays(), function(x)
                     { return x.cd() == currentHoliday.cd() });
-                    self.lstHolidays.remove(function(item) { return item.cd() == currentHoliday.cd(); });
                     service.removeHolidayRemaining(ko.toJS(currentHoliday)).done(function() {
-                        if (self.lstHolidays().length == 0) {
-                            self.currentCode('');
-                        } else {
-                            if (index == self.lstHolidays().length) {
-                                self.currentCode(self.lstHolidays()[index - 1].cd());
-                            } else {
-                                self.currentCode(self.lstHolidays()[index].cd());
-                            }
-                        }
-
                         self.getAllData(self.currentCode()).done(() => {
                             dialog.info({ messageId: "Msg_16" }).then(() => {
-                                self.setFocus();
+                                if (self.lstHolidays().length == 0) {
+                                    self.currentCode('');
+                                    self.isNewMode(true);
+                                    self.setFocus();
+                                    nts.uk.ui.errors.clearAll();
+                                } else {
+                                    if (index == self.lstHolidays().length) {
+                                        self.currentCode(self.lstHolidays()[index - 1].cd());
+                                    } else {
+                                        self.currentCode(self.lstHolidays()[index].cd());
+                                    }
+                                }
                             });
                         });
 
                     }).fail(function(error) {
                         dialog.alertError({ messageId: error.messageId });
+                        block.clear();
                     }).always(function() {
                         block.clear();
                     });
