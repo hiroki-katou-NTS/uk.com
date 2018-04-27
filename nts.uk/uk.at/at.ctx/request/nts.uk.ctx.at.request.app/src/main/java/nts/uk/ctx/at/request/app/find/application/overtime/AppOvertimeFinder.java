@@ -975,19 +975,12 @@ public class AppOvertimeFinder {
 		}
 		return WorkClockFromTo;
 	}
-	private String convert(int minute) {
-		String hourminute = Strings.EMPTY;
-		if (minute == -1) {
+	private String convert(Integer minute) {
+		if(minute == null){
 			return null;
-		} else if (minute == 0) {
-			hourminute = ZEZO_TIME;
-		} else {
-			int hour = Math.abs(minute) / 60;
-			int hourInDay = hour % 24;
-			int minutes =  Math.abs(minute) % 60;
-			hourminute = hourInDay + ":" + (minutes < 10 ? ("0" + minutes) : minutes);
 		}
-		return hourminute;
+		TimeWithDayAttr timeConvert = new TimeWithDayAttr(minute);
+		return timeConvert.getInDayTimeWithFormat();
 	}
 
 
