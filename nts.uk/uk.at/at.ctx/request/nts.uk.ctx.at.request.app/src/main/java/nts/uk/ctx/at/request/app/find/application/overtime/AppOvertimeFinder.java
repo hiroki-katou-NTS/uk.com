@@ -72,6 +72,8 @@ import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -129,6 +131,8 @@ public class AppOvertimeFinder {
 	private DailyAttendanceTimeCaculation dailyAttendanceTimeCaculation;
 	@Inject
 	private AppOvertimeSettingRepository appOvertimeSettingRepository;
+	@Inject
+	private WorkingConditionItemRepository workingConditionItemRepository;
 	
 	/**
 	 * @param url
@@ -228,11 +232,12 @@ public class AppOvertimeFinder {
 	}
 	private List<OvertimeInputCaculation> convertMaptoList(Map<Integer,TimeWithCalculationImport> overTime,TimeWithCalculationImport flexTime,TimeWithCalculationImport midNightTime){
 		List<OvertimeInputCaculation> result = new ArrayList<>();
+		
 		for(Map.Entry<Integer,TimeWithCalculationImport> entry : overTime.entrySet()){
 			OvertimeInputCaculation overtimeCal = new OvertimeInputCaculation(AttendanceType.NORMALOVERTIME.value, entry.getKey(), entry.getValue().getCalTime());
 			result.add(overtimeCal);
 		}
-		OvertimeInputCaculation flexTimeCal = new OvertimeInputCaculation(AttendanceType.NORMALOVERTIME.value, 12, flexTime.getCalTime());
+		OvertimeInputCaculation flexTimeCal = new OvertimeInputCaculation(AttendanceType.NORMALOVERTIME.value, 12,(flexTime.getCalTime() == null || flexTime.getCalTime() < 0)? null : flexTime.getCalTime());
 		OvertimeInputCaculation midNightTimeCal = new OvertimeInputCaculation(AttendanceType.NORMALOVERTIME.value, 11, midNightTime.getCalTime());
 		result.add(flexTimeCal);
 		result.add(midNightTimeCal);
@@ -468,14 +473,22 @@ public class AppOvertimeFinder {
 			}
 		}
 		// display flex
-		if (appOvertimeSettingRepository.getAppOver().isPresent()) {
-			if (appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr()
-					.equals(FlexExcessUseSetAtr.NOTDISPLAY)) {
+		if(appOvertimeSettingRepository.getAppOver().isPresent()){
+			if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.NOTDISPLAY)){
 				overTimeDto.setFlexFLag(false);
-			} else {
+			}else if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.DISPLAY)){
+				GeneralDate baseDate = appCommonSettingOutput.generalDate;
+				Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(appOverTime.getApplication().getEmployeeID(),baseDate);
+				if(personalLablorCodition.isPresent()){
+					if(personalLablorCodition.get().getLaborSystem().isFlexTimeWork()){
+						overTimeDto.setFlexFLag(true);
+					}else{
+						overTimeDto.setFlexFLag(false);
+					}
+				}
+			}else{
 				overTimeDto.setFlexFLag(true);
 			}
-
 		}
 		return overTimeDto;
 	} 
@@ -831,6 +844,16 @@ public class AppOvertimeFinder {
 		if(appOvertimeSettingRepository.getAppOver().isPresent()){
 			if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.NOTDISPLAY)){
 				result.setFlexFLag(false);
+			}else if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.DISPLAY)){
+				GeneralDate baseDate = appCommonSettingOutput.generalDate;
+				Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(employeeID,baseDate);
+				if(personalLablorCodition.isPresent()){
+					if(personalLablorCodition.get().getLaborSystem().isFlexTimeWork()){
+						result.setFlexFLag(true);
+					}else{
+						result.setFlexFLag(false);
+					}
+				}
 			}else{
 				result.setFlexFLag(true);
 			}

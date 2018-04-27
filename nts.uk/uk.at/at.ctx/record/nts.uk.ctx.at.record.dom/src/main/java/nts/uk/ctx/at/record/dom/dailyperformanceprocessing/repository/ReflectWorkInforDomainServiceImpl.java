@@ -1297,7 +1297,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				}
 
 				return new TimeLeavingWork(item.getWorkNo(),
-						attendanceStamp == null ? null : Optional.of(attendanceStamp), Optional.ofNullable(leaveStamp));
+						attendanceStamp == null ? null : attendanceStamp, leaveStamp);
 			}).collect(Collectors.toList());
 			automaticStampSetDetailDto.setTimeLeavingWorks(timeLeavingWorks);
 
@@ -1394,8 +1394,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 				}
 
-				leavingStamp = new TimeLeavingWork(timeLeavingWork.getWorkNo(), Optional.of(attendanceStamp),
-						Optional.of(leaveStamp));
+				leavingStamp = new TimeLeavingWork(timeLeavingWork.getWorkNo(), attendanceStamp,
+						leaveStamp);
 				// leavingStamp.setTimeLeavingWork(timeLeavingWork.getWorkNo(),
 				// Optional.of(attendanceStamp), Optional.of(leaveStamp));
 				timeLeavingWorkList.add(leavingStamp);

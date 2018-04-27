@@ -196,7 +196,7 @@ module nts.uk.at.view.kdl003.a {
                         .done(function(data) {
                             data = _.sortBy(data, item => item.code);
                             self.getTimeBySelectedCode(data, code);
-                            if (self.callerParameter.showNone) {
+                            if (nts.uk.util.isNullOrUndefined(self.callerParameter.showNone) || self.callerParameter.showNone) {
                                 self.addFirstItem(data);
                             }
                             self.listWorkTime(data);
@@ -208,7 +208,7 @@ module nts.uk.at.view.kdl003.a {
                         .done(function(data) {
                             data = _.sortBy(data, item => item.code);
                             self.getTimeBySelectedCode(data, code);
-                            if (self.callerParameter.showNone) {
+                            if (nts.uk.util.isNullOrUndefined(self.callerParameter.showNone) || self.callerParameter.showNone) {
                                 self.addFirstItem(data);
                             }
                             self.listWorkTime(data);

@@ -24,6 +24,7 @@ import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
@@ -104,10 +105,40 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		}
 	}
 	
+	/*private List<EditStateOfDailyPerformance> updateEditStateOfDailyPerHoliday(String employeeId, 
+			GeneralDate dateData, 
+			List<Integer> lstItem, List<EditStateOfDailyPerformance> lstDaily){
+		lstItem.stream().forEach(z -> {	
+			boolean ischeck = false;
+			for(EditStateOfDailyPerformance item : lstDaily) {
+				if(item.getAttendanceItemId() == z) {
+					EditStateOfDailyPerformance itemTmp = new EditStateOfDailyPerformance(employeeId, 
+							z, 
+							dateData, 
+							EditStateSetting.REFLECT_APPLICATION);
+					lstDaily.remove(item);
+					lstDaily.add(itemTmp);
+					ischeck = true;
+					continue;
+				}
+			}
+			if(!ischeck) {
+				EditStateOfDailyPerformance insertData = new EditStateOfDailyPerformance(employeeId, z, dateData, EditStateSetting.REFLECT_APPLICATION);
+				lstDaily.add(insertData);
+			}
+		});
+		if(!lstDaily.isEmpty()) {
+			dailyReposiroty.updateByKeyFlush(lstDaily);
+		}
+		return lstDaily;
+	}*/
 	
 	@Override
 	public void updateScheStartEndTime(TimeReflectPara para) {
-		
+		if(para.getStartTime() == null
+				|| para.getEndTime() == null) {
+			return;
+		}
 		//日別実績の勤務情報
 		Optional<WorkInfoOfDailyPerformance> optDailyPerfor = workRepository.find(para.getEmployeeId(), para.getDateData());
 		if(!optDailyPerfor.isPresent()) {
@@ -203,12 +234,12 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		TimeLeavingWork timeLeavingWorkTmp;
 		if(para.isPreCheck()) {
 			timeLeavingWorkTmp = new TimeLeavingWork(timeLeavingWork.getWorkNo(), 
-					Optional.of(timeActualStam), 
-					timeLeavingWork.getLeaveStamp());
+					timeActualStam, 
+					timeLeavingWork.getLeaveStamp().isPresent() ? timeLeavingWork.getLeaveStamp().get() : null);
 		} else {
 			timeLeavingWorkTmp = new TimeLeavingWork(timeLeavingWork.getWorkNo(), 
-					timeLeavingWork.getAttendanceStamp(),
-					Optional.of(timeActualStam));
+					timeLeavingWork.getAttendanceStamp().isPresent() ? timeLeavingWork.getAttendanceStamp().get() : null,
+					timeActualStam);
 		}
 		List<TimeLeavingWork> lstTimeLeavingWorksTmp = new ArrayList<>();
 		lstTimeLeavingWorksTmp.add(timeLeavingWorkTmp);
@@ -471,26 +502,21 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		this.updateEditStateOfDailyPerformance(employeeId, dateData, lstItem);
 	}
 	@Override
-	public void updateWorkTimeFrame(String employeeId, GeneralDate dateData, Map<Integer, Integer> worktimeFrame,
-			boolean isPre) {
-		Optional<AttendanceTimeOfDailyPerformance> optAttendanceTime = attendanceTime.find(employeeId, dateData);
-		if(!optAttendanceTime.isPresent()) {
-			return;
-		}
-		AttendanceTimeOfDailyPerformance attendanceTimeData = optAttendanceTime.get();
-		
+	public IntegrationOfDaily updateWorkTimeFrame(String employeeId, GeneralDate dateData, Map<Integer, Integer> worktimeFrame,
+			boolean isPre, IntegrationOfDaily dailyData) {
+		AttendanceTimeOfDailyPerformance attendanceTimeData = dailyData.getAttendanceTimeOfDailyPerformance().get();
 		ActualWorkingTimeOfDaily actualWorkingTime = attendanceTimeData.getActualWorkingTimeOfDaily();
 		TotalWorkingTime totalWorkingTime =  actualWorkingTime.getTotalWorkingTime();		
 		ExcessOfStatutoryTimeOfDaily excessOfStatutory = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
 		//日別実績の休出時間
 		Optional<HolidayWorkTimeOfDaily> optWorkHolidayTime = excessOfStatutory.getWorkHolidayTime();
 		if(!optWorkHolidayTime.isPresent()) {
-			return;
+			return dailyData;
 		}
 		HolidayWorkTimeOfDaily workHolidayTime = optWorkHolidayTime.get();
 		List<HolidayWorkFrameTime> lstHolidayWorkFrameTime = workHolidayTime.getHolidayWorkFrameTime();
 		if(lstHolidayWorkFrameTime.isEmpty()) {
-			return;
+			return dailyData;
 		}
 		if(isPre) {			
 			lstHolidayWorkFrameTime.stream().forEach(x -> {
@@ -510,6 +536,7 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 				}
 			});
 		}
+		dailyData.setAttendanceTimeOfDailyPerformance(Optional.of(attendanceTimeData));
 		attendanceTime.updateFlush(attendanceTimeData);
 		List<Integer> lstWorktimeFrameTemp = new ArrayList<>();
 		if(isPre) {
@@ -530,7 +557,9 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 			}	
 		}
 		
+		//List<EditStateOfDailyPerformance> lstEdit = this.updateEditStateOfDailyPerHoliday(employeeId, dateData, lstWorktimeFrameTemp, dailyData.getEditState());
 		this.updateEditStateOfDailyPerformance(employeeId, dateData, lstWorktimeFrameTemp);
+		return dailyData;
 	}
 	
 	private List<Integer> lstPreWorktimeFrameItem(){
@@ -560,6 +589,116 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		lstItem.add(306);
 		lstItem.add(311);
 		return lstItem;
+	}
+	@Override
+	public IntegrationOfDaily updateWorkTimeTypeHoliwork(ReflectParameter para, boolean scheUpdate,
+			IntegrationOfDaily dailyData) {		
+		WorkInfoOfDailyPerformance dailyPerfor = dailyData.getWorkInformation();
+		WorkInformation workInfor = new WorkInformation(para.getWorkTimeCode(), para.getWorkTypeCode());
+		List<Integer> lstItem = new ArrayList<>();
+		if(scheUpdate) {
+			lstItem.add(1);
+			lstItem.add(2);
+			dailyPerfor.setScheduleInfo(workInfor);
+			dailyData.setWorkInformation(dailyPerfor);
+			workRepository.updateByKeyFlush(dailyPerfor);
+		} else {
+			lstItem.add(28);
+			lstItem.add(29);
+			dailyPerfor.setRecordInfo(workInfor);
+			dailyData.setWorkInformation(dailyPerfor);
+			workRepository.updateByKeyFlush(dailyPerfor);
+		}
+		//日別実績の編集状態
+		//this.updateEditStateOfDailyPerHoliday(para.getEmployeeId(), para.getDateData(), lstItem, dailyData.getEditState());		
+		this.updateEditStateOfDailyPerformance(para.getEmployeeId(), para.getDateData(), lstItem);
+		return dailyData;
+	}
+	@Override
+	public IntegrationOfDaily updateScheStartEndTimeHoliday(TimeReflectPara para, IntegrationOfDaily dailyData) {
+		if(para.getStartTime() == null
+				|| para.getEndTime() == null) {
+			return dailyData;
+		}		
+		//日別実績の勤務情報
+		WorkInfoOfDailyPerformance dailyPerfor = dailyData.getWorkInformation();
+		ScheduleTimeSheet timeSheet;
+		if(dailyPerfor.getScheduleTimeSheets().isEmpty()) {
+			timeSheet = new ScheduleTimeSheet(1, 
+					para.getStartTime(),
+					para.getEndTime());
+		} else {
+			List<ScheduleTimeSheet> lstTimeSheetFrameNo = dailyPerfor.getScheduleTimeSheets().stream()
+					.filter(x -> x.getWorkNo().v() == para.getFrameNo()).collect(Collectors.toList());
+			if(lstTimeSheetFrameNo.isEmpty()) {
+				return dailyData;
+			}
+			ScheduleTimeSheet timeSheetFrameNo = lstTimeSheetFrameNo.get(0);
+			
+			timeSheet = new ScheduleTimeSheet(timeSheetFrameNo.getWorkNo().v(), 
+					para.isStart() ? para.getStartTime() : timeSheetFrameNo.getAttendance().v(),
+					para.isEnd() ? para.getEndTime() : timeSheetFrameNo.getLeaveWork().v());
+
+			dailyPerfor.getScheduleTimeSheets().remove(timeSheetFrameNo);
+		}
+		
+		dailyPerfor.getScheduleTimeSheets().add(timeSheet);
+		dailyData.setWorkInformation(dailyPerfor);
+		workRepository.updateByKeyFlush(dailyPerfor);
+		//日別実績の編集状態
+		//予定開始時刻の項目ID
+		List<Integer> lstItem = new ArrayList<Integer>();
+		if(para.getFrameNo() == 1) {
+			if(para.isStart()) {
+				lstItem.add(3);	
+			}
+			if(para.isEnd()) {
+				lstItem.add(4);	
+			}
+		} else {
+			if(para.isStart()) {
+				lstItem.add(5);	
+			}
+			if(para.isEnd()) {
+				lstItem.add(6);	
+			}
+		}
+		//this.updateEditStateOfDailyPerHoliday(para.getEmployeeId(), para.getDateData(), lstItem, dailyData.getEditState());
+		this.updateEditStateOfDailyPerformance(para.getEmployeeId(), para.getDateData(), lstItem);
+		return dailyData;
+	}
+	@Override
+	public IntegrationOfDaily updateTimeShiftNightHoliday(String employeeId, GeneralDate dateData, Integer timeNight,
+			boolean isPre, IntegrationOfDaily dailyData) {
+		if(timeNight < 0) {
+			return dailyData;
+		}
+		// 所定外深夜時間を反映する		
+		AttendanceTimeOfDailyPerformance attendanceTimeData = dailyData.getAttendanceTimeOfDailyPerformance().get();		
+		ActualWorkingTimeOfDaily actualWorkingTime = attendanceTimeData.getActualWorkingTimeOfDaily();
+		TotalWorkingTime totalWorkingTime =  actualWorkingTime.getTotalWorkingTime();
+		// ドメインモデル「日別実績の残業時間」を取得する
+		ExcessOfStatutoryTimeOfDaily excessOfStatutory = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
+		ExcessOfStatutoryMidNightTime exMidNightTime = excessOfStatutory.getExcessOfStatutoryMidNightTime();
+		ExcessOfStatutoryMidNightTime tmp = new ExcessOfStatutoryMidNightTime(exMidNightTime.getTime(), new AttendanceTime(timeNight));
+		if(isPre) {
+			excessOfStatutory.setExcessOfStatutoryMidNightTime(tmp);
+		} else {
+			excessOfStatutory.getExcessOfStatutoryMidNightTime().getTime().setTime(new AttendanceTime(timeNight));
+		}
+		dailyData.setAttendanceTimeOfDailyPerformance(Optional.of(attendanceTimeData));
+		attendanceTime.updateFlush(attendanceTimeData);
+		//所定外深夜時間の編集状態を更新する
+		List<Integer> lstNightItem = new ArrayList<Integer>();//所定外深夜時間の項目ID
+		if(isPre) {
+			lstNightItem.add(565);
+		} else {
+			lstNightItem.add(563);
+		}
+				
+		//this.updateEditStateOfDailyPerHoliday(employeeId, dateData, lstNightItem, dailyData.getEditState());
+		this.updateEditStateOfDailyPerformance(employeeId, dateData, lstNightItem);
+		return dailyData;
 	}
 
 }
