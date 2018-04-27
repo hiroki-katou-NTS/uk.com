@@ -81,9 +81,9 @@ public class MPHeaderDto {
 		//G_6 本人確認
 		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_25"), "identify", "boolean", "35px", "", false, "Checkbox", true, true));
 		//G_8 日別確認
-		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_27"), "dailyconfirm", "String", "190px", "#00FF00", false, "Checkbox", true, true));
+		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_27"), "dailyconfirm", "String", "190px", "", false, "Checkbox", true, true));
 		//G_9 日別実績の修正
-		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_28"), "dailyperformace", "String", "35px", "#00b050", false, "Button", true, true));
+		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_28"), "dailyperformace", "String", "35px", "", false, "Button", true, true));
 		return lstHeader;
 	}
 	public void setHeaderText(MPAttendanceItem param) {

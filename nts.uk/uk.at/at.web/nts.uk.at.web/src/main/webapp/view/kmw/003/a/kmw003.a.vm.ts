@@ -121,6 +121,13 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 //期間を変更する
                 self.updateDate(value);
             });
+            $(document).mouseup(function(e) {
+                var container = $(".ui-tooltip");
+                if (!container.is(e.target) &&
+                    container.has(e.target).length === 0) {
+                     $("#tooltip").hide();
+                }
+            });
         }
         startPage(): JQueryPromise<any> {
             let self = this;
@@ -389,7 +396,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let start = performance.now();
             let data =  lstData.map((data) => {
                 let object = {
-                    id: "_" + data.id,
+                    id: data.id,
                     state: data.state,
                     error: data.error,
                     employeeId: data.employeeId,
@@ -557,7 +564,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         /**
          * Create NtsControls
          */
-        getNtsControls(): Array<any>{            
+        getNtsControls(): Array<any>{ 
+            let self = this;           
             let ntsControls: Array<any> = [
                 { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                 { name: 'Button', controlType: 'Button', text:  nts.uk.resource.getText("KMW003_29"), enable: true, click: function() { 
@@ -568,7 +576,40 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 
                     } 
                 },
-                { name: 'FlexImage', source: 'ui-icon ui-icon-locked', click: function() { alert('Show!'); }, controlType: 'FlexImage' },
+                { name: 'FlexImage', source: 'ui-icon ui-icon-locked', click: function(key, rowId, evt) {
+                        let data = $("#dpGrid").igGrid("getCellValue", rowId, key);
+                            if(data!= ""){
+                                 let lock = data.split("|");
+                                 let tempD = "<span>";
+                                 for (let i =1 ; i< lock.length ; i++){
+                                     //月別実績のロック
+                                     if(lock[i] == "monthlyResultLock") 
+                                        tempD +=  nts.uk.resource.getText("KMW003_35")+'<br/>'; 
+                                     //職場の就業確定
+                                     if(lock[i] == "employmentConfirmWorkplace") 
+                                        tempD +=  nts.uk.resource.getText("KMW003_36")+'<br/>'; 
+                                     //月別実績の承認
+                                     if(lock[i] == "monthlyResultApprova") 
+                                        tempD +=  nts.uk.resource.getText("KMW003_37")+'<br/>'; 
+                                     //日別実績の不足
+                                     if(lock[i] == "monthlyResultLack") 
+                                        tempD +=  nts.uk.resource.getText("KMW003_38")+'<br/>'; 
+                                     //日別実績の確認
+                                     if(lock[i] == "monthlyResultConfirm") 
+                                        tempD +=  nts.uk.resource.getText("KMW003_39")+'<br/>'; 
+                                     //日別実績のエラー
+                                     if(lock[i] == "monthlyResultError") 
+                                        tempD +=  nts.uk.resource.getText("KMW003_40")+'<br/>'; 
+                                     //過去実績のロック
+                                     if(lock[i] == "pastPerformaceLock") 
+                                        tempD +=  nts.uk.resource.getText("KMW003_41")+'<br/>'; 
+                                     
+                                }
+                                tempD += nts.uk.resource.getText("KDW003_67")+'</span>'; 
+                                $('#textLock').html(tempD);
+                            }
+                            self.helps(evt, "");                                                    
+                    }, controlType: 'FlexImage' },
                 { name: 'Image', source: 'ui-icon ui-icon-info', controlType: 'Image' },
                 { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'Integer', required: true, format: "Number_Separated" } }
                 ];
@@ -667,6 +708,17 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 });
             }
         }
+        helps(event, data){
+             var self = this;
+             $('#tooltip').css({
+                 'left': event.pageX+15,
+                 'top':  event.pageY-12,
+                 'display': 'none',
+                 'position': 'fixed',
+             });
+             self.lockMessage(data);
+             $("#tooltip").show();
+         }
         /**********************************
          * Button Event 
          **********************************/   
@@ -693,7 +745,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         signAll() {
             let self = this;
             $("#dpGrid").ntsGrid("checkAll", "identify");
-            //$("#dpGrid").ntsGrid("checkAll", "approval");
+            $("#dpGrid").ntsGrid("checkAll", "dailyconfirm");
         }
         /**
          * UnCheck all CheckBox
@@ -701,7 +753,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         releaseAll() {
             let self = this;
             $("#dpGrid").ntsGrid("uncheckAll", "identify");
-            //$("#dpGrid").ntsGrid("uncheckAll", "approval");
+            $("#dpGrid").ntsGrid("uncheckAll", "dailyconfirm");
         }
         /**
          * ロック解除ボタン　クリック

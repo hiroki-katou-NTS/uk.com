@@ -351,7 +351,7 @@ public class MonthlyPerformanceDisplay {
 			//Output「月の実績の状況」を元に「ロック状態一覧」をセットする
 			monthlyLockStatus = new MonthlyPerformaceLockStatus(monthlymonthlyActualStatusOutput.getEmployeeClosingInfo().getEmployeeId(),
 					//TODO
-					LockStatus.LOCK, 
+					LockStatus.UNLOCK, 
 					//職場の就業確定状態
 					monthlymonthlyActualStatusOutput.getEmploymentFixedStatus().equals(EmploymentFixedStatus.CONFIRM) ? LockStatus.LOCK : LockStatus.UNLOCK,
 					//月の承認状況
@@ -363,7 +363,7 @@ public class MonthlyPerformanceDisplay {
 					//日の実績が存在する						
 					monthlymonthlyActualStatusOutput.getDailyActualSituation().isDailyAchievementsExist() ? LockStatus.LOCK : LockStatus.UNLOCK,
 					//TODO
-					LockStatus.LOCK);
+					LockStatus.UNLOCK);
 			monthlyLockStatusLst.add(monthlyLockStatus);
 		}
 		//過去実績の修正ロック

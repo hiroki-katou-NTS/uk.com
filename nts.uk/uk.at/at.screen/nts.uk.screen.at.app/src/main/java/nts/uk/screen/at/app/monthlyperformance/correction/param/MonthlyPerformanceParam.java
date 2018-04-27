@@ -45,6 +45,8 @@ public class MonthlyPerformanceParam {
 	 * ロック状態一覧：List＜月の実績のロック状態＞
 	 */
 	private List<MonthlyPerformaceLockStatus> lstLockStatus;
-		
+	/**
+	 * List item(in all sheet) to be display	
+	 */
 	private Map<Integer, PAttendanceItem> lstAtdItemUnique;
 }

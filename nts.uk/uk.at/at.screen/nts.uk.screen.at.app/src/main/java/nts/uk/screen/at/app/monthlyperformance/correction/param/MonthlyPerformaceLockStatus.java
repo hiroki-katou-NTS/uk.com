@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.monthlyperformance.correction.param;
 
+import org.apache.logging.log4j.util.Strings;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
@@ -10,6 +12,13 @@ import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 @Data
 @AllArgsConstructor
 public class MonthlyPerformaceLockStatus {
+	static String LOCK_MONTHLY_PAST = "pastPerformaceLock";
+	static String LOCK_EMPLOYEE_CONFIRM = "EmploymentConfirmWorkplace";
+	static String LOCK_MONTHLY_APPROVAL = "monthlyResultApprova";
+	static String LOCK_MONTHLY_RESULT = "monthlyResultLock";
+	static String LOCK_MONTHLY_RESULT_CONFIRM = "monthlyResultConfirm";
+	static String LOCK_MONTHLY_LACK = "monthlyResultLack";
+	static String LOCK_MONTHLY_ERROR = "monthlyResultError";
 	/**
 	 * 社員: 社員ID
 	 */
@@ -42,4 +51,41 @@ public class MonthlyPerformaceLockStatus {
 	 * 日別実績のエラー
 	 */
 	LockStatus monthlyResultError;
+	
+	public String getLockStatusString(){
+		StringBuilder sb = new StringBuilder();
+		if(pastPerformaceLock == LockStatus.LOCK){
+			sb.append(LOCK_MONTHLY_PAST);
+			sb.append("|");
+		}
+		if(employmentConfirmWorkplace == LockStatus.LOCK){
+			sb.append(LOCK_EMPLOYEE_CONFIRM);
+			sb.append("|");
+		}
+		if(monthlyResultApprova == LockStatus.LOCK){
+			sb.append(LOCK_MONTHLY_APPROVAL);
+			sb.append("|");
+		}
+		if(monthlyResultLock == LockStatus.LOCK){
+			sb.append(LOCK_MONTHLY_RESULT);
+			sb.append("|");
+		}
+		if(monthlyResultConfirm == LockStatus.LOCK){
+			sb.append(LOCK_MONTHLY_RESULT_CONFIRM);
+			sb.append("|");
+		}
+		if(monthlyResultLack == LockStatus.LOCK){
+			sb.append(LOCK_MONTHLY_LACK);
+			sb.append("|");
+		}
+		if(monthlyResultError == LockStatus.LOCK){
+			sb.append(LOCK_MONTHLY_ERROR);
+			sb.append("|");
+		}
+		String resultStatus = Strings.EMPTY;
+		if(sb.length() > 0){
+			resultStatus = sb.toString().substring(0, sb.length() - 1);
+		}
+		return resultStatus;
+	}
 }

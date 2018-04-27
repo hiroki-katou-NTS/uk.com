@@ -16,17 +16,20 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.FormatPerformanceDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.IdentityProcessDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.IdentityProcessFinder;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
+import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformanceRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFun;
@@ -62,6 +65,7 @@ import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPSheetDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceEmployeeDto;
+import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerformaceLockStatus;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerformanceParam;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.PAttendanceItem;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQueryProcessor;
@@ -176,16 +180,14 @@ public class MonthlyPerformanceCorrectionProcessor {
 			 screenDto.setLstEmployee(extractEmployeeList(param.getLstEmployees(), employeeId, new DateRange(screenDto.getSelectedActualTime().getEndDate(), screenDto.getSelectedActualTime().getEndDate())));
 			List<MonthlyPerformanceEmployeeDto> lstEmployeeData = extractEmployeeData(param.getInitScreenMode(), employeeId,
 					screenDto.getLstEmployee());
-			List<String> employeeIds = lstEmployeeData.stream().map(e -> e.getId()).collect(Collectors.toList());
-			
+			//TODO List<String> employeeIds = lstEmployeeData.stream().map(e -> e.getId()).collect(Collectors.toList());
+			List<String> employeeIds = screenDto.getLstEmployee().stream().map(e -> e.getId()).collect(Collectors.toList());
 			//アルゴリズム「表示フォーマットの取得」を実行する(Thực hiện 「Lấy format hiển thị」)
 			//TODO Data null confirm??formatPerformance
 			monthlyDisplay.getDisplayFormat(employeeIds, formatPerformance.get().getSettingUnitType(), screenDto);
 			
 			//アルゴリズム「月別実績を表示する」を実行する Hiển thị monthly result
 			displayMonthlyResult(screenDto, yearMonth, closureId);
-			//Get data
-			
 			
 			//画面項目の非活制御をする
 			//アルゴリズム「実績の時系列をチェックする」を実行する (Check actual time)
@@ -200,49 +202,11 @@ public class MonthlyPerformanceCorrectionProcessor {
 			listAuthor.add(new MonthlyPerformanceAuthorityDto(rollId, BigDecimal.valueOf(12), true));
 			listAuthor.add(new MonthlyPerformanceAuthorityDto(rollId, BigDecimal.valueOf(11), true));
 			screenDto.setAuthorityDto(listAuthor);
-//			//format type			
-			//screenDto.setFormatPerformance(new FormatPerformanceDto(companyId, formatPerformance.get().getSettingUnitType().value));
-//			//Add dummy header
-//			screenDto.getLstControlDisplayItem().getLstHeader().addAll(MPHeaderDto.GenerateFixedHeader());
-//			screenDto.getLstControlDisplayItem().getLstHeader().add(new MPHeaderDto("Inbound time", "time", "String", "140px", "", false, "Label", true, true));
-//			screenDto.getLstControlDisplayItem().getLstHeader().add(new MPHeaderDto("Button", "alert", "String", "140px", "", false, "Button", true, true));
-//			screenDto.setLstFixedHeader(MPHeaderDto.GenerateFixedHeader());
-			//Cellstate
-			/*List<MPCellStateDto> lstCellState = new ArrayList<>();
-			//
-			//setting data
-			List<MPDataDto> lstData = new ArrayList<>();
-			boolean stateLock = false;
-			String empId;
-			for (int i = 0; i < screenDto.getLstEmployee().size(); i++) {
-				empId = screenDto.getLstEmployee().get(i).getId();
-				if(i % 2 == 0){
-					lstCellState.add(new MPCellStateDto("_" + empId, "dailyperformace", Arrays.asList(STATE_DISABLE)));
-					lstCellState.add(new MPCellStateDto("_" + empId, "identify", Arrays.asList(HAND_CORRECTION_MYSELF, STATE_DISABLE)));
-					stateLock = true;
-				}else{
-					stateLock = false;
-				}
-				
-				lstCellState.add(new MPCellStateDto("_" + empId, "time", Arrays.asList(STATE_ALARM, STATE_DISABLE)));
-				
-				MPDataDto mpdata = new MPDataDto(empId,
-						"stateLock", "", screenDto.getLstEmployee().get(i).getCode(),screenDto.getLstEmployee().get(i).getBusinessName(), "", stateLock, stateLock, stateLock, "");
-				mpdata.addCellData(new MPCellDataDto("time", "11:" + i, "String", ""));
-				lstData.add(mpdata);
-			}			
-			screenDto.setLstCellState(lstCellState);
-			screenDto.setLstData(lstData);		*/	
-			//End dummy data
-			
-			
 		}
 		//「月別実績の承認」からの場合
 		else{
 			//TODO 対象外
 		}
-		
-		
 		return screenDto;
 	}
 	
@@ -381,19 +345,35 @@ public class MonthlyPerformanceCorrectionProcessor {
 		Map<String, MonthlyModifyResult> employeeDataMap = results.stream().collect(Collectors
 				.toMap(x -> x.getEmployeeId(), Function.identity(), (x, y) -> x));
 		
-		List<MPDataDto> lstData = new ArrayList<>();
+		List<MPDataDto> lstData = new ArrayList<>();				//List all data
+		List<MPCellStateDto> lstCellState = new ArrayList<>();		//List cell state
 		screenDto.setLstData(lstData);
+		screenDto.setLstCellState(lstCellState);
+		
+		Map<String, MonthlyPerformaceLockStatus> lockStatusMap = param.getLstLockStatus().stream().collect(Collectors
+				.toMap(x -> x.getEmployeeId(), Function.identity(), (x, y) -> x));
 		for (int i = 0; i < screenDto.getLstEmployee().size(); i++) {
 			MonthlyPerformanceEmployeeDto employee = screenDto.getLstEmployee().get(i);
-			MPDataDto mpdata = new MPDataDto(employee.getId(),
-					"stateLock", "", employee.getCode(),employee.getBusinessName(), "", false, false, false, "");
+			String employeeId = employee.getId();
+			String lockStatus = lockStatusMap.get(employee.getId()).getLockStatusString();		
+			
+			MPDataDto mpdata = new MPDataDto(employeeId,
+					lockStatus, "", employee.getCode(),employee.getBusinessName(), "", false, false, false, "");
 			//Setting data for dynamic column
-			MonthlyModifyResult rowData = employeeDataMap.get(employee.getId());
+			MonthlyModifyResult rowData = employeeDataMap.get(employeeId);
 			if(null != rowData){
 				if(null != rowData.getItems()){
 					rowData.getItems().forEach(item ->{
+						// Cell Data
 						// TODO item.getValueType().value
-						mpdata.addCellData(new MPCellDataDto(mergeString(ADD_CHARACTER ,"" + item.getItemId()), item.getValue(), "String", ""));
+						String attendanceKey = mergeString(ADD_CHARACTER ,"" + item.getItemId());
+						List<String> cellStatus = new ArrayList<>();
+						mpdata.addCellData(new MPCellDataDto(attendanceKey, item.getValue(), "String", ""));
+						if(!StringUtil.isNullOrEmpty(lockStatus, true)){
+							cellStatus.add(STATE_DISABLE);							
+						}
+						// Cell Data
+						lstCellState.add(new MPCellStateDto(employeeId, attendanceKey, cellStatus));
 					});					
 				}				
 			}			
