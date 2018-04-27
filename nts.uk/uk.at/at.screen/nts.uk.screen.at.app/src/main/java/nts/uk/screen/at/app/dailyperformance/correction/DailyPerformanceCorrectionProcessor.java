@@ -750,9 +750,9 @@ public class DailyPerformanceCorrectionProcessor {
 				//int supervisorConfirmError = approvalUseSettingDto.get().getSupervisorConfirmErrorAtr();
 				int supervisorConfirmError = dailyRecOpeFun.getSupervisorConfirmError();
 				if (supervisorConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
-					if (data.getError().contains("ER")) {
+					if (data.getError().contains("ER") && data.isApproval()) {
 						screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_ERROR);
-					} else {
+					} else if(data.getError().contains("ER") && !data.isApproval()) {
 						screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
 					}
 					// thieu check khi co data
@@ -1346,7 +1346,7 @@ public class DailyPerformanceCorrectionProcessor {
 								}
 								dto.setApproverEmployeeState(x.getApprovalAtr());
 								return dto;
-							}));
+							}, (x, y) -> x));
 			return approvalRootMap;
 		} else {
 			List<ApproveRootStatusForEmpImport> approvals = approvalStatusAdapter.getApprovalByListEmplAndListApprovalRecordDate(dateRange.toListDate(), employeeIds, 1);
@@ -1355,5 +1355,32 @@ public class DailyPerformanceCorrectionProcessor {
 			}, (x,y) ->x));
 			return approvalRootMap;
 		}
+	}
+	
+	//出退勤打刻の初期値を埋める
+	private boolean checkSPR(String companyId, List<Integer> itemIds, String lock, ApprovalUseSettingDto approval, IdentityProcessUseSetDto indentity, boolean checkApproval, boolean checkIndentity){
+		if (lock.matches(".*[AD].*"))
+			return false;
+		List<Integer> items = itemIds.stream().filter(x -> (x == 31 || x == 34)).collect(Collectors.toList());
+		if (items.size() != 2)
+			return false;
+		//check 取得しているドメインモデル「本人確認処理の利用設定」、「承認処理の利用設定」をチェックする 
+		//false
+		if((approval == null || (approval != null && !approval.getUseDayApproverConfirm())) 
+		&& (indentity == null || (indentity != null && !indentity.isUseConfirmByYourself())
+		|| (!checkApproval && !checkIndentity))){
+			//TODO  xu ly insert SPR va load 
+			return true;
+		}
+		return false;
+		
+	}
+	
+	//ドメインモデル「日別実績の出退勤」を取得する
+	private void processSPR(String employeeId, GeneralDate date){
+//		if(timeLeaving != null){
+//			
+//		}
+		insertStampSourceInfo(employeeId, date, true, true);
 	}
 }
