@@ -68,11 +68,12 @@ public class RealityStatusFinder {
 	}
 
 	public List<EmpPerformanceDto> getEmpPerformance(EmpPerformanceParam dto) {
-		List<EmpPerformanceDto> listData = this.convertToDto(this.getSampleDate(dto));
-		return listData;
+		List<EmpPerformanceOutput> listEmpPerformance = realityStatusService.getAcquisitionWkpEmpPerformance(
+				dto.getWkpId(), dto.getStartDate(), dto.getEndDate(), dto.getListEmpCd());
+		return this.convertEmpPerformanceDto(listEmpPerformance);
 	}
 
-	private List<EmpPerformanceDto> convertToDto(List<EmpPerformanceOutput> listEmpPerformance) {
+	private List<EmpPerformanceDto> convertEmpPerformanceDto(List<EmpPerformanceOutput> listEmpPerformance) {
 		List<EmpPerformanceDto> listEmp = new ArrayList<>();
 		for (EmpPerformanceOutput emp : listEmpPerformance) {
 			Integer approvalStatus;

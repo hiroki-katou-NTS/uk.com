@@ -1,7 +1,6 @@
 module nts.uk.at.view.kaf018.f.viewmodel {
     import text = nts.uk.resource.getText;
     import getShared = nts.uk.ui.windows.getShared;
-    import formatDate = nts.uk.time.formatDate;
     import formatText = nts.uk.text.format;
     import shareModel = kaf018.share.model;
     import block = nts.uk.ui.block;
@@ -46,6 +45,8 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         // 実績対象外
         colorExcluded = 'bg-actual-excluded';
 
+        dateFormat = "yyyy/MM/dd";
+
         constructor() {
             var self = this;
             this.legendOptions = {
@@ -76,8 +77,8 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 self.closureName = params.closureName;
                 self.processingYm = params.processingYm;
                 self.currentMonth = params.processingYm.split('/')[1];
-                self.startDateFormat = formatDate(new Date(params.startDate), 'yyyy/MM/dd');
-                self.endDateFormat = formatDate(new Date(params.endDate), 'yyyy/MM/dd');
+                self.startDateFormat = self.formatDate(new Date(params.startDate));
+                self.endDateFormat = self.formatDate(new Date(params.endDate));
                 self.startDate = params.startDate;
                 self.endDate = params.endDate;
                 self.listWkp = params.listWkp;
@@ -151,6 +152,11 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             }
         };
 
+        formatDate(date: Date) {
+            let self = this;
+            return nts.uk.time.formatDate(date, self.dateFormat);
+        }
+
         getEmpPerformance(): JQueryPromise<any> {
             let self = this;
             var dfd = $.Deferred();
@@ -172,28 +178,25 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             let listEmpPerformance = Array<EmpPerformance>();
             _.each(data, function(item) {
                 let monthConfirm, personConfirm, bossConfirm, dailyPerformance: Array<DailyPerformance> = [];
-
                 if (item.approvalStatus == ApprovalStatusForEmployee.APPROVED) {
                     monthConfirm = text("KAF018_92");
                 }
                 else {
                     monthConfirm = "";
                 }
-
                 if (_.filter(item.listDailyConfirm, { personConfirm: false }).length == 0) {
                     personConfirm = text("KAF018_92");
                 }
                 else {
                     personConfirm = "";
                 }
-
                 if (_.filter(item.listDailyConfirm, { bossConfirm: false }).length == 0) {
                     bossConfirm = text("KAF018_92");
                 }
                 else {
                     bossConfirm = "";
                 }
-
+                // 「社員ID.期間」内での日付部分の背景色が「Color：実績対象」の場合
                 let performancePeriod = -1;
                 if (self.useSetting.usePersonConfirm) {
                     performancePeriod = Performance.PERSON_UNCONFIRM;
@@ -202,42 +205,50 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 } else if (!self.useSetting.usePersonConfirm && !self.useSetting.useBossConfirm) {
                     performancePeriod = Performance.CONFIRMED;
                 }
-
+                let startDate = new Date(item.startDate.toString());
+                let endDate = new Date(item.endDate.toString());
+                // 日別確認（リスト）＜職場ID、社員ID、対象日、本人確認、上司確認＞のループ                
                 let currentDay = new Date(self.dtPrev().toString());
                 while (currentDay <= self.dtAft()) {
-                    let objDaily = _.find(item.listDailyConfirm, { targetDate: formatDate(currentDay, 'yyyy/MM/dd') });
                     let performance = performancePeriod;
                     let hasError = false;
-
-                    if (objDaily == null) {
+                    // 「社員一覧」に対象の社員IDについて行が存在するかを確認　※同じ社員で複数期間となる場合、同じ社員IDが存在
+                    if (currentDay < startDate || currentDay > endDate) {
                         performance = Performance.EXCLUDED;
                         hasError = false;
                     } else {
-                        if (self.useSetting.usePersonConfirm && self.useSetting.useBossConfirm) {
-                            if (!objDaily.personConfirm && !objDaily.bossConfirm) {
-                                performance = Performance.PERSON_UNCONFIRM;
-                            } else if (objDaily.personConfirm && !objDaily.bossConfirm) {
-                                performance = Performance.BOSS_UNCONFIRM;
-                            } else if (objDaily.personConfirm && objDaily.bossConfirm) {
-                                performance = Performance.CONFIRMED;
+                        let objDaily = _.find(item.listDailyConfirm, { targetDate: self.formatDate(currentDay) });
+                        if (objDaily == null) {
+                            performance = Performance.NONE;
+                            hasError = false;
+                        } else {
+                            if (self.useSetting.usePersonConfirm && self.useSetting.useBossConfirm) {
+                                if (!objDaily.personConfirm && !objDaily.bossConfirm) {
+                                    performance = Performance.PERSON_UNCONFIRM;
+                                } else if (objDaily.personConfirm && !objDaily.bossConfirm) {
+                                    performance = Performance.BOSS_UNCONFIRM;
+                                } else if (objDaily.personConfirm && objDaily.bossConfirm) {
+                                    performance = Performance.CONFIRMED;
+                                }
+                            } else if (self.useSetting.usePersonConfirm && !self.useSetting.useBossConfirm) {
+                                if (!objDaily.personConfirm) {
+                                    performance = Performance.PERSON_UNCONFIRM;
+                                } else if (objDaily.personConfirm) {
+                                    performance = Performance.CONFIRMED;
+                                }
+                            } else if (!self.useSetting.usePersonConfirm && self.useSetting.useBossConfirm) {
+                                if (!objDaily.personConfirm) {
+                                    performance = Performance.BOSS_UNCONFIRM;
+                                } else if (objDaily.personConfirm) {
+                                    performance = Performance.CONFIRMED;
+                                }
                             }
-                        } else if (self.useSetting.usePersonConfirm && !self.useSetting.useBossConfirm) {
-                            if (!objDaily.personConfirm) {
-                                performance = Performance.PERSON_UNCONFIRM;
-                            } else if (objDaily.personConfirm) {
-                                performance = Performance.CONFIRMED;
-                            }
-                        } else if (!self.useSetting.usePersonConfirm && self.useSetting.useBossConfirm) {
-                            if (!objDaily.personConfirm) {
-                                performance = Performance.BOSS_UNCONFIRM;
-                            } else if (objDaily.personConfirm) {
-                                performance = Performance.CONFIRMED;
-                            }
-                        }
 
-                        let objError = _.find(item.listErrorStatus, function(x) { return x == formatDate(currentDay, 'yyyy/MM/dd'); });
-                        if (objError != null) {
-                            hasError = true;
+                            // エラー状況(リスト)＜職場ID、社員ID、対象日＞のループ
+                            let objError = _.find(item.listErrorStatus, function(x) { return x == self.formatDate(currentDay); });
+                            if (objError != null) {
+                                hasError = true;
+                            }
                         }
                     }
                     dailyPerformance.push(new DailyPerformance(currentDay, performance, hasError));
@@ -246,7 +257,6 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 listEmpPerformance.push(new EmpPerformance(index.toString(), item.sid, item.sname, monthConfirm, personConfirm, bossConfirm, dailyPerformance));
                 index++;
             })
-            console.log(listEmpPerformance)
             return listEmpPerformance;
         }
 
@@ -394,12 +404,6 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         }
 
         getDay(time: shareModel.Time): string {
-            /*if (time.day == "1") {
-                return time.month + '/' + time.day + "<br/>" + time.weekDay;
-            } else {
-                return time.day + "<br/>" + time.weekDay;
-            }*/
-
             return time.day + "<br/>" + time.weekDay;
         }
 
@@ -415,7 +419,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             $.when(self.getDataSpecDateAndHoliday()).done(() => {
                 _.each(self.arrDay, (date) => {
                     let ymd = date.yearMonthDay;
-                    let dateFormat = moment(date.yearMonthDay).format('YYYY/MM/DD');
+                    let dateFormat = moment(date.yearMonthDay).format(self.dateFormat);
                     if (_.includes(self.dataWkpSpecificDate(), dateFormat) || _.includes(self.dataComSpecificDate(), dateFormat)) {
                         detailHeaderDeco.push(new shareModel.CellColor("_" + ymd, "1", "bg-schedule-specific-date"));
                     } else if (_.includes(self.dataPublicHoliday(), dateFormat)) {
@@ -532,21 +536,22 @@ module nts.uk.at.view.kaf018.f.viewmodel {
     }
 
     enum Performance {
+        NONE = 0,
         // 実績確認済
-        CONFIRMED = 0,
+        CONFIRMED = 1,
         // 実績上司未確認
-        BOSS_UNCONFIRM = 1,
+        BOSS_UNCONFIRM = 2,
         // 本人未確認
-        PERSON_UNCONFIRM = 2,
+        PERSON_UNCONFIRM = 3,
         // 実績対象外
-        EXCLUDED = 3
+        EXCLUDED = 4
     }
 
     class EmpPerformanceDto {
         sid: String;
         sname: String;
-        startDate: Date;
-        endDate: Date;
+        startDate: String;
+        endDate: String;
         approvalStatus: ApprovalStatusForEmployee;
         listDailyConfirm: Array<DailyConfirmDto>;
         listErrorStatus: Array<Date>;

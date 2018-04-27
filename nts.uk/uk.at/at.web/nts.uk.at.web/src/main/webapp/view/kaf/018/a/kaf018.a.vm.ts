@@ -76,7 +76,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                 service.getApprovalStatusPerior(value, self.processYm).done((data: any) => {
                     self.startDate(new Date(data.startDate));
                     self.endDate(new Date(data.endDate));
-                    self.listEmployeeCode(data.listEmployeeCode);
+                    self.listEmployeeCode(data.employeesCode);
                     self.baseDate(new Date(data.endDate));
                     self.processingYm(nts.uk.time.formatYearMonth(data.yearMonth));
                     $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {

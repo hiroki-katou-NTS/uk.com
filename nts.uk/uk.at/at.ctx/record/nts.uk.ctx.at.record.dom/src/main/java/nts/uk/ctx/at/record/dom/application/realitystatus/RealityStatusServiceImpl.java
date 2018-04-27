@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusF
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.application.realitystatus.enums.ApprovalStatusMailType;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.DailyConfirmOutput;
+import nts.uk.ctx.at.record.dom.application.realitystatus.output.EmpDailyConfirmOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.EmpPerformanceOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.EmpUnconfirmResultOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.ErrorStatusOutput;
@@ -33,7 +34,9 @@ import nts.uk.ctx.at.record.dom.application.realitystatus.output.UseSetingOutput
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.WkpIdMailCheckOutput;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentityProcessUseSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -56,6 +59,9 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 
 	@Inject
 	RoleSetGrantedEmployeeAdapter roleSetGrantedEmployeeAdapter;
+
+	@Inject
+	IdentificationRepository identificationRepo;
 
 	@Override
 	public List<StatusWkpActivityOutput> getStatusWkpActivity(List<String> listWorkplaceId, GeneralDate startDate,
@@ -136,9 +142,10 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 				// imported(申請承認）「上司確認の状況」を取得する
 				List<ApproveRootStatusForEmpImport> listApproval = approvalStatusAdapter
 						.getApprovalByEmplAndDate(emp.getStartDate(), emp.getEndDate(), emp.getSId(), cid, 2);
-				ApproveRootStatusForEmpImport approval = listApproval.stream().findFirst().get();
+				Optional<ApproveRootStatusForEmpImport> approval = listApproval.stream().findFirst();
 				// 承認状況＝「承認済」の場合(trạng thái approval = 「承認済」)
-				if (ApprovalStatusForEmployee.APPROVED.equals(approval.getApprovalStatus())) {
+				if (approval.isPresent()
+						&& ApprovalStatusForEmployee.APPROVED.equals(approval.get().getApprovalStatus())) {
 					// 月別確認件数 ＝ ＋１
 					sumCount.monthConfirm++;
 				}
@@ -150,10 +157,13 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 			}
 
 			// アルゴリズム「承認状況取得日別確認状況」を実行する
-			this.getApprovalSttByDate(emp.getSId(), wkpId, emp.getStartDate(), emp.getEndDate(),
-					useSeting.isUseBossConfirm(), useSeting.isUsePersonConfirm(), sumCount);
+			EmpDailyConfirmOutput result = this.getApprovalSttByDate(emp.getSId(), wkpId, emp.getStartDate(),
+					emp.getEndDate(), useSeting.isUseBossConfirm(), useSeting.isUsePersonConfirm());
 			// 各件数を合算する
-
+			sumCount.personConfirm += result.getSumCount().personConfirm;
+			sumCount.personUnconfirm += result.getSumCount().personUnconfirm;
+			sumCount.bossConfirm += result.getSumCount().bossConfirm;
+			sumCount.bossUnconfirm += result.getSumCount().bossUnconfirm;
 		}
 		return sumCount;
 	}
@@ -174,10 +184,11 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 	 * @param sumCount
 	 *            output
 	 */
-	private List<DailyConfirmOutput> getApprovalSttByDate(String sId, String wkpId, GeneralDate startDate,
-			GeneralDate endDate, boolean useBossConfirm, boolean usePersonConfirm, SumCountOutput sumCount) {
+	private EmpDailyConfirmOutput getApprovalSttByDate(String sId, String wkpId, GeneralDate startDate,
+			GeneralDate endDate, boolean useBossConfirm, boolean usePersonConfirm) {
 		// 期間範囲分の日別確認（リスト）を作成する(Tạo list confirm hàng ngày)
 		List<DailyConfirmOutput> listDailyConfirm = new ArrayList<DailyConfirmOutput>();
+		SumCountOutput sumCount = new SumCountOutput();
 
 		// 利用するの場合(use)
 		if (useBossConfirm) {
@@ -193,7 +204,7 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 		}
 		// 利用しないの場合
 
-		return listDailyConfirm;
+		return new EmpDailyConfirmOutput(listDailyConfirm, sumCount);
 	}
 
 	/**
@@ -261,17 +272,17 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 			List<DailyConfirmOutput> listDailyConfirm, SumCountOutput sumCount) {
 		// RequestList165
 		// imported（KAF018承認状況の照会）本人確認済みの日付を取得
-		// TODO
-		List<GeneralDate> listCheckDate = new ArrayList<GeneralDate>();
+		List<Identification> listIdentification = identificationRepo.findByEmployeeIDSortDate(sId, startDate, endDate);
 		// 確認日付
-		for (GeneralDate checkDate : listCheckDate) {
+		for (Identification identification : listIdentification) {
 			// 日別確認（リスト）に同じ職場ID、社員ID、対象日が登録済
-			Optional<DailyConfirmOutput> confirm = listDailyConfirm.stream().filter(
-					x -> x.getWkpId().equals(wkpId) && x.getSId().equals(sId) && x.getTargetDate().equals(checkDate))
+			Optional<DailyConfirmOutput> confirm = listDailyConfirm.stream().filter(x -> x.getWkpId().equals(wkpId)
+					&& x.getSId().equals(sId) && x.getTargetDate().equals(identification.getProcessingYmd()))
 					.findFirst();
 			if (!confirm.isPresent()) {
 				// 登録されていない場合
-				DailyConfirmOutput newDailyConfirm = new DailyConfirmOutput(wkpId, sId, checkDate, true, false);
+				DailyConfirmOutput newDailyConfirm = new DailyConfirmOutput(wkpId, sId,
+						identification.getProcessingYmd(), true, false);
 				listDailyConfirm.add(newDailyConfirm);
 			} else {
 				// 登録されている場合
@@ -311,8 +322,9 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 	 * @param listWkp
 	 * @return
 	 */
-	private EmpUnconfirmResultOutput getListEmpUnconfirm(ApprovalStatusMailType type, List<WkpIdMailCheckOutput> listWkpId,
-			GeneralDate closureStart, GeneralDate closureEnd, List<String> listEmpCd) {
+	private EmpUnconfirmResultOutput getListEmpUnconfirm(ApprovalStatusMailType type,
+			List<WkpIdMailCheckOutput> listWkpId, GeneralDate closureStart, GeneralDate closureEnd,
+			List<String> listEmpCd) {
 		List<String> listSId = new ArrayList<>();
 		// 職場一覧
 		for (WkpIdMailCheckOutput wkp : listWkpId) {
@@ -389,12 +401,11 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 		String cId = AppContexts.user().companyId();
 		// アルゴリズム「承認状況取得実績使用設定」を実行する
 		UseSetingOutput useSetting = this.getUseSetting(cId);
-		SumCountOutput sumCount = new SumCountOutput();
 		// アルゴリズム「承認状況取得日別確認状況」を実行する
-		this.getApprovalSttByDate(sId, wkpId, startDate, endDate, useSetting.isUseBossConfirm(),
-				useSetting.isUsePersonConfirm(), sumCount);
+		EmpDailyConfirmOutput result = this.getApprovalSttByDate(sId, wkpId, startDate, endDate,
+				useSetting.isUseBossConfirm(), useSetting.isUsePersonConfirm());
 
-		return sumCount.personUnconfirm != 0;
+		return result.getSumCount().personUnconfirm != 0;
 	}
 
 	/**
@@ -516,7 +527,6 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 		String cId = AppContexts.user().companyId();
 		List<EmpPerformanceOutput> listEmpPerformance = new ArrayList<>();
 
-		SumCountOutput sumCount = new SumCountOutput();
 		// アルゴリズム「承認状況取得実績使用設定」を実行する
 		UseSetingOutput useSetting = this.getUseSetting(cId);
 		// アルゴリズム「承認状況取得社員」を実行する
@@ -539,15 +549,14 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 				}
 			}
 			// アルゴリズム「承認状況取得日別確認状況」を実行する
-			List<DailyConfirmOutput> listDailyConfirm = this.getApprovalSttByDate(emp.getSId(), wkpId,
-					emp.getStartDate(), emp.getEndDate(), useSetting.isUseBossConfirm(),
-					useSetting.isUsePersonConfirm(), sumCount);
+			EmpDailyConfirmOutput result = this.getApprovalSttByDate(emp.getSId(), wkpId, emp.getStartDate(),
+					emp.getEndDate(), useSetting.isUseBossConfirm(), useSetting.isUsePersonConfirm());
 			// アルゴリズム「承認状況取得日別エラー状況」を実行する
 			List<ErrorStatusOutput> listErrorStatus = this.getErrorStatus(cId, emp.getSId(), wkpId, emp.getStartDate(),
 					emp.getEndDate());
 			// 画面に内容をセットする
 			listEmpPerformance.add(new EmpPerformanceOutput(emp.getSId(), empName, emp.getStartDate(), emp.getEndDate(),
-					routeStatus, listDailyConfirm, listErrorStatus));
+					routeStatus, result.getListDailyConfirm(), listErrorStatus));
 		}
 		return listEmpPerformance;
 	}
