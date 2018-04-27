@@ -35,13 +35,13 @@ public class ExceededPredAddVacationCalc extends WorkTimeDomainObject {
 		this.calcMethod = memento.getCalcMethod();
 		this.otFrameNo = memento.getOtFrameNo();
 	}
-
+	
 	public ExceededPredAddVacationCalc(CalcMethodExceededPredAddVacation calcMethod, OTFrameNo otFrameNo) {
 		super();
 		this.calcMethod = calcMethod;
 		this.otFrameNo = otFrameNo;
 	}
-	
+
 	/**
 	 * Save to memento.
 	 *

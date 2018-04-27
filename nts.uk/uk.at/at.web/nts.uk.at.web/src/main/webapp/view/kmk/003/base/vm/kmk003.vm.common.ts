@@ -2234,9 +2234,9 @@ module nts.uk.at.view.kmk003.a {
                     let lstOTTimezone: OverTimeOfTimeZoneSetDto[] = _.map(this.lstOTTimezone(), (dataModel) => dataModel.toDto());
 
                     // get data from simple mode (tab2)
-                    if (this.displayMode() == 1) {                                                  
+                    if (this.displayMode() == 1) {
                         const simple = this.lstWorkingTimezoneSimpleMode()[0];
-                        if (simple) { 
+                        if (simple) {
                             const detail = <EmTimeZoneSetDto>{};
                             detail.employmentTimeFrameNo = 1;
                             detail.timezone = <TimeZoneRoundingDto>{};

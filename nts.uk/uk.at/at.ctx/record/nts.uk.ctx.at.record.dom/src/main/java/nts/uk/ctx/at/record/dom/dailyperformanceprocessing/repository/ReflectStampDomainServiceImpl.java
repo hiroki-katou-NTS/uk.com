@@ -159,16 +159,20 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		// 打刻を反映する - Dung code
 		List<StampItem> lstStampItem = this.stampDomainService.handleData(stampReflectRangeOutput, reCreateAttr,
 				empCalAndSumExecLogID, processingDate, employeeID, companyID);
-		ReflectStampOutput reflectStamp = null;
+		ReflectStampOutput reflectStamp = new ReflectStampOutput();
 		if (lstStampItem == null) {
 			reflectStamp = null;
 		}
 
-		if (lstStampItem != null && !lstStampItem.isEmpty()) {
-			reflectStamp = this.ReflectEmbossingDomainService.reflectStamp(workInfoOfDailyPerformance,
-					timeLeavingOfDailyPerformance, lstStampItem, stampReflectRangeOutput, processingDate, employeeID,
-					companyID);
-
+		// lstStampItem is null -> has error
+		if (lstStampItem != null) {
+			
+			if (!lstStampItem.isEmpty()) {
+				reflectStamp = this.ReflectEmbossingDomainService.reflectStamp(workInfoOfDailyPerformance,
+						timeLeavingOfDailyPerformance, lstStampItem, stampReflectRangeOutput, processingDate, employeeID,
+						companyID);				
+			}
+			
 			// 就業時間帯の休憩時間帯を日別実績に反映する
 			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance = this.reflectBreakTimeOfDailyDomainService
 					.reflectBreakTimeZone(companyID, employeeID, processingDate, empCalAndSumExecLogID,
