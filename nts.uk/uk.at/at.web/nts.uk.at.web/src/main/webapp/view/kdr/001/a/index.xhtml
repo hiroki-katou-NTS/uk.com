@@ -28,7 +28,7 @@
 			<div id="functions-area">
 				<!-- A1_1 -->
 				<button id="A1_1" tabindex="1" class="proceed"
-					data-bind="click: exportButton, enable: !nts.uk.ui.errors.hasError()">#{i18n.getText('KDR001_25')}</button>
+					data-bind="click: exportButton, enable: (!nts.uk.ui.errors.hasError()) &amp;&amp; (holidayRemainingSelectedCd())">#{i18n.getText('KDR001_25')}</button>
 			</div>
 
 			<div class="cf" id="contents-area">
