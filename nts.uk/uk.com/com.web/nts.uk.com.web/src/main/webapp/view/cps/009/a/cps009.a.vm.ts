@@ -1284,48 +1284,50 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 self.selectedCode(childData.selectedWorkTypeCode);
                 __viewContext["viewModel"].currentCategory().itemList()[itemWorkTime.indexItem - 1].selectionName(childData.selectedWorkTimeCode + childData.selectedWorkTimeName);
                 __viewContext["viewModel"].currentCategory().itemList()[itemWorkTime.indexItem - 1].selectedCode(childData.selectedWorkTimeCode);
-                for (let i: number = 0; i < itemChilds.length; i++) {
 
-//                    let params: ICheckParam = { workTimeCode: childData.selectedWorkTimeCode };
-//                    service.checkStartEnd(params).done(function(data) {
-//
-//                        service.checkMutiTime(params).done(function(data1) {
-//                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i].indexItem - 1].enableControl(data);
-//                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].enableControl(data);
-//                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i].indexItem - 1].enableControl(data1);
-//                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].enableControl(data1);
+                let params: ICheckParam = { workTimeCode: childData.selectedWorkTimeCode };
+                service.checkStartEnd(params).done(function(data) {
+                    service.checkMutiTime(params).done(function(data1) {
+                        for (let i: number = 0; i < itemChilds.length; i++) {
+                            console.log(itemChilds);
+                            console.log(data + " "+ data1);
+                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i].indexItem - 1].enableControl(data);
+                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].enableControl(data);
+                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 2].indexItem - 1].enableControl(data1 && data);
+                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 3].indexItem - 1].enableControl(data1 && data);
                             __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i].indexItem - 1].dateWithDay(childData.first.start || 0);
-                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].dateWithDay(childData.second.start || 0);
-                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 2].indexItem - 1].dateWithDay(childData.first.end || 0);
+                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].dateWithDay(childData.first.end  || 0);
+                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 2].indexItem - 1].dateWithDay(childData.second.start|| 0);
                             __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 3].indexItem - 1].dateWithDay(childData.second.end || 0);
                             i = i + 3;
-//                        });
-//                    });
-                }
+                        }
+                    });
+                });
             } else {
                 let itemChilds: Array<any> = _.filter(ko.toJS(__viewContext["viewModel"].currentCategory().itemList()), function(obj) { if (obj.itemCode === isSelfItemWorkTime.firstTimes.start || obj.itemCode === isSelfItemWorkTime.firstTimes.end || obj.itemCode === isSelfItemWorkTime.secondTimes.start || obj.itemCode === isSelfItemWorkTime.secondTimes.end) { return obj; } });
                 self.selectionName(childData.selectedWorkTimeCode + childData.selectedWorkTimeName);
                 self.selectedCode(childData.selectedWorkTimeCode);
                 __viewContext["viewModel"].currentCategory().itemList()[itemWorkType.indexItem - 1].selectionName(childData.selectedWorkTypeCode + childData.selectedWorkTypeName);
                 __viewContext["viewModel"].currentCategory().itemList()[itemWorkType.indexItem - 1].selectedCode(childData.selectedWorkTypeCode);
-                for (let i: number = 0; i < itemChilds.length; i++) {
-//                    let params: ICheckParam = { workTimeCode: childData.selectedWorkTimeCode };
-//                    service.checkStartEnd(params).done(function(data) {
-//                        service.checkMutiTime(params).done(function(data1) {
-//                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i].indexItem - 1].enableControl(data1);
-//                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].enableControl(data1);
-//                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i].indexItem - 1].enableControl(data);
-//                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].enableControl(data);
+
+                let params: ICheckParam = { workTimeCode: childData.selectedWorkTimeCode };
+                service.checkStartEnd(params).done(function(data) {
+                    service.checkMutiTime(params).done(function(data1) {
+                        for (let i: number = 0; i < itemChilds.length; i++) {
+                            console.log(itemChilds);
+                            console.log(data + " "+ data1);
+                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i].indexItem - 1].enableControl(data);
+                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].enableControl(data);
+                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 2].indexItem - 1].enableControl(data1 && data);
+                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 3].indexItem - 1].enableControl(data1 && data);
                             __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i].indexItem - 1].dateWithDay(childData.first.start || 0);
-                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].dateWithDay(childData.second.start || 0);
-                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 2].indexItem - 1].dateWithDay(childData.first.end || 0);
+                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].dateWithDay(childData.first.end || 0);
+                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 2].indexItem - 1].dateWithDay(childData.second.start || 0);
                             __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 3].indexItem - 1].dateWithDay(childData.second.end || 0);
                             i = i + 3;
-//                        });
-//                    });
-
-
-                }
+                        }
+                    });
+                });
             }
         }
 
