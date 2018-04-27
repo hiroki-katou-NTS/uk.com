@@ -49,12 +49,15 @@ public class ApplicationFinder {
 
 	public ApplicationRemandDto getAppByIdForRemand(String appID) {
 		ApplicationForRemandOutput appOutput = appForRemandService.getApplicationForRemand(appID);
-		return ApplicationRemandDto.fromDomain(appID, appOutput.getVersion(),
-				appOutput.getErrorFlag(), appOutput.getApplicantPosition(),
-				appOutput.getApplicant(),
-				appOutput.getApprovalFrameDtoForRemand().stream().map(x ->{
-					return ApprovalFrameForRemandDto.fromDomain(x);
-				}).collect(Collectors.toList()));
+		if (!Objects.isNull(appOutput)){
+			return ApplicationRemandDto.fromDomain(appID, appOutput.getVersion(),
+					appOutput.getErrorFlag(), appOutput.getApplicantPosition(),
+					appOutput.getApplicant(),
+					appOutput.getApprovalFrameDtoForRemand().stream().map(x ->{
+						return ApprovalFrameForRemandDto.fromDomain(x);
+					}).collect(Collectors.toList()));
+		}
+		return null;
 	}
 
 	public ApplicationSendDto getAppByIdForSend(String appID){
