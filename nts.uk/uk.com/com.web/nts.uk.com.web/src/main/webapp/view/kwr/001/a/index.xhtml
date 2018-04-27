@@ -8,6 +8,11 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="kwr001.a.start.js" />
 			<com:scriptfile path="kwr001.a.vm.js" />
 			<com:scriptfile path="kwr001.a.service.js" />
@@ -23,6 +28,9 @@
 			</div>
 			
 			<div id="content-area">
+				<div id="ccgcomponent"></div>
+				<div id="list-employee" class="pull-left fixed-flex-layout-left" style="margin-top: 30px; margin-left: 30px;"></div>
+			
 				<table class="table1">
 					<tr>
 						<td class="td-left">
@@ -39,6 +47,11 @@
 											value: dateValue, 
 											maxRange: 'oneMonth'}"/>
 								</div>
+							</div>
+							
+							<!-- A3_1 -->
+							<div class="panel panel-frame row">
+								<div id="component-items-list"></div>
 							</div>
 						</td>
 						
@@ -192,6 +205,8 @@
 					</tr>
 				</table>
 			</div>
+			
+			
 		</ui:define>
 	</ui:composition>
 </body>
