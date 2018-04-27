@@ -93,7 +93,7 @@ module nts.uk.at.view.kdw008.a {
                 self.isRemove = ko.observable(true);
                 self.showCode = ko.observable(false);
 
-                self.checked = ko.observable(false);
+                self.checked = ko.observable(true);
 
                 self.currentDailyFormatCode = ko.observable('');
                 self.currentDailyFormatName = ko.observable('');
@@ -245,7 +245,7 @@ module nts.uk.at.view.kdw008.a {
                     if (nts.uk.text.isNullOrEmpty(CodeMonthly)) return;
                     _.defer(() => { $("#currentName").focus(); });
                     if (self.isDaily()) {
-                        let empSelect = _.find(self.businessTypeList(), bus => {
+                        let empSelect = _.find(self.listDataCommom(), bus => {
                             return bus.dailyPerformanceFormatCode == CodeMonthly;
                         });
                         if (empSelect) {
@@ -369,8 +369,11 @@ module nts.uk.at.view.kdw008.a {
                 self.currentDailyFormatName('');
                 self.selectedCode(null);
                 self.getDetail(self.selectedCode()).done(() => {
-                    _.defer(() => { $("#currentCode").focus(); });
+                    _.defer(() => { $("#currentCode").focus(); 
+                    self.checked(true);
+                    });
                 });
+                //$("#currentCode").focus();
                 self.checked(true);
                 self.showCode(true);
                 self.isUpdate(false);
@@ -383,7 +386,7 @@ module nts.uk.at.view.kdw008.a {
                     self.listMonthlyAttdItem(_.cloneDeep(self.listMonthlyAttdItemFullData()));
                     nts.uk.ui.errors.clearAll();
                 }
-
+                
                 nts.uk.ui.errors.clearAll();
             }
 
@@ -534,11 +537,12 @@ module nts.uk.at.view.kdw008.a {
                     nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
                         .ifYes(() => {
                             new service.Service().removeAuthorityDailyFormat(removeAuthorityDto).done(function() {
-                                nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                                $("#currentName").focus();
+                                nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                                    self.reloadData(removeAuthorityDto.dailyPerformanceFormatCode, true);    
+                                });
                             }).fail(function(error) {
                             });;
-                            self.reloadData(removeAuthorityDto.dailyPerformanceFormatCode, true);
+                            
                         });
                 } else {
                     let deleteMonPfmCmd = {
@@ -561,6 +565,7 @@ module nts.uk.at.view.kdw008.a {
                                     }
                                     self.getListMonPfmCorrectionFormat().done(function(data) {
                                         if (self.listDataCommom().length == 0) {
+                                            self.listDataCommom([]);
                                             self.setNewMode();
                                         } else {
                                             self.selectedCode(code);
@@ -584,7 +589,11 @@ module nts.uk.at.view.kdw008.a {
                     if (self.isDaily()) {
                         $("#checkSheetNameIsDaily").trigger("validate");
                         if (!nts.uk.ui.errors.hasError()) {
-                            self.register();
+                             if (self.authorityFormatDailyValue().length <= 0) {
+                                nts.uk.ui.dialog.alert({ messageId: "Msg_920" });
+                            } else {
+                                self.register();
+                            }
                         }
                     } else {
                         $("#currentCode").trigger("validate");
@@ -734,12 +743,12 @@ module nts.uk.at.view.kdw008.a {
             reloadData(dailyPerformanceFormatCode: string, isRemove?: boolean) {
                 let self = this,
                     dfd = $.Deferred();
-                let oldSelectIndex = _.findIndex(self.businessTypeList(), item => { return item.dailyPerformanceFormatCode == dailyPerformanceFormatCode; });
-                self.businessTypeList([]);
+                let oldSelectIndex = _.findIndex(self.listDataCommom(), item => { return item.dailyPerformanceFormatCode == dailyPerformanceFormatCode; });
+                self.listDataCommom([]);
                 new service.Service().getBusinessType().done(function(data: Array<IDailyPerformanceFormatType>) {
                     if (data && data.length > 0) {
                         data = _.orderBy(data, ["dailyPerformanceFormatCode"], ['asc']);
-                        self.businessTypeList(_.map(data, item => { return new BusinessTypeModel(item) }));
+                        self.listDataCommom(_.map(data, item => { return new BusinessTypeModel(item) }));
                         self.currentDailyFormatCode(dailyPerformanceFormatCode);
                         //                        self.currentDailyFormatName(self.businessTypeList()[0].dailyPerformanceFormatName);
                         //                        self.selectedCode(dailyPerformanceFormatCode);
@@ -753,7 +762,7 @@ module nts.uk.at.view.kdw008.a {
                     } else {
                         self.setNewMode();
                     }
-                    self.listDataCommom(self.businessTypeList());
+                    
                     dfd.resolve();
                 });
 
@@ -762,17 +771,16 @@ module nts.uk.at.view.kdw008.a {
 
             getNewSelectRemove(oldSelectIndex: number): String {
                 let self = this;
-                let dataLength = self.businessTypeList().length;
+                let dataLength = self.listDataCommom().length;
                 if (dataLength == 1 || oldSelectIndex > dataLength) {
-                    return self.businessTypeList()[0].dailyPerformanceFormatCode;
+                    return self.listDataCommom()[0].dailyPerformanceFormatCode;
                 }
                 if (oldSelectIndex <= dataLength - 1) {
-                    return self.businessTypeList()[oldSelectIndex].dailyPerformanceFormatCode;
+                    return self.listDataCommom()[oldSelectIndex].dailyPerformanceFormatCode;
                 }
                 if (oldSelectIndex == dataLength) {
-                    return self.businessTypeList()[oldSelectIndex - 1].dailyPerformanceFormatCode;
+                    return self.listDataCommom()[oldSelectIndex - 1].dailyPerformanceFormatCode;
                 }
-                self.listDataCommom(self.businessTypeList());
                 return null;
             }
 
