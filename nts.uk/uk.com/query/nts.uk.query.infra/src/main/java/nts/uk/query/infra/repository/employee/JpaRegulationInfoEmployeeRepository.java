@@ -212,16 +212,17 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		cq.orderBy(orders);
 
 		// execute query & add to resultList
-		resultList.addAll(em.createQuery(cq).getResultList());
+		CriteriaQuery<EmployeeDataView> tq = cb.createQuery(EmployeeDataView.class);
+		resultList.addAll(em.createQuery(tq).getResultList());
 
 		// Filter result list by status of employee
-		resultList = resultList.stream().filter(item -> item.isFiltered(paramQuery)).collect(Collectors.toList());
+		resultList = resultList.parallelStream().filter(item -> item.isFiltered(paramQuery)).collect(Collectors.toList());
 
 		// Distinct employee in result list.
-		resultList = resultList.stream().filter(this.distinctByKey(EmployeeDataView::getSid))
+		resultList = resultList.parallelStream().filter(this.distinctByKey(EmployeeDataView::getSid))
 				.collect(Collectors.toList());
 
-		return resultList.stream().map(entity -> RegulationInfoEmployee.builder()
+		return resultList.parallelStream().map(entity -> RegulationInfoEmployee.builder()
 				.classificationCode(Optional.ofNullable(entity.getClassificationCode())).employeeCode(entity.getScd())
 				.employeeID(entity.getSid()).employmentCode(Optional.ofNullable(entity.getEmpCd()))
 				.hireDate(Optional.ofNullable(entity.getComStrDate()))
