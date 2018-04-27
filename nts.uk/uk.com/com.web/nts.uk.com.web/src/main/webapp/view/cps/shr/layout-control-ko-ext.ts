@@ -1120,6 +1120,7 @@ module nts.custombinding {
                                     options: lstComboBoxValue,
                                     optionsText: 'optionText',
                                     optionsValue: 'optionValue',
+                                    editable: true,
                                     enable: editable,
                                     required: required,
                                     visibleItemsCount: 5,
@@ -1529,6 +1530,10 @@ module nts.custombinding {
                                     });
                                 }
 
+                                if (dups.length == 1 && ((dups[0].itemTypeState || {}).dataTypeState || {}).dataTypeValue == ITEM_SINGLE_TYPE.RELATE_CATEGORY) {
+                                    return;
+                                }
+
                                 opts.sortable.pushItems(nodups);
                             }
 
@@ -1911,12 +1916,12 @@ module nts.custombinding {
                                             switch (data.item.referenceType) {
                                                 case ITEM_SELECT_TYPE.ENUM:
                                                     return {
-                                                        value: !nou(data.value) ? String(data.value) : undefined,
+                                                        value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
                                                         typeData: 2
                                                     };
                                                 case ITEM_SELECT_TYPE.CODE_NAME:
                                                     return {
-                                                        value: !nou(data.value) ? String(data.value) : undefined,
+                                                        value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
                                                         typeData: 1
                                                     };
                                                 case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
@@ -1924,18 +1929,18 @@ module nts.custombinding {
                                                     if (!nou(value)) {
                                                         if (String(value) == String(data.value)) {
                                                             return {
-                                                                value: !nou(data.value) ? String(data.value) : undefined,
+                                                                value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
                                                                 typeData: 2
                                                             };
                                                         } else {
                                                             return {
-                                                                value: !nou(data.value) ? String(data.value) : undefined,
+                                                                value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
                                                                 typeData: 1
                                                             };
                                                         }
                                                     } else {
                                                         return {
-                                                            value: !nou(data.value) ? String(data.value) : undefined,
+                                                            value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
                                                             typeData: 1
                                                         };
                                                     }
@@ -2669,7 +2674,7 @@ module nts.custombinding {
                 enable: opts.combobox.enable,
                 columns: [
                     { prop: 'categoryCode', 'class': 'hidden' },
-                    { prop: 'categoryName'}
+                    { prop: 'categoryName' }
                 ]
             }), allBindingsAccessor, viewModel, bindingContext);
 
@@ -2718,7 +2723,7 @@ module nts.custombinding {
                 enable: opts.combobox.enable,
                 columns: [
                     { prop: 'categoryCode', 'class': 'hidden' },
-                    { prop: 'categoryName'}
+                    { prop: 'categoryName' }
                 ]
             }), allBindingsAccessor, viewModel, bindingContext);
 

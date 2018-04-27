@@ -38,13 +38,14 @@ module a1 {
         SBcoreTimezone: Array<any>;
 
         linkedWithDialogF: KnockoutObservable<boolean>;
+        isNewMode: KnockoutObservable<boolean>;
         /**
         * Constructor.
         */
         constructor(input: any) {
             let self = this;
             self.selectedTab = input.selectedTab;
-            
+            self.isNewMode = input.isNewMode;
             self.loadDataFromMainScreen(input);
             self.isTimezoneTwoEnabled = ko.computed(() => {
                 return !self.isFlexMode() && !self.isDiffTimeMode();
@@ -106,8 +107,13 @@ module a1 {
                 self.linkedWithDialogF(self.checkLinked(self.collectDialog()));
             });
             self.mainSettingModel.workTimeSetting.worktimeCode.subscribe((v) => {
-                if (!nts.uk.util.isNullOrUndefined(v)) {
-                    self.linkedWithDialogF(false);
+                if (v == "") {
+                    self.linkedWithDialogF(true);
+                }
+                else {
+                    if (!nts.uk.util.isNullOrUndefined(v) && !self.isNewMode()) {
+                        self.linkedWithDialogF(false);
+                    }
                 }
             });
         }
