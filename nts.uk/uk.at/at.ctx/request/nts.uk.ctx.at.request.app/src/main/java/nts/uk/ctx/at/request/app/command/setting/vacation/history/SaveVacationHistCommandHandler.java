@@ -87,9 +87,13 @@ public class SaveVacationHistCommandHandler extends CommandHandler<VacationHisto
 		if (hist.isEmpty()) {
 			return;
 		}
+		
 		PlanVacationHistory history = new PlanVacationHistory(companyId, command.getWorkTypeCode(),
 				new OptionalMaxDay(command.getMaxDay()), command.getVacationHistory().getHistoryId(),
 				command.getVacationHistory().getStartDate(), command.getVacationHistory().getEndDate());
+		
+		//check validate
+		this.vacationPolicy.validate(command.getIsCreated(), history);
 
 		this.vacationHistoryRepository.update(history);
 	}
