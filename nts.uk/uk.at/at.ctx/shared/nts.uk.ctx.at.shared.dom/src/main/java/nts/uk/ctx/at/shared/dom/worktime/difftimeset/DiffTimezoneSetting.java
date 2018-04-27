@@ -110,17 +110,22 @@ public class DiffTimezoneSetting extends WorkTimeDomainObject {
 			}
 		}
 
+		// validate worktime vs OT time
+		// validate msg_845
+		this.checkOverTimeAndEmTimeOverlap();
 		super.validate();
 	}
 
 	/**
 	 * Check over time and em time overlap.
 	 */
-	public boolean isOverTimeAndEmTimeOverlap() {
+	private void checkOverTimeAndEmTimeOverlap() {
 		if (CollectionUtil.isEmpty(this.employmentTimezones) || CollectionUtil.isEmpty(this.oTTimezones)) {
-			return false;
+			return;
 		}		
-		return this.oTTimezones.stream().anyMatch(ot -> this.employmentTimezones.stream().anyMatch(em -> ot.getTimezone().isOverlap(em.getTimezone())));
+		if (this.oTTimezones.stream().anyMatch(ot -> this.employmentTimezones.stream().anyMatch(em -> ot.getTimezone().isOverlap(em.getTimezone())))) {
+			this.bundledBusinessExceptions.addMessage("Msg_845", "KMK003_89");
+		}
 	}
 
 	/**

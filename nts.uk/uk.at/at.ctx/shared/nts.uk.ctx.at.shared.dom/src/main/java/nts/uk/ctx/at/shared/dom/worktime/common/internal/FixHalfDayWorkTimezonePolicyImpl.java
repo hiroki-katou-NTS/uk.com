@@ -42,21 +42,16 @@ public class FixHalfDayWorkTimezonePolicyImpl implements FixHalfDayWorkTimezoneP
 			WorkTimeDisplayMode displayMode, FixHalfDayWorkTimezone halfDayWork, boolean isUseHalfDayShift) {
 		this.fixedWtzPolicy.validateFixedAndDiff(be, predTime, halfDayWork.getWorkTimezone(),
 				displayMode.getDisplayMode(), halfDayWork.getDayAtr(), isUseHalfDayShift);
-				
-		if (!((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
+		
+		// Msg_755
+		if ((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
 				|| (AmPmAtr.PM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
-				|| ((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) || AmPmAtr.PM.equals(halfDayWork.getDayAtr())) && DisplayMode.SIMPLE.equals(displayMode)))) {
-			
-			// Msg_755
-			if (!halfDayWork.isInFixedWork()) {
-				be.addMessage("Msg_755");
-			}
-			
-			// Msg_845
-			if (halfDayWork.getWorkTimezone().isOverTimeAndEmTimeOverlap()) {
-				be.addMessage("Msg_845", "KMK003_89");
-			}
+				|| ((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) || AmPmAtr.PM.equals(halfDayWork.getDayAtr())) && DisplayMode.SIMPLE.equals(displayMode))) {
+			return;
 		}		
+		if (!halfDayWork.isInFixedWork() ) {
+			be.addMessage("Msg_755");
+		}
 	}
 
 	/*
@@ -76,22 +71,17 @@ public class FixHalfDayWorkTimezonePolicyImpl implements FixHalfDayWorkTimezoneP
 		this.fixedWtzPolicy.validateFlex(be, predTime, halfDayWork.getWorkTimezone(), displayMode.getDisplayMode(),
 				halfDayWork.getDayAtr(), isUseHalfDayShift);
 		
-		if (!((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
+		// Msg_755
+		if ((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
 				|| (AmPmAtr.PM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
-				|| ((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) || AmPmAtr.PM.equals(halfDayWork.getDayAtr())) && DisplayMode.SIMPLE.equals(displayMode)))) {
-			
-			// Msg_755
-			if (!halfDayWork.isInFixedWork()) {
-				be.addMessage("Msg_755");
-			}
-			
-			// Msg_845
-			if (halfDayWork.getWorkTimezone().isOverTimeAndEmTimeOverlap()) {
-				be.addMessage("Msg_845", "KMK003_89");
-			}
-		}	
+				|| ((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) || AmPmAtr.PM.equals(halfDayWork.getDayAtr())) && DisplayMode.SIMPLE.equals(displayMode))) {
+			return;
+		}		
+		if (!halfDayWork.isInFixedWork() ) {
+			be.addMessage("Msg_755");
+		}
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 

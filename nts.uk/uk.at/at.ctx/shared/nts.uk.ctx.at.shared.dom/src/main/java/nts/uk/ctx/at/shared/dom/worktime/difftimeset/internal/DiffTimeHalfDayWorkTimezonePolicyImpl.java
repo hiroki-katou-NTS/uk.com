@@ -42,21 +42,16 @@ public class DiffTimeHalfDayWorkTimezonePolicyImpl implements DiffTimeHalfDayWor
 			DiffTimeHalfDayWorkTimezone halfDayWork, boolean isUseHalfDayShift) {
 		this.diffTimezonePolicy.validate(be, predTime, halfDayWork.getWorkTimezone(), displayMode.getDisplayMode(),
 				halfDayWork.getAmPmAtr(), isUseHalfDayShift);
-			
-		if (!((AmPmAtr.AM.equals(halfDayWork.getAmPmAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
+		
+		// Msg_755
+		if ((AmPmAtr.AM.equals(halfDayWork.getAmPmAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
 				|| (AmPmAtr.PM.equals(halfDayWork.getAmPmAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
-				|| ((AmPmAtr.AM.equals(halfDayWork.getAmPmAtr()) || AmPmAtr.PM.equals(halfDayWork.getAmPmAtr())) && DisplayMode.SIMPLE.equals(displayMode)))) {
-			
-			// Msg_755
-			if (halfDayWork.restInWork()) {
-				be.addMessage("Msg_755");
-			}
-			
-			// Msg_845
-			if (halfDayWork.getWorkTimezone().isOverTimeAndEmTimeOverlap()) {
-				be.addMessage("Msg_845", "KMK003_89");
-			}
-		}		
+				|| ((AmPmAtr.AM.equals(halfDayWork.getAmPmAtr()) || AmPmAtr.PM.equals(halfDayWork.getAmPmAtr())) && DisplayMode.SIMPLE.equals(displayMode))) {
+			return;
+		}	
+		if (halfDayWork.restInWork()) {
+			be.addMessage("Msg_755");
+		}
 	}
 
 	/**
