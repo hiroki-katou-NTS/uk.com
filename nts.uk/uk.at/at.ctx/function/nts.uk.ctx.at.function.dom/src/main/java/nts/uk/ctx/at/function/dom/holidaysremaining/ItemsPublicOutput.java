@@ -26,8 +26,8 @@ public class ItemsPublicOutput {
 	private boolean outputitemsholidays;
 	public ItemsPublicOutput(boolean outputholidayforward, boolean monthlyPublic, boolean outputitemsholidays) {
 		super();
-		this.outputholidayforward = outputholidayforward;
-		this.monthlyPublic = monthlyPublic;
+		this.outputholidayforward = !outputitemsholidays ? false : outputholidayforward;
+		this.monthlyPublic = !outputitemsholidays ? false : monthlyPublic;
 		this.outputitemsholidays = outputitemsholidays;
 	}
 	
