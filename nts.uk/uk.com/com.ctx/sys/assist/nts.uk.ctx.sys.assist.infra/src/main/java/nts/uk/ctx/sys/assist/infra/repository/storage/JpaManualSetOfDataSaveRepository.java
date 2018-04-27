@@ -36,7 +36,7 @@ public class JpaManualSetOfDataSaveRepository extends JpaRepository implements M
 		return new SspmtManualSetOfDataSave(
 				new SspmtManualSetOfDataSavePk(dom.getCid(), dom.getStoreProcessingId()), dom.getSystemType().value,
 				dom.getPasswordAvailability().value, dom.getSaveSetName().toString(), dom.getReferenceDate(),
-				dom.getCompressedPassword().toString(), dom.getExecutionDateAndTime(), dom.getDaySaveEndDate(),
+				dom.getCompressedPassword().v(), dom.getExecutionDateAndTime(), dom.getDaySaveEndDate(),
 				dom.getDaySaveStartDate(), dom.getMonthSaveEndDate(),
 				dom.getMonthSaveStartDate(), dom.getSuppleExplanation().toString(), dom.getEndYear().v().intValue(),
 				dom.getStartYear().v().intValue(), dom.getPresenceOfEmployee().value, dom.getIdentOfSurveyPre().value,
@@ -49,4 +49,11 @@ public class JpaManualSetOfDataSaveRepository extends JpaRepository implements M
 				.setParameter("storeProcessingId", storeProcessingId).getSingle(c -> toDomain(c));
 	}
 
+	@Override
+	public void addManualSetting(ManualSetOfDataSave domain) {
+		this.commandProxy().insert(toEntity(domain));
+		
+	}
+	
+	
 }
