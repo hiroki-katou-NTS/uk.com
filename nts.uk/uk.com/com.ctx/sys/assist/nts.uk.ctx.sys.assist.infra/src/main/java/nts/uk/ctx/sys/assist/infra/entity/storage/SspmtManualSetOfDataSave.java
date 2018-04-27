@@ -155,7 +155,7 @@ public class SspmtManualSetOfDataSave extends UkJpaEntity implements Serializabl
     @Override
     protected Object getKey()
     {
-        return manualSetOfDataSavePk;
+        return storeProcessingId;
     }
 
 }
