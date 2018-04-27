@@ -223,16 +223,6 @@ module nts.uk.com.view.cps001.i.vm {
             return res;
         }
 
-        formatTime(value) {
-            if (value) {
-                let hour = Math.floor(Math.abs(value) / 60);
-                let minutes = Math.floor(Math.abs(value) % 60);
-                return hour + ':' + (minutes < 10 ? ("0" + minutes) : minutes);
-            } else {
-                return '';
-            }
-        }
-
         newMode() {
             let self = this;
             self.currentValue(null);
@@ -305,6 +295,7 @@ module nts.uk.com.view.cps001.i.vm {
                             } else if ((self.listData().length > 0) && (ids.length != self.listData().length)) {
                                 self.currentValue(self.listData()[0].specialid);
                             }
+                            clearError();
                             $("#idDateGrantInp").focus();
                         });
                     });
@@ -317,6 +308,7 @@ module nts.uk.com.view.cps001.i.vm {
                                 let saveItemIndex = _.findIndex(self.listData(), (item) => { return item.specialid == newItem.specialid; });
                                 self.currentValue(self.listData()[saveItemIndex].specialid);
                             }
+                            clearError();
                             $("#idDateGrantInp").focus();
                         });
                     });
@@ -401,19 +393,19 @@ module nts.uk.com.view.cps001.i.vm {
 
             // detail of grant
             self.dayNumberOfGrants(result.numberDayGrant);
-            self.grantTime(result.timeGrant == 0 ? null : result.timeGrant);
+            self.grantTime(result.timeGrant == 0 ? 0 : result.timeGrant);
 
             // detail of Use
             self.dayNumberOfUse(result.numberDayUse);
-            self.useTime(result.timeUse == 0 ? null : result.timeUse);
+            self.useTime(result.timeUse == 0 ? 0 : result.timeUse);
 
             // Exeeded detail
             self.dayNumberOver(result.numberDaysOver);
-            self.timeOver(result.timeOver == 0 ? null : result.timeOver);
+            self.timeOver(result.timeOver == 0 ? 0 : result.timeOver);
 
             // Reaming detail
             self.dayNumberOfReam(result.numberDayRemain);
-            self.timeReam(result.timeRemain == 0 ? null : result.timeRemain);
+            self.timeReam(result.timeRemain == 0 ? 0 : result.timeRemain);
         }
 
         formatDate(value) {
@@ -425,6 +417,19 @@ module nts.uk.com.view.cps001.i.vm {
         formatEnum(value: number) {
             return value == 1 ? '使用可能' : '期限切れ';
         }
+
+        formatTime(value: number) {
+            if (value) {
+                let hour = Math.floor(Math.abs(value) / 60);
+                let minutes = Math.floor(Math.abs(value) % 60);
+                let result =  hour + ':' + (minutes < 10 ? ("0" + minutes) : minutes);
+                return value >= 0 ? "&nbsp;"+result : '-'+result;
+            } else {
+                return "&nbsp;0:00";
+            }
+        }
+
+
 
 
 
@@ -510,16 +515,16 @@ module nts.uk.com.view.cps001.i.vm {
                 { headerText: nts.uk.resource.getText('CPS001_118'), key: 'grantDate', width: 100 },
                 { headerText: nts.uk.resource.getText('CPS001_119'), key: 'deadlineDate', width: 100 },
                 { headerText: nts.uk.resource.getText('CPS001_120'), key: 'numberDayGrant', width: 60 },
-                { headerText: nts.uk.resource.getText('CPS001_128'), key: 'timeGrant', width: 70, hidden: self.grantTimeH() },
+                { headerText: nts.uk.resource.getText('CPS001_128'), key: 'timeGrant',  width: 70, hidden: self.grantTimeH() },
                 { headerText: nts.uk.resource.getText('CPS001_121'), key: 'numberDayUse', width: 60 },
-                { headerText: nts.uk.resource.getText('CPS001_122'), key: 'timeUse', width: 70, hidden: self.useTimeH() },
+                { headerText: nts.uk.resource.getText('CPS001_122'), key: 'timeUse',  width: 70, hidden: self.useTimeH() },
                 { headerText: nts.uk.resource.getText('CPS001_130'), key: 'numberDaysOver', width: 60 },
                 { headerText: nts.uk.resource.getText('CPS001_131'), key: 'timeOver', width: 70, hidden: self.timeExeededH() },
                 { headerText: nts.uk.resource.getText('CPS001_123'), key: 'numberDayRemain', width: 60 },
                 { headerText: nts.uk.resource.getText('CPS001_124'), key: 'timeRemain', width: 70, hidden: self.timeReamH() },
                 { headerText: nts.uk.resource.getText('CPS001_129'), key: 'expStatus', width: 80 }
             ]);
-            let table: string = '<table tabindex="5" id="sel_item_grid" data-bind="ntsGridList: { height: 282, options: listData, primaryKey:\'specialid\',columns:columns,multiple: false, value: currentValue , rows :10 , showNumbering: true}"></table>';
+            let table: string = '<table tabindex="5" id="sel_item_grid" data-bind="ntsGridList: { height: 282, options: listData, primaryKey:\'specialid\',columns:columns,multiple: false, value: currentValue , rows :10 }"></table>';
             $("#tbl").html(table);
             ko.applyBindings(self, $("#tbl")[0]);
         }
@@ -674,14 +679,14 @@ module nts.uk.com.view.cps001.i.vm {
         expStatus: number;
         registerType: string;
         numberDayGrant: number;
-        timeGrant: number;
+        timeGrant: string;
         numberDayUse: number;
         useSavingDays: number;
-        timeUse: number;
+        timeUse: string;
         numberOverDays: number;
-        timeOver: number;
+        timeOver: string;
         numberDayRemain: number;
-        timeRemain: number;
+        timeRemain: string;
         constructor(data: ISpecialLeaveRemaining) {
             this.specialid = data.specialid;
             this.sid = data.sid;
@@ -691,14 +696,14 @@ module nts.uk.com.view.cps001.i.vm {
             this.expStatus = data.expStatus;
             this.registerType = data.registerType;
             this.numberDayGrant = data.numberDayGrant;
-            this.timeGrant = data.timeGrant;
+            this.timeGrant = data.timeGrant+"";
             this.numberDayUse = data.numberDayUse;
             this.useSavingDays = data.useSavingDays;
-            this.timeUse = data.timeUse;
+            this.timeUse = data.timeUse+"";
             this.numberOverDays = data.numberDaysOver;
-            this.timeOver = data.timeOver;
+            this.timeOver = data.timeOver+"";
             this.numberDayRemain = data.numberDayRemain;
-            this.timeRemain = data.timeRemain;
+            this.timeRemain = data.timeRemain+"";
         }
     }
 
