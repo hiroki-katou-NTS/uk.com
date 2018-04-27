@@ -109,11 +109,13 @@ public class ManualSetOfDataSave extends AggregateRoot {
 	private List<TargetEmployees> employees;
 	private List<TargetCategory> category;
 
+
 	public ManualSetOfDataSave(String cid, String storeProcessingId, int systemType, int passwordAvailability,
 			String saveSetName, GeneralDate referenceDate, String compressedPassword,
 			GeneralDateTime executionDateAndTime, GeneralDate daySaveEndDate, GeneralDate daySaveStartDate,
 			GeneralDate monthSaveEndDate, GeneralDate monthSaveStartDate, String suppleExplanation, int endYear,
 			int startYear, int presenceOfEmployee, int identOfSurveyPre, String practitioner) {
+
 		super();
 		this.cid = cid;
 		this.storeProcessingId = storeProcessingId;
@@ -141,6 +143,7 @@ public class ManualSetOfDataSave extends AggregateRoot {
 			GeneralDate monthSaveEndDate, GeneralDate monthSaveStartDate, String suppleExplanation, int endYear,
 			int startYear, int presenceOfEmployee, int identOfSurveyPre, String practitioner,
 			List<TargetEmployees> employees, List<TargetCategory> category) {
+
 		super();
 		this.cid = cid;
 		this.storeProcessingId = storeProcessingId;
@@ -163,4 +166,5 @@ public class ManualSetOfDataSave extends AggregateRoot {
 		this.employees = employees;
 		this.category = category;
 	}
+
 }

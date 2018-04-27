@@ -48,4 +48,11 @@ public class JpaManualSetOfDataSaveRepository extends JpaRepository implements M
 				.setParameter("storeProcessingId", storeProcessingId).getSingle(c -> toDomain(c));
 	}
 
+	@Override
+	public void addManualSetting(ManualSetOfDataSave domain) {
+		this.commandProxy().insert(toEntity(domain));
+		
+	}
+	
+	
 }
