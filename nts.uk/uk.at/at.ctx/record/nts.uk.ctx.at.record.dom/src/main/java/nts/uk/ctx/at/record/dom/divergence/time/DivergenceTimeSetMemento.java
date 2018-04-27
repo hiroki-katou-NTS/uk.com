@@ -54,5 +54,5 @@ public interface DivergenceTimeSetMemento {
 	 *
 	 * @param targetItems the new tarset items
 	 */
-	void setTarsetItems(List<Integer> targetItems,int divNo, String Companyid);
+	void setTarsetItems(List<Double> targetItems);
 }

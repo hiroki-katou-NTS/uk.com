@@ -75,7 +75,7 @@ public class DivergenceTime extends AggregateRoot {
 		memento.setDivTimeUseSet(this.divTimeUseSet);
 		memento.setDivType(this.divType);
 		memento.setErrorCancelMedthod(this.errorCancelMedthod);
-		memento.setTarsetItems(this.targetItems, this.divergenceTimeNo,AppContexts.user().companyId());
+		memento.setTarsetItems(this.targetItems);
 
 	}
 

@@ -14,12 +14,6 @@ import nts.uk.ctx.at.record.dom.divergence.time.DivergenceType;
  *
  * @return true, if is reason select
  */
-
-/**
- * Gets the target item.
- *
- * @return the target item
- */
 @Getter
 public class DivergenceTimeDto implements DivergenceTimeSetMemento {
 
@@ -41,9 +35,6 @@ public class DivergenceTimeDto implements DivergenceTimeSetMemento {
 	/** The reason select. */
 	private boolean reasonSelect;
 
-	/** The target item. */
-	private List<Integer> targetItem;
-
 	/**
 	 * Instantiates a new divergence time dto.
 	 */
@@ -51,11 +42,8 @@ public class DivergenceTimeDto implements DivergenceTimeSetMemento {
 		super();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#
-	 * setDivergenceTimeNo(int)
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#setDivergenceTimeNo(int)
 	 */
 	@Override
 	public void setDivergenceTimeNo(int divergenceTimeNo) {
@@ -63,11 +51,8 @@ public class DivergenceTimeDto implements DivergenceTimeSetMemento {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#
-	 * setCompanyId(java.lang.String)
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#setCompanyId(java.lang.String)
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
@@ -75,12 +60,8 @@ public class DivergenceTimeDto implements DivergenceTimeSetMemento {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#
-	 * setDivTimeUseSet(nts.uk.ctx.at.record.dom.divergence.time.
-	 * DivergenceTimeUseSet)
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#setDivTimeUseSet(nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet)
 	 */
 	@Override
 	public void setDivTimeUseSet(DivergenceTimeUseSet divTimeUset) {
@@ -88,12 +69,8 @@ public class DivergenceTimeDto implements DivergenceTimeSetMemento {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#
-	 * setDivTimeName(nts.uk.ctx.at.record.dom.divergence.time.
-	 * DivergenceTimeName)
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#setDivTimeName(nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeName)
 	 */
 	@Override
 	public void setDivTimeName(DivergenceTimeName divTimeName) {
@@ -101,11 +78,8 @@ public class DivergenceTimeDto implements DivergenceTimeSetMemento {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#
-	 * setDivType(nts.uk.ctx.at.record.dom.divergence.time.DivergenceType)
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#setDivType(nts.uk.ctx.at.record.dom.divergence.time.DivergenceType)
 	 */
 	@Override
 	public void setDivType(DivergenceType divType) {
@@ -113,12 +87,8 @@ public class DivergenceTimeDto implements DivergenceTimeSetMemento {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#
-	 * setErrorCancelMedthod(nts.uk.ctx.at.record.dom.divergence.time.
-	 * DivergenceTimeErrorCancelMethod)
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#setErrorCancelMedthod(nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeErrorCancelMethod)
 	 */
 	@Override
 	public void setErrorCancelMedthod(DivergenceTimeErrorCancelMethod errorCancelMedthod) {
@@ -127,18 +97,13 @@ public class DivergenceTimeDto implements DivergenceTimeSetMemento {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#
-	 * setTarsetItems(java.util.List, int, java.lang.String)
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#setTarsetItems(java.util.List)
 	 */
 	@Override
-	public void setTarsetItems(List<Integer> targetItems, int divNo, String Companyid) {
+	public void setTarsetItems(List<Double> targetItems) {
+		// no code
 
-		if (!targetItems.isEmpty()) {
-			targetItem.forEach(item -> this.targetItem.add(item));
-		}
 	}
 
 }
