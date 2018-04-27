@@ -304,6 +304,9 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			if (requestInfo == null) {
 				return false;
 			}
+			if((requestInfo.getDisporder()==null) || (approverInfo.getDisporder()==null)){
+				return true;
+			}
 			if (requestInfo.getDisporder() > approverInfo.getDisporder()) {
 				return true;
 			}
