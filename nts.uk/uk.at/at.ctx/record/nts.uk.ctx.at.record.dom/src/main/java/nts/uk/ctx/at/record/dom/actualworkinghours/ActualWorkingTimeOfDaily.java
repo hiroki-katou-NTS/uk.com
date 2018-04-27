@@ -317,6 +317,12 @@ public class ActualWorkingTimeOfDaily {
 	 */
 	private static List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime>   calcDivergenceTime(DailyRecordToAttendanceItemConverter forCalcDivergenceDto,List<DivergenceTime> divergenceTimeList) {
 		val integrationOfDailyInDto = forCalcDivergenceDto.toDomain();
+		if(integrationOfDailyInDto == null
+			|| integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance() == null
+			|| !integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().isPresent()
+			|| integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily() == null)
+			return Collections.emptyList();
+		
 		val divergenceTimeInIntegrationOfDaily = integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime();
 		val returnList = new ArrayList<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime>(); 
 		//乖離時間算出のアルゴリズム実装
@@ -384,9 +390,20 @@ public class ActualWorkingTimeOfDaily {
 						);
 				
 			}
-			//就業時間から休憩未取得時間を減算
-			totalWorkingTime.getWithinStatutoryTimeOfDaily().workTimeMinusUnUseBreakTimeForOotsuka(unUseBreakTime);
+			//就業時間から休憩未取得時間を減算(休憩未取得を残業時間として計算する　であれば差し引く)
+			if(ootsukaFixedCalcSet != null
+			   && ootsukaFixedCalcSet.isPresent()
+			   && ootsukaFixedCalcSet.get().getOverTimeCalcNoBreak() != null
+			   && ootsukaFixedCalcSet.get().getOverTimeCalcNoBreak().getCalcMethod() != null
+			   && !ootsukaFixedCalcSet.get().getOverTimeCalcNoBreak().getCalcMethod().isCalcAsWorking() ) {
+				totalWorkingTime.getWithinStatutoryTimeOfDaily().workTimeMinusUnUseBreakTimeForOotsuka(unUseBreakTime);
+			}
 			
+			//休暇加算を残業として計算する場合、ロジックの関係上、就業時間計算時に休暇加算が合算されてしまう
+			//ここでは、合算されてしまっている休暇加算を差し引いている
+			if(totalWorkingTime.getWithinStatutoryTimeOfDaily().getWorkTime().greaterThan(predetermineTime.valueAsMinutes())) {
+				totalWorkingTime.setWithinWorkTime(predetermineTime);
+			}
 		}
 		return totalWorkingTime;
 	}
