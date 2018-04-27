@@ -774,12 +774,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 					TimeLeavingOfDailyPerformance timeLeavingOptional = createStamp(companyId, workInfoOfDailyPerformanceUpdate, workingConditionItem, null,
 							employeeID, day);
-					if (reCreateWorkType == false) {
-						// check tay
-						stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeID, day,
-								workInfoOfDailyPerformanceUpdate, timeLeavingOptional, empCalAndSumExecLogID,
-								reCreateAttr);
-					}
+					// check tay
+					stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeID, day,
+							workInfoOfDailyPerformanceUpdate, timeLeavingOptional, empCalAndSumExecLogID,
+							reCreateAttr);
+
 				}
 
 				this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId, employeeID, day,
