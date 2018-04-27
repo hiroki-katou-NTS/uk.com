@@ -70,6 +70,8 @@ public class DailyPerformanceCorrectionDto {
 	private IdentityProcessUseSetDto identityProcessDto;
 	
 	private FlexShortage flexShortage;
+	
+	private boolean showQuestionSPR;
 
 	public DailyPerformanceCorrectionDto() {
 		super();

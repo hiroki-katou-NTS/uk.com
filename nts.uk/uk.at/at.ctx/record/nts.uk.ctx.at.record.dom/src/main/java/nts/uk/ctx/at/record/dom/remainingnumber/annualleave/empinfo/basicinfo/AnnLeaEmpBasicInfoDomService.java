@@ -20,12 +20,10 @@ public class AnnLeaEmpBasicInfoDomService{
 	
 	@Inject
 	private AnnualPaidLeaveSettingRepository annPaidLeaSettingRepo;
-	
+
 	@Inject
 	private AnnLeaGrantRemDataRepository annLeaDataRepo;
-	
-	private static final String granted = "付与日";
-	
+		
 	private static final String not_grant = "未付与";
 	
 	public AnnLeaRemNumValueObject getAnnLeaveNumber(String companyId, String employeeId) {
@@ -70,7 +68,7 @@ public class AnnLeaEmpBasicInfoDomService{
 		if (listData.isEmpty()) {
 			return not_grant; 
 		} else {
-			return granted;
+			return listData.get(0).getGrantDate().toString();
 		}
 	}
 	
