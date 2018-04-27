@@ -34,23 +34,18 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                 service.getApplicationForSendByAppID(self.appID).done(function(result) {
                     if (result) {
                         let listApprovalPhase: any = result.listApprovalPhaseStateDto;
-                        let index = 0;
                         self.mailContent(result.mailTemplate);
-                        self.applicant(ko.toJS(result.applicant));
+                        self.applicant(ko.toJS({employeeID: result.application.applicantSID, smail: result.applicantMail}));
                         self.application(ko.toJS(result.application));
                         for (let i = 0; i < listApprovalPhase.length; i++) {
                             for (let listApprovalFrame = listApprovalPhase[i].listApprovalFrame, j = 0; j < listApprovalFrame.length; j++) {
                                 for (let listApprover = listApprovalFrame[j].listApprover, k = 0; k < listApprover.length; k++) {
-                                    let sMail = result.listApprover[index].smail;
-                                    let employeeId = result.listApprover[index].employeeId;
-                                    let mail = "mail@gmail.com";
-                                    listApprover[k]['sMail'] = mail
-                                    if (mail.length >0){
+                                    if (listApprover[k].approverMail.length >0){
                                         listApprover[k].approverName += '(@)';
+                                        listApprover[k]['isSend'] = 1;
+                                    } else {
+                                        listApprover[k]['isSend'] = 0;
                                     }
-                                    
-                                    listApprover[k]['isSend'] = 1;
-                                    index++;
                                 }
                             }
                         }
@@ -70,16 +65,16 @@ module nts.uk.at.view.kdl030.a.viewmodel {
         }
         sendMail() {
             var self = this;
-            let listSendMail: Array<SendMailOption> = [];
+            let listSendMail: Array<String> = [];
             if (self.isSendToApplicant()) {
-                listSendMail.push(new SendMailOption(self.applicant().employeeId, self.applicant().pname, self.applicant().smail));
+                listSendMail.push(self.applicant().employeeID);
             }
             let listApprovalPhase = ko.toJS(self.approvalRootState);
             _.forEach(listApprovalPhase, x => {
                 _.forEach(x.listApprovalFrame, y => {
                     _.forEach(y.listApprover, z => {
                         if (z.isSend == 1)
-                        listSendMail.push(new SendMailOption(z.approverID, z.approverName, z.sMail));
+                        listSendMail.push(z.approverID);
                     });
                 });
             });
@@ -195,16 +190,6 @@ module nts.uk.at.view.kdl030.a.viewmodel {
             this.dispName = name;
             this.code = ko.observable(code);
             this.name = ko.observable(name);
-        }
-    }
-    export class SendMailOption {
-        employeeID: string;
-        employeeName: string;
-        sMail: string;
-        constructor(employeeID: string, employeeName: string, sMail: string) {
-            this.employeeID = employeeID;
-            this.employeeName = employeeName;
-            this.sMail = employeeID + "@nts.com";
         }
     }
 }

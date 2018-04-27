@@ -5,7 +5,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
-* 
+* 差し戻しのメール内容
 */
 @Getter
 public class ContentOfRemandMail extends AggregateRoot

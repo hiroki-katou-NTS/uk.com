@@ -6,7 +6,7 @@ import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
-* 
+* 埋込URLタスク付帯データ
 */
 @AllArgsConstructor
 @Getter

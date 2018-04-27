@@ -7,20 +7,19 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
+import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApprovalFrameOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApprovalPhaseStateOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApprovalRootOutput;
 @Value
 @AllArgsConstructor
 public class ApplicationSendDto {
 	public ApplicationDto_New application;
 	public String mailTemplate;
 	public List<ApprovalPhaseStateDto> listApprovalPhaseStateDto;
-	public List<PesionInforImport> listApprover;
-	public PesionInforImport applicant;
-	public static ApplicationSendDto fromDomain(ApplicationDto_New application_New, String mailTemplate, ApprovalRootContentImport_New approvalRootContentImport, List<PesionInforImport> listApprover, PesionInforImport applicant){
-			return new ApplicationSendDto(application_New, mailTemplate, approvalRootContentImport.getApprovalRootState().getListApprovalPhaseState()
-					.stream().map(x -> ApprovalPhaseStateDto.fromApprovalPhaseStateImport(x)).collect(Collectors.toList()), listApprover, applicant);
+	public String applicantMail;
+	public static ApplicationSendDto fromDomain(ApplicationDto_New application_New, String mailTemplate, ApprovalRootOutput approvalRootContentImport, String loginerMail){
+			return new ApplicationSendDto(application_New, mailTemplate, approvalRootContentImport.getListApprovalPhaseState()
+					.stream().map(x -> ApprovalPhaseStateDto.fromApprovalPhaseState(x)).collect(Collectors.toList()), loginerMail);
 		}
 }
 @Value
@@ -34,12 +33,12 @@ class ApprovalPhaseStateDto{
 	
 	private List<ApprovalFrameDto> listApprovalFrame;
 	
-	public static ApprovalPhaseStateDto fromApprovalPhaseStateImport(ApprovalPhaseStateImport_New approvalPhaseStateImport){
+	public static ApprovalPhaseStateDto fromApprovalPhaseState(ApprovalPhaseStateOutput approvalPhaseState){
 		return new ApprovalPhaseStateDto(
-				approvalPhaseStateImport.getPhaseOrder(), 
-				approvalPhaseStateImport.getApprovalAtr().value,
-				approvalPhaseStateImport.getApprovalAtr().name,
-				approvalPhaseStateImport.getListApprovalFrame().stream().map(x -> ApprovalFrameDto.fromApprovalFrameImport(x)).collect(Collectors.toList()));
+				approvalPhaseState.getPhaseOrder(), 
+				approvalPhaseState.getApprovalAtr().value,
+				approvalPhaseState.getApprovalAtr().name,
+				approvalPhaseState.getListApprovalFrame().stream().map(x -> ApprovalFrameDto.fromApprovalFrame(x)).collect(Collectors.toList()));
 	}
 }
 
@@ -66,24 +65,25 @@ class ApprovalFrameDto {
 	
 	private String approvalReason;
 	
-	public static ApprovalFrameDto fromApprovalFrameImport(ApprovalFrameImport_New approvalFrameImport){
+	public static ApprovalFrameDto fromApprovalFrame(ApprovalFrameOutput approvalFrame){
 		return new ApprovalFrameDto(
-				approvalFrameImport.getPhaseOrder(), 
-				approvalFrameImport.getFrameOrder(), 
-				approvalFrameImport.getApprovalAtr().value,
-				approvalFrameImport.getApprovalAtr().name, 
-				approvalFrameImport.getListApprover().stream()
+				approvalFrame.getPhaseOrder(), 
+				approvalFrame.getFrameOrder(), 
+				approvalFrame.getApprovalAtr().value,
+				approvalFrame.getApprovalAtr().name, 
+				approvalFrame.getListApprover().stream()
 					.map(x -> new ApproverStateDto(
 							x.getApproverID(), 
 							x.getApproverName(),
 							x.getRepresenterID(),
-							x.getRepresenterName()))
+							x.getRepresenterName(),
+							x.getSMail()))
 					.collect(Collectors.toList()), 
-				approvalFrameImport.getApproverID(),
-				approvalFrameImport.getApproverName(),
-				approvalFrameImport.getRepresenterID(),
-				approvalFrameImport.getRepresenterName(),
-				approvalFrameImport.getApprovalReason());
+				approvalFrame.getApproverID(),
+				approvalFrame.getApproverName(),
+				approvalFrame.getRepresenterID(),
+				approvalFrame.getRepresenterName(),
+				approvalFrame.getApprovalReason());
 	}
 }
 
@@ -97,4 +97,6 @@ class ApproverStateDto {
 	private String representerID;
 	
 	private String representerName;
+	
+	private String approverMail;
 }

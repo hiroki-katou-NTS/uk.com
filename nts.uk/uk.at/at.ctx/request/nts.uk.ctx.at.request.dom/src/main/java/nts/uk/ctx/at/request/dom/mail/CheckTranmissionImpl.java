@@ -64,11 +64,8 @@ public class CheckTranmissionImpl implements CheckTransmission {
 				}
 			}
 		}
-		String mailContentToSend = mailBody;
 		// TO - DO
-		// request list 225
-		// request list 228
-		// get mail (may be get from client but re-get here)
+		// request list 419 - get mail
 		List<EmployeeInfoImport> listEmpName = employeeRequestAdapter.getByListSID(employeeIdList);
 		for(String employeeToSendId: employeeIdList){
 			List<EmployeeInfoImport> listEmpName1 = employeeRequestAdapter.getByListSID(Arrays.asList(employeeToSendId));
@@ -78,8 +75,8 @@ public class CheckTranmissionImpl implements CheckTransmission {
 			if (Strings.isBlank(mail)) {
 				errorList.add(empName);
 			} else {
-				mailSender.send("mailadmin@uk.com", employeeMail, new MailContents("", mailContentToSend));
-				successList.add(employeeToSendId);
+				mailSender.send("mailadmin@uk.com", employeeMail, new MailContents("", mailBody));
+				successList.add(empName);
 				
 			}
 		}

@@ -9,7 +9,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
 
 /**
-* 
+* 埋込URL実行情報
 */
 @AllArgsConstructor
 @Getter
