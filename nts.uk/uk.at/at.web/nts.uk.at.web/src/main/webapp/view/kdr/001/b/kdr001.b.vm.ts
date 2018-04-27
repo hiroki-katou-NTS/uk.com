@@ -302,7 +302,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
          */
         closeDialog() {
             let self = this;
-            setShared('KDR001Params', self.currentCode());
+            setShared('KDR001B2A_cd', self.currentCode());
             nts.uk.ui.windows.close()
         }
     }
