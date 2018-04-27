@@ -8,6 +8,8 @@ import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeName;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceType;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcAttendance;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcAttendancePK;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
 
 /**
@@ -16,7 +18,10 @@ import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
 public class JpaDivergenceTimeSetMemento implements DivergenceTimeSetMemento {
 
 	/** The entity. */
-	private KrcstDvgcTime entity;
+	private KrcstDvgcTime entityDvgcTime;
+
+	/** The entity dvgc attendance. */
+	private List<KrcstDvgcAttendance> entityDvgcAttendanceList;
 
 	/**
 	 * Instantiates a new jpa divergence time repository set memento.
@@ -31,22 +36,41 @@ public class JpaDivergenceTimeSetMemento implements DivergenceTimeSetMemento {
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaDivergenceTimeSetMemento(KrcstDvgcTime entity) {
-		this.entity = entity;
+	public JpaDivergenceTimeSetMemento(KrcstDvgcTime entityDvgcTime, List<KrcstDvgcAttendance> entityDvgcAttendanceList) {
+		this.entityDvgcTime = entityDvgcTime;
+		this.entityDvgcAttendanceList = entityDvgcAttendanceList;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#setDivergenceTimeNo(int)
+	/**
+	 * Sets the divergence time no.
+	 *
+	 * @param DivergenceTimeNo
+	 *            the new divergence time no
+	 */
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#
+	 * setDivergenceTimeNo(int)
 	 */
 	@Override
 	public void setDivergenceTimeNo(int DivergenceTimeNo) {
-		this.entity.getId().setNo(DivergenceTimeNo);
+		this.entityDvgcTime.getId().setNo(DivergenceTimeNo);
 		;
 
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#setCompanyId(java.lang.String)
+	/**
+	 * Sets the company id.
+	 *
+	 * @param CompanyId
+	 *            the new company id
+	 */
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#
+	 * setCompanyId(java.lang.String)
 	 */
 	@Override
 	public void setCompanyId(String CompanyId) {
@@ -54,53 +78,105 @@ public class JpaDivergenceTimeSetMemento implements DivergenceTimeSetMemento {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#setDivTimeUseSet(nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet)
+	/**
+	 * Sets the div time use set.
+	 *
+	 * @param divTimeUset
+	 *            the new div time use set
+	 */
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#
+	 * setDivTimeUseSet(nts.uk.ctx.at.record.dom.divergence.time.
+	 * DivergenceTimeUseSet)
 	 */
 	@Override
 	public void setDivTimeUseSet(DivergenceTimeUseSet divTimeUset) {
-		this.entity.setDvgcTimeUseSet(new BigDecimal(divTimeUset.value));
+		this.entityDvgcTime.setDvgcTimeUseSet(new BigDecimal(divTimeUset.value));
 
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#setDivTimeName(nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeName)
+	/**
+	 * Sets the div time name.
+	 *
+	 * @param divTimeName
+	 *            the new div time name
+	 */
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#
+	 * setDivTimeName(nts.uk.ctx.at.record.dom.divergence.time.
+	 * DivergenceTimeName)
 	 */
 	@Override
 	public void setDivTimeName(DivergenceTimeName divTimeName) {
-		this.entity.setDvgcTimeName(divTimeName.toString());
+		this.entityDvgcTime.setDvgcTimeName(divTimeName.toString());
 
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#setDivType(nts.uk.ctx.at.record.dom.divergence.time.DivergenceType)
+	/**
+	 * Sets the div type.
+	 *
+	 * @param divType
+	 *            the new div type
+	 */
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#
+	 * setDivType(nts.uk.ctx.at.record.dom.divergence.time.DivergenceType)
 	 */
 	@Override
 	public void setDivType(DivergenceType divType) {
-		this.entity.setDvgcType(new BigDecimal(divType.value));
+		this.entityDvgcTime.setDvgcType(new BigDecimal(divType.value));
 
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#setErrorCancelMedthod(nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeErrorCancelMethod)
+	/**
+	 * Sets the error cancel medthod.
+	 *
+	 * @param errorCancelMedthod
+	 *            the new error cancel medthod
+	 */
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#
+	 * setErrorCancelMedthod(nts.uk.ctx.at.record.dom.divergence.time.
+	 * DivergenceTimeErrorCancelMethod)
 	 */
 	@Override
 	public void setErrorCancelMedthod(DivergenceTimeErrorCancelMethod errorCancelMedthod) {
 
-		this.entity
+		this.entityDvgcTime
 				.setReasonInputCanceled(errorCancelMedthod.isReasonInputed() ? BigDecimal.ONE : BigDecimal.ZERO);
 
-		this.entity
+		this.entityDvgcTime
 				.setReasonSelectCanceled(errorCancelMedthod.isReasonSelected() ? BigDecimal.ONE : BigDecimal.ZERO);
 
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#setTarsetItems(java.util.List)
+	/**
+	 * Sets the tarset items.
+	 *
+	 * @param targetItems
+	 *            the new tarset items
+	 */
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#
+	 * setTarsetItems(java.util.List)
 	 */
 	@Override
-	public void setTarsetItems(List<Double> targetItems) {
-		// no coding
+	public void setTarsetItems(List<Integer> targetItems,int divNo, String companyId) {
+		targetItems.forEach(item ->{
+			KrcstDvgcAttendance entityDvgcAttendance = new KrcstDvgcAttendance();
+			entityDvgcAttendance.setId(new KrcstDvgcAttendancePK(divNo, companyId, item));
+			entityDvgcAttendanceList.add(entityDvgcAttendance);
+		});
 
 	}
 

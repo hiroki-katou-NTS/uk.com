@@ -27,8 +27,12 @@ public class DivergenceTimeInputMethodSaveCommandHandler extends CommandHandler<
 	@Inject
 	private DivergenceReasonInputMethodRepository divReasonInputRepo;
 
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<DivergenceTimeInputMethodSaveCommand> context) {
@@ -39,8 +43,7 @@ public class DivergenceTimeInputMethodSaveCommandHandler extends CommandHandler<
 		// Convert to DivergenceTimeSaveCommand
 		DivergenceTimeSaveCommand divTimeCommand = new DivergenceTimeSaveCommand(command.getDivergenceTimeNo(),
 				command.getDivergenceTimeUseSet(), command.getDivergenceTimeName(), divType, command.isReasonInput(),
-				command.isReasonSelect(),
-				command.getTargetItems().stream().map(e -> e.doubleValue()).collect(Collectors.toList()));
+				command.isReasonSelect(), command.getTargetItems());
 
 		// Convert to DivergenceReasonInputMethosSaveCommand
 
