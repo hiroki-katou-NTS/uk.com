@@ -280,7 +280,7 @@ module nts.uk.at.view.kdm002.a {
                     maxWidth: 550,
                     maxRows: 15
                 };
-                self.selectedEmployee().clear();
+                
             }
             
             
@@ -290,10 +290,20 @@ module nts.uk.at.view.kdm002.a {
             private exportButton() {
                 var self = this;
                 // check selection employee 
-                if (self.selectedEmployeeCode && self.selectedEmployee() && self.selectedEmployeeCode().length > 0) {
+                let lstSelectedEployee : Array<EmployeeSearchDto> = [];
+                var index = -1;
+                for (var i = 0; i < self.selectedEmployeeCode().length; i++) {
+                    index = _.findIndex(self.selectedEmployee(), function(x)
+                    { return x.employeeCode === self.selectedEmployeeCode()[i] });
+                    if (index > -1) {
+                        lstSelectedEployee.push(self.selectedEmployee()[index]);
+                    }
+                }
+                
+                if (lstSelectedEployee.length > 0) {
                     if (new Date(self.date()) >= new Date(self.periodDate().endDate)) {
                         nts.uk.ui.windows.setShared('KDM002Params', {
-                            empployeeList: self.selectedEmployee(),
+                            empployeeList: lstSelectedEployee,
                             startDate: self.periodDate().startDate,
                             endDate: self.periodDate().endDate,
                             date: self.date(),
