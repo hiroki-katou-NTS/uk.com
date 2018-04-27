@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
-import lombok.Builder;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
@@ -15,7 +14,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 //打刻反映時間帯
 @Getter
-@Builder
 public class StampReflectTimezone extends WorkTimeDomainObject {
 
 	/** The work no. */
@@ -37,23 +35,8 @@ public class StampReflectTimezone extends WorkTimeDomainObject {
 	/**
 	 * Instantiates a new stamp reflect timezone.
 	 *
-	 * @param workNo the work no
-	 * @param classification the classification
-	 * @param endTime the end time
-	 * @param startTime the start time
-	 */
-	public StampReflectTimezone(WorkNo workNo, GoLeavingWorkAtr classification, TimeWithDayAttr endTime,
-			TimeWithDayAttr startTime) {
-		super();
-		this.workNo = workNo;
-		this.classification = classification;
-		this.endTime = endTime;
-		this.startTime = startTime;
-	}
-
-	/**
-	 * Instantiates a new stamp reflect timezone.
-	 *
+	 * @param memento
+	 *            the memento
 	 */
 	public StampReflectTimezone(StampReflectTimezoneGetMemento memento) {
 		this.workNo = memento.getWorkNo();
@@ -75,24 +58,6 @@ public class StampReflectTimezone extends WorkTimeDomainObject {
 		memento.setStartTime(this.startTime);
 	}
 
-	/**
-	 * Update start time.
-	 *
-	 * @param startTime the start time
-	 */
-	public void updateStartTime(TimeWithDayAttr startTime) {
-		this.startTime = startTime;
-	}
-
-	/**
-	 * Update end time.
-	 *
-	 * @param endTime the end time
-	 */
-	public void updateEndTime(TimeWithDayAttr endTime) {
-		this.endTime = endTime;
-	}
-	
 	/**
 	 * Checks if is empty.
 	 *
