@@ -490,13 +490,13 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 				content += !Objects.isNull(appWork.getGoWorkAtr1())
 						? (appWork.getGoWorkAtr1() == 1
 								? " " + I18NText.getText("CMM045_252") + clockShorHm(appWork.getWorkTimeStart1())
-										+ I18NText.getText("CMM045_100") + clockShorHm(appWork.getWorkTimeEnd1())
+										+ I18NText.getText("CMM045_100") + I18NText.getText("CMM045_252") + clockShorHm(appWork.getWorkTimeEnd1())
 								: "")
 						: "";
 				content += !Objects.isNull(appWork.getGoWorkAtr2())
 						? (appWork.getGoWorkAtr2() == 1
 								? " " + I18NText.getText("CMM045_252") + clockShorHm(appWork.getWorkTimeStart2())
-										+ I18NText.getText("CMM045_100") + clockShorHm(appWork.getWorkTimeEnd2())
+										+ I18NText.getText("CMM045_100") + I18NText.getText("CMM045_252") + clockShorHm(appWork.getWorkTimeEnd2())
 								: "")
 						: "";
 			}
