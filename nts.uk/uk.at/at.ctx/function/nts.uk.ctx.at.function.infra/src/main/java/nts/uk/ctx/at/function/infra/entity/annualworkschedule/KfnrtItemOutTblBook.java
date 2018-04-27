@@ -20,62 +20,62 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KFNRT_ITEM_OUT_TBL_BOOK")
-public class KfnrtItemOutTblBook extends UkJpaEntity implements Serializable
-{
-    private static final long serialVersionUID = 1L;
-    
-    /**
-    * ID
-    */
-    @EmbeddedId
-    public KfnrtItemOutTblBookPk itemOutTblBookPk;
-    
-    /**
-    * コード
-    */
-    @Basic(optional = false)
-    @Column(name = "SET_OUT_CD")
-    public String setOutCd;
-    
-    /**
-    * 並び順
-    */
-    @Basic(optional = false)
-    @Column(name = "SORT_BY")
-    public int sortBy;
-    
-    /**
-    * 見出し名称
-    */
-    @Basic(optional = false)
-    @Column(name = "HEADING_NAME")
-    public String headingName;
-    
-    /**
-    * 使用区分
-    */
-    @Basic(optional = false)
-    @Column(name = "USE_CLASS")
-    public int useClass;
-    
-    /**
-    * 値の出力形式
-    */
-    @Basic(optional = false)
-    @Column(name = "VAL_OUT_FORMAT")
-    public int valOutFormat;
-    
-    @Override
-    protected Object getKey()
-    {
-        return itemOutTblBookPk;
-    }
+public class KfnrtItemOutTblBook extends UkJpaEntity implements Serializable {
+	private static final long serialVersionUID = 1L;
 
-    public ItemOutTblBook toDomain() {
-        return new ItemOutTblBook(this.itemOutTblBookPk.cid, this.itemOutTblBookPk.cd, this.setOutCd, this.sortBy, this.headingName, this.useClass, this.valOutFormat);
-    }
-    public static KfnrtItemOutTblBook toEntity(ItemOutTblBook domain) {
-        return new KfnrtItemOutTblBook(new KfnrtItemOutTblBookPk(domain.getCid(), domain.getCd()), domain.getSetOutCd(), domain.getSortBy(), domain.getHeadingName(), domain.getUseClass(), domain.getValOutFormat());
-    }
+	/**
+	* ID
+	*/
+	@EmbeddedId
+	public KfnrtItemOutTblBookPk itemOutTblBookPk;
 
+	/**
+	* コード
+	*/
+	@Basic(optional = false)
+	@Column(name = "SET_OUT_CD")
+	public String setOutCd;
+
+	/**
+	* 並び順
+	*/
+	@Basic(optional = false)
+	@Column(name = "SORT_BY")
+	public int sortBy;
+
+	/**
+	* 見出し名称
+	*/
+	@Basic(optional = false)
+	@Column(name = "HEADING_NAME")
+	public String headingName;
+
+	/**
+	* 使用区分
+	*/
+	@Basic(optional = false)
+	@Column(name = "USE_CLASS")
+	public int useClass;
+
+	/**
+	* 値の出力形式
+	*/
+	@Basic(optional = false)
+	@Column(name = "VAL_OUT_FORMAT")
+	public int valOutFormat;
+
+	@Override
+	protected Object getKey() {
+		return itemOutTblBookPk;
+	}
+
+	public ItemOutTblBook toDomain() {
+		return ItemOutTblBook.createFromJavaType(this.itemOutTblBookPk.cid, this.itemOutTblBookPk.cd, this.setOutCd,
+												this.sortBy, this.headingName, this.useClass, this.valOutFormat);
+	}
+	public static KfnrtItemOutTblBook toEntity(ItemOutTblBook domain) {
+		return new KfnrtItemOutTblBook(new KfnrtItemOutTblBookPk(domain.getCid(), domain.getCd().v()),
+										domain.getSetOutCd(), domain.getSortBy(), domain.getHeadingName().v(),
+										domain.getUseClass(), domain.getValOutFormat().value);
+	}
 }

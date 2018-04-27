@@ -8,17 +8,17 @@ public enum OutputAgreementTime {
 	 * 1ヶ月ごとのみ表示
 	 * */
 	ONCE_MONTH(0, "1ヶ月ごとのみ表示"),
-	
+
 	/*
 	 * 1ヶ月と2ヶ月ごとを表示
 	 * */
 	TWO_MONTH(1, "1ヶ月と2ヶ月ごとを表示"),
-	
+
 	/*
 	 * 1ヶ月と3ヶ月ごとを表示
 	 * */
 	THREE_MONTH(2, "1ヶ月と3ヶ月ごとを表示");
-	
+
 	/** The value. */
 	public final int value;
 

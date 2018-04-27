@@ -4,9 +4,9 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 @StringMaxLength(20)
-public class OutItemsWoScName extends StringPrimitiveValue<OutItemsWoScName> {
+public class ItemOutTblBookHeadingName extends StringPrimitiveValue<ItemOutTblBookHeadingName> {
 
-	public OutItemsWoScName(String rawValue) {
+	public ItemOutTblBookHeadingName(String rawValue) {
 		super(rawValue);
 	}
 }

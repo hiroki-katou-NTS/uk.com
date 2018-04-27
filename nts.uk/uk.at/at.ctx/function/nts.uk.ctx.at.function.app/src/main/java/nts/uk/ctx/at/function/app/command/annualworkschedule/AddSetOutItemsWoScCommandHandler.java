@@ -4,9 +4,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.function.dom.annualworkschedule.SetOutItemsWoSc;
+import nts.uk.ctx.at.function.dom.annualworkschedule.enums.OutputAgreementTime;
 import nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoScCode;
 import nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoScName;
 import nts.uk.ctx.at.function.dom.annualworkschedule.repository.SetOutItemsWoScRepository;
@@ -26,6 +28,7 @@ public class AddSetOutItemsWoScCommandHandler extends CommandHandler<SetOutItems
         String companyId = AppContexts.user().companyId();
         repository.add(new SetOutItemsWoSc(companyId, new OutItemsWoScCode(addCommand.getCd()),
                        new OutItemsWoScName(addCommand.getName()),
-                       addCommand.getOutNumExceedTime36Agr(), addCommand.getDisplayFormat()));
+                       addCommand.getOutNumExceedTime36Agr(),
+                       EnumAdaptor.valueOf(addCommand.getDisplayFormat(), OutputAgreementTime.class)));
     }
 }

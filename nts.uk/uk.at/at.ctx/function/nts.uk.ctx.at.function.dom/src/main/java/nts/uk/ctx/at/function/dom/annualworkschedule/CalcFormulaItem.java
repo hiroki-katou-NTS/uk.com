@@ -9,33 +9,29 @@ import nts.arc.layer.dom.AggregateRoot;
 */
 @AllArgsConstructor
 @Getter
-public class CalcFormulaItem extends AggregateRoot
-{
-    
-    /**
-    * 会社ID
-    */
-    private String cid;
-    
-    /**
-    * コード
-    */
-    private int setOutCd;
-    
-    /**
-    * コード
-    */
-    private int itemOutCd;
-    
-    /**
-    * 勤怠項目ID
-    */
-    private int attendanceItemId;
-    
-    /**
-    * 加, 減
-    */
-    private int operation;
-    
-    
+public class CalcFormulaItem extends AggregateRoot {
+	/**
+	* 会社ID
+	*/
+	private String cid;
+	
+	/**
+	* コード
+	*/
+	private int setOutCd;
+	
+	/**
+	* コード
+	*/
+	private int itemOutCd;
+	
+	/**
+	* 勤怠項目ID
+	*/
+	private int attendanceItemId;
+	
+	/**
+	* 加, 減
+	*/
+	private int operation;
 }

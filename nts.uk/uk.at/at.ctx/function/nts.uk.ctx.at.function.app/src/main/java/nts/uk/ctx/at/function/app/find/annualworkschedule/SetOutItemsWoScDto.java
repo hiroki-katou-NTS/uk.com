@@ -2,8 +2,6 @@ package nts.uk.ctx.at.function.app.find.annualworkschedule;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.annualworkschedule.SetOutItemsWoSc;
 
 /**
@@ -43,7 +41,7 @@ public class SetOutItemsWoScDto
     public static SetOutItemsWoScDto fromDomain(SetOutItemsWoSc domain)
     {
         return new SetOutItemsWoScDto(domain.getCid(), domain.getCd().v(), domain.getName().v(),
-                                      domain.getOutNumExceedTime36Agr(), domain.getDisplayFormat());
+                                      domain.getOutNumExceedTime36Agr(), domain.getDisplayFormat().value);
     }
     
 }
