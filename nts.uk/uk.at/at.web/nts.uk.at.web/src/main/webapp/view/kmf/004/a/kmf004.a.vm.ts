@@ -651,7 +651,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         openDDialog() {
             let self = this;
             nts.uk.ui.windows.setShared('KMF004D_SPHD_CD', self.currentItem().specialHolidayCode());
-            nts.uk.ui.windows.sub.modal('/view/kmf/004/d/index.xhtml').onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/kmf/004/e/index.xhtml').onClosed(function(): any {
             });
 
         }

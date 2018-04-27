@@ -241,7 +241,7 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 		
 		GrantDatePer grantDatePer = GrantDatePer.createSimpleFromJavaType(kshstGrantDatePer.kshstGrantDatePerPK.companyId,
 				kshstGrantDatePer.kshstGrantDatePerPK.specialHolidayCode, kshstGrantDatePer.kshstGrantDatePerPK.personalGrantDateCode,
-				kshstGrantDatePer.personalGrantDateName, kshstGrantDatePer.grantDate, kshstGrantDatePer.grantDateAtr, grantDatePerSet);
+				kshstGrantDatePer.personalGrantDateName, kshstGrantDatePer.provision, kshstGrantDatePer.grantDate, kshstGrantDatePer.grantDateAtr, grantDatePerSet);
 		return grantDatePer;
 	}
 
@@ -286,6 +286,7 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 		KshstGrantDatePerPK kshstGrantDatePerPK = new KshstGrantDatePerPK(grantDatePer.getCompanyId(),
 				grantDatePer.getSpecialHolidayCode(), grantDatePer.getPersonalGrantDateCode().v());
 		kshstGrantDatePer.personalGrantDateName = grantDatePer.getPersonalGrantDateName().v();
+		kshstGrantDatePer.provision = grantDatePer.getProvision();
 		kshstGrantDatePer.grantDate = grantDatePer.getGrantDate();
 		kshstGrantDatePer.grantDateAtr = grantDatePer.getGrantDateAtr().value;
 
@@ -321,6 +322,7 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 		Optional<KshstGrantDatePer> entity = this.queryProxy().find(key, KshstGrantDatePer.class);
 		KshstGrantDatePer kshstGrantDatePer = entity.get();
 		kshstGrantDatePer.personalGrantDateName = grantDatePer.getPersonalGrantDateName().v();
+		kshstGrantDatePer.provision = grantDatePer.getProvision();
 		kshstGrantDatePer.grantDate = grantDatePer.getGrantDate();
 		kshstGrantDatePer.grantDateAtr = grantDatePer.getGrantDateAtr().value;
 		
