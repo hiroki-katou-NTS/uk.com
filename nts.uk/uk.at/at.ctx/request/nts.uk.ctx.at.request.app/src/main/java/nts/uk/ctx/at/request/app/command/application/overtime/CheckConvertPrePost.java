@@ -232,17 +232,12 @@ public class CheckConvertPrePost {
 		}
 		return WorkClockFromTo;
 	}
-	private String convert(int minute) {
-		String hourminute = Strings.EMPTY;
-		 if (minute == 0) {
-			hourminute = ZEZO_TIME;
-		} else {
-			int hour = Math.abs(minute) / 60;
-			int hourInDay = hour % 24;
-			int minutes =  Math.abs(minute) % 60;
-			hourminute = hourInDay + ":" + (minutes < 10 ? ("0" + minutes) : minutes);
+	private String convert(Integer minute) {
+		if(minute == null){
+			return null;
 		}
-		return hourminute;
+		TimeWithDayAttr timeConvert = new TimeWithDayAttr(minute);
+		return timeConvert.getInDayTimeWithFormat();
 	}
 	private List<OvertimeInputCaculation> convertMaptoList(Map<Integer,TimeWithCalculationImport> overTime,TimeWithCalculationImport flexTime,TimeWithCalculationImport midNightTime){
 		List<OvertimeInputCaculation> result = new ArrayList<>();
