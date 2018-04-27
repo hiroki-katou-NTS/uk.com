@@ -265,7 +265,7 @@ public class WithinStatutoryTimeOfDaily {
 	 * @return
 	 */
 	public WithinStatutoryTimeOfDaily calcDiverGenceTime() {
-		return new WithinStatutoryTimeOfDaily(this.workTime,this.withinStatutoryMidNightTime!=null?this.withinStatutoryMidNightTime.calcDiverGenceTime():this.withinStatutoryMidNightTime);
+		return new WithinStatutoryTimeOfDaily(this.workTime,this.actualWorkTime,this.withinStatutoryMidNightTime!=null?this.withinStatutoryMidNightTime.calcDiverGenceTime():this.withinStatutoryMidNightTime);
 	}
 	
 }
