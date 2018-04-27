@@ -475,7 +475,9 @@ public class OverTimeOfDaily {
 		AttendanceTime predetermineTime = predTime;
 		
 		//就業時間として計算か判定
-		if(ootsukaFixedCalcSet.getCalcMethod().isCalcAsWorking())
+		if(ootsukaFixedCalcSet == null
+			|| ootsukaFixedCalcSet.getCalcMethod() == null
+			|| ootsukaFixedCalcSet.getCalcMethod().isCalcAsWorking())
 			return;
 		//法定労働時間を取得
 		val statutoryTime = dailyUnit.getDailyTime();
@@ -553,7 +555,9 @@ public class OverTimeOfDaily {
 										:b;
 		
 		//就業時間として計算か判定
-		if(ootsukaFixedCalcSet.getCalcMethod().isCalcAsWorking())
+		if(ootsukaFixedCalcSet == null
+				|| ootsukaFixedCalcSet.getCalcMethod() == null
+				|| ootsukaFixedCalcSet.getCalcMethod().isCalcAsWorking())
 				return;
 		
 		val frameNoList = this.overTimeWorkFrameTime.stream().map(tc -> tc.getOverWorkFrameNo()).collect(Collectors.toList());
