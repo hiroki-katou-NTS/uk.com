@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.enums.EnumAdaptor;
@@ -115,4 +116,10 @@ public class Kwr008WebService extends WebService {
 	public void updateOutputItemSetting(SetOutItemsWoScCommand command){
 		this.updateOutputItemSetting.handle(command);
 	}
+	
+//	@POST
+//	@Path("get/checkCodeOutputItemSetting/{cd}")
+//	public SetOutItemsWoScDto checkCodeOutputSettingCode(@PathParam("cd") String cd){
+//		return this.outputItemSetting.find(cd);
+//	}
 }

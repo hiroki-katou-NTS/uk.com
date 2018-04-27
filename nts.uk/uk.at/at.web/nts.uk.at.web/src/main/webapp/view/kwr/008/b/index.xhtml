@@ -7,7 +7,10 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script></script>
+			<com:ValidatorScript>
+				nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoScCode
+				nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoScName
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:stylefile path="kwr008.b.style.css" />
@@ -51,10 +54,10 @@
 						<div data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('KWR008_24')}</div> 
 						
 						<!-- B3_2 -->
-						<input id="B3_2" tabindex="6" data-bind="ntsTextEditor: {name: '#[KWR008_25]', value : inputSettingCode, option : { width : '50px'}}" />
+						<input id="B3_2" tabindex="6" data-bind="ntsTextEditor: {name: '#[KWR008_25]', value : inputSettingCode, option : { width : '25px'}, constraint : 'OutItemsWoScCode'}" />
 						
 						<!-- B3_3 -->
-						<input tabindex="7" data-bind="ntsTextEditor: {name: '#[KWR008_26]', value : inputProjectName, option : { width : '200px'}}" />
+						<input id="B3_3" tabindex="7" data-bind="ntsTextEditor: {name: '#[KWR008_26]', value : inputProjectName, option : { width : '200px'}, constraint: 'OutItemsWoScName'}" />
 					</div>
 					
 					<!-- B4 -->

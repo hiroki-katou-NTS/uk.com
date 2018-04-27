@@ -48,7 +48,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.selectedCode = ko.observable();
 
             //B5_1
-            self.excessTime = ko.observable(0);
+            self.excessTime = ko.observable(false);
 
             //B3_2 B3_3
             self.inputSettingCode = ko.observable('');
@@ -56,9 +56,9 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             //B5_3
             self.itemRadio = ko.observableArray([
-                new model.ItemModel(0, getText('CMF001_37')),
-                new model.ItemModel(1, getText('CMF001_38')),
-                new model.ItemModel(2, getText('CMF001_39'))
+                new model.ItemModel(0, getText('KWR008_37')),
+                new model.ItemModel(1, getText('KWR008_38')),
+                new model.ItemModel(2, getText('KWR008_39'))
             ]);
             self.selectedItemRadio = ko.observable(-1);
 
@@ -79,6 +79,12 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 for (let i = 0, count = data.length; i < count; i++) {
                     self.listStandardImportSetting.push(new model.setOutputSettingCode(data[i].cd, data[i].name, data[i].outNumExceedTime36Agr, data[i].displayFormat));
                 }
+                
+                self.listStandardImportSetting.sort((a, b) => {
+                    return (a.cd === b.cd) ? 0 : (a.cd < b.cd) ? -1 : 1;
+                });
+
+                self.checkListItemOutput();
             });
 
             //fill data B3
@@ -89,7 +95,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             service.getValueOutputFormat().then(data => {
                 for (let i = 0, count = data.length; i < count; i++) {
-                    self.valueOutputFormat().push(new model.ItemModel(data[i].value, data[i].localizedName));
+                    self.valueOutputFormat.push(new model.ItemModel(data[i].value, data[i].localizedName));
                 }
 
                 $('#output-item').ntsGrid({
@@ -103,16 +109,17 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     columns: [
                         { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
                         { headerText: '', key: 'useClassification', dataType: 'boolean', width: '35px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
-                        { headerText: getText('CMF001_27'), key: 'headingName', dataType: 'string', width: '160px' },
+                        { headerText: getText('KWR008_27'), key: 'headingName', dataType: 'string', width: '160px', ntsControl: 'TextEditor' },
                         { headerText: '', key: 'open', dataType: 'string', width: '55px', unbound: true, ntsControl: 'Button' },
-                        { headerText: getText('CMF001_30'), key: 'valueOutputFormat', dataType: 'string', width: '205px', ntsControl: 'Combobox', tabIndex: 0 },
-                        { headerText: getText('CMF001_29'), key: 'outputTargetItem', dataType: 'string', width: '260px' }
+                        { headerText: getText('KWR008_30'), key: 'valueOutputFormat', dataType: 'string', width: '205px', ntsControl: 'Combobox' },
+                        { headerText: getText('KWR008_29'), key: 'outputTargetItem', dataType: 'string', width: '260px' }
                     ],
                     features: [],
                     ntsControls: [
                         { name: 'Checkbox', options: { value: 1 }, optionsValue: 'value', controlType: 'CheckBox', enable: true },
+                        { name: 'TextEditor', value: 'headingName', controlType: 'TextEditor', constraint: { valueType: 'String' } },
                         { name: 'Button', text: getText('CMF001_34'), click: data => { self.openKDW007(data) }, controlType: 'Button' },
-                        { name: 'Combobox', options: self.valueOutputFormat, optionsValue: 'code', optionsText: 'name', columns: [{ prop: 'name', length: 1 }], controlType: 'ComboBox', enable: true },
+                        { name: 'Combobox', options: self.valueOutputFormat, optionsValue: 'code', optionsText: 'name', columns: [{ prop: 'name', length: 3 }], controlType: 'ComboBox', enable: true },
                     ]
                 });
 
@@ -120,6 +127,9 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             //event select change
             self.selectedCode.subscribe((data) => {
+                self.listStandardImportSetting.sort((a, b) => {
+                    return (a.cd === b.cd) ? 0 : (a.cd < b.cd) ? -1 : 1;
+                });
                 self.updateMode(data);
             });
 
@@ -170,6 +180,12 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.selectedItemRadio(self.listStandardImportSetting()[selectedIndex].displayFormat);
 
             $('#B3_2').attr('disabled', 'disabled');
+
+            $('#B3_3').focus();
+
+            self.listStandardImportSetting.sort();
+
+            self.selectedCode(data);
         }
 
 
@@ -192,7 +208,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.inputProjectName('');
 
             //B5_1
-            self.excessTime(0);
+            self.excessTime(false);
 
             //B5_2
             self.selectedItemRadio(-1);
@@ -208,10 +224,21 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 self.selectedItemRadio()
             );
 
-            service.registerOutputItemSetting(data).done(() => {
-                self.listStandardImportSetting.push(data);
-                self.updateMode(+self.inputSettingCode());
-            })
+            if (self.screenMode() == model.SCREEN_MODE.NEW) {
+                service.registerOutputItemSetting(data).done(() => {
+                    self.listStandardImportSetting.push(data);
+                    self.updateMode(+self.inputSettingCode());
+                    info({ messageId: 'Msg_15' });
+                })
+            } else {
+                service.updateOutputItemSetting(data).done(() => {
+                    let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd == self.selectedCode(); });
+                    self.listStandardImportSetting.replace(self.listStandardImportSetting()[selectedIndex], data);
+                    info({ messageId: 'Msg_15' });
+                });
+            }
+
+
         }
 
         //do delete
