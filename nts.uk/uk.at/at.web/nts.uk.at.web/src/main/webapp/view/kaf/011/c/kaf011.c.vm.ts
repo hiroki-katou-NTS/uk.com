@@ -61,9 +61,9 @@ module nts.uk.at.view.kaf011.c.screenModel {
 
             self.appReasons.subscribe((appReasons) => {
                 if (appReasons) {
-                    let defaultReasonId = _.find(appReasons, { 'defaultFlg': 1 }).reasonID;
-                    if (defaultReasonId) {
-                        self.appReasonSelectedID(defaultReasonId);
+                    let defaultReason = _.find(appReasons, { 'defaultFlg': 1 });
+                    if (defaultReason) {
+                        self.appReasonSelectedID(defaultReason.reasonID);
                     }
                 }
 

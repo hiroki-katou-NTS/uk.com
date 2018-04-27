@@ -54,6 +54,7 @@ import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceReposit
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
+import nts.uk.ctx.at.shared.dom.personallaborcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -137,7 +138,7 @@ public class HolidayShipmentScreenAFinder {
 	// Screen A Start
 	public HolidayShipmentDto startPageA(String employeeID, GeneralDate initDate, int uiType) {
 		employeeID = employeeID == null ? AppContexts.user().employeeId() : employeeID;
-		String companyID = AppContexts.user().companyId();
+		companyID = AppContexts.user().companyId();
 		// アルゴリズム「起動前共通処理（新規）」を実行する
 		HolidayShipmentDto result = commonProcessBeforeStart(appType, companyID, employeeID, initDate);
 
@@ -148,9 +149,9 @@ public class HolidayShipmentScreenAFinder {
 				otherCommonAlgorithm.judgmentPrePostAtr(appType, refDate, uiType == 0 ? true : false).value);
 
 		// アルゴリズム「平日時就業時間帯の取得」を実行する
-		PersonalLaborCondition perLaborCondition = getWorkingHourOnWeekDays(employeeID, refDate);
+		SingleDaySchedule wkOnWeekDays = getWorkingHourOnWeekDays(employeeID, refDate);
 
-		String wkTimeCD = getWkTimeCD(perLaborCondition);
+		String wkTimeCD = getWkTimeCD(wkOnWeekDays);
 
 		GeneralDate appDate, deadDate;
 
@@ -200,10 +201,9 @@ public class HolidayShipmentScreenAFinder {
 		return output;
 	}
 
-	private String getWkTimeCD(PersonalLaborCondition perLaborCondition) {
-		if (perLaborCondition != null) {
-			Optional<WorkTimeCode> wkTimeCodeOpt = perLaborCondition.getWorkCategory().getWeekdayTime()
-					.getWorkTimeCode();
+	private String getWkTimeCD(SingleDaySchedule wkOnWeekDays) {
+		if (wkOnWeekDays != null) {
+			Optional<WorkTimeCode> wkTimeCodeOpt = wkOnWeekDays.getWorkTimeCode();
 
 			if (wkTimeCodeOpt.isPresent()) {
 
@@ -319,12 +319,13 @@ public class HolidayShipmentScreenAFinder {
 
 		List<TimezoneUse> timeZones = new ArrayList<TimezoneUse>();
 
+		// ○就業時間帯を取得
 		Optional<WorkTimeSetting> workTimeOpt = wkTimeRepo.findByCode(companyID, wkTimeCode);
 
 		if (workTimeOpt.isPresent()) {
 
 			wkTimeCode = workTimeOpt.get().getWorktimeCode().v();
-
+			// ○所定時間帯を取得
 			Optional<PredetemineTimeSetting> preTimeSetOpt = preTimeSetRepo.findByWorkTimeCode(companyID, wkTimeCode);
 
 			if (preTimeSetOpt.isPresent()) {
@@ -599,12 +600,13 @@ public class HolidayShipmentScreenAFinder {
 
 	}
 
-	private PersonalLaborCondition getWorkingHourOnWeekDays(String employeeID, GeneralDate baseDate) {
+	private SingleDaySchedule getWorkingHourOnWeekDays(String employeeID, GeneralDate baseDate) {
+		// ドメインモデル「個人労働条件」を取得する
 		Optional<PersonalLaborCondition> perLaborConOpt = perLaborConRepo.findById(employeeID, baseDate);
 		if (!perLaborConOpt.isPresent()) {
 			return null;
 		} else {
-			return perLaborConOpt.get();
+			return perLaborConOpt.get().getWorkCategory().getWeekdayTime();
 		}
 
 	}
