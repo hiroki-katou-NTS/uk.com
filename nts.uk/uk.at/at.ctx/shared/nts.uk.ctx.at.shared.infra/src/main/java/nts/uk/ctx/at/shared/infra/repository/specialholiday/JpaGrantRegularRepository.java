@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantDatePerSetPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantDateSet;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantDateSetPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantRegular;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaGrantRegularRepository extends JpaRepository implements GrantRegularRepository {
@@ -36,6 +37,8 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 	private static final String SELECT_ALL_PER;
 	
 	private static final String DELETE_ALL_PER_SET_BY_CODES;
+	
+	private static final String CHANGE_ALL_PROVISION_DATE_PER;
 
 	static {
 
@@ -82,6 +85,10 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 		builderString.append(" AND e.kshstGrantDatePerSetPK.specialHolidayCode = :specialHolidayCode");
 		builderString.append(" AND e.kshstGrantDatePerSetPK.personalGrantDateCode = :personalGrantDateCode");
 		DELETE_ALL_PER_SET_BY_CODES = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("UPDATE KshstGrantDatePer e SET e.provision = 0 WHERE e.kshstGrantDatePerPK.companyId = :companyId");
+		CHANGE_ALL_PROVISION_DATE_PER = builderString.toString();
 	}
 
 	/**
@@ -355,6 +362,15 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 		.setParameter("companyId", companyId)
 		.setParameter("specialHolidayCode", specialHolidayCode)
 		.setParameter("personalGrantDateCode", personalGrantDateCode)
+		.executeUpdate();
+	}
+
+	@Override
+	public void changeAllProvision() {
+		String companyId = AppContexts.user().companyId();
+		
+		this.getEntityManager().createQuery(CHANGE_ALL_PROVISION_DATE_PER)
+		.setParameter("companyId", companyId)
 		.executeUpdate();
 	}
 }
