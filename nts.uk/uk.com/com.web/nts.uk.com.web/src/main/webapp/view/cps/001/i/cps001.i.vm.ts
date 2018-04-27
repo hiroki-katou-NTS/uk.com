@@ -423,9 +423,9 @@ module nts.uk.com.view.cps001.i.vm {
                 let hour = Math.floor(Math.abs(value) / 60);
                 let minutes = Math.floor(Math.abs(value) % 60);
                 let result =  hour + ':' + (minutes < 10 ? ("0" + minutes) : minutes);
-                return value >= 0 ? ' '+result : '-'+result;
+                return value >= 0 ? "&nbsp;"+result : '-'+result;
             } else {
-                return ' 0:00';
+                return "&nbsp;0:00";
             }
         }
 
@@ -524,7 +524,7 @@ module nts.uk.com.view.cps001.i.vm {
                 { headerText: nts.uk.resource.getText('CPS001_124'), key: 'timeRemain', width: 70, hidden: self.timeReamH() },
                 { headerText: nts.uk.resource.getText('CPS001_129'), key: 'expStatus', width: 80 }
             ]);
-            let table: string = '<table tabindex="5" id="sel_item_grid" data-bind="ntsGridList: { height: 282, options: listData, primaryKey:\'specialid\',columns:columns,multiple: false, value: currentValue , rows :10 , showNumbering: true}"></table>';
+            let table: string = '<table tabindex="5" id="sel_item_grid" data-bind="ntsGridList: { height: 282, options: listData, primaryKey:\'specialid\',columns:columns,multiple: false, value: currentValue , rows :10 }"></table>';
             $("#tbl").html(table);
             ko.applyBindings(self, $("#tbl")[0]);
         }
