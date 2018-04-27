@@ -7,13 +7,13 @@ package nts.uk.query.model.employee;
 import java.util.Optional;
 
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 
 /**
  * The Class EmployeeInformation.
  */
 // 社員情報
-@Getter
+@Data
 @Builder
 public class EmployeeInformation {
 
@@ -42,5 +42,5 @@ public class EmployeeInformation {
 	Optional<String> employment; // 所属雇用
 
 	/** The employment cls. */
-	Optional<String> employmentCls; // 就業区分
+	Optional<Integer> employmentCls; // 就業区分
 }

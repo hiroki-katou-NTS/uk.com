@@ -42,5 +42,5 @@ public class EmployeeInformationExport {
 	Optional<String> employment; // 所属雇用
 
 	/** The employment cls. */
-	Optional<String> employmentCls; // 就業区分
+	Optional<Integer> employmentCls; // 就業区分
 }
