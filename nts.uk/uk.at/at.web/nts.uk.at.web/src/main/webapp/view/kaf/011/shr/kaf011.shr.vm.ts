@@ -216,9 +216,12 @@ module nts.uk.at.view.kaf011.shr {
 
                     block.invisible();
                     service.changeWkType(changeWkTypeParam).done((data: IChangeWorkType) => {
+
                         if (data) {
                             if (vm.screenModeNew()) {
                                 if (data.timezoneUseDtos) {
+                                    $("#recTime1Start").ntsError("clear");
+                                    $("#recTime1End").ntsError("clear");
                                     let timeZone1 = data.timezoneUseDtos[0];
                                     let timeZone2 = data.timezoneUseDtos[1];
 
