@@ -160,6 +160,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         calcFlex: KnockoutObservable<CalcFlex> = ko.observable(null);
         breakTimeDay: KnockoutObservable<BreakTimeDay> = ko.observable(null);
         canFlex:  KnockoutObservable<any> = ko.observable(false);
+        sprStampSourceInfo:  KnockoutObservable<any> = ko.observable(null);
         constructor(dataShare:any) {
             var self = this;
             self.initLegendButton();
@@ -424,7 +425,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 // no20
                 self.dPErrorDto(data.dperrorDto); 
                 // flex
-                if (data.flexShortage != null && data.flexShortage.showFlex) {
+                if (data.flexShortage != null && data.flexShortage.showFlex && self.displayFormat == 0) {
                     self.breakTimeDay(data.flexShortage.breakTimeDay);
                     self.calcFlex(new CalcFlex(data.flexShortage.value18, data.flexShortage.value21, data.flexShortage.value189, data.flexShortage.value190, data.flexShortage.value191));
                     self.flexShortage(new FlexShortage(self, self.calcFlex(),  self.breakTimeDay()));
@@ -434,6 +435,61 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     $("#flex").remove();
                 }
                 self.displayNumberZero();
+                //set SPR
+               if(!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null && self.initScreenSPR == 0){
+                   if(data.showQuestionSPR == SPRCheck.SHOW_CONFIRM){
+                       let sprStamp ={employeeId: "", date: "" , change31: false, change34: false};
+                      // show dialog confirm 
+                       nts.uk.ui.dialog.confirm({ messageId: "Msg_1214" }).ifYes(() => {
+                           // update check
+                           if (!data.changeSPR.change31) {
+                               let objectName = {};
+                               objectName["A31"] = ""+self.shareObject().initClock.goOut;
+                               $("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId31, objectName);
+                               sprStamp.change31 = true;
+                           }
+
+                           if (!data.changeSPR.change34) {
+                               let objectName = {};
+                               objectName["A34"] = ""+self.shareObject().initClock.liveTime;
+                               $("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId34, objectName);
+                                 sprStamp.change34 = true;
+                           }
+                           
+                           if(data.changeSPR.showPrincipal){
+                               let objectName = {};
+                               objectName["sign"] = false;
+                               $("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId31, objectName); 
+                           }
+                           
+                           if(data.changeSPR.showSupervisor){
+                                let objectName = {};
+                               objectName["approval"] = false;
+                               $("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId31, objectName);
+                           }
+                           
+                           self.sprStampSourceInfo(sprStamp);
+                       });
+                   }else if(data.showQuestionSPR == SPRCheck.INSERT){
+                       let sprStamp ={employeeId: "", date: "" , change31: false, change34: false};
+                       if (!data.changeSPR.change31) {
+                           let objectName = {};
+                           objectName["A31"] = ""+self.shareObject().initClock.goOut;
+                           $("#dpGrid").ntsGrid("updateRow", "_"+data.changeSPR.rowId31, objectName);
+                            sprStamp.change31 = true;
+                       }
+
+                       if (!data.changeSPR.change34) {
+                           let objectName = {};
+                           objectName["A34"] = ""+self.shareObject().initClock.liveTime;
+                           $("#dpGrid").ntsGrid("updateRow", "_"+data.changeSPR.rowId34, objectName);
+                            sprStamp.change34 = true;
+                       }
+                       
+                         self.sprStampSourceInfo(sprStamp);
+                   }
+                   //update
+               }
                 nts.uk.ui.block.clear();
                 dfd.resolve();
             }).fail(function(error) {
@@ -549,6 +605,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 let dataChangeProcess: any = [];
                 let dataCheckSign: any = [];
                 let dataCheckApproval: any = [];
+                let sprStampSourceInfo: any = null;
                 _.each(dataChange, (data: any) => {
                     let dataTemp = _.find(dataSource, (item: any) => {
                         return item.id == data.rowId;
@@ -606,12 +663,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     }
                 });
                 if(!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null && self.initScreenSPR == 0){
-                    let dataGout = new InfoCellEdit("", "31", String(self.shareObject().initClock.goOut), "INTEGER", "I_A_A_A_A1", self.shareObject().initClock.employeeId, self.shareObject().initClock.dateSpr.utc().toISOString(), 0);
-                    let dataLiveTime = new InfoCellEdit("", "34", String(self.shareObject().initClock.liveTime), "INTEGER", "I_A_A_A_A2", self.shareObject().initClock.employeeId, self.shareObject().initClock.dateSpr.utc().toISOString(), 0);
-                    dataChangeProcess.push(dataGout);
-                    dataChangeProcess.push(dataLiveTime);
+//                    let dataGout = new InfoCellEdit("", "31", String(self.shareObject().initClock.goOut), "INTEGER", "I_A_A_A_A1", self.shareObject().initClock.employeeId, self.shareObject().initClock.dateSpr.utc().toISOString(), 0);
+//                    let dataLiveTime = new InfoCellEdit("", "34", String(self.shareObject().initClock.liveTime), "INTEGER", "I_A_A_A_A2", self.shareObject().initClock.employeeId, self.shareObject().initClock.dateSpr.utc().toISOString(), 0);
+//                    dataChangeProcess.push(dataGout);
+//                    dataChangeProcess.push(dataLiveTime);
+                    if (self.sprStampSourceInfo() != null) {
+                        sprStampSourceInfo = self.sprStampSourceInfo();
+                        sprStampSourceInfo.employeeId = self.shareObject().initClock.employeeId;
+                        sprStampSourceInfo.date = self.shareObject().initClock.dateSpr.utc().toISOString();
+                    }
                 }
-                let dataParent = { itemValues: dataChangeProcess, dataCheckSign : dataCheckSign, dataCheckApproval: dataCheckApproval, mode: self.displayFormat()}
+                let dataParent = { itemValues: dataChangeProcess, dataCheckSign : dataCheckSign, dataCheckApproval: dataCheckApproval, mode: self.displayFormat(), spr: sprStampSourceInfo}
                 if(self.displayFormat() ==0){
                     if (!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null) {
                         dataParent["employeeId"] = self.shareObject().initClock.employeeId;
@@ -2716,4 +2778,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         //承認
         APPROVAL = 1
     }
+    
+     export enum SPRCheck {
+         NOT_INSERT = 0,
+         INSERT = 1,
+         SHOW_CONFIRM = 2
+
+     }
 }

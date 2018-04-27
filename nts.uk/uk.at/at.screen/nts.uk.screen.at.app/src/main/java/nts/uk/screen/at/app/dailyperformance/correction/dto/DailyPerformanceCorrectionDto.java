@@ -71,7 +71,9 @@ public class DailyPerformanceCorrectionDto {
 	
 	private FlexShortage flexShortage;
 	
-	private boolean showQuestionSPR;
+	private Integer showQuestionSPR;
+	
+	private ChangeSPR changeSPR;
 
 	public DailyPerformanceCorrectionDto() {
 		super();
@@ -81,6 +83,7 @@ public class DailyPerformanceCorrectionDto {
 		this.itemValues = new HashSet<>();
 		this.data = new HashMap<>();
 		this.dPErrorDto = new ArrayList<>();
+		this.changeSPR = new ChangeSPR(false, false);
 	}
 
 	/** Check if employeeId is login user */
