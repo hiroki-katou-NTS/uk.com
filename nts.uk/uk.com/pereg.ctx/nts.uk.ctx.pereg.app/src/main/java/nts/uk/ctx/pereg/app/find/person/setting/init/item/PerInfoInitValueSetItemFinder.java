@@ -409,7 +409,7 @@ public class PerInfoInitValueSetItemFinder {
 			PerInfoInitValueSettingItemDto dto, String selectionId, boolean isOld, boolean isEven) {
 
 		if (itemParent.size() > 0) {
-			if (itemParent.get(0).getSelectionItemId() != null && itemParent.get(0).getStringValue().toString()!= null) {
+			if (itemParent.get(0).getSelectionItemId() != null && itemParent.get(0).getStringValue()!= null) {
 				selectionId = itemParent.get(0).getStringValue().v();
 			} else {
 				selectionId = itemParent.get(0).getSelectionItemId();
