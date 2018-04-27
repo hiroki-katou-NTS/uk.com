@@ -943,6 +943,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.extraction();
                     // no20
                     self.dPErrorDto(data.dperrorDto);
+                    // flex
+                    if (data.flexShortage != null && data.flexShortage.showFlex && self.displayFormat == 0) {
+                        self.breakTimeDay(data.flexShortage.breakTimeDay);
+                        self.calcFlex(new CalcFlex(data.flexShortage.value18, data.flexShortage.value21, data.flexShortage.value189, data.flexShortage.value190, data.flexShortage.value191));
+                        self.flexShortage(new FlexShortage(self, self.calcFlex(), self.breakTimeDay()));
+                        // アルゴリズム「フレックス不足の相殺が実施できるかチェックする」
+                        self.calcFlex(data.flexShortage.canflex);
+                    } else {
+                        $("#flex").remove();
+                    }
                     self.displayNumberZero();
                     nts.uk.ui.block.clear();
                 }).fail(function(error) {
