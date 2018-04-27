@@ -402,5 +402,19 @@ public class TotalWorkingTime {
 		return this.outingTimeOfDailyPerformance.stream().filter(o -> o.getReason().value == reason).findFirst();
 	}
 
+	public TotalWorkingTime calcDiverGenceTime() {
+		return new TotalWorkingTime(this.totalTime,
+									this.totalCalcTime,
+									this.actualTime,
+									this.withinStatutoryTimeOfDaily!=null?this.withinStatutoryTimeOfDaily.calcDiverGenceTime():this.withinStatutoryTimeOfDaily,
+									this.excessOfStatutoryTimeOfDaily!=null?this.excessOfStatutoryTimeOfDaily.calcDiverGenceTime():this.excessOfStatutoryTimeOfDaily,
+									this.lateTimeOfDaily,
+									this.leaveEarlyTimeOfDaily,
+									this.breakTimeOfDaily,
+									this.outingTimeOfDailyPerformance,
+									this.raiseSalaryTimeOfDailyPerfor, this.workTimes, this.temporaryTime, this.shotrTimeOfDaily, this.holidayOfDaily); 
+	}
+	
+	
 
 }

@@ -133,6 +133,11 @@ public class ActualWorkingTimeOfDaily {
     										timeDiff,totalWorkingTime,divTime,premiumTime);
     }
     
+    public ActualWorkingTimeOfDaily inssertTotalWorkingTime(TotalWorkingTime time) {
+    	return new ActualWorkingTimeOfDaily(this.constraintDifferenceTime,this.constraintTime,this.timeDifferenceWorkingHours,time,this.divTime,this.premiumTimeOfDailyPerformance);
+    }
+    
+    
 	/**
 	 * 日別実績の実働時間の計算
 	 * @param breakTimeCount 
@@ -261,16 +266,16 @@ public class ActualWorkingTimeOfDaily {
 			/*実績所定労働時間*/) {
 		
 
-		val replaceDto =  rePlaceIntegrationDto(forCalcDivergenceDto,
-				   								employeeId,
-				   								ymd,
-				   								totalWorkingTime,
-				   								constraintDifferenceTime,
-				   								constraintTime,
-				   								timeDifferenceWorkingHours,
-				   								premiumTime,
-				   								workScheduleTime); 	
-		val returnList = calcDivergenceTime(replaceDto, divergenceTimeList);
+//		val replaceDto =  rePlaceIntegrationDto(forCalcDivergenceDto,
+//				   								employeeId,
+//				   								ymd,
+//				   								totalWorkingTime,
+//				   								constraintDifferenceTime,
+//				   								constraintTime,
+//				   								timeDifferenceWorkingHours,
+//				   								premiumTime,
+//				   								workScheduleTime); 	
+		val returnList = calcDivergenceTime(forCalcDivergenceDto, divergenceTimeList);
 		//returnする
 		return new DivergenceTimeOfDaily(returnList);
 	}
