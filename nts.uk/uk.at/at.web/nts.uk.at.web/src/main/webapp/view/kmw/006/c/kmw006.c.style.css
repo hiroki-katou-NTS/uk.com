@@ -1,19 +1,21 @@
 /* style */
-#single-list_headers th {
+#list_headers th {
 	text-align: center;
 }
 
-#single-list td {
+#list td {
 	text-align: center;
 }
 
-.link-button {
+.linkLabel {
 	text-decoration: none;
 	color: #0D86D1 !important;
 	background-color: inherit !important;
+	font-size: 14px;
+    font-family: "DroidSansMono", "Meiryo";
 }
 
-.link-button:hover {
+.linkLabel:hover {
 	text-decoration: underline !important;
 	color: #0D86D1 !important;
 }

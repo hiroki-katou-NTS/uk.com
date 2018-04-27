@@ -42,7 +42,7 @@ module nts.uk.at.view.kmw006.c.viewmodel {
 
         private initIGrid() {
             let self = this;
-            $("#single-list").igGrid({
+            $("#list").igGrid({
                 height: '400px',
                 dataSource: self.items(),
                 primaryKey: 'logId',
@@ -52,11 +52,11 @@ module nts.uk.at.view.kmw006.c.viewmodel {
                     { headerText: getText('KMW006_33'), key: 'column2', dataType: 'string', width: '120px' },
                     { headerText: getText('KMW006_34'), key: 'column3', dataType: 'string', width: '200px' },
                     { headerText: "", key: 'totalEmp', dataType: 'number', hidden: true },
-                    { headerText: getText('KMW006_35'), key: 'column4', dataType: 'string', width: '100px', template: "{{if ${totalEmp} > 0}} <a tabindex=\"1\" data-bind=\"ntsLinkButton: { action: openKmw006dDialog.bind($data, \'${logId}\') }\">${column4}</a> {{else}} ${column4} {{/if}}" },
+                    { headerText: getText('KMW006_35'), key: 'column4', dataType: 'string', width: '100px', template: "{{if ${totalEmp} > 0}} <a href=\"javascript:void(0)\" class=\"linkLabel dialogDLink\" logId=\"${logId}\">${column4}</a> {{else}} ${column4} {{/if}}" },
                     { headerText: "", key: 'alarmCount', dataType: 'number', hidden: true },
-                    { headerText: getText('KMW006_56'), key: 'column5', dataType: 'string', width: '100px', template: "{{if ${alarmCount} > 0}} <a tabindex=\"2\" data-bind=\"ntsLinkButton: { action: openKmw006eDialogA.bind($data, \'${logId}\') }\">${column5}</a> {{else}} ${column5} {{/if}}" },
+                    { headerText: getText('KMW006_56'), key: 'column5', dataType: 'string', width: '100px', template: "{{if ${alarmCount} > 0}} <a href=\"javascript:void(0)\" class=\"linkLabel dialogEALink\" logId=\"${logId}\">${column5}</a> {{else}} ${column5} {{/if}}" },
                     { headerText: "", key: 'errorCount', dataType: 'number', hidden: true },
-                    { headerText: getText('KMW006_36'), key: 'column6', dataType: 'string', width: '100px', template: "{{if ${errorCount} > 0}} <a tabindex=\"3\" data-bind=\"ntsLinkButton: { action: openKmw006eDialogE.bind($data, \'${logId}\') }\">${column6}</a> {{else}} ${column6} {{/if}}" }
+                    { headerText: getText('KMW006_36'), key: 'column6', dataType: 'string', width: '100px', template: "{{if ${errorCount} > 0}} <a href=\"javascript:void(0)\" class=\"linkLabel dialogEELink\" logId=\"${logId}\">${column6}</a> {{else}} ${column6} {{/if}}" }
                 ],
                 features: [
                     {
@@ -64,19 +64,22 @@ module nts.uk.at.view.kmw006.c.viewmodel {
                         pageSize: 15,
                         currentPageIndex: 0,
                         showPageSizeDropDown: false,
+                        pageIndexChanged: () => {
+                            self.bindLinkClick();
+                        },
                         pageCountLimit: 20
                     }
                 ]
             });
         }
-        
+
         private openKmw006dDialog(logId) {
             let self = this;
             block.invisible();
             service.getListEmpId(logId, ATR.ALL).done((result: Array<string>) => {
                 if (result && result.length) {
                     let tmp = _.find(self.items(), (x: ItemModel) => x.logId == logId);
-                    setShared("Kmw006dParams", {logId: logId, listEmpId: result, closure: tmp.column1, targetYm: tmp.column2, executionDt: tmp.column3});
+                    setShared("Kmw006dParams", { logId: logId, listEmpId: result, closure: tmp.column1, targetYm: tmp.column2, executionDt: tmp.column3 });
                     modal("/view/kmw/006/d/index.xhtml").onClosed(() => {
                     });
                 }
@@ -84,16 +87,16 @@ module nts.uk.at.view.kmw006.c.viewmodel {
                 alert(error);
             }).always(() => {
                 block.clear();
-            });     
+            });
         }
-        
+
         private openKmw006eDialog(logId, atr) {
             let self = this;
             block.invisible();
             service.getListEmpId(logId, atr).done((result: Array<string>) => {
                 if (result && result.length) {
                     let tmp = _.find(self.items(), (x: ItemModel) => x.logId == logId);
-                    setShared("Kmw006eParams", {logId: logId, listEmpId: result, closure: tmp.column1, targetYm: tmp.column2, executionDt: tmp.column3, atr: atr});
+                    setShared("Kmw006eParams", { logId: logId, listEmpId: result, closure: tmp.column1, targetYm: tmp.column2, executionDt: tmp.column3, atr: atr });
                     modal("/view/kmw/006/e/index.xhtml").onClosed(() => {
                     });
                 }
@@ -101,17 +104,33 @@ module nts.uk.at.view.kmw006.c.viewmodel {
                 alert(error);
             }).always(() => {
                 block.clear();
-            });     
+            });
         }
-        
+
         private openKmw006eDialogA(logId: string) {
             let self = this;
             self.openKmw006eDialog(logId, ATR.ALARM);
         }
-        
+
         private openKmw006eDialogE(logId: string) {
             let self = this;
             self.openKmw006eDialog(logId, ATR.ERROR);
+        }
+        
+        public bindLinkClick() {
+            let self = this;
+            $('.dialogDLink').click(function() {
+                var logId = $(this).attr("logId");
+                self.openKmw006dDialog(logId);
+            });
+            $('.dialogEALink').click(function() {
+                var logId = $(this).attr("logId");
+                self.openKmw006eDialogA(logId);
+            });
+            $('.dialogEELink').click(function() {
+                var logId = $(this).attr("logId");
+                self.openKmw006eDialogE(logId);
+            });
         }
 
     }
@@ -141,7 +160,7 @@ module nts.uk.at.view.kmw006.c.viewmodel {
             this.errorCount = errorCount;
         }
     }
-    
+
     enum ATR {
         ALL = 0,
         ALARM = 1,
@@ -149,3 +168,4 @@ module nts.uk.at.view.kmw006.c.viewmodel {
     }
 
 }
+
