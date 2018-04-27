@@ -26,6 +26,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                             let item = new HolidayRemaining(data);
                             self.currentHoliday(item);
                             self.isNewMode(false);
+                            self.setFocus();
                         }
                         _.defer(() => { errors.clearAll() });
                     }).fail(function(error) {
