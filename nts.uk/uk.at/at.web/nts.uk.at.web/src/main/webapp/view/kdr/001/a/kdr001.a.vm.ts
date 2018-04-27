@@ -274,7 +274,12 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                             permission.functionNo,
                             permission.availability));
                     if (userSpecific) {
-                        self.holidayRemainingSelectedCd(userSpecific.outputItemSettingCode);
+                        if (_.find(holidayRemainings, x => { return x.cd == userSpecific.outputItemSettingCode; })) {
+                            self.holidayRemainingSelectedCd(userSpecific.outputItemSettingCode);
+                        }
+                        else {
+                            self.holidayRemainingSelectedCd('');
+                        }
                         self.selectedCode(userSpecific.pageBreakAtr);
                     }
                     // Init component.
