@@ -44,8 +44,8 @@ public class PerInfoInitValueSetItemFinder {
 	private PredetemineTimeSettingRepo predetemineTimeSettingRepo;
 	@Inject
 	private PerInfoCtgByCompanyRepositoty ctgRepo;
-	
-	@Inject 
+
+	@Inject
 	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
 
 	public List<PerInfoInitValueSettingItemDto> getAllItem(String settingId, String perInfoCtgId) {
@@ -65,7 +65,8 @@ public class PerInfoInitValueSetItemFinder {
 		List<PerInfoInitValueSetItem> item = this.settingItemRepo.getAllItem(settingId, perInfoCtgId);
 		PersonInfoCategory ctg = this.ctgRepo.getDetailCategoryInfo(companyId, perInfoCtgId, contract)
 				.orElseThrow(null);
-		if(item.isEmpty()) return ctgState;
+		if (item.isEmpty())
+			return ctgState;
 		String ctgCode = item.get(0).getCtgCode();
 		List<String> itemList = this.createItemTimePointOfCS00020();
 		List<ItemRequiredBackGroud> itemRequired = new ArrayList<>();
@@ -107,7 +108,8 @@ public class PerInfoInitValueSetItemFinder {
 			} else {
 				item.stream().forEach(c -> {
 					boolean checkDisable = c.getItemName().equals("終了日")
-							&& (ctg != null ? (ctg.getCategoryType() == CategoryType.CONTINUOUSHISTORY ? true : false) : false);
+							&& (ctg != null ? (ctg.getCategoryType() == CategoryType.CONTINUOUSHISTORY ? true : false)
+									: false);
 					itemDto.add(new ItemDto(c.getPerInfoItemDefId(), c.getItemName(), false, c.getIsRequired().value));
 					ItemRequiredBackGroud itemNamebackGroud = new ItemRequiredBackGroud();
 					ItemRequiredBackGroud disablebackGroud = new ItemRequiredBackGroud();
@@ -120,12 +122,12 @@ public class PerInfoInitValueSetItemFinder {
 						disablebackGroud.setState(toList("ntsgrid-disable"));
 						if (c.getIsRequired().value == IsRequired.REQUIRED.value) {
 							itemNamebackGroud.setState(toList("requiredCell"));
-						} 
+						}
 					} else {
 						if (c.getIsRequired().value == IsRequired.REQUIRED.value) {
 							itemNamebackGroud.setState(toList("requiredCell"));
 							disablebackGroud.setState(toList("requiredCell"));
-						} 
+						}
 					}
 					itemRequired.add(itemNamebackGroud);
 					itemRequired.add(disablebackGroud);
@@ -144,37 +146,46 @@ public class PerInfoInitValueSetItemFinder {
 	public List<PerInfoInitValueSettingItemDto> convertItemDtoLst(List<PerInfoInitValueSetItem> items) {
 		String ctgCode = items.get(0).getCtgCode();
 		List<PerInfoInitValueSettingItemDto> itemDto = new ArrayList<>();
-		//アルゴリズム「勤務開始終了時刻を活性にするかチェックする」
-		List<String> itemEven = Arrays.asList("IS00133", "IS00134", "IS00142", "IS00143", "IS00160", "IS00161", "IS00169",
-				"IS00170", "IS00178", "IS00179", "IS00151", "IS00152", "IS00196", "IS00197", "IS00205", "IS00206",
-				"IS00214", "IS00215", "IS00223", "IS00224", "IS00232", "IS00233", "IS00214", "IS00215", "IS00241",
-				"IS00242", "IS00187", "IS00188");
+		// アルゴリズム「勤務開始終了時刻を活性にするかチェックする」
+		List<String> itemEven = Arrays.asList("IS00133", "IS00134", "IS00142", "IS00143", "IS00160", "IS00161",
+				"IS00169", "IS00170", "IS00178", "IS00179", "IS00151", "IS00152", "IS00196", "IS00197", "IS00205",
+				"IS00206", "IS00214", "IS00215", "IS00223", "IS00224", "IS00232", "IS00233", "IS00214", "IS00215",
+				"IS00241", "IS00242", "IS00187", "IS00188");
 
-		//アルゴリズム「勤務開始終了時刻を活性にするかチェックする」AND 「アルゴリズム「複数回項目を活性にするかチェックする」
-		List<String> itemOld = Arrays.asList("IS00136", "IS00137", "IS00145", "IS00146", "IS00163", "IS00164", "IS00172",
-				"IS00173", "IS00181", "IS00182", "IS00154", "IS00155", "IS00199", "IS00200", "IS00208", "IS00209",
-				"IS00217", "IS00218", "IS00226", "IS00227", "IS00235", "IS00236", "IS00217", "IS00218", "IS00244",
-				"IS00245", "IS00190", "IS00191");
-		
+		// アルゴリズム「勤務開始終了時刻を活性にするかチェックする」AND 「アルゴリズム「複数回項目を活性にするかチェックする」
+		List<String> itemOld = Arrays.asList("IS00136", "IS00137", "IS00145", "IS00146", "IS00163", "IS00164",
+				"IS00172", "IS00173", "IS00181", "IS00182", "IS00154", "IS00155", "IS00199", "IS00200", "IS00208",
+				"IS00209", "IS00217", "IS00218", "IS00226", "IS00227", "IS00235", "IS00236", "IS00217", "IS00218",
+				"IS00244", "IS00245", "IS00190", "IS00191");
+		List<String> itemParents = Arrays.asList("IS00131", "IS00140", "IS00158", "IS00167", "IS00176", "IS00149",
+				"IS00194", "IS00203", "IS00212", "IS00221", "IS00230", "IS00239", "IS00185");
+
+		List<PerInfoInitValueSetItem> itemFilter = items.stream().filter(c -> {
+			return itemParents.contains(c.getItemCode());
+		}).collect(Collectors.toList());
 		// Get company id
 		String companyId = AppContexts.user().companyId();
 		// Get Command
-		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategoryByCtgCD(ctgCode,companyId);
-		boolean  isContinious = perInfoCategory.isPresent()? (perInfoCategory.get().getCategoryType() == CategoryType.CONTINUOUSHISTORY ? true : false): false;
-		
-		if (!perInfoCategory.isPresent()){
+		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategoryByCtgCD(ctgCode,
+				companyId);
+		boolean isContinious = perInfoCategory.isPresent()
+				? (perInfoCategory.get().getCategoryType() == CategoryType.CONTINUOUSHISTORY ? true : false)
+				: false;
+
+		if (!perInfoCategory.isPresent()) {
 			throw new RuntimeException("invalid PersonInfoCategory");
 		}
 		PersonEmployeeType personEmployeeType = perInfoCategory.get().getPersonEmployeeType();
-		
+
 		if (ctgCode.equals("CS00020")) {
 			itemDto = items.stream().map(item -> {
 
 				PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(item);
 				boolean isEven = itemEven.contains(item.getItemCode());
 				boolean isOld = itemOld.contains(item.getItemCode());
-				
-				if(item.getItemName().equals("終了日") && isContinious) {
+				String selectionId = null;
+
+				if (item.getItemName().equals("終了日") && isContinious) {
 					dto.setDisableCombox(true);
 				}
 				if (isOld || isEven) {
@@ -182,24 +193,8 @@ public class PerInfoInitValueSetItemFinder {
 				} else {
 					dto.setDisableCombox(false);
 				}
+				this.setCompareItemCode(item, itemFilter, dto, selectionId, isOld, isEven);
 
-				if (isOld) {
-					if (item.getSelectionItemId() == null) {
-						dto.setEnableControl(false);
-					} else {
-						dto.setEnableControl(this.predetemineTimeSettingRepo.isWorkingTwice(item.getSelectionItemId())
-								&& this.workTimeSettingRepo.isFlowWork(item.getSelectionItemId()));
-					}
-				}
-
-				if (isEven) {
-					if (item.getSelectionItemId() == null) {
-						dto.setEnableControl(false);
-					} else {
-						dto.setEnableControl(this.workTimeSettingRepo.isFlowWork(item.getSelectionItemId()));
-					}
-				}
-				
 				return getInitItemDto(dto, personEmployeeType);
 			}).collect(Collectors.toList());
 		} else if (ctgCode.equals("CS00001")) {
@@ -207,7 +202,7 @@ public class PerInfoInitValueSetItemFinder {
 				return !c.getItemCode().equals("IS00001");
 			}).map(c -> {
 				PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(c);
-				if(c.getItemName().equals("終了日") && isContinious) {
+				if (c.getItemName().equals("終了日") && isContinious) {
 					dto.setDisableCombox(true);
 				}
 				return getInitItemDto(dto, personEmployeeType);
@@ -215,17 +210,18 @@ public class PerInfoInitValueSetItemFinder {
 		} else {
 			itemDto = items.stream().map(c -> {
 				PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(c);
-				if(c.getItemName().equals("終了日") && isContinious) {
+				if (c.getItemName().equals("終了日") && isContinious) {
 					dto.setDisableCombox(true);
 				}
 				return getInitItemDto(dto, personEmployeeType);
-			}).collect(Collectors.toList());;
+			}).collect(Collectors.toList());
+			;
 		}
-		
+
 		return itemDto;
 
 	}
-	
+
 	private PerInfoInitValueSettingItemDto getInitItemDto(PerInfoInitValueSettingItemDto dto,
 			PersonEmployeeType personEmployeeType) {
 		int dataType = dto.getDataType();
@@ -236,7 +232,7 @@ public class PerInfoInitValueSetItemFinder {
 		}
 		return dto;
 	}
-	
+
 	private List<ComboBoxObject> getSelectionItem(PerInfoInitValueSettingItemDto dto,
 			PersonEmployeeType personEmployeeType, boolean isDataType6) {
 		SelectionItemDto selectionItemDto = null;
@@ -262,17 +258,18 @@ public class PerInfoInitValueSetItemFinder {
 	public List<PerInfoInitValueSettingItemDto> filterItemTimePointOfCS00020(List<PerInfoInitValueSetItem> items) {
 		String ctgCode = items.get(0).getCtgCode();
 		List<String> itemList = this.createItemTimePointOfCS00020();
-		
+
 		// Get company id
 		String companyId = AppContexts.user().companyId();
 		// Get Command
-		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategoryByCtgCD(ctgCode,companyId);
-		
-		if (!perInfoCategory.isPresent()){
+		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategoryByCtgCD(ctgCode,
+				companyId);
+
+		if (!perInfoCategory.isPresent()) {
 			throw new RuntimeException("invalid PersonInfoCategory");
 		}
 		List<PerInfoInitValueSetItem> filteredItems = null;
-		
+
 		if (ctgCode.equals("CS00020")) {
 			filteredItems = items.stream().filter(x -> {
 				return !itemList.contains(x.getItemCode());
@@ -284,7 +281,7 @@ public class PerInfoInitValueSetItemFinder {
 		} else {
 			filteredItems = items;
 		}
-		
+
 		return filteredItems.stream().map(c -> {
 			PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(c);
 			return getInitItemDto(dto, perInfoCategory.get().getPersonEmployeeType());
@@ -299,5 +296,141 @@ public class PerInfoInitValueSetItemFinder {
 				"IS00218", "IS00223", "IS00224", "IS00226", "IS00227", "IS00232", "IS00233", "IS00235", "IS00236",
 				"IS00214", "IS00215", "IS00217", "IS00218", "IS00241", "IS00242", "IS00244", "IS00245", "IS00187",
 				"IS00188", "IS00190", "IS00191");
+	}
+
+	private void setCompareItemCode(PerInfoInitValueSetItem item, List<PerInfoInitValueSetItem> itemFilter,
+			PerInfoInitValueSettingItemDto dto, String selectionId, boolean isOld, boolean isEven) {
+		if (item.getItemCode().equals("IS00133") || item.getItemCode().equals("IS00134")
+				|| item.getItemCode().equals("IS00136") || item.getItemCode().equals("IS00137")) {
+			List<PerInfoInitValueSetItem> itemParent = itemFilter.stream().filter(c -> {
+				return c.getItemCode().equals("IS00131");
+			}).collect(Collectors.toList());
+			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
+		}
+
+		if (item.getItemCode().equals("IS00142") || item.getItemCode().equals("IS00143")
+				|| item.getItemCode().equals("IS00145") || item.getItemCode().equals("IS00146")) {
+			List<PerInfoInitValueSetItem> itemParent = itemFilter.stream().filter(c -> {
+				return c.getItemCode().equals("IS00140");
+			}).collect(Collectors.toList());
+			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
+		}
+
+		if (item.getItemCode().equals("IS00160") || item.getItemCode().equals("IS00161")
+				|| item.getItemCode().equals("IS00163") || item.getItemCode().equals("IS00164")) {
+			List<PerInfoInitValueSetItem> itemParent = itemFilter.stream().filter(c -> {
+				return c.getItemCode().equals("IS00158");
+			}).collect(Collectors.toList());
+			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
+		}
+
+		if (item.getItemCode().equals("IS00169") || item.getItemCode().equals("IS00170")
+				|| item.getItemCode().equals("IS00172") || item.getItemCode().equals("IS00173")) {
+			List<PerInfoInitValueSetItem> itemParent = itemFilter.stream().filter(c -> {
+				return c.getItemCode().equals("IS00167");
+			}).collect(Collectors.toList());
+			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
+		}
+
+		if (item.getItemCode().equals("IS00178") || item.getItemCode().equals("IS00178")
+				|| item.getItemCode().equals("IS00181") || item.getItemCode().equals("IS00182")) {
+			List<PerInfoInitValueSetItem> itemParent = itemFilter.stream().filter(c -> {
+				return c.getItemCode().equals("IS00176");
+			}).collect(Collectors.toList());
+			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
+		}
+
+		if (item.getItemCode().equals("IS00151") || item.getItemCode().equals("IS00152")
+				|| item.getItemCode().equals("IS00154") || item.getItemCode().equals("IS00155")) {
+			List<PerInfoInitValueSetItem> itemParent = itemFilter.stream().filter(c -> {
+				return c.getItemCode().equals("IS00149");
+			}).collect(Collectors.toList());
+			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
+		}
+
+		if (item.getItemCode().equals("IS00196") || item.getItemCode().equals("IS00197")
+				|| item.getItemCode().equals("IS00199") || item.getItemCode().equals("IS00200")) {
+			List<PerInfoInitValueSetItem> itemParent = itemFilter.stream().filter(c -> {
+				return c.getItemCode().equals("IS00194");
+			}).collect(Collectors.toList());
+			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
+		}
+
+		if (item.getItemCode().equals("IS00205") || item.getItemCode().equals("IS00206")
+				|| item.getItemCode().equals("IS00208") || item.getItemCode().equals("IS00209")) {
+			List<PerInfoInitValueSetItem> itemParent = itemFilter.stream().filter(c -> {
+				return c.getItemCode().equals("IS00203");
+			}).collect(Collectors.toList());
+			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
+		}
+
+		if (item.getItemCode().equals("IS00214") || item.getItemCode().equals("IS00215")
+				|| item.getItemCode().equals("IS00217") || item.getItemCode().equals("IS00218")) {
+			List<PerInfoInitValueSetItem> itemParent = itemFilter.stream().filter(c -> {
+				return c.getItemCode().equals("IS00212");
+			}).collect(Collectors.toList());
+			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
+		}
+
+		if (item.getItemCode().equals("IS00223") || item.getItemCode().equals("IS00224")
+				|| item.getItemCode().equals("IS00226") || item.getItemCode().equals("IS00227")) {
+			List<PerInfoInitValueSetItem> itemParent = itemFilter.stream().filter(c -> {
+				return c.getItemCode().equals("IS00221");
+			}).collect(Collectors.toList());
+			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
+		}
+
+		if (item.getItemCode().equals("IS00232") || item.getItemCode().equals("IS00233")
+				|| item.getItemCode().equals("IS00235") || item.getItemCode().equals("IS00236")) {
+			List<PerInfoInitValueSetItem> itemParent = itemFilter.stream().filter(c -> {
+				return c.getItemCode().equals("IS00230");
+			}).collect(Collectors.toList());
+			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
+		}
+
+		if (item.getItemCode().equals("IS00241") || item.getItemCode().equals("IS00242")
+				|| item.getItemCode().equals("IS00244") || item.getItemCode().equals("IS00245")) {
+			List<PerInfoInitValueSetItem> itemParent = itemFilter.stream().filter(c -> {
+				return c.getItemCode().equals("IS00239");
+			}).collect(Collectors.toList());
+			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
+		}
+
+		if (item.getItemCode().equals("IS00187") || item.getItemCode().equals("IS00188")
+				|| item.getItemCode().equals("IS00190") || item.getItemCode().equals("IS00191")) {
+			List<PerInfoInitValueSetItem> itemParent = itemFilter.stream().filter(c -> {
+				return c.getItemCode().equals("IS00185");
+			}).collect(Collectors.toList());
+			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
+		}
+	}
+
+	private void setEnableControl(PerInfoInitValueSetItem item, List<PerInfoInitValueSetItem> itemParent,
+			PerInfoInitValueSettingItemDto dto, String selectionId, boolean isOld, boolean isEven) {
+
+		if (itemParent.size() > 0) {
+			if (itemParent.get(0).getSelectionItemId() != null && itemParent.get(0).getStringValue().toString()!= null) {
+				selectionId = itemParent.get(0).getStringValue().v();
+			} else {
+				selectionId = itemParent.get(0).getSelectionItemId();
+			}
+			if (isOld) {
+
+				if (selectionId == null) {
+					dto.setEnableControl(false);
+				} else {
+					dto.setEnableControl(this.predetemineTimeSettingRepo.isWorkingTwice(selectionId)
+							&& this.workTimeSettingRepo.isFlowWork(selectionId));
+				}
+			}
+
+			if (isEven) {
+				if (selectionId == null) {
+					dto.setEnableControl(false);
+				} else {
+					dto.setEnableControl(this.workTimeSettingRepo.isFlowWork(selectionId));
+				}
+			}
+		}
 	}
 }

@@ -24,6 +24,8 @@ public interface EmployeeDataMngInfoRepository {
 	// Lanlt code start
 
 	Optional<EmployeeInfo> findById(String sid);
+	
+	List<EmployeeSimpleInfo> findByIds(List<String> lstId);
 
 	Optional<EmployeeInfo> getDepartment(String departmentId, GeneralDate date);
 

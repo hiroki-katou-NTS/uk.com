@@ -190,10 +190,10 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                 let origin: string = window.location.origin;
                 if(partType === 0){
                     if(topPageCode === "0001"){
-                        this.url = origin + "/nts.uk.at.web/view/ktg/002/a/index.xhtml";
+                        this.url = origin + "/nts.uk.at.web/view/ktg/001/a/index.xhtml";
                         this.html = '<iframe src="' + this.url + '"/>'; 
                     }else if(topPageCode === "0002"){
-                        this.url = origin + "/nts.uk.at.web/view/ktg/001/a/index.xhtml"; 
+                        this.url = origin + "/nts.uk.at.web/view/ktg/002/a/index.xhtml"; 
                         this.html = '<iframe src="' + this.url + '"/>'; 
                     }else if(topPageCode === "0003"){
                         this.url = origin + ""; 

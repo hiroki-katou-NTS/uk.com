@@ -62,10 +62,12 @@ module nts.layout {
 
                     if (element) {
                         if (element.tagName.toUpperCase() == "INPUT") {
-                            $element
-                                .trigger('blur')
-                                .trigger('change');
-                        } else if (element.tagName.toUpperCase() == "BUTTON" || $element.hasClass('radio-wrapper')) {
+                            if (!$element.is(':disabled')) {
+                                $element
+                                    .trigger('blur')
+                                    .trigger('change');
+                            }
+                        } else if ((element.tagName.toUpperCase() == "BUTTON" || $element.hasClass('radio-wrapper')) && !$element.is(':disabled')) {
                             if (nou(x.value) && x.required) {
                                 if (!getError($element).length) {
                                     $element.ntsError('set', {
@@ -77,7 +79,8 @@ module nts.layout {
                         }
                         else {
                             $element
-                                .find('.nts-input')
+                                .trigger('validate')
+                                .find('.nts-input:not(:disabled)')
                                 .trigger('blur')
                                 .trigger('change');
                         }
@@ -298,7 +301,7 @@ module nts.layout {
                 radios: Array<IGrandRadio> = [{
                     ctgCode: 'CS00025',
                     radioCode: 'IS00296',
-                    relateCode: ['IS00297', 'IS00299', 'IS00299', 'IS00300', 'IS00301']
+                    relateCode: ['IS00297', 'IS00298', 'IS00299', 'IS00300', 'IS00301']
                 }, {
                         ctgCode: 'CS00026',
                         radioCode: 'IS00303',
@@ -337,17 +340,15 @@ module nts.layout {
                         relateCode: ['IS00360', 'IS00361', 'IS00362', 'IS00363', 'IS00364']
                     }, {
                         ctgCode: 'CS00035',
-                        radioCode: 'IS00311',
+                        radioCode: 'IS00370',
                         relateCode: ['IS00371', 'IS00372', 'IS00374']
                     }, {
                         ctgCode: 'CS00036',
-                        rdctCode: 'CS00028',
-                        radioCode: 'IS00316',
+                        radioCode: 'IS00375',
                         relateCode: ['IS00376', 'IS00377', 'IS00378', 'IS00379']
                     }, {
                         ctgCode: 'CS00036',
-                        rdctCode: 'CS00028',
-                        radioCode: 'IS00321',
+                        radioCode: 'IS00380',
                         relateCode: ['IS00381', 'IS00382', 'IS00383', 'IS00384']
                     }, {
                         ctgCode: 'CS00049',
@@ -400,7 +401,11 @@ module nts.layout {
 
                     if (rd) {
                         rd.data.value.subscribe(v => {
-                            _.each(ctrls, c => c.data.editable(v == 1));
+                            _.each(ctrls, c => {
+                                if (c && c.data) {
+                                    c.data.editable(v == 1);
+                                }
+                            });
                         });
                         rd.data.value.valueHasMutated();
                     }
@@ -1146,7 +1151,9 @@ module nts.layout {
                 CS00016_IS00077: IFindData = finder.find('CS00016', 'IS00077'),
                 CS00016_IS00079: IFindData = finder.find('CS00016', 'IS00079'),
                 CS00017_IS00082: IFindData = finder.find('CS00017', 'IS00082'),
-                CS00017_IS00084: IFindData = finder.find('CS00017', 'IS00084');
+                CS00017_IS00084: IFindData = finder.find('CS00017', 'IS00084'),
+                CS00020_IS00130: IFindData = finder.find('CS00020', 'IS00130'),
+                CS00020_IS00131: IFindData = finder.find('CS00020', 'IS00131');
 
             if (CS00016_IS00077 && CS00016_IS00079) {
                 CS00016_IS00077.data.value.subscribe(_date => {
@@ -1197,6 +1204,45 @@ module nts.layout {
                     }).done((cbx: Array<IComboboxItem>) => {
                         CS00017_IS00084.data.lstComboBoxValue(cbx);
                     });
+                });
+            }
+
+            if (CS00017_IS00084 && (CS00020_IS00130 || CS00020_IS00131)) {
+                CS00017_IS00084.data.value.subscribe(wc => {
+                    if (CS00020_IS00130) {
+                        let comboData = ko.toJS(CS00020_IS00130.data);
+
+                        fetch.get_cb_data({
+                            comboBoxType: comboData.item.referenceType,
+                            categoryId: comboData.categoryId,
+                            required: comboData.required,
+                            standardDate: undefined,
+                            typeCode: undefined,
+                            masterType: comboData.item.masterType,
+                            employeeId: undefined,
+                            cps002: true,
+                            workplaceId: CS00017_IS00084.data.value()
+                        }).done(data => {
+                            CS00020_IS00130.data.lstComboBoxValue(data);
+                        });;
+                    }
+                    if (CS00020_IS00131) {
+                        let comboData = ko.toJS(CS00020_IS00131.data);
+
+                        fetch.get_cb_data({
+                            comboBoxType: comboData.item.referenceType,
+                            categoryId: comboData.categoryId,
+                            required: comboData.required,
+                            standardDate: undefined,
+                            typeCode: undefined,
+                            masterType: comboData.item.masterType,
+                            employeeId: undefined,
+                            cps002: true,
+                            workplaceId: CS00017_IS00084.data.value()
+                        }).done(data => {
+                            CS00020_IS00131.data.lstComboBoxValue(data);
+                        });;
+                    }
                 });
             }
         }

@@ -1,8 +1,9 @@
 module nts.uk.com.view.cmf005.c {
     __viewContext.ready(function() {
-        __viewContext['screenModel'] = new viewmodel.ScreenModel();
-//        __viewContext['screenModel'].start().done(function() {
-            __viewContext.bind(__viewContext['screenModel']);
-//        });
-    });
+        var screenModel = new viewmodel.ScreenModel();
+          screenModel.start().done(function() {
+            __viewContext.bind(screenModel);
+            $('#combo-box').focus();
+        });
+    });    
 }
