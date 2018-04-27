@@ -84,7 +84,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         constructor() {
             var self = this;
 
-            self.date = ko.observable('20181231');
+            self.date = ko.observable(moment());
             self.systemTypes = ko.observableArray([
                 { name: 'システム管理者', value: 1 }, // PERSONAL_INFORMATION
                 { name: '就業', value: 2 } // EMPLOYMENT
@@ -102,8 +102,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 }
             });
 
-            self.startDateString = ko.observable("20180102");
-            self.endDateString = ko.observable("20181230");
+            self.startDateString = ko.observable(moment());
+            self.endDateString = ko.observable(moment());
             self.selectedEmployeeCode = ko.observableArray([]);
             self.alreadySettingPersonal = ko.observableArray([]);
             self.periodDate = ko.observable({
@@ -243,59 +243,30 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         public startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            /*
-            service.findAll().done(function(data: Array<any>) {
-                self.loadAllHolidayRemaining(data);
-                nts.uk.ui.block.clear();
-                dfd.resolve();
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
-                nts.uk.ui.block.clear();
-                dfd.reject();
-            });
-            service.getDate().done(function(data: IGetDate) {
-                self.startDateString(moment.utc(data.startDate).format("YYYY/MM"));
-                self.endDateString(moment.utc(data.endDate).format("YYYY/MM"));
-                dfd.resolve();
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
-                nts.uk.ui.block.clear();
-                dfd.reject();
-            });
-
-            
-            let user: any = __viewContext.user;
-            nts.uk.characteristics.restore("UserSpecific_" + user.employeeId).done(function(userSpecific) {
-                if (userSpecific) {
-                    self.holidayRemainingSelectedCd(userSpecific.outputItemSettingCode);
-                    self.selectedCode(userSpecific.pageBreakAtr);
-                }
-                dfd.resolve();
-            });
-            */
             let user: any = __viewContext.user;
             $.when(service.findAll(),
-                    //service.getDate(),
+                    service.getDate(),
                     service.getPermissionOfEmploymentForm(),
                     nts.uk.characteristics.restore("UserSpecific_" + user.employeeId)
                     ).done((
                             holidayRemainings: Array<any>,
-                            //dateData: IGetDate,
+                            dateData: IGetDate,
                             permission: any,
                             userSpecific
                             ) => {
                     self.loadAllHolidayRemaining(holidayRemainings);
-                    /*
-                        let cDate = new Date(Date.now()); //get local date
-                        let startDate = dateData ? dateData.startDate || "20180101" : "20180101";
-                        
-                    let endDate = dateData ? dateData.endDate || "20181231" : "20181231";
+                    
+                    let startDate = moment(dateData ? dateData.startDate || moment() : moment());
+                    let endDate = moment(dateData ? dateData.endDate || moment() : moment());
+                    //画面項目「A3_4：終了年月」にパラメータ「当月+１月」をセットする    
+                    let nextMonth = moment(endDate).add(1, 'M');
+                    endDate = nextMonth.format("YYYY/MM");
+
+                    //画面項目「A3_2：開始年月」にパラメータ「当月」－1年した値をセットする
+                    let preYear = moment(startDate).add(-1, 'Y');
+                    startDate = preYear.format("YYYY/MM");
                     self.startDateString(moment.utc(startDate).format("YYYY/MM"));
                     self.endDateString(moment.utc(endDate).format("YYYY/MM"));
-                        */
-                    //TODO dump
-                    self.startDateString("20180101");
-                    self.endDateString("20181231");
                         
                     self.permissionOfEmploymentForm(new PermissionOfEmploymentFormModel(
                             permission.companyId,
