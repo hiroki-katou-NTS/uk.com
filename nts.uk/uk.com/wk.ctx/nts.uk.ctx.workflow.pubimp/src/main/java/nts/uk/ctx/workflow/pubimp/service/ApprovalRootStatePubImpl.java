@@ -323,20 +323,8 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		List<ApprovalRootState> approvalRootStates = new ArrayList<>();
 		// 承認者と期間から承認ルートインスタンスを取得する
 		long start = System.currentTimeMillis();
-		List<ApprovalRootState> resultApprovalRootState = this.approvalRootStateRepository.findEmployeeAppByApprovalRecordDate(startDate, endDate, approverID,rootType);
-		if(!CollectionUtil.isEmpty(resultApprovalRootState)){
-			for(ApprovalRootState approvalRootState : resultApprovalRootState){
-				for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
-					for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()){
-						for(ApproverState approverState : approvalFrame.getListApproverState()){
-							if(approverState.getApproverID().equals(approverID)){
-								approvalRootStates.add(approvalRootState);
-							}
-						}
-					}
-				}
-			}
-		}	
+		List<ApprovalRootState> resultApprovalRootState = this.approvalRootStateRepository.findEmployeeAppByApprovalRecordDateNew(startDate, endDate,rootType);
+		approvalRootStates = getApprovalRootStateForApproverID(resultApprovalRootState,approverID);	
 		long end = System.currentTimeMillis();
 		System.out.println("Thời gian chạy đoạn lệnh: " + (end - start) + "Millis");
 		// ドメインモデル「代行承認」を取得する
@@ -348,22 +336,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 			for(Agent agent : agents){
 				// ドメインモデル「承認ルートインスタンス」を取得する
 				employeeApproverID.add(agent.getEmployeeId());
-				if(!CollectionUtil.isEmpty(resultApprovalRootState)){
-					for(ApprovalRootState approvalRootState : resultApprovalRootState){
-						if(approvalRootState.getApprovalRecordDate().afterOrEquals(agent.getStartDate()) && approvalRootState.getApprovalRecordDate().beforeOrEquals(agent.getEndDate())){
-							for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
-								for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()){
-									for(ApproverState approverState : approvalFrame.getListApproverState()){
-										if(approverState.getApproverID().equals(agent.getEmployeeId())){
-											approvalRootStates.add(approvalRootState);
-										}
-									}
-								}
-							}
-						}
-						
-					}
-				}
+				getApprovalRootStateForAgent(resultApprovalRootState,agent,approvalRootStates);
 			}
 		}
 		long end1 = System.currentTimeMillis();
@@ -544,15 +517,18 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	public boolean checkDataApproveed(GeneralDate startDate, GeneralDate endDate, String approverID, Integer rootType,
 			String companyID) {
 		List<ApprovalRootState> approvalRootStates = new ArrayList<>();
+		List<ApprovalRootState> resultApprovalRootState = new ArrayList<>();
 		if(rootType == null){
 			// xử lí 承認者と期間から承認ルートインスタンスを取得する（ルート種類指定なし）
-			 approvalRootStates = this.approvalRootStateRepository
+			resultApprovalRootState = this.approvalRootStateRepository
 					.findEmployeeAppByApprovalRecordDateAndNoRootType(startDate, endDate, approverID);
+			approvalRootStates = getApprovalRootStateForApproverID(resultApprovalRootState,approverID);
 			 
-		}else{
+		} else {
 			// 承認者と期間から承認ルートインスタンスを取得する
-			 approvalRootStates = this.approvalRootStateRepository
+			resultApprovalRootState = this.approvalRootStateRepository
 					.findEmployeeAppByApprovalRecordDate(startDate, endDate, approverID, rootType);
+			approvalRootStates = getApprovalRootStateForApproverID(resultApprovalRootState,approverID);
 		}
 		// ドメインモデル「代行承認」を取得する
 		List<Agent> agents = this.agentRepository.findByApproverAndDate(companyID, approverID, startDate, endDate);
@@ -562,13 +538,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 			for (Agent agent : agents) {
 				// ドメインモデル「承認ルートインスタンス」を取得する
 				employeeApproverID.add(agent.getEmployeeId());
-				List<ApprovalRootState> approvalRootStateAgents = this.approvalRootStateRepository
-						.findEmployeeAppByApprovalRecordDate(startDate, endDate, agent.getEmployeeId(), rootType);
-				if (!CollectionUtil.isEmpty(approvalRootStateAgents)) {
-					for (ApprovalRootState approver : approvalRootStateAgents) {
-						approvalRootStates.add(approver);
-					}
-				}
+				getApprovalRootStateForAgent(resultApprovalRootState,agent,approvalRootStates);
 			}
 		}
 		if(CollectionUtil.isEmpty(approvalRootStates)){
@@ -588,6 +558,41 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		
 		
 		return result;
+	}
+	private List<ApprovalRootState> getApprovalRootStateForApproverID(List<ApprovalRootState> resultApprovalRootState,String approverID){
+		List<ApprovalRootState> approvalRootStates = new ArrayList<>();
+		if (!CollectionUtil.isEmpty(resultApprovalRootState)) {
+			for (ApprovalRootState approvalRootState : resultApprovalRootState) {
+				for (ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()) {
+					for (ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()) {
+						for (ApproverState approverState : approvalFrame.getListApproverState()) {
+							if (approverState.getApproverID().equals(approverID)) {
+								approvalRootStates.add(approvalRootState);
+							}
+						}
+					}
+				}
+			}
+		}
+		return approvalRootStates;
+	}
+	private void getApprovalRootStateForAgent(List<ApprovalRootState> resultApprovalRootState,Agent agent,List<ApprovalRootState> approvalRootStates){
+		if(!CollectionUtil.isEmpty(resultApprovalRootState)){
+			for(ApprovalRootState approvalRootState : resultApprovalRootState){
+				if(approvalRootState.getApprovalRecordDate().afterOrEquals(agent.getStartDate()) && approvalRootState.getApprovalRecordDate().beforeOrEquals(agent.getEndDate())){
+					for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
+						for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()){
+							for(ApproverState approverState : approvalFrame.getListApproverState()){
+								if(approverState.getApproverID().equals(agent.getEmployeeId())){
+									approvalRootStates.add(approvalRootState);
+								}
+							}
+						}
+					}
+				}
+				
+			}
+		}
 	}
 	@Override
 	// RequestList229
