@@ -215,7 +215,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     service.addHolidayRemaining(ko.toJS(currentHoliday)).done(() => {
                         self.getAllData(currentHoliday.cd()).done(() => {
                             dialog.info({ messageId: "Msg_15" }).then(() => {
-                                if (self.isNewMode()) $("#holidayCode").focus();
+                                self.setFocus();
                             });
                         });
 
@@ -236,7 +236,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     service.updateHolidayRemaining(ko.toJS(currentHoliday)).done(() => {
                         self.getAllData(currentHoliday.cd()).done(() => {
                             dialog.info({ messageId: "Msg_15" }).then(() => {
-                                if (self.isNewMode()) $("#holidayCode").focus();
+                                self.setFocus();
                             });
                         });
                     }).fail(function(error) {
