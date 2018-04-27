@@ -153,6 +153,8 @@ public class HolidayShipmentScreenAFinder {
 
 		String wkTimeCD = getWkTimeCD(wkOnWeekDays);
 
+		result.setWkTimeCD(wkTimeCD);
+
 		GeneralDate appDate, deadDate;
 
 		String takingOutWkTypeCD, takingOutWkTimeCD, holiDayWkTypeCD, holidayWkTimeCD;

@@ -207,6 +207,10 @@ module nts.uk.at.view.kaf011.shr {
                     self.appDate(data.appDate);
                     self.changeWorkHoursType(data.changeWorkHoursType);
                 }
+                self.wkTimeCD.subscribe((newWkType) => {
+                    let self = this;
+                   self.updateWorkingText();
+                });
                 self.wkTypeCD.subscribe((newWkType) => {
                     let vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
                     let changeWkTypeParam = {
