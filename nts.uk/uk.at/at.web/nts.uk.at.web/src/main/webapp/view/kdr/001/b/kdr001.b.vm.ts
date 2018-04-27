@@ -27,12 +27,15 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                             self.currentHoliday(item);
                             self.isNewMode(false);
                         }
-                         _.defer(() => { errors.clearAll() });
+                        _.defer(() => { errors.clearAll() });
                     }).fail(function(error) {
                         alertError(error);
                     }).always(() => {
                         block.clear();
                     });
+                }
+                else {
+                    self.settingCreateMode();
                 }
             });
         }
@@ -175,7 +178,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
          */
         settingCreateMode() {
             let self = this;
-            
+            $('.nts-input').ntsError('clear');
             nts.uk.ui.errors.clearAll();
             // clear selected holiday set
             self.currentCode('');
@@ -230,13 +233,9 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 } else {
                     // update
                     service.updateHolidayRemaining(ko.toJS(currentHoliday)).done(() => {
-                        dialog.info({ messageId: "Msg_15" }).then(() => {
-                            service.findAll().done(function(data: Array<HolidayRemaining>) {
-                                self.getAllData(currentHoliday.cd()).done(() => {
-                                    dialog.info({ messageId: "Msg_15" }).then(() => {
-                                        if (self.isNewMode()) $("#holidayCode").focus();
-                                    });
-                                });
+                        self.getAllData(currentHoliday.cd()).done(() => {
+                            dialog.info({ messageId: "Msg_15" }).then(() => {
+                                if (self.isNewMode()) $("#holidayCode").focus();
                             });
                         });
                     }).fail(function(error) {
@@ -250,6 +249,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                         block.clear();
                     });
                 }
+
             }
         }
 
@@ -269,7 +269,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     self.lstHolidays.remove(function(item) { return item.cd() == currentHoliday.cd(); });
                     service.removeHolidayRemaining(ko.toJS(currentHoliday)).done(function() {
                         if (self.lstHolidays().length == 0) {
-                            self.currentCode(null);
+                            self.currentCode('');
                         } else {
                             if (index == self.lstHolidays().length) {
                                 self.currentCode(self.lstHolidays()[index - 1].cd());
@@ -293,6 +293,8 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     block.clear();
                 }
             }).then(() => {
+                $('.nts-input').ntsError('clear');
+                nts.uk.ui.errors.clearAll();
                 block.clear();
             });;
         }
