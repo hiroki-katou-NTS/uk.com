@@ -32,4 +32,12 @@ public class UndigestedTimeAnnualLeaveTime {
 		domain.undigestedTime = undigestedTime;
 		return domain;
 	}
+	
+	/**
+	 * 分を加算する
+	 * @param minutes 分
+	 */
+	public void addMinutes(int minutes){
+		this.undigestedTime = this.undigestedTime.addMinutes(minutes);
+	}
 }

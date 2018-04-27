@@ -329,7 +329,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	 * @param time
 	 * @return
 	 */
-	private String convertTime(Integer time){
+	@Override
+	public String convertTime(Integer time){
 		if(time == null){
 			return "";
 		}

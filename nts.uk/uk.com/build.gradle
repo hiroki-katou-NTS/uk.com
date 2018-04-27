@@ -836,6 +836,7 @@ project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.ac') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.dom')
 		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.app')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
 	}
 }
 

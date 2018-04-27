@@ -1879,7 +1879,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				});
 			} else {
 				lstOutingTimeSheet = new ArrayList<OutingTimeSheet>();
-				lstOutingTimeSheet.add(new OutingTimeSheet(null, null, null, null, null, null));
+				lstOutingTimeSheet.add(new OutingTimeSheet(null, null, new AttendanceTime(0), new AttendanceTime(0), null, null));
 				outDailyPer = new OutingTimeOfDailyPerformance(employeeId, date, lstOutingTimeSheet);
 			}
 		} else {
@@ -3120,7 +3120,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				}
 
 			} else {
-				if (attendanceTime.v().intValue() >= timeDestination.v().intValue()) {
+				if (attendanceTime.v().intValue() > timeDestination.v().intValue()) {
 					return true;
 				} else {
 					return false;

@@ -25,7 +25,7 @@ public class CurrentMonth extends DomainObject {
 	/** The closure classification */
 	// 締め日変更区分
 	@Setter
-	private Optional<ClosureClassification> closureClassification;
+	private Optional<ClosureClassification> closureClassification = Optional.empty();
 
 	/**
 	 * Instantiates a new current month.
