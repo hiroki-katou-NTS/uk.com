@@ -12,5 +12,10 @@ public interface TargetEmployeesRepository
     List<TargetEmployees> getAllTargetEmployees();
 
     Optional<TargetEmployees> getTargetEmployeesById(String storeProcessingId, String employeeId);
+    
+    void add(TargetEmployees domain);
 
+    void update(TargetEmployees domain);
+
+    void remove(String storeProcessingId, String employeeId);
 }
