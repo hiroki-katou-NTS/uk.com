@@ -129,6 +129,12 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 		this.medicalCareTime = medicalCareTime;
 	}
 	
+	
+	public AttendanceTimeOfDailyPerformance inssertActualWorkingTimeOfDaily(ActualWorkingTimeOfDaily time) {
+		return new AttendanceTimeOfDailyPerformance(this.employeeId, this.ymd, this.workScheduleTimeOfDaily, time, this.stayingTime, this.budgetTimeVariance, this.unEmployedTime); 
+	}
+	
+	
 	/**
 	 * 日別実績の勤怠時間の計算
 	 * @param oneDay 1日の範囲クラス

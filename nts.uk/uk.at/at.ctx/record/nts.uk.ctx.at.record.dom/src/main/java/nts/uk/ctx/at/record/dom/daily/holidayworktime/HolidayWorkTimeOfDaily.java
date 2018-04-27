@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
+import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
@@ -273,4 +274,20 @@ public class HolidayWorkTimeOfDaily {
 		}
 		return returnErrorList;
 	}
+	
+	
+	/**
+	 * 自身の休出枠時間の乖離時間を計算
+	 * @return
+	 */
+	public HolidayWorkTimeOfDaily calcDiverGenceTime() {
+		List<HolidayWorkFrameTime> list = new ArrayList<>();
+		for(HolidayWorkFrameTime holidayworkFrameTime:this.holidayWorkFrameTime) {
+			holidayworkFrameTime.calcDiverGenceTime();
+			list.add(holidayworkFrameTime);
+		}
+		Finally<HolidayMidnightWork> holidayMidnight = this.holidayMidNightWork.isPresent()?Finally.of(this.holidayMidNightWork.get().calcDiverGenceTime()):this.holidayMidNightWork;
+		return new HolidayWorkTimeOfDaily(this.holidayWorkFrameTimeSheet,list,holidayMidnight,this.holidayTimeSpentAtWork);
+	}
+		
 }

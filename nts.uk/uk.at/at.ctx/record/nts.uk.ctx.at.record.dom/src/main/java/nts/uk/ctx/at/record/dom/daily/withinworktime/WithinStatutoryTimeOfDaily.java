@@ -259,4 +259,13 @@ public class WithinStatutoryTimeOfDaily {
 		this.workTime = this.workTime.minusMinutes(unUseBreakTime.valueAsMinutes());
 		this.actualWorkTime = this.actualWorkTime.minusMinutes(unUseBreakTime.valueAsMinutes());
 	}
+	
+	/**
+	 * 乖離時間のみ再計算
+	 * @return
+	 */
+	public WithinStatutoryTimeOfDaily calcDiverGenceTime() {
+		return new WithinStatutoryTimeOfDaily(this.workTime,this.withinStatutoryMidNightTime!=null?this.withinStatutoryMidNightTime.calcDiverGenceTime():this.withinStatutoryMidNightTime);
+	}
+	
 }

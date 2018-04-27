@@ -608,4 +608,20 @@ public class OverTimeOfDaily {
 	}
 	
 	
+	/**
+	 * 乖離時間のみ再計算
+	 * @return
+	 */
+	public OverTimeOfDaily calcDiverGenceTime() {
+		List<OverTimeFrameTime> OverTimeFrameList = new ArrayList<>();
+		for(OverTimeFrameTime overTimeFrameTime:this.overTimeWorkFrameTime) {
+			overTimeFrameTime.calcDiverGenceTime();
+			OverTimeFrameList.add(overTimeFrameTime);
+		}
+		FlexTime flexTime = this.flexTime!=null?this.flexTime.calcDiverGenceTime():this.flexTime;
+		Finally<ExcessOverTimeWorkMidNightTime> excessOverTimeMidNight = this.excessOverTimeWorkMidNightTime.isPresent()?Finally.of(this.excessOverTimeWorkMidNightTime.get().calcDiverGenceTime())
+																																:this.excessOverTimeWorkMidNightTime;
+		return new OverTimeOfDaily(this.overTimeWorkFrameTimeSheet,OverTimeFrameList,excessOverTimeMidNight,this.irregularWithinPrescribedOverTimeWork,flexTime,this.overTimeWorkSpentAtWork);
+	}
+	
 }
