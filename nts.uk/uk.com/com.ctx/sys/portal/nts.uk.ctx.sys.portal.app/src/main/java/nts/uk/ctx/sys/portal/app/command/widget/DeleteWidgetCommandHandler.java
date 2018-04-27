@@ -22,9 +22,6 @@ public class DeleteWidgetCommandHandler extends CommandHandler<DeleteWidgetComma
 	private OptionalWidgetRepository opWidgetRepository;
 	
 	@Inject
-	private TopPagePartService topPageSer;
-	
-	@Inject
 	private MyPageSettingRepository myPageSettingRepository;
 
 	@Override
@@ -34,7 +31,6 @@ public class DeleteWidgetCommandHandler extends CommandHandler<DeleteWidgetComma
 		List<Integer> ls = command.getDisplayItemTypes().stream().map(WidgetDisplayItemCommand::getDisplayItemType)
 				.collect(Collectors.toList());
 		this.opWidgetRepository.remove(companyID, command.getTopPagePartID(), ls);
-		this.topPageSer.deleteTopPagePart(companyID, command.getTopPagePartID());
 		myPageSettingRepository.removeTopPagePartUseSettingById(companyID, command.getTopPagePartID());
 		
 	}
