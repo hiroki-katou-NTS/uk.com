@@ -713,20 +713,19 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 	private String getDisplayReason(String typicalReason, SaveHolidayShipmentCommand command,
 			AppTypeDiscreteSetting appTypeSet) {
-
+		String disPlayReason = Strings.EMPTY;
 		if (isReasonTextFieldDisplay(appTypeSet)) {
 
 			if (Strings.isNotBlank(typicalReason)) {
 
-				return System.lineSeparator();
-
-			} else {
-
-				return command.getAppCmd().getApplicationReason();
+				disPlayReason += System.lineSeparator();
 
 			}
+
+			disPlayReason += command.getAppCmd().getApplicationReason();
+
 		}
-		return "";
+		return disPlayReason;
 	}
 
 	private boolean isReasonTextFieldDisplay(AppTypeDiscreteSetting appTypeSet) {
