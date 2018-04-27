@@ -401,7 +401,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			return Collections.emptyList();
 		}
 		// Lấy toàn bộ domain「社員データ管理情報」
-		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.getByListEmployeeId(sIds);
+		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.findByListEmployeeId(sIds);
 
 		if (CollectionUtil.isEmpty(emps)) {
 			return Collections.emptyList();
