@@ -13,7 +13,7 @@ public interface EmployeeDataMngInfoRepository {
 	void add(EmployeeDataMngInfo domain);
 
 	void update(EmployeeDataMngInfo domain);
-	
+
 	void updateAfterRemove(EmployeeDataMngInfo domain);
 
 	void remove(EmployeeDataMngInfo domain);
@@ -24,7 +24,7 @@ public interface EmployeeDataMngInfoRepository {
 	// Lanlt code start
 
 	Optional<EmployeeInfo> findById(String sid);
-	
+
 	List<EmployeeSimpleInfo> findByIds(List<String> lstId);
 
 	Optional<EmployeeInfo> getDepartment(String departmentId, GeneralDate date);
@@ -36,7 +36,7 @@ public interface EmployeeDataMngInfoRepository {
 	List<EmployeeDataMngInfo> findByPersonId(String pid);
 
 	List<EmployeeDataMngInfo> findByCompanyId(String cid);
-	
+
 	Optional<EmployeeDataMngInfo> findByEmpId(String sId);
 
 	// sonnlb code start
@@ -93,19 +93,19 @@ public interface EmployeeDataMngInfoRepository {
 
 	/**
 	 * Req No.125
+	 * 
 	 * @param cId
 	 * @param sCd
 	 * @return
 	 */
 	Optional<EmployeeDataMngInfo> getEmployeeByCidScd(String cId, String sCd);
-	
+
 	/**
 	 * @param companyId
 	 * @param startLetters
-	 * @return
-	 * return Optional<Value> if can get data
-	 * Optional<empty> if it doesn't match startLetters
+	 * @return return Optional<Value> if can get data Optional<empty> if it doesn't
+	 *         match startLetters
 	 */
 	Optional<String> findLastEml(String companyId, String startLetters);
-	
+
 }
