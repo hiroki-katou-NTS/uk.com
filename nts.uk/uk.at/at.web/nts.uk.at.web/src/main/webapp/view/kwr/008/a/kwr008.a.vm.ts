@@ -19,6 +19,7 @@ module nts.uk.at.view.kwr008.a {
             isEmployeeOfWorkplace: KnockoutObservable<boolean>;
             isEmployeeWorkplaceFollow: KnockoutObservable<boolean>;
             isMutipleCheck: KnockoutObservable<boolean>;
+            showDepartment: KnockoutObservable<boolean>; // 部門条件
             isSelectAllEmployee: KnockoutObservable<boolean>;
             periodStartDate: KnockoutObservable<moment.Moment>;
             periodEndDate: KnockoutObservable<moment.Moment>;
@@ -40,11 +41,12 @@ module nts.uk.at.view.kwr008.a {
             showPeriod: KnockoutObservable<boolean>; // 対象期間利用
             periodFormatYM: KnockoutObservable<boolean>; // 対象期間精度
 
+            user: any = __viewContext.user;
             // Employee tab
             lstPersonComponentOption: any;
             selectedEmployeeCode: KnockoutObservableArray<string>;
             employeeName: KnockoutObservable<string>;
-            employeeList: KnockoutObservableArray<UnitModel>;
+            employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
             alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
             ccgcomponentPerson: GroupOption;
 
@@ -56,18 +58,17 @@ module nts.uk.at.view.kwr008.a {
             startDateString: KnockoutObservable<string> = ko.observable('');
             endDateString: KnockoutObservable<string> = ko.observable('');
             //A4
-            outputItem: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-            selectedOutputItem: KnockoutObservable<ItemModel> = ko.observable(null);
+            outputItem: KnockoutObservableArray<share.ItemModel> = ko.observableArray([]);
+            selectedOutputItem: KnockoutObservable<number> = ko.observable(null);
 
             //A6 
-            breakPage: KnockoutObservableArray<share.model.EnumConstantDto>;
-            selectedBreakPage: KnockoutObservable<string>;
+            breakPage: KnockoutObservableArray<share.EnumConstantDto> = ko.observableArray([]);
+            selectedBreakPage: KnockoutObservable<number> = ko.observable(null);
 
             constructor() {
                 var self = this;
 
                 // dump
-                self.date = ko.observable('20181231');
                 self.selectedEmployee = ko.observableArray([]);
 
                 // initial ccg options
@@ -83,7 +84,7 @@ module nts.uk.at.view.kwr008.a {
                 });
 
                 //A3
-                service.getPeriod().done((data: model.PeriodDto) => {
+                service.getPeriod().done((data) => {
                     self.startDateString(data.startYearMonth);
                     self.endDateString(data.endYearMonth);
                 });
@@ -91,22 +92,56 @@ module nts.uk.at.view.kwr008.a {
                 //A4
                 service.getOutItemSettingCode().done((dataArr: Array<share.OutputSettingCodeDto>) => {
                     _.forEach(dataArr, data => {
-                        self.outputItem.push(new ItemModel(data.cd, data.name));
+                        self.outputItem.push(new share.ItemModel(data.cd, data.name));
                     });
                 });
-
-                self.selectedOutputItem = ko.observable('0');
                 // A6
-                self.breakPage = ko.observable([]);
-                self.selectedBreakPage = ko.observable('0');
+                self.restoreOutputConditionAnnualWorkSchedule()
+                .done((data: model.OutputConditionAnnualWorkScheduleChar) => {
+                    self.selectedOutputItem(data.setItemsOutputCd);
+                    self.selectedBreakPage(data.breakPage);
+                });
 
                 self.selectedEmployeeCode = ko.observableArray([]);
                 self.alreadySettingPersonal = ko.observableArray([]);
                 self.maxDaysCumulationByEmp = ko.observable(0);
+                self.startDateString.subscribe(data => {
+                    self.validateRangeExport();
+                });
+                self.endDateString.subscribe(data => {
+                    self.validateRangeExport();
+                });
+            }
+
+            validateRangeExport() {
+                var self = this;
+                var $rangeDateLabel = $('#range-date').find('.rangeLabel');
+                $rangeDateLabel.ntsError('clear');
+                if (moment(self.startDateString(), 'YYYYMM').toDate() >
+                    moment(self.endDateString(), 'YYYYMM').toDate()) {
+                    $rangeDateLabel.ntsError('set', nts.uk.resource.getMessage("FND_E_SPAN_REVERSED", ['期間']), "FND_E_SPAN_REVERSED");
+                }
             }
 
             exportReport() {
-                nts.uk.request.exportFile('at/function/annualworkschedule/export').done(() => {
+                var self = this;
+                if (moment(self.startDateString(), 'YYYYMM').add(12, 'M').toDate() <
+                    moment(self.endDateString(), 'YYYYMM').toDate()) {
+                    nts.uk.ui.dialog.alertError({messageId: 'Msg_883'});
+                    return;
+                }
+                var data = new model.EmployeeDto();
+                data.startYearMonth   = self.startDateString();
+                data.endYearMonth     = self.endDateString();
+                data.setItemsOutputCd = self.selectedOutputItem().toString();
+                data.breakPage        = self.selectedBreakPage().toString();
+                data.employees = [];
+                for (var employeeCode of self.selectedEmployeeCode()) {
+                    data.employees.push(self.findByCodeEmployee(employeeCode));
+                }
+
+                self.saveOutputConditionAnnualWorkSchedule(new model.OutputConditionAnnualWorkScheduleChar(self.selectedOutputItem(), self.selectedBreakPage()));
+                nts.uk.request.exportFile('at/function/annualworkschedule/export', data).done(() => {
                     console.log('DONE!!');
                 });
             }
@@ -127,6 +162,7 @@ module nts.uk.at.view.kwr008.a {
                 self.isEmployeeOfWorkplace = ko.observable(true);
                 self.isEmployeeWorkplaceFollow = ko.observable(true);
                 self.isMutipleCheck = ko.observable(true);
+                self.showDepartment = ko.observable(false); // 部門条件
                 self.isSelectAllEmployee = ko.observable(false);
                 self.baseDate = ko.observable(moment());
                 self.periodStartDate = ko.observable(moment());
@@ -195,6 +231,7 @@ module nts.uk.at.view.kwr008.a {
 
                     /** Advanced search properties */
                     showEmployment: self.showEmployment(), // 雇用条件
+                    showDepartment: self.showDepartment(), // 部門条件 not covered
                     showWorkplace: self.showWorkplace(), // 職場条件
                     showClassification: self.showClassification(), // 分類条件
                     showJobTitle: self.showJobTitle(), // 職位条件
@@ -260,12 +297,41 @@ module nts.uk.at.view.kwr008.a {
             }
 
             /**
+             * update selected employee kcp005 => detail
+             */
+            public findByCodeEmployee(employeeCode: string): UnitModel {
+                var employee: UnitModel;
+                var self = this;
+                for (var employeeSelect of self.employeeList()) {
+                    if (employeeSelect.code === employeeCode) {
+                        employee = employeeSelect;
+                        break;
+                    }
+                }
+                return employee;
+            }
+
+            /**
              * convert string to date
              */
             private toDate(strDate: string): Date {
                 return moment(strDate, 'YYYY/MM/DD').toDate();
             }
 
+            /**
+             * save to client service PersonalSchedule by employeeId
+            */
+            private restoreOutputConditionAnnualWorkSchedule(): JQueryPromise<model.OutputConditionAnnualWorkScheduleChar> {
+                var self = this;
+                return nts.uk.characteristics.restore("OutputConditionAnnualWorkScheduleChar_" + self.user.employeeId);
+            }
+            /**
+             * save to client service PersonalSchedule by employeeId
+            */
+            private saveOutputConditionAnnualWorkSchedule(data: model.OutputConditionAnnualWorkScheduleChar): void {
+                var self = this;
+                nts.uk.characteristics.save("OutputConditionAnnualWorkScheduleChar_" + self.user.employeeId, data);
+            }
         }
 
         export class ListType {
@@ -294,80 +360,31 @@ module nts.uk.at.view.kwr008.a {
             isAlreadySetting: boolean;
         }
 
-        export interface EmployeeSearchDto {
-            employeeId: string;
-
-            employeeCode: string;
-
-            employeeName: string;
-
-            workplaceCode: string;
-
-            workplaceId: string;
-
-            workplaceName: string;
-        }
-
-        export interface GroupOption {
-            baseDate?: KnockoutObservable<Date>;
-
-            periodStartDate?: KnockoutObservable<Date>;
-
-            periodEndDate?: KnockoutObservable<Date>;
-
-            inService: boolean;
-
-            leaveOfAbsence: boolean;
-
-            closed: boolean;
-
-            retirement: boolean;
-
-            // クイック検索タブ
-            isQuickSearchTab: boolean;
-            // 参照可能な社員すべて
-            isAllReferableEmployee: boolean;
-            //自分だけ
-            isOnlyMe: boolean;
-            //おなじ部門の社員
-            isEmployeeOfWorkplace: boolean;
-            //おなじ＋配下部門の社員
-            isEmployeeWorkplaceFollow: boolean;
-
-
-            // 詳細検索タブ
-            isAdvancedSearchTab: boolean;
-            //複数選択 
-            isMutipleCheck: boolean;
-
-            //社員指定タイプ or 全社員タイプ
-            isSelectAllEmployee: boolean;
-
-            onSearchAllClicked: (data: EmployeeSearchDto[]) => void;
-
-            onSearchOnlyClicked: (data: EmployeeSearchDto) => void;
-
-            onSearchOfWorkplaceClicked: (data: EmployeeSearchDto[]) => void;
-
-            onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
-
-            onApplyEmployee: (data: EmployeeSearchDto[]) => void;
-        }
-
-        export class ItemModel {
-            code: number;
-            name: string;
-            constructor(code: number, name: string) {
-                this.code = code;
-                this.name = name;
-            }
-        }
-
         /** model */
         export module model {
             export interface PeriodDto {
                 startYearMonth: Date;
                 endYearMonth: Date;
+            }
+
+            export class OutputConditionAnnualWorkScheduleChar {
+                /** A4_2 定型選択 */
+                setItemsOutputCd: number;
+                /** A6_2 改頁選択 */
+                breakPage: number;
+                constructor(setItemsOutputCd: number, breakPage: number) {
+                    this.setItemsOutputCd = setItemsOutputCd;
+                    this.breakPage = breakPage;
+                }
+            }
+
+            export class EmployeeDto {
+                employees: Array<UnitModel>;
+                startYearMonth: string;
+                endYearMonth: string;
+                setItemsOutputCd: string;
+                breakPage: string;
+                constructor() {}
             }
         }
     }
