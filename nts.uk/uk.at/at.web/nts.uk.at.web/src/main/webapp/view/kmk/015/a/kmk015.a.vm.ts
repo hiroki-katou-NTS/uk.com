@@ -24,6 +24,7 @@ module nts.uk.at.view.kmk015.a {
             historyId: KnockoutObservable<string>;
             isEnable: KnockoutObservable<boolean>;
             isEnableNumber: KnockoutObservable<boolean>;
+            isSubmit: KnockoutObservable<boolean>;
 
 
             constructor() {
@@ -33,6 +34,7 @@ module nts.uk.at.view.kmk015.a {
                 self.isCreated = ko.observable(false);
                 self.isEnable = ko.observable(true);
                 self.isEnableNumber = ko.observable(true);
+                self.isSubmit = ko.observable(true);
 
                 self.selectedCode = ko.observable('');
                 self.historyId = ko.observable('');
@@ -101,6 +103,7 @@ module nts.uk.at.view.kmk015.a {
                     } else {
                         self.isEnableNumber(false);
                     }
+                    
                 });
 
                 if (nts.uk.util.isNullOrEmpty(self.listHistory())) {
@@ -121,8 +124,6 @@ module nts.uk.at.view.kmk015.a {
                         }
                     });
                 });
-                
-                
             }
             
             /**
@@ -219,6 +220,12 @@ module nts.uk.at.view.kmk015.a {
                     //set numberDay
                     if (self.isCreated()){
                         self.numberDay(null);
+                        
+                        if (!nts.uk.util.isNullOrEmpty(self.timeHistory()) || !self.isEnableNumber()){
+                            self.isSubmit(true);
+                        } else {
+                            self.isSubmit(false);
+                        }
                     }
                 })
             }
@@ -258,6 +265,10 @@ module nts.uk.at.view.kmk015.a {
             public submit() {
                 let self = this;
                 let dfd = $.Deferred<void>();
+                
+                if (!self.isEnableNumber()){
+                    return;
+                }
                 
                 $("#number-1").ntsEditor("validate");
                 
