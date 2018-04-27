@@ -191,6 +191,10 @@ public class DailyPerformanceCorrectionWebService {
 				resultError.put(2, dataCheck);
 			}
 		}
+		
+		if(dataParent.getSpr() != null){
+			processor.insertStampSourceInfo(dataParent.getSpr().getEmployeeId(), dataParent.getSpr().getDate(), dataParent.getSpr().isChange31(), dataParent.getSpr().isChange34());
+		}
 		return resultError;
 	}
 	

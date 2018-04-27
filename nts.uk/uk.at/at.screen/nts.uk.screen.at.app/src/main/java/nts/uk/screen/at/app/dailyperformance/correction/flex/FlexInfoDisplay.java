@@ -55,7 +55,6 @@ public class FlexInfoDisplay {
     
 	//hide or show 
 	private boolean showFlex(){
-		
-		return false;
+		return true;
 	}
 }
