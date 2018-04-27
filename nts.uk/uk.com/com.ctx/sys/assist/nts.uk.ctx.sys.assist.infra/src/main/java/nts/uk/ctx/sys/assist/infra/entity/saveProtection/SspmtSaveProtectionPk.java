@@ -1,21 +1,19 @@
-package nts.uk.ctx.sys.assist.infra.enity.category;
+package nts.uk.ctx.sys.assist.infra.entity.saveProtection;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 /**
-* カテゴリ: 主キー情報
+* 保存保護: 主キー情報
 */
 @EqualsAndHashCode
+@AllArgsConstructor
 @Embeddable
-public class SspmtCategoryPk implements Serializable
+public class SspmtSaveProtectionPk implements Serializable
 {
     private static final long serialVersionUID = 1L;
     

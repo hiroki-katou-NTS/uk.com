@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.assist.dom.saveProtection;
+package nts.uk.ctx.sys.assist.dom.saveProtetion;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import nts.arc.layer.dom.AggregateRoot;
 */
 @AllArgsConstructor
 @Getter
-public class SaveProtection extends AggregateRoot
+public class SaveProtetion extends AggregateRoot
 {
     
     /**

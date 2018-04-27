@@ -24,7 +24,7 @@ module nts.uk.com.view.cmf003.c {
                var self = this;
                 
                self.itemList = ko.observableArray([
-                    new ItemModelCombo('0',self.selected_comobox)
+                    new ItemModelCombo('-1',self.selected_comobox)
                     
                 ]);
                service.getSysTypes().done(function(data: Array<any>) {
@@ -45,7 +45,7 @@ module nts.uk.com.view.cmf003.c {
                 });
                 
                 
-                    self.selectedCode = ko.observable('0');
+                    self.selectedCode = ko.observable('-1');
                     self.isEnable = ko.observable(true);
                     self.isEditable = ko.observable(true);
                    
@@ -55,7 +55,8 @@ module nts.uk.com.view.cmf003.c {
                     
                    
                    service.getConditionList(self.selectedCode()).done(function(data: Array<any>) {
-                    
+                       
+                      console.log("1111111");
                        self.itemsSwap(data);
                        
                    }).fail(function(error) {
@@ -72,8 +73,8 @@ module nts.uk.com.view.cmf003.c {
                })
                 
                self.columns = ko.observableArray([
-                   { headerText: 'コード', key: 'code', width: 70 },
-                   { headerText: '名称', key: 'name', width: 250 }
+                   { headerText: 'コード', key: 'categoryId', width: 70 },
+                   { headerText: '名称', key: 'categoryName', width: 250 }
                ]);
     
                self.currentCodeListSwap = ko.observableArray([]);
@@ -103,15 +104,31 @@ module nts.uk.com.view.cmf003.c {
     }
 
         class ItemModel {
-           code: number;
-           name: string;
-           period: string;
-           range: string;
-           constructor(code: number, name: string, period: string, range: string) {
-               this.code = code;
-               this.name = name;
-               this.period = period;
-               this.range = range;
+           schelperSystem: number;
+           categoryId: string;
+           categoryName: string;
+           possibilitySystem: number;
+           storedProcedureSpecified: number;
+           timeStore: number;
+           otherCompanyCls: number;
+           attendanceSystem: number;
+           recoveryStorageRange: number;
+           paymentAvailability: number;
+           storageRangeSaved: number;
+           constructor(schelperSystem: number,categoryId: string, categoryName: string,possibilitySystem: number,
+           storedProcedureSpecified: number, timeStore: number,otherCompanyCls: number,attendanceSystem: number,
+           recoveryStorageRange: number,paymentAvailability: number ,storageRangeSaved: number) {
+               this.schelperSystem = schelperSystem;
+               this.categoryId = categoryId;
+               this.categoryName = categoryName;
+               this.possibilitySystem = possibilitySystem;
+               this.storedProcedureSpecified = storedProcedureSpecified;
+               this.timeStore = timeStore;
+               this.otherCompanyCls = otherCompanyCls;
+               this.attendanceSystem = attendanceSystem;
+               this.recoveryStorageRange = recoveryStorageRange;
+               this.paymentAvailability = paymentAvailability;
+               this.storageRangeSaved = storageRangeSaved;
            }
        }
 

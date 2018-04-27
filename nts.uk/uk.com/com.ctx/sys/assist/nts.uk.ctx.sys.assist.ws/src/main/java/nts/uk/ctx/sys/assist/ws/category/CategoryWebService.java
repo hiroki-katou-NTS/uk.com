@@ -8,8 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.sys.assist.app.find.category.CategoryDto;
 import nts.uk.ctx.sys.assist.app.find.category.CategoryFinder;
-import nts.uk.ctx.sys.assist.app.find.category.CusCategoryDto;
 
 
 @Path("ctx/sys/assist/app")
@@ -21,7 +21,7 @@ public class CategoryWebService {
 	
 	@POST
 	@Path("findCategory/{systemType}")
-	public List<CusCategoryDto> find(@PathParam("systemType") int systemType){
+	public List<CategoryDto> find(@PathParam("systemType") int systemType){
 		return this.categoryFinder.getCategoryBySystemType(systemType);
 	}
 	

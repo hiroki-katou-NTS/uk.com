@@ -2,9 +2,7 @@ package nts.uk.ctx.sys.assist.app.find.categoryFieldMaster;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.assist.dom.categoryFieldMaster.CategoryFieldMt;
+import nts.uk.ctx.sys.assist.dom.categoryFieldMaster.HistoryDiviSion;
 
 /**
 * カテゴリ項目マスタ
@@ -359,12 +357,12 @@ public class CategoryFieldMtDto
     /**
     * 履歴区分
     */
-    private int historyDivision;
+    private HistoryDiviSion historyDivision;
     
     
-    public static CategoryFieldMtDto fromDomain(CategoryFieldMt domain)
+    /*public static CategoryFieldMtDto fromDomain(CategoryFieldMt domain)
     {
         return new CategoryFieldMtDto(domain.getCategoryId(), domain.getTableNo(), domain.getTableJapanName(), domain.getTableEnglishName(), domain.getCorrectClasscification(), domain.getReplaceColumn(), domain.getTimeStopDelete(), domain.getClsKeyQuery1(), domain.getClsKeyQuery2(), domain.getClsKeyQuery3(), domain.getClsKeyQuery4(), domain.getClsKeyQuery5(), domain.getClsKeyQuery6(), domain.getClsKeyQuery7(), domain.getClsKeyQuery8(), domain.getClsKeyQuery9(), domain.getClsKeyQuery10(), domain.getDefaultCondKeyQuery(), domain.getFieldKeyQuery1(), domain.getFieldKeyQuery2(), domain.getFieldKeyQuery3(), domain.getFieldKeyQuery4(), domain.getFieldKeyQuery5(), domain.getFieldKeyQuery6(), domain.getFieldKeyQuery7(), domain.getFieldKeyQuery8(), domain.getFieldKeyQuery9(), domain.getFieldKeyQuery10(), domain.getFieldDate1(), domain.getFieldDate2(), domain.getFieldDate3(), domain.getFieldDate4(), domain.getFieldDate5(), domain.getFieldDate6(), domain.getFieldDate7(), domain.getFieldDate8(), domain.getFieldDate9(), domain.getFieldDate10(), domain.getFieldDate11(), domain.getFieldDate12(), domain.getFieldDate13(), domain.getFieldDate14(), domain.getFieldDate15(), domain.getFieldDate16(), domain.getFieldDate17(), domain.getFieldDate18(), domain.getFieldDate19(), domain.getFieldDate20(), domain.getFiledKeyUpdate1(), domain.getFiledKeyUpdate2(), domain.getFiledKeyUpdate3(), domain.getFiledKeyUpdate4(), domain.getFiledKeyUpdate5(), domain.getFiledKeyUpdate6(), domain.getFiledKeyUpdate7(), domain.getFiledKeyUpdate8(), domain.getFiledKeyUpdate9(), domain.getFiledKeyUpdate10(), domain.getFiledKeyUpdate11(), domain.getFiledKeyUpdate12(), domain.getFiledKeyUpdate13(), domain.getFiledKeyUpdate14(), domain.getFiledKeyUpdate15(), domain.getFiledKeyUpdate16(), domain.getFiledKeyUpdate17(), domain.getFiledKeyUpdate18(), domain.getFiledKeyUpdate19(), domain.getFiledKeyUpdate20(), domain.getHistoryDivision());
-    }
+    }*/
     
 }

@@ -2,10 +2,7 @@ package nts.uk.ctx.sys.assist.dom.categoryFieldMaster;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 /**
 * カテゴリ項目マスタ
@@ -35,24 +32,10 @@ public class CategoryFieldMt extends AggregateRoot
     */
     private String tableEnglishName;
     
-   
-    
-    /**
-    * 補正区分
-    */
-    private int correctClasscification;
-    
-   
-    
-    /**
-    * 置き換え列
-    */
-    private String replaceColumn;
-    
     /**
     * 削除禁止期間
     */
-    private int timeStopDelete;
+    private String timeStopDelete;
     
     /**
     * 抽出キー区分1
@@ -362,7 +345,10 @@ public class CategoryFieldMt extends AggregateRoot
     /**
     * 履歴区分
     */
-    private int historyDivision;
+    private HistoryDiviSion historyCls;
+
+	
+    
     
     
 }

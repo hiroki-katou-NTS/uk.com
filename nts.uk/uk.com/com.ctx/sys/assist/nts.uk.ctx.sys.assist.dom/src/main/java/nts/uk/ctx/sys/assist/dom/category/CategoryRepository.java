@@ -19,4 +19,13 @@ public interface CategoryRepository
 
     void remove();
 
+	Optional<Category> getCategoryById(String categoryId);
+
+	void remove(String categoryId);
+	
+	List<Category> findByAttendanceSystem(int systemType);
+	List<Category> findByPaymentAvailability(int systemType);
+	List<Category> findByPossibilitySystem(int systemType);
+	List<Category> findBySchelperSystem(int systemType);
+
 }

@@ -6,7 +6,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.sys.assist.dom.saveProtection.SaveProtectionRepository;
+import nts.uk.ctx.sys.assist.dom.saveProtetion.SaveProtetionRepository;
 
 @Stateless
 @Transactional
@@ -14,7 +14,7 @@ public class RemoveSaveProtectionCommandHandler extends CommandHandler<SaveProte
 {
     
     @Inject
-    private SaveProtectionRepository repository;
+    private SaveProtetionRepository repository;
     
     @Override
     protected void handle(CommandHandlerContext<SaveProtectionCommand> context) {

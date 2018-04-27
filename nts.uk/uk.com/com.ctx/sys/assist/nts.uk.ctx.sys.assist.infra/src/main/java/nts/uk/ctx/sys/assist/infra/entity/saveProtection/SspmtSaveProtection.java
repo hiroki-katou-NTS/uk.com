@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.assist.infra.enity.saveProtection;
+package nts.uk.ctx.sys.assist.infra.entity.saveProtection;
 
 import java.io.Serializable;
 

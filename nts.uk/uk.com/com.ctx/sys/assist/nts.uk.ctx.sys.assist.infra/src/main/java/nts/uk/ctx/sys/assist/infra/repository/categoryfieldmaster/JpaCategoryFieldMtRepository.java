@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.assist.infra.repo.categoryFieldMaster;
+package nts.uk.ctx.sys.assist.infra.repository.categoryfieldmaster;
 
 import java.util.List;
 import java.util.Optional;
