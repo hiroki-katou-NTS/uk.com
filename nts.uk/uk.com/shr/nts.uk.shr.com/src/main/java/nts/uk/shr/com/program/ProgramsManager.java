@@ -1734,10 +1734,10 @@ public class ProgramsManager {
 	/*
 	 * KRD001
 	 */
-	public static final Program KRD001A = new Program(WebAppId.AT, ProgramIdConsts.KDR001A, "KDR001_1",
+	public static final Program KRD001A = new Program(WebAppId.AT, ProgramIdConsts.KDR001A, "KDR001_51",
 			"/view/kdr/001/a/index.xhtml");
 	
-	public static final Program KRD001B = new Program(WebAppId.AT, ProgramIdConsts.KRD001B, "KDR001_2",
+	public static final Program KRD001B = new Program(WebAppId.AT, ProgramIdConsts.KRD001B, "KDR001_52",
 			"/view/kdr/001/b/index.xhtml");
 	/**
 	 * All programs map.
