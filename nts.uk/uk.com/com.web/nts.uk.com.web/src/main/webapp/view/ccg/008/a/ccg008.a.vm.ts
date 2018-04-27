@@ -203,7 +203,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                         this.html = '<iframe src="' + this.url + '"/>'; 
                     }
                 }else if(partType === 1){
-                    this.url = origin + "/nts.uk.at.web/view/ktg/029/a/index.xhtml";
+                    this.url = origin + "/nts.uk.at.web/view/ktg/029/a/index.xhtml?code="+topPageCode;
                     this.html = '<iframe src="' + this.url + '"/>';  
                 }else if(partType === 4){
                     this.url = url;
