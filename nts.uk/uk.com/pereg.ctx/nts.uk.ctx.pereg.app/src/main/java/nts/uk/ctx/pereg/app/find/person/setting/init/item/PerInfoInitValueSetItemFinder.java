@@ -51,7 +51,7 @@ public class PerInfoInitValueSetItemFinder {
 	public List<PerInfoInitValueSettingItemDto> getAllItem(String settingId, String perInfoCtgId) {
 		List<PerInfoInitValueSetItem> item = this.settingItemRepo.getAllItem(settingId, perInfoCtgId);
 		if (item != null && !item.isEmpty()) {
-			List<PerInfoInitValueSettingItemDto> itemDto = this.convertItemDtoLst(item);
+			List<PerInfoInitValueSettingItemDto> itemDto = this.convertItemDtoLst(item, perInfoCtgId);
 			return itemDto;
 		}
 
@@ -143,7 +143,7 @@ public class PerInfoInitValueSetItemFinder {
 		return Stream.of(item).collect(Collectors.toCollection(ArrayList::new));
 	}
 
-	public List<PerInfoInitValueSettingItemDto> convertItemDtoLst(List<PerInfoInitValueSetItem> items) {
+	public List<PerInfoInitValueSettingItemDto> convertItemDtoLst(List<PerInfoInitValueSetItem> items, String categoryCode) {
 		String ctgCode = items.get(0).getCtgCode();
 		List<PerInfoInitValueSettingItemDto> itemDto = new ArrayList<>();
 		// アルゴリズム「勤務開始終了時刻を活性にするかチェックする」
@@ -195,7 +195,7 @@ public class PerInfoInitValueSetItemFinder {
 				}
 				this.setCompareItemCode(item, itemFilter, dto, selectionId, isOld, isEven);
 
-				return getInitItemDto(dto, personEmployeeType);
+				return getInitItemDto(dto, personEmployeeType, categoryCode);
 			}).collect(Collectors.toList());
 		} else if (ctgCode.equals("CS00001")) {
 			itemDto = items.stream().filter(c -> {
@@ -205,7 +205,7 @@ public class PerInfoInitValueSetItemFinder {
 				if (c.getItemName().equals("終了日") && isContinious) {
 					dto.setDisableCombox(true);
 				}
-				return getInitItemDto(dto, personEmployeeType);
+				return getInitItemDto(dto, personEmployeeType, categoryCode);
 			}).collect(Collectors.toList());
 		} else {
 			itemDto = items.stream().map(c -> {
@@ -213,7 +213,7 @@ public class PerInfoInitValueSetItemFinder {
 				if (c.getItemName().equals("終了日") && isContinious) {
 					dto.setDisableCombox(true);
 				}
-				return getInitItemDto(dto, personEmployeeType);
+				return getInitItemDto(dto, personEmployeeType, categoryCode);
 			}).collect(Collectors.toList());
 			;
 		}
@@ -223,18 +223,18 @@ public class PerInfoInitValueSetItemFinder {
 	}
 
 	private PerInfoInitValueSettingItemDto getInitItemDto(PerInfoInitValueSettingItemDto dto,
-			PersonEmployeeType personEmployeeType) {
+			PersonEmployeeType personEmployeeType, String categoryCode) {
 		int dataType = dto.getDataType();
 		if (dataType == DataTypeValue.SELECTION.value || dataType == DataTypeValue.SELECTION_BUTTON.value
 				|| dataType == DataTypeValue.SELECTION_RADIO.value) {
 			boolean isDataType6 = dataType == DataTypeValue.SELECTION.value;
-			dto.setSelection(getSelectionItem(dto, personEmployeeType, isDataType6));
+			dto.setSelection(getSelectionItem(dto, personEmployeeType, isDataType6, categoryCode));
 		}
 		return dto;
 	}
 
 	private List<ComboBoxObject> getSelectionItem(PerInfoInitValueSettingItemDto dto,
-			PersonEmployeeType personEmployeeType, boolean isDataType6) {
+			PersonEmployeeType personEmployeeType, boolean isDataType6, String categoryCode) {
 		SelectionItemDto selectionItemDto = null;
 		ReferenceTypes refenceType = EnumAdaptor.valueOf(dto.getSelectionItemRefType(), ReferenceTypes.class);
 		switch (refenceType) {
@@ -252,10 +252,10 @@ public class PerInfoInitValueSetItemFinder {
 			break;
 		}
 		return this.comboBoxFactory.getComboBox(selectionItemDto, AppContexts.user().employeeId(), GeneralDate.today(),
-				true, personEmployeeType, isDataType6);
+				true, personEmployeeType, isDataType6, categoryCode);
 	}
 
-	public List<PerInfoInitValueSettingItemDto> filterItemTimePointOfCS00020(List<PerInfoInitValueSetItem> items) {
+	public List<PerInfoInitValueSettingItemDto> filterItemTimePointOfCS00020(List<PerInfoInitValueSetItem> items, String categorycode) {
 		String ctgCode = items.get(0).getCtgCode();
 		List<String> itemList = this.createItemTimePointOfCS00020();
 
@@ -284,7 +284,7 @@ public class PerInfoInitValueSetItemFinder {
 
 		return filteredItems.stream().map(c -> {
 			PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(c);
-			return getInitItemDto(dto, perInfoCategory.get().getPersonEmployeeType());
+			return getInitItemDto(dto, perInfoCategory.get().getPersonEmployeeType(), categorycode);
 		}).collect(Collectors.toList());
 	}
 

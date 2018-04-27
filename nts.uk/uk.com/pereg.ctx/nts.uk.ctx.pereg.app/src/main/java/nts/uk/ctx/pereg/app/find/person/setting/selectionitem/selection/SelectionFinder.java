@@ -123,19 +123,19 @@ public class SelectionFinder {
 
 	}
 
-	public List<ComboBoxObject> getAllComboxByHistoryId(SelectionQuery dto) {
-		GeneralDate baseDateConvert = GeneralDate.fromString(dto.getBaseDate(), "yyyy-MM-dd");
+	public List<ComboBoxObject> getAllComboxByHistoryId(SelectionQuery query) {
+		GeneralDate baseDateConvert = GeneralDate.fromString(query.getBaseDate(), "yyyy-MM-dd");
 		SelectionItemDto selectionItemDto = null;
 		String companyId = AppContexts.user().companyId();
-		if (dto.getSelectionItemRefType() == 2) {
-			return this.selectionRepo.getAllSelectionByCompanyId(companyId, dto.getSelectionItemId(), baseDateConvert)
+		if (query.getSelectionItemRefType() == 2) {
+			return this.selectionRepo.getAllSelectionByCompanyId(companyId, query.getSelectionItemId(), baseDateConvert)
 					.stream().map(c -> new ComboBoxObject(c.getSelectionID(), c.getSelectionName().toString()))
 					.collect(Collectors.toList());
-		} else if (dto.getSelectionItemRefType() == 1) {
-			selectionItemDto = SelectionItemDto.createMasterRefDto(dto.getSelectionItemId(),
-					dto.getSelectionItemRefType());
+		} else if (query.getSelectionItemRefType() == 1) {
+			selectionItemDto = SelectionItemDto.createMasterRefDto(query.getSelectionItemId(),
+					query.getSelectionItemRefType());
 			return this.comboBoxFactory.getComboBox(selectionItemDto, AppContexts.user().employeeId(), baseDateConvert,
-					true, PersonEmployeeType.EMPLOYEE, true);
+					true, PersonEmployeeType.EMPLOYEE, true, query.getCategoryCode());
 
 		}
 		return new ArrayList<>();

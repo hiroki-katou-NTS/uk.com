@@ -87,7 +87,7 @@ public class CopySettingItemFinder {
 
 		if (isScreenB) {
 
-			this.settingItemMap.setTextForItem(result, employeeId, baseDate);
+			this.settingItemMap.setTextForItem(result, employeeId, baseDate, categoryCd);
 
 			return result.stream().filter(item -> StringUtils.isEmpty(item.getItemParentCd()))
 					.collect(Collectors.toList());

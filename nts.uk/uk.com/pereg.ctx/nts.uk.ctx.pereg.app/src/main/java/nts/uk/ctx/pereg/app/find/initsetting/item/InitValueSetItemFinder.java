@@ -80,7 +80,7 @@ public class InitValueSetItemFinder {
 		boolean isSetSameLoginSuccess = setItemSameLogin(itemList, result);
 
 		if (isScreenC) {
-			this.settingItemMap.setTextForSelectionItem(result, employeeId, command.getBaseDate());
+			this.settingItemMap.setTextForSelectionItem(result, employeeId, command.getBaseDate(), command.getCategoryCd());
 		} else {
 			if (!isSetSameLoginSuccess) {
 				boolean isAllItemIsSameAsLogin = isAllItemIsSameAsLogin(itemList, ReferenceMethodType.SAMEASLOGIN);

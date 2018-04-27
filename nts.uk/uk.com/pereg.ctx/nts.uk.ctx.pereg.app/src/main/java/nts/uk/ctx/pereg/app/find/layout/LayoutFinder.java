@@ -472,7 +472,8 @@ public class LayoutFinder {
 						SelectionItemDto selectionItemDto = (SelectionItemDto) valueItem.getItem();
 						boolean isDataType6 = dataType == DataTypeValue.SELECTION.value;
 						valueItem.setLstComboBoxValue(comboBoxFactory.getComboBox(selectionItemDto, employeeId,
-								comboBoxStandardDate, valueItem.isRequired(),perInfoCategory.getPersonEmployeeType(), isDataType6));
+								comboBoxStandardDate, valueItem.isRequired(), perInfoCategory.getPersonEmployeeType(),
+								isDataType6, perInfoCategory.getCategoryCode().v()));
 					}
 				}
 			}
