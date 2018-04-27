@@ -27,12 +27,15 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                             self.currentHoliday(item);
                             self.isNewMode(false);
                         }
-                         _.defer(() => { errors.clearAll() });
+                        _.defer(() => { errors.clearAll() });
                     }).fail(function(error) {
                         alertError(error);
                     }).always(() => {
                         block.clear();
                     });
+                }
+                else {
+                    self.settingCreateMode();
                 }
             });
         }
@@ -157,7 +160,6 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     self.currentCode('');
                     self.currentHoliday(new HolidayRemaining(null));
                     self.isNewMode(true);
-                    $("#holidayCode").focus();
                 }
                 block.clear();
                 dfd.resolve(self);
@@ -175,8 +177,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
          */
         settingCreateMode() {
             let self = this;
-            
-            nts.uk.ui.errors.clearAll();
+
             // clear selected holiday set
             self.currentCode('');
             // clear holiday setting
@@ -185,6 +186,8 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.isNewMode(true);
             //focus
             self.setFocus();
+            $('.nts-input').ntsError('clear');
+            nts.uk.ui.errors.clearAll();
         }
 
         setFocus() {
@@ -230,13 +233,9 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 } else {
                     // update
                     service.updateHolidayRemaining(ko.toJS(currentHoliday)).done(() => {
-                        dialog.info({ messageId: "Msg_15" }).then(() => {
-                            service.findAll().done(function(data: Array<HolidayRemaining>) {
-                                self.getAllData(currentHoliday.cd()).done(() => {
-                                    dialog.info({ messageId: "Msg_15" }).then(() => {
-                                        if (self.isNewMode()) $("#holidayCode").focus();
-                                    });
-                                });
+                        self.getAllData(currentHoliday.cd()).done(() => {
+                            dialog.info({ messageId: "Msg_15" }).then(() => {
+                                if (self.isNewMode()) $("#holidayCode").focus();
                             });
                         });
                     }).fail(function(error) {
@@ -250,6 +249,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                         block.clear();
                     });
                 }
+
             }
         }
 
@@ -266,26 +266,27 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 if (currentHoliday.cd()) {
                     let index: number = _.findIndex(lstHolidays(), function(x)
                     { return x.cd() == currentHoliday.cd() });
-                    self.lstHolidays.remove(function(item) { return item.cd() == currentHoliday.cd(); });
                     service.removeHolidayRemaining(ko.toJS(currentHoliday)).done(function() {
-                        if (self.lstHolidays().length == 0) {
-                            self.currentCode(null);
-                        } else {
-                            if (index == self.lstHolidays().length) {
-                                self.currentCode(self.lstHolidays()[index - 1].cd());
-                            } else {
-                                self.currentCode(self.lstHolidays()[index].cd());
-                            }
-                        }
-
                         self.getAllData(self.currentCode()).done(() => {
                             dialog.info({ messageId: "Msg_16" }).then(() => {
-                                self.setFocus();
+                                if (self.lstHolidays().length == 0) {
+                                    self.currentCode('');
+                                    self.isNewMode(true);
+                                    self.setFocus();
+                                    nts.uk.ui.errors.clearAll();
+                                } else {
+                                    if (index == self.lstHolidays().length) {
+                                        self.currentCode(self.lstHolidays()[index - 1].cd());
+                                    } else {
+                                        self.currentCode(self.lstHolidays()[index].cd());
+                                    }
+                                }
                             });
                         });
 
                     }).fail(function(error) {
                         dialog.alertError({ messageId: error.messageId });
+                        block.clear();
                     }).always(function() {
                         block.clear();
                     });
@@ -293,6 +294,8 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     block.clear();
                 }
             }).then(() => {
+                $('.nts-input').ntsError('clear');
+                nts.uk.ui.errors.clearAll();
                 block.clear();
             });;
         }
@@ -302,7 +305,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
          */
         closeDialog() {
             let self = this;
-            setShared('KDR001Params', self.currentCode());
+            setShared('KDR001B2A_cd', self.currentCode());
             nts.uk.ui.windows.close()
         }
     }
