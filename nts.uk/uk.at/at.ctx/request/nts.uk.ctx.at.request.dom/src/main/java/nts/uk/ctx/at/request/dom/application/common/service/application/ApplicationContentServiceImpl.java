@@ -24,7 +24,6 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
@@ -85,9 +84,6 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 	private RecruitmentAppRepository recAppRepo;
 
 	@Inject
-	private CompltLeaveSimMngRepository compltRepo;
-
-	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 
 	@Inject
@@ -111,7 +107,6 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 	@Override
 	public String getApplicationContent(Application_New app) {
 		String appReason = app.getAppReason().toString();
-		ApplicationType appType = app.getAppType();
 		String appID = app.getAppID();
 		String companyID = AppContexts.user().companyId();
 		switch (app.getAppType()) {
@@ -233,7 +228,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 							case NORMALOVERTIME: {
 								type = "残業時間";
 								List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(cid, listFrame);
-								type = lstFramOt.get(0).getOvertimeWorkFrName().v();
+								if (!lstFramOt.isEmpty()){
+									type = lstFramOt.get(0).getOvertimeWorkFrName().v();
+								}
 								break;
 							}
 							case RESTTIME: {
@@ -401,6 +398,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 				content += " " + I18NText.getText("CMM045_269") + " " + clockShorHm(totalWorkUnit)
 						+ I18NText.getText("CMM045_230", frameInfo);
 			}
+			case NONE: {
+				
+			}
 			}
 		}
 		return content + "\n" + appReason;
@@ -481,11 +481,17 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 		Optional<AppWorkChange> op_appWork = workChangeRepo.getAppworkChangeById(companyID, appID);
 		if (op_appWork.isPresent()) {
 			AppWorkChange appWork = op_appWork.get();
-			content += Objects.isNull(appWork.getWorkTypeCd()) ? ""
-					: " " + repoWorkType.findByPK(companyID, appWork.getWorkTypeCd()).get().getName().v()
-							+ (Objects.isNull(appWork.getWorkTimeCd()) ? ""
-									: " " + repoworkTime.findByCode(companyID, appWork.getWorkTimeCd()).get()
-											.getWorkTimeDisplayName().getWorkTimeName());
+			String workTypeName = "";
+			if (!Objects.isNull(appWork.getWorkTypeCd())){
+				Optional<WorkType> workType = repoWorkType.findByPK(companyID, appWork.getWorkTypeCd());
+				workTypeName = (workType.isPresent() ? workType.get().getName().v() : "");
+			}
+			String workTimeName = "";
+			if (!Objects.isNull(appWork.getWorkTimeCd())){
+				Optional<WorkTimeSetting> workTime = repoworkTime.findByCode(companyID, appWork.getWorkTimeCd());
+				workTimeName = workTime.isPresent() ? workTime.get().getWorkTimeDisplayName().getWorkTimeName().v() : "";
+			}
+			content += workTypeName + workTimeName;
 			if (!Objects.isNull(appWork.getWorkTimeStart1()) && !Objects.isNull(appWork.getWorkTimeEnd1())) {
 				content += !Objects.isNull(appWork.getGoWorkAtr1())
 						? (appWork.getGoWorkAtr1() == 1
@@ -767,6 +773,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 						}
 					}
 				}
+				case NONE: {
+					
+				}
 				}
 			}
 		}
@@ -982,9 +991,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 			if (sync.getType() == 0) {
 				leaveApp = appLeaveRepo.findByAppId(appID).orElse(null);
 				if (!Objects.isNull(leaveApp)) {
+					Optional<WorkType> workType = repoWorkType.findByPK(companyID, leaveApp.getWorkTypeCD());
 					content += I18NText.getText("CMM045_262") + " " + app.getAppDate().toString("MM/dd")
-							+ I18NText.getText("CMM045_230",
-									repoWorkType.findByPK(companyID, leaveApp.getWorkTypeCD()).get().getName().v());
+							+ (workType.isPresent() ? I18NText.getText("CMM045_230", workType.get().getName().v()) : "") ;
 					if (!Objects.isNull(leaveApp.getWorkTime1()) && !Objects.isNull(leaveApp.getWorkTime2())) {
 						content += clockShorHm(leaveApp.getWorkTime1().getStartTime().v())
 								+ I18NText.getText("CMM045_100")
@@ -995,9 +1004,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 			} else {
 				recApp = recAppRepo.findByAppId(appID).orElse(null);
 				if (!Objects.isNull(recApp)) {
+					Optional<WorkType> workType = repoWorkType.findByPK(companyID, recApp.getWorkTypeCD());
 					content += I18NText.getText("CMM045_263") + " " + app.getAppDate().toString("MM/dd")
-							+ I18NText.getText("CMM045_230",
-									repoWorkType.findByPK(companyID, recApp.getWorkTypeCD()).get().getName().v());
+							+ (workType.isPresent() ? I18NText.getText("CMM045_230", workType.get().getName().v()) : "") ;
 					if (!Objects.isNull(recApp.getWorkTime1()) && !Objects.isNull(recApp.getWorkTime2())) {
 						content += clockShorHm(recApp.getWorkTime1().getStartTime().v())
 								+ I18NText.getText("CMM045_100") + clockShorHm(recApp.getWorkTime1().getEndTime().v());
@@ -1008,20 +1017,27 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 			leaveApp = appLeaveRepo.findByAppId(sync.getAbsId()).orElse(null);
 			recApp = recAppRepo.findByAppId(sync.getRecId()).orElse(null);
 			if (!Objects.isNull(leaveApp) && !Objects.isNull(recApp)) {
-				content += I18NText.getText("CMM045_262") + " " + app.getAppDate().toString("MM/dd") + I18NText.getText(
-						"CMM045_230", repoWorkType.findByPK(companyID, leaveApp.getWorkTypeCD()).get().getName().v());
-				if (!Objects.isNull(recApp.getWorkTime1().getStartTime().v())
-						&& !Objects.isNull(recApp.getWorkTime1().getEndTime().v())) {
-					content += " " + clockShorHm(recApp.getWorkTime1().getStartTime().v())
-							+ I18NText.getText("CMM045_100") + clockShorHm(recApp.getWorkTime1().getEndTime().v());
+				Optional<Application_New> leaveAppInfo = appRepo.findByID(companyID, leaveApp.getAppID());
+				Optional<Application_New> recAppInfo = appRepo.findByID(companyID, recApp.getAppID());
+				if (recAppInfo.isPresent()){
+					Optional<WorkType> workType = repoWorkType.findByPK(companyID, recApp.getWorkTypeCD());
+					content += I18NText.getText("CMM045_262") + " " + recAppInfo.get().getAppDate().toString("MM/dd") 
+							+ (workType.isPresent() ? I18NText.getText("CMM045_230", workType.get().getName().v()) : "") ;
+					if (!Objects.isNull(recApp.getWorkTime1().getStartTime().v())
+							&& !Objects.isNull(recApp.getWorkTime1().getEndTime().v())) {
+						content += " " + clockShorHm(recApp.getWorkTime1().getStartTime().v())
+								+ I18NText.getText("CMM045_100") + clockShorHm(recApp.getWorkTime1().getEndTime().v());
+					}
 				}
-				content += "\n" + I18NText.getText("CMM045_263") + " " + app.getAppDate().toString("MM/dd")
-						+ I18NText.getText("CMM045_230",
-								repoWorkType.findByPK(companyID, recApp.getWorkTypeCD()).get().getName().v());
-				if (!Objects.isNull(leaveApp.getWorkTime1().getStartTime().v())
-						&& !Objects.isNull(leaveApp.getWorkTime1().getEndTime().v())) {
-					content += " " + clockShorHm(leaveApp.getWorkTime1().getStartTime().v())
-							+ I18NText.getText("CMM045_100") + clockShorHm(leaveApp.getWorkTime1().getEndTime().v());
+				if (leaveAppInfo.isPresent()){
+					Optional<WorkType> workType = repoWorkType.findByPK(companyID, leaveApp.getWorkTypeCD());
+					content += "\n" + I18NText.getText("CMM045_263") + " " + leaveAppInfo.get().getAppDate().toString("MM/dd")
+							+ (workType.isPresent() ? I18NText.getText("CMM045_230", workType.get().getName().v()) : "") ;
+					if (!Objects.isNull(leaveApp.getWorkTime1().getStartTime().v())
+							&& !Objects.isNull(leaveApp.getWorkTime1().getEndTime().v())) {
+						content += " " + clockShorHm(leaveApp.getWorkTime1().getStartTime().v())
+								+ I18NText.getText("CMM045_100") + clockShorHm(leaveApp.getWorkTime1().getEndTime().v());
+					}
 				}
 			}
 		}
