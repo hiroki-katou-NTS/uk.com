@@ -74,6 +74,24 @@ public class StampReflectTimezone extends WorkTimeDomainObject {
 		memento.setEndTime(this.endTime);
 		memento.setStartTime(this.startTime);
 	}
+	
+	/**
+	 * Update start time.
+	 *
+	 * @param startTime the start time
+	 */
+	public void updateStartTime(TimeWithDayAttr startTime) {
+		this.startTime = startTime;
+	}
+
+	/**
+	 * Update end time.
+	 *
+	 * @param endTime the end time
+	 */
+	public void updateEndTime(TimeWithDayAttr endTime) {
+		this.endTime = endTime;
+	}
 
 	/**
 	 * Checks if is empty.
