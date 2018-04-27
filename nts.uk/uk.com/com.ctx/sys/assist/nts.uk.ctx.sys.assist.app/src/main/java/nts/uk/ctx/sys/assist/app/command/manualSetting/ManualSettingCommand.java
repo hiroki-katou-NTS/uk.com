@@ -4,6 +4,7 @@
 package nts.uk.ctx.sys.assist.app.command.manualSetting;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -49,6 +50,10 @@ public class ManualSettingCommand {
 		return new ManualSetOfDataSave(cid, storeProcessingId, systemType, passwordAvailability, saveSetName,
 				referenceDate, compressedPassword, executionDateAndTime, daySaveEndDate, daySaveStartDate,
 				monthSaveEndDate, monthSaveStartDate, suppleExplanation, endYear, startYear, presenceOfEmployee,
-				identOfSurveyPre, practitioner, employees, category);
+				identOfSurveyPre, practitioner, employees.stream().map(x -> {
+					return new TargetEmployees(storeProcessingId, x.getSid(), x.getBusinessname());
+				}).collect(Collectors.toList()), category.stream().map(x1 -> {
+					return new TargetCategory(storeProcessingId, x1.getCategoryId());
+				}).collect(Collectors.toList()));
 	}
 }

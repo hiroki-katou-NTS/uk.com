@@ -46,4 +46,11 @@ public class JpaTargetEmployeesRepository extends JpaRepository implements Targe
 		this.commandProxy().remove(SspmtTargetEmployees.class,
 				new SspmtTargetEmployeesPk(storeProcessingId, employeeId));
 	}
+
+	@Override
+	public void addAll(List<TargetEmployees> employees) {
+		for(TargetEmployees targetEmployee: employees){
+			this.commandProxy().insert(SspmtTargetEmployees.toEntity(targetEmployee));
+		}
+	}
 }

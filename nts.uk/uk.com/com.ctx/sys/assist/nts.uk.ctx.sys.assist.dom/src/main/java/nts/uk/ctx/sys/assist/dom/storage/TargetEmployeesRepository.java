@@ -15,7 +15,14 @@ public interface TargetEmployeesRepository
     
     void add(TargetEmployees domain);
 
+
     void update(TargetEmployees domain);
 
     void remove(String storeProcessingId, String employeeId);
+
+	/**
+	 * @param employees
+	 * @author nam.lh
+	 */
+	void addAll(List<TargetEmployees> employees);
 }
