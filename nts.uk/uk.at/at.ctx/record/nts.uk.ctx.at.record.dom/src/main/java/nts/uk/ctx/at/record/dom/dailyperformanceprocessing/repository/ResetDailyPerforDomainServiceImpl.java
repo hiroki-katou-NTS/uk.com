@@ -25,6 +25,8 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.AutoCalculationSetService;
 
 @Stateless
@@ -62,6 +64,9 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 	
 	@Inject
 	private BreakTimeOfDailyPerformanceRepository breakTimeOfDailyPerformanceRepository;
+	
+	@Inject
+	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepository;
 
 	@Override
 	public void resetDailyPerformance(String companyID, String employeeID, GeneralDate processingDate,
@@ -143,8 +148,9 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 						if (executionLog.get().getDailyCreationSetInfo().get().getPartResetClassification().get()
 								.getResettingWorkingHours() == true) {
 							this.breakTimeOfDailyPerformanceRepository.deleteByBreakType(employeeID, processingDate, 0);
+							Optional<TimeLeavingOfDailyPerformance> timeLeavingOpt = this.timeLeavingOfDailyPerformanceRepository.findByKey(employeeID, processingDate);
 							breakTimeOfDailyPerformance = this.reflectBreakTimeOfDailyDomainService.reflectBreakTime(
-									companyID, employeeID, processingDate, empCalAndSumExecLogID, null,
+									companyID, employeeID, processingDate, empCalAndSumExecLogID, timeLeavingOpt.isPresent() ? timeLeavingOpt.get() : null,
 									workInfoOfDailyPerformanceUpdate);
 						}
 						// 打刻を取得する(get info stamp)
