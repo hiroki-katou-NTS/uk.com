@@ -120,14 +120,22 @@ module nts.uk.at.view.kwr008.a {
                 if (moment(self.startDateString(), 'YYYYMM').toDate() >
                     moment(self.endDateString(), 'YYYYMM').toDate()) {
                     $rangeDateLabel.ntsError('set', nts.uk.resource.getMessage("FND_E_SPAN_REVERSED", ['期間']), "FND_E_SPAN_REVERSED");
+                    return false;
                 }
+                return true;
             }
 
             exportReport() {
                 var self = this;
-                if (moment(self.startDateString(), 'YYYYMM').add(12, 'M').toDate() <
+                //対象期間をチェックする
+                if (moment(self.startDateString(), 'YYYYMM').add(12, 'M').toDate() <=
                     moment(self.endDateString(), 'YYYYMM').toDate()) {
                     nts.uk.ui.dialog.alertError({messageId: 'Msg_883'});
+                    return;
+                }
+                //出力対象の社員をチェックする
+                if (self.selectedEmployeeCode().length) {
+                    nts.uk.ui.dialog.alertError({messageId: 'Msg_884'});
                     return;
                 }
                 var data = new model.EmployeeDto();
@@ -139,8 +147,9 @@ module nts.uk.at.view.kwr008.a {
                 for (var employeeCode of self.selectedEmployeeCode()) {
                     data.employees.push(self.findByCodeEmployee(employeeCode));
                 }
-
+                //ユーザ固有情報「年間勤務表（36チェックリスト）」を更新する
                 self.saveOutputConditionAnnualWorkSchedule(new model.OutputConditionAnnualWorkScheduleChar(self.selectedOutputItem(), self.selectedBreakPage()));
+
                 nts.uk.request.exportFile('at/function/annualworkschedule/export', data).done(() => {
                     console.log('DONE!!');
                 });

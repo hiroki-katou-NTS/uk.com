@@ -42,7 +42,8 @@ public class SetOutItemsWoScDto
     
     public static SetOutItemsWoScDto fromDomain(SetOutItemsWoSc domain)
     {
-        return new SetOutItemsWoScDto(domain.getCid(), domain.getCd(), domain.getName(), domain.getOutNumExceedTime36Agr(), domain.getDisplayFormat());
+        return new SetOutItemsWoScDto(domain.getCid(), domain.getCd().v(), domain.getName().v(),
+                                      domain.getOutNumExceedTime36Agr(), domain.getDisplayFormat());
     }
     
 }

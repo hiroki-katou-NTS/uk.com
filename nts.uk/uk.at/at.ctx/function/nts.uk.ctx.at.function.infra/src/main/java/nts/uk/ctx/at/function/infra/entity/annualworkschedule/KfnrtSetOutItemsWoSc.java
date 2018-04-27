@@ -11,6 +11,8 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.annualworkschedule.SetOutItemsWoSc;
+import nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoScCode;
+import nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoScName;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -58,10 +60,13 @@ public class KfnrtSetOutItemsWoSc extends UkJpaEntity implements Serializable
     }
 
     public SetOutItemsWoSc toDomain() {
-        return new SetOutItemsWoSc(this.setOutItemsWoScPk.cid, this.setOutItemsWoScPk.cd, this.name, this.outNumExceedTime36Agr, this.displayFormat);
+        return new SetOutItemsWoSc(this.setOutItemsWoScPk.cid, new OutItemsWoScCode(this.setOutItemsWoScPk.cd),
+                                   new OutItemsWoScName(this.name), this.outNumExceedTime36Agr, this.displayFormat);
     }
     public static KfnrtSetOutItemsWoSc toEntity(SetOutItemsWoSc domain) {
-        return new KfnrtSetOutItemsWoSc(new KfnrtSetOutItemsWoScPk(domain.getCid(), domain.getCd()), domain.getName(), domain.getOutNumExceedTime36Agr(), domain.getDisplayFormat());
+        return new KfnrtSetOutItemsWoSc(new KfnrtSetOutItemsWoScPk(domain.getCid(), domain.getCd().v()),
+                                        domain.getName().v(), domain.getOutNumExceedTime36Agr(),
+                                        domain.getDisplayFormat());
     }
 
 }
