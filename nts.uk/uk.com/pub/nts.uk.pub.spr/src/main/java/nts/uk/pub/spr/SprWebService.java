@@ -1,6 +1,5 @@
 package nts.uk.pub.spr;
 
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,6 +11,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import lombok.val;
+import nts.uk.pub.spr.SprStubHelper.ApplicationTargetResult;
 import nts.uk.pub.spr.SprStubHelper.RecordApplicationStatusResult;
 import nts.uk.pub.spr.SprStubHelper.RequestApplicationStatusResult;
 import nts.uk.pub.spr.approvalroot.SprApprovalRootService;
@@ -205,8 +205,7 @@ public class SprWebService {
 	@Produces("application/json")
 	public SprStubHelper.EmployeesContainer<SprStubHelper.ApplicationTargetResult> getApprovalRoot(
 			SprStubHelper.ApplicationTargetQuery query) {
-		
-		sprApprovalRootService.getApprovalRoot(
+		List<ApplicationTargetResult> applicationTargetResultList = sprApprovalRootService.getApprovalRoot(
 				query.getLoginemployeeCode(), 
 				query.getDate())
 				.stream()
@@ -216,6 +215,6 @@ public class SprWebService {
 						x.getStatus2()))
 				.collect(Collectors.toList());
 		
-		return new SprStubHelper.EmployeesContainer<>(SprStubHelper.ApplicationTargetResult.create());
+		return new SprStubHelper.EmployeesContainer<>(applicationTargetResultList);
 	}
 }
