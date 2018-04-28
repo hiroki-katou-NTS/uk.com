@@ -57,6 +57,8 @@ public class AttendanceLeavingGateOfDaily {
 					if(!timeActualstamp.isPresent()) continue;
 					if(!timeActualstamp.get().getStamp().isPresent()) continue;
 					Optional<WorkStamp> workStamp = timeActualstamp.get().getStamp();
+					if(workStamp.isPresent()) continue;
+					if(workStamp.get().getTimeWithDay()==null) continue;
 					stamp = workStamp.get().getTimeWithDay().valueAsMinutes();
 				}
 			}
