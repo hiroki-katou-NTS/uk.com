@@ -477,7 +477,9 @@ public class OverTimeOfDaily {
 		//就業時間として計算か判定
 		if(ootsukaFixedCalcSet == null
 			|| ootsukaFixedCalcSet.getCalcMethod() == null
-			|| ootsukaFixedCalcSet.getCalcMethod().isCalcAsWorking())
+			|| ootsukaFixedCalcSet.getCalcMethod().isCalcAsWorking()
+			|| ootsukaFixedCalcSet.getInLawOT() == null
+			|| ootsukaFixedCalcSet.getNotInLawOT() == null)
 			return;
 		//法定労働時間を取得
 		val statutoryTime = dailyUnit.getDailyTime();
@@ -557,7 +559,8 @@ public class OverTimeOfDaily {
 		//就業時間として計算か判定
 		if(ootsukaFixedCalcSet == null
 				|| ootsukaFixedCalcSet.getCalcMethod() == null
-				|| ootsukaFixedCalcSet.getCalcMethod().isCalcAsWorking())
+				|| ootsukaFixedCalcSet.getCalcMethod().isCalcAsWorking()
+				|| ootsukaFixedCalcSet.getOtFrameNo() == null)
 				return;
 		
 		val frameNoList = this.overTimeWorkFrameTime.stream().map(tc -> tc.getOverWorkFrameNo()).collect(Collectors.toList());

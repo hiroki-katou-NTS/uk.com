@@ -99,14 +99,16 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				if(overTime.getTimeItemTypeAtr().equals(TimeItemTypeAtr.NORMAL_TYPE)){
 					List<BonusPayTimeItem> lstFramBonus = repoBonusTime.getListBonusPayTimeItemName(companyId, lstFrameNo);
 					lstFrame.add(new OverTimeFrame(3, lstFramBonus.get(0).getId(),lstFramBonus.get(0).getTimeItemName().v(), 
-							lstFramBonus.get(0).getTimeItemTypeAtr().value, overTime.getApplicationTime().v(), 
+							lstFramBonus.get(0).getTimeItemTypeAtr().value, 
+							overTime.getApplicationTime() == null ? null : overTime.getApplicationTime().v(), 
 							overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
 							overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
 				}else{
 					List<BonusPayTimeItem> specs = bPTimeItemRepo
 							.getListSpecialBonusPayTimeItemName(companyId, lstFrameNo);
 					lstFrame.add(new OverTimeFrame(4, specs.get(0).getId(),specs.get(0).getTimeItemName().v(), 
-							specs.get(0).getTimeItemTypeAtr().value, overTime.getApplicationTime().v(), 
+							specs.get(0).getTimeItemTypeAtr().value,
+							overTime.getApplicationTime() == null ? null : overTime.getApplicationTime().v(), 
 							overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
 							overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
 				}
@@ -115,7 +117,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				lstFrameNo.add(overTime.getFrameNo());
 				List<WorkdayoffFrame> lstFramWork = repoWork.getWorkdayoffFrameBy(companyId,lstFrameNo);
 				lstFrame.add(new OverTimeFrame(2, lstFramWork.get(0).getWorkdayoffFrNo().v().intValue(), 
-						lstFramWork.get(0).getWorkdayoffFrName().v(), null, overTime.getApplicationTime().v(),
+						lstFramWork.get(0).getWorkdayoffFrName().v(), null,
+						overTime.getApplicationTime() == null ? null : overTime.getApplicationTime().v(),
 						overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
 						overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
 			}
@@ -131,7 +134,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				name = lstFramOt.get(0).getOvertimeWorkFrName().v();
 				}
 				lstFrame.add(new OverTimeFrame(1, overTime.getFrameNo(), 
-						name, null, overTime.getApplicationTime().v(),
+						name, null,
+						overTime.getApplicationTime() == null ? null : overTime.getApplicationTime().v(),
 						overTime.getStartTime() == null ? null : overTime.getStartTime().v(),
 						overTime.getEndTime() == null ? null : overTime.getEndTime().v()));
 			}
@@ -141,8 +145,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				this.convertTime(appOt.getWorkClockTo1()),
 				this.convertTime(appOt.getWorkClockFrom2()),
 				this.convertTime(appOt.getWorkClockTo2()),
-				0, lstFrame, appOt.getOverTimeShiftNight(),
-				appOt.getFlexExessTime());
+				lstFrame, this.convertTime(appOt.getOverTimeShiftNight()),
+				this.convertTime(appOt.getFlexExessTime()));
 	}
 
 	/**
