@@ -43,7 +43,13 @@ public class OvertimeWebService extends WebService{
 	@POST
 	@Path("getOvertimeByUI")
 	public OverTimeDto getOvertimeByUIType(Param param) {
-		return this.overtimeFinder.getOvertimeByUIType(param.getUrl(), param.getAppDate(), param.getUiType(),param.getTimeStart1(),param.getTimeEnd1(),param.getReasonContent());
+		return this.overtimeFinder.getOvertimeByUIType(param.getUrl(),
+				param.getAppDate(),
+				param.getUiType(),
+				param.getTimeStart1(),
+				param.getTimeEnd1(),
+				param.getReasonContent(),
+				param.getEmployeeIDs());
 	}
 	
 	@POST
@@ -125,6 +131,7 @@ class Param{
 	private Integer timeStart1;
 	private Integer timeEnd1;
 	private String reasonContent;
+	private List<String> employeeIDs;
 }
 @Value
 class RecordWorkParam {

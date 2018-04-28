@@ -52,6 +52,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         //Approval 
         approvalSource: Array<common.AppApprovalPhase> = [];
         employeeID: KnockoutObservable<string> = ko.observable('');
+        employeeIDs: KnockoutObservableArray<string> = ko.observableArray([]);
         heightOvertimeHours: KnockoutObservable<number> = ko.observable(null);
         
         overtimeAtr: KnockoutObservable<number> = ko.observable(null);
@@ -134,7 +135,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                  self.timeStart1(transferData.startTime);
                 self.timeEnd1(transferData.endTime);
                 self.appDate(transferData.appDate);
-                self.multilContent(transferData.applicationReason); 
+                self.multilContent(transferData.applicationReason);
+                self.employeeIDs(transferData.employeeIDs); 
                 self.uiType(1); 
             }
                     
@@ -170,7 +172,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 uiType: self.uiType(),
                 timeStart1: self.timeStart1(),
                 timeEnd1: self.timeEnd1(),
-                reasonContent: self.multilContent()
+                reasonContent: self.multilContent(),
+                employeeIDs: self.employeeIDs()
             }).done((data) => {
                 self.initData(data);
                 $("#inputdate").focus();
@@ -354,18 +357,95 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.restTime.push(new common.OverTimeInput("", "", 0, "", i,0, i, null, null, null,""));
             }
             // 残業時間
-            if (data.overTimeInputs != null) {
-                for (let i = 0; i < data.overTimeInputs.length; i++) {
-                    if (data.overTimeInputs[i].attendanceID == 1) {
-                        self.overtimeHours.push(new common.OvertimeCaculation("", "", data.overTimeInputs[i].attendanceID, "", data.overTimeInputs[i].frameNo,0, data.overTimeInputs[i].frameName, null, null, null,"#[KAF005_55]","",""));
-                    }
-                    if (data.overTimeInputs[i].attendanceID == 2) {
-                        self.breakTimes.push(new common.OvertimeCaculation("", "", data.overTimeInputs[i].attendanceID, "", data.overTimeInputs[i].frameNo,0,data.overTimeInputs[i].frameName,null, null, null,"","",""));
-                    }
-                    if (data.overTimeInputs[i].attendanceID == 3) {
-                        self.bonusTimes.push(new common.OvertimeCaculation("", "", data.overTimeInputs[i].attendanceID, "", data.overTimeInputs[i].frameNo,data.overTimeInputs[i].timeItemTypeAtr ,data.overTimeInputs[i].frameName, null, null, null,"","",""));
+            if (!data.resultCaculationTimeFlg) {
+                if (data.overTimeInputs != null) {
+                    for (let i = 0; i < data.overTimeInputs.length; i++) {
+
+
+                        if (data.overTimeInputs[i].attendanceID == 1) {
+                            self.overtimeHours.push(new common.OvertimeCaculation("", "", data.overTimeInputs[i].attendanceID, "", data.overTimeInputs[i].frameNo, 0, data.overTimeInputs[i].frameName, null, null, null, "#[KAF005_55]", "", ""));
+                        }
+                        if (data.overTimeInputs[i].attendanceID == 3) {
+                            self.bonusTimes.push(new common.OvertimeCaculation("", "", data.overTimeInputs[i].attendanceID, "", data.overTimeInputs[i].frameNo, data.overTimeInputs[i].timeItemTypeAtr, data.overTimeInputs[i].frameName, null, null, null, "", "", ""));
+                        }
+
+                        if (data.overTimeInputs[i].attendanceID == 2) {
+                            self.breakTimes.push(new common.OvertimeCaculation("", "", data.overTimeInputs[i].attendanceID, "", data.overTimeInputs[i].frameNo, 0, data.overTimeInputs[i].frameName, null, null, null, "", "", ""));
+                        }
+
                     }
                 }
+            }else{
+                let dataOverTime = _.filter(data.caculationTimes, {'attendanceID': 1});
+                let dataBonusTime = _.filter(data.caculationTimes, {'attendanceID': 3});
+                 _.forEach(dataOverTime, (item : any) => { 
+                    let color: string = "";
+                    if (item.errorCode == 1) {
+                        color = '#FD4D4D';
+                    }
+                    if (item.errorCode == 2) {
+                        color = '#F6F636';
+                    }
+                    if (item.errorCode == 3) {
+                        color = '#F69164';
+                    }
+                    if(item.frameNo == 11){
+                        if (data.appOvertimeNightFlg == 1 && data.overtimeAtr != 0) {
+                            if (item.errorCode)
+                                self.overtimeHours.push(new common.OvertimeCaculation(
+                                    item.companyID,
+                                    item.appID,
+                                    item.attendanceID,
+                                    "",
+                                    item.frameNo,
+                                    item.timeItemTypeAtr,
+                                    nts.uk.resource.getText("KAF005_63"),
+                                    item.applicationTime,
+                                    null,
+                                    null, "#[KAF005_64]", "", color));
+                        }
+                    } else if (item.frameNo == 12) {
+                        if (data.flexFLag && data.overtimeAtr != 0) {
+                            self.overtimeHours.push(new common.OvertimeCaculation(
+                                item.companyID,
+                                item.appID,
+                                item.attendanceID,
+                                "",
+                                item.frameNo,
+                                item.timeItemTypeAtr,
+                                nts.uk.resource.getText("KAF005_65"),
+                                item.applicationTime,
+                                null,
+                                null, "#[KAF005_66]", "", color));
+                        }
+                    } else {
+                        self.overtimeHours.push(new common.OvertimeCaculation(
+                            item.companyID,
+                            item.appID,
+                            item.attendanceID,
+                            "",
+                            item.frameNo,
+                            item.timeItemTypeAtr,
+                            item.frameName,
+                            item.applicationTime,
+                            null,
+                            null, "#[KAF005_55]", "", color));
+                    }
+                   
+                });
+                _.forEach(dataBonusTime, (item) => { 
+                    self.bonusTimes.push(new common.OvertimeCaculation(
+                        item.companyID, 
+                        item.appID, 
+                        item.attendanceID, 
+                        "", 
+                        item.frameNo, 
+                        item.timeItemTypeAtr, 
+                        item.frameName, 
+                        item.applicationTime, 
+                        null, 
+                        null, "","",""));
+                });  
             }
             //
             if (data.appOvertimeNightFlg == 1 && data.overtimeAtr != 0) {
