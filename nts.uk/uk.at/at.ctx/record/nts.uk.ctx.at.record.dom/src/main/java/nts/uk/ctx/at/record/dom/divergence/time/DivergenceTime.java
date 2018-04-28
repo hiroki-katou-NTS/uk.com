@@ -137,7 +137,9 @@ public class DivergenceTime extends AggregateRoot {
 							   .map(tc -> idConverter.convert(tc.intValue()).get())
 							   .collect(Collectors.toList());
 		return  getValueList.stream()
-									 .filter(tc -> tc.getValueType().isInteger())
+									 .filter(tc ->  tc !=null
+									  			 && tc.getValue() != null
+									  			 && tc.getValueType().isInteger())
 									 .map(tc -> Integer.valueOf(tc.getValue()))
 									 .collect(Collectors.summingInt(tc -> tc));
 									 
