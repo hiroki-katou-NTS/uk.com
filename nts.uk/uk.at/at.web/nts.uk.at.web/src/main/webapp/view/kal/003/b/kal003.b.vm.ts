@@ -23,7 +23,8 @@ module nts.uk.at.view.kal003.b.viewmodel{
         displayWorkTypeSelections_BA1_4         : KnockoutObservable<string> = ko.observable('');
         displayAttendanceItemSelections_BA2_3   : KnockoutObservable<string> = ko.observable('');
         displayWorkingTimeSelections_BA5_3  : KnockoutObservable<string> = ko.observable('');
-               
+        required_BA1_4 : KnockoutObservable<boolean>;
+                
         private setting : sharemodel.WorkRecordExtractingCondition;
         swANDOR_B5_3 : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         swANDOR_B6_3 : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
@@ -55,10 +56,16 @@ module nts.uk.at.view.kal003.b.viewmodel{
                         }
                     });
                 }
+                $(".nts-input").ntsError("clear");
             });
             self.comparisonRange().comparisonOperator.subscribe((operN) => {
                 self.settingEnableComparisonMaxValueField();
             });
+            self.required_BA1_4 = ko.observable(self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual()>0);
+            self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual.subscribe((newV)=>{
+                self.required_BA1_4(newV>0);
+                $(".nts-input").ntsError("clear");
+            });                        
         }
 
         //initial screen
@@ -550,6 +557,8 @@ module nts.uk.at.view.kal003.b.viewmodel{
             windows.setShared("KDL002_SelectedItemId", lstSelectedCode);
             windows.sub.modal("/view/kdl/002/a/index.xhtml", 
                     { title: "乖離時間の登録＞対象項目", dialogClass: "no-close"}).onClosed(function(): any {
+                        
+                $(".nts-input").ntsError("clear");                        
               //get data from share window
                 let listItems : Array<any> = windows.getShared("KDL002_SelectedNewItem");
                 if (listItems != null && listItems != undefined) {
@@ -580,6 +589,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
             windows.setShared("kml001selectedCodeList", lstSelectedCode);
             windows.sub.modal("/view/kdl/001/a/index.xhtml", 
                     { title: "割増項目の設定", dialogClass: "no-close"}).onClosed(function(): any {
+                $(".nts-input").ntsError("clear");
               //get data from share window
                 let listItems : Array<any> = windows.getShared("kml001selectedCodeList");
                 if (listItems != null && listItems != undefined) {
@@ -643,6 +653,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
                     nts.uk.ui.windows.setShared('AllAttendanceObj', lstItemCode);
                     nts.uk.ui.windows.setShared('SelectedAttendanceId', [currentAtdItemCondition.uncountableAtdItem()]);
                     nts.uk.ui.windows.sub.modal("at", "/view/kdl/021/a/index.xhtml").onClosed(() => {
+                        $(".nts-input").ntsError("clear");
                         let output = nts.uk.ui.windows.getShared("selectedChildAttendace");
                         if (output) {
                             currentAtdItemCondition.uncountableAtdItem(parseInt(output));
@@ -667,6 +678,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
                     
                     nts.uk.ui.windows.setShared("KDW007Params", param);
                     nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/c/index.xhtml").onClosed(() => {
+                        $(".nts-input").ntsError("clear");
                         let output = nts.uk.ui.windows.getShared("KDW007CResults");  
                         if (output) {
                             currentAtdItemCondition.countableAddAtdItems(output.lstAddItems.map((item) => { return parseInt(item); }));
@@ -751,6 +763,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 workRecordExtractingCondition = self.workRecordExtractingCondition();
             $('.nts-input').trigger("validate");
             if (errors.hasError() === true) {
+                nts.uk.ui.errors.show();
                 return;
              }                
             let isOk : boolean = true;
