@@ -189,10 +189,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			) {
 		
 		val timeFrames = new ArrayList<WithinWorkTimeFrame>();
-		//所定時間と就業時間帯の重複部分取得
-		List<EmTimeZoneSet> workingHourSet = createWorkingHourSet(workType, predetermineTimeForSet , lstHalfDayWorkTimezone, workNo);
 		//出退勤時刻と↑の重複時間帯と重複部分取得
-		List<WithinWorkTimeFrame> withinWorkTimeFrame = duplicatedByStamp(workingHourSet,timeLeavingWork);
+		List<WithinWorkTimeFrame> withinWorkTimeFrame = duplicatedByStamp(timeLeavingWork,lstHalfDayWorkTimezone,workType);
 		
 		for(WithinWorkTimeFrame duplicateTimeSheet :withinWorkTimeFrame) {
 			//就業時間内時間枠の作成
@@ -221,11 +219,14 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @param timeLeavingWork　出退勤
 	 * @return　時間枠の時間帯と出退勤の重複時間
 	 */
-	private static List<WithinWorkTimeFrame> duplicatedByStamp(List<EmTimeZoneSet> workingHourSet,
-			TimeLeavingWork timeLeavingWork) {
+	private static List<WithinWorkTimeFrame> duplicatedByStamp(
+			TimeLeavingWork timeLeavingWork,CommonFixedWorkTimezoneSet lstHalfDayWorkTimezone,WorkType workType) {
 		List<WithinWorkTimeFrame> returnList = new ArrayList<>();
 		Optional<TimeSpanForCalc> duplicatedRange = Optional.empty(); 
-		for(EmTimeZoneSet timeZone:workingHourSet) {
+		val attendanceHolidayAttr = workType.getAttendanceHolidayAttr();
+		val emTimeZoneSet = getWorkingHourSetByAmPmClass(lstHalfDayWorkTimezone, attendanceHolidayAttr);
+		
+		for(EmTimeZoneSet timeZone:emTimeZoneSet) {
 			duplicatedRange = timeZone.getTimezone().getDuplicatedWith(timeLeavingWork.getTimespan());
 			if(duplicatedRange.isPresent()) {
 				returnList.add(new WithinWorkTimeFrame(timeZone.getEmploymentTimeFrameNo(),
@@ -268,25 +269,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 */
 	public WithinWorkTimeFrame getFrameAt(int frameNo) {
 		return this.withinWorkTimeFrame.get(frameNo);
-	}
-
-	/**
-	 *  所定時間と重複している時間帯の判定
-	 * @param workType　勤務種類クラス
-	 * @param predetermineTimeSet 所定時間設定クラス
-	 * @param fixedWorkSetting 固定勤務設定クラス
-	 * @return 所定時間と重複している時間帯
-	 */
-	public static List<EmTimeZoneSet> createWorkingHourSet(WorkType workType, PredetermineTimeSetForCalc predetermineTimeSet,
-			CommonFixedWorkTimezoneSet lstHalfDayWorkTimezone,int workNo) {
-		
-		val attendanceHolidayAttr = workType.getAttendanceHolidayAttr();
-		val emTimeZoneSet = getWorkingHourSetByAmPmClass(lstHalfDayWorkTimezone, attendanceHolidayAttr);
-		val predTimeSheet = predetermineTimeSet.getTimeSheets().stream().filter(tc -> tc.getWorkNo() == workNo).findFirst(); 
-		return extractBetween(
-				emTimeZoneSet,
-				predTimeSheet.isPresent()?predTimeSheet.get().getStart():new TimeWithDayAttr(0),
-				predTimeSheet.isPresent()?predTimeSheet.get().getEnd():new TimeWithDayAttr(0));
 	}
 
 	/**
