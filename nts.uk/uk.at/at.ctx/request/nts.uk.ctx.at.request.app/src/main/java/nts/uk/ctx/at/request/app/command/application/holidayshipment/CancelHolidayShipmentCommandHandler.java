@@ -1,11 +1,16 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.ProcessCancel;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -13,6 +18,8 @@ public class CancelHolidayShipmentCommandHandler extends CommandHandler<HolidayS
 
 	@Inject
 	private ProcessCancel processCancel;
+	@Inject
+	private CompltLeaveSimMngRepository CompLeaveRepo;
 
 	String companyID, employeeID;
 	Long version;
@@ -31,20 +38,27 @@ public class CancelHolidayShipmentCommandHandler extends CommandHandler<HolidayS
 		boolean isCancelRec = command.getRecAppID() != null;
 		boolean isCancelAbs = command.getAbsAppID() != null;
 
-		if (isCancelAbs) {
-			// アルゴリズム「取消処理」を実行する
-			cancelProcess(companyID, command.getAbsAppID());
-		}
-
 		if (isCancelRec) {
 			// アルゴリズム「取消処理」を実行する
-			cancelProcess(companyID, command.getRecAppID());
+			cancelProcess(companyID, command.getRecAppID(), command.getAppVersion());
 		}
-		// ドメインモデル「振休振出同時申請管理」を1件更新する
+
+		if (isCancelAbs) {
+			// アルゴリズム「取消処理」を実行する
+			cancelProcess(companyID, command.getAbsAppID(), command.getAppVersion());
+			// ドメインモデル「振休振出同時申請管理」を1件更新する
+			Optional<CompltLeaveSimMng> compltLeaveSimMngOpt = CompLeaveRepo.findByAbsID(command.getAbsAppID());
+			if (compltLeaveSimMngOpt.isPresent()) {
+				CompltLeaveSimMng compltLeaveSimMng = compltLeaveSimMngOpt.get();
+				compltLeaveSimMng.setSyncing(SyncState.ASYNCHRONOUS);
+				CompLeaveRepo.update(compltLeaveSimMng);
+			}
+
+		}
 
 	}
 
-	private void cancelProcess(String companyID, String appID) {
+	private void cancelProcess(String companyID, String appID, Long version) {
 		// アルゴリズム「詳細画面取消の処理」を実行する
 		processCancel.detailScreenCancelProcess(companyID, appID, version);
 	}

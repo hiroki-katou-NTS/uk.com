@@ -407,6 +407,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         otherAuth: number;
         selfAuth: number;
         dataType: number;
+        isConvert: boolean;
     }
 
     export class PersonRole {
@@ -717,10 +718,11 @@ module nts.uk.com.view.cas001.a.viewmodel {
         selfAuth: string;
         itemCd: string;
         dataType: number;
+        isConvert: boolean = false;
 
         constructor(param: IPersonRoleItem) {
             let self = this;
-            self.personItemDefId = param ? _.replace(param.personItemDefId, new RegExp("-", "g"), "_") : '';
+            self.personItemDefId = param ?  param.personItemDefId: "";//_.replace(param.personItemDefId, new RegExp("-", "g"), "_") : '';
             self.setting = param ? param.setting : false;
             self.requiredAtr = param ? param.requiredAtr : 'false';
             self.itemName = param ? param.itemName : '';
@@ -729,6 +731,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             self.otherAuth = this.setting === true ? param ? param.otherAuth : 1 : 1;
             self.selfAuth = this.setting === true ? param ? param.selfAuth : 1 : 1;
             self.dataType = param ? param.dataType : '';
+            self.isConvert = param ? (param.personItemDefId.search("CS") > -1 ? false: true): false;
         }
     }
 
@@ -807,10 +810,9 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
 
             itemLst = _.map(dataSource, function(c: any) {
-                c.personItemDefId = c.personItemDefId.search("COM") > -1 ? c.personItemDefId : _.replace(c.personItemDefId, new RegExp("_", "g"), "-");
                 _.each(itemGroup, function(i) {
                     if (i.length > 0) {
-                        let personItemDefId: string = i[0].rowId.search("COM") > -1 ? i[0].rowId : _.replace(i[0].rowId, new RegExp("_", "g"), "-");
+                         let personItemDefId: string = i[0].rowId;
                     }
                     if (c.personItemDefId === personItemDefId) {
                         _.each(i, function(x) {
@@ -832,6 +834,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             });
 
             this.items = _.map(itemLst, x => new PersonRoleItemCommand(x));
+            console.log(this.items);
             //add child item
             this.addChildItem(this.items);
         }

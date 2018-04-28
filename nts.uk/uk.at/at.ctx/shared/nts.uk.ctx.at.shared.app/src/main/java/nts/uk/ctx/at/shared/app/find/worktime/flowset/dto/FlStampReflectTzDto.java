@@ -50,6 +50,10 @@ public class FlStampReflectTzDto implements FlowStampReflectTzSetMemento {
 	public void setStampReflectTimezone(List<StampReflectTimezone> lstRtz) {
 		this.stampReflectTimezones = lstRtz.stream().map(item -> {
 			StampReflectTimezoneDto dto = new StampReflectTimezoneDto();
+			dto.setWorkNo(item.getWorkNo());
+			dto.setClassification(item.getClassification());
+			dto.setStartTime(item.getStartTime());
+			dto.setEndTime(item.getEndTime());
 			return dto;
 		}).collect(Collectors.toList());
 	}

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -34,11 +35,11 @@ public class TimeLeavingWork extends DomainObject{
 
 
 	
-	public TimeLeavingWork(WorkNo workNo, Optional<TimeActualStamp> attendanceStamp, Optional<TimeActualStamp> leaveStamp) {
+	public TimeLeavingWork(WorkNo workNo, TimeActualStamp attendanceStamp, TimeActualStamp leaveStamp) {
 		super();
 		this.workNo = workNo;
-		this.attendanceStamp = attendanceStamp;
-		this.leaveStamp = leaveStamp;
+		this.attendanceStamp = Optional.ofNullable(attendanceStamp);
+		this.leaveStamp = Optional.ofNullable(leaveStamp);
 		
 		this.timespan = this.craeteTimeSpan();
 	}
@@ -93,13 +94,36 @@ public class TimeLeavingWork extends DomainObject{
 		if(isJustTimeLateAttendance) {
 			newLeave = leaveStamp.get().moveAheadStampTime(1);
 		}
-		return new TimeLeavingWork(this.workNo,Optional.ofNullable(newAttendance) , Optional.ofNullable(newLeave));
+		return new TimeLeavingWork(this.workNo, newAttendance , newLeave);
 	}
 
 	public void setTimeLeavingWork(WorkNo workNo, Optional<TimeActualStamp> attendanceStamp, Optional<TimeActualStamp> leaveStamp){
 		this.workNo = workNo;
 		this.attendanceStamp = attendanceStamp;
 		this.leaveStamp = leaveStamp;
+	}
+
+	/**
+	 * 打刻漏れをしているかチェックする
+	 * @return 打刻漏れをしていない 
+	 */
+	public boolean checkLeakageStamp() {
+		//出勤時刻が無い
+		if( this.getAttendanceStamp() == null
+			&& !this.getAttendanceStamp().isPresent()
+			&& this.getAttendanceStamp().get().getStamp() == null
+			&& !this.getAttendanceStamp().get().getStamp().isPresent()
+			&& this.getAttendanceStamp().get().getStamp().get().getTimeWithDay() == null) {
+			return false;
+		}
+		if(this.getLeaveStamp() == null
+				&& !this.getLeaveStamp().isPresent()
+				&& this.getLeaveStamp().get().getStamp() == null
+				&& !this.getLeaveStamp().get().getStamp().isPresent()
+				&& this.getLeaveStamp().get().getStamp().get().getTimeWithDay() == null) {
+			return false;
+		}
+		return true;
 	}
 	
 }

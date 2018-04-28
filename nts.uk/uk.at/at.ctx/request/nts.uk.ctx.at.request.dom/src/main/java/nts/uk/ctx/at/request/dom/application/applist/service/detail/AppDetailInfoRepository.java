@@ -46,4 +46,10 @@ public interface AppDetailInfoRepository {
 	 * @return
 	 */
 	public AppCompltLeaveFull getAppCompltLeaveInfo(String companyID, String appId, int type);
+	/**
+	 * convert time from integer to Time_Short_HM
+	 * @param time
+	 * @return
+	 */
+	public String convertTime(Integer time);
 }

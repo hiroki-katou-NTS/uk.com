@@ -47,12 +47,15 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
                 //console.log(data);
                 self.dataSource(data);
+                var topPageUrl = "/view/ccg/008/a/index.xhtml";
                 if (data.topPage != null && data.topPage.standardMenuUrl != null) {//hien thi standardmenu
                     var res = "/" + data.topPage.standardMenuUrl.split("web/")[1];
-                    if (_.includes(data.topPage.standardMenuUrl, ".at.")) { 
-                        nts.uk.request.jump("at", res);
-                    } else {
-                        nts.uk.request.jump(res);
+                    if (res && topPageUrl != res.trim()) { 
+                        if (_.includes(data.topPage.standardMenuUrl, ".at.")) { 
+                            nts.uk.request.jump("at", res);
+                        } else {
+                            nts.uk.request.jump(res);
+                        }
                     }
                 }
                 if (data.checkMyPage == false) {//k hien thi my page

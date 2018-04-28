@@ -66,7 +66,7 @@ public class DetermineErrorAlarmWorkRecordService implements ErAlCheckService {
 		List<ErrorAlarmWorkRecord> lstErrorAlarm = conditionAlarmError.getErAlConditons(comapanyId);
 		if (!lstErrorAlarm.isEmpty()) {
 			return lstErrorAlarm.stream().collect(Collectors.toMap(erAl -> erAl, erAl -> {
-				if (erAl.getErrorAlarmCondition() != null && erAl.getErrorDisplayItem() != null) {
+				if (erAl.getErrorAlarmCondition() == null || erAl.getErrorDisplayItem() == null) {
 					return new HashMap<>();
 				}
 				return workRecordCheckService.check(date, Arrays.asList(employeeID), erAl.getErrorAlarmCondition());

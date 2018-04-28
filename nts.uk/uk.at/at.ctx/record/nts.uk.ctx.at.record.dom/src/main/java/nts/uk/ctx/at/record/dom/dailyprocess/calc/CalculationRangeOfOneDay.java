@@ -29,13 +29,16 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTime
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
+import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.WorkTimeCalcMethodDetailOfHoliday;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
@@ -49,7 +52,6 @@ import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -83,17 +85,13 @@ public class CalculationRangeOfOneDay {
 	private TimeSpanForCalc oneDayOfRange;
 
 	private WorkInfoOfDailyPerformance workInformationOfDaily;
-
+	
 	private TimeLeavingOfDailyPerformance attendanceLeavingWork;
 
 	private PredetermineTimeSetForCalc predetermineTimeSetForCalc;
 
 	private Finally<TimevacationUseTimeOfDaily> timeVacationAdditionRemainingTime = Finally.empty();// 時間休暇加算残時間
 
-	private Optional<DeductionTimeSheet> temporaryDeductionTimeSheet = Optional.empty(); // 休憩時間の算出ロジック(概要設計)が終わるまで一時的措置のため設置
-																							// 2017.11.15
-																							// by
-																							// hoshina
 
 	public CalculationRangeOfOneDay(Finally<WithinWorkTimeSheet> withinWorkingTimeSheet,
 			Finally<OutsideWorkTimeSheet> outsideWorkTimeSheet, TimeSpanForCalc oneDayOfRange,
@@ -146,6 +144,7 @@ public class CalculationRangeOfOneDay {
 	 * @param autoCalculationSet
 	 * @param statutorySet
 	 * @param prioritySet
+	 * @param integrationOfDaily 
 	 */
 	public void createWithinWorkTimeSheet(WorkingSystem workingSystem, WorkTimeMethodSet setMethod,
 			RestClockManageAtr clockManage, OutingTimeOfDailyPerformance dailyGoOutSheet, CommonRestSetting commonSet,
@@ -157,19 +156,18 @@ public class CalculationRangeOfOneDay {
 			BreakDownTimeDay breakdownTimeDay, DailyTime dailyTime, AutoCalOvertimeSetting autoCalculationSet,
 			LegalOTSetting statutorySet, StatutoryPrioritySet prioritySet, WorkTimeSetting workTime,List<BreakTimeOfDailyPerformance> breakTimeOfDailyList
 			,MidNightTimeSheet midNightTimeSheet,DailyCalculationPersonalInformation personalInfo,Optional<CoreTimeSetting> coreTimeSetting,
-			WorkTimeCalcMethodDetailOfHoliday workTimeCalcMethodDetailOfHoliday) {
+			HolidayCalcMethodSet holidayCalcMethodSet,DailyUnit dailyUnit,List<TimeSheetOfDeductionItem> breakTimeList) {
 		/* 固定控除時間帯の作成 */
 		DeductionTimeSheet deductionTimeSheet = DeductionTimeSheet.createTimeSheetForFixBreakTime(
 				setMethod, clockManage, dailyGoOutSheet, this.oneDayOfRange, commonSet, attendanceLeavingWork,
 				fixedCalc, workTimeDivision, breakTimeOfDailyList);
-		this.temporaryDeductionTimeSheet = Optional.of(deductionTimeSheet);
 		
 		val fixedWorkTImeZoneSet = new CommonFixedWorkTimezoneSet();
 		fixedWorkTImeZoneSet.forFixed(fixedWorkSetting.getLstHalfDayWorkTimezone());
 		theDayOfWorkTimesLoop(workingSystem, predetermineTimeSetForCalc, fixedWorkTImeZoneSet,fixedWorkSetting.getCommonSetting(), bonusPaySetting,
 				overTimeHourSetList, fixOff, dayEndSet, holidayTimeWorkItem, beforeDay, toDay, afterDay,
 				breakdownTimeDay, dailyTime, autoCalculationSet, statutorySet, prioritySet, deductionTimeSheet,
-				workTime,midNightTimeSheet,personalInfo,workTimeCalcMethodDetailOfHoliday,coreTimeSetting);
+				workTime,midNightTimeSheet,personalInfo,holidayCalcMethodSet,coreTimeSetting,dailyUnit,breakTimeList);
 	}
 
 	/**
@@ -213,6 +211,7 @@ public class CalculationRangeOfOneDay {
 	 *            法定内優先設定
 	 * @param deductionTimeSheet
 	 *            控除時間帯
+	 * @param integrationOfDaily 
 	 */
 	public void theDayOfWorkTimesLoop(WorkingSystem workingSystem, PredetermineTimeSetForCalc predetermineTimeSetForCalc,
 			CommonFixedWorkTimezoneSet lstHalfDayWorkTimezone,
@@ -222,7 +221,8 @@ public class CalculationRangeOfOneDay {
 			BreakDownTimeDay breakdownTimeDay, DailyTime dailyTime, AutoCalOvertimeSetting autoCalculationSet,
 			LegalOTSetting statutorySet, StatutoryPrioritySet prioritySet,
 			DeductionTimeSheet deductionTimeSheet, WorkTimeSetting workTime,MidNightTimeSheet midNightTimeSheet,
-			DailyCalculationPersonalInformation personalInfo,WorkTimeCalcMethodDetailOfHoliday workTimeCalcMethodDetailOfHoliday,Optional<CoreTimeSetting> coreTimeSetting) {
+			DailyCalculationPersonalInformation personalInfo,HolidayCalcMethodSet holidayCalcMethodSet,
+			Optional<CoreTimeSetting> coreTimeSetting,DailyUnit dailyUnit,List<TimeSheetOfDeductionItem> breakTimeList) {
 		if (workingSystem.isExcludedWorkingCalculate()) {
 			/* 計算対象外の処理 */
 			return;
@@ -231,7 +231,7 @@ public class CalculationRangeOfOneDay {
 			
 			/* 就業内の時間帯作成 */
 			//打刻はある前提で動く
-			val createWithinWorkTimeSheet = WithinWorkTimeSheet.createAsFixed(attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)).get(),
+			val createWithinWorkTimeSheet = WithinWorkTimeSheet.createAsFixed(attendanceLeavingWork.getAttendanceLeavingWork(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(workNumber)).get(),
 																			  toDay,
 																			  predetermineTimeSetForCalc, 
 																			  lstHalfDayWorkTimezone,
@@ -241,8 +241,9 @@ public class CalculationRangeOfOneDay {
 																			  midNightTimeSheet,
 																			  workNumber,
 																			  coreTimeSetting,
-																			  workTimeCalcMethodDetailOfHoliday,
-																			  workTimeCommonSet.getLateEarlySet());
+																			  holidayCalcMethodSet,
+																			  workTimeCommonSet.getLateEarlySet(),
+																			  dailyUnit,breakTimeList);
 			if(withinWorkingTimeSheet.isPresent()) {
 				withinWorkingTimeSheet.get().getWithinWorkTimeFrame().addAll(createWithinWorkTimeSheet.getWithinWorkTimeFrame());
 			}
@@ -252,10 +253,10 @@ public class CalculationRangeOfOneDay {
 			/* 就業外の時間帯作成 */
 			//打刻はある前提で動く
 			val createOutSideWorkTimeSheet = OutsideWorkTimeSheet.createOutsideWorkTimeSheet(overTimeHourSetList, fixOff,
-					attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)).get(),
+					attendanceLeavingWork.getAttendanceLeavingWork(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(workNumber)).get(),
 					workNumber, dayEndSet, workTimeCommonSet, holidayTimeWorkItem, beforeDay, toDay, afterDay, workTime,
 					workingSystem, breakdownTimeDay, dailyTime, autoCalculationSet, statutorySet, prioritySet
-					,bonusPaySetting,midNightTimeSheet,personalInfo,deductionTimeSheet);
+					,bonusPaySetting,midNightTimeSheet,personalInfo,deductionTimeSheet,dailyUnit,holidayCalcMethodSet);
 			if(!outsideWorkTimeSheet.isPresent()) {
 				//outsideWorkTimeSheet.set(createOutSideWorkTimeSheet);
 				this.outsideWorkTimeSheet = Finally.of(createOutSideWorkTimeSheet);
@@ -288,8 +289,7 @@ public class CalculationRangeOfOneDay {
 	 * 
 	 * @return 深夜時間
 	 */
-	public ExcessOfStatutoryTimeOfDaily calcMidNightTime(ExcessOfStatutoryTimeOfDaily excessOfDaily,
-			AutoCalRestTimeSetting autoCalcSet) {
+	public ExcessOfStatutoryTimeOfDaily calcMidNightTime(ExcessOfStatutoryTimeOfDaily excessOfDaily) {
 		// ExcessOverTimeWorkMidNightTime excessHolidayWorkMidNight =
 		// excessOfDaily.getOverTimeWork().get().calcMidNightTimeIncludeOverTimeWork();
 		// HolidayMidnightWork excessMidNight =
@@ -447,6 +447,8 @@ public class CalculationRangeOfOneDay {
 
 	 /**
 	 * フレックスの時間帯作成
+	 * @param integrationOfDaily 
+	 * @param integrationOfDaily 
 	 */
 	 public void createTimeSheetAsFlex(
 			 		WorkingSystem workingSystem, PredetermineTimeSetForCalc predetermineTimeSetForCalc,
@@ -459,7 +461,7 @@ public class CalculationRangeOfOneDay {
 					FlexWorkSetting flexWorkSetting,OutingTimeOfDailyPerformance outingTimeSheetofDaily,
 					TimeSpanForCalc oneDayTimeSpan,TimeLeavingOfDailyPerformance attendanceLeaveWork,WorkTimeDivision workTimeDivision
 					,List<BreakTimeOfDailyPerformance> breakTimeOfDailyList,MidNightTimeSheet midNightTimeSheet,DailyCalculationPersonalInformation personalInfo,
-					WorkTimeCalcMethodDetailOfHoliday workTimeCalcMethodDetailOfHoliday,Optional<CoreTimeSetting> coreTimeSetting){
+					HolidayCalcMethodSet holidayCalcMethodSet,Optional<CoreTimeSetting> coreTimeSetting,DailyUnit dailyUnit,List<TimeSheetOfDeductionItem> breakTimeList){
 		 //if(!flexTimeSet.getUseFixedRestTime()){
 			// predetermineTimeSetForCalc.correctPredetermineTimeSheet(dailyWork);
 			 /*遅刻早退処理*/
@@ -473,7 +475,6 @@ public class CalculationRangeOfOneDay {
 		 //控除時間帯の作成
 		 val deductionTimeSheet = provisionalDeterminationOfDeductionTimeSheet(outingTimeSheetofDaily,
 				 oneDayTimeSpan, attendanceLeaveWork, workTimeDivision,breakTimeOfDailyList,flexWorkSetting.getOffdayWorkTime().getRestTimezone(),flexWorkSetting.getRestSetting());
-		 this.temporaryDeductionTimeSheet = Optional.of(deductionTimeSheet);
 		 /*固定勤務の時間帯作成*/
 		 val fixedWorkTimeZoneSet = new CommonFixedWorkTimezoneSet();
 		 fixedWorkTimeZoneSet.forFlex(flexWorkSetting.getLstHalfDayWorkTimezone());
@@ -483,10 +484,11 @@ public class CalculationRangeOfOneDay {
 					holidayTimeWorkItem,  beforeDay,  toDay,  afterDay,
 					 breakdownTimeDay,  dailyTime,  autoCalculationSet,
 					 statutorySet,  prioritySet,
-					 deductionTimeSheet,  workTime,midNightTimeSheet,personalInfo,workTimeCalcMethodDetailOfHoliday,coreTimeSetting);
+					 deductionTimeSheet,  workTime,midNightTimeSheet,personalInfo,holidayCalcMethodSet,coreTimeSetting,dailyUnit,breakTimeList);
 		 /*コアタイムのセット*/
 		 //this.withinWorkingTimeSheet.set(withinWorkingTimeSheet.get().createWithinFlexTimeSheet(flexWorkSetting.getCoreTimeSetting()));
-		 this.withinWorkingTimeSheet = Finally.of(withinWorkingTimeSheet.get().createWithinFlexTimeSheet(flexWorkSetting.getCoreTimeSetting()));
+		 if(this.withinWorkingTimeSheet.isPresent())
+			 this.withinWorkingTimeSheet = Finally.of(withinWorkingTimeSheet.get().createWithinFlexTimeSheet(flexWorkSetting.getCoreTimeSetting()));
 	 }
 	
 //	 /**
@@ -646,6 +648,20 @@ public class CalculationRangeOfOneDay {
 	 			 oneDayTimeSpan, attendanceLeaveWork, workTimeDivision,breakTimeOfDailyList,flowRestTimezone,flowRestSetting);
 	 
 	 	return new DeductionTimeSheet(dedTimeSheet,recordTimeSheet); 
+	 }
+	 
+	 /**
+	  * 大塚モード使用時専用の遅刻、早退削除処理
+	  */
+	 public void cleanLateLeaveEarlyTimeForOOtsuka() {
+		 if(this.getWithinWorkingTimeSheet() != null
+			&& this.getWithinWorkingTimeSheet().isPresent()){
+			 this.withinWorkingTimeSheet.get().cleanLateLeaveEarlyTimeForOOtsuka();
+		 }
+	 }
+	 
+	 public void clearLeavingTime() {
+		 this.attendanceLeavingWork = new TimeLeavingOfDailyPerformance(this.getAttendanceLeavingWork().getEmployeeId(), new WorkTimes(0), Collections.emptyList(), this.getAttendanceLeavingWork().getYmd());
 	 }
 	 
 }

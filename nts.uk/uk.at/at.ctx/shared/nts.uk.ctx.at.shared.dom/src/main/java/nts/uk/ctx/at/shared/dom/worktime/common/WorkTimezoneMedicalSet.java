@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class WorkTimezoneMedicalSet.
@@ -30,7 +31,8 @@ public class WorkTimezoneMedicalSet extends WorkTimeDomainObject {
 	/**
 	 * Instantiates a new work timezone medical set.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public WorkTimezoneMedicalSet(WorkTimezoneMedicalSetGetMemento memento) {
 		this.roundingSet = memento.getRoundingSet();
@@ -41,7 +43,8 @@ public class WorkTimezoneMedicalSet extends WorkTimeDomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(WorkTimezoneMedicalSetSetMemento memento) {
 		memento.setRoundingSet(this.roundingSet);
@@ -49,4 +52,16 @@ public class WorkTimezoneMedicalSet extends WorkTimeDomainObject {
 		memento.setApplicationTime(this.applicationTime);
 	}
 
+	/**
+	 * Correct data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 */
+	public void correctData(ScreenMode screenMode) {
+		if (ScreenMode.SIMPLE.equals(screenMode)) {
+			this.applicationTime = new OneDayTime(0);
+			this.roundingSet.setDefaultDataRoundingDown();
+		}
+	}
 }

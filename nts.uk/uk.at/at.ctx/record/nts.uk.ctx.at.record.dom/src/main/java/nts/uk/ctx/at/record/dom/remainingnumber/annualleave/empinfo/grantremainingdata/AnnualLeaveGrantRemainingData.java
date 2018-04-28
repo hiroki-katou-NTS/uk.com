@@ -80,6 +80,19 @@ public class AnnualLeaveGrantRemainingData extends AggregateRoot {
 		}
 		return domain;
 	}
+	
+	public void updateData(GeneralDate grantDate, GeneralDate deadline, int expirationStatus, int registerType,
+			double grantDays, Integer grantMinutes, double usedDays, Integer usedMinutes, Double stowageDays,
+			double remainDays, Integer remainMinutes, double usedPercent) {
+		this.grantDate = grantDate;
+		this.deadline = deadline;
+		this.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
+		this.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
+		
+		this.details = new AnnualLeaveNumberInfo(grantDays, grantMinutes, usedDays, usedMinutes, stowageDays,
+				remainDays, remainMinutes, usedPercent);
+		
+	}
 
 	/**
 	 * 年休を指定日数消化する

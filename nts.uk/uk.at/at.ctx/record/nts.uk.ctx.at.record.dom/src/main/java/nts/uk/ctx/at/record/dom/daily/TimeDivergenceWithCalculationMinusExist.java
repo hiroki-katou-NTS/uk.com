@@ -19,7 +19,7 @@ public class TimeDivergenceWithCalculationMinusExist {
 	private TimeDivergenceWithCalculationMinusExist(AttendanceTimeOfExistMinus time,AttendanceTimeOfExistMinus calcTime) {
 		this.time = time;
 		this.calcTime = calcTime;
-		this.divergenceTime = calcTime.minusMinutes(time.valueAsMinutes());
+		this.divergenceTime = this.time.minusMinutes(this.calcTime.valueAsMinutes());
 	}
 	
 	/**
@@ -39,4 +39,13 @@ public class TimeDivergenceWithCalculationMinusExist {
 		return new TimeDivergenceWithCalculationMinusExist(time,calcTime);
 		
 	}
+	
+	/**
+	 * 自身の乖離時間を計算する
+	 * @return
+	 */
+	public TimeDivergenceWithCalculationMinusExist calcDiverGenceTime() {
+		return new TimeDivergenceWithCalculationMinusExist(this.time,this.calcTime);
+	}
+	
 }

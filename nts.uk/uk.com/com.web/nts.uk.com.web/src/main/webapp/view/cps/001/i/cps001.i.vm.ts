@@ -88,12 +88,14 @@ module nts.uk.com.view.cps001.i.vm {
 
         //data recive from cps001.a
         categoryCode: KnockoutObservable<string> = ko.observable(null);
+        sid: KnockoutObservable<string> = ko.observable(null);
 
         constructor() {
             let self = this,
                 data: any = getShared('CPS001GHI_VALUES');
 
             self.categoryCode(data.ctgCode);
+            self.sid(data.sid);
 
             self.expStateTitle = ko.observable('expDateTitle');
             self.roundingRules = ko.observableArray([
@@ -108,19 +110,22 @@ module nts.uk.com.view.cps001.i.vm {
                     service.getDetail(value).done((result: ISpecialLeaveRemaining) => {
                         if (result) {
                             self.bindingData(result);
+                            $("#idDateGrantInp").focus();
                         }
                     });
                 }
                 self.activeBtn();
+                clearError();
             });
 
             // Subscribe checkbox
             self.checked.subscribe(value => {
                 let self = this;
                 self.activeBtn();
+                clearError();
                 if (value) {
                     self.listData(self.convertData(self.listFullData()));
-                    self.currentValue(self.listData()[0].specialid);
+                    //self.currentValue(self.listData()[0].specialid);
                 } else {
                     self.listData(self.convertData(_.filter(self.listFullData(), function(item: any) {
                         return item.expStatus == 1;
@@ -128,11 +133,15 @@ module nts.uk.com.view.cps001.i.vm {
                 }
                 if (self.listData().length) {
                     // Set focus
-                    self.currentValue(self.listData()[0].specialid);
-                    // Set to update mode
+                    let index = _.findIndex(self.listData(), (item) => { return item.specialid == self.currentValue(); });
+
+                    if (index == -1) {
+                        self.currentValue(self.listData()[0].specialid);
+                    }
                 } else {
                     self.newMode();
                 }
+                $("#idDateGrantInp").focus();
 
             });
 
@@ -141,15 +150,21 @@ module nts.uk.com.view.cps001.i.vm {
 
         loadData(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            self.checked(false);
             let ctgCode: IData = self.genSpecialCode(self.categoryCode());
 
-            service.getAllList(__viewContext.user.employeeId, ctgCode.specialCode).done((data: Array<ISpecialLeaveRemaining>) => {
+            service.getAllList(self.sid(), ctgCode.specialCode).done((data: Array<ISpecialLeaveRemaining>) => {
                 if (data && data.length > 0) {
                     self.listFullData(data);
-                    self.listData(self.convertData(_.filter(self.listFullData(), function(item: any) {
-                        return item.expStatus == 1;
-                    })));
+                    if (self.checked()) {
+                        self.listData(self.convertData(_.filter(self.listFullData(), function(item: any) {
+                            return item;
+                        })));
+                    } else {
+                        self.listData(self.convertData(_.filter(self.listFullData(), function(item: any) {
+                            return item.expStatus == 1;
+                        })));
+                    }
+
 
                     if (self.listData().length > 0) {
                         // Set focus
@@ -184,7 +199,6 @@ module nts.uk.com.view.cps001.i.vm {
                     self.newMode();
                 }
                 clearError();
-                $('#idDateGrantInp').focus();
             });
 
         }
@@ -235,7 +249,8 @@ module nts.uk.com.view.cps001.i.vm {
             self.dayNumberOver(null);
             self.timeOver(null);
             self.selectedRuleCode(1);
-            $('#idDateGrantInp').focus();
+            $("#idDateGrantInp").focus();
+            nts.uk.ui.errors.clearAll;
         }
 
         Save() {
@@ -244,15 +259,20 @@ module nts.uk.com.view.cps001.i.vm {
                 deadline = moment.utc(self.deadlineDateInp(), "YYYY/MM/DD"),
                 ctgCode: IData = self.genSpecialCode(self.categoryCode());
 
+            $("#idDateGrantInp").trigger("validate");
+            $("#idDeadline").trigger("validate");
+            $("#dayNumberOfGrants").trigger("validate");
+            $("#dayNumberOfUse").trigger("validate");
+            $("#dayNumberOver").trigger("validate");
+            $("#dayNumberOfReam").trigger("validate");
 
-            if (self.dateGrantInp() == null || self.deadlineDateInp() == null
-                || self.dayNumberOfGrants() == null || self.dayNumberOfUse() == null
-                || self.dayNumberOfReam() == null || self.dayNumberOver() == null || nts.uk.ui.errors.hasError()) {
+
+            if (nts.uk.ui.errors.hasError()) {
                 return;
             }
 
             if ((new Date(deadline._d)) < (new Date(grantDate._d))) {
-                error({ messageId: "Msg_1023" });
+                $('#idDateGrantInp').ntsError('set', { messageId: "Msg_1023" });
                 return;
             }
 
@@ -260,7 +280,7 @@ module nts.uk.com.view.cps001.i.vm {
             //sid = "1B3D3CC4-90FD-4992-9566-12EC72827E4C" || __viewContext.user.employeeId
             let command = {
                 specialid: currentRow == undefined ? null : currentRow.specialid,
-                sid: __viewContext.user.employeeId,
+                sid: self.sid(),
                 specialLeaCode: ctgCode.specialCode,
                 grantDate: self.dateGrantInp(), deadlineDate: self.deadlineDateInp(),
                 expStatus: self.selectedRuleCode(), registerType: null,
@@ -279,20 +299,31 @@ module nts.uk.com.view.cps001.i.vm {
             service.saveData(command).done((_data: any) => {
                 if (command.specialid) {
                     self.loadData().done(() => {
-                        self.currentValue(self.listData()[saveItemIndex].specialid);
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            if (ids.length == self.listData().length) {
+                                self.currentValue(self.listData()[saveItemIndex].specialid);
+                            } else if ((self.listData().length > 0) && (ids.length != self.listData().length)) {
+                                self.currentValue(self.listData()[0].specialid);
+                            }
+                            $("#idDateGrantInp").focus();
+                        });
                     });
 
                 } else {
                     self.loadData().done(() => {
-                        if (self.listData().length > 0) {
-                            let newItem = _.find(self.listData(), x => ids.indexOf(x.specialid) == -1);
-                            let saveItemIndex = _.findIndex(self.listData(), (item) => { return item.specialid == newItem.specialid; });
-                            self.currentValue(self.listData()[saveItemIndex].specialid);
-                        }
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            if (self.listData().length > 0) {
+                                let newItem = _.find(self.listData(), x => ids.indexOf(x.specialid) == -1);
+                                let saveItemIndex = _.findIndex(self.listData(), (item) => { return item.specialid == newItem.specialid; });
+                                self.currentValue(self.listData()[saveItemIndex].specialid);
+                            }
+                            $("#idDateGrantInp").focus();
+                        });
                     });
                 }
-                alert({ messageId: "Msg_15" });
+                clearError();
                 unblock();
+
             }).fail((error: any) => {
                 unblock();
             });
@@ -334,34 +365,27 @@ module nts.uk.com.view.cps001.i.vm {
                     if (currentRow != undefined) {
                         let itemListLength = self.listData().length;
                         service.remove(currentRow.specialid).done((_data: any) => {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                                if (itemListLength === 1) {
+                                    self.loadData().done(() => { });
+                                } else if (itemListLength - 1 === delItemIndex) {
+                                    self.loadData().done(() => {
+                                        self.currentValue(self.listData()[delItemIndex - 1].specialid);
+                                    });
+                                } else if (itemListLength - 1 > delItemIndex) {
+                                    self.loadData().done(() => {
+                                        self.currentValue(self.listData()[delItemIndex].specialid);
+                                    });
+                                }
+                            });
 
-                            if (itemListLength === 1) {
-                                self.loadData().done(() => {
-                                    self.newMode();
-                                });
-                            } else if (itemListLength - 1 === delItemIndex) {
-                                self.loadData().done(() => {
-                                    self.currentValue(self.listData()[delItemIndex - 1].specialid);
-
-                                });
-                            } else if (itemListLength - 1 > delItemIndex) {
-                                self.loadData().done(() => {
-                                    self.currentValue(self.listData()[delItemIndex].specialid);
-                                });
-                            }
-
-                            alert({ messageId: "Msg_15" });
-                            unblock();
-                        }).fail((error: any) => {
+                        }).always(function() {
                             unblock();
                         });
-
                     }
-
-                }).ifCancel(() => {
+                }).then(() => {
+                    unblock();
                 });
-
-
         }
 
         closeDialog() {
@@ -377,19 +401,19 @@ module nts.uk.com.view.cps001.i.vm {
 
             // detail of grant
             self.dayNumberOfGrants(result.numberDayGrant);
-            self.grantTime(result.timeGrant);
+            self.grantTime(result.timeGrant == 0 ? null : result.timeGrant);
 
             // detail of Use
             self.dayNumberOfUse(result.numberDayUse);
-            self.useTime(result.timeUse);
+            self.useTime(result.timeUse == 0 ? null : result.timeUse);
 
             // Exeeded detail
             self.dayNumberOver(result.numberDaysOver);
-            self.timeOver(result.timeOver);
+            self.timeOver(result.timeOver == 0 ? null : result.timeOver);
 
             // Reaming detail
             self.dayNumberOfReam(result.numberDayRemain);
-            self.timeReam(result.timeRemain);
+            self.timeReam(result.timeRemain == 0 ? null : result.timeRemain);
         }
 
         formatDate(value) {
@@ -408,7 +432,6 @@ module nts.uk.com.view.cps001.i.vm {
             let self = this;
             let ctgCode: IData = self.genSpecialCode(self.categoryCode());
             service.getItemDef(ctgCode.ctgCodeChirld).done((data: Array<IItem>) => {
-                console.log(data);
                 self.setItemDefValue(data).done(() => {
                     self.setGridList();
                 });
@@ -436,19 +459,15 @@ module nts.uk.com.view.cps001.i.vm {
                             switch (timeType) {
                                 case "grantDate":
                                     self.nameDateGrantInp(itemDef.itemName);
-                                    console.log(self.nameDateGrantInp());
                                     break;
                                 case "deadlineDate":
                                     self.nameDeadlineDateInp(itemDef.itemName);
-                                    console.log(self.nameDeadlineDateInp());
                                     break;
                                 case "dayNumberOfGrants":
                                     self.nameDayNumberOfGrant(itemDef.itemName);
-                                    console.log(self.nameDayNumberOfGrant());
                                     break;
                                 case "dayNumberOfUse":
                                     self.nameDayNumberOfUse(itemDef.itemName);
-                                    console.log(self.nameDayNumberOfUse());
                                     break;
                                 case "dayNumberOver":
                                     self.nameDayNumberOver(itemDef.itemName);
@@ -472,7 +491,6 @@ module nts.uk.com.view.cps001.i.vm {
                                     self.timeReamH = ko.observable(!itemDef.display);
                                     self.nameTimeReam(itemDef.itemName);
                                     break;
-
                             }
 
 
