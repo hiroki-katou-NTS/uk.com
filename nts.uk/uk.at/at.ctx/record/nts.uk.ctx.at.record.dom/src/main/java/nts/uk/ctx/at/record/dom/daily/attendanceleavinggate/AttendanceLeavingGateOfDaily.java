@@ -44,25 +44,33 @@ public class AttendanceLeavingGateOfDaily {
 			if(!attendanceLeavingGate.getAttendance().isPresent()){
 				continue;
 			}
+			
+			Optional<WorkStamp> attendanceLeaveWorkStamp = goLeavingWorkAtr.isGO_WORK()?attendanceLeavingGate.getAttendance():
+																			   			attendanceLeavingGate.getLeaving();
+			if(!attendanceLeaveWorkStamp.isPresent()) continue;
 			//入門または退門時間の取得
-			TimeWithDayAttr gateTime = goLeavingWorkAtr.isGO_WORK()?attendanceLeavingGate.getAttendance().get().getTimeWithDay():
-                													attendanceLeavingGate.getLeaving().get().getTimeWithDay();
-			int	attendanceLeavingGateTime = gateTime.valueAsMinutes();
+			TimeWithDayAttr gateTime = attendanceLeaveWorkStamp.get().getTimeWithDay();
+			
+			if(gateTime==null) continue;
+
 			//出勤または退勤時間の取得
-			int stamp = 0;
-			if(attendanceLeave.isPresent()) {
-				if(attendanceLeave.get().getAttendanceLeavingWork(new WorkNo(attendanceLeavingGate.getWorkNo().v())).isPresent()) {
-					Optional<TimeActualStamp> timeActualstamp = goLeavingWorkAtr.isGO_WORK()?attendanceLeave.get().getAttendanceLeavingWork(new WorkNo(attendanceLeavingGate.getWorkNo().v())).get().getAttendanceStamp():
-																						 	 attendanceLeave.get().getAttendanceLeavingWork(new WorkNo(attendanceLeavingGate.getWorkNo().v())).get().getLeaveStamp();
-					if(!timeActualstamp.isPresent()) continue;
-					if(!timeActualstamp.get().getStamp().isPresent()) continue;
-					Optional<WorkStamp> workStamp = timeActualstamp.get().getStamp();
-					if(workStamp.isPresent()) continue;
-					if(workStamp.get().getTimeWithDay()==null) continue;
-					stamp = workStamp.get().getTimeWithDay().valueAsMinutes();
-				}
-			}
-			//出勤なら「出勤-入門」、退勤なら「退門-退勤」
+			if(!attendanceLeave.isPresent()) continue;
+			if(!attendanceLeave.get().getAttendanceLeavingWork(new WorkNo(attendanceLeavingGate.getWorkNo().v())).isPresent()) continue;
+					
+			Optional<TimeActualStamp> timeActualstamp = goLeavingWorkAtr.isGO_WORK()?attendanceLeave.get().getAttendanceLeavingWork(new WorkNo(attendanceLeavingGate.getWorkNo().v())).get().getAttendanceStamp():
+			 	 																	 attendanceLeave.get().getAttendanceLeavingWork(new WorkNo(attendanceLeavingGate.getWorkNo().v())).get().getLeaveStamp();
+			if(!timeActualstamp.isPresent()) continue;
+			if(!timeActualstamp.get().getStamp().isPresent()) continue;
+			Optional<WorkStamp> workStamp = timeActualstamp.get().getStamp();
+			if(!workStamp.isPresent()) continue;
+			if(workStamp.get().getTimeWithDay()==null) continue;
+			
+			//出退勤前時間
+			int	attendanceLeavingGateTime = gateTime.valueAsMinutes();
+			//出勤時刻
+			int stamp = workStamp.get().getTimeWithDay().valueAsMinutes();
+			
+			//出勤なら「出勤-ログオン」、退勤なら「ログオフ-退勤」
 			int calcResult = goLeavingWorkAtr.isGO_WORK()?stamp-attendanceLeavingGateTime:attendanceLeavingGateTime-stamp;
 			resultList.add(new AttendanceTime(calcResult));
 		}
