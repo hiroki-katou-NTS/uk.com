@@ -38,27 +38,28 @@ public class AttendanceLeavingGateOfDaily {
 	 * @return
 	 */
 	public AttendanceTime calcBeforeAttendanceTime(Optional<TimeLeavingOfDailyPerformance> attendanceLeave,GoLeavingWorkAtr goLeavingWorkAtr) {
+		if(!attendanceLeave.isPresent()) return new AttendanceTime(0);
 		List<AttendanceTime> resultList = new ArrayList<>();
 		for(AttendanceLeavingGate attendanceLeavingGate : this.attendanceLeavingGates) {
-			//入門または退門時間の取得
-			int attendanceLeavingGateTime = 0;
-			if(attendanceLeavingGate.getAttendance().isPresent()) {
-				TimeWithDayAttr gateTime = goLeavingWorkAtr.isGO_WORK()?attendanceLeavingGate.getAttendance().get().getTimeWithDay():
-					                                                    attendanceLeavingGate.getLeaving().get().getTimeWithDay();
-				attendanceLeavingGateTime = gateTime!=null?gateTime.valueAsMinutes():0;
+			if(!attendanceLeavingGate.getAttendance().isPresent()){
+				continue;
 			}
+			//入門または退門時間の取得
+			TimeWithDayAttr gateTime = goLeavingWorkAtr.isGO_WORK()?attendanceLeavingGate.getAttendance().get().getTimeWithDay():
+                													attendanceLeavingGate.getLeaving().get().getTimeWithDay();
+			int	attendanceLeavingGateTime = gateTime.valueAsMinutes();
 			//出勤または退勤時間の取得
 			int stamp = 0;
 			if(attendanceLeave.isPresent()) {
-				if(attendanceLeave.get().getAttendanceLeavingWork(attendanceLeavingGate.getWorkNo()).isPresent()) {
-					Optional<TimeActualStamp> timeActualstamp = goLeavingWorkAtr.isGO_WORK()?attendanceLeave.get().getAttendanceLeavingWork(attendanceLeavingGate.getWorkNo()).get().getAttendanceStamp():
-																						 	attendanceLeave.get().getAttendanceLeavingWork(attendanceLeavingGate.getWorkNo()).get().getLeaveStamp();
-					if(timeActualstamp.isPresent()) {
-						Optional<WorkStamp> workStamp = timeActualstamp.get().getStamp();
-						if(workStamp.isPresent()) {
-							stamp = workStamp.get().getTimeWithDay()!=null?workStamp.get().getTimeWithDay().valueAsMinutes():0;
-						}
-					}
+				if(attendanceLeave.get().getAttendanceLeavingWork(new WorkNo(attendanceLeavingGate.getWorkNo().v())).isPresent()) {
+					Optional<TimeActualStamp> timeActualstamp = goLeavingWorkAtr.isGO_WORK()?attendanceLeave.get().getAttendanceLeavingWork(new WorkNo(attendanceLeavingGate.getWorkNo().v())).get().getAttendanceStamp():
+																						 	 attendanceLeave.get().getAttendanceLeavingWork(new WorkNo(attendanceLeavingGate.getWorkNo().v())).get().getLeaveStamp();
+					if(!timeActualstamp.isPresent()) continue;
+					if(!timeActualstamp.get().getStamp().isPresent()) continue;
+					Optional<WorkStamp> workStamp = timeActualstamp.get().getStamp();
+					if(workStamp.isPresent()) continue;
+					if(workStamp.get().getTimeWithDay()==null) continue;
+					stamp = workStamp.get().getTimeWithDay().valueAsMinutes();
 				}
 			}
 			//出勤なら「出勤-入門」、退勤なら「退門-退勤」
