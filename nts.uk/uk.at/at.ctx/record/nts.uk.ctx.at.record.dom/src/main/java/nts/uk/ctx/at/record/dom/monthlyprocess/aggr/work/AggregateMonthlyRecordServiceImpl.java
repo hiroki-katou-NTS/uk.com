@@ -237,6 +237,14 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		// 所属情報の作成
 		val affiliationInfo = this.createAffiliationInfo(procPeriod);
 		if (affiliationInfo == null) return null;
+		val itrAffiliationInfo = this.aggregateResult.getAffiliationInfoList().listIterator();
+		while (itrAffiliationInfo.hasNext()){
+			val oldAffiliationInfo = itrAffiliationInfo.next();
+			if (oldAffiliationInfo.equals(affiliationInfo)){
+				affiliationInfo.setFirstInfo(oldAffiliationInfo.getFirstInfo());
+				itrAffiliationInfo.remove();
+			}
+		}
 		this.aggregateResult.getAffiliationInfoList().add(affiliationInfo);
 		
 		// 労働制を確認する
@@ -377,7 +385,7 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			this.errorInfos.putIfAbsent(errorInfo.getResourceId(), errorInfo);
 			return null;
 		}
-		val lastInfoOfDaily = firstInfoOfDailyOpt.get();
+		val lastInfoOfDaily = lastInfoOfDailyOpt.get();
 		val lastWorkTypeOfDailyOpt = this.repositories.getWorkTypeOfDaily().findByKey(
 				this.employeeId, datePeriod.end());
 		if (!lastWorkTypeOfDailyOpt.isPresent()){
@@ -413,7 +421,7 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		
 		// 月末の勤務情報を判断
 		val lastInfo = affiliationInfoOpt.get().getLastInfo();
-		if (lastInfo.getBusinessTypeCd().v() == "0000002030"){
+		if (lastInfo.getBusinessTypeCd().v().compareTo("0000002030") == 0){
 			
 			// 任意項目50にセット
 			this.aggregateResult.addAnyItemOrUpdate(AnyItemOfMonthly.of(
