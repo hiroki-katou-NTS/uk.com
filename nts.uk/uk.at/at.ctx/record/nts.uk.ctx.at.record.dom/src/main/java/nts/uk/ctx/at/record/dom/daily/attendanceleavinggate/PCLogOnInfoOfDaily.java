@@ -49,9 +49,8 @@ public class PCLogOnInfoOfDaily {
 				if(attendanceLeave.get().getAttendanceLeavingWork(new WorkNo(logOn.getWorkNo().v())).isPresent()) {
 					Optional<TimeActualStamp> timeActualstamp = goLeavingWorkAtr.isGO_WORK()?attendanceLeave.get().getAttendanceLeavingWork(new WorkNo(logOn.getWorkNo().v())).get().getAttendanceStamp():
 																						 	 attendanceLeave.get().getAttendanceLeavingWork(new WorkNo(logOn.getWorkNo().v())).get().getLeaveStamp();
-					if(!(timeActualstamp.isPresent()&& timeActualstamp.get().getStamp().isPresent())) {
-						continue;
-					}
+					if(!timeActualstamp.isPresent()) continue;
+					if(!timeActualstamp.get().getStamp().isPresent()) continue;
 					Optional<WorkStamp> workStamp = timeActualstamp.get().getStamp();
 					stamp = workStamp.get().getTimeWithDay().valueAsMinutes();
 				}
