@@ -192,6 +192,19 @@ public class TotalWorkingTime {
 																		:Optional.of(new WorkTimeCode(oneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode().v().toString()));
 		}
 		
+		//staticを外すまでのフレ事前申請取り出し処理
+		AttendanceTime flexPreAppTime = new AttendanceTime(0);
+		if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()
+				&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily() != null
+				&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null
+				&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime() != null
+				&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily() != null
+				&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()
+				&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime() != null
+				) {
+			flexPreAppTime = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getBeforeApplicationTime();
+		}
+		
 		/*日別実績の法定内時間(就業時間)*/
 		val withinStatutoryTimeOfDaily = WithinStatutoryTimeOfDaily.calcStatutoryTime(oneDay,
 				   																      personalCondition,
@@ -211,7 +224,8 @@ public class TotalWorkingTime {
 				   																      flexCalcMethod, 
 				   																      flexAutoCalSet.getFlexOtTime().getUpLimitORtSet(),
 				   																      workTimeDailyAtr.get(), 
-				   																      workTimeCode);
+				   																      workTimeCode,
+				   																      flexPreAppTime);
 
 		
 		ExcessOfStatutoryTimeOfDaily excesstime =ExcessOfStatutoryTimeOfDaily.calculationExcessTime(oneDay, 
@@ -232,7 +246,8 @@ public class TotalWorkingTime {
 																									workTimeDailyAtr.get(),
 																									eachWorkTimeSet,
 																									eachCompanyTimeSet,
-																									integrationOfDaily);
+																									integrationOfDaily,
+																									flexPreAppTime);
 		int overWorkTime = excesstime.getOverTimeWork().isPresent()?excesstime.getOverTimeWork().get().calcTotalFrameTime():0;
 		overWorkTime += excesstime.getOverTimeWork().isPresent()?excesstime.getOverTimeWork().get().calcTransTotalFrameTime():0;
 		int holidayWorkTime = excesstime.getWorkHolidayTime().isPresent()?excesstime.getWorkHolidayTime().get().calcTotalFrameTime():0;

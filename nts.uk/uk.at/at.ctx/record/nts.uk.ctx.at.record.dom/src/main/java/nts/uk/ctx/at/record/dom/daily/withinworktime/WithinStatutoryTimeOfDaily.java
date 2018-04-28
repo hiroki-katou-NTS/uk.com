@@ -113,14 +113,15 @@ public class WithinStatutoryTimeOfDaily {
 			   												   Optional<SettingOfFlexWork> flexCalcMethod, 
 			   												   TimeLimitUpperLimitSetting flexLimitSetting, 
 			   												   WorkTimeDailyAtr workTimeDailyAtr, 
-			   												   Optional<WorkTimeCode> workTimeCode) {
+			   												   Optional<WorkTimeCode> workTimeCode,
+			   												   AttendanceTime preFlexTime) {
 		AttendanceTime workTime = new AttendanceTime(0);
 		AttendanceTime actualTime = new AttendanceTime(0);
 		//就業時間の計算
 		workTime = calcWithinStatutoryTime(oneDay,personalCondition,vacationClass,workType,
 														  late,leaveEarly,workingSystem,illegularAddSetting,
 														  flexAddSetting,regularAddSetting,holidayAddtionSet,holidayCalcMethodSet,
-														  calcMethod,autoCalcAtr,flexCalcMethod,flexLimitSetting,workTimeDailyAtr,workTimeCode);
+														  calcMethod,autoCalcAtr,flexCalcMethod,flexLimitSetting,workTimeDailyAtr,workTimeCode,preFlexTime);
 		//実働時間の計算
 		if(oneDay.getWithinWorkingTimeSheet().isPresent())
 			actualTime =  oneDay.getWithinWorkingTimeSheet().get().calcWorkTime(PremiumAtr.RegularWork,
@@ -165,7 +166,8 @@ public class WithinStatutoryTimeOfDaily {
 			   												   AutoCalOverTimeAttr autoCalcAtr, 
 			   												   Optional<SettingOfFlexWork> flexCalcMethod,
 			   												   TimeLimitUpperLimitSetting flexLimitSetting,
-			   												   WorkTimeDailyAtr workTimeDailyAtr, Optional<WorkTimeCode> workTimeCode) {
+			   												   WorkTimeDailyAtr workTimeDailyAtr, Optional<WorkTimeCode> workTimeCode,
+			   												   AttendanceTime preFlexTime) {
 		AttendanceTime workTime = new AttendanceTime(0);
 		if(oneDay.getWithinWorkingTimeSheet().isPresent()) {
 			if(workTimeDailyAtr.isFlex()) {
@@ -188,7 +190,8 @@ public class WithinStatutoryTimeOfDaily {
 						  									 calcMethod,
 						  									 autoCalcAtr,
 						  									 flexCalcMethod.get(),
-						  									 flexLimitSetting
+						  									 flexLimitSetting,
+						  									 preFlexTime
 						   );
 			}
 			else {

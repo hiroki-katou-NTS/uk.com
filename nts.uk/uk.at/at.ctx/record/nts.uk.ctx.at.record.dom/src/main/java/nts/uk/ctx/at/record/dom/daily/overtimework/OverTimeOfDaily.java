@@ -275,6 +275,7 @@ public class OverTimeOfDaily {
 	/**
 	 * メンバー変数の時間計算を指示するクラス
 	 * @param integrationOfDaily 
+	 * @param flexPreAppTime 
 	 * @return 計算結果
 	 */
 	public static OverTimeOfDaily calculationTime(OverTimeSheet overTimeSheet,
@@ -299,7 +300,7 @@ public class OverTimeOfDaily {
 												  WorkRegularAdditionSet regularAddSetting,
 												  HolidayAddtionSet holidayAddtionSet,WorkTimeDailyAtr workTimeDailyAtr,
 												  Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-												  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily) {
+												  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily, AttendanceTime flexPreAppTime) {
 		//枠時間帯入れる
 		val overTimeFrameTimeSheet = overTimeSheet.changeOverTimeFrameTimeSheet();
 		//枠時間計算
@@ -312,6 +313,7 @@ public class OverTimeOfDaily {
 		FlexTime flexTime = new FlexTime(TimeDivergenceWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),new AttendanceTime(0));
 		//フレ時間の計算に挑戦
 		if(workTimeDailyAtr.isFlex() && withinWorkTimeSheetList != null) {
+			
 			val changeVariant = ((FlexWithinWorkTimeSheet)withinWorkTimeSheetList);
 			flexTime =  changeVariant.createWithinWorkTimeSheetAsFlex(calcMethod,holidayCalcMethodSet,autoCalcAtr,workType,
 					//flexCalcMethod.get(),
@@ -324,7 +326,7 @@ public class OverTimeOfDaily {
 					late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 					leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 					workingSystem,illegularAddSetting,flexAddSetting,regularAddSetting,
-					holidayAddtionSet,TimeLimitUpperLimitSetting.NOUPPERLIMIT);
+					holidayAddtionSet,TimeLimitUpperLimitSetting.NOUPPERLIMIT,flexPreAppTime);
 		}
 
 		val overTimeWork = new AttendanceTime(0);
