@@ -26,7 +26,7 @@ public class ScheMasterInfo {
 	private String classificationCd;
 	
 	/** 勤務種別コード */
-	private String workTypeCd;
+	private String businessTypeCd;
 	
 	/** 職位ID */
 	private String jobId;

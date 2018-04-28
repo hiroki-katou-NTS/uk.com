@@ -7,4 +7,5 @@ public interface AppRootStateConfirmAdapter {
 	AppRootStateConfirmImport appRootStateConfirmFinder(String companyID, String employeeID, 
 			Integer confirmAtr, Integer appType, GeneralDate date);
 
+	void clearAppRootstate(String rootId);
 }

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.breakorgoout;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,7 +19,6 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
  *
  */
 @Getter
-@AllArgsConstructor
 public class BreakTimeOfDailyPerformance extends AggregateRoot {
 	
 	private String employeeId;
@@ -54,6 +54,15 @@ public class BreakTimeOfDailyPerformance extends AggregateRoot {
 	 */
 	public List<TimeSheetOfDeductionItem> changeAllTimeSheetToDeductionItem(){
 		return this.breakTimeSheets.stream().map(tc -> tc.toTimeSheetOfDeductionItem()).collect(Collectors.toList());
+	}
+
+	public BreakTimeOfDailyPerformance(String employeeId, BreakType breakType, List<BreakTimeSheet> breakTimeSheets,
+			GeneralDate ymd) {
+		super();
+		this.employeeId = employeeId;
+		this.breakType = breakType;
+		this.breakTimeSheets = breakTimeSheets == null ? new ArrayList<>() : breakTimeSheets;
+		this.ymd = ymd;
 	}
 
 }

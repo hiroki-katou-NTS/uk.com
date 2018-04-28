@@ -45,15 +45,15 @@ module nts.uk.at.view.kmk013.e {
                     new ItemModel(2, nts.uk.resource.getText("Enum_Rounding_Down_Over"))
                 ]);
                 self.itemListExcOutRounding = ko.observableArray([
-                    new ItemModel(0, nts.uk.resource.getText("Enum_Rounding_Down")),
-                    new ItemModel(1, nts.uk.resource.getText("Enum_Rounding_Up"))
+                    new ItemModel(0, nts.uk.resource.getText("Enum_Exc_Rounding_Down")),
+                    new ItemModel(1, nts.uk.resource.getText("Enum_Exc_Rounding_Up"))
                 ]);
                 self.itemListExcOutRoundingFull = ko.observableArray([
-                    new ItemModel(0, nts.uk.resource.getText("Enum_Rounding_Down")),
-                    new ItemModel(1, nts.uk.resource.getText("Enum_Rounding_Up")),
-                    new ItemModel(2, nts.uk.resource.getText("Enum_Rounding_Down_Over"))
+                    new ItemModel(0, nts.uk.resource.getText("Enum_Exc_Rounding_Down")),
+                    new ItemModel(1, nts.uk.resource.getText("Enum_Exc_Rounding_Up")),
+                    new ItemModel(2, nts.uk.resource.getText("Enum_Exc_Follow_Element"))
                 ]);
-                self.currentRounding = ko.observableArray([]);
+                self.currentRounding = ko.observableArray(self.itemListExcOutRounding());
                 
                 self.isEnable = ko.observable(true);
                 self.isEditable = ko.observable(false);
@@ -68,6 +68,8 @@ module nts.uk.at.view.kmk013.e {
                     }
                     else {
                         self.currentRounding(self.itemListExcOutRounding());
+                        if (self.excRoundingProc() == 2)
+                            self.excRoundingProc(0);
                     }
                 });
                 
@@ -107,7 +109,7 @@ module nts.uk.at.view.kmk013.e {
                                 
                                 self.listData.push(ur);
                             });
-
+                            $('#unit-combo-box').find("input").focus();
                         });
                     });
                 });
@@ -121,20 +123,29 @@ module nts.uk.at.view.kmk013.e {
             saveData(): void {
                 let self = this;
                 blockUI.invisible();
-                service.save(ko.toJS(self.listData())).done(() => {
+                service.save(ko.toJS(self.gatherData())).done(() => {
                     let data = {};
                     data.roundingUnit = self.excRoundingUnit();
                     data.roundingProcess = self.excRoundingProc();
                     service.saveExcOut(data).done(() => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         blockUI.clear();
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            $("#unit-combo-box").find("input").focus();
+                        });
                     });
                 }).fail((error) => {
                     console.log(error);
                     blockUI.clear();
                 });
-                
-                
+            }
+            
+            private gatherData(): Array<UnitRoudingClientData>{
+                let self = this;
+                let data = [];
+                for (let i = 0; i < self.listData().length; i++){
+                    data.push(new UnitRoudingClientData(self.listData()[i]));
+                }
+                return data;
             }
         };
 
@@ -145,9 +156,21 @@ module nts.uk.at.view.kmk013.e {
                 this.code = code;
                 this.name = name;
             }
-
         }
         
+        class UnitRoudingClientData {
+            timeItemId: string;
+            attendanceItemName: string;
+            unit: number;
+            rounding: number;
+            
+            constructor(unitRouding: UnitRouding){
+                this.timeItemId = unitRouding.timeItemId;
+                this.attendanceItemName = unitRouding.attendanceItemName;
+                this.unit = unitRouding.unit;
+                this.rounding = unitRouding.rounding;
+            }
+        }
         
         class UnitRouding {
             timeItemId: string;
@@ -169,6 +192,8 @@ module nts.uk.at.view.kmk013.e {
                     self.list_round(screenModel.itemListRoundingFull());
                 } else {
                     self.list_round(screenModel.itemListRounding());
+                    if (self.rounding() == 2)
+                        self.rounding(0);
                 }
                 
                 this.unit.subscribe(function(v) {
@@ -176,10 +201,11 @@ module nts.uk.at.view.kmk013.e {
                         self.list_round(screenModel.itemListRoundingFull());
                     } else {
                         self.list_round(screenModel.itemListRounding());
+                        if (self.rounding() == 2)
+                            self.rounding(0);
                     }
                 });
             }
-
         }
     }
 }

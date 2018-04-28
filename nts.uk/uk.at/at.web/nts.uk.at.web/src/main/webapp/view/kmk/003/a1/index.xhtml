@@ -3,9 +3,21 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	
+	<!-- Custom validate -->
+	<script>
+	__viewContext.primitiveValueConstraints.OneDayRange = {
+			valueType: 'Integer',
+			max: 48,
+			min: 0,
+		};
+	</script>
    	<div>
-		<div>#{i18n.getText('KMK003_31')}</div>
+		<div class ="height-30">
+			<label class = "pull-left pad_top_15">#{i18n.getText('KMK003_31')}</label>
+			<!-- TODO can chinh lai button -->
+			<button class="pull-right" data-bind="click: openDetailSetting, visible: isDetailMode">#{i18n.getText('KMK003_192')}
+			</button>
+		</div>
 		<div>
 			<hr />
 		</div>
@@ -28,17 +40,12 @@
 	<com:ko tag="if" bind="isDetailMode">
 	<div class="setting_rows">
 		<div class="setting_header_tab1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_33')}</div>
-		<input tabindex = "26" data-bind="ntsTimeEditor: {
+		<input tabindex = "26" data-bind="ntsNumberEditor: {
 			name: '#[KMK003_33]',
-			value: predseting.rangeTimeDay,
-			constraint: 'AttendanceTime',
-			inputFormat: 'time',
-			mode: 'time',
-			option: oneDayRangeTimeOption,
-			required: true,
-			enable: true,
-			readonly: false,
-			immediate: false}" 
+			value: predseting.rangeTimeDayInHours,
+			option: {width: '50'},
+			constraint: 'OneDayRange',
+			required: true}" 
 		/>
 		<label>#{i18n.getText('KMK003_211')}</label>
 		<div tabindex="27" data-bind="ntsCheckBox: { checked: predseting.nightShift }">#{i18n.getText('KMK003_34')}</div>

@@ -16,8 +16,6 @@ module a14 {
      * WorkTimeCommonSet -> ShortTimeWorkSetOfWorkTime
      */
     class ScreenModel {
-
-        selectedTab: KnockoutObservable<string>;
         
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
@@ -38,9 +36,8 @@ module a14 {
         /**
         * Constructor.
         */
-        constructor(selectedTab: KnockoutObservable<string>, screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
+        constructor(screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
             let _self = this;
-            _self.selectedTab = selectedTab;
             
             // Check exist
             if (nts.uk.util.isNullOrUndefined(model) || nts.uk.util.isNullOrUndefined(settingEnum)) {
@@ -55,12 +52,12 @@ module a14 {
             
             // Init all data               
             _self.lstChildCareEnum = ko.observableArray([
-                {value: false, localizedName: nts.uk.resource.getText("KMK003_116")},
-                {value: true, localizedName: nts.uk.resource.getText("KMK003_117")}
+                {value: true, localizedName: nts.uk.resource.getText("KMK003_116")},
+                {value: false, localizedName: nts.uk.resource.getText("KMK003_117")}
             ]);          
             _self.lstNursingTimeEnum = ko.observableArray([
-                {value: false, localizedName: nts.uk.resource.getText("KMK003_196")},
-                {value: true, localizedName: nts.uk.resource.getText("KMK003_197")}
+                {value: true, localizedName: nts.uk.resource.getText("KMK003_196")},
+                {value: false, localizedName: nts.uk.resource.getText("KMK003_197")}
             ]);
             
             // Detail mode and simple mode is same
@@ -125,7 +122,7 @@ module a14 {
             let model = input.model;
             let settingEnum = input.enum;
 
-            let screenModel = new ScreenModel(input.selectedTab, screenMode, model, settingEnum);
+            let screenModel = new ScreenModel(screenMode, model, settingEnum);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);

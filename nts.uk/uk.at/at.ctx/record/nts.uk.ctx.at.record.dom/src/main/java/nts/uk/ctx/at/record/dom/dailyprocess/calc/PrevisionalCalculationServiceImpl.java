@@ -121,7 +121,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		if (workTimeCode != null)
 			setWorkTimeCode = workTimeCode.v();
 		WorkInfoOfDailyPerformance workInformation = new WorkInfoOfDailyPerformance(employeeId,
-				new WorkInformation(setWorkTimeCode, workTypeCode.toString()), null, CalculationState.No_Calculated,
+				new WorkInformation(setWorkTimeCode, workTypeCode.toString()), new WorkInformation(setWorkTimeCode, workTypeCode.toString()), CalculationState.No_Calculated,
 				NotUseAttribute.Not_use, NotUseAttribute.Not_use, ymd, Collections.emptyList());
 		// 勤怠時間取得
 		val attendanceTime = attendanceTimeRepository.find(employeeId, ymd);

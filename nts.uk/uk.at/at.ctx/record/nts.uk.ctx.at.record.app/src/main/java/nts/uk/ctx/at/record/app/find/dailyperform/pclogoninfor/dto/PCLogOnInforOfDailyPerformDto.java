@@ -52,6 +52,15 @@ public class PCLogOnInforOfDailyPerformDto extends AttendanceItemCommon {
 
 	@Override
 	public PCLogOnInfoOfDaily toDomain(String employeeId, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
+		if (employeeId == null) {
+			employeeId = this.employeeId();
+		}
+		if (date == null) {
+			date = this.workingDate();
+		}
 		return new PCLogOnInfoOfDaily(employeeId, date, ConvertHelper.mapTo(logonTime, 
 							c -> new LogOnInfo(new PCLogOnNo(c.getLogNo()),
 								toWorkStamp(c.getLogOff()), toWorkStamp(c.getLogOn()))));

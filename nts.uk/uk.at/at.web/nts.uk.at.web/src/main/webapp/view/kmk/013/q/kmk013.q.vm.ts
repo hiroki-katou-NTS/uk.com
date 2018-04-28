@@ -5,6 +5,7 @@ module nts.uk.at.view.kmk013.q {
     
     export module viewmodel {
         const lastTabIndexTabPanel1 = 6;
+        const lastTabIndexBeforeJumpTabPanel1 = 4;
         
         export class ScreenModel {
             
@@ -65,6 +66,10 @@ module nts.uk.at.view.kmk013.q {
                             if (9 == _.toNumber($( "*:focus" ).attr("posTab"))) {
                                 self.selectedTab("tab-2");
                             }
+                        }
+                        
+                        if (lastTabIndexBeforeJumpTabPanel1 == _.toNumber($( "*:focus" ).attr("tabindex"))) {
+                            self.selectedTab("tab-1");
                         }
                     }
                 });
