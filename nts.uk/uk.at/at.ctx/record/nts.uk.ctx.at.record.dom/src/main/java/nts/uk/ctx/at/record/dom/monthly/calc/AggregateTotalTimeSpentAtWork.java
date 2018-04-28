@@ -58,4 +58,17 @@ public class AggregateTotalTimeSpentAtWork {
 		domain.totalTimeSpentAtWork = totalTimeSpentAtWork;
 		return domain;
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(AggregateTotalTimeSpentAtWork target){
+
+		this.overTimeSpentAtWork = this.overTimeSpentAtWork.addMinutes(target.overTimeSpentAtWork.v());
+		this.midnightTimeSpentAtWork = this.midnightTimeSpentAtWork.addMinutes(target.midnightTimeSpentAtWork.v());
+		this.holidayTimeSpentAtWork = this.holidayTimeSpentAtWork.addMinutes(target.holidayTimeSpentAtWork.v());
+		this.varienceTimeSpentAtWork = this.varienceTimeSpentAtWork.addMinutes(target.varienceTimeSpentAtWork.v());
+		this.totalTimeSpentAtWork = this.totalTimeSpentAtWork.addMinutes(target.totalTimeSpentAtWork.v());
+	}
 }

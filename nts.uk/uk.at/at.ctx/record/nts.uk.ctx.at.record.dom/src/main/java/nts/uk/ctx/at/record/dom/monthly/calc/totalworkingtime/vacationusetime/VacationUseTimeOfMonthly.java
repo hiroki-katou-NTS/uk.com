@@ -56,6 +56,32 @@ public class VacationUseTimeOfMonthly {
 		domain.compensatoryLeave = compensatoryLeave;
 		return domain;
 	}
+
+	/**
+	 * 複写
+	 * @param annualLeave 年休
+	 * @param retentionYearly 積立年休
+	 * @param specialHoliday 特別休暇
+	 * @param compensatoryLeave 代休
+	 * @return 月別実績の休暇使用時間
+	 */
+	public static VacationUseTimeOfMonthly copyFrom(
+			AnnualLeaveUseTimeOfMonthly annualLeave,
+			RetentionYearlyUseTimeOfMonthly retentionYearly,
+			SpecialHolidayUseTimeOfMonthly specialHoliday,
+			CompensatoryLeaveUseTimeOfMonthly compensatoryLeave){
+
+		val domain = new VacationUseTimeOfMonthly();
+		domain.annualLeave = AnnualLeaveUseTimeOfMonthly.copyFrom(
+				annualLeave.getUseTime(), annualLeave.getTimeSeriesWorks());
+		domain.retentionYearly = RetentionYearlyUseTimeOfMonthly.copyFrom(
+				retentionYearly.getUseTime(), retentionYearly.getTimeSeriesWorks());
+		domain.specialHoliday = SpecialHolidayUseTimeOfMonthly.copyFrom(
+				specialHoliday.getUseTime(), specialHoliday.getTimeSeriesWorks());
+		domain.compensatoryLeave = CompensatoryLeaveUseTimeOfMonthly.copyFrom(
+				compensatoryLeave.getUseTime(), compensatoryLeave.getTimeSeriesWorks());
+		return domain;
+	}
 	
 	/**
 	 * 休暇使用時間を確認する
@@ -95,5 +121,17 @@ public class VacationUseTimeOfMonthly {
 		
 		// 代休使用時間を集計する
 		this.compensatoryLeave.aggregate(datePeriod);
+	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(VacationUseTimeOfMonthly target){
+		
+		this.annualLeave.addMinuteToUseTime(target.annualLeave.getUseTime().v());
+		this.retentionYearly.addMinuteToUseTime(target.retentionYearly.getUseTime().v());
+		this.specialHoliday.addMinuteToUseTime(target.specialHoliday.getUseTime().v());
+		this.compensatoryLeave.addMinuteToUseTime(target.compensatoryLeave.getUseTime().v());
 	}
 }

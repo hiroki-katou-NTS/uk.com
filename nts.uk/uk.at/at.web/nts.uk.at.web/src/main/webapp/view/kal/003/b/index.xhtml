@@ -128,6 +128,8 @@
                                             <!-- BA1-4 -->
                                             <input data-bind="ntsTextEditor: {
                                               value: $parent.displayWorkTypeSelections_BA1_4,
+                                              name: '#[KAL003_56]',
+                                              required: $parent.required_BA1_4,                                              
                                               readonly: true}"/>
                                         </com:ko-if>
 		                                <com:ko-if bind="checkItem() == 5">
@@ -136,6 +138,8 @@
 			                                <!-- BA1-4 -->
 			                                <input data-bind="ntsTextEditor: {
 			                                  value: $parent.displayWorkTypeSelections_BA1_4,
+			                                  name: '#[KAL003_56]',
+			                                  required: true,			                                  
 			                                  readonly: true}"/>
 			                            </com:ko-if>
 	                                </div>
@@ -305,6 +309,8 @@
 	                                    <!-- BA1-3 -->
 	                                    <input data-bind="ntsTextEditor: {
 	                                       value: $parent.displayWorkingTimeSelections_BA5_3,
+	                                       name : '#[KAL003_57]',
+	                                       required: true,	                                       
 	                                       readonly: true}" />
 	                                </div>
 	                            </td>
@@ -579,12 +585,12 @@
                 </div>
                 </div>
             </div>
-            <div id="functions-area-bottom" style="height: 70px; padding-top: 18px; text-align: center;">
+            <div id="functions-area-bottom">
                     <!-- B4-2 : Decision-->
-                    <button id="btnDecision" class="proceed large" tabindex = "2" style="padding-left: 10px; width:90px"
+                    <button id="btnDecision" class="proceed large" tabindex = "2" 
                         data-bind="click : btnDecision, enable: true">#{i18n.getText('KAL003_14')}</button>
                     <!-- B4-3 : Cancel-->
-                    <button id="btnCancel" class="large" tabindex = "3" style="padding-left: 10px; margin-left: 239px;; width:90px"
+                    <button id="btnCancel" class="large" tabindex = "3" 
                         data-bind="click: closeDialog">#{i18n.getText('KAL003_30')}</button>
                 </div>
         </ui:define>
