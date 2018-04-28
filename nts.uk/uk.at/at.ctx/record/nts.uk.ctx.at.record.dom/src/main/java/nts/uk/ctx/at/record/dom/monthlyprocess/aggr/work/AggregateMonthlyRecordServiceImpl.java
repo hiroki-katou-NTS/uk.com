@@ -115,9 +115,6 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			
 			// 月別実績の任意項目を集計
 			this.aggregateAnyItem();
-
-			// 大塚カスタマイズ
-			this.customizeForOtsuka();
 			
 			// データを合算する
 			val itrAttendanceTime = this.aggregateResult.getAttendanceTimeList().iterator();
@@ -138,6 +135,9 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			// 計算結果を戻り値に蓄積
 			this.aggregateResult.getAttendanceTimeList().add(attendanceTime);
 		}
+
+		// 大塚カスタマイズ
+		this.customizeForOtsuka();
 		
 		// 戻り値にエラー情報を移送
 		for (val errorInfo : this.errorInfos.values()){
