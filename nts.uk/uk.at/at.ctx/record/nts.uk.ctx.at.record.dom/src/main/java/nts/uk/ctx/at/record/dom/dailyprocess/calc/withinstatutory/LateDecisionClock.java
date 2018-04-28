@@ -114,7 +114,7 @@ public class LateDecisionClock {
 			if(coreTimeSetting.isPresent()) {
 				//コアタイム使用するかどうか
 				if(coreTimeSetting.get().getTimesheet().isNOT_USE()) {
-					result = Optional.empty();
+					return Optional.empty();
 				}
 				result = Optional.of(new TimeSpanForCalc(coreTimeSetting.get().getCoreTimeSheet().getStartTime(), attendance));
 			}
