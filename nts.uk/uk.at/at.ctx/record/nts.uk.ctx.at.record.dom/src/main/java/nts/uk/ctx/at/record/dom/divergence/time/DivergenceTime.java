@@ -132,10 +132,8 @@ public class DivergenceTime extends AggregateRoot {
 		if(this.targetItems == null) {
 			return 0;
 		}
-		val getValueList = this.targetItems.stream()
-							   .filter(tc -> idConverter.convert(tc.intValue()).isPresent())
-							   .map(tc -> idConverter.convert(tc.intValue()).get())
-							   .collect(Collectors.toList());
+		val getValueList = idConverter.convert(this.targetItems.stream().map(c -> c.intValue()).collect(Collectors.toList()));
+				
 		return  getValueList.stream()
 									 .filter(tc ->  tc !=null
 									  			 && tc.getValue() != null
