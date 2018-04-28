@@ -32,8 +32,8 @@ public class FlexInfoDisplay {
 	//<<Public>> フレックス情報を表示する
 	public FlexShortage flexInfo(String employeeId, GeneralDate baseDate, String roleId){
 		 Optional<WorkingConditionItem>  workingConditionItemOpt = workingConditionService.findWorkConditionByEmployee(employeeId, baseDate);
-		 if(!workingConditionItemOpt.isPresent()) return null;
-		 if(!workingConditionItemOpt.get().getLaborSystem().equals(WorkingSystem.FLEX_TIME_WORK)) return null;
+		 if(!workingConditionItemOpt.isPresent()) return new FlexShortage().createShowFlex(false);
+		 if(!workingConditionItemOpt.get().getLaborSystem().equals(WorkingSystem.FLEX_TIME_WORK)) return new FlexShortage().createShowFlex(false);
 		 //TODO 対応するドメインモデル「月別実績の勤怠時間」を取得する
 		 val value18 = "10";
 		 val value21 = "10";
@@ -47,7 +47,14 @@ public class FlexInfoDisplay {
 		 //TODO フレックス不足の相殺が実施できるかチェックする
 		 boolean checkFlex = checkShortageFlex.checkShortageFlex(employeeId, baseDate);
 		 BreakDownTimeDayExport time = predertermineOpt.get().getPredTime();
-		 return new FlexShortage(value18, value21, value189, value190, value191, new BreakTimeDay(time.getOneDay(), time.getMorning(), time.getAfternoon()), checkFlex);
+		return  new FlexShortage(value18, value21, value189, value190, value191)
+				    .createCanFlex(checkFlex)
+				    .createBreakTimeDay(new BreakTimeDay(time.getOneDay(), time.getMorning(), time.getAfternoon()))
+				    .createShowFlex(showFlex());
 	}
-
+    
+	//hide or show 
+	private boolean showFlex(){
+		return true;
+	}
 }

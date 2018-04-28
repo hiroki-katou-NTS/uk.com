@@ -31,7 +31,7 @@ public class LeaveEarlyDecisionClock {
 	private int workNo;
 	
 	
-	public static LeaveEarlyDecisionClock create(
+	public static Optional<LeaveEarlyDecisionClock> create(
 			int workNo,
 			PredetermineTimeSetForCalc predetermineTimeSet,
 			DeductionTimeSheet deductionTimeSheet,
@@ -40,18 +40,20 @@ public class LeaveEarlyDecisionClock {
 			Optional<CoreTimeSetting> coreTimeSetting) {
 		
 		val predetermineTimeSheet = predetermineTimeSet.getTimeSheets(workNo);
+		if(!predetermineTimeSheet.isPresent())
+			return Optional.empty();
 		TimeWithDayAttr decisionClock = new TimeWithDayAttr(0);
 		
 		//計算範囲の取得
-		Optional<TimeSpanForCalc> calｃRange = getCalcRange(predetermineTimeSheet,timeLeavingWork,coreTimeSetting);
+		Optional<TimeSpanForCalc> calｃRange = getCalcRange(predetermineTimeSheet.get(),timeLeavingWork,coreTimeSetting);
 		if (calｃRange.isPresent()) {
 			if(leaveEarlyGraceTime.isZero()) {
 				// 猶予時間が0：00の場合、所定時間の終了時刻を判断時刻にする
 				decisionClock = calｃRange.get().getEnd();
 			} else {
 				// 猶予時間帯の作成
-				TimeSpanForCalc graceTimeSheet = new TimeSpanForCalc(predetermineTimeSheet.getEnd().forwardByMinutes(leaveEarlyGraceTime.getGraceTime().minute()),
-																	 predetermineTimeSheet.getEnd());
+				TimeSpanForCalc graceTimeSheet = new TimeSpanForCalc(predetermineTimeSheet.get().getEnd().forwardByMinutes(leaveEarlyGraceTime.getGraceTime().minute()),
+																	 predetermineTimeSheet.get().getEnd());
 				
 				// 重複している控除分をずらす
 				List<TimeZoneRounding> breakTimeSheetList = deductionTimeSheet.getForDeductionTimeZoneList().stream().filter(t -> t.getDeductionAtr().isBreak()==true).map(t -> t.getTimeSheet()).collect(Collectors.toList());
@@ -64,9 +66,9 @@ public class LeaveEarlyDecisionClock {
 				decisionClock = graceTimeSheet.getStart();
 			}
 			// 補正後の猶予時間帯の開始時刻を判断時刻とする
-			return new LeaveEarlyDecisionClock(decisionClock, workNo);
+			return Optional.of(new LeaveEarlyDecisionClock(decisionClock, workNo));
 		}
-		return null;
+		return Optional.empty();
 	}
 	
 	/**

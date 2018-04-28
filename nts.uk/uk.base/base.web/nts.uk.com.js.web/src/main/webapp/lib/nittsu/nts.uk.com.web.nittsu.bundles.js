@@ -28012,7 +28012,16 @@ var nts;
                             "<div class='ntsDateRangeComponent ntsStartDate ntsControl nts-datepicker-wrapper'/><div class='ntsDateRangeComponent ntsRangeLabel'><label>～</label></div>" +
                             "<div class='ntsDateRangeComponent ntsEndDate ntsControl nts-datepicker-wrapper' /></div>");
                         $datePickerArea.data("required", required);
-                        var dateFormat = (dateType !== 'yearmonth') ? "YYYY/MM/DD" : 'YYYY/MM';
+                        var dateFormat;
+                        if (dateType === 'year') {
+                            dateFormat = 'YYYY';
+                        }
+                        else if (dateType === 'yearmonth') {
+                            dateFormat = 'YYYY/MM';
+                        }
+                        else {
+                            dateFormat = 'YYYY/MM/DD';
+                        }
                         var ISOFormat = uk.text.getISOFormat(dateFormat);
                         ISOFormat = ISOFormat.replace(/d/g, "").trim();
                         if (showNextPrevious === true) {
@@ -28123,8 +28132,11 @@ var nts;
                                             maxDate = maxDate.date(currentDate - 1);
                                         }
                                     }
-                                    else {
+                                    else if (dateFormat === "YYYY/MM") {
                                         maxDate = maxDate.add(1, 'year').add(-1, "months");
+                                    }
+                                    else {
+                                        maxDate = maxDate.add(1, 'year');
                                     }
                                     if (endDate.isAfter(maxDate)) {
                                         $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_OVER_YEAR", [rangeName]), "FND_E_SPAN_OVER_YEAR");
@@ -28194,7 +28206,16 @@ var nts;
                         var dataName = ko.unwrap(data.name);
                         var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
                         var required = ko.unwrap(data.required);
-                        var dateFormat = (dateType !== 'yearmonth') ? "YYYY/MM/DD" : 'YYYY/MM';
+                        var dateFormat;
+                        if (dateType === 'year') {
+                            dateFormat = 'YYYY';
+                        }
+                        else if (dateType === 'yearmonth') {
+                            dateFormat = 'YYYY/MM';
+                        }
+                        else {
+                            dateFormat = 'YYYY/MM/DD';
+                        }
                         var ISOFormat = uk.text.getISOFormat(dateFormat);
                         ISOFormat = ISOFormat.replace(/d/g, "").trim();
                         var $input = $container.find(".ntsDatepicker");

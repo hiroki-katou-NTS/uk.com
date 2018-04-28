@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -78,10 +79,14 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	
 	
 	
-	public WithinWorkTimeSheet(List<WithinWorkTimeFrame> withinWorkTimeFrame,LateDecisionClock lateDecisionClock,LeaveEarlyDecisionClock leaveEarlyDecisionClock) {
+	public WithinWorkTimeSheet(List<WithinWorkTimeFrame> withinWorkTimeFrame,Optional<LateDecisionClock> lateDecisionClock,Optional<LeaveEarlyDecisionClock> leaveEarlyDecisionClock) {
 		this.withinWorkTimeFrame = withinWorkTimeFrame;
-		this.lateDecisionClock.add(lateDecisionClock);
-		this.leaveEarlyDecisionClock.add(leaveEarlyDecisionClock);
+		if(lateDecisionClock != null
+			&& lateDecisionClock.isPresent())
+			this.lateDecisionClock.add(lateDecisionClock.get());
+		if(leaveEarlyDecisionClock != null
+			&& leaveEarlyDecisionClock.isPresent())
+			this.leaveEarlyDecisionClock.add(leaveEarlyDecisionClock.get());
 	}
 	
 	
@@ -113,9 +118,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		List<WithinWorkTimeFrame> timeFrames = new ArrayList<>();
 		
 		//遅刻判断時刻
-		LateDecisionClock lateDesClock = null;
+		Optional<LateDecisionClock> lateDesClock = null;
 		//遅刻判断時刻
-		LeaveEarlyDecisionClock leaveEarlyDesClock = null;
+		Optional<LeaveEarlyDecisionClock> leaveEarlyDesClock = null;
 	
 		if(workType.isWeekDayAttendance()) {
 			//遅刻判断時刻を求める
@@ -175,8 +180,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			BonusPaySetting bonusPaySetting,
 			MidNightTimeSheet midNightTimeSheet,
 			int workNo,
-			LateDecisionClock lateDesClock,
-			LeaveEarlyDecisionClock leaveEarlyDecisionClock,
+			Optional<LateDecisionClock> lateDesClock,
+			Optional<LeaveEarlyDecisionClock> leaveEarlyDesClock,
 			HolidayCalcMethodSet holidayCalcMethodSet,
 			WorkTimezoneLateEarlySet workTimezoneLateEarlySet,
 			Optional<CoreTimeSetting> coreTimeSetting,
@@ -196,7 +201,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 																		 bonusPaySetting,
 																		 midNightTimeSheet,
 																		 lateDesClock,
-																		 leaveEarlyDecisionClock,
+																		 leaveEarlyDesClock,
 																		 timeLeavingWork,
 																		 holidayCalcMethodSet,
 																		 workNo,
@@ -841,5 +846,20 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 //		}
 //		return returnList;
 //	}
-
+	/**
+	 * 大塚モード使用時専用の遅刻、早退削除処理
+	 */
+	public void cleanLateLeaveEarlyTimeForOOtsuka() {
+		this.withinWorkTimeFrame.forEach(tc -> tc.cleanLateLeaveEarlyTimeForOOtsuka());
+		cleanLateTime();
+		cleanLeaveEarly();
+	}
+	
+	private void cleanLateTime() {
+		this.lateDecisionClock = Collections.emptyList();
+	}
+	
+	private void cleanLeaveEarly() {
+		this.leaveEarlyDecisionClock = Collections.emptyList();
+	}
 }

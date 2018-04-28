@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculation;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
@@ -26,8 +27,9 @@ public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 	@Override
 	public WorkType getOotsukaWorkType(WorkType workType,
 									   Optional<FixedWorkCalcSetting> calcMethodOfFixWork,
-									   TimeLeavingOfDailyPerformance attendanceLeaving) {
-		if(decisionOotsukaMode(workType,calcMethodOfFixWork,attendanceLeaving)) {
+									   TimeLeavingOfDailyPerformance attendanceLeaving,
+									   HolidayCalculation holidayCalculation) {
+		if(decisionOotsukaMode(workType,calcMethodOfFixWork,attendanceLeaving,holidayCalculation)) {
 			return createOotsukaWorkType(workType);
 		}
 		else {
@@ -132,13 +134,14 @@ public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 
 	/**
 	 * 大塚モード判断処理
+	 * @param holidayCalculation 
 	 * @return
 	 */
 	private boolean decisionOotsukaMode(WorkType workType,
 										Optional<FixedWorkCalcSetting> calcMethodOfFixWork,
-										TimeLeavingOfDailyPerformance attendanceLeaving) {
+										TimeLeavingOfDailyPerformance attendanceLeaving, HolidayCalculation holidayCalculation) {
 		//勤務計算をする　＆＆　打刻漏れをしていない
-		if(decisionAbleCalc(workType,calcMethodOfFixWork) && !attendanceLeaving.isLeakageStamp()) {
+		if(decisionAbleCalc(workType,calcMethodOfFixWork,holidayCalculation) && !attendanceLeaving.isLeakageStamp()) {
 			return true;
 		}
 		return false;
@@ -148,12 +151,13 @@ public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 	/**
 	 * 日勤務で計算するかどうか判断
 	 * @param workType 勤務種類
+	 * @param holidayCalculation 
 	 * @param isCalcInVacation 休暇時の計算
 	 * @return
 	 */
-	private boolean decisionAbleCalc(WorkType workType,Optional<FixedWorkCalcSetting> calcMethodOfFixWork) {
+	private boolean decisionAbleCalc(WorkType workType,Optional<FixedWorkCalcSetting> calcMethodOfFixWork, HolidayCalculation holidayCalculation) {
 		//休暇時の計算を取得
-		if(workType != null && true) {//calcMethodOfFixWork.isPresent()) {
+		if(workType != null && holidayCalculation.getIsCalculate().isUse()) {//calcMethodOfFixWork.isPresent()) {
 			return workType.getDailyWork().isOneOrHalfAnnualHoliday()
 					|| workType.getDailyWork().isOneOrHalfDaySpecHoliday()
 					|| workType.getDailyWork().isOneOrHalfDayYearlyReserved();

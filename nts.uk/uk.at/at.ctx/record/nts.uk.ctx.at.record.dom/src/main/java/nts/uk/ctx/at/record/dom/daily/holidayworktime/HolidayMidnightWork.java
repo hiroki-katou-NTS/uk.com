@@ -65,4 +65,19 @@ public class HolidayMidnightWork {
 		}
 		return returnErrorList;
 	}
+	
+	/**
+	 *乖離時間を再計算 
+	 * @return
+	 */
+	public HolidayMidnightWork calcDiverGenceTime(){
+		if(this.holidayWorkMidNightTime.isEmpty()) {
+			return this;
+		}
+		List<HolidayWorkMidNightTime> list = new ArrayList<>();
+		for(HolidayWorkMidNightTime midNightTime:this.holidayWorkMidNightTime) {
+			list.add(midNightTime.calcDiverGenceTime());
+		}
+		return new HolidayMidnightWork(list);
+	}
 }

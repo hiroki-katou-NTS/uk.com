@@ -123,6 +123,10 @@ public class DivTimeSysFixedCheckService {
 	private final String WORKTYPE_HISTORY_ITEM = "W_HIS";
 	private final String COMPANY_HISTORY_ITEM = "C_HIS";
 	private final String WORKTYPE_CODE = "WTC";
+	/** ログオフ時刻をシステム時刻として計算するかチェックする */
+	private final int LOGOFF_DIV_NO = 6;
+	/** ・勤怠項目ID　34（退勤時刻1） */
+	private final int TIME_LEAVE_ITEM = 34;
 
 	
 	
@@ -232,7 +236,7 @@ public class DivTimeSysFixedCheckService {
 			if(divergenceTimeErAl.isDivergenceTimeUse()){
 				divergenTime.stream().filter(dt -> dt.getDivTimeId() == divergenceTimeErAl.getDivergenceTimeNo()).findFirst().ifPresent(dt -> {
 					int divergenceTime = 0;
-					boolean isPcDivergence = dt.getDivTimeId() == 7 && isToday;
+					boolean isPcDivergence = dt.getDivTimeId() == LOGOFF_DIV_NO && isToday;
 					if(isPcDivergence) {
 						divergenceTime = calcCurrentDivergenceTime(employeeId, workingDate);
 					} else if (dt.getDivTimeAfterDeduction() != null) {
@@ -267,7 +271,7 @@ public class DivTimeSysFixedCheckService {
 		val timeLeave = timeLeaveRepo.findByKey(employeeId, workingDate);
 		/** 勤怠項目ID　34（退勤時刻1） */
 		if(timeLeave.isPresent()) {
-			val valued = convertHelper.withTimeLeaving(timeLeave.get()).convert(34);
+			val valued = convertHelper.withTimeLeaving(timeLeave.get()).convert(TIME_LEAVE_ITEM);
 			if(valued.isPresent() && valued.get().value() != null) {
 				GeneralDateTime now = GeneralDateTime.now();
 				int currentTime = now.hours()*60 + now.minutes();
