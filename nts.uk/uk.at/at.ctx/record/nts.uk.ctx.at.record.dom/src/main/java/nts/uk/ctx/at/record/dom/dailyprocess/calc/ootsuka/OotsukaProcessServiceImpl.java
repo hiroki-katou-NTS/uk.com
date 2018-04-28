@@ -137,7 +137,8 @@ public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 	 * @param holidayCalculation 
 	 * @return
 	 */
-	private boolean decisionOotsukaMode(WorkType workType,
+	@Override
+	public boolean decisionOotsukaMode(WorkType workType,
 										Optional<FixedWorkCalcSetting> calcMethodOfFixWork,
 										TimeLeavingOfDailyPerformance attendanceLeaving, HolidayCalculation holidayCalculation) {
 		//勤務計算をする　＆＆　打刻漏れをしていない

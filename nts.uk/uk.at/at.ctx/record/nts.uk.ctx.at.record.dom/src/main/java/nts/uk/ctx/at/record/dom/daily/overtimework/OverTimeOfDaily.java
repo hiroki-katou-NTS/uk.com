@@ -544,7 +544,6 @@ public class OverTimeOfDaily {
 											  ExceededPredAddVacationCalc ootsukaFixedCalcSet,
 											  AutoCalOvertimeSetting autoCalcSet) {
 		AttendanceTime totalWorkTime = new AttendanceTime(actualWorkTime.valueAsMinutes()
-				  						+ unUseBreakTime.valueAsMinutes()
 				  						+ annualAddTime.valueAsMinutes());
 
 		AttendanceTime a = totalWorkTime.minusMinutes(oneDayPredTime.valueAsMinutes());

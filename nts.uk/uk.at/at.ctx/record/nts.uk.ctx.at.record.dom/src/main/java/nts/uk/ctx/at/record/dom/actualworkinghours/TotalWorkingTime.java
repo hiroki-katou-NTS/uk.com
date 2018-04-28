@@ -292,11 +292,14 @@ public class TotalWorkingTime {
 				
 		
 		//総労働時間
+		
+		int flexTime = workTimeDailyAtr.isPresent()&&workTimeDailyAtr.get().isFlex() ? excesstime.getOverTimeWork().get().getFlexTime().getFlexTime().getCalcTime().valueAsMinutes():0;
 		val totalWorkTime = new AttendanceTime(withinStatutoryTimeOfDaily.getWorkTime().valueAsMinutes()
 						  					   + withinStatutoryTimeOfDaily.getWithinPrescribedPremiumTime().valueAsMinutes() 
 						  					   + overWorkTime
 						  					   + holidayWorkTime
-						  					   + tempTime.totalTemporaryFrameTime());
+						  					   + tempTime.totalTemporaryFrameTime()
+						  					   + flexTime);
 		
 		//総計算時間
 		val totalCalcTime = new AttendanceTime(0);

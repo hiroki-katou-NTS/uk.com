@@ -30,6 +30,7 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
+import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
@@ -84,17 +85,13 @@ public class CalculationRangeOfOneDay {
 	private TimeSpanForCalc oneDayOfRange;
 
 	private WorkInfoOfDailyPerformance workInformationOfDaily;
-
+	
 	private TimeLeavingOfDailyPerformance attendanceLeavingWork;
 
 	private PredetermineTimeSetForCalc predetermineTimeSetForCalc;
 
 	private Finally<TimevacationUseTimeOfDaily> timeVacationAdditionRemainingTime = Finally.empty();// 時間休暇加算残時間
 
-	private Optional<DeductionTimeSheet> temporaryDeductionTimeSheet = Optional.empty(); // 休憩時間の算出ロジック(概要設計)が終わるまで一時的措置のため設置
-																							// 2017.11.15
-																							// by
-																							// hoshina
 
 	public CalculationRangeOfOneDay(Finally<WithinWorkTimeSheet> withinWorkingTimeSheet,
 			Finally<OutsideWorkTimeSheet> outsideWorkTimeSheet, TimeSpanForCalc oneDayOfRange,
@@ -164,7 +161,6 @@ public class CalculationRangeOfOneDay {
 		DeductionTimeSheet deductionTimeSheet = DeductionTimeSheet.createTimeSheetForFixBreakTime(
 				setMethod, clockManage, dailyGoOutSheet, this.oneDayOfRange, commonSet, attendanceLeavingWork,
 				fixedCalc, workTimeDivision, breakTimeOfDailyList);
-		this.temporaryDeductionTimeSheet = Optional.of(deductionTimeSheet);
 		
 		val fixedWorkTImeZoneSet = new CommonFixedWorkTimezoneSet();
 		fixedWorkTImeZoneSet.forFixed(fixedWorkSetting.getLstHalfDayWorkTimezone());
@@ -479,7 +475,6 @@ public class CalculationRangeOfOneDay {
 		 //控除時間帯の作成
 		 val deductionTimeSheet = provisionalDeterminationOfDeductionTimeSheet(outingTimeSheetofDaily,
 				 oneDayTimeSpan, attendanceLeaveWork, workTimeDivision,breakTimeOfDailyList,flexWorkSetting.getOffdayWorkTime().getRestTimezone(),flexWorkSetting.getRestSetting());
-		 this.temporaryDeductionTimeSheet = Optional.of(deductionTimeSheet);
 		 /*固定勤務の時間帯作成*/
 		 val fixedWorkTimeZoneSet = new CommonFixedWorkTimezoneSet();
 		 fixedWorkTimeZoneSet.forFlex(flexWorkSetting.getLstHalfDayWorkTimezone());
@@ -492,7 +487,8 @@ public class CalculationRangeOfOneDay {
 					 deductionTimeSheet,  workTime,midNightTimeSheet,personalInfo,holidayCalcMethodSet,coreTimeSetting,dailyUnit,breakTimeList);
 		 /*コアタイムのセット*/
 		 //this.withinWorkingTimeSheet.set(withinWorkingTimeSheet.get().createWithinFlexTimeSheet(flexWorkSetting.getCoreTimeSetting()));
-		 this.withinWorkingTimeSheet = Finally.of(withinWorkingTimeSheet.get().createWithinFlexTimeSheet(flexWorkSetting.getCoreTimeSetting()));
+		 if(this.withinWorkingTimeSheet.isPresent())
+			 this.withinWorkingTimeSheet = Finally.of(withinWorkingTimeSheet.get().createWithinFlexTimeSheet(flexWorkSetting.getCoreTimeSetting()));
 	 }
 	
 //	 /**
@@ -652,6 +648,20 @@ public class CalculationRangeOfOneDay {
 	 			 oneDayTimeSpan, attendanceLeaveWork, workTimeDivision,breakTimeOfDailyList,flowRestTimezone,flowRestSetting);
 	 
 	 	return new DeductionTimeSheet(dedTimeSheet,recordTimeSheet); 
+	 }
+	 
+	 /**
+	  * 大塚モード使用時専用の遅刻、早退削除処理
+	  */
+	 public void cleanLateLeaveEarlyTimeForOOtsuka() {
+		 if(this.getWithinWorkingTimeSheet() != null
+			&& this.getWithinWorkingTimeSheet().isPresent()){
+			 this.withinWorkingTimeSheet.get().cleanLateLeaveEarlyTimeForOOtsuka();
+		 }
+	 }
+	 
+	 public void clearLeavingTime() {
+		 this.attendanceLeavingWork = new TimeLeavingOfDailyPerformance(this.getAttendanceLeavingWork().getEmployeeId(), new WorkTimes(0), Collections.emptyList(), this.getAttendanceLeavingWork().getYmd());
 	 }
 	 
 }

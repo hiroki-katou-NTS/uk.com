@@ -98,6 +98,7 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
@@ -277,12 +278,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		 */
 		if (workType.get().getAttendanceHolidayAttr().equals(AttendanceHolidayAttr.HOLIDAY)) {
 			oneRange.getPredetermineTimeSetForCalc().endTimeSetStartTime();
+			
 		}
 		
 		/*法定労働時間(日単位)*/
 		val dailyUnit = dailyStatutoryWorkingHours.getDailyUnit(companyId, employmentCd, employeeId, targetDate, personalInfo.getWorkingSystem());
-		/*法定労働時間(日単位)_（仮）*/
-		//DailyUnit dailyUnit = new DailyUnit(new TimeOfDay(480));
 		
 		/*休憩時間帯（遅刻早退用）*/
 		 List<TimeSheetOfDeductionItem> breakTimeList = new ArrayList<>();
@@ -408,7 +408,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			/*大塚モード*/
 //			workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), oneRange.getAttendanceLeavingWork()));
 			workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), ootsukaFixedWorkSet, oneRange.getAttendanceLeavingWork(),flexWorkSetOpt.get().getCommonSetting().getHolidayCalculation()));
-			
+			//出退勤削除
+			if(!ootsukaProcessService.decisionOotsukaMode(workType.get(), ootsukaFixedWorkSet, oneRange.getAttendanceLeavingWork(),flexWorkSetOpt.get().getCommonSetting().getHolidayCalculation())
+				&& workType.get().getDailyWork().isHolidayType())
+				oneRange.clearLeavingTime();
+				
 			/*前日の勤務情報取得  */
 			WorkInfoOfDailyPerformance yestarDayWorkInfo = workInformationRepository.find(employeeId, targetDate.addDays(-1)).orElse(workInfo);
 			val yesterDay = this.workTypeRepository.findByPK(companyId, yestarDayWorkInfo.getRecordInfo().getWorkTypeCode().v()).orElse(workType.get());
@@ -492,7 +496,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						
 				/*大塚モード*/
 				workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), ootsukaFixedWorkSet, oneRange.getAttendanceLeavingWork(),fixedWorkSetting.get().getCommonSetting().getHolidayCalculation()));
-				
+				//出退勤削除
+				if(!ootsukaProcessService.decisionOotsukaMode(workType.get(), ootsukaFixedWorkSet, oneRange.getAttendanceLeavingWork(),fixedWorkSetting.get().getCommonSetting().getHolidayCalculation())
+					&& workType.get().getDailyWork().isHolidayType())
+					oneRange.clearLeavingTime();
 				
 				/*前日の勤務情報取得  */
 				WorkInfoOfDailyPerformance yestarDayWorkInfo = workInformationRepository.find(employeeId, targetDate.addDays(-1)).orElse(workInfo);
@@ -523,7 +530,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						oneRange.getPredetermineTimeSetForCalc().getAdditionSet().getPredTime(),
 						personalInfo.getStatutoryWorkTime(), 
 						calcSetinIntegre.getOvertimeSetting(), 
-						//fixedWorkSetting.get().getLegalOTSetting(),
 						LegalOTSetting.LEGAL_INTERNAL_TIME,
 						StatutoryPrioritySet.priorityNormalOverTimeWork, 
 						workTime.get(),
@@ -532,10 +538,12 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						personalInfo,
 						Optional.empty(),
 						holidayCalcMethodSet,
-//						new WorkTimeCalcMethodDetailOfHoliday(1,1),
 						dailyUnit,
 						breakTimeList
 						);
+				//大塚モードの判定(緊急対応)
+				if(ootsukaProcessService.decisionOotsukaMode(workType.get(), ootsukaFixedWorkSet, oneRange.getAttendanceLeavingWork(),fixedWorkSetting.get().getCommonSetting().getHolidayCalculation()))
+					oneRange.cleanLateLeaveEarlyTimeForOOtsuka();
 				break;
 			case FLOW_WORK:
 				/* 流動勤務 */
@@ -644,9 +652,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				new OverSalaryOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
 				new SpecialHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
 				new AnnualOfDaily(new AttendanceTime(0), new AttendanceTime(0))));
-
-		//個人労働条件
-		//PersonalLaborCondition personalLabor = new PersonalLaborCondition(manageReGetClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getAdditionSet());
 		
 		Optional<SettingOfFlexWork> flexCalcMethod = Optional.of(new SettingOfFlexWork(new FlexCalcMethodOfHalfWork(new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.OneDay, FlexCalcMethod.OneDay),
 																													new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.OneDay, FlexCalcMethod.OneDay))));
@@ -919,17 +924,16 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		String employmentCd = integrationOfDaily.getAffiliationInfor().getEmploymentCode().toString();
 		String employeeId = integrationOfDaily.getAffiliationInfor().getEmployeeId();
 		GeneralDate targetDate = integrationOfDaily.getAffiliationInfor().getYmd();
-		// Optional<EmploymentContractHistory> employmentContractHistory =
-		// this.employmentContractHistoryAdopter.findByEmployeeIdAndBaseDate(employeeId,
-		// targetDate);
-		Optional<EmploymentContractHistory> employmentContractHistory = Optional
-				.of(new EmploymentContractHistory(employeeId, WorkingSystem.REGULAR_WORK));
-		if (!employmentContractHistory.isPresent()) {
+		
+		// ドメインモデル「個人労働条件」を取得する
+		Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(employeeId,targetDate);
+		
+		if (!personalLablorCodition.isPresent()) {
 			throw new RuntimeException("Can't get WorkingSystem");
 		}
 		// 労働制
 		return getOfStatutoryWorkTime.getDailyTimeFromStaturoyWorkTime(
-				employmentContractHistory.get().getWorkingSystem(), companyId, placeId, employmentCd, employeeId,
+				personalLablorCodition.get().getLaborSystem(), companyId, placeId, employmentCd, employeeId,
 				targetDate);
 	}
 }

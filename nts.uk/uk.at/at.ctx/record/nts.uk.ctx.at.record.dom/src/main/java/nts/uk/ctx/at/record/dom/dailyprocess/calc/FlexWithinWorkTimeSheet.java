@@ -173,7 +173,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		StatutoryWorkingTime houtei = calcStatutoryTime(workType,flexCalcMethod,predetermineTimeSet,siftCode,personalCondition,holidayAddtionSet);
 		/*実働時間の算出*/
 		AttendanceTimeOfExistMinus zitudou = new AttendanceTimeOfExistMinus(super.calcWorkTime(PremiumAtr.RegularWork, 
-																							   CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME, 
+																							   flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(), 
 																							   vacationClass, 
 																							   timevacationUseTimeOfDaily,
 																							   statutoryDivision,
@@ -191,7 +191,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 																							   holidayCalcMethodSet).valueAsMinutes());
 		/*実働時間の算出(割増時間含む)*/
 		AttendanceTimeOfExistMinus zitudouIncludePremium = new AttendanceTimeOfExistMinus(super.calcWorkTime(PremiumAtr.Premium,
-																											 CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME,
+																											 flexAddSetting.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday().getCalculateActualOperation(),
 																											 vacationClass, 
 																											 timevacationUseTimeOfDaily,
 																											 statutoryDivision,
@@ -209,8 +209,8 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 																											 holidayCalcMethodSet).valueAsMinutes());
 		
 		AttendanceTimeOfExistMinus flexTime = new AttendanceTimeOfExistMinus(0);
-		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation()==CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME
-				&& holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getCalculateActualOperation()!=CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME) {
+		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation()!=CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME
+				&& holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getCalculateActualOperation()==CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME) {
 			/*フレックス時間算出*/
 			flexTime = new AttendanceTimeOfExistMinus(zitudou.valueAsMinutes()).minusMinutes(houtei.getForActualWorkTime().v());
 			if(flexTime.lessThan(0)) {

@@ -114,13 +114,16 @@ public class WithinStatutoryTimeOfDaily {
 			   												   TimeLimitUpperLimitSetting flexLimitSetting, 
 			   												   WorkTimeDailyAtr workTimeDailyAtr, 
 			   												   Optional<WorkTimeCode> workTimeCode) {
+		AttendanceTime workTime = new AttendanceTime(0);
+		AttendanceTime actualTime = new AttendanceTime(0);
 		//就業時間の計算
-		AttendanceTime workTime = calcWithinStatutoryTime(oneDay,personalCondition,vacationClass,workType,
+		workTime = calcWithinStatutoryTime(oneDay,personalCondition,vacationClass,workType,
 														  late,leaveEarly,workingSystem,illegularAddSetting,
 														  flexAddSetting,regularAddSetting,holidayAddtionSet,holidayCalcMethodSet,
 														  calcMethod,autoCalcAtr,flexCalcMethod,flexLimitSetting,workTimeDailyAtr,workTimeCode);
 		//実働時間の計算
-		AttendanceTime actualTime =  oneDay.getWithinWorkingTimeSheet().get().calcWorkTime(PremiumAtr.RegularWork,
+		if(oneDay.getWithinWorkingTimeSheet().isPresent())
+			actualTime =  oneDay.getWithinWorkingTimeSheet().get().calcWorkTime(PremiumAtr.RegularWork,
 																						   CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME,
 																						   vacationClass,
 																						   oneDay.getTimeVacationAdditionRemainingTime().get(),
@@ -168,7 +171,7 @@ public class WithinStatutoryTimeOfDaily {
 			if(workTimeDailyAtr.isFlex()) {
 				FlexWithinWorkTimeSheet changedFlexTimeSheet = (FlexWithinWorkTimeSheet)oneDay.getWithinWorkingTimeSheet().get();
 				workTime = changedFlexTimeSheet.calcWorkTime(PremiumAtr.RegularWork,
-															 CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME,
+															 flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
 						  									 vacationClass,
 						  									 oneDay.getTimeVacationAdditionRemainingTime().get(),
 						  									 StatutoryDivision.Nomal,workType,oneDay.getPredetermineTimeSetForCalc(),
@@ -190,7 +193,7 @@ public class WithinStatutoryTimeOfDaily {
 			}
 			else {
 				workTime =  oneDay.getWithinWorkingTimeSheet().get().calcWorkTime(PremiumAtr.RegularWork,
-																				  CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME,
+																				  regularAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
 						  														  vacationClass,
 						  														  oneDay.getTimeVacationAdditionRemainingTime().get(),
 						  														  StatutoryDivision.Nomal,workType,oneDay.getPredetermineTimeSetForCalc(),

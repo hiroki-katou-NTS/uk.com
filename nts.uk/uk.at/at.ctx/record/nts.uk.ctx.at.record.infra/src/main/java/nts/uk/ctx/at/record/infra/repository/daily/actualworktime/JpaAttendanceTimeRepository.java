@@ -130,6 +130,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 				.find(new KrcdtDayAttendanceTimePK(attendanceTime.getEmployeeId(), attendanceTime.getYmd()),
 						KrcdtDayAttendanceTime.class)
 				.orElse(null);
+		deleteByEmployeeIdAndDate(attendanceTime.getEmployeeId(), attendanceTime.getYmd());
 		if (entity != null) {
 			/* 勤怠時間 */
 			entity.setData(attendanceTime);
