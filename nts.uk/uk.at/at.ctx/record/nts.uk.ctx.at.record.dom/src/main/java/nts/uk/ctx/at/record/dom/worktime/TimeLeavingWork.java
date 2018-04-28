@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -100,6 +101,29 @@ public class TimeLeavingWork extends DomainObject{
 		this.workNo = workNo;
 		this.attendanceStamp = attendanceStamp;
 		this.leaveStamp = leaveStamp;
+	}
+
+	/**
+	 * 打刻漏れをしているかチェックする
+	 * @return 打刻漏れをしていない 
+	 */
+	public boolean checkLeakageStamp() {
+		//出勤時刻が無い
+		if( this.getAttendanceStamp() == null
+			&& !this.getAttendanceStamp().isPresent()
+			&& this.getAttendanceStamp().get().getStamp() == null
+			&& !this.getAttendanceStamp().get().getStamp().isPresent()
+			&& this.getAttendanceStamp().get().getStamp().get().getTimeWithDay() == null) {
+			return false;
+		}
+		if(this.getLeaveStamp() == null
+				&& !this.getLeaveStamp().isPresent()
+				&& this.getLeaveStamp().get().getStamp() == null
+				&& !this.getLeaveStamp().get().getStamp().isPresent()
+				&& this.getLeaveStamp().get().getStamp().get().getTimeWithDay() == null) {
+			return false;
+		}
+		return true;
 	}
 	
 }

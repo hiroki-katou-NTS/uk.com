@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.dom.service;
 
 import java.util.List;
 
+import nts.uk.ctx.workflow.dom.agent.Agent;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
@@ -57,6 +58,13 @@ public interface JudgmentApprovalStatusService {
 	 * @param employeeID
 	 */
 	public ApprovalStatusOutput judmentApprovalStatus(String companyID, ApprovalPhaseState approvalPhaseState, String employeeID);
+	
+	/**
+	 * 1.承認状況の判断(NodataDatabaseAcess)
+	 * @param approvalPhaseState
+	 * @param employeeID
+	 */
+	public ApprovalStatusOutput judmentApprovalStatusNodataDatabaseAcess(String companyID, ApprovalPhaseState approvalPhaseState, String employeeID,List<Agent> agents);
 	
 	/**
 	 * 2.指定した社員が指定した承認者リストの代行承認者かの判断

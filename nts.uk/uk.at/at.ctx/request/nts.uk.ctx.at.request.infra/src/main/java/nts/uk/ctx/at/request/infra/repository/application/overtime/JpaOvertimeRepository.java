@@ -97,7 +97,7 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 					KrqdtOvertimeInputPK pk =  new KrqdtOvertimeInputPK(item.getCompanyID(), item.getAppID(),
 							item.getAttendanceType().value, item.getFrameNo(),item.getTimeItemTypeAtr().value);
 					return new KrqdtOvertimeInput(pk, item.getStartTime() == null ? null : item.getStartTime().v(), item.getEndTime() == null ? null : item.getEndTime().v(),
-							item.getApplicationTime().v());
+							item.getApplicationTime() == null ? null : item.getApplicationTime().v());
 				})
 				.collect(Collectors.toList());
 

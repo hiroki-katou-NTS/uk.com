@@ -123,7 +123,6 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	 */
 	private KrcmtSpecialLeaveReam toEntity(SpecialLeaveGrantRemainingData data) {
 		KrcmtSpecialLeaveReam entity = new KrcmtSpecialLeaveReam();
-		System.out.println(data);
 		entity.cId = data.getCId();
 		entity.specialLeaID = data.getSpecialId();
 		entity.employeeId = data.getEmployeeId();
