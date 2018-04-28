@@ -1256,7 +1256,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				if (timeLeavingOptional.getTimeLeavingWorks() != null) {
 					leavingStamp = timeLeavingOptional.getTimeLeavingWorks().stream()
 							.filter(itemx -> itemx.getWorkNo().v().equals(timeLeavingWork.getWorkNo().v())).findFirst()
-							.get();
+							.orElse(null);
 				}
 
 				TimeActualStamp attendanceStamp = new TimeActualStamp();
