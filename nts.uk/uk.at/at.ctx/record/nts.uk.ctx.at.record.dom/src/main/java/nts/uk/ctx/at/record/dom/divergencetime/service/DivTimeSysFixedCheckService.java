@@ -124,7 +124,7 @@ public class DivTimeSysFixedCheckService {
 	private final String COMPANY_HISTORY_ITEM = "C_HIS";
 	private final String WORKTYPE_CODE = "WTC";
 	/** ログオフ時刻をシステム時刻として計算するかチェックする */
-	private final int LOGOFF_DIV_NO = 6;
+	private final int LOGOFF_DIV_NO = 7;
 	/** ・勤怠項目ID　34（退勤時刻1） */
 	private final int TIME_LEAVE_ITEM = 34;
 
