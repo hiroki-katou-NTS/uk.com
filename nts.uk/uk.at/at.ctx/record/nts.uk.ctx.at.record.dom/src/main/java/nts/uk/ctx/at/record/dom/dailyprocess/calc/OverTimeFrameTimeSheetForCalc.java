@@ -307,7 +307,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 			
 			/*ここで分割*/
 			overTimeWorkFrameTimeSheetList = correctTimeSpan(overTimeWorkFrameTimeSheetList.get(number).splitTimeSpan(endTime,overTimeHourSetList),overTimeWorkFrameTimeSheetList,number);
-			ableRangeTime.minusMinutes(transTime.valueAsMinutes()) ; 
+			ableRangeTime = ableRangeTime.minusMinutes(transTime.valueAsMinutes()) ; 
 		}
 		return overTimeWorkFrameTimeSheetList;
 	}
@@ -415,7 +415,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
                                                          ,Collections.emptyList()
                                                          ,Collections.emptyList()
                                                          ,afterMid
-                                                         ,this.getFrameTime()
+                                                         ,this.getFrameTime().changeFrameNo(this.getFrameTime().getOverWorkFrameNo().v())
                                                          ,StatutoryAtr.DeformationCriterion
                                                          ,this.goEarly
                                                          ,this.getOverTimeWorkSheetNo()
