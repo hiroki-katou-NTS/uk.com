@@ -86,6 +86,7 @@ public class CalculationRangeOfOneDay {
 
 	private WorkInfoOfDailyPerformance workInformationOfDaily;
 	
+	@Setter
 	private TimeLeavingOfDailyPerformance attendanceLeavingWork;
 
 	private PredetermineTimeSetForCalc predetermineTimeSetForCalc;

@@ -300,7 +300,7 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 		if(overTimeOfDaily != null) {
 			//残業枠時間
 			if(overTimeOfDaily.getOverTimeWorkFrameTime() != null
-				&& overTimeOfDaily.getOverTimeWorkFrameTime().isEmpty()) {
+				&& !overTimeOfDaily.getOverTimeWorkFrameTime().isEmpty()) {
 				OverTimeFrameTime frame1 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 1);
 				OverTimeFrameTime frame2 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 2);
 				OverTimeFrameTime frame3 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 3);
