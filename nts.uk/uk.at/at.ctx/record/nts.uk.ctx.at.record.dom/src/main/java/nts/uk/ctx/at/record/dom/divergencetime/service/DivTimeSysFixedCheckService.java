@@ -246,7 +246,7 @@ public class DivTimeSysFixedCheckService {
 							isAlarm, isWHis, historyItem, bsCode,
 							divergenceTimeErAl.getErrorCancelMedthod().isReasonInputed(),
 							dt.getDivReason());
-					if(valid){
+					if(!valid){
 						checkR.add(new EmployeeDailyPerError(companyId, employeeId, workingDate, 
 								erAl.getCode(), Arrays.asList(erAl.getErrorDisplayItem() != null? erAl.getErrorDisplayItem().intValue():null), 
 								erAl.getCancelableAtr() ? 1 : 0, getMessage(isCheckByWorkType, isPcDivergence, companyId, ((numberIn-1) / 2)+1, isAlarm, bsCode)));
@@ -385,19 +385,19 @@ public class DivTimeSysFixedCheckService {
 		}
 		DivergenceReferenceTime sdTime = isAlarm ? standard.getAlarmTime().orElse(null) : standard.getErrorTime().orElse(null);
 		if(sdTime != null){
-			boolean isValid = sdTime.lessThanOrEqualTo(0) || divergenceTime > sdTime.valueAsMinutes();
-			if(isValid) {
+			boolean isError = sdTime.lessThanOrEqualTo(0) || divergenceTime > sdTime.valueAsMinutes();
+			if(isError) {
 				if(isRemoveErrorByInputReason) {
 					if(reason == null || reason.v() == null || reason.v().isEmpty()) {
 					}
 					else {
-						return false;
+						return true;
 					}
 				}
-				
+				return false;
 			}
 			else {
-				return false;
+				return true;
 			}
 		}
 		return true;

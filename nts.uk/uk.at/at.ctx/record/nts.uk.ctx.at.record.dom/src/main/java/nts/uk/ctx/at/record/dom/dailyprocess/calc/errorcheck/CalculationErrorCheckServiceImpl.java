@@ -55,8 +55,21 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 			//システム固定
 			if(errorItem.getFixedAtr()) {
 				val addItems = systemErrorCheck(integrationOfDaily,errorItem,attendanceItemConverter);
-				if(!addItems.isEmpty() && addItems != null)
-					addItemList.addAll(addItems);
+				if(!addItems.isEmpty() && addItems != null) {
+					for(val item : addItems) {
+						Boolean flg = true;
+						
+						//addListにふくまれていなければ追加する
+						for(EmployeeDailyPerError addedItem : addItemList) {
+							if(item.getErrorAlarmWorkRecordCode().equals(addedItem.getErrorAlarmWorkRecordCode())) {
+								flg = false;
+								break;
+							}
+						}
+						if(flg) addItemList.add(item);
+					}
+					//addItemList.addAll(addItems);
+				}
 			}
 			//ユーザ設定
 			else {
