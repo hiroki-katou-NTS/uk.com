@@ -169,14 +169,14 @@ public class DivTimeSysFixedCheckService {
 				registryIdentity(companyId, identityPUS, new SelfConfirmContentRegistry(content, employeeId));
 			});
 		}
-		approvalSettingRepo.findByCompanyId(companyId).ifPresent(as -> {
-			if(as.getUseDayApproverConfirm() != null && as.getUseDayApproverConfirm()) {
-				approvalStatRepo.find(employeeId, workingDate).ifPresent(asd -> {
-					/** 承認状態をすべてクリアする */
-					appRootStateAdapter.clearAppRootstate(asd.getRootInstanceID());
-				});
-			}
-		});
+//		approvalSettingRepo.findByCompanyId(companyId).ifPresent(as -> {
+//			if(as.getUseDayApproverConfirm() != null && as.getUseDayApproverConfirm()) {
+//				approvalStatRepo.find(employeeId, workingDate).ifPresent(asd -> {
+//					/** 承認状態をすべてクリアする */
+//					appRootStateAdapter.clearAppRootstate(asd.getRootInstanceID());
+//				});
+//			}
+//		});
 		return errors;
 	}
 	
@@ -385,7 +385,7 @@ public class DivTimeSysFixedCheckService {
 		}
 		DivergenceReferenceTime sdTime = isAlarm ? standard.getAlarmTime().orElse(null) : standard.getErrorTime().orElse(null);
 		if(sdTime != null){
-			boolean isError = sdTime.lessThanOrEqualTo(0) || divergenceTime > sdTime.valueAsMinutes();
+			boolean isError = divergenceTime >= sdTime.valueAsMinutes();
 			if(isError) {
 				if(isRemoveErrorByInputReason) {
 					if(reason == null || reason.v() == null || reason.v().isEmpty()) {

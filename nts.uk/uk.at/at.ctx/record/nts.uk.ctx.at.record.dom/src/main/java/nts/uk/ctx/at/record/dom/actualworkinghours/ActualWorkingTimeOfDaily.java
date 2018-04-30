@@ -27,6 +27,9 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
+import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonCode;
+import nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode;
+import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent;
 import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTimeOfDaily;
 import nts.uk.ctx.at.record.dom.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
@@ -354,7 +357,22 @@ public class ActualWorkingTimeOfDaily {
 			|| integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily() == null)
 			return Collections.emptyList();
 		
-		val divergenceTimeInIntegrationOfDaily = integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime();
+		List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> divergenceTime = new ArrayList<>();
+		for(int i=0 ; i<10 ;i++) {
+			nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime obj = new nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime(
+					new AttendanceTime(0),
+					new AttendanceTime(0),
+					new AttendanceTime(0),
+					i,
+					new DivergenceReasonContent(""),
+					new DiverdenceReasonCode(""));
+			
+			divergenceTime.add(obj);
+		}
+		
+		
+		//val divergenceTimeInIntegrationOfDaily = integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime();
+		val divergenceTimeInIntegrationOfDaily = new DivergenceTimeOfDaily(divergenceTime);
 		val returnList = new ArrayList<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime>(); 
 		//乖離時間算出のアルゴリズム実装
 		for(DivergenceTime divergenceTimeClass : divergenceTimeList) {
