@@ -358,14 +358,31 @@ public class ActualWorkingTimeOfDaily {
 			return Collections.emptyList();
 		
 		List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> divergenceTime = new ArrayList<>();
+		
+		DivergenceTimeOfDaily div_time = integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime();
 		for(int i=0 ; i<10 ;i++) {
+			String reasonContent = "";
+			String reasonCode = "";
+			
+			int div_index = i+1;
+			if(div_time != null) {
+				List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> obj
+					= div_time.getDivergenceTime().stream().filter(c->c.getDivTimeId()==div_index).collect(Collectors.toList());
+				
+				if(!obj.isEmpty()) {
+					if(obj.get(0).getDivReason() != null) reasonContent = obj.get(0).getDivReason().v();
+					if(obj.get(0).getDivResonCode() != null) reasonCode = obj.get(0).getDivResonCode().v();
+				}
+					
+			}
+			
 			nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime obj = new nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime(
 					new AttendanceTime(0),
 					new AttendanceTime(0),
 					new AttendanceTime(0),
-					i,
-					new DivergenceReasonContent(""),
-					new DiverdenceReasonCode(""));
+					div_index,
+					new DivergenceReasonContent(reasonContent),
+					new DiverdenceReasonCode(reasonCode));
 			
 			divergenceTime.add(obj);
 		}

@@ -247,11 +247,15 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					this.reflect(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType);
 				} else {
 					WorkInfoOfDailyPerformance workInfoOfDailyPerformance = this.workInformationRepository.find(employeeId, day).get();	
+					Boolean existsDailyInfo = workInfoOfDailyPerformance != null;
 					ReflectStampOutput stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeId, day,
 							workInfoOfDailyPerformance, null, empCalAndSumExecLogID,
 							reCreateAttr);
+//					this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId, employeeId, day,
+//							stampOutput, null, workInfoOfDailyPerformance,
+//							null, null, null, null);
 					this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId, employeeId, day,
-							stampOutput, null, workInfoOfDailyPerformance,
+							stampOutput, null, existsDailyInfo? null:workInfoOfDailyPerformance/*既に勤務情報が存在する場合は更新しない*/,
 							null, null, null, null);
 				}
 			}

@@ -74,8 +74,21 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 			//ユーザ設定
 			else {
 				val addItems = erAlCheckService.checkErrorFor(integrationOfDaily.getAffiliationInfor().getEmployeeId(), integrationOfDaily.getAffiliationInfor().getYmd());
-				if(!addItems.isEmpty() && addItems != null)
-					addItemList.addAll(addItems);
+				if(!addItems.isEmpty() && addItems != null) {
+					for(val item : addItems) {
+						Boolean flg = true;
+						
+						//addListにふくまれていなければ追加する
+						for(EmployeeDailyPerError addedItem : addItemList) {
+							if(item.getErrorAlarmWorkRecordCode().equals(addedItem.getErrorAlarmWorkRecordCode())) {
+								flg = false;
+								break;
+							}
+						}
+						if(flg) addItemList.add(item);
+					}
+					//addItemList.addAll(addItems);
+				}
 			}
 		}
 		integrationOfDaily.setEmployeeError(addItemList);
