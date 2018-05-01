@@ -81,7 +81,7 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 		CommonReflectSchePubParam absenceLeave = new CommonReflectSchePubParam(relectSche.getEmployeeId(),
 				relectSche.getDatePara(),
 				relectSche.getAbsenceLeave().getWorkTypeCD(),
-				relectSche.getAbsenceLeave().getWorkTimeCD() != null ? relectSche.getAbsenceLeave().getWorkTimeCD().v() : null, 
+				relectSche.getAbsenceLeave().getWorkTimeCD(), 
 				relectSche.getAppInfor().getStartDate().isPresent() ? relectSche.getAppInfor().getStartDate().get() : null,
 				relectSche.getAppInfor().getEndDate().isPresent() ? relectSche.getAppInfor().getEndDate().get() : null,
 				relectSche.getAbsenceLeave().getWorkTime1().getStartTime() != null ? relectSche.getAbsenceLeave().getWorkTime1().getStartTime().v() : null,
