@@ -1,12 +1,8 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
@@ -24,7 +20,7 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 	private ScheWorkUpdateService workTimeUpdate;
 	@Override
 	public boolean commonProcessCheck(CommonCheckParameter para) {
-		ReflectedStateRecord state;
+		/*ReflectedStateRecord state;
 		if(para.getExecutiontype() == ExecutionType.RETURN) {
 			return true;
 		}
@@ -36,7 +32,7 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 		}
 		if(state == ReflectedStateRecord.WAITREFLECTION) {
 			return true;
-		}
+		}*/
 		return false;
 	}
 	

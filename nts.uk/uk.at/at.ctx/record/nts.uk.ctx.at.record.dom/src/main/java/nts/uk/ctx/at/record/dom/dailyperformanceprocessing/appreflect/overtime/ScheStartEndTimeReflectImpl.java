@@ -121,8 +121,13 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 		} else {
 			timeZone2 = lstTimeZone2.get(0);	
 		}
-
-		TimezoneUse timeZone1 = lstTimeZone1.get(0);
+		TimezoneUse timeZone1 = null;
+		if(lstTimeZone1.isEmpty()) {
+			findDataOut.setCountReflect1Atr(false);
+		} else {
+			timeZone1 = lstTimeZone1.get(0);	
+		}
+		
 		if(timeZone2 != null && timeZone2.getUseAtr() == UseSetting.NOT_USE) {
 			findDataOut.setCountReflect2Atr(false);
 		} else {

@@ -72,7 +72,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 				para.getScheTimeReflectAtr());
 		TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(), para.getDateData(), startTimeReflect.getTimeOfDay(), endTimeReflect.getTimeOfDay(), 1, startTimeReflect.isReflectFlg(), endTimeReflect.isReflectFlg());
 		scheUpdateService.updateScheStartEndTime(timeData1);		
-		//(開始時刻2)反映する時刻を求める
+		/*//(開始時刻2)反映する時刻を求める
 		TimeOfDayReflectOutput startTime2Reflect = this.getTimeOfDayReflect(timeTypeScheReflect, 
 				para.getGobackData().getStartTime2(), 
 				ApplyTimeAtr.START2, 
@@ -90,7 +90,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 				2, 
 				startTime2Reflect.isReflectFlg(), 
 				endTime2Reflect.isReflectFlg());
-		scheUpdateService.updateScheStartEndTime(timeData2);		
+		scheUpdateService.updateScheStartEndTime(timeData2);*/		
 	}
 	@Override
 	public TimeOfDayReflectOutput getTimeOfDayReflect(boolean timeTypeScheReflect, 
@@ -171,37 +171,27 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 			tmpWorkTimeCode = workData.getRecordInfo().getWorkTimeCode().v();
 		}
 		//出勤時刻を反映できるかチェックする
-		if(this.checkAttendenceReflect(para, 1, true)) {
-			//ジャスト遅刻により時刻を編集する
-			Integer timeLate = this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getStartTime1(), 1, true);
-			//開始時刻を反映する 
-			TimeReflectParameter timeData = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), timeLate, 1, true);
-			scheUpdateService.updateRecordStartEndTime(timeData);			
-		}
+		boolean isStart1 = this.checkAttendenceReflect(para, 1, true);
+		//ジャスト遅刻により時刻を編集する
+		//開始時刻を反映する 
+		Integer startTime1 = isStart1 ? this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getStartTime1(), 1, true) : null;
 		//退勤時刻を反映できるか
-		if(this.checkAttendenceReflect(para, 1, false)) {
-			//ジャスト早退により時刻を編集する
-			Integer timeLeave = this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getEndTime1(), 1, false);
-			//終了時刻の反映
-			TimeReflectParameter timeData = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), timeLeave, 1, false);
-			scheUpdateService.updateRecordStartEndTime(timeData);
-		}
-		//出勤時刻２を反映できるか
-		if(this.checkAttendenceReflect(para, 2, true)) {
-			//ジャスト遅刻により時刻を編集する
-			Integer timeLate2 = this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getStartTime2(), 2, true);
-			//開始時刻を反映する 
-			TimeReflectParameter timeData = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), timeLate2, 2, true);
-			scheUpdateService.updateRecordStartEndTime(timeData);			
-		}
+		boolean isEnd1 = this.checkAttendenceReflect(para, 1, false);
+		//ジャスト早退により時刻を編集する
+		//終了時刻の反映
+		Integer endTime1 = isEnd1 ? this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getEndTime1(), 1, false) : null;		
+		TimeReflectPara timePara1 = new TimeReflectPara(para.getEmployeeId(), para.getDateData(), startTime1, endTime1, 1, isStart1, isEnd1);
+		scheUpdateService.updateRecordStartEndTimeReflect(timePara1);		
+		/*//出勤時刻２を反映できるか
+		boolean startTime2 = this.checkAttendenceReflect(para, 2, true);
+		//ジャスト遅刻により時刻を編集する
+		Integer timeLate2 = startTime2 ? this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getStartTime2(), 2, true) : null;
 		//退勤時刻２を反映できるか
-		if(this.checkAttendenceReflect(para, 2, false)) {
-			//ジャスト早退により時刻を編集する
-			Integer timeLeave2 = this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getEndTime2(), 2, false);
-			//終了時刻の反映
-			TimeReflectParameter timeData = new TimeReflectParameter(para.getEmployeeId(), para.getDateData(), timeLeave2, 2, false);
-			scheUpdateService.updateRecordStartEndTime(timeData);
-		}
+		boolean endTime2 = this.checkAttendenceReflect(para, 2, false);
+		//ジャスト早退により時刻を編集する
+		Integer timeLeave2 = endTime2 ? this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getEndTime2(), 2, false) : null;
+		TimeReflectPara timePara2 = new TimeReflectPara(para.getEmployeeId(), para.getDateData(), timeLate2, timeLeave2, 2, startTime2, endTime2);
+		scheUpdateService.updateRecordStartEndTimeReflect(timePara2);*/
 	}
 	@Override
 	public boolean checkAttendenceReflect(GobackReflectParameter para, Integer frameNo, boolean isPre) {

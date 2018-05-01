@@ -6,9 +6,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ApplicationReflectOutput;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReasonNotReflectRecord;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReflectedStateRecord;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -36,8 +33,6 @@ public class AfterOvertimeReflectServiceImpl implements AfterOvertimeReflectServ
 	@Override
 	public boolean reflectAfterOvertime(OvertimeParameter overtimePara) {
 		try {
-			ApplicationReflectOutput output = new ApplicationReflectOutput(overtimePara.getOvertimePara().getReflectedState(), 
-					overtimePara.getOvertimePara().getReasonNotReflect());
 			//予定勤種・就時の反映
 			afterOverTimeReflect.checkScheReflect(overtimePara);
 			//勤種・就時の反映
@@ -70,9 +65,6 @@ public class AfterOvertimeReflectServiceImpl implements AfterOvertimeReflectServ
 			//○日別実績を置き換える Replace daily performance		
 			IntegrationOfDaily calculateData = calculate.calculate(preOvertimeService.calculateForAppReflect(overtimePara.getEmployeeId(), overtimePara.getDateInfo()));
 			attendanceTime.updateFlush(calculateData.getAttendanceTimeOfDailyPerformance().get());
-			
-			output.setReflectedState(ReflectedStateRecord.REFLECTED);
-			output.setReasonNotReflect(ReasonNotReflectRecord.ACTUAL_CONFIRMED);
 			return true;
 			
 		} catch (Exception e) {

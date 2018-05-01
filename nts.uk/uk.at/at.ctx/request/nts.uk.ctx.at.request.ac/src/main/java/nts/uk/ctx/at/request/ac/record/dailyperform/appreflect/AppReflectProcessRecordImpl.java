@@ -6,7 +6,6 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppCommonPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppReflectProcessRecordPub;
-import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppReflectPubOutput;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.CommonReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.DegreeReflectionPubAtr;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ExecutionPubType;
@@ -23,15 +22,12 @@ import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.PriorStampPubAtr;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.ScheTimeReflectPubAtr;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.OvertimeAppPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.PreOvertimePubParameter;
-import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.CommonReflectPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppReflectInfor;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppReflectProcessRecord;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.GobackReflectPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.HolidayWorkReflectPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.OvertimeReflectPara;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.WorkReflectedStatesInfo;
 
 @Stateless
 public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
@@ -95,20 +91,16 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				EnumAdaptor.valueOf(para.getScheAndRecordSameChangeFlg().value, ScheAndRecordSameChangePubFlg.class), 
 				para.isScheTimeOutFlg(), 
 				overtimePara);
-		AppReflectPubOutput appReflect;
 		if(isPre) {
 			return recordPub.preOvertimeReflect(preOvertimePara);	
 		} else {
 			return recordPub.afterOvertimeReflect(preOvertimePara);
-		}		
+		}
 	}
 
 	@Override
-	public WorkReflectedStatesInfo absenceReflectRecor(CommonReflectPara para, boolean isPre) {
-		AppReflectPubOutput dataReflect = recordPub.absenceReflect(this.toPubPara(para), isPre);
-		WorkReflectedStatesInfo dataOutput = new WorkReflectedStatesInfo(EnumAdaptor.valueOf(dataReflect.getReflectedState().value, ReflectedState_New.class), 
-				dataReflect.getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(dataReflect.getReasonNotReflect().value, ReasonNotReflectDaily_New.class));
-		return dataOutput;
+	public boolean absenceReflectRecor(CommonReflectPara para, boolean isPre) {
+		return recordPub.absenceReflect(this.toPubPara(para), isPre);		
 	}
 
 	@Override
