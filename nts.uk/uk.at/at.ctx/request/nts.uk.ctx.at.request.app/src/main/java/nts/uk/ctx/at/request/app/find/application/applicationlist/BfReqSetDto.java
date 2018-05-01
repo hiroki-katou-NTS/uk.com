@@ -26,12 +26,17 @@ public class BfReqSetDto {
 	public Integer retrictPreTimeDay;
 	// 未来日許可しない
 	public Integer retrictPostAllowFutureFlg;
-	
-	public static List<BfReqSetDto> convertToDto(RequestSetting domain){
+
+	public static List<BfReqSetDto> convertToDto(RequestSetting domain) {
 		List<ReceptionRestrictionSetting> appType = domain.getApplicationSetting().getListReceptionRestrictionSetting();
 		List<BfReqSetDto> listDto = new ArrayList<>();
-		for(ReceptionRestrictionSetting item: appType){
-			listDto.add(new BfReqSetDto(domain.getCompanyID(), item.getAppType().value, item.getBeforehandRestriction().getMethodCheck().value, item.getBeforehandRestriction().getToUse() == true ? 1 : 0, item.getBeforehandRestriction().getDateBeforehandRestriction().value, item.getBeforehandRestriction().getTimeBeforehandRestriction().v(), item.getAfterhandRestriction().getAllowFutureDay() == true ? 1: 0));
+		for (ReceptionRestrictionSetting item : appType) {
+			listDto.add(new BfReqSetDto(domain.getCompanyID(), item.getAppType().value,
+					item.getBeforehandRestriction().getMethodCheck().value,
+					item.getBeforehandRestriction().getOtToUse() == true ? 1 : 0,
+					item.getBeforehandRestriction().getOtRestrictPreDay().value,
+					item.getBeforehandRestriction().getTimeBeforehandRestriction() == null ? null : item.getBeforehandRestriction().getTimeBeforehandRestriction().v(),
+					item.getAfterhandRestriction().getAllowFutureDay() == true ? 1 : 0));
 		}
 		return listDto;
 	}

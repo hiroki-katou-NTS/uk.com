@@ -31,14 +31,14 @@ public class W4D4CheckService {
 		String companyID = AppContexts.user().companyId();
 
 		List<WorkInfoOfDailyPerformance> listWorkInfoOfDailyPerformance = workInformationRepository.findByPeriodOrderByYmd(employeeID, period);
-		List<String> listActualWorkTypeCode = listWorkInfoOfDailyPerformance.stream().map(c -> c.getRecordInfo().getWorkTypeCode().v()).distinct().collect(Collectors.toList());
+		List<String> listActualWorkTypeCode = listWorkInfoOfDailyPerformance.stream().map(c -> c.getRecordInfo().getWorkTypeCode().v()).collect(Collectors.toList());
 		
 		val listHolidayWorkType = workTypeRepository.findWorkOneDay(companyID, DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value, WorkTypeClassification.Holiday.value);
 		List<String> listHolidayWorkTypeCode = listHolidayWorkType.stream().map(c -> c.getWorkTypeCode().v()).collect(Collectors.toList());
 		
 		int countHoliday = 0;
-		for (val workTypeCode: listHolidayWorkTypeCode) {
-			if (listActualWorkTypeCode.contains(workTypeCode))
+		for (val workTypeCode: listActualWorkTypeCode) {
+			if (listHolidayWorkTypeCode.contains(workTypeCode))
 				countHoliday++;
 		}
 		

@@ -627,7 +627,7 @@ public abstract class CalculationTimeSheet {
 	public static Optional<MidNightTimeSheetForCalc> getDuplicateMidNight(MidNightTimeSheet midNightTimeSheet, TimeSpanForCalc timeSpan){ 
 		val duplicateMidNightSpan = timeSpan.getDuplicatedWith(midNightTimeSheet.getTimeSpan());
 		if(duplicateMidNightSpan.isPresent()) {
-			return Optional.of(MidNightTimeSheetForCalc.convertForCalc(midNightTimeSheet).getDuplicateRangeTimeSheet(duplicateMidNightSpan.get()));
+			return MidNightTimeSheetForCalc.convertForCalc(midNightTimeSheet).getDuplicateRangeTimeSheet(duplicateMidNightSpan.get());
 		}
 		return Optional.empty();
 	}
