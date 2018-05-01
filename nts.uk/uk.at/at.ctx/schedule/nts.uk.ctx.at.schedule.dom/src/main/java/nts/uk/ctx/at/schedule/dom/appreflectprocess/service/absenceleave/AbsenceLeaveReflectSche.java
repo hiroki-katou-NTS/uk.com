@@ -23,6 +23,14 @@ public interface AbsenceLeaveReflectSche {
 	 * @param startTime
 	 * @param endTime
 	 */
-	public void absenceLeaveStartEndTimeReflect(String employeeId, GeneralDate baseDate, String workTypeCode, Integer startTime, Integer endTime);
+	public void absenceLeaveStartEndTimeReflect(CommonReflectParamSche param);
+	/**
+	 * 就業時間帯が反映できるか
+	 * @param employeeId
+	 * @param baseDate
+	 * @param worktimeCode
+	 * @return
+	 */
+	public WorkTimeIsReflect workTimeIsReflect(String employeeId, GeneralDate baseDate, String worktimeCode);
 
 }
