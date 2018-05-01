@@ -15,11 +15,15 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  *
  */
 
-// 選択肢履歴ドメイン
+// 選択肢履歴
 public class PerInfoHistorySelection {
+	
 	private String histId;
+	
 	private String selectionItemId;
+	
 	private String companyId;
+	
 	private DatePeriod period;
 
 	public static PerInfoHistorySelection createHistorySelection(String histId, String selectionItemId,

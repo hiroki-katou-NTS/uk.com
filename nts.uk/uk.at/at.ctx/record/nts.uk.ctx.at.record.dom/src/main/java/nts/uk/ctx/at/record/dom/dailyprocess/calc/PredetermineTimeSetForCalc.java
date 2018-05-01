@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
@@ -159,6 +160,27 @@ public class PredetermineTimeSetForCalc {
 	}
 	
 	/**
+	 * 出勤系などの～～～刑による所定時間の取得
+	 * @param attendanceAtr
+	 * @return
+	 */
+	public AttendanceTime getPredetermineTimeByAttendanceAtr(AttendanceHolidayAttr attendanceAtr) {
+		switch(attendanceAtr) {
+		case FULL_TIME:
+			return additionSet.getPredTime().getOneDay();
+		case MORNING:
+			return additionSet.getPredTime().getMorning();
+		case AFTERNOON:
+			return additionSet.getPredTime().getAfternoon();
+		case HOLIDAY:
+			return new AttendanceTime(0);
+		default:
+				throw new RuntimeException("unknown workTypeRange");
+		}
+	}
+	
+	
+	/**
 	 * 所定時間設定を所定時間設定(計算用)に変換する
 	 * @param master 所定時間設定
 	 */
@@ -176,8 +198,8 @@ public class PredetermineTimeSetForCalc {
 	 * @param workNo
 	 * @return
 	 */
-	public TimezoneUse getTimeSheets(int workNo) {
-		return this.timeSheets.stream().filter(t -> t.getWorkNo()==workNo).collect(Collectors.toList()).get(0);
+	public Optional<TimezoneUse> getTimeSheets(int workNo) {
+		return this.timeSheets.stream().filter(t -> t.getWorkNo()==workNo).findFirst();
 	}
 	
 }

@@ -48,7 +48,7 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 	}
 
 	@Override
-	public WorkReflectedStatesInfo gobackReflectRecord(GobackReflectPara para, boolean isPre) {
+	public boolean gobackReflectRecord(GobackReflectPara para, boolean isPre) {
 		GobackAppPubParameter gobackPra = new GobackAppPubParameter(EnumAdaptor.valueOf(para.getGobackData().getChangeAppGobackAtr().value,
 				ChangeAppGobackPubAtr.class), para.getGobackData().getWorkTimeCode(),
 				para.getGobackData().getWorkTypeCode(), 
@@ -66,21 +66,15 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				EnumAdaptor.valueOf(para.getScheTimeReflectAtr().value, ScheTimeReflectPubAtr.class),
 				para.isScheReflectAtr(),
 				gobackPra);
-		AppReflectPubOutput gobackReflect;
 		if(isPre) {
-			gobackReflect = recordPub.preGobackReflect(pubPara);
+			 return recordPub.preGobackReflect(pubPara);
 		} else {
-			gobackReflect = recordPub.afterGobackReflect(pubPara);
+			return recordPub.afterGobackReflect(pubPara);
 		}
-		
-		
-		WorkReflectedStatesInfo preGobackData = new WorkReflectedStatesInfo(EnumAdaptor.valueOf(gobackReflect.getReflectedState().value, ReflectedState_New.class), 
-				gobackReflect.getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(gobackReflect.getReasonNotReflect().value, ReasonNotReflectDaily_New.class));
-		return preGobackData;
 	}
 
 	@Override
-	public WorkReflectedStatesInfo overtimeReflectRecord(OvertimeReflectPara para, boolean isPre) {
+	public boolean overtimeReflectRecord(OvertimeReflectPara para, boolean isPre) {
 		OvertimeAppPubParameter overtimePara = new OvertimeAppPubParameter(EnumAdaptor.valueOf(para.getOvertimePara().getReflectedState().value, ReflectedStatePubRecord.class),
 				EnumAdaptor.valueOf(para.getOvertimePara().getReasonNotReflect() == null ? 0 : para.getOvertimePara().getReasonNotReflect().value, ReasonNotReflectPubRecord.class),
 				para.getOvertimePara().getWorkTypeCode(),
@@ -103,14 +97,10 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				overtimePara);
 		AppReflectPubOutput appReflect;
 		if(isPre) {
-			appReflect = recordPub.preOvertimeReflect(preOvertimePara);	
+			return recordPub.preOvertimeReflect(preOvertimePara);	
 		} else {
-			appReflect = recordPub.afterOvertimeReflect(preOvertimePara);
-		}
-		
-		WorkReflectedStatesInfo overtimeReflect = new WorkReflectedStatesInfo(EnumAdaptor.valueOf(appReflect.getReflectedState().value, ReflectedState_New.class), 
-				EnumAdaptor.valueOf(appReflect.getReasonNotReflect().value, ReasonNotReflectDaily_New.class));
-		return overtimeReflect;
+			return recordPub.afterOvertimeReflect(preOvertimePara);
+		}		
 	}
 
 	@Override
@@ -122,7 +112,7 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 	}
 
 	@Override
-	public WorkReflectedStatesInfo holidayWorkReflectRecord(HolidayWorkReflectPara para, boolean isPre) {
+	public boolean holidayWorkReflectRecord(HolidayWorkReflectPara para, boolean isPre) {
 		HolidayWorktimeAppPubPara appPara = new HolidayWorktimeAppPubPara(para.getHolidayWorkPara().getWorkTypeCode(), 
 				para.getHolidayWorkPara().getWorkTimeCode(), 
 				para.getHolidayWorkPara().getMapWorkTimeFrame(), 
@@ -138,18 +128,12 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				para.isScheReflectFlg(), 
 				appPara);
 		
-		AppReflectPubOutput pubOutput = recordPub.holidayWorkReflect(pubPara);
-		return new WorkReflectedStatesInfo(EnumAdaptor.valueOf(pubOutput.getReflectedState().value, ReflectedState_New.class),
-				pubOutput.getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(pubOutput.getReasonNotReflect().value, ReasonNotReflectDaily_New.class));
+		return recordPub.holidayWorkReflect(pubPara);		
 	}
 
 	@Override
-	public WorkReflectedStatesInfo workChangeReflectRecord(CommonReflectPara para, boolean isPre) {
-		
-		AppReflectPubOutput dataReflect = recordPub.workChangeReflect(this.toPubPara(para), isPre);
-		WorkReflectedStatesInfo dataOutput = new WorkReflectedStatesInfo(EnumAdaptor.valueOf(dataReflect.getReflectedState().value, ReflectedState_New.class), 
-				dataReflect.getReasonNotReflect() == null ? null : EnumAdaptor.valueOf(dataReflect.getReasonNotReflect().value, ReasonNotReflectDaily_New.class));
-		return dataOutput;
+	public boolean workChangeReflectRecord(CommonReflectPara para, boolean isPre) {		
+		return recordPub.workChangeReflect(this.toPubPara(para), isPre);		
 	}
 	
 	private CommonReflectPubParameter toPubPara(CommonReflectPara para) {

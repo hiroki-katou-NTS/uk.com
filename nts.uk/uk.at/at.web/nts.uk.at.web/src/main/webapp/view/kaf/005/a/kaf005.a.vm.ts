@@ -126,9 +126,18 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         flexExessTimeRefer: KnockoutObservable<string> = ko.observable(null);
         //　初期起動時、計算フラグ=1とする。
         calculateFlag: KnockoutObservable<number> = ko.observable(1);
+        uiType: KnockoutObservable<number> = ko.observable(0);
         preWorkContent: common.WorkContent;
-        constructor() {
-            let self = this;             
+        constructor(transferData :any) {
+            let self = this;
+            if(transferData != null){
+                 self.timeStart1(transferData.startTime);
+                self.timeEnd1(transferData.endTime);
+                self.appDate(transferData.appDate);
+                self.multilContent(transferData.applicationReason); 
+                self.uiType(1); 
+            }
+                    
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 005a AFTER start 000_A
@@ -158,7 +167,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             service.getOvertimeByUI({
                 url: urlParam,
                 appDate: nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
-                uiType: 0
+                uiType: self.uiType(),
+                timeStart1: self.timeStart1(),
+                timeEnd1: self.timeEnd1(),
+                reasonContent: self.multilContent()
             }).done((data) => {
                 self.initData(data);
                 $("#inputdate").focus();
@@ -436,8 +448,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 overtimeHours: ko.toJS(self.overtimeHours()),
                 breakTimes: ko.toJS(self.breakTimes()),
                 restTime: ko.toJS(self.restTime()),
-                overTimeShiftNight: overTimeShiftNightTmp == null ? -1 : overTimeShiftNightTmp,
-                flexExessTime: flexExessTimeTmp == null ? -1 : flexExessTimeTmp,
+                overTimeShiftNight: overTimeShiftNightTmp == null ? null : overTimeShiftNightTmp,
+                flexExessTime: flexExessTimeTmp == null ? null : flexExessTimeTmp,
                 divergenceReasonContent: divergenceReason,
                 sendMail: self.manualSendMailAtr(),
                 overtimeAtr: self.overtimeAtr(),

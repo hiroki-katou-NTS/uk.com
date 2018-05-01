@@ -11,4 +11,5 @@ public class DPItemParent {
 	List<DPItemCheckBox> dataCheckSign;
 	List<DPItemCheckBox> dataCheckApproval;
 	DateRange dateRange;
+	SPRStampSourceInfo spr;
 }

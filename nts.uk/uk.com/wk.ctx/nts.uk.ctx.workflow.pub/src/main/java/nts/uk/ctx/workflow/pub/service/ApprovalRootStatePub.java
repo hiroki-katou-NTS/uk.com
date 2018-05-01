@@ -19,6 +19,26 @@ import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
  */
 public interface ApprovalRootStatePub {
 	/**
+	 * RequestList356
+	 * 実績の承認を解除する
+	 * @param approverID
+	 * @param approvalRecordDates
+	 * @param employeeID
+	 * @param rootType
+	 * @return
+	 */
+	public boolean releaseApproval(String approverID, List<GeneralDate> approvalRecordDates, List<String> employeeID,Integer rootType,String companyID);
+	/**
+	 * RequestList347
+	 * 実績の承認を登録する
+	 * @param approverID
+	 * @param approvalRecordDates
+	 * @param employeeID
+	 * @param rootType
+	 * @return
+	 */
+	public void registerApproval(String approverID, List<GeneralDate> approvalRecordDates, List<String> employeeID,Integer rootType,String companyID);
+	/**
 	 * RequestList155
 	 * [No.155]承認対象者リストと日付リストから承認状況を取得する
 	 * getApprovalByListEmplAndListApprovalRecordDate
@@ -211,5 +231,12 @@ public interface ApprovalRootStatePub {
 	 */
 	public AppRootStateConfirmExport getApprovalRootState(String companyID, String employeeID, 
 			Integer confirmAtr, Integer appType, GeneralDate date);
+	
+	/**
+	 * RequestList 403
+	 * 承認状態をすべてクリアする
+	 * @param rootStateID
+	 */
+	public void cleanApprovalRootState(String rootStateID);
 	
 }

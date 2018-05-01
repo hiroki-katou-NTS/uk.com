@@ -659,11 +659,12 @@ public class DeductionTimeSheet {
 	 * @param atr
 	 * @return
 	 */
-	private List<TimeSheetOfDeductionItem> getDedListWithAtr(DeductionAtr atr) {
+	public List<TimeSheetOfDeductionItem> getDedListWithAtr(DeductionAtr atr) {
 		if (atr.isDeduction()) {
 			return this.forDeductionTimeZoneList;
 		} else {
 			return this.forRecordTimeZoneList;
 		}
 	}
+	
 }

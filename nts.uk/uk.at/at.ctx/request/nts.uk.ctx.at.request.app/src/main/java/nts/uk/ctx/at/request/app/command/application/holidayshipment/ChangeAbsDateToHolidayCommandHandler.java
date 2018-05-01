@@ -1,9 +1,12 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 
+@Stateless
 public class ChangeAbsDateToHolidayCommandHandler extends CommandHandler<SaveHolidayShipmentCommand> {
 
 	String companyID, appReason, employeeID;

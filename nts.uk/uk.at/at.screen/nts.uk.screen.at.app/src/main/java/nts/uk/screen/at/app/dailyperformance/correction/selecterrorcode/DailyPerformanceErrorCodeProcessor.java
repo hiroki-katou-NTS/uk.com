@@ -165,9 +165,6 @@ public class DailyPerformanceErrorCodeProcessor {
 		// get employmentCode
 		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(sId, dateRange);
 		screenDto.setEmploymentCode(employment == null ? "" : employment.getEmploymentCode());
-		// アルゴリズム「休暇の管理状況をチェックする」を実行する | Get holiday setting data
-		getHolidaySettingData(screenDto);
-
 		/**
 		 * アルゴリズム「表示形式に従って情報を取得する」を実行する | Execute "Get information according to
 		 * display format"
@@ -310,7 +307,7 @@ public class DailyPerformanceErrorCodeProcessor {
 			//set checkbox sign
 			data.setSign(signDayMap.containsKey(data.getEmployeeId() + "|" + data.getDate()));
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
-			if (resultOfOneRow != null) {
+			if (resultOfOneRow != null && !data.getError().equals("")) {
 				lockData(sId, screenDto, dailyRecOpeFun, data, identityProcessDtoOpt, approvalUseSettingDtoOpt);
 
 				boolean lock = checkLockAndSetState(employeeAndDateRange, data);
@@ -342,18 +339,6 @@ public class DailyPerformanceErrorCodeProcessor {
 		}
 		screenDto.setLstData(lstData);
 		return screenDto;
-	}
-
-	/** アルゴリズム「休暇の管理状況をチェックする」を実行する */
-	private void getHolidaySettingData(DailyPerformanceCorrectionDto dailyPerformanceCorrectionDto) {
-		// アルゴリズム「年休設定を取得する」を実行する
-		dailyPerformanceCorrectionDto.setYearHolidaySettingDto(this.repo.getYearHolidaySetting());
-		// アルゴリズム「振休管理設定を取得する」を実行する
-		dailyPerformanceCorrectionDto.setSubstVacationDto(this.repo.getSubstVacationDto());
-		// アルゴリズム「代休管理設定を取得する」を実行する
-		dailyPerformanceCorrectionDto.setCompensLeaveComDto(this.repo.getCompensLeaveComDto());
-		// アルゴリズム「60H超休管理設定を取得する」を実行する
-		dailyPerformanceCorrectionDto.setCom60HVacationDto(this.repo.getCom60HVacationDto());
 	}
 
 	/**

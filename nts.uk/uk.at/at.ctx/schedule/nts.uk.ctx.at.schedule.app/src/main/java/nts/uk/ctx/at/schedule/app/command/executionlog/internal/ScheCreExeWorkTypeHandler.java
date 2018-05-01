@@ -17,11 +17,9 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 
@@ -90,12 +88,13 @@ public class ScheCreExeWorkTypeHandler {
 					workingConditionItem.getScheduleMethod().get().getWorkScheduleBusCal().get().getReferenceWorkingHours().value);
 		}
 		
-		
+		//勤務種類を取得する(lấy dữ liệu worktype)
 		Optional<WorktypeDto> optWorktype = this.getWorktype(commandWorktypeGetter);
 
 		if (optWorktype.isPresent()) {
 			WorkTimeGetterCommand commandWorkTimeGetter = commandWorktypeGetter.toWorkTime();
 			commandWorkTimeGetter.setWorkTypeCode(optWorktype.get().getWorktypeCode());	
+			//就業時間帯を取得する(lấy dữ liệu worktime)
 			Optional<String> optionalWorkTime = this.scheCreExeWorkTimeHandler.getWorktime(commandWorkTimeGetter);
 
 			if (optionalWorkTime == null || optionalWorkTime.isPresent()) {
@@ -284,12 +283,12 @@ public class ScheCreExeWorkTypeHandler {
 	}
 	
 	/**
+	 * 勤務種類を取得する
 	 * Gets the worktype.
 	 *
 	 * @param command the command
 	 * @return the worktype
 	 */
-	// 勤務種類を取得する
 	public Optional<WorktypeDto> getWorktype(WorkTypeGetterCommand command) {
 
 		// setup command getter

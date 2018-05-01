@@ -122,8 +122,8 @@ public class KrcdtDayHolidyWorkTs extends UkJpaEntity implements Serializable{
 			/*休日出勤2終了時刻*/
 			this.holiWork2EndClc = sheet.get().getTimeSheet().getEnd().valueAsMinutes();
 		}
+		sheet = getTimeSheet(domain, 4);
 		if(sheet.isPresent()){
-			sheet = getTimeSheet(domain, 3);
 			/*休日出勤3開始時刻*/
 			this.holiWork3StrClc = sheet.get().getTimeSheet().getStart().valueAsMinutes();
 			/*休日出勤3終了時刻*/

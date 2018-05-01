@@ -92,6 +92,11 @@ public class ErAlWorkRecordCheckService {
 				.map(e -> e.getEmployeeId()).collect(Collectors.toList());
 
 		if (filted.isEmpty()) {
+			//Map<String, Boolean> map = new HashMap<String, Boolean>();
+			//for(String id :employeeIds) {
+			//	map.put(id, true);
+			//}
+			//return map;
 			return toEmptyResultMap();
 		}
 		/** 社員に一致する日別実績を取得する */

@@ -90,4 +90,26 @@ public class BonusPayTimeOfMonthly {
 			}
 		}
 	}
+
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(BonusPayTimeOfMonthly target){
+		
+		for (val bonusPayValue : this.bonusPayTime.values()){
+			val frameNo = bonusPayValue.getBonusPayFrameNo();
+			if (target.bonusPayTime.containsKey(frameNo)){
+				val targetBonusPayValue = target.bonusPayTime.get(frameNo);
+				bonusPayValue.addMinutesToBonusPayTime(targetBonusPayValue.getBonusPayTime().v());
+				bonusPayValue.addMinutesToSpecificBonusPayTime(targetBonusPayValue.getSpecificBonusPayTime().v());
+				bonusPayValue.addMinutesToHolidayWorkBonusPayTime(targetBonusPayValue.getHolidayWorkBonusPayTime().v());
+				bonusPayValue.addMinutesToHolidayWorkSpecificBonusPayTime(targetBonusPayValue.getHolidayWorkSpecificBonusPayTime().v());
+			}
+		}
+		for (val targetBonusPayValue : target.bonusPayTime.values()){
+			val frameNo = targetBonusPayValue.getBonusPayFrameNo();
+			this.bonusPayTime.putIfAbsent(frameNo, targetBonusPayValue);
+		}
+	}
 }

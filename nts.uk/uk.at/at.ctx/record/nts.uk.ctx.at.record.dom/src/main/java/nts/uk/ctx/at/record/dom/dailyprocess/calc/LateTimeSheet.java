@@ -80,18 +80,18 @@ public class LateTimeSheet{
 	 * @param goWorkTime
 	 * @param workNo
 	 * @param classification
-	 * @param lateDecisionClock
+	 * @param lateDesClock
 	 * @return
 	 */
 	public static LateTimeSheet createLateTimeSheet(
-			LateDecisionClock lateDecisionClock,
+			Optional<LateDecisionClock> lateDesClock,
 			TimeLeavingWork timeLeavingWork
 			,GraceTimeSetting graceTimeSetting
 			,WithinWorkTimeFrame duplicateTimeSheet
 			,DeductionTimeSheet deductionTimeSheet
 			,Optional<CoreTimeSetting> coreTimeSetting
-			,TimezoneUse predetermineTimeSet
-			,int workNo) {
+			,Optional<TimezoneUse> optional
+			,int workNo,List<TimeSheetOfDeductionItem> breakTimeList) {
 		
 		//出勤時刻
 		TimeWithDayAttr attendance = null;
@@ -102,15 +102,27 @@ public class LateTimeSheet{
 				}
 			}
 		}
-		if(attendance != null) {
+		if(attendance != null && lateDesClock.isPresent()) {
 			//出勤時刻と遅刻判断時刻を比較	
-			if(lateDecisionClock.getLateDecisionClock().greaterThan(attendance)
+			if(lateDesClock.get().getLateDecisionClock().greaterThan(attendance)
 					||!graceTimeSetting.isIncludeWorkingHour()){//猶予時間を加算しない場合
 				
 				//遅刻控除時間帯の作成
-				Optional<LateLeaveEarlyTimeSheet> lateDeductTimeSheet = createLateLeaveEarlyTimeSheet(DeductionAtr.Deduction,timeLeavingWork,coreTimeSetting,predetermineTimeSet,duplicateTimeSheet,deductionTimeSheet);
+				Optional<LateLeaveEarlyTimeSheet> lateDeductTimeSheet = createLateLeaveEarlyTimeSheet(DeductionAtr.Deduction,
+																									  timeLeavingWork,
+																									  coreTimeSetting,
+																									  optional.get(),
+																									  duplicateTimeSheet,
+																									  deductionTimeSheet,
+																									  breakTimeList);
 				//遅刻時間帯の作成
-				Optional<LateLeaveEarlyTimeSheet> lateAppTimeSheet = createLateLeaveEarlyTimeSheet(DeductionAtr.Appropriate,timeLeavingWork,coreTimeSetting,predetermineTimeSet,duplicateTimeSheet,deductionTimeSheet);
+				Optional<LateLeaveEarlyTimeSheet> lateAppTimeSheet = createLateLeaveEarlyTimeSheet(DeductionAtr.Appropriate,
+																								   timeLeavingWork,
+																								   coreTimeSetting,
+																								   optional.get(),
+																								   duplicateTimeSheet,
+																								   deductionTimeSheet,
+																								   breakTimeList);
 				
 				LateTimeSheet lateTimeSheet = new LateTimeSheet(lateAppTimeSheet,lateDeductTimeSheet, workNo, Optional.empty());
 				
@@ -135,7 +147,7 @@ public class LateTimeSheet{
 			,Optional<CoreTimeSetting> coreTimeSetting
 			,TimezoneUse predetermineTimeSet
 			,WithinWorkTimeFrame duplicateTimeSheet
-			,DeductionTimeSheet deductionTimeSheet){
+			,DeductionTimeSheet deductionTimeSheet,List<TimeSheetOfDeductionItem> breakTimeList){
 
 		//遅刻時間帯の作成
 		Optional<LateLeaveEarlyTimeSheet> instance = createLateTimeSheetInstance(deductionAtr,
@@ -143,13 +155,13 @@ public class LateTimeSheet{
 				,coreTimeSetting
 				,predetermineTimeSet
 				,duplicateTimeSheet
-				,deductionTimeSheet);
+				,deductionTimeSheet,breakTimeList);
 			
 		//遅刻時間を計算
-		AttendanceTime lateTime = instance.isPresent()?instance.get().calcTotalTime():new AttendanceTime(0);
+//		AttendanceTime lateTime = instance.isPresent()?instance.get().calcTotalTime():new AttendanceTime(0);
 		//遅刻時間帯を再度補正
 		if(instance.isPresent()) {
-			instance = Optional.of(instance.get().collectionAgain(lateTime));
+			instance = Optional.of(instance.get().collectionAgainOfLate(instance.get()));
 		}
 		return instance;
 	}
@@ -160,7 +172,7 @@ public class LateTimeSheet{
 			,Optional<CoreTimeSetting> coreTimeSetting
 			,TimezoneUse predetermineTimeSet
 			,WithinWorkTimeFrame duplicateTimeSheet
-			,DeductionTimeSheet deductionTimeSheet){
+			,DeductionTimeSheet deductionTimeSheet,List<TimeSheetOfDeductionItem> breakTimeList){
 		//控除区分を基に丸め設定を取得しておく
 		//TimeRoundingSetting timeRoundingSetting = lateLeaveEarlySettingOfWorkTime.getTimeRoundingSetting(deductionAtr);
 		//出勤時刻
@@ -178,13 +190,16 @@ public class LateTimeSheet{
 			if(calcRange.isPresent()) {
 				//遅刻時間帯の作成
 				TimeWithDayAttr start = calcRange.get().getStart();
-//				TimeWithDayAttr end = duplicateTimeSheet.getTimezone().getEnd().greaterThanOrEqualTo(attendance)?attendance:duplicateTimeSheet.getTimezone().getEnd();
 				TimeWithDayAttr end = calcRange.get().getStart().lessThanOrEqualTo(attendance)?attendance:calcRange.get().getStart();
 				
 				LateLeaveEarlyTimeSheet lateLeaveEarlytimeSheet = new LateLeaveEarlyTimeSheet(
 										new TimeZoneRounding(start,end,new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN)),
 										new TimeSpanForCalc(start,end));
 				
+				//大塚モードか判断_現状は常に大塚モード
+				if(true) {
+					deductionTimeSheet = new DeductionTimeSheet(breakTimeList,breakTimeList);
+				}
 				List<TimeSheetOfDeductionItem> dudctionList = deductionTimeSheet.getDupliRangeTimeSheet(new TimeSpanForCalc(start,end), deductionAtr);
 				lateLeaveEarlytimeSheet.setDeductionTimeSheet(dudctionList);
 				return Optional.of(lateLeaveEarlytimeSheet);
@@ -206,7 +221,7 @@ public class LateTimeSheet{
 		//インターバル免除時間を控除する
 		
 		//遅刻計上時間の作成
-		TimeWithCalculation lateTime = late?TimeWithCalculation.sameTime(calcforRecordTime):TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(0),calcforRecordTime);	
+		TimeWithCalculation lateTime = late?TimeWithCalculation.sameTime(new AttendanceTime(calcforRecordTime.minute())):TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(0),new AttendanceTime(calcforRecordTime.minute()));	
 		return lateTime;
 	}
 	
@@ -225,7 +240,6 @@ public class LateTimeSheet{
 		}
 		return lateDeductionTime;
 	}
-	
 	
 	
 //	/**

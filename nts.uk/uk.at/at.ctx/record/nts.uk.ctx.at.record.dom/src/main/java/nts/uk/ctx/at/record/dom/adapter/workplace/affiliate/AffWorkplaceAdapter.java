@@ -41,4 +41,5 @@ public interface AffWorkplaceAdapter {
 	 */
 	List<String> findAffiliatedWorkPlaceIdsToRoot(String companyId, String employeeId, GeneralDate baseDate);
 	
+	
 }

@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktype;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -74,6 +75,20 @@ public class WorkType extends AggregateRoot {
 				throw new BusinessException("Msg_395");
 			}
 		}
+	}
+	
+	/** 取得したドメインモデル「勤務種類．一日の勤務．一日」をチェックする */
+	public boolean isWokingDay() {
+		if(dailyWork == null) { return false; }
+		if (dailyWork.getWorkTypeUnit() == WorkTypeUnit.OneDay) {
+			return isWorkingType(dailyWork.getOneDay());
+		}
+		return isWorkingType(dailyWork.getMorning()) || isWorkingType(dailyWork.getAfternoon());
+	}
+
+	/** 出勤系かチェックする　*/
+	private boolean isWorkingType(WorkTypeClassification wt) {
+		return wt == WorkTypeClassification.Attendance || wt == WorkTypeClassification.Shooting;
 	}
 
 	/**
@@ -275,7 +290,15 @@ public class WorkType extends AggregateRoot {
 	 * @param workTypeSet
 	 */
 	public void addWorkTypeSet(WorkTypeSet workTypeSet) {
-		this.workTypeSetList.add(workTypeSet);
+		if(this.workTypeSetList == null || this.workTypeSetList.isEmpty()) {
+			List<WorkTypeSet> addItems = new ArrayList<>();
+			addItems.add(workTypeSet);
+			this.workTypeSetList = addItems;
+		}
+		else {
+			this.workTypeSetList.add(workTypeSet);
+		}
+		
 							
 	}
 }

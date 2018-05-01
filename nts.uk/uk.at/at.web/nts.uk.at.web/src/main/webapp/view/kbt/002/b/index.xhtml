@@ -117,7 +117,7 @@
 		                         			<div class="subExecSetting">
 		                         				<div id="line-one">
 		                         					#{i18n.getText('KBT002_20')}
-		                         					<div tabindex="14" style="width: 160px" class="middle"
+		                         					<div tabindex="14" style="width: 173px" class="middle"
 							                                    data-bind="ntsComboBox: {
 							                                    name: '#[KBT002_21]',
 							                                    options: $parent.targetMonthList,
@@ -127,7 +127,7 @@
 							                                    editable: false,
 							                                    enable: perScheduleCls,
 							                                    columns: [
-							                                    { prop: 'localizedName', length: 2 },
+							                                    { prop: 'localizedName', length: 9 },
 							                                    ]}">
 					                                 </div>
 													 <input tabindex="15" style="width: 20px;" class="middle" id="targetDate" data-bind="ntsNumberEditor :{
@@ -180,8 +180,8 @@
 													<div id="targetCheckBoxes">
 														<div tabindex="-1" data-bind="ntsCheckBox: { checked: recreateTransfer, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 }">#{i18n.getText('KBT002_32')}</div>
 														<div tabindex="-1" data-bind="ntsCheckBox: { checked: createEmployee, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 }">#{i18n.getText('KBT002_33')}</div>
-														<div tabindex="-1" data-bind="ntsCheckBox: { checked: manualCorrection, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 }">#{i18n.getText('KBT002_149')}</div>
-														<div tabindex="-1" data-bind="ntsCheckBox: { checked: recreateWorkType, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 &amp;&amp; recreateTransfer() &amp;&amp; manualCorrection() }">#{i18n.getText('KBT002_34')}</div>
+														<div tabindex="-1" data-bind="ntsCheckBox: { checked: recreateWorkType, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 }">#{i18n.getText('KBT002_149')}</div>
+														<div tabindex="-1" data-bind="ntsCheckBox: { checked: manualCorrection, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 &amp;&amp; recreateTransfer() &amp;&amp; manualCorrection() }">#{i18n.getText('KBT002_34')}</div>
 													</div>
 		                         				</div>
 		                         			</div>
@@ -201,7 +201,7 @@
 								                                    editable: false,
 								                                    enable: dailyPerfCls(),
 								                                    columns: [
-								                                    { prop: 'localizedName', length: 2 },
+								                                    { prop: 'localizedName', length: 25 },
 								                                    ]}">
 				                                 </div>
 				                                 <div tabindex="20" data-bind="ntsCheckBox: { checked: midJoinEmployee, enable: dailyPerfCls() }">#{i18n.getText('KBT002_37')}</div>

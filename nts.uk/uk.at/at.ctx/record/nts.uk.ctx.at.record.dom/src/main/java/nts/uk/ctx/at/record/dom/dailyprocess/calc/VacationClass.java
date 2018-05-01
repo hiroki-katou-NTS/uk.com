@@ -298,7 +298,7 @@ public class VacationClass {
 											HolidayCalcMethodSet holidayCalcMethodSet) {
 		LeaveSetAdded leaveSetAdded = new LeaveSetAdded(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);// 下のif文に入らない場合は全てしないを返す
 		// 休暇加算設定の取得
-		if (holidayCalcMethodSet.getNotUseAtr(premiumAtr)==NotUseAtr.NOT_USE) {// 加算する場合
+		if (holidayCalcMethodSet.getNotUseAtr(premiumAtr)==NotUseAtr.USE) {// 加算する場合
 			leaveSetAdded = holidayAddtionSet.getAdditionVacationSet();
 		}
 		return leaveSetAdded;
