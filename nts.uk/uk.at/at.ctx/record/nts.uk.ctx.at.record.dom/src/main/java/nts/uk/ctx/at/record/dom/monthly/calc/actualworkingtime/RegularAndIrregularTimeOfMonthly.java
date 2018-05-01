@@ -552,12 +552,12 @@ public class RegularAndIrregularTimeOfMonthly {
 		if (targetPremiumTimeMonth.lessThanOrEqualTo(statutoryWorkingTimeMonth.v())) return;
 		
 		// 通常勤務の月割増対象時間が法定労働時間を超えた分を「月割増対象時間超過分」とする
-		val excessTargetPremiumTimeMonth = new AttendanceTimeMonth(targetPremiumTimeMonth.v());
-		excessTargetPremiumTimeMonth.minusMinutes(statutoryWorkingTimeMonth.v());
+		int excessTargetPremiumMinutes = targetPremiumTimeMonth.v();
+		excessTargetPremiumMinutes -= statutoryWorkingTimeMonth.v();
 		
 		// 月割増対象時間超過分－週割増合計時間を月割増合計時間とする
-		this.monthlyTotalPremiumTime = new AttendanceTimeMonth(excessTargetPremiumTimeMonth.v());
-		this.monthlyTotalPremiumTime.minusMinutes(this.weeklyTotalPremiumTime.v());
+		this.monthlyTotalPremiumTime = new AttendanceTimeMonth(
+				excessTargetPremiumMinutes - this.weeklyTotalPremiumTime.v());
 		if (this.monthlyTotalPremiumTime.lessThan(0)) {
 			this.monthlyTotalPremiumTime = new AttendanceTimeMonth(0);
 		}
