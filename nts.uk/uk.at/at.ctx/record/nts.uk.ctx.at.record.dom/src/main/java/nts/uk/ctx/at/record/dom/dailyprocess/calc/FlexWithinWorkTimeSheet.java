@@ -51,7 +51,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	private AttendanceTime preOrderTime;
 
 	public FlexWithinWorkTimeSheet(List<WithinWorkTimeFrame> withinWorkTimeFrame, Optional<TimeSpanForCalc> coreTimeSheet) {
-		super(withinWorkTimeFrame,new LateDecisionClock(new TimeWithDayAttr(0), 1),new LeaveEarlyDecisionClock(new TimeWithDayAttr(0), 1));
+		super(withinWorkTimeFrame,Optional.of(new LateDecisionClock(new TimeWithDayAttr(0), 1)),Optional.of(new LeaveEarlyDecisionClock(new TimeWithDayAttr(0), 1)));
 		this.coreTimeSheet = coreTimeSheet;
 	}	
 	
