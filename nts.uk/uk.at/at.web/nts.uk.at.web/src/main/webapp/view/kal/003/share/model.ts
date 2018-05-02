@@ -13,7 +13,7 @@ module nts.uk.at.view.kal003.share.model {
 //            new ItemModel(4, getText('Enum_AlarmCategory_SCHEDULE_YEAR')),
             new ItemModel(5, getText('Enum_AlarmCategory_DAILY')),
 //            new ItemModel(6, getText('Enum_AlarmCategory_WEEKLY')),
-//            new ItemModel(7, getText('Enum_AlarmCategory_MONTHLY')),
+            new ItemModel(7, getText('Enum_AlarmCategory_MONTHLY')),
 //            new ItemModel(8, getText('Enum_AlarmCategory_APPLICATION_APPROVAL')),
 //            new ItemModel(9, getText('Enum_AlarmCategory_MULTIPLE_MONTH')),
 //            new ItemModel(10, getText('Enum_AlarmCategory_ANY_PERIOD')),
