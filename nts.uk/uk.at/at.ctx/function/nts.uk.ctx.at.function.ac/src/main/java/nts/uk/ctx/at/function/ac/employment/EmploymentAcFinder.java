@@ -9,12 +9,18 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.employment.EmploymentAdapter;
 import nts.uk.ctx.at.function.dom.adapter.employment.EmploymentHistoryImported;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
+import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 
 @Stateless
 public class EmploymentAcFinder implements EmploymentAdapter {
 
 	@Inject
 	private SyEmployeePub syEmployeePub;
+	
+	/** The emp pub. */
+	@Inject
+	private SyEmploymentPub empPub;
+
 	
 	@Override
 	public String getClosure(String employeeId, GeneralDate baseDate) {
@@ -29,8 +35,8 @@ public class EmploymentAcFinder implements EmploymentAdapter {
 	@Override
 	public Optional<EmploymentHistoryImported> getEmpHistBySid(String companyId, String employeeId,
 			GeneralDate baseDate) {
-		// TODO Auto-generated method stub
-		return null;
+			return this.empPub.findSEmpHistBySid(companyId, employeeId, baseDate)
+					.map(f -> new EmploymentHistoryImported(f.getEmployeeId(), f.getEmploymentCode(), f.getPeriod()));
 	}
 
 }
