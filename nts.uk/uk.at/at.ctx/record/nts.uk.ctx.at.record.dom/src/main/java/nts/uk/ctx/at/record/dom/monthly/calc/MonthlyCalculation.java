@@ -424,13 +424,14 @@ public class MonthlyCalculation {
 		this.aggregateTime.aggregateActualWorkingTime(aggrPeriod, this.workingSystem,
 				this.actualWorkingTime, this.flexTime);
 		
-		// 総労働時間を計算
-		this.calcTotalWorkingTime();
 		
-		// フレックス時間勤務の時、フレックス時間から控除した年休控除時間を年休使用時間に加算する
+		// フレックス時間勤務の時、年休控除時間を年休使用時間に加算する
 		if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK){
 			this.addAnnualLeaveUseTimeDeductFlex();
 		}
+		
+		// 総労働時間を計算
+		this.calcTotalWorkingTime();
 		
 		// 管理期間の36協定時間の作成
 		this.agreementTimeOfManagePeriod = new AgreementTimeOfManagePeriod(this.employeeId, this.yearMonth);
