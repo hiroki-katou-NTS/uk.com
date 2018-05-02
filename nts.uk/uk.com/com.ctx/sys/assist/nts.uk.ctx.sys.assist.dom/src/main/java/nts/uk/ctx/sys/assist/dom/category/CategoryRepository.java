@@ -20,7 +20,9 @@ public interface CategoryRepository
     void remove();
 
 	Optional<Category> getCategoryById(String categoryId);
-
+	
+	List<Category> getCategoryByListId(List<String> categoryIds);
+	
 	void remove(String categoryId);
 	
 	List<Category> findByAttendanceSystem(int systemType);

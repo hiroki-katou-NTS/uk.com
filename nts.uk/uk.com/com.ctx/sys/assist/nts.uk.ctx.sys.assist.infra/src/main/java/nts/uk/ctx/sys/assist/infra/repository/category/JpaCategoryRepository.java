@@ -20,7 +20,7 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
     private static final String SELECT_BY_PAYMENT_AVAIABILITY = SELECT_ALL_QUERY_STRING + " WHERE f.paymentAvailability =:systemType";
     private static final String SELECT_BY_POSSIBILITY_SYSTEM = SELECT_ALL_QUERY_STRING + " WHERE f.possibilitySystem =:systemType";
     private static final String SELECT_BY_SCHELPER_SYSTEM   = SELECT_ALL_QUERY_STRING + " WHERE f.schelperSystem =:systemType";
-
+    private static final String SELECT_BY_LIST_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.categoryPk.categoryId IN :lstCID ";
     @Override
     public List<Category> getAllCategory(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, SspmtCategory.class)
@@ -33,7 +33,7 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
         .setParameter("categoryId", categoryId)
         .getSingle(c->c.toDomain());
     }
-
+    
     @Override
     public void add(Category domain){
         this.commandProxy().insert(SspmtCategory.toEntity(domain));
@@ -86,6 +86,16 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
 	public List<Category> findBySchelperSystem(int systemType) {
 		return this.queryProxy().query(SELECT_BY_SCHELPER_SYSTEM, SspmtCategory.class)
 		        .setParameter("systemType", systemType)
+		        .getList(c->c.toDomain());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.assist.dom.category.CategoryRepository#getCategoryByListId(java.util.List)
+	 */
+	@Override
+	public List<Category> getCategoryByListId(List<String> categoryIds) {
+		return this.queryProxy().query(SELECT_BY_LIST_KEY_STRING, SspmtCategory.class)
+				.setParameter("lstCID", categoryIds).setParameter("categoryIds", categoryIds)
 		        .getList(c->c.toDomain());
 	}
 

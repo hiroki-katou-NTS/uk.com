@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.assist.dom.categoryFieldMaster;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 /**
 * カテゴリ項目マスタ
@@ -19,4 +19,6 @@ public interface CategoryFieldMtRepository
 
     void remove();
 
+    List<CategoryFieldMt> getCategoryFieldMtByListId(List<String> categoryIds);
+    
 }

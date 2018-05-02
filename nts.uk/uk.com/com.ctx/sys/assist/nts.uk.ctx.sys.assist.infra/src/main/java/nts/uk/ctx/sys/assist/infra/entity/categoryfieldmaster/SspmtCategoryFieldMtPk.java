@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.assist.infra.enity.categoryfieldmaster;
+package nts.uk.ctx.sys.assist.infra.entity.categoryfieldmaster;
 
 import java.io.Serializable;
 
