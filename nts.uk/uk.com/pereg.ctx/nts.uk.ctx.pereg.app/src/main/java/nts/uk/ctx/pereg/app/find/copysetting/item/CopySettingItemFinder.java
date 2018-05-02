@@ -21,6 +21,7 @@ import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDtoMapping;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.dom.copysetting.item.EmpCopySettingItem;
 import nts.uk.ctx.pereg.dom.copysetting.item.EmpCopySettingItemRepository;
+import nts.uk.ctx.pereg.dom.copysetting.setting.EmpCopySettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
@@ -30,6 +31,9 @@ public class CopySettingItemFinder {
 
 	@Inject
 	private EmpCopySettingItemRepository empCopyItemRepo;
+	
+	@Inject
+	private EmpCopySettingRepository empCopyRepo;
 
 	@Inject
 	private LayoutingProcessor layoutProc;
@@ -97,13 +101,8 @@ public class CopySettingItemFinder {
 	}
 
 	public List<CopySettingItemDto> getPerInfoDefById(String perInfoCategoryId) {
-		String companyId = AppContexts.user().companyId();
-		String contractId = AppContexts.user().contractCode();
-		List<CopySettingItemDto> listData = empCopyItemRepo
-				.getPerInfoItemByCtgId(perInfoCategoryId, companyId, contractId).stream().map(item -> {
-					return CopySettingItemDto.createFromDomain(item);
-				}).collect(Collectors.toList());
-
+		List<CopySettingItemDto> listData = empCopyRepo.getPerInfoItemByCtgId(perInfoCategoryId).stream()
+				.map(item -> CopySettingItemDto.createFromDomain(item)).collect(Collectors.toList());
 		return listData;
 	}
 

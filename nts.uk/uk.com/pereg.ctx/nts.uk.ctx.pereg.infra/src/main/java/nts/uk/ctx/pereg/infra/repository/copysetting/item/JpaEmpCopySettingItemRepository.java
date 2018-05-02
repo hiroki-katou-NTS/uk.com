@@ -9,7 +9,6 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pereg.dom.copysetting.item.EmpCopySettingItem;
 import nts.uk.ctx.pereg.dom.copysetting.item.EmpCopySettingItemRepository;
-import nts.uk.ctx.pereg.dom.copysetting.setting.valueobject.CopySettingItemObject;
 import nts.uk.ctx.pereg.infra.entity.copysetting.item.PpestEmployeeCopySettingItem;
 import nts.uk.ctx.pereg.infra.entity.copysetting.item.PpestEmployeeCopySettingItemPk;
 
@@ -32,14 +31,6 @@ public class JpaEmpCopySettingItemRepository extends JpaRepository implements Em
 
 	private static final String CHECK_SELF_AUTH = " AND pa.selfAuthType!=1 ORDER BY po.displayOrder ASC";
 
-	private final static String SELECT_PERINFOITEM_BYCTGID = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.itemName,i.itemCd FROM PpemtPerInfoItem i"
-			+ " INNER JOIN PpemtPerInfoItemOrder io ON i.ppemtPerInfoItemPK.perInfoItemDefId= io.ppemtPerInfoItemPK.perInfoItemDefId"
-			+ " INNER JOIN PpemtPerInfoItemCm ic ON i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd"
-			+ " WHERE i.perInfoCtgId = :perInfoCtgId AND i.abolitionAtr = 0"
-			+ " AND ((ic.dataType != 9 AND ic.dataType != 10) or ic.dataType is null) AND ic.itemParentCd IS NULL ORDER BY io.displayOrder ASC";
-	
-	private final static String FIND_EMP_COPY_SETTING_ITEM = "SELECT ci FROM PpestEmployeeCopySettingItem ci WHERE ci.categoryId = :perInfoCtgId";
-	
 	@Override
 	public List<EmpCopySettingItem> getAllItemFromCategoryCd(String categoryCd, String companyId, boolean isSelf) {
 
@@ -81,24 +72,6 @@ public class JpaEmpCopySettingItemRepository extends JpaRepository implements Em
 					perInforCtgId);
 			this.commandProxy().insert(entity);
 		}
-	}
-
-	@Override
-	public List<CopySettingItemObject> getPerInfoItemByCtgId(String perInfoCategoryId, String companyId,
-			String contractCd) {
-
-		List<Object[]> perDefItemList = this.queryProxy().query(SELECT_PERINFOITEM_BYCTGID, Object[].class)
-				.setParameter("perInfoCtgId", perInfoCategoryId).getList();
-
-		List<String> copyItemIdList = this.queryProxy()
-				.query(FIND_EMP_COPY_SETTING_ITEM, PpestEmployeeCopySettingItem.class)
-				.setParameter("perInfoCtgId", perInfoCategoryId).getList().stream()
-				.map(item -> item.ppestEmployeeCopySettingItemPk.perInfoItemDefId).collect(Collectors.toList());
-
-		return perDefItemList.stream()
-				.map(i -> CopySettingItemObject.createFromJavaType(perInfoCategoryId, String.valueOf(i[0]),
-						String.valueOf(i[1]), String.valueOf(i[2]), copyItemIdList.contains(String.valueOf(i[0]))))
-				.collect(Collectors.toList());
 	}
 
 }
