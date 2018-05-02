@@ -340,7 +340,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 															   Optional<PredetermineTimeSetForCalc> schePreTime,WorkType workType, Optional<WorkType> scheWorkType) {
 		//勤務予定時間を計算
 		//val schedulePredWorkTime = (scheduleOneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode() == null)?new AttendanceTime(0):recordOneDay.getPredetermineTimeSetForCalc().getpredetermineTime(workType.getDailyWork());
-		val shedulePreWorkTime = (schePreTime.isPresent())? schePreTime.get().getpredetermineTime(workType.getDailyWork()):new AttendanceTime(0);
+		//val shedulePreWorkTime = (schePreTime.isPresent())? schePreTime.get().getpredetermineTime(workType.getDailyWork()):new AttendanceTime(0);
 		//実績所定労働時間の計算
 		val actualPredWorkTime = (recordOneDay.getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode() == null)?new AttendanceTime(0):recordOneDay.getPredetermineTimeSetForCalc().getPredetermineTimeByAttendanceAtr(workType.getDailyWork().decisionNeedPredTime());
 		//計画所定時間の計算

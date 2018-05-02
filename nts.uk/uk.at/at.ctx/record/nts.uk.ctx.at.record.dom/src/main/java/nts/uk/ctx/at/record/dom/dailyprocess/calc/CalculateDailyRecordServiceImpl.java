@@ -719,10 +719,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			workTimeDailyAtr = workTimeSetting.isPresent()?Optional.of(workTimeSetting.get().getWorkTimeDivision().getWorkTimeDailyAtr()):Optional.empty();
 		}
 		
-		val workType = manageReGetClass.getWorkType();
-		if(!workType.isPresent() || !workTimeDailyAtr.isPresent()) return manageReGetClass.getIntegrationOfDaily();
+		val workType = recordReGetClass.getWorkType();
+		if(!workType.isPresent() || !workTimeDailyAtr.isPresent()) return recordReGetClass.getIntegrationOfDaily();
 		//予定時間帯が作成されるまでの一時対応
-		val scheWorkTypeCode = manageReGetClass.getCalculationRangeOfOneDay().getWorkInformationOfDaily().getScheduleInfo().getWorkTypeCode();
+		val scheWorkTypeCode = recordReGetClass.getCalculationRangeOfOneDay().getWorkInformationOfDaily().getScheduleInfo().getWorkTypeCode();
 		Optional<WorkType> scheWorkType = Optional.empty();
 		if(scheWorkTypeCode != null)
 			 scheWorkType = workTypeRepository.findByPK(companyId, scheWorkTypeCode.toString()); 
@@ -748,11 +748,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		//休憩回数
 		int breakCount = 0;
-		if(!manageReGetClass.getIntegrationOfDaily().getBreakTime().isEmpty())
-			breakCount = manageReGetClass.getIntegrationOfDaily().getBreakTime().get(0).getBreakTimeSheets().size(); 
+		if(!recordReGetClass.getIntegrationOfDaily().getBreakTime().isEmpty())
+			breakCount = recordReGetClass.getIntegrationOfDaily().getBreakTime().get(0).getBreakTimeSheets().size(); 
 		/*時間の計算*/
-		manageReGetClass.setIntegrationOfDaily(AttendanceTimeOfDailyPerformance.calcTimeResult(manageReGetClass.getCalculationRangeOfOneDay(),
-																				 manageReGetClass.getIntegrationOfDaily(),
+		recordReGetClass.setIntegrationOfDaily(AttendanceTimeOfDailyPerformance.calcTimeResult(recordReGetClass.getCalculationRangeOfOneDay(),
+																				 recordReGetClass.getIntegrationOfDaily(),
 																				 sharedOtSet,
 																				 holidayAutoCalcSetting.getRestTime(),
 					Optional.empty(),//Optional.of(personalLabor),
@@ -760,7 +760,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				    workType.get(),
 				    lateLeave.getLeaveLate().isUse(),  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 				    lateLeave.getLeaveEarly().isUse(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-				    manageReGetClass.getPersonalInfo().getWorkingSystem(),
+				    recordReGetClass.getPersonalInfo().getWorkingSystem(),
 				    illegularAddSetting,
 				    flexAddSetting,
 				    regularAddSetting,
@@ -768,11 +768,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				    AutoCalOverTimeAttr.CALCULATION_FROM_STAMP,
 				    workTimeDailyAtr,
 				    flexCalcMethod,
-				    manageReGetClass.getHolidayCalcMethodSet(),
+				    recordReGetClass.getHolidayCalcMethodSet(),
 				    autoRaisingSet,
 					bonusPayAutoCalcSet,
 					calcAtrOfDaily,
-					manageReGetClass.getSubHolTransferSetList(),
+					recordReGetClass.getSubHolTransferSetList(),
 					eachCompanyTimeSet,
 					attendanceLeavingGateOfDaily,
 					pCLogOnInfoOfDaily,
@@ -781,11 +781,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					divergenceTimeList,
 					calculateOfTotalConstraintTime, 
 					schePreTimeSet,
-					manageReGetClass.getOotsukaFixedWorkSet(),
-					manageReGetClass.getFixRestTimeSetting(),
+					recordReGetClass.getOotsukaFixedWorkSet(),
+					recordReGetClass.getFixRestTimeSetting(),
 					scheWorkType,
-					manageReGetClass.getIntegrationOfDaily().getCalAttr().getFlexExcessTime(),
-					manageReGetClass.getDailyUnit(),
+					recordReGetClass.getIntegrationOfDaily().getCalAttr().getFlexExcessTime(),
+					recordReGetClass.getDailyUnit(),
 					breakCount
 					));
 //					schePreTimeSet));
