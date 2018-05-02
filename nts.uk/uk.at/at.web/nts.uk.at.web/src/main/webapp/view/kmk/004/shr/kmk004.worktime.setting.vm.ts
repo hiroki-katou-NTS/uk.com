@@ -250,6 +250,10 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                     this.referenceFlexPred = ko.observable(value);
                 }    
             }
+            
+            public updateOriginFlexSpecifiedTime(): void {
+                this.originFlexMonthlyTime = ko.toJS(this.flexSetting().flexSettingDetail());
+            }
                         
             public resetFlexSpecifiedTime(): void {
                 let specifiedTime : FlexMonthlyTime[] = this.flexSetting().flexSettingDetail();

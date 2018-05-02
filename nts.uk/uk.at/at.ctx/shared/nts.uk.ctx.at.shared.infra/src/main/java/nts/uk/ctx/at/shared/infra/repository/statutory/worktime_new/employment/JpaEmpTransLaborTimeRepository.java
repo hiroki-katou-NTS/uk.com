@@ -4,26 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.employment;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpRegLaborTime;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpRegLaborTimePK;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpTransLabTime;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpTransLabTimePK;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpTransLabTimePK_;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpTransLabTime_;
 
 /**
  * The Class JpaEmpTransLaborTimeRepository.
@@ -35,16 +24,22 @@ public class JpaEmpTransLaborTimeRepository extends JpaRepository implements Emp
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository#add(nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTime)
 	 */
 	@Override
-	public void add(EmpTransLaborTime emplDeforLaborWorkingHour) {
-		commandProxy().insert(this.toEntity(emplDeforLaborWorkingHour));
+	public void add(EmpTransLaborTime domain) {
+		KshstEmpTransLabTime entity = new KshstEmpTransLabTime();
+		domain.saveToMemento(new JpaEmpTransLaborTimeSetMemento(entity));
+		commandProxy().insert(entity);
 	}
 
 	/* 
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository#update(nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTime)
 	 */
 	@Override
-	public void update(EmpTransLaborTime emplDeforLaborWorkingHour) {
-		commandProxy().update(this.toEntity(emplDeforLaborWorkingHour));
+	public void update(EmpTransLaborTime domain) {
+		KshstEmpTransLabTime entity = this.queryProxy()
+				.find(new KshstEmpTransLabTimePK(domain.getCompanyId().v(),
+						domain.getEmploymentCode().v()), KshstEmpTransLabTime.class).get();
+		domain.saveToMemento(new JpaEmpTransLaborTimeSetMemento(entity));
+		commandProxy().update(entity);
 	}
 
 	/* 
@@ -69,18 +64,6 @@ public class JpaEmpTransLaborTimeRepository extends JpaRepository implements Emp
 		return Optional.ofNullable(this.toDomain(optEntity.get()));
 	}
 
-	/**
-	 * To entity.
-	 *
-	 * @param domain the domain
-	 * @return the kshst emp trans lab time
-	 */
-	private KshstEmpTransLabTime toEntity(EmpTransLaborTime domain) {
-		KshstEmpTransLabTime entity = new KshstEmpTransLabTime();
-		domain.saveToMemento(new JpaEmpTransLaborTimeSetMemento(entity));
-		return entity;
-	}
-	
 	/**
 	 * To domain.
 	 *

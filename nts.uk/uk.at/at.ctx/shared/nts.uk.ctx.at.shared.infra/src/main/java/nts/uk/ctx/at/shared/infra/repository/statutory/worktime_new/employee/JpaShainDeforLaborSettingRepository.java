@@ -41,7 +41,9 @@ public class JpaShainDeforLaborSettingRepository extends JpaRepository implement
 	 */
 	@Override
 	public void add(ShainDeforLaborSetting setting) {
-		commandProxy().insert(this.toEntity(setting));
+		KshstShaDeforLarSet entity = new KshstShaDeforLarSet();
+		setting.saveToMemento(new JpaShainDeforLaborSettingSetMemento(entity));
+		this.commandProxy().insert(entity);
 	}
 
 	/* 
@@ -49,7 +51,12 @@ public class JpaShainDeforLaborSettingRepository extends JpaRepository implement
 	 */
 	@Override
 	public void update(ShainDeforLaborSetting setting) {
-		commandProxy().update(this.toEntity(setting));
+		KshstShaDeforLarSet entity = this.queryProxy()
+				.find(new KshstShaDeforLarSetPK(setting.getCompanyId().v(),
+						setting.getEmployeeId().v(), setting.getYear().v()),
+						KshstShaDeforLarSet.class).get();
+		setting.saveToMemento(new JpaShainDeforLaborSettingSetMemento(entity));
+		commandProxy().update(entity);
 	}
 
 	/* 
@@ -70,16 +77,4 @@ public class JpaShainDeforLaborSettingRepository extends JpaRepository implement
 		return new ShainDeforLaborSetting(new JpaShainDeforLaborSettingGetMemento(entity));
 	}
 	
-	/**
-	 * To entity.
-	 *
-	 * @param domain the domain
-	 * @return the kshst sha defor lar set
-	 */
-	private KshstShaDeforLarSet toEntity(ShainDeforLaborSetting domain) {
-		KshstShaDeforLarSet entity = new KshstShaDeforLarSet();
-		domain.saveToMemento(new JpaShainDeforLaborSettingSetMemento(entity));
-		return entity;
-	}
-
 }
