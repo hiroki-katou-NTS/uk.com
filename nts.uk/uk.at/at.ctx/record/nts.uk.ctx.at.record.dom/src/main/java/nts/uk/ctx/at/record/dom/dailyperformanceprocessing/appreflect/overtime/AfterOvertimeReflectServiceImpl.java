@@ -11,7 +11,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 
 
 @Stateless
@@ -23,7 +23,7 @@ public class AfterOvertimeReflectServiceImpl implements AfterOvertimeReflectServ
 	@Inject
 	private WorkInformationRepository workRepository;
 	@Inject
-	private ScheWorkUpdateService scheWorkUpdate;
+	private WorkUpdateService scheWorkUpdate;
 	@Inject
 	private PreOvertimeReflectService preOvertimeService;
 	@Inject

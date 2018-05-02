@@ -3,8 +3,6 @@ package nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess;
 import java.util.Map;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 
 /**
@@ -12,7 +10,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
  * @author do_dt
  *
  */
-public interface ScheWorkUpdateService {
+public interface WorkUpdateService {
 	/**
 	 * 勤種・就時の反映
 	 * @param para

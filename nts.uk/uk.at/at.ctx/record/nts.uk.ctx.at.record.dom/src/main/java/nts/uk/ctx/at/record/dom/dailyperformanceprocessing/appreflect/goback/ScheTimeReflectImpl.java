@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectParameter;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
@@ -41,7 +41,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeRepo;
 	@Inject
-	private ScheWorkUpdateService scheUpdateService;
+	private WorkUpdateService scheUpdateService;
 	@Inject
 	private WorkInformationRepository workInfor;
 	@Inject

@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.ScheTimeReflect;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectParameter;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -29,7 +29,7 @@ public class StartEndTimeOffReflectImpl implements StartEndTimeOffReflect{
 	@Inject 
 	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDaily;
 	@Inject
-	private ScheWorkUpdateService scheWorkUpdate;
+	private WorkUpdateService scheWorkUpdate;
 	@Inject
 	private ScheStartEndTimeReflect scheTimereflect;
 	@Inject

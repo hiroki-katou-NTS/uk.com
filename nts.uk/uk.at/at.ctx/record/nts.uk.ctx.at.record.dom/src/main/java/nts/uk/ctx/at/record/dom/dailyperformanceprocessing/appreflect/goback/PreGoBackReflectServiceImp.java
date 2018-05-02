@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 
 @Stateless
 public class PreGoBackReflectServiceImp implements PreGoBackReflectService {
@@ -12,7 +12,7 @@ public class PreGoBackReflectServiceImp implements PreGoBackReflectService {
 	@Inject
 	private ScheTimeReflect scheTimeReflect;
 	@Inject
-	private ScheWorkUpdateService workTimeUpdate;
+	private WorkUpdateService workTimeUpdate;
 	@Inject
 	private AfterWorkTimeTypeReflect afterWorkTimeType;
 	@Inject

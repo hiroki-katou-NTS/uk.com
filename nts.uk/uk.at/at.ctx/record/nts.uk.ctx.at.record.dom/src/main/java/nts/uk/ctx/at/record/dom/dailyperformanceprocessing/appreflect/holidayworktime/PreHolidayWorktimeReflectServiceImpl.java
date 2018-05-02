@@ -15,7 +15,7 @@ import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformance
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
@@ -33,7 +33,7 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 	@Inject
 	private HolidayWorkReflectProcess holidayWorkProcess;
 	@Inject
-	private ScheWorkUpdateService workUpdate;
+	private WorkUpdateService workUpdate;
 	@Inject
 	private PreOvertimeReflectService overTimeService;
 	@Inject
@@ -43,7 +43,7 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 	@Inject
 	private WorkInformationRepository workRepository;
 	@Inject
-	private ScheWorkUpdateService scheWork;
+	private WorkUpdateService scheWork;
 	@Inject
 	private EditStateOfDailyPerformanceRepository dailyReposiroty;
 	@Override

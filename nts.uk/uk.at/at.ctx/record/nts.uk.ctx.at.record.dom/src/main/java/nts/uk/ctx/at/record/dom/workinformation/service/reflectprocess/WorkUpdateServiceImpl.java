@@ -43,7 +43,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
-public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
+public class WorkUpdateServiceImpl implements WorkUpdateService{
 	@Inject
 	private WorkInformationRepository workRepository;
 	@Inject
@@ -104,34 +104,7 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 			dailyReposiroty.updateByKeyFlush(lstDaily);
 		}
 	}
-	
-	/*private List<EditStateOfDailyPerformance> updateEditStateOfDailyPerHoliday(String employeeId, 
-			GeneralDate dateData, 
-			List<Integer> lstItem, List<EditStateOfDailyPerformance> lstDaily){
-		lstItem.stream().forEach(z -> {	
-			boolean ischeck = false;
-			for(EditStateOfDailyPerformance item : lstDaily) {
-				if(item.getAttendanceItemId() == z) {
-					EditStateOfDailyPerformance itemTmp = new EditStateOfDailyPerformance(employeeId, 
-							z, 
-							dateData, 
-							EditStateSetting.REFLECT_APPLICATION);
-					lstDaily.remove(item);
-					lstDaily.add(itemTmp);
-					ischeck = true;
-					continue;
-				}
-			}
-			if(!ischeck) {
-				EditStateOfDailyPerformance insertData = new EditStateOfDailyPerformance(employeeId, z, dateData, EditStateSetting.REFLECT_APPLICATION);
-				lstDaily.add(insertData);
-			}
-		});
-		if(!lstDaily.isEmpty()) {
-			dailyReposiroty.updateByKeyFlush(lstDaily);
-		}
-		return lstDaily;
-	}*/
+
 	
 	@Override
 	public void updateScheStartEndTime(TimeReflectPara para) {
@@ -617,8 +590,7 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 			dailyData.setWorkInformation(dailyPerfor);
 			workRepository.updateByKeyFlush(dailyPerfor);
 		}
-		//日別実績の編集状態
-		//this.updateEditStateOfDailyPerHoliday(para.getEmployeeId(), para.getDateData(), lstItem, dailyData.getEditState());		
+		//日別実績の編集状態	
 		this.updateEditStateOfDailyPerformance(para.getEmployeeId(), para.getDateData(), lstItem);
 		return dailyData;
 	}
@@ -671,7 +643,6 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 				lstItem.add(6);	
 			}
 		}
-		//this.updateEditStateOfDailyPerHoliday(para.getEmployeeId(), para.getDateData(), lstItem, dailyData.getEditState());
 		this.updateEditStateOfDailyPerformance(para.getEmployeeId(), para.getDateData(), lstItem);
 		return dailyData;
 	}
@@ -703,8 +674,6 @@ public class WorkUpdateServiceImpl implements ScheWorkUpdateService{
 		} else {
 			lstNightItem.add(563);
 		}
-				
-		//this.updateEditStateOfDailyPerHoliday(employeeId, dateData, lstNightItem, dailyData.getEditState());
 		this.updateEditStateOfDailyPerformance(employeeId, dateData, lstNightItem);
 		return dailyData;
 	}

@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectParameter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
@@ -19,13 +19,13 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 	@Inject
 	private WorkTimeIsFluidWork workTimeService;
 	@Inject
-	private ScheWorkUpdateService scheWorkUpdateService;
+	private WorkUpdateService scheWorkUpdateService;
 	@Inject
 	private ScheStartEndTimeReflect scheStartEndTimeReflect;
 	@Inject
 	private StartEndTimeOffReflect startEndTimeOffReflect;
 	@Inject
-	private ScheWorkUpdateService scheWorkUpdate;
+	private WorkUpdateService scheWorkUpdate;
 	@Override
 	public boolean checkScheReflect(OvertimeParameter overtimePara) {
 		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする

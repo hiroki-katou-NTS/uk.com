@@ -6,14 +6,14 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 
 @Stateless
 public class PreWorkchangeReflectServiceImpl implements PreWorkchangeReflectService{
 	@Inject
 	private CommonProcessCheckService commonService;
 	@Inject
-	private ScheWorkUpdateService workTimeUpdate;
+	private WorkUpdateService workTimeUpdate;
 	@Override
 	public boolean workchangeReflect(CommonReflectParameter workchangePara, boolean isPre) {
 		try {

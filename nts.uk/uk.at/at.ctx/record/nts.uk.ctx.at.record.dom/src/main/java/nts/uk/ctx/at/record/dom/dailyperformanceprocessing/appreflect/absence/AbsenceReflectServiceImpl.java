@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -25,7 +25,7 @@ import nts.uk.ctx.at.shared.dom.worktype.algorithm.JudgmentWorkTypeService;
 public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 	
 	@Inject
-	private ScheWorkUpdateService workTimeUpdate;
+	private WorkUpdateService workTimeUpdate;
 	@Inject
 	private CommonProcessCheckService commonService;
 	@Inject
@@ -100,7 +100,6 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 							.filter(x -> x.getWorkNo().v() == 1).collect(Collectors.toList());
 					if(!timeLeavingWorks.isEmpty()) {
 						TimeLeavingWork timeLeaving1 = timeLeavingWorks.get(0);
-						//TODO can phai xac nhan lai check voi chi Mo
 						Optional<TimeActualStamp> optAttendanceStamp = timeLeaving1.getAttendanceStamp();
 						if(optAttendanceStamp.isPresent()) {
 							TimeActualStamp attendanceStamp = optAttendanceStamp.get();
