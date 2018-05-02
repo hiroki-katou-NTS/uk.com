@@ -395,8 +395,8 @@ public class DailyPerformanceCorrectionProcessor {
 			}
 			// フレックス情報を表示する
 			if(!listEmployeeId.isEmpty())
-			screenDto.setFlexShortage(flexInfoDisplay.flexInfo(listEmployeeId.get(0), dateRange.getEndDate(),  AppContexts.user().roles().forAttendance()));
-			//screenDto.setFlexShortage(null);
+			//screenDto.setFlexShortage(flexInfoDisplay.flexInfo(listEmployeeId.get(0), dateRange.getEndDate(),  AppContexts.user().roles().forAttendance()));
+			screenDto.setFlexShortage(null);
 		}
 		DisplayItem disItem = getDisplayItems(correct, formatCodes, companyId, screenDto, listEmployeeId, showButton);
 
