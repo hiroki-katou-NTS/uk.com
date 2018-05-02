@@ -2,6 +2,9 @@ package nts.uk.ctx.pereg.dom.copysetting.setting;
 
 import java.util.List;
 
+import lombok.Getter;
+
+@Getter
 public class EmployeeCopyCategory {
 	
 	/**
