@@ -839,7 +839,12 @@ public class FlexTimeOfMonthly {
 					flexCarryforwardShortTime.minusMinutes(subtractTime.v()));
 			// 引いた分を年休控除時間から引く
 			this.deductDaysAndTime.minusMinutesToAnnualLeaveDeductTime(subtractTime.v());
+			// 引いた分をフレックス繰越勤務時間に足す
+			this.flexCarryforwardTime.setFlexCarryforwardWorkTime(new AttendanceTimeMonth(
+					this.flexCarryforwardTime.getFlexCarryforwardWorkTime().v() + subtractTime.v()));
 		}
+		
+		// 年休控除時間が残っているか確認する
 		if (this.deductDaysAndTime.getAnnualLeaveDeductTime().lessThanOrEqualTo(0)) return;
 		
 		// 法定内・法定外フレックス時間に加算する
