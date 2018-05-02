@@ -43,7 +43,7 @@ public class DivergenceTime extends AggregateRoot {
 
 	/** The target item list. */
 	// 対象項目一覧
-	private List<Double> targetItems;
+	private List<Integer> targetItems;
 
 	/**
 	 * Instantiates a new divergence time.
