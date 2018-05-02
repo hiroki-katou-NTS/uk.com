@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.schedule.dom.appreflectprocess.service.absenceleave;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -16,6 +18,11 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AbsenceLeaveReflectScheImpl implements AbsenceLeaveReflectSche{
@@ -29,6 +36,8 @@ public class AbsenceLeaveReflectScheImpl implements AbsenceLeaveReflectSche{
 	private BasicScheduleRepository basicScheRepo;
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeRepo;
 	@Override
 	public boolean absenceLeaveReflect(CommonReflectParamSche param) {
 		try {
@@ -67,6 +76,19 @@ public class AbsenceLeaveReflectScheImpl implements AbsenceLeaveReflectSche{
 						null, 
 						workTimeReflect.getWorkTimeCode());
 			}
+			//開始終了時刻が反映できるか
+			StartEndTimeIsReflect chkReflect = this.startEndTimeIsReflect(param.getEmployeeId(), 
+					param.getDatePara(), 
+					checkworkDay, 
+					param.getStartTime(), 
+					param.getEndTime(), 
+					workTimeReflect.getWorkTimeCode());
+			if(chkReflect.isChkReflect()) {
+				//開始時刻の反映
+				//終了時刻の反映
+				startEndTimeScheService.updateStartTimeRflect(new TimeReflectScheDto(param.getEmployeeId(),
+						param.getDatePara(), chkReflect.getStartTime(), chkReflect.getEndTime(), 1, true, true));
+			}
 		}
 			
 	}
@@ -98,6 +120,47 @@ public class AbsenceLeaveReflectScheImpl implements AbsenceLeaveReflectSche{
 			dataOutput.setWorkTimeCode(worktimeCode);
 		}
 		return dataOutput;
+	}
+
+	@Override
+	public StartEndTimeIsReflect startEndTimeIsReflect(String employeeId, GeneralDate baseDate, WorkStyle workStype,
+			Integer startTime, Integer endTime, String workTimeCode) {
+		StartEndTimeIsReflect outData = new StartEndTimeIsReflect(false, 0, 0);
+		String companyId = AppContexts.user().companyId();
+		//INPUT．開始時刻1とINPUT．終了時刻1に値がある
+		if(startTime != null && endTime != null) {
+			outData.setChkReflect(true);
+			outData.setStartTime(startTime);
+			outData.setEndTime(endTime);
+			return outData;
+		}
+		//ドメインモデル「就業時間帯の設定」を取得する
+		Optional<PredetemineTimeSetting> optFindByCode = predetemineTimeRepo.findByWorkTimeCode(companyId, workTimeCode);
+		if(!optFindByCode.isPresent()) {
+			return outData;
+		}
+		PredetemineTimeSetting timeSetting = optFindByCode.get();
+		PrescribedTimezoneSetting timeZoneSetting = timeSetting.getPrescribedTimezoneSetting();		
+		List<TimezoneUse> lstTimezone = timeZoneSetting.getLstTimezone().stream()
+				.filter(x -> x.getWorkNo() == 1)
+				.collect(Collectors.toList());
+		if(!lstTimezone.isEmpty()) {
+			return outData;
+		}
+		outData.setChkReflect(true);
+		//INPUT．出勤休日区分をチェックする		
+		if(workStype == WorkStyle.MORNING_WORK) {//INPUT．出勤休日区分が午前出勤系			
+			//反映開始時刻=「所定時間帯設定」．時間帯．開始(勤務NO=1)
+			outData.setStartTime(lstTimezone.get(0).getStart().v());
+			//反映終了時刻=「所定時間帯設定」．午前終了時刻
+			outData.setEndTime(timeZoneSetting.getMorningEndTime().v());
+		} else if(workStype == WorkStyle.AFTERNOON_WORK){
+			//反映開始時刻=「所定時間帯設定」．午後開始時刻(勤務NO=1)
+			outData.setStartTime(timeZoneSetting.getAfternoonStartTime().v());
+			//反映終了時刻=「所定時間帯設定」．時間帯．終了(勤務NO=1)
+			outData.setEndTime(lstTimezone.get(0).getEnd().v());
+		}
+		return outData;
 	}
 	
 

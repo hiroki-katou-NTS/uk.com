@@ -160,11 +160,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				RecruitmentApp recruitmentData = optRecruitmentData.get();
 				reflectScheParam.setRecruitment(recruitmentData);
 			}
-			
-		
 		} 
-		
-		
 		else {
 			return;
 		}
