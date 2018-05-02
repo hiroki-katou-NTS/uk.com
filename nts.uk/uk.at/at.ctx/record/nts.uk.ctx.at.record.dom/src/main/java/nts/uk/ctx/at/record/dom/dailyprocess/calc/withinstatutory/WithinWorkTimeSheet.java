@@ -157,7 +157,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 										  coreTimeSetting,
 										  dailyUnit,breakTimeList);
 		}
-		return new WithinWorkTimeSheet(timeFrames,lateDesClock,leaveEarlyDesClock);
+		return new WithinWorkTimeSheet(timeFrames,Optional.of(lateDesClock),Optional.of(leaveEarlyDesClock));
 	}
 
 	
