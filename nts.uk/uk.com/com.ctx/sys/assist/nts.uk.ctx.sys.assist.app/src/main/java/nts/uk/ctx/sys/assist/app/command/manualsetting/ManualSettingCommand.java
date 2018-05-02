@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.sys.assist.app.command.manualSetting;
+package nts.uk.ctx.sys.assist.app.command.manualsetting;
 
 import java.util.List;
 import java.util.stream.Collectors;
