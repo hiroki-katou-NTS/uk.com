@@ -51,7 +51,7 @@ public class ManualSettingCommand {
 				referenceDate, compressedPassword, executionDateAndTime, daySaveEndDate, daySaveStartDate,
 				monthSaveEndDate, monthSaveStartDate, suppleExplanation, endYear, startYear, presenceOfEmployee,
 				identOfSurveyPre, practitioner, employees.stream().map(x -> {
-					return new TargetEmployees(storeProcessingId, x.getSid(), x.getBusinessname());
+					return new TargetEmployees(storeProcessingId, x.getSid(), x.getBusinessname(), x.getScd());
 				}).collect(Collectors.toList()), category.stream().map(x1 -> {
 					return new TargetCategory(storeProcessingId, x1.getCategoryId());
 				}).collect(Collectors.toList()));

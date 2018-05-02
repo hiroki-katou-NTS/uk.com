@@ -28,5 +28,9 @@ public class TargetEmployees
     */
     private BusinessName businessname;
     
+    /**
+     * 社員コード
+     */
+    private EmployeeCode scd;
     
 }
