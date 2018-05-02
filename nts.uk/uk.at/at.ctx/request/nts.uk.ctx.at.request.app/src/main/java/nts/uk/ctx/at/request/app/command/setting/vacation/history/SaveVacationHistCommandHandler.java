@@ -10,25 +10,27 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.settting.worktype.history.OptionalMaxDay;
 import nts.uk.ctx.at.request.dom.settting.worktype.history.PlanVacationHistory;
+import nts.uk.ctx.at.request.dom.settting.worktype.history.VacationHistoryPolicy;
 import nts.uk.ctx.at.request.dom.settting.worktype.history.VacationHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class SaveHistoryCommandHandler.
  */
 @Stateless
 @Transactional
-public class SaveHistoryCommandHandler extends CommandHandler<VacationHistoryCommand> {
+public class SaveVacationHistCommandHandler extends CommandHandler<VacationHistoryCommand> {
 
 	/** The vacation history repository. */
 	@Inject
 	private VacationHistoryRepository vacationHistoryRepository;
+	
+	@Inject
+	private VacationHistoryPolicy vacationPolicy ;
 
 	/*
 	 * (non-Javadoc)
@@ -42,30 +44,8 @@ public class SaveHistoryCommandHandler extends CommandHandler<VacationHistoryCom
 		VacationHistoryCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 
-		// check conditional
-		if (command.getVacationHistory().getStartDate().after(command.getVacationHistory().getEndDate())) {
-			throw new BusinessException("Msg_917");
-		}
-
-		DatePeriod period = new DatePeriod(command.getVacationHistory().getStartDate(),
-				command.getVacationHistory().getEndDate());
-		Integer count = this.vacationHistoryRepository.countByDatePeriod(companyId, command.getWorkTypeCode(), period,
-				command.getVacationHistory().getHistoryId());
-
-		if (count.intValue() > 0) {
-			throw new BusinessException("Msg_106");
-		}
-
-		if (command.getVacationHistory().getStartDate().year() != command.getVacationHistory().getEndDate().year()) {
-			throw new BusinessException("Msg_967");
-		}
-
 		// check isNewMode
 		if (command.getIsCreated()) {
-			if (this.vacationHistoryRepository.findByWorkTypeCode(companyId, command.getWorkTypeCode()).size() >= 20) {
-				throw new BusinessException("Msg_976");
-			}
-
 			// Add
 			this.addVacationHistory(companyId, command);
 		} else {
@@ -85,6 +65,9 @@ public class SaveHistoryCommandHandler extends CommandHandler<VacationHistoryCom
 		PlanVacationHistory history = new PlanVacationHistory(companyId, command.getWorkTypeCode(),
 				new OptionalMaxDay(command.getMaxDay()), command.getVacationHistory().getStartDate(),
 				command.getVacationHistory().getEndDate());
+		
+		//check validate
+		this.vacationPolicy.validate(command.getIsCreated(), history);
 
 		// insert
 		this.vacationHistoryRepository.add(history);
@@ -104,9 +87,13 @@ public class SaveHistoryCommandHandler extends CommandHandler<VacationHistoryCom
 		if (hist.isEmpty()) {
 			return;
 		}
+		
 		PlanVacationHistory history = new PlanVacationHistory(companyId, command.getWorkTypeCode(),
 				new OptionalMaxDay(command.getMaxDay()), command.getVacationHistory().getHistoryId(),
 				command.getVacationHistory().getStartDate(), command.getVacationHistory().getEndDate());
+		
+		//check validate
+		this.vacationPolicy.validate(command.getIsCreated(), history);
 
 		this.vacationHistoryRepository.update(history);
 	}

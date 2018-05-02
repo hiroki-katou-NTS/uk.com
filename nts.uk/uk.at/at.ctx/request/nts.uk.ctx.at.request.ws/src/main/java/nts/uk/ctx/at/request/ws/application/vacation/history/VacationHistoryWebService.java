@@ -14,9 +14,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.request.app.command.setting.vacation.history.SaveHistoryCommandHandler;
+import nts.uk.ctx.at.request.app.command.setting.vacation.history.RemoveVacationHistoryCommand;
+import nts.uk.ctx.at.request.app.command.setting.vacation.history.RemoveVacationHistoryCommandHandler;
+import nts.uk.ctx.at.request.app.command.setting.vacation.history.SaveVacationHistCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.vacation.history.VacationHistoryCommand;
-import nts.uk.ctx.at.request.app.command.setting.vacation.history.VacationHistoryCommandRemove;
 import nts.uk.ctx.at.request.app.command.setting.vacation.history.dto.VacationHistoryReturnDto;
 import nts.uk.ctx.at.request.dom.settting.worktype.history.PlanVacationHistory;
 import nts.uk.ctx.at.request.dom.settting.worktype.history.VacationHistoryRepository;
@@ -35,7 +36,10 @@ public class VacationHistoryWebService extends WebService {
 
 	/** The save history command handler. */
 	@Inject
-	private SaveHistoryCommandHandler saveHistoryCommandHandler;
+	private SaveVacationHistCommandHandler saveHistoryCommandHandler;
+	
+	@Inject
+	private RemoveVacationHistoryCommandHandler removeHistoryCommandHandler;
 
 	/**
 	 * Gets the history by work type.
@@ -67,7 +71,7 @@ public class VacationHistoryWebService extends WebService {
 	 * @return the list
 	 */
 	// To Dto By Domain
-	public List<VacationHistoryReturnDto> toDto(List<PlanVacationHistory> historyList) {
+	private List<VacationHistoryReturnDto> toDto(List<PlanVacationHistory> historyList) {
 		return historyList.stream().map(item -> {
 			VacationHistoryReturnDto dto = new VacationHistoryReturnDto();
 			dto.setHistoryId(item.identifier());
@@ -101,12 +105,8 @@ public class VacationHistoryWebService extends WebService {
 	 */
 	@POST
 	@Path("removeVacationHistory")
-	public void removeVacationHistory(VacationHistoryCommandRemove command) {
-
-		// Get companyId;
-		String companyId = AppContexts.user().companyId();
-
-		// Add VacationHistory
-		this.historyRepository.removeVacationHistory(companyId, command.getHistoryId(), command.getWorkTypeCode());
+	public void removeVacationHistory(RemoveVacationHistoryCommand command) {
+		// remove VacationHistory
+		this.removeHistoryCommandHandler.handle(command);
 	}
 }

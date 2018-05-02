@@ -4,6 +4,7 @@ module nts.uk.at.view.kmk015.c {
         var screenModel = new viewmodel.ScreenModel(parentCodes);
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
+            $("#inp-period-startYMD").focus();
         });
     });
 }

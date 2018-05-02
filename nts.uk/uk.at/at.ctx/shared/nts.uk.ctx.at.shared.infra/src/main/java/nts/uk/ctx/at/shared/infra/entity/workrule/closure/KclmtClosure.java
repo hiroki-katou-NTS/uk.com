@@ -40,10 +40,6 @@ public class KclmtClosure extends UkJpaEntity implements Serializable {
     @Column(name = "CLOSURE_MONTH")
     private Integer closureMonth;
     
-    /** The closure classification. */
-    @Column(name = "CLOSURE_CLASSIFICATION")
-    private Integer closureClassification;
-
     /**
      * Instantiates a new kclmt closure.
      */

@@ -5,7 +5,9 @@
 package nts.uk.ctx.at.request.dom.settting.worktype.history;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.validate.Validatable;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.shr.com.history.GeneralHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -16,7 +18,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Getter
 //計画休暇のルールの履歴
-public class PlanVacationHistory extends GeneralHistoryItem<PlanVacationHistory, DatePeriod, GeneralDate> {
+public class PlanVacationHistory extends GeneralHistoryItem<PlanVacationHistory, DatePeriod, GeneralDate> implements Validatable {
 	
 	/** The company id. */
 	private String companyId;
@@ -105,4 +107,20 @@ public class PlanVacationHistory extends GeneralHistoryItem<PlanVacationHistory,
 		this.maxDay = maxDay;
 		this.workTypeCode = workTypeCode;
 	}
+	
+	/* (non-Javadoc)
+	 * @see nts.arc.validate.Validatable#validate()
+	 */
+	@Override
+    public void validate() {
+		// check conditional
+		if (this.start().after(this.end())) {
+			throw new BusinessException("Msg_917");
+		}
+
+		if (this.start().year() != this.end().year()) {
+			throw new BusinessException("Msg_967");
+		}
+    }
 }
+	

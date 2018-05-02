@@ -65,4 +65,13 @@ public interface VacationHistoryRepository {
      * @return the optional
      */
     public List<PlanVacationHistory> findHistory(String companyId, String historyId);
+    
+    /**
+     * Find history by period.
+     *
+     * @param companyId the company id
+     * @param period the period
+     * @return the list
+     */
+    public List<PlanVacationHistory> findHistoryByPeriod(String companyId, DatePeriod period);
 }

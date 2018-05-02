@@ -22,13 +22,19 @@ module nts.uk.at.view.kmk015.a {
             endforC: KnockoutObservable<moment.Moment>;
             isCreated: KnockoutObservable<boolean>;
             historyId: KnockoutObservable<string>;
+            isEnable: KnockoutObservable<boolean>;
+            isEnableNumber: KnockoutObservable<boolean>;
+            isSubmit: KnockoutObservable<boolean>;
 
 
             constructor() {
                 let self = this;
                 self.listWorkType = ko.observableArray([]);
                 self.numberDay = ko.observable(0);
-                self.isCreated = ko.observable(true);
+                self.isCreated = ko.observable(false);
+                self.isEnable = ko.observable(true);
+                self.isEnableNumber = ko.observable(true);
+                self.isSubmit = ko.observable(true);
 
                 self.selectedCode = ko.observable('');
                 self.historyId = ko.observable('');
@@ -55,30 +61,80 @@ module nts.uk.at.view.kmk015.a {
                     }
                 ]);
                 self.columnsHistory = ko.observableArray([
-                    { headerText: nts.uk.resource.getText('KMK015_12'), key: 'historyId', hidden:true },
-                    { headerText: nts.uk.resource.getText('KMK015_12'), key: 'time', width: 200 },
+                    { headerText: nts.uk.resource.getText('KMK015_12'), key: 'historyId', hidden: true },
+                    { headerText: nts.uk.resource.getText('KMK015_12'), key: 'time', width: 270 },
                 ]);
                 self.selectedCode.subscribe(code => {
+                    //clear Error
+                    nts.uk.ui.errors.clearAll();
+                    
                     self.listWorkType().forEach(function(item) {
                         if (item.workTypeCode == code) { self.nameWorkType(item.name); }
                     });
+                    if (code) {
+                        service.getHistoryByWorkType(code).done(data => {
+                            //clear list history
+                            self.listHistory.removeAll();
+
+                            if (!nts.uk.util.isNullOrEmpty(data)){
+                                //push listHistory
+                                self.addList(data);
+                                
+                                //set focus 
+                                self.selectedCodeHistory(data[0].historyId);
+                            }
+                            
+                            //set Enable
+                            if (nts.uk.util.isNullOrEmpty(self.listHistory()) 
+                                || nts.uk.util.isNullOrEmpty(self.selectedCodeHistory())) {
+                                this.newMode();
+                            } else {
+                                self.isEnable(true);
+                                self.isEnableNumber(true);
+                            }
+                        });
+                    } else {
+                        self.listHistory.removeAll();
+                        this.newMode();
+                    }
+                    
+                    if (!nts.uk.util.isNullOrEmpty(self.timeHistory())){
+                        self.isEnableNumber(true);
+                    } else {
+                        self.isEnableNumber(false);
+                    }
+                    
                 });
-                
-                if (nts.uk.util.isNullOrEmpty(self.listHistory())){
-                        self.timeHistory(null);
+
+                if (nts.uk.util.isNullOrEmpty(self.listHistory())) {
+                    self.timeHistory(null);
                 }
-                
+
                 self.selectedCodeHistory.subscribe(code => {
+                    //clear Error
+                    nts.uk.ui.errors.clearAll();
+                   
                     self.listHistory().forEach(function(item) {
-                        if (item.historyId == code) { 
+                        if (item.historyId == code) {
                             self.historyId(code);
-                            self.timeHistory(item.time); 
+                            self.timeHistory(item.time);
                             self.numberDay(item.maxDay);
                             self.startforC(item.startItem);
                             self.endforC(item.endItem);
                         }
                     });
                 });
+            }
+            
+            /**
+             * set NewMode
+             */
+            private newMode() {
+                let self = this;
+                self.numberDay(null);
+                self.timeHistory(null);
+                self.isEnable(false);
+                self.isEnableNumber(false);
             }
 
             /**
@@ -113,15 +169,25 @@ module nts.uk.at.view.kmk015.a {
 
                     //get List History
                     service.getHistoryByWorkType(self.selectedCode()).done(data => {
+                        //clear list history
+                        self.listHistory.removeAll();
+                        
                         //push listHistory
                         self.addList(data);
                         
-                        //set focus 
-                        self.selectedCodeHistory(data[0].historyId);
+                        if (!nts.uk.util.isNullOrEmpty(data)){
+                            //set focus 
+                            self.selectedCodeHistory(data[0].historyId);
+                        }
                     });
+                    
                     dfd.resolve();
-                }).fail(function (res) {nts.uk.ui.dialog.alert(res.message)})
-                .always(() => nts.uk.ui.block.clear()); // clear block ui.
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert({ messageId: res.messageId }).then(function() {
+                        nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");
+                    });
+                })
+                    .always(() => nts.uk.ui.block.clear()); // clear block ui.
 
                 return dfd.promise();
             }
@@ -129,12 +195,12 @@ module nts.uk.at.view.kmk015.a {
             //open dialog B
             OpenDialogB() {
                 let self = this;
-                
-                if (self.listHistory().length >= 20){
+
+                if (self.listHistory().length >= 19) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_976" });
                     return;
                 }
-                
+
                 nts.uk.ui.windows.sub.modal('/view/kmk/015/b/index.xhtml').onClosed(function(): any {
                     //view all code of selected item 
                     var childData = nts.uk.ui.windows.getShared('childData');
@@ -144,19 +210,36 @@ module nts.uk.at.view.kmk015.a {
                         self.startTime(childData.start);
                         self.endTime(childData.end);
                     }
+                    
+                    if (!nts.uk.util.isNullOrEmpty(self.timeHistory())){
+                        self.isEnableNumber(true);
+                    } else {
+                        self.isEnableNumber(false);
+                    }
+                    
+                    //set numberDay
+                    if (self.isCreated()){
+                        self.numberDay(null);
+                        
+                        if (!nts.uk.util.isNullOrEmpty(self.timeHistory()) || !self.isEnableNumber()){
+                            self.isSubmit(true);
+                        } else {
+                            self.isSubmit(false);
+                        }
+                    }
                 })
             }
-            
-            
+
+
             //open dialog C
             OpenDialogC() {
                 let self = this;
-                
-                if (nts.uk.util.isNullOrEmpty(self.selectedCode())){
+
+                if (nts.uk.util.isNullOrEmpty(self.selectedCode())) {
                     nts.uk.ui.dialog.alertError({ messageId: "Please Choose History!" });
                     return;
                 }
-                
+
                 let workTypeCodes = self.selectedCode();
                 nts.uk.ui.windows.setShared('parentCodes', {
                     workTypeCodes: workTypeCodes,
@@ -183,24 +266,38 @@ module nts.uk.at.view.kmk015.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 
-                if (nts.uk.util.isNullOrEmpty(self.timeHistory())){
+                if (!self.isEnableNumber()){
+                    return;
+                }
+                
+                $("#number-1").ntsEditor("validate");
+                
+                if (nts.uk.ui.errors.hasError()) {
+                    return;                   
+                }
+                
+                if (nts.uk.util.isNullOrEmpty(self.timeHistory())) {
                     nts.uk.ui.dialog.alertError("Please Setup History!");
                     return;
                 }
-
+                
                 let historyId = "";
-                
+                let history: SaveHistory;
+
                 //check isNewMode
-                if (!self.isCreated()){
+                if (!self.isCreated()) {
                     historyId = self.historyId();
+                    history = new SaveHistory(historyId, new Date(self.startforC().format("YYYY/MM/DD")), new Date(self.endforC().format("YYYY/MM/DD")));
+                } else {
+                    history = new SaveHistory(historyId, new Date(self.startTime().format("YYYY/MM/DD")), new Date(self.endTime().format("YYYY/MM/DD")));
                 }
-                
+
                 //Add command
-                let history: SaveHistory = new SaveHistory(historyId, new Date(self.startTime().format("YYYY/MM/DD")), new Date(self.endTime().format("YYYY/MM/DD")));
                 let command: SaveVacationHistoryCommand = new SaveVacationHistoryCommand(self.isCreated(), self.selectedCode(), self.numberDay(), history);
+
                 // Loading, block ui.
                 nts.uk.ui.block.invisible();
-                service.insertHistory(command).done(function(){
+                service.insertHistory(command).done(function() {
                     //OK
                     nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
                     //clear list
@@ -209,23 +306,27 @@ module nts.uk.at.view.kmk015.a {
                     service.getHistoryByWorkType(self.selectedCode()).done(data => {
                         //push listHistory
                         self.addList(data);
-                        
+
                         //focus new history
                         data.forEach(function(item) {
-                            if (moment(moment(self.startTime()).format("YYYY/MM/DD")).isSame(moment(item.startDate))){
+                            if (moment(moment(self.startTime()).format("YYYY/MM/DD")).isSame(moment(item.startDate))) {
                                 self.selectedCodeHistory(item.historyId);
                             }
                         });
+
+                        self.isCreated(false);
+                        self.isEnable(true);
+
                         dfd.resolve();
-                    }).fail(function (res) {nts.uk.ui.dialog.alert(res.message)});
-                }).fail(function (res) {nts.uk.ui.dialog.alert(res.message)});
+                    }).fail(function(res) { nts.uk.ui.dialog.alertError(res) });
+                }).fail(function(res) { nts.uk.ui.dialog.alertError(res) });
 
                 //clear blockUI
                 nts.uk.ui.block.clear();
 
                 return dfd.promise();
             }
-            
+
             /**
              * Remove
              */
@@ -233,45 +334,48 @@ module nts.uk.at.view.kmk015.a {
                 let self = this;
                 let isLastIndex = false;
                 //confirm Delete
-                nts.uk.ui.dialog.confirm({messageId: 'Msg_18'}).ifYes(() => {
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(() => {
                     //get index
                     let index = _.findIndex(self.listHistory(), ['historyId', self.selectedCodeHistory()]);
-                    if (self.listHistory().length - 1 == index){
+                    if (self.listHistory().length - 1 == index) {
                         isLastIndex = true;
-                    } 
+                    }
                     //add command
                     var command: any = {};
                     command.historyId = self.historyId();
                     command.workTypeCode = self.selectedCode();
-                    
+
                     //Remove history
                     service.removeVacationHistory(command).done(() => {
                         nts.uk.ui.dialog.info({ messageId: 'Msg_16' });
-                        
+
                         //clear list
                         self.listHistory.removeAll();
-                        
+
                         //Get listHistory
                         service.getHistoryByWorkType(self.selectedCode()).done(data => {
                             //push listHistory
                             self.addList(data);
-                            
+
                             //focus new history
-                            if (!nts.uk.util.isNullOrEmpty(self.listHistory())){
+                            if (!nts.uk.util.isNullOrEmpty(self.listHistory())) {
                                 //check lastIndex
-                                if (isLastIndex){
-                                    self.selectedCodeHistory(self.listHistory()[index - 1].historyId)
+                                if (isLastIndex) {
+                                    self.selectedCodeHistory(self.listHistory()[index - 1].historyId);
                                 } else {
-                                    self.selectedCodeHistory(self.listHistory()[index].historyId)
+                                    self.selectedCodeHistory(self.listHistory()[index].historyId);
                                 }
+                            } else {
+                                this.newMode();
                             }
-                            }).fail(function (res) {nts.uk.ui.dialog.alert(res.message)});
-                                
-                        }).fail((res: any) => {nts.uk.ui.dialog.bundledErrors(res);
+                        }).fail(function(res) { nts.uk.ui.dialog.alertError(res) });
+
+                    }).fail((res: any) => {
+                        nts.uk.ui.dialog.bundledErrors(res);
                     });
                 });
             }
-            
+
             /**
              * Add listHistory
              */

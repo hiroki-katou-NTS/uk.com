@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class VacationHistoryCommandRemove {
+public class RemoveVacationHistoryCommand {
 	
 	/** The history id. */
 	private String historyId;
