@@ -1,3 +1,4 @@
+
 module nts.custom.component {
     import ajax = nts.uk.request.ajax;
     import text = nts.uk.resource.getText;
@@ -291,6 +292,7 @@ module nts.custom.component {
                     </div>
                 </div>
             </div>
+            <div style="clear: both"></div>
         <!-- /ko -->`,
         viewModel: function(params: any) {
             // add style to <head> on first run
