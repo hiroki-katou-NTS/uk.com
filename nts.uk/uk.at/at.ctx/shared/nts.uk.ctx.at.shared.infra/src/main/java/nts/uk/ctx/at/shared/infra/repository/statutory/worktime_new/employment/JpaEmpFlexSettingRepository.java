@@ -25,7 +25,9 @@ public class JpaEmpFlexSettingRepository extends JpaRepository implements EmpFle
 	 */
 	@Override
 	public void add(EmpFlexSetting setting) {
-		commandProxy().insert(this.toEntity(setting));
+		KshstEmpFlexSet entity = new KshstEmpFlexSet();
+		setting.saveToMemento(new JpaEmpFlexSettingSetMemento(entity));
+		commandProxy().insert(entity);
 	}
 
 	/* 
@@ -33,6 +35,12 @@ public class JpaEmpFlexSettingRepository extends JpaRepository implements EmpFle
 	 */
 	@Override
 	public void update(EmpFlexSetting setting) {
+		KshstEmpFlexSet entity = this.queryProxy()
+				.find(new KshstEmpFlexSetPK(setting.getCompanyId().v(),
+						setting.getEmploymentCode().v(), setting.getYear().v()),
+						KshstEmpFlexSet.class)
+				.get();
+		setting.saveToMemento(new JpaEmpFlexSettingSetMemento(entity));
 		commandProxy().update(this.toEntity(setting));
 	}
 
