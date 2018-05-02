@@ -287,6 +287,7 @@ module nts.uk.at.view.kmk015.a {
                 //check isNewMode
                 if (!self.isCreated()) {
                     historyId = self.historyId();
+                }
                 
                 history = new SaveHistory(historyId, new Date(self.startTime().format("YYYY/MM/DD")), new Date(self.endTime().format("YYYY/MM/DD")));
 
