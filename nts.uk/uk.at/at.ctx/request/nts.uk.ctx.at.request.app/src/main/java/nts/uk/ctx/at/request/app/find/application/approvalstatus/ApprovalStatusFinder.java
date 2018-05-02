@@ -25,9 +25,9 @@ import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWo
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOverTimeInfoFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppWorkChangeFull;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTempRepository;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationsListOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppDetail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverOutput;
@@ -35,12 +35,11 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Daily
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatusOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.application.realitystatus.RealityStatusAdapter;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.HolidayAppType;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryForComDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosuresDto;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -58,9 +57,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class ApprovalStatusFinder {
 
 	@Inject
-	private ApprovalStatusMailTempRepository approvalStatusMailTempRepo;
-
-	@Inject
 	private ClosureService closureService;
 
 	/** The repository. */
@@ -74,13 +70,7 @@ public class ApprovalStatusFinder {
 	private ApprovalStatusService appSttService;
 
 	@Inject
-	private RealityStatusAdapter realityStatusAdapter;
-
-	@Inject
 	private AppDetailInfoRepository appDetailInfoRepo;
-
-	@Inject
-	private BPTimeItemRepository repoBonusTime;
 
 	/**
 	 * アルゴリズム「承認状況本文起動」を実行する
@@ -228,20 +218,19 @@ public class ApprovalStatusFinder {
 	 */
 	public List<ApprovalSttAppOutput> getAppSttByWorkpace(ApprovalStatusActivityData appStatus) {
 		List<ApprovalSttAppOutput> listAppSttApp = new ArrayList<>();
-		/*
-		 * startDate = appStatus.getStartDate(); endDate =
-		 * appStatus.getEndDate(); for (WorkplaceInfor wkp :
-		 * appStatus.getListWorkplaceInfor()) { //String wkpName = this.
-		 * List<ApprovalStatusEmployeeOutput> listAppStatusEmp =
-		 * appSttService.getApprovalStatusEmployee(wkp.getWkpId(), startDate,
-		 * endDate, appStatus.getListEmpCd()); approvalSttApp =
-		 * appSttService.getApprovalSttApp(wkp, listAppStatusEmp);
-		 * listAppSttApp.add(approvalSttApp); }
-		 */
+		GeneralDate startDate = appStatus.getStartDate();
+		GeneralDate endDate = appStatus.getEndDate();
 		List<WorkplaceInfor> listWorkPlaceInfor = appStatus.getListWorkplace();
 		for (WorkplaceInfor wkp : listWorkPlaceInfor) {
-			listAppSttApp.add(new ApprovalSttAppOutput(wkp.getCode(), wkp.getName(), true, true, 0, 0, 0, 0, 0));
+			List<ApprovalStatusEmployeeOutput> listAppStatusEmp = appSttService
+					.getApprovalStatusEmployee(wkp.getCode(), startDate, endDate, appStatus.getListEmpCd());
+			ApprovalSttAppOutput approvalSttApp = appSttService.getApprovalSttApp(wkp, listAppStatusEmp);
+			if(Objects.isNull(approvalSttApp)) {
+				continue;
+			}
+			listAppSttApp.add(approvalSttApp);
 		}
+
 		return listAppSttApp;
 	}
 
@@ -265,30 +254,8 @@ public class ApprovalStatusFinder {
 	 * アルゴリズム「承認状況社員別起動」を実行する
 	 */
 	public List<DailyStatusOutput> initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById) {
-		List<DailyStatusOutput> listDailyOut = new ArrayList<>();
-		List<DailyStatus> listDaily = new ArrayList<>();
-		List<DailyStatus> listDaily1 = new ArrayList<>();
-		List<Integer> listSymbol1 = new ArrayList<>();
-		listSymbol1.add(1);
-		listSymbol1.add(3);
-		listSymbol1.add(2);
-		List<Integer> listSymbol2 = new ArrayList<>();
-		listSymbol2.add(2);
-		listSymbol2.add(1);
-		listSymbol2.add(0);
-		GeneralDate date1 = appSttById.getEndDate().addDays(-2);
-		GeneralDate date12 = appSttById.getStartDate().addDays(2);
-		listDaily.add(new DailyStatus(date1, listSymbol1));
-		listDaily1.add(new DailyStatus(date12, listSymbol2));
-		listDailyOut.add(new DailyStatusOutput("0e4bfa2e-5459-4631-86b8-b3e2c0356ae0", "Anh", listDaily));
-		listDailyOut.add(new DailyStatusOutput("0e4bfa2e-5459-1245-86b8-b3e2c035567h", "Tuan", listDaily1));
-		/*
-		 * return
-		 * appSttService.getApprovalSttById(appSttById.getSelectedWkpId(),
-		 * appSttById.getListWkpId(), appSttById.getStartDate(),
-		 * appSttById.getEndDate(), appSttById.getListEmpCode());
-		 */
-		return listDailyOut;
+		return appSttService.getApprovalSttById(appSttById.getSelectedWkpId(), appSttById.getListWkpId(),
+				appSttById.getStartDate(), appSttById.getEndDate(), appSttById.getListEmpCode());
 	}
 
 	/**
@@ -297,7 +264,8 @@ public class ApprovalStatusFinder {
 	public ApplicationsListDto initApprovalSttRequestContentDis(ApprovalSttRequestContentDis appSttContent) {
 		String companyID = AppContexts.user().companyId();
 		ApplicationsListOutput appList = appSttService.initApprovalSttRequestContentDis(
-				appSttContent.getListStatusEmp(), appSttContent.getSelectedWkpId(), appSttContent.getSelectedEmpId());
+				appSttContent.getListStatusEmp());
+		HdAppSet lstHdAppSet = appList.getLstHdAppSet();
 		List<ApplicationDetailDto> listAppDetail = new ArrayList<>();
 		for (ApprovalSttAppDetail app : appList.getApprovalSttAppDetail()) {
 			ApplicationDetailDto detail = new ApplicationDetailDto();
@@ -310,7 +278,7 @@ public class ApprovalStatusFinder {
 			detail.setAppName(app.getAppDispName().getDispName().v());
 			detail.setPrePostAtr(applicaton_N.getPrePostAtr().value);
 			detail.setAppEndDate(applicaton_N.getEndDate().orElseGet(null));
-			
+
 			List<ApproverOutput> listApprover = app.getListApprover();
 			for (ApproverOutput approver : listApprover) {
 				int phase = approver.getPhase();
@@ -356,11 +324,11 @@ public class ApprovalStatusFinder {
 				break;
 			// 直行直帰申請
 			case GO_RETURN_DIRECTLY_APPLICATION:
-				appContent += getAppGoBackInfo(companyID, appId);
+				appContent = getAppGoBackInfo(companyID, appId);
 				break;
 			// 休出時間申請
 			case BREAK_TIME_APPLICATION:
-				appContent += getBreakTimeApp(companyID, appId);
+				appContent = getBreakTimeApp(applicaton_N, companyID, appId);
 				break;
 			// 打刻申請
 			case STAMP_APPLICATION:
@@ -376,7 +344,8 @@ public class ApprovalStatusFinder {
 				break;
 			// 振休振出申請
 			case COMPLEMENT_LEAVE_APPLICATION:
-				// TODO
+				//Not use anymore
+				//appContent = getAppCompltLeaveInfo(applicaton_N, companyID, appId);
 				// Đơn xin đồng bộ
 				break;
 			// 打刻申請（NR形式）
@@ -403,38 +372,49 @@ public class ApprovalStatusFinder {
 			listAppDetail.add(detail);
 		}
 
-		return null;
-		/*
-		 * return appSttService.initApprovalSttRequestContentDis(appSttContent.
-		 * getListStatusEmp(), appSttContent.getSelectedWkpId(),
-		 * appSttContent.getSelectedEmpId());
-		 */
+		return new ApplicationsListDto(listAppDetail, lstHdAppSet);
 	}
-	
-	private String getBreakTimeApp(String companyID, String appId) {
+
+/*	private String getAppCompltLeaveInfo(Application_New applicaton_N, String companyID, String appId) {
+		AppCompltLeaveFull appComlt =  appDetailInfoRepo.getAppCompltLeaveInfo(companyID, appId, type);
+		return null;
+	}*/
+
+	private String getBreakTimeApp(Application_New applicaton_N, String companyID, String appId) {
 		String appContent = "";
 		AppHolidayWorkFull appHoliday = appDetailInfoRepo.getAppHolidayWorkInfo(companyID, appId);
 		appContent += I18NText.getText("KAF018_275") + appHoliday.getWorkTypeName() + appHoliday.getWorkTimeName();
-		if(!Objects.isNull(appHoliday.getStartTime1()) && !Objects.isNull(appHoliday.getEndTime1())) {
+		if (!Objects.isNull(appHoliday.getStartTime1()) && !Objects.isNull(appHoliday.getEndTime1())) {
 			appContent += I18NText.getText("KAF018_220");
 		}
 		appContent += appHoliday.getEndTime1() + appHoliday.getStartTime2();
-		if(!Objects.isNull(appHoliday.getStartTime2()) && !Objects.isNull(appHoliday.getEndTime2())) {
+		if (!Objects.isNull(appHoliday.getStartTime2()) && !Objects.isNull(appHoliday.getEndTime2())) {
 			appContent += I18NText.getText("KAF018_220");
 		}
 		appContent += appHoliday.getEndTime1();
-		appContent += I18NText.getText("KAF018_276");
 		List<OverTimeFrame> lstFrame = appHoliday.getLstFrame();
-		Integer totalTime;
-		for(OverTimeFrame overTime : lstFrame) {
-			//if(overTime.getAttendanceType())
+		int totalTime = 0;
+		for (OverTimeFrame overTime : lstFrame) {
+			totalTime += overTime.getApplicationTime();
 		}
+		appContent += I18NText.getText("KAF018_276") + clockShorHm(totalTime);
+		int countItem = 0;
+		for (OverTimeFrame overFrame : lstFrame) {
+			if (overFrame.getApplicationTime() != 0) {
+				appContent += overFrame.getName() + " " + clockShorHm(overFrame.getApplicationTime());
+				countItem++;
+				if (countItem > 2) {
+					break;
+				}
+			}
+		}
+		appContent +=  "\n" + applicaton_N.getAppReason();
 		return appContent;
 	}
 
 	private String getAppGoBackInfo(String companyID, String appId) {
 		String appContent = "";
-		AppGoBackInfoFull  appGoBackInfo = appDetailInfoRepo.getAppGoBackInfo(companyID, appId);
+		AppGoBackInfoFull appGoBackInfo = appDetailInfoRepo.getAppGoBackInfo(companyID, appId);
 		appContent += I18NText.getText("KAF018_258") + I18NText.getText("KAF018_259");
 		appContent += clockShorHm(appGoBackInfo.getGoWorkAtr1()) + appGoBackInfo.getWorkTimeStart1();
 		appContent += I18NText.getText("KAF018_260");
@@ -451,19 +431,24 @@ public class ApprovalStatusFinder {
 		AppWorkChangeFull appWorkChange = appDetailInfoRepo.getAppWorkChangeInfo(companyID, appId);
 		appContent += I18NText.getText("KAF018_250");
 		appContent += appWorkChange.getWorkTypeName() + appWorkChange.getWorkTimeName();
-		if(!Objects.isNull(appWorkChange.getWorkTimeStart1()) && !Objects.isNull(appWorkChange.getWorkTimeEnd1())){
-			appContent += I18NText.getText("KAF018_252") + clockShorHm(appWorkChange.getGoWorkAtr1()) + appWorkChange.getWorkTimeStart1();
+		if (!Objects.isNull(appWorkChange.getWorkTimeStart1()) && !Objects.isNull(appWorkChange.getWorkTimeEnd1())) {
+			appContent += I18NText.getText("KAF018_252") + clockShorHm(appWorkChange.getGoWorkAtr1())
+					+ appWorkChange.getWorkTimeStart1();
 			appContent += I18NText.getText("KAF018_220");
-			appContent += I18NText.getText("KAF018_252") + clockShorHm(appWorkChange.getBackHomeAtr1()) + appWorkChange.getWorkTimeEnd1();
+			appContent += I18NText.getText("KAF018_252") + clockShorHm(appWorkChange.getBackHomeAtr1())
+					+ appWorkChange.getWorkTimeEnd1();
 		}
-		if(!Objects.isNull(appWorkChange.getWorkTimeStart2()) && !Objects.isNull(appWorkChange.getWorkTimeEnd2())){
-			appContent += I18NText.getText("KAF018_252") + clockShorHm(appWorkChange.getGoWorkAtr2()) + appWorkChange.getWorkTimeStart2();
+		if (!Objects.isNull(appWorkChange.getWorkTimeStart2()) && !Objects.isNull(appWorkChange.getWorkTimeEnd2())) {
+			appContent += I18NText.getText("KAF018_252") + clockShorHm(appWorkChange.getGoWorkAtr2())
+					+ appWorkChange.getWorkTimeStart2();
 			appContent += I18NText.getText("KAF018_220");
-			appContent += I18NText.getText("KAF018_252") + clockShorHm(appWorkChange.getBackHomeAtr2()) + appWorkChange.getWorkTimeEnd2();
+			appContent += I18NText.getText("KAF018_252") + clockShorHm(appWorkChange.getBackHomeAtr2())
+					+ appWorkChange.getWorkTimeEnd2();
 		}
-		if(!Objects.isNull(appWorkChange.getBreakTimeStart1()) && !Objects.isNull(appWorkChange.getBreakTimeEnd1())){
+		if (!Objects.isNull(appWorkChange.getBreakTimeStart1()) && !Objects.isNull(appWorkChange.getBreakTimeEnd1())) {
 			appContent += I18NText.getText("KAF018_251");
-			appContent += appWorkChange.getBreakTimeStart1() + I18NText.getText("KAF018_220") + appWorkChange.getBreakTimeEnd1();
+			appContent += appWorkChange.getBreakTimeStart1() + I18NText.getText("KAF018_220")
+					+ appWorkChange.getBreakTimeEnd1();
 		}
 		return appContent;
 	}
@@ -541,6 +526,7 @@ public class ApprovalStatusFinder {
 				+ I18NText.getText("CMM045_230", value) + "　" + "\n" + applicaton_N.getAppReason();
 		return appContent;
 	}
+
 	private String clockShorHm(Integer minute) {
 		return (minute / 60 + ":" + (minute % 60 < 10 ? "0" + minute % 60 : minute % 60));
 	}

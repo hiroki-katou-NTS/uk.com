@@ -108,14 +108,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
             let endDate = nts.uk.time.formatDate(new Date(self.endDate), 'yyyy/MM/dd');
             return self.processingYm +"("+ startDate +" ～ "+ endDate+")";
         }
-        
-        backToA() {
-            var self = this;
-            let params = {
-                    
-            }
-        }
-        
+
         gotoC(index) {
             var self = this;
             
@@ -142,10 +135,10 @@ module nts.uk.at.view.kaf018.b.viewmodel {
            closureName: string;
             
            /** The start date. */
-           startDate: string;
+           startDate: Date;
             
             /** The end date. */
-            endDate: string;
+            endDate: Date;
              
             /** The closure date. */
             //処理年月

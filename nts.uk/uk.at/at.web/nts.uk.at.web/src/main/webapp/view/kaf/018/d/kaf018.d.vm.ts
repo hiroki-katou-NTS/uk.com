@@ -22,6 +22,8 @@ module nts.uk.at.view.kaf018.d.viewmodel {
         enableNext: KnockoutObservable<boolean>;
         enablePre: KnockoutObservable<boolean>;
 
+        dailySttOut: DailyStatusOut = new DailyStatusOut(null, null);
+        listEmp: Array<any>;
         listData: any;
         constructor() {
             var self = this;
@@ -40,23 +42,28 @@ module nts.uk.at.view.kaf018.d.viewmodel {
             var self = this;
             var dfd = $.Deferred();
 
-            let params = getShared("KAF018D_PARAMS");
+            let params = getShared("KAF018D_VALUE");
             if (params) {
-                self.closureId = params.closureId;
-                self.closureName = params.closureName;
-                self.processingYm = params.processingYm;
-                self.startDateFormat = formatDate(new Date(params.startDate), 'yyyy/MM/dd');
-                self.endDateFormat = formatDate(new Date(params.endDate), 'yyyy/MM/dd');
-                self.startDate = params.startDate;
-                self.endDate = params.endDate;
-                self.listWorkplace = params.listWorkplace;
-                self.selectedWplIndex = params.selectedWplIndex;
-                self.listEmpCd = params.listEmployeeCode;
+//                self.closureId = params.closureId;
+//                self.closureName = params.closureName;
+//                self.processingYm = params.processingYm;
+//                self.startDateFormat = formatDate(new Date(params.startDate), 'yyyy/MM/dd');
+//                self.endDateFormat = formatDate(new Date(params.endDate), 'yyyy/MM/dd');
+//                self.startDate = params.startDate;
+//                self.endDate = params.endDate;
+//                self.listWorkplace = params.listWorkplace;
+//                self.selectedWplIndex = params.selectedWplIndex;
+//                self.listEmpCd = params.listEmployeeCode;
+                self.dailySttOut = params.dailyData;
+                self.listEmp = params.listEmp;
+                self.selectedWplId = params.selectWkkpId;
             }
             self.initExTable();
-            _.forEach(self.listWorkplace, function(item) {
-                self.listWkpId.push(item.code);
-            });
+//            _.forEach(self.listWorkplace, function(item) {
+//                self.listWkpId.push(item.code);
+//            });
+//            
+            //service.initApprovalSttRequestContentDis()
             dfd.resolve();
             return dfd.promise();
         }
@@ -119,7 +126,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
             detailHeaderColumns.push({ key: "applicationName", width: "160px", headerText: text("KAF018_36") });
             detailHeaderColumns.push({ key: "beforeAfter", width: "120px", headerText: text("KAF018_37") });
             detailHeaderColumns.push({ key: "applicationDate", width: "150px", headerText: text("KAF018_38") });
-            detailHeaderColumns.push({ key: "applicationContent", width: "530px", headerText: text("KAF018_39") });
+            detailHeaderColumns.push({ key: "applicationContent", width: "450px", headerText: text("KAF018_39") });
             detailHeaderColumns.push({ key: "reflectionStatus", width: "100px", headerText: text("KAF018_40") });
             detailHeaderColumns.push({ key: "approvalStatus", width: "150px", headerText: text("KAF018_41") });
             detailHeaderColumns.push({ key: "approvalPhase1", width: "100px", headerText: text("KAF018_42") });
@@ -130,7 +137,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
             //create Detail Header
             detailHeader = {
                 columns: detailHeaderColumns,
-                width: "1200px",
+                width: "1280px",
                 features: [
                     {
                         name: "HeaderRowHeight",
@@ -170,6 +177,15 @@ module nts.uk.at.view.kaf018.d.viewmodel {
         }
     }
 
+    class DailyStatusOut {
+        empId: string;
+        listDaily: Array<Date>;
+        constructor(empId: string, listDaily: Array<Date>) {
+            this.empId = empId;
+            this.listDaily = listDaily;
+        }
+    }
+    
     class Content {
         applicationName: string;
         beforeAfter: string;

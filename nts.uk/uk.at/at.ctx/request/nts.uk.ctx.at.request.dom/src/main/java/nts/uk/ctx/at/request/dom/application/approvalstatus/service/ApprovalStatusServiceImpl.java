@@ -148,6 +148,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 					datePeriod);
 			// 雇用（リスト）
 			for (EmploymentHisImport empHist : listEmpHist) {
+
 				// 取得した雇用コードが雇用コード(リスト)に存在する
 				if (!listEmpCd.contains(empHist.getEmploymentCode())) {
 					// 存在しない場合
@@ -228,10 +229,11 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	public ApprovalSttAppOutput getApprovalSttApp(WorkplaceInfor wkpInfor,
 			List<ApprovalStatusEmployeeOutput> listAppStatusEmp) {
 		List<ApprovalSttAppOutput> appSttAppliStateList = new ArrayList<>();
-		ApprovalSttAppOutput approvalSttApp = null;
+
 		for (ApprovalStatusEmployeeOutput approvalStt : listAppStatusEmp) {
 			List<ApplicationApprContent> getAppSttAcquisitionAppl = this.getAppSttAcquisitionAppl(approvalStt);
-			appSttAppliStateList.add(this.getCountAppSttAppliState(wkpInfor, getAppSttAcquisitionAppl));
+			ApprovalSttAppOutput appStt = this.getCountAppSttAppliState(wkpInfor, getAppSttAcquisitionAppl);
+			appSttAppliStateList.add(appStt);
 		}
 
 		if (appSttAppliStateList.isEmpty())
@@ -250,8 +252,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		if (Objects.isNull(numOfUnapprovalDisp)) {
 			isEnable = false;
 		}
-		approvalSttApp = new ApprovalSttAppOutput(wkpInfor.getCode(), wkpInfor.getName(), isEnable, false, numOfAppDisp,
-				appNumOfCaseDisp, numOfUnreflectedDisp, numOfUnapprovalDisp, numOfDenialsDisp);
+		ApprovalSttAppOutput approvalSttApp = new ApprovalSttAppOutput(wkpInfor.getCode(), wkpInfor.getName(), isEnable,
+				false, numOfAppDisp, appNumOfCaseDisp, numOfUnreflectedDisp, numOfUnapprovalDisp, numOfDenialsDisp);
 		return approvalSttApp;
 	}
 
@@ -260,11 +262,11 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	 */
 	private List<ApplicationApprContent> getAppSttAcquisitionAppl(ApprovalStatusEmployeeOutput approvalStt) {
 		List<ApplicationApprContent> listAppSttAcquisitionAppl = new ArrayList<>();
-		String sId = AppContexts.user().companyId();
-		String empId = approvalStt.getSId();
+		String companyId = AppContexts.user().companyId();
+		String sId = approvalStt.getSId();
 		GeneralDate startDate = approvalStt.getStartDate();
 		GeneralDate endDate = approvalStt.getEndDate();
-		List<Application_New> listApp = appRepoNew.getListAppById(sId, empId, startDate, endDate);
+		List<Application_New> listApp = appRepoNew.getListAppBySID(companyId, sId, startDate, endDate);
 		for (Application_New app : listApp) {
 			// 申請承認内容(リスト）
 			ApprovalRootContentImport_New approvalRoot = this.approvalStateAdapter.getApprovalRootContent(sId,
@@ -487,17 +489,18 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			GeneralDate startDate = appEmp.getStartDate();
 			GeneralDate endDate = appEmp.getEndDate();
 			for (ApplicationApprContent app : listAppContent) {
+				if (Objects.isNull(app)) {
+					continue;
+				}
 				if (app.getApplication().getReflectionInformation().getStateReflectionReal().value != 0) {
 					continue;
-				} else {
-					GeneralDate appDate = app.getApplication().getEndDate().get();
-					// アルゴリズム「承認状況未承認メール対象者取得」を実行する
-					List<String> listUnAppEmpIds = this.getUnApprovalMailTarget(app.getApprRootContentExport(),
-							appDate);
-					listUnAppEmpIds.stream().forEach(item -> {
-						listUnAppPerson.add(new UnApprovalPerson(item, startDate, endDate));
-					});
 				}
+				GeneralDate appDate = app.getApplication().getEndDate().get();
+				// アルゴリズム「承認状況未承認メール対象者取得」を実行する
+				List<String> listUnAppEmpIds = this.getUnApprovalMailTarget(app.getApprRootContentExport(), appDate);
+				listUnAppEmpIds.stream().forEach(item -> {
+					listUnAppPerson.add(new UnApprovalPerson(item, startDate, endDate));
+				});
 			}
 		}
 		return listUnAppPerson;
@@ -559,8 +562,14 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		List<String> listApprovalEmpId = new ArrayList<>();
 
 		for (ApprovalFrameImport_New appFrame : listAppFrame) {
+			if(Objects.isNull(appFrame)) {
+				continue;
+			}
 			List<ApproverStateImport_New> listAppState = appFrame.getListApprover();
 			for (ApproverStateImport_New appState : listAppState) {
+				if(Objects.isNull(appFrame)) {
+					continue;
+				}
 				listApprovalEmpId.add(appState.getApproverID());
 			}
 		}
@@ -714,8 +723,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public ApplicationsListOutput initApprovalSttRequestContentDis(List<ApprovalStatusEmployeeOutput> listStatusEmp,
-			String selectedWkpId, String selectedEmpId) {
+	public ApplicationsListOutput initApprovalSttRequestContentDis(List<ApprovalStatusEmployeeOutput> listStatusEmp) {
 		List<ApplicationApprContent> listAppContents = new ArrayList<>();
 		// 期間（リスト）
 		for (ApprovalStatusEmployeeOutput appEmp : listStatusEmp) {
@@ -889,24 +897,6 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				itemIds);
 		return listAttendanceResult;
 	}
-
-	// DELETE
-	/**
-	 * 承認状況申請内容取得振休振出
-	 */
-	/*
-	 * private AppCompltSyncOutput
-	 * getAppliDetailAcquisitionOfBreakdown(Application_New app,
-	 * List<Application_New> listApplication) { AppCompltSyncOutput
-	 * appCompltSync = new AppCompltSyncOutput(); if (!app.isAppCompltLeave()) {
-	 * return null; } // アルゴリズム「同時申請された振休振出申請を取得する」を実行する
-	 * AppCompltLeaveSyncOutput sync =
-	 * otherCommonAlgorithm.getAppComplementLeaveSync(app.getCompanyID(),
-	 * app.getAppID()); if (sync.isSync()) { // 紐付け場合内容の申請IDが取得した申請一覧に存在する if
-	 * (listApplication.contains(app.getAppID())) {
-	 * appCompltSync.setAbsId(app.getAppID()); // TODO } } return appCompltSync;
-	 * }
-	 */
 
 	/**
 	 * 承認状況申請内容取得休暇

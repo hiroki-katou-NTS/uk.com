@@ -33,7 +33,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         dataComSpecificDate: KnockoutObservableArray<any> = ko.observableArray([]);
         dataPublicHoliday: KnockoutObservableArray<any> = ko.observableArray([]);
 
-        listDailySttOut: Array<DailyStatusOut> = [];
+        dailySttOut: DailyStatusOut = new DailyStatusOut(null, null);
         constructor() {
             var self = this;
             this.legendOptions = {
@@ -84,7 +84,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             return dfd.promise();
         }
 
-        
+
         getWkpName() {
             var self = this;
             self.enablePre(self.selectedWplIndex != 0)
@@ -94,7 +94,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             self.selectedWplId(wkp.code);
             self.selectedWplName(wkp.name);
         }
-        
+
         getStatusSymbol() {
             var self = this;
             var dfd = $.Deferred();
@@ -196,8 +196,8 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                     headerText: text("KAF018_29"),
                     key: "empName",
                     width: "150px",
-                    control: "link",
-                    handler: function() { self.goToD();}
+                    control: "link", 
+                    handler: function(rData, rowIdx, key) {self.goToD(rData);}
                 }
             ];
             leftmostHeader = {
@@ -326,7 +326,9 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             var self = this, dfd = $.Deferred();
             _.each(listData, function(emp) {
                 let currentDay = new Date(self.dtPrev().toString());
+                var vaueDate: Date;
                 while (currentDay <= self.dtAft()) {
+
                     let time = new shareModel.Time(currentDay);
                     let key = "__" + time.yearMonthDay;
                     let curentDayConvert = nts.uk.time.formatDate(currentDay, 'yyyy/MM/dd');
@@ -367,35 +369,28 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             nts.uk.request.jump('/view/kaf/018/b/index.xhtml', params);
         }
 
-        goToD() {
+        goToD(rData: any) {
             var self = this;
+            self.dailySttOut = new DailyStatusOut(rData.empId, rData.listDaily);
             let params = {
                 selectWkkpId: self.selectedWplId,
-                listEmp: self.listWorkplace
+                listEmp: self.listWorkplace,
+                dailyData: self.dailySttOut
             }
-            nts.uk.request.jump('/view/kaf/018/d/index.xhtml', params);
+            nts.uk.ui.windows.setShared("KAF018D_VALUE", params);
+            nts.uk.ui.windows.sub.modal('/view/kaf/018/d/index.xhtml');
         }
     }
 
     class DailyStatusOut {
         empId: string;
-        empName: string;
-        listDaily: Array<DailyStatus>;
-        constructor(empId: string, empName: string, listDaily: Array<DailyStatus>) {
+        listDaily: Array<Date>;
+        constructor(empId: string, listDaily: Array<Date>) {
             this.empId = empId;
-            this.empName = empName;
             this.listDaily = listDaily;
         }
     }
 
-    class DailyStatus {
-        date: Date;
-        stateSymbol: Array<number>;
-        constructor(date: Date, stateSymbol: Array<number>) {
-            this.date = date;
-            this.stateSymbol = stateSymbol;
-        }
-    }
 
     class ApprovalSttByEmp {
         selectedWkpId: string;

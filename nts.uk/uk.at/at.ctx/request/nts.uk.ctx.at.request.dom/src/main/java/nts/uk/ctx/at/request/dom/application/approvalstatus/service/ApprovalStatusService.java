@@ -108,7 +108,6 @@ public interface ApprovalStatusService {
 	/**
 	 * アルゴリズム「承認状況申請内容表示」を実行する
 	 */
-	ApplicationsListOutput initApprovalSttRequestContentDis(List<ApprovalStatusEmployeeOutput> listStatusEmp,
-			String selectedWkpId, String selectedEmpId);
+	ApplicationsListOutput initApprovalSttRequestContentDis(List<ApprovalStatusEmployeeOutput> listStatusEmp);
 	
 }
