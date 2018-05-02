@@ -30,50 +30,55 @@ import nts.uk.query.model.workplace.WorkplaceModel;
 @Stateless
 public class JpaEmployeeInformationRepository extends JpaRepository implements EmployeeInformationRepository {
 
-	private final String EMPLOYEE_QUERY = "SELECT e, p FROM BSYMT_EMP_DTA_MNG_INFO e"
-			+ " LEFT JOIN BPSMT_PERSON p ON p.PID = e.PID"
-			+ " WHERE e.SID IN :listSid";
+	private final String EMPLOYEE_QUERY = "SELECT e, p"
+			+ " FROM BsymtEmployeeDataMngInfo e"
+			+ " LEFT JOIN BpsmtPerson p ON p.bpsmtPersonPk.pId = e.bsymtEmployeeDataMngInfoPk.pId"
+			+ " WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid";
 
-	private final String WORKPLACE_QUERY = "SELECT awh.SID, wi.WKPCD, wi.GENERIC_NAME, wi.WKP_NAME"
-			+ " FROM BSYMT_AFF_WORKPLACE_HIST awh"
-			+ " LEFT JOIN BSYMT_AFF_WPL_HIST_ITEM awhi ON awhi.HIST_ID = awh.HIST_ID"
-			+ " LEFT JOIN BSYMT_WORKPLACE_HIST wh ON wh.HIST_ID = awhi.HIST_ID"
-			+ " LEFT JOIN BSYMT_WORKPLACE_INFO wi ON wi.HIST_ID = wh.HIST_ID"
-			+ " WHERE awh.SID IN :listSid"
-			+ " AND awh.START_DATE <= :refDate"
-			+ " AND awh.END_DATE >= :refDate"
-			+ " AND wh.START_DATE <= :refDate"
-			+ " AND wh.END_DATE >= :refDate";
+	private final String WORKPLACE_QUERY = "SELECT awh.sid, wi.wkpcd, wi.wkpGenericName, wi.wkpName"
+			+ " FROM BsymtAffiWorkplaceHist awh"
+			+ " LEFT JOIN BsymtAffiWorkplaceHistItem awhi ON awhi.hisId = awh.hisId"
+			+ " LEFT JOIN BsymtWorkplaceHist wh ON wh.bsymtWorkplaceHistPK.historyId = awhi.hisId"
+			+ " LEFT JOIN BsymtWorkplaceInfo wi ON wi.bsymtWorkplaceInfoPK.historyId = wh.bsymtWorkplaceHistPK.historyId"
+			+ " WHERE awh.sid IN :listSid"
+			+ " AND awh.strDate <= :refDate"
+			+ " AND awh.endDate >= :refDate"
+			+ " AND wh.strD <= :refDate"
+			+ " AND wh.endD >= :refDate";
 
-	private final String POSITION_QUERY = "SELECT ajh.SID, ji.JOB_CD, ji.JOB_NAME FROM BSYMT_AFF_JOB_HIST ajh"
-			+ " LEFT JOIN BSYMT_AFF_JOB_HIST_ITEM ajhi ON ajhi.HIST_ID = ajhi.HIST_ID"
-			+ " LEFT JOIN BSYMT_JOB_HIST jh ON jh.JOB_ID = ajhi.JOB_TITLE_ID"
-			+ " LEFT JOIN BSYMT_JOB_INFO ji ON ji.HIST_ID = jh.HIST_ID"
-			+ " WHERE awh.SID IN :listSid"
-			+ " AND ajh.START_DATE <= :refDate"
-			+ " AND ajh.END_DATE >= :refDate"
-			+ " AND jh.START_DATE <= :refDate"
-			+ " AND jh.END_DATE >= :refDate";
+	private final String POSITION_QUERY = "SELECT ajh.sid, ji.jobCd, ji.jobName"
+			+ " FROM BsymtAffJobTitleHist ajh"
+			+ " LEFT JOIN BsymtAffJobTitleHistItem ajhi ON ajhi.hisId = ajh.hisId"
+			+ " LEFT JOIN BsymtJobHist jh ON jh.bsymtJobHistPK.jobId = ajhi.jobTitleId"
+			+ " LEFT JOIN BsymtJobInfo ji ON ji.bsymtJobInfoPK.histId = jh.bsymtJobHistPK.histId"
+			+ " WHERE ajh.sid IN :listSid"
+			+ " AND ajh.strDate <= :refDate"
+			+ " AND ajh.endDate >= :refDate"
+			+ " AND jh.startDate <= :refDate"
+			+ " AND jh.endDate >= :refDate";
 
-	private final String EMPLOYMENT_QUERY = "SELECT eh.SID, e.CODE, e.NAME FROM BSYMT_EMPLOYMENT_HIST eh "
-			+ "LEFT JOIN BSYMT_EMPLOYMENT_HIS_ITEM ehi ON ehi.HIST_ID = eh.HIST_ID "
-			+ "LEFT JOIN BSYMT_EMPLOYMENT e ON e.CODE = ehi.EMP_CD "
-			+ "WHERE eh.SID IN :listSid "
-			+ "AND eh.START_DATE <= :refDate "
-			+ "AND eh.END_DATE >= :refDate";
+	private final String EMPLOYMENT_QUERY = "SELECT eh.sid, e.bsymtEmploymentPK.code, e.name "
+			+ "FROM BsymtEmploymentHist eh "
+			+ "LEFT JOIN BsymtEmploymentHistItem ehi ON ehi.hisId = eh.hisId "
+			+ "LEFT JOIN BsymtEmployment e ON e.bsymtEmploymentPK.code = ehi.empCode "
+			+ "WHERE eh.sid IN :listSid "
+			+ "AND eh.strDate <= :refDate "
+			+ "AND eh.endDate >= :refDate";
 
-	private final String CLASSIFICATION_QUERY = "SELECT ach.SID, c.CLSCD, c.CLSNAME FROM BSYMT_AFF_CLASS_HISTORY ach "
-			+ "LEFT JOIN BSYMT_AFF_CLASS_HIS_ITEM achi ON achi.HIST_ID = ach.HIST_ID "
-			+ "LEFT JOIN BSYMT_CLASSIFICATION c ON c.CLSCD = achi.CLASSIFICATION_CODE "
-			+ "WHERE ach.SID IN :listSid "
-			+ "AND ach.START_DATE <= :refDate "
-			+ "AND ach.END_DATE >= :refDate";
+	private final String CLASSIFICATION_QUERY = "SELECT ach.sid, c.bsymtClassificationPK.clscd, c.clsname "
+			+ "FROM BsymtAffClassHistory ach "
+			+ "LEFT JOIN BsymtAffClassHistItem achi ON achi.historyId = ach.historyId "
+			+ "LEFT JOIN BsymtClassification c ON c.bsymtClassificationPK.clscd = achi.classificationCode "
+			+ "WHERE ach.sid IN :listSid "
+			+ "AND ach.startDate <= :refDate "
+			+ "AND ach.endDate >= :refDate";
 
-	private final String EMPCLS_QUERY = "SELECT wc,SID, wci.LABOR_SYS FROM KSHMT_WORKING_COND wc "
-			+ "LEFT JOIN KSHMT_WORKING_COND_ITEM wci ON wci.HIST_ID = wc.HIST_ID "
-			+ "WHERE wc.SID IN :listSid "
-			+ "AND wc.START_DATE <= :refDate "
-			+ "AND wc.END_DATE >= :refDate";
+	private final String EMPCLS_QUERY = "SELECT wc.kshmtWorkingCondPK.sid, wci.laborSys "
+			+ "FROM KshmtWorkingCond wc "
+			+ "LEFT JOIN KshmtWorkingCondItem wci ON wci.historyId = wc.kshmtWorkingCondPK.historyId "
+			+ "WHERE wc.kshmtWorkingCondPK.sid IN :listSid "
+			+ "AND wc.strD <= :refDate "
+			+ "AND wc.endD >= :refDate";
 
 	/*
 	 * (non-Javadoc)
