@@ -32,7 +32,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
         targetBtnText: string = getText("KCP009_3");
         listComponentOption: ComponentOption;
         selectedItem: KnockoutObservable<string> = ko.observable(null);
-        tabindex: number = 1;
+        tabindex: number = -1;
         isInitDepartment: boolean = true;
         isInitdailyApproval: boolean = true;
 
@@ -44,7 +44,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             self.showinfoSelectedEmployee = ko.observable(false);
             self.ccgcomponent = {
                 /** Common properties */
-                systemType: 1,
+                systemType: 2,
                 showEmployeeSelection: true,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
@@ -103,8 +103,8 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                     if (!self.isInitDepartment && value.length == 6) {
                         self.getEmployeeByCode(value, APPROVER_TYPE.DEPARTMENT_APPROVER);
                     }
-                    self.isInitDepartment = false;
                 }
+                self.isInitDepartment = false;
             });
 
             //社員コードを入力する
@@ -113,8 +113,8 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                     if (!self.isInitdailyApproval && value.length == 6) {
                         self.getEmployeeByCode(value, APPROVER_TYPE.DAILY_APPROVER);
                     }
-                    self.isInitdailyApproval = false;
                 }
+                self.isInitdailyApproval = false;
             });
         }
 
@@ -178,8 +178,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
         //「登録」ボタンをクリックする
         regSettingManager_click(data) {
             let self = this;
-            $("#A2_3").trigger("validate");
-            $("#A2_7").trigger("validate");
+            $('.nts-input').trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
                 block.invisible();
                 let startDate = new Date(self.settingManager().startDate());
@@ -196,7 +195,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                     command.endDate   = moment.utc(self.settingManager().endDate(), "YYYY/MM/DD").toISOString();
 
                     if(self.screenMode() == EXECUTE_MODE.NEW_MODE){
-                        self.callUpdateHistoryService(command);
+                        self.callInsertHistoryService(command);
                         return;
                     }
 
@@ -281,18 +280,23 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             service.getEmployeeByCode(employeeCode, hasAuthority).done(result => {
                 if (result) {
                     if (approverType == APPROVER_TYPE.DEPARTMENT_APPROVER) {
-                        self.settingManager().departmentName(result.employeeName);
+                        self.settingManager().departmentName(result.businessName);
+                        self.settingManager().departmentCode(result.employeeCD);
+                        self.settingManager().departmentApproverId(result.employeeID);
                     } else {
-                        self.settingManager().dailyApprovalName(result.employeeName);
+                        self.settingManager().dailyApprovalName(result.businessName);
+                        self.settingManager().dailyApprovalCode(result.employeeCD);
+                        self.settingManager().dailyApproverId(result.employeeID);
                     }
                 }
             }).fail(error => {
                 if (approverType == APPROVER_TYPE.DEPARTMENT_APPROVER) {
                     self.settingManager().departmentName('');
+                    $('#A2_7').ntsError('set', { messageId: error.messageId});
                 } else {
                     self.settingManager().dailyApprovalName('');
+                    $('#A2_10').ntsError('set', { messageId: error.messageId});
                 }
-                dialog.alertError({ messageId: error.messageId });
             }).always(() => {
                 block.clear();
             });

@@ -33,12 +33,11 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
 import nts.uk.ctx.bs.employee.pub.employee.ConcurrentEmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeDataMngInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
+import nts.uk.ctx.bs.employee.pub.employee.EmployeeInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.JobClassification;
 import nts.uk.ctx.bs.employee.pub.employee.MailAddress;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
@@ -80,12 +79,6 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	private AffWorkplaceHistoryItemRepository affWkpItemRepo;
 
 	@Inject
-	private WorkplaceConfigRepository wkpConfigRepo;
-
-	@Inject
-	private WorkplaceConfigInfoRepository wkpConfigInfoRepo;
-
-	@Inject
 	private SyWorkplacePub syWorkplacePub;
 
 	@Inject
@@ -93,6 +86,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 	@Inject
 	private EmployeeDataMngInfoRepository sDataMngInfoRepo;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -261,7 +255,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		Date date = new Date();
 		GeneralDate systemDate = GeneralDate.legacyDate(date);
 
-		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.getByListEmployeeId(sIds);
+		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.findByListEmployeeId(sIds);
 
 		if (CollectionUtil.isEmpty(emps)) {
 			return null;
@@ -361,7 +355,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 	@Override
 	public List<String> getEmployeeCode(String sid, GeneralDate basedate) {
-		
+
 		if (sid == null || basedate == null) {
 			return null;
 		}
@@ -375,13 +369,16 @@ public class SyEmployeePubImp implements SyEmployeePub {
 				.collect(Collectors.toList());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub#getSdataMngInfo(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub#getSdataMngInfo(java.lang.
+	 * String)
 	 */
 	@Override
 	public Optional<EmployeeDataMngInfoExport> getSdataMngInfo(String sid) {
-		Optional<EmployeeDataMngInfo> optEmployeeDataMngInfo = this.sDataMngInfoRepo
-				.findByEmpId(sid);
+		Optional<EmployeeDataMngInfo> optEmployeeDataMngInfo = this.sDataMngInfoRepo.findByEmpId(sid);
 
 		// Check exist
 		if (!optEmployeeDataMngInfo.isPresent()) {
@@ -392,11 +389,48 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 		return Optional.of(EmployeeDataMngInfoExport.builder().companyId(mngInfo.getCompanyId())
 				.personId(mngInfo.getPersonId()).employeeId(mngInfo.getEmployeeId())
-				.employeeCode(mngInfo.getEmployeeCode().v())
-				.deletedStatus(mngInfo.getDeletedStatus().value)
-				.deleteDateTemporary(mngInfo.getDeleteDateTemporary())
-				.removeReason(mngInfo.getRemoveReason().v())
+				.employeeCode(mngInfo.getEmployeeCode().v()).deletedStatus(mngInfo.getDeletedStatus().value)
+				.deleteDateTemporary(mngInfo.getDeleteDateTemporary()).removeReason(mngInfo.getRemoveReason().v())
 				.externalCode(mngInfo.getExternalCode().v()).build());
+	}
+
+	@Override
+	public List<EmployeeInfoExport> getByListSid(List<String> sIds) {
+
+		if (CollectionUtil.isEmpty(sIds)) {
+			return Collections.emptyList();
+		}
+		// Lấy toàn bộ domain「社員データ管理情報」
+		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.findByListEmployeeId(sIds);
+
+		if (CollectionUtil.isEmpty(emps)) {
+			return Collections.emptyList();
+		}
+
+		List<String> pIds = emps.stream().map(EmployeeDataMngInfo::getPersonId).collect(Collectors.toList());
+		
+		// Lấy toàn bộ domain「個人基本情報」
+		List<Person> persons = this.personRepository.getPersonByPersonIds(pIds);
+
+		Map<String, Person> mapPersons = persons.stream()
+				.collect(Collectors.toMap(Person::getPersonId, Function.identity()));
+		
+		return emps.stream().map(employee -> {
+
+			EmployeeInfoExport result = new EmployeeInfoExport();
+
+			// Get Person
+			Person person = mapPersons.get(employee.getPersonId());
+
+			if (person != null) {
+				result.setBussinessName(person.getPersonNameGroup().getBusinessName() == null ? null
+						: person.getPersonNameGroup().getBusinessName().v());
+			}
+			result.setSid(employee.getEmployeeId());
+			result.setScd(employee.getEmployeeCode() == null ? null : employee.getEmployeeCode().v());
+
+			return result;
+		}).collect(Collectors.toList());
 	}
 
 }

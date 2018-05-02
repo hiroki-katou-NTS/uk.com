@@ -229,7 +229,7 @@ public class RegisterLayoutFinder {
 			throw new RuntimeException("invalid PersonInfoCategory");
 		}
 				
-		if (itemDef.getItemTypeState().getItemType() != 1) {
+		if (itemDef.getItemTypeState().getItemType() == ItemType.SINGLE_ITEM.value) {
 			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
 			item.setItem(sigleItem.getDataTypeState());
 			int dataTypeValue = item.getItem().getDataTypeValue();
@@ -239,13 +239,14 @@ public class RegisterLayoutFinder {
 
 				SelectionItemDto selectionItemDto = null;
 
-				List<ComboBoxObject> comboValues;
+				
 
 				selectionItemDto = (SelectionItemDto) item.getItem();
 				boolean isDataType6 = dataTypeValue == DataTypeValue.SELECTION.value;
 				
-				comboValues = cbbfact.getComboBox(selectionItemDto, AppContexts.user().employeeId(),
-						command.getHireDate(), item.isRequired(), perInfoCategory.get().getPersonEmployeeType(), isDataType6);
+				List<ComboBoxObject> comboValues = cbbfact.getComboBox(selectionItemDto, AppContexts.user().employeeId(),
+						command.getHireDate(), item.isRequired(), perInfoCategory.get().getPersonEmployeeType(),
+						isDataType6, perInfoCategory.get().getCategoryCode().v());
 
 				item.setLstComboBoxValue(comboValues);
 				PerInfoItemDefForLayoutDto dto = new PerInfoItemDefForLayoutDto();
@@ -321,8 +322,8 @@ public class RegisterLayoutFinder {
 			querys.add(new PeregQuery(x.getCategoryCd(), command.getEmployeeCopyId(), null, command.getHireDate()));
 		});
 
-		querys.forEach(x -> {
-			result.addAll(this.copyItemFinder.getAllCopyItemByCtgCode(false, x.getCategoryCode(),
+		querys.forEach(query -> {
+			result.addAll(this.copyItemFinder.getAllCopyItemByCtgCode(false, query.getCategoryCode(),
 					command.getEmployeeCopyId(), command.getHireDate()));
 		});
 		return result;

@@ -27,12 +27,12 @@ public class SettingItemDtoMapping {
 	@Inject 
 	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
 
-	public void setTextForItem(List<SettingItemDto> result, String employeeId, GeneralDate baseDate) {
-		setTextForSelectionItem(result, employeeId, baseDate);
+	public void setTextForItem(List<SettingItemDto> result, String employeeId, GeneralDate baseDate, String categoryCode) {
+		setTextForSelectionItem(result, employeeId, baseDate, categoryCode);
 		setTextForSetItem(result);
 	}
 
-	public void setTextForSelectionItem(List<SettingItemDto> result, String employeeId, GeneralDate baseDate) {
+	public void setTextForSelectionItem(List<SettingItemDto> result, String employeeId, GeneralDate baseDate, String categoryCode) {
 
 		List<SettingItemDto> selectionItemLst = result.stream()
 				.filter(x -> x.getDataType().equals(DataTypeValue.SELECTION)).collect(Collectors.toList());
@@ -54,7 +54,7 @@ public class SettingItemDtoMapping {
 
 			List<ComboBoxObject> comboxList = this.comboBoxFac.getComboBox(item.getSelectionItemRefType(),
 					item.getSelectionItemRefCd(), baseDate, employeeId, null, true,
-					perInfoCategory.get().getPersonEmployeeType(), true );
+					perInfoCategory.get().getPersonEmployeeType(), true , categoryCode);
 
 			comboxList.forEach(cbItem -> {
 				if (cbItem.getOptionValue().equals(item.getSaveData().getValue().toString())) {

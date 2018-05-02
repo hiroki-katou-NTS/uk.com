@@ -87,7 +87,7 @@ public class CopySettingItemFinder {
 
 		if (isScreenB) {
 
-			this.settingItemMap.setTextForItem(result, employeeId, baseDate);
+			this.settingItemMap.setTextForItem(result, employeeId, baseDate, categoryCd);
 
 			return result.stream().filter(item -> StringUtils.isEmpty(item.getItemParentCd()))
 					.collect(Collectors.toList());
@@ -101,17 +101,6 @@ public class CopySettingItemFinder {
 		String contractId = AppContexts.user().contractCode();
 		List<CopySettingItemDto> listData = empCopyItemRepo
 				.getPerInfoItemByCtgId(perInfoCategoryId, companyId, contractId).stream().map(item -> {
-					return CopySettingItemDto.createFromDomain(item);
-				}).collect(Collectors.toList());
-
-		return listData;
-	}
-	
-	public List<CopySettingItemDto> getPerInfoDefByIdNo812(String perInfoCategoryId) {
-		String companyId = AppContexts.user().companyId();
-		String contractId = AppContexts.user().contractCode();
-		List<CopySettingItemDto> listData = empCopyItemRepo
-				.getPerInfoItemByCtgIdNo812(perInfoCategoryId, companyId, contractId).stream().map(item -> {
 					return CopySettingItemDto.createFromDomain(item);
 				}).collect(Collectors.toList());
 

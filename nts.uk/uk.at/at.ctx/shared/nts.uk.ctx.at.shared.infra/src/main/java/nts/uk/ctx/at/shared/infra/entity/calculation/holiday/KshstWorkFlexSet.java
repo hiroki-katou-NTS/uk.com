@@ -47,7 +47,7 @@ public class KshstWorkFlexSet  extends UkJpaEntity implements Serializable{
 	@Column(name = "PRE_ADDITION_TIME")
 	public int additionTime1;
 	
-	/** 遅刻・早退を控除しない */
+	/** 控除する */
 	@Column(name = "PRE_NOT_DEDUCT_LATELEAVE")
 	public int notDeductLateleave1;
 	
@@ -67,7 +67,7 @@ public class KshstWorkFlexSet  extends UkJpaEntity implements Serializable{
 	@Column(name = "WKT_INC_CHILD_NURSE_CARE")
 	public int incChildNursingCare2;
 	
-	/** 遅刻・早退を控除しない */
+	/** 遅刻・早退を控除する*/
 	@Column(name = "WKT_NOT_DEDUCT_LATELEAVE")
 	public int notDeductLateleave2;
 	

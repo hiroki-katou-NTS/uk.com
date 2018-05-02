@@ -2,6 +2,9 @@ package nts.uk.ctx.pereg.app.find.employee;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+
+import java.util.List;
+
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -18,6 +21,7 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeInfo;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeSimpleInfo;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
@@ -69,6 +73,7 @@ public class GetHeaderOfCPS001Finder {
 		String cid = AppContexts.user().companyId();
 		String roleId = AppContexts.user().roles().forPersonalInfo();
 		Optional<EmployeeInfo> empInfo = this.employeeMngRepo.findById(sid);
+
 		boolean isDepartment = isSelfAuth(roleId, "CS00015", "IS00073", AppContexts.user().employeeId().equals(sid));
 		boolean isPosition = isSelfAuth(roleId, "CS00016", "IS00079", AppContexts.user().employeeId().equals(sid));
 		boolean isEmployeement = isSelfAuth(roleId, "CS00014", "IS00068", AppContexts.user().employeeId().equals(sid));
@@ -85,6 +90,7 @@ public class GetHeaderOfCPS001Finder {
 							m.end().localDate().compareTo(LocalDate.now()) < 0 ? m.end().localDate() : LocalDate.now()))
 					.mapToInt(m -> Math.abs(m.intValue())).sum());
 		}
+
 		if (isDepartment) {
 			Optional<AffDepartmentHistory> department = this.departmentRepo.getAffDeptHistByEmpHistStandDate(sid, date);
 			if (department.isPresent()) {
@@ -93,6 +99,7 @@ public class GetHeaderOfCPS001Finder {
 				if (historyItem.isPresent()) {
 					Optional<EmployeeInfo> departmentInfo = this.employeeMngRepo
 							.getDepartment(historyItem.get().getDepartmentId(), date);
+
 					if (departmentInfo.isPresent()) {
 						EmployeeInfo _dept = departmentInfo.get();
 						_emp.setDepartmentCode(_dept.getDepartmentCode());
@@ -103,7 +110,6 @@ public class GetHeaderOfCPS001Finder {
 					}
 				}
 			}
-
 		} else {
 			_emp.setDepartmentCode(" ");
 			_emp.setDepartmentName(" ");
@@ -117,8 +123,8 @@ public class GetHeaderOfCPS001Finder {
 			_emp.setNumberOfWork(-1);
 			_emp.setNumberOfTempHist(-1);
 		} else {
-			
 			AffCompanyHist comHist = achFinder.getAffCompanyHistoryOfEmployee(cid, sid);
+
 			if (comHist != null) {
 				AffCompanyHistByEmployee emp = comHist.getAffCompanyHistByEmployee(sid);
 				if (emp != null) {
@@ -142,9 +148,7 @@ public class GetHeaderOfCPS001Finder {
 			} else {
 				_emp.setPosition(" ");
 			}
-
 		} else {
-
 			_emp.setPosition(" ");
 		}
 
@@ -161,6 +165,10 @@ public class GetHeaderOfCPS001Finder {
 		}
 
 		return _emp;
+	}
+
+	public List<EmployeeSimpleInfo> getList(List<String> lstId) {
+		return employeeMngRepo.findByIds(lstId);
 	}
 
 	private boolean isSelfAuth(String roleId, String ctgCd, String itemCd, boolean self) {

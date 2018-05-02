@@ -147,20 +147,20 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 				RegRecApp(command);
 			}
 			if (isSaveAbs()) {
-				RegAbsenceLeaveApp(command);
+				RegAbsApp(command);
 			}
 
 		}
 	}
 
-	private void RegAbsenceLeaveApp(SaveHolidayShipmentCommand command) {
-		String wkTypeCD = command.getRecCmd().getWkTypeCD();
+	private void RegAbsApp(SaveHolidayShipmentCommand command) {
+		String wkTypeCD = command.getAbsCmd().getWkTypeCD();
 		// アルゴリズム「振休消化管理データ更新と消化対象の決定」を実行する
 		updateDigestionTarget(command);
 		// アルゴリズム「代休消化管理データ更新と消化対象の決定」を実行する
 		updateOfSubstitution(command, wkTypeCD);
 		// ドメイン「振休申請」を1件登録する
-		createNewAbsenceLeaveApp(command);
+		createNewAbsApp(command);
 
 	}
 
@@ -228,7 +228,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 		String recAppID = createNewRecApp(command);
 
-		String absAppID = createNewAbsenceLeaveApp(command);
+		String absAppID = createNewAbsApp(command);
 		// ドメイン「振休振出同時申請管理」を1件登録する
 		createNewComLeaveSilMng(recAppID, absAppID);
 
@@ -240,7 +240,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 	}
 
-	private String createNewAbsenceLeaveApp(SaveHolidayShipmentCommand command) {
+	private String createNewAbsApp(SaveHolidayShipmentCommand command) {
 		Application_New absApplication = Application_New.firstCreate(companyID,
 				EnumAdaptor.valueOf(command.getAppCmd().getPrePostAtr(), PrePostAtr.class), absDate, appType, sID,
 				new AppReason(appReason));

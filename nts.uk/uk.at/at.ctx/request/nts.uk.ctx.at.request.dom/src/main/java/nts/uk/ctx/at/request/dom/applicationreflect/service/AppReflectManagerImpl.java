@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
@@ -79,7 +80,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				null);
 		// TODO 再実行かどうか判断する (xác nhận xem có thực hiện lại hay k)
 		//申請を取得 (lấy đơn)
-		if(appInfor.getAppType() == ApplicationType.OVER_TIME_APPLICATION) {
+		if(appInfor.getAppType() == ApplicationType.OVER_TIME_APPLICATION
+				&& appInfor.getPrePostAtr() == PrePostAtr.PREDICT) {
 			Optional<AppOverTime> getFullAppOvertime = overTimeRepo.getFullAppOvertime(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!getFullAppOvertime.isPresent()) {
 				return;
@@ -112,7 +114,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			if(commonReflect == null) {
 				return;
 			}*/
-		} else if (appInfor.getAppType() == ApplicationType.BREAK_TIME_APPLICATION) {			
+		} else if (appInfor.getAppType() == ApplicationType.BREAK_TIME_APPLICATION
+				&& appInfor.getPrePostAtr() == PrePostAtr.PREDICT) {			
 			Optional<AppHolidayWork> getFullAppHolidayWork = holidayWorkRepo.getFullAppHolidayWork(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!getFullAppHolidayWork.isPresent()) {
 				return;
@@ -219,13 +222,14 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	private GobackReflectPara getGobackReflectPara(Application_New appInfor, GoBackDirectly gobackInfo) {
 		GobackReflectPara appGobackTmp = null;
 		
-		GobackAppRequestPara gobackReques = new GobackAppRequestPara(gobackInfo.getWorkChangeAtr(), 
-				gobackInfo.getSiftCD().v(), 
-				gobackInfo.getWorkTypeCD().v(), 
-				gobackInfo.getWorkTimeStart1().v(), 
-				gobackInfo.getWorkTimeEnd1().v(), 
-				gobackInfo.getWorkTimeStart2().v(), 
-				gobackInfo.getWorkTimeEnd2().v(), 
+		GobackAppRequestPara gobackReques = new GobackAppRequestPara(
+				gobackInfo.getWorkChangeAtr().get(), 
+				gobackInfo.getSiftCD().get().v(), 
+				gobackInfo.getWorkTypeCD().get().v(), 
+				gobackInfo.getWorkTimeStart1().get().v(), 
+				gobackInfo.getWorkTimeEnd1().get().v(), 
+				gobackInfo.getWorkTimeStart2().get().v(), 
+				gobackInfo.getWorkTimeEnd2().get().v(), 
 				appInfor.getReflectionInformation().getStateReflectionReal(),
 				appInfor.getReflectionInformation().getNotReasonReal().isPresent() ? appInfor.getReflectionInformation().getNotReasonReal().get() : null);
 		appGobackTmp = new GobackReflectPara(appInfor.getEmployeeID(), appInfor.getAppDate(), true, PriorStampRequestAtr.GOBACKPRIOR,

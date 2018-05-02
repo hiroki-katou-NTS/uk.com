@@ -172,6 +172,7 @@ module nts.uk.at.view.kaf010.b {
                 var self = this;
                 self.version = data.application.version;
                 self.manualSendMailAtr(data.manualSendMailAtr);
+                self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
                 self.prePostSelected(data.application.prePostAtr);
                 self.displayCaculationTime(data.displayCaculationTime);
                 self.typicalReasonDisplayFlg(data.typicalReasonDisplayFlg);
@@ -618,9 +619,30 @@ module nts.uk.at.view.kaf010.b {
                     let endTime = self.restTime()[i].endTime();
                     let attendanceId = self.restTime()[i].attendanceID();
                     let frameNo = self.restTime()[i].frameNo();
-                    if(!nts.uk.util.isNullOrEmpty(startTime) && startTime != ""){
-                        if(!self.validateTime(startTime, endTime, 'input#restTimeStart_'+attendanceId+'_'+frameNo)){
+                    if (i != 9) {
+                        let startTimeAdd = self.restTime()[i + 1].startTime();
+                        let endTimeAdd = self.restTime()[i + 1].endTime();
+                        let attendanceIdAdd = self.restTime()[i + 1].attendanceID();
+                        let frameNoAdd = self.restTime()[i + 1].frameNo();
+                    }
+                    if (nts.uk.util.isNullOrEmpty(startTime) && !nts.uk.util.isNullOrEmpty(endTime)) {
+                        dialog.alertError({ messageId: "Msg_307" })
+                        $('input#restTimeStart_' + attendanceId + '_' + frameNo).focus();
+                        return false;
+                    }
+                    if (!nts.uk.util.isNullOrEmpty(startTime) && startTime != "") {
+                        if (!self.validateTime(startTime, endTime, 'input#restTimeEnd_' + attendanceId + '_' + frameNo)) {
                             return false;
+                        };
+                    }
+                    if (!nts.uk.util.isNullOrEmpty(startTimeAdd)) {
+                        if (endTime == null) {
+                                dialog.alertError({ messageId: "Msg_307" })
+                                $('input#restTimeEnd_' + attendanceId + '_' + frameNo).focus();
+                                return false;
+                        }
+                        if (!self.validateTime(endTime, startTimeAdd, 'input#restTimeStart_' + attendanceIdAdd + '_' + frameNoAdd)) {
+                                return false;
                         };
                     }
                 }
