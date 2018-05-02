@@ -464,7 +464,7 @@ public class ApprovalStatusFinder {
 		appContent += appOverTIme.getWorkClockFrom2() != null ? appOverTIme.getWorkClockFrom2() : "";
 		appContent += I18NText.getText("KAF018_220");
 		appContent += appOverTIme.getWorkClockTo2() != null ? appOverTIme.getWorkClockTo2() : "";
-		appContent += appOverTIme.getTotal();
+		//appContent += appOverTIme.getTotal();
 
 		List<OverTimeFrame> lstFrame = appOverTIme.getLstFrame();
 		Comparator<OverTimeFrame> sortList = Comparator.comparing(OverTimeFrame::getAttendanceType)
