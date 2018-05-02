@@ -16,9 +16,13 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
+import nts.uk.query.model.classification.ClassificationModel;
 import nts.uk.query.model.employee.EmployeeInformation;
 import nts.uk.query.model.employee.EmployeeInformationQuery;
 import nts.uk.query.model.employee.EmployeeInformationRepository;
+import nts.uk.query.model.employement.EmploymentModel;
+import nts.uk.query.model.position.PositionModel;
+import nts.uk.query.model.workplace.WorkplaceModel;
 
 /**
  * The Class JpaEmployeeInformationRepository.
@@ -27,10 +31,11 @@ import nts.uk.query.model.employee.EmployeeInformationRepository;
 public class JpaEmployeeInformationRepository extends JpaRepository implements EmployeeInformationRepository {
 
 	private final String EMPLOYEE_QUERY = "SELECT e, p FROM BSYMT_EMP_DTA_MNG_INFO e"
-			+ "LEFT JOIN BPSMT_PERSON p ON p.PID = e.PID"
-			+ "WHERE e.SID IN :listSid";
+			+ " LEFT JOIN BPSMT_PERSON p ON p.PID = e.PID"
+			+ " WHERE e.SID IN :listSid";
 
-	private final String WORKPLACE_QUERY = "SELECT awh.SID, wi.WKP_NAME FROM BSYMT_AFF_WORKPLACE_HIST awh"
+	private final String WORKPLACE_QUERY = "SELECT awh.SID, wi.WKPCD, wi.GENERIC_NAME, wi.WKP_NAME"
+			+ " FROM BSYMT_AFF_WORKPLACE_HIST awh"
 			+ " LEFT JOIN BSYMT_AFF_WPL_HIST_ITEM awhi ON awhi.HIST_ID = awh.HIST_ID"
 			+ " LEFT JOIN BSYMT_WORKPLACE_HIST wh ON wh.HIST_ID = awhi.HIST_ID"
 			+ " LEFT JOIN BSYMT_WORKPLACE_INFO wi ON wi.HIST_ID = wh.HIST_ID"
@@ -40,7 +45,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 			+ " AND wh.START_DATE <= :refDate"
 			+ " AND wh.END_DATE >= :refDate";
 
-	private final String POSITION_QUERY = "SELECT ajh.SID, ji.JOB_NAME FROM BSYMT_AFF_JOB_HIST ajh"
+	private final String POSITION_QUERY = "SELECT ajh.SID, ji.JOB_CD, ji.JOB_NAME FROM BSYMT_AFF_JOB_HIST ajh"
 			+ " LEFT JOIN BSYMT_AFF_JOB_HIST_ITEM ajhi ON ajhi.HIST_ID = ajhi.HIST_ID"
 			+ " LEFT JOIN BSYMT_JOB_HIST jh ON jh.JOB_ID = ajhi.JOB_TITLE_ID"
 			+ " LEFT JOIN BSYMT_JOB_INFO ji ON ji.HIST_ID = jh.HIST_ID"
@@ -50,14 +55,14 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 			+ " AND jh.START_DATE <= :refDate"
 			+ " AND jh.END_DATE >= :refDate";
 
-	private final String EMPLOYMENT_QUERY = "SELECT eh.SID, e.NAME FROM BSYMT_EMPLOYMENT_HIST eh "
+	private final String EMPLOYMENT_QUERY = "SELECT eh.SID, e.CODE, e.NAME FROM BSYMT_EMPLOYMENT_HIST eh "
 			+ "LEFT JOIN BSYMT_EMPLOYMENT_HIS_ITEM ehi ON ehi.HIST_ID = eh.HIST_ID "
 			+ "LEFT JOIN BSYMT_EMPLOYMENT e ON e.CODE = ehi.EMP_CD "
 			+ "WHERE eh.SID IN :listSid "
 			+ "AND eh.START_DATE <= :refDate "
 			+ "AND eh.END_DATE >= :refDate";
 
-	private final String CLASSIFICATION_QUERY = "SELECT ach.SID, c.CLSNAME FROM BSYMT_AFF_CLASS_HISTORY ach "
+	private final String CLASSIFICATION_QUERY = "SELECT ach.SID, c.CLSCD, c.CLSNAME FROM BSYMT_AFF_CLASS_HISTORY ach "
 			+ "LEFT JOIN BSYMT_AFF_CLASS_HIS_ITEM achi ON achi.HIST_ID = ach.HIST_ID "
 			+ "LEFT JOIN BSYMT_CLASSIFICATION c ON c.CLSCD = achi.CLASSIFICATION_CODE "
 			+ "WHERE ach.SID IN :listSid "
@@ -109,8 +114,14 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 				}).findAny();
 
 				if (workplace.isPresent()) {
-					String workplaceName = (String) workplace.get()[1];
-					employeeInfoList.get(empId).setWorkplace(Optional.of(workplaceName));
+					String workplaceCode = (String) workplace.get()[1];
+					String workplaceGenericName = (String) workplace.get()[2];
+					String workplaceName = (String) workplace.get()[3];
+					employeeInfoList.get(empId).setWorkplace(Optional.of(WorkplaceModel.builder()
+							.workplaceCode(workplaceCode)
+							.workplaceGenericName(workplaceGenericName)
+							.workplaceName(workplaceName)
+							.build()));
 				}
 			});
 		}
@@ -126,8 +137,12 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 				}).findAny();
 				
 				if (job.isPresent()) {
-					String jobName = (String) job.get()[1];
-					employeeInfoList.get(empId).setPosition(Optional.of(jobName));
+					String jobCode = (String) job.get()[1];
+					String jobName = (String) job.get()[2];
+					employeeInfoList.get(empId).setPosition(Optional.of(PositionModel.builder()
+							.positionCode(jobCode)
+							.positionName(jobName)
+							.build()));
 				}
 			});
 		}
@@ -143,8 +158,12 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 				}).findAny();
 				
 				if (em.isPresent()) {
-					String empName = (String) em.get()[1];
-					employeeInfoList.get(empId).setEmployment(Optional.of(empName));
+					String empCode = (String) em.get()[1];
+					String empName = (String) em.get()[2];
+					employeeInfoList.get(empId).setEmployment(Optional.of(EmploymentModel.builder()
+							.employmentCode(empCode)
+							.employmentName(empName)
+							.build()));
 				}
 			});
 		}
@@ -160,8 +179,12 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 				}).findAny();
 				
 				if (cls.isPresent()) {
-					String clsName = (String) cls.get()[1];
-					employeeInfoList.get(empId).setClassification(Optional.of(clsName));
+					String clsCode = (String) cls.get()[1];
+					String clsName = (String) cls.get()[2];
+					employeeInfoList.get(empId).setClassification(Optional.of(ClassificationModel.builder()
+							.classificationCode(clsCode)
+							.classificationName(clsName)
+							.build()));
 				}
 			});
 		}

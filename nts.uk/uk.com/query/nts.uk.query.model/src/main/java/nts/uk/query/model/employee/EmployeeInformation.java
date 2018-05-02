@@ -8,6 +8,11 @@ import java.util.Optional;
 
 import lombok.Builder;
 import lombok.Data;
+import nts.uk.query.model.classification.ClassificationModel;
+import nts.uk.query.model.department.DepartmentModel;
+import nts.uk.query.model.employement.EmploymentModel;
+import nts.uk.query.model.position.PositionModel;
+import nts.uk.query.model.workplace.WorkplaceModel;
 
 /**
  * The Class EmployeeInformation.
@@ -27,19 +32,19 @@ public class EmployeeInformation {
 	String businessName; // ビジネスネーム
 
 	/** The workplace. */
-	Optional<String> workplace; // 所属職場
+	Optional<WorkplaceModel> workplace; // 所属職場
 
 	/** The classification. */
-	Optional<String> classification; // 所属分類
+	Optional<ClassificationModel> classification; // 所属分類
 
 	/** The department. */
-	Optional<String> department; // 所属部門
+	Optional<DepartmentModel> department; // 所属部門
 
 	/** The position. */
-	Optional<String> position; // 所属職位
+	Optional<PositionModel> position; // 所属職位
 
 	/** The employment. */
-	Optional<String> employment; // 所属雇用
+	Optional<EmploymentModel> employment; // 所属雇用
 
 	/** The employment cls. */
 	Optional<Integer> employmentCls; // 就業区分
