@@ -287,10 +287,8 @@ module nts.uk.at.view.kmk015.a {
                 //check isNewMode
                 if (!self.isCreated()) {
                     historyId = self.historyId();
-                    history = new SaveHistory(historyId, new Date(self.startforC().format("YYYY/MM/DD")), new Date(self.endforC().format("YYYY/MM/DD")));
-                } else {
-                    history = new SaveHistory(historyId, new Date(self.startTime().format("YYYY/MM/DD")), new Date(self.endTime().format("YYYY/MM/DD")));
-                }
+                
+                history = new SaveHistory(historyId, new Date(self.startTime().format("YYYY/MM/DD")), new Date(self.endTime().format("YYYY/MM/DD")));
 
                 //Add command
                 let command: SaveVacationHistoryCommand = new SaveVacationHistoryCommand(self.isCreated(), self.selectedCode(), self.numberDay(), history);
