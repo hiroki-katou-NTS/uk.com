@@ -15,7 +15,7 @@ public class JpaDataStorageMngRepository extends JpaRepository implements DataSt
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspmtDataStorageMng f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.dataStorageMngPk.storeProcessingId =:storeProcessingId ";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.storeProcessingId =:storeProcessingId ";
 
     @Override
     public List<DataStorageMng> getAllDataStorageMng(){

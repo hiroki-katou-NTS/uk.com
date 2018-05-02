@@ -15,7 +15,7 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspmtResultOfSaving f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.resultOfSavingPk.storeProcessingId =:storeProcessingId ";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.storeProcessingId =:storeProcessingId ";
 
     @Override
     public List<ResultOfSaving> getAllResultOfSaving(){
