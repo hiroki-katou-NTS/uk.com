@@ -25,7 +25,9 @@ public class JpaShainFlexSettingRepository extends JpaRepository implements Shai
 	 */
 	@Override
 	public void add(ShainFlexSetting setting) {
-		commandProxy().insert(this.toEntity(setting));
+		KshstShaFlexSet entity = new KshstShaFlexSet();
+		setting.saveToMemento(new JpaShainFlexSettingSetMemento(entity));
+		this.commandProxy().insert(entity);
 	}
 
 	/* 
@@ -33,7 +35,14 @@ public class JpaShainFlexSettingRepository extends JpaRepository implements Shai
 	 */
 	@Override
 	public void update(ShainFlexSetting setting) {
-		commandProxy().update(this.toEntity(setting));
+		KshstShaFlexSet entity = this
+				.queryProxy().find(
+						new KshstShaFlexSetPK(setting.getCompanyId().v(),
+								setting.getEmployeeId().v(), setting.getYear().v()),
+						KshstShaFlexSet.class)
+				.get();
+		setting.saveToMemento(new JpaShainFlexSettingSetMemento(entity));
+		this.commandProxy().update(entity);
 	}
 
 	/* 
@@ -41,7 +50,7 @@ public class JpaShainFlexSettingRepository extends JpaRepository implements Shai
 	 */
 	@Override
 	public void delete(String cid, String empId, int year) {
-		commandProxy().remove(KshstShaFlexSet.class, new KshstShaFlexSetPK(cid, empId, year));
+		this.commandProxy().remove(KshstShaFlexSet.class, new KshstShaFlexSetPK(cid, empId, year));
 	}
 	
 	/* 
@@ -57,18 +66,6 @@ public class JpaShainFlexSettingRepository extends JpaRepository implements Shai
 		}
 
 		return Optional.ofNullable(this.toDomain(optEntity.get()));
-	}
-
-	/**
-	 * To entity.
-	 *
-	 * @param domain the domain
-	 * @return the kshst sha flex set
-	 */
-	private KshstShaFlexSet toEntity(ShainFlexSetting domain) {
-		KshstShaFlexSet entity = new KshstShaFlexSet();
-		domain.saveToMemento(new JpaShainFlexSettingSetMemento(entity));
-		return entity;
 	}
 
 	/**

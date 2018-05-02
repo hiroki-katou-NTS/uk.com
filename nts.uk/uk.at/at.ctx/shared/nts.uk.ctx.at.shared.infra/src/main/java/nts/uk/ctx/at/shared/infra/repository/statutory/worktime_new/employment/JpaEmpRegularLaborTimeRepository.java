@@ -36,7 +36,9 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements E
 	 */
 	@Override
 	public void add(EmpRegularLaborTime emplRegWorkHour) {
-		commandProxy().insert(this.toEntity(emplRegWorkHour));
+		KshstEmpRegLaborTime entity = new KshstEmpRegLaborTime();
+		emplRegWorkHour.saveToMemento(new JpaEmpRegularLaborTimeSetMemento(entity));
+		commandProxy().insert(entity);
 	}
 
 	/* 
@@ -44,7 +46,14 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements E
 	 */
 	@Override
 	public void update(EmpRegularLaborTime emplRegWorkHour) {
-		commandProxy().update(this.toEntity(emplRegWorkHour));
+		KshstEmpRegLaborTime entity = this
+				.queryProxy().find(
+						new KshstEmpRegLaborTimePK(emplRegWorkHour.getCompanyId().v(),
+								emplRegWorkHour.getEmploymentCode().v()),
+						KshstEmpRegLaborTime.class)
+				.get();
+		emplRegWorkHour.saveToMemento(new JpaEmpRegularLaborTimeSetMemento(entity));
+		commandProxy().update(entity);
 	}
 
 	/* 
@@ -87,17 +96,6 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements E
 		return Optional.ofNullable(this.toDomain(optEntity.get()));
 	}
 
-	/**
-	 * To entity.
-	 *
-	 * @param emplRegWorkHour the empl reg work hour
-	 * @return the kshst emp reg labor time
-	 */
-	private KshstEmpRegLaborTime toEntity(EmpRegularLaborTime emplRegWorkHour) {
-		KshstEmpRegLaborTime entity = new KshstEmpRegLaborTime();
-		emplRegWorkHour.saveToMemento(new JpaEmpRegularLaborTimeSetMemento(entity));
-		return entity;
-	}
 	
 	/**
 	 * To domain.
