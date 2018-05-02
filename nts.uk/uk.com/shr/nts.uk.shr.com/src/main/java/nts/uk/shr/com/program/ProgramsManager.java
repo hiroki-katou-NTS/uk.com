@@ -1755,6 +1755,14 @@ public class ProgramsManager {
 	public static final Program CMF002V2 = new Program(WebAppId.COM, ProgramIdConsts.CMF002V2, "CMF002_21",
 			"/view/cmf/002/v2/index.xhtml");
 
+    /**
+     * KRD001
+     */
+    public static final Program KRD001A = new Program(WebAppId.AT, ProgramIdConsts.KDR001A, "KDR001_51",
+            "/view/kdr/001/a/index.xhtml");   
+    public static final Program KRD001B = new Program(WebAppId.AT, ProgramIdConsts.KRD001B, "KDR001_52",
+            "/view/kdr/001/b/index.xhtml");
+
 	/**
 	 * CMM053
 	 */
