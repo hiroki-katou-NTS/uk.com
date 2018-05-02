@@ -28,7 +28,7 @@ public class UpdateAppOvertimeSettingCommandHandler extends CommandHandler<AppOv
 				data.getPostTypesiftReflectFlg(), data.getPostBreakReflectFlg(), 
 				data.getPostWorktimeReflectFlg(), data.getCalendarDispAtr(), data.getEarlyOverTimeUseAtr(), 
 				data.getInstructExcessOtAtr(), data.getPriorityStampSetAtr(), data.getUnitAssignmentOvertime(), 
-				data.getNormalOvertimeUseAtr(), data.getAttendanceId(), data.getUseOt(), data.getRestAtr());
+				data.getNormalOvertimeUseAtr(), data.getAttendanceId(), data.getUseOt(), data.getRestAtr(), 1);
 		if(appOver.isPresent()){
 			appOverRep.update(appOvertime);
 			return;
