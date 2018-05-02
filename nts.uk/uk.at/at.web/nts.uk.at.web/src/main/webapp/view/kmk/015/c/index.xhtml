@@ -14,9 +14,9 @@
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="kmk015.b.vm.js" />
-			<com:scriptfile path="kmk015.b.service.js" />
-			<com:scriptfile path="kmk015.b.start.js" />
+			<com:scriptfile path="kmk015.c.vm.js" />
+			<com:scriptfile path="kmk015.c.service.js" />
+			<com:scriptfile path="kmk015.c.start.js" />
 			<com:ValidatorScript>
 				nts.uk.shr.com.time.TimeWithDayAttr
 			</com:ValidatorScript>
@@ -43,12 +43,10 @@
 							required: true }">
 					</div>
 				</div>
-
-				
 			</div>
 			<div id="functions-area-bottom">
-				<button class="x-large proceed" tabindex="3"
-					data-bind="click: submit">#{i18n.getText('KMK015_21')}</button>
+				<button tabindex="3" class="x-large proceed"
+					data-bind="click: submit">#{i18n.getText('KMK015_21')}</button> 
 				<button tabindex="4" data-bind="click: closeDialog">#{i18n.getText('KMK015_22')}</button>
 			</div>
 		</ui:define>
