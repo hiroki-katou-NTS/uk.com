@@ -2,6 +2,8 @@ package nts.uk.ctx.at.request.pub.vacation.history.export;
 
 import java.util.List;
 
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
+
 /**
  * The Interface VacationHistoryPub.
  */
@@ -25,4 +27,12 @@ public interface VacationHistoryPub {
 	//計画休暇を取得できる上限日数を取得する
 	MaxDayExport getMaxDay(String historyId);
 	
+	/**
+	 * Gets the plan vacation history.
+	 *
+	 * @param companyId the company id
+	 * @param period the period
+	 * @return the plan vacation history
+	 */
+	List<VacationHistoryExport> getPlanVacationHistory(String companyId, DatePeriod period);
 }

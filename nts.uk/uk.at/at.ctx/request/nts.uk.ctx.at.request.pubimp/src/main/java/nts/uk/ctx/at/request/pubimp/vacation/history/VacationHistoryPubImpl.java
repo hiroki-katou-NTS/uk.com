@@ -12,6 +12,7 @@ import nts.uk.ctx.at.request.pub.vacation.history.export.MaxDayExport;
 import nts.uk.ctx.at.request.pub.vacation.history.export.VacationHistoryExport;
 import nts.uk.ctx.at.request.pub.vacation.history.export.VacationHistoryPub;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class VacationHistoryPubImpl.
@@ -80,5 +81,18 @@ public class VacationHistoryPubImpl implements VacationHistoryPub{
 		maxDay.setWorkTypeCode(history.get(0).getWorkTypeCode());
 		
 		return maxDay;
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.request.pub.vacation.history.export.VacationHistoryPub#getPlanVacationHistory(java.lang.String, nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 */
+	@Override
+	public List<VacationHistoryExport> getPlanVacationHistory(String companyId, DatePeriod period){
+
+		// Get history list
+		List<PlanVacationHistory> historyList = this.historyRepository.findHistoryByPeriod(companyId, period);
+
+		// convert to Dto
+		return this.toDto(historyList);
 	}
 }

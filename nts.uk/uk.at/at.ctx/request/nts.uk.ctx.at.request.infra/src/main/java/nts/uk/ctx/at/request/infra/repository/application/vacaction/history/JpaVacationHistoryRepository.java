@@ -108,8 +108,52 @@ public class JpaVacationHistoryRepository extends JpaRepository implements Vacat
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
-		// order by closure id asc
+		// order by startDate desc
 		cq.orderBy(criteriaBuilder.desc(root.get(KrqmtVacationHistory_.startDate)));
+
+		// exclude select
+		List<PlanVacationHistory> lstHist = em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
+				.collect(Collectors.toList());
+		
+		if (CollectionUtil.isEmpty(lstHist)){
+			return Collections.emptyList();
+		}
+		//return 
+		return lstHist;
+	}
+	
+	@Override
+	public List<PlanVacationHistory> findHistoryByPeriod(String companyId, DatePeriod period) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KCLMT_CLOSURE (KclmtClosure SQL)
+		CriteriaQuery<KrqmtVacationHistory> cq = criteriaBuilder.createQuery(KrqmtVacationHistory.class);
+
+		// root data
+		Root<KrqmtVacationHistory> root = cq.from(KrqmtVacationHistory.class);
+		
+		// Get start date, end Date
+		GeneralDate startDate = period.start();
+		GeneralDate endDate = period.end();
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equal company id
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KrqmtVacationHistory_.krqmtVacationHistoryPK).get(KrqmtVacationHistoryPK_.cid), companyId));
+		
+		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KrqmtVacationHistory_.startDate), startDate));
+		
+		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KrqmtVacationHistory_.endDate), endDate));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// exclude select
 		List<PlanVacationHistory> lstHist = em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
