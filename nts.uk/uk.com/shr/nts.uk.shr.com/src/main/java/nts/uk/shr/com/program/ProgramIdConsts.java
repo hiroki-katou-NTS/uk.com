@@ -95,6 +95,8 @@ public class ProgramIdConsts {
 	
 	public static final String KMK015B = "KMK015B";
 	
+	public static final String KMK015C = "KMK015C";
+	
 	public static final String KML001A = "KML001A";
 
 	public static final String KML001B = "KML001B";

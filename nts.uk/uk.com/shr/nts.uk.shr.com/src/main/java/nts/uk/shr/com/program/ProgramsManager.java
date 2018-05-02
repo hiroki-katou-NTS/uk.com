@@ -1241,6 +1241,9 @@ public class ProgramsManager {
 	/** The Constant KMK015B. */
 	public static final Program KMK015B = new Program(WebAppId.AT, ProgramIdConsts.KMK015B, "KMK015_2",
 			"/view/kmk/015/b/index.xhtml");
+	
+	public static final Program KMK015C = new Program(WebAppId.AT, ProgramIdConsts.KMK015C, "KMK015_3",
+			"/view/kmk/015/c/index.xhtml");
 
 	public static final Program KDL006 = new Program(WebAppId.AT, ProgramIdConsts.KDL006, "KDL006_1",
 			"/view/kdl/006/a/index.xhtml");

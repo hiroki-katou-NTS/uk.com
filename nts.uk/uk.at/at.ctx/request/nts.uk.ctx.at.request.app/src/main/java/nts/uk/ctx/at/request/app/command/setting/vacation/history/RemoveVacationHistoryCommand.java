@@ -4,24 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.at.request.app.command.setting.vacation.history;
 
-
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.request.app.command.setting.vacation.history.dto.VacationHistoryDto;
 
 @Setter
 @Getter
-public class VacationHistoryCommand {
+public class RemoveVacationHistoryCommand {
 	
-	/** The is create mode. */
-	private Boolean isCreated;
-	
-	/** The max day. */
-	private Integer maxDay;
+	/** The history id. */
+	private String historyId;
 	
 	/** The work type code. */
 	private String workTypeCode;
-	
-	/** The vacation dto. */
-	private VacationHistoryDto vacationHistory;
 }
