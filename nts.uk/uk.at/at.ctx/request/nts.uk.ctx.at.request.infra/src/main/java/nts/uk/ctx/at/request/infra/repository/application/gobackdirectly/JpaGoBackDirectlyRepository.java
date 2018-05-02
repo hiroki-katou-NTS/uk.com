@@ -102,9 +102,9 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 			currentEntity.setWorkTimeEnd2(goBackDirectly.getWorkTimeEnd2().map(x -> x.v()).orElse(null));
 			currentEntity.setWorkLocationCd1(goBackDirectly.getWorkLocationCD1().map(x -> x).orElse(null));
 			currentEntity.setWorkLocationCd2(goBackDirectly.getWorkLocationCD2().map(x -> x).orElse(null));
-			if(goBackDirectly.getWorkChangeAtr().get() == UseAtr.USE) {
-				currentEntity.setWorkTypeCD(goBackDirectly.getWorkTypeCD().get().v());
-				currentEntity.setSiftCD(goBackDirectly.getSiftCD().get().v());
+			if(goBackDirectly.getWorkChangeAtr().map(x -> x).orElse(UseAtr.NOTUSE) == UseAtr.USE) {
+				currentEntity.setWorkTypeCD(goBackDirectly.getWorkTypeCD().map(x -> x.v()).orElse(null));
+				currentEntity.setSiftCD(goBackDirectly.getSiftCD().map(x -> x.v()).orElse(null));
 			}
 			this.commandProxy().update(currentEntity);
 			

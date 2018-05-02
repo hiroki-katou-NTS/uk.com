@@ -97,17 +97,18 @@ public class TotalTimeBeforeRound {
 		case ONLY_ILLEGAL_FLEX:
 			
 			// 法定外フレックスのみでフレックス時間をコピーする
-			this.flexExcessTime = flexTimeOfMonthly.getFlexExcessTime().addMinutes(
+			this.flexExcessTime = new AttendanceTimeMonth(
+					flexTimeOfMonthly.getFlexTime().getIllegalFlexTime().v() +
 					flexTimeOfMonthly.getFlexCarryforwardTime().getFlexCarryforwardWorkTime().v());
 			break;
 			
 		case INCLUDE_LEGAL_FLEX:
 			
 			// 法定内フレックスを含んでフレックス時間をコピーする
-			this.flexExcessTime = flexTimeOfMonthly.getFlexExcessTime().addMinutes(
+			this.flexExcessTime = new AttendanceTimeMonth(
+					flexTimeOfMonthly.getFlexTime().getIllegalFlexTime().v() +
+					flexTimeOfMonthly.getFlexTime().getLegalFlexTime().v() +
 					flexTimeOfMonthly.getFlexCarryforwardTime().getFlexCarryforwardWorkTime().v());
-			this.flexExcessTime = this.flexExcessTime.addMinutes(
-					flexTimeOfMonthly.getFlexTime().getLegalFlexTime().v());
 			break;
 		}
 		

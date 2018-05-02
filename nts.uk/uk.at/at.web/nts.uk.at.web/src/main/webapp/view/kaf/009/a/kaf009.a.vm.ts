@@ -66,6 +66,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         selectedReason: KnockoutObservable<string> = ko.observable('');
         displayTypicalReason: KnockoutObservable<boolean> = ko.observable(false);
         enableTypicalReason: KnockoutObservable<boolean> = ko.observable(false); 
+        requireTypicalReason: KnockoutObservable<boolean> = ko.observable(false);
         //MultilineEditor
         requiredReason: KnockoutObservable<boolean> = ko.observable(false);
         multilContent: KnockoutObservable<string> = ko.observable('');
@@ -149,13 +150,14 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     self.enableTypicalReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1 ? true : false);
                     self.displayReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false);
                     self.enableReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false);
+                    self.requireTypicalReason(
+                        (settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1)&&
+                        (settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1)
+                    );
                     //申請制限設定.申請理由が必須
                     self.requiredReason(
                         (settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1)&&
-                        (
-                            (settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1)||
-                            (settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1)
-                        )
+                        (settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1)
                     );
                     if (settingData.appCommonSettingDto.appTypeDiscreteSettingDtos.length > 0) {
                         //登録時にメールを送信する Visible
@@ -257,6 +259,22 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          */
         insert() {
             let self = this;
+//            if(self.requireTypicalReason()&&self.requiredReason()){
+//                if(nts.uk.util.isNullOrEmpty($("#combo-box").val())&&nts.uk.util.isNullOrEmpty($('#inpReasonTextarea').val())){
+//                    $("#combo-box").ntsError('set', '定型理由を入力してください');   
+//                    $("#inpReasonTextarea").ntsError('set', '申請理由を入力してください');               
+//                }        
+//            }
+//            else if(self.requireTypicalReason()){
+//                if(nts.uk.util.isNullOrEmpty($("#combo-box").val())){
+//                    $("#combo-box").ntsError('set', '定型理由を入力してください');    
+//                }    
+//            }
+//            else if(self.requiredReason()){
+//                if(nts.uk.util.isNullOrEmpty($("#inpReasonTextarea").val())){
+//                    $("#inpReasonTextarea").ntsError('set', '申請理由を入力してください');    
+//                }      
+//            }
             if (!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(self.getCommand().appCommand.appReasonID) ? self.getCommand().appCommand.appReasonID + "\n" + self.multilContent() : self.multilContent(), "#inpReasonTextarea") || nts.uk.ui.errors.hasError()) {
                 return;
             }

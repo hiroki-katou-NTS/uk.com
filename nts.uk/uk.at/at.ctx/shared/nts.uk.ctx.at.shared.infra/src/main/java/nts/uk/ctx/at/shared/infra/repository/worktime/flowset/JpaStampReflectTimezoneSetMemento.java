@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
@@ -38,7 +38,7 @@ public class JpaStampReflectTimezoneSetMemento implements StampReflectTimezoneSe
 	 */
 	@Override
 	public void setWorkNo(WorkNo workNo) {
-		this.entity.getKshmtFlowStampReflectPK().setWorkNo(workNo.v());
+		// Do nothing
 	}
 
 	/*
@@ -51,7 +51,7 @@ public class JpaStampReflectTimezoneSetMemento implements StampReflectTimezoneSe
 	 */
 	@Override
 	public void setClassification(GoLeavingWorkAtr classification) {
-		this.entity.setAttendAtr(classification.value);
+		// Do nothing
 	}
 
 	/*

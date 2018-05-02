@@ -20,14 +20,15 @@ public interface IPerInfoSelectionItemRepository {
 
 	Optional<PerInfoSelectionItem> getSelectionItemBySelectionItemId(String selectionItemId);
 
-	Optional<PerInfoSelectionItem> getSelectionItemByName(String selectionItemName);
+	Optional<PerInfoSelectionItem> getSelectionItemByName(String contractCode, String selectionItemName,
+			String selectionItemId);
 
 	/**
 	 * getAllSelection
 	 * 
 	 * @return List<PerInfoSelectionItem>
 	 */
-	List<PerInfoSelectionItem> getAllSelection(int selectionItemClsAtr);
+	List<PerInfoSelectionItem> getAllSelection(int selectionItemClsAtr, String contractCode);
 
 	List<PerInfoSelectionItem> getAllSelectionItemByContractCd(String contractCode);
 

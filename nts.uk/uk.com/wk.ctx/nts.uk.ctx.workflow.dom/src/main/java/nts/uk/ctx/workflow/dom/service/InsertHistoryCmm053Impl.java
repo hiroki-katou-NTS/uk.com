@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.dom.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -93,7 +94,9 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 					endDate, UUID.randomUUID().toString(), null, 1, 2);
 
 			List<PersonApprovalRoot> insertPersonApproval = new ArrayList<>();
-			insertPersonApproval.add(common);
+			if (!Objects.isNull(dailyApproverId)) {
+				insertPersonApproval.add(common);
+			}
 			insertPersonApproval.add(monthly);
 
 			// ドメインモデル「就業承認ルート」と紐付きドメインモデル「分岐」「承認ルート」をINSERTする(INSERT
@@ -139,6 +142,7 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 			ApprovalBranch branch = new ApprovalBranch(companyId, branchId, 1);
 			lstBranch.add(branch);
 		}
+
 		// 分岐
 		repoBranch.addAllBranch(lstBranch);
 
@@ -192,7 +196,9 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 			PersonApprovalRoot common = PersonApprovalRoot.createSimpleFromJavaType(companyId,
 					UUID.randomUUID().toString(), employeeId, historyId, null,
 					startDate.toString().replace("/", "-"), endDate, UUID.randomUUID().toString(), null, null, 0);
-			insertPsAppRoot.add(common);
+			if(!Objects.isNull(dailyApproverId)){
+				insertPsAppRoot.add(common);
+			}
 		} else {
 			// 条件： 1．就業ルート区分：確認 AND 確認ルート種類：月次確認 2．承認フェーズ.順序 ＝ 1
 			PersonApprovalRoot monthly = PersonApprovalRoot.createSimpleFromJavaType(companyId,
@@ -230,7 +236,9 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 			PersonApprovalRoot common = PersonApprovalRoot.createSimpleFromJavaType(companyId,
 					UUID.randomUUID().toString(), employeeId, historyId, null, startDate.toString().replace("/", "-"),
 					endDate, UUID.randomUUID().toString(), null, null, 0);
-			insertPersonApproval.add(common);
+			if(!Objects.isNull(dailyApproverId)){
+				insertPersonApproval.add(common);
+			}
 		}
 
 		if (monthlyPs.isPresent()) {

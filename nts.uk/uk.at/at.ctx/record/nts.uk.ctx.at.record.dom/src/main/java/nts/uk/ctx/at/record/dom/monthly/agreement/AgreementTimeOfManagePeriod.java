@@ -88,8 +88,11 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 		// 36協定時間内訳の合計時間を36協定時間とする
 		this.agreementTime.setAgreementTime(this.breakdown.getTotalTime());
 		
-		// エラーチェック
-		this.agreementTime.errorCheck(companyId, monthlyCalculation.getEmployeeId(), criteriaDate,
+		// エラーアラーム値の取得
+		this.agreementTime.getErrorAlarmValue(companyId, monthlyCalculation.getEmployeeId(), criteriaDate,
 				monthlyCalculation.getYearMonth(), monthlyCalculation.getWorkingSystem(), repositories);
+		
+		// エラーチェック
+		this.agreementTime.errorCheck();
 	}
 }

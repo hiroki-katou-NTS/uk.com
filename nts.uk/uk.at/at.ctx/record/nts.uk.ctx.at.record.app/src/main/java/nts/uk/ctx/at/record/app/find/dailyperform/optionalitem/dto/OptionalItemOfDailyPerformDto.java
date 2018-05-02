@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.optionalitem.dto;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +16,6 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 
 @Data
 @AttendanceItemRoot(rootName = "日別実績の任意項目")
@@ -27,7 +25,7 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 
 	private GeneralDate date;
 
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "任意項目値", listMaxLength = 99, indexField = "itemNo")
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "任意項目値", listMaxLength = 100, indexField = "itemNo")
 	private List<OptionalItemValueDto> optionalItems;
 
 	public static OptionalItemOfDailyPerformDto getDto(AnyItemValueOfDaily domain) {
@@ -63,6 +61,12 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 	public AnyItemValueOfDaily toDomain(String employeeId, GeneralDate date) {
 		if(!this.isHaveData()) {
 			return null;
+		}
+		if (employeeId == null) {
+			employeeId = this.employeeId();
+		}
+		if (date == null) {
+			date = this.workingDate();
 		}
 		return new AnyItemValueOfDaily(employeeId, date, ConvertHelper.mapTo(optionalItems,
 								(c) -> new AnyItemValue(new AnyItemNo(c.getItemNo()), 

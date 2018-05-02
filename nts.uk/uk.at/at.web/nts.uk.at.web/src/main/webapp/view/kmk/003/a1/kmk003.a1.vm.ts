@@ -37,13 +37,15 @@ module a1 {
         settingEnum: WorkTimeSettingEnumDto;
         SBcoreTimezone: Array<any>;
 
+        linkedWithDialogF: KnockoutObservable<boolean>;
+        isNewMode: KnockoutObservable<boolean>;
         /**
         * Constructor.
         */
         constructor(input: any) {
             let self = this;
             self.selectedTab = input.selectedTab;
-            
+            self.isNewMode = input.isNewMode;
             self.loadDataFromMainScreen(input);
             self.isTimezoneTwoEnabled = ko.computed(() => {
                 return !self.isFlexMode() && !self.isDiffTimeMode();
@@ -78,6 +80,42 @@ module a1 {
                     self.changeExtent = self.mainSettingModel.diffWorkSetting.changeExtent;
                 }
             });
+            
+            self.linkedWithDialogF = ko.observable(self.checkLinked(self.collectDialog()));
+            self.predseting.predTime.predTime.oneDay.subscribe((v) => {
+                let preCheck = self.linkedWithDialogF();
+                self.linkedWithDialogF(self.checkLinked(self.collectDialog()));
+                if (self.linkedWithDialogF() || preCheck == true) {
+                    self.predseting.predTime.addTime.oneDay(v);
+                }
+                self.linkedWithDialogF(self.checkLinked(self.collectDialog()));
+            });
+            self.predseting.predTime.predTime.morning.subscribe((v) => {
+                let preCheck = self.linkedWithDialogF();
+                self.linkedWithDialogF(self.checkLinked(self.collectDialog()));
+                if (self.linkedWithDialogF() || preCheck == true) {
+                    self.predseting.predTime.addTime.morning(v);
+                }
+                self.linkedWithDialogF(self.checkLinked(self.collectDialog()));
+            });
+            self.predseting.predTime.predTime.afternoon.subscribe((v) => {
+                let preCheck = self.linkedWithDialogF();
+                self.linkedWithDialogF(self.checkLinked(self.collectDialog()));
+                if (self.linkedWithDialogF() || preCheck == true) {
+                    self.predseting.predTime.addTime.afternoon(v);
+                }
+                self.linkedWithDialogF(self.checkLinked(self.collectDialog()));
+            });
+            self.mainSettingModel.workTimeSetting.worktimeCode.subscribe((v) => {
+                if (v == "") {
+                    self.linkedWithDialogF(true);
+                }
+                else {
+                    if (!nts.uk.util.isNullOrUndefined(v) && !self.isNewMode()) {
+                        self.linkedWithDialogF(false);
+                    }
+                }
+            });
         }
 
         /**
@@ -96,6 +134,13 @@ module a1 {
             self.isDiffTimeMode = self.mainSettingModel.workTimeSetting.isDiffTime;
             self.settingEnum = settingEnum;
             self.useHalfDay = data.useHalfDay;
+                                                   
+            // Subscribe event update dialog J interlock for A7_4, A7_6, A7_12, A7_13, A7_14
+            self.predseting.startDateClock.subscribe(() => { self.mainSettingModel.updateStampValue(); self.mainSettingModel.updateInterlockDialogJ(); });
+            self.predseting.rangeTimeDay.subscribe(() => { self.mainSettingModel.updateStampValue(); self.mainSettingModel.updateInterlockDialogJ(); });
+            self.timeZoneModelOne.end.subscribe(() => { self.mainSettingModel.updateStampValue(); self.mainSettingModel.updateInterlockDialogJ(); });                
+            self.timeZoneModelTwo.start.subscribe(() => { self.mainSettingModel.updateStampValue(); self.mainSettingModel.updateInterlockDialogJ(); });
+            self.timeZoneModelTwo.useAtr.subscribe(() => { self.mainSettingModel.updateStampValue(); self.mainSettingModel.updateInterlockDialogJ(); });
         }
 
         public collectData(oldData: any) {
@@ -103,6 +148,47 @@ module a1 {
             oldData.startDateClock = self.dayStartTime();
         }
 
+        public openDetailSetting() {
+            let self = this;
+            //open dialog F
+            let dialogDataObject = self.collectDialog();
+            self.linkedWithDialogF(self.checkLinked(dialogDataObject));
+            
+            //send data sang dialog
+            nts.uk.ui.windows.setShared('KMK003_DIALOG_F_INPUT_DATA', dialogDataObject);
+            nts.uk.ui.windows.sub.modal("/view/kmk/003/f/index.xhtml").onClosed(() => {
+                let returnObject = nts.uk.ui.windows.getShared('KMK003_DIALOG_F_OUTPUT_DATA');
+                self.predseting.predTime.addTime.oneDay(returnObject.oneDayDialog);
+                self.predseting.predTime.addTime.morning(returnObject.morningDialog);
+                self.predseting.predTime.addTime.afternoon(returnObject.afternoonDialog);
+                self.linkedWithDialogF(self.checkLinked(returnObject));
+//                if (self.linkedWithDialogF()) {
+//                    //bind from parent to dialog model
+//                    self.predseting.predTime.addTime.oneDay(self.predseting.predTime.predTime.oneDay());
+//                    self.predseting.predTime.addTime.morning(self.predseting.predTime.predTime.morning());
+//                    self.predseting.predTime.addTime.afternoon(self.predseting.predTime.predTime.afternoon());
+//                }
+//                else {
+//                    self.predseting.predTime.addTime.oneDay(returnObject.oneDayDialog);
+//                    self.predseting.predTime.addTime.morning(returnObject.morningDialog);
+//                    self.predseting.predTime.addTime.afternoon(returnObject.afternoonDialog);
+//                }
+            });
+        }
+        
+        private collectDialog() {
+            let self = this;
+            return {
+                oneDayDialog: self.predseting.predTime.addTime.oneDay(),
+                morningDialog: self.predseting.predTime.addTime.morning(),
+                afternoonDialog: self.predseting.predTime.addTime.afternoon()
+            };
+        }
+        
+        private checkLinked(dialogDataObject: any): boolean {
+            let self = this;
+            return (dialogDataObject.oneDayDialog == self.predseting.predTime.predTime.oneDay()) && (dialogDataObject.morningDialog == self.predseting.predTime.predTime.morning()) && (dialogDataObject.afternoonDialog == self.predseting.predTime.predTime.afternoon());
+        }
     }
     export class Item {
         code: string;

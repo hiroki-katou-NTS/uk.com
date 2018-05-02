@@ -53,7 +53,7 @@ public class SettingItemDtoMapping {
 			}
 
 			List<ComboBoxObject> comboxList = this.comboBoxFac.getComboBox(item.getSelectionItemRefType(),
-					item.getSelectionItemRefCd(), baseDate, employeeId, null, true, true,
+					item.getSelectionItemRefCd(), baseDate, employeeId, null, true,
 					perInfoCategory.get().getPersonEmployeeType(), true );
 
 			comboxList.forEach(cbItem -> {
