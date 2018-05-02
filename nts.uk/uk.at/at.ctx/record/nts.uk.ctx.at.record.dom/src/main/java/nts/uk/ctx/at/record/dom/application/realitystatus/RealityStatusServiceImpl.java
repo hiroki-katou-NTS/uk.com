@@ -188,6 +188,11 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 			GeneralDate endDate, boolean useBossConfirm, boolean usePersonConfirm) {
 		// 期間範囲分の日別確認（リスト）を作成する(Tạo list confirm hàng ngày)
 		List<DailyConfirmOutput> listDailyConfirm = new ArrayList<DailyConfirmOutput>();
+		GeneralDate currentDate = startDate;
+		while (currentDate.beforeOrEquals(endDate)) {
+			listDailyConfirm.add(new DailyConfirmOutput(wkpId, sId, currentDate, false, false));
+			currentDate = currentDate.addDays(1);
+		}
 		SumCountOutput sumCount = new SumCountOutput();
 
 		// 利用するの場合(use)
@@ -230,17 +235,6 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 				endDate, sId, cid, 1);
 		// 承認ルートの状況
 		for (ApproveRootStatusForEmpImport approval : listApproval) {
-			// 日別確認（リスト）に同じ職場ID、社員ID、対象日が登録済
-			Optional<DailyConfirmOutput> confirm = listDailyConfirm.stream().filter(x -> x.getWkpId().equals(wkpId)
-					&& x.getSId().equals(sId) && x.getTargetDate().equals(approval.getAppDate())).findFirst();
-			// 登録されていない場合
-			if (!confirm.isPresent()) {
-				// 日別確認（リスト）に追加する
-				DailyConfirmOutput newDailyConfirm = new DailyConfirmOutput(wkpId, sId, approval.getAppDate(), false,
-						false);
-				listDailyConfirm.add(newDailyConfirm);
-			}
-
 			// 承認ルート状況.承認状況
 			if (ApprovalStatusForEmployee.APPROVED.equals(approval.getApprovalStatus())) {
 				// 「承認済」の場合
@@ -279,13 +273,7 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 			Optional<DailyConfirmOutput> confirm = listDailyConfirm.stream().filter(x -> x.getWkpId().equals(wkpId)
 					&& x.getSId().equals(sId) && x.getTargetDate().equals(identification.getProcessingYmd()))
 					.findFirst();
-			if (!confirm.isPresent()) {
-				// 登録されていない場合
-				DailyConfirmOutput newDailyConfirm = new DailyConfirmOutput(wkpId, sId,
-						identification.getProcessingYmd(), true, false);
-				listDailyConfirm.add(newDailyConfirm);
-			} else {
-				// 登録されている場合
+			if (confirm.isPresent()) {
 				// 対象の日別確認（リスト）の行を対象として内容を更新するする
 				confirm.get().setPersonConfirm(true);
 			}

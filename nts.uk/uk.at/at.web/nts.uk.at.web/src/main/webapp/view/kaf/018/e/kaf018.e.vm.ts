@@ -203,13 +203,12 @@ module nts.uk.at.view.kaf018.e.viewmodel {
             this.dayPrincipalUnconfirm = dayPrincipalUnconfirm ? dayPrincipalUnconfirm : null;
             this.dayPrincipalConfirm = dayPrincipalConfirm ? dayPrincipalConfirm : null;
             if (dayPrincipalUnconfirm == 0 && dayBossUnconfirm == 0 && monthUnconfirm == 0) {
-                //this.enable = false;
-                this.enable = true;
-                this.check = ko.observable(this.enable);
+                this.enable = false;
+                this.check = ko.observable(false);
             }
             else {
                 this.enable = true;
-                this.check = ko.observable(this.enable);
+                this.check = ko.observable(true);
             }
         }
     }

@@ -1,10 +1,8 @@
 package nts.uk.ctx.at.record.app.find.realitystatus;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -12,8 +10,6 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.request.application.dto.SendMailResultImport;
-import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
-import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.application.realitystatus.RealityStatusService;
 import nts.uk.ctx.at.record.dom.application.realitystatus.enums.ApprovalStatusMailType;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.DailyConfirmOutput;
@@ -96,87 +92,5 @@ public class RealityStatusFinder {
 					approvalStatus, listDailyConfirm, listErrorStatus));
 		}
 		return listEmp;
-	}
-
-	private List<EmpPerformanceOutput> getSampleDate(EmpPerformanceParam dto) {
-		List<EmpPerformanceOutput> listEmp = new ArrayList<>();
-		for (int i = 0; i < 30; i++) {
-			String sId = "sid" + i;
-			String sName = "sName - " + i;
-			GeneralDate startDate = dto.getStartDate();
-			GeneralDate endDate = dto.getEndDate();
-			ApproveRootStatusForEmpImport routeStatus = null;
-			List<DailyConfirmOutput> listDailyConfirm = new ArrayList<>();
-			List<ErrorStatusOutput> listErrorStatus = new ArrayList<>();
-
-			if (i % 5 == 0) {
-				routeStatus = new ApproveRootStatusForEmpImport();
-				routeStatus.setApprovalStatus(EnumAdaptor.valueOf(2, ApprovalStatusForEmployee.class));
-			}
-
-			if (i == 2) {
-				startDate = startDate.addDays(5);
-				endDate = endDate.addDays(-7);
-			}
-
-			if (i == 4) {
-				startDate = startDate.addDays(4);
-			}
-
-			if (i == 7) {
-				startDate = startDate.addDays(5);
-				endDate = endDate.addDays(-10);
-			}
-
-			GeneralDate currentDate = startDate;
-
-			while (currentDate.beforeOrEquals(endDate)) {
-				String wkpId = dto.getWkpId();
-				boolean personConfirm = false;
-				boolean bossConfirm = false;
-
-				if (i == 4 || i == 5 || i == 9) {
-					personConfirm = true;
-					bossConfirm = true;
-				} else if (i % 3 == 0) {
-					if (currentDate.day() % 3 == 0) {
-						personConfirm = true;
-					}
-					if (currentDate.day() % 4 == 0) {
-						bossConfirm = true;
-					}
-				}
-
-				if (i % 5 == 0) {
-					if (currentDate.day() % 2 == 0) {
-						personConfirm = true;
-					}
-					if (currentDate.day() % 8 == 0) {
-						bossConfirm = true;
-					}
-				}
-
-				if (i % 7 == 0) {
-					if (currentDate.day() % 6 == 0) {
-						personConfirm = true;
-					}
-					if (currentDate.day() % 5 == 0) {
-						bossConfirm = true;
-					}
-				}
-
-				DailyConfirmOutput daily = new DailyConfirmOutput(wkpId, sId, currentDate, personConfirm, bossConfirm);
-				listDailyConfirm.add(daily);
-
-				if (currentDate.day() % 5 == 0) {
-					ErrorStatusOutput error = new ErrorStatusOutput(wkpId, sId, currentDate);
-					listErrorStatus.add(error);
-				}
-				currentDate = currentDate.addDays(1);
-			}
-			listEmp.add(new EmpPerformanceOutput(sId, sName, startDate, endDate, routeStatus, listDailyConfirm,
-					listErrorStatus));
-		}
-		return listEmp;
-	}
+	}	
 }
