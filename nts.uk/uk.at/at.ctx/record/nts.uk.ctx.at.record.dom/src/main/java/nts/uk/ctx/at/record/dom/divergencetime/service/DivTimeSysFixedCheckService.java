@@ -36,6 +36,7 @@ import nts.uk.ctx.at.record.dom.divergence.time.message.DivergenceTimeErrorAlarm
 import nts.uk.ctx.at.record.dom.divergence.time.message.ErrorAlarmMessage;
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessage;
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageRepository;
+import nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
@@ -183,7 +184,7 @@ public class DivTimeSysFixedCheckService {
 	
 	/** 日の本人確認を登録する */
 	private void registryIdentity(String companyId, IdentityProcessUseSet identityPUS, SelfConfirmContentRegistry selfConfirm) {
-		if(identityPUS.getYourSelfConfirmError().isPresent()) {
+		if(!identityPUS.getYourSelfConfirmError().isPresent()) {
 			return;
 		}
 		if(identityPUS.getYourSelfConfirmError().get() != SelfConfirmError.CAN_CONFIRM_WHEN_ERROR) {
@@ -194,17 +195,25 @@ public class DivTimeSysFixedCheckService {
 				List<ErrorAlarmWorkRecord> eaRecords = eaRecordRepo.getListErAlByListCodeError(companyId, 
 						errors.stream().map(c -> c.getErrorAlarmWorkRecordCode().v()).collect(Collectors.toList()));
 				if(!eaRecords.isEmpty()) {
+					// fix remove ドメインモデル「日の本人確認」を削除する Thanh
+					selfConfirm.content.stream().filter(c -> !c.confirmStatus).forEach(c -> {
+						identityRepo.remove(companyId, selfConfirm.empId, c.ymd);
+					});
+					GeneralDate today = GeneralDate.today();
+					selfConfirm.content.stream().filter(c -> c.confirmStatus).forEach(c -> {
+						identityRepo.insert(new Identification(companyId, selfConfirm.empId, c.ymd, today));
+					});
 					return;
 				}
 			}
 		}
-		selfConfirm.content.stream().filter(c -> !c.confirmStatus).forEach(c -> {
-			identityRepo.remove(companyId, selfConfirm.empId, c.ymd);
-		});
-		GeneralDate today = GeneralDate.today();
-		selfConfirm.content.stream().filter(c -> c.confirmStatus).forEach(c -> {
-			identityRepo.insert(new Identification(companyId, selfConfirm.empId, c.ymd, today));
-		});
+//		selfConfirm.content.stream().filter(c -> !c.confirmStatus).forEach(c -> {
+//			identityRepo.remove(companyId, selfConfirm.empId, c.ymd);
+//		});
+//		GeneralDate today = GeneralDate.today();
+//		selfConfirm.content.stream().filter(c -> c.confirmStatus).forEach(c -> {
+//			identityRepo.insert(new Identification(companyId, selfConfirm.empId, c.ymd, today));
+//		});
 	}
 	
 	/** システム固定エラー：　乖離時間をチェックする */
@@ -242,10 +251,11 @@ public class DivTimeSysFixedCheckService {
 					} else if (dt.getDivTimeAfterDeduction() != null) {
 						divergenceTime = dt.getDivTimeAfterDeduction().valueAsMinutes();
 					}
+					// add DivResonCode to check Thanh
 					boolean valid = evaluateDivergenceTime(((numberIn-1) / 2)+1, divergenceTime, 
 							isAlarm, isWHis, historyItem, bsCode,
-							divergenceTimeErAl.getErrorCancelMedthod().isReasonInputed(),
-							dt.getDivReason());
+							divergenceTimeErAl.getErrorCancelMedthod().isReasonInputed(), divergenceTimeErAl.getErrorCancelMedthod().isReasonSelected(),
+							dt.getDivReason(), dt.getDivResonCode());
 					if(!valid){
 						checkR.add(new EmployeeDailyPerError(companyId, employeeId, workingDate, 
 								erAl.getCode(), Arrays.asList(erAl.getErrorDisplayItem() != null? erAl.getErrorDisplayItem().intValue():null), 
@@ -341,31 +351,31 @@ public class DivTimeSysFixedCheckService {
 	/** 乖離時間のチェック */
 	private boolean evaluateDivergenceTime(int divNo, int divergenceTime, 
 			boolean isAlarm, boolean isCheckByWorkType, DateHistoryItem history, BusinessTypeCode bsCode,
-			boolean isRemoveErrorByInputReason, DivergenceReasonContent reason){
+			boolean isRemoveErrorByInputReason, boolean isRemoveErrorBySelectReasonCode, DivergenceReasonContent reason,  DiverdenceReasonCode reasonCode){
 		if(history == null){
 			return true;
 		}
 		if(isCheckByWorkType){
-			return evaluateByWorkType(divNo, history, divergenceTime, isAlarm, bsCode, isRemoveErrorByInputReason, reason);
+			return evaluateByWorkType(divNo, history, divergenceTime, isAlarm, bsCode, isRemoveErrorByInputReason, isRemoveErrorBySelectReasonCode, reason, reasonCode);
 		} else {
-			return evaluateByCompany(divNo, divergenceTime, isAlarm, history, isRemoveErrorByInputReason, reason);
+			return evaluateByCompany(divNo, divergenceTime, isAlarm, history, isRemoveErrorByInputReason, isRemoveErrorBySelectReasonCode, reason, reasonCode);
 		}
 	}
 
 	/** 勤務種別ごとの乖離基準時間でチェックする */
 	public boolean evaluateByWorkType(int divNo, DateHistoryItem history, int divergenceTime, 
-			boolean isAlarm, BusinessTypeCode bsCode, boolean isRemoveErrorByInputReason, DivergenceReasonContent reason){
+			boolean isAlarm, BusinessTypeCode bsCode, boolean isRemoveErrorByInputReason, boolean isRemoveErrorBySelectReasonCode, DivergenceReasonContent reason, DiverdenceReasonCode reasonCode){
 		val divTimeBaseByWT = wtDivRefTime.findByKey(history.identifier(), bsCode, divNo).orElse(null);
 		if(divTimeBaseByWT == null || !divTimeBaseByWT.getDivergenceReferenceTimeValue().isPresent()){
 			return true;
 		}
 		return evaluate(divergenceTime, isAlarm, divTimeBaseByWT.getNotUseAtr() == NotUseAtr.USE, 
-				divTimeBaseByWT.getDivergenceReferenceTimeValue().get(), isRemoveErrorByInputReason, reason);
+				divTimeBaseByWT.getDivergenceReferenceTimeValue().get(), isRemoveErrorByInputReason, isRemoveErrorBySelectReasonCode, reason, reasonCode);
 	}
 
 	/** 会社の履歴項目でチェックする */
 	public boolean evaluateByCompany(int divNo,  int divergenceTime, boolean isAlarm, DateHistoryItem history,
-			boolean isRemoveErrorByInputReason, DivergenceReasonContent reason){
+			boolean isRemoveErrorByInputReason, boolean isRemoveErrorBySelectReasonCode, DivergenceReasonContent reason, DiverdenceReasonCode reasonCode){
 		if(history == null){
 			return true;
 		}
@@ -374,12 +384,12 @@ public class DivTimeSysFixedCheckService {
 			return true;
 		}
 		return evaluate(divergenceTime, isAlarm, divTimeBaseByCom.getNotUseAtr() == NotUseAtr.USE,
-				divTimeBaseByCom.getDivergenceReferenceTimeValue().get(), isRemoveErrorByInputReason, reason);
+				divTimeBaseByCom.getDivergenceReferenceTimeValue().get(), isRemoveErrorByInputReason, isRemoveErrorBySelectReasonCode, reason, reasonCode);
 	}
 
 	/** 乖離時間を判定する */
 	public boolean evaluate(int divergenceTime, boolean isAlarm, boolean isUse, DivergenceReferenceTimeValue standard, 
-			boolean isRemoveErrorByInputReason, DivergenceReasonContent reason){
+			boolean isRemoveErrorByInputReason, boolean isRemoveErrorBySelectReasonCode, DivergenceReasonContent reason, DiverdenceReasonCode reasonCode){
 		if(!isUse || standard == null){
 			return true;
 		}
@@ -387,6 +397,15 @@ public class DivTimeSysFixedCheckService {
 		if(sdTime != null){
 			boolean isError = divergenceTime >= sdTime.valueAsMinutes();
 			if(isError) {
+				// パラメータ「エラーの解除方法．乖離理由が選択された場合，エラーを解除する」をチェックする
+				if(isRemoveErrorBySelectReasonCode) {
+					if(reasonCode == null || reasonCode.v() == null || reasonCode.v().isEmpty()) {
+					}
+					else {
+						return true;
+					}
+				}
+				
 				if(isRemoveErrorByInputReason) {
 					if(reason == null || reason.v() == null || reason.v().isEmpty()) {
 					}
