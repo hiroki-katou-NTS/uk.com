@@ -86,6 +86,8 @@ public class RegulationInfoEmployeeAdapterImport {
 	
 	/** The name type. */
 	private String nameType; //氏名の種類
+	
+	private boolean filterByClosure; //就業締めで絞り込む
 
 	/** The system type.
 	 *  Note: 

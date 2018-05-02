@@ -28,7 +28,7 @@ public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 	
 	@Basic(optional = false)
 	@Id
-	@Column(name = "HISTORY_ID")
+	@Column(name = "HIST_ID")
 	public String histId;
 
 	@Basic(optional = false)

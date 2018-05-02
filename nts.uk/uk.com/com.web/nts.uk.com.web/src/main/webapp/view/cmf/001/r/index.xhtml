@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 850, height: 550 };</script>
+			<script>var dialogSize = { width: 760, height: 550 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf001.r.vm.js" />
@@ -17,112 +17,115 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div class="contents-area" style="width:750px; height:550px;">
-			 	<div class="settingzyouho">
-			 	<!-- R1_1 -->
-					<div><label class="cmf001_505">#{i18n.getText('CMF001_505')}</label></div>
-					<table class="setting-zyouhou">
-						<tbody>
-							<tr>
-							<!-- R1_2 -->
-								<td class="bggreen" width='150px'>
-									<label>#{i18n.getText('CMF001_506')}</label>
-								</td>
-							<!-- R1_3,4 -->
-								<td width='300px'>
-									<label data-bind="text : code()"></label>
-									<label data-bind="text : nameSetting()"></label>
-								</td>
-							</tr>
-							<!-- R1_5,6 -->
-							<tr>
-								<td class="bggreen" width='150px'>
-									<label>#{i18n.getText('CMF001_507')}</label>
-								</td>
-								<td width='300px'>
-									<label data-bind="text : datetime"></label>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-				
-				<div class="kekkanaiyou">
-					<!-- R2_1 -->
-					<div><label class="cmf001_508">#{i18n.getText('CMF001_508')}</label></div>
-					<table class="kekka-naiyou">
-						<tbody>
-							<tr>
-							<!-- R2_2 -->
-								<td class="bggreen" width='150px'>
-									<label>#{i18n.getText('CMF001_509')}</label>
-								</td>
-								<!-- R2_3 -->
-								<td width='300px'>
-									
-										<div style="float:right" >
-											<div style="float: left; width:50px">
-												<label style="float: right" data-bind="text : imExExecuteResultLog.targetCount"></label></div>
-											<!-- R2_4 -->
-											<div style="float: left; width: 250px">
-												<label>#{i18n.getText('CMF001_510')}</label>
+			<div class="contents-area">
+				<div>
+					<div class="kekkanaiyou">
+						<!-- R2_1 -->
+						<div><label class="cmf001_508">#{i18n.getText('CMF001_508')}</label></div>
+						<table class="kekka-naiyou">
+							<tbody>
+								<tr>
+								<!-- R2_2 -->
+									<td class="bggreen" width='150px'>
+										<label>#{i18n.getText('CMF001_509')}</label>
+									</td>
+									<!-- R2_3 -->
+									<td width='80px'>
+										
+											<div style="float:right" >
+												<div style="float: left; width:30px">
+													<label style="float: right" data-bind="text : imExExecuteResultLog().targetCount"></label></div>
+												<!-- R2_4 -->
+												<div style=" width: 50px">
+													<label>#{i18n.getText('CMF001_510')}</label>
+												</div>
 											</div>
+									</td>
+								</tr>
+								<tr>
+									<!-- R2_5 -->
+									<td class="bggreen" width='150px'>
+										<label>#{i18n.getText('CMF001_511')}</label>
+									</td>
+									<!-- R2_6,7 -->
+									<td width='80px'>
+										<div style="float:right" >
+											<div style="float: left; width:30px">
+												<label style="float: right" data-bind="text : imExExecuteResultLog().targetCount - imExExecuteResultLog().errorCount"></label>
+											</div>
+											<div style=" width: 50px"><label>#{i18n.getText('CMF001_512')}</label></div>
 										</div>
-								</td>
-							</tr>
-							<tr>
-								<!-- R2_5 -->
-								<td class="bggreen" width='150px'>
-									<label>#{i18n.getText('CMF001_511')}</label>
-								</td>
-								<!-- R2_6,7 -->
-								<td width='300px'>
-									<div style="float:right" >
-										<div style="float: left; width:50px">
-											<label style="float: right" data-bind="text : imExExecuteResultLog.targetCount - imExExecuteResultLog.errorCount"></label>
+										
+									</td>
+								</tr>
+								<tr>
+									<!-- R2_8 -->
+									<td class="bggreen" width='100px'>
+										<label>#{i18n.getText('CMF001_513')}</label>
+									</td>
+									<!-- R2_9,10 -->
+									<td width='80px'>
+										<div style="float:right" >
+										<div  style="float: left; width:30px"><label style="float: right" data-bind="text : imExExecuteResultLog().errorCount"></label></div>
+										<div style=" width: 50px"><label>#{i18n.getText('CMF001_514')}</label></div>
 										</div>
-										<div style="float: left; width: 250px"><label>#{i18n.getText('CMF001_512')}</label></div>
-									</div>
-									
-								</td>
-							</tr>
-							<tr>
-								<!-- R2_8 -->
-								<td class="bggreen" width='150px'>
-									<label>#{i18n.getText('CMF001_513')}</label>
-								</td>
-								<!-- R2_9,10 -->
-								<td width='300px'>
-									<div style="float:right" >
-									<div  style="float: left; width:50px"><label style="float: right" data-bind="text : imExExecuteResultLog.errorCount"></label></div>
-									<div style="float: left; width: 250px"><label>#{i18n.getText('CMF001_514')}</label></div>
-									</div>
-								</td>
-							</tr>
-						</tbody>
-					</table>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				 	<div class="settingzyouho">
+				 	<!-- R1_1 -->
+						<div><label class="cmf001_505">#{i18n.getText('CMF001_505')}</label></div>
+						<table class="setting-zyouhou">
+							<tbody>
+								<tr>
+								<!-- R1_2 -->
+									<td class="bggreen" width='150px'>
+										<label>#{i18n.getText('CMF001_506')}</label>
+									</td>
+								<!-- R1_3,4 -->
+									<td width='250px'>
+										<label data-bind="text : code()"></label>
+										<label data-bind="text : nameSetting()"></label>
+									</td>
+								</tr>
+								<!-- R1_5,6 -->
+								<tr>
+									<td class="bggreen" width='150px'>
+										<label>#{i18n.getText('CMF001_507')}</label>
+									</td>
+									<td width='250px'>
+										<label data-bind="text : datetime()"></label>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</div>
 				<!-- R3 -->
 				<div class="error-ichiran">
 				
-					<div><div style="float: right; height:50px"><button id="BTN_ERROR_EXPORT" class="large btn-error-export" data-bind="click : errorExport" tabindex="2">#{i18n.getText('CMF001_516')}</button></div>
-					<div style="float: left; height:25px"><label class="cmf001_515">#{i18n.getText('CMF001_515')}</label></div></div>
+					<div style="margin: 10px;">
+						<div><button id="BTN_ERROR_EXPORT" class="large btn-error-export" data-bind="click : errorExport" tabindex="2">#{i18n.getText('CMF001_516')}</button></div>
+						<div>
+							<div><label>#{i18n.getText('CMF001_515')}</label></div>
+							<!-- R4 -->
+							<div><label>#{i18n.getText('CMF001_523')}</label></div>
+							<div><label>#{i18n.getText('CMF001_524')}</label></div>
+						</div>
+					</div>
 					
 					<div class="ichi-ran" style="margin-left:10px; margin-right:auto" >
 						<table id="single-list" data-bind="ntsGridList: {								
  							height: 350, 
  							dataSource: imExErrorLog, 
  							columns: columns,
- 							rows: 13, 
+ 							rows: 10, 
  							value: currentCode,
  							multiple: false,
  						}"></table> 
 					</div>
-				</div>
-				<!-- R4 -->
-				<div class="label-4">
-					<div><label>#{i18n.getText('CMF001_523')}</label></div>
-					<div><label>#{i18n.getText('CMF001_524')}</label></div>
 				</div>
 				<div class ="button">
 					<button id="BTN_CLOSE" class="large btn-close" data-bind="click : close" tabindex="1">#{i18n.getText('CMF001_526')}</button>

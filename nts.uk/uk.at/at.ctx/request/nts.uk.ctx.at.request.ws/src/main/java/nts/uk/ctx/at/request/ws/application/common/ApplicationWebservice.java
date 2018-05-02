@@ -186,6 +186,12 @@ public class ApplicationWebservice extends WebService {
 		return this.finderApp.getAppByID(appID);
 	}
 	
+	@POST
+	@Path("getAppInfoByListAppID")
+	public List<ApplicationMetaDto> getListAppInfo(List<String> listAppID){
+		return this.finderApp.getListAppInfo(listAppID);
+	}
+	
 	
 	@POST
 	@Path("getAppInfoForRemandByAppId")

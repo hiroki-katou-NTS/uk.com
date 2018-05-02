@@ -19,6 +19,9 @@ import nts.uk.ctx.at.shared.dom.worktype.language.WorkTypeLanguage;
 import nts.uk.ctx.at.shared.dom.worktype.language.WorkTypeLanguageRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class WorkTypeFinder.
+ */
 @Stateless
 public class WorkTypeFinder {
 
@@ -26,10 +29,17 @@ public class WorkTypeFinder {
 	@Inject
 	private WorkTypeRepository workTypeRepo;
 
+	/** The work type language repo. */
 	@Inject
 	private WorkTypeLanguageRepository workTypeLanguageRepo;
 
 	
+	/**
+	 * Gets the possible work type.
+	 *
+	 * @param lstPossible the lst possible
+	 * @return the possible work type
+	 */
 	public List<WorkTypeDto> getPossibleWorkType(List<String> lstPossible) {
 		// company id
 		String companyId = AppContexts.user().companyId();
@@ -41,8 +51,7 @@ public class WorkTypeFinder {
 	/**
 	 * Find not deprecated by list code.
 	 *
-	 * @param codes
-	 *            the codes
+	 * @param codes the codes
 	 * @return the list
 	 */
 	public List<WorkTypeDto> findNotDeprecatedByListCode(List<String> codes) {
@@ -95,10 +104,9 @@ public class WorkTypeFinder {
 	}
 
 	/**
-	 * Find by id.
+	 * Find by code.
 	 *
-	 * @param workTypeCode
-	 *            the work type code
+	 * @param workTypeCode the work type code
 	 * @return the work type dto
 	 */
 	public WorkTypeDto findByCode(String workTypeCode) {
@@ -123,10 +131,10 @@ public class WorkTypeFinder {
 
 
 	/**
-	 * get workType language base on language Id
-	 * 
-	 * @param langId
-	 * @return List WorkTypeDtos
+	 * Find work type language.
+	 *
+	 * @param langId the lang id
+	 * @return the list
 	 */
 	public List<WorkTypeDto> findWorkTypeLanguage(String langId) {
 		// company id
@@ -136,5 +144,17 @@ public class WorkTypeFinder {
 			WorkType wT = new WorkType(companyId, x.getWorkTypeCode(), x.getName(), x.getAbbreviationName());
 			return WorkTypeDto.fromDomainWorkTypeLanguage(wT);
 		}).collect(Collectors.toList());
+	}
+	
+	/**
+	 * Find work type by condition.
+	 *
+	 * @return the list
+	 */
+	public List<WorkTypeDto> findWorkTypeByCondition() {
+		// company id
+		String companyId = AppContexts.user().companyId();
+		return this.workTypeRepo.findWorkTypeByCondition(companyId).stream().map(dom -> WorkTypeDto.fromDomain(dom))
+				.collect(Collectors.toList());
 	}
 }

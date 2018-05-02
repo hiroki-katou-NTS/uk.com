@@ -32,4 +32,12 @@ public class UndigestedAnnualLeaveDays {
 		domain.undigestedDays = undigestedDays;
 		return domain;
 	}
+
+	/**
+	 * 日数を加算する
+	 * @param days 日数
+	 */
+	public void addDays(double days){
+		this.undigestedDays = new AnnualLeaveUsedDayNumber(this.undigestedDays.v() + days);
+	}
 }

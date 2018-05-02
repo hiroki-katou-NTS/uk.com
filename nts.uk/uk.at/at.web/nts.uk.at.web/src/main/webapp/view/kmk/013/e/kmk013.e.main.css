@@ -32,3 +32,8 @@
 .right-box-component {
 	margin-right: 10px;
 }
+
+.caret-helpbutton.caret-top:before,
+.caret-helpbutton.caret-top:after {
+	left: 0;
+}

@@ -320,7 +320,7 @@ module nts.uk.at.view.kmk011.d {
                         _self.enableSaveDivergenceRefSetting(false);
                         _self.fillListItemSettingDefault();
                         _self.histList([]);
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1058" }).then(() => {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1191" }).then(() => {
                             $('#save-hist-com').focus();
                         });
                         blockUI.clear();

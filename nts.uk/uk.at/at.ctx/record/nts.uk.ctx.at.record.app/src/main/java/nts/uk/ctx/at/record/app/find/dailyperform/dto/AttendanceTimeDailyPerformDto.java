@@ -86,6 +86,12 @@ public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 		if(!this.isHaveData()) {
 			return null;
 		}
+		if (emp == null) {
+			emp = this.employeeId();
+		}
+		if (date == null) {
+			date = this.workingDate();
+		}
 		return new AttendanceTimeOfDailyPerformance(emp, date,
 				scheduleTime == null ? null : scheduleTime.toDomain(), 
 				actualWorkTime == null ? null : actualWorkTime.toDomain(),

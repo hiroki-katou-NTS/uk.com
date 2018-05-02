@@ -52,6 +52,25 @@ public class PrescribedWorkingTimeOfMonthly {
 		domain.recordPrescribedWorkingTime = recordPrescribedWorkingTime;
 		return domain;
 	}
+
+	/**
+	 * 複写
+	 * @param schedulePrescribedWorkingTime 計画所定労働時間
+	 * @param recordPrescribedWorkingTime 実績所定労働時間
+	 * @param timeSeriesWorks 時系列ワーク
+	 * @return 月別実績の所定労働時間
+	 */
+	public static PrescribedWorkingTimeOfMonthly copyFrom(
+			AttendanceTimeMonth schedulePrescribedWorkingTime,
+			AttendanceTimeMonth recordPrescribedWorkingTime,
+			List<PrescribedWorkingTimeOfTimeSeries> timeSeriesWorks){
+		
+		val domain = new PrescribedWorkingTimeOfMonthly();
+		domain.schedulePrescribedWorkingTime = new AttendanceTimeMonth(schedulePrescribedWorkingTime.valueAsMinutes());
+		domain.recordPrescribedWorkingTime = new AttendanceTimeMonth(recordPrescribedWorkingTime.valueAsMinutes());
+		domain.timeSeriesWorks = timeSeriesWorks;
+		return domain;
+	}
 	
 	/**
 	 * 所定労働時間を確認する
@@ -94,6 +113,22 @@ public class PrescribedWorkingTimeOfMonthly {
 	}
 
 	/**
+	 * 計画所定労働合計時間を取得する
+	 * @param datePeriod 期間
+	 * @return 計画所定労働合計時間
+	 */
+	public AttendanceTimeMonth getTotalSchedulePrescribedWorkingTime(DatePeriod datePeriod){
+		
+		AttendanceTimeMonth returnTime = new AttendanceTimeMonth(0);
+		for (val timeSeriesWork : this.timeSeriesWorks){
+			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
+			val prescribedWorkingTime = timeSeriesWork.getPrescribedWorkingTime();
+			returnTime = returnTime.addMinutes(prescribedWorkingTime.getSchedulePrescribedLaborTime().v());
+		}
+		return returnTime;
+	}
+
+	/**
 	 * 実績所定労働合計時間を取得する
 	 * @param datePeriod 期間
 	 * @return 実績所定労働合計時間
@@ -107,5 +142,17 @@ public class PrescribedWorkingTimeOfMonthly {
 			returnTime = returnTime.addMinutes(prescribedWorkingTime.getRecordPrescribedLaborTime().v());
 		}
 		return returnTime;
+	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(PrescribedWorkingTimeOfMonthly target){
+		
+		this.schedulePrescribedWorkingTime = this.schedulePrescribedWorkingTime.addMinutes(
+				target.schedulePrescribedWorkingTime.v());
+		this.recordPrescribedWorkingTime = this.recordPrescribedWorkingTime.addMinutes(
+				target.recordPrescribedWorkingTime.v());
 	}
 }

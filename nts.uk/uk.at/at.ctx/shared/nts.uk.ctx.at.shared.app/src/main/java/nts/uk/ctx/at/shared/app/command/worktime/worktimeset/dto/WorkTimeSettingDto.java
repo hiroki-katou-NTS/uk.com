@@ -71,9 +71,8 @@ public class WorkTimeSettingDto implements WorkTimeSettingGetMemento {
 	 */
 	@Override
 	public WorkTimeDivision getWorkTimeDivision() {
-		return WorkTimeDivision.builder()
-				.workTimeDailyAtr(WorkTimeDailyAtr.valueOf(this.workTimeDivision.getWorkTimeDailyAtr()))
-				.workTimeMethodSet(WorkTimeMethodSet.valueOf(this.workTimeDivision.getWorkTimeMethodSet())).build();
+		return new WorkTimeDivision(WorkTimeDailyAtr.valueOf(this.workTimeDivision.getWorkTimeDailyAtr()),
+				WorkTimeMethodSet.valueOf(this.workTimeDivision.getWorkTimeMethodSet()));
 	}
 
 	/* (non-Javadoc)

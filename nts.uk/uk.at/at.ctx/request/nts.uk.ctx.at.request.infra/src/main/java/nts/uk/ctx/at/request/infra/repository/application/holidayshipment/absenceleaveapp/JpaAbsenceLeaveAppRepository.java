@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- * 
+ *
  * @author sonnlb
  */
 @Stateless
@@ -128,7 +128,7 @@ public class JpaAbsenceLeaveAppRepository extends JpaRepository implements Absen
 
 	/**
 	 * find AbsenceLeaveApp By AppId
-	 * 
+	 *
 	 * @author hoatt
 	 * @param applicationID
 	 * @return
@@ -140,7 +140,7 @@ public class JpaAbsenceLeaveAppRepository extends JpaRepository implements Absen
 
 	/**
 	 * convert entity to domain
-	 * 
+	 *
 	 * @author hoatt
 	 * @param entity
 	 * @return

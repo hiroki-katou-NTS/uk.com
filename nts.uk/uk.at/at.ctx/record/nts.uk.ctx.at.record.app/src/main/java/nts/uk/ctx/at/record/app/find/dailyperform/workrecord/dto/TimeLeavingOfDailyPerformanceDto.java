@@ -63,6 +63,12 @@ public class TimeLeavingOfDailyPerformanceDto extends AttendanceItemCommon {
 		if(!this.isHaveData()) {
 			return null;
 		}
+		if (emp == null) {
+			emp = this.employeeId();
+		}
+		if (date == null) {
+			date = this.workingDate();
+		}
 		return new TimeLeavingOfDailyPerformance(emp, new WorkTimes(toWorkTime()),
 				ConvertHelper.mapTo(workAndLeave, c -> toTimeLeaveWork(c)), date);
 	}
@@ -73,8 +79,8 @@ public class TimeLeavingOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	private TimeLeavingWork toTimeLeaveWork(WorkLeaveTimeDto c) {
 		return c == null ? null
-				: new TimeLeavingWork(new WorkNo(c.getWorkNo()), toTimeActualStamp(c.getWorking()),
-						toTimeActualStamp(c.getLeave()));
+				: new TimeLeavingWork(new WorkNo(c.getWorkNo()), toTimeActualStamp(c.getWorking()).isPresent() ? toTimeActualStamp(c.getWorking()).get() : null,
+						toTimeActualStamp(c.getLeave()).isPresent() ? toTimeActualStamp(c.getLeave()).get() : null);
 	}
 
 	private Optional<TimeActualStamp> toTimeActualStamp(WithActualTimeStampDto c) {

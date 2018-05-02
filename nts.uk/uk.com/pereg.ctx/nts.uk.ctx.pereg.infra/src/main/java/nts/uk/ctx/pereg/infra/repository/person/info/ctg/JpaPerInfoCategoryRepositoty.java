@@ -354,12 +354,17 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	}
 
 	@Override
-	public DateRangeItem getDateRangeItemByCategoryId(String perInfoCtgId) {
-		PpemtDateRangeItem item = this.queryProxy().query(GET_DATE_RANGE_ID_BY_CTG_ID_2, PpemtDateRangeItem.class)
-				.setParameter("perInfoCtgId", perInfoCtgId).getSingleOrNull();
+	public Optional<DateRangeItem> getDateRangeItemByCategoryId(String perInfoCtgId) {
+		Optional<PpemtDateRangeItem> itemOpt = this.queryProxy()
+				.query(GET_DATE_RANGE_ID_BY_CTG_ID_2, PpemtDateRangeItem.class)
+				.setParameter("perInfoCtgId", perInfoCtgId).getSingle();
+		if (!itemOpt.isPresent()) {
+			return Optional.empty();
+		}
+		PpemtDateRangeItem item = itemOpt.get();
 		DateRangeItem s = DateRangeItem.createFromJavaType(item.ppemtPerInfoCtgPK.perInfoCtgId, item.startDateItemId,
 				item.endDateItemId, item.dateRangeItemId);
-		return s;
+		return Optional.of(s);
 	}
 
 	// vinhpx: end

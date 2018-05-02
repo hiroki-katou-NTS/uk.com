@@ -59,9 +59,11 @@ public class BreakTimeStampLeakageChecking {
 					} else if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(10))) {
 						attendanceItemIDList.add(211);
 					}
-
-					createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate,
-							new ErrorAlarmWorkRecordCode("S001"), attendanceItemIDList);
+					
+					if (!attendanceItemIDList.isEmpty()) {
+						createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate,
+								new ErrorAlarmWorkRecordCode("S001"), attendanceItemIDList);
+					}
 				}
 
 				if (breakTimeSheet.getEndTime() == null) {
@@ -88,9 +90,11 @@ public class BreakTimeStampLeakageChecking {
 					} else if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(10))) {
 						attendanceItemIDList.add(213);
 					}
-
-					createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate,
-							new ErrorAlarmWorkRecordCode("S001"), attendanceItemIDList);
+					
+					if (!attendanceItemIDList.isEmpty()) {
+						createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate,
+								new ErrorAlarmWorkRecordCode("S001"), attendanceItemIDList);
+					}
 				}
 			}
 		}

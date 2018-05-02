@@ -116,8 +116,11 @@ module cmm045.shr {
             //事前、事後の後ろに#CMM045_101(※)を追加
             checkAddNote: boolean;
             checkTimecolor: number;
+            //ver14 + EA1360
+            detailSet: number;
             constructor(appID: string, appType: number, dispName: string, empName: string, inpEmpName: string,
-            workplaceName: string, statusFrameAtr: boolean, phaseStatus: string, checkAddNote: boolean, checkTimecolor: number)
+            workplaceName: string, statusFrameAtr: boolean, phaseStatus: string, checkAddNote: boolean, 
+            checkTimecolor: number, detailSet: number)
             {
                 this.appID = appID;
                 this.appType = appType;
@@ -129,6 +132,7 @@ module cmm045.shr {
                 this.phaseStatus = phaseStatus;
                 this.checkAddNote = checkAddNote;
                 this.checkTimecolor = checkTimecolor;
+                this.detailSet = detailSet;
             }
         }
         export class ApplicationDto_New{
@@ -355,14 +359,27 @@ module cmm045.shr {
             postAppID: string;
             //実績
             lstFrameRes: Array<vmbase.OverTimeFrame>;
+            /**出勤時刻  - 開始時刻1*/
+            strTime1: string;
+            /**退勤時刻  - 終了時刻1*/
+            endTime1: string;
+            /**出勤時刻2  - 開始時刻2*/
+            strTime2: string;
+            /**退勤時刻2  - 終了時刻2*/
+            endTime2: string;
             appPre: any;
             reasonAppPre: string;
             appPreHd: any;
             constructor(preAppID: string, postAppID: string, lstFrameRes: Array<vmbase.OverTimeFrame>,
+                strTime1: string, endTime1: string, strTime2: string, endTime2: string,
                 appPre: any, reasonAppPre: string, appPreHd: any){
                 this.preAppID = preAppID;
                 this.postAppID = postAppID;
                 this.lstFrameRes = lstFrameRes;
+                this.strTime1 = strTime1;
+                this.endTime1 = endTime1;
+                this.strTime2 = strTime2;
+                this.endTime2 = endTime2;
                 this.appPre = appPre;
                 this.reasonAppPre = reasonAppPre;
                 this.appPreHd = appPreHd;
@@ -495,15 +512,15 @@ module cmm045.shr {
         export class AppCompltLeaveFull {
             /**申請ID*/
             appID: string;
-            /**勤務種類*/
-            workTypeCD: string;
+            /**勤務種類Name*/
+            workTypeName: string;
             /**勤務時間1.開始時刻*/
             startTime: string;
             /**勤務時間1.終了時刻*/
             endTime: string;
-            constructor(appID: string, workTypeCD: string, startTime: string, endTime: string){
+            constructor(appID: string, workTypeName: string, startTime: string, endTime: string){
                 this.appID = appID;
-                this.workTypeCD = workTypeCD;
+                this.workTypeName = workTypeName;
                 this.startTime = startTime;
                 this.endTime = endTime;
             }
