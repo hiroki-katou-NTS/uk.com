@@ -34,7 +34,7 @@
 										
 											<div style="float:right" >
 												<div style="float: left; width:30px">
-													<label style="float: right" data-bind="text : imExExecuteResultLog.targetCount"></label></div>
+													<label style="float: right" data-bind="text : imExExecuteResultLog().targetCount"></label></div>
 												<!-- R2_4 -->
 												<div style=" width: 50px">
 													<label>#{i18n.getText('CMF001_510')}</label>
@@ -51,7 +51,7 @@
 									<td width='80px'>
 										<div style="float:right" >
 											<div style="float: left; width:30px">
-												<label style="float: right" data-bind="text : imExExecuteResultLog.targetCount - imExExecuteResultLog.errorCount"></label>
+												<label style="float: right" data-bind="text : imExExecuteResultLog().targetCount - imExExecuteResultLog().errorCount"></label>
 											</div>
 											<div style=" width: 50px"><label>#{i18n.getText('CMF001_512')}</label></div>
 										</div>
@@ -66,7 +66,7 @@
 									<!-- R2_9,10 -->
 									<td width='80px'>
 										<div style="float:right" >
-										<div  style="float: left; width:30px"><label style="float: right" data-bind="text : imExExecuteResultLog.errorCount"></label></div>
+										<div  style="float: left; width:30px"><label style="float: right" data-bind="text : imExExecuteResultLog().errorCount"></label></div>
 										<div style=" width: 50px"><label>#{i18n.getText('CMF001_514')}</label></div>
 										</div>
 									</td>
@@ -96,7 +96,7 @@
 										<label>#{i18n.getText('CMF001_507')}</label>
 									</td>
 									<td width='250px'>
-										<label data-bind="text : datetime"></label>
+										<label data-bind="text : datetime()"></label>
 									</td>
 								</tr>
 							</tbody>

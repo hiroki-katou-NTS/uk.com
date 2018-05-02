@@ -247,9 +247,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 
                     self.getAllData(self.selectedStandardImportSettingCode()).done(() => {
                         info({ messageId: "Msg_16" }).then(() => {
-                            if (self.screenMode() == model.SCREEN_MODE.UPDATE) {
-                                $("#B3_4").focus();
-                            } else {
+                            if (self.screenMode() != model.SCREEN_MODE.UPDATE) {
                                 $("#B4_3").focus();
                             }
                         });
