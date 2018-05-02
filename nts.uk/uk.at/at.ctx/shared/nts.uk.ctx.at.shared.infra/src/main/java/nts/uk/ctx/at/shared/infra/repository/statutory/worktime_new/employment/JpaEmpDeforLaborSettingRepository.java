@@ -25,7 +25,9 @@ public class JpaEmpDeforLaborSettingRepository extends JpaRepository implements 
 	 */
 	@Override
 	public void add(EmpDeforLaborSetting setting) {
-		commandProxy().insert(this.toEntity(setting));
+		KshstEmpDeforLarSet entity = new KshstEmpDeforLarSet();
+		setting.saveToMemento(new JpaEmpDeforLaborSettingSetMemento(entity));
+		commandProxy().insert(entity);
 	}
 
 	/* 
@@ -33,7 +35,13 @@ public class JpaEmpDeforLaborSettingRepository extends JpaRepository implements 
 	 */
 	@Override
 	public void update(EmpDeforLaborSetting setting) {
-		commandProxy().update(this.toEntity(setting));
+		KshstEmpDeforLarSet entity = this.queryProxy()
+				.find(new KshstEmpDeforLarSetPK(setting.getCompanyId().v(),
+						setting.getEmployeeCode().v(), setting.getYear().v()),
+						KshstEmpDeforLarSet.class)
+				.get();
+		setting.saveToMemento(new JpaEmpDeforLaborSettingSetMemento(entity));
+		commandProxy().update(entity);
 	}
 
 	/* 
@@ -59,17 +67,6 @@ public class JpaEmpDeforLaborSettingRepository extends JpaRepository implements 
 		return Optional.ofNullable(this.toDomain(optEntity.get()));
 	}
 
-	/**
-	 * To entity.
-	 *
-	 * @param domain the domain
-	 * @return the kshst emp defor lar set
-	 */
-	private KshstEmpDeforLarSet toEntity(EmpDeforLaborSetting domain) {
-		KshstEmpDeforLarSet entity = new KshstEmpDeforLarSet();
-		domain.saveToMemento(new JpaEmpDeforLaborSettingSetMemento(entity));
-		return entity;
-	}
 	
 	/**
 	 * To domain.
