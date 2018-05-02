@@ -427,6 +427,11 @@ public class MonthlyCalculation {
 		// 総労働時間を計算
 		this.calcTotalWorkingTime();
 		
+		// フレックス時間勤務の時、フレックス時間から控除した年休控除時間を年休使用時間に加算する
+		if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK){
+			this.addAnnualLeaveUseTimeDeductFlex();
+		}
+		
 		// 管理期間の36協定時間の作成
 		this.agreementTimeOfManagePeriod = new AgreementTimeOfManagePeriod(this.employeeId, this.yearMonth);
 		this.agreementTimeOfManagePeriod.aggregate(this.companyId, this.year, aggrPeriod.end(),
@@ -460,6 +465,46 @@ public class MonthlyCalculation {
 		}
 		this.flexTime.getFlexShortDeductTime().setAnnualLeaveDeductDays(applyAnnualDeductDays);
 		this.flexTime.getFlexShortDeductTime().setAbsenceDeductTime(applyAbsenceDeductTime);
+	}
+	
+	/**
+	 * フレックス時間から控除した年休控除時間を年休使用時間に加算する
+	 */
+	private void addAnnualLeaveUseTimeDeductFlex(){
+		
+		// 控除後の結果にエラーがある時、加算しない
+		val afterDeduct = this.flexTime.getDeductDaysAndTime();
+		if (afterDeduct.getErrorInfos().size() > 0) return;
+		if (!afterDeduct.getPredetermineTimeSetOfWeekDay().isPresent()) return;
+
+		// 控除後の年休控除時間が0以下の時、加算しない
+		if (afterDeduct.getAnnualLeaveDeductTime().lessThanOrEqualTo(0)) return;
+		
+		// 控除前の年休控除時間を取得する
+		val beforeDeductTime = this.flexTime.getAnnualLeaveTimeBeforeDeduct();
+		
+		// 控除した時間を求める
+		val deductedTime = beforeDeductTime.minusMinutes(afterDeduct.getAnnualLeaveDeductTime().v());
+
+		// 控除した時間を年休使用時間に加算する
+		val annualLeave = this.aggregateTime.getVacationUseTime().getAnnualLeave();
+		annualLeave.addMinuteToUseTime(deductedTime.v());
+
+		// 控除時間が余分に入力されていないか確認する
+		val predetermineTimeSet = afterDeduct.getPredetermineTimeSetOfWeekDay().get();
+		val predAddTimeAM = predetermineTimeSet.getPredTime().getAddTime().getMorning();
+		boolean isExtraTime = false;
+		if (afterDeduct.getAnnualLeaveDeductTime().greaterThanOrEqualTo(predAddTimeAM.v())){
+			isExtraTime = true;
+		}
+		else if (afterDeduct.getAbsenceDeductTime().greaterThan(0)){
+			isExtraTime = true;
+		}
+		if (isExtraTime){
+			
+			// 「余分な控除時間のエラーフラグ」をtrueにする
+			this.flexTime.getFlexShortDeductTime().setErrorAtrOfExtraDeductTime(true);
+		}
 	}
 	
 	/**

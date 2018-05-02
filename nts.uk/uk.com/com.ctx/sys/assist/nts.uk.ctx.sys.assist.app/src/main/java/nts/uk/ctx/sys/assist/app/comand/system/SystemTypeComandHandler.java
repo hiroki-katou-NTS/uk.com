@@ -25,7 +25,7 @@ public class SystemTypeComandHandler extends CommandHandlerWithResult<SystemType
 		List<SystemTypeResult> lstSystemType= new ArrayList<>();
 
 		if(temp.isPersonalInformation()){
-			lstSystemType.add(new SystemTypeResult(SystemTypeEnum.PERSON_SYSTEM.nameId, SystemTypeEnum.PERSON_SYSTEM.value));
+			lstSystemType.add(new SystemTypeResult(SystemTypeEnum.POSSIBILITY_SYSTEM.nameId, SystemTypeEnum.POSSIBILITY_SYSTEM.value));
 		}
 
 		if(temp.isHumanResOfficer()){

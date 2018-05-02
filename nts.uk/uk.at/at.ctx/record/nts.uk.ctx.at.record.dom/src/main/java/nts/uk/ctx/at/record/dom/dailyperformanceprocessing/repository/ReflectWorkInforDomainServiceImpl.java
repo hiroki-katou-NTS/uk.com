@@ -774,12 +774,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 					TimeLeavingOfDailyPerformance timeLeavingOptional = createStamp(companyId, workInfoOfDailyPerformanceUpdate, workingConditionItem, null,
 							employeeID, day);
-					if (reCreateWorkType == false) {
-						// check tay
-						stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeID, day,
-								workInfoOfDailyPerformanceUpdate, timeLeavingOptional, empCalAndSumExecLogID,
-								reCreateAttr);
-					}
+					// check tay
+					stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeID, day,
+							workInfoOfDailyPerformanceUpdate, timeLeavingOptional, empCalAndSumExecLogID,
+							reCreateAttr);
+
 				}
 
 				this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId, employeeID, day,
@@ -1257,7 +1256,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				if (timeLeavingOptional.getTimeLeavingWorks() != null) {
 					leavingStamp = timeLeavingOptional.getTimeLeavingWorks().stream()
 							.filter(itemx -> itemx.getWorkNo().v().equals(timeLeavingWork.getWorkNo().v())).findFirst()
-							.get();
+							.orElse(null);
 				}
 
 				TimeActualStamp attendanceStamp = new TimeActualStamp();

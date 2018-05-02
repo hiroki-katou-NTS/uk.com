@@ -565,10 +565,10 @@ public class ExcessOutsideWorkMng {
 		val vacationUseTime = this.monthlyCalculation.getAggregateTime().getVacationUseTime();
 		val compensatoryLeave = vacationUseTime.getCompensatoryLeave();
 		DatePeriod targetPeriod = new DatePeriod(this.procPeriod.start(), procDate);
-		compensatoryLeave.aggregate(targetPeriod);
+		val compensatoryLeaveTime = compensatoryLeave.getTotalUseTime(targetPeriod);
 		
 		// 法定労働時間から代休分を引く
-		int afterDeduction = statutoryWorkingTimeMonth.v() - compensatoryLeave.getUseTime().v();
+		int afterDeduction = statutoryWorkingTimeMonth.v() - compensatoryLeaveTime.v();
 		if (afterDeduction < 0) afterDeduction = 0;
 		
 		// 当日までの超過時間を求める
@@ -595,10 +595,10 @@ public class ExcessOutsideWorkMng {
 		val vacationUseTime = this.monthlyCalculation.getAggregateTime().getVacationUseTime();
 		val compensatoryLeave = vacationUseTime.getCompensatoryLeave();
 		DatePeriod targetPeriod = new DatePeriod(this.procPeriod.start(), procDate);
-		compensatoryLeave.aggregate(targetPeriod);
+		val compensatoryLeaveTime = compensatoryLeave.getTotalUseTime(targetPeriod);
 		
 		// 所定労働時間から代休分を引く
-		int afterDeduction = prescribedWorkingTimeMonth.v() - compensatoryLeave.getUseTime().v();
+		int afterDeduction = prescribedWorkingTimeMonth.v() - compensatoryLeaveTime.v();
 		if (afterDeduction < 0) afterDeduction = 0;
 		
 		// 当日までの超過時間を求める

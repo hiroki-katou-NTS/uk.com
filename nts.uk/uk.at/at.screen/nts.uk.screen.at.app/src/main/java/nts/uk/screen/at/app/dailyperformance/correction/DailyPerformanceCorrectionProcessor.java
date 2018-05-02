@@ -24,17 +24,14 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
-import nts.uk.ctx.at.function.dom.adapter.AffComHistItemImport;
-import nts.uk.ctx.at.function.dom.adapter.AffCompanyHistImport;
 import nts.uk.ctx.at.function.dom.adapter.EmployeeHistWorkRecordAdapter;
-import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
-import nts.uk.ctx.at.function.dom.adapter.WorkPlaceIdAndPeriodImport;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.person.EmployeeInfoFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.person.EmployeeInfoFunAdapterDto;
@@ -54,6 +51,7 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ConfirmOfManagerOrYo
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
@@ -80,6 +78,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalUseSettingDt
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFomatDailyDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatInitialDisplayDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatSheetDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ChangeSPR;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ClosureDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ColumnSetting;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.CorrectionOfDailyPerformance;
@@ -101,10 +100,12 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DisplayItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DivergenceTimeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.FlexShortage;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.FormatDPCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ObjectShare;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.SPRCheck;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ScreenMode;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
@@ -394,7 +395,8 @@ public class DailyPerformanceCorrectionProcessor {
 			}
 			// フレックス情報を表示する
 			if(!listEmployeeId.isEmpty())
-			screenDto.setFlexShortage(flexInfoDisplay.flexInfo(listEmployeeId.get(0), dateRange.getEndDate(),  AppContexts.user().roles().forAttendance()));
+			//screenDto.setFlexShortage(flexInfoDisplay.flexInfo(listEmployeeId.get(0), dateRange.getEndDate(),  AppContexts.user().roles().forAttendance()));
+			screenDto.setFlexShortage(null);
 		}
 		DisplayItem disItem = getDisplayItems(correct, formatCodes, companyId, screenDto, listEmployeeId, showButton);
 
@@ -403,7 +405,6 @@ public class DailyPerformanceCorrectionProcessor {
 		DPControlDisplayItem dPControlDisplayItem = this.getItemIdNames(disItem, showButton);
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
 		screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
-
 		System.out.println("time get data and map name : " + (System.currentTimeMillis() - start));
 		long startTime2 = System.currentTimeMillis();
 		Map<String, DailyModifyResult> resultDailyMap = results.stream().collect(Collectors
@@ -487,7 +488,7 @@ public class DailyPerformanceCorrectionProcessor {
 			//get status check box 
 			ApproveRootStatusForEmpDto approveRootStatus =  approvalDayMap.get(data.getEmployeeId() + "|" + data.getDate());
 		//	if(mode == ScreenMode.APPROVAL.value){
-				data.setApproval(approveRootStatus == null ? false : approveRootStatus.isCheckApproval());
+			data.setApproval(approveRootStatus == null ? false : approveRootStatus.isCheckApproval());
 		//	}
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
 			if (resultOfOneRow != null && (displayFormat == 2 ? !data.getError().equals("") : true)) {
@@ -505,6 +506,10 @@ public class DailyPerformanceCorrectionProcessor {
 							data.setState(typeLock + "|" + LOCK_EDIT_APPROVAL);
 						lock = true;
 					}
+				}
+				if(displayFormat == 0 && objectShare != null){
+					// set question SPR 
+					screenDto.setShowQuestionSPR(checkSPR(companyId, disItem.getLstAtdItemUnique(), data.getState(), approvalUseSettingDtoOpt.get(), identityProcessDtoOpt.get(), data.isApproval(), data.isSign()).value);
 				}
 				itemValueMap = resultOfOneRow.getItems().stream()
 						.collect(Collectors.toMap(x -> mergeString(String.valueOf(x.getItemId()), "|",
@@ -526,6 +531,7 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 		System.out.println("time get data into cell : " + (System.currentTimeMillis() - start2));
 		screenDto.setLstData(lstData);
+		screenDto.getChangeSPR().setPrincipal(screenDto.getShowPrincipal()).setSupervisor(screenDto.getShowSupervisor());
 		System.out.println("time add  return : " + (System.currentTimeMillis() - start));
 		System.out.println("All time :" + (System.currentTimeMillis() - timeStart));
 		return screenDto;
@@ -614,17 +620,22 @@ public class DailyPerformanceCorrectionProcessor {
 					if (attendanceAtr == DailyAttendanceAtr.Time.value
 							|| attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
 						//set SPR
-						if(share != null && share.getInitClock() != null && share.getDisplayFormat() == 0){
-							boolean att = false;
-							boolean leav = false;
+						if(share != null && share.getInitClock() != null && share.getDisplayFormat() == 0 && screenDto.getShowQuestionSPR() != SPRCheck.NOT_INSERT.value){
+							boolean change31 = false;
+							boolean change34 = false;
 							if(item.getId() == 31 && data.getEmployeeId().equals(share.getInitClock().getEmployeeId()) && data.getDate().equals(share.getInitClock().getDateSpr())){
-								value = share.getInitClock().getGoOut() != null ?  share.getInitClock().getGoOut() : "";
-								att = true;
+								//value = share.getInitClock().getGoOut() != null ?  share.getInitClock().getGoOut() : "";
+								if(!value.equals(share.getInitClock().getGoOut()))  change31 = true;
+								ChangeSPR changeSPR31 = processSPR(data.getEmployeeId(), data.getDate(), share, change31, false);
+								changeSPR31.setChange34(screenDto.getChangeSPR().isChange34());
+								screenDto.setChangeSPR(changeSPR31.setRow31(data.getId()));
 							}else if(item.getId() == 34 && data.getEmployeeId().equals(share.getInitClock().getEmployeeId()) && data.getDate().equals(share.getInitClock().getDateSpr())){
-								value = share.getInitClock().getLiveTime() != null ?  share.getInitClock().getLiveTime() : "";
-								leav = true;
+								if(!value.equals(share.getInitClock().getLiveTime()))  change34 = true;
+								ChangeSPR changeSPR34 = processSPR(data.getEmployeeId(), data.getDate(), share, false, change34);
+								changeSPR34.setChange31(screenDto.getChangeSPR().isChange31());
+								screenDto.setChangeSPR(changeSPR34.setRow34(data.getId()));
 							}
-							insertStampSourceInfo(data.getEmployeeId(), data.getDate(), att, leav);
+							//insertStampSourceInfo(data.getEmployeeId(), data.getDate(), att, leav);
 						}
 						if (!value.isEmpty()) {
 							// convert HH:mm
@@ -1288,7 +1299,7 @@ public class DailyPerformanceCorrectionProcessor {
 		return query;
 	}
 	
-	private void insertStampSourceInfo(String employeeId, GeneralDate date, Boolean stampSourceAt,
+	public void insertStampSourceInfo(String employeeId, GeneralDate date, Boolean stampSourceAt,
 			Boolean stampSourceLeav) {
 		Optional<TimeLeavingOfDailyPerformance> timeLeavingOpt = timeLeavingOfDailyPerformanceRepository
 				.findByKey(employeeId, date);
@@ -1358,29 +1369,58 @@ public class DailyPerformanceCorrectionProcessor {
 	}
 	
 	//出退勤打刻の初期値を埋める
-	private boolean checkSPR(String companyId, List<Integer> itemIds, String lock, ApprovalUseSettingDto approval, IdentityProcessUseSetDto indentity, boolean checkApproval, boolean checkIndentity){
+	private SPRCheck checkSPR(String companyId, List<Integer> itemIds, String lock, ApprovalUseSettingDto approval, IdentityProcessUseSetDto indentity, boolean checkApproval, boolean checkIndentity){
 		if (lock.matches(".*[AD].*"))
-			return false;
+			return SPRCheck.NOT_INSERT;
 		List<Integer> items = itemIds.stream().filter(x -> (x == 31 || x == 34)).collect(Collectors.toList());
 		if (items.size() != 2)
-			return false;
+			return SPRCheck.NOT_INSERT;
 		//check 取得しているドメインモデル「本人確認処理の利用設定」、「承認処理の利用設定」をチェックする 
 		//false
-		if((approval == null || (approval != null && !approval.getUseDayApproverConfirm())) 
-		&& (indentity == null || (indentity != null && !indentity.isUseConfirmByYourself())
+		if((approval == null || (approval != null && !approval.getUseDayApproverConfirm())
+		&& (indentity == null || (indentity != null && !indentity.isUseConfirmByYourself()))
 		|| (!checkApproval && !checkIndentity))){
 			//TODO  xu ly insert SPR va load 
-			return true;
+			return SPRCheck.INSERT;
 		}
-		return false;
+		return SPRCheck.SHOW_CONFIRM;
 		
 	}
 	
 	//ドメインモデル「日別実績の出退勤」を取得する
-	private void processSPR(String employeeId, GeneralDate date){
-//		if(timeLeaving != null){
-//			
-//		}
-		insertStampSourceInfo(employeeId, date, true, true);
+	private ChangeSPR processSPR(String employeeId, GeneralDate date, ObjectShare shareSPR, boolean change31, boolean change34){
+		//ChangeSPR changeSPR = new ChangeSPR(change31, change31);
+		Optional<TimeLeavingOfDailyPerformance> timeLeavingOpt = timeLeavingOfDailyPerformanceRepository
+				.findByKey(employeeId, date);
+		if(!timeLeavingOpt.isPresent()) return  new ChangeSPR(false, false);
+		boolean checkSPR31 = false;
+		boolean checkSPR34 = false;
+	    List<TimeLeavingWork> timeLeaving = timeLeavingOpt.get().getTimeLeavingWorks().stream().filter(x -> x.getWorkNo().v() == 1).collect(Collectors.toList());
+	    if(!timeLeaving.isEmpty()){
+	    	TimeLeavingWork x = timeLeaving.get(0);
+	    	Optional<TimeActualStamp> attOpt = x.getAttendanceStamp();
+			if (attOpt.isPresent()) {
+				Optional<WorkStamp> workStampOpt = attOpt.get().getStamp();
+				if (workStampOpt.isPresent()) {
+					if (workStampOpt.get().getStampSourceInfo() == StampSourceInfo.SPR) {
+						checkSPR31 = true;
+					}
+				}
+			}
+			
+			Optional<TimeActualStamp> leavOpt = x.getLeaveStamp();
+			if (leavOpt.isPresent()) {
+				Optional<WorkStamp> workStampOpt = leavOpt.get().getStamp();
+				if (workStampOpt.isPresent()) {
+					if (workStampOpt.get().getStampSourceInfo() == StampSourceInfo.SPR) {
+						checkSPR31 = true;
+					}
+				}
+			}
+	    }
+		if(!shareSPR.getInitClock().isCanEdit())  return new ChangeSPR(false, false);
+		return new ChangeSPR(change31 && checkSPR31, change34 && checkSPR34);
+		//insertStampSourceInfo(employeeId, date, true, true);
 	}
 }
+ 
