@@ -441,6 +441,10 @@ module nts.uk.com.view.cps001.i.vm {
             let self = this;
             let ctgCode: IData = self.genSpecialCode(self.categoryCode());
             service.getItemDef(ctgCode.ctgCodeChirld).done((data: Array<IItem>) => {
+                if (!data[6].display || !data[9].display || !data[11].display || !data[14].display) {
+                    var currentDialog = nts.uk.ui.windows.getSelf();
+                    currentDialog.setWidth(558);
+                }
                 self.setItemDefValue(data).done(() => {
                     self.setGridList();
                 });
