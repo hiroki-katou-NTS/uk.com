@@ -118,7 +118,6 @@ module nts.uk.at.view.kmk015.a {
                         if (item.historyId == code) {
                             self.historyId(code);
                             self.timeHistory(item.time);
-                            console.log(self.timeHistory());
                             self.numberDay(item.maxDay);
                             self.startforC(item.startItem);
                             self.endforC(item.endItem);
@@ -126,6 +125,7 @@ module nts.uk.at.view.kmk015.a {
                     });
                 });
                 
+                //set always subscribe
                 self.selectedCodeHistory.extend({ notify: 'always' });
             }
             
