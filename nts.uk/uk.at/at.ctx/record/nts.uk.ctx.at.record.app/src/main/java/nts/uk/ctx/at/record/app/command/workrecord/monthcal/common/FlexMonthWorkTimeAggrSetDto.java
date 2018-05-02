@@ -100,8 +100,8 @@ public class FlexMonthWorkTimeAggrSetDto {
 		 */
 		@Override
 		public AggregateTimeSetting getLegalAggrSet() {
-			return AggregateTimeSetting
-					.of(EnumAdaptor.valueOf(this.dto.getLegalAggrSet(), AggregateSetting.class));
+			// EA修正履歴No.1357
+			return AggregateTimeSetting.of(AggregateSetting.MANAGE_DETAIL);
 		}
 
 		/*

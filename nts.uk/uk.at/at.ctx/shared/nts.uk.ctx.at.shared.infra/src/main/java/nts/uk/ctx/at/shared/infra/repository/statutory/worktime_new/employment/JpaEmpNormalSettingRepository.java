@@ -36,7 +36,9 @@ public class JpaEmpNormalSettingRepository extends JpaRepository implements EmpN
 	 */
 	@Override
 	public void add(EmpNormalSetting setting) {
-		commandProxy().insert(this.toEntity(setting));
+		KshstEmpNormalSet entity = new KshstEmpNormalSet();
+		setting.saveToMemento(new JpaEmpNormalSettingSetMemento(entity));
+		commandProxy().insert(entity);
 	}
 
 	/* 
@@ -44,7 +46,12 @@ public class JpaEmpNormalSettingRepository extends JpaRepository implements EmpN
 	 */
 	@Override
 	public void update(EmpNormalSetting setting) {
-		commandProxy().update(this.toEntity(setting));
+		KshstEmpNormalSet entity = this.queryProxy()
+				.find(new KshstEmpNormalSetPK(setting.getCompanyId().v(),
+						setting.getEmploymentCode().v(), setting.getYear().v()),
+						KshstEmpNormalSet.class).get();
+		setting.saveToMemento(new JpaEmpNormalSettingSetMemento(entity));
+		commandProxy().update(entity);
 	}
 
 	/* 
@@ -69,17 +76,6 @@ public class JpaEmpNormalSettingRepository extends JpaRepository implements EmpN
 		return Optional.ofNullable(this.toDomain(optEntity.get()));
 	}
 
-	/**
-	 * To entity.
-	 *
-	 * @param domain the domain
-	 * @return the kshst emp normal set
-	 */
-	private KshstEmpNormalSet toEntity(EmpNormalSetting domain) {
-		KshstEmpNormalSet entity = new KshstEmpNormalSet();
-		domain.saveToMemento(new JpaEmpNormalSettingSetMemento(entity));
-		return entity;
-	}
 	
 	/**
 	 * To domain.
