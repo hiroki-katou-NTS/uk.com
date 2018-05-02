@@ -75,6 +75,8 @@ public class FlexTimeOfMonthly {
 	private AddedVacationUseTime addedVacationUseTime;
 	/** 控除の日数と時間 */
 	private DeductDaysAndTime deductDaysAndTime;
+	/** 控除前の年休控除時間 */
+	private AttendanceTimeMonth annualLeaveTimeBeforeDeduct;
 	/** エラー情報リスト */
 	private List<MonthlyAggregationErrorInfo> errorInfos;
 	
@@ -98,6 +100,7 @@ public class FlexTimeOfMonthly {
 		this.addedVacationUseTime = new AddedVacationUseTime();
 		this.deductDaysAndTime = new DeductDaysAndTime(
 				new AttendanceDaysMonth(0.0), new AttendanceTimeMonth(0));
+		this.annualLeaveTimeBeforeDeduct = new AttendanceTimeMonth(0);
 		this.errorInfos = new ArrayList<>();
 	}
 
@@ -801,6 +804,9 @@ public class FlexTimeOfMonthly {
 			return;
 		}
 		
+		// 控除前の年休控除時間を保存する
+		this.annualLeaveTimeBeforeDeduct = this.deductDaysAndTime.getAnnualLeaveDeductTime();
+		
 		// フレックス不足時間を年休控除する
 		if (this.flexShortageTime.greaterThan(0)){
 			AttendanceTimeMonth subtractTime = this.deductDaysAndTime.getAnnualLeaveDeductTime();
@@ -852,11 +858,8 @@ public class FlexTimeOfMonthly {
 		}
 		// 年休控除時間をフレックス時間に加算する
 		int flexMinutes = this.flexTime.getFlexTime().getTime().v();
-		if (flexMinutes < 0){
-			int addMinutes = this.deductDaysAndTime.getAnnualLeaveDeductTime().v();
-			if (addMinutes > -flexMinutes) addMinutes = -flexMinutes;
-			this.flexTime.getFlexTime().setTime(new AttendanceTimeMonthWithMinus(flexMinutes + addMinutes));
-		}
+		int addMinutes = this.deductDaysAndTime.getAnnualLeaveDeductTime().v();
+		this.flexTime.getFlexTime().setTime(new AttendanceTimeMonthWithMinus(flexMinutes + addMinutes));
 	}
 	
 	/**

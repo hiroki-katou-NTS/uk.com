@@ -46,6 +46,23 @@ public class SpecialHolidayUseTimeOfMonthly {
 		return domain;
 		
 	}
+
+	/**
+	 * 複写
+	 * @param useTime 使用時間
+	 * @param timeSeriesWorks 時系列ワーク
+	 * @return 月別実績の特別休暇使用時間
+	 */
+	public static SpecialHolidayUseTimeOfMonthly copyFrom(
+			AttendanceTimeMonth useTime,
+			Map<GeneralDate, SpecialHolidayUseTimeOfTimeSeries> timeSeriesWorks){
+		
+		val domain = new SpecialHolidayUseTimeOfMonthly();
+		domain.useTime = new AttendanceTimeMonth(useTime.valueAsMinutes());
+		domain.timeSeriesWorks = timeSeriesWorks;
+		return domain;
+		
+	}
 	
 	/**
 	 * 特別休暇使用時間を確認する

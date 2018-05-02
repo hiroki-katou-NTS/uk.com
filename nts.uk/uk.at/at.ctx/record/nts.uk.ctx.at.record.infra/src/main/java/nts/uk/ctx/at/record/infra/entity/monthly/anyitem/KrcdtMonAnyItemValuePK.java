@@ -42,6 +42,6 @@ public class KrcdtMonAnyItemValuePK implements Serializable {
 	public int isLastDay;
 	
 	/** 任意項目ID */
-	@Column(name = "ANY_ITEM_ID")
+	@Column(name = "ITEM_NO")
 	public int anyItemId;
 }

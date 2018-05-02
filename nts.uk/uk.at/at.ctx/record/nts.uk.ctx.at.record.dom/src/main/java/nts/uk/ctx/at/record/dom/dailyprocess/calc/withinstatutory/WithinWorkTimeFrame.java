@@ -553,6 +553,14 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		}
 		return result;
 	}
+	
+	/**
+	 * 大塚モード使用時専用の遅刻、早退削除処理
+	 */
+	public void cleanLateLeaveEarlyTimeForOOtsuka() {
+		lateTimeSheet = Optional.empty();
+		leaveEarlyTimeSheet = Optional.empty();
+	}
 
 }
 

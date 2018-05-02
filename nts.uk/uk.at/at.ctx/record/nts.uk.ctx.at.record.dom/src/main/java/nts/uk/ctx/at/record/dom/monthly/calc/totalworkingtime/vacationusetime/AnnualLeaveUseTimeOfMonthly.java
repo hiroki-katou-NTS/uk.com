@@ -44,6 +44,22 @@ public class AnnualLeaveUseTimeOfMonthly {
 		domain.useTime = useTime;
 		return domain;
 	}
+
+	/**
+	 * 複写
+	 * @param useTime 使用時間
+	 * @param timeSeriesWorks 時系列ワーク
+	 * @return 月別実績の年休使用時間
+	 */
+	public static AnnualLeaveUseTimeOfMonthly copyFrom(
+			AttendanceTimeMonth useTime,
+			Map<GeneralDate, AnnualLeaveUseTimeOfTimeSeries> timeSeriesWorks){
+		
+		val domain = new AnnualLeaveUseTimeOfMonthly();
+		domain.useTime = new AttendanceTimeMonth(useTime.valueAsMinutes());
+		domain.timeSeriesWorks = timeSeriesWorks;
+		return domain;
+	}
 	
 	/**
 	 * 年休使用時間を確認する

@@ -402,7 +402,7 @@ public class ActualWorkingTimeOfDaily {
 			//休暇加算を残業として計算する場合、ロジックの関係上、就業時間計算時に休暇加算が合算されてしまう
 			//ここでは、合算されてしまっている休暇加算を差し引いている
 			if(totalWorkingTime.getWithinStatutoryTimeOfDaily().getWorkTime().greaterThan(predetermineTime.valueAsMinutes())) {
-				totalWorkingTime.setWithinWorkTime(predetermineTime);
+				//totalWorkingTime.setWithinWorkTime(predetermineTime);
 			}
 		}
 		return totalWorkingTime;

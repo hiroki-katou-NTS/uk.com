@@ -69,4 +69,8 @@ public enum CalcMethodExceededPredAddVacation {
 		// Not found.
 		return null;
 	}
+	
+	public boolean isCalcAsWorking() {
+		return CALC_AS_WORKING.equals(this);
+	}
 }

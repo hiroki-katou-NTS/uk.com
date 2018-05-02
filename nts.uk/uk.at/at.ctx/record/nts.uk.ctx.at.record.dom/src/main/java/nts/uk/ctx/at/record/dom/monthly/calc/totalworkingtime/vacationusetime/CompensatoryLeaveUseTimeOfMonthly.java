@@ -46,6 +46,22 @@ public class CompensatoryLeaveUseTimeOfMonthly {
 	}
 	
 	/**
+	 * 複写
+	 * @param useTime 使用時間
+	 * @param timeSeriesWorks 時系列ワーク
+	 * @return 月別実績の代休使用時間
+	 */
+	public static CompensatoryLeaveUseTimeOfMonthly copyFrom(
+			AttendanceTimeMonth useTime,
+			Map<GeneralDate, CompensatoryLeaveUseTimeOfTimeSeries> timeSeriesWorks){
+		
+		val domain = new CompensatoryLeaveUseTimeOfMonthly();
+		domain.useTime = new AttendanceTimeMonth(useTime.valueAsMinutes());
+		domain.timeSeriesWorks = timeSeriesWorks;
+		return domain;
+	}
+	
+	/**
 	 * 代休使用時間を確認する
 	 * @param datePeriod 期間
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
@@ -83,6 +99,22 @@ public class CompensatoryLeaveUseTimeOfMonthly {
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
 			this.useTime.addMinutes(timeSeriesWork.getSubstituteHolidayUseTime().getUseTime().v());
 		}
+	}
+	
+	/**
+	 * 代休使用時間を求める
+	 * @param datePeriod 期間
+	 * @return 代休使用時間
+	 */
+	public AttendanceTimeMonth getTotalUseTime(DatePeriod datePeriod){
+		
+		AttendanceTimeMonth returnTime = new AttendanceTimeMonth(0);
+		
+		for (val timeSeriesWork : this.timeSeriesWorks.values()){
+			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
+			returnTime.addMinutes(timeSeriesWork.getSubstituteHolidayUseTime().getUseTime().v());
+		}
+		return returnTime;
 	}
 	
 	/**
