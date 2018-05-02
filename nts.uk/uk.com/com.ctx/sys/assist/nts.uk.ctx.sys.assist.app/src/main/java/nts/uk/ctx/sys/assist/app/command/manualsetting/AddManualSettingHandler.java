@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.sys.assist.app.command.manualSetting;
+package nts.uk.ctx.sys.assist.app.command.manualsetting;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

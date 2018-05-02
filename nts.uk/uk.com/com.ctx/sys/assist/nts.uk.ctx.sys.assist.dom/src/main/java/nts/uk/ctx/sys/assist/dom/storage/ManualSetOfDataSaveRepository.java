@@ -10,16 +10,18 @@ import java.util.List;
  * @author nam.lh
  *
  */
-public interface ManualSetOfDataSaveRepository
-{
+public interface ManualSetOfDataSaveRepository {
 
-    List<ManualSetOfDataSave> getAllManualSetOfDataSave();
+	List<ManualSetOfDataSave> getAllManualSetOfDataSave();
 
-    Optional<ManualSetOfDataSave> getManualSetOfDataSaveById(String cid, String storeProcessingId);
-    
-    /**
-     * @param domain
-     * @author nam.lh
-     */
-    void addManualSetting(ManualSetOfDataSave domain);
+	Optional<ManualSetOfDataSave> getManualSetOfDataSaveById(String cid, String storeProcessingId);
+
+	/**
+	 * @param domain
+	 * @author nam.lh
+	 */
+
+	Optional<ManualSetOfDataSave> getManualSetOfDataSaveById(String storeProcessingId);
+
+	void addManualSetting(ManualSetOfDataSave domain);
 }

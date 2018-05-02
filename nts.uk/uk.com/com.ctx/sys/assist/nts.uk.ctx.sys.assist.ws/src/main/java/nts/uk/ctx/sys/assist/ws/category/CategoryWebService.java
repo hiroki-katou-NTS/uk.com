@@ -12,7 +12,6 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.assist.app.command.category.CusCategoryCommand;
 import nts.uk.ctx.sys.assist.app.find.category.CategoryDto;
 import nts.uk.ctx.sys.assist.app.find.category.CategoryFinder;
-import nts.uk.ctx.sys.assist.app.find.category.CusCategoryDto;
 
 
 @Path("ctx/sys/assist/app")
