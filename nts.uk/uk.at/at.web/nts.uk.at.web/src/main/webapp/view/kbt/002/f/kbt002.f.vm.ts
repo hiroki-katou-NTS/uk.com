@@ -109,6 +109,38 @@ module nts.uk.at.view.kbt002.f {
 //                        dfd.resolve();
 //                    });
                 });
+                 let newExecLogList = [];
+                 _.forEach(self.execLogList(),function(x) {
+                       if(x.execItemCd==command.execItemCd){
+                           newExecLogList.push( {execItemCd : x.execItemCd, 
+            companyId:           x.companyId,
+            execItemName:        x.execItemName,
+            currentStatusCd:     0,
+            currentStatus:       "実行中",
+            overallStatusCd:     x.overallStatusCd,
+            overallStatus:       " ",
+            overallError:        x.overallError,
+            prevExecDateTime:    x.prevExecDateTime,
+            schCreateStart:      x.schCreateStart,
+            schCreateEnd:        x.schCreateEnd,
+            dailyCreateStart:    x.dailyCreateStart,
+            dailyCreateEnd:      x.dailyCreateEnd,
+            dailyCalcStart:      x.dailyCalcStart,
+            dailyCalcEnd:        x.dailyCalcEnd,
+            execId:              x.execId,
+            prevExecDateTimeEx:  x.prevExecDateTimeEx,
+            taskLogList:         x.taskLogList,
+                        });
+                     }else{
+                        newExecLogList.push(x);     
+                        }
+  
+                });
+                 
+                 ko.cleanNode(igrid);
+                 self.execLogList(newExecLogList);
+                 ko.applyBindings(self,igrid);
+           
 //                return dfd.promise();
             }
             
@@ -118,8 +150,12 @@ module nts.uk.at.view.kbt002.f {
 //                var dfd = $.Deferred();
                 let command: any = self.toJsonObject();
                 service.terminate(command).done(function() {
+                    ko.cleanNode(igrid);
+                        $.when(self.getProcExecLogList()).done(()=>{
+                             ko.applyBindings(self,igrid);
+                             block.clear();
+                        });  
 //                    $.when(self.getProcExecLogList()).done(()=>{
-                        block.clear();
 //                        dfd.resolve();
 //                    });
                 });

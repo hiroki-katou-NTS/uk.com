@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.schedule.infra.repository.executionlog;
 
 import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
+import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionDateTime;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogGetMemento;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeLog;
@@ -22,7 +23,8 @@ public class JpaScheduleExecutionLogGetMemento implements ScheduleExecutionLogGe
 	/**
 	 * Instantiates a new jpa schedule execution log get memento.
 	 *
-	 * @param item the item
+	 * @param item
+	 *            the item
 	 */
 	public JpaScheduleExecutionLogGetMemento(KscdtScheExeLog item) {
 		this.entity = item;
@@ -98,6 +100,11 @@ public class JpaScheduleExecutionLogGetMemento implements ScheduleExecutionLogGe
 	@Override
 	public DatePeriod getPeriod() {
 		return new DatePeriod(this.entity.getStartYmd(), this.entity.getEndYmd());
+	}
+
+	@Override
+	public ExecutionAtr getExeAtr() {
+		return ExecutionAtr.valueOf(this.entity.getExeAtr());
 	}
 
 }

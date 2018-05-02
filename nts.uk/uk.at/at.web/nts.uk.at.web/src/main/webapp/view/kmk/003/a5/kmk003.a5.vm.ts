@@ -7,7 +7,9 @@ module a5 {
     import FixHalfDayWorkTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.fixedset.FixHalfDayWorkTimezoneModel;
     import DiffTimeHalfDayWorkTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.difftimeset.DiffTimeHalfDayWorkTimezoneModel;
     import FlexHalfDayWorkTimeModel = nts.uk.at.view.kmk003.a.viewmodel.flexset.FlexHalfDayWorkTimeModel;
+    import DialogHParam = nts.uk.at.view.kmk003.h.viewmodel.DialogHParam;
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
+    import WorkTimeSettingEnumDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingEnumDto;
 
     class ScreenModel {
         mainSettingModel: MainSettingModel;
@@ -74,7 +76,7 @@ module a5 {
         isFlow: KnockoutComputed<boolean>;
         isFixed: KnockoutComputed<boolean>;
         isDiffTime: KnockoutComputed<boolean>;
-        isDetailMode: KnockoutObservable<boolean>;
+        isDetailMode: KnockoutComputed<boolean>;
         useHalfDay: KnockoutObservable<boolean>;
 
         // show/hide
@@ -85,7 +87,7 @@ module a5 {
         isFlexTimezone: KnockoutComputed<boolean>; // flex and suru *26
         isFlexRestTime: KnockoutComputed<boolean>; // flex and nashi *26
         display27: KnockoutComputed<boolean>; // A23_7 is checked *27
-
+        enumSetting: WorkTimeSettingEnumDto;
         constructor(valueAccessor: any) {
             let self = this;
             // switch button
@@ -102,7 +104,93 @@ module a5 {
 
             // fix table option
             self.setFixedTableOption();
+            self.enumSetting = valueAccessor.enum;
+        }
 
+        /**
+         * Open dialog fixed break setting
+         */
+        public openFixedBreakSetting(): void {
+            let self = this;
+
+            let input = <DialogHParam>{};
+            if (self.isFlex()) {
+                input.calcMethodFixed = self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateMethod();
+                input.isCalcFromSchedule = self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromSchedule.isCalcFromSchedule();
+                input.isReferRestTime = self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromSchedule.isReferRestTime();
+                input.usePrivateGoOutRest = self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.usePrivateGoOutRest();
+                input.useAssoGoOutRest = self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.useAssoGoOutRest();
+            }
+            if (self.isFlow()) {
+                input.calcMethodFixed = self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateMethod();
+                input.isCalcFromSchedule = self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromSchedule.isCalcFromSchedule();
+                input.isReferRestTime = self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromSchedule.isReferRestTime();
+                input.usePrivateGoOutRest = self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.usePrivateGoOutRest();
+                input.useAssoGoOutRest = self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.useAssoGoOutRest();
+            }
+
+            nts.uk.ui.windows.setShared("KMK003_DIALOG_H_INPUT", input);
+            _.defer(() => nts.uk.ui.windows.sub.modal("/view/kmk/003/h/index.xhtml").onClosed(() => {
+                let dto: DialogHParam = nts.uk.ui.windows.getShared("KMK003_DIALOG_H_OUTPUT");
+                if (!dto) {
+                    return;
+                }
+                if (self.isFlow()) {
+                    self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateMethod(dto.calcMethodFixed);
+                    self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromSchedule.isCalcFromSchedule(dto.isCalcFromSchedule);
+                    self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromSchedule.isReferRestTime(dto.isReferRestTime);
+                    self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.usePrivateGoOutRest(dto.usePrivateGoOutRest);
+                    self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.useAssoGoOutRest(dto.useAssoGoOutRest);
+                }
+                if (self.isFlex()) {
+                    self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateMethod(dto.calcMethodFixed);
+                    self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromSchedule.isCalcFromSchedule(dto.isCalcFromSchedule);
+                    self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromSchedule.isReferRestTime(dto.isReferRestTime);
+                    self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.usePrivateGoOutRest(dto.usePrivateGoOutRest);
+                    self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.useAssoGoOutRest(dto.useAssoGoOutRest);
+                }
+            }));
+        }
+
+        /**
+         * Open dialog flow break setting
+         */
+        public openFlowBreakSetting(): void {
+            let self = this;
+
+            let input = <DialogHParam>{};
+            if (self.isFlex()) {
+                input.calcMethodFluctuation = self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowRestSetting.calculateMethod();
+                input.useStamp = self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowRestSetting.useStamp();
+                input.useStampCalcMethod = self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowRestSetting.useStampCalcMethod();
+                input.timeManagerSetAtr = self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowRestSetting.timeManagerSetAtr();
+            }
+            if (self.isFlow()) {
+                input.calcMethodFluctuation = self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowRestSetting.calculateMethod();
+                input.useStamp = self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowRestSetting.useStamp();
+                input.useStampCalcMethod = self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowRestSetting.useStampCalcMethod();
+                input.timeManagerSetAtr = self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowRestSetting.timeManagerSetAtr();
+            }
+
+            nts.uk.ui.windows.setShared("KMK003_DIALOG_H_INPUT", input);
+            _.defer(() => nts.uk.ui.windows.sub.modal("/view/kmk/003/h/index2.xhtml").onClosed(() => {
+                let dto: DialogHParam = nts.uk.ui.windows.getShared("KMK003_DIALOG_H_OUTPUT");
+                if (!dto) {
+                    return;
+                }
+                if (self.isFlow()) {
+                    self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowRestSetting.calculateMethod(dto.calcMethodFluctuation);
+                    self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowRestSetting.useStamp(dto.useStamp);
+                    self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowRestSetting.useStampCalcMethod(dto.useStampCalcMethod);
+                    self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowRestSetting.timeManagerSetAtr(dto.timeManagerSetAtr);
+                }
+                if (self.isFlex()) {
+                    self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowRestSetting.calculateMethod(dto.calcMethodFluctuation);
+                    self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowRestSetting.useStamp(dto.useStamp);
+                    self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowRestSetting.useStampCalcMethod(dto.useStampCalcMethod);
+                    self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowRestSetting.timeManagerSetAtr(dto.timeManagerSetAtr);
+                }
+            }));
         }
 
         /**
@@ -192,20 +280,8 @@ module a5 {
             });
         }
 
-        /**
-         * Force to add fixed table event listener
-         */
-        public forceAddFixedTableEvent(): void {
+        public setTabIndexTable() {
             let self = this;
-            self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.valueHasMutated();
-            
-            // set tabindex
-            self.setTabIndexTable();
-        }
-
-        private setTabIndexTable() {
-            let self = this;
-            
             
             //=================== TIMEZONE ===================
             // flex timezone
@@ -252,11 +328,11 @@ module a5 {
             self.afternoonFlexTimezoneOption.dataSource = self.afternoonFlexTimezones;
 
             // difftime timezone option
-            self.oneDayDiffTimezoneOption = self.getDefaultTimezoneOption();
+            self.oneDayDiffTimezoneOption = self.getDiffTimezoneOption();
             self.oneDayDiffTimezoneOption.dataSource = self.oneDayDiffTimezones;
-            self.morningDiffTimezoneOption = self.getDefaultTimezoneOption();
+            self.morningDiffTimezoneOption = self.getDiffTimezoneOption();
             self.morningDiffTimezoneOption.dataSource = self.morningDiffTimezones;
-            self.afternoonDiffTimezoneOption = self.getDefaultTimezoneOption();
+            self.afternoonDiffTimezoneOption = self.getDiffTimezoneOption();
             self.afternoonDiffTimezoneOption.dataSource = self.afternoonDiffTimezones;
 
             // fixed timezone option
@@ -295,6 +371,29 @@ module a5 {
                 dataSource: ko.observableArray([]),
                 isMultipleSelect: true,
                 columns: self.getTimezoneColumns(),
+                tabindex: 1,
+            };
+        }
+
+        private getDiffTimezoneOption(): FixTableOption {
+            let self = this;
+            let columns = self.getTimezoneColumns();
+            columns.push({
+                headerText: nts.uk.resource.getText("KMK003_129"),
+                key: "isUpdateStartTime",
+                defaultValue: ko.observable(false),
+                width: 50,
+                template: `<div data-bind="ntsCheckBox: { enable: true }">`
+            });
+
+            return {
+                maxRow: 10,
+                minRow: 0,
+                maxRowDisplay: 10,
+                isShowButton: true,
+                dataSource: ko.observableArray([]),
+                isMultipleSelect: true,
+                columns: columns,
                 tabindex: 1,
             };
         }
@@ -351,9 +450,106 @@ module a5 {
                 }
             ];
         }
-
+        
+        public openDialogG() {
+            //open dialog G 
+            var self = this;
+            //if flex or flow
+            if (self.isFlex() || self.isFlow()) {
+                let dataFlexFlow: any = null;
+                if (self.isFlow()) {//flow
+                    dataFlexFlow = {
+                        workForm: EnumWorkForm.REGULAR,
+                        settingMethod:SettingMethod.FLOW,
+                        lstEnum: self.enumSetting,
+                        //1勤務目と2勤務目の間を休憩として扱うか
+                        useRest: self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime()?1:0,
+                        //休憩として扱う場合の単位
+                        roundUnit: self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.roundingTime(),
+                        //休憩として扱う場合の端数処理
+                        roundType: self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.rounding(),
+                        //休憩中に退勤した場合の休憩時間の計算方法
+                        calcMethod: self.mainSettingModel.flowWorkSetting.restSetting.commonRestSetting.calculateMethod()
+                    }
+                }
+                else {//flex
+                    dataFlexFlow = {
+                        workForm: EnumWorkForm.FLEX,
+                        settingMethod:SettingMethod.FLOW,
+                        lstEnum: self.enumSetting,
+                        useRest: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime()?1:0,
+                        roundUnit: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.roundingTime(),
+                        roundType: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.rounding(),
+                        calcMethod: self.mainSettingModel.flexWorkSetting.restSetting.commonRestSetting.calculateMethod()
+                    }
+                }
+                nts.uk.ui.windows.setShared('KMK003_DIALOG_G_INPUT_DATA', dataFlexFlow);
+                nts.uk.ui.windows.sub.modal("/view/kmk/003/g/index.xhtml").onClosed(() => {
+                    var returnObject = nts.uk.ui.windows.getShared('KMK003_DIALOG_G_OUTPUT_DATA');
+                    //if case flex
+                    if (self.isFlex()) {
+                        self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime(returnObject.useRest==1?true:false);
+                        self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.rounding(returnObject.roundType);
+                        self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.roundingTime(returnObject.roundUnit);
+                        self.mainSettingModel.flexWorkSetting.restSetting.commonRestSetting.calculateMethod(returnObject.calcMethod);
+                    }
+                    else//case flow
+                    {
+                        self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime(returnObject.useRest==1?true:false);
+                        self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.rounding(returnObject.roundType);
+                        self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.roundingTime(returnObject.roundUnit);
+                        self.mainSettingModel.flowWorkSetting.restSetting.commonRestSetting.calculateMethod(returnObject.calcMethod);
+                    }
+                });
+            }
+            else//difftime or fixed
+            {
+                let dataFixedDiff: any = null;
+                if (self.isDiffTime()) {//difftime
+                    dataFixedDiff = {
+                        workForm: EnumWorkForm.REGULAR,
+                        settingMethod:SettingMethod.DIFFTIME,
+                        //実績での休憩計算方法
+                        actualRest: self.mainSettingModel.diffWorkSetting.restSet.fixedRestCalculateMethod(),
+                        //休憩中に退勤した場合の休憩時間の計算方法
+                        restTimeCalcMethod: self.mainSettingModel.diffWorkSetting.restSet.commonRestSet.calculateMethod()
+                    }
+                }
+                else {//fixed
+                    dataFixedDiff = {
+                        workForm: EnumWorkForm.REGULAR,
+                        settingMethod:SettingMethod.FIXED,
+                        actualRest: self.mainSettingModel.fixedWorkSetting.fixedWorkRestSetting.fixedRestCalculateMethod(),
+                        restTimeCalcMethod: self.mainSettingModel.fixedWorkSetting.fixedWorkRestSetting.commonRestSet.calculateMethod()
+                    }
+                }
+                nts.uk.ui.windows.setShared('KMK003_DIALOG_G_INPUT_DATA', dataFixedDiff);
+                nts.uk.ui.windows.sub.modal("/view/kmk/003/g/index2.xhtml").onClosed(() => {
+                    var returnObject = nts.uk.ui.windows.getShared('KMK003_DIALOG_G_OUTPUT_DATA');
+                    if (self.isDiffTime()) {
+                        self.mainSettingModel.diffWorkSetting.restSet.fixedRestCalculateMethod(returnObject.actualRest);
+                        self.mainSettingModel.diffWorkSetting.restSet.commonRestSet.calculateMethod(returnObject.restTimeCalcMethod);
+                    }
+                    else {
+                        self.mainSettingModel.fixedWorkSetting.fixedWorkRestSetting.fixedRestCalculateMethod(returnObject.actualRest);
+                        self.mainSettingModel.fixedWorkSetting.fixedWorkRestSetting.commonRestSet.calculateMethod(returnObject.restTimeCalcMethod);
+                    }
+                });
+            }
+        }
+    }
+    
+    export enum EnumWorkForm {
+        REGULAR,
+        FLEX
     }
 
+    export enum SettingMethod {
+        FIXED,
+        DIFFTIME,
+        FLOW,
+        ALL
+    }
     class KMK003A5BindingHandler implements KnockoutBindingHandler {
 
         constructor() {
@@ -370,7 +566,7 @@ module a5 {
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                _.defer(() => screenModel.forceAddFixedTableEvent());
+                _.defer(() => screenModel.setTabIndexTable()); // set tabindex
             });
         }
 

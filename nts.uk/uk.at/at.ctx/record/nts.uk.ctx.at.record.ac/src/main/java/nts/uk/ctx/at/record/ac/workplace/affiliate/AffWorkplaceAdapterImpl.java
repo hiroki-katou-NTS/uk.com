@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.ac.workplace.affiliate;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -63,4 +64,10 @@ public class AffWorkplaceAdapterImpl implements AffWorkplaceAdapter {
 		return Optional.of(affWorkPlaceSidImport);
 	}
 
+	@Override
+	public List<String> findAffiliatedWorkPlaceIdsToRoot(String companyId,String employeeId, GeneralDate baseDate) {
+		return this.wkpPub.findWpkIdsBySid(companyId ,employeeId, baseDate);
+	}
+	
+	
 }

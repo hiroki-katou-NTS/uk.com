@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset;
@@ -55,6 +55,10 @@ public class KshmtDiffTimeWorkSet extends UkJpaEntity implements Serializable {
 	@Column(name = "DT_COMMON_REST_SET")
 	private int dtCommonRestSet;
 
+	/** The dt is plan actual not match master refe. */
+	@Column(name = "DT_PLAN_NOT_MATCH")
+	private int dtIsPlanActualNotMatchMasterRefe;
+
 	/** The use half day. */
 	@Column(name = "USE_HALF_DAY")
 	private int useHalfDay;
@@ -83,57 +87,68 @@ public class KshmtDiffTimeWorkSet extends UkJpaEntity implements Serializable {
 	@Column(name = "UPD_START_TIME")
 	private int updStartTime;
 	
+	/** The ot calc method. */
+	@Column(name = "OT_CALC_METHOD")
+	private Integer otCalcMethod;
+	
+	/** The ot in law. */
+	@Column(name = "OT_IN_LAW")
+	private Integer otInLaw;
+	
+	/** The ot not in law. */
+	@Column(name = "OT_NOT_IN_LAW")
+	private Integer otNotInLaw;
+	
+	/** The exceeded pred calc method. */
+	@Column(name = "EXCEEDED_PRED_CALC_METHOD")
+	private Integer exceededPredCalcMethod;
+	
+	/** The exceeded pred ot frame no. */
+	@Column(name = "EXCEEDED_PRED_OT_FRAME_NO")
+	private Integer exceededPredOtFrameNo;
+	
 	/** The lst kshmt dt half rest time. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumns({
-			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
-	private List<KshmtDtHalfRestTime> lstKshmtDtHalfRestTime;//ok
+	private List<KshmtDtHalfRestTime> lstKshmtDtHalfRestTime;// ok
 
 	/** The lst kshmt dt work time set. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumns({
-			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
-	private List<KshmtDtWorkTimeSet> lstKshmtDtWorkTimeSet;//ok
+	private List<KshmtDtWorkTimeSet> lstKshmtDtWorkTimeSet;// ok
 
 	/** The lst kshmt dt ot time set. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumns({
-			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
-	private List<KshmtDtOtTimeSet> lstKshmtDtOtTimeSet;//ok
+	private List<KshmtDtOtTimeSet> lstKshmtDtOtTimeSet;// ok
 
 	/** The lst kshmt dt hol rest time. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumns({
-			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
-	private List<KshmtDtHolRestTime> lstKshmtDtHolRestTime;//ok
-	
+	private List<KshmtDtHolRestTime> lstKshmtDtHolRestTime;// ok
+
 	/** The lst kshmt diff time hol set. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumns({
-			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
-	private List<KshmtDiffTimeHolSet> lstKshmtDiffTimeHolSet;//ok
-	
+	private List<KshmtDiffTimeHolSet> lstKshmtDiffTimeHolSet;// ok
+
 	/** The lst kshmt dt stamp reflect. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumns({
-			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
-	private List<KshmtDtStampReflect> lstKshmtDtStampReflect;//ok
-	
+	private List<KshmtDtStampReflect> lstKshmtDtStampReflect;// ok
+
 	/** The lst kshmt worktime common set. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumns({
-		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = false, updatable = false)
-	})
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = false, updatable = false) })
 	private List<KshmtWorktimeCommonSet> lstKshmtWorktimeCommonSet;
-	
-	
+
 	/**
 	 * Instantiates a new kshmt diff time work set.
 	 */
@@ -150,16 +165,13 @@ public class KshmtDiffTimeWorkSet extends UkJpaEntity implements Serializable {
 		if (CollectionUtil.isEmpty(this.lstKshmtWorktimeCommonSet)) {
 			this.lstKshmtWorktimeCommonSet = new ArrayList<KshmtWorktimeCommonSet>();
 		}
-		return this.lstKshmtWorktimeCommonSet.stream()
-				.filter(entityCommon -> {
-					KshmtWorktimeCommonSetPK pk = entityCommon.getKshmtWorktimeCommonSetPK();
-					return pk.getWorkFormAtr() == WorkTimeDailyAtr.REGULAR_WORK.value
-							&& pk.getWorktimeSetMethod() == WorkTimeMethodSet.DIFFTIME_WORK.value;
-				})
-				.findFirst()
-				.orElse(null);
+		return this.lstKshmtWorktimeCommonSet.stream().filter(entityCommon -> {
+			KshmtWorktimeCommonSetPK pk = entityCommon.getKshmtWorktimeCommonSetPK();
+			return pk.getWorkFormAtr() == WorkTimeDailyAtr.REGULAR_WORK.value
+					&& pk.getWorktimeSetMethod() == WorkTimeMethodSet.DIFFTIME_WORK.value;
+		}).findFirst().orElse(null);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 

@@ -4,11 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.executionlog;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheduleErrorLogGeterCommand;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 
 /**
  * The Class ScheduleCreatorExecutionCommand.
@@ -37,8 +40,15 @@ public class ScheduleCreatorExecutionCommand {
 	
 	/** The is delete befor insert. */
 	private Boolean isDeleteBeforInsert;
-	
-	
+
+	private ScheduleExecutionLog scheduleExecutionLog;
+
+	private PersonalSchedule personalSchedule;
+
+	private boolean isAutomatic;
+
+	private List<String> employeeIds;
+
 	/**
 	 * To base command.
 	 *

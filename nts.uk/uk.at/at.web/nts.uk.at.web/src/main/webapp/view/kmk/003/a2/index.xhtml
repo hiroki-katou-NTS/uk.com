@@ -3,59 +3,99 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<com:ValidatorScript>
-		nts.uk.shr.com.time.TimeWithDayAttr
-	</com:ValidatorScript>
-
 
 	<!-- BEGIN A14_1 ~ A16_12 -->
-	<div data-bind="rended: true">
-		<com:ko tag="if" bind="!isSimpleMode() &amp;&amp; !isFlowMode()">
+	<com:ko tag="ifnot" bind="isFlowMode">
+		
+		<com:ko tag="if" bind="isSimpleMode">
+			<div tabindex="46" class="accordion setting_detail_tab2">
+				<com:ko tag="if" bind="isFixedMode">
+					<div id="fixtable-tab2-one-day-simple-mode-fixed" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
+							isEnableAllControl: ko.observable(false),
+							option: fixTableOptionOneDaySimpleModeFixed}"></div>
+				</com:ko>
+				<com:ko tag="if" bind="isFlexMode">
+					<div id="fixtable-tab2-one-day-simple-mode-flex" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
+							isEnableAllControl: ko.observable(true),
+							option: fixTableOptionOneDaySimpleModeFlex}"></div>
+				</com:ko>
+				<com:ko tag="if" bind="isDiffTimeMode">
+					<div id="fixtable-tab2-one-day-simple-mode-difftime" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
+							isEnableAllControl: ko.observable(false),
+							option: fixTableOptionOneDaySimpleModeDifftime}"></div>
+				</com:ko>
+			</div>
+		</com:ko>
+		
+		<!-- =================== Detail mode =================== -->
+		<com:ko tag="ifnot" bind="isSimpleMode">
 			<div tabindex="-1" class="accordion setting_detail_tab2"
 				data-bind="ntsAccordion: {enable: true} ">
 				<h3>
 					<label>#{i18n.getText('KMK003_51')}</label>
 				</h3>
 				<div class="accordion-content">
-					<div id="fixtable-tab2-one-day" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
-							option: fixTableOptionOneDay}"></div>
+					<com:ko tag="if" bind="isFixedMode">
+						<div id="fixedtable-tab2-oneday-fixed" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
+								option: fixTableOptionOneDayFixed}"></div>
+					</com:ko>
+					<com:ko tag="if" bind="isFlexMode">
+						<div id="fixedtable-tab2-oneday-flex" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
+								option: fixTableOptionOneDayFlex}"></div>
+					</com:ko>
+					<com:ko tag="if" bind="isDiffTimeMode">
+						<div id="fixedtable-tab2-oneday-difftime" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
+								option: fixTableOptionOneDayDifftime}"></div>
+					</com:ko>
 				</div>
 			</div>
-		</com:ko>
+			
+			<!-- =================== Use half day =================== -->
+			<com:ko tag="if" bind="isUseHalfDay">
+				<div tabindex="-1" class="accordion setting_detail_tab2"
+					data-bind="ntsAccordion: {enable: true}">
+					<h3>
+						<label>#{i18n.getText('KMK003_60')}</label>
+					</h3>
+					<div class ="accordion-content">
+						<com:ko tag="if" bind="isFixedMode">
+							<div id="fixedtable-tab2-morning-fixed" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
+								option: fixTableOptionMorningFixed}"></div>
+						</com:ko>
+						<com:ko tag="if" bind="isFlexMode">
+							<div id="fixedtable-tab2-morning-flex" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
+								option: fixTableOptionMorningFlex}"></div>
+						</com:ko>
+						<com:ko tag="if" bind="isDiffTimeMode">
+							<div id="fixedtable-tab2-morning-difftime" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
+								option: fixTableOptionMorningDifftime}"></div>
+						</com:ko>
+					</div>
+				</div>
+				<div tabindex="-1" class="accordion setting_detail_tab2"
+					data-bind="ntsAccordion: {enable: true}">
+					<h3>
+						<label>#{i18n.getText('KMK003_61')}</label>
+					</h3>
+					<div class ="accordion-content">
+						<com:ko tag="if" bind="isFixedMode">
+							<div id="fixedtable-tab2-afternoon-fixed" class="tab-2-table-width"
+								data-bind="ntsFixTableCustom: {option: fixTableOptionAfternoonFixed}"></div>
+						</com:ko>
+						<com:ko tag="if" bind="isFlexMode">
+							<div id="fixedtable-tab2-afternoon-flex" class="tab-2-table-width"
+								data-bind="ntsFixTableCustom: {option: fixTableOptionAfternoonFlex}"></div>
+						</com:ko>
+						<com:ko tag="if" bind="isDiffTimeMode">
+							<div id="fixedtable-tab2-afternoon-difftime" class="tab-2-table-width"
+								data-bind="ntsFixTableCustom: {option: fixTableOptionAfternoonDifftime}"></div>
+						</com:ko>
+					</div>
+				</div>
+			</com:ko>
 		
-		<com:ko tag="if" bind="isSimpleMode() &amp;&amp; !isFlowMode()">
-			<div tabindex="46" class="accordion setting_detail_tab2">
-				<div id="fixtable-tab2-one-day-simple-mode" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
-						isEnableAllControl: isEnableTimeRangeOneDaySimpleMode,
-						option: fixTableOptionOneDaySimpleMode}"></div>
-			</div>
 		</com:ko>
-		
-		<!-- =================== Begin Use Half Day Shift And Detail mode =================== -->
-		<com:ko tag="if" bind="!isSimpleMode() &amp;&amp; !isFlowMode() &amp;&amp; isUseHalfDay()">
-			<div tabindex="-1" class="accordion setting_detail_tab2"
-				data-bind="ntsAccordion: {enable: true}">
-				<h3>
-					<label>#{i18n.getText('KMK003_60')}</label>
-				</h3>
-				<div class ="accordion-content">
-					<div tabindex ="47" id="fixtable-tab2-morning-day" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
-						option: fixTableOptionMorning}"></div>
-				</div>
-			</div>
-			<div tabindex="-1" class="accordion setting_detail_tab2"
-				data-bind="ntsAccordion: {enable: true}">
-				<h3>
-					<label>#{i18n.getText('KMK003_61')}</label>
-				</h3>
-				<div class ="accordion-content">
-					<div tabindex ="48" id="fixtable-tab2-afternoon" class="tab-2-table-width"
-						data-bind="ntsFixTableCustom: {option: fixTableOptionAfternoon}"></div>
-				</div>
-			</div>
-		</com:ko>
-		<!-- =================== End Use Half Day Shift And Detail mode =================== -->
-	</div>
+	</com:ko>
 
 
 	<!-- =================== Begin Flow Mode =================== -->
@@ -111,7 +151,7 @@
 		</div><!-- END A18_19 ~ A18_23 -->
 
 		<!-- BEGIN A18_24 ~ A18_26 -->
-		<com:ko tag="if" bind="!isSimpleMode()">
+		<com:ko tag="ifnot" bind="isSimpleMode">
 			<div class="tab-rows">
 				<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_138')}</div>
 			</div>

@@ -116,7 +116,8 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 		builderString.append("WHERE a.id.sid = :employeeId ");
 		builderString.append("AND a.id.ymd = :ymd ");
 		return this.queryProxy().query(builderString.toString(), KrcdtDayPcLogonInfo.class)
-				.setParameter("employeeId", employeeId).setParameter("ymd", baseDate);
+				.setParameter("employeeId", employeeId)
+				.setParameter("ymd", baseDate);
 	}
 
 	private List<PCLogOnInfoOfDaily> toList(TypedQueryWrapper<KrcdtDayPcLogonInfo> query) {

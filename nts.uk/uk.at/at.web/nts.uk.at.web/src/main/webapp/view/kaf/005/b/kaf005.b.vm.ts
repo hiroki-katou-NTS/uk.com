@@ -438,8 +438,8 @@ module nts.uk.at.view.kaf005.b {
                     overtimeHours: ko.mapping.toJS(_.map(self.overtimeHours(), item => self.convertOvertimeCaculationToOverTimeInput(item))),
                     restTime: ko.mapping.toJS(self.restTime()),
                     bonusTimes: ko.mapping.toJS(_.map(self.bonusTimes(), item => self.convertOvertimeCaculationToOverTimeInput(item))),
-                    overTimeShiftNight: overTimeShiftNightTmp == null ? -1 : overTimeShiftNightTmp,
-                    flexExessTime: flexExessTimeTmp == null ? -1 : flexExessTimeTmp,
+                    overTimeShiftNight: overTimeShiftNightTmp == null ? null : overTimeShiftNightTmp,
+                    flexExessTime: flexExessTimeTmp == null ? null : flexExessTimeTmp,
                     overtimeAtr: self.overtimeAtr(),
                     divergenceReasonContent: divergenceReason,
                     sendMail: self.manualSendMailAtr(),
@@ -628,6 +628,22 @@ module nts.uk.at.view.kaf005.b {
             CaculationTime(){
                     let self = this;
                     let dfd = $.Deferred();
+                    if (nts.uk.util.isNullOrEmpty(self.appDate())) {
+                        dialog.alertError({ messageId: "Msg_959" });
+                        return;
+                    }
+                    $("#inpStartTime1").trigger("validate");
+                    $("#inpEndTime1").trigger("validate");
+                    //return if has error
+                    if (nts.uk.ui.errors.hasError()) { return; }
+                    if (!self.validateTime(self.timeStart1(), self.timeEnd1(), '#inpStartTime1')) {
+                        return;
+                    }
+                    if (!nts.uk.util.isNullOrEmpty(self.timeStart2())) {
+                        if (!self.validateTime(self.timeStart2(), self.timeEnd2(), '#inpStartTime2')) {
+                            return;
+                        };
+                    }
                     let param : any ={
                         overtimeHours: _.map(ko.toJS(self.overtimeHours()), item => {return self.initCalculateData(item);}),
                         bonusTimes: _.map(ko.toJS(self.bonusTimes()), item => {return self.initCalculateData(item);}),

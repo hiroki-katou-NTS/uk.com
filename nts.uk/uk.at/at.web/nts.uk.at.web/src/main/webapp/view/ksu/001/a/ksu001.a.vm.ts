@@ -437,7 +437,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let time = new Time(currentDay);
                 objDetailHeaderDs['_' + time.yearMonthDay] = '';
                 detailColumns.push({
-                    key: "_" + time.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", primitiveValue: "HolidayAppPrimitiveTime", visible: true
+                    key: "_" + time.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", primitiveValue: "TimeWithDayAttr", visible: true
                 });
 
                 currentDay.setDate(currentDay.getDate() + 1);
@@ -713,7 +713,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             //define the new detailColumns
             _.each(self.arrDay, (x: Time) => {
                 newDetailColumns.push({
-                    key: "_" + x.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", primitiveValue: "HolidayAppPrimitiveTime", visible: true
+                    key: "_" + x.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", primitiveValue: "TimeWithDayAttr", visible: true
                 });
             });
 
@@ -877,7 +877,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let time = new Time(currentDay);
                 //define the new detailColumns
                 newDetailColumns.push({
-                    key: "_" + time.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", primitiveValue: "HolidayAppPrimitiveTime", visible: true
+                    key: "_" + time.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", primitiveValue: "TimeWithDayAttr", visible: true
                 });
                 //create new detailHeaderDs
                 newObjDetailHeaderDs['_' + time.yearMonthDay] = '';

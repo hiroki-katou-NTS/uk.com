@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.worktime.common;
@@ -92,10 +92,13 @@ public class KshmtWorktimeCommonSet extends UkJpaEntity implements Serializable 
 	@Column(name = "LATE_NIGHT_ROUNDING")
 	private int lateNightRounding;
 
+	/** The holiday calc is calculate. */
+	@Column(name = "HD_CAL_IS_CALCULATE")
+	private int holidayCalcIsCalculate;
+
 	/** The kshmt substitution sets. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumns({
-			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
 			@JoinColumn(name = "WORK_FORM_ATR", referencedColumnName = "WORK_FORM_ATR", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD", insertable = true, updatable = true) })
@@ -103,8 +106,7 @@ public class KshmtWorktimeCommonSet extends UkJpaEntity implements Serializable 
 
 	/** The kshmt medical time sets. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumns({
-			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
 			@JoinColumn(name = "WORK_FORM_ATR", referencedColumnName = "WORK_FORM_ATR", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD", insertable = true, updatable = true) })
@@ -112,8 +114,7 @@ public class KshmtWorktimeCommonSet extends UkJpaEntity implements Serializable 
 
 	/** The kshmt special round outs. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumns({
-			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
 			@JoinColumn(name = "WORK_FORM_ATR", referencedColumnName = "WORK_FORM_ATR", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD", insertable = true, updatable = true) })
@@ -127,33 +128,31 @@ public class KshmtWorktimeCommonSet extends UkJpaEntity implements Serializable 
 			@PrimaryKeyJoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD") })
 	private KshmtLateEarlySet kshmtLateEarlySet;
 
-	/** The kshmt other late early. */
+	/** The kshmt other late earlies. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumns({
-			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
 			@JoinColumn(name = "WORK_FORM_ATR", referencedColumnName = "WORK_FORM_ATR", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD", insertable = true, updatable = true) })
 	private List<KshmtOtherLateEarly> kshmtOtherLateEarlies;
 
-	/** The kshmt piority set. */
+	/** The kshmt piority sets. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumns({
-			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
 			@JoinColumn(name = "WORK_FORM_ATR", referencedColumnName = "WORK_FORM_ATR", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD", insertable = true, updatable = true) })
 	private List<KshmtPioritySet> kshmtPioritySets;
 
-	/** The kshmt rounding set. */
+	/** The kshmt rounding sets. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumns({
-			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
 			@JoinColumn(name = "WORK_FORM_ATR", referencedColumnName = "WORK_FORM_ATR", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD", insertable = true, updatable = true) })
 	private List<KshmtRoundingSet> kshmtRoundingSets;
 
+	/** The kshmt temp worktime set. */
 	@OneToOne(optional = true, cascade = CascadeType.ALL)
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD"),
@@ -169,23 +168,23 @@ public class KshmtWorktimeCommonSet extends UkJpaEntity implements Serializable 
 			@PrimaryKeyJoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD") })
 	private KshmtWorktimeGoOutSet KshmtWorktimeGoOutSet;
 
-	
 	/**
 	 * Instantiates a new kshmt worktime common set.
 	 */
 	public KshmtWorktimeCommonSet() {
 		super();
 	}
-	
+
 	/**
 	 * Instantiates a new kshmt worktime common set.
 	 *
-	 * @param kshmtWorktimeCommonSetPK the kshmt worktime common set PK
+	 * @param kshmtWorktimeCommonSetPK
+	 *            the kshmt worktime common set PK
 	 */
 	public KshmtWorktimeCommonSet(KshmtWorktimeCommonSetPK kshmtWorktimeCommonSetPK) {
 		this.kshmtWorktimeCommonSetPK = kshmtWorktimeCommonSetPK;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
