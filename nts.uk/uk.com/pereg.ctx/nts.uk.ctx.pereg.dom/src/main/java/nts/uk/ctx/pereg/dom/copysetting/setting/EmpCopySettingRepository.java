@@ -13,7 +13,7 @@ public interface EmpCopySettingRepository {
 	
 	Optional<EmployeeCopyCategory> findCopyCategory(String companyId, String categoryId);
 	
-	List<CopySettingItemObject> getPerInfoItemByCtgId(String perInfoCategoryId);
+	List<CopySettingItemObject> getPerInfoItemByCtgId(String companyId, String perInfoCategoryId);
 	
 	void addCopyCategory(EmployeeCopyCategory copyCategory);
 	

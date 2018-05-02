@@ -36,9 +36,10 @@ public class JpaEmpCopySettingRepository extends JpaRepository implements EmpCop
 			+ "WHERE i.ppestEmployeeCopySettingPk.categoryId = :categoryId AND i.companyId = :companyId";
 	
 	private final static String SELECT_PERINFOITEM_BYCTGID = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.itemName,i.itemCd FROM PpemtPerInfoItem i"
+			+ " INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " INNER JOIN PpemtPerInfoItemOrder io ON i.ppemtPerInfoItemPK.perInfoItemDefId= io.ppemtPerInfoItemPK.perInfoItemDefId"
-			+ " INNER JOIN PpemtPerInfoItemCm ic ON i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd"
-			+ " WHERE i.perInfoCtgId = :perInfoCtgId AND i.abolitionAtr = 0"
+			+ " INNER JOIN PpemtPerInfoItemCm ic ON i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd AND c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd"
+			+ " WHERE c.cid = :companyId AND i.perInfoCtgId = :perInfoCtgId AND i.abolitionAtr = 0"
 			+ " AND ((ic.dataType != 9 AND ic.dataType != 10) or ic.dataType is null) AND ic.itemParentCd IS NULL ORDER BY io.displayOrder ASC";
 	
 	@Override
@@ -88,9 +89,10 @@ public class JpaEmpCopySettingRepository extends JpaRepository implements EmpCop
 	}
 	
 	@Override
-	public List<CopySettingItemObject> getPerInfoItemByCtgId(String perInfoCategoryId) {
+	public List<CopySettingItemObject> getPerInfoItemByCtgId(String companyId, String perInfoCategoryId) {
 
 		List<Object[]> perDefItemList = this.queryProxy().query(SELECT_PERINFOITEM_BYCTGID, Object[].class)
+				.setParameter("companyId", companyId)
 				.setParameter("perInfoCtgId", perInfoCategoryId).getList();
 
 		List<String> copyItemIdList = this.queryProxy()

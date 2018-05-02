@@ -101,7 +101,8 @@ public class CopySettingItemFinder {
 	}
 
 	public List<CopySettingItemDto> getPerInfoDefById(String perInfoCategoryId) {
-		List<CopySettingItemDto> listData = empCopyRepo.getPerInfoItemByCtgId(perInfoCategoryId).stream()
+		String companyId = AppContexts.user().companyId();
+		List<CopySettingItemDto> listData = empCopyRepo.getPerInfoItemByCtgId(companyId, perInfoCategoryId).stream()
 				.map(item -> CopySettingItemDto.createFromDomain(item)).collect(Collectors.toList());
 		return listData;
 	}
