@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktype;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -289,7 +290,15 @@ public class WorkType extends AggregateRoot {
 	 * @param workTypeSet
 	 */
 	public void addWorkTypeSet(WorkTypeSet workTypeSet) {
-		this.workTypeSetList.add(workTypeSet);
+		if(this.workTypeSetList == null || this.workTypeSetList.isEmpty()) {
+			List<WorkTypeSet> addItems = new ArrayList<>();
+			addItems.add(workTypeSet);
+			this.workTypeSetList = addItems;
+		}
+		else {
+			this.workTypeSetList.add(workTypeSet);
+		}
+		
 							
 	}
 }

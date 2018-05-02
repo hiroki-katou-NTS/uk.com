@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -34,5 +35,31 @@ public class CreateEmployeeDailyPerError {
 			this.employeeDailyPerErrorRepository.insert(employeeDailyPerformanceError);
 			
 		}
+	}
+	
+	public void createEmployeeDailyPerError(EmployeeDailyPerError error) {
+		
+		EmployeeDailyPerError obj;
+		if(error.getErrorAlarmMessage().isPresent()) {
+		 
+			obj = new EmployeeDailyPerError(
+						error.getCompanyID(),
+						error.getEmployeeID(),
+						error.getDate(),
+						error.getErrorAlarmWorkRecordCode(),
+						error.getAttendanceItemList(),
+						error.getErrorCancelAble(),
+						error.getErrorAlarmMessage().get().v()); 
+		}
+		else {
+			obj = new EmployeeDailyPerError(
+					error.getCompanyID(),
+					error.getEmployeeID(),
+					error.getDate(),
+					error.getErrorAlarmWorkRecordCode(),
+					error.getAttendanceItemList(),
+					error.getErrorCancelAble()); 
+		}
+		this.employeeDailyPerErrorRepository.insert(obj);
 	}
 }

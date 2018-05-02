@@ -209,7 +209,7 @@ module nts.uk.at.view.kaf011.shr {
                 }
                 self.wkTimeCD.subscribe((newWkType) => {
                     let self = this;
-                   self.updateWorkingText();
+                    self.updateWorkingText();
                 });
                 self.wkTypeCD.subscribe((newWkType) => {
                     let vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
@@ -436,7 +436,11 @@ module nts.uk.at.view.kaf011.shr {
 
                     let newAbsAppID = nts.uk.ui.windows.getShared('KAF_011_C_PARAMS');
                     if (newAbsAppID) {
-                        vm.startPage(newAbsAppID);
+                        if (newAbsAppID != 'Msg_198') {
+                            vm.startPage(newAbsAppID);
+                        } else {
+                            nts.uk.request.jump('../../../cmm/045/a/index.xhtml');
+                        }
                     }
 
                 });

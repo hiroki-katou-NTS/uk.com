@@ -103,10 +103,7 @@ public class OverTimeWorkDailyPerformDto {
 	}
 
 	private TimeDivergenceWithCalculationMinusExist createTimeWithCalcMinus() {
-		return flexTime == null || flexTime.getFlexTime() == null ? null
-												: TimeDivergenceWithCalculationMinusExist.createTimeWithCalculation(
-														toAttendanceTimeOfExistMinus(flexTime.getFlexTime().getTime()), 
-														toAttendanceTimeOfExistMinus(flexTime.getFlexTime().getCalcTime()));
+		return flexTime == null || flexTime.getFlexTime() == null ? null : flexTime.getFlexTime().createTimeDivWithMinus();
 	}
 
 	private TimeSpanForCalc createTimeSheet(TimeSpanForCalcDto c) {

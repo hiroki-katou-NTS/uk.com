@@ -3,16 +3,22 @@ package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
+import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
+import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.GetVacationAddSet;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.PayItemCountOfMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlexRepository;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.GetAggrSettingMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthlyRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
@@ -25,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetOfStatutoryWorkTime;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetWeekStart;
+import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.flex.GetFlexPredWorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetHolidayWorkAndTransferOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetOverTimeAndTransferOrder;
@@ -51,11 +58,17 @@ public interface RepositoriesRequiredByMonthlyAggr {
 	/** 所属雇用履歴の取得 */
 	SyEmploymentAdapter getSyEmployment();
 	
+	/** 日別実績の勤務種別の取得 */
+	WorkTypeOfDailyPerforRepository getWorkTypeOfDaily();
+	
 	/** 日別実績の勤怠時間の取得 */
 	AttendanceTimeRepository getAttendanceTimeOfDaily();
 	
 	/** 日別実績の勤務情報の取得 */
 	WorkInformationRepository getWorkInformationOfDaily();
+	
+	/** 日別実績の所属情報の取得 */
+	AffiliationInforOfDailyPerforRepository getAffiliationInfoOfDaily();
 
 	/** 日別実績の出退勤の取得 */
 	TimeLeavingOfDailyPerformanceRepository getTimeLeavingOfDaily();
@@ -75,14 +88,22 @@ public interface RepositoriesRequiredByMonthlyAggr {
 	/** 所定時間設定の取得 */
 	PredetemineTimeSettingRepository getPredetermineTimeSet();
 
+	/** 日の法定労働時間の取得 */
+	DailyStatutoryWorkingHours getDailyStatutoryWorkingHours();
+	/** 週・月の法定労働時間の取得*/
+	MonthlyStatutoryWorkingHours getMonthlyStatutoryWorkingHours();
+	
 	/** 締めの取得 */
 	ClosureRepository getClosure();
 	
 	/** 社員の日別積実績エラー一覧 */
 	EmployeeDailyPerErrorRepository getEmployeeDailyError();
 	
-	/** 月別実績の勤怠時間の取得 */
+	/** 月別実績の勤怠時間 */
 	AttendanceTimeOfMonthlyRepository getAttendanceTimeOfMonthly();
+	
+	/** 月別実績の任意項目 */
+	AnyItemOfMonthlyRepository getAnyItemOfMonthly();
 	
 	/** 月別実績集計設定の取得 */
 	GetAggrSettingMonthly getAggrSettingMonthly();
@@ -124,6 +145,11 @@ public interface RepositoriesRequiredByMonthlyAggr {
 	
 	/** 休暇加算設定を取得する */
 	GetVacationAddSet getVacationAddSet();
+	
+	/** フレックス勤務の月別集計設定の取得 */
+	MonthlyAggrSetOfFlexRepository getMonthlyAggrSetOfFlex();
+	/** フレックス勤務所定労働時間取得 */
+	GetFlexPredWorkTimeRepository getFlexPredWorktime();
 	
 	/** 週開始の取得 */
 	GetWeekStart getGetWeekStart();

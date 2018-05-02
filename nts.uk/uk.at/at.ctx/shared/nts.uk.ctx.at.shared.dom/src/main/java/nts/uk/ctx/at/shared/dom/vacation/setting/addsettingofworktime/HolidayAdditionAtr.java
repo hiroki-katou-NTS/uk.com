@@ -19,10 +19,10 @@ public enum HolidayAdditionAtr {
 	 */
 	public HolidayAdditionAtr convertFromCalcByActualTimeToHolidayAdditionAtr(CalcurationByActualTimeAtr calcActualTime){
 		if(calcActualTime.isCalclationByActualTime()) {
-			return HolidayAddition;
+			return HolidayNotAddition;
 		}
 		else {
-			return HolidayNotAddition;
+			return HolidayAddition;
 		}
 	}
 	

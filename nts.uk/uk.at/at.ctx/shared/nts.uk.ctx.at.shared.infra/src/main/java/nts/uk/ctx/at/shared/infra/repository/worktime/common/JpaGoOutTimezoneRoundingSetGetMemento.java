@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductGoOutRoundingSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimezoneRoundingSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTypeRoundingSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.RoundingGoOutTimeSheet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSpecialRoundOut;
 
 /**
@@ -37,19 +37,19 @@ public class JpaGoOutTimezoneRoundingSetGetMemento implements GoOutTimezoneRound
 						.valueOf(entity.getKshmtSpecialRoundOutPK().getRoundingTimeType()),
 				entity -> new GoOutTypeRoundingSet(new DeductGoOutRoundingSet(
 						new GoOutTimeRoundingSetting(
-								GoOutTimeRoundingMethod.valueOf(entity.getPubDeductMethod()),
+								RoundingGoOutTimeSheet.valueOf(entity.getPubDeductMethod()),
 								new TimeRoundingSetting(entity.getPubDeductUnit(),
 										entity.getPubDeductRounding())),
 						new GoOutTimeRoundingSetting(
-								GoOutTimeRoundingMethod.valueOf(entity.getPubRoundingMethod()),
+								RoundingGoOutTimeSheet.valueOf(entity.getPubRoundingMethod()),
 								new TimeRoundingSetting(entity.getPubRoundingUnit(),
 										entity.getPubRounding()))),
 						new DeductGoOutRoundingSet(new GoOutTimeRoundingSetting(
-								GoOutTimeRoundingMethod.valueOf(entity.getPersonalDeductMethod()),
+								RoundingGoOutTimeSheet.valueOf(entity.getPersonalDeductMethod()),
 								new TimeRoundingSetting(entity.getPersonalDeductUnit(),
 										entity.getPersonalDeductRounding())),
 								new GoOutTimeRoundingSetting(
-										GoOutTimeRoundingMethod
+										RoundingGoOutTimeSheet
 												.valueOf(entity.getPersonalRoundingMethod()),
 										new TimeRoundingSetting(entity.getPersonalRoundingUnit(),
 												entity.getPersonalRounding()))))));

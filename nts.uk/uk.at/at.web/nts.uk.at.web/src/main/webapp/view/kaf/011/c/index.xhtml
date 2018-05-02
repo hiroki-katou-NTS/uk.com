@@ -116,7 +116,7 @@
 			</div>
 
 			<div id="functions-area-bottom">
-				<button class="x-large proceed" data-bind="click:saveAbs">#{i18n.getText('KAF011_3')}</button>
+				<button class="x-large proceed" data-bind="enable: $root.errors.isEmpty,click:saveAbs">#{i18n.getText('KAF011_3')}</button>
 				<button data-bind="click: closeDialog">#{i18n.getText('KAF011_4')}</button>
 
 			</div>

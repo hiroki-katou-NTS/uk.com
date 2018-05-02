@@ -115,6 +115,23 @@ public class DailyWork extends DomainObject { // 1日の勤務
 		}
 	}
 	
+	public boolean isHolidayType() {
+		if (this.workTypeUnit == WorkTypeUnit.OneDay) {
+			if (this.oneDay.isHolidayType()) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			if (this.morning.isHolidayType() && this.afternoon.isHolidayType()) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+	}
+	
 	/**
 	 * 所定時間の取得先を判定する
 	 * @return　出勤休出区分
@@ -216,6 +233,7 @@ public class DailyWork extends DomainObject { // 1日の勤務
 			return this.getMorning().isAnnualLeave() && this.getAfternoon().isAnnualLeave();
 		}
 	}
+	
 	
 	/**
 	 * 特別休暇の場合であるか

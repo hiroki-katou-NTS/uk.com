@@ -136,8 +136,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
         validate() {
             let self = this;
             $(".kaf-011-combo-box ,.nts-input").trigger("validate");
-            self.checkRecTime();
-            self.checkAbsTime();
+//            self.checkRecTime();
+//            self.checkAbsTime();
         }
         checkRecTime() {
             let self = this,

@@ -65,7 +65,7 @@ public class KrqdtOvertimeInput extends UkJpaEntity implements Serializable {
 	public KrqdtOvertimeInput fromDomainValue(OverTimeInput overTimeInput){
 		this.startTime = overTimeInput.getStartTime() == null ? null : overTimeInput.getStartTime().v();
 		this.endTime = overTimeInput.getEndTime() == null ? null : overTimeInput.getEndTime().v();
-		this.applicationTime = overTimeInput.getApplicationTime().v();
+		this.applicationTime = overTimeInput.getApplicationTime() == null ? null : overTimeInput.getApplicationTime().v();
 		return this;
 	}
 	

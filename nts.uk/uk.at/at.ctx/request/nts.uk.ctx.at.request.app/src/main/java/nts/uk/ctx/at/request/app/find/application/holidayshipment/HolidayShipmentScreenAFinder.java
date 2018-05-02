@@ -362,7 +362,7 @@ public class HolidayShipmentScreenAFinder {
 
 		// アルゴリズム「振休振出申請定型理由の取得」を実行する
 
-		output.setAppReasonComboItems(appResonRepo.getReasonByCompanyId(companyID).stream()
+		output.setAppReasonComboItems(appResonRepo.getReasonByAppType(companyID,appType.value).stream()
 				.map(x -> ApplicationReasonDto.convertToDto(x)).collect(Collectors.toList()));
 
 		// アルゴリズム「基準日別設定の取得」を実行する
@@ -667,8 +667,8 @@ public class HolidayShipmentScreenAFinder {
 				}
 			} else {
 				Optional<ComSubstVacation> comSubOpt = comSubrepo.findById(companyID);
-				boolean isNoComSubOrNotManage = !comSubOpt.isPresent()
-						|| comSubOpt.get().getSetting().getIsManage().equals(ManageDistinct.NO);
+				boolean isNoComSubOrNotManage = comSubOpt.isPresent()
+						&& comSubOpt.get().getSetting().getIsManage().equals(ManageDistinct.NO);
 				if (isNoComSubOrNotManage) {
 					throw new BusinessException("Msg_323");
 				}

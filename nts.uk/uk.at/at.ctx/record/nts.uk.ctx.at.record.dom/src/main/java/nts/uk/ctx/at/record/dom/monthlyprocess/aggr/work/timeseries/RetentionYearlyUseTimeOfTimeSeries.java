@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.YearlyReservedOfDaily;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * 時系列の積立年休使用時間
@@ -15,7 +17,7 @@ public class RetentionYearlyUseTimeOfTimeSeries {
 	private GeneralDate ymd;
 	
 	/** 積立年休使用時間 */
-	//private RetentionYearlyOfDaily retentionYearly;
+	private YearlyReservedOfDaily retentionYearlyUseTime;
 
 	/**
 	 * コンストラクタ
@@ -23,17 +25,20 @@ public class RetentionYearlyUseTimeOfTimeSeries {
 	public RetentionYearlyUseTimeOfTimeSeries(GeneralDate ymd){
 		
 		this.ymd = ymd;
-		//this.retentionYearly = new RetentionYearlyOfDaily();
+		this.retentionYearlyUseTime = new YearlyReservedOfDaily(new AttendanceTime(0));
 	}
 
 	/**
 	 * ファクトリー
 	 * @param ymd 年月日
+	 * @param retentionYearlyUseTime 積立年休使用時間
 	 * @return 時系列の積立年休使用時間
 	 */
-	public static RetentionYearlyUseTimeOfTimeSeries of(GeneralDate ymd){
+	public static RetentionYearlyUseTimeOfTimeSeries of(
+			GeneralDate ymd, YearlyReservedOfDaily retentionYearlyUseTime){
 		
 		val domain = new RetentionYearlyUseTimeOfTimeSeries(ymd);
+		domain.retentionYearlyUseTime = retentionYearlyUseTime;
 		return domain;
 	}
 }

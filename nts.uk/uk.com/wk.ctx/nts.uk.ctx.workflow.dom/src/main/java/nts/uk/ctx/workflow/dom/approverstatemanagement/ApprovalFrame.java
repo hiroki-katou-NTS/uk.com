@@ -32,7 +32,7 @@ public class ApprovalFrame extends DomainObject {
 	private ApprovalBehaviorAtr approvalAtr;
 	
 	private ConfirmPerson confirmAtr;
-	
+	@Setter
 	private List<ApproverState> listApproverState;
 	
 	@Setter

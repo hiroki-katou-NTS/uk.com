@@ -18,6 +18,15 @@ public interface ApprovalRootStateRepository {
 	 * @return List<ApprovalRootState>
 	 */
 	public List<ApprovalRootState> findEmployeeAppByApprovalRecordDate(GeneralDate startDate, GeneralDate endDate,String approverID,Integer rootType);
+	
+	/**
+	 * @param startDate
+	 * @param endDate
+	 * @param approverID
+	 * @param rootType
+	 * @return
+	 */
+	public List<ApprovalRootState> findEmployeeAppByApprovalRecordDateNew(GeneralDate startDate, GeneralDate endDate,Integer rootType);
 	/**
 	 * @param startDate
 	 * @param endDate
