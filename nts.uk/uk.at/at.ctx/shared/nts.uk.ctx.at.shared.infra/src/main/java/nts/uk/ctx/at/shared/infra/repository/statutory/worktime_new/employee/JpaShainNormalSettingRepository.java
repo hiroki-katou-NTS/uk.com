@@ -36,7 +36,9 @@ public class JpaShainNormalSettingRepository extends JpaRepository implements Sh
 	 */
 	@Override
 	public void add(ShainNormalSetting setting) {
-		commandProxy().insert(this.toEntity(setting));
+		KshstShaNormalSet entity = new KshstShaNormalSet();
+		setting.saveToMemento(new JpaShainNormalSettingSetMemento(entity));
+		commandProxy().insert(entity);
 	}
 	
 	/* 
@@ -44,7 +46,13 @@ public class JpaShainNormalSettingRepository extends JpaRepository implements Sh
 	 */
 	@Override
 	public void update(ShainNormalSetting setting) {
-		commandProxy().update(this.toEntity(setting));
+		KshstShaNormalSet entity = this.queryProxy()
+				.find(new KshstShaNormalSetPK(setting.getCompanyId().v(),
+						setting.getEmployeeId().v(), setting.getYear().v()),
+						KshstShaNormalSet.class)
+				.get();
+		setting.saveToMemento(new JpaShainNormalSettingSetMemento(entity));
+		commandProxy().update(entity);
 	}
 
 	/* 
@@ -62,17 +70,6 @@ public class JpaShainNormalSettingRepository extends JpaRepository implements Sh
 		return Optional.ofNullable(this.toDomain(optEntity.get()));
 	}
 
-	/**
-	 * To entity.
-	 *
-	 * @param domain the domain
-	 * @return the kshst sha normal set
-	 */
-	private KshstShaNormalSet toEntity(ShainNormalSetting domain) {
-		KshstShaNormalSet entity = new KshstShaNormalSet();
-		domain.saveToMemento(new JpaShainNormalSettingSetMemento(entity));
-		return entity;
-	}
 	
 	/**
 	 * To domain.
