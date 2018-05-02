@@ -562,11 +562,12 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 	}
 
 	public void vacationTransferCheck(String sID, GeneralDate appDate, int prePostAtr) {
-
+		// ドメインモデル「申請」を取得する
 		List<Application_New> sameDateApps = appRepo
 				.getApp(sID, appDate, prePostAtr, ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value).stream()
-				.filter(x -> !x.getReflectionInformation().getStateReflection().equals(ReflectedState_New.CANCELED)
-						&& !x.getReflectionInformation().getStateReflection().equals(ReflectedState_New.DENIAL))
+				.filter(x -> !x.getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.CANCELED)
+						&& !x.getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.WAITCANCEL)
+						&& !x.getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.DENIAL))
 				.collect(Collectors.toList());
 
 		boolean isAppSameDateExists = !CollectionUtil.isEmpty(sameDateApps);
