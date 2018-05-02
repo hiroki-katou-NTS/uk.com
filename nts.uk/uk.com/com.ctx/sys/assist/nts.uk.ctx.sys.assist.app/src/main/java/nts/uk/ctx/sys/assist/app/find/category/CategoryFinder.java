@@ -29,16 +29,32 @@ public class CategoryFinder
     	List<Category> listCategory =  null;
     	List<CategoryDto> listCategoryDto = new ArrayList<>();
     	if(systemType == SystemType.PERSON_SYSTEM.value) {
-    		listCategory = finder.findByPossibilitySystem(systemType);
+    		listCategory = finder.findByPossibilitySystem();
     	} else if (systemType == SystemType.ATTENDANCE_SYSTEM.value) {
-    		listCategory = finder.findByAttendanceSystem(systemType);
+    		listCategory = finder.findByAttendanceSystem();
     	} else if (systemType == SystemType.PAYROLL_SYSTEM.value) {
-    		listCategory = finder.findByPaymentAvailability(systemType);
+    		listCategory = finder.findByPaymentAvailability();
     	} else if (systemType == SystemType.OFFICE_HELPER.value) {
-    		listCategory = finder.findBySchelperSystem(systemType);
+    		listCategory = finder.findBySchelperSystem();
     	}
     	listCategoryDto = listCategory.stream().map(c -> CategoryDto.fromDomain(c)).collect(Collectors.toList());
     	
+    	return listCategoryDto;
+    }
+    
+    public List<CategoryDto> getCategoryByCodeOrName(int systemType,String keySearch,List<String> categoriesIgnore){
+    	List<Category> listCategory =  null;
+    	List<CategoryDto> listCategoryDto = new ArrayList<>();
+    	if(systemType == SystemType.PERSON_SYSTEM.value) {
+    		listCategory = finder.findByPossibilitySystemAndCodeName(keySearch, categoriesIgnore);
+    	} else if (systemType == SystemType.ATTENDANCE_SYSTEM.value) {
+    		listCategory = finder.findByAttendanceSystemAndCodeName(keySearch, categoriesIgnore);
+    	} else if (systemType == SystemType.PAYROLL_SYSTEM.value) {
+    		listCategory = finder.findByPaymentAvailabilityAndCodeName(keySearch, categoriesIgnore);
+    	} else if (systemType == SystemType.OFFICE_HELPER.value) {
+    		listCategory = finder.findBySchelperSystemAndCodeName(keySearch, categoriesIgnore);
+    	}
+    	listCategoryDto = listCategory.stream().map(c -> CategoryDto.fromDomain(c)).collect(Collectors.toList());
     	return listCategoryDto;
     }
     

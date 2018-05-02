@@ -23,9 +23,12 @@ public interface CategoryRepository
 
 	void remove(String categoryId);
 	
-	List<Category> findByAttendanceSystem(int systemType);
-	List<Category> findByPaymentAvailability(int systemType);
-	List<Category> findByPossibilitySystem(int systemType);
-	List<Category> findBySchelperSystem(int systemType);
-
+	List<Category> findByAttendanceSystem();
+	List<Category> findByPaymentAvailability();
+	List<Category> findByPossibilitySystem();
+	List<Category> findBySchelperSystem();
+	List<Category> findByAttendanceSystemAndCodeName(String keySearch,List<String> categoriesIgnore);
+	List<Category> findByPaymentAvailabilityAndCodeName(String keySearch,List<String> categoriesIgnore);
+	List<Category> findByPossibilitySystemAndCodeName(String keySearch,List<String> categoriesIgnore);
+	List<Category> findBySchelperSystemAndCodeName(String keySearch,List<String> categoriesIgnore);
 }
