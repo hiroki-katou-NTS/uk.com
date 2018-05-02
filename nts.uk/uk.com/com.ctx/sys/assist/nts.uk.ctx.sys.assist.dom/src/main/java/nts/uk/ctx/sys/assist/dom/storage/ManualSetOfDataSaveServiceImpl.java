@@ -13,8 +13,8 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.sys.assist.dom.category.Category;
 import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
-import nts.uk.ctx.sys.assist.dom.categoryFieldMaster.CategoryFieldMt;
-import nts.uk.ctx.sys.assist.dom.categoryFieldMaster.CategoryFieldMtRepository;
+import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMt;
+import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMtRepository;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**

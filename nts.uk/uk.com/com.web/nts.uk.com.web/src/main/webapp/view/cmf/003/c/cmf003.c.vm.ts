@@ -95,7 +95,7 @@ module nts.uk.com.view.cmf003.c {
                      alertError({ messageId: "Msg_577" });
                 } else {
                     setShared("result",self.currentCodeListSwap());
-                    setShared("currentItem",self.currentItem);
+                    setShared("CMF003cOutputCategorys",self.currentItem);
                     close();
                 }
             }

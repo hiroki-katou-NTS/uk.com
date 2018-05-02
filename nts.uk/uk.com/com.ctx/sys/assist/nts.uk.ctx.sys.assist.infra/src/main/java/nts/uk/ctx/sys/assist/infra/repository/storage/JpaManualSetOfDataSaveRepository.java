@@ -15,9 +15,9 @@ public class JpaManualSetOfDataSaveRepository extends JpaRepository implements M
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspmtManualSetOfDataSave f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.manualSetOfDataSavePk.cid =:cid AND  f.manualSetOfDataSavePk.storeProcessingId =:storeProcessingId ";
+			+ " WHERE  f.cid =:cid AND  f.storeProcessingId =:storeProcessingId ";
 	private static final String SELECT_BY_KEY_STRING_STORE = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.manualSetOfDataSavePk.storeProcessingId =:storeProcessingId ";
+			+ " WHERE  f.storeProcessingId =:storeProcessingId ";
 
 	@Override
 	public List<ManualSetOfDataSave> getAllManualSetOfDataSave() {

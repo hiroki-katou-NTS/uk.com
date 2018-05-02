@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.assist.infra.repository.category;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -21,6 +21,10 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
     private static final String SELECT_BY_POSSIBILITY_SYSTEM = SELECT_ALL_QUERY_STRING + " WHERE f.possibilitySystem =:systemType";
     private static final String SELECT_BY_SCHELPER_SYSTEM   = SELECT_ALL_QUERY_STRING + " WHERE f.schelperSystem =:systemType";
     private static final String SELECT_BY_LIST_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.categoryPk.categoryId IN :lstCID ";
+    private static final String SELECT_BY_ATTENDANCE_SYSTEM_AND_CODENAME = SELECT_ALL_QUERY_STRING + " WHERE f.categoryId like %:keySearch% OR f.categoryName LIKE '%:keySearch%' and f.timeStore <> 1 and f.categoryId NOT IN :categoriesIgnore ORDER BY f.attendanceSystem,f.categoryId";
+    private static final String SELECT_BY_PAYMENT_AVAIABILITY_AND_CODENAME = SELECT_ALL_QUERY_STRING + " WHERE f.categoryId like %:keySearch% OR f.categoryName LIKE '%:keySearch%' and f.timeStore <> 1 and f.categoryId NOT IN :categoriesIgnore ORDER BY f.paymentAvailability,f.categoryId";
+    private static final String SELECT_BY_POSSIBILITY_SYSTEM_AND_CODENAME = SELECT_ALL_QUERY_STRING + " WHERE f.categoryId like %:keySearch% OR f.categoryName LIKE '%:keySearch%' and f.timeStore <> 1 and f.categoryId NOT IN :categoriesIgnore ORDER BY f.possibilitySystem,f.categoryId";
+    private static final String SELECT_BY_SCHELPER_SYSTEM_AND_CODENAME = SELECT_ALL_QUERY_STRING + " WHERE f.categoryId like %:keySearch% OR f.categoryName LIKE '%:keySearch%' and f.timeStore <> 1 and f.categoryId NOT IN :categoriesIgnore ORDER BY f.possibilitySystem,f.categoryId";
     @Override
     public List<Category> getAllCategory(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, SspmtCategory.class)
@@ -62,30 +66,54 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
 	}
 
 	@Override
-	public List<Category> findByAttendanceSystem(int systemType) {
+	public List<Category> findByAttendanceSystem() {
 		return this.queryProxy().query(SELECT_BY_ATTENDANCE_SYSTEM, SspmtCategory.class)
-		        .setParameter("systemType", systemType)
 		        .getList(c->c.toDomain());
 	}
 
 	@Override
-	public List<Category> findByPaymentAvailability(int systemType) {
+	public List<Category> findByPaymentAvailability() {
 		return this.queryProxy().query(SELECT_BY_PAYMENT_AVAIABILITY, SspmtCategory.class)
-		        .setParameter("systemType", systemType)
 		        .getList(c->c.toDomain());
 	}
 
 	@Override
-	public List<Category> findByPossibilitySystem(int systemType) {
+	public List<Category> findByPossibilitySystem() {
 		return this.queryProxy().query(SELECT_BY_POSSIBILITY_SYSTEM, SspmtCategory.class)
-		        .setParameter("systemType", systemType)
 		        .getList(c->c.toDomain());
 	}
 
 	@Override
-	public List<Category> findBySchelperSystem(int systemType) {
+	public List<Category> findBySchelperSystem() {
 		return this.queryProxy().query(SELECT_BY_SCHELPER_SYSTEM, SspmtCategory.class)
-		        .setParameter("systemType", systemType)
+		        .getList(c->c.toDomain());
+	}
+
+	@Override
+	public List<Category> findByAttendanceSystemAndCodeName(String keySearch, List<String> categoriesIgnore) {
+		return this.queryProxy().query(SELECT_BY_ATTENDANCE_SYSTEM_AND_CODENAME, SspmtCategory.class)
+		        .setParameter("keySearch", keySearch).setParameter("categoriesIgnore", categoriesIgnore)
+		        .getList(c->c.toDomain());
+	}
+
+	@Override
+	public List<Category> findByPaymentAvailabilityAndCodeName(String keySearch, List<String> categoriesIgnore) {
+		return this.queryProxy().query(SELECT_BY_PAYMENT_AVAIABILITY_AND_CODENAME, SspmtCategory.class)
+		        .setParameter("keySearch", keySearch).setParameter("categoriesIgnore", categoriesIgnore)
+		        .getList(c->c.toDomain());
+	}
+
+	@Override
+	public List<Category> findByPossibilitySystemAndCodeName(String keySearch, List<String> categoriesIgnore) {
+		return this.queryProxy().query(SELECT_BY_POSSIBILITY_SYSTEM_AND_CODENAME, SspmtCategory.class)
+		        .setParameter("keySearch", keySearch).setParameter("categoriesIgnore", categoriesIgnore)
+		        .getList(c->c.toDomain());
+	}
+
+	@Override
+	public List<Category> findBySchelperSystemAndCodeName(String keySearch, List<String> categoriesIgnore) {
+		return this.queryProxy().query(SELECT_BY_SCHELPER_SYSTEM_AND_CODENAME, SspmtCategory.class)
+		        .setParameter("keySearch", keySearch).setParameter("categoriesIgnore", categoriesIgnore)
 		        .getList(c->c.toDomain());
 	}
 
