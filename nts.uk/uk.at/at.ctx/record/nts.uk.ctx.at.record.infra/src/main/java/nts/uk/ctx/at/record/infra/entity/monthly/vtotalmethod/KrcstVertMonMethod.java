@@ -29,10 +29,6 @@ public class KrcstVertMonMethod extends UkJpaEntity implements Serializable {
 	@Column(name="CID")
 	private String cid;
 
-	// 勤務種類
-	@Column(name="DUTY_TYPE")
-	private int dutyType;
-
 	// 振出日数カウント条件
 	@Column(name="TRANS_ATTEND_DAY")
 	private int transAttendDay;

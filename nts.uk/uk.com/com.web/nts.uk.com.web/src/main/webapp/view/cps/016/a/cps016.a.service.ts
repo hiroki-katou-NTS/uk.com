@@ -20,7 +20,7 @@ module nts.uk.com.view.cps016.a.service {
         return nts.uk.request.ajax("com", _path);
     }
 
-    export function saveDataSelectionItem(command) {
+    export function addDataSelectionItem(command) {
         return ajax(paths.saveDataSelectionItem, command);
     }
 

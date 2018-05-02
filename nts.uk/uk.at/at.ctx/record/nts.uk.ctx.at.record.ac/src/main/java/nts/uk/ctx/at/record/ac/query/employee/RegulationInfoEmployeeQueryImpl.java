@@ -51,6 +51,7 @@ public class RegulationInfoEmployeeQueryImpl implements RegulationInfoEmployeeQu
 							.includeGoingOnLoan(queryX.getIncludeGoingOnLoan())
 							.systemType(2)
 //							.sortOrderNo(1)
+//							.filterByClosure(false)
 							.includeRetirees(queryX.getIncludeRetirees()).build();
 	}
 }

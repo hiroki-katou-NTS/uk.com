@@ -102,4 +102,23 @@ public class AbsenceDaysOfMonthly {
 			this.totalAbsenceDays = this.totalAbsenceDays.addDays(aggrAbsenceDays.getDays().v());
 		}
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(AbsenceDaysOfMonthly target){
+		
+		this.totalAbsenceDays = this.totalAbsenceDays.addDays(target.totalAbsenceDays.v());
+		for (val absenceDays : this.absenceDaysList.values()){
+			val frameNo = absenceDays.getAbsenceFrameNo();
+			if (target.absenceDaysList.containsKey(frameNo)){
+				absenceDays.addDays(target.absenceDaysList.get(frameNo).getDays().v());
+			}
+		}
+		for (val targetAbsenceDays : target.absenceDaysList.values()){
+			val frameNo = targetAbsenceDays.getAbsenceFrameNo();
+			this.absenceDaysList.putIfAbsent(frameNo, targetAbsenceDays);
+		}
+	}
 }

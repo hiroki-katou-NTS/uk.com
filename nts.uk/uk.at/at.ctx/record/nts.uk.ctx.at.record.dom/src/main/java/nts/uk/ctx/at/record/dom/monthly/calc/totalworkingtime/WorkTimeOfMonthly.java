@@ -63,6 +63,25 @@ public class WorkTimeOfMonthly {
 		domain.withinPrescribedPremiumTime = withinPrescribedPremiumTime;
 		return domain;
 	}
+
+	/**
+	 * 複写
+	 * @param workTime 就業時間
+	 * @param withinPrescribedPremiumTime 所定内割増時間
+	 * @param timeSeriesWorks 時系列ワーク
+	 * @return 月別実績の就業時間
+	 */
+	public static WorkTimeOfMonthly copyFrom(
+			AttendanceTimeMonth workTime,
+			AttendanceTimeMonth withinPrescribedPremiumTime,
+			Map<GeneralDate, WorkTimeOfTimeSeries> timeSeriesWorks){
+		
+		val domain = new WorkTimeOfMonthly();
+		domain.workTime = new AttendanceTimeMonth(workTime.valueAsMinutes());
+		domain.withinPrescribedPremiumTime = new AttendanceTimeMonth(withinPrescribedPremiumTime.valueAsMinutes());
+		domain.timeSeriesWorks = timeSeriesWorks;
+		return domain;
+	}
 	
 	/**
 	 * 就業時間を確認する
@@ -108,7 +127,7 @@ public class WorkTimeOfMonthly {
 			val workTimeOfTimeSeries = WorkTimeOfTimeSeries.of(ymd,
 					WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(
 							workTime,
-							withinPrescribedTimeOfDaily.getWorkTimeIncludeVacationTime(),
+							withinPrescribedTimeOfDaily.getActualWorkTime(),
 							withinPrescribedPremiumTime,
 							withinPrescribedTimeOfDaily.getWithinStatutoryMidNightTime(),
 							withinPrescribedTimeOfDaily.getVacationAddTime())
@@ -184,5 +203,16 @@ public class WorkTimeOfMonthly {
 	public AttendanceTimeMonth getTotalWorkingTargetTime(){
 		
 		return new AttendanceTimeMonth(this.workTime.v() + this.withinPrescribedPremiumTime.v());
+	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(WorkTimeOfMonthly target){
+		
+		this.workTime = this.workTime.addMinutes(target.workTime.v());
+		this.withinPrescribedPremiumTime = this.withinPrescribedPremiumTime.addMinutes(
+				target.withinPrescribedPremiumTime.v());
 	}
 }

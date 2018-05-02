@@ -121,7 +121,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		if (workTimeCode != null)
 			setWorkTimeCode = workTimeCode.v();
 		WorkInfoOfDailyPerformance workInformation = new WorkInfoOfDailyPerformance(employeeId,
-				new WorkInformation(setWorkTimeCode, workTypeCode.toString()), null, CalculationState.No_Calculated,
+				new WorkInformation(setWorkTimeCode, workTypeCode.toString()), new WorkInformation(setWorkTimeCode, workTypeCode.toString()), CalculationState.No_Calculated,
 				NotUseAttribute.Not_use, NotUseAttribute.Not_use, ymd, Collections.emptyList());
 		// 勤怠時間取得
 		val attendanceTime = attendanceTimeRepository.find(employeeId, ymd);
@@ -174,8 +174,20 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		// エラーメッセージは日別計算で使用しないため、empCalAndSumExecLogIDに任意の物を入れている
 		val employeeState = reflectWorkInforDomainServiceImpl
 				.createAffiliationInforOfDailyPerfor(AppContexts.user().companyId(), employeeId, ymd, "01");
-		if (!employeeState.getAffiliationInforOfDailyPerfor().isPresent())
-			return Optional.empty();
+		if (!employeeState.getAffiliationInforOfDailyPerfor().isPresent()) {
+			org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(this.getClass());
+			employeeState.getErrMesInfos().forEach(tc -> { if(tc.getEmployeeID() == "001")
+																log.info("所属雇用履歴が存在しません。");
+														   if(tc.getEmployeeID() == "002")
+															    log.info("所属職場履歴が存在しません。");
+														   if(tc.getEmployeeID() == "003")
+															    log.info("所属分類履歴が存在しません。");
+														   if(tc.getEmployeeID() == "004")
+															   log.info("所属職位履歴が存在しません。");
+			});
+			return Optional.empty();		
+		}
+		
 		// return new IntegrationOfDaily(workInformation, timeAttendance,
 		// attendanceTime.get());
 		return Optional.of(new IntegrationOfDaily(workInformation, calAttrOfDailyPerformance,

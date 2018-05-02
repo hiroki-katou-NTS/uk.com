@@ -1,5 +1,7 @@
 package nts.uk.pub.spr.login;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -13,6 +15,8 @@ import nts.uk.ctx.bs.employee.pub.spr.export.EmpSprExport;
 import nts.uk.ctx.sys.auth.pub.spr.UserSprExport;
 import nts.uk.ctx.sys.auth.pub.spr.UserSprPub;
 import nts.uk.pub.spr.login.output.LoginUserContextSpr;
+import nts.uk.pub.spr.login.output.RoleInfoSpr;
+import nts.uk.pub.spr.login.output.RoleTypeSpr;
 import nts.uk.pub.spr.login.paramcheck.LoginParamCheck;
 /**
  * 
@@ -119,7 +123,7 @@ public class SprLoginFormImpl implements SprLoginFormService {
 		}
 		UserSprExport userSpr = opUserSpr.get();
 		// 権限（ロール）情報を取得、設定する(lay thong tin quuyen han (role) roi setting)
-		String roleID = this.getRoleInfo(userSpr.getUserID());
+		List<RoleInfoSpr> roleList = this.getRoleInfo(userSpr.getUserID());
 		return new LoginUserContextSpr(
 				userSpr.getUserID(), 
 				"000000000000", // 固定
@@ -128,41 +132,41 @@ public class SprLoginFormImpl implements SprLoginFormService {
 				personID, 
 				loginEmployeeCD, 
 				loginEmployeeID, 
-				roleID,
+				roleList,
 				employeeID);
 		
 	}
 
 	@Override
-	public String getRoleInfo(String userID) {
+	public List<RoleInfoSpr> getRoleInfo(String userID) {
 		// 契約コード固定：　000000000000
 		// 会社コード固定：　0001
 		// 会社ID固定：　000000000000-0001
 		String companyID = "000000000000-0001";
-		String role = null;
+		List<RoleInfoSpr> roleList = new ArrayList<>();
 		Optional<String> resultRole = Optional.empty();
 		// ロール種類＝就業
 		resultRole = userSprPub.getRoleFromUserId(companyID, userID, 3);
 		if(resultRole.isPresent()){
-			role = resultRole.get();
+			roleList.add(new RoleInfoSpr(resultRole.get(), RoleTypeSpr.EMPLOYMENT));
 		}
 		
 		// ロール種類＝給与
 		resultRole = userSprPub.getRoleFromUserId(companyID, userID, 4);
 		if(resultRole.isPresent()){
-			role = resultRole.get();
+			roleList.add(new RoleInfoSpr(resultRole.get(), RoleTypeSpr.SALARY));
 		}
 		
 		// ロール種類＝人事
 		resultRole = userSprPub.getRoleFromUserId(companyID, userID, 5);
 		if(resultRole.isPresent()){
-			role = resultRole.get();
+			roleList.add(new RoleInfoSpr(resultRole.get(), RoleTypeSpr.HUMAN_RESOURCE));
 		}
 		
 		// ロール種類＝オフィスヘルパー
 		resultRole = userSprPub.getRoleFromUserId(companyID, userID, 6);
 		if(resultRole.isPresent()){
-			role = resultRole.get();
+			roleList.add(new RoleInfoSpr(resultRole.get(), RoleTypeSpr.OFFICE_HELPER));
 		}
 		
 		/*
@@ -176,33 +180,33 @@ public class SprLoginFormImpl implements SprLoginFormService {
 		// ロール種類＝マイナンバー
 		resultRole = userSprPub.getRoleFromUserId(companyID, userID, 7);
 		if(resultRole.isPresent()){
-			role = resultRole.get();
+			roleList.add(new RoleInfoSpr(resultRole.get(), RoleTypeSpr.MY_NUMBER));
 		}
 		
 		// ロール種類＝グループ会社管理
 		resultRole = userSprPub.getRoleFromUserId(companyID, userID, 2);
 		if(resultRole.isPresent()){
-			role = resultRole.get();
+			roleList.add(new RoleInfoSpr(resultRole.get(), RoleTypeSpr.GROUP_COMAPNY_MANAGER));
 		}
 		
 		// ロール種類＝会社管理者
 		resultRole = userSprPub.getRoleFromUserId(companyID, userID, 1);
 		if(resultRole.isPresent()){
-			role = resultRole.get();
+			roleList.add(new RoleInfoSpr(resultRole.get(), RoleTypeSpr.COMPANY_MANAGER));
 		}
 		
 		// ロール種類＝システム管理者
 		resultRole = userSprPub.getRoleFromUserId(companyID, userID, 0);
 		if(resultRole.isPresent()){
-			role = resultRole.get();
+			roleList.add(new RoleInfoSpr(resultRole.get(), RoleTypeSpr.SYSTEM_MANAGER));
 		}
 		
 		// ロール種類＝個人情報
 		resultRole = userSprPub.getRoleFromUserId(companyID, userID, 8);
 		if(resultRole.isPresent()){
-			role = resultRole.get();
+			roleList.add(new RoleInfoSpr(resultRole.get(), RoleTypeSpr.PERSONAL_INFO));
 		}
 		
-		return role;
+		return roleList;
 	}
 }

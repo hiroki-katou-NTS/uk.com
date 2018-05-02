@@ -100,22 +100,22 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	@Override
 	public List<DivergenceTime> getDivTimeListByNo(String companyId, List<Integer> divTimeNo) {
 
-		//Define DivergenceTime list
+		// Define DivergenceTime list
 		List<DivergenceTime> divTimeList = new ArrayList<DivergenceTime>();
 
-		//Foreach integer list 
+		// Foreach integer list
 		divTimeNo.forEach(item -> {
-			//Get OptionalDivTime
+			// Get OptionalDivTime
 			Optional<DivergenceTime> optionalDivTime = this.getDivTimeInfo(companyId, item);
-			//if present DivergenceTime
+			// if present DivergenceTime
 			if (optionalDivTime.isPresent()) {
-				//get domain
+				// get domain
 				DivergenceTime divTime = optionalDivTime.get();
-				//add domain to DivergenceTime list
+				// add domain to DivergenceTime list
 				divTimeList.add(divTime);
 			}
 		});
-		//return
+		// return
 		return divTimeList;
 	}
 
@@ -129,7 +129,6 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	public Optional<DivergenceTime> getDivTimeInfo(String companyId, int divTimeNo) {
 
 		KrcstDvgcTimePK PK = new KrcstDvgcTimePK(companyId, divTimeNo);
-
 		return this.queryProxy().find(PK, KrcstDvgcTime.class).map(e -> this.toDomain(e));
 	}
 
@@ -167,17 +166,63 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 				: KrcstDvgcAttendance.stream().map(item -> item.getId().getAttendanceId()).collect(Collectors.toList());
 
 	}
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository#getDivTimeListByUseSet(java.lang.String)
+
+	/**
+	 * Find attendance.
+	 *
+	 * @param companyId
+	 *            the company id
+	 * @param divTimeNo
+	 *            the div time no
+	 * @return the list
+	 */
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository#
+	 * findAttendanceId(java.lang.String, int)
+	 */
+	public List<KrcstDvgcAttendance> findAttendance(String companyId, int divTimeNo) {
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<KrcstDvgcAttendance> cq = criteriaBuilder.createQuery(KrcstDvgcAttendance.class);
+		Root<KrcstDvgcAttendance> root = cq.from(KrcstDvgcAttendance.class);
+
+		// Build query
+		cq.select(root);
+
+		// create where conditions
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(
+				criteriaBuilder.equal(root.get(KrcstDvgcAttendance_.id).get(KrcstDvgcAttendancePK_.cid), companyId));
+		predicates.add(
+				criteriaBuilder.equal(root.get(KrcstDvgcAttendance_.id).get(KrcstDvgcAttendancePK_.no), divTimeNo));
+
+		// add where to query
+		cq.where(predicates.toArray(new Predicate[] {}));
+
+		// query data
+		List<KrcstDvgcAttendance> KrcstDvgcAttendance = em.createQuery(cq).getResultList();
+
+		// return
+		return KrcstDvgcAttendance.isEmpty() ? null : KrcstDvgcAttendance;
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository#
+	 * getDivTimeListByUseSet(java.lang.String)
 	 */
 	@Override
 	public List<DivergenceTime> getDivTimeListByUseSet(String companyId) {
-		
+
 		// get all div time by logined company
 		List<DivergenceTime> divTimeList = this.findByCompanyId(companyId);
-		
-		// filter the div time list by use classification is USE and sort by div time NO
+
+		// filter the div time list by use classification is USE and sort by div
+		// time NO
 		return divTimeList.stream().filter(item -> item.getDivTimeUseSet().equals(DivergenceTimeUseSet.USE))
 				.sorted(Comparator.comparing(DivergenceTime::getDivergenceTimeNo)).collect(Collectors.toList());
 	}
@@ -185,13 +230,16 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	/**
 	 * To domain.
 	 *
-	 * @param entities
-	 *            the entities
+	 * @param entityDvgcTime
+	 *            the entity dvgc time
 	 * @return the divergence time
 	 */
-	private DivergenceTime toDomain(KrcstDvgcTime entities) {
+	private DivergenceTime toDomain(KrcstDvgcTime entityDvgcTime) {
 
-		DivergenceTimeGetMemento memento = new JpaDivergenceTimeGetMemento(entities);
+		List<KrcstDvgcAttendance> entityAttendance = this.findAttendance(entityDvgcTime.getId().getCid(),
+				entityDvgcTime.getId().getNo());
+
+		DivergenceTimeGetMemento memento = new JpaDivergenceTimeGetMemento(entityDvgcTime, entityAttendance);
 
 		return new DivergenceTime(memento);
 	}
@@ -290,12 +338,14 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	 */
 	private KrcstDvgcTime toEntity(DivergenceTime domain) {
 
+		List<KrcstDvgcAttendance> entityAttendanceList = this.findAttendance(domain.getCompanyId(),
+				domain.getDivergenceTimeNo());
 		KrcstDvgcTimePK PK = new KrcstDvgcTimePK(domain.getCompanyId(), domain.getDivergenceTimeNo());
-		KrcstDvgcTime entity = this.queryProxy().find(PK, KrcstDvgcTime.class).orElse(new KrcstDvgcTime());
+		KrcstDvgcTime entityDvgcTime = this.queryProxy().find(PK, KrcstDvgcTime.class).orElse(new KrcstDvgcTime());
 
-		domain.saveToMemento(new JpaDivergenceTimeSetMemento(entity));
+		domain.saveToMemento(new JpaDivergenceTimeSetMemento(entityDvgcTime));
 
-		return entity;
+		return entityDvgcTime;
 
 	}
 

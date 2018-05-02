@@ -159,7 +159,9 @@ module cps001.d.vm {
             let self = this;
             let id = self.empFileMn().fileId;
             try {
-                $("#test").ntsImageEditor("selectByFileId", id);
+                 $("#test").ntsImageEditor("selectByFileId", {fileId: id, actionOnClose: function(){
+                     close();   
+                }});
             } catch (Error) {
                 self.isChange(true);
             }

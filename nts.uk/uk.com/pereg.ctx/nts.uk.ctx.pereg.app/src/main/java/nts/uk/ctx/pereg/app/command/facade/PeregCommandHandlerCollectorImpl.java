@@ -60,6 +60,11 @@ import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.update
 import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave7informationCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave8informationCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.empinfo.basicinfo.update.UpdateSpecialleave9informationCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.nursingcareleave.AddCareLeaveCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.nursingcareleave.UpdateCareLeaveCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.otherhdinfo.AddOtherHolidayInfoCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.otherhdinfo.DeleteOtherHolidayInfoCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.otherhdinfo.UpdateOtherHolidayInfoCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.AddShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.DeleteShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.UpdateShortWorkTimeCommand;
@@ -96,7 +101,6 @@ import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregCommandHandlerCollector;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
-import nts.uk.ctx.at.record.app.command.remainingnumber.otherhdinfo.*;
 
 @Stateless
 @SuppressWarnings("serial")
@@ -139,7 +143,8 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave18informationCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave19informationCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave20informationCommand>>(){},
-			new TypeLiteral<PeregAddCommandHandler<AddOtherHolidayInfoCommand>>(){} 
+			new TypeLiteral<PeregAddCommandHandler<AddOtherHolidayInfoCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddCareLeaveCommand>>(){}
 			);
 	
 	/** Update handlers */
@@ -179,7 +184,8 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave18informationCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave19informationCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave20informationCommand>>(){},
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateOtherHolidayInfoCommand>>(){} 
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateOtherHolidayInfoCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateCareLeaveCommand>>(){} 
 			);
 	
 	/** Delete handlers */

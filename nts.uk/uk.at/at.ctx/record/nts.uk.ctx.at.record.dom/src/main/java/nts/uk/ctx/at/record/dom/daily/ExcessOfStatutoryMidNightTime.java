@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.daily;
 
 import lombok.Value;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
@@ -64,6 +65,14 @@ public class ExcessOfStatutoryMidNightTime {
 	 */
 	public boolean isPreOverLimitDivergenceTime() {
 		return this.calcPreOverLimitDivergenceTime() > 0 ? true:false;
+	}
+	
+	/**
+	 * 乖離時間のみ再計算
+	 * @return
+	 */
+	public ExcessOfStatutoryMidNightTime calcDiverGenceTime() {
+		return new ExcessOfStatutoryMidNightTime(this.time==null?this.time:this.time.calcDiverGenceTime(),this.beforeApplicationTime);
 	}
 
 }

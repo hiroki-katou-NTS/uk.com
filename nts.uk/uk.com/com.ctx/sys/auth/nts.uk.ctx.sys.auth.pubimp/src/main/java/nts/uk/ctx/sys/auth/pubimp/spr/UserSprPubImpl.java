@@ -37,7 +37,7 @@ public class UserSprPubImpl implements UserSprPub {
 
 	@Override
 	public Optional<String> getRoleFromUserId(String companyID, String userId, int roleType) {
-		return roleFromUserIdPub.findByUserCompanyRoleType(companyID, userId, roleType);
+		return roleFromUserIdPub.findByUserCompanyRoleType(userId, companyID, roleType);
 	}
 
 }

@@ -26,7 +26,7 @@ public class Application_New extends DomainObject {
 	
 	// 申請ID
 	private String appID;
-	
+	@Setter
 	// 事前事後区分
 	private PrePostAtr prePostAtr;
 	
