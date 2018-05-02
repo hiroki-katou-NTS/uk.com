@@ -10,8 +10,7 @@ public interface MasterCopyCategoryRepository {
 	/**
 	 * Find all master copy category.
 	 *
-	 * @param companyId the company id
 	 * @return the list
 	 */
-	List<MasterCopyCategory> findAllMasterCopyCategory(String companyId);
+	List<MasterCopyCategory> findAllMasterCopyCategory();
 }
