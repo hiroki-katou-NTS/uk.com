@@ -35,6 +35,26 @@ import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialle
 import nts.uk.ctx.at.record.app.find.remainingnumber.empinfo.basicinfo.Specialleave9informationDto;
 import nts.uk.ctx.at.record.app.find.remainingnumber.nursingcareleave.info.CareLeaveInfoDto;
 import nts.uk.ctx.at.record.app.find.remainingnumber.otherhdinfo.OtherHolidayInfoDto;
+import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto1;
+import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto10;
+import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto11;
+import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto12;
+import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto13;
+import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto14;
+import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto15;
+import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto16;
+import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto17;
+import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto18;
+import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto19;
+import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto2;
+import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto20;
+import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto3;
+import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto4;
+import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto5;
+import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto6;
+import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto7;
+import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto8;
+import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto9;
 import nts.uk.ctx.at.shared.app.find.shortworktime.ShortWorkTimeDto;
 import nts.uk.ctx.at.shared.app.find.workingcondition.WorkingConditionDto;
 import nts.uk.ctx.bs.employee.app.find.classification.affiliate.AffClassificationDto;
@@ -127,7 +147,48 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 			// CS00057 特別休暇１９情報
 			new TypeLiteral<PeregFinder<Specialleave19informationDto>>(){},
 			// CS00058 特別休暇２０情報
-			new TypeLiteral<PeregFinder<Specialleave20informationDto>>(){}
+			new TypeLiteral<PeregFinder<Specialleave20informationDto>>(){},
+			// CS00039  特別休暇１付与残数
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto1>>(){},
+			// CS00040  特別休暇2付与残数
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto2>>(){},
+			// CS00041  特別休暇3付与残数
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto3>>(){},
+			// CS00042  特別休暇4付与残数
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto4>>(){},
+			// CS00043  特別休暇5付与残数
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto5>>(){},
+			// CS00044  特別休暇6付与残数
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto6>>(){},
+			// CS00045  特別休暇7付与残数
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto7>>(){},
+			// CS00046  特別休暇8付与残数
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto8>>(){},
+			// CS00047  特別休暇9付与残数
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto9>>(){},
+			// CS00048  特別休暇１0付与残数
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto10>>(){},
+			// CS00059 特別休暇１１付与残数
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto11>>(){},
+			// CS00060  特別休暇12付与残数
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto12>>(){},
+			// CS00061  特別休暇13付与残数
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto13>>(){},
+			// CS00062  特別休暇14付与残数
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto14>>(){},
+			// CS00063  特別休暇15付与残数
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto15>>(){},
+			// CS00064  特別休暇16付与残数
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto16>>(){},
+			// CS00065  特別休暇17付与残数
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto17>>(){},
+			// CS00066  特別休暇18付与残数
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto18>>(){},
+			// CS00067  特別休暇19付与残数
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto19>>(){},
+			// CS00068  特別休暇20付与残数
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto20>>(){}
+			
 			);
 
 	@Override
