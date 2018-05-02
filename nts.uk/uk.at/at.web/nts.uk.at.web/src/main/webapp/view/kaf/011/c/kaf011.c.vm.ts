@@ -118,7 +118,7 @@ module nts.uk.at.view.kaf011.c.screenModel {
             if (isCheckLengthError) {
                 return;
             };
-
+            if (nts.uk.ui.errors.hasError()) { return; }
             saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;;
             block.invisible();
             service.changeAbsDate(saveCmd).done((data) => {
@@ -127,7 +127,13 @@ module nts.uk.at.view.kaf011.c.screenModel {
                     nts.uk.ui.windows.close();
                 });
             }).fail((error) => {
-                alError({ messageId: error.messageId, messageParams: error.parameterIds });
+                alError({ messageId: error.messageId, messageParams: error.parameterIds }).then(() => {
+                    if (error.messageId == 'Msg_198') {
+                        nts.uk.ui.windows.setShared('KAF_011_C_PARAMS', 'Msg_198');
+                        nts.uk.ui.windows.close();
+                    }
+
+                });
 
             }).always(() => {
                 block.clear();
