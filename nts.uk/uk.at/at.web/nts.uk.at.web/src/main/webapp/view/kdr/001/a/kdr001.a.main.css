@@ -1,0 +1,47 @@
+
+.ccg001searchkcp005{
+	float:left;
+}
+
+.holidayAction {
+	/* border: 1px solid #ccc !important; */
+	margin-top: 37px;
+	/* 
+	padding: 5px;
+	border-radius: 5px;
+	height: 511px;
+	margin-left: 10px; */
+}
+
+.holidayAction table tr {
+	display: flex;
+	margin-bottom: 10px;
+}
+
+.holidayAction table tr td {
+	display: inline-flex;
+}
+
+.periodCovered {
+	display: inline-flex;
+	margin-bottom: 10px;
+	/* padding-left: 40px; */
+}
+
+.selectionHoliday {
+	/* border: 1px solid #ccc !important; */
+	border-radius: 5px;
+	margin: 0px 30px 0px 90px;
+	padding: 20px;
+	width: 600px;
+}
+
+#contents-area { 
+	overflow-x: hidden;
+	display: flex;
+}
+
+#A4_1 {
+	margin-top: 15px;
+	
+}
