@@ -15,11 +15,11 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspmtCategory f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.categoryPk.categoryId =:categoryId ";
-    private static final String SELECT_BY_ATTENDANCE_SYSTEM = SELECT_ALL_QUERY_STRING + " WHERE f.attendanceSystem =:systemType";
-    private static final String SELECT_BY_PAYMENT_AVAIABILITY = SELECT_ALL_QUERY_STRING + " WHERE f.paymentAvailability =:systemType";
-    private static final String SELECT_BY_POSSIBILITY_SYSTEM = SELECT_ALL_QUERY_STRING + " WHERE f.possibilitySystem =:systemType";
-    private static final String SELECT_BY_SCHELPER_SYSTEM   = SELECT_ALL_QUERY_STRING + " WHERE f.schelperSystem =:systemType";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.categoryId =:categoryId ";
+    private static final String SELECT_BY_ATTENDANCE_SYSTEM = SELECT_ALL_QUERY_STRING + " WHERE f.attendanceSystem = 1";
+    private static final String SELECT_BY_PAYMENT_AVAIABILITY = SELECT_ALL_QUERY_STRING + " WHERE f.paymentAvailability = 1";
+    private static final String SELECT_BY_POSSIBILITY_SYSTEM = SELECT_ALL_QUERY_STRING + " WHERE f.possibilitySystem = 1";
+    private static final String SELECT_BY_SCHELPER_SYSTEM   = SELECT_ALL_QUERY_STRING + " WHERE f.schelperSystem = 1";
 
     @Override
     public List<Category> getAllCategory(){
