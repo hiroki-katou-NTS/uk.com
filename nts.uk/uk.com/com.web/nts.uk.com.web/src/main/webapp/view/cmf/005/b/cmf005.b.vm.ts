@@ -9,9 +9,16 @@ module nts.uk.com.view.cmf005.b.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
 
+    //D Screen
     import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
+
+    import ComponentOption = kcp.share.list.ComponentOption;
+    import ListType = kcp.share.list.ListType;
+    import SelectType = kcp.share.list.SelectType;
+    import UnitModel = kcp.share.list.UnitModel;
+    import UnitAlreadySettingModel = kcp.share.list.UnitAlreadySettingModel;
     
     export class ScreenModel {
 
@@ -24,7 +31,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         //information category
         deleteSetName: KnockoutObservable<string>;
 
-               
+
         // B5_2_2
         systemType: KnockoutObservable<string>;
 
@@ -34,7 +41,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         selectedCsvItemNumber: KnockoutObservable<number> = ko.observable(null);
         count: number = 100;
         switchOptions: KnockoutObservableArray<any>;
-        
+
         //datepicker
         enable: KnockoutObservable<boolean>;
         required: KnockoutObservable<boolean>;
@@ -60,15 +67,17 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         //B9_2
         supplementExplanation: KnockoutObservable<string>;
 
-        
-        //D
+
+        //D3_1
         ccg001ComponentOption: GroupOption;
+        employeeInputList: KnockoutObservableArray<UnitModel>;
         
         constructor() {
             var self = this;
             self.initComponents();
             self.setDefault();
-
+            
+            self.employeeInputList = ko.observableArray([]);
         }
 
         initComponents() {
@@ -87,13 +96,13 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.optionCategory = ko.observable({ value: 1, text: nts.uk.resource.getText("CMF005_15") });
             self.optionDeleteSet = ko.observable({ value: 2, text: nts.uk.resource.getText("CMF005_16") });
             self.deleteSetName = ko.observable('');
-            
+
             //B5_2_2
-            self.systemType= ko.observable('');
+            self.systemType = ko.observable('');
             //B5_3
             self.listDataCategory = ko.observableArray([]);
-            for(let i = 1; i < 5; i++) {
-                self.listDataCategory.push(new model.ItemCategory(i, '00'+i, 'catename' + i, 'aaaa', 'all'));
+            for (let i = 1; i < 5; i++) {
+                self.listDataCategory.push(new model.ItemCategory(i, '00' + i, 'catename' + i, 'aaaa', 'all'));
             }
             self.listColumnHeader = ko.observableArray([
                 { headerText: '', key: 'cateItemNumber', width: 10, hidden: false },
@@ -193,11 +202,11 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         openScreenC() {
             var self = this;
             let param = {
-                lstCategory:self.listDataCategory,
+                lstCategory: self.listDataCategory,
                 systemType: self.systemType
             };
             setShared("paramCmf005b", param);
-            modal("/view/cmf/005/c/index.xhtml",{ width: 800, title: "カテゴリの選択" }).onClosed(() => {
+            modal("/view/cmf/005/c/index.xhtml", { width: 800, title: "ã‚«ãƒ†ã‚´ãƒªã�®é�¸æŠž" }).onClosed(() => {
                 let data = getShared("paramCmf005b");
                 if (!nts.uk.util.isNullOrUndefined(data))
                     self.listDataCategory(data.lstDataCategoryChose);
@@ -218,7 +227,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         }
 
         /**
-         * return 本日(NOW）－　１ヵ月　＋　１日
+         * return æœ¬æ—¥(NOWï¼‰ï¼�ã€€ï¼‘ãƒµæœˆã€€ï¼‹ã€€ï¼‘æ—¥
          */
         getDate() {
             var timeCurrent = moment.utc(new Date(), "YYYY/MM/DD");
@@ -263,32 +272,28 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             }
             return new model.ItemDate(newYear + "/" + newMonth + "/" + newDate, year + "/" + moth + "/" + date, newYear, year);
         }
-        
+
+        loadScreenD() {
+            let self = this;
+            self.loadCcg001Component(); 
+            self.showEmployeeList();   
+        }
         
         //load D screen
-        loadScreenD() {
+        loadCcg001Component() {
             let self = this;
             // Set component option
             self.ccg001ComponentOption = {
                 /** Common properties */
-                systemType: 1,
                 showEmployeeSelection: true,
+                systemType: 1,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
-                showBaseDate: false,
-                showClosure: true,
-                showAllClosure: true,
-                showPeriod: true,
+                showBaseDate: true,
+                showClosure: false,
+                showAllClosure: false,
+                showPeriod: false,
                 periodFormatYM: false,
-
-                /** Required parameter */
-                baseDate: moment().toISOString(),
-                periodStartDate: moment().toISOString(),
-                periodEndDate: moment().toISOString(),
-                inService: true,
-                leaveOfAbsence: true,
-                closed: true,
-                retirement: true,
 
                 /** Quick search tab options */
                 showAllReferableEmployee: true,
@@ -304,15 +309,59 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 showWorktype: true,
                 isMutipleCheck: true,
 
+
+                /** Required parameter */
+                baseDate: moment().toISOString(),
+                periodStartDate: moment().toISOString(),
+                periodEndDate: moment().toISOString(),
+                inService: true,
+                leaveOfAbsence: true,
+                closed: true,
+                retirement: true,
+
                 /**
                 * Self-defined function: Return data from CCG001
                 * @param: data: the data return from CCG001
                 */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                    self.searchEmployee(data.listEmployee);
                 }
             }
 
             $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);
+        }
+        
+        searchEmployee(dataEmployee: EmployeeSearchDto[]) {
+            var self = this;
+            self.employeeInputList.removeAll();
+            _.forEach(dataEmployee, function(item: EmployeeSearchDto) {
+                self.employeeInputList.push(new UnitModel({
+                    id: item.employeeId,
+                    code: item.employeeCode,
+                    businessName: item.employeeName,
+                    workplaceName: item.workplaceName,
+                }));
+            });
+
+            self.showEmployeeList();
+        }
+        
+        showEmployeeList() {
+            var self = this;
+//            console.log(self.employeeInputList);
+            var listComponentOption: ComponentOption = {
+                isShowAlreadySet: false,
+                isMultiSelect: true,
+                listType: ListType.EMPLOYEE,
+                employeeInputList: self.employeeInputList,
+                selectType: SelectType.SELECT_ALL,
+                isDialog: false,
+                isShowNoSelectRow: false,
+                isShowWorkPlaceName: true,
+                isShowSelectAllButton: true
+            };
+            
+             $('#component-employees-list').ntsListComponent(listComponentOption);
         }
 
     }
