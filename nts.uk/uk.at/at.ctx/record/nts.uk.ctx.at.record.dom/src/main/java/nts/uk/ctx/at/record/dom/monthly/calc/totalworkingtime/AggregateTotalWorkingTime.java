@@ -109,9 +109,19 @@ public class AggregateTotalWorkingTime {
 	 */
 	public void copySharedItem(AggregateTotalWorkingTime aggregateTime){
 		
-		this.workTime = aggregateTime.getWorkTime();
-		this.vacationUseTime = aggregateTime.getVacationUseTime();
-		this.prescribedWorkingTime = aggregateTime.getPrescribedWorkingTime();
+		this.workTime = WorkTimeOfMonthly.copyFrom(
+				aggregateTime.getWorkTime().getWorkTime(),
+				aggregateTime.getWorkTime().getWithinPrescribedPremiumTime(),
+				aggregateTime.getWorkTime().getTimeSeriesWorks());
+		this.vacationUseTime = VacationUseTimeOfMonthly.copyFrom(
+				aggregateTime.getVacationUseTime().getAnnualLeave(),
+				aggregateTime.getVacationUseTime().getRetentionYearly(),
+				aggregateTime.getVacationUseTime().getSpecialHoliday(),
+				aggregateTime.getVacationUseTime().getCompensatoryLeave());
+		this.prescribedWorkingTime = PrescribedWorkingTimeOfMonthly.copyFrom(
+				aggregateTime.getPrescribedWorkingTime().getSchedulePrescribedWorkingTime(),
+				aggregateTime.getPrescribedWorkingTime().getRecordPrescribedWorkingTime(),
+				aggregateTime.getPrescribedWorkingTime().getTimeSeriesWorks());
 	}
 	
 	/**

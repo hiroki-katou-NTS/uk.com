@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 
@@ -11,7 +10,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -30,7 +28,6 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -118,9 +115,6 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			
 			// 月別実績の任意項目を集計
 			this.aggregateAnyItem();
-
-			// 大塚カスタマイズ
-			this.customizeForOtsuka();
 			
 			// データを合算する
 			val itrAttendanceTime = this.aggregateResult.getAttendanceTimeList().iterator();
@@ -141,6 +135,9 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			// 計算結果を戻り値に蓄積
 			this.aggregateResult.getAttendanceTimeList().add(attendanceTime);
 		}
+
+		// 大塚カスタマイズ
+		this.customizeForOtsuka();
 		
 		// 戻り値にエラー情報を移送
 		for (val errorInfo : this.errorInfos.values()){
@@ -240,6 +237,14 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		// 所属情報の作成
 		val affiliationInfo = this.createAffiliationInfo(procPeriod);
 		if (affiliationInfo == null) return null;
+		val itrAffiliationInfo = this.aggregateResult.getAffiliationInfoList().listIterator();
+		while (itrAffiliationInfo.hasNext()){
+			val oldAffiliationInfo = itrAffiliationInfo.next();
+			if (oldAffiliationInfo.equals(affiliationInfo)){
+				affiliationInfo.setFirstInfo(oldAffiliationInfo.getFirstInfo());
+				itrAffiliationInfo.remove();
+			}
+		}
 		this.aggregateResult.getAffiliationInfoList().add(affiliationInfo);
 		
 		// 労働制を確認する
@@ -380,7 +385,7 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			this.errorInfos.putIfAbsent(errorInfo.getResourceId(), errorInfo);
 			return null;
 		}
-		val lastInfoOfDaily = firstInfoOfDailyOpt.get();
+		val lastInfoOfDaily = lastInfoOfDailyOpt.get();
 		val lastWorkTypeOfDailyOpt = this.repositories.getWorkTypeOfDaily().findByKey(
 				this.employeeId, datePeriod.end());
 		if (!lastWorkTypeOfDailyOpt.isPresent()){
@@ -416,7 +421,7 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		
 		// 月末の勤務情報を判断
 		val lastInfo = affiliationInfoOpt.get().getLastInfo();
-		if (lastInfo.getBusinessTypeCd().v() == "0000002030"){
+		if (lastInfo.getBusinessTypeCd().v().compareTo("0000002030") == 0){
 			
 			// 任意項目50にセット
 			this.aggregateResult.addAnyItemOrUpdate(AnyItemOfMonthly.of(

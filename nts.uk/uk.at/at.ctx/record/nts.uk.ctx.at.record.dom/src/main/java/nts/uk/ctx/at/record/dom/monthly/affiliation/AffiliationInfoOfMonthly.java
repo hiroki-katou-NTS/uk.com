@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.affiliation;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
@@ -23,8 +24,10 @@ public class AffiliationInfoOfMonthly extends AggregateRoot {
 	private final ClosureDate closureDate;
 	
 	/** 月初の情報 */
+	@Setter
 	private AggregateAffiliationInfo firstInfo;
 	/** 月末の情報 */
+	@Setter
 	private AggregateAffiliationInfo lastInfo;
 
 	/**
@@ -70,5 +73,18 @@ public class AffiliationInfoOfMonthly extends AggregateRoot {
 		domain.firstInfo = firstInfo;
 		domain.lastInfo = lastInfo;
 		return domain;
+	}
+	
+	/**
+	 * 等しいかどうか
+	 * @param target 月別実績の所属情報
+	 * @return true：等しい、false：等しくない
+	 */
+	public boolean equals(AffiliationInfoOfMonthly target){
+		return (target.getEmployeeId() == this.employeeId &&
+				target.getYearMonth().equals(this.yearMonth) &&
+				target.getClosureId() == this.closureId &&
+				target.getClosureDate().getClosureDay().equals(this.closureDate.getClosureDay()) &&
+				target.getClosureDate().getLastDayOfMonth() == this.closureDate.getLastDayOfMonth());
 	}
 }
