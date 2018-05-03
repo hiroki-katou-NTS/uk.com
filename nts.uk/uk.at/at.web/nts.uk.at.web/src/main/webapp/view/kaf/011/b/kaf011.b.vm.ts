@@ -73,6 +73,11 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             return returnCmd;
 
         }
+
+        enablePrepost() {
+            let self = this;
+            return self.screenModeNew() && self.appTypeSet().canClassificationChange() != 0;
+        }
         showAppReason(): boolean {
             let self = this;
             if (self.screenModeNew()) {
