@@ -75,6 +75,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     self.codeObject(ko.toJS(self.selectedOption().yearServiceCode));
                     self.check(false);
                     self.provisionCheck(self.selectedOption().provision == 1 ? true : false);
+                    nts.uk.ui.errors.clearAll();   
                 }
             });
         }
