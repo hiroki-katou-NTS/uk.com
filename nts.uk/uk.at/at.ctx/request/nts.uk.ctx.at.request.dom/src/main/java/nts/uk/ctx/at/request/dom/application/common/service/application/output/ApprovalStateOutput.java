@@ -6,6 +6,10 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
 
+/**
+ * @author hiep.ld
+ *
+ */
 @AllArgsConstructor
 @Data
 @Getter

@@ -10,6 +10,10 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
 
+/**
+ * @author hiep.ld
+ *
+ */
 @AllArgsConstructor
 @Data
 @Getter

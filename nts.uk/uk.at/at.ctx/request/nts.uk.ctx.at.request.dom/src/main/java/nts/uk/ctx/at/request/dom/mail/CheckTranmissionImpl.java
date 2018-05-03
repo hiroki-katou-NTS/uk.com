@@ -49,32 +49,32 @@ public class CheckTranmissionImpl implements CheckTransmission {
 			String mailTitle, String mailBody, List<String> fileId) {
 		String cid = AppContexts.user().companyId();
 		Application_New application = applicationRepository.findByID(cid, appId).get();
-		Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(cid);
 		List<String> successList = new ArrayList<>();
 		List<String> errorList = new ArrayList<>();
-		// URL is pending
-		if (urlEmbedded.isPresent()) {
-			int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
-			NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
-			if (checkUrl == NotUseAtr.USE) {
-				String urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(appId, application.getAppType().value,
-						application.getPrePostAtr().value, application.getEmployeeID());
-				if (!Strings.isEmpty(urlInfo)){
-//					appContent += "\n" + I18NText.getText("KDL030_30") + " " + application.getAppID() + "\n" + urlInfo;
-				}
-			}
-		}
-		// TO - DO
-		// request list 419 - get mail
 		List<EmployeeInfoImport> listEmpName = employeeRequestAdapter.getByListSID(employeeIdList);
 		for(String employeeToSendId: employeeIdList){
 			List<EmployeeInfoImport> listEmpName1 = employeeRequestAdapter.getByListSID(Arrays.asList(employeeToSendId));
 			String empName = (!listEmpName1.isEmpty() ? listEmpName1.get(0).getBussinessName() : "");
-			String mail = employeeToSendId;
+			// TODO
+			// request list 419 - get mail
 			String employeeMail = "hiep.ld@3si.vn";
-			if (Strings.isBlank(mail)) {
+			// アルゴリズム「申請メール埋込URL取得」を実行する
+//			Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(cid);
+//			if (urlEmbedded.isPresent()) {
+//				int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
+//				NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
+//				if (checkUrl == NotUseAtr.USE) {
+//					String urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(appId, application.getAppType().value,
+//							application.getPrePostAtr().value, employeeToSendId);
+//					if (!Strings.isEmpty(urlInfo)){
+//						appContent += "\n" + I18NText.getText("KDL030_30") + " " + application.getAppID() + "\n" + urlInfo;
+//					} 
+//				}
+//			}
+			if (Strings.isBlank(employeeMail)) {
 				errorList.add(empName);
 			} else {
+				// 送信対象者リストの「メール送信する」の承認者に対してメールを送信する
 				mailSender.send("mailadmin@uk.com", employeeMail, new MailContents("", mailBody));
 				successList.add(empName);
 				

@@ -63,6 +63,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                 return dfd.promise();
             }
         }
+        // アルゴリズム「メール送信」を実行する
         sendMail() {
             var self = this;
             let listSendMail: Array<String> = [];
