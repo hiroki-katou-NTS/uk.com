@@ -921,8 +921,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
             if (params.dataType === 8) {
                 let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == params.stringValue) { return c } });
                 self.selectionName = ko.observable((objSel == undefined ? " " : objSel.optionText) || " ");
-                console.log(self.selectionName());
-
             }
 
 
@@ -1289,15 +1287,13 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 service.checkStartEnd(params).done(function(data) {
                     service.checkMutiTime(params).done(function(data1) {
                         for (let i: number = 0; i < itemChilds.length; i++) {
-                            console.log(itemChilds);
-                            console.log(data + " "+ data1);
                             __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i].indexItem - 1].enableControl(data);
                             __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].enableControl(data);
                             __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 2].indexItem - 1].enableControl(data1 && data);
                             __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 3].indexItem - 1].enableControl(data1 && data);
                             __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i].indexItem - 1].dateWithDay(childData.first.start || 0);
-                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].dateWithDay(childData.first.end  || 0);
-                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 2].indexItem - 1].dateWithDay(childData.second.start|| 0);
+                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].dateWithDay(childData.first.end || 0);
+                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 2].indexItem - 1].dateWithDay(childData.second.start || 0);
                             __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 3].indexItem - 1].dateWithDay(childData.second.end || 0);
                             i = i + 3;
                         }
@@ -1314,8 +1310,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 service.checkStartEnd(params).done(function(data) {
                     service.checkMutiTime(params).done(function(data1) {
                         for (let i: number = 0; i < itemChilds.length; i++) {
-                            console.log(itemChilds);
-                            console.log(data + " "+ data1);
                             __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i].indexItem - 1].enableControl(data);
                             __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].enableControl(data);
                             __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 2].indexItem - 1].enableControl(data1 && data);
@@ -1330,8 +1324,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 });
             }
         }
-
-
 
     }
 
