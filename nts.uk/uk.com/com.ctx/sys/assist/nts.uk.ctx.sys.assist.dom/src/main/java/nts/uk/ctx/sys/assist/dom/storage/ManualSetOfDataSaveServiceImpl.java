@@ -69,6 +69,8 @@ public class ManualSetOfDataSaveServiceImpl implements ManualSetOfDataSaveServic
 			operatingCondition = EnumAdaptor.valueOf(1, OperatingCondition.class);
 			repoDataSto.update(storeProcessingId, categoryTotalCount, categoryCount, operatingCondition);
 		}
+		
+		//Execute algorithm "Save target data"
 
 	}
 
