@@ -124,7 +124,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		String companyId = AppContexts.user().companyId();
 		String comHistId = IdentifierUtil.randomUniqueId();
 
-		List<ItemsByCategory> inputs = commandFacade.createData(command, personId, employeeId, comHistId);
+		List<ItemsByCategory> inputs = commandFacade.createData(command);
 
 		validateTime(inputs, employeeId, personId);
 		checkRequiredInputs(inputs, employeeId, personId, companyId);

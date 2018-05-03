@@ -36,8 +36,7 @@ public class AddEmployeeCommandFacade {
 
 	}
 	
-	public List<ItemsByCategory> createData(AddEmployeeCommand command, String personId, String employeeId,
-			String comHistId) {
+	public List<ItemsByCategory> createData(AddEmployeeCommand command) {
 		
 		if (command.getCreateType() == 3) {
 			return command.getInputs();
