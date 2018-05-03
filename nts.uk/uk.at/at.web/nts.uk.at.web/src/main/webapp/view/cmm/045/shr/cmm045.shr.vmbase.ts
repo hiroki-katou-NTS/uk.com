@@ -55,10 +55,20 @@ module cmm045.shr {
                     this.appDisplayAtr = appDisplayAtr;
                     this.listEmployeeId = listEmployeeId;
                     this.empRefineCondition = empRefineCondition;
-                
+                    
             }
             setAppType(appType: number){
                   this.appType = appType;
+            }
+        }
+        export class AppListParamFilter{
+            condition: AppListExtractConditionDto;
+            spr: boolean;
+            extractCondition: number;
+            constructor(condition, spr: boolean, extractCondition: number){
+                this.condition = condition;
+                this.spr = spr;
+                this.extractCondition = extractCondition;    
             }
         }
         //data fill grid list mode application
@@ -592,6 +602,13 @@ module cmm045.shr {
                 this.columnKey = columnKey;
                 this.color = color;
             } 
+        }
+        export interface IntefaceSPR{
+            mode: number;//1=承認一覧
+            startDate: string;//yyyy-mm-dd //期間（開始日）
+            endDate: string;//yyyy-mm-dd //期間（終了日）
+            extractCondition: number;//０＝全て、１＝早出・普通残業のみ
+            agreementTime36: number;//０＝表示しない、1＝表示する
         }
         export class ProcessHandler {
             /**
