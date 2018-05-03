@@ -61,7 +61,9 @@ public class AttendanceLeavingGateOfDaily {
 					}
 				}
 			}
-			resultList.add(new AttendanceTime(attendanceLeavingGateTime-stamp));
+			//出勤なら「出勤-入門」、退勤なら「退門-退勤」
+			int calcResult = goLeavingWorkAtr.isGO_WORK()?stamp-attendanceLeavingGateTime:attendanceLeavingGateTime-stamp;
+			resultList.add(new AttendanceTime(calcResult));
 		}
 		AttendanceTime result = new AttendanceTime(resultList.stream().filter(t -> t!=null).mapToInt(t->t.valueAsMinutes()).sum());
 		return result!=null?result:new AttendanceTime(0);

@@ -1,11 +1,12 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class WorkTimezoneShortTimeWorkSet.
@@ -68,4 +69,16 @@ public class WorkTimezoneShortTimeWorkSet extends WorkTimeDomainObject {
 		memento.setChildCareWorkUse(this.childCareWorkUse);
 	}
 
+	/**
+	 * Correct data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 */
+	public void correctData(ScreenMode screenMode) {
+		if (ScreenMode.SIMPLE.equals(screenMode)) {
+			this.nursTimezoneWorkUse = false;
+			this.childCareWorkUse = false;
+		}
+	}
 }

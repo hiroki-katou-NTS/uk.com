@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTimeSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHaFixRest;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaFixRest;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**

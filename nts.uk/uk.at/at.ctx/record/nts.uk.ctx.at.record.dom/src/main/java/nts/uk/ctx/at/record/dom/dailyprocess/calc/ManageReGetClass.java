@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPerso
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -47,7 +48,7 @@ public class ManageReGetClass {
 	DailyUnit dailyUnit;
 	
 	//大塚用　固定勤務の休憩時間帯保持
-	Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting;
+	Optional<FixRestTimezoneSet> fixRestTimeSetting;
 	
 	//大塚要ケインで使用する固定計算設定クラス
 	Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet;
@@ -66,7 +67,7 @@ public class ManageReGetClass {
 			Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType,
 			List<WorkTimezoneOtherSubHolTimeSet> subHolTransferSetList,
 			DailyCalculationPersonalInformation personalInfo, DailyUnit dailyUnit,
-			Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSeting,
+			Optional<FixRestTimezoneSet> fixRestTimeSeting,
 			Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet,
 			HolidayCalcMethodSet holidayCalcMethodSet,Boolean calculatable) {
 		super();
@@ -78,6 +79,7 @@ public class ManageReGetClass {
 		this.personalInfo = personalInfo;
 		this.fixRestTimeSetting = fixRestTimeSeting;
 		this.dailyUnit = dailyUnit;
+		this.ootsukaFixedWorkSet = ootsukaFixedWorkSet;
 		this.holidayCalcMethodSet = holidayCalcMethodSet;
 		this.calculatable = calculatable;
 	}
@@ -107,7 +109,7 @@ public class ManageReGetClass {
 										  Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType,
 										  List<WorkTimezoneOtherSubHolTimeSet> subHolTransferSetList,
 										  DailyCalculationPersonalInformation personalInfo, DailyUnit dailyUnit,
-										  Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSeting,
+										  Optional<FixRestTimezoneSet> fixRestTimeSeting,
 										  Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet,
 										  HolidayCalcMethodSet holidayCalcMethodSet) {
 		return new ManageReGetClass(calculationRangeOfOneDay,

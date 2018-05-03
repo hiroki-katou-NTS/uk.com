@@ -32,6 +32,7 @@ import nts.uk.ctx.at.function.dom.processexecution.LastExecDateTime;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScopeItem;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.EachProcessPeriod;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
@@ -193,7 +194,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		ExecuteProcessExecutionCommand command = context.getCommand();
 		String execItemCd = command.getExecItemCd();
 		String companyId = command.getCompanyId();
-		String execId = command.getExecId();
+		String execTionId = command.getExecId();
 		int execType = command.getExecType();
 		// ドメインモデル「更新処理自動実行」を取得する
 		ProcessExecution procExec = null;
@@ -211,10 +212,23 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		
 		// ドメインモデル「更新処理自動実行ログ」を取得する
 		ProcessExecutionLog procExecLog = null;
-		Optional<ProcessExecutionLog> procExecLogOpt = this.procExecLogRepo.getLogByCIdAndExecCd(companyId, execItemCd, execId);
+		Optional<ProcessExecutionLog> procExecLogOpt = this.procExecLogRepo.getLogByCIdAndExecCd(companyId, execItemCd, execTionId);
+		//fixed dung tam cho son
+		String execId = IdentifierUtil.randomUniqueId();
 		if (procExecLogOpt.isPresent()) {
-			procExecLog = procExecLogOpt.get();
+			//procExecLog = procExecLogOpt.get();
+			//<--fixed dung tam cho son
+			 procExecLog =
+					new ProcessExecutionLog(new ExecutionCode(execItemCd),
+											companyId,
+											EndStatus.NOT_IMPLEMENT,
+											execId,
+											CurrentExecutionStatus.INVALID);
+			this.procExecLogRepo.remove(companyId, execItemCd, execTionId);
+			this.procExecLogRepo.insert(procExecLog);
+			//-->
 		}
+		
 
 		// ドメインモデル「更新処理前回実行日時」を取得する
 		LastExecDateTime lastExecDateTime = null;
@@ -375,6 +389,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		LoginUserContext loginContext = AppContexts.user();
 		// ドメインモデル「更新処理自動実行ログ」を更新する
 		this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, null);
+		boolean isException = true;
 		try {
 			// 個人スケジュール作成区分の判定
 			if (!procExec.getExecSetting().getPerSchedule().isPerSchedule()) {
@@ -527,6 +542,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			});
 			
 			
+			
 			/*
 			 *  作成対象の判定
 			 */
@@ -578,8 +594,13 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				}
 			}
 		} catch (Exception e) {
+			isException= false;
 			// ドメインモデル「更新処理自動実行ログ」を更新する
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.ABNORMAL_END);
+		}
+		if(isException){
+			// ドメインモデル「更新処理自動実行ログ」を更新する
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.SUCCESS);
 		}
 		return true;
 	}
@@ -589,6 +610,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			LoginUserContext loginContext, DatePeriod calculateSchedulePeriod , List<String> empIds) {
 		ScheduleCreatorExecutionCommand scheduleCommand = new ScheduleCreatorExecutionCommand();
 		scheduleCommand.setConfirm(false);
+		scheduleCommand.setExecutionId(execId);
 		scheduleCommand.setAutomatic(true);
 		scheduleCommand.setEmployeeIds(empIds);
 		//2-対象開始日　＝　「期間の計算」で作成した開始日とする
@@ -618,12 +640,12 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		//8-処理実行区分　→　もう一度作り直す　とする
 			reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
 		}else{
-		//・実施区分　→　通常作成　とする
-		   s.setImplementAtr(ImplementAtr.GENERALLY_CREATED);
-		  //・再作成区分　→　全件　とする
-		   reCreateContent.setReCreateAtr(ReCreateAtr.ALL_CASE);
-		  //・処理実行区分　→　再設定　とする
-		   reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.RECONFIG);
+			//・実施区分　→　再作成　とする
+			s.setImplementAtr(ImplementAtr.RECREATE);
+			//・再作成区分　→　全件　とする
+			  reCreateContent.setReCreateAtr(ReCreateAtr.ALL_CASE);
+			//・処理実行区分　→　もう一度作り直す　とする
+			  reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
 		}
 		//・9-マスタ情報再設定　→　falseとする
 		ResetAtr r =	new ResetAtr();
@@ -737,12 +759,12 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		//8-処理実行区分　→　もう一度作り直す　とする
 			reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
 		}else{
-		//・実施区分　→　通常作成　とする
-		   s.setImplementAtr(ImplementAtr.GENERALLY_CREATED);
-		  //・再作成区分　→　全件　とする
-		   reCreateContent.setReCreateAtr(ReCreateAtr.ALL_CASE);
-		  //・処理実行区分　→　再設定　とする
-		   reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.RECONFIG);
+			//・実施区分　→　再作成　とする
+			s.setImplementAtr(ImplementAtr.RECREATE);
+			//・再作成区分　→　全件　とする
+			  reCreateContent.setReCreateAtr(ReCreateAtr.ALL_CASE);
+			//・処理実行区分　→　もう一度作り直す　とする
+			  reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
 		}
 		//・9-マスタ情報再設定　→　falseとする
 		ResetAtr r =	new ResetAtr();
@@ -1131,6 +1153,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		procExecLog.getEachProcPeriod().setScheduleCreationPeriod(new DatePeriod(startDate, endDate));
 		return new DatePeriod(startDate, endDate);
 		*/
+		
+		
+		
 		GeneralDate today = GeneralDate.today();
 		int targetMonth = procExec.getExecSetting().getPerSchedule().getPeriod().getTargetMonth().value;
 		int targetDate = procExec.getExecSetting().getPerSchedule().getPeriod().getTargetDate().v().intValue();
@@ -1165,6 +1190,12 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			}
 		}else{
 			endDate =	GeneralDate.ymd(today.year(), startMonth+createPeriod, targetDate);
+		}
+		
+		if(procExecLog.getEachProcPeriod()==null){
+			procExecLog.setEachProcPeriod(new EachProcessPeriod(new DatePeriod(startDate, endDate), new DatePeriod(startDate, endDate), new DatePeriod(startDate, endDate)));
+		}else{
+			procExecLog.getEachProcPeriod().setScheduleCreationPeriod(new DatePeriod(startDate, endDate));
 		}
 		return new DatePeriod(startDate, endDate);
 	}

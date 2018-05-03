@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
@@ -197,8 +198,8 @@ public class PredetermineTimeSetForCalc {
 	 * @param workNo
 	 * @return
 	 */
-	public TimezoneUse getTimeSheets(int workNo) {
-		return this.timeSheets.stream().filter(t -> t.getWorkNo()==workNo).collect(Collectors.toList()).get(0);
+	public Optional<TimezoneUse> getTimeSheets(int workNo) {
+		return this.timeSheets.stream().filter(t -> t.getWorkNo()==workNo).findFirst();
 	}
 	
 }

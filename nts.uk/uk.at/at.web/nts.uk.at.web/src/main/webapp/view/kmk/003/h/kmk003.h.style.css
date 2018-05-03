@@ -1,0 +1,16 @@
+.main-container {
+	margin: 10px;
+}
+
+.margin-first-child {
+	margin-left: 20px;
+}
+
+.margin-first-child .ntsRadioBox {
+	width: 100%;
+	margin-bottom: 10px;
+}
+
+.margin-second-child {
+	margin-left: 40px;
+}

@@ -40,7 +40,14 @@ module nts.uk.ui.koExtentions {
             
             $datePickerArea.data("required", required);
             
-            let dateFormat: string = (dateType !== 'yearmonth') ? "YYYY/MM/DD" : 'YYYY/MM';
+            let dateFormat: string;
+            if(dateType === 'year') {
+                dateFormat = 'YYYY'; 
+            } else if(dateType === 'yearmonth') {
+                dateFormat = 'YYYY/MM'; 
+            } else {
+                dateFormat = 'YYYY/MM/DD'; 
+            }
             var ISOFormat = text.getISOFormat(dateFormat);
             ISOFormat = ISOFormat.replace(/d/g,"").trim();
             
@@ -156,8 +163,10 @@ module nts.uk.ui.koExtentions {
                             } else {
                                 maxDate = maxDate.date(currentDate - 1);    
                             }    
-                        } else {
+                        } else if(dateFormat === "YYYY/MM"){
                             maxDate = maxDate.add(1, 'year').add(-1, "months");   
+                        } else {
+                            maxDate = maxDate.add(1, 'year');
                         }
                         if (endDate.isAfter(maxDate)) {
                             $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_OVER_YEAR", [rangeName]), "FND_E_SPAN_OVER_YEAR");        
@@ -247,7 +256,14 @@ module nts.uk.ui.koExtentions {
             let enable = data.enable === undefined ? true : ko.unwrap(data.enable);
             let required = ko.unwrap(data.required);
             
-            let dateFormat: string = (dateType !== 'yearmonth') ? "YYYY/MM/DD" : 'YYYY/MM';
+            let dateFormat: string;
+            if(dateType === 'year') {
+                dateFormat = 'YYYY'; 
+            } else if(dateType === 'yearmonth') {
+                dateFormat = 'YYYY/MM'; 
+            } else {
+                dateFormat = 'YYYY/MM/DD'; 
+            }
             var ISOFormat = text.getISOFormat(dateFormat);
             ISOFormat = ISOFormat.replace(/d/g,"").trim();
             
