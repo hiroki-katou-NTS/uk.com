@@ -4,10 +4,12 @@ import java.math.BigDecimal;
 
 import org.apache.commons.lang3.StringUtils;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 
+@AllArgsConstructor
 @NoArgsConstructor
 public class ItemValue {
 
@@ -15,14 +17,6 @@ public class ItemValue {
 	private String itemCode;
 	private String value;
 	private int type;
-	
-	public ItemValue(String definitionId, String itemCode, String value, int type) {
-		super();
-		this.definitionId = definitionId;
-		this.itemCode = itemCode;
-		this.value = value;
-		this.type = type;
-	}
 	
 	public static ItemValue createItemValue(String definitionId, String itemCode, String value, int dataType,
 			Integer selectionRefType, String selectionRefCode) {
@@ -44,6 +38,7 @@ public class ItemValue {
 			break;
 		case DATE:
 			itemValue.type = 3;
+			break;
 		case SELECTION:
 		case SELECTION_RADIO:
 		case SELECTION_BUTTON:
