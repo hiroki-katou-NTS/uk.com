@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import com.aspose.cells.BackgroundType;
 import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
 import com.aspose.cells.CellBorderType;
@@ -36,6 +35,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 	private static final String TEMPLATE_FILE = "report/休暇残数管理票_テンプレート.xlsx";
 	private static final String REPORT_FILE_NAME = "休暇残数管理票.xlsx";
 	private final int numberRowOfPage = 37;
+	private final int numberColumn = 23;
 	// private final int minRowDetails = 4;
 	private HolidayRemainingDataSource dataSource;
 
@@ -128,7 +128,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			int rowCount = countRowEachPerson() + 1;
 			if (firstRow % numberRowOfPage != 5
 					&& firstRow / numberRowOfPage != (firstRow + rowCount) / numberRowOfPage) {
-				firstRow = (firstRow/numberRowOfPage + 1)* numberRowOfPage;
+				firstRow = (firstRow / numberRowOfPage + 1) * numberRowOfPage;
 				// print Header
 				cells.copyRows(cells, 0, firstRow, 6);
 				firstRow += 5;
@@ -173,7 +173,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			int rowCount = countRowEachPerson();
 			if (firstRow % numberRowOfPage != 6
 					&& firstRow / numberRowOfPage != (firstRow + rowCount) / numberRowOfPage) {
-				firstRow = (firstRow/numberRowOfPage + 1)* numberRowOfPage;
+				firstRow = (firstRow / numberRowOfPage + 1) * numberRowOfPage;
 				// print Header
 				cells.copyRows(cells, 0, firstRow, 6);
 				// D1_1, D1_2
@@ -327,13 +327,13 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		// D2_2
 		cells.get(rowIndexD, 1).setValue(employee.getEmployeeName());
 		// D2_3 Todo rql No.369
-		
+
 		// Set Style
-		setTopBorderStyle(cells.get(rowIndexD, 0));
-		setTopBorderStyle(cells.get(rowIndexD, 1));
-		setBottomBorderStyle(cells.get(firstRow - 1, 0));
-		setBottomBorderStyle(cells.get(firstRow - 1, 1));
-		
+		for (int index = 0; index < numberColumn; index++) {
+			setTopBorderStyle(cells.get(rowIndexD, index));
+			setBottomBorderStyle(cells.get(firstRow - 1, index));
+		}
+
 		return firstRow;
 	}
 
@@ -384,16 +384,16 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 	private void setTopBorderStyle(Cell cell) {
 		Style style = cell.getStyle();
-		style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+		style.setBorder(BorderType.TOP_BORDER, CellBorderType.MEDIUM, Color.getBlack());
 		cell.setStyle(style);
 	}
-	
+
 	private void setBottomBorderStyle(Cell cell) {
 		Style style = cell.getStyle();
-		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM, Color.getBlack());
 		cell.setStyle(style);
 	}
-	
+
 	private int totalMonths(YearMonth start, YearMonth end) {
 		return (end.getYear() - start.getYear()) * 12 + (end.getMonthValue() - start.getMonthValue());
 	}
