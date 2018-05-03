@@ -186,7 +186,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                         appVersion: 0
                         ,
                     }
-                }, selectedReason = _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() });
+                }, selectedReason = self.appReasonSelectedID() ? _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() }) : null;
             if (selectedReason) {
                 returnCmd.appCmd.appReasonText = selectedReason.reasonTemp;
             }
