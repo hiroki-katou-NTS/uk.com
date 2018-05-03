@@ -36,7 +36,7 @@ public interface LoginParamCheck {
 	 * @param reason
 	 * @return
 	 */
-	public String checkParamAdjustDaily(String employeeCD, String startTime, String endTime, String date, String reason);
+	public String checkParamAdjustDaily(String employeeCD, String startTime, String endTime, String date, String reason, String stampFlg);
 	
 	/**
 	 * パラメータチェック（承認一覧）
