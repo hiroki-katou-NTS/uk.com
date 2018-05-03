@@ -18,4 +18,30 @@ public enum SystemTypeEnum {
 		this.value = value;
 		this.nameId = nameId;
 	}
+	
+	/** The Constant values. */
+	private final static SystemTypeEnum[] values = SystemTypeEnum.values();
+	
+	/**
+	 * Value of.
+	 *
+	 * @param value the value
+	 * @return the role type
+	 */
+	public static SystemTypeEnum valueOf(Integer value) {
+		// Invalid object.
+		if (value == null) {
+			return null;
+		}
+
+		// Find value.
+		for (SystemTypeEnum val : SystemTypeEnum.values) {
+			if (val.value == value) {
+				return val;
+			}
+		}
+
+		// Not found.
+		return null;
+	}
 }

@@ -16,7 +16,6 @@ import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.manual.ManualSetting;
-import nts.uk.ctx.sys.assist.dom.resultlog.ResultLog;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
