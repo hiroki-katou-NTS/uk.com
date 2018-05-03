@@ -22,7 +22,7 @@ module nts.uk.com.view.cmf003.c {
            selected_comobox: string = getText("CMF003_59");
            constructor() {
                var self = this;
-                
+               var systemIdSelected;
                    self.itemList = ko.observableArray<any>;
                    service.getSysTypes().done(function(data: Array<any>) {
                         if (data && data.length) {
@@ -30,6 +30,7 @@ module nts.uk.com.view.cmf003.c {
                                 self.itemList.push(new ItemModelCombo(index.type,index.name));
                               });
                              
+                            systemIdSelected = self.itemList()[0].code;
                         } else {
                            
                         }
@@ -40,10 +41,12 @@ module nts.uk.com.view.cmf003.c {
                     }).always(() => {
                         
                     });
-                    console.log(self.itemList()[0]);
-                    console.log(_.first(self.itemList, 1));
-                   self.selectedCode = ko.observable('1');
-                   service.getConditionList(self.selectedCode()).done(function(data: Array<any>) {
+                    
+                    
+                   self.selectedCode = ko.observable(systemIdSelected);
+                   
+                   if (systemIdSelected != undefined ) {
+                       service.getConditionList(self.selectedCode()).done(function(data: Array<any>) {
                            
                            self.itemsSwap(data);
                            
@@ -55,6 +58,8 @@ module nts.uk.com.view.cmf003.c {
                                 $("#grd_Condition tr:first-child").focus();
                             });
                         });
+                   }
+                   
                 
                     
                     self.isEnable = ko.observable(true);
@@ -66,10 +71,7 @@ module nts.uk.com.view.cmf003.c {
                     
                    
                    service.getConditionList(self.selectedCode()).done(function(data: Array<any>) {
-                       
-                      console.log("1111111");
                        self.itemsSwap(data);
-                       
                    }).fail(function(error) {
                         alertError(error);
                    }).always(() => {
