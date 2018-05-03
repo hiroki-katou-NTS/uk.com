@@ -75,7 +75,10 @@ module nts.uk.at.view.kaf011.a.screenModel {
 
             });
         }
-
+        enablePrepost() {
+            let self = this;
+            return self.screenModeNew() && self.appTypeSet().canClassificationChange() != 0;
+        }
 
         start(): JQueryPromise<any> {
             block.invisible();
