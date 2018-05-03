@@ -18,6 +18,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.adapter.approvalrootstate.AppRootStateConfirmAdapter;
+import nts.uk.ctx.at.record.dom.approvalmanagement.enums.ConfirmationOfManagerOrYouself;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalStatusOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
@@ -43,6 +44,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
+import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.enums.SelfConfirmError;
@@ -164,24 +166,35 @@ public class DivTimeSysFixedCheckService {
 	/** 確認解除 */
 	private List<EmployeeDailyPerError> removeconfirm(String companyId, String employeeId, GeneralDate workingDate, 
 			List<EmployeeDailyPerError> errors, IdentityProcessUseSet identityPUS) {
-		if(identityPUS.isUseConfirmByYourself()) {
-			identityRepo.findByCode(employeeId, workingDate).ifPresent(id -> {
-				List<SelfConfirmContent> content = errors.stream().map(c -> new SelfConfirmContent(c.getDate(), false)).collect(Collectors.toList());
-				registryIdentity(companyId, identityPUS, new SelfConfirmContentRegistry(content, employeeId));
+		List<EmployeeDailyPerError> errorDivergence = errors.stream().filter(c -> c.getErrorAlarmWorkRecordCode() != null
+				&& (c.getErrorAlarmWorkRecordCode().v().equals(SystemFixedErrorAlarm.DIVERGENCE_ERROR_6.value)
+				|| c.getErrorAlarmWorkRecordCode().v().equals(SystemFixedErrorAlarm.DIVERGENCE_ERROR_7.value))
+				&& c.getDate().equals(workingDate) && c.getEmployeeID().equals(employeeId)).collect(Collectors.toList());
+		
+		if (identityPUS.isUseConfirmByYourself()) {
+			val identity = identityRepo.findByCode(employeeId, workingDate);
+			if (identity.isPresent()) {
+				List<SelfConfirmContent> content = errorDivergence.stream().map(c -> new SelfConfirmContent(c.getDate(), false))
+						.collect(Collectors.toList());
+				removeSelfIdentity(companyId, identityPUS, new SelfConfirmContentRegistry(content, employeeId));
+			}
+		}
+		
+		if (!errorDivergence.isEmpty()) {
+			approvalSettingRepo.findByCompanyId(companyId).ifPresent(as -> {
+				if (as.getUseDayApproverConfirm() != null && as.getUseDayApproverConfirm()
+						&& as.getSupervisorConfirmErrorAtr() != null
+						&& !as.getSupervisorConfirmErrorAtr().equals(ConfirmationOfManagerOrYouself.CAN_CHECK)) {
+					approvalStatRepo.find(employeeId, workingDate).ifPresent(asd -> {
+						/** 承認状態をすべてクリアする */
+						appRootStateAdapter.clearAppRootstate(asd.getRootInstanceID());
+					});
+				}
 			});
 		}
-//		approvalSettingRepo.findByCompanyId(companyId).ifPresent(as -> {
-//			if(as.getUseDayApproverConfirm() != null && as.getUseDayApproverConfirm()) {
-//				approvalStatRepo.find(employeeId, workingDate).ifPresent(asd -> {
-//					/** 承認状態をすべてクリアする */
-//					appRootStateAdapter.clearAppRootstate(asd.getRootInstanceID());
-//				});
-//			}
-//		});
 		return errors;
 	}
-	
-	
+		
 	/** 日の本人確認を登録する */
 	private void registryIdentity(String companyId, IdentityProcessUseSet identityPUS, SelfConfirmContentRegistry selfConfirm) {
 		if(!identityPUS.getYourSelfConfirmError().isPresent()) {
@@ -214,6 +227,20 @@ public class DivTimeSysFixedCheckService {
 //		selfConfirm.content.stream().filter(c -> c.confirmStatus).forEach(c -> {
 //			identityRepo.insert(new Identification(companyId, selfConfirm.empId, c.ymd, today));
 //		});
+	}
+	
+	/** 日の本人確認を解除する */
+	private void removeSelfIdentity(String companyId, IdentityProcessUseSet identityPUS, SelfConfirmContentRegistry selfConfirm) {
+		if(!identityPUS.getYourSelfConfirmError().isPresent()) {
+			return;
+		}
+		if (identityPUS.getYourSelfConfirmError().get() != SelfConfirmError.CAN_CONFIRM_WHEN_ERROR) {
+			// fix remove ドメインモデル「日の本人確認」を削除する Thanh
+			selfConfirm.content.stream().filter(c -> !c.confirmStatus).forEach(c -> {
+				identityRepo.remove(companyId, selfConfirm.empId, c.ymd);
+			});
+			return;
+		}
 	}
 	
 	/** システム固定エラー：　乖離時間をチェックする */
