@@ -116,16 +116,15 @@ public class RegisterLayoutFinder {
 	private List<LayoutPersonInfoClsDto> getClassItemList(AddEmployeeCommand command, NewLayout _layout) {
 
 		List<LayoutPersonInfoClsDto> itemCls = this.clsFinder.getListClsDtoHasCtgCd(_layout.getLayoutID());
-
+		List<SettingItemDto> dataServer = new ArrayList<>();
 		if (command.getCreateType() != 3) {
-			
 			// get data from server
-			List<SettingItemDto> dataServer = this.getSetItems(command);
-			
-			// set to layout's item
-			for (LayoutPersonInfoClsDto classItem : itemCls) {
-				setValueToItemCls(dataServer, classItem, command);
-			}
+			dataServer = this.getSetItems(command);
+		}
+		
+		// set to layout's item
+		for (LayoutPersonInfoClsDto classItem : itemCls) {
+			setValueToItemCls(dataServer, classItem, command);
 		}
 		
 		// check and set 9999/12/31 to endDate
