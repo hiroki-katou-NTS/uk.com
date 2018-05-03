@@ -65,7 +65,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                     enteredPersonSID: self.employeeID(),
                     appVersion: self.version(),
                 }
-            }, selectedReason = _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() });
+            }, selectedReason = self.appReasonSelectedID() ? _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() }) : null;
             returnCmd.absCmd.changeWorkHoursType = returnCmd.absCmd.changeWorkHoursType ? 1 : 0;
             if (selectedReason) {
                 returnCmd.appCmd.appReasonText = selectedReason.reasonTemp;

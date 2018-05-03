@@ -78,7 +78,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 		Optional<Application_New> appLicationOpt = this.appRepo.findByID(companyID, appCmd.getAppID());
 		if (appLicationOpt.isPresent()) {
 			Application_New application = appLicationOpt.get();
-			application.setAppReason(new AppReason(command.getAppCmd().getApplicationReason()));
+			application.setAppReason(new AppReason(appReason));
 			application.setVersion(command.getAppCmd().getAppVersion());
 			this.appRepo.updateWithVersion(application);
 			Optional<AbsenceLeaveApp> absAppOpt = this.absRepo.findByID(appCmd.getAppID());
@@ -114,7 +114,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 		Optional<Application_New> absAppLicationOpt = this.appRepo.findByID(companyID, appCmd.getAppID());
 		if (absAppLicationOpt.isPresent()) {
 			Application_New application = absAppLicationOpt.get();
-			application.setAppReason(new AppReason(command.getAppCmd().getApplicationReason()));
+			application.setAppReason(new AppReason(appReason));
 			application.setVersion(command.getAppCmd().getAppVersion());
 			this.appRepo.updateWithVersion(application);
 			Optional<RecruitmentApp> recAppOpt = this.recRepo.findByID(appCmd.getAppID());
