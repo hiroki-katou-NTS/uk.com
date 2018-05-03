@@ -1,4 +1,4 @@
-package nts.uk.ctx.workflow.infra.entity.approverstatemanagement;
+package nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -7,11 +7,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverState;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
@@ -29,6 +29,12 @@ public class WwfdtApproverState extends UkJpaEntity {
 	@EmbeddedId
 	public WwfdpApproverStatePK wwfdpApproverStatePK;
 	
+	@Column(name="CID")
+	public String companyID;
+	
+	@Column(name="APPROVAL_RECORD_DATE")
+	public GeneralDate recordDate;
+	
 	@ManyToOne
 	@PrimaryKeyJoinColumns({
 		@PrimaryKeyJoinColumn(name="ROOT_STATE_ID",referencedColumnName="ROOT_STATE_ID"),
@@ -42,7 +48,7 @@ public class WwfdtApproverState extends UkJpaEntity {
 		return wwfdpApproverStatePK;
 	}
 	
-	public static WwfdtApproverState fromDomain(ApproverState approverState){
+	public static WwfdtApproverState fromDomain(String companyID, GeneralDate date, ApproverState approverState){
 		return WwfdtApproverState.builder()
 				.wwfdpApproverStatePK(
 						new WwfdpApproverStatePK(
@@ -50,6 +56,8 @@ public class WwfdtApproverState extends UkJpaEntity {
 								approverState.getPhaseOrder(), 
 								approverState.getFrameOrder(), 
 								approverState.getApproverID()))
+				.companyID(companyID)
+				.recordDate(date)
 				.build();
 	}
 	
