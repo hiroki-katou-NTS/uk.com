@@ -50,7 +50,8 @@ module nts.uk.at.view.kwr008.a {
             alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
             ccgcomponentPerson: GroupOption;
 
-            permissionOfEmploymentForm : KnockoutObservable<model.PermissionOfEmploymentFormModel> = ko.observable(null);
+            permissionOfEmploymentForm : KnockoutObservable<model.PermissionOfEmploymentFormModel>
+                = ko.observable(new model.PermissionOfEmploymentFormModel('', '', 4, false));
             // date
             date: KnockoutObservable<string>;
             maxDaysCumulationByEmp: KnockoutObservable<number>;
