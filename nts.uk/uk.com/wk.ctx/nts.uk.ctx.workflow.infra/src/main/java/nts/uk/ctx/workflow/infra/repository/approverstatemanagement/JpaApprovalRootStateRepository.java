@@ -61,6 +61,8 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	private static final String SELECT_FRAME;
 	
 	private static final String SELECT_APPROVER_STATE;
+	
+	private static final String SELECT_CF_DAY_BY_EMP_DATE;
 
 	
 	static {
@@ -105,6 +107,14 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString.append(" AND e.rootType = :rootType");
 		builderString.append(" AND e.employeeID = :employeeID");
 		SELECT_BY_EMP_DATE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM WwfdtApprovalRootStateNew e");
+		builderString.append(" WHERE e.recordDate = :recordDate");
+		builderString.append(" AND e.rootType = 1");
+		builderString.append(" AND e.employeeID = :employeeID");
+		SELECT_CF_DAY_BY_EMP_DATE = builderString.toString();
 		
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
@@ -353,5 +363,15 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public void deleteConfirmDay(String employeeID, GeneralDate date) {
+		List<WwfdpApprovalRootStatePK> rootStateKeyList = this.queryProxy().query(SELECT_CF_DAY_BY_EMP_DATE, WwfdtApprovalRootStateNew.class)
+					.setParameter("recordDate", date)
+					.setParameter("employeeID", employeeID)
+					.getList(x -> new WwfdpApprovalRootStatePK(x.wwfdpApprovalRootStatePK.rootStateID));
+		this.commandProxy().removeAll(WwfdtApprovalRootState.class, rootStateKeyList);
+		this.getEntityManager().flush();
 	}
 }
