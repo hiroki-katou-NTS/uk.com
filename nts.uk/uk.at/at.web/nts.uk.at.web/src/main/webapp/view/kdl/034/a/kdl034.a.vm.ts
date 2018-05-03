@@ -149,11 +149,11 @@ module nts.uk.at.view.kdl034.a {
                 this.approvalReson = approvalReason;
                 this.jobTitle = jobTitle;
                 if (_.isNull(phaseOrder)) {
-                    this.dispApprover = "申請者：　" + jobTitle + "　" + name;
+                    this.dispApprover = "申請者：　" + jobTitle + "　" + (representerName.length == 0 ? name : representerName);
                 } else if (phaseOrder == 2) {
-                    this.dispApprover = "フェーズ" + phaseOrder + "の承認者：　" + jobTitle + "　" + name + "　" + representerName;
+                    this.dispApprover = "フェーズ" + phaseOrder + "の承認者：　" + jobTitle + "　" + (representerName.length == 0 ? name : representerName);
                 } else {
-                    this.dispApprover = "フェーズ" + phaseOrder + "の承認者：　" + jobTitle + "　" + name;
+                    this.dispApprover = "フェーズ" + phaseOrder + "の承認者：　" + jobTitle + "　" + (representerName.length == 0 ? name : representerName);
                 }
                 this.idAndPhase = id + "__" + phaseOrder;
             }
