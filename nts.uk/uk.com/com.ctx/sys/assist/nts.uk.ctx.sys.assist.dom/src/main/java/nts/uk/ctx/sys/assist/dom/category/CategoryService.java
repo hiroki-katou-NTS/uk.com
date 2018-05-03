@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.dom.category;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -15,7 +16,7 @@ public class CategoryService  {
 	
 	
 	public List<Category> categoriesBySystemType(int systemType) {
-		List<Category> listCategory =  null;
+		List<Category> listCategory =  new ArrayList<>();
 		if(systemType == SystemType.PERSON_SYSTEM.value) {
     		listCategory = finder.findByPossibilitySystem();
     	} else if (systemType == SystemType.ATTENDANCE_SYSTEM.value) {
@@ -30,7 +31,7 @@ public class CategoryService  {
 
 	
 	public List<Category> categoriesByCodeOrName(int systemType, String keySearch, List<String> categoriesIgnore) {
-		List<Category> listCategory =  null;
+		List<Category> listCategory = new ArrayList<>();
 		if(systemType == SystemType.PERSON_SYSTEM.value) {
     		listCategory = finder.findByPossibilitySystemAndCodeName(keySearch, categoriesIgnore);
     	} else if (systemType == SystemType.ATTENDANCE_SYSTEM.value) {

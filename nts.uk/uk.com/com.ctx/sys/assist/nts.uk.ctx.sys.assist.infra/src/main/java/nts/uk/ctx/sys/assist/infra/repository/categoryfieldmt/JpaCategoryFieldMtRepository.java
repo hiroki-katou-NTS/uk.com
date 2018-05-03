@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMt;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMtRepository;
-import nts.uk.ctx.sys.assist.infra.entity.categoryfieldmaster.SspmtCategoryFieldMt;
+import nts.uk.ctx.sys.assist.infra.entity.categoryfieldmt.SspmtCategoryFieldMt;
 
 @Stateless
 public class JpaCategoryFieldMtRepository extends JpaRepository implements CategoryFieldMtRepository

@@ -19,7 +19,7 @@ public class CategoryFinder
     private CategoryRepository finder;
     
     @Inject
-    private CategoryService categoryServiceImp;
+    private CategoryService categoryService;
 
     public List<CategoryDto> getAllCategory(){
         return finder.getAllCategory().stream().map(item -> CategoryDto.fromDomain(item))
@@ -29,14 +29,14 @@ public class CategoryFinder
     
     public List<CategoryDto> getCategoryBySystemType(int systemType) {
     	List<CategoryDto> listCategoryDto = new ArrayList<>();
-    	List<Category> listCategory =  categoryServiceImp.categoriesBySystemType(systemType);
+    	List<Category> listCategory =  categoryService.categoriesBySystemType(systemType);
     	listCategoryDto = listCategory.stream().map(c -> CategoryDto.fromDomain(c)).collect(Collectors.toList());
     	return listCategoryDto;
     }
     
     public List<CategoryDto> getCategoryByCodeOrName(int systemType,String keySearch,List<String> categoriesIgnore){
     	List<CategoryDto> listCategoryDto = new ArrayList<>();
-    	List<Category> listCategory =  categoryServiceImp.categoriesByCodeOrName(systemType, keySearch, categoriesIgnore);
+    	List<Category> listCategory =  categoryService.categoriesByCodeOrName(systemType, keySearch, categoriesIgnore);
     	listCategoryDto = listCategory.stream().map(c -> CategoryDto.fromDomain(c)).collect(Collectors.toList());
     	return listCategoryDto;
     }
