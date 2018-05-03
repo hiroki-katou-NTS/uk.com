@@ -110,7 +110,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM WwfdtApprovalRootState e");
+		builderString.append(" FROM WwfdtApprovalRootStateNew e");
 		builderString.append(" WHERE e.recordDate = :recordDate");
 		builderString.append(" AND e.rootType = 1");
 		builderString.append(" AND e.employeeID = :employeeID");
