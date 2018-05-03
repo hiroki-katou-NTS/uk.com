@@ -170,7 +170,7 @@ public class AppOvertimeFinder {
 			 startupErrorCheckService.startupErrorCheck(appCommonSettingOutput.generalDate, ApplicationType.OVER_TIME_APPLICATION.value, approvalRootPattern.getApprovalRootContentImport());
 		}
 		// 02_残業区分チェック : check loai lam them
-		int overtimeAtr = overtimeService.checkOvertime(url);
+		int overtimeAtr = overtimeService.checkOvertimeAtr(url);
 		result.setOvertimeAtr(overtimeAtr);
 		// 01_初期データ取得
 		getData(result,uiType,appDate,companyID,employeeID,appCommonSettingOutput,applicationDto,overtimeAtr,overTimeInputs,preAppOvertimeDto,timeStart1,timeEnd1,reasonContent);

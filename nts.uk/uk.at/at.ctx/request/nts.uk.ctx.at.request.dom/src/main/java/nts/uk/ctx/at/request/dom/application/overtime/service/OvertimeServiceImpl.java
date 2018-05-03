@@ -52,7 +52,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
 	@Override
-	public int checkOvertime(String url) {
+	public int checkOvertimeAtr(String url) {
 		if(url == null){
 			return 0;
 		}
