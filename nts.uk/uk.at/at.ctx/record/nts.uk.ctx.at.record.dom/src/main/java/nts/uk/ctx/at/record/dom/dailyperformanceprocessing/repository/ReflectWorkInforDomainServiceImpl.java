@@ -1158,7 +1158,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 									// 出勤系時刻を丸める
 									Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = this.getCommonSet.get(
 											companyId,
-											workInfoOfDailyPerformanceUpdate.getScheduleInfo().getWorkTimeCode().v());
+											workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode().v());
 									WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
 									// 出勤
 									RoundingSet atendanceRoundingSet = stampSet.getRoundingSets().stream()
