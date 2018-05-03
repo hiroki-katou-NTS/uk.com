@@ -9,14 +9,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import com.aspose.cells.BackgroundType;
-import com.aspose.cells.BorderType;
-import com.aspose.cells.Cell;
-import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Cells;
-import com.aspose.cells.Color;
 import com.aspose.cells.Shape;
-import com.aspose.cells.Style;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
@@ -327,13 +321,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		// D2_2
 		cells.get(rowIndexD, 1).setValue(employee.getEmployeeName());
 		// D2_3 Todo rql No.369
-		
-		// Set Style
-		setTopBorderStyle(cells.get(rowIndexD, 0));
-		setTopBorderStyle(cells.get(rowIndexD, 1));
-		setBottomBorderStyle(cells.get(firstRow - 1, 0));
-		setBottomBorderStyle(cells.get(firstRow - 1, 1));
-		
+
+		cells.copyRows(cells, 24, firstRow, 1);
 		return firstRow;
 	}
 
@@ -382,18 +371,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		cells.deleteRows(0, numberRowOfPage);
 	}
 
-	private void setTopBorderStyle(Cell cell) {
-		Style style = cell.getStyle();
-		style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
-		cell.setStyle(style);
-	}
-	
-	private void setBottomBorderStyle(Cell cell) {
-		Style style = cell.getStyle();
-		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
-		cell.setStyle(style);
-	}
-	
 	private int totalMonths(YearMonth start, YearMonth end) {
 		return (end.getYear() - start.getYear()) * 12 + (end.getMonthValue() - start.getMonthValue());
 	}
