@@ -28,8 +28,8 @@ public class ItemsOutputtedAlternate {
 	public ItemsOutputtedAlternate(boolean remainingChargeSubstitute, boolean representSubstitute,
 			boolean outputItemSubstitute) {
 		super();
-		this.remainingChargeSubstitute = remainingChargeSubstitute;
-		this.representSubstitute = representSubstitute;
+		this.remainingChargeSubstitute = !outputItemSubstitute ? false : remainingChargeSubstitute;
+		this.representSubstitute = !outputItemSubstitute ? false : representSubstitute;
 		this.outputItemSubstitute = outputItemSubstitute;
 	}
 	
