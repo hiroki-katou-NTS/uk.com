@@ -21,24 +21,26 @@ __viewContext.ready(function() {
     var employeeID = paramSPR.employeeID;
 	switch(menuCD) {
 	case 1:
-        nts.uk.request.jump("at", "/view/kaf/005/a/index.xhtml", 
+        nts.uk.request.jump("at", "/view/kaf/005/a/index.xhtml?a=0", 
             {
                 uiType: 0,
                 appDate: date,
                 startTime: starttime,
                 endTime: endtime,
                 applicationReason: reason,
+                employeeIDs: [employeeID]
             }
         );
 		break;
 	case 2:
-        nts.uk.request.jump("at", "/view/kaf/005/a/index.xhtml", 
+        nts.uk.request.jump("at", "/view/kaf/005/a/index.xhtml?a=1", 
             {
                 uiType: 1,
                 appDate: date,
                 startTime: starttime,
                 endTime: endtime,
                 applicationReason: reason,
+                employeeIDs: [employeeID]
             }
         );
 		break;
@@ -83,13 +85,16 @@ __viewContext.ready(function() {
 		nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
 		break;
 	case 4:
+        
         nts.uk.request.jump("at", "/view/cmm/045/a/index.xhtml", 
-            {
-                mode: 1 ,//1=承認一覧
-                startDate: date,//yyyy/mm/dd //期間（開始日）
-                endDate: date,//yyyy/mm/dd //期間（終了日）
-                extractCondition: selecttype,//０＝全て、１＝早出・普通残業のみ
-                agreementTime36: 0,//０＝表示しない、1＝表示する
+            { 'PARAM_SPR_CMM045':
+                {
+                    mode: 1 ,//1=承認一覧
+                    startDate: date,//yyyy/mm/dd //期間（開始日）
+                    endDate: date,//yyyy/mm/dd //期間（終了日）
+                    extractCondition: selecttype,//０＝全て、１＝早出・普通残業のみ
+                    agreementTime36: 0,//０＝表示しない、1＝表示する
+                }
             }
         );
 		break;

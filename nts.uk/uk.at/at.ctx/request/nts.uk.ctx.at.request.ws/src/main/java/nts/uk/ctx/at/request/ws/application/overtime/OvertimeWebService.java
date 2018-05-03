@@ -63,7 +63,8 @@ public class OvertimeWebService extends WebService{
 				param.getStartTime(),
 				param.getEndTime(),
 				param.getStartTimeRest(),
-				param.getEndTimeRest());
+				param.getEndTimeRest(),
+				param.getOvertimeAtr());
 	}
 	@POST
 	@Path("checkConvertPrePost")
