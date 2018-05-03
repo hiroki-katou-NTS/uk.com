@@ -8,18 +8,17 @@ module nts.uk.com.view.cmf003.c {
         export class ScreenModel {
             
             // swapList
-           itemsSwap: KnockoutObservableArray<ItemModel>;
-           itemsSwapLeft: KnockoutObservableArray<ItemModel>;
+           itemsSwap: KnockoutObservableArray<ItemSwapList>;
+           itemsSwapLeft: KnockoutObservableArray<ItemSwapList>;
            columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
            currentCodeListSwap: KnockoutObservableArray<any>;
            
            // comboBox
            itemList: KnockoutObservableArray<any>;
            selectedCode: KnockoutObservable<string>;
-           currentItem: KnockoutObservable<ItemModelCombo>;
+           currentItem: KnockoutObservable<ItemCombobox>;
            isEnable: KnockoutObservable<boolean>;
            isEditable: KnockoutObservable<boolean>;
-           selected_comobox: string = getText("CMF003_59");
            constructor() {
                var self = this;
                var systemIdSelected;
@@ -27,7 +26,7 @@ module nts.uk.com.view.cmf003.c {
                    service.getSysTypes().done(function(data: Array<any>) {
                         if (data && data.length) {
                             _.forOwn(data, function(index) {
-                                self.itemList.push(new ItemModelCombo(index.type,index.name));
+                                self.itemList.push(new ItemCombobox(index.type,index.name));
                               });
                              
                             systemIdSelected = self.itemList()[0].code;
@@ -108,7 +107,7 @@ module nts.uk.com.view.cmf003.c {
                      alertError({ messageId: "Msg_577" });
                 } else {
                     setShared("CMF003_C_Categories",self.currentCodeListSwap());
-                    setShared("CMF003_C_SystemType",self.currentItem);
+                    setShared("CMF003_C_Systemtype",self.currentItem);
                     close();
                 }
             }
@@ -116,7 +115,7 @@ module nts.uk.com.view.cmf003.c {
         }
     }
 
-        class ItemModel {
+        class ItemSwapList {
            schelperSystem: number;
            categoryId: string;
            categoryName: string;
@@ -145,7 +144,7 @@ module nts.uk.com.view.cmf003.c {
            }
        }
 
-        class ItemModelCombo {
+        class ItemCombobox {
             code: string;
             name: string;
         
