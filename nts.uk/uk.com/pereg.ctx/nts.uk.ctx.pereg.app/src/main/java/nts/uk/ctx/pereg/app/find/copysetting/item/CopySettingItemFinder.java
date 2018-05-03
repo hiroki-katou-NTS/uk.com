@@ -102,7 +102,7 @@ public class CopySettingItemFinder {
 		// set data to setting-item-DTO
 		
 		// initial with null-value
-		return copyItemList.stream().filter(copyItem -> dataMap.get(copyItem.getItemCode()) == null)
+		return copyItemList.stream().filter(copyItem -> dataMap.get(copyItem.getItemCode()) != null)
 				.map(copyItem -> SettingItemDto.createFromJavaType(copyItem, dataMap.get(copyItem.getItemCode())))
 				.collect(Collectors.toList());
 	}
