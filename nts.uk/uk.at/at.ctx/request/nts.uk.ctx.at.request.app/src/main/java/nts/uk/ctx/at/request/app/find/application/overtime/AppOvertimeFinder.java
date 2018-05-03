@@ -26,6 +26,7 @@ import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeInputDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.PreAppOvertimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.Changeable;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
@@ -134,7 +135,6 @@ public class AppOvertimeFinder {
 	private AppOvertimeSettingRepository appOvertimeSettingRepository;
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
-	
 	/**
 	 * @param url
 	 * @param appDate
@@ -497,6 +497,11 @@ public class AppOvertimeFinder {
 			}else{
 				overTimeDto.setFlexFLag(true);
 			}
+			//ドメインモデル「残業申請設定」.勤種変更可否フラグがtrueの場合
+			overTimeDto.setWorkTypeChangeFlg(false);
+			if(appOvertimeSettingRepository.getAppOver().get().getWorkTypeChangeFlag().equals(Changeable.CHANGEABLE)){
+				overTimeDto.setWorkTypeChangeFlg(true);
+			}
 		}
 		return overTimeDto;
 	} 
@@ -536,7 +541,7 @@ public class AppOvertimeFinder {
 	 * @param prePostAtr
 	 * @return
 	 */
-	public OverTimeDto findByChangeAppDate(String appDate,int prePostAtr,String siftCD, List<CaculationTime> overtimeHours,String workTypeCode,Integer startTime,Integer endTime,Integer startTimeRest,Integer endTimeRest){
+	public OverTimeDto findByChangeAppDate(String appDate,int prePostAtr,String siftCD, List<CaculationTime> overtimeHours,String workTypeCode,Integer startTime,Integer endTime,Integer startTimeRest,Integer endTimeRest,int overtimeAtr){
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		OverTimeDto result = new OverTimeDto();
@@ -590,7 +595,7 @@ public class AppOvertimeFinder {
 		if(appCommonSettingOutput.applicationSetting.getDisplayPrePostFlg().value == AppDisplayAtr.NOTDISPLAY.value){
 			result.setDisplayPrePostFlg(AppDisplayAtr.NOTDISPLAY.value);
 			// 3.事前事後の判断処理(事前事後非表示する場合)
-			PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), GeneralDate.fromString(appDate, DATE_FORMAT));
+			PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), GeneralDate.fromString(appDate, DATE_FORMAT),overtimeAtr);
 			if(prePostAtrJudgment != null){
 				prePostAtr = prePostAtrJudgment.value;
 			}
@@ -688,7 +693,7 @@ public class AppOvertimeFinder {
 		 * chưa phải làm
 		 */
 		// 01-13_事前事後区分を取得
-		DisplayPrePost displayPrePost =	iOvertimePreProcess.getDisplayPrePost(companyID, uiType,appDate,ApplicationType.OVER_TIME_APPLICATION.value);
+		DisplayPrePost displayPrePost =	iOvertimePreProcess.getDisplayPrePost(companyID, uiType,appDate,ApplicationType.OVER_TIME_APPLICATION.value,overtimeAtr);
 		result.setDisplayPrePostFlg(displayPrePost.getDisplayPrePostFlg());
 		applicationDto.setPrePostAtr(displayPrePost.getPrePostAtr());
 		result.setApplication(applicationDto);
@@ -877,8 +882,9 @@ public class AppOvertimeFinder {
 				}			
 			}
 		}
-		// display flex
+		
 		if(appOvertimeSettingRepository.getAppOver().isPresent()){
+			// display flex
 			if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.NOTDISPLAY)){
 				result.setFlexFLag(false);
 			}else if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.DISPLAY)){
@@ -894,7 +900,11 @@ public class AppOvertimeFinder {
 			}else{
 				result.setFlexFLag(true);
 			}
-			
+			//ドメインモデル「残業申請設定」.勤種変更可否フラグがtrueの場合
+			result.setWorkTypeChangeFlg(false);
+			if(appOvertimeSettingRepository.getAppOver().get().getWorkTypeChangeFlag().equals(Changeable.CHANGEABLE)){
+				result.setWorkTypeChangeFlg(true);
+			}
 		}
 		// xử lí tính toán
 		if(result.getApplication().getApplicationDate() != null

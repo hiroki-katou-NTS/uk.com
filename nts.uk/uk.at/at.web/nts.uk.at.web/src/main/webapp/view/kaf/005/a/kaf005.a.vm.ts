@@ -80,6 +80,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         displayDivergenceReasonForm: KnockoutObservable<boolean> = ko.observable(false);
         displayDivergenceReasonInput: KnockoutObservable<boolean> = ko.observable(false);
         
+        
 
         // 参照
         referencePanelFlg: KnockoutObservable<boolean> = ko.observable(false);
@@ -88,6 +89,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         isRightContent: KnockoutObservable<boolean> = ko.observable(false);
         performanceDisplayAtr: KnockoutObservable<boolean> = ko.observable(false);
         preDisplayAtr: KnockoutObservable<boolean> = ko.observable(false);
+        workTypeChangeFlg: KnockoutObservable<boolean> = ko.observable(false);
         
         instructInforFlag: KnockoutObservable <boolean> = ko.observable(true);
         instructInfor : KnockoutObservable <string> = ko.observable('');
@@ -132,7 +134,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         constructor(transferData :any) {
             let self = this;
             if(transferData != null){
-                 self.timeStart1(transferData.startTime);
+                self.timeStart1(transferData.startTime);
                 self.timeEnd1(transferData.endTime);
                 self.appDate(transferData.appDate);
                 self.multilContent(transferData.applicationReason);
@@ -196,7 +198,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             startTimeRest: nts.uk.util.isNullOrEmpty(self.restTime())? null : self.restTime()[0].startTime(),
                             endTimeRest:nts.uk.util.isNullOrEmpty(self.restTime())? null : self.restTime()[0].endTime(),
                             startTime: nts.uk.util.isNullOrEmpty(self.timeStart1()) ? null : self.timeStart1(),
-                            endTime: nts.uk.util.isNullOrEmpty(self.timeEnd1()) ? null : self.timeEnd1()    
+                            endTime: nts.uk.util.isNullOrEmpty(self.timeEnd1()) ? null : self.timeEnd1(),
+                            overtimeAtr: self.overtimeAtr()    
                         }).done((data) =>{
                             self.findBychangeAppDateData(data);
                             self.kaf000_a.getAppDataDate(0, moment(value).format(self.DATE_FORMAT), false);
@@ -350,6 +353,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
             self.preDisplayAtr(data.preDisplayAtr);
             self.performanceDisplayAtr(data.performanceDisplayAtr);
+            self.workTypeChangeFlg(data.workTypeChangeFlg);
             // preAppOvertime
             self.convertpreAppOvertimeDto(data);
             // 休憩時間
@@ -675,7 +679,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 if ( !self.validateTime( self.timeStart2(), self.timeEnd2(), '#inpStartTime2' ) ) {
                     return;
                 };
-            }         
+            }
+            nts.uk.ui.block.invisible();         
             let param : any ={
                 overtimeHours: _.map(ko.toJS(self.overtimeHours()), item => {return self.initCalculateData(item);}),
                  bonusTimes: _.map(ko.toJS(self.bonusTimes()), item => {return self.initCalculateData(item);}),
@@ -767,9 +772,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 //                }
                  //Check work content Changed
                 self.checkWorkContentChanged();
+                nts.uk.ui.block.clear();
                 dfd.resolve(data);
             }).fail(function(res){
                 dfd.reject(res);
+                nts.uk.ui.block.clear();
             });
             return dfd.promise();
         }

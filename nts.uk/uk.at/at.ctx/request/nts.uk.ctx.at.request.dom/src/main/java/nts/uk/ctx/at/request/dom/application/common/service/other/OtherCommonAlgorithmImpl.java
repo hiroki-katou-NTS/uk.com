@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,7 +14,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
@@ -23,8 +23,9 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.ReceptionRestrictionSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
@@ -67,6 +68,8 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	private AbsenceLeaveAppRepository absRepo;
 	@Inject
 	private CompltLeaveSimMngRepository compLeaveRepo;
+	@Inject
+	private RequestSettingRepository requestSettingRepository;
 	
 	public PeriodCurrentMonth employeePeriodCurrentMonthCalculate(String companyID, String employeeID, GeneralDate date){
 		/*
@@ -118,13 +121,18 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	}
 
 	@Override
-	public PrePostAtr preliminaryJudgmentProcessing(ApplicationType appType, GeneralDate appDate) {
+	public PrePostAtr preliminaryJudgmentProcessing(ApplicationType appType, GeneralDate appDate,int overTimeAtr) {
 		GeneralDate systemDate = GeneralDate.today();
 		Integer systemTime = GeneralDateTime.now().localDateTime().getHour()*60 
 				+ GeneralDateTime.now().localDateTime().getMinute();
 		String companyID = AppContexts.user().companyId();
 		PrePostAtr prePostAtr = null;
 		Optional<AppTypeDiscreteSetting> appTypeDisc = appTypeDiscreteSettingRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value);
+		Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
+		List<ReceptionRestrictionSetting> receptionRestrictionSetting = new ArrayList<>();
+		if(requestSetting.isPresent()){
+			receptionRestrictionSetting = requestSetting.get().getApplicationSetting().getListReceptionRestrictionSetting().stream().filter(x -> x.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)).collect(Collectors.toList());
+		}
 		//if appdate > systemDate 
 		if(appDate.after(systemDate) ) {
 			//xin truoc 事前事後区分= 事前
@@ -154,7 +162,15 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 				if(appTypeDisc.get().getRetrictPreMethodFlg() == CheckMethod.DAYCHECK) {
 					prePostAtr = PrePostAtr.POSTERIOR;
 				}else{
-					if(systemTime.compareTo(appTypeDisc.get().getRetrictPreTimeDay().v())==1) {
+					int resultCompare = 0;
+					if(overTimeAtr == 0 && receptionRestrictionSetting.get(0).getBeforehandRestriction().getPreOtTime() != null){
+						resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getPreOtTime().v());
+					}else if(overTimeAtr == 1 && receptionRestrictionSetting.get(0).getBeforehandRestriction().getNormalOtTime() !=  null){
+						resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getNormalOtTime().v());
+					}else if(overTimeAtr == 2 && receptionRestrictionSetting.get(0).getBeforehandRestriction().getTimeBeforehandRestriction() !=  null){
+						resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getTimeBeforehandRestriction().v());
+					}
+					if(resultCompare == 1) {
 						prePostAtr = PrePostAtr.POSTERIOR;
 					}else { // if systemDateTime <=  RetrictPreTimeDay - > xin truoc
 						prePostAtr = PrePostAtr.PREDICT;

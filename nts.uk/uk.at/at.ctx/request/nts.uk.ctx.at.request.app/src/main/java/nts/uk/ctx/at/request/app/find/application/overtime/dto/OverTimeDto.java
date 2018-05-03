@@ -218,6 +218,7 @@ public class OverTimeDto {
 	private List<CaculationTime> caculationTimes;
 	
 	private boolean resultCaculationTimeFlg;
+	private boolean workTypeChangeFlg;
 	
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
 		return new OverTimeDto(
@@ -269,6 +270,7 @@ public class OverTimeDto {
 				false,
 				false,
 				null,
+				false,
 				false);
 	}
 	

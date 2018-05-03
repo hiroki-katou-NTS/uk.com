@@ -1,7 +1,10 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -24,6 +27,9 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImp
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.ReceptionRestrictionSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.DeadlineCriteria;
@@ -65,8 +71,10 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 	
 	@Inject
 	private ObtainDeadlineDateAdapter obtainDeadlineDateAdapter;
+	@Inject
+	private RequestSettingRepository requestSettingRepository;
 	
-	public void processBeforeRegister(Application_New application){
+	public void processBeforeRegister(Application_New application,int overTimeAtr){
 		// アルゴリズム「未入社前チェック」を実施する
 		retirementCheckBeforeJoinCompany(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
 		
@@ -128,7 +136,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 				periodCurrentMonth.getStartDate(), periodCurrentMonth.getEndDate(), startDate, endDate);
 		
 		// アルゴリズム「申請の受付制限をチェック」を実施する
-		applicationAcceptanceRestrictionsCheck(application.getCompanyID(), application.getAppType(), application.getPrePostAtr(), startDate, endDate);
+		applicationAcceptanceRestrictionsCheck(application.getCompanyID(), application.getAppType(), application.getPrePostAtr(), startDate, endDate,overTimeAtr);
 		if(application.getAppDate().equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr.PREDICT)){
 			
 		}else{
@@ -202,7 +210,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		}	
 	}
 	
-	public void applicationAcceptanceRestrictionsCheck(String companyID, ApplicationType appType, PrePostAtr postAtr, GeneralDate startDate, GeneralDate endDate){
+	public void applicationAcceptanceRestrictionsCheck(String companyID, ApplicationType appType, PrePostAtr postAtr, GeneralDate startDate, GeneralDate endDate,int overTimeAtr){
 		/*ログイン者のパスワードレベルが０の場合、チェックしない
 		ロールが決まったら、要追加*/
 		// if(passwordLevel!=0) return;
@@ -213,6 +221,11 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, appType.value);
 		if(!appTypeDiscreteSettingOp.isPresent()) {
 			throw new RuntimeException("Not found AppTypeDiscreteSetting in table KRQST_APP_TYPE_DISCRETE, appType =" +  appType);
+		}
+		Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
+		List<ReceptionRestrictionSetting> receptionRestrictionSetting = new ArrayList<>();
+		if(requestSetting.isPresent()){
+			receptionRestrictionSetting = requestSetting.get().getApplicationSetting().getListReceptionRestrictionSetting().stream().filter(x -> x.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)).collect(Collectors.toList());
 		}
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
 		
@@ -242,15 +255,24 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 						throw new BusinessException("Msg_327", loopDay.toString(DATE_FORMAT));
 					}
 				} else {
-					// ループする日とシステム日付を比較する
-					if(loopDay.before(systemDate)){
-						throw new BusinessException("Msg_327", loopDay.toString(DATE_FORMAT));
-					} else if(loopDay.equals(systemDate)){
-						Integer limitTime = appTypeDiscreteSetting.getRetrictPreTimeDay().v();
-						Integer systemTime = systemDateTime.hours() * 60 + systemDateTime.minutes();
-						// システム日時と受付制限日時と比較する
-						if(systemTime > limitTime) {
+					if(appType.equals(ApplicationType.OVER_TIME_APPLICATION)){
+						// ループする日とシステム日付を比較する
+						if(loopDay.before(systemDate)){
 							throw new BusinessException("Msg_327", loopDay.toString(DATE_FORMAT));
+						} else if(loopDay.equals(systemDate)){
+							Integer systemTime = systemDateTime.hours() * 60 + systemDateTime.minutes();
+							int resultCompare = 0;
+							if(overTimeAtr == 0 && receptionRestrictionSetting.get(0).getBeforehandRestriction().getPreOtTime() != null){
+								resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getPreOtTime().v());
+							}else if(overTimeAtr == 1 && receptionRestrictionSetting.get(0).getBeforehandRestriction().getNormalOtTime() !=  null){
+								resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getNormalOtTime().v());
+							}else if(overTimeAtr == 2 && receptionRestrictionSetting.get(0).getBeforehandRestriction().getTimeBeforehandRestriction() !=  null){
+								resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getTimeBeforehandRestriction().v());
+							}
+							// システム日時と受付制限日時と比較する
+							if(resultCompare == 1) {
+								throw new BusinessException("Msg_327", loopDay.toString(DATE_FORMAT));
+							}
 						}
 					}
 				}

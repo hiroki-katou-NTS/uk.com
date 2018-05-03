@@ -100,6 +100,7 @@ module nts.uk.at.view.kaf005.b {
             overtimeHoursPre: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
             overTimeShiftNightPre: KnockoutObservable<number> = ko.observable(null);
             flexExessTimePre: KnockoutObservable<number> = ko.observable(null);
+            workTypeChangeFlg: KnockoutObservable<boolean> = ko.observable(false);
             
             // AppOvertimeReference
             appDateReference: KnockoutObservable<string> = ko.observable(moment().format(this.DATE_FORMAT));
@@ -145,9 +146,9 @@ module nts.uk.at.view.kaf005.b {
                     self.initData(data);
                     //Check work content Changed
                     self.checkWorkContentChanged();
+                    nts.uk.ui.block.clear();
                     dfd.resolve(); 
-                })
-                .fail(function(res) {
+                }).fail(function(res) {
                     if(res.messageId == 'Msg_426'){
                        dialog.alertError({messageId : res.messageId}).then(function(){
                             nts.uk.ui.block.clear();
@@ -225,6 +226,7 @@ module nts.uk.at.view.kaf005.b {
                 self.allPreAppPanelFlg(data.allPreAppPanelFlg);
                 self.indicationOvertimeFlg(data.extratimeDisplayFlag);
                 self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
+                self.workTypeChangeFlg(data.workTypeChangeFlg);
                 // preAppOvertime
                 if(data.preAppOvertimeDto != null){
                     self.appDatePre(data.preAppOvertimeDto.appDatePre);
@@ -644,6 +646,7 @@ module nts.uk.at.view.kaf005.b {
                             return;
                         };
                     }
+                    nts.uk.ui.block.invisible();
                     let param : any ={
                         overtimeHours: _.map(ko.toJS(self.overtimeHours()), item => {return self.initCalculateData(item);}),
                         bonusTimes: _.map(ko.toJS(self.bonusTimes()), item => {return self.initCalculateData(item);}),
@@ -737,8 +740,10 @@ module nts.uk.at.view.kaf005.b {
                         }
                         //Check work content Changed
                         self.checkWorkContentChanged();
+                        nts.uk.ui.block.clear();
                          dfd.resolve(data);
                     }).fail(function(res){
+                        nts.uk.ui.block.clear();
                         dfd.reject(res);
                     });
                     return dfd.promise();
