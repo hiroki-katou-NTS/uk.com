@@ -106,8 +106,8 @@ module nts.uk.com.view.cmf003.c {
                 if(self.currentCodeListSwap().length == 0){
                      alertError({ messageId: "Msg_577" });
                 } else {
-                    setShared("CMF003_C_Categories",self.currentCodeListSwap());
-                    setShared("CMF003_C_Systemtype",self.currentItem);
+                    setShared("CMF003_C_CATEGORIES",self.currentCodeListSwap());
+                    setShared("CMF003_C_SYSTEMTYPE",self.currentItem);
                     close();
                 }
             }
