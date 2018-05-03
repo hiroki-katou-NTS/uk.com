@@ -4,12 +4,10 @@ import java.math.BigDecimal;
 
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 
-@AllArgsConstructor
 @NoArgsConstructor
 public class ItemValue {
 
@@ -17,6 +15,67 @@ public class ItemValue {
 	private String itemCode;
 	private String value;
 	private int type;
+	
+	public ItemValue(String definitionId, String itemCode, String value, int type) {
+		super();
+		this.definitionId = definitionId;
+		this.itemCode = itemCode;
+		this.value = value;
+		this.type = type;
+	}
+	
+	public static ItemValue createItemValue(String definitionId, String itemCode, String value, int dataType,
+			Integer selectionRefType, String selectionRefCode) {
+		ItemValue itemValue = new ItemValue();
+		itemValue.definitionId = definitionId;
+		itemValue.itemCode = itemCode;
+		itemValue.value = value;
+		ItemValueType itemValueType = EnumAdaptor.valueOf(dataType, ItemValueType.class);
+		switch (itemValueType) {
+		case STRING:
+
+			itemValue.type = 1;
+			break;
+		case NUMERIC:
+		case TIME:
+		case TIMEPOINT:
+		case NUMBERIC_BUTTON:
+			itemValue.type = 2;
+			break;
+		case DATE:
+			itemValue.type = 3;
+		case SELECTION:
+		case SELECTION_RADIO:
+		case SELECTION_BUTTON:
+			switch (selectionRefType) {
+			// 1:専用マスタ(DesignatedMaster)
+			case 1:
+				if (selectionRefCode.equals("M00006")) {
+					itemValue.type = 2;
+				} else {
+					itemValue.type = 1;
+				}
+				break;
+			//2:コード名称(CodeName)
+			case 2:
+				itemValue.type = 1;
+				break;
+			// 3:列挙型(Enum)
+			case 3:
+				itemValue.type = 2;
+				break;
+
+			default:
+				break;
+			}
+			break;
+		case READONLY:
+			break;
+		default:
+			break;
+		}
+		return itemValue;
+	}
 
 	/**
 	 * 個人情報項目定義ID
@@ -39,11 +98,8 @@ public class ItemValue {
 	@SuppressWarnings("unchecked")
 	public <T> T value() {
 		Object convertedValue;
-		switch (this.itemValueType()) {
+		switch (this.saveDataType()) {
 		case NUMERIC:
-		case TIME:
-		case TIMEPOINT:
-		case SELECTION_RADIO:
 			// In case of value is empty or null return default value
 			if (StringUtils.isEmpty(this.value)) {
 				convertedValue = null;
@@ -52,11 +108,6 @@ public class ItemValue {
 			}
 			break;
 		case STRING:
-		case SELECTION:
-		case SELECTION_BUTTON:
-		case READONLY:
-		case RELATE_CATEGORY:
-		case READONLY_BUTTON:
 			convertedValue = this.value;
 			break;
 		case DATE:
@@ -79,20 +130,11 @@ public class ItemValue {
 			this.value = null;
 			return;
 		}
-		switch (this.itemValueType()) {
+		switch (this.saveDataType()) {
 		case NUMERIC:
-		case TIME:
-		case TIMEPOINT:
-		case SELECTION_RADIO:
-		case NUMBERIC_BUTTON:
 			this.value = obj.toString();
 			break;
 		case STRING:
-		case SELECTION:
-		case SELECTION_BUTTON:
-		case READONLY:
-		case RELATE_CATEGORY:
-		case READONLY_BUTTON:
 			this.value = obj.toString();
 			break;
 		case DATE:
@@ -103,7 +145,8 @@ public class ItemValue {
 		}
 	}
 
-	public ItemValueType itemValueType() {
-		return EnumAdaptor.valueOf(this.type, ItemValueType.class);
+	public SaveDataType saveDataType() {
+		return EnumAdaptor.valueOf(this.type, SaveDataType.class);
 	}
+
 }

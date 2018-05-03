@@ -17,7 +17,7 @@ import nts.uk.ctx.pereg.app.find.copysetting.item.CopySettingItemFinder;
 import nts.uk.ctx.pereg.app.find.copysetting.setting.EmpCopySettingFinder;
 import nts.uk.ctx.pereg.app.find.initsetting.item.InitValueSetItemFinder;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
-import nts.uk.ctx.pereg.app.find.initsetting.item.findInitItemDto;
+import nts.uk.ctx.pereg.app.find.initsetting.item.FindInitItemDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.NewLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
@@ -104,7 +104,7 @@ public class RegisterLayoutFinder {
 
 		NewLayout _layout = layout.get();
 
-		List<LayoutPersonInfoClsDto> itemCls = getItemCls(command, _layout);
+		List<LayoutPersonInfoClsDto> itemCls = getClassItemList(command, _layout);
 
 		if (itemCls.stream().filter(c -> c.getPersonInfoCategoryCD().equals("CS00020")).findFirst().isPresent()) {
 			initDefaultValue.setDefaultValueRadio(itemCls);
@@ -113,15 +113,20 @@ public class RegisterLayoutFinder {
 
 	}
 
-	private List<LayoutPersonInfoClsDto> getItemCls(AddEmployeeCommand command, NewLayout _layout) {
+	private List<LayoutPersonInfoClsDto> getClassItemList(AddEmployeeCommand command, NewLayout _layout) {
 
 		List<LayoutPersonInfoClsDto> itemCls = this.clsFinder.getListClsDtoHasCtgCd(_layout.getLayoutID());
-		List<SettingItemDto> items = new ArrayList<SettingItemDto>();
 
 		if (command.getCreateType() != 3) {
-			items = this.getSetItems(command);
+			
+			// get data from server
+			List<SettingItemDto> dataServer = this.getSetItems(command);
+			
+			// set to layout's item
+			for (LayoutPersonInfoClsDto classItem : itemCls) {
+				setValueToItemCls(dataServer, classItem, command);
+			}
 		}
-		setData(items, itemCls, command);
 		
 		// check and set 9999/12/31 to endDate
 		itemCls.forEach(classItem -> {
@@ -149,15 +154,6 @@ public class RegisterLayoutFinder {
 		}
 
 		return itemCls;
-	}
-
-	private void setData(List<SettingItemDto> setItems, List<LayoutPersonInfoClsDto> itemCls,
-			AddEmployeeCommand command) {
-
-		itemCls.forEach(item -> {
-			setValueToItemCls(setItems, item, command);
-		});
-
 	}
 
 	private void setValueToItemCls(List<SettingItemDto> dataServer, LayoutPersonInfoClsDto itemCls,
@@ -238,9 +234,6 @@ public class RegisterLayoutFinder {
 					|| dataTypeValue == DataTypeValue.SELECTION_RADIO.value) {
 
 				SelectionItemDto selectionItemDto = null;
-
-				
-
 				selectionItemDto = (SelectionItemDto) item.getItem();
 				boolean isDataType6 = dataTypeValue == DataTypeValue.SELECTION.value;
 				
@@ -308,7 +301,7 @@ public class RegisterLayoutFinder {
 
 		querys.forEach(x -> {
 
-			findInitItemDto findInitCommand = new findInitItemDto(command.getInitSettingId(), command.getHireDate(),
+			FindInitItemDto findInitCommand = new FindInitItemDto(command.getInitSettingId(), command.getHireDate(),
 					x.getCategoryCode(), command.getEmployeeName(), command.getEmployeeCode(), command.getHireDate());
 			result.addAll(this.initItemFinder.getAllInitItemByCtgCode(false, findInitCommand));
 		});
@@ -323,7 +316,7 @@ public class RegisterLayoutFinder {
 		});
 
 		querys.forEach(query -> {
-			result.addAll(this.copyItemFinder.getAllCopyItemByCtgCode(false, query.getCategoryCode(),
+			result.addAll(this.copyItemFinder.getValueCopyItem(query.getCategoryCode(),
 					command.getEmployeeCopyId(), command.getHireDate()));
 		});
 		return result;

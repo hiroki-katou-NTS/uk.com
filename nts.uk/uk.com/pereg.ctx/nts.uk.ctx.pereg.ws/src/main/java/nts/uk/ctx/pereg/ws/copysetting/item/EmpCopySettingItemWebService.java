@@ -33,7 +33,7 @@ public class EmpCopySettingItemWebService {
 	@Path("getAll/{employeeId}/{categoryCd}/{baseDate}")
 	public List<SettingItemDto> getAllCopyItemByCtgCode(@PathParam("categoryCd") String categoryCd,
 			@PathParam("employeeId") String employeeId, @PathParam("baseDate") String baseDate) {
-		return this.finder.getAllCopyItemByCtgCode(true, categoryCd, employeeId,
+		return this.finder.getAllCopyItemByCtgCode(categoryCd, employeeId,
 				GeneralDate.fromString(baseDate, "yyyyMMdd"));
 	}
 

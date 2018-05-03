@@ -49,7 +49,7 @@ public class InitValueSetItemFinder {
 	GeneralDate baseDate;
 
 	// sonnlb
-	public List<SettingItemDto> getAllInitItemByCtgCode(boolean isScreenC, findInitItemDto command) {
+	public List<SettingItemDto> getAllInitItemByCtgCode(boolean isScreenC, FindInitItemDto command) {
 
 		List<SettingItemDto> result = new ArrayList<SettingItemDto>();
 

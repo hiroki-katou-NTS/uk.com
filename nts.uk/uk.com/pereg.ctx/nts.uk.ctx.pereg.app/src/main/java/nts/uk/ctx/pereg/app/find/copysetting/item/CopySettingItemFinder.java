@@ -1,6 +1,5 @@
 package nts.uk.ctx.pereg.app.find.copysetting.item;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -36,17 +35,14 @@ public class CopySettingItemFinder {
 	private EmpCopySettingRepository empCopyRepo;
 
 	@Inject
-	private LayoutingProcessor layoutProc;
+	private LayoutingProcessor layoutProcessor;
 
 	@Inject
 	private SettingItemDtoMapping settingItemMap;
 
-	public List<SettingItemDto> getAllCopyItemByCtgCode(boolean isScreenB, String categoryCd, String employeeId,
-			GeneralDate baseDate) {
+	public List<SettingItemDto> getAllCopyItemByCtgCode(String categoryCd, String employeeId, GeneralDate baseDate) {
 
 		String companyId = AppContexts.user().companyId();
-
-		List<SettingItemDto> result = new ArrayList<SettingItemDto>();
 
 		// check empployeeId
 		boolean isSelf = AppContexts.user().employeeId().equals(employeeId) ? true : false;
@@ -54,8 +50,9 @@ public class CopySettingItemFinder {
 		List<EmpCopySettingItem> copyItemList = this.empCopyItemRepo.getAllItemFromCategoryCd(categoryCd, companyId,
 				isSelf);
 
-		if (isScreenB && CollectionUtil.isEmpty(copyItemList)) {
+		if (CollectionUtil.isEmpty(copyItemList)) {
 
+			// TODO: ログイン者の権限（ロール）をチェックする (Kiểm tra quyền của người đăng nhập)
 			boolean isPersonnelRepresentative = true;
 			if (isPersonnelRepresentative) {
 				throw new BusinessException(new RawErrorMessage("Msg_347"));
@@ -64,40 +61,50 @@ public class CopySettingItemFinder {
 			}
 
 		}
-		
+
 		// initial with null-value
-		copyItemList.forEach(copyItem -> {
-			result.add(SettingItemDto.createFromJavaType(copyItem.getCategoryCode(), copyItem.getItemDefId(), 
-					copyItem.getItemCode(), copyItem.getItemName(), copyItem.getIsRequired().value, null , 
-					copyItem.getDataType(), copyItem.getSelectionItemRefType(), copyItem.getItemParentCd(), 
-					copyItem.getDateType().value, copyItem.getSelectionItemRefCd()));
-		});
+		List<SettingItemDto> result = copyItemList.stream()
+				.map(copyItem -> SettingItemDto.createFromJavaType(copyItem, null)).collect(Collectors.toList());
 
 		PeregQuery query = new PeregQuery(categoryCd, employeeId, null, baseDate);
-
-		PeregDto dto = this.layoutProc.findSingle(query);
+		PeregDto dto = this.layoutProcessor.findSingle(query);
 
 		if (dto != null) {
 			Map<String, Object> dataMap = MappingFactory.getFullDtoValue(dto);
 			// set data to setting-item-DTO
-			result.forEach( settingItemDto -> settingItemDto.setData(dataMap.get(settingItemDto.getItemCode())));
-
-		} else {
-			if (!isScreenB) {
-				return Collections.emptyList();
-			}
+			result.forEach(settingItemDto -> settingItemDto.setData(dataMap.get(settingItemDto.getItemCode())));
 
 		}
 
-		if (isScreenB) {
+		this.settingItemMap.setTextForItem(result, employeeId, baseDate, categoryCd);
 
-			this.settingItemMap.setTextForItem(result, employeeId, baseDate, categoryCd);
+		return result.stream().filter(item -> StringUtils.isEmpty(item.getItemParentCd())).collect(Collectors.toList());
 
-			return result.stream().filter(item -> StringUtils.isEmpty(item.getItemParentCd()))
-					.collect(Collectors.toList());
+	}
+	
+	public List<SettingItemDto> getValueCopyItem(String categoryCd, String employeeId,
+			GeneralDate baseDate) {
+
+		String companyId = AppContexts.user().companyId();
+
+		// check empployeeId
+		boolean isSelf = AppContexts.user().employeeId().equals(employeeId) ? true : false;
+
+		List<EmpCopySettingItem> copyItemList = this.empCopyItemRepo.getAllItemFromCategoryCd(categoryCd, companyId,
+				isSelf);
+		
+		PeregDto dto = this.layoutProcessor.findSingle(new PeregQuery(categoryCd, employeeId, null, baseDate));
+		if ( dto == null ) {
+			return Collections.emptyList();
 		}
-		return result;
-
+		
+		Map<String, Object> dataMap = MappingFactory.getFullDtoValue(dto);
+		// set data to setting-item-DTO
+		
+		// initial with null-value
+		return copyItemList.stream().filter(copyItem -> dataMap.get(copyItem.getItemCode()) == null)
+				.map(copyItem -> SettingItemDto.createFromJavaType(copyItem, dataMap.get(copyItem.getItemCode())))
+				.collect(Collectors.toList());
 	}
 
 	public List<CopySettingItemDto> getPerInfoDefById(String perInfoCategoryId) {

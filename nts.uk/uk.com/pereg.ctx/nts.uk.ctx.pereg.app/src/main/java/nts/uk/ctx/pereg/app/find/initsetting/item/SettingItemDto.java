@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pereg.dom.copysetting.item.EmpCopySettingItem;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
 import nts.uk.ctx.pereg.dom.person.info.dateitem.DateType;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
@@ -110,16 +111,14 @@ public class SettingItemDto {
 		return itemDto;
 	}
 	
-	public static SettingItemDto createFromJavaType(String categoryCode, String itemDefId, String itemCode,
-			String itemName, int isRequired, Object value, int dataType, int selectionItemRefType, String itemParentCd,
-			int dateType, String SelectionItemRefCd) {
-		SettingItemDto itemDto = new SettingItemDto(categoryCode, itemDefId, itemCode, itemName, isRequired,
-				createSaveDataDto(value), EnumAdaptor.valueOf(dataType, DataTypeValue.class),
-				EnumAdaptor.valueOf(selectionItemRefType, ReferenceTypes.class), itemParentCd,
-				EnumAdaptor.valueOf(dateType, DateType.class), SelectionItemRefCd);
-		return itemDto;
+	public static SettingItemDto createFromJavaType(EmpCopySettingItem copyItem, Object value) {
+		return new SettingItemDto(copyItem.getCategoryCode(), copyItem.getItemDefId(), copyItem.getItemCode(), 
+				copyItem.getItemName(), copyItem.getIsRequired().value,
+				createSaveDataDto(value), EnumAdaptor.valueOf(copyItem.getDataType(), DataTypeValue.class),
+				EnumAdaptor.valueOf(copyItem.getSelectionItemRefType(), ReferenceTypes.class), copyItem.getItemParentCd(),
+				EnumAdaptor.valueOf(copyItem.getDateType().value, DateType.class), copyItem.getSelectionItemRefCd());
 	}
-
+	
 	public static SettingItemDto fromInfoDataItem(EmpInfoItemData domain) {
 
 		return SettingItemDto.createFromJavaType(domain.getPerInfoCtgCd(), domain.getPerInfoDefId(),
