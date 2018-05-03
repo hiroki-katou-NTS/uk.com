@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workrule.closure;
@@ -182,5 +182,29 @@ public interface ClosureRepository {
 	 * @return the closure list
 	 */
 	List<Closure> getClosureList(String companyId);
+	
+	/**
+	 * Find by id and use atr.
+	 *
+	 * @param companyId the company id
+	 * @param closureId the closure id
+	 * @param useAtr the use atr
+	 * @return the optional
+	 */
+	default Optional<Closure> findByIdAndUseAtr(String companyId, int closureId, UseClassification useAtr) {
+		Optional<Closure> foundedClosure = this.findById(companyId, closureId);
+		
+		// Check closure exits.
+		if (!foundedClosure.isPresent()) {
+			return Optional.empty();
+		}
+		
+		// Check use Atr;
+		if (foundedClosure.get().getUseClassification() == useAtr) {
+			return foundedClosure;
+		}
+		
+		return Optional.empty();
+	}
 
 }
