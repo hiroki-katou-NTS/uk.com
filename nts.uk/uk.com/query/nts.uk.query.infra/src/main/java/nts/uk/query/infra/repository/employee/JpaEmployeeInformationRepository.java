@@ -105,6 +105,11 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 					.employeeId(e.bsymtEmployeeDataMngInfoPk.sId)
 					.employeeCode(e.employeeCode)
 					.businessName(p.businessName)
+					.workplace(Optional.empty())
+					.classification(Optional.empty())
+					.department(Optional.empty())
+					.employment(Optional.empty())
+					.employmentCls(Optional.empty())
 					.build();
 		}).collect(Collectors.toMap(EmployeeInformation::getEmployeeId, v -> v));
 

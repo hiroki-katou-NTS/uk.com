@@ -4,10 +4,13 @@
  *****************************************************************/
 package nts.uk.query.pub.employee;
 
-import java.util.Optional;
-
 import lombok.Builder;
 import lombok.Data;
+import nts.uk.query.pub.classification.ClassificationExport;
+import nts.uk.query.pub.department.DepartmentExport;
+import nts.uk.query.pub.employement.EmploymentExport;
+import nts.uk.query.pub.position.PositionExport;
+import nts.uk.query.pub.workplace.WorkplaceExport;
 
 /**
  * The Class EmployeeInformationExport.
@@ -27,20 +30,20 @@ public class EmployeeInformationExport {
 	String businessName; // ビジネスネーム
 
 	/** The workplace. */
-	Optional<String> workplace; // 所属職場
+	WorkplaceExport workplace; // 所属職場
 
 	/** The classification. */
-	Optional<String> classification; // 所属分類
+	ClassificationExport classification; // 所属分類
 
 	/** The department. */
-	Optional<String> department; // 所属部門
+	DepartmentExport department; // 所属部門
 
 	/** The position. */
-	Optional<String> position; // 所属職位
+	PositionExport position; // 所属職位
 
 	/** The employment. */
-	Optional<String> employment; // 所属雇用
+	EmploymentExport employment; // 所属雇用
 
 	/** The employment cls. */
-	Optional<Integer> employmentCls; // 就業区分
+	Integer employmentCls; // 就業区分
 }
