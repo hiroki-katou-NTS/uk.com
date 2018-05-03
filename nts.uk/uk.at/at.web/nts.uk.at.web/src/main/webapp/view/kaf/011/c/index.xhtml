@@ -89,7 +89,7 @@
 					</div>
 				</div>
 				<div class="div_line" style="margin-bottom: 20px;"
-					data-bind="if:appTypeSet().displayAppReason() !=0">
+					data-bind="if:showAppReason()">
 					<!-- constraint: -->
 					<div class="div_line_col_1">
 						<div data-bind="ntsFormLabel: { constraint: 'AppReason' }">#{i18n.getText('KAF011_17')}</div>
@@ -99,6 +99,7 @@
 							data-bind="ntsMultilineEditor: {
 									constraint: 'AppReason',
 									value: reason ,
+									enable:appTypeSet().displayAppReason() != 0,
 									name: '#{i18n.getText('KAF011_17')}',
 									option: {
 									resizeable: false ,
