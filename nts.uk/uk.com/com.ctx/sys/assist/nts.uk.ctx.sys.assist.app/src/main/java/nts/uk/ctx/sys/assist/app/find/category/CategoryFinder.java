@@ -9,8 +9,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.sys.assist.dom.category.Category;
 import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
-import nts.uk.ctx.sys.assist.dom.category.CategoryServiceImp;
-import nts.uk.ctx.sys.assist.dom.storage.SystemType;
+import nts.uk.ctx.sys.assist.dom.category.CategoryService;
 
 @Stateless
 public class CategoryFinder
@@ -20,7 +19,7 @@ public class CategoryFinder
     private CategoryRepository finder;
     
     @Inject
-    private CategoryServiceImp categoryServiceImp;
+    private CategoryService categoryServiceImp;
 
     public List<CategoryDto> getAllCategory(){
         return finder.getAllCategory().stream().map(item -> CategoryDto.fromDomain(item))
