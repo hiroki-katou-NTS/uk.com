@@ -140,39 +140,40 @@ module nts.uk.at.view.kaf011.a.screenModel {
             let self = this;
             $(".kaf-011-combo-box ,.nts-input").trigger("validate");
 
+            return self.checkRecTime() && self.checkAbsTime();
 
-            //            self.checkRecTime();
-            //            self.checkAbsTime();
         }
         checkRecTime() {
             let self = this,
                 comCode = self.appComSelectedCode(),
-                isRecCreate = comCode == 1 || comCode == 0;
+                isRecCreate = comCode == 1 || comCode == 0,
+                isError = false;
             if (isRecCreate) {
                 let wkTimeCd = self.recWk().wkTimeCD();
                 if (!wkTimeCd) {
-                    $('#recTimeBtn').ntsError('set', '');
-                } else {
-                    $('#recTimeBtn').ntsError('clear');
+                    $('#recTimeBtn').ntsError('set', { messageId: 'FND_E_REQ_SELECT', messageParams: [text('KAF011_30')] });
+                    isError = true;
                 }
             }
+            return isError;
 
         }
         checkAbsTime() {
             let self = this,
                 comCode = self.appComSelectedCode(),
-                isAbsCreate = comCode == 2 || comCode == 0;
+                isAbsCreate = comCode == 2 || comCode == 0,
+                isError = false;
             if (isAbsCreate) {
                 let isUseWkTime = self.absWk().changeWorkHoursType();
                 if (isUseWkTime) {
                     let wkTimeCd = self.absWk().wkTimeCD();
                     if (!wkTimeCd) {
-                        $('#absTimeBtn').ntsError('set', '');
-                    } else {
-                        $('#absTimeBtn').ntsError('clear');
+                        $('#absTimeBtn').ntsError('set', { messageId: 'FND_E_REQ_SELECT', messageParams: [text('KAF011_30')] });
+                        isError = true;
                     }
                 }
             }
+            return isError;
         }
         genSaveCmd(): common.ISaveHolidayShipmentCommand {
             let self = this,
@@ -199,11 +200,9 @@ module nts.uk.at.view.kaf011.a.screenModel {
         }
         register() {
             let self = this,
-                saveCmd = self.genSaveCmd();
-
-            self.validateControl();
-
-            if (nts.uk.ui.errors.hasError()) { return; }
+                saveCmd = self.genSaveCmd(),
+                isErrorControl = !self.validateControl();
+            if (nts.uk.ui.errors.hasError() || isErrorControl) { return; }
 
             let isCheckReasonError = !self.checkReason();
             if (isCheckReasonError) {
