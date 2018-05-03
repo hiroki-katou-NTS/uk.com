@@ -9,7 +9,7 @@ module nts.uk.com.view.cmf003.c {
                 getSystemType: "exio/exi/condset/getSysType"
             }
         
-            // Get 出力条件設定（定型）
+            
             export function getSysTypes(condSetCode: string): JQueryPromise<any> {
                 return ajax("com", paths.getSystemType);
             }

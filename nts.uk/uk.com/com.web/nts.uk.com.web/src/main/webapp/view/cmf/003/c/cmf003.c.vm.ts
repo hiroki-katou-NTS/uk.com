@@ -7,29 +7,31 @@ module nts.uk.com.view.cmf003.c {
     export module viewmodel {
         export class ScreenModel {
             
-            // swapList
-           itemsSwap: KnockoutObservableArray<ItemSwapList>;
-           itemsSwapLeft: KnockoutObservableArray<ItemSwapList>;
+            // category
+           categoriesDefault: KnockoutObservableArray<ItemCategory>;
+           categoriesSelected: KnockoutObservableArray<ItemCategory>;
            columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-           currentCodeListSwap: KnockoutObservableArray<any>;
+           currentCateSelected: KnockoutObservableArray<any>;
            
-           // comboBox
-           itemList: KnockoutObservableArray<any>;
+           // systemType
+           systemTypes: KnockoutObservableArray<any>;
            selectedCode: KnockoutObservable<string>;
-           currentItem: KnockoutObservable<ItemCombobox>;
+           currentItem: KnockoutObservable<ItemSystemType>;
            isEnable: KnockoutObservable<boolean>;
            isEditable: KnockoutObservable<boolean>;
+           headerCodeCategories: string = getText("CMF003_65");
+           headerNameCategories: string = getText("CMF003_66");
            constructor() {
                var self = this;
                var systemIdSelected;
-                   self.itemList = ko.observableArray([]);
+                   self.systemTypes = ko.observableArray([]);
                    service.getSysTypes().done(function(data: Array<any>) {
                         if (data && data.length) {
                             _.forOwn(data, function(index) {
-                                self.itemList.push(new ItemCombobox(index.type,index.name));
+                                self.systemTypes.push(new ItemSystemType(index.type,index.name));
                               });
                              
-                            systemIdSelected = self.itemList()[0].code;
+                            systemIdSelected = self.systemTypes()[0].code;
                         } else {
                            
                         }
@@ -46,55 +48,45 @@ module nts.uk.com.view.cmf003.c {
                    
                    if (systemIdSelected != undefined ) {
                        service.getConditionList(self.selectedCode()).done(function(data: Array<any>) {
-                           
-                           self.itemsSwap(data);
-                           
+                           self.categoriesDefault(data);
                        }).fail(function(error) {
                             alertError(error);
                        }).always(() => {
-                           
                             _.defer(() => {
                                 $("#grd_Condition tr:first-child").focus();
                             });
                         });
-                   }
+                    }
                    
-                
-                    
+
                     self.isEnable = ko.observable(true);
                     self.isEditable = ko.observable(true);
-                   
-                    self.itemsSwap = ko.observableArray([]);
+                    self.categoriesDefault = ko.observableArray([]);
                     self.selectedCode.subscribe(value=>{
-                    self.currentItem = _.find(self.itemList(), a => a.code === value);
-                    
-                   
-                   service.getConditionList(self.selectedCode()).done(function(data: Array<any>) {
-                       self.itemsSwap(data);
-                   }).fail(function(error) {
-                        alertError(error);
-                   }).always(() => {
-                       
-                        _.defer(() => {
-                            $("#grd_Condition tr:first-child").focus();
+                       self.currentItem = _.find(self.systemTypes(), a => a.code === value);
+                       service.getConditionList(self.selectedCode()).done(function(data: Array<any>) {
+                           self.categoriesDefault(data);
+                       }).fail(function(error) {
+                            alertError(error);
+                       }).always(() => {
+                            _.defer(() => {
+                                $("#grd_Condition tr:first-child").focus();
+                            });
                         });
-                    });
                    
-                   
-                   
-               })
+                   })
                 
-               self.columns = ko.observableArray([
-                   { headerText: 'コード', key: 'categoryId', width: 70 },
-                   { headerText: '名称', key: 'categoryName', width: 250 }
-               ]);
-    
-               self.currentCodeListSwap = ko.observableArray([]);
-               self.itemsSwapLeft = self.currentCodeListSwap;
+                   self.columns = ko.observableArray([
+                       { headerText: self.headerCodeCategories, key: 'categoryId', width: 70 },
+                       { headerText: self.headerNameCategories, key: 'categoryName', width: 250 }
+                   ]);
+        
+                   self.currentCateSelected = ko.observableArray([]);
+                   self.categoriesSelected = self.currentCateSelected;
            }
        
-           remove(){
-               self.itemsSwap.shift();            
+           remove() {
+               self.categoriesDefault.shift();            
            }
             
             closeUp() {
@@ -103,10 +95,10 @@ module nts.uk.com.view.cmf003.c {
             
             submit() {
                 let self = this;
-                if(self.currentCodeListSwap().length == 0){
+                if(self.currentCateSelected().length == 0){
                      alertError({ messageId: "Msg_577" });
                 } else {
-                    setShared("CMF003_C_CATEGORIES",self.currentCodeListSwap());
+                    setShared("CMF003_C_CATEGORIES",self.currentCateSelected());
                     setShared("CMF003_C_SYSTEMTYPE",self.currentItem);
                     close();
                 }
@@ -115,7 +107,7 @@ module nts.uk.com.view.cmf003.c {
         }
     }
 
-        class ItemSwapList {
+    class ItemCategory {
            schelperSystem: number;
            categoryId: string;
            categoryName: string;
@@ -144,14 +136,13 @@ module nts.uk.com.view.cmf003.c {
            }
        }
 
-        class ItemCombobox {
-            code: string;
-            name: string;
-        
-            constructor(code: string, name: string) {
+    class ItemSystemType {
+           code: string;
+           name: string;
+           constructor(code: string, name: string) {
                 this.code = code;
                 this.name = name;
-            }
+          }
         }
     
        
