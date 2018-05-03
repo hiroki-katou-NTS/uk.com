@@ -129,7 +129,7 @@ __viewContext.ready(function() {
             empRefineCondition: ""        
         }
         nts.uk.characteristics.save('AppListExtractCondition', paramSave);
-        nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': [applicationID], 'currentApp': applicationID });
+        nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': [applicationID], 'currentApp': applicationID });
 		break;
 	default:
         nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
