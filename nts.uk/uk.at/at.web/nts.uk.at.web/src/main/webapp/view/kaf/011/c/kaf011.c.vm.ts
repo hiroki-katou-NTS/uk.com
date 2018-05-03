@@ -109,6 +109,14 @@ module nts.uk.at.view.kaf011.c.screenModel {
 
         }
 
+        showAppReason(): boolean {
+            let self = this;
+
+
+            return self.appTypeSet().displayAppReason() != 0 || self.appTypeSet().displayFixedReason() != 0;
+
+        }
+
         checkReason(): boolean {
             let self = this,
                 appReason = self.getReason();
