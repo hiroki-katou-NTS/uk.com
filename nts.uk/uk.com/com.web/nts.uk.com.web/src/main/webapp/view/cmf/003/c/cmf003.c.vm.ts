@@ -14,7 +14,7 @@ module nts.uk.com.view.cmf003.c {
            currentCodeListSwap: KnockoutObservableArray<any>;
            
            // comboBox
-           itemList: KnockoutObservableArray<ItemModelCombo>;
+           itemList: KnockoutObservableArray<any>;
            selectedCode: KnockoutObservable<string>;
            currentItem: KnockoutObservable<ItemModelCombo>;
            isEnable: KnockoutObservable<boolean>;
@@ -23,7 +23,7 @@ module nts.uk.com.view.cmf003.c {
            constructor() {
                var self = this;
                var systemIdSelected;
-                   self.itemList = ko.observableArray<any>;
+                   self.itemList = ko.observableArray([]);
                    service.getSysTypes().done(function(data: Array<any>) {
                         if (data && data.length) {
                             _.forOwn(data, function(index) {
@@ -107,8 +107,8 @@ module nts.uk.com.view.cmf003.c {
                 if(self.currentCodeListSwap().length == 0){
                      alertError({ messageId: "Msg_577" });
                 } else {
-                    setShared("result",self.currentCodeListSwap());
-                    setShared("CMF003cOutputCategorys",self.currentItem);
+                    setShared("CMF003_C_Categories",self.currentCodeListSwap());
+                    setShared("CMF003_C_SystemType",self.currentItem);
                     close();
                 }
             }
