@@ -27,14 +27,15 @@ public class OverTimeInstructPubImpl implements OverTimeInstructPub {
 		
 		if(data != null) {
 			List<OverTimeInstructExport> result = new ArrayList<>();
-			
 			for (OverTimeInstruct item : data) {
-				OverTimeInstructExport export = OverTimeInstructExport.createFromJavaType(item.getCompanyID(), item.getWorkContent().v(), 
-						item.getInputDate(), item.getTargetPerson(), item.getInstructDate(), 
-						item.getInstructor(), item.getOvertimeInstructReason().v(), item.getOvertimeHour().v(), 
-						item.getStartClock(), item.getEndClock());
-				
-				result.add(export);
+				if(item.getInstructDate().after(startDate) && item.getInstructDate().before(endDate)) {
+					OverTimeInstructExport export = OverTimeInstructExport.createFromJavaType(item.getCompanyID(), item.getWorkContent().v(), 
+							item.getInputDate(), item.getTargetPerson(), item.getInstructDate(), 
+							item.getInstructor(), item.getOvertimeInstructReason().v(), item.getOvertimeHour().v(), 
+							item.getStartClock(), item.getEndClock());
+					
+					result.add(export);
+				}
 			}
 			
 			return result;

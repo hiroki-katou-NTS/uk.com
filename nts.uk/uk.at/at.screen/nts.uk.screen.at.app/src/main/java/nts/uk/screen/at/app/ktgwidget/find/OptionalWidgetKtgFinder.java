@@ -16,6 +16,9 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.screen.at.app.ktgwidget.find.dto.DatePeriodDto;
+import nts.uk.screen.at.app.ktgwidget.find.dto.OptionalWidgetDisplay;
+import nts.uk.screen.at.app.ktgwidget.find.dto.OptionalWidgetInfoDTO;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -75,6 +78,16 @@ public class OptionalWidgetKtgFinder {
 		if(!dto.isPresent())
 			return null;
 		return optionalWidgetAdapter.getSelectedWidget(companyId, topPagePartCode).get();
+	}
+	
+	public OptionalWidgetDisplay getOptionalWidgetDisplay(String topPagePartCode) {
+		DatePeriodDto datePeriodDto = getCurrentMonth();
+		OptionalWidgetImport optionalWidgetImport = findOptionalWidgetByCode(topPagePartCode);
+		return new OptionalWidgetDisplay(datePeriodDto, optionalWidgetImport);
+	}
+	
+	public OptionalWidgetInfoDTO getDataByDateperiord(GeneralDate startDate, GeneralDate endDate) {
+		return null;
 	}
 	
 }

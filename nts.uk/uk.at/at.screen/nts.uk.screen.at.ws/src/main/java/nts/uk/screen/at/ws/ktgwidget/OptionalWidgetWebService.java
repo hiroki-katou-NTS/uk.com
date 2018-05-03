@@ -6,10 +6,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetImport;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
-import nts.uk.screen.at.app.ktgwidget.find.DatePeriodDto;
 import nts.uk.screen.at.app.ktgwidget.find.OptionalWidgetKtgFinder;
+import nts.uk.screen.at.app.ktgwidget.find.dto.DatePeriodParam;
+import nts.uk.screen.at.app.ktgwidget.find.dto.OptionalWidgetDisplay;
+import nts.uk.screen.at.app.ktgwidget.find.dto.OptionalWidgetInfoDTO;
 
 @Path("screen/at/OptionalWidget")
 @Produces("application/json")
@@ -25,14 +25,14 @@ public class OptionalWidgetWebService extends WebService {
 	}
 	
 	@POST
-	@Path("getCurrentMonth")
-	public DatePeriodDto getCurrentMonth(){
-		return OptionalWidgetFinder.getCurrentMonth();
+	@Path("getOptionalWidgetDisplay")
+	public OptionalWidgetDisplay getOptionalWidgetDisplay(String topPagePartCode){
+		return OptionalWidgetFinder.getOptionalWidgetDisplay(topPagePartCode);
 	}
 	
 	@POST
-	@Path("getOptionalWidget")
-	public OptionalWidgetImport findOptionalWidgetByCode(String topPagePartCode){
-		return OptionalWidgetFinder.findOptionalWidgetByCode(topPagePartCode);
+	@Path("getOptionalWidgetInfo")
+	public OptionalWidgetInfoDTO getOptionalWidgetInfo(DatePeriodParam datePeriodParam){
+		return OptionalWidgetFinder.getDataByDateperiord(datePeriodParam.strMonth, datePeriodParam.endMonth);
 	}
 }

@@ -20,10 +20,10 @@
 			<div id="contents-area">
 				<table class="widget-table">
 					<tr>
-						<td data-bind="text: txtDatePeriod"></td>
-						<td><button class="small" data-bind="click:switchMonth">#{i18n.getText('KTG029_6')}</button></td>
+						<td class="textPeriod" data-bind="text: txtDatePeriod"></td>
+						<td><button class="small" data-bind="click:switchMonth(), text: btnSwitch">#{i18n.getText('KTG029_6')}</button></td>
 					</tr>
-					<tr Class="">
+					<tr data-bind="visible: displayOvertime">
 						<td>#{i18n.getText('KTG029_9')}</td>
 						<td>
 							<table class="detail">
@@ -38,7 +38,7 @@
 							</table>	
 						</td>
 					</tr>
-					<tr>
+					<tr data-bind="visible: displayHoliInstruct">
 						<td>#{i18n.getText('KTG029_10')}</td>
 						<td>
 							<table class="detail">
@@ -53,7 +53,7 @@
 							</table>	
 						</td>
 					</tr>
-					<tr>
+					<tr data-bind="visible: displayApproved">
 						<td>#{i18n.getText('KTG029_11')}</td>
 						<td>
 							<table class="detail">
@@ -68,7 +68,7 @@
 							</table>	
 						</td>
 					</tr>
-					<tr>
+					<tr data-bind="visible: displayUnApproved">
 						<td>#{i18n.getText('KTG029_12')}</td>
 						<td>
 							<table class="detail">
@@ -83,7 +83,7 @@
 							</table>	
 						</td>
 					</tr>
-					<tr>
+					<tr data-bind="visible: displayDenied">
 						<td>#{i18n.getText('KTG029_13')}</td>
 						<td>
 							<table class="detail">
@@ -98,7 +98,7 @@
 							</table>	
 						</td>
 					</tr>
-					<tr>
+					<tr data-bind="visible: displayRemand">
 						<td>#{i18n.getText('KTG029_14')}</td>
 						<td>
 							<table class="detail">
@@ -114,12 +114,12 @@
 						</td>
 					</tr>
 					<!-- A9 -->
-					<tr>
+					<tr data-bind="visible: displayDeadlineMonth">
 						<td>#{i18n.getText('KTG029_15')}</td>
 						<td>MM/DD</td>
 					</tr>
 					<!-- A10 -->
-					<tr>
+					<tr data-bind="visible: displayPresenceDailyPer">
 						<td>#{i18n.getText('KTG029_16')}</td>
 						<td>
 							<table class="detail">
@@ -134,13 +134,13 @@
 							</table>	
 						</td>
 					</tr>
-					<tr>
+					<tr data-bind="visible: displayPresenceDailyPer">
 						<td class="tab" colspan="2">
 							<div data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KTG029_61')}</div>
 						</td>
 					</tr>
 					<!-- A11 -->
-					<tr>
+					<tr data-bind="visible: displayWorkRecord">
 						<td>#{i18n.getText('KTG029_17')}</td>
 						<td>
 							<table class="detail">
@@ -156,32 +156,32 @@
 						</td>
 					</tr>
 					<!-- A12 -->
-					<tr>
+					<tr data-bind="visible: displayOverTimeHours">
 						<td>#{i18n.getText('KTG029_18')}</td>
 						<td>XX : XX</td>
 					</tr>
 					<!-- A13 -->
-					<tr>
+					<tr data-bind="visible: displayFlexTime">
 						<td>#{i18n.getText('KTG029_19')}</td>
 						<td>XX : XX</td>
 					</tr>
 					<!-- A14 -->
-					<tr>
+					<tr data-bind="visible: displayRestTime">
 						<td>#{i18n.getText('KTG029_20')}</td>
 						<td>XX : XX</td>
 					</tr>
 					<!-- A15 -->
-					<tr>
+					<tr data-bind="visible: displayNightWorkHours">
 						<td>#{i18n.getText('KTG029_21')}</td>
 						<td>XX : XX</td>
 					</tr>
 					<!-- A16 -->
-					<tr>
+					<tr data-bind="visible: displayLateOrEarlyRetreat">
 						<td>#{i18n.getText('KTG029_22')}</td>
 						<td>0o#{i18n.getText('KTG029_35')}AA#{i18n.getText('KTG029_36')}</td>
 					</tr>
 					<!-- A17 -->
-					<tr>
+					<tr data-bind="visible: displayYearlyHoliDay">
 						<td>#{i18n.getText('KTG029_23')}</td>
 						<td>
 							<table class="detail">
@@ -267,7 +267,7 @@
 						<td>data #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A18 -->
-					<tr>
+					<tr data-bind="visible: displayYearRemainNo">
 						<td>#{i18n.getText('KTG029_24')}</td>
 						<td>
 							<table class="detail">
@@ -283,41 +283,41 @@
 						</td>
 					</tr>
 					<!-- A19 -->
-					<tr>
-						<td class="tab" colspan="2">#{i18n.getText('KTG029_25')}</td>
+					<tr data-bind="visible: displayPlannedYearHoliday">
+						<td colspan="2">#{i18n.getText('KTG029_25')}</td>
 					</tr>
 					<!-- A19_1 -->
-					<tr>
-						<td class="tab" >#{i18n.getText('KTG029_25')}(1)</td>
+					<tr data-bind="visible: displayPlannedYearHoliday">
+						<td class="tab" >#{i18n.getText('KTG029_25')} (1)</td>
 						<td>data #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A19_2 -->
-					<tr>
+					<tr data-bind="visible: displayPlannedYearHoliday">
 						<td class="tab" >#{i18n.getText('KTG029_25')} (2)</td>
 						<td>data #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A19_3 -->
-					<tr>
+					<tr data-bind="visible: displayPlannedYearHoliday">
 						<td class="tab" >#{i18n.getText('KTG029_25')} (3)</td>
 						<td>data #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A19_4 -->
-					<tr>
+					<tr data-bind="visible: displayPlannedYearHoliday">
 						<td class="tab" >#{i18n.getText('KTG029_25')} (4)</td>
 						<td>data #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A19_5 -->
-					<tr>
+					<tr data-bind="visible: displayPlannedYearHoliday">
 						<td class="tab" >#{i18n.getText('KTG029_25')} (5)</td>
 						<td>data #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A20 -->
-					<tr>
+					<tr data-bind="visible: displayRemainAlternationNo">
 						<td>#{i18n.getText('KTG029_26')}</td>
 						<td>XX : XX</td>
 					</tr>
 					<!-- A21 -->
-					<tr>
+					<tr data-bind="visible: displayRemainsLeft">
 						<td>#{i18n.getText('KTG029_27')}</td>
 						<td>
 							<table class="detail">
@@ -333,27 +333,27 @@
 						</td>
 					</tr>
 					<!-- A22 -->
-					<tr>
+					<tr data-bind="visible: displayPublicHDNo">
 						<td>#{i18n.getText('KTG029_28')}</td>
 						<td>data #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A23 -->
-					<tr>
+					<tr data-bind="visible: displayHDRemainNo">
 						<td>#{i18n.getText('KTG029_29')}</td>
 						<td>data #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A24 -->
-					<tr>
+					<tr data-bind="visible: displayCareLeaveNo">
 						<td>#{i18n.getText('KTG029_30')}</td>
 						<td>data #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A25 -->
-					<tr>
+					<tr data-bind="visible: displaySPHDRamainNo">
 						<td>#{i18n.getText('KTG029_31')}</td>
 						<td>data #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A26 -->
-					<tr>
+					<tr data-bind="visible: displaySixtyhExtraRest">
 						<td>#{i18n.getText('KTG029_32')}</td>
 						<td>
 							<table class="detail">

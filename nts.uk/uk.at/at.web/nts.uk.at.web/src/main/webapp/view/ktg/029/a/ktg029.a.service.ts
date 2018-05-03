@@ -3,16 +3,12 @@ module nts.uk.at.view.ktg029.a {
     export module service {
         export class Service {
             paths = {
-                getPeriod: "screen/at/OptionalWidget/getCurrentMonth",
-                getOptionalWidget: "screen/at/OptionalWidget/getOptionalWidget"
+                getOptionalWidgetDisplay: "screen/at/OptionalWidget/getOptionalWidgetDisplay"
             }
             constructor() {}
             
-            getPeriod(): JQueryPromise<any> {
-                return ajax("at", this.paths.getPeriod);
-            }
-            getOptionalWidget(code: any): JQueryPromise<any> {
-                return ajax("at", this.paths.getOptionalWidget, code);
+            getOptionalWidgetDisplay(code: any): JQueryPromise<any> {
+                return ajax("at", this.paths.getOptionalWidgetDisplay, code);
             }
             
         }
