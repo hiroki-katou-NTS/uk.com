@@ -4,6 +4,7 @@ module cmm045.a.viewmodel {
     import block = nts.uk.ui.block;
     import character = nts.uk.characteristics;
     import request = nts.uk.request;
+    import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
         roundingRules: KnockoutObservableArray<vmbase.ApplicationDisplayAtr> = ko.observableArray([]);
         selectedRuleCode: KnockoutObservable<any> = ko.observable(0);// switch button
@@ -26,13 +27,17 @@ module cmm045.a.viewmodel {
         approvalMode: KnockoutObservable<boolean> = ko.observable(false);
         approvalCount: KnockoutObservable<vmbase.ApplicationStatus> = ko.observable(new vmbase.ApplicationStatus(0, 0, 0, 0, 0, 0));
         itemList: KnockoutObservableArray<any>;
-        selectedIds: KnockoutObservableArray<any> = ko.observableArray([1, 2, 3, 4, 5, 6]);// check box
+        selectedIds: KnockoutObservableArray<any> = ko.observableArray([1,2,3,4,5,6]);// check box
         dateValue: KnockoutObservable<vmbase.Date> = ko.observable({ startDate: '', endDate: '' });
         itemApplication: KnockoutObservableArray<vmbase.ChoseApplicationList> = ko.observableArray([]);
         selectedCode: KnockoutObservable<number> = ko.observable(-1);// combo box
         mode: KnockoutObservable<number> = ko.observable(1);
         startDateString: KnockoutObservable<string> = ko.observable("");
         endDateString: KnockoutObservable<string> = ko.observable("");
+        
+        //spr
+        isSpr: KnockoutObservable<boolean> = ko.observable(false);
+        extractCondition: KnockoutObservable<number> = ko.observable(0);
         constructor() {
             let self = this;
             self.itemList = ko.observableArray([
@@ -61,10 +66,33 @@ module cmm045.a.viewmodel {
             if (urlParam !== undefined) {
                 character.save('AppListExtractCondition', null);
             }
+            //get param spr
+            let paramSprCmm045: vmbase.IntefaceSPR = __viewContext.transferred.value == null ? 
+                    null : __viewContext.transferred.value.PARAM_SPR_CMM045;
+//            let paramSprCmm045: vmbase.IntefaceSPR = {
+//                mode: 1,//1=承認一覧
+//                startDate: '2018/05/02',//yyyy-mm-dd //期間（開始日）
+//                endDate: '2018/05/02',//yyyy-mm-dd //期間（終了日）
+//                extractCondition: 1,//０＝全て、１＝早出・普通残業のみ
+//                agreementTime36: 0//０＝表示しない、1＝表示する
+//            }
+            //spr call
+            if(paramSprCmm045 !== undefined && paramSprCmm045 !== null){
+                character.save('AppListExtractCondition', null);
+                let date: vmbase.Date = { startDate: paramSprCmm045.startDate, endDate: paramSprCmm045.endDate }
+                self.dateValue(date);
+                self.mode(paramSprCmm045.mode);
+                self.isSpr(true);
+                self.extractCondition(paramSprCmm045.extractCondition);
+//                let selectedType = paramSprCmm045.extractCondition == 0 ? -1 : 0;
+//                self.selectedCode(selectedType);
+//                self.selectedIds([1,2,3,4,5,6]);
+                
+            }
             character.restore("AppListExtractCondition").done((obj) => {
 //                console.log(obj);
                 characterData = obj;
-                if (obj !== undefined && obj !== null) {
+                if (obj !== undefined && obj !== null && !self.isSpr()) {
                     let date: vmbase.Date = { startDate: obj.startDate, endDate: obj.endDate }
                     self.dateValue(date);
                     self.selectedIds([]);
@@ -90,16 +118,17 @@ module cmm045.a.viewmodel {
                     //combo box
                     appCHeck = obj.appType;
                 }
-                if (urlParam === undefined) {
+                if (urlParam === undefined && !self.isSpr()) {
                     self.mode(characterData.appListAtr);
-                } else {
+                } 
+                if(urlParam !== undefined && !self.isSpr()){
                     self.mode(urlParam);
                 }
 
-                let param: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
+                let condition: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
                     self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
                     self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
-
+                let param = new vmbase.AppListParamFilter(condition, self.isSpr(), self.extractCondition());
                 service.getApplicationDisplayAtr().done(function(data1) {
                     _.each(data1, function(obj) {
                         self.roundingRules.push(new vmbase.ApplicationDisplayAtr(obj.value, obj.localizedName));
@@ -157,6 +186,13 @@ module cmm045.a.viewmodel {
                         _.each(data.lstAppInfor, function(appInfo){
                             self.itemApplication.push(new vmbase.ChoseApplicationList(appInfo.appType, appInfo.appName));                          
                         });
+                        //spr
+//                        if(self.isSpr()==1 && self.selectedCode() == 0){
+//                            let over = self.findAppOverTime(self.itemApplication());
+//                            if(over == undefined){
+////                                self.itemApplication.push(new vmbase.ChoseApplicationList(appInfo.appType, appInfo.appName)); 
+//                            }    
+//                        }
                         self.lstListAgent([]);
                         _.each(data.lstAgent, function(agent){
                             self.lstListAgent.push(new vmbase.ApproveAgent(agent.appID, agent.agentId));
@@ -211,6 +247,10 @@ module cmm045.a.viewmodel {
                         }
                         if(appCHeck != null){
                             self.selectedCode(appCHeck);
+                        }
+                        if(self.isSpr()){
+                            let selectedType = paramSprCmm045.extractCondition == 0 ? -1 : 0;
+                            self.selectedCode(selectedType);    
                         }
                         block.clear();
                         dfd.resolve();
@@ -1299,9 +1339,10 @@ module cmm045.a.viewmodel {
                 block.clear();
                 return;
             }
-            let param: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
+            let condition: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
                 self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
                 self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
+            let param = new vmbase.AppListParamFilter(condition, false, 0);
             service.getApplicationList(param).done(function(data) {
                 console.log(data);
                 //reset data
@@ -1580,6 +1621,11 @@ module cmm045.a.viewmodel {
                 min = '0' + min1;
             }
             return hh + ':' + min;
+        }
+        findAppOverTime(lstItem: Array<any>){
+            return _.find(lstItem, function(item){
+                return item.appId == 0;
+            });
         }
     }
 
