@@ -320,10 +320,17 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	 */
 	@Override
 	public List<EmployeeEmailImport> findEmpMailAddr(List<String> listsId) {
+		// imported（就業）「個人社員基本情報」を取得する
 		List<EmployeeEmailImport> listEmployee = employeeRequestAdapter.getApprovalStatusEmpMailAddr(listsId);
 		// TODO 419
 		// Imported（申請承認）「社員メールアドレス」を取得する
-
+		listEmployee = new ArrayList<>();
+		for (String sid : listsId) {
+			EmployeeEmailImport sample = new EmployeeEmailImport(sid, "sname",
+					GeneralDate.fromString("20100101", "yyyyMMdd"), GeneralDate.fromString("20180101", "yyyyMMdd"),
+					"dat.lh@3si.vn");
+			listEmployee.add(sample);
+		}
 		return listEmployee;
 	}
 
@@ -345,7 +352,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// 社員名
 		String sName = employeeRequestAdapter.getEmployeeName(sid);
 		// メールアドレス
-		String mailAddr = employeeRequestAdapter.empEmail(sid);
+		String mailAddr = this.confirmApprovalStatusMailSender();
 		// 件名
 		String subject = domain.getMailSubject().v();
 		// 送信本文
@@ -365,10 +372,10 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		List<String> listError = new ArrayList<>();
 		for (MailTransmissionContentOutput mailTransmission : listMailContent) {
 			// アルゴリズム「承認状況メール埋込URL取得」を実行する
-			String embeddedURL = this.getEmbeddedURL(mailTransmission.getSId(), domain, mailType);
+			// String embeddedURL = this.getEmbeddedURL(mailTransmission.getSId(), domain, mailType);
 			try {
 				// アルゴリズム「メールを送信する」を実行する
-				mailsender.send("nts", mailTransmission.getMailAddr(),
+				mailsender.send("mailadmin@uk.com", mailTransmission.getMailAddr(),
 						new MailContents(mailTransmission.getSubject(), mailTransmission.getText()));
 			} catch (SendMailFailedException e) {
 				// 送信エラー社員(リスト)と社員名、エラー内容を追加する

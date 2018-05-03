@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.RegisterApprovalStatusMailTempCommandHandler;
@@ -51,8 +52,8 @@ public class ApprovalStatusWebservice extends WebService {
 
 	@POST
 	@Path("confirmSenderMail")
-	public String confirmSenderMail() {
-		return approvalMailFinder.confirmSenderMail();
+	public JavaTypeResult<String> confirmSenderMail() {
+		return new JavaTypeResult<String>(approvalMailFinder.confirmSenderMail());
 	}
 	
 	@POST

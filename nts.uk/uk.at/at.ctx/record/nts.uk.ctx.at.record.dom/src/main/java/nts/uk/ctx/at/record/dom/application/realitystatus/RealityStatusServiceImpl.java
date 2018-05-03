@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.application.realitystatus;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -10,8 +11,8 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.adapter.auth.RoleSetGrantedEmployeeAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
+import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.record.dom.adapter.request.application.ApprovalStatusRequestAdapter;
 import nts.uk.ctx.at.record.dom.adapter.request.application.dto.ApprovalStatusMailTempImport;
 import nts.uk.ctx.at.record.dom.adapter.request.application.dto.EmployeeUnconfirmImport;
@@ -56,9 +57,6 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 
 	@Inject
 	private EmployeeRecordAdapter employeeRecordAdapter;
-
-	@Inject
-	RoleSetGrantedEmployeeAdapter roleSetGrantedEmployeeAdapter;
 
 	@Inject
 	IdentificationRepository identificationRepo;
@@ -469,7 +467,8 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 					.getApprovalByEmplAndDate(emp.getStartDate(), emp.getEndDate(), emp.getSId(), cId, 2);
 			Optional<ApproveRootStatusForEmpImport> appRootStatus = listAppRootStatus.stream().findFirst();
 			// 承認ルートの状況
-			if (ApprovalStatusForEmployee.UNAPPROVED.equals(appRootStatus.get().getApprovalStatus())) {
+			if (appRootStatus.isPresent()
+					&& ApprovalStatusForEmployee.UNAPPROVED.equals(appRootStatus.get().getApprovalStatus())) {
 				// 未確認者に承認ルートの状況.承認者をセット ※複数の場合複数セット
 				listEmpUnconfirm.add(emp.getSId());
 			}
@@ -526,7 +525,8 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 
 			// imported（就業）「社員基本情報」を取得する
 			// RequestList1
-			String empName = employeeRecordAdapter.getPersonInfor(emp.getSId()).getPname();
+			EmployeeRecordImport empInfo = employeeRecordAdapter.getPersonInfor(emp.getSId());
+			String empName = Objects.isNull(empInfo) ? "" : empInfo.getPname();
 
 			if (useSetting.isMonthlyConfirm()) {
 				// imported（ワークフロー）「承認ルート状況」を取得する
@@ -555,15 +555,9 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 	private List<ErrorStatusOutput> getErrorStatus(String cId, String sId, String wkpId, GeneralDate startDate,
 			GeneralDate endDate) {
 		List<ErrorStatusOutput> listError = new ArrayList<>();
-		GeneralDate currentDate = startDate;
-		while (currentDate.afterOrEquals(endDate)) {
-			// imported（KAF018承認状況の照会）「実績エラー状況＜年月日、boolean＞」を取得する
-			// RequestList303
-			if (roleSetGrantedEmployeeAdapter.canApprovalOnBaseDate(cId, sId, currentDate)) {
-
-			}
-			currentDate.addDays(1);
-		}
+		// imported（KAF018承認状況の照会）「実績エラー状況＜年月日、boolean＞」を取得する
+		// TODO RequestList303
+		listError.add(new ErrorStatusOutput(wkpId, sId, startDate.addDays(1)));
 		return listError;
 	}
 }
