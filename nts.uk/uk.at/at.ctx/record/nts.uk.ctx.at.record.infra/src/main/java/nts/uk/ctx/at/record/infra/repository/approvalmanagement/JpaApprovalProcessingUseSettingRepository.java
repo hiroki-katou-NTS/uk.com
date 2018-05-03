@@ -33,7 +33,7 @@ public class JpaApprovalProcessingUseSettingRepository extends JpaRepository
 					krcstAppProUseSet.get().monthApproverComfirmAtr.intValue() == 1,
 					lstKrcstAppProUseJbSet.stream().map((entity) -> {
 						return entity.krcstAppProUseJbSetPK.jobId;
-					}).collect(Collectors.toList()));
+					}).collect(Collectors.toList())).setSupervisorConfirmErrorAtr(krcstAppProUseSet.get().comfirmErrorAtr.intValue());
 			return domain;
 		} else {
 			return null;
