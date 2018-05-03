@@ -28,11 +28,13 @@ public class LogOnInfo {
 		this.logOn = Optional.ofNullable(logOn);
 	}
 	
-	public TimeWithDayAttr getLogOnLogOffTime(GoLeavingWorkAtr goLeavingWorkAtr) {
+	public Optional<TimeWithDayAttr> getLogOnLogOffTime(GoLeavingWorkAtr goLeavingWorkAtr) {
 		if(goLeavingWorkAtr.isGO_WORK()) {
-			return this.logOn.isPresent()?this.logOn.get():new TimeWithDayAttr(0);
+			if(!this.logOn.isPresent()) return Optional.empty();
+			return Optional.of(this.logOn.get());
 		}else {
-			return this.logOff.isPresent()?this.logOff.get():new TimeWithDayAttr(0);
+			if(!this.logOff.isPresent()) return Optional.empty();
+			return Optional.of(this.logOff.get());
 		}
 	}
 	

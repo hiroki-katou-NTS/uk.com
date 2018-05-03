@@ -46,4 +46,15 @@ public class HolidayTimeOfMonthly {
 		domain.illegalSpecialHolidayTime = illegalSpecialHolidayTime;
 		return domain;
 	}
+
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(HolidayTimeOfMonthly target){
+		
+		this.legalHolidayTime = this.legalHolidayTime.addMinutes(target.legalHolidayTime.v());
+		this.illegalHolidayTime = this.illegalHolidayTime.addMinutes(target.illegalHolidayTime.v());
+		this.illegalSpecialHolidayTime = this.illegalSpecialHolidayTime.addMinutes(target.illegalSpecialHolidayTime.v());
+	}
 }

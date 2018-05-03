@@ -23,7 +23,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- A1_1: Button 承認 -->
-				<div data-bind = "visible: mode()==1"><button  data-bind = "click: approval">#{i18n.getText('CMM045_3')}</button></div>
+				<div data-bind = "visible: mode()==1"><button tabindex = "1" data-bind = "click: approval">#{i18n.getText('CMM045_3')}</button></div>
 				<!-- A1_2: Button 印刷 -->
 				<!-- <button tabindex = "2">#{i18n.getText('CMM045_4')}</button> -->
 			</div>
@@ -77,7 +77,7 @@
 					<div class = "cell" style ="padding: 20px; border:1px solid #AAAAAA;">
 						<!-- A2: Switch button -->
 						<div data-bind = "visible: mode()==1">
-							<div   data-bind="ntsSwitchButton: {
+							<div tabindex = "3"  data-bind="ntsSwitchButton: {
 								options: roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
@@ -95,7 +95,7 @@
 									<td><div>#{i18n.getText('CMM045_19')}</div></td>
 									<td>
 										<!-- A4_1 -->
-										<div data-bind="ntsMultiCheckBox: {
+										<div tabindex="4" data-bind="ntsMultiCheckBox: {
 											options: itemList,
 											optionsValue: 'id',
 											optionsText: 'name',
@@ -105,7 +105,7 @@
 								</tr>
 								<tr>
 									<td><div>#{i18n.getText('CMM045_29')}</div></td>
-									<td><div id="daterangepicker" 
+									<td><div id="daterangepicker" tabindex="5"
 											data-bind="ntsDateRangePicker:
 											{required: false,
 											enable: true,
@@ -117,7 +117,7 @@
 									<td></td>
 									<td>
 										<!-- A4_3_4: button 検索 -->
-										<button  data-bind = "click: filter">#{i18n.getText('CMM045_32')}</button>
+										<button tabindex="6" data-bind = "click: filter">#{i18n.getText('CMM045_32')}</button>
 									</td>
 								</tr>
 								<tr>
@@ -125,7 +125,7 @@
 									<td><div>#{i18n.getText('CMM045_33')}</div></td>
 									<td>
 										<div id="combo-box" style = "display: inline-block;"
-											  data-bind="ntsComboBox: {
+											tabindex="7"  data-bind="ntsComboBox: {
 												options: itemApplication,
 												optionsValue: 'appId',
 												value: selectedCode,
@@ -147,11 +147,11 @@
 				<br/>
 				<div style="margin-left: 20px;"
 					class="compact-grid">
-					<table  id="grid1"></table>
+					<table tabindex="8" id="grid1"></table>
 				</div>
 				<div style="margin-left: 20px;"
 					class="compact-grid">
-					<table  id="grid2"></table>
+					<table tabindex="9" id="grid2"></table>
 				</div>
 				<br/>
 			</div>

@@ -74,7 +74,7 @@ public class StampReflectTimezone extends WorkTimeDomainObject {
 		memento.setEndTime(this.endTime);
 		memento.setStartTime(this.startTime);
 	}
-
+	
 	/**
 	 * Update start time.
 	 *
@@ -92,7 +92,7 @@ public class StampReflectTimezone extends WorkTimeDomainObject {
 	public void updateEndTime(TimeWithDayAttr endTime) {
 		this.endTime = endTime;
 	}
-	
+
 	/**
 	 * Checks if is empty.
 	 *
@@ -170,4 +170,5 @@ public class StampReflectTimezone extends WorkTimeDomainObject {
 			//this.endTime = new TimeWithDayAttr(0);
 		}
 	}
+
 }

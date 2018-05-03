@@ -59,8 +59,8 @@ public class FactoryOvertimeImpl implements IFactoryOvertime {
 			Integer workClockFrom2, 
 			Integer workClockTo2,
 			String divergenceReason, 
-			int flexExessTime, 
-			int overTimeShiftNight, 
+			Integer flexExessTime, 
+			Integer overTimeShiftNight, 
 			List<OverTimeInput> overtimeInputs) {
 		
 		AppOverTime appOverTime = AppOverTime.createSimpleFromJavaType(companyID, appID, overTimeAtr, workTypeCode,
