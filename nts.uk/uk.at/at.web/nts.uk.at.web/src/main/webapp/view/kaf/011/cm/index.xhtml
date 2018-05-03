@@ -273,7 +273,7 @@
 					<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_16')}</div>
 				</div>
 				<div class="div_line_col_2">
-					<div class="kaf-011-combo-box"
+					<div id="reasonCombo" class="kaf-011-combo-box"
 						data-bind="ntsComboBox: {
 										name: '#{i18n.getText('KAF011_28')}',
 										options: appReasons ,
@@ -283,8 +283,8 @@
 										optionsText: 'reasonTemp',
 										editable: false,
 										enable: true,
-										required:appTypeSet().displayFixedReason() !=0,
-										columns: [
+										required: true,
+										columns:[
 											{ prop: 'reasonTemp', length: 10 },
 										]}">
 					</div>
@@ -300,8 +300,9 @@
 				<div class="div_line_col_2">
 					<textarea style="height: 100px" id="appReason"
 						data-bind="ntsMultilineEditor: {
-					constraint: 'AppReason',
-					value: reason ,name: '#{i18n.getText('KAF011_17')}',
+									constraint: 'AppReason',
+									value: reason ,
+									name: '#{i18n.getText('KAF011_17')}',
 									option: {
 									resizeable: false ,
 			                    	width: '500'
