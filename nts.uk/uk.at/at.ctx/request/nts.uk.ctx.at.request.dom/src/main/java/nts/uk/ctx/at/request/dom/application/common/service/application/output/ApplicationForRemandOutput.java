@@ -14,5 +14,5 @@ public class ApplicationForRemandOutput {
 	public int errorFlag;
 	public String applicantPosition;
 	public PesionInforImport applicant; 
-	public List<ApprovalFrameOutput> approvalFrameDtoForRemand;
+	public List<DetailApprovalFrameOutput> approvalFrameDtoForRemand;
 }

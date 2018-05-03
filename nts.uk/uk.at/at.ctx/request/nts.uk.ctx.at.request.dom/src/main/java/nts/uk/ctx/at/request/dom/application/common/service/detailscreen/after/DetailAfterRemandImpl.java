@@ -114,27 +114,6 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 		if (Strings.isEmpty(emp)) {
 			emp = employeeAdapter.getEmployeeName(AppContexts.user().employeeId());
 		}
-		// TODO
-		Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(AppContexts.user().companyId());
-		String urlInfo = "";
-		if (urlEmbedded.isPresent()) {
-			int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
-			NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
-			if (checkUrl == NotUseAtr.USE) {
-				urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(application.getAppID(),
-						application.getAppType().value, application.getPrePostAtr().value, application.getEmployeeID());
-			}
-		}
-		if (!Strings.isBlank(urlInfo)) {
-			appContent += "\n" + I18NText.getText("KDL030_30") + " " + application.getAppID() + "\n" + urlInfo;
-		}
-		String mailContentToSend = I18NText.getText("Msg_1060",
-				employeeAdapter.getEmployeeName(AppContexts.user().employeeId()), mailBody,
-				GeneralDate.today().toString(), application.getAppType().nameId,
-				employeeAdapter.getEmployeeName(application.getEmployeeID()),
-				application.getAppDate().toLocalDate().toString(), appContent,
-				employeeAdapter.getEmployeeName(AppContexts.user().employeeId()), emp);
-
 		List<String> successList = new ArrayList<>();
 		List<String> errorList = new ArrayList<>();
 		for (String employee : employeeList) {
@@ -142,6 +121,26 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 			// Using RQL 419 instead (1 not have mail)
 			String employeeMail = employeeAdapter.empEmail(employee);
 			employeeMail = "hiep.ld@3si.vn";
+			// TODO
+//			Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(AppContexts.user().companyId());
+//			String urlInfo = "";
+//			if (urlEmbedded.isPresent()) {
+//				int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
+//				NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
+//				if (checkUrl == NotUseAtr.USE) {
+//					urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(application.getAppID(),
+//							application.getAppType().value, application.getPrePostAtr().value, employee);
+//				}
+//			}
+//			if (!Strings.isBlank(urlInfo)) {
+//				appContent += "\n" + I18NText.getText("KDL030_30") + " " + application.getAppID() + "\n" + urlInfo;
+//			}
+			String mailContentToSend = I18NText.getText("Msg_1060",
+					employeeAdapter.getEmployeeName(AppContexts.user().employeeId()), mailBody,
+					GeneralDate.today().toString(), application.getAppType().nameId,
+					employeeAdapter.getEmployeeName(application.getEmployeeID()),
+					application.getAppDate().toLocalDate().toString(), appContent,
+					employeeAdapter.getEmployeeName(AppContexts.user().employeeId()), emp);
 			if (Strings.isBlank(employeeMail)) {
 				errorList.add(I18NText.getText("Msg_768", employeeName));
 				continue;

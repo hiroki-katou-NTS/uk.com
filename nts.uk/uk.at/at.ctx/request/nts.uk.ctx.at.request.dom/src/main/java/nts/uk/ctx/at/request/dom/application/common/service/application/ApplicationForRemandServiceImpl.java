@@ -15,7 +15,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.jobtitle.dto.AffJ
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForRemandOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApprovalFrameOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.application.output.DetailApprovalFrameOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.DetailApproverOutput;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -43,7 +43,7 @@ public class ApplicationForRemandServiceImpl implements IApplicationForRemandSer
 					.getApprovalRootContent(companyID, null, null, null, appID, false);
 			Optional<AffJobTitleHistoryImport> jobTitle = jobTitleAdapter.getJobTitlebBySIDAndDate(app.getEmployeeID(), app.getAppDate());
 			String applicantPosition = jobTitle.isPresent() ? jobTitle.get().getJobTitleName() : "";
-			List<ApprovalFrameOutput> listApprovalFrame = new ArrayList<ApprovalFrameOutput>();
+			List<DetailApprovalFrameOutput> listApprovalFrame = new ArrayList<DetailApprovalFrameOutput>();
 			approvalRootContentImport.getApprovalRootState().getListApprovalPhaseState().forEach(x -> {
 				x.getListApprovalFrame().forEach(y -> {
 					List<DetailApproverOutput> listApprover = new ArrayList<DetailApproverOutput>();
@@ -54,7 +54,7 @@ public class ApplicationForRemandServiceImpl implements IApplicationForRemandSer
 								z.getRepresenterName(), approverPosition));
 					});
 					listApprovalFrame
-							.add(new ApprovalFrameOutput(y.getPhaseOrder(), y.getApprovalReason(), listApprover));
+							.add(new DetailApprovalFrameOutput(y.getPhaseOrder(), y.getApprovalReason(), listApprover));
 				});
 			});
 			return new ApplicationForRemandOutput(appID, application_New.get().getVersion(),

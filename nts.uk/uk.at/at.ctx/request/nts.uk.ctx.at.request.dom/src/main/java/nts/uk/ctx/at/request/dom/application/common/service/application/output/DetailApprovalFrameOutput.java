@@ -7,7 +7,7 @@ import lombok.Value;
 
 @Value
 @AllArgsConstructor
-public class ApprovalFrameOutput {
+public class DetailApprovalFrameOutput {
 	public int phaseOrder;
 	public String approvalReason;
 	public List<DetailApproverOutput> listApprover; 
