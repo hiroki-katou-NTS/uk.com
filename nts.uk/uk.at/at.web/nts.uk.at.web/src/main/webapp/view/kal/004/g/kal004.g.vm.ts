@@ -88,13 +88,13 @@ module nts.uk.at.view.kal004.g.viewmodel {
             self.strSelected = ko.observable(self.getParam.strSpecify);
             self.strDay = ko.observable(self.getParam.strDay);
             self.strMonth = ko.observable(self.getParam.strMonth);
-            self.strComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);  
+            self.strComboMonth = ko.observableArray(__viewContext.enums.StandardMonth);  
             
             //End Date
             self.endSelected = ko.observable(self.getParam.endSpecify);
             self.endDay = ko.observable(self.getParam.endDay);
             self.endMonth = ko.observable(self.getParam.endMonth);    
-            self.endComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
+            self.endComboMonth = ko.observableArray(__viewContext.enums.StandardMonth);
             
             
             self.dateSpecify = ko.observableArray([
@@ -104,9 +104,9 @@ module nts.uk.at.view.kal004.g.viewmodel {
             
             //tab2
             self.strMonth2 = ko.observable(self.getParam.strMonth);
-            self.strComboMonth2 = ko.observableArray(__viewContext.enums.SpecifiedMonth);              
+            self.strComboMonth2 = ko.observableArray(__viewContext.enums.StandardMonth);              
             self.endMonth2 = ko.observable(self.getParam.endMonth);    
-            self.endComboMonth2 = ko.observableArray(__viewContext.enums.SpecifiedMonth);             
+            self.endComboMonth2 = ko.observableArray(__viewContext.enums.StandardMonth);             
                         
             
             //tab3:
@@ -114,20 +114,20 @@ module nts.uk.at.view.kal004.g.viewmodel {
                 {value: 0, name: ''},
                 {value: 1, name: getText('KAL004_96')}
                 ]);
-            self.strSelected3 = ko.observable(self.getParam.strSpecify);
+            self.strSelected3 = ko.observable(0);
             self.strMonthy3 = ko.observable(self.getParam.strDay);
             self.strMonth3 = ko.observable(self.getParam.strMonth);
-            self.strComboMonth3 = ko.observableArray(__viewContext.enums.SpecifiedMonth);
+            self.strComboMonth3 = ko.observableArray(__viewContext.enums.StandardMonth);
             self.endMonth3 = ko.observable(self.getParam.endMonth);    
-            self.endComboMonth3 = ko.observableArray(__viewContext.enums.SpecifiedMonth);  
+            self.endComboMonth3 = ko.observableArray(__viewContext.enums.StandardMonth);  
 
             //tab4:
-            self.strSelected4 = ko.observable(self.getParam.strSpecify);
+            self.strSelected4 = ko.observable(0);
             self.strMonthy4 = ko.observable(self.getParam.strDay);
             self.strMonth4 = ko.observable(self.getParam.strMonth);
-            self.strComboMonth4 = ko.observableArray(__viewContext.enums.SpecifiedMonth);
+            self.strComboMonth4 = ko.observableArray(__viewContext.enums.StandardMonth);
             self.endMonth4 = ko.observable(self.getParam.endMonth);    
-            self.endComboMonth4 = ko.observableArray(__viewContext.enums.SpecifiedMonth);
+            self.endComboMonth4 = ko.observableArray(__viewContext.enums.StandardMonth);
             
             //tab5
             self.strSelected5 = ko.observable(self.getParam.strSpecify);
@@ -146,6 +146,39 @@ module nts.uk.at.view.kal004.g.viewmodel {
         }
         submit() {
             let self = this;
+            // tab1
+            if(self.strSelected()==0){
+                if(self.endSelected()==0 && self.strDay() < self.endDay() ){
+                    alertError("Msg_812");
+                    return;
+                } else if(self.endSelected()==1){
+                    alertError("Msg_815");
+                    return;    
+                }        
+            }else{
+                if(self.endSelected()==1 && self.strMonth() < self.endMonth()){
+                    alertError("Msg_812");
+                    return;    
+                }    
+            }
+            // tab2
+            if(self.strMonth2() < self.endMonth2()){
+                    alertError("Msg_812");
+                    return;                       
+            } 
+            
+            // tab3
+            if(self.strSelected3() ==0 && self.strMonth3() < self.endMonth3()){
+                alertError("Msg_812");
+                return;    
+            }
+            // tab4
+            if(self.strSelected4() ==0 && self.strMonth4() < self.endMonth4()){
+                alertError("Msg_812");
+                return;    
+            }
+            
+            nts.uk.ui.windows.setShared("selectedTab", self.selectedTab());
             nts.uk.ui.windows.close();
         }
         closeDialog(): void {
