@@ -133,11 +133,13 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.recWk().wkTimeCD(data.wkTimeCD || null);
             }
         }
-        validate() {
+        validateControl() {
             let self = this;
             $(".kaf-011-combo-box ,.nts-input").trigger("validate");
-//            self.checkRecTime();
-//            self.checkAbsTime();
+
+
+            //            self.checkRecTime();
+            //            self.checkAbsTime();
         }
         checkRecTime() {
             let self = this,
@@ -169,10 +171,9 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 }
             }
         }
-
-        register() {
+        genSaveCmd(): common.ISaveHolidayShipmentCommand {
             let self = this,
-                saveCmd: common.ISaveHolidayShipmentCommand = {
+                returnCmd = common.ISaveHolidayShipmentCommand = {
                     recCmd: ko.mapping.toJS(self.recWk()),
                     absCmd: ko.mapping.toJS(self.absWk()),
                     comType: self.appComSelectedCode(),
@@ -185,20 +186,28 @@ module nts.uk.at.view.kaf011.a.screenModel {
                         appVersion: 0
                         ,
                     }
-                },
-                selectedReason = _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() }),
-                appReason = self.getReason();
-
+                }, selectedReason = _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() });
             if (selectedReason) {
-                saveCmd.appCmd.appReasonText = selectedReason.reasonTemp;
+                returnCmd.appCmd.appReasonText = selectedReason.reasonTemp;
             }
-            let isCheckLengthError: boolean = !nts.uk.at.view.kaf000.shr.model.CommonProcess.checklenghtReason(appReason, "#appReason");
-            if (isCheckLengthError) {
+            returnCmd.absCmd.changeWorkHoursType = returnCmd.absCmd.changeWorkHoursType ? 1 : 0;
+            return returnCmd;
+
+        }
+        register() {
+            let self = this,
+                saveCmd = self.genSaveCmd();
+
+            self.validateControl();
+
+            if (nts.uk.ui.errors.hasError()) { return; }
+
+            let isCheckReasonError = !self.checkReason();
+            if (isCheckReasonError) {
                 return;
             }
-            saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;
-            self.validate();
-            if (nts.uk.ui.errors.hasError()) { return; }
+
+
             block.invisible();
             service.save(saveCmd).done(() => {
                 dialog({ messageId: 'Msg_15' }).then(function() {
@@ -210,6 +219,21 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 block.clear();
                 $("#recDatePicker").focus();
             });
+        }
+
+        checkReason(): boolean {
+            let self = this,
+                appReason = self.getReason();
+            let appReasonError = !nts.uk.at.view.kaf000.shr.model.CommonProcess.checkAppReason(true, self.appTypeSet().displayFixedReason() != 0, self.appTypeSet().displayAppReason() != 0, appReason);
+            if (appReasonError) {
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' });
+                return false;
+            }
+            let isCheckLengthError: boolean = !nts.uk.at.view.kaf000.shr.model.CommonProcess.checklenghtReason(appReason, "#appReason");
+            if (isCheckLengthError) {
+                return false;
+            }
+            return true;
         }
 
         getReason(): string {
