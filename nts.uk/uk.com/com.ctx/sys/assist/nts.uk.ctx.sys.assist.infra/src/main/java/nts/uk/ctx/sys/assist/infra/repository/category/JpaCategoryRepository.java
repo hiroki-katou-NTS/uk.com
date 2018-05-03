@@ -101,7 +101,7 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
 	public List<Category> findByAttendanceSystemAndCodeName(String keySearch, List<String> categoriesIgnore) {
 		return this.queryProxy().query(SELECT_BY_ATTENDANCE_SYSTEM_AND_CODENAME, SspmtCategory.class)
 		        .setParameter("keySearch", keySearch).setParameter("categoriesIgnore", categoriesIgnore)
-		        .setParameter("timeStore", TimeStore.FULL_TIME)
+		        .setParameter("timeStore", TimeStore.FULL_TIME.value)
 		        .setParameter("attendanceSystem", SystemUsability.AVAILABLE.value)
 		        .getList(c->c.toDomain());
 	}
@@ -110,7 +110,7 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
 	public List<Category> findByPaymentAvailabilityAndCodeName(String keySearch, List<String> categoriesIgnore) {
 		return this.queryProxy().query(SELECT_BY_PAYMENT_AVAIABILITY_AND_CODENAME, SspmtCategory.class)
 		        .setParameter("keySearch", keySearch).setParameter("categoriesIgnore", categoriesIgnore)
-		        .setParameter("timeStore", TimeStore.FULL_TIME)
+		        .setParameter("timeStore", TimeStore.FULL_TIME.value)
 		        .setParameter("paymentAvailability", SystemUsability.AVAILABLE.value)
 		        .getList(c->c.toDomain());
 	}
@@ -119,7 +119,7 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
 	public List<Category> findByPossibilitySystemAndCodeName(String keySearch, List<String> categoriesIgnore) {
 		return this.queryProxy().query(SELECT_BY_POSSIBILITY_SYSTEM_AND_CODENAME, SspmtCategory.class)
 		        .setParameter("keySearch", keySearch).setParameter("categoriesIgnore", categoriesIgnore)
-		        .setParameter("timeStore", TimeStore.FULL_TIME)
+		        .setParameter("timeStore", TimeStore.FULL_TIME.value)
 		        .setParameter("possibilitySystem", SystemUsability.AVAILABLE.value)
 		        .getList(c->c.toDomain());
 	}
@@ -128,7 +128,7 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
 	public List<Category> findBySchelperSystemAndCodeName(String keySearch, List<String> categoriesIgnore) {
 		return this.queryProxy().query(SELECT_BY_SCHELPER_SYSTEM_AND_CODENAME, SspmtCategory.class)
 		        .setParameter("keySearch", keySearch).setParameter("categoriesIgnore", categoriesIgnore)
-		        .setParameter("timeStore", TimeStore.FULL_TIME)
+		        .setParameter("timeStore", TimeStore.FULL_TIME.value)
 		        .setParameter("schelperSystem", SystemUsability.AVAILABLE.value)
 		        .getList(c->c.toDomain());
 	}

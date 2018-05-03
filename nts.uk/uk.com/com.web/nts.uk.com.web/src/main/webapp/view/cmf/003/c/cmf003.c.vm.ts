@@ -23,29 +23,40 @@ module nts.uk.com.view.cmf003.c {
            constructor() {
                var self = this;
                 
-               self.itemList = ko.observableArray([
-                    new ItemModelCombo('-1',self.selected_comobox)
-                    
-                ]);
-               service.getSysTypes().done(function(data: Array<any>) {
-                    if (data && data.length) {
-                        _.forOwn(data, function(index) {
-                            self.itemList.push(new ItemModelCombo(index.type,index.name));
-                          });
-                         
-                    } else {
+                   self.itemList = ko.observableArray<any>;
+                   service.getSysTypes().done(function(data: Array<any>) {
+                        if (data && data.length) {
+                            _.forOwn(data, function(index) {
+                                self.itemList.push(new ItemModelCombo(index.type,index.name));
+                              });
+                             
+                        } else {
+                           
+                        }
                        
-                    }
-                   
-                }).fail(function(error) {
-                    alertError(error);
-                   
-                }).always(() => {
+                    }).fail(function(error) {
+                        alertError(error);
+                       
+                    }).always(() => {
+                        
+                    });
+                    console.log(self.itemList()[0]);
+                    console.log(_.first(self.itemList, 1));
+                   self.selectedCode = ko.observable('1');
+                   service.getConditionList(self.selectedCode()).done(function(data: Array<any>) {
+                           
+                           self.itemsSwap(data);
+                           
+                       }).fail(function(error) {
+                            alertError(error);
+                       }).always(() => {
+                           
+                            _.defer(() => {
+                                $("#grd_Condition tr:first-child").focus();
+                            });
+                        });
+                
                     
-                });
-                
-                
-                    self.selectedCode = ko.observable('-1');
                     self.isEnable = ko.observable(true);
                     self.isEditable = ko.observable(true);
                    
