@@ -180,7 +180,7 @@ module nts.uk.com.view.kaf001.a.viewmodel {
             let self = this;
             let employeeIds : Array<string> = [];
             _.each(self.selectedEmployeeCode(), x => {
-                let employee = _.find(self.selectedEmployee(), x1=>{return x1.employeeCode === x});
+                let employee = _.find(self.selectedEmployee(), x1 => { return x1.employeeCode === x });
                 if (employee) {
                     employeeIds.push(employee.employeeId);
                 }
@@ -193,7 +193,7 @@ module nts.uk.com.view.kaf001.a.viewmodel {
                 service.selectApplicationByType(paramFind).done(() => {
                     switch (applicationType) {
                         case ApplicationType.OVER_TIME_APPLICATION: {
-                            jump("at", "/view/kaf/005/a/index.xhtml", { employeeIds: employeeIds });
+                            jump("at", "/view/kaf/005/a/index.xhtml?overworkatr=2", { employeeIds: employeeIds });
                             break;
                         }
                         case ApplicationType.ABSENCE_APPLICATION: {
