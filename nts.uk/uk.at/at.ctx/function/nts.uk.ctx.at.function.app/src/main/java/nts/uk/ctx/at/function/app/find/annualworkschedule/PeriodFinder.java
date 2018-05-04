@@ -5,6 +5,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingAdapter;
 import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -29,7 +30,8 @@ public class PeriodFinder {
 
 		YearMonth startYm = YearMonth.of(startYear, startMonth);
 		YearMonth endYm   = startYm.addMonths(11);
-		return new PeriodDto(startYm.year() + "" + startYm.month(), endYm.year() + "" + endYm.month());
+		return new PeriodDto(startYm.year() + StringUtil.padLeft(String.valueOf(startYm.month()), 2, '0'),
+							endYm.year() + StringUtil.padLeft(String.valueOf(endYm.month()), 2, '0'));
 	}
 
 }

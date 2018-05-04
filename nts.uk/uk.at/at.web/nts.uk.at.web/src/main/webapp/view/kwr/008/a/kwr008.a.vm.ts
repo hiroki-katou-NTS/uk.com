@@ -125,31 +125,13 @@ module nts.uk.at.view.kwr008.a {
                 self.selectedEmployeeCode = ko.observableArray([]);
                 self.alreadySettingPersonal = ko.observableArray([]);
                 self.maxDaysCumulationByEmp = ko.observable(0);
-                self.startDateString.subscribe(data => {
-                    self.validateRangeExport();
-                });
-                self.endDateString.subscribe(data => {
-                    self.validateRangeExport();
-                });
-            }
-
-            validateRangeExport() {
-                var self = this;
-                var $rangeDateLabel = $('#range-date').find('.rangeLabel');
-                $rangeDateLabel.ntsError('clear');
-                if (moment(self.startDateString(), 'YYYYMM').toDate() >
-                    moment(self.endDateString(), 'YYYYMM').toDate()) {
-                    $rangeDateLabel.ntsError('set', nts.uk.resource.getMessage("FND_E_SPAN_REVERSED", ['期間']), "FND_E_SPAN_REVERSED");
-                    return false;
-                }
-                return true;
             }
 
             exportReport() {
                 var self = this;
                 //対象期間をチェックする
-                if (moment(self.startDateString(), 'YYYYMM').add(12, 'M').toDate() <=
-                    moment(self.endDateString(), 'YYYYMM').toDate()) {
+                if (moment(self.dateValue().startDate, 'YYYY/MM').add(12, 'M').toDate() <=
+                    moment(self.dateValue().endDate, 'YYYYMM').toDate()) {
                     nts.uk.ui.dialog.alertError({messageId: 'Msg_883'});
                     return;
                 }
@@ -159,8 +141,8 @@ module nts.uk.at.view.kwr008.a {
                     return;
                 }
                 var data = new model.EmployeeDto();
-                data.startYearMonth   = self.startDateString();
-                data.endYearMonth     = self.endDateString();
+                data.startYearMonth   = self.dateValue().startDate;
+                data.endYearMonth     = self.dateValue().endDate;
                 data.setItemsOutputCd = self.selectedOutputItem().toString();
                 data.breakPage        = self.selectedBreakPage().toString();
                 data.employees = [];
