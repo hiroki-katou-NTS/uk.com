@@ -17,6 +17,8 @@ public class TimeAnnualLeaveUsedTime {
 	private UsedTimes usedTimes;
 	/** 使用時間 */
 	private UsedMinutes usedTime;
+	/** 使用時間付与前 */
+	private UsedMinutes usedTimeBeforeGrant;
 	/** 使用時間付与後 */
 	private Optional<UsedMinutes> usedTimeAfterGrant;
 	
@@ -27,6 +29,7 @@ public class TimeAnnualLeaveUsedTime {
 		
 		this.usedTimes = new UsedTimes(0);
 		this.usedTime = new UsedMinutes(0);
+		this.usedTimeBeforeGrant = new UsedMinutes(0);
 		this.usedTimeAfterGrant = Optional.empty();
 	}
 
@@ -34,17 +37,20 @@ public class TimeAnnualLeaveUsedTime {
 	 * ファクトリー
 	 * @param usedTimes 使用回数
 	 * @param usedTime 使用時間
+	 * @param usedTimeBeforeGrant 使用時間付与前
 	 * @param usedTimeAfterGrant 使用時間付与後
 	 * @return 時間年休使用時間
 	 */
 	public static TimeAnnualLeaveUsedTime of(
 			UsedTimes usedTimes,
 			UsedMinutes usedTime,
+			UsedMinutes usedTimeBeforeGrant,
 			Optional<UsedMinutes> usedTimeAfterGrant){
 		
 		TimeAnnualLeaveUsedTime domain = new TimeAnnualLeaveUsedTime();
 		domain.usedTimes = usedTimes;
 		domain.usedTime = usedTime;
+		domain.usedTimeBeforeGrant = usedTimeBeforeGrant;
 		domain.usedTimeAfterGrant = usedTimeAfterGrant;
 		return domain;
 	}

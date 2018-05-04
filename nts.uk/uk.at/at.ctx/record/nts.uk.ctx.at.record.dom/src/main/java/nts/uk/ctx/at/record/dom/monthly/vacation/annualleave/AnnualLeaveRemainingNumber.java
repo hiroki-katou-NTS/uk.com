@@ -73,10 +73,10 @@ public class AnnualLeaveRemainingNumber {
 			
 			// 明細に年休付与残数データ．明細．残数を追加
 			val remainingNumber = remainingData.getDetails().getRemainingNumber();
-			AnnualLeaveRemainingTime remainingTime = new AnnualLeaveRemainingTime(0);
+			AnnualLeaveRemainingTime remainingTime = null;
 			if (remainingNumber.getMinutes().isPresent()) remainingTime = remainingNumber.getMinutes().get();
 			this.details.add(AnnualLeaveRemainingDetail.of(
-					remainingNumber.getDays(), remainingTime, remainingData.getGrantDate()));
+					remainingData.getGrantDate(), remainingNumber.getDays(), Optional.ofNullable(remainingTime)));
 			
 			// 合計残日数　←　「明細．日数」の合計
 			this.totalRemainingDays = new AnnualLeaveRemainingDayNumber(
