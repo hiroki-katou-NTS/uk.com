@@ -3,7 +3,6 @@ package nts.uk.ctx.at.function.dom.alarm.extractionrange.month;
 import java.util.Optional;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
 /**
@@ -12,7 +11,6 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
  *
  */  
 @Getter
-@Setter
 public class StartMonth {
 
 	/** 開始月の指定方法 */
@@ -22,7 +20,7 @@ public class StartMonth {
 	private Optional<MonthNo> strMonthNo = Optional.empty();
 	
 	/** 固定月度 */
-	private FixedMonthly fixedMonthly;
+	private Optional<FixedMonthly> fixedMonthly = Optional.empty();
 	
 	public StartMonth(int specifyStartMonth) {
 		this.specifyStartMonth = EnumAdaptor.valueOf(specifyStartMonth, SpecifyStartMonth.class);
@@ -30,5 +28,9 @@ public class StartMonth {
 	
 	public void setStartMonth(PreviousClassification monthPrevious, int strMonthNo, boolean currentMonth) {
 		this.strMonthNo = Optional.of(new MonthNo(monthPrevious, strMonthNo, currentMonth));
+	}
+	
+	public void setFixedMonth(PreviousClassification monthPrevious, YearSpecifiedType yearSpecifiedType, int designatedMonth) {
+		this.fixedMonthly = Optional.of(new FixedMonthly(yearSpecifiedType, designatedMonth));
 	}
 }
