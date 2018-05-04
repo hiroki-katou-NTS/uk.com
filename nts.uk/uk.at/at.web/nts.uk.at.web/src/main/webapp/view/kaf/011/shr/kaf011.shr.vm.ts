@@ -207,8 +207,21 @@ module nts.uk.at.view.kaf011.shr {
                     self.appDate(data.appDate);
                     self.changeWorkHoursType(data.changeWorkHoursType);
                 }
-                self.wkTimeCD.subscribe((newWkType) => {
-                    let self = this;
+                self.wkTimeCD.subscribe((newWkTimeCD) => {
+                    let self = this,
+                        vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
+
+                    if (!newWkTimeCD && !vm.screenModeNew()) {
+                        $('#recTimeBtn').ntsError("clear");
+                        $('#absTimeBtn').ntsError("clear");
+                        vm.checkRecTime();
+                        vm.checkAbsTime();
+                    }
+
+                    if (newWkTimeCD) {
+
+
+                    }
                     self.updateWorkingText();
                 });
                 self.wkTypeCD.subscribe((newWkType) => {
