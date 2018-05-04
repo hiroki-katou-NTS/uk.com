@@ -91,6 +91,7 @@ public class KTG027QueryProcessor {
 			}
 		}
 	}
+		return false;
 	}
 
 	public int initialActivationArocess(GeneralDate targetMonth) {
