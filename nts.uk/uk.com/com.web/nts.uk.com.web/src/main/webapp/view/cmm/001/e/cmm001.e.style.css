@@ -1,27 +1,31 @@
-#contents-left, #contents-right {
-	padding: 20px;
+table, th {
+    border-top: 0.5px solid grey;
+    border-bottom: 0.5px solid grey;
+    border-right: 0.5px solid grey;
+    border-left: 0.5px solid grey;
 }
-
-.control-group {
-	margin-top: 30px;
+th, td {
+    padding: 5px;
 }
-
-.labelfirst {
-	margin-left: 10px;
-	margin-top: 10px;
+td {
+    border-top: 0.5px solid grey;
+    border-left: 0.5px solid grey;
 }
-
-#dataAddress_virtualContainer {
-	margin-left: 4px;
+.div-table {
+    display:block;
+    height:420px;
+    overflow:auto;
 }
-
-#btn_chooseZipCode {
-	margin-top: -80px !important;
-	width: 120px;
-	margin-left: -50px !important;
-}
-
-#btn_close {
-	margin-top: -35px !important;
-	margin-left: 50px;
+.selected { background-color: #CEE6FF; }
+td.border-custom { 
+	border-top: none;
+ }
+td.border-custom2 { 
+	border-bottom: none;
+ }
+.caret-bottom.outline {
+    width: 5rem;
+    height: 1em;
+    margin-left: 125px;
+    font-size: 2rem;
 }

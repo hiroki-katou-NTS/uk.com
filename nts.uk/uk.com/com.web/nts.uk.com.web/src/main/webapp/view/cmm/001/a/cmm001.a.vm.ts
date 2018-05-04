@@ -334,6 +334,13 @@ module cmm001.a {
                 nts.uk.ui.block.clear();
             });
         }
+        
+        openEDialog() {
+            let self = this;
+            nts.uk.ui.windows.setShared('companyId', self.currentCompany().companyId());
+            nts.uk.ui.windows.sub.modal('/view/cmm/001/e/index.xhtml', { title: '', }).onClosed(function(): any {
+            })
+        }
     }
     class CompanyModel {
         companyCode: KnockoutObservable<string>;
