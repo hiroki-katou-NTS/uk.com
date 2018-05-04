@@ -1470,6 +1470,10 @@ module nts.custombinding {
                                                 }
                                             });
                                         }
+                                        
+                                        if (item.listItemDf[0] && item.personInfoCategoryID != item.listItemDf[0].perInfoCtgId) {
+                                            item.personInfoCategoryID = item.listItemDf[0].perInfoCtgId;
+                                        }
 
                                         return item;
                                     })
