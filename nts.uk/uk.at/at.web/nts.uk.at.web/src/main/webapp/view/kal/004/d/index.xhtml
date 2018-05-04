@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Day
+            </com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<script>var dialogSize = { width: 750, height: 550 };</script>
+			<com:EnumScript>
+				nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.SpecifiedMonth
+				nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification
+			</com:EnumScript>
+			<com:stylefile path="kal004.d.style.css" />
+			<com:scriptfile path="kal004.d.service.js" />
+			<com:scriptfile path="kal004.d.start.js" />
+			<com:scriptfile path="kal004.d.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="header">
+					<span class="label" data-bind="text: getCategoryName"></span>
+				</div>
+				<div class="cf">
+					<div class="valign-center control-group start">
+						<span class="label">#{i18n.getText('KAL004_29')}</span>
+						<div class="day">
+							<span class="label txt">#{i18n.getText('KAL004_34')}</span>
+						</div>
+						<div class="month">
+							<div class="combo-box" tabindex="5"
+								data-bind="ntsComboBox: {
+										options: strComboMonth,
+										optionsValue: 'value',
+										value: strMonth,
+										visibleItemsCount: 7,
+										optionsText: 'name',
+										enable: true,
+										columns: [
+											{ prop: 'name', length: 5 }
+										]}"></div>
+						</div>
+					</div>
+					<div class="centerSys">#{i18n.getText('KAL004_30')}</div>
+					<div class="valign-center control-group end">
+						<span class="label">#{i18n.getText('KAL004_31')}</span>
+						<div class="day">
+							<span class="label txt">#{i18n.getText('KAL004_34')}</span>
+						</div>
+						<div class="month">
+							<div class="combo-box" tabindex="10"
+								data-bind="ntsComboBox: {
+										options: endComboMonth,
+										optionsValue: 'value',
+										value: endMonth,
+										optionsText: 'name',
+										visibleItemsCount: 7,
+										enable: true,
+										columns: [
+											{ prop: 'name', length: 5 }
+										]}"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button tabindex="11" data-bind="click :Decide">#{i18n.getText('KAL004_44')}</button>
+				<button tabindex="12" data-bind="click :closeDialog">#{i18n.getText('KAL004_45')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
