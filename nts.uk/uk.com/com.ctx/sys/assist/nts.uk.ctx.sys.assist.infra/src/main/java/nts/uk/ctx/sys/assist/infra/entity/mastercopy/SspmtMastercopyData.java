@@ -32,7 +32,7 @@ public class SspmtMastercopyData extends UkJpaEntity implements Serializable {
 
 	/** The master copy target. */
 	@Column(name="MASTER_COPY_TARGET")
-	private Object masterCopyTarget;
+	private String masterCopyTarget;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()

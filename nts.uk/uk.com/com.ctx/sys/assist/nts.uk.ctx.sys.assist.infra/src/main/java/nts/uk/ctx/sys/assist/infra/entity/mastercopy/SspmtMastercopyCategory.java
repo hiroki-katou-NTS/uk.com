@@ -38,7 +38,7 @@ public class SspmtMastercopyCategory extends UkJpaEntity implements Serializable
 
 	/** The master copy category. */
 	@Column(name="MASTER_COPY_CATEGORY")
-	private Object masterCopyCategory;
+	private String masterCopyCategory;
 
 	/** The system type. */
 	@Column(name="SYSTEM_TYPE")

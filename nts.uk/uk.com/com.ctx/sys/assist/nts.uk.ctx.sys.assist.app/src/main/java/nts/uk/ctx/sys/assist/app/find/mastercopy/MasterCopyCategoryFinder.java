@@ -30,7 +30,7 @@ public class MasterCopyCategoryFinder {
 		String companyId = AppContexts.user().companyId();
 		
 		//get list category from database
-		List<MasterCopyCategory> listMasterCopyCategory = this.repository.findAllMasterCopyCategory(companyId);
+		List<MasterCopyCategory> listMasterCopyCategory = this.repository.findAllMasterCopyCategory();
 		
 		//check empty
 		if (listMasterCopyCategory.isEmpty()) {
