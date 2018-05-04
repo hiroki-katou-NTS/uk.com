@@ -353,7 +353,7 @@ module cmm045.a.viewmodel {
                 if (item.appStatusNo == 2) {//2 反映済　＝　反映済み
                     result.push(new vmbase.CellState(rowId,'appStatus',['reflectCell']));
                 }
-                if (item.appStatusNo == 3 || item.appStatusNo == 34) {//3,4 取消待ち/取消済　＝　取消
+                if (item.appStatusNo == 3 || item.appStatusNo == 4) {//3,4 取消待ち/取消済　＝　取消
                     result.push(new vmbase.CellState(rowId,'appStatus',['cancelCell']));
                 }
                 if (item.appStatusNo == 5) {//5 差し戻し　＝　差戻
