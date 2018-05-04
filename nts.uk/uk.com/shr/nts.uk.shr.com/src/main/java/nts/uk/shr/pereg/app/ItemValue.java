@@ -27,7 +27,6 @@ public class ItemValue {
 		ItemValueType itemValueType = EnumAdaptor.valueOf(dataType, ItemValueType.class);
 		switch (itemValueType) {
 		case STRING:
-
 			itemValue.type = 1;
 			break;
 		case NUMERIC:
@@ -59,14 +58,11 @@ public class ItemValue {
 			case 3:
 				itemValue.type = 2;
 				break;
-
-			default:
-				break;
 			}
 			break;
-		case READONLY:
-			break;
+		
 		default:
+			itemValue.type = 1;
 			break;
 		}
 		return itemValue;
