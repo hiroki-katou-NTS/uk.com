@@ -5,49 +5,51 @@
 }
 
 #ex_accept_wizard {
-	width: 1200px;
+	width: 1400px;
 	height: 480px;
 }
 
 #ex_accept_wizard>.steps {
 	width: 250px;
-	height: 485px;
+	height: 640px;
 }
 
 #ex_accept_wizard>.content {
-	width: 940px;
+	width: 1140px;
 	height: 590px;
 	background: none;
 	margin-left: 5px;
 	margin-right: 0px;
 }
+#ex_accept_wizard > .content > .body {
+	padding-top: 0;
+}
+#ex_accept_wizard, #ex_accept_wizard .content {
+	overflow: visible;
+}
 
-#contentAll {
+.contentAll {
 	width: 100%;
 }
 
-#contentL {
+.contentL {
 	float: left;
 	width: 45%;
 }
 
-#contentR {
+.contentR {
 	float: right;
 	width: 55%;
 }
 
-#tableContentL {
+.tableContentL {
 	border-spacing: 10px;
 	border-collapse: separate;
 }
 
-#tableContentL {
-	border-spacing: 10px;
-	border-collapse: separate;
-}
 
 #B5_2_1 {
-	margin-left: 175x;
+	margin-left: 175px;
 }
 
 #B5_2_2 {

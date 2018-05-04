@@ -1,107 +1,133 @@
-module nts.uk.com.view.cmf005.c.viewmodel {
-    import block = nts.uk.ui.block;
+module nts.uk.com.view.cmf003.c {
     import getText = nts.uk.resource.getText;
-    import model = cmf005.share.model;
-    import confirm = nts.uk.ui.dialog.confirm;
-    import alertError = nts.uk.ui.dialog.alertError;
-    import info = nts.uk.ui.dialog.info;
-
-    import modal = nts.uk.ui.windows.sub.modal;
+    import close = nts.uk.ui.windows.close;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import gridColumn = nts.uk.ui.NtsGridListColumn;
+    import model = cmf005.share.model;
+    import alertError = nts.uk.ui.dialog.alertError;
+    export module viewmodel {
+        export class ScreenModel {
 
-    export class ScreenModel {
-        //Dropdownlist contain System data
-        systemList: KnockoutObservableArray<model.SystemModel> = ko.observableArray([]);
-        systemName: KnockoutObservable<string>;
-        currentSystemCode: KnockoutObservable<number>
-        selectedSystemCode: KnockoutObservable<number>;
+            // swapList
+            itemsSwap: KnockoutObservableArray<model.ItemCategory> = ko.observableArray([]);
+            itemsSwapLeft: KnockoutObservableArray<model.ItemCategory> = ko.observableArray([]);
+            columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+            currentCodeListSwap: KnockoutObservableArray<any>;
 
-        //C5
-        listCategorysDelete: KnockoutObservableArray<model.ItemCategory> = ko.observableArray([]);
-        swapColumns: KnockoutObservableArray<gridColumn>;
-        listCategorysChose: KnockoutObservableArray<model.ItemCategory> = ko.observableArray([]);
+            // comboBox
+            itemList: KnockoutObservableArray<ItemModelCombox>;
+            selectedCode: KnockoutObservable<string>;
+            currentItem: KnockoutObservable<ItemModelCombox>;
+            isEnable: KnockoutObservable<boolean>;
+            isEditable: KnockoutObservable<boolean>;
 
-        /* screen */
-        constructor() {
-            this.systemName = ko.observable('');
-            this.currentSystemCode = ko.observable(0);
-            this.selectedSystemCode = ko.observable(0);
+            constructor() {
+                var self = this;
 
-            //C5
-            // set tam sau lay tu tang apdapter
-            var array = [];
-            for (var i = 1; i < 10; i++) {
-                array.push(new model.ItemCategory(i, '0000' + i, 'cccccc' + i, '1', '2'));
-            }
-            this.listCategorysDelete(array);
+                self.itemList = ko.observableArray<any>;
+                service.getSysTypes().done(function(data: Array<any>) {
+                    if (data && data.length) {
+                        _.forOwn(data, function(index) {
+                            self.itemList.push(new ItemModelCombox(index.type, index.name));
+                        });
 
-            this.swapColumns = ko.observableArray([
-                { headerText: '', key: 'cateItemNumber', width: 40, hidden: true, formatter: _.escape },
-                { headerText: getText('CMF005_19'), key: 'categoryId', width: 80 },
-                { headerText: getText('CMF005_20'), key: 'categoryName', width: 150 }
-            ]);
+                    } else {
 
-        }
+                    }
 
-        // init screen
-        start(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred(), systemList = self.systemList;
-            service.getListSystemType().done((itemList: Array<model.SystemModel>) => {
-                // in case number of System list is greater then 0
-                if (itemList && itemList.length > 0) {
-                    systemList(itemList);
+                }).fail(function(error) {
+                    alertError(error);
+
+                }).always(() => {
+
+                });
+
+                self.isEnable = ko.observable(true);
+                self.isEditable = ko.observable(true);
+
+                self.selectedCode = ko.observableArray<any>;
+               
+                self.columns = ko.observableArray([
+                    { headerText: 'コード', key: 'categoryId', width: 70 },
+                    { headerText: '名称', key: 'categoryName', width: 200 }
+                ]);
+                var array = [];
+                for (var i = 1; i < 10; i++) {
+                    array.push(new model.ItemCategory('0000' + i, 'cccccc' + i, '1', '2'));
                 }
-
-            }).always(() => {
-                dfd.resolve();
-            });
-            return dfd.promise();
-        }
-
-
-        //Load category
-        loadCategoryList(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred(), listCategorysDelete = self.listCategorysDelete,
-                listCategorysChose = self.listCategorysChose,
-                searchText = '';
-            // get list category delete
-            let listCategoryId = [];
-            let category = model.ItemCategory;
-            for (category in listCategorysChose) {
-                console.log(category.categoryId); // "species"
-                listCategoryId.push(category.categoryId);
+                self.itemsSwap(array);
+                console.log(self.itemsSwap().length);
+                self.currentCodeListSwap = ko.observableArray([]);
+                self.itemsSwapLeft = self.currentCodeListSwap;
             }
 
-            //            service.getCategorysDeletion(self.selectedSystemCode,searchText,listCategoryId).done((itemList: Array<model.ItemCategory>) => {
-            //                console.log("aaaaaa:" + itemList.length);
-            //                // in case number of RoleSet is greater then 0
-            //                if (itemList && itemList.length > 0) {
-            //                    listCategorysDelete(itemList);
-            //                }
-            //
-            //            }).always(() => {
-            //                dfd.resolve();
-            //            });
-            return dfd.resolve();
-        }
+            remove() {
+                self.itemsSwap.shift();
+            }
 
-        // Return code / name of selected line
-        selectedListCategory() {
-            var self = this;
-            // return screen B
-            setShared("CMF005COutput", { listCategoryChose: self.listCategorysChose(),systemTypeId:self.selectedSystemCode()});
-            nts.uk.ui.windows.close();
-        }
-        //Cancel and exit
-        cancelSelectCategory() {
-            nts.uk.ui.windows.close();
+            closePopup() {
+                close();
+            }
+
+            submit() {
+                let self = this;
+                if (self.currentCodeListSwap().length == 0) {
+                    alertError({ messageId: "Msg_471" });
+                } else {
+                    setShared("CMF005COutput", { listCategoryChose: self.currentCodeListSwap(), systemTypeId: self.currentItem });
+                    close();
+                }
+            }
+
         }
     }
 
+    class ItemModel {
+        schelperSystem: number;
+        categoryId: string;
+        categoryName: string;
+        possibilitySystem: number;
+        storedProcedureSpecified: number;
+        timeStore: number;
+        otherCompanyCls: number;
+        attendanceSystem: number;
+        recoveryStorageRange: number;
+        paymentAvailability: number;
+        storageRangeSaved: number;
+        constructor(schelperSystem: number, categoryId: string, categoryName: string, possibilitySystem: number,
+            storedProcedureSpecified: number, timeStore: number, otherCompanyCls: number, attendanceSystem: number,
+            recoveryStorageRange: number, paymentAvailability: number, storageRangeSaved: number) {
+            this.schelperSystem = schelperSystem;
+            this.categoryId = categoryId;
+            this.categoryName = categoryName;
+            this.possibilitySystem = possibilitySystem;
+            this.storedProcedureSpecified = storedProcedureSpecified;
+            this.timeStore = timeStore;
+            this.otherCompanyCls = otherCompanyCls;
+            this.attendanceSystem = attendanceSystem;
+            this.recoveryStorageRange = recoveryStorageRange;
+            this.paymentAvailability = paymentAvailability;
+            this.storageRangeSaved = storageRangeSaved;
+        }
+
+        constructor(categoryId: string, categoryName: string, timeStore: number, storageRangeSaved: number) {
+
+            this.categoryId = categoryId;
+            this.categoryName = categoryName;
+            this.timeStore = timeStore;
+            this.storageRangeSaved = storageRangeSaved;
+        }
+    }
+
+    class ItemModelCombox {
+        code: string;
+        name: string;
+
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }
 
 
 

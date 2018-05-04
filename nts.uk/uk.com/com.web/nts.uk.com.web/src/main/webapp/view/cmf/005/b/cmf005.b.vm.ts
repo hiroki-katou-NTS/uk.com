@@ -37,20 +37,11 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         systemTypeId: KnockoutObservable<number>;
 
         //B5_3
-
-        items: KnockoutObservableArray<ItemModel>;
-        columns: KnockoutObservableArray<NtsGridListColumn>;
-        columns2: KnockoutObservableArray<NtsGridListColumn>;
-        currentCode: KnockoutObservable<any>;
-        currentCodeList: KnockoutObservableArray<any>;
-
         listDataCategory: KnockoutObservableArray<model.ItemCategory>;
         listColumnHeader: KnockoutObservableArray<NtsGridListColumn>;
-        selectedCsvItemNumber: KnockoutObservable<number> = ko.observable(null);
-        count: number = 100;
-        switchOptions: KnockoutObservableArray<any>;
+        currentCategory: KnockoutObservableArray<any>;
 
-        //datepicker
+        //datepicker B5_2_2
         enable: KnockoutObservable<boolean>;
         requiredDate: KnockoutObservable<boolean>;
         requiredMonth: KnockoutObservable<boolean>;
@@ -112,15 +103,17 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.systemTypeId = ko.observable('');
             //B5_3
             self.listDataCategory = ko.observableArray([]);
-//            for (let i = 1; i < 5; i++) {
-//                self.listDataCategory.push(new model.ItemCategory(i, '00' + i, 'catename' + i, 'aaaa', 'all'));
-//            }
+            self.currentCode = ko.observable();
+            self.currentCategory = ko.observableArray([]);
+            //            for (let i = 1; i < 5; i++) {
+            //                self.listDataCategory.push(new model.ItemCategory(i, '00' + i, 'catename' + i, 'aaaa', 'all'));
+            //            }
             self.listColumnHeader = ko.observableArray([
-                { headerText: '', key: 'cateItemNumber', width: 10, hidden: false },
-                { headerText: '', key: 'categoryId', width: 10, hidden: true },
-                { headerText: 'abc', key: 'categoryName', width: 150, hidden: false },
-                { headerText: '123', key: 'timeDeletion', width: 20, hidden: false },
-                { headerText: '456', key: 'rangeDeletion', width: 30 }
+                { headerText: '', key: 'cateItemNumber', width: 20, hidden: false },
+                { headerText: '', key: 'categoryId', hidden: true },
+                { headerText: getText('CMF005_24'), key: 'categoryName', width: 200, hidden: false },
+                { headerText: getText('CMF005_25'), key: 'timeDeletion', width: 100, hidden: false },
+                { headerText: getText('CMF005_26'), key: 'rangeDeletion', width: 100, hidden: false }
             ]);
 
             //DatePcicker B6_1
@@ -191,9 +184,9 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
             //B6_2_2
             let startEndDate = self.getDate();
-            self.dateValue1 = ko.observable({ startDate: startEndDate.startDate, endDate: startEndDate.endDate });
-            self.dateValue2 = ko.observable({ startDate: startEndDate.startDate, endDate: startEndDate.endDate });
-            self.dateValue3 = ko.observable({ startDate: startEndDate.startYear, endDate: startEndDate.endYear });
+            self.dateValue = ko.observable({ startDate: startEndDate.startDate, endDate: startEndDate.endDate });
+            self.monthValue = ko.observable({ startDate: startEndDate.startDate, endDate: startEndDate.endDate });
+            self.yearValue = ko.observable({ startDate: startEndDate.startYear, endDate: startEndDate.endYear });
 
             //B7_2_1
             self.isSaveBeforeDeleteFlg = ko.observable(model.SAVE_BEFOR_DELETE_ATR.YES);
@@ -224,9 +217,9 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 if (!nts.uk.util.isNullOrUndefined(data)) {
                     var listCategoryChoseAdd = _.map(data.listCategoryChose, item => {
                         let indexOfItem = _.findIndex(data.listCategoryChose, { categoryId: item.categoryId });
-                        return new model.ItemCategory(indexOfItem,item.categoryId,item.categoryName,item.timeDeletion,item.rangeDeletion);
+                        return new model.ItemCategory(indexOfItem, item.categoryId, item.categoryName, item.timeDeletion, item.rangeDeletion);
                     });
-                    self.listDataCategory = listCategoryChoseAdd;
+                    self.listDataCategory(listCategoryChoseAdd);
                     //                    let listDataCategory = data.listCategoryChose;
                     //                    cosole.log(listDataCategory.length);
                     //                    if (listDataCategory) {
@@ -235,8 +228,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                     //                           let model.ItemCategory = listDataCategory ;
                     //                        }
                     //                    }
-                      
-                      console.log(listCategoryChoseAdd.length);
+
+                    console.log(self.listDataCategory().length);
                     if (data.systemTypeId == model.SYSTEM_TYPE.PERSON_SYS) {
                         self.systemTypeName(getText('CMF005_170'));
                     }
@@ -254,8 +247,31 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             });
         }
 
+
         // Open screen D
         nextScreenD() {
+            let self = this;
+
+            if (self.listDataCategory().length > 0) {
+                // check so sanh hang ngay hang thang hang nam
+                if (self.checkDatePicker()) {
+                    // check pass word
+                    if (self.checkPass()) {
+                        self.next();
+                    }
+                } else {
+                    alertError({ messageId: 'Msg_465' });
+                }
+
+            } else {
+                alertError({ messageId: 'Msg_463' });
+            }
+        }
+
+        /**
+             * function next wizard by on click button 
+             */
+        private next() {
             let self = this;
             self.loadScreenD();
             $('#ex_accept_wizard').ntsWizard("next");
@@ -266,6 +282,34 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             nts.uk.request.jump("/view/cmf/005/a/index.xhtml");
         }
 
+
+        //check date,month,year
+        checkDatePicker() {
+            return true;
+        }
+        // validate password
+        checkPass() {
+            let self = this;
+
+            //check pass on
+            if (self.isExistCompressPasswordFlg()) {
+                // check pass empty
+                if (self.passwordForCompressFile() && self.confirmPasswordForCompressFile()) {
+                    // compare pass
+                    if (self.passwordForCompressFile() == self.confirmPasswordForCompressFile()) {
+                        return true;
+                    } else {
+                        alertError({ messageId: 'Msg_566' });
+                        return false;
+                    }
+                } else {
+                    alertError({ messageId: 'Msg_463' });
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
         /**
          *return 本日(NOW）－　１ヵ月　＋　１日
          */
@@ -318,6 +362,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.loadCcg001Component();
             self.showEmployeeList();
         }
+
 
         //load D screen
         loadCcg001Component() {
@@ -406,33 +451,6 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
     }
 
-    class ItemModel {
-        code: string;
-        name: string;
-        description: string;
-        other1: string;
-        other2: string;
-        deletable: boolean;
-        switchValue: boolean;
-        constructor(code: string, name: string, description: string, deletable: boolean, other1?: string, other2?: string) {
-            this.code = code;
-            this.name = name;
-            this.description = description;
-            this.other1 = other1;
-            this.other2 = other2 || other1;
-            this.deletable = deletable;
-            this.switchValue = ((code % 3) + 1).toString();
-        }
-    }
-    export class BoxModel {
-        id: number;
-        name: string;
-        constructor(id, name) {
-            var self = this;
-            self.id = id;
-            self.name = name;
-        }
-    }
 }
 
 

@@ -7,57 +7,58 @@
 <body>
 	<ui:composition>
 		<!-- b Screen -->
-		<div id="contentAll">
-			<div id="contentL">
-				<table id="tableContentL">
+		<div class="contentAll">
+			<div class="contentL">
+				<table class="tableContentL">
 					<tr>
-						<td><div
-								data-bind="ntsRadioButton: { checked: rdSelected, enable: 'true', option: optionCategory, optionValue: 'value', optionText: 'text', group: 'ntsControl'}">
-							</div></td>
+						<td>
+							<div data-bind="ntsRadioButton: { checked: rdSelected, enable: 'true', option: optionCategory, optionValue: 'value', optionText: 'text', group: 'ntsControl'}"/>
+						</td>
 					</tr>
 					<tr>
-						<td>#{i18n.getText('CMF005_170')},#{i18n.getText('CMF005_171')},#{i18n.getText('CMF005_172')},#{i18n.getText('CMF005_173')}
-						<div id="btnOpenC">
-								<button id="B3_5" tabindex="2" class="vertical-align-center"
-									data-bind="click: openScreenC, enable: isEnableBtnOpenC()">#{i18n.getText('CMF005_17')}</button>
-							</div></td>
+						<td>
+							<div id="btnOpenC">
+								<button id="B3_5" tabindex="2" class="vertical-align-center" data-bind="click: openScreenC, enable: isEnableBtnOpenC()">#{i18n.getText('CMF005_17')}</button>
+							</div>
+						</td>
 					</tr>
 					<tr>
-						<td><div
-								data-bind="ntsRadioButton: {checked: rdSelected, enable: 'true', option: optionDeleteSet, optionValue: 'value', optionText: 'text', group: 'ntsControl'}"></div>
+						<td>
+							<div data-bind="ntsRadioButton: {checked: rdSelected, enable: 'true', option: optionDeleteSet, optionValue: 'value', optionText: 'text', group: 'ntsControl'}" />
 						</td>
 					</tr>
 				</table>
 			</div>
-			<div id="contentR">
+			<div class="contentR">
 				<div id="fixed-flex-layout-right">
 					<div class="line-height flex">
 						<div>
 							<!--B4_1-->
-							<div class="float_left display_block"
-								data-bind="ntsFormLabel: {required : true ,constraint:['DelName'] }">#{i18n.getText('CMF005_20')}</div>
-							<input id="B4_2"
-								data-bind="ntsTextEditor: { value: deleteSetName, required: true, constraint: 'DelName', option: {width: '200px'}, name: '#[CMF005_21]'}"
-								tabindex="4" />
+							<div class="float_left display_block" data-bind="ntsFormLabel: {required : true ,constraint:['DelName'] }">#{i18n.getText('CMF005_20')}</div>
+							<input id="B4_2" tabindex="4"
+								data-bind="ntsTextEditor: { value: deleteSetName, required: true, constraint: 'DelName', option: {width: '200px'}, name: '#[CMF005_21]'}" />
 						</div>
-
 					</div>
 					<div class="flex">
 						<!--B5_1-->
 						<div data-bind="ntsFormLabel: {required : true }">#{i18n.getText('CMF005_22')}</div>
 						<div id="B5_2_1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF005_23')}</div>
-						<label id="B5_2_2" data-bind="text: systemTypeName"></label>
+						<label id="B5_2_2" data-bind="text: systemTypeName"/>
 					</div>
 
 					<div class="flex">
 						<!-- B5_3 -->
-						 <table id="single-list" data-bind="ntsGridList: {								
-							height: 350,
+						 <table id="single-list"
+							data-bind="ntsGridList: {
+							height: 400,
+							width: 500,
 							dataSource: listDataCategory,
 							primaryKey: 'categoryId',
 							columns: listColumnHeader,
-							multiple: false
-						}"></table> 
+							multiple: false,
+							value : currentCategory,
+							rows: 5
+						}"/>
 					</div>
 					<div class="flex">
 						<!--B6_1-->
@@ -67,18 +68,21 @@
 								<td>
 									<div class="label">#{i18n.getText('CMF005_28')}</div>
 								</td>
-								<td><div id="daily" tabindex="6"
-										data-bind="ntsDateRangePicker: { required: requiredDate, enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneMonth'}" /></td>
+								<td>
+									<div id="daily" tabindex="6" data-bind="ntsDateRangePicker: { required: requiredDate, enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneMonth'}" />
+								</td>
 							</tr>
 							<tr>
 								<td><div class="label">#{i18n.getText('CMF005_29')}</div></td>
-								<td><div id="mothly" tabindex="7"
-										data-bind="ntsDateRangePicker: { required: requiredMonth, enable: enable, showNextPrevious: true, value: monthValue, maxRange: 'oneMonth',type: 'yearmonth'}" /></td>
+								<td>
+									<div id="mothly" tabindex="7" data-bind="ntsDateRangePicker: { required: requiredMonth, enable: enable, showNextPrevious: true, value: monthValue, maxRange: 'oneMonth',type: 'yearmonth'}" />
+								</td>
 							</tr>
 							<tr>
 								<td><div class="label">#{i18n.getText('CMF005_30')}</div></td>
-								<td><div id="yearly" tabindex="8"
-										data-bind="ntsDateRangePicker: { required: requiredYear, enable: enable, showNextPrevious: true, value: yearValue, maxRange: 'oneYear',type: 'year',jumpUnit: 'year'}" /></td>
+								<td>
+									<div id="yearly" tabindex="8" data-bind="ntsDateRangePicker: { required: requiredYear, enable: enable, showNextPrevious: true, value: yearValue, maxRange: 'oneYear',type: 'year',jumpUnit: 'year'}" />
+								</td>
 							</tr>
 						</table>
 					</div>
@@ -98,16 +102,18 @@
 						<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF005_37')}</div>
 						<table>
 							<tr>
-								<td><div tabindex="10"
-										data-bind="ntsCheckBox: { checked: isExistCompressPasswordFlg, enable: true, text: '#{i18n.getText('CMF005_38')}' }"></div></td>
-								<td><input id="B8_2_2" tabindex="11"
-									data-bind="ntsTextEditor: {name: '#[CMF005_37]', value: passwordForCompressFile, required: true, constraint:'PasswordCompressFile', enable:isExistCompressPasswordFlg, option: {width: '120px',textmode: 'password'}}" /></td>
+								<td>
+									<div tabindex="10" data-bind="ntsCheckBox: { checked: isExistCompressPasswordFlg, enable: true, text: '#{i18n.getText('CMF005_38')}' }" />
+								</td>
+								<td>
+									<input id="B8_2_2" tabindex="11" data-bind="ntsTextEditor: {name: '#[CMF005_37]', value: passwordForCompressFile, required: true, constraint:'PasswordCompressFile', enable:isExistCompressPasswordFlg, option: {width: '120px',textmode: 'password'}}" />
+								</td>
 							</tr>
-							<tr >
+							<tr>
 								<td><div id="B8_3_1">#{i18n.getText('CMF005_138')}</div></td>
-								<td><input id="B8_3_2"
-									tabindex="12"
-									data-bind="ntsTextEditor: {name: '#[CMF005_139]', value: confirmPasswordForCompressFile, required: true, constraint:'PasswordCompressFile', enable:isExistCompressPasswordFlg, option: {width: '120px',textmode: 'password'}}" /></td>
+								<td>
+									<input id="B8_3_2" tabindex="12" data-bind="ntsTextEditor: {name: '#[CMF005_139]', value: confirmPasswordForCompressFile, required: true, constraint:'PasswordCompressFile', enable:isExistCompressPasswordFlg, option: {width: '120px',textmode: 'password'}}" />
+								</td>
 							</tr>
 						</table>
 
@@ -115,43 +121,15 @@
 					<div class="flex">
 						<!--B9_1-->
 						<div data-bind="ntsFormLabel: { constraint:['SupplementExplanation'] }">#{i18n.getText('CMF005_39')}</div>
-						<input id="B9_2" tabindex="13"
-							data-bind="ntsTextEditor: {name: '#[CMF005_39]', value: supplementExplanation, constraint:'SupplementExplanation'}" />
+						<input id="B9_2" tabindex="13" data-bind="ntsTextEditor: {name: '#[CMF005_39]', value: supplementExplanation, constraint:'SupplementExplanation'}" />
 					</div>
 
 					<div style="text-align: center; margin-top: 20px">
-						<button id="B20_1" class="large" tabindex="14"
-							data-bind="click: backScreenA">#{i18n.getText('CMF005_42')}</button>
-
-						<button id="B20_2" class="x-large proceed"
-							data-bind="click: nextScreenD">#{i18n.getText('CMF005_43')}</button>
+						<button id="B20_1" class="large" tabindex="14" data-bind="click: backScreenA">#{i18n.getText('CMF005_42')}</button>
+						<button id="B20_2" class="x-large proceed" data-bind="click: nextScreenD">#{i18n.getText('CMF005_43')}</button>
 					</div>
 
 				</div>
-
-
-
-
-				<!-- <table id="tableContentR">
-										<tr>
-											<td>
-												<div id="B4_1" data-bind="ntsFormLabel: {required : true }">#{i18n.getText('CMF005_20')}</div>
-												<input tabindex="1" id="B4_2"
-												data-bind="ntsTextEditor: {name: '#[CMF005_21]', value: deleteSetName, required: true, option: {width: '40px'}" />
-											</td>
-											<td></td>
-										</tr>
-										<tr>
-											<td>
-												<div id="B5_1" data-bind="ntsFormLabel: {required : true }">#{i18n.getText('CMF005_22')}</div>
-											</td>
-											<td><div id="B5_2_1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF005_23')}</div>
-												<div id="B5_2_2" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF005_23')}</div></td>
-										</tr>
-										<tr>
-											<td></td>
-										</tr>
-									</table> -->
 			</div>
 		</div>
 	</ui:composition>

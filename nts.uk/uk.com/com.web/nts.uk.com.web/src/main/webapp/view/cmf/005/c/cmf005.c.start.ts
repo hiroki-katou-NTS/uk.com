@@ -1,8 +1,7 @@
 module nts.uk.com.view.cmf005.c {
     __viewContext.ready(function() {
-        __viewContext['screenModel'] = new viewmodel.ScreenModel();
-        __viewContext['screenModel'].start().done(function() {
-            __viewContext.bind(__viewContext['screenModel']);
-        });
+        let screenModel = new nts.uk.com.view.cmf003.c.viewmodel.ScreenModel();
+            __viewContext.bind(screenModel);
+            
     });
 }

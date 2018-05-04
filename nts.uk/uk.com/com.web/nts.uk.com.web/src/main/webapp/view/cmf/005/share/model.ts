@@ -39,14 +39,14 @@ module nts.uk.com.view.cmf005.share.model {
     }
 
     export class ItemCategory {
-        cateItemNumber: number;
+     
         categoryId: string;
         categoryName: string;
         timeDeletion: string;
         rangeDeletion: string;
 
-        constructor(cateItemNumber: number, categoryId: string, categoryName: string,timeDeletion:string,rangeDeletion :string) {
-            this.cateItemNumber = cateItemNumber;
+        constructor( categoryId: string, categoryName: string,timeDeletion:string,rangeDeletion :string) {
+         
             this.categoryId = categoryId;
             this.categoryName = categoryName;
             this.timeDeletion = timeDeletion;
