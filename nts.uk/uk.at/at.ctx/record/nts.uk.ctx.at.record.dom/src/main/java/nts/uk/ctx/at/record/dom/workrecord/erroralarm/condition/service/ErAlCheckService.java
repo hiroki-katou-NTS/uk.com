@@ -10,4 +10,6 @@ public interface ErAlCheckService {
 	public void checkAndInsert(String employeeID, GeneralDate date);
 
 	public List<EmployeeDailyPerError> checkErrorFor(String employeeID, GeneralDate date);
+	
+	public void createEmployeeDailyPerError(List<EmployeeDailyPerError> errors);
 }

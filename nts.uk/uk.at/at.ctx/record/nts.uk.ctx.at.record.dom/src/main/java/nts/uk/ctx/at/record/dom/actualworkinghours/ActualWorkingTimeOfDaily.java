@@ -27,6 +27,9 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
+import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonCode;
+import nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode;
+import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent;
 import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTimeOfDaily;
 import nts.uk.ctx.at.record.dom.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
@@ -354,7 +357,39 @@ public class ActualWorkingTimeOfDaily {
 			|| integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily() == null)
 			return Collections.emptyList();
 		
-		val divergenceTimeInIntegrationOfDaily = integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime();
+		List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> divergenceTime = new ArrayList<>();
+		
+		DivergenceTimeOfDaily div_time = integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime();
+		for(int i=0 ; i<10 ;i++) {
+			String reasonContent = "";
+			String reasonCode = "";
+			
+			int div_index = i+1;
+			if(div_time != null) {
+				List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> obj
+					= div_time.getDivergenceTime().stream().filter(c->c.getDivTimeId()==div_index).collect(Collectors.toList());
+				
+				if(!obj.isEmpty()) {
+					if(obj.get(0).getDivReason() != null) reasonContent = obj.get(0).getDivReason().v();
+					if(obj.get(0).getDivResonCode() != null) reasonCode = obj.get(0).getDivResonCode().v();
+				}
+					
+			}
+			
+			nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime obj = new nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime(
+					new AttendanceTime(0),
+					new AttendanceTime(0),
+					new AttendanceTime(0),
+					div_index,
+					new DivergenceReasonContent(reasonContent),
+					new DiverdenceReasonCode(reasonCode));
+			
+			divergenceTime.add(obj);
+		}
+		
+		
+		//val divergenceTimeInIntegrationOfDaily = integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime();
+		val divergenceTimeInIntegrationOfDaily = new DivergenceTimeOfDaily(divergenceTime);
 		val returnList = new ArrayList<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime>(); 
 		//乖離時間算出のアルゴリズム実装
 		for(DivergenceTime divergenceTimeClass : divergenceTimeList) {

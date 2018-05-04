@@ -106,7 +106,7 @@ public class LeaveEarlyDecisionClock {
 			if(coreTimeSetting.isPresent()) {
 				//コアタイム使用するかどうか
 				if(coreTimeSetting.get().getTimesheet().isNOT_USE()) {
-					result = null;
+					return Optional.empty();
 				}
 				result = Optional.of(new TimeSpanForCalc(leave,coreTimeSetting.get().getCoreTimeSheet().getEndTime()));
 			}

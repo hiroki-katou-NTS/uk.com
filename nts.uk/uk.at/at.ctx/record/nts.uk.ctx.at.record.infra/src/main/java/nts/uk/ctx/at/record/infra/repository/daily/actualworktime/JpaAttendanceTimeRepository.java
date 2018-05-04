@@ -71,8 +71,8 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 			}
 			if(attendanceTime.getActualWorkingTimeOfDaily().getDivTime() != null) {
 				//追加
-					this.commandProxy().insert(KrcdtDayDivergenceTime.toEntity(attendanceTime.getEmployeeId(), attendanceTime.getYmd(),
-																			   attendanceTime.getActualWorkingTimeOfDaily().getDivTime()));
+				this.commandProxy().insert(KrcdtDayDivergenceTime.toEntity(attendanceTime.getEmployeeId(), attendanceTime.getYmd(),
+																			  attendanceTime.getActualWorkingTimeOfDaily().getDivTime()));
 			}
 			if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
 				if (attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
@@ -120,17 +120,22 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 				this.commandProxy().insert(
 						KrcdtDayPrsIncldTime.create(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), attendanceTime
 								.getActualWorkingTimeOfDaily().getTotalWorkingTime().getWithinStatutoryTimeOfDaily()));
+				
 			}
 		}
 	}
 
 	@Override
 	public void update(AttendanceTimeOfDailyPerformance attendanceTime) {
+		
 		KrcdtDayAttendanceTime entity = this.queryProxy()
 				.find(new KrcdtDayAttendanceTimePK(attendanceTime.getEmployeeId(), attendanceTime.getYmd()),
 						KrcdtDayAttendanceTime.class)
 				.orElse(null);
+
+		//delete -> Insert
 		deleteByEmployeeIdAndDate(attendanceTime.getEmployeeId(), attendanceTime.getYmd());
+		
 		if (entity != null) {
 			/* 勤怠時間 */
 			entity.setData(attendanceTime);
