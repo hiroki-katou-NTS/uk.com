@@ -3,6 +3,7 @@ package nts.uk.ctx.pereg.app.find.copysetting.item;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -21,6 +22,8 @@ import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.dom.copysetting.item.EmpCopySettingItem;
 import nts.uk.ctx.pereg.dom.copysetting.item.EmpCopySettingItemRepository;
 import nts.uk.ctx.pereg.dom.copysetting.setting.EmpCopySettingRepository;
+import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
@@ -39,10 +42,21 @@ public class CopySettingItemFinder {
 
 	@Inject
 	private SettingItemDtoMapping settingItemMap;
+	
+	@Inject 
+	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
 
 	public List<SettingItemDto> getAllCopyItemByCtgCode(String categoryCd, String employeeId, GeneralDate baseDate) {
 
 		String companyId = AppContexts.user().companyId();
+		
+		// Get perInfoCategory
+		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategoryByCtgCD(categoryCd,
+				companyId);
+		
+		if (!perInfoCategory.isPresent()) {
+			throw new RuntimeException("invalid PersonInfoCategory");
+		}
 
 		// check empployeeId
 		boolean isSelf = AppContexts.user().employeeId().equals(employeeId) ? true : false;
@@ -73,10 +87,11 @@ public class CopySettingItemFinder {
 			Map<String, Object> dataMap = MappingFactory.getFullDtoValue(dto);
 			// set data to setting-item-DTO
 			result.forEach(settingItemDto -> settingItemDto.setData(dataMap.get(settingItemDto.getItemCode())));
-
+			
+			this.settingItemMap.setTextForItem(result, employeeId, baseDate, perInfoCategory.get());
 		}
 
-		this.settingItemMap.setTextForItem(result, employeeId, baseDate, categoryCd);
+		
 
 		return result.stream().filter(item -> StringUtils.isEmpty(item.getItemParentCd())).collect(Collectors.toList());
 
