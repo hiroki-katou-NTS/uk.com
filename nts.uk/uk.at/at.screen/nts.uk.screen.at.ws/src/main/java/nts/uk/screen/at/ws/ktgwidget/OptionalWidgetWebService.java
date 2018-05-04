@@ -33,6 +33,6 @@ public class OptionalWidgetWebService extends WebService {
 	@POST
 	@Path("getOptionalWidgetInfo")
 	public OptionalWidgetInfoDTO getOptionalWidgetInfo(DatePeriodParam datePeriodParam){
-		return OptionalWidgetFinder.getDataByDateperiord(datePeriodParam.strMonth, datePeriodParam.endMonth);
+		return OptionalWidgetFinder.getDataByDateperiord(datePeriodParam.code, datePeriodParam.strMonth, datePeriodParam.endMonth);
 	}
 }

@@ -8,6 +8,8 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 public class DatePeriodParam {
 
+	public String code;
+	
 	public GeneralDate strMonth;
 	
 	public GeneralDate endMonth;

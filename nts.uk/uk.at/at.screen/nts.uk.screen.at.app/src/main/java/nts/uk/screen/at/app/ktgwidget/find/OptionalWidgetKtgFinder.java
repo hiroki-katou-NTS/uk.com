@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.ktgwidget.find;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -9,6 +10,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetImport;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.WidgetDisplayItemImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -86,7 +88,66 @@ public class OptionalWidgetKtgFinder {
 		return new OptionalWidgetDisplay(datePeriodDto, optionalWidgetImport);
 	}
 	
-	public OptionalWidgetInfoDTO getDataByDateperiord(GeneralDate startDate, GeneralDate endDate) {
+	public OptionalWidgetInfoDTO getDataByDateperiord(String code, GeneralDate startDate, GeneralDate endDate) {
+		
+		List<WidgetDisplayItemImport> widgetDisplayItem = findOptionalWidgetByCode(code).getWidgetDisplayItemExport();
+		for (WidgetDisplayItemImport item : widgetDisplayItem) {
+			if(item.getNotUseAtr()==1) {
+				if(item.getDisplayItemType() == 0) {
+					
+				}else if(item.getDisplayItemType() == 1) {
+					
+				}else if(item.getDisplayItemType() == 2) {
+					
+				}else if(item.getDisplayItemType() == 3) {
+					
+				}else if(item.getDisplayItemType() == 4) {
+					
+				}else if(item.getDisplayItemType() == 5) {
+					
+				}else if(item.getDisplayItemType() == 6) {
+					
+				}else if(item.getDisplayItemType() == 7) {
+					
+				}else if(item.getDisplayItemType() == 8) {
+					
+				}else if(item.getDisplayItemType() == 9) {
+					
+				}else if(item.getDisplayItemType() == 10) {
+					
+				}else if(item.getDisplayItemType() == 11) {
+					
+				}else if(item.getDisplayItemType() == 12) {
+					
+				}else if(item.getDisplayItemType() == 13) {
+					
+				}else if(item.getDisplayItemType() == 14) {
+					
+				}else if(item.getDisplayItemType() == 15) {
+					
+				}else if(item.getDisplayItemType() == 16) {
+					
+				}else if(item.getDisplayItemType() == 17) {
+					
+				}else if(item.getDisplayItemType() == 18) {
+					
+				}else if(item.getDisplayItemType() == 19) {
+					
+				}else if(item.getDisplayItemType() == 20) {
+					
+				}else if(item.getDisplayItemType() == 21) {
+					
+				}else if(item.getDisplayItemType() == 22) {
+					
+				}else if(item.getDisplayItemType() == 23) {
+					
+				}else if(item.getDisplayItemType() == 24) {
+					
+				}else if(item.getDisplayItemType() == 25) {
+					
+				}
+			}
+		}
 		return null;
 	}
 	

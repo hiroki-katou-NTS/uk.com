@@ -85,13 +85,26 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                 if(data!=null){
                     self.excuteDisplay(data.optionalWidgetImport);
                     self.getDate(data.datePeriodDto);
-                    self.switchMonth();
+                    self.switchMonth(topPagePartCode);
                 }    
                 block.clear();
             });           
             dfd.resolve();
 
             return dfd.promise();
+        }
+        private getInfor(code: string, strDate: string, endDate: string): void{
+            var self = this;
+            block.invisible();
+            var param ={
+                code: code,
+                strMonth: strDate,
+                endMonth: endDate
+            };
+            new service.Service().getOptionalWidgetInfo(param).done(function(data: any){
+                console.log(data);
+                block.clear();
+            });           
         }
         private excuteDisplay(data: any):void{
             var self = this;
@@ -179,7 +192,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             var lastDay = new Date(y, m, 0);
             return new period(y+'/'+m+'/'+'01', y+'/'+m+'/'+lastDay.getDate());
         }
-        private switchMonth():void{
+        private switchMonth(code: string):void{
             var self = this;
             if(isNaN(self.currentMonth().strMonth)){
                 return;    
@@ -191,6 +204,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                 } 
                 var lastMonth = self.currentMonth().endMonth.getDate();
                 self.txtDatePeriod(month+'/01'+getText('KTG029_3')+month+'/'+lastMonth+getText('KTG029_5'));
+                self.getInfor(code, self.currentMonth().strMonth, self.currentMonth().endMonth);
                 self.switchDate(false);
             }else{
                 var month = self.nextMonth().endMonth.getMonth()+1;
@@ -199,6 +213,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                 }
                 var lastMonth = self.nextMonth().endMonth.getDate();
                 self.txtDatePeriod(month+'/01'+getText('KTG029_3')+month+'/'+lastMonth+getText('KTG029_5'));
+                self.getInfor(code, self.nextMonth().strMonth, self.nextMonth().endMonth);
                 self.switchDate(true);
             }
         }
@@ -212,6 +227,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         
         openCMM045Dialog() {
             let self = this;
+//            ※URLパラメータ　＝　照会モード
             window.top.location = window.location.origin + '/nts.uk.at.web/view/cmm/045/a/index.xhtml?a=1';
         }
         
