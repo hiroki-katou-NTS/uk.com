@@ -124,8 +124,8 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             //Screen H
             self.optionsEmployee  = ko.observableArray([
                 { headerText: 'employeeId', key: 'employeeId', width: 100, hidden: true },
-                { headerText: 'コード', key: 'employeeCode', width: 120, hidden: false },
-                { headerText: '名称', key: 'employeeName', width: 200, hidden: false }
+                { headerText: 'コード', key: 'employeeCode', width: 100, hidden: false },
+                { headerText: '名称', key: 'employeeName', width: 150, hidden: false }
             ]); 
 
             self.startDateString.subscribe(value => {
