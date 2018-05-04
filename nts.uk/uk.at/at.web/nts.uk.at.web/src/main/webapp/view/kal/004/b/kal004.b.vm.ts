@@ -31,13 +31,13 @@ module nts.uk.com.view.kal004.b.viewmodel {
         constructor() {
             var self = this;
             self.enable = true;
-            self.txtDay = ko.observable(resource.getText('KAL004_32'));
+            self.txtDay = ko.observable();
             self.dateSpecify = ko.observableArray([
                 {value: 0, name: self.txtDay()},
                 {value: 1, name: self.txtDay()}
                 ]);
-            self.txtStrMonth = ko.observable(resource.getText('KAL004_37'));
-            self.txtEndMonth = ko.observable(resource.getText('KAL004_43'));
+            self.txtStrMonth = ko.observable();
+            self.txtEndMonth = ko.observable();
             self.strComboDay = ko.observableArray(__viewContext.enums.PreviousClassification);
             self.endComboDay = ko.observableArray(__viewContext.enums.PreviousClassification);
             self.strComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
