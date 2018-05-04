@@ -1,10 +1,14 @@
 package nts.uk.ctx.at.request.app.find.application.approvalstatus;
 
+import java.util.List;
+
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Setter
 public class ApplicationDetailDto {
 	
@@ -30,25 +34,28 @@ public class ApplicationDetailDto {
 	/** 
 	 * 反映状況 
 	 */
-	int reflectionInfo;
+	int reflectState;
+	
+	List<Integer> approvalStatus; 
+	
 	/** 
 	 * 承認フェーズ１ 
 	 */
-	int phase1;
+	String phase1;
 	/** 
 	 * 承認フェーズ２ 
 	 */
-	int phase2;
+	String phase2;
 	/** 
 	 * 承認フェーズ３ 
 	 */
-	int phase3;
+	String phase3;
 	/**
 	 *  承認フェーズ４
 	 */
-	int phase4;
+	String phase4;
 	/** 
 	 * 承認フェーズ５ 
 	 */
-	int phase5;
+	String phase5;
 }

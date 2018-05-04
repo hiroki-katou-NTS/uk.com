@@ -10,7 +10,7 @@
 			<script>
 				var dialogSize = {
 					width : 1280,
-					height : 500
+					height : 768
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -19,7 +19,6 @@
 			<com:scriptfile path="kaf018.d.start.js" />
 			<com:scriptfile path="kaf018.d.service.js" />
 			<com:scriptfile path="kaf018.d.vm.js" />
-			<com:scriptfile path="kaf018.d.start.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -45,9 +44,18 @@
 					</tr>
 				</table>
 				<!--D4_申請内容一覧 -->
-				<div id="extable" tabindex="4" style="width: 600px;"></div>
+				<table id="single-list"
+					data-bind="ntsGridList: {								
+					height: 700,
+					dataSource: listData,
+					primaryKey: 'applicationName',
+					columns: columns,
+					multiple: false,
+					rows: 20,
+					value: currentCode
+				}"></table>
 				<div class="button_Closeup">
-					<button tabindex="1" data-bind="click: closeUp()">#{i18n.getText('KAF018_48')}</button>
+					<button tabindex="1" data-bind="click: closeUp">#{i18n.getText('KAF018_48')}</button>
 				</div>
 			</div>
 		</ui:define>

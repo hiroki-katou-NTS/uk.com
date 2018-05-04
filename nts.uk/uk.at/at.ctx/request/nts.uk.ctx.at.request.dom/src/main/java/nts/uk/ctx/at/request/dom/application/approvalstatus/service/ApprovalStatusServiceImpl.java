@@ -17,6 +17,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
@@ -146,6 +147,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			// RequestList264
 			List<EmploymentHisImport> listEmpHist = atEmploymentAdapter.findByListSidAndPeriod(empInOut.getSId(),
 					datePeriod);
+			if(listEmpHist.isEmpty()) continue;
 			// 雇用（リスト）
 			for (EmploymentHisImport empHist : listEmpHist) {
 
@@ -287,24 +289,21 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		int approvedNumOfCase = 0;
 		int numOfDenials = 0;
 		List<Application_New> listApp_New = new ArrayList<>();
-		for (ApplicationApprContent appContent : listAppContent) {
-			Application_New app = appContent.getApplication();
-			listApp_New.add(app);
-		}
+		listAppContent.stream().map(x -> listApp_New.add(x.getApplication()));
 		for (Application_New app : listApp_New) {
 			// アルゴリズム「承認状況申請内容取得出張」を実行する
-			int valueState = app.getReflectionInformation().getStateReflectionReal().value;
-			if (valueState != 3 || valueState != 4) {
+			ReflectedState_New reflectState = app.getReflectionInformation().getStateReflectionReal();
+			if(!ReflectedState_New.WAITCANCEL.equals(reflectState) || !ReflectedState_New.CANCELED.equals(reflectState)) {
 				numOfApp++;
-				if (valueState == 0 || valueState == 5) {
+				if (ReflectedState_New.NOTREFLECTED.equals(reflectState)  || ReflectedState_New.REMAND.equals(reflectState) ) {
 					numOfUnapproval++;
 					numOfUnreflected++;
-				} else if (valueState == 1) {
+				} else if (ReflectedState_New.WAITREFLECTION.equals(reflectState)) {
 					approvedNumOfCase++;
 					numOfUnreflected++;
-				} else if (valueState == 6) {
+				} else if (ReflectedState_New.DENIAL.equals(reflectState)) {
 					numOfDenials++;
-				} else if (valueState == 2) {
+				} else if (ReflectedState_New.REFLECTED.equals(reflectState)) {
 					numOfApp++;
 				}
 			}
@@ -656,10 +655,11 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		for (ApprovalStatusEmployeeOutput appStt : listAppSttEmp) {
 			List<String> listEmpId = new ArrayList<>();
 			listEmpId.add(appStt.getSId());
+			if(listEmpId.isEmpty()) continue;
 			// Imported（就業）「個人社員基本情報」を取得する
 			// RequestList126
 			List<EmployeeBasicInfoImport> listEmpInfor = this.workplaceAdapter.findBySIds(listEmpId);
-			String empName = listEmpInfor.stream().findFirst().get().getPName();
+			String empName = !listEmpInfor.isEmpty() ? listEmpInfor.stream().findFirst().get().getPName() : "";
 			// アルゴリズム「承認状況取得申請」を実行する
 			List<ApplicationApprContent> listAppSttAcquisitionAppl = this.getAppSttAcquisitionAppl(appStt);
 			List<Application_New> listApprovalContent = new ArrayList<>();
@@ -679,31 +679,31 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		List<DailyStatus> listDailyStatus = new ArrayList<>();
 		for (Application_New app : listApprovalContent) {
 			DailyStatus dailyStatus = new DailyStatus();
-			int value = app.getReflectionInformation().getStateReflectionReal().value;
+			ReflectedState_New reflectedState = app.getReflectionInformation().getStateReflectionReal();
 			Integer symbol = null;
-			/** 反映済 */
-			if (value == 2) {
+			switch (reflectedState) {
+			case REFLECTED:
 				symbol = 0;
-			}
-			/** 反映待ち */
-			else if (value == 1) {
+				break;
+			case WAITREFLECTION:
 				symbol = 1;
-			}
-			/** 否認 */
-			else if (value == 6) {
+				break;
+			case DENIAL:
 				symbol = 2;
-			}
-			/** 0:未反映 */
-			/** 5: 差し戻し */
-			else if (value == 0 || value == 5) {
+				break;
+			case NOTREFLECTED:
 				symbol = 3;
+				break;
+			case REMAND:
+				symbol = 3;
+				break;
+			case WAITCANCEL:
+				break;
+			case CANCELED:
+				break;
+			default:
+				break;
 			}
-			/** 取消待ち */
-			/** 取消済 */
-			else {
-				continue;
-			}
-
 			GeneralDate dateTemp;
 			// 申請開始日が期間内に存在する
 			if (app.getStartDate().get().afterOrEquals(appStt.getStartDate())

@@ -11,14 +11,14 @@ module nts.uk.at.view.kaf018.b.viewmodel {
         tempData: Array<model.ConfirmationStatus> = [];
         enable: KnockoutObservable<boolean> = ko.observable(true);
         listWorkplaceId: KnockoutObservableArray<string> =  ko.observableArray([]);
-        closureId: KnockoutObservable<number> = ko.observable(0);
-        closureName: KnockoutObservable<string> = ko.observable('');
-        processingYm: KnockoutObservable<string> = ko.observable('');
+        closureId: number;
+        closureName: string;
+        processingYm: string;
         startDate: Date;
         endDate: Date;
-        isDailyComfirm: KnockoutObservable<boolean> = ko.observable(false);
-        listEmployeeCode: KnockoutObservableArray<any> = ko.observableArray([]);
-        listWorkplace: KnockoutObservableArray<model.WorkplaceInfor> =  ko.observableArray([]);
+        isDailyComfirm: boolean;
+        listEmployeeCode: Array<any>;
+        listWorkplace: Array<model.WorkplaceInfor>;
         constructor() {
             var self = this;
             $("#fixed-table").ntsFixedTable({ width: 1000, height: 161 });         
@@ -26,8 +26,8 @@ module nts.uk.at.view.kaf018.b.viewmodel {
         
         startPage(): JQueryPromise<any> {
             var self = this;
-
             var dfd = $.Deferred();
+            block.invisible();
             let params: model.IParam = nts.uk.ui.windows.getShared('KAF018BInput');
             self.closureId = params.closureId;
             self.closureName = params.closureName;
@@ -50,9 +50,11 @@ module nts.uk.at.view.kaf018.b.viewmodel {
                     self.tempData.push(new model.ConfirmationStatus(item.workplaceId, item.workplaceName , item.enabled, item.checked, item.numOfApp, item.approvedNumOfCase, item.numOfUnreflected, item.numOfUnapproval, item.numOfDenials));
                 
                 })
-                console.log(self.tempData);
                 dfd.resolve();
-            });
+                block.clear();
+            }).fail(function() {
+                block.clear();
+            })
             return dfd.promise();
         }
 

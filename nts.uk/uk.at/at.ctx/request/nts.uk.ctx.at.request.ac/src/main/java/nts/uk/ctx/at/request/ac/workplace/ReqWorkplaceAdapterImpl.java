@@ -65,7 +65,7 @@ public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 	public List<EmployeeBasicInfoImport> findBySIds(List<String> sIds) {
 
 		return this.syEmpPub.findBySIds(sIds).stream()
-				.map(x -> new EmployeeBasicInfoImport(x.getPId(), x.getEmployeeId(), x.getPName(), x.getGender(),
+				.map(x -> new EmployeeBasicInfoImport(x.getPId(), x.getEmployeeId(), Objects.isNull(x.getPName()) ? "" : x.getPName(), x.getGender(),
 						x.getBirthDay(), Objects.isNull(x.getPMailAddr()) ? "" : x.getPMailAddr().v() , x.getEmployeeCode(),
 						x.getEntryDate(), x.getRetiredDate(), Objects.isNull(x.getCompanyMailAddr()) ? "" : x.getCompanyMailAddr().v()))
 				.collect(Collectors.toList());

@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import formatDate = nts.uk.time.formatDate;
     import shareModel = kaf018.share.model;
+    import block = nts.uk.ui.block;
 
     export class ScreenModel {
         legendOptions: any;
@@ -13,12 +14,12 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         endDateFormat: string;
         startDate: Date;
         endDate: Date;
-        listWorkplace: any;
+        listWorkplace: KnockoutObservableArray<any> = ko.observableArray([]);;
         selectedWplIndex: number;
         selectedWplId: KnockoutObservable<string>;
         selectedWplName: KnockoutObservable<string>;
         listEmpCd: Array<string>;
-        listWkpId: Array<string> = [];
+        listWkpId: KnockoutObservableArray<string> = ko.observableArray([]);
 
         enableNext: KnockoutObservable<boolean>;
         enablePre: KnockoutObservable<boolean>;
@@ -58,7 +59,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-
+            block.invisible();
             let params = getShared("KAF018C_PARAMS");
             if (params) {
                 self.closureId = params.closureId;
@@ -76,10 +77,10 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             self.dtAft(new Date(self.endDateFormat));
             self.setArrDate();
             self.getWkpName();
-            self.initExTable();
             _.forEach(self.listWorkplace, function(item) {
                 self.listWkpId.push(item.code);
             });
+            self.initExTable();
             dfd.resolve();
             return dfd.promise();
         }
@@ -100,7 +101,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             var dfd = $.Deferred();
             let obj = {
                 selectedWkpId: self.selectedWplId(),
-                listWkpId: self.listWkpId,
+                listWkpId: self.listWkpId(),
                 startDate: self.startDate,
                 endDate: self.endDate,
                 listEmpCode: self.listEmpCd,
@@ -159,8 +160,12 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                         .LeftmostHeader(initExTable.leftmostHeader).LeftmostContent(initExTable.leftmostContent)
                         .DetailHeader(initExTable.detailHeader).DetailContent(initExTable.detailContent)
                         .create();
+                }).always(() => {
+                    block.clear();
                 })
-            });
+            }).fail(() => {
+                block.clear();
+            })
         }
 
         /**
@@ -168,6 +173,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         */
         updateExTable() {
             let self = this;
+            block.invisible();
             self.getStatusSymbol().done(function(listData: any) {
                 let sv1 = self.setColorForCellHeaderDetail();
                 let sv2 = self.setSymbolForCellContentDetail(listData);
@@ -175,7 +181,11 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                     let initExTable = self.setFormatData(detailHeaderDeco, listData);
                     $("#extable").exTable("updateTable", "leftmost", initExTable.leftmostHeader, initExTable.leftmostContent, true);
                     $("#extable").exTable("updateTable", "detail", initExTable.detailHeader, initExTable.detailContent, true);
+                }).always(() => {
+                    block.clear();
                 })
+            }).fail(() => {
+                block.clear();
             })
         }
 
@@ -196,8 +206,8 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                     headerText: text("KAF018_29"),
                     key: "empName",
                     width: "150px",
-                    control: "link", 
-                    handler: function(rData, rowIdx, key) {self.goToD(rData);}
+                    control: "link",
+                    handler: function(rData, rowIdx, key) { self.goToD(rData); }
                 }
             ];
             leftmostHeader = {

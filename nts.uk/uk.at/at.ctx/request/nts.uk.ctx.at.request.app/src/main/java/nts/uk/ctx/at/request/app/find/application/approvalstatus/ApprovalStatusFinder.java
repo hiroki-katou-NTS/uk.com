@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.approvalstatus;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -31,10 +32,11 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Appro
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppDetail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatus;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatusOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.HolidayAppType;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
@@ -267,7 +269,25 @@ public class ApprovalStatusFinder {
 				appSttContent.getListStatusEmp());
 		HdAppSet lstHdAppSet = appList.getLstHdAppSet();
 		List<ApplicationDetailDto> listAppDetail = new ArrayList<>();
-		for (ApprovalSttAppDetail app : appList.getApprovalSttAppDetail()) {
+		GeneralDate appStartDate = GeneralDate.today();
+		GeneralDate appEndDate = GeneralDate.today();
+		List<Integer> approvalStatus = new ArrayList<>();
+		List<Integer> approvalStatus2 = new ArrayList<>();
+		List<Integer> approvalStatus3 = new ArrayList<>();
+		List<Integer> approvalStatus4 = new ArrayList<>();
+		for(int x = 0; x < 4; x++) {
+			approvalStatus.add(x);
+			approvalStatus2.add(x);
+			approvalStatus3.add(x);
+			approvalStatus4.add(x);
+		}
+		listAppDetail. add(new ApplicationDetailDto(0, "残業申請", 0, appStartDate, appEndDate, "2-16③システム日付(2018/4/7)　<　申請日.終了日(3/31)+8　　ＯＫ", 2, approvalStatus, "Phase1", "Phase1", "Phase1", "Phase1", "Phase1"));
+		listAppDetail. add(new ApplicationDetailDto(1, "残業申請", 1, appStartDate, appEndDate, "2-16③システム日付(2018/4/7)　<　申請日.終了日(3/31)+8　　ＯＫ", 2, approvalStatus2, "Phase1", "Phase1", "Phase1", "Phase1", "Phase1"));
+		listAppDetail. add(new ApplicationDetailDto(2, "残業申請", 1, appStartDate, appEndDate, "2-16③システム日付(2018/4/7)　<　申請日.終了日(3/31)+8　　ＯＫ", 2, approvalStatus3, "Phase1", "Phase1", "Phase1", "Phase1", "Phase1"));
+		listAppDetail. add(new ApplicationDetailDto(3, "残業申請", 0, appStartDate, appEndDate, "2-16③システム日付(2018/4/7)　<　申請日.終了日(3/31)+8　　ＯＫ", 2, approvalStatus4, "Phase1", "Phase1", "Phase1", "Phase1", "Phase1"));
+		listAppDetail. add(new ApplicationDetailDto(1, "残業申請", 1, appStartDate, appEndDate, "2-16③システム日付(2018/4/7)　<　申請日.終了日(3/31)+8　　ＯＫ", 2, approvalStatus, "Phase1", "Phase1", "Phase1", "Phase1", "Phase1"));
+		/*List<ApprovalSttAppDetail> listAppSttDetail = appList.getApprovalSttAppDetail();
+		for (ApprovalSttAppDetail app : listAppSttDetail) {
 			ApplicationDetailDto detail = new ApplicationDetailDto();
 
 			ApplicationType appType = app.getAppDispName().getAppType();
@@ -275,28 +295,55 @@ public class ApprovalStatusFinder {
 			String appId = applicaton_N.getAppID();
 			detail.setAppType(appType.value);
 			detail.setAppStartDate(applicaton_N.getStartDate().orElseGet(null));
+			if(applicaton_N.isAppAbsence() || applicaton_N.isAppBusinessTrip() || applicaton_N.isAppWkChange()) {
+				detail.setAppEndDate(applicaton_N.getEndDate().orElseGet(null));
+			}
+			
 			detail.setAppName(app.getAppDispName().getDispName().v());
 			detail.setPrePostAtr(applicaton_N.getPrePostAtr().value);
-			detail.setAppEndDate(applicaton_N.getEndDate().orElseGet(null));
 
+			List<ApprovalPhaseStateImport_New> listApprovalPhase= app.getAppContent().getApprRootContentExport().getApprovalRootState().getListApprovalPhaseState();
+			listApprovalPhase.sort((ApprovalPhaseStateImport_New x1, ApprovalPhaseStateImport_New x2) -> x1.getPhaseOrder() - x2.getPhaseOrder());
+			List<Integer> appStatus = new ArrayList<>();
+			for(ApprovalPhaseStateImport_New appPhase: listApprovalPhase) {
+				ApprovalBehaviorAtrImport_New appBehavior = appPhase.getApprovalAtr();
+				switch (appBehavior) {
+				case UNAPPROVED:
+					appStatus.add(0);
+					break;
+				case APPROVED:
+					appStatus.add(1);
+					break;
+				case REMAND:
+					appStatus.add(2);
+					break;
+				case DENIAL:
+					appStatus.add(3);
+					break;
+				default:
+					break;
+				}
+			}
+			detail.setApprovalStatus(appStatus);
 			List<ApproverOutput> listApprover = app.getListApprover();
 			for (ApproverOutput approver : listApprover) {
 				int phase = approver.getPhase();
+				String others = approver.getEmpName() + I18NText.getText("KAF018_47", approver.getNumOfPeople().toString());
 				switch (phase) {
 				case 1:
-					detail.setPhase1(phase);
+					detail.setPhase1(others);
 					break;
 				case 2:
-					detail.setPhase2(phase);
+					detail.setPhase2(others);
 					break;
 				case 3:
-					detail.setPhase3(phase);
+					detail.setPhase3(others);
 					break;
 				case 4:
-					detail.setPhase4(phase);
+					detail.setPhase4(others);
 					break;
 				case 5:
-					detail.setPhase5(phase);
+					detail.setPhase5(others);
 					break;
 				default:
 					break;
@@ -369,8 +416,10 @@ public class ApprovalStatusFinder {
 				break;
 			}
 			detail.setAppContent(appContent);
+			int reflectState = applicaton_N.getReflectionInformation().getStateReflectionReal().value;
+			detail.setReflectState(reflectState);
 			listAppDetail.add(detail);
-		}
+		}*/
 
 		return new ApplicationsListDto(listAppDetail, lstHdAppSet);
 	}
