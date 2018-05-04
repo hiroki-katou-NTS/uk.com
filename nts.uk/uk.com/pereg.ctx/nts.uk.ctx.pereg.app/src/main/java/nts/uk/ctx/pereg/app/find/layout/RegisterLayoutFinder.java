@@ -1,10 +1,8 @@
 package nts.uk.ctx.pereg.app.find.layout;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -61,11 +59,9 @@ public class RegisterLayoutFinder {
 	private EmpCopySettingFinder copySettingFinder;
 
 	@Inject
-
 	private CopySettingItemFinder copyItemFinder;
 
 	@Inject
-
 	private InitValueSetItemFinder initItemFinder;
 
 	@Inject
@@ -79,10 +75,6 @@ public class RegisterLayoutFinder {
 	
 	private final String END_DATE_NAME = "終了日";
 	
-	private static List<String> haveRadioButtonCategorys = Arrays.asList("CS00020","CS00025", "CS00026", "CS00027", "CS00028", "CS00029",
-			"CS00030", "CS00031", "CS00032", "CS00033", "CS00034", "CS00049", "CS00050", "CS00051", "CS00052",
-			"CS00053", "CS00054", "CS00055", "CS00056", "CS00057", "CS00058", "CS00035");
-
 	/**
 	 * get Layout Dto by create type
 	 * 
@@ -145,11 +137,8 @@ public class RegisterLayoutFinder {
 			}
 		}
 		
-		// set default radio value
-		List<LayoutPersonInfoClsDto> classItemOfRadioCategory = classItemList.stream()
-				.filter(classItem -> haveRadioButtonCategorys.contains(classItem.getPersonInfoCategoryCD()))
-				.collect(Collectors.toList());
-		initDefaultValue.setDefaultValueRadio(classItemOfRadioCategory);
+		// set default value
+		initDefaultValue.setDefaultValue(classItemList);
 
 		return classItemList;
 	}

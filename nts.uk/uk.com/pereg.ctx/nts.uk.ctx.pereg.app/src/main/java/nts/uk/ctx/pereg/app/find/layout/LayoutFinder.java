@@ -18,10 +18,6 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
-import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
-import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
-import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
@@ -76,9 +72,6 @@ public class LayoutFinder {
 	private EmployeeDataMngInfoRepository employeeDataRepo;
 
 	@Inject
-	private AffCompanyHistRepository affCompanyHistRepo;
-
-	@Inject
 	private LayoutPersonInfoClsFinder clsFinder;
 
 	@Inject
@@ -123,10 +116,6 @@ public class LayoutFinder {
 	@Inject 
 	private InitDefaultValue initDefaultValue;
 	
-	private static List<String> haveRadioButtonCategorys = Arrays.asList("CS00020","CS00025", "CS00026", "CS00027", "CS00028", "CS00029",
-			"CS00030", "CS00031", "CS00032", "CS00033", "CS00034", "CS00049", "CS00050", "CS00051", "CS00052",
-			"CS00053", "CS00054", "CS00055", "CS00056", "CS00057", "CS00058", "CS00035");
-
 	public List<SimpleEmpMainLayoutDto> getSimpleLayoutList(String browsingEmpId) {
 
 		String loginEmpId = AppContexts.user().employeeId();
@@ -166,7 +155,6 @@ public class LayoutFinder {
 		// query properties
 		GeneralDate standardDate = GeneralDate.legacyDate(layoutQuery.getStandardDate());
 		String browsingEmpId = layoutQuery.getBrowsingEmpId();
-		String cid = AppContexts.user().companyId();
 		EmployeeDataMngInfo employee = employeeDataRepo.findByEmpId(browsingEmpId).get();
 		String browsingPeronId = employee.getPersonId();
 
@@ -305,36 +293,6 @@ public class LayoutFinder {
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * @param stardardDate
-	 * @param employee
-	 * @param result
-	 */
-	private GeneralDate validateStandardDate(String cid, String browsingEmpId, GeneralDate stardardDate,
-			EmpMaintLayoutDto result) {
-
-		AffCompanyHist affCompanyHist = affCompanyHistRepo.getAffCompanyHistoryOfEmployee(cid, browsingEmpId);
-		if (affCompanyHist == null) {
-			throw new RuntimeException("Affliate Company Histoty can't be null!");
-		}
-		AffCompanyHistByEmployee employeeHistory = affCompanyHist.getAffCompanyHistByEmployee(browsingEmpId);
-
-		if (employeeHistory.getHistoryWithReferDate(stardardDate).isPresent()) {
-			result.setStandardDate(stardardDate);
-		} else {
-			Optional<AffCompanyHistItem> hitoryOption = employeeHistory.getHistoryBeforeReferDate(stardardDate);
-			if (hitoryOption.isPresent()) {
-				stardardDate = hitoryOption.get().getDatePeriod().end();
-			} else {
-				hitoryOption = employeeHistory.getHistoryAfterReferDate(stardardDate);
-				if (hitoryOption.isPresent()) {
-					stardardDate = hitoryOption.get().getDatePeriod().start();
-				}
-			}
-		}
-		return stardardDate;
 	}
 
 	/**
@@ -483,10 +441,8 @@ public class LayoutFinder {
 			}
 		}
 		
-		// set default value for items of category WorkingCondition 
-		if (haveRadioButtonCategorys.contains(perInfoCategory.getCategoryCode())) {
-			initDefaultValue.setDefaultValueRadio(classItemList);
-		}
+		// set default value
+		initDefaultValue.setDefaultValue(classItemList);
 
 	}
 
