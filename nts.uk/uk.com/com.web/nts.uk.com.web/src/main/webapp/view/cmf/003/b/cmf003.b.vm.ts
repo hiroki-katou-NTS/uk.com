@@ -15,7 +15,19 @@ module nts.uk.at.view.cmf003.d {
     export module viewmodel {
         export class ScreenModel {
             
-             //input
+            // systemtype from C
+            systemtypeFromC: KnockoutObservable<ItemCombobox>;
+            
+            // check compress password
+            isCompressPass: KnockoutObservable<boolean>;
+            
+            // check compress password
+            isSymbol: KnockoutObservable<boolean>;
+            
+            // reference date
+            referenceDate : string;
+
+            //input
             password: KnockoutObservable<string> = ko.observable('');
             confirmPassword: KnockoutObservable<string> = ko.observable('');
             explanation: KnockoutObservable<string> = ko.observable('');
@@ -27,15 +39,14 @@ module nts.uk.at.view.cmf003.d {
             activeStep: KnockoutObservable<number>;
 
             //gridlist
-            items: KnockoutObservableArray<CategoryModel>;
-            items2: KnockoutObservableArray<CategoryModel2>;
-            columns: KnockoutObservableArray<NtsGridListColumn>;
-            columns2: KnockoutObservableArray<NtsGridListColumn>;
+            categorys: KnockoutObservableArray<CategoryModel>;
+            columnCategorys: KnockoutObservableArray<NtsGridListColumn>;
+            columnEmployees: KnockoutObservableArray<NtsGridListColumn>;
             currentCode: KnockoutObservable<any>;
             currentCodeList: KnockoutObservableArray<any>;
 
-//          itemTitleAtr: KnockoutObservableArray<any>;
-//          selectedTitleAtr: KnockoutObservable<number>;
+            //          itemTitleAtr: KnockoutObservableArray<any>;
+            //          selectedTitleAtr: KnockoutObservable<number>;
             //Date Ranger Picker : type fullDay
             dayEnable: KnockoutObservable<boolean>;
             dayRequired: KnockoutObservable<boolean>;
@@ -56,7 +67,7 @@ module nts.uk.at.view.cmf003.d {
             yearValue: KnockoutObservable<any>;
             yearStartDateString: KnockoutObservable<string>;
             yearEndDateString: KnockoutObservable<string>;
-            
+
             //Help Button
             enable: KnockoutObservable<boolean>;
 
@@ -143,6 +154,9 @@ module nts.uk.at.view.cmf003.d {
             constructor() {
                 var self = this;
                 
+                self.isCompressPass = ko.observable(false);
+                self.isSymbol = ko.observable(false);
+
                 self.stepList = [
                     { content: '.step-1' },
                     { content: '.step-2' },
@@ -150,98 +164,93 @@ module nts.uk.at.view.cmf003.d {
                 ];
                 self.activeStep = ko.observable(0);
                 //self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
-    
+
                 //gridlist
-                this.items = ko.observableArray([]);
-                for (let i = 1; i < 100; i++) {
-                    this.items.push(new CategoryModel('00' + i, '基本給', "基本給 ", "基本給"));
-                }
-    
-                this.items2 = ko.observableArray([]);
-                for (let i = 1; i < 100; i++) {
-                    this.items2.push(new CategoryModel2('00000' + i, "名称"));
-                }
-    
-                this.columns = ko.observableArray([
-                    { headerText: '', key: 'code', width: 100, hidden: true },
-                    { headerText: getText('CMF003_30'), key: 'name', width: 320 },
-                    { headerText: getText('CMF003_31'), key: 'period', width: 80 },
-                    { headerText: getText('CMF003_32'), key: 'range', width: 80 }
+                this.categorys = ko.observableArray([]);
+
+                this.columnCategorys = ko.observableArray([
+                    { headerText: '', key: 'categoryId', width: 100, hidden: true },
+                    { headerText: getText('CMF003_30'), key: 'categoryName', width: 320 },
+                    { headerText: getText('CMF003_31'), formatter: timeStore, key: 'timeStore', width: 80 },
+                    { headerText: getText('CMF003_32'), formatter: storageRangeSaved, key: 'storageRangeSaved', width: 80 }
                 ]);
-                this.columns2 = ko.observableArray([
-                    { headerText: '', key: 'code', width: 100, hidden: true },
-                    { headerText: getText('CMF003_163'), key: 'code', width: 120 },
-                    { headerText: getText('CMF003_164'), key: 'name', width: 280 }
+
+                this.columnEmployees = ko.observableArray([
+                    { headerText: '', key: 'categoryId', width: 100, hidden: true },
+                    { headerText: getText('CMF003_30'), key: 'categoryName', width: 320 },
+                    { headerText: getText('CMF003_31'), key: 'timeStore', width: 80 }
                 ]);
+
                 self.itemTitleAtr = ko.observableArray([
                     { value: 0, titleAtrName: resource.getText('CMF003_088') },
                     { value: 1, titleAtrName: resource.getText('CMF003_089') }]);
                 self.selectedTitleAtr = ko.observable(0);
                 this.currentCode = ko.observable();
                 this.currentCodeList = ko.observableArray([]);
-    
+
                 //Date Ranger Picker : type full day
                 self.dayEnable = ko.observable(true);
-                self.dayRequired = ko.observable(true);
+                self.dayRequired = ko.observable(false);
                 self.dayStartDateString = ko.observable("");
                 self.dayEndDateString = ko.observable("");
-                self.dayValue = ko.observable({});
-    
+                self.dayValue = ko.observable({ startDate: moment.utc().subtract(1, "M").add(1, "d").format("YYYY/MM/DD"), 
+                        endDate: moment.utc().format("YYYY/MM/DD")});
+
                 self.dayStartDateString.subscribe(function(value) {
                     self.dayValue().startDate = value;
                     self.dayValue.valueHasMutated();
                 });
-    
+
                 self.dayEndDateString.subscribe(function(value) {
                     self.dayValue().endDate = value;
                     self.dayValue.valueHasMutated();
                 });
-    
+
                 //Date Ranger Picker : type month
                 self.monthEnable = ko.observable(true);
-                self.monthRequired = ko.observable(true);
+                self.monthRequired = ko.observable(false);
                 self.monthStartDateString = ko.observable("");
                 self.monthEndDateString = ko.observable("");
-                self.monthValue = ko.observable({});
-    
+                self.monthValue = ko.observable({ startDate: moment.utc().format("YYYY/MM"), endDate: moment.utc().format("YYYY/MM")});
+
                 self.monthStartDateString.subscribe(function(value) {
                     self.monthValue().startDate = value;
                     self.monthValue.valueHasMutated();
                 });
-    
+
                 self.monthEndDateString.subscribe(function(value) {
                     self.monthValue().endDate = value;
                     self.monthValue.valueHasMutated();
                 });
-    
+
                 //Date Ranger Picker : type year
                 self.yearEnable = ko.observable(true);
-                self.yearRequired = ko.observable(true);
+                self.yearRequired = ko.observable(false);
                 self.yearStartDateString = ko.observable("");
                 self.yearEndDateString = ko.observable("");
-                self.yearValue = ko.observable({});
-    
+                self.yearValue = ko.observable({startDate: moment.utc().format("YYYY"), endDate: moment.utc().format("YYYY")});
+
                 self.yearStartDateString.subscribe(function(value) {
                     self.yearValue().startDate = value;
                     self.yearValue.valueHasMutated();
                 });
-    
+
                 self.yearEndDateString.subscribe(function(value) {
                     self.yearValue().endDate = value;
                     self.yearValue.valueHasMutated();
                 });
                 //Defaut D4_7
                 self.dateDefaut = ko.observable("2018/04/19");
-                
+
                 //Help Button
                 self.enable = ko.observable(true);
                 self.textHelp = ko.observable("”基準日説明画像”");
-                
+
                 //Radio button
-//                self.itemTitleAtr = ko.observableArray([
-//                    { value: 0, titleAtrName: resource.getText('CMF003_88') },
-//                    { value: 1, titleAtrName: resource.getText('CMF003_89') }]);
-//                self.selectedTitleAtr = ko.observable(0);
+                //                self.itemTitleAtr = ko.observableArray([
+                //                    { value: 0, titleAtrName: resource.getText('CMF003_88') },
+                //                    { value: 1, titleAtrName: resource.getText('CMF003_89') }]);
+                //                self.selectedTitleAtr = ko.observable(0);
                 self.enableGrid = ko.observable(false);
                 $("#titleSeach").prop("disabled", true);
                 _.defer(function() {
@@ -307,9 +316,9 @@ module nts.uk.at.view.cmf003.d {
                 });
             }//end constructor
 
-            
-            
-            
+
+
+
             /**
              * Set default ccg001 options
              */
@@ -400,6 +409,7 @@ module nts.uk.at.view.cmf003.d {
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                         self.selectedEmployee(data.listEmployee);
                         self.applyKCP005ContentSearch(data.listEmployee);
+                        self.referenceDate = moment(data.baseDate).format("YYYY/MM/DD");
                     }
                 }
                 //$('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
@@ -420,7 +430,7 @@ module nts.uk.at.view.cmf003.d {
             */
             public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
                 var self = this;
-                self.employeeList([]);
+                self.employeeList = ko.observableArray([]);
                 var employeeSearchs: UnitModel[] = [];
                 for (var employeeSearch of dataList) {
                     var employee: UnitModel = {
@@ -463,96 +473,175 @@ module nts.uk.at.view.cmf003.d {
                 let self = this;
                 // check selection employee 
                 if (self.selectedEmployeeCode && self.selectedEmployee() && self.selectedEmployeeCode().length > 0) {
-                    
-                }else{
-                   nts.uk.ui.dialog.error({ messageId: "Msg_498", messageParams: ["X", "Y"] }); 
+
+                } else {
+                    nts.uk.ui.dialog.error({ messageId: "Msg_498", messageParams: ["X", "Y"] });
                 }
-                
-                
+
+
             }
-            
+
             /**
              * function next wizard by on click button 
              */
-        private next(){
-            $('#ex_accept_wizard').ntsWizard("next");
-        }
-        /**
-         * function previous wizard by on click button 
-         */
-        private previous() {
-            $('#ex_accept_wizard').ntsWizard("prev");
-        }
-        /**
-        * function previous wizard by on click button 
-        */
-        private nextPageEmployee(): void {
-            var self = this;
-            self.next();
-        }
-        private previousB(): void {
-            var self = this;
-            self.previous();
-        }
-        private backToA() {
-            let self = this;
-            nts.uk.request.jump("/view/cmf/003/a/index.xhtml");
-        }
-
-        private selectCategory(): void {
-            nts.uk.ui.windows.sub.modal('../c/index.xhtml').onClosed(() => {
-                $("#B4_2").focus();
-                let params = getShared('CMF003cOutputCategorys'); 
-                console.log("params");
-                console.log(params);
-            });
-        }
+            private next() {
+                $('#ex_accept_wizard').ntsWizard("next");
+            }
+            /**
+             * function previous wizard by on click button 
+             */
+            private previous() {
+                $('#ex_accept_wizard').ntsWizard("prev");
+            }
+            /**
+            * function previous wizard by on click button 
+            */
+            private nextPageEmployee(): void {
+                var self = this;
+                
+                if(self.validateB()) {
+                    if(self.isCompressPass()) {
+                        if(self.password() == self.confirmPassword()) {
+                            if(self.categorys().length > 0) {
+                                self.next();
+                            } else {
+                                alertError({ messageId: 'Msg_463' });
+                            }
+                        } else {
+                            alertError({ messageId: 'Msg_566' });
+                        }
+                    } else {
+                        if(self.categorys().length > 0) {
+                            self.next();
+                        } else {
+                            alertError({ messageId: 'Msg_463' });
+                        }
+                    }
+                }
+            }
             
-        private gotoscreenF(): void {
-            nts.uk.ui.windows.sub.modal('../f/index.xhtml');
-        }
+            private setRangePickerRequire(): void {
+                let self = this;
+                
+                self.dayRequired = ko.observable(false);
+                self.monthRequired = ko.observable(false);
+                self.yearRequired = ko.observable(false);
+                for (var i = 0; i < self.categorys().length; i++) {
+                    if(self.categorys()[i].timeStore == 0) {
+                        self.monthRequired = ko.observable(true);
+                    } else if(self.categorys()[i].timeStore == 1){
+                        self.yearRequired = ko.observable(true);
+                    } else if(self.categorys()[i].timeStore == 2){
+                        self.dayRequired = ko.observable(true);
+                    }
+                }
+            }
+            
+            private nextFromDToE(): void {
+                var self = this;
+                self.initE();
+                self.next();
+            }
+            
+            private initE(): void {
+                var self = this;
+                $("#E3_3").html(self.dataSaveSetName());
+                $("#E3_5").html(self.explanation());
+                $("#E3_37").html(self.referenceDate);
+            }
+            
+            ScreenModel.prototype.validateB = function () {
+                $(".form-B").trigger("validate");
+                if (nts.uk.ui.errors.hasError()) {
+                    return false;
+                }
+                return true;
+            };
+            
+            private previousB(): void {
+                var self = this;
+                self.previous();
+            }
+            private backToA() {
+                let self = this;
+                nts.uk.request.jump("/view/cmf/003/a/index.xhtml");
+            }
+
+            private selectCategory(): void {
+                let self = this;
+                setShared("CMF003_B_CATEGORIES",self.systemtypeFromC);
+                setShared("CMF003_B_SYSTEMTYPE",self.categorys());
+                nts.uk.ui.windows.sub.modal('../c/index.xhtml').onClosed(() => {
+                    let categoryFromC = getShared('CMF003_C_CATEGORIES');
+                    let systemtypeFromC = getShared('CMF003_C_SYSTEMTYPE');
+                    
+                    if(systemtypeFromC) {
+                        self.systemtypeFromC = systemtypeFromC;
+                        $("#B4_24").html(systemtypeFromC.name);
+                    }
+                    
+                    if(categoryFromC && (categoryFromC.length > 0)) {
+                        self.categorys.removeAll();
+                        for (let i = 0; i < categoryFromC.length; i++) {
+                            self.categorys.push(categoryFromC[i]);
+                        }
+                        
+                        self.setRangePickerRequire();
+                    }
+
+                    $("#B4_2").focus();
+                });
+            }
+
+            private gotoscreenF(): void {
+                nts.uk.ui.windows.sub.modal('../f/index.xhtml');
+            }
         }//end screemodule
- 
-     export class CategoryModel {
-         schelperSystem: number;
-         categoryId: string;
-         categoryName: string;
-         possibilitySystem: number;
-         storedProcedureSpecified: number;
-         timeStore: number;
-         otherCompanyCls: number;
-         attendanceSystem: number;
-         recoveryStorageRange: number;
-         paymentAvailability: number;
-         storageRangeSaved: number;
-          
-         constructor(schelperSystem: number,categoryId: string, categoryName: string,possibilitySystem: number,
-         storedProcedureSpecified: number, timeStore: number,otherCompanyCls: number,attendanceSystem: number,
-         recoveryStorageRange: number,paymentAvailability: number ,storageRangeSaved: number) {
-             this.schelperSystem = schelperSystem;
-             this.categoryId = categoryId;
-             this.categoryName = categoryName;
-             this.possibilitySystem = possibilitySystem;
-             this.storedProcedureSpecified = storedProcedureSpecified;
-             this.timeStore = timeStore;
-             this.otherCompanyCls = otherCompanyCls;
-             this.attendanceSystem = attendanceSystem;
-             this.recoveryStorageRange = recoveryStorageRange;
-             this.paymentAvailability = paymentAvailability;
-             this.storageRangeSaved = storageRangeSaved;
-        }
-    }
 
-    export class CategoryModel2 {
-        code: string;
-        name: string;
-        constructor(code: string, name: string, period: string, range: string) {
-            this.code = code;
-            this.name = name;
+        export class CategoryModel {
+            schelperSystem: number;
+            categoryId: string;
+            categoryName: string;
+            possibilitySystem: number;
+            storedProcedureSpecified: number;
+            timeStore: number;
+            otherCompanyCls: number;
+            attendanceSystem: number;
+            recoveryStorageRange: number;
+            paymentAvailability: number;
+            storageRangeSaved: number;
+
+            constructor(schelperSystem: number, categoryId: string, categoryName: string, possibilitySystem: number,
+                storedProcedureSpecified: number, timeStore: number, otherCompanyCls: number, attendanceSystem: number,
+                recoveryStorageRange: number, paymentAvailability: number, storageRangeSaved: number) {
+                this.schelperSystem = schelperSystem;
+                this.categoryId = categoryId;
+                this.categoryName = categoryName;
+                this.possibilitySystem = possibilitySystem;
+                this.storedProcedureSpecified = storedProcedureSpecified;
+                this.timeStore = timeStore;
+                this.otherCompanyCls = otherCompanyCls;
+                this.attendanceSystem = attendanceSystem;
+                this.recoveryStorageRange = recoveryStorageRange;
+                this.paymentAvailability = paymentAvailability;
+                this.storageRangeSaved = storageRangeSaved;
+            }
+        }
+        
+        class ItemCombobox {
+            code: string;
+            name: string;
+        
+            constructor(code: string, name: string) {
+                this.code = code;
+                this.name = name;
+            }
         }
 
-    }
- 
+        export class EmployeesModel {
+
+        }
+
         export class ListType {
             static EMPLOYMENT = 1;
             static Classification = 2;
@@ -595,19 +684,19 @@ module nts.uk.at.view.cmf003.d {
 
         export interface GroupOption {
             baseDate?: KnockoutObservable<Date>;
- 
+
             periodStartDate?: KnockoutObservable<Date>;
- 
+
             periodEndDate?: KnockoutObservable<Date>;
- 
+
             inService: boolean;
- 
+
             leaveOfAbsence: boolean;
- 
+
             closed: boolean;
- 
+
             retirement: boolean;
- 
+
             // クイック検索タブ
             isQuickSearchTab: boolean;
             // 参照可能な社員すべて
@@ -637,6 +726,26 @@ module nts.uk.at.view.cmf003.d {
             onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
 
             onApplyEmployee: (data: EmployeeSearchDto[]) => void;
+        }
+        
+        function timeStore(value, row) {
+            if (value && value === '0') {
+                return getText('Enum_TimeStore_MONTHLY');
+            } else if (value && value === '1') {
+                return getText('Enum_TimeStore_ANNUAL');
+            } else if (value && value === '2') {
+                return getText('Enum_TimeStore_FULL_TIME');
+            } else if (value && value === '3') {
+                return getText('Enum_TimeStore_DAILY');
+            }
+        }
+        
+        function storageRangeSaved(value, row) {
+            if (value && value === '0') {
+                return getText('Enum_Storage_Range_Saved_EARCH_EMP');
+            } else if (value && value === '1') {
+                return getText('Enum_Storage_Range_Saved_ALL_EMP');
+            }
         }
     }
 }

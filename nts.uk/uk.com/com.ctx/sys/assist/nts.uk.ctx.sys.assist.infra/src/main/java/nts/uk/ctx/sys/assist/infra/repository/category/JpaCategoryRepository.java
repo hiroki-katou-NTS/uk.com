@@ -8,6 +8,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.category.Category;
 import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
+import nts.uk.ctx.sys.assist.dom.category.SystemUsability;
+import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.infra.entity.category.SspmtCategory;
 
 @Stateless
@@ -15,16 +17,18 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspmtCategory f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.categoryPk.categoryId =:categoryId ";
-    private static final String SELECT_BY_ATTENDANCE_SYSTEM = SELECT_ALL_QUERY_STRING + " WHERE f.attendanceSystem =:systemType";
-    private static final String SELECT_BY_PAYMENT_AVAIABILITY = SELECT_ALL_QUERY_STRING + " WHERE f.paymentAvailability =:systemType";
-    private static final String SELECT_BY_POSSIBILITY_SYSTEM = SELECT_ALL_QUERY_STRING + " WHERE f.possibilitySystem =:systemType";
-    private static final String SELECT_BY_SCHELPER_SYSTEM   = SELECT_ALL_QUERY_STRING + " WHERE f.schelperSystem =:systemType";
+
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.categoryId =:categoryId ";
+    private static final String SELECT_BY_ATTENDANCE_SYSTEM = SELECT_ALL_QUERY_STRING + " WHERE f.attendanceSystem =:attendanceSystem";
+    private static final String SELECT_BY_PAYMENT_AVAIABILITY = SELECT_ALL_QUERY_STRING + " WHERE f.paymentAvailability =:paymentAvailability";
+    private static final String SELECT_BY_POSSIBILITY_SYSTEM = SELECT_ALL_QUERY_STRING + " WHERE f.possibilitySystem =:possibilitySystem";
+    private static final String SELECT_BY_SCHELPER_SYSTEM   = SELECT_ALL_QUERY_STRING + " WHERE f.schelperSystem =:schelperSystem";
+    private static final String SELECT_BY_ATTENDANCE_SYSTEM_AND_CODENAME = SELECT_ALL_QUERY_STRING + " WHERE f.categoryId like %:keySearch% OR f.categoryName LIKE '%:keySearch%' and f.timeStore <> :timeStore and f.categoryId NOT IN :categoriesIgnore and f.attendanceSystem = :attendanceSystem ORDER BY f.attendanceSystem,f.categoryId";
+    private static final String SELECT_BY_PAYMENT_AVAIABILITY_AND_CODENAME = SELECT_ALL_QUERY_STRING + " WHERE f.categoryId like %:keySearch% OR f.categoryName LIKE '%:keySearch%' and f.timeStore <> :timeStore and f.categoryId NOT IN :categoriesIgnore and f.paymentAvailability = :paymentAvailability ORDER BY f.paymentAvailability,f.categoryId";
+    private static final String SELECT_BY_POSSIBILITY_SYSTEM_AND_CODENAME = SELECT_ALL_QUERY_STRING + " WHERE f.categoryId like %:keySearch% OR f.categoryName LIKE '%:keySearch%' and f.timeStore <> :timeStore and f.categoryId NOT IN :categoriesIgnore and f.possibilitySystem = :possibilitySystem ORDER BY f.possibilitySystem,f.categoryId";
+    private static final String SELECT_BY_SCHELPER_SYSTEM_AND_CODENAME = SELECT_ALL_QUERY_STRING + " WHERE f.categoryId like %:keySearch% OR f.categoryName LIKE '%:keySearch%' and f.timeStore <> :timeStore and f.categoryId NOT IN :categoriesIgnore and f.schelperSystem = :schelperSystem ORDER BY f.possibilitySystem,f.categoryId";
     private static final String SELECT_BY_LIST_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.categoryPk.categoryId IN :lstCID ";
-    private static final String SELECT_BY_ATTENDANCE_SYSTEM_AND_CODENAME = SELECT_ALL_QUERY_STRING + " WHERE f.categoryId like %:keySearch% OR f.categoryName LIKE '%:keySearch%' and f.timeStore <> 1 and f.categoryId NOT IN :categoriesIgnore ORDER BY f.attendanceSystem,f.categoryId";
-    private static final String SELECT_BY_PAYMENT_AVAIABILITY_AND_CODENAME = SELECT_ALL_QUERY_STRING + " WHERE f.categoryId like %:keySearch% OR f.categoryName LIKE '%:keySearch%' and f.timeStore <> 1 and f.categoryId NOT IN :categoriesIgnore ORDER BY f.paymentAvailability,f.categoryId";
-    private static final String SELECT_BY_POSSIBILITY_SYSTEM_AND_CODENAME = SELECT_ALL_QUERY_STRING + " WHERE f.categoryId like %:keySearch% OR f.categoryName LIKE '%:keySearch%' and f.timeStore <> 1 and f.categoryId NOT IN :categoriesIgnore ORDER BY f.possibilitySystem,f.categoryId";
-    private static final String SELECT_BY_SCHELPER_SYSTEM_AND_CODENAME = SELECT_ALL_QUERY_STRING + " WHERE f.categoryId like %:keySearch% OR f.categoryName LIKE '%:keySearch%' and f.timeStore <> 1 and f.categoryId NOT IN :categoriesIgnore ORDER BY f.possibilitySystem,f.categoryId";
+
     @Override
     public List<Category> getAllCategory(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, SspmtCategory.class)
@@ -68,24 +72,28 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
 	@Override
 	public List<Category> findByAttendanceSystem() {
 		return this.queryProxy().query(SELECT_BY_ATTENDANCE_SYSTEM, SspmtCategory.class)
+				.setParameter("attendanceSystem",SystemUsability.AVAILABLE.value)
 		        .getList(c->c.toDomain());
 	}
 
 	@Override
 	public List<Category> findByPaymentAvailability() {
 		return this.queryProxy().query(SELECT_BY_PAYMENT_AVAIABILITY, SspmtCategory.class)
+				.setParameter("paymentAvailability", SystemUsability.AVAILABLE.value)
 		        .getList(c->c.toDomain());
 	}
 
 	@Override
 	public List<Category> findByPossibilitySystem() {
 		return this.queryProxy().query(SELECT_BY_POSSIBILITY_SYSTEM, SspmtCategory.class)
+				.setParameter("possibilitySystem", SystemUsability.AVAILABLE.value)
 		        .getList(c->c.toDomain());
 	}
 
 	@Override
 	public List<Category> findBySchelperSystem() {
 		return this.queryProxy().query(SELECT_BY_SCHELPER_SYSTEM, SspmtCategory.class)
+				.setParameter("schelperSystem", SystemUsability.AVAILABLE.value)
 		        .getList(c->c.toDomain());
 	}
 
@@ -93,6 +101,8 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
 	public List<Category> findByAttendanceSystemAndCodeName(String keySearch, List<String> categoriesIgnore) {
 		return this.queryProxy().query(SELECT_BY_ATTENDANCE_SYSTEM_AND_CODENAME, SspmtCategory.class)
 		        .setParameter("keySearch", keySearch).setParameter("categoriesIgnore", categoriesIgnore)
+		        .setParameter("timeStore", TimeStore.FULL_TIME.value)
+		        .setParameter("attendanceSystem", SystemUsability.AVAILABLE.value)
 		        .getList(c->c.toDomain());
 	}
 
@@ -100,6 +110,8 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
 	public List<Category> findByPaymentAvailabilityAndCodeName(String keySearch, List<String> categoriesIgnore) {
 		return this.queryProxy().query(SELECT_BY_PAYMENT_AVAIABILITY_AND_CODENAME, SspmtCategory.class)
 		        .setParameter("keySearch", keySearch).setParameter("categoriesIgnore", categoriesIgnore)
+		        .setParameter("timeStore", TimeStore.FULL_TIME.value)
+		        .setParameter("paymentAvailability", SystemUsability.AVAILABLE.value)
 		        .getList(c->c.toDomain());
 	}
 
@@ -107,6 +119,8 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
 	public List<Category> findByPossibilitySystemAndCodeName(String keySearch, List<String> categoriesIgnore) {
 		return this.queryProxy().query(SELECT_BY_POSSIBILITY_SYSTEM_AND_CODENAME, SspmtCategory.class)
 		        .setParameter("keySearch", keySearch).setParameter("categoriesIgnore", categoriesIgnore)
+		        .setParameter("timeStore", TimeStore.FULL_TIME.value)
+		        .setParameter("possibilitySystem", SystemUsability.AVAILABLE.value)
 		        .getList(c->c.toDomain());
 	}
 
@@ -114,6 +128,8 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
 	public List<Category> findBySchelperSystemAndCodeName(String keySearch, List<String> categoriesIgnore) {
 		return this.queryProxy().query(SELECT_BY_SCHELPER_SYSTEM_AND_CODENAME, SspmtCategory.class)
 		        .setParameter("keySearch", keySearch).setParameter("categoriesIgnore", categoriesIgnore)
+		        .setParameter("timeStore", TimeStore.FULL_TIME.value)
+		        .setParameter("schelperSystem", SystemUsability.AVAILABLE.value)
 		        .getList(c->c.toDomain());
 	}
 

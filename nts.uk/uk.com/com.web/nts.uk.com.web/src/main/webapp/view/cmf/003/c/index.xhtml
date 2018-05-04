@@ -27,10 +27,11 @@
 						data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMF003_58')}</div>
 					<div class="two"  id="combo-box"
 						data-bind="ntsComboBox: {
-									options: itemList,
+									options: systemTypes,
 									value: selectedCode,
 									optionsValue: 'code',
-									optionsText: 'name'
+									optionsText: 'name',
+									name: '#{i18n.getText('CMF003_59')}'
 									}"></div>
 	
 				</div>
@@ -41,10 +42,10 @@
 					data-bind="ntsSwapList: {
 								showSearchBox: { showLeft : true},
 								height: 450,
-								dataSource: itemsSwap,
+								dataSource: categoriesDefault,
 								primaryKey: 'categoryId',
 								columns: columns,
-								value: currentCodeListSwap,
+								value: currentCateSelected,
 								searchCriterion: ['categoryId'],
 								draggable: true,
 								multipleDrag: { left: true, right: false },

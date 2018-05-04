@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.infra.entity.saveprotection;
 
+
 import java.io.Serializable;
 
 import javax.persistence.Basic;
@@ -30,32 +31,11 @@ public class SspmtSaveProtection extends UkJpaEntity implements Serializable
     public SspmtSaveProtectionPk saveProtectionPk;
     
     /**
-    * カテゴリID
-    */
-    @Basic(optional = false)
-    @Column(name = "CATEGORY_ID")
-    public int categoryId;
-    
-    /**
     * 補正区分
     */
     @Basic(optional = false)
     @Column(name = "CORRECT_CLASSCIFICATION")
     public int correctClasscification;
-    
-    /**
-    * 置き換え列
-    */
-    @Basic(optional = false)
-    @Column(name = "REPLACE_COLUMN")
-    public String replaceColumn;
-    
-    /**
-    * テーブルNo
-    */
-    @Basic(optional = false)
-    @Column(name = "TABLE_NO")
-    public int tableNo;
     
     @Override
     protected Object getKey()
@@ -63,11 +43,11 @@ public class SspmtSaveProtection extends UkJpaEntity implements Serializable
         return saveProtectionPk;
     }
 
-    /*public SaveProtection toDomain() {
-        return new SaveProtection(this.categoryId, this.correctClasscification, this.replaceColumn, this.tableNo);
+   /* public SaveProtection toDomain() {
+        return new SaveProtection(this.saveProtectionPk.categoryId, this.saveProtectionPk.replaceColumn, this.saveProtectionPk.tableNo, this.correctClasscification);
     }
     public static SspmtSaveProtection toEntity(SaveProtection domain) {
-        return new SspmtSaveProtection(new SspmtSaveProtectionPk(), domain.getCategoryId(), domain.getCorrectClasscification(), domain.getReplaceColumn(), domain.getTableNo());
+        return new SspmtSaveProtection(new SspmtSaveProtectionPk(domain.getCategoryId(), domain.getReplaceColumn(), domain.getTableNo()), domain.getCorrectClasscification());
     }*/
 
 }

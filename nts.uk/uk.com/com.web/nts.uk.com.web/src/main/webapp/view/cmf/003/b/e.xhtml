@@ -11,18 +11,18 @@
 			<div class="fixed-flex-layout-left" style="padding-top: 20px; width:600px; padding-left: 20px">
 				<div class="label" id = "E3_1">#{i18n.getText('CMF003_117')}</div>
 			
-			<div id = "E3_3" class="periodCovered" tabindex="-1">
-				<div class="labelRangeDate" tabindex="-1" 
+			<div class="valign-center control-group">
+				<div id = "E3_2" class="labelRangeDate" tabindex="-1" 
 				data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_118')}
 				</div>
-				<div class="label" id = "E3_3"></div>
+				<span id = "E3_3"></span>
 			</div>
 			
-			<div id = "E3_4" class="periodCovered" tabindex="-1">
-				<div class="labelRangeDate" tabindex="-1" 
+			<div class="valign-center control-group">
+				<div id = "E3_4" class="labelRangeDate" tabindex="-1" 
 				data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_119')}
 				</div>
-				<div class="label" id = "E3_3"></div>
+				<span id = "E3_5"></span>
 			</div>
 			
 			<div id = "E3_6" class="periodCovered" tabindex="-1">
@@ -33,9 +33,9 @@
 			<div class="valign-center control-group" style="margin-top:20px;">
 					<table id="E3_7" data-bind="ntsGridList: {								
 						height: 400,
-						dataSource: items,
+						dataSource: categorys,
 						primaryKey: 'code',
-						columns: columns,
+						columns: columnCategorys,
 						multiple: false,
 						value: currentCode,
 						rows: 5
@@ -44,7 +44,6 @@
 				
 				<div class="valign-center control-group">
 					<div id="E3_20" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_124')}</div>
-					<div style="padding-right: 16px; display: inline-block;"></div>
 					<span id="E3_21">#{i18n.getText('CMF003_125')}</span>
 					<div id="E3_24" style="display:inline-block;" tabindex="7" data-bind="ntsDateRangePicker: { 
 						required: dayRequired, enable: dayEnable, name: '#[CMF003_37]', 
@@ -66,7 +65,7 @@
 				</div>
 				<div class="valign-center control-group">
 					<div id="E3_32" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_45')}</div>
-					<div id="E3_33" tabindex="10" data-bind="ntsCheckBox: { checked: true }">
+					<div id="E3_33" tabindex="10" data-bind="ntsCheckBox: { checked: isCompressPass }">
 						#{i18n.getText('CMF003_46')}
 					</div>
 					<input tabindex="11" id="E3_34"
@@ -82,13 +81,14 @@
 				</div>
 				<!-- E3_36 -->
 				<div class="valign-center control-group">
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_100')}</div>
+							<div id="E3_36" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_100')}</div>
+							<span id="E3_37"></span>
 							<button
-								data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top'">?</button>
+								data-bind="ntsHelpButton: {image: '../resource/実行間隔説明画像.jpg', position: 'top left'}">?</button>
 				</div>
 				<div class="valign-center control-group">
 					<div id="E3_39" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_144')}</div>
-					<div id="E3_40" tabindex="10" data-bind="ntsCheckBox: { checked: true }">
+					<div id="E3_40" tabindex="10" data-bind="ntsCheckBox: { checked: isSymbol }">
 						#{i18n.getText('CMF003_145')}
 					</div>
 				</div>
@@ -113,9 +113,9 @@
 				<div class="valign-center control-group">
 					<table id="E4_4" data-bind="ntsGridList: {								
 						height: 1600,
-						dataSource: items2,
+						dataSource: categorys,
 						primaryKey: 'code',
-						columns: columns2,
+						columns: columnEmployees,
 						multiple: false,
 						value: currentCode,
 						rows: 20
