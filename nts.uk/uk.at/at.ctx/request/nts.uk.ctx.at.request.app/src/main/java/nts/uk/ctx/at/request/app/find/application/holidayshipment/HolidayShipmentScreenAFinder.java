@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingD
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmentapp.RecruitmentAppDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
@@ -167,14 +168,14 @@ public class HolidayShipmentScreenAFinder {
 		commonProcessAtStartup(companyID, employeeID, refDate, appDate, takingOutWkTypeCD, takingOutWkTimeCD, deadDate,
 				holiDayWkTypeCD, holidayWkTimeCD, result, appCommonSettingOutput);
 		// アルゴリズム「勤務時間初期値の取得」を実行する
-		setWorkTimeInfo(result, wkTimeCD);
+		String wkTypeCD = result.getRecWkTypes().size() > 0 ? result.getRecWkTypes().get(0).getWorkTypeCode() : "";
+		setWorkTimeInfo(result, wkTimeCD, wkTypeCD);
 
 		return result;
 	}
 
-	private void setWorkTimeInfo(HolidayShipmentDto result, String wkTimeCD) {
+	private void setWorkTimeInfo(HolidayShipmentDto result, String wkTimeCD, String wkTypeCD) {
 		if (wkTimeCD != null) {
-			String wkTypeCD = result.getRecWkTypes().size() > 0 ? result.getRecWkTypes().get(0).getWorkTypeCode() : "";
 			if (StringUtils.isNoneEmpty(wkTypeCD)) {
 				result.setWorkTimeInfo(getWkTimeInfoInitValue(companyID, wkTypeCD, wkTimeCD));
 			}
@@ -202,6 +203,11 @@ public class HolidayShipmentScreenAFinder {
 		setChangeAppDateData(recDate, absDate, companyID, employeeID, uiType, output);
 
 		return output;
+	}
+
+	public WorkTimeInfoDto getSelectedWorkingHours(String wkTypeCD, String wkTimeCD) {
+		String companyID = AppContexts.user().companyId();
+		return getWkTimeInfoInitValue(companyID, wkTypeCD, wkTimeCD);
 	}
 
 	private String getWkTimeCD(SingleDaySchedule wkOnWeekDays) {
