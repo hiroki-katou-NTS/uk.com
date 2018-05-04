@@ -57,6 +57,7 @@ module nts.uk.at.view.kwr008.a {
             maxDaysCumulationByEmp: KnockoutObservable<number>;
             periodDate: KnockoutObservable<any>;
             //A3
+            dateValue: KnockoutObservable<any> = ko.observable({ startDate: '', endDate: '' });
             startDateString: KnockoutObservable<string> = ko.observable('');
             endDateString: KnockoutObservable<string> = ko.observable('');
             //A4
@@ -78,6 +79,16 @@ module nts.uk.at.view.kwr008.a {
 
                 // Init component.
                 self.reloadCcg001();
+
+                self.startDateString.subscribe(function(value){
+                    self.dateValue().startDate = value;
+                    self.dateValue.valueHasMutated();
+                });
+
+                self.endDateString.subscribe(function(value){
+                    self.dateValue().endDate = value;
+                    self.dateValue.valueHasMutated();
+                });
 
                 self.periodFormatYM.subscribe(item => {
                     if (item) {
@@ -143,7 +154,7 @@ module nts.uk.at.view.kwr008.a {
                     return;
                 }
                 //出力対象の社員をチェックする
-                if (self.selectedEmployeeCode().length) {
+                if (!self.selectedEmployeeCode().length) {
                     nts.uk.ui.dialog.alertError({messageId: 'Msg_884'});
                     return;
                 }

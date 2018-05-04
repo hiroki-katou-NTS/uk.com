@@ -1,0 +1,8 @@
+#contents-area { 
+	overflow-x: hidden;
+	display: flex;
+}
+
+.inline-table {
+	display: inline-table;
+}
