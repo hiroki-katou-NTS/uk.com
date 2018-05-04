@@ -4,7 +4,7 @@ module a2 {
     
     class ScreenModel {
 
-
+        simpleValue: KnockoutObservable<string>;
         
         /**
          * Constructor
@@ -12,6 +12,7 @@ module a2 {
         constructor(model: MainModel) {
             let _self = this;
             //TODO
+            _self.simpleValue = ko.observable("");
         }
 
         /**
