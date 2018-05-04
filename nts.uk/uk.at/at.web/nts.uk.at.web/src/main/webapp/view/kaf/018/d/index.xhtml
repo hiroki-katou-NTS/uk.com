@@ -44,16 +44,7 @@
 					</tr>
 				</table>
 				<!--D4_申請内容一覧 -->
-				<table id="single-list"
-					data-bind="ntsGridList: {								
-					height: 700,
-					dataSource: listData,
-					primaryKey: 'applicationName',
-					columns: columns,
-					multiple: false,
-					rows: 20,
-					value: currentCode
-				}"></table>
+				<table id="grid1"></table>
 				<div class="button_Closeup">
 					<button tabindex="1" data-bind="click: closeUp">#{i18n.getText('KAF018_48')}</button>
 				</div>

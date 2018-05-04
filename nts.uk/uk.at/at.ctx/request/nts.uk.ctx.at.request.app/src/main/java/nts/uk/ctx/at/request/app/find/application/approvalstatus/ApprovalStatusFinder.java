@@ -281,11 +281,11 @@ public class ApprovalStatusFinder {
 			approvalStatus3.add(x);
 			approvalStatus4.add(x);
 		}
-		listAppDetail. add(new ApplicationDetailDto(0, "残業申請", 0, appStartDate, appEndDate, "2-16③システム日付(2018/4/7)　<　申請日.終了日(3/31)+8　　ＯＫ", 2, approvalStatus, "Phase1", "Phase1", "Phase1", "Phase1", "Phase1"));
-		listAppDetail. add(new ApplicationDetailDto(1, "残業申請", 1, appStartDate, appEndDate, "2-16③システム日付(2018/4/7)　<　申請日.終了日(3/31)+8　　ＯＫ", 2, approvalStatus2, "Phase1", "Phase1", "Phase1", "Phase1", "Phase1"));
-		listAppDetail. add(new ApplicationDetailDto(2, "残業申請", 1, appStartDate, appEndDate, "2-16③システム日付(2018/4/7)　<　申請日.終了日(3/31)+8　　ＯＫ", 2, approvalStatus3, "Phase1", "Phase1", "Phase1", "Phase1", "Phase1"));
-		listAppDetail. add(new ApplicationDetailDto(3, "残業申請", 0, appStartDate, appEndDate, "2-16③システム日付(2018/4/7)　<　申請日.終了日(3/31)+8　　ＯＫ", 2, approvalStatus4, "Phase1", "Phase1", "Phase1", "Phase1", "Phase1"));
-		listAppDetail. add(new ApplicationDetailDto(1, "残業申請", 1, appStartDate, appEndDate, "2-16③システム日付(2018/4/7)　<　申請日.終了日(3/31)+8　　ＯＫ", 2, approvalStatus, "Phase1", "Phase1", "Phase1", "Phase1", "Phase1"));
+		listAppDetail. add(new ApplicationDetailDto(0, "残業申請", true, appStartDate, appEndDate, "2-16③システム日付(2018/4/7)　<　申請日.終了日(3/31)+8　　ＯＫ", 2, approvalStatus, "Phase1", "Phase1", "Phase1", "Phase1", "Phase1"));
+		listAppDetail. add(new ApplicationDetailDto(1, "残業申請", false, appStartDate, appEndDate, "2-16③システム日付(2018/4/7)　<　申請日.終了日(3/31)+8　　ＯＫ", 2, approvalStatus2, "Phase1", "Phase1", "Phase1", "Phase1", "Phase1"));
+		listAppDetail. add(new ApplicationDetailDto(2, "残業申請", true, appStartDate, appEndDate, "2-16③システム日付(2018/4/7)　<　申請日.終了日(3/31)+8　　ＯＫ", 2, approvalStatus3, "Phase1", "Phase1", "Phase1", "Phase1", "Phase1"));
+		listAppDetail. add(new ApplicationDetailDto(3, "残業申請", false, appStartDate, appEndDate, "2-16③システム日付(2018/4/7)　<　申請日.終了日(3/31)+8　　ＯＫ", 2, approvalStatus4, "Phase1", "Phase1", "Phase1", "Phase1", "Phase1"));
+		listAppDetail. add(new ApplicationDetailDto(1, "残業申請",true, appStartDate, appEndDate, "2-16③システム日付(2018/4/7)　<　申請日.終了日(3/31)+8　　ＯＫ", 2, approvalStatus, "Phase1", "Phase1", "Phase1", "Phase1", "Phase1"));
 		/*List<ApprovalSttAppDetail> listAppSttDetail = appList.getApprovalSttAppDetail();
 		for (ApprovalSttAppDetail app : listAppSttDetail) {
 			ApplicationDetailDto detail = new ApplicationDetailDto();
@@ -315,10 +315,10 @@ public class ApprovalStatusFinder {
 					appStatus.add(1);
 					break;
 				case REMAND:
-					appStatus.add(2);
+					appStatus.add(0);
 					break;
 				case DENIAL:
-					appStatus.add(3);
+					appStatus.add(2);
 					break;
 				default:
 					break;

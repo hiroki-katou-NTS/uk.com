@@ -20,7 +20,7 @@ public class ApplicationDetailDto {
 	/** 
 	 * 事前事後 
 	 */
-	int prePostAtr;
+	boolean prePostAtr;
 	/** 
 	 * 申請日付
 	 */

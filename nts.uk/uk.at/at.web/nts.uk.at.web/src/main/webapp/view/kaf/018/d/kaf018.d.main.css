@@ -36,3 +36,40 @@
 .clear {
 	clear: both;
 }
+
+.unapprovaled-remand {
+	color: #ff0000;
+}
+.approvaled {
+	color: #BFEA60;
+}
+.denied{
+	color: #FD4D4D;
+}
+.dateRange{
+	float: left;
+}
+.saturdayCell{
+	color: #0000ff;
+}	
+.sundayCell{
+	color: #ff0000;
+}
+.unapprovalCell {
+	background-color: #ffffff;
+}
+.approvalCell {
+	background-color: #BFEA60;
+}
+.remandCell {
+	background-color: #FD4D4D;
+}
+.denialCell {
+	background-color: #FD4D4D;
+}
+.cancelCell {
+	background-color: #F6F636;
+}
+.reflectCell {
+	background-color: #CEE6FF;
+}

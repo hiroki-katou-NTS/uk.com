@@ -9,29 +9,33 @@ module nts.uk.at.view.kaf018.share.model {
             this.name = name;
         }
     }
-
+    export class CellState {
+        rowId: any;
+        columnKey: string;
+        state: Array<any>
+        constructor(rowId: any, columnKey: string, state: Array<any>) {
+            this.rowId = rowId;
+            this.columnKey = columnKey;
+            this.state = state;
+        }
+    }
     export enum REFLECTEDSTATUS {
-        /** 未反映 */
+        //未反映        
         NOTREFLECTED = 0,
 
-        /** 反映待ち */
+        //反映待ち
         WAITREFLECTION = 1,
 
-        /** 反映済 */
+        //反映済
         REFLECTED = 2,
-
-        /** 取消待ち */
+        //取消待ち
         WAITCANCEL = 3,
-
-        /** 取消済 */
+        //取消済
         CANCELED = 4,
-
-        /**
-         *  差し戻し
-         */
+        //差し戻し
         REMAND = 5,
 
-        /** 否認 */
+        //否認 
         DENIAL = 6
     }
 
