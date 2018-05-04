@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.ctx.sys.assist.dom.category.Category;
 import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
@@ -58,8 +57,8 @@ public class ManualSetOfDataSaveService {
 		int categoryTotalCount = 0;
 		int categoryCount = 0;
 		int errorCount = 0;
-		OperatingCondition operatingCondition = EnumAdaptor.valueOf(0, OperatingCondition.class);
-		NotUseAtr doNotInterrupt = EnumAdaptor.valueOf(0, NotUseAtr.class);
+		OperatingCondition operatingCondition = OperatingCondition.INPREPARATION;
+		NotUseAtr doNotInterrupt = NotUseAtr.NOT_USE;
 		DataStorageMng domain = new DataStorageMng(storeProcessingId, doNotInterrupt, categoryCount, categoryTotalCount,
 				errorCount, operatingCondition);
 
@@ -83,7 +82,7 @@ public class ManualSetOfDataSaveService {
 			storeProcessingId = domain.getStoreProcessingId();
 			categoryTotalCount = categorys.size();
 			categoryCount = 1;
-			operatingCondition = EnumAdaptor.valueOf(1, OperatingCondition.class);
+			operatingCondition = OperatingCondition.SAVING;
 			repoDataSto.update(storeProcessingId, categoryTotalCount, categoryCount, operatingCondition);
 
 			// Execute algorithm "Save target data"
