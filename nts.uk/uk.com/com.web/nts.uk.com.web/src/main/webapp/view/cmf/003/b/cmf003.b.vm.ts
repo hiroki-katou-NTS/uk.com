@@ -299,7 +299,7 @@ module nts.uk.at.view.cmf003.d {
                 self.checkCreateMethodAtrPersonalInfo = ko.observable(true);
                 self.checkCreateMethodAtrPatternSchedule = ko.observable(false);
                 self.checkCreateMethodAtrCopyPastSchedule = ko.observable(false);
-
+                self.employeeList = ko.observableArray([]);
                 self.workTypeInfo = ko.observable('');
                 self.workTypeCode = ko.observable('');
                 self.workTimeInfo = ko.observable('');
@@ -430,7 +430,6 @@ module nts.uk.at.view.cmf003.d {
             */
             public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
                 var self = this;
-                self.employeeList = ko.observableArray([]);
                 var employeeSearchs: UnitModel[] = [];
                 for (var employeeSearch of dataList) {
                     var employee: UnitModel = {
