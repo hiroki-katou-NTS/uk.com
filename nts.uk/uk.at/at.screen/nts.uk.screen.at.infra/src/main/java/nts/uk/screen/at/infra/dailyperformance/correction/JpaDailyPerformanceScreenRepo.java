@@ -497,15 +497,21 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		if(sIds.isEmpty()) return new ArrayList<>(); 
 		String query_empCodes = "SELECT e FROM BsymtEmploymentHistItem e JOIN BsymtEmploymentHist h ON e.hisId = h.hisId WHERE "
 				+ " h.strDate <= :baseDate AND h.endDate >= :baseDate AND h.companyId = :companyId AND h.sid IN :sIds";
-		Map<String, String> empCodes = this.queryProxy().query(query_empCodes, BsymtEmploymentHistItem.class)
+		Map<String, String> empCodes = new HashMap<>();
+		CollectionUtil.split(sIds, 1000, (subList) ->{
+			empCodes.putAll(this.queryProxy().query(query_empCodes, BsymtEmploymentHistItem.class)
 				.setParameter("companyId", AppContexts.user().companyId()).setParameter("baseDate", baseDate)
-				.setParameter("sIds", sIds).getList().stream().collect(Collectors.toMap(x -> x.sid, x -> x.empCode, (x, y) -> x));
+				.setParameter("sIds", subList).getList().stream().collect(Collectors.toMap(x -> x.sid, x -> x.empCode, (x, y) -> x)));
+		});
 		if(empCodes.isEmpty()) {
 			return new ArrayList<>();
 		}
-		List<ClosureDto> closureDtos = this.queryProxy().query(SEL_CLOSURE_IDS, ClosureDto.class)
-				.setParameter("companyId", AppContexts.user().companyId()).setParameter("emptcd", empCodes.values())
-				.getList();
+		List<ClosureDto> closureDtos = new ArrayList<>();
+		CollectionUtil.split(empCodes.values().stream().collect(Collectors.toList()), 1000, (subList) ->{
+			closureDtos.addAll(this.queryProxy().query(SEL_CLOSURE_IDS, ClosureDto.class)
+				.setParameter("companyId", AppContexts.user().companyId()).setParameter("emptcd", subList)
+				.getList());
+		});
 		List<ClosureDto> result = new ArrayList<>();
 		empCodes.forEach((key, value) -> {
 			Optional<ClosureDto> optional = closureDtos.stream().filter(item -> item.getEmploymentCode().equals(value))
@@ -600,11 +606,15 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	public List<WorkInfoOfDailyPerformanceDto> getListWorkInfoOfDailyPerformance(List<String> lstEmployee,
 			DateRange dateRange) {
 		if(lstEmployee.isEmpty()) return new ArrayList<>();
-		return this.queryProxy().query(SEL_DAILY_WORK_INFO, KrcdtDaiPerWorkInfo.class)
-				.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", lstEmployee).getList(e -> {
-					return new WorkInfoOfDailyPerformanceDto(e.krcdtDaiPerWorkInfoPK.employeeId, e.calculationState,
-							e.krcdtDaiPerWorkInfoPK.ymd, e.recordWorkWorktypeCode, e.recordWorkWorktimeCode, e.scheduleWorkWorktypeCode, e.scheduleWorkWorktimeCode, e.scheduleTimes == null ? false : true);
-				});
+		List<WorkInfoOfDailyPerformanceDto> results = new ArrayList<>();
+		CollectionUtil.split(lstEmployee, 1000, subList ->{
+			results.addAll(this.queryProxy().query(SEL_DAILY_WORK_INFO, KrcdtDaiPerWorkInfo.class)
+					.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", subList).getList(e -> {
+						return new WorkInfoOfDailyPerformanceDto(e.krcdtDaiPerWorkInfoPK.employeeId, e.calculationState,
+								e.krcdtDaiPerWorkInfoPK.ymd, e.recordWorkWorktypeCode, e.recordWorkWorktimeCode, e.scheduleWorkWorktypeCode, e.scheduleWorkWorktimeCode, e.scheduleTimes == null ? false : true);
+					}));
+		});
+		return results;
 	}
 
 	@Override
@@ -618,14 +628,22 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<DailyPerformanceEmployeeDto> getListEmployee(List<String> lstJobTitle, List<String> lstEmployment,
 			Map<String, String> lstWorkplace, List<String> lstClassification) {
-		List<BsymtEmployeeDataMngInfo> lstEmployee = this.queryProxy()
+		List<BsymtEmployeeDataMngInfo> lstEmployee = new ArrayList<>();
+		CollectionUtil.split(lstWorkplace.keySet().stream().collect(Collectors.toList()), 1000, subList ->{
+			lstEmployee.addAll(this.queryProxy()
 				.query(SEL_EMPLOYEE, BsymtEmployeeDataMngInfo.class)
-				.setParameter("lstWkp", lstWorkplace.keySet().stream().collect(Collectors.toList())).getList();
+				.setParameter("lstWkp", subList).getList());
+		});
+		
 		List<String> ids = lstEmployee.stream().map((employee) -> {
 			return employee.bsymtEmployeeDataMngInfoPk.pId.trim();
 		}).collect(Collectors.toList());
-		List<BpsmtPerson> lstPerson = this.queryProxy().query(SEL_PERSON, BpsmtPerson.class)
-				.setParameter("lstPersonId",ids).getList();
+		List<BpsmtPerson> lstPerson = new ArrayList<>();
+		CollectionUtil.split(ids, 1000, subList ->{
+			lstPerson.addAll(this.queryProxy().query(SEL_PERSON, BpsmtPerson.class)
+					.setParameter("lstPersonId",subList).getList());
+		});
+		
 		return lstEmployee.stream().map((employee) -> {
 			for (BpsmtPerson person : lstPerson) {
 				if (person.bpsmtPersonPk.pId.equals(employee.bsymtEmployeeDataMngInfoPk.pId)) {
@@ -652,8 +670,11 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		List<String> ids = resultList.stream().map((employee) -> {
 			return employee.bsymtEmployeeDataMngInfoPk.pId.trim();
 		}).collect(Collectors.toList());
-		List<BpsmtPerson> lstPerson = this.queryProxy().query(SEL_PERSON, BpsmtPerson.class)
-				.setParameter("lstPersonId", ids).getList();
+		List<BpsmtPerson> lstPerson = new ArrayList<>();
+		CollectionUtil.split(ids, 1000, (subList) -> {
+			lstPerson.addAll(this.queryProxy().query(SEL_PERSON, BpsmtPerson.class)
+					.setParameter("lstPersonId", subList).getList());
+		});
 		return resultList.stream().map((employee) -> {
 			for (BpsmtPerson person : lstPerson) {
 				if (person.bpsmtPersonPk.pId.equals(employee.bsymtEmployeeDataMngInfoPk.pId)) {
@@ -668,9 +689,13 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
     
 	@Override
 	public List<String> getListBusinessType(List<String> lstEmployee, DateRange dateRange) {
-		return this.queryProxy().query(SEL_BUSINESS_TYPE, String.class).setParameter("lstSID", lstEmployee)
-				.setParameter("startYmd", dateRange.getStartDate()).setParameter("endYmd", dateRange.getEndDate())
-				.getList();
+		List<String> businessTypes = new ArrayList<>();
+		CollectionUtil.split(lstEmployee, 1000, subList ->{
+			businessTypes.addAll(this.queryProxy().query(SEL_BUSINESS_TYPE, String.class).setParameter("lstSID", subList)
+					.setParameter("startYmd", dateRange.getStartDate()).setParameter("endYmd", dateRange.getEndDate())
+					.getList());
+		});
+		return businessTypes;
 	}
 
 	@Override
@@ -737,26 +762,34 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<DPErrorDto> getListDPError(DateRange dateRange, List<String> lstEmployee) {
-		return this.queryProxy().query(SEL_DP_ERROR_EMPLOYEE, KrcdtSyainDpErList.class)
-				.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", lstEmployee).getList()
-				.stream().map(e -> {
-					return new DPErrorDto(e.errorCode, "", e.employeeId,
-							e.processingDate, 
-							!e.erAttendanceItem.isEmpty() ? e.erAttendanceItem.stream().map(x -> x.krcdtErAttendanceItemPK.attendanceItemId).collect(Collectors.toList()) : Collections.emptyList(),
-							e.errorCancelable.intValue() == 1 ? true : false, e.errorAlarmMessage);
-				}).collect(Collectors.toList());
+		List<DPErrorDto> listDPError = new ArrayList<>();
+		CollectionUtil.split(lstEmployee, 1000, subList ->{
+			listDPError.addAll(this.queryProxy().query(SEL_DP_ERROR_EMPLOYEE, KrcdtSyainDpErList.class)
+					.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", subList).getList()
+					.stream().map(e -> {
+						return new DPErrorDto(e.errorCode, "", e.employeeId,
+								e.processingDate, 
+								!e.erAttendanceItem.isEmpty() ? e.erAttendanceItem.stream().map(x -> x.krcdtErAttendanceItemPK.attendanceItemId).collect(Collectors.toList()) : Collections.emptyList(),
+								e.errorCancelable.intValue() == 1 ? true : false, e.errorAlarmMessage);
+					}).collect(Collectors.toList()));
+		});
+		return listDPError; 
 	}
 
 	@Override
 	public List<DPErrorDto> getListDPError(DateRange dateRange, List<String> lstEmployee, List<String> errorCodes) {
-		return this.queryProxy().query(SEL_DP_ERROR_EMPLOYEE_CONDITION_ERRORS, KrcdtSyainDpErList.class)
-				.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", lstEmployee)
-				.setParameter("errorCodes", errorCodes).getList().stream().map(e -> {
-					return new DPErrorDto(e.errorCode, "", e.employeeId,
-							e.processingDate,
-							!e.erAttendanceItem.isEmpty() ? e.erAttendanceItem.stream().map(x -> x.krcdtErAttendanceItemPK.attendanceItemId).collect(Collectors.toList()) : Collections.emptyList(),
-							e.errorCancelable.intValue() == 1 ? true : false, e.errorAlarmMessage);
-				}).collect(Collectors.toList());
+		List<DPErrorDto> dpErrors = new ArrayList<>();
+		CollectionUtil.split(lstEmployee, 1000, subList ->{
+			dpErrors.addAll(this.queryProxy().query(SEL_DP_ERROR_EMPLOYEE_CONDITION_ERRORS, KrcdtSyainDpErList.class)
+					.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", subList)
+					.setParameter("errorCodes", errorCodes).getList().stream().map(e -> {
+						return new DPErrorDto(e.errorCode, "", e.employeeId,
+								e.processingDate,
+								!e.erAttendanceItem.isEmpty() ? e.erAttendanceItem.stream().map(x -> x.krcdtErAttendanceItemPK.attendanceItemId).collect(Collectors.toList()) : Collections.emptyList(),
+								e.errorCancelable.intValue() == 1 ? true : false, e.errorAlarmMessage);
+					}).collect(Collectors.toList()));
+		});
+		return dpErrors;
 	}
 
 	@Override
@@ -849,31 +882,39 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<DailyRecEditSetDto> getDailyRecEditSet(List<String> listEmployeeId, DateRange dateRange) {
 		if(listEmployeeId.isEmpty()) return Collections.emptyList();
-		return this.queryProxy().query(SEL_DAILY_REC_EDIT_SET, KrcdtDailyRecEditSet.class)
-				.setParameter("employeeIds", listEmployeeId).setParameter("ymds", dateRange.toListDate()).getList()
-				.stream().map(s -> {
-					return new DailyRecEditSetDto(s.krcdtDailyRecEditSetPK.employeeId,
-							s.krcdtDailyRecEditSetPK.processingYmd, s.krcdtDailyRecEditSetPK.attendanceItemId,
-							s.editState);
-				}).collect(Collectors.toList());
+		List<DailyRecEditSetDto> editSets = new ArrayList<>();
+		CollectionUtil.split(listEmployeeId, 1000, subList ->{
+			editSets.addAll(this.queryProxy().query(SEL_DAILY_REC_EDIT_SET, KrcdtDailyRecEditSet.class)
+					.setParameter("employeeIds", subList).setParameter("ymds", dateRange.toListDate()).getList()
+					.stream().map(s -> {
+						return new DailyRecEditSetDto(s.krcdtDailyRecEditSetPK.employeeId,
+								s.krcdtDailyRecEditSetPK.processingYmd, s.krcdtDailyRecEditSetPK.attendanceItemId,
+								s.editState);
+					}).collect(Collectors.toList()));
+		});
+		return editSets;
 	}
 
 	@Override
 	public List<WorkInfoOfDailyPerformanceDetailDto> find(List<String> listEmployeeId, DateRange dateRange) {
-		return this.queryProxy().query(SEL_DAILY_WORK_INFO, KrcdtDaiPerWorkInfo.class)
-				.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", listEmployeeId)
-				.getList(c -> new WorkInfoOfDailyPerformanceDetailDto(c.krcdtDaiPerWorkInfoPK.employeeId,
-						new WorkInformationDto(c.recordWorkWorktimeCode, c.recordWorkWorktypeCode),
-						new WorkInformationDto(c.scheduleWorkWorktimeCode, c.recordWorkWorktypeCode),
-						EnumAdaptor.valueOf(c.calculationState, CalculationStateDto.class),
-						EnumAdaptor.valueOf(c.goStraightAttribute, NotUseAttributeDto.class),
-						EnumAdaptor.valueOf(c.backStraightAttribute, NotUseAttributeDto.class),
-						c.krcdtDaiPerWorkInfoPK.ymd,
-						c.scheduleTimes.isEmpty() ? null
-								: c.scheduleTimes.stream()
-										.map(s -> new ScheduleTimeSheetDto(s.krcdtWorkScheduleTimePK.workNo,
-												new TimeWithDayAttr(s.attendance), new TimeWithDayAttr(s.leaveWork)))
-										.collect(Collectors.toList())));
+		List<WorkInfoOfDailyPerformanceDetailDto> datas = new ArrayList<>();
+		CollectionUtil.split(listEmployeeId, 1000, subList ->{
+			datas.addAll(this.queryProxy().query(SEL_DAILY_WORK_INFO, KrcdtDaiPerWorkInfo.class)
+					.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", subList)
+					.getList(c -> new WorkInfoOfDailyPerformanceDetailDto(c.krcdtDaiPerWorkInfoPK.employeeId,
+							new WorkInformationDto(c.recordWorkWorktimeCode, c.recordWorkWorktypeCode),
+							new WorkInformationDto(c.scheduleWorkWorktimeCode, c.recordWorkWorktypeCode),
+							EnumAdaptor.valueOf(c.calculationState, CalculationStateDto.class),
+							EnumAdaptor.valueOf(c.goStraightAttribute, NotUseAttributeDto.class),
+							EnumAdaptor.valueOf(c.backStraightAttribute, NotUseAttributeDto.class),
+							c.krcdtDaiPerWorkInfoPK.ymd,
+							c.scheduleTimes.isEmpty() ? null
+									: c.scheduleTimes.stream()
+											.map(s -> new ScheduleTimeSheetDto(s.krcdtWorkScheduleTimePK.workNo,
+													new TimeWithDayAttr(s.attendance), new TimeWithDayAttr(s.leaveWork)))
+											.collect(Collectors.toList()))));
+		});
+		return datas;
 	}
 
 	@Override
@@ -1071,14 +1112,23 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<DailyPerformanceEmployeeDto> getListEmployeeWithSid(List<String> sid) {
-		List<BsymtEmployeeDataMngInfo> lstEmployee = this.queryProxy()
-				.query(SEL_EMPLOYEE_WITH_SID, BsymtEmployeeDataMngInfo.class)
-				.setParameter("sids", sid).getList();
+		List<BsymtEmployeeDataMngInfo> lstEmployee = new ArrayList<>();
+		CollectionUtil.split(sid, 1000, subList ->{
+			lstEmployee.addAll(this.queryProxy()
+					.query(SEL_EMPLOYEE_WITH_SID, BsymtEmployeeDataMngInfo.class)
+					.setParameter("sids", subList).getList());
+		});
+		
 		List<String> ids = lstEmployee.stream().map((employee) -> {
 			return employee.bsymtEmployeeDataMngInfoPk.pId.trim();
 		}).collect(Collectors.toList());
-		List<BpsmtPerson> lstPerson = this.queryProxy().query(SEL_PERSON, BpsmtPerson.class)
-				.setParameter("lstPersonId",ids).getList();
+		
+		List<BpsmtPerson> lstPerson = new ArrayList<>();
+		CollectionUtil.split(ids, 1000, subList ->{
+			lstPerson.addAll(this.queryProxy().query(SEL_PERSON, BpsmtPerson.class)
+					.setParameter("lstPersonId", subList).getList());
+		});
+		
 		return lstEmployee.stream().map((employee) -> {
 			for (BpsmtPerson person : lstPerson) {
 				if (person.bpsmtPersonPk.pId.equals(employee.bsymtEmployeeDataMngInfoPk.pId)) {
@@ -1120,12 +1170,16 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public Map<String, Boolean> getConfirmDay(String companyId, List<String> sids, DateRange dates) {
 		if (!sids.isEmpty()) {
-			return this.queryProxy().query(SELECT_CONFIRM_DAY, KrcdtIdentificationStatus.class)
-					.setParameter("companyID", companyId).setParameter("sids", sids)
+			Map<String, Boolean> result = new HashMap<>();
+			CollectionUtil.split(sids, 1000, subList ->{
+				result.putAll(this.queryProxy().query(SELECT_CONFIRM_DAY, KrcdtIdentificationStatus.class)
+					.setParameter("companyID", companyId).setParameter("sids", subList)
 					.setParameter("processingYmds", dates.toListDate())
 					.getList(x -> x.krcdtIdentificationStatusPK.employeeId + "|"
 							+ x.krcdtIdentificationStatusPK.processingYmd)
-					.stream().collect(Collectors.toMap(y -> y, y -> true));
+					.stream().collect(Collectors.toMap(y -> y, y -> true)));
+			});
+			return result;
 		} else {
 			return Collections.emptyMap();
 		}
@@ -1159,7 +1213,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		List<AffComHistItemAtScreen> resultList = new ArrayList<>();
 		CollectionUtil.split(employeeIds, 1000, (subList) -> {
 			resultList.addAll(this.queryProxy()
-					.query(SELECT_BY_EMPLOYEE_ID_AFF_COM, BsymtAffCompanyHist.class).setParameter("sIds", employeeIds)
+					.query(SELECT_BY_EMPLOYEE_ID_AFF_COM, BsymtAffCompanyHist.class).setParameter("sIds", subList)
 					.setParameter("cid", cid).getList(x -> new AffComHistItemAtScreen(x.bsymtAffCompanyHistPk.sId, new DatePeriod(x.startDate, x.endDate))));
 		});
 		 return resultList.stream().collect(Collectors.groupingBy(AffComHistItemAtScreen :: getEmployeeId, Collectors
