@@ -17,7 +17,9 @@ import nts.uk.ctx.at.record.app.command.monthlyclosureupdate.ExecuteMonthlyClosu
 import nts.uk.ctx.at.record.app.command.monthlyclosureupdate.MonthlyClosureResponse;
 import nts.uk.ctx.at.record.app.find.monthlyclosureupdate.Kmw006aResultDto;
 import nts.uk.ctx.at.record.app.find.monthlyclosureupdate.Kmw006cDto;
+import nts.uk.ctx.at.record.app.find.monthlyclosureupdate.Kmw006eParams;
 import nts.uk.ctx.at.record.app.find.monthlyclosureupdate.Kmw006fResultDto;
+import nts.uk.ctx.at.record.app.find.monthlyclosureupdate.MonthlyClosureErrorInforDto;
 import nts.uk.ctx.at.record.app.find.monthlyclosureupdate.MonthlyClosureUpdateFinder;
 import nts.uk.ctx.at.record.app.find.monthlyclosureupdate.MonthlyClosureUpdateLogDto;
 import nts.uk.ctx.at.record.app.find.monthlyclosureupdate.exportcsv.MonthlyClosureUpdateLogExportService;
@@ -74,9 +76,9 @@ public class MonthlyClosureUpdateWebService extends WebService {
 	}
 
 	@POST
-	@Path("getResults/{monthlyClosureId}/{atr}")
-	public Kmw006fResultDto getResults(@PathParam("monthlyClosureId") String id, @PathParam("atr") Integer atr) {
-		return monthlyClosureFinder.getClosureResult(id, atr);
+	@Path("getResults/{monthlyClosureId}")
+	public Kmw006fResultDto getResults(@PathParam("monthlyClosureId") String id) {
+		return monthlyClosureFinder.getClosureResult(id);
 	}
 
 	@POST
@@ -109,4 +111,9 @@ public class MonthlyClosureUpdateWebService extends WebService {
 		return this.exportService.start(command);
 	}
 	
+	@POST
+	@Path("getErrInfor")
+	public List<MonthlyClosureErrorInforDto> getListErrorInfor(Kmw006eParams params){
+		return this.monthlyClosureFinder.getListErrorInfor(params.getLogId(), params.getListEmpId());
+	}
 }

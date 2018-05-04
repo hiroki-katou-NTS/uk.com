@@ -26,10 +26,10 @@ module nts.uk.at.view.kmw006.e.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             block.invisible();
-            service.getResults(self.params.logId, self.params.atr).done((result) => {
+            service.getResults(self.params.logId, self.params.listEmpId).done((result) => {
                 let listErr: Array<MonthlyClosureErrorInfor> = [];
-                for (let i = 0; i < result.listErrorInfor.length; i++) {
-                    let item = result.listErrorInfor[i];
+                for (let i = 0; i < result.length; i++) {
+                    let item = result[i];
                     listErr.push(new MonthlyClosureErrorInfor(i + 1, item.employeeCode, item.employeeName, item.errorMessage, item.atr));
                 }
                 self.items(listErr);

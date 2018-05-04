@@ -1,6 +1,12 @@
 package nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.ymupdate;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 
 /**
  * 
@@ -11,6 +17,9 @@ import javax.ejb.Stateless;
 @Stateless
 public class ProcessYearMonthUpdate {
 
+	@Inject
+	private ClosureRepository closureRepository;
+
 	/**
 	 * 処理年月更新
 	 * 
@@ -18,8 +27,15 @@ public class ProcessYearMonthUpdate {
 	 * @param closureId
 	 */
 	public void processYmUpdate(String companyId, int closureId) {
-		// TODO waiting for 当月を次月へ更新する
-
+		Optional<Closure> optClosure = closureRepository.findById(companyId, closureId);
+		// check exist
+		if (!optClosure.isPresent()) {
+			return;
+		}
+		// update CurrentMonth
+		Closure closure = optClosure.get();
+		closure.updateCurrentMonth();
+		closureRepository.update(closure);
 	}
 
 }

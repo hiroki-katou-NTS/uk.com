@@ -3,13 +3,12 @@ module nts.uk.at.view.kmw006.e.service {
     import format = nts.uk.text.format;
     
     var paths = {
-        getResults: "at/record/monthlyclosure/getResults/{0}/{1}",
+        getResults: "at/record/monthlyclosure/getErrInfor",
         exportCsv: "at/record/monthlyclosure/exportLog"
     }
 
-    export function getResults(id: string, atr): JQueryPromise<any> {
-        let _path = format(paths.getResults, id, atr);
-        return ajax("at", _path);
+    export function getResults(id: string, atr: Array<string>): JQueryPromise<any> {
+        return ajax("at", paths.getResults, {logId: id, listEmpId: atr});
     }
     
     export function exportCsv(data: any): JQueryPromise<any> {

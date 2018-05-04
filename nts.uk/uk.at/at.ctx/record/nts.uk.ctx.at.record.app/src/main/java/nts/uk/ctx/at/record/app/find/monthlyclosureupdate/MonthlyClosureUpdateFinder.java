@@ -15,7 +15,6 @@ import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureExecutionStatus;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosurePersonExecutionResult;
-import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErrorAlarmAtr;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErrorInfor;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErrorInforRepository;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateLog;
@@ -60,18 +59,10 @@ public class MonthlyClosureUpdateFinder {
 		return domainToDto(monthlyClosureUpdateRepo.getLogById(id).get());
 	}
 
-	public Kmw006fResultDto getClosureResult(String monthlyClosureUpdateLogId, Integer atr) {
+	public Kmw006fResultDto getClosureResult(String monthlyClosureUpdateLogId) {
 		List<MonthlyClosureErrorInforDto> listResult = new ArrayList<>();
 		MonthlyClosureUpdateLog updateLog = monthlyClosureUpdateRepo.getLogById(monthlyClosureUpdateLogId).get();
 		List<MonthlyClosureUpdateErrorInfor> listErrorInfo = errorInforRepo.getAll(monthlyClosureUpdateLogId);
-		if (atr != null && atr.intValue() == 1) { // get alarm only
-			listErrorInfo.stream().filter(item -> item.getAtr() == MonthlyClosureUpdateErrorAlarmAtr.ALARM)
-					.collect(Collectors.toList());
-		}
-		if (atr != null && atr.intValue() == 2) { // get error only
-			listErrorInfo.stream().filter(item -> item.getAtr() == MonthlyClosureUpdateErrorAlarmAtr.ERROR)
-					.collect(Collectors.toList());
-		}
 		if (!listErrorInfo.isEmpty()) {
 			for (MonthlyClosureUpdateErrorInfor errInfor : listErrorInfo) {
 				EmployeeRecordImport empImport = empImportAdapter.getPersonInfor(errInfor.getEmployeeId());
@@ -81,8 +72,7 @@ public class MonthlyClosureUpdateFinder {
 			}
 		}
 		listResult.sort((i1, i2) -> i1.getEmployeeCode().compareToIgnoreCase(i2.getEmployeeCode())); 
-		Kmw006fResultDto dto = new Kmw006fResultDto(listResult, domainToDto(updateLog));
-		return dto;
+		return new Kmw006fResultDto(listResult, domainToDto(updateLog));
 	}
 
 	private MonthlyClosureUpdateLogDto domainToDto(MonthlyClosureUpdateLog domain) {
@@ -212,6 +202,18 @@ public class MonthlyClosureUpdateFinder {
 		}
 		result.sort((e1, e2) -> e1.getEmployeeCode().compareToIgnoreCase(e2.getEmployeeCode()));
 		return result;
+	}
+	
+	public List<MonthlyClosureErrorInforDto> getListErrorInfor(String logId, List<String> listEmpId) {
+		List<MonthlyClosureErrorInforDto> listResult = new ArrayList<>();
+		for (String empId : listEmpId) {
+			MonthlyClosureUpdateErrorInfor errInfor = errorInforRepo.getById(logId, empId).get();
+			EmployeeRecordImport empImport = empImportAdapter.getPersonInfor(empId);
+			MonthlyClosureErrorInforDto result = new MonthlyClosureErrorInforDto(empImport.getEmployeeCode(),
+					empImport.getPname(), errInfor.getErrorMessage(), errInfor.getAtr().value);
+			listResult.add(result);
+		}
+		return listResult;
 	}
 
 }
