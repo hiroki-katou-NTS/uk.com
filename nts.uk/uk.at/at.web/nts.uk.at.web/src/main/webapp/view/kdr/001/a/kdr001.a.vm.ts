@@ -243,6 +243,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         public startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            nts.uk.ui.block.invisible();
             let user: any = __viewContext.user;
             $.when(service.findAll(),
                     service.getDate(),
@@ -260,13 +261,11 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                     let endDate = moment(dateData ? dateData.endDate || moment() : moment());
                     //画面項目「A3_4：終了年月」にパラメータ「当月+１月」をセットする    
                     let nextMonth = moment(endDate).add(1, 'M');
-                    endDate = nextMonth.format("YYYY/MM/DD");
 
                     //画面項目「A3_2：開始年月」にパラメータ「当月」－1年した値をセットする
                     let preYear = moment(startDate).add(-1, 'Y');
-                    startDate = preYear.format("YYYY/MM/DD");
-                    self.startDateString(moment.utc(startDate).format("YYYY/MM/DD"));
-                    self.endDateString(moment.utc(endDate).format("YYYY/MM/DD"));
+                    self.startDateString(moment.utc(preYear).format("YYYY/MM/DD"));
+                    self.endDateString(moment.utc(nextMonth).format("YYYY/MM/DD"));
                         
                     self.permissionOfEmploymentForm(new PermissionOfEmploymentFormModel(
                             permission.companyId,
@@ -284,11 +283,11 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                     }
                     // Init component.
                     self.reloadCcg001();
+                    dfd.resolve(self);
                }).fail(function(res) {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
             }).always(() => {
                 nts.uk.ui.block.clear();
-                dfd.resolve(self);
             });
             return dfd.promise();
         }
