@@ -1,6 +1,6 @@
 package nts.uk.ctx.pereg.app.find.common;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,40 +28,12 @@ public class InitDefaultValue {
 	@Inject
 	I18NResourcesForUK ukResouce;
 	
-	private static final String SPACE_JP = " ";
-
 	public void setDefaultValueRadio(List<LayoutPersonInfoClsDto> classItemList) {
-		List<String> firstReqLstItems = new ArrayList<String>();
-		firstReqLstItems.add("IS00130");
-		firstReqLstItems.add("IS00128");
-		firstReqLstItems.add("IS00139");
-		firstReqLstItems.add("IS00157");
-		firstReqLstItems.add("IS00166");
-		firstReqLstItems.add("IS00175");
-		firstReqLstItems.add("IS00148");
-		firstReqLstItems.add("IS00193");
-		firstReqLstItems.add("IS00202");
-		firstReqLstItems.add("IS00211");
-		firstReqLstItems.add("IS00220");
-		firstReqLstItems.add("IS00229");
-		firstReqLstItems.add("IS00238");
-		firstReqLstItems.add("IS00184");
-		List<String> secReqLstItems = new ArrayList<String>();
-		secReqLstItems.add("IS00131");
-		secReqLstItems.add("IS00140");
-		secReqLstItems.add("IS00158");
-		secReqLstItems.add("IS00167");
-		secReqLstItems.add("IS00176");
-		secReqLstItems.add("IS00149");
-		secReqLstItems.add("IS00194");
-		secReqLstItems.add("IS00203");
-		secReqLstItems.add("IS00212");
-		secReqLstItems.add("IS00221");
-		secReqLstItems.add("IS00230");
-		secReqLstItems.add("IS00239");
-		secReqLstItems.add("IS00185");
+		List<String> firstReqLstItems = Arrays.asList("IS00130", "IS00128", "IS00139", "IS00157", "IS00166", "IS00175",
+				"IS00148", "IS00193", "IS00202", "IS00211", "IS00220", "IS00229", "IS00238", "IS00184");
+		List<String> secReqLstItems = Arrays.asList("IS00131", "IS00140", "IS00158", "IS00167", "IS00176", "IS00149",
+				"IS00194", "IS00203", "IS00212", "IS00221", "IS00230", "IS00239", "IS00185");
 		if (classItemList == null) {
-
 			return;
 		}
 		List<LayoutPersonInfoClsDto> cls = classItemList.stream().filter(x -> x.getItems() != null)

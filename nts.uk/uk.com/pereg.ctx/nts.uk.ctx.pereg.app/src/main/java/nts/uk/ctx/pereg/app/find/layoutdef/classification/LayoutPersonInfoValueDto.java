@@ -148,4 +148,29 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setActionRole(itemDef.getActionRole());
 		return dataObject;
 	}
+	
+	public static LayoutPersonInfoValueDto createFromDefItem(PersonInfoCategory perInfoCategory, PerInfoItemDefDto itemDef) {
+		LayoutPersonInfoValueDto item = new LayoutPersonInfoValueDto();
+		
+		item.setCategoryId(itemDef.getPerInfoCtgId());
+		item.setCtgType(perInfoCategory.getCategoryType().value);
+		item.setCategoryCode(perInfoCategory.getCategoryCode().v());
+		
+		item.setItemDefId(itemDef.getId());
+		item.setItemName(itemDef.getItemName());
+		item.setItemCode(itemDef.getItemCode());
+		item.setItemParentCode(itemDef.getItemParentCode());
+		
+		item.setRow(0);
+		item.setRequired(itemDef.getIsRequired() == 1);
+		item.setType(itemDef.getItemTypeState().getItemType());
+		
+		item.setActionRole(ActionRole.EDIT);
+		item.setResourceId(itemDef.getResourceId());
+		return item;
+	}
+	
+	public void toStringValue() {
+		this.value = this.value.toString();
+	}
 }
