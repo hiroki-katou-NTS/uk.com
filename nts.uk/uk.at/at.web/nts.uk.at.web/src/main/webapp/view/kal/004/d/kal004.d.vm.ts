@@ -25,7 +25,7 @@ module nts.uk.com.view.kal004.d.viewmodel {
             var self = this;
             let dataSetShare = self.getData();
             nts.uk.ui.windows.setShared("extractionDaily", dataSetShare);
-            if (self.strMonth() > self.endMonth()) {
+            if (self.strMonth() < self.endMonth()) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_812" });
                 return false;
             } else {
