@@ -1357,7 +1357,7 @@ module cmm045.a.viewmodel {
                 self.lstAppAbsence([]);
                 self.lstAppCompltSync([]);
                 //luu
-                character.save('AppListExtractCondition', param);
+                character.save('AppListExtractCondition', condition);
                 let lstGoBack: Array<vmbase.AppGoBackInfoFull> = [];
                 let lstAppGroup: Array<vmbase.AppPrePostGroup> = [];
                 self.displaySet(new vmbase.ApprovalListDisplaySetDto(data.displaySet.advanceExcessMessDisAtr,
