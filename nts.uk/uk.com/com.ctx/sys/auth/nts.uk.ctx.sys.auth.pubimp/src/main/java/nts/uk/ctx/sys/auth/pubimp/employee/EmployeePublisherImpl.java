@@ -68,12 +68,13 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 
 	@Inject
 	private RoleIndividualService roleIndividualService;
-	
+
 	@Inject
 	private RoleExportRepo roleExportRepo;
-	
+
 	@Inject
 	private AcquireListWorkplaceByEmpIDService acquireListWorkplace;
+
 	@Override
 	public Optional<NarrowEmpByReferenceRange> findByEmpId(List<String> sID, int roleType) {
 		// imported（権限管理）「社員」を取得する Request No1
@@ -177,8 +178,12 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 			OptionalInt optEmpRange = roleExportRepo.findEmpRangeByRoleID(roleID);
 			// 指定社員が参照可能な職場リストを取得する
 			// (Lấy list workplace của employee chỉ định)
-		    List<String> listWorkPlaceID = acquireListWorkplace.getListWorkPlaceID(employeeID, optEmpRange.getAsInt(), referenceDate);
-		    return listWorkPlaceID;
+			List<String> listWorkPlaceID = acquireListWorkplace.getListWorkPlaceID(employeeID, optEmpRange.getAsInt(), referenceDate);
+			if (listWorkPlaceID.isEmpty()) {
+				return new ArrayList<>();
+			} else {
+				return listWorkPlaceID;
+			}
 		}
 	}
 
