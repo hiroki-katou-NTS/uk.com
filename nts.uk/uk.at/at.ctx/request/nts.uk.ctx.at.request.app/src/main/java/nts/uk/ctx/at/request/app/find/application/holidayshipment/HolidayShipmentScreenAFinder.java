@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingD
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmentapp.RecruitmentAppDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
@@ -167,14 +168,14 @@ public class HolidayShipmentScreenAFinder {
 		commonProcessAtStartup(companyID, employeeID, refDate, appDate, takingOutWkTypeCD, takingOutWkTimeCD, deadDate,
 				holiDayWkTypeCD, holidayWkTimeCD, result, appCommonSettingOutput);
 		// アルゴリズム「勤務時間初期値の取得」を実行する
-		setWorkTimeInfo(result, wkTimeCD);
+		String wkTypeCD = result.getRecWkTypes().size() > 0 ? result.getRecWkTypes().get(0).getWorkTypeCode() : "";
+		setWorkTimeInfo(result, wkTimeCD, wkTypeCD);
 
 		return result;
 	}
 
-	private void setWorkTimeInfo(HolidayShipmentDto result, String wkTimeCD) {
+	private void setWorkTimeInfo(HolidayShipmentDto result, String wkTimeCD, String wkTypeCD) {
 		if (wkTimeCD != null) {
-			String wkTypeCD = result.getRecWkTypes().size() > 0 ? result.getRecWkTypes().get(0).getWorkTypeCode() : "";
 			if (StringUtils.isNoneEmpty(wkTypeCD)) {
 				result.setWorkTimeInfo(getWkTimeInfoInitValue(companyID, wkTypeCD, wkTimeCD));
 			}
@@ -195,12 +196,18 @@ public class HolidayShipmentScreenAFinder {
 		GeneralDate baseDate = comType == ApplicationCombination.Abs.value ? absDate : recDate;
 
 		HolidayShipmentDto output = commonProcessBeforeStart(appType, companyID, employeeID, baseDate);
+		// アルゴリズム「実績の取得」を実行する
 		// AchievementOutput achievementOutput = getAchievement(companyID,
 		// employeeID, baseDate);
-		// アルゴリズム「実績の取得」を実行する
+		// アルゴリズム「申請日の変更」を実行する
 		setChangeAppDateData(recDate, absDate, companyID, employeeID, uiType, output);
 
 		return output;
+	}
+
+	public WorkTimeInfoDto getSelectedWorkingHours(String wkTypeCD, String wkTimeCD) {
+		String companyID = AppContexts.user().companyId();
+		return getWkTimeInfoInitValue(companyID, wkTypeCD, wkTimeCD);
 	}
 
 	private String getWkTimeCD(SingleDaySchedule wkOnWeekDays) {
@@ -232,7 +239,7 @@ public class HolidayShipmentScreenAFinder {
 		ApplicationSetting appSet = appCommonSet.applicationSetting;
 		// 承認ルート基準日をチェックする
 		GeneralDate inputDate;
-		if (!appSet.getBaseDateFlg().equals(BaseDateFlg.APP_DATE)) {
+		if (appSet.getBaseDateFlg().equals(BaseDateFlg.APP_DATE)) {
 
 			inputDate = referenceDate;
 		} else {
@@ -362,7 +369,7 @@ public class HolidayShipmentScreenAFinder {
 
 		// アルゴリズム「振休振出申請定型理由の取得」を実行する
 
-		output.setAppReasonComboItems(appResonRepo.getReasonByAppType(companyID,appType.value).stream()
+		output.setAppReasonComboItems(appResonRepo.getReasonByAppType(companyID, appType.value).stream()
 				.map(x -> ApplicationReasonDto.convertToDto(x)).collect(Collectors.toList()));
 
 		// アルゴリズム「基準日別設定の取得」を実行する

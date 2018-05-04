@@ -57,7 +57,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
             self.appComSelectedCode.subscribe((newCode) => {
                 if (newCode == 0) { return; };
                 if (newCode == 1) {
-                    $("#absDatePinker").ntsError("clear");
+                    $("#absDatePicker").ntsError("clear");
                 }
                 if (newCode == 2) {
                     $("#recDatePicker").ntsError("clear");
