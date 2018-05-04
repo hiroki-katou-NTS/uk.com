@@ -390,7 +390,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             }
             if ((workType.oneDayCls() == 5 && workType.oneDay().sumAbsenseNo() == "")
                 || (workType.morningCls() == 5 && workType.morning().sumAbsenseNo() == "") ||
-                (workType.afternoonCls() == 5 && workType.afternoon().sumAbsenseNo() == "")) {
+                (workTypee.afternoonCls() == 5 && workType.afternoon().sumAbsenseNo() == "")) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_922" });
                 return;
             }
