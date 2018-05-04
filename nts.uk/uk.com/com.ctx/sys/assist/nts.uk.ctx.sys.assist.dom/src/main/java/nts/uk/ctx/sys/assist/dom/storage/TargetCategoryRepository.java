@@ -12,6 +12,8 @@ public interface TargetCategoryRepository
     List<TargetCategory> getAllTargetCategory();
 
     Optional<TargetCategory> getTargetCategoryById(String storeProcessingId, String categoryId);
+    
+    Optional<TargetCategory> getTargetCategoryListById(String storeProcessingId);
 
     void add(TargetCategory domain);
 
