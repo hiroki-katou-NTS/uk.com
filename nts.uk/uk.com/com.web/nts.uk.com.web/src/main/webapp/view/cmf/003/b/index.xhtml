@@ -7,6 +7,11 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.sys.assist.dom.storage.SaveSetName
+				nts.uk.ctx.sys.assist.dom.storage.FileCompressionPassword
+				nts.uk.ctx.sys.assist.dom.storage.Explanation
+			</com:ValidatorScript>
 			<com:stylefile path="cmf003.b.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />

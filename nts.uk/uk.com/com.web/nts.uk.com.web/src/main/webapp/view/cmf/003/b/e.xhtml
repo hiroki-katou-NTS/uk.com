@@ -33,9 +33,9 @@
 			<div class="valign-center control-group" style="margin-top:20px;">
 					<table id="E3_7" data-bind="ntsGridList: {								
 						height: 400,
-						dataSource: items,
+						dataSource: categorys,
 						primaryKey: 'code',
-						columns: columns,
+						columns: columnCategorys,
 						multiple: false,
 						value: currentCode,
 						rows: 5
@@ -113,9 +113,9 @@
 				<div class="valign-center control-group">
 					<table id="E4_4" data-bind="ntsGridList: {								
 						height: 1600,
-						dataSource: items2,
+						dataSource: categorys,
 						primaryKey: 'code',
-						columns: columns2,
+						columns: columnEmployees,
 						multiple: false,
 						value: currentCode,
 						rows: 20
