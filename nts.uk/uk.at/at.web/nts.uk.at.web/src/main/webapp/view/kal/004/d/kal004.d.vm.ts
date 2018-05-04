@@ -11,12 +11,14 @@ module nts.uk.com.view.kal004.d.viewmodel {
 
         strMonth: KnockoutObservable<number>;
         endMonth: KnockoutObservable<number>;
+
+        getParam: ExtractionDailyDto;
         constructor() {
             var self = this;
             self.strComboDay = ko.observableArray(__viewContext.enums.PreviousClassification);
             self.endComboDay = ko.observableArray(__viewContext.enums.PreviousClassification);
-            self.strComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
-            self.endComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
+            self.strComboMonth = ko.observableArray(__viewContext.enums.StandardMonth);
+            self.endComboMonth = ko.observableArray(__viewContext.enums.StandardMonth);
 
 
             self.getParam = nts.uk.ui.windows.getShared("extractionDailyDto");
@@ -32,12 +34,13 @@ module nts.uk.com.view.kal004.d.viewmodel {
 
             let dataSetShare = self.getData();
             nts.uk.ui.windows.setShared("extractionDaily", dataSetShare);
-            self.cancel_Dialog();
+            self.closeDialog();
         }
 
         getData(): any {
             var self = this;
-
+            var extractionId = self.getParam.extractionId;
+            var extractionRange = self.getParam.extractionRange;
             var strPreviousMonth = null;
             var strCurrentMonth = null;
             var strMonth = null;
@@ -83,14 +86,26 @@ module nts.uk.com.view.kal004.d.viewmodel {
                 return true;
             }
         }
+
+        closeDialog(): void {
+            nts.uk.ui.windows.close();
+        }
+
+
+    }
+    export interface ExtractionDailyDto {
+        extractionId: string;
+        extractionRange: number;
+        strPreviousMonth?: number;
+        strCurrentMonth?: number;
+        strMonth?: number;
+        endPreviousMonth?: number;
+        endCurrentMonth?: number;
+        endMonth?: number;
     }
 
-    closeDialog(): void {
-        nts.uk.ui.windows.close();
-    }
 }
 
-}
 
 
 class items {

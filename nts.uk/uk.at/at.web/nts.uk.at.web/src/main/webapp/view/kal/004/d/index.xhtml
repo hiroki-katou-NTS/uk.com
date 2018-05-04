@@ -11,9 +11,9 @@
 				nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Day
             </com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 750, height: 550 };</script>
+			<script>var dialogSize = { width: 750, height: 350 };</script>
 			<com:EnumScript>
-				nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.SpecifiedMonth
+				nts.uk.ctx.at.function.dom.alarm.extractionrange.StandardMonth
 				nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification
 			</com:EnumScript>
 			<com:stylefile path="kal004.d.style.css" />
@@ -22,18 +22,15 @@
 			<com:scriptfile path="kal004.d.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="contents-area">
+			<div id="contents-area" style="overflow: hidden;">
 				<div class="header">
 					<span class="label" data-bind="text: getCategoryName"></span>
 				</div>
 				<div class="cf">
 					<div class="valign-center control-group start">
 						<span class="label">#{i18n.getText('KAL004_29')}</span>
-						<div class="day">
-							<span class="label txt">#{i18n.getText('KAL004_34')}</span>
-						</div>
 						<div class="month">
-							<div class="combo-box" tabindex="5"
+							<div class="combo-box" style="margin-top: -15px;" tabindex="5"
 								data-bind="ntsComboBox: {
 										options: strComboMonth,
 										optionsValue: 'value',
@@ -46,14 +43,11 @@
 										]}"></div>
 						</div>
 					</div>
-					<div class="centerSys">#{i18n.getText('KAL004_30')}</div>
+					<div class="centerSys" style="margin-top: -35px; margin-left: -65px;">#{i18n.getText('KAL004_30')}</div>
 					<div class="valign-center control-group end">
 						<span class="label">#{i18n.getText('KAL004_31')}</span>
-						<div class="day">
-							<span class="label txt">#{i18n.getText('KAL004_34')}</span>
-						</div>
 						<div class="month">
-							<div class="combo-box" tabindex="10"
+							<div class="combo-box" style="margin-top: -15px;" tabindex="10"
 								data-bind="ntsComboBox: {
 										options: endComboMonth,
 										optionsValue: 'value',

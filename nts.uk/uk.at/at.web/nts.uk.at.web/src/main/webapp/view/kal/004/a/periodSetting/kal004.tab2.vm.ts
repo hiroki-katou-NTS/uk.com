@@ -56,23 +56,31 @@ module nts.uk.at.view.kal004.tab2.viewModel {
 
         private openDialog(ModelCheckConditonCode): void {
             var self = this;
-            var param = ModelCheckConditonCode.extractionPeriodDaily;
-            var extractionDailyDto = {
-                extractionId: param.extractionId,
-                extractionRange: param.extractionRange,
-                strPreviousMonth: param.strPreviousMonth,
-                strCurrentMonth: param.strCurrentMonth,
-                strMonth: param.strMonth,
-                endMakeToDay: param.endMakeToDay,
-                endPreviousMonth: param.endPreviousMonth,
-                endCurrentMonth: param.endCurrentMonth,
-                endMonth: param.endMonth
-            };
-            nts.uk.ui.windows.setShared("extractionDailyDto", extractionDailyDto);
-            nts.uk.ui.windows.setShared("categoryId", categoryId);
-            nts.uk.ui.windows.setShared("categoryName", ModelCheckConditonCode.categoryName);
+
             var categoryId = ModelCheckConditonCode.categoryId;
-            if (categoryId == 0) {
+            if (categoryId == 7) {
+                var param = ModelCheckConditonCode.extractionPeriodDaily;
+                var extractionDailyDto = {
+                    extractionId: param.extractionId,
+                    extractionRange: param.extractionRange,
+                    strSpecify: param.strSpecify,
+                    strPreviousDay: param.strPreviousDay,
+                    strMakeToDay: param.strMakeToDay,
+                    strDay: param.strDay,
+                    strPreviousMonth: param.strPreviousMonth,
+                    strCurrentMonth: param.strCurrentMonth,
+                    strMonth: param.strMonth,
+                    endSpecify: param.endSpecify,
+                    endPreviousDay: param.endPreviousDay,
+                    endMakeToDay: param.endMakeToDay,
+                    endDay: param.endDay,
+                    endPreviousMonth: param.endPreviousMonth,
+                    endCurrentMonth: param.endCurrentMonth,
+                    endMonth: param.endMonth
+                };                
+                nts.uk.ui.windows.setShared("extractionDailyDto", extractionDailyDto);
+                nts.uk.ui.windows.setShared("categoryId", categoryId);
+                nts.uk.ui.windows.setShared("categoryName", ModelCheckConditonCode.categoryName);
                 nts.uk.ui.windows.sub.modal("../d/index.xhtml").onClosed(() => {
                     let data = nts.uk.ui.windows.getShared("extractionDaily");
                     if (!nts.uk.util.isNullOrUndefined(data)) {
@@ -119,8 +127,8 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                         self.changeExtractionDaily(data, categoryId);
                     }
                 });
-            }else if(categoryId ==12){
-                
+            } else if (categoryId == 12) {
+
                 let param = ModelCheckConditonCode.extractionPeriodDaily;
                 let extractionDailyDto = {
                     extractionId: param.extractionId,
@@ -139,17 +147,17 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                     endPreviousMonth: param.endPreviousMonth,
                     endCurrentMonth: param.endCurrentMonth,
                     endMonth: param.endMonth
-                };                
-                
+                };
+
                 nts.uk.ui.windows.setShared("categoryId", categoryId);
                 nts.uk.ui.windows.setShared("categoryName", ModelCheckConditonCode.categoryName);
                 nts.uk.ui.windows.setShared("extractionDailyDto", extractionDailyDto);
                 nts.uk.ui.windows.sub.modal("../g/index.xhtml").onClosed(() => {
                     let data = nts.uk.ui.windows.getShared("extractionDaily");
-                    if(!nts.uk.util.isNullOrUndefined(data)){
-                        
+                    if (!nts.uk.util.isNullOrUndefined(data)) {
+
                     }
-                });                
+                });
             }
         }
         private changeExtractionDaily(extractionDailyDto: share.ExtractionDailyDto, categoryId: number): void {
@@ -197,9 +205,9 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             var self = this;
             this.categoryId = CheckCondition.alarmCategory;
             this.categoryName = _.find(self.ListAlarmCategory, ['value', CheckCondition.alarmCategory]).name;
-            if(nts.uk.util.isNullOrUndefined(CheckCondition.extractionPeriodDaily)  && CheckCondition.alarmCategory==2){
-                this.extractionPeriod = _.find(self.SegmentationOfCycle, ['value', CheckCondition.extractionPeriodUnit.segmentationOfCycle]).name; 
-            }else if(CheckCondition.alarmCategory==5 || CheckCondition.alarmCategory==13){
+            if (nts.uk.util.isNullOrUndefined(CheckCondition.extractionPeriodDaily) && CheckCondition.alarmCategory == 2) {
+                this.extractionPeriod = _.find(self.SegmentationOfCycle, ['value', CheckCondition.extractionPeriodUnit.segmentationOfCycle]).name;
+            } else if (CheckCondition.alarmCategory == 5 || CheckCondition.alarmCategory == 13) {
 
                 var str, end;
                 if (CheckCondition.extractionPeriodDaily.strSpecify == 0) {
@@ -213,10 +221,10 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 } else {
                     let endMonth = _.find(self.ListSpecifiedMonth, ['value', CheckCondition.extractionPeriodDaily.endMonth]);
                     end = endMonth.name + getText('KAL004_43');
-                }  
-                this.extractionPeriod = str + ' ' + getText('KAL004_30') +  ' ' +end;
-            }else{
-                this.extractionPeriod="";
+                }
+                this.extractionPeriod = str + ' ' + getText('KAL004_30') + ' ' + end;
+            } else {
+                this.extractionPeriod = "";
             }
 
             this.extractionPeriodDaily = CheckCondition.extractionPeriodDaily;
