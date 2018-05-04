@@ -19,9 +19,10 @@
 			</div>
 			<div class="fixed-flex-layout-right" style="padding-top: 20px;">
 				<div class="valign-center control-group">
-					<div id="B4_1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF003_28')}</div>
+					<div id="B4_1" data-bind="ntsFormLabel: {required: true, constraint: 'SaveSetName'}">#{i18n.getText('CMF003_28')}</div>
 					<input id="B4_2" tabindex="6" data-bind="ntsTextEditor: {
-											value: dataSaveSetName, required: true, 
+											value: dataSaveSetName, required: true,
+											constraint: 'SaveSetName', 
 											option: {width: '200px'}}" />
 				</div>
 				<div class="valign-center control-group">
@@ -34,9 +35,9 @@
 				<div class="valign-center control-group">
 					<table id="B4_4" data-bind="ntsGridList: {								
 						height: 400,
-						dataSource: items,
+						dataSource: categorys,
 						primaryKey: 'code',
-						columns: columns,
+						columns: columnCategorys,
 						multiple: false,
 						value: currentCode,
 						rows: 5
@@ -68,14 +69,14 @@
 				</div>
 				<div class="valign-center control-group">
 					<div id="B4_30" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_45')}</div>
-					<div id="B4_31" tabindex="10" data-bind="ntsCheckBox: { checked: true }">
+					<div id="B4_31" tabindex="10" data-bind="ntsCheckBox: { checked: isCompressPass }">
 						#{i18n.getText('CMF003_46')}
 					</div>
 					<input tabindex="11" id="B4_32"
 										data-bind="ntsTextEditor: {
 											name: '#[CMF003_73]',
 											value: password,
-											required: false,
+											required: isCompressPass, constraint: 'FileCompressionPassword',
 											option: {textmode: 'password',width: '152px'},
 											enable: true,
 											readonly: false
@@ -88,19 +89,20 @@
 										data-bind="ntsTextEditor: {
 											name: '#[CMF003_74]',
 											value: confirmPassword,
-											required: false,
+											required: isCompressPass, constraint: 'FileCompressionPassword', 
 											option: {textmode: 'password',width: '152px'},
 											enable: true,
 											readonly: false
 											}" />
 				</div>
 				<div class="valign-center control-group">
-					<div id="B4_34" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_47')}</div>
+					<div id="B4_34" data-bind="ntsFormLabel: {constraint: 'Explanation'}">#{i18n.getText('CMF003_47')}</div>
 					<input tabindex="12" id="B4_35"
 										data-bind="ntsTextEditor: {
 											name: '#[CMF003_48]',
 											value: explanation,
 											required: false,
+											constraint: 'Explanation',
 											enable: true,
 											readonly: false
 											}" />
@@ -113,9 +115,7 @@
 				</div>
 				<div class="valign-center control-group button-bottom-area">
 					<button id="B5_1" class="large" tabindex="14" data-bind="click : backToA">#{i18n.getText('CMF003_52')}</button>
-<!-- 					<button id="B5_2" class="x-large proceed" tabindex="15" data-bind="click: nextPageEmployee">#{i18n.getText('CMF003_53')}</button> -->
-					<button class="proceed x-large"  tabindex="6"  
-					data-bind="click: nextPageEmployee">#{i18n.getText('CMF003_53')}</button>
+					<button id="B5_2" class="proceed x-large" tabindex="15" data-bind="click: nextPageEmployee">#{i18n.getText('CMF003_53')}</button>
 				</div>
 			</div>
 		</div>
