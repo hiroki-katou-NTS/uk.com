@@ -6,35 +6,31 @@ module nts.uk.com.view.kal004.d.viewmodel {
         getCategoryName: KnockoutObservable<string>;
         strComboMonth: KnockoutObservableArray<any>;
         endComboMonth: KnockoutObservableArray<any>;
-        strComboDay: KnockoutObservableArray<any>;
-        endComboDay: KnockoutObservableArray<any>;
-
         strMonth: KnockoutObservable<number>;
         endMonth: KnockoutObservable<number>;
-
-        getParam: ExtractionDailyDto;
+        getParam: ExtractionMonthDto;
         constructor() {
             var self = this;
-            self.strComboDay = ko.observableArray(__viewContext.enums.PreviousClassification);
-            self.endComboDay = ko.observableArray(__viewContext.enums.PreviousClassification);
+
             self.strComboMonth = ko.observableArray(__viewContext.enums.StandardMonth);
             self.endComboMonth = ko.observableArray(__viewContext.enums.StandardMonth);
-
-
-            self.getParam = nts.uk.ui.windows.getShared("extractionDailyDto");
+            self.getParam = nts.uk.ui.windows.getShared("extractionMonthDto");
             self.getCategoryName = nts.uk.ui.windows.getShared("categoryName");
             self.getCategoryId = ko.observable(nts.uk.ui.windows.getShared("categoryId"));
-
             self.strMonth = ko.observable(self.getParam.strMonth);
             self.endMonth = ko.observable(self.getParam.endMonth);
 
         }
         Decide(): any {
             var self = this;
-
             let dataSetShare = self.getData();
             nts.uk.ui.windows.setShared("extractionDaily", dataSetShare);
-            self.closeDialog();
+            if (self.strMonth() > self.endMonth()) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_812" });
+                return false;
+            } else {
+                self.closeDialog();
+            }
         }
 
         getData(): any {
@@ -79,7 +75,7 @@ module nts.uk.com.view.kal004.d.viewmodel {
         }
         checkPeriod(): boolean {
             var self = this;
-            if (self.strComboMonth() > self.endComboMonth()) {
+            if (self.strMonth() > self.endMonth()) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_812" });
                 return false;
             } else {
@@ -93,7 +89,7 @@ module nts.uk.com.view.kal004.d.viewmodel {
 
 
     }
-    export interface ExtractionDailyDto {
+    export interface ExtractionMonthDto {
         extractionId: string;
         extractionRange: number;
         strPreviousMonth?: number;
@@ -106,19 +102,5 @@ module nts.uk.com.view.kal004.d.viewmodel {
 
 }
 
-
-
-class items {
-    value: string;
-    name: string;
-    description: string;
-
-    constructor(value: string, name: string, description: string) {
-        var self = this;
-        self.value = value;
-        self.name = name;
-        self.description = description;
-    }
-}
 
 

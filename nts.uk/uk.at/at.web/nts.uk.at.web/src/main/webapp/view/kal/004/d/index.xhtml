@@ -11,7 +11,7 @@
 				nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Day
             </com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 750, height: 350 };</script>
+			<script>var dialogSize = { width: 750, height: 400 };</script>
 			<com:EnumScript>
 				nts.uk.ctx.at.function.dom.alarm.extractionrange.StandardMonth
 				nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification
@@ -38,6 +38,7 @@
 										visibleItemsCount: 7,
 										optionsText: 'name',
 										enable: true,
+										dropDownAttachedToBody: true,
 										columns: [
 											{ prop: 'name', length: 5 }
 										]}"></div>
@@ -47,7 +48,7 @@
 					<div class="valign-center control-group end">
 						<span class="label">#{i18n.getText('KAL004_31')}</span>
 						<div class="month">
-							<div class="combo-box" style="margin-top: -15px;" tabindex="10"
+							<div class="combo-box" style="margin-top: -15px; display: " tabindex="10"
 								data-bind="ntsComboBox: {
 										options: endComboMonth,
 										optionsValue: 'value',
@@ -55,6 +56,7 @@
 										optionsText: 'name',
 										visibleItemsCount: 7,
 										enable: true,
+										dropDownAttachedToBody: true,
 										columns: [
 											{ prop: 'name', length: 5 }
 										]}"></div>
