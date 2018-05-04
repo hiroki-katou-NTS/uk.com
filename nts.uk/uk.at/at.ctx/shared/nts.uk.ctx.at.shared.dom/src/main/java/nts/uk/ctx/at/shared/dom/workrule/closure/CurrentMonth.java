@@ -41,6 +41,6 @@ public class CurrentMonth extends DomainObject {
 	 * 当月を1ヵ月分進める
 	 */
 	public void nextMonth() {
-		this.processingYm.addMonths(1);
+		this.processingYm = this.processingYm.nextMonth();
 	}
 }
