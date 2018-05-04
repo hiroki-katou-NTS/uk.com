@@ -569,8 +569,8 @@ module nts.uk.at.view.cmf003.d {
 
             private selectCategory(): void {
                 let self = this;
-                setShared("CMF003_B_CATEGORIES",self.systemtypeFromC);
-                setShared("CMF003_B_SYSTEMTYPE",self.categorys());
+                setShared("CMF003_B_CATEGORIES",self.categorys());
+                setShared("CMF003_B_SYSTEMTYPE",self.systemtypeFromC);
                 nts.uk.ui.windows.sub.modal('../c/index.xhtml').onClosed(() => {
                     let categoryFromC = getShared('CMF003_C_CATEGORIES');
                     let systemtypeFromC = getShared('CMF003_C_SYSTEMTYPE');

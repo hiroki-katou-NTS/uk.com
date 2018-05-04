@@ -2,8 +2,8 @@ package nts.uk.ctx.sys.assist.dom.category;
 
 public enum StoredProcedureSpecified {	
 	
-	IS_NOT_SPECIFIED(0,"Enum_Stored_Procedure_Specified_IS_NOT_SPECIFIED"),
-	SPECIFIED(1,"Enum_Stored_Procedure_Specified_SPECIFIED");
+	IS_NOT_SPECIFIED(0,"Enum_StoredProcedureSpecified_IS_NOT_SPECIFIED"),
+	SPECIFIED(1,"Enum_StoredProcedureSpecified_SPECIFIED");
 	
 	/** The value. */
 	public final int value;
