@@ -32,6 +32,7 @@ public class RegulationInfoEmployeeQueryImpl implements RegulationInfoEmployeeQu
 	private EmployeeSearchQueryDto createQueryToFilterEmployees(RegulationInfoEmployeeQuery queryX) {
 		GeneralDateTime workingDate = GeneralDateTime.localDateTime(queryX.getBaseDate().localDate().atStartOfDay());
 		return EmployeeSearchQueryDto.builder().baseDate(workingDate)
+				            .referenceRange(queryX.getReferenceRange())
 							.filterByEmployment(queryX.getFilterByEmployment())
 							.employmentCodes(queryX.getEmploymentCodes())
 							.filterByDepartment(queryX.getFilterByDepartment())
