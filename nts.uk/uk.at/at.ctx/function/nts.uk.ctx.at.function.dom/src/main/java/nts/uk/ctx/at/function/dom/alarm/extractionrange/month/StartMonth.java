@@ -30,7 +30,7 @@ public class StartMonth {
 		this.strMonthNo = Optional.of(new MonthNo(monthPrevious, strMonthNo, currentMonth));
 	}
 	
-	public void setFixedMonth(PreviousClassification monthPrevious, YearSpecifiedType yearSpecifiedType, int designatedMonth) {
+	public void setFixedMonth(YearSpecifiedType yearSpecifiedType, int designatedMonth) {
 		this.fixedMonthly = Optional.of(new FixedMonthly(yearSpecifiedType, designatedMonth));
 	}
 }

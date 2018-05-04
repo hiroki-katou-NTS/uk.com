@@ -24,8 +24,9 @@ public class EndMonth {
 	
 
 	
-	public EndMonth(int specifyEndMonth) {
+	public EndMonth(int specifyEndMonth, int extractFromStartMonth) {
 		this.specifyEndMonth = EnumAdaptor.valueOf(specifyEndMonth, SpecifyEndMonth.class);
+		this.extractFromStartMonth = EnumAdaptor.valueOf(extractFromStartMonth, ExtractFromStartMonth.class);
 	}
 	
 	public void setEndMonthNo(PreviousClassification monthPrevious, int endMonthNo, boolean currentMonth) {

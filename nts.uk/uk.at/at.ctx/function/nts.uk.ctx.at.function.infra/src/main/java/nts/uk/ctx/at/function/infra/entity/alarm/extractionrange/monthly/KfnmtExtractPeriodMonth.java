@@ -9,6 +9,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.NumberOfMonth;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.EndMonth;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.ExtractionPeriodMonth;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.SpecifyStartMonth;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.StartMonth;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.YearSpecifiedType;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtCheckCondition;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -77,5 +85,40 @@ public class KfnmtExtractPeriodMonth extends UkJpaEntity implements Serializable
 		this.endMonth = newEntity.endMonth;
 		this.endCurrentMonth = newEntity.endCurrentMonth;
 		this.endPreviousAtr = newEntity.endPreviousAtr;
+	}
+	
+	
+	public ExtractionPeriodMonth toDomain() {		
+		StartMonth startMonth = new StartMonth(strSpecify);
+		
+		if(this.strSpecify==SpecifyStartMonth.DESIGNATE_CLOSE_START_MONTH.value) {
+			startMonth.setStartMonth(EnumAdaptor.valueOf(strPreviousAtr, PreviousClassification.class), strMonth, strCurrentMonth ==1);
+		}else {
+			startMonth.setFixedMonth(EnumAdaptor.valueOf(yearType, YearSpecifiedType.class), specifyMonth);
+		}
+		
+		EndMonth endMonth = new EndMonth(endSpecify, extractPeriod);
+		endMonth.setEndMonthNo(EnumAdaptor.valueOf(endPreviousAtr, PreviousClassification.class), this.endMonth, endCurrentMonth==1);
+		
+		return new ExtractionPeriodMonth(this.pk.extractionId, this.pk.extractionRange, startMonth, endMonth, EnumAdaptor.valueOf(pk.unit, NumberOfMonth.class));
+	}
+	
+	public KfnmtExtractPeriodMonth(ExtractionPeriodMonth domain) {
+		this.pk = new KfnmtExtractPeriodMonthPK(domain.getExtractionId(), domain.getExtractionRange().value, domain.getNumberOfMonth().value);
+		this.strSpecify= domain.getStartMonth().getSpecifyStartMonth().value;
+		this.yearType = domain.getStartMonth().getFixedMonthly().isPresent() ? domain.getStartMonth().getFixedMonthly().get().getYearSpecifiedType().value: YearSpecifiedType.CURRENT_YEAR.value;
+		this.specifyMonth = domain.getStartMonth().getFixedMonthly().isPresent()? domain.getStartMonth().getFixedMonthly().get().getDesignatedMonth(): 0;
+		this.strMonth = domain.getStartMonth().getStrMonthNo().isPresent() ? domain.getStartMonth().getStrMonthNo().get().getMonthNo(): 0;
+		this.strCurrentMonth = domain.getStartMonth().getStrMonthNo().isPresent() ? (domain.getStartMonth().getStrMonthNo().get().isCurentMonth()? 1: 0 ) : 12;
+		this.strPreviousAtr = PreviousClassification.BEFORE.value;
+		this.endSpecify = domain.getEndMonth().getSpecifyEndMonth().value;
+		this.extractPeriod = domain.getEndMonth().getExtractFromStartMonth().value;
+		this.endMonth = domain.getEndMonth().getEndMonthNo().get().getMonthNo();
+		this.endCurrentMonth = domain.getEndMonth().getEndMonthNo().get().isCurentMonth()? 1: 0;
+		this.endPreviousAtr = domain.getEndMonth().getEndMonthNo().get().getMonthPrevious().value;
+	}
+	
+	public static KfnmtExtractPeriodMonth toEntity(ExtractionPeriodMonth domain) {
+		return new KfnmtExtractPeriodMonth(domain);		
 	}
 }

@@ -20,4 +20,35 @@ public class KfnmtExtractPeriodMonthPK implements Serializable{
 	
 	@Column(name = "UNIT")
 	public int unit;
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((extractionId == null) ? 0 : extractionId.hashCode());
+		result = prime * result + extractionRange;
+		result = prime * result + unit;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		KfnmtExtractPeriodMonthPK other = (KfnmtExtractPeriodMonthPK) obj;
+		if (extractionId == null) {
+			if (other.extractionId != null)
+				return false;
+		} else if (!extractionId.equals(other.extractionId))
+			return false;
+		if (extractionRange != other.extractionRange)
+			return false;
+		if (unit != other.unit)
+			return false;
+		return true;
+	}
 }

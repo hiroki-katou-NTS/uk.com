@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.app.command.alarm;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.ejb.Stateless;
@@ -48,14 +49,19 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 		}
 
 	}
-	
+
 	public CheckCondition convertToCheckCondition (CheckConditionCommand command) {
-		ExtractionRangeBase extraction = null;
+		List<ExtractionRangeBase> extractionList = new ArrayList<>();
 		if(command.getExtractionPeriodDaily()!=null) {
-			extraction = command.getExtractionPeriodDaily().toDomain();
+			extractionList.add(command.getExtractionPeriodDaily().toDomain());
 		}else if(command.getExtractionPeriodUnit()  !=null){
-			extraction = command.getExtractionPeriodUnit().toDomain();
+			extractionList.add(command.getExtractionPeriodUnit().toDomain());
+		}else if(!command.getListExtractionMonthly().isEmpty()) {
+			command.getListExtractionMonthly().forEach( e->{
+				extractionList.add(e.toDomain());
+			});
 		}
-		return new CheckCondition(EnumAdaptor.valueOf(command.getAlarmCategory(), AlarmCategory.class), command.getCheckConditionCodes(), extraction);
+		return new CheckCondition(EnumAdaptor.valueOf(command.getAlarmCategory(), AlarmCategory.class), command.getCheckConditionCodes(), extractionList);
 	}
+	
 }
