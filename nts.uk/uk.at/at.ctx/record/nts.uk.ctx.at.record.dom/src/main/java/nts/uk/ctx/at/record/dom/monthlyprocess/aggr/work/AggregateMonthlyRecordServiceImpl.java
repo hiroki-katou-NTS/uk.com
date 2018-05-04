@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -371,6 +372,14 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 				firstInfoOfDaily.getClsCode(),
 				firstWorkTypeOfDaily.getWorkTypeCode());
 
+		// 月末がシステム日付以降の場合、月初の情報を月末の情報とする
+		if (datePeriod.end().after(GeneralDate.today())){
+
+			// 月別実績の所属情報を返す
+			return AffiliationInfoOfMonthly.of(this.employeeId, this.yearMonth, this.closureId, this.closureDate,
+					firstInfo, firstInfo);
+		}
+		
 		// 月末の所属情報を取得
 		val lastInfoOfDailyOpt = this.repositories.getAffiliationInfoOfDaily().findByKey(
 				this.employeeId, datePeriod.end());
