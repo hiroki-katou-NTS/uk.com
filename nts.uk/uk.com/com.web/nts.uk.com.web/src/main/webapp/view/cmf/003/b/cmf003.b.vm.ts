@@ -20,6 +20,12 @@ module nts.uk.at.view.cmf003.d {
             
             // check compress password
             isCompressPass: KnockoutObservable<boolean>;
+            
+            // check compress password
+            isSymbol: KnockoutObservable<boolean>;
+            
+            // reference date
+            referenceDate : string;
 
             //input
             password: KnockoutObservable<string> = ko.observable('');
@@ -149,6 +155,7 @@ module nts.uk.at.view.cmf003.d {
                 var self = this;
                 
                 self.isCompressPass = ko.observable(false);
+                self.isSymbol = ko.observable(false);
 
                 self.stepList = [
                     { content: '.step-1' },
@@ -183,7 +190,7 @@ module nts.uk.at.view.cmf003.d {
 
                 //Date Ranger Picker : type full day
                 self.dayEnable = ko.observable(true);
-                self.dayRequired = ko.observable(true);
+                self.dayRequired = ko.observable(false);
                 self.dayStartDateString = ko.observable("");
                 self.dayEndDateString = ko.observable("");
                 self.dayValue = ko.observable({ startDate: moment.utc().subtract(1, "M").add(1, "d").format("YYYY/MM/DD"), 
@@ -201,7 +208,7 @@ module nts.uk.at.view.cmf003.d {
 
                 //Date Ranger Picker : type month
                 self.monthEnable = ko.observable(true);
-                self.monthRequired = ko.observable(true);
+                self.monthRequired = ko.observable(false);
                 self.monthStartDateString = ko.observable("");
                 self.monthEndDateString = ko.observable("");
                 self.monthValue = ko.observable({ startDate: moment.utc().format("YYYY/MM"), endDate: moment.utc().format("YYYY/MM")});
@@ -218,7 +225,7 @@ module nts.uk.at.view.cmf003.d {
 
                 //Date Ranger Picker : type year
                 self.yearEnable = ko.observable(true);
-                self.yearRequired = ko.observable(true);
+                self.yearRequired = ko.observable(false);
                 self.yearStartDateString = ko.observable("");
                 self.yearEndDateString = ko.observable("");
                 self.yearValue = ko.observable({startDate: moment.utc().format("YYYY"), endDate: moment.utc().format("YYYY")});
@@ -402,6 +409,7 @@ module nts.uk.at.view.cmf003.d {
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                         self.selectedEmployee(data.listEmployee);
                         self.applyKCP005ContentSearch(data.listEmployee);
+                        self.referenceDate = moment(data.baseDate).format("YYYY/MM/DD");
                     }
                 }
                 //$('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
@@ -491,24 +499,65 @@ module nts.uk.at.view.cmf003.d {
             private nextPageEmployee(): void {
                 var self = this;
                 
-                if(self.isCompressPass()) {
-                    if(self.password() == self.confirmPassword()) {
+                if(self.validateB()) {
+                    if(self.isCompressPass()) {
+                        if(self.password() == self.confirmPassword()) {
+                            if(self.categorys().length > 0) {
+                                self.next();
+                            } else {
+                                alertError({ messageId: 'Msg_463' });
+                            }
+                        } else {
+                            alertError({ messageId: 'Msg_566' });
+                        }
+                    } else {
                         if(self.categorys().length > 0) {
                             self.next();
                         } else {
                             alertError({ messageId: 'Msg_463' });
                         }
-                    } else {
-                        alertError({ messageId: 'Msg_566' });
-                    }
-                } else {
-                    if(self.categorys().length > 0) {
-                        self.next();
-                    } else {
-                        alertError({ messageId: 'Msg_463' });
                     }
                 }
             }
+            
+            private setRangePickerRequire(): void {
+                let self = this;
+                
+                self.dayRequired = ko.observable(false);
+                self.monthRequired = ko.observable(false);
+                self.yearRequired = ko.observable(false);
+                for (var i = 0; i < self.categorys().length; i++) {
+                    if(self.categorys()[i].timeStore == 0) {
+                        self.monthRequired = ko.observable(true);
+                    } else if(self.categorys()[i].timeStore == 1){
+                        self.yearRequired = ko.observable(true);
+                    } else if(self.categorys()[i].timeStore == 2){
+                        self.dayRequired = ko.observable(true);
+                    }
+                }
+            }
+            
+            private nextFromDToE(): void {
+                var self = this;
+                self.initE();
+                self.next();
+            }
+            
+            private initE(): void {
+                var self = this;
+                $("#E3_3").html(self.dataSaveSetName());
+                $("#E3_5").html(self.explanation());
+                $("#E3_37").html(self.referenceDate);
+            }
+            
+            ScreenModel.prototype.validateB = function () {
+                $(".form-B").trigger("validate");
+                if (nts.uk.ui.errors.hasError()) {
+                    return false;
+                }
+                return true;
+            };
+            
             private previousB(): void {
                 var self = this;
                 self.previous();
@@ -519,8 +568,10 @@ module nts.uk.at.view.cmf003.d {
             }
 
             private selectCategory(): void {
+                let self = this;
+                setShared("CMF003_B_CATEGORIES",self.systemtypeFromC);
+                setShared("CMF003_B_SYSTEMTYPE",self.categorys());
                 nts.uk.ui.windows.sub.modal('../c/index.xhtml').onClosed(() => {
-                    var self = this;
                     let categoryFromC = getShared('CMF003_C_CATEGORIES');
                     let systemtypeFromC = getShared('CMF003_C_SYSTEMTYPE');
                     
@@ -529,11 +580,13 @@ module nts.uk.at.view.cmf003.d {
                         $("#B4_24").html(systemtypeFromC.name);
                     }
                     
-                    if(categoryFromC.length > 0) {
+                    if(categoryFromC && (categoryFromC.length > 0)) {
                         self.categorys.removeAll();
                         for (let i = 0; i < categoryFromC.length; i++) {
                             self.categorys.push(categoryFromC[i]);
-                        } 
+                        }
+                        
+                        self.setRangePickerRequire();
                     }
 
                     $("#B4_2").focus();
