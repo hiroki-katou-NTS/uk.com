@@ -8,11 +8,23 @@ module nts.uk.com.view.cmm048.a {
     }
     
     export module model {
-        export interface OvertimeWorkFrameFindDto {
-            overtimeWorkFrNo: number;
-            overtimeWorkFrName: string;
-            transferFrName: string;
-            useAtr: number;
+        
+        export interface MainDto {
+            employeeName: string;
+            passwordPolicy: PasswordPolicyDto;
+        }
+        
+        export interface PasswordPolicyDto {
+            lowestDigits: number;
+            complexity: ComplexityDto;
+            historyCount: number;
+            validityPeriod: number;
+        }
+        
+        export interface ComplexityDto {
+            alphabetDigit: number;
+            numberOfDigits: number;
+            numberOfChar: number;
         }
     }
 }

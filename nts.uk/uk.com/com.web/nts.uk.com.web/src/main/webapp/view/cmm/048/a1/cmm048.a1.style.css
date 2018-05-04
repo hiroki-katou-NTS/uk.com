@@ -1,0 +1,13 @@
+.table-form, .table-panel {
+	width: 100%;
+}
+
+.table-form td {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.table-panel td {
+	padding: 5px;
+	vertical-align: top;
+}
