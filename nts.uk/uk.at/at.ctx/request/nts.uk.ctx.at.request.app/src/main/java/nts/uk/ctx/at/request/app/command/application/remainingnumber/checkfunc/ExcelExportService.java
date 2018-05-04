@@ -1,20 +1,15 @@
 package nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.csv.CSVFileData;
 import nts.uk.shr.infra.file.csv.CSVReportGenerator;
@@ -40,11 +35,15 @@ public class ExcelExportService extends ExportService<ExcelInforCommand> {
     	listHeader.add("残数の対象日");
     	listHeader.add("年休付与後残数");
     	listHeader.add("年休残数");
+    	listHeader.add("年休使用数");
+    	listHeader.add("上限日数");
+    	listHeader.add("夏季休暇");
+    	listHeader.add("夏季休暇(上限)");
     	
-    	for (PlannedVacationListCommand plannedVacation : listOuput.getPlannedVacationListCommand()) {
-    		listHeader.add(plannedVacation.getWorkTypeName());
-    		listHeader.add(plannedVacation.getWorkTypeName()+"（上限）");
-		}
+//    	for (PlannedVacationListCommand plannedVacation : listOuput.getPlannedVacationListCommand()) {
+//    		listHeader.add(plannedVacation.getWorkTypeName());
+//    		listHeader.add(plannedVacation.getWorkTypeName()+"（上限）");
+//		}
     	
     	List<String> header = this.getTextHeader(listHeader);  
 		

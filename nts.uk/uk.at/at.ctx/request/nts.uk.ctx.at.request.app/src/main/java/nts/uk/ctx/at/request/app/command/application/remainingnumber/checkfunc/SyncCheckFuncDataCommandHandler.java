@@ -15,20 +15,19 @@ import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.SyEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.AnnualBreakManageAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.AnnualBreakManageImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.DailyWorkTypeListImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.YearlyHolidaysTimeRemainingImport;
-import nts.uk.ctx.at.request.dom.settting.worktype.history.IVactionHistoryRulesService;
-import nts.uk.ctx.at.request.dom.settting.worktype.history.OptionalMaxDay;
 import nts.uk.ctx.at.request.dom.settting.worktype.history.PlanVacationHistory;
 import nts.uk.ctx.at.request.dom.settting.worktype.history.VacationHistoryRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateful
 public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFuncDataCommand> {
@@ -52,7 +51,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 	
 	@Inject
 	private VacationHistoryRepository vacationHistoryRepository;
-
+	
 	@Override
 	protected void handle(CommandHandlerContext<CheckFuncDataCommand> context) {
 		val asyncTask = context.asAsync();
@@ -69,8 +68,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 		setter.setData(NUMBER_OF_ERROR, command.getError());
 
 		// アルゴリズム「社員ID、期間をもとに期間内に年休付与日がある社員を抽出する」を実行する
-		// TODO RequestList 要求No304. Result from RequestList 304 waiting from
-		// team A
+		// TODO RequestList 要求No304. 
 		List<String> employeeList = command.getEmployeeList().stream().map(f -> f.getEmployeeId())
 				.collect(Collectors.toList());
 
@@ -81,7 +79,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 		checkEmployeeListId(setter, employeeIdRq304, employeeListResult, outputErrorInfoCommand, employeeSearchCommand);
 
 		// TODO 計画休暇一覧を取得する
-		List<PlannedVacationListCommand> plannedVacationList = getPlannedVacationList(command.getDate(),
+		List<PlannedVacationListCommand> plannedVacationList = getPlannedVacationList(new DatePeriod(command.getStartTime(), command.getEndTime()),
 				outputErrorInfoCommand);
 		if (outputErrorInfoCommand.size() > 0) {
 			// エラーがあった場合
@@ -112,7 +110,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 					continue;
 				}
 				// 取得成功
-				// RequestList 要求No327 waiting from customer
+				// RequestList 要求No327
 				List<YearlyHolidaysTimeRemainingImport> yearlyHolidaysTimeRemainingImport = annualBreakManageAdapter
 						.getYearHolidayTimeAnnualRemaining(employeeSearchCommand.get(i).getEmployeeId(), command.getDate());
 				
@@ -121,7 +119,23 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 					continue;
 				}
 				// 取得成功
-				// TODO RequestList 要求No328 waiting from team Luong Bong
+				// TODO RequestList 要求No328
+				List<String> workTypeCode = plannedVacationList.stream().map(x -> x.getWorkTypeCode()).collect(Collectors.toList());
+				Optional<DailyWorkTypeListImport> dailyWorkTypeListImport = this.annualBreakManageAdapter.getDailyWorkTypeUsed(employeeSearchCommand.get(i).getEmployeeId(), workTypeCode, command.getStartTime(), command.getEndTime());
+				//取得した情報をもとにExcel 出力情報Listに設定する
+				ExcelInforCommand excelInforCommand = new ExcelInforCommand();
+				excelInforCommand.setName(employeeRecordImport.getPname());
+				excelInforCommand.setDateStart(employeeRecordImport.getEntryDate());
+				excelInforCommand.setDateEnd(employeeRecordImport.getRetiredDate());
+				excelInforCommand.setDateOffYear(yearlyHolidaysTimeRemainingImport.get(i).getAnnualHolidayGrantDay());
+				excelInforCommand.setDateTargetRemaining(command.getDate());
+				excelInforCommand.setDateAnnualRetirement(yearlyHolidaysTimeRemainingImport.get(i).getAnnualRemainingGrantTime());
+				excelInforCommand.setDateAnnualRest(yearlyHolidaysTimeRemainingImport.get(i).getAnnualRemaining());
+				if(dailyWorkTypeListImport.isPresent()){
+					excelInforCommand.setNumberOfWorkTypeUsedImport(dailyWorkTypeListImport.get().getNumberOfWorkTypeUsedExports());
+				}
+				excelInforCommand.setMaxNumberDays(plannedVacationList.get(i).getMaxNumberDays());
+				excelInforList.add(excelInforCommand);
 
 				setter.updateData(NUMBER_OF_SUCCESS, i + 1);
 
@@ -144,14 +158,14 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 	 * @param maxDay
 	 * @return
 	 */
-	private List<PlannedVacationListCommand> getPlannedVacationList(GeneralDate date,
+	private List<PlannedVacationListCommand> getPlannedVacationList(DatePeriod period,
 			List<OutputErrorInfoCommand> outputErrorInfoCommand) {
 		List<PlannedVacationListCommand> plannedVacationListCommand = new ArrayList<>();
 		LoginUserContext loginUserContext = AppContexts.user();
 
 		// ドメインモデル「計画休暇のルールの履歴」を取得する (Lấy domain 「計画休暇のルールの履歴」)
 		String companyId = AppContexts.user().companyId();
-		List<PlanVacationHistory> planVacationHistory = new ArrayList<>();
+		List<PlanVacationHistory> planVacationHistory = vacationHistoryRepository.findHistoryByPeriod(companyId, period);
 				//iVactionHistoryRulesService
 				//.getPlanVacationHistoryByDate(companyId, date);
 		if (planVacationHistory.isEmpty()) {
@@ -165,7 +179,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 			return plannedVacationListCommand;
 		}
 		for (PlanVacationHistory element : planVacationHistory) {
-			// TODO ドメインモデル「計画休暇を取得できる上限日数」を取得する (Lấy domain 「計画休暇を取得できる上限日数」)
+			// ドメインモデル「計画休暇を取得できる上限日数」を取得する (Lấy domain 「計画休暇を取得できる上限日数」)
 			List<PlanVacationHistory> planVacationHistoryMaxDay = vacationHistoryRepository.findHistory(companyId,
 					element.getWorkTypeCode());
 			// ドメインモデル「勤務種類」を取得する (lấy domain 「勤務種類」)

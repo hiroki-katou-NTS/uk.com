@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
@@ -33,4 +34,14 @@ public interface AnnualBreakManageAdapter {
 	 * @return
 	 */
 	List<NextAnnualLeaveGrant> calculateNextHolidayGrant(String employeeId, DatePeriod time);
+	/**
+ 	 * RequestList #328
+	 * @param employeeId
+	 * @param workTypeList
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	Optional<DailyWorkTypeListImport> getDailyWorkTypeUsed(String employeeId, List<String> workTypeList, GeneralDate startDate, GeneralDate endDate);
+
 }

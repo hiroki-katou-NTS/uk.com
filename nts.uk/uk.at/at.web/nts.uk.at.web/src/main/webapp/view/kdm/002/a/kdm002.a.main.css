@@ -38,7 +38,6 @@
 }
 
 .infoButtonSetting {
-	width: 300px;
 	display: inline-flex;
 }
 
@@ -66,9 +65,9 @@
 }
 
 .labelWork {
-	margin-top: 30px;
+	margin-top: 10px;
 	margin-left: 15px;
-	width: 120px;
+	width: 115px;
 }
 .employeeWorkSetting{
 	padding-left: 40px;
@@ -78,11 +77,11 @@
 	overflow-x: hidden;
 }
 #A3_2 {
-	margin-bottom: 40px;
+	margin-bottom: 20px;
 }
 
 #A3_10 {
-	margin-top: 40px;
+	margin-top: 20px;
 	
 }
 #A2_2{
