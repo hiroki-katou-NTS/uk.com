@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -11,9 +12,9 @@ import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremain
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
-
-public class AddResvLeaCommandPeregHandler extends CommandHandlerWithResult<AddResvLeaRemainCommand, PeregAddCommandResult>
-implements PeregAddCommandHandler<AddResvLeaRemainCommand>{
+@Stateless
+public class AddResvLeaCommandPeregHandler extends CommandHandlerWithResult<AddResvLeaRemainPeregCommand, PeregAddCommandResult>
+implements PeregAddCommandHandler<AddResvLeaRemainPeregCommand>{
 	@Inject
 	private RervLeaGrantRemDataRepository resvLeaRepo;
 
@@ -24,16 +25,16 @@ implements PeregAddCommandHandler<AddResvLeaRemainCommand>{
 
 	@Override
 	public Class<?> commandClass() {
-		return AddResvLeaRemainCommand.class;
+		return AddResvLeaRemainPeregCommand.class;
 	}
 
 	@Override
-	protected PeregAddCommandResult handle(CommandHandlerContext<AddResvLeaRemainCommand> context) {
-		AddResvLeaRemainCommand c = context.getCommand();
+	protected PeregAddCommandResult handle(CommandHandlerContext<AddResvLeaRemainPeregCommand> context) {
+		AddResvLeaRemainPeregCommand c = context.getCommand();
 		ReserveLeaveGrantRemainingData data = ReserveLeaveGrantRemainingData.createFromJavaType(
 				IdentifierUtil.randomUniqueId(), c.getEmployeeId(), c.getGrantDate(), c.getDeadline(),
-				c.getExpirationStatus(), GrantRemainRegisterType.MANUAL.value, c.getGrantDays(), c.getUseDays(),
-				c.getOverLimitDays(), c.getRemainingDays());
+				c.getExpirationStatus() == null? 1: c.getExpirationStatus().intValue(), GrantRemainRegisterType.MANUAL.value, c.getGrantDays() == null? 0d: c.getGrantDays().doubleValue(),  c.getUseDays() == null? 0d:c.getUseDays().doubleValue(),
+				c.getOverLimitDays()== null? 0d: c.getOverLimitDays().doubleValue(), c.getRemainingDays() == null? 0d: c.getRemainingDays().doubleValue());
 		resvLeaRepo.add(data, AppContexts.user().companyId());
 		
 		

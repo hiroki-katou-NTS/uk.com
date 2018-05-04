@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.command.remainingnumber.annleagrtremnum;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
@@ -12,7 +13,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
-
+@Stateless
 public class AddAnnLeaCommandPeregHandler extends CommandHandlerWithResult<AddAnnLeaGrantRemnNumPeregCommand, PeregAddCommandResult>
 implements PeregAddCommandHandler<AddAnnLeaGrantRemnNumPeregCommand>{
 	@Inject
@@ -39,9 +40,9 @@ implements PeregAddCommandHandler<AddAnnLeaGrantRemnNumPeregCommand>{
 		}
 		String annLeavId = IdentifierUtil.randomUniqueId();
 		AnnualLeaveGrantRemainingData data = AnnualLeaveGrantRemainingData.createFromJavaType(annLeavId, cid, command.getEmployeeId(), 
-				command.getGrantDate(), command.getDeadline(), command.getExpirationStatus(), GrantRemainRegisterType.MANUAL.value,
-				command.getGrantDays(), command.getGrantMinutes(), command.getUsedDays(), command.getUsedMinutes(), 
-				null, command.getRemainingDays(), command.getRemainingMinutes(), 0d, null, null, null);
+				command.getGrantDate(), command.getDeadline(), command.getExpirationStatus() == null? 1: command.getExpirationStatus().intValue(), GrantRemainRegisterType.MANUAL.value,
+				command.getGrantDays() == null? 0d: command.getGrantDays() .doubleValue(), command.getGrantMinutes() == null? 0: command.getGrantMinutes().intValue(), command.getUsedDays() == null? 0d: command.getUsedDays().doubleValue(), command.getUsedMinutes()== null? 0: command.getUsedMinutes().intValue(), 
+				null, command.getRemainingDays()== null? 0: command.getRemainingDays().doubleValue(), command.getRemainingMinutes() == null? 0: command.getRemainingMinutes().intValue(), 0d, null, null, null);
 		annLeaRepo.add(data);
 		return new PeregAddCommandResult(annLeavId);
 	}

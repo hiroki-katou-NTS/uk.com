@@ -66,7 +66,7 @@ import nts.uk.ctx.at.record.app.command.remainingnumber.nursingcareleave.UpdateC
 import nts.uk.ctx.at.record.app.command.remainingnumber.otherhdinfo.AddOtherHolidayInfoCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.otherhdinfo.DeleteOtherHolidayInfoCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.otherhdinfo.UpdateOtherHolidayInfoCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.AddResvLeaRemainCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.AddResvLeaRemainPeregCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.AddShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.DeleteShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.UpdateShortWorkTimeCommand;
@@ -126,7 +126,7 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregAddCommandHandler<AddPerContactCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddAnnuaLeaveCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddAnnLeaGrantRemnNumPeregCommand>>(){},
-			new TypeLiteral<PeregAddCommandHandler<AddResvLeaRemainCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddResvLeaRemainPeregCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave1informationCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave2informationCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave3informationCommand>>(){},
