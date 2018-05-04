@@ -420,7 +420,7 @@ module nts.uk.at.view.cmf003.d {
             */
             public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
                 var self = this;
-                self.employeeList([]);
+                self.employeeList = ko.observableArray([]);
                 var employeeSearchs: UnitModel[] = [];
                 for (var employeeSearch of dataList) {
                     var employee: UnitModel = {
