@@ -41,7 +41,7 @@ public class JpaMasterCopyDataGetMemento implements MasterCopyDataGetMemento {
 	 */
 	@Override
 	public MasterCopyTarget getMasterCopyTarget() {
-		return (MasterCopyTarget) this.entity.getMasterCopyTarget();
+		return new MasterCopyTarget(this.entity.getMasterCopyTarget().toString());
 	}
 
 }

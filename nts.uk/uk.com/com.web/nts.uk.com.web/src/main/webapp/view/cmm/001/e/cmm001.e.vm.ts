@@ -83,8 +83,13 @@ module cmm001.e.viewmodel {
             else {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1162" }).ifYes(() => {
                     var cid = nts.uk.ui.windows.getShared('companyId');
-                    nts.uk.ui.windows.setShared('companyId', cid);
-                    nts.uk.ui.windows.setShared('copyItemList', selectedItems);
+                    var IMasterDataList: model.MasterCopyCategoryDto[] = [];
+                    for(item of selectedItems) {
+                        var IMasterCopyCategoryDto : model.MasterCopyCategoryDto = {categoryName: item.masterCopyCategory, order: item.order, systemType: item.systemType, copyMethod: item.copyMethod};
+                        IMasterDataList.push(IMasterCopyCategoryDto);
+                    }
+                    var masterCopyDataCmd : model.MasterCopyDataCommand = {companyId: cid,masterDataList: IMasterDataList};
+                    nts.uk.ui.windows.setShared('masterCopyDataCmd', masterCopyDataCmd);
                     nts.uk.ui.windows.sub.modal('/view/cmm/001/f/index.xhtml', { title: '', }).onClosed(function(): any {
                     });
                 });
@@ -97,6 +102,7 @@ module cmm001.e.viewmodel {
     }
     
     export module model {
+        // master copy category model
         export class MasterCopyCategory {
             systemType: string;
             masterCopyId: string;
@@ -109,6 +115,8 @@ module cmm001.e.viewmodel {
                 this.order = order;
             }
         } 
+        
+        // row model
         export class CopyItem {
             flag : KnockoutObservable<boolean>;
             copyMethod : KnockoutObservable<number>;
@@ -127,6 +135,20 @@ module cmm001.e.viewmodel {
                 this.isBorder = isBorder;
             }
             
+        }
+        
+        // copy data command
+        export interface MasterCopyDataCommand {
+            companyId: string;
+            masterDataList: MasterCopyCategoryDto[];
+        }
+        
+        // master category dto
+        export interface MasterCopyCategoryDto {
+            categoryName: string;
+            order: number;
+            systemType: string;
+            copyMethod: number;
         }
     }
 }

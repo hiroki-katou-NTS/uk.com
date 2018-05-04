@@ -26,6 +26,8 @@ public class JpaMasterCopyCategorySetMemento implements MasterCopyCategorySetMem
 	 * Instantiates a new jpa master copy category set memento.
 	 *
 	 * @param entity
+	 * 
+	 * 
 	 *            the entity
 	 */
 	public JpaMasterCopyCategorySetMemento(SspmtMastercopyCategory entity) {
@@ -65,7 +67,7 @@ public class JpaMasterCopyCategorySetMemento implements MasterCopyCategorySetMem
 	 */
 	@Override
 	public void setMasterCopyCategory(MasterCopyCategoryName masterCopyCategory) {
-		this.entity.setMasterCopyCategory(masterCopyCategory);
+		this.entity.setMasterCopyCategory(masterCopyCategory.toString());
 
 	}
 

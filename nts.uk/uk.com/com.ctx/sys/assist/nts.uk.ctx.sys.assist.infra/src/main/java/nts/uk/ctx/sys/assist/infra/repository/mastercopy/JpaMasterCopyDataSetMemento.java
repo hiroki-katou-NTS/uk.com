@@ -42,7 +42,7 @@ public class JpaMasterCopyDataSetMemento implements MasterCopyDataSetMemento {
 	 */
 	@Override
 	public void setMasterCopyTarget(MasterCopyTarget masterCopyTarget) {
-		this.entity.setMasterCopyTarget(masterCopyTarget);
+		this.entity.setMasterCopyTarget(masterCopyTarget.toString());
 
 	}
 
