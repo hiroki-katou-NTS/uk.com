@@ -28,7 +28,7 @@
 						<td>
 							<table class="detail">
 								<tr>
-									<td>Data #{i18n.getText('KTG029_33')}</td>
+									<td>0 #{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
 										<button class = "overtime-work-no">
 											<i data-bind="click: openKAF015Dialog, ntsIcon: { no: 144 }"></i>
@@ -43,7 +43,7 @@
 						<td>
 							<table class="detail">
 								<tr>
-									<td>Data #{i18n.getText('KTG029_33')}</td>
+									<td>0 #{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
 										<button class = "instruction-hd-no">
 											<i data-bind="click: openKAF015Dialog, ntsIcon: { no: 144 }"></i>
@@ -58,7 +58,7 @@
 						<td>
 							<table class="detail">
 								<tr>
-									<td>Data #{i18n.getText('KTG029_33')}</td>
+									<td>0 #{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
 										<button class = "approved-no">
 											<i data-bind="click: openCMM045Dialog, ntsIcon: { no: 144 }"></i>
@@ -73,7 +73,7 @@
 						<td>
 							<table class="detail">
 								<tr>
-									<td>Data #{i18n.getText('KTG029_33')}</td>
+								<td>0 #{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
 										<button>
 											<i data-bind="click: openCMM045Dialog, ntsIcon: { no: 144 }"></i>
@@ -88,7 +88,7 @@
 						<td>
 							<table class="detail">
 								<tr>
-									<td>Data #{i18n.getText('KTG029_33')}</td>
+									<td>0 #{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
 										<button>
 											<i data-bind="click: openCMM045Dialog, ntsIcon: { no: 144 }"></i>
@@ -103,7 +103,7 @@
 						<td>
 							<table class="detail">
 								<tr>
-									<td>Data #{i18n.getText('KTG029_33')}</td>
+									<td>0 #{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
 										<button>
 											<i data-bind="click: openCMM045Dialog, ntsIcon: { no: 144 }"></i>
@@ -116,7 +116,7 @@
 					<!-- A9 -->
 					<tr data-bind="visible: displayDeadlineMonth">
 						<td>#{i18n.getText('KTG029_15')}</td>
-						<td>MM/DD</td>
+						<td>05/31</td>
 					</tr>
 					<!-- A10 -->
 					<tr data-bind="visible: displayPresenceDailyPer">
@@ -124,7 +124,7 @@
 						<td>
 							<table class="detail">
 								<tr>
-									<td>No Data</td>
+									<td>エラー有り</td>
 									<td class="go-button">
 										<button>
 											<i data-bind="click: openKDW003Dialog, ntsIcon: { no: 144 }"></i>
@@ -158,27 +158,27 @@
 					<!-- A12 -->
 					<tr data-bind="visible: displayOverTimeHours">
 						<td>#{i18n.getText('KTG029_18')}</td>
-						<td>XX : XX</td>
+						<td>00 : 00</td>
 					</tr>
 					<!-- A13 -->
 					<tr data-bind="visible: displayFlexTime">
 						<td>#{i18n.getText('KTG029_19')}</td>
-						<td>XX : XX</td>
+						<td>00 : 00</td>
 					</tr>
 					<!-- A14 -->
 					<tr data-bind="visible: displayRestTime">
 						<td>#{i18n.getText('KTG029_20')}</td>
-						<td>XX : XX</td>
+						<td>00 : 00</td>
 					</tr>
 					<!-- A15 -->
 					<tr data-bind="visible: displayNightWorkHours">
 						<td>#{i18n.getText('KTG029_21')}</td>
-						<td>XX : XX</td>
+						<td>00 : 00</td>
 					</tr>
 					<!-- A16 -->
 					<tr data-bind="visible: displayLateOrEarlyRetreat">
 						<td>#{i18n.getText('KTG029_22')}</td>
-						<td>0o#{i18n.getText('KTG029_35')}AA#{i18n.getText('KTG029_36')}</td>
+						<td>0 #{i18n.getText('KTG029_35')} 0 #{i18n.getText('KTG029_36')}</td>
 					</tr>
 					<!-- A17 -->
 					<tr data-bind="visible: displayYearlyHoliDay">
@@ -198,73 +198,73 @@
 					</tr>
 					
 					<!-- A17_1 -->
-					<tr>
+					<tr data-bind="visible: displayYearlyHoliDay">
 						<td class="tab">#{i18n.getText('KTG029_40')}</td>
-						<td>data data #{i18n.getText('KTG029_42')}</td>
+						<td>18/05/31#{i18n.getText('KTG029_42')}</td>
 					</tr>
 					<!-- A17_2 -->
-					<tr>
+					<tr data-bind="visible: displayYearlyHoliDay">
 						<td class="tab" >#{i18n.getText('KTG029_23')}</td>
-						<td>data #{i18n.getText('KTG029_42')} data</td>
+						<td>0日#{i18n.getText('KTG029_42')} 00:00</td>
 					</tr>
 					<!-- A17_3 -->
-					<tr>
+					<tr data-bind="visible: displayYearlyHoliDay">
 						<td class="tab" >#{i18n.getText('KTG029_43')}</td>
-						<td>#{i18n.getText('KTG029_44')} data #{i18n.getText('KTG029_45')}</td>
+						<td>#{i18n.getText('KTG029_44')} 0 #{i18n.getText('KTG029_45')}</td>
 					</tr>
 					<!-- A17_4 -->
-					<tr>
+					<tr data-bind="visible: displayYearlyHoliDay">
 						<td class="tab" >#{i18n.getText('KTG029_46')}</td>
-						<td>#{i18n.getText('KTG029_47')} data #{i18n.getText('KTG029_48')}</td>
+						<td>#{i18n.getText('KTG029_47')} 00:00 #{i18n.getText('KTG029_48')}</td>
 					</tr>
 					<!-- A17_5 -->
-					<tr>
+					<tr data-bind="visible: displayYearlyHoliDay">
 						<td class="tab" >#{i18n.getText('KTG029_49')}</td>
-						<td>yy/mm/dd</td>
+						<td>18/05/31</td>
 					</tr>
 					<!-- A17_6 -->
-					<tr>
+					<tr data-bind="visible: displayYearlyHoliDay">
 						<td class="tab" >#{i18n.getText('KTG029_50')}</td>
-						<td>data #{i18n.getText('KTG029_42')} data</td>
+						<td>0日#{i18n.getText('KTG029_42')} 00:00</td>
 					</tr>
 					<!-- A17_7 -->
-					<tr>
+					<tr data-bind="visible: displayYearlyHoliDay">
 						<td class="tab" >#{i18n.getText('KTG029_51')}</td>
-						<td>#{i18n.getText('KTG029_44')} data #{i18n.getText('KTG029_45')}</td>
+						<td>#{i18n.getText('KTG029_44')} 0 #{i18n.getText('KTG029_45')}</td>
 					</tr>
 					<!-- A17_8 -->
-					<tr>
+					<tr data-bind="visible: displayYearlyHoliDay">
 						<td class="tab" >#{i18n.getText('KTG029_52')}</td>
-						<td>#{i18n.getText('KTG029_47')} data #{i18n.getText('KTG029_48')}</td>
+						<td>#{i18n.getText('KTG029_47')} 00:00 #{i18n.getText('KTG029_48')}</td>
 					</tr>
 					<!-- A17_9 -->
-					<tr>
+					<tr data-bind="visible: displayYearlyHoliDay">
 						<td class="tab" >#{i18n.getText('KTG029_53')}</td>
-						<td>data #{i18n.getText('KTG029_42')} data</td>
+						<td>0日#{i18n.getText('KTG029_42')} 00:00</td>
 					</tr>
 					<!-- A17_10 -->
-					<tr>
+					<tr data-bind="visible: displayYearlyHoliDay">
 						<td class="tab" >#{i18n.getText('KTG029_54')}</td>
-						<td>#{i18n.getText('KTG029_44')} data #{i18n.getText('KTG029_45')}</td>
+						<td>#{i18n.getText('KTG029_44')} 0 #{i18n.getText('KTG029_45')}</td>
 					</tr>
 					<!-- A17_11 -->
-					<tr>
+					<tr data-bind="visible: displayYearlyHoliDay">
 						<td class="tab" >#{i18n.getText('KTG029_55')}</td>
-						<td>#{i18n.getText('KTG029_47')} data #{i18n.getText('KTG029_48')}</td>
+						<td>#{i18n.getText('KTG029_47')} 00:00 #{i18n.getText('KTG029_48')}</td>
 					</tr>
 					<!-- A17_12 -->
-					<tr>
+					<tr data-bind="visible: displayYearlyHoliDay">
 						<td class="tab" colspan="2">#{i18n.getText('KTG029_56')}</td>
 					</tr>
 					<!-- A17_13 -->
-					<tr>
+					<tr data-bind="visible: displayYearlyHoliDay">
 						<td class="tab" >#{i18n.getText('KTG029_57')}</td>
-						<td>data #{i18n.getText('KTG029_58')}</td>
+						<td>0 #{i18n.getText('KTG029_58')}</td>
 					</tr>
 					<!-- A17_14 -->
-					<tr>
+					<tr data-bind="visible: displayYearlyHoliDay">
 						<td class="tab" >#{i18n.getText('KTG029_59')}</td>
-						<td>data #{i18n.getText('KTG029_60')}</td>
+						<td>0 #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A18 -->
 					<tr data-bind="visible: displayYearRemainNo">
@@ -272,7 +272,7 @@
 						<td>
 							<table class="detail">
 								<tr>
-									<td>data #{i18n.getText('KTG029_60')}</td>
+									<td>0 #{i18n.getText('KTG029_60')}</td>
 									<td class="go-button">
 										<button>
 											<i data-bind="click: openKDL029Dialog, ntsIcon: { no: 144 }"></i>
@@ -289,32 +289,32 @@
 					<!-- A19_1 -->
 					<tr data-bind="visible: displayPlannedYearHoliday">
 						<td class="tab" >#{i18n.getText('KTG029_25')} (1)</td>
-						<td>data #{i18n.getText('KTG029_60')}</td>
+						<td>0 #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A19_2 -->
 					<tr data-bind="visible: displayPlannedYearHoliday">
 						<td class="tab" >#{i18n.getText('KTG029_25')} (2)</td>
-						<td>data #{i18n.getText('KTG029_60')}</td>
+						<td>0 #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A19_3 -->
 					<tr data-bind="visible: displayPlannedYearHoliday">
 						<td class="tab" >#{i18n.getText('KTG029_25')} (3)</td>
-						<td>data #{i18n.getText('KTG029_60')}</td>
+						<td>0 #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A19_4 -->
 					<tr data-bind="visible: displayPlannedYearHoliday">
 						<td class="tab" >#{i18n.getText('KTG029_25')} (4)</td>
-						<td>data #{i18n.getText('KTG029_60')}</td>
+						<td>0 #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A19_5 -->
 					<tr data-bind="visible: displayPlannedYearHoliday">
 						<td class="tab" >#{i18n.getText('KTG029_25')} (5)</td>
-						<td>data #{i18n.getText('KTG029_60')}</td>
+						<td>0 #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A20 -->
 					<tr data-bind="visible: displayRemainAlternationNo">
 						<td>#{i18n.getText('KTG029_26')}</td>
-						<td>XX : XX</td>
+						<td>00 : 00</td>
 					</tr>
 					<!-- A21 -->
 					<tr data-bind="visible: displayRemainsLeft">
@@ -322,7 +322,7 @@
 						<td>
 							<table class="detail">
 								<tr>
-									<td>data #{i18n.getText('KTG029_60')}</td>
+									<td>0 #{i18n.getText('KTG029_60')}</td>
 									<td class="go-button">
 										<button>
 											<i data-bind="click: openKDL009Dialog, ntsIcon: { no: 144 }"></i>
@@ -335,22 +335,22 @@
 					<!-- A22 -->
 					<tr data-bind="visible: displayPublicHDNo">
 						<td>#{i18n.getText('KTG029_28')}</td>
-						<td>data #{i18n.getText('KTG029_60')}</td>
+						<td>0 #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A23 -->
 					<tr data-bind="visible: displayHDRemainNo">
 						<td>#{i18n.getText('KTG029_29')}</td>
-						<td>data #{i18n.getText('KTG029_60')}</td>
+						<td>0 #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A24 -->
 					<tr data-bind="visible: displayCareLeaveNo">
 						<td>#{i18n.getText('KTG029_30')}</td>
-						<td>data #{i18n.getText('KTG029_60')}</td>
+						<td>0 #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A25 -->
 					<tr data-bind="visible: displaySPHDRamainNo">
 						<td>#{i18n.getText('KTG029_31')}</td>
-						<td>data #{i18n.getText('KTG029_60')}</td>
+						<td>0 #{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A26 -->
 					<tr data-bind="visible: displaySixtyhExtraRest">
@@ -358,7 +358,7 @@
 						<td>
 							<table class="detail">
 								<tr>
-									<td>XX : XX</td>
+									<td>00 : 00</td>
 									<td class="go-button">
 										<button>
 											<i data-bind="click: openKDL017Dialog, ntsIcon: { no: 144 }"></i>

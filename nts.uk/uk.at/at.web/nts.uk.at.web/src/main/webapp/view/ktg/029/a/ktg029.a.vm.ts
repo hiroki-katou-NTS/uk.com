@@ -85,6 +85,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                 if(data!=null){
                     self.excuteDisplay(data.optionalWidgetImport);
                     self.getDate(data.datePeriodDto);
+                    self.switchMonth();
                 }    
                 block.clear();
             });           
@@ -153,14 +154,36 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         
         private getDate(data: any) :void{
             var self = this;
-            if(data==null)
-                return;
-            self.currentMonth = ko.observable(new period(data.strCurrentMonth, data.endCurrentMonth));
-            self.nextMonth = ko.observable(new period(data.strNextMonth, data.endNextMonth));
-            self.switchMonth();
+            if(data==null){
+                self.createDate();
+            }else{
+                self.currentMonth = ko.observable(new period(data.strCurrentMonth, data.endCurrentMonth));
+                self.nextMonth = ko.observable(new period(data.strNextMonth, data.endNextMonth));
+            }
+        }
+        private createDate() :void{
+            var self =  this;
+            var today = new Date();
+            self.currentMonth = ko.observable(self.getStrEndMonth(today));
+            
+            if (today.getMonth() == 11) {
+                var nexMonth = new Date(today.getFullYear() + 1, 0, 1);
+            } else {
+                var nexMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+            }
+            self.nextMonth = ko.observable(self.getStrEndMonth(nexMonth));
+        }
+        private getStrEndMonth(date: Date):period{
+            var y = date.getFullYear();
+            var m = date.getMonth()+1;
+            var lastDay = new Date(y, m, 0);
+            return new period(y+'/'+m+'/'+'01', y+'/'+m+'/'+lastDay.getDate());
         }
         private switchMonth():void{
             var self = this;
+            if(isNaN(self.currentMonth().strMonth)){
+                return;    
+            }
             if(self.switchDate()){
                 var month = self.currentMonth().endMonth.getMonth()+1;
                 if(month<10){
