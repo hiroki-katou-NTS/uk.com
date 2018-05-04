@@ -212,16 +212,16 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         
         openCMM045Dialog() {
             let self = this;
-//            nts.uk.ui.windows.sub.modal('/view/cmm/045/a/index.xhtml').onClosed(function(): any {
-//            });
-
+            window.top.location = window.location.origin + '/nts.uk.at.web/view/cmm/045/a/index.xhtml?a=1';
         }
         
         openKDW003Dialog() {
             let self = this;
-//            nts.uk.ui.windows.sub.modal('/view/kdw/003/a/index.xhtml').onClosed(function(): any {
-//            });
-
+            if(true){
+                window.top.location = window.location.origin + '/nts.uk.at.web/view/kdw/003/a/index.xhtml';
+            }else{
+               nts.uk.ui.windows.sub.modal('/view/kdw/003/b/index.xhtml');
+            }
         }
         
         openKDL033Dialog() {
