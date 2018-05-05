@@ -31,7 +31,8 @@ public class SettingItemDtoMapping {
 	 * 
 	 * change value from value -> text
 	 */
-	public void setTextForItem(List<SettingItemDto> result, String employeeId, GeneralDate baseDate, PersonInfoCategory perInfoCategory) {
+	public void setTextForItem(List<SettingItemDto> result, String employeeId, GeneralDate baseDate,
+			PersonInfoCategory perInfoCategory) {
 		setTextForSelectionItem(result, employeeId, baseDate, perInfoCategory);
 		setTextForSetItem(result);
 	}

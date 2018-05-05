@@ -1,6 +1,8 @@
 package nts.uk.ctx.pereg.app.find.copysetting.item;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -16,14 +18,23 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
+import nts.uk.ctx.pereg.app.find.copysetting.setting.EmpCopySettingFinder;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDtoMapping;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.dom.copysetting.item.EmpCopySettingItem;
 import nts.uk.ctx.pereg.dom.copysetting.item.EmpCopySettingItemRepository;
 import nts.uk.ctx.pereg.dom.copysetting.setting.EmpCopySettingRepository;
+import nts.uk.ctx.pereg.dom.copysetting.setting.EmployeeCopySetting;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
+import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
+import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeState;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.SingleItem;
+import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository;
+import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryDetail;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
@@ -45,8 +56,17 @@ public class CopySettingItemFinder {
 	
 	@Inject 
 	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
-
-	public List<SettingItemDto> getAllCopyItemByCtgCode(String categoryCd, String employeeId, GeneralDate baseDate) {
+	
+	@Inject
+	private EmpCopySettingFinder copySettingFinder;
+	
+	@Inject
+	private PerInfoItemDefRepositoty itemDefRepo;
+	
+	@Inject
+	private PersonInfoCategoryAuthRepository perInfoCtgRepo;
+	
+	public List<SettingItemDto> getAllCopyItemByCtgCode(String categoryCd, String selectedEmployeeId, GeneralDate baseDate) {
 
 		String companyId = AppContexts.user().companyId();
 		
@@ -59,7 +79,7 @@ public class CopySettingItemFinder {
 		}
 
 		// check empployeeId
-		boolean isSelf = AppContexts.user().employeeId().equals(employeeId) ? true : false;
+		boolean isSelf = AppContexts.user().employeeId().equals(selectedEmployeeId) ? true : false;
 
 		List<EmpCopySettingItem> copyItemList = this.empCopyItemRepo.getAllItemFromCategoryCd(categoryCd, companyId,
 				isSelf);
@@ -80,7 +100,7 @@ public class CopySettingItemFinder {
 		List<SettingItemDto> result = copyItemList.stream()
 				.map(copyItem -> SettingItemDto.createFromJavaType(copyItem, null)).collect(Collectors.toList());
 
-		PeregQuery query = new PeregQuery(categoryCd, employeeId, null, baseDate);
+		PeregQuery query = new PeregQuery(categoryCd, selectedEmployeeId, null, baseDate);
 		PeregDto dto = this.layoutProcessor.findSingle(query);
 
 		if (dto != null) {
@@ -88,7 +108,7 @@ public class CopySettingItemFinder {
 			// set data to setting-item-DTO
 			result.forEach(settingItemDto -> settingItemDto.setData(dataMap.get(settingItemDto.getItemCode())));
 			
-			this.settingItemMap.setTextForItem(result, employeeId, baseDate, perInfoCategory.get());
+			this.settingItemMap.setTextForItem(result, selectedEmployeeId, baseDate, perInfoCategory.get());
 		}
 
 		
@@ -97,31 +117,58 @@ public class CopySettingItemFinder {
 
 	}
 	
-	public List<SettingItemDto> getValueCopyItem(String categoryCd, String employeeId,
-			GeneralDate baseDate) {
+	public List<SettingItemDto> getValueCopyItem(String employeeId, GeneralDate baseDate) {
 
 		String companyId = AppContexts.user().companyId();
 
-		// check empployeeId
-		boolean isSelf = AppContexts.user().employeeId().equals(employeeId) ? true : false;
-
-		List<EmpCopySettingItem> copyItemList = this.empCopyItemRepo.getAllItemFromCategoryCd(categoryCd, companyId,
-				isSelf);
+		Optional<EmployeeCopySetting> employeeCopySettingOpt = empCopyRepo.findSetting(companyId);
+		if (!employeeCopySettingOpt.isPresent()) {
+			return new ArrayList<>();
+		}	
+		List<String> copySettingCategoryIdList = employeeCopySettingOpt.get().getCopySettingCategoryIdList();
+		List<String> copySettingItemIdList = employeeCopySettingOpt.get().getCopySettingItemIdList();
 		
-		PeregDto dto = this.layoutProcessor.findSingle(new PeregQuery(categoryCd, employeeId, null, baseDate));
-		if ( dto == null ) {
-			return Collections.emptyList();
+		List<PersonInfoCategoryDetail> categoryDetailList = perInfoCtgRepo.getAllCategoryByCtgIdList(companyId,
+				copySettingCategoryIdList);
+		Map<String, String> categoryIdvsCodeMap = categoryDetailList.stream()
+				.collect(Collectors.toMap(x -> x.getCategoryId(), x -> x.getCategoryCode()));
+		
+		List<PersonInfoItemDefinition> itemDefList = itemDefRepo.getPerInfoItemDefByListId(copySettingItemIdList,
+				AppContexts.user().contractCode());
+		
+		// get data
+		Map<String, Object> dataMap = new HashMap<>();
+		categoryDetailList.forEach(x -> {
+			PeregDto dto = this.layoutProcessor.findSingle(new PeregQuery(x.getCategoryCode(), employeeId, null, baseDate));
+			if ( dto != null ) {
+				dataMap.putAll(MappingFactory.getFullDtoValue(dto));
+			}
+		});
+		
+		List<SettingItemDto> copyItemList = new ArrayList<>();
+		for (PersonInfoItemDefinition itemDef : itemDefList) {
+			if (itemDef.getItemTypeState().getItemType() != ItemType.SINGLE_ITEM) {
+				continue;
+			}
+			
+			if (dataMap.get(itemDef.getItemCode().v()) == null) {
+				continue;
+			}
+			
+			SingleItem singleItemTypeState = (SingleItem) itemDef.getItemTypeState();
+			DataTypeState dataTypeState = singleItemTypeState.getDataTypeState();
+			Object value  = dataMap.get(itemDef.getItemCode().v());
+			
+			copyItemList.add(SettingItemDto.createFromJavaType1(categoryIdvsCodeMap.get(itemDef.getPerInfoCategoryId()),
+					itemDef.getPerInfoItemDefId(), itemDef.getItemCode().v(), itemDef.getItemName().v(),
+					itemDef.getIsRequired().value, value,
+					dataTypeState.getDataTypeValue(), dataTypeState.getReferenceTypes(),
+					itemDef.getItemParentCode().v(), null, dataTypeState.getReferenceCode()));
+			
 		}
-		
-		Map<String, Object> dataMap = MappingFactory.getFullDtoValue(dto);
-		// set data to setting-item-DTO
-		
-		// initial with null-value
-		return copyItemList.stream().filter(copyItem -> dataMap.get(copyItem.getItemCode()) != null)
-				.map(copyItem -> SettingItemDto.createFromJavaType(copyItem, dataMap.get(copyItem.getItemCode())))
-				.collect(Collectors.toList());
+		return copyItemList;
 	}
-
+	
 	public List<CopySettingItemDto> getPerInfoDefById(String perInfoCategoryId) {
 		String companyId = AppContexts.user().companyId();
 		List<CopySettingItemDto> listData = empCopyRepo.getPerInfoItemByCtgId(companyId, perInfoCategoryId).stream()
