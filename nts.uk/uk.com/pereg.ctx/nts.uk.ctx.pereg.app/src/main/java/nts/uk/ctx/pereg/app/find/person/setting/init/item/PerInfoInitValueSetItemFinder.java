@@ -51,7 +51,7 @@ public class PerInfoInitValueSetItemFinder {
 	public List<PerInfoInitValueSettingItemDto> getAllItem(String settingId, String perInfoCtgId) {
 		List<PerInfoInitValueSetItemDetail> item = this.settingItemRepo.getAllItem(settingId, perInfoCtgId);
 		if (item != null && !item.isEmpty()) {
-			List<PerInfoInitValueSettingItemDto> itemDto = this.convertItemDtoLst(item, perInfoCtgId);
+			List<PerInfoInitValueSettingItemDto> itemDto = this.convertItemDtoLst(item);
 			return itemDto;
 		}
 
@@ -88,8 +88,7 @@ public class PerInfoInitValueSetItemFinder {
 		return Stream.of(item).collect(Collectors.toCollection(ArrayList::new));
 	}
 
-	public List<PerInfoInitValueSettingItemDto> convertItemDtoLst(List<PerInfoInitValueSetItemDetail> items,
-			String categoryCode) {
+	public List<PerInfoInitValueSettingItemDto> convertItemDtoLst(List<PerInfoInitValueSetItemDetail> items) {
 		String ctgCode = items.get(0).getCtgCode();
 		List<PerInfoInitValueSettingItemDto> itemDto = new ArrayList<>();
 		// アルゴリズム「勤務開始終了時刻を活性にするかチェックする」
@@ -126,7 +125,7 @@ public class PerInfoInitValueSetItemFinder {
 			items = items.stream().filter(c -> {
 				return !c.getItemCode().equals("IS00001");
 			}).collect(Collectors.toList());
-			
+
 		}
 		if (ctgCode.equals("CS00020")) {
 			itemDto = items.stream().map(item -> {
@@ -135,11 +134,11 @@ public class PerInfoInitValueSetItemFinder {
 				boolean isEven = itemEven.contains(item.getItemCode());
 				boolean isOld = itemOld.contains(item.getItemCode());
 				String selectionId = null;
-				this.setCompareItemCode(item, itemFilter, dto, selectionId, isOld, isEven);
+				this.setCompareItemCode(item, itemFilter, itemParents, dto, selectionId, isOld, isEven);
 				if (((item.getItemName().equals("終了日") && isContinious)) || isEven || isOld) {
 					dto.setDisableCombox(true);
 				}
-				return getInitItemDto(dto, personEmployeeType, categoryCode);
+				return getInitItemDto(dto, personEmployeeType, ctgCode);
 			}).collect(Collectors.toList());
 		} else {
 			itemDto = items.stream().map(c -> {
@@ -147,7 +146,7 @@ public class PerInfoInitValueSetItemFinder {
 				if (c.getItemName().equals("終了日") && isContinious) {
 					dto.setDisableCombox(true);
 				}
-				return getInitItemDto(dto, personEmployeeType, categoryCode);
+				return getInitItemDto(dto, personEmployeeType, ctgCode);
 			}).collect(Collectors.toList());
 			;
 		}
@@ -234,110 +233,32 @@ public class PerInfoInitValueSetItemFinder {
 	}
 
 	private void setCompareItemCode(PerInfoInitValueSetItemDetail item, List<PerInfoInitValueSetItemDetail> itemFilter,
-			PerInfoInitValueSettingItemDto dto, String selectionId, boolean isOld, boolean isEven) {
-		if (item.getItemCode().equals("IS00133") || item.getItemCode().equals("IS00134")
-				|| item.getItemCode().equals("IS00136") || item.getItemCode().equals("IS00137")) {
-			List<PerInfoInitValueSetItemDetail> itemParent = itemFilter.stream().filter(c -> {
-				return c.getItemCode().equals("IS00131");
+			List<String> itemParents, PerInfoInitValueSettingItemDto dto, String selectionId, boolean isOld,
+			boolean isEven) {
+		List<String> itemLst = this.createItemTimePointOfCS00020();
+		List<PerInfoInitValueSetItemDetail> itemParent = new ArrayList<>();
+		itemParents.stream().forEach(i -> {
+			List<PerInfoInitValueSetItemDetail> itemParentFilter = itemFilter.stream().filter(c -> {
+				return c.getItemCode().equals(i);
 			}).collect(Collectors.toList());
-			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
+			if (itemParentFilter.size() > 0) {
+				itemParent.addAll(itemParentFilter);
+			}
+		});
+
+		for (int i = 0; i < itemLst.size(); i = i + 4) {
+			if (i + 4 < itemLst.size()) {
+				if (item.getItemCode().equals(itemLst.get(i)) || item.getItemCode().equals(itemLst.get(i + 1))
+						|| item.getItemCode().equals(itemLst.get(i + 2))
+						|| item.getItemCode().equals(itemLst.get(i + 3))) {
+
+					setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
+					break;
+				}
+			}
+
 		}
 
-		if (item.getItemCode().equals("IS00142") || item.getItemCode().equals("IS00143")
-				|| item.getItemCode().equals("IS00145") || item.getItemCode().equals("IS00146")) {
-			List<PerInfoInitValueSetItemDetail> itemParent = itemFilter.stream().filter(c -> {
-				return c.getItemCode().equals("IS00140");
-			}).collect(Collectors.toList());
-			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
-		}
-
-		if (item.getItemCode().equals("IS00160") || item.getItemCode().equals("IS00161")
-				|| item.getItemCode().equals("IS00163") || item.getItemCode().equals("IS00164")) {
-			List<PerInfoInitValueSetItemDetail> itemParent = itemFilter.stream().filter(c -> {
-				return c.getItemCode().equals("IS00158");
-			}).collect(Collectors.toList());
-			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
-		}
-
-		if (item.getItemCode().equals("IS00169") || item.getItemCode().equals("IS00170")
-				|| item.getItemCode().equals("IS00172") || item.getItemCode().equals("IS00173")) {
-			List<PerInfoInitValueSetItemDetail> itemParent = itemFilter.stream().filter(c -> {
-				return c.getItemCode().equals("IS00167");
-			}).collect(Collectors.toList());
-			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
-		}
-
-		if (item.getItemCode().equals("IS00178") || item.getItemCode().equals("IS00178")
-				|| item.getItemCode().equals("IS00181") || item.getItemCode().equals("IS00182")) {
-			List<PerInfoInitValueSetItemDetail> itemParent = itemFilter.stream().filter(c -> {
-				return c.getItemCode().equals("IS00176");
-			}).collect(Collectors.toList());
-			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
-		}
-
-		if (item.getItemCode().equals("IS00151") || item.getItemCode().equals("IS00152")
-				|| item.getItemCode().equals("IS00154") || item.getItemCode().equals("IS00155")) {
-			List<PerInfoInitValueSetItemDetail> itemParent = itemFilter.stream().filter(c -> {
-				return c.getItemCode().equals("IS00149");
-			}).collect(Collectors.toList());
-			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
-		}
-
-		if (item.getItemCode().equals("IS00196") || item.getItemCode().equals("IS00197")
-				|| item.getItemCode().equals("IS00199") || item.getItemCode().equals("IS00200")) {
-			List<PerInfoInitValueSetItemDetail> itemParent = itemFilter.stream().filter(c -> {
-				return c.getItemCode().equals("IS00194");
-			}).collect(Collectors.toList());
-			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
-		}
-
-		if (item.getItemCode().equals("IS00205") || item.getItemCode().equals("IS00206")
-				|| item.getItemCode().equals("IS00208") || item.getItemCode().equals("IS00209")) {
-			List<PerInfoInitValueSetItemDetail> itemParent = itemFilter.stream().filter(c -> {
-				return c.getItemCode().equals("IS00203");
-			}).collect(Collectors.toList());
-			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
-		}
-
-		if (item.getItemCode().equals("IS00214") || item.getItemCode().equals("IS00215")
-				|| item.getItemCode().equals("IS00217") || item.getItemCode().equals("IS00218")) {
-			List<PerInfoInitValueSetItemDetail> itemParent = itemFilter.stream().filter(c -> {
-				return c.getItemCode().equals("IS00212");
-			}).collect(Collectors.toList());
-			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
-		}
-
-		if (item.getItemCode().equals("IS00223") || item.getItemCode().equals("IS00224")
-				|| item.getItemCode().equals("IS00226") || item.getItemCode().equals("IS00227")) {
-			List<PerInfoInitValueSetItemDetail> itemParent = itemFilter.stream().filter(c -> {
-				return c.getItemCode().equals("IS00221");
-			}).collect(Collectors.toList());
-			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
-		}
-
-		if (item.getItemCode().equals("IS00232") || item.getItemCode().equals("IS00233")
-				|| item.getItemCode().equals("IS00235") || item.getItemCode().equals("IS00236")) {
-			List<PerInfoInitValueSetItemDetail> itemParent = itemFilter.stream().filter(c -> {
-				return c.getItemCode().equals("IS00230");
-			}).collect(Collectors.toList());
-			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
-		}
-
-		if (item.getItemCode().equals("IS00241") || item.getItemCode().equals("IS00242")
-				|| item.getItemCode().equals("IS00244") || item.getItemCode().equals("IS00245")) {
-			List<PerInfoInitValueSetItemDetail> itemParent = itemFilter.stream().filter(c -> {
-				return c.getItemCode().equals("IS00239");
-			}).collect(Collectors.toList());
-			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
-		}
-
-		if (item.getItemCode().equals("IS00187") || item.getItemCode().equals("IS00188")
-				|| item.getItemCode().equals("IS00190") || item.getItemCode().equals("IS00191")) {
-			List<PerInfoInitValueSetItemDetail> itemParent = itemFilter.stream().filter(c -> {
-				return c.getItemCode().equals("IS00185");
-			}).collect(Collectors.toList());
-			setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
-		}
 	}
 
 	private void setEnableControl(PerInfoInitValueSetItemDetail item, List<PerInfoInitValueSetItemDetail> itemParent,
