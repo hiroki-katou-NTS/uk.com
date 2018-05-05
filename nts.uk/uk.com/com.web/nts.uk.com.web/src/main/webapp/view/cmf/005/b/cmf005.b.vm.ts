@@ -72,12 +72,24 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         ccg001ComponentOption: GroupOption;
         employeeInputList: KnockoutObservableArray<UnitModel>;
         
+        listComponentOption: any;
+        selectedCode: KnockoutObservable<string>;
+        multiSelectedCode: KnockoutObservableArray<string>;
+        isShowAlreadySet: KnockoutObservable<boolean>;
+        alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+        isDialog: KnockoutObservable<boolean>;
+        isShowNoSelectRow: KnockoutObservable<boolean>;
+        isMultiSelect: KnockoutObservable<boolean>;
+        isShowWorkPlaceName: KnockoutObservable<boolean>;
+        isShowSelectAllButton: KnockoutObservable<boolean>;
+        employeeList: KnockoutObservableArray<UnitModel>;
+        selectedItems: KnockoutObservable<any>;
+        selectedClosureId: KnockoutObservable<string>;
+        
         constructor() {
             var self = this;
             self.initComponents();
             self.setDefault();
-            
-            self.employeeInputList = ko.observableArray([]);
         }
 
         initComponents() {
@@ -276,7 +288,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         loadScreenD() {
             let self = this;
             self.loadCcg001Component(); 
-            self.showEmployeeList();   
+            //self.showEmployeeList();  
         }
         
         //load D screen
@@ -333,14 +345,10 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         
         searchEmployee(dataEmployee: EmployeeSearchDto[]) {
             var self = this;
-            self.employeeInputList.removeAll();
+            self.employeeInputList = ko.observableArray([]);
             _.forEach(dataEmployee, function(item: EmployeeSearchDto) {
-                self.employeeInputList.push(new UnitModel({
-                    id: item.employeeId,
-                    code: item.employeeCode,
-                    businessName: item.employeeName,
-                    workplaceName: item.workplaceName,
-                }));
+                self.employeeInputList.push(new UnitModel(item.employeeCode, 
+                    item.employeeName, item.workplaceName));
             });
 
             self.showEmployeeList();
@@ -348,22 +356,56 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         
         showEmployeeList() {
             var self = this;
-//            console.log(self.employeeInputList);
-            var listComponentOption: ComponentOption = {
+            
+            self.selectedItems = ko.observable(null);
+            self.baseDate = ko.observable(new Date());
+            self.selectedCode = ko.observable('F00009');
+            self.multiSelectedCode = ko.observableArray(['F00009', 'F00008', 'F00010']);
+            self.selectedClosureId = ko.observableArray([]);
+            self.isDialog = ko.observable(true);
+            self.isShowNoSelectRow = ko.observable(false);
+            self.isMultiSelect = ko.observable(false);
+            self.isShowWorkPlaceName = ko.observable(true);
+            self.isShowSelectAllButton = ko.observable(true);            
+            self.alreadySettingList = ko.observableArray([
+                {code: '0', isAlreadySetting: true},
+                {code: '1', isAlreadySetting: true},
+                {code: '2', isAlreadySetting: true}
+            ]);
+            
+           
+            self.listComponentOption = {
                 isShowAlreadySet: false,
                 isMultiSelect: true,
                 listType: ListType.EMPLOYEE,
                 employeeInputList: self.employeeInputList,
-                selectType: SelectType.SELECT_ALL,
-                isDialog: false,
-                isShowNoSelectRow: false,
-                isShowWorkPlaceName: true,
-                isShowSelectAllButton: true
+                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                selectedCode: self.selectedCode,
+                isDialog: self.isDialog(),
+                isShowNoSelectRow: self.isShowNoSelectRow(),
+                alreadySettingList: self.alreadySettingList,
+                isShowWorkPlaceName: self.isShowWorkPlaceName(),
+                isShowSelectAllButton: self.isShowSelectAllButton(),
+                selectedClosureId: self.selectedClosureId,
+                maxRows: 12
             };
             
-             $('#component-employees-list').ntsListComponent(listComponentOption);
+             //isShowAlreadySet: self.isAlreadySetting(),
+               // isMultiSelect: self.isMultiSelect(),
+               // listType: ListType.EMPLOYEE,
+                //employeeInputList: self.employeeList,
+               // selectType: self.selectedType(),
+                //selectedCode: self.bySelectedCode,
+               // isDialog: self.isDialog(),
+               // isShowNoSelectRow: self.isShowNoSelectionItem(),
+                //alreadySettingList: self.alreadySettingList,
+                //isShowWorkPlaceName: self.isShowWorkPlaceName(),
+                //isShowSelectAllButton: self.isShowSelectAllButton(),
+               // maxRows: 12
+            
+             $('#component-employees-list').ntsListComponent(self.listComponentOption);
         }
-
+        
     }
 
     export class BoxModel {
@@ -375,6 +417,37 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.name = name;
         }
     }
+    
+    export class UnitModel {
+        code: string;
+        name: string;
+        workplaceName: string;
+        
+        constructor(code: string, name: string, workplaceName: string) {
+                this.code = code;
+                this.name = name;
+                this.workplaceName = workplaceName;
+        }
+    }
+    
+        export class ListType {
+            static EMPLOYMENT = 1;
+            static Classification = 2;
+            static JOB_TITLE = 3;
+            static EMPLOYEE = 4;
+        }
+            
+        export class SelectType {
+            static SELECT_BY_SELECTED_CODE = 1;
+            static SELECT_ALL = 2;
+            static SELECT_FIRST_ITEM = 3;
+            static NO_SELECT = 4;
+        }
+        
+        export interface UnitAlreadySettingModel {
+            code: string;
+            isAlreadySetting: boolean;
+        }
 }
 
 
