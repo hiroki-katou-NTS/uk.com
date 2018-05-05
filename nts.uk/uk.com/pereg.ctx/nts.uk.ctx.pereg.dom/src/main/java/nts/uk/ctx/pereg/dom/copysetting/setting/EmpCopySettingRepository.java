@@ -7,8 +7,6 @@ import nts.uk.ctx.pereg.dom.copysetting.setting.valueobject.CopySettingItemObjec
 
 public interface EmpCopySettingRepository {
 
-	List<EmpCopySetting> find(String companyId);
-	
 	Optional<EmployeeCopySetting> findSetting(String companyId);
 	
 	Optional<EmployeeCopyCategory> findCopyCategory(String companyId, String categoryId);
