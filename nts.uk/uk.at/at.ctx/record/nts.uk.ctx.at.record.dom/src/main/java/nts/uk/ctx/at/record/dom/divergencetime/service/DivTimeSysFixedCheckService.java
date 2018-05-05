@@ -286,7 +286,7 @@ public class DivTimeSysFixedCheckService {
 					if(!valid){
 						checkR.add(new EmployeeDailyPerError(companyId, employeeId, workingDate, 
 								erAl.getCode(), Arrays.asList(erAl.getErrorDisplayItem() != null? erAl.getErrorDisplayItem().intValue():null), 
-								erAl.getCancelableAtr() ? 1 : 0, getMessage(isCheckByWorkType, isPcDivergence, companyId, ((numberIn-1) / 2)+1, isAlarm, bsCode)));
+								erAl.getCancelableAtr() ? 1 : 0, getMessage(isWHis, isPcDivergence, companyId, ((numberIn-1) / 2)+1, isAlarm, bsCode)));
 					}
 				});
 //				divergenTime.stream().forEach(dt -> {
