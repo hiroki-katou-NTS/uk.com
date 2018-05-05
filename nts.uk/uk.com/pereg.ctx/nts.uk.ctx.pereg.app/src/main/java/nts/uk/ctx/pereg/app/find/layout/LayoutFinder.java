@@ -198,27 +198,11 @@ public class LayoutFinder {
 			}
 		}
 
-		// COLLECT CLASS ITEM WITH CATEGORY
-		Map<String, List<LayoutPersonInfoClsDto>> classItemInCategoryMap = new HashMap<>();
-		for (LayoutPersonInfoClsDto classItem : authItemClasList) {
-
-			if (classItem.getLayoutItemType() != LayoutItemType.SeparatorLine) {
-				if (classItem.getLayoutItemType() == LayoutItemType.ITEM) {
-					List<LayoutPersonInfoClsDto> classItemList = classItemInCategoryMap
-							.get(classItem.getPersonInfoCategoryID());
-					if (classItemList == null) {
-						classItemList = new ArrayList<>();
-						classItemInCategoryMap.put(classItem.getPersonInfoCategoryID(), classItemList);
-					}
-					classItemList.add(classItem);
-				} else {
-
-				}
-			}
-
-		}
-
 		// GET DATA WITH EACH CATEGORY
+		Map<String, List<LayoutPersonInfoClsDto>> classItemInCategoryMap = authItemClasList.stream()
+				.filter(classItem -> classItem.getLayoutItemType() != LayoutItemType.SeparatorLine)
+				.collect(Collectors.groupingBy(LayoutPersonInfoClsDto::getPersonInfoCategoryID));
+		
 		for (Entry<String, List<LayoutPersonInfoClsDto>> classItemsOfCategory : classItemInCategoryMap.entrySet()) {
 			String categoryId = classItemsOfCategory.getKey();
 			List<LayoutPersonInfoClsDto> classItemList = classItemsOfCategory.getValue();
