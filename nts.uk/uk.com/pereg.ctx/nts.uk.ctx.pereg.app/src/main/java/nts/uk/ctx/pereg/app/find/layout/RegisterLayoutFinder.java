@@ -1,9 +1,7 @@
 package nts.uk.ctx.pereg.app.find.layout;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -14,9 +12,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
 import nts.uk.ctx.pereg.app.find.common.InitDefaultValue;
-import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.copysetting.item.CopySettingItemFinder;
-import nts.uk.ctx.pereg.app.find.copysetting.setting.EmpCopySettingFinder;
 import nts.uk.ctx.pereg.app.find.initsetting.item.FindInitItemDto;
 import nts.uk.ctx.pereg.app.find.initsetting.item.InitValueSetItemFinder;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
@@ -29,8 +25,6 @@ import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SingleItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
-import nts.uk.ctx.pereg.dom.copysetting.setting.EmpCopySettingRepository;
-import nts.uk.ctx.pereg.dom.copysetting.setting.EmployeeCopySetting;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
@@ -42,7 +36,6 @@ import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutItemType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregQuery;
-import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
 /**
  * @author sonnlb
@@ -62,9 +55,6 @@ public class RegisterLayoutFinder {
 	private PerInfoInitValueSettingCtgFinder initCtgSettingFinder;
 
 	@Inject
-	private EmpCopySettingFinder copySettingFinder;
-
-	@Inject
 	private CopySettingItemFinder copyItemFinder;
 
 	@Inject
@@ -78,9 +68,6 @@ public class RegisterLayoutFinder {
 	
 	@Inject 
 	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
-	
-	@Inject
-	private EmpCopySettingRepository empCopyRepo;
 	
 	private final String END_DATE_NAME = "終了日";
 	
