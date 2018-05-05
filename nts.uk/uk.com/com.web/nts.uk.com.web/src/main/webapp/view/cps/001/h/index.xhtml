@@ -15,8 +15,10 @@
 			</script>
 			<com:ValidatorScript>
 					nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber
-					nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber
 					nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber
+					nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveOverLimitDayNumber
+					nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber
+					
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cps001.h.style.css" />
@@ -107,7 +109,7 @@
 										<span>5</span><span><input class="realTxt" id="overLimitDays" tabindex='12' data-bind="ntsNumberEditor: {
 											name: lmd,
 		                                    value: overLimitDays,
-		                                    constraint:'ReserveLeaveUsedDayNumber',
+		                                    constraint:'ReserveLeaveOverLimitDayNumber',
 		                                    option: {
 			                                    decimallength: 1
 		                                    },
