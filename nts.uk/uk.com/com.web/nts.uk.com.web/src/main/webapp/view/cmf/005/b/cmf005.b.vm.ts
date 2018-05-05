@@ -19,7 +19,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
     import SelectType = kcp.share.list.SelectType;
     import UnitModel = kcp.share.list.UnitModel;
     import UnitAlreadySettingModel = kcp.share.list.UnitAlreadySettingModel;
-    
+
     export class ScreenModel {
 
 
@@ -33,21 +33,22 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
 
         // B5_2_2
-        systemType: KnockoutObservable<string>;
+        systemTypeName: KnockoutObservable<string>;
+        systemTypeId: KnockoutObservable<number>;
 
         //B5_3
-        listDataCategory: KnockoutObservableArray<ItemCategory>;
+        listDataCategory: KnockoutObservableArray<model.ItemCategory>;
         listColumnHeader: KnockoutObservableArray<NtsGridListColumn>;
-        selectedCsvItemNumber: KnockoutObservable<number> = ko.observable(null);
-        count: number = 100;
-        switchOptions: KnockoutObservableArray<any>;
+        currentCategory: KnockoutObservableArray<any>;
 
-        //datepicker
+        //datepicker B5_2_2
         enable: KnockoutObservable<boolean>;
-        required: KnockoutObservable<boolean>;
-        dateValue1: KnockoutObservable<any>;
-        dateValue2: KnockoutObservable<any>;
-        dateValue3: KnockoutObservable<any>;
+        requiredDate: KnockoutObservable<boolean>;
+        requiredMonth: KnockoutObservable<boolean>;
+        requiredYear: KnockoutObservable<boolean>;
+        dateValue: KnockoutObservable<any>;
+        monthValue: KnockoutObservable<any>;
+        yearValue: KnockoutObservable<any>;
         startDateDailyString: KnockoutObservable<string>;
         endDateDailyString: KnockoutObservable<string>;
         startDateMothlyString: KnockoutObservable<string>;
@@ -110,23 +111,28 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.deleteSetName = ko.observable('');
 
             //B5_2_2
-            self.systemType = ko.observable('');
+            self.systemTypeName = ko.observable('');
+            self.systemTypeId = ko.observable('');
             //B5_3
             self.listDataCategory = ko.observableArray([]);
-            for (let i = 1; i < 5; i++) {
-                self.listDataCategory.push(new model.ItemCategory(i, '00' + i, 'catename' + i, 'aaaa', 'all'));
-            }
+            self.currentCode = ko.observable();
+            self.currentCategory = ko.observableArray([]);
+            //            for (let i = 1; i < 5; i++) {
+            //                self.listDataCategory.push(new model.ItemCategory(i, '00' + i, 'catename' + i, 'aaaa', 'all'));
+            //            }
             self.listColumnHeader = ko.observableArray([
-                { headerText: '', key: 'cateItemNumber', width: 10, hidden: false },
-                { headerText: '', key: 'cateId', width: 10, hidden: true },
-                { headerText: 'abc', key: 'cateName', width: 150, hidden: false },
-                { headerText: '123', key: 'timeDeletion', width: 20, hidden: false },
-                { headerText: '456', key: 'rangeDeletion', width: 30 }
+                { headerText: '', key: 'cateItemNumber', width: 20, hidden: false },
+                { headerText: '', key: 'categoryId', hidden: true },
+                { headerText: getText('CMF005_24'), key: 'categoryName', width: 200, hidden: false },
+                { headerText: getText('CMF005_25'), key: 'timeDeletion', width: 100, hidden: false },
+                { headerText: getText('CMF005_26'), key: 'rangeDeletion', width: 100, hidden: false }
             ]);
 
             //DatePcicker B6_1
             self.enable = ko.observable(true);
-            self.required = ko.observable(true);
+            self.requiredDate = ko.observable(true);
+            self.requiredMonth = ko.observable(true);
+            self.requiredYear = ko.observable(true);
 
             self.startDateDailyString = ko.observable("");
             self.endDateDailyString = ko.observable("");
@@ -137,35 +143,35 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.startDateYearlyString = ko.observable("");
             self.endDateYearlyString = ko.observable("");
 
-            self.dateValue1 = ko.observable({});
-            self.dateValue2 = ko.observable({});
-            self.dateValue3 = ko.observable({});
+            self.dateValue = ko.observable({});
+            self.monthValue = ko.observable({});
+            self.yearValue = ko.observable({});
 
             self.startDateDailyString.subscribe(function(value) {
-                self.dateValue1().startDate = value;
-                self.dateValue1.valueHasMutated();
+                self.dateValue().startDate = value;
+                self.dateValue.valueHasMutated();
             });
             self.endDateDailyString.subscribe(function(value) {
-                self.dateValue1().endDate = value;
-                self.dateValue1.valueHasMutated();
+                self.dateValue().endDate = value;
+                self.dateValue.valueHasMutated();
             });
 
             self.startDateMothlyString.subscribe(function(value) {
-                self.dateValue2().startDate = value;
-                self.dateValue2.valueHasMutated();
+                self.monthValue().startDate = value;
+                self.monthValue.valueHasMutated();
             });
             self.endDateMothlyString.subscribe(function(value) {
-                self.dateValue2().endDate = value;
-                self.dateValue2.valueHasMutated();
+                self.monthValue().endDate = value;
+                self.monthValue.valueHasMutated();
             });
 
             self.startDateYearlyString.subscribe(function(value) {
-                self.dateValue3().startDate = value;
-                self.dateValue3.valueHasMutated();
+                self.yearValue().startDate = value;
+                self.yearValue.valueHasMutated();
             });
             self.endDateYearlyString.subscribe(function(value) {
-                self.dateValue3().endDate = value;
-                self.dateValue3.valueHasMutated();
+                self.yearValue().endDate = value;
+                self.yearValue.valueHasMutated();
             });
 
 
@@ -190,9 +196,9 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
             //B6_2_2
             let startEndDate = self.getDate();
-            self.dateValue1 = ko.observable({ startDate: startEndDate.startDate, endDate: startEndDate.endDate });
-            self.dateValue2 = ko.observable({ startDate: startEndDate.startDate, endDate: startEndDate.endDate });
-            self.dateValue3 = ko.observable({ startDate: startEndDate.startYear, endDate: startEndDate.endYear });
+            self.dateValue = ko.observable({ startDate: startEndDate.startDate, endDate: startEndDate.endDate });
+            self.monthValue = ko.observable({ startDate: startEndDate.startDate, endDate: startEndDate.endDate });
+            self.yearValue = ko.observable({ startDate: startEndDate.startYear, endDate: startEndDate.endYear });
 
             //B7_2_1
             self.isSaveBeforeDeleteFlg = ko.observable(model.SAVE_BEFOR_DELETE_ATR.YES);
@@ -215,19 +221,69 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             var self = this;
             let param = {
                 lstCategory: self.listDataCategory,
-                systemType: self.systemType
+                systemTypeName: self.systemTypeName
             };
-            setShared("paramCmf005b", param);
-            modal("/view/cmf/005/c/index.xhtml", { width: 800, title: "ã‚«ãƒ†ã‚´ãƒªã�®é�¸æŠž" }).onClosed(() => {
-                let data = getShared("paramCmf005b");
-                if (!nts.uk.util.isNullOrUndefined(data))
-                    self.listDataCategory(data.lstDataCategoryChose);
-                self.systemType(data.systemType);
+            setShared("CMF005CParams", param);
+            modal("/view/cmf/005/c/index.xhtml", { width: 800, title: "カテゴリの選択" }).onClosed(() => {
+                let data = getShared("CMF005COutput");
+                if (!nts.uk.util.isNullOrUndefined(data)) {
+                    var listCategoryChoseAdd = _.map(data.listCategoryChose, item => {
+                        let indexOfItem = _.findIndex(data.listCategoryChose, { categoryId: item.categoryId });
+                        return new model.ItemCategory(indexOfItem, item.categoryId, item.categoryName, item.timeDeletion, item.rangeDeletion);
+                    });
+                    self.listDataCategory(listCategoryChoseAdd);
+                    //                    let listDataCategory = data.listCategoryChose;
+                    //                    cosole.log(listDataCategory.length);
+                    //                    if (listDataCategory) {
+                    //                        self.listDataCategory(listDataCategory);
+                    //                        for (let i = 0; i < listDataCategory().length; i++) {
+                    //                           let model.ItemCategory = listDataCategory ;
+                    //                        }
+                    //                    }
+
+                    console.log(self.listDataCategory().length);
+                    if (data.systemTypeId == model.SYSTEM_TYPE.PERSON_SYS) {
+                        self.systemTypeName(getText('CMF005_170'));
+                    }
+                    if (data.systemTypeId == model.SYSTEM_TYPE.ATTENDANCE_SYS) {
+                        self.systemTypeName(getText('CMF005_171'));
+                    }
+                    if (data.systemTypeId == model.SYSTEM_TYPE.PAYROLL_SYS) {
+                        self.systemTypeName(getText('CMF005_172'));
+                    }
+                    if (data.systemTypeId == model.SYSTEM_TYPE.OFFICE_HELPER) {
+                        self.systemTypeName(getText('CMF005_173'));
+                    }
+                    self.systemTypeId = data.systemTypeId;
+                }
             });
         }
 
+
         // Open screen D
         nextScreenD() {
+            let self = this;
+
+            if (self.listDataCategory().length > 0) {
+                // check so sanh hang ngay hang thang hang nam
+                if (self.checkDatePicker()) {
+                    // check pass word
+                    if (self.checkPass()) {
+                        self.next();
+                    }
+                } else {
+                    alertError({ messageId: 'Msg_465' });
+                }
+
+            } else {
+                alertError({ messageId: 'Msg_463' });
+            }
+        }
+
+        /**
+             * function next wizard by on click button 
+             */
+        private next() {
             let self = this;
             self.loadScreenD();
             $('#ex_accept_wizard').ntsWizard("next");
@@ -238,8 +294,36 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             nts.uk.request.jump("/view/cmf/005/a/index.xhtml");
         }
 
+
+        //check date,month,year
+        checkDatePicker() {
+            return true;
+        }
+        // validate password
+        checkPass() {
+            let self = this;
+
+            //check pass on
+            if (self.isExistCompressPasswordFlg()) {
+                // check pass empty
+                if (self.passwordForCompressFile() && self.confirmPasswordForCompressFile()) {
+                    // compare pass
+                    if (self.passwordForCompressFile() == self.confirmPasswordForCompressFile()) {
+                        return true;
+                    } else {
+                        alertError({ messageId: 'Msg_566' });
+                        return false;
+                    }
+                } else {
+                    alertError({ messageId: 'Msg_463' });
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
         /**
-         * return æœ¬æ—¥(NOWï¼‰ï¼�ã€€ï¼‘ãƒµæœˆã€€ï¼‹ã€€ï¼‘æ—¥
+         *return 本日(NOW）－　１ヵ月　＋　１日
          */
         getDate() {
             var timeCurrent = moment.utc(new Date(), "YYYY/MM/DD");
@@ -289,8 +373,10 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             let self = this;
             self.loadCcg001Component(); 
             //self.showEmployeeList();  
+
         }
-        
+
+
         //load D screen
         loadCcg001Component() {
             let self = this;
@@ -342,7 +428,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
             $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);
         }
-        
+
         searchEmployee(dataEmployee: EmployeeSearchDto[]) {
             var self = this;
             self.employeeInputList = ko.observableArray([]);
@@ -353,10 +439,10 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
             self.showEmployeeList();
         }
-        
+
         showEmployeeList() {
             var self = this;
-            
+
             self.selectedItems = ko.observable(null);
             self.baseDate = ko.observable(new Date());
             self.selectedCode = ko.observable('F00009');
@@ -389,21 +475,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 selectedClosureId: self.selectedClosureId,
                 maxRows: 12
             };
-            
-             //isShowAlreadySet: self.isAlreadySetting(),
-               // isMultiSelect: self.isMultiSelect(),
-               // listType: ListType.EMPLOYEE,
-                //employeeInputList: self.employeeList,
-               // selectType: self.selectedType(),
-                //selectedCode: self.bySelectedCode,
-               // isDialog: self.isDialog(),
-               // isShowNoSelectRow: self.isShowNoSelectionItem(),
-                //alreadySettingList: self.alreadySettingList,
-                //isShowWorkPlaceName: self.isShowWorkPlaceName(),
-                //isShowSelectAllButton: self.isShowSelectAllButton(),
-               // maxRows: 12
-            
-             $('#component-employees-list').ntsListComponent(self.listComponentOption);
+            $('#component-employees-list').ntsListComponent(listComponentOption);
         }
         
     }

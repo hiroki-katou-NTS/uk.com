@@ -1,10 +1,10 @@
 package nts.uk.ctx.sys.assist.app.comand.system;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Data
-@NoArgsConstructor
+@AllArgsConstructor
 public class SystemTypeCommand {
 
 	
@@ -18,14 +18,4 @@ public class SystemTypeCommand {
 	private boolean isOfficeHelperPersonne = false;
 	/**Person in charge of personal information*/
 	private boolean isPersonalInformation = false;
-	
-	public SystemTypeCommand(boolean isEmployeeCharge, boolean isSalaryProfessional, boolean isHumanResOfficer,
-			boolean isOfficeHelperPersonne, boolean isPersonalInformation) {
-		super();
-		this.isEmployeeCharge = isEmployeeCharge;
-		this.isSalaryProfessional = isSalaryProfessional;
-		this.isHumanResOfficer = isHumanResOfficer;
-		this.isOfficeHelperPersonne = isOfficeHelperPersonne;
-		this.isPersonalInformation = isPersonalInformation;
-	}
 }

@@ -1,21 +1,23 @@
-module nts.uk.com.view.cmf005.c.service {
+module nts.uk.com.view.cmf003.c {
     import ajax = nts.uk.request.ajax;
-
-    var paths = {
-        getSystemType: "ctx/sys/assist/systemtype/getlistsystemtype",
-        getCategorys: "ctx/sys/assist/category/categorysytemtype/"
+    import format = nts.uk.text.format;
+    
+    export module service {
+            var paths = {
+                //TODO: Fake ws
+                getCategoryBySytem: "ctx/sys/assist/app/findCategory/{0}",
+                getSystemType: "exio/exi/condset/getSysType"
+            }
+        
+            // Get 出力条件設定（定型）
+            export function getSysTypes(condSetCode: string): JQueryPromise<any> {
+                return ajax("com", paths.getSystemType);
+            }
+        
+            export function getCategoryListBySystem(systemType: number): JQueryPromise<any> {
+                let _path = format(paths.getCategoryBySytem, systemType);
+                return ajax('com', _path);
+            };
+        
     }
-
-    //Get list systemType
-    export function getListSystemType(): JQueryPromise<any> {
-        return ajax(paths.getSystemType);
-    }
-
-    //get list Category deletion
-    export function getCategorysDeletion(sysType: number, searchText: string, listCategoryId: any): JQueryPromise<any> {
-        return nts.uk.request.ajax("com", paths.getCategorys, sysType, searchText, listCategoryId);
-    }
-
-
-
 }

@@ -27,18 +27,28 @@ module nts.uk.com.view.cmf005.share.model {
             this.name = name;
         }
     }
+    
+   export class SystemModel {
+        systemTypeValue: number;
+        systemTypeName: string;
+
+        constructor(systemTypeValue: number, systemTypeName: string) {
+            this.systemTypeValue = systemTypeValue;
+            this.systemTypeName = systemTypeName;
+        }
+    }
 
     export class ItemCategory {
-        cateItemNumber: number;
-        cateId: string;
-        cateName: string;
+     
+        categoryId: string;
+        categoryName: string;
         timeDeletion: string;
         rangeDeletion: string;
 
-        constructor(cateItemNumber: number, cateId: string, cateName: string,timeDeletion:string,rangeDeletion :string) {
-            this.cateItemNumber = cateItemNumber;
-            this.cateId = cateId;
-            this.cateName = cateName;
+        constructor( categoryId: string, categoryName: string,timeDeletion:string,rangeDeletion :string) {
+         
+            this.categoryId = categoryId;
+            this.categoryName = categoryName;
             this.timeDeletion = timeDeletion;
             this.rangeDeletion = rangeDeletion;
         }
