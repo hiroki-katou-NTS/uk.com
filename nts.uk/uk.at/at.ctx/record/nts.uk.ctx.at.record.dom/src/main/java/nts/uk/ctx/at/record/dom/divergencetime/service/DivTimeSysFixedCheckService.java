@@ -483,7 +483,7 @@ public class DivTimeSysFixedCheckService {
 			}
 		}
 		if(message != null) {
-			return isWithBonusText ? StringUtils.join(message.v(), resources.localize("KDW003_108")) : message.v();
+			return isWithBonusText ? StringUtils.join(message.v(), resources.localize("KDW003_108").orElse("")) : message.v();
 		}
 		return "";
 	}
