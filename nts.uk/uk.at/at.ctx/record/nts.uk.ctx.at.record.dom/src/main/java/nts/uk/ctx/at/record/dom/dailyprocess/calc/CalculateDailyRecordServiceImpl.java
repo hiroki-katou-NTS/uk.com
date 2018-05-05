@@ -803,9 +803,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		   //手修正された項目の値を計算前に戻す   
 		   calcResultIntegrationOfDaily = afterDailyRecordDto.toDomain();
 		   
-		   calcResultIntegrationOfDaily = reCalc(calcResultIntegrationOfDaily, companyId);
-		   
 		  }
+		   
+		   calcResultIntegrationOfDaily = reCalc(calcResultIntegrationOfDaily, companyId);
 		  
 			
 		/*日別実績への項目移送*/
