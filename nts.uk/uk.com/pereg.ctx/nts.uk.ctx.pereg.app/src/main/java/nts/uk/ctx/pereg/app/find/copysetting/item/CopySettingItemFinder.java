@@ -81,7 +81,7 @@ public class CopySettingItemFinder {
 
 		}
 		
-		List<PersonInfoItemDefinition> itemDefList = itemDefRepo.getPerInfoItemDefByListId(
+		List<PersonInfoItemDefinition> itemDefList = itemDefRepo.getItemLstByListId(
 				empCopyCategoryOpt.get().getItemDefIdList(), AppContexts.user().contractCode());
 		
 		// get data
@@ -131,7 +131,7 @@ public class CopySettingItemFinder {
 		Map<String, String> categoryIdvsCodeMap = categoryDetailList.stream()
 				.collect(Collectors.toMap(x -> x.getCategoryId(), x -> x.getCategoryCode()));
 		
-		List<PersonInfoItemDefinition> itemDefList = itemDefRepo.getPerInfoItemDefByListId(copySettingItemIdList,
+		List<PersonInfoItemDefinition> itemDefList = itemDefRepo.getItemLstByListId(copySettingItemIdList,
 				AppContexts.user().contractCode());
 		
 		// get data
