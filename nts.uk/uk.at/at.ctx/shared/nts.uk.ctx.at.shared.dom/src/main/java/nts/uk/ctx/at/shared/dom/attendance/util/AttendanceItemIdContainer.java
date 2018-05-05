@@ -489,6 +489,7 @@ public class AttendanceItemIdContainer {
 		DAY_ITEM_ID_CONTAINER.put(536, "日別実績の勤怠時間.実績時間.総労働時間.休憩時間帯.控除用合計時間.合計時間.時間");
 		DAY_ITEM_ID_CONTAINER.put(537, "日別実績の勤怠時間.実績時間.総労働時間.休憩時間帯.計上用合計時間.法定内合計時間.時間");
 		DAY_ITEM_ID_CONTAINER.put(538, "日別実績の勤怠時間.実績時間.総労働時間.休憩時間帯.控除用合計時間.法定内合計時間.時間");
+		DAY_ITEM_ID_CONTAINER.put(798, "日別実績の勤怠時間.実績時間.総労働時間.休憩時間帯.計上用合計時間.法定外合計時間.時間");
 		DAY_ITEM_ID_CONTAINER.put(574, "日別実績の勤怠時間.実績時間.総労働時間.休憩時間帯.勤務間時間");
 
 		DAY_ITEM_ID_CONTAINER.put(160, "日別実績の勤怠時間.実績時間.総労働時間.休憩時間帯.補正後時間帯.開始-就業時間帯から参照1");
