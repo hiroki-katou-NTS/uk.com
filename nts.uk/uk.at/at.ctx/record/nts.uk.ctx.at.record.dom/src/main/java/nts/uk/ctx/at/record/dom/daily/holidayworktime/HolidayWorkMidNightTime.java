@@ -36,6 +36,6 @@ public class HolidayWorkMidNightTime {
 	 * @return
 	 */
 	public HolidayWorkMidNightTime calcDiverGenceTime() {
-		return new HolidayWorkMidNightTime(this.time!=null?this.time.calcDiverGenceTime():this.time,this.statutoryAtr);
+		return new HolidayWorkMidNightTime(this.time!=null?this.time.calcDiverGenceTime():TimeDivergenceWithCalculation.emptyTime(),this.statutoryAtr);
 	}
 }

@@ -72,7 +72,7 @@ public class ExcessOfStatutoryMidNightTime {
 	 * @return
 	 */
 	public ExcessOfStatutoryMidNightTime calcDiverGenceTime() {
-		return new ExcessOfStatutoryMidNightTime(this.time==null?this.time:this.time.calcDiverGenceTime(),this.beforeApplicationTime);
+		return new ExcessOfStatutoryMidNightTime(this.time==null?TimeDivergenceWithCalculation.emptyTime():this.time.calcDiverGenceTime(),this.beforeApplicationTime);
 	}
 
 }

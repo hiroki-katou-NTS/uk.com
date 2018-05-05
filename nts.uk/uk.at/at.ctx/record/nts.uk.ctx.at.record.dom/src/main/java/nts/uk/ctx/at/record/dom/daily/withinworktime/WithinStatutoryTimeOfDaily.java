@@ -70,7 +70,7 @@ public class WithinStatutoryTimeOfDaily {
 	//所定内割増時間
 	private AttendanceTime withinPrescribedPremiumTime = new AttendanceTime(0);
 	//所定内深夜時間
-	private WithinStatutoryMidNightTime withinStatutoryMidNightTime = new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)));
+	private WithinStatutoryMidNightTime withinStatutoryMidNightTime = new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.emptyTime());
 	//休暇加算時間
 	private AttendanceTime vacationAddTime = new AttendanceTime(0);  
 	
