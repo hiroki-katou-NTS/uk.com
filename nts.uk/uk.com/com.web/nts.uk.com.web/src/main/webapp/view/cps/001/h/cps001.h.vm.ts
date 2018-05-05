@@ -321,7 +321,11 @@ module cps001.h.vm {
         }
 
         formatterDate(value) {
-            return value + "日";
+            if (value) {
+                return value >= 0 ? "&nbsp;" + value + '日' : value + '日';
+            } else {
+                return "&nbsp;0日";
+            }
         }
 
         formatterExState(value: number) {
@@ -346,18 +350,23 @@ module cps001.h.vm {
         remainingDays: KnockoutObservable<string> = ko.observable("");
         constructor(data: IResvLeaGrantRemNum) {
             let self = this;
-            self.id(data && data.id || "");
-            self.grantDate(data && data.grantDate || "");
-            self.deadline(data && data.deadline || "");
+            self.id(data && data.id);
+            self.grantDate(data && data.grantDate);
+            self.deadline(data && data.deadline);
             self.expirationStatus(data == undefined ? 1 : (data.expirationStatus == undefined ? 1 : data.expirationStatus));
-            self.grantDays(data && data.grantDays || "");
-            self.useDays(data && data.useDays || "");
-            self.overLimitDays(data && data.overLimitDays || "");
-            self.remainingDays(data && data.remainingDays || "");
+            self.grantDays(data && data.grantDays);
+            self.useDays(data && data.useDays);
+            self.overLimitDays(data && data.overLimitDays);
+            self.remainingDays(data && data.remainingDays);
 
             self.grantDate.subscribe((data) => {
 
                 if (data && __viewContext.viewModel.isCreate()) {
+
+                    if (nts.uk.ui.errors.hasError()) {
+                        return;
+                    }
+
                     service.generateDeadline(moment.utc(data, "YYYY/MM/DD")).done((item) => {
                         self.deadline(item);
                     });
