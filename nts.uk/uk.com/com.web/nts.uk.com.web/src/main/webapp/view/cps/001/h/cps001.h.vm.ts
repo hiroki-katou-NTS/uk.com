@@ -76,11 +76,11 @@ module cps001.h.vm {
                 { headerText: "", key: 'id', hidden: true },
                 { headerText: text("CPS001_118"), key: 'grantDate', width: 100, isDateColumn: true, format: 'YYYY/MM/DD' },
                 { headerText: text("CPS001_119"), key: 'deadline', width: 100, isDateColumn: true, format: 'YYYY/MM/DD' },
-                { headerText: text("CPS001_120"), key: 'grantDays', width: 70, formatter: self.formatterDate },
-                { headerText: text("CPS001_121"), key: 'useDays', width: 70, formatter: self.formatterDate },
-                { headerText: text("CPS001_130"), key: 'overLimitDays', width: 70, formatter: self.formatterDate },
-                { headerText: text("CPS001_123"), key: 'remainingDays', width: 70, formatter: self.formatterDate },
-                { headerText: text("CPS001_129"), key: 'expirationStatus', width: 70, formatter: self.formatterExState }
+                { headerText: text("CPS001_120"), key: 'grantDays', width: 80, formatter: self.formatterDate },
+                { headerText: text("CPS001_121"), key: 'useDays', width: 80, formatter: self.formatterDate },
+                { headerText: text("CPS001_130"), key: 'overLimitDays', width: 80, formatter: self.formatterDate },
+                { headerText: text("CPS001_123"), key: 'remainingDays', width: 80, formatter: self.formatterDate },
+                { headerText: text("CPS001_129"), key: 'expirationStatus', width: 80, formatter: self.formatterExState }
             ]);
         }
 

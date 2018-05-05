@@ -414,7 +414,9 @@ module nts.uk.com.view.cps001.i.vm {
 
         formatDate(value) {
             if (value) {
-                return value + '日';
+                return value >= 0 ? "&nbsp;" + value + '日' :  value + '日';
+            }else{
+                 return "&nbsp;0日";
             }
         }
 
