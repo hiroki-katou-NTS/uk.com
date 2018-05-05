@@ -440,7 +440,7 @@ public class DivTimeSysFixedCheckService {
 			return true;
 		}
 		DivergenceReferenceTime sdTime = isAlarm ? standard.getAlarmTime().orElse(null) : standard.getErrorTime().orElse(null);
-		if(sdTime != null){
+		if(sdTime != null && sdTime.v() > 0){
 			boolean isError = divergenceTime >= sdTime.valueAsMinutes();
 			if(isError) {
 				// パラメータ「エラーの解除方法．乖離理由が選択された場合，エラーを解除する」をチェックする
