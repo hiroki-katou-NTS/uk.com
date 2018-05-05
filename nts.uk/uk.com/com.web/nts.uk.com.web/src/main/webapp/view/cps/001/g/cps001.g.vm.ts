@@ -62,10 +62,10 @@ module nts.uk.com.view.cps001.g.vm {
                     _self.createMode(false);
                     service.getDetail(value).done((result: IAnnualLeaveGrantRemainingData) => {
                         if (result) {
-                            let x : IAnnualLeaveGrantRemainingData = result;
-                            if(x.grantMinutes == null) x.grantMinutes =  0 ;
-                            if(x.usedMinutes == null)  x.usedMinutes = 0 ;
-                            if(x.remainingMinutes == null) x.remainingMinutes =  0 ;
+                            let x: IAnnualLeaveGrantRemainingData = result;
+                            if (x.grantMinutes == null) x.grantMinutes = 0;
+                            if (x.usedMinutes == null) x.usedMinutes = 0;
+                            if (x.remainingMinutes == null) x.remainingMinutes = 0;
                             _self.currentItem(new AnnualLeaveGrantRemainingData(x));
                             _self.loadItemDef();
                         }
@@ -392,6 +392,10 @@ module nts.uk.com.view.cps001.g.vm {
             // Subcribe grantDate
             self.grantDate.subscribe(value => {
                 if (value && __viewContext.viewModel.createMode()) {
+
+                    if (nts.uk.ui.errors.hasError()) {
+                        return;
+                    }
                     service.lostFocus(value).done((data: Date) => {
                         if (data) {
                             self.deadline(moment.utc(data, "YYYY/MM/DD"));
