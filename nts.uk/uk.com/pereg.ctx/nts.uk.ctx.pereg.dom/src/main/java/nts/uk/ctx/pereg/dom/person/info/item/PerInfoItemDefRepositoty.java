@@ -111,4 +111,8 @@ public interface PerInfoItemDefRepositoty {
 	List<PersonInfoItemDefinition> getItemDefByCtgCdAndComId(String perInfoCtgCd, String CompanyId);
 	
 	void updateItemDefNameAndAbolition(List<PersonInfoItemDefinition> lst, String companyId);
+	
+	List<PersonInfoItemDefinition> getItemLstByListId(List<String> listItemDefId, String contractCd);
+	
+	
 }
