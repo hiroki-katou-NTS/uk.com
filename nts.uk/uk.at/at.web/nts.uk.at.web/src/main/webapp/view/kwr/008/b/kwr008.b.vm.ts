@@ -8,51 +8,35 @@ module nts.uk.at.view.kwr008.b.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import model = nts.uk.at.view.kwr008.share.model;
-    //    import service = nts.uk.at.view.kwr008.b.servic    
+    
     export class ScreenModel {
-        //        systemTypes: KnockoutObservableArray<model.BoxModel> = ko.observableArray([]);
-        //        systemType: KnockoutObsermber>;
-
         //enum mode
         screenMode: KnockoutObservable<number> = ko.observable(model.SCREEN_MODE.NEW);
 
         //enum value output format
-        valueOutputFormat: KnockoutObservableArray<any>;
+        valueOutputFormat: KnockoutObservableArray<any> = ko.observableArray([]);
 
         //B5_1
-        excessTime: KnockoutObservable<boolean>;
+        excessTime: KnockoutObservable<boolean> = ko.observable(false);
 
         //B2_2
-        listStandardImportSetting: KnockoutObservableArray<model.OutputSettingCodeDto>;
-        selectedCode: KnockoutObservable<any>;
+        listStandardImportSetting: KnockoutObservableArray<model.OutputSettingCodeDto> = ko.observableArray([]);
+        selectedCode: KnockoutObservable<any> = ko.observable();
 
         //B3_2 B3_3
-        inputSettingCode: KnockoutObservable<string>;
-        inputProjectName: KnockoutObservable<string>;
+        inputSettingCode: KnockoutObservable<string> = ko.observable('');
+        inputProjectName: KnockoutObservable<string> = ko.observable('');
 
         //B5_3
-        itemRadio: KnockoutObservableArray<any>;
-        selectedItemRadio: KnockoutObservable<number>;
+        itemRadio: KnockoutObservableArray<any> = ko.observableArray([]);
+        selectedItemRadio: KnockoutObservable<number> = ko.observable(0);
 
         //B4
-        outputItem: KnockoutObservableArray<any>;
+        outputItem: KnockoutObservableArray<any> = ko.observableArray([]);
 
 
         constructor() {
             var self = this;
-            //init enum
-            this.valueOutputFormat = ko.observableArray([]);
-
-            //B2_2
-            self.listStandardImportSetting = ko.observableArray([]);
-            self.selectedCode = ko.observable();
-
-            //B5_1
-            self.excessTime = ko.observable(false);
-
-            //B3_2 B3_3
-            self.inputSettingCode = ko.observable('');
-            self.inputProjectName = ko.observable('');
 
             //B5_3
             self.itemRadio = ko.observableArray([
@@ -60,11 +44,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 new model.ItemModel(1, getText('KWR008_38')),
                 new model.ItemModel(2, getText('KWR008_39'))
             ]);
-            self.selectedItemRadio = ko.observable(-1);
-
-            //B4
-            self.outputItem = ko.observableArray([]);
-
+            
             //table fixed
             $('#fixed-table').ntsFixedTable({ height: 304, width: 900 });
         }
@@ -87,12 +67,6 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 self.checkListItemOutput();
             });
 
-            //fill data B3
-            self.outputItem([
-                new OutputItemData(1, true, 'a', 1, 'a'),
-                new OutputItemData(2, false, 'b', 0, 'b')
-            ]);
-
             service.getValueOutputFormat().then(data => {
                 for (let i = 0, count = data.length; i < count; i++) {
                     self.valueOutputFormat.push(new model.ItemModel(data[i].value, data[i].localizedName));
@@ -107,18 +81,18 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     virtualization: true,
                     virtualizationMode: 'continuous',
                     columns: [
-                        { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
+                        { headerText: 'ID', key: 'id', dataType: 'number', ntsControl: 'Label' },
                         { headerText: '', key: 'useClassification', dataType: 'boolean', width: '35px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
-                        { headerText: getText('KWR008_27'), key: 'headingName', dataType: 'string', width: '160px', ntsControl: 'TextEditor' },
+                        { headerText: getText('KWR008_28'), key: 'headingName', dataType: 'string', width: '160px', ntsControl: 'TextEditor' },
                         { headerText: '', key: 'open', dataType: 'string', width: '55px', unbound: true, ntsControl: 'Button' },
                         { headerText: getText('KWR008_30'), key: 'valueOutputFormat', dataType: 'string', width: '205px', ntsControl: 'Combobox' },
                         { headerText: getText('KWR008_29'), key: 'outputTargetItem', dataType: 'string', width: '260px' }
                     ],
-                    features: [],
+                    features: ['ColumnFixing'],
                     ntsControls: [
                         { name: 'Checkbox', options: { value: 1 }, optionsValue: 'value', controlType: 'CheckBox', enable: true },
                         { name: 'TextEditor', value: 'headingName', controlType: 'TextEditor', constraint: { valueType: 'String' } },
-                        { name: 'Button', text: getText('CMF001_34'), click: data => { self.openKDW007(data) }, controlType: 'Button' },
+                        { name: 'Button', text: getText('KWR008_34'), click: data => { self.openKDW007(data) }, controlType: 'Button' },
                         { name: 'Combobox', options: self.valueOutputFormat, optionsValue: 'code', optionsText: 'name', columns: [{ prop: 'name', length: 3 }], controlType: 'ComboBox', enable: true },
                     ]
                 });
@@ -127,6 +101,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             //event select change
             self.selectedCode.subscribe((data) => {
+                nts.uk.ui.errors.clearAll()
                 self.listStandardImportSetting.sort((a, b) => {
                     return (a.cd === b.cd) ? 0 : (a.cd < b.cd) ? -1 : 1;
                 });
@@ -160,7 +135,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         }
 
         //mode update
-        updateMode(data: number) {
+        updateMode(data: string) {
             var self = this;
 
             let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd == data; });
@@ -177,7 +152,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.excessTime(self.listStandardImportSetting()[selectedIndex].outNumExceedTime36Agr);
 
             //B5_2
-            self.selectedItemRadio(self.listStandardImportSetting()[selectedIndex].displayFormat);
+            self.selectedItemRadio(+self.listStandardImportSetting()[selectedIndex].displayFormat);
 
             $('#B3_2').attr('disabled', 'disabled');
 
@@ -186,6 +161,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.listStandardImportSetting.sort();
 
             self.selectedCode(data);
+            
         }
 
 
@@ -211,18 +187,32 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.excessTime(false);
 
             //B5_2
-            self.selectedItemRadio(-1);
+            self.selectedItemRadio(0);
+            
+            for (var i = 0; i < 10; i++) {
+                self.outputItem.push(new OutputItemData(i, true, '', i, ''));
+            }
         }
 
         //do register
         doRegister() {
             var self = this;
+            
             let data: model.OutputSettingCodeDto = new model.setOutputSettingCode(
-                +self.inputSettingCode(),
+                self.inputSettingCode(),
                 self.inputProjectName(),
                 (self.excessTime()) ? 1 : 0,
                 self.selectedItemRadio()
             );
+            
+//            service.checkOutputItemCode(self.inputSettingCode()).done(r=>{
+//                if(!!r){
+//                    alertError({ messageId: 'Msg_3' });
+//                }
+//            });
+            
+            if(nts.uk.ui.errors.hasError())
+                return;
 
             if (self.screenMode() == model.SCREEN_MODE.NEW) {
                 service.registerOutputItemSetting(data).done(() => {
@@ -265,10 +255,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
         //cancel register
         doCancel() {
-            var self = this;
-            self.screenMode(model.SCREEN_MODE.UPDATE);
-            self.selectedCode(self.listStandardImportSetting()[0].cd);
-            self.updateMode(self.listStandardImportSetting()[0].cd);
+            nts.uk.request.jump("/view/kwr/008/a/index.xhtml");
         }
 
 

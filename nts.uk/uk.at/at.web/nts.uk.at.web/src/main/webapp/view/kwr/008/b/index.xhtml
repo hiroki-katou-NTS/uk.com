@@ -21,10 +21,10 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button tabindex="1" data-bind="click: registerMode">#{i18n.getText('KWR008_18')}</button>
-				<button tabindex="2" data-bind="click: doRegister" class="proceed">#{i18n.getText('KWR008_19')}</button>
+				<button tabindex="1" data-bind="click: registerMode, enable: screenMode() == nts.uk.at.view.kwr008.share.model.SCREEN_MODE.UPDATE">#{i18n.getText('KWR008_18')}</button>
+				<button tabindex="2" data-bind="click: doRegister, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('KWR008_19')}</button>
 				<button tabindex="3" data-bind="click: doDelete, enable: screenMode() == nts.uk.at.view.kwr008.share.model.SCREEN_MODE.UPDATE" class="danger">#{i18n.getText('KWR008_20')}</button>
-				<button tabindex="4" data-bind="click: doCancel, enable: screenMode() == nts.uk.at.view.kwr008.share.model.SCREEN_MODE.NEW">#{i18n.getText('KWR008_21')}</button>
+				<button tabindex="4" data-bind="click: doCancel">#{i18n.getText('KWR008_21')}</button>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<div class="fixed-flex-layout-left"
@@ -51,21 +51,21 @@
 				<div class="fixed-flex-layout-right" style="padding-top: 20px;">
 					<div>
 						<!-- B3_1 -->
-						<div data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('KWR008_24')}</div> 
+						<div data-bind ="ntsFormLabel: { required: true }">#{i18n.getText('KWR008_24')}</div> 
 						
 						<!-- B3_2 -->
-						<input id="B3_2" tabindex="6" data-bind="ntsTextEditor: {name: '#[KWR008_25]', value : inputSettingCode, option : { width : '25px'}, constraint : 'OutItemsWoScCode'}" />
+						<input id="B3_2" tabindex="6" data-bind="ntsTextEditor: {name: '#[KWR008_25]', value : inputSettingCode, required: true, option : { width : '25px'}, constraint : 'OutItemsWoScCode'}" />
 						
 						<!-- B3_3 -->
-						<input id="B3_3" tabindex="7" data-bind="ntsTextEditor: {name: '#[KWR008_26]', value : inputProjectName, option : { width : '200px'}, constraint: 'OutItemsWoScName'}" />
+						<input id="B3_3" tabindex="7" data-bind="ntsTextEditor: {name: '#[KWR008_26]', value : inputProjectName, required: true, option : { width : '200px'}, constraint: 'OutItemsWoScName'}" />
 					</div>
 					
 					<!-- B4 -->
 					<div style="margin-top: 15px;">
 						
 						<!-- B4_1 -->
-						<div style="margin-bottom: 15px" data-bind ="ntsFormLabel: { required: false }" >#{i18n.getText('KWR008_27')}</div>
-						<table id="output-item"></table>
+						<div style="margin-bottom: 15px" data-bind ="ntsFormLabel: { required: true }" >#{i18n.getText('KWR008_27')}</div>
+						<table tabindex="8" id="output-item"></table>
 
 					</div>
 					<div style="margin-top: 15px;">
