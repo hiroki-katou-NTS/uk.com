@@ -85,7 +85,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                 if(data!=null){
                     self.excuteDisplay(data.optionalWidgetImport);
                     self.getDate(data.datePeriodDto);
-                    self.switchMonth(topPagePartCode);
+                    self.switchMonth();
                 }    
                 block.clear();
             });           
@@ -192,8 +192,9 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             var lastDay = new Date(y, m, 0);
             return new period(y+'/'+m+'/'+'01', y+'/'+m+'/'+lastDay.getDate());
         }
-        private switchMonth(code: string):void{
+        private switchMonth():void{
             var self = this;
+            var code = $(location).attr('search').split('=')[1];
             if(isNaN(self.currentMonth().strMonth)){
                 return;    
             }
