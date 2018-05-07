@@ -37,5 +37,8 @@ public class CommonReflectParameter {
 	private GeneralDate startDate;
 	
 	private GeneralDate endDate;
+	
+	private Integer startTime;
+	private Integer endTime;
 
 }

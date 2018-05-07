@@ -64,7 +64,7 @@ public class AbsenceLeaveReflectScheImpl implements AbsenceLeaveReflectSche{
 			//就業時間帯の必須チェック
 			SetupType checkNeededOfWorkTimeSetting = basicService.checkNeededOfWorkTimeSetting(param.getWorktypeCode());
 			//必須任意不要区分(output)が不要
-			if(checkNeededOfWorkTimeSetting == SetupType.REQUIRED) {
+			if(checkNeededOfWorkTimeSetting == SetupType.NOT_REQUIRED) {
 				//就時の反映
 				updateSche.updateScheWorkTimeType(param.getEmployeeId(), 
 						param.getDatePara(), 
@@ -114,6 +114,9 @@ public class AbsenceLeaveReflectScheImpl implements AbsenceLeaveReflectSche{
 			Optional<BasicSchedule> optBasicSche = basicScheRepo.find(employeeId, baseDate);
 			//ドメインモデル「勤務予定基本情報」．就業時間帯をチェックする
 			if(optBasicSche.isPresent()) {
+				BasicSchedule basicSche = optBasicSche.get();
+				dataOutput.setReflect(true);
+				dataOutput.setWorkTimeCode(basicSche.getWorkTimeCode());
 				return dataOutput;
 			}
 			//ドメインモデル「個人労働条件」を取得する

@@ -677,5 +677,27 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		this.updateEditStateOfDailyPerformance(employeeId, dateData, lstNightItem);
 		return dailyData;
 	}
+	@Override
+	public void updateRecordWorkTime(String employeeId, GeneralDate dateData, String workTimeCode, boolean scheUpdate) {
+		//日別実績の勤務情報
+		Optional<WorkInfoOfDailyPerformance> optDailyPerfor = workRepository.find(employeeId, dateData);
+		if(!optDailyPerfor.isPresent()) {
+			return;
+		}
+		WorkInfoOfDailyPerformance dailyPerfor = optDailyPerfor.get();
+		List<Integer> lstItem = new ArrayList<>();
+		if(scheUpdate) {
+			lstItem.add(2);
+			dailyPerfor.setScheduleInfo(new WorkInformation(workTimeCode, dailyPerfor.getScheduleInfo().getWorkTypeCode() == null ? null : dailyPerfor.getScheduleInfo().getWorkTypeCode().v()));
+			workRepository.updateByKeyFlush(dailyPerfor);
+		} else {
+			lstItem.add(29);
+			dailyPerfor.setRecordInfo(new WorkInformation(workTimeCode, dailyPerfor.getRecordInfo().getWorkTypeCode() == null ? null : dailyPerfor.getScheduleInfo().getWorkTypeCode().v()));
+			workRepository.updateByKeyFlush(dailyPerfor);
+		}
+		//日別実績の編集状態
+		this.updateEditStateOfDailyPerformance(employeeId, dateData, lstItem);
+		
+	}
 
 }

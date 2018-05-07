@@ -78,5 +78,13 @@ public interface WorkUpdateService {
 	 * @param isPre
 	 */
 	public IntegrationOfDaily updateWorkTimeFrame(String employeeId, GeneralDate dateData, Map<Integer, Integer> worktimeFrame, boolean isPre, IntegrationOfDaily dailyData);
+	/**
+	 * 就時の反映
+	 * @param employeeId
+	 * @param dateData
+	 * @param workTimeCode
+	 * @param scheUpdate true: 予定就時の反映
+	 */
+	public void updateRecordWorkTime(String employeeId, GeneralDate dateData, String workTimeCode, boolean scheUpdate);
 
 }

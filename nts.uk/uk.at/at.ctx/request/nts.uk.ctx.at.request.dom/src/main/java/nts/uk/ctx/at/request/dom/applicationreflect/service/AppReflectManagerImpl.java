@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -192,10 +193,11 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				ScheAndRecordSameChangeFlg.ALWAY, 
 				true, 
 				workChange.getWorkTypeCd(), 
-				workChange.getWorkTimeCd(), appInfor.getReflectionInformation().getStateReflectionReal(), 
-				appInfor.getReflectionInformation().getNotReasonReal().isPresent() ? appInfor.getReflectionInformation().getNotReasonReal().get() : null,
+				workChange.getWorkTimeCd(), 
 				appInfor.getStartDate().get(),
-				appInfor.getEndDate().get());
+				appInfor.getEndDate().get(),
+				null,
+				null);
 		
 		 
 		return workchangeInfor;		
@@ -233,10 +235,9 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				true, 
 				absenceAppData.getWorkTypeCode().v(), 
 				"",
-				appInfor.getReflectionInformation().getStateReflectionReal(), 
-				appInfor.getReflectionInformation().getNotReasonReal().isPresent() ? appInfor.getReflectionInformation().getNotReasonReal().get() : null,
 				appInfor.getStartDate().isPresent() ? appInfor.getStartDate().get() : null,
-				appInfor.getEndDate().isPresent() ? appInfor.getEndDate().get() : null);
+				appInfor.getEndDate().isPresent() ? appInfor.getEndDate().get() : null,
+						null, null);
 		return absenceInfor;
 	}
 	
@@ -289,7 +290,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 						appOvertimeInfor.getWorkClockTo2(),
 						mapOvertimeFrame, 
 						appOvertimeInfor.getOverTimeShiftNight(),
-						appOvertimeInfor.getFlexExessTime()); 
+						appOvertimeInfor.getFlexExessTime(),
+						appOvertimeInfor.getOverTimeAtr()); 
 		overTimeTmp = new OvertimeReflectPara(appInfor.getEmployeeID(), 
 				appInfor.getAppDate(), 
 				true,

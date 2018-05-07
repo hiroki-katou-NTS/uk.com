@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.GobackAppPubParam
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.GobackReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.PriorStampPubAtr;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.ScheTimeReflectPubAtr;
+import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.OverTimeRecordPubAtr;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.OvertimeAppPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.PreOvertimePubParameter;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.CommonReflectPara;
@@ -81,7 +82,8 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				para.getOvertimePara().getEndTime2(),
 				para.getOvertimePara().getMapOvertimeFrame(),
 				para.getOvertimePara().getOverTimeShiftNight(),
-				para.getOvertimePara().getFlexExessTime());
+				para.getOvertimePara().getFlexExessTime(),
+				EnumAdaptor.valueOf(para.getOvertimePara().getOverTimeAtr().value, OverTimeRecordPubAtr.class));
 		PreOvertimePubParameter preOvertimePara = new PreOvertimePubParameter(para.getEmployeeId(), 
 				para.getDateInfo(), 
 				para.isActualReflectFlg(), 
@@ -135,10 +137,10 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				para.isScheTimeReflectAtr(),
 				para.getWorkTypeCode(), 
 				para.getWorkTimeCode(),
-				EnumAdaptor.valueOf(para.getReflectState().value, ReflectedStatePubRecord.class), 
-				para.getReasoNotReflect() == null ? null : EnumAdaptor.valueOf(para.getReasoNotReflect().value, ReasonNotReflectPubRecord.class),
 				para.getStartDate(),
-				para.getEndDate());
+				para.getEndDate(),
+				para.getStartTime(),
+				para.getEndTime());
 		return pubPara;
 	}
 	

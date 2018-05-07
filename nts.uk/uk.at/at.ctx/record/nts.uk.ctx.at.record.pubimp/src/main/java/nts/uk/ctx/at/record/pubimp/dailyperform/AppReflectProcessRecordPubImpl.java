@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidaywor
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.HolidayWorktimePara;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.PreHolidayWorktimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.AfterOvertimeReflectService;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OverTimeRecordAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OvertimeAppParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OvertimeParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
@@ -100,7 +101,8 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 				param.getOvertimePara().getEndTime2(),
 				param.getOvertimePara().getMapOvertimeFrame(),
 				param.getOvertimePara().getOverTimeShiftNight(),
-				param.getOvertimePara().getFlexExessTime());
+				param.getOvertimePara().getFlexExessTime(),
+				EnumAdaptor.valueOf(param.getOvertimePara().getOverTimeAtr().value, OverTimeRecordAtr.class));
 		OvertimeParameter overtimePara = new OvertimeParameter(param.getEmployeeId(), 
 				param.getDateInfo(), 
 				param.isActualReflectFlg(), 
@@ -148,7 +150,9 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 			 	param.getWorkTypeCode(),
 			 	param.getWorkTimeCode(),			 	
 			 	param.getStartDate(),
-			 	param.getEndDate());
+			 	param.getEndDate(),
+			 	param.getStartTime(),
+			 	param.getEndTime());
 		return workchangePara;
 	}
 

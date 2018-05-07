@@ -111,7 +111,11 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 	@Override
 	public void reflectStartEndtime(OvertimeParameter para, WorkTimeTypeOutput timeTypeData) {
 		//反映する開始終了時刻を求める
-		ScheStartEndTimeReflectOutput findStartEndTimeReflect = scheStartEndTimeReflect.findStartEndTime(para, timeTypeData);
+		StartEndTimeRelectCheck startEndTimeCheck = new StartEndTimeRelectCheck(para.getEmployeeId(), para.getDateInfo(), para.getOvertimePara().getStartTime1(), 
+				para.getOvertimePara().getEndTime1(), para.getOvertimePara().getStartTime2(), 
+				para.getOvertimePara().getEndTime2(), 
+				para.getOvertimePara().getWorkTimeCode(), para.getOvertimePara().getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr());
+		ScheStartEndTimeReflectOutput findStartEndTimeReflect = scheStartEndTimeReflect.findStartEndTime(startEndTimeCheck, timeTypeData);
 		//ジャスト遅刻早退により時刻を編集する
 		StartEndTimeOutput startEndTimeData = startEndTimeOffReflect.justLateEarly(timeTypeData.getWorktimeCode(), findStartEndTimeReflect);
 		//申請する開始終了時刻に値があるかチェックする
@@ -138,9 +142,11 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 			//１回勤務反映区分(output)をチェックする
 			if(findStartEndTimeReflect.isCountReflect1Atr()) {				
 				//開始時刻を反映できるかチェックする
-				boolean isStart = scheStartEndTimeReflect.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 1, timeTypeData.getWorkTypeCode(), true);
+				boolean isStart = scheStartEndTimeReflect.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 1, 
+						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(), true);
 				//終了時刻を反映できるかチェックする
-				boolean isEnd = scheStartEndTimeReflect.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 1, timeTypeData.getWorkTypeCode(), false);
+				boolean isEnd = scheStartEndTimeReflect.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 1,
+						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(),false);
 				TimeReflectPara timePara1 = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), startEndTimeData.getStart1(), startEndTimeData.getEnd1(), 1, isStart, isEnd);
 				scheWorkUpdate.updateRecordStartEndTimeReflect(timePara1);
 				
@@ -148,9 +154,11 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 			//２回勤務反映区分(output)をチェックする
 			if(findStartEndTimeReflect.isCountReflect2Atr()) {				
 				//開始時刻2を反映できるかチェックする
-				boolean isStart = scheStartEndTimeReflect.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 2, timeTypeData.getWorkTypeCode(), true);
+				boolean isStart = scheStartEndTimeReflect.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 2,
+						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(), true);
 				//終了時刻を反映できるかチェックする
-				boolean isEnd = scheStartEndTimeReflect.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 2, timeTypeData.getWorkTypeCode(), false);
+				boolean isEnd = scheStartEndTimeReflect.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 2, 
+						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(), false);
 				TimeReflectPara timePara2 = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), startEndTimeData.getStart2(), startEndTimeData.getEnd2(), 2, isStart, isEnd);
 				scheWorkUpdate.updateRecordStartEndTimeReflect(timePara2);
 			}
