@@ -8,8 +8,10 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
 
 @Getter
+//ユーザー情報の使用方法
 public class UserInfoUseMethod extends AggregateRoot {
 
 	/** The company id. */

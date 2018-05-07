@@ -1,8 +1,8 @@
-package nts.uk.ctx.sys.env.infra.repository.mailnoticeset;
+package nts.uk.ctx.sys.env.infra.repository.mailnoticeset.employee;
 
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSettingGetMemento;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.SevstUseContactSet;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevstUseContactSet;
 
 public class JpaUseContactSettingGetMemento implements UseContactSettingGetMemento {
 

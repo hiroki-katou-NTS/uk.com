@@ -2,12 +2,12 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.env.infra.repository.mailnoticeset;
+package nts.uk.ctx.sys.env.infra.repository.mailnoticeset.employee;
 
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSettingSetMemento;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.SevstUseContactSet;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.SevstUseContactSetPK;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevstUseContactSet;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevstUseContactSetPK;
 
 /**
  * The Class JpaUseContactSettingSetMemento.

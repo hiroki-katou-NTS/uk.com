@@ -6,11 +6,14 @@ package nts.uk.ctx.sys.env.dom.mailnoticeset.company;
 
 import java.util.List;
 
+import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
+
 /**
  * The Class MailDestinationFunction.
  */
 // メール送信先機能
-public class MailDestinationFunction {
+public class MailDestinationFunction extends AggregateRoot{
 
 	/** The company id. */
 	// 会社ID
