@@ -45,7 +45,7 @@ public class KrcmtCompareSingleVal extends UkJpaEntity implements Serializable {
 		return errorAlarmCheckID;
 	}
 
-	public KrcmtCompareSingleVal(String errorAlarmCheckID, int compareOperator, int daysValue, int timeValue) {
+	public KrcmtCompareSingleVal(String errorAlarmCheckID, int compareOperator, int daysValue, Integer timeValue) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
 		this.compareOperator = compareOperator;

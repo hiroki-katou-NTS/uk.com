@@ -56,7 +56,7 @@ public class KrcmtCompareRange extends UkJpaEntity implements Serializable {
 		return errorAlarmCheckID;
 	}
 
-	public KrcmtCompareRange(String errorAlarmCheckID, int compareOperator, int startValueDay, int startValueTime, int endValueDay, int endValueTime) {
+	public KrcmtCompareRange(String errorAlarmCheckID, int compareOperator, int startValueDay, Integer startValueTime, int endValueDay, Integer endValueTime) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
 		this.compareOperator = compareOperator;
