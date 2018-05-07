@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.assist.dom.storage;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * データ保存の対象社員
@@ -24,5 +24,5 @@ public interface TargetEmployeesRepository {
 	 */
 	void addAll(List<TargetEmployees> employees);
 
-	List<TargetEmployees> getTargetEmployeesListById(String storeProcessingId);
+	List<TargetEmployeesDto> getTargetEmployeesListById(String storeProcessingId);
 }
