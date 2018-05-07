@@ -14,7 +14,7 @@ module nts.uk.at.view.kaf011.shr.service {
         holidayShipmentCancel: "at/request/application/holidayshipment/cancel",
         changeAbsDate: "at/request/application/holidayshipment/change_abs_date",
         changeAbsDateToHoliday: "at/request/application/holidayshipment/change_abs_date_to_holiday",
-        getSelectedWorkingHours: "at/request/application/holidayshipment/get_selected_working_hours", 
+        getSelectedWorkingHours: "at/request/application/holidayshipment/get_selected_working_hours",
     }
 
     export function start(startParam: any) {
@@ -50,15 +50,15 @@ module nts.uk.at.view.kaf011.shr.service {
     export function changeAbsDate(saveCmd: common.ISaveHolidayShipmentCommand) {
         return ajax(paths.changeAbsDate, saveCmd);
     }
-    
-    export function     changeAbsDateToHoliday(saveCmd: common.ISaveHolidayShipmentCommand) {
+
+    export function changeAbsDateToHoliday(saveCmd: common.ISaveHolidayShipmentCommand) {
         return ajax(paths.changeAbsDateToHoliday, saveCmd);
     }
     export function getSelectedWorkingHours(changeWkTypeParam) {
-            return ajax(paths.getSelectedWorkingHours, changeWkTypeParam);
-        }
+        return ajax(paths.getSelectedWorkingHours, changeWkTypeParam);
+    }
 
-        
+
 
 
 
