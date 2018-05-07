@@ -85,7 +85,6 @@ __viewContext.ready(function() {
 		nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
 		break;
 	case 4:
-        
         nts.uk.request.jump("at", "/view/cmm/045/a/index.xhtml", 
             { 'PARAM_SPR_CMM045':
                 {
@@ -99,6 +98,44 @@ __viewContext.ready(function() {
         );
 		break;
 	case 5:
+        var initParam = { 
+            //画面モード
+            screenMode: 1,
+            //社員一覧
+            lstEmployee: [employeeID],
+            //エラー参照を起動する
+            errorRefStartAtr: true,
+            //期間を変更する
+            changePeriodAtr: true,
+            //処理締め
+            targetClosue: null,
+            //Optional
+            //打刻初期値
+            initClock: {
+                dateSpr: date,
+                canEdit: stampProtection == 0 ? false : true,
+                employeeId: employeeID, 
+                liveTime: endtime,  //退勤打刻
+                goOut: starttime,  //出勤打刻
+            },
+            //遷移先の画面
+            transitionDesScreen: null,
+        }
+
+        var extractionParam = {
+            //表示形式
+            displayFormat: 0, // DPCorrectionDisplayFormat.INDIVIDUAl(個人別)
+            //期間
+            startDate: date,
+            endDate: date,
+            //抽出した社員一覧
+            lstExtractedEmployee: employeeID,
+            //Optional
+            //日付別で起動
+            dateTarget: date,
+            individualTarget: employeeID,
+        }
+        nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
 		break;
 	case 6:
         let paramSave = {
