@@ -1,4 +1,4 @@
-module nts.uk.at.view.cmf003.d {
+module nts.uk.com.view.cmf003.b {
 
     import ScheduleBatchCorrectSettingSave = service.model.ScheduleBatchCorrectSettingSave;
     import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
@@ -409,7 +409,7 @@ module nts.uk.at.view.cmf003.d {
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                         self.selectedEmployee(data.listEmployee);
                         self.applyKCP005ContentSearch(data.listEmployee);
-                        self.referenceDate = moment(data.baseDate).format("YYYY/MM/DD");
+                        self.referenceDate = moment.utc(data.baseDate).format("YYYY/MM/DD");
                     }
                 }
                 //$('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
@@ -569,8 +569,8 @@ module nts.uk.at.view.cmf003.d {
 
             private selectCategory(): void {
                 let self = this;
-                setShared("CMF003_B_CATEGORIES",self.systemtypeFromC);
-                setShared("CMF003_B_SYSTEMTYPE",self.categorys());
+                setShared("CMF003_B_CATEGORIES", self.categorys());
+                setShared("CMF003_B_SYSTEMTYPE", self.systemtypeFromC);
                 nts.uk.ui.windows.sub.modal('../c/index.xhtml').onClosed(() => {
                     let categoryFromC = getShared('CMF003_C_CATEGORIES');
                     let systemtypeFromC = getShared('CMF003_C_SYSTEMTYPE');
@@ -594,9 +594,68 @@ module nts.uk.at.view.cmf003.d {
             }
 
             private gotoscreenF(): void {
-                nts.uk.ui.windows.sub.modal('../f/index.xhtml');
+                let self = this;
+                self.saveManualSetting();
+            }
+            
+            private saveManualSetting(): void {
+                let self = this;
+                let manualSetting = new ManualSettingModal(self.systemtypeFromC.code, Number(self.isCompressPass()), self.dataSaveSetName(), 
+                        moment.utc(self.referenceDate, 'YYYY/MM/DD'), self.password(), moment.utc().toISOString(), moment.utc(self.dayValue().endDate, 'YYYY/MM/DD'), 
+                        moment.utc(self.dayValue().startDate, 'YYYY/MM/DD'), moment.utc(self.monthValue().endDate, 'YYYY/MM/DD'), 
+                        moment.utc(self.monthValue().startDate, 'YYYY/MM/DD'), self.explanation(), Number(self.yearValue().endDate), Number(self.yearValue().startDate),
+                        1, Number(self.isSymbol()), self.employeeList, self.categorys() );
+
+                service.addMalSet(manualSetting).done(() => {
+                    
+                }).fail(res => {
+                    
+                });
             }
         }//end screemodule
+        
+        export class ManualSettingModal {
+            systemType: number;
+            passwordAvailability: number;
+            saveSetName: string;
+            referenceDate: string;
+            compressedPassword: string;
+            executionDateAndTime: string;
+            daySaveEndDate: string;
+            daySaveStartDate: string;
+            monthSaveEndDate: string;
+            monthSaveStartDate: string;
+            suppleExplanation: string;
+            endYear: number;
+            startYear: number;
+            presenceOfEmployee: number;
+            identOfSurveyPre: number;
+            employees: Array<EmployeeModel>;
+            category: Array<CategoryModel>;
+            
+            constructor(systemType: number, passwordAvailability: number, saveSetName: string, referenceDate: string, compressedPassword: string, 
+                    executionDateAndTime: string, daySaveEndDate: string, daySaveStartDate: string, monthSaveEndDate: string, monthSaveStartDate: string, 
+                    suppleExplanation: string, endYear: number, startYear: number, presenceOfEmployee: number, identOfSurveyPre: number,
+                    employees: Array<EmployeeModel>, category: Array<CategoryModel>) {
+                this.systemType = systemType;
+                this.passwordAvailability = passwordAvailability;
+                this.saveSetName = saveSetName;
+                this.referenceDate = referenceDate;
+                this.compressedPassword = compressedPassword;
+                this.executionDateAndTime = executionDateAndTime;
+                this.daySaveEndDate = daySaveEndDate;
+                this.daySaveStartDate = daySaveStartDate;
+                this.monthSaveEndDate = monthSaveEndDate;
+                this.monthSaveStartDate = monthSaveStartDate;
+                this.suppleExplanation = suppleExplanation;
+                this.endYear = endYear;
+                this.startYear = startYear;
+                this.presenceOfEmployee = presenceOfEmployee;
+                this.identOfSurveyPre = identOfSurveyPre;
+                this.employees = employees;
+                this.category = category;
+            }
+        }
 
         export class CategoryModel {
             schelperSystem: number;
@@ -612,8 +671,8 @@ module nts.uk.at.view.cmf003.d {
             storageRangeSaved: number;
 
             constructor(schelperSystem: number, categoryId: string, categoryName: string, possibilitySystem: number,
-                storedProcedureSpecified: number, timeStore: number, otherCompanyCls: number, attendanceSystem: number,
-                recoveryStorageRange: number, paymentAvailability: number, storageRangeSaved: number) {
+                    storedProcedureSpecified: number, timeStore: number, otherCompanyCls: number, attendanceSystem: number,
+                    recoveryStorageRange: number, paymentAvailability: number, storageRangeSaved: number) {
                 this.schelperSystem = schelperSystem;
                 this.categoryId = categoryId;
                 this.categoryName = categoryName;
@@ -638,7 +697,7 @@ module nts.uk.at.view.cmf003.d {
             }
         }
 
-        export class EmployeesModel {
+        export class EmployeeModel {
 
         }
 
