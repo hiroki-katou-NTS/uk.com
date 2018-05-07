@@ -114,7 +114,7 @@ public interface DailyPerformanceScreenRepo {
 	List<FormatDPCorrectionDto> getListFormatDPCorrection(List<String> lstBusinessType);
 
 	/** Get Daily performance business type type control */
-	List<DPBusinessTypeControl> getListBusinessTypeControl(List<String> lstBusinessType, List<Integer> lstAttendanceItem);
+	List<DPBusinessTypeControl> getListBusinessTypeControl(String companyId, String authorityDailyID, List<Integer> lstAttendanceItem, boolean use);
 
 	/** Get list attendance item */
 	List<DPAttendanceItem> getListAttendanceItem(List<Integer> lstAttendanceItem);

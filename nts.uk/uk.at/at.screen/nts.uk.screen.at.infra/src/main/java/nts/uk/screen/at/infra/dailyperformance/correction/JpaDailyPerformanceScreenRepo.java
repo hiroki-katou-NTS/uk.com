@@ -23,8 +23,7 @@ import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthority
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityDailyItemPK;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityFormSheet;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtDailyPerformanceDisplay;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.old.SettingUnit;
-import nts.uk.ctx.at.record.infra.entity.approvalmanagement.KrcstAppProUseSet;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessFormatSheet;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDaily;
 import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceReason;
@@ -39,8 +38,9 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtSyainDpErLis
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecord;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstErAlApplication;
 import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.KrcdtIdentificationStatus;
-import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.KrcmtIdentityProceSet;
 import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.KrcmtIdentityProceSetPK;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtApprovalProcess;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtIdentityProcess;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.old.KrcmtDaiPerformanceAut;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.old.KrcmtWorktypeChangeable;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.old.KrcstDailyRecOpe;
@@ -296,9 +296,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT c FROM KshstDailyServiceTypeControl c ");
-		builderString.append("WHERE c.kshstDailyServiceTypeControlPK.businessTypeCode IN :lstBusinessType ");
-		builderString.append("AND c.kshstDailyServiceTypeControlPK.attendanceItemId IN :lstItem ");
-		builderString.append("AND c.use = 1");
+		builderString.append("WHERE c.kshstDailyServiceTypeControlPK.authorityDailyID = :authorityDailyID ");
+		builderString.append("AND c.kshstDailyServiceTypeControlPK.itemDailyID IN :lstItem ");
+		builderString.append("AND c.toUse = 1");
 		SEL_DP_TYPE_CONTROL = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -642,17 +642,14 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public List<DPBusinessTypeControl> getListBusinessTypeControl(List<String> lstBusinessType,
-			List<Integer> lstAttendanceItem) {
-//		return this.queryProxy().query(SEL_DP_TYPE_CONTROL, KshstDailyServiceTypeControl.class)
-//				.setParameter("lstBusinessType", lstBusinessType).setParameter("lstItem", lstAttendanceItem).getList()
-//				.stream().map(c -> {
-//					return new DPBusinessTypeControl(c.kshstDailyServiceTypeControlPK.businessTypeCode,
-//							c.kshstDailyServiceTypeControlPK.attendanceItemId.intValue(),
-//							c.use.intValue() == 1 ? true : false, c.canBeChangedByOthers.intValue() == 1 ? true : false,
-//							c.youCanChangeIt.intValue() == 1 ? true : false);
-//				}).collect(Collectors.toList());
-		 return null;
+	public List<DPBusinessTypeControl> getListBusinessTypeControl(String companyId, String authorityDailyID, List<Integer> lstAttendanceItem, boolean use) {
+		return this.queryProxy().query(SEL_DP_TYPE_CONTROL, KshstDailyServiceTypeControl.class)
+				.setParameter("lstBusinessType", authorityDailyID).setParameter("lstItem", lstAttendanceItem).getList()
+				.stream().map(c -> {
+					return new DPBusinessTypeControl(c.kshstDailyServiceTypeControlPK.itemDailyID,
+							c.toUse == 1 , c.canBeChangedByOthers == 1,
+							c.youCanChangeIt == 1);
+				}).collect(Collectors.toList());
 	}
 
 	@Override
@@ -669,15 +666,14 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<DPAttendanceItemControl> getListAttendanceItemControl(List<Integer> lstAttendanceItem) {
-//		return this.queryProxy().query(SEL_ATTENDANCE_ITEM_CONTROL, KshstControlOfAttendanceItems.class)
-//				.setParameter("lstItem", lstAttendanceItem).getList().stream().map(c -> {
-//					return new DPAttendanceItemControl(c.kshstControlOfAttendanceItemsPK.attandanceTimeId.intValue(),
-//							c.inputUnitOfTimeItem != null ? c.inputUnitOfTimeItem.intValue() : null,
-//							c.headerBackgroundColorOfDailyPerformance != null
-//									? c.headerBackgroundColorOfDailyPerformance : "",
-//							c.nameLineFeedPosition.intValue());
-//				}).collect(Collectors.toList());
-		return null;
+		return this.queryProxy().query(SEL_ATTENDANCE_ITEM_CONTROL, KshstControlOfAttendanceItems.class)
+				.setParameter("lstItem", lstAttendanceItem).getList().stream().map(c -> {
+					return new DPAttendanceItemControl(c.kshstControlOfAttendanceItemsPK.itemDailyID,
+							c.inputUnitOfTimeItem != null ? c.inputUnitOfTimeItem.intValue() : null,
+							c.headerBgColorOfDailyPer != null
+									? c.headerBgColorOfDailyPer : "",
+							null);
+				}).collect(Collectors.toList());
 	}
 
 	@Override
@@ -841,7 +837,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				KrcstDailyRecOpe.class);
 		if (krcstDailyRecOpeOpt.isPresent()) {
 			return new OperationOfDailyPerformanceDto(companyId,
-					EnumAdaptor.valueOf(krcstDailyRecOpeOpt.get().settingUnit, SettingUnit.class),
+					EnumAdaptor.valueOf(krcstDailyRecOpeOpt.get().settingUnit, SettingUnitType.class),
 					krcstDailyRecOpeOpt.get().comment);
 		} else
 			return null;
@@ -1055,10 +1051,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public Optional<IdentityProcessUseSetDto> findIdentityProcessUseSet(String comapnyId) {
-		return this.queryProxy().find(new KrcmtIdentityProceSetPK(comapnyId), KrcmtIdentityProceSet.class)
-				.map(x -> new IdentityProcessUseSetDto(x.useConfirmByYourself == 1 ? true : false,
-						x.useIdentityOfMonth == 1 ? true : false,
-						x.yourSelfConfirmError != null ? x.yourSelfConfirmError : null));
+		return this.queryProxy().find(new KrcmtIdentityProceSetPK(comapnyId), KrcmtIdentityProcess.class)
+				.map(x -> new IdentityProcessUseSetDto(x.useDailySelfCk == 1 ? true : false,
+						x.useMonthSelfCK == 1 ? true : false,
+						x.yourselfConfirmError != null ? x.yourselfConfirmError : null));
 	}
 
 	@Override
@@ -1077,10 +1073,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public Optional<ApprovalUseSettingDto> findApprovalUseSettingDto(String comapnyId) {
-		return this.queryProxy().find(comapnyId, KrcstAppProUseSet.class)
-				.map(x -> new ApprovalUseSettingDto(x.dayApproverComfirmAtr.intValue() == 1 ? true : false,
-						x.monthApproverComfirmAtr.intValue() == 1 ? true : false,
-						x.comfirmErrorAtr != null ? x.comfirmErrorAtr.intValue() : null));
+		return this.queryProxy().find(comapnyId, KrcmtApprovalProcess.class)
+				.map(x -> new ApprovalUseSettingDto(x.useDailyBossChk == 1 ? true : false,
+						x.useMonthBossChk == 1 ? true : false,
+						x.supervisorConfirmError != null ? x.supervisorConfirmError : null));
 	}
 
 }
