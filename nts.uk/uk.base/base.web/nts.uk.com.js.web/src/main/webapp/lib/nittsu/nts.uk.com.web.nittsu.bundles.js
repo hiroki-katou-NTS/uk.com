@@ -5754,7 +5754,7 @@ var nts;
                                     }
                                 }
                                 setTimeout(function () {
-                                    var dialogM = dialogInfo.$dialog.closest("div[role='dialog']");
+                                    var dialogM = dialogInfo.isRoot ? $("body") : dialogInfo.$dialog.closest("div[role='dialog']");
                                     var topDiff = (dialogM.innerHeight() - dialog.innerHeight()) / 2;
                                     var leftDiff = (dialogM.innerWidth() - dialog.innerWidth()) / 2;
                                     if (topDiff > 0) {
@@ -21253,7 +21253,7 @@ var nts;
                                                 var selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
                                                 $scrollContainer_1.scrollTop(selectRowOffset - firstRowOffset);
                                             }
-                                            else {
+                                            else if (selected && oldSelected) {
                                                 var index = $(selected["element"]).attr("data-row-idx");
                                                 $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
                                             }
