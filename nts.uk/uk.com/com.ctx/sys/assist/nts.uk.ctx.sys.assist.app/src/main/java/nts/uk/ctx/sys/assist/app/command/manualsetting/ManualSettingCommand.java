@@ -44,7 +44,6 @@ public class ManualSettingCommand {
 	private String practitioner;
 	List<TargetEmployees> employees;
 	List<TargetCategory> category;
-	private int selectionTarget;
 
 	public ManualSetOfDataSave toDomain(String storeProcessingId) {
 		return new ManualSetOfDataSave(cid, storeProcessingId, systemType, passwordAvailability, saveSetName,

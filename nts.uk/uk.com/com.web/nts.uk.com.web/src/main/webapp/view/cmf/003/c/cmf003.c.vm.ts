@@ -21,8 +21,15 @@ module nts.uk.com.view.cmf003.c {
            isEditable: KnockoutObservable<boolean>;
            headerCodeCategories: string = getText("CMF003_65");
            headerNameCategories: string = getText("CMF003_66");
+            
+           systemtypeFromB: KnockoutObservable<ItemSystemType>;
+           categoriesFromB: KnockoutObservable<any>;
            constructor() {
+               
                var self = this;
+               let categoriesFB = getShared('CMF003_B_CATEGORIES');
+               let systemtypeFB = getShared('CMF003_B_SYSTEMTYPE');
+               self.currentCateSelected = ko.observableArray([]);
                var systemIdSelected;
                    self.systemTypes = ko.observableArray([]);
                    service.getSysTypes().done(function(data: Array<any>) {
@@ -42,12 +49,22 @@ module nts.uk.com.view.cmf003.c {
                     }).always(() => {
                         
                     });
-                    
-                    
+                   
+                   if(systemtypeFB != undefined) {
+                    systemIdSelected = systemtypeFB.code;
+                   }
                    self.selectedCode = ko.observable(systemIdSelected);
                    
                    if (systemIdSelected != undefined ) {
                        service.getConditionList(self.selectedCode()).done(function(data: Array<any>) {
+                           if(systemtypeFB != undefined) {
+                                _.forOwn(categoriesFB, function(index) {
+                                     _.remove(data, function (e) {
+                                            return e.categoryId == index.categoryId;
+                                        });
+                                });
+                               self.currentCateSelected(categoriesFB);
+                           }
                            self.categoriesDefault(data);
                        }).fail(function(error) {
                             alertError(error);
@@ -81,8 +98,9 @@ module nts.uk.com.view.cmf003.c {
                        { headerText: self.headerNameCategories, key: 'categoryName', width: 250 }
                    ]);
         
-                   self.currentCateSelected = ko.observableArray([]);
+                   
                    self.categoriesSelected = self.currentCateSelected;
+                   
            }
        
            remove() {
