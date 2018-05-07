@@ -23,11 +23,18 @@ import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyTimeMonth;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
+import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveAttdRateDays;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveMngMode;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
@@ -43,6 +50,9 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 	/** 月別集計が必要とするリポジトリ */
 	@Inject
 	private RepositoriesRequiredByMonthlyAggr repositories;
+	/** 期間中の年休積休残数を取得 */
+	@Inject
+	private GetAnnAndRsvRemNumWithinPeriod getAnnAndRsvRemNumWithinPeriod;
 	
 	/** 集計結果 */
 	private AggregateMonthlyRecordValue aggregateResult;
@@ -64,20 +74,15 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 	private List<WorkingConditionItem> workingConditionItems;
 	/** 労働条件 */
 	private Map<String, DatePeriod> workingConditions;
+	/** 前回集計結果　（年休積立年休の集計結果） */
+	private AggrResultOfAnnAndRsvLeave prevAggrResult;
 	
-	/**
-	 * 集計処理　（アルゴリズム）
-	 * @param companyId 会社ID
-	 * @param employeeId 社員ID
-	 * @param yearMonth 年月
-	 * @param closureId 締めID
-	 * @param closureDate 締め日付
-	 * @param datePeriod 期間
-	 * @return 集計結果
-	 */
+	/** 集計処理　（アルゴリズム） */
 	@Override
-	public AggregateMonthlyRecordValue aggregate(String companyId, String employeeId, YearMonth yearMonth,
-			ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod) {
+	public AggregateMonthlyRecordValue aggregate(
+			String companyId, String employeeId, YearMonth yearMonth,
+			ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod,
+			AggrResultOfAnnAndRsvLeave prevAggrResult) {
 		
 		this.aggregateResult = new AggregateMonthlyRecordValue();
 		this.errorInfos = new HashMap<>();
@@ -87,6 +92,7 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		this.yearMonth = yearMonth;
 		this.closureId = closureId;
 		this.closureDate = closureDate;
+		this.prevAggrResult = prevAggrResult;
 		
 		// 社員を取得する
 		EmployeeImport employee = null;
@@ -179,6 +185,7 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		}
 		
 		// 残数処理
+		this.remainingProcess(monthPeriod);
 		
 		// 大塚カスタマイズ
 		this.customizeForOtsuka();
@@ -294,6 +301,77 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 	 */
 	private void aggregateAnyItem(){
 		
+	}
+	
+	/**
+	 * 残数処理
+	 * @param period 期間
+	 */
+	private void remainingProcess(DatePeriod period){
+		
+		// 年休、積休
+		this.annualAndReserveLeaveRemain(period);
+	}
+	
+	/**
+	 * 年休、積休
+	 * @param period 期間
+	 */
+	private void annualAndReserveLeaveRemain(DatePeriod period){
+
+		// 期間中の年休積休残数を取得
+		val aggrResult = this.getAnnAndRsvRemNumWithinPeriod.algorithm(
+				this.companyId, this.employeeId, period, TempAnnualLeaveMngMode.MONTHLY,
+				period.end(), false, true, Optional.of(false), Optional.empty(), Optional.empty(),
+				this.prevAggrResult.getAnnualLeave(), this.prevAggrResult.getReserveLeave());
+		
+		if (aggrResult.getAnnualLeave().isPresent()){
+			val asOfPeriodEnd = aggrResult.getAnnualLeave().get().getAsOfPeriodEnd();
+			val remainingNumber = asOfPeriodEnd.getRemainingNumber();
+			
+			// 年休月別残数データを更新
+			AnnLeaRemNumEachMonth annLeaRemNum = AnnLeaRemNumEachMonth.of(
+					this.employeeId,
+					this.yearMonth,
+					this.closureId,
+					this.closureDate,
+					period,
+					ClosureStatus.UNTREATED,
+					remainingNumber.getAnnualLeaveNoMinus(),
+					remainingNumber.getAnnualLeaveWithMinus(),
+					remainingNumber.getHalfDayAnnualLeaveNoMinus(),
+					remainingNumber.getHalfDayAnnualLeaveWithMinus(),
+					asOfPeriodEnd.getGrantInfo(),
+					remainingNumber.getTimeAnnualLeaveNoMinus(),
+					remainingNumber.getTimeAnnualLeaveWithMinus(),
+					AnnualLeaveAttdRateDays.of(
+							new MonthlyDays(0.0),
+							new MonthlyDays(0.0),
+							new MonthlyDays(0.0)),
+					asOfPeriodEnd.isAfterGrantAtr());
+			this.aggregateResult.getAnnLeaRemNumEachMonthList().add(annLeaRemNum);
+			
+			// 年休エラー処理
+			for (val annualLeaveError : aggrResult.getAnnualLeave().get().getAnnualLeaveErrors()){
+				MonthlyAggregationErrorInfo errorInfo = null;
+				//*****（未）　エラーに対して、対応するメッセージを追加する必要がある。未設計。2018.5.6 shuichi_ishida
+				switch (annualLeaveError){
+				case SHORTAGE_AL_OF_UNIT_DAY_BFR_GRANT:
+				case SHORTAGE_AL_OF_UNIT_DAY_AFT_GRANT:
+				case SHORTAGE_TIMEAL_BEFORE_GRANT:
+				case SHORTAGE_TIMEAL_AFTER_GRANT:
+				case EXCESS_MAX_TIMEAL_BEFORE_GRANT:
+				case EXCESS_MAX_TIMEAL_AFTER_GRANT:
+					errorInfo = new MonthlyAggregationErrorInfo(
+							"XXX", new ErrMessageContent(TextResource.localize("Msg_XXX")));
+					break;
+				}
+				if (errorInfo != null) this.errorInfos.putIfAbsent("XXX", errorInfo);
+			}
+		}
+		
+		// 集計結果を前回集計結果に引き継ぐ
+		this.aggregateResult.setAggrResultOfAnnAndRsvLeave(aggrResult);
 	}
 	
 	/**

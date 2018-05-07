@@ -14,7 +14,10 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
+import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -27,19 +30,22 @@ public class AggregateMonthlyRecordValue {
 
 	/** 月別実績の勤怠時間 */
 	private List<AttendanceTimeOfMonthly> attendanceTimeList;
-
 	/** 月別実績の所属情報 */
 	private List<AffiliationInfoOfMonthly> affiliationInfoList;
-	
 	/** 月別実績の任意項目 */
 	private List<AnyItemOfMonthly> anyItemList;
-	
 	/** 管理時間の36協定時間 */
 	private List<AgreementTimeOfManagePeriod> agreementTimeList;
+	/** 年休月別残数データ */
+	private List<AnnLeaRemNumEachMonth> annLeaRemNumEachMonthList;
+	/** 積立年休月別残数データ */
+	private List<RsvLeaRemNumEachMonth> rsvLeaRemNumEachMonthList;
 	
+	/** 年休積立年休の集計結果 */
+	@Setter
+	private AggrResultOfAnnAndRsvLeave aggrResultOfAnnAndRsvLeave;
 	/** エラー情報 */
 	private Map<String, MonthlyAggregationErrorInfo> errorInfos;
-	
 	/** 中断フラグ */
 	@Setter
 	private boolean interruption;
@@ -53,6 +59,10 @@ public class AggregateMonthlyRecordValue {
 		this.affiliationInfoList = new ArrayList<>();
 		this.anyItemList = new ArrayList<>();
 		this.agreementTimeList = new ArrayList<>();
+		this.annLeaRemNumEachMonthList = new ArrayList<>();
+		this.rsvLeaRemNumEachMonthList = new ArrayList<>();
+		
+		this.aggrResultOfAnnAndRsvLeave = new AggrResultOfAnnAndRsvLeave();
 		this.errorInfos = new HashMap<>();
 		this.interruption = false;
 	}

@@ -9,6 +9,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.WorkClockOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.PayItemCountOfMonthly;
@@ -36,6 +37,8 @@ public class VerticalTotalOfMonthly {
 	private WorkDaysOfMonthly workDays;
 	/** 勤務時間 */
 	private WorkTimeOfMonthly workTime;
+	/** 勤務時刻 */
+	private WorkClockOfMonthly workClock;
 	
 	/**
 	 * コンストラクタ
@@ -44,21 +47,25 @@ public class VerticalTotalOfMonthly {
 		
 		this.workDays = new WorkDaysOfMonthly();
 		this.workTime = new WorkTimeOfMonthly();
+		this.workClock = new WorkClockOfMonthly();
 	}
 	
 	/**
 	 * ファクトリー
 	 * @param workDays 勤務日数
 	 * @param workTime 勤務時間
+	 * @param workClock 勤務時刻
 	 * @return 月別実績の縦計
 	 */
 	public static VerticalTotalOfMonthly of(
 			WorkDaysOfMonthly workDays,
-			WorkTimeOfMonthly workTime){
+			WorkTimeOfMonthly workTime,
+			WorkClockOfMonthly workClock){
 		
 		val domain = new VerticalTotalOfMonthly();
 		domain.workDays = workDays;
 		domain.workTime = workTime;
+		domain.workClock = workClock;
 		return domain;
 	}
 	
@@ -80,6 +87,7 @@ public class VerticalTotalOfMonthly {
 		// 集計結果の初期化
 		this.workTime = new WorkTimeOfMonthly();
 		this.workDays = new WorkDaysOfMonthly();
+		this.workClock = new WorkClockOfMonthly();
 		
 		// 日別実績の勤務情報　取得
 		val workInfoOfDailys =
@@ -198,6 +206,9 @@ public class VerticalTotalOfMonthly {
 			// 出勤状態・2回目打刻有無を確認する
 			val isAttendanceDay = attendanceStatusMap.isAttendanceDay(procYmd);
 			val isTwoTimesStampExists = attendanceStatusMap.isTwoTimesStampExists(procYmd);
+			
+			// PCログオン情報　取得
+			val pcLogonInfoOpt = repositories.getPCLogonInfoOfDaily().find(employeeId, procYmd);
 		
 			// 勤務日数集計
 			this.workDays.aggregate(workingSystem, workType, attendanceTimeOfDaily, temporaryTimeOfDaily,
@@ -207,6 +218,9 @@ public class VerticalTotalOfMonthly {
 			
 			// 勤務時間集計
 			this.workTime.aggregate(workType, attendanceTimeOfDaily);
+			
+			// 勤務時刻集計
+			this.workClock.aggregate(pcLogonInfoOpt, attendanceTimeOfDaily);
 			
 			// 処理期間の各週の開始日・終了日を判断
 			
@@ -226,5 +240,6 @@ public class VerticalTotalOfMonthly {
 
 		this.workDays.sum(target.workDays);
 		this.workTime.sum(target.workTime);
+		this.workClock.sum(target.workClock);
 	}
 }
