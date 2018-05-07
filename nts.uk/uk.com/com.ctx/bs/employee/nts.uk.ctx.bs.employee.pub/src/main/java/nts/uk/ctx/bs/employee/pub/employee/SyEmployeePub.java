@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface EmployeePub.
@@ -81,4 +82,21 @@ public interface SyEmployeePub {
 	// Redmine #87534
 	Optional<EmployeeDataMngInfoExport> getSdataMngInfo(String sid);
 	
+	/**
+	 * Find by emp ids.
+	 * 社員ID（List）から社員コードと表示名を取得
+	 * @param sIds the sids
+	 * @return the list
+	 */
+	// RequestList228
+	List<EmployeeInfoExport> getByListSid(List<String> sIds);
+	
+	
+	/**
+	 * Get List EmployeeId By WorkPlace and Employment and TemporaryLeaveAbsenceHistory
+	 * @param sIds
+	 * @return
+	 */
+	// RequestList335
+	List<String> getListEmpByWkpAndEmpt(List<String> wkps , List<String> lstempts , DatePeriod dateperiod);
 }
