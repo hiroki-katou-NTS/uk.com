@@ -95,9 +95,6 @@ module nts.uk.at.view.kwr008.a {
                         self.showClosure(true);
                     }
                 });
-                self.selectedOutputItem.subscribe(item => {
-                    $('#outputItem').trigger('validate');
-                });
 
                 service.getPermissionOfEmploymentForm().done((permission: any) => {
                     self.permissionOfEmploymentForm(new model.PermissionOfEmploymentFormModel(
