@@ -4,12 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pubimp.employee;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -47,6 +49,7 @@ import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class SyEmployeePubImp.
@@ -416,13 +419,13 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		}
 
 		List<String> pIds = emps.stream().map(EmployeeDataMngInfo::getPersonId).collect(Collectors.toList());
-		
+
 		// Lấy toàn bộ domain「個人基本情報」
 		List<Person> persons = this.personRepository.getPersonByPersonIds(pIds);
 
 		Map<String, Person> mapPersons = persons.stream()
 				.collect(Collectors.toMap(Person::getPersonId, Function.identity()));
-		
+
 		return emps.stream().map(employee -> {
 
 			EmployeeInfoExport result = new EmployeeInfoExport();
@@ -440,5 +443,70 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			return result;
 		}).collect(Collectors.toList());
 	}
+
+	@Override
+	public List<String> getListEmpByWkpAndEmpt(List<String> wkpsId, List<String> lstemptsCode, DatePeriod dateperiod) {
+
+		// lấy List workplace history items từ dateperiod and list workplaceId
+		List<AffWorkplaceHistoryItem> lstWkpHisItem = affWkpItemRepo
+				.getAffWkpHistItemByListWkpIdAndDatePeriod(dateperiod, wkpsId);
+
+		if (lstWkpHisItem.isEmpty()) {
+			return Collections.emptyList();
+		}
+		// Lấy list sid từ lstWkpHisItem
+		List<String> lstEmpIdOfWkp = lstWkpHisItem.stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
+		// (Thực hiện Lấy List employeement history item từ list employeementId và
+		// period)
+
+		List<EmploymentHistoryItem> lstEmptHisItem = emptHistItem.getListEmptByListCodeAndDatePeriod(dateperiod,
+				lstemptsCode);
+
+		if (lstEmptHisItem.isEmpty()) {
+			return Collections.emptyList();
+		}
+		// Lấy list sid từ lstEmptHisItem
+		List<String> lstEmpIdOfEmpt = lstEmptHisItem.stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
+
+		// lấy list sid chung từ 2 list lstEmpIdOfWkp vs lstEmpIdOfEmpt
+		List<String> lstId = lstEmpIdOfWkp.stream().filter(lstEmpIdOfEmpt::contains).collect(Collectors.toList());
+
+		if (lstId.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		// lây list Employee từ list sid và dateperiod
+		List<AffCompanyHist> lstAffComHist = affComHistRepo.getAffComHisEmpByLstSidAndPeriod(lstId , dateperiod);
+
+		if (lstAffComHist.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
+		List<AffCompanyHistByEmployee> lstAffComHistByEmp = getAffCompanyHistByEmployee(lstAffComHist);
+		
+		//List sid sau khi lọc qua điều kiện datePeriod
+		List<String> lstSidAfterFilter = lstAffComHistByEmp.stream().map(m -> m.getSId()).collect(Collectors.toList());
+		
+		// List sid tồn tại ở lstId nhưng không tồn tại ở  list sid
+		List<String> result = lstId.stream().filter(i -> !lstSidAfterFilter.contains(i)).collect(Collectors.toList());
+		if (result.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return result;
+	}
+
+	public List<AffCompanyHistByEmployee> getAffCompanyHistByEmployee(List<AffCompanyHist> lstAffComHist) {
+		if (lstAffComHist.isEmpty()) {
+			return Collections.emptyList();
+		}
+		List<AffCompanyHistByEmployee> result = new ArrayList<>();
+
+		lstAffComHist.forEach(m -> {
+			result.addAll(m.getLstAffCompanyHistByEmployee());
+		});
+		return result;
+	}
+
+	
 
 }
