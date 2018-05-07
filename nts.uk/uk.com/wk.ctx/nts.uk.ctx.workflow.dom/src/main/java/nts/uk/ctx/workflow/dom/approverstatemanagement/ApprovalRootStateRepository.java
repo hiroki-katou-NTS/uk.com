@@ -54,7 +54,7 @@ public interface ApprovalRootStateRepository {
 	 */
 	public List<ApprovalRootState> findAppByListEmployeeIDAndListRecordDate(List<GeneralDate> approvalRecordDates,List<String> employeeIDs,Integer rootType);
 	
-	public List<ApprovalRootState> findEmploymentApps(List<String> rootStateIDs);
+	public List<ApprovalRootState> findEmploymentApps(List<String> rootStateIDs, String approverID);
 	
 	public Optional<ApprovalRootState> findEmploymentApp(String rootStateID);
 	

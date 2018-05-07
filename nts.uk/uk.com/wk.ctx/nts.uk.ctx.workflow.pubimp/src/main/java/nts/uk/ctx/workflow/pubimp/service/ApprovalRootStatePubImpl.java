@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.pubimp.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -70,6 +71,7 @@ import nts.uk.ctx.workflow.pub.service.export.ApproverStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverWithFlagExport;
 import nts.uk.ctx.workflow.pub.service.export.ErrorFlagExport;
 import nts.uk.ctx.workflow.pub.service.export.ReleasedProprietyDivision;
+import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author Doan Duy Hung
@@ -121,10 +123,14 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	private GenerateApprovalRootStateService generateApprovalRootStateService;
 	
 	@Override
-	public Map<String,List<ApprovalPhaseStateExport>> getApprovalRoots(List<String> appIDs,String companyID) {
+	public Map<String,List<ApprovalPhaseStateExport>> getApprovalRoots(List<String> appIDs, String companyID){ 
+		String approverID = AppContexts.user().employeeId();
 		Map<String,List<ApprovalPhaseStateExport>> approvalPhaseStateExportMs = new LinkedHashMap<>();
 		ApprovalRootContentOutput approvalRootContentOutput =  null;
-		List<ApprovalRootState> approvalRootStates = approvalRootStateRepository.findEmploymentApps(appIDs);
+		System.out.println("queryDB start: "+LocalDateTime.now());
+		List<ApprovalRootState> approvalRootStates = approvalRootStateRepository.findEmploymentApps(appIDs, approverID);
+		System.out.println("queryDB end: "+LocalDateTime.now());
+		System.out.println("format start: "+LocalDateTime.now());
 		if(!CollectionUtil.isEmpty(approvalRootStates)){
 			for(ApprovalRootState approvalRootState :  approvalRootStates){
 				approvalRootContentOutput = new ApprovalRootContentOutput(approvalRootState, ErrorFlag.NO_ERROR);
@@ -157,6 +163,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 				approvalPhaseStateExportMs.put(approvalRootState.getRootStateID(), approvalPhaseStateExports);
 			}
 		}
+		System.out.println("format end: "+LocalDateTime.now());
 		return approvalPhaseStateExportMs;
 	}
 	@Override

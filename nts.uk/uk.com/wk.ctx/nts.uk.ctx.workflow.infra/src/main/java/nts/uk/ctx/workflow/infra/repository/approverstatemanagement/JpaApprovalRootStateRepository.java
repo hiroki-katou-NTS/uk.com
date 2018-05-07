@@ -93,9 +93,17 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		SELECT_CF_MONTH_BY_ID = builderString.toString();
 		
 		builderString = new StringBuilder();
-		builderString.append("SELECT e");
-		builderString.append(" FROM WwfdtApprovalRootState e");
-		builderString.append(" AND e.wwfdpApprovalRootStatePK.rootStateID IN :rootStateIDs");
+		builderString.append("SELECT c");
+		builderString.append(" FROM WwfdtApprovalRootState c");
+		builderString.append(" WHERE c.wwfdpApprovalRootStatePK.rootStateID IN ");
+		builderString.append("(SELECT DISTINCT a.wwfdpApprovalRootStatePK.rootStateID");
+		builderString.append(" FROM WwfdtAppRootStateSimple a");
+		builderString.append(" JOIN WwfdtAppStateSimple b ");
+		builderString.append(" ON a.wwfdpApprovalRootStatePK.rootStateID = b.wwfdpApproverStatePK.rootStateID");
+		builderString.append(" WHERE (b.wwfdpApproverStatePK.approverID = :approverID");
+		builderString.append(" OR b.wwfdpApproverStatePK.approverID IN");
+		builderString.append(" (SELECT d.cmmmtAgentPK.employeeId FROM CmmmtAgent d WHERE d.agentSid1 = :approverID))");
+		builderString.append(" AND a.wwfdpApprovalRootStatePK.rootStateID IN :rootStateIDs)");
 		SELECT_APPS_BY_ID = builderString.toString();
 		
 		builderString = new StringBuilder();
@@ -185,9 +193,11 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString.append(" FROM WwfdtApprovalRootState c");
 		builderString.append(" WHERE c.wwfdpApprovalRootStatePK.rootStateID IN ");
 		builderString.append("(SELECT DISTINCT a.wwfdpApprovalRootStatePK.rootStateID");
-		builderString.append(" FROM WwfdtApprovalRootState a JOIN WwfdtApproverState b ");
+		builderString.append(" FROM WwfdtAppRootStateSimple a JOIN WwfdtAppStateSimple b ");
 		builderString.append(" ON a.wwfdpApprovalRootStatePK.rootStateID = b.wwfdpApproverStatePK.rootStateID ");
-		builderString.append(" WHERE b.wwfdpApproverStatePK.approverID = :approverID");
+		builderString.append(" WHERE (b.wwfdpApproverStatePK.approverID = :approverID");
+		builderString.append(" OR b.wwfdpApproverStatePK.approverID IN");
+		builderString.append(" (SELECT d.cmmmtAgentPK.employeeId FROM CmmmtAgent d WHERE d.agentSid1 = :approverID))");
 		builderString.append(" AND b.companyID = :companyID");
 		builderString.append(" AND b.recordDate >= :startDate AND b.recordDate <= :endDate)");
 		SELECT_APPS_BY_APPROVER = builderString.toString();
@@ -197,9 +207,11 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString.append(" FROM WwfdtApprovalRootDay c");
 		builderString.append(" WHERE c.wwfdpApprovalRootDayPK.rootStateID IN ");
 		builderString.append("(SELECT DISTINCT a.wwfdpApprovalRootDayPK.rootStateID");
-		builderString.append(" FROM WwfdtApprovalRootDay a JOIN WwfdtApproverDay b ");
+		builderString.append(" FROM WwfdtAppRootDaySimple a JOIN WwfdtApproverDaySimple b ");
 		builderString.append(" ON a.wwfdpApprovalRootDayPK.rootStateID = b.wwfdpApproverDayPK.rootStateID ");
-		builderString.append(" WHERE b.wwfdpApproverDayPK.approverID = :approverID");
+		builderString.append(" WHERE (b.wwfdpApproverDayPK.approverID = :approverID");
+		builderString.append(" OR b.wwfdpApproverDayPK.approverID IN");
+		builderString.append(" (SELECT d.cmmmtAgentPK.employeeId FROM CmmmtAgent d WHERE d.agentSid1 = :approverID))");
 		builderString.append(" AND b.companyID = :companyID");
 		builderString.append(" AND b.recordDate >= :startDate AND b.recordDate <= :endDate)");
 		SELECT_CFS_DAY_BY_APPROVER = builderString.toString();
@@ -211,7 +223,9 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString.append("(SELECT DISTINCT a.wwfdpApprovalRootMonthPK.rootStateID");
 		builderString.append(" FROM WwfdtApprovalRootMonth a JOIN WwfdtApproverMonth b ");
 		builderString.append(" ON a.wwfdpApprovalRootMonthPK.rootStateID = b.wwfdpApproverMonthPK.rootStateID ");
-		builderString.append(" WHERE b.wwfdpApproverMonthPK.approverID = :approverID");
+		builderString.append(" WHERE (b.wwfdpApproverMonthPK.approverID = :approverID");
+		builderString.append(" OR b.wwfdpApproverMonthPK.approverID IN");
+		builderString.append(" (SELECT d.cmmmtAgentPK.employeeId FROM CmmmtAgent d WHERE d.agentSid1 = :approverID))");
 		builderString.append(" AND b.companyID = :companyID");
 		builderString.append(" AND b.recordDate >= :startDate AND b.recordDate <= :endDate)");
 		SELECT_CFS_MONTH_BY_APPROVER = builderString.toString();
@@ -234,9 +248,11 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	}
 	
 	@Override
-	public List<ApprovalRootState> findEmploymentApps(List<String> rootStateIDs) {
+	public List<ApprovalRootState> findEmploymentApps(List<String> rootStateIDs, String approverID) {
 		return this.queryProxy().query(SELECT_APPS_BY_ID, WwfdtApprovalRootState.class)
-				.setParameter("rootStateIDs", rootStateIDs).getList(x -> x.toDomain());
+				.setParameter("rootStateIDs", rootStateIDs)
+				.setParameter("approverID", approverID)
+				.getList(x -> x.toDomain());
 	}
 	
 	@Override
@@ -265,14 +281,14 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		switch (rootType) {
 		case 1:
 			WwfdtApprovalRootDay wwfdtApprovalRootDay = this.queryProxy()
-					.find(new WwfdpApprovalRootStatePK(approvalRootState.getRootStateID()), WwfdtApprovalRootDay.class).get();
+					.find(new WwfdpApprovalRootDayPK(approvalRootState.getRootStateID()), WwfdtApprovalRootDay.class).get();
 			wwfdtApprovalRootDay.listWwfdtApprovalPhaseDay = approvalRootState.getListApprovalPhaseState().stream()
 					.map(x -> updateEntityWwfdtApprovalPhaseDay(x)).collect(Collectors.toList());
 			this.commandProxy().update(wwfdtApprovalRootDay);
 			break;
 		case 2:
 			WwfdtApprovalRootMonth wwfdtApprovalRootMonth = this.queryProxy()
-					.find(new WwfdpApprovalRootStatePK(approvalRootState.getRootStateID()), WwfdtApprovalRootMonth.class).get();
+					.find(new WwfdpApprovalRootMonthPK(approvalRootState.getRootStateID()), WwfdtApprovalRootMonth.class).get();
 			wwfdtApprovalRootMonth.listWwfdtApprovalPhaseMonth = approvalRootState.getListApprovalPhaseState().stream()
 					.map(x -> updateEntityWwfdtApprovalPhaseMonth(x)).collect(Collectors.toList());
 			this.commandProxy().update(wwfdtApprovalRootMonth);
