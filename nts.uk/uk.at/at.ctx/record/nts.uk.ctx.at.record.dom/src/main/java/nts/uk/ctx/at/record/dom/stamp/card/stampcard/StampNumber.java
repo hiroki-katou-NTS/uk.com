@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.stamp;
+package nts.uk.ctx.at.record.dom.stamp.card.stampcard;
 
 import nts.arc.primitive.StringPrimitiveValue;
 

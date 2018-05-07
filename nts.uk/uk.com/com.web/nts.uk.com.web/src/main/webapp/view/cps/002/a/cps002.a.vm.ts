@@ -323,33 +323,9 @@ module cps002.a.vm {
         }
 
         getCardNumber(userSetting: IUserSetting) {
-            //            let self = this,
-            //                genType = userSetting.cardNumberType,
-            //                eployee = self.currentEmployee();
-            //
-            //            if (genType === 1 || genType === 4) {
-            //
-            //                //                service.getCardNumber(genType === 1 ? userSetting.cardNumberLetter : '').done((result) => {
-            //                //
-            //                //                    eployee.cardNo(result);
-            //                //
-            //                //                });
-            //            } else {
-            //
-            //                if (genType === 3) {
-            //
-            //                    eployee.cardNo(eployee.employeeCode());
-            //                }
-            //
-            //                if (genType === 5) {
-            //
-            //                    service.getEmployeeCodeAndComId(userSetting.employeeCodeLetter).done((result) => {
-            //
-            //                        eployee.cardNo(result);
-            //                    });
-            //                }
-            //            }
-
+            let self = this;
+            let employee = self.currentEmployee();
+            employee.cardNo(__viewContext.user.companyId + employee.employeeCode());
         }
 
         isError() {
