@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	
+<!-- 	<com:ValidatorScript> -->
+<!--         nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.NameWKRecord -->
+<!--     </com:ValidatorScript> -->
+	
+	<div>
+		<table id="fixed-table1">
+			<colgroup>
+		        <col width="55px"/>
+		        <col width="60px"/>
+		        <col width="175px"/>
+		        <col width="220px"/>
+		    </colgroup>
+			<thead>
+				<tr>
+					<!-- I2_2 3 4 5 6 7 8 9 -->
+					<th class="ui-widget-header" style ="text-align: center; background-color: #CFF1A5;"><div data-bind="ntsCheckBox: { checked: false  }"></div></th>
+					<th class="ui-widget-header" style ="background-color: #CFF1A5;">#{i18n.getText('KAL003_24')}</th>
+					<th class="ui-widget-header" style ="background-color: #CFF1A5;">#{i18n.getText('KAL003_54')}</th>
+					<th class="ui-widget-header" style ="background-color: #CFF1A5;">#{i18n.getText('KAL003_55')}</th>
+					
+				</tr>
+			</thead>
+			<tbody>
+<!-- 				<com:ko-foreach bind="listFixedConditionWorkRecord"> -->
+					<tr>
+						<td style="text-align: center; border: 1px solid #dddddd;"> <div data-bind="ntsCheckBox: { checked: false }"></div> </td>
+						<td style="border: 1px solid #dddddd;"> 1 </td>
+						<td style="border: 1px solid #dddddd;"> 休暇の優 </td>
+						<td style="border: 1px solid #dddddd;"> 休暇の優休暇の優 </td>
+					</tr>
+<!-- 				</com:ko-foreach> -->
+			</tbody>
+		</table>
+	</div>
+</ui:composition>

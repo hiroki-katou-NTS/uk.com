@@ -13,8 +13,10 @@
 			<com:scriptfile path="../share/kal003utils.js" />
 			<com:scriptfile path="common/scopecheck.js" />
 			<com:scriptfile path="common/checkconditiontab.js" />
+			<com:scriptfile path="monthly/checkalarmcommon.js" />
 			<com:scriptfile path="daily/dailyperformance/dailyperfortab.js" />
 			<com:scriptfile path="daily/fixedcheckcondition/fixedchecktab.js" />
+			<com:scriptfile path="monthly/alarmchecktab.js" />
 			<com:stylefile path="kal003.a.style.css" />
 			<com:scriptfile path="kal003.a.service.js" />
 			<com:scriptfile path="kal003.a.vm.js" />
@@ -115,6 +117,12 @@
 							</div>
 							<div class="tab-content-4" data-bind="with: tabFixedCondition">
 								<ui:include src="daily/fixedcheckcondition/fixedcheck.xhtml" />
+							</div>
+							<div class="tab-content-5" data-bind="with: tabAlarmcheck">
+								<ui:include src="monthly/alarmcheck.xhtml" />
+							</div>
+							<div class="tab-content-6" data-bind="with: tabCheckAlarm">
+								<ui:include src="monthly/checkalarmcommon.xhtml" />
 							</div>
 						</div>
 					</div>
