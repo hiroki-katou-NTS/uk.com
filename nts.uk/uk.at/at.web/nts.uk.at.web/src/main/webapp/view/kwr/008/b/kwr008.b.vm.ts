@@ -53,11 +53,13 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             var self = this;
 
             var dfd = $.Deferred();
+            
+            block.invisible();
 
             //fill data B2_2
             service.getOutItemSettingCode().done((data) => {
                 for (let i = 0, count = data.length; i < count; i++) {
-                    self.listStandardImportSetting.push(new model.setOutputSettingCode(data[i].cd, data[i].name, data[i].outNumExceedTime36Agr, data[i].displayFormat));
+                    self.listStandardImportSetting.push(new setOutputSettingCode(data[i].cd, data[i].name, data[i].outNumExceedTime36Agr, data[i].displayFormat));
                 }
                 
                 self.listStandardImportSetting.sort((a, b) => {
@@ -74,21 +76,21 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
                 $('#output-item').ntsGrid({
                     width: '735px',
-                    height: '400px',
+                    height: '320px',
                     dataSource: self.outputItem(),
-                    primaryKey: 'id',
+                    primaryKey: 'cd',
                     hidePrimaryKey: true,
                     virtualization: true,
                     virtualizationMode: 'continuous',
                     columns: [
-                        { headerText: 'ID', key: 'id', dataType: 'number', ntsControl: 'Label' },
+                        { headerText: 'ID', key: 'cd', dataType: 'number', ntsControl: 'Label' },
                         { headerText: '', key: 'useClassification', dataType: 'boolean', width: '35px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
                         { headerText: getText('KWR008_28'), key: 'headingName', dataType: 'string', width: '160px', ntsControl: 'TextEditor' },
                         { headerText: '', key: 'open', dataType: 'string', width: '55px', unbound: true, ntsControl: 'Button' },
                         { headerText: getText('KWR008_30'), key: 'valueOutputFormat', dataType: 'string', width: '205px', ntsControl: 'Combobox' },
                         { headerText: getText('KWR008_29'), key: 'outputTargetItem', dataType: 'string', width: '260px' }
                     ],
-                    features: ['ColumnFixing'],
+                    features: [],
                     ntsControls: [
                         { name: 'Checkbox', options: { value: 1 }, optionsValue: 'value', controlType: 'CheckBox', enable: true },
                         { name: 'TextEditor', value: 'headingName', controlType: 'TextEditor', constraint: { valueType: 'String' } },
@@ -101,12 +103,18 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             //event select change
             self.selectedCode.subscribe((data) => {
+                self.outputItem.removeAll();
+                //service.getListItemOutput(data).done(r => {
+                //    self.outputItem.push(new OutputItemData(r.cd, r.useClass, r.headingName, r.valOutFormat, ''));
+               // });
                 nts.uk.ui.errors.clearAll()
                 self.listStandardImportSetting.sort((a, b) => {
                     return (a.cd === b.cd) ? 0 : (a.cd < b.cd) ? -1 : 1;
                 });
                 self.updateMode(data);
             });
+            
+            block.clear();
 
             dfd.resolve(self);
             return dfd.promise();
@@ -160,7 +168,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             self.listStandardImportSetting.sort();
 
-            self.selectedCode(data);
+            self.selectedCode(self.listStandardImportSetting()[selectedIndex].cd);
             
         }
 
@@ -189,8 +197,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             //B5_2
             self.selectedItemRadio(0);
             
-            for (var i = 0; i < 10; i++) {
-                self.outputItem.push(new OutputItemData(i, true, '', i, ''));
+            for (var i = 1; i <= 10; i++) {
+                self.outputItem.push(new OutputItemData(i, false, '', 0, ''));
             }
         }
 
@@ -198,18 +206,20 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         doRegister() {
             var self = this;
             
-            let data: model.OutputSettingCodeDto = new model.setOutputSettingCode(
+            let itemOut : any = _.filter(self.outputItem(), v=>{return v.headingName.trim() != '';});
+            
+//            if(itemOut.length == 0){
+//                $('#output-item').ntsError('set', {messageId:"Msg_881"});
+//            }
+            
+            let data : model.OutputSettingCodeDto = new setOutputSettingCode(
                 self.inputSettingCode(),
                 self.inputProjectName(),
                 (self.excessTime()) ? 1 : 0,
-                self.selectedItemRadio()
+                self.selectedItemRadio(),
+                itemOut
             );
-            
-//            service.checkOutputItemCode(self.inputSettingCode()).done(r=>{
-//                if(!!r){
-//                    alertError({ messageId: 'Msg_3' });
-//                }
-//            });
+
             
             if(nts.uk.ui.errors.hasError())
                 return;
@@ -217,8 +227,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             if (self.screenMode() == model.SCREEN_MODE.NEW) {
                 service.registerOutputItemSetting(data).done(() => {
                     self.listStandardImportSetting.push(data);
-                    self.updateMode(+self.inputSettingCode());
+                    self.updateMode(self.inputSettingCode());
                     info({ messageId: 'Msg_15' });
+                }).fail(err=>{
+                    $('#B3_2').ntsError('set', err);
                 })
             } else {
                 service.updateOutputItemSetting(data).done(() => {
@@ -239,18 +251,20 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
                 let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd == self.selectedCode(); });
 
-                info({ messageId: 'Msg_35' }).then(() => {
-                    let data = ko.toJS(self.listStandardImportSetting()[selectedIndex]);
-                    // send request remove item
-                    service.deleteOutputItemSetting(data).done(() => {
-                        self.checkListItemOutput();
-                        info({ messageId: 'Msg_16' });
-                        self.listStandardImportSetting.splice(selectedIndex, 1);
-                    })
-                });
-            }).ifNo(() => {
-                info({ messageId: 'Msg_36' });
-            });
+                let data = ko.toJS(self.listStandardImportSetting()[selectedIndex]);
+                // send request remove item
+                service.deleteOutputItemSetting(data).done(() => {
+                    self.checkListItemOutput();
+                    info({ messageId: 'Msg_16' });
+                    if (selectedIndex + 1 == self.listStandardImportSetting().length) {
+                        self.selectedCode(self.listStandardImportSetting()[selectedIndex - 1].cd);
+                    } else {
+                        self.selectedCode(self.listStandardImportSetting()[selectedIndex + 1].cd);
+                    }
+                    self.listStandardImportSetting.splice(selectedIndex, 1);
+                })
+
+            })
         }
 
         //cancel register
@@ -262,17 +276,34 @@ module nts.uk.at.view.kwr008.b.viewmodel {
     }
 
     class OutputItemData {
-        id: number;
+        cd: number;
         useClassification: boolean;
         headingName: string;
         valueOutputFormat: number;
         outputTargetItem: string;
-        constructor(id: number, useClassification: boolean, headingName: string, valueOutputFormat: number, outputTargetItem: string) {
-            this.id = id;
+        constructor(cd: number, useClassification: boolean, headingName: string, valueOutputFormat: number, outputTargetItem: string) {
+            this.cd = cd;
             this.useClassification = useClassification;
             this.headingName = headingName;
             this.valueOutputFormat = valueOutputFormat;
             this.outputTargetItem = outputTargetItem;
+        }
+    }
+    
+    export class setOutputSettingCode implements model.OutputSettingCodeDto {
+        cd: string;
+        name: string;
+        outNumExceedTime36Agr: number;
+        displayFormat: number;
+        listItemOutput : OutputItemData;
+
+
+        constructor(cd: string, name: string, outNumExceedTime36Agr: number, displayFormat: number, listItemOutput : OutputItemData) {
+            this.cd = cd;
+            this.name = name;
+            this.outNumExceedTime36Agr = outNumExceedTime36Agr;
+            this.displayFormat = displayFormat;
+            this.listItemOutput = listItemOutput;
         }
     }
 }

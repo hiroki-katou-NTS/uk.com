@@ -145,12 +145,6 @@ public class Kwr008WebService extends WebService {
 		this.updateOutputItemSetting.handle(command);
 	}
 	
-	@POST
-	@Path("get/checkCodeOutputItemSetting/{cd}")
-	public SetOutItemsWoScDto checkCodeOutputSettingCode(@PathParam("cd") String cd){
-		return this.outputItemSetting.find(cd);
-	}
-	
 	/*
 	 * 帳表に出力する項目
 	 * */

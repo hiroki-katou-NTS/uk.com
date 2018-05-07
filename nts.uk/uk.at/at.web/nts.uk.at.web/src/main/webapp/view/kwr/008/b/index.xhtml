@@ -5,8 +5,14 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 482,
+					height : 320
+				};
+			</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoScCode
 				nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoScName

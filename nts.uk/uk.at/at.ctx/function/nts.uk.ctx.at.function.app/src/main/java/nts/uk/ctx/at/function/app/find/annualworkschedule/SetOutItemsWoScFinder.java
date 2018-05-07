@@ -25,13 +25,4 @@ public class SetOutItemsWoScFinder
     	String cid = AppContexts.user().companyId();
         return finder.getAllSetOutItemsWoSc(cid).stream().map(item -> SetOutItemsWoScDto.fromDomain(item)).collect(Collectors.toList());
     }
-    
-    public SetOutItemsWoScDto find(String cd){
-    	String cid = AppContexts.user().companyId();
-    	Optional<SetOutItemsWoSc> setOutItem = finder.getSetOutItemsWoScById(cid, cd);
-    	if(setOutItem.isPresent()){
-    		return Optional.of(SetOutItemsWoScDto.fromDomain(setOutItem.get())).get();
-    	}
-    	return null;
-    }
 }

@@ -34,5 +34,7 @@ public class SetOutItemsWoScCommand
     private int displayFormat;
     
     private Long version;
+    
+//    private ItemOutTblBookCommand listItemOutput;
 
 }

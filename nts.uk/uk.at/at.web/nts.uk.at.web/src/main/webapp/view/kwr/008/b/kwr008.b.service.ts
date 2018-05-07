@@ -9,7 +9,6 @@ module nts.uk.at.view.kwr008.b.service{
         registerOutputItemSetting: "at/function/annualworkschedule/add/outputitemsetting",
         getValueOutputFormat: "at/function/annualworkschedule/get/enum/valueoutputformat",
         getOutputAgreementTime : "at/function/annualworkschedule/get/enum/outputagreementtime",
-        checkOutputItemCode : "at/function/annualworkschedule/get/checkCodeOutputItemSetting/",
         getListItemOutput : "at/function/annualworkschedule/get/listItemOutput/"
     }
     
@@ -37,7 +36,7 @@ module nts.uk.at.view.kwr008.b.service{
         return ajax(paths.getOutputAgreementTime);
     }
     
-    export function checkOutputItemCode(cd : string): JQueryPromise<any>{
-        return ajax(paths.checkOutputItemCode + cd);
+    export function getListItemOutput(itemOutputSettingCode : string): JQueryPromise<any>{
+        return ajax(paths.getListItemOutput + itemOutputSettingCode);
     }
 }
