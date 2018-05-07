@@ -10,11 +10,14 @@ import javax.ws.rs.Produces;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
+import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.annualworkschedule.AddSetOutItemsWoScCommandHandler;
 import nts.uk.ctx.at.function.app.command.annualworkschedule.RemoveSetOutItemsWoScCommandHandler;
 import nts.uk.ctx.at.function.app.command.annualworkschedule.SetOutItemsWoScCommand;
 import nts.uk.ctx.at.function.app.command.annualworkschedule.UpdateSetOutItemsWoScCommandHandler;
+import nts.uk.ctx.at.function.app.export.annualworkschedule.AnnualWorkScheduleExportQuery;
+import nts.uk.ctx.at.function.app.export.annualworkschedule.AnnualWorkScheduleExportService;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.ItemOutTblBookDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.ItemOutTblBookFinder;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.PeriodDto;
@@ -23,7 +26,6 @@ import nts.uk.ctx.at.function.app.find.annualworkschedule.PermissionOfEmployment
 import nts.uk.ctx.at.function.app.find.annualworkschedule.PermissionOfEmploymentFormDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.SetOutItemsWoScDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.SetOutItemsWoScFinder;
-import nts.uk.ctx.at.function.dom.annualworkschedule.SetOutItemsWoSc;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.OutputAgreementTime;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.PageBreakIndicator;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.ValueOuputFormat;
@@ -60,6 +62,9 @@ public class Kwr008WebService extends WebService {
 	
 	@Inject
 	private ItemOutTblBookFinder listItemOut;
+
+	@Inject
+	private AnnualWorkScheduleExportService serive;
 
 	@POST
 	@Path("getPermissionOfEmploymentForm")
@@ -113,6 +118,12 @@ public class Kwr008WebService extends WebService {
 		return outputItemSetting.getAllSetOutItemsWoSc();
 	}
 
+	@POST
+	@Path("export")
+	public ExportServiceResult generate(AnnualWorkScheduleExportQuery query) {
+		return this.serive.start(query);
+	}
+
 	/*
 	 * ドメインモデル「年間勤務表（36チェックリスト）」を削除する
 	 */
@@ -146,6 +157,6 @@ public class Kwr008WebService extends WebService {
 	@POST
 	@Path("get/listItemOutput/{setOutCd}")
 	public List<ItemOutTblBookDto> listItemOuput(@PathParam("setOutCd") String setOutCd){
-		return this.listItemOut.getAllItemOutTblBook(setOutCd);
+		return this.listItemOut.getItemOutTblBookBySetOutCd(setOutCd);
 	}
 }

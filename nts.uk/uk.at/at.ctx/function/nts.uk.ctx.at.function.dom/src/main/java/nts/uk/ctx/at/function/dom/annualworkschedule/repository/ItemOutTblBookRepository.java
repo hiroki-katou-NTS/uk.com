@@ -12,9 +12,11 @@ import java.util.List;
 public interface ItemOutTblBookRepository
 {
 
-    List<ItemOutTblBook> getAllItemOutTblBook(String cid, String setOutCd);
+    List<ItemOutTblBook> getAllItemOutTblBook(String cid);
 
     Optional<ItemOutTblBook> getItemOutTblBookById(String cid, String cd);
+
+    List<ItemOutTblBook> getItemOutTblBookBySetOutCd(String cid, String setOutCd);
 
     void add(ItemOutTblBook domain);
 
