@@ -4,15 +4,17 @@ module a2 {
     
     class ScreenModel {
 
-        simpleValue: KnockoutObservable<string>;
+        employeeInfoContact: EmployeeInfoContactModel;
+        personContact: PersonContactModel;
         
         /**
          * Constructor
          */
         constructor(model: MainModel) {
             let _self = this;
-            //TODO
-            _self.simpleValue = ko.observable("");
+            
+            _self.employeeInfoContact = model.employeeInfoContact;
+            _self.personContact = model.personContact;
         }
 
         /**

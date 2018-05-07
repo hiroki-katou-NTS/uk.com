@@ -6,7 +6,7 @@
 	
 	<div class="tab-rows">
 		<div style="width: 200px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CMM048_6')}</div>
-		<div class="label" data-bind="text: employeeName"></div>
+		<div class="label" data-bind="text: employee.employeeName"></div>
 	</div>
 	
 	<table style="width: 100%;">
@@ -24,21 +24,21 @@
 							<td style="width: 200px;"><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CMM048_8')}</div></td>
 							<td><input tabindex="4" data-bind="ntsTextEditor: {
 								name: '#[CMM048_8]',
-								value: simpleValue, 
+								value: employee.employeeName, 
 								option: {textmode: 'password'}}" /></td>
 						</tr>
 						<tr>
 							<td style="width: 200px;"><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CMM048_9')}</div></td>
 							<td><input tabindex="5" data-bind="ntsTextEditor: {
 								name: '#[CMM048_9]',
-								value: simpleValue, 
+								value: employee.employeeName, 
 								option: {textmode: 'password'}}" /></td>
 						</tr>
 						<tr>
 							<td style="width: 200px;"><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CMM048_10')}</div></td>
 							<td><input tabindex="6" data-bind="ntsTextEditor: {
 								name: '#[CMM048_10]',
-								value: simpleValue, 
+								value: employee.employeeName, 
 								option: {textmode: 'password'}}" /></td>
 						</tr>
 					</table>					

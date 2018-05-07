@@ -14,6 +14,26 @@ module nts.uk.com.view.cmm048.a {
             passwordPolicy: PasswordPolicyDto;
         }
         
+        export interface EmployeeDto {
+            employeeId: string;
+            employeeCode: string;
+            employeeName: string;
+        }
+        
+        export interface EmployeeInfoContactDto {
+            employeeId: string;
+            mailAddress: string;
+            mobileMailAddress: string;
+            cellPhoneNo: string;
+        }
+        
+        export interface PersonContactDto {
+            personId: string;
+            mailAddress: string;
+            mobileMailAddress: string;
+            cellPhoneNo: string;
+        }
+        
         export interface PasswordPolicyDto {
             lowestDigits: number;
             complexity: ComplexityDto;

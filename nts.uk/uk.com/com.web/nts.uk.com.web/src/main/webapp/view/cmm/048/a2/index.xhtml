@@ -28,7 +28,7 @@
 					<td style="text-align: center;">
 						<input tabindex="10" data-bind="ntsTextEditor: {
 								name: '#[CMM048_30]',
-								value: simpleValue,
+								value: employeeInfoContact.mailAddress,
 								option: {width: '350px'}}" />
 					</td>
 					<td></td>
@@ -39,10 +39,12 @@
 					<td style="text-align: center;">
 						<input tabindex="13" data-bind="ntsTextEditor: {
 								name: '#[CMM048_35]',
-								value: simpleValue,
+								value: personContact.mailAddress,
 								option: {width: '350px'}}" />
 					</td>
-					<td></td>
+					<td>
+						
+					</td>
 					<td style="text-align: center;"><button style="width: 80px;">#{i18n.getText('CMM048_34')}</button></td>
 				</tr>
 				
@@ -52,7 +54,7 @@
 					<td style="text-align: center;">
 						<input tabindex="17" data-bind="ntsTextEditor: {
 								name: '#[CMM048_38]',
-								value: simpleValue,
+								value: employeeInfoContact.mobileMailAddress,
 								option: {width: '350px'}}" />
 					</td>
 					<td></td>
@@ -63,22 +65,36 @@
 					<td style="text-align: center;">
 						<input tabindex="20" data-bind="ntsTextEditor: {
 								name: '#[CMM048_39]',
-								value: simpleValue,
+								value: personContact.mobileMailAddress,
 								option: {width: '350px'}}" />
 					</td>
-					<td></td>
+					<td>
+						
+					</td>
 					<td style="text-align: center;"><button style="width: 80px;">#{i18n.getText('CMM048_34')}</button></td>
 				</tr>
 				
 				<tr>
 					<td class="bg-green" rowspan="2">#{i18n.getText('CMM048_40')}</td>
 					<td class="bg-green">#{i18n.getText('CMM048_28')}</td>
-					<td colspan="2"></td>
+					<td colspan="2" style="padding-left: 14px; padding-right: 14px;">
+						<input tabindex="24" data-bind="ntsTextEditor: {
+								name: '#[CMM048_41]',
+								value: employeeInfoContact.cellPhoneNo,
+								option: {width: '250px'}}" />
+						<div style="margin-left: 20px; width: auto;" class="label">#{i18n.getText('CMM048_42')}</div>		
+					</td>
 					<td></td>
 				</tr>
 				<tr>
 					<td class="bg-green">#{i18n.getText('CMM048_29')}</td>
-					<td colspan="2"></td>
+					<td colspan="2" style="padding-left: 14px; padding-right: 14px;">
+						<input tabindex="25" data-bind="ntsTextEditor: {
+								name: '#[CMM048_43]',
+								value: personContact.cellPhoneNo,
+								option: {width: '250px'}}" />
+						<div style="margin-left: 20px; width: auto;" class="label">#{i18n.getText('CMM048_44')}</div>		
+					</td>
 					<td></td>
 				</tr>
 			</tbody>

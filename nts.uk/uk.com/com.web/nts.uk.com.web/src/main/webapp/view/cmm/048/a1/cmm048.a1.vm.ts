@@ -1,12 +1,15 @@
 module a1 {
 
     import MainModel = nts.uk.com.view.cmm048.a.viewmodel.MainModel;
+    import EmployeeModel = nts.uk.com.view.cmm048.a.viewmodel.EmployeeModel;
+    import EmployeeInfoContactModel = nts.uk.com.view.cmm048.a.viewmodel.EmployeeInfoContactModel;
+    import PersonContactModel = nts.uk.com.view.cmm048.a.viewmodel.PersonContactModel;
+    import PasswordPolicyModel = nts.uk.com.view.cmm048.a.viewmodel.PasswordPolicyModel;
     
     class ScreenModel {
 
-        employeeName: KnockoutObservable<string>;
+        employee: EmployeeModel;        
         passwordPolicy: PasswordPolicyModel;
-        simpleValue: KnockoutObservable<string>;
         
         /**
          * Constructor
@@ -14,10 +17,8 @@ module a1 {
         constructor(model: MainModel) {
             let _self = this;
         
-            _self.employeeName = model.employeeName;
+            _self.employee = model.employee;            
             _self.passwordPolicy = model.passwordPolicy;
-            //TODO
-            _self.simpleValue = ko.observable("");
         }
 
         /**

@@ -28,12 +28,22 @@ module nts.uk.com.view.cmm048.a {
                 let _self = this;
                 let dfd = $.Deferred<any>();
                 
-                
+
                 
                 dfd.resolve();
                 return dfd.promise();
             }
             
+            /**
+             * Set focus
+             */
+            public setInitialFocus(): void {
+                $('button-save').focus();
+            }
+            
+            /**
+             * Save
+             */
             public save() {
                 
             }
@@ -41,13 +51,60 @@ module nts.uk.com.view.cmm048.a {
         }
         
         export class MainModel {
-            employeeName: KnockoutObservable<string>;
+            employee: EmployeeModel;
+            employeeInfoContact: EmployeeInfoContactModel;
+            personContact: PersonContactModel;
             passwordPolicy: PasswordPolicyModel;
             
             constructor() {
                 let _self = this;
-                _self.employeeName = ko.observable("Tung");
+                _self.employee = new EmployeeModel();
+                _self.employeeInfoContact = new EmployeeInfoContactModel();
+                _self.personContact = new PersonContactModel();
                 _self.passwordPolicy = new PasswordPolicyModel();
+            }
+        }
+        
+        export class EmployeeModel {
+            employeeId: KnockoutObservable<string>;
+            employeeCode: KnockoutObservable<string>;
+            employeeName: KnockoutObservable<string>;
+            
+            constructor() {
+                let _self = this;
+                _self.employeeId = ko.observable("");
+                _self.employeeCode = ko.observable("");
+                _self.employeeName = ko.observable("Tung");
+            }
+        }
+        
+        export class EmployeeInfoContactModel {
+            employeeId: KnockoutObservable<string>;
+            mailAddress: KnockoutObservable<string>;
+            mobileMailAddress: KnockoutObservable<string>;
+            cellPhoneNo: KnockoutObservable<string>;
+            
+            constructor() {
+                let _self = this;
+                _self.employeeId = ko.observable("");
+                _self.mailAddress = ko.observable("emp@pcmail.com");
+                _self.mobileMailAddress = ko.observable("emp@mobilemail.com");
+                _self.cellPhoneNo = ko.observable("080-XXXX-XXXX");
+            }
+        }
+        
+        export class PersonContactModel {
+            personId: KnockoutObservable<string>;
+            mailAddress: KnockoutObservable<string>;
+            mobileMailAddress: KnockoutObservable<string>;
+            cellPhoneNo: KnockoutObservable<string>;
+            
+            constructor() {
+                let _self = this;
+                _self.personId = ko.observable("");
+                _self.mailAddress = ko.observable("person@pcmail.com");
+                _self.mobileMailAddress = ko.observable("person@mobilemail.com");
+                _self.cellPhoneNo = ko.observable("090-XXXX-XXXX");
             }
         }
         
