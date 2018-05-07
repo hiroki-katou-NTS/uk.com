@@ -15,6 +15,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.StartEndTimeReflectScheService;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.servicedto.TimeReflectScheDto;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -41,11 +42,11 @@ public class AbsenceLeaveReflectScheImpl implements AbsenceLeaveReflectSche{
 	@Override
 	public boolean absenceLeaveReflect(CommonReflectParamSche param) {
 		try {
-			//勤種・就時の反映
+			//勤種・就時の反映 
 			updateSche.updateScheWorkTimeType(param.getEmployeeId(), 
 					param.getDatePara(), 
 					param.getWorktypeCode(), 
-					"000");//就業時間帯クリア->000
+					null);
 			//開始予定・終了予定の置き換え
 			this.absenceLeaveStartEndTimeReflect(param);
 			return true;
@@ -60,6 +61,16 @@ public class AbsenceLeaveReflectScheImpl implements AbsenceLeaveReflectSche{
 		WorkStyle checkworkDay = basicService.checkWorkDay(param.getWorktypeCode());
 		//日休日の場合
 		if(checkworkDay == WorkStyle.ONE_DAY_REST) {
+			//就業時間帯の必須チェック
+			SetupType checkNeededOfWorkTimeSetting = basicService.checkNeededOfWorkTimeSetting(param.getWorktypeCode());
+			//必須任意不要区分(output)が不要
+			if(checkNeededOfWorkTimeSetting == SetupType.REQUIRED) {
+				//就時の反映
+				updateSche.updateScheWorkTimeType(param.getEmployeeId(), 
+						param.getDatePara(), 
+						param.getWorktypeCode(), 
+						"000");//就業時間帯クリア->000
+			}
 			//勤務開始終了のクリア
 			startEndTimeScheService.updateStartTimeRflect(new TimeReflectScheDto(param.getEmployeeId(),
 					param.getDatePara(), 0, 0, 1, true, true));
