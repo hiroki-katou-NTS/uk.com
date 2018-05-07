@@ -119,7 +119,6 @@ module nts.uk.at.view.kwr008.a {
                     _.forEach(dataArr, data => {
                         self.outputItem.push(new share.ItemModel(data.cd, data.name));
                     });
-                    $('#outputItem').trigger('validate');
                 });
                 // A6
                 self.restoreOutputConditionAnnualWorkSchedule()
@@ -137,6 +136,7 @@ module nts.uk.at.view.kwr008.a {
 
             exportReport() {
                 var self = this;
+                if (self.validate()) return;
                 nts.uk.ui.block.invisible();
                 //対象期間をチェックする
                 if (moment(self.dateValue().startDate, 'YYYY/MM').add(12, 'M').toDate() <=
@@ -164,7 +164,7 @@ module nts.uk.at.view.kwr008.a {
                 self.saveOutputConditionAnnualWorkSchedule(new model.OutputConditionAnnualWorkScheduleChar(self.selectedOutputItem(), self.selectedBreakPage()));
 
                 nts.uk.request.exportFile('at/function/annualworkschedule/export', data).done(() => {
-                    console.log('DONE!!');
+                    
                 });
                 nts.uk.ui.block.clear();
             }
@@ -284,6 +284,11 @@ module nts.uk.at.view.kwr008.a {
 
                 dfd.resolve(self);
                 return dfd.promise();
+            }
+            public validate(): boolean {
+                $('#period').trigger('validate');
+                $('#outputItem').trigger('validate');
+                return nts.uk.ui.errors.hasError();
             }
             /**
             * apply ccg001 search data to kcp005

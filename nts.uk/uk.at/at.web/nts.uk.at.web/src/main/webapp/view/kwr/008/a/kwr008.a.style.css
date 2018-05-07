@@ -10,3 +10,7 @@
 .date-range-picker {
 	display: inline-block;
 }
+
+.form-label {
+	width: 110px;
+}

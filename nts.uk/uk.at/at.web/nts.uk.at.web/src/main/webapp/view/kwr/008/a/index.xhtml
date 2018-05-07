@@ -25,7 +25,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- A1_1 -->
-				<button tabindex="1" class="proceed" data-bind="click: exportReport, enable: $root.errors.isEmpty">#{i18n.getText('KWR008_3')}</button>
+				<button tabindex="1" id="A1_1" class="proceed" data-bind="click: exportReport, enable: $root.errors.isEmpty">#{i18n.getText('KWR008_3')}</button>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<!-- A2_1  CCG001-->
@@ -46,9 +46,9 @@
 						<!-- A3 -->
 						<div id="range-date" class="valign-center control-group ntsControl">
 							<!-- A3_1 -->
-							<span class="label">#{i18n.getText('KWR008_4')}</span>
+							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KWR008_4')}</div>
 							<!-- A3_2 -->
-							<div class="date-range-picker" data-bind="ntsDateRangePicker: { required: true,
+							<div id="period" class="date-range-picker" data-bind="ntsDateRangePicker: { required: true,
 							enable: true,
 							showNextPrevious: true,
 							value: dateValue,
@@ -58,7 +58,7 @@
 						<!-- A4 -->
 						<div class="valign-center control-group">
 							<!-- A4_1 -->
-							<span class="label">#{i18n.getText('KWR008_11')}</span>
+							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KWR008_11')}</div>
 							<!-- A4_2 -->
 							<div id="outputItem" tabindex="6" data-bind="ntsComboBox: {
 								name: '#[KWR008_12]',
@@ -69,9 +69,10 @@
 								optionsText: 'name',
 								selectFirstIfNull: true,
 								required: true,
+								editable: false,
 								columns: [
-									{ prop: 'cd', length: 1 },
-									{ prop: 'name', length: 10 },
+									{ prop: 'code', length: 2 },
+									{ prop: 'name', length: 10, lengthDropDown: 20 },
 								]}"></div>
 								<!-- A4_3 -->
 								<button data-bind="click: redirectKWR008B, 
@@ -80,7 +81,7 @@
 						</div>
 						<!-- A6 -->
 						<div class="valign-center control-group">
-							<span class="label">#{i18n.getText('KWR008_17')}</span>
+							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KWR008_17')}</div>
 							<div tabindex="7" id="A4_2" data-bind="ntsComboBox: {
 								options: breakPage,
 								optionsValue: 'value',
