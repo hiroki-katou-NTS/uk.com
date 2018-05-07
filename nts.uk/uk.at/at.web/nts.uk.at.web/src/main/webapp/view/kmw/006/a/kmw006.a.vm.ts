@@ -179,6 +179,7 @@ module nts.uk.at.view.kmw006.a.viewmodel {
                 dfd = $.Deferred();
             block.invisible();
             self.listClosureInfo.removeAll();
+            self.itemList.removeAll();
             service.getInfors().done((results: any) => {
                 if (results) {
                     for (var i = 0; i < results.listInfor.length; i++) {
