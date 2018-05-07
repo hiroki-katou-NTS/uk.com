@@ -203,8 +203,12 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                 if(month<10){
                      month='0'+month; 
                 } 
+                var startMonth = self.currentMonth().strMonth.getDate();
+                if(startMonth<10){
+                     startMonth='0'+startMonth; 
+                } 
                 var lastMonth = self.currentMonth().endMonth.getDate();
-                self.txtDatePeriod(month+'/01'+getText('KTG029_3')+month+'/'+lastMonth+getText('KTG029_5'));
+                self.txtDatePeriod(month+'/'+startMonth+getText('KTG029_3')+month+'/'+lastMonth+getText('KTG029_5'));
                 self.getInfor(code, self.currentMonth().strMonth, self.currentMonth().endMonth);
                 self.btnSwitch(getText('KTG029_6'));
                 self.switchDate(false);
@@ -213,8 +217,12 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                 if(month<10){
                      month='0'+month; 
                 }
+                var startMonth = self.currentMonth().strMonth.getDate();
+                if(startMonth<10){
+                     startMonth='0'+startMonth; 
+                } 
                 var lastMonth = self.nextMonth().endMonth.getDate();
-                self.txtDatePeriod(month+'/01'+getText('KTG029_3')+month+'/'+lastMonth+getText('KTG029_5'));
+                self.txtDatePeriod(month+'/'+startMonth+getText('KTG029_3')+month+'/'+lastMonth+getText('KTG029_5'));
                 self.getInfor(code, self.nextMonth().strMonth, self.nextMonth().endMonth);
                 self.btnSwitch(getText('KTG029_6'));
                 self.switchDate(true);

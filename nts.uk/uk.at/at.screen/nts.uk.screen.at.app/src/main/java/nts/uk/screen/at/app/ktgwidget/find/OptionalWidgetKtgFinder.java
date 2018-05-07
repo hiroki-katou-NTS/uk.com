@@ -11,6 +11,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.WidgetDisplayItemImport;
+import nts.uk.ctx.at.request.dom.overtimeinstruct.OvertimeInstructRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -42,6 +43,9 @@ public class OptionalWidgetKtgFinder {
 	
 	@Inject
 	private OptionalWidgetAdapter optionalWidgetAdapter; 
+
+	@Inject
+	private OvertimeInstructRepository overtimeInstructRepo;
 	
 	
 
@@ -90,12 +94,13 @@ public class OptionalWidgetKtgFinder {
 	}
 	
 	public OptionalWidgetInfoDto getDataRecord(String code, GeneralDate startDate, GeneralDate endDate) {
+		String sId = AppContexts.user().employeeId();
 		OptionalWidgetInfoDto dto = new OptionalWidgetInfoDto();
 		List<WidgetDisplayItemImport> widgetDisplayItem = findOptionalWidgetByCode(code).getWidgetDisplayItemExport();
 		for (WidgetDisplayItemImport item : widgetDisplayItem) {
 			if(item.getNotUseAtr()==1) {
 				if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.OVERTIME_WORK_NO.value) {
-					
+					dto.setOverTime(overtimeInstructRepo.getAllOverTimeInstructBySId(sId, startDate, endDate).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.INSTRUCTION_HD_NO.value) {
 					
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.APPROVED_NO.value) {

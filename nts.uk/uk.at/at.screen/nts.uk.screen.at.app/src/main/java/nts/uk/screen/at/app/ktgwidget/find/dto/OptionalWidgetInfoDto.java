@@ -1,9 +1,16 @@
 package nts.uk.screen.at.app.ktgwidget.find.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 
-@Value
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class OptionalWidgetInfoDto {
 	
 	/** 1 OverTime Work Number 残業指示件数 */
