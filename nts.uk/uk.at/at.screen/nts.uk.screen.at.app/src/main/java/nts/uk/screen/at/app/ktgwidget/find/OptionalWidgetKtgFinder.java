@@ -20,7 +20,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.screen.at.app.ktgwidget.find.dto.DatePeriodDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OptionalWidgetDisplay;
-import nts.uk.screen.at.app.ktgwidget.find.dto.OptionalWidgetInfoDTO;
+import nts.uk.screen.at.app.ktgwidget.find.dto.OptionalWidgetInfoDto;
+import nts.uk.screen.at.app.ktgwidget.find.dto.WidgetDisplayItemTypeImport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -88,67 +89,67 @@ public class OptionalWidgetKtgFinder {
 		return new OptionalWidgetDisplay(datePeriodDto, optionalWidgetImport);
 	}
 	
-	public OptionalWidgetInfoDTO getDataByDateperiord(String code, GeneralDate startDate, GeneralDate endDate) {
-		
+	public OptionalWidgetInfoDto getDataRecord(String code, GeneralDate startDate, GeneralDate endDate) {
+		OptionalWidgetInfoDto dto = new OptionalWidgetInfoDto();
 		List<WidgetDisplayItemImport> widgetDisplayItem = findOptionalWidgetByCode(code).getWidgetDisplayItemExport();
 		for (WidgetDisplayItemImport item : widgetDisplayItem) {
 			if(item.getNotUseAtr()==1) {
-				if(item.getDisplayItemType() == 0) {
+				if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.OVERTIME_WORK_NO.value) {
 					
-				}else if(item.getDisplayItemType() == 1) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.INSTRUCTION_HD_NO.value) {
 					
-				}else if(item.getDisplayItemType() == 2) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.APPROVED_NO.value) {
 					
-				}else if(item.getDisplayItemType() == 3) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.UNAPPROVED_NO.value) {
 					
-				}else if(item.getDisplayItemType() == 4) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.DENIED_NO.value) {
 					
-				}else if(item.getDisplayItemType() == 5) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAND_NO.value) {
 					
-				}else if(item.getDisplayItemType() == 6) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.APP_DEADLINE_MONTH.value) {
 					
-				}else if(item.getDisplayItemType() == 7) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PRESENCE_DAILY_PER.value) {
 					
-				}else if(item.getDisplayItemType() == 8) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REFER_WORK_RECORD.value) {
 					
-				}else if(item.getDisplayItemType() == 9) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.OVERTIME_HOURS.value) {
 					
-				}else if(item.getDisplayItemType() == 10) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.FLEX_TIME.value) {
 					
-				}else if(item.getDisplayItemType() == 11) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REST_TIME.value) {
 					
-				}else if(item.getDisplayItemType() == 12) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.NIGHT_WORK_HOURS.value) {
 					
-				}else if(item.getDisplayItemType() == 13) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.LATE_OR_EARLY_RETREAT.value) {
 					
-				}else if(item.getDisplayItemType() == 14) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.YEARLY_HD.value) {
 					
-				}else if(item.getDisplayItemType() == 15) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HAFT_DAY_OFF.value) {
 					
-				}else if(item.getDisplayItemType() == 16) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HOURS_OF_HOLIDAY_UPPER_LIMIT.value) {
 					
-				}else if(item.getDisplayItemType() == 17) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.RESERVED_YEARS_REMAIN_NO.value) {
 					
-				}else if(item.getDisplayItemType() == 18) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PLANNED_YEAR_HOLIDAY.value) {
 					
-				}else if(item.getDisplayItemType() == 19) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAIN_ALTERNATION_NO.value) {
 					
-				}else if(item.getDisplayItemType() == 20) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAINS_LEFT.value) {
 					
-				}else if(item.getDisplayItemType() == 21) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PUBLIC_HD_NO.value) {
 					
-				}else if(item.getDisplayItemType() == 22) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HD_REMAIN_NO.value) {
 					
-				}else if(item.getDisplayItemType() == 23) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.CARE_LEAVE_NO.value) {
 					
-				}else if(item.getDisplayItemType() == 24) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.SPHD_RAMAIN_NO.value) {
 					
-				}else if(item.getDisplayItemType() == 25) {
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.SIXTYH_EXTRA_REST.value) {
 					
 				}
 			}
 		}
-		return null;
+		return dto;
 	}
 	
 }
