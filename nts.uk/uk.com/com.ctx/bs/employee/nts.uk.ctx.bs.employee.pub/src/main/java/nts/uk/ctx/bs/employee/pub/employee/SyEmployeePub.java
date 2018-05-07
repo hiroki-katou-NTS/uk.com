@@ -99,4 +99,14 @@ public interface SyEmployeePub {
 	 */
 	// RequestList335
 	List<String> getListEmpByWkpAndEmpt(List<String> wkps , List<String> lstempts , DatePeriod dateperiod);
+	
+	/**
+	 * Get List EmployeeId By CompanyId
+	 * @param sIds
+	 * @return
+	 */
+	// RequestList52
+	List<EmpOfLoginCompanyExport> getListEmpOfLoginCompany(String cid);
+	
+	
 }
