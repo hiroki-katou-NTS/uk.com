@@ -27,6 +27,7 @@ import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeState;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.SingleItem;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryDetail;
@@ -81,7 +82,7 @@ public class CopySettingItemFinder {
 
 		}
 		
-		List<PersonInfoItemDefinition> itemDefList = itemDefRepo.getPerInfoItemDefByListId(
+		List<PersonInfoItemDefinition> itemDefList = itemDefRepo.getItemLstByListId(
 				empCopyCategoryOpt.get().getItemDefIdList(), AppContexts.user().contractCode());
 		
 		// get data
@@ -100,6 +101,14 @@ public class CopySettingItemFinder {
 			
 			SingleItem singleItemTypeState = (SingleItem) itemDef.getItemTypeState();
 			DataTypeState dataTypeState = singleItemTypeState.getDataTypeState();
+			
+			DataTypeValue dataType = dataTypeState.getDataTypeValue();
+			
+			if (dataType == DataTypeValue.READONLY
+					|| dataType == DataTypeValue.RELATE_CATEGORY) {
+				continue;
+			}
+			
 			Object value  = dataMap.get(itemDef.getItemCode().v());
 			
 			copyItemList.add(SettingItemDto.createFromJavaType1(categoryCd,
@@ -131,7 +140,7 @@ public class CopySettingItemFinder {
 		Map<String, String> categoryIdvsCodeMap = categoryDetailList.stream()
 				.collect(Collectors.toMap(x -> x.getCategoryId(), x -> x.getCategoryCode()));
 		
-		List<PersonInfoItemDefinition> itemDefList = itemDefRepo.getPerInfoItemDefByListId(copySettingItemIdList,
+		List<PersonInfoItemDefinition> itemDefList = itemDefRepo.getItemLstByListId(copySettingItemIdList,
 				AppContexts.user().contractCode());
 		
 		// get data
@@ -155,12 +164,19 @@ public class CopySettingItemFinder {
 			
 			SingleItem singleItemTypeState = (SingleItem) itemDef.getItemTypeState();
 			DataTypeState dataTypeState = singleItemTypeState.getDataTypeState();
+			DataTypeValue dataType = dataTypeState.getDataTypeValue();
+			
+			if (dataType == DataTypeValue.READONLY
+					|| dataType == DataTypeValue.RELATE_CATEGORY) {
+				continue;
+			}
+			
 			Object value  = dataMap.get(itemDef.getItemCode().v());
 			
 			copyItemList.add(SettingItemDto.createFromJavaType1(categoryIdvsCodeMap.get(itemDef.getPerInfoCategoryId()),
 					itemDef.getPerInfoItemDefId(), itemDef.getItemCode().v(), itemDef.getItemName().v(),
 					itemDef.getIsRequired().value, value,
-					dataTypeState.getDataTypeValue(), dataTypeState.getReferenceTypes(),
+					dataType, dataTypeState.getReferenceTypes(),
 					itemDef.getItemParentCode().v(), null, dataTypeState.getReferenceCode()));
 			
 		}

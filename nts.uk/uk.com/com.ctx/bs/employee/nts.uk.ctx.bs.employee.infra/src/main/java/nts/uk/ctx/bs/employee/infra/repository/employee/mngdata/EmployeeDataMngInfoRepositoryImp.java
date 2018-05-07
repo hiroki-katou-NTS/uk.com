@@ -99,6 +99,9 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	/** The select by cid and sid. */
 	public final String SELECT_BY_SIDS = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid";
+	
+	private static final String GET_ALL = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid ORDER BY  e.employeeCode ASC";
+
 
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
@@ -423,6 +426,14 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			commandProxy().update(entity);
 		}
 
+	}
+
+	@Override
+	public List<EmployeeDataMngInfo> getAllByCid(String cid) {
+		List<BsymtEmployeeDataMngInfo> listEntity = this.queryProxy()
+				.query(GET_ALL, BsymtEmployeeDataMngInfo.class).setParameter("cid", cid).getList();
+
+		return toListEmployeeDataMngInfo(listEntity);
 	}
 
 	// laitv code end

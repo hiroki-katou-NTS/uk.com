@@ -162,12 +162,7 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 		if (CollectionUtil.isEmpty(personIds)) {
 			return new ArrayList<>();
 		}
-//
-//		List<Person> lstPerson = this.queryProxy().query(SELECT_BY_PERSON_IDS, BpsmtPerson.class)
-//				.setParameter("pids", personIds).getList(c -> toDomain(c));
-//
-//		return lstPerson;
-		
+
 		List<Person> lstPerson = new ArrayList<>();
 		CollectionUtil.split(personIds, 1000, subIdList -> {
 			lstPerson.addAll(this.queryProxy().query(SELECT_BY_PERSON_IDS, BpsmtPerson.class)
