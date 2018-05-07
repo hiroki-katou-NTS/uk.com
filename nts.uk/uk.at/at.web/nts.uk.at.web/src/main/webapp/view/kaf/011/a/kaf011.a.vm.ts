@@ -137,10 +137,12 @@ module nts.uk.at.view.kaf011.a.screenModel {
             }
         }
         validateControl() {
-            let self = this;
+            let self = this,
+                isRecError = self.checkRecTime(),
+                isAbsError = self.checkAbsTime();
             $(".kaf-011-combo-box ,.nts-input").trigger("validate");
-
-            return self.checkRecTime() && self.checkAbsTime();
+            let isKibanControlError = nts.uk.ui.errors.hasError();
+            return isRecError || isAbsError || isKibanControlError;
 
         }
         checkRecTime() {
@@ -200,16 +202,13 @@ module nts.uk.at.view.kaf011.a.screenModel {
         }
         register() {
             let self = this,
-                saveCmd = self.genSaveCmd(),
-                isErrorControl = !self.validateControl();
-            if (nts.uk.ui.errors.hasError() || isErrorControl) { return; }
+                saveCmd = self.genSaveCmd();
 
+            let isControlError = self.validateControl();
+            if (isControlError) { return; }
+            
             let isCheckReasonError = !self.checkReason();
-            if (isCheckReasonError) {
-                return;
-            }
-
-
+            if (isCheckReasonError) { return; }
             block.invisible();
             service.save(saveCmd).done(() => {
                 dialog({ messageId: 'Msg_15' }).then(function() {
