@@ -4,11 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.sys.env.dom.mailnoticeset;
 
+import nts.arc.layer.dom.AggregateRoot;
+
 /**
  * The Class MailFunction.
  */
 //メール機能
-public class MailFunction {
+public class MailFunction extends AggregateRoot {
 
 	/** The function id. */
 	//機能ID

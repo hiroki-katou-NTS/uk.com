@@ -10,6 +10,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
 @Getter
+//ユーザー情報の使用方法
 public class UserInfoUseMethod extends AggregateRoot {
 
 	/** The company id. */
