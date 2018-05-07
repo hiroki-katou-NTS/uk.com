@@ -118,9 +118,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		List<WithinWorkTimeFrame> timeFrames = new ArrayList<>();
 		
 		//遅刻判断時刻
-		Optional<LateDecisionClock> lateDesClock = null;
+		Optional<LateDecisionClock> lateDesClock = Optional.empty();
 		//遅刻判断時刻
-		Optional<LeaveEarlyDecisionClock> leaveEarlyDesClock = null;
+		Optional<LeaveEarlyDecisionClock> leaveEarlyDesClock = Optional.empty();
 	
 		if(workType.isWeekDayAttendance()) {
 			//遅刻判断時刻を求める
