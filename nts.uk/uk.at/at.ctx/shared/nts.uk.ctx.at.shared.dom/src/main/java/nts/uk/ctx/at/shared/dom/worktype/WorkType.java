@@ -243,6 +243,12 @@ public class WorkType extends AggregateRoot {
 	public WorkTypeSet getWorkTypeSetByAtr(WorkAtr atr) {
 		return this.getWorkTypeSetList().stream().filter(item -> item.getWorkAtr() == atr).findFirst().get();
 	}
+	
+	public WorkTypeSet getWorkTypeSetAvailable() {
+		return this.getWorkTypeSetList().stream().filter(item -> item.getWorkAtr() == WorkAtr.OneDay 
+				|| item.getWorkAtr() == WorkAtr.Afternoon  
+				|| item.getWorkAtr() == WorkAtr.Monring).findFirst().get();
+	}
 
 	/**
 	 * Gets the work type set.
