@@ -32,9 +32,9 @@ module nts.uk.at.view.kwr008.share.model {
     }
 
     export class ItemModel {
-        code: number;
+        code: string;
         name: string;
-        constructor(code: number, name: string) {
+        constructor(code: string, name: string) {
             this.code = code;
             this.name = name;
         }

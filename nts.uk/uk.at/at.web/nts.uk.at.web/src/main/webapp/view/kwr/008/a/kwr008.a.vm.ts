@@ -95,6 +95,9 @@ module nts.uk.at.view.kwr008.a {
                         self.showClosure(true);
                     }
                 });
+                self.selectedOutputItem.subscribe(item => {
+                    $('#outputItem').trigger('validate');
+                });
 
                 service.getPermissionOfEmploymentForm().done((permission: any) => {
                     self.permissionOfEmploymentForm(new model.PermissionOfEmploymentFormModel(
@@ -105,8 +108,10 @@ module nts.uk.at.view.kwr008.a {
                 });
                 //A3
                 service.getPeriod().done((data) => {
-                    self.startDateString(data.startYearMonth);
-                    self.endDateString(data.endYearMonth);
+                    if (data) {
+                        self.startDateString(data.startYearMonth);
+                        self.endDateString(data.endYearMonth);
+                    }
                 });
 
                 //A4
@@ -114,12 +119,15 @@ module nts.uk.at.view.kwr008.a {
                     _.forEach(dataArr, data => {
                         self.outputItem.push(new share.ItemModel(data.cd, data.name));
                     });
+                    $('#outputItem').trigger('validate');
                 });
                 // A6
                 self.restoreOutputConditionAnnualWorkSchedule()
                 .done((data: model.OutputConditionAnnualWorkScheduleChar) => {
-                    self.selectedOutputItem(data.setItemsOutputCd);
-                    self.selectedBreakPage(data.breakPage);
+                    if (data) {
+                        self.selectedOutputItem(data.setItemsOutputCd);
+                        self.selectedBreakPage(data.breakPage);
+                    }
                 });
 
                 self.selectedEmployeeCode = ko.observableArray([]);
@@ -129,15 +137,18 @@ module nts.uk.at.view.kwr008.a {
 
             exportReport() {
                 var self = this;
+                nts.uk.ui.block.invisible();
                 //対象期間をチェックする
                 if (moment(self.dateValue().startDate, 'YYYY/MM').add(12, 'M').toDate() <=
                     moment(self.dateValue().endDate, 'YYYYMM').toDate()) {
                     nts.uk.ui.dialog.alertError({messageId: 'Msg_883'});
+                    nts.uk.ui.block.clear();
                     return;
                 }
                 //出力対象の社員をチェックする
                 if (!self.selectedEmployeeCode().length) {
                     nts.uk.ui.dialog.alertError({messageId: 'Msg_884'});
+                    nts.uk.ui.block.clear();
                     return;
                 }
                 var data = new model.EmployeeDto();
@@ -155,6 +166,7 @@ module nts.uk.at.view.kwr008.a {
                 nts.uk.request.exportFile('at/function/annualworkschedule/export', data).done(() => {
                     console.log('DONE!!');
                 });
+                nts.uk.ui.block.clear();
             }
 
             redirectKWR008B(){

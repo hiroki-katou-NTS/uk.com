@@ -60,15 +60,17 @@
 							<!-- A4_1 -->
 							<span class="label">#{i18n.getText('KWR008_11')}</span>
 							<!-- A4_2 -->
-							<div tabindex="6" data-bind="ntsComboBox: {
+							<div id="outputItem" tabindex="6" data-bind="ntsComboBox: {
 								name: '#[KWR008_12]',
 								options: outputItem,
 								optionsValue: 'code',
 								visibleItemsCount: 5,
 								value: selectedOutputItem,
 								optionsText: 'name',
+								selectFirstIfNull: true,
 								required: true,
 								columns: [
+									{ prop: 'cd', length: 1 },
 									{ prop: 'name', length: 10 },
 								]}"></div>
 								<!-- A4_3 -->
