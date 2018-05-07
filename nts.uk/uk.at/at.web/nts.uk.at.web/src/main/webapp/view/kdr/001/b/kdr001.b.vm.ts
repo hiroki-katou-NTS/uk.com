@@ -418,6 +418,20 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.pauseItem = ko.observable(param ? param.pauseItem || false : false);
             self.yearlyReserved = ko.observable(param ? param.yearlyReserved || false : false);
             self.listSpecialHoliday = ko.observableArray(param ? param.listSpecialHoliday || [] : []);
+            
+            self.outputItemSubstitute.subscribe((isCheck) => {
+                if(isCheck === false){
+                    self.representSubstitute(false);
+                    self.remainingChargeSubstitute(false);
+                }
+            });
+            
+            self.pauseItem.subscribe((isCheck) => {
+                if(isCheck === false){
+                    self.unDigestedPause(false);
+                    self.numberRemainingPause(false);
+                }
+            });
         }
     }
 
