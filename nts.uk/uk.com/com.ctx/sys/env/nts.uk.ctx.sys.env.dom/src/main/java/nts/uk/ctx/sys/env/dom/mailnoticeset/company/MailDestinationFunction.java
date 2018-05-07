@@ -7,6 +7,7 @@ package nts.uk.ctx.sys.env.dom.mailnoticeset.company;
 import java.util.List;
 
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
 
 /**
  * The Class MailDestinationFunction.
