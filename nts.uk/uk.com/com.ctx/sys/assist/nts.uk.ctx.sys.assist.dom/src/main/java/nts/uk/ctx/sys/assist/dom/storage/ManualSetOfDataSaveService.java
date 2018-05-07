@@ -70,9 +70,8 @@ public class ManualSetOfDataSaveService {
 		// repoTargetEmp.getTargetEmployeesListById(storeProcessingId);
 		if (optManualSetting.isPresent()) {
 			// Get list category from
-			Optional<TargetCategory> targetCategories = repoTargetCat.getTargetCategoryListById(storeProcessingId);
-			List<TargetCategory> otpTarCate = Arrays.asList(targetCategories.get());
-			List<String> categoryIds = otpTarCate.stream().map(x -> {
+			List<TargetCategory> targetCategories = repoTargetCat.getTargetCategoryListById(storeProcessingId);
+			List<String> categoryIds = targetCategories.stream().map(x -> {
 				return x.getCategoryId();
 			}).collect(Collectors.toList());
 			List<Category> categorys = repoCategory.getCategoryByListId(categoryIds);
@@ -115,12 +114,11 @@ public class ManualSetOfDataSaveService {
 	}
 
 	private void generalCsv2(String storeProcessingId) {
-		Optional<TargetEmployees> targetEmployees = repoTargetEmp.getTargetEmployeesListById(storeProcessingId);
-		List<TargetEmployees> otpTarEmp = Arrays.asList(targetEmployees.get());
+		List<TargetEmployees> targetEmployees = repoTargetEmp.getTargetEmployeesListById(storeProcessingId);
 		// Add Table to CSV2
 		List<String> header = this.getTextHeader();
 		List<Map<String, Object>> dataSourceCsv2 = new ArrayList<>();
-		for (TargetEmployees targetEmp : otpTarEmp) {
+		for (TargetEmployees targetEmp : targetEmployees) {
 			Map<String, Object> rowCsv2 = new HashMap<>();
 			rowCsv2.put(header.get(0), targetEmp.getSid());
 			rowCsv2.put(header.get(1), targetEmp.getScd());

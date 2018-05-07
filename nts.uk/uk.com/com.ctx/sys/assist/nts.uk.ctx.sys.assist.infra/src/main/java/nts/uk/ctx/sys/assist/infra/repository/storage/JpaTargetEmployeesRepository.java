@@ -63,9 +63,9 @@ public class JpaTargetEmployeesRepository extends JpaRepository implements Targe
 	 * getTargetEmployeesListById(java.lang.String)
 	 */
 	@Override
-	public Optional<TargetEmployees> getTargetEmployeesListById(String storeProcessingId) {
+	public List<TargetEmployees> getTargetEmployeesListById(String storeProcessingId) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING_LIST, SspmtTargetEmployees.class)
-				.setParameter("storeProcessingId", storeProcessingId).getSingle(c -> c.toDomain());
+				.setParameter("storeProcessingId", storeProcessingId).getList(c -> c.toDomain());
 	}
 
 }
