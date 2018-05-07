@@ -52,8 +52,8 @@ public class JpaTargetCategoryRepository extends JpaRepository implements Target
 	 * @see nts.uk.ctx.sys.assist.dom.storage.TargetCategoryRepository#getTargetCategoryListById(java.lang.String)
 	 */
 	@Override
-	public Optional<TargetCategory> getTargetCategoryListById(String storeProcessingId) {
+	public List<TargetCategory> getTargetCategoryListById(String storeProcessingId) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING_LIST, SspmtTargetCategory.class)
-				.setParameter("storeProcessingId", storeProcessingId).getSingle(c -> c.toDomain());
+				.setParameter("storeProcessingId", storeProcessingId).getList(c -> c.toDomain());
 	}
 }
