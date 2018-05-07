@@ -17,12 +17,13 @@ public class JpaItemOutTblBookRepository extends JpaRepository implements ItemOu
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KfnrtItemOutTblBook f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.itemOutTblBookPk.cid =:cid AND  f.itemOutTblBookPk.cd =:cd ";
-    private static final String SELECT_ALL_BY_COMPANY = SELECT_ALL_QUERY_STRING + " WHERE f.itemOutTblBookPk.cid = :cid";
+    private static final String SELECT_ALL_BY_COMPANY = SELECT_ALL_QUERY_STRING + " WHERE f.itemOutTblBookPk.cid = :cid AND f.itemOutTblBookPk.set_out_cd =:setOutCd";
     
     @Override
-    public List<ItemOutTblBook> getAllItemOutTblBook(String cid){
+    public List<ItemOutTblBook> getAllItemOutTblBook(String cid, String setOutCd){
         return this.queryProxy().query(SELECT_ALL_BY_COMPANY, KfnrtItemOutTblBook.class)
                 .setParameter("cid", cid)
+                .setParameter("setOutCd", setOutCd)
                 .getList(item -> item.toDomain());
     }
 

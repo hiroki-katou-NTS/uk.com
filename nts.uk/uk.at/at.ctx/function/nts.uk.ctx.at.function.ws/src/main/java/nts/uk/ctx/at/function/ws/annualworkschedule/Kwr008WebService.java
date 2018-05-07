@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.enums.EnumAdaptor;
@@ -14,12 +15,15 @@ import nts.uk.ctx.at.function.app.command.annualworkschedule.AddSetOutItemsWoScC
 import nts.uk.ctx.at.function.app.command.annualworkschedule.RemoveSetOutItemsWoScCommandHandler;
 import nts.uk.ctx.at.function.app.command.annualworkschedule.SetOutItemsWoScCommand;
 import nts.uk.ctx.at.function.app.command.annualworkschedule.UpdateSetOutItemsWoScCommandHandler;
+import nts.uk.ctx.at.function.app.find.annualworkschedule.ItemOutTblBookDto;
+import nts.uk.ctx.at.function.app.find.annualworkschedule.ItemOutTblBookFinder;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.PeriodDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.PeriodFinder;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.PermissionOfEmploymentFinder;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.PermissionOfEmploymentFormDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.SetOutItemsWoScDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.SetOutItemsWoScFinder;
+import nts.uk.ctx.at.function.dom.annualworkschedule.SetOutItemsWoSc;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.OutputAgreementTime;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.PageBreakIndicator;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.ValueOuputFormat;
@@ -53,6 +57,9 @@ public class Kwr008WebService extends WebService {
 	
 	@Inject
 	private UpdateSetOutItemsWoScCommandHandler updateOutputItemSetting;
+	
+	@Inject
+	private ItemOutTblBookFinder listItemOut;
 
 	@POST
 	@Path("getPermissionOfEmploymentForm")
@@ -127,9 +134,18 @@ public class Kwr008WebService extends WebService {
 		this.updateOutputItemSetting.handle(command);
 	}
 	
-//	@POST
-//	@Path("get/checkCodeOutputItemSetting/{cd}")
-//	public SetOutItemsWoScDto checkCodeOutputSettingCode(@PathParam("cd") String cd){
-//		return this.outputItemSetting.find(cd);
-//	}
+	@POST
+	@Path("get/checkCodeOutputItemSetting/{cd}")
+	public SetOutItemsWoScDto checkCodeOutputSettingCode(@PathParam("cd") String cd){
+		return this.outputItemSetting.find(cd);
+	}
+	
+	/*
+	 * 帳表に出力する項目
+	 * */
+	@POST
+	@Path("get/listItemOutput/{setOutCd}")
+	public List<ItemOutTblBookDto> listItemOuput(@PathParam("setOutCd") String setOutCd){
+		return this.listItemOut.getAllItemOutTblBook(setOutCd);
+	}
 }

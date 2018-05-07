@@ -12,7 +12,7 @@ import java.util.List;
 public interface ItemOutTblBookRepository
 {
 
-    List<ItemOutTblBook> getAllItemOutTblBook(String cid);
+    List<ItemOutTblBook> getAllItemOutTblBook(String cid, String setOutCd);
 
     Optional<ItemOutTblBook> getItemOutTblBookById(String cid, String cd);
 

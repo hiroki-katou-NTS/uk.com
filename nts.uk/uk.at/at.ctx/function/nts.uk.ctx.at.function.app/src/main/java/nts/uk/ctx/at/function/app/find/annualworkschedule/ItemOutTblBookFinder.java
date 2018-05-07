@@ -19,9 +19,9 @@ public class ItemOutTblBookFinder
     @Inject
     private ItemOutTblBookRepository finder;
 
-    public List<ItemOutTblBookDto> getAllItemOutTblBook() {
+    public List<ItemOutTblBookDto> getAllItemOutTblBook(String setOutCd) {
         String cid = AppContexts.user().companyId();
-        return finder.getAllItemOutTblBook(cid).stream().map(item -> ItemOutTblBookDto.fromDomain(item))
+        return finder.getAllItemOutTblBook(cid, setOutCd).stream().map(item -> ItemOutTblBookDto.fromDomain(item))
                 .collect(Collectors.toList());
     }
 
