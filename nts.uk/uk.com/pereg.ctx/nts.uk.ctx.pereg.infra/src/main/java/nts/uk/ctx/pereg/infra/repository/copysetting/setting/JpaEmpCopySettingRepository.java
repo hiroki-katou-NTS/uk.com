@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pereg.dom.copysetting.setting.EmpCopySetting;
 import nts.uk.ctx.pereg.dom.copysetting.setting.EmpCopySettingRepository;
 import nts.uk.ctx.pereg.dom.copysetting.setting.EmployeeCopyCategory;
 import nts.uk.ctx.pereg.dom.copysetting.setting.EmployeeCopySetting;
@@ -21,9 +20,6 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaEmpCopySettingRepository extends JpaRepository implements EmpCopySettingRepository {
-
-	private static final String SELECT_EMP_COPY_SETTING_BY_COMID_QUERY_STRING = "SELECT cs "
-			+ "FROM PpestEmployeeCopySetting cs " + "WHERE cs.companyId =:companyId";
 
 	private static final String SELECT_EMP_COPY_SETTING = "SELECT ci FROM PpestEmployeeCopySettingItem ci"
 			+ " INNER JOIN PpestEmployeeCopySetting cs ON cs.ppestEmployeeCopySettingPk.categoryId = ci.categoryId"
@@ -41,14 +37,6 @@ public class JpaEmpCopySettingRepository extends JpaRepository implements EmpCop
 			+ " INNER JOIN PpemtPerInfoItemCm ic ON i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd AND c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd"
 			+ " WHERE c.cid = :companyId AND i.perInfoCtgId = :perInfoCtgId AND i.abolitionAtr = 0"
 			+ " AND ((ic.dataType != 9 AND ic.dataType != 10) or ic.dataType is null) AND ic.itemParentCd IS NULL ORDER BY io.displayOrder ASC";
-	
-	@Override
-	public List<EmpCopySetting> find(String companyId) {
-		return this.queryProxy().query(SELECT_EMP_COPY_SETTING_BY_COMID_QUERY_STRING, PpestEmployeeCopySetting.class)
-				.setParameter("companyId", companyId).getList().stream().map(x -> toDomain(x))
-				.collect(Collectors.toList());
-
-	}
 	
 	@Override
 	public Optional<EmployeeCopySetting> findSetting(String companyId) {
@@ -106,11 +94,6 @@ public class JpaEmpCopySettingRepository extends JpaRepository implements EmpCop
 				.collect(Collectors.toList());
 	}
 
-	private EmpCopySetting toDomain(PpestEmployeeCopySetting entity) {
-
-		return EmpCopySetting.createFromJavaType(entity.ppestEmployeeCopySettingPk.categoryId, entity.companyId);
-	}
-	
 	@Override
 	public void addCopyCategory(EmployeeCopyCategory copyCategory) {
 		

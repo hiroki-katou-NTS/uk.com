@@ -15,6 +15,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.find.additionaldata.item.EmpInfoItemDataFinder;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
+import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemDetail;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.ReferenceMethodType;
@@ -41,6 +43,9 @@ public class InitValueSetItemFinder {
 	private SettingItemDtoMapping settingItemMap;
 
 	List<PerInfoInitValueSetItemDetail> itemList;
+	
+	@Inject 
+	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
 
 	String employeeId;
 
@@ -80,7 +85,16 @@ public class InitValueSetItemFinder {
 		boolean isSetSameLoginSuccess = setItemSameLogin(itemList, result);
 
 		if (isScreenC) {
-			this.settingItemMap.setTextForSelectionItem(result, employeeId, command.getBaseDate(), command.getCategoryCd());
+			// Get perInfoCategory
+			Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty
+					.getPerInfoCategoryByCtgCD(command.getCategoryCd(), AppContexts.user().companyId());
+			
+			if (!perInfoCategory.isPresent()) {
+				throw new RuntimeException("invalid PersonInfoCategory");
+			}
+			
+			this.settingItemMap.setTextForSelectionItem(result, employeeId, command.getBaseDate(), perInfoCategory.get());
+			
 		} else {
 			if (!isSetSameLoginSuccess) {
 				boolean isAllItemIsSameAsLogin = isAllItemIsSameAsLogin(itemList, ReferenceMethodType.SAMEASLOGIN);
