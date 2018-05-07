@@ -40,19 +40,20 @@ public class AddManualSettingHandler extends CommandHandler<ManualSettingCommand
 		String storeProcessingId = IdentifierUtil.randomUniqueId();
 
 		ManualSetOfDataSave domain = manualSetCmd.toDomain(storeProcessingId);
-		// 画面の保存対象社員から「社員指定の有無」を判定する ( check radio button )
-		if (manualSetCmd.getSelectionTarget() == 1) {
+		// 画面の保存対象社員から「社員指定の有無」を判定する ( check radio button )presenceOfEmployee
+		if (manualSetCmd.getPresenceOfEmployee() == 1) {
 			// 指定社員の有無＝「する」
 			repoTargetEmp.addAll(domain.getEmployees());
 		}
 
-		if (manualSetCmd.getSelectionTarget() == 0) {
+		if (manualSetCmd.getPresenceOfEmployee() == 0) {
 			// 指定社員の有無＝「しない」の場合」
 
 		}
+		
+		repo.addManualSetting(domain);
 
 		manualSetOfDataSaveService.serverManualSaveProcessing(storeProcessingId);
 
-		repo.addManualSetting(domain);
 	}
 }

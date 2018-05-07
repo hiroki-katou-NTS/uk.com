@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.sys.assist.ws.manualSetting;
+package nts.uk.ctx.sys.assist.ws.manualsetting;
 
 import java.util.List;
 
