@@ -332,7 +332,8 @@ public class MonthlyPerformanceDisplay {
 		}
 		//社員ID（List）と基準日から所属職場IDを取得
 		//基準日：パラメータ「締め期間」の終了日
-		List<AffAtWorkplaceImport> affWorkplaceLst = affWorkplaceAdapter.findBySIdAndBaseDate(empIds, closureTime.end());
+//		List<AffAtWorkplaceImport> affWorkplaceLst = affWorkplaceAdapter.findBySIdAndBaseDate(empIds, closureTime.end());
+		List<AffAtWorkplaceImport> affWorkplaceLst = new ArrayList<>();
 		if(CollectionUtil.isEmpty(affWorkplaceLst)){
 			return monthlyLockStatusLst; 
 		}

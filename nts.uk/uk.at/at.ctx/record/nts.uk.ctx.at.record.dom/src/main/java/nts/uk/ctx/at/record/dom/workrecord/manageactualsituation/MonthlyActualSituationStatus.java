@@ -52,7 +52,7 @@ public class MonthlyActualSituationStatus {
 		//対象日の本人確認が済んでいるかチェックする
 		dailyActualSituation.setIdentificationCompleted(indentityStatus.identityConfirmCheck(param.getCompanyId(), param.getEmployeeId(), param.getDuration()));
 		//対象期間に日別実績のエラーが発生しているかチェックする
-		dailyActualSituation.setDailyRecordError(dailyRecordError.employeeDailyRecordErrorCheck(param.getCompanyId(), param.getEmployeeId(), param.getDuration()));
+//		dailyActualSituation.setDailyRecordError(dailyRecordError.employeeDailyRecordErrorCheck(param.getCompanyId(), param.getEmployeeId(), param.getDuration()));
 		
 		//日別実績が存在しているかチェックする
 		monthlyResult.setDailyActualSituation(dailyActualSituation);
