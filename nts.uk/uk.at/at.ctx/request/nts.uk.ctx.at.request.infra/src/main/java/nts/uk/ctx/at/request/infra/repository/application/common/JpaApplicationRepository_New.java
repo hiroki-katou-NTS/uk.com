@@ -219,4 +219,27 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 				.setParameter("companyID", companyID)
 				.getList(x -> x.toDomain());
 	}
+	/**
+	 * RequestList 232 param 反映状態   ＝  「反映済み」または「反映待ち」 
+	 * RequestList 233 param 反映状態   ＝  「未承認」または「差戻し」
+	 * RequestList 234 param 反映状態   ＝  「否認」
+	 * RequestList 235 param 反映状態   ＝  「差戻し」
+	 */
+	private final String SELECT_LIST_REFSTATUS = SELECT_FROM_APPLICATION 
+			+ "WHERE a.employeeID = :employeeID "
+			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate"
+			+ " AND WHERE a.stateReflectionReal IN :listReflecInfor"	
+			+ " AND a.appDate ORDER BY a.appDate ASC"
+			+ " AND a.prePostAtr ORDER BY a.prePostAtr DESC";
+	
+	@Override
+	public List<Application_New> getByListRefStatus(String employeeID, GeneralDate startDate, GeneralDate endDate, List<Integer> listReflecInfor) {
+		// TODO Auto-generated method stub
+		return this.queryProxy().query(SELECT_LIST_REFSTATUS, KrqdtApplication_New.class)
+		.setParameter("startDate", startDate)
+		.setParameter("endDate", endDate)
+		.setParameter("listReflecInforyID", listReflecInfor)
+		.getList(x -> x.toDomain());
+	}
+	
 }
