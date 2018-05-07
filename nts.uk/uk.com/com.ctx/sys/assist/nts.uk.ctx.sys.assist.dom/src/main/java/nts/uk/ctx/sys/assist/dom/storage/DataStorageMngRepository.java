@@ -1,6 +1,5 @@
 package nts.uk.ctx.sys.assist.dom.storage;
 
-import java.util.Optional;
 import java.util.List;
 
 /**
@@ -11,7 +10,7 @@ public interface DataStorageMngRepository {
 
 	List<DataStorageMng> getAllDataStorageMng();
 
-	Optional<DataStorageMng> getDataStorageMngById(String storeProcessingId);
+	List<DataStorageMngDto> getDataStorageMngById(String storeProcessingId);
 
 	/**
 	 * @author nam.lh

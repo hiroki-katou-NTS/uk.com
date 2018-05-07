@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.assist.dom.storage;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 /**
 * 対象カテゴリ
@@ -13,7 +13,7 @@ public interface TargetCategoryRepository
 
     Optional<TargetCategory> getTargetCategoryById(String storeProcessingId, String categoryId);
     
-    List<TargetCategory> getTargetCategoryListById(String storeProcessingId);
+    List<TargetCategoryDto> getTargetCategoryListById(String storeProcessingId);
 
     void add(TargetCategory domain);
 
