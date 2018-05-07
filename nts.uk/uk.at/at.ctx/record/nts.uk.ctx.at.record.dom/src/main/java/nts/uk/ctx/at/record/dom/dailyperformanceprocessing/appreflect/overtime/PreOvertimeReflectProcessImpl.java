@@ -159,7 +159,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 			Integer overShiftNight) {
 		// INPUT．残業時間反映フラグをチェックする
 		//INPUT．外深夜時間をチェックする
-		if(!timeReflectFlg || overShiftNight < 0) {
+		if(!timeReflectFlg || overShiftNight == null || overShiftNight < 0) {
 			return;
 		}
 		//所定外深夜時間の反映
@@ -171,7 +171,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		//INPUT．残業時間反映フラグをチェックする
 		//INPUT．フレックス時間をチェックする
 		if(!timeReflectFlg
-				|| flexExessTime < 0) {
+				|| flexExessTime == null || flexExessTime < 0) {
 			return;
 		}
 		//フレックス時間を反映する
