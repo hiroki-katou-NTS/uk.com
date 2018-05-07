@@ -60,8 +60,6 @@ public class JpaExecutionTaskSettingRepository extends JpaRepository
 		oldData.endDate = updateData.endDate;
 		oldData.enabledSetting = updateData.enabledSetting;
 		oldData.nextExecDateTime = updateData.nextExecDateTime;
-		oldData.repIntervalDay = updateData.repIntervalDay;
-		oldData.repIntervalWeek = updateData.repIntervalWeek;
 		oldData.monday = updateData.monday;
 		oldData.tuesday = updateData.tuesday;
 		oldData.wednesday = updateData.wednesday;

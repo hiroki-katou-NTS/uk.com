@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.processexecution.executionlog;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,10 +24,10 @@ public class ProcessExecutionLogHistory extends AggregateRoot {
 	private String companyId;
 	
 	/* 全体のエラー詳細 */
-	private OverallErrorDetail overallError;
+	private Optional<OverallErrorDetail>  overallError;
 	
 	/* 全体の終了状態 */
-	private EndStatus overallStatus;
+	private Optional<EndStatus> overallStatus;
 	
 	/* 前回実行日時 */
 	private GeneralDateTime lastExecDateTime;

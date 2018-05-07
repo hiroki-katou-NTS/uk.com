@@ -7,6 +7,8 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskSettingRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.LastExecDateTimeRepository;
+import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogHistRepository;
+import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -25,16 +27,29 @@ public class RemoveProcessExecutionCommandHandler extends CommandHandler<RemoveP
 	
 	@Inject
 	private LastExecDateTimeRepository lastExecRepo;
+	
+	@Inject
+	private ProcessExecutionLogManageRepository processExecLogManRepo;
+	
+	@Inject
+	private ProcessExecutionLogHistRepository processExecLogHistRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<RemoveProcessExecutionCommand> context) {
 		String companyId = AppContexts.user().companyId();
 
 		RemoveProcessExecutionCommand command = context.getCommand();
-
-		this.procExecRepo.remove(companyId, command.getExecItemCd());
+		//ドメインモデル「実行タスク設定」を削除する
 		this.execSetRepo.remove(companyId, command.getExecItemCd());
+		//ドメインモデル「更新処理自動実行ログ」を削除する
 		this.procExecLogRepo.removeList(companyId, command.getExecItemCd());
+		//ドメインモデル「更新処理自動実行」を削除する
+		this.procExecRepo.remove(companyId, command.getExecItemCd());
+		//ドメインモデル「更新処理前回実行日時」を削除する
 		this.lastExecRepo.remove(companyId, command.getExecItemCd());
+		//ドメインモデル「更新処理自動実行管理」を削除する
+		this.processExecLogManRepo.remove(companyId, command.getExecItemCd());
+		//ドメインモデル「更新処理自動実行ログ履歴」を削除する
+		this.processExecLogHistRepo.remove(companyId, command.getExecItemCd());
 	}
 }

@@ -108,10 +108,11 @@
                         <tr class="row">
                         	<td colspan="2">
                         		<div style="border-top : 1px solid black; padding : 10px; margin-top:10px">
+                        		
 	                        		<div style="border : 1px solid black; padding : 10px; border-radius:10px;">
 	                        			<!-- 個人スケジュール作成 -->
 		                         		<div class="execSetting">
-		                       				<!-- B7-1 Title -->
+		                       				<!-- B7-1 Title 実行設定.個人スケジュール作成.個人スケジュール作成区分-->
 		                         			<div tabindex="13" data-bind="ntsCheckBox: { checked: perScheduleCls }" style="border-bottom: 1px solid black;">#{i18n.getText('KBT002_19')}</div>
 		                         			<!-- DateTime setting -->
 		                         			<div class="subExecSetting">
@@ -186,9 +187,11 @@
 		                         				</div>
 		                         			</div>
 		                         		</div>
+		                         		
 		                         		<!-- 日別実績の作成・計算 -->
 		                         		<div class="execSetting">
-		                         			<!-- B8-1 Title -->
+		                         			<!-- B8-1 Title 実行設定.日別実績の作成・計算.日別実績の作成・計算区分								
+		                         			-->
 		                         			<div tabindex="18" data-bind="ntsCheckBox: { checked: dailyPerfCls }" style="border-bottom: 1px solid black;">#{i18n.getText('KBT002_35')}</div>
 		                         			<div class="subExecSetting">
 			                         			<div tabindex="19" style="width: 400px" class="middle"
@@ -207,6 +210,13 @@
 				                                 <div tabindex="20" data-bind="ntsCheckBox: { checked: midJoinEmployee, enable: dailyPerfCls() }">#{i18n.getText('KBT002_37')}</div>
 		                         			</div>
 		                         		</div>
+		                         		<!-- 更新処理の日別処理対象者区分  -->
+											<div class="execSetting"
+												data-bind="ntsRadioBoxGroup: {
+											options: $parent.targetGroupClass,
+											optionsValue: 'targetId',
+											optionsText: 'targetName',
+											value: targetGroupClassification, enable: dailyPerfCls()}"></div>
 		                         		<div class="execSetting">
 		                         			<!-- 承認結果反映 -->
 		                         			<div tabindex="21" data-bind="ntsCheckBox: { checked: reflectResultCls }" style="width: 250px;margin-right: 65px;border-bottom: 1px solid black;">#{i18n.getText('KBT002_38')}</div>
