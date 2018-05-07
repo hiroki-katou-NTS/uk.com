@@ -4,12 +4,12 @@ import java.util.List;
 
 public interface FixedExtraMonRepository {
 
-	List<FixedExtraMon> getByEralCheckID(String errorAlarmCheckID);
+	List<FixedExtraMon> getByEralCheckID(String monAlarmCheckID);
 	
 	void addFixedExtraMon(FixedExtraMon fixedExtraMon);
 	
 	void updateFixedExtraMon(FixedExtraMon fixedExtraMon);
 	
-	void deleteFixedExtraMon(String errorAlarmCheckID);
+	void deleteFixedExtraMon(String monAlarmCheckID);
 	
 }

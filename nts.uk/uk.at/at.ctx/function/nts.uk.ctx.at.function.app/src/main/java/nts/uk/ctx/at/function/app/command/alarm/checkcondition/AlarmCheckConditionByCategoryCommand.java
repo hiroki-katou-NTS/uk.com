@@ -33,10 +33,12 @@ public class AlarmCheckConditionByCategoryCommand {
 	
 	private int action;
 
+	private MonAlarmCheckConCommand monAlarmCheckCon;
+	
 	public AlarmCheckConditionByCategoryCommand(String code, String name, int category,
 			AlarmCheckTargetConditionCommand targetCondition, List<String> availableRoles,
 			DailyAlarmCheckConditionCommand dailyAlarmCheckCondition,
-			Schedule4WeekAlarmCheckConditionCommand schedule4WeekAlarmCheckCondition, int action) {
+			Schedule4WeekAlarmCheckConditionCommand schedule4WeekAlarmCheckCondition, int action,MonAlarmCheckConCommand monAlarmCheckCon) {
 		super();
 		this.code = code;
 		this.name = name;
@@ -46,6 +48,7 @@ public class AlarmCheckConditionByCategoryCommand {
 		this.dailyAlarmCheckCondition = dailyAlarmCheckCondition;
 		this.schedule4WeekAlarmCheckCondition = schedule4WeekAlarmCheckCondition;
 		this.action = action;
+		this.monAlarmCheckCon = monAlarmCheckCon;
 	}
 
 }

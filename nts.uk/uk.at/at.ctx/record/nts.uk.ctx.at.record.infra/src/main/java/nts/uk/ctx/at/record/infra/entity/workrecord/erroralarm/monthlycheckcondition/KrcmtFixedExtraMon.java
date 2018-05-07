@@ -47,7 +47,7 @@ public class KrcmtFixedExtraMon extends UkJpaEntity implements Serializable {
 	public static KrcmtFixedExtraMon toEntity(FixedExtraMon domain) {
 		return new KrcmtFixedExtraMon(
 				new KrcmtFixedExtraMonPK(
-					domain.getErrorAlarmCheckID(),
+					domain.getMonAlarmCheckID(),
 					domain.getFixedExtraItemMonNo().value),
 				domain.isUseAtr()?1:0,
 				!domain.getMessage().isPresent()?null:domain.getMessage().get().v()
@@ -57,7 +57,7 @@ public class KrcmtFixedExtraMon extends UkJpaEntity implements Serializable {
 	
 	public FixedExtraMon toDomain() {
 		return new FixedExtraMon(
-				this.krcmtFixedExtraMonPK.errorAlarmCheckID,
+				this.krcmtFixedExtraMonPK.monAlarmCheckID,
 				EnumAdaptor.valueOf(this.krcmtFixedExtraMonPK.fixedExtraItemMonNo, SysFixedMonPerEral.class),
 				this.useAtr==0?false:true,
 				new FixedConditionWorkRecordName(this.message)
