@@ -129,37 +129,23 @@ module nts.custom.component {
                 box-sizing: border-box;
             }
             
-            .header-info .person-info td {
-                line-height: 30px;
+            .header-info .person-info .row {
+                margin-top: -1px;
+                line-height: 32px;
                 border: 1px solid #999;
             }
             
-            .header-info .person-info td:not (:first-child ) {
-                position: relative;
-            }
-            
-            .header-info .person-info td:first-child {
-                width: 120px;
-                padding-left: 15px;
-            }
-            
-            .header-info .person-info td:nth-child(3) {
-                width: 100px;
-                padding-left: 15px;
-                box-sizing: border-box;
-            }
-            
-            .header-info .person-info td>div.info {
+            .header-info .person-info .row>div.info {
                 float: left;
                 display: block;
                 padding-left: 5px;
                 padding-right: 5px;
-                min-height: 30px;
-                max-height: 30px;
+                min-height: 31px;
+                max-height: 31px;
                 overflow: hidden;
             }
             
-            .header-info .person-info td>div.info>* {
+            .header-info .person-info .row>div.info>* {
                 display: inline-block;
                 max-width: 215px;
                 text-overflow: ellipsis;
@@ -168,27 +154,29 @@ module nts.custom.component {
                 white-space: nowrap;
             }
             
-            .header-info .person-info td>div.info>*:first-child {
+            .header-info .person-info .row>div.info>*:first-child {
                 min-width: 110px;
                 max-width: 110px;
             }
             
-            .header-info .person-info td>div.info.first {
-                min-width: 95px;
-                max-width: 95px;
+            .header-info .person-info .row>div.info.first {
+                min-width: 170px;
+                max-width: 170px;
             }
             
-            .header-info .person-info td>div.bg-calendar-ym-set {
+            .header-info .person-info .row>div.bg-calendar-ym-set {
                 display: inline-block;
                 padding-left: 10px;
                 padding-right: 10px;
                 border-left: 1px solid #999;
                 border-right: 1px solid #999;
             }
+            
+            .header-info .person-info .row>div.bg-calendar-ym-set:first-child {
+                min-width: 40px;
+                margin-left: -1px;
+            }
         </style>`;
-
-    // add support virtual element to let control
-    ko.virtualElements.allowedBindings.let = true;
 
     window["ko"].components.register('employee-list', {
         template: `<!-- ko let: {
@@ -223,43 +211,35 @@ module nts.custom.component {
                     </div>
                     <div class="person-group">
                         <div class="active-panel">
-                            <table class="person-info">
-                                <tbody>
-                                    <tr>
-                                        <td class="bg-calendar-ym-set" data-bind="text: text('CPS001_11')"></td>
-                                        <td>
-                                            <div class="info">
-                                                <span data-bind="text: employee.code, attr: { title: employee.code }"></span>
-                                                <span data-bind="text: employee.name, attr: { title: employee.name }"></span>
-                                                <span data-bind="text: person.gender, attr: { title: person.gender }"></span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="bg-calendar-ym-set" data-bind="text: text('CPS001_12')"></td>
-                                        <td>
-                                            <div class="info first" data-bind="text: person.age"></div>
-                                            <div class="info bg-calendar-ym-set" data-bind="text: text('CPS001_13')"></div>
-                                            <div class="info" data-bind="text: employee.entire"></div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="bg-calendar-ym-set" data-bind="text: text('CPS001_14')"></td>
-                                        <td>
-                                            <span data-bind="text: department.code"></span>
-                                            <span data-bind="text: department.name"></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="bg-calendar-ym-set" data-bind="text: text('CPS001_15')"></td>
-                                        <td>
-                                            <div class="info first" data-bind="text: constract.position"></div>
-                                            <div class="info bg-calendar-ym-set" data-bind="text: text('CPS001_16')"></div>
-                                            <div class="info" data-bind="text: constract.contractType"></div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div class="person-info">
+                                <div class="row cf">
+                                    <div class="info bg-calendar-ym-set" data-bind="text: text('CPS001_11')"></div>
+                                    <div class="info">
+                                        <span data-bind="text: employee.code, attr: { title: employee.code }"></span>
+                                        <span data-bind="text: employee.name, attr: { title: employee.name }"></span>
+                                        <span data-bind="text: person.gender, attr: { title: person.gender }"></span>
+                                    </div>
+                                </div>
+                                <div class="row cf">
+                                    <div class="info bg-calendar-ym-set" data-bind="text: text('CPS001_12')"></div>
+                                    <div class="info first" data-bind="text: person.age"></div>
+                                    <div class="info bg-calendar-ym-set" data-bind="text: text('CPS001_13')"></div>
+                                    <div class="info" data-bind="text: employee.entire"></div>
+                                </div>
+                                <div class="row cf">
+                                    <div class="info bg-calendar-ym-set" data-bind="text: text('CPS001_14')"></div>
+                                    <div class="info">
+                                        <span data-bind="text: department.code"></span>
+                                        <span data-bind="text: department.name"></span>
+                                    </div>
+                                </div>
+                                <div class="row cf">
+                                    <div class="info bg-calendar-ym-set" data-bind="text: text('CPS001_15')"></div>
+                                    <div class="info first" data-bind="text: constract.position"></div>
+                                    <div class="info bg-calendar-ym-set" data-bind="text: text('CPS001_16')"></div>
+                                    <div class="info" data-bind="text: constract.contractType"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="action-group">
