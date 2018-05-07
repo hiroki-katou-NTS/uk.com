@@ -156,13 +156,13 @@ public class OverTimeSheet {
 		
 		//事前申請を上限とする制御
 		val afterCalcUpperTimeList = afterUpperControl(calcOverTimeWorkTimeList,autoCalcSet);
-		return afterCalcUpperTimeList; 
+		//return afterCalcUpperTimeList; 
 		//振替処理
-//		val aftertransTimeList = transProcess(workType,
-//											  afterCalcUpperTimeList,
-//											  eachWorkTimeSet,
-//											  eachCompanyTimeSet);
-//		return aftertransTimeList;
+		val aftertransTimeList = transProcess(workType,
+											  afterCalcUpperTimeList,
+											  eachWorkTimeSet,
+											  eachCompanyTimeSet);
+		return aftertransTimeList;
 		
 	}
 	
@@ -177,8 +177,11 @@ public class OverTimeSheet {
 	private List<OverTimeFrameTime> afterUpperControl(List<OverTimeFrameTime> calcOverTimeWorkTimeList,AutoCalOvertimeSetting autoCalcSet) {
 		List<OverTimeFrameTime> returnList = new ArrayList<>();
 		for(OverTimeFrameTime loopOverTimeFrame:calcOverTimeWorkTimeList) {
+			//時間の上限時間算出
 			AttendanceTime upperTime = desictionUseUppserTime(autoCalcSet, loopOverTimeFrame);
+			//計算時間の上限算出
 			AttendanceTime upperCalcTime = desictionUseUppserTime(autoCalcSet,  loopOverTimeFrame);
+			//振替処理
 			loopOverTimeFrame = loopOverTimeFrame.changeOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(upperTime.greaterThan(loopOverTimeFrame.getOverTimeWork().getTime())?loopOverTimeFrame.getOverTimeWork().getTime():upperTime,
 																														 upperCalcTime.greaterThan(loopOverTimeFrame.getOverTimeWork().getCalcTime())?loopOverTimeFrame.getOverTimeWork().getCalcTime():upperCalcTime));
 			returnList.add(loopOverTimeFrame);
