@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36;
 
+import java.util.List;
 import java.util.Optional;
 /**
  * the AgreeConditionErrorRepository interface
@@ -7,6 +8,11 @@ import java.util.Optional;
  *
  */
 public interface IAgreeConditionErrorRepository {
+	/**
+	 * find all AgreeConditionError
+	 * @return
+	 */
+	public List<AgreeConditionError> findAll();
 	/**
 	 * get a optional AgreeConditionError by id
 	 * @param id

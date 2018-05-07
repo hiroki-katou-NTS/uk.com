@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.infra.repository.alarm.checkcondition;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -10,6 +11,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeConditionErr
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeConditionErrorRepository;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.agree36.Kfnmt36AgreeCondErr;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.agree36.Kfnmt36AgreeCondErrPK;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.agree36.Kfnmt36AgreeName;
 /**
  * 
  * @author yennth
@@ -17,6 +19,7 @@ import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.agree36.Kfnmt36A
  */
 @Stateless
 public class JpaAgreeConditionErrorRepository extends JpaRepository implements IAgreeConditionErrorRepository{
+	private final String SELECT_NO_WHERE = "SELECT c FROM Kfnmt36AgreeCondErr c ";
 	/**
 	 * convert from AgreeConditionError domain to Kfnmt36AgreeCondErr entity
 	 * @param entity
@@ -75,6 +78,13 @@ public class JpaAgreeConditionErrorRepository extends JpaRepository implements I
 	@Override
 	public void delete(String id) {
 		this.commandProxy().remove(Kfnmt36AgreeCondErr.class, new Kfnmt36AgreeCondErrPK(id));;
+	}
+	/**
+	 * find all AgreeConditionError
+	 */
+	@Override
+	public List<AgreeConditionError> findAll() {
+		return this.queryProxy().query(SELECT_NO_WHERE, Kfnmt36AgreeCondErr.class).getList(c -> toDomain(c));
 	}
 
 }

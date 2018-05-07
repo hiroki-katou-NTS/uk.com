@@ -17,11 +17,11 @@ public class AgreeNameError extends AggregateRoot {
 	/** エラーアラーム */
 	private ErrorAlarm errorAlarm;
 	/** 名称 */
-	private MessageDisp name;
+	private Name name;
 	
 	public static AgreeNameError createFromJavaType(int period, int errorAlarm, String name){
 		return new AgreeNameError(EnumAdaptor.valueOf(period, Period.class),
 				EnumAdaptor.valueOf(errorAlarm, ErrorAlarm.class),
-				new MessageDisp(name));
+				new Name(name));
 	}
 }

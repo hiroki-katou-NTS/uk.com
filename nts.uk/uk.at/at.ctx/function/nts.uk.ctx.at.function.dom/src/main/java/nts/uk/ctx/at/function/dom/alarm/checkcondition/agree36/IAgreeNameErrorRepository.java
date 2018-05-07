@@ -9,6 +9,12 @@ import java.util.Optional;
  */
 public interface IAgreeNameErrorRepository {
 	/**
+	 * find name by list period and error alarm
+	 * @param param
+	 * @return
+	 */
+	public List<AgreeNameError> findName(List<ParamFind> param);
+	/**
 	 * get a optional AgreeNameError by id
 	 * @param id
 	 * @return
