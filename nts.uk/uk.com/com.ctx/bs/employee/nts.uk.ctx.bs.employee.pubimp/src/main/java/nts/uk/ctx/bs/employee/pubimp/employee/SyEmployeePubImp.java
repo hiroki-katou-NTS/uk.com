@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -36,6 +35,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.pub.employee.ConcurrentEmployeeExport;
+import nts.uk.ctx.bs.employee.pub.employee.EmpOfLoginCompanyExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeDataMngInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
@@ -468,18 +468,18 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		}
 
 		// lây list Employee từ list sid và dateperiod
-		List<AffCompanyHist> lstAffComHist = affComHistRepo.getAffComHisEmpByLstSidAndPeriod(lstId , dateperiod);
+		List<AffCompanyHist> lstAffComHist = affComHistRepo.getAffComHisEmpByLstSidAndPeriod(lstId, dateperiod);
 
 		if (lstAffComHist.isEmpty()) {
 			return Collections.emptyList();
 		}
-		
+
 		List<AffCompanyHistByEmployee> lstAffComHistByEmp = getAffCompanyHistByEmployee(lstAffComHist);
-		
-		//List sid sau khi lọc qua điều kiện datePeriod
+
+		// List sid sau khi lọc qua điều kiện datePeriod
 		List<String> lstSidAfterFilter = lstAffComHistByEmp.stream().map(m -> m.getSId()).collect(Collectors.toList());
-		
-		// List sid tồn tại ở lstId nhưng không tồn tại ở  list sid
+
+		// List sid tồn tại ở lstId nhưng không tồn tại ở list sid
 		List<String> result = lstId.stream().filter(i -> !lstSidAfterFilter.contains(i)).collect(Collectors.toList());
 		if (result.isEmpty()) {
 			return Collections.emptyList();
@@ -499,6 +499,30 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		return result;
 	}
 
-	
+	@Override
+	public List<EmpOfLoginCompanyExport> getListEmpOfLoginCompany(String cid) {
+
+		// lây toàn bộ nhân viên theo cid
+		List<EmployeeDataMngInfo> lstEmp = empDataMngRepo.getAllByCid(cid);
+
+		if (lstEmp.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		List<String> lstpid = lstEmp.stream().map(m -> m.getPersonId()).collect(Collectors.toList());
+
+		Map<String, Person> personMap = personRepository.getPersonByPersonIds(lstpid).stream()
+				.collect(Collectors.toMap(x -> x.getPersonId(), x -> x));
+		List<EmpOfLoginCompanyExport> lstresult = new ArrayList<>();
+		lstEmp.forEach(m -> {
+			EmpOfLoginCompanyExport emp = new EmpOfLoginCompanyExport();
+			emp.setScd(m.getEmployeeCode().v());
+			emp.setSid(m.getEmployeeId());
+			emp.setBussinesName(personMap.get(m.getPersonId()).getPersonNameGroup().getBusinessName().v());
+			lstresult.add(emp);
+
+		});
+		return lstresult;
+	}
 
 }
