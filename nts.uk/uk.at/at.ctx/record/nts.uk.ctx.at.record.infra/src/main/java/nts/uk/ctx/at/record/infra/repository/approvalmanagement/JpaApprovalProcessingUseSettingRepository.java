@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.infra.entity.approvalmanagement.KrcstAppProUseJbSet;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtApprovalProcess;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtApprovalProcessPk;
 
 /**
  * @author hungnm
@@ -42,7 +43,7 @@ public class JpaApprovalProcessingUseSettingRepository extends JpaRepository
 
 	@Override
 	public Optional<ApprovalProcessingUseSetting> findByCompanyId(String companyId) {
-		Optional<KrcmtApprovalProcess> krcstAppProUseSet = this.queryProxy().find(companyId, KrcmtApprovalProcess.class);
+		Optional<KrcmtApprovalProcess> krcstAppProUseSet = this.queryProxy().find(new KrcmtApprovalProcessPk(companyId), KrcmtApprovalProcess.class);
 		List<KrcstAppProUseJbSet> lstKrcstAppProUseJbSet = this.queryProxy()
 				.query(SEL_USE_JB_SET_BY_CID, KrcstAppProUseJbSet.class).setParameter("companyId", companyId).getList();
 		return Optional.ofNullable(fromEntity(krcstAppProUseSet, lstKrcstAppProUseJbSet));
