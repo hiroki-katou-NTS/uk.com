@@ -383,8 +383,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             var self = this;
             self.dailySttOut = new DailyStatusOut(rData.empId, rData.listDaily);
             let params = {
-                selectWkkpId: self.selectedWplId,
-                listEmp: self.listWorkplace,
+                listEmp: self.listEmpCd,
                 dailyData: self.dailySttOut
             }
             nts.uk.ui.windows.setShared("KAF018D_VALUE", params);

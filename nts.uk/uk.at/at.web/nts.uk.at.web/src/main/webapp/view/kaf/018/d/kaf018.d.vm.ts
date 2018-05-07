@@ -17,14 +17,14 @@ module nts.uk.at.view.kaf018.d.viewmodel {
             var self = this;
             self.selectedWplId = ko.observable('');
             this.currentCode = ko.observable();
-            var listAppStt: Array<number> = [0, 1, 2, 3];
-            let currentDate = new Date();
-            for (let i = 0; i < 30; i++) {
-                let startDate = currentDate.getDay();
-                let endDate = currentDate.getDay() + 1;
-                self.listData.push(new Content("" + i, "Anh" + i, 1, startDate, endDate, "anhvsdvvfdvd" + i, i, listAppStt, "sdvsgvs", "sdvsdvs", "bfdbgf", "cvnvbn", "hgmvbnvb"));
-            }
-            console.log(self.listData);
+//            var listAppStt: Array<number> = [0, 1, 2, 3];
+//            let currentDate = new Date();
+//            for (let i = 0; i < 30; i++) {
+//                let startDate = currentDate.getDay();
+//                let endDate = currentDate.getDay() + 1;
+//                self.listData.push(new Content("" + i, "Anh" + i, true, startDate, endDate, "anhvsdvvfdvd" + i, i, listAppStt, "sdvsgvs", "sdvsdvs", "bfdbgf", "cvnvbn", "hgmvbnvb"));
+//            }
+//            console.log(self.listData);
         }
 
         /**
@@ -37,10 +37,11 @@ module nts.uk.at.view.kaf018.d.viewmodel {
             if (params) {
                 self.dailySttOut = params.dailyData;
                 self.listEmp = params.listEmp;
-                self.selectedWplId = params.selectWkkpId;
+                //self.selectedWplId = params.selectWkkpId;
             }
-            //            service.initApprovalSttRequestContentDis(params).done(function(data: any) {
-            //                self.listData = da     //            });
+            service.initApprovalSttRequestContentDis(params).done(function(data: any) {
+                self.listData = data;
+            });
 
             self.initExTable();
             dfd.resolve();
@@ -54,7 +55,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
             var self = this;
             _.each(self.listData, function(data: Content) {
                 let dateRange = self.appDateRangeColor(self.convertDateMDW(data.appStartDate), self.convertDateMDW(data.appEndDate));
-                self.listDataDisp.push(new ContentDisp(data.appType, data.appName, data.prePostAtr ? "事前" : "事後", dateRange, data.appContent, data.reflectState, self.disApprovalStatus(data.approvalStatus), data.phase1, data.phase2, data.phase3, data.phase4, data.phase5));
+                self.listDataDisp.push(new ContentDisp(data.appType, data.appName, data.prePostAtr ? "事前" : "事後", dateRange, data.appContent, self.disReflectionStatus(data.reflectState), self.disApprovalStatus(data.approvalStatus), data.phase1, data.phase2, data.phase3, data.phase4, data.phase5));
             });
             let colorBackGr = self.fillColorbackGr();
             self.reloadGridApplicaion(colorBackGr);
@@ -87,7 +88,6 @@ module nts.uk.at.view.kaf018.d.viewmodel {
                     { headerText: text("KAF018_46"), key: 'phase5', dataType: 'string', width: 150 }
                 ],
                 features: [
-                    { name: 'Resizing' },
                     {
                         name: 'Selection',
                         mode: 'row',
@@ -112,58 +112,45 @@ module nts.uk.at.view.kaf018.d.viewmodel {
             _.each(self.listDataDisp(), function(item) {
                 let rowId = item.appId;
                 //fill color in 承認状況
-                result.push(new shared.CellState(rowId, 'appName', ['approvalCell']));
-                /*
                 if (item.reflectState == 0) {//0 下書き保存/未反映　=　未
-                    result.push(new shared.CellState(rowId,'reflectState',['unapprovalCell']));
+                    result.push(new shared.CellState(rowId, 'reflectState', ['unapprovalCell']));
                 }
                 if (item.reflectState == 1) {//1 反映待ち　＝　承認済み
-                    result.push(new shared.CellState(rowId,'reflectState',['approvalCell']));
+                    result.push(new shared.CellState(rowId, 'reflectState', ['approvalCell']));
                 }
                 if (item.reflectState == 2) {//2 反映済　＝　反映済み
-                    result.push(new shared.CellState(rowId,'reflectState',['reflectCell']));
+                    result.push(new shared.CellState(rowId, 'reflectState', ['reflectCell']));
                 }
                 if (item.reflectState == 3 || item.reflectState == 4) {//3,4 取消待ち/取消済　＝　取消
-                    result.push(new shared.CellState(rowId,'reflectState',['cancelCell']));
+                    result.push(new shared.CellState(rowId, 'reflectState', ['cancelCell']));
                 }
                 if (item.reflectState == 5) {//5 差し戻し　＝　差戻
-                    result.push(new shared.CellState(rowId,'reflectState',['remandCell']));
+                    result.push(new shared.CellState(rowId, 'reflectState', ['remandCell']));
                 }
                 if (item.reflectState == 6) {//6 否認　=　否
-                    result.push(new shared.CellState(rowId,'reflectState',['denialCell']));
-                }*/
+                    result.push(new shared.CellState(rowId, 'reflectState', ['denialCell']));
+                }
             });
             return result;
         }
         //反映状況
         disReflectionStatus(status: number): string {
-            var disReFlected = "";
             switch (status) {
                 case shareModel.NOTREFLECTED:
-                    disReFlected = text('KAF018_93');
-                    break;
+                    return text('KAF018_93');
                 case shareModel.WAITREFLECTION:
-                    disReFlected = text('KAF018_93');
-                    break;
+                    return text('KAF018_94');
                 case shareModel.REFLECTED:
-                    disReFlected = text('KAF018_95');
-                    break;
+                    return text('KAF018_95');
                 case shareModel.DENIAL:
-                    disReFlected = text('KAF018_96');
-                    break;
+                    return text('KAF018_96');
                 case shareModel.REMAND:
-                    disReFlected = text('KAF018_97');
-                    break;
+                    return text('KAF018_97');
                 case shareModel.WAITCANCEL:
-                    disReFlected = text('KAF018_98');
-                    break;
+                    return text('KAF018_98');
                 case shareModel.CANCELED:
-                    disReFlected = text('KAF018_98');
-                    break;
-                default:
-                    break;
+                    return text('KAF018_98');
             }
-            return disReFlected;
         }
 
         //承認状況

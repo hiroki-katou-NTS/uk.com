@@ -275,17 +275,17 @@ public class ApprovalStatusFinder {
 		List<Integer> approvalStatus2 = new ArrayList<>();
 		List<Integer> approvalStatus3 = new ArrayList<>();
 		List<Integer> approvalStatus4 = new ArrayList<>();
-		for(int x = 0; x < 4; x++) {
+		for(int x = 0; x < 3; x++) {
 			approvalStatus.add(x);
 			approvalStatus2.add(x);
 			approvalStatus3.add(x);
 			approvalStatus4.add(x);
 		}
 		listAppDetail. add(new ApplicationDetailDto(0, "残業申請", true, appStartDate, appEndDate, "2-16③システム日付(2018/4/7)　<　申請日.終了日(3/31)+8　　ＯＫ", 2, approvalStatus, "Phase1", "Phase1", "Phase1", "Phase1", "Phase1"));
-		listAppDetail. add(new ApplicationDetailDto(1, "残業申請", false, appStartDate, appEndDate, "2-16③システム日付(2018/4/7)　<　申請日.終了日(3/31)+8　　ＯＫ", 2, approvalStatus2, "Phase1", "Phase1", "Phase1", "Phase1", "Phase1"));
-		listAppDetail. add(new ApplicationDetailDto(2, "残業申請", true, appStartDate, appEndDate, "2-16③システム日付(2018/4/7)　<　申請日.終了日(3/31)+8　　ＯＫ", 2, approvalStatus3, "Phase1", "Phase1", "Phase1", "Phase1", "Phase1"));
-		listAppDetail. add(new ApplicationDetailDto(3, "残業申請", false, appStartDate, appEndDate, "2-16③システム日付(2018/4/7)　<　申請日.終了日(3/31)+8　　ＯＫ", 2, approvalStatus4, "Phase1", "Phase1", "Phase1", "Phase1", "Phase1"));
-		listAppDetail. add(new ApplicationDetailDto(1, "残業申請",true, appStartDate, appEndDate, "2-16③システム日付(2018/4/7)　<　申請日.終了日(3/31)+8　　ＯＫ", 2, approvalStatus, "Phase1", "Phase1", "Phase1", "Phase1", "Phase1"));
+		listAppDetail. add(new ApplicationDetailDto(1, "残業申請", false, appStartDate, appEndDate, "2-16③システム日付(2018/4/7)　<　申請日.終了日(3/31)+8　　ＯＫ", 4, approvalStatus2, "Phase1", "Phase1", "Phase1", "Phase1", "Phase1"));
+		listAppDetail. add(new ApplicationDetailDto(2, "残業申請", true, appStartDate, appEndDate, "2-16③システム日付(2018/4/7)　<　申請日.終了日(3/31)+8　　ＯＫ", 5, approvalStatus3, "Phase1", "Phase1", "Phase1", "Phase1", "Phase1"));
+		listAppDetail. add(new ApplicationDetailDto(3, "残業申請", false, appStartDate, appEndDate, "2-16③システム日付(2018/4/7)　<　申請日.終了日(3/31)+8　　ＯＫ", 0, approvalStatus4, "Phase1", "Phase1", "Phase1", "Phase1", "Phase1"));
+		listAppDetail. add(new ApplicationDetailDto(1, "残業申請",true, appStartDate, appEndDate, "2-16③システム日付(2018/4/7)　<　申請日.終了日(3/31)+8　　ＯＫ", 1, approvalStatus, "Phase1", "Phase1", "Phase1", "Phase1", "Phase1"));
 		/*List<ApprovalSttAppDetail> listAppSttDetail = appList.getApprovalSttAppDetail();
 		for (ApprovalSttAppDetail app : listAppSttDetail) {
 			ApplicationDetailDto detail = new ApplicationDetailDto();

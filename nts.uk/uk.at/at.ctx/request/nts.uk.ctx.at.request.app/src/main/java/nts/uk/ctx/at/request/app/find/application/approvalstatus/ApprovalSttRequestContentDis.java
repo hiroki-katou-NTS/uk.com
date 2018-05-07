@@ -10,6 +10,5 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Appro
 @AllArgsConstructor
 public class ApprovalSttRequestContentDis {
 	private List<ApprovalStatusEmployeeOutput> listStatusEmp;
-	private String selectedWkpId;
 	private String selectedEmpId;
 }
