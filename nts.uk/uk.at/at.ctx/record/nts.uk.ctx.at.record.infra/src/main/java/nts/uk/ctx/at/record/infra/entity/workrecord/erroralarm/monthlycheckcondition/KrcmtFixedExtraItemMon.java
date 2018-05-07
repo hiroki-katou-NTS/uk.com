@@ -16,8 +16,8 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.SysF
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
-@Entity
-@Table(name = "KRCMT_FIX_EXTRA_ITEM_MON")
+@Entity      
+@Table(name = "KRCMT_FIXED_ITEM_MONTHLY")
 public class KrcmtFixedExtraItemMon extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
