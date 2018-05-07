@@ -805,7 +805,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 workTypeCodes: self.workTypecodes(),
                 selectedWorkTypeCode: self.workTypeCd(),
                 workTimeCodes: self.workTimecodes(),
-                selectedWorkTimeCode: self.siftCD()
+                selectedWorkTimeCode: self.siftCD(),
+                showNone: false
             }, true);
 
             nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {

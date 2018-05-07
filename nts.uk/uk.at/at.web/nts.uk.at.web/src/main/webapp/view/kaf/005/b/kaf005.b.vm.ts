@@ -548,10 +548,11 @@ module nts.uk.at.view.kaf005.b {
                     }
                 }
                 nts.uk.ui.windows.setShared('parentCodes', {
-                   workTypeCodes: self.workTypecodes(),
-                selectedWorkTypeCode: self.workTypeCd(),
-                workTimeCodes: self.workTimecodes(),
-                selectedWorkTimeCode: self.siftCD()
+                    workTypeCodes: self.workTypecodes(),
+                    selectedWorkTypeCode: self.workTypeCd(),
+                    workTimeCodes: self.workTimecodes(),
+                    selectedWorkTimeCode: self.siftCD(),
+                    showNone: false
                 }, true);
     
                 nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
