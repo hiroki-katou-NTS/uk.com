@@ -42,12 +42,14 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstEr
 import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.KrcdtIdentificationStatus;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtApprovalProcess;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtApprovalProcessPk;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformEdFun;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformEdFunPk;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformanceAut;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtFormatPerformance;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtFormatPerformancePk;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtIdentityProcess;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtIdentityProcessPk;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.old.KrcmtDaiPerformanceAut;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.old.KrcmtWorktypeChangeable;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.old.KrcstDailyRecOpe;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.old.KrcstDailyRecOpeFun;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtWorktypeChangeable;
 import nts.uk.ctx.at.record.infra.entity.workrecord.workfixed.KrcstWorkFixed;
 import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KrcmtDailyAttendanceItem;
 import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KshstControlOfAttendanceItems;
@@ -93,7 +95,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorSettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPSheetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecEditSetDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecOpeFuncDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DivergenceTimeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmploymentDto;
@@ -223,6 +224,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	private static final String SELECT_BY_LISTSID_WPH;
 	
 	private final static String FIND_APPLICATION_CALL = "SELECT a FROM KfnmtApplicationCall a WHERE a.kfnmtApplicationCallPK.companyId = :companyId";
+	
 	static {
 		StringBuilder builderString = new StringBuilder();		
 		builderString.append("SELECT DISTINCT b.businessTypeCode");
@@ -489,7 +491,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append(" LEFT JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId");
 		builderString.append(" WHERE aw.sid IN :listSid");
 		SELECT_BY_LISTSID_WPH = builderString.toString();
-
+		
 	}
 
 	@Override
@@ -935,14 +937,14 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public OperationOfDailyPerformanceDto findOperationOfDailyPerformance() {
 		String companyId = AppContexts.user().companyId();
-		Optional<KrcstDailyRecOpe> krcstDailyRecOpeOpt = this.queryProxy().find(AppContexts.user().companyId(),
-				KrcstDailyRecOpe.class);
-		if (krcstDailyRecOpeOpt.isPresent()) {
-			return new OperationOfDailyPerformanceDto(companyId,
-					EnumAdaptor.valueOf(krcstDailyRecOpeOpt.get().settingUnit, SettingUnitType.class),
-					krcstDailyRecOpeOpt.get().comment);
-		} else
-			return null;
+		OperationOfDailyPerformanceDto dto = new OperationOfDailyPerformanceDto();
+		Optional<KrcmtFormatPerformance> format = this.queryProxy().find(new KrcmtFormatPerformancePk(companyId),
+				KrcmtFormatPerformance.class);
+		Optional<KrcmtDaiPerformEdFun> edFunc = this.queryProxy().find(new KrcmtDaiPerformEdFunPk(companyId),
+				KrcmtDaiPerformEdFun.class);
+		dto.setComment(edFunc.isPresent() ? edFunc.get().comment : "");
+		dto.setSettingUnit(EnumAdaptor.valueOf(format.isPresent() ? format.get().settingUnitType : 1, SettingUnitType.class));
+		return dto;
 	}
 
 	@Override
@@ -1096,17 +1098,6 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		return this.queryProxy().query(SEL_FIND_WORKPLACE, BsymtWorkplaceInfo.class).setParameter("cid", companyId)
 				.setParameter("wkpid", id).setParameter("baseDate", date)
 				.getSingle(w -> new CodeName(w.getWkpcd(), w.getWkpName(), w.getBsymtWorkplaceInfoPK().getWkpid()));
-	}
-
-	@Override
-	public Optional<DailyRecOpeFuncDto> findDailyRecOpeFun(String companyId) {
-		Optional<KrcstDailyRecOpeFun> krcstDailyRecOpeFunOpt = this.queryProxy().find(companyId.toString(),
-				KrcstDailyRecOpeFun.class);
-		return !krcstDailyRecOpeFunOpt.isPresent() ? Optional.empty()
-				: Optional.of(new DailyRecOpeFuncDto(krcstDailyRecOpeFunOpt.get().confirmByYourselfAtr,
-						krcstDailyRecOpeFunOpt.get().yourselfConfirmWhenError,
-						krcstDailyRecOpeFunOpt.get().confirmBySupervisorAtr,
-						krcstDailyRecOpeFunOpt.get().supervisorConfirmWhenError));
 	}
 
 	@Override

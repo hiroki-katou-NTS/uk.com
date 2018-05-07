@@ -188,8 +188,6 @@ public interface DailyPerformanceScreenRepo {
 	
 	void updateColumnsWidth(Map<Integer, Integer> lstHeader, List<String> formatCodes);
 	
-	Optional<DailyRecOpeFuncDto> findDailyRecOpeFun(String companyId);
-	
 	List<EnumConstant> findErAlApplication(String companyId, List<String> errorCode);
 	
 	List<EnumConstant> findApplicationCall(String companyId);

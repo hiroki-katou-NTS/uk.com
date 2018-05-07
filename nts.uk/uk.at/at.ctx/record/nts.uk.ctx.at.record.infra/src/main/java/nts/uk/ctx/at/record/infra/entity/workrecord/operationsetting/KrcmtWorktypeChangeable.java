@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.old;
+package nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;

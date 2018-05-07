@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.old;
+package nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting;
 
 import java.math.BigDecimal;
 

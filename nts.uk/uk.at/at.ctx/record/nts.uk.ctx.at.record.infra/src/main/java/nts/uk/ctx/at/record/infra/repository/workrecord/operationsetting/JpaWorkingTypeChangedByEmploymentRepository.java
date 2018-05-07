@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.at.record.infra.repository.workrecord.operationsetting.old;
+package nts.uk.ctx.at.record.infra.repository.workrecord.operationsetting;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -17,8 +17,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workingtype.ChangeableWorktypeGroup;
 import nts.uk.ctx.at.record.dom.workrecord.workingtype.WorkingTypeChangedByEmpRepo;
 import nts.uk.ctx.at.record.dom.workrecord.workingtype.WorkingTypeChangedByEmployment;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.old.KrcmtWorktypeChangeable;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.old.KrcmtWorktypeChangeablePk;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtWorktypeChangeable;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtWorktypeChangeablePk;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.shr.com.context.AppContexts;
