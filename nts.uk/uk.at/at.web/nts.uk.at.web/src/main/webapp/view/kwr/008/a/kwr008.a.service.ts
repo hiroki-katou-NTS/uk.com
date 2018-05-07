@@ -5,7 +5,7 @@ module nts.uk.at.view.kwr008.a.service{
         getPeriod : "at/function/annualworkschedule/get/period",
         getPageBreakSelection : "at/function/annualworkschedule/get/enum/pagebreak",
         getOutputItemSetting : "at/function/annualworkschedule/get/outputitemsetting",
-        getPermissionOfEmploymentForm: "at/function/holidaysremaining/getPermissionOfEmploymentForm"
+        getPermissionOfEmploymentForm: "at/function/annualworkschedule/getPermissionOfEmploymentForm"
     }
 
     export function getPermissionOfEmploymentForm() : JQueryPromise<any> {

@@ -6,3 +6,7 @@
 .inline-table {
 	display: inline-table;
 }
+
+.date-range-picker {
+	display: inline-block;
+}
