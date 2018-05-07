@@ -4,12 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.sys.env.dom.mailnoticeset;
 
+import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * The Class MailFunction.
  */
 //メール機能
+@Getter
 public class MailFunction extends AggregateRoot {
 
 	/** The function id. */

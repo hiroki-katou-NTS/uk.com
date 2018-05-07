@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.env.infra.entity.mailnoticeset;
+package nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee;
 
 import java.io.Serializable;
 
