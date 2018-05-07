@@ -649,7 +649,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 	@Override
 	public IntegrationOfDaily updateTimeShiftNightHoliday(String employeeId, GeneralDate dateData, Integer timeNight,
 			boolean isPre, IntegrationOfDaily dailyData) {
-		if(timeNight < 0) {
+		if(timeNight == null || timeNight < 0) {
 			return dailyData;
 		}
 		// 所定外深夜時間を反映する		
