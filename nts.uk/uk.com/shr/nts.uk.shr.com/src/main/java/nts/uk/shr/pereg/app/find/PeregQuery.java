@@ -24,6 +24,7 @@ public class PeregQuery {
 	
 	private int ctgType;
 
+	// layout case
 	public PeregQuery(String categoryCode, String employeeId, String personId, GeneralDate standardDate) {
 		this.categoryCode = categoryCode;
 		this.employeeId = employeeId;
@@ -31,6 +32,7 @@ public class PeregQuery {
 		this.standardDate = standardDate;
 	}
 	
+	// category case
 	public PeregQuery(String infoId, String categoryCode, String employeeId, String personId) {
 		this.infoId = infoId;
 		this.categoryCode = categoryCode;

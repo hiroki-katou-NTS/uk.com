@@ -17,6 +17,7 @@ import command.person.info.UpdatePersonCommand;
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.AddBusinessWokrTypeOfHistoryCommand;
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.DeleteBusinessWorkTypeOfHistoryCommand;
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.UpdateBusinessWorkTypeOfHistoryCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.annleagrtremnum.AddAnnLeaGrantRemnNumPeregCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.annualeave.AddAnnuaLeaveCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.annualeave.DeleteAnnuaLeaveCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.annualeave.UpdateAnnuaLeaveCommand;
@@ -65,6 +66,27 @@ import nts.uk.ctx.at.record.app.command.remainingnumber.nursingcareleave.UpdateC
 import nts.uk.ctx.at.record.app.command.remainingnumber.otherhdinfo.AddOtherHolidayInfoCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.otherhdinfo.DeleteOtherHolidayInfoCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.otherhdinfo.UpdateOtherHolidayInfoCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant10Command;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant11Command;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant12Command;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant13Command;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant14Command;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant15Command;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant16Command;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant17Command;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant18Command;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant19Command;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant1Command;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant20Command;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant2Command;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant3Command;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant4Command;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant5Command;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant6Command;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant7Command;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant8Command;
+import nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add.AddSpecialLeaveGrant9Command;
+import nts.uk.ctx.at.record.app.command.remainingnumber.rervleagrtremnum.AddResvLeaRemainPeregCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.AddShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.DeleteShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.shortworktime.UpdateShortWorkTimeCommand;
@@ -123,6 +145,8 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregAddCommandHandler<AddEmployeeInfoContactCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddPerContactCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddAnnuaLeaveCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddAnnLeaGrantRemnNumPeregCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddResvLeaRemainPeregCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave1informationCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave2informationCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave3informationCommand>>(){},
@@ -144,7 +168,27 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave19informationCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddSpecialleave20informationCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddOtherHolidayInfoCommand>>(){},
-			new TypeLiteral<PeregAddCommandHandler<AddCareLeaveCommand>>(){}
+			new TypeLiteral<PeregAddCommandHandler<AddCareLeaveCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant1Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant2Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant3Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant4Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant5Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant6Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant7Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant8Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant9Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant10Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant11Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant12Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant13Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant14Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant15Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant16Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant17Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant18Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant19Command>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddSpecialLeaveGrant20Command>>(){}
 			);
 	
 	/** Update handlers */

@@ -312,6 +312,11 @@ module nts.custom.component {
                 params.combobox.options.removeAll();
                 params.gridlist.options.removeAll();
                 if (t == TABS.LAYOUT) {
+                    if (!params.hasLayout()) {
+                        params.tab(TABS.CATEGORY);
+                        return;
+                    }
+
                     params.gridlist.row(10);
                     fetch.get_layout(sid).done((data: Array<any>) => {
                         if (data.length) {

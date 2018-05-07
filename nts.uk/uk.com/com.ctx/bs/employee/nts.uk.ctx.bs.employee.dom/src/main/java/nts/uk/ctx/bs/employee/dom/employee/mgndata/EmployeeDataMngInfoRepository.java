@@ -107,5 +107,12 @@ public interface EmployeeDataMngInfoRepository {
 	 *         match startLetters
 	 */
 	Optional<String> findLastEml(String companyId, String startLetters);
+	
+	/**
+	 * Get all Employee By CompanyId, Order by Scd ASC
+	 * @param cid
+	 * @return
+	 */
+	List<EmployeeDataMngInfo> getAllByCid(String cid);
 
 }

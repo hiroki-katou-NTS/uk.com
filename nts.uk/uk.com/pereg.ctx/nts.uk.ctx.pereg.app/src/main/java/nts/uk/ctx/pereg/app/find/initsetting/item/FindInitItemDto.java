@@ -6,7 +6,7 @@ import nts.arc.time.GeneralDate;
 
 @Value
 @Getter
-public class findInitItemDto {
+public class FindInitItemDto {
 
 	private String initSettingId;
 
