@@ -299,7 +299,7 @@ module nts.uk.com.view.cmf003.b {
                 self.checkCreateMethodAtrPersonalInfo = ko.observable(true);
                 self.checkCreateMethodAtrPatternSchedule = ko.observable(false);
                 self.checkCreateMethodAtrCopyPastSchedule = ko.observable(false);
-
+                self.employeeList = ko.observableArray([]);
                 self.workTypeInfo = ko.observable('');
                 self.workTypeCode = ko.observable('');
                 self.workTimeInfo = ko.observable('');
@@ -314,6 +314,24 @@ module nts.uk.com.view.cmf003.b {
                     self.periodDate().endDate = value;
                     self.periodDate.valueHasMutated();
                 });
+                
+                //KCP005
+                self.lstPersonComponentOption = {
+                    isShowAlreadySet: false,
+                    isMultiSelect: true,
+                    listType: ListType.EMPLOYEE,
+                    employeeInputList: self.employeeList,
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    selectedCode: self.selectedEmployeeCode,
+                    isDialog: false,
+                    isShowNoSelectRow: false,
+                    alreadySettingList: self.alreadySettingPersonal,
+                    isShowWorkPlaceName: true,
+                    isShowSelectAllButton: true,
+                    maxWidth: 550,
+                    maxRows: 15
+                };
+
             }//end constructor
 
 
@@ -430,7 +448,7 @@ module nts.uk.com.view.cmf003.b {
             */
             public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
                 var self = this;
-                self.employeeList = ko.observableArray([]);
+                
                 var employeeSearchs: UnitModel[] = [];
                 for (var employeeSearch of dataList) {
                     var employee: UnitModel = {
@@ -441,22 +459,6 @@ module nts.uk.com.view.cmf003.b {
                     employeeSearchs.push(employee);
                 }
                 self.employeeList(employeeSearchs);
-                self.lstPersonComponentOption = {
-                    isShowAlreadySet: false,
-                    isMultiSelect: true,
-                    listType: ListType.EMPLOYEE,
-                    employeeInputList: self.employeeList,
-                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                    selectedCode: self.selectedEmployeeCode,
-                    isDialog: false,
-                    isShowNoSelectRow: false,
-                    alreadySettingList: self.alreadySettingPersonal,
-                    isShowWorkPlaceName: true,
-                    isShowSelectAllButton: true,
-                    maxWidth: 550,
-                    maxRows: 15
-                };
-
             }
 
             /**
@@ -569,8 +571,10 @@ module nts.uk.com.view.cmf003.b {
 
             private selectCategory(): void {
                 let self = this;
+
                 setShared("CMF003_B_CATEGORIES", self.categorys());
                 setShared("CMF003_B_SYSTEMTYPE", self.systemtypeFromC);
+
                 nts.uk.ui.windows.sub.modal('../c/index.xhtml').onClosed(() => {
                     let categoryFromC = getShared('CMF003_C_CATEGORIES');
                     let systemtypeFromC = getShared('CMF003_C_SYSTEMTYPE');

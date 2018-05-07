@@ -4,7 +4,6 @@ module nts.uk.com.view.cmf003.b {
         screenModel.startPage().done(function(self) {
             __viewContext.bind(self);
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(function() {
-                self.employeeList = ko.observableArray<UnitModel>([]);
                 self.applyKCP005ContentSearch([]);
                 // Load employee list component
                 $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption).done(function() {

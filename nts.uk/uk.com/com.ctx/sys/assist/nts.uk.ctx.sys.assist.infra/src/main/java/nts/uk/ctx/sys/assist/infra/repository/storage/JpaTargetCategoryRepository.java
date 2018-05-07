@@ -17,6 +17,8 @@ public class JpaTargetCategoryRepository extends JpaRepository implements Target
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspmtTargetCategory f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.targetCategoryPk.storeProcessingId =:storeProcessingId AND  f.targetCategoryPk.categoryId =:categoryId ";
+	private static final String SELECT_BY_KEY_STRING_LIST = SELECT_ALL_QUERY_STRING
+			+ " WHERE  f.targetCategoryPk.storeProcessingId =:storeProcessingId ";
 
 	@Override
 	public List<TargetCategory> getAllTargetCategory() {
@@ -44,5 +46,14 @@ public class JpaTargetCategoryRepository extends JpaRepository implements Target
 	@Override
 	public void remove(String storeProcessingId, String categoryId) {
 		this.commandProxy().remove(SspmtTargetCategory.class, new SspmtTargetCategoryPk(storeProcessingId, categoryId));
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.assist.dom.storage.TargetCategoryRepository#getTargetCategoryListById(java.lang.String)
+	 */
+	@Override
+	public List<TargetCategory> getTargetCategoryListById(String storeProcessingId) {
+		return this.queryProxy().query(SELECT_BY_KEY_STRING_LIST, SspmtTargetCategory.class)
+				.setParameter("storeProcessingId", storeProcessingId).getList(c -> c.toDomain());
 	}
 }

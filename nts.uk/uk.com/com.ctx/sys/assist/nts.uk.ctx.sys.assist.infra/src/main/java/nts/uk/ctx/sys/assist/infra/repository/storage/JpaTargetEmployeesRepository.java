@@ -17,6 +17,8 @@ public class JpaTargetEmployeesRepository extends JpaRepository implements Targe
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspmtTargetEmployees f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.targetEmployeesPk.storeProcessingId =:storeProcessingId AND  f.targetEmployeesPk.employeeId =:employeeId ";
+	private static final String SELECT_BY_KEY_STRING_LIST = SELECT_ALL_QUERY_STRING
+			+ " WHERE  f.targetEmployeesPk.storeProcessingId =:storeProcessingId";
 
 	@Override
 	public List<TargetEmployees> getAllTargetEmployees() {
@@ -30,7 +32,7 @@ public class JpaTargetEmployeesRepository extends JpaRepository implements Targe
 				.setParameter("storeProcessingId", storeProcessingId).setParameter("employeeId", employeeId)
 				.getSingle(c -> c.toDomain());
 	}
-	
+
 	@Override
 	public void add(TargetEmployees domain) {
 		this.commandProxy().insert(SspmtTargetEmployees.toEntity(domain));
@@ -49,8 +51,21 @@ public class JpaTargetEmployeesRepository extends JpaRepository implements Targe
 
 	@Override
 	public void addAll(List<TargetEmployees> employees) {
-		for(TargetEmployees targetEmployee: employees){
+		for (TargetEmployees targetEmployee : employees) {
 			this.commandProxy().insert(SspmtTargetEmployees.toEntity(targetEmployee));
 		}
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.assist.dom.storage.TargetEmployeesRepository#
+	 * getTargetEmployeesListById(java.lang.String)
+	 */
+	@Override
+	public List<TargetEmployees> getTargetEmployeesListById(String storeProcessingId) {
+		return this.queryProxy().query(SELECT_BY_KEY_STRING_LIST, SspmtTargetEmployees.class)
+				.setParameter("storeProcessingId", storeProcessingId).getList(c -> c.toDomain());
+	}
+
 }
