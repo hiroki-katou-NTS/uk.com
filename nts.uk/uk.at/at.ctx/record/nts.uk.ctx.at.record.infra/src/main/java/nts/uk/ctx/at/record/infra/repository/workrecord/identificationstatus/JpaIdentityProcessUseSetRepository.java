@@ -9,7 +9,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.enums.SelfConfirmError;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentityProcessUseSetRepository;
-import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.KrcmtIdentityProceSetPK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtIdentityProcess;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtIdentityProcessPk;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -19,7 +18,7 @@ public class JpaIdentityProcessUseSetRepository extends JpaRepository implements
 
 	@Override
 	public Optional<IdentityProcessUseSet> findByKey(String companyId) {
-		return this.queryProxy().find(new KrcmtIdentityProceSetPK(companyId), KrcmtIdentityProcess.class)
+		return this.queryProxy().find(new KrcmtIdentityProcessPk(companyId), KrcmtIdentityProcess.class)
 				.map(x -> toDomain(x));
 	}
 
