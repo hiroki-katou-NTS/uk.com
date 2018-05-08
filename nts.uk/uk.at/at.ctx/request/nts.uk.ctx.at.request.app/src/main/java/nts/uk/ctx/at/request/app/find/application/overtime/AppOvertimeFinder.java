@@ -768,6 +768,12 @@ public class AppOvertimeFinder {
 			overTimeHours.add(cal);
 			overTimeInputs.add(overtimeInputDto);
 		}
+		for(int i = 11; i<= 12;i++){
+			CaculationTime caculationTime = new CaculationTime();
+			caculationTime.setAttendanceID(AttendanceType.NORMALOVERTIME.value);
+			caculationTime.setFrameNo(i);
+			overTimeHours.add(caculationTime);
+		}
 		
 		// lay breakTime
 		List<WorkdayoffFrame> breaktimeFrames = iOvertimePreProcess.getBreaktimeFrame(companyID);

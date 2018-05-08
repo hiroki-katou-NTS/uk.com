@@ -427,7 +427,7 @@ module nts.uk.at.view.kaf005.b {
                     appID: self.appID(),
                     applicationDate: new Date(self.appDate()),
                     prePostAtr: self.prePostSelected(),
-                    applicantSID: self.employeeID,
+                    applicantSID: self.employeeID(),
                     applicationReason: appReason,
                     appApprovalPhaseCmds: self.approvalList,
                     workTypeCode: self.workTypeCd(),
@@ -548,10 +548,11 @@ module nts.uk.at.view.kaf005.b {
                     }
                 }
                 nts.uk.ui.windows.setShared('parentCodes', {
-                   workTypeCodes: self.workTypecodes(),
-                selectedWorkTypeCode: self.workTypeCd(),
-                workTimeCodes: self.workTimecodes(),
-                selectedWorkTimeCode: self.siftCD()
+                    workTypeCodes: self.workTypecodes(),
+                    selectedWorkTypeCode: self.workTypeCd(),
+                    workTimeCodes: self.workTimecodes(),
+                    selectedWorkTimeCode: self.siftCD(),
+                    showNone: false
                 }, true);
     
                 nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
@@ -598,11 +599,11 @@ module nts.uk.at.view.kaf005.b {
                 if(!self.validateTime(self.timeStart1(), self.timeEnd1(), '#inpStartTime1')){
                     return false;
                 };
-                if ( !nts.uk.util.isNullOrEmpty(self.timeStart2()) && self.timeStart2() != "") {
-                    if ( !self.validateTime( self.timeStart2(), self.timeEnd2(), '#inpStartTime2' ) ) {
-                        return false;
-                    };
-                }
+//                if ( !nts.uk.util.isNullOrEmpty(self.timeStart2()) && self.timeStart2() != "") {
+//                    if ( !self.validateTime( self.timeStart2(), self.timeEnd2(), '#inpStartTime2' ) ) {
+//                        return false;
+//                    };
+//                }
                 //休憩時間
                 for (let i = 0; i < self.restTime().length; i++) {
                     let startTime = self.restTime()[i].startTime();
@@ -641,11 +642,11 @@ module nts.uk.at.view.kaf005.b {
                     if (!self.validateTime(self.timeStart1(), self.timeEnd1(), '#inpStartTime1')) {
                         return;
                     }
-                    if (!nts.uk.util.isNullOrEmpty(self.timeStart2())) {
-                        if (!self.validateTime(self.timeStart2(), self.timeEnd2(), '#inpStartTime2')) {
-                            return;
-                        };
-                    }
+//                    if (!nts.uk.util.isNullOrEmpty(self.timeStart2())) {
+//                        if (!self.validateTime(self.timeStart2(), self.timeEnd2(), '#inpStartTime2')) {
+//                            return;
+//                        };
+//                    }
                     nts.uk.ui.block.invisible();
                     let param : any ={
                         overtimeHours: _.map(ko.toJS(self.overtimeHours()), item => {return self.initCalculateData(item);}),
