@@ -137,10 +137,19 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             });
         }
         //Open dialog KDW007
-        openKDW007(data) {
-            var self = this;
-
-            console.log(data);
+        openKDW007(oper_code) {
+            let self = this;
+            nts.uk.ui.block.invisible();
+            setShared('KWR008_B_PARAM', oper_code);
+            modal("/view/kdw/007/c/index.xhtml").onClosed(function() {
+                let resultData = getShared('KDW007CResults');
+                if (resultData) {
+                    let lstAddItems = resultData.lstAddItems;
+                    let lstSubItems = resultData.lstSubItems;
+                    let operationName = "";
+                    //outputItem
+                } 
+            });
         }
 
 
@@ -161,13 +170,12 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         //mode update
         updateMode(code: string) {
             let self = this;
-            let currentSetOutputSettingCode = self.currentSetOutputSettingCode();
             if (code) {
                 let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd() == code; });
     
                 self.screenMode(model.SCREEN_MODE.UPDATE);
                 if (selectedIndex > -1) {
-                    currentSetOutputSettingCode(ko.toJS(self.listStandardImportSetting()[selectedIndex]));
+                    self.currentSetOutputSettingCode(ko.toJS(self.listStandardImportSetting()[selectedIndex]));
                     $('#B3_3').focus();
                 }else {
                     self.selectedCode('');
@@ -281,7 +289,9 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
         //cancel register
         doCancel() {
-            nts.uk.request.jump("/view/kwr/008/a/index.xhtml");
+            let self = this;
+            setShared("KWR008_B_Result", self.selectedCode());
+            nts.uk.ui.windows.close();
         }
 
 
