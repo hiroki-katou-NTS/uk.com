@@ -11,7 +11,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
     
     export class ScreenModel {
         //enum mode
-        screenMode: KnockoutObservable<number> = ko.observable(model.SCREEN_MODE.NEW);
+        isNewMode: KnockoutObservable<boolean> = ko.observable(true);
 
         //enum value output format
         valueOutputFormat: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -23,7 +23,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         listStandardImportSetting: KnockoutObservableArray<model.OutputSettingCodeDto> = ko.observableArray([]);
         selectedCode: KnockoutObservable<any> = ko.observable('');
         currentSetOutputSettingCode :KnockoutObservable<SetOutputSettingCode>
-                = ko.observable(new SetOutputSettingCode(null, []));
+                = ko.observable(new SetOutputSettingCode(null));
         //B3_2 B3_3
         //inputSettingCode: KnockoutObservable<string> = ko.observable('');
         //inputProjectName: KnockoutObservable<string> = ko.observable('');
@@ -77,7 +77,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             //fill data B2_2
             service.getOutItemSettingCode().done((data) => {
                 for (let i = 0, count = data.length; i < count; i++) {
-                    self.listStandardImportSetting.push(new SetOutputSettingCode(data[i], []));
+                    self.listStandardImportSetting.push(new SetOutputSettingCode(data[i]));
                 }
                 self.listStandardImportSetting_Sort();
                 self.checkListItemOutput();
@@ -199,10 +199,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             var self = this;
 
             if (self.listStandardImportSetting().length == 0) {
-                self.screenMode(model.SCREEN_MODE.NEW);
+                self.isNewMode(true);
                 self.registerMode();
             } else {
-                self.screenMode(model.SCREEN_MODE.UPDATE);
+                self.isNewMode(false);
                 if (!self.selectedCode()) {
                     self.selectedCode(self.listStandardImportSetting()[0].cd());
                 }
@@ -215,9 +215,9 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             if (code) {
                 let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd() == code; });
     
-                self.screenMode(model.SCREEN_MODE.UPDATE);
+                self.isNewMode(false);
                 if (selectedIndex > -1) {
-                    self.currentSetOutputSettingCode(ko.toJS(self.listStandardImportSetting()[selectedIndex]));
+                    self.currentSetOutputSettingCode(self.listStandardImportSetting()[selectedIndex]);
                     $('#B3_3').focus();
                 }else {
                     self.selectedCode('');
@@ -229,7 +229,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         registerMode() {
             let self = this;
 
-            self.screenMode(model.SCREEN_MODE.NEW);
+            self.isNewMode(true);
 
            // $("#B3_2").removeAttr("disabled");
 
@@ -237,7 +237,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             $('#listStandardImportSetting').ntsGridList('deselectAll');
             
-            self.currentSetOutputSettingCode(new SetOutputSettingCode(null, []));
+            self.currentSetOutputSettingCode(new SetOutputSettingCode(null));
             /*
             //B3_2
             self.inputSettingCode('');
@@ -389,7 +389,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         outNumExceedTime36Agr: KnockoutObservable<boolean> = ko.observable(false);
         displayFormat: KnockoutObservable<number> = ko.observable(0);
         listItemOutput : KnockoutObservableArray<OutputItemData> = ko.observableArray([]);
-        constructor(param, listItemOutput : Array<OutputItemData>) {
+        constructor(param) {
             let self = this;
             self.cd(param ? param.cd || '' : '');
             self.displayCode = self.cd();
@@ -397,7 +397,6 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.displayName = self.name();
             self.outNumExceedTime36Agr(param ? param.outNumExceedTime36Agr || false : false);
             self.displayFormat(param ? param.displayFormat || 0 : 0);
-            self.buildListItemOutput();
             
         }
         buildListItemOutput(listItemOutput: Array<any>) {
