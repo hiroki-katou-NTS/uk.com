@@ -64,6 +64,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepositor
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.ctx.at.shared.dom.worktype.holidayset.HolidaySetting;
@@ -270,10 +271,9 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 				new WorkTime(wkTime1Cmd.getEndTime()));
 		AbsenceLeaveWorkingHour workTime2 = new AbsenceLeaveWorkingHour(new WorkTime(wkTime2Cmd.getStartTime()),
 				new WorkTime(wkTime2Cmd.getEndTime()));
-		AbsenceLeaveApp absApp = new AbsenceLeaveApp(absAppID, absCmd.getWkTypeCD(),
-				EnumAdaptor.valueOf(absCmd.getChangeWorkHoursType(), NotUseAtr.class),
-				absCmd.getWkTimeCD() == null ? null : new WorkTimeCode(absCmd.getWkTimeCD()), workTime1, workTime2,
-				Collections.emptyList(), Collections.emptyList());
+		AbsenceLeaveApp absApp = new AbsenceLeaveApp(absAppID, new WorkTypeCode(absCmd.getWkTypeCD()),
+				EnumAdaptor.valueOf(absCmd.getChangeWorkHoursType(), NotUseAtr.class), absCmd.getWkTimeCD(), workTime1,
+				workTime2, Collections.emptyList(), Collections.emptyList());
 		return absApp;
 	}
 
@@ -299,7 +299,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 	private RecruitmentApp createNewRecDomainFromCmd(String recAppID, RecruitmentAppCommand appCmd) {
 		WkTimeCommand wkTime1Cmd = appCmd.getWkTime1();
 		WkTimeCommand wkTime2Cmd = appCmd.getWkTime2();
-		RecruitmentApp recApp = new RecruitmentApp(recAppID, appCmd.getWkTypeCD(),
+		RecruitmentApp recApp = new RecruitmentApp(recAppID, new WorkTypeCode(appCmd.getWkTypeCD()),
 				new WorkTimeCode(appCmd.getWkTimeCD()),
 				new RecruitmentWorkingHour(new WorkTime(wkTime1Cmd.getStartTime()),
 						EnumAdaptor.valueOf(wkTime1Cmd.getStartType(), NotUseAtr.class),
@@ -527,7 +527,7 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 	private void ApplicationDateRelatedCheck(SaveHolidayShipmentCommand command, WithDrawalReqSet reqSet) {
 		// アルゴリズム「同日申請存在チェック」を実行する
-		dateCheck(command);
+		dateCheck(sID, recDate, absDate, command);
 		// 申請の組み合わせをチェックする
 		if (isSaveBothApp()) {
 			// アルゴリズム「振休先取可否チェック」を実行する
@@ -548,24 +548,26 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 	}
 
-	public void dateCheck(SaveHolidayShipmentCommand command) {
+	public void dateCheck(String employeeID, GeneralDate recDate, GeneralDate absDate,
+			SaveHolidayShipmentCommand command) {
 		// アルゴリズム「休暇・振替系申請存在チェック」を実行する
 		if (isSaveAbs()) {
-			vacationTransferCheck(sID, absDate, command.getAppCmd().getPrePostAtr());
+			vacationTransferCheck(employeeID, absDate, command.getAppCmd().getPrePostAtr());
 		}
 		// アルゴリズム「休暇・振替系申請存在チェック」を実行する
 		if (isSaveRec()) {
-			vacationTransferCheck(sID, recDate, command.getAppCmd().getPrePostAtr());
+			vacationTransferCheck(employeeID, recDate, command.getAppCmd().getPrePostAtr());
 		}
 
 	}
 
 	public void vacationTransferCheck(String sID, GeneralDate appDate, int prePostAtr) {
-
+		// ドメインモデル「申請」を取得する
 		List<Application_New> sameDateApps = appRepo
 				.getApp(sID, appDate, prePostAtr, ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value).stream()
-				.filter(x -> !x.getReflectionInformation().getStateReflection().equals(ReflectedState_New.CANCELED)
-						&& !x.getReflectionInformation().getStateReflection().equals(ReflectedState_New.DENIAL))
+				.filter(x -> !x.getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.CANCELED)
+						&& !x.getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.WAITCANCEL)
+						&& !x.getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.DENIAL))
 				.collect(Collectors.toList());
 
 		boolean isAppSameDateExists = !CollectionUtil.isEmpty(sameDateApps);
@@ -712,20 +714,19 @@ public class SaveHolidayShipmentCommandHandler extends CommandHandler<SaveHolida
 
 	private String getDisplayReason(String typicalReason, SaveHolidayShipmentCommand command,
 			AppTypeDiscreteSetting appTypeSet) {
-
+		String disPlayReason = Strings.EMPTY;
 		if (isReasonTextFieldDisplay(appTypeSet)) {
 
 			if (Strings.isNotBlank(typicalReason)) {
 
-				return System.lineSeparator();
-
-			} else {
-
-				return command.getAppCmd().getApplicationReason();
+				disPlayReason += System.lineSeparator();
 
 			}
+
+			disPlayReason += command.getAppCmd().getApplicationReason();
+
 		}
-		return "";
+		return disPlayReason;
 	}
 
 	private boolean isReasonTextFieldDisplay(AppTypeDiscreteSetting appTypeSet) {
