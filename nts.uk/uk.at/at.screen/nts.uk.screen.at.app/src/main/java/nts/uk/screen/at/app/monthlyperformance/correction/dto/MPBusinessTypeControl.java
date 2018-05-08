@@ -6,10 +6,6 @@ package nts.uk.screen.at.app.monthlyperformance.correction.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-/**
- * @author hungnm
- *
- */
 @Data
 @AllArgsConstructor
 public class MPBusinessTypeControl {

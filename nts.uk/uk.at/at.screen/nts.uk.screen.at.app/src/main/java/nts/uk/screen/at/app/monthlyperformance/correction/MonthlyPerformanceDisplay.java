@@ -12,24 +12,25 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.monthlyattditem.MonthlyAttendanceItem;
-import nts.uk.ctx.at.record.dom.monthlyattditem.MonthlyAttendanceItemRepository;
-import nts.uk.ctx.at.record.dom.monthlyperformanceformat.enums.SettingUnit;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
+import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.CorrectionOfDailyPerformance;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.DisplayItem;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.FormatMPCorrectionDto;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPBusinessTypeControl;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPSheetDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceCorrectionDto;
-import nts.uk.screen.at.app.monthlyperformance.correction.dto.OperationOfMonthlyPerformanceDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.tmp.MonthlyItemControlAuthDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class MonthlyPerformanceDisplay {
 	
+	@Inject
+	private DailyPerformanceScreenRepo repo;
 	@Inject
 	private MonthlyAttendanceItemRepository monthlyAttendanceItemRepo;
 	//@Inject
@@ -41,7 +42,7 @@ public class MonthlyPerformanceDisplay {
 	 * @param formatCodes: 使用するフォーマットコード：月別実績フォーマットコード
 	 * 表示する項目一覧
 	 */
-	public DisplayItem getDisplayFormat(List<DailyPerformanceEmployeeDto> lstEmployees, List<String> formatCodes, CorrectionOfDailyPerformance correctionOfDaily, SettingUnitType unitType, MonthlyPerformanceCorrectionDto screenDto){
+	public DisplayItem getDisplayFormat(List<String> lstEmployeeIds, DateRange dateRange, List<String> formatCodes, CorrectionOfDailyPerformance correctionOfDaily, SettingUnitType unitType, MonthlyPerformanceCorrectionDto screenDto){
 		//会社ID：ログイン会社に一致する
 		String cId = AppContexts.user().companyId();
 		//ロールID：ログイン社員の就業ロールに一致する
@@ -56,7 +57,7 @@ public class MonthlyPerformanceDisplay {
 		else{
 			//社員の勤務種別に対応する表示項目を取得する
 			//(Lấy các item hiển thị ứng với loại đi làm của employee)
-			dispItem = getDisplayItemBussiness(lstEmployees, formatCodes, correctionOfDaily);
+			dispItem = getDisplayItemBussiness(lstEmployeeIds, dateRange, formatCodes, correctionOfDaily);
 		}
 		//対応するドメインモデル「権限別月次項目制御」を取得する
 		//TODO 権限別月次項目制御
@@ -70,10 +71,11 @@ public class MonthlyPerformanceDisplay {
 			List<MonthlyAttendanceItem> lstAttendanceIds = monthlyAttendanceItemRepo.findByAttendanceItemId(cId, attendanceItemIds);
 			
 			//TODO 対応するドメインモデル「勤怠項目と枠の紐付け」を取得する  - attendanceItemLinkingRepository
+			//Domain hien tai dang nam trong function.
 			
-			//取得したドメインモデルの名称をドメインモデル「勤怠項目．名称」に埋め込む 
+			//TODO 取得したドメインモデルの名称をドメインモデル「勤怠項目．名称」に埋め込む 
 			
-			//ドメインモデル「月次の勤怠項目の制御」を取得する
+			//TODO ドメインモデル「月次の勤怠項目の制御」を取得する
 			
 		}
 		DisplayItem lockItem = new DisplayItem();
@@ -122,7 +124,6 @@ public class MonthlyPerformanceDisplay {
 		dispItem.setLstFormat(lstFormat);
 		dispItem.setLstSheet(lstSheet);
 		dispItem.setLstAtdItemUnique(lstAtdItemUnique);
-		//dispItem.setBussiness(dailyPerformanceDto.getSettingUnit().value);
 		return dispItem;
 	}
 	
@@ -131,30 +132,36 @@ public class MonthlyPerformanceDisplay {
 	 * (Lấy các item hiển thị ứng với loại đi làm của employee)
 	 * @return
 	 */
-	private DisplayItem getDisplayItemBussiness(List<DailyPerformanceEmployeeDto> lstEmployees, List<String> formatCodes, CorrectionOfDailyPerformance correctionOfDaily){
+	private DisplayItem getDisplayItemBussiness(
+			List<String> lstEmployeeId,
+			DateRange dateRange, 
+			List<String> formatCodes, 
+			CorrectionOfDailyPerformance correctionOfDaily){
 		DisplayItem dispItem = new DisplayItem();
+		if (CollectionUtil.isEmpty(lstEmployeeId)) {
+			return dispItem;
+		}		
 		List<FormatMPCorrectionDto> lstFormat = new ArrayList<FormatMPCorrectionDto>();
 		List<MPSheetDto> lstSheet = new ArrayList<MPSheetDto>();
 		List<Integer> lstAtdItem = new ArrayList<>();
 		List<Integer> lstAtdItemUnique = new ArrayList<>();
 		
-		//TODO 特定の社員が所属する勤務種別をすべて取得する
-		//Lấy tất cả các loại đi làm của employee chỉ định
-		
+		//特定の社員が所属する勤務種別をすべて取得する Lấy tất cả các loại đi làm của employee chỉ định
+		List<String> lstBusinessTypeCode = this.repo.getListBusinessType(lstEmployeeId, dateRange);
+		List<MPBusinessTypeControl> lstMPBusinessTypeControl = new ArrayList<>();
+		// Create header & sheet
 		//取得したImported「（就業機能）勤務種別」の件数をチェックする
-		//(Check số Imported「（就業機能）勤務種別」)		
-		int importCnt = 0;
-		if(importCnt == 0){
+		if (lstBusinessTypeCode.size() == 0) {
 			//エラーメッセージ（#）を表示する
 			//TODO missing message ID
 			throw new BusinessException("エラーメッセージ（#）を表示する");
-			
-		}else if(importCnt == 1){
+		}else if(lstBusinessTypeCode.size() == 1) {
 			//対応するドメインモデル「勤務種別の月別実績の修正のフォーマット」を取得する
-			//Lấy domain 「勤務種別の月別実績の修正のフォーマット」
-		}else{
-			//対応するドメインモデル「勤務種別の月別実績の修正のフォーマット」を取得する
+			//TODO Lấy domain 「勤務種別の月別実績の修正のフォーマット」
+		}else if(lstBusinessTypeCode.size() >= 2) {
+			//TODO 対応するドメインモデル「勤務種別の月別実績の修正のフォーマット」を取得する
 		}
+		
 		
 		//取得した「勤務種別の月別実績の修正のフォーマット」に表示するすべての項目の列幅があるかチェックする
 		//Check xem tất cả item có hiển thị trong 「勤務種別の月別実績の修正のフォーマット」
