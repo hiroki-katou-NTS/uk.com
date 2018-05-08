@@ -12,11 +12,14 @@ import lombok.NoArgsConstructor;
 public class KfnmtExtractPeriodMonthPK implements Serializable{
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "EXTRACTION_ID")
-	public String extractionId;
+	@Column(name = "CID")	
+	public String companyID;
 	
-	@Column(name = "EXTRACTION_RANGE")
-	public int extractionRange;
+	@Column(name = "ALARM_PATTERN_CD")	
+	public String alarmPatternCD;
+	
+	@Column(name = "ALARM_CATEGORY")	
+	public int alarmCategory;
 	
 	@Column(name = "UNIT")
 	public int unit;
@@ -25,8 +28,9 @@ public class KfnmtExtractPeriodMonthPK implements Serializable{
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((extractionId == null) ? 0 : extractionId.hashCode());
-		result = prime * result + extractionRange;
+		result = prime * result + alarmCategory;
+		result = prime * result + ((alarmPatternCD == null) ? 0 : alarmPatternCD.hashCode());
+		result = prime * result + ((companyID == null) ? 0 : companyID.hashCode());
 		result = prime * result + unit;
 		return result;
 	}
@@ -40,15 +44,22 @@ public class KfnmtExtractPeriodMonthPK implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		KfnmtExtractPeriodMonthPK other = (KfnmtExtractPeriodMonthPK) obj;
-		if (extractionId == null) {
-			if (other.extractionId != null)
-				return false;
-		} else if (!extractionId.equals(other.extractionId))
+		if (alarmCategory != other.alarmCategory)
 			return false;
-		if (extractionRange != other.extractionRange)
+		if (alarmPatternCD == null) {
+			if (other.alarmPatternCD != null)
+				return false;
+		} else if (!alarmPatternCD.equals(other.alarmPatternCD))
+			return false;
+		if (companyID == null) {
+			if (other.companyID != null)
+				return false;
+		} else if (!companyID.equals(other.companyID))
 			return false;
 		if (unit != other.unit)
 			return false;
 		return true;
 	}
+	
+
 }

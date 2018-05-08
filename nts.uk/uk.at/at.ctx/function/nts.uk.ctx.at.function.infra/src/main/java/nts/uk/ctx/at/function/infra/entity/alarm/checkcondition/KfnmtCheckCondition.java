@@ -51,7 +51,8 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 	public int extractionRange;
 
 	@ManyToOne
-	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+	@JoinColumns(
+		  { @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 			@JoinColumn(name = "ALARM_PATTERN_CD", referencedColumnName = "ALARM_PATTERN_CD", insertable = false, updatable = false) })
 	public KfnmtAlarmPatternSet alarmPatternSet;
 
@@ -76,10 +77,7 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 	
 	
 	@OneToMany(mappedBy = "checkCondition", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumns({
-		@JoinColumn(name="EXTRACTION_ID", referencedColumnName="EXTRACTION_ID", insertable=false, updatable=false),
-		@JoinColumn(name="EXTRACTION_RANGE", referencedColumnName="EXTRACTION_RANGE", insertable=false, updatable=false)
-	})
+	@JoinTable(name = "KFNMT_EXTRACT_PER_MONTH")
 	public List<KfnmtExtractPeriodMonth> listExtractPerMonth;
 	
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -134,7 +132,7 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 				extractPeriodList.add(extractionPeriodDaily.toDomain());				
 			}else if(listExtractPerMonth !=null){
 				listExtractPerMonth.forEach( e ->{
-					extractPeriodList.add(e.toDomain());
+					extractPeriodList.add(e.toDomain(extractionId, extractionRange));
 				});
 			}
 			
@@ -171,7 +169,7 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 							extractBase.getExtractionId(), extractBase.getExtractionRange().value, 
 							domain.getCheckConditionList().stream().map(
 									x-> new KfnmtCheckConItem(buildCheckConItemPK(domain, x, companyId, alarmPatternCode))).collect(Collectors.toList()),
-							Arrays.asList(KfnmtExtractPeriodMonth.toEntity(extractionPeriodMonth)));
+							Arrays.asList(KfnmtExtractPeriodMonth.toEntity(companyId, alarmPatternCode, domain.getAlarmCategory().value,  extractionPeriodMonth)));
 					return entity;
 				}
 

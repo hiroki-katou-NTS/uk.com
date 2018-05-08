@@ -5,6 +5,8 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -70,6 +72,11 @@ public class KfnmtExtractPeriodMonth extends UkJpaEntity implements Serializable
 	
 
 	@ManyToOne
+	@JoinColumns({
+		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+		@JoinColumn(name = "ALARM_PATTERN_CD", referencedColumnName = "ALARM_PATTERN_CD", insertable = false, updatable = false), 
+		@JoinColumn(name = "ALARM_CATEGORY", referencedColumnName = "ALARM_CATEGORY", insertable = false, updatable = false)
+		})
 	public KfnmtCheckCondition checkCondition;
 	
 	
@@ -88,7 +95,7 @@ public class KfnmtExtractPeriodMonth extends UkJpaEntity implements Serializable
 	}
 	
 	
-	public ExtractionPeriodMonth toDomain() {		
+	public ExtractionPeriodMonth toDomain(String extractionId, int extractionRange) {		
 		StartMonth startMonth = new StartMonth(strSpecify);
 		
 		if(this.strSpecify==SpecifyStartMonth.DESIGNATE_CLOSE_START_MONTH.value) {
@@ -100,11 +107,11 @@ public class KfnmtExtractPeriodMonth extends UkJpaEntity implements Serializable
 		EndMonth endMonth = new EndMonth(endSpecify, extractPeriod);
 		endMonth.setEndMonthNo(EnumAdaptor.valueOf(endPreviousAtr, PreviousClassification.class), this.endMonth, endCurrentMonth==1);
 		
-		return new ExtractionPeriodMonth(this.pk.extractionId, this.pk.extractionRange, startMonth, endMonth, EnumAdaptor.valueOf(pk.unit, NumberOfMonth.class));
+		return new ExtractionPeriodMonth(extractionId, extractionRange, startMonth, endMonth, EnumAdaptor.valueOf(pk.unit, NumberOfMonth.class));
 	}
 	
-	public KfnmtExtractPeriodMonth(ExtractionPeriodMonth domain) {
-		this.pk = new KfnmtExtractPeriodMonthPK(domain.getExtractionId(), domain.getExtractionRange().value, domain.getNumberOfMonth().value);
+	public KfnmtExtractPeriodMonth(String companyId, String alarmPatternCode, int alarmCategory, ExtractionPeriodMonth domain) {
+		this.pk = new KfnmtExtractPeriodMonthPK(companyId, alarmPatternCode, alarmCategory, domain.getNumberOfMonth().value);
 		this.strSpecify= domain.getStartMonth().getSpecifyStartMonth().value;
 		this.yearType = domain.getStartMonth().getFixedMonthly().isPresent() ? domain.getStartMonth().getFixedMonthly().get().getYearSpecifiedType().value: YearSpecifiedType.CURRENT_YEAR.value;
 		this.specifyMonth = domain.getStartMonth().getFixedMonthly().isPresent()? domain.getStartMonth().getFixedMonthly().get().getDesignatedMonth(): 0;
@@ -118,7 +125,7 @@ public class KfnmtExtractPeriodMonth extends UkJpaEntity implements Serializable
 		this.endPreviousAtr = domain.getEndMonth().getEndMonthNo().get().getMonthPrevious().value;
 	}
 	
-	public static KfnmtExtractPeriodMonth toEntity(ExtractionPeriodMonth domain) {
-		return new KfnmtExtractPeriodMonth(domain);		
+	public static KfnmtExtractPeriodMonth toEntity(String companyId, String alarmPatternCode, int alarmCategory, ExtractionPeriodMonth domain) {
+		return new KfnmtExtractPeriodMonth(companyId, alarmPatternCode, alarmCategory, domain);		
 	}
 }

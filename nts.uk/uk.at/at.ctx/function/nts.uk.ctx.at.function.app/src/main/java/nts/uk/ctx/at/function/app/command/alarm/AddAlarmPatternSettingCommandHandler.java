@@ -61,11 +61,11 @@ public class AddAlarmPatternSettingCommandHandler extends CommandHandler<AddAlar
 	
 	public CheckCondition convertToCheckCondition (CheckConditionCommand command) {
 		List<ExtractionRangeBase> extractionList = new ArrayList<>();
-		if(command.getExtractionPeriodDaily()!=null) {
+		if(command.getAlarmCategory()==AlarmCategory.DAILY.value || command.getAlarmCategory() == AlarmCategory.MAN_HOUR_CHECK.value) {
 			extractionList.add(command.getExtractionPeriodDaily().toDomain());
-		}else if(command.getExtractionPeriodUnit()  !=null){
+		}else if(command.getAlarmCategory()  == AlarmCategory.SCHEDULE_4WEEK.value){
 			extractionList.add(command.getExtractionPeriodUnit().toDomain());
-		}else if(!command.getListExtractionMonthly().isEmpty()) {
+		}else if(command.getAlarmCategory() == AlarmCategory.MONTHLY.value) {
 			command.getListExtractionMonthly().forEach( e->{
 				extractionList.add(e.toDomain());
 			});

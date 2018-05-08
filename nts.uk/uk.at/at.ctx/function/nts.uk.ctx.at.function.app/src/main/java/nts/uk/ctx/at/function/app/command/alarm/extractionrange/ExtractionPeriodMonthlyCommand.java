@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.app.command.alarm.extractionrange;
 
 import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.NumberOfMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.EndMonth;
@@ -41,6 +42,11 @@ public class ExtractionPeriodMonthlyCommand {
 	private int endPreviousAtr;
 	
 	public ExtractionPeriodMonth toDomain() {
+		
+		if(this.extractionId == null || this.extractionId.equals("")){
+			this.extractionId = IdentifierUtil.randomUniqueId();
+		}
+		
 		StartMonth startMonth = new StartMonth(strSpecify);
 		
 		if(this.strSpecify==SpecifyStartMonth.DESIGNATE_CLOSE_START_MONTH.value) {
