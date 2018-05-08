@@ -40,12 +40,15 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                         for (let i = 0; i < listApprovalPhase.length; i++) {
                             for (let listApprovalFrame = listApprovalPhase[i].listApprovalFrame, j = 0; j < listApprovalFrame.length; j++) {
                                 for (let listApprover = listApprovalFrame[j].listApprover, k = 0; k < listApprover.length; k++) {
-                                    if (listApprover[k].approverMail.length >0){
+                                    if (listApprover[k].representerName.length > 0){
+                                        listApprover[k].approverName += '(' + listApprover[k].representerName + ')';
+                                    } else if (listApprover[k].approverMail.length >0){
                                         listApprover[k].approverName += '(@)';
                                         listApprover[k]['isSend'] = 1;
                                     } else {
                                         listApprover[k]['isSend'] = 0;
                                     }
+                                    listApprover[k]['dispApproverName'] = listApprover[k].approverName;
                                 }
                             }
                         }
