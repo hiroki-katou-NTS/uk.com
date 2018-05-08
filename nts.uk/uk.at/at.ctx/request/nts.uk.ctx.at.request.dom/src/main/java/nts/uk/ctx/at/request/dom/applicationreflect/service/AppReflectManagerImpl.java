@@ -155,12 +155,14 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			if(optAbsenceLeaveData.isPresent()) {
 				AbsenceLeaveApp absenceLeave = optAbsenceLeaveData.get();
 				reflectScheParam.setAbsenceLeave(absenceLeave);
+				absenceLeaveAppInfor = this.getAbsenceLeaveAppInfor(appInfor, absenceLeave);
 			} 
 			
 			Optional<RecruitmentApp> optRecruitmentData = recruitmentRepo.findByAppId(appInfor.getAppID());
 			if(optRecruitmentData.isPresent()) {
 				RecruitmentApp recruitmentData = optRecruitmentData.get();
 				reflectScheParam.setRecruitment(recruitmentData);
+				recruitmentInfor = this.getRecruitmentInfor(appInfor, recruitmentData);
 			}
 		} 
 		else {
@@ -211,7 +213,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				appInfor.getAppDate(), 
 				ScheAndRecordSameChangeFlg.ALWAY, 
 				true, 
-				absenceLeaveApp.getWorkTypeCD(), 
+				absenceLeaveApp.getWorkTypeCD().v(), 
 				absenceLeaveApp.getWorkTimeCD(), 
 				null, 
 				null, 
@@ -225,7 +227,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		recruitment = new CommonReflectPara(appInfor.getEmployeeID(),
 				appInfor.getAppDate(),
 				ScheAndRecordSameChangeFlg.ALWAY,
-				true, recuitmentApp.getWorkTypeCD(), 
+				true, recuitmentApp.getWorkTypeCD().v(), 
 				recuitmentApp.getWorkTimeCD().v(), 
 				null, 
 				null,
