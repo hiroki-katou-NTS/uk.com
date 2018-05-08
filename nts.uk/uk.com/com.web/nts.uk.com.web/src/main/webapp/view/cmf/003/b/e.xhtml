@@ -83,7 +83,7 @@
 				<div class="valign-center control-group">
 							<div id="E3_36" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_100')}</div>
 							<span id="E3_37"></span>
-							<button
+							<button id="E3_38"
 								data-bind="ntsHelpButton: {image: '../resource/実行間隔説明画像.jpg', position: 'top left'}">?</button>
 				</div>
 				<div class="valign-center control-group">
@@ -95,25 +95,27 @@
 			</div>
 			<!-- left area -->
 			<div class="fixed-flex-layout-right" style="padding-top: 20px; padding-left: 30px;">
-				<div style="float: left; width: 50%;">
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_160')}</div>
-							</div>
-							<div style="float: left; width: 40%; padding-bottom: 20px;">
-								<!-- E4_2 -->
-								<!-- E4_3 -->
-								<div tabindex="3"
-									data-bind="ntsRadioBoxGroup: {options: itemTitleAtr,
-																		optionsValue: 'value',
-																		optionsText: 'titleAtrName',
-																		value: selectedTitleAtr,	
-																		enable: true}">
-								</div>
-							</div>
+				<div class="valign-center control-group">
+					<div style="float: left; width: 50%;">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_160')}</div>
+					</div>
+					<div style="float: left; width: 40%; padding-bottom: 20px;">
+						<!-- E4_2 -->
+						<!-- E4_3 -->
+						<div tabindex="3"
+							data-bind="ntsRadioBoxGroup: {options: itemTitleAtr,
+																optionsValue: 'value',
+																optionsText: 'titleAtrName',
+																value: selectedTitleAtr,	
+																enable: true}">
+						</div>
+					</div>
+				</div>
+				
 				<!-- List employee -->
 				<div class="valign-center control-group">
-					<table id="E4_4" data-bind="ntsGridList: {								
-						height: 1600,
-						dataSource: categorys,
+					<table id="E4_4" data-bind="ntsGridList: {
+						dataSource: employeeList,
 						primaryKey: 'code',
 						columns: columnEmployees,
 						multiple: false,
@@ -123,7 +125,7 @@
 				</div>
 				<!-- List employee -->
 				<!-- button -->
-				<div class="valign-center control-group button-bottom-area" style="padding-top: 70px;">
+				<div class="valign-center control-group">
 					<button id="E5_1" class="large" tabindex="14" data-bind="click: previousB">#{i18n.getText('CMF003_101')}</button>
 					<button id="E5_2" class="x-large proceed" tabindex="15" data-bind="click: gotoscreenF">#{i18n.getText('CMF003_102')}</button>	
 				</div>
