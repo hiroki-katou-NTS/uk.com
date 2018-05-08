@@ -12,7 +12,6 @@ module nts.uk.at.view.kdr001.a.viewmodel {
     export class ScreenModel {
 
         ccgcomponent: GroupOption;
-        systemTypes: KnockoutObservableArray<any>;
 
         // Options
         isQuickSearchTab: KnockoutObservable<boolean>;
@@ -85,7 +84,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             var self = this;
 
             self.date = ko.observable(moment());
-            self.systemTypes = ko.observableArray([
+            self.systemType = ko.observableArray([
                 { name: 'システム管理者', value: 1 }, // PERSONAL_INFORMATION
                 { name: '就業', value: 2 } // EMPLOYMENT
             ]);
@@ -263,7 +262,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                     let nextMonth = moment(endDate).add(1, 'M');
 
                     //画面項目「A3_2：開始年月」にパラメータ「当月」－1年した値をセットする
-                    let preYear = moment(startDate).add(-1, 'Y');
+                    let preYear = moment(nextMonth).add(-1, 'Y');
                     self.startDateString(moment.utc(preYear).format("YYYY/MM/DD"));
                     self.endDateString(moment.utc(nextMonth).format("YYYY/MM/DD"));
                         
