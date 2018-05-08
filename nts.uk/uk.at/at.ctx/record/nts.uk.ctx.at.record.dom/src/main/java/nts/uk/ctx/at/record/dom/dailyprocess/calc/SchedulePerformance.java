@@ -66,23 +66,24 @@ public class SchedulePerformance {
 	 */
 	public static IntegrationOfDaily convertScheduleToRecord(IntegrationOfDaily integrationOfDaily) {
 		
+		IntegrationOfDaily copyIntegration = integrationOfDaily;
 		//勤務情報を移す
 		WorkInfoOfDailyPerformance workInfo = integrationOfDaily.getWorkInformation();
 		workInfo.setScheduleInfo(workInfo.getRecordInfo());
 		
 		List<TimeLeavingWork> scheduleTimeSheetList = new ArrayList<TimeLeavingWork>(); 
 		for(ScheduleTimeSheet schedule : workInfo.getScheduleTimeSheets()) {
-			//TimeLeavingOfDailyPerformance attendanceLeavingOfDaily = timeLeavingOfDailyPerformanceRepository.
 			WorkStamp attendance = new WorkStamp(schedule.getAttendance(),schedule.getAttendance(), new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET );
+			//TimeLeavingOfDailyPerformance attendanceLeavingOfDaily = timeLeavingOfDailyPerformanceRepository.
 			WorkStamp leaving    = new WorkStamp(schedule.getLeaveWork(),schedule.getLeaveWork(), new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET );
 			TimeActualStamp atStamp = new TimeActualStamp(attendance,attendance,workInfo.getScheduleTimeSheets().size());
-			TimeActualStamp leStamp = new TimeActualStamp(attendance,attendance,workInfo.getScheduleTimeSheets().size());
+			TimeActualStamp leStamp = new TimeActualStamp(leaving,leaving,workInfo.getScheduleTimeSheets().size());
 			TimeLeavingWork timeLeavingWork = new TimeLeavingWork(schedule.getWorkNo(),atStamp,leStamp);
 			scheduleTimeSheetList.add(timeLeavingWork);
 		}
 		val timeLeavingOfDaily = new TimeLeavingOfDailyPerformance(workInfo.getEmployeeId(),new WorkTimes(workInfo.getScheduleTimeSheets().size()), scheduleTimeSheetList, workInfo.getYmd());
-		integrationOfDaily.setAttendanceLeave(Optional.of(timeLeavingOfDaily));
-		return integrationOfDaily;
+		copyIntegration.setAttendanceLeave(Optional.of(timeLeavingOfDaily));
+		return copyIntegration;
 	}
 	
 //	/**
@@ -130,7 +131,7 @@ public class SchedulePerformance {
 																				  new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS)),
 																		  new AutoCalOfLeaveEarlySetting(LeaveAttr.USE, LeaveAttr.USE),
 																		  new AutoCalcSetOfDivergenceTime(DivergenceTimeAttr.USE));
-		if(integrationOfDaily != null) {
+		if(integrationOfDaily.getCalAttr() != null) {
 			calAttr = new CalAttrOfDailyPerformance(integrationOfDaily.getWorkInformation().getEmployeeId(), 
 													integrationOfDaily.getWorkInformation().getYmd(),
 													new AutoCalFlexOvertimeSetting(new AutoCalSetting(integrationOfDaily.getCalAttr().getFlexExcessTime().getFlexOtTime().getUpLimitORtSet(), AutoCalAtrOvertime.CALCULATEMBOSS)),

@@ -278,7 +278,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	 * @return　実働時間
 	 */
 	public AttendanceTime calcActualTime() {
-		return new AttendanceTime(((CalculationTimeSheet)this).getTimeSheet().timeSpan().lengthAsMinutes());	
+		return new AttendanceTime(((CalculationTimeSheet)this).getCalcrange().lengthAsMinutes());	
 //		TimeZoneRounding a = ((CalculationTimeSheet)this).getTimeSheet();
 //		TimeSpanForCalc b = a.timeSpan();
 //		return new AttendanceTime(((CalculationTimeSheet)this).getTimeSheet().timeSpan().lengthAsMinutes());

@@ -242,7 +242,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			}else {
 				returnList.add(new WithinWorkTimeFrame(timeZone.getEmploymentTimeFrameNo(),
 													   new TimeZoneRounding(timeZone.getTimezone().getStart(),timeZone.getTimezone().getStart(),timeZone.getTimezone().getRounding()),
-													   new TimeSpanForCalc(timeZone.getTimezone().getStart(), timeZone.getTimezone().getEnd()),
+													   new TimeSpanForCalc(timeZone.getTimezone().getStart(), timeZone.getTimezone().getStart()),
 													   new ArrayList<>(),
 													   new ArrayList<>(),
 													   new ArrayList<>(),
