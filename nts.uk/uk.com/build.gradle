@@ -169,6 +169,16 @@ subprojects {
 		// https://mvnrepository.com/artifact/org.quartz-scheduler/quartz
 		compile group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.0'
 		
+		// For Login feature.
+		// https://mvnrepository.com/artifact/com.github.dblock.waffle/waffle-jna
+		compile group: 'com.github.dblock.waffle', name: 'waffle-jna', version: '1.8.1'
+		// https://mvnrepository.com/artifact/com.google.guava/guava
+		compile group: 'com.google.guava', name: 'guava', version: '23.0'
+		// https://mvnrepository.com/artifact/net.java.dev.jna/jna
+		compile group: 'net.java.dev.jna', name: 'jna', version: '4.4.0'
+		// https://mvnrepository.com/artifact/net.java.dev.jna/jna-platform
+		compile group: 'net.java.dev.jna', name: 'jna-platform', version: '4.4.0'
+		
         compile group: 'nts.gul', name: 'nts.gul', version: version
         compile group: 'nts.arc', name: 'nts.arc', version: version
 	}
@@ -801,6 +811,62 @@ project (':com.ctx:sys:env:nts.uk.ctx.sys.env.pubimp') {
 }
 //========================sys:gateway �====================================
 
+
+//========================sys:assist=====================================
+project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.ws') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.app')
+	}
+}
+
+project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.dom') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
+
+project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.app') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':shr:nts.uk.shr.find')
+		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.dom')
+	}
+}
+
+project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.infra') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.dom')
+	}
+}
+
+project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.ac') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.dom')
+		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.app')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
+	}
+}
+
+project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.pub') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
+
+project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.pubimp') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.pub')
+		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.dom')
+		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.app')
+		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.infra')
+	}
+}
+
+
 //=====================nts.uk.com.web�===========================
 project (':com.web:nts.uk.com.web') {
 	apply plugin: 'war'
@@ -906,6 +972,14 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':com.ctx:sys:env:nts.uk.ctx.sys.env.pub')
 		runtime project (':com.ctx:sys:env:nts.uk.ctx.sys.env.pubimp')
 		runtime project (':com.ctx:sys:env:nts.uk.ctx.sys.env.ws')
+
+		runtime project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.ac')
+		runtime project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.app')
+		runtime project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.dom')
+		runtime project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.infra')
+		runtime project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.pub')
+		runtime project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.pubimp')
+		runtime project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.ws')
 		
 		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ac')
 		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.app')
@@ -947,6 +1021,7 @@ project (':com.web:nts.uk.com.web') {
 		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.infra', version: version
 		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pub', version: version
 		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pubimp', version: version
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.ws', version: version
 		
 		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.ac', version: version
 		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.app', version: version
@@ -1120,6 +1195,9 @@ project (':pereg.ctx:nts.uk.ctx.pereg.app') {
 		compile project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom')
 		compile project (':com.ctx:bs:person:nts.uk.ctx.bs.person.app')
 		compile project (':com.ctx:bs:person:nts.uk.ctx.bs.person.dom')
+		
+		compile project (':com.screen:nts.uk.screen.com.app')
+		
 		compile project (':wk.ctx:nts.uk.ctx.workflow.app')
 		compile project (':wk.ctx:nts.uk.ctx.workflow.dom')
 		

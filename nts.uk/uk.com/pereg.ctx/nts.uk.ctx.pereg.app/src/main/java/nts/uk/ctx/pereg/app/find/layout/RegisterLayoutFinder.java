@@ -36,6 +36,7 @@ import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.pereg.dom.person.layout.NewLayout;
+import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutItemType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -133,10 +134,12 @@ public class RegisterLayoutFinder {
 		});
 
 		// check and set employeeName to businessName
-		Optional<LayoutPersonInfoClsDto> businessNameOpt = itemCls.stream().filter(classItem -> {
-			LayoutPersonInfoValueDto item = (LayoutPersonInfoValueDto) classItem.getItems().get(0);
-			return item.getItemCode().equals("IS00009");
-		}).findFirst();
+		Optional<LayoutPersonInfoClsDto> businessNameOpt = itemCls.stream()
+				.filter(classItem -> classItem.getLayoutItemType() != LayoutItemType.SeparatorLine)
+				.filter(classItem -> {
+					LayoutPersonInfoValueDto item = (LayoutPersonInfoValueDto) classItem.getItems().get(0);
+					return item.getItemCode().equals("IS00009");
+				}).findFirst();
 		if ( businessNameOpt.isPresent()) {
 			LayoutPersonInfoClsDto businessName = businessNameOpt.get();
 			LayoutPersonInfoValueDto item = (LayoutPersonInfoValueDto) businessName.getItems().get(0);
@@ -226,7 +229,7 @@ public class RegisterLayoutFinder {
 			throw new RuntimeException("invalid PersonInfoCategory");
 		}
 				
-		if (itemDef.getItemTypeState().getItemType() != 1) {
+		if (itemDef.getItemTypeState().getItemType() == ItemType.SINGLE_ITEM.value) {
 			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
 			item.setItem(sigleItem.getDataTypeState());
 			int dataTypeValue = item.getItem().getDataTypeValue();
@@ -318,8 +321,8 @@ public class RegisterLayoutFinder {
 			querys.add(new PeregQuery(x.getCategoryCd(), command.getEmployeeCopyId(), null, command.getHireDate()));
 		});
 
-		querys.forEach(x -> {
-			result.addAll(this.copyItemFinder.getAllCopyItemByCtgCode(false, x.getCategoryCode(),
+		querys.forEach(query -> {
+			result.addAll(this.copyItemFinder.getAllCopyItemByCtgCode(false, query.getCategoryCode(),
 					command.getEmployeeCopyId(), command.getHireDate()));
 		});
 		return result;

@@ -13,5 +13,5 @@ public class CareLeaveDataDto {
 	private String sId;
 	
 	//使用日数
-	private int numOfUsedDay;
+	private double numOfUsedDay;
 }

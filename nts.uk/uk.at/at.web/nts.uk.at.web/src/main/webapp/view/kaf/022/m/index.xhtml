@@ -248,7 +248,7 @@
 					</td>
 				</tr>
 				<!-- AppType: 打刻申請 -->
-				<tr data-bind="if: $data.appType() == 11">		
+							<tr data-bind="if: $data.appType() == 7">		
 					<td class="color-header"><span class="label">#{i18n.getText('KAF022_11')}</span></td>
 					<td>
 						<div data-bind="ntsRadioBoxGroup: {
@@ -261,7 +261,7 @@
 					<td></td>
 					<td></td>
 					<td>
-						<textarea class = 'hhhhhhhhhh' style="height: 40px; width: 174px" data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo', name:'#{i18n.getText('KAF022_315')}'" />
+						<textarea style="height: 40px; width: 174px" data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo', name:'#{i18n.getText('KAF022_315')}' }" />
 					</td>
 				</tr>
 				<!-- AppType: 振休振出申請 -->
@@ -278,7 +278,7 @@
 					<td></td>
 					<td></td>
 					<td>
-						<textarea style="height: 40px;width: 174px" data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo', name:'#{i18n.getText('KAF022_315')}' }" />
+						<textarea style="height: 40px; width: 174px" data-bind="ntsMultilineEditor: { value: $data.memo, constraint: 'Memo', name:'#{i18n.getText('KAF022_315')}' }" />
 					</td>
 				</tr>
 				<!-- AppType: ３６協定時間申請 -->

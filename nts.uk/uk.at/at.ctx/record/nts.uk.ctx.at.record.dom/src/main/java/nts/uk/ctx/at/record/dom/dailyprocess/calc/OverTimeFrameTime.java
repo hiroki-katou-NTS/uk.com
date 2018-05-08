@@ -16,6 +16,7 @@ public class OverTimeFrameTime {
 	/** 残業枠NO: 残業枠NO */
 	private OverTimeFrameNo OverWorkFrameNo;
 	/** 残業時間: 計算付き時間 */
+	@Setter
 	private TimeDivergenceWithCalculation OverTimeWork;
 	/** 振替時間: 計算付き時間 */
 	private TimeDivergenceWithCalculation TransferTime;
@@ -81,6 +82,14 @@ public class OverTimeFrameTime {
 									 transTime,
 									 this.BeforeApplicationTime,
 									 this.orderTime);
+	}
+	
+	/**
+	 * 事前申請を足す(4末納品きんきゅうたいおうby 保科)
+	 * @param addTime
+	 */
+	public void addBeforeTime(AttendanceTime addTime) {
+		this.BeforeApplicationTime = this.getBeforeApplicationTime().addMinutes(addTime.valueAsMinutes());
 	}
 	
 	/**

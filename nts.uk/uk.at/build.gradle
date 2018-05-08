@@ -359,6 +359,7 @@ project (':at.ctx:function:nts.uk.ctx.at.function.app') {
 project (':at.ctx:function:nts.uk.ctx.at.function.infra') {
 	dependencies {
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.dom')
+		compile group: 'aspose', name: 'cells', version: '9.0.0'
 	}
 }
 
@@ -373,6 +374,7 @@ project (':at.ctx:function:nts.uk.ctx.at.function.ac') {
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: version)
 		compile(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: version)
 		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
+		compile(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.pub', version: version)
 	}
 }
 
@@ -751,6 +753,9 @@ project (':at.web:nts.uk.at.web') {
 		runtime group: 'com.basic.company', name: 'nts.uk.ctx.basic.pub', version: version
 		runtime group: 'com.basic.company', name: 'nts.uk.ctx.basic.pubimp', version: version
 		runtime group: 'com.basic.company', name: 'nts.uk.ctx.basic.ac', version: version
+		
+		runtime group: 'com.screen', name: 'nts.uk.screen.com.app', version: version
+		runtime group: 'com.screen', name: 'nts.uk.screen.com.infra', version: version
 	}	
 	
 	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {

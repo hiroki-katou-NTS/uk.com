@@ -13,7 +13,7 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 	private AppReflectProcessRecord reflectRecord;
 
 	@Override
-	public WorkReflectedStatesInfo workRecordreflect(AppReflectRecordPara appRecordInfor) {
+	public boolean workRecordreflect(AppReflectRecordPara appRecordInfor) {
 		ReflectRecordInfor recordInfor = appRecordInfor.getRecordInfor();
 		/*WorkReflectedStatesInfo statesInfor = new WorkReflectedStatesInfo(recordInfor.getAppInfor().getReflectionInformation().getStateReflectionReal(),
 				recordInfor.getAppInfor().getReflectionInformation().getNotReasonReal().isPresent() ? recordInfor.getAppInfor().getReflectionInformation().getNotReasonReal().get() : null);
@@ -35,8 +35,9 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 				return reflectRecord.gobackReflectRecord(gobackpara, true);
 			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.ABSENCE_APPLICATION) {
 				//TODO: lam trong lan giao hang tiep theo
-				CommonReflectPara absenceInfor = appRecordInfor.getCommonInfor();
-				return reflectRecord.absenceReflectRecor(absenceInfor, true);
+				/*CommonReflectPara absenceInfor = appRecordInfor.getCommonInfor();
+				return reflectRecord.absenceReflectRecor(absenceInfor, true);*/
+				return false;
 			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.BREAK_TIME_APPLICATION) {
 				HolidayWorkReflectPara holidayworkData = appRecordInfor.getHolidayworkInfor();
 				return reflectRecord.holidayWorkReflectRecord(holidayworkData, true);
@@ -53,15 +54,16 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 				return reflectRecord.gobackReflectRecord(gobackpara, false);
 			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.ABSENCE_APPLICATION) {
 				//TODO: lam trong lan giao hang tiep theo
-				CommonReflectPara absenceInfor = appRecordInfor.getCommonInfor();
-				return reflectRecord.absenceReflectRecor(absenceInfor, false);
+				/*CommonReflectPara absenceInfor = appRecordInfor.getCommonInfor();
+				return reflectRecord.absenceReflectRecor(absenceInfor, false);*/
+				return false;
 			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.WORK_CHANGE_APPLICATION) {
 				CommonReflectPara workChangeData = appRecordInfor.getCommonInfor();
 				return reflectRecord.workChangeReflectRecord(workChangeData, false);
 			}
 		}
 		
-		return null;
+		return false;
 	}
 
 }

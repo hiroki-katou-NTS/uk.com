@@ -379,9 +379,10 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 		lstpredicateWhere.add(criteriaBuilder.like(prHierarchyCodeParameter,
 				criteriaBuilder.concat(senderEmailPath, "%")));
 
+		// Base in EAP: Don't exclude
 		// Ignore the wkp
-		lstpredicateWhere.add(criteriaBuilder.notEqual(root.get(BsymtWkpConfigInfo_.hierarchyCd),
-				prHierarchyCode));
+		// lstpredicateWhere.add(criteriaBuilder.notEqual(root.get(BsymtWkpConfigInfo_.hierarchyCd),
+		// prHierarchyCode));
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 

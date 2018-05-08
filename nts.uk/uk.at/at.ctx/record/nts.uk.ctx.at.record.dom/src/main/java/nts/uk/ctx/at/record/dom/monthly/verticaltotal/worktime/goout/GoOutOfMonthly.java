@@ -70,4 +70,42 @@ public class GoOutOfMonthly {
 		
 		// 日別実績の「短時間・回数」を集計する
 	}
+
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(GoOutOfMonthly target){
+		
+		for (val goOut : this.goOuts.values()){
+			val goOutReason = goOut.getGoOutReason();
+			if (target.goOuts.containsKey(goOutReason)){
+				val targetGoOut = target.goOuts.get(goOutReason);
+				goOut.addTimes(targetGoOut.getTimes().v());
+				goOut.addMinutesToLegalTime(
+						targetGoOut.getLegalTime().getTime().v(), targetGoOut.getLegalTime().getCalcTime().v());
+				goOut.addMinutesToIllegalTime(
+						targetGoOut.getIllegalTime().getTime().v(), targetGoOut.getIllegalTime().getCalcTime().v());
+				goOut.addMinutesToTotalTime(
+						targetGoOut.getTotalTime().getTime().v(), targetGoOut.getTotalTime().getCalcTime().v());
+			}
+		}
+		for (val targetGoOut : target.goOuts.values()){
+			val goOutReason = targetGoOut.getGoOutReason();
+			this.goOuts.putIfAbsent(goOutReason, targetGoOut);
+		}
+		
+		for (val childCare : this.goOutForChildCares.values()){
+			val childCareAtr = childCare.getChildCareAtr();
+			if (target.goOutForChildCares.containsKey(childCareAtr)){
+				val targetChildCare = target.goOutForChildCares.get(childCareAtr);
+				childCare.addTimes(targetChildCare.getTimes().v());
+				childCare.addMinutesToTime(targetChildCare.getTime().v());
+			}
+		}
+		for (val targetChildCare : target.goOutForChildCares.values()){
+			val childCareAtr = targetChildCare.getChildCareAtr();
+			this.goOutForChildCares.putIfAbsent(childCareAtr, targetChildCare);
+		}
+	}
 }

@@ -154,10 +154,9 @@ public class VerticalTotalOfMonthly {
 				attendanceTimeOfDailys, timeLeaveingOfDailys);
 		
 		// 乖離フラグの集計
-		//*****（未）　ドメインの構成、DB設計、リポジトリでのfindの管理単位が不整合かもしれない。確認要。
-		//val employeeDailyPerErrors =
-		//		repositories.getEmployeeDailyError().findByPeriodOrderByYmd(employeeId, datePeriod);
-		//this.workTime.aggregateDivergenceAtr(employeeDailyPerErrors);
+		val employeeDailyPerErrors =
+				repositories.getEmployeeDailyError().findByPeriodOrderByYmd(employeeId, datePeriod);
+		this.workTime.aggregateDivergenceAtr(employeeDailyPerErrors);
 		
 		// 日ごとのループ
 		GeneralDate procYmd = datePeriod.start();
@@ -215,8 +214,17 @@ public class VerticalTotalOfMonthly {
 			
 			// 週の集計
 			
-			
 			procYmd = procYmd.addDays(1);
 		}
+	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(VerticalTotalOfMonthly target){
+
+		this.workDays.sum(target.workDays);
+		this.workTime.sum(target.workTime);
 	}
 }

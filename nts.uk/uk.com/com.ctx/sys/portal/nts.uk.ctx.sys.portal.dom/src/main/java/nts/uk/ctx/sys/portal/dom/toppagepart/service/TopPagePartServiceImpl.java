@@ -24,6 +24,8 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.optionalwidget.OptionalWidget;
 import nts.uk.ctx.sys.portal.dom.toppagepart.optionalwidget.OptionalWidgetRepository;
+import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
+import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidgetRepository;
 
 /**
  * @author HieuLT
@@ -36,9 +38,12 @@ public class TopPagePartServiceImpl implements TopPagePartService{
 	
 	@Inject
 	private FlowMenuRepository flowMenuRepository;
+
+	@Inject
+	private StandardWidgetRepository standardWidgetRepository;
 	
-//	@Inject
-//	private OptionalWidgetRepository optionalWidgetRepository;
+	@Inject
+	private OptionalWidgetRepository optionalWidgetRepository;
 	
 	@Inject
 	private PlacementService placementService;
@@ -105,18 +110,28 @@ public class TopPagePartServiceImpl implements TopPagePartService{
 		if (!listFlowMenuID.isEmpty())
 			FlowMenu = flowMenuRepository.findByCodes(companyID, listFlowMenuID);
 		
+		// TODO: Get list StandardWidget
+		val listStandardWidget = listTopPagePart.stream().filter(c -> c.isStandardWidget()).collect(Collectors.toList());
+		List<String> listStandardWidgetID = listStandardWidget.stream().map(c -> c.getToppagePartID()).collect(Collectors.toList());
+		List<StandardWidget> StandardWidget = new ArrayList<>();
+		if (!listStandardWidgetID.isEmpty()){
+			StandardWidget = standardWidgetRepository.getAll();
+		}
+		
 		// TODO: Get list OptionalWidget
-//		val listOptionalWidget = listTopPagePart.stream().filter(c -> c.isOptionalWidget()).collect(Collectors.toList());
-//		List<String> listOptionalWidgetID = listOptionalWidget.stream().map(c -> c.getToppagePartID()).collect(Collectors.toList());
-//		List<OptionalWidget> OptionalWidget = new ArrayList<>();
-//		if (!listOptionalWidgetID.isEmpty()){
-//			OptionalWidget = optionalWidgetRepository.findByCode(companyID, listOptionalWidgetID);
-//		}
+		val listOptionalWidget = listTopPagePart.stream().filter(c -> c.isOptionalWidget()).collect(Collectors.toList());
+		List<String> listOptionalWidgetID = listOptionalWidget.stream().map(c -> c.getToppagePartID()).collect(Collectors.toList());
+		List<OptionalWidget> OptionalWidget = new ArrayList<>();
+		if (!listOptionalWidgetID.isEmpty()){
+			OptionalWidget = optionalWidgetRepository.findByCode(companyID, listOptionalWidgetID);
+		}
 		
 		// TODO: Get list Dashboard
 		
+
+		result.addAll(StandardWidget);
+		result.addAll(OptionalWidget);
 		result.addAll(FlowMenu);
-		//result.addAll(OptionalWidget);
 		return result;
 	}
 	

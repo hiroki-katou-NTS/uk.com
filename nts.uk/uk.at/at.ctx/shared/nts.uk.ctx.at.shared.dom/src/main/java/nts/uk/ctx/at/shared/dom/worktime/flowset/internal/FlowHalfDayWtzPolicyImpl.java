@@ -9,8 +9,8 @@ import javax.inject.Inject;
 
 import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowHalfDayWorkTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowHalfDayWtzPolicy;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezonePolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.policy.FlowHalfDayWtzPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.policy.FlowWorkRestTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**

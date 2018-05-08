@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
  *
  */
 @Getter
-@NoArgsConstructor
 public class TimeActualStamp {
 	
 	private Optional<WorkStamp> actualStamp;
@@ -61,6 +60,12 @@ public class TimeActualStamp {
 								   stamp,
                 				   this.numberOfReflectionStamp);
 	}
+	public TimeActualStamp() {
+		super();
+		this.actualStamp = Optional.empty();
+		this.stamp = Optional.empty();
+		this.numberOfReflectionStamp = 0;
+	}
 	public TimeActualStamp(WorkStamp actualStamp, WorkStamp stamp, Integer numberOfReflectionStamp) {
 		super();
 		this.actualStamp = Optional.ofNullable(actualStamp);
@@ -68,8 +73,13 @@ public class TimeActualStamp {
 		this.numberOfReflectionStamp = numberOfReflectionStamp;
 	}
 	public void setPropertyTimeActualStamp(Optional<WorkStamp> actualStamp, Optional<WorkStamp> stamp, Integer numberOfReflectionStamp){
-		this.actualStamp = actualStamp;
-		this.stamp = stamp;
+		this.actualStamp = actualStamp == null ? Optional.empty() : actualStamp;
+		this.stamp = stamp == null ? Optional.empty() : stamp;
 		this.numberOfReflectionStamp = numberOfReflectionStamp;
+	}
+	
+	/** 「打刻」を削除する */
+	public void removeStamp() {
+		this.stamp = Optional.empty();
 	}
 }

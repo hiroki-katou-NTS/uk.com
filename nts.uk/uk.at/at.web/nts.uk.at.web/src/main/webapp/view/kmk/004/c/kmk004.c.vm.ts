@@ -143,6 +143,12 @@ module nts.uk.at.view.kmk004.c {
              */
             public loadEmploymentSetting(code?: string): void {
                 let self = this;
+                                
+                let year = self.worktimeVM.worktimeSetting.normalSetting().year();
+                if(nts.uk.util.isNullOrEmpty(year)) {
+                    return;
+                }
+                
                 if (nts.uk.text.isNullOrEmpty(code)) {
                     self.resetFieldsToNewMode();
                     return;

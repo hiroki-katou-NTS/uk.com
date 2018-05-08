@@ -20,9 +20,13 @@ import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.WwfdpApprovalPha
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.WwfdpApprovalRootStatePK;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.WwfdpApproverStatePK;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.WwfdtApprovalFrame;
+import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.WwfdtApprovalFrameNew;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.WwfdtApprovalPhaseState;
+import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.WwfdtApprovalPhaseStateNew;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.WwfdtApprovalRootState;
+import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.WwfdtApprovalRootStateNew;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.WwfdtApproverState;
+import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.WwfdtApproverStateNew;
 
 /**
  * 
@@ -49,6 +53,14 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	private static final String SELECT_BY_LIST_EMP_DATE;
 	
 	private static final String SELECT_BY_LIST_EMP_AND_DATES;
+	
+	private static final String SELECT_APPROVALNEW_BY_DATE;
+	
+	private static final String SELECT_PHASE;
+	
+	private static final String SELECT_FRAME;
+	
+	private static final String SELECT_APPROVER_STATE;
 
 	
 	static {
@@ -117,6 +129,32 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString.append(" AND e.rootType = :rootType");
 		builderString.append(" AND e.employeeID IN :employeeID");
 		SELECT_BY_LIST_EMP_AND_DATES = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT DISTINCT e");
+		builderString.append(" FROM WwfdtApprovalRootStateNew e");
+		builderString.append(" WHERE e.recordDate >= :startDate");
+		builderString.append(" AND e.recordDate <= :endDate");
+		builderString.append(" AND e.rootType = :rootType");
+		SELECT_APPROVALNEW_BY_DATE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT DISTINCT e");
+		builderString.append(" FROM WwfdtApprovalPhaseStateNew e");
+		builderString.append(" WHERE e.wwfdpApprovalPhaseStatePK.rootStateID IN :rootStateIDs");
+		SELECT_PHASE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT DISTINCT e");
+		builderString.append(" FROM WwfdtApprovalFrameNew e");
+		builderString.append(" WHERE e.wwfdpApprovalFramePK.rootStateID IN :rootStateIDs");
+		SELECT_FRAME = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT DISTINCT e");
+		builderString.append(" FROM WwfdtApproverStateNew e");
+		builderString.append(" WHERE e.wwfdpApproverStatePK.rootStateID IN :rootStateIDs");
+		SELECT_APPROVER_STATE = builderString.toString();
 		
 	}
 	
@@ -202,23 +240,11 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	public List<ApprovalRootState> findEmployeeAppByApprovalRecordDate(GeneralDate startDate, GeneralDate endDate,
 			String approverID,Integer rootType) {
 		List<ApprovalRootState> result  = new ArrayList<>();
-		List<ApprovalRootState> approvalRootStates = this.queryProxy().query(SELECT_BY_DATE, WwfdtApprovalRootState.class)
+		List<WwfdtApprovalRootState> aa = this.queryProxy().query(SELECT_BY_DATE, WwfdtApprovalRootState.class)
 				.setParameter("startDate", startDate)
 				.setParameter("endDate", endDate)
-				.setParameter("rootType", rootType).getList(x -> x.toDomain());
-		if(!CollectionUtil.isEmpty(approvalRootStates)){
-			for(ApprovalRootState approvalRootState : approvalRootStates){
-				for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
-					for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()){
-						for(ApproverState approverState : approvalFrame.getListApproverState()){
-							if(approverState.getApproverID().equals(approverID)){
-								result.add(approvalRootState);
-							}
-						}
-					}
-				}
-			}
-		}	
+				.setParameter("rootType", rootType).getList();
+		result = aa.stream().map(x -> x.toDomain()).collect(Collectors.toList());
 		return result;
 	}
 
@@ -244,22 +270,9 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	public List<ApprovalRootState> findEmployeeAppByApprovalRecordDateAndNoRootType(GeneralDate startDate,
 			GeneralDate endDate, String approverID) {
 		List<ApprovalRootState> result  = new ArrayList<>();
-		List<ApprovalRootState> approvalRootStates = this.queryProxy()
+		result = this.queryProxy()
 				.query(SELECT_BY_DATE_NO_ROOTYPE, WwfdtApprovalRootState.class).setParameter("startDate", startDate)
 				.setParameter("endDate", endDate).getList(x -> x.toDomain());
-		if (!CollectionUtil.isEmpty(approvalRootStates)) {
-			for (ApprovalRootState approvalRootState : approvalRootStates) {
-				for (ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()) {
-					for (ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()) {
-						for (ApproverState approverState : approvalFrame.getListApproverState()) {
-							if (approverState.getApproverID().equals(approverID)) {
-								result.add(approvalRootState);
-							}
-						}
-					}
-				}
-			}
-		}
 		return result;
 	}
 
@@ -280,5 +293,65 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 				.setParameter("recordDate", approvalRecordDates)
 				.setParameter("rootType", rootType)
 				.setParameter("employeeID", employeeIDs).getList(x -> x.toDomain());
+	}
+
+	@Override
+	public List<ApprovalRootState> findEmployeeAppByApprovalRecordDateNew(GeneralDate startDate, GeneralDate endDate,
+			Integer rootType) {
+		List<ApprovalRootState> result  = new ArrayList<>();
+		result = this.queryProxy().query(SELECT_APPROVALNEW_BY_DATE, WwfdtApprovalRootStateNew.class)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.setParameter("rootType", rootType).getList(x -> x.toDomain());
+		
+		List<String> rootStateIDs = result.stream().map(x -> x.getRootStateID()).collect(Collectors.toList());
+		if(rootStateIDs != null){
+			List<ApprovalPhaseState>  approvalPhases =  new ArrayList<>();
+			CollectionUtil.split(rootStateIDs, 1000, subList -> {
+				approvalPhases.addAll(this.queryProxy().query(SELECT_PHASE, WwfdtApprovalPhaseStateNew.class)
+					.setParameter("rootStateIDs", subList).getList(x -> x.toDomain()));
+				});
+			List<ApprovalFrame>  approvalFrames = new ArrayList<>();
+			CollectionUtil.split(rootStateIDs, 1000, subList -> {
+				approvalFrames.addAll(this.queryProxy().query(SELECT_FRAME, WwfdtApprovalFrameNew.class)
+					.setParameter("rootStateIDs", subList).getList(x -> x.toDomain()));
+				});
+			List<ApproverState>  approverStates = new ArrayList<>();
+			CollectionUtil.split(rootStateIDs, 1000, subList -> {
+				approverStates.addAll(this.queryProxy().query(SELECT_APPROVER_STATE, WwfdtApproverStateNew.class)
+					.setParameter("rootStateIDs", subList).getList(x -> x.toDomain()));
+				});
+			for(ApprovalFrame frame : approvalFrames){
+				List<ApproverState> listApproverState = new ArrayList<>();
+				for(ApproverState approver : approverStates){
+					if(frame.getRootStateID().equals(approver.getRootStateID()) 
+							&& frame.getPhaseOrder().equals(approver.getPhaseOrder()) 
+							&& frame.getFrameOrder().equals(approver.getFrameOrder())){
+						listApproverState.add(approver);
+					}
+				}
+				frame.setListApproverState(listApproverState);
+			}
+			for(ApprovalPhaseState approvalPhase : approvalPhases){
+				List<ApprovalFrame> frames = new ArrayList<>();
+				for(ApprovalFrame frame : approvalFrames){
+					if(approvalPhase.getRootStateID().equals(frame.getRootStateID()) 
+							&& approvalPhase.getPhaseOrder().equals(frame.getPhaseOrder())){
+						frames.add(frame);
+					}
+				}
+				approvalPhase.setListApprovalFrame(frames);
+			}
+			for(ApprovalRootState approvalRoot : result){
+				List<ApprovalPhaseState> approvalPhaseStates = new ArrayList<>();
+				for(ApprovalPhaseState approvalPhase : approvalPhases){
+					if(approvalRoot.getRootStateID().equals(approvalPhase.getRootStateID())){
+						approvalPhaseStates.add(approvalPhase);
+					}
+				}
+				approvalRoot.setListApprovalPhaseState(approvalPhaseStates);
+			}
+		}
+		return result;
 	}
 }

@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
@@ -17,43 +17,60 @@ public class JpaFixedStampReflectTimezoneGetMemento implements StampReflectTimez
 
 	/** The entity. */
 	private KshmtFixedStampReflect entity;
-	
+
 	/**
 	 * Instantiates a new jpa fixed stamp reflect timezone get memento.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 */
 	public JpaFixedStampReflectTimezoneGetMemento(KshmtFixedStampReflect entity) {
 		super();
 		this.entity = entity;
 	}
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezoneGetMemento#getWorkNo()
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezoneGetMemento#
+	 * getWorkNo()
 	 */
 	@Override
 	public WorkNo getWorkNo() {
 		return new WorkNo(this.entity.getKshmtFixedStampReflectPK().getWorkNo());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezoneGetMemento#getClassification()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezoneGetMemento#
+	 * getClassification()
 	 */
 	@Override
 	public GoLeavingWorkAtr getClassification() {
-		return GoLeavingWorkAtr.valueOf(this.entity.getAtr());
+		return GoLeavingWorkAtr.valueOf(this.entity.getKshmtFixedStampReflectPK().getAtr());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezoneGetMemento#getEndTime()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezoneGetMemento#
+	 * getEndTime()
 	 */
 	@Override
 	public TimeWithDayAttr getEndTime() {
 		return new TimeWithDayAttr(this.entity.getEndTime());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezoneGetMemento#getStartTime()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezoneGetMemento#
+	 * getStartTime()
 	 */
 	@Override
 	public TimeWithDayAttr getStartTime() {

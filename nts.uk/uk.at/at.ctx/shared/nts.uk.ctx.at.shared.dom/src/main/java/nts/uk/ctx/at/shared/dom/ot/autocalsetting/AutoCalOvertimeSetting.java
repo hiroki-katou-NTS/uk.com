@@ -97,4 +97,28 @@ public class AutoCalOvertimeSetting extends DomainObject {
 			throw new RuntimeException("unknown StatutoryAtr When dicision Ot AutoCalc Setting:"+statutoryAtr);
 		}
 	}
+	
+	/**
+	 * 計算区分の判定処理
+	 * @param statutoryAtr 法定内区分
+	 * @param goEarly 早出区分
+	 * @return 打刻から計算する
+	 */
+	public boolean decisionCalcAtr(StatutoryAtr statutoryAtr,boolean goEarly) {
+		if(statutoryAtr.isStatutory()) {
+			if(goEarly) {
+				/*早出残業区分を参照*/
+				return this.getEarlyOtTime().getCalAtr().isCalculateEmbossing();
+			}
+			else {
+				/*普通残業計算区分を参照*/
+				return this.getNormalOtTime().getCalAtr().isCalculateEmbossing();
+			}
+		}
+		else {
+			/*法定内の場合*/
+			return this.getLegalOtTime().getCalAtr().isCalculateEmbossing();
+		}
+	}
+	
 }

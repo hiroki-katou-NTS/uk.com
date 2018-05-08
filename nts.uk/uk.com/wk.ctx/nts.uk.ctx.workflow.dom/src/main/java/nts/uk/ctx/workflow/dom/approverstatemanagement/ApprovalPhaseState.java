@@ -29,7 +29,7 @@ public class ApprovalPhaseState extends DomainObject {
 	private ApprovalBehaviorAtr approvalAtr;
 	
 	private ApprovalForm approvalForm;
-	
+	@Setter
 	private List<ApprovalFrame> listApprovalFrame;
 	
 	public static ApprovalPhaseState createFromFirst(String rootStateID, ApprovalPhaseState approvalPhaseState){
