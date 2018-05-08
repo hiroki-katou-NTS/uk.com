@@ -166,8 +166,8 @@ module nts.uk.at.view.kwr008.a {
                 nts.uk.ui.block.clear();
             }
 
-            redirectKWR008B(){
-                nts.uk.request.jump("/view/kwr/008/b/index.xhtml");
+            openKWR008B(){
+                nts.uk.ui.windows.sub.modal("/view/kwr/008/b/index.xhtml", { title: "出力項目設定画面" });
             }
 
             /**
