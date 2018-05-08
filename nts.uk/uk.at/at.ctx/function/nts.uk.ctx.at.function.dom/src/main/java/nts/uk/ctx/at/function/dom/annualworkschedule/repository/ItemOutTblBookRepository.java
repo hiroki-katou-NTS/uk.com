@@ -12,9 +12,9 @@ import java.util.List;
 public interface ItemOutTblBookRepository
 {
 
-    List<ItemOutTblBook> getAllItemOutTblBook(String cid);
+    List<ItemOutTblBook> getAllItemOutTblBook();
 
-    Optional<ItemOutTblBook> getItemOutTblBookById(String cid, String cd);
+    Optional<ItemOutTblBook> getItemOutTblBookById(String cid, String setOutCd, String cd);
 
     List<ItemOutTblBook> getItemOutTblBookBySetOutCd(String cid, String setOutCd);
 
@@ -22,6 +22,6 @@ public interface ItemOutTblBookRepository
 
     void update(ItemOutTblBook domain);
 
-    void remove(String cid, String cd);
+    void remove(String cid, String setOutCd, String cd);
 
 }

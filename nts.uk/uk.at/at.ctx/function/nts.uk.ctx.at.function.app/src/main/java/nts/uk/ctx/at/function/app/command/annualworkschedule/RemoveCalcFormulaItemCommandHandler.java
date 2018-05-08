@@ -22,6 +22,9 @@ public class RemoveCalcFormulaItemCommandHandler extends CommandHandler<CalcForm
     @Override
     protected void handle(CommandHandlerContext<CalcFormulaItemCommand> context) {
         String cid = context.getCommand().getCid();
-        repository.remove(cid);
+        String setOutCd = context.getCommand().getSetOutCd();
+        String itemOutCd = context.getCommand().getItemOutCd();
+        int attendanceItemId = context.getCommand().getAttendanceItemId();
+        repository.remove(cid, setOutCd, itemOutCd, attendanceItemId);
     }
 }

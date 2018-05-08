@@ -16,7 +16,7 @@ public class JpaCalcFormulaItemRepository extends JpaRepository implements CalcF
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KfnrtCalcFormulaItem f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.calcFormulaItemPk.cid =:cid ";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.calcFormulaItemPk.cid =:cid AND  f.calcFormulaItemPk.setOutCd =:setOutCd AND  f.calcFormulaItemPk.itemOutCd =:itemOutCd AND  f.calcFormulaItemPk.attendanceItemId =:attendanceItemId ";
 
     @Override
     public List<CalcFormulaItem> getAllCalcFormulaItem(){
@@ -25,9 +25,12 @@ public class JpaCalcFormulaItemRepository extends JpaRepository implements CalcF
     }
 
     @Override
-    public Optional<CalcFormulaItem> getCalcFormulaItemById(String cid){
+    public Optional<CalcFormulaItem> getCalcFormulaItemById(String cid, String setOutCd, String itemOutCd, int attendanceItemId){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, KfnrtCalcFormulaItem.class)
         .setParameter("cid", cid)
+        .setParameter("setOutCd", setOutCd)
+        .setParameter("itemOutCd", itemOutCd)
+        .setParameter("attendanceItemId", attendanceItemId)
         .getSingle(c->c.toDomain());
     }
 
@@ -42,7 +45,7 @@ public class JpaCalcFormulaItemRepository extends JpaRepository implements CalcF
     }
 
     @Override
-    public void remove(String cid){
-        this.commandProxy().remove(KfnrtCalcFormulaItem.class, new KfnrtCalcFormulaItemPk(cid)); 
+    public void remove(String cid, String setOutCd, String itemOutCd, int attendanceItemId){
+        this.commandProxy().remove(KfnrtCalcFormulaItem.class, new KfnrtCalcFormulaItemPk(cid, setOutCd, itemOutCd, attendanceItemId)); 
     }
 }

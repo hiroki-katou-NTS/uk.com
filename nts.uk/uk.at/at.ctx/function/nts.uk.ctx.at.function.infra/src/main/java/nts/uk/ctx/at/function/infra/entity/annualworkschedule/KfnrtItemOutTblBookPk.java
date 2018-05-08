@@ -32,6 +32,13 @@ public class KfnrtItemOutTblBookPk implements Serializable
     * コード
     */
     @Basic(optional = false)
+    @Column(name = "SET_OUT_CD")
+    public String setOutCd;
+    
+    /**
+    * コード
+    */
+    @Basic(optional = false)
     @Column(name = "CD")
     public String cd;
     

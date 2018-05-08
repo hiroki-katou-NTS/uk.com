@@ -20,7 +20,9 @@ public class AddCalcFormulaItemCommandHandler extends CommandHandler<CalcFormula
     @Override
     protected void handle(CommandHandlerContext<CalcFormulaItemCommand> context) {
         CalcFormulaItemCommand addCommand = context.getCommand();
-        repository.add(new CalcFormulaItem(addCommand.getCid(), addCommand.getSetOutCd(), addCommand.getItemOutCd(), addCommand.getAttendanceItemId(), addCommand.getOperation()));
+        repository.add(CalcFormulaItem.createFromJavaType(addCommand.getCid(), addCommand.getSetOutCd(),
+                                                          addCommand.getItemOutCd(), addCommand.getAttendanceItemId(),
+                                                          addCommand.getOperation()));
     
     }
 }

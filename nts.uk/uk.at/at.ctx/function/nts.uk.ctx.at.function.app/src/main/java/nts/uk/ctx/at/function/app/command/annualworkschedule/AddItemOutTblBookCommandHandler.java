@@ -22,8 +22,8 @@ public class AddItemOutTblBookCommandHandler extends CommandHandler<ItemOutTblBo
     @Override
     protected void handle(CommandHandlerContext<ItemOutTblBookCommand> context) {
         ItemOutTblBookCommand addCommand = context.getCommand();
-        repository.add(ItemOutTblBook.createFromJavaType(addCommand.getCid(), addCommand.getCd(),
-                       addCommand.getSetOutCd(), addCommand.getSortBy(),
+        repository.add(ItemOutTblBook.createFromJavaType(addCommand.getCid(),
+                       addCommand.getSetOutCd(), addCommand.getCd(), addCommand.getSortBy(),
                        addCommand.getHeadingName(), addCommand.getUseClass(),
                        addCommand.getValOutFormat()));
     

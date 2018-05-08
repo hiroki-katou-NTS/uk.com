@@ -22,12 +22,12 @@ public class ItemOutTblBook extends AggregateRoot {
 	/**
 	* コード
 	*/
-	private ItemOutTblBookCode cd;
+	private String setOutCd;
 
 	/**
 	* コード
 	*/
-	private String setOutCd;
+	private ItemOutTblBookCode cd;
 
 	/**
 	* 並び順
@@ -49,9 +49,9 @@ public class ItemOutTblBook extends AggregateRoot {
 	*/
 	private ValueOuputFormat valOutFormat;
 
-	public static ItemOutTblBook createFromJavaType(String cid, String cd, String setOutCd, int sortBy, String headingName, int useClass,
+	public static ItemOutTblBook createFromJavaType(String cid, String setOutCd, String cd, int sortBy, String headingName, int useClass,
 			int valOutFormat) {
-		return new ItemOutTblBook(cid, new ItemOutTblBookCode(cd), setOutCd, sortBy,
+		return new ItemOutTblBook(cid, setOutCd, new ItemOutTblBookCode(cd), sortBy,
 				new ItemOutTblBookHeadingName(headingName), useClass,
 				EnumAdaptor.valueOf(valOutFormat, ValueOuputFormat.class));
 	}

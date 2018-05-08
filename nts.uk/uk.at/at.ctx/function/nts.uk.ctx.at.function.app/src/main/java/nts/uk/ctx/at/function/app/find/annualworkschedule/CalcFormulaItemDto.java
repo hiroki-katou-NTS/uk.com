@@ -22,12 +22,12 @@ public class CalcFormulaItemDto
     /**
     * コード
     */
-    private int setOutCd;
+    private String setOutCd;
     
     /**
     * コード
     */
-    private int itemOutCd;
+    private String itemOutCd;
     
     /**
     * 勤怠項目ID
@@ -35,7 +35,7 @@ public class CalcFormulaItemDto
     private int attendanceItemId;
     
     /**
-    * 加, 減
+    * オペレーション
     */
     private int operation;
     

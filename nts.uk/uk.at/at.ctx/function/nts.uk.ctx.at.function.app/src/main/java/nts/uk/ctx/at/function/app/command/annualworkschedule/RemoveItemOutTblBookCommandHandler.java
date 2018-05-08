@@ -22,7 +22,8 @@ public class RemoveItemOutTblBookCommandHandler extends CommandHandler<ItemOutTb
     @Override
     protected void handle(CommandHandlerContext<ItemOutTblBookCommand> context) {
         String cid = context.getCommand().getCid();
+        String setOutCd = context.getCommand().getSetOutCd();
         String cd = context.getCommand().getCd();
-        repository.remove(cid, cd);
+        repository.remove(cid, setOutCd, cd);
     }
 }

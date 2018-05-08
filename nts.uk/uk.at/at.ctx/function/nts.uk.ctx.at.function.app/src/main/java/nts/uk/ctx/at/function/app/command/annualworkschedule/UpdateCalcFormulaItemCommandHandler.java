@@ -20,7 +20,10 @@ public class UpdateCalcFormulaItemCommandHandler extends CommandHandler<CalcForm
     @Override
     protected void handle(CommandHandlerContext<CalcFormulaItemCommand> context) {
         CalcFormulaItemCommand updateCommand = context.getCommand();
-        repository.update(new CalcFormulaItem(updateCommand.getCid(), updateCommand.getSetOutCd(), updateCommand.getItemOutCd(), updateCommand.getAttendanceItemId(), updateCommand.getOperation()));
+        repository.update(CalcFormulaItem.createFromJavaType(updateCommand.getCid(), updateCommand.getSetOutCd(),
+                                                             updateCommand.getItemOutCd(),
+                                                             updateCommand.getAttendanceItemId(),
+                                                             updateCommand.getOperation()));
     
     }
 }

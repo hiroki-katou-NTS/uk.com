@@ -28,4 +28,25 @@ public class KfnrtCalcFormulaItemPk implements Serializable
     @Column(name = "CID")
     public String cid;
     
+    /**
+    * コード
+    */
+    @Basic(optional = false)
+    @Column(name = "SET_OUT_CD")
+    public String setOutCd;
+    
+    /**
+    * コード
+    */
+    @Basic(optional = false)
+    @Column(name = "ITEM_OUT_CD")
+    public String itemOutCd;
+    
+    /**
+    * 勤怠項目ID
+    */
+    @Basic(optional = false)
+    @Column(name = "ATTENDANCE_ITEM_ID")
+    public int attendanceItemId;
+    
 }
