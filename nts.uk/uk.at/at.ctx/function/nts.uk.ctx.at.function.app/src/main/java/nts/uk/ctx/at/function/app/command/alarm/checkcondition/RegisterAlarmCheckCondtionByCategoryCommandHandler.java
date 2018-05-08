@@ -13,6 +13,8 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
+import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunAdapter;
+import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunImport;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
@@ -20,6 +22,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.ExtractionCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -40,6 +43,9 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 	
 	@Inject
 	private FixedConWorkRecordAdapter fixedConWorkRecordRepo;
+	
+	@Inject
+	private FixedExtraMonFunAdapter fixedExtraMonFunAdapter;
 
 	@Override
 	protected void handle(CommandHandlerContext<AlarmCheckConditionByCategoryCommand> context) {
@@ -94,6 +100,21 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 					}
 				}
 				break;
+			case MONTHLY:
+				MonAlarmCheckCon monAlarmCheckCon = (MonAlarmCheckCon) domain.getExtractionCondition() ;
+				//TODO: 
+				
+				//update list fixedExtraMonFun
+				for(FixedExtraMonFunImport fixedExtraMonFun : command.getMonAlarmCheckCon().getListFixExtraMon()) {
+					if(fixedExtraMonFun.getMonAlarmCheckID() == null || fixedExtraMonFun.getMonAlarmCheckID().equals("") ) {
+						fixedExtraMonFun.setMonAlarmCheckID(monAlarmCheckCon.getMonAlarmCheckConID());
+						this.fixedExtraMonFunAdapter.addFixedExtraMon(fixedExtraMonFun);
+					}else {
+						this.fixedExtraMonFunAdapter.updateFixedExtraMon(fixedExtraMonFun);
+						
+					}
+				}
+				break;
 			case SCHEDULE_4WEEK:
 				extractionCondition = command.getSchedule4WeekAlarmCheckCondition() == null ? null
 						: new AlarmCheckCondition4W4D(IdentifierUtil.randomUniqueId(),
@@ -129,6 +150,16 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 					fixedConWorkRecordAdapterDto.setDailyAlarmConID(dailyAlarmId);
 					this.fixedConWorkRecordRepo.addFixedConWorkRecordPub(fixedConWorkRecordAdapterDto);
 				}
+				break;
+			case MONTHLY:
+				String monAlarmCheckConID = IdentifierUtil.randomUniqueId();
+				//add list fixedExtraMonFun
+				for(FixedExtraMonFunImport fixedExtraMonFun : command.getMonAlarmCheckCon().getListFixExtraMon()) {
+					fixedExtraMonFun.setMonAlarmCheckID(monAlarmCheckConID);
+					this.fixedExtraMonFunAdapter.addFixedExtraMon(fixedExtraMonFun);
+				}
+				
+				
 				break;
 			case SCHEDULE_4WEEK:
 				extractionCondition = command.getSchedule4WeekAlarmCheckCondition() == null ? null
