@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.WorkClockOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByM
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -108,8 +110,13 @@ public class VerticalTotalOfMonthly {
 		}
 		
 		// 日別実績の出退勤　取得
-		val timeLeaveingOfDailys =
+		val timeLeavingOfDailys =
 				repositories.getTimeLeavingOfDaily().findbyPeriodOrderByYmd(employeeId, datePeriod);
+		Map<GeneralDate, TimeLeavingOfDailyPerformance> timeLeavingOfDailyMap = new HashMap<>();
+		for (val timeLeavingOfDaily : timeLeavingOfDailys){
+			val ymd = timeLeavingOfDaily.getYmd();
+			timeLeavingOfDailyMap.putIfAbsent(ymd, timeLeavingOfDaily);
+		}
 		
 		// 日別実績の臨時出退勤　取得
 		val temporaryTimeOfDailys =
@@ -159,7 +166,7 @@ public class VerticalTotalOfMonthly {
 		
 		// 出勤状態クラスの作成
 		AttendanceStatusMap attendanceStatusMap = new AttendanceStatusMap(
-				attendanceTimeOfDailys, timeLeaveingOfDailys);
+				attendanceTimeOfDailys, timeLeavingOfDailys);
 		
 		// 乖離フラグの集計
 		val employeeDailyPerErrors =
@@ -175,6 +182,7 @@ public class VerticalTotalOfMonthly {
 			WorkType workType = null;
 			WorkTypeDaysCountTable workTypeDaysCountTable = null;
 			PredetemineTimeSetting predetermineTimeSet = null;
+			PredetermineTimeSetForCalc predTimeSetForCalc = null;
 			if (workInfoOfDaily != null){
 				val recordWorkInfo = workInfoOfDaily.getRecordInfo();
 				val workTypeCode = recordWorkInfo.getWorkTypeCode();
@@ -192,10 +200,18 @@ public class VerticalTotalOfMonthly {
 				
 				// 所定時間設定の有無を確認する
 				predetermineTimeSet = predetermineTimeSetMap.get(workTimeCode);
+				
+				// 計算用所定時間設定を確認する
+				if (predetermineTimeSet != null){
+					predTimeSetForCalc = PredetermineTimeSetForCalc.convertMastarToCalc(predetermineTimeSet);
+				}
 			}
 			
 			// 勤怠時間を確認する
 			val attendanceTimeOfDaily = attendanceTimeOfDailyMap.get(procYmd);
+			
+			// 出退勤を確認する
+			val timeLeavingOfDaily = timeLeavingOfDailyMap.get(procYmd);
 			
 			// 臨時出退勤を確認する
 			val temporaryTimeOfDaily = temporaryTimeOfDailyMap.get(procYmd);
@@ -220,7 +236,7 @@ public class VerticalTotalOfMonthly {
 			this.workTime.aggregate(workType, attendanceTimeOfDaily);
 			
 			// 勤務時刻集計
-			this.workClock.aggregate(pcLogonInfoOpt, attendanceTimeOfDaily);
+			this.workClock.aggregate(pcLogonInfoOpt, attendanceTimeOfDaily, timeLeavingOfDaily, predTimeSetForCalc);
 			
 			// 処理期間の各週の開始日・終了日を判断
 			

@@ -5,7 +5,9 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.PCLogonOfMonthly;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 
 /**
  * 月別実績の勤務時刻
@@ -48,13 +50,17 @@ public class WorkClockOfMonthly {
 	 * 集計
 	 * @param pcLogonInfoOpt 日別実績のPCログオン情報 
 	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
+	 * @param timeLeavingOfDaily 日別実績の出退勤
+	 * @param predTimeSetForCalc 計算用所定時間設定
 	 */
 	public void aggregate(
 			Optional<PCLogOnInfoOfDaily> pcLogonInfoOpt,
-			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily){
+			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
+			TimeLeavingOfDailyPerformance timeLeavingOfDaily,
+			PredetermineTimeSetForCalc predTimeSetForCalc){
 		
 		// 終業時刻の集計
-		this.endClock.aggregate();
+		this.endClock.aggregate(timeLeavingOfDaily, predTimeSetForCalc);
 		
 		// PCログオン情報の集計
 		this.logonInfo.aggregate(pcLogonInfoOpt, attendanceTimeOfDaily);
