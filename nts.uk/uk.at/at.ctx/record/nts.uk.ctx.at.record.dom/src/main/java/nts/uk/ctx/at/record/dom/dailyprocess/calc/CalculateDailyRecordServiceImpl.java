@@ -227,14 +227,14 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	private IntegrationOfDaily calcDailyAttendancePerformance(IntegrationOfDaily integrationOfDaily) {
 		val copyCalcAtr = integrationOfDaily.getCalAttr();
 		//予定の時間帯
-		//val schedule = createSchedule(integrationOfDaily);
+		val schedule = createSchedule(integrationOfDaily);
 		//実績の時間帯
 		val record = createRecord(integrationOfDaily,TimeSheetAtr.RECORD);
 		if (!record.calculatable) {
 			integrationOfDaily.setCalAttr(copyCalcAtr);
 			return integrationOfDaily;
 		}
-		val test = calcRecord(record,record);
+		val test = calcRecord(record,schedule);
 		test.setCalAttr(copyCalcAtr);
 		return test;
 	}
@@ -257,10 +257,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		String employeeId = integrationOfDaily.getAffiliationInfor().getEmployeeId();
 		GeneralDate targetDate = integrationOfDaily.getAffiliationInfor().getYmd(); 
 		
-		/*日別実績(Work)の退避*/
-		val copyIntegrationOfDaily = integrationOfDaily;
-
-
 		/* 1日の計算範囲クラスを作成 */
 		val oneRange = createOneDayRange(integrationOfDaily);
 		/* 勤務種類の取得 */
@@ -988,8 +984,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 * @return 計画の日別実績(WOOR)
 	 */
 	private ManageReGetClass createSchedule(IntegrationOfDaily integrationOfDaily) {
+		val integrationOfDailyForSchedule = dailyRecordToAttendanceItemConverter.setData(integrationOfDaily).toDomain();
 		//予定時間１　ここで、「勤務予定を取得」～「休憩情報を変更」を行い、日別実績(Work)をReturnとして受け取る
-		IntegrationOfDaily afterScheduleIntegration = SchedulePerformance.createScheduleTimeSheet(integrationOfDaily);
+		IntegrationOfDaily afterScheduleIntegration = SchedulePerformance.createScheduleTimeSheet(integrationOfDailyForSchedule);
 		//予定時間2 　ここで、「時間帯を作成」を実施 Returnとして１日の計算範囲を受け取る
 		return this.createRecord(afterScheduleIntegration,TimeSheetAtr.SCHEDULE);
 	}
