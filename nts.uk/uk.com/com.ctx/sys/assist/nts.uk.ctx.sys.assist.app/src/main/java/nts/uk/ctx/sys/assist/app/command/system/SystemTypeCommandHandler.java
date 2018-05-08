@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.assist.app.comand.system;
+package nts.uk.ctx.sys.assist.app.command.system;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,15 +14,15 @@ import nts.uk.ctx.sys.assist.dom.system.SystemTypeImport;
 import nts.uk.ctx.sys.assist.dom.system.SystemTypeResult;
 
 @Stateless
-public class SystemTypeComandHandler extends CommandHandlerWithResult<SystemTypeCommand, List<SystemTypeResult>> {
+public class SystemTypeCommandHandler extends CommandHandlerWithResult<SystemTypeCommand, List<SystemTypeResult>> {
 	@Inject
 	private SystemTypeAdapter systemTypeAdapter;
 
 	@Override
 	protected List<SystemTypeResult> handle(CommandHandlerContext<SystemTypeCommand> context) {
 	
-		SystemTypeImport temp =systemTypeAdapter.getSystemTypeByEmpId();
-		List<SystemTypeResult> lstSystemType= new ArrayList<>();
+		SystemTypeImport temp = systemTypeAdapter.getSystemTypeByEmpId();
+		List<SystemTypeResult> lstSystemType = new ArrayList<>();
 
 		if(temp.isPersonalInformation()){
 			lstSystemType.add(new SystemTypeResult(SystemTypeEnum.POSSIBILITY_SYSTEM.nameId, SystemTypeEnum.POSSIBILITY_SYSTEM.value));
