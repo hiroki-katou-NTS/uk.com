@@ -174,23 +174,29 @@ public class LeaveEarlyTimeSheet {
 			}
 		}
 		
-		//計算範囲の取得
-		Optional<TimeSpanForCalc> calcRange = LeaveEarlyDecisionClock.getCalcRange(predetermineTimeSet, timeLeavingWork, coreTimeSetting);
-		if(calcRange.isPresent()) {
-			//早退時間帯の作成
-			TimeWithDayAttr start = calcRange.get().getEnd().greaterThanOrEqualTo(leave)?leave:calcRange.get().getEnd();
-			TimeWithDayAttr end = calcRange.get().getEnd();
-			
-			LateLeaveEarlyTimeSheet timeSheet = new LateLeaveEarlyTimeSheet(
-									new TimeZoneRounding(start,end,new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN)),
-									new TimeSpanForCalc(start,end));
-			//大塚モードか判断_現状は常に大塚モード
-			if(true) {
-				deductionTimeSheet = new DeductionTimeSheet(breakTimeList,breakTimeList);
+		if(leave!=null) {
+			//計算範囲の取得
+			Optional<TimeSpanForCalc> calcRange = LeaveEarlyDecisionClock.getCalcRange(predetermineTimeSet, timeLeavingWork, coreTimeSetting);
+			if(calcRange.isPresent()) {
+				//早退時間帯の作成
+//				TimeWithDayAttr start = calcRange.get().getEnd().greaterThanOrEqualTo(leave)?leave:calcRange.get().getEnd();
+				TimeWithDayAttr start = calcRange.get().getEnd();
+				if(calcRange.get().getEnd().greaterThan(calcRange.get().getStart())) {
+					 start = leave.lessThan(calcRange.get().getStart())?calcRange.get().getStart():leave;
+				}
+				TimeWithDayAttr end = calcRange.get().getEnd();
+				
+				LateLeaveEarlyTimeSheet timeSheet = new LateLeaveEarlyTimeSheet(
+										new TimeZoneRounding(start,end,new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN)),
+										new TimeSpanForCalc(start,end));
+				//大塚モードか判断_現状は常に大塚モード
+				if(true) {
+					deductionTimeSheet = new DeductionTimeSheet(breakTimeList,breakTimeList);
+				}
+				List<TimeSheetOfDeductionItem> dudctionList = deductionTimeSheet.getDupliRangeTimeSheet(new TimeSpanForCalc(start,end), deductionAtr);
+				timeSheet.setDeductionTimeSheet(dudctionList);
+				return Optional.of(timeSheet);
 			}
-			List<TimeSheetOfDeductionItem> dudctionList = deductionTimeSheet.getDupliRangeTimeSheet(new TimeSpanForCalc(start,end), deductionAtr);
-			timeSheet.setDeductionTimeSheet(dudctionList);
-			return Optional.of(timeSheet);
 		}
 		return Optional.empty();
 	}
