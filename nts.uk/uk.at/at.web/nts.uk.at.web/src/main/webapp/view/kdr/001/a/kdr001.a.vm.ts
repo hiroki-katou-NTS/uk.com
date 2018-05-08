@@ -338,7 +338,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 maxWidth: 550,
                 maxRows: 15
             };
-
+            self.startDateString($('#inp-period-startYM').val());
+            self.endDateString($('#inp-period-endYM').val());
         }
 
 
