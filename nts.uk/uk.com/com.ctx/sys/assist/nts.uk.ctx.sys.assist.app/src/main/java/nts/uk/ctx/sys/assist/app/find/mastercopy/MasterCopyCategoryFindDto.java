@@ -15,7 +15,7 @@ public class MasterCopyCategoryFindDto {
 	private Integer order;
 	
 	/** The system type. */
-	private String systemType;
+	private Integer systemType;
 	
 	/** The master copy category. */
 	private String masterCopyCategory;
@@ -33,7 +33,7 @@ public class MasterCopyCategoryFindDto {
 	 * @param systemType the system type
 	 * @param masterCopyCategory the master copy category
 	 */
-	public MasterCopyCategoryFindDto(String systemType, String masterCopyCategory, Integer order, String masterCopyId){
+	public MasterCopyCategoryFindDto(Integer systemType, String masterCopyCategory){
 		this.systemType = systemType;
 		this.masterCopyCategory = masterCopyCategory;
 		this.order = order;
