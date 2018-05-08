@@ -21,7 +21,7 @@ public interface ManualSetOfDataSaveRepository {
 	 * @author nam.lh
 	 */
 
-	List<ManualSetOfDataSave> getManualSetOfDataSaveById(String storeProcessingId);
+	Optional<ManualSetOfDataSave> getManualSetOfDataSaveById(String storeProcessingId);
 
 	void addManualSetting(ManualSetOfDataSave domain);
 }
