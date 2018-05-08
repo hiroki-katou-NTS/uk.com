@@ -24,7 +24,7 @@ public class JpaAgreeCondOtRepository extends JpaRepository implements IAgreeCon
 	 * @author yennth
 	 */
 	private static AgreeCondOt toDomain(Kfnmt36AgreeCondOt entity){
-		AgreeCondOt domain = AgreeCondOt.createFromJavaType(entity.kfnmt36AgreeCondOtPK.no, entity.ot36, entity.excessNum, 
+		AgreeCondOt domain = AgreeCondOt.createFromJavaType(entity.kfnmt36AgreeCondOtPK.id, entity.kfnmt36AgreeCondOtPK.no, entity.ot36, entity.excessNum, 
 															entity.messageDisp == null ? null : entity.messageDisp);
 		return domain;
 	}
@@ -90,6 +90,9 @@ public class JpaAgreeCondOtRepository extends JpaRepository implements IAgreeCon
 	 */
 	@Override
 	public void insert(AgreeCondOt agreeCondOt) {
+		if(agreeCondOt.getId() == null){
+			agreeCondOt.setId(agreeCondOt.createId());
+		}
 		this.commandProxy().insert(toEntity(agreeCondOt));
 	}
 	/**

@@ -29,13 +29,17 @@ public class UpdateAgreeConditionErrorCommandHandler extends CommandHandler<Upda
 	protected void handle(CommandHandlerContext<UpdateAgreeConditionErrorCommand> context) {
 		List<AgreeConditionError> listDomain = new ArrayList<>();
 		listDomain = context.getCommand().getAgreeConditionErrorCommand().stream().map(x -> {
-			return new AgreeConditionError(UUID.randomUUID().toString(), x.getUseAtr(), x.getPeriod(), 
+			return new AgreeConditionError(x.getId(), x.getUseAtr(), x.getPeriod(), 
 													x.getErrorAlarm(), x.getMessageDisp());
 		}).collect(Collectors.toList());
 		for(AgreeConditionError item : listDomain){
-			Optional<AgreeConditionError> oldOption = conErrRep.findById(item.getId());
-			if(oldOption.isPresent()){
-				conErrRep.update(item);
+			if(item.getId() != null){
+				Optional<AgreeConditionError> oldOption = conErrRep.findById(item.getId());
+				if(oldOption.isPresent()){
+					conErrRep.update(item);
+				}else{
+					conErrRep.insert(item);
+				}
 			}else{
 				conErrRep.insert(item);
 			}

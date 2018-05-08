@@ -27,7 +27,7 @@ public class JpaAgreeConditionErrorRepository extends JpaRepository implements I
 	 * @author yennth
 	 */
 	private static AgreeConditionError toDomain(Kfnmt36AgreeCondErr entity){
-		AgreeConditionError domain = AgreeConditionError.createFromJavaType(entity.useAtr, entity.period, 
+		AgreeConditionError domain = AgreeConditionError.createFromJavaType(entity.kfnmt36AgreeCondErrPK.id, entity.useAtr, entity.period, 
 																			entity.errorAlarm, 
 																			entity.messageDisp == null ? null : entity.messageDisp);
 		return domain;
@@ -53,7 +53,7 @@ public class JpaAgreeConditionErrorRepository extends JpaRepository implements I
 	 */
 	@Override
 	public Optional<AgreeConditionError> findById(String id) {
-		return this.queryProxy().find(id, Kfnmt36AgreeCondErr.class).map(c -> toDomain(c));
+		return this.queryProxy().find(new Kfnmt36AgreeCondErrPK(id), Kfnmt36AgreeCondErr.class).map(c -> toDomain(c));
 	}
 	/**
 	 * update AgreeConditionError
@@ -69,6 +69,9 @@ public class JpaAgreeConditionErrorRepository extends JpaRepository implements I
 	 */
 	@Override
 	public void insert(AgreeConditionError agreeConditionError) {
+		if(agreeConditionError.getId() == null){
+			agreeConditionError.setId(agreeConditionError.createId());
+		}
 		this.commandProxy().insert(toEntity(agreeConditionError));
 	}
 	/**

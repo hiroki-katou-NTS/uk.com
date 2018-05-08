@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 /**
@@ -15,6 +16,7 @@ import nts.arc.layer.dom.AggregateRoot;
 @AllArgsConstructor
 public class AgreeConditionError extends AggregateRoot{
 	/** ID */
+	@Setter
 	private String id;
 	/** 使用区分 */
 	private UseClassification useAtr;
@@ -25,10 +27,14 @@ public class AgreeConditionError extends AggregateRoot{
 	/** 表示するメッセージ */
 	private MessageDisp messageDisp;
 	
-	public static AgreeConditionError createFromJavaType(int useAtr, int period, int errorAlarm, String messageDisp){
-		return new AgreeConditionError(UUID.randomUUID().toString(), EnumAdaptor.valueOf(useAtr, UseClassification.class),
+	public static AgreeConditionError createFromJavaType(String id, int useAtr, int period, int errorAlarm, String messageDisp){
+		return new AgreeConditionError(id, EnumAdaptor.valueOf(useAtr, UseClassification.class),
 				EnumAdaptor.valueOf(period, Period.class),
 				EnumAdaptor.valueOf(errorAlarm, ErrorAlarm.class),
 				messageDisp == null ? null : new MessageDisp(messageDisp));
 	}
+	public String createId(){
+		return UUID.randomUUID().toString();
+	}
+	
 }

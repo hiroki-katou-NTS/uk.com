@@ -22,11 +22,11 @@ public class Kfnmt36AgreeCondOt extends UkJpaEntity implements Serializable{
 	public Kfnmt36AgreeCondOtPK kfnmt36AgreeCondOtPK;
 	
 	/** 36超過時間 */
-	@Column(name = "36_OVERTIME")
+	@Column(name = "OVERTIME_36")
 	public BigDecimal ot36;
 	
 	/** 36超過回数 */
-	@Column(name = "36_EXCESS_NUM")
+	@Column(name = "EXCESS_NUM_36")
 	public int excessNum;
 	
 	/** 表示するメッセージ */

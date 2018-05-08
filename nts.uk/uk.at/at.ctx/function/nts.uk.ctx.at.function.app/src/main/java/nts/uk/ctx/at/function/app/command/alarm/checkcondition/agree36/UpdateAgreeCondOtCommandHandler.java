@@ -3,7 +3,6 @@ package nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -15,6 +14,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeCondOt;
@@ -28,16 +28,24 @@ public class UpdateAgreeCondOtCommandHandler extends CommandHandler<UpdateAgreeC
 	@Override
 	protected void handle(CommandHandlerContext<UpdateAgreeCondOtCommand> context) {
 		List<AgreeCondOt> listDomain = new ArrayList<>();
+		if(listDomain.isEmpty()){
+			throw new BusinessException("Msg_832"); 
+		}
 		listDomain = context.getCommand().getAgreeCondOtCommand().stream().map(x -> {
-			return new AgreeCondOt(UUID.randomUUID().toString(), x.getNo(), x.getOt36(), x.getExcessNum(), x.getMessageDisp());
+			return new AgreeCondOt(x.getId(), x.getNo(), x.getOt36(), x.getExcessNum(), x.getMessageDisp());
 		}).collect(Collectors.toList());
 		for(AgreeCondOt item : listDomain){
-			Optional<AgreeCondOt> oldOption = otRep.findById(item.getId(), item.getNo());
-			if(oldOption.isPresent()){
-				otRep.update(item);
+			if(item.getId() != null){
+				Optional<AgreeCondOt> oldOption = otRep.findById(item.getId(), item.getNo());
+				if(oldOption.isPresent()){
+					otRep.update(item);
+				}else{
+					otRep.insert(item);
+				}
 			}else{
 				otRep.insert(item);
 			}
+	
 		}
 	}
 }
