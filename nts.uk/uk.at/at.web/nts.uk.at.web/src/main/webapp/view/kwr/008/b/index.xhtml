@@ -76,28 +76,28 @@
 						 -->
 						<table id="table-output-items" >
                                    <colgroup>
-                                        <col width="180"/>
-										<col width="60"/>
-			                            <col width="180"/>
-			                            <col width="60"/>
+                                   		<col width="10"/>
+                                        <col width="40"/>
+										<col width="100"/>
+			                            <col width="50"/>
+			                            <col width="50"/>
 										<col width="180"/>
-			                            <col width="52"/>
                                    </colgroup>
                                    <thead>
                                       <tr> 
 
-                                          <th class="ui-widget-header"  colspan="6" style ="text-align: center;"></th>
-                                          <th class="ui-widget-header"  colspan="6" style ="text-align: center;"></th>
-                                          <th class="ui-widget-header"  colspan="6" style ="text-align: center;">#{i18n.getText('KWR008_28')}</th>
-                                          <th class="ui-widget-header"  colspan="6" style ="text-align: center;"></th>
-                                          <th class="ui-widget-header"  colspan="6" style ="text-align: center;">#{i18n.getText('KWR008_30')}</th>
-                                          <th class="ui-widget-header"  colspan="6" style ="text-align: center;">#{i18n.getText('KWR008_29')}</th>
+                                          <th class="ui-widget-header"  style ="text-align: center;"></th>
+                                          <th class="ui-widget-header"  style ="text-align: center;"></th>
+                                          <th class="ui-widget-header"  tyle ="text-align: center;">#{i18n.getText('KWR008_28')}</th>
+                                          <th class="ui-widget-header"  style ="text-align: center;"></th>
+                                          <th class="ui-widget-header"  style ="text-align: center;">#{i18n.getText('KWR008_30')}</th>
+                                          <th class="ui-widget-header"  style ="text-align: center;">#{i18n.getText('KWR008_29')}</th>
                                           
                                       </tr>
                                    </thead>
                                    <tbody data-bind = "foreach: outputItem()">
                                        <tr>
-                                       			<td></td>
+                                       			<td>1</td>
 				                            	<td><div tabindex="9" data-bind="ntsCheckBox: { checked: $data.useClassification }"></div></td>
 				                            	<td>
 				                            			<input data-bind="ntsTextEditor: {
@@ -117,20 +117,15 @@
 					                                                value: cd,
 					                                                optionsText: 'name',
 					                                                enable: true,
-					                                                columns: [{ prop: 'name', length: 3 }]}">
+					                                                columns: [{ prop: 'name', length: 2 }]}">
 					                                </div>
 					                             </td>
 				                                
-				                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.outputTargetItem"></span></td>
+				                            	<td><span class="limited-label" data-bind="text: $data.outputTargetItem"></span></td>
                                            
                                        </tr>
                                    </tbody>
                                </table>
-						
-						-->
-						
-						
-
 					</div>
 					<div style="margin-top: 15px;">
 						<!-- B5_1 -->
