@@ -68,32 +68,32 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         supplementExplanation: KnockoutObservable<string>;
 
 
-        
-        
+
+
         //D
-      //Radio button
+        //Radio button
         itemTitleAtr: KnockoutObservableArray<any>;
         selectedTitleAtr: KnockoutObservable<number>;
-        
+
         ccg001ComponentOption: GroupOption;
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
-        
+
         listComponentOption: any;
         selectedEmployeeCode: KnockoutObservableArray<string>;
         employeeName: KnockoutObservable<string>;
         employeeList: KnockoutObservableArray<UnitModel>;
         alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
-        
+
         constructor() {
             var self = this;
             self.initComponents();
             self.setDefault();
-            
+
             self.itemTitleAtr = ko.observableArray([
                 { value: 0, titleAtrName: resource.getText('CMF005_51') },
                 { value: 1, titleAtrName: resource.getText('CMF005_52') }]);
             self.selectedTitleAtr = ko.observable(0);
-            
+
         }
 
         initComponents() {
@@ -120,7 +120,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.listColumnHeader = ko.observableArray([
                 { headerText: '', key: 'cateItemNumber', width: 20 },
                 { headerText: '', key: 'categoryId', hidden: true },
-                { headerText: getText('CMF005_24'), key: 'categoryName', width: 250 },
+                { headerText: getText('CMF005_24'), key: 'categoryName', width: 220 },
                 { headerText: getText('CMF005_25'), key: 'timeStore', width: 100, formatter: timeStore },
                 { headerText: getText('CMF005_26'), key: 'storageRangeSaved', width: 100, formatter: storageRangeSaved }
             ]);
@@ -184,7 +184,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
             //B9_2
             supplementExplanation = ko.observable("");
-            
+
             //D
             self.employeeList = ko.observableArray([]);
             self.selectedEmployee = ko.observableArray([]);
@@ -211,7 +211,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             //B8_2_1
             self.isExistCompressPasswordFlg = ko.observable(true);
         }
- 
+
         /**
          *Get status display button select category 
          */
@@ -254,27 +254,46 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             });
         }
 
+         openScreenF() {
+            var self = this;
+           
+            modal("/view/cmf/005/f/index.xhtml").onClosed(() => {
+                alert('ok!!!!!!!!!!!!!') });
+        }
+        
         /**
          *Open screen D 
          */
         nextScreenD() {
             let self = this;
-
-            if (self.listDataCategory().length > 0) {
-                // check so sanh hang ngay hang thang hang nam
-                if (self.validateDatePicker()) {
-                    // check pass word
-                    if (self.checkPass()) {
-                        self.next();
+            if (self.validateForm()) {
+                if (self.listDataCategory().length > 0) {
+                    // check so sanh hang ngay hang thang hang nam
+                    if (self.validateDatePicker()) {
+                        // check pass word
+                        if (self.checkPass()) {
+                            self.next();
+                        }
+                    } else {
+                        alertError({ messageId: 'Msg_465' });
                     }
-                } else {
-                    alertError({ messageId: 'Msg_465' });
-                }
 
-            } else {
-                alertError({ messageId: 'Msg_463' });
+                } else {
+                    alertError({ messageId: 'Msg_463' });
+                }
             }
         }
+
+        /**
+         *Check validate client
+         */
+        ScreenModel.prototype.validateForm = function() {
+            $(".validate_form").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return false;
+            }
+            return true;
+        };
 
         /**
          * function next wizard by on click button 
@@ -286,9 +305,9 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         }
 
         /**
-             * Validate  DatePicker
-             * return : boolean (true: Valid ,false: Invalid)
-             */
+        * Validate  DatePicker
+        * return : boolean (true: Valid ,false: Invalid)
+        */
         validateDatePicker() {
             let self = this;
             if (self.dateValue().startDate > self.dateValue().endDate) {
@@ -305,9 +324,9 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         }
 
         /**
-           * Validate Compress Password 
-           * return : boolean (true: Valid ,false: Invalid)
-           */
+        * Validate Compress Password 
+        * return : boolean (true: Valid ,false: Invalid)
+        */
         checkPass() {
             let self = this;
 
@@ -332,8 +351,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         }
 
         /**
-            * Setting require for RangePicker
-            */
+        * Setting require for RangePicker
+        */
         private setRangePickerRequire(): void {
             let self = this;
 
@@ -352,8 +371,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         }
 
         /**
-             * Open screen A
-             */
+         * Open screen A
+         */
         backScreenA() {
             nts.uk.request.jump("/view/cmf/005/a/index.xhtml");
         }
@@ -365,7 +384,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
          */
         getDateDefault() {
             var timeCurrent = moment.utc(new Date(), "YYYY/MM/DD");
-            //            let dateCurrent = moment.utc("2000/3/28", "YYYY/MM/DD");
+            //let dateCurrent = moment.utc("2000/3/28", "YYYY/MM/DD");
             var dateNow = timeCurrent.add(1, "M");
             let currentYear = timeCurrent.get('year');
             let date = dateNow.get('date');
@@ -411,7 +430,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             let self = this;
             self.loadCcg001Component();
             self.initComponnentKCP005();
-//            self.reloadEmployeeList();
+            //            self.reloadEmployeeList();
         }
 
 
@@ -471,12 +490,12 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             var self = this;
             var employeeSearchs: UnitModel[] = [];
             _.forEach(dataEmployee, function(item: EmployeeSearchDto) {
-                employeeSearchs.push(new UnitModel(item.employeeCode, 
+                employeeSearchs.push(new UnitModel(item.employeeCode,
                     item.employeeName, item.workplaceName));
             });
 
             self.employeeList(employeeSearchs);
-//            self.reloadEmployeeList();
+            //            self.reloadEmployeeList();
         }
 
         initComponnentKCP005() {
@@ -495,31 +514,30 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 isShowSelectAllButton: true,
                 maxWidth: 550,
                 maxRows: 15
-            };    
-            
-//            $('#employeeSearch').ntsListComponent(self.listComponentOption);
+            };
+
+            //            $('#employeeSearch').ntsListComponent(self.listComponentOption);
         }
-        
-//        reloadEmployeeList() {
-//            $('#employeeSearch').ntsListComponent(self.listComponentOption);
-//        }
-        
+
+        //        reloadEmployeeList() {
+        //            $('#employeeSearch').ntsListComponent(self.listComponentOption)   //        }
+
         private previousB(): void {
-                var self = this;
-                self.previous();
+            var self = this;
+            self.previous();
         }
-        
+
         private backToA() {
             let self = this;
             nts.uk.request.jump("/view/cmf/003/a/index.xhtml");
         }
-        
+
         private nextFromDToE(): void {
-                var self = this;
-                self.initE();
-                self.next();
+            var self = this;
+            self.initE();
+            self.next();
         }
-            
+
         private initE(): void {
             var self = this;
             $("#E3_3").html(self.dataSaveSetName());
@@ -547,37 +565,37 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             return getText('Enum_Storage_Range_Saved_ALL_EMP');
         }
     }
-   
+
     export class UnitModel {
         code: string;
         name: string;
         workplaceName: string;
-        
+
         constructor(code: string, name: string, workplaceName: string) {
-                this.code = code;
-                this.name = name;
-                this.workplaceName = workplaceName;
+            this.code = code;
+            this.name = name;
+            this.workplaceName = workplaceName;
         }
     }
-    
-        export class ListType {
-            static EMPLOYMENT = 1;
-            static Classification = 2;
-            static JOB_TITLE = 3;
-            static EMPLOYEE = 4;
-        }
-            
-        export class SelectType {
-            static SELECT_BY_SELECTED_CODE = 1;
-            static SELECT_ALL = 2;
-            static SELECT_FIRST_ITEM = 3;
-            static NO_SELECT = 4;
-        }
-        
-        export interface UnitAlreadySettingModel {
-            code: string;
-            isAlreadySetting: boolean;
-        }
+
+    export class ListType {
+        static EMPLOYMENT = 1;
+        static Classification = 2;
+        static JOB_TITLE = 3;
+        static EMPLOYEE = 4;
+    }
+
+    export class SelectType {
+        static SELECT_BY_SELECTED_CODE = 1;
+        static SELECT_ALL = 2;
+        static SELECT_FIRST_ITEM = 3;
+        static NO_SELECT = 4;
+    }
+
+    export interface UnitAlreadySettingModel {
+        code: string;
+        isAlreadySetting: boolean;
+    }
 }
 
 
