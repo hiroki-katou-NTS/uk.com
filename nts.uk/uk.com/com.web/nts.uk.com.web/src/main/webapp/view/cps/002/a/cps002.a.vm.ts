@@ -226,6 +226,12 @@ module cps002.a.vm {
                 }
 
             });
+            
+            
+            self.currentEmployee().employeeCode.subscribe((employeeCode) => {
+                var self = this;
+                self.updateCardNumber();
+            });
 
             self.start();
 
@@ -268,7 +274,6 @@ module cps002.a.vm {
                         if (result) {
                             self.getEmployeeCode(result).done((empCode) => {
                                 self.currentEmployee().employeeCode(empCode);
-                                self.getCardNumber(result);
 
                             });
                         }
@@ -322,7 +327,7 @@ module cps002.a.vm {
             return dfd.promise();
         }
 
-        getCardNumber(userSetting: IUserSetting) {
+        updateCardNumber(userSetting: IUserSetting) {
             let self = this;
             let employee = self.currentEmployee();
             employee.cardNo(__viewContext.user.companyCode + employee.employeeCode());
