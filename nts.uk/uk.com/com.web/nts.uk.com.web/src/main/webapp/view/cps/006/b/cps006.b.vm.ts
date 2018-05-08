@@ -321,6 +321,8 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     return getText('Enum_StringItemType_NUMERIC');
                 case 5:
                     return getText('Enum_StringItemType_KANA');
+                 case 6:
+                    return getText('Enum_StringItemType_CARDNO');
             }
         }
 
