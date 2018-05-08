@@ -71,7 +71,65 @@
 						
 						<!-- B4_1 -->
 						<div style="margin-bottom: 15px" data-bind ="ntsFormLabel: { required: true }" >#{i18n.getText('KWR008_27')}</div>
+						<!-- 
 						<table tabindex="8" id="output-item"></table>
+						 -->
+						<table id="table-output-items" >
+                                   <colgroup>
+                                        <col width="180"/>
+										<col width="60"/>
+			                            <col width="180"/>
+			                            <col width="60"/>
+										<col width="180"/>
+			                            <col width="52"/>
+                                   </colgroup>
+                                   <thead>
+                                      <tr> 
+
+                                          <th class="ui-widget-header"  colspan="6" style ="text-align: center;"></th>
+                                          <th class="ui-widget-header"  colspan="6" style ="text-align: center;"></th>
+                                          <th class="ui-widget-header"  colspan="6" style ="text-align: center;">#{i18n.getText('KWR008_28')}</th>
+                                          <th class="ui-widget-header"  colspan="6" style ="text-align: center;"></th>
+                                          <th class="ui-widget-header"  colspan="6" style ="text-align: center;">#{i18n.getText('KWR008_30')}</th>
+                                          <th class="ui-widget-header"  colspan="6" style ="text-align: center;">#{i18n.getText('KWR008_29')}</th>
+                                          
+                                      </tr>
+                                   </thead>
+                                   <tbody data-bind = "foreach: outputItem()">
+                                       <tr>
+                                       			<td></td>
+				                            	<td><div tabindex="9" data-bind="ntsCheckBox: { checked: $data.useClassification }"></div></td>
+				                            	<td>
+				                            			<input data-bind="ntsTextEditor: {
+				                            				name: '#[KWR008_25ddddddddd]',
+				                            				value : $data.headingName,
+				                            				required: false,
+				                            				option : { width : '25px'}}" />
+				                            	</td>
+				                            	<td><button id="btnSettingB16_5"  data-bind="click: $data.openKDW007($data.cd), enable: true">#{i18n.getText('KWR008_34')}</button></td>
+				                            	<td>
+					                            	<div class="combo-box"
+					                                            data-bind="ntsComboBox: {
+					                                                name:'#[KAL003_27fsdfsdfsdfdsf]',
+					                                                options: $parent.valueOutputFormat,
+					                                                optionsValue: 'code',
+					                                                visibleItemsCount: 5,
+					                                                value: cd,
+					                                                optionsText: 'name',
+					                                                enable: true,
+					                                                columns: [{ prop: 'name', length: 3 }]}">
+					                                </div>
+					                             </td>
+				                                
+				                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.outputTargetItem"></span></td>
+                                           
+                                       </tr>
+                                   </tbody>
+                               </table>
+						
+						-->
+						
+						
 
 					</div>
 					<div style="margin-top: 15px;">

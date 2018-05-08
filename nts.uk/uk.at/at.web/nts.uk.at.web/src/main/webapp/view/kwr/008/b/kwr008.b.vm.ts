@@ -47,6 +47,16 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             
             //table fixed
             $('#fixed-table').ntsFixedTable({ height: 304, width: 900 });
+             //event select change
+            self.selectedCode.subscribe((data) => {
+                nts.uk.ui.errors.clearAll()
+                self.outputItem.removeAll();
+                service.getListItemOutput(data).done(r => {
+                    self.outputItem.push(new OutputItemData(r.cd, r.useClass, r.headingName, r.valOutFormat, ''));
+                });
+                
+                self.updateMode(data);
+            });
         }
 
         public startPage(): JQueryPromise<any> {
@@ -59,7 +69,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             //fill data B2_2
             service.getOutItemSettingCode().done((data) => {
                 for (let i = 0, count = data.length; i < count; i++) {
-                    self.listStandardImportSetting.push(new setOutputSettingCode(data[i].cd, data[i].name, data[i].outNumExceedTime36Agr, data[i].displayFormat));
+                    self.listStandardImportSetting.push(new SetOutputSettingCode(data[i].cd, data[i].name, data[i].outNumExceedTime36Agr, data[i].displayFormat, []));
                 }
                 
                 self.listStandardImportSetting.sort((a, b) => {
@@ -77,7 +87,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 $('#output-item').ntsGrid({
                     width: '735px',
                     height: '320px',
-                    dataSource: self.outputItem(),
+                    dataSource: self.outputItem,
                     primaryKey: 'cd',
                     hidePrimaryKey: true,
                     virtualization: true,
@@ -100,20 +110,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 });
 
             });
-
-            //event select change
-            self.selectedCode.subscribe((data) => {
-                self.outputItem.removeAll();
-                //service.getListItemOutput(data).done(r => {
-                //    self.outputItem.push(new OutputItemData(r.cd, r.useClass, r.headingName, r.valOutFormat, ''));
-               // });
-                nts.uk.ui.errors.clearAll()
-                self.listStandardImportSetting.sort((a, b) => {
-                    return (a.cd === b.cd) ? 0 : (a.cd < b.cd) ? -1 : 1;
-                });
-                self.updateMode(data);
-            });
-            
+           
             block.clear();
 
             dfd.resolve(self);
@@ -212,7 +209,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 //                $('#output-item').ntsError('set', {messageId:"Msg_881"});
 //            }
             
-            let data : model.OutputSettingCodeDto = new setOutputSettingCode(
+            let data : model.OutputSettingCodeDto = new SetOutputSettingCode(
                 self.inputSettingCode(),
                 self.inputProjectName(),
                 (self.excessTime()) ? 1 : 0,
@@ -276,34 +273,46 @@ module nts.uk.at.view.kwr008.b.viewmodel {
     }
 
     class OutputItemData {
-        cd: number;
-        useClassification: boolean;
-        headingName: string;
-        valueOutputFormat: number;
-        outputTargetItem: string;
+        cd: KnockoutObservable<number>= ko.observable('');
+        useClassification: KnockoutObservable<boolean>= ko.observable(false);
+        headingName: KnockoutObservable<string>= ko.observable('');
+        valueOutputFormat: KnockoutObservable<number>= ko.observable(0);
+        outputTargetItem: KnockoutObservable<string>= ko.observable('');
         constructor(cd: number, useClassification: boolean, headingName: string, valueOutputFormat: number, outputTargetItem: string) {
-            this.cd = cd;
-            this.useClassification = useClassification;
-            this.headingName = headingName;
-            this.valueOutputFormat = valueOutputFormat;
-            this.outputTargetItem = outputTargetItem;
+            let self = this;
+            self.cd(cd || '');
+            self.useClassification(useClassification || false);
+            self.headingName(headingName || '');
+            self.valueOutputFormat(valueOutputFormat || 0);
+            self.outputTargetItem(outputTargetItem || '');
         }
     }
     
-    export class setOutputSettingCode implements model.OutputSettingCodeDto {
-        cd: string;
-        name: string;
-        outNumExceedTime36Agr: number;
-        displayFormat: number;
-        listItemOutput : OutputItemData;
-
-
-        constructor(cd: string, name: string, outNumExceedTime36Agr: number, displayFormat: number, listItemOutput : OutputItemData) {
-            this.cd = cd;
-            this.name = name;
-            this.outNumExceedTime36Agr = outNumExceedTime36Agr;
-            this.displayFormat = displayFormat;
-            this.listItemOutput = listItemOutput;
+    export class SetOutputSettingCode {
+        cd: KnockoutObservable<string>= ko.observable('');
+        name: KnockoutObservable<string>= ko.observable('');
+        outNumExceedTime36Agr: KnockoutObservable<boolean> = ko.observable(false);
+        displayFormat: KnockoutObservable<number> = ko.observable('');
+        listItemOutput : KnockoutObservableArray<OutputItemData> = ko.observableArray([]);
+        constructor(cd: string, name: string, outNumExceedTime36Agr: number, displayFormat: number, listItemOutput : Array<OutputItemData>) {
+            let self = this;
+            self.cd(cd || '');
+            self.name(name || '');
+            self.outNumExceedTime36Agr(outNumExceedTime36Agr || false);
+            self.displayFormat(displayFormat || 0);
+            if (listItemOutput && listItemOutput.length > 0) {
+                for(var i = 0; i < listItemOutput.length; i++) {
+                    self.listItemOutput.push(new  OutputItemData(
+                        listItemOutput[i].cd, 
+                        listItemOutput[i].useClassification,
+                        listItemOutput[i].headingName,
+                        listItemOutput[i].valueOutputFormat,
+                        listItemOutput[i].outputTargetItem));
+                }
+            } else {
+                self.listItemOutput([]);
+            }
+            
         }
     }
 }
