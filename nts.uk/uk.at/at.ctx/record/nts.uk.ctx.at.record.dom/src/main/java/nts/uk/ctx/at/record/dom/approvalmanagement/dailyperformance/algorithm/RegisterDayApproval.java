@@ -21,8 +21,8 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OpOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OperationOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.old.OpOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.old.OperationOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.context.AppContexts;
 
