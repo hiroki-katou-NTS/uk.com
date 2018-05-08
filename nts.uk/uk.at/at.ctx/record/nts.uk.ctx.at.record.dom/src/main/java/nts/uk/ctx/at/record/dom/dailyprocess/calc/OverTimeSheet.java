@@ -420,7 +420,7 @@ public class OverTimeSheet {
 			return afterCalcUpperTimeList;
 		val transSet = getTransSet(eachWorkTimeSet,eachCompanyTimeSet);
 		//就業時間帯の代休設定取得できない
-		if(!transSet.isPresent()||transSet.get().isUseDivision()) {
+		if(!transSet.isPresent()||!transSet.get().isUseDivision()) {
 			return afterCalcUpperTimeList;
 		}
 		else {
@@ -500,7 +500,7 @@ public class OverTimeSheet {
 		for(OverTimeFrameTime overTimeFrameTime : afterCalcUpperTimeList) {
 
 			
-			transAbleTime = calcTransferTime(useTimeAtr, overTimeFrameTime, transAbleTime, transRestAbleTime);
+			transAbleTime = calcTransferTime(useTimeAtr, overTimeFrameTime, transRestAbleTime);
 			//振替
 			val overTime = useTimeAtr.isTime()?overTimeFrameTime.getOverTimeWork().getTime().minusMinutes(transAbleTime.valueAsMinutes())
 											  :overTimeFrameTime.getOverTimeWork().getCalcTime().minusMinutes(transAbleTime.valueAsMinutes());
@@ -520,15 +520,15 @@ public class OverTimeSheet {
 	 * @param transRestAbleTime
 	 * @return
 	 */
-	private AttendanceTime calcTransferTime(UseTimeAtr useTimeAtr, OverTimeFrameTime overTimeFrameTime, AttendanceTime transAbleTime, AttendanceTime transRestAbleTime) {
+	private AttendanceTime calcTransferTime(UseTimeAtr useTimeAtr, OverTimeFrameTime overTimeFrameTime, AttendanceTime transRestAbleTime) {
 		if(useTimeAtr.isTime()) {
 			return overTimeFrameTime.getOverTimeWork().getTime().greaterThanOrEqualTo(transRestAbleTime)
-																		  ?transAbleTime
+																		  ?transRestAbleTime
 																		  :overTimeFrameTime.getOverTimeWork().getTime();
 		}
 		else {
-			return transAbleTime = overTimeFrameTime.getOverTimeWork().getCalcTime().greaterThanOrEqualTo(transRestAbleTime)
-					  													  ?transAbleTime
+			return overTimeFrameTime.getOverTimeWork().getCalcTime().greaterThanOrEqualTo(transRestAbleTime)
+					  													  ?transRestAbleTime
 					  													  :overTimeFrameTime.getOverTimeWork().getCalcTime();
 		}
 	}
@@ -538,18 +538,20 @@ public class OverTimeSheet {
 	 * 振替残時間(振替後)の算出
 	 * @param useTimeAtr 使用する時間区分
 	 * @param overTimeFrameTime　残業時間枠
-	 * @param overTime　残業時間
+	 * @param overTime　振替処理後の残業時間
 	 * @param transAbleTime　振替時間
 	 * @return 振替処理後の残業時間枠
 	 */
 	private OverTimeFrameTime calcTransTimeInFrame(UseTimeAtr useTimeAtr, OverTimeFrameTime overTimeFrameTime,AttendanceTime overTime, AttendanceTime transAbleTime){
 		if(useTimeAtr.isTime()) {
-			val changeOverTimeFrame = overTimeFrameTime.changeOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(overTime , overTimeFrameTime.getOverTimeWork().getTime()));
-			return changeOverTimeFrame.changeTransTime(TimeDivergenceWithCalculation.createTimeWithCalculation(overTimeFrameTime.getTransferTime().getTime(), transAbleTime));
+			val changeOverTimeFrame = overTimeFrameTime.changeOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(overTime,
+																															   overTimeFrameTime.getOverTimeWork().getCalcTime()));
+			return changeOverTimeFrame.changeTransTime(TimeDivergenceWithCalculation.createTimeWithCalculation(transAbleTime, overTimeFrameTime.getTransferTime().getCalcTime()));
 		}
 		else {
-			val changeOverTimeFrame = overTimeFrameTime.changeOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(overTime , overTimeFrameTime.getOverTimeWork().getCalcTime()));
-			return changeOverTimeFrame.changeTransTime(TimeDivergenceWithCalculation.createTimeWithCalculation(overTimeFrameTime.getTransferTime().getCalcTime(), transAbleTime));
+			val changeOverTimeFrame = overTimeFrameTime.changeOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(overTimeFrameTime.getOverTimeWork().getTime(),
+																															   overTime));
+			return changeOverTimeFrame.changeTransTime(TimeDivergenceWithCalculation.createTimeWithCalculation(overTimeFrameTime.getTransferTime().getTime(), transAbleTime));
 		}
 	}
 	
