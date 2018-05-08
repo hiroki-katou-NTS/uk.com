@@ -5,12 +5,12 @@ module nts.uk.com.view.cmf005.c {
     export module service {
             var paths = {
                 getCategoryBySytem: "ctx/sys/assist/app/findCategory/{0}",
-                getSystemType: "exio/exi/condset/getSysType"
+                getSystemTypes: "ctx/sys/assist/systemtype/getsystemtypes" 
             }
         
             // Get system type
             export function getSysTypes(condSetCode: string): JQueryPromise<any> {
-                return ajax("com", paths.getSystemType);
+                return ajax("com", paths.getSystemTypes);
             }
         
             export function getCategoryListBySystem(systemType: number): JQueryPromise<any> {

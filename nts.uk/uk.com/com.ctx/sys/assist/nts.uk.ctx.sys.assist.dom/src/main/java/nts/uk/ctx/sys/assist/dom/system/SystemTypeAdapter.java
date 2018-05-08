@@ -6,10 +6,8 @@ package nts.uk.ctx.sys.assist.dom.system;
  */
 public interface SystemTypeAdapter {
 	/**
-	 * get system type  by employee ID
-	 * 
-	 * @param employeeId
-	 * @return
+	 * Get system type by employee ID
+	 * @return SystemTypeImport
 	 */
 	SystemTypeImport getSystemTypeByEmpId();
 }

@@ -25,19 +25,19 @@ public class SystemTypeCommandHandler extends CommandHandlerWithResult<SystemTyp
 		List<SystemTypeResult> lstSystemType = new ArrayList<>();
 
 		if(temp.isPersonalInformation()){
-			lstSystemType.add(new SystemTypeResult(SystemTypeEnum.POSSIBILITY_SYSTEM.nameId, SystemTypeEnum.POSSIBILITY_SYSTEM.value));
+			lstSystemType.add(new SystemTypeResult(SystemTypeEnum.POSSIBILITY_SYSTEM.name, SystemTypeEnum.POSSIBILITY_SYSTEM.value));
 		}
 
 		if(temp.isHumanResOfficer()){
-			lstSystemType.add(new SystemTypeResult(SystemTypeEnum.ATTENDANCE_SYSTEM.nameId, SystemTypeEnum.ATTENDANCE_SYSTEM.value));
+			lstSystemType.add(new SystemTypeResult(SystemTypeEnum.ATTENDANCE_SYSTEM.name, SystemTypeEnum.ATTENDANCE_SYSTEM.value));
 		}
 
 		if(temp.isSalaryProfessional()){
-			lstSystemType.add(new SystemTypeResult(SystemTypeEnum.PAYROLL_SYSTEM.nameId, SystemTypeEnum.PAYROLL_SYSTEM.value));
+			lstSystemType.add(new SystemTypeResult(SystemTypeEnum.PAYROLL_SYSTEM.name, SystemTypeEnum.PAYROLL_SYSTEM.value));
 		}
 
 		if(temp.isOfficeHelperPersonne()){
-			lstSystemType.add(new SystemTypeResult(SystemTypeEnum.OFFICE_HELPER.nameId, SystemTypeEnum.OFFICE_HELPER.value));
+			lstSystemType.add(new SystemTypeResult(SystemTypeEnum.OFFICE_HELPER.name, SystemTypeEnum.OFFICE_HELPER.value));
 		}
 		
 		return lstSystemType;
