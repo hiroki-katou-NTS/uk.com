@@ -9,8 +9,6 @@ module nts.uk.at.view.kdm002.a {
         export class ScreenModel {
                         
             ccgcomponent: GroupOption;
-            systemTypes: KnockoutObservableArray<any>;
-
             // Options
             isQuickSearchTab: KnockoutObservable<boolean>;
             isAdvancedSearchTab: KnockoutObservable<boolean>;
@@ -88,7 +86,7 @@ module nts.uk.at.view.kdm002.a {
                 var self = this;
                 // dump
                 self.date = ko.observable(new Date().getFullYear() + "1231");
-                self.systemTypes = ko.observableArray([
+                self.systemType = ko.observableArray([
                     { name: 'システム管理者', value: 1 }, // PERSONAL_INFORMATION
                     { name: '就業', value: 2 } // EMPLOYMENT
                 ]);
@@ -157,7 +155,7 @@ module nts.uk.at.view.kdm002.a {
                 self.isEmployeeOfWorkplace = ko.observable(true);
                 self.isEmployeeWorkplaceFollow = ko.observable(true);
                 self.isMutipleCheck = ko.observable(true);
-                self.isSelectAllEmployee = ko.observable(true);
+                self.isSelectAllEmployee = ko.observable(false);
                 self.baseDate = ko.observable(moment());
                 self.periodStartDate = ko.observable(moment());
                 self.periodEndDate = ko.observable(moment());

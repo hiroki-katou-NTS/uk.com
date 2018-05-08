@@ -1,23 +1,12 @@
-.employeeInfoSearch {
-	
-
+.fixed-flex-layout{
+	width: 1325px;
 }
-
-.ccg001searchkcp005{
-	float:left;
-}
-
-.employeeAction {
+.fixed-flex-layout-right {
 	/*border: 1px solid #ccc !important;
 	border-radius: 5px;*/
-	float: right;
 	padding: 5px;
 	margin-top: 37px;
-	height: 400px;
-}
-
-.infoKDL003 {
-	width: 250px;
+	padding-right: 100px;
 }
 
 .periodCovered {

@@ -28,27 +28,19 @@
 					<button tabindex="1" class="proceed" data-bind="click: exportButton, enable: !nts.uk.ui.errors.hasError()">#{i18n.getText('KDM002_2')}</button>
 				</div>
 				
-				<div class="cf" tabindex="-1" id="contents-area">
+				<div class="fixed-flex-layout" tabindex="-1" id="contents-area">
 					<!-- A2_1  CCG001-->
 					
-					<div class = "ccg001searchkcp005">
+					<div class = "fixed-flex-layout-left">
 					<div id="ccgcomponent" tabindex="2"></div>
 					<!--  -->
 					<div class="employeeInfoSearch">
-						<div class="label" id = "A2_2">#{i18n.getText('KDM002_17')}</div>
 						<div class="selectionEmployee" tabindex="3">
 							<div id="employeeSearch" tabindex="-1"></div>
 						</div>
 					</div>
 					</div>
-					<div class="employeeAction">
-							<!--  -->
-							<div id = "A3_2" tabindex="-1">
-								<div class="labelRangeDate" tabindex="-1" 
-									data-bind="ntsFormLabel: {}">#{i18n.getText('KDM002_8')}
-								</div>
-								
-							</div>
+					<div class="fixed-flex-layout-right">
 							<!--  -->
 							<div id = "A3_3" class="periodCovered" tabindex="-1">
 							    <!-- A3_3 -->
