@@ -6,11 +6,11 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.StampCardItem;
-import nts.uk.ctx.at.record.dom.stamp.card.StampCardRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.StampCardtemRepository;
 import nts.uk.ctx.at.record.infra.entity.stamp.stampcard.KwkdtStampCard;
 
 @Stateless
-public class JpaStampCardRepository extends JpaRepository implements StampCardRepository {
+public class JpaStampCardItemRepository extends JpaRepository implements StampCardtemRepository {
 
 	private final String SELECT_BY_SID = "SELECT c FROM KwkdtStampCard c"
 			+ " WHERE c.employeeID = :employeeID";
