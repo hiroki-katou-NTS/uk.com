@@ -470,16 +470,16 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 	
 	private List<Integer> lstPreWorktimeFrameItem(){
 		List<Integer> lstItem = new ArrayList<>();
-		lstItem.add(267);
-		lstItem.add(272);
-		lstItem.add(276);
-		lstItem.add(282);
-		lstItem.add(287);
-		lstItem.add(292);
-		lstItem.add(297);
-		lstItem.add(302);
-		lstItem.add(307);
-		lstItem.add(312);
+		lstItem.add(270);
+		lstItem.add(275);
+		lstItem.add(280);
+		lstItem.add(285);
+		lstItem.add(290);
+		lstItem.add(295);
+		lstItem.add(300);
+		lstItem.add(305);
+		lstItem.add(310);
+		lstItem.add(315);
 		return lstItem;
 	}
 	private List<Integer> lstAfterWorktimeFrameItem(){
@@ -497,17 +497,17 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		return lstItem;
 	}
 	private List<Integer> lstTranfertimeFrameItem(){
-		List<Integer> lstItem = new ArrayList<>();
-		lstItem.add(270);
-		lstItem.add(275);
-		lstItem.add(280);
-		lstItem.add(285);
-		lstItem.add(290);
-		lstItem.add(295);
-		lstItem.add(300);
-		lstItem.add(305);
-		lstItem.add(310);
-		lstItem.add(315);
+		List<Integer> lstItem = new ArrayList<>();		
+		lstItem.add(267);
+		lstItem.add(272);
+		lstItem.add(276);
+		lstItem.add(282);
+		lstItem.add(287);
+		lstItem.add(292);
+		lstItem.add(297);
+		lstItem.add(302);
+		lstItem.add(307);
+		lstItem.add(312);
 		return lstItem;
 	}
 	
@@ -745,10 +745,10 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		attendanceTime.updateFlush(attendanceTimeData);
 		
 		List<Integer> lstWorktimeFrameTemp = new ArrayList<>();
-		lstWorktimeFrameTemp = this.lstPreWorktimeFrameItem();
+		lstWorktimeFrameTemp = this.lstTranfertimeFrameItem();
 		for(int i = 1; i <= 10; i++) {
 			if(!transferTimeFrame.containsKey(i)) {
-				Integer item = this.lstPreWorktimeFrameItem().get(i - 1); 
+				Integer item = this.lstTranfertimeFrameItem().get(i - 1); 
 				lstWorktimeFrameTemp.remove(item);
 			}
 		}
