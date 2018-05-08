@@ -34,7 +34,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
         // B5_2_2
         systemTypeCbb: KnockoutObservable<model.ItemModel>;
-
+        systemType: KnockoutObservable<number>;
+        
         //B5_3
         listDataCategory: KnockoutObservableArray<model.ItemCategory>;
         listColumnHeader: KnockoutObservableArray<NtsGridListColumn>;
@@ -67,9 +68,6 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         //B9_2
         supplementExplanation: KnockoutObservable<string>;
 
-
-
-
         //D
         //Radio button
         itemTitleAtr: KnockoutObservableArray<any>;
@@ -82,23 +80,25 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         selectedEmployeeCode: KnockoutObservableArray<string>;
         employeeName: KnockoutObservable<string>;
         employeeList: KnockoutObservableArray<UnitModel>;
+        initEmployeeList: KnockoutObservableArray<UnitModel>;
         alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
 
+        //E
+        //gridlist
+        categorys: KnockoutObservableArray<CategoryModel>;
+        columnCategorys: KnockoutObservableArray<NtsGridListColumn>;
+        columnEmployees: KnockoutObservableArray<NtsGridListColumn>;
+        currentCode: KnockoutObservable<any>;
+        currentCodeList: KnockoutObservableArray<any>;
+        
         constructor() {
-            var self = this;
+            var self = this;           
             self.initComponents();
             self.setDefault();
-
-            self.itemTitleAtr = ko.observableArray([
-                { value: 0, titleAtrName: resource.getText('CMF005_51') },
-                { value: 1, titleAtrName: resource.getText('CMF005_52') }]);
-            self.selectedTitleAtr = ko.observable(0);
-
         }
 
         initComponents() {
             var self = this;
-
             //View menu step
             self.stepList = [
                 { content: '.step-1' },
@@ -186,11 +186,43 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             supplementExplanation = ko.observable("");
 
             //D
+            self.systemType = ko.observable(1);
+            self.initEmployeeList = ko.observableArray([]);
             self.employeeList = ko.observableArray([]);
             self.selectedEmployee = ko.observableArray([]);
             self.selectedEmployeeCode = ko.observableArray([]);
             self.alreadySettingPersonal = ko.observableArray([]);
+            self.itemTitleAtr = ko.observableArray([
+                { value: 0, titleAtrName: resource.getText('CMF005_51') },
+                { value: 1, titleAtrName: resource.getText('CMF005_52') }]);
+            self.selectedTitleAtr = ko.observable(0);
+            self.selectedTitleAtr.subscribe(function(value) {
+                if(value == 0) {
+                    self.applyKCP005ContentSearch(self.initEmployeeList());
+                } 
+                else {
+                    self.applyKCP005ContentSearch([]);
+                    self.selectedEmployee(self.initEmployeeList());
+                }
+            });
+            self.initComponentCCG001();
+            self.initComponnentKCP005();
+            
+            
+            //E
+             this.categorys = ko.observableArray([]);
         }
+        
+           /**
+           * start page data 
+           */
+            public startPage(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred();
+
+                dfd.resolve(self);
+                return dfd.promise();
+            }
 
         /**
          * Setting value default  screen B
@@ -238,6 +270,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
                 if (systemTypeC) {
                     self.systemTypeCbb = systemTypeC;
+                    self.systemType(systemTypeC.code);
                     $("#B5_2_2").html(systemTypeC.name);
                 }
                 if (categoryC && (categoryC.length > 0)) {
@@ -272,7 +305,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                     if (self.validateDatePicker()) {
                         // check pass word
                         if (self.checkPass()) {
-                            self.next();
+                            self.nextFromBToD();
                         }
                     } else {
                         alertError({ messageId: 'Msg_465' });
@@ -298,10 +331,22 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         /**
          * function next wizard by on click button 
          */
-        private next() {
+        private nextFromBToD() {
             let self = this;
-            self.loadScreenD();
+            self.next();
+        }
+        
+         /**
+         * function next wizard by on click button 
+         */
+        private next() {
             $('#ex_accept_wizard').ntsWizard("next");
+        }
+        /**
+         * function previous wizard by on click button 
+         */
+        private previous() {
+            $('#ex_accept_wizard').ntsWizard("prev");
         }
 
         /**
@@ -426,22 +471,15 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             return new model.ItemDate(newYear + "/" + newMonth + "/" + newDate, year + "/" + moth + "/" + date, newYear, year);
         }
 
-        loadScreenD() {
-            let self = this;
-            self.loadCcg001Component();
-            self.initComponnentKCP005();
-            //            self.reloadEmployeeList();
-        }
-
 
         //load D screen
-        loadCcg001Component() {
+        initComponentCCG001() {
             let self = this;
             // Set component option
             self.ccg001ComponentOption = {
                 /** Common properties */
                 showEmployeeSelection: true,
-                systemType: 1,
+                systemType: self.systemType(),
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
                 showBaseDate: true,
@@ -479,11 +517,12 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 * @param: data: the data return from CCG001
                 */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                    self.selectedTitleAtr(0);
+                    self.initEmployeeList(data.listEmployee);
+//                    self.selectedEmployee(data.listEmployee);
                     self.applyKCP005ContentSearch(data.listEmployee);
                 }
             }
-
-            $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
         }
 
         applyKCP005ContentSearch(dataEmployee: EmployeeSearchDto[]) {
@@ -495,19 +534,19 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             });
 
             self.employeeList(employeeSearchs);
-            //            self.reloadEmployeeList();
         }
 
         initComponnentKCP005() {
             //KCP005
+            var self = this;
             self.listComponentOption = {
                 isShowAlreadySet: false,
                 isMultiSelect: true,
                 listType: ListType.EMPLOYEE,
                 employeeInputList: self.employeeList,
-                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                selectType: SelectType.SELECT_ALL,
                 selectedCode: self.selectedEmployeeCode,
-                isDialog: false,
+                isDialog: true,
                 isShowNoSelectRow: false,
                 alreadySettingList: self.alreadySettingPersonal,
                 isShowWorkPlaceName: true,
@@ -516,12 +555,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 maxRows: 15
             };
 
-            //            $('#employeeSearch').ntsListComponent(self.listComponentOption);
         }
-
-        //        reloadEmployeeList() {
-        //            $('#employeeSearch').ntsListComponent(self.listComponentOption)   //        }
-
+                
         private previousB(): void {
             var self = this;
             self.previous();
@@ -532,10 +567,36 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             nts.uk.request.jump("/view/cmf/003/a/index.xhtml");
         }
 
+        
+        /**
+             * function submit button
+         */
+        private validateD() : boolean {
+            var self = this;
+            if ((self.selectedTitleAtr() == 0 && self.selectedEmployeeCode() && self.selectedEmployeeCode().length > 0)
+                || (self.selectedTitleAtr() == 1 && self.initEmployeeList() && self.initEmployeeList().length > 0)) {
+                return true;
+            } else {
+                nts.uk.ui.dialog.error({ messageId: "Msg_498", messageParams: ["X", "Y"] });
+                return false;
+            }
+        }
+        
+        getSelectedEmployee() : any {
+            var self = this;
+            console.log(self.selectedTitleAtr());
+            if (self.selectedTitleAtr() == 0) {
+                return $('#employeeSearch').getDataList();
+            } else {
+                return self.initEmployeeList();
+            }
+        }
+        
         private nextFromDToE(): void {
             var self = this;
-            self.initE();
-            self.next();
+            if (self.validateD()) {
+                self.next();
+            }
         }
 
         private initE(): void {
