@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.assist.infra.repository.mastercopy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -50,12 +51,32 @@ public class JpaMasterCopyCategoryRepository extends JpaRepository implements Ma
 		return new ArrayList<MasterCopyCategory>();
 
 	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryRepository#findByMasterCopyId(java.lang.String)
+	 */
+	@Override
+	public Optional<MasterCopyCategory> findByMasterCopyId(String masterCopyId){
+		return this.queryProxy().find(masterCopyId, SspmtMastercopyCategory.class).map(item -> this.toDomain(item));
+	}
 
+	/**
+	 * To domain.
+	 *
+	 * @param entity the entity
+	 * @return the master copy category
+	 */
 	private MasterCopyCategory toDomain(SspmtMastercopyCategory entity) {
 		MasterCopyCategoryGetMemento memento = new JpaMasterCopyCategoryGetMemento(entity);
 		return new MasterCopyCategory(memento);
 	}
 
+	/**
+	 * To entity.
+	 *
+	 * @param domain the domain
+	 * @return the sspmt mastercopy category
+	 */
 	private SspmtMastercopyCategory toEntity(MasterCopyCategory domain) {
 		SspmtMastercopyCategory entity = this.queryProxy().find(domain.getMasterCopyId(), SspmtMastercopyCategory.class)
 				.orElse(new SspmtMastercopyCategory());

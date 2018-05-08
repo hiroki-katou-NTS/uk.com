@@ -84,8 +84,10 @@ module cmm001.e.viewmodel {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1162" }).ifYes(() => {
                     var cid = nts.uk.ui.windows.getShared('companyId');
                     var IMasterDataList: model.MasterCopyCategoryDto[] = [];
+                    var copyMethod : number;
                     for(item of selectedItems) {
-                        var IMasterCopyCategoryDto : model.MasterCopyCategoryDto = {categoryName: item.masterCopyCategory, order: item.order, systemType: item.systemType, copyMethod: item.copyMethod};
+                        copyMethod = item.copyMethod();
+                        var IMasterCopyCategoryDto : model.MasterCopyCategoryDto = {categoryName: item.masterCopyCategory, order: item.order, systemType: item.systemType, copyMethod: copyMethod};
                         IMasterDataList.push(IMasterCopyCategoryDto);
                     }
                     var masterCopyDataCmd : model.MasterCopyDataCommand = {companyId: cid,masterDataList: IMasterDataList};

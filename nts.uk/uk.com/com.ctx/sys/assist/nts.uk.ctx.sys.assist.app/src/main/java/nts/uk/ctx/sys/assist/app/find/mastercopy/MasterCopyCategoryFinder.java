@@ -14,26 +14,27 @@ import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryRepository;
  */
 @Stateless
 public class MasterCopyCategoryFinder {
-	
+
 	/** The repository. */
 	@Inject
 	private MasterCopyCategoryRepository repository;
-	
+
 	/**
 	 * Gets the all master copy category.
 	 *
 	 * @return the all master copy category
 	 */
-	public List<MasterCopyCategoryFindDto> getAllMasterCopyCategory(){
-		//get list category from database
+	public List<MasterCopyCategoryFindDto> getAllMasterCopyCategory() {
+		// get list category from database
 		List<MasterCopyCategory> listMasterCopyCategory = this.repository.findAllMasterCopyCategory();
-		
-		//check empty
+
+		// check empty
 		if (listMasterCopyCategory.isEmpty()) {
 			return null;
 		}
-		
+
 		// return list category
-		return listMasterCopyCategory.stream().map(e -> new MasterCopyCategoryFindDto(e.getSystemType().displayName, e.getMasterCopyCategory().v())).collect(Collectors.toList());
+		return listMasterCopyCategory.stream().map(e -> new MasterCopyCategoryFindDto(e.getSystemType().displayName,
+				e.getMasterCopyCategory().v(), e.getOrder(), e.getMasterCopyId())).collect(Collectors.toList());
 	}
 }

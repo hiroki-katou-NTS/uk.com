@@ -30,7 +30,7 @@
 						<tr tabindex="-1">
 							<td class="bg-green titleScheduleSetting" >#{i18n.getText('CMM001_53')}</td>
 							<td class="valueScheduleSetting">
-								<span class="executionStateTime" data-bind="text: executionStartDate"></span>
+								<span class="executionStateTime" data-bind="text: moment(executionStartDate()).format('YYYY/MM/DD HH:MM:SS')"></span>
 							</td>
 						</tr>
 						<tr tabindex="-1">
@@ -54,13 +54,15 @@
 							<td class="valueScheduleSetting">
 								<span class="executionStateTime" data-bind="text: executionState"></span>
 								<span>:</span>
-								<span data-bind="text: numberFail"></span>
+								<span data-bind="text: numberOfData"></span>
+								<span>#{i18n.getText('CMM001_66')}</span>
 							</td>
 						</tr>
 						<tr tabindex="-1">
 							<td class="bg-green titleScheduleSetting" >#{i18n.getText('CMM001_56')}</td>
 							<td class="valueScheduleSetting">
 								<span data-bind="text: numberFail"></span>
+								<span>#{i18n.getText('CMM001_67')}</span>
 							</td>
 						</tr>
 					</table>
@@ -72,7 +74,7 @@
 							<table id="tableShowError" data-bind="ntsGridList: {								
 								height: 350,
 								dataSource: errorLogs,
-								primaryKey: 'employeeId',
+								primaryKey: 'order',
 								columns: columns,
 								multiple: false,
 								value: currentCode,
@@ -82,7 +84,6 @@
 					</com:ko>
 					
 				</div>
-				
 				
 			</div>
 			<div id="functions-area-bottom">

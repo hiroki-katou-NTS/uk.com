@@ -2,7 +2,6 @@ package nts.uk.ctx.sys.assist.app.command.mastercopy;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -11,10 +10,16 @@ import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.sys.assist.app.find.mastercopy.MasterCopyDataFindDto;
+import nts.uk.ctx.sys.assist.app.find.mastercopy.MasterCopyDataFinder;
+import nts.uk.ctx.sys.assist.dom.mastercopy.MasterDataCopyEvent;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopyDataCommand> {
+	
+	/** The master copy data finder. */
+	private MasterCopyDataFinder masterCopyDataFinder;
 
 	/** The Constant NUMBER_OF_SUCCESS. */
 	private static final String NUMBER_OF_SUCCESS = "NUMBER_OF_SUCCESS";
@@ -38,13 +43,13 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 	protected void handle(CommandHandlerContext<MasterCopyDataCommand> context) {
 
 		val asyncTask = context.asAsync();
-		TaskDataSetter setter = asyncTask.getDataSetter();
-
-		// get company id
-		String companyId = AppContexts.user().companyId();
+		TaskDataSetter setter = asyncTask.getDataSetter();	
 
 		// get command
 		MasterCopyDataCommand command = context.getCommand();
+		
+		// get company id
+		String companyId = command.getCompanyId();
 
 		// setup data object
 		PerCopyDataCorrectProcessDto dto = new PerCopyDataCorrectProcessDto();
@@ -75,6 +80,36 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 				break;
 			}
 
+			MasterCopyDataFindDto masterCopyData = masterCopyDataFinder.findByMasterCopyData(listData.getMasterCopyId());
+			if (masterCopyData == null){			
+				
+				ErrorContentDto errorContentDto = new ErrorContentDto();
+				errorContentDto.setCategoryName(listData.getCategoryName());
+				errorContentDto.setOrder(listData.getOrder());
+				errorContentDto.setSystemType(listData.getSystemType().toString());
+				errorContentDto.setMessage(TextResource.localize("Msg_1146"));
+
+				// Add to error list (save to DB every 5 error records)
+				if (errorList.size() >= MAX_ERROR_RECORD) {
+					errorRecordCount++;
+					setter.setData(DATA_PREFIX + errorRecordCount, dto);
+					
+					// Clear the list for the new batch of error record
+					errorList.clear();
+				}
+				errorList.add(errorContentDto);
+				setter.updateData(NUMBER_OF_ERROR, errorList.size()); // update the number of errors
+				if (errorList.size() == 1) dto.setWithError(WithError.WITH_ERROR); // if there is even one error, output it
+			} else {
+				
+				MasterDataCopyEvent event = new MasterDataCopyEvent(companyId, listData.getCopyMethod());
+				event.toBePublished();
+				
+				countSuccess++;
+				setter.updateData(NUMBER_OF_SUCCESS, countSuccess);
+			}
+		
+			
 			// TO DO: handle copy
 		}
 
@@ -92,9 +127,5 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 	public void interrupt() {
 		isInterrupted = true;
 	}
-
-//	private Optional<String> getMasterCopyData() {
-//
-//	}
 
 }

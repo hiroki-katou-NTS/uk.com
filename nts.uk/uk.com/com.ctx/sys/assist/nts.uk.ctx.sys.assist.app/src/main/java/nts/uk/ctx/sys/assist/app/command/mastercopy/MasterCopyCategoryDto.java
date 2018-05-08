@@ -8,6 +8,9 @@ import lombok.Data;
 @Data
 public class MasterCopyCategoryDto {
 	
+	/** The master copy id. */
+	private String masterCopyId;
+	
 	/** The category name. */
 	private String categoryName;
 	
