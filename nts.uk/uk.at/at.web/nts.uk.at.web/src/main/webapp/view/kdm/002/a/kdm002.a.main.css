@@ -1,9 +1,7 @@
 .fixed-flex-layout{
-	width: 1325px;
+	width: 1254px;
 }
 .fixed-flex-layout-right {
-	/*border: 1px solid #ccc !important;
-	border-radius: 5px;*/
 	padding: 5px;
 	margin-top: 37px;
 	padding-right: 100px;
@@ -12,7 +10,7 @@
 .periodCovered {
 	display: inline-flex;
 	margin-bottom: 10px;
-	padding-left: 40px;
+	padding-left: 10px;
 }
 
 .lableInfo {
@@ -36,10 +34,8 @@
 }
 
 .selectionEmployee {
-	/*border: 1px solid #ccc !important;
-	border-radius: 5px;*/
-	margin: 0px 20px 0px 90px;
-	padding: 10px;
+	margin-left: 90px;
+	padding-top: 10px;
 }
 
 .labelRangeDate {
@@ -59,7 +55,7 @@
 	width: 115px;
 }
 .employeeWorkSetting{
-	padding-left: 40px;
+	padding-left: 10px;
 }
 
 #contents-area { 

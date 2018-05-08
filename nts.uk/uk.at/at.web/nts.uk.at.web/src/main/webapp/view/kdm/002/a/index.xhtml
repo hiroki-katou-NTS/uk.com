@@ -59,7 +59,7 @@
 									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDM002_6')}
 								</div>
 								<div class="infoButtonSetting" >
-									<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"  tabindex="5"></div>
+									<div data-bind="ntsDatePicker: {value: date, required: true, dateFormat: 'YYYY/MM/DD'}"  tabindex="5"></div>
 									<div class="label">#{i18n.getText('KDM002_7')}</div>
 								</div>
 							</div>
@@ -73,7 +73,8 @@
 										name: '#[KDM002_9]',
 										constraint: 'AnnualLeaveRemainingDayNumber',
 										option: {
-										width: '60px',
+										decimallength: 1,
+										width: '80px',
 										unitID: 'DAYS',
 										textalign: 'right'
 										},
