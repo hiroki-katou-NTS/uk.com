@@ -67,6 +67,7 @@
 .button-bottom-area {
 	text-align: center;
 	margin-bottom: 20px;
+	margin-top: 10px;
 }
 
 #B3_15 {
@@ -92,6 +93,14 @@
 
 #B4_35 {
 	width: 350px !important;
+}
+
+#D4_8 {
+	margin-left: 10px;
+}
+
+#D5_1 {
+	margin-left: 100px;
 }
 
 #E3_1 {
@@ -227,7 +236,7 @@
 
 .bot-right-panel{
 	float: right;
-    margin-right: 335px;
+    margin-right: 445px;
 }
 
 .other .space {
