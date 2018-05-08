@@ -5018,7 +5018,7 @@ var nts;
                     $(document).on('mouseenter', '.limited-label', function (e) {
                         var $label = $(e.target);
                         // Check if contents is overflow
-                        if ($label.outerWidth() < $label[0].scrollWidth) {
+                        if (isOverflow($label)) {
                             var $view_1 = $('<div />').addClass('limited-label-view')
                                 .text($label.text() || $label.val())
                                 .appendTo('body')
@@ -5035,6 +5035,25 @@ var nts;
                         }
                     });
                 });
+                function isOverflow($label) {
+                    if ($label[0].nodeName === "INPUT"
+                        && (window.navigator.userAgent.indexOf("MSIE") > -1
+                            || !!window.navigator.userAgent.match(/trident/i))) {
+                        var $div = $("<div/>").appendTo($(document.body));
+                        var style = $label[0].currentStyle;
+                        if (style) {
+                            for (var p in style) {
+                                $div[0].style[p] = style[p];
+                            }
+                        }
+                        $div.html($label.val());
+                        var width = $div.outerWidth();
+                        var scrollWidth = $div[0].scrollWidth;
+                        $div.remove();
+                        return width < scrollWidth;
+                    }
+                    return $label.outerWidth() < $label[0].scrollWidth;
+                }
             })(smallExtensions || (smallExtensions = {}));
             var keyboardStream;
             (function (keyboardStream) {
