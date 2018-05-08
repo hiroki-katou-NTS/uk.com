@@ -80,7 +80,7 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 	public boolean ebsenceLeaveReflect(ReflectScheDto relectSche) {
 		CommonReflectSchePubParam absenceLeave = new CommonReflectSchePubParam(relectSche.getEmployeeId(),
 				relectSche.getDatePara(),
-				relectSche.getAbsenceLeave().getWorkTypeCD(),
+				relectSche.getAbsenceLeave().getWorkTypeCD() == null ? null : relectSche.getAbsenceLeave().getWorkTypeCD().v(),
 				relectSche.getAbsenceLeave().getWorkTimeCD(), 
 				relectSche.getAppInfor().getStartDate().isPresent() ? relectSche.getAppInfor().getStartDate().get() : null,
 				relectSche.getAppInfor().getEndDate().isPresent() ? relectSche.getAppInfor().getEndDate().get() : null,
@@ -93,7 +93,7 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 	public boolean recruitmentReflect(ReflectScheDto relectSche) {
 		CommonReflectSchePubParam recruitment = new CommonReflectSchePubParam(relectSche.getEmployeeId(), 
 				relectSche.getDatePara(), 
-				relectSche.getRecruitment().getWorkTypeCD(), 
+				relectSche.getRecruitment().getWorkTypeCD() != null ? relectSche.getRecruitment().getWorkTypeCD().v() : null, 
 				relectSche.getRecruitment().getWorkTimeCD() != null ? relectSche.getRecruitment().getWorkTimeCD().v() : null, 
 				relectSche.getAppInfor().getStartDate().isPresent() ? relectSche.getAppInfor().getStartDate().get() : null, 
 				relectSche.getAppInfor().getEndDate().isPresent() ? relectSche.getAppInfor().getEndDate().get() : null, 
