@@ -23,19 +23,17 @@ public class HolidayInstructPubImpl implements HolidayInstructPub {
 	 */
 	@Override
 	public List<HolidayInstructExport> acquireBreakIndication(String sId, GeneralDate startDate, GeneralDate endDate) {
-		List<HolidayInstruct> data = repo.getAllHolidayInstructBySId(sId);
+		List<HolidayInstruct> data = repo.getAllHolidayInstructBySId(sId, startDate, endDate);
 		
 		if(data != null) {
 			List<HolidayInstructExport> result = new ArrayList<>();
 			
 			for (HolidayInstruct item : data) {
-				if(item.getInstructDate().after(startDate) && item.getInstructDate().before(endDate)) {
-					HolidayInstructExport export = HolidayInstructExport.createFromJavaType(item.getWorkContent().v(), item.getInputDate(), item.getTargetPerson(), 
-							item.getInstructDate(), item.getInstructor(), item.getHolidayInstructionReason().v(), 
-							item.getHoilidayWorkHour().v(), item.getStartClock(), item.getEndClock());
-					
-					result.add(export);
-				}
+				HolidayInstructExport export = HolidayInstructExport.createFromJavaType(item.getWorkContent().v(), item.getInputDate(), item.getTargetPerson(), 
+						item.getInstructDate(), item.getInstructor(), item.getHolidayInstructionReason().v(), 
+						item.getHoilidayWorkHour().v(), item.getStartClock(), item.getEndClock());
+				
+				result.add(export);
 			}
 			
 			return result;
