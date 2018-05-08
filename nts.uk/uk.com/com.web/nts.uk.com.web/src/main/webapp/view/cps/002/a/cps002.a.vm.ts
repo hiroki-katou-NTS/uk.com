@@ -325,7 +325,7 @@ module cps002.a.vm {
         getCardNumber(userSetting: IUserSetting) {
             let self = this;
             let employee = self.currentEmployee();
-            employee.cardNo(__viewContext.user.companyId + employee.employeeCode());
+            employee.cardNo(__viewContext.user.companyCode + employee.employeeCode());
         }
 
         isError() {
