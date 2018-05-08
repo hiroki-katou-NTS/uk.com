@@ -158,9 +158,10 @@ module nts.uk.at.view.kal004.a.model {
                     if (categoryInputed) {
                         let daily = categoryInputed.extractionDaily == null ? null : new share.ExtractionPeriodDailyCommand(categoryInputed.extractionDaily);
                         let unit = categoryInputed.extractionUnit == null ? null : new share.PeriodUnitCommand(categoryInputed.extractionUnit);
-                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, daily, unit));
+                        let listMonthly = categoryInputed.listExtractionMonthly == [] ? [] : _.map(categoryInputed.listExtractionMonthly, (item)=>{ return new share.ExtractionPeriodMonthlyCommand(item)});
+                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, daily, unit, listMonthly));
                     } else {
-                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, null, null));
+                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, null, null, []));
                     }
 
                 });

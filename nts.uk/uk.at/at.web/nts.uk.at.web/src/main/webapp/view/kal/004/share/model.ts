@@ -22,6 +22,7 @@ module nts.uk.at.view.kal004.share.model {
         checkConditionCodes: Array<string>;
         extractionDaily?: ExtractionDailyDto;
         extractionUnit?: PeriodUnitDto;
+        listExtractionMonthly ?: Array<ExtractionPeriodMonthlyDto>;
     }
 
 
@@ -125,7 +126,22 @@ module nts.uk.at.view.kal004.share.model {
         segmentationOfCycle: number;
     }
 
-    
+    export interface ExtractionPeriodMonthlyDto{
+         extractionId: string;
+         extractionRange: number;
+         unit: number;        
+         strSpecify : number;        
+         yearType: number;
+         specifyMonth: number;
+         strMonth: number;
+         strCurrentMonth: number;
+         strPreviousAtr: number;
+         endSpecify: number;
+         extractPeriod: number;
+         endMonth: number;
+         endCurrentMonth: number;
+         endPreviousAtr: number;                    
+    }
     
 
     //Command
@@ -157,11 +173,13 @@ module nts.uk.at.view.kal004.share.model {
         extractionPeriodDaily: ExtractionPeriodDailyCommand;
         checkConditionCodes: Array<string>;
         extractionPeriodUnit: PeriodUnitCommand;
+        listExtractionMonthly : Array<ExtractionPeriodMonthlyCommand>;
 
-        constructor(alarmCategory: number, checkConditionCodes: Array<string>, extractionPeriodDaily: ExtractionPeriodDailyCommand, extractionPeriodUnit: PeriodUnitCommand) {
+        constructor(alarmCategory: number, checkConditionCodes: Array<string>, extractionPeriodDaily: ExtractionPeriodDailyCommand,
+            extractionPeriodUnit: PeriodUnitCommand, listExtractionMonthly: Array<ExtractionPeriodMonthlyCommand>) {
             this.alarmCategory = alarmCategory;
             this.checkConditionCodes = checkConditionCodes;
-            if (nts.uk.util.isNullOrUndefined(extractionPeriodDaily)  && alarmCategory!=2) {
+            if (nts.uk.util.isNullOrUndefined(extractionPeriodDaily) && (alarmCategory ==5  || alarmCategory == 13)) {
                 this.extractionPeriodDaily = new ExtractionPeriodDailyCommand({
                     extractionId: "",
                     extractionRange: 0,
@@ -192,6 +210,27 @@ module nts.uk.at.view.kal004.share.model {
             }else{
                 this.extractionPeriodUnit =  extractionPeriodUnit;
             }
+            
+            if((listExtractionMonthly==null ||listExtractionMonthly.length==0)  && alarmCategory == 7 ){
+                this.listExtractionMonthly = [new ExtractionPeriodMonthlyCommand({
+                                 extractionId: "",
+                                 extractionRange: 0,
+                                 unit: 3,       
+                                 strSpecify : 1,        
+                                 yearType: 2,
+                                 specifyMonth: 0,
+                                 strMonth: 0,
+                                 strCurrentMonth: 12,
+                                 strPreviousAtr: 0,
+                                 endSpecify: 0,
+                                 extractPeriod: 12,
+                                 endMonth: 0,
+                                 endCurrentMonth: 0,
+                                 endPreviousAtr: 0     
+                })];
+            }else{
+                this.listExtractionMonthly =  listExtractionMonthly;
+            }
         }
 
         public setExtractPeriod(extractionPeriodDaily: ExtractionPeriodDailyCommand) {
@@ -200,7 +239,11 @@ module nts.uk.at.view.kal004.share.model {
         
         public setExtractUnit(extractionPeriodUnit: PeriodUnitCommand) {
             this.extractionPeriodUnit = extractionPeriodUnit;
-        }        
+        } 
+        
+        public setExtractMonthly(listExtractionMonthly: Array<ExtractionPeriodMonthlyCommand>) {
+            this.listExtractionMonthly = listExtractionMonthly;
+        }          
     }
 
     export class ExtractionPeriodDailyCommand {
@@ -241,7 +284,7 @@ module nts.uk.at.view.kal004.share.model {
         }
     }
     
-        export class PeriodUnitCommand {
+    export class PeriodUnitCommand {
         extractionId: string;
         extractionRange: number;
         segmentationOfCycle: number;
@@ -252,5 +295,41 @@ module nts.uk.at.view.kal004.share.model {
             
         }
     }
+    
+    export class  ExtractionPeriodMonthlyCommand{
+         extractionId: string;
+         extractionRange: number;
+         unit: number;        
+         strSpecify : number;        
+         yearType: number;
+         specifyMonth: number;
+         strMonth: number;
+         strCurrentMonth: number;
+         strPreviousAtr: number;
+         endSpecify: number;
+         extractPeriod: number;
+         endMonth: number;
+         endCurrentMonth: number;
+         endPreviousAtr: number;     
+        
+        constructor(dto: ExtractionPeriodMonthlyDto){
+            this.extractionId = dto.extractionId;
+            this.extractionRange = dto.extractionRange;
+            this.unit = dto.unit;
+            this.strSpecify = dto.strSpecify;
+            this.yearType = dto.yearType;
+            this.specifyMonth = dto.specifyMonth;
+            this.strMonth = dto.strMonth;
+            this.strCurrentMonth = dto.strCurrentMonth;
+            this.strPreviousAtr = dto.strPreviousAtr;
+            this.endSpecify = dto.endSpecify;
+            this.extractPeriod = dto.extractPeriod;
+            this.endMonth = dto.endMonth;
+            this.endCurrentMonth = dto.endCurrentMonth;
+            this.endPreviousAtr = dto.endPreviousAtr;
+            
+        }
+    }
+    
 
 }
