@@ -12,7 +12,7 @@ import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.RegisterApprovalStatusMailTempCommandHandler;
-import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApplicationsListDto;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApplicationDetailDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusActivityData;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusByIdDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusFinder;
@@ -21,7 +21,7 @@ import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusP
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalSttRequestContentDis;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.UnAppMailTransmisDto;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatusOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpList;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
 
@@ -107,14 +107,14 @@ public class ApprovalStatusWebservice extends WebService {
 	
 	@POST
 	@Path("initApprovalSttByEmployee")
-	public List<DailyStatusOutput> initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById){
+	public ApprovalSttByEmpList initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById){
 		return this.finder.initApprovalSttByEmployee(appSttById);
 		
 	}
 	
 	@POST
 	@Path("initApprovalSttRequestContentDis")
-	public ApplicationsListDto initApprovalSttRequestContentDis(ApprovalSttRequestContentDis appSttContent) {
+	public List<ApplicationDetailDto> initApprovalSttRequestContentDis(ApprovalSttRequestContentDis appSttContent) {
 		return this.finder.initApprovalSttRequestContentDis(appSttContent);
 	}
 }

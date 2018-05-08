@@ -15,6 +15,4 @@ import nts.arc.time.GeneralDate;
 public class DailyStatus {
 	GeneralDate date;
 	List<Integer> stateSymbol;
-	
-	
 }

@@ -5,18 +5,14 @@ module nts.uk.at.view.kaf018.d.viewmodel {
     import shareModel = kaf018.share.model.REFLECTEDSTATUS;
     import shared = kaf018.share.model;
     export class ScreenModel {
-
-        selectedWplId: KnockoutObservable<string>;
+        selectedEmpId: KnockoutObservable<string> = ko.observable('');
+        listStatusEmp: Array<ApprovalStatusEmployee> = [];
+        
         columns: KnockoutObservableArray<NtsGridListColumn>;
-        dailySttOut: DailyStatusOut = new DailyStatusOut(null, null);
-        listEmp: Array<any>;
-        currentCode: KnockoutObservable<any>;
         listData: Array<Content> = [];
         listDataDisp: KnockoutObservableArray<ContentDisp> = ko.observableArray([]);
         constructor() {
             var self = this;
-            self.selectedWplId = ko.observable('');
-            this.currentCode = ko.observable();
 //            var listAppStt: Array<number> = [0, 1, 2, 3];
 //            let currentDate = new Date();
 //            for (let i = 0; i < 30; i++) {
@@ -35,25 +31,30 @@ module nts.uk.at.view.kaf018.d.viewmodel {
             var dfd = $.Deferred();
             let params = getShared("KAF018D_VALUE");
             if (params) {
-                self.dailySttOut = params.dailyData;
-                self.listEmp = params.listEmp;
-                //self.selectedWplId = params.selectWkkpId;
+                _.each(params.listStatusEmp, function(item) {
+                     self.listStatusEmp.push(new ApprovalStatusEmployee(item.sId, new Date(item.startDate), new Date(item.endDate)));
+                });
             }
-            service.initApprovalSttRequestContentDis(params).done(function(data: any) {
+            let paramsTranfer = {
+                listStatusEmp: self.listStatusEmp,
+                selectedEmpId: params.selectedEmpId
+            };
+            service.initApprovalSttRequestContentDis(paramsTranfer).done(function(data: any) {
                 self.listData = data;
-            });
-
-            self.initExTable();
-            dfd.resolve();
+                self.initExTable(self.listData);
+                dfd.resolve();
+            }).fail(function(data: any) {
+                dfd.reject();
+                });
             return dfd.promise();
         }
 
         /**
          * Create exTable
          */
-        initExTable(): void {
+        initExTable(listData: Array<Content>): void {
             var self = this;
-            _.each(self.listData, function(data: Content) {
+            _.each(listData, function(data: Content) {
                 let dateRange = self.appDateRangeColor(self.convertDateMDW(data.appStartDate), self.convertDateMDW(data.appEndDate));
                 self.listDataDisp.push(new ContentDisp(data.appType, data.appName, data.prePostAtr ? "事前" : "事後", dateRange, data.appContent, self.disReflectionStatus(data.reflectState), self.disApprovalStatus(data.approvalStatus), data.phase1, data.phase2, data.phase3, data.phase4, data.phase5));
             });
@@ -219,13 +220,15 @@ module nts.uk.at.view.kaf018.d.viewmodel {
         }
     }
 
-    class DailyStatusOut {
-        empId: string;
-        listDaily: Array<Date>;
-        constructor(empId: string, listDaily: Array<Date>) {
-            this.empId = empId;
-            this.listDaily = listDaily;
-        }
+    class ApprovalStatusEmployee {
+         sId: string;
+         startDate: Date;
+         endDate: Date;
+        constructor(sId: string, startDate: Date, endDate: Date) {
+            this.sId = sId;
+            this.startDate = startDate;
+            this.endDate = endDate;
+        }    
     }
 
     class NtsGridListColumn {

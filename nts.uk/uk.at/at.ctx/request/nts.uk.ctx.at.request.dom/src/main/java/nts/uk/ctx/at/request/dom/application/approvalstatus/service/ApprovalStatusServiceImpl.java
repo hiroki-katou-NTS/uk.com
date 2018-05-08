@@ -16,6 +16,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
@@ -29,6 +30,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Appli
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppDetail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpList;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttDetailRecord;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatus;
@@ -233,7 +235,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		List<ApprovalSttAppOutput> appSttAppliStateList = new ArrayList<>();
 
 		for (ApprovalStatusEmployeeOutput approvalStt : listAppStatusEmp) {
+			//アルゴリズム「承認状況取得申請」を実行する
 			List<ApplicationApprContent> getAppSttAcquisitionAppl = this.getAppSttAcquisitionAppl(approvalStt);
+			//アルゴリズム「承認状況取得申請状態カウント」を実行する
 			ApprovalSttAppOutput appStt = this.getCountAppSttAppliState(wkpInfor, getAppSttAcquisitionAppl);
 			appSttAppliStateList.add(appStt);
 		}
@@ -291,7 +295,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		List<Application_New> listApp_New = new ArrayList<>();
 		listAppContent.stream().map(x -> listApp_New.add(x.getApplication()));
 		for (Application_New app : listApp_New) {
-			// アルゴリズム「承認状況申請内容取得出張」を実行する
+			//申請.反映情報.実績反映状態
 			ReflectedState_New reflectState = app.getReflectionInformation().getStateReflectionReal();
 			if(!ReflectedState_New.WAITCANCEL.equals(reflectState) || !ReflectedState_New.CANCELED.equals(reflectState)) {
 				numOfApp++;
@@ -304,7 +308,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				} else if (ReflectedState_New.DENIAL.equals(reflectState)) {
 					numOfDenials++;
 				} else if (ReflectedState_New.REFLECTED.equals(reflectState)) {
-					numOfApp++;
+					approvedNumOfCase++;
 				}
 			}
 		}
@@ -645,7 +649,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public List<DailyStatusOutput> getApprovalSttById(String selectedWkpId, List<String> listWkpId,
+	public ApprovalSttByEmpList getApprovalSttById(String selectedWkpId, List<String> listWkpId,
 			GeneralDate startDate, GeneralDate endDate, List<String> listEmpCode) {
 		List<DailyStatusOutput> listDailyStatus = new ArrayList<>();
 		// アルゴリズム「承認状況取得社員」を実行する
@@ -668,7 +672,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			List<DailyStatus> dailyStatus = this.getApprovalSttByDate(appStt, listApprovalContent);
 			listDailyStatus.add(new DailyStatusOutput(appStt.getSId(), empName, dailyStatus));
 		}
-		return listDailyStatus;
+		return new ApprovalSttByEmpList(listDailyStatus, listAppSttEmp);
 	}
 
 	/**
@@ -742,8 +746,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		List<ApprovalSttAppDetail> listApprovalAppDetail = this.getApprovalSttAppDetail(listAppContents);
 		// ドメインモデル「休暇申請設定」を取得する
 		Optional<HdAppSet> lstHdAppSet = repoHdAppSet.getAll();
-
-		return new ApplicationsListOutput(listApprovalAppDetail, lstHdAppSet.get());
+		
+		return new ApplicationsListOutput(listApprovalAppDetail, lstHdAppSet);
 	}
 
 	/**

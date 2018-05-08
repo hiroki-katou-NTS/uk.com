@@ -13,7 +13,6 @@
 			<com:scriptfile path="kaf018.c.start.js" />
 			<com:scriptfile path="kaf018.c.service.js" />
 			<com:scriptfile path="kaf018.c.vm.js" />
-			<com:scriptfile path="kaf018.c.start.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -22,7 +21,7 @@
 				<a class="goback"
 					data-bind="ntsLinkButton: { jump: '/view/kaf/018/a/index.xhtml' }">#{i18n.getText('KAF018_17')}</a>
 				<!-- C1_2一覧へ戻る-->
-				<button tabindex="1" data-bind="click: goToD">#{i18n.getText('KAF018_26')}</button>
+				<button tabindex="1" data-bind="click: backToB">#{i18n.getText('KAF018_26')}</button>
 			</div>
 			<div id="contents-area">
 				<table class="tbl-control">

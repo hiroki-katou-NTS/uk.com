@@ -2,14 +2,10 @@ package nts.uk.ctx.at.request.app.find.application.approvalstatus;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Value;
 import nts.arc.time.GeneralDate;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Setter
+@Value
 public class ApplicationDetailDto {
 	
 	int appType;

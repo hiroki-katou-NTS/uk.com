@@ -8,6 +8,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTy
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationsListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpList;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatusOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmployeeEmailOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.MailTransmissionContentOutput;
@@ -102,7 +103,7 @@ public interface ApprovalStatusService {
 	 * アルゴリズム「承認状況社員別一覧作成」を実行する
 	 * @return 
 	 */
-	List<DailyStatusOutput> getApprovalSttById(String selectedWkpId, List<String> listWkpId,
+	ApprovalSttByEmpList getApprovalSttById(String selectedWkpId, List<String> listWkpId,
 			GeneralDate startDate, GeneralDate endDate, List<String> listEmpCode);
 
 	/**
