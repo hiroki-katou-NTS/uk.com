@@ -410,6 +410,9 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 	@Override
 	public IntegrationOfDaily updateWorkTimeFrame(String employeeId, GeneralDate dateData, Map<Integer, Integer> worktimeFrame,
 			boolean isPre, IntegrationOfDaily dailyData) {
+		if(!dailyData.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			return dailyData;
+		}
 		AttendanceTimeOfDailyPerformance attendanceTimeData = dailyData.getAttendanceTimeOfDailyPerformance().get();
 		ActualWorkingTimeOfDaily actualWorkingTime = attendanceTimeData.getActualWorkingTimeOfDaily();
 		TotalWorkingTime totalWorkingTime =  actualWorkingTime.getTotalWorkingTime();		
