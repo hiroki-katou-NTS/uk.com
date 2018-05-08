@@ -56,4 +56,20 @@ public class CreateEmployeeDailyPerError {
 
 		return daysBetween;
 	}
+
+	 public void createEmployeeDailyPerError(EmployeeDailyPerError error) {
+
+		  EmployeeDailyPerError obj;
+		  if (error.getErrorAlarmMessage().isPresent()) {
+
+		   obj = new EmployeeDailyPerError(error.getCompanyID(), error.getEmployeeID(), error.getDate(),
+		     error.getErrorAlarmWorkRecordCode(), error.getAttendanceItemList(), error.getErrorCancelAble(),
+		     error.getErrorAlarmMessage().get().v());
+		  } else {
+		   obj = new EmployeeDailyPerError(error.getCompanyID(), error.getEmployeeID(), error.getDate(),
+		     error.getErrorAlarmWorkRecordCode(), error.getAttendanceItemList(), error.getErrorCancelAble());
+		  }
+		  this.employeeDailyPerErrorRepository.insert(obj);
+	 }
+	
 }
