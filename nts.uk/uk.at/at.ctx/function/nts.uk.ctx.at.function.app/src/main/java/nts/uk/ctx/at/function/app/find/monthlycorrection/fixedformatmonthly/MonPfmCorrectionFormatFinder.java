@@ -60,10 +60,9 @@ public class MonPfmCorrectionFormatFinder {
 	
 
 	public List<MonPfmCorrectionFormatDto> getMonPfmCorrectionFormat(String companyID, List<String> monthlyPfmFormatCode) {
-//		return repo.getMonPfmCorrectionFormat(companyID, monthlyPfmFormatCode)
-//				.stream()
-//				.map(item -> MonPfmCorrectionFormatDto.fromDomain(item))
-//				.collect(Collectors.toList());
-		return null;
+		return repo.getMonPfmCorrectionFormat(companyID, monthlyPfmFormatCode)
+				.stream()
+				.map(item -> MonPfmCorrectionFormatDto.fromDomain(item))
+				.collect(Collectors.toList());
 	}
 }
