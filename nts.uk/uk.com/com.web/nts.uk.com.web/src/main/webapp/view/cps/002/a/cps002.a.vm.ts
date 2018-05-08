@@ -425,12 +425,16 @@ module cps002.a.vm {
 
                 layout.listItemCls(data.itemsClassification || []);
                 if (layout.listItemCls().length > 0) {
-                    new vc(layout.listItemCls());
+                    _.defer(() => {
+                        new vc(layout.listItemCls());
+                        _.defer(() => {
+                            $('.drag-panel input:not(:disabled):first').focus();
+                        });
+                    });
                 }
 
             });
 
-            $("#employeeAvatar").focus();
 
             service.getSelfRoleAuth().done((result: IRoleAuth) => {
 
@@ -566,7 +570,7 @@ module cps002.a.vm {
             if (self.currentStep() === 1) {
                 $('#emp_reg_info_wizard').ntsWizard("prev");
             }
-            if (self.currentStep() === 2 　&& self.createTypeId() !== 3) {
+            if (self.currentStep() === 2 && self.createTypeId() !== 3) {
                 self.gotoStep1();
             }
             if (self.createTypeId() === 3) {
@@ -610,27 +614,27 @@ module cps002.a.vm {
             command.inputs = self.layoutData();
             command.createType = self.createTypeId();
 
-            if (!self.isError()) {
+            //            if (!self.isError()) {
 
-                service.addNewEmployee(command).done((employeeId) => {
-                    self.saveBasicInfo(command, employeeId);
+            service.addNewEmployee(command).done((employeeId) => {
+                self.saveBasicInfo(command, employeeId);
 
-                    nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { dialogClass: "finish", title: '' }).onClosed(() => {
-                        if (getShared('isContinue')) {
+                nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { dialogClass: "finish", title: '' }).onClosed(() => {
+                    if (getShared('isContinue')) {
 
-                            self.backToStep0();
+                        self.backToStep0();
 
-                        } else {
-                            jump('/view/cps/001/a/index.xhtml', { employeeId: employeeId });
-                        }
-                    });
+                    } else {
+                        jump('/view/cps/001/a/index.xhtml', { employeeId: employeeId });
+                    }
+                });
 
-                }).fail(error => {
+            }).fail(error => {
 
-                    dialog({ messageId: error.messageId, messageParams: error.parameterIds });
+                dialog({ messageId: error.messageId, messageParams: error.parameterIds });
 
-                })
-            }
+            })
+            //            }
         }
 
         openEModal(param, data) {

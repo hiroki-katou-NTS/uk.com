@@ -445,7 +445,7 @@ module nts.uk.com.view.cps001.i.vm {
             service.getItemDef(ctgCode.ctgCodeChirld).done((data: Array<IItem>) => {
                 if (!data[6].display || !data[9].display || !data[11].display || !data[14].display) {
                     var currentDialog = nts.uk.ui.windows.getSelf();
-                    currentDialog.setWidth(558);
+                    currentDialog.setWidth(618);
                 }
                 self.setItemDefValue(data).done(() => {
                     self.setGridList();
@@ -524,13 +524,13 @@ module nts.uk.com.view.cps001.i.vm {
                 { headerText: nts.uk.resource.getText('CPS001_118'), key: 'specialid', width: 0 },
                 { headerText: nts.uk.resource.getText('CPS001_118'), key: 'grantDate', width: 100 },
                 { headerText: nts.uk.resource.getText('CPS001_119'), key: 'deadlineDate', width: 100 },
-                { headerText: nts.uk.resource.getText('CPS001_120'), key: 'numberDayGrant', width: 60 },
+                { headerText: nts.uk.resource.getText('CPS001_120'), key: 'numberDayGrant', width: 75 },
                 { headerText: nts.uk.resource.getText('CPS001_128'), key: 'timeGrant', width: 70, hidden: self.grantTimeH() },
-                { headerText: nts.uk.resource.getText('CPS001_121'), key: 'numberDayUse', width: 60 },
+                { headerText: nts.uk.resource.getText('CPS001_121'), key: 'numberDayUse', width: 75 },
                 { headerText: nts.uk.resource.getText('CPS001_122'), key: 'timeUse', width: 70, hidden: self.useTimeH() },
-                { headerText: nts.uk.resource.getText('CPS001_130'), key: 'numberDaysOver', width: 60 },
+                { headerText: nts.uk.resource.getText('CPS001_130'), key: 'numberDaysOver', width: 75 },
                 { headerText: nts.uk.resource.getText('CPS001_131'), key: 'timeOver', width: 70, hidden: self.timeExeededH() },
-                { headerText: nts.uk.resource.getText('CPS001_123'), key: 'numberDayRemain', width: 60 },
+                { headerText: nts.uk.resource.getText('CPS001_123'), key: 'numberDayRemain', width: 75 },
                 { headerText: nts.uk.resource.getText('CPS001_149'), key: 'timeRemain', width: 70, hidden: self.timeReamH() },
                 { headerText: nts.uk.resource.getText('CPS001_129'), key: 'expStatus', width: 80 }
             ]);
