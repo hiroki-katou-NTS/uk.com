@@ -72,4 +72,10 @@ public class AffWorkplaceAdapterImpl implements AffWorkplaceAdapter {
 			return new AffAtWorkplaceImport(item.getEmployeeId(), item.getWorkplaceId(), item.getHistoryID(), item.getNormalWorkplaceID());
 		}).collect(Collectors.toList());		
 	}
+	
+	@Override
+	public List<String> findAffiliatedWorkPlaceIdsToRoot(String companyId,String employeeId, GeneralDate baseDate) {
+		return this.wkpPub.findWpkIdsBySid(companyId ,employeeId, baseDate);
+	}
+	
 }
