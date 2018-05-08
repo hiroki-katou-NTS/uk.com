@@ -754,7 +754,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		return this.queryProxy().query(SEL_ATTENDANCE_ITEM_CONTROL, KshstControlOfAttendanceItems.class)
 				.setParameter("lstItem", lstAttendanceItem).getList().stream().map(c -> {
 					return new DPAttendanceItemControl(c.kshstControlOfAttendanceItemsPK.itemDailyID,
-							c.inputUnitOfTimeItem != null ? c.inputUnitOfTimeItem.intValue() : null,
+							c.inputUnitOfTimeItem,
 							c.headerBgColorOfDailyPer != null
 									? c.headerBgColorOfDailyPer : "",
 							null);

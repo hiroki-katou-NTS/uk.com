@@ -31,7 +31,8 @@ public class MonthlyPerformanceCorrectionWebService {
 	@POST
 	@Path("startScreen")
 	public MonthlyPerformanceCorrectionDto startScreen(MPParams param) throws InterruptedException {
-		return processor.initScreen(param.initMode, param.lstEmployees, param.formatCodes, param.correctionOfDaily);
+		//return processor.initScreen(param.initMode, param.lstEmployees, param.formatCodes, param.correctionOfDaily);
+		return null;
 	}
 	@POST
 	@Path("getErrorList")
@@ -42,9 +43,10 @@ public class MonthlyPerformanceCorrectionWebService {
 	@POST
 	@Path("getFormatCodeList")
 	public List<DailyPerformanceFormatDto> getAll() {		
-		return monPfmCorrectionFormatFinder.getAllMonPfmCorrectionFormat()
-				.stream()
-				.map(x->new DailyPerformanceFormatDto(x.getCompanyID(), x.getMonthlyPfmFormatCode(), x.getMonPfmCorrectionFormatName()))
-				.collect(Collectors.toList());
+//		return monPfmCorrectionFormatFinder.getAllMonPfmCorrectionFormat()
+//				.stream()
+//				.map(x->new DailyPerformanceFormatDto(x.getCompanyID(), x.getMonthlyPfmFormatCode(), x.getMonPfmCorrectionFormatName()))
+//				.collect(Collectors.toList());
+		return null;
 	}
 }
