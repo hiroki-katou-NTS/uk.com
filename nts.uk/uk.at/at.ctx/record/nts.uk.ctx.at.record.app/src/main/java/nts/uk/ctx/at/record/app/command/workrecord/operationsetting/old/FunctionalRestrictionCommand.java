@@ -1,10 +1,10 @@
 /**
  * 
  */
-package nts.uk.ctx.at.record.app.command.workrecord.operationsetting;
+package nts.uk.ctx.at.record.app.command.workrecord.operationsetting.old;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ConfirmOfManagerOrYouself;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.old.ConfirmOfManagerOrYouself;
 
 /**
  * @author danpv

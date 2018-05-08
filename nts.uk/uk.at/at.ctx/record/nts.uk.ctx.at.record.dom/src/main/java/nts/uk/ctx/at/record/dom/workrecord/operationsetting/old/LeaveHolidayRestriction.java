@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.operationsetting;
+package nts.uk.ctx.at.record.dom.workrecord.operationsetting.old;
 
 public class LeaveHolidayRestriction {
 

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting;
+package nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.old;
 
 import java.math.BigDecimal;
 
@@ -10,8 +10,8 @@ import javax.persistence.Table;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
-@Table(name = "KRCMT_DAI_PERFORMANCE_FUN")
-public class KrcmtDaiPerformanceFun extends UkJpaEntity{
+@Table(name = "KRCMT_DAI_PERFORMANCE_FUN_OLD")
+public class KrcmtDaiPerformanceFunOld extends UkJpaEntity{
 	
 	@Id
 	@Column(name = "FUNCTION_NO")

@@ -21,14 +21,14 @@ public class JpaDaiPerformanceFunRepository extends JpaRepository implements Dai
     @Override
     public List<DaiPerformanceFun> getAllDaiPerformanceFun(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, KrcmtDaiPerformanceFun.class)
-                .getList(item -> item.toDomain(item));
+                .getList(item -> item.toDomain());
     }
 
     @Override
     public Optional<DaiPerformanceFun> getDaiPerformanceFunById(String cid){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, KrcmtDaiPerformanceFun.class)
         .setParameter("cid", cid)
-        .getSingle(c->c.toDomain(c));
+        .getSingle(c->c.toDomain());
     }
 
     @Override

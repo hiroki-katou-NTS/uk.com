@@ -128,8 +128,8 @@ public class KrcmtDaiPerformanceFun extends UkJpaEntity implements Serializable
         return daiPerformanceFunPk;
     }
 
-    public DaiPerformanceFun toDomain(KrcmtDaiPerformanceFun entity) {
-        return new DaiPerformanceFun(entity.daiPerformanceFunPk.cid, new Comment(entity.comment), entity.isCompleteConfirmOneMonth, entity.isDisplayAgreementThirtySix, entity.isFixClearedContent, entity.isDisplayFlexWorker, entity.isUpdateBreak, entity.isSettingTimeBreak, entity.isDayBreak, entity.isSettingAutoTime, entity.isUpdateEarly, entity.isUpdateOvertime, entity.isUpdateOvertimeWithinLegal, entity.isFixContentAuto);
+    public DaiPerformanceFun toDomain() {
+        return new DaiPerformanceFun(this.daiPerformanceFunPk.cid, new Comment(this.comment), this.isCompleteConfirmOneMonth, this.isDisplayAgreementThirtySix, this.isFixClearedContent, this.isDisplayFlexWorker, this.isUpdateBreak, this.isSettingTimeBreak, this.isDayBreak, this.isSettingAutoTime, this.isUpdateEarly, this.isUpdateOvertime, this.isUpdateOvertimeWithinLegal, this.isFixContentAuto);
     }
     public static KrcmtDaiPerformanceFun toEntity(DaiPerformanceFun domain) {
         return new KrcmtDaiPerformanceFun(new KrcmtDaiPerformanceFunPk(domain.getCid()), domain.getComment().toString(), domain.getIsCompleteConfirmOneMonth(), domain.getIsDisplayAgreementThirtySix(), domain.getIsFixClearedContent(), domain.getIsDisplayFlexWorker(), domain.getIsUpdateBreak(), domain.getIsSettingTimeBreak(), domain.getIsDayBreak(), domain.getIsSettingAutoTime(), domain.getIsUpdateEarly(), domain.getIsUpdateOvertime(), domain.getIsUpdateOvertimeWithinLegal(), domain.getIsFixContentAuto());

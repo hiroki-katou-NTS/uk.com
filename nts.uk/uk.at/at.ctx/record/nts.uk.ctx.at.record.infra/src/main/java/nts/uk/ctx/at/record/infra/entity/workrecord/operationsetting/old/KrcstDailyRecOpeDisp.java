@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting;
+package nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.old;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

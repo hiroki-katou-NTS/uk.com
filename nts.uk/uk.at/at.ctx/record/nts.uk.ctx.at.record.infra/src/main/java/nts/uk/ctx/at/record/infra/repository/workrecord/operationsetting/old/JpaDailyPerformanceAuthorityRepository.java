@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.at.record.infra.repository.workrecord.operationsetting;
+package nts.uk.ctx.at.record.infra.repository.workrecord.operationsetting.old;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -13,8 +13,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceAuthority;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformAuthorRepo;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformanceAut;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformanceAutPk;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.old.KrcmtDaiPerformanceAut;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.old.KrcmtDaiPerformanceAutPk;
 
 /**
  * @author danpv

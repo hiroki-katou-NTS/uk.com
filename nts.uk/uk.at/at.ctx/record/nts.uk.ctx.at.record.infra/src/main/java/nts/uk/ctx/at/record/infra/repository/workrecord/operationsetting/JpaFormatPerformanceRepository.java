@@ -21,14 +21,14 @@ public class JpaFormatPerformanceRepository extends JpaRepository implements For
     @Override
     public List<FormatPerformance> getAllFormatPerformance(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, KrcmtFormatPerformance.class)
-                .getList(item -> item.toDomain(item));
+                .getList(item -> item.toDomain());
     }
 
     @Override
     public Optional<FormatPerformance> getFormatPerformanceById(String cid){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, KrcmtFormatPerformance.class)
         .setParameter("cid", cid)
-        .getSingle(c->c.toDomain(c));
+        .getSingle(c->c.toDomain());
     }
 
     @Override
