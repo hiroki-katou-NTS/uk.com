@@ -56,7 +56,7 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 			extractionList.add(command.getExtractionPeriodDaily().toDomain());
 		}else if(command.getAlarmCategory()  == AlarmCategory.SCHEDULE_4WEEK.value){
 			extractionList.add(command.getExtractionPeriodUnit().toDomain());
-		}else if(command.getAlarmCategory() == AlarmCategory.AGREEMENT.value) {
+		}else if(command.getAlarmCategory() == AlarmCategory.MONTHLY.value) {
 			command.getListExtractionMonthly().forEach( e->{
 				extractionList.add(e.toDomain());
 			});
