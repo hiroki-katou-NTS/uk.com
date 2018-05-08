@@ -126,14 +126,14 @@ public class JpaAgreeNameErrorRepository extends JpaRepository implements IAgree
 	 * @author yennth
 	 */
 	@Override
-	public List<AgreeNameError> findName(List<ParamFind> param) {
-		List<AgreeNameError> list = new ArrayList<>();
+	public List<String> findName(List<ParamFind> param) {
+		List<String> list = new ArrayList<>();
 		for (ParamFind obj : param) {
 			Optional<AgreeNameError> item = this.findById(obj.getPeriod(), obj.getErrorAlarm());
 			if (item.isPresent()) {
-				list.add(item.get());
+				list.add(item.get().getName().v());
 			}
 		}
-		return null;
+		return list;
 	}
 }

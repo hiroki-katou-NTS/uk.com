@@ -13,7 +13,7 @@ public interface IAgreeNameErrorRepository {
 	 * @param param
 	 * @return
 	 */
-	public List<AgreeNameError> findName(List<ParamFind> param);
+	public List<String> findName(List<ParamFind> param);
 	/**
 	 * get a optional AgreeNameError by id
 	 * @param id

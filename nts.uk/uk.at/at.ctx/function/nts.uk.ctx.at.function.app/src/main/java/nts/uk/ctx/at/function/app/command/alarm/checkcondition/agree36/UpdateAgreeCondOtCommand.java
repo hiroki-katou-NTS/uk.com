@@ -6,10 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * insert/update AgreeConditionError Command
+ * @author yennth
+ *
+ */
 @Getter
 @Setter
 @NoArgsConstructor
-public class DeleteAgreeConditionErrorCommand {
-	/** ID */
-	private List<String> id;
+public class UpdateAgreeCondOtCommand {
+	List<AgreeCondOtCommand> agreeCondOtCommand;
 }

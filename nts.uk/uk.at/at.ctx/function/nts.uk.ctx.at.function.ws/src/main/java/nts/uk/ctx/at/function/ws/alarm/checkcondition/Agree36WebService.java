@@ -8,13 +8,18 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.DeleteAgreeCondOtCommand;
+import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.DeleteAgreeCondOtCommandHandler;
+import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.DeleteAgreeConditionErrorCommand;
+import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.DeleteAgreeConditionErrorCommandHandler;
+import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.UpdateAgreeCondOtCommand;
+import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.UpdateAgreeCondOtCommandHandler;
+import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.UpdateAgreeConditionErrorCommand;
+import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.UpdateAgreeConditionErrorCommandHandler;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeCondOtDto;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeCondOtFinder;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeConditionErrorDto;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeConditionErrorFinder;
-import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeNameErrorDto;
-import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeNameErrorFinder;
-import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.ParamFindName;
 
 @Path("at/function/alarm/checkcondition/agree36")
 @Produces("application/json")
@@ -22,25 +27,49 @@ public class Agree36WebService extends WebService{
 	@Inject
 	private AgreeCondOtFinder condOtFinder;
 	@Inject
-	private AgreeNameErrorFinder nameFinder;
-	@Inject
 	private AgreeConditionErrorFinder condErrorFinder;
+	@Inject
+	private UpdateAgreeConditionErrorCommandHandler updateConditionError;
+	@Inject
+	private UpdateAgreeCondOtCommandHandler updateConOt;
+	@Inject
+	private DeleteAgreeCondOtCommandHandler deleteOt;
+	@Inject
+	private DeleteAgreeConditionErrorCommandHandler deleteConError;
 	
 	@POST
-	@Path("findCondOt")
+	@Path("findcondot")
 	public List<AgreeCondOtDto> finder(){
 		return this.condOtFinder.finder();
 	}
 	
 	@POST
-	@Path("findNameError")
-	public List<AgreeNameErrorDto> findName(ParamFindName param){
-		return this.nameFinder.finder(param);
+	@Path("finderror")
+	public List<AgreeConditionErrorDto> findError(){
+		return this.condErrorFinder.finder();
 	}
 	
 	@POST
-	@Path("findNameError")
-	public List<AgreeConditionErrorDto> findError(){
-		return this.condErrorFinder.finder();
+	@Path("updateerror")
+	public void updateConditionError(UpdateAgreeConditionErrorCommand command){
+		this.updateConditionError.handle(command);
+	}
+	
+	@POST
+	@Path("updateot")
+	public void updateConditionOt(UpdateAgreeCondOtCommand command){
+		this.updateConOt.handle(command);
+	}
+	
+	@POST
+	@Path("deleteot")
+	public void deleteOt(DeleteAgreeCondOtCommand command){
+		this.deleteOt.handle(command);
+	}
+	
+	@POST
+	@Path("deleteerror")
+	public void deleteOt(DeleteAgreeConditionErrorCommand command){
+		this.deleteConError.handle(command);
 	}
 }

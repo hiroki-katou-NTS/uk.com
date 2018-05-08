@@ -56,7 +56,7 @@ public class JpaAgreeCondOtRepository extends JpaRepository implements IAgreeCon
 	 */
 	@Override
 	public List<AgreeCondOt> findAll() {
-		return this.queryProxy().query(SELECT_BY_ID, Kfnmt36AgreeCondOt.class).getList(x -> toDomain(x));
+		return this.queryProxy().query(SELECT_NO_WHERE, Kfnmt36AgreeCondOt.class).getList(x -> toDomain(x));
 	}
 	/**
 	 * find AgreeCondOt by id

@@ -19,4 +19,6 @@ public class AgreeConditionErrorDto {
 	int errorAlarm;
 	/** 表示するメッセージ */
 	String messageDisp;
+	
+	String name;
 }

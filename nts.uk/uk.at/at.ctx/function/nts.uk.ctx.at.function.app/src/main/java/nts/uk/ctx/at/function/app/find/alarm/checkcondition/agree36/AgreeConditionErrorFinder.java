@@ -7,7 +7,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeConditionError;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeNameError;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeConditionErrorRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeNameErrorRepository;
 
 /**
  * 
@@ -18,11 +20,20 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeConditionEr
 public class AgreeConditionErrorFinder {
 	@Inject
 	private IAgreeConditionErrorRepository errorRep;
-	
-	public List<AgreeConditionErrorDto> finder(){
+
+	@Inject
+	private IAgreeNameErrorRepository nameRep;
+
+	public List<AgreeConditionErrorDto> finder() {
 		List<AgreeConditionError> listConError = errorRep.findAll();
+		List<AgreeNameError> listAgreeNameError = this.nameRep.findAll();
+
 		return listConError.stream().map(item -> {
-			return new AgreeConditionErrorDto(item.getId(), item.getUseAtr().value, item.getPeriod().value, item.getErrorAlarm().value, item.getMessageDisp().v());
+			String agreementNameErr = listAgreeNameError.stream()
+					.filter(x -> (x.getPeriod() == item.getPeriod() && x.getErrorAlarm() == item.getErrorAlarm()))
+					.findFirst().get().getName().v();
+			return new AgreeConditionErrorDto(item.getId(), item.getUseAtr().value, item.getPeriod().value,
+					item.getErrorAlarm().value, item.getMessageDisp().v(), agreementNameErr);
 		}).collect(Collectors.toList());
 	}
 }
