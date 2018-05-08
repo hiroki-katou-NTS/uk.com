@@ -34,6 +34,8 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
 import nts.uk.ctx.bs.employee.pub.employee.ConcurrentEmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmpOfLoginCompanyExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
@@ -80,6 +82,12 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 	@Inject
 	private AffWorkplaceHistoryItemRepository affWkpItemRepo;
+
+	@Inject
+	private WorkplaceConfigRepository wkpConfigRepo;
+
+	@Inject
+	private WorkplaceConfigInfoRepository wkpConfigInfoRepo;
 
 	@Inject
 	private SyWorkplacePub syWorkplacePub;
@@ -258,7 +266,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		Date date = new Date();
 		GeneralDate systemDate = GeneralDate.legacyDate(date);
 
-		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.findByListEmployeeId(sIds);
+		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.getByListEmployeeId(sIds);
 
 		if (CollectionUtil.isEmpty(emps)) {
 			return null;
@@ -404,7 +412,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			return Collections.emptyList();
 		}
 		// Lấy toàn bộ domain「社員データ管理情報」
-		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.findByListEmployeeId(sIds);
+		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.getByListEmployeeId(sIds);
 
 		if (CollectionUtil.isEmpty(emps)) {
 			return Collections.emptyList();
