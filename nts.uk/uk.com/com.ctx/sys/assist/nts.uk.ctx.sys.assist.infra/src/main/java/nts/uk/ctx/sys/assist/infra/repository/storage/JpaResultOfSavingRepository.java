@@ -24,9 +24,9 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
     }
 
     @Override
-    public List<ResultOfSaving> getResultOfSavingById(String storeProcessingId){
+    public Optional<ResultOfSaving> getResultOfSavingById(String storeProcessingId){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, SspmtResultOfSaving.class)
         .setParameter("storeProcessingId", storeProcessingId)
-        .getList(c->c.toDomain());
+        .getSingle(c->c.toDomain());
     }
 }

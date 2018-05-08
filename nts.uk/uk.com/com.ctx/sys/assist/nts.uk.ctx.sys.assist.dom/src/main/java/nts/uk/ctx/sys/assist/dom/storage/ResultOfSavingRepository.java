@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.dom.storage;
 
+import java.util.Optional;
 import java.util.List;
 
 /**
@@ -10,6 +11,6 @@ public interface ResultOfSavingRepository
 
     List<ResultOfSaving> getAllResultOfSaving();
 
-    List<ResultOfSavingDto> getResultOfSavingById(String storeProcessingId);
+    Optional<ResultOfSaving> getResultOfSavingById(String storeProcessingId);
 
 }

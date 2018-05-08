@@ -55,9 +55,9 @@ public class JpaManualSetOfDataSaveRepository extends JpaRepository implements M
 	}
 
 	@Override
-	public List<ManualSetOfDataSave> getManualSetOfDataSaveById(String storeProcessingId) {
+	public Optional<ManualSetOfDataSave> getManualSetOfDataSaveById(String storeProcessingId) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING_STORE, SspmtManualSetOfDataSave.class)
-				.setParameter("storeProcessingId", storeProcessingId).getList(c -> toDomain(c));
+				.setParameter("storeProcessingId", storeProcessingId).getSingle(c -> toDomain(c));
 	}
 
 }
