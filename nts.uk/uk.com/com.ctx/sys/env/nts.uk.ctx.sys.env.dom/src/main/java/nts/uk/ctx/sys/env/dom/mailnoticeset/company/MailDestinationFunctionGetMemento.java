@@ -14,13 +14,6 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
 public interface MailDestinationFunctionGetMemento {
 	
 	/**
-	 * Gets the company id.
-	 *
-	 * @return the company id
-	 */
-	public String getCompanyId();
-
-	/**
 	 * Gets the setting item.
 	 *
 	 * @return the setting item

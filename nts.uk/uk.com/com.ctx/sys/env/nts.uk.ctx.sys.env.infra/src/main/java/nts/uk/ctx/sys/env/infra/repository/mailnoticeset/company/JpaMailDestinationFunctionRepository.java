@@ -14,4 +14,22 @@ public class JpaMailDestinationFunctionRepository implements MailDestinationFunc
 		return null;
 	}
 
+	@Override
+	public void add(MailDestinationFunction domain) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(MailDestinationFunction domain) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void remove(String companyId, UserInfoItem userInfoItem) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

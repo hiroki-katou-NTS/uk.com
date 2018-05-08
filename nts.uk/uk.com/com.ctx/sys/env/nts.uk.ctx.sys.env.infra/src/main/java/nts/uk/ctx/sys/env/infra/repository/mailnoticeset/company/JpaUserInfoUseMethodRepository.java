@@ -16,4 +16,16 @@ public class JpaUserInfoUseMethodRepository implements UserInfoUseMethodReposito
 		return null;
 	}
 
+	@Override
+	public void update(UserInfoUseMethod userInfo) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void create(UserInfoUseMethod userInfo) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

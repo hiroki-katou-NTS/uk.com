@@ -10,6 +10,12 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
 
+// TODO: Auto-generated Javadoc
+/**
+ * Gets the setting use mail.
+ *
+ * @return the setting use mail
+ */
 @Getter
 //ユーザー情報の使用方法
 public class UserInfoUseMethod extends AggregateRoot {

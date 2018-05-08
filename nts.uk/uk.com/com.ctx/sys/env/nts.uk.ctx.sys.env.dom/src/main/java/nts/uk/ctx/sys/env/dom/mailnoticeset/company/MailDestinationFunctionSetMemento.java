@@ -12,13 +12,6 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
  * The Interface MailDestinationFunctionSetMemento.
  */
 public interface MailDestinationFunctionSetMemento {
-	
-	/**
-	 * Sets the company id.
-	 *
-	 * @param companyId the new company id
-	 */
-	public void setCompanyId(String companyId);
 
 	/**
 	 * Sets the setting item.

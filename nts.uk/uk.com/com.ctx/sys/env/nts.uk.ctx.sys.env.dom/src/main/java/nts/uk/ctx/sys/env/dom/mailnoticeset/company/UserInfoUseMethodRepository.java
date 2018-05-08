@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.sys.env.dom.mailnoticeset.company;
@@ -18,4 +18,18 @@ public interface UserInfoUseMethodRepository {
 	 * @return the list
 	 */
 	public List<UserInfoUseMethod> findByCompanyId(String companyId);
+
+	/**
+	 * Update.
+	 *
+	 * @param userInfo the user info
+	 */
+	public void update(UserInfoUseMethod userInfo);
+
+	/**
+	 * Creates the.
+	 *
+	 * @param userInfo the user info
+	 */
+	public void create(UserInfoUseMethod userInfo);
 }

@@ -1,11 +1,12 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.sys.env.dom.mailnoticeset.company;
 
 import java.util.List;
 
+import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
 
@@ -13,6 +14,7 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
  * The Class MailDestinationFunction.
  */
 // メール送信先機能
+@Getter
 public class MailDestinationFunction extends AggregateRoot{
 
 	/** The company id. */
@@ -33,7 +35,6 @@ public class MailDestinationFunction extends AggregateRoot{
 	 * @param memento the memento
 	 */
 	public void saveToMemento(MailDestinationFunctionSetMemento memento) {
-		memento.setCompanyId(this.companyId);
 		memento.setSettingItem(this.settingItem);
 		memento.setSendByFunctionSetting(this.sendByFunctionSetting);
 	}
@@ -44,7 +45,6 @@ public class MailDestinationFunction extends AggregateRoot{
 	 * @param memento the memento
 	 */
 	public MailDestinationFunction(MailDestinationFunctionGetMemento memento) {
-		this.companyId = memento.getCompanyId();
 		this.settingItem = memento.getSettingItem();
 		this.sendByFunctionSetting = memento.getSendByFunctionSetting();
 	}
