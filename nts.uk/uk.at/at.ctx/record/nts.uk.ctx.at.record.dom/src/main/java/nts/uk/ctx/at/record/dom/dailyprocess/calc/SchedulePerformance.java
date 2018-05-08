@@ -130,7 +130,7 @@ public class SchedulePerformance {
 																				  new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS)),
 																		  new AutoCalOfLeaveEarlySetting(LeaveAttr.USE, LeaveAttr.USE),
 																		  new AutoCalcSetOfDivergenceTime(DivergenceTimeAttr.USE));
-		if(integrationOfDaily != null) {
+		if(integrationOfDaily.getCalAttr() != null) {
 			calAttr = new CalAttrOfDailyPerformance(integrationOfDaily.getWorkInformation().getEmployeeId(), 
 													integrationOfDaily.getWorkInformation().getYmd(),
 													new AutoCalFlexOvertimeSetting(new AutoCalSetting(integrationOfDaily.getCalAttr().getFlexExcessTime().getFlexOtTime().getUpLimitORtSet(), AutoCalAtrOvertime.CALCULATEMBOSS)),
