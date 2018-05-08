@@ -72,10 +72,10 @@ public class OtherHolidayInfoDto extends PeregDomainDto{
 	}
 	
 	public  static String convertWithMinutes(int minutes) {
-		if ( minutes < 10) {
-			return "0" + minutes;
+		if ( Math.abs(minutes) < 10) {
+			return "0" + Math.abs(minutes);
 		}
-		return "" + minutes;
+		return "" +  Math.abs(minutes);
 	}
 
 }
