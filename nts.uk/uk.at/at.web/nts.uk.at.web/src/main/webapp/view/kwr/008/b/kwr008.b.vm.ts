@@ -17,23 +17,24 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         valueOutputFormat: KnockoutObservableArray<any> = ko.observableArray([]);
 
         //B5_1
-        excessTime: KnockoutObservable<boolean> = ko.observable(false);
+        //excessTime: KnockoutObservable<boolean> = ko.observable(false);
 
         //B2_2
         listStandardImportSetting: KnockoutObservableArray<model.OutputSettingCodeDto> = ko.observableArray([]);
-        selectedCode: KnockoutObservable<any> = ko.observable();
-
+        selectedCode: KnockoutObservable<any> = ko.observable('');
+        currentSetOutputSettingCode :KnockoutObservable<SetOutputSettingCode>
+                = ko.observable(new SetOutputSettingCode(null, []));
         //B3_2 B3_3
-        inputSettingCode: KnockoutObservable<string> = ko.observable('');
-        inputProjectName: KnockoutObservable<string> = ko.observable('');
+        //inputSettingCode: KnockoutObservable<string> = ko.observable('');
+        //inputProjectName: KnockoutObservable<string> = ko.observable('');
 
         //B5_3
         itemRadio: KnockoutObservableArray<any> = ko.observableArray([]);
-        selectedItemRadio: KnockoutObservable<number> = ko.observable(0);
+        //selectedItemRadio: KnockoutObservable<number> = ko.observable(0);
 
         //B4
         outputItem: KnockoutObservableArray<any> = ko.observableArray([]);
-
+        
 
         constructor() {
             var self = this;
@@ -48,14 +49,21 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             //table fixed
             $('#fixed-table').ntsFixedTable({ height: 304, width: 900 });
              //event select change
-            self.selectedCode.subscribe((data) => {
+            self.selectedCode.subscribe((code) => {
                 nts.uk.ui.errors.clearAll()
                 self.outputItem.removeAll();
-                service.getListItemOutput(data).done(r => {
-                    self.outputItem.push(new OutputItemData(r.cd, r.useClass, r.headingName, r.valOutFormat, ''));
-                });
-                
-                self.updateMode(data);
+                if (code) {
+                    service.getListItemOutput(code).done(r => {
+                        if (r && r.length > 0) {
+                            for(var i = 0; i < r.length; i++) {
+                                self.outputItem.push(new OutputItemData(r[i].cd, r[i].useClass, r[i].headingName, r[i].valOutFormat, ''));
+                            }
+                        }
+                    });
+                    self.updateMode(code);
+                } else {
+                    self.registerMode();
+                }
             });
         }
 
@@ -69,7 +77,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             //fill data B2_2
             service.getOutItemSettingCode().done((data) => {
                 for (let i = 0, count = data.length; i < count; i++) {
-                    self.listStandardImportSetting.push(new SetOutputSettingCode(data[i].cd, data[i].name, data[i].outNumExceedTime36Agr, data[i].displayFormat, []));
+                    self.listStandardImportSetting.push(new SetOutputSettingCode(data[i], []));
                 }
                 self.listStandardImportSetting_Sort();
                 self.checkListItemOutput();
@@ -129,10 +137,19 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             });
         }
         //Open dialog KDW007
-        openKDW007(data) {
-            var self = this;
-
-            console.log(data);
+        openKDW007(oper_code) {
+            let self = this;
+            nts.uk.ui.block.invisible();
+            setShared('KWR008_B_PARAM', oper_code);
+            modal("/view/kdw/007/c/index.xhtml").onClosed(function() {
+                let resultData = getShared('KDW007CResults');
+                if (resultData) {
+                    let lstAddItems = resultData.lstAddItems;
+                    let lstSubItems = resultData.lstSubItems;
+                    let operationName = "";
+                    //outputItem
+                } 
+            });
         }
 
 
@@ -144,46 +161,31 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 self.registerMode();
             } else {
                 self.screenMode(model.SCREEN_MODE.UPDATE);
-                self.selectedCode(self.listStandardImportSetting()[0].cd);
-                self.updateMode(self.listStandardImportSetting()[0].cd);
-               // $('#B3_2').attr('disabled', 'disabled');
+                if (!self.selectedCode()) {
+                    self.selectedCode(self.listStandardImportSetting()[0].cd());
+                }
             }
         }
 
         //mode update
-        updateMode(data: string) {
-            var self = this;
-
-            let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd == data; });
-
-            self.screenMode(model.SCREEN_MODE.UPDATE);
-
-            //B3_2
-            self.inputSettingCode(self.listStandardImportSetting()[selectedIndex].cd + '');
-
-            //B3_3
-            self.inputProjectName(self.listStandardImportSetting()[selectedIndex].name);
-
-            //B5_1
-            self.excessTime(self.listStandardImportSetting()[selectedIndex].outNumExceedTime36Agr);
-
-            //B5_2
-            self.selectedItemRadio(+self.listStandardImportSetting()[selectedIndex].displayFormat);
-
-            //$('#B3_2').attr('disabled', 'disabled');
-
-            $('#B3_3').focus();
-
-            self.listStandardImportSetting.sort();
-
-            self.selectedCode(self.listStandardImportSetting()[selectedIndex].cd);
-            
+        updateMode(code: string) {
+            let self = this;
+            if (code) {
+                let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd() == code; });
+    
+                self.screenMode(model.SCREEN_MODE.UPDATE);
+                if (selectedIndex > -1) {
+                    self.currentSetOutputSettingCode(ko.toJS(self.listStandardImportSetting()[selectedIndex]));
+                    $('#B3_3').focus();
+                }else {
+                    self.selectedCode('');
+                }
+            } 
         }
-
 
         //mode register
         registerMode() {
-            var self = this;
+            let self = this;
 
             self.screenMode(model.SCREEN_MODE.NEW);
 
@@ -192,7 +194,9 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             $("#B3_2").focus();
 
             $('#listStandardImportSetting').ntsGridList('deselectAll');
-
+            
+            self.currentSetOutputSettingCode(new SetOutputSettingCode(null, []));
+            /*
             //B3_2
             self.inputSettingCode('');
 
@@ -204,7 +208,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             //B5_2
             self.selectedItemRadio(0);
-            
+            */
             for (var i = 1; i <= 10; i++) {
                 self.outputItem.push(new OutputItemData(i, false, '', 0, ''));
             }
@@ -216,29 +220,28 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             block.invisible();
             let itemOut : any = _.filter(self.outputItem(), v=>{return v.headingName.trim() != '';});
             
-//            if(itemOut.length == 0){
-//                $('#output-item').ntsError('set', {messageId:"Msg_881"});
-//            }
-            
-            let data : model.OutputSettingCodeDto = new SetOutputSettingCode(
-                self.inputSettingCode(),
-                self.inputProjectName(),
-                (self.excessTime()) ? 1 : 0,
-                self.selectedItemRadio(),
-                itemOut
-            );
+            if(itemOut.length == 0){
+                $('#output-item').ntsError('set', {messageId:"Msg_881"});
+                block.clear();
+                return;
+            }
 
             $('.nts-input').trigger("validate");
             if(nts.uk.ui.errors.hasError()) {
                 block.clear();
                 return;
             }
+            
+            self.currentSetOutputSettingCode().buildListItemOutput(itemOut);
+            let data : model.OutputSettingCodeDto = ko.toJS(self.currentSetOutputSettingCode);
+            
             if (self.screenMode() == model.SCREEN_MODE.NEW) {
                 service.registerOutputItemSetting(data).done(() => {
-                    self.listStandardImportSetting.push(data);
-                    listStandardImportSetting_Sort();
-                    self.updateMode(self.inputSettingCode());
-                    info({ messageId: 'Msg_15' });
+                    info({ messageId: 'Msg_15' }).then(() => {
+                        self.listStandardImportSetting.push(self.currentSetOutputSettingCode);
+                        self.listStandardImportSetting_Sort();
+                        self.selectedCode(self.currentSetOutputSettingCode().cd());
+                    });
                 }).fail(err=>{
                     $('#B3_2').ntsError('set', err);
                 }).always(function() {
@@ -246,8 +249,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 });
             } else {
                 service.updateOutputItemSetting(data).done(() => {
-                    let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd == self.selectedCode(); });
-                    self.listStandardImportSetting.replace(self.listStandardImportSetting()[selectedIndex], data);
+                    //let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd == self.selectedCode(); });
+                    //self.listStandardImportSetting.replace(self.listStandardImportSetting()[selectedIndex], data);
                     info({ messageId: 'Msg_15' });
                 }).fail(err=>{
                     $('#B3_2').ntsError('set', err);
@@ -255,8 +258,6 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     block.clear();
                 });
             }
-
-
         }
 
         //do delete
@@ -265,33 +266,38 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             confirm({ messageId: 'Msg_18' }).ifYes(() => {
 
-                let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd == self.selectedCode(); });
+                let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd() == self.selectedCode(); });
 
                 let data = ko.toJS(self.listStandardImportSetting()[selectedIndex]);
                 // send request remove item
                 service.deleteOutputItemSetting(data).done(() => {
-                    self.checkListItemOutput();
                     info({ messageId: 'Msg_16' });
-                    if (selectedIndex + 1 == self.listStandardImportSetting().length) {
-                        self.selectedCode(self.listStandardImportSetting()[selectedIndex - 1].cd);
-                    } else {
-                        self.selectedCode(self.listStandardImportSetting()[selectedIndex + 1].cd);
-                    }
                     self.listStandardImportSetting.splice(selectedIndex, 1);
-                })
+                    if (self.listStandardImportSetting().length == 0) {
+                        self.selectedCode('');
+                    } else {
+                        if (selectedIndex >= self.listStandardImportSetting().length) {
+                            self.selectedCode(self.listStandardImportSetting()[self.listStandardImportSetting().length].cd());
+                        } else {
+                            self.selectedCode(self.listStandardImportSetting()[selectedIndex].cd());
+                        }
+                    }
+                });
 
-            })
+            });
         }
 
         //cancel register
         doCancel() {
-            nts.uk.request.jump("/view/kwr/008/a/index.xhtml");
+            let self = this;
+            setShared("KWR008_B_Result", self.selectedCode());
+            nts.uk.ui.windows.close();
         }
 
 
     }
 
-    class OutputItemData {
+    export class OutputItemData {
         cd: KnockoutObservable<number>= ko.observable('');
         useClassification: KnockoutObservable<boolean>= ko.observable(false);
         headingName: KnockoutObservable<string>= ko.observable('');
@@ -313,16 +319,21 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         name: KnockoutObservable<string>= ko.observable('');
         displayName: string;
         outNumExceedTime36Agr: KnockoutObservable<boolean> = ko.observable(false);
-        displayFormat: KnockoutObservable<number> = ko.observable('');
+        displayFormat: KnockoutObservable<number> = ko.observable(0);
         listItemOutput : KnockoutObservableArray<OutputItemData> = ko.observableArray([]);
-        constructor(cd: string, name: string, outNumExceedTime36Agr: number, displayFormat: number, listItemOutput : Array<OutputItemData>) {
+        constructor(param, listItemOutput : Array<OutputItemData>) {
             let self = this;
-            self.cd(cd || '');
+            self.cd(param ? param.cd || '' : '');
             self.displayCode = self.cd();
-            self.name(name || '');
+            self.name(param ? param.name || '' : '');
             self.displayName = self.name();
-            self.outNumExceedTime36Agr(outNumExceedTime36Agr || false);
-            self.displayFormat(displayFormat || 0);
+            self.outNumExceedTime36Agr(param ? param.outNumExceedTime36Agr || false : false);
+            self.displayFormat(param ? param.displayFormat || 0 : 0);
+            self.buildListItemOutput();
+            
+        }
+        buildListItemOutput(listItemOutput: Array<any>) {
+            let self = this;
             if (listItemOutput && listItemOutput.length > 0) {
                 for(var i = 0; i < listItemOutput.length; i++) {
                     self.listItemOutput.push(new  OutputItemData(
@@ -335,7 +346,6 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             } else {
                 self.listItemOutput([]);
             }
-            
         }
     }
 }
