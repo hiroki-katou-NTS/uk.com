@@ -12,7 +12,10 @@ module nts.uk.at.view.kal003.a.service {
         getClsNameByCodes: "bs/employee/classification/getClsNameByCds",
         getEmpNameByCodes: "bs/employee/employment/findNamesByCodes",
         getJobNameByIds: "bs/employee/jobtitle/getNamesByIds",
-        getBusTypeByCodes: "at/record/worktypeselection/getNamesByCodes"
+        getBusTypeByCodes: "at/record/worktypeselection/getNamesByCodes",
+        getAgreementHour: "at/function/alarm/checkcondition/agree36/findcondot",
+        getAgreementError: "at/function/alarm/checkcondition/agree36/finderror",
+        getAgreementNameError: "at/function/alarm/checkcondition/agree36/findnameerror"
     }
 
     export function getAllData(category: number): JQueryPromise<any> {
@@ -30,7 +33,7 @@ module nts.uk.at.view.kal003.a.service {
     };
 
     export function deleteData(data: any): JQueryPromise<any> {
-        return ajax("at", paths.deleteData, data);
+        return ajax("at", paths.deleteData, data);  
     }
     
     export function getDailyErrorAlarmCheck(): JQueryPromise<any> {
@@ -57,5 +60,13 @@ module nts.uk.at.view.kal003.a.service {
     
     export function getJobNamesByIds(data: Array<string>): JQueryPromise<any> {
         return ajax("com", paths.getJobNameByIds, data);
+    }
+    
+    export function getAgreementHour(): JQueryPromise<any> {
+        return ajax("at", paths.getAgreementHour);
+    }
+
+    export function getAgreementError(): JQueryPromise<any> {
+        return ajax("at", paths.getAgreementError);
     }
 }

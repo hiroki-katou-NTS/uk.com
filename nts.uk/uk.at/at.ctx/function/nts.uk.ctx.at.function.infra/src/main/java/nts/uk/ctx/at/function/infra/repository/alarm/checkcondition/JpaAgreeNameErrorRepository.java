@@ -8,7 +8,6 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeConditionError;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeNameError;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeNameErrorRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.ParamFind;
