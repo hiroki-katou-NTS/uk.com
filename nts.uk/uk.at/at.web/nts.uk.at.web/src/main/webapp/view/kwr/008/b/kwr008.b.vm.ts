@@ -37,7 +37,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         
 
         constructor() {
-            var self = this;
+            let self = this;
 
             //B5_3
             self.itemRadio = ko.observableArray([
@@ -87,41 +87,6 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 for (let i = 0, count = data.length; i < count; i++) {
                     self.valueOutputFormat.push(new model.ItemModel(data[i].value, data[i].localizedName));
                 }
-/*
-                $('#output-item').ntsGrid({
-                    width: '685px',
-                    height: '320px',
-                    dataSource: self.outputItem,
-                    primaryKey: 'cd',
-                    hidePrimaryKey: true,
-                    virtualization: true,
-                    virtualizationMode: 'continuous',
-                    columns: [
-                        { headerText: 'ID', key: 'cd', dataType: 'number', ntsControl: 'Label' },
-                        { headerText: '', key: 'useClassification', dataType: 'boolean', width: '35px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
-                        { headerText: getText('KWR008_28'), key: 'headingName', dataType: 'string', width: '160px', ntsControl: 'TextEditor' },
-                        { headerText: '', key: 'open', dataType: 'string', width: '55px', unbound: true, ntsControl: 'Button' },
-                        { headerText: getText('KWR008_30'), key: 'valueOutputFormat', dataType: 'string', width: '195px', ntsControl: 'Combobox' },
-                        { headerText: getText('KWR008_29'), key: 'outputTargetItem', dataType: 'string', width: '220px' }
-                    ],
-                    features: [
-                        { name: 'Resizing', columnSettings: [
-                            { columnKey: 'cd', allowResizing: false, minimumWidth: 0 },
-                            { columnKey: 'useClassification', allowResizing: false, minimumWidth: 0 },
-                            { columnKey: 'headingName', allowResizing: false, minimumWidth: 0 },
-                            { columnKey: 'open', allowResizing: false, minimumWidth: 0 },
-                            { columnKey: 'valueOutputFormat', allowResizing: false, minimumWidth: 0 },
-                            { columnKey: 'outputTargetItem', allowResizing: false, minimumWidth: 0 }
-                        ] }
-                    ],
-                    ntsControls: [
-                        { name: 'Checkbox', options: { value: 1 }, optionsValue: 'value', controlType: 'CheckBox', enable: true },
-                        { name: 'TextEditor', value: 'headingName', controlType: 'TextEditor', constraint: { valueType: 'String' } },
-                        { name: 'Button', text: getText('KWR008_34'), click: data => { self.openKDW007(data) }, controlType: 'Button' },
-                        { name: 'Combobox', options: self.valueOutputFormat, optionsValue: 'code', optionsText: 'name', columns: [{ prop: 'name', length: 3 }], controlType: 'ComboBox', enable: true },
-                    ]
-                });
-*/
             });
            
             block.clear();
@@ -149,10 +114,16 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             //let lstOpeItems: _.map(self.listOperationCds, ((item) => { return item.code; }));
             self.getListItemByAtr(self.outputItem()[index].valueOutputFormat()).done((lstItem) => {
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
+                let lstAddItems: _.filter(self.outputItem()[index].listOperationSetting(), (item) => {
+                        return item.operation();
+                    }).map((item) => { return item.cd; });
+                let lstSubItems: _.filter(self.outputItem()[index].listOperationSetting(), (item) => {
+                        return !item.operation();
+                    }).map((item) => { return item.cd; });
                 let param = {
                             lstAllItems: lstItemCode,
-                            lstAddItems: [],
-                            lstSubItems: []
+                            lstAddItems: lstAddItems,
+                            lstSubItems: lstSubItems
                         };
                 nts.uk.ui.windows.setShared("KDW007Params", param);
                 nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/c/index.xhtml").onClosed(() => {
@@ -164,13 +135,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     let lstAddItems = resultData.lstAddItems;
                     let lstSubItems = resultData.lstSubItems;
                     let operationName = "";
-                    /*
-                    let index = _.findIndex(self.outputItem(), (x) => {return x.cd() === oper_code; });
-                    if (index == -1) {
-                        nts.uk.ui.block.clear();
-                        return;
-                    }
-                    */
+
                     self.outputItem()[index].listOperationSetting().removeAll();
                     if (lstAddItems && lstAddItems.length > 0) {
                         //add
@@ -211,7 +176,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 });
              });
         }
-
+        // get data for kdw007
         getListItemByAtr(valueOutputFormat) {
             let self = this;
             let dfd = $.Deferred<any>();
@@ -292,27 +257,9 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             let self = this;
 
             self.isNewMode(true);
-
-           // $("#B3_2").removeAttr("disabled");
-
             $("#B3_2").focus();
-
             $('#listStandardImportSetting').ntsGridList('deselectAll');
-            
             self.currentSetOutputSettingCode(new SetOutputSettingCode(null));
-            /*
-            //B3_2
-            self.inputSettingCode('');
-
-            //B3_3
-            self.inputProjectName('');
-
-            //B5_1
-            self.excessTime(false);
-
-            //B5_2
-            self.selectedItemRadio(0);
-            */
             for (var i = 1; i <= 10; i++) {
                 self.outputItem.push(new OutputItemData(i, '', false, '', 0, ''));
             }
@@ -353,8 +300,11 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 });
             } else {
                 service.updateOutputItemSetting(data).done(() => {
-                    //let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd == self.selectedCode(); });
-                    //self.listStandardImportSetting.replace(self.listStandardImportSetting()[selectedIndex], data);
+                    let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd == self.selectedCode(); });
+                    if (selectedIndex > -1) {
+                        //self.listStandardImportSetting.replace(self.listStandardImportSetting()[selectedIndex], data);
+                        self.listStandardImportSetting()[selectedIndex](self.currentSetOutputSettingCode);
+                    }
                     info({ messageId: 'Msg_15' });
                 }).fail(err=>{
                     $('#B3_2').ntsError('set', err);
@@ -467,12 +417,17 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             let self = this;
             if (listItemOutput && listItemOutput.length > 0) {
                 for(var i = 0; i < listItemOutput.length; i++) {
-                    self.listItemOutput.push(new  OutputItemData(
+                    var outputItemData = new OutputItemData(
+                        i++,
                         listItemOutput[i].cd, 
                         listItemOutput[i].useClassification,
                         listItemOutput[i].headingName,
                         listItemOutput[i].valueOutputFormat,
                         listItemOutput[i].outputTargetItem));
+                    if (listItemOutput[i].listOperationSetting) {
+                        outputItemData.buildListOperationSetting(listItemOutput[i].listOperationSetting);
+                    }
+                    self.listItemOutput.push(outputItemData)
                 }
             } else {
                 self.listItemOutput([]);
