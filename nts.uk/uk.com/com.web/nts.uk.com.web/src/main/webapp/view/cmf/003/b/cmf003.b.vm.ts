@@ -611,7 +611,8 @@ module nts.uk.com.view.cmf003.b {
 
             private gotoscreenF(): void {
                 let self = this;
-                self.saveManualSetting();
+                //self.saveManualSetting();
+                nts.uk.ui.windows.sub.modal("/view/cmf/003/f/index.xhtml");
             }
             
             private saveManualSetting(): void {
