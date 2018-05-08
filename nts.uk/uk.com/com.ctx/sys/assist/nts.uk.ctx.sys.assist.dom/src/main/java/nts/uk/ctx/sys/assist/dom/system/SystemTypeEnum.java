@@ -12,11 +12,11 @@ public enum SystemTypeEnum {
 	public final int value;
 
 	/** The name id. */
-	public final String nameId;
+	public final String name;
 
-	private SystemTypeEnum(int value, String nameId) {
+	private SystemTypeEnum(int value, String name) {
 		this.value = value;
-		this.nameId = nameId;
+		this.name = name;
 	}
 	
 	/** The Constant values. */
@@ -28,12 +28,8 @@ public enum SystemTypeEnum {
 	 * @param value the value
 	 * @return the role type
 	 */
-	public static SystemTypeEnum valueOf(Integer value) {
-		// Invalid object.
-		if (value == null) {
-			return null;
-		}
-
+	public static SystemTypeEnum valueOf(int value) {
+		
 		// Find value.
 		for (SystemTypeEnum val : SystemTypeEnum.values) {
 			if (val.value == value) {

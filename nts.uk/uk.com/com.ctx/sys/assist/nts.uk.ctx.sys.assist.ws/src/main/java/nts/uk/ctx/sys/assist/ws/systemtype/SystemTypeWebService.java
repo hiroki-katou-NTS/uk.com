@@ -19,7 +19,7 @@ public class SystemTypeWebService extends WebService {
 	private SystemTypeCommandHandler systemTypeComandHandler;
 	
 	@POST
-	@Path("getlistsystemtype")
+	@Path("getsystemtypes")
 	public List<SystemTypeResult> getListSystemType(SystemTypeCommand command) {
 		return this.systemTypeComandHandler.handle(command);
 	}
