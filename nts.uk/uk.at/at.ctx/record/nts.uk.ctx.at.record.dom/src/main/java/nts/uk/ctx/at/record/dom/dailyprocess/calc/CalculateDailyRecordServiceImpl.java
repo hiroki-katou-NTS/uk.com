@@ -227,14 +227,14 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	private IntegrationOfDaily calcDailyAttendancePerformance(IntegrationOfDaily integrationOfDaily) {
 		val copyCalcAtr = integrationOfDaily.getCalAttr();
 		//予定の時間帯
-//		val schedule = createSchedule(integrationOfDaily);
+		//val schedule = createSchedule(integrationOfDaily);
 		//実績の時間帯
 		val record = createRecord(integrationOfDaily,TimeSheetAtr.RECORD);
 		if (!record.calculatable) {
 			integrationOfDaily.setCalAttr(copyCalcAtr);
 			return integrationOfDaily;
 		}
-		val test = calcRecord(record,record/*schedule*/);
+		val test = calcRecord(record,record);
 		test.setCalAttr(copyCalcAtr);
 		return test;
 	}
