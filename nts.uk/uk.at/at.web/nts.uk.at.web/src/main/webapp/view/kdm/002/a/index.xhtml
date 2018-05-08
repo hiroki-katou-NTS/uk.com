@@ -58,7 +58,7 @@
 								<!-- A3_4,5,6 -->
 								<div tabindex="4" id="dateRangePickerPeriod" 
 									data-bind="ntsDateRangePicker: { required: true, showNextPrevious: false, 
-									startName:'#[KDM002_4]', endName: '#[KDM002_5]', value: periodDate, name: '#[KDM002_3]'}">
+									startName:'#[KDM002_4]', endName: '#[KDM002_5]', value: periodDate, maxRange:'oneYear', name: '#[KDM002_3]'}">
 								</div>
 							</div>
 							<div id = "A3_7" class="employeeWorkSetting">
@@ -85,7 +85,6 @@
 										unitID: 'DAYS',
 										textalign: 'right'
 										},
-										required: true,
 										readonly: false}" tabindex="6"/>
 									<div class="label">#{i18n.getText('KDM002_18')}</div>
 								</div>
