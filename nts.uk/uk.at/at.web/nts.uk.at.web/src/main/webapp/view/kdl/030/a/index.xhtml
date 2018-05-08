@@ -58,12 +58,11 @@
  									<td data-bind="foreach: $data.listApprover"> 
  									<com:ko bind="$data.approverMail().length > 0" tag="if">
 										<div class="cf" data-bind="ntsSwitchButton: { 
-   										name: 'Sample Switch',   
+   										name: '#{i18n.getText('KAF030_25')}',   
    										options: $parents[2].optionList,   
   										optionsValue: 'dispCode',  
   										optionsText: 'dispName',  
-  										value: $data.isSend, 
-  										hidden: $data.approverMail().length > 0 }"></div> 
+  										value: $data.isSend}"></div> 
 									</com:ko>
 									</td>
 								</tr>
