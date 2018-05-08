@@ -1010,7 +1010,6 @@ project (':com.web:nts.uk.com.web') {
 		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.infra', version: version
 		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pub', version: version
 		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pubimp', version: version
-		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.ws', version: version
 		
 		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.ac', version: version
 		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.app', version: version
