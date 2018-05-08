@@ -79,15 +79,6 @@ public class LeaveEarlyDecisionClock {
 	 */
 	static public Optional<TimeSpanForCalc> getCalcRange(TimezoneUse predetermineTimeSet,TimeLeavingWork timeLeavingWork,Optional<CoreTimeSetting> coreTimeSetting)
 	{
-		//出勤時刻
-		TimeWithDayAttr attendance = null;
-		if(timeLeavingWork.getAttendanceStamp().isPresent()) {
-			if(timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent()) {
-				if(timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay()!=null) {
-					attendance =  timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay();
-				}
-			}
-		}
 		//退勤時刻
 		TimeWithDayAttr leave = null;
 		if(timeLeavingWork.getLeaveStamp().isPresent()) {
@@ -110,7 +101,7 @@ public class LeaveEarlyDecisionClock {
 				}
 				result = Optional.of(new TimeSpanForCalc(leave,coreTimeSetting.get().getCoreTimeSheet().getEndTime()));
 			}
-			if(attendance!=null&&attendance.lessThanOrEqualTo(predetermineTimeSet.getStart())) {
+			if(leave.lessThanOrEqualTo(predetermineTimeSet.getStart())) {
 				result = Optional.of(new TimeSpanForCalc(predetermineTimeSet.getStart(),predetermineTimeSet.getEnd()));
 			}
 		}

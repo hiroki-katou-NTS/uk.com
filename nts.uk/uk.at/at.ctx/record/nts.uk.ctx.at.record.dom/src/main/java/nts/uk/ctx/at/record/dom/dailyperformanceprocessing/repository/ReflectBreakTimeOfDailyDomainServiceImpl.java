@@ -638,7 +638,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 	public Optional<BreakTimeOfDailyPerformance> getBreakTime(String companyId, String employeeID, GeneralDate processingDate,
 			WorkInfoOfDailyPerformance WorkInfo) {
 		Optional<BreakTimeOfDailyPerformance> breakOpt = this.breakTimeOfDailyPerformanceRepo.find(employeeID, processingDate, 0);
-		if(breakOpt.isPresent()){
+		if(!breakOpt.isPresent()){
 			return Optional.empty();
 		}
 		BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut = new BreakTimeZoneSettingOutPut();

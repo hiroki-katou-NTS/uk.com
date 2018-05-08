@@ -97,15 +97,6 @@ public class LateDecisionClock {
 				}
 			}
 		}
-		//退勤時刻
-		TimeWithDayAttr leave = null;
-		if(timeLeavingWork.getLeaveStamp().isPresent()) {
-			if(timeLeavingWork.getLeaveStamp().get().getStamp().isPresent()) {
-				if(timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay()!=null) {
-					leave =  timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay();
-				}
-			}
-		}
 		//フレックス勤務では無い場合の計算範囲
 		Optional<TimeSpanForCalc> result = Optional.empty();
 		if(attendance!=null) {
@@ -118,7 +109,7 @@ public class LateDecisionClock {
 				}
 				result = Optional.of(new TimeSpanForCalc(coreTimeSetting.get().getCoreTimeSheet().getStartTime(), attendance));
 			}
-			if(leave!=null&&attendance.greaterThanOrEqualTo(predetermineTimeSet.getEnd())) {
+			if(attendance.greaterThanOrEqualTo(predetermineTimeSet.getEnd())) {
 				result = Optional.of(new TimeSpanForCalc(predetermineTimeSet.getStart(), predetermineTimeSet.getEnd()));
 			}
 		}
