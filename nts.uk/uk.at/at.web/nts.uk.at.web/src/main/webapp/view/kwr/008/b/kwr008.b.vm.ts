@@ -223,6 +223,9 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     self.selectedCode('');
                 }
             } 
+            for (var i = 1; i <= 10; i++) {
+                self.outputItem.push(new OutputItemData(i, false, '', 0, ''));
+            }
         }
 
         //mode register
