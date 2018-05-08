@@ -74,7 +74,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                     service.getStatusActivity(obj).done(function(data: any) {
                         _.each(data, function(item) {
                             let wkp = _.find(listWorkplace, { code: item.wkpId });
-                            self.listWkpStatusConfirm.push(new ApprovalStatusActivity(item.wkpId, wkp.name, item.monthConfirm, item.monthUnconfirm, item.bossConfirm, item.bossUnconfirm, item.personConfirm, item.personUnconfirm))
+                            self.listWkpStatusConfirm.push(new ApprovalStatusActivity(item.wkpId, wkp.name, item.monthUnconfirm, item.monthConfirm, item.bossUnconfirm, item.bossConfirm, item.personUnconfirm, item.personConfirm))
                             self.listWkpActive.push({ code: item.wkpId, name: wkp.name });
                         })
 
@@ -105,6 +105,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                 width += 200;
             }
             $("#fixed-table").ntsFixedTable({ width: width, height: 186 });
+            self.focusE5();
         }
 
         sendMail(value: TransmissionAttr) {
@@ -148,6 +149,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                     }).fail(function(err) {
                         error({ messageId: err.messageId });
                     }).always(function() {
+                        self.focusE5();
                         block.clear();
                     });
                 })
@@ -158,8 +160,12 @@ module nts.uk.at.view.kaf018.e.viewmodel {
             });
         }
 
-        private getRecord(value?: number) {
+        getRecord(value?: number) {
             return value ? value + "件" : "";
+        }
+
+        focusE5() {
+            $("#fixed-table").focus();
         }
 
         gotoF(index) {
@@ -193,23 +199,22 @@ module nts.uk.at.view.kaf018.e.viewmodel {
         check: KnockoutObservable<boolean>;
         enable: boolean;
 
-        constructor(code: string, name: string, monthConfirm: number, monthUnconfirm: number, dayBossUnconfirm: number, dayBossConfirm: number, dayPrincipalUnconfirm: number, dayPrincipalConfirm: number) {
+        constructor(code: string, name: string, monthUnconfirm: number, monthConfirm: number, dayBossUnconfirm: number, dayBossConfirm: number, dayPrincipalUnconfirm: number, dayPrincipalConfirm: number) {
             this.code = code;
             this.name = name;
-            this.monthConfirm = monthConfirm ? monthConfirm : null;
             this.monthUnconfirm = monthUnconfirm ? monthUnconfirm : null;
+            this.monthConfirm = monthConfirm ? monthConfirm : null;
             this.dayBossUnconfirm = dayBossUnconfirm ? dayBossUnconfirm : null;
             this.dayBossConfirm = dayBossConfirm ? dayBossConfirm : null;
             this.dayPrincipalUnconfirm = dayPrincipalUnconfirm ? dayPrincipalUnconfirm : null;
             this.dayPrincipalConfirm = dayPrincipalConfirm ? dayPrincipalConfirm : null;
             if (dayPrincipalUnconfirm == 0 && dayBossUnconfirm == 0 && monthUnconfirm == 0) {
                 this.enable = false;
-                this.check = ko.observable(false);
             }
             else {
                 this.enable = true;
-                this.check = ko.observable(true);
             }
+            this.check = ko.observable(false);
         }
     }
 
