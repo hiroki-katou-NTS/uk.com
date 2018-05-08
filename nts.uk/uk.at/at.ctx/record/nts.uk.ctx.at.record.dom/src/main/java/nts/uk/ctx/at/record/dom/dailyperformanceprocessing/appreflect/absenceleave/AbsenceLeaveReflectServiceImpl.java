@@ -57,7 +57,7 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 	public boolean reflectAbsenceLeave(CommonReflectParameter param, boolean isPre) {
 		try {
 			//予定勤種就時開始終了の反映
-			this.reflectScheStartEndTime(param);
+			this.reflectScheStartEndTime(param, isPre);
 			//勤種就時開始終了の反映
 			this.reflectRecordStartEndTime(param);
 			return true;
@@ -67,9 +67,10 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 	}
 
 	@Override
-	public void reflectScheStartEndTime(CommonReflectParameter param) {
+	public void reflectScheStartEndTime(CommonReflectParameter param, boolean isPre) {
 		//予定を反映できるかチェックする(事前)
-		if(!holidayProcess.checkScheWorkTimeReflect(param.getEmployeeId(), param.getBaseDate(), param.getWorkTimeCode(), param.isScheTimeReflectAtr(), param.getScheAndRecordSameChangeFlg())) {
+		if(!holidayProcess.checkScheWorkTimeReflect(param.getEmployeeId(), param.getBaseDate(), 
+				param.getWorkTimeCode(), param.isScheTimeReflectAtr(), isPre, param.getScheAndRecordSameChangeFlg())) {
 			return;
 		}
 		//予定勤種の反映
@@ -197,7 +198,7 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 				workUpdate.updateRecordWorkTime(param.getEmployeeId(), param.getBaseDate(), "000", true);
 			}
 			//開始終了時刻が反映できるか(1日休日)
-			if(this.checkReflectRecordStartEndTime(param.getEmployeeId(), param.getBaseDate(), 1)) {
+			if(this.checkReflectRecordStartEndTime(param.getEmployeeId(), param.getBaseDate(), 1, true)) {
 				//開始時刻の反映 開始時刻をクリア
 				//終了時刻の反映 終了時刻をクリア
 				TimeReflectPara timePara1 = new TimeReflectPara(param.getEmployeeId(), param.getBaseDate(), 
@@ -224,7 +225,7 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 	}
 
 	@Override
-	public boolean checkReflectRecordStartEndTime(String employeeId, GeneralDate baseDate, Integer frameNo) {
+	public boolean checkReflectRecordStartEndTime(String employeeId, GeneralDate baseDate, Integer frameNo, boolean isAttendence) {
 		//出勤時刻を取得する
 		//打刻元情報を取得する
 		Optional<TimeLeavingOfDailyPerformance> optTimeLeaving = timeLeavingOfDaily.findByKey(employeeId, baseDate);
@@ -242,12 +243,18 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 			return false;
 		}
 		TimeLeavingWork leavingStamp1 = lstLeavingStamp1.get(0);
-		//出勤
-		Optional<TimeActualStamp> optAttendanceStamp = leavingStamp1.getAttendanceStamp();
-		if(!optAttendanceStamp.isPresent()) {
-			return true;
+		Optional<TimeActualStamp> optTimeActual = null;
+		if(isAttendence) {
+			//出勤
+			optTimeActual = leavingStamp1.getAttendanceStamp();
+		} else {
+			//退勤
+			optTimeActual = leavingStamp1.getLeaveStamp();
 		}
-		TimeActualStamp attendanceStamp = optAttendanceStamp.get();
+		if(!optTimeActual.isPresent()) {
+			return true;
+		}	
+		TimeActualStamp attendanceStamp = optTimeActual.get();
 		Optional<WorkStamp> optActualStamp = attendanceStamp.getActualStamp();
 		if(!optActualStamp.isPresent()) {
 			return true;

@@ -14,7 +14,7 @@ public interface AbsenceLeaveReflectService {
 	 * 予定勤種就時開始終了の反映
 	 * @param param
 	 */
-	public void reflectScheStartEndTime(CommonReflectParameter param);
+	public void reflectScheStartEndTime(CommonReflectParameter param, boolean isPre);
 	/**
 	 * 就業時間帯が反映できるか
 	 * @param employeeId
@@ -47,5 +47,5 @@ public interface AbsenceLeaveReflectService {
 	 * @param frameNo
 	 * @return
 	 */
-	public boolean checkReflectRecordStartEndTime(String employeeId, GeneralDate baseDate, Integer frameNo);
+	public boolean checkReflectRecordStartEndTime(String employeeId, GeneralDate baseDate, Integer frameNo, boolean isAttendence);
 }

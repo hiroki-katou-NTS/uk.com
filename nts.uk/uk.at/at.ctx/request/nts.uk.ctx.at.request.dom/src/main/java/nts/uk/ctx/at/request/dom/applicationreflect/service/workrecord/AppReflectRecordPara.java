@@ -32,5 +32,13 @@ public class AppReflectRecordPara {
 	 * 休暇申請
 	 */
 	private CommonReflectPara absenceInfor;
+	/**
+	 * 振休申請
+	 */
+	private CommonReflectPara absenceLeaveAppInfor;
+	/**
+	 * 振出申請
+	 */
+	private CommonReflectPara recruitmentInfor;
 
 }

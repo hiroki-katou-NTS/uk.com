@@ -47,7 +47,7 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 	@Inject
 	private EditStateOfDailyPerformanceRepository dailyReposiroty;
 	@Override
-	public boolean preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara) {		
+	public boolean preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara, boolean isPre) {		
 		try {
 			Optional<WorkInfoOfDailyPerformance> optDailyData = workRepository.find(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate());
 			if(!optDailyData.isPresent()) {
@@ -65,7 +65,7 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 					new WorkLocationCD("01"), 
 					StampSourceInfo.CORRECTION_RECORD_SET );
 
-			WorkStamp leaving    = new WorkStamp(new TimeWithDayAttr(holidayWorkPara.getHolidayWorkPara().getEndTime()),
+			WorkStamp leaving = new WorkStamp(new TimeWithDayAttr(holidayWorkPara.getHolidayWorkPara().getEndTime()),
 					new TimeWithDayAttr(holidayWorkPara.getHolidayWorkPara().getEndTime()),
 					new WorkLocationCD("01"),
 					StampSourceInfo.CORRECTION_RECORD_SET );
@@ -87,7 +87,7 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 					holidayWorkPara.getBaseDate(), 
 					holidayWorkPara.getHolidayWorkPara().getWorkTypeCode(), 
 					holidayWorkPara.getHolidayWorkPara().getWorkTimeCode(), 
-					holidayWorkPara.isScheReflectFlg(), 
+					holidayWorkPara.isScheReflectFlg(), isPre,
 					holidayWorkPara.getScheAndRecordSameChangeFlg(),
 					daily);
 			//勤種・就時の反映

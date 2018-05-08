@@ -45,4 +45,18 @@ public interface AppReflectProcessRecord {
 	 * @return
 	 */
 	public boolean workChangeReflectRecord(CommonReflectPara para, boolean isPre);
+	/**
+	 * 振休申請
+	 * @param para
+	 * @param isPre
+	 * @return
+	 */
+	public boolean absenceLeaveReflectRecord(CommonReflectPara para, boolean isPre);
+	/**
+	 * 振出申請
+	 * @param para
+	 * @param isPre
+	 * @return
+	 */
+	public boolean recruitmentReflectRecord(CommonReflectPara para, boolean isPre);
 }

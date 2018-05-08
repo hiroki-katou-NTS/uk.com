@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.recruitment;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
 /**
  * 事前申請の処理(振出申請)
@@ -18,10 +19,16 @@ public interface RecruitmentRelectRecordService {
 	 * 予定勤種就時の反映
 	 * @param param
 	 */
-	public void reflectScheWorkTimeType(CommonReflectParameter param);
+	public void reflectScheWorkTimeType(CommonReflectParameter param, boolean isPre);
 	/**
 	 * 開始終了時刻の反映
 	 * @param param
 	 */
 	public void reflectRecordStartEndTime(CommonReflectParameter param);
+	/**
+	 * 休出時間振替時間をクリアする
+	 * @param employeeId
+	 * @param baseDate
+	 */
+	public void clearRecruitmenFrameTime(String employeeId, GeneralDate baseDate);
 }

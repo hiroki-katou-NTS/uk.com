@@ -24,7 +24,7 @@ public class HolidayWorkReflectProcessImpl implements HolidayWorkReflectProcess{
 	private WorkUpdateService workUpdate;
 	@Override
 	public IntegrationOfDaily updateScheWorkTimeType(String employeeId, GeneralDate baseDate, String workTypeCode,
-			String workTimeCode, boolean scheReflectFlg, 
+			String workTimeCode, boolean scheReflectFlg, boolean isPre,
 			ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg,
 			IntegrationOfDaily dailyData) {
 		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする
@@ -33,7 +33,7 @@ public class HolidayWorkReflectProcessImpl implements HolidayWorkReflectProcess{
 			return dailyData;
 		}
 		//予定勤種・就時を反映できるかチェックする
-		if(!this.checkScheWorkTimeReflect(employeeId, baseDate, workTimeCode, scheReflectFlg, scheAndRecordSameChangeFlg)) {
+		if(!this.checkScheWorkTimeReflect(employeeId, baseDate, workTimeCode, scheReflectFlg, isPre, scheAndRecordSameChangeFlg)) {
 			return dailyData;
 		}
 		//予定勤種・就時の反映
@@ -46,9 +46,9 @@ public class HolidayWorkReflectProcessImpl implements HolidayWorkReflectProcess{
 
 	@Override
 	public boolean checkScheWorkTimeReflect(String employeeId, GeneralDate baseDate, String workTimeCode,
-			boolean scheReflectFlg, ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg) {
+			boolean scheReflectFlg, boolean isPre, ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg) {
 		//INPUT．予定反映区分をチェックする
-		if(scheReflectFlg
+		if((scheReflectFlg && isPre)
 				|| scheAndRecordSameChangeFlg == ScheAndRecordSameChangeFlg.ALWAY) {
 			return true;
 		}

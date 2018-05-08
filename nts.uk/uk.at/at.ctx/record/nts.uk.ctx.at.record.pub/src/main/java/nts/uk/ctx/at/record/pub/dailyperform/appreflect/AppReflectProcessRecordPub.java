@@ -51,7 +51,7 @@ public interface AppReflectProcessRecordPub {
 	 * @param param
 	 * @return
 	 */
-	public boolean holidayWorkReflect(HolidayWorkReflectPubPara param);
+	public boolean holidayWorkReflect(HolidayWorkReflectPubPara param, boolean isPre);
 	/**
 	 * 勤務変更申請
 	 * @param param
@@ -59,5 +59,19 @@ public interface AppReflectProcessRecordPub {
 	 * @return
 	 */
 	public boolean workChangeReflect(CommonReflectPubParameter param, boolean isPre);
+	/**
+	 * 振休申請
+	 * @param param
+	 * @param isPre
+	 * @return
+	 */
+	public boolean absenceLeaveReflect(CommonReflectPubParameter param, boolean isPre);
+	/**
+	 * 振出申請
+	 * @param param
+	 * @param isPre
+	 * @return
+	 */
+	public boolean recruitmentReflect(CommonReflectPubParameter param, boolean isPre);
 	
 }

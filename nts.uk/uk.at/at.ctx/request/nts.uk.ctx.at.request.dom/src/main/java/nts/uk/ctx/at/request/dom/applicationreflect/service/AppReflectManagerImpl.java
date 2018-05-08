@@ -7,7 +7,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -79,6 +78,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		CommonReflectPara workchangeData = null;
 		HolidayWorkReflectPara holidayworkInfor = null;
 		CommonReflectPara absenceData = null;
+		CommonReflectPara absenceLeaveAppInfor = null;
+		CommonReflectPara recruitmentInfor = null;
 		ReflectScheDto reflectScheParam = new ReflectScheDto(appInfor.getEmployeeID(), 
 				appInfor.getAppDate(),
 				ExecutionType.NORMALECECUTION, 
@@ -177,7 +178,9 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				appGobackTmp, overTimeTmp, 
 				workchangeData, 
 				holidayworkInfor, 
-				absenceData);
+				absenceData,
+				absenceLeaveAppInfor,
+				recruitmentInfor);
 		if(workRecordReflect.workRecordreflect(appPara)) {
 			appInfor.getReflectionInformation().setStateReflectionReal(ReflectedState_New.REFLECTED);
 			appInfor.getReflectionInformation().setNotReasonReal(Optional.of(ReasonNotReflectDaily_New.ACTUAL_CONFIRMED));
@@ -187,7 +190,6 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	
 	private CommonReflectPara getWorkChange(Application_New appInfor, AppWorkChange workChange) {
 		CommonReflectPara workchangeInfor = null;
-		
 		workchangeInfor = new CommonReflectPara(appInfor.getEmployeeID(), 
 				appInfor.getAppDate(),
 				ScheAndRecordSameChangeFlg.ALWAY, 
@@ -201,6 +203,35 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		
 		 
 		return workchangeInfor;		
+	}
+	
+	private CommonReflectPara getAbsenceLeaveAppInfor(Application_New appInfor, AbsenceLeaveApp absenceLeaveApp) {
+		CommonReflectPara absenceLeave = null;
+		absenceLeave = new CommonReflectPara(appInfor.getEmployeeID(), 
+				appInfor.getAppDate(), 
+				ScheAndRecordSameChangeFlg.ALWAY, 
+				true, 
+				absenceLeaveApp.getWorkTypeCD(), 
+				absenceLeaveApp.getWorkTimeCD(), 
+				null, 
+				null, 
+				absenceLeaveApp.getWorkTime1().getStartTime().v(),
+				absenceLeaveApp.getWorkTime2().getEndTime().v());
+		return absenceLeave;
+	}
+	
+	private CommonReflectPara getRecruitmentInfor(Application_New appInfor, RecruitmentApp recuitmentApp) {
+		CommonReflectPara recruitment = null;
+		recruitment = new CommonReflectPara(appInfor.getEmployeeID(),
+				appInfor.getAppDate(),
+				ScheAndRecordSameChangeFlg.ALWAY,
+				true, recuitmentApp.getWorkTypeCD(), 
+				recuitmentApp.getWorkTimeCD().v(), 
+				null, 
+				null,
+				recuitmentApp.getWorkTime1().getStartTime().v(), 
+				recuitmentApp.getWorkTime1().getEndTime().v());
+		return recruitment;
 	}
 	
 	private HolidayWorkReflectPara getHolidayWork(Application_New appInfor, AppHolidayWork holidayWorkData) {

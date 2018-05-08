@@ -122,7 +122,7 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				para.isScheReflectFlg(), 
 				appPara);
 		
-		return recordPub.holidayWorkReflect(pubPara);		
+		return recordPub.holidayWorkReflect(pubPara, isPre);		
 	}
 
 	@Override
@@ -142,6 +142,16 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				para.getStartTime(),
 				para.getEndTime());
 		return pubPara;
+	}
+
+	@Override
+	public boolean absenceLeaveReflectRecord(CommonReflectPara para, boolean isPre) {
+		return recordPub.absenceLeaveReflect(this.toPubPara(para), isPre);
+	}
+
+	@Override
+	public boolean recruitmentReflectRecord(CommonReflectPara para, boolean isPre) {
+		return recordPub.recruitmentReflect(this.toPubPara(para), isPre);
 	}
 	
 

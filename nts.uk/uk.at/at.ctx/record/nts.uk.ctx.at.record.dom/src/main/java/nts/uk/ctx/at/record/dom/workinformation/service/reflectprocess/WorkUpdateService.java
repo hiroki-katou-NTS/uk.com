@@ -86,5 +86,12 @@ public interface WorkUpdateService {
 	 * @param scheUpdate true: 予定就時の反映
 	 */
 	public void updateRecordWorkTime(String employeeId, GeneralDate dateData, String workTimeCode, boolean scheUpdate);
+	/**
+	 * 振替時間(休出)の反映
+	 * @param employeeId
+	 * @param dateData
+	 * @param transferTimeFrame
+	 */
+	public void updateTransferTimeFrame(String employeeId, GeneralDate dateData, Map<Integer, Integer> transferTimeFrame);
 
 }
