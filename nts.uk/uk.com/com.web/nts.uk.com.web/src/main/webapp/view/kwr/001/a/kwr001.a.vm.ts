@@ -1,188 +1,283 @@
 module nts.uk.at.view.kwr001.a {
     import ScheduleBatchCorrectSettingSave = service.model.ScheduleBatchCorrectSettingSave;
-    import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
-    import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
-    import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
     import ComponentOption = kcp.share.list.ComponentOption;
     
     export module viewmodel {
         export class ScreenModel {
             data: KnockoutObservable<number>;
-            roundingRules: KnockoutObservable<any>;
+            dataOutputType: KnockoutObservableArray<any>;
             
-            // A1_6
-            enable: KnockoutObservable<boolean>;
-            required: KnockoutObservable<boolean>;
-            dateValue: KnockoutObservable<any>;
-            startDateString: KnockoutObservable<string>;
-            endDateString: KnockoutObservable<string>;
+            // datepicker A1_6
+            requiredDatePicker: KnockoutObservable<boolean>; 
+            enableDatePicker: KnockoutObservable<boolean>; 
+            datepickerValue: KnockoutObservable<any>;
+            startDatepicker: KnockoutObservable<string>;
+            endDatepicker: KnockoutObservable<string>; 
+            // datepicker A1_6
             
             // switch button A6_2
-            selectedRuleCode: any;
+            selectedDataOutputType: KnockoutObservable<number>;
             
             // dropdownlist A7_3
-            itemList: KnockoutObservableArray<ItemModel>;
-            selectedCode: KnockoutObservable<string>;
-            isEnable: KnockoutObservable<boolean>;
-            isEditable: KnockoutObservable<boolean>;
+            itemListCodeTemplate: KnockoutObservableArray<ItemModel>;
+            selectedCodeA7_3: KnockoutObservable<string>;
             
+            // dropdownlist A9_2
+            itemListTypePageBrake: KnockoutObservableArray<ItemModel>;
+            selectedCodeA9_2: KnockoutObservable<string>;
+            
+            // radio button group A13_1
+            itemListConditionSet: KnockoutObservableArray<any>;
+            selectedCodeA13_1: KnockoutObservable<number>;
+            
+            // start variable of CCG001
             ccg001ComponentOption: GroupOption;
-            systemTypes: KnockoutObservableArray<any>;
-
-            // Options
-            isQuickSearchTab: KnockoutObservable<boolean>;
-            isAdvancedSearchTab: KnockoutObservable<boolean>;
-            isAllReferableEmployee: KnockoutObservable<boolean>;
-            isOnlyMe: KnockoutObservable<boolean>;
-            isEmployeeOfWorkplace: KnockoutObservable<boolean>;
-            isEmployeeWorkplaceFollow: KnockoutObservable<boolean>;
-            isMutipleCheck: KnockoutObservable<boolean>;
-            isSelectAllEmployee: KnockoutObservable<boolean>;
-            periodStartDate: KnockoutObservable<moment.Moment>;
-            periodEndDate: KnockoutObservable<moment.Moment>;
-            baseDate: KnockoutObservable<moment.Moment>;
-            selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
-            showEmployment: KnockoutObservable<boolean>; // 雇用条件
-            showWorkplace: KnockoutObservable<boolean>; // 職場条件
-            showClassification: KnockoutObservable<boolean>; // 分類条件
-            showJobTitle: KnockoutObservable<boolean>; // 職位条件
-            showWorktype: KnockoutObservable<boolean>; // 勤種条件
-            inService: KnockoutObservable<boolean>; // 在職区分
-            leaveOfAbsence: KnockoutObservable<boolean>; // 休職区分
-            closed: KnockoutObservable<boolean>; // 休業区分
-            retirement: KnockoutObservable<boolean>; // 退職区分
-            systemType: KnockoutObservable<number>;
-            showClosure: KnockoutObservable<boolean>; // 就業締め日利用
-            showBaseDate: KnockoutObservable<boolean>; // 基準日利用
-            showAllClosure: KnockoutObservable<boolean>; // 全締め表示
-            showPeriod: KnockoutObservable<boolean>; // 対象期間利用
-            periodFormatYM: KnockoutObservable<boolean>; // 対象期間精度
+            // end variable of CCG001
             
-            selectedImplementAtrCode: KnockoutObservable<number>;
-            checkReCreateAtrAllCase: KnockoutObservable<boolean>;
-            checkReCreateAtrOnlyUnConfirm: KnockoutObservable<boolean>;
-            checkProcessExecutionAtrRebuild: KnockoutObservable<boolean>;
-            checkProcessExecutionAtrReconfig: KnockoutObservable<boolean>;
-            checkCreateMethodAtrPersonalInfo: KnockoutObservable<boolean>;
-            checkCreateMethodAtrPatternSchedule: KnockoutObservable<boolean>;
-            checkCreateMethodAtrCopyPastSchedule: KnockoutObservable<boolean>;
-            resetWorkingHours: KnockoutObservable<boolean>;
-            resetDirectLineBounce: KnockoutObservable<boolean>;
-            resetMasterInfo: KnockoutObservable<boolean>;
-            resetTimeChildCare: KnockoutObservable<boolean>;
-            resetAbsentHolidayBusines: KnockoutObservable<boolean>;
-            resetTimeAssignment: KnockoutObservable<boolean>;
-            workTypeInfo: KnockoutObservable<string>;
-            workTypeCode: KnockoutObservable<string>;
-            workTimeInfo: KnockoutObservable<string>;
-            workTimeCode: KnockoutObservable<string>;
-            scheduleBatchCorrectSettingInfo: KnockoutObservable<ScheduleBatchCorrectSettingSave>;
-            
-            periodDate: KnockoutObservable<any>;
-            copyStartDate: KnockoutObservable<Date>;
-
-            lstLabelInfomation: KnockoutObservableArray<string>;
-            infoCreateMethod: KnockoutObservable<string>;
-            infoPeriodDate: KnockoutObservable<string>;
-            lengthEmployeeSelected: KnockoutObservable<string>;
-            
-            // Employee tab
-            lstPersonComponentOption: any;
-            selectedEmployeeCode: KnockoutObservableArray<string>;
-            employeeName: KnockoutObservable<string>;
-            employeeList: KnockoutObservableArray<UnitModel>;
-            alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
-            ccgcomponentPerson: GroupOption;
-            
-            // kcp005
-            bySelectedCode: KnockoutObservable<string>;
-            isAlreadySetting: KnockoutObservable<boolean>;
+            // start declare KCP005
+            listComponentOption: any;
+            multiSelectedCode: KnockoutObservableArray<string>;
+            isShowAlreadySet: KnockoutObservable<boolean>;
+            alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
             isDialog: KnockoutObservable<boolean>;
-            isShowNoSelectionItem: KnockoutObservable<boolean>;
+            isShowNoSelectRow: KnockoutObservable<boolean>;
             isMultiSelect: KnockoutObservable<boolean>;
             isShowWorkPlaceName: KnockoutObservable<boolean>;
             isShowSelectAllButton: KnockoutObservable<boolean>;
-    
-            multiSelectedCode: KnockoutObservableArray<string>;
-            multiBySelectedCode: KnockoutObservableArray<string>;
-    
-            listComponentOption: any;
-            alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
-    
-            hasSelectedEmp: KnockoutObservable<boolean>;
-    
-            selectionTypeList: KnockoutObservableArray<any>;
-            selectedType: KnockoutObservable<number>;
-            selectionOption: KnockoutObservableArray<any>;
-            selectedOption: KnockoutObservable<number>;
-            jsonData: KnockoutObservable<string>;
+            employeeList: KnockoutObservableArray<UnitModel>;
+            // end KCP005
+            
+            requiredTemp: KnockoutObservable<boolean>;
+            enableTemp: KnockoutObservable<boolean>;
+            
+            checkedA10_2: KnockoutObservable<boolean>;
+            checkedA10_3: KnockoutObservable<boolean>;
+            checkedA10_4: KnockoutObservable<boolean>;
+            checkedA10_5: KnockoutObservable<boolean>;
+            checkedA10_6: KnockoutObservable<boolean>;
+            checkedA10_7: KnockoutObservable<boolean>;
+            
+            checkedA10_10: KnockoutObservable<boolean>;
+            checkedA10_11: KnockoutObservable<boolean>;
+            checkedA10_12: KnockoutObservable<boolean>;
+            checkedA10_13: KnockoutObservable<boolean>;
+            checkedA10_14: KnockoutObservable<boolean>;
+            checkedA10_15: KnockoutObservable<boolean>;
+            checkedA10_16: KnockoutObservable<boolean>;
+            checkedA10_17: KnockoutObservable<boolean>;
+            checkedA10_18: KnockoutObservable<boolean>;
+            
+            enableByCumulativeWkp: KnockoutObservable<boolean>;
+            enableByOutputFormat: KnockoutObservable<boolean>;
+            enableBtnConfigure: KnockoutObservable<boolean>;
+            enableConfigErrCode: KnockoutObservable<boolean>;
             
             constructor() {
-                var self = this;
+                let self = this;
+
                 self.data = ko.observable(1);
                 
-                self.enable = ko.observable(true);
-                self.required = ko.observable(true);
+                self.enableConfigErrCode = ko.observable(true);
+                self.enableByOutputFormat = ko.observable(true);
+                self.enableBtnConfigure = ko.observable(true);
+                self.requiredTemp = ko.observable(true);
+                self.enableTemp = ko.observable(true);;
                 
-                self.startDateString = ko.observable("");
-                self.endDateString = ko.observable("");
-                self.dateValue = ko.observable({});
+                self.checkedA10_2 = ko.observable(false);
+                self.checkedA10_3 = ko.observable(false);
+                self.checkedA10_4 = ko.observable(false);
+                self.checkedA10_5 = ko.observable(false);
+                self.checkedA10_6 = ko.observable(false);
+                self.checkedA10_7 = ko.observable(false);
                 
-                self.startDateString.subscribe(function(value){
-                    self.dateValue().startDate = value;
-                    self.dateValue.valueHasMutated();        
+                self.checkedA10_10 = ko.observable(false);
+                self.checkedA10_11 = ko.observable(false);
+                self.checkedA10_12 = ko.observable(false);
+                self.checkedA10_13 = ko.observable(false);
+                self.checkedA10_14 = ko.observable(false);
+                self.checkedA10_15 = ko.observable(false);
+                self.checkedA10_16 = ko.observable(false);
+                self.checkedA10_17 = ko.observable(false);
+                self.checkedA10_18 = ko.observable(false);
+                
+                self.enableByCumulativeWkp = ko.observable(true);
+                
+                self.checkedA10_7.subscribe(function(value) {
+                    if (value == true) {
+                        self.enableByCumulativeWkp(true);        
+                    } else {
+                        self.enableByCumulativeWkp(false);    
+                    }
+                })
+                self.checkedA10_7.valueHasMutated();
+                
+                // start set variable for datepicker A1_6
+                self.enableDatePicker = ko.observable(true);
+                self.requiredDatePicker = ko.observable(true);
+                
+                self.startDatepicker = ko.observable("");
+                self.endDatepicker = ko.observable("");
+                self.datepickerValue = ko.observable({});
+                
+                self.startDatepicker.subscribe(function(value){
+                    self.datepickerValue().startDate = value;
+                    self.datepickerValue.valueHasMutated();        
                 });
                 
-                self.endDateString.subscribe(function(value){
-                    self.dateValue().endDate = value;   
-                    self.dateValue.valueHasMutated();      
+                self.endDatepicker.subscribe(function(value){
+                    self.datepickerValue().endDate = value;   
+                    self.datepickerValue.valueHasMutated();      
                 });
+                // end set variable for datepicker A1_6
                 
-                self.roundingRules = ko.observableArray([
-                    { code: '1', name: nts.uk.resource.getText("#KWR001_10") },
-                    { code: '2', name: nts.uk.resource.getText("#KWR001_11") }
+                // start set variable for CCG001
+                self.ccg001ComponentOption = {
+                    /** Common properties */
+                    systemType: 2,
+                    showEmployeeSelection: false,
+                    showQuickSearchTab: true,
+                    showAdvancedSearchTab: true,
+                    showBaseDate: true,
+                    showClosure: false,
+                    showAllClosure: false,
+                    showPeriod: false,
+                    periodFormatYM: false,
+                    
+                    /** Required parameter */
+//                    baseDate: moment(self.endDatepicker(), DATE_FORMAT_YYYY_MM_DD).toISOString(),
+                    baseDate: moment().toISOString(),
+                    periodStartDate: moment().toISOString(),
+                    periodEndDate: moment().toISOString(),
+                    inService: true,
+                    leaveOfAbsence: true,
+                    closed: true,
+                    retirement: true,
+                    
+                    /** Quick search tab options */
+                    showAllReferableEmployee: true,
+                    showOnlyMe: true,
+                    showSameWorkplace: true,
+                    showSameWorkplaceAndChild: true,
+                    
+                    /** Advanced search properties */
+                    showEmployment: true,
+                    showWorkplace: true,
+                    showClassification: true,
+                    showJobTitle: true,
+                    showWorktype: true,
+                    isMutipleCheck: true,
+                    
+                    /**
+                    * Self-defined function: Return data from CCG001
+                    * @param: data: the data return from CCG001
+                    */
+                    returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                        self.employeeList.removeAll();
+                        var employeeSearchs: UnitModel[] = [];
+                        _.forEach(data.listEmployee, function(value) {
+                            var employee: UnitModel = {
+                                code: value.employeeCode,
+                                name: value.employeeName,
+                            };
+                            employeeSearchs.push(employee);
+                        });
+                        self.employeeList(employeeSearchs);
+                    }
+                }
+                // end set variable for CCG001
+                
+                // start component CCG001
+                $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption).done(function(){
+                });
+                // end component CCG001
+                
+                // TODO: hoangdd - goi service lay enum thay cho viec set cung resource
+                self.dataOutputType = ko.observableArray([
+                    { code: '0', name: nts.uk.resource.getText("KWR001_10") },
+                    { code: '1', name: nts.uk.resource.getText("KWR001_11") }
                 ]);
-                self.selectedRuleCode = ko.observable(1);
-                
-                // value of radio button group A13_1's name
-                self.itemList = ko.observableArray([
-                    new ItemModel('1', nts.uk.resource.getText("#KWR001_38")),
-                    new ItemModel('2', nts.uk.resource.getText("#KWR001_39"))
+                self.selectedDataOutputType = ko.observable(0);
+                self.selectedDataOutputType.subscribe(function(value) {
+                    if (value == 0) {
+                        self.enableByOutputFormat(true);                        
+                    } else {
+                        self.enableByOutputFormat(false);    
+                    }
+                })
+                self.selectedDataOutputType.valueHasMutated();
+
+                // TODO: hoangdd - lay du lieu tu service
+                self.itemListCodeTemplate = ko.observableArray([
+                    new ItemModel('0', '123'),
+                    new ItemModel('1', '456')
                 ]);
                 
-                // Initial listComponentOption
+                // TODO: hoangdd - lay du lieu tu service
+                self.itemListTypePageBrake = ko.observableArray([
+                    new ItemModel('0', '123'),
+                    new ItemModel('1', '456')
+                ]);
+                
+                self.selectedCodeA9_2 = ko.observable('1');
+                
+                self.selectedCodeA7_3 = ko.observable('1'); 
+                
+                // TODO: hoangdd - lay du lieu tu service
+                self.itemListConditionSet = ko.observableArray([
+                    new BoxModel(0, nts.uk.resource.getText("KWR001_38")),
+                    new BoxModel(1, nts.uk.resource.getText("KWR001_39"))
+                ]);
+                
+                self.selectedCodeA13_1 = ko.observable(0);
+                self.selectedCodeA13_1.subscribe(function(value) {
+                    if (value==1) {
+                        self.enableConfigErrCode(true);
+                    } else {
+                        self.enableConfigErrCode(false);
+                    }
+                })
+                self.selectedCodeA13_1.valueHasMutated();
+                
+                // start define KCP005
+                self.multiSelectedCode = ko.observableArray([]);
+                self.isShowAlreadySet = ko.observable(false);
+                self.alreadySettingList = ko.observableArray([]);
+                self.isDialog = ko.observable(true);
+                self.isShowNoSelectRow = ko.observable(false);
+                self.isMultiSelect = ko.observable(true);
+                self.isShowWorkPlaceName = ko.observable(false);
+                self.isShowSelectAllButton = ko.observable(false);
+                this.employeeList = ko.observableArray<UnitModel>([]);
                 self.listComponentOption = {
-                    isShowAlreadySet: true,
+                    isShowAlreadySet: self.isShowAlreadySet(),
                     isMultiSelect: self.isMultiSelect(),
                     listType: ListType.EMPLOYEE,
                     employeeInputList: self.employeeList,
-                    selectType: self.selectedType(),
-                    selectedCode: self.bySelectedCode,
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    selectedCode: self.multiSelectedCode,
                     isDialog: self.isDialog(),
-                    isShowNoSelectRow: self.isShowNoSelectionItem(),
+                    isShowNoSelectRow: self.isShowNoSelectRow(),
                     alreadySettingList: self.alreadySettingList,
                     isShowWorkPlaceName: self.isShowWorkPlaceName(),
                     isShowSelectAllButton: self.isShowSelectAllButton(),
-                    maxRows: 12
+                    tabindex: 5,
+                    maxRows: 17
                 };
+                // end define KCP005
                 
-                // initial ccg options
-                self.setDefaultCcg001Option();
-                
-                // Init component.
-                self.reloadCcg001();
-                self.reloadComponent();
-        
-                self.selectedCode = ko.observable('1');
-                self.isEnable = ko.observable(true);
-                self.isEditable = ko.observable(true);
-                self.periodDate = ko.observable({});
-                
+                // start component KCP005
+                $('#component-items-list').ntsListComponent(self.listComponentOption);
+                // end component KCP005
             }
             
             public startPage(): JQueryPromise<void>  {
                 var dfd = $.Deferred<void>();
                 var self = this;
+                
+                // TODO - hoangdd: goi service lay domain cho A7_6. gio dang fix cung
+                self.enableBtnConfigure(true); 
+//                $('.ntsStartDatePicker').focus();
+                dfd.resolve();
                 return dfd.promise();
             }
             openScreenB () {
@@ -195,163 +290,14 @@ module nts.uk.at.view.kwr001.a {
             openScreenC () {
                 var self = this;
                 nts.uk.ui.windows.setShared('KWR001_C', self.data(), true);
+//                nts.uk.request.jump("/view/kwr/001/c/index.xhtml", {} );
                 nts.uk.ui.windows.sub.modal('/view/kwr/001/c/index.xhtml').onClosed(function(): any {
                     nts.uk.ui.windows.getShared('KWR001_C');
                 });
             }
-            
-            /**
-             * Set default ccg001 options
-             */
-            public setDefaultCcg001Option(): void {
-                let self = this;
-                self.isQuickSearchTab = ko.observable(true);
-                self.isAdvancedSearchTab = ko.observable(true);
-                self.isAllReferableEmployee = ko.observable(true);
-                self.isOnlyMe = ko.observable(true);
-                self.isEmployeeOfWorkplace = ko.observable(true);
-                self.isEmployeeWorkplaceFollow = ko.observable(true);
-                self.isMutipleCheck = ko.observable(true);
-                self.isSelectAllEmployee = ko.observable(true);
-                self.baseDate = ko.observable(moment());
-                self.periodStartDate = ko.observable(moment());
-                self.periodEndDate = ko.observable(moment());
-                self.showEmployment = ko.observable(true); // 雇用条件
-                self.showWorkplace = ko.observable(true); // 職場条件
-                self.showClassification = ko.observable(true); // 分類条件
-                self.showJobTitle = ko.observable(true); // 職位条件
-                self.showWorktype = ko.observable(true); // 勤種条件
-                self.inService = ko.observable(true); // 在職区分
-                self.leaveOfAbsence = ko.observable(true); // 休職区分
-                self.closed = ko.observable(true); // 休業区分
-                self.retirement = ko.observable(true); // 退職区分
-                self.systemType = ko.observable(1);
-                self.showClosure = ko.observable(true); // 就業締め日利用
-                self.showBaseDate = ko.observable(true); // 基準日利用
-                self.showAllClosure = ko.observable(true); // 全締め表示
-                self.showPeriod = ko.observable(true); // 対象期間利用
-                self.periodFormatYM = ko.observable(false); // 対象期間精度
-            }
-
-            /**
-             * Reload component CCG001
-             */
-            public reloadCcg001(): void {
-                let self = this;
-                if ($('.ccg-sample-has-error').ntsError('hasError')) {
-                    return;
-                }
-                // clear ccg001 errors
-                $('#inp_baseDate').ntsError('clear');
-                $('#inp-period-startYMD').ntsError('clear');
-                $('#inp-period-endYMD').ntsError('clear');
-                $('#inp-period-startYM').ntsError('clear');
-                $('#inp-period-endYM').ntsError('clear');
-                $('#ccg001-partg-start').ntsError('clear');
-                $('#ccg001-partg-end').ntsError('clear');
-                
-                if (!self.showBaseDate() && !self.showClosure() && !self.showPeriod()){
-                    nts.uk.ui.dialog.alertError("Base Date or Closure or Period must be shown!" );
-                    return;
-                }
-                self.ccg001ComponentOption = {
-                    /** Common properties */
-                    systemType: self.systemType(), // システム区分
-                    showEmployeeSelection: self.isSelectAllEmployee(), // 検索タイプ
-                    showQuickSearchTab: self.isQuickSearchTab(), // クイック検索
-                    showAdvancedSearchTab: self.isAdvancedSearchTab(), // 詳細検索
-                    showBaseDate: self.showBaseDate(), // 基準日利用
-                    showClosure: self.showClosure(), // 就業締め日利用
-                    showAllClosure: self.showAllClosure(), // 全締め表示
-                    showPeriod: self.showPeriod(), // 対象期間利用
-                    periodFormatYM: self.periodFormatYM(), // 対象期間精度
-
-                    /** Required parameter */
-                    baseDate: self.baseDate().toISOString(), // 基準日
-                    periodStartDate: self.periodStartDate().toISOString(), // 対象期間開始日
-                    periodEndDate: self.periodEndDate().toISOString(), // 対象期間終了日
-                    inService: self.inService(), // 在職区分
-                    leaveOfAbsence: self.leaveOfAbsence(), // 休職区分
-                    closed: self.closed(), // 休業区分
-                    retirement: self.retirement(), // 退職区分
-
-                    /** Quick search tab options */
-                    showAllReferableEmployee: self.isAllReferableEmployee(), // 参照可能な社員すべて
-                    showOnlyMe: self.isOnlyMe(), // 自分だけ
-                    showSameWorkplace: self.isEmployeeOfWorkplace(), // 同じ職場の社員
-                    showSameWorkplaceAndChild: self.isEmployeeWorkplaceFollow(), // 同じ職場とその配下の社員
-
-                    /** Advanced search properties */
-                    showEmployment: self.showEmployment(), // 雇用条件
-                    showWorkplace: self.showWorkplace(), // 職場条件
-                    showClassification: self.showClassification(), // 分類条件
-                    showJobTitle: self.showJobTitle(), // 職位条件
-                    showWorktype: self.showWorktype(), // 勤種条件
-                    isMutipleCheck: self.isMutipleCheck(), // 選択モード
-
-                    /** Return data */
-                    returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-                        self.selectedEmployee(data.listEmployee);
-                        self.applyKCP005ContentSearch(data.listEmployee);
-                    }
-                }
-
-                // Start component
-                $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
-            }
-            
-            /**
-            * apply ccg001 search data to kcp005
-            */
-            public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
-                var self = this;
-                self.employeeList([]);
-                var employeeSearchs: UnitModel[] = [];
-                for (var employeeSearch of dataList) {
-                    var employee: UnitModel = {
-                        code: employeeSearch.employeeCode,
-                        name: employeeSearch.employeeName,
-                        workplaceName: employeeSearch.workplaceName
-                    };
-                    employeeSearchs.push(employee);
-                }
-                self.employeeList(employeeSearchs);
-                self.lstPersonComponentOption = {
-                    isShowAlreadySet: false,
-                    isMultiSelect: true,
-                    listType: ListType.EMPLOYEE,
-                    employeeInputList: self.employeeList,
-                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                    selectedCode: self.selectedEmployeeCode,
-                    isDialog: false,
-                    isShowNoSelectRow: false,
-                    alreadySettingList: self.alreadySettingPersonal,
-                    isShowWorkPlaceName: true,
-                    isShowSelectAllButton: true,
-                    maxWidth: 550,
-                    maxRows: 15
-                };
-            }
-            // Reload component Method
-            private reloadComponent() {
-                var self = this;
-                self.listComponentOption.isShowAlreadySet = self.isAlreadySetting();
-                self.listComponentOption.listType = ListType.EMPLOYEE;
-                self.listComponentOption.employeeInputList = self.employeeList;
-                self.listComponentOption.isDialog = self.isDialog();
-                self.listComponentOption.isShowNoSelectRow = self.isShowNoSelectionItem();
-                self.listComponentOption.alreadySettingList = self.alreadySettingList;
-                self.listComponentOption.isMultiSelect = self.isMultiSelect();
-                self.listComponentOption.selectType = self.selectedType();
-                self.listComponentOption.isShowWorkPlaceName = self.isShowWorkPlaceName();
-                self.listComponentOption.isShowSelectAllButton = self.isShowSelectAllButton();
-    
-                $('#component-items-list').ntsListComponent(self.listComponentOption).done(function() {
-                    $('#component-items-list').focusComponent();
-                });
-                
-            }
         }
+        
+        const DATE_FORMAT_YYYY_MM_DD = "YYYY/MM/DD";
         
         export class ListType {
             static EMPLOYMENT = 1;
@@ -383,5 +329,72 @@ module nts.uk.at.view.kwr001.a {
                 this.name = name;
             }
         }
+        
+        class BoxModel {
+            id: number;
+            name: string;
+            constructor(id, name){
+                var self = this;
+                self.id = id;
+                self.name = name;
+            }
+        }
+
+        // start CCG001
+        export interface GroupOption {
+            /** Common properties */
+            showEmployeeSelection: boolean; // 検索タイプ
+            systemType: number; // システム区分
+            showQuickSearchTab: boolean; // クイック検索
+            showAdvancedSearchTab: boolean; // 詳細検索
+            showBaseDate: boolean; // 基準日利用
+            showClosure: boolean; // 就業締め日利用
+            showAllClosure: boolean; // 全締め表示
+            showPeriod: boolean; // 対象期間利用
+            periodFormatYM: boolean; // 対象期間精度
+            isInDialog?: boolean;
+        
+            /** Required parameter */
+            baseDate?: string; // 基準日
+            periodStartDate?: string; // 対象期間開始日
+            periodEndDate?: string; // 対象期間終了日
+            inService: boolean; // 在職区分
+            leaveOfAbsence: boolean; // 休職区分
+            closed: boolean; // 休業区分
+            retirement: boolean; // 退職区分
+        
+            /** Quick search tab options */
+            showAllReferableEmployee: boolean; // 参照可能な社員すべて
+            showOnlyMe: boolean; // 自分だけ
+            showSameWorkplace: boolean; // 同じ職場の社員
+            showSameWorkplaceAndChild: boolean; // 同じ職場とその配下の社員
+        
+            /** Advanced search properties */
+            showEmployment: boolean; // 雇用条件
+            showWorkplace: boolean; // 職場条件
+            showClassification: boolean; // 分類条件
+            showJobTitle: boolean; // 職位条件
+            showWorktype: boolean; // 勤種条件
+            isMutipleCheck: boolean; // 選択モード
+        
+            /** Data returned */
+            returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
+        }
+
+        export interface EmployeeSearchDto {
+            employeeId: string;
+            employeeCode: string;
+            employeeName: string;
+            workplaceId: string;
+            workplaceName: string;
+        }
+        export interface Ccg001ReturnedData {
+            baseDate: string; // 基準日
+            closureId?: number; // 締めID
+            periodStart: string; // 対象期間（開始)
+            periodEnd: string; // 対象期間（終了）
+            listEmployee: Array<EmployeeSearchDto>; // 検索結果
+        }
+        // end CCG001
     }
 }

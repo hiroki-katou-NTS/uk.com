@@ -47,9 +47,9 @@ public interface OutputItemDailyWorkScheduleGetMemento {
 	List<PrintRemarksContent> getLstRemarkContent();
 	
 	/**
-	 * Gets the zone name.
+	 * Gets the work type name display.
 	 *
-	 * @return the zone name
+	 * @return the work type name display
 	 */
-	NameWorkTypeOrHourZone getZoneName();
+	NameWorkTypeOrHourZone getWorkTypeNameDisplay();
 }

@@ -14,7 +14,6 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.PrintRemarksContent;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedule;
-import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedulePK;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -24,9 +23,6 @@ public class JpaOutputItemDailyWorkScheduleGetMemento implements OutputItemDaily
 
 	/** The kfnmt item work schedule. */
 	private KfnmtItemWorkSchedule kfnmtItemWorkSchedule;
-	
-	/** The Constant USE. */
-	private static final int USE = 1;
 	
 	/**
 	 * Instantiates a new jpa output item daily work schedule get memento.
@@ -87,11 +83,10 @@ public class JpaOutputItemDailyWorkScheduleGetMemento implements OutputItemDaily
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleGetMemento#getZoneName()
+	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleGetMemento#getWorkTypeNameDisplay()
 	 */
 	@Override
-	public NameWorkTypeOrHourZone getZoneName() {
-		return NameWorkTypeOrHourZone.valueOf(this.kfnmtItemWorkSchedule.getZoneName().intValue());
+	public NameWorkTypeOrHourZone getWorkTypeNameDisplay() {
+		return NameWorkTypeOrHourZone.valueOf(this.kfnmtItemWorkSchedule.getWorkTypeNameDisplay().intValue());
 	}
-
 }

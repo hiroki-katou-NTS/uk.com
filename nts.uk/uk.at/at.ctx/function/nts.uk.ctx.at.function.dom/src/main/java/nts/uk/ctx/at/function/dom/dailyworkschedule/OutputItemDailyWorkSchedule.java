@@ -38,7 +38,7 @@ public class OutputItemDailyWorkSchedule extends AggregateRoot{
 	
 	/** The zone name. */
 	// 勤務種類・就業時間帯の名称
-	private NameWorkTypeOrHourZone zoneName;
+	private NameWorkTypeOrHourZone workTypeNameDisplay;
 	
 	/**
 	 * Instantiates a new output item daily work schedule.

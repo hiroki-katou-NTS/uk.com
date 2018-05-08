@@ -17,7 +17,6 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.PrintRemarksContent;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtAttendanceDisplay;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtAttendanceDisplayPK;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedule;
-import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedulePK;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtPrintRemarkCont;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtPrintRemarkContPK;
 
@@ -99,11 +98,10 @@ public class JpaOutputItemDailyWorkScheduleSetMemento implements OutputItemDaily
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleSetMemento#setZoneName(nts.uk.ctx.at.function.dom.dailyworkschedule.NameWorkTypeOrHourZone)
+	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleSetMemento#setWorkTypeNameDisplay(nts.uk.ctx.at.function.dom.dailyworkschedule.NameWorkTypeOrHourZone)
 	 */
 	@Override
-	public void setZoneName(NameWorkTypeOrHourZone zoneName) {
-		kfnmtItemWorkSchedule.setZoneName(new BigDecimal(zoneName.value));
+	public void setWorkTypeNameDisplay(NameWorkTypeOrHourZone workTypeNameDisplay) {
+		kfnmtItemWorkSchedule.setWorkTypeNameDisplay(new BigDecimal(workTypeNameDisplay.value));
 	}
-
 }

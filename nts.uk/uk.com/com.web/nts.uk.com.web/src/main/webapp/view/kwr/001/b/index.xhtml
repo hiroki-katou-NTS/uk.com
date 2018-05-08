@@ -9,15 +9,15 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 500,
+					width : 700,
 					height : 550
 				};
 			</script>
 		
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="kwr001.b.start.js" />
-			<com:scriptfile path="kwr001.b.vm.js" />
 			<com:scriptfile path="kwr001.b.service.js" />
+			<com:scriptfile path="kwr001.b.vm.js" />
+			<com:scriptfile path="kwr001.b.start.js" />
 			<com:stylefile path="kwr001.b.main.css" />
 		</ui:define>
 
@@ -28,14 +28,18 @@
 					<span class="label">#{i18n.getText('KWR001_40')}</span>
 					<br/>
 					<!-- B2_1 -->
-					<table tabindex="1" id="multi-list" data-bind="ntsGridList: {
-						height: 380,
-						options: items,
-						optionsValue: 'code',
-						columns: columns,
-						multiple: true,
-						value: currentCodeList
-					}"></table>
+					<div id="multi-list-div" tabindex="1">
+						<table id="multi-list" data-bind="ntsGridList: {
+							name: '#[KWR001_41]',
+							height: 380,
+							width: 575,
+							dataSource: items,
+							primaryKey: 'code',
+							columns: columns,
+							multiple: true,
+							value: currentCodeList
+						}"></table>
+					</div>
 				</div>
 				
 				<!-- B4_1 -->
@@ -43,9 +47,9 @@
 				
 				<div class="confirm">
 					<!-- B5_1 -->
-					<button tabindex="2" class="proceed">#{i18n.getText('KWR001_44')}</button>
+					<button tabindex="2" data-bind="click: saveDialog" class="proceed">#{i18n.getText('KWR001_44')}</button>
 					<!-- B5_2 -->
-					<button tabindex="3">#{i18n.getText('KWR001_45')}</button>
+					<button tabindex="3" data-bind="click: closeDialog" >#{i18n.getText('KWR001_45')}</button>
 				</div>
 			</div>
 		</ui:define>

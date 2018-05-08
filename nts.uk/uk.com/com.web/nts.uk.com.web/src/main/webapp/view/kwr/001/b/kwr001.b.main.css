@@ -4,10 +4,14 @@
 	margin: auto;
 }
 
-#multi-list_container {
+/* #multi-list_container {
 	margin: auto !important;
-}
+} */
 
 .label, hr {
 	margin: 15px;
 }
+
+/* #multi-list_headers_v {
+	width: unset !important;
+} */

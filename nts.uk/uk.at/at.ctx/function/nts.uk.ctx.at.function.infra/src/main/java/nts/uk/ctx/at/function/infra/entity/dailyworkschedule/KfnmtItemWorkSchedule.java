@@ -19,8 +19,6 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
-import nts.uk.ctx.at.function.infra.repository.dailyworkschedule.JpaOutputItemDailyWorkScheduleGetMemento;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 
@@ -45,9 +43,9 @@ public class KfnmtItemWorkSchedule extends UkJpaEntity implements Serializable {
 	@Column(name="ITEM_NAME")
 	private String itemName;
 
-	/** The zone name. */
-	@Column(name="ZONE_NAME")
-	private BigDecimal zoneName;
+	/** The work type name display. */
+	@Column(name="WORKTYPE_NAME_DISPLAY")
+	private BigDecimal workTypeNameDisplay;
 
 	/** The lst kfnmt attendance display. */
 	@OneToMany

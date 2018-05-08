@@ -47,9 +47,9 @@ public interface OutputItemDailyWorkScheduleSetMemento {
 	void setLstRemarkContent(List<PrintRemarksContent> lstRemarkContent);
 	
 	/**
-	 * Sets the zone name.
+	 * Sets the work type name display.
 	 *
-	 * @param zoneName the new zone name
+	 * @param workTypeNameDisplay the new work type name display
 	 */
-	void setZoneName(NameWorkTypeOrHourZone zoneName);
+	void setWorkTypeNameDisplay(NameWorkTypeOrHourZone workTypeNameDisplay);
 }

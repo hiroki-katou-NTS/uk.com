@@ -1,17 +1,17 @@
 .panel {
-	display: inline-block;
-	width: 91%;
+	/* display: inline-block; */
+	/* width: 91%; */
 	padding: 5px;
 	margin: 5px;
 }
 
 .A1_5, .A1_6 {
 	display: inline-block;
-	margin-left: 20px;
+	margin-left: 3px;
 }
 
 .A1_6 {
-	width: 70%;
+	/* width: 70%; */
 }
 
 .A5_1 {
@@ -19,15 +19,15 @@
 }
 
 .td-left {
-	width: 43%;
+	/* padding-top: 4px; */
 }
 
 .td-right{
-	width: 67%;
+	/* width: 57%; */
 }
 
 .table1 {
-	width: 80%;
+	width: 1200px;
 	margin-left: 5%;
 }
 
@@ -36,14 +36,25 @@
 }
 
 .A13_1{
-	margin-left: 50px;
-	width: 170px;
+	margin-left: 27px;
+	width: 145px;
+	display:  flex;
+	flex-direction:  column;
 }
 
-.row {
+.td-left .row {
 	margin: 5px;
 	display: flex;
-    align-items: center
+	align-items: center;
+	margin-top: 10px;
+}
+
+.td-right .row {
+	display: flex;
+	align-items: center;
+	margin-top:  5px;
+	margin-bottom:  5px;
+	margin-left: 25px;
 }
 
 #combo-box{
@@ -63,17 +74,17 @@ td {
 }
 
 label {
-	width: 130px;
+	width: 85px;
 }
 
 .A10-left{
-	width: 30%;
-	display: flex;
-	flex-direction: column;
+	width: 30px;
+	/* display: flex; */
+	/* flex-direction: column; */
 }
 
 .table2 {
-	margin-left: 10%;
+	margin-left: 7%;
 }
 
 hr {
@@ -81,5 +92,26 @@ hr {
 }
 
 .td-center{
-	vertical-align: middle;
+	vertical-align: bottom;
+}
+
+.td-left .panel.panel-frame {
+	width: 442px;
+}
+
+.type-page-brake {
+	max-width: 100px;
+}
+
+.td-right .right .panel.panel-frame {
+	padding: 15px;
+}
+
+.A13_1 label {
+	width: 120px;
+	margin-top: 5px;
+}
+
+#output-setting-content {
+	height: 573px
 }

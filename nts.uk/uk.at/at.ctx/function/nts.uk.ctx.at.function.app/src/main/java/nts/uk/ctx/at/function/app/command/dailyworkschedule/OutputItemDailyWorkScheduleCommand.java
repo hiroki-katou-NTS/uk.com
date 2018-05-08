@@ -86,16 +86,19 @@ public class OutputItemDailyWorkScheduleCommand implements OutputItemDailyWorkSc
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleGetMemento#getZoneName()
+	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleGetMemento#getCompanyID()
 	 */
-	@Override
-	public NameWorkTypeOrHourZone getZoneName() {
-		return NameWorkTypeOrHourZone.valueOf(this.zoneName);
-	}
-
 	@Override
 	public String getCompanyID() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleGetMemento#getWorkTypeNameDisplay()
+	 */
+	@Override
+	public NameWorkTypeOrHourZone getWorkTypeNameDisplay() {
+		return NameWorkTypeOrHourZone.valueOf(this.zoneName);
 	}
 }

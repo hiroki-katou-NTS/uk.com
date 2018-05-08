@@ -48,6 +48,10 @@ module nts.uk.at.view.kwr001.c {
                 self.selectedRuleCode = ko.observable(1);
                 self.currentCodeListSwap = ko.observableArray([]);
                 self.test = ko.observableArray([]);
+                
+                self.currentCodeListSwap.subscribe(function(value) {
+                    console.log(value);
+                })
             }
             
             remove(){
@@ -62,6 +66,7 @@ module nts.uk.at.view.kwr001.c {
                 dfd.resolve();
                 return dfd.promise();
             }
+
             openScreenD () {
                 var self = this;
                 nts.uk.ui.windows.setShared('KWR001_D', self.data(), true);
@@ -76,6 +81,11 @@ module nts.uk.at.view.kwr001.c {
                 
                 dfd.resolve();
                 return dfd.promise();
+            }
+            
+            // return to screen A
+            closeScreenC(): void {
+                nts.uk.ui.windows.close();
             }
         }
         class ItemModel {

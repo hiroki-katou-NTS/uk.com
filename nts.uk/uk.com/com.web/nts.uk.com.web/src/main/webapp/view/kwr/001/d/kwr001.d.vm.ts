@@ -40,7 +40,14 @@ module nts.uk.at.view.kwr001.d {
                 dfd.resolve();
                 return dfd.promise();
             }
+            
+            closeDialog(): void {
+                nts.uk.ui.windows.close();
+            }
         
+            closeSaveDialog(): void {
+                nts.uk.ui.windows.close();
+            }
         };
         
         class ItemModel {

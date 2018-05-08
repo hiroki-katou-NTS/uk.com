@@ -20,7 +20,7 @@
 }
 
 .label-name {
-	width: 130px;
+	width: 199px;
 }
 
 .row {
@@ -64,10 +64,18 @@
 }
 
 .C8 {
-	width: 60%;
+	width: 80%;
 }
 
 .check-box-list {
-	width: 90%;
+	/* width: 90%; */
 	float: right;
+}
+
+.check-box-list > ul {
+	columns: 4;
+}
+
+.td-right {
+	width: 800px;
 }
