@@ -16,6 +16,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.layer.infra.file.temp.ApplicationTemporaryFileFactory;
+import nts.arc.layer.infra.file.temp.ApplicationTemporaryFilesContainer;
 import nts.uk.ctx.sys.assist.dom.category.Category;
 import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMt;
@@ -48,6 +50,9 @@ public class ManualSetOfDataSaveService {
 	private TargetEmployeesRepository repoTargetEmp;
 	@Inject
 	private CSVReportGenerator generator;
+	
+	@Inject
+	private ApplicationTemporaryFileFactory applicationTemporaryFileFactory;
 	@Inject
 	private SaveTargetCsvRepository csvRepo;
 
@@ -102,13 +107,24 @@ public class ManualSetOfDataSaveService {
 
 			// Add Table to CSV2
 			generalCsv2(storeProcessingId);
+			
+			/** finally*/
+			//OutputStream zippedFile = applicationTemporaryFilesContainer.zip("pass");
+			//applicationTemporaryFilesContainer.removeContainer();
 		}
 
 	}
-
+	
+	
+	private List<SaveTargetCsv> commonCsv(String storeProcessingId){
+		List<SaveTargetCsv> csvTarRepoCommon = csvRepo.getSaveTargetCsvById(storeProcessingId);
+		return csvTarRepoCommon;
+	}
+	
 	private void generalCsv(String storeProcessingId) {
 
-		List<SaveTargetCsv> csvTarRepo = csvRepo.getSaveTargetCsvById(storeProcessingId);
+		List<SaveTargetCsv> csvTarRepo = commonCsv(storeProcessingId);
+		
 		List<String> headerCsv = this.getTextHeader();
 		// Get data from Manual Setting table
 		List<Map<String, Object>> dataSourceCsv = new ArrayList<>();
@@ -203,6 +219,8 @@ public class ManualSetOfDataSaveService {
 				headerCsv, dataSourceCsv);
 		FileGeneratorContext generatorContext = new FileGeneratorContext();
 		generator.generate(generatorContext, fileData);
+		
+		
 	}
 
 	private void generalCsv2(String storeProcessingId) {
@@ -217,10 +235,18 @@ public class ManualSetOfDataSaveService {
 			rowCsv2.put(headerCsv2.get(2), targetEmp.getBusinessname());
 			dataSourceCsv2.add(rowCsv2);
 		}
+		/***/
+		ApplicationTemporaryFilesContainer applicationTemporaryFilesContainer = applicationTemporaryFileFactory.createContainer();	
 		CSVFileData fileData = new CSVFileData(PGID + "対象社員" + AppContexts.user().companyCode() + FILE_EXTENSION,
 				headerCsv2, dataSourceCsv2);
+		
 		FileGeneratorContext generatorContext = new FileGeneratorContext();
+
 		generator.generate(generatorContext, fileData);
+		applicationTemporaryFilesContainer.addFile(generatorContext);
+		
+
+		
 	}
 
 	private static final List<String> LST_NAME_ID_HEADER_TABLE = Arrays.asList("CMF003_500", "CMF003_501", "CMF003_502",

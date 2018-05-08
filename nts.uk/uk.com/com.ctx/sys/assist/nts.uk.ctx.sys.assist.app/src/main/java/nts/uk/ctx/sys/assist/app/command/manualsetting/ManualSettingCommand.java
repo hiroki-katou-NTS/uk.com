@@ -26,7 +26,7 @@ public class ManualSettingCommand {
 
 	private String cid;
 	private String storeProcessingId;
-	int systemType;
+	private int systemType;
 	private int passwordAvailability;
 	private String saveSetName;
 	private GeneralDate referenceDate;
