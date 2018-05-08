@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.manageactualsituation;
+package nts.uk.ctx.at.record.dom.workrecord.managectualsituation;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

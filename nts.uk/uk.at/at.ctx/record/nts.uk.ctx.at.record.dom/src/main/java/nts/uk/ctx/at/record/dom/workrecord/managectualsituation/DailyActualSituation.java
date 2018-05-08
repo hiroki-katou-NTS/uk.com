@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.manageactualsituation;
+package nts.uk.ctx.at.record.dom.workrecord.managectualsituation;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
@@ -18,7 +18,7 @@ public class DailyActualSituation {
 	/**
 	 * 本人確認が完了している
 	 */
-	boolean identificationCompleted;
+	boolean identityVerificationCompleted;
 	/**
 	 * エラーが0件である
 	 */

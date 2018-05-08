@@ -15,9 +15,11 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceForm
 import nts.uk.screen.at.app.monthlyperformance.correction.MonthlyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ErrorAlarmWorkRecordDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceCorrectionDto;
-import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerformanceParam;
+import nts.uk.screen.at.ws.monthlyperformance.MPParams;
 
-
+/**
+ * TODO
+ */
 @Path("screen/at/monthlyperformance")
 @Produces("application/json")
 public class MonthlyPerformanceCorrectionWebService {
@@ -28,13 +30,9 @@ public class MonthlyPerformanceCorrectionWebService {
 	MonPfmCorrectionFormatFinder monPfmCorrectionFormatFinder;
 	@POST
 	@Path("startScreen")
-	public MonthlyPerformanceCorrectionDto startScreen(MonthlyPerformanceParam param) throws InterruptedException {
-		return processor.initScreen(param);
+	public MonthlyPerformanceCorrectionDto startScreen(MPParams param) throws InterruptedException {
+		return processor.initScreen(param.initMode, param.lstEmployees, param.formatCodes, param.correctionOfDaily);
 	}
-	/**
-	 * TODO
-	 * @return
-	 */
 	@POST
 	@Path("getErrorList")
 	public List<ErrorAlarmWorkRecordDto> getMonthlyErrorList() {
