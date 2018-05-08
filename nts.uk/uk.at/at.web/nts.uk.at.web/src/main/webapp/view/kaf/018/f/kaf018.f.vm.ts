@@ -94,6 +94,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             service.getUseSetting().done(function(setting) {
                 self.useSetting = setting;
                 self.initExTable().done(function() {
+                    self.focusE5();
                     block.clear();
                 });
             }).fail(function() {
@@ -141,6 +142,10 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             self.selectedWplIndex--;
             self.getWkpName();
             self.updateExTable();
+        }
+
+        focusE5() {
+            $("#extable").focus();
         }
 
         setArrDate() {
@@ -227,7 +232,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                                     performance = Performance.PERSON_UNCONFIRM;
                                 } else if (objDaily.personConfirm && !objDaily.bossConfirm) {
                                     performance = Performance.BOSS_UNCONFIRM;
-                                } else if (objDaily.personConfirm && objDaily.bossConfirm) {
+                                } else if (objDaily.bossConfirm) {
                                     performance = Performance.CONFIRMED;
                                 }
                             } else if (self.useSetting.usePersonConfirm && !self.useSetting.useBossConfirm) {

@@ -60,7 +60,7 @@ public class RealityStatusService {
 
 	@Inject
 	IdentificationRepository identificationRepo;
-	
+
 	/**
 	 * 承認状況職場実績起動
 	 */
@@ -241,6 +241,13 @@ public class RealityStatusService {
 		for (ApproveRootStatusForEmpImport approval : listApproval) {
 			// 承認ルート状況.承認状況
 			if (ApprovalStatusForEmployee.APPROVED.equals(approval.getApprovalStatus())) {
+				Optional<DailyConfirmOutput> confirm = listDailyConfirm.stream().filter(x -> x.getWkpId().equals(wkpId)
+						&& x.getSId().equals(sId) && x.getTargetDate().equals(approval.getAppDate())).findFirst();
+				if (confirm.isPresent()) {
+					// 日別確認リスト)を変更
+					// 上司確認 ＝確認
+					confirm.get().setBossConfirm(true);
+				}
 				// 「承認済」の場合
 				// 上司確認件数 ＝＋１
 				sumCount.bossConfirm++;
@@ -567,7 +574,8 @@ public class RealityStatusService {
 		List<ErrorStatusOutput> listError = new ArrayList<>();
 		// imported（KAF018承認状況の照会）「実績エラー状況＜年月日、boolean＞」を取得する
 		// TODO RequestList303
-		// listError.add(new ErrorStatusOutput(wkpId, sId, startDate.addDays(1)));
+		// listError.add(new ErrorStatusOutput(wkpId, sId,
+		// startDate.addDays(1)));
 		return listError;
 	}
 }
