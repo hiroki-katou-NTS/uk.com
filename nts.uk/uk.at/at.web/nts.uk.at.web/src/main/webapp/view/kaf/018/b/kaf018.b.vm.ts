@@ -4,6 +4,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
     import formatDate = nts.uk.time.formatDate;
     import info = nts.uk.ui.dialog.info;
     import error = nts.uk.ui.dialog.alertError;
+        import shareModel = kaf018.share.model;
     import confirm = nts.uk.ui.dialog.confirm;
     import block = nts.uk.ui.block;
     
@@ -113,14 +114,17 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 
         gotoC(index) {
             var self = this;
-            
+            let listWorkplace = [];
+            _.each(self.tempData, function(item) {
+                listWorkplace.push(new shareModel.ItemModel(item.workplaceId, item.workplaceName));        
+            });
             let params = {
                 closureId: self.closureId,
                 closureName: self.closureName,
                 processingYm: self.processingYm,
                 startDate: self.startDate,
                 endDate: self.endDate,
-                listWorkplace: self.listWorkplace,
+                listWorkplace: listWorkplace,
                 selectedWplIndex: index(),
                 listEmployeeCode: self.listEmployeeCode,
             };

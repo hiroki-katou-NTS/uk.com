@@ -115,7 +115,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                     }   
                 });
              dfd.resolve();
-            });
+            })
             //Confirm checkbox A4_2_1
             service.getUseSetting().done(function(data: any) {
                 if ((data.monthlyConfirm || data.useBossConfirm || data.usePersonConfirm)) {

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.approvalstatus.service.output;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Value;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
@@ -8,5 +9,5 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vaca
 @Value
 public class ApplicationsListOutput {
 	List<ApprovalSttAppDetail> approvalSttAppDetail; 
-	HdAppSet lstHdAppSet;
+	Optional<HdAppSet> lstHdAppSet;
 }

@@ -4,7 +4,9 @@ module nts.uk.at.view.kaf018.a.start {
         let screenModel = new kaf018.a.viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
-            $('#combo-box').focus();
+            _.defer(() => {
+                    $('#combo-box').focus();
+                });
         })
     });
 }
