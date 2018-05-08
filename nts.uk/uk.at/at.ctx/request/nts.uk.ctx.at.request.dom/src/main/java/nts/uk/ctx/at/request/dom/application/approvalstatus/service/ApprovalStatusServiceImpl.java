@@ -30,7 +30,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Appli
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppDetail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpList;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttDetailRecord;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatus;
@@ -649,7 +649,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public ApprovalSttByEmpList getApprovalSttById(String selectedWkpId, List<String> listWkpId,
+	public ApprovalSttByEmpListOutput getApprovalSttById(String selectedWkpId, List<String> listWkpId,
 			GeneralDate startDate, GeneralDate endDate, List<String> listEmpCode) {
 		List<DailyStatusOutput> listDailyStatus = new ArrayList<>();
 		// アルゴリズム「承認状況取得社員」を実行する
@@ -672,7 +672,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			List<DailyStatus> dailyStatus = this.getApprovalSttByDate(appStt, listApprovalContent);
 			listDailyStatus.add(new DailyStatusOutput(appStt.getSId(), empName, dailyStatus));
 		}
-		return new ApprovalSttByEmpList(listDailyStatus, listAppSttEmp);
+		return new ApprovalSttByEmpListOutput(listDailyStatus, listAppSttEmp);
 	}
 
 	/**

@@ -21,7 +21,7 @@ import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusP
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalSttRequestContentDis;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.UnAppMailTransmisDto;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpList;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
 
@@ -107,7 +107,7 @@ public class ApprovalStatusWebservice extends WebService {
 	
 	@POST
 	@Path("initApprovalSttByEmployee")
-	public ApprovalSttByEmpList initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById){
+	public ApprovalSttByEmpListOutput initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById){
 		return this.finder.initApprovalSttByEmployee(appSttById);
 		
 	}

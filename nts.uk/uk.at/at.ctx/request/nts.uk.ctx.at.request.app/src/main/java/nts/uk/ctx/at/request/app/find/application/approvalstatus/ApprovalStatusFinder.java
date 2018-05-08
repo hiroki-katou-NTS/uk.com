@@ -29,7 +29,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStat
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationsListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpList;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.HolidayAppType;
@@ -248,7 +248,7 @@ public class ApprovalStatusFinder {
 	/**
 	 * アルゴリズム「承認状況社員別起動」を実行する
 	 */
-	public ApprovalSttByEmpList initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById) {
+	public ApprovalSttByEmpListOutput initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById) {
 		return appSttService.getApprovalSttById(appSttById.getSelectedWkpId(), appSttById.getListWkpId(),
 				appSttById.getStartDate(), appSttById.getEndDate(), appSttById.getListEmpCode());
 	}
