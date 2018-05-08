@@ -29,7 +29,7 @@ public class AddAutDaiFormatCommandHandler extends CommandHandler<AddAuthorityDa
 
 	@Inject
 	private AuthorityFormatDailyRepository authorityFormatDailyRepository;
-
+ 
 	@Inject
 	private AuthorityFormatSheetRepository authorityFormatSheetRepository;
 
@@ -66,7 +66,7 @@ public class AddAutDaiFormatCommandHandler extends CommandHandler<AddAuthorityDa
 				new DailyPerformanceFormatName(command.getAuthorityDailyCommand().getDailyPerformanceFormatName()));
 
 		if (this.authorityDailyPerformanceFormatRepository
-				.checkExistCode(new DailyPerformanceFormatCode(command.getAuthorityDailyCommand().getDailyPerformanceFormatCode()))) {
+				.checkExistCode(companyId,new DailyPerformanceFormatCode(command.getAuthorityDailyCommand().getDailyPerformanceFormatCode()))) {
 			throw new BusinessException("Msg_3");
 		} else {
 			this.authorityFormatDailyRepository.add(authorityFomatDailies);
