@@ -60,10 +60,10 @@
 						<div data-bind ="ntsFormLabel: { required: true }">#{i18n.getText('KWR008_24')}</div> 
 						
 						<!-- B3_2 -->
-						<input id="B3_2" tabindex="6" data-bind="ntsTextEditor: {name: '#[KWR008_25]', value : inputSettingCode, required: true, enable: screenMode(), option : { width : '25px'}, constraint : 'OutItemsWoScCode'}" />
+						<input id="B3_2" tabindex="6" data-bind="ntsTextEditor: {name: '#[KWR008_25]', value : currentSetOutputSettingCode().cd, required: true, enable: screenMode(), option : { width : '25px'}, constraint : 'OutItemsWoScCode'}" />
 						
 						<!-- B3_3 -->
-						<input id="B3_3" tabindex="7" data-bind="ntsTextEditor: {name: '#[KWR008_26]', value : inputProjectName, required: true, option : { width : '200px'}, constraint: 'OutItemsWoScName'}" />
+						<input id="B3_3" tabindex="7" data-bind="ntsTextEditor: {name: '#[KWR008_26]', value : currentSetOutputSettingCode().name, required: true, option : { width : '200px'}, constraint: 'OutItemsWoScName'}" />
 					</div>
 					
 					<!-- B4 -->
@@ -129,7 +129,7 @@
 					</div>
 					<div style="margin-top: 15px;">
 						<!-- B5_1 -->
-						<div tabindex="9" data-bind="ntsCheckBox: { checked: excessTime }">${i18n.getText('KWR008_35')}</div>
+						<div tabindex="9" data-bind="ntsCheckBox: { checked: currentSetOutputSettingCode().outNumExceedTime36Agr }">${i18n.getText('KWR008_35')}</div>
 					</div>
 					<div style="margin-top: 15px; margin-bottom:30px">
 						<!-- B5_2 -->
@@ -139,7 +139,7 @@
 							options: itemRadio,
 							optionsValue: 'code',
 							optionsText: 'name',
-							value: selectedItemRadio}">
+							value: currentSetOutputSettingCode().displayFormat}">
 						</div>
 					</div>
 				</div>
