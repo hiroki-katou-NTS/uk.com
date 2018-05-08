@@ -22,7 +22,7 @@ import nts.uk.pub.spr.login.output.LoginUserContextSpr;
 import nts.uk.pub.spr.login.output.RoleInfoSpr;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
-@Path("public/spr_") // <- plz fix when discard SptWebServiceStub
+@Path("public/spr")
 public class SprWebService {
 	
 	@Inject
