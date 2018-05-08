@@ -18,10 +18,10 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
 public class MailDestinationFunctionDto implements MailDestinationFunctionGetMemento {
 
 	/** The setting item. */
-	private Integer settingItem;
+	public Integer settingItem;
 
 	/** The send by function setting. */
-	private List<SendMailByFunctionSetting> sendByFunctionSetting;
+	public List<SendMailByFunctionSetting> sendByFunctionSetting;
 
 	/*
 	 * (non-Javadoc)

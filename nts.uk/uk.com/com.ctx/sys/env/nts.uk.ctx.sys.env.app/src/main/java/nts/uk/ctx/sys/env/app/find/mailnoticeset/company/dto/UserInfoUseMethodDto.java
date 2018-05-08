@@ -23,16 +23,16 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
 public class UserInfoUseMethodDto implements UserInfoUseMethodSetMemento {
 
 	/** The company id. */
-	private String companyId;
+	public String companyId;
 
 	/** The setting item. */
-	private Integer settingItem;
+	public Integer settingItem;
 
 	/** The self edit. */
-	private Integer selfEdit;
+	public Integer selfEdit;
 
 	/** The setting use mail. */
-	private Integer settingUseMail;
+	public Integer settingUseMail;
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethodSetMemento#setSettingItem(nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem)

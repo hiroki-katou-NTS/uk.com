@@ -4,12 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.sys.env.app.find.mailnoticeset.company.dto;
 
+import lombok.Data;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SendMailByFunctionSettingSetMemento;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * The Class SendMailByFunctionSettingDto.
  */
+@Data
 public class SendMailByFunctionSettingDto implements SendMailByFunctionSettingSetMemento {
 
 	/** The function id. */

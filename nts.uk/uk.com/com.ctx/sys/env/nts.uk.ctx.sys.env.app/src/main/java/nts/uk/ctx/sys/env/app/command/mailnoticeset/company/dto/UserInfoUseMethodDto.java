@@ -19,16 +19,13 @@ import nts.uk.shr.com.context.AppContexts;
 public class UserInfoUseMethodDto implements UserInfoUseMethodGetMemento {
 
 	/** The setting item. */
-	// 設定項目
-	private Integer settingItem;
+	public Integer settingItem;
 
 	/** The self edit. */
-	// 本人編集
-	private Integer selfEdit;
+	public Integer selfEdit;
 
 	/** The setting use mail. */
-	// メール利用設定
-	private Integer settingUseMail;
+	public Integer settingUseMail;
 
 	/*
 	 * (non-Javadoc)

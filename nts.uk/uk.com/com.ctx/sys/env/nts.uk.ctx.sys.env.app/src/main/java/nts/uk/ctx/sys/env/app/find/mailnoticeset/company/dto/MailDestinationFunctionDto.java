@@ -7,6 +7,7 @@ package nts.uk.ctx.sys.env.app.find.mailnoticeset.company.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.Data;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunctionSetMemento;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SendMailByFunctionSetting;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
@@ -14,6 +15,7 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
 /**
  * The Class MailDestinationFunctionDto.
  */
+@Data
 public class MailDestinationFunctionDto implements MailDestinationFunctionSetMemento {
 
 	/** The setting item. */

@@ -14,16 +14,16 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.MailFunctionSetMemento;
 public class MailFunctionDto implements MailFunctionSetMemento {
 
 	/** The function id. */
-	private Integer functionId;
+	public Integer functionId;
 
 	/** The function name. */
-	private String functionName;
+	public String functionName;
 
 	/** The propriety send mail setting atr. */
-	private boolean proprietySendMailSettingAtr;
+	public boolean proprietySendMailSettingAtr;
 
 	/** The sort order. */
-	private Integer sortOrder;
+	public Integer sortOrder;
 
 	@Override
 	public void setFunctionId(Integer functionId) {
