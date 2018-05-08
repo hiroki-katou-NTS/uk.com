@@ -68,16 +68,32 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         supplementExplanation: KnockoutObservable<string>;
 
 
-        //D3_1
+        
+        
+        //D
+      //Radio button
+        itemTitleAtr: KnockoutObservableArray<any>;
+        selectedTitleAtr: KnockoutObservable<number>;
+        
         ccg001ComponentOption: GroupOption;
-        employeeInputList: KnockoutObservableArray<UnitModel>;
-
+        selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
+        
+        listComponentOption: any;
+        selectedEmployeeCode: KnockoutObservableArray<string>;
+        employeeName: KnockoutObservable<string>;
+        employeeList: KnockoutObservableArray<UnitModel>;
+        alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
+        
         constructor() {
             var self = this;
             self.initComponents();
             self.setDefault();
-
-            self.employeeInputList = ko.observableArray([]);
+            
+            self.itemTitleAtr = ko.observableArray([
+                { value: 0, titleAtrName: resource.getText('CMF005_51') },
+                { value: 1, titleAtrName: resource.getText('CMF005_52') }]);
+            self.selectedTitleAtr = ko.observable(0);
+            
         }
 
         initComponents() {
@@ -168,6 +184,12 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
             //B9_2
             supplementExplanation = ko.observable("");
+            
+            //D
+            self.employeeList = ko.observableArray([]);
+            self.selectedEmployee = ko.observableArray([]);
+            self.selectedEmployeeCode = ko.observableArray([]);
+            self.alreadySettingPersonal = ko.observableArray([]);
         }
 
         /**
@@ -255,8 +277,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         }
 
         /**
-             * function next wizard by on click button 
-             */
+         * function next wizard by on click button 
+         */
         private next() {
             let self = this;
             self.loadScreenD();
@@ -388,7 +410,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         loadScreenD() {
             let self = this;
             self.loadCcg001Component();
-            self.showEmployeeList();
+            self.initComponnentKCP005();
+//            self.reloadEmployeeList();
         }
 
 
@@ -437,46 +460,72 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 * @param: data: the data return from CCG001
                 */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-                    self.searchEmployee(data.listEmployee);
+                    self.applyKCP005ContentSearch(data.listEmployee);
                 }
             }
 
-            $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);
+            $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
         }
 
-        searchEmployee(dataEmployee: EmployeeSearchDto[]) {
+        applyKCP005ContentSearch(dataEmployee: EmployeeSearchDto[]) {
             var self = this;
-            self.employeeInputList.removeAll();
+            var employeeSearchs: UnitModel[] = [];
             _.forEach(dataEmployee, function(item: EmployeeSearchDto) {
-                self.employeeInputList.push(new UnitModel({
-                    id: item.employeeId,
-                    code: item.employeeCode,
-                    businessName: item.employeeName,
-                    workplaceName: item.workplaceName,
-                }));
+                employeeSearchs.push(new UnitModel(item.employeeCode, 
+                    item.employeeName, item.workplaceName));
             });
 
-            self.showEmployeeList();
+            self.employeeList(employeeSearchs);
+//            self.reloadEmployeeList();
         }
 
-        showEmployeeList() {
-            var self = this;
-            //            console.log(self.employeeInputList);
-            var listComponentOption: ComponentOption = {
+        initComponnentKCP005() {
+            //KCP005
+            self.listComponentOption = {
                 isShowAlreadySet: false,
                 isMultiSelect: true,
                 listType: ListType.EMPLOYEE,
-                employeeInputList: self.employeeInputList,
-                selectType: SelectType.SELECT_ALL,
+                employeeInputList: self.employeeList,
+                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                selectedCode: self.selectedEmployeeCode,
                 isDialog: false,
                 isShowNoSelectRow: false,
+                alreadySettingList: self.alreadySettingPersonal,
                 isShowWorkPlaceName: true,
-                isShowSelectAllButton: true
-            };
-
-            $('#component-employees-list').ntsListComponent(listComponentOption);
+                isShowSelectAllButton: true,
+                maxWidth: 550,
+                maxRows: 15
+            };    
+            
+//            $('#employeeSearch').ntsListComponent(self.listComponentOption);
         }
-
+        
+//        reloadEmployeeList() {
+//            $('#employeeSearch').ntsListComponent(self.listComponentOption);
+//        }
+        
+        private previousB(): void {
+                var self = this;
+                self.previous();
+        }
+        
+        private backToA() {
+            let self = this;
+            nts.uk.request.jump("/view/cmf/003/a/index.xhtml");
+        }
+        
+        private nextFromDToE(): void {
+                var self = this;
+                self.initE();
+                self.next();
+        }
+            
+        private initE(): void {
+            var self = this;
+            $("#E3_3").html(self.dataSaveSetName());
+            $("#E3_5").html(self.explanation());
+            $("#E3_37").html(self.referenceDate);
+        }
     }
 
     function timeStore(value, row) {
@@ -498,7 +547,37 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             return getText('Enum_Storage_Range_Saved_ALL_EMP');
         }
     }
-
+   
+    export class UnitModel {
+        code: string;
+        name: string;
+        workplaceName: string;
+        
+        constructor(code: string, name: string, workplaceName: string) {
+                this.code = code;
+                this.name = name;
+                this.workplaceName = workplaceName;
+        }
+    }
+    
+        export class ListType {
+            static EMPLOYMENT = 1;
+            static Classification = 2;
+            static JOB_TITLE = 3;
+            static EMPLOYEE = 4;
+        }
+            
+        export class SelectType {
+            static SELECT_BY_SELECTED_CODE = 1;
+            static SELECT_ALL = 2;
+            static SELECT_FIRST_ITEM = 3;
+            static NO_SELECT = 4;
+        }
+        
+        export interface UnitAlreadySettingModel {
+            code: string;
+            isAlreadySetting: boolean;
+        }
 }
 
 

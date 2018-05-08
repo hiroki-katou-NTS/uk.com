@@ -24,5 +24,5 @@ public interface TargetEmployeesRepository {
 	 */
 	void addAll(List<TargetEmployees> employees);
 
-	Optional<TargetEmployees> getTargetEmployeesListById(String storeProcessingId);
+	List<TargetEmployees> getTargetEmployeesListById(String storeProcessingId);
 }

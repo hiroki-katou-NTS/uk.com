@@ -13,7 +13,7 @@ public interface TargetCategoryRepository
 
     Optional<TargetCategory> getTargetCategoryById(String storeProcessingId, String categoryId);
     
-    Optional<TargetCategory> getTargetCategoryListById(String storeProcessingId);
+    List<TargetCategory> getTargetCategoryListById(String storeProcessingId);
 
     void add(TargetCategory domain);
 
