@@ -13,7 +13,7 @@ module nts.uk.at.view.kwr008.share.model {
     export interface OutputSettingCodeDto {
         cd: string;
         name: string;
-        outNumExceedTime36Agr: number;
+        outNumExceedTime36Agr: boolean;
         displayFormat: number;
     }
 
