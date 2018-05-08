@@ -40,6 +40,19 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 				entity.gender, entity.businessName, entity.personName, entity.personNameKana);
 		return domain;
 	}
+	
+	private static Person toFullPersonDomain(BpsmtPerson entity) {
+		if (entity.gender == 0) {
+			entity.gender = 1;
+		}
+
+		Person domain = Person.createFromJavaType(entity.birthday, entity.bloodType, entity.gender,
+				entity.bpsmtPersonPk.pId, entity.businessName, entity.businessNameKana, entity.personName,
+				entity.personNameKana, entity.businessOtherName, entity.businessEnglishName, entity.personRomanji,
+				entity.personRomanjiKana, entity.todokedeFullName, entity.todokedeFullNameKana, entity.oldName,
+				entity.oldNameKana, entity.perNameMultilLang, entity.perNameMultilLangKana);
+		return domain;
+	}
 
 	private BpsmtPerson toEntity(Person domain) {
 		BpsmtPerson entity = new BpsmtPerson();
@@ -182,7 +195,7 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 	public Optional<Person> getByPersonId(String personId) {
 		Optional<BpsmtPerson> person = this.queryProxy().find(new BpsmtPersonPk(personId), BpsmtPerson.class);
 		if (person.isPresent()) {
-			return Optional.of(toDomain(person.get()));
+			return Optional.of(toFullPersonDomain(person.get()));
 		} else {
 			return Optional.empty();
 		}
