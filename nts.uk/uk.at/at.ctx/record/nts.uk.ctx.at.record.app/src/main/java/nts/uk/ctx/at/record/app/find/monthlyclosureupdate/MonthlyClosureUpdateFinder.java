@@ -109,12 +109,12 @@ public class MonthlyClosureUpdateFinder {
 						infor.getClosureDate().getLastDayOfMonth(), log == null ? null : log.getTargetYearMonth().v(),
 						log == null ? null : log.getExecutionDateTime());
 				listInforDto.add(i);
-				if (infor.getPeriod().end().after(tmp.getPeriod().end())) {
+				if (infor.getPeriod().end().before(tmp.getPeriod().end())) {
 					tmp = infor;
 				}
 			}
 			final GeneralDate end = tmp.getPeriod().end();
-			listClosureInfor = listClosureInfor.stream().filter(item -> item.getPeriod().end().afterOrEquals(end))
+			listClosureInfor = listClosureInfor.stream().filter(item -> item.getPeriod().end().beforeOrEquals(end))
 					.sorted((o1, o2) -> o1.getClosureId().compareTo(o2.getClosureId())).collect(Collectors.toList());
 			tmp = listClosureInfor.get(0);
 			return new Kmw006aResultDto(executable, tmp.getClosureId().value, listInforDto);

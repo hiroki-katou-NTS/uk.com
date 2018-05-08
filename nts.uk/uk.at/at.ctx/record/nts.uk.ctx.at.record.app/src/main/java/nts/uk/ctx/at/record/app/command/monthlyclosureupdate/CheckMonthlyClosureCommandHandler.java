@@ -115,13 +115,13 @@ public class CheckMonthlyClosureCommandHandler extends CommandHandlerWithResult<
 		List<ClosureInfor> listClosureInfor = closureService.getClosureInfo();
 		ClosureInfor result = listClosureInfor.get(0);
 		for (ClosureInfor infor : listClosureInfor) {
-			if (infor.getPeriod().end().after(result.getPeriod().end())) {
+			if (infor.getPeriod().end().before(result.getPeriod().end())) {
 				result = infor;
 			}
 		}
 		final GeneralDate end = result.getPeriod().end();
 		List<ClosureId> listClosureId = listClosureInfor.stream()
-				.filter(item -> item.getPeriod().end().afterOrEquals(end)).map(item -> item.getClosureId())
+				.filter(item -> item.getPeriod().end().beforeOrEquals(end)).map(item -> item.getClosureId())
 				.collect(Collectors.toList());
 		return listClosureId.contains(ClosureId.valueOf(closureId));
 	}
