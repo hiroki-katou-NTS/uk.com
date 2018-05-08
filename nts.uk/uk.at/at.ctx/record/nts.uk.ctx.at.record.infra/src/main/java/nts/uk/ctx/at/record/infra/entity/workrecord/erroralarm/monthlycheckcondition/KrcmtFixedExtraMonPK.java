@@ -18,8 +18,8 @@ public class KrcmtFixedExtraMonPK implements Serializable  {/**
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	@Column(name = "ERAL_CHECK_ID")
-	public String errorAlarmCheckID;
+	@Column(name = "MON_ALARM_CHECK_ID")
+	public String monAlarmCheckID;
 	
 	@Column(name = "FIX_EXTRA_ITEM_MON_NO")
 	public int fixedExtraItemMonNo;

@@ -13,16 +13,16 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecordNa
 @Getter
 public class FixedExtraMon extends AggregateRoot {
 	/**ID*/
-	private String errorAlarmCheckID;
+	private String  monAlarmCheckID;
 	/**NO*/
 	private  SysFixedMonPerEral fixedExtraItemMonNo;
 	/**使用区分*/
 	private boolean useAtr;
 	/**表示メッセージ*/
 	private Optional<FixedConditionWorkRecordName> message;
-	public FixedExtraMon(String errorAlarmCheckID, SysFixedMonPerEral fixedExtraItemMonNo, boolean useAtr, FixedConditionWorkRecordName message) {
+	public FixedExtraMon(String monAlarmCheckID, SysFixedMonPerEral fixedExtraItemMonNo, boolean useAtr, FixedConditionWorkRecordName message) {
 		super();
-		this.errorAlarmCheckID = errorAlarmCheckID;
+		this.monAlarmCheckID = monAlarmCheckID;
 		this.fixedExtraItemMonNo = fixedExtraItemMonNo;
 		this.useAtr = useAtr;
 		this.message = Optional.ofNullable(message);
