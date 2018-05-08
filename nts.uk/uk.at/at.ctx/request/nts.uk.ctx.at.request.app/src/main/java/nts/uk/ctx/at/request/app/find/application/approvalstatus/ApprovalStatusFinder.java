@@ -347,8 +347,6 @@ public class ApprovalStatusFinder {
 		 * value; detail.setReflectState(reflectState);
 		 * listAppDetail.add(detail); }
 		 */
-
-		ApplicationsListDto app = new ApplicationsListDto(listAppDetail, hdAppSetDto);
 		return listAppDetail;
 	}
 
