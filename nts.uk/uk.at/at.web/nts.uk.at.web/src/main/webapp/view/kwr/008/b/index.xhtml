@@ -77,11 +77,11 @@
 						 -->
 						<table id="table-output-items" >
                                    <colgroup>
-                                   		<col width="10"/>
+                                   		<col width="20"/>
                                         <col width="40"/>
 										<col width="100"/>
 			                            <col width="50"/>
-			                            <col width="50"/>
+			                            <col width="100"/>
 										<col width="180"/>
                                    </colgroup>
                                    <thead>
@@ -98,16 +98,16 @@
                                    </thead>
                                    <tbody data-bind = "foreach: outputItem()">
                                        <tr>
-                                       			<td>1</td>
+                                       			<td><span class="limited-label" data-bind="text: $data.index"></span></td>
 				                            	<td><div tabindex="9" data-bind="ntsCheckBox: { checked: $data.useClassification }"></div></td>
 				                            	<td>
 				                            			<input data-bind="ntsTextEditor: {
 				                            				name: '#[KWR008_25ddddddddd]',
 				                            				value : $data.headingName,
 				                            				required: false,
-				                            				option : { width : '25px'}}" />
+				                            				option : { width : '40px'}}" />
 				                            	</td>
-				                            	<td><button id="btnSettingB16_5"  data-bind="click: function() {openKDW007($data.cd, $data.lstOperationCds)}, enable: true">#{i18n.getText('KWR008_34')}</button></td>
+				                            	<td><button id="btnSettingB16_5"  data-bind="click: function() {$parent.openKDW007($data.index)}, enable: true">#{i18n.getText('KWR008_34')}</button></td>
 				                            	<td>
 					                            	<div class="combo-box"
 					                                            data-bind="ntsComboBox: {
@@ -115,10 +115,10 @@
 					                                                options: $parent.valueOutputFormat,
 					                                                optionsValue: 'code',
 					                                                visibleItemsCount: 5,
-					                                                value: cd,
+					                                                value: $data.valueOutputFormat,
 					                                                optionsText: 'name',
 					                                                enable: true,
-					                                                columns: [{ prop: 'name', length: 2 }]}">
+					                                                columns: [{ prop: 'name', length: 1 }]}">
 					                                </div>
 					                             </td>
 				                                

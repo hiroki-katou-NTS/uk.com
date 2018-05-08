@@ -10,7 +10,8 @@ module nts.uk.at.view.kwr008.b.service{
         getValueOutputFormat: "at/function/annualworkschedule/get/enum/valueoutputformat",
         getOutputAgreementTime : "at/function/annualworkschedule/get/enum/outputagreementtime",
         getListItemOutput : "at/function/annualworkschedule/get/listItemOutput/",
-        getAttendanceItemByCodes: "at/record/divergencetime/AttendanceDivergenceName"
+        getAttendanceItemByCodes: "at/record/divergencetime/AttendanceDivergenceName",
+        getAttendanceItemByAtr: "at/record/businesstype/attendanceItem/getListByAttendanceAtr/"
     }
     
     export function getOutItemSettingCode(): JQueryPromise<Array<share.OutputSettingCodeDto>>{
@@ -43,5 +44,9 @@ module nts.uk.at.view.kwr008.b.service{
     
     export function getAttendanceItemByCodes(codes) {
         return ajax("at", paths.getAttendanceItemByCodes, codes);
+    }
+    
+    export function getAttendanceItemByAtr(atr) {
+        return nts.uk.request.ajax("at", paths.getAttendanceItemByAtr + atr);
     }
 }

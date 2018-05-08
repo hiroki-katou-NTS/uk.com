@@ -56,7 +56,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     service.getListItemOutput(code).done(r => {
                         if (r && r.length > 0) {
                             for(var i = 0; i < r.length; i++) {
-                                self.outputItem.push(new OutputItemData(r[i].cd, r[i].useClass, r[i].headingName, r[i].valOutFormat, ''));
+                                self.outputItem.push(new OutputItemData(i+1, r[i].cd, r[i].useClass, r[i].headingName, r[i].valOutFormat, ''));
                             }
                         }
                     });
@@ -137,63 +137,122 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             });
         }
         //Open dialog KDW007
-        openKDW007(oper_code, listOperationCds) {
+        openKDW007(idx) {
             let self = this;
             nts.uk.ui.block.invisible();
+            let index = _.findIndex(self.outputItem(), (x) => {return x.index() === idx(); });
+            if (index == -1) {
+                nts.uk.ui.block.clear();
+                return;
+            }
             
             //let lstOpeItems: _.map(self.listOperationCds, ((item) => { return item.code; }));
-            
-            setShared('KDW007Params', []);
-            modal("/view/kdw/007/c/index.xhtml").onClosed(function() {
-                let resultData = getShared('KDW007CResults');
-                if (!resultData) {
-                    return;
-                }
-                let lstAddItems = resultData.lstAddItems;
-                let lstSubItems = resultData.lstSubItems;
-                let operationName = "";
-                let index = _.findIndex(self.outputItem(), (x) => {return x.cd() === oper_code; });
-                if (index == -1) {
-                    return;
-                }
-                self.outputItem()[index].listOperationSetting().removeAll();
-                if (lstAddItems && lstAddItems.length > 0) {
-                    //add
-                    service.getAttendanceItemByCodes(lstAddItems).done((lstItems) => {
-                        _.forEach(lstItems, (item) => {
-                            self.outputItem()[index].listOperationSetting.push(new OperationCondition(item.attendanceItemId, false, item.attendanceItemName));
-                            if (operationName) {
-                                operationName = operationName + " + " + item.attendanceItemName;
+            self.getListItemByAtr(self.outputItem()[index].valueOutputFormat()).done((lstItem) => {
+                let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
+                let param = {
+                            lstAllItems: lstItemCode,
+                            lstAddItems: [],
+                            lstSubItems: []
+                        };
+                nts.uk.ui.windows.setShared("KDW007Params", param);
+                nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/c/index.xhtml").onClosed(() => {
+                    let resultData = nts.uk.ui.windows.getShared("KDW007CResults");
+    
+                    if (!resultData) {
+                        return;
+                    }
+                    let lstAddItems = resultData.lstAddItems;
+                    let lstSubItems = resultData.lstSubItems;
+                    let operationName = "";
+                    /*
+                    let index = _.findIndex(self.outputItem(), (x) => {return x.cd() === oper_code; });
+                    if (index == -1) {
+                        nts.uk.ui.block.clear();
+                        return;
+                    }
+                    */
+                    self.outputItem()[index].listOperationSetting().removeAll();
+                    if (lstAddItems && lstAddItems.length > 0) {
+                        //add
+                        service.getAttendanceItemByCodes(lstAddItems).done((lstItems) => {
+                            _.forEach(lstItems, (item) => {
+                                self.outputItem()[index].listOperationSetting.push(new OperationCondition(item.attendanceItemId, false, item.attendanceItemName));
+                                if (operationName) {
+                                    operationName = operationName + " + " + item.attendanceItemName;
+                                } else {
+                                    operationName = item.attendanceItemName;
+                                }
+                            });
+                            
+                            //sub
+                            if (lstSubItems && lstSubItems.length > 0) {
+                                service.getAttendanceItemByCodes(lstSubItems).done((lstItems) => {
+                                    _.forEach(lstItems, (item) => {
+                                        self.outputItem()[index].listOperationSetting.push(new OperationCondition(item.attendanceItemId, false, item.attendanceItemName));
+                                        if (operationName) {
+                                            operationName = operationName + " - " + item.attendanceItemName;
+                                        } else {
+                                            operationName = item.attendanceItemName;
+                                        }
+                                    });
+                                });
+                                self.outputItem()[index].outputTargetItem(operationName);
                             } else {
-                                operationName = item.attendanceItemName;
+                                self.outputItem()[index].listSubCds([]);
                             }
                         });
-                        
-                        //sub
-                        if (lstSubItems && lstSubItems.length > 0) {
-                            service.getAttendanceItemByCodes(lstSubItems).done((lstItems) => {
-                                _.forEach(lstItems, (item) => {
-                                    self.outputItem()[index].listOperationSetting.push(new OperationCondition(item.attendanceItemId, false, item.attendanceItemName));
-                                    if (operationName) {
-                                        operationName = operationName + " - " + item.attendanceItemName;
-                                    } else {
-                                        operationName = item.attendanceItemName;
-                                    }
-                                });
-                            });
-                            self.outputItem()[index].outputTargetItem(operationName);
-                        } else {
-                            self.outputItem()[index].listSubCds([]);
-                        }
-                    });
-                } else {
-                    self.outputItem()[index].listAddCds([]);
-                }
-                self.outputItem()[index].outputTargetItem(operationName);
-                
-            });
+                        nts.uk.ui.block.clear();
+                    } else {
+                        self.outputItem()[index].listAddCds([]);
+                        nts.uk.ui.block.clear();
+                    }
+                    self.outputItem()[index].outputTargetItem(operationName);
+                    
+                });
+             });
         }
 
+        getListItemByAtr(valueOutputFormat) {
+            let self = this;
+            let dfd = $.Deferred<any>();
+            if (valueOutputFormat === 0) {
+                //With type 回数 - Times
+                service.getAttendanceItemByAtr(2).done((lstAtdItem) => {
+                    service.getOptItemByAtr(1).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            lstAtdItem.push(lstOptItem[i]);
+                        }
+                        dfd.resolve(lstAtdItem);
+                    });
+                });
+            } else if (valueOutputFormat === 1) {
+                //With type 時間 - Time
+                service.getAttendanceItemByAtr(5).done((lstAtdItem) => {
+                    service.getOptItemByAtr(0).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            lstAtdItem.push(lstOptItem[i]);
+                        }
+                        dfd.resolve(lstAtdItem);
+                    });
+                });
+            } else if (valueOutputFormat === 2) {
+                //With type 時刻 - TimeWithDay
+                service.getAttendanceItemByAtr(6).done((lstAtdItem) => {
+                    dfd.resolve(lstAtdItem);
+                });
+            } else if (valueOutputFormat === 3) {
+                //With type 金額 - AmountMoney
+                service.getAttendanceItemByAtr(3).done((lstAtdItem) => {
+                    service.getOptItemByAtr(2).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            lstAtdItem.push(lstOptItem[i]);
+                        }
+                        dfd.resolve(lstAtdItem);
+                    });
+                });
+            }
+            return dfd.promise();
+        }
 
         checkListItemOutput() {
             var self = this;
@@ -223,8 +282,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     self.selectedCode('');
                 }
             } 
-            for (var i = 1; i <= 10; i++) {
-                self.outputItem.push(new OutputItemData(i, false, '', 0, ''));
+            for (var i = self.outputItem().length; i < 10; i++) {
+                self.outputItem.push(new OutputItemData(i+1, '', false, '', 0, ''));
             }
         }
 
@@ -255,7 +314,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.selectedItemRadio(0);
             */
             for (var i = 1; i <= 10; i++) {
-                self.outputItem.push(new OutputItemData(i, false, '', 0, ''));
+                self.outputItem.push(new OutputItemData(i, '', false, '', 0, ''));
             }
         }
 
@@ -354,15 +413,17 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         }
     }
     export class OutputItemData {
-        cd: KnockoutObservable<number>= ko.observable('');
+        index: KnockoutObservable<number>= ko.observable(1);
+        cd: KnockoutObservable<number>= ko.observable(0);
         useClassification: KnockoutObservable<boolean>= ko.observable(false);
         headingName: KnockoutObservable<string>= ko.observable('');
         valueOutputFormat: KnockoutObservable<number>= ko.observable(0);
         outputTargetItem: KnockoutObservable<string>= ko.observable('');
         listOperationSetting: KnockoutObservableArray<OperationCondition> = ko.observableArray([]);
-        constructor(cd: number, useClassification: boolean, headingName: string, valueOutputFormat: number, outputTargetItem: string) {
+        constructor(index: number, cd: number, useClassification: boolean, headingName: string, valueOutputFormat: number, outputTargetItem: string) {
             let self = this;
-            self.cd(cd || '');
+            self.index(index || 1);
+            self.cd(cd || 0);
             self.useClassification(useClassification || false);
             self.headingName(headingName || '');
             self.valueOutputFormat(valueOutputFormat || 0);
