@@ -29,7 +29,7 @@
 			<div id="functions-area">
 				<button tabindex="1" data-bind="click: registerMode, enable: isNewMode() == nts.uk.at.view.kwr008.share.model.SCREEN_MODE.UPDATE">#{i18n.getText('KWR008_18')}</button>
 				<button tabindex="2" data-bind="click: doRegister, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('KWR008_19')}</button>
-				<button tabindex="3" data-bind="click: doDelete, enable: isNewMode() == nts.uk.at.view.kwr008.share.model.SCREEN_MODE.UPDATE" class="danger">#{i18n.getText('KWR008_20')}</button>
+				<button tabindex="3" data-bind="click: doDelete, enable: !isNewMode()" class="danger">#{i18n.getText('KWR008_20')}</button>
 				<button tabindex="4" data-bind="click: doCancel">#{i18n.getText('KWR008_21')}</button>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
