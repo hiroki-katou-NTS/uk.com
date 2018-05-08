@@ -1,6 +1,6 @@
 module nts.uk.at.view.kdw006.g.viewmodel {
     let __viewContext: any = window["__viewContext"] || {};
-    
+
     export class ScreenModelG {
         // declare
         fullWorkTypeList: KnockoutObservableArray<any>;
@@ -92,6 +92,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
         getWorkType(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+            let array = [];
             let fullWorkTypeCodes = _.map(self.fullWorkTypeList(), function(item: any) { return item.workTypeCode; });
             service.getWorkTypes(self.selectedCode()).done(function(res) {
                 self.groups1.removeAll();
@@ -108,14 +109,31 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                     if (item.no == 4) {
                         comment = nts.uk.resource.getText("KDW006_59", ['法定外休日(祝)']);
                     }
-                    let group = new WorkTypeGroup(item.no, item.name === "　" ? '' : item.name, item.workTypeList, names.join("、　"),
+                    let group = new WorkTypeGroup(item.no, 'a', item.workTypeList, names.join("、　"),
                         fullWorkTypeCodes, comment);
+                    //                    item.name === " " ? '' : item.name
+                    array.push(group);
                     if (group.no < 5) {
                         self.groups1.push(group);
                     } else {
                         self.groups2.push(group);
                     }
                 });
+                _.forEach(array, function(obj) {
+                    if (obj.no == 1) {
+                        obj.name(nts.uk.resource.getText('KDW006_57'));
+                    }
+                    if (obj.no == 2) {
+                        obj.name(nts.uk.resource.getText('KDW006_72'));
+                    }
+                    if (obj.no == 3) {
+                        obj.name(nts.uk.resource.getText('KDW006_73'));
+                    }
+                    if (obj.no == 4) {
+                        obj.name(nts.uk.resource.getText('KDW006_74'));
+                    }
+                });
+
                 dfd.resolve();
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError(res.message);
