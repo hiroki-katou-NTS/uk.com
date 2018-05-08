@@ -5,7 +5,6 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 
 @Stateless
 public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
@@ -34,16 +33,23 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 				GobackReflectPara gobackpara = appRecordInfor.getGobackInfor();
 				return reflectRecord.gobackReflectRecord(gobackpara, true);
 			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.ABSENCE_APPLICATION) {
-				//TODO: lam trong lan giao hang tiep theo
-				/*CommonReflectPara absenceInfor = appRecordInfor.getCommonInfor();
-				return reflectRecord.absenceReflectRecor(absenceInfor, true);*/
-				return false;
+				CommonReflectPara absenceInfor = appRecordInfor.getAbsenceInfor();
+				return reflectRecord.absenceReflectRecor(absenceInfor, true);
 			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.BREAK_TIME_APPLICATION) {
 				HolidayWorkReflectPara holidayworkData = appRecordInfor.getHolidayworkInfor();
 				return reflectRecord.holidayWorkReflectRecord(holidayworkData, true);
 			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.WORK_CHANGE_APPLICATION) {
-				CommonReflectPara workChangeData = appRecordInfor.getCommonInfor();
+				CommonReflectPara workChangeData = appRecordInfor.getWorkchangeInfor();
 				return reflectRecord.workChangeReflectRecord(workChangeData, true);
+			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION) {
+				CommonReflectPara absenceLeaveData = appRecordInfor.getAbsenceLeaveAppInfor();
+				CommonReflectPara recruitmentData = appRecordInfor.getRecruitmentInfor();
+				if(absenceLeaveData != null) {
+					return reflectRecord.absenceLeaveReflectRecord(absenceLeaveData, true);
+				}
+				if(recruitmentData != null) {
+					return reflectRecord.recruitmentReflectRecord(recruitmentData, true);
+				}
 			}
 		} else {
 			if(recordInfor.getAppInfor().getAppType() == ApplicationType.OVER_TIME_APPLICATION) {		
@@ -53,13 +59,20 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 				GobackReflectPara gobackpara = appRecordInfor.getGobackInfor();
 				return reflectRecord.gobackReflectRecord(gobackpara, false);
 			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.ABSENCE_APPLICATION) {
-				//TODO: lam trong lan giao hang tiep theo
-				/*CommonReflectPara absenceInfor = appRecordInfor.getCommonInfor();
-				return reflectRecord.absenceReflectRecor(absenceInfor, false);*/
-				return false;
+				CommonReflectPara absenceInfor = appRecordInfor.getAbsenceInfor();
+				return reflectRecord.absenceReflectRecor(absenceInfor, false);
 			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.WORK_CHANGE_APPLICATION) {
-				CommonReflectPara workChangeData = appRecordInfor.getCommonInfor();
+				CommonReflectPara workChangeData = appRecordInfor.getWorkchangeInfor();
 				return reflectRecord.workChangeReflectRecord(workChangeData, false);
+			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION) {
+				CommonReflectPara absenceLeaveData = appRecordInfor.getAbsenceLeaveAppInfor();
+				CommonReflectPara recruitmentData = appRecordInfor.getRecruitmentInfor();
+				if(absenceLeaveData != null) {
+					return reflectRecord.absenceLeaveReflectRecord(absenceLeaveData, false);
+				}
+				if(recruitmentData != null) {
+					return reflectRecord.recruitmentReflectRecord(recruitmentData, false);
+				}
 			}
 		}
 		

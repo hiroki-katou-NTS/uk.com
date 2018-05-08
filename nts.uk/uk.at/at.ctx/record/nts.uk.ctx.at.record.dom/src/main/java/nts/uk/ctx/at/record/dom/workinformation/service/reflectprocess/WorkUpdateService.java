@@ -3,8 +3,6 @@ package nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess;
 import java.util.Map;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 
 /**
@@ -12,7 +10,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
  * @author do_dt
  *
  */
-public interface ScheWorkUpdateService {
+public interface WorkUpdateService {
 	/**
 	 * 勤種・就時の反映
 	 * @param para
@@ -29,10 +27,10 @@ public interface ScheWorkUpdateService {
 	
 	public IntegrationOfDaily updateScheStartEndTimeHoliday(TimeReflectPara data, IntegrationOfDaily dailyData);
 	/**
-	 * 開始時刻の反映
+	 * 開始時刻の反映, 終了時刻を反映
 	 * @param data
 	 */
-	public void updateRecordStartEndTime(TimeReflectParameter para);
+	public void updateRecordStartEndTimeReflect(TimeReflectPara data);
 	/**
 	 * 残業時間の反映
 	 * @param employeeId
@@ -80,5 +78,20 @@ public interface ScheWorkUpdateService {
 	 * @param isPre
 	 */
 	public IntegrationOfDaily updateWorkTimeFrame(String employeeId, GeneralDate dateData, Map<Integer, Integer> worktimeFrame, boolean isPre, IntegrationOfDaily dailyData);
+	/**
+	 * 就時の反映
+	 * @param employeeId
+	 * @param dateData
+	 * @param workTimeCode
+	 * @param scheUpdate true: 予定就時の反映
+	 */
+	public void updateRecordWorkTime(String employeeId, GeneralDate dateData, String workTimeCode, boolean scheUpdate);
+	/**
+	 * 振替時間(休出)の反映
+	 * @param employeeId
+	 * @param dateData
+	 * @param transferTimeFrame
+	 */
+	public void updateTransferTimeFrame(String employeeId, GeneralDate dateData, Map<Integer, Integer> transferTimeFrame);
 
 }
