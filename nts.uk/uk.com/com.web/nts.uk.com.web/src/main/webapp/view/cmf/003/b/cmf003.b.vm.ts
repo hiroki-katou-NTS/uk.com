@@ -549,8 +549,12 @@ module nts.uk.com.view.cmf003.b {
             
             private nextFromDToE(): void {
                 var self = this;
-                self.initE();
-                self.next();
+                if((self.selectedTitleAtr() == 1) && (self.employeeList().length == 0)) {
+                    alertError({ messageId: 'Msg_498' });
+                } else {
+                    self.initE();
+                    self.next();
+                }            
             }
             
             private initE(): void {

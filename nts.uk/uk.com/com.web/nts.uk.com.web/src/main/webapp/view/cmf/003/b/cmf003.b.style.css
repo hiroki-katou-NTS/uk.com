@@ -56,7 +56,6 @@
 }
 .fixed-flex-layout-right{
 	float: right;
-	margin-right: 60px;
 }
 
 .fixed-flex-layout-right-screenD{
@@ -231,13 +230,12 @@
 }
 
 .top-right-panel{
-	float: right;
-    margin-right: 230px;	
+	margin-left: 365px;
 }
 
 .bot-right-panel{
 	float: right;
-    margin-right: 445px;
+    margin-right: 440px;
 }
 
 .other .space {
