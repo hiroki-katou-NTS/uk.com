@@ -75,7 +75,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 }
 
                 $('#output-item').ntsGrid({
-                    width: '735px',
+                    width: '685px',
                     height: '320px',
                     dataSource: self.outputItem(),
                     primaryKey: 'cd',
@@ -87,10 +87,19 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         { headerText: '', key: 'useClassification', dataType: 'boolean', width: '35px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
                         { headerText: getText('KWR008_28'), key: 'headingName', dataType: 'string', width: '160px', ntsControl: 'TextEditor' },
                         { headerText: '', key: 'open', dataType: 'string', width: '55px', unbound: true, ntsControl: 'Button' },
-                        { headerText: getText('KWR008_30'), key: 'valueOutputFormat', dataType: 'string', width: '205px', ntsControl: 'Combobox' },
-                        { headerText: getText('KWR008_29'), key: 'outputTargetItem', dataType: 'string', width: '260px' }
+                        { headerText: getText('KWR008_30'), key: 'valueOutputFormat', dataType: 'string', width: '195px', ntsControl: 'Combobox' },
+                        { headerText: getText('KWR008_29'), key: 'outputTargetItem', dataType: 'string', width: '220px' }
                     ],
-                    features: [],
+                    features: [
+                        { name: 'Resizing', columnSettings: [
+                            { columnKey: 'cd', allowResizing: false, minimumWidth: 0 },
+                            { columnKey: 'useClassification', allowResizing: false, minimumWidth: 0 },
+                            { columnKey: 'headingName', allowResizing: false, minimumWidth: 0 },
+                            { columnKey: 'open', allowResizing: false, minimumWidth: 0 },
+                            { columnKey: 'valueOutputFormat', allowResizing: false, minimumWidth: 0 },
+                            { columnKey: 'outputTargetItem', allowResizing: false, minimumWidth: 0 }
+                        ] }
+                    ],
                     ntsControls: [
                         { name: 'Checkbox', options: { value: 1 }, optionsValue: 'value', controlType: 'CheckBox', enable: true },
                         { name: 'TextEditor', value: 'headingName', controlType: 'TextEditor', constraint: { valueType: 'String' } },
