@@ -196,7 +196,9 @@ public class CheckBeforeRegisterHolidayWork {
 		// 03-02_実績超過チェック
 		for(CaculationTime breakTime : convertList(holidayWorkInputs)){
 			for(Map.Entry<Integer,TimeWithCalculationImport> entry : dailyAttendanceTimeCaculationImport.getHolidayWorkTime().entrySet()){
-				holidayThreeProcess.checkCaculationActualExcess(appRoot.getPrePostAtr().value, ApplicationType.BREAK_TIME_APPLICATION.value, employeeId, holidayWorkDomain.getCompanyID(), appRoot.getAppDate(), breakTime, holidayWorkDomain.getWorkTimeCode().toString(), entry.getValue().getCalTime());
+				if(breakTime.getFrameNo() == entry.getKey()){
+					holidayThreeProcess.checkCaculationActualExcess(appRoot.getPrePostAtr().value, ApplicationType.BREAK_TIME_APPLICATION.value, employeeId, holidayWorkDomain.getCompanyID(), appRoot.getAppDate(), breakTime, holidayWorkDomain.getWorkTimeCode().toString(), entry.getValue().getCalTime());
+				}
 			}
 		}
 		// TODO: ３６協定時間上限チェック（月間）

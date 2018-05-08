@@ -146,7 +146,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 005a AFTER start 000_A
             self.startPage().done(function() {
-                self.kaf000_a.start(self.employeeID, 1, 0, moment(new Date()).format(self.DATE_FORMAT)).done(function() {                    
+                self.kaf000_a.start(self.employeeID(), 1, 0, moment(new Date()).format(self.DATE_FORMAT)).done(function() {                    
                     $("#fixed-table").ntsFixedTable({ height: 120 });
                     $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
                     $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
@@ -378,6 +378,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         }
 
                     }
+
+                }
+                //
+                if (data.appOvertimeNightFlg == 1 && data.overtimeAtr != 0) {
+                    self.overtimeHours.push(new common.OvertimeCaculation("", "", 1, "", 11, 0, nts.uk.resource.getText("KAF005_63"), null, null, null, "#[KAF005_64]", "", ""));
+                }
+                if (data.flexFLag && data.overtimeAtr != 0) {
+                    self.overtimeHours.push(new common.OvertimeCaculation("", "", 1, "", 12, 0, nts.uk.resource.getText("KAF005_65"), null, null, null, "#[KAF005_66]", "", ""));
                 }
             }else{
                 let dataOverTime = _.filter(data.caculationTimes, {'attendanceID': 1});
@@ -449,15 +457,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         item.applicationTime, 
                         null, 
                         null, "","",""));
-                });  
+                }); 
+                //勤務内容を変更後に計算ボタン押下。計算フラグ=0にする。 
+                if(!self.isEmptyOverTimeInput(ko.toJS(self.overtimeHours()))){
+                    self.calculateFlag(0);
+                } 
             }
-            //
-            if (data.appOvertimeNightFlg == 1 && data.overtimeAtr != 0) {
-                self.overtimeHours.push(new common.OvertimeCaculation("", "", 1, "", 11,0, nts.uk.resource.getText("KAF005_63"), null, null, null,"#[KAF005_64]","",""));
-            }
-            if(data.flexFLag && data.overtimeAtr != 0){
-               self.overtimeHours.push(new common.OvertimeCaculation("", "", 1, "", 12,0, nts.uk.resource.getText("KAF005_65"), null, null, null,"#[KAF005_66]","","")); 
-            }
+            
             self.overtimeAtr(data.overtimeAtr);
             if(data.overtimeAtr == 0){
                 self.heightOvertimeHours(56);   
@@ -520,7 +526,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             let overtime: common.AppOverTime = {
                 applicationDate: self.appDate(),
                 prePostAtr: self.prePostSelected(),
-                applicantSID: self.employeeID,
+                applicantSID: self.employeeID(),
                 applicationReason: appReason,
                 workTypeCode: self.workTypeCd(),
                 siftTypeCode: self.siftCD(),
@@ -626,11 +632,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             if(!self.validateTime(self.timeStart1(), self.timeEnd1(), '#inpStartTime1')){
                 return false;
             };
-            if ( !nts.uk.util.isNullOrEmpty(self.timeStart2()) && self.timeStart2() != "") {
-                if ( !self.validateTime( self.timeStart2(), self.timeEnd2(), '#inpStartTime2' ) ) {
-                    return false;
-                };
-            }
+//            if ( !nts.uk.util.isNullOrEmpty(self.timeStart2()) && self.timeStart2() != "") {
+//                if ( !self.validateTime( self.timeStart2(), self.timeEnd2(), '#inpStartTime2' ) ) {
+//                    return false;
+//                };
+//            }
             //休憩時間
             for (let i = 0; i < self.restTime().length; i++) {
                 let startTime = self.restTime()[i].startTime();
@@ -669,11 +675,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             if(!self.validateTime(self.timeStart1(), self.timeEnd1(), '#inpStartTime1')){
                 return;    
             }
-            if ( !nts.uk.util.isNullOrEmpty(self.timeStart2())) {
-                if ( !self.validateTime( self.timeStart2(), self.timeEnd2(), '#inpStartTime2' ) ) {
-                    return;
-                };
-            }
+//            if ( !nts.uk.util.isNullOrEmpty(self.timeStart2())) {
+//                if ( !self.validateTime( self.timeStart2(), self.timeEnd2(), '#inpStartTime2' ) ) {
+//                    return;
+//                };
+//            }
             nts.uk.ui.block.invisible();         
             let param : any ={
                 overtimeHours: _.map(ko.toJS(self.overtimeHours()), item => {return self.initCalculateData(item);}),
@@ -799,7 +805,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 workTypeCodes: self.workTypecodes(),
                 selectedWorkTypeCode: self.workTypeCd(),
                 workTimeCodes: self.workTimecodes(),
-                selectedWorkTimeCode: self.siftCD()
+                selectedWorkTimeCode: self.siftCD(),
+                showNone: false
             }, true);
 
             nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
