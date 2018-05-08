@@ -19,6 +19,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.pub.spr.ApplicationSprPub;
 import nts.uk.ctx.at.request.pub.spr.export.AppOverTimeSprExport;
+import nts.uk.ctx.at.request.pub.spr.export.ApplicationSpr;
 /**
  * 
  * @author Doan Duy Hung
@@ -60,6 +61,14 @@ public class ApplicationSprPubImpl implements ApplicationSprPub {
 			return Optional.empty();
 		}
 		return Optional.of(resultList.get(0));
+	}
+
+	@Override
+	public Optional<ApplicationSpr> getAppByID(String companyID, String appID) {
+		return applicationRepository_New.findByID(companyID, appID)
+				.map(x -> new ApplicationSpr(
+						x.getAppID(), 
+						x.getAppType().value));
 	}
 
 }
