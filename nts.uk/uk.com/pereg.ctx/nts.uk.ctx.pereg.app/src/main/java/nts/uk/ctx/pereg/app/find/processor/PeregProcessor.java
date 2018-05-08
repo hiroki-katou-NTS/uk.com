@@ -288,10 +288,10 @@ public class PeregProcessor {
 	}
 	
 	private List<LayoutPersonInfoClsDto> creatClassItemList(List<PerInfoItemDefForLayoutDto> lstClsItem) {
-		List<LayoutPersonInfoClsDto> classItemList = new ArrayList<>();
-		lstClsItem.forEach(item -> {
+		return lstClsItem.stream().map(item -> {
 			LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
 			layoutPerInfoClsDto.setPersonInfoCategoryID(item.getPerInfoCtgId());
+			layoutPerInfoClsDto.setPersonInfoCategoryCD(item.getPerInfoCtgCd());
 			layoutPerInfoClsDto.setLayoutItemType(LayoutItemType.ITEM);
 			layoutPerInfoClsDto.setClassName(item.getItemName());
 			layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
@@ -299,12 +299,12 @@ public class PeregProcessor {
 			if (item.getItemTypeState().getItemType() != 2) {
 				item.getLstChildItemDef().forEach(childItem -> {
 					layoutPerInfoClsDto.setDispOrder(childItem.getDispOrder());
-					layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(childItem, getValue(childItem)));
+					layoutPerInfoClsDto.getItems()
+							.add(LayoutPersonInfoValueDto.initData(childItem, getValue(childItem)));
 				});
 			}
-			classItemList.add(layoutPerInfoClsDto);
-		});
-		return classItemList;
+			return layoutPerInfoClsDto;
+		}).collect(Collectors.toList());
 	}
 	
 	public Object getValue(PerInfoItemDefForLayoutDto item) {

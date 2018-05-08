@@ -508,6 +508,7 @@ public class LayoutFinder {
 			for (PerInfoItemDefDto itemDef : classItem.getListItemDf()) {
 				items.add(LayoutPersonInfoValueDto.cloneFromItemDef(perInfoCategory, itemDef));
 			}
+			classItem.setPersonInfoCategoryCD(perInfoCategory.getCategoryCode().v());
 			classItem.setListItemDf(null);
 			classItem.setItems(items);
 		}
