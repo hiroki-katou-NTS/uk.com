@@ -82,13 +82,14 @@
 	display: inline-block;
 }
 
-#B4_12, #B4_30, #B4_34, .space {
+#B4_12, #B4_30, #B4_34, #B4_36, .space {
 	width: 135px;
 }
 
 #B4_33 {
 	margin-left: 33px;
-    margin-right: 35px;
+    margin-right: 24px;
+    width: 126px;
 }
 
 #B4_35 {
