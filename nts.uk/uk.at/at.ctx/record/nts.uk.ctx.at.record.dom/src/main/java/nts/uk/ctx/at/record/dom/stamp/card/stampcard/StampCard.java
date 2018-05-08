@@ -12,6 +12,11 @@ public class StampCard extends AggregateRoot {
 	// domain name: 打刻カード
 	
 	/**
+	 * 打刻カードID
+	 */
+	private String stampCardId;
+	
+	/**
 	 * 社員ID
 	 */
 	private String employeeId;
