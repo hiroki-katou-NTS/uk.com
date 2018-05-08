@@ -22,7 +22,7 @@ public class AgreeCondOtFinder {
 	public List<AgreeCondOtDto> finder(){
 		List<AgreeCondOt> result = condOtRep.findAll();
 		return result.stream().map(x -> {
-			return new AgreeCondOtDto(x.getId(), x.getNo(), x.getOt36(), x.getExcessNum(), x.getMessageDisp().v());
+			return new AgreeCondOtDto(x.getId(), x.getNo(), x.getOt36().v(), x.getExcessNum().v(), x.getMessageDisp().v());
 		}).collect(Collectors.toList());
 	}
 }

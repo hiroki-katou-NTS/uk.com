@@ -20,14 +20,14 @@ public class AgreeCondOt {
 	/** no */
 	private int no;
 	/** 36超過時間 */
-	private BigDecimal ot36;
+	private OverTime ot36;
 	/** 36超過回数 */
-	private int excessNum;
+	private Number excessNum;
 	/** 表示するメッセージ */
 	private MessageDisp messageDisp;
 	
 	public static AgreeCondOt createFromJavaType(String id, int no, BigDecimal ot36, int excessNum, String messageDisp){
-		return new AgreeCondOt(id, no, ot36, excessNum,
+		return new AgreeCondOt(id, no, new OverTime(ot36), new Number(excessNum),
 				messageDisp == null ? null : new MessageDisp(messageDisp));
 	}
 	

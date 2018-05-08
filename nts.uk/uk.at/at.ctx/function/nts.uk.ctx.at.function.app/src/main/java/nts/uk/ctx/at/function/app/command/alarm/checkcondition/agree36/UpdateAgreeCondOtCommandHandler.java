@@ -31,8 +31,11 @@ public class UpdateAgreeCondOtCommandHandler extends CommandHandler<UpdateAgreeC
 		if(listDomain.isEmpty()){
 			throw new BusinessException("Msg_832"); 
 		}
+		if(listDomain.size() > 10){
+			throw new BusinessException("Msg_1242"); 
+		}
 		listDomain = context.getCommand().getAgreeCondOtCommand().stream().map(x -> {
-			return new AgreeCondOt(x.getId(), x.getNo(), x.getOt36(), x.getExcessNum(), x.getMessageDisp());
+			return AgreeCondOt.createFromJavaType(x.getId(), x.getNo(), x.getOt36(), x.getExcessNum(), x.getMessageDisp().v());
 		}).collect(Collectors.toList());
 		for(AgreeCondOt item : listDomain){
 			if(item.getId() != null){
