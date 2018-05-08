@@ -33,8 +33,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
 
         // B5_2_2
-        systemTypeName: KnockoutObservable<string>;
-        systemTypeId: KnockoutObservable<number>;
+        systemTypeCbb: KnockoutObservable<model.ItemModel>;
 
         //B5_3
         listDataCategory: KnockoutObservableArray<model.ItemCategory>;
@@ -105,22 +104,16 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.optionDeleteSet = ko.observable({ value: 2, text: nts.uk.resource.getText("CMF005_16") });
             self.deleteSetName = ko.observable('');
 
-            //B5_2_2
-            self.systemTypeName = ko.observable('');
-            self.systemTypeId = ko.observable('');
             //B5_3
             self.listDataCategory = ko.observableArray([]);
             self.currentCode = ko.observable();
             self.currentCategory = ko.observableArray([]);
-            //            for (let i = 1; i < 5; i++) {
-            //                self.listDataCategory.push(new model.ItemCategory(i, '00' + i, 'catename' + i, 'aaaa', 'all'));
-            //            }
             self.listColumnHeader = ko.observableArray([
-                { headerText: '', key: 'cateItemNumber', width: 20, hidden: false },
+                { headerText: '', key: 'cateItemNumber', width: 20 },
                 { headerText: '', key: 'categoryId', hidden: true },
-                { headerText: getText('CMF005_24'), key: 'categoryName', width: 200, hidden: false },
-                { headerText: getText('CMF005_25'), key: 'timeDeletion', width: 100, hidden: false },
-                { headerText: getText('CMF005_26'), key: 'rangeDeletion', width: 100, hidden: false }
+                { headerText: getText('CMF005_24'), key: 'categoryName', width: 250 },
+                { headerText: getText('CMF005_25'), key: 'timeStore', width: 100, formatter: timeStore },
+                { headerText: getText('CMF005_26'), key: 'storageRangeSaved', width: 100, formatter: storageRangeSaved }
             ]);
 
             //DatePcicker B6_1
@@ -203,13 +196,16 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.initComponnentKCP005();
         }
 
+        /**
+         * Setting value default  screen B
+         */
         setDefault() {
             var self = this;
             //set B3_1 "ON"
             self.rdSelected = ko.observable(1);
 
             //B6_2_2
-            let startEndDate = self.getDate();
+            let startEndDate = self.getDateDefault();
             self.dateValue = ko.observable({ startDate: startEndDate.startDate, endDate: startEndDate.endDate });
             self.monthValue = ko.observable({ startDate: startEndDate.startDate, endDate: startEndDate.endDate });
             self.yearValue = ko.observable({ startDate: startEndDate.startYear, endDate: startEndDate.endYear });
@@ -219,8 +215,10 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             //B8_2_1
             self.isExistCompressPasswordFlg = ko.observable(true);
         }
-
-        // get status display button select category
+ 
+        /**
+         *Get status display button select category 
+         */
         isEnableBtnOpenC() {
             var self = this;
             if (self.rdSelected() == 1) {
@@ -230,58 +228,46 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             }
         }
 
-        // Open screen C
+        /**
+         *Open screen C 
+         */
         openScreenC() {
             var self = this;
-            let param = {
-                lstCategory: self.listDataCategory,
-                systemTypeName: self.systemTypeName
-            };
-            setShared("CMF005CParams", param);
-            modal("/view/cmf/005/c/index.xhtml", { width: 800, title: "カテゴリの選択" }).onClosed(() => {
-                let data = getShared("CMF005COutput");
-                if (!nts.uk.util.isNullOrUndefined(data)) {
-                    var listCategoryChoseAdd = _.map(data.listCategoryChose, item => {
-                        let indexOfItem = _.findIndex(data.listCategoryChose, { categoryId: item.categoryId });
-                        return new model.ItemCategory(indexOfItem, item.categoryId, item.categoryName, item.timeDeletion, item.rangeDeletion);
-                    });
-                    self.listDataCategory(listCategoryChoseAdd);
-                    //                    let listDataCategory = data.listCategoryChose;
-                    //                    cosole.log(listDataCategory.length);
-                    //                    if (listDataCategory) {
-                    //                        self.listDataCategory(listDataCategory);
-                    //                        for (let i = 0; i < listDataCategory().length; i++) {
-                    //                           let model.ItemCategory = listDataCategory ;
-                    //                        }
-                    //                    }
+            setShared("CMF005CParams_ListCategory", self.listDataCategory());
+            setShared("CMF005CParams_SystemType", self.systemTypeCbb);
+            modal("/view/cmf/005/c/index.xhtml").onClosed(() => {
 
-                    console.log(self.listDataCategory().length);
-                    if (data.systemTypeId == model.SYSTEM_TYPE.PERSON_SYS) {
-                        self.systemTypeName(getText('CMF005_170'));
-                    }
-                    if (data.systemTypeId == model.SYSTEM_TYPE.ATTENDANCE_SYS) {
-                        self.systemTypeName(getText('CMF005_171'));
-                    }
-                    if (data.systemTypeId == model.SYSTEM_TYPE.PAYROLL_SYS) {
-                        self.systemTypeName(getText('CMF005_172'));
-                    }
-                    if (data.systemTypeId == model.SYSTEM_TYPE.OFFICE_HELPER) {
-                        self.systemTypeName(getText('CMF005_173'));
-                    }
-                    self.systemTypeId = data.systemTypeId;
+                let categoryC = getShared('CMF005COutput_ListCategoryChose');
+                let systemTypeC = getShared('CMF005COutput_SystemTypeChose');
+
+                if (systemTypeC) {
+                    self.systemTypeCbb = systemTypeC;
+                    $("#B5_2_2").html(systemTypeC.name);
                 }
+                if (categoryC && (categoryC.length > 0)) {
+                    self.listDataCategory.removeAll();
+                    for (let i = 0; i < categoryC.length; i++) {
+                        categoryC[i].cateItemNumber = i + 1;
+                        self.listDataCategory.push(categoryC[i]);
+                    }
+
+                    self.setRangePickerRequire();
+                }
+
+                $("#B4_2").focus();
             });
         }
 
-
-        // Open screen D
+        /**
+         *Open screen D 
+         */
         nextScreenD() {
             let self = this;
-
-             self.nextFromBToD();
+            self.nextFromBToD();
+            
 //            if (self.listDataCategory().length > 0) {
 //                // check so sanh hang ngay hang thang hang nam
-//                if (self.checkDatePicker()) {
+//                if (self.validateDatePicker()) {
 //                    // check pass word
 //                    if (self.checkPass()) {
 //                        self.next();
@@ -317,17 +303,29 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             $('#ex_accept_wizard').ntsWizard("prev");
         }
 
-        // Open screen A
-        backScreenA() {
-            nts.uk.request.jump("/view/cmf/005/a/index.xhtml");
-        }
+        /**
+             * Validate  DatePicker
+             * return : boolean (true: Valid ,false: Invalid)
+             */
+        validateDatePicker() {
+            let self = this;
+            if (self.dateValue().startDate > self.dateValue().endDate) {
+                return false;
+            }
+            if (self.monthValue().startDate > self.monthValue().endDate) {
+                return false;
+            }
+            if (self.yearValue().startDate > self.yearValue().endDate) {
+                return false;
+            }
 
-
-        //check date,month,year
-        checkDatePicker() {
             return true;
         }
-        // validate password
+
+        /**
+           * Validate Compress Password 
+           * return : boolean (true: Valid ,false: Invalid)
+           */
         checkPass() {
             let self = this;
 
@@ -350,10 +348,40 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 return false;
             }
         }
+
         /**
+            * Setting require for RangePicker
+            */
+        private setRangePickerRequire(): void {
+            let self = this;
+
+            self.requiredDate = ko.observable(false);
+            self.requiredMonth = ko.observable(false);
+            self.requiredYear = ko.observable(false);
+            for (var i = 0; i < self.listDataCategory().length; i++) {
+                if (self.listDataCategory()[i].timeStore == 0) {
+                    self.requiredMonth = ko.observable(true);
+                } else if (self.listDataCategory()[i].timeStore == 1) {
+                    self.requiredYear = ko.observable(true);
+                } else if (self.listDataCategory()[i].timeStore == 2) {
+                    self.requiredDate = ko.observable(true);
+                }
+            }
+        }
+
+        /**
+             * Open screen A
+             */
+        backScreenA() {
+            nts.uk.request.jump("/view/cmf/005/a/index.xhtml");
+        }
+
+
+        /**
+         * Get date default
          *return 本日(NOW）－　１ヵ月　＋　１日
          */
-        getDate() {
+        getDateDefault() {
             var timeCurrent = moment.utc(new Date(), "YYYY/MM/DD");
             //            let dateCurrent = moment.utc("2000/3/28", "YYYY/MM/DD");
             var dateNow = timeCurrent.add(1, "M");
@@ -529,16 +557,26 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         }
     }
 
-    export class BoxModel {
-        id: number;
-        name: string;
-        constructor(id, name) {
-            var self = this;
-            self.id = id;
-            self.name = name;
+    function timeStore(value, row) {
+        if (value && value === '0') {
+            return getText('Enum_TimeStore_MONTHLY');
+        } else if (value && value === '1') {
+            return getText('Enum_TimeStore_ANNUAL');
+        } else if (value && value === '2') {
+            return getText('Enum_TimeStore_FULL_TIME');
+        } else if (value && value === '3') {
+            return getText('Enum_TimeStore_DAILY');
         }
     }
-    
+
+    function storageRangeSaved(value, row) {
+        if (value && value === '0') {
+            return getText('Enum_Storage_Range_Saved_EARCH_EMP');
+        } else if (value && value === '1') {
+            return getText('Enum_Storage_Range_Saved_ALL_EMP');
+        }
+    }
+   
     export class UnitModel {
         code: string;
         name: string;

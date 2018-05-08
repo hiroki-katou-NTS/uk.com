@@ -1,134 +1,135 @@
-module nts.uk.com.view.cmf003.c {
+module nts.uk.com.view.cmf005.c.viewmodel {
     import getText = nts.uk.resource.getText;
     import close = nts.uk.ui.windows.close;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import model = cmf005.share.model;
     import alertError = nts.uk.ui.dialog.alertError;
-    export module viewmodel {
-        export class ScreenModel {
 
-            // swapList
-            itemsSwap: KnockoutObservableArray<model.ItemCategory> = ko.observableArray([]);
-            itemsSwapLeft: KnockoutObservableArray<model.ItemCategory> = ko.observableArray([]);
-            columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-            currentCodeListSwap: KnockoutObservableArray<any>;
+    export class ScreenModel {
 
-            // comboBox
-            itemList: KnockoutObservableArray<ItemModelCombox>;
-            selectedCode: KnockoutObservable<string>;
-            currentItem: KnockoutObservable<ItemModelCombox>;
-            isEnable: KnockoutObservable<boolean>;
-            isEditable: KnockoutObservable<boolean>;
+        // swapList category
+        listCategory: KnockoutObservableArray<model.ItemCategory> = ko.observableArray([]);
+        listCategoryChosed: KnockoutObservableArray<model.ItemCategory> = ko.observableArray([]);
+        columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+        currentCategorySelected: KnockoutObservableArray<any>;
 
-            constructor() {
-                var self = this;
+        // comboBox system type
+        systemTypes: KnockoutObservableArray<any>;
+        selectedCode: KnockoutObservable<string>;
+        currentItem: KnockoutObservable<model.ItemModel>;
+        isEnable: KnockoutObservable<boolean>;
+        isEditable: KnockoutObservable<boolean>;
+        headerCodeCategories: string = getText("CMF005_19");
+        headerNameCategories: string = getText("CMF005_20");
 
-                self.itemList = ko.observableArray<any>;
-                service.getSysTypes().done(function(data: Array<any>) {
-                    if (data && data.length) {
-                        _.forOwn(data, function(index) {
-                            self.itemList.push(new ItemModelCombox(index.type, index.name));
+
+        constructor() {
+            var self = this;
+
+            // get param from screen B 
+            let listCategoryB = getShared('CMF005CParams_ListCategory');
+            let systemTypeB = getShared('CMF005CParams_SystemType');
+
+
+            self.currentCategorySelected = ko.observableArray([]);
+            var systemIdSelected;
+            self.systemTypes = ko.observableArray([]);
+            service.getSysTypes().done(function(data: Array<any>) {
+                if (data && data.length) {
+                    _.forOwn(data, function(index) {
+                        self.systemTypes.push(new model.ItemModel(index.type, index.name));
+                    });
+
+                    systemIdSelected = self.systemTypes()[0].code;
+                } else {
+
+                }
+
+            }).fail(function(error) {
+                alertError(error);
+
+            }).always(() => {
+
+            });
+
+            if (systemTypeB != undefined) {
+                systemIdSelected = systemTypeB.code;
+            }
+            self.selectedCode = ko.observable(systemIdSelected);
+
+            if (systemIdSelected != undefined) {
+                service.getCategoryListBySystem(self.selectedCode()).done(function(data: Array<any>) {
+                    if (systemTypeB != undefined) {
+                        _.forOwn(listCategoryB, function(index) {
+                            _.remove(data, function(e) {
+                                return e.categoryId == index.categoryId;
+                            });
                         });
-
-                    } else {
-
+                        self.currentCategorySelected(listCategoryB);
                     }
-
+                    self.listCategory(data);
                 }).fail(function(error) {
                     alertError(error);
-
                 }).always(() => {
+                    _.defer(() => {
+                        $("#grd_Condition tr:first-child").focus();
+                    });
+                });
+            }
 
+
+            self.isEnable = ko.observable(true);
+            self.isEditable = ko.observable(true);
+            self.listCategory = ko.observableArray([]);
+            self.selectedCode.subscribe(value => {
+                self.currentItem = _.find(self.systemTypes(), a => a.code === value);
+                service.getCategoryListBySystem(self.selectedCode()).done(function(data: Array<any>) {
+                    self.listCategory(data);
+                }).fail(function(error) {
+                    alertError(error);
+                }).always(() => {
+                    _.defer(() => {
+                        $("#grd_Condition tr:first-child").focus();
+                    });
                 });
 
-                self.isEnable = ko.observable(true);
-                self.isEditable = ko.observable(true);
+            })
 
-                self.selectedCode = ko.observableArray<any>;
-               
-                self.columns = ko.observableArray([
-                    { headerText: 'コード', key: 'categoryId', width: 70 },
-                    { headerText: '名称', key: 'categoryName', width: 200 }
-                ]);
-                var array = [];
-                for (var i = 1; i < 10; i++) {
-                    array.push(new model.ItemCategory('0000' + i, 'cccccc' + i, '1', '2'));
-                }
-                self.itemsSwap(array);
-                console.log(self.itemsSwap().length);
-                self.currentCodeListSwap = ko.observableArray([]);
-                self.itemsSwapLeft = self.currentCodeListSwap;
-            }
+            self.columns = ko.observableArray([
+                { headerText: self.headerCodeCategories, key: 'categoryId', width: 70 },
+                { headerText: self.headerNameCategories, key: 'categoryName', width: 200 }
+            ]);
 
-            remove() {
-                self.itemsSwap.shift();
-            }
 
-            closePopup() {
+            self.listCategoryChosed = self.currentCategorySelected;
+        }
+
+        remove() {
+            self.listCategory.shift();
+        }
+
+        closePopup() {
+            close();
+        }
+
+        submit() {
+            let self = this;
+            if (self.currentCategorySelected().length == 0) {
+                alertError({ messageId: "Msg_471" });
+            } else {
+                setShared("CMF005COutput_ListCategoryChose", self.currentCategorySelected());
+                setShared("CMF005COutput_SystemTypeChose", self.currentItem);
                 close();
             }
-
-            submit() {
-                let self = this;
-                if (self.currentCodeListSwap().length == 0) {
-                    alertError({ messageId: "Msg_471" });
-                } else {
-                    setShared("CMF005COutput", { listCategoryChose: self.currentCodeListSwap(), systemTypeId: self.currentItem });
-                    close();
-                }
-            }
-
         }
+
     }
-
-    class ItemModel {
-        schelperSystem: number;
-        categoryId: string;
-        categoryName: string;
-        possibilitySystem: number;
-        storedProcedureSpecified: number;
-        timeStore: number;
-        otherCompanyCls: number;
-        attendanceSystem: number;
-        recoveryStorageRange: number;
-        paymentAvailability: number;
-        storageRangeSaved: number;
-        constructor(schelperSystem: number, categoryId: string, categoryName: string, possibilitySystem: number,
-            storedProcedureSpecified: number, timeStore: number, otherCompanyCls: number, attendanceSystem: number,
-            recoveryStorageRange: number, paymentAvailability: number, storageRangeSaved: number) {
-            this.schelperSystem = schelperSystem;
-            this.categoryId = categoryId;
-            this.categoryName = categoryName;
-            this.possibilitySystem = possibilitySystem;
-            this.storedProcedureSpecified = storedProcedureSpecified;
-            this.timeStore = timeStore;
-            this.otherCompanyCls = otherCompanyCls;
-            this.attendanceSystem = attendanceSystem;
-            this.recoveryStorageRange = recoveryStorageRange;
-            this.paymentAvailability = paymentAvailability;
-            this.storageRangeSaved = storageRangeSaved;
-        }
-
-        constructor(categoryId: string, categoryName: string, timeStore: number, storageRangeSaved: number) {
-
-            this.categoryId = categoryId;
-            this.categoryName = categoryName;
-            this.timeStore = timeStore;
-            this.storageRangeSaved = storageRangeSaved;
-        }
-    }
-
-    class ItemModelCombox {
-        code: string;
-        name: string;
-
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
-        }
-    }
-
-
 
 }
+
+
+
+
+
+

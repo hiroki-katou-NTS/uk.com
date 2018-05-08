@@ -10,7 +10,7 @@ module nts.uk.com.view.cmf005.share.model {
         YES = 0,
         NO = 1
     }
-    
+
     export enum SYSTEM_TYPE {
         PERSON_SYS = 0,
         ATTENDANCE_SYS = 1,
@@ -27,30 +27,51 @@ module nts.uk.com.view.cmf005.share.model {
             this.name = name;
         }
     }
-    
-   export class SystemModel {
-        systemTypeValue: number;
-        systemTypeName: string;
 
-        constructor(systemTypeValue: number, systemTypeName: string) {
-            this.systemTypeValue = systemTypeValue;
-            this.systemTypeName = systemTypeName;
-        }
-    }
-
+      
     export class ItemCategory {
-     
+        cateItemNumber: number;
+        schelperSystem: number;
         categoryId: string;
         categoryName: string;
-        timeDeletion: string;
-        rangeDeletion: string;
-
-        constructor( categoryId: string, categoryName: string,timeDeletion:string,rangeDeletion :string) {
-         
+        possibilitySystem: number;
+        storedProcedureSpecified: number;
+        timeStore: number;
+        otherCompanyCls: number;
+        attendanceSystem: number;
+        recoveryStorageRange: number;
+        paymentAvailability: number;
+        storageRangeSaved: number;
+        constructor(schelperSystem: number, categoryId: string, categoryName: string, possibilitySystem: number,
+            storedProcedureSpecified: number, timeStore: number, otherCompanyCls: number, attendanceSystem: number,
+            recoveryStorageRange: number, paymentAvailability: number, storageRangeSaved: number) {
+            this.schelperSystem = schelperSystem;
             this.categoryId = categoryId;
             this.categoryName = categoryName;
-            this.timeDeletion = timeDeletion;
-            this.rangeDeletion = rangeDeletion;
+            this.possibilitySystem = possibilitySystem;
+            this.storedProcedureSpecified = storedProcedureSpecified;
+            this.timeStore = timeStore;
+            this.otherCompanyCls = otherCompanyCls;
+            this.attendanceSystem = attendanceSystem;
+            this.recoveryStorageRange = recoveryStorageRange;
+            this.paymentAvailability = paymentAvailability;
+            this.storageRangeSaved = storageRangeSaved;
+        }
+
+        constructor(categoryId: string, categoryName: string, timeStore: number, storageRangeSaved: number) {
+
+            this.categoryId = categoryId;
+            this.categoryName = categoryName;
+            this.timeStore = timeStore;
+            this.storageRangeSaved = storageRangeSaved;
+        }
+
+        constructor(cateItemNumber: number, categoryId: string, categoryName: string, timeStore: number, storageRangeSaved: number) {
+
+            this.categoryId = categoryId;
+            this.categoryName = categoryName;
+            this.timeStore = timeStore;
+            this.storageRangeSaved = storageRangeSaved;
         }
     }
 
@@ -60,7 +81,7 @@ module nts.uk.com.view.cmf005.share.model {
         startYear: string;
         endYear: string;
 
-        constructor(startDate: string, endDate: string, startYear: string, endYear: string, ) {
+        constructor(startDate: string, endDate: string, startYear: string, endYear: string) {
             this.startDate = startDate;
             this.endDate = endDate;
             this.startYear = startYear;

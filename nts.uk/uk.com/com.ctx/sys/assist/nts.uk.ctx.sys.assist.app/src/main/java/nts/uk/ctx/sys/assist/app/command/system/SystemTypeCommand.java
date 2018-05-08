@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.assist.app.comand.system;
+package nts.uk.ctx.sys.assist.app.command.system;
 
 import lombok.Data;
 import lombok.AllArgsConstructor;
