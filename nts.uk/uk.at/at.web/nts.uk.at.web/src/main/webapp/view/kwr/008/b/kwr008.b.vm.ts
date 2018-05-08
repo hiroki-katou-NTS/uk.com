@@ -269,10 +269,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         doRegister() {
             let self = this;
             block.invisible();
-            let itemOut : any = _.filter(self.outputItem(), v=>{return v.headingName.trim() != '';});
+            let itemOut : any = _.filter(self.outputItem(), v=>{return v.headingName().trim();});
             
             if(itemOut.length == 0){
-                $('#output-item').ntsError('set', {messageId:"Msg_881"});
+                $('#table-output-items').ntsError('set', {messageId:"Msg_881"});
                 block.clear();
                 return;
             }
