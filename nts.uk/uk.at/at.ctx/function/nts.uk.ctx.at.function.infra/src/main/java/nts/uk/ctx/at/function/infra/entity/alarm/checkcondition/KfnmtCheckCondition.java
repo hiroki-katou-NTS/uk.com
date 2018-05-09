@@ -118,6 +118,13 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 		this.listExtractPerMonth = listExtractPerMonth;
 	}
 
+	public KfnmtCheckCondition(KfnmtCheckConditionPK pk, String extractionId, int extractionRange, List<KfnmtCheckConItem> checkConItems) {
+		super();
+		this.pk = pk;
+		this.extractionId = extractionId;
+		this.extractionRange = extractionRange;
+		this.checkConItems = checkConItems;
+	}
 
 	@Override
 	protected Object getKey() {
@@ -189,9 +196,15 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 							.collect(Collectors.toList()),
 					KfnmtExtractionPerUnit.toEntity(extractionPerUnit));
 			return entity;			
+		}else {
+			return new KfnmtCheckCondition(
+					new KfnmtCheckConditionPK(companyId, alarmPatternCode, domain.getAlarmCategory().value), "", 0,
+					domain.getCheckConditionList().stream().map(
+							x -> new KfnmtCheckConItem(buildCheckConItemPK(domain, x, companyId, alarmPatternCode)))
+							.collect(Collectors.toList()));	
+			
 		}
-		
-		return null;
+
 
 	}
 	
@@ -223,5 +236,6 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 	private static KfnmtCheckConItemPK buildCheckConItemPK(CheckCondition domain, String checkConditionCD, String companyId, String alarmPatternCode) {
 		return new KfnmtCheckConItemPK(companyId, alarmPatternCode, domain.getAlarmCategory().value, checkConditionCD);
 	}
+
 	
 }
