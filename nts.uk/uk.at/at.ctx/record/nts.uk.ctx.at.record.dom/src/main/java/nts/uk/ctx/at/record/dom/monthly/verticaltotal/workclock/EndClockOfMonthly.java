@@ -73,6 +73,7 @@ public class EndClockOfMonthly {
 			val leaveStamp = timeLeavingWork.getLeaveStamp().get();
 			if (!leaveStamp.getStamp().isPresent()) continue;
 			val stamp = leaveStamp.getStamp().get();
+			if (stamp.getTimeWithDay() == null) continue;
 			
 			// 時間帯　確認
 			val workNo = timeLeavingWork.getWorkNo();
