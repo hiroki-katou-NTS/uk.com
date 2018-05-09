@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.function.app.command.annualworkschedule;
 
+import java.util.List;
+
 import lombok.Value;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 @Value
 public class SetOutItemsWoScCommand
@@ -33,8 +33,6 @@ public class SetOutItemsWoScCommand
     */
     private int displayFormat;
     
-    private Long version;
-    
-//    private ItemOutTblBookCommand listItemOutput;
+    private List<ItemOutTblBookCommand> listItemOutput;
 
 }

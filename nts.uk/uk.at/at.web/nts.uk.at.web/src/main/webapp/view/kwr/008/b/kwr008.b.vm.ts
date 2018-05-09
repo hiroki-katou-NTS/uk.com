@@ -325,10 +325,9 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 });
             } else {
                 service.updateOutputItemSetting(data).done(() => {
-                    let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd == self.selectedCode(); });
+                    let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd() == self.selectedCode(); });
                     if (selectedIndex > -1) {
-                        //self.listStandardImportSetting.replace(self.listStandardImportSetting()[selectedIndex], data);
-                        self.listStandardImportSetting()[selectedIndex](self.currentSetOutputSettingCode);
+                        self.listStandardImportSetting.replace(self.listStandardImportSetting()[selectedIndex], data);
                     }
                     info({ messageId: 'Msg_15' });
                 }).fail(err=>{
@@ -425,7 +424,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         displayCode: string;
         name: KnockoutObservable<string>= ko.observable('');
         displayName: string;
-        outNumExceedTime36Agr: KnockoutObservable<boolean> = ko.observable(false);
+        outNumExceedTime36Agr: KnockoutObservable<number> = ko.observable(0);
         displayFormat: KnockoutObservable<number> = ko.observable(0);
         listItemOutput : KnockoutObservableArray<OutputItemData> = ko.observableArray([]);
         constructor(param) {
@@ -434,7 +433,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.displayCode = self.cd();
             self.name(param ? param.name || '' : '');
             self.displayName = self.name();
-            self.outNumExceedTime36Agr(param ? param.outNumExceedTime36Agr || false : false);
+            self.outNumExceedTime36Agr(param ? param.outNumExceedTime36Agr || 0 : 0);
             self.displayFormat(param ? param.displayFormat || 0 : 0);
             
         }
@@ -443,7 +442,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             if (listItemOutput && listItemOutput.length > 0) {
                 for(var i = 0; i < listItemOutput.length; i++) {
                     var outputItemData = new OutputItemData(
-                        i++,
+                        i+1,
                         listItemOutput[i].cd, 
                         listItemOutput[i].useClassification,
                         listItemOutput[i].headingName,
