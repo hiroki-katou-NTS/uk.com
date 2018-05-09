@@ -205,7 +205,7 @@ module nts.layout {
                             lindex: number = value.lastIndexOf('　'),
                             dom = $(item.id);
 
-                        if (index > 0 && lindex < value.length - 1) {
+                        if (!value || (index > 0 && lindex < value.length - 1)) {
                             rmError(dom, "Msg_924");
                         } else if (!dom.is(':disabled') && !dom.ntsError('hasError')) {
                             dom.ntsError('set', {
