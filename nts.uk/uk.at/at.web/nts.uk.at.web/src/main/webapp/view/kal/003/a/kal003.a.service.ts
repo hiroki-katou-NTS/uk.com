@@ -15,7 +15,10 @@ module nts.uk.at.view.kal003.a.service {
         getBusTypeByCodes: "at/record/worktypeselection/getNamesByCodes",
         getAgreementHour: "at/function/alarm/checkcondition/agree36/findcondot",
         getAgreementError: "at/function/alarm/checkcondition/agree36/finderror",
-        getAgreementNameError: "at/function/alarm/checkcondition/agree36/findnameerror"
+        getAgreementNameError: "at/function/alarm/checkcondition/agree36/findnameerror",
+
+        //monthly
+        getAllFixedExtraItemMon : "at/record/condition/monthlycheckcondition/getallfixitemmonthly"
     }
 
     export function getAllData(category: number): JQueryPromise<any> {
@@ -61,6 +64,7 @@ module nts.uk.at.view.kal003.a.service {
     export function getJobNamesByIds(data: Array<string>): JQueryPromise<any> {
         return ajax("com", paths.getJobNameByIds, data);
     }
+
     
     export function getAgreementHour(): JQueryPromise<any> {
         return ajax("at", paths.getAgreementHour);
@@ -68,5 +72,10 @@ module nts.uk.at.view.kal003.a.service {
 
     export function getAgreementError(): JQueryPromise<any> {
         return ajax("at", paths.getAgreementError);
+
+    //monthly
+    export function getAllFixedExtraItemMon(): JQueryPromise<Array<any>>{
+        return ajax("at", paths.getAllFixedExtraItemMon);
+
     }
 }
