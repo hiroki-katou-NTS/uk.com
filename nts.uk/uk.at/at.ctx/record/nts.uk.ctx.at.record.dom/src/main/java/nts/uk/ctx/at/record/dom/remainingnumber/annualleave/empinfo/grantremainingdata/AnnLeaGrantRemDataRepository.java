@@ -9,6 +9,8 @@ public interface AnnLeaGrantRemDataRepository {
 	
 	List<AnnualLeaveGrantRemainingData> find(String employeeId);
 	
+	Optional<AnnualLeaveGrantRemainingData> getLast(String employeeId);
+	
 	Optional<AnnualLeaveGrantRemainingData> findByID(String id);
 	
 	List<AnnualLeaveGrantRemainingData> findByCheckState(String employeeId, int checkState);

@@ -33,6 +33,19 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 				.setParameter("employeeId", employeeId).getList();
 		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
 	}
+	
+
+	@Override
+	public Optional<AnnualLeaveGrantRemainingData> getLast(String employeeId) {
+		Optional<KRcmtAnnLeaRemain> entityOpt = this.queryProxy().query(QUERY_WITH_EMP_ID, KRcmtAnnLeaRemain.class)
+				.setParameter("employeeId", employeeId).getSingle();
+		
+		if (!entityOpt.isPresent()) {
+			return Optional.empty();
+		}
+		
+		return Optional.of(toDomain(entityOpt.get()));
+	}
 
 	@Override
 	public List<AnnualLeaveGrantRemainingData> findNotExp(String employeeId) {
