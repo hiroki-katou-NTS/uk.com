@@ -220,12 +220,12 @@ module nts.uk.at.view.kal004.share.model {
                                  yearType: 2,
                                  specifyMonth: 0,
                                  strMonth: 0,
-                                 strCurrentMonth: 12,
+                                 strCurrentMonth: 1,
                                  strPreviousAtr: 0,
-                                 endSpecify: 0,
+                                 endSpecify: 2,
                                  extractPeriod: 12,
                                  endMonth: 0,
-                                 endCurrentMonth: 0,
+                                 endCurrentMonth: 1,
                                  endPreviousAtr: 0     
                 })];
             }else{
