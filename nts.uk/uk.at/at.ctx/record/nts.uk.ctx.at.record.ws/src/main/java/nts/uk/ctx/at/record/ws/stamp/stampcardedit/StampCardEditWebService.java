@@ -9,7 +9,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.find.stamp.stampcardedit.StampCardEditDto;
 import nts.uk.ctx.at.record.app.find.stamp.stampcardedit.StampCardEditFinder;
 
-@Path("at/record/stamp/stampcardedit")
+@Path("record/stamp/stampcardedit")
 @Produces("application/json")
 public class StampCardEditWebService extends WebService {
 	@Inject
