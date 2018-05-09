@@ -210,7 +210,7 @@ module cps008.a.viewmodel {
                 let dto: Array<any> = getShared('CPS008B_VALUE');
 
                 if (dto && dto.length) {
-                    layout.classifications(_.map(dto, x => _.omit(x, ["items"])));
+                    layout.classifications(_.map(dto, x => _.omit(x, ["items", "renders"])));
                     layout.action(LAYOUT_ACTION.UPDATE);
                 }
             });
