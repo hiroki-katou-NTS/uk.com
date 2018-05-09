@@ -140,6 +140,7 @@ module nts.uk.com.view.cmf003.b {
             selectedEmployeeCode: KnockoutObservableArray<string>;
             employeeName: KnockoutObservable<string>;
             employeeList: KnockoutObservableArray<TargetEmployee>;
+            targetEmployee: KnockoutObservableArray<TargetEmployee>;
             alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
             ccgcomponentPerson: GroupOption;
 
@@ -304,6 +305,7 @@ module nts.uk.com.view.cmf003.b {
                 self.checkCreateMethodAtrPatternSchedule = ko.observable(false);
                 self.checkCreateMethodAtrCopyPastSchedule = ko.observable(false);
                 self.employeeList = ko.observableArray([]);
+                self.targetEmployee = ko.observableArray([]);
                 self.workTypeInfo = ko.observable('');
                 self.workTypeCode = ko.observable('');
                 self.workTimeInfo = ko.observable('');
@@ -549,7 +551,7 @@ module nts.uk.com.view.cmf003.b {
             
             private nextFromDToE(): void {
                 var self = this;
-                if((self.selectedTitleAtr() == 1) && (self.employeeList().length == 0)) {
+                if((self.selectedTitleAtr() == 1) && (self.selectedEmployeeCode().length == 0)) {
                     alertError({ messageId: 'Msg_498' });
                 } else {
                     self.initE();
@@ -559,9 +561,23 @@ module nts.uk.com.view.cmf003.b {
             
             private initE(): void {
                 var self = this;
+                self.setTargetEmployee();
                 $("#E3_3").html(self.dataSaveSetName());
                 $("#E3_5").html(self.explanation());
                 $("#E3_37").html(self.referenceDate);
+            }
+            
+            private setTargetEmployee(): void {
+                var self = this;
+                
+                self.targetEmployee.removeAll();
+                for(var i = 0; i < self.selectedEmployeeCode().length; i++) {
+                    for(var j = 0; j < self.employeeList().length; j++) {
+                        if(self.employeeList()[j].code == self.selectedEmployeeCode()[i]) {
+                            self.targetEmployee.push(self.employeeList()[j]);
+                        }   
+                    }
+                }
             }
             
             private validateB(): boolean {
@@ -621,7 +637,7 @@ module nts.uk.com.view.cmf003.b {
                         moment.utc(self.referenceDate, 'YYYY/MM/DD'), self.password(), moment.utc().toISOString(), moment.utc(self.dayValue().endDate, 'YYYY/MM/DD'), 
                         moment.utc(self.dayValue().startDate, 'YYYY/MM/DD'), moment.utc(self.monthValue().endDate, 'YYYY/MM/DD'), 
                         moment.utc(self.monthValue().startDate, 'YYYY/MM/DD'), self.explanation(), Number(self.yearValue().endDate), Number(self.yearValue().startDate),
-                        self.selectedTitleAtr(), Number(self.isSymbol()), self.employeeList(), self.categorys() );
+                        self.selectedTitleAtr(), Number(self.isSymbol()), self.targetEmployee(), self.categorys() );
 
                 service.addMalSet(manualSetting).done(() => {
                     
