@@ -384,17 +384,18 @@ module nts.custombinding {
                         width: 65px;
                     }
 
+                    .layout-control .item-classification .set-item-sperator {
+                        text-align: center;
+                        min-width: 25px !important;
+                        line-height: 30px !important;
+                    }
+
                     .layout-control .item-classification .value-text.readonly,
                     .layout-control .item-classification .relate-button .value-text,
                     .layout-control .item-classification .readonly-button .value-text {
                         padding: 0;
                         min-width: 65px;
                         line-height: 35px;
-                    }
-
-                    .layout-control .item-classification .set-item-sperator {
-                        min-width: 25px !important;
-                        text-align: center;
                     }
 
                     .layout-control .item-classification .set-table-items .value-text.readonly {
@@ -673,7 +674,7 @@ module nts.custombinding {
                 </script>
                 <script type="text/html" id="ctr_template">
                     <!-- ko if: resourceId -->
-                        <button class="inline" data-bind="attr: { title: resourceId }">？</button>
+                        <button class="inline" data-bind="attr: { title: resourceId }, text: text('？')">？</button>
                     <!-- /ko -->                    
                     <!-- ko let: { 
                                 nameid : itemDefId.replace(/[-_]/g, ''),
