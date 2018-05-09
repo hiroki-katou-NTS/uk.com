@@ -117,7 +117,7 @@ module cps001.a.vm {
                     .filter(x => !!x)
                     .value();
 
-                self.saveAble(!!aut.length);
+                self.saveAble(!!aut.length && !hasError());
             }, 0);
         }
 
