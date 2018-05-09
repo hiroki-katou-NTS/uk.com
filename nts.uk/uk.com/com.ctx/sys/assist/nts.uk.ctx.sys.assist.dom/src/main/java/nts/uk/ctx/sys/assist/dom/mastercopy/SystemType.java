@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.assist.dom.mastercopy;
 
-import nts.uk.shr.com.i18n.TextResource;
-
 /**
  * The Enum SystemType.
  */
@@ -9,25 +7,22 @@ import nts.uk.shr.com.i18n.TextResource;
 public enum SystemType {
 	
 	/** The common. */
-	COMMON(0, "Enum_SystemType_COMMON", TextResource.localize("CMM001_43")), // will update correct text resource later
+	COMMON(0, "Enum_SystemType_COMMON"),
 
 	/** The employment. */
-	EMPLOYMENT(1, "Enum_SystemType_EMPLOYMENT", TextResource.localize("CMM001_43")), // will update correct text resource later
+	EMPLOYMENT(1, "Enum_SystemType_EMPLOYMENT"),
 	
 	/** The salary. */
-	SALARY(2, "Enum_SystemType_SALARY", TextResource.localize("CMM001_44")), // will update correct text resource later
+	SALARY(2, "Enum_SystemType_SALARY"),
 	
 	/** The human resource. */
-	HUMAN_RESOURCE(3, "Enum_SystemType_HUMAN_RESOURCE", TextResource.localize("CMM001_45")); // will update correct text resource later
+	HUMAN_RESOURCE(3, "Enum_SystemType_HUMAN_RESOURCE");
 
 	/** The value. */
 	public final int value;
 
 	/** The name id. */
 	public final String nameId;
-	
-	/** The name display UI */
-	public final String displayName;
 
 	/** The Constant values. */
 	private final static SystemType[] values = SystemType.values();
@@ -40,10 +35,9 @@ public enum SystemType {
 	 * @param nameId
 	 *            the name id
 	 */
-	private SystemType(int value, String nameId, String displayName) {
+	private SystemType(int value, String nameId) {
 		this.value = value;
 		this.nameId = nameId;
-		this.displayName = displayName;
 	}
 
 	/**

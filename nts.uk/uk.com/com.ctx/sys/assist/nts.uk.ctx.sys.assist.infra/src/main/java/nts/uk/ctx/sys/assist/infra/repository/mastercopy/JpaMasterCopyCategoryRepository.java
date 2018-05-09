@@ -43,11 +43,11 @@ public class JpaMasterCopyCategoryRepository extends JpaRepository implements Ma
 		cq.select(root);
 
 		// query data
-		List<SspmtMastercopyCategory> SspmtMastercopyCategory = em.createQuery(cq).getResultList();
+		List<SspmtMastercopyCategory> sspmtMastercopyCategories = em.createQuery(cq).getResultList();
 
 		// return
-		if (SspmtMastercopyCategory != null)
-			return SspmtMastercopyCategory.stream().map(e -> this.toDomain(e)).collect(Collectors.toList());
+		if (sspmtMastercopyCategories != null)
+			return sspmtMastercopyCategories.stream().map(e -> this.toDomain(e)).collect(Collectors.toList());
 		return new ArrayList<MasterCopyCategory>();
 
 	}

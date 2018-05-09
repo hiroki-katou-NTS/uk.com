@@ -22,7 +22,9 @@ module cmm001.e {
                 self.switchHeader = ko.observable(0);
                 self.switchHeader.subscribe((value) => {
                     ko.utils.arrayForEach(self.dataSource(), function(item) {
-                        item.copyMethod(value);
+                        if(item.flag()) {
+                            item.copyMethod(value);
+                        } 
                     })
                 });
                 self.dataSource = ko.observableArray([]);
@@ -57,8 +59,8 @@ module cmm001.e {
                         preSystemType = itemData.systemType;
                     }
                     self.dataSource(copyItemList);
+                    $("#copy-method-header").focus();
                     dfd.resolve();
-
                 });
                 return dfd.promise();
             }
@@ -67,16 +69,20 @@ module cmm001.e {
                 var systemType : string;
                 switch (systemTypeVal) {
                     case 0:
-                        systemType = nts.uk.resource.getText('CMM001_43');
+                     //   systemType = nts.uk.resource.getText('CMM001_42');
+                        systemType = 'COMMON';
                         break;
                     case 1:
-                        systemType = nts.uk.resource.getText('CMM001_44');
+                      //  systemType = nts.uk.resource.getText('CMM001_44');
+                        systemType = 'EMPLOYMENT';
                         break;
                     case 2:
-                        systemType = nts.uk.resource.getText('CMM001_45');
+                       // systemType = nts.uk.resource.getText('CMM001_45');
+                        systemType = 'SALARY';
                         break;
                     case 3:
-                        systemType = nts.uk.resource.getText('CMM001_44');
+                      //  systemType = nts.uk.resource.getText('CMM001_44');
+                        systemType = 'HUMAN_RESOURCE';
                         break;
                 }
                 return systemType;
