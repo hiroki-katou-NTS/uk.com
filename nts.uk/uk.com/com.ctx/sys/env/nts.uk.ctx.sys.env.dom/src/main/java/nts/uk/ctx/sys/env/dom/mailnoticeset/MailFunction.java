@@ -16,11 +16,11 @@ public class MailFunction extends AggregateRoot {
 
 	/** The function id. */
 	//機能ID
-	private Integer functionId;
+	private FunctionId functionId;
 	
 	/** The function name. */
 	//機能名
-	private String functionName;
+	private FunctionName functionName;
 	
 	/** The propriety send mail setting atr. */
 	//メール送信設定可否区分
@@ -28,7 +28,7 @@ public class MailFunction extends AggregateRoot {
 	
 	/** The sort order. */
 	//並び順
-	private Integer sortOrder;
+	private SortOrder sortOrder;
 	
 	/**
 	 * Save to memento.

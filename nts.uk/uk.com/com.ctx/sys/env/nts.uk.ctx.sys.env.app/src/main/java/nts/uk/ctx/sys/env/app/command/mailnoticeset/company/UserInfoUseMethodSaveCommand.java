@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.sys.env.app.command.mailnoticeset.company;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.Data;
 import nts.uk.ctx.sys.env.app.command.mailnoticeset.company.dto.UserInfoUseMethodDto;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod;
@@ -15,14 +18,16 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod;
 public class UserInfoUseMethodSaveCommand {
 
 	/** The fixed work setting. */
-	private UserInfoUseMethodDto userInfoUseMethodDto;
+	private List<UserInfoUseMethodDto> lstUserInfoUseMethodDto;
 
 	/**
 	 * To domain fixed work setting.
 	 *
 	 * @return the fixed work setting
 	 */
-	public UserInfoUseMethod toDomain() {
-		return new UserInfoUseMethod(this.userInfoUseMethodDto);
+	public List<UserInfoUseMethod> toDomain() {
+		return this.lstUserInfoUseMethodDto.stream().map(dto -> {
+			return new UserInfoUseMethod(dto);
+		}).collect(Collectors.toList());
 	}
 }

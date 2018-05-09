@@ -5,6 +5,7 @@
 package nts.uk.ctx.sys.env.app.find.mailnoticeset.company.dto;
 
 import lombok.Data;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.FunctionId;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SendMailByFunctionSettingSetMemento;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -26,8 +27,8 @@ public class SendMailByFunctionSettingDto implements SendMailByFunctionSettingSe
 	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.company.SendMailByFunctionSettingSetMemento#setFunctionId(java.lang.Integer)
 	 */
 	@Override
-	public void setFunctionId(Integer functionId) {
-		this.functionId = functionId;
+	public void setFunctionId(FunctionId functionId) {
+		this.functionId = functionId.v();
 	}
 
 	/* (non-Javadoc)

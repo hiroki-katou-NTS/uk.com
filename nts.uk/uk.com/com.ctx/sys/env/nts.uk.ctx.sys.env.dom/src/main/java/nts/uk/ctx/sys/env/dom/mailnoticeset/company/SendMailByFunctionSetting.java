@@ -6,6 +6,7 @@ package nts.uk.ctx.sys.env.dom.mailnoticeset.company;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.FunctionId;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -18,7 +19,7 @@ public class SendMailByFunctionSetting extends DomainObject {
 
 	/** The function id. */
 	// 機能ID
-	private Integer functionId;
+	private FunctionId functionId;
 
 	/** The send setting. */
 	// 送信設定

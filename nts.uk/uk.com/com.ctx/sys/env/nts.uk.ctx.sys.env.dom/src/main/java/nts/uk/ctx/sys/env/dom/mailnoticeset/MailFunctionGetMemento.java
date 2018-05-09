@@ -9,31 +9,31 @@ package nts.uk.ctx.sys.env.dom.mailnoticeset;
  */
 public interface MailFunctionGetMemento {
 
-    /**
-     * Gets the function id.
-     *
-     * @return the function id
-     */
-    public Integer getFunctionId();
+	/**
+	 * Gets the function id.
+	 *
+	 * @return the function id
+	 */
+	public FunctionId getFunctionId();
 
-    /**
-     * Gets the function name.
-     *
-     * @return the function name
-     */
-    public String getFunctionName();
+	/**
+	 * Gets the function name.
+	 *
+	 * @return the function name
+	 */
+	public FunctionName getFunctionName();
 
-    /**
-     * Checks if is propriety send mail setting atr.
-     *
-     * @return true, if is propriety send mail setting atr
-     */
-    public boolean isProprietySendMailSettingAtr();
+	/**
+	 * Checks if is propriety send mail setting atr.
+	 *
+	 * @return true, if is propriety send mail setting atr
+	 */
+	public boolean isProprietySendMailSettingAtr();
 
-    /**
-     * Gets the sort order.
-     *
-     * @return the sort order
-     */
-    public Integer getSortOrder();
+	/**
+	 * Gets the sort order.
+	 *
+	 * @return the sort order
+	 */
+	public SortOrder getSortOrder();
 }

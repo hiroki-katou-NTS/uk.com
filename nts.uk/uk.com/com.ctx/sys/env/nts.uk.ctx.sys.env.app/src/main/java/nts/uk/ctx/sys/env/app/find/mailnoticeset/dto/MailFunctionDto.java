@@ -5,7 +5,10 @@
 package nts.uk.ctx.sys.env.app.find.mailnoticeset.dto;
 
 import lombok.Data;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.FunctionId;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.FunctionName;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.MailFunctionSetMemento;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.SortOrder;
 
 /**
  * Instantiates a new mail function dto.
@@ -26,14 +29,14 @@ public class MailFunctionDto implements MailFunctionSetMemento {
 	public Integer sortOrder;
 
 	@Override
-	public void setFunctionId(Integer functionId) {
-		this.functionId = functionId;
+	public void setFunctionId(FunctionId functionId) {
+		this.functionId = functionId.v();
 
 	}
 
 	@Override
-	public void setFunctionName(String functionName) {
-		this.functionName = functionName;
+	public void setFunctionName(FunctionName functionName) {
+		this.functionName = functionName.v();
 
 	}
 
@@ -44,8 +47,8 @@ public class MailFunctionDto implements MailFunctionSetMemento {
 	}
 
 	@Override
-	public void setSortOrder(Integer sortOrder) {
-		this.sortOrder = sortOrder;
+	public void setSortOrder(SortOrder sortOrder) {
+		this.sortOrder = sortOrder.v();
 
 	}
 

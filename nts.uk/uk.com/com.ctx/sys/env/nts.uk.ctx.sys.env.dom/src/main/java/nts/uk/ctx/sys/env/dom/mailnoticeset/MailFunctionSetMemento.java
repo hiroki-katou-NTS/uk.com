@@ -14,26 +14,26 @@ public interface MailFunctionSetMemento {
 	 *
 	 * @param functionId the new function id
 	 */
-	public void setFunctionId(Integer functionId);
+	public void setFunctionId(FunctionId functionId);
 
-    /**
-     * Sets the function name.
-     *
-     * @param functionName the new function name
-     */
-    public void setFunctionName(String functionName);
+	/**
+	 * Sets the function name.
+	 *
+	 * @param functionName the new function name
+	 */
+	public void setFunctionName(FunctionName functionName);
 
-    /**
-     * Sets the propriety send mail setting atr.
-     *
-     * @param proprietySendMailSettingAtr the new propriety send mail setting atr
-     */
-    public void setProprietySendMailSettingAtr(boolean proprietySendMailSettingAtr);
+	/**
+	 * Sets the propriety send mail setting atr.
+	 *
+	 * @param proprietySendMailSettingAtr the new propriety send mail setting atr
+	 */
+	public void setProprietySendMailSettingAtr(boolean proprietySendMailSettingAtr);
 
-    /**
-     * Sets the sort order.
-     *
-     * @param sortOrder the new sort order
-     */
-    public void setSortOrder(Integer sortOrder);
+	/**
+	 * Sets the sort order.
+	 *
+	 * @param sortOrder the new sort order
+	 */
+	public void setSortOrder(SortOrder sortOrder);
 }

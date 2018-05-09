@@ -24,12 +24,12 @@ public interface UserInfoUseMethodRepository {
 	 *
 	 * @param userInfo the user info
 	 */
-	public void update(UserInfoUseMethod userInfo);
+	public void update(List<UserInfoUseMethod> lstUserInfo);
 
 	/**
 	 * Creates the.
 	 *
 	 * @param userInfo the user info
 	 */
-	public void create(UserInfoUseMethod userInfo);
+	public void create(List<UserInfoUseMethod> lstUserInfo);
 }

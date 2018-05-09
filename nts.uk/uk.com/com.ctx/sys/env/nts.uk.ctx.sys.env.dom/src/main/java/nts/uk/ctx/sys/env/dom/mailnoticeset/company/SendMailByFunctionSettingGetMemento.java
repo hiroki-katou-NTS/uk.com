@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.env.dom.mailnoticeset.company;
 
+import nts.uk.ctx.sys.env.dom.mailnoticeset.FunctionId;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -16,7 +17,7 @@ public interface SendMailByFunctionSettingGetMemento {
 	 *
 	 * @return the function id
 	 */
-	public Integer getFunctionId();
+	public FunctionId getFunctionId();
 
     /**
      * Gets the send setting.
