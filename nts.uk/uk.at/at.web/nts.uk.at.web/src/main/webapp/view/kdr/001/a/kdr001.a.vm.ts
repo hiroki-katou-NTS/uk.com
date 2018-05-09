@@ -341,8 +341,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 return;
             }
             nts.uk.ui.block.invisible();
-            let startMonth = moment.utc(self.startDateString());
-            let endMonth = moment.utc(self.endDateString());
+            let startMonth = moment(self.startDateString(), 'YYYY/MM');
+            let endMonth = moment(self.endDateString(), 'YYYY/MM');
             let totalMonths = (parseInt(endMonth.format("YYYY"))*12 + parseInt(endMonth.format("MM")))
                              - (parseInt(startMonth.format("YYYY"))*12 + parseInt(startMonth.format("MM")));
             if (totalMonths < 0){
