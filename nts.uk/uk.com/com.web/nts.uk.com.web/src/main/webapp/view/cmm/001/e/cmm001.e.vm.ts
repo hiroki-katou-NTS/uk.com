@@ -93,7 +93,7 @@ module cmm001.e {
                     nts.uk.ui.dialog.confirm({ messageId: "Msg_1162" }).ifYes(() => {
                         var cid = nts.uk.ui.windows.getShared('companyId');
                         var IMasterDataList: model.MasterCopyCategoryDto[] = [];
-                    var copyMethod : number;
+                        var copyMethod : number;
                         for (item of selectedItems) {
                         copyMethod = item.copyMethod();
                         var IMasterCopyCategoryDto : model.MasterCopyCategoryDto = {masterCopyId: item.masterCopyId, categoryName: item.masterCopyCategory, order: item.order, systemType: item.systemType, copyMethod: copyMethod};
@@ -109,21 +109,6 @@ module cmm001.e {
 
             closeDialog() {
                 nts.uk.ui.windows.close();
-            }
-
-            exportErrorCsv() {
-                var errors: model.ErrorContentDto[] = [];
-                items = (function() {
-                    var list = [];
-                    for (var i = 0; i < 5; i++) {
-                        var IErrorContentDto: model.ErrorContentDto = { systemType: 'Common', categoryName: 'Name' + i, message: 'Error', order: i };
-                        list.push(IErrorContentDto);
-                    }
-                    return list;
-                })();
-                errors = items;
-                service.exportErrorCsv(errors).done(function() {
-                });
             }
         }
     }
