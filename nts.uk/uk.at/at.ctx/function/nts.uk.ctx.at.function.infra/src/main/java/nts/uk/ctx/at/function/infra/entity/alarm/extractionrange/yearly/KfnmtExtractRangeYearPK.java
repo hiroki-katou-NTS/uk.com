@@ -17,4 +17,33 @@ public class KfnmtExtractRangeYearPK implements Serializable{
 	
 	@Column(name = "EXTRACTION_RANGE")
 	public int extractionRange;
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((extractionId == null) ? 0 : extractionId.hashCode());
+		result = prime * result + extractionRange;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		KfnmtExtractRangeYearPK other = (KfnmtExtractRangeYearPK) obj;
+		if (extractionId == null) {
+			if (other.extractionId != null)
+				return false;
+		} else if (!extractionId.equals(other.extractionId))
+			return false;
+		if (extractionRange != other.extractionRange)
+			return false;
+		return true;
+	}
+	
 }

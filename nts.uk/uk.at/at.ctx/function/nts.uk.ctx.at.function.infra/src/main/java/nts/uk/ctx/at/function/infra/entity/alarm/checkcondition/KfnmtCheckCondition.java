@@ -22,11 +22,11 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRange;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.ExtractionPeriodMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.periodunit.ExtractionPeriodUnit;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.year.AYear;
 import nts.uk.ctx.at.function.infra.entity.alarm.KfnmtAlarmPatternSet;
 import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.daily.KfnmtExtractionPeriodDaily;
 import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.monthly.KfnmtExtractPeriodMonth;
@@ -118,6 +118,21 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 		this.listExtractPerMonth = listExtractPerMonth;
 	}
 
+
+	public KfnmtCheckCondition(KfnmtCheckConditionPK pk, String extractionId, int extractionRange,
+			List<KfnmtCheckConItem> checkConItems, KfnmtExtractionPeriodDaily extractionPeriodDaily,
+			List<KfnmtExtractPeriodMonth> listExtractPerMonth, KfnmtExtractRangeYear extractRangeYear) {
+		super();
+		this.pk = pk;
+		this.extractionId = extractionId;
+		this.extractionRange = extractionRange;
+		this.checkConItems = checkConItems;
+		this.extractionPeriodDaily = extractionPeriodDaily;
+		this.listExtractPerMonth = listExtractPerMonth;
+		this.extractRangeYear = extractRangeYear;
+	}
+	
+	
 	public KfnmtCheckCondition(KfnmtCheckConditionPK pk, String extractionId, int extractionRange, List<KfnmtCheckConItem> checkConItems) {
 		super();
 		this.pk = pk;
@@ -143,8 +158,18 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 				if (e.pk.unit == 3)
 					extractPeriodList.add(e.toDomain(extractionId, extractionRange));
 			});
+			
 		} else if (this.pk.alarmCategory == AlarmCategory.SCHEDULE_4WEEK.value) {
 			extractPeriodList.add(extractionPerUnit.toDomain());
+			
+		} else if(this.pk.alarmCategory == AlarmCategory.AGREEMENT.value) {
+			extractPeriodList.add(extractionPeriodDaily.toDomain());
+			
+			listExtractPerMonth.forEach(e -> {				
+					extractPeriodList.add(e.toDomain(extractionId, extractionRange));
+			});
+			
+			extractPeriodList.add(extractRangeYear.toDomain());
 		}
 
 		List<String> checkConList = this.checkConItems.stream().map(c -> c.pk.checkConditionCD)
@@ -196,13 +221,41 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 							.collect(Collectors.toList()),
 					KfnmtExtractionPerUnit.toEntity(extractionPerUnit));
 			return entity;			
-		}else {
+			
+		} else if (domain.isAgrrement()) {
+			List<ExtractionPeriodMonth> listMonth = new ArrayList<ExtractionPeriodMonth>();
+			ExtractionPeriodDaily extractionPeriodDaily = null;
+			AYear extractYear = null ;
+			
+			for(ExtractionRangeBase extractBase : domain.getExtractPeriodList()) {
+				
+				if(extractBase instanceof ExtractionPeriodDaily) {
+					extractionPeriodDaily = (ExtractionPeriodDaily) extractBase;
+					
+				}else if(extractBase  instanceof ExtractionPeriodMonth) {
+					listMonth.add((ExtractionPeriodMonth) extractBase);					
+				}else {
+					extractYear = (AYear) extractBase;
+				}
+				
+				
+			}
+			return new KfnmtCheckCondition(
+					new KfnmtCheckConditionPK(companyId, alarmPatternCode, domain.getAlarmCategory().value),
+					extractYear.getExtractionId(), extractYear.getExtractionRange().value,
+					domain.getCheckConditionList().stream().map( x -> new KfnmtCheckConItem(buildCheckConItemPK(domain, x, companyId, alarmPatternCode))).collect(Collectors.toList()), 
+					KfnmtExtractionPeriodDaily.toEntity(extractionPeriodDaily), 
+					listMonth.stream().map( e-> KfnmtExtractPeriodMonth.toEntity(companyId, alarmPatternCode,
+					domain.getAlarmCategory().value, e) ).collect(Collectors.toList()),
+					KfnmtExtractRangeYear.toEntity(extractYear));
+			
+		} else {
+			
 			return new KfnmtCheckCondition(
 					new KfnmtCheckConditionPK(companyId, alarmPatternCode, domain.getAlarmCategory().value), "", 0,
 					domain.getCheckConditionList().stream().map(
 							x -> new KfnmtCheckConItem(buildCheckConItemPK(domain, x, companyId, alarmPatternCode)))
-							.collect(Collectors.toList()));	
-			
+							.collect(Collectors.toList()));
 		}
 
 
@@ -222,7 +275,19 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 			});
 			
 		} else if (entity.pk.alarmCategory == AlarmCategory.SCHEDULE_4WEEK.value) {
+			
 			this.extractionPerUnit.fromEntity(entity.extractionPerUnit);
+			
+		} else if(entity.pk.alarmCategory ==AlarmCategory.AGREEMENT.value) {
+			
+			this.extractionPeriodDaily.fromEntity(entity.extractionPeriodDaily);
+			
+			this.listExtractPerMonth= new ArrayList<KfnmtExtractPeriodMonth>();
+			entity.listExtractPerMonth.forEach(item -> {
+				this.listExtractPerMonth.add(item);
+			});
+			
+			this.extractRangeYear.fromEntity(entity.extractRangeYear);
 		}
 		
 		

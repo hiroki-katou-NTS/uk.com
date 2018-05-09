@@ -53,4 +53,7 @@ public class CheckCondition  extends DomainObject {
 		return this.alarmCategory == AlarmCategory.MAN_HOUR_CHECK;
 	}
 	
+	public boolean isAgrrement() {
+		return this.alarmCategory== AlarmCategory.AGREEMENT;
+	}
 }

@@ -18,6 +18,7 @@ import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingService;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPermissionSetting;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.year.AYear;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -75,7 +76,19 @@ public class AddAlarmPatternSettingCommandHandler extends CommandHandler<AddAlar
 			command.getListExtractionMonthly().forEach(e -> {
 				extractionList.add(e.toDomain());
 			});
-
+		} else if(command.getAlarmCategory() == AlarmCategory.AGREEMENT.value) {
+			
+			extractionList.add(command.getExtractionPeriodDaily().toDomain());
+			command.getListExtractionMonthly().forEach(e -> {
+				extractionList.add(e.toDomain());
+			});
+			AYear extractYear = command.getExtractionYear().toDomain();
+			extractionList.add(extractYear);
+			
+			extractionList.forEach( e-> {
+				e.setExtractionId(extractYear.getExtractionId());
+				e.setExtractionRange(extractYear.getExtractionRange());
+			});
 		}
 		return new CheckCondition(EnumAdaptor.valueOf(command.getAlarmCategory(), AlarmCategory.class), command.getCheckConditionCodes(), extractionList);
 	}
