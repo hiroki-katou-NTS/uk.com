@@ -336,7 +336,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.isNewMode(true);
             $("#B3_2").focus();
             self.outputItem.removeAll();
-            $('#listStandardImportSetting').ntsGridList('deselectAll');
+            //$('#listStandardImportSetting').ntsGridList('deselectAll');
             self.currentSetOutputSettingCode(new SetOutputSettingCode(null));
             for (var i = 1; i <= 10; i++) {
                 self.outputItem.push(new OutputItemData(i, '', false, '', 0, ''));
@@ -376,7 +376,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 return;
             }
             
-            self.currentSetOutputSettingCode().buildListItemOutput(itemOut);
+            self.currentSetOutputSettingCode().buildListItemOutput(ko.toJS(itemOut));
             let data : model.OutputSettingCodeDto = ko.toJS(self.currentSetOutputSettingCode);
             
             if (self.isNewMode()) {
@@ -511,7 +511,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             if (listItemOutput && listItemOutput.length > 0) {
                 for(var i = 0; i < listItemOutput.length; i++) {
                     var outputItemData = new OutputItemData(
-                        i++,
+                        i+1,
                         listItemOutput[i].cd, 
                         listItemOutput[i].useClassification,
                         listItemOutput[i].headingName,
