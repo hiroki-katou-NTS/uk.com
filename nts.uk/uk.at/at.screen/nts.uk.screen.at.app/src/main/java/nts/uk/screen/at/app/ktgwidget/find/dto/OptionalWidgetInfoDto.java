@@ -31,7 +31,7 @@ public class OptionalWidgetInfoDto {
 	private int remand = 0;
 	
 	/** 7 App Deadline Month 今月の申請締め切り日 */
-	private DeadlineOfRequestDto appDeadlineMonth = new DeadlineOfRequestDto(0, GeneralDate.today());
+	private DeadlineOfRequest appDeadlineMonth = new DeadlineOfRequest(0, GeneralDate.today());
 	
 	/** 8 Presence Daily Per 日別実績のエラー有無 */
 	private boolean presenceDailyPer = false;
@@ -54,13 +54,13 @@ public class OptionalWidgetInfoDto {
 	private int earlyRetreat = 0;
 	
 	/** 15 Yearly Holiday 年休残数 */
-	private YearlyHolidayDto yearlyHoliday;
+	private YearlyHoliday yearlyHoliday = new YearlyHoliday();
 	
 	/** 16 Reserved Years Remain Number 積立年休残数 */
 	private int reservedYearsRemainNo = 0;
 	
 	/** 18 Remain Alternation Number 代休残数 */
-	private int remainAlternationNo = 0;
+	private TimeOT remainAlternationNo = new TimeOT(0, 0);
 	
 	/** 19 RemainsLeft 振休残数 */
 	private int remainsLeft = 0;

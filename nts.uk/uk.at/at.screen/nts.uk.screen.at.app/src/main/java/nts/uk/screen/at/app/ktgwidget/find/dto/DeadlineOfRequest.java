@@ -4,7 +4,7 @@ import lombok.Value;
 import nts.arc.time.GeneralDate;
 
 @Value
-public class DeadlineOfRequestDto {
+public class DeadlineOfRequest {
 
 	private int use;
 	

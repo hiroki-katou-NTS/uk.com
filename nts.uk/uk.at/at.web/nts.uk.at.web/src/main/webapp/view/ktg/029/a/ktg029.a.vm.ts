@@ -49,7 +49,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             self.currentMonth = ko.observable(new period("",""));
             self.nextMonth = ko.observable(new period("",""));
             self.txtDatePeriod = ko.observable("");
-            self.btnSwitch = ko.observable(getText('KTG029_6'));
+            self.btnSwitch = ko.observable(getText('KTG029_7'));
             
             self.displayOvertime = ko.observable(false);
             self.displayHoliInstruct = ko.observable(false);
@@ -87,7 +87,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             new service.Service().getOptionalWidgetDisplay(topPagePartCode).done(function(data: any){
                 if(data!=null){
                     self.excuteDisplay(data.optionalWidgetImport);
-                    self.getDate(data.datePeriodDto);
+                    self.excuteDate(data.datePeriodDto);
                     self.switchMonth();
                     dfd.resolve();
                 }    
@@ -169,7 +169,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             });
         }
         
-        private getDate(data: any) :void{
+        private excuteDate(data: any) :void{
             var self = this;
             if(data==null){
                 self.createDate();
@@ -217,7 +217,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                 } 
                 self.txtDatePeriod(month+'/'+startMonth+getText('KTG029_3')+month+'/'+lastMonth+getText('KTG029_5'));
                 self.getInfor(code, self.currentMonth().strMonth, self.currentMonth().endMonth);
-                self.btnSwitch(getText('KTG029_6'));
+                self.btnSwitch(getText('KTG029_7'));
                 self.switchDate(false);
             }else{
                 var month = self.nextMonth().endMonth.getMonth()+1;
@@ -234,7 +234,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                 } 
                 self.txtDatePeriod(month+'/'+startMonth+getText('KTG029_3')+month+'/'+lastMonth+getText('KTG029_5'));
                 self.getInfor(code, self.nextMonth().strMonth, self.nextMonth().endMonth);
-                self.btnSwitch(getText('KTG029_6'));
+                self.btnSwitch(getText('KTG029_8'));
                 self.switchDate(true);
             }
         }
@@ -295,6 +295,30 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             this.endMonth = new Date(endMonth);
         }    
     }
+    export interface TimeOTDto{
+        hours: number;
+        min: number;
+    }
+    export interface DeadlineOfRequestDto {
+        use: number;
+        deadLine: Date;
+    }
+    export interface YearlyHolidayInfoDto {
+        day: number;
+        hours: TimeOTDto;
+        remaining: number;
+        timeYearLimit: TimeOTDto;
+    }
+    export interface YearlyHolidayDto {
+        nextTime: Date;
+        grantedDaysNo: number;
+        nextTimeInfo: YearlyHolidayInfoDto;
+        nextGrantDate: Date;
+        nextGrantDateInfo: YearlyHolidayInfoDto;
+        afterGrantDateInfo: YearlyHolidayInfoDto;
+        attendanceRate: number;
+        workingDays: number;
+    }
     export interface OptionalWidget{
         overTime: number;
         holidayInstruction: number;
@@ -310,22 +334,47 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         nightWorktime: TimeOTDto;
         lateRetreat: number;
         earlyRetreat: number;
-        yearlyHoliday: number;
+        yearlyHoliday: YearlyHolidayDto;
         reservedYearsRemainNo: number;
-        remainAlternationNo: number;
+        remainAlternationNo: TimeOTDto;
         remainsLeft: number;
         hdremainNo: number;
         careLeaveNo: number;
         sphdramainNo: number;   
     }
-    export interface TimeOTDto{
-        hours: number;
-        min: number;
+    export class YearlyHolidayInfo {
+        day: number;
+        hours: string;
+        remaining: number;
+        timeYearLimit: string;
+        constructor(dto: YearlyHolidayInfoDto){
+            this.day = dto.day;
+            this.hours = (dto.hours.hours<10?('0'+dto.hours.hours):dto.hours.hours)+':'+(dto.hours.min<10?('0'+dto.hours.min):dto.hours.min);
+            this.remaining = dto.remaining;
+            this.timeYearLimit = (dto.timeYearLimit.hours<10?('0'+dto.timeYearLimit.hours):dto.timeYearLimit.hours)+':'+(dto.timeYearLimit.min<10?('0'+dto.timeYearLimit.min):dto.timeYearLimit.min);
+        }
     }
-    export interface DeadlineOfRequestDto {
-        use: number;
-        deadLine: Date;
+    export class YearlyHoliday {
+        nextTime: Date;
+        grantedDaysNo: number;
+        nextTimeInfo: YearlyHolidayInfo;
+        nextGrantDate: Date;
+        nextGrantDateInfo: YearlyHolidayInfo;
+        afterGrantDateInfo: YearlyHolidayInfo;
+        attendanceRate: number;
+        workingDays: number;
+        constructor(dto: YearlyHolidayDto){
+            this.nextTime = dto.nextTime;
+            this.grantedDaysNo = dto.grantedDaysNo;
+            this.nextTimeInfo = new YearlyHolidayInfo(dto.nextTimeInfo);
+            this.nextGrantDate = dto.nextGrantDate;
+            this.nextGrantDateInfo = new YearlyHolidayInfo(dto.nextGrantDateInfo);
+            this.afterGrantDateInfo = new YearlyHolidayInfo(dto.afterGrantDateInfo);
+            this.attendanceRate = dto.attendanceRate;
+            this.workingDays = dto.workingDays;
+        }
     }
+    
     export class OptionalWidgetInfo{
         overTime: number;
         holidayInstruction: number;
@@ -334,7 +383,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         deniedNo: number;
         remand: number;
         appDeadlineUse: boolean;
-        appDeadlineMonth: string;
+        appDeadlineMonth: Date;
         presenceDailyPer: boolean;
         overtimeHours: string;
         flexTime: string;
@@ -342,9 +391,9 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         nightWorktime: string
         lateRetreat: number;
         earlyRetreat: number;
-        yearlyHoliday: number;
+        yearlyHoliday: YearlyHoliday;
         reservedYearsRemainNo: number;
-        remainAlternationNo: number;
+        remainAlternationNo: string;
         remainsLeft: number;
         hDRemainNo: number;
         careLeaveNo: number;
@@ -357,10 +406,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             this.deniedNo = data.deniedNo;
             this.remand = data.remand;
             this.appDeadlineUse= data.appDeadlineMonth.use===1?true:false;
-            var date: Date = new Date(data.appDeadlineMonth.deadLine.toString());
-            var month = (date.getMonth()+1)<10?'0'+(date.getMonth()+1):(date.getMonth()+1);
-            var day = date.getDate()<10?'0'+date.getDate():date.getDate();
-            this.appDeadlineMonth =  month+'/'+day;
+            this.appDeadlineMonth =  data.appDeadlineMonth.deadLine;
             this.presenceDailyPer = data.presenceDailyPer;
             this.overtimeHours = (data.overtimeHours.hours<10?('0'+data.overtimeHours.hours):data.overtimeHours.hours)+':'+(data.overtimeHours.min<10?('0'+data.overtimeHours.min):data.overtimeHours.min);
             this.flexTime = (data.flexTime.hours<10?('0'+data.flexTime.hours):data.flexTime.hours)+':'+(data.flexTime.min<10?('0'+data.flexTime.min):data.flexTime.min);
@@ -368,9 +414,9 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             this.nightWorktime = (data.nightWorktime.hours<10?('0'+data.nightWorktime.hours):data.nightWorktime.hours)+':'+(data.nightWorktime.min<10?('0'+data.nightWorktime.min):data.nightWorktime.min);
             this.lateRetreat = data.lateRetreat;
             this.earlyRetreat = data.earlyRetreat;
-            this.yearlyHoliday = data.yearlyHoliday;
+            this.yearlyHoliday = new YearlyHoliday(data.yearlyHoliday);
             this.reservedYearsRemainNo = data.reservedYearsRemainNo;
-            this.remainAlternationNo = data.remainAlternationNo;
+            this.remainAlternationNo = (data.remainAlternationNo.hours<10?('0'+data.remainAlternationNo.hours):data.remainAlternationNo.hours)+':'+(data.remainAlternationNo.min<10?('0'+data.remainAlternationNo.min):data.remainAlternationNo.min);;
             this.remainsLeft = data.remainsLeft;
             this.hDRemainNo = data.hdremainNo;
             this.careLeaveNo = data.careLeaveNo;
