@@ -81,17 +81,21 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 }
                 self.listStandardImportSetting_Sort();
                 self.checkListItemOutput();
+                service.getValueOutputFormat().done(data => {
+                    for (let i = 0, count = data.length; i < count; i++) {
+                        self.valueOutputFormat.push(new model.ItemModel(data[i].value, data[i].localizedName));
+                    }
+                }).always(function() {
+                    dfd.resolve(self);
+                    block.clear();
+                });
+            }).always(function() {
+                dfd.resolve(self);
+                block.clear();
             });
 
-            service.getValueOutputFormat().then(data => {
-                for (let i = 0, count = data.length; i < count; i++) {
-                    self.valueOutputFormat.push(new model.ItemModel(data[i].value, data[i].localizedName));
-                }
-            });
-           
-            block.clear();
 
-            dfd.resolve(self);
+            
             return dfd.promise();
         }
 
