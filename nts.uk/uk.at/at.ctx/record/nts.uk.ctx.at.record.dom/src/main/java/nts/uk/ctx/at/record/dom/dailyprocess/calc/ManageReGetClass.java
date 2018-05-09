@@ -59,6 +59,9 @@ public class ManageReGetClass {
 	//計算処理に入ることができるかフラグ
 	//(造語)
 	Boolean calculatable;
+	
+	//休憩回数
+	int breakCount;
 
 	/**
 	 * Constructor 
@@ -69,7 +72,8 @@ public class ManageReGetClass {
 			DailyCalculationPersonalInformation personalInfo, DailyUnit dailyUnit,
 			Optional<FixRestTimezoneSet> fixRestTimeSeting,
 			Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet,
-			HolidayCalcMethodSet holidayCalcMethodSet,Boolean calculatable) {
+			HolidayCalcMethodSet holidayCalcMethodSet,Boolean calculatable,
+			int breakCount) {
 		super();
 		this.calculationRangeOfOneDay = calculationRangeOfOneDay;
 		this.integrationOfDaily = integrationOfDaily;
@@ -82,6 +86,7 @@ public class ManageReGetClass {
 		this.ootsukaFixedWorkSet = ootsukaFixedWorkSet;
 		this.holidayCalcMethodSet = holidayCalcMethodSet;
 		this.calculatable = calculatable;
+		this.breakCount = breakCount;
 	}
 	
 	/**
@@ -98,7 +103,8 @@ public class ManageReGetClass {
 									Optional.empty(),
 									Optional.empty(),
 									null,
-									false);
+									false,
+									0);
 				
 	}
 	
@@ -111,7 +117,8 @@ public class ManageReGetClass {
 										  DailyCalculationPersonalInformation personalInfo, DailyUnit dailyUnit,
 										  Optional<FixRestTimezoneSet> fixRestTimeSeting,
 										  Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet,
-										  HolidayCalcMethodSet holidayCalcMethodSet) {
+										  HolidayCalcMethodSet holidayCalcMethodSet,
+										  int breakCount) {
 		return new ManageReGetClass(calculationRangeOfOneDay,
 									integrationOfDaily,
 									workTimeSetting,
@@ -122,7 +129,8 @@ public class ManageReGetClass {
 									fixRestTimeSeting,
 									ootsukaFixedWorkSet,
 									holidayCalcMethodSet,
-									true);
+									true,
+									breakCount);
 	
 	}
 }

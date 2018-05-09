@@ -36,6 +36,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkTimezoneSetting;
@@ -109,9 +110,9 @@ public class OverTimeSheet {
 														   Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 														   Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily) {
 		Map<Integer,OverTimeFrameTime> overTimeFrameList = new HashMap<Integer, OverTimeFrameTime>();
-		
+		val sortedFrameTimeSheet = sortFrameTime(frameTimeSheets, workType, null, eachWorkTimeSet, eachCompanyTimeSet);
 		//時間帯の計算
-		for(OverTimeFrameTimeSheetForCalc overTimeFrameTime : frameTimeSheets) {
+		for(OverTimeFrameTimeSheetForCalc overTimeFrameTime : sortedFrameTimeSheet) {
 			val forceAtr = autoCalcSet.decisionUseCalcSetting(overTimeFrameTime.getWithinStatutryAtr(), overTimeFrameTime.isGoEarly()).getCalAtr();
 			//val forceAtr = AutoCalAtrOvertime.CALCULATEMBOSS;
 			//残業時間　－　控除時間算出
@@ -167,6 +168,24 @@ public class OverTimeSheet {
 	}
 	
 
+
+
+	private List<OverTimeFrameTimeSheetForCalc> sortFrameTime(List<OverTimeFrameTimeSheetForCalc> frameTimeSheets, WorkType workType, List<OverTimeFrameTime> afterCalcUpperTimeList, Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet, Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+		val useSetting = decisionUseSetting(workType, afterCalcUpperTimeList, eachWorkTimeSet, eachCompanyTimeSet);
+		if(!useSetting.isPresent())
+			return frameTimeSheets;
+		//指定した時間分振り替える
+		//開始時刻のASC
+		//&& 普通残業を優先するであれば普通残業、早出残業順になるようにする
+		if(useSetting.get().getSubHolTransferSetAtr().isSpecifiedTimeSubHol()) {
+			return frameTimeSheets.stream().sorted((first,second) -> second.timeSheet.getStart().compareTo(first.timeSheet.getStart())).collect(Collectors.toList());
+		}
+		//一定時間
+		//開始時刻のDESC
+		else {
+			return frameTimeSheets.stream().sorted((first,second) -> first.timeSheet.getStart().compareTo(second.timeSheet.getStart())).collect(Collectors.toList());
+		}
+	}
 
 
 	/**
@@ -415,26 +434,45 @@ public class OverTimeSheet {
 	public List<OverTimeFrameTime> transProcess(WorkType workType, List<OverTimeFrameTime> afterCalcUpperTimeList,
 												Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 												Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+		
+		val useSettingAtr = decisionUseSetting(workType, afterCalcUpperTimeList, eachWorkTimeSet, eachCompanyTimeSet);
+		
+		if(!useSettingAtr.isPresent())
+			return afterCalcUpperTimeList;
+		//代休振替設定判定
+		switch(useSettingAtr.get().getSubHolTransferSetAtr()) {
+			case CERTAIN_TIME_EXC_SUB_HOL:
+				return periodOfTimeTransfer(useSettingAtr.get().getCertainTime(),afterCalcUpperTimeList);
+			case SPECIFIED_TIME_SUB_HOL:
+				return transAllTime(useSettingAtr.get().getDesignatedTime().getOneDayTime(),
+								    useSettingAtr.get().getDesignatedTime().getHalfDayTime(),
+									afterCalcUpperTimeList);
+			default:
+				throw new RuntimeException("unknown daikyuSet:");
+		}
+	}
+
+	/**
+	 * 代休の振替処理(残業用)
+	 * @param workType　当日の勤務種類
+	 * @param eachWorkTimeSet 就業時間帯別代休時間設定
+	 * @param eachCompanyTimeSet 会社別代休時間設定
+	 * 
+	 */
+	public Optional<SubHolTransferSet> decisionUseSetting(WorkType workType, List<OverTimeFrameTime> afterCalcUpperTimeList,
+													  Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
+													  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
 		//平日ではない
 		if(!workType.isWeekDayAttendance()) 
-			return afterCalcUpperTimeList;
+			return Optional.empty();
 		val transSet = getTransSet(eachWorkTimeSet,eachCompanyTimeSet);
 		//就業時間帯の代休設定取得できない
 		if(!transSet.isPresent()||!transSet.get().isUseDivision()) {
-			return afterCalcUpperTimeList;
+			return Optional.empty();
 		}
 		else {
 			//代休振替設定判定
-			switch(transSet.get().getSubHolTransferSetAtr()) {
-				case CERTAIN_TIME_EXC_SUB_HOL:
-					return periodOfTimeTransfer(transSet.get().getCertainTime(),afterCalcUpperTimeList);
-				case SPECIFIED_TIME_SUB_HOL:
-					return transAllTime(transSet.get().getDesignatedTime().getOneDayTime(),
-										transSet.get().getDesignatedTime().getHalfDayTime(),
-										afterCalcUpperTimeList);
-				default:
-					throw new RuntimeException("unknown daikyuSet:");
-			}
+			return transSet;
 		}
 	}
 	
