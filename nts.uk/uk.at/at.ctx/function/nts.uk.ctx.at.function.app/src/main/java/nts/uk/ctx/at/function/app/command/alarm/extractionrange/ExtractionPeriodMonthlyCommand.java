@@ -46,6 +46,8 @@ public class ExtractionPeriodMonthlyCommand {
 		if(this.extractionId == null || this.extractionId.equals("")){
 			this.extractionId = IdentifierUtil.randomUniqueId();
 		}
+		if(this.strMonth==0) this.strCurrentMonth=1;
+		if(this.endMonth ==0) this.endCurrentMonth =1;
 		
 		StartMonth startMonth = new StartMonth(strSpecify);
 		

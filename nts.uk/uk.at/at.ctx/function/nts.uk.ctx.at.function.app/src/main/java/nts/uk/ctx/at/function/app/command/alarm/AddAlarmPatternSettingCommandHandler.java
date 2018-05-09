@@ -61,14 +61,21 @@ public class AddAlarmPatternSettingCommandHandler extends CommandHandler<AddAlar
 	
 	public CheckCondition convertToCheckCondition (CheckConditionCommand command) {
 		List<ExtractionRangeBase> extractionList = new ArrayList<>();
-		if(command.getAlarmCategory()==AlarmCategory.DAILY.value || command.getAlarmCategory() == AlarmCategory.MAN_HOUR_CHECK.value) {
+		if (command.getAlarmCategory() == AlarmCategory.DAILY.value
+				|| command.getAlarmCategory() == AlarmCategory.MAN_HOUR_CHECK.value) {
+
 			extractionList.add(command.getExtractionPeriodDaily().toDomain());
-		}else if(command.getAlarmCategory()  == AlarmCategory.SCHEDULE_4WEEK.value){
+
+		} else if (command.getAlarmCategory() == AlarmCategory.SCHEDULE_4WEEK.value) {
+
 			extractionList.add(command.getExtractionPeriodUnit().toDomain());
-		}else if(command.getAlarmCategory() == AlarmCategory.MONTHLY.value) {
-			command.getListExtractionMonthly().forEach( e->{
+
+		} else if (command.getAlarmCategory() == AlarmCategory.MONTHLY.value) {
+
+			command.getListExtractionMonthly().forEach(e -> {
 				extractionList.add(e.toDomain());
 			});
+
 		}
 		return new CheckCondition(EnumAdaptor.valueOf(command.getAlarmCategory(), AlarmCategory.class), command.getCheckConditionCodes(), extractionList);
 	}

@@ -78,27 +78,21 @@ public class AlarmPatternSettingFinder {
 		ExtractionPeriodDailyDto extractionPeriodDailyDto = null;
 		ExtractionPeriodUnitDto extractionUnit = null;
 		List<ExtractionPeriodMonthlyDto> listExtractionMonthly = new ArrayList<ExtractionPeriodMonthlyDto>();
-		
-		if(domain.getExtractPeriodList().size()==1) {
-			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);			
-			if (extractBase.getExtractionRange() == ExtractionRange.PERIOD) {
 
-				if(extractBase instanceof ExtractionPeriodDaily ) {					
-					ExtractionPeriodDaily extractionPeriodDaily = (ExtractionPeriodDaily) extractBase;
-					extractionPeriodDailyDto = ExtractionPeriodDailyDto
-							.fromDomain(extractionPeriodDaily);					
-				}else if(extractBase instanceof ExtractionPeriodMonth) {
-					ExtractionPeriodMonth extractionPeriodMonth= (ExtractionPeriodMonth) extractBase;
-					ExtractionPeriodMonthlyDto extractionPeriodMonthlyDto = ExtractionPeriodMonthlyDto.fromDomain(extractionPeriodMonth);
-					listExtractionMonthly.add(extractionPeriodMonthlyDto);
-				}
-			} else if (extractBase.getExtractionRange() == ExtractionRange.WEEK) {
-				extractionUnit = ExtractionPeriodUnitDto.fromDomain((ExtractionPeriodUnit) extractBase);
-			} 				
-		}else {
-			
-		}
-
+		if (domain.isDaily() || domain.isManHourCheck()) {
+			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
+			ExtractionPeriodDaily extractionPeriodDaily = (ExtractionPeriodDaily) extractBase;
+			extractionPeriodDailyDto = ExtractionPeriodDailyDto.fromDomain(extractionPeriodDaily);
+		} else if (domain.isMonthly()) {
+			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
+			ExtractionPeriodMonth extractionPeriodMonth = (ExtractionPeriodMonth) extractBase;
+			ExtractionPeriodMonthlyDto extractionPeriodMonthlyDto = ExtractionPeriodMonthlyDto
+					.fromDomain(extractionPeriodMonth);
+			listExtractionMonthly.add(extractionPeriodMonthlyDto);
+		} else if (domain.is4W4D()) {
+			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
+			extractionUnit = ExtractionPeriodUnitDto.fromDomain((ExtractionPeriodUnit) extractBase);
+		}				
 
 		return new CheckConditionDto(domain.getAlarmCategory().value, domain.getCheckConditionList(),
 				extractionPeriodDailyDto, extractionUnit, listExtractionMonthly);

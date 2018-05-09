@@ -116,7 +116,7 @@ public class KfnmtExtractPeriodMonth extends UkJpaEntity implements Serializable
 		this.yearType = domain.getStartMonth().getFixedMonthly().isPresent() ? domain.getStartMonth().getFixedMonthly().get().getYearSpecifiedType().value: YearSpecifiedType.CURRENT_YEAR.value;
 		this.specifyMonth = domain.getStartMonth().getFixedMonthly().isPresent()? domain.getStartMonth().getFixedMonthly().get().getDesignatedMonth(): 0;
 		this.strMonth = domain.getStartMonth().getStrMonthNo().isPresent() ? domain.getStartMonth().getStrMonthNo().get().getMonthNo(): 0;
-		this.strCurrentMonth = domain.getStartMonth().getStrMonthNo().isPresent() ? (domain.getStartMonth().getStrMonthNo().get().isCurentMonth()? 1: 0 ) : 12;
+		this.strCurrentMonth = domain.getStartMonth().getStrMonthNo().isPresent() ? (domain.getStartMonth().getStrMonthNo().get().isCurentMonth()? 1: 0 ) : 1;
 		this.strPreviousAtr = PreviousClassification.BEFORE.value;
 		this.endSpecify = domain.getEndMonth().getSpecifyEndMonth().value;
 		this.extractPeriod = domain.getEndMonth().getExtractFromStartMonth().value;

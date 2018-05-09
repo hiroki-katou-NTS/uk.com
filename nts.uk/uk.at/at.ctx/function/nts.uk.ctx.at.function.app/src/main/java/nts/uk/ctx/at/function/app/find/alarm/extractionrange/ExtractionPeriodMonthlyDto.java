@@ -55,7 +55,7 @@ public class ExtractionPeriodMonthlyDto {
 				: 0);
 		dto.setStrCurrentMonth(domain.getStartMonth().getStrMonthNo().isPresent()
 				? (domain.getStartMonth().getStrMonthNo().get().isCurentMonth() ? 1 : 0)
-				: 12);
+				: 0);
 		dto.setStrPreviousAtr(PreviousClassification.BEFORE.value);
 		dto.setEndSpecify(domain.getEndMonth().getSpecifyEndMonth().value);
 		dto.setExtractPeriod(domain.getEndMonth().getExtractFromStartMonth().value);

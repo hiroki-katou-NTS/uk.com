@@ -49,4 +49,8 @@ public class CheckCondition  extends DomainObject {
 		return this.alarmCategory == AlarmCategory.SCHEDULE_4WEEK;
 	}
 	
+	public boolean isManHourCheck() {
+		return this.alarmCategory == AlarmCategory.MAN_HOUR_CHECK;
+	}
+	
 }
