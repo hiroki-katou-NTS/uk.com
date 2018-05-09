@@ -105,6 +105,9 @@ public class SprDailyStatusImpl implements SprDailyStatusService {
 		List<DailyStatusSpr> resultList = new ArrayList<>();
 		// 取得期間を日単位でループする（開始日～終了日）　MAX 31日
 		for(int i = 0; startDate.addDays(i).compareTo(endDate) <= 0; i++){
+			if(i==31){
+				break;
+			}
 			GeneralDate loopDate = startDate.addDays(i);
 			// 本人確認状況
 			Integer status1 = this.getEmployeeStatus(loopDate, employeeID);

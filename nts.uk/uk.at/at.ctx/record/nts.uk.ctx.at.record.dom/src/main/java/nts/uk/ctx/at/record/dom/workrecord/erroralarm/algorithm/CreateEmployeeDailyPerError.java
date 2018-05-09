@@ -15,8 +15,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmW
 
 /**
  * 
- * @author nampt Minh Hùng
- * 社員の日別実績のエラーを作成する
+ * @author nampt Minh Hùng 社員の日別実績のエラーを作成する
  */
 @Stateless
 public class CreateEmployeeDailyPerError {
@@ -33,33 +32,23 @@ public class CreateEmployeeDailyPerError {
 			EmployeeDailyPerError employeeDailyPerformanceError = new EmployeeDailyPerError(companyID, employeeID,
 					processingDate, errorCode, attendanceItemIDList, 0);
 			this.employeeDailyPerErrorRepository.insert(employeeDailyPerformanceError);
-			
+
 		}
 	}
-	
+
 	public void createEmployeeDailyPerError(EmployeeDailyPerError error) {
-		
+
 		EmployeeDailyPerError obj;
-		if(error.getErrorAlarmMessage().isPresent()) {
-		 
-			obj = new EmployeeDailyPerError(
-						error.getCompanyID(),
-						error.getEmployeeID(),
-						error.getDate(),
-						error.getErrorAlarmWorkRecordCode(),
-						error.getAttendanceItemList(),
-						error.getErrorCancelAble(),
-						error.getErrorAlarmMessage().get().v()); 
-		}
-		else {
-			obj = new EmployeeDailyPerError(
-					error.getCompanyID(),
-					error.getEmployeeID(),
-					error.getDate(),
-					error.getErrorAlarmWorkRecordCode(),
-					error.getAttendanceItemList(),
-					error.getErrorCancelAble()); 
+		if (error.getErrorAlarmMessage().isPresent()) {
+
+			obj = new EmployeeDailyPerError(error.getCompanyID(), error.getEmployeeID(), error.getDate(),
+					error.getErrorAlarmWorkRecordCode(), error.getAttendanceItemList(), error.getErrorCancelAble(),
+					error.getErrorAlarmMessage().get().v());
+		} else {
+			obj = new EmployeeDailyPerError(error.getCompanyID(), error.getEmployeeID(), error.getDate(),
+					error.getErrorAlarmWorkRecordCode(), error.getAttendanceItemList(), error.getErrorCancelAble());
 		}
 		this.employeeDailyPerErrorRepository.insert(obj);
 	}
+
 }

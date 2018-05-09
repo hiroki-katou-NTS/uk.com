@@ -55,12 +55,12 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 			throw new BusinessException("Msg_1009", date);
 		}
 		// フォームデータ「出勤時刻(starttime)」を取得する
-		if(startTime==null){
+		if(Strings.isBlank(startTime)){
 			throw new BusinessException("Msg_1012", "Msg_1026");
 		}
 		// 出勤時刻(starttime)をチェックする
-		Integer startTimeValue = Integer.valueOf(startTime);
 		try {
+			Integer startTimeValue = Integer.valueOf(startTime);
 			new AttendanceClock(startTimeValue);
 		} catch (Exception e) {
 			throw new BusinessException("Msg_1012", startTime.toString());
@@ -97,12 +97,12 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 			throw new BusinessException("Msg_1009", date);
 		}
 		// フォームデータ「退勤時刻(endtime)」を取得する
-		if(endTime==null){
+		if(Strings.isBlank(endTime)){
 			throw new BusinessException("Msg_1013", "Msg_1026");
 		}
 		// 退勤時刻(endtime)をチェックする
-		Integer endTimeValue = Integer.valueOf(endTime);
 		try {
+			Integer endTimeValue = Integer.valueOf(endTime);
 			new AttendanceClock(endTimeValue);
 		} catch (Exception e) {
 			throw new BusinessException("Msg_1013", endTime.toString());
@@ -112,7 +112,7 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 	}
 
 	@Override
-	public String checkParamAdjustDaily(String employeeCD, String startTime, String endTime, String date, String reason) {
+	public String checkParamAdjustDaily(String employeeCD, String startTime, String endTime, String date, String reason, String stampFlg) {
 		// 契約コード固定：　000000000000
 		// 会社コード固定：　0001
 		// 会社ID固定：　000000000000-0001
@@ -139,26 +139,36 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 			throw new BusinessException("Msg_1009", date);
 		}
 		// フォームデータ「出勤時刻(starttime)」を取得する
-		if(startTime==null){
+		if(Strings.isBlank(startTime)){
 			throw new BusinessException("Msg_1012", "Msg_1026");
 		}
 		// 出勤時刻(starttime)をチェックする
-		Integer startTimeValue = Integer.valueOf(startTime);
 		try {
+			Integer startTimeValue = Integer.valueOf(startTime);
 			new AttendanceClock(startTimeValue);
 		} catch (Exception e) {
 			throw new BusinessException("Msg_1012", startTime.toString());
 		}
 		// フォームデータ「退勤時刻(endtime)」を取得する
-		Integer endTimeValue = Integer.valueOf(endTime);
-		if(endTime==null){
+		if(Strings.isBlank(endTime)){
 			throw new BusinessException("Msg_1013", "Msg_1026");
 		}
 		// 退勤時刻(endtime)をチェックする
 		try {
+			Integer endTimeValue = Integer.valueOf(endTime);
 			new AttendanceClock(endTimeValue);
 		} catch (Exception e) {
 			throw new BusinessException("Msg_1013", endTime.toString());
+		}
+		// フォームデータ「打刻保護区分(stampProtection)」を取得する
+		try {
+			Integer stampFlgValue = Integer.valueOf(stampFlg);
+			// 打刻保護区分(stampProtection)をチェックする
+			if(stampFlgValue != 0 && stampFlgValue != 1){
+				throw new BusinessException("Msg_1194", stampFlg);
+			}
+		} catch (NumberFormatException e) {
+			throw new BusinessException("Msg_1194", "Msg_1026");
 		}
 		return opEmployeeSpr.get().getEmployeeID();
 	}
@@ -176,13 +186,14 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 			throw new BusinessException("Msg_1009", date);
 		}
 		// フォームデータ「抽出対象(selecttype)」を取得する
-		Integer selectTypeValue = Integer.valueOf(selectType);
-		if(selectType == null){
+		try {
+			Integer selectTypeValue = Integer.valueOf(selectType);
+			// 抽出対象(selecttype)をチェックする
+			if(selectTypeValue != 0 && selectTypeValue != 1){
+				throw new BusinessException("Msg_1014", selectType.toString());
+			}
+		} catch (NumberFormatException e) {
 			throw new BusinessException("Msg_1014", "Msg_1026");
-		}
-		// 抽出対象(selecttype)をチェックする
-		if(selectTypeValue != 0 || selectTypeValue != 1){
-			throw new BusinessException("Msg_1014", selectType.toString());
 		}
 	}
 

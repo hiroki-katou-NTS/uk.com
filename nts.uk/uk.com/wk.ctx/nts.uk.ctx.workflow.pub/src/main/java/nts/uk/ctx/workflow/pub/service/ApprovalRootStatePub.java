@@ -239,4 +239,6 @@ public interface ApprovalRootStatePub {
 	 */
 	public void cleanApprovalRootState(String rootStateID);
 	
+	public void deleteConfirmDay(String employeeID, GeneralDate date);
+	
 }

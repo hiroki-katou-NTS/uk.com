@@ -80,8 +80,7 @@ public class PCLogOnInfoOfDaily {
 	 * @return　Optional<LogOnInfo>
 	 */
 	public Optional<LogOnInfo> getLogOnInfo(PCLogOnNo workNo) {
-	    LogOnInfo logOnInfo = this.logOnInfo.stream().filter(t->t.getWorkNo().equals(workNo)).findFirst().orElse(null);
-		return Optional.of(logOnInfo);
+		return this.logOnInfo.stream().filter(t->t.getWorkNo().equals(workNo)).findFirst();
 	}
 	
 	/**

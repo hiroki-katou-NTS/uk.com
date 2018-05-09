@@ -94,7 +94,6 @@ public class ExcessOfStatutoryTimeOfDaily {
 	/**
 	 * 各時間の計算を指示するクラス
 	 * @param integrationOfDaily 
-	 * @param flexPreAppTime 
 	 * @return
 	 */
 	public static ExcessOfStatutoryTimeOfDaily calculationExcessTime(CalculationRangeOfOneDay oneDay,AutoCalOvertimeSetting overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting,
@@ -111,8 +110,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 			   														 HolidayAddtionSet holidayAddtionSet,
 			   														 WorkTimeDailyAtr workTimeDailyAtr,
 			   														 List<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-			   														 List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, 
-			   														 IntegrationOfDaily integrationOfDaily, AttendanceTime flexPreAppTime) {
+			   														 List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily, AttendanceTime flexPreAppTime) {
 		//残業時間
 		val overTime = calculationOverTime(oneDay,overTimeAutoCalcSet,calcMethod,holidayCalcMethodSet,autoCalcAtr,workType,flexCalcMethod,
 										   predetermineTimeSet,vacationClass,timevacationUseTimeOfDaily,
@@ -142,7 +140,6 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 * 残業時間の計算
 	 * @param oneDay 
 	 * @param integrationOfDaily 
-	 * @param flexPreAppTime 
 	 */
 	private static OverTimeOfDaily calculationOverTime(CalculationRangeOfOneDay oneDay,AutoCalOvertimeSetting overTimeAutoCalcSet,
 													   CalcMethodOfNoWorkingDay calcMethod,HolidayCalcMethodSet holidayCalcMethodSet,AutoCalOverTimeAttr autoCalcAtr,WorkType workType,
@@ -226,6 +223,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 				   						  Finally.of(new HolidayMidnightWork(addList)),
 				   						  new AttendanceTime(0));
 	}
+	
 	
 	/**
 	 * 残業時間超過 
@@ -350,17 +348,6 @@ public class ExcessOfStatutoryTimeOfDaily {
 				returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
 		}
 		return returnErrorList;
-	}
-	
-	/**
-	 * 乖離時間のみ再計算
-	 * @return
-	 */
-	public ExcessOfStatutoryTimeOfDaily calcDiverGenceTime() {
-		Optional<OverTimeOfDaily> overtime = this.overTimeWork.isPresent()?Optional.of(this.overTimeWork.get().calcDiverGenceTime()):Optional.empty();
-		Optional<HolidayWorkTimeOfDaily> holiday = this.workHolidayTime.isPresent()?Optional.of(this.workHolidayTime.get().calcDiverGenceTime()):Optional.empty();
-		ExcessOfStatutoryMidNightTime excessOfStatutoryMidNightTime = this.excessOfStatutoryMidNightTime!=null?this.excessOfStatutoryMidNightTime.calcDiverGenceTime():this.excessOfStatutoryMidNightTime;
-		return new ExcessOfStatutoryTimeOfDaily(excessOfStatutoryMidNightTime,overtime,holiday); 
 	}
 	
 }

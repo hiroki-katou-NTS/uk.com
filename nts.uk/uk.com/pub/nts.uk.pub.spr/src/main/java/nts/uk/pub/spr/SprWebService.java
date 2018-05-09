@@ -22,7 +22,7 @@ import nts.uk.pub.spr.login.output.LoginUserContextSpr;
 import nts.uk.pub.spr.login.output.RoleInfoSpr;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
-@Path("public/spr_") // <- plz fix when discard SptWebServiceStub
+@Path("public/spr")
 public class SprWebService {
 	
 	@Inject
@@ -52,7 +52,8 @@ public class SprWebService {
 			@FormParam("date") String targetDate,
 			@FormParam("selecttype") String selectType,
 			@FormParam("applicationID") String applicationID,
-			@FormParam("reason") String reason) {
+			@FormParam("reason") String reason,
+			@FormParam("stampProtection") String stampProtection) {
 		LoginUserContextSpr loginUserContextSpr = sprLoginFormService.loginFromSpr(
 				menuCode, 
 				loginEmployeeCode, 
@@ -62,7 +63,8 @@ public class SprWebService {
 				targetDate, 
 				selectType, 
 				applicationID, 
-				reason);
+				reason,
+				stampProtection);
 		loginUserContextManager.loggedInAsEmployee(
 				loginUserContextSpr.getUserID(), 
 				loginUserContextSpr.getPersonID(), 
@@ -123,6 +125,7 @@ public class SprWebService {
 		paramsValue.put("selecttype", selectType);
 		paramsValue.put("applicationID", applicationID);
 		paramsValue.put("reason", reason);
+		paramsValue.put("stampProtection", stampProtection);
 		paramsValue.put("userID", loginUserContextSpr.getUserID());
 		paramsValue.put("contractCD", loginUserContextSpr.getContractCD());
 		paramsValue.put("companyID", loginUserContextSpr.getCompanyID());
