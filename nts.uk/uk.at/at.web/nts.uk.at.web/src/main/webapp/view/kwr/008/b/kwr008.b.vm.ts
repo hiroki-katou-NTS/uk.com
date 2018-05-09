@@ -295,6 +295,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 return;
             }
             for(var i = 0; i < itemOut.length; i++ ) {
+                // item Rule 36 - do not checking
+                if (itemOut.index == 0) {
+                    continue;
+                }
                 if (itemOut.listOperationSetting.lenth == 0) {
                     alertError({messageId:"Msg_881"});
                     block.clear();
