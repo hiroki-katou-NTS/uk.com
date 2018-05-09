@@ -131,6 +131,10 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 	public IntegrationOfDaily calculateForAppReflect(String employeeId,
 			GeneralDate dateData) {
 		String companyId = AppContexts.user().companyId();
+		Optional<WorkInfoOfDailyPerformance> optWorkInfor = workRepository.find(employeeId, dateData);
+		if(!optWorkInfor.isPresent()) {
+			return null;
+		}
 		WorkInfoOfDailyPerformance workInfor = workRepository.find(employeeId, dateData).get();
 		//日別実績の計算区分
 		CalAttrOfDailyPerformance calAtrrOfDailyData = calAttrOfDaily.find(employeeId, dateData);
