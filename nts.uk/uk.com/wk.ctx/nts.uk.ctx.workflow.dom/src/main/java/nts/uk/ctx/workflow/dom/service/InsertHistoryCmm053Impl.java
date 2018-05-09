@@ -35,6 +35,8 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 	private ApproverRepository repoApprover;
 	@Inject
 	private ApprovalBranchRepository repoBranch;
+	@Inject
+	private UpdateHistoryCmm053Service updateHistory;
 
 	/**
 	 * Add history
@@ -185,7 +187,7 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 
 		//1.1　最新履歴の承認者を更新する
 		String employeeIdApprover = PersonApprovalRoot.isCommonPsApprovalRoot(newestPsAppRoot) ? dailyApproverId : departmentApproverId;
-		this.updateApproverFirstPhase(companyId, employeeIdApprover, newestPsAppRoot);
+		this.updateHistory.updateApproverFirstPhase(companyId, employeeIdApprover, newestPsAppRoot);
 
 		//1.2　前の履歴を変更して新しい履歴を追加する
 		PersonApprovalRoot updateOlderPsAppRoot = PersonApprovalRoot.updateEdate(olderPsAppRoot, endDatePrevious.toString().replace("/", "-"));
@@ -254,32 +256,12 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 		if (!personApproval.isEmpty()) {
 			for (PersonApprovalRoot psAppRoot : personApproval) {
 				String employeeIdApprover = PersonApprovalRoot.isCommonPsApprovalRoot(psAppRoot) ? dailyApproverId : departmentApproverId;
-				this.updateApproverFirstPhase(companyId, employeeIdApprover, psAppRoot);
+				this.updateHistory.updateApproverFirstPhase(companyId, employeeIdApprover, psAppRoot);
 			}
 		}
 
 		if (!insertPersonApproval.isEmpty()) {
 			this.addHistoryByListPersonApprovalRoot(companyId, departmentApproverId, dailyApproverId, insertPersonApproval);
-		}
-	}
-
-	/**
-	 * Update approver first phase
-	 * @param companyId
-	 * @param employeeIdApprover
-	 * @param psAppRoot
-	 */
-	private void updateApproverFirstPhase(String companyId, String employeeIdApprover, PersonApprovalRoot psAppRoot) {
-		Optional<ApprovalPhase> approvalPhase = this.repoAppPhase.getApprovalFirstPhase(companyId,
-				psAppRoot.getBranchId());
-		if (approvalPhase.isPresent()) {
-			ApprovalPhase updateApprovalPhase = approvalPhase.get();
-			List<Approver> approverOlds       = updateApprovalPhase.getApprovers();
-			Optional<Approver> firstApprover  = approverOlds.stream().filter(x -> x.getOrderNumber() == 0).findFirst();
-			if (firstApprover.isPresent()) {
-				firstApprover.get().setEmployeeId(employeeIdApprover);
-				this.repoApprover.updateEmployeeIdApprover(firstApprover.get());
-			}
 		}
 	}
 }
