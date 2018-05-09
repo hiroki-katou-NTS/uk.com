@@ -169,7 +169,9 @@ module cps001.a.vm {
             });
 
             modal('../b/index.xhtml').onClosed(() => {
-                self.reload();
+                if (getShared('CPS001B_VALUES')) {
+                    self.reload();
+                }
             });
         }
 
