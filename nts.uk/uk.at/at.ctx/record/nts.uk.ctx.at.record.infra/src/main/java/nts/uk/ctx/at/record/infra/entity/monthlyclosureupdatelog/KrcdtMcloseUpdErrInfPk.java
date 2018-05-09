@@ -6,6 +6,7 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 
 /**
  * 
@@ -27,4 +28,12 @@ public class KrcdtMcloseUpdErrInfPk {
 	@Column(name = "MONTH_CLOSE_UPD_LOG_ID")
 	public String monthlyClosureUpdateLogId;
 
+	// 実締め終了日
+	@Column(name = "ACTUAL_CLOSURE_END")
+	public GeneralDate actualClosureEndDate;
+
+	// リソースID
+	@Column(name = "RESOURCE_ID")
+	public String resourceId;
+	
 }

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.logprocess;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -87,17 +86,18 @@ public class MonthlyClosureUpdateLogProcess {
 	 */
 	public void monthlyClosureUpdatePersonLogProcess(String monthlyClosureUpdateLogId, String employeeId,
 			MonthlyClosureUpdatePersonLog personLog) {
-		Optional<MonthlyClosureUpdateErrorInfor> optErrorInfor = mClosureErrorInforRepo
-				.getById(monthlyClosureUpdateLogId, employeeId);
-		if (optErrorInfor.isPresent()) {
-			MonthlyClosureUpdateErrorInfor errorInfor = optErrorInfor.get();
-			if (errorInfor.getAtr() == MonthlyClosureUpdateErrorAlarmAtr.ERROR) {
-				personLog.updateResult(MonthlyClosurePersonExecutionResult.NOT_UPDATED_WITH_ERROR);
-			} else {
-				personLog.updateResult(MonthlyClosurePersonExecutionResult.UPDATED_WITH_ALARM);
-			}
-		} else {
+		List<MonthlyClosureUpdateErrorInfor> optErrorInfor = mClosureErrorInforRepo
+				.getByLogIdAndEmpId(monthlyClosureUpdateLogId, employeeId);
+		if (optErrorInfor.isEmpty()) {
 			personLog.updateResult(MonthlyClosurePersonExecutionResult.UPDATED);
+		} else {
+			optErrorInfor = optErrorInfor.stream().filter(it -> it.getAtr() == MonthlyClosureUpdateErrorAlarmAtr.ERROR)
+					.collect(Collectors.toList());
+			if (optErrorInfor.isEmpty()) {
+				personLog.updateResult(MonthlyClosurePersonExecutionResult.UPDATED_WITH_ALARM);
+			} else {
+				personLog.updateResult(MonthlyClosurePersonExecutionResult.NOT_UPDATED_WITH_ERROR);
+			}
 		}
 
 		personLog.updateStatus(MonthlyClosurePersonExecutionStatus.COMPLETE);

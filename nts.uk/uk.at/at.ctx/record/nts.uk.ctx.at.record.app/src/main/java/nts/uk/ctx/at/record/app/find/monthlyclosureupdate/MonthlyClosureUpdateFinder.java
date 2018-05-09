@@ -71,7 +71,7 @@ public class MonthlyClosureUpdateFinder {
 				listResult.add(result);
 			}
 		}
-		listResult.sort((i1, i2) -> i1.getEmployeeCode().compareToIgnoreCase(i2.getEmployeeCode())); 
+		listResult.sort((i1, i2) -> i1.getEmployeeCode().compareToIgnoreCase(i2.getEmployeeCode()));
 		return new Kmw006fResultDto(listResult, domainToDto(updateLog));
 	}
 
@@ -203,15 +203,17 @@ public class MonthlyClosureUpdateFinder {
 		result.sort((e1, e2) -> e1.getEmployeeCode().compareToIgnoreCase(e2.getEmployeeCode()));
 		return result;
 	}
-	
+
 	public List<MonthlyClosureErrorInforDto> getListErrorInfor(String logId, List<String> listEmpId) {
 		List<MonthlyClosureErrorInforDto> listResult = new ArrayList<>();
 		for (String empId : listEmpId) {
-			MonthlyClosureUpdateErrorInfor errInfor = errorInforRepo.getById(logId, empId).get();
+			List<MonthlyClosureUpdateErrorInfor> errInfors = errorInforRepo.getByLogIdAndEmpId(logId, empId);
 			EmployeeRecordImport empImport = empImportAdapter.getPersonInfor(empId);
-			MonthlyClosureErrorInforDto result = new MonthlyClosureErrorInforDto(empImport.getEmployeeCode(),
-					empImport.getPname(), errInfor.getErrorMessage(), errInfor.getAtr().value);
-			listResult.add(result);
+			for (MonthlyClosureUpdateErrorInfor e : errInfors) {
+				MonthlyClosureErrorInforDto result = new MonthlyClosureErrorInforDto(empImport.getEmployeeCode(),
+						empImport.getPname(), e.getErrorMessage(), e.getAtr().value);
+				listResult.add(result);
+			}
 		}
 		return listResult;
 	}

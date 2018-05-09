@@ -129,7 +129,9 @@ public class MonthlyUpdateMgr {
 			return opt.get();
 		} else {
 			MonthlyClosureUpdateErrorInfor errorInfor = new MonthlyClosureUpdateErrorInfor(empId, monthlyClosureLogId,
-					"001", TextResource.localize("Msg_1107"), MonthlyClosureUpdateErrorAlarmAtr.ERROR.value);
+					period.getPeriod().end(), "001", TextResource.localize("Msg_1107",
+							period.getPeriod().start().toString(), period.getPeriod().end().toString()),
+					MonthlyClosureUpdateErrorAlarmAtr.ERROR.value);
 			errorInforRepo.add(errorInfor);
 			return null;
 		}

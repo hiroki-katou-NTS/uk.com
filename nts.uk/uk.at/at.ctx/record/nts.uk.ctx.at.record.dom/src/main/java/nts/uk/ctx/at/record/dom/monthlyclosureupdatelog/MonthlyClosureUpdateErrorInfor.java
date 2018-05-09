@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.monthlyclosureupdatelog;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 
 /**
  * 
@@ -19,6 +20,9 @@ public class MonthlyClosureUpdateErrorInfor extends AggregateRoot {
 	// 月締め更新ログID
 	private String monthlyClosureUpdateLogId;
 
+	// 実締め終了日
+	private GeneralDate actualClosureEndDate;
+
 	// リソースID
 	private String resourceId;
 
@@ -28,14 +32,15 @@ public class MonthlyClosureUpdateErrorInfor extends AggregateRoot {
 	// 区分
 	private MonthlyClosureUpdateErrorAlarmAtr atr;
 
-	public MonthlyClosureUpdateErrorInfor(String employeeId, String monthlyClosureUpdateLogId, String resourceId,
-			String errorMessage, int atr) {
+	public MonthlyClosureUpdateErrorInfor(String employeeId, String monthlyClosureUpdateLogId,
+			GeneralDate actualClosureEndDate, String resourceId, String errorMessage, int atr) {
 		super();
 		this.employeeId = employeeId;
 		this.monthlyClosureUpdateLogId = monthlyClosureUpdateLogId;
 		this.resourceId = resourceId;
 		this.errorMessage = errorMessage;
 		this.atr = EnumAdaptor.valueOf(atr, MonthlyClosureUpdateErrorAlarmAtr.class);
+		this.actualClosureEndDate = actualClosureEndDate;
 	}
 
 }

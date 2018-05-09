@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErrorInfor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -23,10 +24,6 @@ public class KrcdtMcloseUpdErrInf extends UkJpaEntity {
 	@EmbeddedId
 	public KrcdtMcloseUpdErrInfPk pk;
 
-	// リソースID
-	@Column(name = "RESOURCE_ID")
-	public String resourceId;
-
 	// エラーメッセージ
 	@Column(name = "ERROR_MESSAGE")
 	public String errorMessage;
@@ -40,23 +37,23 @@ public class KrcdtMcloseUpdErrInf extends UkJpaEntity {
 		return this.pk;
 	}
 
-	public KrcdtMcloseUpdErrInf(String employeeId, String monthlyClosureUpdateLogId, String resourceId,
-			String errorMessage, int atr) {
+	public KrcdtMcloseUpdErrInf(String employeeId, String monthlyClosureUpdateLogId, GeneralDate actualClosureEndDate,
+			String resourceId, String errorMessage, int atr) {
 		super();
-		this.pk = new KrcdtMcloseUpdErrInfPk(employeeId, monthlyClosureUpdateLogId);
-		this.resourceId = resourceId;
+		this.pk = new KrcdtMcloseUpdErrInfPk(employeeId, monthlyClosureUpdateLogId, actualClosureEndDate, resourceId);
 		this.errorMessage = errorMessage;
 		this.atr = atr;
 	}
 
 	public static KrcdtMcloseUpdErrInf fromDomain(MonthlyClosureUpdateErrorInfor domain) {
 		return new KrcdtMcloseUpdErrInf(domain.getEmployeeId(), domain.getMonthlyClosureUpdateLogId(),
-				domain.getResourceId(), domain.getErrorMessage(), domain.getAtr().value);
+				domain.getActualClosureEndDate(), domain.getResourceId(), domain.getErrorMessage(),
+				domain.getAtr().value);
 	}
 
 	public MonthlyClosureUpdateErrorInfor toDomain() {
 		return new MonthlyClosureUpdateErrorInfor(this.pk.employeeId, this.pk.monthlyClosureUpdateLogId,
-				this.resourceId, this.errorMessage, this.atr);
+				this.pk.actualClosureEndDate, this.pk.resourceId, this.errorMessage, this.atr);
 	}
 
 }
