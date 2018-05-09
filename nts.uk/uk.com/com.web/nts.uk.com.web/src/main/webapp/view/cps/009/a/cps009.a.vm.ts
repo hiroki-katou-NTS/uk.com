@@ -919,8 +919,13 @@ module nts.uk.com.view.cps009.a.viewmodel {
             }
 
             if (params.dataType === 8) {
-                let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == params.stringValue) { return c } });
-                self.selectionName = ko.observable((objSel == undefined ? " " : objSel.optionText) || " ");
+                if (params.stringValue !== undefined) {
+                    let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == params.stringValue) { return c } });
+                    self.selectionName = ko.observable((objSel == undefined ? (params.stringValue == null ? params.selectionItemId: params.stringValue) + " " + text("CPS001_107") : objSel.optionText) || (params.stringValue == null ? params.selectionItemId: params.stringValue) + " " + text("CPS001_107"));
+                } else {
+                    let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == params.selectionItemId) { return c } });
+                    self.selectionName = ko.observable((objSel == undefined ? params.selectionItemId + " " + text("CPS001_107") : objSel.optionText) || params.selectionItemId + " " + text("CPS001_107"));
+                }
             }
 
 
@@ -1286,17 +1291,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 let params: ICheckParam = { workTimeCode: childData.selectedWorkTimeCode };
                 service.checkStartEnd(params).done(function(data) {
                     service.checkMutiTime(params).done(function(data1) {
-                        for (let i: number = 0; i < itemChilds.length; i++) {
-                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i].indexItem - 1].enableControl(data);
-                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].enableControl(data);
-                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 2].indexItem - 1].enableControl(data1 && data);
-                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 3].indexItem - 1].enableControl(data1 && data);
-                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i].indexItem - 1].dateWithDay(childData.first.start || 0);
-                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].dateWithDay(childData.first.end || 0);
-                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 2].indexItem - 1].dateWithDay(childData.second.start || 0);
-                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 3].indexItem - 1].dateWithDay(childData.second.end || 0);
-                            i = i + 3;
-                        }
+                        self.setData(childData, itemChilds, data, data1);
                     });
                 });
             } else {
@@ -1309,20 +1304,25 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 let params: ICheckParam = { workTimeCode: childData.selectedWorkTimeCode };
                 service.checkStartEnd(params).done(function(data) {
                     service.checkMutiTime(params).done(function(data1) {
-                        for (let i: number = 0; i < itemChilds.length; i++) {
-                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i].indexItem - 1].enableControl(data);
-                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].enableControl(data);
-                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 2].indexItem - 1].enableControl(data1 && data);
-                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 3].indexItem - 1].enableControl(data1 && data);
-                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i].indexItem - 1].dateWithDay(childData.first.start || 0);
-                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].dateWithDay(childData.first.end || 0);
-                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 2].indexItem - 1].dateWithDay(childData.second.start || 0);
-                            __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 3].indexItem - 1].dateWithDay(childData.second.end || 0);
-                            i = i + 3;
-                        }
+                        self.setData(childData, itemChilds, data, data1);
                     });
                 });
             }
+        }
+
+        setData(childData: IChildData, itemChilds: Array<any>, checkStartEnd: boolean, mutiTime: boolean) {
+            for (let i: number = 0; i < itemChilds.length; i++) {
+                __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i].indexItem - 1].enableControl(checkStartEnd);
+                __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].enableControl(checkStartEnd);
+                __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 2].indexItem - 1].enableControl(mutiTime && checkStartEnd);
+                __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 3].indexItem - 1].enableControl(mutiTime && checkStartEnd);
+                __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i].indexItem - 1].dateWithDay(childData.first.start || 0);
+                __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].dateWithDay(childData.first.end || 0);
+                __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 2].indexItem - 1].dateWithDay(childData.second.start || 0);
+                __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 3].indexItem - 1].dateWithDay(childData.second.end || 0);
+                i = i + 3;
+            }
+
         }
 
     }
