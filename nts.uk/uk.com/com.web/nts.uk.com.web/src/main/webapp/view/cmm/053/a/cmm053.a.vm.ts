@@ -331,9 +331,11 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             }
             //画面をクリアする
             self.settingManager().endDate('');
+            self.settingManager().departmentApproverId('');
             self.settingManager().departmentCode('');
-            self.settingManager().dailyApprovalCode('');
             self.settingManager().departmentName('');
+            self.settingManager().dailyApproverId('');
+            self.settingManager().dailyApprovalCode('');
             self.settingManager().dailyApprovalName('');
 
             //画面を新規モードにする
