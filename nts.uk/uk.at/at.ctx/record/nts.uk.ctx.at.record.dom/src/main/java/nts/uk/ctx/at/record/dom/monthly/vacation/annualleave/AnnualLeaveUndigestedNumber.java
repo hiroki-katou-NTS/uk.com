@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 年休未消化数
@@ -14,6 +15,7 @@ public class AnnualLeaveUndigestedNumber {
 	/** 未消化日数 */
 	private UndigestedAnnualLeaveDays undigestedDays;
 	/** 未消化時間 */
+	@Setter
 	private Optional<UndigestedTimeAnnualLeaveTime> undigestedTime;
 	
 	/**

@@ -16,6 +16,9 @@ module nts.uk.ui {
         export let errorCode = "エラーコード";
         export let errorList = "エラー一覧";
         export let plzWait = "お待ちください";
+        export let targetNotFound = "対象データがありません";
+        export let clear = "解除";
+        export let searchBox = "検索テキストボックス";
     }
 
 
@@ -158,7 +161,7 @@ module nts.uk.ui {
                 let $label = $(e.target);
 
                 // Check if contents is overflow
-                if ($label.outerWidth() < $label[0].scrollWidth) {
+                if (isOverflow($label)) {
                     let $view = $('<div />').addClass('limited-label-view')
                         .text($label.text() || $label.val())
                         .appendTo('body')
@@ -176,6 +179,28 @@ module nts.uk.ui {
                 }
             });
         });
+        
+        function isOverflow($label) {
+            if ($label[0].nodeName === "INPUT" 
+                && (window.navigator.userAgent.indexOf("MSIE") > -1
+                || !!window.navigator.userAgent.match(/trident/i))) {
+                let $div = $("<div/>").appendTo($(document.body));
+                let style = $label[0].currentStyle;
+                if (style) {
+                    for (let p in style) {
+                        $div[0].style[p] = style[p];
+                    }
+                }
+                
+                $div.html($label.val());
+                let width = $div.outerWidth();
+                let scrollWidth = $div[0].scrollWidth;
+                $div.remove();
+                return width < scrollWidth;
+            }
+            
+            return $label.outerWidth() < $label[0].scrollWidth;
+        }
     }
     
     export module keyboardStream {

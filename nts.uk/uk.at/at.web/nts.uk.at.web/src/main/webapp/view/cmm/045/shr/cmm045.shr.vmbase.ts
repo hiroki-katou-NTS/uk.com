@@ -55,10 +55,20 @@ module cmm045.shr {
                     this.appDisplayAtr = appDisplayAtr;
                     this.listEmployeeId = listEmployeeId;
                     this.empRefineCondition = empRefineCondition;
-                
+                    
             }
             setAppType(appType: number){
                   this.appType = appType;
+            }
+        }
+        export class AppListParamFilter{
+            condition: AppListExtractConditionDto;
+            spr: boolean;
+            extractCondition: number;
+            constructor(condition, spr: boolean, extractCondition: number){
+                this.condition = condition;
+                this.spr = spr;
+                this.extractCondition = extractCondition;    
             }
         }
         //data fill grid list mode application
@@ -116,8 +126,11 @@ module cmm045.shr {
             //事前、事後の後ろに#CMM045_101(※)を追加
             checkAddNote: boolean;
             checkTimecolor: number;
+            //ver14 + EA1360
+            detailSet: number;
             constructor(appID: string, appType: number, dispName: string, empName: string, inpEmpName: string,
-            workplaceName: string, statusFrameAtr: boolean, phaseStatus: string, checkAddNote: boolean, checkTimecolor: number)
+            workplaceName: string, statusFrameAtr: boolean, phaseStatus: string, checkAddNote: boolean, 
+            checkTimecolor: number, detailSet: number)
             {
                 this.appID = appID;
                 this.appType = appType;
@@ -129,6 +142,7 @@ module cmm045.shr {
                 this.phaseStatus = phaseStatus;
                 this.checkAddNote = checkAddNote;
                 this.checkTimecolor = checkTimecolor;
+                this.detailSet = detailSet;
             }
         }
         export class ApplicationDto_New{
@@ -355,14 +369,27 @@ module cmm045.shr {
             postAppID: string;
             //実績
             lstFrameRes: Array<vmbase.OverTimeFrame>;
+            /**出勤時刻  - 開始時刻1*/
+            strTime1: string;
+            /**退勤時刻  - 終了時刻1*/
+            endTime1: string;
+            /**出勤時刻2  - 開始時刻2*/
+            strTime2: string;
+            /**退勤時刻2  - 終了時刻2*/
+            endTime2: string;
             appPre: any;
             reasonAppPre: string;
             appPreHd: any;
             constructor(preAppID: string, postAppID: string, lstFrameRes: Array<vmbase.OverTimeFrame>,
+                strTime1: string, endTime1: string, strTime2: string, endTime2: string,
                 appPre: any, reasonAppPre: string, appPreHd: any){
                 this.preAppID = preAppID;
                 this.postAppID = postAppID;
                 this.lstFrameRes = lstFrameRes;
+                this.strTime1 = strTime1;
+                this.endTime1 = endTime1;
+                this.strTime2 = strTime2;
+                this.endTime2 = endTime2;
                 this.appPre = appPre;
                 this.reasonAppPre = reasonAppPre;
                 this.appPreHd = appPreHd;
@@ -575,6 +602,13 @@ module cmm045.shr {
                 this.columnKey = columnKey;
                 this.color = color;
             } 
+        }
+        export interface IntefaceSPR{
+            mode: number;//1=承認一覧
+            startDate: string;//yyyy-mm-dd //期間（開始日）
+            endDate: string;//yyyy-mm-dd //期間（終了日）
+            extractCondition: number;//０＝全て、１＝早出・普通残業のみ
+            agreementTime36: number;//０＝表示しない、1＝表示する
         }
         export class ProcessHandler {
             /**

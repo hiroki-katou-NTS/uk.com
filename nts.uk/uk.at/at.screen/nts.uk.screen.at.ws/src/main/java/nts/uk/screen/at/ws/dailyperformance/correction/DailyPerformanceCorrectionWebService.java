@@ -82,13 +82,13 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("startScreen")
 	public DailyPerformanceCorrectionDto startScreen(DPParams params ) throws InterruptedException{
-		return this.processor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.displayFormat, params.correctionOfDaily, params.formatCodes, params.objectShare);
+		return this.processor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.formatCodes, params.objectShare);
 	}
 	
 	@POST
 	@Path("errorCode")
 	public DailyPerformanceCorrectionDto condition(DPParams params ) throws InterruptedException{
-		return this.errorProcessor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.displayFormat, params.correctionOfDaily, params.errorCodes, params.formatCodes);
+		return this.errorProcessor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.errorCodes, params.formatCodes);
 	}
 	
 	@POST
@@ -182,13 +182,18 @@ public class DailyPerformanceCorrectionWebService {
 		// insert sign
 		dailyModifyCommandFacade.insertSign(dataParent.getDataCheckSign());
 		
-		//
+		// insert approval
+		dailyModifyCommandFacade.insertApproval(dataParent.getDataCheckApproval());
 		if(dataParent.getMode() == 0){
 			val dataCheck = validatorDataDaily.checkContinuousHolidays(dataParent.getEmployeeId(),
 					dataParent.getDateRange());
 			if (!dataCheck.isEmpty()) {
 				resultError.put(2, dataCheck);
 			}
+		}
+		
+		if(dataParent.getSpr() != null){
+			processor.insertStampSourceInfo(dataParent.getSpr().getEmployeeId(), dataParent.getSpr().getDate(), dataParent.getSpr().isChange31(), dataParent.getSpr().isChange34());
 		}
 		return resultError;
 	}
@@ -206,7 +211,7 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@POST
 	@Path("getApplication")
-	public List<EnumConstant> getApplicationName(List<String> errorCodes) {
-		return dataDialogWithTypeProcessor.getNameAppliction(errorCodes);
+	public List<EnumConstant> getApplicationName() {
+		return dataDialogWithTypeProcessor.getNameAppliction();
 	}
 }

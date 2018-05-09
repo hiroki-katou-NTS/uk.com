@@ -19,6 +19,14 @@ public interface WorkTypeQueryRepository {
 	 * @return
 	 */
 	List<WorkTypeDto> findAllWorkType(String companyId, List<Integer> workTypeAtrList);
+	
+	/**
+	 * Find work type by company and work attribute (分類)
+	 * @param companyId
+	 * @param workTypeAtrList 分類
+	 * @return
+	 */
+	List<WorkTypeDto> findWorkType(String companyId, List<Integer> workTypeAtrList);
 
 	/**
 	 *  Find All Work Type by companyId, abolishAtr, oneDayAtr1, oneDayAtr2

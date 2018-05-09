@@ -25,8 +25,6 @@ public class ComboBoxParam {
 	
 	private String employeeId;
 	
-	private boolean cps002;
-	
 	private String workplaceId;
 	
 }

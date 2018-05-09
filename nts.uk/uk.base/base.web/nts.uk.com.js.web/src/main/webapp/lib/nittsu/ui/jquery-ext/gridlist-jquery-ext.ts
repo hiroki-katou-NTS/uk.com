@@ -94,17 +94,20 @@ module nts.uk.ui.jqueryExtentions {
                         if(!nts.uk.util.isNullOrEmpty(selected)){
                             selected = oldSelected;    
                         } 
-                        let $scrollContainer: any = $grid.igGrid("scrollContainer");
-                        _.defer(() => {
-                            if ($scrollContainer.length > 0){
-                                let firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
-                                let selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
-                                $scrollContainer.scrollTop(selectRowOffset - firstRowOffset);
-                            } else { 
-                                let index = $(selected["element"]).attr("data-row-idx");
-                                $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
-                            }   
-                        });
+                        
+                        if($grid.data('igGrid')) {
+                            let $scrollContainer: any = $grid.igGrid("scrollContainer");
+                            _.defer(() => {
+                                if ($scrollContainer.length > 0) {
+                                    let firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
+                                    let selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
+                                    $scrollContainer.scrollTop(selectRowOffset - firstRowOffset);
+                                } else if(selected && oldSelected) { 
+                                    let index = $(selected["element"]).attr("data-row-idx");
+                                    $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
+                                }   
+                            });
+                        }
                     });    
                 }
             });

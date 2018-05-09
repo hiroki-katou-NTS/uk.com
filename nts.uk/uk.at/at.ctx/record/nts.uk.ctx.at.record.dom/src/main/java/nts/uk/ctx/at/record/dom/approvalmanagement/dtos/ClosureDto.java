@@ -15,4 +15,5 @@ import lombok.Data;
 public class ClosureDto {
 	public int closureId;
 	public String closureName;
+	public int currentYearMonth;
 }

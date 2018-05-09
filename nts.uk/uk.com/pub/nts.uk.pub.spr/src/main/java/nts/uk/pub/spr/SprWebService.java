@@ -11,6 +11,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import lombok.val;
+import nts.uk.pub.spr.SprStubHelper.ApplicationTargetResult;
 import nts.uk.pub.spr.SprStubHelper.RecordApplicationStatusResult;
 import nts.uk.pub.spr.SprStubHelper.RequestApplicationStatusResult;
 import nts.uk.pub.spr.approvalroot.SprApprovalRootService;
@@ -18,8 +19,10 @@ import nts.uk.pub.spr.appstatus.SprAppStatusService;
 import nts.uk.pub.spr.dailystatus.SprDailyStatusService;
 import nts.uk.pub.spr.login.SprLoginFormService;
 import nts.uk.pub.spr.login.output.LoginUserContextSpr;
+import nts.uk.pub.spr.login.output.RoleInfoSpr;
+import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
-@Path("public/spr_") // <- plz fix when discard SptWebServiceStub
+@Path("public/spr")
 public class SprWebService {
 	
 	@Inject
@@ -33,6 +36,9 @@ public class SprWebService {
 	
 	@Inject
 	private SprApprovalRootService sprApprovalRootService;
+	
+	@Inject
+	private LoginUserContextManager loginUserContextManager;
 
 	@POST
 	@Path("01/loginfromspr")
@@ -46,7 +52,8 @@ public class SprWebService {
 			@FormParam("date") String targetDate,
 			@FormParam("selecttype") String selectType,
 			@FormParam("applicationID") String applicationID,
-			@FormParam("reason") String reason) {
+			@FormParam("reason") String reason,
+			@FormParam("stampProtection") String stampProtection) {
 		LoginUserContextSpr loginUserContextSpr = sprLoginFormService.loginFromSpr(
 				menuCode, 
 				loginEmployeeCode, 
@@ -56,7 +63,48 @@ public class SprWebService {
 				targetDate, 
 				selectType, 
 				applicationID, 
-				reason);
+				reason,
+				stampProtection);
+		loginUserContextManager.loggedInAsEmployee(
+				loginUserContextSpr.getUserID(), 
+				loginUserContextSpr.getPersonID(), 
+				loginUserContextSpr.getContractCD(), 
+				loginUserContextSpr.getCompanyID(), 
+				loginUserContextSpr.getCompanyCD(), 
+				loginUserContextSpr.getLoginEmployeeID(), 
+				loginUserContextSpr.getEmployeeCD());
+		for(RoleInfoSpr roleInfor : loginUserContextSpr.getRoleList()){
+			switch (roleInfor.getRoleType()) {
+			case COMPANY_MANAGER:
+				loginUserContextManager.roleIdSetter().forCompanyAdmin(roleInfor.getRoleID());
+				break;
+			case EMPLOYMENT:
+				loginUserContextManager.roleIdSetter().forAttendance(roleInfor.getRoleID());
+				break;
+			case GROUP_COMAPNY_MANAGER:
+				loginUserContextManager.roleIdSetter().forGroupCompaniesAdmin(roleInfor.getRoleID());
+				break;
+			case HUMAN_RESOURCE:
+				loginUserContextManager.roleIdSetter().forPersonnel(roleInfor.getRoleID());
+				break;
+			case MY_NUMBER:
+				break;
+			case OFFICE_HELPER:
+				loginUserContextManager.roleIdSetter().forOfficeHelper(roleInfor.getRoleID());
+				break;
+			case PERSONAL_INFO:
+				loginUserContextManager.roleIdSetter().forPersonalInfo(roleInfor.getRoleID());
+				break;
+			case SALARY:
+				loginUserContextManager.roleIdSetter().forPayroll(roleInfor.getRoleID());
+				break;
+			case SYSTEM_MANAGER:
+				loginUserContextManager.roleIdSetter().forSystemAdmin(roleInfor.getRoleID());
+				break;
+			default:
+				break;
+			}
+		}
 		val paramsMap = new LinkedHashMap<String, String>();
 		paramsMap.put("menu", SprStubHelper.formatParam(menuCode));
 		paramsMap.put("loginemployeeCode", SprStubHelper.formatParam(loginEmployeeCode));
@@ -77,13 +125,14 @@ public class SprWebService {
 		paramsValue.put("selecttype", selectType);
 		paramsValue.put("applicationID", applicationID);
 		paramsValue.put("reason", reason);
+		paramsValue.put("stampProtection", stampProtection);
 		paramsValue.put("userID", loginUserContextSpr.getUserID());
 		paramsValue.put("contractCD", loginUserContextSpr.getContractCD());
 		paramsValue.put("companyID", loginUserContextSpr.getCompanyID());
 		paramsValue.put("companyCD", loginUserContextSpr.getCompanyCD());
 		paramsValue.put("personID", loginUserContextSpr.getPersonID());
 		paramsValue.put("loginEmployeeID", loginUserContextSpr.getLoginEmployeeID());
-		paramsValue.put("roleID", loginUserContextSpr.getRoleID());
+		paramsValue.put("roleID", "");
 		paramsValue.put("employeeID", loginUserContextSpr.getEmployeeID());
 		
 		val html = new StringBuilder()
@@ -159,8 +208,7 @@ public class SprWebService {
 	@Produces("application/json")
 	public SprStubHelper.EmployeesContainer<SprStubHelper.ApplicationTargetResult> getApprovalRoot(
 			SprStubHelper.ApplicationTargetQuery query) {
-		
-		sprApprovalRootService.getApprovalRoot(
+		List<ApplicationTargetResult> applicationTargetResultList = sprApprovalRootService.getApprovalRoot(
 				query.getLoginemployeeCode(), 
 				query.getDate())
 				.stream()
@@ -170,6 +218,6 @@ public class SprWebService {
 						x.getStatus2()))
 				.collect(Collectors.toList());
 		
-		return new SprStubHelper.EmployeesContainer<>(SprStubHelper.ApplicationTargetResult.create());
+		return new SprStubHelper.EmployeesContainer<>(applicationTargetResultList);
 	}
 }

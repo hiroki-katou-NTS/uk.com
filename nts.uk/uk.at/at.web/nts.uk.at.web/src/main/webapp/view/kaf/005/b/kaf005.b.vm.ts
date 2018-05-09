@@ -100,6 +100,7 @@ module nts.uk.at.view.kaf005.b {
             overtimeHoursPre: KnockoutObservableArray<common.OverTimeInput> = ko.observableArray([]);
             overTimeShiftNightPre: KnockoutObservable<number> = ko.observable(null);
             flexExessTimePre: KnockoutObservable<number> = ko.observable(null);
+            workTypeChangeFlg: KnockoutObservable<boolean> = ko.observable(false);
             
             // AppOvertimeReference
             appDateReference: KnockoutObservable<string> = ko.observable(moment().format(this.DATE_FORMAT));
@@ -145,9 +146,9 @@ module nts.uk.at.view.kaf005.b {
                     self.initData(data);
                     //Check work content Changed
                     self.checkWorkContentChanged();
+                    nts.uk.ui.block.clear();
                     dfd.resolve(); 
-                })
-                .fail(function(res) {
+                }).fail(function(res) {
                     if(res.messageId == 'Msg_426'){
                        dialog.alertError({messageId : res.messageId}).then(function(){
                             nts.uk.ui.block.clear();
@@ -225,6 +226,7 @@ module nts.uk.at.view.kaf005.b {
                 self.allPreAppPanelFlg(data.allPreAppPanelFlg);
                 self.indicationOvertimeFlg(data.extratimeDisplayFlag);
                 self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
+                self.workTypeChangeFlg(data.workTypeChangeFlg);
                 // preAppOvertime
                 if(data.preAppOvertimeDto != null){
                     self.appDatePre(data.preAppOvertimeDto.appDatePre);
@@ -425,7 +427,7 @@ module nts.uk.at.view.kaf005.b {
                     appID: self.appID(),
                     applicationDate: new Date(self.appDate()),
                     prePostAtr: self.prePostSelected(),
-                    applicantSID: self.employeeID,
+                    applicantSID: self.employeeID(),
                     applicationReason: appReason,
                     appApprovalPhaseCmds: self.approvalList,
                     workTypeCode: self.workTypeCd(),
@@ -438,8 +440,8 @@ module nts.uk.at.view.kaf005.b {
                     overtimeHours: ko.mapping.toJS(_.map(self.overtimeHours(), item => self.convertOvertimeCaculationToOverTimeInput(item))),
                     restTime: ko.mapping.toJS(self.restTime()),
                     bonusTimes: ko.mapping.toJS(_.map(self.bonusTimes(), item => self.convertOvertimeCaculationToOverTimeInput(item))),
-                    overTimeShiftNight: overTimeShiftNightTmp == null ? -1 : overTimeShiftNightTmp,
-                    flexExessTime: flexExessTimeTmp == null ? -1 : flexExessTimeTmp,
+                    overTimeShiftNight: overTimeShiftNightTmp == null ? null : overTimeShiftNightTmp,
+                    flexExessTime: flexExessTimeTmp == null ? null : flexExessTimeTmp,
                     overtimeAtr: self.overtimeAtr(),
                     divergenceReasonContent: divergenceReason,
                     sendMail: self.manualSendMailAtr(),
@@ -546,10 +548,11 @@ module nts.uk.at.view.kaf005.b {
                     }
                 }
                 nts.uk.ui.windows.setShared('parentCodes', {
-                   workTypeCodes: self.workTypecodes(),
-                selectedWorkTypeCode: self.workTypeCd(),
-                workTimeCodes: self.workTimecodes(),
-                selectedWorkTimeCode: self.siftCD()
+                    workTypeCodes: self.workTypecodes(),
+                    selectedWorkTypeCode: self.workTypeCd(),
+                    workTimeCodes: self.workTimecodes(),
+                    selectedWorkTimeCode: self.siftCD(),
+                    showNone: false
                 }, true);
     
                 nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
@@ -596,11 +599,11 @@ module nts.uk.at.view.kaf005.b {
                 if(!self.validateTime(self.timeStart1(), self.timeEnd1(), '#inpStartTime1')){
                     return false;
                 };
-                if ( !nts.uk.util.isNullOrEmpty(self.timeStart2()) && self.timeStart2() != "") {
-                    if ( !self.validateTime( self.timeStart2(), self.timeEnd2(), '#inpStartTime2' ) ) {
-                        return false;
-                    };
-                }
+//                if ( !nts.uk.util.isNullOrEmpty(self.timeStart2()) && self.timeStart2() != "") {
+//                    if ( !self.validateTime( self.timeStart2(), self.timeEnd2(), '#inpStartTime2' ) ) {
+//                        return false;
+//                    };
+//                }
                 //休憩時間
                 for (let i = 0; i < self.restTime().length; i++) {
                     let startTime = self.restTime()[i].startTime();
@@ -628,6 +631,23 @@ module nts.uk.at.view.kaf005.b {
             CaculationTime(){
                     let self = this;
                     let dfd = $.Deferred();
+                    if (nts.uk.util.isNullOrEmpty(self.appDate())) {
+                        dialog.alertError({ messageId: "Msg_959" });
+                        return;
+                    }
+                    $("#inpStartTime1").trigger("validate");
+                    $("#inpEndTime1").trigger("validate");
+                    //return if has error
+                    if (nts.uk.ui.errors.hasError()) { return; }
+                    if (!self.validateTime(self.timeStart1(), self.timeEnd1(), '#inpStartTime1')) {
+                        return;
+                    }
+//                    if (!nts.uk.util.isNullOrEmpty(self.timeStart2())) {
+//                        if (!self.validateTime(self.timeStart2(), self.timeEnd2(), '#inpStartTime2')) {
+//                            return;
+//                        };
+//                    }
+                    nts.uk.ui.block.invisible();
                     let param : any ={
                         overtimeHours: _.map(ko.toJS(self.overtimeHours()), item => {return self.initCalculateData(item);}),
                         bonusTimes: _.map(ko.toJS(self.bonusTimes()), item => {return self.initCalculateData(item);}),
@@ -721,8 +741,10 @@ module nts.uk.at.view.kaf005.b {
                         }
                         //Check work content Changed
                         self.checkWorkContentChanged();
+                        nts.uk.ui.block.clear();
                          dfd.resolve(data);
                     }).fail(function(res){
+                        nts.uk.ui.block.clear();
                         dfd.reject(res);
                     });
                     return dfd.promise();

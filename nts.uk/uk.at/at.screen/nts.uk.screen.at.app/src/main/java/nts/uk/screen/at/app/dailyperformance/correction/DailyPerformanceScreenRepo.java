@@ -44,8 +44,10 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.YearHolidaySettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHistItemAtScreen;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.reasondiscrepancy.ReasonCodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInfoOfDailyPerformanceDetailDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceIdPeriodAtScreen;
 
 /**
  * @author hungnm
@@ -112,7 +114,7 @@ public interface DailyPerformanceScreenRepo {
 	List<FormatDPCorrectionDto> getListFormatDPCorrection(List<String> lstBusinessType);
 
 	/** Get Daily performance business type type control */
-	List<DPBusinessTypeControl> getListBusinessTypeControl(List<String> lstBusinessType, List<Integer> lstAttendanceItem);
+	List<DPBusinessTypeControl> getListBusinessTypeControl(String companyId, String authorityDailyID, List<Integer> lstAttendanceItem, boolean use);
 
 	/** Get list attendance item */
 	List<DPAttendanceItem> getListAttendanceItem(List<Integer> lstAttendanceItem);
@@ -170,7 +172,7 @@ public interface DailyPerformanceScreenRepo {
 	
 	List<AuthorityFormatSheetDto> findAuthorityFormatSheet(String companyId, List<String> formatCode,  List<BigDecimal>sheetNo);
 	
-	Optional<DivergenceTimeDto> findDivergenceTime(String companyId, int divTimeId);
+	List<DivergenceTimeDto> findDivergenceTime(String companyId, List<Integer> divergenceNo);
 	
 	List<ReasonCodeName> findDivergenceReason(String companyId, int divTimeId);
 	
@@ -186,9 +188,9 @@ public interface DailyPerformanceScreenRepo {
 	
 	void updateColumnsWidth(Map<Integer, Integer> lstHeader, List<String> formatCodes);
 	
-	Optional<DailyRecOpeFuncDto> findDailyRecOpeFun(String companyId);
-	
 	List<EnumConstant> findErAlApplication(String companyId, List<String> errorCode);
+	
+	List<EnumConstant> findApplicationCall(String companyId);
 	
 	Optional<IdentityProcessUseSetDto> findIdentityProcessUseSet(String comapnyId);
 	
@@ -196,4 +198,7 @@ public interface DailyPerformanceScreenRepo {
 	
 	Map<String, Boolean> getConfirmDay(String companyId, List<String> sids, DateRange dates);
 	
+	Map<String, List<WorkPlaceIdPeriodAtScreen>> getWplByListSidAndPeriod(List<String> sids);
+	
+	Map<String, List<AffComHistItemAtScreen>>getAffCompanyHistoryOfEmployee(String cid, List<String> employeeIds);
  }

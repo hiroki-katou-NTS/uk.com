@@ -15,10 +15,12 @@ public interface PerInfoHistorySelectionRepository {
 	Optional<PerInfoHistorySelection> getAllHistoryByHistId(String histId);
 
 	List<PerInfoHistorySelection> getAllHistoryBySelectionItemId(String selectionItemId);
+	
+	void removeInSelectionItemId(String selectionItemId);
 
 	List<PerInfoHistorySelection> getHistoryByStartDate(GeneralDate startDate);
 
-	List<PerInfoHistorySelection> getAllHistoryBySelectionItemIdAndCompanyId(String selectionItemId, String companyId);
+	List<PerInfoHistorySelection> getAllBySelecItemIdAndCompanyId(String selectionItemId, String companyId);
 
 	/**
 	 * get History Selection Item By Date

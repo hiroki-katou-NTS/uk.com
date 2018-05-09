@@ -10,12 +10,13 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.ManagementDataAtr;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.SubTargetDigestion;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTime;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTimeCode;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentWorkingHour;
 import nts.uk.ctx.at.request.infra.entity.application.holidayshipment.recruitmentapp.KrqdtRecruitmentApp;
 import nts.uk.ctx.at.request.infra.entity.application.holidayshipment.subtargetdigestion.KrqdtSubTargetDigestion;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -49,8 +50,8 @@ public class JpaRecruitmentAppRepository extends JpaRepository implements Recrui
 				.query(FIND_SUB_TAG_DIG_BY_REC_ID, KrqdtSubTargetDigestion.class)
 				.setParameter("appID", entity.getAppID()).getList(x -> toSubTagDigestion(x));
 
-		return new RecruitmentApp(entity.getAppID(), entity.getWorkTypeCD(), new WorkTimeCode(entity.getWorkTimeCD()),
-				workTime1, workTime2, subTargetDigestions);
+		return new RecruitmentApp(entity.getAppID(), new WorkTypeCode(entity.getWorkTypeCD()),
+				new WorkTimeCode(entity.getWorkTimeCD()), workTime1, workTime2, subTargetDigestions);
 	}
 
 	private SubTargetDigestion toSubTagDigestion(KrqdtSubTargetDigestion entity) {
@@ -62,7 +63,7 @@ public class JpaRecruitmentAppRepository extends JpaRepository implements Recrui
 	private KrqdtRecruitmentApp toEntity(RecruitmentApp recApp) {
 		KrqdtRecruitmentApp entity = new KrqdtRecruitmentApp();
 		entity.setAppID(recApp.getAppID());
-		entity.setWorkTypeCD(recApp.getWorkTypeCD());
+		entity.setWorkTypeCD(recApp.getWorkTypeCD().v());
 		entity.setWorkTimeCD(recApp.getWorkTimeCD().v());
 
 		RecruitmentWorkingHour wkTime1 = recApp.getWorkTime1();
@@ -130,7 +131,7 @@ public class JpaRecruitmentAppRepository extends JpaRepository implements Recrui
 		RecruitmentWorkingHour workTime2 = new RecruitmentWorkingHour(new WorkTime(entity.getStartWorkTime2()),
 				EnumAdaptor.valueOf(entity.getStartUseAtr2(), NotUseAtr.class), new WorkTime(entity.getEndWorkTime2()),
 				EnumAdaptor.valueOf(entity.getEndUseAtr2(), NotUseAtr.class));
-		return new RecruitmentApp(entity.getAppID(), entity.getWorkTypeCD(), new WorkTimeCode(entity.getWorkTimeCD()),
-				workTime1, workTime2, null);
+		return new RecruitmentApp(entity.getAppID(), new WorkTypeCode(entity.getWorkTypeCD()),
+				new WorkTimeCode(entity.getWorkTimeCD()), workTime1, workTime2, null);
 	}
 }

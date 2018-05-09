@@ -13,4 +13,29 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAt
 public class HolidayWorkMidNightTime {
 	private TimeDivergenceWithCalculation time;
 	private StaturoryAtrOfHolidayWork statutoryAtr;
+	
+	/**
+	 * 実績超過乖離時間の計算
+	 * @return
+	 */
+	public int calcOverLimitDivergenceTime() {
+		return this.getTime().getDivergenceTime().valueAsMinutes() 
+				 + this.getTime().getDivergenceTime().valueAsMinutes();
+	}
+
+	/**
+	 * 実績超過乖離時間が発生しているか判定する
+	 * @return 乖離時間が発生している
+	 */
+	public boolean isOverLimitDivergenceTime() {
+		return this.calcOverLimitDivergenceTime() > 0 ? true:false;
+	}
+	
+	/**
+	 * 乖離時間を再計算
+	 * @return
+	 */
+	public HolidayWorkMidNightTime calcDiverGenceTime() {
+		return new HolidayWorkMidNightTime(this.time!=null?this.time.calcDiverGenceTime():TimeDivergenceWithCalculation.emptyTime(),this.statutoryAtr);
+	}
 }
