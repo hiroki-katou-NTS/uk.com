@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -37,9 +38,9 @@ public class LeaveEarlyDecisionClock {
 			DeductionTimeSheet deductionTimeSheet,
 			GraceTimeSetting leaveEarlyGraceTime,
 			TimeLeavingWork timeLeavingWork,
-			Optional<CoreTimeSetting> coreTimeSetting) {
+			Optional<CoreTimeSetting> coreTimeSetting,WorkType workType) {
 		
-		val predetermineTimeSheet = predetermineTimeSet.getTimeSheets(workNo);
+		val predetermineTimeSheet = predetermineTimeSet.getTimeSheets(workType.getDailyWork().decisionNeedPredTime(),workNo);
 		if(!predetermineTimeSheet.isPresent())
 			return Optional.empty();
 		TimeWithDayAttr decisionClock = new TimeWithDayAttr(0);
@@ -70,6 +71,7 @@ public class LeaveEarlyDecisionClock {
 		}
 		return Optional.empty();
 	}
+	
 	
 	/**
 	 * 早退時間の計算範囲の取得

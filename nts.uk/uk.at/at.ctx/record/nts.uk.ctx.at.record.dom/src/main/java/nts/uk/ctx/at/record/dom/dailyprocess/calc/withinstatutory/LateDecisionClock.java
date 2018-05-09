@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -46,9 +47,9 @@ public class LateDecisionClock {
 			DeductionTimeSheet deductionTimeSheet,
 			GraceTimeSetting lateGraceTime,
 			TimeLeavingWork timeLeavingWork,
-			Optional<CoreTimeSetting> coreTimeSetting) {
+			Optional<CoreTimeSetting> coreTimeSetting,WorkType workType) {
 
-		Optional<TimezoneUse> predetermineTimeSheet = predetermineTimeSet.getTimeSheets(workNo);
+		Optional<TimezoneUse> predetermineTimeSheet = predetermineTimeSet.getTimeSheets(workType.getDailyWork().decisionNeedPredTime(),workNo);
 		if(!predetermineTimeSheet.isPresent())
 			return Optional.empty();
 //		TimezoneUse predetermineTimeSheet = new TimezoneUse(new TimeWithDayAttr(0), new TimeWithDayAttr(0), UseSetting.NOT_USE , workNo);
