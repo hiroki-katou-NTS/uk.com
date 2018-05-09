@@ -1253,7 +1253,7 @@ module nts.custombinding {
                                                 }
                                             });
                                         }
-                                        
+
                                         if (item.listItemDf[0] && item.personInfoCategoryID != item.listItemDf[0].perInfoCtgId) {
                                             item.personInfoCategoryID = item.listItemDf[0].perInfoCtgId;
                                         }
@@ -2207,8 +2207,6 @@ module nts.custombinding {
                     } else {
                         x.renders = undefined;
                     }
-
-                    //console.log(x.items());
                 });
 
                 // clear all error on switch new layout
