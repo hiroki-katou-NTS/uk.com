@@ -110,7 +110,7 @@ public class OverTimeSheet {
 														   Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 														   Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily) {
 		Map<Integer,OverTimeFrameTime> overTimeFrameList = new HashMap<Integer, OverTimeFrameTime>();
-		val sortedFrameTimeSheet = sortFrameTime(frameTimeSheets, workType, null, eachWorkTimeSet, eachCompanyTimeSet);
+		val sortedFrameTimeSheet = sortFrameTime(frameTimeSheets, workType, eachWorkTimeSet, eachCompanyTimeSet);
 		//時間帯の計算
 		for(OverTimeFrameTimeSheetForCalc overTimeFrameTime : sortedFrameTimeSheet) {
 			val forceAtr = autoCalcSet.decisionUseCalcSetting(overTimeFrameTime.getWithinStatutryAtr(), overTimeFrameTime.isGoEarly()).getCalAtr();
@@ -170,8 +170,8 @@ public class OverTimeSheet {
 
 
 
-	private List<OverTimeFrameTimeSheetForCalc> sortFrameTime(List<OverTimeFrameTimeSheetForCalc> frameTimeSheets, WorkType workType, List<OverTimeFrameTime> afterCalcUpperTimeList, Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet, Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
-		val useSetting = decisionUseSetting(workType, afterCalcUpperTimeList, eachWorkTimeSet, eachCompanyTimeSet);
+	private List<OverTimeFrameTimeSheetForCalc> sortFrameTime(List<OverTimeFrameTimeSheetForCalc> frameTimeSheets, WorkType workType, Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet, Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+		val useSetting = decisionUseSetting(workType, eachWorkTimeSet, eachCompanyTimeSet);
 		if(!useSetting.isPresent())
 			return frameTimeSheets;
 		//指定した時間分振り替える
@@ -197,9 +197,9 @@ public class OverTimeSheet {
 		List<OverTimeFrameTime> returnList = new ArrayList<>();
 		for(OverTimeFrameTime loopOverTimeFrame:calcOverTimeWorkTimeList) {
 			//時間の上限時間算出
-			AttendanceTime upperTime = desictionUseUppserTime(autoCalcSet, loopOverTimeFrame);
+			AttendanceTime upperTime = desictionUseUppserTime(autoCalcSet,loopOverTimeFrame, loopOverTimeFrame.getOverTimeWork().getTime());
 			//計算時間の上限算出
-			AttendanceTime upperCalcTime = desictionUseUppserTime(autoCalcSet,  loopOverTimeFrame);
+			AttendanceTime upperCalcTime = desictionUseUppserTime(autoCalcSet,loopOverTimeFrame,  loopOverTimeFrame.getOverTimeWork().getCalcTime());
 			//振替処理
 			loopOverTimeFrame = loopOverTimeFrame.changeOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(upperTime.greaterThan(loopOverTimeFrame.getOverTimeWork().getTime())?loopOverTimeFrame.getOverTimeWork().getTime():upperTime,
 																														 upperCalcTime.greaterThan(loopOverTimeFrame.getOverTimeWork().getCalcTime())?loopOverTimeFrame.getOverTimeWork().getCalcTime():upperCalcTime));
@@ -209,11 +209,11 @@ public class OverTimeSheet {
 	}
 	
 	
-	public AttendanceTime desictionUseUppserTime(AutoCalOvertimeSetting autoCalcSet, OverTimeFrameTime loopOverTimeFrame) {
+	public AttendanceTime desictionUseUppserTime(AutoCalOvertimeSetting autoCalcSet, OverTimeFrameTime loopOverTimeFrame, AttendanceTime attendanceTime) {
 		switch(autoCalcSet.decisionUseCalcSetting(StatutoryAtr.Excess,false).getUpLimitORtSet()) {
 		//上限なし
 		case NOUPPERLIMIT:
-			return loopOverTimeFrame.getOverTimeWork().getCalcTime();
+			return attendanceTime;
 		//指示時間を上限とする
 		case INDICATEDYIMEUPPERLIMIT:
 			return loopOverTimeFrame.getOrderTime();
@@ -435,7 +435,7 @@ public class OverTimeSheet {
 												Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 												Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
 		
-		val useSettingAtr = decisionUseSetting(workType, afterCalcUpperTimeList, eachWorkTimeSet, eachCompanyTimeSet);
+		val useSettingAtr = decisionUseSetting(workType, eachWorkTimeSet, eachCompanyTimeSet);
 		
 		if(!useSettingAtr.isPresent())
 			return afterCalcUpperTimeList;
@@ -459,7 +459,7 @@ public class OverTimeSheet {
 	 * @param eachCompanyTimeSet 会社別代休時間設定
 	 * 
 	 */
-	public Optional<SubHolTransferSet> decisionUseSetting(WorkType workType, List<OverTimeFrameTime> afterCalcUpperTimeList,
+	public Optional<SubHolTransferSet> decisionUseSetting(WorkType workType,
 													  Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 													  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
 		//平日ではない

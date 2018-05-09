@@ -37,6 +37,13 @@ public class HolidayWorkFrameTime {
 		this.holidayWorkTime = Finally.of(this.holidayWorkTime.get().addMinutes(time, calcTime));
 	}
 	
+	public HolidayWorkFrameTime addHolidayTimeExistReturn(AttendanceTime time,AttendanceTime calcTime) {
+		return new HolidayWorkFrameTime(this.holidayFrameNo, 
+										Finally.of(this.holidayWorkTime.get().addMinutes(time, calcTime)), 
+										this.transferTime, 
+										this.beforeApplicationTime);
+	}
+	
 	//休出枠Noのみ指定した休出枠Noに更新する
 	public HolidayWorkFrameTime updateHolidayFrameNo(HolidayWorkFrameNo holidayFrameNo) {
 		
