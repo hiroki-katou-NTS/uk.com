@@ -226,7 +226,7 @@ public class KrcdtDayDivergenceTime extends UkJpaEntity implements Serializable{
 		if(frame.isPresent()) {
 			setPerDivergenceTimeData("divergenceTime",number,frame.get().getDivTime() == null ? 0 : frame.get().getDivTime().valueAsMinutes());
 			setPerDivergenceTimeData("deductionTime",number,frame.get().getDeductionTime() == null ? 0 : frame.get().getDeductionTime().valueAsMinutes());
-			setPerDivergenceTimeData("afterDeductionTime",frame.get().getDivTimeAfterDeduction() == null ? 0 : number,frame.get().getDivTimeAfterDeduction().valueAsMinutes());
+			setPerDivergenceTimeData("afterDeductionTime",number,frame.get().getDivTimeAfterDeduction() == null ? 0 : frame.get().getDivTimeAfterDeduction().valueAsMinutes());
 			setPerDivergenceTimeData("reasonCode",number,frame.get().getDivResonCode() == null ? "" : frame.get().getDivResonCode().toString());
 			setPerDivergenceTimeData("reason",number,frame.get().getDivReason() == null ? "" : frame.get().getDivReason().toString());
 		}

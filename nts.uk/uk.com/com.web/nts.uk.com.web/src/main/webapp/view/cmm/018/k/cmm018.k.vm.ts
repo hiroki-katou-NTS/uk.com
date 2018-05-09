@@ -5,6 +5,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
     import resource = nts.uk.resource;
     import shrVm = cmm018.shr.vmbase;
     import service = cmm018.k.service;
+    import block = nts.uk.ui.block;
     export class ScreenModel{
         //enable list workplace
         enableListWp: KnockoutObservable<boolean> = ko.observable(true);
@@ -187,6 +188,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         //set data in swap-list
         setDataForSwapList(selectTypeSet: number){
             var self = this;
+            block.invisible();
             //clear data before push employee new
             self.employeeList([]);
             //個人設定 (employee setting)
@@ -199,7 +201,9 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                     _.each(lstTmp, function(item){
                         self.employeeList.push(new shrVm.ApproverDtoK(item.id, item.code, item.name, item.approvalAtr,0))
                     });
+                    block.clear();
                 }).fail(function(res: any){
+                    block.clear();
                     nts.uk.ui.dialog.alert(res.messageId);
                 })
             //職位設定(job setting)
@@ -208,8 +212,10 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                     _.forEach(data, function(value: service.model.JobtitleInfor){
                         var job = new shrVm.ApproverDtoK(value.positionId,value.positionCode,value.positionName, 1,0);
                         self.employeeList.push(job);
-                    })    
+                    });
+                    block.clear(); 
                 }).fail(function(res: any){
+                    block.clear();
                     nts.uk.ui.dialog.alert(res.messageId);
                 })
             }    
@@ -256,21 +262,25 @@ module nts.uk.com.view.cmm018.k.viewmodel{
          * load data new when base date is changed 
          */
         applyDataSearch(): void {
-             let self = this;
+            let self = this;
+            block.invisible();
             if (nts.uk.ui.errors.hasError()){return;}
             if(self.selectTypeSet() == 0){
                 self.treeGrid.baseDate(this.standardDate());
                 $('#tree-grid').ntsTreeComponent(self.treeGrid);
+                block.clear();
             }else{
                 self.employeeList([]);
                 service.getJobTitleInfor(self.standardDate()).done(function(data: string){
                     _.forEach(data, function(value: service.model.JobtitleInfor){
                         var job = new shrVm.ApproverDtoK(value.positionId,value.positionCode,value.positionName, 1);
                         self.employeeList.push(job);
-                    })    
+                    });
+                    block.clear();    
                 }).fail(function(res: any){
+                    block.clear();
                     nts.uk.ui.dialog.alert(res.messageId);
-                })
+                });
             }
              
          }

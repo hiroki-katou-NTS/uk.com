@@ -186,22 +186,22 @@ module nts.uk.ui.koExtentions {
                 var validator = new validation.TimeValidator(isStart ? startName : endName, "", 
                     {required: false, outputFormat: dateFormat, valueType: "string"});
                 
-                var result = validator.validate(newText);
-                
+                var valueX = time.formatPattern(newText, dateFormat, ISOFormat);
+                if(!nts.uk.util.isNullOrEmpty(valueX) && valueX !== "Invalid date"){
+                    $target.val(valueX);
+                    $target.datepicker("update");
+                    newText = valueX;
+                }
+
+                let result = validator.validate(newText);
                 let oldValue = value();
-                if($target.hasClass("ntsStartDatePicker")){
+                if (isStart) {
                     oldValue.startDate = result.isValid ? result.parsedValue : newText;            
                 } else {
                     oldValue.endDate = result.isValid ? result.parsedValue : newText;    
                 }
                 
                 validateProcess(newText, $target, isStart, oldValue, result);
-                var valueX = time.formatPattern(newText, dateFormat, ISOFormat);
-                if(!nts.uk.util.isNullOrEmpty(valueX) && valueX !== "Invalid date"){
-                    //console.log(1);
-                    $target.val(valueX);
-                }
-                
                 value(oldValue);
             });
             

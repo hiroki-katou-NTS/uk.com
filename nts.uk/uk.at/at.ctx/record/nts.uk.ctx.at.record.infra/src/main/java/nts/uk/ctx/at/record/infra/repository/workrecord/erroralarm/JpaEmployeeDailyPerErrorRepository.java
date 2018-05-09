@@ -159,6 +159,12 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 				.setParameter("employeeId", employeeID).setParameter("companyId", companyID)
 				.getList(x -> x.toDomain());
 	}
+
+	@Override
+	public boolean checkExistRecordErrorListDate(String companyID, String employeeID, List<GeneralDate> lstDate) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 
 }

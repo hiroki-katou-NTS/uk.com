@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.daily.breaktimegoout;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -14,11 +13,9 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetRoundingAtr;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 
 /**
  * 日別実績の休憩時間
@@ -108,15 +105,12 @@ public class BreakTimeOfDaily {
 
 	/**
 	 * 休憩未使用時間の計算
-	 * @param timeLeavingOfDailyPerformance 
 	 * @return 休憩未使用時間
 	 */
-	public AttendanceTime calcUnUseBrekeTime(FixRestTimezoneSet fixRestTimezoneSet, TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
+	public AttendanceTime calcUnUseBrekeTime(TimezoneOfFixedRestTimeSet fixRestTimeSetting) {
 		//実績の休憩時間を取得
 		val recordTotalTime = this.getToRecordTotalTime().getWithinStatutoryTotalTime();
-		
-		val timeSpans = timeLeavingOfDailyPerformance.getTimeLeavingWorks().stream().map(tc -> tc.getTimespan()).collect(Collectors.toList());
-		val totalBreakTime = fixRestTimezoneSet.calcTotalTimeDuplicatedAttLeave(timeSpans);
+		val totalBreakTime = fixRestTimeSetting.calcTotalTime();
 		return totalBreakTime.minusMinutes(recordTotalTime.getCalcTime().valueAsMinutes());
 	}
 	

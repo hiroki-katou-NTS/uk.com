@@ -12,6 +12,7 @@ import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReference;
+import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 
@@ -214,6 +215,11 @@ public class OverTimeDto {
 	 */
 	private boolean prePostCanChangeFlg;
 	
+	private List<CaculationTime> caculationTimes;
+	
+	private boolean resultCaculationTimeFlg;
+	private boolean workTypeChangeFlg;
+	
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
 		return new OverTimeDto(
 				appOverTime.getVersion(),
@@ -261,7 +267,11 @@ public class OverTimeDto {
 				null,
 				false,
 				false,
-				false,false);
+				false,
+				false,
+				null,
+				false,
+				false);
 	}
 	
 }

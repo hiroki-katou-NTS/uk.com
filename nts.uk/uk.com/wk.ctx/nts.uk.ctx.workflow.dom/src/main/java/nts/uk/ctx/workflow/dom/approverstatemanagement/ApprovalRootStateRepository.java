@@ -74,4 +74,6 @@ public interface ApprovalRootStateRepository {
 	
 	public List<ApprovalRootState> getRootStateByDateAndType(GeneralDate date, Integer rootType);
 	
+	public void deleteConfirmDay(String employeeID, GeneralDate date);
+	
 }
