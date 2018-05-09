@@ -134,7 +134,8 @@ public class WorkTimeOfMonthly {
 			}
 			
 			// 「日別実績の総労働時間．休暇加算時間」を取得する
-			val vacationAddTime = totalWorkingTime.getVacationAddTime();
+			//val vacationAddTime = totalWorkingTime.getVacationAddTime();
+			AttendanceTime vacationAddTime = new AttendanceTime(0);
 	
 			// 時系列ワークに追加
 			val workTimeOfTimeSeries = WorkTimeOfTimeSeries.of(ymd,
