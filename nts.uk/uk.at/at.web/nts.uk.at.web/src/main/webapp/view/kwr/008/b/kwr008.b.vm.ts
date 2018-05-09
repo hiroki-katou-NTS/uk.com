@@ -114,10 +114,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             //let lstOpeItems: _.map(self.listOperationCds, ((item) => { return item.code; }));
             self.getListItemByAtr(self.outputItem()[index].valueOutputFormat()).done((lstItem) => {
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
-                let lstAddItems: _.filter(self.outputItem()[index].listOperationSetting(), (item) => {
+                let lstAddItems = _.filter(self.outputItem()[index].listOperationSetting(), (item) => {
                         return item.operation();
                     }).map((item) => { return item.cd; });
-                let lstSubItems: _.filter(self.outputItem()[index].listOperationSetting(), (item) => {
+                let lstSubItems = _.filter(self.outputItem()[index].listOperationSetting(), (item) => {
                         return !item.operation();
                     }).map((item) => { return item.cd; });
                 let param = {
@@ -272,7 +272,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             let itemOut : any = _.filter(self.outputItem(), v=>{return v.headingName().trim();});
             
             if(itemOut.length == 0){
-                $('#table-output-items').ntsError('set', {messageId:"Msg_881"});
+               // $('#table-output-items').ntsError('set', {messageId:"Msg_881"});
+                alertError({messageId:"Msg_881"});
                 block.clear();
                 return;
             }
@@ -423,7 +424,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         listItemOutput[i].useClassification,
                         listItemOutput[i].headingName,
                         listItemOutput[i].valueOutputFormat,
-                        listItemOutput[i].outputTargetItem));
+                        listItemOutput[i].outputTargetItem);
                     if (listItemOutput[i].listOperationSetting) {
                         outputItemData.buildListOperationSetting(listItemOutput[i].listOperationSetting);
                     }
