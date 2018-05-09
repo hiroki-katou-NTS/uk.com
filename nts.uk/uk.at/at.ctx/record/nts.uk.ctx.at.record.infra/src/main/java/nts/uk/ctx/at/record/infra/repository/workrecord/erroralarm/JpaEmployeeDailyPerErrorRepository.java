@@ -25,6 +25,8 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	private static final String REMOVE_DATA;
 	
 	private static final String REMOVE_DATA_ATTENDANCE_ITEM;
+	
+	private static final String CHECK_EXIST_CODE_BY_LIST_DATE;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -65,6 +67,14 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		builderString.append("FROM KrcdtErAttendanceItem a ");
 		builderString.append("WHERE a.krcdtErAttendanceItemPK.iD = :iD ");
 		REMOVE_DATA_ATTENDANCE_ITEM = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT COUNT(a) ");
+		builderString.append("FROM KrcdtSyainDpErList a ");
+		builderString.append("WHERE a.employeeId = :employeeId ");
+		builderString.append("AND a.companyID = :companyID ");
+		builderString.append("AND a.processingDate IN :processingDates ");
+		CHECK_EXIST_CODE_BY_LIST_DATE = builderString.toString();
 
 	}
 
@@ -162,8 +172,9 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 
 	@Override
 	public boolean checkExistRecordErrorListDate(String companyID, String employeeID, List<GeneralDate> lstDate) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.queryProxy().query(CHECK_EXIST_CODE_BY_LIST_DATE, long.class).setParameter("employeeId", employeeID)
+				.setParameter("companyID", companyID)
+				.setParameter("processingDates", lstDate).getSingle().get() > 0;
 	}
 	
 
