@@ -97,7 +97,8 @@ module kcp004.a.viewmodel {
                 isShowSelectButton: self.isShowSelectButton(),
                 isDialog: self.isDialog(),
                 alreadySettingList: self.alreadySettingList,
-                systemType : self.selectedSystemType()
+                systemType : self.selectedSystemType(),
+                restrictionOfReferenceRange: self.restrictionOfReferenceRange()
                 
             };
             
