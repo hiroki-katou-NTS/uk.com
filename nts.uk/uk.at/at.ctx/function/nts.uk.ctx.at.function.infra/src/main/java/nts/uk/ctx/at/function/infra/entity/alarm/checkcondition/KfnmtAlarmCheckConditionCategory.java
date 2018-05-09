@@ -21,8 +21,10 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.ExtractionCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyAlarmCondition;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.fourweekfourdayoff.KfnmtAlarmCheck4W4D;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.monthly.KfnmtMonAlarmCheckCon;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -64,6 +66,10 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
 	public KfnmtAlarmCheck4W4D schedule4W4DAlarmCondition;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
+	public KfnmtMonAlarmCheckCon kfnmtMonAlarmCheckCon;
+	
 
 	@Override
 	protected Object getKey() {
@@ -73,7 +79,8 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 	public KfnmtAlarmCheckConditionCategory(String companyId, int category, String code, String name,
 			KfnmtAlarmCheckTargetCondition targetCondition,
 			List<KfnmtAlarmCheckConditionCategoryRole> listAvailableRole,
-			KrcmtDailyAlarmCondition dailyAlarmCondition, KfnmtAlarmCheck4W4D schedule4W4DAlarmCondition) {
+			KrcmtDailyAlarmCondition dailyAlarmCondition, KfnmtAlarmCheck4W4D schedule4W4DAlarmCondition,
+			KfnmtMonAlarmCheckCon kfnmtMonAlarmCheckCon) {
 		super();
 		this.pk = new KfnmtAlarmCheckConditionCategoryPk(companyId, category, code);
 		this.name = name;
@@ -82,6 +89,7 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 		this.listAvailableRole = listAvailableRole;
 		this.dailyAlarmCondition = dailyAlarmCondition;
 		this.schedule4W4DAlarmCondition = schedule4W4DAlarmCondition;
+		this.kfnmtMonAlarmCheckCon = kfnmtMonAlarmCheckCon;
 	}
 
 	public static AlarmCheckConditionByCategory toDomain(KfnmtAlarmCheckConditionCategory entity) {
@@ -93,6 +101,9 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 			break;
 		case SCHEDULE_4WEEK:
 			extractionCondition = entity.schedule4W4DAlarmCondition == null ? null : entity.schedule4W4DAlarmCondition.toDomain();
+			break;
+		case MONTHLY:
+			extractionCondition = entity.kfnmtMonAlarmCheckCon == null ? null : entity.kfnmtMonAlarmCheckCon.toDomain();
 			break;
 		default:
 			break;
@@ -149,7 +160,11 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 				domain.getCategory() == AlarmCategory.SCHEDULE_4WEEK
 						? KfnmtAlarmCheck4W4D.toEntity((AlarmCheckCondition4W4D) domain.getExtractionCondition(),
 								domain.getCompanyId(), domain.getCategory(), domain.getCode())
-						: null);
+						: null,
+				domain.getCategory() == AlarmCategory.MONTHLY
+						? KfnmtMonAlarmCheckCon.toEntity(domain.getCompanyId(), domain.getCode().v(),domain.getCategory().value ,(MonAlarmCheckCon) domain.getExtractionCondition())
+						: null		
+				);
 	}
 
 }

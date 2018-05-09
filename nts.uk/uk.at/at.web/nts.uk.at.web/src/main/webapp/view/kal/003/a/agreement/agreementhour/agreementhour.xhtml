@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+	<com:ValidatorScript>
+        nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.MessageDisp
+        nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.NameWKRecord
+    </com:ValidatorScript>
+
+	<ui:define name="htmlHead">
+		<com:scriptfile set="IGNITE" />
+	</ui:define>
+
+	<div>
+		<div class="mg-bot-10">
+			<span>#{i18n.getText('KAL003_209')}</span>
+		</div>
+		<div class="mg-bot-10">
+			<button data-bind="click: createNewLine">#{i18n.getText('KAL003_203')}</button>
+			<button data-bind="click: deleteLine">#{i18n.getText('KAL003_204')}</button>
+		</div>
+		<table id="fixed-table-agreement-hour">
+			<colgroup>
+				<col width="50px" />
+				<col width="100px" />
+				<col width="100px" />
+				<col width="250px" />
+			</colgroup>
+			<thead>
+				<tr>
+					<th class="ui-widget-header">#{i18n.getText('KAL003_205')}</th>
+					<th class="ui-widget-header">#{i18n.getText('KAL003_206')}</th>
+					<th class="ui-widget-header">#{i18n.getText('KAL003_207')}</th>
+					<th class="ui-widget-header">#{i18n.getText('KAL003_208')}</th>
+				</tr>
+			</thead>
+			<tbody data-bind="foreach: listAgreementHour()">
+				<tr data-bind="attr: {'data-id': id}">
+					<td class="text-center"><span data-bind="text: no"></span></td>
+					<td><input
+						data-bind="ntsTextEditor: {value: ot36, required: false, constraint: 'NameWKRecord', name: '#[KAL003_206]', 
+		                       option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+				                textmode: 'text',
+				                placeholder: '',
+				                width: '70px',
+				                textalign: 'left'
+				            }))}" />
+					</td>
+					<td><input
+						data-bind="ntsTextEditor: {value: excessNum, required: false, constraint: 'NameWKRecord', name: '#[KAL003_207]', 
+		                       option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+				                textmode: 'text',
+				                placeholder: '',
+				                width: '70px',
+				                textalign: 'left'
+				            }))}" /></td>
+					<td><input
+						data-bind="ntsTextEditor: {value: messageDisp, required: false, constraint: 'MessageDisp', name: '#[KAL003_208]', 
+		                       option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+				                textmode: 'text',
+				                placeholder: '',
+				                width: '220px',
+				                textalign: 'left'
+				            }))}" /></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</ui:composition>
