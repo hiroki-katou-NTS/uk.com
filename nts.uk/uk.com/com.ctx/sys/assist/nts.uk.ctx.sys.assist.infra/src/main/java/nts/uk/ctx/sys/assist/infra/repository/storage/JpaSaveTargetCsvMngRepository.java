@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.storage.SaveTargetCsv;
 import nts.uk.ctx.sys.assist.dom.storage.SaveTargetCsvRepository;
@@ -15,12 +17,15 @@ import nts.uk.ctx.sys.assist.dom.storage.SaveTargetCsvRepository;
  * @author nam.lh
  *
  */
+@Stateless
 public class JpaSaveTargetCsvMngRepository extends JpaRepository implements SaveTargetCsvRepository {
 
 	private static final String SELECT_BY_STORE_PROCESSING_ID = "select a.storeProcessingId, a.suppleExplanation, b.saveForm, b.saveSetCode, b.saveName, c.categoryId, c.timeStore, c.recoveryStorageRange, b.saveForInvest, c.otherCompanyCls, e.categoryId, e.tableJapanName, e.tableEnglishName, e.historyCls, e.defaultCondKeyQuery, e.fieldKeyQuery1, e.fieldKeyQuery2, e.fieldKeyQuery3, e.fieldKeyQuery4, e.fieldKeyQuery5, e.fieldKeyQuery6, e.fieldKeyQuery7, e.fieldKeyQuery8, e.fieldKeyQuery9, e.fieldKeyQuery10, e.clsKeyQuery1, e.clsKeyQuery2, e.clsKeyQuery3, e.clsKeyQuery4, e.clsKeyQuery5, e.clsKeyQuery6, e.clsKeyQuery7, e.clsKeyQuery8, e.clsKeyQuery9, e.clsKeyQuery10, e.filedKeyUpdate1, , e.filedKeyUpdate2, , e.filedKeyUpdate3,  e.filedKeyUpdate4,  e.filedKeyUpdate5,  e.filedKeyUpdate6, e.filedKeyUpdate7, e.filedKeyUpdate8, e.filedKeyUpdate9, e.filedKeyUpdate10, e.filedKeyUpdate11, e.filedKeyUpdate12, e.filedKeyUpdate13, e.filedKeyUpdate14, e.filedKeyUpdate15, e.filedKeyUpdate16, e.filedKeyUpdate17, e.filedKeyUpdate18, e.filedKeyUpdate19, e.filedKeyUpdate20, e.fieldDate1, , e.fieldDate2, , e.fieldDate3,  e.fieldDate4,  e.fieldDate5,  e.fieldDate6, e.fieldDate7, e.fieldDate8, e.fieldDate9, e.fieldDate10, e.fieldDate11, e.fieldDate12, e.fieldDate13, e.fieldDate14, e.fieldDate15, e.fieldDate16, e.fieldDate17, e.fieldDate18, e.fieldDate19, e.fieldDate20   from SspmtManualSetOfDataSave a"
 			+ "JOIN SspmtResultOfSaving b" + "ON a.storeProcessingId = b.storeProcessingId" + "JOIN SspmtCategory c "
 			+ "ON c.categoryId in (SELECT c.categoryId FROM SspmtTargetCategory d WHERE b.storeProcessingId =:storeProcessingId )"
 			+ "JOIN SspmtCategoryFieldMt e" + "ON e.categoryId = c.categoryId";
+
+	private static final String SELECT_TABLE_NAME_CSV = "";
 
 	@Override
 	public List<SaveTargetCsv> getSaveTargetCsvById(String storeProcessingId) {
