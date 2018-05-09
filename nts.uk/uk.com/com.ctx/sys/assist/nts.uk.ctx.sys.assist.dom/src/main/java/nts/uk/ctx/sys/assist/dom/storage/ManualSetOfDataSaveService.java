@@ -4,6 +4,8 @@
 package nts.uk.ctx.sys.assist.dom.storage;
 
 import java.io.File;
+import java.io.OutputStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,6 +17,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.layer.app.file.export.ExportService;
+import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFileFactory;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFilesContainer;
@@ -33,7 +37,7 @@ import nts.uk.shr.infra.file.csv.CSVReportGenerator;
  *
  */
 @Stateless
-public class ManualSetOfDataSaveService {
+public class ManualSetOfDataSaveService extends ExportService<Object> {
 	@Inject
 	private ResultOfSavingRepository repoResultSaving;
 	@Inject
@@ -50,13 +54,26 @@ public class ManualSetOfDataSaveService {
 	private TargetEmployeesRepository repoTargetEmp;
 	@Inject
 	private CSVReportGenerator generator;
-	
+
 	@Inject
 	private ApplicationTemporaryFileFactory applicationTemporaryFileFactory;
 	@Inject
 	private SaveTargetCsvRepository csvRepo;
 
-	public void serverManualSaveProcessing(String storeProcessingId) {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.file.export.ExportService#handle(nts.arc.layer.app.file
+	 * .export.ExportServiceContext)
+	 */
+	@Override
+	protected void handle(ExportServiceContext<Object> context) {
+		String storeProcessingId = context.getQuery().toString();
+		serverManualSaveProcessing(storeProcessingId, context.getGeneratorContext());
+	}
+
+	public void serverManualSaveProcessing(String storeProcessingId, FileGeneratorContext generatorContext) {
 		// ドメインモデル「データ保存の保存結果」へ書き出す
 		Optional<ResultOfSaving> otpResultSaving = repoResultSaving.getResultOfSavingById(storeProcessingId);
 		// ドメインモデル「データ保存動作管理」を登録する ( Save data to Data storage operation
@@ -92,39 +109,50 @@ public class ManualSetOfDataSaveService {
 			repoDataSto.update(storeProcessingId, categoryTotalCount, categoryCount, operatingCondition);
 
 			// Execute algorithm "Save target data"
-			// Create TEMP folder
-			File nameFoderTemp = new File("C:\\Temp");
-			if (!nameFoderTemp.exists()) {
-				if (nameFoderTemp.mkdir()) {
-					System.out.println("Directory temp is created!");
-				} else {
-					System.out.println("Failed to create directory temp!");
-				}
-			}
+
+			/***/
+			ApplicationTemporaryFilesContainer applicationTemporaryFilesContainer = applicationTemporaryFileFactory
+					.createContainer();
 
 			// Add Table to CSV
-			generalCsv(storeProcessingId);
+			generalCsv(storeProcessingId, generatorContext);
 
 			// Add Table to CSV2
-			generalCsv2(storeProcessingId);
-			
-			/** finally*/
-			//OutputStream zippedFile = applicationTemporaryFilesContainer.zip("pass");
-			//applicationTemporaryFilesContainer.removeContainer();
+			generalCsv2(storeProcessingId, generatorContext);
+
+			// Add folder temp to zip
+			applicationTemporaryFilesContainer.addFile(generatorContext);
+
+			int passwordAvailability = optManualSetting.get().getPasswordAvailability().value;
+
+			if (passwordAvailability == 0) {
+				applicationTemporaryFilesContainer.zip();
+			}
+			if (passwordAvailability == 1) {
+				String password = optManualSetting.get().getCompressedPassword().v();
+				applicationTemporaryFilesContainer.zip(password);
+			}
+
+			Path tempFolder = applicationTemporaryFilesContainer.getPath();
+			applicationTemporaryFilesContainer.removeContainer();
+
+			/** finally */
+			// OutputStream zippedFile =
+			// applicationTemporaryFilesContainer.zip("pass");
+			// applicationTemporaryFilesContainer.removeContainer();
 		}
 
 	}
-	
-	
-	private List<SaveTargetCsv> commonCsv(String storeProcessingId){
+
+	private List<SaveTargetCsv> commonCsv(String storeProcessingId) {
 		List<SaveTargetCsv> csvTarRepoCommon = csvRepo.getSaveTargetCsvById(storeProcessingId);
 		return csvTarRepoCommon;
 	}
-	
-	private void generalCsv(String storeProcessingId) {
+
+	private void generalCsv(String storeProcessingId, FileGeneratorContext generatorContext) {
 
 		List<SaveTargetCsv> csvTarRepo = commonCsv(storeProcessingId);
-		
+
 		List<String> headerCsv = this.getTextHeader();
 		// Get data from Manual Setting table
 		List<Map<String, Object>> dataSourceCsv = new ArrayList<>();
@@ -217,13 +245,12 @@ public class ManualSetOfDataSaveService {
 
 		CSVFileData fileData = new CSVFileData(PGID + "対象社員" + AppContexts.user().companyCode() + FILE_EXTENSION,
 				headerCsv, dataSourceCsv);
-		FileGeneratorContext generatorContext = new FileGeneratorContext();
+		// FileGeneratorContext generatorContext = new FileGeneratorContext();
 		generator.generate(generatorContext, fileData);
-		
-		
+
 	}
 
-	private void generalCsv2(String storeProcessingId) {
+	private void generalCsv2(String storeProcessingId, FileGeneratorContext generatorContext) {
 		List<TargetEmployees> targetEmployees = repoTargetEmp.getTargetEmployeesListById(storeProcessingId);
 		// Add Table to CSV2
 		List<String> headerCsv2 = this.getTextHeaderCSV2();
@@ -235,19 +262,21 @@ public class ManualSetOfDataSaveService {
 			rowCsv2.put(headerCsv2.get(2), targetEmp.getBusinessname());
 			dataSourceCsv2.add(rowCsv2);
 		}
-		/***/
-		ApplicationTemporaryFilesContainer applicationTemporaryFilesContainer = applicationTemporaryFileFactory.createContainer();	
+
 		CSVFileData fileData = new CSVFileData(PGID + "対象社員" + AppContexts.user().companyCode() + FILE_EXTENSION,
 				headerCsv2, dataSourceCsv2);
-		
-		FileGeneratorContext generatorContext = new FileGeneratorContext();
+
+		// FileGeneratorContext generatorContext = new FileGeneratorContext();
 
 		generator.generate(generatorContext, fileData);
-		applicationTemporaryFilesContainer.addFile(generatorContext);
-		
+		// applicationTemporaryFilesContainer.addFile(generatorContext);
 
-		
 	}
+
+	private void generalCsvAuto(String storeProcessingId) {
+		List<SaveTargetCsv> csvTarRepo = commonCsv(storeProcessingId);
+
+	};
 
 	private static final List<String> LST_NAME_ID_HEADER_TABLE = Arrays.asList("CMF003_500", "CMF003_501", "CMF003_502",
 			"CMF003_503", "CMF003_504", "CMF003_505", "CMF003_506", "CMF003_507", "CMF003_508", "CMF003_509",

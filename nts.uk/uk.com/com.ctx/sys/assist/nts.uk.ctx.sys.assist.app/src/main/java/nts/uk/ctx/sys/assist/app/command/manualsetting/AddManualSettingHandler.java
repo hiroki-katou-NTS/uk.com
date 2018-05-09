@@ -53,7 +53,7 @@ public class AddManualSettingHandler extends CommandHandler<ManualSettingCommand
 		
 		repo.addManualSetting(domain);
 
-		manualSetOfDataSaveService.serverManualSaveProcessing(storeProcessingId);
+		manualSetOfDataSaveService.start(storeProcessingId);
 
 	}
 }
