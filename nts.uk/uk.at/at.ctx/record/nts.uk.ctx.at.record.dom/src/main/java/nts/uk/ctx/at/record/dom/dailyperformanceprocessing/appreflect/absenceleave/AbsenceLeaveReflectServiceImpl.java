@@ -122,7 +122,7 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 		if(optWorkInfor.isPresent()) {
 			WorkInfoOfDailyPerformance workInfo = optWorkInfor.get();
 			if(workInfo.getScheduleInfo().getWorkTimeCode() != null) {
-				outData.setChkReflect(true);
+				outData.setChkReflect(false);
 				outData.setWorkTimeCode(workInfo.getScheduleInfo().getWorkTimeCode().v());
 				return outData;
 			}
@@ -195,7 +195,7 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 			SetupType checkNeededOfWorkTimeSetting = basicService.checkNeededOfWorkTimeSetting(param.getWorkTypeCode());
 			if(checkNeededOfWorkTimeSetting == SetupType.NOT_REQUIRED) {
 				//就時の反映: 就業時間帯コードをクリア
-				workUpdate.updateRecordWorkTime(param.getEmployeeId(), param.getBaseDate(), "000", true);
+				workUpdate.updateRecordWorkTime(param.getEmployeeId(), param.getBaseDate(), "000", false);
 			}
 			//開始終了時刻が反映できるか(1日休日)
 			if(this.checkReflectRecordStartEndTime(param.getEmployeeId(), param.getBaseDate(), 1, true)) {
