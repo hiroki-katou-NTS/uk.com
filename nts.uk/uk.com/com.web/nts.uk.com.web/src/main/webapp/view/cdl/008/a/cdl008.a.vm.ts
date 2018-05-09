@@ -16,6 +16,8 @@ module nts.uk.com.view.cdl008.a {
             baseDate: KnockoutObservable<Date>;
             workplaces: TreeComponentOption;
             isMultiple: boolean;
+            selectedSystemType: KnockoutObservable<number>;
+            restrictionOfReferenceRange: KnockoutObservable<boolean>;
             constructor(){
                 var self = this;
                 self.baseDate = ko.observable(new Date());
@@ -31,7 +33,9 @@ module nts.uk.com.view.cdl008.a {
                     }   
                     else {
                         self.selectedSelWorkplace(inputCDL008.selectedCodes);
-                    } 
+                    }
+                self.selectedSystemType = inputCDL008.selectedSystemType;
+                self.restrictionOfReferenceRange = inputCDL008.isrestrictionOfReferenceRange;                     
                 }
                 
                 self.workplaces = {
@@ -45,7 +49,8 @@ module nts.uk.com.view.cdl008.a {
                     selectedWorkplaceId : null, 
                     maxRows: 12, 
                     tabindex: 1,
-                    systemType: 2
+                    systemType: self.selectedSystemType,
+                    restrictionOfReferenceRange: self.restrictionOfReferenceRange
                 }
                 if (self.isMultiple) {
                     self.workplaces.selectedWorkplaceId = self.selectedMulWorkplace;
