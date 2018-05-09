@@ -284,7 +284,7 @@ module cps002.a.vm {
                         dfs[1].resolve(data);
                     });
 
-                    $.when($, dfs).then(() => {
+                    $.when.apply($, dfs).then(() => {
                         let stampCardEditing = arguments[0];
                         let userSetting = arguments[1];
 

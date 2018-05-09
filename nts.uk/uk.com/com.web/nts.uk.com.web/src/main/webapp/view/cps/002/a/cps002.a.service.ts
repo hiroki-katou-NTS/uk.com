@@ -77,7 +77,7 @@ module cps002.a.service {
         let dfd = $.Deferred<any>();
         let self = this;
         _.defer(() => block.invisible());
-        nts.uk.request.ajax(paths.getEmployeeCode, employeeLetter)
+        nts.uk.request.ajax("com", regpath + paths.getEmployeeCode, employeeLetter)
             .done(function(res) {
                 dfd.resolve(res);
             }).fail(function(res) {
