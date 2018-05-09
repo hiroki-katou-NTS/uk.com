@@ -72,10 +72,10 @@ module nts.uk.at.view.kal003.a.service {
 
     export function getAgreementError(): JQueryPromise<any> {
         return ajax("at", paths.getAgreementError);
-
+    }
     //monthly
     export function getAllFixedExtraItemMon(): JQueryPromise<Array<any>>{
-        return ajax("at", paths.getAllFixedExtraItemMon);
+        return ajax("at", paths.getAllFixedExtraItemMon); 
 
     }
 }
