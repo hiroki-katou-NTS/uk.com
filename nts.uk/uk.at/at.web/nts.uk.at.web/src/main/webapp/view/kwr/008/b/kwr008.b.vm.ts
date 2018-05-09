@@ -49,7 +49,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     service.getListItemOutput(code).done(r => {
                         if (r && r.length > 0) {
                             for(var i = 0; i < r.length; i++) {
-                                self.outputItem.push(new OutputItemData(i+1, r[i].cd, r[i].useClass, r[i].headingName, r[i].valOutFormat, ''));
+                                self.outputItem.replace(self.outputItem()[i],new OutputItemData(i + 1, r[i].cd, r[i].useClass, r[i].headingName, r[i].valOutFormat, ''));
                             }
                         }
                     });
@@ -335,7 +335,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             self.isNewMode(true);
             $("#B3_2").focus();
-            //$('#listStandardImportSetting').ntsGridList('deselectAll');
+            self.outputItem.removeAll();
+            $('#listStandardImportSetting').ntsGridList('deselectAll');
             self.currentSetOutputSettingCode(new SetOutputSettingCode(null));
             for (var i = 1; i <= 10; i++) {
                 self.outputItem.push(new OutputItemData(i, '', false, '', 0, ''));
