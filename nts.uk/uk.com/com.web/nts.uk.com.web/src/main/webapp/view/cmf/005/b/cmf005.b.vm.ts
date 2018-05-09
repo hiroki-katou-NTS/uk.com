@@ -118,7 +118,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.currentCode = ko.observable();
             self.currentCategory = ko.observableArray([]);
             self.listColumnHeader = ko.observableArray([
-                { headerText: '', key: 'cateItemNumber', width: 20 },
+                { headerText: '', key: 'cateItemNumber', width: 40 },
                 { headerText: '', key: 'categoryId', hidden: true },
                 { headerText: getText('CMF005_24'), key: 'categoryName', width: 220 },
                 { headerText: getText('CMF005_25'), key: 'timeStore', width: 100, formatter: timeStore },
@@ -286,18 +286,11 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 $("#B4_2").focus();
             });
         }
-
-         openScreenF() {
-            var self = this;
-           
-            modal("/view/cmf/005/f/index.xhtml").onClosed(() => {
-                alert('ok!!!!!!!!!!!!!') });
-        }
         
         /**
          *Open screen D 
          */
-        nextScreenD() {
+       private nextScreenD(): void  {
             let self = this;
             if (self.validateForm()) {
                 if (self.listDataCategory().length > 0) {
@@ -391,7 +384,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                     return false;
                 }
             } else {
-                return false;
+                return true;
             }
         }
 
