@@ -16,6 +16,7 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoScCode
 				nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoScName
+				nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.ItemOutTblBookHeadingName
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
@@ -27,7 +28,7 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button tabindex="1" data-bind="click: registerMode, enable: isNewMode() == nts.uk.at.view.kwr008.share.model.SCREEN_MODE.UPDATE">#{i18n.getText('KWR008_18')}</button>
+				<button tabindex="1" data-bind="click: registerMode, enable: !isNewMode()">#{i18n.getText('KWR008_18')}</button>
 				<button tabindex="2" data-bind="click: doRegister, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('KWR008_19')}</button>
 				<button tabindex="3" data-bind="click: doDelete, enable: !isNewMode()" class="danger">#{i18n.getText('KWR008_20')}</button>
 				<button tabindex="4" data-bind="click: doCancel">#{i18n.getText('KWR008_21')}</button>
@@ -77,19 +78,19 @@
 						 -->
 						<table id="table-output-items" >
                                    <colgroup>
-                                   		<col width="20"/>
-                                        <col width="40"/>
-										<col width="100"/>
-			                            <col width="50"/>
-			                            <col width="100"/>
-										<col width="180"/>
+                                   		<col width="0"/>
+                                        <col width="35"/>
+										<col width="220"/>
+			                            <col width="60"/>
+			                            <col width="80"/>
+										<col width="250"/>
                                    </colgroup>
                                    <thead>
                                       <tr> 
 
                                           <th class="ui-widget-header"  style ="text-align: center;"></th>
-                                          <th class="ui-widget-header"  style ="text-align: center;"></th>
-                                          <th class="ui-widget-header"  tyle ="text-align: center;">#{i18n.getText('KWR008_28')}</th>
+                                          <th class="ui-widget-header"  style ="text-align: center;"><div data-bind="ntsCheckBox: {}"></div></th>
+                                          <th class="ui-widget-header"  style ="text-align: center;">#{i18n.getText('KWR008_28')}</th>
                                           <th class="ui-widget-header"  style ="text-align: center;"></th>
                                           <th class="ui-widget-header"  style ="text-align: center;">#{i18n.getText('KWR008_30')}</th>
                                           <th class="ui-widget-header"  style ="text-align: center;">#{i18n.getText('KWR008_29')}</th>
@@ -105,7 +106,8 @@
 				                            				name: '#[KWR008_31]',
 				                            				value : $data.headingName,
 				                            				required: false,
-				                            				option : { width : '40px'}}" />
+				                            				option : { width : '190px'}},
+				                            				constraint: 'ItemOutTblBookHeadingName'"  />
 				                            	</td>
 				                            	<td><button id="btnSettingB16_5"  data-bind="click: function() {$parent.openKDW007($data.index)}, enable: true">#{i18n.getText('KWR008_34')}</button></td>
 				                            	<td>
@@ -118,12 +120,11 @@
 					                                                value: $data.valueOutputFormat,
 					                                                optionsText: 'name',
 					                                                enable: true,
-					                                                columns: [{ prop: 'name', length: 1 }]}">
+					                                                columns: [{ prop: 'name', length: 3 }]}">
 					                                </div>
 					                             </td>
 				                                
 				                            	<td><span class="limited-label" data-bind="text: $data.outputTargetItem"></span></td>
-                                           
                                        </tr>
                                    </tbody>
                                </table>
