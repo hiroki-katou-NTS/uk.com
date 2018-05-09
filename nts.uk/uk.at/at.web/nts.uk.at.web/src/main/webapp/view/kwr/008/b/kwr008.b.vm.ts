@@ -296,14 +296,14 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             }
             for(var i = 0; i < itemOut.length; i++ ) {
                 // item Rule 36 - do not checking
-                if (itemOut.index == 0) {
+                if (itemOut[i].index == 0) {
                     continue;
                 }
-                if (itemOut.listOperationSetting.lenth == 0) {
+                if (itemOut[i].listOperationSetting.lenth == 0) {
                     alertError({messageId:"Msg_881"});
                     block.clear();
                     return;
-                } else if (itemOut.listOperationSetting.lenth > 50) {
+                } else if (itemOut[i].listOperationSetting.lenth > 50) {
                     alertError({messageId:"Msg_882"});
                     block.clear();
                     return;
