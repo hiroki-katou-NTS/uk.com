@@ -217,14 +217,7 @@ module kcp.share.tree {
             self.isShowSelectButton = data.isShowSelectButton && data.isMultiSelect;
             self.isDialog = data.isDialog;
             self.baseDate = data.baseDate;
-//            self.restrictionOfReferenceRange = data.restrictionOfReferenceRange;
-
-            if(data.restrictionOfReferenceRange){
-                self.restrictionOfReferenceRange = data.restrictionOfReferenceRange;    
-            } else {
-                self.restrictionOfReferenceRange = true;    
-            }
-            
+            self.restrictionOfReferenceRange = data.restrictionOfReferenceRange;            
             if (data.systemType) {
                 self.systemType =  data.systemType;
             } else {
