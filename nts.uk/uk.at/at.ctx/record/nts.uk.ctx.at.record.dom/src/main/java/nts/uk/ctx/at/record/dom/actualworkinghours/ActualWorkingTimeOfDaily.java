@@ -463,10 +463,16 @@ public class ActualWorkingTimeOfDaily {
 			
 			//休暇加算を残業として計算する場合、ロジックの関係上、就業時間計算時に休暇加算が合算されてしまう
 			//ここでは、合算されてしまっている休暇加算を差し引いている
-			if(totalWorkingTime.getWithinStatutoryTimeOfDaily().getWorkTime().greaterThan(predetermineTime.valueAsMinutes())) {
-				totalWorkingTime.setWithinWorkTime(predetermineTime);
+//			if(totalWorkingTime.getWithinStatutoryTimeOfDaily().getWorkTime().greaterThan(predetermineTime.valueAsMinutes())) {
+//				totalWorkingTime.setWithinWorkTime(predetermineTime);
+//			}
+			if(ootsukaFixedCalcSet != null && ootsukaFixedCalcSet.isPresent() ) {
+				if(ootsukaFixedCalcSet.get().getExceededPredAddVacationCalc().getCalcMethod().isCalcAsOverTime()
+						&&totalWorkingTime.getWithinStatutoryTimeOfDaily().getWorkTime().greaterThan(predetermineTime.valueAsMinutes())) {
+					totalWorkingTime.setWithinWorkTime(predetermineTime);
+				}
 			}
-			
+
 			//就業時間から休憩未取得時間を減算(休憩未取得を残業時間として計算する　であれば差し引く)
 			if(ootsukaFixedCalcSet != null
 			   && ootsukaFixedCalcSet.isPresent()
