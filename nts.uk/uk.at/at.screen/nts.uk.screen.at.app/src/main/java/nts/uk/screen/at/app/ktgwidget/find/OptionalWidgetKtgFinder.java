@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.ktgwidget.find;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,8 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.WidgetDisplayItemImport;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.holidayinstruction.HolidayInstructRepository;
 import nts.uk.ctx.at.request.dom.overtimeinstruct.OvertimeInstructRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -50,6 +53,9 @@ public class OptionalWidgetKtgFinder {
 	
 	@Inject
 	private HolidayInstructRepository holidayInstructRepo;
+	
+	@Inject
+	private ApplicationRepository_New applicationRepo_New;
 	
 	
 
@@ -109,12 +115,34 @@ public class OptionalWidgetKtgFinder {
 					dto.setHolidayInstruction(holidayInstructRepo.getAllHolidayInstructBySId(sId, startDate, endDate).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.APPROVED_NO.value) {
 					
+					//・反映状態　　＝　「反映済み」または「反映待ち」(「反映済み」 OR 「反映待ち」)
+					List<Integer> reflected = new ArrayList<>();
+					reflected.add(ReflectedState_New.REFLECTED.value);
+					reflected.add(ReflectedState_New.WAITREFLECTION.value);
+					
+					dto.setApproved(applicationRepo_New.getByListRefStatus(sId, startDate, endDate, reflected).size());
+					
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.UNAPPROVED_NO.value) {
 					
+					//・反映状態　　＝　「未承認」または「差戻し」(「未承認」OR 「差戻し」)
+					List<Integer> reflected = new ArrayList<>();
+					reflected.add(ReflectedState_New.NOTREFLECTED.value);
+					reflected.add(ReflectedState_New.REMAND.value);
+					
+					dto.setUnApproved(applicationRepo_New.getByListRefStatus(sId, startDate, endDate, reflected).size());
+					
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.DENIED_NO.value) {
+					//・反映状態　　＝　「否認」
+					List<Integer> reflected = new ArrayList<>();
+					reflected.add(ReflectedState_New.DENIAL.value);
 					
+					dto.setDeniedNo(applicationRepo_New.getByListRefStatus(sId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAND_NO.value) {
+					//・反映状態　　＝　「差戻し」
+					List<Integer> reflected = new ArrayList<>();
+					reflected.add(ReflectedState_New.REMAND.value);
 					
+					dto.setDeniedNo(applicationRepo_New.getByListRefStatus(sId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.APP_DEADLINE_MONTH.value) {
 					
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PRESENCE_DAILY_PER.value) {

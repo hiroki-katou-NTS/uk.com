@@ -8,5 +8,5 @@
 
 .widget-table>tbody>tr>td:nth-child(2){width:150px;}
 .widget-table>tbody>tr>td:nth-child(2) table{width:100%;}
-.widget-table .detail .go-button{width: 40px; text-align: right;}
+.widget-table .detail .go-button{width: 40px; text-align: right; height:33px;}
 .widget-table .detail .go-button button{width: 30px; border: 0; box-shadow: none; padding:0;}

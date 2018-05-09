@@ -39,6 +39,8 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         displaySPHDRamainNo: KnockoutObservable<boolean>;
         displaySixtyhExtraRest: KnockoutObservable<boolean>;
         
+        dataRecord: KnockoutObservable<OptionalWidgetInfo>
+        
         
         
         constructor() {
@@ -74,6 +76,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             self.displaySPHDRamainNo = ko.observable(false);
             self.displaySixtyhExtraRest = ko.observable(false);
             
+            self.dataRecord = ko.observable(null);
         }
 
         startPage(): JQueryPromise<any> {
@@ -86,10 +89,11 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                     self.excuteDisplay(data.optionalWidgetImport);
                     self.getDate(data.datePeriodDto);
                     self.switchMonth();
+                    dfd.resolve();
                 }    
                 block.clear();
             });           
-            dfd.resolve();
+            
 
             return dfd.promise();
         }
@@ -101,8 +105,8 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                 strMonth: strDate,
                 endMonth: endDate
             };
-            new service.Service().getOptionalWidgetInfo(param).done(function(data: any){
-                console.log(data);
+            new service.Service().getOptionalWidgetInfo(param).done(function(data: OptionalWidget){
+                self.dataRecord(new OptionalWidgetInfo(data));
                 block.clear();
             });           
         }
@@ -170,21 +174,21 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             if(data==null){
                 self.createDate();
             }else{
-                self.currentMonth = ko.observable(new period(data.strCurrentMonth, data.endCurrentMonth));
-                self.nextMonth = ko.observable(new period(data.strNextMonth, data.endNextMonth));
+                self.currentMonth(new period(data.strCurrentMonth, data.endCurrentMonth));
+                self.nextMonth(new period(data.strNextMonth, data.endNextMonth));
             }
         }
         private createDate() :void{
             var self =  this;
             var today = new Date();
-            self.currentMonth = ko.observable(self.getStrEndMonth(today));
+            self.currentMonth(self.getStrEndMonth(today));
             
             if (today.getMonth() == 11) {
                 var nexMonth = new Date(today.getFullYear() + 1, 0, 1);
             } else {
                 var nexMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
             }
-            self.nextMonth = ko.observable(self.getStrEndMonth(nexMonth));
+            self.nextMonth(self.getStrEndMonth(nexMonth));
         }
         private getStrEndMonth(date: Date):period{
             var y = date.getFullYear();
@@ -208,6 +212,9 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                      startMonth='0'+startMonth; 
                 } 
                 var lastMonth = self.currentMonth().endMonth.getDate();
+                if(lastMonth<10){
+                     lastMonth='0'+lastMonth; 
+                } 
                 self.txtDatePeriod(month+'/'+startMonth+getText('KTG029_3')+month+'/'+lastMonth+getText('KTG029_5'));
                 self.getInfor(code, self.currentMonth().strMonth, self.currentMonth().endMonth);
                 self.btnSwitch(getText('KTG029_6'));
@@ -222,6 +229,9 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                      startMonth='0'+startMonth; 
                 } 
                 var lastMonth = self.nextMonth().endMonth.getDate();
+                if(lastMonth<10){
+                     lastMonth='0'+lastMonth; 
+                } 
                 self.txtDatePeriod(month+'/'+startMonth+getText('KTG029_3')+month+'/'+lastMonth+getText('KTG029_5'));
                 self.getInfor(code, self.nextMonth().strMonth, self.nextMonth().endMonth);
                 self.btnSwitch(getText('KTG029_6'));
@@ -231,20 +241,18 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         
         openKAF015Dialog() {
             let self = this;
-//            nts.uk.ui.windows.sub.modal('/view/kaf/015/a/index.xhtml').onClosed(function(): any {
-//            });
-
+            window.top.location = window.location.origin + '/nts.uk.at.web/view/kaf/015/a/index.xhtml';
         }
         
         openCMM045Dialog() {
             let self = this;
-//            ※URLパラメータ　＝　照会モード
+//          ※URLパラメータ　＝　照会モード
             window.top.location = window.location.origin + '/nts.uk.at.web/view/cmm/045/a/index.xhtml?a=1';
         }
         
         openKDW003Dialog() {
             let self = this;
-            if(true){
+            if(self.dataRecord().presenceDailyPer){
                 window.top.location = window.location.origin + '/nts.uk.at.web/view/kdw/003/a/index.xhtml';
             }else{
                nts.uk.ui.windows.sub.modal('/view/kdw/003/b/index.xhtml');
@@ -285,9 +293,91 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         constructor(strMonth: string, endMonth: string){
             this.strMonth = new Date(strMonth);
             this.endMonth = new Date(endMonth);
-            
         }    
     }
+    export interface OptionalWidget{
+        overTime: number;
+        holidayInstruction: number;
+        approved: number;
+        unApproved: number;
+        deniedNo: number;
+        remand: number;
+        appDeadlineMonth: DeadlineOfRequestDto;
+        presenceDailyPer: boolean;
+        overtimeHours: TimeOTDto;
+        flexTime: TimeOTDto;
+        restTime: TimeOTDto;
+        nightWorktime: TimeOTDto;
+        lateRetreat: number;
+        earlyRetreat: number;
+        yearlyHoliday: number;
+        reservedYearsRemainNo: number;
+        remainAlternationNo: number;
+        remainsLeft: number;
+        hdremainNo: number;
+        careLeaveNo: number;
+        sphdramainNo: number;   
+    }
+    export interface TimeOTDto{
+        hours: number;
+        min: number;
+    }
+    export interface DeadlineOfRequestDto {
+        use: number;
+        deadLine: Date;
+    }
+    export class OptionalWidgetInfo{
+        overTime: number;
+        holidayInstruction: number;
+        approved: number;
+        unApproved: number;
+        deniedNo: number;
+        remand: number;
+        appDeadlineUse: boolean;
+        appDeadlineMonth: string;
+        presenceDailyPer: boolean;
+        overtimeHours: string;
+        flexTime: string;
+        restTime: string;
+        nightWorktime: string
+        lateRetreat: number;
+        earlyRetreat: number;
+        yearlyHoliday: number;
+        reservedYearsRemainNo: number;
+        remainAlternationNo: number;
+        remainsLeft: number;
+        hDRemainNo: number;
+        careLeaveNo: number;
+        sPHDRamainNo: number;
+        constructor (data: OptionalWidget){
+            this.overTime = data.overTime;
+            this.holidayInstruction = data.holidayInstruction;
+            this.approved = data.approved;
+            this.unApproved = data.unApproved;
+            this.deniedNo = data.deniedNo;
+            this.remand = data.remand;
+            this.appDeadlineUse= data.appDeadlineMonth.use===1?true:false;
+            var date: Date = new Date(data.appDeadlineMonth.deadLine.toString());
+            var month = (date.getMonth()+1)<10?'0'+(date.getMonth()+1):(date.getMonth()+1);
+            var day = date.getDate()<10?'0'+date.getDate():date.getDate();
+            this.appDeadlineMonth =  month+'/'+day;
+            this.presenceDailyPer = data.presenceDailyPer;
+            this.overtimeHours = (data.overtimeHours.hours<10?('0'+data.overtimeHours.hours):data.overtimeHours.hours)+':'+(data.overtimeHours.min<10?('0'+data.overtimeHours.min):data.overtimeHours.min);
+            this.flexTime = (data.flexTime.hours<10?('0'+data.flexTime.hours):data.flexTime.hours)+':'+(data.flexTime.min<10?('0'+data.flexTime.min):data.flexTime.min);
+            this.restTime = (data.restTime.hours<10?('0'+data.restTime.hours):data.restTime.hours)+':'+(data.restTime.min<10?('0'+data.restTime.min):data.restTime.min);
+            this.nightWorktime = (data.nightWorktime.hours<10?('0'+data.nightWorktime.hours):data.nightWorktime.hours)+':'+(data.nightWorktime.min<10?('0'+data.nightWorktime.min):data.nightWorktime.min);
+            this.lateRetreat = data.lateRetreat;
+            this.earlyRetreat = data.earlyRetreat;
+            this.yearlyHoliday = data.yearlyHoliday;
+            this.reservedYearsRemainNo = data.reservedYearsRemainNo;
+            this.remainAlternationNo = data.remainAlternationNo;
+            this.remainsLeft = data.remainsLeft;
+            this.hDRemainNo = data.hdremainNo;
+            this.careLeaveNo = data.careLeaveNo;
+            this.sPHDRamainNo = data.sphdramainNo;
+        }
+    }
+    
     export enum widgetDisplayItem{
         OVERTIME_WORK_NO = 0,
         INSTRUCTION_HD_NO = 1,

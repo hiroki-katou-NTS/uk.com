@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.Value;
 import nts.arc.time.GeneralDate;
 
 @Getter
@@ -26,34 +25,36 @@ public class OptionalWidgetInfoDto {
 	private int unApproved = 0;
 	
 	/** 5 Denied Number 否認された件数 */
-	private int denied = 0;
+	private int deniedNo = 0;
 
 	/** 6 Remand Number 差し戻し件数 */
 	private int remand = 0;
 	
 	/** 7 App Deadline Month 今月の申請締め切り日 */
-	private DeadlineOfRequestDto deadlineOfRequest = new DeadlineOfRequestDto(0, GeneralDate.today());
+	private DeadlineOfRequestDto appDeadlineMonth = new DeadlineOfRequestDto(0, GeneralDate.today());
 	
 	/** 8 Presence Daily Per 日別実績のエラー有無 */
 	private boolean presenceDailyPer = false;
 	
 	/** 10 Overtime Hours 残業時間 */
-	private TimeOT timeOT = new TimeOT(0, 0);
+	private TimeOT overtimeHours = new TimeOT(0, 0);
 	
-	/** 11 Overtime Hours 残業時間 */
+	/** 11 Flex Time フレックス時間 */
 	private TimeOT flexTime = new TimeOT(0, 0);
 	
-	/** 12 Overtime Hours 残業時間 */
+	/** 12 Rest Time 休出時間 */
 	private TimeOT restTime = new TimeOT(0, 0);
 	
-	/** 13 Overtime Hours 残業時間 */
+	/** 13 Night Work Hours 就業時間外深夜時間 */
 	private TimeOT nightWorktime = new TimeOT(0, 0);
 	
-	/** 14 Overtime Hours 残業時間 */
-	private int lateOrEarlyRetreat = 0;
+	/** 14 Late Or Early Retreat 遅刻/早退回数 */
+	private int lateRetreat = 0;
+	
+	private int earlyRetreat = 0;
 	
 	/** 15 Yearly Holiday 年休残数 */
-	private int yearlyHoliday = 0;
+	private YearlyHolidayDto yearlyHoliday;
 	
 	/** 16 Reserved Years Remain Number 積立年休残数 */
 	private int reservedYearsRemainNo = 0;

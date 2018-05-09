@@ -27,11 +27,11 @@
 						<td>#{i18n.getText('KTG029_9')}</td>
 						<td>
 							<table class="detail">
-								<tr>
-									<td>0#{i18n.getText('KTG029_33')}</td>
+								<tr data-bind="with:dataRecord()">
+									<td><span data-bind="text: overTime"></span>#{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
-										<button class = "overtime-work-no">
-											<i data-bind="click: openKAF015Dialog, ntsIcon: { no: 144 }"></i>
+										<button class = "overtime-work-no" data-bind="visible:(overTime>0)">
+											<i data-bind="click: $parent.openKAF015Dialog, ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>
 								</tr>
@@ -41,12 +41,12 @@
 					<tr data-bind="visible: displayHoliInstruct">
 						<td>#{i18n.getText('KTG029_10')}</td>
 						<td>
-							<table class="detail">
-								<tr>
-									<td>0#{i18n.getText('KTG029_33')}</td>
+							<table class="detail" >
+								<tr data-bind="with:dataRecord()">
+									<td><span data-bind="text: holidayInstruction"></span>#{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
-										<button class = "instruction-hd-no">
-											<i data-bind="click: openKAF015Dialog, ntsIcon: { no: 144 }"></i>
+										<button class = "instruction-hd-no" data-bind="visible:(holidayInstruction>0)">
+											<i data-bind="click: $parent.openKAF015Dialog, ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>
 								</tr>
@@ -57,11 +57,11 @@
 						<td>#{i18n.getText('KTG029_11')}</td>
 						<td>
 							<table class="detail">
-								<tr>
-									<td>0#{i18n.getText('KTG029_33')}</td>
+								<tr data-bind="with:dataRecord()">
+									<td><span data-bind="text: approved"></span>#{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
-										<button class = "approved-no">
-											<i data-bind="click: openCMM045Dialog, ntsIcon: { no: 144 }"></i>
+										<button class = "approved-no" data-bind="visible:(approved>0)">
+											<i data-bind="click: $parent.openCMM045Dialog, ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>
 								</tr>
@@ -72,11 +72,11 @@
 						<td>#{i18n.getText('KTG029_12')}</td>
 						<td>
 							<table class="detail">
-								<tr>
-								<td>0#{i18n.getText('KTG029_33')}</td>
+								<tr data-bind="with:dataRecord()">
+									<td><span data-bind="text: unApproved"></span>#{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
-										<button>
-											<i data-bind="click: openCMM045Dialog, ntsIcon: { no: 144 }"></i>
+										<button data-bind="visible:(unApproved>0)">
+											<i data-bind="click: $parent.openCMM045Dialog, ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>
 								</tr>
@@ -87,11 +87,11 @@
 						<td>#{i18n.getText('KTG029_13')}</td>
 						<td>
 							<table class="detail">
-								<tr>
-									<td>0#{i18n.getText('KTG029_33')}</td>
+								<tr data-bind="with:dataRecord()">
+									<td><span data-bind="text: deniedNo"></span>#{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
-										<button>
-											<i data-bind="click: openCMM045Dialog, ntsIcon: { no: 144 }"></i>
+										<button  data-bind="visible:(deniedNo>0)">
+											<i data-bind="click: $parent.openCMM045Dialog, ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>
 								</tr>
@@ -102,11 +102,11 @@
 						<td>#{i18n.getText('KTG029_14')}</td>
 						<td>
 							<table class="detail">
-								<tr>
-									<td>0#{i18n.getText('KTG029_33')}</td>
+								<tr data-bind="with:dataRecord()">
+									<td><span data-bind="text: remand"></span>#{i18n.getText('KTG029_33')}</td>
 									<td class="go-button">
-										<button>
-											<i data-bind="click: openCMM045Dialog, ntsIcon: { no: 144 }"></i>
+										<button data-bind="visible:(remand>0)">
+											<i data-bind="click: $parent.openCMM045Dialog, ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>
 								</tr>
@@ -116,26 +116,26 @@
 					<!-- A9 -->
 					<tr data-bind="visible: displayDeadlineMonth">
 						<td>#{i18n.getText('KTG029_15')}</td>
-						<td>05/31</td>
+						<td data-bind="with:dataRecord()"><span data-bind="text:appDeadlineMonth"></span></td>
 					</tr>
 					<!-- A10 -->
 					<tr data-bind="visible: displayPresenceDailyPer">
 						<td>#{i18n.getText('KTG029_16')}</td>
 						<td>
 							<table class="detail">
-								<tr>
-									<td>エラー有り</td>
+								<tr data-bind="with:dataRecord()">
+									<td data-bind="text:presenceDailyPer"></td>
 									<td class="go-button">
-										<button>
-											<i data-bind="click: openKDW003Dialog, ntsIcon: { no: 144 }"></i>
+										<button data-bind="visible: presenceDailyPer">
+											<i data-bind="click: $parent.openKDW003Dialog, ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>
 								</tr>
 							</table>	
 						</td>
 					</tr>
-					<tr data-bind="visible: displayPresenceDailyPer">
-						<td class="tab" colspan="2">
+					<tr data-bind="with:dataRecord()">
+						<td class="tab" colspan="2" data-bind="visible: ($parent.displayPresenceDailyPer &amp;&amp; presenceDailyPer)">
 							<div data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KTG029_61')}</div>
 						</td>
 					</tr>
@@ -158,27 +158,27 @@
 					<!-- A12 -->
 					<tr data-bind="visible: displayOverTimeHours">
 						<td>#{i18n.getText('KTG029_18')}</td>
-						<td>00:00</td>
+						<td data-bind="with:dataRecord()"><span data-bind="text: overtimeHours"></span></td>
 					</tr>
 					<!-- A13 -->
 					<tr data-bind="visible: displayFlexTime">
 						<td>#{i18n.getText('KTG029_19')}</td>
-						<td>00:00</td>
+						<td data-bind="with:dataRecord()"><span data-bind="text: flexTime"></span></td>
 					</tr>
 					<!-- A14 -->
 					<tr data-bind="visible: displayRestTime">
 						<td>#{i18n.getText('KTG029_20')}</td>
-						<td>00:00</td>
+						<td data-bind="with:dataRecord()"><span data-bind="text: restTime"></span></td>
 					</tr>
 					<!-- A15 -->
 					<tr data-bind="visible: displayNightWorkHours">
 						<td>#{i18n.getText('KTG029_21')}</td>
-						<td>00:00</td>
+						<td data-bind="with:dataRecord()"><span data-bind="text: nightWorktime"></span></td>
 					</tr>
 					<!-- A16 -->
 					<tr data-bind="visible: displayLateOrEarlyRetreat">
 						<td>#{i18n.getText('KTG029_22')}</td>
-						<td>0#{i18n.getText('KTG029_35')} 0 #{i18n.getText('KTG029_36')}</td>
+						<td data-bind="with:dataRecord()"><span data-bind="text:lateRetreat"></span>#{i18n.getText('KTG029_35')} <span data-bind="text:earlyRetreat"></span>#{i18n.getText('KTG029_36')}</td>
 					</tr>
 					<!-- A17 -->
 					<tr data-bind="visible: displayYearlyHoliDay">
