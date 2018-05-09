@@ -16,17 +16,11 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         //enum value output format
         valueOutputFormat: KnockoutObservableArray<any> = ko.observableArray([]);
 
-        //B5_1
-        //excessTime: KnockoutObservable<boolean> = ko.observable(false);
-
         //B2_2
         listStandardImportSetting: KnockoutObservableArray<model.OutputSettingCodeDto> = ko.observableArray([]);
         selectedCode: KnockoutObservable<any> = ko.observable('');
         currentSetOutputSettingCode :KnockoutObservable<SetOutputSettingCode>
                 = ko.observable(new SetOutputSettingCode(null));
-        //B3_2 B3_3
-        //inputSettingCode: KnockoutObservable<string> = ko.observable('');
-        //inputProjectName: KnockoutObservable<string> = ko.observable('');
 
         //B5_3
         itemRadio: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -143,7 +137,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         //add
                         service.getAttendanceItemByCodes(resultData.lstAddItems).done((lstItems) => {
                             _.forEach(lstItems, (item) => {
-                                self.outputItem()[index].listOperationSetting.push(new OperationCondition(item.attendanceItemId, false, item.attendanceItemName));
+                                self.outputItem()[index].listOperationSetting.push(new OperationCondition(item.attendanceItemId, true, item.attendanceItemName));
                                 if (operationName) {
                                     operationName = operationName + " + " + item.attendanceItemName;
                                 } else {
