@@ -43,7 +43,7 @@ public class RegulationInfoEmployeeQueryImpl implements RegulationInfoEmployeeQu
 				.worktypeCodes(queryX.getWorktypeCodes()).periodStart(periodStart).periodEnd(periodEnd)
 				.includeIncumbents(queryX.getIncludeIncumbents())
 				.includeWorkersOnLeave(queryX.getIncludeWorkersOnLeave()).includeOccupancy(queryX.getIncludeOccupancy())
-				.systemType(2).sortOrderNo(1).includeRetirees(queryX.getIncludeRetirees()).filterByClosure(true)
+				.systemType(2).sortOrderNo(1).includeRetirees(queryX.getIncludeRetirees()).filterByClosure(queryX.getFilterByClosure())
 				.closureIds(queryX.getClosureIds()).build();
 	}
 
