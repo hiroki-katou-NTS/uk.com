@@ -462,6 +462,17 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 if(!self.isEmptyOverTimeInput(ko.toJS(self.overtimeHours()))){
                     self.calculateFlag(0);
                 }
+                 //setting work content
+                self.preWorkContent = {
+                    applicationDate: self.appDate(),
+                    workType: self.workTypeCd(),
+                    siftType: self.siftCD(),
+                    workClockFrom1: self.timeStart1(),
+                    workClockTo1: self.timeEnd1(),
+                    workClockFrom2: self.timeStart2(),
+                    workClockTo2: self.timeEnd2(),
+                    overtimeHours:  ko.toJS(self.overtimeHours())
+                }
                  //Check work content Changed
                 self.checkWorkContentChanged(); 
             }
