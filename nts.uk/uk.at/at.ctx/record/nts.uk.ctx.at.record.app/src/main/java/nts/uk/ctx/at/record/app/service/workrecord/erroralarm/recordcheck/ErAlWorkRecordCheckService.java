@@ -227,8 +227,8 @@ public class ErAlWorkRecordCheckService {
 		query.setFilterByWorktype(isFixed ? false : checkCondition.getFilterByBusinessType());
 		query.setWorktypeCodes(isFixed ? new ArrayList<>() : checkCondition.getLstBusinessTypeCode().stream().map(c -> c.v())
 				.collect(Collectors.toList()));
-		query.setPeriodStart(workingDate.toString());
-		query.setPeriodEnd(workingDate.toString());
+		query.setPeriodStart(workingDate);
+		query.setPeriodEnd(workingDate);
 		query.setIncludeIncumbents(true);
 		query.setIncludeWorkersOnLeave(true);
 		query.setIncludeOccupancy(true);

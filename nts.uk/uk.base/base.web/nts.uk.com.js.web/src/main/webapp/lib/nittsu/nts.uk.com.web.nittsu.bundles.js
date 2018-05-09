@@ -3670,7 +3670,7 @@ var nts;
                  */
                 function request() {
                     $("#logo").on(constants.CLICK, function () {
-                        //            uk.request.jumpToTopPage();
+                        uk.request.jumpToTopPage();
                     });
                     displayUserInfo();
                     nts.uk.request.ajax(constants.APP_ID, constants.MenuDataPath).done(function (menuSet) {
@@ -5018,7 +5018,7 @@ var nts;
                     $(document).on('mouseenter', '.limited-label', function (e) {
                         var $label = $(e.target);
                         // Check if contents is overflow
-                        if ($label.outerWidth() < $label[0].scrollWidth) {
+                        if (isOverflow($label)) {
                             var $view_1 = $('<div />').addClass('limited-label-view')
                                 .text($label.text() || $label.val())
                                 .appendTo('body')
@@ -5035,6 +5035,25 @@ var nts;
                         }
                     });
                 });
+                function isOverflow($label) {
+                    if ($label[0].nodeName === "INPUT"
+                        && (window.navigator.userAgent.indexOf("MSIE") > -1
+                            || !!window.navigator.userAgent.match(/trident/i))) {
+                        var $div = $("<div/>").appendTo($(document.body));
+                        var style = $label[0].currentStyle;
+                        if (style) {
+                            for (var p in style) {
+                                $div[0].style[p] = style[p];
+                            }
+                        }
+                        $div.html($label.val());
+                        var width = $div.outerWidth();
+                        var scrollWidth = $div[0].scrollWidth;
+                        $div.remove();
+                        return width < scrollWidth;
+                    }
+                    return $label.outerWidth() < $label[0].scrollWidth;
+                }
             })(smallExtensions || (smallExtensions = {}));
             var keyboardStream;
             (function (keyboardStream) {
@@ -5754,7 +5773,7 @@ var nts;
                                     }
                                 }
                                 setTimeout(function () {
-                                    var dialogM = dialogInfo.$dialog.closest("div[role='dialog']");
+                                    var dialogM = dialogInfo.isRoot ? $("body") : dialogInfo.$dialog.closest("div[role='dialog']");
                                     var topDiff = (dialogM.innerHeight() - dialog.innerHeight()) / 2;
                                     var leftDiff = (dialogM.innerWidth() - dialog.innerWidth()) / 2;
                                     if (topDiff > 0) {
@@ -15476,7 +15495,9 @@ var nts;
                         var modal = ko.unwrap(option.modal);
                         var show = ko.unwrap(option.show);
                         var buttons = ko.unwrap(option.buttons);
-                        var $dialog = $("<div id='ntsErrorDialog'></div>");
+                        var self = nts.uk.ui.windows.getSelf();
+                        var id = 'ntsErrorDialog_' + self.id;
+                        var $dialog = $("<div>", { "id": id });
                         PS.$('body').append($dialog);
                         // Create Buttons
                         var dialogbuttons = [];
@@ -15537,7 +15558,23 @@ var nts;
                         //var maxrows: number = ko.unwrap(option.maxrows);
                         var autoclose = ko.unwrap(option.autoclose);
                         var show = ko.unwrap(option.show);
-                        var $dialog = PS.$("#ntsErrorDialog");
+                        var self = nts.uk.ui.windows.getSelf();
+                        var id = 'ntsErrorDialog_' + self.id;
+                        var $dialog;
+                        if (self.isRoot) {
+                            $dialog = PS.$("#" + id);
+                        }
+                        else {
+                            while (!nts.uk.util.isNullOrUndefined(self)) {
+                                if (self.isRoot) {
+                                    self = null;
+                                    $dialog = $((nts.uk.ui.windows.getSelf().parent.globalContext.document).getElementById(id));
+                                }
+                                else {
+                                    self = self.parent;
+                                }
+                            }
+                        }
                         if (show == true) {
                             // Create Error Table
                             var $errorboard = $("<div id='error-board'></div>");
@@ -21253,7 +21290,7 @@ var nts;
                                                 var selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
                                                 $scrollContainer_1.scrollTop(selectRowOffset - firstRowOffset);
                                             }
-                                            else {
+                                            else if (selected && oldSelected) {
                                                 var index = $(selected["element"]).attr("data-row-idx");
                                                 $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
                                             }
@@ -28151,20 +28188,21 @@ var nts;
                             $ntsDateRange.ntsError("clear");
                             var isStart = $target.hasClass("ntsStartDatePicker");
                             var validator = new ui_25.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
+                            var valueX = uk.time.formatPattern(newText, dateFormat, ISOFormat);
+                            if (!nts.uk.util.isNullOrEmpty(valueX) && valueX !== "Invalid date") {
+                                $target.val(valueX);
+                                $target.datepicker("update");
+                                newText = valueX;
+                            }
                             var result = validator.validate(newText);
                             var oldValue = value();
-                            if ($target.hasClass("ntsStartDatePicker")) {
+                            if (isStart) {
                                 oldValue.startDate = result.isValid ? result.parsedValue : newText;
                             }
                             else {
                                 oldValue.endDate = result.isValid ? result.parsedValue : newText;
                             }
                             validateProcess(newText, $target, isStart, oldValue, result);
-                            var valueX = uk.time.formatPattern(newText, dateFormat, ISOFormat);
-                            if (!nts.uk.util.isNullOrEmpty(valueX) && valueX !== "Invalid date") {
-                                //console.log(1);
-                                $target.val(valueX);
-                            }
                             value(oldValue);
                         });
                         $input.on("blur", function (e) {
