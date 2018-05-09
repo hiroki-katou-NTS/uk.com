@@ -148,11 +148,9 @@ module cps008.a.viewmodel {
             setShared('CPS008_PARAM', data);
             modal('../c/index.xhtml').onClosed(() => {
                 let _data = getShared('CPS008C_RESPONE');
-                if (_data) {
+                if (_data != undefined) {
                     self.start(_data);
-                } else {
-                    self.start(data.code);
-                }
+                } 
             });
         }
 
