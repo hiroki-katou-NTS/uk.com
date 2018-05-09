@@ -307,9 +307,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//休憩時間帯(BreakManagement)
 		List<BreakTimeSheet> breakTimeSheet = new ArrayList<>();
 		if(!integrationOfDaily.getBreakTime().isEmpty()) {
-			if(!integrationOfDaily.getBreakTime().get(0).getBreakTimeSheets().isEmpty()) {
-				breakTimeSheet.addAll(integrationOfDaily.getBreakTime().get(0).getBreakTimeSheets());
-			}
+			val breakTimeByBreakType = integrationOfDaily.getBreakTime().stream()
+																		.filter(tc -> tc.getBreakType().isUse(timeSheetAtr))
+																		.findFirst();
+			breakTimeByBreakType.ifPresent(tc -> breakTimeSheet.addAll(tc.getBreakTimeSheets()));
 		}
 		List<BreakTimeOfDailyPerformance> breakTimeOfDailyList = new ArrayList<>();
 		breakTimeOfDailyList.add(new BreakTimeOfDailyPerformance(employeeId, 
@@ -415,7 +416,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			//フレックス勤務の加算設定.休暇の計算方法の設定
 			holidayCalcMethodSet = WorkRegularAdditionSet!=null?WorkRegularAdditionSet.getVacationCalcMethodSet():holidayCalcMethodSet;
 			/*大塚モード*/
-//			workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), oneRange.getAttendanceLeavingWork()));
 			workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), ootsukaFixedWorkSet, oneRange.getAttendanceLeavingWork(),flexWorkSetOpt.get().getCommonSetting().getHolidayCalculation()));
 			//出退勤削除
 			if(!ootsukaProcessService.decisionOotsukaMode(workType.get(), ootsukaFixedWorkSet, oneRange.getAttendanceLeavingWork(),flexWorkSetOpt.get().getCommonSetting().getHolidayCalculation())
