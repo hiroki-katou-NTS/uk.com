@@ -29,7 +29,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         //B4
         outputItem: KnockoutObservableArray<any> = ko.observableArray([]);
         
-
+        isCheckedAll: KnockoutObservable<boolean> = ko.observable(false);
+        selectedItems: KnockoutObservableArray<any> = ko.observableArray([]);
         constructor() {
             let self = this;
 
@@ -40,8 +41,6 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 new model.ItemModel(2, getText('KWR008_39'))
             ]);
             
-            //table fixed
-            $('#fixed-table').ntsFixedTable({ height: 304, width: 900 });
              //event select change
             self.selectedCode.subscribe((code) => {
                 nts.uk.ui.errors.clearAll()
@@ -50,7 +49,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     service.getListItemOutput(code).done(r => {
                         if (r && r.length > 0) {
                             for(var i = 0; i < r.length; i++) {
-                                self.outputItem.push(new OutputItemData(i+1, r[i].cd, r[i].useClass, r[i].headingName, r[i].valOutFormat, ''));
+                                self.outputItem.replace(self.outputItem()[i],new OutputItemData(i + 1, r[i].cd, r[i].useClass, r[i].headingName, r[i].valOutFormat, ''));
                             }
                         }
                     });
@@ -59,15 +58,41 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     self.registerMode();
                 }
             });
+            self.isCheckedAll = ko.computed({
+                  read:function(){
+                    return this.selectedItems().length == this.outputItem().length;
+                  },
+                  write: function(val){
+                    if(val)
+                       this.selectedItems(this.outputItem().map(function(item){return item.useClassification();}))        
+                    else
+                       this.selectedItems.removeAll();   
+                  }, 
+                  owner:this
+              });
+                        self.isCheckedAll = ko.computed({
+                read:function(){
+                     let itemOut : any = _.filter(self.outputItem(), (x)=>{return !x.useClassification();});
+                    if(itemOut && itemOut.length > 0){
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+                write: function(val){
+                    ko.utils.arrayForEach(self.outputItem(), function(item) {
+                        item.useClassification(val);
+                    });
+               }, 
+               owner:this
+            });
         }
 
         public startPage(): JQueryPromise<any> {
             var self = this;
-
             var dfd = $.Deferred();
             
             block.invisible();
-
             //fill data B2_2
             service.getOutItemSettingCode().done((data) => {
                 for (let i = 0, count = data.length; i < count; i++) {
@@ -87,8 +112,6 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 dfd.resolve(self);
                 block.clear();
             });
-
-
             
             return dfd.promise();
         }
@@ -109,15 +132,14 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 return;
             }
             
-            //let lstOpeItems: _.map(self.listOperationCds, ((item) => { return item.code; }));
             self.getListItemByAtr(self.outputItem()[index].valueOutputFormat()).done((lstItem) => {
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                 let lstAddItems = _.filter(self.outputItem()[index].listOperationSetting(), (item) => {
                         return item.operation();
-                    }).map((item) => { return item.cd; });
+                    }).map((item) => { return item.attendanceItemId(); });
                 let lstSubItems = _.filter(self.outputItem()[index].listOperationSetting(), (item) => {
                         return !item.operation();
-                    }).map((item) => { return item.cd; });
+                    }).map((item) => { return item.attendanceItemId(); });
                 let param = {
                             lstAllItems: lstItemCode,
                             lstAddItems: lstAddItems,
@@ -130,64 +152,79 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         nts.uk.ui.block.clear();
                         return;
                     }
-                    let operationName = "";
+                    self.buildOutputItem(resultData, self.outputItem()[index]).done(() => {
+                    }).always(function() {
+                        block.clear();
+                    });
+                });
+             });
+        }
+        
+        //re-build output item from Kdw007 result
+        buildOutputItem(resultData, outputItem) : JQueryPromise {
+            let self = this;
+            let dfd = $.Deferred<any>();
+            let operationName = "";
 
-                    self.outputItem()[index].listOperationSetting.removeAll();
-                    if (resultData.lstAddItems && resultData.lstAddItems.length > 0) {
-                        //add
-                        service.getAttendanceItemByCodes(resultData.lstAddItems).done((lstItems) => {
+            outputItem.listOperationSetting.removeAll();
+            if (resultData.lstAddItems && resultData.lstAddItems.length > 0) {
+                //add
+                service.getAttendanceItemByCodes(resultData.lstAddItems).done((lstItems) => {
+                    _.forEach(lstItems, (item) => {
+                        outputItem.listOperationSetting.push(new OperationCondition(item.attendanceItemId, 1, item.attendanceItemName));
+                        if (operationName) {
+                            operationName = operationName + " + " + item.attendanceItemName;
+                        } else {
+                            operationName = item.attendanceItemName;
+                        }
+                    });
+                }).always(function() {
+                    //sub
+                    if (resultData.lstSubItems && resultData.lstSubItems.length > 0) {
+                        service.getAttendanceItemByCodes(resultData.lstSubItems).done((lstItems) => {
                             _.forEach(lstItems, (item) => {
-                                self.outputItem()[index].listOperationSetting.push(new OperationCondition(item.attendanceItemId, true, item.attendanceItemName));
+                                outputItem.listOperationSetting.push(new OperationCondition(item.attendanceItemId, 0, item.attendanceItemName));
                                 if (operationName) {
-                                    operationName = operationName + " + " + item.attendanceItemName;
+                                    operationName = operationName + " - " + item.attendanceItemName;
                                 } else {
                                     operationName = item.attendanceItemName;
                                 }
                             });
-                            
-                            //sub
-                            if (resultData.lstSubItems && resultData.lstSubItems.length > 0) {
-                                service.getAttendanceItemByCodes(resultData.lstSubItems).done((lstItems) => {
-                                    _.forEach(lstItems, (item) => {
-                                        self.outputItem()[index].listOperationSetting.push(new OperationCondition(item.attendanceItemId, false, item.attendanceItemName));
-                                        if (operationName) {
-                                            operationName = operationName + " - " + item.attendanceItemName;
-                                        } else {
-                                            operationName = item.attendanceItemName;
-                                        }
-                                    });
-                                });
-                                self.outputItem()[index].outputTargetItem(operationName);
+                        }).always(function() {
+                            outputItem.outputTargetItem(operationName);
+                            dfd.resolve();
+                        });
+                    } else {
+                        outputItem.outputTargetItem(operationName);
+                        dfd.resolve();
+                    }
+                });
+            } else {
+                //sub
+                if (resultData.lstSubItems && resultData.lstSubItems.length > 0) {
+                    service.getAttendanceItemByCodes(resultData.lstSubItems).done((lstItems) => {
+                        _.forEach(lstItems, (item) => {
+                            outputItem.listOperationSetting.push(new OperationCondition(item.attendanceItemId, 0, item.attendanceItemName));
+                            if (operationName) {
+                                operationName = operationName + " - " + item.attendanceItemName;
                             } else {
-                                self.outputItem()[index].listSubCds([]);
+                                operationName = item.attendanceItemName;
                             }
                         });
-                        nts.uk.ui.block.clear();
-                    } else {
-                        self.outputItem()[index].listAddCds([]);
-                        //sub
-                            if (lstSubItems && lstSubItems.length > 0) {
-                                service.getAttendanceItemByCodes(lstSubItems).done((lstItems) => {
-                                    _.forEach(lstItems, (item) => {
-                                        self.outputItem()[index].listOperationSetting.push(new OperationCondition(item.attendanceItemId, false, item.attendanceItemName));
-                                        if (operationName) {
-                                            operationName = operationName + " - " + item.attendanceItemName;
-                                        } else {
-                                            operationName = item.attendanceItemName;
-                                        }
-                                    });
-                                });
-                                self.outputItem()[index].outputTargetItem(operationName);
-                            } else {
-                                self.outputItem()[index].listSubCds([]);
-                            }
-                        nts.uk.ui.block.clear();
-                    }
-                    self.outputItem()[index].outputTargetItem(operationName);
-                    nts.uk.ui.block.clear();
-                });
-             });
+                        
+                    }).always(function() {
+                        outputItem.outputTargetItem(operationName);
+                        dfd.resolve();
+                    });
+                    
+                } else {
+                    outputItem.outputTargetItem(operationName);
+                    dfd.resolve();
+                }
+            }
+            return dfd.promise();
         }
+        
         // get data for kdw007
         getListItemByAtr(valueOutputFormat) {
             let self = this;
@@ -244,6 +281,33 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             }
         }
 
+        buildIsCheckedAll() {
+            let self = this;
+            let itemOut : any = _.filter(self.outputItem(), (x)=>{return !x.useClassification();});
+            if(itemOut && itemOut.length > 0){
+                self.isCheckedAll(false);
+            } else {
+                self.isCheckedAll(true);
+            }
+            /*
+            self.isCheckedAll = ko.computed({
+                read:function(){
+                     let itemOut : any = _.filter(self.outputItem(), (x)=>{return !x.useClassification();});
+                    if(itemOut && itemOut.length > 0){
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+                write: function(val){
+                    ko.utils.arrayForEach(self.outputItem(), function(item) {
+                        item.useClassification(val);
+                    });
+               }, 
+               owner:this
+            });
+            */
+        }
         //mode update
         updateMode(code: string) {
             let self = this;
@@ -261,6 +325,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             for (var i = self.outputItem().length; i < 10; i++) {
                 self.outputItem.push(new OutputItemData(i+1, '', false, '', 0, ''));
             }
+            
+            self.buildIsCheckedAll();
         }
 
         //mode register
@@ -269,11 +335,13 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             self.isNewMode(true);
             $("#B3_2").focus();
+            self.outputItem.removeAll();
             //$('#listStandardImportSetting').ntsGridList('deselectAll');
             self.currentSetOutputSettingCode(new SetOutputSettingCode(null));
             for (var i = 1; i <= 10; i++) {
                 self.outputItem.push(new OutputItemData(i, '', false, '', 0, ''));
             }
+            self.buildIsCheckedAll();
         }
 
         //do register
@@ -308,7 +376,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 return;
             }
             
-            self.currentSetOutputSettingCode().buildListItemOutput(itemOut);
+            self.currentSetOutputSettingCode().buildListItemOutput(ko.toJS(itemOut));
             let data : model.OutputSettingCodeDto = ko.toJS(self.currentSetOutputSettingCode);
             
             if (self.isNewMode()) {
@@ -376,13 +444,13 @@ module nts.uk.at.view.kwr008.b.viewmodel {
     }
 
     export class OperationCondition {
-        cd: KnockoutObservable<string>= ko.observable('');
-        operation: KnockoutObservable<boolean>= ko.observable(true); //true: '+'; false: '-'
+        attendanceItemId: KnockoutObservable<number>= ko.observable(null);
+        operation: KnockoutObservable<number>= ko.observable(0); //0: '-'; 1: '+'
         name: KnockoutObservable<string>= ko.observable('');
-        constructor(cd: string, operation: boolean, name: string) {
+        constructor(attendanceItemId: number, operation: number, name: string) {
             let self = this;
-            self.cd(cd || '');
-            self.operation(operation || true);
+            self.attendanceItemId(attendanceItemId || null);
+            self.operation(operation || 0);
             self.name(name || '');
         }
     }
@@ -409,7 +477,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             if (listOperation && listOperation.length > 0) {
                 for(var i = 0; i < listOperation.length; i++) {
                     self.listOperationSetting.push(new  OperationCondition(
-                        listOperation[i].cd, 
+                        listOperation[i].attendanceItemId, 
                         listOperation[i].operation,
                         listOperation[i].name));
                 }

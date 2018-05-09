@@ -89,7 +89,7 @@
                                       <tr> 
 
                                           <th class="ui-widget-header"  style ="text-align: center;"></th>
-                                          <th class="ui-widget-header"  style ="text-align: center;"><div data-bind="ntsCheckBox: {}"></div></th>
+                                          <th class="ui-widget-header"  style ="text-align: center;"><div data-bind="ntsCheckBox: {checked: isCheckedAll}"></div></th>
                                           <th class="ui-widget-header"  style ="text-align: center;">#{i18n.getText('KWR008_28')}</th>
                                           <th class="ui-widget-header"  style ="text-align: center;"></th>
                                           <th class="ui-widget-header"  style ="text-align: center;">#{i18n.getText('KWR008_30')}</th>
@@ -100,7 +100,7 @@
                                    <tbody data-bind = "foreach: outputItem()">
                                        <tr>
                                        			<td><span class="limited-label" data-bind="text: $data.index"></span></td>
-				                            	<td><div tabindex="9" data-bind="ntsCheckBox: { checked: $data.useClassification }"></div></td>
+				                            	<td><div tabindex="9" data-bind="ntsCheckBox: {checked: $data.useClassification}"></div></td>
 				                            	<td>
 				                            			<input data-bind="ntsTextEditor: {
 				                            				name: '#[KWR008_31]',
