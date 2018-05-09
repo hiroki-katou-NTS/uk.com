@@ -15,13 +15,9 @@
 			<com:scriptfile path="/view/ccg/share/ccg.service.js"
 				of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/kdl/023/base/kdl023.base.service.js" />
 			<com:scriptfile path="kdr001.a.start.js" />
 			<com:scriptfile path="kdr001.a.vm.js" />
 			<com:scriptfile path="kdr001.a.service.js" />
-			<com:ValidatorScript>
-				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber
-				</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
@@ -43,8 +39,8 @@
 							<div id="employeeSearch"></div>
 						</div>
 					</div>
-
 				</div>
+				
 				<div class="holidayAction">
 					<table>
 						<tr>
@@ -90,7 +86,6 @@
 							<td>
 								<!-- A4_2  -->
 								<div id="comboBx-HolidayRemaining" tabindex="6"
-									
 									data-bind="ntsComboBox: {
 							    name:'#[KDR001_30]',
 								options: lstHolidayRemaining,
@@ -108,7 +103,6 @@
 									data-bind="click: openKDR001b, 
 								enable: permissionOfEmploymentForm().availability()"
 									tabindex="7" style="margin-left: 20px;">#{i18n.getText('KDR001_31')}</button>
-
 							</td>
 						</tr>
 						<tr>
