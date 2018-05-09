@@ -306,15 +306,23 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//---------------------------------Repositoryが整理されるまでの一時的な作成-------------------------------------------
 		//休憩時間帯(BreakManagement)
 		List<BreakTimeSheet> breakTimeSheet = new ArrayList<>();
+		List<BreakTimeOfDailyPerformance> breakTimeOfDailyList = new ArrayList<>();
+		//休憩回数
+		int breakCount = 0;
 		if(!integrationOfDaily.getBreakTime().isEmpty()) {
 			val breakTimeByBreakType = integrationOfDaily.getBreakTime().stream()
 																		.filter(tc -> tc.getBreakType().isUse(timeSheetAtr))
 																		.findFirst();
 			breakTimeByBreakType.ifPresent(tc -> breakTimeSheet.addAll(tc.getBreakTimeSheets()));
+			
+			breakCount = breakTimeSheet.stream()
+									   .filter(tc -> (tc.getStartTime() != null && tc.getEndTime()!=null && tc.getEndTime().greaterThan(tc.getStartTime())))
+									   .collect(Collectors.toList())
+									   .size();
 		}
-		List<BreakTimeOfDailyPerformance> breakTimeOfDailyList = new ArrayList<>();
+		
 		breakTimeOfDailyList.add(new BreakTimeOfDailyPerformance(employeeId, 
-																 BreakType.REFER_WORK_TIME, 
+																 timeSheetAtr.decisionBreakTime(), 
 																 breakTimeSheet, 
 																 targetDate));
 
@@ -533,12 +541,15 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				/*翌日の勤務情報取得 */
 				WorkInfoOfDailyPerformance tomorrowDayWorkInfo = workInformationRepository.find(employeeId, targetDate.addDays(1)).orElse(workInfo);
 				val tomorrow = this.workTypeRepository.findByPK(companyId, tomorrowDayWorkInfo.getRecordInfo().getWorkTypeCode().v()).orElse(workType.get());
+				if(timeSheetAtr.isSchedule())
+					fixedWorkSetting.get().getFixedWorkRestSetting().changeCalcMethodToSche();
 				
 				subhol = fixedWorkSetting.get().getCommonSetting().getSubHolTimeSet();
+				
 				oneRange.createWithinWorkTimeSheet(personalInfo.getWorkingSystem(),
 						workTime.get().getWorkTimeDivision().getWorkTimeMethodSet(), RestClockManageAtr.IS_CLOCK_MANAGE,
 						goOutTimeSheetList, new CommonRestSetting(RestTimeOfficeWorkCalcMethod.OFFICE_WORK_APPROP_ALL),
-						Optional.of(FixedRestCalculateMethod.MASTER_REF), workTime.get().getWorkTimeDivision(),
+						Optional.of(fixedWorkSetting.get().getFixedWorkRestSetting().getCalculateMethod()), workTime.get().getWorkTimeDivision(),
 						oneRange.getPredetermineTimeSetForCalc(), fixedWorkSetting.get(), 
 						BonusPaySetting.createFromJavaType(companyId,
 						"01"/*ここは聞く*/,
@@ -588,7 +599,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			}
 		}
 		//beforeWorkType,workType
-		return ManageReGetClass.canCalc(oneRange, integrationOfDaily, workTime,beforeWorkType , subhol, personalInfo ,dailyUnit ,fixRestTimeSet,ootsukaFixedWorkSet,holidayCalcMethodSet);
+		return ManageReGetClass.canCalc(oneRange, integrationOfDaily, workTime,beforeWorkType , subhol, personalInfo ,dailyUnit ,fixRestTimeSet,ootsukaFixedWorkSet,holidayCalcMethodSet,breakCount);
 	}
 
 	/**
@@ -742,10 +753,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//乖離時間計算用　勤怠項目ID紐づけDto作成
 		DailyRecordToAttendanceItemConverter forCalcDivergenceDto = this.dailyRecordToAttendanceItemConverter.setData(copyIntegrationOfDaily);
 		
-		//休憩回数
-		int breakCount = 0;
-		if(!recordReGetClass.getIntegrationOfDaily().getBreakTime().isEmpty())
-			breakCount = recordReGetClass.getIntegrationOfDaily().getBreakTime().get(0).getBreakTimeSheets().size(); 
+
 		/*時間の計算*/
 		recordReGetClass.setIntegrationOfDaily(AttendanceTimeOfDailyPerformance.calcTimeResult(recordReGetClass.getCalculationRangeOfOneDay(),
 																				 recordReGetClass.getIntegrationOfDaily(),
@@ -782,7 +790,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					scheWorkType,
 					recordReGetClass.getIntegrationOfDaily().getCalAttr().getFlexExcessTime(),
 					recordReGetClass.getDailyUnit(),
-					breakCount
+					recordReGetClass.getBreakCount()
 					));
 //					schePreTimeSet));
 	
