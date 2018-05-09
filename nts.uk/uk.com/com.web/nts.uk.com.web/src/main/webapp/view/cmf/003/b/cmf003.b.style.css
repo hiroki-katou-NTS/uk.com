@@ -56,7 +56,6 @@
 }
 .fixed-flex-layout-right{
 	float: right;
-	margin-right: 60px;
 }
 
 .fixed-flex-layout-right-screenD{
@@ -67,6 +66,7 @@
 .button-bottom-area {
 	text-align: center;
 	margin-bottom: 20px;
+	margin-top: 10px;
 }
 
 #B3_15 {
@@ -81,17 +81,26 @@
 	display: inline-block;
 }
 
-#B4_12, #B4_30, #B4_34, .space {
+#B4_12, #B4_30, #B4_34, #B4_36, .space {
 	width: 135px;
 }
 
 #B4_33 {
 	margin-left: 33px;
-    margin-right: 35px;
+    margin-right: 24px;
+    width: 126px;
 }
 
 #B4_35 {
 	width: 350px !important;
+}
+
+#D4_8 {
+	margin-left: 10px;
+}
+
+#D5_1 {
+	margin-left: 100px;
 }
 
 #E3_1 {
@@ -221,13 +230,12 @@
 }
 
 .top-right-panel{
-	float: right;
-    margin-right: 230px;	
+	margin-left: 365px;
 }
 
 .bot-right-panel{
 	float: right;
-    margin-right: 335px;
+    margin-right: 440px;
 }
 
 .other .space {

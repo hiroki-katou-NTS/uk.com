@@ -139,7 +139,8 @@ module nts.uk.com.view.cmf003.b {
             lstPersonComponentOption: any;
             selectedEmployeeCode: KnockoutObservableArray<string>;
             employeeName: KnockoutObservable<string>;
-            employeeList: KnockoutObservableArray<UnitModel>;
+            employeeList: KnockoutObservableArray<TargetEmployee>;
+            targetEmployee: KnockoutObservableArray<TargetEmployee>;
             alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
             ccgcomponentPerson: GroupOption;
 
@@ -167,6 +168,10 @@ module nts.uk.com.view.cmf003.b {
 
                 //gridlist
                 this.categorys = ko.observableArray([]);
+                
+                //referenceDate init toDay
+                self.referenceDate = moment.utc().format("YYYY/MM/DD");
+                $("#D4_7").html(self.referenceDate);
 
                 this.columnCategorys = ko.observableArray([
                     { headerText: '', key: 'categoryId', width: 100, hidden: true },
@@ -177,13 +182,13 @@ module nts.uk.com.view.cmf003.b {
 
                 this.columnEmployees = ko.observableArray([
                     { headerText: '', key: 'categoryId', width: 100, hidden: true },
-                    { headerText: getText('CMF003_30'), key: 'categoryName', width: 320 },
-                    { headerText: getText('CMF003_31'), key: 'timeStore', width: 80 }
+                    { headerText: getText('CMF003_163'), key: 'code', width: 130 },
+                    { headerText: getText('CMF003_164'), key: 'businessname', width: 270 }
                 ]);
 
                 self.itemTitleAtr = ko.observableArray([
-                    { value: 0, titleAtrName: resource.getText('CMF003_088') },
-                    { value: 1, titleAtrName: resource.getText('CMF003_089') }]);
+                    { value: 0, titleAtrName: resource.getText('CMF003_88') },
+                    { value: 1, titleAtrName: resource.getText('CMF003_89') }]);
                 self.selectedTitleAtr = ko.observable(0);
                 this.currentCode = ko.observable();
                 this.currentCodeList = ko.observableArray([]);
@@ -300,6 +305,7 @@ module nts.uk.com.view.cmf003.b {
                 self.checkCreateMethodAtrPatternSchedule = ko.observable(false);
                 self.checkCreateMethodAtrCopyPastSchedule = ko.observable(false);
                 self.employeeList = ko.observableArray([]);
+                self.targetEmployee = ko.observableArray([]);
                 self.workTypeInfo = ko.observable('');
                 self.workTypeCode = ko.observable('');
                 self.workTimeInfo = ko.observable('');
@@ -428,6 +434,7 @@ module nts.uk.com.view.cmf003.b {
                         self.selectedEmployee(data.listEmployee);
                         self.applyKCP005ContentSearch(data.listEmployee);
                         self.referenceDate = moment.utc(data.baseDate).format("YYYY/MM/DD");
+                        $("#D4_7").html(self.referenceDate);
                     }
                 }
                 //$('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
@@ -449,12 +456,15 @@ module nts.uk.com.view.cmf003.b {
             public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
                 var self = this;
                 
-                var employeeSearchs: UnitModel[] = [];
+                var employeeSearchs: TargetEmployee[] = [];
                 for (var employeeSearch of dataList) {
-                    var employee: UnitModel = {
+                    var employee: TargetEmployee = {
                         code: employeeSearch.employeeCode,
                         name: employeeSearch.employeeName,
-                        workplaceName: employeeSearch.workplaceName
+                        workplaceName: employeeSearch.workplaceName,
+                        Sid: employeeSearch.employeeId,
+                        scd: employeeSearch.employeeCode,
+                        businessname: employeeSearch.employeeName
                     };
                     employeeSearchs.push(employee);
                 }
@@ -541,18 +551,36 @@ module nts.uk.com.view.cmf003.b {
             
             private nextFromDToE(): void {
                 var self = this;
-                self.initE();
-                self.next();
+                if((self.selectedTitleAtr() == 1) && (self.selectedEmployeeCode().length == 0)) {
+                    alertError({ messageId: 'Msg_498' });
+                } else {
+                    self.initE();
+                    self.next();
+                }            
             }
             
             private initE(): void {
                 var self = this;
+                self.setTargetEmployee();
                 $("#E3_3").html(self.dataSaveSetName());
                 $("#E3_5").html(self.explanation());
                 $("#E3_37").html(self.referenceDate);
             }
             
-            ScreenModel.prototype.validateB = function () {
+            private setTargetEmployee(): void {
+                var self = this;
+                
+                self.targetEmployee.removeAll();
+                for(var i = 0; i < self.selectedEmployeeCode().length; i++) {
+                    for(var j = 0; j < self.employeeList().length; j++) {
+                        if(self.employeeList()[j].code == self.selectedEmployeeCode()[i]) {
+                            self.targetEmployee.push(self.employeeList()[j]);
+                        }   
+                    }
+                }
+            }
+            
+            private validateB(): boolean {
                 $(".form-B").trigger("validate");
                 if (nts.uk.ui.errors.hasError()) {
                     return false;
@@ -599,7 +627,8 @@ module nts.uk.com.view.cmf003.b {
 
             private gotoscreenF(): void {
                 let self = this;
-                self.saveManualSetting();
+                //self.saveManualSetting();
+                nts.uk.ui.windows.sub.modal("/view/cmf/003/f/index.xhtml");
             }
             
             private saveManualSetting(): void {
@@ -608,7 +637,7 @@ module nts.uk.com.view.cmf003.b {
                         moment.utc(self.referenceDate, 'YYYY/MM/DD'), self.password(), moment.utc().toISOString(), moment.utc(self.dayValue().endDate, 'YYYY/MM/DD'), 
                         moment.utc(self.dayValue().startDate, 'YYYY/MM/DD'), moment.utc(self.monthValue().endDate, 'YYYY/MM/DD'), 
                         moment.utc(self.monthValue().startDate, 'YYYY/MM/DD'), self.explanation(), Number(self.yearValue().endDate), Number(self.yearValue().startDate),
-                        1, Number(self.isSymbol()), self.employeeList, self.categorys() );
+                        self.selectedTitleAtr(), Number(self.isSymbol()), self.targetEmployee(), self.categorys() );
 
                 service.addMalSet(manualSetting).done(() => {
                     
@@ -634,13 +663,13 @@ module nts.uk.com.view.cmf003.b {
             startYear: number;
             presenceOfEmployee: number;
             identOfSurveyPre: number;
-            employees: Array<EmployeeModel>;
+            employees: Array<TargetEmployee>;
             category: Array<CategoryModel>;
             
             constructor(systemType: number, passwordAvailability: number, saveSetName: string, referenceDate: string, compressedPassword: string, 
                     executionDateAndTime: string, daySaveEndDate: string, daySaveStartDate: string, monthSaveEndDate: string, monthSaveStartDate: string, 
                     suppleExplanation: string, endYear: number, startYear: number, presenceOfEmployee: number, identOfSurveyPre: number,
-                    employees: Array<EmployeeModel>, category: Array<CategoryModel>) {
+                    employees: Array<TargetEmployee>, category: Array<CategoryModel>) {
                 this.systemType = systemType;
                 this.passwordAvailability = passwordAvailability;
                 this.saveSetName = saveSetName;
@@ -701,10 +730,6 @@ module nts.uk.com.view.cmf003.b {
             }
         }
 
-        export class EmployeeModel {
-
-        }
-
         export class ListType {
             static EMPLOYMENT = 1;
             static Classification = 2;
@@ -712,11 +737,14 @@ module nts.uk.com.view.cmf003.b {
             static EMPLOYEE = 4;
         }
 
-        export interface UnitModel {
+        export interface TargetEmployee {
             code: string;
             name?: string;
             workplaceName?: string;
             isAlreadySetting?: boolean;
+            Sid: string;
+            scd: string;
+            businessname: string;
         }
 
         export class SelectType {
