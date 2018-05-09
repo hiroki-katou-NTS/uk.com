@@ -1,8 +1,4 @@
 module nts.uk.at.view.kwr008.share.model {
-    export enum SCREEN_MODE {
-        NEW = 0,
-        UPDATE = 1
-    }
 
     export interface EnumConstantDto {
         value: number;
