@@ -433,36 +433,37 @@ public class ApprovalStatusFinder {
 	private String getAppContentOverTime(String companyID, String appId) {
 		String appContent = "";
 
-		AppOverTimeInfoFull appOverTIme = appDetailInfoRepo.getAppOverTimeInfo(companyID, appId);
+		AppHolidayWorkFull appHoliday = appDetailInfoRepo.getAppHolidayWorkInfo(companyID, appId);
+		AppOverTimeInfoFull appOverTime = appDetailInfoRepo.getAppOverTimeInfo(companyID, appId);
 		appContent += I18NText.getText("KAF018_268");
-		appContent += appOverTIme.getWorkClockFrom1();
+		appContent += appHoliday.getStartTime1();
 		appContent += I18NText.getText("KAF018_220");
-		appContent += appOverTIme.getWorkClockTo1();
-		appContent += appOverTIme.getWorkClockFrom2() != null ? appOverTIme.getWorkClockFrom2() : "";
-		appContent += I18NText.getText("KAF018_220");
-		appContent += appOverTIme.getWorkClockTo2() != null ? appOverTIme.getWorkClockTo2() : "";
-		// appContent += appOverTIme.getTotal();
+		appContent += appHoliday.getEndTime1();
+		appContent += appHoliday.getStartTime2() != null ? appHoliday.getStartTime2() : " ";
+		appContent += appHoliday.getEndTime2() != null ? I18NText.getText("KAF018_220") : " ";
+		appContent += appHoliday.getEndTime2() != null ? appHoliday.getEndTime2() : " ";
+		appContent += "残業合計  ";
 
-		List<OverTimeFrame> lstFrame = appOverTIme.getLstFrame();
+		List<OverTimeFrame> lstFrame = appOverTime.getLstFrame();
 		Comparator<OverTimeFrame> sortList = Comparator.comparing(OverTimeFrame::getAttendanceType)
 				.thenComparing(OverTimeFrame::getFrameNo);
 		lstFrame.sort(sortList);
 		int countItem = 0;
 		int countRest = 0;
+		int time = 0;
+		String frameName = "";
 		for (OverTimeFrame overFrame : lstFrame) {
 			if (overFrame.getApplicationTime() != 0) {
-				appContent += overFrame.getName() + " " + clockShorHm(overFrame.getApplicationTime());
-				appContent += I18NText.getText("KAF018_270") + appOverTIme.getOverTimeShiftNight();
-				appContent += I18NText.getText("KAF018_271") + appOverTIme.getFlexExessTime();
+				frameName += overFrame.getName() + " " + clockShorHm(overFrame.getApplicationTime());
 				countItem++;
-				if (countItem > 3) {
+				if (countItem > 2) {
 					countRest = lstFrame.size() - 3;
 				}
 			}
+			time += overFrame.getApplicationTime();
 		}
-		if (countRest > 0) {
-			appContent += I18NText.getText("KAF018_231", String.valueOf(countRest));
-		}
+		String other = I18NText.getText("KAF018_231", String.valueOf(countRest));
+		appContent += clockShorHm(time) + I18NText.getText("KAF018_231", frameName + other);
 		return appContent;
 	}
 
