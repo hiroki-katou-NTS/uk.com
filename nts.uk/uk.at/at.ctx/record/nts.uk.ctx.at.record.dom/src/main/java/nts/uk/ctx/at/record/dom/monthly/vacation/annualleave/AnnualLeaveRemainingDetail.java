@@ -14,7 +14,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremaini
  */
 @Getter
 @Setter
-public class AnnualLeaveRemainingDetail {
+public class AnnualLeaveRemainingDetail implements Cloneable {
 
 	/** 付与日 */
 	private GeneralDate grantDate;
@@ -52,5 +52,21 @@ public class AnnualLeaveRemainingDetail {
 		domain.days = days;
 		domain.time = time;
 		return domain;
+	}
+	
+	@Override
+	protected AnnualLeaveRemainingDetail clone() {
+		AnnualLeaveRemainingDetail cloned = new AnnualLeaveRemainingDetail(this.grantDate);
+		try {
+			cloned = (AnnualLeaveRemainingDetail)super.clone();
+			cloned.days = new AnnualLeaveRemainingDayNumber(this.days.v());
+			if (this.time.isPresent()){
+				cloned.time = Optional.of(new AnnualLeaveRemainingTime(this.time.get().v()));
+			}
+		}
+		catch (Exception e){
+			throw new RuntimeException("AnnualLeaveRemainingDetail clone error.");
+		}
+		return cloned;
 	}
 }

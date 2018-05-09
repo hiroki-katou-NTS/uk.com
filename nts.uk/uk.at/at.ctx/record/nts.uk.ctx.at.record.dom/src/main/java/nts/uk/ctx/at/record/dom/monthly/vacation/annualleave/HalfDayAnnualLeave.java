@@ -9,7 +9,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class HalfDayAnnualLeave {
+public class HalfDayAnnualLeave implements Cloneable {
 
 	/** 残数 */
 	private HalfDayAnnLeaRemainingNum remainingNum;
@@ -39,5 +39,18 @@ public class HalfDayAnnualLeave {
 		domain.remainingNum = remainingNum;
 		domain.usedNum = usedNum;
 		return domain;
+	}
+	
+	@Override
+	public HalfDayAnnualLeave clone() {
+		HalfDayAnnualLeave cloned = new HalfDayAnnualLeave();
+		try {
+			cloned.remainingNum = this.remainingNum.clone();
+			cloned.usedNum = this.usedNum.clone();
+		}
+		catch (Exception e){
+			throw new RuntimeException("HalfDayAnnualLeave clone error.");
+		}
+		return cloned;
 	}
 }
