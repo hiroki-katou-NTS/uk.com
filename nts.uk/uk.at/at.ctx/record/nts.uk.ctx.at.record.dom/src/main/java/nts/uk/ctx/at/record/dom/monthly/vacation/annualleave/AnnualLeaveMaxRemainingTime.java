@@ -12,7 +12,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.Rema
  */
 @Getter
 @Setter
-public class AnnualLeaveMaxRemainingTime {
+public class AnnualLeaveMaxRemainingTime implements Cloneable {
 
 	/** 時間 */
 	private RemainingMinutes time;
@@ -48,5 +48,21 @@ public class AnnualLeaveMaxRemainingTime {
 		domain.timeBeforeGrant = timeBeforeGrant;
 		domain.timeAfterGrant = timeAfterGrant;
 		return domain;
+	}
+	
+	@Override
+	public AnnualLeaveMaxRemainingTime clone() {
+		AnnualLeaveMaxRemainingTime cloned = new AnnualLeaveMaxRemainingTime();
+		try {
+			cloned.time = new RemainingMinutes(this.time.v());
+			cloned.timeBeforeGrant = new RemainingMinutes(this.timeBeforeGrant.v());
+			if (this.timeAfterGrant.isPresent()){
+				cloned.timeAfterGrant = Optional.of(new RemainingMinutes(this.timeAfterGrant.get().v()));
+			}
+		}
+		catch (Exception e){
+			throw new RuntimeException("AnnualLeaveMaxRemainingTime clone error.");
+		}
+		return cloned;
 	}
 }

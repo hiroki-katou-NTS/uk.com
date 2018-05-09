@@ -11,7 +11,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.Used
  * @author shuichu_ishida
  */
 @Getter
-public class TimeAnnualLeaveUsedTime {
+public class TimeAnnualLeaveUsedTime implements Cloneable {
 
 	/** 使用回数 */
 	private UsedTimes usedTimes;
@@ -53,5 +53,23 @@ public class TimeAnnualLeaveUsedTime {
 		domain.usedTimeBeforeGrant = usedTimeBeforeGrant;
 		domain.usedTimeAfterGrant = usedTimeAfterGrant;
 		return domain;
+	}
+	
+	@Override
+	protected TimeAnnualLeaveUsedTime clone() {
+		TimeAnnualLeaveUsedTime cloned = new TimeAnnualLeaveUsedTime();
+		try {
+			cloned.usedTimes = new UsedTimes(this.usedTime.v());
+			cloned.usedTime = new UsedMinutes(this.usedTime.v());
+			cloned.usedTimeBeforeGrant = new UsedMinutes(this.usedTimeBeforeGrant.v());
+			if (this.usedTimeAfterGrant.isPresent()){
+				cloned.usedTimeAfterGrant = Optional.of(
+						new UsedMinutes(this.usedTimeAfterGrant.get().v()));
+			}
+		}
+		catch (Exception e){
+			throw new RuntimeException("TimeAnnualLeaveUsedTime clone error.");
+		}
+		return cloned;
 	}
 }
