@@ -241,10 +241,9 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             var self = this;
 
             if (self.listStandardImportSetting().length == 0) {
-                self.isNewMode(true);
+                
                 self.registerMode();
             } else {
-                self.isNewMode(false);
                 if (!self.selectedCode()) {
                     self.selectedCode(self.listStandardImportSetting()[0].cd());
                 }
@@ -276,7 +275,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             self.isNewMode(true);
             $("#B3_2").focus();
-            $('#listStandardImportSetting').ntsGridList('deselectAll');
+            //$('#listStandardImportSetting').ntsGridList('deselectAll');
             self.currentSetOutputSettingCode(new SetOutputSettingCode(null));
             for (var i = 1; i <= 10; i++) {
                 self.outputItem.push(new OutputItemData(i, '', false, '', 0, ''));
