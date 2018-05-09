@@ -836,8 +836,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 						k++;
 					}
 				}
-				content += (appStamp.getAppStampGoOutPermits().size() - k > 0
-						? I18NText.getText("CMM045_231", (appStamp.getAppStampGoOutPermits().size() - k) + "") : "");
+				content += (k > 3 ? I18NText.getText("CMM045_230", k - 3 + "") : "");
 				break;
 			}
 			case STAMP_WORK: {
@@ -851,8 +850,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 							+ (x.getStartTime().isPresent() ? x.getEndTime().get().toString() : "") + " ";
 					k++;
 				}
-				content += (appStamp.getAppStampGoOutPermits().size() - k > 0
-						? I18NText.getText("CMM045_231", (appStamp.getAppStampGoOutPermits().size() - k) + "") : "");
+				content += (k > 3 ? I18NText.getText("CMM045_230", k - 3 + "") : "");
 				break;
 			}
 			case STAMP_ONLINE_RECORD: {
@@ -935,8 +933,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 					}
 					}
 				}
-				content += (appStamp.getAppStampGoOutPermits().size() - k > 0
-						? I18NText.getText("CMM045_231", (appStamp.getAppStampGoOutPermits().size() - k) + "") : "");
+				content += (k > 3 ? I18NText.getText("CMM045_230", k - 3 + "") : "");
 				break;
 			}
 			}
