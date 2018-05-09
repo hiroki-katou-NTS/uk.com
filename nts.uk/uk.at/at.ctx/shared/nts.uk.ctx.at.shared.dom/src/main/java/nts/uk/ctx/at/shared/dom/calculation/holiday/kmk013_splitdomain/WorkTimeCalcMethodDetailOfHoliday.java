@@ -82,14 +82,17 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject{
 	
 	/**
 	 * 遅刻・早退を控除するか判断する
+	 * 2018/05/09　高須
+	 * caseがUSEの場合にわざとfalseにしています
+	 * 画面上で「遅刻早退をマイナスしない」のチェックボックスでチェックがある場合にここにUSEが来る為です
 	 * @return
 	 */
 	public boolean isDeductLateLeaveEarly() {
 		switch(this.notDeductLateLeaveEarly) {
 			case USE:
-				return true;
-			case NOT_USE:
 				return false;
+			case NOT_USE:
+				return true;
 			default:
 				throw new RuntimeException("unknown notDeductLateLeaveEarly");
 		}	
