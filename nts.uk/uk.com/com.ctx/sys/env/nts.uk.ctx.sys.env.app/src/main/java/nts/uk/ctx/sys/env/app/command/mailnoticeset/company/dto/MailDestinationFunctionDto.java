@@ -22,7 +22,7 @@ public class MailDestinationFunctionDto implements MailDestinationFunctionGetMem
 
 	/** The send by function setting. */
 	public List<SendMailByFunctionSetting> sendByFunctionSetting;
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 

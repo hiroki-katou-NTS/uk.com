@@ -74,7 +74,7 @@ module nts.uk.com.view.cmm048.a {
                 let _self = this;
                 _self.employeeId = ko.observable("");
                 _self.employeeCode = ko.observable("");
-                _self.employeeName = ko.observable("Tung");
+                _self.employeeName = ko.observable("");
             }
         }
         

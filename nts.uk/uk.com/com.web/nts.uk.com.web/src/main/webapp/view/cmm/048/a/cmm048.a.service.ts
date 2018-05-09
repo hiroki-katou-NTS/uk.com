@@ -10,7 +10,9 @@ module nts.uk.com.view.cmm048.a {
     export module model {
         
         export interface MainDto {
-            employeeName: string;
+            employee: EmployeeDto;
+            employeeInfoContact: EmployeeInfoContactDto;
+            personContact: PersonContactDto;
             passwordPolicy: PasswordPolicyDto;
         }
         

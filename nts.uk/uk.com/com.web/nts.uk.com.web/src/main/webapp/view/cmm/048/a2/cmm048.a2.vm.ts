@@ -20,8 +20,24 @@ module a2 {
         /**
          * Start tab
          */
-        public startTab(): void {
+        public startTab() {
             let _self = this;
+        }
+        
+        /**
+         * Open dialog user info
+         */
+        public openDialogUserInfo(userInfo: number) {
+            let _self = this;
+            nts.uk.ui.block.grayout();
+            
+            let dataObject: any = {
+                userInfo: userInfo
+            };
+            nts.uk.ui.windows.setShared("CMM048_DIALOG_B_INPUT_DATA", dataObject);
+            nts.uk.ui.windows.sub.modal("/view/cmm/048/b/index.xhtml").onClosed(() => {
+                nts.uk.ui.block.clear();
+            });
         }
     } 
 
