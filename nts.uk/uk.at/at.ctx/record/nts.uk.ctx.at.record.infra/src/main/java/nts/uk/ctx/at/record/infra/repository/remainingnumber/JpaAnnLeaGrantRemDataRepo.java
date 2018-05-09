@@ -111,7 +111,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 
 		if (data.getAnnualLeaveConditionInfo().isPresent()) {
 			AnnualLeaveConditionInfo conditionInfo = data.getAnnualLeaveConditionInfo().get();
-			entity.perscribedDays = conditionInfo.getDeductedDays().v();
+			entity.perscribedDays = conditionInfo.getPrescribedDays().v();
 			entity.deductedDays = conditionInfo.getDeductedDays().v();
 			entity.workingDays = conditionInfo.getWorkingDays().v();
 		} else {
