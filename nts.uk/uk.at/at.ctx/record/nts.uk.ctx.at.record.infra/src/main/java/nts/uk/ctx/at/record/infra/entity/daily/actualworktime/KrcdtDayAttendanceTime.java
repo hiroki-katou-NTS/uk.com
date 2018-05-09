@@ -319,16 +319,14 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 						 DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
 					 			   			   TimeWithCalculation.sameTime(new AttendanceTime(0)),
 					 			   			   TimeWithCalculation.sameTime(new AttendanceTime(0))),
-						 ChildCareAttribute.CARE
-						)
-//				,
-//				new HolidayOfDaily(new AbsenceOfDaily(new AttendanceTime(0)), 
-//								   new TimeDigestOfDaily(new AttendanceTime(0),new AttendanceTime(0)), 
-//								   new YearlyReservedOfDaily(new AttendanceTime(0)), 
-//								   new SubstituteHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)), 
-//								   new OverSalaryOfDaily(new AttendanceTime(0), new AttendanceTime(0)), 
-//								   new SpecialHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)), 
-//								   new AnnualOfDaily(new AttendanceTime(0), new AttendanceTime(0)))
+						 ChildCareAttribute.CARE),
+				new HolidayOfDaily(new AbsenceOfDaily(new AttendanceTime(0)), 
+								   new TimeDigestOfDaily(new AttendanceTime(0),new AttendanceTime(0)), 
+								   new YearlyReservedOfDaily(new AttendanceTime(0)), 
+								   new SubstituteHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)), 
+								   new OverSalaryOfDaily(new AttendanceTime(0), new AttendanceTime(0)), 
+								   new SpecialHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)), 
+								   new AnnualOfDaily(new AttendanceTime(0), new AttendanceTime(0)))
 				);
 
 		// 日別実績の勤務実績時間
