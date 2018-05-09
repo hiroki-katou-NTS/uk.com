@@ -6,13 +6,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ApplicationReflectOutput;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReasonNotReflectRecord;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReflectedStateRecord;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
@@ -21,9 +15,8 @@ import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformance
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectParameter;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -40,7 +33,7 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 	@Inject
 	private HolidayWorkReflectProcess holidayWorkProcess;
 	@Inject
-	private ScheWorkUpdateService workUpdate;
+	private WorkUpdateService workUpdate;
 	@Inject
 	private PreOvertimeReflectService overTimeService;
 	@Inject
@@ -50,11 +43,11 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 	@Inject
 	private WorkInformationRepository workRepository;
 	@Inject
-	private ScheWorkUpdateService scheWork;
+	private WorkUpdateService scheWork;
 	@Inject
 	private EditStateOfDailyPerformanceRepository dailyReposiroty;
 	@Override
-	public boolean preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara) {		
+	public boolean preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara, boolean isPre) {		
 		try {
 			Optional<WorkInfoOfDailyPerformance> optDailyData = workRepository.find(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate());
 			if(!optDailyData.isPresent()) {
@@ -72,7 +65,7 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 					new WorkLocationCD("01"), 
 					StampSourceInfo.CORRECTION_RECORD_SET );
 
-			WorkStamp leaving    = new WorkStamp(new TimeWithDayAttr(holidayWorkPara.getHolidayWorkPara().getEndTime()),
+			WorkStamp leaving = new WorkStamp(new TimeWithDayAttr(holidayWorkPara.getHolidayWorkPara().getEndTime()),
 					new TimeWithDayAttr(holidayWorkPara.getHolidayWorkPara().getEndTime()),
 					new WorkLocationCD("01"),
 					StampSourceInfo.CORRECTION_RECORD_SET );
@@ -94,7 +87,7 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 					holidayWorkPara.getBaseDate(), 
 					holidayWorkPara.getHolidayWorkPara().getWorkTypeCode(), 
 					holidayWorkPara.getHolidayWorkPara().getWorkTimeCode(), 
-					holidayWorkPara.isScheReflectFlg(), 
+					holidayWorkPara.isScheReflectFlg(), isPre,
 					holidayWorkPara.getScheAndRecordSameChangeFlg(),
 					daily);
 			//勤種・就時の反映

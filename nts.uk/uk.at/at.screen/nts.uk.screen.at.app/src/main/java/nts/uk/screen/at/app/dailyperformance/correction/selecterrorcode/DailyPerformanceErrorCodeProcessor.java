@@ -23,9 +23,10 @@ import org.apache.commons.lang3.StringUtils;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApproverEmployeeState;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ConfirmOfManagerOrYouself;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.YourselfConfirmError;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationExportDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListForScreen;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
@@ -69,6 +70,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.FormatDPCorrectionDt
 import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ObjectShare;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ScreenMode;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
@@ -128,7 +130,7 @@ public class DailyPerformanceErrorCodeProcessor {
 	private static final String STATE_ERROR ="ntsgrid-error";
 
 	public DailyPerformanceCorrectionDto generateData(DateRange dateRange,
-			List<DailyPerformanceEmployeeDto> lstEmployee, Integer initScreen, Integer displayFormat, CorrectionOfDailyPerformance correct,
+			List<DailyPerformanceEmployeeDto> lstEmployee, Integer initScreen, Integer mode, Integer displayFormat, CorrectionOfDailyPerformance correct,
 			List<String> errorCodes, List<String> formatCodes) {
 		String sId = AppContexts.user().employeeId();
 		String companyId = AppContexts.user().companyId();
@@ -141,6 +143,8 @@ public class DailyPerformanceErrorCodeProcessor {
 		screenDto.setIdentityProcessDto(identityProcessDtoOpt.isPresent() ? identityProcessDtoOpt.get()
 				: new IdentityProcessUseSetDto(false, false, null));
 		Optional<ApprovalUseSettingDto> approvalUseSettingDtoOpt = repo.findApprovalUseSettingDto(companyId);
+		
+		setHideCheckbok(screenDto, identityProcessDtoOpt, approvalUseSettingDtoOpt, companyId, mode);
 
 		/**
 		 * システム日付を基準に1ヵ月前の期間を設定する | Set date range one month before system date
@@ -199,7 +203,7 @@ public class DailyPerformanceErrorCodeProcessor {
 		
 		// check show column 本人
 		// check show column 承認
-		DailyRecOpeFuncDto dailyRecOpeFun = findDailyRecOpeFun(screenDto, companyId).orElse(null);
+		//DailyRecOpeFuncDto dailyRecOpeFun = findDailyRecOpeFun(screenDto, companyId).orElse(null);
 		Map<String, DatePeriod> employeeAndDateRange = extractEmpAndRange(dateRange, companyId, listEmployeeId);
 		long start = System.currentTimeMillis();
 		// No 19, 20 show/hide button
@@ -308,7 +312,7 @@ public class DailyPerformanceErrorCodeProcessor {
 			data.setSign(signDayMap.containsKey(data.getEmployeeId() + "|" + data.getDate()));
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
 			if (resultOfOneRow != null && !data.getError().equals("")) {
-				lockData(sId, screenDto, dailyRecOpeFun, data, identityProcessDtoOpt, approvalUseSettingDtoOpt);
+				lockData(sId, screenDto, data, identityProcessDtoOpt, approvalUseSettingDtoOpt);
 
 				boolean lock = checkLockAndSetState(employeeAndDateRange, data);
 
@@ -496,62 +500,72 @@ public class DailyPerformanceErrorCodeProcessor {
 		return resultDailyMap.isEmpty() ? null : resultDailyMap.get(mergeString(sId, "|", date.toString()));
 	}
 	
-	private Optional<DailyRecOpeFuncDto> findDailyRecOpeFun(DailyPerformanceCorrectionDto screenDto, String companyId) {
-		Optional<DailyRecOpeFuncDto> findDailyRecOpeFun = repo.findDailyRecOpeFun(companyId);
-		if (findDailyRecOpeFun.isPresent()) {
-			screenDto.setShowPrincipal(findDailyRecOpeFun.get().getUseConfirmByYourself() == 0 ? false : true);
-			screenDto.setShowSupervisor(findDailyRecOpeFun.get().getUseSupervisorConfirm() == 0 ? false : true);
-		} else {
-			screenDto.setShowPrincipal(false);
-			screenDto.setShowSupervisor(false);
-		}
-		
-		return findDailyRecOpeFun;
+//	private Optional<DailyRecOpeFuncDto> findDailyRecOpeFun(DailyPerformanceCorrectionDto screenDto, String companyId) {
+//		Optional<DailyRecOpeFuncDto> findDailyRecOpeFun = repo.findDailyRecOpeFun(companyId);
+//		if (findDailyRecOpeFun.isPresent()) {
+//			screenDto.setShowPrincipal(findDailyRecOpeFun.get().getUseConfirmByYourself() == 0 ? false : true);
+//			screenDto.setShowSupervisor(findDailyRecOpeFun.get().getUseSupervisorConfirm() == 0 ? false : true);
+//		} else {
+//			screenDto.setShowPrincipal(false);
+//			screenDto.setShowSupervisor(false);
+//		}
+//		
+//		return findDailyRecOpeFun;
+//	}
+	
+	private void setHideCheckbok(DailyPerformanceCorrectionDto screenDto, Optional<IdentityProcessUseSetDto> indentity,
+			Optional<ApprovalUseSettingDto> approval, String companyId, int mode) {
+		screenDto.setShowPrincipal(indentity.isPresent() && indentity.get().isUseConfirmByYourself());
+		screenDto.setShowSupervisor(approval.isPresent() && approval.get().getUseDayApproverConfirm() == true ? false
+				: ScreenMode.APPROVAL.value == mode);
 	}
 	
-	private void lockData(String sId, DailyPerformanceCorrectionDto screenDto, DailyRecOpeFuncDto dailyRecOpeFun,
+	private void lockData(String sId, DailyPerformanceCorrectionDto screenDto,
 			DPDataDto data, Optional<IdentityProcessUseSetDto> identityProcessUseSetDto, Optional<ApprovalUseSettingDto> approvalUseSettingDto) {
 		// disable, enable check sign no 10
-		if (dailyRecOpeFun != null) {
-			if (!sId.equals(data.getEmployeeId())) {
-				screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
-				screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
-			} else {
-				//if (identityProcessUseSetDto.isPresent()) {
-				if (dailyRecOpeFun != null) {
-					//int selfConfirmError = identityProcessUseSetDto.get().getYourSelfConfirmError();
-					int selfConfirmError = dailyRecOpeFun.getYourselfConfirmError();
-					// lock sign
-					if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
-						if (data.getError().contains("ER") && data.isSign()) {
-							screenDto.setLock(data.getId(), LOCK_SIGN, STATE_ERROR);
-						} else if(data.getError().contains("ER") && !data.isSign()){
-							screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
+				if (!sId.equals(data.getEmployeeId())) {
+					screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
+					// screenDto.setLock(data.getId(), LOCK_APPROVAL,
+					// STATE_DISABLE);
+				} else {
+					if (identityProcessUseSetDto.isPresent()) {
+						int selfConfirmError = identityProcessUseSetDto.get().getYourSelfConfirmError();
+						// lock sign
+						if (selfConfirmError == YourselfConfirmError.CANNOT_CHECKED_WHEN_ERROR.value) {
+							if (data.getError().contains("ER") && data.isSign()) {
+								screenDto.setLock(data.getId(), LOCK_SIGN, STATE_ERROR);
+							} else if (data.getError().contains("ER") && !data.isSign()) {
+								screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
+							}
+							// thieu check khi co data
+						} else if (selfConfirmError == YourselfConfirmError.CANNOT_REGISTER_WHEN_ERROR.value) {
+							// co the dang ky data nhưng ko đăng ký được check box
 						}
-						// thieu check khi co data
-					} else if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_REGISTER_WHEN_ERROR.value) {
-						// co the dang ky data nhưng ko đăng ký được check box
 					}
 				}
 
-				//if (approvalUseSettingDto.isPresent()) {
-				if (dailyRecOpeFun != null) {
+				if (!approvalUseSettingDto.isPresent()) {
 					// lock approval
-					//int supervisorConfirmError = approvalUseSettingDto.get().getSupervisorConfirmErrorAtr();
-					int supervisorConfirmError = dailyRecOpeFun.getSupervisorConfirmError();
-					if (supervisorConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
-						if (data.getError().contains("ER")) {
+					int supervisorConfirmError = approvalUseSettingDto.get().getSupervisorConfirmErrorAtr();
+					if (supervisorConfirmError == YourselfConfirmError.CANNOT_CHECKED_WHEN_ERROR.value) {
+						if (data.getError().contains("ER") && data.isApproval()) {
 							screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_ERROR);
-						} else {
+						} else if (data.getError().contains("ER") && !data.isApproval()) {
 							screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
 						}
 						// thieu check khi co data
-					} else if (supervisorConfirmError == ConfirmOfManagerOrYouself.CANNOT_REGISTER_WHEN_ERROR.value) {
+					} else if (supervisorConfirmError == YourselfConfirmError.CANNOT_REGISTER_WHEN_ERROR.value) {
 						// co the dang ky data nhưng ko đăng ký được check box
 					}
+
+					// disable, enable checkbox with approveRootStatus
+//					if (approveRootStatus == null)
+//						return;
+//					if (approveRootStatus.getApproverEmployeeState() != null
+//							&& approveRootStatus.getApproverEmployeeState() != ApproverEmployeeState.PHASE_DURING) {
+//						screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
+//					}
 				}
-			}
-		}
 	}
 	
 	private boolean checkLockAndSetState(Map<String, DatePeriod> employeeAndDateRange, DPDataDto data) {
@@ -728,7 +742,8 @@ public class DailyPerformanceErrorCodeProcessor {
 			List<DPSheetDto> lstSheet = new ArrayList<DPSheetDto>();
 			List<Integer> lstAtdItem = new ArrayList<>();
 			List<Integer> lstAtdItemUnique = new ArrayList<>();
-			if (dailyPerformanceDto != null && dailyPerformanceDto.getSettingUnit() == SettingUnit.AUTHORITY) {
+			List<DPBusinessTypeControl> lstDPBusinessTypeControl = new ArrayList<>();
+			if (dailyPerformanceDto != null && dailyPerformanceDto.getSettingUnit() == SettingUnitType.AUTHORITY) {
 				// setting button A2_4
 				result.setSettingUnit(true);
 				List<AuthorityFomatDailyDto> authorityFomatDailys = new ArrayList<>();
@@ -798,29 +813,30 @@ public class DailyPerformanceErrorCodeProcessor {
 				// アルゴリズム「社員の勤務種別に対応する表示項目を取得する」を実行する
 				/// アルゴリズム「社員の勤務種別をすべて取得する」を実行する
 				List<String> lstBusinessTypeCode = this.repo.getListBusinessType(lstEmployeeId, dateRange);
-				List<DPBusinessTypeControl> lstDPBusinessTypeControl = new ArrayList<>();
 				// Create header & sheet
 				if (lstBusinessTypeCode.size() > 0) {
                     // List item hide 
 					lstFormat = this.repo.getListFormatDPCorrection(lstBusinessTypeCode).stream().collect(Collectors.toList()); // 10s
 					lstAtdItem = lstFormat.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList());
 					lstAtdItemUnique = new HashSet<Integer>(lstAtdItem).stream().collect(Collectors.toList());//.filter(x -> !itemHide.containsKey(x))
-					if (lstFormat.size() > 0) {
-						lstDPBusinessTypeControl = this.repo.getListBusinessTypeControl(lstBusinessTypeCode,
-								lstAtdItemUnique);
-					}
-					Map<Integer, String> itemHide = lstDPBusinessTypeControl.stream().filter(x -> x.isUseAtr()).collect(Collectors.toMap(DPBusinessTypeControl :: getAttendanceItemId, x -> "", (x, y) -> x));
 					lstSheet = this.repo.getFormatSheets(lstBusinessTypeCode);
 					Set<String> lstSheetNo = lstSheet.stream().map(DPSheetDto::getName).collect(Collectors.toSet());
 					if (lstSheetNo.size() != lstSheet.size()) {
 						lstSheet = lstSheet.stream().map(x -> new DPSheetDto(x.getName(), x.getName()))
 								.collect(Collectors.toList());
 					}
-					/// 対応するドメインモデル「勤務種別日別実績の修正のフォーマット」を取得する
-					lstFormat = lstFormat.stream().filter(x -> itemHide.containsKey(x.getAttendanceItemId())).collect(Collectors.toList()); // 10s
-				}
-				result.setLstBusinessTypeCode(lstDPBusinessTypeControl);
+				}	
 			}
+			/// 対応するドメインモデル「勤務種別日別実績の修正のフォーマット」を取得する
+			if (lstFormat.size() > 0) {
+				String authorityDailyID =  AppContexts.user().roles().forAttendance(); 
+				lstDPBusinessTypeControl = this.repo.getListBusinessTypeControl(companyId, authorityDailyID,
+						lstAtdItemUnique, true);
+			}
+			Map<Integer, String> itemHide = lstDPBusinessTypeControl.stream().filter(x -> x.isUseAtr()).collect(Collectors.toMap(DPBusinessTypeControl :: getAttendanceItemId, x -> "", (x, y) -> x));
+			lstFormat = lstFormat.stream().filter(x -> itemHide.containsKey(x.getAttendanceItemId())).collect(Collectors.toList()); // 10s
+			
+			result.setLstBusinessTypeCode(lstDPBusinessTypeControl);
 			result.setLstFormat(lstFormat);
 			result.setLstSheet(lstSheet);
 			result.setLstAtdItemUnique(lstAtdItemUnique);

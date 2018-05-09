@@ -30,29 +30,20 @@ public class RegulationInfoEmployeeQueryImpl implements RegulationInfoEmployeeQu
 	}
 
 	private EmployeeSearchQueryDto createQueryToFilterEmployees(RegulationInfoEmployeeQuery queryX) {
-		GeneralDateTime workingDate = GeneralDateTime.localDateTime(queryX.getBaseDate().localDate().atStartOfDay());
-		return EmployeeSearchQueryDto.builder().baseDate(workingDate)
-				            .referenceRange(queryX.getReferenceRange())
-							.filterByEmployment(queryX.getFilterByEmployment())
-							.employmentCodes(queryX.getEmploymentCodes())
-							.filterByDepartment(queryX.getFilterByDepartment())
-							.filterByWorkplace(queryX.getFilterByWorkplace())
-							.filterByClassification(queryX.getFilterByClassification())
-							.classificationCodes(queryX.getClassificationCodes())
-							.filterByJobTitle(queryX.getFilterByJobTitle())
-							.jobTitleCodes(queryX.getJobTitleCodes())
-							.filterByWorktype(queryX.getFilterByWorktype())
-							.worktypeCodes(queryX.getWorktypeCodes())
-							.periodStart(workingDate)
-							.periodEnd(workingDate)
-							.includeIncumbents(queryX.getIncludeIncumbents())
-							.includeWorkersOnLeave(queryX.getIncludeWorkersOnLeave())
-							.includeOccupancy(queryX.getIncludeOccupancy())
-							.includeAreOnLoan(queryX.getIncludeAreOnLoan())
-							.includeGoingOnLoan(queryX.getIncludeGoingOnLoan())
-							.systemType(2)
-//							.sortOrderNo(1)
-//							.filterByClosure(false)
-							.includeRetirees(queryX.getIncludeRetirees()).build();
+		GeneralDateTime baseDate = GeneralDateTime.localDateTime(queryX.getBaseDate().localDate().atStartOfDay());
+		GeneralDateTime periodStart = GeneralDateTime.localDateTime(queryX.getPeriodStart().localDate().atStartOfDay());
+		GeneralDateTime periodEnd = GeneralDateTime.localDateTime(queryX.getPeriodEnd().localDate().atStartOfDay());
+		return EmployeeSearchQueryDto.builder().baseDate(baseDate).referenceRange(queryX.getReferenceRange())
+				.filterByEmployment(queryX.getFilterByEmployment()).employmentCodes(queryX.getEmploymentCodes())
+				.filterByDepartment(queryX.getFilterByDepartment()).departmentCodes(queryX.getDepartmentCodes())
+				.filterByWorkplace(queryX.getFilterByWorkplace()).workplaceCodes(queryX.getWorkplaceCodes())
+				.filterByClassification(queryX.getFilterByClassification())
+				.classificationCodes(queryX.getClassificationCodes()).filterByJobTitle(queryX.getFilterByJobTitle())
+				.jobTitleCodes(queryX.getJobTitleCodes()).filterByWorktype(queryX.getFilterByWorktype())
+				.worktypeCodes(queryX.getWorktypeCodes()).periodStart(periodStart).periodEnd(periodEnd)
+				.includeIncumbents(queryX.getIncludeIncumbents())
+				.includeWorkersOnLeave(queryX.getIncludeWorkersOnLeave()).includeOccupancy(queryX.getIncludeOccupancy())
+				.systemType(2).sortOrderNo(1).includeRetirees(queryX.getIncludeRetirees()).build();
 	}
+
 }

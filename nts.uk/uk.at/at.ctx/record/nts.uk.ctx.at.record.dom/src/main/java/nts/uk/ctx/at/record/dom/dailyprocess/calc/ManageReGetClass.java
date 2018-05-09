@@ -12,7 +12,6 @@ import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPerso
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -48,7 +47,7 @@ public class ManageReGetClass {
 	DailyUnit dailyUnit;
 	
 	//大塚用　固定勤務の休憩時間帯保持
-	Optional<FixRestTimezoneSet> fixRestTimeSetting;
+	Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSetting;
 	
 	//大塚要ケインで使用する固定計算設定クラス
 	Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet;
@@ -67,7 +66,7 @@ public class ManageReGetClass {
 			Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType,
 			List<WorkTimezoneOtherSubHolTimeSet> subHolTransferSetList,
 			DailyCalculationPersonalInformation personalInfo, DailyUnit dailyUnit,
-			Optional<FixRestTimezoneSet> fixRestTimeSeting,
+			Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSeting,
 			Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet,
 			HolidayCalcMethodSet holidayCalcMethodSet,Boolean calculatable) {
 		super();
@@ -109,7 +108,7 @@ public class ManageReGetClass {
 										  Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType,
 										  List<WorkTimezoneOtherSubHolTimeSet> subHolTransferSetList,
 										  DailyCalculationPersonalInformation personalInfo, DailyUnit dailyUnit,
-										  Optional<FixRestTimezoneSet> fixRestTimeSeting,
+										  Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSeting,
 										  Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet,
 										  HolidayCalcMethodSet holidayCalcMethodSet) {
 		return new ManageReGetClass(calculationRangeOfOneDay,

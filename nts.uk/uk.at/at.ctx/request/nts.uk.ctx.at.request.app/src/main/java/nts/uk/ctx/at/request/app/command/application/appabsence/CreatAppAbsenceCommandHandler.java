@@ -65,7 +65,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 				command.getStartTime2(),
 				command.getEndTime2());
 		// 2-1.新規画面登録前の処理を実行する
-		newBeforeRegister.processBeforeRegister(appRoot);
+		newBeforeRegister.processBeforeRegister(appRoot,0);
 		// 7.登録時のエラーチェック
 		checkBeforeRegister(command,startDate,endDate,true);
 		// insert

@@ -85,11 +85,13 @@ module nts.uk.ui.koExtentions {
             var show: boolean = ko.unwrap(option.show);
             var buttons: any = ko.unwrap(option.buttons);
 
-            var $dialog = $("<div id='ntsErrorDialog'></div>");
-
+            var self = nts.uk.ui.windows.getSelf();
+            var id = 'ntsErrorDialog_' + self.id;
+            var $dialog = $("<div>", { "id": id });
             PS.$('body').append($dialog);
             // Create Buttons
             var dialogbuttons = [];
+
             for (let button of buttons) {
                 dialogbuttons.push({
                     text: ko.unwrap(button.text),
@@ -144,11 +146,24 @@ module nts.uk.ui.koExtentions {
             //var maxrows: number = ko.unwrap(option.maxrows);
             var autoclose: boolean = ko.unwrap(option.autoclose);
             var show: boolean = ko.unwrap(option.show);
+            var self = nts.uk.ui.windows.getSelf();
 
-            var $dialog = PS.$("#ntsErrorDialog");
+            var id = 'ntsErrorDialog_' + self.id;
+            var $dialog;
+            if (self.isRoot) {
+                $dialog = PS.$("#" + id);
+            } else {
+                while (!nts.uk.util.isNullOrUndefined(self)) {
+                    if (self.isRoot) {
+                        self = null;
+                        $dialog = $((nts.uk.ui.windows.getSelf().parent.globalContext.document).getElementById(id));
+                    } else {
+                        self = self.parent;
+                    }
+                }
+            }
 
             if (show == true) {
-                
                 // Create Error Table
                 var $errorboard = $("<div id='error-board'></div>");
                 var $errortable = $("<table></table>");

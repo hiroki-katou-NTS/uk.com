@@ -15,6 +15,7 @@ public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTyp
 	private static final String SELECT_BY_WORKTYPE_ATR;
 	private static final String SELECT_ALL_WORKTYPE_SPE;
 	private static final String SELECT_ALL_WORKTYPE_DISP;
+	private static final String SELECT_WORKTYPE_KDW006;
 
 	static {
 		StringBuilder stringBuilder = new StringBuilder();
@@ -41,6 +42,18 @@ public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTyp
 		stringBuilder.append("OR c.afternoonAtr IN :workTypeAtr ");
 		stringBuilder.append("ORDER BY  CASE WHEN o.dispOrder IS NULL THEN 1 ELSE 0 END, o.dispOrder ASC ");
 		SELECT_BY_WORKTYPE_ATR = stringBuilder.toString();
+		
+		stringBuilder = new StringBuilder();
+		stringBuilder.append("SELECT NEW " + WorkTypeDto.class.getName());
+		stringBuilder.append(
+				"(c.kshmtWorkTypePK.workTypeCode, c.name, c.abbreviationName, c.symbolicName, c.deprecateAtr, c.memo, c.worktypeAtr, c.oneDayAtr, c.morningAtr, c.afternoonAtr, c.calculatorMethod, 0) ");
+		stringBuilder.append("FROM KshmtWorkType c ");
+		stringBuilder.append("WHERE c.kshmtWorkTypePK.companyId = :companyId AND c.deprecateAtr = 0 ");
+		stringBuilder.append("AND (c.oneDayAtr IN :workTypeAtr ");
+		stringBuilder.append("OR c.morningAtr IN :workTypeAtr ");
+		stringBuilder.append("OR c.afternoonAtr IN :workTypeAtr) ");
+		stringBuilder.append("ORDER BY c.kshmtWorkTypePK.workTypeCode ASC ");
+		SELECT_WORKTYPE_KDW006 = stringBuilder.toString();   
 
 		stringBuilder = new StringBuilder();
 		stringBuilder.append("SELECT NEW " + WorkTypeDto.class.getName());
@@ -79,6 +92,12 @@ public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTyp
 	public List<WorkTypeDto> findAllWorkType(String companyId, List<Integer> workTypeAtrList) {
 		return this.queryProxy().query(SELECT_BY_WORKTYPE_ATR, WorkTypeDto.class).setParameter("companyId", companyId)
 				.setParameter("workTypeAtr", workTypeAtrList).getList();
+	}
+	
+	@Override
+	public List<WorkTypeDto> findWorkType(String companyId, List<Integer> workTypeAtrList) {
+		return this.queryProxy().query(SELECT_WORKTYPE_KDW006, WorkTypeDto.class).setParameter("companyId", companyId)
+				.setParameter("workTypeAtr", workTypeAtrList).getList();  
 	}
 
 	@Override

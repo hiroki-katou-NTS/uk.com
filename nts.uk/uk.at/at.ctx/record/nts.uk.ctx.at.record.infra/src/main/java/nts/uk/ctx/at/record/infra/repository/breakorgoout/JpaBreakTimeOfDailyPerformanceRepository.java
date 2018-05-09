@@ -135,6 +135,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public void update(BreakTimeOfDailyPerformance breakTimes) {
+		if(breakTimes == null){ return;}
 		List<KrcdtDaiBreakTime> all = KrcdtDaiBreakTime.toEntity(breakTimes);
 		if (!all.isEmpty()) {
 			List<KrcdtDaiBreakTime> krcdtDaiBreakTimes = this.queryProxy()
