@@ -130,7 +130,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 					deductionTimeSheet,
 					workTimeCommonSet.getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE).getGraceTimeSet(),
 					timeLeavingWork,
-					coreTimeSetting);
+					coreTimeSetting,workType);
 			//早退判断時刻を求める
 			leaveEarlyDesClock = LeaveEarlyDecisionClock.create(
 					workNo,
@@ -138,7 +138,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 					deductionTimeSheet,
 					workTimeCommonSet.getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.EARLY).getGraceTimeSet(),
 					timeLeavingWork,
-					coreTimeSetting);
+					coreTimeSetting,workType);
 				
 			//就業時間内枠の作成
 			timeFrames = isWeekDayProcess(timeLeavingWork,
@@ -204,7 +204,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 																		 holidayCalcMethodSet,
 																		 workNo,
 																		 workTimezoneLateEarlySet,
-																		 predetermineTimeForSet.getTimeSheets(workNo),
+																		 predetermineTimeForSet.getTimeSheets(workType.getDailyWork().decisionNeedPredTime(),workNo),
 																		 coreTimeSetting,breakTimeList));
 		}
 		/*所定内割増時間の時間帯作成*/
@@ -242,7 +242,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			}else {
 				returnList.add(new WithinWorkTimeFrame(timeZone.getEmploymentTimeFrameNo(),
 													   new TimeZoneRounding(timeZone.getTimezone().getStart(),timeZone.getTimezone().getStart(),timeZone.getTimezone().getRounding()),
-													   new TimeSpanForCalc(timeZone.getTimezone().getStart(), timeZone.getTimezone().getStart()),
+													   new TimeSpanForCalc(timeZone.getTimezone().getStart(), timeZone.getTimezone().getEnd()),
 													   new ArrayList<>(),
 													   new ArrayList<>(),
 													   new ArrayList<>(),
