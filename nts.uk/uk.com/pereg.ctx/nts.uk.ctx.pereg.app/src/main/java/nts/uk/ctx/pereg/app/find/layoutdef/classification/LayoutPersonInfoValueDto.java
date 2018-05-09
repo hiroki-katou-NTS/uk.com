@@ -123,7 +123,7 @@ public class LayoutPersonInfoValueDto {
 		return dataObject;
 	}
 
-	public static LayoutPersonInfoValueDto initData(PerInfoItemDefForLayoutDto itemDef, Object value) {
+	public static LayoutPersonInfoValueDto initData(PerInfoItemDefForLayoutDto itemDef) {
 		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
 		dataObject.setRecordId(itemDef.getRecordId());
 		dataObject.setLstComboBoxValue(itemDef.getLstComboxBoxValue());
@@ -134,7 +134,6 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setItemCode(itemDef.getItemCode());
 		dataObject.setItemParentCode(itemDef.getItemParentCode());
 		dataObject.setRow(itemDef.getRow());
-		dataObject.setValue(value);
 		dataObject.setCtgType(itemDef.getCtgType());
 		dataObject.setRequired(itemDef.getIsRequired() == 1);
 		dataObject.setResourceId(itemDef.getResourceId());
