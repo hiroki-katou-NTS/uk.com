@@ -102,7 +102,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         listStandardImportSetting_Sort() {
             let self = this;
             self.listStandardImportSetting.sort((a, b) => {
-                return (a.cd === b.cd) ? 0 : (a.cd < b.cd) ? -1 : 1;
+                return (+a.cd() === +b.cd()) ? 0 : (+a.cd() < +b.cd()) ? -1 : 1;
             });
         }
         //Open dialog KDW007
@@ -317,7 +317,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.currentSetOutputSettingCode().buildListItemOutput(itemOut);
             let data : model.OutputSettingCodeDto = ko.toJS(self.currentSetOutputSettingCode);
             
-            if (self.screenMode() == model.SCREEN_MODE.NEW) {
+            if (self.isNewMode()) {
                 service.registerOutputItemSetting(data).done(() => {
                     info({ messageId: 'Msg_15' }).then(() => {
                         self.listStandardImportSetting.push(self.currentSetOutputSettingCode);
