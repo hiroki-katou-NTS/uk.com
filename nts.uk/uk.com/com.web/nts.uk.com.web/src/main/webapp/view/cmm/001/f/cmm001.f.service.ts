@@ -5,7 +5,7 @@ module nts.uk.com.view.cmm001.f {
          */
         var path: any = {
             executionMasterCopyData: "sys/assist/mastercopy/data/execute",
-            exportFileError: "sys/assist/mastercopy/data/log/export",
+            exportFileError: "sys/assist/mastercopy/data/export",
             interrupt: "sys/assist/mastercopy/data/interrupt"
             };
         

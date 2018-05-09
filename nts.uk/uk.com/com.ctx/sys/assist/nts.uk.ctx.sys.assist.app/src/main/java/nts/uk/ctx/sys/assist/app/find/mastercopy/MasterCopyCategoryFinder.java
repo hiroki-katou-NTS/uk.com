@@ -34,6 +34,6 @@ public class MasterCopyCategoryFinder {
 		}
 
 		// return list category
-		return listMasterCopyCategory.stream().map(e -> new MasterCopyCategoryFindDto(e.getSystemType().value, e.getMasterCopyCategory().v())).collect(Collectors.toList());
+		return listMasterCopyCategory.stream().map(e -> new MasterCopyCategoryFindDto(e.getSystemType().value, e.getMasterCopyCategory().v(), e.getOrder(), e.getMasterCopyId())).collect(Collectors.toList());
 	}
 }

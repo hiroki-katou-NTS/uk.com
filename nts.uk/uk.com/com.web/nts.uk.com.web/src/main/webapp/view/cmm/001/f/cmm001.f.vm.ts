@@ -38,11 +38,11 @@ module nts.uk.com.view.cmm001.f {
                 self.errorLogs = ko.observableArray([]);
 
                 self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("CMM001_60"), key: 'systemType', width: 80},
+                    { headerText: nts.uk.resource.getText("CMM001_60"), key: 'systemType', width: 80 },
                     { headerText: nts.uk.resource.getText("CMM001_61"), key: 'categoryName', width: 150 },
                     { headerText: nts.uk.resource.getText("CMM001_62"), key: 'message', width: 150 }
                 ]);
-                
+
                 self.executionStartDate = ko.observable(this.getExecutionStartDate());
                 self.currentCode = ko.observable();
                 //                self.currentCodeList = ko.observableArray([]);
@@ -104,7 +104,7 @@ module nts.uk.com.view.cmm001.f {
                 $('.countdown').startCount();
 
                 // Set execution state to processing
-                self.executionState(nts.uk.resource.getText("CMM001_63") + "running");
+                self.executionState(nts.uk.resource.getText("CMM001_63"));
 
                 nts.uk.deferred.repeat(conf => conf
                     .task(() => {
@@ -134,10 +134,13 @@ module nts.uk.com.view.cmm001.f {
                                     if (item.key == 'NUMBER_OF_ERROR') {
                                         self.numberFail(item.valueAsNumber);
                                     }
-                                    //self.totalRecord(self.numberSuccess() + self.numberFail());                                 
+                                    //self.totalRecord(self.numberSuccess() + self.numberFail());                                                             
                                 });
-                                self.executionState(nts.uk.resource.getText("CMM001_64") + "not Err");
-                                self.countData(self.countData() + 1);
+                                
+                                if (self.pauseFlag() == false) {
+                                    self.executionState(nts.uk.resource.getText("CMM001_64"));
+                                }
+                                self.countData(self.numberFail() + self.numberSuccess());
                             }
 
                             self.executionTotal(nts.uk.resource.getText("CMM001_66", [self.countData(), self.numberOfData()]));
@@ -147,21 +150,21 @@ module nts.uk.com.view.cmm001.f {
                                 //                                self.errorLogs.sort(function(a, b) {
                                 //                                    return a.order.localeCompare(b.order) || (moment(a.ymd, 'YYYY/MM/DD').toDate() - moment(b.ymd, 'YYYY/MM/DD').toDate());
                                 //                                });
-                            
+
                                 self.isFinish(true);
                                 $('.countdown').stopCount();
                                 if (res.succeeded) {
                                     $('#closeDialog').focus();
                                 }
                                 if (self.numberFail() > 0) {
-                                    self.executionState(nts.uk.resource.getText("CMM001_65") + "isErr");
+                                    if (!self.pauseFlag() == false) {
+                                        self.executionState(nts.uk.resource.getText("CMM001_65"));
+                                    } 
                                     self.isError(true);
                                     $('#tableShowError').show();
                                 }
-
                                 self.numberFail(self.errorLogs().length);
                                 self.readIndex.removeAll();
-
                             }
                         });
                     }).while(infor => {
@@ -174,21 +177,23 @@ module nts.uk.com.view.cmm001.f {
             */
             private stopExecution(): void {
                 let self = this;
-                
+                self.pauseFlag(true);
                 if (nts.uk.text.isNullOrEmpty(self.taskId())) {
                     return;
                 }
                 // interrupt process import then close dialog
                 nts.uk.request.asyncTask.requestToCancel(self.taskId());
                 $('.countdown').stopCount();
-                self.executionState(nts.uk.resource.getText("CMM001_57") + "cancel" );
-                self.isFinish(true);
+                self.isFinish(false);
+                self.executionState(nts.uk.resource.getText("CMM001_57"));
                 service.pause();
             }
 
             public getExecutionStartDate() {
                 let currentDate: string;
-                currentDate = moment().toDate().toString();
+//                currentDate = moment().toDate().toString();
+                currentDate = new Date().toLocaleString();
+                console.log(currentDate);
                 return currentDate;
             }
 
@@ -197,6 +202,12 @@ module nts.uk.com.view.cmm001.f {
             }
 
             public exportFileError() {
+                let self = this;
+                var errors: model.ErrorContentDto[] = [];
+
+                errors = self.errorLogs();
+                service.exportFileError(errors).done(function() {
+                });
             }
         }
 
