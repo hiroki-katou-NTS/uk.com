@@ -28,7 +28,13 @@ module nts.uk.at.view.kal004.g.viewmodel {
         endMonth: KnockoutObservable<number>;
         endComboMonth: KnockoutObservableArray<any>;
         
-        getParam: ExtractionDailyDto;
+        daily36: share.ExtractionPeriodDailyCommand;
+        listMonthly36 : Array<share.ExtractionPeriodMonthlyCommand>;
+        yearly36 : share.ExtractionRangeYearCommand;
+        monthly2: share.ExtractionPeriodMonthlyCommand;
+        monthly3: share.ExtractionPeriodMonthlyCommand;
+        monthly4: share.ExtractionPeriodMonthlyCommand;
+        
         categoryId: KnockoutObservable<number>;
         categoryName: KnockoutObservable<string>;
         
@@ -78,22 +84,25 @@ module nts.uk.at.view.kal004.g.viewmodel {
                     nts.uk.ui.errors.clearAll();
             });
             
-            
-            self.getParam = nts.uk.ui.windows.getShared("extractionDailyDto");
+            self.yearly36 = nts.uk.ui.windows.getShared("yearly36");
+            self.listMonthly36 = nts.uk.ui.windows.getShared("listMonthly36");
+            self.daily36 = nts.uk.ui.windows.getShared("daily36");
             self.categoryName = nts.uk.ui.windows.getShared("categoryName");
             self.categoryId = ko.observable(nts.uk.ui.windows.getShared("categoryId"));
-            
+            self.monthly2 = _.find(self.listMonthly36, ['unit', 0]);
+            self.monthly3 = _.find(self.listMonthly36, ['unit', 1]);
+            self.monthly4 = _.find(self.listMonthly36, ['unit', 2]);
             
             //start date
-            self.strSelected = ko.observable(self.getParam.strSpecify);
-            self.strDay = ko.observable(self.getParam.strDay);
-            self.strMonth = ko.observable(self.getParam.strMonth);
+            self.strSelected = ko.observable(self.daily36.strSpecify);
+            self.strDay = ko.observable(self.strSelected() ==0 ? self.daily36.strDay: null);
+            self.strMonth = ko.observable(self.strSelected()==1? self.daily36.strMonth: 0);
             self.strComboMonth = ko.observableArray(__viewContext.enums.StandardMonth);  
             
             //End Date
-            self.endSelected = ko.observable(self.getParam.endSpecify);
-            self.endDay = ko.observable(self.getParam.endDay);
-            self.endMonth = ko.observable(self.getParam.endMonth);    
+            self.endSelected = ko.observable(self.daily36.endSpecify);
+            self.endDay = ko.observable(self.endSelected()==0? self.daily36.endDay: null);
+            self.endMonth = ko.observable(self.endSelected() ==1? self.daily36.endMonth: 0);    
             self.endComboMonth = ko.observableArray(__viewContext.enums.StandardMonth);
             
             
@@ -103,9 +112,9 @@ module nts.uk.at.view.kal004.g.viewmodel {
                 ]);
             
             //tab2
-            self.strMonth2 = ko.observable(self.getParam.strMonth);
+            self.strMonth2 = ko.observable(self.monthly2.strMonth);
             self.strComboMonth2 = ko.observableArray(__viewContext.enums.StandardMonth);              
-            self.endMonth2 = ko.observable(self.getParam.endMonth);    
+            self.endMonth2 = ko.observable(self.monthly2.endMonth);    
             self.endComboMonth2 = ko.observableArray(__viewContext.enums.StandardMonth);             
                         
             
@@ -114,24 +123,24 @@ module nts.uk.at.view.kal004.g.viewmodel {
                 {value: 0, name: ''},
                 {value: 1, name: getText('KAL004_96')}
                 ]);
-            self.strSelected3 = ko.observable(0);
-            self.strMonthy3 = ko.observable(self.getParam.strDay);
-            self.strMonth3 = ko.observable(self.getParam.strMonth);
+            self.strSelected3 = ko.observable(self.monthly3.strSpecify -1);
+            self.strMonthy3 = ko.observable(self.strSelected3()==1? self.monthly3.specifyMonth: null);
+            self.strMonth3 = ko.observable(self.strSelected3()==0? self.monthly3.strMonth: 0);
             self.strComboMonth3 = ko.observableArray(__viewContext.enums.StandardMonth);
-            self.endMonth3 = ko.observable(self.getParam.endMonth);    
+            self.endMonth3 = ko.observable(self.monthly3.endMonth);    
             self.endComboMonth3 = ko.observableArray(__viewContext.enums.StandardMonth);  
 
             //tab4:
-            self.strSelected4 = ko.observable(0);
-            self.strMonthy4 = ko.observable(self.getParam.strDay);
-            self.strMonth4 = ko.observable(self.getParam.strMonth);
+            self.strSelected4 = ko.observable(self.monthly4.strSpecify -1);
+            self.strMonthy4 = ko.observable(self.strSelected4()==1? self.monthly4.specifyMonth: null);
+            self.strMonth4 = ko.observable(self.strSelected4()==0? self.monthly4.strMonth: 0);
             self.strComboMonth4 = ko.observableArray(__viewContext.enums.StandardMonth);
-            self.endMonth4 = ko.observable(self.getParam.endMonth);    
+            self.endMonth4 = ko.observable(self.monthly4.endMonth);    
             self.endComboMonth4 = ko.observableArray(__viewContext.enums.StandardMonth);
             
             //tab5
-            self.strSelected5 = ko.observable(self.getParam.strSpecify);
-            self.strYear5 = ko.observable(self.getParam.strDay);
+            self.strSelected5 = ko.observable(self.yearly36.thisYear);
+            self.strYear5 = ko.observable(self.strSelected5() ==0?self.yearly36.year: null);
         }
 
         startPage(): JQueryPromise<any> {
@@ -144,8 +153,27 @@ module nts.uk.at.view.kal004.g.viewmodel {
 
             return dfd.promise();
         }
+        
+        checkValidate(): boolean {
+            let self = this;
+            if(self.strSelected()==0) $(".input-str1").trigger("validate");
+            if(self.endSelected()==0) $(".input-end1").trigger("validate");
+            if(self.strSelected3()==1) $(".input-str3").trigger("validate");
+            if(self.strSelected4()==1) $(".input-str4").trigger("validate");
+            if(self.strSelected5()==0) $(".input-str5").trigger("validate");
+            
+            if($(".nts-input").ntsError("hasError")){
+                return true;    
+            }
+                        
+            return false;
+        }
+        
         submit() {
             let self = this;
+            
+            if(self.checkValidate()) return;
+            
             // tab1
             if(self.strSelected()==0){
                 if(self.endSelected()==0 && self.strDay() < self.endDay() ){
@@ -178,7 +206,86 @@ module nts.uk.at.view.kal004.g.viewmodel {
                 return;    
             }
             
-            nts.uk.ui.windows.setShared("selectedTab", self.selectedTab());
+            
+            
+            let daily36Share = {
+                                extractionId: "",
+                                extractionRange: 0,
+                                strSpecify: self.strSelected(),
+                                strPreviousDay: 0,
+                                strMakeToDay: 0,
+                                strDay: self.strSelected()==0? self.strDay(): 0,
+                                strPreviousMonth: 0,
+                                strCurrentMonth: 1,
+                                strMonth: self.strSelected()==1? self.strMonth(): 0,
+                                endSpecify: self.endSelected(),
+                                endPreviousDay: 0,
+                                endMakeToDay: 0,
+                                endDay: self.endSelected()==0? self.endDay(): 0,
+                                endPreviousMonth: 0,
+                                endCurrentMonth: 1,
+                                endMonth: self.endSelected()==1? self.endMonth(): 0                                
+                              };
+            let monthly2Share ={
+                                 extractionId: "",
+                                 extractionRange: 0,
+                                 unit: 0,       
+                                 strSpecify : 1,        
+                                 yearType: 2,
+                                 specifyMonth: 0,
+                                 strMonth: self.strMonth2(),
+                                 strCurrentMonth: 1,
+                                 strPreviousAtr: 0,
+                                 endSpecify: 2,
+                                 extractPeriod: 12,
+                                 endMonth: self.endMonth2(),
+                                 endCurrentMonth: 1,
+                                 endPreviousAtr: 0                       
+                               }
+            let monthly3Share ={
+                                 extractionId: "",
+                                 extractionRange: 0,
+                                 unit: 1,       
+                                 strSpecify : self.strSelected3()+1,        
+                                 yearType: 2,
+                                 specifyMonth: self.strSelected3() ==1? self.strMonthy3(): 0,
+                                 strMonth: self.strSelected3()==0? self.strMonth3(): 0,
+                                 strCurrentMonth: 1,
+                                 strPreviousAtr: 0,
+                                 endSpecify: 2,
+                                 extractPeriod: 12,
+                                 endMonth: self.endMonth3(),
+                                 endCurrentMonth: 1,
+                                 endPreviousAtr: 0                       
+                               }   
+            let monthly4Share ={
+                                 extractionId: "",
+                                 extractionRange: 0,
+                                 unit: 2,       
+                                 strSpecify : self.strSelected4()+1,        
+                                 yearType: 2,
+                                 specifyMonth: self.strSelected4() ==1? self.strMonthy4(): 0,
+                                 strMonth: self.strSelected4()==0? self.strMonth4(): 0,
+                                 strCurrentMonth: 1,
+                                 strPreviousAtr: 0,
+                                 endSpecify: 2,
+                                 extractPeriod: 12,
+                                 endMonth: self.endMonth4(),
+                                 endCurrentMonth: 1,
+                                 endPreviousAtr: 0                       
+                               }
+            let listMonth36Share = [monthly2Share, monthly3Share, monthly4Share];
+            
+            let yearly36Share ={
+                                extractionId: "",
+                                extractionRange: 1,
+                                year: self.strSelected5()==0? self.strYear5(): 0,
+                                thisYear: self.strSelected5()    
+                               }
+            
+            nts.uk.ui.windows.setShared("daily36Share", daily36Share);
+            nts.uk.ui.windows.setShared("listMonth36Share", listMonth36Share);
+            nts.uk.ui.windows.setShared("yearly36Share", yearly36Share);
             nts.uk.ui.windows.close();
         }
         closeDialog(): void {
@@ -186,22 +293,4 @@ module nts.uk.at.view.kal004.g.viewmodel {
         }
     }
     
-       export interface ExtractionDailyDto {
-        extractionId: string;
-        extractionRange: number;
-        strSpecify: number;
-        strPreviousDay?: number;
-        strMakeToDay?: number;
-        strDay?: number;
-        strPreviousMonth?: number;
-        strCurrentMonth?: number;
-        strMonth?: number;
-        endSpecify: number;
-        endPreviousDay?: number;
-        endMakeToDay?: number;
-        endDay?: number;
-        endPreviousMonth?: number;
-        endCurrentMonth?: number;
-        endMonth?: number;
-    }
 }

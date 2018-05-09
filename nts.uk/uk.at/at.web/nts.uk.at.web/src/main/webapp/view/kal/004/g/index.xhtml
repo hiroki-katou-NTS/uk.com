@@ -39,7 +39,7 @@
 							<div class="day">
 								<div
 									data-bind="ntsRadioButton: {checked: strSelected, enable: true, option: dateSpecify()[0], optionValue: 'value', optionText: 'name', group: 'strRadio'}"></div>
-								<input class ='input-box'
+								<input class ='input-box input-str1'
 									data-bind="ntsNumberEditor: {value:strDay, name: '#[KAL004_78]', constraint:'Day', required: true, enable: (strSelected() == 0)}" /> 
 								<span class ='lableDay'>#{i18n.getText('KAL004_79')}</span>
 								<span class ='lableDay'>#{i18n.getText('KAL004_35')}</span>
@@ -69,7 +69,7 @@
 							<div class="day">
 								<div
 									data-bind="ntsRadioButton: {checked: endSelected, enable: true, option: dateSpecify()[0], optionValue: 'value', optionText: 'name', group: 'endRadio'}"></div>
-								<input class ='input-box'
+								<input class ='input-box input-end1'
 									data-bind="ntsNumberEditor: {value:endDay, name: '#[KAL004_78]', constraint:'Day', required: true, enable: (endSelected() == 0)}" /> 
 								<span class ='lableDay'>#{i18n.getText('KAL004_84')}</span>
 								<span class ='lableDay'>#{i18n.getText('KAL004_41')}</span>
@@ -149,7 +149,7 @@
 							<div class="year3">
 								<div
 									data-bind="ntsRadioButton: {checked: strSelected3, enable: true, option: yearSpecify()[1], optionValue: 'value', optionText: 'name', group: 'strRadio3'}"></div>
-								<input class ='input-box'
+								<input class ='input-box input-str3'
 									data-bind="ntsNumberEditor: {value:strMonthy3, name: '#[KAL004_97]', constraint:'Month', required: true, enable: (strSelected3() == 0)}" /> 
 								<span>#{i18n.getText('KAL004_98')}</span>
 								
@@ -194,7 +194,7 @@
 							<div class="year4">
 								<div
 									data-bind="ntsRadioButton: {checked: strSelected4, enable: true, option: yearSpecify()[1], optionValue: 'value', optionText: 'name', group: 'strRadio4'}"></div>
-								<input class ='input-box'
+								<input class ='input-box input-str4'
 									data-bind="ntsNumberEditor: {value:strMonthy4, name: '#[KAL004_97]', constraint:'Month', required: true, enable: (strSelected4() == 0)}" /> 
 								<span>#{i18n.getText('KAL004_106')}</span>
 								
@@ -222,7 +222,7 @@
 						<div class ='radioButton5'>
 								<div
 									data-bind="ntsRadioButton: {checked: strSelected5, enable: true, option: yearSpecify()[0], optionValue: 'value', optionText: 'name', group: 'strRadio5'}"></div>							
-								<input class ='input-box5'
+								<input class ='input-box5  input-str5'
 									data-bind="ntsNumberEditor: {value:strYear5, name: '#[KAL004_108]', constraint:'YearOfAgreement', required: true, enable: (strSelected5() == 0)}" /> 
 								<span>#{i18n.getText('KAL004_109')}</span>							
 						</div>

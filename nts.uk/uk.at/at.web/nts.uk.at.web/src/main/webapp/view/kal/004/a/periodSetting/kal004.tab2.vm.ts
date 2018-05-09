@@ -30,21 +30,24 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 return;
             } else if (self.listStorageCheckCondition().length == 0) {
                 _.forEach(listCheckCode, (category: share.CheckConditionCommand) => {
-                    let checkCondition = new share.CheckConditionCommand(category.alarmCategory, category.checkConditionCodes, category.extractionPeriodDaily, category.extractionPeriodUnit, category.listExtractionMonthly);
+                    let checkCondition = new share.CheckConditionCommand(category.alarmCategory, category.checkConditionCodes, category.extractionPeriodDaily, category.extractionPeriodUnit, 
+                                                                           category.listExtractionMonthly, category.extractionYear);
                     listCheckConditionDto.push(checkCondition);
                     listConverToview.push(new ModelCheckConditonCode(checkCondition));
                     self.listStorageCheckCondition.push(category);
                 });
             } else {
                 _.forEach(listCheckCode, (category: share.CheckConditionCommand) => {
-                    let checkCondition = new share.CheckConditionCommand(category.alarmCategory, category.checkConditionCodes, category.extractionPeriodDaily, category.extractionPeriodUnit, category.listExtractionMonthly);
+                    let checkCondition = new share.CheckConditionCommand(category.alarmCategory, category.checkConditionCodes, category.extractionPeriodDaily, category.extractionPeriodUnit, 
+                                                                           category.listExtractionMonthly, category.extractionYear);
                     var check = _.find(self.listStorageCheckCondition(), ['alarmCategory', category.alarmCategory]);
                     if (nts.uk.util.isNullOrUndefined(check)) {
                         listCheckConditionDto.push(checkCondition);
                         listConverToview.push(new ModelCheckConditonCode(checkCondition));
                         self.listStorageCheckCondition.push(category);
                     } else {
-                        let checkConditionUpDate = new share.CheckConditionCommand(category.alarmCategory, category.checkConditionCodes, check.extractionPeriodDaily, category.extractionPeriodUnit, category.listExtractionMonthly);
+                        let checkConditionUpDate = new share.CheckConditionCommand(category.alarmCategory, category.checkConditionCodes, check.extractionPeriodDaily, category.extractionPeriodUnit,
+                                                                                     category.listExtractionMonthly, category.extractionYear);
                         listCheckConditionDto.push(checkConditionUpDate);
                         listConverToview.push(new ModelCheckConditonCode(checkConditionUpDate));
                     }
@@ -73,21 +76,21 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                     let data = nts.uk.ui.windows.getShared("extractionMonthly");
                     if (!nts.uk.util.isNullOrUndefined(data)) {
                         let extractMonthlyCommand = {
-                                 extractionId: "",
-                                 extractionRange: 0,
+                                 extractionId: data.extractionId,
+                                 extractionRange: data.extractionRange,
                                  unit: 3,       
                                  strSpecify : 1,        
                                  yearType: 2,
                                  specifyMonth: 0,
-                                 strMonth: 0,
+                                 strMonth: data.strMonth,
                                  strCurrentMonth: 1,
                                  strPreviousAtr: 0,
                                  endSpecify: 2,
                                  extractPeriod: 12,
-                                 endMonth: 0,
+                                 endMonth: data.endMonth,
                                  endCurrentMonth: 1,
                                  endPreviousAtr: 0    
-                }
+                        }
                         self.changeExtractionMonthly(extractMonthlyCommand, categoryId);
                     }
                 });
@@ -133,37 +136,60 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 });
             } else if (categoryId == 12) {
 
-                let param36 = modelCheck.extractionPeriodDaily;
-                let extractionDailyDto = {
-                    extractionId: param36.extractionId,
-                    extractionRange: param36.extractionRange,
-                    strSpecify: param36.strSpecify,
-                    strPreviousDay: param36.strPreviousDay,
-                    strMakeToDay: param36.strMakeToDay,
-                    strDay: param36.strDay,
-                    strPreviousMonth: param36.strPreviousMonth,
-                    strCurrentMonth: param36.strCurrentMonth,
-                    strMonth: param36.strMonth,
-                    endSpecify: param36.endSpecify,
-                    endPreviousDay: param36.endPreviousDay,
-                    endMakeToDay: param36.endMakeToDay,
-                    endDay: param36.endDay,
-                    endPreviousMonth: param36.endPreviousMonth,
-                    endCurrentMonth: param36.endCurrentMonth,
-                    endMonth: param36.endMonth
-                };
-
+                let daily36  = modelCheck.extractionPeriodDaily;
+                let listMonthly36 = modelCheck.listExtractionMonthly;
+                let yearly36 = modelCheck.extractionYear;
+                
                 nts.uk.ui.windows.setShared("categoryId", categoryId);
                 nts.uk.ui.windows.setShared("categoryName", modelCheck.categoryName);
-                nts.uk.ui.windows.setShared("extractionDailyDto", extractionDailyDto);
+                nts.uk.ui.windows.setShared("daily36", daily36);
+                nts.uk.ui.windows.setShared("listMonthly36", listMonthly36);
+                nts.uk.ui.windows.setShared("yearly36", yearly36);
+                                
                 nts.uk.ui.windows.sub.modal("../g/index.xhtml").onClosed(() => {
-                    let data = nts.uk.ui.windows.getShared("extractionDaily");
-                    if (!nts.uk.util.isNullOrUndefined(data)) {
-
-                    }
+                    let daily36Share = nts.uk.ui.windows.getShared("daily36Share");
+                    let listMonth36Share = nts.uk.ui.windows.getShared("listMonth36Share");
+                    let yearly36Share = nts.uk.ui.windows.getShared("yearly36Share");
+                    
+                    self.changeExtraction36Agreement(listMonth36Share, daily36Share, yearly36Share, categoryId);
                 });
             }
         }
+        
+        private changeExtraction36Agreement(listMonth36Share : Array<share.ExtractionPeriodMonthlyDto>, 
+                                            daily36Share : share.ExtractionDailyDto, yearly36Share : share.ExtractionRangeYearDto, categoryId: number){
+            let self = this;
+            let oldItem = _.find(self.listStorageCheckCondition(), ['alarmCategory', categoryId]);
+            let monthlyDtos :Array<share.ExtractionPeriodMonthlyCommand>  = oldItem.listExtractionMonthly;
+            _.remove(monthlyDtos, (item) =>{return item.unit!=3 });
+            listMonth36Share.forEach((monthlyItem) =>{
+                monthlyDtos.push(new share.ExtractionPeriodMonthlyCommand(monthlyItem));    
+            });            
+            
+            oldItem.setExtractPeriod(new share.ExtractionPeriodDailyCommand(daily36Share));
+            oldItem.setExtractYearly(new share.ExtractionRangeYearCommand(yearly36Share));
+            
+            let listCheckConditionDto: Array<share.CheckConditionCommand> = [];
+            
+            _.forEach(self.listCheckCondition(), (checkCondition: share.CheckConditionCommand) => {
+                if (checkCondition.alarmCategory == categoryId) {
+                    
+                    _.remove(checkCondition.listExtractionMonthly, (item) =>{return item.unit !=3 });                    
+                    listMonth36Share.forEach((monthlyItem) =>{
+                        checkCondition.listExtractionMonthly.push(new share.ExtractionPeriodMonthlyCommand(monthlyItem));    
+                    });
+                    
+                    checkCondition.setExtractPeriod(new share.ExtractionPeriodDailyCommand(daily36Share));
+                    checkCondition.setExtractYearly(new share.ExtractionRangeYearCommand(yearly36Share));                    
+                    
+                }
+                listCheckConditionDto.push(checkCondition);
+            });
+            self.changeCheckCondition(listCheckConditionDto);            
+            
+            
+        }
+        
 
         private changeExtractionMonthly(extractionMonthlyDto: share.ExtractionPeriodMonthlyDto, categoryId: number): void {
             let self = this;
@@ -226,6 +252,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
         extractionPeriodDaily: share.ExtractionPeriodDailyCommand;
         extractionPeriodUnit: share.PeriodUnitCommand;
         listExtractionMonthly : Array<share.ExtractionPeriodMonthlyCommand>;
+        extractionYear: share.ExtractionRangeYearCommand;
         
         constructor(checkCondition: share.CheckConditionCommand) {
             var self = this;
@@ -252,10 +279,11 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             } else if(checkCondition.alarmCategory ==7) {                
                 this.extractionPeriod = _.find(self.standardMonth, ['value', checkCondition.listExtractionMonthly[0].strMonth]).name + ' ' + getText('KAL004_30') + ' ' +
                                         _.find(self.standardMonth, ['value', checkCondition.listExtractionMonthly[0].endMonth]).name ;
-            } else{
+            } else {
                     this.extractionPeriod = " ";
             }
-
+            
+            this.extractionYear = checkCondition.extractionYear;
             this.extractionPeriodDaily = checkCondition.extractionPeriodDaily;
             this.extractionPeriodUnit = checkCondition.extractionPeriodUnit;
             this.listExtractionMonthly = checkCondition.listExtractionMonthly;

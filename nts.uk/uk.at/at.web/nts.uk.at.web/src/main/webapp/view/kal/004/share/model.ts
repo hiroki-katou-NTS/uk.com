@@ -23,6 +23,7 @@ module nts.uk.at.view.kal004.share.model {
         extractionDaily?: ExtractionDailyDto;
         extractionUnit?: PeriodUnitDto;
         listExtractionMonthly ?: Array<ExtractionPeriodMonthlyDto>;
+        extractionYear ?: ExtractionRangeYearDto;
     }
 
 
@@ -143,6 +144,12 @@ module nts.uk.at.view.kal004.share.model {
          endPreviousAtr: number;                    
     }
     
+    export interface ExtractionRangeYearDto{
+         extractionId: string;
+         extractionRange: number;
+         year : number;
+         thisYear : number;           
+    }
 
     //Command
     export class AddAlarmPatternSettingCommand {
@@ -173,64 +180,64 @@ module nts.uk.at.view.kal004.share.model {
         extractionPeriodDaily: ExtractionPeriodDailyCommand;
         checkConditionCodes: Array<string>;
         extractionPeriodUnit: PeriodUnitCommand;
-        listExtractionMonthly : Array<ExtractionPeriodMonthlyCommand>;
-
+        listExtractionMonthly : Array<ExtractionPeriodMonthlyCommand>=[];
+        extractionYear: ExtractionRangeYearCommand;
         constructor(alarmCategory: number, checkConditionCodes: Array<string>, extractionPeriodDaily: ExtractionPeriodDailyCommand,
-            extractionPeriodUnit: PeriodUnitCommand, listExtractionMonthly: Array<ExtractionPeriodMonthlyCommand>) {
+            extractionPeriodUnit: PeriodUnitCommand, listExtractionMonthly: Array<ExtractionPeriodMonthlyCommand>, extractionYear:  ExtractionRangeYearCommand) {
             this.alarmCategory = alarmCategory;
             this.checkConditionCodes = checkConditionCodes;
-            if (nts.uk.util.isNullOrUndefined(extractionPeriodDaily) && (alarmCategory ==5  || alarmCategory == 13)) {
-                this.extractionPeriodDaily = new ExtractionPeriodDailyCommand({
-                    extractionId: "",
-                    extractionRange: 0,
-                    strSpecify: 1,
-                    strPreviousDay: null,
-                    strMakeToDay: null,
-                    strDay: null,
-                    strPreviousMonth: 0,
-                    strCurrentMonth: 1,
-                    strMonth: 0,
-                    endSpecify: 1,
-                    endPreviousDay: null,
-                    endMakeToDay: null,
-                    endDay: null,
-                    endPreviousMonth: 0,
-                    endCurrentMonth: 1,
-                    endMonth: 0
-                });
-            } else {
-                this.extractionPeriodDaily = extractionPeriodDaily;
-            }
-            if(nts.uk.util.isNullOrUndefined(extractionPeriodUnit) && alarmCategory == 2){
-                this.extractionPeriodUnit = new PeriodUnitCommand({
-                    extractionId: "",
-                    extractionRange: 3,
-                    segmentationOfCycle: 1
-                })
-            }else{
-                this.extractionPeriodUnit =  extractionPeriodUnit;
+            
+            
+            if (alarmCategory ==5  || alarmCategory == 13) {
+                if(nts.uk.util.isNullOrUndefined(extractionPeriodDaily)){
+                    this.setDefaultDaily();
+                } else {
+                    this.extractionPeriodDaily = extractionPeriodDaily;
+                }
             }
             
-            if((listExtractionMonthly==null ||listExtractionMonthly.length==0)  && alarmCategory == 7 ){
-                this.listExtractionMonthly = [new ExtractionPeriodMonthlyCommand({
-                                 extractionId: "",
-                                 extractionRange: 0,
-                                 unit: 3,       
-                                 strSpecify : 1,        
-                                 yearType: 2,
-                                 specifyMonth: 0,
-                                 strMonth: 0,
-                                 strCurrentMonth: 1,
-                                 strPreviousAtr: 0,
-                                 endSpecify: 2,
-                                 extractPeriod: 12,
-                                 endMonth: 0,
-                                 endCurrentMonth: 1,
-                                 endPreviousAtr: 0     
-                })];
-            }else{
-                this.listExtractionMonthly =  listExtractionMonthly;
+            
+            
+            if(alarmCategory == 2){
+                if(nts.uk.util.isNullOrUndefined(extractionPeriodUnit)){
+                    this.setDefaulttUnit();
+                }else{
+                    this.extractionPeriodUnit =  extractionPeriodUnit;
+                }
             }
+            
+            
+            if(alarmCategory == 7 ){
+                if(listExtractionMonthly.length==0){
+                    this.setDefaultMonthly(3);
+                }else{
+                    this.listExtractionMonthly =  listExtractionMonthly;
+                }
+            }
+            
+            if(alarmCategory ==12){
+                if(listExtractionMonthly.length ==0){                                        
+                    this.setDefaultMonthly(0);
+                    this.setDefaultMonthly(1);
+                    this.setDefaultMonthly(2);        
+                }else{
+                    this.listExtractionMonthly =  listExtractionMonthly;    
+                }
+                
+                if(extractionPeriodDaily==null){
+                    this.setDefaultDaily();                        
+                }else{
+                    this.extractionPeriodDaily=    extractionPeriodDaily;                        
+                }
+                
+                if(extractionYear ==null){
+                    this.setDefaultYear();   
+                }else{
+                    this.extractionYear =    extractionYear; 
+                }
+            }
+            
+            
         }
 
         public setExtractPeriod(extractionPeriodDaily: ExtractionPeriodDailyCommand) {
@@ -243,7 +250,69 @@ module nts.uk.at.view.kal004.share.model {
         
         public setExtractMonthly(listExtractionMonthly: Array<ExtractionPeriodMonthlyCommand>) {
             this.listExtractionMonthly = listExtractionMonthly;
-        }          
+        }
+        public setExtractYearly( extractionYear : ExtractionRangeYearCommand){
+            this.extractionYear = extractionYear;
+        }
+        
+        
+        public setDefaultDaily() {
+               this.extractionPeriodDaily = new ExtractionPeriodDailyCommand({
+                                                extractionId: "",
+                                                extractionRange: 0,
+                                                strSpecify: 1,
+                                                strPreviousDay: null,
+                                                strMakeToDay: null,
+                                                strDay: null,
+                                                strPreviousMonth: 0,
+                                                strCurrentMonth: 1,
+                                                strMonth: 0,
+                                                endSpecify: 1,
+                                                endPreviousDay: null,
+                                                endMakeToDay: null,
+                                                endDay: null,
+                                                endPreviousMonth: 0,
+                                                endCurrentMonth: 1,
+                                                endMonth: 0
+                                            });
+        }
+        
+        public setDefaulttUnit() {
+                this.extractionPeriodUnit = new PeriodUnitCommand({
+                                                extractionId: "",
+                                                extractionRange: 3,
+                                                segmentationOfCycle: 1
+                                            });            
+        }
+        
+        public setDefaultMonthly(unit: number){
+            this.listExtractionMonthly.push( new ExtractionPeriodMonthlyCommand({
+                                                     extractionId: "",
+                                                     extractionRange: 0,
+                                                     unit: unit,       
+                                                     strSpecify : 1,        
+                                                     yearType: 2,
+                                                     specifyMonth: 0,
+                                                     strMonth: 0,
+                                                     strCurrentMonth: 1,
+                                                     strPreviousAtr: 0,
+                                                     endSpecify: 2,
+                                                     extractPeriod: 12,
+                                                     endMonth: 0,
+                                                     endCurrentMonth: 1,
+                                                     endPreviousAtr: 0     
+                                             }) );
+           
+        }
+        
+        public setDefaultYear(){
+            this.extractionYear = new ExtractionRangeYearCommand({
+                                        extractionId: "",
+                                        extractionRange: 1,
+                                        year: 0,
+                                        thisYear: 1    
+                                    });    
+        }
     }
 
     export class ExtractionPeriodDailyCommand {
@@ -331,5 +400,17 @@ module nts.uk.at.view.kal004.share.model {
         }
     }
     
+    export class ExtractionRangeYearCommand{
+        extractionId: string;
+        extractionRange: number;
+        year: number;
+        thisYear: number;
+        constructor(dto: ExtractionRangeYearDto){
+            this.extractionId = dto.extractionId;
+            this.extractionRange = dto.extractionRange;
+            this.year = dto.year;
+            this.thisYear = dto.thisYear;
+        }
+    }
 
 }
