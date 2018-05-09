@@ -45,4 +45,22 @@ public class SearchEmployeePubImpl implements SearchEmployeePub {
 		return this.empAuthAdapter.narrowEmpListByReferenceRange(sIds, systemType);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.query.pub.employee.SearchEmployeePub#searchByEmployeeName(java.
+	 * lang.String, java.lang.Integer)
+	 */
+	@Override
+	public List<String> searchByEmployeeName(String sName, Integer systemType) {
+		List<String> pIds = this.personRepo.findByName(sName).stream().map(Person::getPersonId)
+				.collect(Collectors.toList());
+
+		List<String> sIds = this.empDataMngInfoRepo.findByListPersonId(AppContexts.user().companyId(), pIds).stream()
+				.map(EmployeeDataMngInfo::getEmployeeId).collect(Collectors.toList());
+
+		return this.empAuthAdapter.narrowEmpListByReferenceRange(sIds, systemType);
+	}
+
 }

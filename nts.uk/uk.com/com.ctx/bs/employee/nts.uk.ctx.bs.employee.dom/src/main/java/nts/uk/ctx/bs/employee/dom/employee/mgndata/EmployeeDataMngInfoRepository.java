@@ -114,4 +114,14 @@ public interface EmployeeDataMngInfoRepository {
 	 * @return
 	 */
 	List<EmployeeDataMngInfo> getByListEmployeeId(List<String> listSid);
+
+	/**
+	 * Find by list person id.
+	 *
+	 * @param comId the com id
+	 * @param pIds the ids
+	 * @return the list
+	 * @author NWS-AnhNM
+	 */
+	List<EmployeeDataMngInfo> findByListPersonId(String comId, List<String> pIds);
 }

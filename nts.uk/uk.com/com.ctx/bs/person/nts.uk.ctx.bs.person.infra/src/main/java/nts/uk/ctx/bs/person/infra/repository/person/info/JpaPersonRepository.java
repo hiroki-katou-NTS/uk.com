@@ -25,6 +25,22 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 
 	public final String SELECT_BY_PERSON_IDS = SELECT_NO_WHERE + " WHERE c.bpsmtPersonPk.pId IN :pids";
 
+	private final String FIND_BY_NAME = SELECT_NO_WHERE + " WHERE c.personName LIKE :name"
+			+ " OR c.personName LIKE :name"
+			+ " OR c.personNameKana LIKE :name"
+			+ " OR c.businessName LIKE :name"
+			+ " OR c.businessNameKana LIKE :name"
+			+ " OR c.businessEnglishName LIKE :name"
+			+ " OR c.businessOtherName LIKE :name"
+			+ " OR c.personRomanji LIKE :name"
+			+ " OR c.personRomanjiKana LIKE :name"
+			+ " OR c.todokedeFullName LIKE :name"
+			+ " OR c.todokedeFullNameKana LIKE :name"
+			+ " OR c.oldName LIKE :name"
+			+ " OR c.oldNameKana LIKE :name"
+			+ " OR c.perNameMultilLang LIKE :name"
+			+ " OR c.perNameMultilLangKana LIKE :name";
+
 	public final String GET_LAST_CARD_NO = "SELECT c.cardNumberLetter FROM BpsstUserSetting c "
 
 			+ " WHERE c.companyId = :companyId AND c.cardNumberLetter LIKE CONCAT(:cardNo, '%')"
@@ -240,5 +256,18 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 		} else {
 			return Optional.empty();
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.person.dom.person.info.PersonRepository#findByName(java.
+	 * lang.String)
+	 */
+	@Override
+	public List<Person> findByName(String name) {
+		return this.queryProxy().query(FIND_BY_NAME, BpsmtPerson.class).setParameter("name", name)
+				.getList(e -> toDomain(e));
 	}
 }

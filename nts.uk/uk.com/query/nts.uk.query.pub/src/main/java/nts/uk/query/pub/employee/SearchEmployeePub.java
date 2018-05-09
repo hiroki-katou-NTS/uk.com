@@ -20,4 +20,14 @@ public interface SearchEmployeePub {
 	 */
 	// <<Public>> 社員コードで検索する
 	public List<String> searchByEmployeeCode(String sCd, Integer systemType);
+
+	/**
+	 * Search by employee name.
+	 *
+	 * @param sName the s name
+	 * @param systemType the system type
+	 * @return the list
+	 */
+	// <<Public>> 社員名で検索する
+	public List<String> searchByEmployeeName(String sName, Integer systemType);
 }

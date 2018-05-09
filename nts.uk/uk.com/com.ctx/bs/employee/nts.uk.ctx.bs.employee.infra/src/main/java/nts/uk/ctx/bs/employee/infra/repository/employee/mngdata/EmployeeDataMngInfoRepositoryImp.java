@@ -40,6 +40,11 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	private static final String SELECT_EMPLOYEE_NOTDELETE_IN_COMPANY = String.join(" ", SELECT_NO_PARAM,
 			"WHERE e.companyId = :cId AND e.employeeCode= :sCd AND e.delStatus=0");
 
+	private static final String FIND_BY_PIDS_AND_NOT_DELETED = SELECT_NO_PARAM
+			+ " WHERE e.companyId = :cId"
+			+ " AND e.bsymtEmployeeDataMngInfoPk.pId = :pIds"
+			+ " AND e.delStatus = 0";
+
 	private static final String GET_LIST_BY_CID_SCD = String.join(" ", SELECT_NO_PARAM,
 			"WHERE e.companyId = :cId AND e.employeeCode = :sCd ");
 
@@ -432,4 +437,27 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	}
 
 	// laitv code end
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository
+	 * #findByListPersonId(java.lang.String, java.util.List)
+	 */
+	@Override
+	public List<EmployeeDataMngInfo> findByListPersonId(String comId, List<String> pIds) {
+		if (CollectionUtil.isEmpty(pIds)) {
+			return Collections.emptyList();
+		}
+
+		List<BsymtEmployeeDataMngInfo> resultList = new ArrayList<>();
+
+		CollectionUtil.split(pIds, 1000, (subList) -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_PIDS_AND_NOT_DELETED, BsymtEmployeeDataMngInfo.class)
+					.setParameter("cId", comId).setParameter("pIds", subList).getList());
+		});
+
+		return resultList.stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+	}
 }
