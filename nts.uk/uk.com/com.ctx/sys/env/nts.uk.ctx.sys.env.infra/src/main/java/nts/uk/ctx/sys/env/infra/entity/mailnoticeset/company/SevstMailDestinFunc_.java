@@ -1,18 +1,16 @@
-/******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
- * All right reserved.                                            *
- *****************************************************************/
 package nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company;
 
+import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFuncPK;
 
-/**
- * The Class SevstMailDestinFunc_.
- */
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-05-09T16:58:26")
 @StaticMetamodel(SevstMailDestinFunc.class)
-public class SevstMailDestinFunc_ {
-	
-	/** The sevst mail destin func PK. */
-	public static volatile SingularAttribute<SevstMailDestinFunc, SevstMailDestinFuncPK> sevstMailDestinFuncPK;
+public class SevstMailDestinFunc_ { 
+
+    public static volatile SingularAttribute<SevstMailDestinFunc, SevstMailDestinFuncPK> sevstMailDestinFuncPK;
+    public static volatile SingularAttribute<SevstMailDestinFunc, Integer> sendSet;
+    public static volatile SingularAttribute<SevstMailDestinFunc, Integer> exclusVer;
+
 }

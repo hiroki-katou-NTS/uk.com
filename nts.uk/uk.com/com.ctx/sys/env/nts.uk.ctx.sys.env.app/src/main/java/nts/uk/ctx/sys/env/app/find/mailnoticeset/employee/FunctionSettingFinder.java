@@ -44,13 +44,13 @@ public class FunctionSettingFinder {
 	public List<FunctionSettingDto> findByUserInfoItem(UserInfoItem userInfoItem) {
 		
 		String companyId = AppContexts.user().companyId();
-		
+		//TODO mailFunctionRepository
 		List<FunctionSettingDto> listResult = this.mailFunctionRepository.findAll(true).stream()
-				.map(item -> new FunctionSettingDto(item.getFunctionId(), item.getFunctionName(), true))
+				.map(item -> new FunctionSettingDto(item.getFunctionId().v(), item.getFunctionName().v(), false))
 				.collect(Collectors.toList());	
 		MailDestinationFunction mailDestinationFunction = this.mailDestinationFunctionRepository.findByCidAndSettingItem(companyId, userInfoItem);
 		Map<Integer, SendMailByFunctionSetting> mapSendMailByFunctionSetting = mailDestinationFunction.getSendByFunctionSetting().stream()
-				.collect(Collectors.toMap(item -> item.getFunctionId(), Function.identity()));
+				.collect(Collectors.toMap(item -> item.getFunctionId().v(), Function.identity()));
 		listResult.forEach(dto -> {
 			SendMailByFunctionSetting sendSetting = mapSendMailByFunctionSetting.get(dto.getFunctionId());
 			if (sendSetting == null) {

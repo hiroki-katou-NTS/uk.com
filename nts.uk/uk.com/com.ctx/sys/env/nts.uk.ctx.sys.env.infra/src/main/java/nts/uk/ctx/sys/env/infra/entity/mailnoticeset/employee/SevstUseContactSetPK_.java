@@ -1,22 +1,14 @@
-/******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
- * All right reserved.                                            *
- *****************************************************************/
 package nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee;
 
+import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
-/**
- * The Class SevstUseContactSetPK_.
- */
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-05-09T16:58:26")
 @StaticMetamodel(SevstUseContactSetPK.class)
 public class SevstUseContactSetPK_ { 
-    
-    /** The cid. */
+
     public static volatile SingularAttribute<SevstUseContactSetPK, String> cid;
-    
-    /** The sid. */
     public static volatile SingularAttribute<SevstUseContactSetPK, String> sid;
 
 }
