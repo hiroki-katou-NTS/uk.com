@@ -116,6 +116,10 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 	@Column(name = "TOTAL_ABSENCE_DAYS")
 	public double totalAbsenceDays;
 	
+	/** 欠勤合計時間 */
+	@Column(name = "TOTAL_ABSENCE_TIME")
+	public int totalAbsenceTime;
+	
 	/** 給与出勤日数 */
 	@Column(name = "PAY_ATTENDANCE_DAYS")
 	public double payAttendanceDays;
@@ -347,6 +351,7 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 				AttendanceDaysOfMonthly.of(new AttendanceDaysMonth(this.attendanceDays)),
 				AbsenceDaysOfMonthly.of(
 						new AttendanceDaysMonth(this.totalAbsenceDays),
+						new AttendanceTimeMonth(this.totalAbsenceTime),
 						krcdtMonAggrAbsnDays.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
 				PredeterminedDaysOfMonthly.of(
 						new AttendanceDaysMonth(this.predetermineDays)),
@@ -465,6 +470,7 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 		this.attendanceDays = vtWorkDays.getAttendanceDays().getDays().v();
 		this.holidayWorkDays = vtWorkDays.getHolidayWorkDays().getDays().v();
 		this.totalAbsenceDays = vtWorkDays.getAbsenceDays().getTotalAbsenceDays().v();
+		this.totalAbsenceTime = vtWorkDays.getAbsenceDays().getTotalAbsenceTime().v();
 		this.payAttendanceDays = vtWorkDays.getPayDays().getPayAttendanceDays().v();
 		this.payAbsenceDays = vtWorkDays.getPayDays().getPayAbsenceDays().v();
 		

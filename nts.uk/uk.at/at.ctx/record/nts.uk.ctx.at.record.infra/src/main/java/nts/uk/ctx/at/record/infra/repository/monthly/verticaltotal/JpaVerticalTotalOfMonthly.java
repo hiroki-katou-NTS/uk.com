@@ -57,6 +57,7 @@ public class JpaVerticalTotalOfMonthly extends JpaRepository implements Vertical
 		entity.attendanceDays = workDays.getAttendanceDays().getDays().v();
 		entity.holidayWorkDays = workDays.getHolidayWorkDays().getDays().v();
 		entity.totalAbsenceDays = workDays.getAbsenceDays().getTotalAbsenceDays().v();
+		entity.totalAbsenceTime = workDays.getAbsenceDays().getTotalAbsenceTime().v();
 		entity.payAttendanceDays = workDays.getPayDays().getPayAttendanceDays().v();
 		entity.payAbsenceDays = workDays.getPayDays().getPayAbsenceDays().v();
 		

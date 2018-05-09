@@ -12,20 +12,10 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.val;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.EndClockOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.WorkClockOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.AggrPCLogonClock;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.AggrPCLogonDivergence;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.PCLogonClockOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.PCLogonDivergenceOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.PCLogonOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AggregateAbsenceDays;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -48,6 +38,10 @@ public class KrcdtMonAggrAbsnDays extends UkJpaEntity implements Serializable {
 	/** 欠勤日数 */
 	@Column(name = "ABSENCE_DAYS")
 	public double absenceDays;
+	
+	/** 欠勤時間 */
+	@Column(name = "ABSENCE_TIME")
+	public int absenceTime;
 
 	/** マッチング：月別実績の勤怠時間 */
 	@ManyToOne
@@ -76,7 +70,8 @@ public class KrcdtMonAggrAbsnDays extends UkJpaEntity implements Serializable {
 		
 		return AggregateAbsenceDays.of(
 				this.PK.absenceFrameNo,
-				new AttendanceDaysMonth(this.absenceDays));
+				new AttendanceDaysMonth(this.absenceDays),
+				new AttendanceTimeMonth(this.absenceTime));
 	}
 	
 	/**
@@ -103,5 +98,6 @@ public class KrcdtMonAggrAbsnDays extends UkJpaEntity implements Serializable {
 	public void fromDomainForUpdate(AggregateAbsenceDays domain){
 		
 		this.absenceDays = domain.getDays().v();
+		this.absenceTime = domain.getTime().v();
 	}
 }

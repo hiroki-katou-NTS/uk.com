@@ -51,6 +51,10 @@ public class KrcdtMonAggrTotalWrk extends UkJpaEntity implements Serializable {
 	@Column(name = "WORK_TIME")
 	public int workTime;
 	
+	/** 実働就業時間 */
+	@Column(name = "ACTWORK_TIME")
+	public int actualWorkTime;
+	
 	/** 所定内割増時間 */
 	@Column(name = "WITPRS_PREMIUM_TIME")
 	public int withinPrescribedPremiumTime;
@@ -101,7 +105,8 @@ public class KrcdtMonAggrTotalWrk extends UkJpaEntity implements Serializable {
 		// 月別実績の就業時間
 		val workTime = WorkTimeOfMonthly.of(
 				new AttendanceTimeMonth(this.workTime),
-				new AttendanceTimeMonth(this.withinPrescribedPremiumTime));
+				new AttendanceTimeMonth(this.withinPrescribedPremiumTime),
+				new AttendanceTimeMonth(this.actualWorkTime));
 
 		// 月別実績の残業時間
 		OverTimeOfMonthly overTime = new OverTimeOfMonthly();
@@ -158,6 +163,7 @@ public class KrcdtMonAggrTotalWrk extends UkJpaEntity implements Serializable {
 	public void fromDomainForUpdate(AggregateTotalWorkingTime domain){
 		
 		this.workTime = domain.getWorkTime().getWorkTime().v();
+		this.actualWorkTime = domain.getWorkTime().getActualWorkTime().v();
 		this.withinPrescribedPremiumTime = domain.getWorkTime().getWithinPrescribedPremiumTime().v();
 		this.schedulePrescribedWorkingTime = domain.getPrescribedWorkingTime().getSchedulePrescribedWorkingTime().v();
 		this.recordPrescribedWorkingTime = domain.getPrescribedWorkingTime().getRecordPrescribedWorkingTime().v();
