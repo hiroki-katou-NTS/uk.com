@@ -10,7 +10,7 @@
 			<script>
 				var dialogSize = {
 					width : 610,
-					height : 500
+					height : 560
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -53,16 +53,14 @@
 							<td class="bg-green titleScheduleSetting" >#{i18n.getText('CMM001_55')}</td>
 							<td class="valueScheduleSetting">
 								<span class="executionStateTime" data-bind="text: executionState"></span>
-								<span>:</span>
-								<span data-bind="text: numberOfData"></span>
-								<span>#{i18n.getText('CMM001_66')}</span>
+								<span data-bind="text: executionTotal"></span>
+								<!-- <span>#{i18n.getText('CMM001_66')}</span> -->
 							</td>
 						</tr>
 						<tr tabindex="-1">
 							<td class="bg-green titleScheduleSetting" >#{i18n.getText('CMM001_56')}</td>
 							<td class="valueScheduleSetting">
-								<span data-bind="text: numberFail"></span>
-								<span>#{i18n.getText('CMM001_67')}</span>
+								<span class="executionStateTime" data-bind="text: executionError"></span>
 							</td>
 						</tr>
 					</table>
@@ -73,8 +71,9 @@
 						<div class="tableErrorLog cf">
 							<table id="tableShowError" data-bind="ntsGridList: {								
 								height: 350,
+								width: 552,
 								dataSource: errorLogs,
-								primaryKey: 'order',
+								primaryKey: 'systemType',
 								columns: columns,
 								multiple: false,
 								value: currentCode,

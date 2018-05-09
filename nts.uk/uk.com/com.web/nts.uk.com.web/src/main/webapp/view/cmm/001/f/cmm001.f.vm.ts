@@ -22,13 +22,14 @@ module nts.uk.com.view.cmm001.f {
             numberSuccess: KnockoutObservable<number>;
             numberFail: KnockoutObservable<number>;
             numberOfData: KnockoutObservable<number>;
-            dataError: KnockoutObservableArray<ErrorContentDto>;
+            //            dataError: KnockoutObservableArray<ErrorContentDto>;
             inputData: MasterCopyDataCommand;
             isError: KnockoutObservable<boolean>;
             isFinish: KnockoutObservable<boolean>;
             readIndex: KnockoutObservableArray<number>;
             pauseFlag: KnockoutObservable<boolean>;
-
+            countData: KnockoutObservable<number>;
+            executionTotal: KnockoutObservable<string>;
             constructor() {
                 let self = this;
 
@@ -37,14 +38,11 @@ module nts.uk.com.view.cmm001.f {
                 self.errorLogs = ko.observableArray([]);
 
                 self.columns = ko.observableArray([
-                    //                    { headerText: nts.uk.resource.getText("CMM001_60"), key: 'employeeId', width: 80},
-                    //                    { headerText: nts.uk.resource.getText("CMM001_61"), key: 'employeeName', width: 150 },
-                    //                    { headerText: nts.uk.r001_62"), key: 'message', width: 150 }
-
-                    { headerText: nts.uk.resource.getText("CMM001_60"), width: 80 },
-                    { headerText: nts.uk.resource.getText("CMM001_61"), width: 150 },
-                    { headerText: nts.uk.resource.getText("CMM001_62"), width: 150 }
+                    { headerText: nts.uk.resource.getText("CMM001_60"), key: 'systemType', width: 80},
+                    { headerText: nts.uk.resource.getText("CMM001_61"), key: 'categoryName', width: 150 },
+                    { headerText: nts.uk.resource.getText("CMM001_62"), key: 'message', width: 150 }
                 ]);
+                
                 self.executionStartDate = ko.observable(this.getExecutionStartDate());
                 self.currentCode = ko.observable();
                 //                self.currentCodeList = ko.observableArray([]);
@@ -52,13 +50,15 @@ module nts.uk.com.view.cmm001.f {
                 self.numberSuccess = ko.observable(0);
                 self.numberFail = ko.observable(0);
                 self.numberOfData = ko.observable(0);
-                self.dataError = ko.observableArray([]);
+                //                self.dataError = ko.observableArray([]);
                 self.executionState = ko.observable('');
                 self.executionError = ko.observable('');
+                self.executionTotal = ko.observable('');
                 self.isError = ko.observable(false);
                 self.isFinish = ko.observable(false);
                 self.pauseFlag = ko.observable(false);
                 self.readIndex = ko.observableArray([]);
+                self.countData = ko.observable(0);
             }
 
             /**
@@ -104,7 +104,7 @@ module nts.uk.com.view.cmm001.f {
                 $('.countdown').startCount();
 
                 // Set execution state to processing
-                self.executionState('処理中');
+                self.executionState(nts.uk.resource.getText("CMM001_63") + "running");
 
                 nts.uk.deferred.repeat(conf => conf
                     .task(() => {
@@ -134,37 +134,39 @@ module nts.uk.com.view.cmm001.f {
                                     if (item.key == 'NUMBER_OF_ERROR') {
                                         self.numberFail(item.valueAsNumber);
                                     }
-                                    //self.totalRecord(self.numberSuccess() + self.numberFail());
+                                    //self.totalRecord(self.numberSuccess() + self.numberFail());                                 
                                 });
+                                self.executionState(nts.uk.resource.getText("CMM001_64") + "not Err");
+                                self.countData(self.countData() + 1);
                             }
 
-                            //self.executionTotal(nts.uk.resource.getText("KSC001_84", [self.numberSuccess(), self.totalRecord()]));
-                            //                            self.executionError(nts.uk.resource.getText("KSC001_85", [self.numberFail()]));
+                            self.executionTotal(nts.uk.resource.getText("CMM001_66", [self.countData(), self.numberOfData()]));
+                            self.executionError(nts.uk.resource.getText("CMM001_67", [self.numberFail()]));
                             // finish task
                             if (res.succeeded || res.failed || res.cancelled || res.status == "REQUESTED_CANCEL") {
                                 //                                self.errorLogs.sort(function(a, b) {
                                 //                                    return a.order.localeCompare(b.order) || (moment(a.ymd, 'YYYY/MM/DD').toDate() - moment(b.ymd, 'YYYY/MM/DD').toDate());
                                 //                                });
-
-                                self.executionState('完了');
-
+                            
+                                self.isFinish(true);
                                 $('.countdown').stopCount();
                                 if (res.succeeded) {
                                     $('#closeDialog').focus();
                                 }
                                 if (self.numberFail() > 0) {
+                                    self.executionState(nts.uk.resource.getText("CMM001_65") + "isErr");
                                     self.isError(true);
                                     $('#tableShowError').show();
                                 }
 
                                 self.numberFail(self.errorLogs().length);
                                 self.readIndex.removeAll();
-                                self.isFinish(true);
+
                             }
                         });
                     }).while(infor => {
                         return (infor.pending || infor.running) && infor.status != "REQUESTED_CANCEL";
-                    }).pause(10000));
+                    }).pause(1000));
             }
 
             /**
@@ -172,14 +174,14 @@ module nts.uk.com.view.cmm001.f {
             */
             private stopExecution(): void {
                 let self = this;
-
+                
                 if (nts.uk.text.isNullOrEmpty(self.taskId())) {
                     return;
                 }
                 // interrupt process import then close dialog
                 nts.uk.request.asyncTask.requestToCancel(self.taskId());
                 $('.countdown').stopCount();
-                self.executionState('完了');
+                self.executionState(nts.uk.resource.getText("CMM001_57") + "cancel" );
                 self.isFinish(true);
                 service.pause();
             }
@@ -193,8 +195,17 @@ module nts.uk.com.view.cmm001.f {
             public cancelDialog(): void {
                 nts.uk.ui.windows.close();
             }
+
+            public exportFileError() {
+            }
         }
 
+        //        export enum systemType {
+        //            共通 = 0,
+        //            就業 = 1,
+        //            給与 = 2,
+        //            人事 = 3
+        //        }
     }
 
 }

@@ -96,7 +96,7 @@ module cmm001.e {
                     var copyMethod : number;
                         for (item of selectedItems) {
                         copyMethod = item.copyMethod();
-                        var IMasterCopyCategoryDto : model.MasterCopyCategoryDto = {categoryName: item.masterCopyCategory, order: item.order, systemType: item.systemType, copyMethod: copyMethod};
+                        var IMasterCopyCategoryDto : model.MasterCopyCategoryDto = {masterCopyId: item.masterCopyId, categoryName: item.masterCopyCategory, order: item.order, systemType: item.systemType, copyMethod: copyMethod};
                             IMasterDataList.push(IMasterCopyCategoryDto);
                         }
                         var masterCopyDataCmd: model.MasterCopyDataCommand = { companyId: cid, masterDataList: IMasterDataList };
@@ -171,6 +171,7 @@ module cmm001.e {
 
         // master category dto
         export interface MasterCopyCategoryDto {
+            masterCopyId: string;
             categoryName: string;
             order: number;
             systemType: string;

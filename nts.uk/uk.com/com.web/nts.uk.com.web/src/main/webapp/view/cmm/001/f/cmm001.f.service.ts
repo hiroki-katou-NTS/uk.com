@@ -13,7 +13,7 @@ module nts.uk.com.view.cmm001.f {
          * execution process copy
          */
         export function executionMasterCopyData(data: model.MasterCopyDataCommand): JQueryPromise<any>{
-            return nts.uk.request.ajax(path.executionMasterCopyData);
+            return nts.uk.request.ajax(path.executionMasterCopyData, data);
         }
         
         /**
@@ -48,6 +48,7 @@ module nts.uk.com.view.cmm001.f {
         
         // master category dto
         export interface MasterCopyCategoryDto {
+            masterCopyId: string;
             categoryName: string;
             order: number;
             systemType: string;

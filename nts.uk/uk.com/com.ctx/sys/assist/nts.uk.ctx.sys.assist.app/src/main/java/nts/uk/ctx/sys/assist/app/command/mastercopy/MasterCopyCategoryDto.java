@@ -18,7 +18,7 @@ public class MasterCopyCategoryDto {
 	private Integer order;
 	
 	/** The system type. */
-	private Integer systemType;
+	private String systemType;
 	
 	/** The copy method. */
 	private Integer copyMethod;
