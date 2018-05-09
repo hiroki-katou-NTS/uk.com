@@ -6,7 +6,7 @@ package nts.uk.ctx.sys.assist.app.command.manualsetting;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.CommandHandler;
+import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSave;
@@ -19,7 +19,7 @@ import nts.uk.ctx.sys.assist.dom.storage.TargetEmployeesRepository;
  *
  */
 @Stateless
-public class AddManualSettingHandler extends CommandHandler<ManualSettingCommand> {
+public class AddManualSettingHandler extends AsyncCommandHandler<ManualSettingCommand> {
 	@Inject
 	private ManualSetOfDataSaveRepository repo;
 	@Inject
