@@ -307,4 +307,11 @@ public class WorkType extends AggregateRoot {
 		
 							
 	}
+	
+
+	public boolean getDecisionAttendanceHolidayAttr() {
+		return this.dailyWork.getDecidionAttendanceHolidayAttr();
+	}
+	
+	
 }

@@ -534,9 +534,16 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	 */
 	public boolean jugmentDeductLateEarly(nts.uk.ctx.at.shared.dom.PremiumAtr premiumAtr,HolidayCalcMethodSet holidayCalcMethodSet) {
 		//就業の休暇の就業時間計算方法詳細．遅刻・早退を控除する
-		NotUseAtr workTimeDeductLateLeaveEarly = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()
-																				?holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly()
-																				:NotUseAtr.NOT_USE;
+//		NotUseAtr workTimeDeductLateLeaveEarly = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()
+//																				?holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly()
+//																				:NotUseAtr.NOT_USE;	
+		NotUseAtr workTimeDeductLateLeaveEarly = NotUseAtr.NOT_USE;
+		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {
+			if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly()) {
+				workTimeDeductLateLeaveEarly = NotUseAtr.USE;
+			}
+		}
+		
 		//割増の休暇の就業時間計算方法詳細．遅刻・早退を控除する
 		NotUseAtr premiumDeductLateLeaveEarly = holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getAdvanceSet().isPresent()
 																				?holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getAdvanceSet().get().getCalculateIncludIntervalExemptionTime()

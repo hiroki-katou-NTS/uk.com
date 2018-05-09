@@ -285,4 +285,21 @@ public class DailyWork extends DomainObject { // 1日の勤務
 		}
 		return WorkTypeRangeForPred.NOTHING;
 	}
+	
+	
+	/**
+	 * 1日休日系か判定する
+	 * @return
+	 */
+	public boolean getDecidionAttendanceHolidayAttr() {
+		if (this.workTypeUnit == WorkTypeUnit.OneDay) {
+			if (this.oneDay.isHolidayType()) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
 }

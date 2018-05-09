@@ -278,7 +278,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		/**
 		 * 勤務種類が休日系なら、所定時間の時間を変更する
 		 */
-		if (workType.get().getAttendanceHolidayAttr().equals(AttendanceHolidayAttr.HOLIDAY)) {
+		if (workType.get().getDecisionAttendanceHolidayAttr()) {
 			oneRange.getPredetermineTimeSetForCalc().endTimeSetStartTime();
 			
 		}
