@@ -314,11 +314,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																		.filter(tc -> tc.getBreakType().isUse(timeSheetAtr))
 																		.findFirst();
 			breakTimeByBreakType.ifPresent(tc -> breakTimeSheet.addAll(tc.getBreakTimeSheets()));
-			breakCount = breakTimeByBreakType.get().getBreakTimeSheets()
-												   .stream()
-												   .filter(tc -> (tc.getStartTime() != null && tc.getEndTime()!=null && tc.getStartTime().valueAsMinutes() == tc.getEndTime().valueAsMinutes()))
-												   .collect(Collectors.toList())
-												   .size();
+			
+			breakCount = breakTimeSheet.stream()
+									   .filter(tc -> (tc.getStartTime() != null && tc.getEndTime()!=null && tc.getEndTime().greaterThan(tc.getStartTime())))
+									   .collect(Collectors.toList())
+									   .size();
 		}
 		
 		breakTimeOfDailyList.add(new BreakTimeOfDailyPerformance(employeeId, 
