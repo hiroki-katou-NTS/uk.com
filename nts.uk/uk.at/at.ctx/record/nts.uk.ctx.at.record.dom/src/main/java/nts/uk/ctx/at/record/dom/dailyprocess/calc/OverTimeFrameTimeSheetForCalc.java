@@ -357,6 +357,12 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 	public static List<OverTimeFrameTimeSheetForCalc> correctTimeSpan(List<OverTimeFrameTimeSheetForCalc> insertList,List<OverTimeFrameTimeSheetForCalc> originList,int nowNumber){
 		originList.remove(nowNumber);
 		originList.addAll(insertList);
+		originList = originList.stream()
+							   .filter(tc -> tc.getPayOrder().isPresent())
+							   .sorted((first,second) -> first.getPayOrder().get().compareTo(second.getPayOrder().isPresent()
+		    																				 ?second.getPayOrder().get()
+		    																				 :new SettlementOrder(99)))
+							   .collect(Collectors.toList());
 		return originList;
 	}
 	

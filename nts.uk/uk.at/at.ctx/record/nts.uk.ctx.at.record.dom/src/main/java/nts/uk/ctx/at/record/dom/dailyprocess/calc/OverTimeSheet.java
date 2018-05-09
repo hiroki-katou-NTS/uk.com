@@ -178,12 +178,12 @@ public class OverTimeSheet {
 		//開始時刻のASC
 		//&& 普通残業を優先するであれば普通残業、早出残業順になるようにする
 		if(useSetting.get().getSubHolTransferSetAtr().isSpecifiedTimeSubHol()) {
-			return frameTimeSheets.stream().sorted((first,second) -> second.timeSheet.getStart().compareTo(first.timeSheet.getStart())).collect(Collectors.toList());
+			return frameTimeSheets.stream().sorted((first,second) -> first.timeSheet.getStart().compareTo(second.timeSheet.getStart())).collect(Collectors.toList());
 		}
 		//一定時間
 		//開始時刻のDESC
 		else {
-			return frameTimeSheets.stream().sorted((first,second) -> first.timeSheet.getStart().compareTo(second.timeSheet.getStart())).collect(Collectors.toList());
+			return frameTimeSheets.stream().sorted((first,second) -> second.timeSheet.getStart().compareTo(first.timeSheet.getStart())).collect(Collectors.toList());
 		}
 	}
 
