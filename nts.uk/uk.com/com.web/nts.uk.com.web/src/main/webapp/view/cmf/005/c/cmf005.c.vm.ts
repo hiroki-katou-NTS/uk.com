@@ -38,7 +38,7 @@ module nts.uk.com.view.cmf005.c.viewmodel {
             service.getSysTypes().done(function(data: Array<any>) {
                 if (data && data.length) {
                     _.forOwn(data, function(index) {
-                        self.systemTypes.push(new model.ItemModel(index.type, index.name));
+                        self.systemTypes.push(new model.ItemModel(index.systemTypeValue, index.systemTypeName));
                     });
 
                     systemIdSelected = self.systemTypes()[0].code;

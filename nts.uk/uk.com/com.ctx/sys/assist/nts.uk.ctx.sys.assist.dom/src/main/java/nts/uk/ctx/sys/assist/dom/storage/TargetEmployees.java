@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @Getter
 public class TargetEmployees
 {
-    
-    /**
+
+	/**
     * データ保存処理ID
     */
     private String storeProcessingId;

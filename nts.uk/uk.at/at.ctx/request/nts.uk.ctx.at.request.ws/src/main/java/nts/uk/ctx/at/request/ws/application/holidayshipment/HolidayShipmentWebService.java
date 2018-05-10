@@ -21,7 +21,7 @@ import nts.uk.ctx.at.request.app.command.application.holidayshipment.UpdateHolid
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenBFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenCFinder;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.ChangeWorkTypeDto;
+/*import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.ChangeWorkTypeDto;*/
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 
 @Path("at/request/application/holidayshipment")
@@ -56,14 +56,15 @@ public class HolidayShipmentWebService extends WebService {
 	@POST
 	@Path("start")
 	public HolidayShipmentDto startPage(StartAParam param) {
-		return this.aFinder.startPage(param.getSID(), param.getAppDate(), param.getUiType());
+		//return this.aFinder.startPage(param.getSID(), param.getAppDate(), param.getUiType());
+		return null;
 	}
 
-	@POST
+	/*@POST
 	@Path("change_work_type")
 	public ChangeWorkTypeDto changeWorkType(ChangeWorkTypeParam param) {
 		return this.aFinder.changeWorkType(param.getWkTypeCD(), param.getWkTimeCD());
-	}
+	}*/
 
 	@POST
 	@Path("update")
@@ -71,12 +72,12 @@ public class HolidayShipmentWebService extends WebService {
 		updateHandler.handle(command);
 	}
 
-	@POST
+	/*@POST
 	@Path("change_day")
 	public HolidayShipmentDto changeDay(ChangeDateParam param) {
 		return this.aFinder.changeDay(param.getTakingOutDate(), param.getHolidayDate(), param.getComType(),
 				param.getUiType());
-	}
+	}*/
 
 	@POST
 	@Path("save")

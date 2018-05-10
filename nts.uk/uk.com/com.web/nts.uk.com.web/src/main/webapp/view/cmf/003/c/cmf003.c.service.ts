@@ -8,8 +8,7 @@ module nts.uk.com.view.cmf003.c {
                 getCategoryBySytem: "ctx/sys/assist/app/findCategory/{0}",
                 getSystemType: "exio/exi/condset/getSysType"
             }
-        
-            
+         
             export function getSysTypes(condSetCode: string): JQueryPromise<any> {
                 return ajax("com", paths.getSystemType);
             }

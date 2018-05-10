@@ -60,10 +60,10 @@ public class ChangeAbsDateCommandHandler extends CommandHandler<SaveHolidayShipm
 	}
 
 	private void errorCheckBeforeReg() {
-		appReason = saveHanler.preconditionCheck(command, companyID, appType);
+		//appReason = saveHanler.preconditionCheck(command, companyID, appType);
 		employeeID = AppContexts.user().employeeId();
 		// アルゴリズム「事前条件チェック」を実行する
-		reason = saveHanler.preconditionCheck(command, companyID, appType);
+		//reason = saveHanler.preconditionCheck(command, companyID, appType);
 		// アルゴリズム「同日申請存在チェック」を実行する
 		saveHanler.dateCheck(command);
 
