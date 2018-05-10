@@ -3,6 +3,7 @@ package nts.uk.ctx.pereg.infra.repository.person.info.item;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,8 +31,6 @@ import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypeState;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.RelatedCategory;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionItem;
-import nts.uk.ctx.pereg.dom.person.info.setitem.SetItem;
-import nts.uk.ctx.pereg.dom.person.info.setitem.SetTableItem;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeState;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.SingleItem;
 import nts.uk.ctx.pereg.dom.person.info.stringitem.StringItem;
@@ -124,7 +123,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"ic.dataType, ic.timeItemMin, ic.timeItemMax, ic.timepointItemMin, ic.timepointItemMax, ic.dateItemType,",
 			"ic.stringItemType, ic.stringItemLength, ic.stringItemDataType, ic.numericItemMin, ic.numericItemMax, ic.numericItemAmountAtr,",
 			"ic.numericItemMinusAtr, ic.numericItemDecimalPart, ic.numericItemIntegerPart,",
-			"ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId, ic.relatedCategoryCode, ic.resourceId",
+			"ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId, ic.relatedCategoryCode, ic.resourceId, io.disporder",
 			"FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId",
 			"INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd",
 			"AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd INNER JOIN PpemtPerInfoItemOrder io",
@@ -299,7 +298,6 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"ON io.ppemtPerInfoItemPK.perInfoItemDefId = i.ppemtPerInfoItemPK.perInfoItemDefId AND io.perInfoCtgId = i.perInfoCtgId",
 			"WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND ic.itemParentCd IN :listParentCd",
 			"ORDER BY io.disporder");
-
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
 		return this.queryProxy().query(SELECT_ITEMS_BY_CATEGORY_ID_QUERY, Object[].class)
@@ -927,38 +925,29 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	@Override
 	public List<PersonInfoItemDefinition> getItemLstByListId(List<String> listItemDefId, String contractCd) {
 		// SELECT_CHILDS_ITEMS_BY_LIST_ITEM_ID_QUERY
-
-		List<PersonInfoItemDefinition> itemParentLst = this.queryProxy()
-				.query(SELECT_ITEMS_BY_LIST_ITEM_ID_QUERY, Object[].class).setParameter("contractCd", contractCd)
-				.setParameter("listItemDefId", listItemDefId).getList(i -> {
-					List<String> items = getChildIds(contractCd, String.valueOf(i[27]), String.valueOf(i[1]));
-					return createDomainFromEntity1(i, items);
-				});
-		List<String> itemChilds = new ArrayList<>();
-//		long start = System.currentTimeMillis();
-		itemParentLst.stream().forEach(c -> {
-			if (c.getItemTypeState().getItemType() == ItemType.SET_ITEM) {
-				SetItem itemSet = (SetItem) c.getItemTypeState();
-				itemChilds.addAll(itemSet.getItems());
-
-			} else if (c.getItemTypeState().getItemType() == ItemType.TABLE_ITEM) {
-				SetTableItem itemTableSet = (SetTableItem) c.getItemTypeState();
-
-				itemChilds.addAll(itemTableSet.getItems());
+		long start = System.currentTimeMillis();
+		List<Object[]> objItemParents = this.queryProxy()
+				.query(SELECT_ITEMS_BY_LIST_ITEM_ID_QUERY, Object[].class)
+				.setParameter("contractCd", contractCd)
+				.setParameter("listItemDefId", listItemDefId).getList();
+		List<Object[]> itemlst = new ArrayList<>();
+		for(int i = 0 ; i <objItemParents.size(); i++) {
+			List<String> itemChilds = getChildIds(contractCd, String.valueOf(objItemParents.get(i)[27]), String.valueOf(objItemParents.get(i)[1]));
+			if(!itemChilds.isEmpty()) {
+				itemlst.addAll(this.queryProxy()
+						.query(SELECT_ITEMS_BY_LIST_ITEM_ID_QUERY, Object[].class).setParameter("contractCd", contractCd)
+						.setParameter("listItemDefId", itemChilds).getList());
 			}
-		});
-//		System.out.println( "ong " + (System.currentTimeMillis() - start) );
-		if (itemChilds.size() > 0) {
-			List<PersonInfoItemDefinition> itemChildLst = this.queryProxy()
-					.query(SELECT_ITEMS_BY_LIST_ITEM_ID_QUERY, Object[].class).setParameter("contractCd", contractCd)
-					.setParameter("listItemDefId", itemChilds).getList(i -> {
-						List<String> items = getChildIds(contractCd, String.valueOf(i[27]), String.valueOf(i[1]));
-						return createDomainFromEntity1(i, items);
-					});
-			itemParentLst.addAll(itemChildLst);
 		}
-
-
-		return itemParentLst;
+		objItemParents.addAll(itemlst);
+		Collections.sort(objItemParents,new Sortbyroll());
+		System.out.println( System.currentTimeMillis() - start);
+		return objItemParents.stream().map(c -> {return createDomainFromEntity1(c, new ArrayList<>());}).collect(Collectors.toList());
 	}
 }
+
+class Sortbyroll implements Comparator<Object[]> {
+	 public int compare(Object[] a, Object[] b) {
+	  return (Integer.valueOf(a[30].toString()) - Integer.valueOf(b[30].toString()));
+	 }
+	}
