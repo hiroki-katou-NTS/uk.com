@@ -165,7 +165,7 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 	@Override
 	public List<String> getListWorkPlaceID(String employeeID, GeneralDate referenceDate) {
 		// 社員IDからユーザIDを取得する
-		// (Lấy userID từ employeeID)
+		/** (Lấy userID từ employeeID) */
 		Optional<String> userID = acquireUserIDFromEmpIDService.getUserIDByEmpID(employeeID);
 		if (!userID.isPresent()) {
 			return new ArrayList<>();
@@ -182,6 +182,7 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 			if (listWorkPlaceID.isEmpty()) {
 				return new ArrayList<>();
 			} else {
+				//return
 				return listWorkPlaceID;
 			}
 		}
