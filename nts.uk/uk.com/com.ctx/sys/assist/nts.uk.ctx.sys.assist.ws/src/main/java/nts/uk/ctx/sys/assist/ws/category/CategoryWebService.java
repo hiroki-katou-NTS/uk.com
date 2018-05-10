@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.ws.category;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -33,7 +34,7 @@ public class CategoryWebService extends WebService {
 		if(cusCategoryCommand.getKeySearch() != null) {
 			return this.categoryFinder.getCategoryByCodeOrName(cusCategoryCommand.getSystemType(), cusCategoryCommand.getKeySearch(), cusCategoryCommand.getCategoriesIgnore());
 		} else {
-			return this.categoryFinder.getCategoryByCodeOrName(cusCategoryCommand.getSystemType(), null, cusCategoryCommand.getCategoriesIgnore());
+			return this.categoryFinder.getCategoryByCodeOrName(cusCategoryCommand.getSystemType(), "", cusCategoryCommand.getCategoriesIgnore());
 		}
 	}
 	
