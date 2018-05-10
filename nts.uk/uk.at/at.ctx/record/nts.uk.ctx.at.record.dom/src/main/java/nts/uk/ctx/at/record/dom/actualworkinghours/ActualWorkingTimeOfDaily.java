@@ -467,8 +467,9 @@ public class ActualWorkingTimeOfDaily {
 //				totalWorkingTime.setWithinWorkTime(predetermineTime);
 //			}
 			if(ootsukaFixedCalcSet != null && ootsukaFixedCalcSet.isPresent() ) {
-				if(ootsukaFixedCalcSet.get().getExceededPredAddVacationCalc().getCalcMethod().isCalcAsOverTime()
-						&&totalWorkingTime.getWithinStatutoryTimeOfDaily().getWorkTime().greaterThan(predetermineTime.valueAsMinutes())) {
+				if(ootsukaFixedCalcSet.get().getExceededPredAddVacationCalc().getCalcMethod() != null
+					 && ootsukaFixedCalcSet.get().getExceededPredAddVacationCalc().getCalcMethod().isCalcAsOverTime()
+					 && totalWorkingTime.getWithinStatutoryTimeOfDaily().getWorkTime().greaterThan(predetermineTime.valueAsMinutes())) {
 					totalWorkingTime.setWithinWorkTime(predetermineTime);
 				}
 			}
