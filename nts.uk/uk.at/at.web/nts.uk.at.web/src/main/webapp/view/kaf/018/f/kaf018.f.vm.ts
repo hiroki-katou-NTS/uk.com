@@ -242,9 +242,9 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                                     performance = Performance.CONFIRMED;
                                 }
                             } else if (!self.useSetting.usePersonConfirm && self.useSetting.useBossConfirm) {
-                                if (!objDaily.personConfirm) {
+                                if (!objDaily.bossConfirm) {
                                     performance = Performance.BOSS_UNCONFIRM;
-                                } else if (objDaily.personConfirm) {
+                                } else if (objDaily.bossConfirm) {
                                     performance = Performance.CONFIRMED;
                                 }
                             }
