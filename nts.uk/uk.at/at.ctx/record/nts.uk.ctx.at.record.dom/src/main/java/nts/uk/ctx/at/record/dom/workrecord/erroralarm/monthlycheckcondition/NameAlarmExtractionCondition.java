@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

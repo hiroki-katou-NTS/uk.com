@@ -24,6 +24,7 @@ import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtErAlCondition;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycheckcondition.KrcmtExtraResultMonthly;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycondition.KrcmtTimeChkMonthly;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -58,6 +59,9 @@ public class KrcstErAlConGroup extends UkJpaEntity implements Serializable {
     
     @OneToOne(mappedBy="krcstErAlConGroup1")
 	public KrcmtTimeChkMonthly krcmtTimeChkMonthly;
+    
+    @OneToOne(mappedBy="krcstErAlConGroup1")
+	public KrcmtExtraResultMonthly krcmtExtraResultMonthly;
     
 	@Override
 	protected Object getKey() {

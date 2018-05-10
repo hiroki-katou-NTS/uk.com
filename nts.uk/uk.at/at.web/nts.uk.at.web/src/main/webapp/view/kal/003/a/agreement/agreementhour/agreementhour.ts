@@ -15,7 +15,7 @@ module nts.uk.at.view.kal003.a.tab {
             self.init();
 
             $("#fixed-table-agreement-hour").ntsFixedTable({ height: 310, width: 500 });
-        }
+        } 
 
         init(): void {
             let self = this;
