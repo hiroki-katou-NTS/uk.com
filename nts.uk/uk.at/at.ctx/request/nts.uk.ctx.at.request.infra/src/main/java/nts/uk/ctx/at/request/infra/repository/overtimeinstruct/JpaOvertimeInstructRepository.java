@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.infra.repository.overtimeinstruct;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -29,7 +30,7 @@ public class JpaOvertimeInstructRepository extends JpaRepository implements Over
 		
 		query = new StringBuilder();
 		query.append(FIND_ALL);
-		query.append(" AND o.krqdtOvertimeInstructPK.targetPerson = :targetPerson");
+		query.append(" WHERE o.krqdtOvertimeInstructPK.targetPerson = :targetPerson");
 		query.append(" ORDER BY o.krqdtOvertimeInstructPK.instructDate ASC");
 		FIND_ALL_BY_TARGET_PERSON = query.toString();
 		
@@ -67,17 +68,18 @@ public class JpaOvertimeInstructRepository extends JpaRepository implements Over
 	 * For request list 230
 	 */
 	@Override
-	public List<OverTimeInstruct> getAllOverTimeInstructBySId(String sId) {
+	public List<OverTimeInstruct> getAllOverTimeInstructBySId(String sId, GeneralDate strDate, GeneralDate endDate) {
 		List<OverTimeInstruct> overTimeInstructs = this.queryProxy().query(FIND_ALL_BY_TARGET_PERSON, KrqdtOvertimeInstruct.class)
 				.setParameter("targetPerson", sId).getList(c -> convertToDomain(c));
-		
-		if(overTimeInstructs != null){
-			if(overTimeInstructs.size() > 0){
-				return overTimeInstructs;
+		List<OverTimeInstruct> result = new ArrayList<>();
+		for (OverTimeInstruct item : overTimeInstructs) {
+			if(item.getInstructDate().afterOrEquals(strDate) && item.getInstructDate().beforeOrEquals(endDate)) {
+				result.add(item);
 			}
 		}
-		
-		return null;
+		return result;
 	}
-
+	
 }
+
+

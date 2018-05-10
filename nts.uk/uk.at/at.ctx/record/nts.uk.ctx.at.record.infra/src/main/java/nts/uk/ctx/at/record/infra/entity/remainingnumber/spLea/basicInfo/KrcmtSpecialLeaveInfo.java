@@ -35,7 +35,7 @@ public class KrcmtSpecialLeaveInfo extends UkJpaEntity {
 
 	@Override
 	protected Object getKey() {
-		return getKey();
+		return key;
 	}
     
 

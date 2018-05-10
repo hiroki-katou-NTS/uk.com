@@ -20,19 +20,18 @@ public class SpecialLeaveUsedNumber {
 
 	public Optional<SpecialLeaveOverNumber> specialLeaveOverLimitNumber;
 
-	private SpecialLeaveUsedNumber(Double dayNumberOfUse, Integer timeOfUse, Double useSavingDays,
-			int dayNumberOfExeeded, Integer timeOfExeeded) {
+	private SpecialLeaveUsedNumber(double dayNumberOfUse, Integer timeOfUse, Double useSavingDays,
+			double dayNumberOfExeeded, Integer timeOfExeeded) {
 		this.dayNumberOfUse = new DayNumberOfUse(dayNumberOfUse);
 		this.timeOfUse = timeOfUse != null ? Optional.of(new TimeOfUse(timeOfUse)) : Optional.empty();
 		this.useSavingDays = useSavingDays != null ? Optional.of(new DayNumberOfUse(useSavingDays))
 				: Optional.empty();
 		this.specialLeaveOverLimitNumber = Optional
 				.of(SpecialLeaveOverNumber.createFromJavaType(dayNumberOfExeeded, timeOfExeeded));
-
 	}
 
-	public static SpecialLeaveUsedNumber createFromJavaType(Double dayNumberOfUse, Integer timeOfUse,
-			Double dayNumberOfUsed, int dayNumberOfExeeded, Integer timeOfExeeded) {
+	public static SpecialLeaveUsedNumber createFromJavaType(double dayNumberOfUse, Integer timeOfUse,
+			Double dayNumberOfUsed, double dayNumberOfExeeded, Integer timeOfExeeded) {
 		return new SpecialLeaveUsedNumber(dayNumberOfUse, timeOfUse, dayNumberOfUsed, dayNumberOfExeeded,
 				timeOfExeeded);
 	}

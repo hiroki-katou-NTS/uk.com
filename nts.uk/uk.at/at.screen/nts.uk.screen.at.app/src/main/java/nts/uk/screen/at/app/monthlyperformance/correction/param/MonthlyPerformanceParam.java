@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Data;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.CorrectionOfMonthlyPerformance;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceEmployeeDto;
 @Data
 public class MonthlyPerformanceParam {
@@ -22,7 +23,7 @@ public class MonthlyPerformanceParam {
 	/**
 	 * 月別実績の修正
 	 */
-//	private CorrectionOfMonthlyPerformance correctionOfMonthly;
+	private CorrectionOfMonthlyPerformance correctionOfMonthly;
 	/**
 	 * 起動モード
 	 * 0: 通常モードで起動する

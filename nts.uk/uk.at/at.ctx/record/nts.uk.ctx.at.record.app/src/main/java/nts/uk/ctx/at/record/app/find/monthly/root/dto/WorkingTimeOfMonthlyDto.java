@@ -25,18 +25,25 @@ public class WorkingTimeOfMonthlyDto {
 	@AttendanceItemLayout(jpPropertyName = "所定内割増時間", layout = "B")
 	private Integer withinPrescribedPremiumTime;
 	
+	/** 実働就業時間 */
+	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(jpPropertyName = "実働就業時間", layout = "C")
+	private Integer actualWorkTime;
+	
 	public static WorkingTimeOfMonthlyDto from(WorkTimeOfMonthly domain) {
 		WorkingTimeOfMonthlyDto dto = new WorkingTimeOfMonthlyDto();
 		if(domain != null) {
 			dto.setWithinPrescribedPremiumTime(domain.getWithinPrescribedPremiumTime() == null 
 					? null : domain.getWithinPrescribedPremiumTime().valueAsMinutes());
 			dto.setWorkTime(domain.getWorkTime() == null ? null : domain.getWorkTime().valueAsMinutes());
+			dto.setActualWorkTime(domain.getActualWorkTime() == null ? null : domain.getActualWorkTime().valueAsMinutes());
 		}
 		return dto;
 	}
 	
 	public WorkTimeOfMonthly toDomain() {
 		return WorkTimeOfMonthly.of(workTime == null ? null : new AttendanceTimeMonth(workTime),
-									withinPrescribedPremiumTime == null ? null : new AttendanceTimeMonth(withinPrescribedPremiumTime));
+									withinPrescribedPremiumTime == null ? null : new AttendanceTimeMonth(withinPrescribedPremiumTime),
+									actualWorkTime == null ? null : new AttendanceTimeMonth(actualWorkTime));
 	}
 }

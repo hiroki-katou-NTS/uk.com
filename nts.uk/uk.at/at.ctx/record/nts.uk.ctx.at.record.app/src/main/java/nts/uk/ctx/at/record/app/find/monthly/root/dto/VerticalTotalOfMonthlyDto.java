@@ -26,7 +26,8 @@ public class VerticalTotalOfMonthlyDto {
 	
 	public VerticalTotalOfMonthly toDomain(){
 		return VerticalTotalOfMonthly.of(workDays == null ? null : workDays.toDomain(), 
-										workTime == null ? null : workTime.toDomain());
+										workTime == null ? null : workTime.toDomain(), 
+										workHour == null ? null : workHour.toDomain());
 	}
 	
 	public static VerticalTotalOfMonthlyDto from(VerticalTotalOfMonthly domain) {
@@ -34,6 +35,7 @@ public class VerticalTotalOfMonthlyDto {
 		if(domain != null) {
 			dto.setWorkTime(WorkTimeOfMonthlyDto.from(domain.getWorkTime()));
 			dto.setWorkDays(WorkDaysOfMonthlyDto.from(domain.getWorkDays()));
+			dto.setWorkHour(WorkHourOfMonthlyDto.from(domain.getWorkClock()));
 		}
 		return dto;
 	}

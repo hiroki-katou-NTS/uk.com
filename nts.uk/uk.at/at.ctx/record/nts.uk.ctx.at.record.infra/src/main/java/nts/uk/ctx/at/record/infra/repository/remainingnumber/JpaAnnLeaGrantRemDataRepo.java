@@ -24,14 +24,27 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 
 	private String DELETE_QUERY = "DELETE FROM KRcmtAnnLeaRemain a"
 			+ " WHERE a.sid = :employeeId and a.grantDate = :grantDate";
-
-	private String QUERY_WITH_EMP_ID_NOT_EXP = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId AND a.expStatus = 1 ORDER BY a.grantDate";
+	
+	private String QUERY_WITH_EMP_ID_NOT_EXP = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId AND a.expStatus = 1 ORDER BY a.grantDate DESC";
 
 	@Override
 	public List<AnnualLeaveGrantRemainingData> find(String employeeId) {
 		List<KRcmtAnnLeaRemain> entities = this.queryProxy().query(QUERY_WITH_EMP_ID, KRcmtAnnLeaRemain.class)
 				.setParameter("employeeId", employeeId).getList();
 		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
+	}
+	
+
+	@Override
+	public Optional<AnnualLeaveGrantRemainingData> getLast(String employeeId) {
+		List<KRcmtAnnLeaRemain> entities = this.queryProxy().query(QUERY_WITH_EMP_ID, KRcmtAnnLeaRemain.class)
+				.setParameter("employeeId", employeeId).getList();
+		
+		if (entities.isEmpty()) {
+			return Optional.empty();
+		}
+		
+		return Optional.of(toDomain(entities.get(0)));
 	}
 
 	@Override
@@ -104,7 +117,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 
 		if (data.getAnnualLeaveConditionInfo().isPresent()) {
 			AnnualLeaveConditionInfo conditionInfo = data.getAnnualLeaveConditionInfo().get();
-			entity.perscribedDays = conditionInfo.getDeductedDays().v();
+			entity.perscribedDays = conditionInfo.getPrescribedDays().v();
 			entity.deductedDays = conditionInfo.getDeductedDays().v();
 			entity.workingDays = conditionInfo.getWorkingDays().v();
 		} else {

@@ -165,8 +165,7 @@ public class ValidatorDataDaily {
 		ContinuousHolidayCheckResult result = erAlWorkRecordCheckService.checkContinuousHolidays(employeeId,
 				new DatePeriod(date.getStartDate(), date.getEndDate()));
 		if(result == null) return Collections.emptyList();
-		Map<GeneralDate, Integer> resultMap = erAlWorkRecordCheckService.checkContinuousHolidays(employeeId,
-				new DatePeriod(date.getStartDate(), date.getEndDate())).getCheckResult();
+		Map<GeneralDate, Integer> resultMap = result.getCheckResult();
 		if (!resultMap.isEmpty()) {
 			return resultMap.entrySet().stream()
 					.map(x -> new DPItemValue("勤務種類", employeeId, x.getKey(), 0, String.valueOf(x.getValue()), result.message()))
