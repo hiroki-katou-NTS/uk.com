@@ -6,126 +6,127 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition>
-		<!-- B 受入設定選択 -->
-		<div class="contentB">
+		<!-- E 削除設定サマリ-->
+		<div class="contentE">
 			<div class="fixed-flex-layout-left" style="padding-top: 20px; width:600px; padding-left: 20px">
-				<div class="label" id = "E3_1">#{i18n.getText('CMF003_117')}</div>
+				<div class="label" id = "E3">#{i18n.getText('CMF005_55')}</div>
 			
 			<div class="valign-center control-group">
-				<div id = "E3_2" class="labelRangeDate" tabindex="-1" 
-				data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_118')}
+				<div id = "E4_1" class="labelE" 
+				data-bind="ntsFormLabel: {}">#{i18n.getText('CMF005_20')}
 				</div>
-				<span id = "E3_3"></span>
+				<span id = "E4_2"></span>
 			</div>
 			
 			<div class="valign-center control-group">
-				<div id = "E3_4" class="labelRangeDate" tabindex="-1" 
-				data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_119')}
+				<div id = "E5_1" class="labelE"
+				data-bind="ntsFormLabel: {}">#{i18n.getText('CMF005_39')}
 				</div>
-				<span id = "E3_5"></span>
+				<span id = "E5_2"></span>
 			</div>
 			
-			<div id = "E3_6" class="periodCovered" tabindex="-1">
-				<div class="labelRangeDate" tabindex="-1" 
-				data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_120')}
+			<div class="flex">
+				<div style="width: 60%;">
+					<div id = "E6_1" class="labelE" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF005_47')}
+					</div>
+				</div>
+				<div style="width: 40%;">
+					<div id = "E6_2_1" class="labelE" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF005_23')}
+					</div>
+					<span id = "E6_2_2"></span>
 				</div>
 			</div>
+			
 			<div class="valign-center control-group" style="margin-top:20px;">
-					<table id="E3_7" data-bind="ntsGridList: {								
+					<table id="E6_3" data-bind="ntsGridList: {								
 						height: 400,
-						dataSource: categorys,
-						primaryKey: 'code',
-						columns: columnCategorys,
+						dataSource: listDataCategory,
+						primaryKey: 'categoryId',
+						columns: listColumnHeader,
 						multiple: false,
-						value: currentCode,
+						value: currentCategory,
 						rows: 5
 					}"></table>
 				</div>
 				
 				<div class="valign-center control-group">
-					<div id="E3_20" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_124')}</div>
-					<span id="E3_21">#{i18n.getText('CMF003_125')}</span>
-					<div id="E3_24" style="display:inline-block;" tabindex="7" data-bind="ntsDateRangePicker: { 
-						required: dayRequired, enable: dayEnable, name: '#[CMF003_37]', 
-						showNextPrevious: false, value: dayValue}"/>
+					<div id="E7_1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF005_27')}</div>
+					<span id="E7_2_1" class="timeLabel">#{i18n.getText('CMF005_28')}</span>
+					<div id="E7_2_2" style="display:inline-block;" data-bind="ntsDateRangePicker: { 
+						required: requiredDate, enable: false, name: '#[CMF005_29]', 
+						showNextPrevious: false, value: dateValue}"/>
 				</div>
 				<div class="valign-center control-group other">
 					<div class="space"></div>
-					<span id="E3_22">#{i18n.getText('CMF003_35')}</span>
-					<div id="E3_25" style="display:inline-block;" tabindex="8" data-bind="ntsDateRangePicker: { 
-						required: monthRequired, enable: monthEnable, name: '#[CMF003_38]',
+					<span id="E7_3_1" class="timeLabel">#{i18n.getText('CMF005_30')}</span>
+					<div id="E7_3_2" style="display:inline-block;" data-bind="ntsDateRangePicker: { 
+						required: requiredMonth, enable: false, name: '#[CMF005_31]',
 						showNextPrevious: false, value: monthValue, type: 'yearmonth'}"/>
 				</div>
 				<div class="valign-center control-group other">
 					<div class="space"></div>
-					<span id="E3_23">#{i18n.getText('CMF003_36')}</span>
-					<div id="E3_26" style="display:inline-block;" tabindex="9" data-bind="ntsDateRangePicker: {
-						required: yearRequired, enable: yearEnable, name: '#[CMF003_39]',
+					<span id="E7_4_1" class="timeLabel">#{i18n.getText('CMF005_32')}</span>
+					<div id="E7_4_2" style="display:inline-block;" data-bind="ntsDateRangePicker: {
+						required: requiredYear, enable: false, name: '#[CMF005_33]',
 						showNextPrevious: false, value: yearValue, type: 'year'}"/>
 				</div>
 				<div class="valign-center control-group">
-					<div id="E3_32" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_45')}</div>
-					<div id="E3_33" tabindex="10" data-bind="ntsCheckBox: { checked: isCompressPass }">
-						#{i18n.getText('CMF003_46')}
+					<div id="E8_1" class="labelE" data-bind="ntsFormLabel: {}">削除前に保存</div>
+					<div id="E8_2" class="cf" data-bind="ntsSwitchButton: {
+						options: saveBeforDeleteOption, optionsValue: 'code', optionsText: 'name',
+						value: isSaveBeforeDeleteFlg, enable: false }"></div>
+				</div>
+				<div class="valign-center control-group">
+					<div id="E9_1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF005_37')}</div>
+					<div id="E9_2_1" data-bind="ntsCheckBox: { checked: isExistCompressPasswordFlg, enable: false }">
+						#{i18n.getText('CMF005_38')}
 					</div>
-					<input tabindex="11" id="E3_34"
+					<input id="E9_2_2"
 										data-bind="ntsTextEditor: {
-											name: '#[CMF003_73]',
-											value: password,
+											name: '#[CMF005_37]',
+											value: passwordForCompressFile,
 											required: false,
 											option: {textmode: 'password',width: '95px'},
-											enable: true,
+											enable: false,
 											readonly: false
 											}" />
 											
 				</div>
-				<!-- E3_36 -->
-				<div class="valign-center control-group">
-							<div id="E3_36" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_100')}</div>
-							<span id="E3_37"></span>
-							<button
-								data-bind="ntsHelpButton: {image: '../resource/実行間隔説明画像.jpg', position: 'top left'}">?</button>
-				</div>
-				<div class="valign-center control-group">
-					<div id="E3_39" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_144')}</div>
-					<div id="E3_40" tabindex="10" data-bind="ntsCheckBox: { checked: isSymbol }">
-						#{i18n.getText('CMF003_145')}
-					</div>
-				</div>
 			</div>
 			<!-- left area -->
 			<div class="fixed-flex-layout-right" style="padding-top: 20px; padding-left: 30px;">
-				<div style="float: left; width: 50%;">
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_160')}</div>
-							</div>
-							<div style="float: left; width: 40%; padding-bottom: 20px;">
-								<!-- E4_2 -->
-								<!-- E4_3 -->
-								<div tabindex="3"
-									data-bind="ntsRadioBoxGroup: {options: itemTitleAtr,
-																		optionsValue: 'value',
-																		optionsText: 'titleAtrName',
-																		value: selectedTitleAtr,	
-																		enable: true}">
-								</div>
-							</div>
+				<div style="float: left; width: 35%;">
+					<div id="E11_1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF005_50')}</div>
+				</div>
+				<div style="float: left; width: 60%; padding-bottom: 20px;">
+					<!-- E11_2_1 -->
+					<!-- E11_2_2 -->
+					<div data-bind="ntsRadioBoxGroup: {options: itemTitleAtr,
+															optionsValue: 'value',
+															optionsText: 'titleAtrName',
+															value: selectedTitleAtr,	
+															enable: true}">
+					</div>
+				</div>
 				<!-- List employee -->
 				<div class="valign-center control-group">
-					<table id="E4_4" data-bind="ntsGridList: {								
-						height: 1600,
-						dataSource: categorys,
-						primaryKey: 'code',
+					<table id="E12" data-bind="ntsGridList: {								
+						height: 2000,
+						showNumbering: true,
+						dataSource: employeeList,
+						primaryKey: 'name',
 						columns: columnEmployees,
 						multiple: false,
-						value: currentCode,
-						rows: 20
+						value: employeeList,
+						rows: 20,
+						enable: false
 					}"></table>
 				</div>
 				<!-- List employee -->
 				<!-- button -->
 				<div class="valign-center control-group button-bottom-area" style="padding-top: 70px;">
-					<button id="E5_1" class="large" tabindex="14" data-bind="click: previousB">#{i18n.getText('CMF005_53')}</button>
-					<button id="E5_2" class="x-large proceed" tabindex="15" data-bind="click: gotoscreenF">#{i18n.getText('CMF005_54')}</button>	
+					<button id="E20_1" class="large" tabindex="1" data-bind="click: previousB">#{i18n.getText('CMF005_58')}</button>
+					<button id="E20_2" class="x-large proceed" tabindex="2" data-bind="click: gotoscreenF">#{i18n.getText('CMF005_59')}</button>	
 				</div>
 				<!-- button -->
 			</div>

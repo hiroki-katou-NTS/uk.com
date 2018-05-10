@@ -84,12 +84,13 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
         
         //E
-        //gridlist
-        categorys: KnockoutObservableArray<CategoryModel>;
-        columnCategorys: KnockoutObservableArray<NtsGridListColumn>;
         columnEmployees: KnockoutObservableArray<NtsGridListColumn>;
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
+        
+        
+        roundingRules: KnockoutObservableArray<any>;
+        selectedRuleCode: any;
         
         constructor() {
             var self = this;           
@@ -208,21 +209,23 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.initComponentCCG001();
             self.initComponnentKCP005();
             
-            
-            //E
-             this.categorys = ko.observableArray([]);
+            //E   
+            this.columnEmployees = ko.observableArray([
+                { headerText: getText('CMF005_56'), key: 'code', width: 150 },
+                { headerText: getText('CMF005_57'), key: 'name', width: 200 }
+            ]);
         }
         
-           /**
-           * start page data 
-           */
-            public startPage(): JQueryPromise<any> {
-                var self = this;
-                var dfd = $.Deferred();
+        /**
+        * start page data 
+        */
+        public startPage(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
 
-                dfd.resolve(self);
-                return dfd.promise();
-            }
+            dfd.resolve(self);
+            return dfd.promise();
+        }
 
         /**
          * Setting value default  screen B
@@ -292,20 +295,21 @@ module nts.uk.com.view.cmf005.b.viewmodel {
          */
         nextScreenD() {
             let self = this;
-            if (self.listDataCategory().length > 0) {
-                // check so sanh hang ngay hang thang hang nam
-                if (self.validateDatePicker()) {
-                    // check pass word
-                    if (self.checkPass()) {
-                        self.nextFromBToD();
-                    }
-                } else {
-                    alertError({ messageId: 'Msg_465' });
-                }
-
-            } else {
-                alertError({ messageId: 'Msg_463' });
-            }
+            self.nextFromBToD();
+//            if (self.listDataCategory().length > 0) {
+//                // check so sanh hang ngay hang thang hang nam
+//                if (self.validateDatePicker()) {
+//                    // check pass word
+//                    if (self.checkPass()) {
+//                        self.nextFromBToD();
+//                    }
+//                } else {
+//                    alertError({ messageId: 'Msg_465' });
+//                }
+//
+//            } else {
+//                alertError({ messageId: 'Msg_463' });
+//            }
         }
 
         /**
@@ -540,17 +544,13 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.previous();
         }
         
-        private backToA() {
-            let self = this;
-            nts.uk.request.jump("/view/cmf/003/a/index.xhtml");
-        }
-        
-        
         /**
              * function submit button
          */
         private validateD() : boolean {
             var self = this;
+            console.log(self.employeeList());
+            
             if ((self.selectedTitleAtr() == 0 && self.selectedEmployeeCode() && self.selectedEmployeeCode().length > 0)
                 || (self.selectedTitleAtr() == 1 && self.initEmployeeList() && self.initEmployeeList().length > 0)) {
                 return true;
@@ -559,29 +559,41 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 return false;
             }
         }
-        
-        getSelectedEmployee() : any {
-            var self = this;
-            console.log(self.selectedTitleAtr());
-            if (self.selectedTitleAtr() == 0) {
-                return $('#employeeSearch').getDataList();
-            } else {
-                return self.initEmployeeList();
-            }
-        }
-        
+         
         private nextFromDToE(): void {
             var self = this;
             if (self.validateD()) {
+                self.initE();
                 self.next();
             }
         }
             
-        private initE(): void {
+        initE() {
             var self = this;
-            $("#E3_3").html(self.dataSaveSetName());
-            $("#E3_5").html(self.explanation());
-            $("#E3_37").html(self.referenceDate);
+            console.log(self.supplementExplanation);
+            $("#E4_2").html(self.deleteSetName());
+            $("#E5_2").html(self.supplementExplanation);
+//            $("#E6_2_2").html(self.systemTypeCbb.name);
+        }
+        
+         private gotoscreenF(): void {
+                let self = this;
+                self.saveManualSetting();
+        }
+            
+        private saveManualSetting(): void {
+//            let self = this;
+//            let manualSetting = new ManualSettingModal(self.systemtypeFromC.code, Number(self.isCompressPass()), self.dataSaveSetName(), 
+//                    moment.utc(self.referenceDate, 'YYYY/MM/DD'), self.password(), moment.utc().toISOString(), moment.utc(self.dayValue().endDate, 'YYYY/MM/DD'), 
+//                    moment.utc(self.dayValue().startDate, 'YYYY/MM/DD'), moment.utc(self.monthValue().endDate, 'YYYY/MM/DD'), 
+//                    moment.utc(self.monthValue().startDate, 'YYYY/MM/DD'), self.explanation(), Number(self.yearValue().endDate), Number(self.yearValue().startDate),
+//                    1, Number(self.isSymbol()), self.employeeList, self.categorys() );
+//
+//            service.addMalSet(manualSetting).done(() => {
+//                
+//            }).fail(res => {
+//                
+//            });
         }
     }
 
@@ -617,24 +629,24 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         }
     }
     
-        export class ListType {
-            static EMPLOYMENT = 1;
-            static Classification = 2;
-            static JOB_TITLE = 3;
-            static EMPLOYEE = 4;
-        }
-            
-        export class SelectType {
-            static SELECT_BY_SELECTED_CODE = 1;
-            static SELECT_ALL = 2;
-            static SELECT_FIRST_ITEM = 3;
-            static NO_SELECT = 4;
-        }
+    export class ListType {
+        static EMPLOYMENT = 1;
+        static Classification = 2;
+        static JOB_TITLE = 3;
+        static EMPLOYEE = 4;
+    }
         
-        export interface UnitAlreadySettingModel {
-            code: string;
-            isAlreadySetting: boolean;
-        }
+    export class SelectType {
+        static SELECT_BY_SELECTED_CODE = 1;
+        static SELECT_ALL = 2;
+        static SELECT_FIRST_ITEM = 3;
+        static NO_SELECT = 4;
+    }
+    
+    export interface UnitAlreadySettingModel {
+        code: string;
+        isAlreadySetting: boolean;
+    }
 }
 
 
