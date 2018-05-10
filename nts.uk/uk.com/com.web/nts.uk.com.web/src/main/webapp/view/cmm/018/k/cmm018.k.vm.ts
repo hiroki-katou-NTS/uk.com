@@ -126,9 +126,9 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 }
             })
             //職場リスト            
-            self.treeGrid.selectedWorkplaceId.subscribe(function(newValues){
-                self.setDataForSwapList(self.selectTypeSet());                
-            })
+//            self.treeGrid.selectedWorkplaceId.subscribe(function(newValues){
+//                self.setDataForSwapList(self.selectTypeSet());                
+//            })
             //確定者(K2_21)の選択肢を承認者一覧(K2_15)と合わせる(update item cua control 確定者(K2_21)  theo 承認者一覧(K2_15))
             self.approverList.subscribe(function(){
                 self.setDataForCbb();
