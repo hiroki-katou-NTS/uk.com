@@ -72,14 +72,10 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		List<String> classificationCodes = paramQuery.getClassificationCodes();
 		List<String> jobTitleCodes = paramQuery.getJobTitleCodes();
 		List<String> worktypeCodes = paramQuery.getWorktypeCodes();
+		List<Integer> closureIds = paramQuery.getClosureIds();
 
 		// Add company condition 
 		conditions.add(cb.equal(root.get(EmployeeDataView_.cid), comId));
-//		conditions.add(cb.or(
-//				cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.comStrDate), paramQuery.getPeriodStart()),
-//						cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodStart())),
-//				cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.comStrDate), paramQuery.getPeriodEnd()),
-//						cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodEnd()))));
 
 		// Add NOT_DELETED condition
 		conditions.add(cb.equal(root.get(EmployeeDataView_.delStatusAtr), NOT_DELETED));
@@ -140,18 +136,37 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			conditions
 					.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.jobInfoEndDate), paramQuery.getBaseDate()));
 		}
-		if (paramQuery.getSystemType() == SystemType.EMPLOYMENT.value && paramQuery.getFilterByWorktype()) {
-			// return empty list if condition code list is empty
-			if (worktypeCodes.isEmpty()) {
-				return Collections.emptyList();
-			}
+		if (paramQuery.getSystemType() == SystemType.EMPLOYMENT.value) {
+			if (paramQuery.getFilterByWorktype()) {
+				// return empty list if condition code list is empty
+				if (worktypeCodes.isEmpty()) {
+					return Collections.emptyList();
+				}
 
-			// update query conditions
-			conditions.add(root.get(EmployeeDataView_.workTypeCd).in(worktypeCodes));
-			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.workTypeStrDate),
-					GeneralDate.localDate(paramQuery.getBaseDate().toLocalDate())));
-			conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.workTypeEndDate),
-					GeneralDate.localDate(paramQuery.getBaseDate().toLocalDate())));
+				// update query conditions
+				conditions.add(root.get(EmployeeDataView_.workTypeCd).in(worktypeCodes));
+				conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.workTypeStrDate),
+						GeneralDate.localDate(paramQuery.getBaseDate().toLocalDate())));
+				conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.workTypeEndDate),
+						GeneralDate.localDate(paramQuery.getBaseDate().toLocalDate())));
+			}
+			if (paramQuery.getFilterByClosure()) {
+				// return empty list if condition code list is empty
+				if (closureIds.isEmpty()) {
+					return Collections.emptyList();
+				}
+
+				// update query conditions
+				conditions.add(root.get(EmployeeDataView_.closureId).in(closureIds));
+
+				// check exist before add employment conditions
+				if (!paramQuery.getFilterByEmployment()) {
+					conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.employmentStrDate),
+							paramQuery.getBaseDate()));
+					conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.employmentEndDate),
+							paramQuery.getBaseDate()));
+				}
+			}
 		}
 		cq.where(conditions.toArray(new Predicate[] {}));
 

@@ -128,7 +128,7 @@ public class AnnualLeaveGrantRemainingData extends AggregateRoot {
 			}
 			this.details.setUsedNumber(AnnualLeaveUsedNumber.createFromJavaType(newUsed, null, stowageDays));
 			
-			// 年休使用数を0にする
+			// 年休使用残を0にする
 			remainingDays = 0.0;
 		}
 		else {

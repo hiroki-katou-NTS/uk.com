@@ -11,6 +11,17 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approve
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverPersonImport;
 
 public interface ApprovalRootStateAdapter {
+	/**
+	 * RequestList113
+	 * @param startDate
+	 * @param endDate
+	 * @param employeeID
+	 * @param companyID
+	 * @param rootType
+	 * @return
+	 */
+	public List<ApproveRootStatusForEmpImPort> getApprovalByEmplAndDate(GeneralDate startDate, GeneralDate endDate, String employeeID,String companyID,Integer rootType);
+	
 	public Map<String,List<ApprovalPhaseStateImport_New>> getApprovalRootContents(List<String> appIDs,String companyID);
 	
 	public ApprovalRootContentImport_New getApprovalRootContent(String companyID, String employeeID, Integer appTypeValue, GeneralDate appDate, String appID, Boolean isCreate);

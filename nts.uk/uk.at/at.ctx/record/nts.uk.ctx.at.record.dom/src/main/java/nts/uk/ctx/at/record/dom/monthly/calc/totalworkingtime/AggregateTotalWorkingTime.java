@@ -112,6 +112,7 @@ public class AggregateTotalWorkingTime {
 		this.workTime = WorkTimeOfMonthly.copyFrom(
 				aggregateTime.getWorkTime().getWorkTime(),
 				aggregateTime.getWorkTime().getWithinPrescribedPremiumTime(),
+				aggregateTime.getWorkTime().getActualWorkTime(),
 				aggregateTime.getWorkTime().getTimeSeriesWorks());
 		this.vacationUseTime = VacationUseTimeOfMonthly.copyFrom(
 				aggregateTime.getVacationUseTime().getAnnualLeave(),

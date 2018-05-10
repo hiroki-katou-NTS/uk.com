@@ -167,7 +167,11 @@ public class MonthlyPerformanceCorrectionProcessor {
 			List<String> employeeIds = screenDto.getLstEmployee().stream().map(e -> e.getId()).collect(Collectors.toList());
 			//アルゴリズム「表示フォーマットの取得」を実行する(Thực hiện 「Lấy format hiển thị」)
 			//TODO Data null confirm??formatPerformance
-			monthlyDisplay.getDisplayFormat(employeeIds, formatPerformance.get().getSettingUnitType(), screenDto);
+			if (formatPerformance.isPresent()) {
+				monthlyDisplay.getDisplayFormat(employeeIds, formatPerformance.get().getSettingUnitType(), screenDto);
+			} else {
+				throw new BusinessException("FormatPerformance hasn't data");
+			}
 			
 			//アルゴリズム「月別実績を表示する」を実行する Hiển thị monthly result
 			displayMonthlyResult(screenDto, yearMonth, closureId);
@@ -338,10 +342,10 @@ public class MonthlyPerformanceCorrectionProcessor {
 		for (int i = 0; i < screenDto.getLstEmployee().size(); i++) {
 			MonthlyPerformanceEmployeeDto employee = screenDto.getLstEmployee().get(i);
 			String employeeId = employee.getId();
-			String lockStatus = lockStatusMap.get(employee.getId()).getLockStatusString();		
+			String lockStatus = lockStatusMap.isEmpty() ? "" : lockStatusMap.get(employee.getId()).getLockStatusString();		
 			
 			MPDataDto mpdata = new MPDataDto(employeeId,
-					lockStatus, "", employee.getCode(),employee.getBusinessName(), "", false, false, false, "");
+					lockStatus, "", employee.getCode(),employee.getBusinessName(), employeeId, "", false, false, false, "");
 			//Setting data for dynamic column
 			MonthlyModifyResult rowData = employeeDataMap.get(employeeId);
 			if(null != rowData){
@@ -351,7 +355,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 						// TODO item.getValueType().value
 						String attendanceKey = mergeString(ADD_CHARACTER ,"" + item.getItemId());
 						List<String> cellStatus = new ArrayList<>();
-						mpdata.addCellData(new MPCellDataDto(attendanceKey, item.getValue(), "String", ""));
+						mpdata.addCellData(new MPCellDataDto(attendanceKey, item.getValue() != null ? item.getValue() : "", "String", ""));
 						if(!StringUtil.isNullOrEmpty(lockStatus, true)){
 							cellStatus.add(STATE_DISABLE);							
 						}
@@ -419,7 +423,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 					String key = displayFormat + "_" + convertFormatString(employee.getId()) + "_"
 							+ convertFormatString(converDateToString(lstDate.get(i))) + "_"
 							+ convertFormatString(converDateToString(lstDate.get(lstDate.size() - 1))) + "_" + dataId;
-					result.add(new MPDataDto(key, "stateLock", "", employee.getCode(), employee.getBusinessName(), "",
+					result.add(new MPDataDto(key, "stateLock", "", employee.getCode(), employee.getBusinessName(), employee.getId(), "",
 									stateLock, stateLock, stateLock, ""));
 					dataId++;
 				}

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.ac.workflow.approvalrootstate;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,10 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalStatusForEmployeeImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApproveRootStatusForEmpImPort;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
@@ -29,6 +33,7 @@ import nts.uk.ctx.workflow.pub.agent.ApproverRepresenterExport;
 import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
+import nts.uk.ctx.workflow.pub.service.export.ApproveRootStatusForEmpExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
 /**
@@ -216,6 +221,23 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	@Override
 	public void doRemandForApplicant(String companyID, String rootStateID) {
 		approvalRootStatePub.doRemandForApplicant(companyID, rootStateID);
+	}
+	// request list 113
+	@Override
+	public List<ApproveRootStatusForEmpImPort> getApprovalByEmplAndDate(GeneralDate startDate, GeneralDate endDate,
+			String employeeID, String companyID, Integer rootType) {
+		List<ApproveRootStatusForEmpImPort> approveRootStatusForEmpImPorts = new ArrayList<>();
+		List<ApproveRootStatusForEmpExport> approverRootStatus = this.approvalRootStatePub.getApprovalByEmplAndDate(startDate, endDate, employeeID, companyID, rootType);
+		if(CollectionUtil.isEmpty(approverRootStatus)){
+			return approveRootStatusForEmpImPorts;
+		}
+		for(ApproveRootStatusForEmpExport approve : approverRootStatus){
+			ApproveRootStatusForEmpImPort  approveRootStatusForEmp = new ApproveRootStatusForEmpImPort(approve.getEmployeeID(),
+					approve.getAppDate(),
+					EnumAdaptor.valueOf(approve.getApprovalStatus().value,ApprovalStatusForEmployeeImport.class));
+			approveRootStatusForEmpImPorts.add(approveRootStatusForEmp);
+		}
+		return approveRootStatusForEmpImPorts;
 	}
 	
 }
