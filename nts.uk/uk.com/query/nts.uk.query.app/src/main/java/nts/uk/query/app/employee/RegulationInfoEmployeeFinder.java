@@ -11,12 +11,17 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.query.model.employee.EmployeeAuthAdapter;
 import nts.uk.query.model.employee.EmployeeReferenceRange;
 import nts.uk.query.model.employee.EmployeeRoleImported;
 import nts.uk.query.model.employee.EmployeeRoleRepository;
 import nts.uk.query.model.employee.RegulationInfoEmployeeRepository;
 import nts.uk.query.model.employee.RoleWorkPlaceAdapter;
+import nts.uk.query.model.employee.history.EmployeeHistoryRepository;
+import nts.uk.query.model.employee.mgndata.EmpDataMngInfoAdapter;
+import nts.uk.query.model.person.QueryPersonAdapter;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class RegulationInfoEmployeeFinder.
@@ -28,11 +33,29 @@ public class RegulationInfoEmployeeFinder {
 	@Inject
 	private RegulationInfoEmployeeRepository repo;
 	
+	/** The role repo. */
 	@Inject
 	private EmployeeRoleRepository roleRepo;
 	
+	/** The work place adapter. */
 	@Inject
 	private RoleWorkPlaceAdapter workPlaceAdapter;
+
+	/** The emp auth adapter. */
+	@Inject
+	private EmployeeAuthAdapter empAuthAdapter;
+
+	/** The emp data mng info adapter. */
+	@Inject
+	private EmpDataMngInfoAdapter empDataMngInfoAdapter;
+
+	/** The person adapter. */
+	@Inject
+	private QueryPersonAdapter personAdapter;
+
+	/** The emp his repo. */
+	@Inject
+	private EmployeeHistoryRepository empHisRepo;
 
 	/**
 	 * Find.
@@ -139,5 +162,60 @@ public class RegulationInfoEmployeeFinder {
 			queryParam.setFilterByWorkplace(true);
 		}
 
+	}
+
+	/**
+	 * Search by employee code.
+	 *
+	 * @param sCd the s cd
+	 * @param systemType the system type
+	 * @return the list
+	 */
+	public List<String> searchByEmployeeCode(String sCd, Integer systemType) {
+		List<String> sIds = this.empDataMngInfoAdapter.findNotDeletedBySCode(AppContexts.user().companyId(),
+				sCd);
+
+		return this.empAuthAdapter.narrowEmpListByReferenceRange(sIds, systemType);
+	}
+
+	/**
+	 * Search by employee name.
+	 *
+	 * @param sName the s name
+	 * @param systemType the system type
+	 * @return the list
+	 */
+	public List<String> searchByEmployeeName(String sName, Integer systemType) {
+		List<String> pIds = this.personAdapter.findPersonIdsByName(sName);
+
+		List<String> sIds = this.empDataMngInfoAdapter.findByListPersonId(AppContexts.user().companyId(), pIds);
+
+		return this.empAuthAdapter.narrowEmpListByReferenceRange(sIds, systemType);
+	}
+
+	/**
+	 * Search by entry date.
+	 *
+	 * @param period the period
+	 * @param systemType the system type
+	 * @return the list
+	 */
+	public List<String> searchByEntryDate(DatePeriod period, Integer systemType) {
+		List<String> sIds = this.empHisRepo.findEmployeeByEntryDate(period);
+
+		return this.empAuthAdapter.narrowEmpListByReferenceRange(sIds, systemType);
+	}
+
+	/**
+	 * Search by retirement date.
+	 *
+	 * @param period the period
+	 * @param systemType the system type
+	 * @return the list
+	 */
+	public List<String> searchByRetirementDate(DatePeriod period, Integer systemType) {
+		List<String> sIds = this.empHisRepo.findEmployeeByRetirementDate(period);
+
+		return this.empAuthAdapter.narrowEmpListByReferenceRange(sIds, systemType);
 	}
 }
