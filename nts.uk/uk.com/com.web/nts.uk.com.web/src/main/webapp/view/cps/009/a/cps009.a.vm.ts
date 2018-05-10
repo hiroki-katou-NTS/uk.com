@@ -853,9 +853,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.saveDataType = ko.observable(params.saveDataType || 0);
             self.stringValue = ko.observable(params.stringValue || null);
-            self.intValue = ko.observable(params.intValue || null);
-
-            self.dateWithDay = ko.observable(params.dateWithDay || 0);
+           
+            self.intValue = ko.observable(params.intValue);
+            self.dateWithDay = ko.observable(params.dateWithDay);
             self.timePoint = ko.observable(params.timePoint || "");
 
             self.timeItemMin = params.timeItemMin || undefined;
@@ -915,7 +915,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 self.selectionItemRefType = params.selectionItemRefType || undefined;
 
                 self.selection = ko.observableArray(params.selection || []);
-                self.selectedCode = ko.observable(params.stringValue || undefined);
+                self.selectedCode = ko.observable((params.stringValue == null?  params.selectionItemId: params.stringValue)|| undefined);
 
             }
 
@@ -923,9 +923,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 if (params.stringValue !== undefined) {
                     let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == params.stringValue) { return c } });
                     self.selectionName = ko.observable((objSel == undefined ? (params.stringValue == null ? params.selectionItemId: params.stringValue) + " " + text("CPS001_107") : objSel.optionText) || (params.stringValue == null ? params.selectionItemId: params.stringValue) + " " + text("CPS001_107"));
+                    console.log(self.selectionName());
                 } else {
                     let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == params.selectionItemId) { return c } });
                     self.selectionName = ko.observable((objSel == undefined ? params.selectionItemId + " " + text("CPS001_107") : objSel.optionText) || params.selectionItemId + " " + text("CPS001_107"));
+                    console.log(self.selectionName());
                 }
             }
 
