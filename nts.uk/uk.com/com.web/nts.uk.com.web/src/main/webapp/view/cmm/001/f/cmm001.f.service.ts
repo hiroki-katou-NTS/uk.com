@@ -20,7 +20,7 @@ module nts.uk.com.view.cmm001.f {
          *  export error to csv service
          */
         export function exportFileError(data: model.ErrorContentDto[]): JQueryPromise<any> {
-            return nts.uk.request.ajax(path.exportFileError);
+            return nts.uk.request.ajax(path.exportFileError, data);
         }
         
         /**

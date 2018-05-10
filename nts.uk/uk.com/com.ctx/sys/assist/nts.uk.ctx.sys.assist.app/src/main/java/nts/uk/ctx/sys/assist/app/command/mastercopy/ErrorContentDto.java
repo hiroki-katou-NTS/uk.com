@@ -55,7 +55,7 @@ public class ErrorContentDto {
 		JsonObjectBuilder tmp = Json.createObjectBuilder();
 		tmp.add(MESSAGE, message);
 		tmp.add(CATEGORY_NAME, categoryName);
-		tmp.add(ORDER, categoryName);
+		tmp.add(ORDER, order);
 		tmp.add(SYSTEM_TYPE, systemType);		
 		
 		return tmp.build();
