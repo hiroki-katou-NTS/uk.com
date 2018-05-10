@@ -6,6 +6,11 @@ import lombok.Getter;
 public class CodeNameReferenceType extends ReferenceTypeState {
 	
 	private TypeCode typeCode;
+	
+	@Override
+	public String getReferenceCode() {
+		return this.typeCode.v();
+	}
 
 	private CodeNameReferenceType(String typeCode) {
 		super();

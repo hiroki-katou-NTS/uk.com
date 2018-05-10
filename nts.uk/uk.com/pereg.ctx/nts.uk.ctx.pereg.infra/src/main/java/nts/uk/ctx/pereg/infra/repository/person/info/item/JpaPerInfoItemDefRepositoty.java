@@ -30,6 +30,8 @@ import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypeState;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.RelatedCategory;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionItem;
+import nts.uk.ctx.pereg.dom.person.info.setitem.SetItem;
+import nts.uk.ctx.pereg.dom.person.info.setitem.SetTableItem;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeState;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.SingleItem;
 import nts.uk.ctx.pereg.dom.person.info.stringitem.StringItem;
@@ -283,6 +285,20 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.itemName, i.itemCd FROM PpemtPerInfoItem i",
 			"JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId",
 			"WHERE c.categoryCd = :ctgCd AND c.cid = :cid");
+
+	private final static String SELECT_CHILDS_ITEMS_BY_LIST_ITEM_ID_QUERY = String.join(" ",
+			"SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,",
+			"ic.itemParentCd, ic.systemRequiredAtr, ic.requireChangabledAtr, ic.fixedAtr, ic.itemType,",
+			"ic.dataType, ic.timeItemMin, ic.timeItemMax, ic.timepointItemMin, ic.timepointItemMax, ic.dateItemType,",
+			"ic.stringItemType, ic.stringItemLength, ic.stringItemDataType, ic.numericItemMin, ic.numericItemMax, ic.numericItemAmountAtr,",
+			"ic.numericItemMinusAtr, ic.numericItemDecimalPart, ic.numericItemIntegerPart,",
+			"ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId, ic.relatedCategoryCode, ic.resourceId",
+			"FROM PpemtPerInfoItem i ",
+			"INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd",
+			"AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd INNER JOIN PpemtPerInfoItemOrder io",
+			"ON io.ppemtPerInfoItemPK.perInfoItemDefId = i.ppemtPerInfoItemPK.perInfoItemDefId AND io.perInfoCtgId = i.perInfoCtgId",
+			"WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND ic.itemParentCd IN :listParentCd",
+			"ORDER BY io.disporder");
 
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
@@ -906,5 +922,43 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				.setParameter("ctgCd", perInfoCtgCd).setParameter("cid", CompanyId)
 				.getList(x -> PersonInfoItemDefinition.createDomainWithNameAndAbolition(x[0].toString(),
 						x[1].toString(), x[2].toString()));
+	}
+
+	@Override
+	public List<PersonInfoItemDefinition> getItemLstByListId(List<String> listItemDefId, String contractCd) {
+		// SELECT_CHILDS_ITEMS_BY_LIST_ITEM_ID_QUERY
+
+		List<PersonInfoItemDefinition> itemParentLst = this.queryProxy()
+				.query(SELECT_ITEMS_BY_LIST_ITEM_ID_QUERY, Object[].class).setParameter("contractCd", contractCd)
+				.setParameter("listItemDefId", listItemDefId).getList(i -> {
+					List<String> items = getChildIds(contractCd, String.valueOf(i[27]), String.valueOf(i[1]));
+					return createDomainFromEntity1(i, items);
+				});
+		List<String> itemChilds = new ArrayList<>();
+//		long start = System.currentTimeMillis();
+		itemParentLst.stream().forEach(c -> {
+			if (c.getItemTypeState().getItemType() == ItemType.SET_ITEM) {
+				SetItem itemSet = (SetItem) c.getItemTypeState();
+				itemChilds.addAll(itemSet.getItems());
+
+			} else if (c.getItemTypeState().getItemType() == ItemType.TABLE_ITEM) {
+				SetTableItem itemTableSet = (SetTableItem) c.getItemTypeState();
+
+				itemChilds.addAll(itemTableSet.getItems());
+			}
+		});
+//		System.out.println( "ong " + (System.currentTimeMillis() - start) );
+		if (itemChilds.size() > 0) {
+			List<PersonInfoItemDefinition> itemChildLst = this.queryProxy()
+					.query(SELECT_ITEMS_BY_LIST_ITEM_ID_QUERY, Object[].class).setParameter("contractCd", contractCd)
+					.setParameter("listItemDefId", itemChilds).getList(i -> {
+						List<String> items = getChildIds(contractCd, String.valueOf(i[27]), String.valueOf(i[1]));
+						return createDomainFromEntity1(i, items);
+					});
+			itemParentLst.addAll(itemChildLst);
+		}
+
+
+		return itemParentLst;
 	}
 }
