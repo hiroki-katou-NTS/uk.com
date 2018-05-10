@@ -145,6 +145,29 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 		return Optional.empty();
 	}
 
-	
-	
+	@Override
+	public List<String> getListWorkPlaceID(String employeeID, GeneralDate referenceDate) {
+		// 社員IDからユーザIDを取得する
+		/** (Lấy userID từ employeeID) */
+		Optional<String> userID = acquireUserIDFromEmpIDService.getUserIDByEmpID(employeeID);
+		if (!userID.isPresent()) {
+			return new ArrayList<>();
+		} else {
+			// ユーザIDからロールを取得する
+			// (lấy role từ userID)
+			String roleID = roleIndividualService.getRoleFromUserId(userID.get(), RoleType.EMPLOYMENT.value, referenceDate);
+			// 社員参照範囲を取得する
+			// (Lấy phạm vi tham chiếu employee)
+			OptionalInt optEmpRange = roleExportRepo.findEmpRangeByRoleID(roleID);
+			// 指定社員が参照可能な職場リストを取得する
+			// (Lấy list workplace của employee chỉ định)
+			List<String> listWorkPlaceID = acquireListWorkplace.getListWorkPlaceID(employeeID, optEmpRange.getAsInt(), referenceDate);
+			if (listWorkPlaceID.isEmpty()) {
+				return new ArrayList<>();
+			} else {
+				//return
+				return listWorkPlaceID;
+			}
+		}
+	}
 }
