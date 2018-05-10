@@ -55,6 +55,7 @@ module nts.uk.com.view.cmm048.a {
             employeeInfoContact: EmployeeInfoContactModel;
             personContact: PersonContactModel;
             passwordPolicy: PasswordPolicyModel;
+            listUserInfoUseMethod: Array<UserInfoUseMethodModel>;
             
             constructor() {
                 let _self = this;
@@ -62,6 +63,7 @@ module nts.uk.com.view.cmm048.a {
                 _self.employeeInfoContact = new EmployeeInfoContactModel();
                 _self.personContact = new PersonContactModel();
                 _self.passwordPolicy = new PasswordPolicyModel();
+                _self.listUserInfoUseMethod = [];
             }
         }
         
@@ -133,6 +135,47 @@ module nts.uk.com.view.cmm048.a {
                 _self.alphabetDigit = ko.observable(0);
                 _self.numberOfDigits = ko.observable(0);
                 _self.numberOfChar = ko.observable(0);
+            }
+        }
+        
+        export class UserInfoUseMethodModel {
+            settingItem: KnockoutObservable<number>;
+            selfEdit: KnockoutObservable<number>;
+            settingUseMail: KnockoutObservable<number>;
+            isNotUse: boolean;
+            isUse: boolean;          
+            isPersonal: boolean;
+            
+            constructor() {
+                let _self = this;
+                _self.settingItem = ko.observable(0);
+                _self.selfEdit = ko.observable(0);
+                _self.settingUseMail = ko.observable(null);
+                
+                _self.settingUseMail.subscribe((v) => {
+                    switch (v) {
+                        case 0:
+                            _self.isNotUse = true;
+                            _self.isUse = false;                           
+                            _self.isPersonal = false;
+                        break;
+                        case 1:
+                            _self.isNotUse = false;
+                            _self.isUse = true;                           
+                            _self.isPersonal = false;
+                        break;
+                        case 2:
+                            _self.isNotUse = false;
+                            _self.isUse = false;                           
+                            _self.isPersonal = true;
+                        break;
+                        default:
+                            _self.isNotUse = false;
+                            _self.isUse = false;                           
+                            _self.isPersonal = false;
+                    }      
+                });
+                _self.settingUseMail(0);
             }
         }
     }

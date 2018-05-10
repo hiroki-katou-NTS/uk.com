@@ -10,7 +10,6 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
 
-// TODO: Auto-generated Javadoc
 /**
  * Gets the setting use mail.
  *

@@ -14,6 +14,7 @@ module nts.uk.com.view.cmm048.a {
             employeeInfoContact: EmployeeInfoContactDto;
             personContact: PersonContactDto;
             passwordPolicy: PasswordPolicyDto;
+            listUserInfoUseMethod: Array<PasswordPolicyDto>;
         }
         
         export interface EmployeeDto {
@@ -47,6 +48,12 @@ module nts.uk.com.view.cmm048.a {
             alphabetDigit: number;
             numberOfDigits: number;
             numberOfChar: number;
+        }
+        
+        export interface UserInfoUseMethodDto {
+            settingItem: number;
+            selfEdit: number;
+            settingUseMail: number;
         }
     }
 }

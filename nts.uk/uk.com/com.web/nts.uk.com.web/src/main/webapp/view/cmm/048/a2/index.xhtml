@@ -10,7 +10,7 @@
 				<col width="200px"/>
 				<col width="100px"/>
 				<col width="400px"/>
-				<col width="200px"/>
+				<col width="280px"/>
 				<col width="100px"/>
 			</colgroup>
 			<thead>
@@ -31,8 +31,23 @@
 								value: employeeInfoContact.mailAddress,
 								option: {width: '350px'}}" />
 					</td>
-					<td style="text-align: center;">
-					
+					<td style="text-align: center;" data-bind="with: userInfoCompanyPcMail">
+						<com:ko tag="if" bind="isNotUse">
+							<div class="label">#{i18n.getText('CMM048_32')}</div>
+						</com:ko>
+						<com:ko tag="if" bind="isUse">
+							<div class="label">#{i18n.getText('CMM048_33')}</div>
+						</com:ko>
+						<com:ko tag="if" bind="isPersonal">
+							<div class="cf" data-bind="ntsSwitchButton: {
+									name: '#[CMM048_36]',
+									options: $parent.listSelfEdit,
+									optionsValue: 'value',
+									optionsText: 'localizedName',
+									value: selfEdit,
+									required: false,
+									enable: true }"></div>
+						</com:ko>
 					</td>
 					<td style="text-align: center;"><button style="width: 80px;" data-bind="click: openDialogUserInfo.bind($data, 0)">#{i18n.getText('CMM048_34')}</button></td>
 				</tr>
@@ -44,8 +59,23 @@
 								value: personContact.mailAddress,
 								option: {width: '350px'}}" />
 					</td>
-					<td style="text-align: center;">
-						
+					<td style="text-align: center;" data-bind="with: userInfoPersonalPcMail">
+						<com:ko tag="if" bind="isNotUse">
+							<div class="label">#{i18n.getText('CMM048_32')}</div>
+						</com:ko>
+						<com:ko tag="if" bind="isUse">
+							<div class="label">#{i18n.getText('CMM048_33')}</div>
+						</com:ko>
+						<com:ko tag="if" bind="isPersonal">
+							<div class="cf" data-bind="ntsSwitchButton: {
+									name: '#[CMM048_36]',
+									options: $parent.listSelfEdit,
+									optionsValue: 'value',
+									optionsText: 'localizedName',
+									value: selfEdit,
+									required: false,
+									enable: true }"></div>
+						</com:ko>
 					</td>
 					<td style="text-align: center;"><button style="width: 80px;" data-bind="click: openDialogUserInfo.bind($data, 1)">#{i18n.getText('CMM048_34')}</button></td>
 				</tr>
@@ -59,8 +89,23 @@
 								value: employeeInfoContact.mobileMailAddress,
 								option: {width: '350px'}}" />
 					</td>
-					<td style="text-align: center;">
-					
+					<td style="text-align: center;" data-bind="with: userInfoCompanyMobileMail">
+						<com:ko tag="if" bind="isNotUse">
+							<div class="label">#{i18n.getText('CMM048_32')}</div>
+						</com:ko>
+						<com:ko tag="if" bind="isUse">
+							<div class="label">#{i18n.getText('CMM048_33')}</div>
+						</com:ko>
+						<com:ko tag="if" bind="isPersonal">
+							<div class="cf" data-bind="ntsSwitchButton: {
+									name: '#[CMM048_36]',
+									options: $parent.listSelfEdit,
+									optionsValue: 'value',
+									optionsText: 'localizedName',
+									value: selfEdit,
+									required: false,
+									enable: true }"></div>
+						</com:ko>
 					</td>
 					<td style="text-align: center;"><button style="width: 80px;" data-bind="click: openDialogUserInfo.bind($data, 2)">#{i18n.getText('CMM048_34')}</button></td>
 				</tr>
@@ -72,8 +117,23 @@
 								value: personContact.mobileMailAddress,
 								option: {width: '350px'}}" />
 					</td>
-					<td style="text-align: center;">
-						
+					<td style="text-align: center;" data-bind="with: userInfoPersonalMobileMail">
+						<com:ko tag="if" bind="isNotUse">
+							<div class="label">#{i18n.getText('CMM048_32')}</div>
+						</com:ko>
+						<com:ko tag="if" bind="isUse">
+							<div class="label">#{i18n.getText('CMM048_33')}</div>
+						</com:ko>
+						<com:ko tag="if" bind="isPersonal">
+							<div class="cf" data-bind="ntsSwitchButton: {
+									name: '#[CMM048_36]',
+									options: $parent.listSelfEdit,
+									optionsValue: 'value',
+									optionsText: 'localizedName',
+									value: selfEdit,
+									required: false,
+									enable: true }"></div>
+						</com:ko>
 					</td>
 					<td style="text-align: center;"><button style="width: 80px;" data-bind="click: openDialogUserInfo.bind($data, 3)">#{i18n.getText('CMM048_34')}</button></td>
 				</tr>

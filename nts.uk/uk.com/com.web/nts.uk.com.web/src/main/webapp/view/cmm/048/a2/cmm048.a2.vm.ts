@@ -1,11 +1,22 @@
 module a2 {
 
     import MainModel = nts.uk.com.view.cmm048.a.viewmodel.MainModel;
+    import EmployeeInfoContactModel = nts.uk.com.view.cmm048.a.viewmodel.EmployeeInfoContactModel;
+    import PersonContactModel = nts.uk.com.view.cmm048.a.viewmodel.PersonContactModel;
+    import UserInfoUseMethodModel = nts.uk.com.view.cmm048.a.viewmodel.UserInfoUseMethodModel;
     
     class ScreenModel {
 
         employeeInfoContact: EmployeeInfoContactModel;
         personContact: PersonContactModel;
+        listUserInfoUseMethod: Array<UserInfoUseMethodModel>;
+        
+        userInfoCompanyPcMail: UserInfoUseMethodModel;
+        userInfoPersonalPcMail: UserInfoUseMethodModel;
+        userInfoCompanyMobileMail: UserInfoUseMethodModel;
+        userInfoPersonalMobileMail: UserInfoUseMethodModel;
+        
+        listSelfEdit: KnockoutObservableArray<any>;
         
         /**
          * Constructor
@@ -15,6 +26,39 @@ module a2 {
             
             _self.employeeInfoContact = model.employeeInfoContact;
             _self.personContact = model.personContact;
+            _self.listUserInfoUseMethod = model.listUserInfoUseMethod;  
+            
+            // Init data                 
+            _self.listSelfEdit = ko.observableArray([
+                { value: 1, localizedName: nts.uk.resource.getText("CMM048_32") },
+                { value: 0, localizedName: nts.uk.resource.getText("CMM048_33") }            
+            ]); 
+            
+            //TODO fake data           
+            let user1 = new UserInfoUseMethodModel();
+            user1.settingItem(UserInfoItem.COMPANY_PC_MAIL);
+            user1.settingUseMail(1);
+            _self.listUserInfoUseMethod.push(user1);
+            
+            let user2 = new UserInfoUseMethodModel();
+            user2.settingItem(UserInfoItem.PERSONAL_PC_MAIL);
+            user2.settingUseMail(2);
+            _self.listUserInfoUseMethod.push(user2);
+            
+            let user3 = new UserInfoUseMethodModel();
+            user3.settingItem(UserInfoItem.COMPANY_MOBILE_MAIL);
+            user3.settingUseMail(0);
+            _self.listUserInfoUseMethod.push(user3);
+            
+            let user4 = new UserInfoUseMethodModel();
+            user4.settingItem(UserInfoItem.PERSONAL_MOBILE_MAIL);
+            user4.settingUseMail(2);
+            _self.listUserInfoUseMethod.push(user4);
+            
+            _self.userInfoCompanyPcMail = _.find(_self.listUserInfoUseMethod, method => method.settingItem() == UserInfoItem.COMPANY_PC_MAIL);
+            _self.userInfoPersonalPcMail = _.find(_self.listUserInfoUseMethod, method => method.settingItem() == UserInfoItem.PERSONAL_PC_MAIL);
+            _self.userInfoCompanyMobileMail = _.find(_self.listUserInfoUseMethod, method => method.settingItem() == UserInfoItem.COMPANY_MOBILE_MAIL);
+            _self.userInfoPersonalMobileMail = _.find(_self.listUserInfoUseMethod, method => method.settingItem() == UserInfoItem.PERSONAL_MOBILE_MAIL);
         }
 
         /**
@@ -39,7 +83,17 @@ module a2 {
                 nts.uk.ui.block.clear();
             });
         }
-    } 
+    }      
+        
+    export enum UserInfoItem {
+        COMPANY_PC_MAIL,
+        PERSONAL_PC_MAIL,
+        COMPANY_MOBILE_MAIL,
+        PERSONAL_MOBILE_MAIL,
+        COMPANY_MOBILE_PHONE,
+        PERSONAL_MOBILE_PHONE,
+        PASSWORD
+    }
 
     /**
      * Knockout Binding Handler - Tab 1
