@@ -185,7 +185,7 @@ module nts.custom.component {
             <div class="left-area">
                 <div class="bg-green caret-right caret-background">
                     <table data-bind="attr: { 
-                                NameID: text('CPS001_09'), 
+                                NameID: text('CPS001_9'), 
                                 id: nts.uk.util.randomId().replace(/-/g, '')
                             }, 
                             ntsGridList: {                              
@@ -193,8 +193,8 @@ module nts.custom.component {
                                 multiple: false,
                                 columns: [
                                     { headerText: 'コード', key: 'employeeId', width: 100, hidden: true },
-                                    { headerText: text('CPS001_10'), key: 'employeeCode', width: 115, hidden: false },
-                                    { headerText: '', key: 'employeeName', width: 125, hidden: false }
+                                    { headerText: text('CPS001_9'), key: 'employeeCode', width: 115, hidden: false },
+                                    { headerText: text('CPS001_10'), key: 'employeeName', width: 125, hidden: false }
                                 ],
                                 primaryKey: 'employeeId',
                                 value: employeeId,
