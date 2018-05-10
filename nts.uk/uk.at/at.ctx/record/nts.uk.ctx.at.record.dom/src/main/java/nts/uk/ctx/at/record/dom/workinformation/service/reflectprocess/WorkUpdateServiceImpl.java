@@ -757,5 +757,76 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		}
 		this.updateEditStateOfDailyPerformance(employeeId, dateData, lstWorktimeFrameTemp);
 	}
+	@Override
+	public void updateRecordStartEndTimeReflectRecruitment(TimeReflectPara data,
+			TimeLeavingOfDailyPerformance timeLeavingOfDailyData) {
+		if(!data.isStart()
+				&& !data.isEnd()) {
+			return;
+		}
+		List<TimeLeavingWork> lstTimeLeavingWorks = timeLeavingOfDailyData.getTimeLeavingWorks().stream()
+				.filter(x -> x.getWorkNo().v() == data.getFrameNo()).collect(Collectors.toList());
+		if(lstTimeLeavingWorks.isEmpty()) {
+			return;
+		}
+		TimeLeavingWork timeLeavingWork = lstTimeLeavingWorks.get(0);
+		Optional<TimeActualStamp> optTimeAttendanceStart = timeLeavingWork.getAttendanceStamp();
+		Optional<TimeActualStamp> optTimeAttendanceEnd = timeLeavingWork.getLeaveStamp();
+		if(data.isStart() && optTimeAttendanceStart.isPresent()) {
+			TimeActualStamp timeAttendanceStart= optTimeAttendanceStart.get();
+			Optional<WorkStamp> optStamp = timeAttendanceStart.getStamp();
+			if(optStamp.isPresent()) {
+				WorkStamp stamp = optStamp.get();
+				WorkStamp stampTmp = new WorkStamp(stamp.getAfterRoundingTime(),
+						new TimeWithDayAttr(data.getStartTime()),
+						stamp.getLocationCode().isPresent() ? stamp.getLocationCode().get() : null,
+						stamp.getStampSourceInfo());
+				TimeActualStamp timeActualStam = new TimeActualStamp(timeAttendanceStart.getActualStamp().isPresent() ? timeAttendanceStart.getActualStamp().get() : null,
+						stampTmp,
+						timeAttendanceStart.getNumberOfReflectionStamp());
+				optTimeAttendanceStart = Optional.of(timeActualStam);
+			}
+		}
+		if(data.isEnd() && optTimeAttendanceEnd.isPresent()) {			
+			TimeActualStamp timeAttendanceEnd = optTimeAttendanceEnd.get();
+			Optional<WorkStamp> optStamp = timeAttendanceEnd.getStamp();
+			if(optStamp.isPresent()) {				
+				WorkStamp stamp = optStamp.get();
+				WorkStamp stampTmp = new WorkStamp(stamp.getAfterRoundingTime(),
+						new TimeWithDayAttr(data.getEndTime()),
+						stamp.getLocationCode().isPresent() ? stamp.getLocationCode().get() : null,
+						stamp.getStampSourceInfo());
+				TimeActualStamp timeActualStam = new TimeActualStamp(timeAttendanceEnd.getActualStamp().isPresent() ? timeAttendanceEnd.getActualStamp().get() : null,
+						stampTmp,
+						timeAttendanceEnd.getNumberOfReflectionStamp());
+				optTimeAttendanceEnd = Optional.of(timeActualStam);
+			}
+		}
+		TimeLeavingWork timeLeavingWorkTmp = new TimeLeavingWork(timeLeavingWork.getWorkNo(),
+				optTimeAttendanceStart.get(),
+				optTimeAttendanceEnd.get());
+		timeLeavingOfDailyData.getTimeLeavingWorks().remove(timeLeavingWork);
+		timeLeavingOfDailyData.getTimeLeavingWorks().add(timeLeavingWorkTmp);
+		timeLeavingOfDaily.updateFlush(timeLeavingOfDailyData);
+		//開始時刻の編集状態を更新する
+		//予定項目ID=出勤の項目ID	
+		List<Integer> lstItem = new ArrayList<Integer>();
+		if(data.isStart()) {
+			if(data.getFrameNo() == 1) {
+				lstItem.add(31);
+			} else {
+				lstItem.add(41);
+			}
+		}
+		if(data.isEnd()) {
+			if(data.getFrameNo() == 1) {
+				lstItem.add(34);
+			} else {
+				lstItem.add(44);
+			}
+		}
+		this.updateEditStateOfDailyPerformance(data.getEmployeeId(), data.getDateData(), lstItem);
+		
+	}
 
 }

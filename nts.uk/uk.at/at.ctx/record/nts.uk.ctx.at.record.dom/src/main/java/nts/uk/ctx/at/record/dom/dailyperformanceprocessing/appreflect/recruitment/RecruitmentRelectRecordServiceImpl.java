@@ -94,7 +94,7 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 			//開始時刻の反映
 			////終了時刻の反映
 			TimeReflectPara startTimeData = new TimeReflectPara(param.getEmployeeId(), param.getBaseDate(), justLateEarly.getStart1(), justLateEarly.getEnd1(), 1, isStartTime, isEndTime);
-			workUpdate.updateRecordStartEndTimeReflect(startTimeData);			
+			workUpdate.updateRecordStartEndTimeReflectRecruitment(startTimeData, daily.getAttendanceLeave().get());			
 		}		
 		//休出時間振替時間をクリアする
 		this.clearRecruitmenFrameTime(param.getEmployeeId(), param.getBaseDate(), daily);
@@ -178,7 +178,7 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 		WorkStamp actualStamp = optActualStamp.get();
 		//取得した出勤時刻に値がない　OR
 		//取得した打刻元情報が「打刻自動セット(個人情報)、直行直帰申請」
-		if(actualStamp.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION
+		if(actualStamp.getStampSourceInfo() == null ||  actualStamp.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT
 				|| actualStamp.getStampSourceInfo() == StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO) {
 			return true;
 		}

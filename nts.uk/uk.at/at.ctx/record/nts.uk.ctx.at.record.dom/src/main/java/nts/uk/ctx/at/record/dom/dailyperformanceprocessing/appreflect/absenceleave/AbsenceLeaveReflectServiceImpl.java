@@ -262,7 +262,7 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 		WorkStamp actualStamp = optActualStamp.get();
 		//取得した出勤時刻に値がない　OR
 		//取得した打刻元情報が「打刻自動セット(個人情報)、直行直帰申請」
-		if(actualStamp.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION
+		if(actualStamp.getStampSourceInfo() == null ||  actualStamp.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT
 				|| actualStamp.getStampSourceInfo() == StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO) {
 			return true;
 		}
