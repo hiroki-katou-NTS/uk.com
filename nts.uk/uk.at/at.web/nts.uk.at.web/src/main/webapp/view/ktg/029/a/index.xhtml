@@ -309,7 +309,7 @@
 					<!-- A22 -->
 					<tr data-bind="visible: displayPublicHDNo">
 						<td>#{i18n.getText('KTG029_28')}</td>
-						<td>0#{i18n.getText('KTG029_60')}</td>
+						<td data-bind="with:dataRecord()"><span data-bind="text: publicHDNo"></span>#{i18n.getText('KTG029_60')}</td>
 					</tr>
 					<!-- A23 -->
 					<tr data-bind="visible: displayHDRemainNo">
@@ -332,7 +332,7 @@
 						<td>
 							<table class="detail">
 								<tr>
-									<td>00:00</td>
+									<td data-bind="with:dataRecord()"><span data-bind="text: extraRest"></span></td>
 									<td class="go-button">
 										<button>
 											<i data-bind="click: openKDL017Dialog, ntsIcon: { no: 144 }"></i>

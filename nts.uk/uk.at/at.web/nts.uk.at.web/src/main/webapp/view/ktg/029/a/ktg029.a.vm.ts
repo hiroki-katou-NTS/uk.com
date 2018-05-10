@@ -338,9 +338,11 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         reservedYearsRemainNo: number;
         remainAlternationNo: TimeOTDto;
         remainsLeft: number;
+        publicHDNo: number;
         hdremainNo: number;
         careLeaveNo: number;
-        sphdramainNo: number;   
+        sphdramainNo: number;
+        extraRest: TimeOTDto;  
     }
     export class YearlyHolidayInfo {
         day: number;
@@ -395,9 +397,11 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         reservedYearsRemainNo: number;
         remainAlternationNo: string;
         remainsLeft: number;
+        publicHDNo: number;
         hDRemainNo: number;
         careLeaveNo: number;
         sPHDRamainNo: number;
+        extraRest: string;
         constructor (data: OptionalWidget){
             this.overTime = data.overTime;
             this.holidayInstruction = data.holidayInstruction;
@@ -416,11 +420,13 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             this.earlyRetreat = data.earlyRetreat;
             this.yearlyHoliday = new YearlyHoliday(data.yearlyHoliday);
             this.reservedYearsRemainNo = data.reservedYearsRemainNo;
-            this.remainAlternationNo = (data.remainAlternationNo.hours<10?('0'+data.remainAlternationNo.hours):data.remainAlternationNo.hours)+':'+(data.remainAlternationNo.min<10?('0'+data.remainAlternationNo.min):data.remainAlternationNo.min);;
+            this.remainAlternationNo = (data.remainAlternationNo.hours<10?('0'+data.remainAlternationNo.hours):data.remainAlternationNo.hours)+':'+(data.remainAlternationNo.min<10?('0'+data.remainAlternationNo.min):data.remainAlternationNo.min);
             this.remainsLeft = data.remainsLeft;
+            this.publicHDNo = data.publicHDNo;
             this.hDRemainNo = data.hdremainNo;
             this.careLeaveNo = data.careLeaveNo;
             this.sPHDRamainNo = data.sphdramainNo;
+            this.extraRest = (data.extraRest.hours<10?('0'+data.extraRest.hours):data.extraRest.hours)+':'+(data.extraRest.min<10?('0'+data.extraRest.min):data.extraRest.min);
         }
     }
     

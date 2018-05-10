@@ -65,6 +65,9 @@ public class OptionalWidgetInfoDto {
 	/** 19 RemainsLeft 振休残数 */
 	private int remainsLeft = 0;
 	
+	/** Public Holiday Number 公休残数 */
+	private int publicHDNo = 0;
+	
 	/** 21 Holiday Remain Number 子の看護休暇残数 */
 	private int hDRemainNo = 0;
 	
@@ -73,5 +76,8 @@ public class OptionalWidgetInfoDto {
 	
 	/** 23 Special Holiday Remain Number 特休残数 */
 	private int sPHDRamainNo = 0;
+	
+	/** ６０Ｈ超休残数 */
+	private TimeOT extraRest = new TimeOT(0, 0);
 
 }
