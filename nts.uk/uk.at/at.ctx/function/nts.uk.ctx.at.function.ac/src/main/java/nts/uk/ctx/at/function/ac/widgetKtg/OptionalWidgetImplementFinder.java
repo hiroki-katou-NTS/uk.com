@@ -54,7 +54,6 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 				optionalWidgetExport.get().getTopPagePartID(), optionalWidgetExport.get().getTopPageCode(),
 				optionalWidgetExport.get().getTopPageName(), optionalWidgetExport.get().getWidth(),
 				optionalWidgetExport.get().getHeight(), widgetDisplayItemImport));
-		// TODO Auto-generated method stub
 		return optionalWidgetImport;
 	}
 
