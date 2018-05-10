@@ -109,7 +109,8 @@ public class PerInfoItemDefForLayoutFinder {
 
 				boolean isDataType6 = dataTypeValue == DataTypeValue.SELECTION;
 				List<ComboBoxObject> lstCombo = getCombo(selectionItemDto, combobox, employeeId, startDate,
-						itemDefinition.getIsRequired() == IsRequired.REQUIRED, category.getPersonEmployeeType(), isDataType6);
+						itemDefinition.getIsRequired() == IsRequired.REQUIRED, category.getPersonEmployeeType(),
+						isDataType6, category.getCategoryCode().v());
 				itemForLayout.setLstComboxBoxValue(lstCombo);
 
 			}
@@ -119,7 +120,7 @@ public class PerInfoItemDefForLayoutFinder {
 	
 	private List<ComboBoxObject> getCombo(SelectionItemDto selectionItemDto,
 			Map<String, Map<Boolean, List<ComboBoxObject>>> combobox, String empId, GeneralDate sDate,
-			boolean isRequired, PersonEmployeeType perEmplType, boolean isDataType6) {
+			boolean isRequired, PersonEmployeeType perEmplType, boolean isDataType6, String categoryCode) {
 		String referenceCode = null;
 		switch (selectionItemDto.getReferenceType()) {
 		case DESIGNATED_MASTER:
@@ -140,16 +141,18 @@ public class PerInfoItemDefForLayoutFinder {
 			if (mapComboInRefCode.containsKey(isRequired)) {
 				return mapComboInRefCode.get(isRequired);
 			} else {
-				List<ComboBoxObject> returnList = getLstComboBoxValue(selectionItemDto, empId, sDate, isRequired, perEmplType, isDataType6);
+				List<ComboBoxObject> returnList = getLstComboBoxValue(selectionItemDto, empId, sDate, isRequired,
+						perEmplType, isDataType6, categoryCode);
 				mapComboInRefCode.put(isRequired, returnList);
 				combobox.put(referenceCode, mapComboInRefCode);
 				return returnList;
 			}
 		} else {
-			List<ComboBoxObject> returnList = getLstComboBoxValue(selectionItemDto, empId, sDate, isRequired, perEmplType, isDataType6);
+			List<ComboBoxObject> returnList = getLstComboBoxValue(selectionItemDto, empId, sDate, isRequired,
+					perEmplType, isDataType6, categoryCode);
 			Map<Boolean, List<ComboBoxObject>> mapComboInRefCode = new HashMap<>();
 			mapComboInRefCode.put(isRequired, returnList);
-			combobox.put( referenceCode, mapComboInRefCode);
+			combobox.put(referenceCode, mapComboInRefCode);
 			return returnList;
 		}
 	}
@@ -175,7 +178,7 @@ public class PerInfoItemDefForLayoutFinder {
 	}
 
 	public List<ComboBoxObject> getLstComboBoxValue(SelectionItemDto selectionItemDto, String empId,
-			GeneralDate baseDate, boolean isRequired, PersonEmployeeType perEmplType, boolean isDataType6) {
+			GeneralDate baseDate, boolean isRequired, PersonEmployeeType perEmplType, boolean isDataType6, String categoryCode) {
 
 		GeneralDate standardDate = baseDate;
 		if (baseDate == null) {
@@ -184,6 +187,6 @@ public class PerInfoItemDefForLayoutFinder {
 			standardDate = affCompanyHist.getLstAffCompanyHistByEmployee().get(0).getLstAffCompanyHistoryItem().stream()
 					.collect(Collectors.toList()).get(0).start();
 		}
-		return comboBoxRetrieveFactory.getComboBox(selectionItemDto, empId, standardDate, isRequired, perEmplType, isDataType6);
+		return comboBoxRetrieveFactory.getComboBox(selectionItemDto, empId, standardDate, isRequired, perEmplType, isDataType6, categoryCode);
 	}
 }

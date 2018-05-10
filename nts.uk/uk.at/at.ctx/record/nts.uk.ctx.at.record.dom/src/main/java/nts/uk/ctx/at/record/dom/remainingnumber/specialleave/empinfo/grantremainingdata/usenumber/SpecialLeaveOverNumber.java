@@ -19,12 +19,12 @@ public class SpecialLeaveOverNumber {
 	// 時間
 	public Optional<TimeOver> timeOver;
 	
-	private SpecialLeaveOverNumber(int days, Integer minutes) {
+	private SpecialLeaveOverNumber(double days, Integer minutes) {
 		this.numberOverDays = new DayNumberOver(days);
 		this.timeOver = minutes != null ? Optional.of(new TimeOver(minutes)) : Optional.empty();
 	}
 
-	public static SpecialLeaveOverNumber createFromJavaType(int days, Integer minutes) {
+	public static SpecialLeaveOverNumber createFromJavaType(double days, Integer minutes) {
 		return new SpecialLeaveOverNumber(days, minutes);
 	}
 

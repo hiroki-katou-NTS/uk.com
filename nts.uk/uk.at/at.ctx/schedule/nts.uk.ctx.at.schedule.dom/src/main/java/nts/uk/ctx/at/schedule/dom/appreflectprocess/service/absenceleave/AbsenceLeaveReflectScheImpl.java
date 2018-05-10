@@ -109,7 +109,7 @@ public class AbsenceLeaveReflectScheImpl implements AbsenceLeaveReflectSche{
 		//反映できるフラグ=false、反映就業時間帯をクリア(初期化)
 		WorkTimeIsReflect dataOutput = new WorkTimeIsReflect(false, "000");
 		//INPUT．就業時間帯をチェックする
-		if(worktimeCode.isEmpty()) {
+		if(worktimeCode == null) {
 			//ドメインモデル「勤務予定基本情報」を取得する
 			Optional<BasicSchedule> optBasicSche = basicScheRepo.find(employeeId, baseDate);
 			//ドメインモデル「勤務予定基本情報」．就業時間帯をチェックする
@@ -158,7 +158,7 @@ public class AbsenceLeaveReflectScheImpl implements AbsenceLeaveReflectSche{
 		List<TimezoneUse> lstTimezone = timeZoneSetting.getLstTimezone().stream()
 				.filter(x -> x.getWorkNo() == 1)
 				.collect(Collectors.toList());
-		if(!lstTimezone.isEmpty()) {
+		if(lstTimezone.isEmpty()) {
 			return outData;
 		}
 		outData.setChkReflect(true);

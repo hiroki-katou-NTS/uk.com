@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.infra.repository.application.common;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -204,4 +203,31 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 				.setParameter("companyID", companyID)
 				.getList(x -> x.toDomain());
 	}
+	/**
+	 * RequestList 232 param 反映状態   ＝  「反映済み」または「反映待ち」 
+	 * RequestList 233 param 反映状態   ＝  「未承認」または「差戻し」
+	 * RequestList 234 param 反映状態   ＝  「否認」
+	 * RequestList 235 param 反映状態   ＝  「差戻し」
+	 */
+	private final String SELECT_LIST_REFSTATUS = "SELECT a FROM KrqdtApplication_New a"
+			+ " WHERE a.employeeID = :employeeID "
+			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate"
+			+ " AND a.stateReflectionReal IN :listReflecInfor"	
+			+ " ORDER BY a.appDate ASC,"
+			+ " a.prePostAtr DESC";
+	
+	@Override
+	public List<Application_New> getByListRefStatus(String employeeID, GeneralDate startDate, GeneralDate endDate, List<Integer> listReflecInfor) {
+		// TODO Auto-generated method stub
+		if(listReflecInfor.size()==0) {
+			return Collections.emptyList();
+		}
+		return this.queryProxy().query(SELECT_LIST_REFSTATUS, KrqdtApplication_New.class)
+			.setParameter("employeeID", employeeID)
+			.setParameter("startDate", startDate)
+			.setParameter("endDate", endDate)
+			.setParameter("listReflecInfor", listReflecInfor)
+			.getList(x -> x.toDomain());
+	}
+	
 }

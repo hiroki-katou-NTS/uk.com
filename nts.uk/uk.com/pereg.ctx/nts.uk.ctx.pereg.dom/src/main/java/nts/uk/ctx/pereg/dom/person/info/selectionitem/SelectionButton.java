@@ -14,6 +14,16 @@ public class SelectionButton extends DataTypeState {
 		this.dataTypeValue = DataTypeValue.SELECTION_BUTTON;
 
 	}
+	
+	@Override
+	public ReferenceTypes getReferenceTypes() {
+		return referenceTypeState.getReferenceType();
+	}
+	
+	@Override
+	public String getReferenceCode() {
+		return this.referenceTypeState.getReferenceCode();
+	}
 
 	public static SelectionButton createFromJavaType(ReferenceTypeState referenceTypeState) {
 		return new SelectionButton(referenceTypeState);

@@ -19,3 +19,9 @@
 .ui-iggrid-header{
 	white-space: unset !important;
 }
+
+.ui-iggrid-header.ui-widget-header{
+	word-wrap: break-word;
+	white-space: pre-wrap;
+	word-break: normal;
+}

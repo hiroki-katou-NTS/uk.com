@@ -23,7 +23,10 @@ import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemTypeState;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.info.setitem.SetItem;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeState;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.SingleItem;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepository;
@@ -105,11 +108,22 @@ public class ItemDefFinder {
 		return lstItemDef;
 	}
 	
-	private ItemValue getItemValueFromDomain(PersonInfoItemDefinition item) {		
+	private ItemValue getItemValueFromDomain(PersonInfoItemDefinition item) {
 		SingleItem single = (SingleItem) item.getItemTypeState();
-		int valueType = single.getDataTypeState().getDataTypeValue().value;
-		return new ItemValue(item.getPerInfoItemDefId(), item.getItemCode().v(), null,
-				valueType);
+		DataTypeState dataTypeState = single.getDataTypeState();
+		DataTypeValue dataType = single.getDataTypeState().getDataTypeValue();
+		switch (dataType) {
+		case SELECTION:
+		case SELECTION_BUTTON:
+		case SELECTION_RADIO:
+			ReferenceTypes referenceType = dataTypeState.getReferenceTypes();
+			String referenceCode = dataTypeState.getReferenceCode();
+			return ItemValue.createItemValue(item.getPerInfoItemDefId(), item.getItemCode().v(), null, dataType.value,
+					referenceType.value, referenceCode);
+		default:
+			return ItemValue.createItemValue(item.getPerInfoItemDefId(), item.getItemCode().v(), null, dataType.value,
+					null, null);
+		}
 	}
 	
 	private List<ItemValue> getListItemChildren(PersonInfoItemDefinition parentItem){

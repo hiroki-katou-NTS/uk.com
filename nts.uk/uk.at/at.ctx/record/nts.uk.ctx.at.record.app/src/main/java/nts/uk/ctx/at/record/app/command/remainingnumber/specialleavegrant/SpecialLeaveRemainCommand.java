@@ -20,11 +20,11 @@ public class SpecialLeaveRemainCommand {
 	private String deadlineDate;
 	private int expStatus;
 	private int registerType;
-	private int numberDayGrant;
+	private double numberDayGrant;
 	private int timeGrant;
 	private double numberDayUse;
 	private int timeUse;
-	private int numberDaysOver;
+	private double numberDaysOver;
 	private int timeOver;
 	private double numberDayRemain;
 	private int timeRemain;
