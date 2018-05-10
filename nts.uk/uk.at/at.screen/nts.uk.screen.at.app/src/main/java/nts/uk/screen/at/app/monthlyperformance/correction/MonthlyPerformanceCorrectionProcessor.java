@@ -20,6 +20,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.record.app.find.monthly.root.dto.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.FormatPerformanceDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.IdentityProcessDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.IdentityProcessFinder;
@@ -29,15 +30,20 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformanceRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFun;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFunRepository;
+import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyDto;
+import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyFinder;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
+import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPCellDataDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPCellStateDto;
@@ -87,14 +93,19 @@ public class MonthlyPerformanceCorrectionProcessor {
 	 */
 	@Inject 
 	private MonthlyPerformanceCheck monthlyCheck;
+	
 	@Inject
 	private MonthlyPerformanceScreenRepo repo;
 	
 	@Inject
-	private MonthlyModifyQueryProcessor monthlyModifyQueryProcessor;
+	private MonthlyModifyQueryProcessor monthlyModifyQueryProcessor;	
+
+	@Inject
+	private DailyPerformanceScreenRepo dailyPerformanceScreenRepo;
+	
 	/** 月次の勤怠項目の制御 */
-//	@Inject
-//	ControlOfMonthlyFinder controlOfMonthlyFinder;
+	@Inject
+	private ControlOfMonthlyFinder controlOfMonthlyFinder;
 	private static final String STATE_DISABLE = "ntsgrid-disable";
 	private static final String HAND_CORRECTION_MYSELF = "ntsgrid-manual-edit-target";
 	private static final String HAND_CORRECTION_OTHER = "ntsgrid-manual-edit-other";
@@ -179,16 +190,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 			//画面項目の非活制御をする
 			//アルゴリズム「実績の時系列をチェックする」を実行する (Check actual time)
 			screenDto.setActualTimeState(monthlyCheck.checkActualTime(closureId, yearMonth, screenDto.getSelectedActualTime()).value);
-			
-			//TODO Dummy data
+
 			//author
-			List<MonthlyPerformanceAuthorityDto> listAuthor = new ArrayList<>();
-			listAuthor.add(new MonthlyPerformanceAuthorityDto(rollId, BigDecimal.valueOf(32), true));
-			listAuthor.add(new MonthlyPerformanceAuthorityDto(rollId, BigDecimal.valueOf(33), true));
-			listAuthor.add(new MonthlyPerformanceAuthorityDto(rollId, BigDecimal.valueOf(34), true));
-			listAuthor.add(new MonthlyPerformanceAuthorityDto(rollId, BigDecimal.valueOf(12), true));
-			listAuthor.add(new MonthlyPerformanceAuthorityDto(rollId, BigDecimal.valueOf(11), true));
-			screenDto.setAuthorityDto(listAuthor);
+			screenDto.setAuthorityDto(getAuthority(screenDto));
 		}
 		//「月別実績の承認」からの場合
 		else{
@@ -196,6 +200,18 @@ public class MonthlyPerformanceCorrectionProcessor {
 		}
 		return screenDto;
 	}
+	
+	private List<MonthlyPerformanceAuthorityDto> getAuthority(MonthlyPerformanceCorrectionDto screenDto) {
+		String roleId = AppContexts.user().roles().forAttendance();
+		if (roleId != null) {
+			List<MonthlyPerformanceAuthorityDto> dailyPerformans = dailyPerformanceScreenRepo.findAuthority(roleId, new BigDecimal(1));
+			if (!dailyPerformans.isEmpty()) {
+				return dailyPerformans;
+			}
+		}
+		throw new BusinessException("Msg_914");
+	}
+
 	
 	/**
 	 * アルゴリズム「ログイン社員の締めを取得する」を実行する
@@ -265,7 +281,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 		if (closureHis.isPresent()) {
 			// 締め名称 → 画面項目「A4_2：対象締め日」
 			screenDto.setClosureName(closureHis.get().getClosureName().v());
-			//screenDto.setClosureDate(ClosureDateDto.from(closureHis.get().getClosureDate()));
+			screenDto.setClosureDate(ClosureDateDto.from(closureHis.get().getClosureDate()));
 		}
 		// アルゴリズム「実績期間の取得」を実行する 
 		List<ActualTime> actualTimes = closure.get().getPeriodByYearMonth(YearMonth.of(processYM)).stream()
@@ -314,8 +330,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 			PAttendanceItem item = param.getLstAtdItemUnique().get(key);
 			//ドメインモデル「月次の勤怠項目の制御」を取得する
 			//Setting Header color & time input
-//			ControlOfMonthlyDto ctrOfMonthlyDto = controlOfMonthlyFinder.getControlOfAttendanceItem(item.getId());	
-//			lstHeader.add(MPHeaderDto.createSimpleHeader(item, ctrOfMonthlyDto));
+			ControlOfMonthlyDto ctrOfMonthlyDto = controlOfMonthlyFinder.getControlOfAttendanceItem(item.getId());	
+			lstHeader.add(MPHeaderDto.createSimpleHeader(item, ctrOfMonthlyDto));
 		}
 		displayItem.setLstHeader(lstHeader);
 		//Fixed header
@@ -328,7 +344,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 		List<MonthlyModifyResult> results = new ArrayList<>();
 		List<String> listEmployeeIds = screenDto.getLstEmployee().stream().map(e -> e.getId()).collect(Collectors.toList());
 		List<Integer> attdanceIds = screenDto.getParam().getLstAtdItemUnique().keySet().stream().collect(Collectors.toList());
-		//results = new GetDataMonthly(listEmployeeIds, new YearMonth(yearMonth), ClosureId.valueOf(closureId), screenDto.getClosureDate().toDomain(), attdanceIds, monthlyModifyQueryProcessor).call();
+		results = new GetDataMonthly(listEmployeeIds, new YearMonth(yearMonth), ClosureId.valueOf(closureId), screenDto.getClosureDate().toDomain(), attdanceIds, monthlyModifyQueryProcessor).call();
 		Map<String, MonthlyModifyResult> employeeDataMap = results.stream().collect(Collectors
 				.toMap(x -> x.getEmployeeId(), Function.identity(), (x, y) -> x));
 		
