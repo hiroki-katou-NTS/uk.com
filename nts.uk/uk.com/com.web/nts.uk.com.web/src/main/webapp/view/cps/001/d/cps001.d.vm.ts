@@ -64,6 +64,7 @@ module cps001.d.vm {
                         return;
                     }
                     self.isInit = false;
+                    $('.upload-btn').focus();
                     unblock();
                 });
 
@@ -77,6 +78,7 @@ module cps001.d.vm {
                         self.enaBtnSave(false);
                         $(".upload-btn").attr('disabled', 'disabled');
                         $('input[type=checkbox]').prop('disabled', true);
+                        $('.upload-btn').focus();
                     }
                 }
             });
@@ -161,9 +163,14 @@ module cps001.d.vm {
         getImage() {
             let self = this;
             let id = self.empFileMn().fileId;
+            let sid = self.empFileMn().employeeId; 
             try {
                  $("#test").ntsImageEditor("selectByFileId", {fileId: id, actionOnClose: function(){
-                     close();   
+                    unblock();
+                    self.isChange(true);
+                    $(".checkbox-holder").hide();
+                    $('.upload-btn').focus();
+                     
                 }});
             } catch (Error) {
                 self.isChange(true);

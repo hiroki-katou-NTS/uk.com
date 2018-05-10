@@ -45,12 +45,12 @@ public class AddCareLeaveCommandHandler extends CommandHandlerWithResult<AddCare
 		dataRepo.add(childCareData, cId);
 		dataRepo.add(careData, cId);
 		
-		NursingCareLeaveRemainingInfo childCareInfo = NursingCareLeaveRemainingInfo.createChildCareLeaveInfo(data.getSId(), data.getChildCareUseArt().intValue(), 
+		NursingCareLeaveRemainingInfo childCareInfo = NursingCareLeaveRemainingInfo.createChildCareLeaveInfo(data.getSId(), data.getChildCareUseArt()== null? 0: data.getChildCareUseArt().intValue(), 
 				data.getChildCareUpLimSet()  == null? UpperLimitSetting.FAMILY_INFO.value: data.getChildCareUpLimSet().intValue(), 
 				data.getChildCareThisFiscal() == null? null: data.getChildCareThisFiscal().doubleValue(), 
 				data.getChildCareNextFiscal() == null? null: data.getChildCareNextFiscal().doubleValue());
 		
-		NursingCareLeaveRemainingInfo careInfo= NursingCareLeaveRemainingInfo.createCareLeaveInfo(data.getSId(), data.getCareUseArt().intValue(), 
+		NursingCareLeaveRemainingInfo careInfo= NursingCareLeaveRemainingInfo.createCareLeaveInfo(data.getSId(), data.getCareUseArt()== null? 0: data.getCareUseArt().intValue(), 
 				data.getCareUpLimSet() == null?  UpperLimitSetting.FAMILY_INFO.value: data.getCareUpLimSet().intValue(), 
 				data.getCareThisFiscal() == null? null: data.getCareThisFiscal().doubleValue(), 
 				data.getCareNextFiscal() == null? null:  data.getCareNextFiscal().doubleValue());

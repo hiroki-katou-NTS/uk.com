@@ -160,6 +160,11 @@ module nts.uk.com.view.cps001.g.vm {
                 self.setItemDefValue(self.itemDefs);
             } else {
                 service.getItemDef().done((data) => {
+                    if (!data[6].display && !data[9].display && !data[12].display) {
+                        var currentDialog = nts.uk.ui.windows.getSelf();
+                        currentDialog.setWidth(595);
+                    }
+
                     self.itemDefs = data;
                     self.setItemDefValue(data).done(() => {
                         self.setGridList();

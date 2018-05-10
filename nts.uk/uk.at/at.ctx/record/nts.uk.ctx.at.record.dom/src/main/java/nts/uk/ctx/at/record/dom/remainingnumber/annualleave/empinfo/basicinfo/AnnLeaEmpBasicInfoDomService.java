@@ -64,11 +64,12 @@ public class AnnLeaEmpBasicInfoDomService{
 		return annLeaveRemainNumber.getDays() + "日と　" + remainingHours + ":" + convertWithMinutes(remainingMinutes);
 	}
 	
-	public String calculateLastGrantDate(List<AnnualLeaveGrantRemainingData> listData) {
-		if (listData.isEmpty()) {
-			return not_grant; 
+	public String calculateLastGrantDate(String employeeId) {
+		Optional<AnnualLeaveGrantRemainingData> lastDataOpt = annLeaDataRepo.getLast(employeeId);
+		if (!lastDataOpt.isPresent()) {
+			return not_grant;
 		} else {
-			return listData.get(0).getGrantDate().toString();
+			return lastDataOpt.get().getGrantDate().toString();
 		}
 	}
 	

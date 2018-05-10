@@ -139,8 +139,10 @@ module cps001.f.vm {
         }
 
         restart() {
+            let self = this;
             __viewContext['viewModel'].start().done(() => {
                 init();
+                self.filename("");
                 $('.browser-button').focus();
             });
         }

@@ -134,6 +134,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			boolean isEffective, String... companyId) {
 		List<PersonInfoItemDefinition> lstItem = itemRepo.getItemDefByCtgCdAndComId(ctgId, companyId[0]);
 		List<PersonInfoItemDefinition> lstReturn = new ArrayList<>();
+
 		if (isEffective) {
 			/**
 			 * 【更新内容】 廃止区分 ＝ 廃止しない 項目名称 ＝
@@ -141,7 +142,6 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			for (PersonInfoItemDefinition x : lstItem) {
 				Optional<String> newItemName = getNewItemName(x.getItemCode().v(), spHDName);
 				if (newItemName.isPresent()) {
-					// x.setIsAbolition(EnumAdaptor.valueOf(0, IsAbolition.class));
 					x.setItemName(newItemName.get());
 					lstReturn.add(x);
 				}
@@ -155,10 +155,12 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			 */
 			for (PersonInfoItemDefinition x : lstItem) {
 				String itemCode = x.getItemCode().v();
-				if (mapItemNameInZeroCom.containsKey(itemCode)) {
-					// x.setIsAbolition(EnumAdaptor.valueOf(1, IsAbolition.class));
-					x.setItemName(mapItemNameInZeroCom.get(itemCode));
-					lstReturn.add(x);
+				Optional<String> newItemName = getNewItemName(itemCode, spHDName);
+				if (newItemName.isPresent()) {
+					if (mapItemNameInZeroCom.containsKey(itemCode)) {
+						x.setItemName(mapItemNameInZeroCom.get(itemCode));
+						lstReturn.add(x);
+					}
 				}
 			}
 		}

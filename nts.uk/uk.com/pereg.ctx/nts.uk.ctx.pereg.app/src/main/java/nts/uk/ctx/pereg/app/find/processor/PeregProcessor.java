@@ -26,7 +26,6 @@ import nts.uk.ctx.pereg.app.find.person.category.PerInfoCategoryFinder;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutFinder;
-import nts.uk.ctx.pereg.app.find.person.info.item.SingleItemDto;
 import nts.uk.ctx.pereg.dom.person.ParamForGetPerItem;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
@@ -38,10 +37,8 @@ import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
-import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
-import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutItemType;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepository;
@@ -295,32 +292,16 @@ public class PeregProcessor {
 			layoutPerInfoClsDto.setLayoutItemType(LayoutItemType.ITEM);
 			layoutPerInfoClsDto.setClassName(item.getItemName());
 			layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
-			layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, getValue(item)));
+			layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item));
 			if (item.getItemTypeState().getItemType() != 2) {
 				item.getLstChildItemDef().forEach(childItem -> {
 					layoutPerInfoClsDto.setDispOrder(childItem.getDispOrder());
 					layoutPerInfoClsDto.getItems()
-							.add(LayoutPersonInfoValueDto.initData(childItem, getValue(childItem)));
+							.add(LayoutPersonInfoValueDto.initData(childItem));
 				});
 			}
 			return layoutPerInfoClsDto;
 		}).collect(Collectors.toList());
-	}
-	
-	public Object getValue(PerInfoItemDefForLayoutDto item) {
-		Object value = null;
-		if(item.getItemTypeState().getItemType() == ItemType.SINGLE_ITEM.value) {
-			SingleItemDto singleItem = (SingleItemDto) item.getItemTypeState();
-			if(singleItem.getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION.value) {
-				if(item.getLstComboxBoxValue().size() > 0) {
-					String valueText = item.getLstComboxBoxValue().get(0).getOptionValue();
-					if(!valueText.equals("")) {
-						value = valueText;
-					};
-				}
-			}
-		}
-		return value;
 	}
 	
 	private void setOptionData(PersonInfoCategory perInfoCtg, List<LayoutPersonInfoClsDto> classItemList,

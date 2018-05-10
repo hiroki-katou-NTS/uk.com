@@ -168,9 +168,18 @@ public class AddEmployeeCommandFacade {
 	private ItemValue convertSettingItemToItemValue(SettingItemDto settingItem) {
 		String value = settingItem.getSaveData().getValue() == null ? ""
 				: settingItem.getSaveData().getValue().toString();
-		return ItemValue.createItemValue(settingItem.getItemDefId(), settingItem.getItemCode(), value,
-				settingItem.getDataType().value, settingItem.getSelectionItemRefType().value,
-				settingItem.getSelectionItemRefCd());
+		switch (settingItem.getDataType()) {
+		case SELECTION:
+		case SELECTION_BUTTON:
+		case SELECTION_RADIO:
+			return ItemValue.createItemValue(settingItem.getItemDefId(), settingItem.getItemCode(), value,
+					settingItem.getDataType().value, settingItem.getSelectionItemRefType().value,
+					settingItem.getSelectionItemRefCd());
+		default:
+			return ItemValue.createItemValue(settingItem.getItemDefId(), settingItem.getItemCode(), value,
+					settingItem.getDataType().value, null, null);
+		}
+
 	}
 
 }

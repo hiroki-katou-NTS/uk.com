@@ -33,6 +33,19 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 				.setParameter("employeeId", employeeId).getList();
 		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
 	}
+	
+
+	@Override
+	public Optional<AnnualLeaveGrantRemainingData> getLast(String employeeId) {
+		List<KRcmtAnnLeaRemain> entities = this.queryProxy().query(QUERY_WITH_EMP_ID, KRcmtAnnLeaRemain.class)
+				.setParameter("employeeId", employeeId).getList();
+		
+		if (entities.isEmpty()) {
+			return Optional.empty();
+		}
+		
+		return Optional.of(toDomain(entities.get(0)));
+	}
 
 	@Override
 	public List<AnnualLeaveGrantRemainingData> findNotExp(String employeeId) {
@@ -111,7 +124,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 
 		if (data.getAnnualLeaveConditionInfo().isPresent()) {
 			AnnualLeaveConditionInfo conditionInfo = data.getAnnualLeaveConditionInfo().get();
-			entity.perscribedDays = conditionInfo.getDeductedDays().v();
+			entity.perscribedDays = conditionInfo.getPrescribedDays().v();
 			entity.deductedDays = conditionInfo.getDeductedDays().v();
 			entity.workingDays = conditionInfo.getWorkingDays().v();
 		} else {

@@ -29,8 +29,8 @@ module nts.layout {
         initCheckError: (items: Array<any>) => {
             // validate button, radio button
             _(items)
-                .filter(x => _.has(x, "items") && _.isFunction(x.items))
-                .map(x => x.items())
+                .filter(x => _.has(x, "items") && !!x.items)
+                .map(x => x.items)
                 .flatten()
                 .flatten()
                 .filter((x: IItemData) => x.required && x.type != ITEM_TYPE.SET)
@@ -49,8 +49,8 @@ module nts.layout {
         },
         checkError: (items: Array<any>) => {
             _(items)
-                .filter(x => _.has(x, "items") && _.isFunction(x.items))
-                .map(x => x.items())
+                .filter(x => _.has(x, "items") && !!x.items)
+                .map(x => x.items)
                 .flatten()
                 .flatten()
                 .filter((x: any) => x.type != ITEM_TYPE.SET)
@@ -60,14 +60,12 @@ module nts.layout {
                         element = document.getElementById(id),
                         $element = $(element);
 
-                    if (element) {
+                    if (element && !!x.editable) {
                         if (element.tagName.toUpperCase() == "INPUT") {
-                            if (!$element.is(':disabled')) {
-                                $element
-                                    .trigger('blur')
-                                    .trigger('change');
-                            }
-                        } else if ((element.tagName.toUpperCase() == "BUTTON" || $element.hasClass('radio-wrapper')) && !$element.is(':disabled')) {
+                            $element
+                                .trigger('blur')
+                                .trigger('change');
+                        } else if ((element.tagName.toUpperCase() == "BUTTON" || $element.hasClass('radio-wrapper'))) {
                             if (nou(x.value) && x.required) {
                                 if (!getError($element).length) {
                                     $element.ntsError('set', {
@@ -80,7 +78,7 @@ module nts.layout {
                         else {
                             $element
                                 .trigger('validate')
-                                .find('.nts-input:not(:disabled)')
+                                .find('.nts-input')
                                 .trigger('blur')
                                 .trigger('change');
                         }
@@ -100,7 +98,7 @@ module nts.layout {
 
         find = (categoryCode: string, subscribeCode: string): IFindData => {
             let self = this,
-                controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && _.isFunction(x.items)).map(x => x.items()).flatten().flatten().value(),
+                controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && !!x.items).map(x => x.items).flatten().flatten().value(),
                 subscribe: any = _.find(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && x.itemCode == subscribeCode);
 
             if (subscribe) {
@@ -120,7 +118,7 @@ module nts.layout {
             }
 
             let self = this,
-                controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && _.isFunction(x.items)).map(x => x.items()).flatten().flatten().value(),
+                controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && !!x.items).map(x => x.items).flatten().flatten().value(),
                 subscribes: Array<any> = _.filter(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && (subscribesCode || []).indexOf(x.itemCode) > -1);
 
             return subscribes.map(x => {
@@ -134,7 +132,7 @@ module nts.layout {
 
         findChilds = (categoryCode: string, parentCode: string): Array<IFindData> => {
             let self = this,
-                controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && _.isFunction(x.items)).map(x => x.items()).flatten().flatten().value(),
+                controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && !!x.items).map(x => x.items).flatten().flatten().value(),
                 subscribes: Array<any> = _.filter(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && x.itemParentCode == parentCode),
                 childset: Array<string> = _(subscribes).filter(x => [ITEM_TYPE.SET, ITEM_TYPE.SET_TABLE].indexOf(x.type) > -1).map(x => x.itemCode).value();
 
@@ -190,7 +188,7 @@ module nts.layout {
                 self.time_range();
 
                 validate.initCheckError(lstCls);
-            }, 500);
+            }, 50);
         }
 
         textBox = () => {
@@ -207,7 +205,7 @@ module nts.layout {
                             lindex: number = value.lastIndexOf('　'),
                             dom = $(item.id);
 
-                        if (index > 0 && lindex < value.length - 1) {
+                        if (!value || (index > 0 && lindex < value.length - 1)) {
                             rmError(dom, "Msg_924");
                         } else if (!dom.is(':disabled') && !dom.ntsError('hasError')) {
                             dom.ntsError('set', {
@@ -284,13 +282,13 @@ module nts.layout {
 
             if (CS00035_IS00366) {
                 fetch.check_remain_days(empId).done(x => {
-                    CS00035_IS00366.data.editable(x);
+                    //CS00035_IS00366.data.editable(x);
                 });
             }
 
             if (CS00035_IS00368) {
                 fetch.check_remain_left(empId).done(x => {
-                    CS00035_IS00368.data.editable(x);
+                    //CS00035_IS00368.data.editable(x);
                 });
             }
         }
@@ -720,11 +718,7 @@ module nts.layout {
                 setData = (ctrl: IFindData, value?: any) => {
                     if (ctrl) {
                         ctrl.data.value(value);
-                        //ctrl.data.defValue = value;
                     }
-                },
-                setDataText = (ctrl: IFindData, value?: any) => {
-                    ctrl && ctrl.data.textValue(value || undefined);
                 },
                 setEditAble = (ctrl: IFindData, editable?: boolean) => {
                     ctrl && ctrl.data.editable(editable || false);
@@ -773,7 +767,7 @@ module nts.layout {
                                             dom2.parent().removeClass('error');
                                         }
                                     }
-                                }, 100);
+                                }, 50);
                             });
                         }
                     }
@@ -842,7 +836,6 @@ module nts.layout {
 
                             if (childData[0]) {
                                 setData(workType, childData[0].code);
-                                setDataText(workType, childData[0].name);
                             }
                         });
                     });
@@ -862,10 +855,8 @@ module nts.layout {
 
                             if (childData) {
                                 setData(workType, childData.selectedWorkTypeCode);
-                                setDataText(workType, childData.selectedWorkTypeName);
 
                                 setData(workTime, childData.selectedWorkTimeCode);
-                                setDataText(workTime, childData.selectedWorkTimeName);
 
                                 firstTimes && setData(firstTimes.start, childData.first && childData.first.start);
                                 firstTimes && setData(firstTimes.end, childData.first && childData.first.end);
@@ -1129,7 +1120,7 @@ module nts.layout {
                                     result.data.value(undefined);
                                 }
                             }
-                            else if (vnb1 || vnb2) {
+                            else if (ITEM_SINGLE_TYPE.NUMERIC == first.data.item.dataTypeValue) {
                                 result.data.value(Number(vnb1) - Number(vnb2));
                             } else {
                                 result.data.value(undefined);
@@ -1501,7 +1492,7 @@ module nts.layout {
                                             ctrl2.parent().removeClass('error');
                                         }
                                     }
-                                }, 100);
+                                }, 50);
                             });
                         }
                     });
