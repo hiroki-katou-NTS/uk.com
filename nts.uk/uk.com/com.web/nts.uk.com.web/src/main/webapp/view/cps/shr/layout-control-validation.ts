@@ -282,13 +282,13 @@ module nts.layout {
 
             if (CS00035_IS00366) {
                 fetch.check_remain_days(empId).done(x => {
-                    //CS00035_IS00366.data.editable(x);
+                    CS00035_IS00366.data.numberedit(x);
                 });
             }
 
             if (CS00035_IS00368) {
                 fetch.check_remain_left(empId).done(x => {
-                    //CS00035_IS00368.data.editable(x);
+                    CS00035_IS00368.data.numberedit(x);
                 });
             }
         }
@@ -1554,6 +1554,7 @@ module nts.layout {
         textValue: KnockoutObservable<any>;
         item: any;
         editable: KnockoutObservable<boolean>;
+        numberedit: KnockoutObservable<boolean>;
         readonly: KnockoutObservable<boolean>;
         categoryCode: string;
         itemCode: string;
