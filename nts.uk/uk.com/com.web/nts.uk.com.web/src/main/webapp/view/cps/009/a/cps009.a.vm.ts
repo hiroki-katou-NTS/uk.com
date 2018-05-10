@@ -853,9 +853,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.saveDataType = ko.observable(params.saveDataType || 0);
             self.stringValue = ko.observable(params.stringValue || null);
-            self.intValue = ko.observable(params.intValue || null);
-
-            self.dateWithDay = ko.observable(params.dateWithDay || 0);
+           
+            self.intValue = ko.observable(params.intValue);
+            self.dateWithDay = ko.observable(params.dateWithDay);
             self.timePoint = ko.observable(params.timePoint || "");
 
             self.timeItemMin = params.timeItemMin || undefined;
