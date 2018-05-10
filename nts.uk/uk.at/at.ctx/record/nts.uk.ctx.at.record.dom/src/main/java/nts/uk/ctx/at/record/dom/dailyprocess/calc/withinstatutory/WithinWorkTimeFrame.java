@@ -480,7 +480,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
    			if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().decisionLateDeductSetting(lateDeductTime, workTimezoneLateEarlySet.getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE).getGraceTimeSet())) {   
     		//遅刻時間帯の終了時刻を開始時刻にする
     			dupTimeSheet = new EmTimeZoneSet(duplicateTimeSheet.getWorkingHoursTimeNo(), 
-             									 new TimeZoneRounding(lateTimeSheet.getForDeducationTimeSheet().isPresent()?lateTimeSheet.getForDeducationTimeSheet().get().getTimeSheet().getEnd()
+             									 new TimeZoneRounding(lateTimeSheet.getForDeducationTimeSheet().isPresent()?lateTimeSheet.getForDeducationTimeSheet().get().getTimeSheet().getStart()
                                     																						:duplicateTimeSheet.getTimeSheet().getStart(),
                       							 duplicateTimeSheet.getTimeSheet().getEnd(),
                       							 duplicateTimeSheet.getTimeSheet().getRounding()));
@@ -503,7 +503,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
   	     		//早退時間帯の開始時刻を終了時刻にする
   	     		dupTimeSheet = new EmTimeZoneSet(new EmTimeFrameNo(workNo), 
   	              							 new TimeZoneRounding(dupTimeSheet.getTimezone().getStart(),
-  	                       										  LeaveEarlyTimeSheet.getForDeducationTimeSheet().isPresent()?LeaveEarlyTimeSheet.getForDeducationTimeSheet().get().getTimeSheet().getStart()
+  	                       										  LeaveEarlyTimeSheet.getForDeducationTimeSheet().isPresent()?LeaveEarlyTimeSheet.getForDeducationTimeSheet().get().getTimeSheet().getEnd()
   	                                     																				         :dupTimeSheet.getTimezone().getEnd(),
   	                       					 dupTimeSheet.getTimezone().getRounding()));
   	    		}

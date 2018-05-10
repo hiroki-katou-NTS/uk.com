@@ -72,8 +72,9 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject{
 	 * @return
 	 */
 	public boolean decisionLateDeductSetting(AttendanceTime deductTime, GraceTimeSetting graceTimeSetting) {
-		if(this.notDeductLateLeaveEarly==NotUseAtr.USE) {//早退設定を控除項目にするかをチェックする
-			if(deductTime.greaterThan(0) || !graceTimeSetting.isIncludeWorkingHour()) {
+//		if(this.notDeductLateLeaveEarly==NotUseAtr.USE) {//
+		if(!isDeductLateLeaveEarly()) {//遅刻早退をマイナスしない場合に処理に入る
+			if(deductTime.greaterThan(0) || !graceTimeSetting.isIncludeWorkingHour()) {//猶予時間の加算設定をチェック&&パラメータ「遅刻控除時間」の確認
 				return true;
 			}
 		}
@@ -85,7 +86,7 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject{
 	 * 2018/05/09　高須
 	 * caseがUSEの場合にわざとfalseにしています
 	 * 画面上で「遅刻早退をマイナスしない」のチェックボックスでチェックがある場合にここにUSEが来る為です
-	 * @return
+	 * @return 控除する場合はtrueが返る
 	 */
 	public boolean isDeductLateLeaveEarly() {
 		switch(this.notDeductLateLeaveEarly) {
