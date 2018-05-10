@@ -510,7 +510,7 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 				//計算フレックス時間
 				this.calcFlexTime = overTimeOfDaily.getFlexTime().getFlexTime().getCalcTime().valueAsMinutes();
 				//事前フレックス時間
-				this.preAppFlexTime = overTimeOfDaily.getFlexTime().getBeforeApplicationTime().valueAsMinutes();
+				this.preAppFlexTime = overTimeOfDaily.getFlexTime().getBeforeApplicationTime() == null ? 0 :overTimeOfDaily.getFlexTime().getBeforeApplicationTime().valueAsMinutes();
 				//フレックス乖離時間
 				this.divergenceFlexTime = overTimeOfDaily.getFlexTime().getFlexTime().getDivergenceTime().valueAsMinutes();
 			}
