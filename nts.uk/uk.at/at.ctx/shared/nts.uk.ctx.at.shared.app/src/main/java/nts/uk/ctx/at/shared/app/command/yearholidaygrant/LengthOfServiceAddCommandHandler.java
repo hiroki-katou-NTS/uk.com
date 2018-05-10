@@ -40,6 +40,9 @@ public class LengthOfServiceAddCommandHandler extends CommandHandler<List<GrantH
 		// Get data from Db
 		List<LengthServiceTbl> lengthServiceTbl = lengthServiceRepository.findByCode(companyId, command.get(0).getYearHolidayCode());
 		
+		// Validate input
+		validateViewData(companyId, command);
+		
 		// Remove items case
 		if(command.size() < lengthServiceTbl.size()) {
 			// Get GrantNums
@@ -56,7 +59,7 @@ public class LengthOfServiceAddCommandHandler extends CommandHandler<List<GrantH
 			// Insert new items or update items case
 			for (GrantHolidayCommand item : command) {
 				// Compare data from Db with data on UI:
-				Boolean lengthService = lengthServiceTbl.stream().anyMatch(x -> x.getYearHolidayCode().v().equals(item.getYearHolidayCode()));
+				Boolean lengthService = lengthServiceTbl.stream().anyMatch(x -> x.getYearHolidayCode().v().equals(item.getYearHolidayCode()) && x.getGrantNum().v() == item.getGrantNum());
 
 				LengthServiceTbl lengthOfService = LengthServiceTbl.createFromJavaType(companyId, item.getYearHolidayCode(), item.getGrantNum(), 
 						item.getAllowStatus(), item.getStandGrantDay(), item.getYear(), item.getMonth());
@@ -76,6 +79,25 @@ public class LengthOfServiceAddCommandHandler extends CommandHandler<List<GrantH
 				}
 			}
 		}		
+	}
+	
+	/**
+	 * Validate data before process
+	 * @param companyId
+	 * @param command
+	 */
+	private void validateViewData(String companyId, List<GrantHolidayCommand> command) {
+		List<LengthServiceTbl> lengthServiceData = new ArrayList<>();
+		for (GrantHolidayCommand data : command) {
+			LengthServiceTbl lengthService = LengthServiceTbl.createFromJavaType(companyId, data.getYearHolidayCode(), data.getGrantNum(), 
+					data.getAllowStatus(), data.getStandGrantDay(), data.getYear(), data.getMonth());
+			
+			if(lengthService.getMonth() != null || lengthService.getYear() != null) {
+				lengthServiceData.add(lengthService);
+			}
+		}
+		
+		LengthServiceTbl.validateInput(lengthServiceData);
 	}
 	
 	/**
