@@ -132,39 +132,33 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 
 	private List<PersonInfoItemDefinition> getUpdateItems(String spHDName, String ctgId, String contractCode,
 			boolean isEffective, String... companyId) {
-		List<PersonInfoItemDefinition> lstItem = itemRepo.getItemDefByCtgCdAndComId(ctgId, companyId[0]);
-		List<PersonInfoItemDefinition> lstReturn = new ArrayList<>();
+		return itemRepo.getItemDefByCtgCdAndComId(ctgId, companyId[0]).stream().filter(f -> {
+			String itemCode = f.getItemCode().v();
+			Optional<String> newItemName = getNewItemName(itemCode, spHDName);
 
-		if (isEffective) {
-			/**
-			 * 【更新内容】 廃止区分 ＝ 廃止しない 項目名称 ＝
-			 */
-			for (PersonInfoItemDefinition x : lstItem) {
-				Optional<String> newItemName = getNewItemName(x.getItemCode().v(), spHDName);
-				if (newItemName.isPresent()) {
-					x.setItemName(newItemName.get());
-					lstReturn.add(x);
-				}
-			}
-		} else {
-			Map<String, String> mapItemNameInZeroCom = itemRepo.getItemDefByCtgCdAndComId(ctgId, companyId[1]).stream()
-					.collect(Collectors.toMap(x -> x.getItemCode().v(), x -> x.getItemName().v()));
+			if (newItemName.isPresent()) {
+				if (isEffective) {
+					/**
+					 * 【更新内容】 廃止区分 ＝ 廃止しない 項目名称 ＝
+					 */
+					f.setItemName(newItemName.get());
+				} else {
+					/**
+					 * 【更新内容】 廃止区分 ＝ 廃止する 項目名 ＝ 取得したゼロ会社の「個人情報項目定義」．項目名
+					 */
+					Map<String, String> mapItemNameInZeroCom = itemRepo.getItemDefByCtgCdAndComId(ctgId, companyId[1])
+							.stream().collect(Collectors.toMap(x -> x.getItemCode().v(), x -> x.getItemName().v()));
 
-			/**
-			 * 【更新内容】 廃止区分 ＝ 廃止する 項目名 ＝ 取得したゼロ会社の「個人情報項目定義」．項目名
-			 */
-			for (PersonInfoItemDefinition x : lstItem) {
-				String itemCode = x.getItemCode().v();
-				Optional<String> newItemName = getNewItemName(itemCode, spHDName);
-				if (newItemName.isPresent()) {
 					if (mapItemNameInZeroCom.containsKey(itemCode)) {
-						x.setItemName(mapItemNameInZeroCom.get(itemCode));
-						lstReturn.add(x);
+						f.setItemName(mapItemNameInZeroCom.get(itemCode));
 					}
 				}
+
+				return true;
+			} else {
+				return false;
 			}
-		}
-		return lstReturn;
+		}).collect(Collectors.toList());
 	}
 
 	private List<String> getCtgCds(int spcHdCode) {

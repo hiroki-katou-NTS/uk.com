@@ -991,7 +991,7 @@ module nts.custombinding {
                                                 decimallength: Number(item.decimalPart),
                                                 grouplength: item.numericItemAmount && 3
                                             },
-                                            enable: editable,
+                                            enable: editable() && numberedit(),
                                             readonly: readonly
                                         }, attr: {
                                             id: nameid, 
@@ -1659,6 +1659,8 @@ module nts.custombinding {
                     def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
                     def.readonly = ko.observable(_.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.VIEW_ONLY : !!opts.sortable.isEnabled());
                     def.editable = ko.observable(_.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.EDIT : !!opts.sortable.isEditable());
+                    def.numberedit = ko.observable(false);
+
                     def.showColor = _.has(def, "showColor") ? (ko.isObservable(def.showColor) ? def.showColor : ko.observable(def.showColor)) :
                         (ko.isObservable(opts.sortable.showColor) ? opts.sortable.showColor : ko.observable(opts.sortable.showColor));
 
@@ -2096,7 +2098,6 @@ module nts.custombinding {
             $.extend(opts.sortable, { data: access.data });
 
             opts.sortable.data.subscribe((data: Array<IItemClassification>) => {
-                let startt = new Date().getTime();
                 opts.sortable.isEditable.valueHasMutated();
 
                 _.each(data, (x, i) => {
@@ -2235,11 +2236,7 @@ module nts.custombinding {
                         };
                     }).value());
                 }
-
-                let endt = new Date().getTime();
-                console.log(endt - startt);
             });
-            //opts.sortable.data.valueHasMutated();
 
             // get all id of controls
             $.extend(ctrls, {
