@@ -524,7 +524,7 @@ public class RealityStatusService {
 	}
 
 	/**
-	 * 承認状況取得職場社員実績
+	 * 承認状況取得職場社員実績一覧
 	 */
 	public List<EmpPerformanceOutput> getAcquisitionWkpEmpPerformance(String wkpId, GeneralDate startDate,
 			GeneralDate endDate, List<String> listEmpCd) {
