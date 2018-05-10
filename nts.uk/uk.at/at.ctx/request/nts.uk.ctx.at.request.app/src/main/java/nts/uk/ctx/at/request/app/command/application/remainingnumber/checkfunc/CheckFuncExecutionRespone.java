@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.command.remainingnumber.checkfunc;
+package nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc;
 
 import lombok.Getter;
 import lombok.Setter;
