@@ -719,12 +719,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 	}
 	@Override
 	public void updateTransferTimeFrame(String employeeId, GeneralDate dateData,
-			Map<Integer, Integer> transferTimeFrame) {
-		Optional<AttendanceTimeOfDailyPerformance> optAttendanceTime = attendanceTime.find(employeeId, dateData);
-		if(!optAttendanceTime.isPresent()) {
-			return;
-		}
-		AttendanceTimeOfDailyPerformance attendanceTimeData = optAttendanceTime.get();
+			Map<Integer, Integer> transferTimeFrame, AttendanceTimeOfDailyPerformance attendanceTimeData) {
 		ActualWorkingTimeOfDaily actualWorkingTime = attendanceTimeData.getActualWorkingTimeOfDaily();
 		TotalWorkingTime totalWorkingTime =  actualWorkingTime.getTotalWorkingTime();		
 		ExcessOfStatutoryTimeOfDaily excessOfStatutory = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();

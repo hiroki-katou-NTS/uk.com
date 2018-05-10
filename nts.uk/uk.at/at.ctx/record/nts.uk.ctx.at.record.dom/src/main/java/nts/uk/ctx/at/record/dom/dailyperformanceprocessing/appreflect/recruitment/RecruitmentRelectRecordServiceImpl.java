@@ -128,7 +128,7 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 		tranferTimeFrame.put(8, 0);
 		tranferTimeFrame.put(9, 0);
 		tranferTimeFrame.put(10, 0);
-		workUpdate.updateTransferTimeFrame(employeeId, baseDate, tranferTimeFrame);
+		workUpdate.updateTransferTimeFrame(employeeId, baseDate, tranferTimeFrame, daily.getAttendanceTimeOfDailyPerformance().get());
 	}
 
 	@Override
