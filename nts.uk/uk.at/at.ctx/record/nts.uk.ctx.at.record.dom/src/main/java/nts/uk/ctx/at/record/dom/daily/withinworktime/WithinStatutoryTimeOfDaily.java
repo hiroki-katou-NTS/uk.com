@@ -111,7 +111,6 @@ public class WithinStatutoryTimeOfDaily {
 			   												   CalcMethodOfNoWorkingDay calcMethod, 
 			   												   AutoCalOverTimeAttr autoCalcAtr, 
 			   												   Optional<SettingOfFlexWork> flexCalcMethod, 
-			   												   TimeLimitUpperLimitSetting flexLimitSetting, 
 			   												   WorkTimeDailyAtr workTimeDailyAtr, 
 			   												   Optional<WorkTimeCode> workTimeCode,
 			   												   AttendanceTime preFlexTime) {
@@ -121,7 +120,7 @@ public class WithinStatutoryTimeOfDaily {
 		workTime = calcWithinStatutoryTime(oneDay,personalCondition,vacationClass,workType,
 														  late,leaveEarly,workingSystem,illegularAddSetting,
 														  flexAddSetting,regularAddSetting,holidayAddtionSet,holidayCalcMethodSet,
-														  calcMethod,autoCalcAtr,flexCalcMethod,flexLimitSetting,workTimeDailyAtr,workTimeCode,preFlexTime);
+														  calcMethod,autoCalcAtr,flexCalcMethod,workTimeDailyAtr,workTimeCode,preFlexTime);
 		//実働時間の計算
 		if(oneDay.getWithinWorkingTimeSheet().isPresent())
 			actualTime =  oneDay.getWithinWorkingTimeSheet().get().calcWorkTime(PremiumAtr.RegularWork,
@@ -165,7 +164,6 @@ public class WithinStatutoryTimeOfDaily {
 			   												   CalcMethodOfNoWorkingDay calcMethod, 
 			   												   AutoCalOverTimeAttr autoCalcAtr, 
 			   												   Optional<SettingOfFlexWork> flexCalcMethod,
-			   												   TimeLimitUpperLimitSetting flexLimitSetting,
 			   												   WorkTimeDailyAtr workTimeDailyAtr, Optional<WorkTimeCode> workTimeCode,
 			   												   AttendanceTime preFlexTime) {
 		AttendanceTime workTime = new AttendanceTime(0);
@@ -190,7 +188,7 @@ public class WithinStatutoryTimeOfDaily {
 						  									 calcMethod,
 						  									 autoCalcAtr,
 						  									 flexCalcMethod.get(),
-						  									 flexLimitSetting,
+						  									 TimeLimitUpperLimitSetting.NOUPPERLIMIT,
 						  									 preFlexTime
 						   );
 			}

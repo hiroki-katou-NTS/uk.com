@@ -650,10 +650,21 @@ public abstract class CalculationTimeSheet {
 	 */
 	public void addDuplicatedDeductionTimeSheet(List<TimeSheetOfDeductionItem> deductionTimeSheet,DeductionAtr dedAtr) {
 		if(dedAtr.isAppropriate()) {
-			this.recordedTimeSheet.addAll(getDuplicatedDeductionTimeSheet(deductionTimeSheet));
+			if(this.recordedTimeSheet != null && !this.recordedTimeSheet.isEmpty()) {
+				this.recordedTimeSheet.addAll(getDuplicatedDeductionTimeSheet(deductionTimeSheet));
+			}
+			else {
+				this.recordedTimeSheet = Collections.emptyList();
+			}
+				
 		}
 		else {
-			this.deductionTimeSheet.addAll(getDuplicatedDeductionTimeSheet(deductionTimeSheet));
+			if(this.deductionTimeSheet != null && !this.recordedTimeSheet.isEmpty()) {
+				this.deductionTimeSheet.addAll(getDuplicatedDeductionTimeSheet(deductionTimeSheet));
+			}
+			else {
+				this.deductionTimeSheet = Collections.emptyList();
+			}
 		}
 	}
 	

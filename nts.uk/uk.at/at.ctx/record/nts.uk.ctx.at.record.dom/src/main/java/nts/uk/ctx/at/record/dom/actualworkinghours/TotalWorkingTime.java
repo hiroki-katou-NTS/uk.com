@@ -222,7 +222,6 @@ public class TotalWorkingTime {
 				   																      CalcMethodOfNoWorkingDay.isCalculateFlexTime, 
 				   																      overTimeAutoCalcAtr, 
 				   																      flexCalcMethod, 
-				   																      flexAutoCalSet.getFlexOtTime().getUpLimitORtSet(),
 				   																      workTimeDailyAtr.get(), 
 				   																      workTimeCode,
 				   																      flexPreAppTime);

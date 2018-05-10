@@ -141,12 +141,13 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		switch(flexLimitSetting) {
 			//事前申請を上限にする
 			case LIMITNUMBERAPPLICATION:
+				//指示時間を上限にする ←はEAで修正されたら適切な処理入れる
+			case INDICATEDYIMEUPPERLIMIT:	
 				//上限制御をやりつつ、値を返す
 				return (preAppTime.greaterThan(flexTime.v()))
 						?flexTime
 						:new AttendanceTimeOfExistMinus(preAppTime.v());
-			//指示時間を上限にする
-			case INDICATEDYIMEUPPERLIMIT:	
+			
 			//上限なし	
 			case NOUPPERLIMIT:
 				return flexTime;
