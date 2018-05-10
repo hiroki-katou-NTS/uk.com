@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.MessageDisp;
 
 /**
  * insert/update AgreeCondOtCommand
@@ -18,12 +17,15 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.MessageDisp;
 public class AgreeCondOtCommand {
 	/** ID */
 	private String id;
+	private String companyId;
+	private int category;
 	/** no */
 	private int no;
+	private String code;
 	/** 36超過時間 */
 	private BigDecimal ot36;
 	/** 36超過回数 */
 	private int excessNum;
 	/** 表示するメッセージ */
-	private MessageDisp messageDisp;
+	private String messageDisp;
 }

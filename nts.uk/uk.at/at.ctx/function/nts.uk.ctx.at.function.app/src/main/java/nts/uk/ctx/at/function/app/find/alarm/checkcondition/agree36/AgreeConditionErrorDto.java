@@ -11,6 +11,7 @@ import lombok.Value;
 public class AgreeConditionErrorDto {
 	/** ID */
 	String id;
+	String code;
 	/** 使用区分 */
 	int useAtr;
 	/** 期間 */

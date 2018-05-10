@@ -5,8 +5,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeCondOtDto;
+import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeConditionErrorDto;
+import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AlarmChkCondAgree36Dto;
 import nts.uk.ctx.at.function.dom.adapter.ErrorAlarmWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
@@ -18,10 +23,15 @@ import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraItemMonFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraItemMonFunImport;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunAdapter;
-import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunImport;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeCondOt;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeConditionError;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeNameError;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeCondOtRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeConditionErrorRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeNameErrorRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.ConExtractedDaily;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
@@ -54,12 +64,21 @@ public class AlarmCheckConditionByCategoryFinder {
 	@Inject
 	private PublicHolidaySettingAdapter publicHolidaySettingAdapter;
 	
+	@Inject
+	private IAgreeConditionErrorRepository errorRep;
+
+	@Inject
+	private IAgreeNameErrorRepository nameRep;
+	
 	//monthly
 	@Inject
 	private FixedExtraMonFunAdapter fixExtraMon;
 	
 	@Inject
 	private FixedExtraItemMonFunAdapter fixExtraItemMon;
+	
+	@Inject
+	private IAgreeCondOtRepository condOtRep;
 
 	public List<AlarmCheckConditionByCategoryDto> getAllData(int category) {
 		String companyId = AppContexts.user().companyId();
@@ -100,6 +119,25 @@ public class AlarmCheckConditionByCategoryFinder {
 		//monthly
 		MonAlarmCheckCon monAlarmCheckCon = new MonAlarmCheckCon("");
 		List<FixedExtraMonFunDto> listFixedExtraMonFun = new ArrayList<>();
+			// AgreeConditionErrorFinder
+			List<AgreeConditionError> listConError = errorRep.findAll(domain.getCode().v(), domain.getCategory().value);
+			List<AgreeNameError> listAgreeNameError = this.nameRep.findAll();
+			List<AgreeConditionErrorDto> listCondError = new ArrayList<>();
+			listCondError = listConError.stream().map(item -> {
+				String agreementNameErr = listAgreeNameError.stream()
+						.filter(x -> (x.getPeriod() == item.getPeriod() && x.getErrorAlarm() == item.getErrorAlarm()))
+						.findFirst().get().getName().v();
+				return new AgreeConditionErrorDto(item.getId(), item.getCode().v(), 
+													item.getUseAtr().value, item.getPeriod().value,
+													item.getErrorAlarm().value, item.getMessageDisp().v(), agreementNameErr);
+			}).collect(Collectors.toList());
+			// AgreeCondOtFinder
+			List<AgreeCondOtDto> listCondOt = new ArrayList<>();
+			List<AgreeCondOt> result = condOtRep.findAll(domain.getCode().v(), domain.getCategory().value);
+			listCondOt = result.stream().map(x -> {
+				return new AgreeCondOtDto(x.getId(), x.getNo(), x.getCode().v(),
+											x.getOt36().v(), x.getExcessNum().v(), x.getMessageDisp().v());
+			}).collect(Collectors.toList());
 		
 		if (domain.getCategory() == AlarmCategory.SCHEDULE_4WEEK && domain.getExtractionCondition() != null) {
 			AlarmCheckCondition4W4D schedule4WeekCondition = (AlarmCheckCondition4W4D) domain.getExtractionCondition();
@@ -168,12 +206,12 @@ public class AlarmCheckConditionByCategoryFinder {
 				new DailyAlarmCheckConditionDto(dailyAlarmCondition.isAddApplication(),
 						dailyAlarmCondition.getConExtractedDaily().value, dailyAlarmCondition.getErrorAlarmCode(),
 						lstWorkRecordExtraCon, listFixedConditionWkRecord),
-				new MonAlarmCheckConDto(listFixedExtraMonFun)
-				);
+				new MonAlarmCheckConDto(listFixedExtraMonFun),
+				new AlarmChkCondAgree36Dto(listCondError, listCondOt));
 	}
 	
 	private AlarmCheckConditionByCategoryDto minValueFromDomain(AlarmCheckConditionByCategory domain) {
 		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(),
-				domain.getCategory().value, null, null, 0, null,null);
+				domain.getCategory().value, null, null, 0, null, null, null);
 	}
 }

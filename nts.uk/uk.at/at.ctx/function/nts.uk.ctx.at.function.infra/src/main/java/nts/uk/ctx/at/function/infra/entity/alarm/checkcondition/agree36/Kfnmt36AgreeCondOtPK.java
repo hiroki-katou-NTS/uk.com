@@ -16,8 +16,17 @@ public class Kfnmt36AgreeCondOtPK implements Serializable {
 	/** ID **/
 	@Column(name = "ID")
 	public String id;
-	
 	/** NO **/
 	@Column(name = "NO")
 	public int no;
+	
+	/** NO **/
+	@Column(name = "CD")
+	public String code;
+	
+	@Column(name = "CID")
+	public String companyId;
+	
+	@Column(name = "CATEGORY")
+	public int category;
 }

@@ -14,12 +14,12 @@ public interface IAgreeCondOtRepository {
 	 * @param id
 	 * @return
 	 */
-	public Optional<AgreeCondOt> findById(String id, int no);
+	public Optional<AgreeCondOt> findById(String id, int no, String code, String companyId, int category);
 	/**
 	 * find all AgreeCondOt
 	 * @return
 	 */
-	public List<AgreeCondOt> findAll();
+	public List<AgreeCondOt> findAll(String code, int category);
 	/**
 	 * find AgreeNameError by id
 	 * @param period
@@ -46,5 +46,5 @@ public interface IAgreeCondOtRepository {
 	 * delete AgreeCondOt
 	 * @param agreeCondOt
 	 */
-	public void delete(String id, int no);
+	public void delete(String code, int category);
 }

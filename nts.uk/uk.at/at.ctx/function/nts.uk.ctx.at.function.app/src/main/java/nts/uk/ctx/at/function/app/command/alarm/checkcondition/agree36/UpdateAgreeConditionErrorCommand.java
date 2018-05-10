@@ -16,4 +16,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UpdateAgreeConditionErrorCommand {
 	List<AgreeConditionErrorCommand> agreeConditionErrorCommand;
+	List<DeleteAgreeConditionErrorCommand> deleteCondError;
+	List<DeleteAgreeCondOtCommand> deleteCondOt;
 }

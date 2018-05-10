@@ -3,9 +3,6 @@ package nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.ErrorAlarm;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.MessageDisp;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.Period;
 /**
  * insert/update AgreeNameErrorCommand
  * @author yennth
@@ -16,9 +13,9 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.Period;
 @NoArgsConstructor
 public class AgreeNameErrorCommand {
 	/** 期間 */
-	private Period period;
+	private int period;
 	/** エラーアラーム */
-	private ErrorAlarm errorAlarm;
+	private int errorAlarm;
 	/** 名称 */
-	private MessageDisp name;
+	private String name;
 }

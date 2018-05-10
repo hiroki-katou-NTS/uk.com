@@ -8,11 +8,15 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.DeleteAgreeCondOtCommand;
+import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.DeleteAgreeConditionErrorCommand;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunAdapter;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeCondOtRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeConditionErrorRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -36,7 +40,12 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 	//monthly
 	@Inject
 	private FixedExtraMonFunAdapter fixedExtraMonFunAdapter;
-	
+	// ３６協定
+	@Inject
+	private IAgreeConditionErrorRepository conErrRep;
+
+	@Inject
+	private IAgreeCondOtRepository otRep;
 	@Override
 	protected void handle(CommandHandlerContext<AlarmCheckConditionByCategoryCommand> context) {
 		AlarmCheckConditionByCategoryCommand command = context.getCommand();
@@ -61,7 +70,18 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 				this.fixedExtraMonFunAdapter.deleteFixedExtraMon(monAlarmCheckID);
 			}
 		}
-		
+		if (command.getCategory() == AlarmCategory.AGREEMENT.value) {
+			List<DeleteAgreeConditionErrorCommand> listErrorDel = context.getCommand().getDeleteCondError();  
+			for(DeleteAgreeConditionErrorCommand obj : listErrorDel){
+				this.conErrRep.delete(obj.getCode(), obj.getCategory());
+			}
+			
+			
+			List<DeleteAgreeCondOtCommand> listOtDel = context.getCommand().getDeleteCondOt();
+			for(DeleteAgreeCondOtCommand item : listOtDel){
+				this.otRep.delete(item.getCode(), item.getCategory());
+			}
+		}
 		conditionRepo.delete(companyId, command.getCategory(), command.getCode());
 	}
 

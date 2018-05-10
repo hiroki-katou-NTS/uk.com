@@ -11,12 +11,17 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeCondOt;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeCondOtRepository;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.agree36.Kfnmt36AgreeCondOt;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.agree36.Kfnmt36AgreeCondOtPK;
+import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaAgreeCondOtRepository extends JpaRepository implements IAgreeCondOtRepository{
 	
 	private final String SELECT_NO_WHERE = "SELECT c FROM Kfnmt36AgreeCondOt c ";
 	private final String SELECT_BY_ID = SELECT_NO_WHERE + "WHERE c.kfnmt36AgreeCondOtPK.id = :id ";
 	private final String SELECT_BY_NO = SELECT_NO_WHERE + "WHERE c.kfnmt36AgreeCondOtPK.no = :no ";
+	private final String SELECT_CODE = SELECT_NO_WHERE + "WHERE c.kfnmt36AgreeCondOtPK.companyId = :companyId AND c.kfnmt36AgreeCondOtPK.code = :code AND c.kfnmt36AgreeCondOtPK.category = :category ";
+	
+	private final String DELETE_NO_WHERE = "DELETE FROM Kfnmt36AgreeCondOt c ";
+	private final String DELETE_CODE = DELETE_NO_WHERE + "WHERE c.kfnmt36AgreeCondOtPK.companyId = :companyId AND c.kfnmt36AgreeCondOtPK.category = :category AND c.kfnmt36AgreeCondOtPK.code = :code ";
 	/**
 	 * convert from entity to domain
 	 * @param entity
@@ -24,7 +29,10 @@ public class JpaAgreeCondOtRepository extends JpaRepository implements IAgreeCon
 	 * @author yennth
 	 */
 	private static AgreeCondOt toDomain(Kfnmt36AgreeCondOt entity){
-		AgreeCondOt domain = AgreeCondOt.createFromJavaType(entity.kfnmt36AgreeCondOtPK.id, entity.kfnmt36AgreeCondOtPK.no, entity.ot36, entity.excessNum, 
+		AgreeCondOt domain = AgreeCondOt.createFromJavaType(entity.kfnmt36AgreeCondOtPK.id, 
+															entity.kfnmt36AgreeCondOtPK.companyId, entity.kfnmt36AgreeCondOtPK.category,
+															entity.kfnmt36AgreeCondOtPK.code, 
+															entity.kfnmt36AgreeCondOtPK.no, entity.ot36, entity.excessNum, 
 															entity.messageDisp == null ? null : entity.messageDisp);
 		return domain;
 	}
@@ -36,7 +44,8 @@ public class JpaAgreeCondOtRepository extends JpaRepository implements IAgreeCon
 	 */
 	private static Kfnmt36AgreeCondOt toEntity(AgreeCondOt domain){
 		val entity = new Kfnmt36AgreeCondOt();
-		entity.kfnmt36AgreeCondOtPK = new Kfnmt36AgreeCondOtPK(domain.getId(), domain.getNo());
+		entity.kfnmt36AgreeCondOtPK = new Kfnmt36AgreeCondOtPK(domain.getId(), domain.getNo(), domain.getCode().v(), 
+																domain.getCompanyId(), domain.getCategory().value);
 		entity.excessNum = domain.getExcessNum().v();
 		entity.messageDisp = (domain.getMessageDisp() == null ? null : domain.getMessageDisp().v());
 		entity.ot36 = domain.getOt36().v();
@@ -47,16 +56,21 @@ public class JpaAgreeCondOtRepository extends JpaRepository implements IAgreeCon
 	 * @author yennth
 	 */
 	@Override
-	public Optional<AgreeCondOt> findById(String id, int no) {
-		return this.queryProxy().find(new Kfnmt36AgreeCondOtPK(id, no), Kfnmt36AgreeCondOt.class).map(x -> toDomain(x));
+	public Optional<AgreeCondOt> findById(String id, int no, String code, String companyId, int category) {
+		return this.queryProxy().find(new Kfnmt36AgreeCondOtPK(id, no, code, companyId, category), Kfnmt36AgreeCondOt.class).map(x -> toDomain(x));
 	}
 	/**
 	 * find all AgreeCondOt
 	 * @author yennth
 	 */
 	@Override
-	public List<AgreeCondOt> findAll() {
-		return this.queryProxy().query(SELECT_NO_WHERE, Kfnmt36AgreeCondOt.class).getList(x -> toDomain(x));
+	public List<AgreeCondOt> findAll(String code, int category) {
+		String companyId = AppContexts.user().companyId();
+		return this.queryProxy().query(SELECT_CODE, Kfnmt36AgreeCondOt.class)
+				.setParameter("companyId", companyId)
+				.setParameter("code", code)
+				.setParameter("category", category)
+				.getList(x -> toDomain(x));
 	}
 	/**
 	 * find AgreeCondOt by id
@@ -100,8 +114,13 @@ public class JpaAgreeCondOtRepository extends JpaRepository implements IAgreeCon
 	 * @author yennth
 	 */
 	@Override
-	public void delete(String id, int no) {
-		this.commandProxy().remove(Kfnmt36AgreeCondOt.class, new Kfnmt36AgreeCondOtPK(id, no));
+	public void delete(String code, int category) {
+		String companyId = AppContexts.user().companyId();
+		this.getEntityManager().createQuery(DELETE_CODE)
+								.setParameter("companyId", companyId)
+								.setParameter("category", category)
+								.setParameter("code", code)
+								.executeUpdate();
 	}
 
 }
