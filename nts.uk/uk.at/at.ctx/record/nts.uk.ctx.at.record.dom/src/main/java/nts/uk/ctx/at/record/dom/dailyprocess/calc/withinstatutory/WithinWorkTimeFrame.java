@@ -550,9 +550,10 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 																			    :NotUseAtr.NOT_USE;
 		
 		boolean result = false;
-		if(premiumAtr.isRegularWork()&&workTimeDeductLateLeaveEarly == NotUseAtr.NOT_USE) {
-			return true;
-		}else if(premiumAtr.isPremium()
+//		if(premiumAtr.isRegularWork()&&workTimeDeductLateLeaveEarly == NotUseAtr.NOT_USE) {
+//			return true;
+//		}else 
+		if(premiumAtr.isPremium()
 				 &&workTimeDeductLateLeaveEarly == NotUseAtr.USE
 				 &&premiumDeductLateLeaveEarly==NotUseAtr.NOT_USE){
 			return true;
