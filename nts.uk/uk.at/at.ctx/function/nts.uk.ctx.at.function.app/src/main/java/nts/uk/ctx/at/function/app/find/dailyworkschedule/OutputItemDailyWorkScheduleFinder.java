@@ -137,18 +137,19 @@ public class OutputItemDailyWorkScheduleFinder {
 		List<DailyAttendanceItem> lstDailyAttendanceItem = dailyAttendanceItemRepository.getListById(companyID, lstAttendanceID);
 		
 		// get domain 日別勤務表の出力項目
-		Optional<OutputItemDailyWorkSchedule> optDomain = this.outputItemDailyWorkScheduleRepository.findByCid(companyID);
+		List<OutputItemDailyWorkSchedule> optDomain = this.outputItemDailyWorkScheduleRepository.findByCid(companyID);
 		
 		// if find
-		if (optDomain.isPresent()) {
-			OutputItemDailyWorkSchedule domain = optDomain.get();
-			OutputItemDailyWorkScheduleDto dto = new OutputItemDailyWorkScheduleDto();
-			dto.setItemCode(domain.getItemCode().v());
-			dto.setItemName(domain.getItemName().v());
-			dto.setLstDisplayedAttendance(toDtoTimeitemTobeDisplay(domain.getLstDisplayedAttendance()));
-			dto.setLstRemarkContent(toDtoPrintRemarksContent(domain.getLstRemarkContent()));
-			return dto;
-		}
+		// TODO - hoangdd: xem lai cho nay, vi moi tra ra arraylist, ngay truoc la optional
+//		if (optDomain.isPresent()) {
+//			OutputItemDailyWorkSchedule domain = optDomain.get();
+//			OutputItemDailyWorkScheduleDto dto = new OutputItemDailyWorkScheduleDto();
+//			dto.setItemCode(domain.getItemCode().v());
+//			dto.setItemName(domain.getItemName().v());
+//			dto.setLstDisplayedAttendance(toDtoTimeitemTobeDisplay(domain.getLstDisplayedAttendance()));
+//			dto.setLstRemarkContent(toDtoPrintRemarksContent(domain.getLstRemarkContent()));
+//			return dto;
+//		}
 		
 		// find nothing
 		return null;

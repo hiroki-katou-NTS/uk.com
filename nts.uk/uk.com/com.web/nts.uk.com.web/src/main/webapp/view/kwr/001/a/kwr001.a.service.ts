@@ -1,33 +1,14 @@
 module nts.uk.at.view.kwr001.a {
     export module service {
         var paths = {
-           checkScheduleBatchCorrectSettingSave: ""
+           getDataStartPage: "at/function/dailyworkschedule/startPage"
         }
         
-        /**
-         * call service check ScheduleBatchCorrectSetting save
-         */
-        export function checkScheduleBatchCorrectSettingSave(dto: model.ScheduleBatchCorrectSettingSave): JQueryPromise<void> {
-            return nts.uk.request.ajax('at', paths.checkScheduleBatchCorrectSettingSave, dto);
+        export function getDataStartPage(isExist: boolean, keyRestore: string): JQueryPromise<void> {
+            return nts.uk.request.ajax('at', paths.getDataStartPage + SLASH + isExist + SLASH + keyRestore);
         }
         
+        const SLASH = "/";
         
-        export module model {
-
-            export interface ScheduleBatchCorrectSettingSave {
-                worktypeCode: string;
-
-                employeeId: string;
-
-                endDate: Date;
-
-                startDate: Date;
-                
-                worktimeCode: string;
-
-                employeeIds: string[];
-            }
-            
-        }
     }
 }

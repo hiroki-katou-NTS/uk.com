@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.function.infra.repository.dailyworkschedule;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -57,9 +59,9 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository#findByCid(java.lang.String)
 	 */
 	@Override
-	public Optional<OutputItemDailyWorkSchedule> findByCid(String companyId) {
+	public List<OutputItemDailyWorkSchedule> findByCid(String companyId) {
 		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<>();
 	}
 
 	/* (non-Javadoc)

@@ -21,7 +21,7 @@ import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputItemDailyWorkSche
 /**
  * The Class OutputItemDailyWorkScheduleWS.
  */
-@Path("at/function/employmentfunction")
+@Path("at/function/dailyworkschedule")
 @Produces(MediaType.APPLICATION_JSON)
 public class OutputItemDailyWorkScheduleWS extends WebService{
 	

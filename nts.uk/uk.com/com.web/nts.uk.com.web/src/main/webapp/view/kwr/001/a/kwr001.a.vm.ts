@@ -1,6 +1,9 @@
 module nts.uk.at.view.kwr001.a {
-    import ScheduleBatchCorrectSettingSave = service.model.ScheduleBatchCorrectSettingSave;
     import ComponentOption = kcp.share.list.ComponentOption;
+    
+    import blockUI = nts.uk.ui.block;
+    
+    import service = nts.uk.at.view.kwr001.a.service;
     
     export module viewmodel {
         export class ScreenModel {
@@ -186,11 +189,6 @@ module nts.uk.at.view.kwr001.a {
                 }
                 // end set variable for CCG001
                 
-                // start component CCG001
-                $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption).done(function(){
-                });
-                // end component CCG001
-                
                 // TODO: hoangdd - goi service lay enum thay cho viec set cung resource
                 self.dataOutputType = ko.observableArray([
                     { code: '0', name: nts.uk.resource.getText("KWR001_10") },
@@ -270,16 +268,54 @@ module nts.uk.at.view.kwr001.a {
                 // end component KCP005
             }
             
-            public startPage(): JQueryPromise<void>  {
+            public startPage(): JQueryPromise<any>  {
+                blockUI.grayout();
                 var dfd = $.Deferred<void>();
                 var self = this;
                 
                 // TODO - hoangdd: goi service lay domain cho A7_6. gio dang fix cung
-                self.enableBtnConfigure(true); 
-//                $('.ntsStartDatePicker').focus();
+                self.enableBtnConfigure(true);
+                
+                $.when(self.getDataStartPageService()).done(function() {
+                        blockUI.clear();
+                    });
+                
                 dfd.resolve();
                 return dfd.promise();
             }
+            
+            private getDataStartPageService(): JQueryPromise<any> {
+                var dfd = $.Deferred<void>();
+                let self = this;
+                
+                // TODO - hoangdd: fake data
+                let isExist = true;
+                let keyRestore = "kwr001";
+                service.getDataStartPage(isExist, keyRestore).done(function(data: any) {
+                    self.startDatepicker(data.startDate);
+                    self.endDatepicker(data.endDate);
+                    self.ccg001ComponentOption.baseDate = moment.utc(self.endDatepicker(), DATE_FORMAT_YYYY_MM_DD).toISOString();
+                    // start component CCG001
+                    $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption).done(function(){
+                        dfd.resolve();
+                    });
+                    // end component CCG001
+                    console.log(data);
+                    
+                })
+                
+                return dfd.promise();
+            }
+            
+            private getDataCharateristic(): JQueryPromise<any> {
+                var dfd = $.Deferred<void>();
+                let self = this;
+                
+                dfd.resolve();
+                
+                return dfd.promise();
+            }
+            
             openScreenB () {
                 var self = this;
                 nts.uk.ui.windows.setShared('KWR001_B', self.data(), true);

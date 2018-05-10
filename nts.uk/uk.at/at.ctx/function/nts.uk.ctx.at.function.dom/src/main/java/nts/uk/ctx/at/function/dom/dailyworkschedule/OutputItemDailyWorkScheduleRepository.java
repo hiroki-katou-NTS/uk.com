@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.function.dom.dailyworkschedule;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -33,7 +34,7 @@ public interface OutputItemDailyWorkScheduleRepository {
 	 * @param companyId the company id
 	 * @return the optional
 	 */
-	public Optional<OutputItemDailyWorkSchedule> findByCid(String companyId);
+	public List<OutputItemDailyWorkSchedule> findByCid(String companyId);
 	
 	/**
 	 * Adds the.
