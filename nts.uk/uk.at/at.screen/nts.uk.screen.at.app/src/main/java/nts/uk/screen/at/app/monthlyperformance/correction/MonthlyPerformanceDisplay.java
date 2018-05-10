@@ -31,11 +31,11 @@ import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.InitialDi
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
-import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.AcquireActualStatus;
-import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.ApprovalStatus;
-import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.EmploymentFixedStatus;
-import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.MonthlyActualSituationOutput;
-import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.MonthlyActualSituationStatus;
+import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.AcquireActualStatus;
+import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.ApprovalStatus;
+import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.EmploymentFixedStatus;
+import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.MonthlyActualSituationOutput;
+import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.MonthlyActualSituationStatus;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthFinder;
