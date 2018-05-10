@@ -79,7 +79,7 @@ module nts.uk.at.view.kal004.g.viewmodel {
                 { id: 'tab-5', title: getText('KAL004_73'), content: '.tab-content-5', enable: ko.observable(true), visible: ko.observable(true) },
                 
             ]);
-            self.selectedTab = ko.observable('tab-1'); 
+            self.selectedTab = ko.observable(nts.uk.ui.windows.getShared("selectedTab")); 
             self.selectedTab.subscribe(()=>{
                     nts.uk.ui.errors.clearAll();
             });
@@ -299,6 +299,7 @@ module nts.uk.at.view.kal004.g.viewmodel {
                                 thisYear: self.strSelected5()    
                                }
             
+            nts.uk.ui.windows.setShared("selectedTab", self.selectedTab());
             nts.uk.ui.windows.setShared("daily36Share", daily36Share);
             nts.uk.ui.windows.setShared("listMonth36Share", listMonth36Share);
             nts.uk.ui.windows.setShared("yearly36Share", yearly36Share);

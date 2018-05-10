@@ -8,6 +8,9 @@ module nts.uk.at.view.kal004.tab2.viewModel {
         listStorageCheckCondition: KnockoutObservableArray<share.CheckConditionCommand> = ko.observableArray([]);
         ListView: KnockoutObservableArray<ModelCheckConditonCode>;
         isCreateMode: KnockoutObservable<boolean>;
+        
+        // this variable only use for screen G        
+        selectedTab : KnockoutObservable<string> = ko.observable('tab-1');
         constructor() {
             var self = this;
 
@@ -33,7 +36,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                     let checkCondition = new share.CheckConditionCommand(category.alarmCategory, category.checkConditionCodes, category.extractionPeriodDaily, category.extractionPeriodUnit, 
                                                                            category.listExtractionMonthly, category.extractionYear);
                     listCheckConditionDto.push(checkCondition);
-                    listConverToview.push(new ModelCheckConditonCode(checkCondition));
+                    listConverToview.push(new ModelCheckConditonCode(checkCondition, self.selectedTab()));
                     self.listStorageCheckCondition.push(category);
                 });
             } else {
@@ -43,13 +46,13 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                     var check = _.find(self.listStorageCheckCondition(), ['alarmCategory', category.alarmCategory]);
                     if (nts.uk.util.isNullOrUndefined(check)) {
                         listCheckConditionDto.push(checkCondition);
-                        listConverToview.push(new ModelCheckConditonCode(checkCondition));
+                        listConverToview.push(new ModelCheckConditonCode(checkCondition, self.selectedTab()));
                         self.listStorageCheckCondition.push(category);
                     } else {
                         let checkConditionUpDate = new share.CheckConditionCommand(category.alarmCategory, category.checkConditionCodes, check.extractionPeriodDaily, category.extractionPeriodUnit,
                                                                                      category.listExtractionMonthly, category.extractionYear);
                         listCheckConditionDto.push(checkConditionUpDate);
-                        listConverToview.push(new ModelCheckConditonCode(checkConditionUpDate));
+                        listConverToview.push(new ModelCheckConditonCode(checkConditionUpDate, self.selectedTab()));
                     }
                 });
             }
@@ -142,6 +145,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 
                 nts.uk.ui.windows.setShared("categoryId", categoryId);
                 nts.uk.ui.windows.setShared("categoryName", modelCheck.categoryName);
+                nts.uk.ui.windows.setShared("selectedTab", self.selectedTab());
                 nts.uk.ui.windows.setShared("daily36", daily36);
                 nts.uk.ui.windows.setShared("listMonthly36", listMonthly36);
                 nts.uk.ui.windows.setShared("yearly36", yearly36);
@@ -150,6 +154,10 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                     let daily36Share = nts.uk.ui.windows.getShared("daily36Share");
                     let listMonth36Share = nts.uk.ui.windows.getShared("listMonth36Share");
                     let yearly36Share = nts.uk.ui.windows.getShared("yearly36Share");
+                    let selectedTab = nts.uk.ui.windows.getShared("selectedTab");
+                    if(!nts.uk.util.isNullOrUndefined(selectedTab)){
+                        self.selectedTab(selectedTab);    
+                    }
                     
                     if (!nts.uk.util.isNullOrUndefined(listMonth36Share)) {
                         self.changeExtraction36Agreement(listMonth36Share, daily36Share, yearly36Share, categoryId);                        
@@ -256,14 +264,39 @@ module nts.uk.at.view.kal004.tab2.viewModel {
         listExtractionMonthly : Array<share.ExtractionPeriodMonthlyCommand>;
         extractionYear: share.ExtractionRangeYearCommand;
         
-        constructor(checkCondition: share.CheckConditionCommand) {
-            var self = this;
+        constructor(checkCondition: share.CheckConditionCommand, selectedTab: string) {
+            let self = this;
             this.categoryId = checkCondition.alarmCategory;
             this.categoryName = _.find(self.ListAlarmCategory, ['value', checkCondition.alarmCategory]).name;
+            
+            this.extractionYear = checkCondition.extractionYear;
+            this.extractionPeriodDaily = checkCondition.extractionPeriodDaily;
+            this.extractionPeriodUnit = checkCondition.extractionPeriodUnit;
+            this.listExtractionMonthly = checkCondition.listExtractionMonthly;            
+            
+            
             if (nts.uk.util.isNullOrUndefined(checkCondition.extractionPeriodDaily) && checkCondition.alarmCategory == 2) {
                 this.extractionPeriod = _.find(self.SegmentationOfCycle, ['value', checkCondition.extractionPeriodUnit.segmentationOfCycle]).name;
+                
             } else if (checkCondition.alarmCategory == 5 || checkCondition.alarmCategory == 13) {
+                this.setDailyText(checkCondition);
+                
+            } else if(checkCondition.alarmCategory ==7) {                
+                this.extractionPeriod = _.find(self.standardMonth, ['value', checkCondition.listExtractionMonthly[0].strMonth]).name + ' ' + getText('KAL004_30') + ' ' +
+                                        _.find(self.standardMonth, ['value', checkCondition.listExtractionMonthly[0].endMonth]).name ;
+                
+            } else if(checkCondition.alarmCategory ==12) {
 
+                this.set36AgreementText(checkCondition, selectedTab);
+            }else{
+                this.extractionPeriod = "";    
+            }
+            
+        }
+        
+        
+        private setDailyText(checkCondition: share.CheckConditionCommand){
+                let self = this;
                 let str, end;
                 if (checkCondition.extractionPeriodDaily.strSpecify == 0) {
                     str = getText('KAL004_32') + checkCondition.extractionPeriodDaily.strDay + getText('KAL004_34') + _.find(self.PreviousClassification, ['value', checkCondition.extractionPeriodDaily.strPreviousDay]).name;
@@ -277,18 +310,61 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                     let endMonth = _.find(self.ListSpecifiedMonth, ['value', checkCondition.extractionPeriodDaily.endMonth]);
                     end = endMonth.name + getText('KAL004_43');
                 }
-                this.extractionPeriod = str + ' ' + getText('KAL004_30') + ' ' + end;
-            } else if(checkCondition.alarmCategory ==7) {                
-                this.extractionPeriod = _.find(self.standardMonth, ['value', checkCondition.listExtractionMonthly[0].strMonth]).name + ' ' + getText('KAL004_30') + ' ' +
-                                        _.find(self.standardMonth, ['value', checkCondition.listExtractionMonthly[0].endMonth]).name ;
-            } else {
-                    this.extractionPeriod = " ";
+                this.extractionPeriod = str + ' ' + getText('KAL004_30') + ' ' + end;            
+        }
+        
+        private set36AgreementText(checkCondition: share.CheckConditionCommand, selectedTab: string){
+            let self = this;
+            let str, end;
+            if(selectedTab =="tab-1"){
+                if (checkCondition.extractionPeriodDaily.strSpecify == 0) {
+                    str = getText('KAL004_77') + checkCondition.extractionPeriodDaily.strDay + getText('KAL004_79') + _.find(self.PreviousClassification, ['value', checkCondition.extractionPeriodDaily.strPreviousDay]).name;
+                } else {
+                    let strMonth = _.find(self.standardMonth, ['value', checkCondition.extractionPeriodDaily.strMonth]);
+                    str = strMonth.name + getText('KAL004_81');
+                }
+                if (checkCondition.extractionPeriodDaily.endSpecify == 0) {
+                    end = getText('KAL004_82') + checkCondition.extractionPeriodDaily.endDay + getText('KAL004_84') + _.find(self.PreviousClassification, ['value', checkCondition.extractionPeriodDaily.endPreviousDay]).name;
+                } else {
+                    let endMonth = _.find(self.standardMonth, ['value', checkCondition.extractionPeriodDaily.endMonth]);
+                    end = endMonth.name + getText('KAL004_86');
+                }    
+                   
+                
+            }else  if(selectedTab =="tab-2"){
+                let month2 : share.ExtractionPeriodMonthlyCommand = _.find(self.listExtractionMonthly, ['unit', 0]);
+                str = _.find(self.standardMonth, ['value', month2.strMonth]).name;
+                end = _.find(self.standardMonth, ['value', month2.endMonth]).name;    
+                            
+            } else if(selectedTab =='tab-3'){
+                let month3 : share.ExtractionPeriodMonthlyCommand = _.find(self.listExtractionMonthly, ['unit', 1]);
+                if(month3.strSpecify==1){
+                    str = _.find(self.standardMonth, ['value', month3.strMonth]).name;   
+                }else{
+                    str = getText('KAL004_96') + month3.specifyMonth + getText('KAL004_98');
+                }
+                end  = _.find(self.standardMonth, ['value', month3.endMonth]).name; 
+                
+            } else if(selectedTab =='tab-4'){
+                let month4 : share.ExtractionPeriodMonthlyCommand = _.find(self.listExtractionMonthly, ['unit', 2]);
+                if(month4.strSpecify==1){
+                    str = _.find(self.standardMonth, ['value', month4.strMonth]).name;   
+                }else{
+                    str = getText('KAL004_104') + month4.specifyMonth + getText('KAL004_106');
+                }
+                end  = _.find(self.standardMonth, ['value', month4.endMonth]).name;    
+                             
+            } else if(selectedTab =='tab-5'){
+                if(this.extractionYear.thisYear) str = getText('KAL004_110');
+                else str = this.extractionYear.year + getText('KAL004_109');
+                 
             }
             
-            this.extractionYear = checkCondition.extractionYear;
-            this.extractionPeriodDaily = checkCondition.extractionPeriodDaily;
-            this.extractionPeriodUnit = checkCondition.extractionPeriodUnit;
-            this.listExtractionMonthly = checkCondition.listExtractionMonthly;
+            if(selectedTab != 'tab-5'){
+                this.extractionPeriod = str + ' ' + getText('KAL004_30') + ' ' + end; 
+            }else{
+                this.extractionPeriod = str;    
+            }
         }
     }
 }
