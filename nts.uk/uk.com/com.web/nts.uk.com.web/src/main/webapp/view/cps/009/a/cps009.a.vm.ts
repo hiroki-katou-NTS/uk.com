@@ -379,6 +379,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     isSetting: currentCtg.setting,
                     itemLst: _.map(ko.toJS(self.currentCategory().itemList()), function(obj: PerInfoInitValueSettingItemDto) {
                         return {
+                            ctgCode: obj.ctgCode,
                             perInfoItemDefId: obj.perInfoItemDefId,
                             itemName: obj.itemName,
                             isRequired: obj.isRequired,
@@ -852,7 +853,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.saveDataType = ko.observable(params.saveDataType || 0);
             self.stringValue = ko.observable(params.stringValue || null);
-            self.intValue = ko.observable(params.intValue || 0);
+            self.intValue = ko.observable(params.intValue || null);
 
             self.dateWithDay = ko.observable(params.dateWithDay || 0);
             self.timePoint = ko.observable(params.timePoint || "");
@@ -1316,10 +1317,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].enableControl(checkStartEnd);
                 __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 2].indexItem - 1].enableControl(mutiTime && checkStartEnd);
                 __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 3].indexItem - 1].enableControl(mutiTime && checkStartEnd);
-                __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i].indexItem - 1].dateWithDay(childData.first.start || 0);
-                __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].dateWithDay(childData.first.end || 0);
-                __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 2].indexItem - 1].dateWithDay(childData.second.start || 0);
-                __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 3].indexItem - 1].dateWithDay(childData.second.end || 0);
+                __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i].indexItem - 1].dateWithDay(childData.first.start);
+                __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 1].indexItem - 1].dateWithDay(childData.first.end);
+                __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 2].indexItem - 1].dateWithDay(childData.second.start);
+                __viewContext["viewModel"].currentCategory().itemList()[itemChilds[i + 3].indexItem - 1].dateWithDay(childData.second.end);
                 i = i + 3;
             }
 
