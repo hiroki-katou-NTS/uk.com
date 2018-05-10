@@ -641,6 +641,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																		   OvertimeTimesheetCalculationSetting.CalculateAutomatic,
 																		   HolidayTimesheetCalculationSetting.CalculateAutomatical);
 		
+		
 		/*各加算設定取得用*/
 		Map<String, AggregateRoot> map = holidayAddtionRepository.findByCompanyId(companyId);
 		AggregateRoot workRegularAdditionSet = map.get("regularWork");
