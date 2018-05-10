@@ -100,7 +100,7 @@ public class ClosureHistory extends DomainObject {
 		}
 		
 		// Case date is not exist
-		if(isDateOfMonth(this.startYearMonth.year(), this.startYearMonth.month(),
+		if(!this.isDateOfMonth(this.startYearMonth.year(), this.startYearMonth.month(),
 				this.closureDate.getClosureDay().v() + ONE_DAY)) {
 			return GeneralDate.ymd(this.startYearMonth.year(), this.startYearMonth.month(), ONE_DAY);
 		}
