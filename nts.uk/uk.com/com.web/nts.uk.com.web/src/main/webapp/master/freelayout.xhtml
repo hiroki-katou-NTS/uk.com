@@ -16,7 +16,7 @@
 
 <h:body class="no-header">
 	<div data-bind="with: content">
-		<com:ko tag="let" bind="{ vm: $data }">
+		<com:ko tag="let" bind="{ $vm: $data }">
 			<ui:insert name="content" />
 		</com:ko>
 	</div>
