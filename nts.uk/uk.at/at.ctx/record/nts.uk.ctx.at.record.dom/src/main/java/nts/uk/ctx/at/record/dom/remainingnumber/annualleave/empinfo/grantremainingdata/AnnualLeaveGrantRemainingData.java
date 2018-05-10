@@ -110,7 +110,7 @@ public class AnnualLeaveGrantRemainingData extends AggregateRoot {
 		// 年休残数が足りているかチェック
 		boolean isSubtractRemain = false;
 		val remainingNumber = this.details.getRemainingNumber();
-		if (remainingNumber.getDays().v().doubleValue() > remainingDays) isSubtractRemain = true;
+		if (remainingNumber.getDays().v().doubleValue() >= remainingDays) isSubtractRemain = true;
 		// 「強制的に消化する」をチェック
 		else if (isForcibly) isSubtractRemain = true;
 		
