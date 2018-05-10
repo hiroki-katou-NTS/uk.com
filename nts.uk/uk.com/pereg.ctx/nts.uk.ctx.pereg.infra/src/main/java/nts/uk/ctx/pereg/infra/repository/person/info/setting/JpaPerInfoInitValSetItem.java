@@ -249,7 +249,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 							c.setStringValue(init.getStringValue().v());
 							break;
 						case NUMBERIC:
-							c.setIntValue(init.getIntValue().v());
+							c.setIntValue(init.getIntValue() == null? null: init.getIntValue().v());
 							break;
 						case DATE:
 							c.setDateValue(init.getDateValue());
