@@ -90,7 +90,7 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 		// ログインしている会社ID　取得
 		LoginUserContext loginUserContext = AppContexts.user();
 		String companyId = loginUserContext.companyId();
-		Optional<AnnualLeaveInfo> annualLeaveInfo = Optional.empty();
+		Optional<AggrResultOfAnnualLeave> annualLeaveInfo = Optional.empty();
 		int count = 0;
 		for (NextAnnualLeaveGrant elementNextAnnualLeaveGrant : nextAnnualLeaveGrant) {
 			// 期間中の年休残数を取得
