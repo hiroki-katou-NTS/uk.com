@@ -436,13 +436,5 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		return toListEmployeeDataMngInfo(listEntity);
 	}
 
-	@Override
-	public List<EmployeeDataMngInfo> getAllByCid(String cid) {
-		List<BsymtEmployeeDataMngInfo> listEntity = this.queryProxy()
-				.query(GET_ALL, BsymtEmployeeDataMngInfo.class).setParameter("cid", cid).getList();
-
-		return toListEmployeeDataMngInfo(listEntity);
-	}
-
 	// laitv code end
 }
