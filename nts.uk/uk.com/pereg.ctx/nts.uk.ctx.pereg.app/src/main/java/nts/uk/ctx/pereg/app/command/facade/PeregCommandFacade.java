@@ -145,35 +145,15 @@ public class PeregCommandFacade {
 
 	private void updateNonTransaction(PeregInputContainer container) {
 
-		container.getInputs().forEach(itemsByCategory -> {
-			val handler = this.updateHandlers.get(itemsByCategory.getCategoryCd());
-			// In case of optional category fix category doesn't exist
-			if (handler != null) {
-				handler.handlePeregCommand(container.getPersonId(), container.getEmployeeId(), itemsByCategory);
-			}
-			val commandForUserDef = new PeregUserDefUpdateCommand(container.getPersonId(), container.getEmployeeId(),
-					itemsByCategory);
-			this.userDefUpdate.handle(commandForUserDef);
-		});
-	}
-
-	@Transactional
-	public Object register(PeregInputContainer inputContainer) {
-		String recordId = null;
-		List<ItemsByCategory> addInputs = inputContainer.getInputs().stream()
-				.filter(p -> StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
-		if (addInputs != null && !addInputs.isEmpty()) {
-			recordId = this.add(inputContainer);
-		}
-
-		List<ItemsByCategory> updateInputs = inputContainer.getInputs().stream()
+		List<ItemsByCategory> updateInputs = container.getInputs().stream()
 				.filter(p -> !StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
+
 		if (updateInputs != null && !updateInputs.isEmpty()) {
 			// Add item invisible to list
 			for (ItemsByCategory itemByCategory : updateInputs) {
 
 				PeregQuery query = new PeregQuery(itemByCategory.getRecordId(), itemByCategory.getCategoryCd(),
-						inputContainer.getEmployeeId(), inputContainer.getPersonId());
+						container.getEmployeeId(), container.getPersonId());
 
 				List<ItemValue> fullItems = itemDefFinder.getFullListItemDef(query);
 				List<String> visibleItemCodes = itemByCategory.getItems().stream().map(ItemValue::itemCode)
@@ -187,10 +167,28 @@ public class PeregCommandFacade {
 				itemByCategory.getItems().addAll(itemInvisible);
 			}
 
-			PeregInputContainer registerPeregInputContainer = new PeregInputContainer(inputContainer.getPersonId(),
-					inputContainer.getEmployeeId(), updateInputs);
-			this.update(registerPeregInputContainer);
 		}
+
+		updateInputs.forEach(itemsByCategory -> {
+			val handler = this.updateHandlers.get(itemsByCategory.getCategoryCd());
+			// In case of optional category fix category doesn't exist
+			if (handler != null) {
+				handler.handlePeregCommand(container.getPersonId(), container.getEmployeeId(), itemsByCategory);
+			}
+			val commandForUserDef = new PeregUserDefUpdateCommand(container.getPersonId(), container.getEmployeeId(),
+					itemsByCategory);
+			this.userDefUpdate.handle(commandForUserDef);
+		});
+	}
+
+	@Transactional
+	public Object register(PeregInputContainer inputContainer) {
+		
+		// ADD COMMAND
+		String recordId = this.add(inputContainer);
+
+		// UPDATE COMMAND
+		this.update(inputContainer);
 
 		return new Object[] { recordId };
 	}
