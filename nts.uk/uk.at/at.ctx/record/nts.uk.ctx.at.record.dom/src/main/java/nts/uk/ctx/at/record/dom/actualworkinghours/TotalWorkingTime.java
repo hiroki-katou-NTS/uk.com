@@ -247,7 +247,8 @@ public class TotalWorkingTime {
 																									eachWorkTimeSet,
 																									eachCompanyTimeSet,
 																									integrationOfDaily,
-																									flexPreAppTime);
+																									flexPreAppTime,
+																									flexAutoCalSet);
 		int overWorkTime = excesstime.getOverTimeWork().isPresent()?excesstime.getOverTimeWork().get().calcTotalFrameTime():0;
 		overWorkTime += excesstime.getOverTimeWork().isPresent()?excesstime.getOverTimeWork().get().calcTransTotalFrameTime():0;
 		int holidayWorkTime = excesstime.getWorkHolidayTime().isPresent()?excesstime.getWorkHolidayTime().get().calcTotalFrameTime():0;
