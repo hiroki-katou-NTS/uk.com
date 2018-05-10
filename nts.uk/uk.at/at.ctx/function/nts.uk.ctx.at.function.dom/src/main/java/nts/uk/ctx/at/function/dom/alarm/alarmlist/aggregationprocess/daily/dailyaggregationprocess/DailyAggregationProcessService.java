@@ -20,6 +20,7 @@ import nts.uk.ctx.at.function.dom.adapter.fixedcheckitem.FixedCheckItemAdapter;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckAdapter;
+import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.ErrorRecordImport;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
@@ -32,6 +33,7 @@ import nts.uk.ctx.at.function.dom.dailyattendanceitem.repository.DailyAttendance
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class DailyAggregationProcessService {
@@ -107,17 +109,14 @@ public class DailyAggregationProcessService {
 		List<WorkRecordExtraConAdapterDto> listWorkRecordExtraCon=  workRecordExtraConAdapter.getAllWorkRecordExtraConByListID(dailyAlarmCondition.getExtractConditionWorkRecord());
 		Map<String, WorkRecordExtraConAdapterDto> mapWorkRecordExtraCon = listWorkRecordExtraCon.stream().collect(Collectors.toMap(WorkRecordExtraConAdapterDto::getErrorAlarmCheckID, x->x));
 		
-		for(GeneralDate date : period.getListDate()) {
-			
-			Map<String, Map<String, Boolean>> mapErAlCheckIdANDEmployee =  erAlWorkRecordCheckAdapter.check(date, Arrays.asList(employee.getId()), dailyAlarmCondition.getExtractConditionWorkRecord());
-	
-			mapErAlCheckIdANDEmployee.entrySet().stream().forEach(e ->{
-				if(e.getValue().get(employee.getId())) {
-					listValueExtractAlarm.add(checkConditionGenerateValue(employee, date, mapWorkRecordExtraCon.get(e.getKey()), companyID));
-				} 
-				
-			});
+		List<ErrorRecordImport> listErrorRecord = erAlWorkRecordCheckAdapter.check(dailyAlarmCondition.getExtractConditionWorkRecord(), new DatePeriod(period.getStartDate(), period.getEndDate()),
+																																	   Arrays.asList(employee.getId()));
+		for(ErrorRecordImport errorRecord : listErrorRecord) {
+			if(errorRecord.isError()) {
+				listValueExtractAlarm.add(this.checkConditionGenerateValue(employee, errorRecord.getDate(), mapWorkRecordExtraCon.get(errorRecord.getErAlId()), companyID));				
+			}			
 		}
+		
 		return listValueExtractAlarm;
 	}
 	
@@ -296,6 +295,8 @@ public class DailyAggregationProcessService {
 	private String calculateWktypeText( WorkRecordExtraConAdapterDto workRecordExtraCon,String companyID) {
 		
 		List<String> workTypeCodes =  workRecordExtraCon.getErrorAlarmCondition().getWorkTypeCondition().getPlanLstWorkType();
+		if (workTypeCodes.isEmpty() || workTypeCodes == null)
+			return "";
 		List<String> workTypeNames = workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeCodes).stream().map( x ->x.getName().toString()).collect(Collectors.toList());
 		return workTypeNames.isEmpty()? "":  String.join(",", workTypeNames);
 	}
