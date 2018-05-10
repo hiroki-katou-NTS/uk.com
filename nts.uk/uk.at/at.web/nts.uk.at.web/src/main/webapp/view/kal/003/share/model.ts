@@ -59,6 +59,7 @@ module nts.uk.at.view.kal003.share.model {
         dailyAlarmCheckCondition: KnockoutObservable<DailyAlarmCheckCondition> = ko.observable(new DailyAlarmCheckCondition(DATA_CONDITION_TO_EXTRACT.ALL, false, [], [], []));
         schedule4WeekAlarmCheckCondition: KnockoutObservable<Schedule4WeekAlarmCheckCondition> = ko.observable(new Schedule4WeekAlarmCheckCondition(SCHEDULE_4_WEEK_CHECK_CONDITION.FOR_ACTUAL_RESULTS_ONLY));
         action: KnockoutObservable<number> = ko.observable(0);
+        agreement36: KnockoutObservable<Agreement36> = ko.observable(new Agreement36([], []));
 
         constructor(code: string, name: string, category: ItemModel, availableRoles: Array<string>, targetCondition: AlarmCheckTargetCondition) {
             this.code = ko.observable(code);
@@ -238,6 +239,16 @@ module nts.uk.at.view.kal003.share.model {
 
         constructor(schedule4WeekCheckCondition: number) {
             this.schedule4WeekCheckCondition = ko.observable(schedule4WeekCheckCondition);
+        }
+    }
+
+    export class Agreement36 {
+        listAgreementHour: KnockoutObservableArray<AgreeCondOt>;//tab agreement hour
+        listAreementError: KnockoutObservableArray<AgreeConditionErrorDto>;//tab agreement error
+
+        constructor(listAgreementHour: Array<AgreeCondOt>, listAreementError: Array<AgreeConditionErrorDto>) {
+            this.listAgreementHour = ko.observableArray(listAgreementHour);
+            this.listAreementError = ko.observableArray(listAreementError);
         }
     }
 

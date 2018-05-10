@@ -15,7 +15,6 @@ module nts.uk.at.view.kal003.a.service {
         getBusTypeByCodes: "at/record/worktypeselection/getNamesByCodes",
         getAgreementHour: "at/function/alarm/checkcondition/agree36/findcondot",
         getAgreementError: "at/function/alarm/checkcondition/agree36/finderror",
-        getAgreementNameError: "at/function/alarm/checkcondition/agree36/findnameerror"
     }
 
     export function getAllData(category: number): JQueryPromise<any> {
