@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 720, height: 560 };</script>			
+			<script>var dialogSize = { width: 820, height: 560 };</script>			
 			<com:ValidatorScript>
 				nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Day
 				nts.uk.ctx.at.shared.dom.common.Month
@@ -29,6 +29,8 @@
 
 			<div id="contents-area">
 				<label class ='textlabel' data-bind="text:textlabel"></label>
+				<span style ="padding-left: 20px">#{i18n.getText('KAL004_68')}</span>				
+				<button tabindex="9" id="help" data-bind="ntsHelpButton: {image: 'KAL004_1.png', position: 'right top', enable: true }">?</button>				
 				<hr></hr>
 				
 				<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">

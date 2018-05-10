@@ -98,12 +98,19 @@ module nts.uk.at.view.kal004.g.viewmodel {
             self.strDay = ko.observable(self.strSelected() ==0 ? self.daily36.strDay: null);
             self.strMonth = ko.observable(self.strSelected()==1? self.daily36.strMonth: 0);
             self.strComboMonth = ko.observableArray(__viewContext.enums.StandardMonth);  
+            self.strSelected.subscribe((newSelect)=>{
+                if(newSelect) $('.input-str1').ntsError('clear');
+            });
+            
             
             //End Date
             self.endSelected = ko.observable(self.daily36.endSpecify);
             self.endDay = ko.observable(self.endSelected()==0? self.daily36.endDay: null);
             self.endMonth = ko.observable(self.endSelected() ==1? self.daily36.endMonth: 0);    
             self.endComboMonth = ko.observableArray(__viewContext.enums.StandardMonth);
+            self.endSelected.subscribe((newSelect)=>{
+                if(newSelect) $('.input-end1').ntsError('clear');
+            });            
             
             
             self.dateSpecify = ko.observableArray([
@@ -129,7 +136,10 @@ module nts.uk.at.view.kal004.g.viewmodel {
             self.strComboMonth3 = ko.observableArray(__viewContext.enums.StandardMonth);
             self.endMonth3 = ko.observable(self.monthly3.endMonth);    
             self.endComboMonth3 = ko.observableArray(__viewContext.enums.StandardMonth);  
-
+            self.strSelected3.subscribe((newSelect)=>{
+                if(!newSelect) $('.input-str3').ntsError('clear');
+            }); 
+            
             //tab4:
             self.strSelected4 = ko.observable(self.monthly4.strSpecify -1);
             self.strMonthy4 = ko.observable(self.strSelected4()==1? self.monthly4.specifyMonth: null);
@@ -137,10 +147,16 @@ module nts.uk.at.view.kal004.g.viewmodel {
             self.strComboMonth4 = ko.observableArray(__viewContext.enums.StandardMonth);
             self.endMonth4 = ko.observable(self.monthly4.endMonth);    
             self.endComboMonth4 = ko.observableArray(__viewContext.enums.StandardMonth);
+            self.strSelected4.subscribe((newSelect)=>{
+                if(!newSelect) $('.input-str4').ntsError('clear');
+            });             
             
             //tab5
             self.strSelected5 = ko.observable(self.yearly36.thisYear);
             self.strYear5 = ko.observable(self.strSelected5() ==0?self.yearly36.year: null);
+            self.strSelected5.subscribe((newSelect)=>{
+                if(newSelect) $('.input-str5').ntsError('clear');
+            });               
         }
 
         startPage(): JQueryPromise<any> {
