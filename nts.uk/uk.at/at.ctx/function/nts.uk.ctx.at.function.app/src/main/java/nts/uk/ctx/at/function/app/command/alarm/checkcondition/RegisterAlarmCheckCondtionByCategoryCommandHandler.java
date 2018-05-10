@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.function.app.command.alarm.checkcondition;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -20,6 +22,10 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.ExtractionCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeCondOt;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeConditionError;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeCondOtRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeConditionErrorRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
@@ -46,7 +52,13 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 	//monthly
 	@Inject
 	private FixedExtraMonFunAdapter fixedExtraMonFunAdapter;
+	
+	@Inject
+	private IAgreeConditionErrorRepository conErrRep;
 
+	@Inject
+	private IAgreeCondOtRepository otRep;
+	
 	@Override
 	protected void handle(CommandHandlerContext<AlarmCheckConditionByCategoryCommand> context) {
 		AlarmCheckConditionByCategoryCommand command = context.getCommand();
@@ -119,6 +131,55 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				extractionCondition = command.getSchedule4WeekAlarmCheckCondition() == null ? null
 						: new AlarmCheckCondition4W4D(IdentifierUtil.randomUniqueId(),
 								command.getSchedule4WeekAlarmCheckCondition().getSchedule4WeekCheckCondition());
+				break;
+			case AGREEMENT: 
+				// update agree condtion error
+				List<AgreeConditionError> listError = new ArrayList<>();
+				listError = command.getAgree36().getListCondError().stream().map(x -> 
+					AgreeConditionError.createFromJavaType(x.getId(), x.getCompanyId(), x.getCategory(),
+															x.getCode(), x.getUseAtr(), x.getPeriod(), 
+															x.getErrorAlarm(), x.getMessageDisp())
+				).collect(Collectors.toList());
+				for(AgreeConditionError item : listError){
+					if(item.getId() != null){
+						Optional<AgreeConditionError> oldOption = conErrRep.findById(item.getId(), item.getCode().v(), 
+																						item.getCompanyId(), item.getCategory().value);
+						if(oldOption.isPresent()){
+							conErrRep.update(item);
+						}else{
+							conErrRep.insert(item);
+						}
+					}else{
+						conErrRep.insert(item);
+					}
+				}
+				// update agree conditon ot
+				List<AgreeCondOt> listOt = new ArrayList<>();
+				if(listOt.isEmpty()){
+					throw new BusinessException("Msg_832"); 
+				}
+				if(listOt.size() > 10){
+					throw new BusinessException("Msg_1242"); 
+				}
+				listOt = command.getAgree36().getListCondOt().stream().map(x -> 
+						AgreeCondOt.createFromJavaType(x.getId(), x.getCompanyId(), 
+								x.getCategory(), x.getCode(), 
+								x.getNo(), x.getOt36(), x.getExcessNum(), x.getMessageDisp())
+				).collect(Collectors.toList());
+				for(AgreeCondOt obj : listOt){
+					if(obj.getId() != null){
+						Optional<AgreeCondOt> oldOption = otRep.findById(obj.getId(), obj.getNo(), obj.getCode().v(),
+																			obj.getCompanyId(), obj.getCategory().value);
+						if(oldOption.isPresent()){
+							otRep.update(obj);
+						}else{
+							otRep.insert(obj);
+						}
+					}else{
+						otRep.insert(obj);
+					}
+			
+				}
 				break;
 			default:
 				break;

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.agree36;
 
 import java.io.Serializable;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -20,4 +21,14 @@ public class Kfnmt36AgreeCondErrPK implements Serializable{
 	/** ID **/
 	@Column(name = "ID")
 	public String id;
+
+	@Basic
+	@Column(name = "CD")
+	public String code;
+	
+	@Column(name = "CID")
+	public String companyId;
+	
+	@Column(name = "CATEGORY")
+	public int category;
 }

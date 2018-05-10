@@ -12,13 +12,13 @@ public interface IAgreeConditionErrorRepository {
 	 * find all AgreeConditionError
 	 * @return
 	 */
-	public List<AgreeConditionError> findAll();
+	public List<AgreeConditionError> findAll(String code, int category);
 	/**
 	 * get a optional AgreeConditionError by id
 	 * @param id
 	 * @return
 	 */
-	public Optional<AgreeConditionError> findById(String id);
+	public Optional<AgreeConditionError> findById(String id, String code, String companyId, int category);
 	/**
 	 * update a AgreeConditionError
 	 * @param agreeConditionError
@@ -33,5 +33,5 @@ public interface IAgreeConditionErrorRepository {
 	 * delete a AgreeConditionError
 	 * @param agreeConditionError
 	 */
-	public void delete(String id);
+	public void delete(String code, int category);
 }

@@ -34,12 +34,15 @@ public class UpdateAgreeCondOtCommandHandler extends CommandHandler<UpdateAgreeC
 		if(listDomain.size() > 10){
 			throw new BusinessException("Msg_1242"); 
 		}
-		listDomain = context.getCommand().getAgreeCondOtCommand().stream().map(x -> {
-			return AgreeCondOt.createFromJavaType(x.getId(), x.getNo(), x.getOt36(), x.getExcessNum(), x.getMessageDisp().v());
-		}).collect(Collectors.toList());
+		listDomain = context.getCommand().getAgreeCondOtCommand().stream().map(x -> 
+				AgreeCondOt.createFromJavaType(x.getId(), x.getCompanyId(), 
+						x.getCategory(), x.getCode(), 
+						x.getNo(), x.getOt36(), x.getExcessNum(), x.getMessageDisp())
+		).collect(Collectors.toList());
 		for(AgreeCondOt item : listDomain){
 			if(item.getId() != null){
-				Optional<AgreeCondOt> oldOption = otRep.findById(item.getId(), item.getNo());
+				Optional<AgreeCondOt> oldOption = otRep.findById(item.getId(), item.getNo(), item.getCode().v(),
+																	item.getCompanyId(), item.getCategory().value);
 				if(oldOption.isPresent()){
 					otRep.update(item);
 				}else{

@@ -6,6 +6,9 @@ import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 /**
  * 36協定時間超過回数のチェック条件, 36協定時間超過回数抽出条件
  * @author yennth
@@ -17,6 +20,9 @@ public class AgreeCondOt {
 	/** ID */
 	@Setter
 	private String id;
+	private String companyId;
+	private AlarmCategory category;
+	private AlarmCheckConditionCode code;
 	/** no */
 	private int no;
 	/** 36超過時間 */
@@ -26,8 +32,11 @@ public class AgreeCondOt {
 	/** 表示するメッセージ */
 	private MessageDisp messageDisp;
 	
-	public static AgreeCondOt createFromJavaType(String id, int no, BigDecimal ot36, int excessNum, String messageDisp){
-		return new AgreeCondOt(id, no, new OverTime(ot36), new Number(excessNum),
+	public static AgreeCondOt createFromJavaType(String id, String companyId, int category, String code, int no, 
+													BigDecimal ot36, int excessNum, String messageDisp){
+		return new AgreeCondOt(id, companyId,
+				EnumAdaptor.valueOf(category, AlarmCategory.class),
+				new AlarmCheckConditionCode(code), no, new OverTime(ot36), new Number(excessNum),
 				messageDisp == null ? null : new MessageDisp(messageDisp));
 	}
 	

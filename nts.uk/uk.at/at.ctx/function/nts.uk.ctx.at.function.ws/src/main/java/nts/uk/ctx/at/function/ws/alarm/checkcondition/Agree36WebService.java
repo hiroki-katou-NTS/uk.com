@@ -8,10 +8,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.DeleteAgreeCondOtCommand;
-import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.DeleteAgreeCondOtCommandHandler;
-import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.DeleteAgreeConditionErrorCommand;
-import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.DeleteAgreeConditionErrorCommandHandler;
 import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.UpdateAgreeCondOtCommand;
 import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.UpdateAgreeCondOtCommandHandler;
 import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.UpdateAgreeConditionErrorCommand;
@@ -32,22 +28,18 @@ public class Agree36WebService extends WebService{
 	private UpdateAgreeConditionErrorCommandHandler updateConditionError;
 	@Inject
 	private UpdateAgreeCondOtCommandHandler updateConOt;
-	@Inject
-	private DeleteAgreeCondOtCommandHandler deleteOt;
-	@Inject
-	private DeleteAgreeConditionErrorCommandHandler deleteConError;
 	
-	@POST
-	@Path("findcondot")
-	public List<AgreeCondOtDto> finder(){
-		return this.condOtFinder.finder();
-	}
+//	@POST
+//	@Path("findcondot")
+//	public List<AgreeCondOtDto> finder(){
+//		return this.condOtFinder.finder();
+//	}
 	
-	@POST
-	@Path("finderror")
-	public List<AgreeConditionErrorDto> findError(){
-		return this.condErrorFinder.finder();
-	}
+//	@POST
+//	@Path("finderror")
+//	public List<AgreeConditionErrorDto> findError(){
+//		return this.condErrorFinder.finder();
+//	}
 	
 	@POST
 	@Path("updateerror")
@@ -61,15 +53,4 @@ public class Agree36WebService extends WebService{
 		this.updateConOt.handle(command);
 	}
 	
-	@POST
-	@Path("deleteot")
-	public void deleteOt(DeleteAgreeCondOtCommand command){
-		this.deleteOt.handle(command);
-	}
-	
-	@POST
-	@Path("deleteerror")
-	public void deleteOt(DeleteAgreeConditionErrorCommand command){
-		this.deleteConError.handle(command);
-	}
 }

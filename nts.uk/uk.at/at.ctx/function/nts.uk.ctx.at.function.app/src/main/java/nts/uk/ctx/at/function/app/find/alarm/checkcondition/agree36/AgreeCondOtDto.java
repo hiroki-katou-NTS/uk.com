@@ -9,6 +9,7 @@ public class AgreeCondOtDto {
 	String id;
 	/** no */
 	int no;
+	String code;
 	/** 36超過時間 */
 	BigDecimal ot36;
 	/** 36超過回数 */

@@ -3,10 +3,6 @@ package nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.ErrorAlarm;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.MessageDisp;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.Period;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.UseClassification;
 /**
  * insert/update AgreeConditionError Command
  * @author yennth
@@ -18,12 +14,15 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.UseClassification
 public class AgreeConditionErrorCommand {
 	/** ID */
 	private String id;
+	private String code;
+	private String companyId;
+	private int category;
 	/** 使用区分 */
-	private UseClassification useAtr;
+	private int useAtr;
 	/** 期間 */
-	private Period period;
+	private int period;
 	/** エラーアラーム */
-	private ErrorAlarm errorAlarm;
+	private int errorAlarm;
 	/** 表示するメッセージ */
-	private MessageDisp messageDisp;
+	private String messageDisp;
 }
