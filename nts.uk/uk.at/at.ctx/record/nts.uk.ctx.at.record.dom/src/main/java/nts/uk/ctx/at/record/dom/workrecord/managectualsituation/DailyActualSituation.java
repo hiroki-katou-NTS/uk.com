@@ -18,7 +18,7 @@ public class DailyActualSituation {
 	/**
 	 * 本人確認が完了している
 	 */
-	boolean identityVerificationCompleted;
+	boolean identificationCompleted;
 	/**
 	 * エラーが0件である
 	 */
