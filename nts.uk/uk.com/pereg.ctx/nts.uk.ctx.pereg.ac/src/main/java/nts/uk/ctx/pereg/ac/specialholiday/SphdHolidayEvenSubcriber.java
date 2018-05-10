@@ -154,9 +154,9 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			 * 【更新内容】 廃止区分 ＝ 廃止する 項目名 ＝ 取得したゼロ会社の「個人情報項目定義」．項目名
 			 */
 			for (PersonInfoItemDefinition x : lstItem) {
-				Optional<String> newItemName = getNewItemName(x.getItemCode().v(), spHDName);
+				String itemCode = x.getItemCode().v();
+				Optional<String> newItemName = getNewItemName(itemCode, spHDName);
 				if (newItemName.isPresent()) {
-					String itemCode = x.getItemCode().v();
 					if (mapItemNameInZeroCom.containsKey(itemCode)) {
 						x.setItemName(mapItemNameInZeroCom.get(itemCode));
 						lstReturn.add(x);
