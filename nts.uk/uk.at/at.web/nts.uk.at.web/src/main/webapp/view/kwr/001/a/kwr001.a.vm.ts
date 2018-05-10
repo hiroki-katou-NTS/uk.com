@@ -264,7 +264,7 @@ module nts.uk.at.view.kwr001.a {
                 // end define KCP005
                 
                 // start component KCP005
-                $('#component-items-list').ntsListComponent(self.listComponentOption);
+//                $('#component-items-list').ntsListComponent(self.listComponentOption);
                 // end component KCP005
             }
             
@@ -276,7 +276,8 @@ module nts.uk.at.view.kwr001.a {
                 // TODO - hoangdd: goi service lay domain cho A7_6. gio dang fix cung
                 self.enableBtnConfigure(true);
                 
-                $.when(self.getDataStartPageService()).done(function() {
+                $.when(self.getDataStartPageService(), self.getDataCharateristic(),
+                        $('#component-items-list').ntsListComponent(self.listComponentOption)).done(function() {
                         blockUI.clear();
                     });
                 
@@ -309,8 +310,12 @@ module nts.uk.at.view.kwr001.a {
             
             private getDataCharateristic(): JQueryPromise<any> {
                 var dfd = $.Deferred<void>();
+                console.log(__viewContext);
                 let self = this;
-                
+                nts.uk.characteristics.save("WorkScheduleOutputCondition_", "sdf");
+                $.when(nts.uk.characteristics.restore("WorkScheduleOutputCondition_")).done(function(data: any) {
+                    console.log(data);
+                });
                 dfd.resolve();
                 
                 return dfd.promise();
@@ -432,5 +437,106 @@ module nts.uk.at.view.kwr001.a {
             listEmployee: Array<EmployeeSearchDto>; // 検索結果
         }
         // end CCG001
+        
+        class WorkScheduleOutputCondition {
+            companyId: string;
+            userId: string;
+            outputType: number;
+            code: Array<string>;
+            pageBreakIndicator: number;
+            settingDetailTotalOuput: WorkScheduleSettingTotalOutput;
+            conditionSetting: number;
+            errorAlarmCode: Array<string>;
+            
+            constructor(companyId: string, userId: string, outputType: number, code: Array<string>, pageBreakIndicator: number,
+                            settingDetailTotalOuput: WorkScheduleSettingTotalOutput, conditionSetting: number, errorAlarmCode: Array<string>) {
+                this.companyId = companyId;
+                this.userId = userId;
+                this.outputType = outputType;
+                this.code = code;
+                this.pageBreakIndicator = pageBreakIndicator;
+                this.settingDetailTotalOuput = settingDetailTotalOuput;
+                this.conditionSetting =  conditionSetting;
+                if (errorAlarmCode) {
+                    this.errorAlarmCode = errorAlarmCode;        
+                }
+            }
+        }
+        
+        class WorkScheduleSettingTotalOutput {
+            details: boolean;
+            personalTotal: boolean;
+            workplaceTotal: boolean;
+            totalNumberDay: boolean;
+            grossTotal: boolean;
+            cumulativeWorkplace: boolean;
+            
+            workplaceHierarchyTotal: TotalWorkplaceHierachy;
+            
+            constructor( details: boolean, personalTotal: boolean, workplaceTotal: boolean, totalNumberDay: boolean,
+                            grossTotal: boolean, cumulativeWorkplace: boolean, workplaceHierarchyTotal?: TotalWorkplaceHierachy) {
+                this.details = details;
+                this.personalTotal = personalTotal;
+                this.workplaceTotal = workplaceTotal;
+                this.totalNumberDay = totalNumberDay;
+                this.grossTotal = grossTotal;
+                this.cumulativeWorkplace = cumulativeWorkplace;
+                if (workplaceHierarchyTotal) {
+                    this.workplaceHierarchyTotal = workplaceHierarchyTotal;
+                }
+            }
+        }
+        
+        class TotalWorkplaceHierachy {
+            firstLevel: boolean;
+            secondLevel: boolean;
+            thirdLevel: boolean;
+            fourthLevel: boolean;
+            fifthLevel: boolean;
+            sixthLevel: boolean;
+            seventhLevel: boolean;
+            eighthLevel: boolean;
+            ninthLevel: boolean; 
+            
+            constructor(firstLevel?: boolean, secondLevel?: boolean, thirdLevel?: boolean, fourthLevel?: boolean,
+                            fifthLevel?: boolean, sixthLevel?: boolean, seventhLevel?: boolean, 
+                            eighthLevel?: boolean, ninthLevel?: boolean ) {
+                if (firstLevel) {
+                    this.firstLevel = firstLevel;
+                }
+                
+                if (secondLevel) {
+                    this.secondLevel = secondLevel;
+                }
+                
+                if (thirdLevel) {
+                    this.thirdLevel = thirdLevel;
+                }
+                
+                if (fourthLevel) {
+                    this.fourthLevel = fourthLevel;
+                }
+                
+                if (fifthLevel) {
+                    this.fifthLevel = fifthLevel;
+                }
+                
+                if (sixthLevel) {
+                    this.sixthLevel = sixthLevel;
+                }
+                
+                if (seventhLevel) {
+                    this.seventhLevel = seventhLevel;
+                }
+                
+                if (eighthLevel) {
+                    this.eighthLevel = eighthLevel;
+                }
+                
+                if (ninthLevel) {
+                    this.ninthLevel = ninthLevel;
+                }
+            }
+        }
     }
 }
