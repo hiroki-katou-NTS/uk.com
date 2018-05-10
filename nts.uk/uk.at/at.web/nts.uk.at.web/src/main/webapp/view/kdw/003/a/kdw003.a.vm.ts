@@ -1994,7 +1994,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         available19: KnockoutObservable<boolean> = ko.observable(false);
         available20: KnockoutObservable<boolean> = ko.observable(false);
         available21: KnockoutObservable<boolean> = ko.observable(false);
-        constructor(data: Array<DailyPerformanceAuthorityDto>, authority : any, showCheckbox) {
+        constructor(data: Array<DailyPerformanceAuthorityDto>, authority : any) {
             var self = this;
             if (!data) return;
             this.available1(self.checkAvailable(data, 1));
@@ -2008,7 +2008,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             this.available7(self.checkAvailable(data, 7));
             this.available23(self.checkAvailable(data, 23));
             this.available25(self.checkAvailable(data, 25));
-            if (self.checkAvailable(data, 25) && showCheckbox) { 
+            if (self.checkAvailable(data, 25)) { 
                 $("#btn-signAll").css("visibility", "visible");
                 $("#btn-releaseAll").css("visibility", "visible");
 
