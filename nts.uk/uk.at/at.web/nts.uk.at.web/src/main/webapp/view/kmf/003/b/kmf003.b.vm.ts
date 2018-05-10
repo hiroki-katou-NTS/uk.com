@@ -395,7 +395,16 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             });
             
             if(checkErr){
-                service.addYearHolidayGrant(grantHolidayTblList).done(function(){
+                let data = [];
+                _.forEach(grantHolidayTblList, function(item) {
+                    if((item.year != null || item.month != null) && item.grantDays != null) {
+                        if((item.year != "" || item.month != "") && item.grantDays != "") {
+                            data.push(item);
+                        }
+                    }
+                });
+                
+                service.addYearHolidayGrant(data).done(function(){
                     nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", true);
                     self.checkDataExisted(true);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
