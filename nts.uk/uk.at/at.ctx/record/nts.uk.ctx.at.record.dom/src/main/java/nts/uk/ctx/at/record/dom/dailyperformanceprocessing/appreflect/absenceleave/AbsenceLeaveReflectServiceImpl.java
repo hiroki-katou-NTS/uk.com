@@ -252,12 +252,12 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 			optTimeActual = leavingStamp1.getLeaveStamp();
 		}
 		if(!optTimeActual.isPresent()) {
-			return true;
+			return false;
 		}	
 		TimeActualStamp attendanceStamp = optTimeActual.get();
 		Optional<WorkStamp> optActualStamp = attendanceStamp.getActualStamp();
 		if(!optActualStamp.isPresent()) {
-			return true;
+			return false;
 		}
 		WorkStamp actualStamp = optActualStamp.get();
 		//取得した出勤時刻に値がない　OR
