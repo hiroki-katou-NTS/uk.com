@@ -151,7 +151,9 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                     let listMonth36Share = nts.uk.ui.windows.getShared("listMonth36Share");
                     let yearly36Share = nts.uk.ui.windows.getShared("yearly36Share");
                     
-                    self.changeExtraction36Agreement(listMonth36Share, daily36Share, yearly36Share, categoryId);
+                    if (!nts.uk.util.isNullOrUndefined(listMonth36Share)) {
+                        self.changeExtraction36Agreement(listMonth36Share, daily36Share, yearly36Share, categoryId);                        
+                    }
                 });
             }
         }
