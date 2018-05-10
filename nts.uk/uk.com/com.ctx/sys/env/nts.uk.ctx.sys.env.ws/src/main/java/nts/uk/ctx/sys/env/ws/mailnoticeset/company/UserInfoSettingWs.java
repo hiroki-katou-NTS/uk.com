@@ -21,31 +21,35 @@ import nts.uk.ctx.sys.env.app.find.mailnoticeset.MailFunctionAndDestinationFinde
 import nts.uk.ctx.sys.env.app.find.mailnoticeset.company.UserInfoUseMethodFinder;
 import nts.uk.ctx.sys.env.app.find.mailnoticeset.company.dto.UserInfoUseMethodDto;
 import nts.uk.ctx.sys.env.app.find.mailnoticeset.dto.SettingDataDto;
+import nts.uk.ctx.sys.env.app.find.mailnoticeset.dto.UserInfoEnumDto;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
  * The Class UserInfoSettingWs.
  */
-@Path("sys/env/userinfousemethod")
+@Path("sys/env/userinfoset")
 @Produces(MediaType.APPLICATION_JSON)
 public class UserInfoSettingWs extends WebService {
 
 	/** The find handler. */
 	@Inject
-	UserInfoUseMethodFinder findHandler;
+	private UserInfoUseMethodFinder findHandler;
 
 	/** The mail function and destination finder. */
 	@Inject
-	MailFunctionAndDestinationFinder mailFunctionAndDestinationFinder;
+	private MailFunctionAndDestinationFinder mailFunctionAndDestinationFinder;
 
 	/** The mail destination function save command handler. */
 	@Inject
-	MailDestinationFunctionSaveCommandHandler mailDestinationFunctionSaveCommandHandler;
+	private MailDestinationFunctionSaveCommandHandler mailDestinationFunctionSaveCommandHandler;
 
 	/** The user info use method save command handler. */
 	@Inject
-	UserInfoUseMethodSaveCommandHandler userInfoUseMethodSaveCommandHandler;
+	private UserInfoUseMethodSaveCommandHandler userInfoUseMethodSaveCommandHandler;
 
+	@Inject
+	private I18NResourcesForUK i18n;
 	/**
 	 * Find.
 	 *
@@ -125,4 +129,9 @@ public class UserInfoSettingWs extends WebService {
 		this.mailDestinationFunctionSaveCommandHandler.handle(command);
 	}
 
+	@Path("getAllEnum")
+	@POST
+	public UserInfoEnumDto getAllEnum() {
+		return UserInfoEnumDto.init(i18n);
+	}
 }
