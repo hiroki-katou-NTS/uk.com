@@ -1,5 +1,8 @@
 package nts.uk.file.at.app.export.dailyschedule.totalsum;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -29,4 +32,18 @@ public class TotalCountDay {
 	private int earlyLeaveDay;
 	// 所定日数
 	private int predeterminedDay;	
+	
+	public List<Integer> allDayCount = new ArrayList<>();
+	
+	public void initAllDayCount() {
+		allDayCount.add(predeterminedDay);	// 所定日数
+		allDayCount.add(holidayDay);		// 休日日数
+		allDayCount.add(offDay);			// 休出日数
+		allDayCount.add(yearOffUsage);		// 年休使用数
+		allDayCount.add(heavyHolDay);		// 積休使用数
+		allDayCount.add(specialHoliday);	// 特休日数
+		allDayCount.add(absenceDay);		// 欠勤日数
+		allDayCount.add(lateComeDay);		// 遅刻回数
+		allDayCount.add(earlyLeaveDay);		// 早退回数
+	}
 }

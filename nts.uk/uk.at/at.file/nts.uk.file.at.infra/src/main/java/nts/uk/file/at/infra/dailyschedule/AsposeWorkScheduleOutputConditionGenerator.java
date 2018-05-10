@@ -1,16 +1,12 @@
 package nts.uk.file.at.infra.dailyschedule;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.management.Query;
 
 import com.aspose.cells.Cell;
 import com.aspose.cells.Cells;
@@ -20,32 +16,21 @@ import com.aspose.cells.Workbook;
 import com.aspose.cells.WorkbookDesigner;
 import com.aspose.cells.Worksheet;
 
-import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.ErrorAlarmWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.ErrorAlarmWorkRecordAdapterDto;
-import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceItemValueImport;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.PrintRemarksContent;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarksContentChoice;
-import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.editstate.EditStateOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.editstate.EditStateOfDailyPerformanceFinder;
-import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmClassification;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
-import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoGetMemento;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
@@ -56,12 +41,15 @@ import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameGroup;
 import nts.uk.file.at.app.export.dailyschedule.ActualValue;
+import nts.uk.file.at.app.export.dailyschedule.AttendanceResultImportAdapter;
 import nts.uk.file.at.app.export.dailyschedule.IndividualDailyWorkSchedule;
+import nts.uk.file.at.app.export.dailyschedule.TotalDayCountWs;
 import nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputCondition;
 import nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputGenerator;
 import nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputQuery;
 import nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputService;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.PersonalTotal;
+import nts.uk.file.at.app.export.dailyschedule.totalsum.TotalCountDay;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.TotalSumRowOfDailySchedule;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.TotalValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
@@ -72,19 +60,22 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsReportGenerator implements WorkScheduleOutputGenerator{
 
 	@Inject
-	WorkplaceConfigInfoRepository workplaceConfigRepository;
+	private WorkplaceConfigInfoRepository workplaceConfigRepository;
 	
 	@Inject
-	WorkplaceInfoRepository workplaceInfoRepository;
+	private WorkplaceInfoRepository workplaceInfoRepository;
 	
 	@Inject
-	EmployeeDailyPerErrorRepository errorAlarmRepository;
+	private EmployeeDailyPerErrorRepository errorAlarmRepository;
+	
+	@Inject
+	private AttendanceResultImportAdapter attendaceAdapter;
+	
+	@Inject
+	private TotalDayCountWs totalDayCountWs;
 	
 	@Inject
 	private ErrorAlarmWorkRecordAdapter errorAlarmWorkRecordAdapter;
-	
-	@Inject
-	private DailyRecordWorkFinder fullFinder;
 	
 	@Inject
 	private EditStateOfDailyPerformanceFinder editStateFinder;
@@ -330,7 +321,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param cells
 	 * @param employeeId
 	 */
-	public void writeDayCount(int currentRow, Cells cells, int employeeId) {
+	public void writeDayCount(int currentRow, Cells cells, int employeeId, DateRange dateRange) {
 		// A7_1
 		Cell dayCountTag = cells.get(currentRow, 0);
 		dayCountTag.setValue(WorkScheOutputConstants.DAY_COUNT);
@@ -341,8 +332,19 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			dayTypeTag.setValue(WorkScheOutputConstants.DAY_COUNT_TITLES[i]);
 		}
 		
-		// A7_11 -> A7_19
+		currentRow++;
 		
+		// A7_11 -> A7_19
+		TotalCountDay totalCountDay = new TotalCountDay();
+		totalDayCountWs.calculateAllDayCount(employeeId, dateRange, totalCountDay);
+		totalCountDay.initAllDayCount();
+		
+		for (int i = 0; i < WorkScheOutputConstants.DAY_COUNT_TITLES.length; i++) {
+			Cell dayTypeTag = cells.get(currentRow, i + 3);
+			dayTypeTag.setValue(totalCountDay.getAllDayCount().get(i));
+		}
+		
+		currentRow++;
 	}
 	
 	/**
@@ -420,7 +422,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						List<ActualValue> lstActualValue = new ArrayList<>();
 						indDailyWorkSche.setActualValue(lstActualValue);
 						
-						AttendanceResultImport attendanceResultImport = getValueOf(employeeId, currentDate, convertList(condition.getCode(), x -> x.v()));
+						AttendanceResultImport attendanceResultImport = attendaceAdapter.getValueOf(employeeId, currentDate, AttendanceResultImportAdapter.convertList(condition.getCode(), x -> x.v()));
 						attendanceResultImport.getAttendanceItems().stream().map(x -> lstActualValue.add(new ActualValue(x.getItemId(), x.value())));
 						
 						// A5_3
@@ -469,28 +471,15 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					writePersonalTotal(currentRow, cells, personalTotal, Integer.parseInt(employeeId));
 					
 					// Day count (A7)
+					writeDayCount(currentRow, cells, Integer.parseInt(employeeId), dateRange);
+					
+					
 				}
 				
 				// Recursive into lower level workplace
 				writeDetailedWorkSchedule(currentRow, cells, hierachyInfo, query, condition, sum);
 			}
 		}
-	}
-	
-	public AttendanceResultImport getValueOf(String employeeId, GeneralDate workingDate, List<Integer> itemIds) {
-		DailyRecordDto itemDtos = this.fullFinder.find(employeeId, workingDate);
-		return getAndConvert(employeeId, workingDate, itemDtos, itemIds);
-	}
-	
-	private AttendanceResultImport getAndConvert(String employeeId, GeneralDate workingDate, DailyRecordDto data, List<Integer> itemIds){
-		return AttendanceResultImport.builder().employeeId(employeeId).workingDate(workingDate)
-				.attendanceItems(AttendanceItemUtil.toItemValues(data, itemIds).stream()
-						.map(c -> new AttendanceItemValueImport(c.getValueType().value, c.itemId(), c.value()))
-						.collect(Collectors.toList())).build();
-	}
-	
-	public static <T, U> List<U> convertList(List<T> from, Function<T, U> func) {
-	    return from.stream().map(func).collect(Collectors.toList());
 	}
 	
 	public Optional<PrintRemarksContent> getRemarkContent(String employeeId, GeneralDate currentDate, List<EmployeeDailyPerError> errorList, RemarksContentChoice choice) {

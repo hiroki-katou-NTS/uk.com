@@ -11,9 +11,9 @@ public enum NumberOfItem {
 	// 遅刻時間2
 	Late_Come_2(598, 1),
 	// 早退回数1
-	Early_Leave_1(59, 1),
+	Early_Leave_1(604, 1),
 	// 早退回数2
-	Early_Leave_2(592, 1);
+	Early_Leave_2(610, 1);
 	
 	public int attendanceId;
 	
