@@ -22,12 +22,11 @@
 		<ui:define name="content">
 			<div id="content-area" class="contents-area fixed-flex-layout"
 				style="display: block;">
-				<div>
+				<div style="padding: 10px;">
 					<label>#{i18n.getText('CMM001_41')}</label>
 				</div>
-				<br></br>
 				<div class="div-table">
-					<table>
+					<table data-bind="name : #{i18n.getText('CMM001_42')};">
 						<colgroup>
 							<col width="20px" />
 							<col width="150px" />
@@ -37,16 +36,17 @@
 						<thead>
 							<tr class="bg-green">
 								<th><div data-bind="ntsCheckBox: {checked: isCheckedAll};"></div></th>
-								<th>#{i18n.getText('CMM001_43')}</th>
-								<th>#{i18n.getText('CMM001_44')}</th>
+								<th><label>#{i18n.getText('CMM001_43')}</label></th>
+								<th><label>#{i18n.getText('CMM001_44')}</label></th>
 								<th>
-									<div>#{i18n.getText('CMM001_45')}</div> <br></br>
-									<div data-bind="ntsSwitchButton: {
+									<div><label>#{i18n.getText('CMM001_45')}</label></div>
+									<div id="copy-method-header" data-bind="ntsSwitchButton: {
 												options: switchOptions,
 												optionsValue: 'copyMethod',
 												optionsText: 'text',
 												value: switchHeader,
-												enable: true}"
+												enable: true,
+												name: '#{i18n.getText('CMM001_45')}'}"
 										tabindex="2" style="display: inline"></div>
 									<div><span class="caret-bottom outline"></span></div></th>
 							</tr>
@@ -55,28 +55,29 @@
 							<tr data-bind="css: { selected: flag }">
 								<td><div data-bind="ntsCheckBox: {checked: flag}"
 										class="checkbox-item"></div></td>
-								<td data-bind="ifnot: isBorder, css: { 'border-custom' : isBorder }"><span
-									data-bind="text: systemType;"></span></td>
-								<td><span data-bind="text: masterCopyCategory"></span></td>
+								<td data-bind="ifnot: isBorder, css: { 'border-custom' : isBorder }"><label
+									data-bind="text: systemType;"></label></td>
+								<td><label data-bind="text: masterCopyCategory"></label></td>
 								<td><div data-bind="ntsSwitchButton: {
 												options: $parent.switchOptions,
 												optionsValue: 'copyMethod',
 												optionsText: 'text',
 												value: copyMethod,
 												required: true,
-												enable: true}"
+												enable: true,
+												name: '#{i18n.getText('CMM001_45')}'}"
 										tabindex="4" class="switch-method"></div></td>
 							</tr>
 						</tbody>
 					</table>
-				</div>
+				</div> <hr></hr>
 			</div>
 			<div id="functions-area" style="text-align: center;">
 				<button tabindex="5" id="openFDialog"
-					class="button separate-button fix-button"
+					class="button separate-button fix-button x-large proceed"
 					data-bind="click: openFDialog">#{i18n.getText('CMM001_50')}</button>
 				<button tabindex="6" id="closeDialog"
-					class="button separate-button fix-button"
+					class="button separate-button fix-button large"
 					data-bind="click: closeDialog">#{i18n.getText('CMM001_51')}</button>
 			</div>
 		</ui:define>

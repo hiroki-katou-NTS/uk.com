@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.app.find.mastercopy;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +34,10 @@ public class MasterCopyCategoryFinder {
 			return null;
 		}
 
-		// return list category
-		return listMasterCopyCategory.stream().map(e -> new MasterCopyCategoryFindDto(e.getSystemType().value, e.getMasterCopyCategory().v(), e.getOrder(), e.getMasterCopyId())).collect(Collectors.toList());
+		// get list category dto
+		List<MasterCopyCategoryFindDto> listMasterCopyCategoryDto = listMasterCopyCategory.stream().map(e -> new MasterCopyCategoryFindDto(e.getSystemType().value, e.getMasterCopyCategory().v(), e.getOrder(), e.getMasterCopyId())).collect(Collectors.toList());
+		// sort by system then order;
+		return listMasterCopyCategoryDto.stream().sorted(Comparator.comparing(MasterCopyCategoryFindDto::getSystemType).thenComparing(MasterCopyCategoryFindDto::getOrder)).collect(Collectors.toList());
+		
 	}
 }

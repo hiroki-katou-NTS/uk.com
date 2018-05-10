@@ -15,13 +15,11 @@ td {
     display:block;
     height:420px;
     overflow:auto;
+    padding: 10px;
 }
 .selected { background-color: #CEE6FF; }
 td.border-custom { 
 	border-top: none;
- }
-td.border-custom2 { 
-	border-bottom: none;
  }
 .caret-bottom.outline {
     width: 5rem;
