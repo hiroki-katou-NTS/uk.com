@@ -84,12 +84,13 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
 
         //E
-        //gridlist
-        categorys: KnockoutObservableArray<CategoryModel>;
-        columnCategorys: KnockoutObservableArray<NtsGridListColumn>;
         columnEmployees: KnockoutObservableArray<NtsGridListColumn>;
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
+        
+        
+        roundingRules: KnockoutObservableArray<any>;
+        selectedRuleCode: any;
         
         constructor() {
             var self = this;           
@@ -207,21 +208,23 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.initComponentCCG001();
             self.initComponnentKCP005();
             
-            
-            //E
-             this.categorys = ko.observableArray([]);
+            //E   
+            this.columnEmployees = ko.observableArray([
+                { headerText: getText('CMF005_56'), key: 'code', width: 150 },
+                { headerText: getText('CMF005_57'), key: 'name', width: 200 }
+            ]);
         }
         
-           /**
-           * start page data 
-           */
-            public startPage(): JQueryPromise<any> {
-                var self = this;
-                var dfd = $.Deferred();
+        /**
+        * start page data 
+        */
+        public startPage(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
 
-                dfd.resolve(self);
-                return dfd.promise();
-            }
+            dfd.resolve(self);
+            return dfd.promise();
+        }
 
         /**
          * Setting value default  screen B
@@ -553,17 +556,13 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.previous();
         }
 
-        private backToA() {
-            let self = this;
-            nts.uk.request.jump("/view/cmf/003/a/index.xhtml");
-        }
-
-        
         /**
              * function submit button
          */
         private validateD() : boolean {
             var self = this;
+            console.log(self.employeeList());
+            
             if ((self.selectedTitleAtr() == 0 && self.selectedEmployeeCode() && self.selectedEmployeeCode().length > 0)
                 || (self.selectedTitleAtr() == 1 && self.initEmployeeList() && self.initEmployeeList().length > 0)) {
                 return true;
@@ -572,29 +571,41 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 return false;
             }
         }
-        
-        getSelectedEmployee() : any {
-            var self = this;
-            console.log(self.selectedTitleAtr());
-            if (self.selectedTitleAtr() == 0) {
-                return $('#employeeSearch').getDataList();
-            } else {
-                return self.initEmployeeList();
-            }
-        }
-        
+         
         private nextFromDToE(): void {
             var self = this;
             if (self.validateD()) {
+                self.initE();
                 self.next();
             }
         }
-
-        private initE(): void {
+           
+        initE() {
             var self = this;
-            $("#E3_3").html(self.dataSaveSetName());
-            $("#E3_5").html(self.explanation());
-            $("#E3_37").html(self.referenceDate);
+            console.log(self.supplementExplanation);
+            $("#E4_2").html(self.deleteSetName());
+            $("#E5_2").html(self.supplementExplanation);
+//            $("#E6_2_2").html(self.systemTypeCbb.name);
+        }
+        
+         private gotoscreenF(): void {
+                let self = this;
+                self.saveManualSetting();
+        }
+            
+        private saveManualSetting(): void {
+//            let self = this;
+//            let manualSetting = new ManualSettingModal(self.systemtypeFromC.code, Number(self.isCompressPass()), self.dataSaveSetName(), 
+//                    moment.utc(self.referenceDate, 'YYYY/MM/DD'), self.password(), moment.utc().toISOString(), moment.utc(self.dayValue().endDate, 'YYYY/MM/DD'), 
+//                    moment.utc(self.dayValue().startDate, 'YYYY/MM/DD'), moment.utc(self.monthValue().endDate, 'YYYY/MM/DD'), 
+//                    moment.utc(self.monthValue().startDate, 'YYYY/MM/DD'), self.explanation(), Number(self.yearValue().endDate), Number(self.yearValue().startDate),
+//                    1, Number(self.isSymbol()), self.employeeList, self.categorys() );
+//
+//            service.addMalSet(manualSetting).done(() => {
+//                
+//            }).fail(res => {
+//                
+//            });
         }
     }
 

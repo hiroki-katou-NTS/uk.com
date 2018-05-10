@@ -7,7 +7,7 @@
 <body>
 	<ui:composition>
 		<div id="ccgcomponent"></div>
-		<div class="contentB" tabindex="-1">
+		<div class="contentB">
 		<div class="fixed-flex-layout-right-screenD" style="padding-top: 20px; padding-left: 30px;">
 				<div class="top-right-panel">
 					<div style="float: left; width: 35%;">
@@ -15,8 +15,8 @@
 						<div data-bind="ntsFormLabel: {required : true}">#{i18n.getText('CMF005_50')}</div>
 					</div>
 					<div style="float: left; width: 65%; padding-bottom: 20px;">
-						<!-- D5 -->
-						<div id="D5" tabindex="3"
+						<!-- D4_2 -->
+						<div id="D4_2" tabindex="1"
 							data-bind="ntsRadioBoxGroup: {options: itemTitleAtr,
 																optionsValue: 'value',
 																optionsText: 'titleAtrName',
@@ -26,8 +26,8 @@
 					</div>
 				</div>
 				<!-- List employee -->
-				<div class="selectionEmployee" tabindex="3">
-							<div id="employeeSearch" tabindex="-1"></div>
+				<div id="D5" tabindex="2" class="selectionEmployee">
+							<div  id="employeeSearch"></div>
 						</div>
 				<!-- List employee -->
 				<div style="clear: both;">
@@ -35,8 +35,8 @@
 				</div>
 				<!-- button -->
 				<div class="valign-center control-group button-bottom-area">
-					<button id="D20_1" class="large" tabindex="14" data-bind="click: previousB">#{i18n.getText('CMF003_101')}</button>
-					<button id="D20_2" class="x-large proceed" tabindex="15" data-bind="click: nextFromDToE">#{i18n.getText('CMF005_54')}</button>	
+					<button id="D20_1" class="large" tabindex="3" data-bind="click: previousB">#{i18n.getText('CMF003_101')}</button>
+					<button id="D20_2" class="x-large proceed" tabindex="4" data-bind="click: nextFromDToE">#{i18n.getText('CMF005_54')}</button>	
 				</div>
 				<!-- button -->
 			</div>
