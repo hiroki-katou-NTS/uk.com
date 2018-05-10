@@ -1976,24 +1976,25 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
     }
     export class AuthorityDetailModel {
-        available1: KnockoutObservable<boolean> = ko.observable(true);
-        available4: KnockoutObservable<boolean> = ko.observable(true);
-        available2: KnockoutObservable<boolean> = ko.observable(true);
-        available3: KnockoutObservable<boolean> = ko.observable(true);
-        available5: KnockoutObservable<boolean> = ko.observable(true);
-        available8: KnockoutObservable<boolean> = ko.observable(true);
-        available8Authority: KnockoutObservable<boolean> = ko.observable(true);
-        available22: KnockoutObservable<boolean> = ko.observable(true);
-        available24: KnockoutObservable<boolean> = ko.observable(true);
-        available7: KnockoutObservable<boolean> = ko.observable(true);
-        available23: KnockoutObservable<boolean> = ko.observable(true);
-        available25: KnockoutObservable<boolean> = ko.observable(true);
-        available17: KnockoutObservable<boolean> = ko.observable(true);
-        available18: KnockoutObservable<boolean> = ko.observable(true);
-        available19: KnockoutObservable<boolean> = ko.observable(true);
-        available20: KnockoutObservable<boolean> = ko.observable(true);
-        available21: KnockoutObservable<boolean> = ko.observable(true);
-        constructor(data: Array<DailyPerformanceAuthorityDto>, authority : any) {
+        available1: KnockoutObservable<boolean> = ko.observable(false);
+        available4: KnockoutObservable<boolean> = ko.observable(false);
+        available2: KnockoutObservable<boolean> = ko.observable(false);
+        available3: KnockoutObservable<boolean> = ko.observable(false);
+        available5: KnockoutObservable<boolean> = ko.observable(false);
+        available8: KnockoutObservable<boolean> = ko.observable(false);
+        available8Authority: KnockoutObservable<boolean> = ko.observable(false);
+        available11: KnockoutObservable<boolean> = ko.observable(false);
+        available22: KnockoutObservable<boolean> = ko.observable(false);
+        available24: KnockoutObservable<boolean> = ko.observable(false);
+        available7: KnockoutObservable<boolean> = ko.observable(false);
+        available23: KnockoutObservable<boolean> = ko.observable(false);
+        available25: KnockoutObservable<boolean> = ko.observable(false);
+        available17: KnockoutObservable<boolean> = ko.observable(false);
+        available18: KnockoutObservable<boolean> = ko.observable(false);
+        available19: KnockoutObservable<boolean> = ko.observable(false);
+        available20: KnockoutObservable<boolean> = ko.observable(false);
+        available21: KnockoutObservable<boolean> = ko.observable(false);
+        constructor(data: Array<DailyPerformanceAuthorityDto>, authority : any, showCheckbox) {
             var self = this;
             if (!data) return;
             this.available1(self.checkAvailable(data, 1));
@@ -2007,10 +2008,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             this.available7(self.checkAvailable(data, 7));
             this.available23(self.checkAvailable(data, 23));
             this.available25(self.checkAvailable(data, 25));
-            if(self.checkAvailable(data, 25)){
-                $("#btn-signAll").css("visibility", "visible"); 
-            }else{
+            if (self.checkAvailable(data, 25) && showCheckbox) { 
+                $("#btn-signAll").css("visibility", "visible");
+                $("#btn-releaseAll").css("visibility", "visible");
+
+            } else {
                 $("#btn-signAll").css("visibility", "hidden");
+                $("#btn-releaseAll").css("visibility", "hidden");
             }
            // $("#btn-signAll").css("visibility", "hidden");
             this.available17(self.checkAvailable(data, 17));
@@ -2019,6 +2023,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             this.available20(self.checkAvailable(data, 20));
             this.available21(self.checkAvailable(data, 21));
             this.available8Authority(this.available8() && authority)
+            this.available11(self.checkAvailable(data, 11));
 
         }
         checkAvailable(data: Array<DailyPerformanceAuthorityDto>, value: number): boolean {
