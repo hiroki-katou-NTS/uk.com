@@ -79,6 +79,8 @@ module nts.uk.com.view.ccg.model {
         // TopPagePart info
         topPagePartID: string;
         topPagePart: TopPagePart;
+        // External Url for standard Widget
+        origin: string = window.location.origin;
         constructor(placementDto: PlacementDto) {
             // Placement
             this.placementID = placementDto.placementID;
@@ -96,6 +98,20 @@ module nts.uk.com.view.ccg.model {
             } else if (this.type == ENUM_EXTERNALURL) {
                 this.name = "外部URL";
                 this.url = placementPartDto.url;
+            }else if(this.type == ENUM_STANDART_WIDGET) {
+                this.topPagePart = new StandardWidget(placementPartDto);
+                this.name = placementPartDto.topPageName;
+                if(placementPartDto.topPageCode === "0001"){
+                    this.url = this.origin + "/nts.uk.at.web/view/ktg/001/a/index.xhtml"; 
+                }else if(placementPartDto.topPageCode === "0002"){
+                    this.url = this.origin + "/nts.uk.at.web/view/ktg/002/a/index.xhtml"; 
+                }else if(placementPartDto.topPageCode === "0003"){
+                    this.url = this.origin + ""; 
+                }
+            }else if(this.type == ENUM_OPTIONAL_WIDGET) {
+                this.topPagePart = new OptionalWidget(placementPartDto);
+                this.name = placementPartDto.topPageName;
+                this.url = this.origin + "/nts.uk.at.web/view/ktg/029/a/index.xhtml?code="+this.topPagePart.topPageCode();
             }
         }
         
@@ -115,9 +131,13 @@ module nts.uk.com.view.ccg.model {
                 placementPartDto.fileName = flowmenu.fileName(),
                 placementPartDto.defClassAtr = flowmenu.defClassAtr()
             } else if (this.isStandardWidget()) {
-                
+                placementPartDto.topPagePartID = this.topPagePartID,
+                placementPartDto.topPageCode = this.topPagePart.topPageCode(),
+                placementPartDto.topPageName = this.topPagePart.topPageName()
             } else if (this.isOptionalWidget()) {
-                
+                placementPartDto.topPagePartID = this.topPagePartID,
+                placementPartDto.topPageCode = this.topPagePart.topPageCode(),
+                placementPartDto.topPageName = this.topPagePart.topPageName()
             } else if (this.isDashBoard()) {
                 
             } 
@@ -183,4 +203,27 @@ module nts.uk.com.view.ccg.model {
         }
         
     }
+    export class StandardWidget extends TopPagePart {
+        constructor(dto?: PlacementPartDto) {
+            super();
+            this.topPagePartID = ko.observable((dto && dto.topPagePartID) ? dto.topPagePartID : "");
+            this.topPageCode = ko.observable((dto && dto.topPageCode) ? dto.topPageCode : "");
+            this.topPageName = ko.observable((dto && dto.topPageName) ? dto.topPageName : "");
+            this.width = ko.observable((dto && dto.width) ? dto.width : 4);
+            this.height = ko.observable((dto && dto.height) ? dto.height : 4);
+            this.type = ENUM_STANDART_WIDGET;
+        }
+    }
+    export class OptionalWidget extends TopPagePart {
+        constructor(dto?: PlacementPartDto) {
+            super();
+            this.topPagePartID = ko.observable((dto && dto.topPagePartID) ? dto.topPagePartID : "");
+            this.topPageCode = ko.observable((dto && dto.topPageCode) ? dto.topPageCode : "");
+            this.topPageName = ko.observable((dto && dto.topPageName) ? dto.topPageName : "");
+            this.width = ko.observable((dto && dto.width) ? dto.width : 4);
+            this.height = ko.observable((dto && dto.height) ? dto.height : 4);
+            this.type = ENUM_OPTIONAL_WIDGET;
+        }
+    }
+    
 }

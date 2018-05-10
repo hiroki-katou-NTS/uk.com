@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class CcgmtStandardWidgetPK implements Serializable {/**
+public class SptstStandardWidgetPK implements Serializable {/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
