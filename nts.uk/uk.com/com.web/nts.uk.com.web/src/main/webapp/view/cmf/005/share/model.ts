@@ -30,7 +30,7 @@ module nts.uk.com.view.cmf005.share.model {
 
       
     export class ItemCategory {
-        cateItemNumber: number;
+       
         schelperSystem: number;
         categoryId: string;
         categoryName: string;
@@ -66,7 +66,7 @@ module nts.uk.com.view.cmf005.share.model {
             this.storageRangeSaved = storageRangeSaved;
         }
 
-        constructor(cateItemNumber: number, categoryId: string, categoryName: string, timeStore: number, storageRangeSaved: number) {
+        constructor(categoryId: string, categoryName: string, timeStore: number, storageRangeSaved: number) {
 
             this.categoryId = categoryId;
             this.categoryName = categoryName;

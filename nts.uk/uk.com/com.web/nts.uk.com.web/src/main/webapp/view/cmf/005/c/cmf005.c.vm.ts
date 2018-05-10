@@ -13,6 +13,8 @@ module nts.uk.com.view.cmf005.c.viewmodel {
         listCategoryChosed: KnockoutObservableArray<model.ItemCategory> = ko.observableArray([]);
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
         currentCategorySelected: KnockoutObservableArray<any>;
+        listCateIdIgnore: KnockoutObservableArray<string> = ko.observableArray([]);
+       
 
         // comboBox system type
         systemTypes: KnockoutObservableArray<any>;
@@ -57,9 +59,13 @@ module nts.uk.com.view.cmf005.c.viewmodel {
                 systemIdSelected = systemTypeB.code;
             }
             self.selectedCode = ko.observable(systemIdSelected);
-
+            if (self.listCategoryChosed().length > 0) {
+                _.forEach(self.listCategoryChosed(), function(x) {
+                    self.listCateIdIgnore.push(x.id);
+                });
+            }
             if (systemIdSelected != undefined) {
-                service.getCategoryListBySystem(self.selectedCode()).done(function(data: Array<any>) {
+                service.getCategoryListBySystem(self.selectedCode(), self.listCateIdIgnore).done(function(data: Array<any>) {
                     if (systemTypeB != undefined) {
                         _.forOwn(listCategoryB, function(index) {
                             _.remove(data, function(e) {
@@ -84,7 +90,7 @@ module nts.uk.com.view.cmf005.c.viewmodel {
             self.listCategory = ko.observableArray([]);
             self.selectedCode.subscribe(value => {
                 self.currentItem = _.find(self.systemTypes(), a => a.code === value);
-                service.getCategoryListBySystem(self.selectedCode()).done(function(data: Array<any>) {
+                service.getCategoryListBySystem(self.selectedCode(), self.listCateIdIgnore).done(function(data: Array<any>) {
                     self.listCategory(data);
                 }).fail(function(error) {
                     alertError(error);

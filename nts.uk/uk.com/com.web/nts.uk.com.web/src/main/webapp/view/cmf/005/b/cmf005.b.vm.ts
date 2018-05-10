@@ -118,7 +118,6 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.currentCode = ko.observable();
             self.currentCategory = ko.observableArray([]);
             self.listColumnHeader = ko.observableArray([
-                { headerText: '', key: 'cateItemNumber', width: 40 },
                 { headerText: '', key: 'categoryId', hidden: true },
                 { headerText: getText('CMF005_24'), key: 'categoryName', width: 220 },
                 { headerText: getText('CMF005_25'), key: 'timeStore', width: 100, formatter: timeStore },
@@ -276,7 +275,6 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 if (categoryC && (categoryC.length > 0)) {
                     self.listDataCategory.removeAll();
                     for (let i = 0; i < categoryC.length; i++) {
-                        categoryC[i].cateItemNumber = i + 1;
                         self.listDataCategory.push(categoryC[i]);
                     }
 

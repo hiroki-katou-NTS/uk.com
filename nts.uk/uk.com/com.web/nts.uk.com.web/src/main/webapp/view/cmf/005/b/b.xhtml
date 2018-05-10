@@ -52,6 +52,7 @@
 							data-bind="ntsGridList: {
 							height: 400,
 							width: 500,
+							showNumbering: true,
 							dataSource: listDataCategory,
 							primaryKey: 'categoryId',
 							columns: listColumnHeader,
@@ -69,19 +70,19 @@
 									<div class="label">#{i18n.getText('CMF005_28')}</div>
 								</td>
 								<td>
-									<div id="daily" tabindex="6" data-bind="ntsDateRangePicker: { required: requiredDate, enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneMonth'}" />
-								</td>
-							</tr>
-							<tr>
-								<td><div class="label">#{i18n.getText('CMF005_29')}</div></td>
-								<td>
-									<div id="mothly" tabindex="7" data-bind="ntsDateRangePicker: { required: requiredMonth, enable: enable, showNextPrevious: true, value: monthValue, maxRange: 'oneMonth',type: 'yearmonth'}" />
+									<div id="daily" tabindex="6" data-bind="ntsDateRangePicker: { required: requiredDate, enable: enable, name: '#[CMF005_29]', showNextPrevious: true, value: dateValue, maxRange: 'oneMonth'}" />
 								</td>
 							</tr>
 							<tr>
 								<td><div class="label">#{i18n.getText('CMF005_30')}</div></td>
 								<td>
-									<div id="yearly" tabindex="8" data-bind="ntsDateRangePicker: { required: requiredYear, enable: enable, showNextPrevious: true, value: yearValue, maxRange: 'oneYear',type: 'year',jumpUnit: 'year'}" />
+									<div id="mothly" tabindex="7" data-bind="ntsDateRangePicker: { required: requiredMonth, enable: enable, name: '#[CMF005_31]', showNextPrevious: true, value: monthValue, maxRange: 'oneMonth',type: 'yearmonth'}" />
+								</td>
+							</tr>
+							<tr>
+								<td><div class="label">#{i18n.getText('CMF005_32')}</div></td>
+								<td>
+									<div id="yearly" tabindex="8" data-bind="ntsDateRangePicker: { required: requiredYear, enable: enable, name: '#[CMF005_33]', showNextPrevious: true, value: yearValue, maxRange: 'oneYear',type: 'year',jumpUnit: 'year'}" />
 								</td>
 							</tr>
 						</table>
