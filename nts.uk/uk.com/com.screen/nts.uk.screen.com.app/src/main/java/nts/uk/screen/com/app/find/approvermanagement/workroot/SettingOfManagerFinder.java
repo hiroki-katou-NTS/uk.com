@@ -1,11 +1,11 @@
 package nts.uk.screen.com.app.find.approvermanagement.workroot;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
@@ -74,52 +74,27 @@ public class SettingOfManagerFinder {
 		Optional<PersonApprovalRoot> monthlyPsApp = this.personAppRootRepo.getNewestMonthlyPsAppRoot(companyId, employeeId);
 
 		if (commonPsApp.isPresent()) {
-			startDateCommon = commonPsApp.get().getEmploymentAppHistoryItems().get(0).getDatePeriod().start();
-			endDateCommon = commonPsApp.get().getEmploymentAppHistoryItems().get(0).getDatePeriod().end();
-			startDate = startDateCommon;
-			endDate = endDateCommon;
-			// ドメインモデル「承認フェーズ」を取得する
-			Optional<ApprovalPhase> commonApprovalPhase = this.appPhaseRepo.getApprovalFirstPhase(companyId,
-					commonPsApp.get().getBranchId());
-			if (commonApprovalPhase.isPresent()) {
-				commonApprovalPhase.get().getApprovers().sort((p1, p2) -> p1.getOrderNumber() - p2.getOrderNumber());
-				// 「承認者」を取得する
-				Approver firstApprover = commonApprovalPhase.get().getApprovers().get(0);
-				// 履歴があります、承認フェーズ1がありますが承認者１が個人じゃなくて職位です。（履歴を表示しますが社員コードを表示しません）
-				if (firstApprover.getApprovalAtr().value == 0) {
-					PersonImport person = this.employeeAdapter.getEmployeeInformation(firstApprover.getEmployeeId());
-					if (!Objects.isNull(person)) {
-						dailyApprovalCode = person.getEmployeeCode();
-						dailyApproverId   = person.getSID();
-						dailyApprovalName = person.getEmployeeName();
-					}
-				}
-				existCommonAppPhase = true;
-			}
+			SettingInfo settingInfo = this.getSettingInfo(companyId, commonPsApp.get());
+			startDateCommon     = settingInfo.getStartDate();
+			endDateCommon       = settingInfo.getEndDate();
+			startDate           = settingInfo.getStartDate();
+			endDate             = settingInfo.getEndDate();
+			dailyApprovalCode   = settingInfo.getApprovalCode();
+			dailyApproverId     = settingInfo.getApproverId();
+			dailyApprovalName   = settingInfo.getApprovalName();
+			existCommonAppPhase = settingInfo.isExistAppPhase();
 		}
+
 		if (monthlyPsApp.isPresent()) {
-			startDateMonthly = monthlyPsApp.get().getEmploymentAppHistoryItems().get(0).getDatePeriod().start();
-			endDateMonthly = monthlyPsApp.get().getEmploymentAppHistoryItems().get(0).getDatePeriod().end();
-			startDate = startDateMonthly;
-			endDate = endDateMonthly;
-			// ドメインモデル「承認フェーズ」を取得する
-			Optional<ApprovalPhase> monthlyApprovalPhase = this.appPhaseRepo.getApprovalFirstPhase(companyId,
-					monthlyPsApp.get().getBranchId());
-			if (monthlyApprovalPhase.isPresent()) {
-				monthlyApprovalPhase.get().getApprovers().sort((p1, p2) -> p1.getOrderNumber() - p2.getOrderNumber());
-				// 「承認者」を取得する
-				Approver firstApprover = monthlyApprovalPhase.get().getApprovers().get(0);
-				// 履歴があります、承認フェーズ1がありますが承認者１が個人じゃなくて職位です。（履歴を表示しますが社員コードを表示しません）
-				if (firstApprover.getApprovalAtr().value == 0) {
-					PersonImport person = this.employeeAdapter.getEmployeeInformation(firstApprover.getEmployeeId());
-					if (!Objects.isNull(person)) {
-						departmentCode       = person.getEmployeeCode();
-						departmentApproverId = person.getSID();
-						departmentName       = person.getEmployeeName();
-					}
-				}
-				existMonthlyAppPhase = true;
-			}
+			SettingInfo settingInfo = this.getSettingInfo(companyId, monthlyPsApp.get());
+			startDateMonthly     = settingInfo.getStartDate();
+			endDateMonthly       = settingInfo.getEndDate();
+			startDate            = settingInfo.getStartDate();
+			endDate              = settingInfo.getEndDate();
+			departmentCode       = settingInfo.getApprovalCode();
+			departmentApproverId = settingInfo.getApproverId();
+			departmentName       = settingInfo.getApprovalName();
+			existMonthlyAppPhase = settingInfo.isExistAppPhase();
 		}
 
 		if (commonPsApp.isPresent() && monthlyPsApp.isPresent()) {
@@ -185,4 +160,45 @@ public class SettingOfManagerFinder {
 		
 		return Optional.of(closurePeriod.start());
 	}
+	
+	/**
+	 * Get setting information
+	 * @param psAppRoot
+	 * @return
+	 */
+	private SettingInfo getSettingInfo(String companyId, PersonApprovalRoot psAppRoot){
+		GeneralDate startDate = psAppRoot.getEmploymentAppHistoryItems().get(0).getDatePeriod().start();
+		GeneralDate endDate   = psAppRoot.getEmploymentAppHistoryItems().get(0).getDatePeriod().end();
+		boolean existAppPhase = false;
+		String approvalCode = null;
+		String approverId   = null;
+		String approvalName = null;
+		// ドメインモデル「承認フェーズ」を取得する
+		Optional<ApprovalPhase> commonApprovalPhase = this.appPhaseRepo.getApprovalFirstPhase(companyId, psAppRoot.getBranchId());
+		if (commonApprovalPhase.isPresent()) {
+			commonApprovalPhase.get().getApprovers().sort((p1, p2) -> p1.getOrderNumber() - p2.getOrderNumber());
+			// 「承認者」を取得する
+			Approver firstApprover = commonApprovalPhase.get().getApprovers().get(0);
+			// 履歴があります、承認フェーズ1がありますが承認者１が個人じゃなくて職位です。（履歴を表示しますが社員コードを表示しません）
+			if (firstApprover.getApprovalAtr().value == 0) {
+				PersonImport person = this.employeeAdapter.getEmployeeInformation(firstApprover.getEmployeeId());
+				approvalCode = person.getEmployeeCode();
+				approverId   = person.getSID();
+				approvalName = person.getEmployeeName();
+			}
+			existAppPhase = true;
+		}
+		return new SettingInfo(startDate, endDate, approvalCode, approverId, approvalName, existAppPhase);
+	}
+}
+
+
+@Value
+class SettingInfo {
+	private GeneralDate startDate;
+	private GeneralDate endDate;
+	private String approvalCode;
+	private String approverId;
+	private String approvalName;
+	private boolean existAppPhase;
 }
