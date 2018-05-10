@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
@@ -17,6 +19,7 @@ import nts.uk.query.model.employee.mgndata.EmpDataMngInfoAdapter;
 /**
  * The Class EmpDataMngInfoAdapterImpl.
  */
+@Stateless
 public class EmpDataMngInfoAdapterImpl extends JpaRepository implements EmpDataMngInfoAdapter {
 
 	/** The Constant FIND_NOT_DELETED_BY_SCODE. */

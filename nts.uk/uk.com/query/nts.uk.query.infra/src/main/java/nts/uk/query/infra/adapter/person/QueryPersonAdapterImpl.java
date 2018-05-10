@@ -6,6 +6,8 @@ package nts.uk.query.infra.adapter.person;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
 import nts.uk.query.model.person.QueryPersonAdapter;
@@ -13,6 +15,7 @@ import nts.uk.query.model.person.QueryPersonAdapter;
 /**
  * The Class QueryPersonAdapterImpl.
  */
+@Stateless
 public class QueryPersonAdapterImpl extends JpaRepository implements QueryPersonAdapter {
 
 	/** The find by name. */
