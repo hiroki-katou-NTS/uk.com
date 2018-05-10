@@ -44,31 +44,21 @@
 					<button data-bind="enable: $root.errors.isEmpty , 
 										visible: false,
 										enable: showButton().enable_A1_1" class="proceed">#{i18n.getText('KMW003_2')}</button>
-<!-- 										visible: showButton().available_A1_1, -->
 					<!--A1_2 保存ボタン--> 
-					<button data-bind="{visible: false,
+					<button data-bind="{visible:false,
 										enable: showButton().enable_A1_2}">#{i18n.getText('KMW003_3')}</button>
-<!-- 										visible:showButton().available_A1_2, -->
 					<!--A1_3 就業確定ボタン--> 
 					<!-- <button data-bind="{}">#{i18n.getText('KMW003_4')}</button> -->
 					<!--A1_4 抽出条件の設定ボタン--> 
-					<button data-bind="{visible:false,
-										 enable: false,
-										 click: extractCondition}">#{i18n.getText('KMW003_5')}</button>
-<!-- 										 visible:showButton().available_A1_4, -->
+					<button data-bind="{visible:false, click: extractCondition}">#{i18n.getText('KMW003_5')}</button>
 					<!--A1_5 表示項目の選択ボタン--> 
-					<button data-bind="{click: displayItem,
-										 visible:false,
-										enable:showButton().enable_A1_5}">#{i18n.getText('KMW003_6')}</button>
+					<button data-bind="{click: displayItem, enable:showButton().enable_A1_5, visible: false}">#{i18n.getText('KMW003_6')}</button>
 					<!--  対象外 --> 
 					<!--A1_6 修正履歴ボタン-->					
 					<!--A1_7 印刷ボタン--> 
 					<!--A1_8 ロック解除ボタン--> 
 					<com:ko-if bind="showButton().available_A1_8">
-						<button data-bind="{click:unlockProcess,
-											visible:false,
-											enable: false
-										}">#{i18n.getText('KMW003_31')}</button>
+						<button data-bind="{click:unlockProcess}">#{i18n.getText('KMW003_31')}</button>
 					</com:ko-if>
 					<!--A1_9 再ロックボタン--> 
 					<com:ko-if bind="showButton().available_A1_9">
@@ -105,7 +95,7 @@
 								optionsValue: 'code',
 								value: actualTimeSelectedCode,
 								optionsText: 'name',
-								enable: showButton().enable_multiActualTime,
+								enable: false,
 								name:'#[KMW003_12]',
 								columns: [
 									{ prop: 'name', length: 10 },
