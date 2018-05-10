@@ -1,4 +1,6 @@
-package nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition;
+
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
@@ -12,11 +14,11 @@ public class HowDisplayMessage extends DomainObject {
 	/**メッセージを太字にする*/
 	private boolean messageBold;
 	/**メッセージ色*/
-	private int messageColor;
-	public HowDisplayMessage(boolean messageBold, int messageColor) {
+	private Optional<Integer> messageColor;
+	public HowDisplayMessage(boolean messageBold, Integer messageColor) {
 		super();
 		this.messageBold = messageBold;
-		this.messageColor = messageColor;
+		this.messageColor = Optional.ofNullable(messageColor);
 	}
 	
 }

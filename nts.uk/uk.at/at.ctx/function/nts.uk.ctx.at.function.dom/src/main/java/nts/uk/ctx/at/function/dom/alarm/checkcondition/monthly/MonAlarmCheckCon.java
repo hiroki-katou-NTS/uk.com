@@ -20,12 +20,13 @@ public class MonAlarmCheckCon extends ExtractionCondition {
 	/**任意抽出条件*/
 	List<ExtraResultMonthly> arbExtraCon = new ArrayList<>();
 	
-	public MonAlarmCheckCon(String monAlarmCheckConID, List<ExtraResultMonthly> arbExtraCon) {
+	public MonAlarmCheckCon(String monAlarmCheckConID) {
 		super();
 		this.monAlarmCheckConID = monAlarmCheckConID;
-		this.arbExtraCon = arbExtraCon;			
+		//this.arbExtraCon = arbExtraCon;			
 	}
 
+	
 	@Override	
 	public void changeState(ExtractionCondition extractionCondition) {
 		if (extractionCondition instanceof MonAlarmCheckCon) {

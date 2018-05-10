@@ -29,4 +29,5 @@ public class AlarmCheckConditionByCategoryDto {
 
 	private DailyAlarmCheckConditionDto dailyAlarmCheckCondition;
 
+	private MonAlarmCheckConDto monAlarmCheckConDto;
 }

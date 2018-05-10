@@ -15,12 +15,17 @@ import nts.uk.ctx.at.function.dom.adapter.FixedConditionDataAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.PublicHolidaySettingAdapter;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapterDto;
+import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraItemMonFunAdapter;
+import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraItemMonFunImport;
+import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunAdapter;
+import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunImport;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.ConExtractedDaily;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -48,6 +53,13 @@ public class AlarmCheckConditionByCategoryFinder {
 	
 	@Inject
 	private PublicHolidaySettingAdapter publicHolidaySettingAdapter;
+	
+	//monthly
+	@Inject
+	private FixedExtraMonFunAdapter fixExtraMon;
+	
+	@Inject
+	private FixedExtraItemMonFunAdapter fixExtraItemMon;
 
 	public List<AlarmCheckConditionByCategoryDto> getAllData(int category) {
 		String companyId = AppContexts.user().companyId();
@@ -85,6 +97,10 @@ public class AlarmCheckConditionByCategoryFinder {
 				Collections.emptyList(), Collections.emptyList());
 		List<FixedConditionWorkRecordDto> listFixedConditionWkRecord = new ArrayList<>();
 		List<WorkRecordExtraConAdapterDto> lstWorkRecordExtraCon = new ArrayList<>();
+		//monthly
+		MonAlarmCheckCon monAlarmCheckCon = new MonAlarmCheckCon("");
+		List<FixedExtraMonFunDto> listFixedExtraMonFun = new ArrayList<>();
+		
 		if (domain.getCategory() == AlarmCategory.SCHEDULE_4WEEK && domain.getExtractionCondition() != null) {
 			AlarmCheckCondition4W4D schedule4WeekCondition = (AlarmCheckCondition4W4D) domain.getExtractionCondition();
 			schedule4WCondition = schedule4WeekCondition.getFourW4DCheckCond().value;
@@ -119,6 +135,24 @@ public class AlarmCheckConditionByCategoryFinder {
 			lstWorkRecordExtraCon = workRecordExtractConditionAdapter
 					.getAllWorkRecordExtraConByListID(dailyAlarmCondition.getExtractConditionWorkRecord());
 		}
+		//monthly
+		if (domain.getCategory() == AlarmCategory.MONTHLY && domain.getExtractionCondition() != null) {
+			monAlarmCheckCon = (MonAlarmCheckCon) domain.getExtractionCondition() ;
+			
+			
+			//get fixExtra monthly
+			List<FixedExtraItemMonFunImport> dataFixedExtraMon = fixExtraItemMon.getAllFixedExtraItemMon();
+			listFixedExtraMonFun = fixExtraMon.getByEralCheckID(monAlarmCheckCon.getMonAlarmCheckConID()).stream()
+					.map(c->FixedExtraMonFunDto.convertToImport(c)).collect(Collectors.toList());
+			for(FixedExtraMonFunDto fixedExtraMonFunDto : listFixedExtraMonFun) {
+				for(FixedExtraItemMonFunImport fixedExtraItemMonFunImport :dataFixedExtraMon ) {
+					if(fixedExtraMonFunDto.getFixedExtraItemMonNo() == fixedExtraItemMonFunImport.getFixedExtraItemMonNo()) {
+						fixedExtraMonFunDto.setMonAlarmCheckName(fixedExtraItemMonFunImport.getFixedExtraItemMonName());
+						break;
+					}
+				}
+			}//end for
+		}
 
 		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(),
 				domain.getCategory().value,
@@ -133,11 +167,13 @@ public class AlarmCheckConditionByCategoryFinder {
 				domain.getListRoleId(), schedule4WCondition,
 				new DailyAlarmCheckConditionDto(dailyAlarmCondition.isAddApplication(),
 						dailyAlarmCondition.getConExtractedDaily().value, dailyAlarmCondition.getErrorAlarmCode(),
-						lstWorkRecordExtraCon, listFixedConditionWkRecord));
+						lstWorkRecordExtraCon, listFixedConditionWkRecord),
+				new MonAlarmCheckConDto(listFixedExtraMonFun)
+				);
 	}
 	
 	private AlarmCheckConditionByCategoryDto minValueFromDomain(AlarmCheckConditionByCategory domain) {
 		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(),
-				domain.getCategory().value, null, null, 0, null);
+				domain.getCategory().value, null, null, 0, null,null);
 	}
 }

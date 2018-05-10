@@ -95,8 +95,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         return item;
                     });
 
-                    _.each(_accList, acc => self.listAlarmCheckCondition.push(acc));
-
+                    _.each(_.sortBy(_accList, item => { return item.displayCode }), acc => self.listAlarmCheckCondition.push(acc));
                     if (self.selectCategoryFromDialog()) {
                         self.createNewAlarmCheckCondition();
                     } else {
@@ -150,6 +149,18 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 self.tabCheckCondition.schedule4WeekCheckCondition(0);
             }
 
+            if (self.selectedCategory() == model.CATEGORY.MONTHLY) {
+                service.getAllFixedExtraItemMon().done((data: Array<any>) => {
+                    if (data && data.length) {
+                        let _list: Array<model.FixedExtraMonFun> = _.map(data, acc => {
+                            return new model.FixedExtraMonFun({ monAlarmCheckID: "", monAlarmCheckName: acc.monAlarmCheckName, fixedExtraItemMonNo: acc.fixedExtraItemMonNo, message: acc.message, useAtr: false });
+                        });
+                        self.tabAlarmcheck.listFixedExtraMonFun(_list);
+                    }
+                });
+
+            }
+
             self.screenMode(model.SCREEN_MODE.NEW);
             if (self.afterDelete()) {
                 self.afterDelete(false);
@@ -190,6 +201,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
             }
             if (data.category() == model.CATEGORY.SCHEDULE_4_WEEK) {
                 data.schedule4WeekAlarmCheckCondition().schedule4WeekCheckCondition(self.tabCheckCondition.schedule4WeekCheckCondition());
+            }
+
+            if (data.category() == model.CATEGORY.MONTHLY) {
+                data.monAlarmCheckCon().listFixExtraMon(self.tabAlarmcheck.listFixedExtraMonFun());
             }
 
             let command: any = ko.toJS(data);
@@ -285,25 +300,30 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 service.getOneData(self.selectedCategory(), data).done(function(result: any) {
                     if (result) {
                         let category = _.find(ko.toJS(self.cbbItemList), (x: model.ItemModel) => x.code == result.category);
+
                         let item = new model.AlarmCheckConditionByCategory(
-                            result.code, 
-                            result.name, 
-                            category, 
-                            result.availableRoles, 
+                            result.code,
+                            result.name,
+                            category,
+                            result.availableRoles,
                             new model.AlarmCheckTargetCondition(
-                                result.targetCondition.filterByEmployment, 
-                                result.targetCondition.filterByClassification, 
-                                result.targetCondition.filterByJobTitle, 
-                                result.targetCondition.filterByBusinessType, 
-                                result.targetCondition.targetEmployment, 
-                                result.targetCondition.targetClassification, 
-                                result.targetCondition.targetJobTitle, 
+                                result.targetCondition.filterByEmployment,
+                                result.targetCondition.filterByClassification,
+                                result.targetCondition.filterByJobTitle,
+                                result.targetCondition.filterByBusinessType,
+                                result.targetCondition.targetEmployment,
+                                result.targetCondition.targetClassification,
+                                result.targetCondition.targetJobTitle,
                                 result.targetCondition.targetBusinessType));
                         let _fixedList: Array<model.FixedConditionWorkRecord> = _.map(result.dailyAlarmCheckCondition.listFixedExtractConditionWorkRecord, (fix: model.IFixedConditionWorkRecord) => { return new model.FixedConditionWorkRecord(fix); });
                         let _checkList: Array<model.WorkRecordExtractingCondition> = _.map(result.dailyAlarmCheckCondition.listExtractConditionWorkRecork, (c: model.IWorkRecordExtractingCondition) => { return shareutils.convertTransferDataToWorkRecordExtractingCondition(c); });
                         item.dailyAlarmCheckCondition(new model.DailyAlarmCheckCondition(result.dailyAlarmCheckCondition.conditionToExtractDaily, result.dailyAlarmCheckCondition.addApplication, result.dailyAlarmCheckCondition.listErrorAlarmCode, _checkList, _fixedList));
                         item.schedule4WeekAlarmCheckCondition().schedule4WeekCheckCondition(result.schedule4WeekCondition);
                         item.agreement36(new model.Agreement36([], []));
+                        let _listFixExtraMon: Array<model.FixedExtraMonFun> = _.map(result.monAlarmCheckConDto.listFixExtraMon, acc => {
+                            return new model.FixedExtraMonFun(acc);
+                        });
+                        item.monAlarmCheckCon().listFixExtraMon(_listFixExtraMon);
 
                         self.selectedAlarmCheckCondition(item);
                         self.tabScopeCheck.targetCondition(item.targetCondition());
@@ -320,8 +340,15 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         }
 
                         if (item.category() == model.CATEGORY._36_AGREEMENT) {
-//                            self.tabAgreementError.listAgreementError(item.agreement36().listAgreementError());
-//                            self.tabAgreementHour.listAgreementHour(item.agreement36().listAgreementHour());
+                            //                            self.tabAgreementError.listAgreementError(item.agreement36().listAgreementError());
+                            //                            self.tabAgreementHour.listAgreementHour(item.agreement36().listAgreementHour());
+                        }
+
+                        if (item.category() == model.CATEGORY.MONTHLY) {
+                            //tab fix
+                            if (item.monAlarmCheckCon().listFixExtraMon().length > 0) {
+                                self.tabAlarmcheck.listFixedExtraMonFun(item.monAlarmCheckCon().listFixExtraMon());
+                            }
                         }
 
                         self.screenMode(model.SCREEN_MODE.UPDATE);

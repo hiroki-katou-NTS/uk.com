@@ -43,7 +43,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 	
 	@Inject
 	private FixedConWorkRecordAdapter fixedConWorkRecordRepo;
-	
+	//monthly
 	@Inject
 	private FixedExtraMonFunAdapter fixedExtraMonFunAdapter;
 
@@ -103,7 +103,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			case MONTHLY:
 				MonAlarmCheckCon monAlarmCheckCon = (MonAlarmCheckCon) domain.getExtractionCondition() ;
 				//TODO: 
-				
+		
 				//update list fixedExtraMonFun
 				for(FixedExtraMonFunImport fixedExtraMonFun : command.getMonAlarmCheckCon().getListFixExtraMon()) {
 					if(fixedExtraMonFun.getMonAlarmCheckID() == null || fixedExtraMonFun.getMonAlarmCheckID().equals("") ) {
@@ -153,6 +153,9 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				break;
 			case MONTHLY:
 				String monAlarmCheckConID = IdentifierUtil.randomUniqueId();
+				
+				extractionCondition = command.getMonAlarmCheckCon() == null ? null
+						: new MonAlarmCheckCon(monAlarmCheckConID);
 				//add list fixedExtraMonFun
 				for(FixedExtraMonFunImport fixedExtraMonFun : command.getMonAlarmCheckCon().getListFixExtraMon()) {
 					fixedExtraMonFun.setMonAlarmCheckID(monAlarmCheckConID);

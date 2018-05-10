@@ -60,7 +60,7 @@ module nts.uk.at.view.kal003.share.model {
         schedule4WeekAlarmCheckCondition: KnockoutObservable<Schedule4WeekAlarmCheckCondition> = ko.observable(new Schedule4WeekAlarmCheckCondition(SCHEDULE_4_WEEK_CHECK_CONDITION.FOR_ACTUAL_RESULTS_ONLY));
         action: KnockoutObservable<number> = ko.observable(0);
         agreement36: KnockoutObservable<Agreement36> = ko.observable(new Agreement36([], []));
-
+        monAlarmCheckCon :KnockoutObservable<MonAlarmCheckCon> = ko.observable(new MonAlarmCheckCon([]));
         constructor(code: string, name: string, category: ItemModel, availableRoles: Array<string>, targetCondition: AlarmCheckTargetCondition) {
             this.code = ko.observable(code);
             this.name = ko.observable(name);
@@ -766,6 +766,9 @@ module nts.uk.at.view.kal003.share.model {
         message: string;
         useAtr: boolean;
     }
+    
+    
+    
     //class FixedConditionWorkRecord
     export class FixedConditionWorkRecord {
         dailyAlarmConID: string;
@@ -832,4 +835,39 @@ module nts.uk.at.view.kal003.share.model {
             this.name = param.name;
         }
     }
+    
+    //monthly
+    export class MonAlarmCheckCon{
+        listFixExtraMon : KnockoutObservableArray<FixedExtraMonFun>;
+        constructor(listFixExtraMon : KnockoutObservableArray<FixedExtraMonFun>){
+            this.listFixExtraMon = ko.observableArray(listFixExtraMon);
+        }
+    }
+    
+    //interface FixedExtraMonFun
+    export interface IFixedExtraMonFun {
+        monAlarmCheckID: string;
+        monAlarmCheckName: string;
+        fixedExtraItemMonNo: number;
+        message: string;
+        useAtr: boolean;
+    }
+    
+    //class FixedExtraMonFun
+    export class FixedExtraMonFun {
+        monAlarmCheckID: string;
+        fixedExtraItemMonNo: KnockoutObservable<number>;
+        monAlarmCheckName: string;
+        message: KnockoutObservable<string>;
+        useAtr: KnockoutObservable<boolean>;
+        constructor(data: IFixedExtraMonFun) {
+            this.monAlarmCheckID = data.monAlarmCheckID;
+            this.fixedExtraItemMonNo = ko.observable(data.fixedExtraItemMonNo);
+            this.message = ko.observable(data.message);
+            this.useAtr = ko.observable(data.useAtr);
+            this.monAlarmCheckName = data.monAlarmCheckName;
+        }
+    }
+    
+
 }

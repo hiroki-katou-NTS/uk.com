@@ -18,7 +18,7 @@ module nts.uk.at.view.kal003.a.tab {
 
         init(): void {
             let self = this;
-            let listAgErr = [];
+            let listAgErr = [];   
             service.getAgreementError().done((data) => {
                 _.each(data, (x) => {
                     listAgErr.push(new model.AgreeConditionErrorDto({
@@ -33,7 +33,7 @@ module nts.uk.at.view.kal003.a.tab {
                 self.listAgreementError(listAgErr);
             });
         }
-    }
+    } 
 }//end tab
 
 
