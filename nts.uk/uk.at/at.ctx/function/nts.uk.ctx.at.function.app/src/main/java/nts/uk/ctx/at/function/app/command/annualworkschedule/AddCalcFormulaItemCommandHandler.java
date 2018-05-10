@@ -24,6 +24,5 @@ public class AddCalcFormulaItemCommandHandler extends CommandHandler<CalcFormula
         repository.add(CalcFormulaItem.createFromJavaType(AppContexts.user().companyId(), addCommand.getSetOutCd(),
                                                           addCommand.getItemOutCd(), addCommand.getAttendanceItemId(),
                                                           addCommand.getOperation()));
-    
     }
 }

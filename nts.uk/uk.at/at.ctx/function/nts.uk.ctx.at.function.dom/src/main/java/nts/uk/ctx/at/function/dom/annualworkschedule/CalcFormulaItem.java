@@ -2,14 +2,14 @@ package nts.uk.ctx.at.function.dom.annualworkschedule;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.DomainObject;
 
 /**
 * 項目の算出式
 */
 @AllArgsConstructor
 @Getter
-public class CalcFormulaItem extends AggregateRoot
+public class CalcFormulaItem extends DomainObject
 {
     
     /**

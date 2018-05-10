@@ -39,5 +39,5 @@ public class ItemOutTblBookCommand {
     */
     private int valOutFormat;
 
-    List<CalcFormulaItemCommand> listCalcFormulaItem;
+    List<CalcFormulaItemCommand> listOperationSetting;
 }

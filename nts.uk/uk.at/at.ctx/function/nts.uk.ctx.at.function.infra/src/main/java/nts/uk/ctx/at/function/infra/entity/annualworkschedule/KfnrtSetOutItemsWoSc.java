@@ -1,11 +1,16 @@
 package nts.uk.ctx.at.function.infra.entity.annualworkschedule;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -55,13 +60,20 @@ public class KfnrtSetOutItemsWoSc extends UkJpaEntity implements Serializable {
 		return setOutItemsWoScPk;
 	}
 
+	@OneToMany(mappedBy = "setOutItemsWoSc", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinTable(name = "KFNRT_ITEM_OUT_TBL_BOOK")
+	public List<KfnrtItemOutTblBook> listItemOutTblBook;
+
 	public SetOutItemsWoSc toDomain() {
 		return SetOutItemsWoSc.createFromJavaType(this.setOutItemsWoScPk.cid, this.setOutItemsWoScPk.cd,
-													this.name, this.outNumExceedTime36Agr, this.displayFormat);
+													this.name, this.outNumExceedTime36Agr, this.displayFormat,
+			this.listItemOutTblBook.stream().map(m-> m.toDomain()).collect(Collectors.toList()));
 	}
+
 	public static KfnrtSetOutItemsWoSc toEntity(SetOutItemsWoSc domain) {
 		return new KfnrtSetOutItemsWoSc(new KfnrtSetOutItemsWoScPk(domain.getCid(), domain.getCd().v()),
 										domain.getName().v(), domain.getOutNumExceedTime36Agr(),
-										domain.getDisplayFormat().value);
+										domain.getDisplayFormat().value,
+			domain.getListItemOutTblBook().stream().map(m -> KfnrtItemOutTblBook.toEntity(m)).collect(Collectors.toList()));
 	}
 }

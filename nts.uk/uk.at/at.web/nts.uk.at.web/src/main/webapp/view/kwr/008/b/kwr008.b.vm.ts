@@ -123,10 +123,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             });
         }
         //Open dialog KDW007
-        openKDW007(idx) {
+        openKDW007(sortBy) {
             let self = this;
             nts.uk.ui.block.invisible();
-            let index = _.findIndex(self.outputItem(), (x) => {return x.index() === idx(); });
+            let index = _.findIndex(self.outputItem(), (x) => {return x.sortBy() === sortBy(); });
             if (index == -1) {
                 nts.uk.ui.block.clear();
                 return;
@@ -357,7 +357,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             }
             for(var i = 0; i < itemOut.length; i++ ) {
                 // item Rule 36 - do not checking
-                if (itemOut[i].index == 0) {
+                if (itemOut[i].sortBy == 0) {
                     continue;
                 }
                 if (itemOut[i].listOperationSetting.lenth == 0) {
@@ -455,16 +455,16 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         }
     }
     export class OutputItemData {
-        index: KnockoutObservable<number>= ko.observable(1);
+        sortBy: KnockoutObservable<number>= ko.observable(1);
         cd: KnockoutObservable<number>= ko.observable(0);
         useClassification: KnockoutObservable<boolean>= ko.observable(false);
         headingName: KnockoutObservable<string>= ko.observable('');
         valueOutputFormat: KnockoutObservable<number>= ko.observable(0);
         outputTargetItem: KnockoutObservable<string>= ko.observable('');
         listOperationSetting: KnockoutObservableArray<OperationCondition> = ko.observableArray([]);
-        constructor(index: number, cd: number, useClassification: boolean, headingName: string, valueOutputFormat: number, outputTargetItem: string) {
+        constructor(sortBy: number, cd: number, useClassification: boolean, headingName: string, valueOutputFormat: number, outputTargetItem: string) {
             let self = this;
-            self.index(index || 1);
+            self.sortBy(sortBy || 1);
             self.cd(cd || 0);
             self.useClassification(useClassification || false);
             self.headingName(headingName || '');

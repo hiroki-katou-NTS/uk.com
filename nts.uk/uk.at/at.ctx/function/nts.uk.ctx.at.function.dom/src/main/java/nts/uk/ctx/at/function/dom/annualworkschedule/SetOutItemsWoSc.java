@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.dom.annualworkschedule;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
@@ -38,11 +40,14 @@ public class SetOutItemsWoSc extends AggregateRoot {
 	* 表示形式
 	*/
 	private OutputAgreementTime displayFormat;
+
+	private List<ItemOutTblBook> listItemOutTblBook;
 	
 	public static SetOutItemsWoSc createFromJavaType(String cid, String cd, String name, int outNumExceedTime36Agr,
-			int displayFormat) {
+			int displayFormat, List<ItemOutTblBook> listItemOutTblBook) {
 		return new SetOutItemsWoSc(cid, new OutItemsWoScCode(cd),
 				new OutItemsWoScName(name), outNumExceedTime36Agr,
-				EnumAdaptor.valueOf(displayFormat, OutputAgreementTime.class));
+				EnumAdaptor.valueOf(displayFormat, OutputAgreementTime.class),
+				listItemOutTblBook);
 	}
 }

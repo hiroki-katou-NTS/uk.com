@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.function.dom.annualworkschedule;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.ValueOuputFormat;
 import nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.ItemOutTblBookCode;
 import nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.ItemOutTblBookHeadingName;
@@ -13,7 +15,7 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.ItemOutTblBo
 */
 @AllArgsConstructor
 @Getter
-public class ItemOutTblBook extends AggregateRoot {
+public class ItemOutTblBook extends DomainObject {
 	/**
 	* 会社ID
 	*/
@@ -43,16 +45,17 @@ public class ItemOutTblBook extends AggregateRoot {
 	* 使用区分
 	*/
 	private int useClass;
-
 	/**
 	* 値の出力形式
 	*/
 	private ValueOuputFormat valOutFormat;
 
+	private List<CalcFormulaItem> listCalcFormulaItem;
+
 	public static ItemOutTblBook createFromJavaType(String cid, String setOutCd, String cd, int sortBy, String headingName, int useClass,
-			int valOutFormat) {
+			int valOutFormat, List<CalcFormulaItem> listCalcFormulaItem) {
 		return new ItemOutTblBook(cid, setOutCd, new ItemOutTblBookCode(cd), sortBy,
 				new ItemOutTblBookHeadingName(headingName), useClass,
-				EnumAdaptor.valueOf(valOutFormat, ValueOuputFormat.class));
+				EnumAdaptor.valueOf(valOutFormat, ValueOuputFormat.class), listCalcFormulaItem);
 	}
 }
