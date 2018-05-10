@@ -49,14 +49,5 @@ public interface PersonRepository {
 
 
 	void addNewPerson(Person newPerson);
-
-	/**
-	 * Find by name.
-	 *
-	 * @param name the name
-	 * @return the list
-	 * @author NWS-AnhNM
-	 */
-	List<Person> findByName(String name);
 	
 }
