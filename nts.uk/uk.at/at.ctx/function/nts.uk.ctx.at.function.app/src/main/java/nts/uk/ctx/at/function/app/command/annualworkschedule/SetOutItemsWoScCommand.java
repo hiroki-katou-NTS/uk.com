@@ -4,35 +4,35 @@ import java.util.List;
 
 import lombok.Value;
 
+/**
+ * 年間勤務表(36チェックリスト)の出力条件
+ */
 @Value
-public class SetOutItemsWoScCommand
-{
-    
+public class SetOutItemsWoScCommand {
     /**
-    * 会社ID
-    */
+     * 
+     */
     private String cid;
-    
+
     /**
     * コード
     */
     private String cd;
-    
+
     /**
     * 名称
     */
     private String name;
-    
+
     /**
     * 36協定時間を超過した月数を出力する
     */
     private int outNumExceedTime36Agr;
-    
+
     /**
     * 表示形式
     */
     private int displayFormat;
-    
-    private List<ItemOutTblBookCommand> listItemOutput;
 
+    private List<ItemOutTblBookCommand> listItemOutput;
 }

@@ -10,6 +10,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBook;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.ValueOuputFormat;
 import nts.uk.ctx.at.function.dom.annualworkschedule.repository.ItemOutTblBookRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
@@ -22,7 +23,7 @@ public class AddItemOutTblBookCommandHandler extends CommandHandler<ItemOutTblBo
     @Override
     protected void handle(CommandHandlerContext<ItemOutTblBookCommand> context) {
         ItemOutTblBookCommand addCommand = context.getCommand();
-        repository.add(ItemOutTblBook.createFromJavaType(addCommand.getCid(),
+        repository.add(ItemOutTblBook.createFromJavaType(AppContexts.user().companyId(),
                        addCommand.getSetOutCd(), addCommand.getCd(), addCommand.getSortBy(),
                        addCommand.getHeadingName(), addCommand.getUseClass(),
                        addCommand.getValOutFormat()));

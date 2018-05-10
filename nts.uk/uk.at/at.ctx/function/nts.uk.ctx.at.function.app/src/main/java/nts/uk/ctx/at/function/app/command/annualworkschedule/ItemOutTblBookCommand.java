@@ -1,18 +1,16 @@
 package nts.uk.ctx.at.function.app.command.annualworkschedule;
 
+import java.util.List;
+
 import lombok.Value;
 
+/**
+ * 帳表に出力する項目
+ */
 @Value
-public class ItemOutTblBookCommand
-{
-    
+public class ItemOutTblBookCommand {
     /**
-    * 会社ID
-    */
-    private String cid;
-    
-    /**
-    * コード
+    * 年間勤務表(36チェックリスト)の出力条件.コード
     */
     private String setOutCd;
     
@@ -40,7 +38,6 @@ public class ItemOutTblBookCommand
     * 値の出力形式
     */
     private int valOutFormat;
-    
-    private Long version;
 
+    List<CalcFormulaItemCommand> listCalcFormulaItem;
 }

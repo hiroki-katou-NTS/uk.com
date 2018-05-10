@@ -8,6 +8,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.function.dom.annualworkschedule.CalcFormulaItem;
 import nts.uk.ctx.at.function.dom.annualworkschedule.repository.CalcFormulaItemRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
@@ -20,7 +21,7 @@ public class UpdateCalcFormulaItemCommandHandler extends CommandHandler<CalcForm
     @Override
     protected void handle(CommandHandlerContext<CalcFormulaItemCommand> context) {
         CalcFormulaItemCommand updateCommand = context.getCommand();
-        repository.update(CalcFormulaItem.createFromJavaType(updateCommand.getCid(), updateCommand.getSetOutCd(),
+        repository.update(CalcFormulaItem.createFromJavaType(AppContexts.user().companyId(), updateCommand.getSetOutCd(),
                                                              updateCommand.getItemOutCd(),
                                                              updateCommand.getAttendanceItemId(),
                                                              updateCommand.getOperation()));

@@ -6,10 +6,8 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import javax.transaction.Transactional;
-
-import nts.uk.ctx.at.function.dom.annualworkschedule.CalcFormulaItem;
 import nts.uk.ctx.at.function.dom.annualworkschedule.repository.CalcFormulaItemRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
@@ -21,7 +19,7 @@ public class RemoveCalcFormulaItemCommandHandler extends CommandHandler<CalcForm
     
     @Override
     protected void handle(CommandHandlerContext<CalcFormulaItemCommand> context) {
-        String cid = context.getCommand().getCid();
+        String cid = AppContexts.user().companyId();
         String setOutCd = context.getCommand().getSetOutCd();
         String itemOutCd = context.getCommand().getItemOutCd();
         int attendanceItemId = context.getCommand().getAttendanceItemId();
