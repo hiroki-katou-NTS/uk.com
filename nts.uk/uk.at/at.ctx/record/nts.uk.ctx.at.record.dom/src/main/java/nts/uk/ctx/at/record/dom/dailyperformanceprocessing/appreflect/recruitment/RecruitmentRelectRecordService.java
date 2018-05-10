@@ -28,7 +28,7 @@ public interface RecruitmentRelectRecordService {
 	 * 開始終了時刻の反映
 	 * @param param
 	 */
-	public IntegrationOfDaily reflectRecordStartEndTime(CommonReflectParameter param, IntegrationOfDaily daily);
+	public void reflectRecordStartEndTime(CommonReflectParameter param);
 	/**
 	 * 休出時間振替時間をクリアする
 	 * @param employeeId
@@ -44,6 +44,5 @@ public interface RecruitmentRelectRecordService {
 	 * @param optTimeLeaving
 	 * @return
 	 */
-	public boolean checkReflectRecordStartEndTime(String workTypeCode, Integer frameNo, boolean isAttendence,
-			Optional<TimeLeavingOfDailyPerformance> optTimeLeaving);
+	public boolean checkReflectRecordStartEndTime(String workTypeCode, Integer frameNo, boolean isAttendence, String employeeId, GeneralDate baseDate);
 }
