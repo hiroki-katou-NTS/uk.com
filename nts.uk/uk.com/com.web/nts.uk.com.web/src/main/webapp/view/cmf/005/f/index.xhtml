@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				    var dialogSize = {
+				        width : 500,
+				        height : 370
+				    };
+            </script>
+			<com:scriptfile path="cmf005.f.vm.js" />
+			<com:scriptfile path="cmf005.f.start.js" />
+			<com:stylefile path="cmf005.f.style.css" />
+
+		</ui:define>
+
+		<ui:define name="content">
+			<!--F2-->
+			<label id="F2">#{i18n.getText('CMF005_2')}</label>
+			<div id="bodyScreen">
+				<table>
+					<tr>
+						<td class="columnLeft"><label>#{i18n.getText('CMF005_60')}</label></td>
+						<td class="columnRight"><label class="labeRight" data-bind="text: textf212" /></td>
+					</tr>
+					<tr>
+						<td class="columnLeft"><label>#{i18n.getText('CMF005_61')}</label></td>
+						<td>
+							<label class="labeRight" data-bind="text: textf222" />
+							<label class="labeRight" data-bind="text: textf223" />
+							<label>#{i18n.getText('CMF005_62')}</label>
+						</td>
+					</tr>
+					<tr>
+						<td class="columnLeft"><label>#{i18n.getText('CMF005_63')}</label></td>
+						<td><label class="labeRight">#{i18n.getText('CMF005_64')}</label></td>
+					</tr>
+				</table>
+
+				<div id="tableTwo">
+					<label id="F3">#{i18n.getText('CMF005_65')}</label>
+					<table>
+						<tr>
+							<td class="columnLeft"><label class ="labeLeft" >#{i18n.getText('CMF005_66')}</label></td>
+							<td class="columnRight"><label class="labeRight" data-bind="text: textf312" /></td>
+						</tr>
+						<tr>
+							<td class="columnLeft"><label class ="labeLeft">#{i18n.getText('CMF005_67')}</label></td>
+							<td><label class="labeRight" data-bind="text: textf322" /></td>
+						</tr>
+						<tr>
+							<td class="columnLeft" rowspan="3"><label class ="labeLeft">#{i18n.getText('CMF005_68')}</label></td>
+							<td>
+								<label>#{i18n.getText('CMF005_69')}</label>
+								<label data-bind="text: textf332" />
+								<label>#{i18n.getText('CMF005_72')}</label>
+								<label data-bind="text: textf334" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label>#{i18n.getText('CMF005_70')}</label>
+								<label data-bind="text: textf342" />
+								<label>#{i18n.getText('CMF005_72')}</label>
+								<label data-bind="text: textf344" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label>#{i18n.getText('CMF005_71')}</label>
+								<label data-bind="text: textf352" />
+								<label>#{i18n.getText('CMF005_72')}</label>
+								<label data-bind="text: textf354" />
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<hr />
+			<center>
+			<button id="F10_1" data-bind="click : breakPopup" class="large">#{i18n.getText('CMF005_73')}</button>
+			<button id="F10_2" data-bind="click : closePopup" class="large">#{i18n.getText('CMF005_74')}</button>
+			</center>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
