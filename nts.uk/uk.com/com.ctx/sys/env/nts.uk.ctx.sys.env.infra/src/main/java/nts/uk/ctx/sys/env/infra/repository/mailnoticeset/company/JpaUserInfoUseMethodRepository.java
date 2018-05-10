@@ -71,8 +71,7 @@ public class JpaUserInfoUseMethodRepository extends JpaRepository implements Use
 	public void update(List<UserInfoUseMethod> lstUserInfo) {
 		lstUserInfo.stream().forEach(dom -> {
 			Optional<SevstUserInfoUsemethod> optional = this.queryProxy()
-					.find(new SevstUserInfoUsemethodPK(dom.getCompanyId(), dom.getSettingItem().value,
-							dom.getSelfEdit().value), SevstUserInfoUsemethod.class);
+					.find(new SevstUserInfoUsemethodPK(dom.getCompanyId(), dom.getSettingItem().value), SevstUserInfoUsemethod.class);
 			SevstUserInfoUsemethod entity = optional.get();
 			dom.saveToMemento(new JpaUserInfoUseMethodSetMemento(entity));
 			this.commandProxy().update(entity);

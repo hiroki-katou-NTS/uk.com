@@ -22,6 +22,9 @@ public class SevstUserInfoUsemethod implements Serializable {
     
     @Column(name = "EXCLUS_VER")
     private int exclusVer;
+
+    @Column(name = "SELF_EDIT")
+    private int selfEdit;
     
     @Column(name = "USE_MAIL_SET")
     private int useMailSet;

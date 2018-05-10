@@ -56,7 +56,7 @@ public class JpaUserInfoUseMethodGetMemento implements UserInfoUseMethodGetMemen
 	 */
 	@Override
 	public SelfEditUserInfo getSelfEdit() {
-		return SelfEditUserInfo.valueOf(this.entity.getSevstUserInfoUsemethodPK().getSelfEdit());
+		return SelfEditUserInfo.valueOf(this.entity.getSelfEdit());
 	}
 
 	/**

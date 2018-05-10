@@ -20,17 +20,13 @@ public class SevstUserInfoUsemethodPK implements Serializable {
     
     @Column(name = "SETTING_ITEM")
     private int settingItem;
-    
-    @Column(name = "SELF_EDIT")
-    private int selfEdit;
 
     public SevstUserInfoUsemethodPK() {
     }
     
-    public SevstUserInfoUsemethodPK(String cid, int settingItem, int selfEdit) {
+    public SevstUserInfoUsemethodPK(String cid, int settingItem) {
         this.cid = cid;
         this.settingItem = settingItem;
-        this.selfEdit = selfEdit;
     }
 
     @Override
@@ -38,7 +34,6 @@ public class SevstUserInfoUsemethodPK implements Serializable {
         int hash = 0;
         hash += (cid != null ? cid.hashCode() : 0);
         hash += (int) settingItem;
-        hash += (int) selfEdit;
         return hash;
     }
 
@@ -54,15 +49,12 @@ public class SevstUserInfoUsemethodPK implements Serializable {
         if (this.settingItem != other.settingItem) {
             return false;
         }
-        if (this.selfEdit != other.selfEdit) {
-            return false;
-        }
         return true;
     }
 
     @Override
     public String toString() {
-        return "javaapplication1.SevstUserInfoUsemethodPK[ cid=" + cid + ", settingItem=" + settingItem + ", selfEdit=" + selfEdit + " ]";
+        return "javaapplication1.SevstUserInfoUsemethodPK[ cid=" + cid + ", settingItem=" + settingItem + " ]";
     }
     
 }

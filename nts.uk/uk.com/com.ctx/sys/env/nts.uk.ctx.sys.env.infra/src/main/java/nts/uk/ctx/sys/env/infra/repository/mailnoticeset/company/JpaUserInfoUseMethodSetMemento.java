@@ -50,7 +50,7 @@ public class JpaUserInfoUseMethodSetMemento implements UserInfoUseMethodSetMemen
 	 */
 	@Override
 	public void setSelfEdit(SelfEditUserInfo selfEdit) {
-		this.entity.getSevstUserInfoUsemethodPK().setSelfEdit(selfEdit.value);
+		this.entity.setSelfEdit(selfEdit.value);
 	}
 
 	/* (non-Javadoc)
