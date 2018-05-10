@@ -49,6 +49,12 @@ public class FunctionSettingFinder {
 				.map(item -> new FunctionSettingDto(item.getFunctionId().v(), item.getFunctionName().v(), false))
 				.collect(Collectors.toList());	
 		MailDestinationFunction mailDestinationFunction = this.mailDestinationFunctionRepository.findByCidAndSettingItem(companyId, userInfoItem);
+		
+		// In case the mail destination function is not found
+		if (mailDestinationFunction == null) {
+			return listResult;
+		}
+				
 		Map<Integer, SendMailByFunctionSetting> mapSendMailByFunctionSetting = mailDestinationFunction.getSendByFunctionSetting().stream()
 				.collect(Collectors.toMap(item -> item.getFunctionId().v(), Function.identity()));
 		listResult.forEach(dto -> {

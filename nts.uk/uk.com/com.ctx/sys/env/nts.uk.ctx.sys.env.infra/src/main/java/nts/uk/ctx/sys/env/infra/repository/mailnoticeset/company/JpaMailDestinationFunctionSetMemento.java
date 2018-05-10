@@ -21,7 +21,7 @@ public class JpaMailDestinationFunctionSetMemento implements MailDestinationFunc
 	private List<SevstMailDestinFunc> entities;
 	
 	/** The setting item. */
-	private Integer settingItem;
+	private int settingItem;
 	
 	/** The company id. */
 	private String companyId;
