@@ -11,9 +11,6 @@ import nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputConditionReposi
 @Path("screen/at/dailyschedule")
 @Produces("application/json")
 public class Kwr001WebService extends WebService {
-	@Inject
-	private WorkScheduleOutputConditionRepository outputConditionRepository;
-	
 	@POST
 	@Path("export")
 	public void exportData() {
