@@ -4,6 +4,7 @@ module nts.uk.at.view.kmw006.a.viewmodel {
     import alertError = nts.uk.ui.dialog.alertError;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
         itemList: KnockoutObservableArray<ItemModel>;
@@ -31,6 +32,7 @@ module nts.uk.at.view.kmw006.a.viewmodel {
         dispClosurePeriod5: KnockoutObservable<string>;
         executable: KnockoutObservable<boolean> = ko.observable(true);
         displayClosurePeriod: KnockoutObservable<boolean>;
+        first: KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {
             var self = this;
@@ -194,6 +196,7 @@ module nts.uk.at.view.kmw006.a.viewmodel {
                         self.selectedClosureId(results.selectClosureId);
                 } else {//running => open dialog F
                     self.openKmw006fDialog(null);
+                    self.first(false);
                 }
                 dfd.resolve();
             }).fail((error) => {
@@ -214,10 +217,10 @@ module nts.uk.at.view.kmw006.a.viewmodel {
                     let periodEnd: string = result.periodEnd;
                     result.periodStart = moment.utc(periodStart, "YYYY/MM/DD").toISOString();
                     result.periodEnd = moment.utc(periodEnd, "YYYY/MM/DD").toISOString();
-                    sessionStorage.setItem("MonthlyClosureUpdateLogId", result.monthlyClosureUpdateLogId);
-                    sessionStorage.setItem("MonthlyClosureListEmpId", result.listEmployeeId);
-                    sessionStorage.setItem("MonthlyClosureId", result.closureId);
-                    sessionStorage.setItem("MonthlyClosureExecutionDateTime", result.startDT);
+                    localStorage.setItem("MonthlyClosureUpdateLogId", result.monthlyClosureUpdateLogId);
+                    localStorage.setItem("MonthlyClosureListEmpId", result.listEmployeeId);
+                    localStorage.setItem("MonthlyClosureId", result.closureId);
+                    localStorage.setItem("MonthlyClosureExecutionDateTime", result.startDT);
                 }
                 self.openKmw006fDialog(result);
             }).fail((error) => {
@@ -231,7 +234,8 @@ module nts.uk.at.view.kmw006.a.viewmodel {
             let self = this;
             setShared("kmw006fParams", params);
             modal("/view/kmw/006/f/index.xhtml").onClosed(() => {
-                self.startPage();
+                let check = getShared("kmw006fConfirm");
+                if (check || !self.first()) self.startPage();
             });
         }
         
