@@ -16,8 +16,7 @@ import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstLengthServiceTblP
 public class JpaLengthServiceRepository extends JpaRepository implements LengthServiceRepository{
 	private final String SELECT_BY_CODE = "SELECT c FROM KshstLengthServiceTbl c "
 					+ "WHERE c.kshstLengthServiceTblPK.companyId = :companyId "
-					+ "AND c.kshstLengthServiceTblPK.yearHolidayCode = :yearHolidayCode "
-					+ "ORDER BY c.kshstLengthServiceTblPK.yearHolidayCode, c.kshstLengthServiceTblPK.grantNum ";
+					+ "AND c.kshstLengthServiceTblPK.yearHolidayCode = :yearHolidayCode ORDER BY c.kshstLengthServiceTblPK.grantNum ";
 	
 	private final String DELETE_ALL = "DELETE FROM KshstLengthServiceTbl c "
 									+ "WHERE c.kshstLengthServiceTblPK.companyId = :companyId ";
@@ -77,7 +76,7 @@ public class JpaLengthServiceRepository extends JpaRepository implements LengthS
 	 */
 	@Override
 	public void update(LengthServiceTbl holidayGrant) {
-		this.commandProxy().update(holidayGrant);
+		this.commandProxy().update(toEntity(holidayGrant));
 	}
 	/**
 	 * remove LengthServiceTbl by code 

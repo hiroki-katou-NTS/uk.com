@@ -298,7 +298,8 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 	@Override
 	public boolean checkStartEndTimeReflect(String employeeId, GeneralDate datadata, Integer frameNo,
 			String workTypeCode, OverTimeRecordAtr overTimeAtr, boolean isPre) {
-		if(overTimeAtr == OverTimeRecordAtr.REGULAROVERTIME) {
+		if((overTimeAtr == OverTimeRecordAtr.REGULAROVERTIME && isPre)
+				|| overTimeAtr == OverTimeRecordAtr.PREOVERTIME && !isPre) {
 			return false;
 		}
 		//打刻自動セット区分を取得する

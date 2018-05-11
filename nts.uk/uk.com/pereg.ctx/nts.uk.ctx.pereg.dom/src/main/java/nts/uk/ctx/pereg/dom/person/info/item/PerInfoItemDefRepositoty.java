@@ -114,5 +114,7 @@ public interface PerInfoItemDefRepositoty {
 	
 	List<PersonInfoItemDefinition> getItemLstByListId(List<String> listItemDefId, String contractCd);
 	
+	String getItemName(String contractCode, String companyId, String categoryCode, String itemCode);
+	
 	
 }

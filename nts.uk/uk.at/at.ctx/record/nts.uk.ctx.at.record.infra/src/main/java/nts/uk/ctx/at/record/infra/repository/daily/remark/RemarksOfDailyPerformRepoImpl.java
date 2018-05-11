@@ -102,7 +102,7 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 	}
 
 	private TypedQueryWrapper<KrcdtDayRemarksColumn> findEntity(String employeeId, GeneralDate workingDate) {
-		String query = "SELECT r FROM KrcdtDayRemarksColumn r WHERE r.krcdtDayRemarksColumnPK.sid == :sid AND r.krcdtDayRemarksColumnPK.ymd = :ymd";
+		String query = "SELECT r FROM KrcdtDayRemarksColumn r WHERE r.krcdtDayRemarksColumnPK.sid = :sid AND r.krcdtDayRemarksColumnPK.ymd = :ymd";
 		return queryProxy().query(query, KrcdtDayRemarksColumn.class)
 				.setParameter("sid", employeeId)
 				.setParameter("ymd", workingDate);

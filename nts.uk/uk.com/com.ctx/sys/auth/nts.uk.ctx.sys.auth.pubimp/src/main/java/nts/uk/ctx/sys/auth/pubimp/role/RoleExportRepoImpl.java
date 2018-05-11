@@ -34,6 +34,7 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 	@Inject
 	private RoleRepository roleRepo;
 
+	/** The role workplace ID finder. */
 	@Inject
 	private RoleWorkplaceIDFinder roleWorkplaceIDFinder;
 
@@ -63,7 +64,7 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 	 * lang.Integer)
 	 */
 	@Override
-	// ロールIDから参照可能な職場リストを取得する
+	// ロールIDから参�可能な職場リストを取得す�
 	public WorkplaceIdExport findWorkPlaceIdByRoleId(Integer systemType) {
 
 		WorkplaceIdDto workplaceIdDto = roleWorkplaceIDFinder.findListWokplaceId(systemType);
@@ -92,6 +93,9 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.auth.pub.role.RoleExportRepo#findWorkPlaceIdNoRole(java.lang.Integer)
+	 */
 	@Override
 	public WorkplaceIdExport findWorkPlaceIdNoRole(Integer systemType) {
 		WorkplaceIdDto workplaceIdDto = roleWorkplaceIDFinder.findListWokplaceIdNoCheckRole(systemType);
@@ -130,6 +134,9 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 		return this.roleWorkplaceIDFinder.findRoleIdBySystemType(systemType);
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.auth.pub.role.RoleExportRepo#getWhetherLoginerCharge()
+	 */
 	@Override
 	public RoleWhetherLoginPubExport getWhetherLoginerCharge() {
 		String employmentRoleID = AppContexts.user().roles().forAttendance();
