@@ -711,4 +711,8 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		approvalRootStateRepository.update(approvalRootState, rootType);
 		
 	}
+	@Override
+	public void deleteConfirmDay(String employeeID, GeneralDate date) {
+		approvalRootStateRepository.deleteConfirmDay(employeeID, date);
+	}
 }
