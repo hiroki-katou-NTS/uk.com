@@ -55,9 +55,6 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 	private CalcNextAnnualLeaveGrantDate calcNextAnnualLeaveGrantDate;
 
 	@Inject
-	private Closure closureService;
-
-	@Inject
 	private GetClosurePeriod getClosurePeriod;
 
 	@Override
@@ -114,8 +111,9 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			GeneralDate baseDate = GeneralDate.today();
 			// 社員に対応する処理締めを取得する
 			Optional<Closure> closure = checkShortageFlex.findClosureByEmployee(employeeId, baseDate);
+			if(!closure.isPresent()) return null;
 			// 指定した年月の期間をすべて取得する
-			List<DatePeriod> periodByYearMonth = closureService.getPeriodByYearMonth(datePeriod.end().yearMonth());
+			List<DatePeriod> periodByYearMonth = closure.get().getPeriodByYearMonth(datePeriod.end().yearMonth());
 			if (periodByYearMonth == null || periodByYearMonth.size() == 0)
 				return null;
 			// 集計期間を計算する

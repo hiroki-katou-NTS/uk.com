@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
-
+/**
+ * 年月毎年休の集計結果
+ */
 @Getter
 @Setter
 public class AggrResultOfAnnualLeaveEachMonth {
