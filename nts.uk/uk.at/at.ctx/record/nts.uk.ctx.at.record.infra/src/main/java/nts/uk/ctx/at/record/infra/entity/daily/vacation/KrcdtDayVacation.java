@@ -73,10 +73,7 @@ public class KrcdtDayVacation extends UkJpaEntity implements Serializable {
 	@Column(name = "TDV_SHORTAGE_TIME")
 	public int tdvShortageTime;
 	
-	@OneToOne
-	@JoinColumns(value = {
-			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
-			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
+	@OneToOne(mappedBy="KrcdtDayVacation")
 	public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
 	
 	
