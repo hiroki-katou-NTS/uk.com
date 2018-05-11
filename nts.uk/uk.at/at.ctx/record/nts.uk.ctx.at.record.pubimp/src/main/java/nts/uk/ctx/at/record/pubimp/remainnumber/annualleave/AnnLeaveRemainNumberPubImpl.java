@@ -74,19 +74,35 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			// 社員に対応する締め期間を取得する
 			DatePeriod datePeriod = checkShortageFlex.findClosurePeriod(employeeId, startDate.get());
 			// 期間中の年休残数を取得
-			Optional<AggrResultOfAnnualLeave> aggrResult = getAnnLeaRemNumWithinPeriod.algorithm(
-					companyId, employeeId, datePeriod, TempAnnualLeaveMngMode.OTHER, datePeriod.end(), 
-					false, false, Optional.empty(), Optional.empty(), Optional.empty());
+			Optional<AggrResultOfAnnualLeave> aggrResult = getAnnLeaRemNumWithinPeriod.algorithm(companyId, employeeId,
+					datePeriod, TempAnnualLeaveMngMode.OTHER, datePeriod.end(), false, false, Optional.empty(),
+					Optional.empty(), Optional.empty());
 			if (!aggrResult.isPresent())
 				return null;
 			result.setUsedDays(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
 					.getUsedNumber().getUsedDays().getUsedDays());
-			result.setUsedMinutes(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-					.getUsedNumber().getUsedTime());
+
+			result.setUsedMinutes(
+					aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber()
+							.getUsedTime()
+							.isPresent()
+									? Optional.of(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber()
+											.getAnnualLeaveWithMinus().getUsedNumber().getUsedTime().get().getUsedTime()
+											.v())
+									: Optional.empty());
+
 			result.setRemainDays(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
 					.getRemainingNumber().getTotalRemainingDays());
-			result.setRemainMinutes(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-					.getRemainingNumber().getTotalRemainingTime());
+
+			result.setRemainMinutes(
+					aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
+							.getRemainingNumber().getTotalRemainingTime()
+							.isPresent()
+									? Optional.of(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber()
+											.getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingTime()
+											.get().v())
+									: Optional.empty());
+
 			// ドメインモデル「年休社員基本情報」を取得
 			Optional<AnnualLeaveEmpBasicInfo> basicInfo = annLeaBasicInfoRepo.get(employeeId);
 			// 次回年休付与を計算
@@ -95,7 +111,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			if (annualLeaveGrant.size() == 0)
 				return null;
 			result.setGrantDate(annualLeaveGrant.get(0).getGrantDate());
-			result.setGrantDays(annualLeaveGrant.get(0).getGrantDays());
+			result.setGrantDays(annualLeaveGrant.get(0).getGrantDays().v());
 			return result;
 		} catch (Exception e) {
 			return null;
@@ -111,15 +127,16 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			GeneralDate baseDate = GeneralDate.today();
 			// 社員に対応する処理締めを取得する
 			Optional<Closure> closure = checkShortageFlex.findClosureByEmployee(employeeId, baseDate);
-			if(!closure.isPresent()) return null;
+			if (!closure.isPresent())
+				return null;
 			// 指定した年月の期間をすべて取得する
 			List<DatePeriod> periodByYearMonth = closure.get().getPeriodByYearMonth(datePeriod.end().yearMonth());
 			if (periodByYearMonth == null || periodByYearMonth.size() == 0)
 				return null;
 			// 集計期間を計算する
 			List<ClosurePeriod> listClosurePeriod = getClosurePeriod.get(companyId, employeeId,
-					periodByYearMonth.get(periodByYearMonth.size() - 1).end(), 
-					Optional.empty(), Optional.empty(), Optional.empty());
+					periodByYearMonth.get(periodByYearMonth.size() - 1).end(), Optional.empty(), Optional.empty(),
+					Optional.empty());
 			// 締め処理期間のうち、同じ年月の期間をまとめる
 			Map<YearMonth, List<ClosurePeriod>> listMap = listClosurePeriod.stream()
 					.collect(Collectors.groupingBy(ClosurePeriod::getYearMonth));
@@ -152,7 +169,8 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 						Optional.empty(), Optional.empty(), aggrResultOfAnnualLeave);
 				// 結果をListに追加
 				if (aggrResultOfAnnualLeave.isPresent()) {
-					result.add(new AggrResultOfAnnualLeaveEachMonth(item.getYearMonth(), aggrResultOfAnnualLeave.get()));
+					result.add(
+							new AggrResultOfAnnualLeaveEachMonth(item.getYearMonth(), aggrResultOfAnnualLeave.get()));
 				}
 			}
 			return result;
