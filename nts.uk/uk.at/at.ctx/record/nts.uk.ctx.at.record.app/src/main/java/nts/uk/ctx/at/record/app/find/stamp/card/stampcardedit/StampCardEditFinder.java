@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.find.stamp.stampcardedit;
+package nts.uk.ctx.at.record.app.find.stamp.card.stampcardedit;
 
 import java.util.Optional;
 
