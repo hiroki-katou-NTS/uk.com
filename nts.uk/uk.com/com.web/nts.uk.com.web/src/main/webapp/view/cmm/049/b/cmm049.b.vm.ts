@@ -135,9 +135,13 @@ module nts.uk.com.view.cmm049.b {
                         listOfMailFunction.push(item.functionId);
                     });
                     data.mailDestinationFunctionDto.sendByFunctionSetting.forEach((item: any, index: any) => {
-                        let returnArray: Array<any> = _.find(listOfMailFunction, function(o) { return o == item.functionId });
-                        if (returnArray) {
-                            self.currentCodeList.push(item.functionId);
+                        if (item.sendSetting == 1) {
+                            let returnArray: Array<any> = _.find(listOfMailFunction, function(o) {
+                                return o == item.functionId;
+                            });
+                            if (returnArray) {
+                                self.currentCodeList.push(item.functionId);
+                            }
                         }
                     });
                 }

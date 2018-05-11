@@ -20,6 +20,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.MailFunction;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.MailFunctionRepository;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.SevstMailFunction;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.SevstMailFunction_;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFuncPK_;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFunc_;
 
 /**
  * The Class JpaMailFunctionRepository.
@@ -27,6 +30,8 @@ import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.SevstMailFunction;
 @Stateless
 public class JpaMailFunctionRepository extends JpaRepository implements MailFunctionRepository {
 
+	private static final Integer TRUE_VAL = 1;
+	private static final Integer FALSE_VAL = 0;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -48,8 +53,10 @@ public class JpaMailFunctionRepository extends JpaRepository implements MailFunc
 
 		// Add where conditions
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(criteriaBuilder.equal(root.get(SevstMailFunction_.sendMailSetAtr),
+				proprietySendMailSettingAtr ? TRUE_VAL : FALSE_VAL));
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-//		cq.orderBy(criteriaBuilder.desc(root.get(SevstMailFunction.startDate)));
+		cq.orderBy(criteriaBuilder.desc(root.get(SevstMailFunction_.sortOrder)));
 
 		List<SevstMailFunction> listSevstMailFunction = em.createQuery(cq).getResultList();
 
