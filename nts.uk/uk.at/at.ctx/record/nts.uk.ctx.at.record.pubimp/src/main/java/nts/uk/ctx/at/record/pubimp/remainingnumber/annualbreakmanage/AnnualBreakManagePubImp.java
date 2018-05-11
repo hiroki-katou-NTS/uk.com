@@ -54,7 +54,6 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 	@Override
 	public List<AnnualBreakManageExport> getEmployeeId(List<String> employeeId, GeneralDate startDate,
 			GeneralDate endDate) {
-		boolean isNull = false;
 		List<AnnualBreakManageExport> annualBreakManageExport = new ArrayList<>();
 		for (String emp : employeeId) {
 			List<NextAnnualLeaveGrant> nextAnnualLeaveGrant = calculateNextHolidayGrant(emp, new DatePeriod(startDate, endDate));
@@ -90,7 +89,7 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 		// ログインしている会社ID　取得
 		LoginUserContext loginUserContext = AppContexts.user();
 		String companyId = loginUserContext.companyId();
-		Optional<AggrResultOfAnnualLeave> annualLeaveInfo = Optional.empty();
+		Optional<AggrResultOfAnnualLeave> prevAnnualLeave = Optional.empty();
 		int count = 0;
 		for (NextAnnualLeaveGrant elementNextAnnualLeaveGrant : nextAnnualLeaveGrant) {
 			// 期間中の年休残数を取得
@@ -105,7 +104,7 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 							false, 
 							null,
 							null,
-							annualLeaveInfo);
+							prevAnnualLeave);
 			if (aggrResultOfAnnualLeave.isPresent()){
 				// 取得した年休の集計結果．年休情報(付与時点)でループ
 				for (AnnualLeaveInfo annualLeaveInfoe : aggrResultOfAnnualLeave.get().getAsOfGrant().get()) {
@@ -122,7 +121,7 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 				
 				// 年休計算開始日←次回年休付与．付与年月日
 				startDate = Optional.of(nextAnnualLeaveGrant.get(++count).getGrantDate());
-				annualLeaveInfo = Optional.of(aggrResultOfAnnualLeave.get().getAsOfPeriodEnd());
+				prevAnnualLeave = aggrResultOfAnnualLeave;
 			}
 			
 			// 期間中の年休残数を取得
@@ -137,7 +136,7 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 							false, 
 							null,
 							null,
-							annualLeaveInfo);
+							prevAnnualLeave);
 			// List<指定日時点の年休残数>の年休残数を全て更新
 			for (YearlyHolidaysTimeRemainingExport yyearlyHolidaysTimeRemainingExport : yearlyHolidaysTimeRemainingExport) {
 				yyearlyHolidaysTimeRemainingExport.setAnnualRemaining(aggrResultOfAnnualLeavee.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v());
