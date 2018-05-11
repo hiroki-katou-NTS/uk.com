@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.function.infra.repository.holidaysremaining.report;
 
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -37,9 +35,9 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenerator
 		implements HolidaysRemainingReportGenerator {
 
-	@Inject 
+	@Inject
 	private AnnLeaveRemainingAdapter annLeaveRemainingAdapter;
-	
+
 	private static final String TEMPLATE_FILE = "report/休暇残数管理票_テンプレート.xlsx";
 	private static final String REPORT_FILE_NAME = "休暇残数管理票.xlsx";
 	private final int numberRowOfPage = 37;
@@ -80,15 +78,16 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 	}
 
 	private void printTemplate(Worksheet worksheet) throws Exception {
-		GeneralDate start = GeneralDate.fromString(dataSource.getStartMonth(), "yyyy/MM");//YearMonth.parse(dataSource.getStartMonth(), formatter);
-		GeneralDate end = GeneralDate.fromString(dataSource.getEndMonth(),  "yyyy/MM");
+		GeneralDate start = GeneralDate.fromString(dataSource.getStartMonth(), "yyyy/MM/dd");
+		GeneralDate end = GeneralDate.fromString(dataSource.getEndMonth(), "yyyy/MM/dd");
 		GeneralDate currentMonth = GeneralDate.today();
-		datePeriod = new DatePeriod (start, end);
+		datePeriod = new DatePeriod(start, end);
 		Cells cells = worksheet.getCells();
 
 		// B1_1, B1_2
-		cells.get(1, 0)
-				.setValue(TextResource.localize("KDR001_2") + dataSource.getStartMonth() + "　～　" + dataSource.getEndMonth());
+		cells.get(1, 0).setValue(
+				TextResource.localize("KDR001_2") + start.toString("yyyy/MM")
+				+ "　～　" + end.toString("yyyy/MM"));
 		// B1_3
 		cells.get(2, 0).setValue(TextResource.localize("KDR001_3"));
 		// C1_1
@@ -211,8 +210,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 	private int printEachPerson(Worksheet worksheet, int firstRow, HolidaysRemainingEmployee employee)
 			throws Exception {
-		
-		
+
 		Cells cells = worksheet.getCells();
 		// D index
 		// print Header
@@ -233,8 +231,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 	private int printHolidayRemainingEachPerson(Worksheet worksheet, int firstRow, HolidaysRemainingEmployee employee)
 			throws Exception {
-		List<AnnLeaveUsageStatusOfThisMonthImported> listAnnLeaveUsage = 
-				annLeaveRemainingAdapter.getAnnLeaveUsageOfThisMonth(employee.getEmployeeId(), datePeriod);
+		// Call rql 363
+		List<AnnLeaveUsageStatusOfThisMonthImported> listAnnLeaveUsage = annLeaveRemainingAdapter
+				.getAnnLeaveUsageOfThisMonth(employee.getEmployeeId(), datePeriod);
 		int rowIndexD = firstRow;
 		Cells cells = worksheet.getCells();
 		int totalRowDetails = 0;

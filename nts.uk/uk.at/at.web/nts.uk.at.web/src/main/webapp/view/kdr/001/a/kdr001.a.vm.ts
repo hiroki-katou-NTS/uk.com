@@ -381,8 +381,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             nts.uk.characteristics.save("UserSpecific_" + user.employeeId, userSpecificInformation);
 
             let holidayRemainingOutputCondition = new HolidayRemainingOutputCondition(
-                startMonth.format("YYYY/MM"),
-                endMonth.format("YYYY/MM"),
+                startMonth.format("YYYY/MM/DD"),
+                endMonth.format("YYYY/MM/DD"),
                 self.holidayRemainingSelectedCd(),
                 self.selectedCode()
             );
