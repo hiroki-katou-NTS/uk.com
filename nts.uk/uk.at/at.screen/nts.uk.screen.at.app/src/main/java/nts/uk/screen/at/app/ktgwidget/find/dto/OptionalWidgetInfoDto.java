@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 
 @Getter
 @Setter
@@ -30,7 +31,7 @@ public class OptionalWidgetInfoDto {
 	private int remand;
 	
 	/** 7 App Deadline Month 今月の申請締め切り日 */
-	private DeadlineOfRequest appDeadlineMonth = new DeadlineOfRequest();
+	private DeadlineOfRequest appDeadlineMonth = new DeadlineOfRequest(false,GeneralDate.today());
 	
 	/** 8 Presence Daily Per 日別実績のエラー有無 */
 	private boolean presenceDailyPer = false;
