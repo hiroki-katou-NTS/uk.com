@@ -37,7 +37,12 @@ module nts.uk.com.view.cmm048.a {
                 let _self = this;
                 let dfd = $.Deferred<any>();
                 
-
+//                service.getAllEnum().done((data: any) => {
+//                    data.selfEditSetting.forEach((item: any, index: number) => {
+//                        _self.selfEditSetOptions.push({ value: item.value, localizedName: item.fieldName });
+//                    })
+//                    dfd.resolve();
+//                })
                 
                 dfd.resolve();
                 return dfd.promise();
@@ -66,6 +71,8 @@ module nts.uk.com.view.cmm048.a {
             passwordPolicy: PasswordPolicyModel;
             listUserInfoUseMethod: Array<UserInfoUseMethodModel>;
             listUseContactSetting: Array<UseContactSettingModel>;
+            
+            selfEditSetOptions: KnockoutObservableArray<any>;
             
             constructor() {
                 let _self = this;
@@ -123,18 +130,35 @@ module nts.uk.com.view.cmm048.a {
         
         export class PasswordPolicyModel {
             isUse: KnockoutObservable<boolean>;
-            lowestDigits: KnockoutObservable<number>;
             complexity: ComplexityModel;
+            lowestDigits: KnockoutObservable<number>;
             historyCount: KnockoutObservable<number>;
             validityPeriod: KnockoutObservable<number>;
+            
+            textLowestDigits: KnockoutObservable<string>;
+            textHistoryCount: KnockoutObservable<string>;
+            textValidityPeriod: KnockoutObservable<string>;
             
             constructor() {
                 let _self = this;
                 _self.isUse = ko.observable(true);
-                _self.lowestDigits = ko.observable(0);
                 _self.complexity = new ComplexityModel();
-                _self.historyCount = ko.observable(0);
-                _self.validityPeriod = ko.observable(0);
+                _self.lowestDigits = ko.observable(null);                
+                _self.historyCount = ko.observable(null);
+                _self.validityPeriod = ko.observable(null);                
+                _self.textLowestDigits = ko.observable("");
+                _self.textHistoryCount = ko.observable("");
+                _self.textValidityPeriod = ko.observable("");
+                
+                _self.lowestDigits.subscribe((v) => _self.textLowestDigits(nts.uk.text.format(nts.uk.resource.getText("CMM048_13"), v)));
+                _self.lowestDigits.extend({ notify: 'always' });
+                _self.historyCount.subscribe((v) => _self.textHistoryCount(nts.uk.text.format(nts.uk.resource.getText("CMM048_19"), v)));
+                _self.historyCount.extend({ notify: 'always' });
+                _self.validityPeriod.subscribe((v) => _self.textValidityPeriod(nts.uk.text.format(nts.uk.resource.getText("CMM048_21"), v)));
+                _self.validityPeriod.extend({ notify: 'always' });
+                _self.lowestDigits(0);
+                _self.historyCount(0);
+                _self.validityPeriod(0);
             }
             
             updateData(dto: PasswordPolicyDto) {
@@ -152,11 +176,28 @@ module nts.uk.com.view.cmm048.a {
             numberOfDigits: KnockoutObservable<number>;
             numberOfChar: KnockoutObservable<number>;
             
+            textAlphabetDigit: KnockoutObservable<string>;
+            textNumberOfDigits: KnockoutObservable<string>;
+            textNumberOfChar: KnockoutObservable<string>;
+            
             constructor() {
                 let _self = this;
-                _self.alphabetDigit = ko.observable(0);
-                _self.numberOfDigits = ko.observable(0);
-                _self.numberOfChar = ko.observable(0);
+                _self.alphabetDigit = ko.observable(null);
+                _self.numberOfDigits = ko.observable(null);
+                _self.numberOfChar = ko.observable(null);               
+                _self.textAlphabetDigit = ko.observable("");
+                _self.textNumberOfDigits = ko.observable("");
+                _self.textNumberOfChar = ko.observable("");
+                    
+                _self.alphabetDigit.subscribe((v) => _self.textAlphabetDigit(nts.uk.text.format(nts.uk.resource.getText("CMM048_15"), v)));
+                _self.alphabetDigit.extend({ notify: 'always' });
+                _self.numberOfDigits.subscribe((v) => _self.textNumberOfDigits(nts.uk.text.format(nts.uk.resource.getText("CMM048_16"), v)));
+                _self.numberOfDigits.extend({ notify: 'always' });
+                _self.numberOfChar.subscribe((v) => _self.textNumberOfChar(nts.uk.text.format(nts.uk.resource.getText("CMM048_17"), v)));
+                _self.numberOfChar.extend({ notify: 'always' });
+                _self.alphabetDigit(0);
+                _self.numberOfDigits(0);
+                _self.numberOfChar(0);
             }
             
             updateData(dto: ComplexityDto) {
@@ -218,7 +259,7 @@ module nts.uk.com.view.cmm048.a {
                             _self.isPersonal = false;
                     }      
                 });
-                _self.settingUseMail(0);
+                _self.settingUseMail(2);
             }
         }
         

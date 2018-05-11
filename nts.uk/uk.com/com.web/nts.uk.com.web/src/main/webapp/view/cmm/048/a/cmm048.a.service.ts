@@ -2,8 +2,13 @@ module nts.uk.com.view.cmm048.a {
     
     export module service {
         
-        
-        
+        let servicePath: any = {
+            getAllEnum: "sys/env/userinfoset/getAllEnum",
+        }
+
+        export function getAllEnum(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.getAllEnum);
+        }
         
     }
     
