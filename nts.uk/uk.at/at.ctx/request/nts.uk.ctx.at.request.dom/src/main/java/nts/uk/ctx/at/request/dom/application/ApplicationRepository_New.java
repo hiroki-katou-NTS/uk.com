@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationApprContent;
 
 public interface ApplicationRepository_New {
 	
@@ -79,4 +78,6 @@ public interface ApplicationRepository_New {
 	 * @return
 	 */
 	public List<Application_New> getListApp(String sID, GeneralDate startDate, GeneralDate endDate);
+	
+	public List<Application_New> getByListRefStatus(String employeeID ,GeneralDate startDate, GeneralDate endDate , List<Integer> listReflecInfor  );
 }
