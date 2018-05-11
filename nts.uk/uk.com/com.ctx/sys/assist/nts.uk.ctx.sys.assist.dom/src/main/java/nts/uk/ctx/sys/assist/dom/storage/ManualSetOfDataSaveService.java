@@ -132,7 +132,8 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				String password = optManualSetting.get().getCompressedPassword().v();
 				applicationTemporaryFilesContainer.zip(password);
 			}
-
+			
+			
 			Path tempFolder = applicationTemporaryFilesContainer.getPath();
 			applicationTemporaryFilesContainer.removeContainer();
 
@@ -319,11 +320,11 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		return lstHeader;
 	}
 
-	private List<String> getTextHeaderCSV3() {
+	/*private List<String> getTextHeaderCSV3() {
 		List<String> lstHeader = new ArrayList<>();
 		for (String nameId : LST_NAME_ID_HEADER_TABLE_CSV3) {
 			lstHeader.add(TextResource.localize(nameId));
 		}
 		return lstHeader;
-	}
+	}*/
 }

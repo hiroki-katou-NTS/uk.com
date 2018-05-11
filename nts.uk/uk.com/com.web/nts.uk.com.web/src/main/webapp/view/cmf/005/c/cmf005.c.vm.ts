@@ -84,7 +84,6 @@ module nts.uk.com.view.cmf005.c.viewmodel {
                 });
             }
 
-
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);
             self.listCategory = ko.observableArray([]);
@@ -111,10 +110,7 @@ module nts.uk.com.view.cmf005.c.viewmodel {
             self.listCategoryChosed = self.currentCategorySelected;
         }
 
-        remove() {
-            self.listCategory.shift();
-        }
-
+ 
         closePopup() {
             close();
         }
