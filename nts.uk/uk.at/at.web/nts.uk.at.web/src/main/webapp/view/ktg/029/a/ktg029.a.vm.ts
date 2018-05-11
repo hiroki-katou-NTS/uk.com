@@ -318,6 +318,8 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         afterGrantDateInfo: YearlyHolidayInfoDto;
         attendanceRate: number;
         workingDays: number;
+        calculationMethod: number;
+        useSimultaneousGrant: number;
     }
     export interface OptionalWidget{
         overTime: number;
@@ -347,11 +349,13 @@ module nts.uk.at.view.ktg029.a.viewmodel {
     export class YearlyHolidayInfo {
         day: number;
         hours: string;
+        displayHours: boolean;
         remaining: number;
         timeYearLimit: string;
         constructor(dto: YearlyHolidayInfoDto){
             this.day = dto.day;
             this.hours = (dto.hours.hours<10?('0'+dto.hours.hours):dto.hours.hours)+':'+(dto.hours.min<10?('0'+dto.hours.min):dto.hours.min);
+            this.displayHours = (dto.hours.hours == 0 && dto.hours.min == 0)?false:true;
             this.remaining = dto.remaining;
             this.timeYearLimit = (dto.timeYearLimit.hours<10?('0'+dto.timeYearLimit.hours):dto.timeYearLimit.hours)+':'+(dto.timeYearLimit.min<10?('0'+dto.timeYearLimit.min):dto.timeYearLimit.min);
         }
@@ -365,6 +369,8 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         afterGrantDateInfo: YearlyHolidayInfo;
         attendanceRate: number;
         workingDays: number;
+        calculationMethod: boolean;
+        useSimultaneousGrant: boolean;
         constructor(dto: YearlyHolidayDto){
             this.nextTime = dto.nextTime;
             this.grantedDaysNo = dto.grantedDaysNo;
@@ -374,6 +380,8 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             this.afterGrantDateInfo = new YearlyHolidayInfo(dto.afterGrantDateInfo);
             this.attendanceRate = dto.attendanceRate;
             this.workingDays = dto.workingDays;
+            this.calculationMethod = dto.calculationMethod == 1?true:false;
+            this.useSimultaneousGrant = dto.useSimultaneousGrant == 1?true:false;
         }
     }
     

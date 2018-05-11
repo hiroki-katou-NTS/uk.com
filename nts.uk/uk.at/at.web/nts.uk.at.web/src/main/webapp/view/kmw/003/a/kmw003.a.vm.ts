@@ -129,7 +129,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             });
             
              self.showProfileIcon.subscribe((val) => {
-                self.reloadGrid();
+                 $("#dpGrid").ntsGrid("destroy");
+                 self.reloadGrid();
             });
         }
         startPage(): JQueryPromise<any> {
@@ -641,6 +642,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let self = this;
             let tempList = [];
             self.dislayNumberHeaderText();
+            self.displayProfileIcon();
             _.forEach(self.optionalHeader, (header) => {
                 if (header.constraint == null || header.constraint == undefined) {
                     delete header.constraint;
@@ -686,12 +688,20 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         displayProfileIcon() {
             let self = this;
             if (self.showProfileIcon()) {
-                _.remove(self.dateModeHeader, function(header) {
+                 _.remove(self.optionalHeader, function(header) {
                     return header.key === "picture-person";
                 });
+                _.remove(self.fixColGrid(), function(header) {
+                    return header.columnKey === "picture-person";
+                });
+                self.optionalHeader.splice(5, 0, { headerText: '', key: "picture-person", dataType: "string", width: '35px', ntsControl: 'Image' });
+                self.fixColGrid().splice(5, 0, { columnKey: 'picture-person', isFixed: true });
             } else {
-                _.remove(self.dateModeHeader, function(header) {
+                  _.remove(self.optionalHeader, function(header) {
                     return header.key === "picture-person";
+                });
+                _.remove(self.fixColGrid(), function(header) {
+                    return header.columnKey === "picture-person";
                 });
             }
         }

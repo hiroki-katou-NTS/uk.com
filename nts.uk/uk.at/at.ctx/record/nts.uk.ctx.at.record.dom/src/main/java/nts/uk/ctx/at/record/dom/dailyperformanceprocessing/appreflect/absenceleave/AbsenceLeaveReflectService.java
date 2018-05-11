@@ -24,7 +24,7 @@ public interface AbsenceLeaveReflectService {
 	 */
 	public WorkTimeIsRecordReflect checkReflectWorktime(String employeeId, GeneralDate dateData, String workTime);
 	/**
-	 * 開始終了時刻が反映できるか
+	 * 予定開始終了時刻が反映できるか
 	 * @param employeeId
 	 * @param baseDate
 	 * @param workStype
