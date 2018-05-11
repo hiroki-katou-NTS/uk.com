@@ -63,23 +63,23 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 	@Override
 	public AnnLeaveOfThisMonth getAnnLeaveOfThisMonth(String employeeId) {
 		String companyId = AppContexts.user().companyId();
-		//月初の年休残数を取得
+		// 月初の年休残数を取得
 		AnnLeaRemNumValueObject remainNumber = annLeaService.getAnnLeaveNumber(companyId, employeeId);
-		//計算した年休残数を出力用クラスにコピー
+		// 計算した年休残数を出力用クラスにコピー
 		GeneralDate startDate = closureStartService.algorithm(employeeId).get();
-		//社員に対応する締め期間を取得する
+		// 社員に対応する締め期間を取得する
 		DatePeriod datePeriod = checkShortageFlex.findClosurePeriod(employeeId, startDate);
-		//期間中の年休残数を取得
+		// 期間中の年休残数を取得
 		Optional<AggrResultOfAnnualLeave> aggrResult = getAnnLeaRemNumWithinPeriod.algorithm(companyId, employeeId,
 				datePeriod, TempAnnualLeaveMngMode.OTHER, datePeriod.end(), false, false, Optional.empty(),
 				Optional.empty(), Optional.empty());
 		AggrResultOfAnnualLeave annualLeave = new AggrResultOfAnnualLeave();
-		//ドメインモデル「年休社員基本情報」を取得
+		// ドメインモデル「年休社員基本情報」を取得
 		Optional<AnnualLeaveEmpBasicInfo> basicInfo = annLeaBasicInfoRepo.get(employeeId);
-		//次回年休付与を計算
+		// 次回年休付与を計算
 		List<NextAnnualLeaveGrant> annualLeaveGrant = calcNextAnnualLeaveGrantDate.algorithm(companyId, employeeId,
 				Optional.empty());
-		//当月年休を返す
+		// 当月年休を返す
 		AnnLeaveOfThisMonth result = new AnnLeaveOfThisMonth(annualLeaveGrant.get(0).getGrantDate(),
 				annualLeaveGrant.get(0).getGrantDays(), remainNumber.getDays(), remainNumber.getMinutes(),
 				annualLeave.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber()
@@ -102,9 +102,12 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 		Optional<Closure> closure = checkShortageFlex.findClosureByEmployee(employeeId, baseDate);
 		// 指定した年月の期間をすべて取得する
 		List<DatePeriod> periodByYearMonth = closureService.getPeriodByYearMonth(datePeriod.end().yearMonth());
+		if (periodByYearMonth == null || periodByYearMonth.size() == 0)
+			return null;
 		// 集計期間を計算する
-		List<ClosurePeriod> listClosurePeriod = getClosurePeriod.get(companyId, employeeId, datePeriod.end(),
-				Optional.empty(), Optional.empty(), Optional.empty());
+		List<ClosurePeriod> listClosurePeriod = getClosurePeriod.get(companyId, employeeId,
+				periodByYearMonth.get(periodByYearMonth.size() - 1).end(), Optional.empty(), Optional.empty(),
+				Optional.empty());
 		// 締め処理期間のうち、同じ年月の期間をまとめる
 		Map<YearMonth, List<ClosurePeriod>> listMap = listClosurePeriod.stream()
 				.collect(Collectors.groupingBy(ClosurePeriod::getYearMonth));
@@ -112,16 +115,16 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 		List<ClosurePeriodEachYear> listClosurePeriodEachYear = new ArrayList<ClosurePeriodEachYear>();
 
 		for (Map.Entry<YearMonth, List<ClosurePeriod>> item : listMap.entrySet()) {
-			GeneralDate start = GeneralDate.max(), end = GeneralDate.min();
+			GeneralDate start = null, end = null;
 			for (ClosurePeriod closurePeriodItem : item.getValue()) {
 				for (AggrPeriodEachActualClosure actualClosureItem : closurePeriodItem.getAggrPeriods()) {
-					if (start.compareTo(actualClosureItem.getPeriod().start()) > 0) {
+					if (start == null || start.compareTo(actualClosureItem.getPeriod().start()) > 0) {
 						start = actualClosureItem.getPeriod().start();
 					}
-					if (end.compareTo(actualClosureItem.getPeriod().end()) < 0) {
+					if (end == null || end.compareTo(actualClosureItem.getPeriod().end()) < 0) {
 						end = actualClosureItem.getPeriod().end();
 					}
-				}
+				}			
 			}
 
 			listClosurePeriodEachYear.add(new ClosurePeriodEachYear(item.getKey(), new DatePeriod(start, end)));
