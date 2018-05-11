@@ -17,23 +17,23 @@
 			<ui:define name="content">
 				<div class="contents-area dialog-content"  >
 					<div data-bind="ntsFormLabel: {}" id ="D1_1" class = "label-left">#{i18n.getText('CMF004_60')}</div>
-					<span>復旧ファイル名(tên file khô phục)</span>
+					<span data-bind="text: fileNameUpload"></span>
 					<br/>
 					<div data-bind="ntsFormLabel: {}" id ="D1_3" class = "label-left">#{i18n.getText('CMF004_61')}</div>
-					<input tabindex="11" id="C1_4" />
+					<span data-bind="text: timeLabel"></span>
 					<br/>
 					<div data-bind="ntsFormLabel: {}" id ="D1_5" class = "label-left">#{i18n.getText('CMF004_62')}</div>
-					<span>復旧ファイル名(tên file khô phục)</span>
+					<span data-bind="text: statusLabel"></span>
 					<br/>
 					<div>
 						<div data-bind="ntsFormLabel: {}" id ="D2_1" class = "label-left">#{i18n.getText('CMF004_63')}</div>
-						<span>復旧ファイル名(tên file khô phục)</span>
+						<span data-bind="text: statusUpload"></span>
 						<br/>
 						<div data-bind="ntsFormLabel: {}" id ="D2_3" class = "label-left">#{i18n.getText('CMF004_64')}</div>
-						<span>復旧ファイル名(tên file khô phục)</span>
+						<span data-bind="text: statusDecom"></span>
 						<br/>
 						<div data-bind="ntsFormLabel: {}" id ="D2_5" class = "label-left">#{i18n.getText('CMF004_65')}</div>
-						<span>復旧ファイル名(tên file khô phục)</span>
+						<span data-bind="text: statusCheck"></span>
 						<br/>
 						<button id = "D3_1">#{i18n.getText('CMF004_66')}</button>
 						<button id = "D3_2"  class="large proceed">#{i18n.getText('CMF004_67')}</button>
