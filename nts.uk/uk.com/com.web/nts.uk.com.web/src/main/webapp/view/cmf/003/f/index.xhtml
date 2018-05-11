@@ -31,7 +31,7 @@
 							<label>#{i18n.getText('CMF003_181')}</label>
 						</td>
 						<td id="F1_6" width='400px'>
-							<label style="padding-left:  10px;" data-bind="text : timeOver()"></label>
+							<label data-bind="text : timeOver()"></label>
 						</td>
 					</tr>
 					<tr >
@@ -39,15 +39,11 @@
 							<label>#{i18n.getText('CMF003_182')}</label>
 						</td>
 						<td id="F1_7" width='400px'>
-							<div style="float:left; ">
-							<label style="padding-left:  10px;" data-bind="text : executionState"></label>
-							</div>
-							<div style="float:left; ">
-								<div style="float:left; "><label style="padding-left:  150px;" data-bind="text : currentRecord"></label></div>
-								<div style="float:left; "><label>/</label></div>
-								<div style="float:left; "><label data-bind="text : totalRecord"></label></div>
-								<div style="float:left; "><label>#{i18n.getText('CMF001_492')}</label></div>
-							</div>
+							<label data-bind="text : status"></label>
+							<label style="padding-left: 20px;" data-bind="text : categoryCount"></label>
+							<label>/</label>
+							<label data-bind="text : categoryTotalCount"></label>
+							<label>category</label>
 						</td>
 					</tr>
 					<tr >
@@ -55,8 +51,8 @@
 							<label>#{i18n.getText('CMF003_183')}</label>
 						</td>
 						<td id="F1_8" width='400px'>
-							<div style="float:left; "><label style="padding-left:  10px;" data-bind="text : numberFail"></label></div>
-							<div style="float:left; "><label>#{i18n.getText('CMF001_494')}</label></div>
+							<label data-bind="text : errorCount"></label>
+							<label>error</label>
 						</td>
 					</tr>
 				</table>
@@ -69,7 +65,7 @@
 							<label>#{i18n.getText('CMF003_185')}</label>
 						</td>
 						<td id="F2_5" width='400px'>
-							aaa
+							<label data-bind="text : dataSaveSetName"></label>
 						</td>
 					</tr>
 					<tr >
@@ -77,29 +73,41 @@
 							<label>#{i18n.getText('CMF003_186')}</label>
 						</td>
 						<td id="F2_6" width='400px'>
-							aaa
+							<label>#{i18n.getText('CMF003_34')}</label>
+							<label>: </label>
+							<label data-bind="text : dayStartValue"></label>
+							<label>~</label>
+							<label data-bind="text : dayEndValue"></label>
 						</td>
 					</tr>
 					<tr >
 						<td id="F2_7" width='400px'>
-							aaa
+							<label>#{i18n.getText('CMF003_35')}</label>
+							<label>: </label>
+							<label data-bind="text : monthStartValue"></label>
+							<label>~</label> 
+							<label data-bind="text : monthEndValue"></label>
 						</td>
 					</tr>
 					<tr >
 						<td id="F2_8" width='400px'>
-							aaa
+							<label>#{i18n.getText('CMF003_36')}</label>
+							<label>: </label> 
+							<label data-bind="text : yearStartValue"></label>
+							<label>~</label>
+							<label data-bind="text : yearStartValue"></label>
 						</td>
 					</tr>
 				</table>
 				
 				<!-- F3 -->
 				<div class ="button">
-					<com:ko-if bind="isStop() == false">
- 						<button id="F3_1" class="large" data-bind="click : stopExecution" tabindex="1">#{i18n.getText('CMF003_187')}</button> 
+					<com:ko-if bind="dialogMode() == 'saving'">
+ 						<button id="F3_1" class="large" data-bind="click : interrupt" tabindex="1">#{i18n.getText('CMF003_187')}</button> 
  					</com:ko-if>
- 					<com:ko-if bind="isStop() == true">
-	 					<button id="F3_2" class="large" data-bind="click : download" tabindex="2">#{i18n.getText('CMF003_188')}</button>
-	 					<button id="F3_3" class="large" data-bind="click : close, enable: isError()" tabindex="3">#{i18n.getText('CMF003_189')}</button> 
+ 					<com:ko-if bind="(dialogMode() !== 'saving')">
+	 					<button id="F3_2" class="large" data-bind="click : download, enable: dialogMode() == 'done'" tabindex="2">#{i18n.getText('CMF003_188')}</button>
+	 					<button id="F3_3" class="large" data-bind="click : close" tabindex="3">#{i18n.getText('CMF003_189')}</button> 
 					</com:ko-if>
 				</div>
 			</div>

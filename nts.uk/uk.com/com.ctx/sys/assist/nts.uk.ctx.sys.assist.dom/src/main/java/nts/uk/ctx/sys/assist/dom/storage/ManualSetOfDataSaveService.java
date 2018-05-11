@@ -3,8 +3,6 @@
  */
 package nts.uk.ctx.sys.assist.dom.storage;
 
-import java.io.File;
-import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,11 +15,14 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFileFactory;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFilesContainer;
+import nts.arc.time.GeneralDateTime;
+import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.ctx.sys.assist.dom.category.Category;
 import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMt;
@@ -74,8 +75,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	}
 
 	public void serverManualSaveProcessing(String storeProcessingId, FileGeneratorContext generatorContext) {
-		// ドメインモデル「データ保存の保存結果」へ書き出す
-		Optional<ResultOfSaving> otpResultSaving = repoResultSaving.getResultOfSavingById(storeProcessingId);
+
 		// ドメインモデル「データ保存動作管理」を登録する ( Save data to Data storage operation
 		// management )
 		int categoryTotalCount = 0;
@@ -93,6 +93,32 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		// Optional<TargetEmployees> targetEmployees =
 		// repoTargetEmp.getTargetEmployeesListById(storeProcessingId);
 		if (optManualSetting.isPresent()) {
+			// ドメインモデル「データ保存の保存結果」へ書き出す ( Save data to Save result of data
+			// saving)
+			String cid = optManualSetting.get().getCid();
+			int systemType = optManualSetting.get().getSystemType().value;
+			String practitioner = optManualSetting.get().getPractitioner();
+			int saveForm = 0;
+			String saveSetCode = null;
+			String saveName = optManualSetting.get().getSaveSetName().v();
+			int saveForInvest = optManualSetting.get().getIdentOfSurveyPre().value;
+			GeneralDateTime saveStartDatetime = GeneralDateTime.now();
+
+			// Todo : value affer is Optional
+			int fileSize = 0;
+			String saveFileName = null;
+			GeneralDateTime saveEndDatetime = null;
+			int deletedFiles = 0;
+			String compressedPassword = null;
+			int targetNumberPeople = 0;
+			int saveStatus = 0;
+			String fileId = null;
+
+			ResultOfSaving data = new ResultOfSaving(storeProcessingId, cid, systemType, fileSize, saveSetCode,
+					saveFileName, saveName, saveForm, saveEndDatetime, saveStartDatetime, deletedFiles,
+					compressedPassword, practitioner, targetNumberPeople, saveStatus, saveForInvest, fileId);
+			repoResultSaving.add(data);
+
 			// Get list category from
 			List<TargetCategory> targetCategories = repoTargetCat.getTargetCategoryListById(storeProcessingId);
 			List<String> categoryIds = targetCategories.stream().map(x -> {
@@ -114,27 +140,33 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			ApplicationTemporaryFilesContainer applicationTemporaryFilesContainer = applicationTemporaryFileFactory
 					.createContainer();
 
+			// Get
+			List<SaveTargetCsv> csvTarRepo = commonCsv(storeProcessingId);
+
 			// Add Table to CSV
-			generalCsv(storeProcessingId, generatorContext);
+			generalCsv(csvTarRepo, generatorContext);
 
 			// Add Table to CSV2
 			generalCsv2(storeProcessingId, generatorContext);
 
+			// Add Table to CSV Auto
+			generalCsvAuto(csvTarRepo, generatorContext, categoryIds);
+
 			// Add folder temp to zip
-			applicationTemporaryFilesContainer.addFile(generatorContext);
+			// applicationTemporaryFilesContainer.addFile(generatorContext);
 
 			int passwordAvailability = optManualSetting.get().getPasswordAvailability().value;
 
 			if (passwordAvailability == 0) {
-				applicationTemporaryFilesContainer.zip();
+				applicationTemporaryFilesContainer.zipWithName(generatorContext, "test");
 			}
 			if (passwordAvailability == 1) {
 				String password = optManualSetting.get().getCompressedPassword().v();
-				applicationTemporaryFilesContainer.zip(password);
+				applicationTemporaryFilesContainer.zipWithName(generatorContext, "test",
+						CommonKeyCrypt.encrypt(password));
 			}
-			
-			
-			Path tempFolder = applicationTemporaryFilesContainer.getPath();
+
+			Path compressedFile = applicationTemporaryFilesContainer.getPath();
 			applicationTemporaryFilesContainer.removeContainer();
 
 			/** finally */
@@ -150,9 +182,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		return csvTarRepoCommon;
 	}
 
-	private void generalCsv(String storeProcessingId, FileGeneratorContext generatorContext) {
-
-		List<SaveTargetCsv> csvTarRepo = commonCsv(storeProcessingId);
+	private void generalCsv(List<SaveTargetCsv> csvTarRepo, FileGeneratorContext generatorContext) {
 
 		List<String> headerCsv = this.getTextHeader();
 		// Get data from Manual Setting table
@@ -260,7 +290,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			Map<String, Object> rowCsv2 = new HashMap<>();
 			rowCsv2.put(headerCsv2.get(0), targetEmp.getSid());
 			rowCsv2.put(headerCsv2.get(1), targetEmp.getScd());
-			rowCsv2.put(headerCsv2.get(2), targetEmp.getBusinessname());
+			rowCsv2.put(headerCsv2.get(2), CommonKeyCrypt.encrypt(targetEmp.getBusinessname().v()));
 			dataSourceCsv2.add(rowCsv2);
 		}
 
@@ -274,10 +304,51 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 	}
 
-	private void generalCsvAuto(String storeProcessingId) {
-		List<SaveTargetCsv> csvTarRepo = commonCsv(storeProcessingId);
+	private void generalCsvAuto(List<SaveTargetCsv> csvTarRepo, FileGeneratorContext generatorContext,
+			List<String> categoryIds) {
+		StringBuffer sql = null;
+		List<CategoryFieldMt> categoryFieldMts = repoCateField.getCategoryFieldMtByListId(categoryIds);
+		List<String> listColumCond = categoryFieldMts.stream().map(x -> {
+			return x.getClsKeyQuery2();
+		}).collect(Collectors.toList());
 
-	};
+		for (SaveTargetCsv item : csvTarRepo) {
+			sql = new StringBuffer("SELECT ");
+
+			sql.append("").append("");
+			sql.append("").append("FROM");
+			sql.append(" ").append(item.getTableEnglishName());
+
+			int key = 0;
+
+			// WHERE Get condition
+			// listColumCond = "";
+			ExtractionKeyCategory keyEn = EnumAdaptor.valueOf(key, ExtractionKeyCategory.class);
+			switch (keyEn) {
+			case COMPANY_CD:
+
+				break;
+
+			case EMPLOYEE_CD:
+
+				break;
+
+			case YEAR:
+
+				break;
+
+			case YEAR_MONTH:
+
+				break;
+
+			case YEAR_MONTH_DAY:
+
+				break;
+			}
+
+		}
+
+	}
 
 	private static final List<String> LST_NAME_ID_HEADER_TABLE = Arrays.asList("CMF003_500", "CMF003_501", "CMF003_502",
 			"CMF003_503", "CMF003_504", "CMF003_505", "CMF003_506", "CMF003_507", "CMF003_508", "CMF003_509",
@@ -296,9 +367,12 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	private static final List<String> LST_NAME_ID_HEADER_TABLE_CSV2 = Arrays.asList("ヘッダ部", "SID", "SCD",
 			"BUSINESS_NAME");
 
-	private static final List<String> LST_NAME_ID_HEADER_TABLE_CSV3 = Arrays.asList("ヘッダ部", "INS_DATE", "INS_CCD",
-			"INS_SCD", "INS_PG", "UPD_DATE", "UPD_CCD", "UPD_SCD", "UPD_PG", "EXCLUS_VER", "CID", "MANAGE_ATR",
-			"PERMIT_ATR", "PRIORITY_TYPE");
+	/*
+	 * private static final List<String> LST_NAME_ID_HEADER_TABLE_CSV3 =
+	 * Arrays.asList("ヘッダ部", "INS_DATE", "INS_CCD", "INS_SCD", "INS_PG",
+	 * "UPD_DATE", "UPD_CCD", "UPD_SCD", "UPD_PG", "EXCLUS_VER", "CID",
+	 * "MANAGE_ATR", "PERMIT_ATR", "PRIORITY_TYPE");
+	 */
 
 	private static final String PGID = "CMF003";
 
@@ -320,11 +394,9 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		return lstHeader;
 	}
 
-	/*private List<String> getTextHeaderCSV3() {
-		List<String> lstHeader = new ArrayList<>();
-		for (String nameId : LST_NAME_ID_HEADER_TABLE_CSV3) {
-			lstHeader.add(TextResource.localize(nameId));
-		}
-		return lstHeader;
-	}*/
+	/*
+	 * private List<String> getTextHeaderCSV3() { List<String> lstHeader = new
+	 * ArrayList<>(); for (String nameId : LST_NAME_ID_HEADER_TABLE_CSV3) {
+	 * lstHeader.add(TextResource.localize(nameId)); } return lstHeader; }
+	 */
 }

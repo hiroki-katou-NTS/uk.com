@@ -152,6 +152,7 @@ module nts.uk.com.view.cmf003.b {
             // date
             date: KnockoutObservable<string>;
             maxDaysCumulationByEmp: KnockoutObservable<number>;
+            
             constructor() {
                 var self = this;
                 
@@ -627,6 +628,14 @@ module nts.uk.com.view.cmf003.b {
 
             private gotoscreenF(): void {
                 let self = this;
+                let params = {};
+                params.dataSaveSetName = self.dataSaveSetName();
+                params.dayValue = self.dayValue();
+                params.monthValue = self.monthValue();
+                params.yearValue = self.yearValue();
+                
+                setShared("CMF001_E_PARAMS", params);
+                
                 //self.saveManualSetting();
                 nts.uk.ui.windows.sub.modal("/view/cmf/003/f/index.xhtml");
             }

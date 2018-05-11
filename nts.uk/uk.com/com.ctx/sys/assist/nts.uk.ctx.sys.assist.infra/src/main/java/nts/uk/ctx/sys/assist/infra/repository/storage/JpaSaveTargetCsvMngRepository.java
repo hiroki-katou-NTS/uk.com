@@ -25,8 +25,6 @@ public class JpaSaveTargetCsvMngRepository extends JpaRepository implements Save
 			+ "ON c.categoryId in (SELECT c.categoryId FROM SspmtTargetCategory d WHERE b.storeProcessingId =:storeProcessingId )"
 			+ "JOIN SspmtCategoryFieldMt e" + "ON e.categoryId = c.categoryId";
 
-	private static final String SELECT_TABLE_NAME_CSV = "";
-
 	@Override
 	public List<SaveTargetCsv> getSaveTargetCsvById(String storeProcessingId) {
 		List<Object[]> listTemp = this.queryProxy().query(SELECT_BY_STORE_PROCESSING_ID, Object[].class)
