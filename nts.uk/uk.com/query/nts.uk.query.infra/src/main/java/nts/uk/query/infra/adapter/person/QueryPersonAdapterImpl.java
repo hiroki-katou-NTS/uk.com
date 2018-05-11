@@ -20,21 +20,21 @@ public class QueryPersonAdapterImpl extends JpaRepository implements QueryPerson
 
 	/** The find by name. */
 	private final String FIND_BY_NAME = "SELECT c FROM BpsmtPerson c"
-			+ " WHERE c.personName LIKE :name"
-			+ " OR c.personName LIKE :name"
-			+ " OR c.personNameKana LIKE :name"
-			+ " OR c.businessName LIKE :name"
-			+ " OR c.businessNameKana LIKE :name"
-			+ " OR c.businessEnglishName LIKE :name"
-			+ " OR c.businessOtherName LIKE :name"
-			+ " OR c.personRomanji LIKE :name"
-			+ " OR c.personRomanjiKana LIKE :name"
-			+ " OR c.todokedeFullName LIKE :name"
-			+ " OR c.todokedeFullNameKana LIKE :name"
-			+ " OR c.oldName LIKE :name"
-			+ " OR c.oldNameKana LIKE :name"
-			+ " OR c.perNameMultilLang LIKE :name"
-			+ " OR c.perNameMultilLangKana LIKE :name";
+			+ " WHERE c.personName LIKE LOWER(CONCAT('%', :name, '%'))"
+			+ " OR c.personName LIKE LOWER(CONCAT('%', :name, '%'))"
+			+ " OR c.personNameKana LIKE LOWER(CONCAT('%', :name, '%'))"
+			+ " OR c.businessName LIKE LOWER(CONCAT('%', :name, '%'))"
+			+ " OR c.businessNameKana LIKE LOWER(CONCAT('%', :name, '%'))"
+			+ " OR c.businessEnglishName LIKE LOWER(CONCAT('%', :name, '%'))"
+			+ " OR c.businessOtherName LIKE LOWER(CONCAT('%', :name, '%'))"
+			+ " OR c.personRomanji LIKE LOWER(CONCAT('%', :name, '%'))"
+			+ " OR c.personRomanjiKana LIKE LOWER(CONCAT('%', :name, '%'))"
+			+ " OR c.todokedeFullName LIKE LOWER(CONCAT('%', :name, '%'))"
+			+ " OR c.todokedeFullNameKana LIKE LOWER(CONCAT('%', :name, '%'))"
+			+ " OR c.oldName LIKE LOWER(CONCAT('%', :name, '%'))"
+			+ " OR c.oldNameKana LIKE LOWER(CONCAT('%', :name, '%'))"
+			+ " OR c.perNameMultilLang LIKE LOWER(CONCAT('%', :name, '%'))"
+			+ " OR c.perNameMultilLangKana LIKE LOWER(CONCAT('%', :name, '%'))";
 
 	/*
 	 * (non-Javadoc)
