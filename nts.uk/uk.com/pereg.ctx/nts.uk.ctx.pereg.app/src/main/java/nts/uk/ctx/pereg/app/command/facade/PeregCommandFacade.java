@@ -92,11 +92,10 @@ public class PeregCommandFacade {
 		// Filter input category
 		List<ItemsByCategory> addInputs = container.getInputs().stream()
 				.filter(p -> StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
-		PeregInputContainer addPeregInputContainer = new PeregInputContainer(container.getPersonId(),
-				container.getEmployeeId(), addInputs);
+		
 		List<String> recordIds = new ArrayList<String>();
 
-		addPeregInputContainer.getInputs().forEach(itemsByCategory -> {
+		addInputs.forEach(itemsByCategory -> {
 			val handler = this.addHandlers.get(itemsByCategory.getCategoryCd());
 			// In case of optional category fix category doesn't exist
 			String recordId = null;
