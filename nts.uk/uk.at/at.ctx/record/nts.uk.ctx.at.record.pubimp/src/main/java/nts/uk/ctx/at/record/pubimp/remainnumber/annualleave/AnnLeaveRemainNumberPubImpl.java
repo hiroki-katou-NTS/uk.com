@@ -50,10 +50,10 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 
 	@Inject
 	private AnnLeaEmpBasicInfoRepository annLeaBasicInfoRepo;
-	
+
 	@Inject
 	private CalcNextAnnualLeaveGrantDate calcNextAnnualLeaveGrantDate;
-	
+
 	@Inject
 	private Closure closureService;
 
@@ -74,18 +74,20 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 				Optional.empty(), Optional.empty());
 		AggrResultOfAnnualLeave annualLeave = new AggrResultOfAnnualLeave();
 		Optional<AnnualLeaveEmpBasicInfo> basicInfo = annLeaBasicInfoRepo.get(employeeId);
-		
-		List<NextAnnualLeaveGrant> annualLeaveGrant = calcNextAnnualLeaveGrantDate.algorithm(companyId, employeeId, Optional.empty());
-		
-		AnnLeaveOfThisMonth result = new AnnLeaveOfThisMonth(   annualLeaveGrant.get(0).getGrantDate(),
-																annualLeaveGrant.get(0).getGrantDays(), 
-																remainNumber.getDays(),
-																remainNumber.getMinutes(),
-																annualLeave.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber().getUsedDays().getUsedDays(),
-																annualLeave.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber().getUsedTime(),
-																annualLeave.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays(),
-																annualLeave.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingTime()
-				);
+
+		List<NextAnnualLeaveGrant> annualLeaveGrant = calcNextAnnualLeaveGrantDate.algorithm(companyId, employeeId,
+				Optional.empty());
+
+		AnnLeaveOfThisMonth result = new AnnLeaveOfThisMonth(annualLeaveGrant.get(0).getGrantDate(),
+				annualLeaveGrant.get(0).getGrantDays(), remainNumber.getDays(), remainNumber.getMinutes(),
+				annualLeave.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber()
+						.getUsedDays().getUsedDays(),
+				annualLeave.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber()
+						.getUsedTime(),
+				annualLeave.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber()
+						.getTotalRemainingDays(),
+				annualLeave.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber()
+						.getTotalRemainingTime());
 		return result;
 	}
 
@@ -94,13 +96,14 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			DatePeriod datePeriod) {
 		String companyId = AppContexts.user().companyId();
 		GeneralDate baseDate = GeneralDate.today();
-		// Ğˆõ‚É‘Î‰‚·‚éˆ—’÷‚ß‚ğæ“¾‚·‚é
+		// ç¤¾å“¡ã«å¯¾å¿œã™ã‚‹å‡¦ç†ç· ã‚ã‚’å–å¾—ã™ã‚‹
 		Optional<Closure> closure = checkShortageFlex.findClosureByEmployee(employeeId, baseDate);
-		// w’è‚µ‚½”NŒ‚ÌŠúŠÔ‚ğ‚·‚×‚Äæ“¾‚·‚é
+		// æŒ‡å®šã—ãŸå¹´æœˆã®æœŸé–“ã‚’ã™ã¹ã¦å–å¾—ã™ã‚‹
 		List<DatePeriod> periodByYearMonth = closureService.getPeriodByYearMonth(datePeriod.end().yearMonth());
-		// WŒvŠúŠÔ‚ğŒvZ‚·‚é
+		// é›†è¨ˆæœŸé–“ã‚’è¨ˆç®—ã™ã‚‹
 		List<ClosurePeriod> listClosurePeriod = getClosurePeriod.get(companyId, employeeId, datePeriod.end(),
 				Optional.empty(), Optional.empty(), Optional.empty());
+		// ç· ã‚å‡¦ç†æœŸé–“ã®ã†ã¡ã€åŒã˜å¹´æœˆã®æœŸé–“ã‚’ã¾ã¨ã‚ã‚‹
 		Map<YearMonth, List<ClosurePeriod>> listMap = listClosurePeriod.stream()
 				.collect(Collectors.groupingBy(ClosurePeriod::getYearMonth));
 
@@ -126,9 +129,11 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 
 		Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualLeave = Optional.empty();
 		for (ClosurePeriodEachYear item : listClosurePeriodEachYear) {
+			// æœŸé–“ä¸­ã®å¹´ä¼‘æ®‹æ•°ã‚’å–å¾—
 			aggrResultOfAnnualLeave = getAnnLeaRemNumWithinPeriod.algorithm(companyId, employeeId, item.getDatePeriod(),
 					TempAnnualLeaveMngMode.OTHER, item.getDatePeriod().end(), false, false, Optional.empty(),
 					Optional.empty(), aggrResultOfAnnualLeave);
+			// çµæœã‚’Listã«è¿½åŠ 
 			if (aggrResultOfAnnualLeave.isPresent()) {
 				result.add(new AggrResultOfAnnualLeaveEachMonth(item.getYearMonth(), aggrResultOfAnnualLeave.get()));
 			}
