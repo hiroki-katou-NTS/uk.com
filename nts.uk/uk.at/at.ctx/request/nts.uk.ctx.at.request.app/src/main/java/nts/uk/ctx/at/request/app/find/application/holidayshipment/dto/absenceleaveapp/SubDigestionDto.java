@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.SubDigestion;
 
 /**
  * @author sonnlb 消化対象振休管理Dto
@@ -40,4 +41,12 @@ public class SubDigestionDto {
 	 * 日付不明
 	 */
 	private int unknownDate;
+
+	public static SubDigestionDto createFromDomain(SubDigestion domain) {
+
+		return new SubDigestionDto(domain.getAbsenceLeaveAppID(), domain.getDaysUsedNo().value,
+				domain.getPayoutMngDataID(), domain.getPickUpState().value, domain.getOccurrenceDate(),
+				domain.getUnknownDate());
+
+	}
 }

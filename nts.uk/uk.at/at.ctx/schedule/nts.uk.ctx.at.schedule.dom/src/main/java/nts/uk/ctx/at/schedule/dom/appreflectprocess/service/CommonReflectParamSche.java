@@ -28,5 +28,9 @@ public class CommonReflectParamSche {
 	 * 終了日	
 	 */
 	private GeneralDate endDate;
+	
+	private Integer startTime;
+	
+	private Integer endTime;
 
 }

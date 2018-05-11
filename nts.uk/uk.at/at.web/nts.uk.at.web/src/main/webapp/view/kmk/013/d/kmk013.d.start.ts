@@ -3,6 +3,9 @@ module nts.uk.at.view.kmk013.d {
         var screenModel = new d.viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
+            
+            // Focus on D3_4 by default
+            $('#d3_4').focus();
         });
     });
 }

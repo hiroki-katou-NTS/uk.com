@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
@@ -133,5 +132,26 @@ public class MidnightTimeOfMonthly {
 				}
 			}
 		}
+	}
+
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(MidnightTimeOfMonthly target){
+		
+		this.overWorkMidnightTime = this.overWorkMidnightTime.addMinutes(
+				target.overWorkMidnightTime.getTime().v(), target.overWorkMidnightTime.getCalcTime().v());
+		this.legalMidnightTime = this.legalMidnightTime.addMinutes(
+				target.legalMidnightTime.getTime().v(), target.legalMidnightTime.getCalcTime().v());
+		this.illegalMidnightTime.addMinutesToTime(
+				target.illegalMidnightTime.getTime().getTime().v(), target.illegalMidnightTime.getTime().getCalcTime().v());
+		this.illegalMidnightTime.addMinutesToBeforeTime(target.illegalMidnightTime.getBeforeTime().v());
+		this.legalHolidayWorkMidnightTime = this.legalHolidayWorkMidnightTime.addMinutes(
+				target.legalHolidayWorkMidnightTime.getTime().v(), target.legalHolidayWorkMidnightTime.getCalcTime().v());
+		this.illegalHolidayWorkMidnightTime = this.illegalHolidayWorkMidnightTime.addMinutes(
+				target.illegalHolidayWorkMidnightTime.getTime().v(), target.illegalHolidayWorkMidnightTime.getCalcTime().v());
+		this.specialHolidayWorkMidnightTime = this.specialHolidayWorkMidnightTime.addMinutes(
+				target.specialHolidayWorkMidnightTime.getTime().v(), target.specialHolidayWorkMidnightTime.getCalcTime().v());
 	}
 }

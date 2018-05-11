@@ -92,6 +92,11 @@ public class ErAlWorkRecordCheckService {
 				.map(e -> e.getEmployeeId()).collect(Collectors.toList());
 
 		if (filted.isEmpty()) {
+			//Map<String, Boolean> map = new HashMap<String, Boolean>();
+			//for(String id :employeeIds) {
+			//	map.put(id, true);
+			//}
+			//return map;
 			return toEmptyResultMap();
 		}
 		/** 社員に一致する日別実績を取得する */
@@ -222,8 +227,8 @@ public class ErAlWorkRecordCheckService {
 		query.setFilterByWorktype(isFixed ? false : checkCondition.getFilterByBusinessType());
 		query.setWorktypeCodes(isFixed ? new ArrayList<>() : checkCondition.getLstBusinessTypeCode().stream().map(c -> c.v())
 				.collect(Collectors.toList()));
-		query.setPeriodStart(workingDate.toString());
-		query.setPeriodEnd(workingDate.toString());
+		query.setPeriodStart(workingDate);
+		query.setPeriodEnd(workingDate);
 		query.setIncludeIncumbents(true);
 		query.setIncludeWorkersOnLeave(true);
 		query.setIncludeOccupancy(true);

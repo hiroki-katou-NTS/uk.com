@@ -26,7 +26,7 @@ public class RecStatusOfEmployeeAdapterImpl implements RecStatusOfEmployeeAdapte
 		}
 		RecStatusOfEmployeeImport recStatusOfEmployeeImport = new RecStatusOfEmployeeImport(
 				statusOfEmploymentExport.getEmployeeId(), statusOfEmploymentExport.getRefereneDate(),
-				statusOfEmploymentExport.getStatusOfEmployment(), statusOfEmploymentExport.getLeaveHolidayType());
+				statusOfEmploymentExport.getStatusOfEmployment(), statusOfEmploymentExport.getTempAbsenceFrNo());
 		return recStatusOfEmployeeImport;
 	}
 

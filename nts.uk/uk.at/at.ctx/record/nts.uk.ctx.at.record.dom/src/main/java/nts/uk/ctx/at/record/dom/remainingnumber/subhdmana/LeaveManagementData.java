@@ -60,6 +60,7 @@ public class LeaveManagementData extends AggregateRoot {
 			Double occurredDays, int occurredTimes, Double unUsedDays, int unUsedTimes, int subHDAtr, int equivalentADay, int equivalentHalfDay){
 		this.ID = id;
 		this.cID = cid;
+		this.sID = sid;
 		this.ComDayOffDate = new CompensatoryDayoffDate(unknowDate, Optional.ofNullable(dayoffDate));
 		this.expiredDate = expiredDate;
 		this.occurredDays = new ManagementDataDaysAtr(occurredDays);

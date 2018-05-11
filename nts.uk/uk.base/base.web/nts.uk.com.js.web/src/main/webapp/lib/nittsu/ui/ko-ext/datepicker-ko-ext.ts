@@ -69,8 +69,10 @@ module nts.uk.ui.koExtentions {
             let fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
             let $prevButton, $nextButton;
             if (jumpButtonsDisplay) {
-                $prevButton = $("<button/>").text("◀").css("margin-right", "3px").attr("tabIndex", tabIndex);
-                $nextButton = $("<button/>").text("▶").css("margin-left", "3px").attr("tabIndex", tabIndex);
+                $prevButton = $("<button/>").addClass("ntsDateNextButton ntsButton ntsDatePickerButton ntsDatePicker_Component auto-height")
+                                .text("◀").css("margin-right", "3px").attr("tabIndex", tabIndex);
+                $nextButton = $("<button/>").addClass("ntsDatePrevButton ntsButton ntsDatePickerButton ntsDatePicker_Component auto-height")
+                                .text("▶").css("margin-left", "3px").attr("tabIndex", tabIndex);
                 $input.before($prevButton).after($nextButton);
             }
             if (data.dateFormat === "YYYY") {                
@@ -112,6 +114,9 @@ module nts.uk.ui.koExtentions {
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
                 if (result.isValid) {
+                    if(!validateMinMax(result.parsedValue)){
+                       return; 
+                    }
                     // Day of Week
                     if (hasDayofWeek) {
                         if (util.isNullOrEmpty(result.parsedValue))
@@ -150,6 +155,42 @@ module nts.uk.ui.koExtentions {
 //                    }
                 }
             });
+            
+            var validateMinMax = function(parsedValue){
+                if(nts.uk.util.isNullOrEmpty(parsedValue)){
+                    return true;
+                }
+                var mmRs = new nts.uk.time.MomentResult();
+                var otFormat = nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat;
+                var minDate = !nts.uk.util.isNullOrUndefined($input.data('startDate')) ? moment($input.data('startDate'), otFormat) : mmRs.systemMin();
+                var maxDate = !nts.uk.util.isNullOrUndefined($input.data('endDate')) ? moment($input.data('endDate'), otFormat) : mmRs.systemMax();
+                var momentCurrent = moment(parsedValue, otFormat);
+                var error = false;
+                if(momentCurrent.isBefore(minDate, 'day')){
+                    error = true;
+                } else if(momentCurrent.isAfter(maxDate, 'day')){
+                    error = true;
+                }    
+                if(error){
+                    var isHasYear = (nts.uk.util.isNullOrEmpty(otFormat) ? false : otFormat.indexOf("Y") >= 0) || otFormat.indexOf("Y") >= 0;
+                    var isHasMonth = (nts.uk.util.isNullOrEmpty(otFormat) ? false : otFormat.indexOf("M") >= 0) || otFormat.indexOf("M") >= 0;
+                    var isHasDay = (nts.uk.util.isNullOrEmpty(otFormat) ? false : otFormat.indexOf("D") >= 0) || otFormat.indexOf("D") >= 0;
+                    var mesId = "FND_E_DATE_Y";
+                    var fm = "YYYY";
+                    if (isHasDay && isHasMonth && isHasYear) {
+                        mesId = "FND_E_DATE_YMD", fm = "YYYY/MM/DD";
+                    } else if (isHasMonth && isHasYear) {
+                        mesId = "FND_E_DATE_YM", fm = "YYYY/MM";
+                    } 
+                    $input.ntsError('set', { messageId: mesId, messageParams: [ name, minDate.format(fm), maxDate.format(fm) ] }, mesId, false); 
+                    if (hasDayofWeek) {
+                        $label.text(""); 
+                    }
+                    // value(null);
+                    return false;
+                }
+                return true
+            };
 
 
             $input.on('validate', (function(e: Event) {
@@ -180,6 +221,8 @@ module nts.uk.ui.koExtentions {
             container.data("init", false);
             
             $input.ntsDatepicker("bindFlip");
+            $input.data('startDate', startDate);
+            $input.data('endDate', endDate);
         }
 
         /**
@@ -210,7 +253,13 @@ module nts.uk.ui.koExtentions {
             var init = container.data("init");
             var $input: any = container.find(".nts-input");
             var $label: any = container.find(".dayofweek-label");
-            
+
+            // Properties Binding
+            $input.datepicker('setStartDate', startDate);
+            $input.datepicker('setEndDate', endDate);
+            $input.data('startDate', startDate);
+            $input.data('endDate', endDate);
+
             // Value Binding
             if (value() !== $input.val()){
                 var dateFormatValue = (value() !== "") ? text.removeFromStart(time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
@@ -226,13 +275,14 @@ module nts.uk.ui.koExtentions {
             }
             
             $input.data("required", required);
-            // Properties Binding
-            $input.datepicker('setStartDate', startDate);
-            $input.datepicker('setEndDate', endDate);
-            if (enable !== undefined)
+            
+            if (enable !== undefined) {
                $input.prop("disabled", !enable);
-            else
+               container.find(".ntsDatePickerButton").prop("disabled", !enable);
+            } else{
                 $input.prop("disabled", disabled);
+                container.find(".ntsDatePickerButton").prop("disabled", disabled);
+            }
             if($input.prop("disabled") === true){
                 new nts.uk.util.value.DefaultValue().applyReset($input, value);
             }

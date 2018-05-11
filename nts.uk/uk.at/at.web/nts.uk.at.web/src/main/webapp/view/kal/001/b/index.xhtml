@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1150, height: 654 };</script>
+			<script>var dialogSize = { width: 1250, height: 654 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kal001.b.main.css" />
 			<com:scriptfile path="kal001.b.start.js" />
@@ -16,13 +16,13 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" data-bind="click: exportExcel ">#{i18n.getText('KAL001_8')}</button>
-				<button data-bind="click: sendEmail">#{i18n.getText('KAL001_9')}</button>
-				<button data-bind="click: closeDialog">#{i18n.getText('KAL001_10')}</button>
+				<button tabindex="1"  data-bind="click: exportExcel ">#{i18n.getText('KAL001_8')}</button>
+				<button tabindex="2" data-bind="click: sendEmail, visible: false">#{i18n.getText('KAL001_9')}</button>
+				<button tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KAL001_10')}</button>
 				 
 			</div>
 			<div id="contents-area"> 
-				<table id="grid"></table>
+				<table tabindex="4" id="grid"></table>
 			</div>
 		</ui:define>
 	</ui:composition>

@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
+import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternWorkScheduleCre;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
@@ -182,8 +183,8 @@ public class AddWorkingConditionCommandAssembler {
 		WorkingConditionItem workingCond = new WorkingConditionItem(histId,
 				// Default value is Use する
 				EnumAdaptor.valueOf(
-						command.getScheduleManagementAtr() != null ? command.getScheduleManagementAtr().intValue() : NotUseAtr.USE.value,
-						NotUseAtr.class),
+						command.getScheduleManagementAtr() != null ? command.getScheduleManagementAtr().intValue() : ManageAtr.USE.value,
+								ManageAtr.class),
 				workDayOfWeek, workCategory,
 				// Default value is Notuse しない
 				EnumAdaptor.valueOf(command.getAutoStampSetAtr() != null ? command.getAutoStampSetAtr().intValue() : NotUseAtr.NOTUSE.value,

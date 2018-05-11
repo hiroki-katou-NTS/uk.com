@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 
 /**
  * 戻り値：フレックス不足から年休を欠勤を控除する
@@ -17,14 +18,14 @@ public class DeductFromFlexShortageValue {
 	/** 月別実績の月の計算 */
 	@Setter
 	private MonthlyCalculation monthlyCalculation; 
-	/** エラーメッセージID */
-	private List<String> errorMessageIds;
+	/** エラー情報リスト */
+	private List<MonthlyAggregationErrorInfo> errorInfos;
 	
 	/**
 	 * コンストラクタ
 	 */
 	public DeductFromFlexShortageValue(){
 		this.monthlyCalculation = new MonthlyCalculation();
-		this.errorMessageIds = new ArrayList<>();
+		this.errorInfos = new ArrayList<>();
 	}
 }

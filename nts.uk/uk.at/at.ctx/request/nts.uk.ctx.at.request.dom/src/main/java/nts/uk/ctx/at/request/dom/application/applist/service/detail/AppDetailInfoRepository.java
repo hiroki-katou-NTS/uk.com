@@ -38,4 +38,18 @@ public interface AppDetailInfoRepository {
 	 * @return
 	 */
 	public AppAbsenceFull getAppAbsenceInfo(String companyID, String appId, Integer day);
+	/**
+	 * get Application Complt Leave Info
+	 * @param companyID
+	 * @param appId
+	 * @param type
+	 * @return
+	 */
+	public AppCompltLeaveFull getAppCompltLeaveInfo(String companyID, String appId, int type);
+	/**
+	 * convert time from integer to Time_Short_HM
+	 * @param time
+	 * @return
+	 */
+	public String convertTime(Integer time);
 }

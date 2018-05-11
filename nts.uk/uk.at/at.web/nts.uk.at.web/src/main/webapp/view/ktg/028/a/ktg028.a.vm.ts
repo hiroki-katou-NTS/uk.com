@@ -113,6 +113,8 @@ module nts.uk.at.view.ktg028.a.viewmodel {
             self.findAll().done(() => {
                 if (self.items_A2().length > 0) {
                     self.currentCode_A2(self.items_A2()[0].topPageCode);
+                }else{
+                    self.isCreated(true);    
                 }
             });
         }
@@ -224,7 +226,7 @@ module nts.uk.at.view.ktg028.a.viewmodel {
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 nts.uk.ui.block.grayout();
                 service.remove(data).done(function() {
-                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16')).then(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                         self.findAll().done(function() {
                             if (self.items_A2().length == 0) {
                                 self.cleanForm();

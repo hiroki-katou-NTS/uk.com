@@ -28,6 +28,7 @@ import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRe
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
@@ -109,6 +110,9 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	@Inject
 	private TemporaryTimeOfDailyPerformanceRepository temporaryTimeOfDailyPerformanceRepository;
 	
+	@Inject 
+	private ErAlCheckService determineErrorAlarmWorkRecordService;
+	
 	/**
 	 * 社員の日別実績を計算
 	 * @param asyncContext 同期コマンドコンテキスト
@@ -169,9 +173,12 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			log.info("データ更新のために勤怠時間をチェックします");
 			// データ更新
 			//*****（未）　日別実績の勤怠情報だけを更新する場合。まとめて更新するなら、integrationOfDailyを入出できるよう調整する。
-			if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			if(value.getAttendanceTimeOfDailyPerformance().isPresent()) {
 				log.info("勤怠時間が見つかりました");
-				this.registAttendanceTime(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get());
+				employeeDailyPerErrorRepository.removeParam(value.getAttendanceTimeOfDailyPerformance().get().getEmployeeId(), 
+						value.getAttendanceTimeOfDailyPerformance().get().getYmd());
+				this.registAttendanceTime(value.getAttendanceTimeOfDailyPerformance().get());
+				determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(value.getEmployeeError());
 			}
 			else {
 				log.info("勤怠時間が見つかりませんでした");
@@ -217,17 +224,16 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		val attendanceTimeList= workInformationRepository.findByPeriodOrderByYmd(employeeId, datePeriod);
 		
 		List<IntegrationOfDaily> returnList = new ArrayList<>();
-		
+
 		for(WorkInfoOfDailyPerformance attendanceTime : attendanceTimeList) {
 			/** リポジトリ：日別実績の勤務情報 */
 			val workInf = workInformationRepository.find(employeeId, attendanceTime.getYmd());  
-			/** リポジトリ：日別実績の計算区分 */
-			//val calAttr = calAttrOfDailyPerformanceRepository.find(employeeId, attendanceTime.getYmd());
-			val calAttr = new CalAttrOfDailyPerformance();
+			/** リポジトリ：日別実績.日別実績の計算区分 */
+			val calAttr = calAttrOfDailyPerformanceRepository.find(employeeId, attendanceTime.getYmd());
 			
 			/** リポジトリ：日別実績の所属情報 */
 			val affiInfo = affiliationInforOfDailyPerforRepository.findByKey(employeeId, attendanceTime.getYmd());
-			if(!workInf.isPresent() ||  !affiInfo.isPresent())
+			if(!workInf.isPresent() ||  !affiInfo.isPresent())//calAttr == null
 				continue;
 			returnList.add(
 				new IntegrationOfDaily(

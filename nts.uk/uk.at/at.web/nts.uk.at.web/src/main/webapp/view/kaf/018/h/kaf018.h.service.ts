@@ -2,19 +2,10 @@ module nts.uk.at.view.kaf018.h {
     import format = nts.uk.text.format;
     export module service {
         var paths: any = {
-            getMail: "at/request/application/approvalstatus/getMail/{0}",
             getMailBySetting: "at/request/application/approvalstatus/getMailBySetting",
             registerMail: "at/request/application/approvalstatus/registerMail",
-            getEmpMail: "at/request/application/approvalstatus/getEmpMail",
+            confirmSenderMail: "at/request/application/approvalstatus/confirmSenderMail",
             sendTestMail: "at/request/application/approvalstatus/sendTestMail/{0}"
-        }
-
-        /**
-         * アルゴリズム「承認状況メール本文取得」を実行する
-         */
-        export function getApprovalStatusMail(mailType: number): JQueryPromise<any> {
-            let path = format(paths.getMail, mailType);
-            return nts.uk.request.ajax("at", path);
         }
 
         /**
@@ -58,8 +49,8 @@ module nts.uk.at.view.kaf018.h {
         /**
          * アルゴリズム「承認状況社員メールアドレス取得」を実行する
          */
-        export function getEmpMail(): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", paths.getEmpMail);
+        export function confirmSenderMail(): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", paths.confirmSenderMail);
         }
     }
 }

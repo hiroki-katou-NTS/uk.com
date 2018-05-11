@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
@@ -64,18 +65,16 @@ public class PerInfoCategoryFinder {
 	public List<PerInfoCtgWithParentMapDto> getPerInfoCtgWithParent(String parentCd) {
 		String contractCode = AppContexts.user().contractCode();
 		List<PerInfoCtgWithParentMapDto> lstResult = new ArrayList<>();
-		lstResult = perInfoCtgRepositoty
-				.getPerInfoCtgByParentCode(parentCd, contractCode).stream().map(p -> {
-					return new PerInfoCtgWithParentMapDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
-							p.getCategoryName().v(), p.getPersonEmployeeType().value, p.getIsAbolition().value,
-							p.getCategoryType().value, p.getIsFixed().value, 0);
-				}).collect(Collectors.toList());
-		lstResult.add(perInfoCtgRepositoty.getPerInfoCategory(parentCd, contractCode)
-				.map(p -> {
-					return new PerInfoCtgWithParentMapDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
-							p.getCategoryName().v(), p.getPersonEmployeeType().value, p.getIsAbolition().value,
-							p.getCategoryType().value, p.getIsFixed().value, 1);
-				}).orElse(null));
+		lstResult = perInfoCtgRepositoty.getPerInfoCtgByParentCode(parentCd, contractCode).stream().map(p -> {
+			return new PerInfoCtgWithParentMapDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
+					p.getCategoryName().v(), p.getPersonEmployeeType().value, p.getIsAbolition().value,
+					p.getCategoryType().value, p.getIsFixed().value, 0);
+		}).collect(Collectors.toList());
+		lstResult.add(perInfoCtgRepositoty.getPerInfoCategory(parentCd, contractCode).map(p -> {
+			return new PerInfoCtgWithParentMapDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
+					p.getCategoryName().v(), p.getPersonEmployeeType().value, p.getIsAbolition().value,
+					p.getCategoryType().value, p.getIsFixed().value, 1);
+		}).orElse(null));
 		return lstResult;
 	}
 
@@ -104,12 +103,11 @@ public class PerInfoCategoryFinder {
 	// vinhpx: end
 
 	public PerInfoCtgFullDto getPerInfoCtg(String perInfoCtgId) {
-		return perInfoCtgRepositoty.getPerInfoCategory(perInfoCtgId, AppContexts.user().contractCode())
-				.map(p -> {
-					return new PerInfoCtgFullDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
-							p.getCategoryName().v(), p.getPersonEmployeeType().value, p.getIsAbolition().value,
-							p.getCategoryType().value, p.getIsFixed().value);
-				}).orElse(null);
+		return perInfoCtgRepositoty.getPerInfoCategory(perInfoCtgId, AppContexts.user().contractCode()).map(p -> {
+			return new PerInfoCtgFullDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(), p.getCategoryName().v(),
+					p.getPersonEmployeeType().value, p.getIsAbolition().value, p.getCategoryType().value,
+					p.getIsFixed().value);
+		}).orElse(null);
 	};
 
 	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompany() {
@@ -121,8 +119,8 @@ public class PerInfoCategoryFinder {
 
 					if ((pernfoItemDefRep.countPerInfoItemDefInCategory(p.getPersonInfoCategoryId(), companyId) > 0)) {
 						return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
-								p.getCategoryType().value, p.getIsAbolition().value, p.getCategoryParentCode().v(),
-								 p.getInitValMasterCls().value , p.getAddItemCls().value);
+								p.getCategoryType().value, p.getCategoryCode().v(), p.getIsAbolition().value, p.getCategoryParentCode().v(),
+								p.getInitValMasterCls().value, p.getAddItemCls().value);
 					}
 					return null;
 				}).filter(m -> m != null).collect(Collectors.toList());
@@ -143,8 +141,10 @@ public class PerInfoCategoryFinder {
 
 					if (!lstItemDfInCat.isEmpty()) {
 						return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
-								p.getCategoryType().value, p.getIsAbolition().value, p.getCategoryParentCode().v(),
-								p.getInitValMasterCls() == null? 1: p.getInitValMasterCls().value , p.getAddItemCls() == null? 1: p.getAddItemCls().value);
+								p.getCategoryType().value, p.getCategoryCode().v(), p.getIsAbolition().value,
+								p.getCategoryParentCode().v(),
+								p.getInitValMasterCls() == null ? 1 : p.getInitValMasterCls().value,
+								p.getAddItemCls() == null ? 1 : p.getAddItemCls().value);
 					}
 					return null;
 				}).filter(m -> m != null).filter(m -> m.getIsAbolition() == 0).collect(Collectors.toList());
@@ -154,18 +154,29 @@ public class PerInfoCategoryFinder {
 	};
 
 	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompanyRoot() {
+
+		// ログイン者がグループ会社管理者かどうか判定する - Kiểm tra quyền
+		// String roleId = AppContexts.user().roles().forGroupCompaniesAdmin();
+		// if (roleId == null) {
+		// // false Msg_1103
+		// throw new BusinessException("Msg_1103");
+		// } else {
+		// true
 		List<PersonInfoCategory> categoryList = perInfoCtgRepositoty
 				.getAllPerInfoCategory(AppContexts.user().zeroCompanyIdInContract(), AppContexts.user().contractCode());
 
 		List<PerInfoCtgShowDto> x = categoryList.stream().map(p -> {
 			return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
-					p.getCategoryType().value, p.getIsAbolition().value, p.getCategoryParentCode().v(),
+					p.getCategoryType().value, p.getCategoryCode().v(), p.getIsAbolition().value, p.getCategoryParentCode().v(),
 					p.getInitValMasterCls() == null ? 1 : p.getInitValMasterCls().value,
 					p.getAddItemCls() == null ? 1 : p.getAddItemCls().value);
 		}).collect(Collectors.toList());
 
 		List<EnumConstant> historyTypes = EnumAdaptor.convertToValueNameList(HistoryTypes.class, internationalization);
+
 		return new PerInfoCtgDataEnumDto(historyTypes, x);
+
+		// }
 	};
 
 	public PerInfoCtgWithItemsNameDto getPerInfoCtgWithItemsName(String perInfoCtgId) {

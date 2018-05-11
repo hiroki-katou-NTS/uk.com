@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.adapter.request.application.ApprovalStatusReques
 import nts.uk.ctx.at.record.dom.adapter.request.application.dto.ApprovalStatusMailTempImport;
 import nts.uk.ctx.at.record.dom.adapter.request.application.dto.EmployeeUnconfirmImport;
 import nts.uk.ctx.at.record.dom.adapter.request.application.dto.RealityStatusEmployeeImport;
+import nts.uk.ctx.at.record.dom.adapter.request.application.dto.SendMailResultImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
@@ -74,14 +75,14 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 	}
 
 	@Override
-	public void checkSendUnconfirmedMail(List<WkpIdMailCheckOutput> listWkp) {
+	public String checkSendUnconfirmedMail(List<WkpIdMailCheckOutput> listWkp) {
 		// アルゴリズム「承認状況送信者メール確認」を実行する
-		// TODO
-
+		String email = approvalStatusRequestAdapter.confirmApprovalStatusMailSender();
 		// アルゴリズム「承認状況未確認メール送信実行チェック」を実行する
 		if (listWkp.stream().filter(x -> x.isCheckOn()).count() == 0) {
 			throw new BusinessException("Msg_794");
 		}
+		return email;
 	}
 
 	@Override
@@ -101,7 +102,7 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 	}
 
 	/**
-	 * アルゴリズム「承認状況取得職場実績確認」を実行する
+	 * 承認状況取得職場実績確認
 	 * 
 	 * @param listEmp
 	 *            社員ID＜社員ID、期間＞(リスト)
@@ -148,7 +149,7 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 	}
 
 	/**
-	 * アルゴリズム「承認状況取得日別確認状況」を実行する
+	 * 承認状況取得日別確認状況
 	 * 
 	 * @param sId
 	 *            社員ID
@@ -186,7 +187,7 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 	}
 
 	/**
-	 * アルゴリズム「承認状況取得日別上司承認状況」を実行する
+	 * 承認状況取得日別上司承認状況
 	 * 
 	 * @param sId
 	 *            社員ID
@@ -233,7 +234,7 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 	}
 
 	/**
-	 * アルゴリズム「承認状況取得日別本人確認状況」を実行する
+	 * 承認状況取得日別本人確認状況
 	 * 
 	 * @param sId
 	 *            社員ID
@@ -250,6 +251,7 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 			List<DailyConfirmOutput> listDailyConfirm, SumCountOutput sumCount) {
 		// RequestList165
 		// imported（KAF018承認状況の照会）本人確認済みの日付を取得
+		// TODO
 		List<GeneralDate> listCheckDate = new ArrayList<GeneralDate>();
 		// 確認日付
 		for (GeneralDate checkDate : listCheckDate) {
@@ -258,7 +260,7 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 					x -> x.getWkpId().equals(wkpId) && x.getSId().equals(sId) && x.getTargetDate().equals(checkDate))
 					.findFirst();
 			if (!confirm.isPresent()) {
-				// 登録されていない場合(Chưa đăng ký)
+				// 登録されていない場合
 				DailyConfirmOutput newDailyConfirm = new DailyConfirmOutput(wkpId, sId, checkDate, true, false);
 				listDailyConfirm.add(newDailyConfirm);
 			} else {
@@ -275,8 +277,8 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 	}
 
 	@Override
-	public void exeSendUnconfirmMail(TransmissionAttr type, List<WkpIdMailCheckOutput> listWkp, GeneralDate startDate,
-			GeneralDate endDate, List<String> listEmpCd) {
+	public SendMailResultImport exeSendUnconfirmMail(TransmissionAttr type, List<WkpIdMailCheckOutput> listWkp,
+			GeneralDate startDate, GeneralDate endDate, List<String> listEmpCd) {
 		// アルゴリズム「承認状況未確認メール送信社員取得」を実行する
 		EmpUnconfirmResultOutput result = this.getListEmpUnconfirm(type, listWkp, startDate, endDate, listEmpCd);
 		if (!result.isOK()) {
@@ -287,11 +289,12 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 		MailTranmissionContentResultOutput mailResult = this.getUnconfirmEmailContent(result.getListEmpUmconfirm(),
 				type);
 		// アルゴリズム「承認状況メール送信実行」を実行する
-		
+		return approvalStatusRequestAdapter.exeApprovalStatusMailTransmission(mailResult.getListMail(),
+				mailResult.getApprovalStatusMailTemp());
 	}
 
 	/**
-	 * アルゴリズム「承認状況未確認メール送信社員取得」を実行する
+	 * 承認状況未確認メール送信社員取得
 	 * 
 	 * @param type
 	 *            送信区分（本人/日次/月次）
@@ -338,7 +341,7 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 	}
 
 	/**
-	 * アルゴリズム「承認状況未確認メール送信本人取得」を実行する
+	 * 承認状況未確認メール送信本人取得
 	 * 
 	 * @param listEmp
 	 *            社員ID＜社員ID、期間＞(リスト)
@@ -360,7 +363,7 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 	}
 
 	/**
-	 * アルゴリズム「承認状況未確認チェック」を実行する
+	 * 承認状況未確認チェック
 	 * 
 	 * @param sId
 	 *            社員ID
@@ -385,7 +388,7 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 	}
 
 	/**
-	 * アルゴリズム「承認状況未確認メール送信上司取得」を実行する
+	 * 承認状況未確認メール送信上司取得
 	 * 
 	 * @param listEmp
 	 *            社員ID＜社員ID、期間＞(リスト)
@@ -407,7 +410,7 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 	}
 
 	/**
-	 * アルゴリズム「承認状況未確認チェック上司」を実行する
+	 * 承認状況未確認チェック上司
 	 * 
 	 * @param sId
 	 *            社員ID
@@ -438,7 +441,7 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 	}
 
 	/**
-	 * アルゴリズム「承認状況未確認メール送信月次確認者取得」を実行する
+	 * 承認状況未確認メール送信月次確認者取得
 	 * 
 	 * @param listEmp
 	 *            社員ID＜社員ID、期間＞(リスト)
@@ -466,7 +469,7 @@ public class RealityStatusServiceImpl implements RealityStatusService {
 	}
 
 	/**
-	 * アルゴリズム「承認状況未確認メール本文取得」を実行する
+	 * 承認状況未確認メール本文取得
 	 * 
 	 * @param listEmpUmconfirm
 	 *            未確認者

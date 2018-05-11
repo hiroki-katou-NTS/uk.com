@@ -4,21 +4,32 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.calculation.holiday;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 /**
  * The class Holiday Addtime Finder
  */
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.AddSetManageWorkHour;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HourlyPaymentAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.DeductLeaveEarly;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.EmploymentCalcDetailedSetIncludeVacationAmount;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.IncludeHolidaysPremiumCalcDetailSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.PremiumCalcMethodDetailOfHoliday;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.PremiumHolidayCalcMethod;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.WorkTimeCalcMethodDetailOfHoliday;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.WorkTimeHolidayCalcMethod;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -26,46 +37,65 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class HolidayAddtionFinder {
+	
+	/** The repository. */
 	@Inject
 	private HolidayAddtionRepository repository;
 
 	/**
-	 * Find all Holiday Additon
-	 * 
-	 * @return
+	 * Find all holiday addtime.
+	 *
+	 * @return the list
 	 */
 	public List<HolidayAddtionDto> findAllHolidayAddtime() {
 		String companyId = AppContexts.user().companyId();
-		return repository.findByCompanyId(companyId).stream().map(e -> {
-			return convertToDbType(e);
-		}).collect(Collectors.toList());
+//		return repository.findByCompanyId(companyId).stream().map(e -> {
+//			return convertToDbType(e);
+//		}).collect(Collectors.toList());
+		
+		Map<String, AggregateRoot> mapAggre = repository.findByCompanyId(companyId);
+		List<HolidayAddtionDto> dto = new ArrayList<>();
+		dto.add(convertToDbType(mapAggre));
+		return dto;
+		
 	}
 
 	/**
-	 * Convert to Database Holiday Addtion
-	 * 
-	 * @param holidayAddtime
-	 * @return
+	 * Convert to db type.
+	 *
+	 * @param mapAggre the map aggre
+	 * @return the holiday addtion dto
 	 */
-	private HolidayAddtionDto convertToDbType(HolidayAddtionSet holidayAddtime) {
+	private HolidayAddtionDto convertToDbType(Map<String, AggregateRoot> mapAggre) {
+		if (mapAggre.isEmpty() || mapAggre == null) {
+			return null;
+		}
+		HolidayAddtionSet holidayAddtime = (HolidayAddtionSet) mapAggre.get("holidayAddtionSet");
+		AddSetManageWorkHour addSetManageWorkHour = (AddSetManageWorkHour) mapAggre.get("addSetManageWorkHour");
+		WorkFlexAdditionSet workFlexAdditionSet = (WorkFlexAdditionSet) mapAggre.get("flexWork");
+		WorkRegularAdditionSet workRegularAdditionSet = (WorkRegularAdditionSet) mapAggre.get("regularWork");
+		WorkDeformedLaborAdditionSet deformedLaborAdditionSet = (WorkDeformedLaborAdditionSet) mapAggre.get("irregularWork");
+		HourlyPaymentAdditionSet hourlyPaymentAdditionSet = (HourlyPaymentAdditionSet) mapAggre.get("hourlyPaymentAdditionSet");
+		
 		HolidayAddtionDto holidayAddtimeDto = new HolidayAddtionDto();
-			holidayAddtimeDto.setReferComHolidayTime(holidayAddtime.getReferComHolidayTime());
-			holidayAddtimeDto.setOneDay(holidayAddtime.getOneDay());
-			holidayAddtimeDto.setMorning(holidayAddtime.getMorning());
-			holidayAddtimeDto.setAfternoon(holidayAddtime.getAfternoon());
-			holidayAddtimeDto.setReferActualWorkHours(holidayAddtime.getReferActualWorkHours());
-			holidayAddtimeDto.setNotReferringAch(holidayAddtime.getNotReferringAch().get().value);
-			holidayAddtimeDto.setAnnualHoliday(holidayAddtime.getAnnualHoliday());
-			holidayAddtimeDto.setSpecialHoliday(holidayAddtime.getSpecialHoliday());
-			holidayAddtimeDto.setYearlyReserved(holidayAddtime.getYearlyReserved());
-			holidayAddtimeDto.setRegularWork(convertToDbTypeRegularWork(holidayAddtime.getRegularWork()));
-			holidayAddtimeDto.setFlexWork(convertToDbTypeFlexWork(holidayAddtime.getFlexWork()));
-			holidayAddtimeDto.setIrregularWork(convertToDbTypeIrregularWork(holidayAddtime.getWorkDeformLabor()));
-			holidayAddtimeDto.setHourlyPaymentAdditionSet(convertToDbTypeHourlyPaymentAdditionSet(holidayAddtime.getHourPaymentAddition()));
-			holidayAddtimeDto.setAddSetManageWorkHour(holidayAddtime.getAdditionSettingOfOvertime() == null ? 0 : holidayAddtime.getAdditionSettingOfOvertime().getAdditionSettingOfOvertime().value);
+			holidayAddtimeDto.setReferComHolidayTime(holidayAddtime.getWorkRecord().get().getTimeReferenceDestination().get().value);
+			holidayAddtimeDto.setOneDay(new BigDecimal(holidayAddtime.getWorkRecord().get().getAdditionTimeCompany().get().getOneDay().v()));
+			holidayAddtimeDto.setMorning(new BigDecimal(holidayAddtime.getWorkRecord().get().getAdditionTimeCompany().get().getMorning().v()));
+			holidayAddtimeDto.setAfternoon(new BigDecimal(holidayAddtime.getWorkRecord().get().getAdditionTimeCompany().get().getAfternoon().v()));
+			holidayAddtimeDto.setReferActualWorkHours(holidayAddtime.getReferActualWorkHours().value);
+			holidayAddtimeDto.setNotReferringAch(holidayAddtime.getEmployeeInformation().get().getTimeReferenceDestination().value);
+			holidayAddtimeDto.setAnnualHoliday(holidayAddtime.getAdditionVacationSet().getAnnualHoliday().value);
+			holidayAddtimeDto.setSpecialHoliday(holidayAddtime.getAdditionVacationSet().getSpecialHoliday().value);
+			holidayAddtimeDto.setYearlyReserved(holidayAddtime.getAdditionVacationSet().getYearlyReserved().value);
+			holidayAddtimeDto.setRegularWork(convertToDbTypeRegularWork(workRegularAdditionSet));
+			holidayAddtimeDto.setFlexWork(convertToDbTypeFlexWork(workFlexAdditionSet));
+			holidayAddtimeDto.setIrregularWork(convertToDbTypeIrregularWork(deformedLaborAdditionSet));
+			holidayAddtimeDto.setHourlyPaymentAdditionSet(convertToDbTypeHourlyPaymentAdditionSet(hourlyPaymentAdditionSet));
+			
+			holidayAddtimeDto.setAddSetManageWorkHour(addSetManageWorkHour == null ? 0 : addSetManageWorkHour.getAdditionSettingOfOvertime().value);
 			holidayAddtimeDto.setAddingMethod1(holidayAddtime.getTimeHolidayAddition().get(0).getAddingMethod().value);
-			holidayAddtimeDto.setAddingMethod2(holidayAddtime.getTimeHolidayAddition().get(0).getWorkClass().value);
-			holidayAddtimeDto.setWorkClass1(holidayAddtime.getTimeHolidayAddition().get(1).getAddingMethod().value);
+			holidayAddtimeDto.setAddingMethod2(holidayAddtime.getTimeHolidayAddition().get(1).getAddingMethod().value);
+			holidayAddtimeDto.setWorkClass1(holidayAddtime.getTimeHolidayAddition().get(0).getWorkClass().value);
 			holidayAddtimeDto.setWorkClass2(holidayAddtime.getTimeHolidayAddition().get(1).getWorkClass().value);
 			
 		return holidayAddtimeDto;
@@ -83,19 +113,29 @@ public class HolidayAddtionFinder {
 		}
 
 		RegularWorkDto regularWorkDto = new RegularWorkDto();
-			regularWorkDto.setCalcActualOperationPre(regularWork.getCalcActualOperation1().value);
-			regularWorkDto.setExemptTaxTimePre(regularWork.getExemptTaxTime1());
-			regularWorkDto.setIncChildNursingCarePre(regularWork.getIncChildNursingCare1());
-			regularWorkDto.setAdditionTimePre(regularWork.getAdditionTime1());
-			regularWorkDto.setNotDeductLateleavePre(regularWork.getNotDeductLateleave1());
-			regularWorkDto.setDeformatExcValuePre(regularWork.getDeformatExcValue1().value);
-			regularWorkDto.setExemptTaxTimeWork(regularWork.getExemptTaxTime2());
-			regularWorkDto.setCalcActualOperationWork(regularWork.getCalcActualOperation2().value);
-			regularWorkDto.setIncChildNursingCareWork(regularWork.getIncChildNursingCare2());
-			regularWorkDto.setNotDeductLateleaveWork(regularWork.getNotDeductLateleave2());
-			regularWorkDto.setAdditionTimeWork(regularWork.getAdditionTime2());
-			regularWorkDto.setEnableSetPerWorkHour1(regularWork.isEnableSetPerWorkHour1() == true ? 1 : 0);
-			regularWorkDto.setEnableSetPerWorkHour2(regularWork.isEnableSetPerWorkHour2() == true ? 1 : 0);
+			PremiumHolidayCalcMethod premiumHolidayCalcMethod = regularWork.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday();
+			PremiumCalcMethodDetailOfHoliday advanceSetPre = premiumHolidayCalcMethod.getAdvanceSet().get();
+			DeductLeaveEarly deductLeaveEarly = advanceSetPre.getNotDeductLateLeaveEarly();
+			IncludeHolidaysPremiumCalcDetailSet includeHolidaysPremiumCalcDetailSet = advanceSetPre.getIncludeVacationSet();
+			
+			WorkTimeHolidayCalcMethod workTimeHolidayCalcMethod = regularWork.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday();
+			WorkTimeCalcMethodDetailOfHoliday advanceSetWork = workTimeHolidayCalcMethod.getAdvancedSet().get();
+			EmploymentCalcDetailedSetIncludeVacationAmount includeVacationSet = advanceSetWork.getIncludeVacationSet();
+			
+			regularWorkDto.setCalcActualOperationPre(premiumHolidayCalcMethod.getCalculateActualOperation().value);
+			regularWorkDto.setExemptTaxTimePre(advanceSetPre.getCalculateIncludIntervalExemptionTime().value);
+			regularWorkDto.setIncChildNursingCarePre(advanceSetPre.getCalculateIncludCareTime().value);
+			regularWorkDto.setAdditionTimePre(includeHolidaysPremiumCalcDetailSet.getAddition().value);
+			regularWorkDto.setNotDeductLateleavePre(deductLeaveEarly.isDeduct() == true ? 1 : 0);
+			regularWorkDto.setDeformatExcValuePre(includeHolidaysPremiumCalcDetailSet.getDeformationExceedsPredeterminedValue().get().value);
+			regularWorkDto.setExemptTaxTimeWork(advanceSetWork.getCalculateIncludIntervalExemptionTime().value);
+			regularWorkDto.setCalcActualOperationWork(workTimeHolidayCalcMethod.getCalculateActualOperation().value);
+			regularWorkDto.setIncChildNursingCareWork(advanceSetWork.getCalculateIncludCareTime().value);
+			regularWorkDto.setNotDeductLateleaveWork(advanceSetWork.getNotDeductLateLeaveEarly().value);
+			regularWorkDto.setAdditionTimeWork(includeVacationSet.getAddition().value);
+			regularWorkDto.setEnableSetPerWorkHour1(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
+			// spec describle enable1 same enable2
+			regularWorkDto.setEnableSetPerWorkHour2(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
 		return regularWorkDto;
 	}
 
@@ -111,22 +151,32 @@ public class HolidayAddtionFinder {
 		}
 
 		FlexWorkDto flexWorkDto = new FlexWorkDto();
-			flexWorkDto.setCalcActualOperationPre(flexWork.getCalcActualOperation1().value);
-			flexWorkDto.setExemptTaxTimePre(flexWork.getExemptTaxTime1());
-			flexWorkDto.setIncChildNursingCarePre(flexWork.getIncChildNursingCare1());
-			flexWorkDto.setPredeterminedOvertimePre(flexWork.getPredeterminedOvertime1().value);
-			flexWorkDto.setAdditionTimePre(flexWork.getAdditionTime1());
-			flexWorkDto.setNotDeductLateleavePre(flexWork.getNotDeductLateleave1());
-			flexWorkDto.setExemptTaxTimeWork(flexWork.getExemptTaxTime2());
-			flexWorkDto.setMinusAbsenceTimeWork(flexWork.getMinusAbsenceTime2());
-			flexWorkDto.setCalcActualOperationWork(flexWork.getCalcActualOperation2().value);
-			flexWorkDto.setIncChildNursingCareWork(flexWork.getIncChildNursingCare2());
-			flexWorkDto.setNotDeductLateleaveWork(flexWork.getNotDeductLateleave2());
-			flexWorkDto.setPredeterminDeficiencyWork(flexWork.getPredeterminDeficiency2().value);
-			flexWorkDto.setAdditionTimeWork(flexWork.getAdditionTime2());
-			flexWorkDto.setEnableSetPerWorkHour1(flexWork.isEnableSetPerWorkHour1() == true ? 1 : 0);
-			flexWorkDto.setEnableSetPerWorkHour2(flexWork.isEnableSetPerWorkHour2() == true ? 1 : 0);
-			flexWorkDto.setAdditionWithinMonthlyStatutory(flexWork.getAdditionWithinMonthlyStatutory().value);
+		PremiumHolidayCalcMethod premiumHolidayCalcMethod = flexWork.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday();
+		PremiumCalcMethodDetailOfHoliday advanceSetPre = premiumHolidayCalcMethod.getAdvanceSet().get();
+		DeductLeaveEarly deductLeaveEarly = advanceSetPre.getNotDeductLateLeaveEarly();
+		IncludeHolidaysPremiumCalcDetailSet includeHolidaysPremiumCalcDetailSet = advanceSetPre.getIncludeVacationSet();
+		
+		WorkTimeHolidayCalcMethod workTimeHolidayCalcMethod = flexWork.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday();
+		WorkTimeCalcMethodDetailOfHoliday advanceSetWork = workTimeHolidayCalcMethod.getAdvancedSet().get();
+		EmploymentCalcDetailedSetIncludeVacationAmount includeVacationSet = advanceSetWork.getIncludeVacationSet();
+		
+		flexWorkDto.setCalcActualOperationPre(premiumHolidayCalcMethod.getCalculateActualOperation().value);
+		flexWorkDto.setExemptTaxTimePre(advanceSetPre.getCalculateIncludIntervalExemptionTime().value);
+		flexWorkDto.setIncChildNursingCarePre(advanceSetPre.getCalculateIncludCareTime().value);
+		flexWorkDto.setPredeterminedOvertimePre(includeHolidaysPremiumCalcDetailSet.getPredeterminedExcessTimeOfFlex().get().value);
+		flexWorkDto.setAdditionTimePre(includeHolidaysPremiumCalcDetailSet.getAddition().value);
+		flexWorkDto.setNotDeductLateleavePre(deductLeaveEarly.isDeduct() == true ? 1 : 0);
+		flexWorkDto.setExemptTaxTimeWork(advanceSetWork.getCalculateIncludIntervalExemptionTime().value);
+		flexWorkDto.setMinusAbsenceTimeWork(advanceSetWork.getMinusAbsenceTime().get().value);
+		flexWorkDto.setCalcActualOperationWork(workTimeHolidayCalcMethod.getCalculateActualOperation().value);
+		flexWorkDto.setIncChildNursingCareWork(advanceSetWork.getCalculateIncludCareTime().value);
+		flexWorkDto.setNotDeductLateleaveWork(advanceSetWork.getNotDeductLateLeaveEarly().value);
+		flexWorkDto.setPredeterminDeficiencyWork(includeVacationSet.getPredeterminedDeficiencyOfFlex().get().value);
+		flexWorkDto.setAdditionTimeWork(includeVacationSet.getAddition().value);
+		flexWorkDto.setEnableSetPerWorkHour1(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
+		// spec describle enable2 same enable1
+		flexWorkDto.setEnableSetPerWorkHour2(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
+		flexWorkDto.setAdditionWithinMonthlyStatutory(includeVacationSet.getAdditionWithinMonthlyStatutory().get().value);
 		return flexWorkDto;
 	}
 
@@ -142,20 +192,30 @@ public class HolidayAddtionFinder {
 		}
 
 		WorkDepLaborDto laborDto = new WorkDepLaborDto();
-			laborDto.setCalcActualOperationPre(labor.getCalcActualOperation1().value);
-			laborDto.setExemptTaxTimePre(labor.getExemptTaxTime1());
-			laborDto.setIncChildNursingCarePre(labor.getIncChildNursingCare1());
-			laborDto.setAdditionTimePre(labor.getAdditionTime1());
-			laborDto.setNotDeductLateleavePre(labor.getNotDeductLateleave1());
-			laborDto.setDeformatExcValue(labor.getDeformatExcValue().value);
-			laborDto.setExemptTaxTimeWork(labor.getExemptTaxTime2());
-			laborDto.setMinusAbsenceTimeWork(labor.getMinusAbsenceTime2());
-			laborDto.setCalcActualOperationWork(labor.getCalcActualOperation2().value);
-			laborDto.setIncChildNursingCareWork(labor.getIncChildNursingCare2());
-			laborDto.setNotDeductLateleaveWork(labor.getNotDeductLateleave2());
-			laborDto.setAdditionTimeWork(labor.getAdditionTime2());
-			laborDto.setEnableSetPerWorkHour1(labor.isEnableSetPerWorkHour1() == true ? 1 : 0);
-			laborDto.setEnableSetPerWorkHour2(labor.isEnableSetPerWorkHour2() == true ? 1 : 0);
+			PremiumHolidayCalcMethod premiumHolidayCalcMethod = labor.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday();
+			PremiumCalcMethodDetailOfHoliday advanceSetPre = premiumHolidayCalcMethod.getAdvanceSet().get();
+			DeductLeaveEarly deductLeaveEarly = advanceSetPre.getNotDeductLateLeaveEarly();
+			IncludeHolidaysPremiumCalcDetailSet includeHolidaysPremiumCalcDetailSet = advanceSetPre.getIncludeVacationSet();
+			
+			WorkTimeHolidayCalcMethod workTimeHolidayCalcMethod = labor.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday();
+			WorkTimeCalcMethodDetailOfHoliday advanceSetWork = workTimeHolidayCalcMethod.getAdvancedSet().get();
+			EmploymentCalcDetailedSetIncludeVacationAmount includeVacationSet = advanceSetWork.getIncludeVacationSet();
+			
+			laborDto.setCalcActualOperationPre(premiumHolidayCalcMethod.getCalculateActualOperation().value);
+			laborDto.setExemptTaxTimePre(advanceSetPre.getCalculateIncludIntervalExemptionTime().value);
+			laborDto.setIncChildNursingCarePre(advanceSetPre.getCalculateIncludCareTime().value);
+			laborDto.setAdditionTimePre(includeHolidaysPremiumCalcDetailSet.getAddition().value);
+			laborDto.setNotDeductLateleavePre(deductLeaveEarly.isDeduct() == true ? 1 : 0);
+			laborDto.setDeformatExcValue(includeHolidaysPremiumCalcDetailSet.getDeformationExceedsPredeterminedValue().get().value);
+			laborDto.setExemptTaxTimeWork(advanceSetWork.getCalculateIncludIntervalExemptionTime().value);
+			laborDto.setMinusAbsenceTimeWork(advanceSetWork.getMinusAbsenceTime().get().value);
+			laborDto.setCalcActualOperationWork(workTimeHolidayCalcMethod.getCalculateActualOperation().value);
+			laborDto.setIncChildNursingCareWork(advanceSetWork.getCalculateIncludCareTime().value);
+			laborDto.setNotDeductLateleaveWork(advanceSetWork.getNotDeductLateLeaveEarly().value);
+			laborDto.setAdditionTimeWork(includeVacationSet.getAddition().value);
+			laborDto.setEnableSetPerWorkHour1(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
+			// spec describle enable2 same enable1
+			laborDto.setEnableSetPerWorkHour2(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
 		return laborDto;
 	}
 	
@@ -165,19 +225,29 @@ public class HolidayAddtionFinder {
 		}
 		
 		HourlyPaymentAdditionSetDto dto = new HourlyPaymentAdditionSetDto();
-		dto.setCalcPremiumVacation(hourlyPaymentAdditionSet.getCalcPremiumVacation().value);
-		dto.setAddition1(hourlyPaymentAdditionSet.getAddition1().value);;
-		dto.setDeformatExcValue(hourlyPaymentAdditionSet.getDeformatExcValue().value);
-		dto.setIncChildNursingCare(hourlyPaymentAdditionSet.getIncChildNursingCare().value);
-		dto.setDeduct(hourlyPaymentAdditionSet.isDeduct() == true ? 1 : 0);
-		dto.setCalculateIncludeIntervalExemptionTime1(hourlyPaymentAdditionSet.getCalculateIncludeIntervalExemptionTime1().value);
-		dto.setCalcWorkHourVacation(hourlyPaymentAdditionSet.getCalcWorkHourVacation().value);
-		dto.setAddition2(hourlyPaymentAdditionSet.getAddition2().value);
-		dto.setCalculateIncludCareTime(hourlyPaymentAdditionSet.getCalculateIncludCareTime().value);
-		dto.setNotDeductLateLeaveEarly(hourlyPaymentAdditionSet.getNotDeductLateLeaveEarly().value);
-		dto.setCalculateIncludeIntervalExemptionTime2(hourlyPaymentAdditionSet.getCalculateIncludeIntervalExemptionTime2().value);
-		dto.setEnableSetPerWorkHour1(hourlyPaymentAdditionSet.isEnableSetPerWorkHour1() == true ? 1 : 0);
-		dto.setEnableSetPerWorkHour2(hourlyPaymentAdditionSet.isEnableSetPerWorkHour2() == true ? 1 : 0);
+		PremiumHolidayCalcMethod premiumHolidayCalcMethod = hourlyPaymentAdditionSet.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday();
+		PremiumCalcMethodDetailOfHoliday advanceSetPre = premiumHolidayCalcMethod.getAdvanceSet().get();
+		DeductLeaveEarly deductLeaveEarly = advanceSetPre.getNotDeductLateLeaveEarly();
+		IncludeHolidaysPremiumCalcDetailSet includeHolidaysPremiumCalcDetailSet = advanceSetPre.getIncludeVacationSet();
+		
+		WorkTimeHolidayCalcMethod workTimeHolidayCalcMethod = hourlyPaymentAdditionSet.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday();
+		WorkTimeCalcMethodDetailOfHoliday advanceSetWork = workTimeHolidayCalcMethod.getAdvancedSet().get();
+		EmploymentCalcDetailedSetIncludeVacationAmount includeVacationSet = advanceSetWork.getIncludeVacationSet();
+		
+		dto.setCalcPremiumVacation(premiumHolidayCalcMethod.getCalculateActualOperation().value);
+		dto.setAddition1(includeHolidaysPremiumCalcDetailSet.getAddition().value);
+		dto.setDeformatExcValue(includeHolidaysPremiumCalcDetailSet.getDeformationExceedsPredeterminedValue().get().value);
+		dto.setIncChildNursingCare(advanceSetPre.getCalculateIncludCareTime().value);
+		dto.setDeduct(deductLeaveEarly.isDeduct() == true ? 1 : 0);
+		dto.setCalculateIncludeIntervalExemptionTime1(advanceSetPre.getCalculateIncludIntervalExemptionTime().value);
+		dto.setCalcWorkHourVacation(workTimeHolidayCalcMethod.getCalculateActualOperation().value);
+		dto.setAddition2(includeVacationSet.getAddition().value);
+		dto.setCalculateIncludCareTime(advanceSetWork.getCalculateIncludCareTime().value);
+		dto.setNotDeductLateLeaveEarly(advanceSetWork.getNotDeductLateLeaveEarly().value);
+		dto.setCalculateIncludeIntervalExemptionTime2(advanceSetWork.getCalculateIncludIntervalExemptionTime().value);
+		dto.setEnableSetPerWorkHour1(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
+		// spec describle dto.setEnableSetPerWorkHour1 is same dto.setEnableSetPerWorkHour2 
+		dto.setEnableSetPerWorkHour2(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
 		return dto;
 	}
 }

@@ -410,13 +410,11 @@ public class DailyAggregationProcessService {
 						Optional<RecordWorkInfoFunAdapterDto> recordWorkInfo = recordWorkInfoFunAdapter.getInfoCheckNotRegister(employee.getId(), date);
 						if(recordWorkInfo.isPresent()) {
 							workType = recordWorkInfo.get().getWorkTypeCode();
-						}
-						
-						Optional<ValueExtractAlarm> checkWorkType = fixedCheckItemAdapter.checkWorkTypeNotRegister(employee.getWorkplaceId(),employee.getId(), date, workType);
-						if(checkWorkType.isPresent()) {
-							listValueExtractAlarm.add(checkWorkType.get());
-						}
-						
+							Optional<ValueExtractAlarm> checkWorkType = fixedCheckItemAdapter.checkWorkTypeNotRegister(employee.getWorkplaceId(),employee.getId(), date, workType);
+							if(checkWorkType.isPresent()) {
+								listValueExtractAlarm.add(checkWorkType.get());
+							}
+						}	
 					}
 					break;
 				case 1 :
@@ -425,10 +423,13 @@ public class DailyAggregationProcessService {
 						Optional<RecordWorkInfoFunAdapterDto> recordWorkInfoFunAdapterDto = recordWorkInfoFunAdapter.getInfoCheckNotRegister(employee.getId(), date);
 						if(recordWorkInfoFunAdapterDto.isPresent()) {
 							workTime = recordWorkInfoFunAdapterDto.get().getWorkTimeCode();
-						}
-						Optional<ValueExtractAlarm> checkWorkTime = fixedCheckItemAdapter.checkWorkTimeNotRegister(employee.getWorkplaceId(),employee.getId(), date, workTime);
-						if(checkWorkTime.isPresent()) {
-							listValueExtractAlarm.add(checkWorkTime.get());
+
+							if(workTime == null || workTime.equals("")) continue;
+
+							Optional<ValueExtractAlarm> checkWorkTime = fixedCheckItemAdapter.checkWorkTimeNotRegister(employee.getWorkplaceId(),employee.getId(), date, workTime);
+							if(checkWorkTime.isPresent()) {
+								listValueExtractAlarm.add(checkWorkTime.get());
+							}
 						} 
 					}
 					break;

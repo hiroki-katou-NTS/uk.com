@@ -43,10 +43,10 @@ public class WorkTypeNotRegisterDefault implements WorkTypeNotRegisterService {
 		//社員の日別実績のエラーを作成する
 		String comment = fixedConditionDataRepository.getFixedByNO(1).get().getMessage().v();
 		
-		Optional<ValueExtractAlarmWR> valueExtractAlarmWR = createErrorForEmployeeService.createErrorForEmployeeService(workplaceID,companyID, employeeID, date, ERROR_CODE, LIST_TIME_ITEM_ID);
+		Optional<ValueExtractAlarmWR> valueExtractAlarmWR = createErrorForEmployeeService.createErrorForEmployeeService(workplaceID,companyID, employeeID, date);
 		if(valueExtractAlarmWR.isPresent()) {
 		valueExtractAlarmWR.get().setAlarmItem(TextResource.localize("KAL010_6"));
-		valueExtractAlarmWR.get().setAlarmValueMessage(TextResource.localize("KAL010_7",ERROR_CODE));
+		valueExtractAlarmWR.get().setAlarmValueMessage(TextResource.localize("KAL010_7", workTypeCD));
 		valueExtractAlarmWR.get().setComment(Optional.ofNullable(comment));
 		return valueExtractAlarmWR;
 		}

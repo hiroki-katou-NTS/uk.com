@@ -14,12 +14,13 @@ import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 
 @Stateless
-public class AddOtherHolidayInfoCommandHandler extends CommandHandlerWithResult<AddOtherHolidayInfoCommand, PeregAddCommandResult>
-implements PeregAddCommandHandler<AddOtherHolidayInfoCommand> {
+public class AddOtherHolidayInfoCommandHandler
+		extends CommandHandlerWithResult<AddOtherHolidayInfoCommand, PeregAddCommandResult>
+		implements PeregAddCommandHandler<AddOtherHolidayInfoCommand> {
 
 	@Inject
 	private OtherHolidayInfoService otherHolidayInfoService;
-	
+
 	@Override
 	public String targetCategoryCd() {
 		return "CS00035";
@@ -34,10 +35,15 @@ implements PeregAddCommandHandler<AddOtherHolidayInfoCommand> {
 	protected PeregAddCommandResult handle(CommandHandlerContext<AddOtherHolidayInfoCommand> context) {
 		val command = context.getCommand();
 		String cid = AppContexts.user().companyId();
-		
-		PublicHolidayRemain pubHD = new PublicHolidayRemain(cid, command.getEmployeeId(), command.getPubHdremainNumber());
-		ExcessLeaveInfo exLeav = new ExcessLeaveInfo(cid, command.getEmployeeId(), command.getUseAtr(), command.getOccurrenceUnit(), command.getPaymentMethod());
-		otherHolidayInfoService.addOtherHolidayInfo(cid, pubHD, exLeav,command.getRemainNumber(),command.getRemainsLeft());
+
+		PublicHolidayRemain pubHD = new PublicHolidayRemain(cid, command.getEmployeeId(),
+				command.getPubHdremainNumber());
+		ExcessLeaveInfo exLeav = new ExcessLeaveInfo(cid, command.getEmployeeId(),
+				command.getUseAtr() == null ? null : command.getUseAtr().intValue(),
+				command.getOccurrenceUnit() == null ? null : command.getOccurrenceUnit().intValue(),
+				command.getPaymentMethod() == null ? null : command.getPaymentMethod().intValue());
+		otherHolidayInfoService.addOtherHolidayInfo(cid, pubHD, exLeav, command.getRemainNumber(),
+				command.getRemainsLeft());
 
 		return new PeregAddCommandResult(command.getEmployeeId());
 	}

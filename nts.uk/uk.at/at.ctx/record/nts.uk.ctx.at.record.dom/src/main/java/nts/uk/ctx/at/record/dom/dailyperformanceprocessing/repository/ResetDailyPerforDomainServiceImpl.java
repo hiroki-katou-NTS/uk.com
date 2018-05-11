@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.AffiliationInforState;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ClosureOfDailyPerOutPut;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectStampOutput;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
@@ -24,6 +25,8 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.AutoCalculationSetService;
 
 @Stateless
@@ -61,6 +64,9 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 	
 	@Inject
 	private BreakTimeOfDailyPerformanceRepository breakTimeOfDailyPerformanceRepository;
+	
+	@Inject
+	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepository;
 
 	@Override
 	public void resetDailyPerformance(String companyID, String employeeID, GeneralDate processingDate,
@@ -76,13 +82,17 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 			Optional<ExecutionLog> executionLog = this.empCalAndSumExeLogRepository
 					.getByExecutionContent(empCalAndSumExecLogID, 0);
 
+			WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate = workInfoOfDailyPerformance.get();
 			CalAttrOfDailyPerformance calAttrOfDailyPerformance = null;
 			AffiliationInforState affiliationInforState = null;
+			AffiliationInforOfDailyPerfor affiliationInfor = null;
 			SpecificDateAttrOfDailyPerfor specificDateAttrOfDailyPerfor = null;
 			ShortTimeOfDailyPerformance shortTimeOfDailyPerformance = null;
 			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance = null;
-			ReflectStampOutput stampOutput = null;
+			ReflectStampOutput stampOutput = new ReflectStampOutput();
 			List<ErrMessageInfo> errMesInfos = new ArrayList<>();
+			ClosureOfDailyPerOutPut closureOfDailyPerOutPut = new ClosureOfDailyPerOutPut();
+			WorkInfoOfDailyPerformance dailyPerformance = null;
 			if (executionLog.isPresent()) {
 				if (executionLog.get().getDailyCreationSetInfo().isPresent()) {
 					if (executionLog.get().getDailyCreationSetInfo().get().getPartResetClassification().isPresent()) {
@@ -101,8 +111,8 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 									.createAffiliationInforOfDailyPerfor(companyID, employeeID, processingDate,
 											empCalAndSumExecLogID);
 							if (affiliationInforState.getErrMesInfos().isEmpty()) {
-								affiliationInforOfDailyPerfor = affiliationInforState
-										.getAffiliationInforOfDailyPerfor();
+								affiliationInfor = affiliationInforState
+										.getAffiliationInforOfDailyPerfor().get();
 							} else {
 								for (ErrMessageInfo errMessageInfo : affiliationInforState.getErrMesInfos()) {
 									errMesInfos.add(errMessageInfo);
@@ -119,39 +129,47 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 						if (executionLog.get().getDailyCreationSetInfo().get().getPartResetClassification().get()
 								.getResetTimeChildOrNurseCare() == true) {
 							shortTimeOfDailyPerformance = reflectShortWorkingTimeDomainService.reflect(companyID,
-									processingDate, employeeID, workInfoOfDailyPerformance.get());
+									processingDate, employeeID, workInfoOfDailyPerformanceUpdate, null);
 						}
 						// 休業再設定(reSetting 休業)
 						if (executionLog.get().getDailyCreationSetInfo().get().getPartResetClassification().get()
 								.getClosedHolidays() == true) {
-							// has error
-							workInfoOfDailyPerformance = this.reflectWorkInforDomainService
-									.reflectHolidayOfDailyPerfor(companyID, employeeID, processingDate);
+							closureOfDailyPerOutPut = this.reflectWorkInforDomainService
+									.reflectHolidayOfDailyPerfor(companyID, employeeID, processingDate,empCalAndSumExecLogID, workInfoOfDailyPerformanceUpdate);
+							if (closureOfDailyPerOutPut.getErrMesInfos().isEmpty()) {
+								dailyPerformance = closureOfDailyPerOutPut.getWorkInfoOfDailyPerformance();
+							} else {
+								for (ErrMessageInfo errMessageInfo : closureOfDailyPerOutPut.getErrMesInfos()) {
+									errMesInfos.add(errMessageInfo);
+								}
+							}
 						}
 						// 就業時間帯再設定(reSetting worktime)
 						if (executionLog.get().getDailyCreationSetInfo().get().getPartResetClassification().get()
 								.getResettingWorkingHours() == true) {
 							this.breakTimeOfDailyPerformanceRepository.deleteByBreakType(employeeID, processingDate, 0);
+							Optional<TimeLeavingOfDailyPerformance> timeLeavingOpt = this.timeLeavingOfDailyPerformanceRepository.findByKey(employeeID, processingDate);
 							breakTimeOfDailyPerformance = this.reflectBreakTimeOfDailyDomainService.reflectBreakTime(
-									companyID, employeeID, processingDate, empCalAndSumExecLogID, null,
-									workInfoOfDailyPerformance.isPresent() ? workInfoOfDailyPerformance.get() : null);
+									companyID, employeeID, processingDate, empCalAndSumExecLogID, timeLeavingOpt.isPresent() ? timeLeavingOpt.get() : null,
+									workInfoOfDailyPerformanceUpdate);
 						}
 						// 打刻を取得する(get info stamp)
 						if (executionLog.get().getDailyCreationSetInfo().get().getPartResetClassification().get()
 								.getReflectsTheNumberOfFingerprintChecks() == true) {
 							stampOutput = this.reflectStampDomainService.reflectStampInfo(companyID, employeeID,
 									processingDate,
-									workInfoOfDailyPerformance.isPresent() ? workInfoOfDailyPerformance.get() : null,
+									workInfoOfDailyPerformanceUpdate,
 									null, empCalAndSumExecLogID, reCreateAttr);
 						}
+						stampOutput.setShortTimeOfDailyPerformance(shortTimeOfDailyPerformance);  
 					}
 				}
 			}
 
-			if (errMesInfos.isEmpty() && breakTimeOfDailyPerformance != null) {
+			if (errMesInfos.isEmpty()) {
 				this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyID, employeeID,
-						processingDate, stampOutput, affiliationInforOfDailyPerfor.get(),
-						workInfoOfDailyPerformance.get(), specificDateAttrOfDailyPerfor, calAttrOfDailyPerformance,
+						processingDate, stampOutput, affiliationInfor,
+						dailyPerformance, specificDateAttrOfDailyPerfor, calAttrOfDailyPerformance,
 						null, breakTimeOfDailyPerformance);
 			} else {
 				errMesInfos.forEach(action -> {

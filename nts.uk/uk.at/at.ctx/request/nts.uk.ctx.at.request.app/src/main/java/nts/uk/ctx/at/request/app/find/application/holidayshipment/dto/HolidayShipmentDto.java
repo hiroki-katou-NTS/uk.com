@@ -69,9 +69,9 @@ public class HolidayShipmentDto {
 
 	private boolean manualSendMailAtr;
 
-	private List<ApplicationReasonDto> appReasons;
+	private List<ApplicationReasonDto> appReasonComboItems;
 
-	private ChangeWorkTypeDto changeWkType;
+	private WorkTimeInfoDto workTimeInfo;
 
 	/**
 	 * 振出用就業時間帯 振休用就業時間帯 Mặc định null
@@ -102,4 +102,9 @@ public class HolidayShipmentDto {
 	 * 申請種類別設定
 	 */
 	private AppTypeSetDto appTypeSet;
+
+	/**
+	 * 就業時間帯コード
+	 */
+	private String wkTimeCD;
 }

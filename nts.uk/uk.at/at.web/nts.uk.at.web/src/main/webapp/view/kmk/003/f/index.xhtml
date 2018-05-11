@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 350,
+					height : 350
+				};
+			</script>
+
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmk003.f.style.css" />
+			<com:scriptfile path="kmk003.f.vm.js" />
+			<com:scriptfile path="kmk003.f.start.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.common.time.AttendanceTime
+			</com:ValidatorScript>
+		</ui:define>
+
+		<ui:define name="content">
+
+			<div id="contents-area">
+				<div class="main-container">
+					<div>
+						<div>#{i18n.getText('KMK003_228')}</div>
+						<div>
+							<hr />
+						</div>
+					</div>
+					<div class = "pad-left-20">
+						<table>
+							<tr>
+								<td class="td-cell-set"><div class="setting_header_tab1_2"
+										data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_42')}</div></td>
+								<td class="td-cell-set"><input tabindex="1"
+									id="oneDayInput"
+									data-bind="ntsTimeEditor: {
+											name: '#[KMK003_42]',
+											value: oneDay,
+											constraint: 'AttendanceTime',
+											inputFormat: 'time',
+											mode: 'time',
+											option: beforeUpdateWorkTimeOption,
+											required: true,
+											enable: true,
+											readonly: false,
+											immediate: false}" /></td>
+							</tr>
+							<tr>
+								<td class="td-cell-set"><div class="setting_header_tab1_2"
+										data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_43')}</div></td>
+								<td class="td-cell-set"><input tabindex="2"
+									data-bind="ntsTimeEditor: {
+											name: '#[KMK003_43]',
+											value: morning,
+											constraint: 'AttendanceTime',
+											inputFormat: 'time',
+											mode: 'time',
+											option: beforeUpdateWorkTimeOption,
+											required: false,
+											enable: true,
+											readonly: false,
+											immediate: false}" /></td>
+							</tr>
+							<tr>
+								<td class="td-cell-set"><div class="setting_header_tab1_2"
+										data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_44')}</div></td>
+								<td class="td-cell-set"><input tabindex="3"
+									data-bind="ntsTimeEditor: {
+											name: '#[KMK003_44]',
+											value: afternoon,
+											constraint: 'AttendanceTime',
+											inputFormat: 'time',
+											mode: 'time',
+											option: beforeUpdateWorkTimeOption,
+											required: false,
+											enable: true,
+											readonly: false,
+											immediate: false}" /></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+
+			<div id="functions-area-bottom">
+				<button tabindex="4" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
+				<button tabindex="5" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

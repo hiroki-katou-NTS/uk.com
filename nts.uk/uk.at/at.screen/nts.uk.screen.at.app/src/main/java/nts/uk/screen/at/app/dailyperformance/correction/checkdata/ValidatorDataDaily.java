@@ -152,7 +152,7 @@ public class ValidatorDataDaily {
 						.workingDate(c.workingDate()).employeeId(c.employeeId()).completed())
 				.collect(Collectors.toList());
 		if(itemValues.isEmpty()) return result;
-		Map<Integer, String> valueGetFromDBMap = itemValues.get(0).getItems().stream().collect(Collectors.toMap(x -> x.getItemId(), x -> ""));
+		Map<Integer, String> valueGetFromDBMap = itemValues.get(0).getItems().stream().collect(Collectors.toMap(x -> x.getItemId(), x -> x.getValue() == null ? "" : x.getValue()));
 		itemCheckDBs.stream().forEach( x ->{
 			if(valueGetFromDBMap.containsKey(INPUT_CHECK_MAP.get(x.getItemId())) && valueGetFromDBMap.get(INPUT_CHECK_MAP.get(x.getItemId())).equals("")){
 				result.add(x);
@@ -165,8 +165,7 @@ public class ValidatorDataDaily {
 		ContinuousHolidayCheckResult result = erAlWorkRecordCheckService.checkContinuousHolidays(employeeId,
 				new DatePeriod(date.getStartDate(), date.getEndDate()));
 		if(result == null) return Collections.emptyList();
-		Map<GeneralDate, Integer> resultMap = erAlWorkRecordCheckService.checkContinuousHolidays(employeeId,
-				new DatePeriod(date.getStartDate(), date.getEndDate())).getCheckResult();
+		Map<GeneralDate, Integer> resultMap = result.getCheckResult();
 		if (!resultMap.isEmpty()) {
 			return resultMap.entrySet().stream()
 					.map(x -> new DPItemValue("勤務種類", employeeId, x.getKey(), 0, String.valueOf(x.getValue()), result.message()))

@@ -33,7 +33,7 @@ public interface ApprovalStatusService {
 	ApprovalSttAppOutput getApprovalSttApp(String wkpId, List<ApprovalStatusEmployeeOutput> listAppStatusEmp);
 	
 	/**
-	 * アルゴリズム「承認状況社員メールアドレス取得」を実行する RequestList #126
+	 * 承認状況社員メールアドレス取得
 	 * 
 	 * @return 取得社員ID＜社員ID、社員名、メールアドレス＞
 	 */
@@ -59,4 +59,9 @@ public interface ApprovalStatusService {
 	 */
 	SendMailResultOutput exeApprovalStatusMailTransmission(List<MailTransmissionContentOutput> listMailContent,
 			ApprovalStatusMailTemp domain);
+	
+	/**
+	 * 承認状況送信者メール確認
+	 */
+	String confirmApprovalStatusMailSender();
 }

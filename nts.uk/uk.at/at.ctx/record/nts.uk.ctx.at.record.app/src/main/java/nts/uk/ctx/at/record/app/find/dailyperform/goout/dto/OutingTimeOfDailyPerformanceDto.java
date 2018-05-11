@@ -64,6 +64,12 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 		if(!this.isHaveData()) {
 			return null;
 		}
+		if (employeeId == null) {
+			employeeId = this.employeeId();
+		}
+		if (date == null) {
+			date = this.workingDate();
+		}
 		return new OutingTimeOfDailyPerformance(emp, date, 
 					timeZone == null ? new ArrayList<>() : ConvertHelper.mapTo(timeZone,
 						(c) -> new OutingTimeSheet(new OutingFrameNo(c.getWorkNo()), createTimeActual(c.getOuting()),

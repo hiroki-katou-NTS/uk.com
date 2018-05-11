@@ -14,7 +14,7 @@ public interface WorkScheduleReflectService {
 	 * @param executionTupe
 	 * @return
 	 */
-	public ScheReflectedStatesInfo workscheReflect(Application_New application);
+	public boolean workscheReflect(ReflectScheDto reflectParam);
 	/**
 	 * 事前チェック処理
 	 * @param employeeId

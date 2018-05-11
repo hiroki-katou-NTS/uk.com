@@ -67,9 +67,6 @@ module nts.uk.at.view.kaf007.b {
 
                         //A2_申請者 ID
                         self.employeeID = settingData.sid;
-                        //A2_1 申請者
-                        self.employeeName( settingData.employeeName );
-
                         //A3 事前事後区分
                         //事前事後区分 ※A１
                         self.prePostDisp( appCommonSettingDto.applicationSettingDto.displayPrePostFlg == 1 ? true : false );
@@ -104,7 +101,8 @@ module nts.uk.at.view.kaf007.b {
                             let backHomeAtr2 = self.appWorkChange().workChange().backHomeAtr2;
                             goWorkAtr2(nts.uk.util.isNullOrUndefined(goWorkAtr2()) ? 1: goWorkAtr2());
                             backHomeAtr2(nts.uk.util.isNullOrUndefined(backHomeAtr2()) ? 1: backHomeAtr2());
-                            
+                            //A2_1 申請者
+                            self.employeeName( detailData.employeeName );
                             //就業時間帯名(A6_4、B6_4)で、「null」の場合は空白にしてください
                             let typeCd = self.appWorkChange().workChange().workTypeCd;
                             let typeName = self.appWorkChange().workChange().workTypeName;                
@@ -189,7 +187,7 @@ module nts.uk.at.view.kaf007.b {
                 if(!appcommon.CommonProcess.checklenghtReason(appReason,"#inpReasonTextarea")){
                         return;
                 }
-                let appReasonError = !appcommon.CommonProcess.checkAppReason(true, self.typicalReasonDisplayFlg(), self.displayAppReasonContentFlg(), appReason);
+                let appReasonError = !appcommon.CommonProcess.checkAppReason(self.requiredReason(), self.typicalReasonDisplayFlg(), self.displayAppReasonContentFlg(), appReason);
                 if(appReasonError){
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function(){nts.uk.ui.block.clear();});    
                     return;    
@@ -311,7 +309,7 @@ module nts.uk.at.view.kaf007.b {
                 }
                 if ( inputReasonDisp == true && detailReasonDisp == true ) {
                     if ( !nts.uk.util.isNullOrEmpty( inputReason ) && !nts.uk.util.isNullOrEmpty( detailReason ) ) {
-                        appReason = inputReason + ":" + detailReason;
+                        appReason = inputReason + "\n" + detailReason;
                     } else if ( !nts.uk.util.isNullOrEmpty( inputReason ) && nts.uk.util.isNullOrEmpty( detailReason ) ) {
                         appReason = inputReason;
                     } else if ( nts.uk.util.isNullOrEmpty( inputReason ) && !nts.uk.util.isNullOrEmpty( detailReason ) ) {
@@ -342,7 +340,7 @@ module nts.uk.at.view.kaf007.b {
                 if ( data == -1 || data === "" ) {
                     return null;
                 } else if ( data == 0 ) {
-                    hourMinute = "00:00";
+                    hourMinute = "";
                 } else if ( data != null ) {
                     let hour = Math.floor( data / 60 );
                     let minutes = Math.floor( data % 60 );

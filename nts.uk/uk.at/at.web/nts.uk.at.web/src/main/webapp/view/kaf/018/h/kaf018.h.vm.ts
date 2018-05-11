@@ -165,60 +165,43 @@ module nts.uk.at.view.kaf018.h.viewmodel {
         sendTestMail() {
             var self = this;
             block.invisible();
-            self.confirmSenderMail().done(function(data: any) {
+            // アルゴリズム「承認状況メールテスト送信」を実行する
+            service.confirmSenderMail().done(function(data: any) {
                 //メッセージ（Msg_800）を表示する
-                confirm({ messageId: "Msg_800", messageParams: [data.mailAddr] }).ifYes(() => {
-                    self.exeTestMail();
+                confirm({ messageId: "Msg_800", messageParams: [data] }).ifYes(() => {
+                    //アルゴリズム「承認状況メールテスト送信実行」を実行する
+                    let mailType = 0;
+                    switch (self.selectedTab()) {
+                        case 'tab-1':
+                            mailType = 0;
+                            break;
+                        case 'tab-2':
+                            mailType = 1;
+                            break;
+                        case 'tab-3':
+                            mailType = 2;
+                            break;
+                        case 'tab-4':
+                            mailType = 3;
+                            break;
+                        case 'tab-5':
+                            mailType = 4;
+                            break;
+                    }
+                    block.invisible();
+                    service.sendTestMail(mailType).done(function(result: any) {
+                        console.log(result);
+                    }).fail(function(err) {
+                        error({ messageId: err.messageId });
+                    }).always(function() {
+                        block.clear();
+                    });
                 })
-            }).fail(function() {
-                error({ messageId: "Msg_791" });
+            }).fail(function(err) {
+                error({ messageId: err.messageId });
             }).always(function() {
                 block.clear();
-            })
-        }
-
-        /**
-         * アルゴリズム「承認状況メールテスト送信」を実行する
-         */
-        private confirmSenderMail(): JQueryPromise<any> {
-            let dfd = $.Deferred();
-            //アルゴリズム「承認状況送信者メール確認」を実行する
-            service.getEmpMail().done(function(data: any) {
-                //アルゴリズム「承認状況社員メールアドレス取得」を実行する
-                if (data && data.mailAddr != "" && data.mailAddr != null) {
-                    dfd.resolve(data);
-                }
-                else {
-                    dfd.reject();
-                }
             });
-            return dfd.promise();
-        }
-
-        /**
-         * アルゴリズム「承認状況メールテスト送信実行」を実行する
-         */
-        private exeTestMail() {
-            var self = this;
-            let mailType = 0;
-            switch (self.selectedTab()) {
-                case 'tab-1':
-                    mailType = 0;
-                    break;
-                case 'tab-2':
-                    mailType = 1;
-                    break;
-                case 'tab-3':
-                    mailType = 2;
-                    break;
-                case 'tab-4':
-                    mailType = 3;
-                    break;
-                case 'tab-5':
-                    mailType = 4;
-                    break;
-            }
-            service.sendTestMail(mailType);
         }
 
         /**

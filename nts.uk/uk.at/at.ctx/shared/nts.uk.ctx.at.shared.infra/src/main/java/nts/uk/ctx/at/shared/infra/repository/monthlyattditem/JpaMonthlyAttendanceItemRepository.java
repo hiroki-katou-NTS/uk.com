@@ -106,4 +106,17 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 	private MonthlyAttendanceItem toDomain(KrcmtMonAttendanceItem entity) {
 		return new MonthlyAttendanceItem(new JpaMonthlyAttendanceItemGetMemento(entity));
 	}
+
+	@Override
+	public List<MonthlyAttendanceItem> findByAttendanceItemId(String companyId, List<Integer> attendanceItemIds) {
+		StringBuilder builderString = new StringBuilder();		
+		builderString.append("SELECT b");
+		builderString.append(" FROM KrcmtMonAttendanceItem b");
+		builderString.append(" WHERE b.krcmtMonAttendanceItemPK.mAtdItemId IN :attendanceItemIds");
+		builderString.append(" AND b.krcmtMonAttendanceItemPK.cid = :companyId");
+		
+		return this.queryProxy().query(builderString.toString(), KrcmtMonAttendanceItem.class).setParameter("attendanceItemIds", attendanceItemIds)
+				.setParameter("companyId", companyId)
+				.getList(f -> toDomain(f));
+	}
 }

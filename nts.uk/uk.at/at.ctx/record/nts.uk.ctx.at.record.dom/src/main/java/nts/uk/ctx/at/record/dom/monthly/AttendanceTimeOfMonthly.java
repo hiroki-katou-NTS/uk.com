@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
@@ -120,5 +121,38 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 		
 		this.monthlyCalculation.prepareAggregation(companyId, this.employeeId, this.yearMonth,
 				this.closureId, this.closureDate, datePeriod, workingConditionItem, Optional.empty(), repositories);
+	}
+
+	/**
+	 * 等しいかどうか
+	 * @param target 比較対象
+	 * @return true:等しい、false:等しくない
+	 */
+	public boolean equals(AttendanceTimeOfMonthly target) {
+		
+		return (this.employeeId == target.employeeId &&
+				this.yearMonth.equals(target.yearMonth) &&
+				this.closureId.value == target.closureId.value &&
+				this.closureDate.getClosureDay().equals(target.closureDate.getClosureDay()) &&
+				this.closureDate.getLastDayOfMonth() == target.closureDate.getLastDayOfMonth());
+	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(AttendanceTimeOfMonthly target){
+
+		GeneralDate startDate = this.datePeriod.start();
+		GeneralDate endDate = this.datePeriod.end();
+		if (startDate.after(target.datePeriod.start())) startDate = target.datePeriod.start();
+		if (endDate.before(target.datePeriod.end())) endDate = target.datePeriod.end();
+		this.datePeriod = new DatePeriod(startDate, endDate);
+		
+		this.monthlyCalculation.sum(target.monthlyCalculation);
+		this.excessOutsideWork.sum(target.excessOutsideWork);
+		this.verticalTotal.sum(target.verticalTotal);
+		
+		this.aggregateDays = this.aggregateDays.addDays(target.aggregateDays.v());
 	}
 }
