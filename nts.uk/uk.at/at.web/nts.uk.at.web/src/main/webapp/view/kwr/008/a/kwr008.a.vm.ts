@@ -62,7 +62,7 @@ module nts.uk.at.view.kwr008.a {
             endDateString: KnockoutObservable<string> = ko.observable('');
             //A4
             outputItem: KnockoutObservableArray<share.ItemModel> = ko.observableArray([]);
-            selectedOutputItem: KnockoutObservable<number> = ko.observable(null);
+            selectedOutputItem: KnockoutObservable<string> = ko.observable(null);
 
             //A6 
             breakPage: KnockoutObservableArray<share.EnumConstantDto> = ko.observableArray([]);
@@ -151,7 +151,7 @@ module nts.uk.at.view.kwr008.a {
                 var data = new model.EmployeeDto();
                 data.startYearMonth   = self.dateValue().startDate;
                 data.endYearMonth     = self.dateValue().endDate;
-                data.setItemsOutputCd = self.selectedOutputItem().toString();
+                data.setItemsOutputCd = self.selectedOutputItem();
                 data.breakPage        = self.selectedBreakPage().toString();
                 data.employees = [];
                 for (var employeeCode of self.selectedEmployeeCode()) {
@@ -411,10 +411,10 @@ module nts.uk.at.view.kwr008.a {
 
             export class OutputConditionAnnualWorkScheduleChar {
                 /** A4_2 定型選択 */
-                setItemsOutputCd: number;
+                setItemsOutputCd: string;
                 /** A6_2 改頁選択 */
                 breakPage: number;
-                constructor(setItemsOutputCd: number, breakPage: number) {
+                constructor(setItemsOutputCd: string, breakPage: number) {
                     this.setItemsOutputCd = setItemsOutputCd;
                     this.breakPage = breakPage;
                 }

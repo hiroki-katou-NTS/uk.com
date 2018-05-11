@@ -126,19 +126,19 @@
                                    </tbody>
                                </table>
 					</div>
-					<div style="margin-top: 15px;">
+					<div data-bind="with: currentSetOutputSettingCode" style="margin-top: 15px;">
 						<!-- B5_1 -->
-						<div tabindex="9" data-bind="ntsCheckBox: { checked: currentSetOutputSettingCode().outNumExceedTime36Agr }">${i18n.getText('KWR008_35')}</div>
+						<div tabindex="9" data-bind="ntsCheckBox: { checked: outNumExceedTime36Agr }">${i18n.getText('KWR008_35')}</div>
 					</div>
-					<div style="margin-top: 15px; margin-bottom:30px">
+					<div data-bind="with: currentSetOutputSettingCode" style="margin-top: 15px; margin-bottom:30px">
 						<!-- B5_2 -->
 						<span class="label">#{i18n.getText('KWR008_36')}</span>
 						<!-- B5_3 -->
 						<div tabindex="10"  data-bind="ntsRadioBoxGroup: {
-							options: itemRadio,
+							options: $parent.itemRadio,
 							optionsValue: 'code',
 							optionsText: 'name',
-							value: currentSetOutputSettingCode().displayFormat}">
+							value: displayFormat}">
 						</div>
 					</div>
 				</div>
