@@ -6,10 +6,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
-import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunImport;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.ExtraResultMonthly;
 
 @Getter
 @Setter

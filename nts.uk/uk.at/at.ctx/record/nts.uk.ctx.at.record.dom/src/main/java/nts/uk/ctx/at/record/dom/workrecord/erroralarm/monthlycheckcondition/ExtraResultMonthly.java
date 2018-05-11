@@ -4,9 +4,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.MessageDisp;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AttendanceItemCondition;
-import nts.uk.ctx.at.shared.dom.attendance.AttendanceItem;
 
 /**
  * 月別実績の抽出条件

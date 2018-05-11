@@ -18,7 +18,7 @@ public class MonAlarmCheckCon extends ExtractionCondition {
 	/**固定抽出条件*/
 	private List<Integer> listFixExtraMon = new ArrayList<>();
 	/**任意抽出条件*/
-	List<ExtraResultMonthly> arbExtraCon = new ArrayList<>();
+	List<String> arbExtraCon = new ArrayList<>();
 	
 	public MonAlarmCheckCon(String monAlarmCheckConID) {
 		super();
