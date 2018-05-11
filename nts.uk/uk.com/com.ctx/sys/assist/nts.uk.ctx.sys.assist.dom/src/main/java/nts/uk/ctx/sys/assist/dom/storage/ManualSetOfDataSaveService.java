@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
@@ -99,10 +100,11 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			String practitioner = optManualSetting.get().getPractitioner();
 			int saveForm = 0;
 			String saveSetCode = null;
-			String saveName = null;
-			int saveForInvest = 0;
-			GeneralDateTime saveStartDatetime = null;
-			// Todo : waiting QA
+			String saveName = optManualSetting.get().getSaveSetName().v();
+			int saveForInvest = optManualSetting.get().getIdentOfSurveyPre().value;
+			GeneralDateTime saveStartDatetime = GeneralDateTime.now();
+
+			// Todo : value affer is Optional
 			int fileSize = 0;
 			String saveFileName = null;
 			GeneralDateTime saveEndDatetime = null;
@@ -138,11 +140,17 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			ApplicationTemporaryFilesContainer applicationTemporaryFilesContainer = applicationTemporaryFileFactory
 					.createContainer();
 
+			// Get
+			List<SaveTargetCsv> csvTarRepo = commonCsv(storeProcessingId);
+
 			// Add Table to CSV
-			generalCsv(storeProcessingId, generatorContext);
+			generalCsv(csvTarRepo, generatorContext);
 
 			// Add Table to CSV2
 			generalCsv2(storeProcessingId, generatorContext);
+
+			// Add Table to CSV Auto
+			generalCsvAuto(csvTarRepo, generatorContext, categoryIds);
 
 			// Add folder temp to zip
 			// applicationTemporaryFilesContainer.addFile(generatorContext);
@@ -174,9 +182,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		return csvTarRepoCommon;
 	}
 
-	private void generalCsv(String storeProcessingId, FileGeneratorContext generatorContext) {
-
-		List<SaveTargetCsv> csvTarRepo = commonCsv(storeProcessingId);
+	private void generalCsv(List<SaveTargetCsv> csvTarRepo, FileGeneratorContext generatorContext) {
 
 		List<String> headerCsv = this.getTextHeader();
 		// Get data from Manual Setting table
@@ -298,10 +304,51 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 	}
 
-	private void generalCsvAuto(String storeProcessingId) {
-		List<SaveTargetCsv> csvTarRepo = commonCsv(storeProcessingId);
+	private void generalCsvAuto(List<SaveTargetCsv> csvTarRepo, FileGeneratorContext generatorContext,
+			List<String> categoryIds) {
+		StringBuffer sql = null;
+		List<CategoryFieldMt> categoryFieldMts = repoCateField.getCategoryFieldMtByListId(categoryIds);
+		List<String> listColumCond = categoryFieldMts.stream().map(x -> {
+			return x.getClsKeyQuery2();
+		}).collect(Collectors.toList());
 
-	};
+		for (SaveTargetCsv item : csvTarRepo) {
+			sql = new StringBuffer("SELECT ");
+
+			sql.append("").append("");
+			sql.append("").append("FROM");
+			sql.append(" ").append(item.getTableEnglishName());
+
+			int key = 0;
+
+			// WHERE Get condition
+			// listColumCond = "";
+			ExtractionKeyCategory keyEn = EnumAdaptor.valueOf(key, ExtractionKeyCategory.class);
+			switch (keyEn) {
+			case COMPANY_CD:
+
+				break;
+
+			case EMPLOYEE_CD:
+
+				break;
+
+			case YEAR:
+
+				break;
+
+			case YEAR_MONTH:
+
+				break;
+
+			case YEAR_MONTH_DAY:
+
+				break;
+			}
+
+		}
+
+	}
 
 	private static final List<String> LST_NAME_ID_HEADER_TABLE = Arrays.asList("CMF003_500", "CMF003_501", "CMF003_502",
 			"CMF003_503", "CMF003_504", "CMF003_505", "CMF003_506", "CMF003_507", "CMF003_508", "CMF003_509",
@@ -320,9 +367,12 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	private static final List<String> LST_NAME_ID_HEADER_TABLE_CSV2 = Arrays.asList("ヘッダ部", "SID", "SCD",
 			"BUSINESS_NAME");
 
-	private static final List<String> LST_NAME_ID_HEADER_TABLE_CSV3 = Arrays.asList("ヘッダ部", "INS_DATE", "INS_CCD",
-			"INS_SCD", "INS_PG", "UPD_DATE", "UPD_CCD", "UPD_SCD", "UPD_PG", "EXCLUS_VER", "CID", "MANAGE_ATR",
-			"PERMIT_ATR", "PRIORITY_TYPE");
+	/*
+	 * private static final List<String> LST_NAME_ID_HEADER_TABLE_CSV3 =
+	 * Arrays.asList("ヘッダ部", "INS_DATE", "INS_CCD", "INS_SCD", "INS_PG",
+	 * "UPD_DATE", "UPD_CCD", "UPD_SCD", "UPD_PG", "EXCLUS_VER", "CID",
+	 * "MANAGE_ATR", "PERMIT_ATR", "PRIORITY_TYPE");
+	 */
 
 	private static final String PGID = "CMF003";
 
