@@ -37,18 +37,14 @@ public class LayoutPersonInfoClsDto {
 	private List<PerInfoItemDefDto> listItemDf;
 
 	/*
-	 * List item value single/set: List<LayoutPersonInfoValueDto> list:
-	 * List<List<LayoutPersonInfoValueDto>> -----------------------------
 	 * single: [{value: undefined}]
 	 * -------------------------------------------------------------------------
 	 * set: [ { value: undefined }, { value: undefined }, { value: undefined }]
 	 * -------------------------------------------------------------------------
-	 * list: [ [ { value: undefined }, { value: undefined }, { value: undefined
-	 * }] [ { value: undefined }, { value: undefined }, { value: undefined }] [
-	 * { value: undefined }, { value: undefined }, { value: undefined }] ]
+	 * list: [ { value: undefined }, { value: undefined }, { value: undefined }]
 	 * -------------------------------------------------------------------------
 	 */
-	private List<Object> items;
+	private List<LayoutPersonInfoValueDto> items;
 
 	public LayoutPersonInfoClsDto() {
 		items = new ArrayList<>();
