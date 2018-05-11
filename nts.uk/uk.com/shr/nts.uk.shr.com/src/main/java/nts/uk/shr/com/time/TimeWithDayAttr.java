@@ -94,7 +94,7 @@ public class TimeWithDayAttr extends TimeClockPrimitiveValue<TimeWithDayAttr>{
 
 	@Override
 	public int hour() {
-		return super.hour() / 24;
+		return super.hour() % 24;
 	}
 	
 	public int rawHour(){
