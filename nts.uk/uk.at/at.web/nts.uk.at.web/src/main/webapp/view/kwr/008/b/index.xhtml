@@ -79,8 +79,8 @@
                                    		<col width="0"/>
                                         <col width="38"/>
 										<col width="220"/>
-			                            <col width="60"/>
-			                            <col width="80"/>
+			                            <col width="50"/>
+			                            <col width="95"/>
 										<col width="250"/>
                                    </colgroup>
                                    <thead>
@@ -98,7 +98,7 @@
                                    <tbody data-bind = "foreach: outputItem()">
                                        <tr>
                                        			<td><span class="limited-label" data-bind="text: $data.index"></span></td>
-				                            	<td><div tabindex="9" data-bind="ntsCheckBox: {checked: $data.useClass}"></div></td>
+				                            	<td style="text-align: center;"><div tabindex="9" data-bind="ntsCheckBox: {checked: $data.useClass}"></div></td>
 				                            	<td>
 				                            			<input data-bind="ntsTextEditor: {
 				                            				name: '#[KWR008_31]',
@@ -117,7 +117,7 @@
 					                                                visibleItemsCount: 5,
 					                                                value: $data.valueOutputFormat,
 					                                                optionsText: 'name',
-					                                                columns: [{ prop: 'name', length: 1 }]}, visible: $data.sortBy() > 1">
+					                                                columns: [{ prop: 'name', length: 2 }]}, visible: $data.sortBy() > 1">
 					                                </div>
 					                             </td>
 				                                
