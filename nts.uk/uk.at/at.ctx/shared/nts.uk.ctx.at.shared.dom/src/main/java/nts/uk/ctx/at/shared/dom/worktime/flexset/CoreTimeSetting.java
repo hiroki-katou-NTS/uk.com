@@ -4,11 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class CoreTimeSetting.
@@ -116,4 +121,20 @@ public class CoreTimeSetting extends WorkTimeDomainObject {
 			this.minWorkTime = new AttendanceTime(ZERO_MINUTES);
 		}
 	}
+	
+	
+	public TimeSheet getDecisionCoreTimeSheet(AttendanceHolidayAttr attr,TimeWithDayAttr AMEndTime,TimeWithDayAttr PMStartTime) {
+		switch (attr) {
+		case MORNING:
+			return new TimeSheet(this.coreTimeSheet.getStartTime(),AMEndTime);
+		case AFTERNOON:
+			return new TimeSheet(PMStartTime,this.coreTimeSheet.getEndTime());
+		case FULL_TIME:
+		case HOLIDAY:
+			return new TimeSheet(this.coreTimeSheet.getStartTime(),this.coreTimeSheet.getEndTime());
+		default:
+			throw new RuntimeException("unknown attr:" + attr);
+		}
+	}
+	
 }

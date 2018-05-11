@@ -654,7 +654,8 @@ public abstract class CalculationTimeSheet {
 				this.recordedTimeSheet.addAll(getDuplicatedDeductionTimeSheet(deductionTimeSheet));
 			}
 			else {
-				this.recordedTimeSheet = Collections.emptyList();
+//				this.recordedTimeSheet = Collections.emptyList();
+				this.recordedTimeSheet = getDuplicatedDeductionTimeSheet(deductionTimeSheet);
 			}
 				
 		}
@@ -663,7 +664,9 @@ public abstract class CalculationTimeSheet {
 				this.deductionTimeSheet.addAll(getDuplicatedDeductionTimeSheet(deductionTimeSheet));
 			}
 			else {
-				this.deductionTimeSheet = Collections.emptyList();
+//				this.deductionTimeSheet = Collections.emptyList();
+				this.deductionTimeSheet = getDuplicatedDeductionTimeSheet(deductionTimeSheet);
+
 			}
 		}
 	}

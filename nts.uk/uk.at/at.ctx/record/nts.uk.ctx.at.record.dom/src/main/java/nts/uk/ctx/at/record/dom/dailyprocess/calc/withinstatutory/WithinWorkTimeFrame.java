@@ -60,6 +60,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -136,7 +137,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 			,DeductionTimeSheet deductionTimeSheet
 			,int workNo
 			,Optional<TimezoneUse> optional
-			,Optional<CoreTimeSetting> coreTimeSetting,List<TimeSheetOfDeductionItem> breakTimeList) {
+			,Optional<CoreTimeSetting> coreTimeSetting,List<TimeSheetOfDeductionItem> breakTimeList,WorkType workType,PredetermineTimeSetForCalc predetermineTimeForSet) {
 
 		
 		//遅刻時間帯の作成
@@ -148,7 +149,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 				deductionTimeSheet,
 				coreTimeSetting,
 				optional,
-				workNo,breakTimeList);
+				workNo,breakTimeList,workType,predetermineTimeForSet);
 	
 		return latetimesheet;
 		
@@ -173,7 +174,8 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 			,DeductionTimeSheet deductionTimeSheet
 			,int workNo
 			,Optional<TimezoneUse> optional
-			,Optional<CoreTimeSetting> coreTimeSetting,List<TimeSheetOfDeductionItem> breakTimeList) {
+			,Optional<CoreTimeSetting> coreTimeSetting,List<TimeSheetOfDeductionItem> breakTimeList
+			,WorkType workType,PredetermineTimeSetForCalc predetermineTimeForSet) {
 
 		
 		//早退時間帯の作成
@@ -185,7 +187,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 				deductionTimeSheet,
 				coreTimeSetting,
 				optional,
-				workNo,breakTimeList);
+				workNo,breakTimeList,workType,predetermineTimeForSet);
 	
 		return leaveEarlytimesheet;
 		
@@ -457,7 +459,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 																WorkTimezoneLateEarlySet workTimezoneLateEarlySet,
 																Optional<TimezoneUse> optional,
 																Optional<CoreTimeSetting> coreTimeSetting,List<TimeSheetOfDeductionItem> breakTimeList
-																) {
+																,WorkType workType,PredetermineTimeSetForCalc predetermineTimeForSet) {
 		
 		EmTimeZoneSet dupTimeSheet = new EmTimeZoneSet(duplicateTimeSheet.getWorkingHoursTimeNo(),   
 													   new TimeZoneRounding(duplicateTimeSheet.getTimeSheet().getStart(),
@@ -471,7 +473,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
                    deductionTimeSheet,
                    workNo,
                    optional,
-                   coreTimeSetting,breakTimeList);
+                   coreTimeSetting,breakTimeList,workType,predetermineTimeForSet);
   		//遅刻時間を計算する
   		AttendanceTime lateDeductTime = lateTimeSheet.getForDeducationTimeSheet().isPresent()?lateTimeSheet.getForDeducationTimeSheet().get().calcTotalTime():new AttendanceTime(0);  
   		//就業時間内時間帯から控除するか判断し控除する    
@@ -494,7 +496,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
                      deductionTimeSheet,
                      workNo,
                      optional,
-                     coreTimeSetting, breakTimeList);  
+                     coreTimeSetting, breakTimeList,workType,predetermineTimeForSet);  
   		//早退時間を計算する
   		AttendanceTime LeaveEarlyDeductTime = LeaveEarlyTimeSheet.getForDeducationTimeSheet().isPresent()?LeaveEarlyTimeSheet.getForDeducationTimeSheet().get().calcTotalTime():new AttendanceTime(0);
   		//就業時間内時間帯から控除するか判断し控除する

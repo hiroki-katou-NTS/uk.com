@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -46,7 +47,7 @@ public class LeaveEarlyDecisionClock {
 		TimeWithDayAttr decisionClock = new TimeWithDayAttr(0);
 		
 		//計算範囲の取得
-		Optional<TimeSpanForCalc> calｃRange = getCalcRange(predetermineTimeSheet.get(),timeLeavingWork,coreTimeSetting);
+		Optional<TimeSpanForCalc> calｃRange = getCalcRange(predetermineTimeSheet.get(),timeLeavingWork,coreTimeSetting,predetermineTimeSet,workType.getDailyWork().decisionNeedPredTime());
 		if (calｃRange.isPresent()) {
 			if(leaveEarlyGraceTime.isZero()) {
 				// 猶予時間が0：00の場合、所定時間の終了時刻を判断時刻にする
@@ -79,7 +80,10 @@ public class LeaveEarlyDecisionClock {
 	 * @param timeLeavingWork
 	 * @return
 	 */
-	static public Optional<TimeSpanForCalc> getCalcRange(TimezoneUse predetermineTimeSet,TimeLeavingWork timeLeavingWork,Optional<CoreTimeSetting> coreTimeSetting)
+	static public Optional<TimeSpanForCalc> getCalcRange(TimezoneUse predetermineTimeSet,
+														 TimeLeavingWork timeLeavingWork,
+														 Optional<CoreTimeSetting> coreTimeSetting,
+														 PredetermineTimeSetForCalc predetermineTimeSetForCalc,AttendanceHolidayAttr attr)
 	{
 		//退勤時刻
 		TimeWithDayAttr leave = null;
@@ -101,7 +105,12 @@ public class LeaveEarlyDecisionClock {
 				if(coreTimeSetting.get().getTimesheet().isNOT_USE()) {
 					return Optional.empty();
 				}
-				result = Optional.of(new TimeSpanForCalc(leave,coreTimeSetting.get().getCoreTimeSheet().getEndTime()));
+//				if(leave.lessThanOrEqualTo(coreTimeSetting.get().getCoreTimeSheet().getStartTime())) {
+				val coreTime = coreTimeSetting.get().getDecisionCoreTimeSheet(attr, predetermineTimeSetForCalc.getAMEndTime(),predetermineTimeSetForCalc.getPMStartTime());
+				if(leave.lessThanOrEqualTo(coreTime.getStartTime())) {
+					return Optional.of(new TimeSpanForCalc(coreTime.getStartTime(),coreTime.getEndTime()));
+				}
+				return Optional.of(new TimeSpanForCalc(leave,coreTime.getEndTime()));
 			}
 			if(leave.lessThanOrEqualTo(predetermineTimeSet.getStart())) {
 				result = Optional.of(new TimeSpanForCalc(predetermineTimeSet.getStart(),predetermineTimeSet.getEnd()));

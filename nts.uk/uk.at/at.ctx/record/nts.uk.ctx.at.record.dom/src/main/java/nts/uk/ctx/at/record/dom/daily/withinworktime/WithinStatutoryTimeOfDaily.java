@@ -51,6 +51,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
@@ -113,14 +114,14 @@ public class WithinStatutoryTimeOfDaily {
 			   												   Optional<SettingOfFlexWork> flexCalcMethod, 
 			   												   WorkTimeDailyAtr workTimeDailyAtr, 
 			   												   Optional<WorkTimeCode> workTimeCode,
-			   												   AttendanceTime preFlexTime) {
+			   												   AttendanceTime preFlexTime,Optional<CoreTimeSetting> coreTimeSetting) {
 		AttendanceTime workTime = new AttendanceTime(0);
 		AttendanceTime actualTime = new AttendanceTime(0);
 		//就業時間の計算
 		workTime = calcWithinStatutoryTime(oneDay,personalCondition,vacationClass,workType,
 														  late,leaveEarly,workingSystem,illegularAddSetting,
 														  flexAddSetting,regularAddSetting,holidayAddtionSet,holidayCalcMethodSet,
-														  calcMethod,autoCalcAtr,flexCalcMethod,workTimeDailyAtr,workTimeCode,preFlexTime);
+														  calcMethod,autoCalcAtr,flexCalcMethod,workTimeDailyAtr,workTimeCode,preFlexTime,coreTimeSetting);
 		//実働時間の計算
 		if(oneDay.getWithinWorkingTimeSheet().isPresent())
 			actualTime =  oneDay.getWithinWorkingTimeSheet().get().calcWorkTime(PremiumAtr.RegularWork,
@@ -165,7 +166,7 @@ public class WithinStatutoryTimeOfDaily {
 			   												   AutoCalOverTimeAttr autoCalcAtr, 
 			   												   Optional<SettingOfFlexWork> flexCalcMethod,
 			   												   WorkTimeDailyAtr workTimeDailyAtr, Optional<WorkTimeCode> workTimeCode,
-			   												   AttendanceTime preFlexTime) {
+			   												   AttendanceTime preFlexTime,Optional<CoreTimeSetting> coreTimeSetting) {
 		AttendanceTime workTime = new AttendanceTime(0);
 		if(oneDay.getWithinWorkingTimeSheet().isPresent()) {
 			if(workTimeDailyAtr.isFlex()) {
@@ -189,7 +190,7 @@ public class WithinStatutoryTimeOfDaily {
 						  									 autoCalcAtr,
 						  									 flexCalcMethod.get(),
 						  									 TimeLimitUpperLimitSetting.NOUPPERLIMIT,
-						  									 preFlexTime
+						  									 preFlexTime,coreTimeSetting
 						   );
 			}
 			else {

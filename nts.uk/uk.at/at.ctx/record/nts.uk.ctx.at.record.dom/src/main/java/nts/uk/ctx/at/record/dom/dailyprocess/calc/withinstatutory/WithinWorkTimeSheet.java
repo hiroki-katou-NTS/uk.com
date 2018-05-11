@@ -205,7 +205,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 																		 workNo,
 																		 workTimezoneLateEarlySet,
 																		 predetermineTimeForSet.getTimeSheets(workType.getDailyWork().decisionNeedPredTime(),workNo),
-																		 coreTimeSetting,breakTimeList));
+																		 coreTimeSetting,breakTimeList,workType,predetermineTimeForSet));
 		}
 		/*所定内割増時間の時間帯作成*/
 		//この処理にある「法定労働時間を取得」＝dailyUnitです

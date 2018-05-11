@@ -62,6 +62,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
@@ -179,7 +180,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   Optional<WorkType> scheWorkType,
 			   AutoCalFlexOvertimeSetting flexAutoCalSet,
 			   DailyUnit dailyUnit,
-			   int breakCount) {
+			   int breakCount,Optional<CoreTimeSetting> coreTimeSetting) {
 		integrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(collectCalculationResult(oneDay,oneDay, overTimeAutoCalcSet,holidayAutoCalcSetting,
 				   																		personalCondition,
 				   																		 vacationClass,
@@ -213,7 +214,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				   																	     integrationOfDaily, 
 				   																	     scheWorkType,
 				   																	     flexAutoCalSet,
-				   																	     dailyUnit
+				   																	     dailyUnit,coreTimeSetting
 				   																	     )));
 		
 		return integrationOfDaily;
@@ -260,7 +261,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   Optional<FixRestTimezoneSet> fixRestTimeSetting, IntegrationOfDaily integrationOfDaily,
 			   Optional<WorkType> scheWorkType, 
 			   AutoCalFlexOvertimeSetting flexSetting,
-			   DailyUnit dailyUnit
+			   DailyUnit dailyUnit,Optional<CoreTimeSetting> coreTimeSetting
 			   ) {
 		
 		/*日別実績の勤務予定時間の計算*/
@@ -296,7 +297,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 					scheWorkType, 
 					flexSetting, 
 					dailyUnit,
-					workScheduleTime);
+					workScheduleTime,coreTimeSetting);
 		
 
 		/*滞在時間の計算*/

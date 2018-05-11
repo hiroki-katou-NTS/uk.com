@@ -58,6 +58,13 @@ public class LeaveEarlyTimeOfDaily {
 		this.intervalTime = exemptionTime;
 	}
 	
+	public static LeaveEarlyTimeOfDaily noLeaveEarlyTimeOfDaily() {
+		return new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+										 TimeWithCalculation.sameTime(new AttendanceTime(0)),
+										 new WorkNo(1),
+										 new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
+										 new IntervalExemptionTime());
+	}
 	
 	/**
 	 * 早退時間の計算

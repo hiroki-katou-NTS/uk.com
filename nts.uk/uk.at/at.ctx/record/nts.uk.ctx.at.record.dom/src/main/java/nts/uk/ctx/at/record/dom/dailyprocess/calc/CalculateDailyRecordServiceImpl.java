@@ -134,6 +134,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.OverTimeCalcNoBreak;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
@@ -407,10 +408,13 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		HolidayCalcMethodSet holidayCalcMethodSet = HolidayCalcMethodSet.emptyHolidayCalcMethodSet();
 		Optional<FixRestTimezoneSet>fixRestTimeSet = Optional.empty();
 		Optional<FixedWorkCalcSetting>ootsukaFixedWorkSet = Optional.empty();
+		
+		val flexWorkSetOpt = flexWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v());
+		
 		//---------------------------------Repositoryが整理されるまでの一時的な作成-------------------------------------------
 		if (workTime.get().getWorkTimeDivision().getWorkTimeDailyAtr().isFlex()) {
 			/* フレックス勤務 */
-			val flexWorkSetOpt = flexWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v());
+//			val flexWorkSetOpt = flexWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v());
 			//val flexWork = holidayAddtionRepository.findByCId(employeeId);
 			if(timeSheetAtr.isSchedule()) {
 				flexWorkSetOpt.get().getOffdayWorkTime().getRestTimezone().restoreFixRestTime(true);
@@ -598,8 +602,14 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						"unknown workTimeMethodSet" + workTime.get().getWorkTimeDivision().getWorkTimeMethodSet());
 			}
 		}
+		
+		Optional<CoreTimeSetting> coreTimeSetting = Optional.empty();
+		if(flexWorkSetOpt.isPresent()) {
+			coreTimeSetting = Optional.of(flexWorkSetOpt.get().getCoreTimeSetting());
+		}
+		
 		//beforeWorkType,workType
-		return ManageReGetClass.canCalc(oneRange, integrationOfDaily, workTime,beforeWorkType , subhol, personalInfo ,dailyUnit ,fixRestTimeSet,ootsukaFixedWorkSet,holidayCalcMethodSet,breakCount);
+		return ManageReGetClass.canCalc(oneRange, integrationOfDaily, workTime,beforeWorkType , subhol, personalInfo ,dailyUnit ,fixRestTimeSet,ootsukaFixedWorkSet,holidayCalcMethodSet,breakCount,coreTimeSetting);
 	}
 
 	/**
@@ -791,7 +801,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					scheWorkType,
 					recordReGetClass.getIntegrationOfDaily().getCalAttr().getFlexExcessTime(),
 					recordReGetClass.getDailyUnit(),
-					recordReGetClass.getBreakCount()
+					recordReGetClass.getBreakCount(),
+					recordReGetClass.coreTimeSetting
 					));
 //					schePreTimeSet));
 	

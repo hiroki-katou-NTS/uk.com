@@ -14,6 +14,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -62,6 +64,9 @@ public class ManageReGetClass {
 	
 	//休憩回数
 	int breakCount;
+	
+	//フレックス勤務設定
+	Optional<CoreTimeSetting> coreTimeSetting;
 
 	/**
 	 * Constructor 
@@ -73,7 +78,7 @@ public class ManageReGetClass {
 			Optional<FixRestTimezoneSet> fixRestTimeSeting,
 			Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet,
 			HolidayCalcMethodSet holidayCalcMethodSet,Boolean calculatable,
-			int breakCount) {
+			int breakCount,Optional<CoreTimeSetting> coreTimeSetting) {
 		super();
 		this.calculationRangeOfOneDay = calculationRangeOfOneDay;
 		this.integrationOfDaily = integrationOfDaily;
@@ -87,6 +92,7 @@ public class ManageReGetClass {
 		this.holidayCalcMethodSet = holidayCalcMethodSet;
 		this.calculatable = calculatable;
 		this.breakCount = breakCount;
+		this.coreTimeSetting = coreTimeSetting;
 	}
 	
 	/**
@@ -104,7 +110,8 @@ public class ManageReGetClass {
 									Optional.empty(),
 									null,
 									false,
-									0);
+									0,
+									Optional.empty());
 				
 	}
 	
@@ -118,7 +125,7 @@ public class ManageReGetClass {
 										  Optional<FixRestTimezoneSet> fixRestTimeSeting,
 										  Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet,
 										  HolidayCalcMethodSet holidayCalcMethodSet,
-										  int breakCount) {
+										  int breakCount, Optional<CoreTimeSetting> coreTimeSetting) {
 		return new ManageReGetClass(calculationRangeOfOneDay,
 									integrationOfDaily,
 									workTimeSetting,
@@ -130,7 +137,7 @@ public class ManageReGetClass {
 									ootsukaFixedWorkSet,
 									holidayCalcMethodSet,
 									true,
-									breakCount);
+									breakCount,coreTimeSetting);
 	
 	}
 }
