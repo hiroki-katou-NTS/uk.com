@@ -445,7 +445,7 @@ module nts.uk.com.view.cps001.i.vm {
             service.getItemDef(ctgCode.ctgCodeChirld).done((data: Array<IItem>) => {
                 if (!data[6].display && !data[9].display && !data[11].display && !data[14].display) {
                     var currentDialog = nts.uk.ui.windows.getSelf();
-                    currentDialog.setWidth(618);
+                    currentDialog.setWidth(628);
                 }
                 self.setItemDefValue(data).done(() => {
                     self.setGridList();
@@ -532,7 +532,7 @@ module nts.uk.com.view.cps001.i.vm {
                 { headerText: nts.uk.resource.getText('CPS001_131'), key: 'timeOver', width: 70, hidden: self.timeExeededH() },
                 { headerText: nts.uk.resource.getText('CPS001_123'), key: 'numberDayRemain', width: 75 },
                 { headerText: nts.uk.resource.getText('CPS001_149'), key: 'timeRemain', width: 70, hidden: self.timeReamH() },
-                { headerText: nts.uk.resource.getText('CPS001_129'), key: 'expStatus', width: 80 }
+                { headerText: nts.uk.resource.getText('CPS001_129'), key: 'expStatus', width: 90 }
             ]);
             let table: string = '<table tabindex="5" id="sel_item_grid" data-bind="ntsGridList: { height: 282, options: listData, primaryKey:\'specialid\',columns:columns,multiple: false, value: currentValue , rows :10 }"></table>';
             $("#tbl").html(table);
