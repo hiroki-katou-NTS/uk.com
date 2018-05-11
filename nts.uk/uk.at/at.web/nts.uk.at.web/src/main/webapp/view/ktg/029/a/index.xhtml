@@ -116,7 +116,7 @@
 					<!-- A9 -->
 					<tr data-bind="visible: displayDeadlineMonth">
 						<td>#{i18n.getText('KTG029_15')}</td>
-						<td data-bind="with:dataRecord()"><span data-bind="text: appDeadlineMonth.substr(-5)"></span></td>
+						<td data-bind="with:dataRecord()"><span data-bind="visible: !appDeadlineUse">#{i18n.getText('KTG029_62')}</span><span data-bind="visible: appDeadlineUse, text: appDeadlineMonth.substr(-5)"></span></td>
 					</tr>
 					<!-- A10 -->
 					<tr data-bind="visible: displayPresenceDailyPer">
