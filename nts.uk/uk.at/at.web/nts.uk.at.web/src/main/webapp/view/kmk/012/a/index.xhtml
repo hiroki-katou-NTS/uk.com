@@ -87,10 +87,10 @@
 								<br />
 								<br />
 								<br />
-								<br />
-								<div class="contents">
+								<!--<br />
+								 <div class="contents">
 									<hr/>	
-								</div>
+								</div> -->
 								
 								<div class="contents" style="display:  none;">
 									<button tabindex="6" 
@@ -99,8 +99,8 @@
 									</button>
 								</div>
 								
-								<div class="contents">
-									<div class="lableData"  
+								<!-- <div class="contents"> -->
+									<div class="lableData"  style="display:  none;"
 										tabindex="7"  
 										id="lstClosureHistoryHistory" 
 										data-bind="ntsListBox: {
@@ -112,8 +112,9 @@
 										enable: enableUseClassification,
 										rows: 10  }">
 									</div>	
+									
 									<div class="contents">
-										<div tabindex="-1" class="lableDataEnd" 
+										<div tabindex="-1" class="lableData" 
 											data-bind="ntsFormLabel: {required: true, 
 											constraint: 'ClosureName'}">
 											<label>#{i18n.getText('KMK012_9')}</label>
@@ -135,7 +136,7 @@
 									<br />
 									<br />
 									<div class="contents">
-										<div tabindex="-1" class="lableDataEnd" 
+										<div tabindex="-1" class="lableData" 
 											data-bind="ntsFormLabel: {required: true}">
 											<label>#{i18n.getText('KMK012_10')}</label>
 										</div>
@@ -154,7 +155,8 @@
 												]}"></div>
 										</div>
 									</div>
-								</div>
+									
+								<!-- </div> -->
 							</td>
 						</tr>
 					</table>
