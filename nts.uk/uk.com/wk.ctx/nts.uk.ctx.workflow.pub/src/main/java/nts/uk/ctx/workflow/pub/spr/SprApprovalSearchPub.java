@@ -37,5 +37,5 @@ public interface SprApprovalSearchPub {
 	 * @param employeeID 社員ID
 	 * @return
 	 */
-	public JudgmentSprExport judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID);
+	public JudgmentSprExport judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID, Integer rootType);
 }

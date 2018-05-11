@@ -1,4 +1,4 @@
-package nts.uk.ctx.workflow.infra.entity.approverstatemanagement;
+package nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.workflow.infra.entity.approverstatemanagement;
+package nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,7 +7,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
 import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
@@ -15,18 +14,15 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverState;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -78,7 +74,7 @@ public class WwfdtApprovalFrame extends UkJpaEntity {
 		return wwfdpApprovalFramePK;
 	}
 	
-	public static WwfdtApprovalFrame fromDomain(ApprovalFrame approvalFrame){
+	public static WwfdtApprovalFrame fromDomain(String companyID, GeneralDate date, ApprovalFrame approvalFrame){
 		return WwfdtApprovalFrame.builder()
 				.wwfdpApprovalFramePK(
 						new WwfdpApprovalFramePK(
@@ -93,7 +89,7 @@ public class WwfdtApprovalFrame extends UkJpaEntity {
 				.approvalReason(approvalFrame.getApprovalReason())
 				.listWwfdtApproverState(
 						approvalFrame.getListApproverState().stream()
-						.map(x -> WwfdtApproverState.fromDomain(x)).collect(Collectors.toList()))
+						.map(x -> WwfdtApproverState.fromDomain(companyID, date, x)).collect(Collectors.toList()))
 				.build();
 	}
 	

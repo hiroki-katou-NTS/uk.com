@@ -1,11 +1,10 @@
-package nts.uk.ctx.workflow.infra.entity.approverstatemanagement;
+package nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-
 /**
  * 
  * @author Doan Duy Hung
@@ -14,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class WwfdpApprovalFramePK {
+public class WwfdpApproverStatePK {
 	
 	@Column(name="ROOT_STATE_ID")
 	public String rootStateID;
@@ -24,4 +23,8 @@ public class WwfdpApprovalFramePK {
 	
 	@Column(name="FRAME_ORDER")
 	public Integer frameOrder;
+	
+	@Column(name="APPROVER_ID")
+	public String approverID;
+	
 }

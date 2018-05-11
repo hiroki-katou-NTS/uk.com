@@ -1,4 +1,4 @@
-package nts.uk.ctx.workflow.infra.entity.approverstatemanagement;
+package nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmday;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,19 +7,15 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
 import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.RootType;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -31,17 +27,14 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="WWFDT_APPROVAL_ROOT_STATE")
+@Table(name="WWFDT_APPROVAL_ROOT_DAY")
 @Builder
-public class WwfdtApprovalRootState extends UkJpaEntity {
+public class WwfdtApprovalRootDay extends UkJpaEntity {
 	
 	@EmbeddedId
-	public WwfdpApprovalRootStatePK wwfdpApprovalRootStatePK;
+	public WwfdpApprovalRootDayPK wwfdpApprovalRootDayPK;
 	
-	@Column(name="ROOT_TYPE")
-	public Integer rootType;
-	
-	@Column(name="HIS_ID")
+	@Column(name="HIST_ID")
 	public String historyID;
 	
 	@Column(name="EMPLOYEE_ID")
@@ -50,36 +43,36 @@ public class WwfdtApprovalRootState extends UkJpaEntity {
 	@Column(name="APPROVAL_RECORD_DATE")
 	public GeneralDate recordDate;
 	
-	@OneToMany(targetEntity=WwfdtApprovalPhaseState.class, cascade = CascadeType.ALL, mappedBy = "wwfdtApprovalRootState", orphanRemoval = true, fetch = FetchType.EAGER)
-	@JoinTable(name = "WWFDT_APPROVAL_PHASE_ST")
-	public List<WwfdtApprovalPhaseState> listWwfdtApprovalPhaseState;
+	@OneToMany(targetEntity=WwfdtApprovalPhaseDay.class, cascade = CascadeType.ALL, mappedBy = "wwfdtApprovalRootDay", orphanRemoval = true, fetch = FetchType.EAGER)
+	@JoinTable(name = "WWFDT_APPROVAL_PHASE_DAY")
+	public List<WwfdtApprovalPhaseDay> listWwfdtApprovalPhaseDay;
 
 	@Override
 	protected Object getKey() {
-		return wwfdpApprovalRootStatePK; 
+		return wwfdpApprovalRootDayPK; 
 	}
 	
-	public static WwfdtApprovalRootState fromDomain(ApprovalRootState approvalRootState){
-		return WwfdtApprovalRootState.builder()
-				.wwfdpApprovalRootStatePK(new WwfdpApprovalRootStatePK(approvalRootState.getRootStateID()))
-				.rootType(approvalRootState.getRootType().value)
+	public static WwfdtApprovalRootDay fromDomain(String companyID, ApprovalRootState approvalRootState){
+		return WwfdtApprovalRootDay.builder()
+				.wwfdpApprovalRootDayPK(new WwfdpApprovalRootDayPK(approvalRootState.getRootStateID()))
 				.historyID(approvalRootState.getHistoryID())
 				.employeeID(approvalRootState.getEmployeeID())
 				.recordDate(approvalRootState.getApprovalRecordDate())
-				.listWwfdtApprovalPhaseState(
+				.listWwfdtApprovalPhaseDay(
 						approvalRootState.getListApprovalPhaseState().stream()
-						.map(x -> WwfdtApprovalPhaseState.fromDomain(x)).collect(Collectors.toList()))
+						.map(x -> WwfdtApprovalPhaseDay.fromDomain(companyID, approvalRootState.getApprovalRecordDate(), x))
+						.collect(Collectors.toList()))
 				.build();
 	}
 	
 	public ApprovalRootState toDomain(){
 		return ApprovalRootState.builder()
-				.rootStateID(this.wwfdpApprovalRootStatePK.rootStateID)
-				.rootType(EnumAdaptor.valueOf(this.rootType, RootType.class))
+				.rootStateID(this.wwfdpApprovalRootDayPK.rootStateID)
+				.rootType(RootType.CONFIRM_WORK_BY_DAY)
 				.historyID(this.historyID)
 				.approvalRecordDate(this.recordDate)
 				.employeeID(this.employeeID)
-				.listApprovalPhaseState(this.listWwfdtApprovalPhaseState.stream()
+				.listApprovalPhaseState(this.listWwfdtApprovalPhaseDay.stream()
 											.map(x -> x.toDomain()).collect(Collectors.toList()))
 				.build();
 	}
