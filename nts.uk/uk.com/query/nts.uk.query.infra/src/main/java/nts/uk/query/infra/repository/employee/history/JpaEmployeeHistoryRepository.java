@@ -21,11 +21,11 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class JpaEmployeeHistoryRepository extends JpaRepository implements EmployeeHistoryRepository {
 
 	/** The Constant FIND_BY_ENTRY_DATE. */
-	private static final String FIND_BY_ENTRY_DATE = "SELECT c FROM bsymtAffCompanyHist c"
+	private static final String FIND_BY_ENTRY_DATE = "SELECT c FROM BsymtAffCompanyHist c"
 			+ " WHERE c.startDate >= :startDate" + " AND c.startDate <= :endDate";
 
 	/** The Constant FIND_BY_RETIREMENT_DATE. */
-	private static final String FIND_BY_RETIREMENT_DATE = "SELECT c FROM bsymtAffCompanyHist c"
+	private static final String FIND_BY_RETIREMENT_DATE = "SELECT c FROM BsymtAffCompanyHist c"
 			+ " WHERE c.endDate >= :startDate" + " AND c.endDate <= :endDate";
 
 	/*
