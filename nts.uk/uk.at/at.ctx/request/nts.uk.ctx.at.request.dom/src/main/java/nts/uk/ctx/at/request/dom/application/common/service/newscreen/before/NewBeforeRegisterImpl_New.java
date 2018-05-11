@@ -26,6 +26,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.workfixed.Wor
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.daycalendar.ObtainDeadlineDateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalStatusForEmployeeImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApproveRootStatusForEmpImPort;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
@@ -293,117 +294,128 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 	}
 	
 	public void confirmationCheck(String companyID, String employeeID, GeneralDate appDate){
-//		// アルゴリズム「申請の締め切り期限をチェック」を実施する
-//		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID,
-//				employeeID, appDate);
-//		if (empHistImport == null || empHistImport.getEmploymentCode() == null) {
-//			throw new BusinessException("Msg_426");
-//		}
-//		String employmentCD = empHistImport.getEmploymentCode();
-//		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository
-//				.findByEmploymentCD(companyID, employmentCD);
-//		if (!closureEmployment.isPresent()) {
-//			throw new RuntimeException(
-//					"Not found ClosureEmployment in table KCLMT_CLOSURE_EMPLOYMENT, employment =" + employmentCD);
-//		}
-//		GeneralDate systemDate = GeneralDate.today();
-//		WkpHistImport wkpHistImport = workplaceAdapter.findWkpBySid(employeeID, systemDate);
-//		if(wkpHistImport == null){
-//			throw new RuntimeException("Not found workplaceID");
-//		}
-//		Optional<ActualLockImport> actualLockImport = this.actualLockAdapter.findByID(companyID,
-//				closureEmployment.get().getClosureId());
-//		this.workFixedAdater.getEmploymentFixedStatus(companyID, appDate, wkpHistImport.getWorkplaceId(),
-//				closureEmployment.get().getClosureId());
-//		// requestList 113(TODO)
-//		if (!actualLockImport.isPresent()) {
-//			return;
-//		}
-//		
-//		Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
-//		if (!requestSetting.isPresent()) {
-//			return;
-//		}
-//		ApplicationSetting applicationSetting = requestSetting.get().getApplicationSetting();
-//		AppLimitSetting appLimitSetting = applicationSetting.getAppLimitSetting();
-//		// ドメインモデル「申請制限設定」．日別実績が確認済なら申請できないをチェックする(check domain 「申請制限設定」．日別実績が確認済なら申請できない)
-//		if (appLimitSetting.getCanAppAchievementConfirm()) {
-//			//TODO: chưa có xử lí 「Imported(申請承認)「実績確定状態」．日別実績が確認済をチェックする(check 「Imported(申請承認)「実績確定状態」．日別実績が確認済)
-//			if(true){
-//				throw new BusinessException("Msg_448");
-//			}
-//		}
-//		confirmCheck(appLimitSetting,actualLockImport,appDate,companyID,employeeID);
+		// アルゴリズム「申請の締め切り期限をチェック」を実施する
+		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID,
+				employeeID, appDate);
+		if (empHistImport == null || empHistImport.getEmploymentCode() == null) {
+			throw new BusinessException("Msg_426");
+		}
+		String employmentCD = empHistImport.getEmploymentCode();
+		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository
+				.findByEmploymentCD(companyID, employmentCD);
+		if (!closureEmployment.isPresent()) {
+			throw new RuntimeException(
+					"Not found ClosureEmployment in table KCLMT_CLOSURE_EMPLOYMENT, employment =" + employmentCD);
+		}
+		
+		Optional<ActualLockImport> actualLockImport = this.actualLockAdapter.findByID(companyID,
+				closureEmployment.get().getClosureId());
+		
+		Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
+		if (!requestSetting.isPresent()) {
+			return;
+		}
+		ApplicationSetting applicationSetting = requestSetting.get().getApplicationSetting();
+		AppLimitSetting appLimitSetting = applicationSetting.getAppLimitSetting();
+		// ドメインモデル「申請制限設定」．日別実績が確認済なら申請できないをチェックする(check domain 「申請制限設定」．日別実績が確認済なら申請できない)
+		if (appLimitSetting.getCanAppAchievementConfirm()) {
+			List<ApproveRootStatusForEmpImPort> approveRootStatus = this.approvalRootStateAdapter.getApprovalByEmplAndDate(appDate, appDate, employeeID, companyID, 1);
+			if(CollectionUtil.isEmpty(approveRootStatus)){
+				return;
+			}
+			boolean isConfirm = false;
+			for(ApproveRootStatusForEmpImPort approve : approveRootStatus){
+				if(approve.getApprovalStatus().equals(ApprovalStatusForEmployeeImport.APPROVED)){
+					isConfirm = true;
+					break;
+				}
+			}
+			//「Imported(申請承認)「実績確定状態」．日別実績が確認済をチェックする(check 「Imported(申請承認)「実績確定状態」．日別実績が確認済)
+			if(isConfirm){
+				throw new BusinessException("Msg_448");
+			}
+		}
+		confirmCheck(appLimitSetting,actualLockImport,appDate,companyID,employeeID,closureEmployment);
 	}
 	private void confirmCheckOvertime(String companyID, String employeeID, GeneralDate appDate){
-//		// アルゴリズム「申請の締め切り期限をチェック」を実施する
-//				SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID,
-//						employeeID, appDate);
-//				if (empHistImport == null || empHistImport.getEmploymentCode() == null) {
-//					throw new BusinessException("Msg_426");
-//				}
-//				String employmentCD = empHistImport.getEmploymentCode();
-//				Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository
-//						.findByEmploymentCD(companyID, employmentCD);
-//				if (!closureEmployment.isPresent()) {
-//					throw new RuntimeException(
-//							"Not found ClosureEmployment in table KCLMT_CLOSURE_EMPLOYMENT, employment =" + employmentCD);
-//				}
-//				GeneralDate systemDate = GeneralDate.today();
-//				WkpHistImport wkpHistImport = workplaceAdapter.findWkpBySid(employeeID, systemDate);
-//				if(wkpHistImport == null){
-//					throw new RuntimeException("Not found workplaceID");
-//				}
-//				Optional<ActualLockImport> actualLockImport = this.actualLockAdapter.findByID(companyID,
-//						closureEmployment.get().getClosureId());
-//				this.workFixedAdater.getEmploymentFixedStatus(companyID, appDate, wkpHistImport.getWorkplaceId(),
-//						closureEmployment.get().getClosureId());
-//				// requestList 113(TODO)
-//				if (!actualLockImport.isPresent()) {
-//					return;
-//				}
-//				
-//				Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
-//				if (!requestSetting.isPresent()) {
-//					return;
-//				}
-//				ApplicationSetting applicationSetting = requestSetting.get().getApplicationSetting();
-//				AppLimitSetting appLimitSetting = applicationSetting.getAppLimitSetting();
-//				confirmCheck(appLimitSetting,actualLockImport,appDate,companyID,employeeID);
+		// アルゴリズム「申請の締め切り期限をチェック」を実施する
+				SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID,
+						employeeID, appDate);
+				if (empHistImport == null || empHistImport.getEmploymentCode() == null) {
+					throw new BusinessException("Msg_426");
+				}
+				String employmentCD = empHistImport.getEmploymentCode();
+				Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository
+						.findByEmploymentCD(companyID, employmentCD);
+				if (!closureEmployment.isPresent()) {
+					throw new RuntimeException(
+							"Not found ClosureEmployment in table KCLMT_CLOSURE_EMPLOYMENT, employment =" + employmentCD);
+				}
+				Optional<ActualLockImport> actualLockImport = this.actualLockAdapter.findByID(companyID,
+						closureEmployment.get().getClosureId());
+				
+				
+				Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
+				if (!requestSetting.isPresent()) {
+					return;
+				}
+				ApplicationSetting applicationSetting = requestSetting.get().getApplicationSetting();
+				AppLimitSetting appLimitSetting = applicationSetting.getAppLimitSetting();
+				confirmCheck(appLimitSetting,actualLockImport,appDate,companyID,employeeID,closureEmployment);
 	}
 	private void confirmCheck(AppLimitSetting appLimitSetting, Optional<ActualLockImport> actualLockImport,
-			GeneralDate appDate, String companyID, String employeeID) {
-//		// ドメインモデル「申請制限設定」．月別実績が確認済なら申請できないをチェックする(check domain
-//		// 「申請制限設定」．月別実績が確認済なら申請できない)
-//		if (appLimitSetting.getCanAppAchievementMonthConfirm()) {
-//			// 「Imported(申請承認)「実績確定状態」．月別実績が確認済をチェックする(check
-//			// 「Imported(申請承認)「実績確定状態」．月別実績が確認済): TODO
-//			if (true) {
-//				throw new BusinessException("Msg_449");
-//			}
-//		}
-//		// ドメインモデル「申請制限設定」．就業確定済の場合申請できないをチェックする(check domain
-//		// 「申請制限設定」．就業確定済の場合申請できない)
-//		if (appLimitSetting.getCanAppFinishWork()) {
-//			// 「Imported(申請承認)「実績確定状態」．所属職場の就業確定区分をチェックする(check
-//			// 「Imported(申請承認)「実績確定状態」．所属職場の就業確定区分): TODO
-//			if (true) {
-//				throw new BusinessException("Msg_450");
-//			}
-//		}
-//		// ドメインモデル「申請制限設定」．実績修正がロック状態なら申請できないをチェックする(check domain
-//		// 「申請制限設定」．実績修正がロック状態なら申請できない)
-//		if (appLimitSetting.getCanAppAchievementLock()) {
-//			// 4.社員の当月の期間を算出する
-//			PeriodCurrentMonth periodCurrentMonth = this.otherCommonAlgorithmService
-//					.employeePeriodCurrentMonthCalculate(companyID, employeeID, appDate);
-//			if (appDate.afterOrEquals(periodCurrentMonth.getStartDate())
-//					&& appDate.beforeOrEquals(periodCurrentMonth.getEndDate())) {
-//				if (actualLockImport.get().getDailyLockState() == 1
-//						|| actualLockImport.get().getMonthlyLockState() == 1) {
-//					throw new BusinessException("Msg_451");
-//				}
-//			}
-//		}
+			GeneralDate appDate, String companyID, String employeeID,Optional<ClosureEmployment> closureEmployment) {
+		// ドメインモデル「申請制限設定」．月別実績が確認済なら申請できないをチェックする(check domain
+		// 「申請制限設定」．月別実績が確認済なら申請できない)
+		if (appLimitSetting.getCanAppAchievementMonthConfirm()) {
+			// 「Imported(申請承認)「実績確定状態」．月別実績が確認済をチェックする(check
+			// 「Imported(申請承認)「実績確定状態」．月別実績が確認済)
+			List<ApproveRootStatusForEmpImPort> approveRootStatus = this.approvalRootStateAdapter.getApprovalByEmplAndDate(appDate, appDate, employeeID, companyID, 2);
+			if(CollectionUtil.isEmpty(approveRootStatus)){
+				return;
+			}
+			boolean isConfirm = false;
+			for(ApproveRootStatusForEmpImPort approve : approveRootStatus){
+				if(approve.getApprovalStatus().equals(ApprovalStatusForEmployeeImport.APPROVED)){
+					isConfirm = true;
+					break;
+				}
+			}
+			if (isConfirm) {
+				throw new BusinessException("Msg_449");
+			}
+		}
+		// ドメインモデル「申請制限設定」．就業確定済の場合申請できないをチェックする(check domain
+		// 「申請制限設定」．就業確定済の場合申請できない)
+		if (appLimitSetting.getCanAppFinishWork()) {
+			GeneralDate systemDate = GeneralDate.today();
+			WkpHistImport wkpHistImport = workplaceAdapter.findWkpBySid(employeeID, systemDate);
+			if(wkpHistImport == null){
+				throw new RuntimeException("Not found workplaceID");
+			}
+			// 「Imported(申請承認)「実績確定状態」．所属職場の就業確定区分をチェックする(check
+			// 「Imported(申請承認)「実績確定状態」．所属職場の就業確定区分)
+			if (this.workFixedAdater.getEmploymentFixedStatus(companyID, appDate, wkpHistImport.getWorkplaceId(),
+					closureEmployment.get().getClosureId())) {
+				throw new BusinessException("Msg_450");
+			}
+		}
+		if (!actualLockImport.isPresent()) {
+			return;
+		}
+		// ドメインモデル「申請制限設定」．実績修正がロック状態なら申請できないをチェックする(check domain
+		// 「申請制限設定」．実績修正がロック状態なら申請できない)
+		if (appLimitSetting.getCanAppAchievementLock()) {
+			// 4.社員の当月の期間を算出する
+			PeriodCurrentMonth periodCurrentMonth = this.otherCommonAlgorithmService
+					.employeePeriodCurrentMonthCalculate(companyID, employeeID, appDate);
+			if (appDate.afterOrEquals(periodCurrentMonth.getStartDate())
+					&& appDate.beforeOrEquals(periodCurrentMonth.getEndDate())) {
+				if (actualLockImport.get().getDailyLockState() == 1
+						|| actualLockImport.get().getMonthlyLockState() == 1) {
+					throw new BusinessException("Msg_451");
+				}
+			}
+		}
 	}
 }
