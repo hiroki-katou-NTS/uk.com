@@ -43,13 +43,6 @@ public class JpaDataStorageMngRepository extends JpaRepository implements DataSt
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.assist.dom.storage.DataStorageMngRepository#update(nts.uk.
-	 * ctx.sys.assist.dom.storage.DataStorageMng)
-	 */
 	@Override
 	public void update(String storeProcessingId, int categoryTotalCount, int categoryCount,
 			OperatingCondition operatingCondition) {

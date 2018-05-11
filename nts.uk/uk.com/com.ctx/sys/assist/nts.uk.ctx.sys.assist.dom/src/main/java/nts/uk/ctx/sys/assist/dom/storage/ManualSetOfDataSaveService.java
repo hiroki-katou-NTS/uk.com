@@ -3,8 +3,6 @@
  */
 package nts.uk.ctx.sys.assist.dom.storage;
 
-import java.io.File;
-import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +20,8 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFileFactory;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFilesContainer;
+import nts.arc.time.GeneralDateTime;
+import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.ctx.sys.assist.dom.category.Category;
 import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMt;
@@ -74,8 +74,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	}
 
 	public void serverManualSaveProcessing(String storeProcessingId, FileGeneratorContext generatorContext) {
-		// ドメインモデル「データ保存の保存結果」へ書き出す
-		Optional<ResultOfSaving> otpResultSaving = repoResultSaving.getResultOfSavingById(storeProcessingId);
+
 		// ドメインモデル「データ保存動作管理」を登録する ( Save data to Data storage operation
 		// management )
 		int categoryTotalCount = 0;
@@ -93,6 +92,31 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		// Optional<TargetEmployees> targetEmployees =
 		// repoTargetEmp.getTargetEmployeesListById(storeProcessingId);
 		if (optManualSetting.isPresent()) {
+			// ドメインモデル「データ保存の保存結果」へ書き出す ( Save data to Save result of data
+			// saving)
+			String cid = optManualSetting.get().getCid();
+			int systemType = optManualSetting.get().getSystemType().value;
+			String practitioner = optManualSetting.get().getPractitioner();
+			int saveForm = 0;
+			String saveSetCode = null;
+			String saveName = null;
+			int saveForInvest = 0;
+			GeneralDateTime saveStartDatetime = null;
+			// Todo : waiting QA
+			int fileSize = 0;
+			String saveFileName = null;
+			GeneralDateTime saveEndDatetime = null;
+			int deletedFiles = 0;
+			String compressedPassword = null;
+			int targetNumberPeople = 0;
+			int saveStatus = 0;
+			String fileId = null;
+
+			ResultOfSaving data = new ResultOfSaving(storeProcessingId, cid, systemType, fileSize, saveSetCode,
+					saveFileName, saveName, saveForm, saveEndDatetime, saveStartDatetime, deletedFiles,
+					compressedPassword, practitioner, targetNumberPeople, saveStatus, saveForInvest, fileId);
+			repoResultSaving.add(data);
+
 			// Get list category from
 			List<TargetCategory> targetCategories = repoTargetCat.getTargetCategoryListById(storeProcessingId);
 			List<String> categoryIds = targetCategories.stream().map(x -> {
@@ -121,20 +145,20 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			generalCsv2(storeProcessingId, generatorContext);
 
 			// Add folder temp to zip
-			applicationTemporaryFilesContainer.addFile(generatorContext);
+			// applicationTemporaryFilesContainer.addFile(generatorContext);
 
 			int passwordAvailability = optManualSetting.get().getPasswordAvailability().value;
 
 			if (passwordAvailability == 0) {
-				applicationTemporaryFilesContainer.zip();
+				applicationTemporaryFilesContainer.zipWithName(generatorContext, "test");
 			}
 			if (passwordAvailability == 1) {
 				String password = optManualSetting.get().getCompressedPassword().v();
-				applicationTemporaryFilesContainer.zip(password);
+				applicationTemporaryFilesContainer.zipWithName(generatorContext, "test",
+						CommonKeyCrypt.encrypt(password));
 			}
-			
-			
-			Path tempFolder = applicationTemporaryFilesContainer.getPath();
+
+			Path compressedFile = applicationTemporaryFilesContainer.getPath();
 			applicationTemporaryFilesContainer.removeContainer();
 
 			/** finally */
@@ -260,7 +284,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			Map<String, Object> rowCsv2 = new HashMap<>();
 			rowCsv2.put(headerCsv2.get(0), targetEmp.getSid());
 			rowCsv2.put(headerCsv2.get(1), targetEmp.getScd());
-			rowCsv2.put(headerCsv2.get(2), targetEmp.getBusinessname());
+			rowCsv2.put(headerCsv2.get(2), CommonKeyCrypt.encrypt(targetEmp.getBusinessname().v()));
 			dataSourceCsv2.add(rowCsv2);
 		}
 
@@ -320,11 +344,9 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		return lstHeader;
 	}
 
-	/*private List<String> getTextHeaderCSV3() {
-		List<String> lstHeader = new ArrayList<>();
-		for (String nameId : LST_NAME_ID_HEADER_TABLE_CSV3) {
-			lstHeader.add(TextResource.localize(nameId));
-		}
-		return lstHeader;
-	}*/
+	/*
+	 * private List<String> getTextHeaderCSV3() { List<String> lstHeader = new
+	 * ArrayList<>(); for (String nameId : LST_NAME_ID_HEADER_TABLE_CSV3) {
+	 * lstHeader.add(TextResource.localize(nameId)); } return lstHeader; }
+	 */
 }
