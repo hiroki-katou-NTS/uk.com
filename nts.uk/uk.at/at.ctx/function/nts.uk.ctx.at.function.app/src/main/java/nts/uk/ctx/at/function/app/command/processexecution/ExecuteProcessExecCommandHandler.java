@@ -8,11 +8,13 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.AsyncCommandHandler;
+import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
+import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 @Stateless
 public class ExecuteProcessExecCommandHandler extends AsyncCommandHandler<ExecuteProcessExecutionCommand> {
 	@Inject
@@ -20,7 +22,7 @@ public class ExecuteProcessExecCommandHandler extends AsyncCommandHandler<Execut
 	@Inject
 	private ProcessExecutionLogManageRepository processExecLogManaRepo;
 	@Override
-	protected void handle(CommandHandlerContext<ExecuteProcessExecutionCommand> context) {
+	public void handle(CommandHandlerContext<ExecuteProcessExecutionCommand> context) {
 		val asyncContext = context.asAsync();
 		val dataSetter = asyncContext.getDataSetter();
 		ExecuteProcessExecutionCommand command = context.getCommand();
@@ -41,7 +43,9 @@ public class ExecuteProcessExecCommandHandler extends AsyncCommandHandler<Execut
 		//「待機中」の場合
 		else{
 			command.setExecId(IdentifierUtil.randomUniqueId());
-			this.execHandler.handle(context);	
+			AsyncCommandHandlerContext<ExecuteProcessExecutionCommand> ctx = new AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>(command);
+			ctx.setTaskId(context.asAsync().getTaskId());
+			this.execHandler.handle(ctx);	
 		}
 	}
 

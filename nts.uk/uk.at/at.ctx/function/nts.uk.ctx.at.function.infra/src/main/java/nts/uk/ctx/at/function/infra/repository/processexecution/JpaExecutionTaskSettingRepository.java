@@ -79,6 +79,8 @@ public class JpaExecutionTaskSettingRepository extends JpaRepository
 		oldData.october = updateData.october;
 		oldData.november = updateData.november;
 		oldData.december = updateData.december;
+		oldData.scheduleId = updateData.scheduleId;
+		oldData.endScheduleId = updateData.endScheduleId;
 		this.commandProxy().update(oldData);
 	}
 

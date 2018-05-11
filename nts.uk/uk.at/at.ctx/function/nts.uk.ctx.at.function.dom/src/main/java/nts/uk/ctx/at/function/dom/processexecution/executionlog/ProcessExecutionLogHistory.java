@@ -15,7 +15,6 @@ import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
  */
 @Getter
 @Setter
-@AllArgsConstructor
 public class ProcessExecutionLogHistory extends AggregateRoot {
 	/* コード */
 	private ExecutionCode execItemCd;
@@ -40,4 +39,21 @@ public class ProcessExecutionLogHistory extends AggregateRoot {
 	
 	/* 実行ID */
 	private String execId;
+
+	public ProcessExecutionLogHistory(ExecutionCode execItemCd, String companyId,
+			OverallErrorDetail overallError, EndStatus overallStatus,
+			GeneralDateTime lastExecDateTime, EachProcessPeriod eachProcPeriod, List<ExecutionTaskLog> taskLogList,
+			String execId) {
+		super();
+		this.execItemCd = execItemCd;
+		this.companyId = companyId;
+		this.overallError = Optional.ofNullable(overallError);
+		this.overallStatus = Optional.ofNullable(overallStatus);
+		this.lastExecDateTime = lastExecDateTime;
+		this.eachProcPeriod = eachProcPeriod;
+		this.taskLogList = taskLogList;
+		this.execId = execId;
+	}
+	
+	
 }

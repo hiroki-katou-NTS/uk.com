@@ -91,7 +91,7 @@ implements ProcessExecutionLogManageRepository{
 		//this.getEntityManager().lock(this.getEntityManager(), LockModeType.NONE);
 			KfnmtProcessExecutionLogManagePK kfnmtProcExecPK = new KfnmtProcessExecutionLogManagePK(domain.getCompanyId(), domain.getExecItemCd().v());
 			KfnmtProcessExecutionLogManage find = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class, kfnmtProcExecPK);
-			LockModeType lockMode = this.getEntityManager().getLockMode(find);
+		//	LockModeType lockMode = this.getEntityManager().getLockMode(find);
 	//	this.getEntityManager().lock(find, LockModeType.PESSIMISTIC_WRITE);
 			this.getEntityManager().flush();
 	}
@@ -109,8 +109,8 @@ implements ProcessExecutionLogManageRepository{
 			//this.commandProxy().update(oldData);
 			this.getEntityManager().merge(oldData);
 			KfnmtProcessExecutionLogManagePK kfnmtProcExecPK = new KfnmtProcessExecutionLogManagePK(domain.getCompanyId(), domain.getExecItemCd().v());
-			KfnmtProcessExecutionLogManage find = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class, kfnmtProcExecPK);
-			LockModeType lockMode = this.getEntityManager().getLockMode(find);
+			//KfnmtProcessExecutionLogManage find = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class, kfnmtProcExecPK);
+			//LockModeType lockMode = this.getEntityManager().getLockMode(find);
 		//	this.getEntityManager().lock(find, LockModeType.PESSIMISTIC_WRITE);
 			this.getEntityManager().flush();
 	}
@@ -122,7 +122,7 @@ implements ProcessExecutionLogManageRepository{
 		//KfnmtProcessExecutionLogManage find = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class, kfnmtProcExecPK);
 		KfnmtProcessExecutionLogManage find = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class,kfnmtProcExecPK,LockModeType.NONE );
 		this.getEntityManager().remove(find);
-		LockModeType lockMode = this.getEntityManager().getLockMode(find);
+		//LockModeType lockMode = this.getEntityManager().getLockMode(find);
 		//this.getEntityManager().lock(find, LockModeType.PESSIMISTIC_WRITE);
 		this.getEntityManager().flush();
 	}

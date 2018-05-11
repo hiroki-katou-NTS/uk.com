@@ -63,6 +63,8 @@ public class ProcessExecutionLogFinder {
 					dto.setNextExecDateTime(
 							(setting.getNextExecDateTime() == null || !setting.getNextExecDateTime().isPresent()) ? 
 									"設定されていません" : setting.getNextExecDateTime().get().toString("yyyy/MM/dd HH:mm:ss"));
+				}else{
+					dto.setNextExecDateTime("設定されていません");
 				}
 				Optional<ProcessExecution> procExecOpt = this.procExecRepo.getProcessExecutionByCidAndExecCd(companyId, a.getExecItemCd().v());
 				if (procExecOpt.isPresent()) {

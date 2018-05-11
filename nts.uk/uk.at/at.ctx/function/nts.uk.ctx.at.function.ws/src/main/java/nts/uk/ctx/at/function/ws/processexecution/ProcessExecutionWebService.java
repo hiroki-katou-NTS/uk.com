@@ -13,6 +13,7 @@ import nts.arc.layer.ws.WebService;
 import nts.arc.task.AsyncTaskInfo;
 import nts.uk.ctx.at.function.app.command.processexecution.ExecuteProcessExecCommandHandler;
 import nts.uk.ctx.at.function.app.command.processexecution.ExecuteProcessExecutionCommand;
+import nts.uk.ctx.at.function.app.command.processexecution.ExecuteProcessExecutionCommandHandler;
 import nts.uk.ctx.at.function.app.command.processexecution.RemoveProcessExecutionCommand;
 import nts.uk.ctx.at.function.app.command.processexecution.RemoveProcessExecutionCommandHandler;
 import nts.uk.ctx.at.function.app.command.processexecution.SaveExecutionTaskSettingCommand;
@@ -63,7 +64,7 @@ public class ProcessExecutionWebService extends WebService {
 	
 	/* Executor */
 	@Inject
-	private ExecuteProcessExecCommandHandler execHandler;
+	private ExecuteProcessExecutionCommandHandler execHandler;
 	
 	@Inject
 	private TerminateProcessExecutionCommandHandler termHandler;

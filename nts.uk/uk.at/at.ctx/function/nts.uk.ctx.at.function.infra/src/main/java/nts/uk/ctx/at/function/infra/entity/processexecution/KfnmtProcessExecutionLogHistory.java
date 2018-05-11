@@ -94,8 +94,8 @@ public class KfnmtProcessExecutionLogHistory extends UkJpaEntity implements Seri
 				this.taskLogList.stream().map(x -> x.toDomain()).collect(Collectors.toList());
 		return new ProcessExecutionLogHistory(new ExecutionCode(this.kfnmtProcExecLogHstPK.execItemCd),
 				this.kfnmtProcExecLogHstPK.companyId,
-				this.errorDetail != null? Optional.ofNullable(EnumAdaptor.valueOf(this.errorDetail, OverallErrorDetail.class)): Optional.empty(),
-				this.overallStatus!=null? Optional.ofNullable(EnumAdaptor.valueOf(this.overallStatus, EndStatus.class)):Optional.empty(),
+				this.errorDetail != null? EnumAdaptor.valueOf(this.errorDetail, OverallErrorDetail.class): null,
+				this.overallStatus!=null? EnumAdaptor.valueOf(this.overallStatus, EndStatus.class):null,
 				this.prevExecDateTime,
 				new EachProcessPeriod(new DatePeriod(this.schCreateStart, this.schCreateEnd),
 						new DatePeriod(this.dailyCreateStart, this.dailyCreateEnd),

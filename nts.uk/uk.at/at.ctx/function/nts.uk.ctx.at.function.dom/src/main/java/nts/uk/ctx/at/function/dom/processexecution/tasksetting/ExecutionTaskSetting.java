@@ -25,7 +25,6 @@ import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.St
  * 実行タスク設定
  */
 @Getter
-@Setter
 public class ExecutionTaskSetting extends AggregateRoot {
 	final static String SPACE = " ";
 	final static String ZEZO_TIME = "00:00";
@@ -66,6 +65,12 @@ public class ExecutionTaskSetting extends AggregateRoot {
 	
 	/* 開始時刻 */
 	private StartTime startTime;
+	
+	/* スケジュールID */
+	private String scheduleId;
+	
+	private Optional<String> endScheduleId;
+	
 
 	public void validate() {
 		if (startTime != null && endTime.getEndTime() != null) {
@@ -84,7 +89,7 @@ public class ExecutionTaskSetting extends AggregateRoot {
 		
 		if (endDate.getEndDate() != null && startDate != null) {
 			// 画面項目「C2_23：終了日入力欄」に開始日より前の日付を入力し、登録することはできない。
-			if (endDate.getEndDate().before(startDate)) {
+			if (endDate.getEndDate().before(startDate) || endDate.getEndDate().compareTo(startDate)==0 ) {
 				throw new BusinessException("Msg_662");
 			}
 		}
@@ -254,15 +259,35 @@ public class ExecutionTaskSetting extends AggregateRoot {
 	}
 
 	public ExecutionTaskSetting(OneDayRepeatInterval oneDayRepInr, ExecutionCode execItemCd, String companyId,
-			boolean enabledSetting, GeneralDateTime nextExecDateTime, TaskEndDate endDate, TaskEndTime endTime,
-			boolean repeat, RepeatContentItem content, RepeatDetailSetting detailSetting, GeneralDate startDate,
-			StartTime startTime) {
+			boolean enabledSetting, GeneralDateTime nextExecDateTime, TaskEndDate endDate,
+			TaskEndTime endTime, boolean repeat, RepeatContentItem content, RepeatDetailSetting detailSetting,
+			GeneralDate startDate, StartTime startTime, String scheduleId, String endScheduleId) {
 		super();
 		this.oneDayRepInr = oneDayRepInr;
 		this.execItemCd = execItemCd;
 		this.companyId = companyId;
 		this.enabledSetting = enabledSetting;
-		this.nextExecDateTime =Optional.ofNullable(nextExecDateTime);
+		this.nextExecDateTime = Optional.ofNullable(nextExecDateTime);
+		this.endDate = endDate;
+		this.endTime = endTime;
+		this.repeat = repeat;
+		this.content = content;
+		this.detailSetting = detailSetting;
+		this.startDate = startDate;
+		this.startTime = startTime;
+		this.scheduleId = scheduleId;
+		this.endScheduleId = Optional.ofNullable(endScheduleId);
+	}
+	public ExecutionTaskSetting(OneDayRepeatInterval oneDayRepInr, ExecutionCode execItemCd, String companyId,
+			boolean enabledSetting, GeneralDateTime nextExecDateTime, TaskEndDate endDate,
+			TaskEndTime endTime, boolean repeat, RepeatContentItem content, RepeatDetailSetting detailSetting,
+			GeneralDate startDate, StartTime startTime) {
+		super();
+		this.oneDayRepInr = oneDayRepInr;
+		this.execItemCd = execItemCd;
+		this.companyId = companyId;
+		this.enabledSetting = enabledSetting;
+		this.nextExecDateTime = Optional.ofNullable(nextExecDateTime);
 		this.endDate = endDate;
 		this.endTime = endTime;
 		this.repeat = repeat;
@@ -271,6 +296,64 @@ public class ExecutionTaskSetting extends AggregateRoot {
 		this.startDate = startDate;
 		this.startTime = startTime;
 	}
-	
+
+	public void setOneDayRepInr(OneDayRepeatInterval oneDayRepInr) {
+		this.oneDayRepInr = oneDayRepInr;
+	}
+
+	public void setExecItemCd(ExecutionCode execItemCd) {
+		this.execItemCd = execItemCd;
+	}
+
+	public void setCompanyId(String companyId) {
+		this.companyId = companyId;
+	}
+
+	public void setEnabledSetting(boolean enabledSetting) {
+		this.enabledSetting = enabledSetting;
+	}
+
+	public void setNextExecDateTime(GeneralDateTime nextExecDateTime) {
+		this.nextExecDateTime = Optional.ofNullable(nextExecDateTime) ;
+	}
+	public void setNextExecDateTime(Optional<GeneralDateTime> nextExecDateTime) {
+		this.nextExecDateTime = nextExecDateTime ;
+	}
+
+	public void setEndDate(TaskEndDate endDate) {
+		this.endDate = endDate;
+	}
+
+	public void setEndTime(TaskEndTime endTime) {
+		this.endTime = endTime;
+	}
+
+	public void setRepeat(boolean repeat) {
+		this.repeat = repeat;
+	}
+
+	public void setContent(RepeatContentItem content) {
+		this.content = content;
+	}
+
+	public void setDetailSetting(RepeatDetailSetting detailSetting) {
+		this.detailSetting = detailSetting;
+	}
+
+	public void setStartDate(GeneralDate startDate) {
+		this.startDate = startDate;
+	}
+
+	public void setStartTime(StartTime startTime) {
+		this.startTime = startTime;
+	}
+
+	public void setScheduleId(String scheduleId) {
+		this.scheduleId = scheduleId;
+	}
+
+	public void setEndScheduleId(String endScheduleId) {
+		this.endScheduleId = Optional.ofNullable(endScheduleId) ;
+	}
 	
 }

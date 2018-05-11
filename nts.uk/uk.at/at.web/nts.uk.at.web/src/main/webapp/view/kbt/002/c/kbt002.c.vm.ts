@@ -122,6 +122,10 @@ module nts.uk.at.view.kbt002.c {
                 if (self.validate()) {
                     return;
                 }
+                if(self.curExecSetting().repeatContent()==2 &&( self.monthDays() == '' || nts.uk.util.isNullOrUndefined(self.monthDays()))){
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_846" });
+                    return;
+                }
                 nts.uk.ui.block.grayout();
                 
                 if (!self.isNewMode()) {
@@ -175,8 +179,8 @@ module nts.uk.at.view.kbt002.c {
                           { repeatMonthDateList: self.curExecSetting().repeatMonthDateList()
                           });
                 modal("/view/kbt/002/d/index.xhtml").onClosed(function(){
-                    var sharedData = getShared('outputDialogD');
-                    self.curExecSetting().repeatMonthDateList(sharedData.selectedDays);
+                    var sharedDataD = getShared('outputDialogD');
+                    self.curExecSetting().repeatMonthDateList(sharedDataD.selectedDays);
                     
                     self.monthDays(self.buildMonthDaysStr());
                     block.clear();

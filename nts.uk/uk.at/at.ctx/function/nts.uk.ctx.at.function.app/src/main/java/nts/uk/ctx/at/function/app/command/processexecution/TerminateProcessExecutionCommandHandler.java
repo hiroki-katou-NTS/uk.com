@@ -38,8 +38,6 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 		TerminateProcessExecutionCommand command = context.getCommand();
 		String execItemCd = command.getExecItemCd();
 		String companyId = command.getCompanyId();
-		String execId = command.getExecId();
-		
 		//ドメインモデル「更新処理自動実行管理」を取得する
 		Optional<ProcessExecutionLogManage> processExecLogManOpt = this.processExecLogManRepo.getLogByCIdAndExecCd(companyId, execItemCd);
 		if(!processExecLogManOpt.isPresent()){
@@ -57,11 +55,12 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 		// ドメインモデル「更新処理自動実行ログ」を取得する
 		ProcessExecutionLog procExecLog = null;
 		Optional<ProcessExecutionLog> procExecLogOpt =
-							this.procExecLogRepo.getLogByCIdAndExecCd(companyId, execItemCd, execId);
+							this.procExecLogRepo.getLog(companyId, execItemCd);
 		if (!procExecLogOpt.isPresent()) {
 			return;
 		}
 		procExecLog = procExecLogOpt.get();
+		String execId = procExecLog.getExecId();
 		/*
 		 * ドメインモデル「更新処理自動実行管理」を更新する
 		 * 

@@ -176,6 +176,13 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 	@Column(name = "REP_INR_DEC")
 	public Integer december;
 	
+	/* スケジュールID */
+	@Column(name = "SCHEDULE_ID")
+	public String scheduleId;
+	
+	@Column(name = "END_SCHEDULE_ID")
+	public String endScheduleId;
+	
 	@OneToMany(mappedBy="execTaskSetting", cascade = CascadeType.ALL)
 	@JoinTable(name = "KFNMT_REP_MONTH_DATE")
 	public List<KfnmtRepeatMonthDay> repeatMonthDateList;
@@ -250,7 +257,7 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 										EnumAdaptor.valueOf(this.repeatContent, RepeatContentItem.class),
 										detailSetting,
 										startDate,
-										new StartTime(this.startTime));
+										new StartTime(this.startTime),this.scheduleId,this.endScheduleId);
 	}
 	
 	/**
@@ -292,6 +299,7 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 							domain.getDetailSetting().getMonthly().getMonth().isOctober() ? 1 : 0,
 							domain.getDetailSetting().getMonthly().getMonth().isNovember() ? 1 : 0,
 							domain.getDetailSetting().getMonthly().getMonth().isDecember() ? 1 : 0,
+							domain.getScheduleId(), (domain.getEndScheduleId()!=null && domain.getEndScheduleId().isPresent())?domain.getEndScheduleId().get():null,		
 							new ArrayList<>());
 	}
 }

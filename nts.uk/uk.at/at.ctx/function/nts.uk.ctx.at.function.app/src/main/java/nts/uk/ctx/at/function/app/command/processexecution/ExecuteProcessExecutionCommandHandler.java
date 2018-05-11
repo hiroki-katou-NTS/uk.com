@@ -119,6 +119,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.task.schedule.UkJobScheduler;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -206,6 +207,8 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	private SyCompanyRecordAdapter syCompanyRecordAdapter;
 	@Inject
 	private AsyncTaskInfoRepository asyncTaskInfoRepository;
+	@Inject
+	private UkJobScheduler scheduler;
 	/**
 	 * 更新処理を開始する
 	 * 
@@ -226,7 +229,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		ExecuteProcessExecutionCommand command = context.getCommand();
 		String execItemCd = command.getExecItemCd();
 		String companyId = command.getCompanyId();
-		String execId = command.getExecId();
+		//String execId = command.getExecId();
+		// vi ExecuteProcessExecCommandHandler dang loi nen dung tam random execId
+		String execId = IdentifierUtil.randomUniqueId();
 		int execType = command.getExecType();
 		// ドメインモデル「更新処理自動実行」を取得する
 		ProcessExecution procExec = null;
@@ -289,7 +294,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		EmpCalAndSumExeLog empCalAndSumExeLog = null;
 		if (dailyPerfCls || reflectResultCls || monthlyAggCls) {
 			// ドメインモデル「就業計算と集計実行ログ」を追加する
-			empCalAndSumExeLog = new EmpCalAndSumExeLog(execId, command.getCompanyId(), new YearMonth(1),
+			empCalAndSumExeLog = new EmpCalAndSumExeLog(execId, command.getCompanyId(), new YearMonth(GeneralDate.today().year()*100+1),
 					ExecutedMenu.SELECT_AND_RUN, GeneralDate.today(), null, AppContexts.user().employeeId(), 1,
 					IdentifierUtil.randomUniqueId(), CalAndAggClassification.AUTOMATIC_EXECUTION);
 			this.empCalSumRepo.add(empCalAndSumExeLog);
@@ -366,8 +371,8 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		 */
 
 		this.procExecLogHistRepo.insert(new ProcessExecutionLogHistory(new ExecutionCode(execItemCd), companyId,
-				Optional.ofNullable(processExecutionLogManage.getOverallError()),
-				processExecutionLogManage.getOverallStatus(), processExecutionLogManage.getLastExecDateTime(),
+				processExecutionLogManage.getOverallError(),
+				(processExecutionLogManage.getOverallStatus()!=null && processExecutionLogManage.getOverallStatus().isPresent())? processExecutionLogManage.getOverallStatus().get():null , processExecutionLogManage.getLastExecDateTime(),
 				(procExecLog.getEachProcPeriod() != null && procExecLog.getEachProcPeriod().isPresent())
 						? procExecLog.getEachProcPeriod().get() : null,
 				procExecLog.getTaskLogList(), execId));
@@ -384,7 +389,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		 * 次回実行日時 ＝ 次回実行日時を作成する。 ※補足資料⑤参照
 		 */
 		if (execSetting != null) {
-			execSetting.setNextExecDateTime();
+			//execSetting.setNextExecDateTime();
+			String scheduleId = execSetting.getScheduleId();
+			Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(SortingProcessScheduleJob.class, scheduleId);
+			execSetting.setNextExecDateTime(nextFireTime);
 			this.execSettingRepo.update(execSetting);
 		}
 
@@ -1083,11 +1091,11 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				String typeExecution = "日別作成";
 				// 日別実績の作成
 				this.dailyPerformanceCreation(context, procExec, empCalAndSumExeLog, lstEmploymentCode,
-						calculateDailyPeriod.getDailyCreationPeriod(), workPlaceIds, typeExecution);
+						calculateDailyPeriod.getDailyCreationPeriod(), workPlaceIds, typeExecution,dailyCreateLog);
 				typeExecution = "日別計算";
 				// 日別実績の計算
 				this.dailyPerformanceCreation(context, procExec, empCalAndSumExeLog, lstEmploymentCode,
-						calculateDailyPeriod.getDailyCalcPeriod(), workPlaceIds, typeExecution);
+						calculateDailyPeriod.getDailyCalcPeriod(), workPlaceIds, typeExecution,dailyCreateLog);
 
 			} else {
 				DatePeriod maxDatePeriod = this.getMaxDatePeriod(calculateDailyPeriod.getDailyCreationPeriod(),
@@ -1775,6 +1783,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					regulationInfoEmployeeAdapterImport.setRetireEnd(period.end());
 					// 並び順NO → 1
 					regulationInfoEmployeeAdapterImport.setSortOrderNo(1);
+					regulationInfoEmployeeAdapterImport.setSystemType(2);
+					//勤務種別で絞り込む　→　FALSE
+					regulationInfoEmployeeAdapterImport.setFilterByWorktype(false);
+					
 					// 氏名の種類 → ビジネスネーム日本語
 					regulationInfoEmployeeAdapterImport.setNameType("ビジネスネーム日本語");
 
@@ -1824,6 +1836,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					regulationInfoEmployeeAdapterImport.setRetireEnd(period.end());
 					// 並び順NO → 1
 					regulationInfoEmployeeAdapterImport.setSortOrderNo(1);
+					regulationInfoEmployeeAdapterImport.setSystemType(2);
+					//勤務種別で絞り込む　→　FALSE
+					regulationInfoEmployeeAdapterImport.setFilterByWorktype(false);
 					// 氏名の種類 → ビジネスネーム日本語
 					regulationInfoEmployeeAdapterImport.setNameType("ビジネスネーム日本語");
 
@@ -2006,6 +2021,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					regulationInfoEmployeeAdapterImport.setRetireEnd(period.end());
 					// 並び順NO → 1
 					regulationInfoEmployeeAdapterImport.setSortOrderNo(1);
+					regulationInfoEmployeeAdapterImport.setSystemType(2);
+					//勤務種別で絞り込む　→　FALSE
+					regulationInfoEmployeeAdapterImport.setFilterByWorktype(false);
 					// 氏名の種類 → ビジネスネーム日本語
 					regulationInfoEmployeeAdapterImport.setNameType("ビジネスネーム日本語");
 
@@ -2055,6 +2073,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					regulationInfoEmployeeAdapterImport.setRetireEnd(period.end());
 					// 並び順NO → 1
 					regulationInfoEmployeeAdapterImport.setSortOrderNo(1);
+					regulationInfoEmployeeAdapterImport.setSystemType(2);
+					//勤務種別で絞り込む　→　FALSE
+					regulationInfoEmployeeAdapterImport.setFilterByWorktype(false);
 					// 氏名の種類 → ビジネスネーム日本語
 					regulationInfoEmployeeAdapterImport.setNameType("ビジネスネーム日本語");
 
@@ -2207,7 +2228,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	// 日別実績の作成 ~ 日別実績の計算
 	private boolean dailyPerformanceCreation(CommandHandlerContext<ExecuteProcessExecutionCommand> context,
 			ProcessExecution processExecution, EmpCalAndSumExeLog empCalAndSumExeLog, List<String> lstEmploymentCode,
-			DatePeriod period, List<String> workPlaceIds, String typeExecution) throws CreateDailyException, DailyCalculateException {
+			DatePeriod period, List<String> workPlaceIds, String typeExecution,ExecutionLog dailyCreateLog) throws CreateDailyException, DailyCalculateException {
 
 		// <<Public>> 就業条件で社員を検索して並び替える
 		RegulationInfoEmployeeAdapterImport regulationInfoEmployeeAdapterImport = new RegulationInfoEmployeeAdapterImport();
@@ -2263,6 +2284,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			regulationInfoEmployeeAdapterImport.setRetireEnd(period.end());
 			// 並び順NO → 1
 			regulationInfoEmployeeAdapterImport.setSortOrderNo(1);
+			regulationInfoEmployeeAdapterImport.setSystemType(2);
+			//勤務種別で絞り込む　→　FALSE
+			regulationInfoEmployeeAdapterImport.setFilterByWorktype(false);
 			// 氏名の種類 → ビジネスネーム日本語
 			regulationInfoEmployeeAdapterImport.setNameType("ビジネスネーム日本語");
 
@@ -2312,6 +2336,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			regulationInfoEmployeeAdapterImport.setRetireEnd(period.end());
 			// 並び順NO → 1
 			regulationInfoEmployeeAdapterImport.setSortOrderNo(1);
+			regulationInfoEmployeeAdapterImport.setSystemType(2);
+			//勤務種別で絞り込む　→　FALSE
+			regulationInfoEmployeeAdapterImport.setFilterByWorktype(false);
 			// 氏名の種類 → ビジネスネーム日本語
 			regulationInfoEmployeeAdapterImport.setNameType("ビジネスネーム日本語");
 
@@ -2328,7 +2355,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					regulationInfoEmployeeAdapterDto.getEmployeeId(), period);
 			boolean executionDaily = this.executionDaily(context, processExecution,
 					regulationInfoEmployeeAdapterDto.getEmployeeId(), empCalAndSumExeLog, employeeDatePeriod,
-					typeExecution);
+					typeExecution, dailyCreateLog);
 			if (executionDaily) {
 				isInterrupt = true;
 				break;
@@ -2369,7 +2396,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	// true is interrupt
 	private boolean executionDaily(CommandHandlerContext<ExecuteProcessExecutionCommand> context,
 			ProcessExecution processExecution, String employeeId, EmpCalAndSumExeLog empCalAndSumExeLog,
-			DatePeriod period, String typeExecution) throws CreateDailyException, DailyCalculateException {
+			DatePeriod period, String typeExecution,ExecutionLog dailyCreateLog) throws CreateDailyException, DailyCalculateException {
 		AsyncCommandHandlerContext<ExecuteProcessExecutionCommand> asyContext = (AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>) context;
 		ProcessState processState;
 		// 受け取った期間が「作成した期間（日別作成）」の場合
@@ -2377,7 +2404,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			try {
 				// ⑤社員の日別実績を作成する
 				processState = this.createDailyService.createDailyResultEmployee(asyContext, employeeId, period,
-						empCalAndSumExeLog.getCompanyID(), empCalAndSumExeLog.getEmpCalAndSumExecLogID(), Optional.empty(),
+						empCalAndSumExeLog.getCompanyID(), empCalAndSumExeLog.getEmpCalAndSumExecLogID(),Optional.ofNullable(dailyCreateLog),
 						processExecution.getExecSetting().getDailyPerf().getTargetGroupClassification().value == 1 ? true
 								: false);
 			} catch (Exception e) {
@@ -2472,6 +2499,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			regulationInfoEmployeeAdapterImport.setRetireEnd(calculatePeriod.end());
 			// 並び順NO → 1
 			regulationInfoEmployeeAdapterImport.setSortOrderNo(1);
+			regulationInfoEmployeeAdapterImport.setSystemType(2);
+			//勤務種別で絞り込む　→　FALSE
+			regulationInfoEmployeeAdapterImport.setFilterByWorktype(false);
 			// 氏名の種類 → ビジネスネーム日本語
 			regulationInfoEmployeeAdapterImport.setNameType("ビジネスネーム日本語");
 
@@ -2521,6 +2551,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			regulationInfoEmployeeAdapterImport.setRetireEnd(calculatePeriod.end());
 			// 並び順NO → 1
 			regulationInfoEmployeeAdapterImport.setSortOrderNo(1);
+			regulationInfoEmployeeAdapterImport.setSystemType(2);
+			//勤務種別で絞り込む　→　FALSE
+			regulationInfoEmployeeAdapterImport.setFilterByWorktype(false);
 			// 氏名の種類 → ビジネスネーム日本語
 			regulationInfoEmployeeAdapterImport.setNameType("ビジネスネーム日本語");
 
