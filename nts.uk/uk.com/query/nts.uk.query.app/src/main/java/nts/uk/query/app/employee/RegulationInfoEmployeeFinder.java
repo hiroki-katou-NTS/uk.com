@@ -15,11 +15,14 @@ import nts.uk.query.model.employee.EmployeeAuthAdapter;
 import nts.uk.query.model.employee.EmployeeReferenceRange;
 import nts.uk.query.model.employee.EmployeeRoleImported;
 import nts.uk.query.model.employee.EmployeeRoleRepository;
+import nts.uk.query.model.employee.RegulationInfoEmployee;
 import nts.uk.query.model.employee.RegulationInfoEmployeeRepository;
 import nts.uk.query.model.employee.RoleWorkPlaceAdapter;
 import nts.uk.query.model.employee.history.EmployeeHistoryRepository;
 import nts.uk.query.model.employee.mgndata.EmpDataMngInfoAdapter;
+import nts.uk.query.model.employement.history.EmploymentHistoryAdapter;
 import nts.uk.query.model.person.QueryPersonAdapter;
+import nts.uk.query.model.workrule.closure.QueryClosureEmpAdapter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -57,6 +60,13 @@ public class RegulationInfoEmployeeFinder {
 	@Inject
 	private EmployeeHistoryRepository empHisRepo;
 
+	/** The closure emp adapter. */
+	@Inject
+	private QueryClosureEmpAdapter closureEmpAdapter;
+
+	@Inject
+	private EmploymentHistoryAdapter empHisAdapter;
+
 	/**
 	 * Find.
 	 *
@@ -69,14 +79,73 @@ public class RegulationInfoEmployeeFinder {
 		this.changeWorkplaceListByRole(queryDto);
 		
 		return this.repo.find(AppContexts.user().companyId(), queryDto.toQueryModel()).stream()
-				.map(model -> RegulationInfoEmployeeDto.builder()
-						.employeeCode(model.getEmployeeCode())
-						.employeeId(model.getEmployeeID())
-						.employeeName(model.getName().orElse(""))
-						.workplaceId(model.getWorkplaceId().orElse(""))
-						.workplaceCode(model.getWorkplaceCode().orElse(""))
-						.workplaceName(model.getWorkplaceName().orElse(""))
-						.build())
+				.map(model -> this.toDto(model))
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * Find by employee code.
+	 *
+	 * @param query the query
+	 * @return the list
+	 */
+	public List<RegulationInfoEmployeeDto> findByEmployeeCode(SearchEmployeeQuery query) {
+		List<String> sIds = searchByEmployeeCode(query.getCode(), query.getSystemType());
+
+		// filter by closure id
+		this.filterByClosure(query, sIds);
+		
+		return getEmployeeInfo(sIds, query.getReferenceDate());
+	}
+
+	/**
+	 * Find by employee name.
+	 *
+	 * @param query the query
+	 * @return the list
+	 */
+	public List<RegulationInfoEmployeeDto> findByEmployeeName(SearchEmployeeQuery query) {
+		List<String> sIds = searchByEmployeeName(query.getName(), query.getSystemType());
+		
+		// filter by closure id
+		this.filterByClosure(query, sIds);
+		
+		return getEmployeeInfo(sIds, query.getReferenceDate());
+	}
+
+	/**
+	 * Find by employee entry date.
+	 *
+	 * @param query the query
+	 * @return the list
+	 */
+	public List<RegulationInfoEmployeeDto> findByEmployeeEntryDate(SearchEmployeeQuery query) {
+		List<String> sIds = searchByEntryDate(query.getPeriod(), query.getSystemType());
+		
+		// filter by closure id
+		this.filterByClosure(query, sIds);
+		
+		return getEmployeeInfo(sIds, query.getReferenceDate());
+	}
+
+	/**
+	 * Find by employee retirement date.
+	 *
+	 * @param query the query
+	 * @return the list
+	 */
+	public List<RegulationInfoEmployeeDto> findByEmployeeRetirementDate(SearchEmployeeQuery query) {
+		List<String> sIds = searchByRetirementDate(query.getPeriod(), query.getSystemType());
+		
+		// filter by closure id
+		this.filterByClosure(query, sIds);
+		
+		return getEmployeeInfo(sIds, query.getReferenceDate());
+	}
+
+	// A：社員情報取得処理
+	public List<RegulationInfoEmployeeDto> getEmployeeInfo(List<String> sIds, GeneralDate referenceDate) {
+		return this.repo.findInfoBySIds(sIds, referenceDate).stream().map(item -> this.toDto(item))
 				.collect(Collectors.toList());
 	}
 	
@@ -217,5 +286,40 @@ public class RegulationInfoEmployeeFinder {
 		List<String> sIds = this.empHisRepo.findEmployeeByRetirementDate(period);
 
 		return this.empAuthAdapter.narrowEmpListByReferenceRange(sIds, systemType);
+	}
+
+	/**
+	 * Filter by closure.
+	 *
+	 * @param query the query
+	 * @param sIds the s ids
+	 * @return the list
+	 */
+	private List<String> filterByClosure(SearchEmployeeQuery query, List<String> sIds) {
+		if (query.isUseClosure() && !query.isAllClosure()) {
+			List<String> empCds = this.closureEmpAdapter.findListEmpCdByClosureId(query.getClosureId());
+			List<String> filteredSids = this.empHisAdapter.findSIdsByEmpCdsAndPeriod(empCds, query.getPeriod());
+
+			// filter list employee ids
+			return sIds.stream().filter(filteredSids::contains).collect(Collectors.toList());
+		}
+		return sIds;
+	}
+
+	/**
+	 * To dto.
+	 *
+	 * @param model the model
+	 * @return the regulation info employee dto
+	 */
+	private RegulationInfoEmployeeDto toDto(RegulationInfoEmployee model) {
+		return RegulationInfoEmployeeDto.builder()
+				.employeeCode(model.getEmployeeCode())
+				.employeeId(model.getEmployeeID())
+				.employeeName(model.getName().orElse(""))
+				.workplaceId(model.getWorkplaceId().orElse(""))
+				.workplaceCode(model.getWorkplaceCode().orElse(""))
+				.workplaceName(model.getWorkplaceName().orElse(""))
+				.build();
 	}
 }

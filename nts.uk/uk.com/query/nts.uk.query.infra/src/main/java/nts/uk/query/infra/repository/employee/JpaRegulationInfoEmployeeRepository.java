@@ -7,6 +7,7 @@ package nts.uk.query.infra.repository.employee;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,9 +24,12 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtEmpOrderCond;
 import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtEmployeeOrder;
 import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtEmployeeOrderPK;
+import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
 import nts.uk.query.infra.entity.employee.EmployeeDataView;
 import nts.uk.query.infra.entity.employee.EmployeeDataView_;
 import nts.uk.query.model.employee.EmployeeSearchQuery;
@@ -43,6 +47,25 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
 	/** The Constant NOT_DELETED. */
 	private static final int NOT_DELETED = 0;
+
+	/** The Constant MAX_WHERE_IN. */
+	private static final int MAX_WHERE_IN = 1000;
+
+	private static final String FIND_EMPLOYEE = "SELECT e, p"
+			+ " FROM BsymtEmployeeDataMngInfo e"
+			+ " LEFT JOIN BpsmtPerson p ON p.bpsmtPersonPk.pId = e.bsymtEmployeeDataMngInfoPk.pId"
+			+ " WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid";
+
+	private static final String FIND_WORKPLACE = "SELECT awh.sid, wi.wkpcd, wi.bsymtWorkplaceInfoPK.wkpid, wi.wkpName"
+			+ " FROM BsymtAffiWorkplaceHist awh"
+			+ " LEFT JOIN BsymtAffiWorkplaceHistItem awhi ON awhi.hisId = awh.hisId"
+			+ " LEFT JOIN BsymtWorkplaceHist wh ON wh.bsymtWorkplaceHistPK.historyId = awhi.hisId"
+			+ " LEFT JOIN BsymtWorkplaceInfo wi ON wi.bsymtWorkplaceInfoPK.historyId = wh.bsymtWorkplaceHistPK.historyId"
+			+ " WHERE awh.sid IN :listSid"
+			+ " AND awh.strDate <= :refDate"
+			+ " AND awh.endDate >= :refDate"
+			+ " AND wh.strD <= :refDate"
+			+ " AND wh.endD >= :refDate";
 
 	/*
 	 * (non-Javadoc)
@@ -316,6 +339,71 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			// Not found.
 			return null;
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.query.model.employee.RegulationInfoEmployeeRepository#
+	 * findInfoBySIds(java.util.List)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RegulationInfoEmployee> findInfoBySIds(List<String> sIds, GeneralDate referenceDate) {
+		List<Object[]> persons = new ArrayList<>();
+
+		CollectionUtil.split(sIds, MAX_WHERE_IN, (subList) -> {
+			persons.addAll(this.getEntityManager().createQuery(FIND_EMPLOYEE).setParameter("listSid", subList)
+					.getResultList());
+		});
+
+		// get list employee
+		Map<String, RegulationInfoEmployee> employeeInfoList = persons.stream().map(item -> {
+			BsymtEmployeeDataMngInfo e = (BsymtEmployeeDataMngInfo) item[0];
+			BpsmtPerson p = (BpsmtPerson) item[1];
+
+			return RegulationInfoEmployee.builder()
+					.employeeID(e.bsymtEmployeeDataMngInfoPk.sId)
+					.employeeCode(e.employeeCode)
+					.name(Optional.ofNullable(p.businessName))
+					.classificationCode(Optional.empty())
+					.departmentCode(Optional.empty())
+					.employmentCode(Optional.empty())
+					.hireDate(Optional.empty())
+					.jobTitleCode(Optional.empty())
+					.workplaceCode(Optional.empty())
+					.workplaceId(Optional.empty())
+					.workplaceName(Optional.empty())
+					.build();
+		}).collect(Collectors.toMap(RegulationInfoEmployee::getEmployeeID, v -> v, (oldValue, newValue) -> newValue));
+
+		// Get workplace
+		List<Object[]> workplaces = new ArrayList<>();
+		CollectionUtil.split(sIds, MAX_WHERE_IN, (subList) -> {
+			workplaces.addAll(this.getEntityManager().createQuery(FIND_WORKPLACE).setParameter("listSid", subList)
+					.setParameter("refDate", referenceDate).getResultList());
+		});
+
+		// set workplace
+		employeeInfoList.keySet().forEach(empId -> {
+			Optional<Object[]> workplace = workplaces.stream().filter(wpl -> {
+				String id = (String) wpl[0];
+				return id.equals(empId);
+			}).findAny();
+
+			if (workplace.isPresent()) {
+				String workplaceCode = (String) workplace.get()[1];
+				String workplaceId = (String) workplace.get()[2];
+				String workplaceName = (String) workplace.get()[3];
+
+				RegulationInfoEmployee employee = employeeInfoList.get(empId); 
+				employee.setWorkplaceCode(Optional.ofNullable(workplaceCode));
+				employee.setWorkplaceId(Optional.ofNullable(workplaceId));
+				employee.setWorkplaceName(Optional.ofNullable(workplaceName));
+			}
+		});
+
+		return employeeInfoList.values().stream().collect(Collectors.toList());
 	}
 
 }
