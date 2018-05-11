@@ -32,7 +32,7 @@ public class SpecialLeaveGrantRemainService {
 		Integer hours = minute / 60 ;
 		minute = minute % 60;
 
-		return result.toString() + "日と　" + (minute > 0 ? hours : "-"+hours) + ":" + (Math.abs(minute) < 10 ? ("0" + Math.abs(minute)) : (Math.abs(minute) + ""));
+		return result.toString() + "日と　" + ((hours == 0 && minute <0) ? ("-" + hours) : hours ) + ":" + (Math.abs(minute) < 10 ? ("0" + Math.abs(minute)) : (Math.abs(minute) + ""));
 	}
 
 }
