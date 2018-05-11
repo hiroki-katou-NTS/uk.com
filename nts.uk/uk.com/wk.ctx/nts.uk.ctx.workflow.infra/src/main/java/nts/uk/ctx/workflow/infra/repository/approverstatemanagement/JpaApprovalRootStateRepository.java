@@ -578,4 +578,21 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		}
 		return result;
 	}
+
+	@Override
+	public List<ApprovalRootState> findEmployeeAppByApprovalRecordDateNew(GeneralDate startDate, GeneralDate endDate,
+			Integer rootType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void deleteConfirmDay(String employeeID, GeneralDate date) {
+		List<WwfdpApprovalRootStatePK> rootStateKeyList = this.queryProxy().query(SELECT_CF_DAY_BY_EMP_DATE, WwfdtApprovalRootDay.class)
+				.setParameter("recordDate", date)
+				.setParameter("employeeID", employeeID)
+				.getList(x -> new WwfdpApprovalRootStatePK(x.wwfdpApprovalRootDayPK.rootStateID));
+		this.commandProxy().removeAll(WwfdtApprovalRootState.class, rootStateKeyList);
+		this.getEntityManager().flush();
+	}
 }
