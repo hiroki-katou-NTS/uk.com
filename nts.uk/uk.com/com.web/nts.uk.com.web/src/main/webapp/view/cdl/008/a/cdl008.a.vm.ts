@@ -17,7 +17,7 @@ module nts.uk.com.view.cdl008.a {
             workplaces: TreeComponentOption;
             isMultiple: boolean;
             selectedSystemType: KnockoutObservable<number>;
-            restrictionOfReferenceRange: KnockoutObservable<boolean>;
+            restrictionOfReferenceRange: boolean;
             constructor() {
                 var self = this;
                 self.baseDate = ko.observable(new Date());
@@ -25,7 +25,7 @@ module nts.uk.com.view.cdl008.a {
                 self.selectedSelWorkplace = ko.observable('');
                 self.isMultiple = false;
                 self.selectedSystemType = ko.observable(5);
-                self.restrictionOfReferenceRange = ko.observable(false);
+                self.restrictionOfReferenceRange = false;
                 var inputCDL008 = nts.uk.ui.windows.getShared('inputCDL008');
                 if (inputCDL008) {
                     self.baseDate(inputCDL008.baseDate);
@@ -38,7 +38,7 @@ module nts.uk.com.view.cdl008.a {
                     }
                     self.selectedSystemType = inputCDL008.selectedSystemType;
                     if (!inputCDL008.isrestrictionOfReferenceRange) {
-                        self.restrictionOfReferenceRange = ko.observable(true);
+                        self.restrictionOfReferenceRange = true;
                     } else {
                         self.restrictionOfReferenceRange = inputCDL008.isrestrictionOfReferenceRange;
                     }

@@ -9,7 +9,7 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
         listSystemType: KnockoutObservableArray<any>;        
         selectedSystemType: KnockoutObservable<number>;
         enable: KnockoutObservable<boolean>;
-        restrictionOfReferenceRange: KnockoutObservable<boolean>;
+        restrictionOfReferenceRange: boolean;
         constructor() {
             var self = this;
             //construct codes 
@@ -26,7 +26,7 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
                 {code : 5, name: '管理者', enable: self.enable}
             ]);   
             self.selectedSystemType = ko.observable(5);         
-            self.restrictionOfReferenceRange = ko.observable(false);
+            self.restrictionOfReferenceRange = false;
         }
 
         /**
@@ -40,7 +40,7 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
                 baseDate: self.baseDate(),
                 isMultiple: self.selectMode(),
                 selectedSystemType: self.selectedSystemType(),
-                isrestrictionOfReferenceRange: self.restrictionOfReferenceRange()
+                isrestrictionOfReferenceRange: self.restrictionOfReferenceRange
             }, true);
 
             nts.uk.ui.windows.sub.modal('/view/cdl/008/a/index.xhtml').onClosed(function(): any {
