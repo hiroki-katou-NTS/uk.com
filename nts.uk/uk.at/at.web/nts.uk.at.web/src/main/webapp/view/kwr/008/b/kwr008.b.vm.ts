@@ -53,12 +53,12 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 if (code) {
                     service.getListItemOutput(code).done(r => {
                         if (r && r.length > 0) {
-                            let dataSorted = _.sortBy(r, ['cd']);
+                            let dataSorted = _.sortBy(r, ['sortBy']);
                             for (var i = 0; i < dataSorted.length; i++) {
                                 self.outputItem.replace(self.outputItem()[i], new OutputItemData(i + 1, dataSorted[i].cd, dataSorted[i].useClass, dataSorted[i].headingName, dataSorted[i].valOutFormat, ''));
-                                if (r[i].cd != 0) {
-                                    let addItems = _.filter(r.listOperationSetting, (x) => { return x.operation === 1; }).map((item) => { return item.attendanceItemId; });
-                                    let subItems = _.filter(r.listOperationSetting, (x) => { return x.operation === 0; }).map((item) => { return item.attendanceItemId; });
+                                if (dataSorted[i].cd != 1) { // rule 36 = 1
+                                    let addItems = _.filter(dataSorted[i].listOperationSetting, (x) => { return x.operation === 1; }).map((item) => { return item.attendanceItemId; });
+                                    let subItems = _.filter(dataSorted[i].listOperationSetting, (x) => { return x.operation === 0; }).map((item) => { return item.attendanceItemId; });
                                     let resultData = {
                                         lstAddItems: addItems,
                                         lstSubItems: subItems
@@ -235,7 +235,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         getListItemByAtr(valueOutputFormat) {
             let self = this;
             let dfd = $.Deferred<any>();
-            if (valueOutputFormat === 0) {
+            if (valueOutputFormat === 1) {
                 //With type 回数 - Times
                 service.getAttendanceItemByAtr(2).done((lstAtdItem) => {
                     service.getOptItemByAtr(1).done((lstOptItem) => {
@@ -245,7 +245,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         dfd.resolve(lstAtdItem);
                     });
                 });
-            } else if (valueOutputFormat === 1) {
+            } else if (valueOutputFormat === 0) {
                 //With type 時間 - Time
                 service.getAttendanceItemByAtr(5).done((lstAtdItem) => {
                     service.getOptItemByAtr(0).done((lstOptItem) => {
