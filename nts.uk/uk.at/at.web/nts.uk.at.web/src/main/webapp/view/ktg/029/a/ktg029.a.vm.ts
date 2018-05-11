@@ -349,15 +349,15 @@ module nts.uk.at.view.ktg029.a.viewmodel {
     export class YearlyHolidayInfo {
         day: number;
         hours: string;
+        displayHours: boolean;
         remaining: number;
         timeYearLimit: string;
-        displayTime: boolean;
         constructor(dto: YearlyHolidayInfoDto){
             this.day = dto.day;
             this.hours = (dto.hours.hours<10?('0'+dto.hours.hours):dto.hours.hours)+':'+(dto.hours.min<10?('0'+dto.hours.min):dto.hours.min);
+            this.displayHours = (dto.hours.hours == 0 && dto.hours.min == 0)?false:true;
             this.remaining = dto.remaining;
             this.timeYearLimit = (dto.timeYearLimit.hours<10?('0'+dto.timeYearLimit.hours):dto.timeYearLimit.hours)+':'+(dto.timeYearLimit.min<10?('0'+dto.timeYearLimit.min):dto.timeYearLimit.min);
-            this.displayTime = (dto.timeYearLimit.hours == 0 && dto.timeYearLimit.min == 0)?false:true;
         }
     }
     export class YearlyHoliday {
