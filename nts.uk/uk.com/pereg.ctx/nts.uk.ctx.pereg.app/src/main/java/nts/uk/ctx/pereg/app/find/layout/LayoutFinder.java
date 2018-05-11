@@ -206,7 +206,7 @@ public class LayoutFinder {
 			List<LayoutPersonInfoClsDto> classItemList = classItemsOfCategory.getValue();
 			PersonInfoCategory perInfoCategory = perInfoCateRepo
 					.getPerInfoCategory(categoryId, AppContexts.user().contractCode()).get();
-			PeregQuery query = new PeregQuery(perInfoCategory.getCategoryCode().v(), layoutQuery.getBrowsingEmpId(),
+			PeregQuery query = PeregQuery.createQueryLayout(perInfoCategory.getCategoryCode().v(), layoutQuery.getBrowsingEmpId(),
 					browsingPeronId, standardDate);
 			
 			switch (perInfoCategory.getCategoryType()) {

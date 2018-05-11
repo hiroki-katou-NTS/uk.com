@@ -241,7 +241,7 @@ public class RegisterLayoutFinder {
 
 		this.initCtgSettingFinder.getAllCategoryBySetId(command.getInitSettingId()).forEach(x -> {
 
-			querys.add(new PeregQuery(x.getCategoryCd(), command.getEmployeeCopyId(), null, command.getHireDate()));
+			querys.add(PeregQuery.createQueryLayout(x.getCategoryCd(), command.getEmployeeCopyId(), null, command.getHireDate()));
 		});
 
 		querys.forEach(x -> {

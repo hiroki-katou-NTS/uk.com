@@ -151,7 +151,7 @@ public class PeregCommandFacade {
 			// Add item invisible to list
 			for (ItemsByCategory itemByCategory : updateInputs) {
 
-				PeregQuery query = new PeregQuery(itemByCategory.getRecordId(), itemByCategory.getCategoryCd(),
+				PeregQuery query = PeregQuery.createQueryCategory(itemByCategory.getRecordId(), itemByCategory.getCategoryCd(),
 						container.getEmployeeId(), container.getPersonId());
 
 				List<ItemValue> fullItems = itemDefFinder.getFullListItemDef(query);
