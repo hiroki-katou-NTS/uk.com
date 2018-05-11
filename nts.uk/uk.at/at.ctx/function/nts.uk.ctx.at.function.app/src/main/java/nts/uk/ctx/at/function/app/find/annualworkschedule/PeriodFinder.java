@@ -13,24 +13,23 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class PeriodFinder {
 
-//	@Inject
-//	private AgreementOperationSettingAdapter agreementOperationSettingAdapter;
+	@Inject
+	private AgreementOperationSettingAdapter agreementOperationSettingAdapter;
 	@Inject
 	private ClosureEmploymentService closureEmploymentService;
 
 	public PeriodDto getPeriod() {
 		//社員に対応する処理締めを取得する
-//		Closure closure
-//			= closureEmploymentService.findClosureByEmployee(AppContexts.user().employeeId(), GeneralDate.today()).get();
-//		YearMonth standardYm = closure.getClosureMonth().getProcessingYm();
+		Closure closure
+			= closureEmploymentService.findClosureByEmployee(AppContexts.user().employeeId(), GeneralDate.today()).get();
+		YearMonth standardYm = closure.getClosureMonth().getProcessingYm();
 		//基準月に対応する起算月を求める
-//		int startMonth = agreementOperationSettingAdapter.find().getStartingMonth() + 1; //month value: 0-11
-//		int startYear = standardYm.year() - (startMonth <= standardYm.month()? 0: 1);
+		int startMonth = agreementOperationSettingAdapter.find().getStartingMonth() + 1; //month value: 0-11
+		int startYear = standardYm.year() - (startMonth <= standardYm.month()? 0: 1);
 
-//		YearMonth startYm = YearMonth.of(startYear, startMonth);
-//		YearMonth endYm   = startYm.addMonths(11);
-//		return new PeriodDto(startYm.year() + "" + startYm.month(), endYm.year() + "" + endYm.month());
-		return null;
+		YearMonth startYm = YearMonth.of(startYear, startMonth);
+		YearMonth endYm   = startYm.addMonths(11);
+		return new PeriodDto(startYm.year() + "" + startYm.month(), endYm.year() + "" + endYm.month());
 	}
 
 }

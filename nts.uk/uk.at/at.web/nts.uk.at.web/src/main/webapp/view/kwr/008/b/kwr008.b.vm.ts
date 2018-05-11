@@ -19,7 +19,6 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         //B2_2
         listStandardImportSetting: KnockoutObservableArray<model.OutputSettingCodeDto> = ko.observableArray([]);
         selectedCode: KnockoutObservable<any> = ko.observable('');
-        currentSetOutputSettingCode :KnockoutObservable<SetOutputSettingCode>
                 = ko.observable(new SetOutputSettingCode(null));
 
         //B5_3
@@ -28,9 +27,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
         //B4
         outputItem: KnockoutObservableArray<any> = ko.observableArray([]);
-        
+
         isCheckedAll: KnockoutObservable<boolean> = ko.observable(false);
-        selectedItems: KnockoutObservableArray<any> = ko.observableArray([]);
         constructor() {
             let self = this;
 
@@ -40,16 +38,16 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 new model.ItemModel(1, getText('KWR008_38')),
                 new model.ItemModel(2, getText('KWR008_39'))
             ]);
-            
-             //event select change
+
+            //event select change
             self.selectedCode.subscribe((code) => {
                 nts.uk.ui.errors.clearAll()
                 self.outputItem.removeAll();
                 if (code) {
                     service.getListItemOutput(code).done(r => {
                         if (r && r.length > 0) {
-                            for(var i = 0; i < r.length; i++) {
-                                self.outputItem.replace(self.outputItem()[i],new OutputItemData(i + 1, r[i].cd, r[i].useClass, r[i].headingName, r[i].valOutFormat, ''));
+                            for (var i = 0; i < r.length; i++) {
+                                self.outputItem.replace(self.outputItem()[i], new OutputItemData(i + 1, r[i].cd, r[i].useClass, r[i].headingName, r[i].valOutFormat, ''));
                             }
                         }
                     });
@@ -58,48 +56,37 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     self.registerMode();
                 }
             });
+
             self.isCheckedAll = ko.computed({
-                  read:function(){
-                    return this.selectedItems().length == this.outputItem().length;
-                  },
-                  write: function(val){
-                    if(val)
-                       this.selectedItems(this.outputItem().map(function(item){return item.useClassification();}))        
-                    else
-                       this.selectedItems.removeAll();   
-                  }, 
-                  owner:this
-              });
-                        self.isCheckedAll = ko.computed({
-                read:function(){
-                     let itemOut : any = _.filter(self.outputItem(), (x)=>{return !x.useClassification();});
-                    if(itemOut && itemOut.length > 0){
+                read: function() {
+                    let itemOut: any = _.filter(self.outputItem(), (x) => { return !x.useClassification(); });
+                    if (itemOut && itemOut.length > 0) {
                         return false;
                     } else {
                         return true;
                     }
                 },
-                write: function(val){
+                write: function(val) {
                     ko.utils.arrayForEach(self.outputItem(), function(item) {
                         item.useClassification(val);
                     });
-               }, 
-               owner:this
+                },
+                owner: this
             });
         }
 
         public startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            
+
             block.invisible();
             //fill data B2_2
             service.getOutItemSettingCode().done((data) => {
+                var dataSorted = _.sortBy(data, ['cd']);
                 for (let i = 0, count = data.length; i < count; i++) {
-                    self.listStandardImportSetting.push(new SetOutputSettingCode(data[i]));
+                    self.listStandardImportSetting.push(new SetOutputSettingCode(dataSorted[i]));
                 }
-                self.listStandardImportSetting_Sort();
-                self.checkListItemOutput();
+                
                 service.getValueOutputFormat().done(data => {
                     for (let i = 0, count = data.length; i < count; i++) {
                         self.valueOutputFormat.push(new model.ItemModel(data[i].value, data[i].localizedName));
@@ -109,10 +96,11 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     block.clear();
                 });
             }).always(function() {
+                self.checkListItemOutput();
                 dfd.resolve(self);
                 block.clear();
             });
-            
+
             return dfd.promise();
         }
 
@@ -131,20 +119,20 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 nts.uk.ui.block.clear();
                 return;
             }
-            
+
             self.getListItemByAtr(self.outputItem()[index].valueOutputFormat()).done((lstItem) => {
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                 let lstAddItems = _.filter(self.outputItem()[index].listOperationSetting(), (item) => {
-                        return item.operation();
-                    }).map((item) => { return item.attendanceItemId(); });
+                    return item.operation();
+                }).map((item) => { return item.attendanceItemId(); });
                 let lstSubItems = _.filter(self.outputItem()[index].listOperationSetting(), (item) => {
-                        return !item.operation();
-                    }).map((item) => { return item.attendanceItemId(); });
+                    return !item.operation();
+                }).map((item) => { return item.attendanceItemId(); });
                 let param = {
-                            lstAllItems: lstItemCode,
-                            lstAddItems: lstAddItems,
-                            lstSubItems: lstSubItems
-                        };
+                    lstAllItems: lstItemCode,
+                    lstAddItems: lstAddItems,
+                    lstSubItems: lstSubItems
+                };
                 nts.uk.ui.windows.setShared("KDW007Params", param);
                 nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/c/index.xhtml").onClosed(() => {
                     let resultData = nts.uk.ui.windows.getShared("KDW007CResults");
@@ -157,11 +145,11 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         block.clear();
                     });
                 });
-             });
+            });
         }
-        
+
         //re-build output item from Kdw007 result
-        buildOutputItem(resultData, outputItem) : JQueryPromise {
+        buildOutputItem(resultData, outputItem): JQueryPromise {
             let self = this;
             let dfd = $.Deferred<any>();
             let operationName = "";
@@ -211,12 +199,12 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                                 operationName = item.attendanceItemName;
                             }
                         });
-                        
+
                     }).always(function() {
                         outputItem.outputTargetItem(operationName);
                         dfd.resolve();
                     });
-                    
+
                 } else {
                     outputItem.outputTargetItem(operationName);
                     dfd.resolve();
@@ -224,7 +212,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             }
             return dfd.promise();
         }
-        
+
         // get data for kdw007
         getListItemByAtr(valueOutputFormat) {
             let self = this;
@@ -272,60 +260,44 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             var self = this;
 
             if (self.listStandardImportSetting().length == 0) {
-                
+
                 self.registerMode();
             } else {
+
                 if (!self.selectedCode()) {
                     self.selectedCode(self.listStandardImportSetting()[0].cd());
+                    self.updateMode(self.listStandardImportSetting()[0].cd());
                 }
             }
         }
 
         buildIsCheckedAll() {
             let self = this;
-            let itemOut : any = _.filter(self.outputItem(), (x)=>{return !x.useClassification();});
-            if(itemOut && itemOut.length > 0){
+            let itemOut: any = _.filter(self.outputItem(), (x) => { return !x.useClassification(); });
+            if (itemOut && itemOut.length > 0) {
                 self.isCheckedAll(false);
             } else {
                 self.isCheckedAll(true);
             }
-            /*
-            self.isCheckedAll = ko.computed({
-                read:function(){
-                     let itemOut : any = _.filter(self.outputItem(), (x)=>{return !x.useClassification();});
-                    if(itemOut && itemOut.length > 0){
-                        return false;
-                    } else {
-                        return true;
-                    }
-                },
-                write: function(val){
-                    ko.utils.arrayForEach(self.outputItem(), function(item) {
-                        item.useClassification(val);
-                    });
-               }, 
-               owner:this
-            });
-            */
         }
         //mode update
         updateMode(code: string) {
             let self = this;
             if (code) {
                 let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd() == code; });
-    
+
                 self.isNewMode(false);
                 if (selectedIndex > -1) {
-                    self.currentSetOutputSettingCode(self.listStandardImportSetting()[selectedIndex]);
+                    self.currentSetOutputSettingCode(self.clone(self.listStandardImportSetting()[selectedIndex]));
                     $('#B3_3').focus();
-                }else {
+                } else {
                     self.selectedCode('');
                 }
-            } 
-            for (var i = self.outputItem().length; i < 10; i++) {
-                self.outputItem.push(new OutputItemData(i+1, '', false, '', 0, ''));
             }
-            
+            for (var i = self.outputItem().length; i < 10; i++) {
+                self.outputItem.push(new OutputItemData(i + 1, 0, false, '', 0, ''));
+            }
+
             self.buildIsCheckedAll();
         }
 
@@ -333,7 +305,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         registerMode() {
             let self = this;
 
-            self.isNewMode(true);
+            self.isNewMode(true); 
             $("#B3_2").focus();
             self.outputItem.removeAll();
             //$('#listStandardImportSetting').ntsGridList('deselectAll');
@@ -348,45 +320,45 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         doRegister() {
             let self = this;
             block.invisible();
-            let itemOut : any = _.filter(self.outputItem(), v=>{return v.headingName().trim();});
-            
-            if(!itemOut || itemOut.length == 0){
-                alertError({messageId:"Msg_880"});
+            let itemOut: any = _.filter(self.outputItem(), v => { return v.headingName().trim(); });
+
+            if (!itemOut || itemOut.length == 0) {
+                alertError({ messageId: "Msg_880" });
                 block.clear();
                 return;
             }
-            for(var i = 0; i < itemOut.length; i++ ) {
+            for (var i = 0; i < itemOut.length; i++) {
                 // item Rule 36 - do not checking
                 if (itemOut[i].sortBy == 0) {
                     continue;
                 }
                 if (itemOut[i].listOperationSetting.lenth == 0) {
-                    alertError({messageId:"Msg_881"});
+                    alertError({ messageId: "Msg_881" });
                     block.clear();
                     return;
                 } else if (itemOut[i].listOperationSetting.lenth > 50) {
-                    alertError({messageId:"Msg_882"});
+                    alertError({ messageId: "Msg_882" });
                     block.clear();
                     return;
                 }
             }
             $('.nts-input').trigger("validate");
-            if(nts.uk.ui.errors.hasError()) {
+            if (nts.uk.ui.errors.hasError()) {
                 block.clear();
                 return;
             }
-            
+
             self.currentSetOutputSettingCode().buildListItemOutput(ko.toJS(itemOut));
-            let data : model.OutputSettingCodeDto = ko.toJS(self.currentSetOutputSettingCode);
-            
+            let data: model.OutputSettingCodeDto = ko.toJS(self.currentSetOutputSettingCode);
+
             if (self.isNewMode()) {
                 service.registerOutputItemSetting(data).done(() => {
                     info({ messageId: 'Msg_15' }).then(() => {
-                        self.listStandardImportSetting.push(self.currentSetOutputSettingCode);
+                        self.listStandardImportSetting.push(self.clone(self.currentSetOutputSettingCode()));
                         self.listStandardImportSetting_Sort();
                         self.selectedCode(self.currentSetOutputSettingCode().cd());
                     });
-                }).fail(err=>{
+                }).fail(err => {
                     $('#B3_2').ntsError('set', err);
                 }).always(function() {
                     block.clear();
@@ -395,10 +367,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 service.updateOutputItemSetting(data).done(() => {
                     let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd() == self.selectedCode(); });
                     if (selectedIndex > -1) {
-                        self.listStandardImportSetting.replace(self.listStandardImportSetting()[selectedIndex], data);
+                        self.listStandardImportSetting.replace(self.listStandardImportSetting()[selectedIndex], self.clone(self.currentSetOutputSettingCode());
                     }
                     info({ messageId: 'Msg_15' });
-                }).fail(err=>{
+                }).fail(err => {
                     $('#B3_2').ntsError('set', err);
                 }).always(function() {
                     block.clear();
@@ -440,13 +412,23 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             nts.uk.ui.windows.close();
         }
 
-
+        
+        clone(param) {
+            var xxx = new SetOutputSettingCode(null);
+            xxx.cd = ko.observable(param ? param.cd() || '' : '');
+            xxx.displayCode = xxx.cd();
+            xxx.name = ko.observable(param ? param.name() || '' : '');
+            xxx.displayName = xxx.name();
+            xxx.outNumExceedTime36Agr = ko.observable(param ? param.outNumExceedTime36Agr() || 0 : 0);
+            xxx.displayFormat = ko.observable(param ? param.displayFormat() || 0 : 0);
+            return xxx;
+        }
     }
 
     export class OperationCondition {
-        attendanceItemId: KnockoutObservable<number>= ko.observable(null);
-        operation: KnockoutObservable<number>= ko.observable(0); //0: '-'; 1: '+'
-        name: KnockoutObservable<string>= ko.observable('');
+        attendanceItemId: KnockoutObservable<number> = ko.observable(null);
+        operation: KnockoutObservable<number> = ko.observable(0); //0: '-'; 1: '+'
+        name: KnockoutObservable<string> = ko.observable('');
         constructor(attendanceItemId: number, operation: number, name: string) {
             let self = this;
             self.attendanceItemId(attendanceItemId || null);
@@ -471,13 +453,13 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.valueOutputFormat(valueOutputFormat || 0);
             self.outputTargetItem(outputTargetItem || '');
         }
-        
+
         buildListOperationSetting(listOperation: Array<any>) {
             let self = this;
             if (listOperation && listOperation.length > 0) {
-                for(var i = 0; i < listOperation.length; i++) {
-                    self.listOperationSetting.push(new  OperationCondition(
-                        listOperation[i].attendanceItemId, 
+                for (var i = 0; i < listOperation.length; i++) {
+                    self.listOperationSetting.push(new OperationCondition(
+                        listOperation[i].attendanceItemId,
                         listOperation[i].operation,
                         listOperation[i].name));
                 }
@@ -488,13 +470,13 @@ module nts.uk.at.view.kwr008.b.viewmodel {
     }
     
     export class SetOutputSettingCode {
-        cd: KnockoutObservable<string>= ko.observable('');
+        cd: KnockoutObservable<string> = ko.observable('');
         displayCode: string;
-        name: KnockoutObservable<string>= ko.observable('');
+        name: KnockoutObservable<string> = ko.observable('');
         displayName: string;
         outNumExceedTime36Agr: KnockoutObservable<number> = ko.observable(0);
         displayFormat: KnockoutObservable<number> = ko.observable(0);
-        listItemOutput : KnockoutObservableArray<OutputItemData> = ko.observableArray([]);
+        listItemOutput: KnockoutObservableArray<OutputItemData> = ko.observableArray([]);
         constructor(param) {
             let self = this;
             self.cd(param ? param.cd || '' : '');
@@ -503,15 +485,16 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.displayName = self.name();
             self.outNumExceedTime36Agr(param ? param.outNumExceedTime36Agr || 0 : 0);
             self.displayFormat(param ? param.displayFormat || 0 : 0);
-            
+
         }
         buildListItemOutput(listItemOutput: Array<any>) {
             let self = this;
             if (listItemOutput && listItemOutput.length > 0) {
-                for(var i = 0; i < listItemOutput.length; i++) {
+                self.listItemOutput([]);
+                for (var i = 0; i < listItemOutput.length; i++) {
                     var outputItemData = new OutputItemData(
-                        i+1,
-                        listItemOutput[i].cd, 
+                        i + 1,
+                        listItemOutput[i].cd,
                         listItemOutput[i].useClassification,
                         listItemOutput[i].headingName,
                         listItemOutput[i].valueOutputFormat,
