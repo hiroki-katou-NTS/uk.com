@@ -16,8 +16,15 @@
 			
 			<ui:define name="content">
 				<div class="contents-area dialog-content"  >
-					<div data-bind="ntsFormLabel: {}" class = "label-left">#{i18n.getText('CMF004_50')}</div>
+					<div data-bind="ntsFormLabel: {}" id ="C1_1" class = "label-left">#{i18n.getText('CMF004_50')}</div>
 					<span>復旧ファイル名(tên file khô phục)</span>
+					<br/>
+					<div data-bind="ntsFormLabel: {}" id ="C1_3" class = "label-left">#{i18n.getText('CMF004_51')}</div>
+					<input tabindex="11" id="C1_4" />
+					<br/>
+					<div>
+						<button class="large proceed" id ="C1_5">#{i18n.getText('CMF004_52')}</button>
+					</div>
 				</div>
 			</ui:define>
 		</ui:composition>
