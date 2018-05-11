@@ -114,33 +114,36 @@ public class AnnualLeave implements Cloneable {
 
 		// 残数付与前からマイナスを削除
 		if (this.remainingNumberBeforeGrant.getTotalRemainingDays().lessThan(0.0)){
-			// 年休．使用数からマイナス分を引く
+			// 年休．使用数（付与前）からマイナス分を引く
 			double minusDays = this.remainingNumberBeforeGrant.getTotalRemainingDays().v();
-			double useDays = this.usedNumber.getUsedDays().getUsedDays().v();
+			double useDays = this.usedNumber.getUsedDays().getUsedDaysBeforeGrant().v();
 			useDays += minusDays;
 			if (useDays < 0.0) useDays = 0.0;
-			this.usedNumber.getUsedDays().setUsedDays(new AnnualLeaveUsedDayNumber(useDays));
+			this.usedNumber.getUsedDays().setUsedDaysBeforeGrant(new AnnualLeaveUsedDayNumber(useDays));
 			// 残数付与前．明細．日数　←　0
 			this.remainingNumberBeforeGrant.setDaysOfAllDetail(0.0);
 			// 残数．合計残日数　←　0
-			this.remainingNumber.setTotalRemainingDays(new AnnualLeaveRemainingDayNumber(0.0));
+			this.remainingNumberBeforeGrant.setTotalRemainingDays(new AnnualLeaveRemainingDayNumber(0.0));
 		}
 		
 		if (!this.remainingNumberAfterGrant.isPresent()) return;
+		if (!this.usedNumber.getUsedDays().getUsedDaysAfterGrant().isPresent()) return;
 		
 		// 残数付与後からマイナスを削除
 		val remainingNumberAfterGrantValue = this.remainingNumberAfterGrant.get();
+		val usedDaysAfterGrant = this.usedNumber.getUsedDays().getUsedDaysAfterGrant().get();
 		if (remainingNumberAfterGrantValue.getTotalRemainingDays().lessThan(0.0)){
-			// 年休．使用数からマイナス分を引く
+			// 年休．使用数（付与後）からマイナス分を引く
 			double minusDays = remainingNumberAfterGrantValue.getTotalRemainingDays().v();
-			double useDays = this.usedNumber.getUsedDays().getUsedDays().v();
+			double useDays = usedDaysAfterGrant.v();
 			useDays += minusDays;
 			if (useDays < 0.0) useDays = 0.0;
-			this.usedNumber.getUsedDays().setUsedDays(new AnnualLeaveUsedDayNumber(useDays));
+			this.usedNumber.getUsedDays().setUsedDaysAfterGrant(
+					Optional.of(new AnnualLeaveUsedDayNumber(useDays)));
 			// 残数付与前．明細．日数　←　0
 			remainingNumberAfterGrantValue.setDaysOfAllDetail(0.0);
 			// 残数．合計残日数　←　0
-			this.remainingNumber.setTotalRemainingDays(new AnnualLeaveRemainingDayNumber(0.0));
+			remainingNumberAfterGrantValue.setTotalRemainingDays(new AnnualLeaveRemainingDayNumber(0.0));
 		}
 	}
 }

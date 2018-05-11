@@ -32,4 +32,11 @@ public class YearlyHoliday {
 	
 	/*労働日数*/
 	private int workingDays = 0;
+	
+	/* 計算方法 */
+	private int calculationMethod = 0;
+	
+	/*一斉付与を利用する*/
+	private int useSimultaneousGrant = 0;
+	
 }

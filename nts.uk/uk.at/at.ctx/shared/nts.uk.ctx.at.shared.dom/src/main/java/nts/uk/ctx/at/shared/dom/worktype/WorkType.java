@@ -90,6 +90,19 @@ public class WorkType extends AggregateRoot {
 	private boolean isWorkingType(WorkTypeClassification wt) {
 		return wt == WorkTypeClassification.Attendance || wt == WorkTypeClassification.Shooting;
 	}
+	
+	public boolean isNoneWorkTimeType(){
+		if (dailyWork != null && dailyWork.getWorkTypeUnit() == WorkTypeUnit.OneDay) {
+			return isNoneWorkTimeType(dailyWork.getOneDay());
+		}
+		return false;
+	}
+	
+	private boolean isNoneWorkTimeType(WorkTypeClassification wt) {
+		return wt == WorkTypeClassification.Holiday || wt == WorkTypeClassification.Pause
+				|| wt == WorkTypeClassification.LeaveOfAbsence || wt == WorkTypeClassification.Closure
+				|| wt == WorkTypeClassification.ContinuousWork;
+	}
 
 	/**
 	 * 

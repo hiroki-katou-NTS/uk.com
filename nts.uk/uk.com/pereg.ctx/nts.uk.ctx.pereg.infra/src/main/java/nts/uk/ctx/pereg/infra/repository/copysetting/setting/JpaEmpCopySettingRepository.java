@@ -36,7 +36,8 @@ public class JpaEmpCopySettingRepository extends JpaRepository implements EmpCop
 			+ " INNER JOIN PpemtPerInfoItemOrder io ON i.ppemtPerInfoItemPK.perInfoItemDefId= io.ppemtPerInfoItemPK.perInfoItemDefId"
 			+ " INNER JOIN PpemtPerInfoItemCm ic ON i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd AND c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd"
 			+ " WHERE c.cid = :companyId AND i.perInfoCtgId = :perInfoCtgId AND i.abolitionAtr = 0"
-			+ " AND ((ic.dataType != 9 AND ic.dataType != 10) or ic.dataType is null) AND ic.itemParentCd IS NULL ORDER BY io.displayOrder ASC";
+			+ " AND ((ic.dataType != 9 AND ic.dataType != 10) or ic.dataType is null)"
+			+ " AND i.itemCd != 'IS00020' AND ic.itemParentCd IS NULL ORDER BY io.displayOrder ASC";
 	
 	@Override
 	public Optional<EmployeeCopySetting> findSetting(String companyId) {

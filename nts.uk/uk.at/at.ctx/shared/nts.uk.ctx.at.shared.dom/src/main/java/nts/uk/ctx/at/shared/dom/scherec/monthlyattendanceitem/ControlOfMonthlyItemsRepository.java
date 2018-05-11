@@ -8,4 +8,6 @@ public interface ControlOfMonthlyItemsRepository {
 	Optional<ControlOfMonthlyItems> getControlOfMonthlyItem(String companyID,int itemMonthlyID);
 	
 	void updateControlOfMonthlyItem(ControlOfMonthlyItems controlOfMonthlyItems);
+	
+	void addControlOfMonthlyItem(ControlOfMonthlyItems controlOfMonthlyItems);
 }
