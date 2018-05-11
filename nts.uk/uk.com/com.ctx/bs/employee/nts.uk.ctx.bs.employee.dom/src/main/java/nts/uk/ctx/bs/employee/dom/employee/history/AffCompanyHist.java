@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.dom.employee.history;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Getter
 @Setter
@@ -21,6 +24,17 @@ public class AffCompanyHist extends AggregateRoot {
 
 	/** 社員別履歴 */
 	private List<AffCompanyHistByEmployee> lstAffCompanyHistByEmployee;
+	
+	public static AffCompanyHist createNewEmployeeHist(String personId, String employeeId, String comHistId,
+			GeneralDate hireDate) {
+		List<AffCompanyHistItem> comHistItemList = Arrays
+				.asList(new AffCompanyHistItem(comHistId, false, new DatePeriod(hireDate, GeneralDate.max())));
+		
+		List<AffCompanyHistByEmployee> comHistList = Arrays
+				.asList(new AffCompanyHistByEmployee(employeeId, comHistItemList));
+		
+		return new AffCompanyHist(personId, comHistList);
+	}
 
 	public AffCompanyHistByEmployee getAffCompanyHistByEmployee(String sid) {
 		if (lstAffCompanyHistByEmployee == null) {

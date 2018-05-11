@@ -8,9 +8,11 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsHistory;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -24,7 +26,9 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	
 	private final String GET_BY_SID_DATE = "select h from BsymtTempAbsHistory h"
 			+ " where h.sid = :sid and h.startDate <= :standardDate and h.endDate >= :standardDate";
-
+	private final String SELECT_BY_LIST_SID_DATEPERIOD =  "SELECT tah FROM BsymtTempAbsHistory tah"
+			+ " INNER JOIN BsymtTempAbsHisItem tahi on tah.histId = tahi.histId"
+			+ " WHERE tah.sid IN :workplaceIds AND aw.strDate <= :endDate AND :startDate <= aw.endDate";
 	/**
 	 * Convert from domain to entity
 	 * 
@@ -132,6 +136,19 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 			return Optional.of(toDomainTemp(listHist));
 		}
 		return Optional.empty();
+	}
+
+	@Override
+	public List<TempAbsenceHistory> getByListSid(List<String> sIds , DatePeriod dateperiod) {
+		List<BsymtTempAbsHistory> listTempAbsenceHistory = new ArrayList<>();
+		CollectionUtil.split(sIds, 1000, subList -> {
+			listTempAbsenceHistory.addAll(this.queryProxy().query(SELECT_BY_LIST_SID_DATEPERIOD, BsymtTempAbsHistory.class)
+					.setParameter("workplaceIds", subList)
+					.setParameter("startDate", dateperiod.start())
+					.setParameter("endDate", dateperiod.end())
+					.getList());
+		});
+		return null;
 	}
 
 }

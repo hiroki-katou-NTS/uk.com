@@ -1,0 +1,16 @@
+/* style */
+#single-list_headers th {
+	text-align: center;
+}
+
+#single-list td:nth-child(1) {
+	text-align: right;
+}
+
+#fixed-table tr:nth-child(1) {
+	border-top: 2px solid #CCC;
+}
+
+#fixed-table td {
+	padding-left: 20px;
+}

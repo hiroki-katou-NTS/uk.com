@@ -179,7 +179,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	}
 
 	@Override
-	public DisplayPrePost getDisplayPrePost(String companyID, int uiType, String appDate,int appType) {
+	public DisplayPrePost getDisplayPrePost(String companyID, int uiType, String appDate,int appType,int overtimeAtr) {
 		Optional<ApplicationSetting> applicationSetting = applicationSettingRepository
 				.getApplicationSettingByComID(companyID);
 		DisplayPrePost result = new DisplayPrePost();
@@ -208,7 +208,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 				result.setDisplayPrePostFlg(AppDisplayAtr.NOTDISPLAY.value);
 				result.setPrePostAtr(this.otherCommonAlgorithm.preliminaryJudgmentProcessing(
 						EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class),
-						appDate == null ? GeneralDate.today() :GeneralDate.fromString(appDate, DATE_FORMAT)).value);
+						appDate == null ? GeneralDate.today() :GeneralDate.fromString(appDate, DATE_FORMAT),overtimeAtr).value);
 			}
 		}
 		return result;

@@ -52,7 +52,7 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 	@Override
 	public Optional<Identification> findByCode(String employeeID, GeneralDate processingYmd) {
 		return this.queryProxy().query(GET_BY_CODE, KrcdtIdentificationStatus.class)
-				.setParameter("employeeID", employeeID).setParameter("processingYmd", processingYmd)
+				.setParameter("employeeId", employeeID).setParameter("processingYmd", processingYmd)
 				.getSingle(c -> c.toDomain());
 	}
 

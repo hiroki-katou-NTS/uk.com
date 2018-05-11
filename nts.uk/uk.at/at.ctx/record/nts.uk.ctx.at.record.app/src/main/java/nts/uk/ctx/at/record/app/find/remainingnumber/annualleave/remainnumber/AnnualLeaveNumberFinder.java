@@ -27,8 +27,8 @@ public class AnnualLeaveNumberFinder {
 		
 		// compute result with data
 		RemainNumberInfoDto dto = new RemainNumberInfoDto();
-		dto.setAnnualLeaveNumber(annLeaDomainService.calculateAnnualLeaveNumber(companyId, annualLeaveDataList));
-		dto.setLastGrantDate(annLeaDomainService.calculateLastGrantDate(annualLeaveDataList));
+		dto.setAnnualLeaveNumber(annLeaDomainService.calculateAnnLeaNumWithFormat(companyId, annualLeaveDataList));
+		dto.setLastGrantDate(annLeaDomainService.calculateLastGrantDate(employeeId));
 		return dto;
 	}
 

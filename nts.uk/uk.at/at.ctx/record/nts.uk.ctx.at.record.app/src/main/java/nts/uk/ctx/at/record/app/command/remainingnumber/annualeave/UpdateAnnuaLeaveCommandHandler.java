@@ -37,6 +37,11 @@ public class UpdateAnnuaLeaveCommandHandler extends CommandHandler<UpdateAnnuaLe
 			AnnualLeaveMaxData maxData = maxDataOpt.get();
 			maxData.updateData(c.getMaxTimes(), c.getUsedTimes(), c.getMaxMinutes(), c.getUsedMinutes());
 			maxDataRepo.update(maxData);
+		}else {
+			AnnualLeaveMaxData maxData = AnnualLeaveMaxData.createFromJavaType(c.getEmployeeId(), c.getMaxTimes(),
+					c.getUsedTimes(), c.getMaxMinutes(), c.getUsedMinutes());
+			maxDataRepo.add(maxData);
+			
 		}
 		
 	}

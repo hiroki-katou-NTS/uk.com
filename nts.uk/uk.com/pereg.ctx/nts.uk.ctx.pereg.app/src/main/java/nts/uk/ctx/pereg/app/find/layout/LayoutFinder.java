@@ -18,10 +18,6 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
-import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
-import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
-import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
@@ -76,9 +72,6 @@ public class LayoutFinder {
 	private EmployeeDataMngInfoRepository employeeDataRepo;
 
 	@Inject
-	private AffCompanyHistRepository affCompanyHistRepo;
-
-	@Inject
 	private LayoutPersonInfoClsFinder clsFinder;
 
 	@Inject
@@ -122,7 +115,7 @@ public class LayoutFinder {
 	
 	@Inject 
 	private InitDefaultValue initDefaultValue;
-
+	
 	public List<SimpleEmpMainLayoutDto> getSimpleLayoutList(String browsingEmpId) {
 
 		String loginEmpId = AppContexts.user().employeeId();
@@ -162,7 +155,6 @@ public class LayoutFinder {
 		// query properties
 		GeneralDate standardDate = GeneralDate.legacyDate(layoutQuery.getStandardDate());
 		String browsingEmpId = layoutQuery.getBrowsingEmpId();
-		String cid = AppContexts.user().companyId();
 		EmployeeDataMngInfo employee = employeeDataRepo.findByEmpId(browsingEmpId).get();
 		String browsingPeronId = employee.getPersonId();
 
@@ -206,27 +198,11 @@ public class LayoutFinder {
 			}
 		}
 
-		// COLLECT CLASS ITEM WITH CATEGORY
-		Map<String, List<LayoutPersonInfoClsDto>> classItemInCategoryMap = new HashMap<>();
-		for (LayoutPersonInfoClsDto classItem : authItemClasList) {
-
-			if (classItem.getLayoutItemType() != LayoutItemType.SeparatorLine) {
-				if (classItem.getLayoutItemType() == LayoutItemType.ITEM) {
-					List<LayoutPersonInfoClsDto> classItemList = classItemInCategoryMap
-							.get(classItem.getPersonInfoCategoryID());
-					if (classItemList == null) {
-						classItemList = new ArrayList<>();
-						classItemInCategoryMap.put(classItem.getPersonInfoCategoryID(), classItemList);
-					}
-					classItemList.add(classItem);
-				} else {
-
-				}
-			}
-
-		}
-
 		// GET DATA WITH EACH CATEGORY
+		Map<String, List<LayoutPersonInfoClsDto>> classItemInCategoryMap = authItemClasList.stream()
+				.filter(classItem -> classItem.getLayoutItemType() != LayoutItemType.SeparatorLine)
+				.collect(Collectors.groupingBy(LayoutPersonInfoClsDto::getPersonInfoCategoryID));
+		
 		for (Entry<String, List<LayoutPersonInfoClsDto>> classItemsOfCategory : classItemInCategoryMap.entrySet()) {
 			String categoryId = classItemsOfCategory.getKey();
 			List<LayoutPersonInfoClsDto> classItemList = classItemsOfCategory.getValue();
@@ -301,36 +277,6 @@ public class LayoutFinder {
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * @param stardardDate
-	 * @param employee
-	 * @param result
-	 */
-	private GeneralDate validateStandardDate(String cid, String browsingEmpId, GeneralDate stardardDate,
-			EmpMaintLayoutDto result) {
-
-		AffCompanyHist affCompanyHist = affCompanyHistRepo.getAffCompanyHistoryOfEmployee(cid, browsingEmpId);
-		if (affCompanyHist == null) {
-			throw new RuntimeException("Affliate Company Histoty can't be null!");
-		}
-		AffCompanyHistByEmployee employeeHistory = affCompanyHist.getAffCompanyHistByEmployee(browsingEmpId);
-
-		if (employeeHistory.getHistoryWithReferDate(stardardDate).isPresent()) {
-			result.setStandardDate(stardardDate);
-		} else {
-			Optional<AffCompanyHistItem> hitoryOption = employeeHistory.getHistoryBeforeReferDate(stardardDate);
-			if (hitoryOption.isPresent()) {
-				stardardDate = hitoryOption.get().getDatePeriod().end();
-			} else {
-				hitoryOption = employeeHistory.getHistoryAfterReferDate(stardardDate);
-				if (hitoryOption.isPresent()) {
-					stardardDate = hitoryOption.get().getDatePeriod().start();
-				}
-			}
-		}
-		return stardardDate;
 	}
 
 	/**
@@ -472,16 +418,15 @@ public class LayoutFinder {
 						SelectionItemDto selectionItemDto = (SelectionItemDto) valueItem.getItem();
 						boolean isDataType6 = dataType == DataTypeValue.SELECTION.value;
 						valueItem.setLstComboBoxValue(comboBoxFactory.getComboBox(selectionItemDto, employeeId,
-								comboBoxStandardDate, valueItem.isRequired(),perInfoCategory.getPersonEmployeeType(), isDataType6));
+								comboBoxStandardDate, valueItem.isRequired(), perInfoCategory.getPersonEmployeeType(),
+								isDataType6, perInfoCategory.getCategoryCode().v()));
 					}
 				}
 			}
 		}
 		
-		// set default value for items of category WorkingCondition 
-		if (perInfoCategory.getCategoryCode().equals("CS00020")) {
-			initDefaultValue.setDefaultValueRadio(classItemList);
-		}
+		// set default value
+		initDefaultValue.setDefaultValue(classItemList);
 
 	}
 
@@ -563,6 +508,7 @@ public class LayoutFinder {
 			for (PerInfoItemDefDto itemDef : classItem.getListItemDf()) {
 				items.add(LayoutPersonInfoValueDto.cloneFromItemDef(perInfoCategory, itemDef));
 			}
+			classItem.setPersonInfoCategoryCD(perInfoCategory.getCategoryCode().v());
 			classItem.setListItemDf(null);
 			classItem.setItems(items);
 		}

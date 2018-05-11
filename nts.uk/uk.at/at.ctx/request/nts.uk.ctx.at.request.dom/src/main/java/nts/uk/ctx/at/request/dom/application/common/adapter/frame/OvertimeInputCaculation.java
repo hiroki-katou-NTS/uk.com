@@ -16,6 +16,6 @@ public class OvertimeInputCaculation {
 	 * 勤怠項目NO
 	 */
 	private int frameNo;
-	
+	/**時間*/
 	private Integer resultCaculation;
 }

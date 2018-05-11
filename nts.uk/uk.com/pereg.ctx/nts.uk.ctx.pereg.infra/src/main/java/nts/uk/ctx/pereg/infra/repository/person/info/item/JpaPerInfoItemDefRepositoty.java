@@ -3,6 +3,7 @@ package nts.uk.ctx.pereg.infra.repository.person.info.item;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -122,7 +123,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"ic.dataType, ic.timeItemMin, ic.timeItemMax, ic.timepointItemMin, ic.timepointItemMax, ic.dateItemType,",
 			"ic.stringItemType, ic.stringItemLength, ic.stringItemDataType, ic.numericItemMin, ic.numericItemMax, ic.numericItemAmountAtr,",
 			"ic.numericItemMinusAtr, ic.numericItemDecimalPart, ic.numericItemIntegerPart,",
-			"ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId, ic.relatedCategoryCode, ic.resourceId",
+			"ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId, ic.relatedCategoryCode, ic.resourceId, io.disporder",
 			"FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId",
 			"INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd",
 			"AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd INNER JOIN PpemtPerInfoItemOrder io",
@@ -284,6 +285,19 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId",
 			"WHERE c.categoryCd = :ctgCd AND c.cid = :cid");
 
+	private final static String SELECT_CHILDS_ITEMS_BY_LIST_ITEM_ID_QUERY = String.join(" ",
+			"SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,",
+			"ic.itemParentCd, ic.systemRequiredAtr, ic.requireChangabledAtr, ic.fixedAtr, ic.itemType,",
+			"ic.dataType, ic.timeItemMin, ic.timeItemMax, ic.timepointItemMin, ic.timepointItemMax, ic.dateItemType,",
+			"ic.stringItemType, ic.stringItemLength, ic.stringItemDataType, ic.numericItemMin, ic.numericItemMax, ic.numericItemAmountAtr,",
+			"ic.numericItemMinusAtr, ic.numericItemDecimalPart, ic.numericItemIntegerPart,",
+			"ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId, ic.relatedCategoryCode, ic.resourceId",
+			"FROM PpemtPerInfoItem i ",
+			"INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd",
+			"AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd INNER JOIN PpemtPerInfoItemOrder io",
+			"ON io.ppemtPerInfoItemPK.perInfoItemDefId = i.ppemtPerInfoItemPK.perInfoItemDefId AND io.perInfoCtgId = i.perInfoCtgId",
+			"WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND ic.itemParentCd IN :listParentCd",
+			"ORDER BY io.disporder");
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
 		return this.queryProxy().query(SELECT_ITEMS_BY_CATEGORY_ID_QUERY, Object[].class)
@@ -907,4 +921,33 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				.getList(x -> PersonInfoItemDefinition.createDomainWithNameAndAbolition(x[0].toString(),
 						x[1].toString(), x[2].toString()));
 	}
+
+	@Override
+	public List<PersonInfoItemDefinition> getItemLstByListId(List<String> listItemDefId, String contractCd) {
+		// SELECT_CHILDS_ITEMS_BY_LIST_ITEM_ID_QUERY
+		long start = System.currentTimeMillis();
+		List<Object[]> objItemParents = this.queryProxy()
+				.query(SELECT_ITEMS_BY_LIST_ITEM_ID_QUERY, Object[].class)
+				.setParameter("contractCd", contractCd)
+				.setParameter("listItemDefId", listItemDefId).getList();
+		List<Object[]> itemlst = new ArrayList<>();
+		for(int i = 0 ; i <objItemParents.size(); i++) {
+			List<String> itemChilds = getChildIds(contractCd, String.valueOf(objItemParents.get(i)[27]), String.valueOf(objItemParents.get(i)[1]));
+			if(!itemChilds.isEmpty()) {
+				itemlst.addAll(this.queryProxy()
+						.query(SELECT_ITEMS_BY_LIST_ITEM_ID_QUERY, Object[].class).setParameter("contractCd", contractCd)
+						.setParameter("listItemDefId", itemChilds).getList());
+			}
+		}
+		objItemParents.addAll(itemlst);
+		Collections.sort(objItemParents,new Sortbyroll());
+		System.out.println( System.currentTimeMillis() - start);
+		return objItemParents.stream().map(c -> {return createDomainFromEntity1(c, new ArrayList<>());}).collect(Collectors.toList());
+	}
 }
+
+class Sortbyroll implements Comparator<Object[]> {
+	 public int compare(Object[] a, Object[] b) {
+	  return (Integer.valueOf(a[30].toString()) - Integer.valueOf(b[30].toString()));
+	 }
+	}
