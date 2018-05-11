@@ -17,10 +17,9 @@ public class WorkScheduleOutputConditionWS extends WebService{
 	@Inject
 	private WorkScheduleOutputConditionFinder workScheduleOutputConditionFinder;
 	
-	@Path("startPage/{isExistWorkScheduleOutputCondition}/{keyRestoreDomain}")
+	@Path("startPage/{isExistWorkScheduleOutputCondition}")
 	@POST
-	public WorkScheduleOutputConditionDto find(@PathParam("isExistWorkScheduleOutputCondition") boolean isExistWorkScheduleOutputCondition,
-												@PathParam("keyRestoreDomain") String keyRestoreDomain){
-		return this.workScheduleOutputConditionFinder.startScr(isExistWorkScheduleOutputCondition, keyRestoreDomain);
+	public WorkScheduleOutputConditionDto find(@PathParam("isExistWorkScheduleOutputCondition") boolean isExistWorkScheduleOutputCondition){
+		return this.workScheduleOutputConditionFinder.startScr(isExistWorkScheduleOutputCondition);
 	}
 }

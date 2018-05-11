@@ -8,14 +8,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 
 @Setter
 @Getter
 @NoArgsConstructor
 public class WorkScheduleOutputConditionDto {
-	
 	
 	/** The start date. */
 	private GeneralDate startDate;

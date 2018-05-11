@@ -1,9 +1,7 @@
 module nts.uk.at.view.kwr001.a {
     import ComponentOption = kcp.share.list.ComponentOption;
-    
-    import blockUI = nts.uk.ui.block;
-    
     import service = nts.uk.at.view.kwr001.a.service;
+    import blockUI = nts.uk.ui.block;
     
     export module viewmodel {
         export class ScreenModel {
@@ -23,11 +21,11 @@ module nts.uk.at.view.kwr001.a {
             
             // dropdownlist A7_3
             itemListCodeTemplate: KnockoutObservableArray<ItemModel>;
-            selectedCodeA7_3: KnockoutObservable<string>;
+            selectedCodeA7_3: KnockoutObservable<number>;
             
             // dropdownlist A9_2
             itemListTypePageBrake: KnockoutObservableArray<ItemModel>;
-            selectedCodeA9_2: KnockoutObservable<string>;
+            selectedCodeA9_2: KnockoutObservable<number>;
             
             // radio button group A13_1
             itemListConditionSet: KnockoutObservableArray<any>;
@@ -216,9 +214,9 @@ module nts.uk.at.view.kwr001.a {
                     new ItemModel('1', '456')
                 ]);
                 
-                self.selectedCodeA9_2 = ko.observable('1');
+                self.selectedCodeA9_2 = ko.observable(1);
                 
-                self.selectedCodeA7_3 = ko.observable('1'); 
+                self.selectedCodeA7_3 = ko.observable(1); 
                 
                 // TODO: hoangdd - lay du lieu tu service
                 self.itemListConditionSet = ko.observableArray([
@@ -262,61 +260,116 @@ module nts.uk.at.view.kwr001.a {
                     maxRows: 17
                 };
                 // end define KCP005
-                
-                // start component KCP005
-//                $('#component-items-list').ntsListComponent(self.listComponentOption);
-                // end component KCP005
             }
             
-            public startPage(): JQueryPromise<any>  {
-                blockUI.grayout();
+            public startPage(): JQueryPromise<void>  {
                 var dfd = $.Deferred<void>();
                 var self = this;
                 
                 // TODO - hoangdd: goi service lay domain cho A7_6. gio dang fix cung
                 self.enableBtnConfigure(true);
                 
-                $.when(self.getDataStartPageService(), self.getDataCharateristic(),
-                        $('#component-items-list').ntsListComponent(self.listComponentOption)).done(function() {
-                        blockUI.clear();
+                $.when(self.getDataCharateristic()).done(function(dataCharacteristic: any) {
+                    let isExist = !(_.isUndefined(dataCharacteristic) || _.isNull(dataCharacteristic));
+                    self.getDataStartPageService(isExist).done(function(dataService: any) {
+                        switch(dataService.strReturn) {
+                            case SHOW_CHARACTERISTIC:
+                                self.renewDataPage();
+                                break;
+                            case STRING_EMPTY:
+                                break;
+                            case OPEN_SCREEN_C:
+                                self.openScreenC();
+                                break;
+                            default:
+                                break;
+                        }
+                    }).fail(function(error) {
+                       nts.uk.ui.dialog.alertError(error);     
+                    }).always(function() {
+                        dfd.resolve();    
                     });
+                });
                 
-                dfd.resolve();
                 return dfd.promise();
             }
             
-            private getDataStartPageService(): JQueryPromise<any> {
-                var dfd = $.Deferred<void>();
+            private renewDataPage(): void {
                 let self = this;
-                
-                // TODO - hoangdd: fake data
-                let isExist = true;
-                let keyRestore = "kwr001";
-                service.getDataStartPage(isExist, keyRestore).done(function(data: any) {
+                let companyId: string = __viewContext.user.companyId;
+                let userId: string = __viewContext.user.employeeId;
+                service.restoreCharacteristic(companyId, userId).done(function(data: any) {
+                    let workScheduleOutputCondition: WorkScheduleOutputCondition = data;
+                    self.selectedDataOutputType(workScheduleOutputCondition.outputType);
+                    // TODO - hoangdd: A7_3 se can 1 service de lay list, sau do so sanh code da chon vs list code tra ve de lay index
+                    //          workScheduleOutputCondition.code
+                    self.selectedCodeA7_3(1);
+                    self.selectedCodeA9_2(workScheduleOutputCondition.pageBreakIndicator);
+                    self.checkedA10_2(workScheduleOutputCondition.settingDetailTotalOuput.details);
+                    self.checkedA10_3(workScheduleOutputCondition.settingDetailTotalOuput.personalTotal);
+                    self.checkedA10_4(workScheduleOutputCondition.settingDetailTotalOuput.workplaceTotal);
+                    self.checkedA10_5(workScheduleOutputCondition.settingDetailTotalOuput.totalNumberDay);
+                    self.checkedA10_6(workScheduleOutputCondition.settingDetailTotalOuput.grossTotal);
+                    self.checkedA10_7(workScheduleOutputCondition.settingDetailTotalOuput.cumulativeWorkplace);
+                    if (workScheduleOutputCondition.settingDetailTotalOuput.workplaceHierarchyTotal) {
+                        self.checkedA10_10(workScheduleOutputCondition.settingDetailTotalOuput.workplaceHierarchyTotal.firstLevel);
+                        self.checkedA10_11(workScheduleOutputCondition.settingDetailTotalOuput.workplaceHierarchyTotal.secondLevel);
+                        self.checkedA10_12(workScheduleOutputCondition.settingDetailTotalOuput.workplaceHierarchyTotal.thirdLevel);
+                        self.checkedA10_13(workScheduleOutputCondition.settingDetailTotalOuput.workplaceHierarchyTotal.fourthLevel);
+                        self.checkedA10_14(workScheduleOutputCondition.settingDetailTotalOuput.workplaceHierarchyTotal.fifthLevel);
+                        self.checkedA10_15(workScheduleOutputCondition.settingDetailTotalOuput.workplaceHierarchyTotal.sixthLevel);
+                        self.checkedA10_16(workScheduleOutputCondition.settingDetailTotalOuput.workplaceHierarchyTotal.seventhLevel);
+                        self.checkedA10_17(workScheduleOutputCondition.settingDetailTotalOuput.workplaceHierarchyTotal.eighthLevel);
+                        self.checkedA10_18(workScheduleOutputCondition.settingDetailTotalOuput.workplaceHierarchyTotal.ninthLevel);
+                    }
+                    self.selectedCodeA13_1(workScheduleOutputCondition.conditionSetting);
+                })
+            }
+            
+            // get data from service
+            private getDataStartPageService(isExist: boolean): JQueryPromise<any> {
+                var dfd = $.Deferred<any>();
+                let self = this;
+                service.getDataStartPage(isExist).done(function(data: any) {
                     self.startDatepicker(data.startDate);
                     self.endDatepicker(data.endDate);
                     self.ccg001ComponentOption.baseDate = moment.utc(self.endDatepicker(), DATE_FORMAT_YYYY_MM_DD).toISOString();
-                    // start component CCG001
-                    $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption).done(function(){
-                        dfd.resolve();
-                    });
-                    // end component CCG001
-                    console.log(data);
-                    
-                })
-                
+                    dfd.resolve(data);
+                })                
                 return dfd.promise();
             }
             
-            private getDataCharateristic(): JQueryPromise<any> {
-                var dfd = $.Deferred<void>();
-                console.log(__viewContext);
+            // run after create success html 
+            public executeBindingComponent(): void {
                 let self = this;
-                nts.uk.characteristics.save("WorkScheduleOutputCondition_", "sdf");
-                $.when(nts.uk.characteristics.restore("WorkScheduleOutputCondition_")).done(function(data: any) {
-                    console.log(data);
+                
+                // start component CCG001
+                // start component KCP005
+                $.when($('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption), 
+                            $('#component-items-list').ntsListComponent(self.listComponentOption)).done(function() {
+                    $('.ntsStartDatePicker').focus();
+                    blockUI.clear();
                 });
-                dfd.resolve();
+            }
+            
+            // get data from characteristic
+            private getDataCharateristic(): JQueryPromise<any> {
+                var dfd = $.Deferred<any>();
+                let self = this;
+                
+                let companyId: string = __viewContext.user.companyId;
+                let userId: string = __viewContext.user.employeeId;
+                
+                let totalWorkplaceHierachy = new TotalWorkplaceHierachy(true, false, true, false, true, true, false, false, true);
+                let workScheduleSettingTotalOutput = new WorkScheduleSettingTotalOutput(true, true, false, false, true, true, totalWorkplaceHierachy);
+                let workScheduleOutputCondition = new WorkScheduleOutputCondition(companyId, userId, 0, '', 1, workScheduleSettingTotalOutput, 1);
+                
+                // TODO - hoangdd: fake data
+                service.saveCharacteristic(companyId, userId, workScheduleOutputCondition);
+                
+                $.when(service.restoreCharacteristic(companyId, userId)).done(function(data: WorkScheduleOutputCondition) {
+                    dfd.resolve(data);
+                });
                 
                 return dfd.promise();
             }
@@ -331,7 +384,6 @@ module nts.uk.at.view.kwr001.a {
             openScreenC () {
                 var self = this;
                 nts.uk.ui.windows.setShared('KWR001_C', self.data(), true);
-//                nts.uk.request.jump("/view/kwr/001/c/index.xhtml", {} );
                 nts.uk.ui.windows.sub.modal('/view/kwr/001/c/index.xhtml').onClosed(function(): any {
                     nts.uk.ui.windows.getShared('KWR001_C');
                 });
@@ -339,6 +391,9 @@ module nts.uk.at.view.kwr001.a {
         }
         
         const DATE_FORMAT_YYYY_MM_DD = "YYYY/MM/DD";
+        const STRING_EMPTY = "";
+        const SHOW_CHARACTERISTIC = "SHOW_CHARACTERISTIC";
+        const OPEN_SCREEN_C = "Open_ScrC";
         
         export class ListType {
             static EMPLOYMENT = 1;
@@ -442,14 +497,14 @@ module nts.uk.at.view.kwr001.a {
             companyId: string;
             userId: string;
             outputType: number;
-            code: Array<string>;
+            code: string;
             pageBreakIndicator: number;
             settingDetailTotalOuput: WorkScheduleSettingTotalOutput;
             conditionSetting: number;
-            errorAlarmCode: Array<string>;
+            errorAlarmCode: string[];
             
-            constructor(companyId: string, userId: string, outputType: number, code: Array<string>, pageBreakIndicator: number,
-                            settingDetailTotalOuput: WorkScheduleSettingTotalOutput, conditionSetting: number, errorAlarmCode: Array<string>) {
+            constructor(companyId: string, userId: string, outputType: number, code: string, pageBreakIndicator: number,
+                            settingDetailTotalOuput: WorkScheduleSettingTotalOutput, conditionSetting: number, errorAlarmCode?: string[]) {
                 this.companyId = companyId;
                 this.userId = userId;
                 this.outputType = outputType;

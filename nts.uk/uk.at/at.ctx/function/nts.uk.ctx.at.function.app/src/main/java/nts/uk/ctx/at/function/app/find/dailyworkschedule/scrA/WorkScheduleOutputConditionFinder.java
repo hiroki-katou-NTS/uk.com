@@ -45,8 +45,10 @@ public class WorkScheduleOutputConditionFinder {
 	
 	private static final String STRING_EMPTY = "";
 	private static final Integer FUNCTION_NO = 2;
+	private static final String SHOW_CHARACTERISTIC = "SHOW_CHARACTERISTIC";
+	private static final String OPEN_SCREEN_C = "Open_ScrC";
 	
-	public WorkScheduleOutputConditionDto startScr(boolean isExistWorkScheduleOutputCondition, String keyRestoreDomain) {
+	public WorkScheduleOutputConditionDto startScr(boolean isExistWorkScheduleOutputCondition) {
 		
 		WorkScheduleOutputConditionDto dto = new WorkScheduleOutputConditionDto();
 		
@@ -79,14 +81,14 @@ public class WorkScheduleOutputConditionFinder {
 		List<OutputItemDailyWorkSchedule> lstOutputItemDailyWorkSchedule = outputItemDailyWorkScheduleRepository.findByCid(companyId);
 		if (lstOutputItemDailyWorkSchedule.isEmpty()) {
 			if (isExistWorkScheduleOutputCondition) {
-				dto.setStrReturn(keyRestoreDomain);
+				dto.setStrReturn(SHOW_CHARACTERISTIC);
 			} else {
 				dto.setStrReturn(STRING_EMPTY);
 			}
 		} else {
 			// 「就業帳票の権限」が取得できたか ( 「............」 đã được acquire chưa?)
 			if (optPermissionOfEmploymentForm.isPresent()) {
-				dto.setStrReturn("Open_ScrC");
+				dto.setStrReturn(OPEN_SCREEN_C);
 			} else {
 				throw new BusinessException("Msg_1141");
 			}
