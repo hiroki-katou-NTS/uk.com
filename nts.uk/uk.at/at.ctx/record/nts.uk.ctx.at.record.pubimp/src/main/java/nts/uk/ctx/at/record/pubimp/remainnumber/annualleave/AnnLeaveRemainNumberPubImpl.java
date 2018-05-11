@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoDomService;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.basicinfo.valueobject.AnnLeaRemNumValueObject;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveMngMode;
@@ -28,6 +29,7 @@ import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AnnLeaveRemainNumberPub
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.ClosurePeriodEachYear;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -48,7 +50,10 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 
 	@Inject
 	private AnnLeaEmpBasicInfoRepository annLeaBasicInfoRepo;
-
+	
+	@Inject
+	private CalcNextAnnualLeaveGrantDate calcNextAnnualLeaveGrantDate;
+	
 	@Inject
 	private Closure closureService;
 
@@ -67,10 +72,21 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 		Optional<AggrResultOfAnnualLeave> aggrResult = getAnnLeaRemNumWithinPeriod.algorithm(companyId, employeeId,
 				datePeriod, TempAnnualLeaveMngMode.OTHER, datePeriod.end(), false, false, Optional.empty(),
 				Optional.empty(), Optional.empty());
-
+		AggrResultOfAnnualLeave annualLeave = new AggrResultOfAnnualLeave();
 		Optional<AnnualLeaveEmpBasicInfo> basicInfo = annLeaBasicInfoRepo.get(employeeId);
-
-		return null;
+		
+		List<NextAnnualLeaveGrant> annualLeaveGrant = calcNextAnnualLeaveGrantDate.algorithm(companyId, employeeId, Optional.empty());
+		
+		AnnLeaveOfThisMonth result = new AnnLeaveOfThisMonth(   annualLeaveGrant.get(0).getGrantDate(),
+																annualLeaveGrant.get(0).getGrantDays(), 
+																remainNumber.getDays(),
+																remainNumber.getMinutes(),
+																annualLeave.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber().getUsedDays().getUsedDays(),
+																annualLeave.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber().getUsedTime(),
+																annualLeave.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays(),
+																annualLeave.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingTime()
+				);
+		return result;
 	}
 
 	@Override
@@ -78,11 +94,11 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			DatePeriod datePeriod) {
 		String companyId = AppContexts.user().companyId();
 		GeneralDate baseDate = GeneralDate.today();
-		// ç¤¾å“¡ã«å¯¾å¿œã™ã‚‹å‡¦ç†ç· ã‚ã‚’å–å¾—ã™ã‚‹
+		// Ğˆõ‚É‘Î‰‚·‚éˆ—’÷‚ß‚ğæ“¾‚·‚é
 		Optional<Closure> closure = checkShortageFlex.findClosureByEmployee(employeeId, baseDate);
-		// æŒ‡å®šã—ãŸå¹´æœˆã®æœŸé–“ã‚’ã™ã¹ã¦å–å¾—ã™ã‚‹
+		// w’è‚µ‚½”NŒ‚ÌŠúŠÔ‚ğ‚·‚×‚Äæ“¾‚·‚é
 		List<DatePeriod> periodByYearMonth = closureService.getPeriodByYearMonth(datePeriod.end().yearMonth());
-		// é›†è¨ˆæœŸé–“ã‚’è¨ˆç®—ã™ã‚‹
+		// WŒvŠúŠÔ‚ğŒvZ‚·‚é
 		List<ClosurePeriod> listClosurePeriod = getClosurePeriod.get(companyId, employeeId, datePeriod.end(),
 				Optional.empty(), Optional.empty(), Optional.empty());
 		Map<YearMonth, List<ClosurePeriod>> listMap = listClosurePeriod.stream()
