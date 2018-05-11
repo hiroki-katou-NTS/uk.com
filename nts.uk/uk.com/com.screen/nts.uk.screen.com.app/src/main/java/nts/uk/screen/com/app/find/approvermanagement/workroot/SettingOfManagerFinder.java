@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ManagerSettingDto;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
@@ -49,55 +50,59 @@ public class SettingOfManagerFinder {
 	 * @return
 	 */
 	public ManagerSettingDto getPsAppRootBySettingOfManager(String employeeId) {
-		String companyId = AppContexts.user().companyId();
-		String loginId = AppContexts.user().employeeId();
-		GeneralDate startDate = null;
-		GeneralDate endDate = null;
-		GeneralDate startDateCommon = null;
-		GeneralDate endDateCommon = null;
+		String companyId             = AppContexts.user().companyId();
+		String loginId               = AppContexts.user().employeeId();
+		GeneralDate startDate        = null;
+		GeneralDate endDate          = null;
+		GeneralDate startDateCommon  = null;
+		GeneralDate endDateCommon    = null;
 		GeneralDate startDateMonthly = null;
-		GeneralDate endDateMonthly = null;
-		boolean isNewMode = false;
-		String departmentCode = null;
-		String departmentApproverId = null;
-		String departmentName = null;
-		String dailyApprovalCode = null;
-		String dailyApproverId = null;
-		String dailyApprovalName = null;
-		boolean hasAuthority = true;
-		boolean existCommonAppPhase = false;
+		GeneralDate endDateMonthly   = null;
+		boolean isNewMode            = false;
+		String departmentCode        = null;
+		String departmentApproverId  = null;
+		String departmentName        = null;
+		String dailyApprovalCode     = null;
+		String dailyApproverId       = null;
+		String dailyApprovalName     = null;
+		boolean hasAuthority         = true;
+		boolean existCommonAppPhase  = false;
 		boolean existMonthlyAppPhase = false;
 		GeneralDate closingStartDate = null;
+		SettingInfo commonSettingInfo  = null;
+		SettingInfo monthlySettingInfo = null;
 
 		// ドメインモデル「個人別就業承認ルート」を取得する
 		Optional<PersonApprovalRoot> commonPsApp = this.personAppRootRepo.getNewestCommonPsAppRoot(companyId, employeeId);
 		Optional<PersonApprovalRoot> monthlyPsApp = this.personAppRootRepo.getNewestMonthlyPsAppRoot(companyId, employeeId);
 
 		if (commonPsApp.isPresent()) {
-			SettingInfo settingInfo = this.getSettingInfo(companyId, commonPsApp.get());
-			startDateCommon     = settingInfo.getStartDate();
-			endDateCommon       = settingInfo.getEndDate();
-			startDate           = settingInfo.getStartDate();
-			endDate             = settingInfo.getEndDate();
-			dailyApprovalCode   = settingInfo.getApprovalCode();
-			dailyApproverId     = settingInfo.getApproverId();
-			dailyApprovalName   = settingInfo.getApprovalName();
-			existCommonAppPhase = settingInfo.isExistAppPhase();
+			commonSettingInfo = this.getSettingInfo(companyId, commonPsApp.get());
+			startDateCommon     = commonSettingInfo.getStartDate();
+			endDateCommon       = commonSettingInfo.getEndDate();
+			startDate           = commonSettingInfo.getStartDate();
+			endDate             = commonSettingInfo.getEndDate();
+			dailyApprovalCode   = commonSettingInfo.getApprovalCode();
+			dailyApproverId     = commonSettingInfo.getApproverId();
+			dailyApprovalName   = commonSettingInfo.getApprovalName();
+			existCommonAppPhase = commonSettingInfo.isExistAppPhase();
 		}
 
 		if (monthlyPsApp.isPresent()) {
-			SettingInfo settingInfo = this.getSettingInfo(companyId, monthlyPsApp.get());
-			startDateMonthly     = settingInfo.getStartDate();
-			endDateMonthly       = settingInfo.getEndDate();
-			startDate            = settingInfo.getStartDate();
-			endDate              = settingInfo.getEndDate();
-			departmentCode       = settingInfo.getApprovalCode();
-			departmentApproverId = settingInfo.getApproverId();
-			departmentName       = settingInfo.getApprovalName();
-			existMonthlyAppPhase = settingInfo.isExistAppPhase();
+			monthlySettingInfo = this.getSettingInfo(companyId, monthlyPsApp.get());
+			startDateMonthly     = monthlySettingInfo.getStartDate();
+			endDateMonthly       = monthlySettingInfo.getEndDate();
+			startDate            = monthlySettingInfo.getStartDate();
+			endDate              = monthlySettingInfo.getEndDate();
+			departmentCode       = monthlySettingInfo.getApprovalCode();
+			departmentApproverId = monthlySettingInfo.getApproverId();
+			departmentName       = monthlySettingInfo.getApprovalName();
+			existMonthlyAppPhase = monthlySettingInfo.isExistAppPhase();
 		}
 
 		if (commonPsApp.isPresent() && monthlyPsApp.isPresent()) {
+			GeneralDate maxDate = GeneralDate.fromString(ConstantUtils.MAX_DATE, ConstantUtils.FORMAT_DATE_YYYYMMDD);
+
 			// バラバラ履歴があります。
 			if (startDateCommon.after(startDateMonthly)) {
 				startDate = startDateCommon;
@@ -107,6 +112,25 @@ public class SettingOfManagerFinder {
 			else {
 				startDate = startDateMonthly;
 				endDate   = endDateMonthly;
+			}
+
+			if (maxDate.equals(endDateCommon) && maxDate.equals(endDateMonthly)) {
+				dailyApprovalCode    = commonSettingInfo.getApprovalCode();
+				dailyApproverId      = commonSettingInfo.getApproverId();
+				dailyApprovalName    = commonSettingInfo.getApprovalName();
+				departmentCode       = monthlySettingInfo.getApprovalCode();
+				departmentApproverId = monthlySettingInfo.getApproverId();
+				departmentName       = monthlySettingInfo.getApprovalName();
+			} else {
+				if (startDateCommon.after(startDateMonthly)) {
+					departmentCode       = null;
+					departmentApproverId = null;
+					departmentName       = null;
+				} else {
+					dailyApprovalCode = null;
+					dailyApproverId   = null;
+					dailyApprovalName = null;
+				}
 			}
 		}
 		// 両方がない。
