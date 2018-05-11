@@ -32,7 +32,7 @@ public class ItemOutTblBookCommand {
     /**
     * 使用区分
     */
-    private int useClass;
+    private boolean useClass;
     
     /**
     * 値の出力形式

@@ -26,7 +26,7 @@ public class AddItemOutTblBookCommandHandler extends CommandHandler<ItemOutTblBo
         ItemOutTblBookCommand addCommand = context.getCommand();
         repository.add(ItemOutTblBook.createFromJavaType(companyId,
                        addCommand.getSetOutCd(), addCommand.getCd(), addCommand.getSortBy(),
-                       addCommand.getHeadingName(), addCommand.getUseClass(),
+                       addCommand.getHeadingName(), addCommand.isUseClass(),
                        addCommand.getValOutFormat(),
                        addCommand.getListOperationSetting().stream().map(m ->
                            CalcFormulaItem.createFromJavaType(companyId, m.getSetOutCd(),

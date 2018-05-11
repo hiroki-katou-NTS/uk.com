@@ -34,7 +34,7 @@ public class SetOutItemsWoSc extends AggregateRoot {
 	/**
 	* 36協定時間を超過した月数を出力する
 	*/
-	private int outNumExceedTime36Agr;
+	private boolean outNumExceedTime36Agr;
 
 	/**
 	* 表示形式
@@ -43,7 +43,7 @@ public class SetOutItemsWoSc extends AggregateRoot {
 
 	private List<ItemOutTblBook> listItemOutTblBook;
 	
-	public static SetOutItemsWoSc createFromJavaType(String cid, String cd, String name, int outNumExceedTime36Agr,
+	public static SetOutItemsWoSc createFromJavaType(String cid, String cd, String name, boolean outNumExceedTime36Agr,
 			int displayFormat, List<ItemOutTblBook> listItemOutTblBook) {
 		return new SetOutItemsWoSc(cid, new OutItemsWoScCode(cd),
 				new OutItemsWoScName(name), outNumExceedTime36Agr,

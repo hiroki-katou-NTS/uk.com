@@ -44,7 +44,7 @@ public class ItemOutTblBook extends DomainObject {
 	/**
 	* 使用区分
 	*/
-	private int useClassification;
+	private boolean useClassification;
 	/**
 	* 値の出力形式
 	*/
@@ -52,7 +52,7 @@ public class ItemOutTblBook extends DomainObject {
 
 	private List<CalcFormulaItem> listOperationSetting;
 
-	public static ItemOutTblBook createFromJavaType(String cid, String setOutCd, String cd, int sortBy, String headingName, int useClass,
+	public static ItemOutTblBook createFromJavaType(String cid, String setOutCd, String cd, int sortBy, String headingName, boolean useClass,
 			int valOutFormat, List<CalcFormulaItem> listCalcFormulaItem) {
 		return new ItemOutTblBook(cid, setOutCd, new ItemOutTblBookCode(cd), sortBy,
 				new ItemOutTblBookHeadingName(headingName), useClass,

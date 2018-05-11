@@ -30,7 +30,7 @@ public class SetOutItemsWoScDto
     /**
     * 36協定時間を超過した月数を出力する
     */
-    private int outNumExceedTime36Agr;
+    private boolean outNumExceedTime36Agr;
     
     /**
     * 表示形式
@@ -41,7 +41,7 @@ public class SetOutItemsWoScDto
     public static SetOutItemsWoScDto fromDomain(SetOutItemsWoSc domain)
     {
         return new SetOutItemsWoScDto(domain.getCid(), domain.getCd().v(), domain.getName().v(),
-                                      domain.getOutNumExceedTime36Agr(), domain.getDisplayFormat().value);
+                                      domain.isOutNumExceedTime36Agr(), domain.getDisplayFormat().value);
     }
     
 }

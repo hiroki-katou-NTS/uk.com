@@ -436,7 +436,6 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             setShared("KWR008_B_Result", self.selectedCode());
             nts.uk.ui.windows.close();
         }
-
     }
 
     export class OperationCondition {
@@ -488,7 +487,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         displayCode: string;
         name: KnockoutObservable<string> = ko.observable('');
         displayName: string;
-        outNumExceedTime36Agr: KnockoutObservable<number> = ko.observable(0);
+        outNumExceedTime36Agr: KnockoutObservable<number> = ko.observable(false);
         displayFormat: KnockoutObservable<number> = ko.observable(0);
         listItemOutput: KnockoutObservableArray<OutputItemData> = ko.observableArray([]);
         constructor(param) {
@@ -497,7 +496,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.displayCode = self.cd();
             self.name(param ? param.name || '' : '');
             self.displayName = self.name();
-            self.outNumExceedTime36Agr(param ? param.outNumExceedTime36Agr || 0 : 0);
+            self.outNumExceedTime36Agr(param ? param.outNumExceedTime36Agr || false : false);
             self.displayFormat(param ? param.displayFormat || 0 : 0);
 
         }

@@ -100,7 +100,7 @@ public class KfnrtItemOutTblBook extends UkJpaEntity implements Serializable
     public ItemOutTblBook toDomain() {
         return new ItemOutTblBook(this.itemOutTblBookPk.cid, this.itemOutTblBookPk.setOutCd,
                                   new ItemOutTblBookCode(this.itemOutTblBookPk.cd), this.sortBy,
-                                  new ItemOutTblBookHeadingName(this.headingName), this.useClass,
+                                  new ItemOutTblBookHeadingName(this.headingName), this.useClass == 1? true: false,
                                   EnumAdaptor.valueOf(this.valOutFormat, ValueOuputFormat.class),
         this.listCalcFormulaItem.stream().map(m -> m.toDomain()).collect(Collectors.toList()));
     }
@@ -108,8 +108,9 @@ public class KfnrtItemOutTblBook extends UkJpaEntity implements Serializable
     public static KfnrtItemOutTblBook toEntity(ItemOutTblBook domain) {
         return new KfnrtItemOutTblBook(new KfnrtItemOutTblBookPk(domain.getCid(), domain.getSetOutCd(), domain.getCd().v()),
                                        domain.getSortBy(), domain.getHeadingName().v(),
-                                       domain.getUseClass(), domain.getValOutFormat().value,
-                                       domain.getListCalcFormulaItem().stream()
+                                       domain.isUseClassification()? 1: 0,
+                                       domain.getValOutFormat().value,
+                                       domain.getListOperationSetting().stream()
                                        .map(m -> KfnrtCalcFormulaItem.toEntity(m)).collect(Collectors.toList()));
     }
 }

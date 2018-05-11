@@ -66,13 +66,14 @@ public class KfnrtSetOutItemsWoSc extends UkJpaEntity implements Serializable {
 
 	public SetOutItemsWoSc toDomain() {
 		return SetOutItemsWoSc.createFromJavaType(this.setOutItemsWoScPk.cid, this.setOutItemsWoScPk.cd,
-													this.name, this.outNumExceedTime36Agr, this.displayFormat,
+													this.name, this.outNumExceedTime36Agr == 1? true: false,
+													this.displayFormat,
 			this.listItemOutTblBook.stream().map(m-> m.toDomain()).collect(Collectors.toList()));
 	}
 
 	public static KfnrtSetOutItemsWoSc toEntity(SetOutItemsWoSc domain) {
 		return new KfnrtSetOutItemsWoSc(new KfnrtSetOutItemsWoScPk(domain.getCid(), domain.getCd().v()),
-										domain.getName().v(), domain.getOutNumExceedTime36Agr(),
+										domain.getName().v(), domain.isOutNumExceedTime36Agr()? 1: 0,
 										domain.getDisplayFormat().value,
 			domain.getListItemOutTblBook().stream().map(m -> KfnrtItemOutTblBook.toEntity(m)).collect(Collectors.toList()));
 	}

@@ -33,7 +33,7 @@ public class UpdateSetOutItemsWoScCommandHandler extends CommandHandler<SetOutIt
         List<ItemOutTblBook> listItemOutTblBook = updateCommand.getListItemOutput().stream()
                    .map(m -> ItemOutTblBook.createFromJavaType(companyId,
                         updateCommand.getCd(), m.getCd(), m.getSortBy(),
-                        m.getHeadingName(), m.getUseClass(), m.getValOutFormat(),
+                        m.getHeadingName(), m.isUseClass(), m.getValOutFormat(),
                            //list CalcFormulaItem
                            m.getListOperationSetting().stream()
                            .map(os -> CalcFormulaItem.createFromJavaType(companyId, updateCommand.getCd(),
@@ -42,7 +42,7 @@ public class UpdateSetOutItemsWoScCommandHandler extends CommandHandler<SetOutIt
 
         repository.update(new SetOutItemsWoSc(companyId, new OutItemsWoScCode(updateCommand.getCd()),
                           new OutItemsWoScName(updateCommand.getName()),
-                          updateCommand.getOutNumExceedTime36Agr(),
+                          updateCommand.isOutNumExceedTime36Agr(),
                           EnumAdaptor.valueOf(updateCommand.getDisplayFormat(), OutputAgreementTime.class),
                           listItemOutTblBook));
     

@@ -27,7 +27,7 @@ public class SetOutItemsWoScCommand {
     /**
     * 36協定時間を超過した月数を出力する
     */
-    private int outNumExceedTime36Agr;
+    private boolean outNumExceedTime36Agr;
 
     /**
     * 表示形式

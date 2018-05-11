@@ -27,7 +27,7 @@ public class UpdateItemOutTblBookCommandHandler extends CommandHandler<ItemOutTb
         ItemOutTblBookCommand updateCommand = context.getCommand();
         repository.update(ItemOutTblBook.createFromJavaType(companyId, updateCommand.getSetOutCd(),
                                                             updateCommand.getCd(), updateCommand.getSortBy(),
-                                                            updateCommand.getHeadingName(), updateCommand.getUseClass(),
+                                                            updateCommand.getHeadingName(), updateCommand.isUseClass(),
                                                             updateCommand.getValOutFormat(),
                                                             updateCommand.getListOperationSetting().stream().map(m ->
 	                                                            CalcFormulaItem.createFromJavaType(companyId, m.getSetOutCd(),

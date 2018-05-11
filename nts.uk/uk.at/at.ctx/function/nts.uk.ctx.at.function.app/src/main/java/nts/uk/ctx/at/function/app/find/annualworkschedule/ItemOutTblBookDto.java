@@ -35,7 +35,7 @@ public class ItemOutTblBookDto
 	    /**
 	    * 使用区分
 	    */
-	    private int useClass;
+	    private boolean useClass;
 	    
 	    /**
 	    * 値の出力形式
@@ -47,10 +47,10 @@ public class ItemOutTblBookDto
     public static ItemOutTblBookDto fromDomain(ItemOutTblBook domain)
     {
         return new ItemOutTblBookDto(domain.getSetOutCd(), domain.getCd().v(), domain.getSortBy(),
-        		domain.getHeadingName().v(), domain.getUseClassification(), domain.getValOutFormat().value, domain.getListOperationSetting());
+        		domain.getHeadingName().v(), domain.isUseClassification(), domain.getValOutFormat().value, domain.getListOperationSetting());
     }
 
-	public ItemOutTblBookDto(String setOutCd, String cd, int sortBy, String headingName, int useClass, int valOutFormat,
+	public ItemOutTblBookDto(String setOutCd, String cd, int sortBy, String headingName, boolean useClass, int valOutFormat,
 			List<CalcFormulaItem> listOperationSetting) {
 		super();
 		this.setOutCd = setOutCd;
