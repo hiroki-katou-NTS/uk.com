@@ -57,6 +57,7 @@
 											value: strMonth,
 											visibleItemsCount: 13,
 											optionsText: 'name',
+											dropDownAttachedToBody: true,
 											enable: (strSelected() == 1),
 											columns: [
 												{ prop: 'name', length: 5 }
@@ -237,8 +238,8 @@
 	
 			
 			<div id="functions-area-bottom">
-				<button data-bind="click : submit" class="proceed x-large">#{i18n.getText('KAL004_44')}</button>
-				<button data-bind="click : closeDialog">#{i18n.getText('KAL004_45')}</button>
+				<button data-bind="click : submit" class="x-large">#{i18n.getText('KAL004_44')}</button>
+				<button data-bind="click : closeDialog" class="large">#{i18n.getText('KAL004_45')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
