@@ -88,7 +88,8 @@ public class WorkType extends AggregateRoot {
 
 	/** 出勤系かチェックする　*/
 	private boolean isWorkingType(WorkTypeClassification wt) {
-		return wt == WorkTypeClassification.Attendance || wt == WorkTypeClassification.Shooting;
+		return wt == WorkTypeClassification.Attendance || wt == WorkTypeClassification.Shooting 
+				|| wt == WorkTypeClassification.HolidayWork;
 	}
 	
 	public boolean isNoneWorkTimeType(){
