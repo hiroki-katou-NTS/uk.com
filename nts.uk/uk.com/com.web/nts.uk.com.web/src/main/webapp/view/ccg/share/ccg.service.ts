@@ -156,7 +156,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 useClosure?: boolean;
                 closureId?: number;
                 period?: any;
-                referenceDate?: any;
+                referenceDate: any;
             }
 
             export class EmployeeSearchDto {

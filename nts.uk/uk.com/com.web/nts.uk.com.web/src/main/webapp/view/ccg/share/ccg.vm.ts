@@ -131,6 +131,8 @@ module nts.uk.com.view.ccg.share.ccg {
             tab3Code: any;
             tab3Name: any;
             tab3kcp005option: any;
+            tab3Entry: any;
+            tab3Retirement: any;
 
             employmentSubscriptions: Array<KnockoutSubscription> = [];
             employeeSubscriptions: Array<KnockoutSubscription> = [];
@@ -265,6 +267,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.tab3SelectedValues = ko.observable([]);
                 self.tab3Name = ko.observable("");
                 self.tab3Code = ko.observable("");
+                self.tab3Entry = ko.observable({});
+                self.tab3Retirement = ko.observable({});
             }
             
             /**
@@ -1502,7 +1506,8 @@ module nts.uk.com.view.ccg.share.ccg {
                     
                     code: self.tab3Code(),
                     useClosure: false,
-                    systemType: 1
+                    systemType: 1,
+                    referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate()
                 };
                 service.searchByCode(query).done(data => {
                     self.showDataOnKcp005Tab3(data);
@@ -1518,7 +1523,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 const query = {
                     name: self.tab3Name(),
                     useClosure: false,
-                    systemType: 1
+                    systemType: 1,
+                    referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate()
                 };
                 service.searchByName(query).done(data => {
                     self.showDataOnKcp005Tab3(data);
@@ -1532,11 +1538,12 @@ module nts.uk.com.view.ccg.share.ccg {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_1201' });
                 }
                 const query = {
-                    name: self.tab3Name(),
                     useClosure: false,
-                    systemType: 1
+                    systemType: 1,
+                    referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate(),
+                    period: self.toPeriodDto(self.tab3Entry())
                 };
-                service.searchByName(query).done(data => {
+                service.searchByEntryDate(query).done(data => {
                     self.showDataOnKcp005Tab3(data);
                 });
             }
@@ -1548,13 +1555,21 @@ module nts.uk.com.view.ccg.share.ccg {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_1201' });
                 }
                 const query = {
-                    name: self.tab3Name(),
                     useClosure: false,
-                    systemType: 1
+                    systemType: 1,
+                    referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate(),
+                    period: self.toPeriodDto(self.tab3Retirement())
                 };
-                service.searchByName(query).done(data => {
+                service.searchByRetirementDate(query).done(data => {
                     self.showDataOnKcp005Tab3(data);
                 });
+            }
+
+            private toPeriodDto(period: any): any {
+                return {
+                    startDate: new Date(period.startDate),
+                    endDate: new Date(period.endDate)
+                };
             }
 
             /**

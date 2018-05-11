@@ -120,7 +120,7 @@ public class RegulationInfoEmployeeFinder {
 	 * @return the list
 	 */
 	public List<RegulationInfoEmployeeDto> findByEmployeeEntryDate(SearchEmployeeQuery query) {
-		List<String> sIds = searchByEntryDate(query.getPeriod(), query.getSystemType());
+		List<String> sIds = searchByEntryDate(query.getDatePeriod(), query.getSystemType());
 		
 		// filter by closure id
 		this.filterByClosure(query, sIds);
@@ -135,7 +135,7 @@ public class RegulationInfoEmployeeFinder {
 	 * @return the list
 	 */
 	public List<RegulationInfoEmployeeDto> findByEmployeeRetirementDate(SearchEmployeeQuery query) {
-		List<String> sIds = searchByRetirementDate(query.getPeriod(), query.getSystemType());
+		List<String> sIds = searchByRetirementDate(query.getDatePeriod(), query.getSystemType());
 		
 		// filter by closure id
 		this.filterByClosure(query, sIds);
@@ -298,7 +298,7 @@ public class RegulationInfoEmployeeFinder {
 	private List<String> filterByClosure(SearchEmployeeQuery query, List<String> sIds) {
 		if (query.isUseClosure() && !query.isAllClosure()) {
 			List<String> empCds = this.closureEmpAdapter.findListEmpCdByClosureId(query.getClosureId());
-			List<String> filteredSids = this.empHisAdapter.findSIdsByEmpCdsAndPeriod(empCds, query.getPeriod());
+			List<String> filteredSids = this.empHisAdapter.findSIdsByEmpCdsAndPeriod(empCds, query.getDatePeriod());
 
 			// filter list employee ids
 			return sIds.stream().filter(filteredSids::contains).collect(Collectors.toList());
