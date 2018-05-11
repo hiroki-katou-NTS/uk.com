@@ -19,6 +19,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         //B2_2
         listStandardImportSetting: KnockoutObservableArray<model.OutputSettingCodeDto> = ko.observableArray([]);
         selectedCode: KnockoutObservable<any> = ko.observable('');
+        currentSetOutputSettingCode :KnockoutObservable<SetOutputSettingCode> 
                 = ko.observable(new SetOutputSettingCode(null));
 
         //B5_3
