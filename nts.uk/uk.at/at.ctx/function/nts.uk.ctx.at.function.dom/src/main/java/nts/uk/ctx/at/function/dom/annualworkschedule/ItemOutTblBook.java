@@ -44,13 +44,13 @@ public class ItemOutTblBook extends DomainObject {
 	/**
 	* 使用区分
 	*/
-	private int useClass;
+	private int useClassification;
 	/**
 	* 値の出力形式
 	*/
 	private ValueOuputFormat valOutFormat;
 
-	private List<CalcFormulaItem> listCalcFormulaItem;
+	private List<CalcFormulaItem> listOperationSetting;
 
 	public static ItemOutTblBook createFromJavaType(String cid, String setOutCd, String cd, int sortBy, String headingName, int useClass,
 			int valOutFormat, List<CalcFormulaItem> listCalcFormulaItem) {
