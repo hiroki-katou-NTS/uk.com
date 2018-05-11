@@ -74,24 +74,20 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         selectedTitleAtr: KnockoutObservable<number>;
 
         ccg001ComponentOption: GroupOption;
-        selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
 
         listComponentOption: any;
         selectedEmployeeCode: KnockoutObservableArray<string>;
-        employeeName: KnockoutObservable<string>;
         employeeList: KnockoutObservableArray<UnitModel>;
         initEmployeeList: KnockoutObservableArray<UnitModel>;
         alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
 
         //E
+        employeeDeletionList: KnockoutObservableArray<EmployeeDeletion>;
         columnEmployees: KnockoutObservableArray<NtsGridListColumn>;
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
-        
-        
-        roundingRules: KnockoutObservableArray<any>;
-        selectedRuleCode: any;
-        
+        categoryDeletionList : KnockoutObservableArray<CategoryDeletion>;;
+   
         constructor() {
             var self = this;           
             self.initComponents();
@@ -183,13 +179,14 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.confirmPasswordForCompressFile = ko.observable("");
 
             //B9_2
-            supplementExplanation = ko.observable("");
-
+            self.supplementExplanation = ko.observable("");
+          
             //D
             self.systemType = ko.observable(1);
             self.initEmployeeList = ko.observableArray([]);
             self.employeeList = ko.observableArray([]);
-            self.selectedEmployee = ko.observableArray([]);
+            self.employeeDeletionList = ko.observableArray([]);
+            self.categoryDeletionList = ko.observableArray([]);
             self.selectedEmployeeCode = ko.observableArray([]);
             self.alreadySettingPersonal = ko.observableArray([]);
             self.itemTitleAtr = ko.observableArray([
@@ -202,7 +199,6 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 } 
                 else {
                     self.applyKCP005ContentSearch([]);
-                    self.selectedEmployee(self.initEmployeeList());
                 }
             });
             self.initComponentCCG001();
@@ -293,22 +289,23 @@ module nts.uk.com.view.cmf005.b.viewmodel {
          */
        private nextScreenD(): void  {
             let self = this;
-            if (self.validateForm()) {
-                if (self.listDataCategory().length > 0) {
-                    // check so sanh hang ngay hang thang hang nam
-                    if (self.validateDatePicker()) {
-                        // check pass word
-                        if (self.checkPass()) {
-                            self.nextFromBToD();
-                        }
-                    } else {
-                        alertError({ messageId: 'Msg_465' });
-                    }
-
-                } else {
-                    alertError({ messageId: 'Msg_463' });
-                }
-            }
+            self.nextFromBToD();
+//            if (self.validateForm()) {
+//                if (self.listDataCategory().length > 0) {
+//                    // check so sanh hang ngay hang thang hang nam
+//                    if (self.validateDatePicker()) {
+//                        // check pass word
+//                        if (self.checkPass()) {
+//                            self.nextFromBToD();
+//                        }
+//                    } else {
+//                        alertError({ messageId: 'Msg_465' });
+//                    }
+//
+//                } else {
+//                    alertError({ messageId: 'Msg_463' });
+//                }
+//            }
         }
 
         /**
@@ -328,6 +325,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         private nextFromBToD() {
             let self = this;
             self.next();
+            $("#D4_2").find('input').first().focus();
         }
         
          /**
@@ -513,7 +511,6 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                     self.selectedTitleAtr(0);
                     self.initEmployeeList(data.listEmployee);
-//                    self.selectedEmployee(data.listEmployee);
                     self.applyKCP005ContentSearch(data.listEmployee);
                 }
             }
@@ -548,20 +545,21 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 maxWidth: 550,
                 maxRows: 15
             };
-
         }
                 
+        /**
+        * back to B
+        */
         private previousB(): void {
             var self = this;
             self.previous();
         }
 
         /**
-             * function submit button
-         */
+        * validation D form
+        */
         private validateD() : boolean {
             var self = this;
-            console.log(self.employeeList());
             
             if ((self.selectedTitleAtr() == 0 && self.selectedEmployeeCode() && self.selectedEmployeeCode().length > 0)
                 || (self.selectedTitleAtr() == 1 && self.initEmployeeList() && self.initEmployeeList().length > 0)) {
@@ -572,19 +570,56 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             }
         }
          
+        /**
+         * update the list of selected employees
+         */
+        setEmployeeDeletionList() {
+            var self = this;
+            self.employeeDeletionList.removeAll();
+            if (self.selectedTitleAtr() == 0) {
+                for (var i = 0; i < self.selectedEmployeeCode().length; i++) {
+                    for (var j = 0; j < self.employeeList().length; j++) {
+                        if (self.employeeList()[j].code == self.selectedEmployeeCode()[i]) {
+                            let employee = self.employeeList()[j];
+                            self.employeeDeletionList.push(new EmployeeDeletion(employee.code, employee.name));
+                        }
+                    }
+                }
+            }
+        }
+        
+        /**
+         * update the list of selected categories
+         */
+        setCategoryDeletionList() {
+            var self = this;
+            for (var i = 0; i < self.listDataCategory().length; i++) {
+                let category = self.listDataCategory()[i];
+                console.log(category);
+                self.categoryDeletionList.push(new CategoryDeletion(category.categoryId));
+            }
+        }
+         
+        /**
+         * next to E screen
+         */
         private nextFromDToE(): void {
             var self = this;
             if (self.validateD()) {
+                self.setEmployeeDeletionList();
+                self.setCategoryDeletionList();
                 self.initE();
                 self.next();
             }
         }
            
+        /**
+         * initial E screen
+         */
         initE() {
             var self = this;
-            console.log(self.supplementExplanation);
             $("#E4_2").html(self.deleteSetName());
-            $("#E5_2").html(self.supplementExplanation);
+            $("#E5_2").html(self.supplementExplanation());
 //            $("#E6_2_2").html(self.systemTypeCbb.name);
         }
         
@@ -594,18 +629,19 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         }
             
         private saveManualSetting(): void {
-//            let self = this;
-//            let manualSetting = new ManualSettingModal(self.systemtypeFromC.code, Number(self.isCompressPass()), self.dataSaveSetName(), 
-//                    moment.utc(self.referenceDate, 'YYYY/MM/DD'), self.password(), moment.utc().toISOString(), moment.utc(self.dayValue().endDate, 'YYYY/MM/DD'), 
-//                    moment.utc(self.dayValue().startDate, 'YYYY/MM/DD'), moment.utc(self.monthValue().endDate, 'YYYY/MM/DD'), 
-//                    moment.utc(self.monthValue().startDate, 'YYYY/MM/DD'), self.explanation(), Number(self.yearValue().endDate), Number(self.yearValue().startDate),
-//                    1, Number(self.isSymbol()), self.employeeList, self.categorys() );
-//
-//            service.addMalSet(manualSetting).done(() => {
-//                
-//            }).fail(res => {
-//                
-//            });
+            let self = this;
+            let manualSetting = new ManualSettingModal(self.deleteSetName(),self.supplementExplanation(), self.systemType(), 
+                    moment.utc(self.dateValue().startDate, 'YYYY/MM/DD'), moment.utc(self.dateValue().endDate, 'YYYY/MM/DD'),
+                    moment.utc(self.monthValue().startDate, 'YYYYMM'), moment.utc(self.monthValue().endDate, 'YYYYMM'),
+                    Number(self.yearValue().startDate), Number(self.yearValue().endDate),
+                    Number(self.isSaveBeforeDeleteFlg), Number(self.isExistCompressPasswordFlg), self.passwordForCompressFile,
+                    Number(self.haveEmployeeSpecifiedFlg), self.employeeDeletionList(), self.categoryDeletionList());
+
+            service.addManualSetDel(manualSetting).done(() => {
+                
+            }).fail(res => {
+                
+            });
         }
     }
 
@@ -658,6 +694,64 @@ module nts.uk.com.view.cmf005.b.viewmodel {
     export interface UnitAlreadySettingModel {
         code: string;
         isAlreadySetting: boolean;
+    }
+    
+    export class EmployeeDeletion {
+        code: string;
+        name: string;
+        
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }
+    
+     
+    export class ManualSettingModal {
+        delName: string;
+        suppleExplanation: string;
+        systemType: number;
+        dayStartDate: string;
+        dayEndDate: string;
+        monthStartDate: string;
+        monthEndDate: string;
+        startYear: number;
+        endYear: number;
+        isSaveBeforeDeleteFlg: number;
+        isExistCompressPasswordFlg: number;
+        passwordForCompressFile: string;
+        haveEmployeeSpecifiedFlg: number;
+        employees: Array<EmployeeDeletion>;
+        category: Array<CategoryDeletion>;
+
+        constructor(delName: string, suppleExplanation: string, systemType: number,
+            dayStartDate: string, dayEndDate: string, monthStartDate: string, monthEndDate: string,
+            startYear: number, endYear: number, isSaveBeforeDeleteFlg: number, isExistCompressPasswordFlg: number,
+            passwordForCompressFile: string, haveEmployeeSpecifiedFlg: number, employees: Array<EmployeeDeletion>,
+            category: Array<CategoryDeletion>) {
+            this.delName = delName;
+            this.suppleExplanation = suppleExplanation;
+            this.systemType = systemType;
+            this.dayStartDate = dayStartDate;
+            this.dayEndDate = dayEndDate;
+            this.monthStartDate = monthStartDate;
+            this.monthEndDate = monthEndDate;
+            this.startYear = startYear;
+            this.endYear = endYear;
+            this.isSaveBeforeDeleteFlg = isSaveBeforeDeleteFlg;
+            this.isExistCompressPasswordFlg = isExistCompressPasswordFlg;
+            this.passwordForCompressFile = passwordForCompressFile;
+            this.haveEmployeeSpecifiedFlg = haveEmployeeSpecifiedFlg;
+            this.employees = employees;
+            this.category = category;
+        }
+    }
+    
+    export class CategoryDeletion {
+        categoryId: string;
+        constructor(categoryId: string) {
+            this.categoryId = categoryId;
+        }
     }
 }
 

@@ -105,7 +105,7 @@
 															optionsValue: 'value',
 															optionsText: 'titleAtrName',
 															value: selectedTitleAtr,	
-															enable: true}">
+															enable: false }">
 					</div>
 				</div>
 				<!-- List employee -->
@@ -113,11 +113,11 @@
 					<table id="E12" data-bind="ntsGridList: {								
 						height: 2000,
 						showNumbering: true,
-						dataSource: employeeList,
+						dataSource: employeeDeletionList,
 						primaryKey: 'name',
 						columns: columnEmployees,
 						multiple: false,
-						value: employeeList,
+						value: employeeDeletionList,
 						rows: 20,
 						enable: false
 					}"></table>

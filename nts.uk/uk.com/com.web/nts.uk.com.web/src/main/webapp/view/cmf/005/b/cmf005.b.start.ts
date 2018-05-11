@@ -12,7 +12,6 @@ module nts.uk.com.view.cmf005.b {
                 self.applyKCP005ContentSearch([]);
                 // Load employee list component
                 $('#employeeSearch').ntsListComponent(self.listComponentOption).done(function() {
-                    $("#D5").find('input').first().focus();
                 });
             });
         });
