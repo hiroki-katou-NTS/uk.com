@@ -12,6 +12,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Appro
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmployeeEmailOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.MailTransmissionContentOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalSendMail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 
@@ -82,7 +83,7 @@ public interface ApprovalStatusService {
 	/**
 	 * アルゴリズム「承認状況未承認メール送信」を実行する
 	 */
-	List<String> getAppSttSendingUnapprovedMail(List<ApprovalSttAppOutput> listAppSttApp);
+	List<String> getAppSttSendingUnapprovedMail(List<UnApprovalSendMail> listAppSttApp);
 
 	/**
 	 * アルゴリズム「承認状況社員メールアドレス取得」を実行する RequestList #126
@@ -95,8 +96,9 @@ public interface ApprovalStatusService {
 	 * アルゴリズム「承認状況未承認メール送信実行」を実行する
 	 * 
 	 * @param unAppMailTransmis
+	 * @return 
 	 */
-	void exeSendUnconfirmedMail(List<String> listWkpId, GeneralDate closureStart, GeneralDate closureEnd, List<String> listEmpCd);
+	SendMailResultOutput exeSendUnconfirmedMail(List<String> listWkpId, GeneralDate closureStart, GeneralDate closureEnd, List<String> listEmpCd);
 
 	/**
 	 * アルゴリズム「承認状況社員別一覧作成」を実行する

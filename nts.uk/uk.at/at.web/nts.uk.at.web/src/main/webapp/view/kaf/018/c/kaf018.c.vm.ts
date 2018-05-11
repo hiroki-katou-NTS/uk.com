@@ -57,7 +57,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         /**
          * 起動する
          */
-        startPage(): JQueryPromise<any> {
+        startPage() : JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             block.invisible();
@@ -81,9 +81,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             _.forEach(self.listWorkplace, function(item) {
                 self.listWkpId.push(item.code);
             });
-            self.initExTable();
-            dfd.resolve();
-            return dfd.promise();
+            return self.initExTable();
         }
 
 
@@ -139,8 +137,9 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         /**
          * Create exTable
          */
-        initExTable(): void {
+        initExTable(): JQueryPromise<any>  {
             var self = this;
+            var dfd = $.Deferred();
             self.getStatusSymbol().done(function(data: any) {
                 self.listApprovalEmployee = data.listAppSttEmp;
                 self.listDailyStatus = data.listDailyStt;
@@ -162,12 +161,15 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                         .LeftmostHeader(initExTable.leftmostHeader).LeftmostContent(initExTable.leftmostContent)
                         .DetailHeader(initExTable.detailHeader).DetailContent(initExTable.detailContent)
                         .create();
+                    dfd.resolve();
                 }).always(() => {
                     block.clear();
                 })
             }).fail(() => {
+                dfd.reject();
                 block.clear();
             })
+            return dfd.promise();
         }
 
         /**
@@ -231,10 +233,10 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             while (currentDay <= self.dtAft()) {
                 let time = new shareModel.Time(currentDay);
                 detailHeaderColumns.push({
-                    key: "_" + time.yearMonthDay, width: "40px", headerText: self.getDay(time)
+                    key: "_" + time.yearMonthDay, width: "60px", headerText: self.getDay(time)
                 });
                 detailContentColumns.push({
-                    key: "__" + time.yearMonthDay, width: "40px"
+                    key: "__" + time.yearMonthDay, width: "60px"
                 });
                 currentDay.setDate(currentDay.getDate() + 1);
             }

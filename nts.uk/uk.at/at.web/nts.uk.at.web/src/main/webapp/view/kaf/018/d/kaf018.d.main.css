@@ -40,36 +40,66 @@
 .unapprovaled-remand {
 	color: #ff0000;
 }
+
 .approvaled {
 	color: #BFEA60;
 }
-.denied{
+
+.denied {
 	color: #FD4D4D;
 }
-.dateRange{
+
+.dateRange {
 	float: left;
 }
-.saturdayCell{
+
+.saturdayCell {
 	color: #0000ff;
-}	
-.sundayCell{
+}
+
+.sundayCell {
 	color: #ff0000;
 }
+
 .unapprovalCell {
 	background-color: #ffffff;
 }
+
 .approvalCell {
 	background-color: #BFEA60;
 }
+
 .remandCell {
 	background-color: #FD4D4D;
 }
+
 .denialCell {
 	background-color: #FD4D4D;
 }
+
 .cancelCell {
 	background-color: #F6F636;
 }
+
 .reflectCell {
 	background-color: #CEE6FF;
+}
+
+.text-unapproval {
+	color: #ff0000;
+	padding-right: 20px;
+}
+
+.text-approval {
+	color: #BFEA60;
+	padding-right: 20px;
+}
+
+.text-denial {
+	color: #FD4D4D;
+	padding-right: 20px;
+}
+
+.text-status {
+	text-align: right;
 }

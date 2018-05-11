@@ -90,7 +90,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
         }
 
         
-        startPage() {
+        startPage() : JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             service.findAllClosure().done((data: any) => {
@@ -110,7 +110,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                 service.restoreSelectedClosureId().done(value =>{
                     if(value) {
                         self.selectTarget(value); 
-                        }else {
+                    } else {
                         self.selectTarget(1);    
                     }   
                 });
@@ -127,7 +127,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
             return dfd.promise();     
         }
         
-        reloadData() {
+        reloadData(){
             var self = this;
             lstWkp = self.flattenWkpTree(_.cloneDeep($('#tree-grid').getDataList()));
             nts.uk.ui.block.invisible();

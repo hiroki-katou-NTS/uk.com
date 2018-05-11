@@ -62,22 +62,28 @@ module nts.uk.at.view.kaf018.b.viewmodel {
         private sendMails() {
             var self = this;
             block.invisible();
-            let confirmStatus = [];
+            let confirmStatus : Array<model.UnApprovalSendMail> = [];
             _.forEach(self.tempData, function(item) {
                 if (item.isChecked()) {
-                    confirmStatus.push({ workplaceId: item.workplaceId, isChecked: item.isChecked });
+                    confirmStatus.push(new model.UnApprovalSendMail(item.workplaceId, item.isChecked()));
                 }
             });
+            
             service.getCheckSendMail(confirmStatus).done(function() {
                 confirm({ messageId: "Msg_795" }).ifYes(() => {
-                    block.invisible();
+                    block.invisible(); 
+                    let listWkpId = [];
+                    _.forEach(confirmStatus, function(item) {
+                        listWkpId.push(item.workplaceId);        
+                    }); 
                     let obj = {
-                        listWkp: confirmStatus,
-                        startDate: self.startDate,
-                        endDate: self.endDate,
+                        listWkpId: listWkpId,
+                        closureStart: self.startDate,
+                        closureEnd: self.endDate,
                         listEmpCd: self.listEmployeeCode
                     };
                     service.exeSendUnconfirmedMail(obj).done(function(result: any) {
+                        debugger;
                         if (result.ok) {
                             info({ messageId: "Msg_792" });
                         }
@@ -133,6 +139,15 @@ module nts.uk.at.view.kaf018.b.viewmodel {
     }
 
     export module model {
+        
+        export class  UnApprovalSendMail {
+            workplaceId: string;
+            isChecked: boolean;    
+            constructor(workplaceId: string, isChecked: boolean) {
+                this.workplaceId = workplaceId ;
+                this.isChecked = isChecked;
+            }
+        }
         
         export class IParam {
            closureId: number;
@@ -205,7 +220,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
                 this.numOfUnreflected =  numOfUnreflected ? numOfUnreflected : 0;
                 this.numOfUnapproval = numOfUnapproval ? numOfUnapproval : 0;
                 this.numOfDenials = numOfDenials ? numOfDenials : 0;
-                if(this.numOfUnapproval > 0) {
+                if(this.numOfUnapproval < 0) {
                     this.isEnabled = false;    
                 }else {
                     this.isEnabled = true;

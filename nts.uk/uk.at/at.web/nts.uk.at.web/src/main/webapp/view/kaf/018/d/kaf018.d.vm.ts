@@ -7,20 +7,12 @@ module nts.uk.at.view.kaf018.d.viewmodel {
     export class ScreenModel {
         selectedEmpId: KnockoutObservable<string> = ko.observable('');
         listStatusEmp: Array<ApprovalStatusEmployee> = [];
-        
+
         columns: KnockoutObservableArray<NtsGridListColumn>;
         listData: Array<Content> = [];
         listDataDisp: KnockoutObservableArray<ContentDisp> = ko.observableArray([]);
         constructor() {
             var self = this;
-//            var listAppStt: Array<number> = [0, 1, 2, 3];
-//            let currentDate = new Date();
-//            for (let i = 0; i < 30; i++) {
-//                let startDate = currentDate.getDay();
-//                let endDate = currentDate.getDay() + 1;
-//                self.listData.push(new Content("" + i, "Anh" + i, true, startDate, endDate, "anhvsdvvfdvd" + i, i, listAppStt, "sdvsgvs", "sdvsdvs", "bfdbgf", "cvnvbn", "hgmvbnvb"));
-//            }
-//            console.log(self.listData);
         }
 
         /**
@@ -32,20 +24,22 @@ module nts.uk.at.view.kaf018.d.viewmodel {
             let params = getShared("KAF018D_VALUE");
             if (params) {
                 _.each(params.listStatusEmp, function(item) {
-                     self.listStatusEmp.push(new ApprovalStatusEmployee(item.sId, new Date(item.startDate), new Date(item.endDate)));
+                    self.listStatusEmp.push(new ApprovalStatusEmployee(item.sId, new Date(item.startDate), new Date(item.endDate)));
                 });
             }
             let paramsTranfer = {
                 listStatusEmp: self.listStatusEmp,
                 selectedEmpId: params.selectedEmpId
             };
-            service.initApprovalSttRequestContentDis(paramsTranfer).done(function(data: any) {
-                self.listData = data;
+            service.initApprovalSttRequestContentDis(paramsTranfer).done(function(data: Array<Content>) {
+                _.each(data, function(item) {
+                    self.listData.push(new Content(item.appType, item.appName, item.prePostAtr, item.appStartDate, item.appEndDate, item.appContent, item.reflectState, item.approvalStatus, item.phase1, item.phase2, item.phase3, item.phase4, item.phase5));
+                })
                 self.initExTable(self.listData);
                 dfd.resolve();
             }).fail(function(data: any) {
                 dfd.reject();
-                });
+            });
             return dfd.promise();
         }
 
@@ -55,7 +49,14 @@ module nts.uk.at.view.kaf018.d.viewmodel {
         initExTable(listData: Array<Content>): void {
             var self = this;
             _.each(listData, function(data: Content) {
-                let dateRange = self.appDateRangeColor(self.convertDateMDW(data.appStartDate), self.convertDateMDW(data.appEndDate));
+                let appStartDate: string = data.appStartDate.toString();
+                let appEndDate: string = '';
+                if (data.appType == shared.ApplicationType.ABSENCE_APPLICATION || data.appType == shared.ApplicationType.WORK_CHANGE_APPLICATION|| data.appType == shared.ApplicationType.BUSINESS_TRIP_APPLICATION) {
+                    appEndDate = data.appEndDate.toString();
+                } else {
+                    appEndDate == "";
+                }
+                let dateRange = self.appDateRangeColor(self.convertDateMDW(appStartDate), self.convertDateMDW(appEndDate));
                 self.listDataDisp.push(new ContentDisp(data.appType, data.appName, data.prePostAtr ? "事前" : "事後", dateRange, data.appContent, self.disReflectionStatus(data.reflectState), self.disApprovalStatus(data.approvalStatus), data.phase1, data.phase2, data.phase3, data.phase4, data.phase5));
             });
             let colorBackGr = self.fillColorbackGr();
@@ -175,6 +176,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
         }
         //MM/dd ver24
         convertDateMDW(date: string) {
+            if (date == "") return "";
             let a: number = moment(date, 'YYYY/MM/DD').isoWeekday();
             let toDate = moment(date, 'YYYY/MM/DD').toDate();
             let dateMDW = (toDate.getMonth() + 1) + '/' + toDate.getDate();
@@ -197,11 +199,9 @@ module nts.uk.at.view.kaf018.d.viewmodel {
         }
 
         appDateRangeColor(startDate: string, endDate: string): string {
-            let sDate = '<div class = "dateRange" >' + startDate + '</div>';;
-            let eDate = '<div class = "dateRange" >' + endDate + '</div>';
+            let sDate = '<div class = "dateRange" >' + startDate + '</div>';
             //color text appDate
             let a = startDate.split("(")[1];
-            let b = endDate.split("(")[1];
             let color1 = a.substring(0, 1);
             if (color1 == '土') {//土
                 sDate = '<div class = "saturdayCell  dateRange" >' + startDate + '</div>';
@@ -209,26 +209,32 @@ module nts.uk.at.view.kaf018.d.viewmodel {
             if (color1 == '日') {//日 
                 sDate = '<div class = "sundayCell  dateRange" >' + startDate + '</div>';
             }
-            let color2 = b.substring(0, 1);
-            if (color2 == '土') {//土
-                eDate = '<div class = "saturdayCell  dateRange" >' + endDate + '</div>';
+
+            if (endDate != '') {
+                let eDate = '<div class = "dateRange" >' + endDate + '</div>';
+                let b = endDate.split("(")[1];
+                let color2 = b.substring(0, 1);
+                if (color2 == '土') {//土
+                    eDate = '<div class = "saturdayCell  dateRange" >' + endDate + '</div>';
+                }
+                if (color2 == '日') {//日 
+                    eDate = '<div class = "sundayCell  dateRange" >' + endDate + '</div>';
+                }
+                return sDate + '<div class = "dateRange" >' + '－' + '</div>' + eDate;
             }
-            if (color2 == '日') {//日 
-                eDate = '<div class = "sundayCell  dateRange" >' + endDate + '</div>';
-            }
-            return sDate + '<div class = "dateRange" >' + '－' + '</div>' + eDate;
+            return sDate;
         }
     }
 
     class ApprovalStatusEmployee {
-         sId: string;
-         startDate: Date;
-         endDate: Date;
+        sId: string;
+        startDate: Date;
+        endDate: Date;
         constructor(sId: string, startDate: Date, endDate: Date) {
             this.sId = sId;
             this.startDate = startDate;
             this.endDate = endDate;
-        }    
+        }
     }
 
     class NtsGridListColumn {
@@ -237,7 +243,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
         width: number;
     }
     class Content {
-        appType: string;
+        appType: shared.ApplicationType;
         appName: string;
         prePostAtr: boolean;
         appStartDate: Date;
@@ -250,7 +256,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
         phase3: string;
         phase4: string;
         phase5: string;
-        constructor(appType: string, appName: string, prePostAtr: boolean, appStartDate: Date, appEndDate: Date, appContent: string, reflectState: number,
+        constructor(appType: number, appName: string, prePostAtr: boolean, appStartDate: Date, appEndDate: Date, appContent: string, reflectState: number,
             approvalStatus: Array<number>, phase1: string, phase2: string, phase3: string, phase4: string, phase5: string) {
             this.appType = appType;
             this.appName = appName;
