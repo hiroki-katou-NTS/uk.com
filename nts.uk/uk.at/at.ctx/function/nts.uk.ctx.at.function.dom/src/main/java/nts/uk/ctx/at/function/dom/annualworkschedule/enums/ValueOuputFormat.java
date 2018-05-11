@@ -5,24 +5,21 @@ package nts.uk.ctx.at.function.dom.annualworkschedule.enums;
  * */
 public enum ValueOuputFormat {
 	/*
+	 * 時間
+	 * */
+	TIME(0, "Enum_ValueOutput_TIME"),
+	/*
 	 * 回数
 	 * */
-	TIMES(0 , "回数"),
-	
+	TIMES(1 , "Enum_ValueOutput_TIMES"),
 	/*
 	 * 日数
 	 * */
-	DAYS(1, "日数"),
-	
-	/*
-	 * 時間
-	 * */
-	TIME(2, "時間"),
-	
+	DAYS(2, "Enum_ValueOutput_DAYS"),
 	/*
 	 * 金額
 	 * */
-	AMOUNT(3, "金額");
+	AMOUNT(3, "Enum_ValueOutput_AMOUNT_OF_MONEY");
 	
 	/** The value. */
 	public final int value;
