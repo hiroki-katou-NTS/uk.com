@@ -200,8 +200,8 @@ public class VacationClass {
 		//参照する
 		if(referenceAtr) {
 			if(siftCode.isPresent()) {
-				//return predetermineTimeSet.getAdditionSet().getAddTime();
-				return predetermineTimeSet.getAdditionSet().getPredTime();
+				return predetermineTimeSet.getAdditionSet().getAddTime();
+				//return predetermineTimeSet.getAdditionSet().getPredTime();
 			}
 			else {
 				if(true/*ここには就業時間帯が存在しない場合の参照先(フィールド)が実装されてきたら、そこを見るようにする*/) {
