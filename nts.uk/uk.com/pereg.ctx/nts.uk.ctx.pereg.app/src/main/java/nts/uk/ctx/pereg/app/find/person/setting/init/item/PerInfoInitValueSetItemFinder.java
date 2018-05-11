@@ -133,7 +133,7 @@ public class PerInfoInitValueSetItemFinder {
 				PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(item);
 				boolean isEven = itemEven.contains(item.getItemCode());
 				boolean isOld = itemOld.contains(item.getItemCode());
-				String selectionId = null;
+				String selectionId = item.getSelectionItemId();
 				this.setCompareItemCode(item, itemFilter, itemParents, dto, selectionId, isOld, isEven);
 				if (((item.getItemName().equals("終了日") && isContinious)) || isEven || isOld) {
 					dto.setDisableCombox(true);
@@ -247,11 +247,10 @@ public class PerInfoInitValueSetItemFinder {
 		});
 
 		for (int i = 0; i < itemLst.size(); i = i + 4) {
-			if (i + 4 < itemLst.size()) {
+			if (i + 4 <= itemLst.size()) {
 				if (item.getItemCode().equals(itemLst.get(i)) || item.getItemCode().equals(itemLst.get(i + 1))
 						|| item.getItemCode().equals(itemLst.get(i + 2))
 						|| item.getItemCode().equals(itemLst.get(i + 3))) {
-
 					setEnableControl(item, itemParent, dto, selectionId, isOld, isEven);
 					break;
 				}

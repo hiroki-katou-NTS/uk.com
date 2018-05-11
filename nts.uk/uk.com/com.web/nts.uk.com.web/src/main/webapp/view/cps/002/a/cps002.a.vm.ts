@@ -633,27 +633,27 @@ module cps002.a.vm {
             command.inputs = self.layoutData();
             command.createType = self.createTypeId();
 
-            //            if (!self.isError()) {
+            if (!self.isError()) {
 
-            service.addNewEmployee(command).done((employeeId) => {
-                self.saveBasicInfo(command, employeeId);
+                service.addNewEmployee(command).done((employeeId) => {
+                    self.saveBasicInfo(command, employeeId);
 
-                nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { dialogClass: "finish", title: '' }).onClosed(() => {
-                    if (getShared('isContinue')) {
+                    nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { dialogClass: "finish", title: '' }).onClosed(() => {
+                        if (getShared('isContinue')) {
 
-                        self.backToStep0();
+                            self.backToStep0();
 
-                    } else {
-                        jump('/view/cps/001/a/index.xhtml', { employeeId: employeeId });
-                    }
-                });
+                        } else {
+                            jump('/view/cps/001/a/index.xhtml', { employeeId: employeeId });
+                        }
+                    });
 
-            }).fail(error => {
+                }).fail(error => {
 
-                dialog({ messageId: error.messageId, messageParams: error.parameterIds });
+                    dialog({ messageId: error.messageId, messageParams: error.parameterIds });
 
-            })
-            //            }
+                })
+            }
         }
 
         openEModal(param, data) {

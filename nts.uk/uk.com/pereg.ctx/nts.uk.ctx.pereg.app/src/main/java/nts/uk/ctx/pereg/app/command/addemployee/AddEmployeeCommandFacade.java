@@ -28,9 +28,9 @@ public class AddEmployeeCommandFacade {
 	@Inject
 	private RegisterLayoutFinder layoutFinder;
 
-	public void addNewFromInputs(String personId, String employeeId, List<ItemsByCategory> inputs) {
+	public void addNewFromInputs(String personId, String employeeId, String comHistId, List<ItemsByCategory> inputs) {
 
-		updateBasicCategories(personId, employeeId, inputs);
+		updateBasicCategories(personId, employeeId, comHistId, inputs);
 
 		addNoBasicCategories(personId, employeeId, inputs);
 
@@ -58,11 +58,32 @@ public class AddEmployeeCommandFacade {
 				.filter(itemsByCategory -> itemsByCategory != null).collect(Collectors.toList());
 	}
 
-	private void updateBasicCategories(String personId, String employeeId, List<ItemsByCategory> inputs) {
+	private void updateBasicCategories(String personId, String employeeId, String comHistId,  List<ItemsByCategory> inputs) {
 
 		List<ItemsByCategory> basicCategories = inputs.stream()
 				.filter(category -> basicCategoriesDefinition.contains(category.getCategoryCd()))
 				.collect(Collectors.toList());
+		
+		// set recordId(employeeId) for category CS00001
+		Optional<ItemsByCategory> employeeInfoCategory = inputs.stream()
+				.filter(category -> category.getCategoryCd().equals("CS00001")).findFirst();
+		if (employeeInfoCategory.isPresent()) {
+			employeeInfoCategory.get().setRecordId(employeeId);
+		}
+
+		// set recordId(personId) for category CS00002
+		Optional<ItemsByCategory> personCategory = inputs.stream()
+				.filter(category -> category.getCategoryCd().equals("CS00002")).findFirst();
+		if (personCategory.isPresent()) {
+			personCategory.get().setRecordId(personId);
+		}
+
+		// set recordId(historyId) for category CS00003
+		Optional<ItemsByCategory> affComHistCategory = inputs.stream()
+				.filter(category -> category.getCategoryCd().equals("CS00003")).findFirst();
+		if (affComHistCategory.isPresent()) {
+			affComHistCategory.get().setRecordId(comHistId);
+		}
 
 		if (!CollectionUtil.isEmpty(basicCategories)) {
 

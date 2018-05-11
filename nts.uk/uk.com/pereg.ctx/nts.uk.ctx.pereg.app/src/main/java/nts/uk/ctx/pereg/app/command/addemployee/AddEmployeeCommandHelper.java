@@ -1,7 +1,5 @@
 package nts.uk.ctx.pereg.app.command.addemployee;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -10,8 +8,6 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
-import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
-import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfo;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
@@ -23,7 +19,6 @@ import nts.uk.ctx.bs.person.dom.person.info.GenderPerson;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AddEmployeeCommandHelper {
@@ -57,18 +52,6 @@ public class AddEmployeeCommandHelper {
 
 	}
 
-	// private void addAffHist(String companyId, String employeeId) {
-	// List<WorkplaceInfo> wplst = this.workPlaceInfoRepo.findAll(companyId,
-	// GeneralDate.today());
-	// Random rnd = new Random();
-	// WorkplaceInfo wp = wplst.get(rnd.nextInt(wplst.size()));
-	// AffWorkplaceHistory newAffWork =
-	// AffWorkplaceHistory.createFromJavaType(wp.getWorkplaceId(),
-	// ConstantUtils.minDate(), ConstantUtils.maxDate(), employeeId);
-	// this.workplaceHistRepo.addAffWorkplaceHistory(newAffWork);
-	//
-	// }
-
 	private void addNewPerson(String personId, String employeeName) {
 		Person newPerson = Person.createFromJavaType(ConstantUtils.minDate(), null, GenderPerson.Male.value, personId,
 				" ", "", employeeName, " ", "", "", "", "", "", "", "", "", "", "");
@@ -94,12 +77,7 @@ public class AddEmployeeCommandHelper {
 
 	private void addAffCompanyHist(String personId, String employeeId, GeneralDate hireDate, String companyId,
 			String comHistId) {
-		List<AffCompanyHistByEmployee> comHistList = new ArrayList<>();
-		List<AffCompanyHistItem> comHistItemList = new ArrayList<>();
-
-		comHistItemList.add(new AffCompanyHistItem(comHistId, false, new DatePeriod(hireDate, GeneralDate.max())));
-		comHistList.add(new AffCompanyHistByEmployee(employeeId, comHistItemList));
-		AffCompanyHist newComHist = new AffCompanyHist(personId, comHistList);
+		AffCompanyHist newComHist = AffCompanyHist.createNewEmployeeHist(personId, employeeId, comHistId, hireDate);
 		this.companyHistRepo.add(newComHist);
 
 		AffCompanyInfo newComInfo = AffCompanyInfo.createFromJavaType(comHistId, " ", null, null);
