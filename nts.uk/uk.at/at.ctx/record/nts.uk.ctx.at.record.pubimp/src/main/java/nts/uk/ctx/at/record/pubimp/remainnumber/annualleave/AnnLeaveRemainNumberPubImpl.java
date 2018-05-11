@@ -62,35 +62,47 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 
 	@Override
 	public AnnLeaveOfThisMonth getAnnLeaveOfThisMonth(String employeeId) {
-		String companyId = AppContexts.user().companyId();
-		//月初の年休残数を取得
-		AnnLeaRemNumValueObject remainNumber = annLeaService.getAnnLeaveNumber(companyId, employeeId);
-		//計算した年休残数を出力用クラスにコピー
-		GeneralDate startDate = closureStartService.algorithm(employeeId).get();
-		//社員に対応する締め期間を取得する
-		DatePeriod datePeriod = checkShortageFlex.findClosurePeriod(employeeId, startDate);
-		//期間中の年休残数を取得
-		Optional<AggrResultOfAnnualLeave> aggrResult = getAnnLeaRemNumWithinPeriod.algorithm(companyId, employeeId,
-				datePeriod, TempAnnualLeaveMngMode.OTHER, datePeriod.end(), false, false, Optional.empty(),
-				Optional.empty(), Optional.empty());
-		AggrResultOfAnnualLeave annualLeave = new AggrResultOfAnnualLeave();
-		//ドメインモデル「年休社員基本情報」を取得
-		Optional<AnnualLeaveEmpBasicInfo> basicInfo = annLeaBasicInfoRepo.get(employeeId);
-		//次回年休付与を計算
-		List<NextAnnualLeaveGrant> annualLeaveGrant = calcNextAnnualLeaveGrantDate.algorithm(companyId, employeeId,
-				Optional.empty());
-		//当月年休を返す
-		AnnLeaveOfThisMonth result = new AnnLeaveOfThisMonth(annualLeaveGrant.get(0).getGrantDate(),
-				annualLeaveGrant.get(0).getGrantDays(), remainNumber.getDays(), remainNumber.getMinutes(),
-				annualLeave.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber()
-						.getUsedDays().getUsedDays(),
-				annualLeave.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber()
-						.getUsedTime(),
-				annualLeave.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber()
-						.getTotalRemainingDays(),
-				annualLeave.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber()
-						.getTotalRemainingTime());
-		return result;
+		AnnLeaveOfThisMonth result = new AnnLeaveOfThisMonth();
+		try {
+			
+			String companyId = AppContexts.user().companyId();
+			// 月初の年休残数を取得
+			AnnLeaRemNumValueObject remainNumber = annLeaService.getAnnLeaveNumber(companyId, employeeId);
+			result.setFirstMonthRemNumDays(remainNumber.getDays());
+			result.setFirstMonthRemNumMinutes(remainNumber.getMinutes());
+			// 計算した年休残数を出力用クラスにコピー
+			Optional<GeneralDate> startDate = closureStartService.algorithm(employeeId);
+			if (!startDate.isPresent())
+				return null;
+			// 社員に対応する締め期間を取得する
+			DatePeriod datePeriod = checkShortageFlex.findClosurePeriod(employeeId, startDate.get());
+			// 期間中の年休残数を取得
+			Optional<AggrResultOfAnnualLeave> aggrResult = getAnnLeaRemNumWithinPeriod.algorithm(companyId, employeeId,
+					datePeriod, TempAnnualLeaveMngMode.OTHER, datePeriod.end(), false, false, Optional.empty(),
+					Optional.empty(), Optional.empty());
+			if (!aggrResult.isPresent())
+				return null;
+			result.setUsedDays(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber()
+					.getUsedDays().getUsedDays());
+			result.setUsedMinutes(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber()
+							.getUsedTime());
+			result.setRemainDays(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
+							.getRemainingNumber().getTotalRemainingDays());
+			result.setRemainMinutes(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
+					.getRemainingNumber().getTotalRemainingTime());			
+			// ドメインモデル「年休社員基本情報」を取得
+			Optional<AnnualLeaveEmpBasicInfo> basicInfo = annLeaBasicInfoRepo.get(employeeId);
+			// 次回年休付与を計算
+			List<NextAnnualLeaveGrant> annualLeaveGrant = calcNextAnnualLeaveGrantDate.algorithm(companyId, employeeId,
+					Optional.empty());
+			if (annualLeaveGrant.size() == 0)
+				return null;
+			result.setGrantDate(annualLeaveGrant.get(0).getGrantDate());
+			result.setGrantDays(annualLeaveGrant.get(0).getGrantDays());
+			return result;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	@Override
