@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
