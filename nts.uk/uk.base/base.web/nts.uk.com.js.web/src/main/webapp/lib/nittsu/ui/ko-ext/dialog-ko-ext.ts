@@ -150,18 +150,18 @@ module nts.uk.ui.koExtentions {
 
             var id = 'ntsErrorDialog_';// + self.id;
             var $dialog;
-            if (self.isRoot) {
+//            if (self.isRoot) {
                 $dialog = PS.$("#" + id);
-            } else {
-                while (!nts.uk.util.isNullOrUndefined(self)) {
-                    if (self.isRoot) {
-                        self = null;
-                        $dialog = $((nts.uk.ui.windows.getSelf().parent.globalContext.document).getElementById(id));
-                    } else {
-                        self = self.parent;
-                    }
-                }
-            }
+//            } else {
+//                while (!nts.uk.util.isNullOrUndefined(self)) {
+//                    if (self.isRoot) {
+//                        self = null;
+//                        $dialog = $((nts.uk.ui.windows.getSelf().parent.globalContext.document).getElementById(id));
+//                    } else {
+//                        self = self.parent;
+//                    }
+//                }
+//            }
 
             if (show == true) {
                 // Create Error Table
