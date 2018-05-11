@@ -37,27 +37,18 @@ public class AddSpeLeaGrant11CommandHandler
 		val command = context.getCommand();
 		String specialId = IdentifierUtil.randomUniqueId();
 		String cid = AppContexts.user().companyId();
-
-		// 付与日＞使用期限の場合はエラー #Msg_1023
-		if (command.getGrantDate().compareTo(command.getDeadlineDate()) > 0) {
-			throw new BusinessException("Msg_1023");
-		}
-
 		SpecialLeaveGrantRemainingData domain = SpecialLeaveGrantRemainingData.createFromJavaType(specialId, cid,
-				command.getSid(), 11,
-				command.getGrantDate(),command.getDeadlineDate(), 
-				command.getExpStatus().intValue(),
-				GrantRemainRegisterType.MANUAL.value, 
-				command.getNumberDayGrant().doubleValue(), 
-				command.getTimeGrant() != null ? command.getTimeGrant().intValue() : null ,
-				command.getNumberDayUse().doubleValue(), 
-				command.getTimeUse() != null ? command.getTimeUse().intValue() : null, 
-				0.0,
+				command.getSid(), 11, command.getGrantDate(), command.getDeadlineDate(),
+				command.getExpStatus().intValue(), GrantRemainRegisterType.MANUAL.value,
+				command.getNumberDayGrant().doubleValue(),
+				command.getTimeGrant() != null ? command.getTimeGrant().intValue() : null,
+				command.getNumberDayUse().doubleValue(),
+				command.getTimeUse() != null ? command.getTimeUse().intValue() : null, 0.0,
 				command.getNumberDaysOver().doubleValue(),
 				command.getTimeOver() != null ? command.getTimeOver().intValue() : null,
 				command.getNumberDayRemain().doubleValue(),
 				command.getTimeRemain() != null ? command.getTimeRemain().intValue() : null);
-
-		return new PeregAddCommandResult(addSpeLeaveGrantCommandHandler.addHandler(domain));
+				
+				return new PeregAddCommandResult(addSpeLeaveGrantCommandHandler.addHandler(domain));
 	}
 }
