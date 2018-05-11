@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 820, height: 560 };</script>			
+			<script>var dialogSize = { width: 820, height: 570 };</script>			
 			<com:ValidatorScript>
 				nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Day
 				nts.uk.ctx.at.shared.dom.common.Month
@@ -55,7 +55,7 @@
 											options: strComboMonth,
 											optionsValue: 'value',
 											value: strMonth,
-											visibleItemsCount: 13,
+											visibleItemsCount: 7,
 											optionsText: 'name',
 											dropDownAttachedToBody: true,
 											enable: (strSelected() == 1),
@@ -86,7 +86,7 @@
 											options: endComboMonth,
 											optionsValue: 'value',
 											value: endMonth,
-											visibleItemsCount: 13,
+											visibleItemsCount: 7,
 											optionsText: 'name',
 											enable: (endSelected() == 1),
 											columns: [
@@ -106,7 +106,7 @@
 										options: strComboMonth2,
 										optionsValue: 'value',
 										value: strMonth2,
-										visibleItemsCount: 13,
+										visibleItemsCount: 7,
 										optionsText: 'name',
 										enable: true,
 										columns: [
@@ -121,7 +121,7 @@
 										options: endComboMonth2,
 										optionsValue: 'value',
 										value: endMonth2,
-										visibleItemsCount: 13,
+										visibleItemsCount: 7,
 										optionsText: 'name',
 										enable: true,
 										columns: [
@@ -142,7 +142,7 @@
 											options: strComboMonth3,
 											optionsValue: 'value',
 											value: strMonth3,
-											visibleItemsCount: 13,
+											visibleItemsCount: 7,
 											optionsText: 'name',
 											enable: (strSelected3() == 0),
 											columns: [
@@ -167,7 +167,7 @@
 											options: endComboMonth3,
 											optionsValue: 'value',
 											value: endMonth3,
-											visibleItemsCount: 13,
+											visibleItemsCount: 7,
 											optionsText: 'name',
 											enable: true,
 											columns: [
@@ -187,7 +187,7 @@
 											options: strComboMonth4,
 											optionsValue: 'value',
 											value: strMonth4,
-											visibleItemsCount: 13,
+											visibleItemsCount: 7,
 											optionsText: 'name',
 											enable: (strSelected4() == 0),
 											columns: [
@@ -212,7 +212,7 @@
 											options: endComboMonth4,
 											optionsValue: 'value',
 											value: endMonth4,
-											visibleItemsCount: 13,
+											visibleItemsCount: 7,
 											optionsText: 'name',
 											enable: true,
 											columns: [
