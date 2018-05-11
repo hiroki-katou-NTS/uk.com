@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.function.ac.holidaysremaining;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -24,15 +26,17 @@ public class AnnLeaveRemainingFinder implements AnnLeaveRemainingAdapter {
 		if (aggrResults == null) return null;
 		
 		aggrResults.stream().map(item -> {
+			
 			return new AnnLeaveUsageStatusOfThisMonthImported(
 					item.getYearMonth(), 
 					item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber().getUsedDays().getUsedDays().v(),
-					item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber().getUsedTime().get().getUsedTime().v(),
+					item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber().getUsedTime().isPresent() ?
+						Optional.of(item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber().getUsedTime().get().getUsedTime().v()) : Optional.empty(),
 					item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v(),
-					item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingTime().get().v()
+					item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingTime().isPresent() ?
+						Optional.of(item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingTime().get().v()) : Optional.empty()
 					);
 		}).collect(Collectors.toList());
 		return null;
 	}
-
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
@@ -22,22 +23,30 @@ import com.aspose.cells.WorksheetCollection;
 
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveRemainingAdapter;
+import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveUsageStatusOfThisMonthImported;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingDataSource;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingEmployee;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingReportGenerator;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 @Stateless
 public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenerator
 		implements HolidaysRemainingReportGenerator {
 
+	@Inject 
+	private AnnLeaveRemainingAdapter annLeaveRemainingAdapter;
+	
 	private static final String TEMPLATE_FILE = "report/休暇残数管理票_テンプレート.xlsx";
 	private static final String REPORT_FILE_NAME = "休暇残数管理票.xlsx";
 	private final int numberRowOfPage = 37;
 	private final int numberColumn = 23;
 	// private final int minRowDetails = 4;
 	private HolidayRemainingDataSource dataSource;
+	private DatePeriod datePeriod;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, HolidayRemainingDataSource dataSource) {
@@ -71,16 +80,15 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 	}
 
 	private void printTemplate(Worksheet worksheet) throws Exception {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM");
-		YearMonth start = YearMonth.parse(dataSource.getStartMonth(), formatter);
-		YearMonth end = YearMonth.parse(dataSource.getEndMonth(), formatter);
-		YearMonth currentMonth = YearMonth.now();
-
+		GeneralDate start = GeneralDate.fromString(dataSource.getStartMonth(), "yyyy/MM");//YearMonth.parse(dataSource.getStartMonth(), formatter);
+		GeneralDate end = GeneralDate.fromString(dataSource.getEndMonth(),  "yyyy/MM");
+		GeneralDate currentMonth = GeneralDate.today();
+		datePeriod = new DatePeriod (start, end);
 		Cells cells = worksheet.getCells();
 
 		// B1_1, B1_2
 		cells.get(1, 0)
-				.setValue(TextResource.localize("KDR001_2") + start.format(formatter) + "　～　" + end.format(formatter));
+				.setValue(TextResource.localize("KDR001_2") + dataSource.getStartMonth() + "　～　" + dataSource.getEndMonth());
 		// B1_3
 		cells.get(2, 0).setValue(TextResource.localize("KDR001_3"));
 		// C1_1
@@ -107,7 +115,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		}
 		// C1_9
 		for (int i = 0; i <= totalMonths(start, end); i++) {
-			cells.get(4, 10 + i).setValue(String.valueOf(start.plusMonths(i).getMonthValue()) + "月");
+			cells.get(4, 10 + i).setValue(String.valueOf(start.addMonths(i).month()) + "月");
 		}
 
 	}
@@ -203,6 +211,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 	private int printEachPerson(Worksheet worksheet, int firstRow, HolidaysRemainingEmployee employee)
 			throws Exception {
+		
+		
 		Cells cells = worksheet.getCells();
 		// D index
 		// print Header
@@ -223,6 +233,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 	private int printHolidayRemainingEachPerson(Worksheet worksheet, int firstRow, HolidaysRemainingEmployee employee)
 			throws Exception {
+		List<AnnLeaveUsageStatusOfThisMonthImported> listAnnLeaveUsage = 
+				annLeaveRemainingAdapter.getAnnLeaveUsageOfThisMonth(employee.getEmployeeId(), datePeriod);
 		int rowIndexD = firstRow;
 		Cells cells = worksheet.getCells();
 		int totalRowDetails = 0;
@@ -394,7 +406,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		cell.setStyle(style);
 	}
 
-	private int totalMonths(YearMonth start, YearMonth end) {
-		return (end.getYear() - start.getYear()) * 12 + (end.getMonthValue() - start.getMonthValue());
+	private int totalMonths(GeneralDate start, GeneralDate end) {
+		return (end.year() - start.year()) * 12 + (end.month() - start.month());
 	}
 }
