@@ -13,7 +13,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         standardDate: KnockoutObservable<Date> = ko.observable(moment(new Date()).toDate());
         //承認者指定種類
         typeSetting: KnockoutObservableArray<ButtonSelect> = ko.observableArray([]);
-        selectTypeSet: KnockoutObservable<number> = ko.observable(0);
+        selectTypeSet: KnockoutObservable<number> = ko.observable(null);
         //承認形態
         formSetting: KnockoutObservableArray<ButtonSelect> = ko.observableArray([]);
         selectFormSet: KnockoutObservable<number> = ko.observable(null);
@@ -71,6 +71,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                     self.cbbEnable(false);    
                 }
             });
+            self.selectTypeSet(0);
             self.getData();
             if(data !== undefined){
                 //設定する対象申請名
@@ -78,11 +79,9 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 //承認形態
                 self.selectFormSet(data.formSetting);                
                 
-                self.setDataForSwapList(self.selectTypeSet());
                 //承認者の登録(個人別): 非表示
                 if(data.tab === self.personTab){
                     $('#typeSetting').hide();
-                    self.selectTypeSet(self.personSetting);    
                 }else{
                     $('#typeSetting').show();
                 }
@@ -117,18 +116,18 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                     nts.uk.ui.errors.clearAll();
                 }
                 self.employeeList.removeAll();
-                self.setDataForSwapList(newValue);
                 if(newValue == 0){
                     self.enableListWp(true);
                     $('#tree-grid').ntsTreeComponent(self.treeGrid);
                 }else{
+                    self.setDataForSwapList(newValue);
                     self.enableListWp(false);
                 }
-            })
+            });
             //職場リスト            
-//            self.treeGrid.selectedWorkplaceId.subscribe(function(newValues){
-//                self.setDataForSwapList(self.selectTypeSet());                
-//            })
+            self.treeGrid.selectedWorkplaceId.subscribe(function(newValues){
+                self.setDataForSwapList(self.selectTypeSet());                
+            })
             //確定者(K2_21)の選択肢を承認者一覧(K2_15)と合わせる(update item cua control 確定者(K2_21)  theo 承認者一覧(K2_15))
             self.approverList.subscribe(function(){
                 self.setDataForCbb();
