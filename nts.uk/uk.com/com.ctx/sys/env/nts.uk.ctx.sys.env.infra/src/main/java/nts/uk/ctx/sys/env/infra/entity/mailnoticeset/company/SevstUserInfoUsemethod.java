@@ -27,7 +27,7 @@ public class SevstUserInfoUsemethod implements Serializable {
     private int selfEdit;
     
     @Column(name = "USE_MAIL_SET")
-    private int useMailSet;
+    private Integer useMailSet;
 
     public SevstUserInfoUsemethod() {
     }
