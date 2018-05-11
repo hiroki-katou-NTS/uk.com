@@ -107,7 +107,6 @@ module nts.uk.com.view.cmf005.c.viewmodel {
             ]);
 
             self.listCategoryChosed = self.currentCategorySelected;
-            $("#C2_1").focus();
         }
 
  
