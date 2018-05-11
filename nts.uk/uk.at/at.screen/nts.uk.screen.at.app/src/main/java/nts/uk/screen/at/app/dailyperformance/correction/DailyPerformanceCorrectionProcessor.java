@@ -1261,7 +1261,7 @@ public class DailyPerformanceCorrectionProcessor {
 			GeneralDate endDate) {
 		RegulationInfoEmployeeQuery query = new RegulationInfoEmployeeQuery();
 		query.setBaseDate(GeneralDate.today());
-		query.setReferenceRange(EmployeeReferenceRange.DEPARTMENT_AND_CHILD.value);
+		query.setReferenceRange(EmployeeReferenceRange.DEPARTMENT_ONLY.value);
 		query.setFilterByEmployment(false);
 		query.setEmploymentCodes(Collections.emptyList());
 //		query.setFilterByDepartment(false);
@@ -1282,6 +1282,7 @@ public class DailyPerformanceCorrectionProcessor {
 //		query.setIncludeAreOnLoan(true);
 //		query.setIncludeGoingOnLoan(false);
 		query.setIncludeRetirees(false);
+		query.setFilterByClosure(false);
 		return query;
 	}
 	
