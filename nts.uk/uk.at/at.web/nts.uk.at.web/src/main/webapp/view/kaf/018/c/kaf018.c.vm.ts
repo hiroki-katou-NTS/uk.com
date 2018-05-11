@@ -60,7 +60,6 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         startPage() : JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            block.invisible();
             let params = getShared("KAF018C_PARAMS");
             if (params) {
                 self.closureId = params.closureId;
@@ -386,7 +385,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             nts.uk.request.jump('/view/kaf/018/b/index.xhtml', params);
         }
 
-        goToD(rData: DailyStatusOut) {
+        goToD(rData) {
             var self = this;
             let listStatusEmp : Array<ApprovalStatusEmployee> = [];
             _.each(self.listApprovalEmployee, function(item) {
@@ -396,6 +395,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                 
             });
             let params = {
+               empName: rData.empName,
                 selectedEmpId: rData.empId,
                 listStatusEmp: listStatusEmp
             }

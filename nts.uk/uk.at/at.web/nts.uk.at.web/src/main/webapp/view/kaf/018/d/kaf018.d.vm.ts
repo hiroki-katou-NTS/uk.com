@@ -4,6 +4,8 @@ module nts.uk.at.view.kaf018.d.viewmodel {
     import formatDate = nts.uk.time.formatDate;
     import shareModel = kaf018.share.model.REFLECTEDSTATUS;
     import shared = kaf018.share.model;
+    import block = nts.uk.ui.block;
+
     export class ScreenModel {
         selectedEmpId: KnockoutObservable<string> = ko.observable('');
         listStatusEmp: Array<ApprovalStatusEmployee> = [];
@@ -11,6 +13,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
         columns: KnockoutObservableArray<NtsGridListColumn>;
         listData: Array<Content> = [];
         listDataDisp: KnockoutObservableArray<ContentDisp> = ko.observableArray([]);
+        dispEmpName: string = "";
         constructor() {
             var self = this;
         }
@@ -21,8 +24,10 @@ module nts.uk.at.view.kaf018.d.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            block.invisible();
             let params = getShared("KAF018D_VALUE");
             if (params) {
+                self.dispEmpName = params.empName;
                 _.each(params.listStatusEmp, function(item) {
                     self.listStatusEmp.push(new ApprovalStatusEmployee(item.sId, new Date(item.startDate), new Date(item.endDate)));
                 });
@@ -36,8 +41,10 @@ module nts.uk.at.view.kaf018.d.viewmodel {
                     self.listData.push(new Content(item.appType, item.appName, item.prePostAtr, item.appStartDate, item.appEndDate, item.appContent, item.reflectState, item.approvalStatus, item.phase1, item.phase2, item.phase3, item.phase4, item.phase5));
                 })
                 self.initExTable(self.listData);
+                block.clear();
                 dfd.resolve();
             }).fail(function(data: any) {
+                block.clear();
                 dfd.reject();
             });
             return dfd.promise();
@@ -48,16 +55,18 @@ module nts.uk.at.view.kaf018.d.viewmodel {
          */
         initExTable(listData: Array<Content>): void {
             var self = this;
+            let index = 0;
             _.each(listData, function(data: Content) {
                 let appStartDate: string = data.appStartDate.toString();
                 let appEndDate: string = '';
-                if (data.appType == shared.ApplicationType.ABSENCE_APPLICATION || data.appType == shared.ApplicationType.WORK_CHANGE_APPLICATION|| data.appType == shared.ApplicationType.BUSINESS_TRIP_APPLICATION) {
+                if (data.appType == shared.ApplicationType.ABSENCE_APPLICATION || data.appType == shared.ApplicationType.WORK_CHANGE_APPLICATION || data.appType == shared.ApplicationType.BUSINESS_TRIP_APPLICATION) {
                     appEndDate = data.appEndDate.toString();
                 } else {
                     appEndDate == "";
                 }
                 let dateRange = self.appDateRangeColor(self.convertDateMDW(appStartDate), self.convertDateMDW(appEndDate));
-                self.listDataDisp.push(new ContentDisp(data.appType, data.appName, data.prePostAtr ? "事前" : "事後", dateRange, data.appContent, self.disReflectionStatus(data.reflectState), self.disApprovalStatus(data.approvalStatus), data.phase1, data.phase2, data.phase3, data.phase4, data.phase5));
+                self.listDataDisp.push(new ContentDisp(index, data.appType, data.appName, data.prePostAtr ? "事前" : "事後", dateRange, data.appContent, self.disReflectionStatus(data.reflectState), self.disApprovalStatus(data.approvalStatus), data.phase1, data.phase2, data.phase3, data.phase4, data.phase5));
+                index++;
             });
             let colorBackGr = self.fillColorbackGr();
             self.reloadGridApplicaion(colorBackGr);
@@ -69,14 +78,14 @@ module nts.uk.at.view.kaf018.d.viewmodel {
                 width: '1120px',
                 height: '500px',
                 dataSource: self.listDataDisp(),
-                primaryKey: 'appId',
+                primaryKey: 'index',
                 virtualization: true,
                 rows: 20,
                 hidePrimaryKey: true,
                 rowVirtualization: true,
                 virtualizationMode: 'continuous',
                 columns: [
-                    { headerText: "", key: 'appId', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: "", key: 'index', dataType: 'string', width: '0px', hidden: true },
                     { headerText: text("KAF018_36"), key: 'appName', dataType: 'string', width: 160 },
                     { headerText: text("KAF018_37"), key: 'prePostAtr', dataType: 'string', width: 120 },
                     { headerText: text("KAF018_38"), key: 'appDate', dataType: 'string', width: 150 },
@@ -112,7 +121,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
             let self = this;
             let result = [];
             _.each(self.listDataDisp(), function(item) {
-                let rowId = item.appId;
+                let rowId = item.index;
                 //fill color in 承認状況
                 if (item.reflectState == 0) {//0 下書き保存/未反映　=　未
                     result.push(new shared.CellState(rowId, 'reflectState', ['unapprovalCell']));
@@ -275,6 +284,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
     }
 
     class ContentDisp {
+        index: number;
         appId: string;
         appName: string;
         prePostAtr: string;
@@ -287,8 +297,9 @@ module nts.uk.at.view.kaf018.d.viewmodel {
         phase3: string;
         phase4: string;
         phase5: string;
-        constructor(appId: string, appName: string, prePostAtr: string, appDate: string, appContent: string, reflectState: number,
+        constructor(index: number, appId: string, appName: string, prePostAtr: string, appDate: string, appContent: string, reflectState: number,
             approvalStatus: string, phase1: string, phase2: string, phase3: string, phase4: string, phase5: string) {
+            this.index = index;
             this.appId = appId;
             this.appName = appName;
             this.prePostAtr = prePostAtr;
