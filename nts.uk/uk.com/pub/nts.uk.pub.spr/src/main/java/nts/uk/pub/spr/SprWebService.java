@@ -54,17 +54,27 @@ public class SprWebService {
 			@FormParam("applicationID") String applicationID,
 			@FormParam("reason") String reason,
 			@FormParam("stampProtection") String stampProtection) {
+		String menuCDReal = menuCode.trim();
+		String loginEmployeeCDReal = loginEmployeeCode.trim();
+		String targetEmployeeCDReal = targetEmployeeCode.trim();
+		String startTimeReal = startTime.trim();
+		String endTimeReal = endTime.trim();
+		String targetDateReal = targetDate.trim();
+		String selectTypeReal = selectType.trim();
+		String applicationIDReal = applicationID.trim();
+		String reasonReal = reason.trim();
+		String stampProtectionReal = stampProtection.trim();
 		LoginUserContextSpr loginUserContextSpr = sprLoginFormService.loginFromSpr(
-				menuCode, 
-				loginEmployeeCode, 
-				targetEmployeeCode, 
-				startTime, 
-				endTime, 
-				targetDate, 
-				selectType, 
-				applicationID, 
-				reason,
-				stampProtection);
+				menuCDReal, 
+				loginEmployeeCDReal, 
+				targetEmployeeCDReal, 
+				startTimeReal, 
+				endTimeReal, 
+				targetDateReal, 
+				selectTypeReal, 
+				applicationIDReal, 
+				reasonReal,
+				stampProtectionReal);
 		loginUserContextManager.loggedInAsEmployee(
 				loginUserContextSpr.getUserID(), 
 				loginUserContextSpr.getPersonID(), 
@@ -106,26 +116,28 @@ public class SprWebService {
 			}
 		}
 		val paramsMap = new LinkedHashMap<String, String>();
-		paramsMap.put("menu", SprStubHelper.formatParam(menuCode));
-		paramsMap.put("loginemployeeCode", SprStubHelper.formatParam(loginEmployeeCode));
-		paramsMap.put("employeeCode", SprStubHelper.formatParam(targetEmployeeCode));
-		paramsMap.put("", SprStubHelper.formatParamTime(startTime));
-		paramsMap.put("endtime", SprStubHelper.formatParamTime(endTime));
-		paramsMap.put("date", SprStubHelper.formatParam(targetDate));
-		paramsMap.put("selecttype", SprStubHelper.formatParam(selectType));
-		paramsMap.put("applicationID", SprStubHelper.formatParam(applicationID));
+		paramsMap.put("menu", SprStubHelper.formatParam(menuCDReal));
+		paramsMap.put("loginemployeeCode", SprStubHelper.formatParam(loginEmployeeCDReal));
+		paramsMap.put("employeeCode", SprStubHelper.formatParam(targetEmployeeCDReal));
+		paramsMap.put("", SprStubHelper.formatParamTime(startTimeReal));
+		paramsMap.put("endtime", SprStubHelper.formatParamTime(endTimeReal));
+		paramsMap.put("date", SprStubHelper.formatParam(targetDateReal));
+		paramsMap.put("selecttype", SprStubHelper.formatParam(selectTypeReal));
+		paramsMap.put("applicationID", SprStubHelper.formatParam(applicationIDReal));
+		paramsMap.put("reason", SprStubHelper.formatParam(reasonReal));
+		paramsMap.put("stampProtection", SprStubHelper.formatParam(stampProtectionReal));
 		
 		val paramsValue = new LinkedHashMap<String, String>();
-		paramsValue.put("menu", menuCode);
-		paramsValue.put("loginemployeeCode", loginEmployeeCode);
-		paramsValue.put("employeeCode", targetEmployeeCode);
-		paramsValue.put("starttime", startTime);
-		paramsValue.put("endtime", endTime);
-		paramsValue.put("date", targetDate);
-		paramsValue.put("selecttype", selectType);
-		paramsValue.put("applicationID", applicationID);
-		paramsValue.put("reason", reason);
-		paramsValue.put("stampProtection", stampProtection);
+		paramsValue.put("menu", menuCDReal);
+		paramsValue.put("loginemployeeCode", loginEmployeeCDReal);
+		paramsValue.put("employeeCode", targetEmployeeCDReal);
+		paramsValue.put("starttime", startTimeReal);
+		paramsValue.put("endtime", endTimeReal);
+		paramsValue.put("date", targetDateReal);
+		paramsValue.put("selecttype", selectTypeReal);
+		paramsValue.put("applicationID", applicationIDReal);
+		paramsValue.put("reason", reasonReal);
+		paramsValue.put("stampProtection", stampProtectionReal);
 		paramsValue.put("userID", loginUserContextSpr.getUserID());
 		paramsValue.put("contractCD", loginUserContextSpr.getContractCD());
 		paramsValue.put("companyID", loginUserContextSpr.getCompanyID());
