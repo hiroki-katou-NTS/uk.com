@@ -660,8 +660,19 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		}
 		
 		Optional<CoreTimeSetting> coreTimeSetting = Optional.empty();
-		if(flexWorkSetOpt.isPresent()) {
-			coreTimeSetting = Optional.of(flexWorkSetOpt.get().getCoreTimeSetting());
+//		if(flexWorkSetOpt.isPresent()) {
+//			coreTimeSetting = Optional.of(flexWorkSetOpt.get().getCoreTimeSetting());
+//		}
+		if(flexWorkSetOpt.isPresent()) {//暫定的にここに処理を記載しているが、本来は別のクラスにあるべき
+			if(beforeWorkType.isPresent()) {
+				if(beforeWorkType.get().isWeekDayAttendance()) {
+					coreTimeSetting = Optional.of(flexWorkSetOpt.get().getCoreTimeSetting());
+				}else {//出勤系ではない場合は最低勤務時間を0：00にする
+					coreTimeSetting = Optional.of(flexWorkSetOpt.get().getCoreTimeSetting().changeZeroMinWorkTime());
+				}
+			}else {
+				coreTimeSetting = Optional.of(flexWorkSetOpt.get().getCoreTimeSetting());
+			}
 		}
 		
 		//beforeWorkType,workType

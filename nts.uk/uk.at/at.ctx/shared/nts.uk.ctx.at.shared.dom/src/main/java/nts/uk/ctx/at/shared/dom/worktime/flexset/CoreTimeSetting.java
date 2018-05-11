@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
@@ -19,6 +20,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * The Class CoreTimeSetting.
  */
 @Getter
+@AllArgsConstructor
 // コアタイム時間帯設定
 public class CoreTimeSetting extends WorkTimeDomainObject {
 
@@ -135,6 +137,14 @@ public class CoreTimeSetting extends WorkTimeDomainObject {
 		default:
 			throw new RuntimeException("unknown attr:" + attr);
 		}
+	}
+	
+	/**
+	 * 最低勤務時間を0：00に変更する
+	 * @return
+	 */
+	public CoreTimeSetting changeZeroMinWorkTime() {
+		return new CoreTimeSetting(this.coreTimeSheet,this.timesheet,new AttendanceTime(0));
 	}
 	
 }
