@@ -1,31 +1,33 @@
 module nts.uk.at.view.kwr001.b {
     export module viewmodel {
+        
+        import service = nts.uk.at.view.kwr001.b.service;
+        
         export class ScreenModel {
             items: KnockoutObservableArray<ItemModel>;
             columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             currentCodeList: KnockoutObservableArray<any>;
-            count: number = 100;
             
             constructor() {
-                this.items = ko.observableArray([]);
-                
-                for(let i = 1; i < 100; i++) {
-                    this.items.push(new ItemModel('00' + i, 'asrgasrga'));
-                }
-                
-                this.columns = ko.observableArray([
+                let self = this;
+                self.items = ko.observableArray([]);
+                self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("KWR001_42"), key: 'code', width: 150},
                     { headerText: nts.uk.resource.getText("KWR001_43"), key: 'name', width: 350}
                 ]); 
-                this.currentCodeList = ko.observableArray([]);
+                self.currentCodeList = ko.observableArray([]);
             }
             
              startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                var data = nts.uk.ui.windows.getShared('KWR001_B');
-                 //$("#multi-list").focus();
-                dfd.resolve();
+                self.currentCodeList([]);
+                self.currentCodeList(nts.uk.ui.windows.getShared('KWR001_B_errorAlarmCode'));
+                service.getErrorAlarmCode().done(function(data: any) {
+                    self.items(data);
+                    dfd.resolve();     
+                })
+                
                 return dfd.promise();
             }
             
@@ -35,7 +37,7 @@ module nts.uk.at.view.kwr001.b {
             
             saveDialog(): void {
                 let self = this;
-                nts.uk.ui.windows.setShared('ScrB_ErrorCode', self.currentCodeList(), true);
+                nts.uk.ui.windows.setShared('KWR001_B_errorAlarmCode', self.currentCodeList(), true);
                 nts.uk.ui.windows.close();    
             }
         }

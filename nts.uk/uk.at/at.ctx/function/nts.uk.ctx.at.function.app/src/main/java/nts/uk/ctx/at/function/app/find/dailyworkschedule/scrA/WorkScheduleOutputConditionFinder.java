@@ -1,19 +1,28 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.function.app.find.dailyworkschedule.scrA;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.app.find.dailyworkschedule.scrB.ErrorAlarmCodeDto;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.SEmpHistExportAdapter;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.SEmpHistExportImported;
 import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -22,32 +31,58 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
+/**
+ * The Class WorkScheduleOutputConditionFinder.
+ */
 @Stateless
 public class WorkScheduleOutputConditionFinder {
 	
+	/** The permission of employment form repository. */
 	@Inject
 	private PermissionOfEmploymentFormRepository permissionOfEmploymentFormRepository;
 	
+	/** The closure employment repository. */
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
 	
+	/** The s emp hist export adapter. */
 	@Inject
 	private SEmpHistExportAdapter sEmpHistExportAdapter;
 	
+	/** The closure repository. */
 	@Inject
 	private ClosureRepository closureRepository;
 	
+	/** The closure service. */
 	@Inject
 	private ClosureService closureService;
 	
+	/** The output item daily work schedule repository. */
 	@Inject
 	private OutputItemDailyWorkScheduleRepository outputItemDailyWorkScheduleRepository;
 	
+	/** The error alarm work record repository. */
+	@Inject
+	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
+	
+	/** The Constant STRING_EMPTY. */
 	private static final String STRING_EMPTY = "";
+	
+	/** The Constant FUNCTION_NO. */
 	private static final Integer FUNCTION_NO = 2;
+	
+	/** The Constant SHOW_CHARACTERISTIC. */
 	private static final String SHOW_CHARACTERISTIC = "SHOW_CHARACTERISTIC";
+	
+	/** The Constant OPEN_SCREEN_C. */
 	private static final String OPEN_SCREEN_C = "Open_ScrC";
 	
+	/**
+	 * Start scr.
+	 *
+	 * @param isExistWorkScheduleOutputCondition the is exist work schedule output condition
+	 * @return the work schedule output condition dto
+	 */
 	public WorkScheduleOutputConditionDto startScr(boolean isExistWorkScheduleOutputCondition) {
 		
 		WorkScheduleOutputConditionDto dto = new WorkScheduleOutputConditionDto();
@@ -68,11 +103,8 @@ public class WorkScheduleOutputConditionFinder {
 		
 		// アルゴリズム「社員に対応する締め期間を取得する」を実行する(Execute the algorithm "Acquire closing period corresponding to employee")
 		Closure closure = getDomClosure(employeeId, systemDate).get();
-//		List<ClosureHistory> lstClosureHistory = closure.getClosureHistories();
 		
 		// アルゴリズム「当月の期間を算出する」を実行する(Execute the algorithm "Calculate the period of the current month")
-//		execute(closure.getClosureId(), closure.getClosureMonth());
-		
 		DatePeriod datePeriod = closureService.getClosurePeriodNws(closure.getClosureId().value, closure.getClosureMonth().getProcessingYm());
 		dto.setStartDate(datePeriod.start());
 		dto.setEndDate(datePeriod.end());
@@ -96,6 +128,13 @@ public class WorkScheduleOutputConditionFinder {
 		return dto;
 	}
 	
+	/**
+	 * Gets the dom closure.
+	 *
+	 * @param employeeId the employee id
+	 * @param systemDate the system date
+	 * @return the dom closure
+	 */
 	// アルゴリズム「社員に対応する締め期間を取得する」を実行する(Execute the algorithm "Acquire closing period corresponding to employee")
 	private Optional<Closure> getDomClosure(String employeeId, GeneralDate systemDate) {
 		
@@ -115,104 +154,25 @@ public class WorkScheduleOutputConditionFinder {
 		return closureRepository.findById(companyId, optClosureEmployment.get().getClosureId());
 	}
 	
-	// アルゴリズム「当月の期間を算出する」を実行する(Execute the algorithm "Calculate the period of the current month")
-	/*private DatePeriod execute(ClosureId closureId, CurrentMonth currentMonth) {
+	/**
+	 * Gets the error alarm code dto.
+	 *
+	 * @return the error alarm code dto
+	 */
+	public List<ErrorAlarmCodeDto> getErrorAlarmCodeDto() {
 		String companyId = AppContexts.user().companyId();
 		
-		ClosureHistory closureHistory = closureRepository.findByClosureIdAndCurrentMonth(companyId, closureId.value, currentMonth.getProcessingYm().month()).get();
-
-		GeneralDate startDate;
-		GeneralDate endDate;
-		
-		// 締め変更履歴と当月をチェックする Check closing change history and current month
-		if (currentMonth.getProcessingYm().equals(closureHistory.getStartYearMonth())) {
-			
-			ClosureHistory closureHistoryMinus = closureRepository.findByClosureIdAndCurrentMonth(companyId, closureId.value, currentMonth.getProcessingYm().month()-1).get();
-			// アルゴリズム「締め日変更時の期間を算出」を実行する
-			return calculatePeriodWhenChangingClosingDate(closureHistory, closureHistoryMinus, currentMonth);
-		} else {
-			// check is the last day of month
-			if (closureHistory.getClosureDate().getLastDayOfMonth()) {
-				YearMonth yearMonth = currentMonth.getProcessingYm();
-				startDate = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1);
-				endDate = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), closureHistory.getClosureDate().getClosureDay().v());
-				return new DatePeriod(startDate, endDate);
-			} else {
-				// thực hiện xử lý 「日付の存在チェック」
-				startDate = checkExistDate(currentMonth.getProcessingYm().previousMonth(), closureHistory.getClosureDate().getClosureDay().v()+1);
-				endDate = checkExistDate(currentMonth.getProcessingYm(), closureHistory.getClosureDate().getClosureDay().v());
-				return new DatePeriod(startDate, endDate);
-			}
-		}
-	}*/
-
-	/*private DatePeriod calculatePeriodWhenChangingClosingDate(ClosureHistory closureHistory, ClosureHistory closureHistoryMinus, CurrentMonth currentMonth) {
-		
-		// current month - 1 [当月-1]
-		YearMonth yearMonthMinus = currentMonth.getProcessingYm().previousMonth();
-		GeneralDate startDate;
-		GeneralDate endDate;
-		
-		// 「当月」の締め変更履歴．締め日と「当月-1」の締め変更履歴を比較する 
-		if (closureHistory.getClosureDate().getClosureDay().v() <= closureHistoryMinus.getClosureDate().getClosureDay().v()) {
-			// アルゴリズム「日付の存在チェック」を実行する(thực hiện xử lý 「日付の存在チェック」)
-			if (closureHistory.getClosureDate().getLastDayOfMonth() 
-					|| isExistDayInMonth(currentMonth.getProcessingYm(), closureHistory.getClosureDate().getClosureDay().v())) {
-				startDate = checkExistDate(currentMonth.getProcessingYm(), 1);
-			} else {
-				startDate = checkExistDate(yearMonthMinus, closureHistory.getClosureDate().getClosureDay().v() + 1);
-			}
-			
-			// アルゴリズム「日付の存在チェック」を実行する(thực hiện xử lý 「日付の存在チェック」)
-			endDate = checkExistDate(currentMonth.getProcessingYm(), closureHistory.getClosureDate().getClosureDay().v());
-			return new DatePeriod(startDate, endDate);
-		} else {
-			// 締め日変更前期間 Period before closing date change
-			if (currentMonth.getClosureClassification().get().value == ClosureClassification.ClassificationClosingBefore.value) {
-				startDate = GeneralDate.ymd(2018, 1, 1);
-				endDate = GeneralDate.ymd(2018, 1, 1);
-			} 
-			// 締め日変更後期間 Period after closing date change
-			else {
-				startDate = GeneralDate.ymd(2018, 1, 1);
-				endDate = GeneralDate.ymd(2018, 1, 1);
-			}
-			return new DatePeriod(startDate, endDate);
-		}
-	}*/
-	
-	/*private GeneralDate checkExistDate(YearMonth yearMonth, Integer day) {
-		int year = yearMonth.year();
-		int month = yearMonth.month();
-		
-        if (isExistDayInMonth(yearMonth, day)) {
-        	return GeneralDate.ymd(year, month, day);
-        } else {
-        	return GeneralDate.ymd(year, month, getNumberDaysOfMonth(yearMonth));
-        }
-	}*/
-	
-	/*private boolean isExistDayInMonth(YearMonth yearMonth, int day) {
-		Calendar calendar = Calendar.getInstance();
-        int year = yearMonth.year();
-        int month = yearMonth.month()-1; // Janaury is 0
-        int date = 1;
-        calendar.set(year, month, date);
-        int maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        if (day <= maxDay) {
-        	return true;
-        } else {
-        	return false;
-        }
-	}*/
-	
-	/*private int getNumberDaysOfMonth(YearMonth yearMonth) {
-		Calendar calendar = Calendar.getInstance();
-        int year = yearMonth.year();
-        int month = yearMonth.month()-1; // Janaury is 0
-        int date = 1;
-        calendar.set(year, month, date);
-        int maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        return maxDay;
-	}*/
+		// TODO - hoangdd: can repo voi 2 doi so la companyId va 使用する = true, hien tai tu filter = tay
+		// ドメインモデル「勤務実績のエラーアラーム」を取得する(Acquire domain model "work error actual alarm")
+		List<ErrorAlarmWorkRecord> lstErrorAlarmWorkRecord = errorAlarmWorkRecordRepository.getListErrorAlarmWorkRecord(companyId);
+		return lstErrorAlarmWorkRecord.stream()
+								.filter(domain -> domain.getUseAtr())
+								.map(domain -> {
+									ErrorAlarmCodeDto alarmCodeDto = new ErrorAlarmCodeDto(domain.getCode().v(), 
+																							domain.getName().v());
+									return alarmCodeDto;
+								})
+								.sorted(Comparator.comparing(ErrorAlarmCodeDto::getCode))
+								.collect(Collectors.toList());
+	} 
 }

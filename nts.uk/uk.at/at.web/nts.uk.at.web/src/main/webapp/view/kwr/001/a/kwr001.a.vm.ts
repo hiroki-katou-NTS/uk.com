@@ -359,29 +359,37 @@ module nts.uk.at.view.kwr001.a {
                 
                 let companyId: string = __viewContext.user.companyId;
                 let userId: string = __viewContext.user.employeeId;
-                
-                let totalWorkplaceHierachy = new TotalWorkplaceHierachy(true, false, true, false, true, true, false, false, true);
-                let workScheduleSettingTotalOutput = new WorkScheduleSettingTotalOutput(true, true, false, false, true, true, totalWorkplaceHierachy);
-                let workScheduleOutputCondition = new WorkScheduleOutputCondition(companyId, userId, 0, '', 1, workScheduleSettingTotalOutput, 1);
-                
-                // TODO - hoangdd: fake data
-                service.saveCharacteristic(companyId, userId, workScheduleOutputCondition);
-                
+
                 $.when(service.restoreCharacteristic(companyId, userId)).done(function(data: WorkScheduleOutputCondition) {
+                if (_.isUndefined(data)) {
+                    // TODO - hoangdd: fake data default according spec
+                    let totalWorkplaceHierachy = new TotalWorkplaceHierachy(false, false, false, false, false, false, false, false, false);
+                    let workScheduleSettingTotalOutput = new WorkScheduleSettingTotalOutput(false, false, false, false, false, false, totalWorkplaceHierachy);
+                    let workScheduleOutputCondition = new WorkScheduleOutputCondition(companyId, userId, 0, '', 0, workScheduleSettingTotalOutput, 0, []);
+                    service.saveCharacteristic(companyId, userId, workScheduleOutputCondition);    
+                }
+                
                     dfd.resolve(data);
                 });
                 
                 return dfd.promise();
             }
             
-            openScreenB () {
-                var self = this;
-                nts.uk.ui.windows.setShared('KWR001_B', self.data(), true);
-                nts.uk.ui.windows.sub.modal('/view/kwr/001/b/index.xhtml').onClosed(function(): any {
-                    nts.uk.ui.windows.getShared('KWR001_B');
-                });
+            openScreenB (): void {
+                let self = this;
+                let companyId: string = __viewContext.user.companyId;
+                let userId: string = __viewContext.user.employeeId;
+                service.restoreCharacteristic(companyId, userId).done(function(data: any) {
+                    let workScheduleOutputCondition: WorkScheduleOutputCondition = data;
+                    nts.uk.ui.windows.setShared('KWR001_B_errorAlarmCode', _.isUndefined(data) ? [] : workScheduleOutputCondition.errorAlarmCode, true);
+                    nts.uk.ui.windows.sub.modal('/view/kwr/001/b/index.xhtml').onClosed(function(): any {
+                        workScheduleOutputCondition.errorAlarmCode = nts.uk.ui.windows.getShared('KWR001_B_errorAlarmCode');
+                        service.saveCharacteristic(companyId, userId, workScheduleOutputCondition);
+                        console.log(workScheduleOutputCondition);
+                    });  
+                })
             }
-            openScreenC () {
+            openScreenC (): void {
                 var self = this;
                 nts.uk.ui.windows.setShared('KWR001_C', self.data(), true);
                 nts.uk.ui.windows.sub.modal('/view/kwr/001/c/index.xhtml').onClosed(function(): any {
