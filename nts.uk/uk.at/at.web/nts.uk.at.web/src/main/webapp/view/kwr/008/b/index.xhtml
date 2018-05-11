@@ -98,7 +98,7 @@
                                    <tbody data-bind = "foreach: outputItem()">
                                        <tr>
                                        			<td><span class="limited-label" data-bind="text: $data.index"></span></td>
-				                            	<td><div tabindex="9" data-bind="ntsCheckBox: {checked: $data.useClassification}"></div></td>
+				                            	<td><div tabindex="9" data-bind="ntsCheckBox: {checked: $data.useClass}"></div></td>
 				                            	<td>
 				                            			<input data-bind="ntsTextEditor: {
 				                            				name: '#[KWR008_31]',
@@ -107,7 +107,7 @@
 				                            				option : { width : '190px'}},
 				                            				constraint: 'ItemOutTblBookHeadingName'"  />
 				                            	</td>
-				                            	<td><button id="btnSettingB16_5"  data-bind="click: function() {$parent.openKDW007($data.sortBy)}, enable: true">#{i18n.getText('KWR008_34')}</button></td>
+				                            	<td><button id="btnSettingB16_5"  data-bind="click: function() {$parent.openKDW007($data.sortBy)}, enable: true, visible: $data.sortBy() > 1">#{i18n.getText('KWR008_34')}</button></td>
 				                            	<td>
 					                            	<div class="combo-box"
 					                                            data-bind="ntsComboBox: {
@@ -117,7 +117,7 @@
 					                                                visibleItemsCount: 5,
 					                                                value: $data.valueOutputFormat,
 					                                                optionsText: 'name',
-					                                                columns: [{ prop: 'name', length: 1 }]}">
+					                                                columns: [{ prop: 'name', length: 1 }]}, visible: $data.sortBy() > 1">
 					                                </div>
 					                             </td>
 				                                
