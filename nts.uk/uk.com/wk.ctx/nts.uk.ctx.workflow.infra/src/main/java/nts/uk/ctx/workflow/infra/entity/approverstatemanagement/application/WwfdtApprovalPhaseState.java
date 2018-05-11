@@ -1,4 +1,4 @@
-package nts.uk.ctx.workflow.infra.entity.approverstatemanagement;
+package nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,7 +7,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
 import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
@@ -15,16 +14,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -64,7 +61,7 @@ public class WwfdtApprovalPhaseState extends UkJpaEntity {
 		return wwfdpApprovalPhaseStatePK;
 	}
 	
-	public static WwfdtApprovalPhaseState fromDomain(ApprovalPhaseState approvalPhaseState){
+	public static WwfdtApprovalPhaseState fromDomain(String companyID, GeneralDate date, ApprovalPhaseState approvalPhaseState){
 		return WwfdtApprovalPhaseState.builder()
 				.wwfdpApprovalPhaseStatePK(
 						new WwfdpApprovalPhaseStatePK(
@@ -74,7 +71,7 @@ public class WwfdtApprovalPhaseState extends UkJpaEntity {
 				.approvalForm(approvalPhaseState.getApprovalForm().value)
 				.listWwfdtApprovalFrame(
 						approvalPhaseState.getListApprovalFrame().stream()
-						.map(x -> WwfdtApprovalFrame.fromDomain(x)).collect(Collectors.toList()))
+						.map(x -> WwfdtApprovalFrame.fromDomain(companyID, date, x)).collect(Collectors.toList()))
 				.build();
 	}
 	

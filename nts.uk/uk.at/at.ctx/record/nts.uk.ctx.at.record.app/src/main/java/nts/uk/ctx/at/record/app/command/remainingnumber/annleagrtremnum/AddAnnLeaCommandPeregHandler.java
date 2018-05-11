@@ -40,9 +40,17 @@ implements PeregAddCommandHandler<AddAnnLeaGrantRemnNumPeregCommand>{
 		}
 		String annLeavId = IdentifierUtil.randomUniqueId();
 		AnnualLeaveGrantRemainingData data = AnnualLeaveGrantRemainingData.createFromJavaType(annLeavId, cid, command.getEmployeeId(), 
-				command.getGrantDate(), command.getDeadline(), command.getExpirationStatus() == null? 1: command.getExpirationStatus().intValue(), GrantRemainRegisterType.MANUAL.value,
-				command.getGrantDays() == null? 0d: command.getGrantDays() .doubleValue(), command.getGrantMinutes() == null? 0: command.getGrantMinutes().intValue(), command.getUsedDays() == null? 0d: command.getUsedDays().doubleValue(), command.getUsedMinutes()== null? 0: command.getUsedMinutes().intValue(), 
-				null, command.getRemainingDays()== null? 0: command.getRemainingDays().doubleValue(), command.getRemainingMinutes() == null? 0: command.getRemainingMinutes().intValue(), 0d, null, null, null);
+				command.getGrantDate(), command.getDeadline(), 
+				command.getExpirationStatus() == null? 1: command.getExpirationStatus().intValue(),
+				GrantRemainRegisterType.MANUAL.value,
+				command.getGrantDays() == null? 0d: command.getGrantDays() .doubleValue(), 
+				command.getGrantMinutes() == null? null: command.getGrantMinutes().intValue(), 
+				command.getUsedDays() == null? 0d: command.getUsedDays().doubleValue(), 
+				command.getUsedMinutes()== null? null: command.getUsedMinutes().intValue(), 
+				null, 
+				command.getRemainingDays()== null? 0: command.getRemainingDays().doubleValue(), 
+				command.getRemainingMinutes() == null? null: command.getRemainingMinutes().intValue(), 
+				0d, null, null, null);
 		annLeaRepo.add(data);
 		return new PeregAddCommandResult(annLeavId);
 	}

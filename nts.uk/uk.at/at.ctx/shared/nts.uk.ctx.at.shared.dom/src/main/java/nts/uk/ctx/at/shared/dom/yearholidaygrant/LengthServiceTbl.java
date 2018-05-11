@@ -47,8 +47,8 @@ public class LengthServiceTbl extends AggregateRoot{
 	 */
 	public static void validateInput(List<LengthServiceTbl> grantHolidayList) {
 		// 重複した勤続年数の登録不可	
-		List<Integer> years = new ArrayList<>();
-		
+		List<YearMonthHoliday> yearMonthHoliday = new ArrayList<>();
+
 		for (int i = 0; i < grantHolidayList.size(); i++) {
 			LengthServiceTbl currentCondition = grantHolidayList.get(i);
 			
@@ -72,12 +72,15 @@ public class LengthServiceTbl extends AggregateRoot{
 			}
 			
 			// 重複した勤続年数の登録不可
-			Integer currentYear = currentCondition.getYear().v();
+			YearMonthHoliday currentYearMonth = new YearMonthHoliday();
+			currentYearMonth.setMonth(currentCondition.getMonth().v());
+			currentYearMonth.setYear(currentCondition.getYear().v());
 			
-			if (years.stream().anyMatch(x -> x.equals(currentYear))) {
+			if (yearMonthHoliday.stream().anyMatch(x -> x.equals(currentYearMonth))) {
 				throw new BusinessException("Msg_266");
 			}
-			years.add(currentCondition.getYear().v());
+			
+			yearMonthHoliday.add(currentYearMonth);
 						
 			// 年数、月数ともに未入力の場合登録不可
 			if (currentCondition.getYear() == null && currentCondition.getMonth() == null) {

@@ -167,7 +167,7 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 		List<TimezoneUse> lstTimezone = timeZoneSetting.getLstTimezone().stream()
 				.filter(x -> x.getWorkNo() == 1)
 				.collect(Collectors.toList());
-		if(!lstTimezone.isEmpty()) {
+		if(lstTimezone.isEmpty()) {
 			return outData;
 		}
 		outData.setChkReflect(true);

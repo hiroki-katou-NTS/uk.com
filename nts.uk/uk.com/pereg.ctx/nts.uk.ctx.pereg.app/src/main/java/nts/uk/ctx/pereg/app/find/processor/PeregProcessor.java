@@ -55,9 +55,8 @@ import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.PeregQuery;
-import nts.uk.shr.pereg.app.find.dto.EmpOptionalDto;
+import nts.uk.shr.pereg.app.find.dto.OptionalItemDataDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
-import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
 
 @Stateless
 public class PeregProcessor {
@@ -309,7 +308,7 @@ public class PeregProcessor {
 		if (perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
 			List<EmpInfoCtgData> empInfoCtgDatas = new ArrayList<>();
 			if(query.getInfoId() == null && query.getStandardDate() == null && perInfoCtg.getCategoryType() != CategoryType.SINGLEINFO) {
-				MappingFactory.matchEmpOptionData(null, classItemList, new ArrayList<>());
+				MappingFactory.matchOptionalItemData(null, classItemList, new ArrayList<>());
 			}
 			else {
 				empInfoCtgDatas = empInCtgDataRepo.getByEmpIdAndCtgId(query.getEmployeeId(),
@@ -317,21 +316,21 @@ public class PeregProcessor {
 			}
 			if (!empInfoCtgDatas.isEmpty()) {
 				String recordId = empInfoCtgDatas.get(0).getRecordId();
-				List<EmpOptionalDto> empOptionItemData = empInfoItemDataRepository.getAllInfoItemByRecordId(recordId)
+				List<OptionalItemDataDto> empOptionItemData = empInfoItemDataRepository.getAllInfoItemByRecordId(recordId)
 						.stream().map(x -> x.genToPeregDto()).collect(Collectors.toList());
-				MappingFactory.matchEmpOptionData(recordId, classItemList, empOptionItemData);
+				MappingFactory.matchOptionalItemData(recordId, classItemList, empOptionItemData);
 			}
 		} else {
 			List<PerInfoCtgData> perInfoCtgDatas = new ArrayList<>();
 			if(query.getInfoId() != null || query.getStandardDate() != null)
 				perInfoCtgDatas = perInCtgDataRepo.getByPerIdAndCtgId(query.getPersonId(),
 					perInfoCtg.getPersonInfoCategoryId());
-			else MappingFactory.matchEmpOptionData(null, classItemList, new ArrayList<>());
+			else MappingFactory.matchOptionalItemData(null, classItemList, new ArrayList<>());
 			if (!perInfoCtgDatas.isEmpty()) {
 				String recordId = perInfoCtgDatas.get(0).getRecordId();
-				List<PersonOptionalDto> perOptionItemData = perInfoItemDataRepository.getAllInfoItemByRecordId(recordId)
+				List<OptionalItemDataDto> perOptionItemData = perInfoItemDataRepository.getAllInfoItemByRecordId(recordId)
 						.stream().map(x -> x.genToPeregDto()).collect(Collectors.toList());
-				MappingFactory.matchPerOptionData(recordId, classItemList, perOptionItemData);
+				MappingFactory.matchOptionalItemData(recordId, classItemList, perOptionItemData);
 			}
 		}
 
@@ -340,15 +339,15 @@ public class PeregProcessor {
 	private void setOptionalDataByRecordId(String recordId, PersonEmployeeType type, 
 			List<LayoutPersonInfoClsDto> classItemList ){
 		if (type == PersonEmployeeType.EMPLOYEE) {
-			List<EmpOptionalDto> empOptionItemData = empInfoItemDataRepository
+			List<OptionalItemDataDto> empOptionItemData = empInfoItemDataRepository
 					.getAllInfoItemByRecordId(recordId).stream().map(x -> x.genToPeregDto())
 					.collect(Collectors.toList());
-			MappingFactory.matchEmpOptionData(recordId, classItemList, empOptionItemData);
+			MappingFactory.matchOptionalItemData(recordId, classItemList, empOptionItemData);
 		} else {
-			List<PersonOptionalDto> perOptionItemData = perInfoItemDataRepository
+			List<OptionalItemDataDto> perOptionItemData = perInfoItemDataRepository
 					.getAllInfoItemByRecordId(recordId).stream().map(x -> x.genToPeregDto())
 					.collect(Collectors.toList());
-			MappingFactory.matchPerOptionData(recordId, classItemList, perOptionItemData);
+			MappingFactory.matchOptionalItemData(recordId, classItemList, perOptionItemData);
 		}
 	}
 	

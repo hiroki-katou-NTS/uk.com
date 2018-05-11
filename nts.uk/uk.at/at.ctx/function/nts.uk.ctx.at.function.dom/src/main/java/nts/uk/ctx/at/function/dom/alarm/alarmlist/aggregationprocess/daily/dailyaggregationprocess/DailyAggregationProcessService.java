@@ -20,6 +20,7 @@ import nts.uk.ctx.at.function.dom.adapter.fixedcheckitem.FixedCheckItemAdapter;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckAdapter;
+import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.ErrorRecordImport;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
@@ -32,6 +33,7 @@ import nts.uk.ctx.at.function.dom.dailyattendanceitem.repository.DailyAttendance
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class DailyAggregationProcessService {
@@ -107,17 +109,14 @@ public class DailyAggregationProcessService {
 		List<WorkRecordExtraConAdapterDto> listWorkRecordExtraCon=  workRecordExtraConAdapter.getAllWorkRecordExtraConByListID(dailyAlarmCondition.getExtractConditionWorkRecord());
 		Map<String, WorkRecordExtraConAdapterDto> mapWorkRecordExtraCon = listWorkRecordExtraCon.stream().collect(Collectors.toMap(WorkRecordExtraConAdapterDto::getErrorAlarmCheckID, x->x));
 		
-		for(GeneralDate date : period.getListDate()) {
-			
-			Map<String, Map<String, Boolean>> mapErAlCheckIdANDEmployee =  erAlWorkRecordCheckAdapter.check(date, Arrays.asList(employee.getId()), dailyAlarmCondition.getExtractConditionWorkRecord());
-	
-			mapErAlCheckIdANDEmployee.entrySet().stream().forEach(e ->{
-				if(e.getValue().get(employee.getId())) {
-					listValueExtractAlarm.add(checkConditionGenerateValue(employee, date, mapWorkRecordExtraCon.get(e.getKey()), companyID));
-				} 
-				
-			});
+		List<ErrorRecordImport> listErrorRecord = erAlWorkRecordCheckAdapter.check(dailyAlarmCondition.getExtractConditionWorkRecord(), new DatePeriod(period.getStartDate(), period.getEndDate()),
+																																	   Arrays.asList(employee.getId()));
+		for(ErrorRecordImport errorRecord : listErrorRecord) {
+			if(errorRecord.isError()) {
+				listValueExtractAlarm.add(this.checkConditionGenerateValue(employee, errorRecord.getDate(), mapWorkRecordExtraCon.get(errorRecord.getErAlId()), companyID));				
+			}			
 		}
+		
 		return listValueExtractAlarm;
 	}
 	
@@ -155,7 +154,9 @@ public class DailyAggregationProcessService {
 		}
 		
 		alarmContent = checkConditionGenerateAlarmContent(checkItem, workRecordExtraCon , companyID);		
-		
+		if(alarmContent.length()>100) {
+			alarmContent = alarmContent.substring(0, 100);
+		}
 		ValueExtractAlarm result = new ValueExtractAlarm(employee.getWorkplaceId(), employee.getId(), date.toString(), TextResource.localize("KAL010_1"), alarmItem, alarmContent,
 				workRecordExtraCon.getErrorAlarmCondition().getDisplayMessage());
 		return result;
@@ -185,8 +186,8 @@ public class DailyAggregationProcessService {
 			if (!singleCompare(atdItemCon.getCompareOperator())) {
 				
 				if(betweenRange(atdItemCon.getCompareOperator())) {
-					alarmContent = TextResource.localize("KAL010_49", wktypeText, atdItemCon.getCompareStartValue().toString(), coupleOperator.getOperatorStart(), attendanceText,
-							coupleOperator.getOperatorEnd(), atdItemCon.getCompareEndValue().toString());
+					alarmContent = TextResource.localize("KAL010_49", wktypeText, this.formatHourData( atdItemCon.getCompareStartValue().toString()), coupleOperator.getOperatorStart(), attendanceText,
+							coupleOperator.getOperatorEnd(), this.formatHourData(atdItemCon.getCompareEndValue().toString()));
 				}else {
 					alarmContent = TextResource.localize("KAL010_121", wktypeText, attendanceText, coupleOperator.getOperatorStart(), atdItemCon.getCompareStartValue().toString(),
 							atdItemCon.getCompareEndValue().toString(), coupleOperator.getOperatorEnd(), attendanceText);
@@ -194,9 +195,9 @@ public class DailyAggregationProcessService {
 				
 			} else {
 				if (atdItemCon.getConditionType() == ConditionType.FIXED_VALUE.value) {
-					alarmContent = TextResource.localize("KAL010_48", wktypeText, attendanceText, coupleOperator.getOperatorStart(), atdItemCon.getCompareStartValue().toString());
+					alarmContent = TextResource.localize("KAL010_48", wktypeText, attendanceText, coupleOperator.getOperatorStart(),this.formatHourData( atdItemCon.getCompareStartValue().toString()));
 				} else {
-					alarmContent = TextResource.localize("KAL010_48", wktypeText, attendanceText, coupleOperator.getOperatorStart(), atdItemCon.getSingleAtdItem() + "");
+					alarmContent = TextResource.localize("KAL010_48", wktypeText, attendanceText, coupleOperator.getOperatorStart(), this.formatHourData(atdItemCon.getSingleAtdItem() + ""));
 				}
 			}
 			break;
@@ -206,8 +207,8 @@ public class DailyAggregationProcessService {
 			
 			if (!singleCompare(atdItemCon.getCompareOperator())) {
 				if(betweenRange(atdItemCon.getCompareOperator())) {
-					alarmContent = TextResource.localize("KAL010_55", wktypeText, atdItemCon.getCompareStartValue().toString(), coupleOperator.getOperatorStart(), attendanceText,
-							coupleOperator.getOperatorEnd(), atdItemCon.getCompareEndValue().toString(), workRecordExtraCon.getErrorAlarmCondition().getContinuousPeriod() + "");
+					alarmContent = TextResource.localize("KAL010_55", wktypeText, this.formatHourData(atdItemCon.getCompareStartValue().toString()), coupleOperator.getOperatorStart(), attendanceText,
+							coupleOperator.getOperatorEnd(), this.formatHourData(atdItemCon.getCompareEndValue().toString()), workRecordExtraCon.getErrorAlarmCondition().getContinuousPeriod() + "");
 				}else {
 					alarmContent = TextResource.localize("KAL010_122", wktypeText, attendanceText , coupleOperator.getOperatorStart(),  atdItemCon.getCompareStartValue().toString(), 
 							 atdItemCon.getCompareEndValue().toString(),
@@ -216,10 +217,10 @@ public class DailyAggregationProcessService {
 
 			} else {
 				if (atdItemCon.getConditionType() == ConditionType.FIXED_VALUE.value) {
-					alarmContent = TextResource.localize("KAL010_54", wktypeText, attendanceText, coupleOperator.getOperatorStart(), atdItemCon.getCompareStartValue().toString(),
+					alarmContent = TextResource.localize("KAL010_54", wktypeText, attendanceText, coupleOperator.getOperatorStart(), this.formatHourData(atdItemCon.getCompareStartValue().toString()),
 							workRecordExtraCon.getErrorAlarmCondition().getContinuousPeriod() + "");
 				} else {
-					alarmContent = TextResource.localize("KAL010_54", wktypeText, attendanceText, coupleOperator.getOperatorStart(), atdItemCon.getSingleAtdItem() + "",
+					alarmContent = TextResource.localize("KAL010_54", wktypeText, attendanceText, coupleOperator.getOperatorStart(), this.formatHourData(atdItemCon.getSingleAtdItem() + ""),
 							workRecordExtraCon.getErrorAlarmCondition().getContinuousPeriod() + "");
 				}
 			} 
@@ -254,6 +255,19 @@ public class DailyAggregationProcessService {
 
 		return alarmContent;
 		
+	}
+	
+	private String formatHourData(String  minutes) {
+		String h="", m="";
+		if(minutes !=null && !minutes.equals("")) {
+			Integer hour = Integer.parseInt(minutes);
+			h = hour.intValue()/60 +"";
+			m = hour.intValue()%60 +"";
+			
+			return h+ ":"+ m;
+		}else {
+			return "";
+		}
 	}
 	
 	private String generateAlarmGroup(ErAlConAttendanceItemAdapterDto group ) {
@@ -296,6 +310,8 @@ public class DailyAggregationProcessService {
 	private String calculateWktypeText( WorkRecordExtraConAdapterDto workRecordExtraCon,String companyID) {
 		
 		List<String> workTypeCodes =  workRecordExtraCon.getErrorAlarmCondition().getWorkTypeCondition().getPlanLstWorkType();
+		if (workTypeCodes.isEmpty() || workTypeCodes == null)
+			return "";
 		List<String> workTypeNames = workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeCodes).stream().map( x ->x.getName().toString()).collect(Collectors.toList());
 		return workTypeNames.isEmpty()? "":  String.join(",", workTypeNames);
 	}

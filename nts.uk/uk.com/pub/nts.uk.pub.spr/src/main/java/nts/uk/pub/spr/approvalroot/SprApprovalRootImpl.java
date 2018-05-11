@@ -111,7 +111,8 @@ public class SprApprovalRootImpl implements SprApprovalRootService {
 //				}
 			}
 			// （ワークフローExport）アルゴリズム「3.指定した社員が承認できるかの判断」を実行する
-			JudgmentSprExport judgmentSprExport = sprApprovalSearchPub.judgmentTargetPersonCanApprove(companyID, x.getRootStateID(), employeeID);
+			JudgmentSprExport judgmentSprExport = sprApprovalSearchPub
+					.judgmentTargetPersonCanApprove(companyID, x.getRootStateID(), employeeID, rootType);
 			if(!(judgmentSprExport.getAuthorFlag()&&judgmentSprExport.getApprovalAtr()==0&&!judgmentSprExport.getExpirationAgentFlag())){
 				return;
 			}
