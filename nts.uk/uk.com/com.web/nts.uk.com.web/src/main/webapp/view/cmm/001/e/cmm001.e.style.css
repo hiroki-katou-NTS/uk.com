@@ -12,9 +12,9 @@ td {
     border-left: 0.5px solid grey;
 }
 .div-table {
-    display:block;
-    height:420px;
-    overflow:auto;
+    display: block;
+    height: 350px;
+    overflow: auto;
     padding: 10px;
 }
 .selected { background-color: #CEE6FF; }
@@ -22,8 +22,6 @@ td.border-custom {
 	border-top: none;
  }
 .caret-bottom.outline {
-    width: 5rem;
-    height: 1em;
-    margin-left: 125px;
-    font-size: 2rem;
+    margin-left: 110px;
+    font-size: 50px;
 }

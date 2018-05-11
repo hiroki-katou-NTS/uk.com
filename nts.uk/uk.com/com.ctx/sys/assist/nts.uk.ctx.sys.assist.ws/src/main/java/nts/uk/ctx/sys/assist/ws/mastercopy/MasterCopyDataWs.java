@@ -58,7 +58,7 @@ public class MasterCopyDataWs extends WebService{
 	}
 	
 	@POST
-	@Path("export")
+	@Path("log/export")
 	public ExportServiceResult exportErrorCsv(List<ErrorContentDto> command) {
 		return this.exportService.start(command);
 	}

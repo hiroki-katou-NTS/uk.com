@@ -5,7 +5,7 @@ module nts.uk.com.view.cmm001.f {
          */
         var path: any = {
             executionMasterCopyData: "sys/assist/mastercopy/data/execute",
-            exportFileError: "sys/assist/mastercopy/data/export",
+            exportFileError: "sys/assist/mastercopy/data/log/export",
             interrupt: "sys/assist/mastercopy/data/interrupt"
             };
         
@@ -20,7 +20,7 @@ module nts.uk.com.view.cmm001.f {
          *  export error to csv service
          */
         export function exportFileError(data: model.ErrorContentDto[]): JQueryPromise<any> {
-            return nts.uk.request.ajax(path.exportFileError, data);
+            return nts.uk.request.exportFile(path.exportFileError, data);
         }
         
         /**
