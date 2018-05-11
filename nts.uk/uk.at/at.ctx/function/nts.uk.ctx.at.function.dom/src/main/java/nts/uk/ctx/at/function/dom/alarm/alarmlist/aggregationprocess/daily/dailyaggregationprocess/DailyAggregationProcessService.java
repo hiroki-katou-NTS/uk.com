@@ -154,7 +154,9 @@ public class DailyAggregationProcessService {
 		}
 		
 		alarmContent = checkConditionGenerateAlarmContent(checkItem, workRecordExtraCon , companyID);		
-		
+		if(alarmContent.length()>100) {
+			alarmContent = alarmContent.substring(0, 100);
+		}
 		ValueExtractAlarm result = new ValueExtractAlarm(employee.getWorkplaceId(), employee.getId(), date.toString(), TextResource.localize("KAL010_1"), alarmItem, alarmContent,
 				workRecordExtraCon.getErrorAlarmCondition().getDisplayMessage());
 		return result;
@@ -184,8 +186,8 @@ public class DailyAggregationProcessService {
 			if (!singleCompare(atdItemCon.getCompareOperator())) {
 				
 				if(betweenRange(atdItemCon.getCompareOperator())) {
-					alarmContent = TextResource.localize("KAL010_49", wktypeText, atdItemCon.getCompareStartValue().toString(), coupleOperator.getOperatorStart(), attendanceText,
-							coupleOperator.getOperatorEnd(), atdItemCon.getCompareEndValue().toString());
+					alarmContent = TextResource.localize("KAL010_49", wktypeText, this.formatHourData( atdItemCon.getCompareStartValue().toString()), coupleOperator.getOperatorStart(), attendanceText,
+							coupleOperator.getOperatorEnd(), this.formatHourData(atdItemCon.getCompareEndValue().toString()));
 				}else {
 					alarmContent = TextResource.localize("KAL010_121", wktypeText, attendanceText, coupleOperator.getOperatorStart(), atdItemCon.getCompareStartValue().toString(),
 							atdItemCon.getCompareEndValue().toString(), coupleOperator.getOperatorEnd(), attendanceText);
@@ -193,9 +195,9 @@ public class DailyAggregationProcessService {
 				
 			} else {
 				if (atdItemCon.getConditionType() == ConditionType.FIXED_VALUE.value) {
-					alarmContent = TextResource.localize("KAL010_48", wktypeText, attendanceText, coupleOperator.getOperatorStart(), atdItemCon.getCompareStartValue().toString());
+					alarmContent = TextResource.localize("KAL010_48", wktypeText, attendanceText, coupleOperator.getOperatorStart(),this.formatHourData( atdItemCon.getCompareStartValue().toString()));
 				} else {
-					alarmContent = TextResource.localize("KAL010_48", wktypeText, attendanceText, coupleOperator.getOperatorStart(), atdItemCon.getSingleAtdItem() + "");
+					alarmContent = TextResource.localize("KAL010_48", wktypeText, attendanceText, coupleOperator.getOperatorStart(), this.formatHourData(atdItemCon.getSingleAtdItem() + ""));
 				}
 			}
 			break;
@@ -205,8 +207,8 @@ public class DailyAggregationProcessService {
 			
 			if (!singleCompare(atdItemCon.getCompareOperator())) {
 				if(betweenRange(atdItemCon.getCompareOperator())) {
-					alarmContent = TextResource.localize("KAL010_55", wktypeText, atdItemCon.getCompareStartValue().toString(), coupleOperator.getOperatorStart(), attendanceText,
-							coupleOperator.getOperatorEnd(), atdItemCon.getCompareEndValue().toString(), workRecordExtraCon.getErrorAlarmCondition().getContinuousPeriod() + "");
+					alarmContent = TextResource.localize("KAL010_55", wktypeText, this.formatHourData(atdItemCon.getCompareStartValue().toString()), coupleOperator.getOperatorStart(), attendanceText,
+							coupleOperator.getOperatorEnd(), this.formatHourData(atdItemCon.getCompareEndValue().toString()), workRecordExtraCon.getErrorAlarmCondition().getContinuousPeriod() + "");
 				}else {
 					alarmContent = TextResource.localize("KAL010_122", wktypeText, attendanceText , coupleOperator.getOperatorStart(),  atdItemCon.getCompareStartValue().toString(), 
 							 atdItemCon.getCompareEndValue().toString(),
@@ -215,10 +217,10 @@ public class DailyAggregationProcessService {
 
 			} else {
 				if (atdItemCon.getConditionType() == ConditionType.FIXED_VALUE.value) {
-					alarmContent = TextResource.localize("KAL010_54", wktypeText, attendanceText, coupleOperator.getOperatorStart(), atdItemCon.getCompareStartValue().toString(),
+					alarmContent = TextResource.localize("KAL010_54", wktypeText, attendanceText, coupleOperator.getOperatorStart(), this.formatHourData(atdItemCon.getCompareStartValue().toString()),
 							workRecordExtraCon.getErrorAlarmCondition().getContinuousPeriod() + "");
 				} else {
-					alarmContent = TextResource.localize("KAL010_54", wktypeText, attendanceText, coupleOperator.getOperatorStart(), atdItemCon.getSingleAtdItem() + "",
+					alarmContent = TextResource.localize("KAL010_54", wktypeText, attendanceText, coupleOperator.getOperatorStart(), this.formatHourData(atdItemCon.getSingleAtdItem() + ""),
 							workRecordExtraCon.getErrorAlarmCondition().getContinuousPeriod() + "");
 				}
 			} 
@@ -253,6 +255,19 @@ public class DailyAggregationProcessService {
 
 		return alarmContent;
 		
+	}
+	
+	private String formatHourData(String  minutes) {
+		String h="", m="";
+		if(minutes !=null && !minutes.equals("")) {
+			Integer hour = Integer.parseInt(minutes);
+			h = hour.intValue()/60 +"";
+			m = hour.intValue()%60 +"";
+			
+			return h+ ":"+ m;
+		}else {
+			return "";
+		}
 	}
 	
 	private String generateAlarmGroup(ErAlConAttendanceItemAdapterDto group ) {
