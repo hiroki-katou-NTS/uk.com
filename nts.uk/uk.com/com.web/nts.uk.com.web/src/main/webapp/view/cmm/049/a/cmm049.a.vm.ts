@@ -3,107 +3,46 @@ module nts.uk.com.view.cmm049.a {
     export module viewmodel {
 
         export class ScreenModel {
-            mailPcCompany: KnockoutObservableArray<any>;
-            mailPcPersonal: KnockoutObservableArray<any>;
-            mailPcCompanyPerson: KnockoutObservableArray<any>;
-            mailPcPersonSetting: KnockoutObservableArray<any>;
-            mailMobileCompany: KnockoutObservableArray<any>;
-            mailMobileCompanySetting: KnockoutObservableArray<any>;
-            mailMobilePersonal: KnockoutObservableArray<any>;
-            mailMobilePersonalSetting: KnockoutObservableArray<any>;
-            mobilePhoneCompany: KnockoutObservableArray<any>;
-            mobilePhoneCompanySetting: KnockoutObservableArray<any>;
-            password: KnockoutObservableArray<any>;
-            selectedMailPcCom: any;
-            selectedMailPcPerson: any;
-            selectedMailPcPersonal: any;
-            selectedMailPcPersonSetting: any;
-            selectedMailMobileCompany: any;
-            selectedMailMobileCompanySetting: any;
-            selectedMailMobilePersonal: any;
-            selectedMailMobilePersonalSetting: any;
-            selectedMobilePhoneCompany: any;
-            selectedMobilePhoneCompanySetting: any;
-            selectedPassword: any;
+            enums: any;
+            sendMailSetOptions: KnockoutObservableArray<any>;
+            selfEditSetOptions: KnockoutObservableArray<any>;
+            
+            selectedMailPcCom: KnockoutObservable<number>;
+            selectedMailPcPerson: KnockoutObservable<number>;
+            selectedMailPcPersonal: KnockoutObservable<number>;
+            selectedMailPcPersonSetting: KnockoutObservable<number>;
+            selectedMailMobileCompany: KnockoutObservable<number>;
+            selectedMailMobileCompanySetting: KnockoutObservable<number>;
+            selectedMailMobilePersonal: KnockoutObservable<number>;
+            selectedMailMobilePersonalSetting: KnockoutObservable<number>;
+            selectedMobilePhoneCompany: KnockoutObservable<number>;
+            selectedMobilePhoneCompanySetting: KnockoutObservable<number>;
+            selectedPassword: KnockoutObservable<number>;
             controlButton: KnockoutObservable<boolean>;
+            controlMailMobilePersonalSetting: KnockoutObservable<boolean>;
 
             constructor() {
                 var self = this;
-                self.mailPcCompany = ko.observableArray([
-                    { code: 1, name: '利用する' },
-                    { code: 2, name: '利用しない' },
-                    { code: 3, name: '個人選択可' }
-                ]);
-                self.selectedMailPcCom = ko.observable(1);
-
-                self.mailPcCompanyPerson = ko.observableArray([
-                    { code: 1, name: '編集可' },
-                    { code: 2, name: '編集不可' },
-                ]);
-                self.selectedMailPcPerson = ko.observable(1);
-
-                self.mailPcPersonal = ko.observableArray([
-                    { code: 1, name: '利用する' },
-                    { code: 2, name: '利用しない' },
-                    { code: 3, name: '個人選択可' }
-                ]);
-                self.selectedMailPcPersonal = ko.observable(3);
-
-                self.mailPcPersonSetting = ko.observableArray([
-                    { code: 1, name: '編集可' },
-                    { code: 2, name: '編集不可' },
-                ]);
-                self.selectedMailPcPersonSetting = ko.observable(1);
-
-                self.mailMobileCompany = ko.observableArray([
-                    { code: 1, name: '利用する' },
-                    { code: 2, name: '利用しない' },
-                    { code: 3, name: '個人選択可' }
-                ]);
-
-                self.selectedMailMobileCompany = ko.observable(1);
-
-                self.mailMobileCompanySetting = ko.observableArray([
-                    { code: 1, name: '編集可' },
-                    { code: 2, name: '編集不可' },
-                ]);
-                self.selectedMailMobileCompanySetting = ko.observable(1);
-
-                self.mailMobilePersonal = ko.observableArray([
-                    { code: 1, name: '利用する' },
-                    { code: 2, name: '利用しない' },
-                    { code: 3, name: '個人選択可' }
-                ]);
-                self.selectedMailMobilePersonal = ko.observable(2);
+                self.sendMailSetOptions = ko.observableArray([]);
+                self.selfEditSetOptions = ko.observableArray([]);
                 
-                self.mailMobilePersonalSetting = ko.observableArray([
-                    { code: 1, name: '編集可' },
-                    { code: 2, name: '編集不可' },
-                ]);
+                self.selectedMailPcCom = ko.observable(1);
+                self.selectedMailPcPerson = ko.observable(1);
+                self.selectedMailPcPersonal = ko.observable(3);
+                self.selectedMailPcPersonSetting = ko.observable(1);
+                self.selectedMailMobileCompany = ko.observable(1);
+                self.selectedMailMobileCompanySetting = ko.observable(1);
+                self.selectedMailMobilePersonal = ko.observable(2);
                 self.selectedMailMobilePersonalSetting = ko.observable(2);
-
+                self.controlMailMobilePersonalSetting = ko.computed(function(){
+                    return self.selectedMailMobilePersonal() == 1 || self.selectedMailMobilePersonal() == 2;
+                    });
                 self.controlButton = ko.computed(function() {
                     return self.selectedMailMobilePersonalSetting() == 1;
                 });
-                
-                self.mobilePhoneCompany = ko.observableArray([
-                    { code: 1, name: '編集可' },
-                    { code: 2, name: '編集不可' },
-                ]);
                 self.selectedMobilePhoneCompany = ko.observable(1);
-                
-                 self.mobilePhoneCompanySetting = ko.observableArray([
-                    { code: 1, name: '編集可' },
-                    { code: 2, name: '編集不可' },
-                ]);
                 self.selectedMobilePhoneCompanySetting = ko.observable(2);
-                
-                 self.password = ko.observableArray([
-                    { code: 1, name: '編集可' },
-                    { code: 2, name: '編集不可' },
-                ]);
                 self.selectedPassword = ko.observable(1);
-
             }
 
             /**
@@ -112,12 +51,40 @@ module nts.uk.com.view.cmm049.a {
             public startPage(): JQueryPromise<any> {
                 let _self = this;
                 let dfd = $.Deferred<any>();
-
-
-
-                dfd.resolve();
+                service.getAllEnum().done((data: any) => {
+                    _self.enums = data
+                    _self.bindEnums(data);
+                    dfd.resolve();
+                })
                 return dfd.promise();
             }
+            
+            public bindEnums(data: any) {
+                let _self = this;
+                data.settingUseSendMail.forEach((item: any, index: number) => {
+                    _self.sendMailSetOptions().push({ code: item.value, name: item.fieldName });
+                    //TODO
+//                    _self.sendMailSetOptions().push({ code: item.value, name: item.localizedName });
+                    data.selfEditSetting.forEach((item: any, index: number) => {
+                        _self.selfEditSetOptions.push({ code: item.value, name: item.fieldName });
+                    })
+                });
+            }
+            /**
+         * Open dialog user info
+         */
+        public openDialogUserInfo(userInfo: number) {
+            let _self = this;
+            nts.uk.ui.block.grayout();
+            
+            let dataObject: any = {
+                userInfo: userInfo
+            };
+            nts.uk.ui.windows.setShared("CMM049_DIALOG_B_INPUT_DATA", dataObject);
+            nts.uk.ui.windows.sub.modal("/view/cmm/049/b/index.xhtml").onClosed(() => {
+                nts.uk.ui.block.clear();
+            });
+        }
 
             public save() {
             }
