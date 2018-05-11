@@ -28,4 +28,8 @@ public class WorkInformation {
 	public WorkTimeCode getWorkTimeCode(){
 		return this.siftCode;
 	}
+	
+	public void removeWorkTimeInHolydayWorkType(){
+		this.siftCode = null;
+	}
 }
