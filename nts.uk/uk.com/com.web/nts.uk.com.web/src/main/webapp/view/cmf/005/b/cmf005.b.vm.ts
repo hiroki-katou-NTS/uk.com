@@ -289,23 +289,22 @@ module nts.uk.com.view.cmf005.b.viewmodel {
          */
        private nextScreenD(): void  {
             let self = this;
-            self.nextFromBToD();
-//            if (self.validateForm()) {
-//                if (self.listDataCategory().length > 0) {
-//                    // check so sanh hang ngay hang thang hang nam
-//                    if (self.validateDatePicker()) {
-//                        // check pass word
-//                        if (self.checkPass()) {
-//                            self.nextFromBToD();
-//                        }
-//                    } else {
-//                        alertError({ messageId: 'Msg_465' });
-//                    }
-//
-//                } else {
-//                    alertError({ messageId: 'Msg_463' });
-//                }
-//            }
+            if (self.validateForm()) {
+                if (self.listDataCategory().length > 0) {
+                    // check so sanh hang ngay hang thang hang nam
+                    if (self.validateDatePicker()) {
+                        // check pass word
+                        if (self.checkPass()) {
+                            self.nextFromBToD();
+                        }
+                    } else {
+                        alertError({ messageId: 'Msg_465' });
+                    }
+
+                } else {
+                    alertError({ messageId: 'Msg_463' });
+                }
+            }
         }
 
         /**
@@ -325,7 +324,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         private nextFromBToD() {
             let self = this;
             self.next();
-            $("#D4_2").find('input').first().focus();
+            $("#D4_2").focus();
         }
         
          /**
@@ -610,6 +609,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 self.setCategoryDeletionList();
                 self.initE();
                 self.next();
+                $("#E20_2").focus();
             }
         }
            
@@ -620,7 +620,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             var self = this;
             $("#E4_2").html(self.deleteSetName());
             $("#E5_2").html(self.supplementExplanation());
-//            $("#E6_2_2").html(self.systemTypeCbb.name);
+            $("#E6_2_2").html(self.systemTypeCbb.name);
         }
         
          private gotoscreenF(): void {
