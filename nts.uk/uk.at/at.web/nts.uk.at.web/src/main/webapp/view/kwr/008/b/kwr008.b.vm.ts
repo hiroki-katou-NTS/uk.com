@@ -55,7 +55,11 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         if (r && r.length > 0) {
                             let dataSorted = _.sortBy(r, ['sortBy']);
                             for (var i = 0; i < dataSorted.length; i++) {
-                                self.outputItem.replace(self.outputItem()[i], new OutputItemData(i + 1, dataSorted[i].cd, dataSorted[i].useClass, dataSorted[i].headingName, dataSorted[i].valOutFormat, ''));
+                                if (i >= self.outputItem().length) { 
+                                    self.outputItem.push(new OutputItemData(i + 1, dataSorted[i].cd, dataSorted[i].useClass, dataSorted[i].headingName, dataSorted[i].valOutFormat, ''));
+                                } else {
+                                    self.outputItem()[i].updateData(i + 1, dataSorted[i].cd, dataSorted[i].useClass, dataSorted[i].headingName, dataSorted[i].valOutFormat, '');
+                                }
                                 if (dataSorted[i].cd != 1) { // rule 36 = 1
                                     let addItems = _.filter(dataSorted[i].listOperationSetting, (x) => { return x.operation === 1; }).map((item) => { return item.attendanceItemId; });
                                     let subItems = _.filter(dataSorted[i].listOperationSetting, (x) => { return x.operation === 0; }).map((item) => { return item.attendanceItemId; });
@@ -66,8 +70,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                                     self.buildOutputItem(resultData, self.outputItem()[i]);
                                 }
                             }
-                            for (var i = dataSorted.length; i < 10; i++) {
-                                self.outputItem.replace(self.outputItem()[i], new OutputItemData(i + 1, -1, false, '', 0, ''));
+                            for (var i = dataSorted.length; i < self.outputItem().length; i++) {
+                                self.outputItem()[i].updateData(i+1, -1, false, '', 0, '');
                             }
                         }
                     }).always(function() {
@@ -330,7 +334,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.currentSetOutputSettingCode(new SetOutputSettingCode(null));
 
             for (var i = 0; i < self.outputItem().length; i++) {
-                self.outputItem.replace(self.outputItem()[i], new OutputItemData(i + 1, -1, false, '', 0, ''));
+                self.outputItem()[i].update(i + 1, -1, false, '', 0, ''));
             }
             self.outputItem()[0].cd(0);
             self.outputItem()[0].outputTargetItem(self.rule36CalculationName);
@@ -466,7 +470,17 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.valueOutputFormat(valueOutputFormat || 0);
             self.outputTargetItem(outputTargetItem || '');
         }
-
+        
+        updateData(sortBy: number, cd: number, useClass: boolean, headingName: string, valueOutputFormat: number, outputTargetItem: string) {
+            let self = this;
+            self.sortBy(sortBy || 1);
+            self.cd(cd || 0);
+            self.useClass(useClass || false);
+            self.headingName(headingName || '');
+            self.valueOutputFormat(valueOutputFormat || 0);
+            self.outputTargetItem(outputTargetItem || '');
+        }
+        
         buildListOperationSetting(listOperation: Array<any>) {
             let self = this;
             if (listOperation && listOperation.length > 0) {
