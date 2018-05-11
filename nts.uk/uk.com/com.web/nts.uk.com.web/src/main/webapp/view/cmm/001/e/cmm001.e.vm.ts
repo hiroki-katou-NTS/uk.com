@@ -69,20 +69,16 @@ module cmm001.e {
                 var systemType : string;
                 switch (systemTypeVal) {
                     case 0:
-                     //   systemType = nts.uk.resource.getText('CMM001_42');
-                        systemType = 'COMMON';
+                        systemType = '共通';
                         break;
                     case 1:
-                      //  systemType = nts.uk.resource.getText('CMM001_44');
-                        systemType = 'EMPLOYMENT';
+                        systemType = '就業';
                         break;
                     case 2:
-                       // systemType = nts.uk.resource.getText('CMM001_45');
-                        systemType = 'SALARY';
+                        systemType = '給与';
                         break;
                     case 3:
-                      //  systemType = nts.uk.resource.getText('CMM001_44');
-                        systemType = 'HUMAN_RESOURCE';
+                        systemType = '人事';
                         break;
                 }
                 return systemType;
@@ -100,7 +96,9 @@ module cmm001.e {
                         var cid = nts.uk.ui.windows.getShared('companyId');
                         var IMasterDataList: model.MasterCopyCategoryDto[] = [];
                         var copyMethod : number;
-                        for (item of selectedItems) {
+                        var item : model.CopyItem;
+                        for (var i=0; i < selectedItems.length; i++) {
+                        item = selectedItems[i];
                         copyMethod = item.copyMethod();
                         var IMasterCopyCategoryDto : model.MasterCopyCategoryDto = {masterCopyId: item.masterCopyId, categoryName: item.masterCopyCategory, order: item.order, systemType: item.systemType, copyMethod: copyMethod};
                             IMasterDataList.push(IMasterCopyCategoryDto);
