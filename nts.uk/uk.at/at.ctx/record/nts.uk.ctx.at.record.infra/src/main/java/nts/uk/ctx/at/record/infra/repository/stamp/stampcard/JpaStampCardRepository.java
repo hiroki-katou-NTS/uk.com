@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.stamp.stampcard;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,13 +15,13 @@ public class JpaStampCardRepository implements StampCardRepository{
 	@Override
 	public List<StampCard> getListStampCard(String sid) {
 		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<>();
 	}
 
 	@Override
 	public Optional<StampCard> getByStampCardId(String stampCardId) {
 		// TODO Auto-generated method stub
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
