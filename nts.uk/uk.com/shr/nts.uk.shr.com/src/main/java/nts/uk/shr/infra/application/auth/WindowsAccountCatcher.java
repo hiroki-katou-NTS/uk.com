@@ -1,6 +1,7 @@
 package nts.uk.shr.infra.application.auth;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Optional;
 
 import javax.servlet.Filter;
@@ -32,15 +33,12 @@ public class WindowsAccountCatcher implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		HttpServletRequest httpRequest = (HttpServletRequest) request; 
-		String account = httpRequest.getUserPrincipal().getName();
-		Optional<WindowsAccount> accOpt = getAccountInfo(account);
-		
-		if (!accOpt.isPresent()) {
-			chain.doFilter(request, response);
-			return;
+		Principal principal = httpRequest.getUserPrincipal();
+		if (principal != null) {
+			String account = principal.getName();
+			Optional<WindowsAccount> accOpt = getAccountInfo(account);
+			accOpt.ifPresent(AppContextsConfig::setWindowsAccount);
 		}
-		
-		AppContextsConfig.setWindowsAccount(accOpt.get());
 		chain.doFilter(request, response);
 	}
 	
