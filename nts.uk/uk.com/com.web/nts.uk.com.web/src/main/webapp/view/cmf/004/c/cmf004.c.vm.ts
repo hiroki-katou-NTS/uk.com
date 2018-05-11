@@ -7,7 +7,12 @@ module nts.uk.com.view.cmf004.c {
             constructor() {
             }
             
-           
+           private processing(): void {
+                let self = this;
+                nts.uk.ui.windows.sub.modal('../d/index.xhtml').onClosed(() => {
+                   
+                });
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 module nts.uk.com.view.cmf004.d {
+    import close = nts.uk.ui.windows.close;
     export module viewmodel {
         export class ScreenModel {
             
@@ -17,6 +18,12 @@ module nts.uk.com.view.cmf004.d {
                 self.statusDecom = ko.observable("Status Upload");
                 self.statusCheck = ko.observable("Status Check");
             }
+            
+            
+           closeUp() {
+            close();
+           }
+                
         }
     }
 }

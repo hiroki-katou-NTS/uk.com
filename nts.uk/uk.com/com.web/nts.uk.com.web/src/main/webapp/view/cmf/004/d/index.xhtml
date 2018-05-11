@@ -7,7 +7,11 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 160, height: 250 };</script>
+				<script>var dialogSize = { 
+						width: 660, 
+						height: 500 
+					};
+				</script>
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="cmf004.d.vm.js" />
 				<com:scriptfile path="cmf004.d.start.js" />
@@ -25,7 +29,7 @@
 					<div data-bind="ntsFormLabel: {}" id ="D1_5" class = "label-left">#{i18n.getText('CMF004_62')}</div>
 					<span data-bind="text: statusLabel"></span>
 					<br/>
-					<div>
+					<div style="width: 150%">
 						<div data-bind="ntsFormLabel: {}" id ="D2_1" class = "label-left">#{i18n.getText('CMF004_63')}</div>
 						<span data-bind="text: statusUpload"></span>
 						<br/>
@@ -35,7 +39,7 @@
 						<div data-bind="ntsFormLabel: {}" id ="D2_5" class = "label-left">#{i18n.getText('CMF004_65')}</div>
 						<span data-bind="text: statusCheck"></span>
 						<br/>
-						<button id = "D3_1">#{i18n.getText('CMF004_66')}</button>
+						<button id = "D3_1" data-bind="click : closeUp" >#{i18n.getText('CMF004_66')}</button>
 						<button id = "D3_2"  class="large proceed">#{i18n.getText('CMF004_67')}</button>
 					</div>
 				</div>
