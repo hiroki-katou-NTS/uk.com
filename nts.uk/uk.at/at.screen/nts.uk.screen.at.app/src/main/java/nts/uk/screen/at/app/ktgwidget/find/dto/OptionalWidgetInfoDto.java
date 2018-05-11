@@ -13,25 +13,25 @@ import nts.arc.time.GeneralDate;
 public class OptionalWidgetInfoDto {
 	
 	/** 1 OverTime Work Number 残業指示件数 */
-	private int overTime = 0;
+	private int overTime;
 	
 	/** 2 Instructions Holiday Number 休出指示件数 */
-	private int holidayInstruction = 0;
+	private int holidayInstruction;
 	
 	/** 3 Approved Number 承認された件数 */
-	private int approved = 0;
+	private int approved;
 	
 	/** 4 Approved Number 承認された件数 */
-	private int unApproved = 0;
+	private int unApproved;
 	
 	/** 5 Denied Number 否認された件数 */
-	private int deniedNo = 0;
+	private int deniedNo;
 
 	/** 6 Remand Number 差し戻し件数 */
-	private int remand = 0;
+	private int remand;
 	
 	/** 7 App Deadline Month 今月の申請締め切り日 */
-	private DeadlineOfRequest appDeadlineMonth = new DeadlineOfRequest(0, GeneralDate.today());
+	private DeadlineOfRequest appDeadlineMonth ;
 	
 	/** 8 Presence Daily Per 日別実績のエラー有無 */
 	private boolean presenceDailyPer = false;

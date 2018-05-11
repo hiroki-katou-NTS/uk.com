@@ -6,7 +6,7 @@ import nts.arc.time.GeneralDate;
 @Value
 public class DeadlineOfRequest {
 
-	private int use;
+	private boolean use;
 	
 	private GeneralDate deadLine;
 }
