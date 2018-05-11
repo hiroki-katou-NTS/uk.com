@@ -84,7 +84,7 @@ public class JpaUserInfoUseMethodRepository extends JpaRepository implements Use
 	@Override
 	public void create(List<UserInfoUseMethod> lstUserInfo) {
 		List<SevstUserInfoUsemethod> entities = lstUserInfo.stream().map(dom->{
-			SevstUserInfoUsemethod entity = new SevstUserInfoUsemethod();
+			SevstUserInfoUsemethod entity = new SevstUserInfoUsemethod(new SevstUserInfoUsemethodPK());
 			dom.saveToMemento(new JpaUserInfoUseMethodSetMemento(entity));
 			return entity;
 		}).collect(Collectors.toList());

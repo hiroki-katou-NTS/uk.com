@@ -7,14 +7,16 @@ package nts.uk.ctx.sys.env.app.command.mailnoticeset.company;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.sys.env.app.command.mailnoticeset.company.dto.UserInfoUseMethodDto;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod;
 
 /**
  * The Class UserInfoUseMethodCommand.
  */
-@Data
+@Getter
+@Setter
 public class UserInfoUseMethodSaveCommand {
 
 	/** The fixed work setting. */
@@ -30,4 +32,9 @@ public class UserInfoUseMethodSaveCommand {
 			return new UserInfoUseMethod(dto);
 		}).collect(Collectors.toList());
 	}
+
+	public UserInfoUseMethodSaveCommand() {
+		super();
+	}
+	
 }
