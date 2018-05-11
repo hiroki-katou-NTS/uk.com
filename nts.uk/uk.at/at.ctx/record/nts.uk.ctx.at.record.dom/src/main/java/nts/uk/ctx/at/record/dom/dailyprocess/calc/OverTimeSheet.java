@@ -110,6 +110,7 @@ public class OverTimeSheet {
 														   Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 														   Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily) {
 		Map<Integer,OverTimeFrameTime> overTimeFrameList = new HashMap<Integer, OverTimeFrameTime>();
+		List<OverTimeFrameNo> numberOrder = new ArrayList<>();
 		val sortedFrameTimeSheet = sortFrameTime(frameTimeSheets, workType, eachWorkTimeSet, eachCompanyTimeSet);
 		//時間帯の計算
 		for(OverTimeFrameTimeSheetForCalc overTimeFrameTime : sortedFrameTimeSheet) {
@@ -118,7 +119,7 @@ public class OverTimeSheet {
 			//残業時間　－　控除時間算出
 			AttendanceTime calcDedTime = overTimeFrameTime.correctCalculationTime(Optional.empty(), autoCalcSet,DeductionAtr.Deduction);
 			AttendanceTime calcRecTime = overTimeFrameTime.correctCalculationTime(Optional.empty(), autoCalcSet,DeductionAtr.Appropriate);
-			
+			numberOrder.add(overTimeFrameTime.getFrameTime().getOverWorkFrameNo());
 			//加算だけ
 			if(overTimeFrameList.containsKey(overTimeFrameTime.getFrameTime().getOverWorkFrameNo().v())) {
 				val frame = overTimeFrameList.get(overTimeFrameTime.getFrameTime().getOverWorkFrameNo().v());
@@ -132,7 +133,6 @@ public class OverTimeSheet {
 			}
 		}
 		List<OverTimeFrameTime> calcOverTimeWorkTimeList = new ArrayList<>(overTimeFrameList.values()); 
-		
 		
 		//staticがついていなので、4末緊急対応
 		if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()
@@ -150,7 +150,12 @@ public class OverTimeSheet {
 					ts.addBeforeTime(wantAddTime.get().getBeforeApplicationTime());
 							
 			});
-			
+			List<OverTimeFrameTime> reOrderList = new ArrayList<>();
+			for(OverTimeFrameNo no : numberOrder){
+				val item = calcOverTimeWorkTimeList.stream().filter(tc -> tc.getOverWorkFrameNo().equals(no)).findFirst();
+				item.ifPresent(tc -> reOrderList.add(tc));
+			}
+			calcOverTimeWorkTimeList = reOrderList;
 		}
 		//staticがついていなので、4末緊急対応	
 		 
