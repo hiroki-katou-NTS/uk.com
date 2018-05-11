@@ -15,6 +15,7 @@ module nts.uk.com.view.cmm048.a {
             personContact: PersonContactDto;
             passwordPolicy: PasswordPolicyDto;
             listUserInfoUseMethod: Array<PasswordPolicyDto>;
+            listUseContactSettingDto: Array<UseContactSettingDto>;
         }
         
         export interface EmployeeDto {
@@ -38,6 +39,7 @@ module nts.uk.com.view.cmm048.a {
         }
         
         export interface PasswordPolicyDto {
+            isUse: boolean;
             lowestDigits: number;
             complexity: ComplexityDto;
             historyCount: number;
@@ -54,6 +56,12 @@ module nts.uk.com.view.cmm048.a {
             settingItem: number;
             selfEdit: number;
             settingUseMail: number;
+        }
+        
+        export interface UseContactSettingDto {
+            employeeId: string;
+            settingItem: number;
+            useMailSetting: boolean;
         }
     }
 }

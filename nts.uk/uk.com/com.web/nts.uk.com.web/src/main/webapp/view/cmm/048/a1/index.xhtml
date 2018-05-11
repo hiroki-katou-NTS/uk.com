@@ -44,42 +44,44 @@
 					</table>					
 				</div>
 				<div class="tab-block" style="width: 75%;">
-					<div class="panel panel-gray-bg">
-						<table class="table-panel">
-							<tr>
-								<td colspan="2">
-									<div class="label">#{i18n.getText('CMM048_11')}</div>
-									<div><hr/></div>
-								</td>
-							</tr>
-							<tr>
-								<td style="width: 200px;"><div class="label">#{i18n.getText('CMM048_12')}</div></td>
-								<td>
-									<div class="label" data-bind="text: passwordPolicy.lowestDigits"></div>
-								</td>
-							</tr>
-							<tr>
-								<td style="width: 200px;"><div class="label">#{i18n.getText('CMM048_14')}</div></td>
-								<td>
-									<div class="label" data-bind="text: passwordPolicy.complexity.alphabetDigit"></div>
-									<div class="label" data-bind="text: passwordPolicy.complexity.numberOfDigits"></div>
-									<div class="label" data-bind="text: passwordPolicy.complexity.numberOfChar"></div>
-								</td>
-							</tr>
-							<tr>
-								<td style="width: 200px;"><div class="label">#{i18n.getText('CMM048_18')}</div></td>
-								<td>
-									<div class="label" data-bind="text: passwordPolicy.historyCount"></div>
-								</td>
-							</tr>
-							<tr>
-								<td style="width: 200px;"><div class="label">#{i18n.getText('CMM048_20')}</div></td>
-								<td>
-									<div class="label" data-bind="text: passwordPolicy.validityPeriod"></div>
-								</td>
-							</tr>
-						</table>
-					</div>
+					<com:ko tag="if" bind="mainModel.passwordPolicy.isUse">				
+						<div class="panel panel-gray-bg">
+							<table class="table-panel">
+								<tr>
+									<td colspan="2">
+										<div class="label">#{i18n.getText('CMM048_11')}</div>
+										<div><hr/></div>
+									</td>
+								</tr>
+								<tr>
+									<td style="width: 200px;"><div class="label">#{i18n.getText('CMM048_12')}</div></td>
+									<td>
+										<div class="label" data-bind="text: passwordPolicy.lowestDigits"></div>
+									</td>
+								</tr>
+								<tr>
+									<td style="width: 200px;"><div class="label">#{i18n.getText('CMM048_14')}</div></td>
+									<td>
+										<div class="label" data-bind="text: passwordPolicy.complexity.alphabetDigit"></div>
+										<div class="label" data-bind="text: passwordPolicy.complexity.numberOfDigits"></div>
+										<div class="label" data-bind="text: passwordPolicy.complexity.numberOfChar"></div>
+									</td>
+								</tr>
+								<tr>
+									<td style="width: 200px;"><div class="label">#{i18n.getText('CMM048_18')}</div></td>
+									<td>
+										<div class="label" data-bind="text: passwordPolicy.historyCount"></div>
+									</td>
+								</tr>
+								<tr>
+									<td style="width: 200px;"><div class="label">#{i18n.getText('CMM048_20')}</div></td>
+									<td>
+										<div class="label" data-bind="text: passwordPolicy.validityPeriod"></div>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</com:ko>
 				</div>			
 			</td>
 	

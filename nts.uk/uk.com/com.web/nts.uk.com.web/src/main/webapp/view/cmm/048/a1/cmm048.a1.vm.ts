@@ -8,6 +8,8 @@ module a1 {
     
     class ScreenModel {
 
+        mainModel: MainModel;
+        
         employee: EmployeeModel;        
         passwordPolicy: PasswordPolicyModel;
         
@@ -17,6 +19,7 @@ module a1 {
         constructor(model: MainModel) {
             let _self = this;
         
+            _self.mainModel = model;
             _self.employee = model.employee;            
             _self.passwordPolicy = model.passwordPolicy;
         }

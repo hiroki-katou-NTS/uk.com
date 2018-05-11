@@ -22,8 +22,8 @@ module nts.uk.com.view.cmm048.b {
                 
                 _self.columnSetting = ko.observableArray([
                     { headerText: "", key: 'functionId', width: 150,  hidden: true },
-                    { headerText: nts.uk.resource.getText("CMM048_52"), key: 'functionName', width: 150 },
-                    { headerText: nts.uk.resource.getText("CMM048_53"), key: 'sendSettingName', width: 150 }
+                    { headerText: nts.uk.resource.getText("CMM048_52"), key: 'functionName', width: 120 },
+                    { headerText: nts.uk.resource.getText("CMM048_53"), key: 'sendSettingName', width: 120 }
                 ]);
             }
             

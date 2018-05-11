@@ -1,23 +1,32 @@
 module nts.uk.com.view.cmm048.a {
 
     import MainDto = nts.uk.com.view.cmm048.a.model.MainDto;
+    import PasswordPolicyDto = nts.uk.com.view.cmm048.a.model.PasswordPolicyDto;
+    import ComplexityDto = nts.uk.com.view.cmm048.a.model.ComplexityDto;
+    import UseContactSettingDto = nts.uk.com.view.cmm048.a.model.UseContactSettingDto;
     
     export module viewmodel {
 
         export class ScreenModel {
             
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
+            tab1Visible: KnockoutObservable<boolean>;
+            tab2Visible: KnockoutObservable<boolean>;
             selectedTab: KnockoutObservable<string>;
             
             mainModel: MainModel;
             
             constructor() {
                 let _self = this;
+                
+                _self.tab1Visible = ko.observable(true);
+                _self.tab2Visible = ko.observable(true);
                 _self.tabs = ko.observableArray([
-                    {id: 'tab-1', title: nts.uk.resource.getText("CMM048_4"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true)},
-                    {id: 'tab-2', title: nts.uk.resource.getText("CMM048_5"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true)}
+                    {id: 'tab-1', title: nts.uk.resource.getText("CMM048_4"), content: '.tab-content-1', enable: ko.observable(true), visible: _self.tab1Visible},
+                    {id: 'tab-2', title: nts.uk.resource.getText("CMM048_5"), content: '.tab-content-2', enable: ko.observable(true), visible: _self.tab2Visible}
                 ]);
                 _self.selectedTab = ko.observable('tab-1');
+                
                 _self.mainModel = new MainModel();              
             }
             
@@ -56,6 +65,7 @@ module nts.uk.com.view.cmm048.a {
             personContact: PersonContactModel;
             passwordPolicy: PasswordPolicyModel;
             listUserInfoUseMethod: Array<UserInfoUseMethodModel>;
+            listUseContactSetting: Array<UseContactSettingModel>;
             
             constructor() {
                 let _self = this;
@@ -64,6 +74,7 @@ module nts.uk.com.view.cmm048.a {
                 _self.personContact = new PersonContactModel();
                 _self.passwordPolicy = new PasswordPolicyModel();
                 _self.listUserInfoUseMethod = [];
+                _self.listUseContactSetting = [];
             }
         }
         
@@ -111,6 +122,7 @@ module nts.uk.com.view.cmm048.a {
         }
         
         export class PasswordPolicyModel {
+            isUse: KnockoutObservable<boolean>;
             lowestDigits: KnockoutObservable<number>;
             complexity: ComplexityModel;
             historyCount: KnockoutObservable<number>;
@@ -118,10 +130,20 @@ module nts.uk.com.view.cmm048.a {
             
             constructor() {
                 let _self = this;
+                _self.isUse = ko.observable(true);
                 _self.lowestDigits = ko.observable(0);
                 _self.complexity = new ComplexityModel();
                 _self.historyCount = ko.observable(0);
                 _self.validityPeriod = ko.observable(0);
+            }
+            
+            updateData(dto: PasswordPolicyDto) {
+                let _self = this;
+                _self.isUse(dto.isUse);
+                _self.lowestDigits(dto.lowestDigits);
+                _self.complexity.updateData(dto.complexity);
+                _self.historyCount(dto.historyCount);
+                _self.validityPeriod(dto.validityPeriod);
             }
         }
         
@@ -136,6 +158,13 @@ module nts.uk.com.view.cmm048.a {
                 _self.numberOfDigits = ko.observable(0);
                 _self.numberOfChar = ko.observable(0);
             }
+            
+            updateData(dto: ComplexityDto) {
+                let _self = this;
+                _self.alphabetDigit(dto.alphabetDigit);
+                _self.numberOfDigits(dto.numberOfDigits);
+                _self.numberOfChar(dto.numberOfChar);
+            }
         }
         
         export class UserInfoUseMethodModel {
@@ -145,13 +174,27 @@ module nts.uk.com.view.cmm048.a {
             isNotUse: boolean;
             isUse: boolean;          
             isPersonal: boolean;
+            enableEdit: boolean;
             
             constructor() {
                 let _self = this;
                 _self.settingItem = ko.observable(0);
-                _self.selfEdit = ko.observable(0);
+                _self.selfEdit = ko.observable(null);
                 _self.settingUseMail = ko.observable(null);
                 
+                _self.selfEdit.subscribe((v) => {
+                    switch (v) {
+                        case 0:
+                            _self.enableEdit = false;
+                        break;
+                        case 1:
+                            _self.enableEdit = true;
+                        break;
+                        default:
+                            _self.enableEdit = false;
+                    }      
+                });
+                _self.selfEdit(0);
                 _self.settingUseMail.subscribe((v) => {
                     switch (v) {
                         case 0:
@@ -176,6 +219,26 @@ module nts.uk.com.view.cmm048.a {
                     }      
                 });
                 _self.settingUseMail(0);
+            }
+        }
+        
+        export class UseContactSettingModel {
+            employeeId: KnockoutObservable<string>;
+            settingItem: KnockoutObservable<number>;
+            useMailSetting: KnockoutObservable<boolean>;
+            
+            constructor() {
+                let _self = this;
+                _self.employeeId = ko.observable("");
+                _self.settingItem = ko.observable(0);
+                _self.useMailSetting = ko.observable(true);
+            }
+            
+            updateData(dto: UseContactSettingDto) {
+                let _self = this;
+                _self.employeeId(dto.employeeId);
+                _self.settingItem(dto.settingItem);
+                _self.useMailSetting(dto.useMailSetting);
             }
         }
     }
