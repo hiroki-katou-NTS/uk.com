@@ -138,13 +138,14 @@ public enum WorkTypeClassification {
 		switch (this) {
 		case Attendance:
 		case Shooting:
+		
 			return true;
+		case HolidayWork:
 		case Absence:
 		case AnnualHoliday:
 		case Closure:
 		case ContinuousWork:
 		case Holiday:
-		case HolidayWork:
 		case LeaveOfAbsence:
 		case Pause:
 		case SpecialHoliday:

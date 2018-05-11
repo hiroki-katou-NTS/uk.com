@@ -6,6 +6,12 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HourlyPaymentAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
@@ -26,43 +32,50 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 public class ManageReGetClass {
 	
 	//1日の範囲
-	CalculationRangeOfOneDay calculationRangeOfOneDay;
+	private CalculationRangeOfOneDay calculationRangeOfOneDay;
 	
 	//日別実績(WORK)
 	@Setter
-	IntegrationOfDaily integrationOfDaily;
+	private IntegrationOfDaily integrationOfDaily;
 	
 	//就業時間帯設定
-	Optional<WorkTimeSetting> workTimeSetting;
+	private Optional<WorkTimeSetting> workTimeSetting;
 	
 	//勤務種類
-	Optional<WorkType> workType;
+	private Optional<WorkType> workType;
 	
 	//就業時間帯別代休時間設定
-	List<WorkTimezoneOtherSubHolTimeSet> subHolTransferSetList;
+	private List<WorkTimezoneOtherSubHolTimeSet> subHolTransferSetList;
 	
 	//労働制
-	DailyCalculationPersonalInformation personalInfo;
+	private DailyCalculationPersonalInformation personalInfo;
 	
 	//法定労働時間(日単位)
-	DailyUnit dailyUnit;
+	private DailyUnit dailyUnit;
 	
 	//大塚用　固定勤務の休憩時間帯保持
-	Optional<FixRestTimezoneSet> fixRestTimeSetting;
+	private Optional<FixRestTimezoneSet> fixRestTimeSetting;
 	
 	//大塚要ケインで使用する固定計算設定クラス
-	Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet;
+	private Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet;
 	
 	//休暇の計算方法の設定
-	HolidayCalcMethodSet holidayCalcMethodSet;
+	private HolidayCalcMethodSet holidayCalcMethodSet;
 	
 	//計算処理に入ることができるかフラグ
 	//(造語)
-	Boolean calculatable;
+	private Boolean calculatable;
 	
 	//休憩回数
 	int breakCount;
 
+	//各種加算設定
+	private WorkRegularAdditionSet workRegularAdditionSet;
+	private WorkFlexAdditionSet workFlexAdditionSet;
+	private HourlyPaymentAdditionSet hourlyPaymentAdditionSet;
+	private WorkDeformedLaborAdditionSet workDeformedLaborAdditionSet;
+	
+	private HolidayAddtionSet holidayAddtionSet;
 	/**
 	 * Constructor 
 	 */
@@ -73,7 +86,9 @@ public class ManageReGetClass {
 			Optional<FixRestTimezoneSet> fixRestTimeSeting,
 			Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet,
 			HolidayCalcMethodSet holidayCalcMethodSet,Boolean calculatable,
-			int breakCount) {
+			int breakCount,WorkRegularAdditionSet workRegularAdditionSet,
+			WorkFlexAdditionSet workFlexAdditionSet,HourlyPaymentAdditionSet hourlyPaymentAdditionSet, WorkDeformedLaborAdditionSet workDeformedLaborAdditionSet,
+			HolidayAddtionSet holidayAddtionSet) {
 		super();
 		this.calculationRangeOfOneDay = calculationRangeOfOneDay;
 		this.integrationOfDaily = integrationOfDaily;
@@ -87,6 +102,11 @@ public class ManageReGetClass {
 		this.holidayCalcMethodSet = holidayCalcMethodSet;
 		this.calculatable = calculatable;
 		this.breakCount = breakCount;
+		this.workRegularAdditionSet = workRegularAdditionSet;
+		this.workFlexAdditionSet = workFlexAdditionSet;
+		this.hourlyPaymentAdditionSet = hourlyPaymentAdditionSet;
+		this.workDeformedLaborAdditionSet = workDeformedLaborAdditionSet;
+		this.holidayAddtionSet = holidayAddtionSet;
 	}
 	
 	/**
@@ -104,7 +124,12 @@ public class ManageReGetClass {
 									Optional.empty(),
 									null,
 									false,
-									0);
+									0,
+									null,
+									null,
+									null,
+									null,
+									null);
 				
 	}
 	
@@ -118,7 +143,9 @@ public class ManageReGetClass {
 										  Optional<FixRestTimezoneSet> fixRestTimeSeting,
 										  Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet,
 										  HolidayCalcMethodSet holidayCalcMethodSet,
-										  int breakCount) {
+										  int breakCount,WorkRegularAdditionSet workRegularAdditionSet,
+										  WorkFlexAdditionSet workFlexAdditionSet,HourlyPaymentAdditionSet hourlyPaymentAdditionSet, WorkDeformedLaborAdditionSet workDeformedLaborAdditionSet,
+										  HolidayAddtionSet holidayAddtionSet) {
 		return new ManageReGetClass(calculationRangeOfOneDay,
 									integrationOfDaily,
 									workTimeSetting,
@@ -130,7 +157,12 @@ public class ManageReGetClass {
 									ootsukaFixedWorkSet,
 									holidayCalcMethodSet,
 									true,
-									breakCount);
+									breakCount,
+									workRegularAdditionSet,
+									workFlexAdditionSet,
+									hourlyPaymentAdditionSet,
+									workDeformedLaborAdditionSet,
+									holidayAddtionSet);
 	
 	}
 }
