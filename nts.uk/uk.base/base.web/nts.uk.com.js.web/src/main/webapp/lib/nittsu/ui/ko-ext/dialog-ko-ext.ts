@@ -86,7 +86,7 @@ module nts.uk.ui.koExtentions {
             var buttons: any = ko.unwrap(option.buttons);
 
             var self = nts.uk.ui.windows.getSelf();
-            var id = 'ntsErrorDialog_' + self.id;
+            var id = 'ntsErrorDialog_';// + self.id;
             var $dialog = $("<div>", { "id": id });
             PS.$('body').append($dialog);
             // Create Buttons
@@ -148,7 +148,7 @@ module nts.uk.ui.koExtentions {
             var show: boolean = ko.unwrap(option.show);
             var self = nts.uk.ui.windows.getSelf();
 
-            var id = 'ntsErrorDialog_' + self.id;
+            var id = 'ntsErrorDialog_';// + self.id;
             var $dialog;
             if (self.isRoot) {
                 $dialog = PS.$("#" + id);
