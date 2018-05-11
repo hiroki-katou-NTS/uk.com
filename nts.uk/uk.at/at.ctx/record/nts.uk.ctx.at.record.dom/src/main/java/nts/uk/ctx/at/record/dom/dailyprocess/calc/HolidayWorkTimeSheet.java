@@ -26,6 +26,8 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
@@ -72,9 +74,13 @@ public class HolidayWorkTimeSheet{
 		//枠時間のソート
 		val sortedFrameTimeSheet = sortFrameTime(workHolidayTime, workType, eachWorkTimeSet, eachCompanyTimeSet);
 		
+		List<HolidayWorkFrameNo> numberOrder = new ArrayList<>();
+		
 		for(HolidayWorkFrameTimeSheetForCalc holidayWorkFrameTime:sortedFrameTimeSheet) {
 			AttendanceTime calcDedTime = holidayWorkFrameTime.correctCalculationTime(holidayAutoCalcSetting,DeductionAtr.Deduction);
 			AttendanceTime calcRecTime = holidayWorkFrameTime.correctCalculationTime(holidayAutoCalcSetting,DeductionAtr.Appropriate);
+			
+			numberOrder.add(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo());
 			//加算だけ
 			if(holidayTimeFrameList.containsKey(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo().v())) {
 				val frame = holidayTimeFrameList.get(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo().v());
@@ -107,7 +113,12 @@ public class HolidayWorkTimeSheet{
 					ts.addBeforeTime(wantAddTime.get().getBeforeApplicationTime().isPresent()?wantAddTime.get().getBeforeApplicationTime().get():new AttendanceTime(0));
 							
 			});
-			
+			List<HolidayWorkFrameTime> reOrderList = new ArrayList<>();
+			for(HolidayWorkFrameNo no : numberOrder){
+				val item = calcHolidayTimeWorkTimeList.stream().filter(tc -> tc.getHolidayFrameNo().equals(no)).findFirst();
+				item.ifPresent(tc -> reOrderList.add(tc));
+			}
+			calcHolidayTimeWorkTimeList = reOrderList;
 		}
 		//staticがついていなので、4末緊急対応	
 		//事前申請を上限とする制御
