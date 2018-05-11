@@ -18,6 +18,10 @@ module nts.uk.com.view.ccg.share.ccg {
             getEmploymentRoleFuturePermit: "at/auth/workplace/employmentrole/get/futurerefpermit",
             getListWorkplaceId: "ctx/sys/auth/role/getListWorkplaceId",
             findRegulationInfoEmployee: "query/employee/find",
+            searchByName: "query/employee/find/name",
+            searchByCode: "query/employee/find/code",
+            searchByEntryDate: "query/employee/find/entrydate",
+            searchByRetirementDate: "query/employee/find/retirementdate",
         }
 
         /**
@@ -25,6 +29,20 @@ module nts.uk.com.view.ccg.share.ccg {
          */
         export function findRegulationInfoEmployee(query: model.EmployeeQueryParam): JQueryPromise<Array<model.EmployeeSearchDto>> {
             return nts.uk.request.ajax('com', servicePath.findRegulationInfoEmployee, query);
+        }
+
+        export function searchByCode(query: model.SearchEmployeeQuery): JQueryPromise<Array<model.EmployeeSearchDto>> {
+            return nts.uk.request.ajax('com', servicePath.searchByCode, query);
+        }
+
+        export function searchByName(query: model.SearchEmployeeQuery): JQueryPromise<Array<model.EmployeeSearchDto>> {
+            return nts.uk.request.ajax('com', servicePath.searchByName, query);
+        }
+        export function searchByEntryDate(query: model.SearchEmployeeQuery): JQueryPromise<Array<model.EmployeeSearchDto>> {
+            return nts.uk.request.ajax('com', servicePath.searchByEntryDate, query);
+        }
+        export function searchByRetirementDate(query: model.SearchEmployeeQuery): JQueryPromise<Array<model.EmployeeSearchDto>> {
+            return nts.uk.request.ajax('com', servicePath.searchByRetirementDate, query);
         }
 
         /**
@@ -130,6 +148,16 @@ module nts.uk.com.view.ccg.share.ccg {
         }
         
         export module model{
+
+            export interface SearchEmployeeQuery {
+                systemType: number;
+                code?: string;
+                name?: string;
+                useClosure?: boolean;
+                closureId?: number;
+                period?: any;
+                referenceDate?: any;
+            }
 
             export class EmployeeSearchDto {
                 employeeId: string;

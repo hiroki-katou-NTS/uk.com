@@ -121,9 +121,16 @@ module nts.uk.com.view.ccg.share.ccg {
 
             // reserved list employee for KCP005
             reservedEmployees: KnockoutObservableArray<EmployeeSearchDto>;
+            reservedEmployeesTab3: KnockoutObservableArray<EmployeeSearchDto>;
 
             // Acquired baseDate
             acquiredBaseDate: KnockoutObservable<string>;
+
+            tab3ds: any;
+            tab3SelectedValues: any;
+            tab3Code: any;
+            tab3Name: any;
+            tab3kcp005option: any;
 
             employmentSubscriptions: Array<KnockoutSubscription> = [];
             employeeSubscriptions: Array<KnockoutSubscription> = [];
@@ -150,6 +157,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 // init reserved employee list.
                 self.reservedEmployees = ko.observableArray([]);
+                self.reservedEmployeesTab3 = ko.observableArray([]);
 
                 // status of employment period
                 self.statusPeriodStart = ko.observable(moment.utc("1900/01/01", "YYYY/MM/DD"));
@@ -230,22 +238,7 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             private initDatasource(): void {
                 let self = this;
-                self.tabs = ko.observableArray([
-                    {
-                        id: 'tab-1',
-                        title: nts.uk.resource.getText("CCG001_3"),
-                        content: '.tab-content-1',
-                        enable: ko.observable(true),
-                        visible: ko.observable(true)
-                    },
-                    {
-                        id: 'tab-2',
-                        title: nts.uk.resource.getText("CCG001_4"),
-                        content: '.tab-content-2',
-                        enable: ko.observable(true),
-                        visible: ko.observable(true)
-                    }
-                ]);
+                self.tabs = ko.observableArray([]);
                 self.incumbentDatasource = ko.observableArray([
                     { code: true, name: nts.uk.resource.getText("CCG001_40") },
                     { code: false, name: nts.uk.resource.getText("CCG001_41") }
@@ -267,6 +260,11 @@ module nts.uk.com.view.ccg.share.ccg {
                     { headerText: nts.uk.resource.getText('CCG001_60'), prop: 'businessTypeCode', width: 100 },
                     { headerText: nts.uk.resource.getText('CCG001_61'), prop: 'businessTypeName', width: 200 }
                 ]);
+
+                self.tab3ds = ko.observableArray([]);
+                self.tab3SelectedValues = ko.observable([]);
+                self.tab3Name = ko.observable("");
+                self.tab3Code = ko.observable("");
             }
             
             /**
@@ -347,6 +345,13 @@ module nts.uk.com.view.ccg.share.ccg {
                         visible: ko.observable(true)
                     });
                 }
+                arrTabs.push({
+                    id: 'tab-3',
+                    title: nts.uk.resource.getText("CCG001_103"),
+                    content: '#ccg001-tab-content-3',
+                    enable: ko.observable(true),
+                    visible: ko.observable(true)
+                });
                 // => data res
                 return arrTabs;
             }
@@ -651,9 +656,11 @@ module nts.uk.com.view.ccg.share.ccg {
                 // set tab panel height.
                 const tabpanelHeight = componentHeight - $('#ccg001-header').outerHeight(true) - 10;
                 const tabpanelNavHeight = 85;
+                const tabpanelContentHeight = tabpanelHeight - tabpanelNavHeight;
                 $('.ccg-tabpanel.pull-left').outerHeight(tabpanelHeight);
-                $('.ccg-tabpanel>#tab-1').css('height', tabpanelHeight - tabpanelNavHeight);
-                $('.ccg-tabpanel>#tab-2').css('height', tabpanelHeight - tabpanelNavHeight);
+                $('.ccg-tabpanel>#tab-1').css('height', tabpanelContentHeight);
+                $('.ccg-tabpanel>#tab-2').css('height', tabpanelContentHeight);
+                $('.ccg-tabpanel>#tab-3').css('height', tabpanelContentHeight);
             }
 
             /**
@@ -810,13 +817,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     self.toggleSlide();
 
                     // Load KCP005
-                    if (self.showAdvancedSearchTab && self.showEmployeeSelection) {
-                        self.loadKcp005().done(() => {
-                            self.fixComponentWidth();
-                        });
-                    } else {
-                        self.fixComponentWidth();
-                    }
+                    self.loadKcp005();
 
                     // update flag isFirstTime
                     self.isFirstTime = false;
@@ -850,29 +851,76 @@ module nts.uk.com.view.ccg.share.ccg {
                 let dfd = $.Deferred<void>();
                 let self = this;
 
-                // set KCP005 rows
+                $.when(self.loadKcp005OnTab2(), self.loadKcp005OnTab3()).done(() => {
+                    self.fixComponentWidth();
+                    dfd.resolve();
+                });
+
+                return dfd.promise();
+            }
+
+            private calculateKcp005Rows(marginHeight: number): number {
                 const tabContentHeight = parseInt(document.querySelector('.ccg-tabpanel>#tab-2').style.height);
-                const kcp005HeaderHeight = 70;
-                let rows = (tabContentHeight - kcp005HeaderHeight) / 24;
+                const heightPerRow = 24;
+                return (tabContentHeight - marginHeight) / heightPerRow;
+            }
 
-                // set KCP005 options
-                self.employeeinfo = {
-                    isShowAlreadySet: false,
-                    isMultiSelect: self.isMultiple,
-                    isMultipleUse: true,
-                    listType: ListType.EMPLOYEE,
-                    employeeInputList: ko.observableArray([]),
-                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                    selectedCode: self.selectedCodeEmployee,
-                    isDialog: true,
-                    isShowNoSelectRow: false,
-                    maxRows: rows,
-                    subscriptions: self.employeeSubscriptions
+            private loadKcp005OnTab2(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                if (self.showAdvancedSearchTab && self.showEmployeeSelection) {
+                    const Kcp005MarginHeight = 70;
+
+                    // set KCP005 options
+                    self.employeeinfo = {
+                        isShowAlreadySet: false,
+                        isMultiSelect: self.isMultiple,
+                        isMultipleUse: true,
+                        listType: ListType.EMPLOYEE,
+                        employeeInputList: ko.observableArray([]),
+                        selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                        selectedCode: self.selectedCodeEmployee,
+                        isDialog: true,
+                        isShowNoSelectRow: false,
+                        maxRows: self.calculateKcp005Rows(Kcp005MarginHeight),
+                        subscriptions: self.employeeSubscriptions
+                    }
+
+                    // Show KCP005
+                    $('#employeeinfo').ntsListComponent(self.employeeinfo).done(() => dfd.resolve());
+                } else {
+                    dfd.resolve();
                 }
+                return dfd.promise();
+            }
 
-                // Show KCP005
-                $('#employeeinfo').ntsListComponent(self.employeeinfo).done(() => dfd.resolve());
+            private loadKcp005OnTab3(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                // Load KCP05 on tab 3
+                if (true) {
+                    const Kcp005MarginHeight = 240;
 
+                    self.tab3kcp005option = {
+                        isShowAlreadySet: false,
+                        maxWidth: 400,
+                        isMultiSelect: self.isMultiple,
+                        isMultipleUse: true,
+                        listType: ListType.EMPLOYEE,
+                        employeeInputList: self.tab3ds,
+                        selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                        selectedCode: self.tab3SelectedValues,
+                        isDialog: true,
+                        isShowNoSelectRow: false,
+                        isShowWorkPlaceName: true,
+                        maxRows: self.calculateKcp005Rows(Kcp005MarginHeight),
+                    }
+
+                    // Show KCP005
+                    $('#tab3kcp005').ntsListComponent(self.tab3kcp005option).done(() => dfd.resolve());
+                } else {
+                    dfd.resolve();
+                }
                 return dfd.promise();
             }
 
@@ -1142,6 +1190,32 @@ module nts.uk.com.view.ccg.share.ccg {
                 _.defer(() => nts.uk.ui.block.clear());
             }
 
+            public extractSelectedEmployeesInTab3(): void {
+                let self = this;
+                if (nts.uk.util.isNullOrEmpty(self.getSelectedCodeEmployeeTab3())) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_758" });
+                    return;
+                }
+
+                // Filter selected employee
+                let selectedEmployees = self.getSelectedCodeEmployeeTab3();
+                let filteredList = _.filter(self.reservedEmployeesTab3(), e => {
+                    return _.includes(selectedEmployees, e.employeeCode);
+                });
+
+                // block ui
+                nts.uk.ui.block.invisible();
+
+                // return data
+                self.returnDataFromCcg001(self.combineData(filteredList));
+
+                // Hide component.
+                self.hideComponent();
+
+                // clear block UI
+                _.defer(() => nts.uk.ui.block.clear());
+            }
+
             /**
              * clear validate client
              */
@@ -1358,6 +1432,25 @@ module nts.uk.com.view.ccg.share.ccg {
                     return employeeCodes;
                 }
             }        
+
+            public getSelectedCodeEmployeeTab3(): string[]{
+                let self = this;
+                if (self.isMultiple) {
+                    return self.tab3SelectedValues();
+                } else {
+                    let employeeCodes = [];
+                    if (!nts.uk.util.isNullOrEmpty(self.tab3SelectedValues())) {
+                        employeeCodes.push(self.tab3SelectedValues());
+                    }
+                    return employeeCodes;
+                }
+            }        
+
+            private showDataOnKcp005Tab3(data: Array<EmployeeSearchDto>): void {
+                let self = this;
+                self.reservedEmployeesTab3(data);
+                self.tab3ds(self.toUnitModelList(data));
+            }
             
             /**
              * function convert dto to model init data 
@@ -1366,7 +1459,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 return _.map(dataList, item => {
                     return {
                         code: item.employeeCode,
-                        name: item.employeeName
+                        name: item.employeeName,
+                        workplaceName: item.workplaceName
                     };
                 });
             }
@@ -1396,6 +1490,71 @@ module nts.uk.com.view.ccg.share.ccg {
                 var self = this;
                 self.queryParam.referenceRange = ConfigEnumReferenceRange.DEPARTMENT_AND_CHILD;
                 self.quickSearchEmployee();
+            }
+
+            public searchByCode(): void {
+                let self = this;
+                $('#ccg001-inp-code').ntsEditor('validate');
+                if ($('#ccg001-inp-code').ntsError('hasError')) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1201' });
+                }
+                const query = {
+                    
+                    code: self.tab3Code(),
+                    useClosure: false,
+                    systemType: 1
+                };
+                service.searchByCode(query).done(data => {
+                    self.showDataOnKcp005Tab3(data);
+                });
+            }
+
+            public searchByName(): void {
+                let self = this;
+                $('#ccg001-inp-name').ntsEditor('validate');
+                if ($('#ccg001-inp-name').ntsError('hasError')) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1201' });
+                }
+                const query = {
+                    name: self.tab3Name(),
+                    useClosure: false,
+                    systemType: 1
+                };
+                service.searchByName(query).done(data => {
+                    self.showDataOnKcp005Tab3(data);
+                });
+            }
+
+            public searchByEntryDate(): void {
+                let self = this;
+                $('#ccg001-date-entry').ntsEditor('validate');
+                if ($('#ccg001-date-entry').ntsError('hasError')) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1201' });
+                }
+                const query = {
+                    name: self.tab3Name(),
+                    useClosure: false,
+                    systemType: 1
+                };
+                service.searchByName(query).done(data => {
+                    self.showDataOnKcp005Tab3(data);
+                });
+            }
+
+            public searchByRetirementDate(): void {
+                let self = this;
+                $('#ccg001-date-retirement').ntsEditor('validate');
+                if ($('#ccg001-date-retirement').ntsError('hasError')) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1201' });
+                }
+                const query = {
+                    name: self.tab3Name(),
+                    useClosure: false,
+                    systemType: 1
+                };
+                service.searchByName(query).done(data => {
+                    self.showDataOnKcp005Tab3(data);
+                });
             }
 
             /**

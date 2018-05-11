@@ -310,6 +310,79 @@
 						<div class="cf"></div>
 					</div>
 			</com:ko>
+			<div id="ccg001-tab-content-3" class="height-maximum">
+				<div class="pull-left height-maximum" style="width: 400px">
+					<div class="control-group ccg001-control-group">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_104')}</div>
+						<div class="pull-right">
+							<input tabindex="3" id="ccg001-input-code"
+										data-bind="ntsTextEditor: {
+										name: '#[CCG015_43]',
+										value: tab3Code,
+										required: true
+										}" />
+							<button tabindex="5" class="proceed caret-bottom"
+								data-bind="click: searchByCode">#{i18n.getText('CCG001_108')}</button>
+						</div>
+					</div>
+					<div class="control-group ccg001-control-group">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_105')}</div>
+						<div class="pull-right">
+							<input tabindex="3" id="ccg001-inp-name"
+										data-bind="ntsTextEditor: {
+										name: '#[CCG015_43]',
+										value: tab3Name,
+										required: true
+										}" />
+							<button tabindex="5" class="proceed caret-bottom"
+								data-bind="click: searchByName">#{i18n.getText('CCG001_108')}</button>
+						</div>
+					</div>
+					<div class="control-group ccg001-control-group">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_98')}</div>
+						<div class="pull-right">
+							<button tabindex="5" class="proceed caret-bottom pull-right"
+								data-bind="click: searchByEntryDate">#{i18n.getText('CCG001_108')}</button>
+							<div tabindex="1" id="ccg001-date-entry" class="ccg001-date-range pull-right"
+								data-bind="ntsDateRangePicker: {
+									required: true,
+									enable: true,
+									showNextPrevious: false,
+									value: ko.observable(),
+									maxRange: 'oneMonth'}"/>
+						</div>
+					</div>
+					<div class="control-group ccg001-control-group">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_99')}</div>
+						<div class="pull-right">
+							<button tabindex="5" class="proceed caret-bottom pull-right"
+								data-bind="click: searchByRetirementDate">#{i18n.getText('CCG001_108')}</button>
+							<div tabindex="1" id="ccg001-date-retirement" class="ccg001-date-range pull-right"
+								data-bind="ntsDateRangePicker: {
+									required: true,
+									enable: true,
+									showNextPrevious: false,
+									value: ko.observable(),
+									maxRange: 'oneMonth'}"/>
+						</div>
+					</div>
+					<div id="tab3kcp005"></div>
+				</div>
+				<div class="pull-right height-maximum ccg001-table">
+					<div class="ccg001-cell mid">
+						<div tabindex="34" id="ccg001-btn-KCP005-apply" class="ccg001-btn ccg-btn-vertical height-maximum"
+							data-bind="click: extractSelectedEmployeesInTab3">
+							<div class="ccg001-cell mid">
+								<i class="icon icon-47-white-check-mark"></i>
+								<div class="ccg-lbl-vertical ccg-lbl-extract-emp">#{i18n.getText('CCG001_26')}</div>
+							</div>
+						</div>
+					</div>
+					<div class="ccg001-cell mid">
+						<span class="ccg001-caret ccg001-caret-vertical caret-right"></span>
+					</div>
+				</div>
+			</div>
 		</div>
 		</div>
 	</div>
