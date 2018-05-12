@@ -14,6 +14,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
@@ -38,6 +39,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmploymentHisImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.closure.PresentClosingPeriodImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.closure.RqClosureAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
@@ -68,6 +70,7 @@ import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.ApplicationDetailSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
@@ -439,7 +442,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					//条件 bo sung: phase truoc do phai duoc approval thi moi hien thi don
 					int phaseOrderCur = status.getPhaseOrder().intValue();
 					PhaseStatus statusPhase = this.convertStatusPhase(appFull.getApplication().getAppID(), appFull.getLstPhaseState());
-					if(phaseOrderCur == 1 || new Integer(1).equals(statusPhase.getPhaseAtr().get(phaseOrderCur -2))){//phase truoc do da approve
+					if(phaseOrderCur == 1 || this.checkApprove(statusPhase, phaseOrderCur)){//phase truoc do da approve
 						lstAppFilter3.add(appFull.getApplication());
 						lstAppFullFilter3.add(appFull);
 						if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
@@ -556,7 +559,12 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//アルゴリズム「申請一覧リスト取得マスタ情報」を実行する(get List App Master Info): 9 - 申請一覧リスト取得マスタ情報
 		List<AppMasterInfo> lstMaster = this.getListAppMasterInfo(lstAppFilter, companyId);
 		//アルゴリズム「申請一覧リスト取得実績」を実行する-(get App List Achievement): 5 - 申請一覧リスト取得実績
-		AppListAtrOutput timeOutput = this.getAppListAchievement(lstAppFullFilter3, displaySet, companyId, sID);
+		//loai bo nhung don dong bo
+		List<ApplicationFullOutput> lstCount = lstAppFullFilter3.stream()
+				.filter(c -> !lstSyncId.contains(c.getApplication().getAppID())).collect(Collectors.toList());
+		List<AppCompltLeaveSync> lstSync = lstAppCompltLeaveSync.stream()
+				.filter(c -> c.isSync()).collect(Collectors.toList());
+		AppListAtrOutput timeOutput = this.getAppListAchievement(lstCount, displaySet, companyId, sID, lstSync);
 //		long start5 = System.currentTimeMillis();
 //		System.out.println("Thời gian chạy đoạn lệnh getDetailFull: " + (start5 - start4) + "Millis");
 		//承認一覧に稟議書リスト追加し、申請日付順に整列する - phu thuoc vao request
@@ -565,16 +573,31 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				lstAppAbsence, lstAppCompltLeaveSync, timeOutput.getAppStatus(),timeOutput.getLstAppFull(), timeOutput.getLstAppColor(), 
 				lstFrameUn, lstPhaseStatus, timeOutput.getLstAppGroup());
 	}
-//	private boolean findAppPre(String preAppID){
-//		return true;
-//	}
-	
+	/**
+	 * check phase cur is display??
+	 * @param statusPhase
+	 * @param phaseOrderCur
+	 * @return
+	 */
+	private boolean checkApprove(PhaseStatus statusPhase, int phaseOrderCur){
+		List<Integer> phaseAtr = statusPhase.getPhaseAtr();
+		Integer tmp = phaseOrderCur-2;
+		Integer stt = null;
+		if(tmp < 0){
+			return true;
+		}
+		do {
+			stt = phaseAtr.get(tmp);
+			tmp -= 1;
+        } while (tmp >= 0 && stt == null);
+		return stt == null ? false :  stt == 1 ? true : false;
+	}
 	/**
 	 * lam o ui
 	 * 4 - 申請一覧リスト取得承認件数
 	 */
 	@Override
-	public AppInfoStatus countAppListApproval(List<ApplicationFullOutput> lstAppFull, String sID) {
+	public AppInfoStatus countAppListApproval(List<ApplicationFullOutput> lstAppFull, String sID, List<AppCompltLeaveSync> lstSync) {
 		ApplicationStatus appStatus = new ApplicationStatus(0,0,0,0,0,0);
 //		List<ApplicationFullOutput> lstAppFull = mergeAppAndPhase(lstApp);
 		for (ApplicationFullOutput appFull : lstAppFull) {
@@ -591,29 +614,32 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		
 		List<ApplicationFullOutput> listApp = lstAppFull.stream().filter(c -> c.getStatus() != null).collect(Collectors.toList());
 		for (ApplicationFullOutput appFull : listApp) {
+			//check co sync k?
+			boolean check = this.checkSync(lstSync, appFull.getApplication().getAppID());
+			int add = check ? 2 : 1;
 			switch(appFull.getStatus()){
 				case 1://承認状況＝否
 					//否認件数に＋１する
-					appStatus.setDenialNumber(appStatus.getDenialNumber() + 1);
+					appStatus.setDenialNumber(appStatus.getDenialNumber() + add);
 					break;
 				case 2://承認状況＝差戻
 					//差戻件数に＋１する
-					appStatus.setRemandNumner(appStatus.getRemandNumner() + 1);
+					appStatus.setRemandNumner(appStatus.getRemandNumner() + add);
 					break;
 				case 3://承認状況＝取消
 					//取消件数に＋１する
-					appStatus.setCancelNumber(appStatus.getCancelNumber() + 1);
+					appStatus.setCancelNumber(appStatus.getCancelNumber() + add);
 					break;
 				case 4://承認状況＝承認済み/反映済み
 					if(StringUtil.isNullOrEmpty(appFull.getAgentId(), true) || appFull.getAgentId().equals(sID)){//代行者＝未登録　または　代行者＝ログインID
-						appStatus.setApprovalNumber(appStatus.getApprovalNumber() + 1);
+						appStatus.setApprovalNumber(appStatus.getApprovalNumber() + add);
 					}else{//代行者≠ログインID
-						appStatus.setApprovalAgentNumber(appStatus.getApprovalAgentNumber() + 1);
+						appStatus.setApprovalAgentNumber(appStatus.getApprovalAgentNumber() + add);
 					}
 					break;
 				case 5://承認状況＝未
 					//未承認件数に＋１する
-					appStatus.setUnApprovalNumber(appStatus.getUnApprovalNumber() + 1);
+					appStatus.setUnApprovalNumber(appStatus.getUnApprovalNumber() + add);
 					break;
 				default:
 					break;
@@ -621,12 +647,19 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		return new AppInfoStatus(lstAppFull, appStatus);
 	}
-
+	private boolean checkSync(List<AppCompltLeaveSync> lstSync, String appId){
+		for (AppCompltLeaveSync appSync : lstSync) {
+			if(appSync.getAppMain().getAppID().equals(appId)){
+				return true;
+			}
+		}
+		return false;
+	}
 	/**
 	 * 5 - 申請一覧リスト取得実績
 	 */
 	@Override
-	public AppListAtrOutput getAppListAchievement(List<ApplicationFullOutput> lstAppFull, ApprovalListDisplaySetting displaySet, String companyId, String sIDLogin) {
+	public AppListAtrOutput getAppListAchievement(List<ApplicationFullOutput> lstAppFull, ApprovalListDisplaySetting displaySet, String companyId, String sIDLogin, List<AppCompltLeaveSync> lstSync) {
 		List<ApplicationFullOutput> lstOtPost = lstAppFull.stream().filter(c -> c.getApplication().isAppOverTime())
 				.filter(c->c.getApplication().getPrePostAtr().equals(PrePostAtr.POSTERIOR))
 				.collect(Collectors.toList());
@@ -648,6 +681,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				String reasonAppPre = "";
 				if(displaySet.getOtAdvanceDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
 					//ドメインモデル「申請」を取得する
+					//※2018/04/17
+					//複数存在する場合は、最後に新規登録された内容を対象とする
 					List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr.PREDICT.value, ApplicationType.OVER_TIME_APPLICATION.value);
 					if(lstAppPre.isEmpty()){
 //						lstColorTime.add(new CheckColorTime(appID, 1));
@@ -665,7 +700,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 						}
 					}
 					if(!lstAppPre.isEmpty()){
-						group = new AppPrePostGroup(lstAppPre.get(0).getAppID(), appID, null, appPre, reasonAppPre, null);
+						group = new AppPrePostGroup(lstAppPre.get(0).getAppID(), appID, null,"","","","", appPre, reasonAppPre, null);
 					}
 				}
 				//承認一覧表示設定.残業の実績
@@ -689,8 +724,13 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					}
 					if(group != null){
 						group.setTime(result.getLstFrameResult());
+						group.setStrTime1(result.getStrTime1());
+						group.setEndTime1(result.getEndTime1());
+						group.setStrTime2(result.getStrTime2());
+						group.setEndTime2(result.getEndTime2());
+						//NOTE
 					}else{
-						group = new AppPrePostGroup("", appID, result.getLstFrameResult(), appPre, reasonAppPre, null);
+						group = new AppPrePostGroup("", appID, result.getLstFrameResult(),"","","","", appPre, reasonAppPre, null);
 					}
 				}
 				if(group != null){
@@ -729,21 +769,14 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					}
 				}
 				if(!lstAppPre.isEmpty()){
-					group = new AppPrePostGroup(lstAppPre.get(0).getAppID(), appID, null, null, reasonAppPre, appPre);
+					group = new AppPrePostGroup(lstAppPre.get(0).getAppID(), appID, null,"","","","", null, reasonAppPre, appPre);
 				}
 			}
 			//承認一覧表示設定.休出の実績
 			if(displaySet.getHwActualDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
 				//アルゴリズム「申請一覧リスト取得実績残業申請」を実行する-(5.2)
 				List<OverTimeFrame> time = appHdPost.getLstFrame();
-				OverTimeFrame frameRestTime = this.findRestTime(time);
-				Integer restStart = null;
-				Integer restEnd = null;
-				if(frameRestTime != null){
-					restStart = frameRestTime.getStartTime();
-					restEnd = frameRestTime.getEndTime();
-				}
-				TimeResultOutput result = this.getAppListAchievementOverTime(sID, appDate, time, restStart, restEnd);
+				TimeResultOutput result = this.getAppListAchievementBreak(sID, appDate, time);
 				if(result.isCheckColor()){
 					if(this.checkExistColor(lstColorTime, appID)){
 						checkColor.setColorAtr(2);
@@ -754,7 +787,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				if(group != null){
 					group.setTime(result.getLstFrameResult());
 				}else{
-					group = new AppPrePostGroup("", appID, result.getLstFrameResult(), null, reasonAppPre, appPre);
+					group = new AppPrePostGroup("", appID, result.getLstFrameResult(),"","","","", null, reasonAppPre, appPre);
 				}
 			}
 			if(group != null){
@@ -779,7 +812,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 //			this.getListAppAbsence(appDif);
 //		}
 		//アルゴリズム「申請一覧リスト取得承認件数」を実行する(countAppListApproval): 4 -   申請一覧リスト取得承認件数
-		AppInfoStatus appStatus = this.countAppListApproval(lstAppFull, sIDLogin);
+		AppInfoStatus appStatus = this.countAppListApproval(lstAppFull, sIDLogin, lstSync);
 		// TODO Auto-generated method stub
 		return new AppListAtrOutput(appStatus.getLstAppFull(), appStatus.getCount(), lstColorTime, lstAppGroup);
 	}
@@ -793,14 +826,42 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	}
 	/**
 	 * 5.1 - 申請一覧リスト取得実績休出申請
+	 * sID: 申請者ID
+	 * date: 申請日付
 	 */
 	@Override
-	public Boolean getAppListAchievementBreak(String sID, GeneralDate date) {
+	public TimeResultOutput getAppListAchievementBreak(String sID, GeneralDate date, List<OverTimeFrame> time) {
 		// TODO Auto-generated method stub
 		//Imported(申請承認)「勤務実績」を取得する - req #5
 		RecordWorkInfoImport record = recordWkpInfoAdapter.getRecordWorkInfo(sID, date);
 		//Imported(申請承認)「勤務予定」を取得する - req #4
-		Optional<ScBasicScheduleImport> scBsSchedule = scBasicScheduleAdapter.findByID(sID, date);
+//		Optional<ScBasicScheduleImport> scBsSchedule = scBasicScheduleAdapter.findByID(sID, date);
+		//計算休日出勤
+		List<OvertimeInputCaculation> lstHdCal = record.getOvertimeHolidayCaculation();
+		boolean checkColor = false;
+		List<OverTimeFrame> lstFrameResult = new ArrayList<>();
+		for (OvertimeInputCaculation timeCal : lstHdCal) {
+			OverTimeFrame a = this.findFrameTime(time, timeCal.getFrameNo(), timeCal.getAttendanceID());
+			if(a == null){
+				continue;
+			}
+			if(timeCal.getResultCaculation() < a.getApplicationTime()){
+				checkColor = true;
+			}
+			OverTimeFrame frameRes = a;
+			frameRes.setApplicationTime(timeCal.getResultCaculation());
+			lstFrameResult.add(frameRes);
+		}
+		return new TimeResultOutput(checkColor, lstFrameResult, repoAppDetail.convertTime(record.getAttendanceStampTimeFirst()),
+				repoAppDetail.convertTime(record.getLeaveStampTimeFirst()),	repoAppDetail.convertTime(record.getAttendanceStampTimeSecond()),
+				repoAppDetail.convertTime(record.getLeaveStampTimeSecond()));
+	}
+	private OverTimeFrame findFrameTime(List<OverTimeFrame> time, int frameNo, int attendanceType){
+		for (OverTimeFrame overTimeFrame : time) {
+			if(overTimeFrame.getFrameNo() == frameNo && overTimeFrame.getAttendanceType() == attendanceType){
+				return overTimeFrame;
+			}
+		}
 		return null;
 	}
 	/**
@@ -870,7 +931,9 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				}
 			}
 		}
-		return new TimeResultOutput(checkColor, lstFrameResult);
+		return new TimeResultOutput(checkColor, lstFrameResult, repoAppDetail.convertTime(record.getAttendanceStampTimeFirst()),
+				repoAppDetail.convertTime(record.getLeaveStampTimeFirst()),	repoAppDetail.convertTime(record.getAttendanceStampTimeSecond()),
+				repoAppDetail.convertTime(record.getLeaveStampTimeSecond()));
 	}
 	/**
 	 * 6 - 申請一覧リスト取得振休振出
@@ -979,11 +1042,25 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			if(appDispName.isPresent()){
 				appDispNameStr = appDispName.get().getDispName().v();
 			}
+			
+			Integer detailSet = app.isAppOverTime() ? this.detailSet(companyId, wkpID, app.getAppType().value) : null;
 			lstAppMasterInfo.add(new AppMasterInfo(app.getAppID(), app.getAppType().value, appDispNameStr,
-					empName, inpEmpName, wkpName, false, null, checkAddNote, 0));
+					empName, inpEmpName, wkpName, false, null, checkAddNote, 0, detailSet));
 		}
 		return lstAppMasterInfo;
 	}
+	//ver14 + EA1360
+	private Integer detailSet(String companyId, String wkpId, Integer appType){
+		//ドメイン「職場別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by workplace)
+		Optional<ApprovalFunctionSetting> appFuncSet = null;
+		appFuncSet = repoRequestWkp.getFunctionSetting(companyId, wkpId, appType);
+		//対象が存在しない場合 - TH doi tuong k ton tai
+		if(!appFuncSet.isPresent()){
+			//ドメイン「会社別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by company)
+			appFuncSet = repoRequestCompany.getFunctionSetting(companyId, appType);
+		}
+		return appFuncSet.isPresent() ? appFuncSet.get().getApplicationDetailSetting().get().getTimeCalUse().value : null;
+	} 
 	/**
 	 * 12 - 申請一覧初期日付期間
 	 */
@@ -992,59 +1069,62 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//ドメイン「締め」を取得する
 		List<Closure> lstClosure = repoClosure.findAllActive(companyId, UseClassification.UseClass_Use);
 		//list clourse hist
+		// 締め開始日
+		GeneralDate startDate = null;
+		// 締め終了日
+		GeneralDate endDate = null;
 		for (Closure closure : lstClosure) {
-			//find clourse Hist trong khoang thoi gian
-			ClosureHistory closureHist = this.findHistClosure(closure.getClosureHistories(), closure.getClosureMonth());
-			List<ClosureHistory> lstClosureHist = new ArrayList<>();
-			if(closureHist != null){
-				lstClosureHist.add(closureHist);
-				closure.setClosureHistories(lstClosureHist);
-			}else{
-				closure.setClosureHistories(null);
+			//アルゴリズム「処理年月と締め期間を取得する」を実行する
+			Optional<PresentClosingPeriodImport> closureA = closureAdapter.getClosureById(companyId, closure.getClosureId().value);
+			PresentClosingPeriodImport priod = closureA.get();
+			if(startDate == null || startDate.after(priod.getClosureStartDate())){
+				startDate = priod.getClosureStartDate();
+				endDate	= priod.getClosureEndDate();
 			}
 		}
-		List<Closure> lstClosureFil = lstClosure.stream().filter(c-> c.getClosureHistories() != null).collect(Collectors.toList());
-		//取得した、締め日及び当月より、締め日付を作成
-		GeneralDate start = null;
-		GeneralDate minDate = null;
-		for (Closure closure : lstClosureFil) {
-			List<ClosureHistory> closureHist = closure.getClosureHistories();
-			CurrentMonth month = closure.getClosureMonth();
-			for (ClosureHistory closureHistory : closureHist) {
-				if(closureHistory.getClosureDate().getLastDayOfMonth().booleanValue()==true){//締めが末締めの場合
-					GeneralDate tmp = GeneralDate.ymd(month.getProcessingYm().year(), month.getProcessingYm().month() + 1, 1);
-					start = tmp.addMonths(-1);
-				}else{//末締めではない場合
-					GeneralDate tmp = GeneralDate.
-							ymd(month.getProcessingYm().year(), month.getProcessingYm().month(), closure.getClosureHistories().get(0).getClosureDate().getClosureDay().v());
-					GeneralDate date = tmp.addDays(1);
-					start = date.addMonths(-1);
-				}
-				if(minDate == null){
-					minDate = start;
-				}else{
-					minDate = start.afterOrEquals(minDate) ? minDate : start;
-				}
-//				lstDate.add(start);
-			}
-		}
-//		List<GeneralDate> lstFilter = lstDate.sort((x, y) -> x.equals(y));
-//		Closure histMin = this.findHistMin(lstClosureFil);
-//		CurrentMonth month = histMin.getClosureMonth();
-//		GeneralDate start = null;
-		//最小日付に＋１日－１ヵ月して開始日付とする
-//		if(histMin.getClosureHistories().get(0).getClosureDate().getLastDayOfMonth().booleanValue()==true){//締めが末締めの場合
-//			GeneralDate tmp = GeneralDate.ymd(month.getProcessingYm().year(), month.getProcessingYm().month() + 1, 1);
-//			start = tmp.addMonths(-1);
-//		}else{//末締めではない場合
-//			GeneralDate tmp = GeneralDate.
-//					ymd(month.getProcessingYm().year(), month.getProcessingYm().month(), histMin.getClosureHistories().get(0).getClosureDate().getClosureDay().v());
-//			GeneralDate date = tmp.addDays(1);
-//			start = date.addMonths(-1);
+		
+		
+//		//ドメイン「締め」を取得する
+//		List<Closure> lstClosure = repoClosure.findAllActive(companyId, UseClassification.UseClass_Use);
+//		//list clourse hist
+//		for (Closure closure : lstClosure) {
+//			//find clourse Hist trong khoang thoi gian
+//			ClosureHistory closureHist = this.findHistClosure(closure.getClosureHistories(), closure.getClosureMonth());
+//			List<ClosureHistory> lstClosureHist = new ArrayList<>();
+//			if(closureHist != null){
+//				lstClosureHist.add(closureHist);
+//				closure.setClosureHistories(lstClosureHist);
+//			}else{
+//				closure.setClosureHistories(null);
+//			}
 //		}
-		//開始日付の4か月後を終了日付として取得
-		GeneralDate end = minDate.addMonths(4);
-		return new DatePeriod(minDate,end);
+//		List<Closure> lstClosureFil = lstClosure.stream().filter(c-> c.getClosureHistories() != null).collect(Collectors.toList());
+//		//取得した、締め日及び当月より、締め日付を作成
+//		GeneralDate start = null;
+//		GeneralDate minDate = null;
+//		for (Closure closure : lstClosureFil) {
+//			List<ClosureHistory> closureHist = closure.getClosureHistories();
+//			CurrentMonth month = closure.getClosureMonth();
+//			for (ClosureHistory closureHistory : closureHist) {
+//				if(closureHistory.getClosureDate().getLastDayOfMonth().booleanValue()==true){//締めが末締めの場合
+//					GeneralDate tmp = GeneralDate.ymd(month.getProcessingYm().year(), month.getProcessingYm().month() + 1, 1);
+//					start = tmp.addMonths(-1);
+//				}else{//末締めではない場合
+//					GeneralDate tmp = GeneralDate.
+//							ymd(month.getProcessingYm().year(), month.getProcessingYm().month(), closure.getClosureHistories().get(0).getClosureDate().getClosureDay().v());
+//					GeneralDate date = tmp.addDays(1);
+//					start = date.addMonths(-1);
+//				}
+//				if(minDate == null){
+//					minDate = start;
+//				}else{
+//					minDate = start.afterOrEquals(minDate) ? minDate : start;
+//				}
+//			}
+//		}
+//		//開始日付の4か月後を終了日付として取得
+//		GeneralDate end = minDate.addMonths(4);
+		return new DatePeriod(startDate,endDate.addMonths(3));
 	}
 	/**
 	 * 12.1 - 申請一覧初期日付期間_申請
@@ -1517,23 +1597,23 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		String phaseStatus = "";
 		List<Integer> lstPhaseAtr = new ArrayList<>();
 		for (int i = 1; i<= 5; i++) {
-//			String phaseI = "";
-//			Integer status = this.findPhaseStatus(lstPhaseState, i);
-//			lstPhaseAtr.add(status);
-//			if(status != null){//phase exist
-//				phaseI = status == 1 ? "〇" : status == 2 ? "×" : "－";
-//			}
-//			phaseStatus += phaseI;
-			//Doi ung theo QA #90893
 			String phaseI = "";
 			Integer status = this.findPhaseStatus(lstPhaseState, i);
-			if(status == null){
-				continue;
-			}
-			//phase exist
 			lstPhaseAtr.add(status);
-			phaseI = status == 1 ? "〇" : status == 2 ? "×" : "－";
+			if(status != null){//phase exist
+				phaseI = status == 1 ? "〇" : status == 2 ? "×" : "－";
+			}
 			phaseStatus += phaseI;
+			//Doi ung theo QA #90893
+//			String phaseI = "";
+//			Integer status = this.findPhaseStatus(lstPhaseState, i);
+//			if(status == null){
+//				continue;
+//			}
+			//phase exist
+//			lstPhaseAtr.add(status);
+//			phaseI = status == 1 ? "〇" : status == 2 ? "×" : "－";
+//			phaseStatus += phaseI;
 		}
 		return new PhaseStatus(appId, phaseStatus, lstPhaseAtr);
 	}

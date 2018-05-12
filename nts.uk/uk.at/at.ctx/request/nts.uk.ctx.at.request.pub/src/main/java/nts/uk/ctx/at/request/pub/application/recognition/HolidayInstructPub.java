@@ -12,5 +12,5 @@ public interface HolidayInstructPub {
 	 * @param endDate
 	 * @return
 	 */
-	public List<GeneralDate> acquireBreakIndication(String sId, GeneralDate startDate, GeneralDate endDate);
+	public List<HolidayInstructExport> acquireBreakIndication(String sId, GeneralDate startDate, GeneralDate endDate);
 }

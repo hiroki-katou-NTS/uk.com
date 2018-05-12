@@ -36,8 +36,9 @@ public class KscdtScheMasterInfo extends UkJpaEntity implements Serializable {
 	@Column(name = "CLS_CD")
 	public String classificationCd;
 
-	@Column(name = "WORKTYPE_CD")
-	public String workTypeCd;
+	// 勤務種別コード
+	@Column(name = "BUSINESS_TYPE_CD")
+	public String businessTypeCd;
 
 	@Column(name = "JOB_ID")
 	public String jobId;
@@ -58,12 +59,12 @@ public class KscdtScheMasterInfo extends UkJpaEntity implements Serializable {
 	}
 
 	public KscdtScheMasterInfo(KscdtScheMasterInfoPK kscdtScheMasterInfoPk, String employmentCd,
-			String classificationCd, String workTypeCd, String jobId, String workplaceId) {
+			String classificationCd, String businessTypeCd, String jobId, String workplaceId) {
 		super();
 		this.kscdtScheMasterInfoPk = kscdtScheMasterInfoPk;
 		this.employmentCd = employmentCd;
 		this.classificationCd = classificationCd;
-		this.workTypeCd = workTypeCd;
+		this.businessTypeCd = businessTypeCd;
 		this.jobId = jobId;
 		this.workplaceId = workplaceId;
 	}

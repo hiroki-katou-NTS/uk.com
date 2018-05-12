@@ -159,6 +159,7 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot {
 	 */
 	private void validateOneDay() {
 		AttendanceTime oneDayRange = this.getRangeTimeDay();
+		// Pred time
 		AttendanceTime oneDayTime = this.getPredTime().getPredTime().getOneDay(); 		
 		if (oneDayTime.greaterThan(oneDayRange)) {
 			this.bundledBusinessExceptions.addMessage("Msg_781");
@@ -169,6 +170,19 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot {
 		}
 		AttendanceTime afternoonTime = this.getPredTime().getPredTime().getAfternoon(); 		
 		if (afternoonTime.greaterThan(oneDayRange)) {
+			this.bundledBusinessExceptions.addMessage("Msg_781");
+		}
+		// Add time
+		AttendanceTime oneDayAddTime = this.getPredTime().getAddTime().getOneDay(); 		
+		if (oneDayAddTime.greaterThan(oneDayRange)) {
+			this.bundledBusinessExceptions.addMessage("Msg_781");
+		}
+		AttendanceTime morningAddTime = this.getPredTime().getAddTime().getMorning(); 		
+		if (morningAddTime.greaterThan(oneDayRange)) {
+			this.bundledBusinessExceptions.addMessage("Msg_781");
+		}
+		AttendanceTime afternoonAddTime = this.getPredTime().getAddTime().getAfternoon(); 		
+		if (afternoonAddTime.greaterThan(oneDayRange)) {
 			this.bundledBusinessExceptions.addMessage("Msg_781");
 		}
 	}
@@ -258,10 +272,10 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot {
 	 * @param workTimeType the work time type
 	 * @param oldDomain the old domain
 	 */
-	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, PredetemineTimeSetting oldDomain) {	
+	public void correctData(ScreenMode screenMode, WorkTimeDivision workTimeType, PredetemineTimeSetting oldDomain) {	
 		// Tab 1
-		this.prescribedTimezoneSetting.restoreData(screenMode, workTimeType, oldDomain.getPrescribedTimezoneSetting());	
-		
+		this.prescribedTimezoneSetting.correctData(screenMode, workTimeType, oldDomain.getPrescribedTimezoneSetting());	
+		this.predTime.correctData(screenMode, workTimeType, oldDomain.getPredTime());
 		if (screenMode == ScreenMode.SIMPLE) {
 			// Simple mode
 			this.rangeTimeDay = oldDomain.getRangeTimeDay();
@@ -275,10 +289,10 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot {
 	 *
 	 * @param screenMode the screen mode
 	 */
-	public void restoreDefaultData(ScreenMode screenMode, WorkTimeDivision workTimeType) {
+	public void correctDefaultData(ScreenMode screenMode, WorkTimeDivision workTimeType) {
 		// Tab 1
-		this.prescribedTimezoneSetting.restoreDefaultData(screenMode, workTimeType);	
-		
+		this.prescribedTimezoneSetting.correctDefaultData(screenMode, workTimeType);	
+		this.predTime.correctDefaultData(screenMode, workTimeType);
 		if (screenMode == ScreenMode.SIMPLE) {
 			// Simple mode
 			this.rangeTimeDay = new AttendanceTime(TimeWithDayAttr.MINUTES_OF_DAY);

@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.schedule.dom.executionlog;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
@@ -16,6 +17,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 // スケジュール作成実行ログ
 @Getter
+@NoArgsConstructor
 public class ScheduleExecutionLog extends AggregateRoot {
 
 	/** The company id. */
@@ -45,6 +47,18 @@ public class ScheduleExecutionLog extends AggregateRoot {
 
 	// 実行区分
 	private ExecutionAtr exeAtr;
+
+	public ScheduleExecutionLog(CompanyId companyId, CompletionStatus completionStatus, String executionId,
+			ExecutionDateTime executionDateTime, String executionEmployeeId, DatePeriod period, ExecutionAtr exeAtr) {
+		super();
+		this.companyId = companyId;
+		this.completionStatus = completionStatus;
+		this.executionId = executionId;
+		this.executionDateTime = executionDateTime;
+		this.executionEmployeeId = executionEmployeeId;
+		this.period = period;
+		this.exeAtr = exeAtr;
+	}
 
 	/**
 	 * To domain.
@@ -140,6 +154,29 @@ public class ScheduleExecutionLog extends AggregateRoot {
 		} else if (!executionId.equals(other.executionId))
 			return false;
 		return true;
+	}
+
+	public void setPeriod(DatePeriod period) {
+		this.period = period;
+	}
+
+	public void setExeAtr(ExecutionAtr exeAtr) {
+		this.exeAtr = exeAtr;
+	}
+
+	public static ScheduleExecutionLog creator(String companyId, String executionId, String executionEmployeeId,
+			DatePeriod period, ExecutionAtr exeAtr) {
+		return new ScheduleExecutionLog(new CompanyId(companyId), CompletionStatus.INCOMPLETE, executionId,
+				new ExecutionDateTime(GeneralDateTime.now(), GeneralDateTime.now()), executionEmployeeId, period,
+				exeAtr);
+	}
+
+	public void setExecutionId(String executionId) {
+		this.executionId = executionId;
+	}
+
+	public void setCompanyId(CompanyId companyId) {
+		this.companyId = companyId;
 	}
 
 }

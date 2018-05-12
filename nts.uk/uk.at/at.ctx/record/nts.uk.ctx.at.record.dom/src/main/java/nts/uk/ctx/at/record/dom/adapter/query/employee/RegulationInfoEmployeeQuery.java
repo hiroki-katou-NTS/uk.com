@@ -51,10 +51,10 @@ public class RegulationInfoEmployeeQuery {
 	private List<String> worktypeCodes;
 
 	/** The period start. */
-	private String periodStart; // 在職・休職・休業のチェック期間
+	private GeneralDate periodStart; // 在職・休職・休業のチェック期間
 
 	/** The period end. */
-	private String periodEnd; // 在職・休職・休業のチェック期間
+	private GeneralDate periodEnd; // 在職・休職・休業のチェック期間
 
 	/** The include incumbents. */
 	private Boolean includeIncumbents; // 在職者を含める
@@ -90,4 +90,11 @@ public class RegulationInfoEmployeeQuery {
 	private Integer systemType;
 	
 	private String roleId;
+	
+	/** The filter by closure. */
+	private Boolean filterByClosure = false;
+
+	/** The closure ids. */
+	private List<Integer> closureIds;
+	
 }

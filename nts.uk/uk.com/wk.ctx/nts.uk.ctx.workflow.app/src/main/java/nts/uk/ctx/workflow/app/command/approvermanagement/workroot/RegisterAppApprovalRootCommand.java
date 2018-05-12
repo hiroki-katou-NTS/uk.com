@@ -2,9 +2,11 @@ package nts.uk.ctx.workflow.app.command.approvermanagement.workroot;
 
 import java.util.List;
 
-import lombok.Value;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
+@Data
+@NoArgsConstructor
 public class RegisterAppApprovalRootCommand {
 
 	/**就業ルート区分: 会社(0)　－　職場(1)　－　社員(2)*/
@@ -25,4 +27,6 @@ public class RegisterAppApprovalRootCommand {
 	private String endDate;
 	/**checkMode: まとめて登録モード(0), 申請個別登録モード(1)*/
 	private int checkMode;
+
+	
 }

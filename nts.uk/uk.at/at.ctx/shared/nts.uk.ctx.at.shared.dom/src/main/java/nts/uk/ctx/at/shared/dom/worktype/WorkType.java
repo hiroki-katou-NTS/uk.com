@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktype;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -74,6 +75,34 @@ public class WorkType extends AggregateRoot {
 				throw new BusinessException("Msg_395");
 			}
 		}
+	}
+	
+	/** 取得したドメインモデル「勤務種類．一日の勤務．一日」をチェックする */
+	public boolean isWokingDay() {
+		if(dailyWork == null) { return false; }
+		if (dailyWork.getWorkTypeUnit() == WorkTypeUnit.OneDay) {
+			return isWorkingType(dailyWork.getOneDay());
+		}
+		return isWorkingType(dailyWork.getMorning()) || isWorkingType(dailyWork.getAfternoon());
+	}
+
+	/** 出勤系かチェックする　*/
+	private boolean isWorkingType(WorkTypeClassification wt) {
+		return wt == WorkTypeClassification.Attendance || wt == WorkTypeClassification.Shooting 
+				|| wt == WorkTypeClassification.HolidayWork;
+	}
+	
+	public boolean isNoneWorkTimeType(){
+		if (dailyWork != null && dailyWork.getWorkTypeUnit() == WorkTypeUnit.OneDay) {
+			return isNoneWorkTimeType(dailyWork.getOneDay());
+		}
+		return false;
+	}
+	
+	private boolean isNoneWorkTimeType(WorkTypeClassification wt) {
+		return wt == WorkTypeClassification.Holiday || wt == WorkTypeClassification.Pause
+				|| wt == WorkTypeClassification.LeaveOfAbsence || wt == WorkTypeClassification.Closure
+				|| wt == WorkTypeClassification.ContinuousWork;
 	}
 
 	/**
@@ -268,5 +297,22 @@ public class WorkType extends AggregateRoot {
 	 */
 	public boolean isDeprecated() {
 		return DeprecateClassification.Deprecated == this.deprecate;
+	}
+	
+	/**
+	 * 勤務種類設定の編集(一時的なSetter)
+	 * @param workTypeSet
+	 */
+	public void addWorkTypeSet(WorkTypeSet workTypeSet) {
+		if(this.workTypeSetList == null || this.workTypeSetList.isEmpty()) {
+			List<WorkTypeSet> addItems = new ArrayList<>();
+			addItems.add(workTypeSet);
+			this.workTypeSetList = addItems;
+		}
+		else {
+			this.workTypeSetList.add(workTypeSet);
+		}
+		
+							
 	}
 }

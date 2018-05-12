@@ -9,9 +9,10 @@ import javax.ws.rs.Produces;
 
 import lombok.val;
 
-@Path("public/spr")
+// @Path("public/spr")
 public class SprWebServiceStub {
 
+	/*
 	@POST
 	@Path("01/loginfromspr")
 	@Produces("text/html")
@@ -83,4 +84,6 @@ public class SprWebServiceStub {
 
 		return new SprStubHelper.EmployeesContainer<>(SprStubHelper.ApplicationTargetResult.create());
 	}
+	
+	*/
 }

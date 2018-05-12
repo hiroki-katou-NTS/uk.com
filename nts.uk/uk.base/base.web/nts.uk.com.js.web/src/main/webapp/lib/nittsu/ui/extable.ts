@@ -828,11 +828,12 @@ module nts.uk.ui.exTable {
                         let innerDiv = document.createElement("div");
                         innerDiv.innerHTML = data;
                         td.appendChild(innerDiv);
-                    } else if (helper.containsBr(data)) { 
+                    } else if (!column.headerControl && helper.containsBr(data)) { 
                         td.innerHTML = data; 
-                    } else {
+                    } else if (!column.headerControl) {
                         td.innerText = data;
                     }
+                    controls.checkHeader(td, column, data, column.headerHandler);
                 } else if (!self.options.isHeader) {
                     if (!util.isNullOrUndefined(column.icon) && column.icon.for === "body") {
                         let icon = document.createElement("span");
@@ -942,7 +943,7 @@ module nts.uk.ui.exTable {
              */
             highlight(td: HTMLElement) {
                 let self = this;
-                if (self.options.isHeader || self.options.containerClass !== BODY_PRF + DETAIL) return;
+                if (self.options.isHeader || self.options.containerClass !== BODY_PRF + DETAIL || self.options.highlight === false) return;
                 let $targetContainer = self.$container;
                 let targetHeader = helper.firstSibling($targetContainer, self.options.containerClass.replace(BODY_PRF, HEADER_PRF));
                 let extable = helper.getExTableFromGrid($targetContainer);
@@ -1063,6 +1064,7 @@ module nts.uk.ui.exTable {
                 if (!util.isNullOrUndefined(cell.rowspan) && cell.rowspan > 1) $td.setAttribute("rowspan", cell.rowspan);
                 if (!util.isNullOrUndefined(cell.colspan) && cell.colspan > 1) $td.setAttribute("colspan", cell.colspan);
                 else if (!self.visibleColumnsMap[cell.key]) tdStyle += "; display: none;";
+                let column = self.columnsMap[cell.key];
                 
                 if (!util.isNullOrUndefined(cell.icon) && cell.icon.for === "header") {
                     let $icon = document.createElement("span");
@@ -1078,10 +1080,14 @@ module nts.uk.ui.exTable {
                     let $content = document.createElement("div");
                     $content.innerHTML = text;
                     $td.appendChild($content);
-                } else if (helper.containsBr(text)) { 
+                } else if ((!column || (column && !column.headerControl)) && helper.containsBr(text)) { 
                     $td.innerHTML = text; 
-                } else {
+                } else if (!column || (column && !column.headerControl)) {
                     $td.textContent = text;
+                }
+                
+                if (column) {
+                    controls.checkHeader($td, column, text, column.headerHandler);
                 }
                 $td.style.cssText += tdStyle;
                 return $td;
@@ -4738,6 +4744,25 @@ module nts.uk.ui.exTable {
                             action();
                         });
                         a.innerText = data;
+                        td.appendChild(a);
+                        break;
+                }
+            }
+        }
+        
+        /**
+         * Check header.
+         */
+        export function checkHeader(td: HTMLElement, column: any, data: any, action: any) {
+            if (column.headerControl) {
+                switch (column.headerControl) {
+                    case LINK_BUTTON: 
+                        let a = document.createElement("a");
+                        a.classList.add(LINK_CLS);
+                        a.addXEventListener(events.CLICK_EVT, function(evt) {
+                            action();
+                        });    
+                        a.innerHTML = data;
                         td.appendChild(a);
                         break;
                 }

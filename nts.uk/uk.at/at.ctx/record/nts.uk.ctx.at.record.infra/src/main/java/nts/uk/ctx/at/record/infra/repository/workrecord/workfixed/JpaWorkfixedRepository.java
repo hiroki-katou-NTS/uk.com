@@ -17,6 +17,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.YearMonth;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkFixed;
 import nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkfixedRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.workfixed.KrcstWorkFixed;
@@ -129,6 +131,47 @@ public class JpaWorkfixedRepository extends JpaRepository implements WorkfixedRe
 		return listKrcstWorkFixed.stream()
 				.map(item -> new WorkFixed(new JpaWorkfixedGetMemento(item)))
 				.collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkfixedRepository#find(
+	 * java.lang.String, nts.arc.time.YearMonth, java.lang.String,
+	 * java.lang.Integer)
+	 */
+	@Override
+	public Optional<WorkFixed> find(String cid, String wkpId, Integer closureId, YearMonth processYm) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<KrcstWorkFixed> cq = criteriaBuilder.createQuery(KrcstWorkFixed.class);
+		Root<KrcstWorkFixed> root = cq.from(KrcstWorkFixed.class);
+
+		// Build query
+		cq.select(root);
+
+		// Add where conditions
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere
+				.add(criteriaBuilder.equal(root.get(KrcstWorkFixed_.krcstWorkFixedPK).get(KrcstWorkFixedPK_.cid), cid));
+		lstpredicateWhere.add(
+				criteriaBuilder.equal(root.get(KrcstWorkFixed_.krcstWorkFixedPK).get(KrcstWorkFixedPK_.wkpid), wkpId));
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KrcstWorkFixed_.krcstWorkFixedPK).get(KrcstWorkFixedPK_.closureId), closureId));
+		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KrcstWorkFixed_.processYm), processYm.v()));
+
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		List<KrcstWorkFixed> listKrcstWorkFixed = em.createQuery(cq).getResultList();
+
+		if (CollectionUtil.isEmpty(listKrcstWorkFixed)) {
+			return Optional.empty();
+		}
+
+		return Optional.ofNullable(new WorkFixed(new JpaWorkfixedGetMemento(listKrcstWorkFixed.get(0))));
+
 	}
 
 }

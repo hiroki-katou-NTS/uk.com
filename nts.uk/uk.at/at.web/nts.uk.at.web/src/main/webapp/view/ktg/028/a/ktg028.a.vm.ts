@@ -113,6 +113,8 @@ module nts.uk.at.view.ktg028.a.viewmodel {
             self.findAll().done(() => {
                 if (self.items_A2().length > 0) {
                     self.currentCode_A2(self.items_A2()[0].topPageCode);
+                }else{
+                    self.isCreated(true);    
                 }
             });
         }

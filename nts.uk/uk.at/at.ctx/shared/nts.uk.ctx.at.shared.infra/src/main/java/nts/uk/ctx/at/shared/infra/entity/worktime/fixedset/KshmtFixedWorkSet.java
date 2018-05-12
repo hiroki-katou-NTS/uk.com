@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.worktime.fixedset;
@@ -62,6 +62,30 @@ public class KshmtFixedWorkSet extends UkJpaEntity implements Serializable {
 	/** The lev rest calc type. */
 	@Column(name = "LEV_REST_CALC_TYPE")
 	private int levRestCalcType;
+	
+	/** The is plan actual not match master refe. */
+	@Column(name = "PLAN_NOT_MATCH")
+	private int isPlanActualNotMatchMasterRefe;
+	
+	/** The ot calc method. */
+	@Column(name = "OT_CALC_METHOD")
+	private Integer otCalcMethod;
+	
+	/** The ot in law. */
+	@Column(name = "OT_IN_LAW")
+	private Integer otInLaw;
+	
+	/** The ot not in law. */
+	@Column(name = "OT_NOT_IN_LAW")
+	private Integer otNotInLaw;
+	
+	/** The exceeded pred calc method. */
+	@Column(name = "EXCEEDED_PRED_CALC_METHOD")
+	private Integer exceededPredCalcMethod;
+	
+	/** The exceeded pred ot frame no. */
+	@Column(name = "EXCEEDED_PRED_OT_FRAME_NO")
+	private Integer exceededPredOtFrameNo;
 
 	/** The kshmt fixed half rest sets. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -115,8 +139,7 @@ public class KshmtFixedWorkSet extends UkJpaEntity implements Serializable {
 	/**
 	 * Instantiates a new kshmt fixed work set.
 	 *
-	 * @param kshmtFixedWorkSetPK
-	 *            the kshmt fixed work set PK
+	 * @param kshmtFixedWorkSetPK the kshmt fixed work set PK
 	 */
 	public KshmtFixedWorkSet(KshmtFixedWorkSetPK kshmtFixedWorkSetPK) {
 		super();

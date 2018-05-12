@@ -97,8 +97,14 @@ public class SprAppStatusImpl implements SprAppStatusService {
 	@Override
 	public List<AppStatusSpr> getOverTimeAppStatus(String employeeID, GeneralDate startDate, GeneralDate endDate) {
 		List<AppStatusSpr> appOvertimeStatusSprList = new ArrayList<>();
+		/*if(startDate.addDays(31).beforeOrEquals(endDate)){
+			endDate = startDate.addDays(30);
+		}*/
 		// 取得期間を日単位でループする（開始日～終了日）　MAX 31日
-		for(int i = 0; startDate.compareTo(endDate) + i <= 0; i++){
+		for(int i = 0; startDate.addDays(i).compareTo(endDate) <= 0; i++){
+			if(i==31){
+				break;
+			}
 			GeneralDate loopDate = startDate.addDays(i);
 			// 早出残業申請状況確認
 			AppOvertimeStatusSprExport appOvertimeStatusSpr1 = this.getOverTimeAppInfo(loopDate, employeeID, 0);
@@ -109,7 +115,7 @@ public class SprAppStatusImpl implements SprAppStatusService {
 					appOvertimeStatusSpr1.getStatus(), 
 					appOvertimeStatusSpr2.getStatus(), 
 					Optional.ofNullable(appOvertimeStatusSpr1.getApplicationID()), 
-					Optional.ofNullable(appOvertimeStatusSpr1.getApplicationID())));
+					Optional.ofNullable(appOvertimeStatusSpr2.getApplicationID())));
 		}
 		return appOvertimeStatusSprList;
 	}
@@ -124,14 +130,23 @@ public class SprAppStatusImpl implements SprAppStatusService {
 		AppOverTimeSprExport appOverTimeSpr = opAppOverTimeSpr.get();
 		
 		// ドメインモデル「申請.反映情報.実績反映状態」をチェックする
-		List<Integer> successState = Arrays.asList(1,2,3,4);
+		List<Integer> successState = Arrays.asList(2,3,4);
 		if(successState.contains(appOverTimeSpr.getStateReflectionReal())){
 			return new AppOvertimeStatusSprExport(0, null);
 		}
 		
 		// 取得残業区分をチェック
 		if(overTimeAtr==0||overTimeAtr==1){
-			return new AppOvertimeStatusSprExport(1, appOverTimeSpr.getAppID());
+			switch (appOverTimeSpr.getStateReflectionReal()) {
+			case 1:
+				return new AppOvertimeStatusSprExport(2, appOverTimeSpr.getAppID());
+			case 6:
+				return new AppOvertimeStatusSprExport(3, appOverTimeSpr.getAppID());
+			case 5:
+				return new AppOvertimeStatusSprExport(4, appOverTimeSpr.getAppID());
+			default:
+				return new AppOvertimeStatusSprExport(1, appOverTimeSpr.getAppID());
+			}
 		}
 		return new AppOvertimeStatusSprExport(0, null);
 	}
