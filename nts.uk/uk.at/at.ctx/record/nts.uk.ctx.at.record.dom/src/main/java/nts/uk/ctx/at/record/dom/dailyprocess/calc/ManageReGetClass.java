@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPerso
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
@@ -146,7 +147,7 @@ public class ManageReGetClass {
 										  Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType,
 										  List<WorkTimezoneOtherSubHolTimeSet> subHolTransferSetList,
 										  DailyCalculationPersonalInformation personalInfo, DailyUnit dailyUnit,
-										  Optional<TimezoneOfFixedRestTimeSet> fixRestTimeSeting,
+										  Optional<FixRestTimezoneSet> fixRestTimeSeting,
 										  Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet,
 										  HolidayCalcMethodSet holidayCalcMethodSet,
 										  int breakCount,WorkRegularAdditionSet workRegularAdditionSet,
