@@ -384,7 +384,6 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 
 	private BundledBusinessException businessList(List<UpdateItemInitValueSettingCommand> itemSetting) {
 		BundledBusinessException exceptions = BundledBusinessException.newInstance();
-		String ctgCode = itemSetting.isEmpty() ? "" : itemSetting.get(0).getCtgCode();
 		for (UpdateItemInitValueSettingCommand c : itemSetting) {
 			if (c.getSelectedRuleCode() == 2) {
 				if (c.getDataType() == 1 && (c.getStringValue().equals(null) || c.getStringValue().equals(""))) {
@@ -403,7 +402,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 					BusinessException message = new BusinessException("Msg_824", c.getItemName());
 					message.setSuppliment("NameID", c.getItemName());
 					exceptions.addMessage(message);
-				} else if (c.getDataType() == 5 && c.getTime() == null && !c.getCtgCode().equals("CS00020")) {
+				} else if (c.getDataType() == 5 && c.getTime() == null && c.getIsRequired() == 1) {
 					BusinessException message = new BusinessException("Msg_824", c.getItemName());
 					message.setSuppliment("NameID", c.getItemName());
 					exceptions.addMessage(message);
