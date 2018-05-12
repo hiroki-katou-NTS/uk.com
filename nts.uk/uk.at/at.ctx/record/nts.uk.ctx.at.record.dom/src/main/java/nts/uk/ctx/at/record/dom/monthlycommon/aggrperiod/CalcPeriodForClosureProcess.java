@@ -65,20 +65,28 @@ public class CalcPeriodForClosureProcess {
 		if (!currentDateOpt.isPresent()) return returnValue;
 		val currentDate = currentDateOpt.get();
 		
-		// 「締め状態管理」を取得
-		Optional<ClosureStatusManagement> sttMng = closureSttMngRepo.getById(employeeId, currentYm, closureId, currentDate);
-		GeneralDate closureProcessedDate = sttMng.isPresent() ? sttMng.get().getPeriod().end() : GeneralDate.today();		// provisional 締め処理済み年月日
-		
 		// 集計すべき期間を計算
 		this.periodForAggregateList = this.calcPeriodForAggregate.algorithm(companyId, employeeId, currentPeriod.end());
-		
+				
 		// 締め処理すべき締め期間に絞り込む
 		val closurePeriodOpt = this.refineClosurePeriod(closureId, currentDate, currentYm);
-		if (!closurePeriodOpt.isPresent()){
-			
+		if (!closurePeriodOpt.isPresent()){			
 			// 対象締め処理期間なし
 			return returnValue;
 		}
+				
+		// 「締め状態管理」を取得
+		Optional<ClosureStatusManagement> sttMng = closureSttMngRepo.getLatestByEmpId(employeeId);
+		if (!sttMng.isPresent()) {
+			// 「締め処理期間」を返す
+			returnValue.setState(CalcPeriodForClosureProcState.EXIST);
+			returnValue.setClosurePeriod(closurePeriodOpt);
+			return returnValue;
+		}
+		
+		// provisional 締め処理済み年月日
+		GeneralDate closureProcessedDate = sttMng.get().getPeriod().end();		
+		
 		val closurePeriod = closurePeriodOpt.get();
 		
 		// 指定した年月日までの期間を除外する
