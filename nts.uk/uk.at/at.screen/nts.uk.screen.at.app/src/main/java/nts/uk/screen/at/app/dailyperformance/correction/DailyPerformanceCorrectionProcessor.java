@@ -824,7 +824,7 @@ public class DailyPerformanceCorrectionProcessor {
 
 	private void setHideCheckbok(DailyPerformanceCorrectionDto screenDto, Optional<IdentityProcessUseSetDto> indentity, Optional<ApprovalUseSettingDto> approval, String companyId, int mode) {
 			screenDto.setShowPrincipal(indentity.isPresent() && indentity.get().isUseConfirmByYourself());
-			screenDto.setShowSupervisor(approval.isPresent() && approval.get().getUseDayApproverConfirm() == true ? false : ScreenMode.APPROVAL.value == mode);
+			screenDto.setShowSupervisor(approval.isPresent() && approval.get().getUseDayApproverConfirm() == true ? ScreenMode.APPROVAL.value == mode : false);
 	}
 
 	private List<DPErrorDto> getErrorList(DailyPerformanceCorrectionDto screenDto, List<String> listEmployeeId) {
