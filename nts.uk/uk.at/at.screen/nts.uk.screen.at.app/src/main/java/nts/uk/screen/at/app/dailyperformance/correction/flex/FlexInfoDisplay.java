@@ -8,10 +8,9 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.find.monthly.root.dto.ClosureDateDto;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.CheckShortageFlex;
-import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.algorithm.RegisterConfirmationMonth;
 import nts.uk.ctx.at.shared.app.service.workingcondition.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -29,6 +28,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRe
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.FlexShortage;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthParent;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQueryProcessor;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyMultiQuery;
@@ -68,10 +68,16 @@ public class FlexInfoDisplay {
 		Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
 				.findByEmploymentCD(companyId, getEmploymentCode(new DateRange(null, baseDate), employeeId));
 		List<MonthlyModifyResult> results = new ArrayList<>();
+		FlexShortage dataMonth = new FlexShortage();
 		if (closureEmploymentOptional.isPresent()) {
 			Optional<PresentClosingPeriodExport> closingPeriod = shClosurePub.find(companyId,
 					closureEmploymentOptional.get().getClosureId(), baseDate);
 			if(closingPeriod.isPresent()){
+			//set dpMonthParent
+			dataMonth.createMonthParent(new DPMonthParent(employeeId, closingPeriod.get().getProcessingYm().v(),
+					closureEmploymentOptional.get().getClosureId(),
+					new ClosureDateDto(closingPeriod.get().getClosureDate().getClosureDay(),
+							closingPeriod.get().getClosureDate().getLastDayOfMonth())));
 			results = monthlyModifyQueryProcessor.initScreen(new MonthlyMultiQuery(Arrays.asList(employeeId)),
 															Arrays.asList(18, 21, 189, 190, 191), closingPeriod.get().getProcessingYm(),
 															ClosureId.valueOf(closureEmploymentOptional.get().getClosureId()),
@@ -79,7 +85,6 @@ public class FlexInfoDisplay {
 																	closingPeriod.get().getClosureDate().getLastDayOfMonth()));
 			}
 		}
-		FlexShortage dataMonth = new FlexShortage();
 		if (!results.isEmpty()) {
 			mapValue(results.get(0).getItems(), dataMonth);
 		}else{
