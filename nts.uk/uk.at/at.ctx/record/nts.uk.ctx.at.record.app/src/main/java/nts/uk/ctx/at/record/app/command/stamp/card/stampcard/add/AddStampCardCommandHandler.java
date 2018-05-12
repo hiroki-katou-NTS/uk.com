@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.command.stamp.card.stampcard;
+package nts.uk.ctx.at.record.app.command.stamp.card.stampcard.add;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
