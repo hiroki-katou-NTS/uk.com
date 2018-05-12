@@ -14,6 +14,7 @@ import nts.uk.ctx.pereg.app.command.facade.PeregCommandFacade;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
 import nts.uk.shr.pereg.app.ItemValue;
+import nts.uk.shr.pereg.app.SaveDataType;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 import nts.uk.shr.pereg.app.command.PeregInputContainer;
 
@@ -52,10 +53,21 @@ public class AddEmployeeCommandFacade {
 			}
 		});
 
-		return categoryCodeList.stream()
+		List<ItemsByCategory> composedData =  categoryCodeList.stream()
 				.map(categoryCode -> createItemsByCategory(categoryCode, dataServer,
-						command.getCategory(categoryCode)))
+						command.getCategoryData(categoryCode)))
 				.filter(itemsByCategory -> itemsByCategory != null).collect(Collectors.toList());
+		
+		// add new category cardNo to input
+		composedData.add(createCardNoCategory(command.getCardNo()));
+		
+		return composedData;
+		
+	}
+	
+	public ItemsByCategory createCardNoCategory(String cardNo) {
+		ItemValue itemValue = new ItemValue(null, "IS00779", cardNo, SaveDataType.STRING.value);
+		return new ItemsByCategory("CS00069", null, Arrays.asList(itemValue));
 	}
 
 	private void updateBasicCategories(String personId, String employeeId, String comHistId,  List<ItemsByCategory> inputs) {
