@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
@@ -25,8 +25,10 @@ public class TotalRoundingSet extends WorkTimeDomainObject {
 	/**
 	 * Instantiates a new total rounding set.
 	 *
-	 * @param setSameFrameRounding the set same frame rounding
-	 * @param frameStraddRoundingSet the frame stradd rounding set
+	 * @param setSameFrameRounding
+	 *            the set same frame rounding
+	 * @param frameStraddRoundingSet
+	 *            the frame stradd rounding set
 	 */
 	public TotalRoundingSet(int setSameFrameRounding, int frameStraddRoundingSet) {
 		super();
@@ -37,8 +39,10 @@ public class TotalRoundingSet extends WorkTimeDomainObject {
 	/**
 	 * Instantiates a new total rounding set.
 	 *
-	 * @param setSameFrameRounding the set same frame rounding
-	 * @param frameStraddRoundingSet the frame stradd rounding set
+	 * @param setSameFrameRounding
+	 *            the set same frame rounding
+	 * @param frameStraddRoundingSet
+	 *            the frame stradd rounding set
 	 */
 	public TotalRoundingSet(GoOutTimeRoundingMethod setSameFrameRounding,
 			GoOutTimeRoundingMethod frameStraddRoundingSet) {
@@ -50,7 +54,8 @@ public class TotalRoundingSet extends WorkTimeDomainObject {
 	/**
 	 * Instantiates a new total rounding set.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public TotalRoundingSet(TotalRoundingSetGetMemento memento) {
 		this.setSameFrameRounding = memento.getSetSameFrameRounding();
@@ -60,7 +65,8 @@ public class TotalRoundingSet extends WorkTimeDomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(TotalRoundingSetSetMemento memento) {
 		memento.setSetSameFrameRounding(this.setSameFrameRounding);
@@ -68,19 +74,9 @@ public class TotalRoundingSet extends WorkTimeDomainObject {
 	}
 
 	/**
-	 * Restore data.
-	 *
-	 * @param oldDomain the old domain
+	 * Correct default data.
 	 */
-	public void restoreData(TotalRoundingSet oldDomain) {
-		this.setSameFrameRounding = oldDomain.getFrameStraddRoundingSet();
-		this.frameStraddRoundingSet = oldDomain.getFrameStraddRoundingSet();
-	}
-	
-	/**
-	 * Restore default data.
-	 */
-	public void restoreDefaultData() {
+	public void correctDefaultData() {
 		this.setSameFrameRounding = GoOutTimeRoundingMethod.TOTAL_AND_ROUNDING;
 		this.frameStraddRoundingSet = GoOutTimeRoundingMethod.TOTAL_AND_ROUNDING;
 	}

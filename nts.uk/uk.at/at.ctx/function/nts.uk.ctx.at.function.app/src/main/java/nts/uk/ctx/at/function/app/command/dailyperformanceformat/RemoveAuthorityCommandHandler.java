@@ -48,10 +48,11 @@ public class RemoveAuthorityCommandHandler extends CommandHandler<RemoveAuthorit
 
 		this.authorityFormatMonthlyRepository.remove(companyId,
 				new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()));
-
-		this.authorityFormatInitialDisplayRepository.remove(companyId,
-				new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()));
 		
+		if(this.authorityFormatInitialDisplayRepository.checkExistDataByCompanyId(companyId)) {
+			this.authorityFormatInitialDisplayRepository.remove(companyId,
+					new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()));
+		}
 		this.authorityDailyPerformanceFormatRepository.remove(companyId,
 				new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()));
 	}

@@ -502,7 +502,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     };
                 }
                 if(!nts.uk.util.isNullOrEmpty(startTimeAdd)){
-                    if (endTime == null) {
+                    if (nts.uk.util.isNullOrEmpty(endTime)) {
                                 dialog.alertError({ messageId: "Msg_307" })
                                 $('input#restTimeEnd_' + attendanceId + '_' + frameNo).focus();
                                 return false;
@@ -917,16 +917,16 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 }
             });
             //休憩時間
-            for (let i = 0; i < self.breakTimes().length; i++) {
-                self.breakTimes()[i].applicationTime.subscribe(value => {
-                    if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
-                        if (self.preWorkContent.breakTimes[i].applicationTime != value) {
-                            //→エラーＭＳＧ
-                            self.calculateFlag(1);
-                        }
-                    }
-                });
-            }
+//            for (let i = 0; i < self.breakTimes().length; i++) {
+//                self.breakTimes()[i].applicationTime.subscribe(value => {
+//                    if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
+//                        if (self.preWorkContent.breakTimes[i].applicationTime != value) {
+//                            //→エラーＭＳＧ
+//                            self.calculateFlag(1);
+//                        }
+//                    }
+//                });
+//            }
         }
     }
 

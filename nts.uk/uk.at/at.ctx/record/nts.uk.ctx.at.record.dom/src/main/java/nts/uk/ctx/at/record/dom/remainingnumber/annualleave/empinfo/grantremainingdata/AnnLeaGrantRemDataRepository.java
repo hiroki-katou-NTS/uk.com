@@ -13,6 +13,8 @@ public interface AnnLeaGrantRemDataRepository {
 	
 	Optional<AnnualLeaveGrantRemainingData> findByID(String id);
 	
+	Optional<AnnualLeaveGrantRemainingData> find(String employeeId, GeneralDate grantDate, GeneralDate deadline);
+	
 	List<AnnualLeaveGrantRemainingData> findByCheckState(String employeeId, int checkState);
 	
 	List<AnnualLeaveGrantRemainingData> findNotExp(String employeeId);

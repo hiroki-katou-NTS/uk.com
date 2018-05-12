@@ -1,13 +1,15 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.fixedset.dto;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Value;
+import nts.uk.ctx.at.shared.app.command.worktime.common.FixedWorkCalcSettingDto;
 import nts.uk.ctx.at.shared.app.command.worktime.common.dto.FixedWorkRestSetDto;
 import nts.uk.ctx.at.shared.app.command.worktime.common.dto.StampReflectTimezoneDto;
 import nts.uk.ctx.at.shared.app.command.worktime.common.dto.WorkTimezoneCommonSetDto;
@@ -18,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingGetMemento;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -50,6 +53,9 @@ public class FixedWorkSettingDto implements FixedWorkSettingGetMemento {
 
 	/** The legal OT setting. */
 	private Integer legalOTSetting;
+	
+	/** The calculation setting. */
+	private FixedWorkCalcSettingDto calculationSetting;
 
 	/*
 	 * (non-Javadoc)
@@ -159,5 +165,16 @@ public class FixedWorkSettingDto implements FixedWorkSettingGetMemento {
 	@Override
 	public LegalOTSetting getLegalOTSetting() {
 		return LegalOTSetting.valueOf(this.legalOTSetting);
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingGetMemento#getFixedWorkCalcSetting()
+	 */
+	@Override
+	public Optional<FixedWorkCalcSetting> getCalculationSetting() {
+		if (this.calculationSetting == null) {
+			return Optional.empty();
+		}
+		return Optional.of(new FixedWorkCalcSetting(this.calculationSetting));
 	}
 }

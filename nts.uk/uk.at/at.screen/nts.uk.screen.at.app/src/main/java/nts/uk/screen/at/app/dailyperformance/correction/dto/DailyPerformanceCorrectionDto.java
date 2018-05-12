@@ -70,6 +70,10 @@ public class DailyPerformanceCorrectionDto {
 	private IdentityProcessUseSetDto identityProcessDto;
 	
 	private FlexShortage flexShortage;
+	
+	private Integer showQuestionSPR;
+	
+	private ChangeSPR changeSPR;
 
 	public DailyPerformanceCorrectionDto() {
 		super();
@@ -79,6 +83,7 @@ public class DailyPerformanceCorrectionDto {
 		this.itemValues = new HashSet<>();
 		this.data = new HashMap<>();
 		this.dPErrorDto = new ArrayList<>();
+		this.changeSPR = new ChangeSPR(false, false);
 	}
 
 	/** Check if employeeId is login user */
@@ -177,8 +182,10 @@ public class DailyPerformanceCorrectionDto {
 						data.setError(errorType);
 					}
 					// add error alarm cell state
-					setCellStateCheck(data.getId(), error.getAttendanceItemId().toString(),
-							errorType.equals("ER") ? "ntsgrid-error" : "ntsgrid-alarm", mapDP);
+					error.getAttendanceItemId().stream().forEach(x ->{
+						setCellStateCheck(data.getId(), x.toString(),
+								errorType.contains("ER") ? "ntsgrid-error" : "ntsgrid-alarm", mapDP);
+					});
 				}
 			});
 		});
@@ -211,24 +218,41 @@ public class DailyPerformanceCorrectionDto {
 	}
 	
 	private void setCellStateCheck(String dataId, String columnKey, String state, Map<Integer, DPAttendanceItem> mapDP) {
-		Optional<DPCellStateDto> existedCellState = findExistCellState(dataId, columnKey);
-		if (existedCellState.isPresent()) {
-			existedCellState.get().addState(state);
-		} else {
-			if(mapDP.containsKey(Integer.parseInt(columnKey))){
+//		Optional<DPCellStateDto> existedCellState = findExistCellState(dataId, columnKey);
+//		if (existedCellState.isPresent()) {
+//			existedCellState.get().addState(state);
+//		} else {
+		String colKey = null, nameKey = null;
+		if(mapDP.containsKey(Integer.parseInt(columnKey))){
 			int attendanceAtr = mapDP.get(Integer.parseInt(columnKey)).getAttendanceAtr();
 			if (attendanceAtr == DailyAttendanceAtr.Code.value || attendanceAtr == DailyAttendanceAtr.Classification.value) {
 				if (attendanceAtr == DailyAttendanceAtr.Classification.value) {
-					this.lstCellState.add(new DPCellStateDto("_" + dataId, "NO" + columnKey, toList(state)));
+					colKey = "NO" + columnKey;
 				} else {
-					this.lstCellState.add(new DPCellStateDto("_" + dataId, "Code" + columnKey, toList(state)));
+					colKey = "Code" + columnKey;
 				}
-				this.lstCellState.add(new DPCellStateDto("_" + dataId, "Name" + columnKey, toList(state)));
+				nameKey = "Name" + columnKey;
 			} else {
-				this.lstCellState.add(new DPCellStateDto("_" + dataId, "A"+columnKey, toList(state)));
+				columnKey = "A" + columnKey;
+			}
+			
+			Optional<DPCellStateDto> existedCellState = findExistCellState(dataId, colKey);
+			if (existedCellState.isPresent()) {
+				existedCellState.get().addState(state);
+			} else {
+				this.lstCellState.add(new DPCellStateDto("_" + dataId, colKey, toList(state)));
+			}
+			
+			if (nameKey != null) {
+				Optional<DPCellStateDto> existedNameCellState = findExistCellState(dataId, nameKey);
+				if (existedNameCellState.isPresent()) {
+					existedNameCellState.get().addState(state);
+				} else {
+					this.lstCellState.add(new DPCellStateDto("_" + dataId, nameKey, toList(state)));
+				}
 			}
 		}
-		}
+//		}
 	}
 
 	private List<String> toList(String... item) {

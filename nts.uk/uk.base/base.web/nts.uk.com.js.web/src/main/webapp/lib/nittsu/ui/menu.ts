@@ -47,7 +47,7 @@ module nts.uk.ui.menu {
      */
     export function request() {
         $("#logo").on(constants.CLICK, function() {
-//            uk.request.jumpToTopPage();
+            uk.request.jumpToTopPage();
         });
         
         displayUserInfo();

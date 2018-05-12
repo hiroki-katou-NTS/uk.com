@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 /**
  * 承認フェーズインスタンス
@@ -29,10 +30,11 @@ public class ApprovalPhaseState extends DomainObject {
 	private ApprovalBehaviorAtr approvalAtr;
 	
 	private ApprovalForm approvalForm;
-	
+	@Setter
 	private List<ApprovalFrame> listApprovalFrame;
 	
-	public static ApprovalPhaseState createFromFirst(String rootStateID, ApprovalPhaseState approvalPhaseState){
+	public static ApprovalPhaseState createFromFirst(String companyID, GeneralDate date, 
+			String rootStateID, ApprovalPhaseState approvalPhaseState){
 		if(Strings.isBlank(approvalPhaseState.getRootStateID())){
 			return ApprovalPhaseState.builder()
 					.rootStateID(rootStateID)
@@ -40,7 +42,7 @@ public class ApprovalPhaseState extends DomainObject {
 					.approvalAtr(approvalPhaseState.getApprovalAtr())
 					.approvalForm(approvalPhaseState.getApprovalForm())
 					.listApprovalFrame(approvalPhaseState.getListApprovalFrame().stream()
-							.map(x -> ApprovalFrame.createFromFirst(rootStateID, x)).collect(Collectors.toList()))
+							.map(x -> ApprovalFrame.createFromFirst(companyID, date, rootStateID, x)).collect(Collectors.toList()))
 					.build();
 		}
 		return approvalPhaseState;

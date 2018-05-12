@@ -220,6 +220,7 @@ module nts.uk.at.view.kmk010.a {
                     });
                     
                     if (!stopLoop) {
+                        nts.uk.ui.block.clear();
                         return;    
                     }
                     

@@ -37,7 +37,10 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 	private static final String REMOVE_BY_EMPLOYEEID_AND_DATE = "DELETE FROM KrcdtIdentificationStatus c "
 			+ " WHERE c.krcdtIdentificationStatusPK.employeeId = :employeeId "
 			+ " AND c.krcdtIdentificationStatusPK.processingYmd = :processingYmd ";
-
+   
+	private static final String GET_BY_EMPLOYEE_ID_DATE = "SELECT c from KrcdtIdentificationStatus c "
+			+ " WHERE c.krcdtIdentificationStatusPK.employeeId = :employeeId "
+			+ " AND c.krcdtIdentificationStatusPK.processingYmd IN :dates ";
 
 	@Override
 	public List<Identification> findByEmployeeID(String employeeID, GeneralDate startDate, GeneralDate endDate) {
@@ -49,7 +52,7 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 	@Override
 	public Optional<Identification> findByCode(String employeeID, GeneralDate processingYmd) {
 		return this.queryProxy().query(GET_BY_CODE, KrcdtIdentificationStatus.class)
-				.setParameter("employeeID", employeeID).setParameter("processingYmd", processingYmd)
+				.setParameter("employeeId", employeeID).setParameter("processingYmd", processingYmd)
 				.getSingle(c -> c.toDomain());
 	}
 
@@ -80,6 +83,12 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 		return this.queryProxy().query(GET_BY_EMPLOYEE_ID_SORT_DATE, KrcdtIdentificationStatus.class)
 				.setParameter("employeeId", employeeID).setParameter("companyID", AppContexts.user().companyId())
 				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList(c -> c.toDomain());
+	}
+
+	@Override
+	public List<Identification> findByEmployeeID(String employeeID, List<GeneralDate> dates) {
+		return this.queryProxy().query(GET_BY_EMPLOYEE_ID_DATE, KrcdtIdentificationStatus.class)
+				.setParameter("employeeId", employeeID).setParameter("dates", dates).getList(c -> c.toDomain());
 	}
 
 }

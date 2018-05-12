@@ -145,8 +145,12 @@ module nts.uk.at.view.kmk013.b {
             conditionDisplay15: KnockoutObservable<boolean>;
             conditionDisplay26: KnockoutObservable<boolean>;
             
+            isLoadAfterGetData: KnockoutObservable<boolean>;
+            
             constructor() {
                 var self = this;
+                
+                self.isLoadAfterGetData = ko.observable(true);
                 
                 self.conditionDisplay15 = ko.observable(true);
                 self.conditionDisplay26 = ko.observable(true);
@@ -212,9 +216,16 @@ module nts.uk.at.view.kmk013.b {
                 self.selectedValueB8_6 = ko.observable(false);
                 
                 self.checkedB7_23.subscribe((v) => {
-                    if (self.selectedValueB74() == 1 && self.selectedValueB715() == 1) {
-                        self.checkedB7_24(true);
+                    if (v == true) {
+                        if (self.selectedValueB74() == 1 && self.selectedValueB715() == 1) {
+                            self.checkedB7_24(true);
+                        }    
+                    } else {
+                        if (self.selectedValueB74() == 1 && self.selectedValueB715() == 1) {
+                            self.checkedB7_24(false);
+                        }
                     }
+                    
                 });
                 
                 self.checkedB8_7.subscribe((v) => {
@@ -246,6 +257,7 @@ module nts.uk.at.view.kmk013.b {
                         if (self.selectedValueB8_5() == true) {
                             self.enableB8_22(true);
                         }
+                        self.checkedB8_14(true);
                     } else {
                         self.enableB8_22(false);    
                     }
@@ -256,6 +268,10 @@ module nts.uk.at.view.kmk013.b {
                         if (self.selectedValueB8_5() == true && self.selectedValueB8_16() == true) {
                             self.checkedB8_23(true);    
                         } 
+                    } else {
+                        if (self.selectedValueB8_5() == true && self.selectedValueB8_16() == true) {
+                            self.checkedB8_23(false);    
+                        }
                     }
                 });
                 
@@ -269,7 +285,7 @@ module nts.uk.at.view.kmk013.b {
                 
                 self.checkedB8_18.subscribe((v) => {
                     if (v == false) {
-                        if (self.selectedValueB8_6() == true && self.selectedValueB8_17() == true) {
+                        if (self.selectedValueB8_5() == true && self.selectedValueB8_16() == true) {
                             self.checkedB8_7(false);    
                         } 
                     }
@@ -277,7 +293,7 @@ module nts.uk.at.view.kmk013.b {
                 
                 self.checkedB8_19.subscribe((v) => {
                     if (v == false) {
-                        if (self.selectedValueB8_6() == true && self.selectedValueB8_17() == true) {
+                        if (self.selectedValueB8_5() == true && self.selectedValueB8_16() == true) {
                             self.checkedB8_12(false);    
                         } 
                     }
@@ -295,13 +311,16 @@ module nts.uk.at.view.kmk013.b {
                     if (v == false) {
                         if (self.selectedValueB8_6() == true && self.selectedValueB8_17() == true) {
                             self.checkedB8_14(false);    
-                        } 
+                        }
+                        self.checkedB8_20(false);
+                        self.checkedB8_14(false);
                     }
                 });
                 
                 self.checkedB8_20.subscribe((v) => {
                     if (v == false) {
-                        self.enableB8_22(false);
+                        self.enableB8_23(false);
+                        self.checkedB8_13(false);
                     } 
 //                    if (v == true) {
 //                        if (self.selectedValueB8_16() == true) {
@@ -313,7 +332,13 @@ module nts.uk.at.view.kmk013.b {
                 self.checkedB5_22.subscribe((v) => {
                     if (v == true) {
                         if (self.selectedValueB54() == 1 && self.selectedValueB515() == 1) {
+                            // temparory don't action B5_23
                             self.checkedB5_23(true);
+                        }
+                    } else {
+                        if (self.selectedValueB54() == 1 && self.selectedValueB515() == 1) {
+                            // temparory don't action B5_23
+                            self.checkedB5_23(false);
                         }
                     }
                 });
@@ -353,6 +378,10 @@ module nts.uk.at.view.kmk013.b {
                         if (self.selectedValueB64() == 1 && self.selectedValueB612() == 1) {
                             self.checkedB6_22(true);
                         }
+                    } else {
+                        if (self.selectedValueB64() == 1 && self.selectedValueB612() == 1) {
+                            self.checkedB6_22(false);
+                        }    
                     }
                 });
                 
@@ -525,6 +554,7 @@ module nts.uk.at.view.kmk013.b {
                         self.enableB29(false);
                         self.enableB215(false);
                         self.enableB217(false);
+                        nts.uk.ui.errors.clearAll();
                     } else {
                         self.enableB29(true);
                         if (self.selectedB29() == 0) {
@@ -533,27 +563,38 @@ module nts.uk.at.view.kmk013.b {
                                 self.enableB217(true);
                             }
                         }
+                        if (self.enableB215() == true && self.selectedB215() == 0) {
+                            $('.input-time').ntsError('check');    
+                        }
+                        self.selectedB215.valueHasMutated();
                     }
                 });
                 self.selectedB29.subscribe((newValue) => {
                     if (newValue == 1) {
                         self.enableB215(false);
                         self.enableB217(false);
+                        nts.uk.ui.errors.clearAll();
                     } else {
                         if(self.enableB29()==true){
-                             self.enableB215(true);
-                          }
+                            self.enableB215(true);
+                        }
+                        if (self.enableB215() == true && self.selectedB215() == 0) {
+                            $('.input-time').ntsError('check');    
+                        }
+                        self.selectedB215.valueHasMutated();
                     }
                 });
                 self.selectedB215.subscribe((newValue) => {
                     if (newValue == 1) {
                         self.enableB217(false);
-                        nts.uk.ui.errors.clearAll();
+                        nts.uk.ui.errors.clearAll();                        
                     } else {
                         if(self.enableB215()==true){
                             self.enableB217(true);
                         }
-                        $('.input-time').ntsError('check');
+                        if (self.selectedB23() == 1 && self.selectedB29() == 1) {
+                            $('.input-time').ntsError('check');                            
+                        }
                     }
                 });
                 //B5
@@ -728,7 +769,9 @@ module nts.uk.at.view.kmk013.b {
                 });
                 self.checkedB616.subscribe(newValue => {
                     if (newValue == false) {
-                        self.checkedB68(false);
+                        if (!self.isLoadAfterGetData()) {
+                            self.checkedB68(false);                            
+                        }
                     }
                 });
                 self.checkedB69.subscribe(newValue => {
@@ -885,7 +928,11 @@ module nts.uk.at.view.kmk013.b {
                            case lastTabIndexTabPanel3 : { 
                                 self.selectedTab("tab-4"); 
                               break; 
-                           } 
+                           }
+                           case lastTabIndexBeforeTabPanel1 : { 
+                                self.selectedTab("tab-1"); 
+                                break; 
+                           }
                            default: { 
                            } 
                         }
@@ -903,6 +950,7 @@ module nts.uk.at.view.kmk013.b {
             }
             initData(): void {
                 let self = this;
+                self.isLoadAfterGetData(true);
                 $.when(service.findByCompanyId(), service.getDomainSet()).done(function(data, dataDomainSet){
                     if (dataDomainSet != null) {
                         // condition 15
@@ -979,7 +1027,7 @@ module nts.uk.at.view.kmk013.b {
                                                 "notDeductLateLeaveEarly":0, "calculateIncludeIntervalExemptionTime2":0, "enableSetPerWorkHour1":0, "enableSetPerWorkHour2":0
                                                 };
                     }
-                    self.notifyVarKnockoutchange();
+//                    self.notifyVarKnockoutchange();
                     
                     self.oldData(data[0]);
                     let obj = data[0];
@@ -1109,7 +1157,7 @@ module nts.uk.at.view.kmk013.b {
                     /** 休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.遅刻・早退を控除する */
                     self.checkedB8_20(convertToBoolean(obj.hourlyPaymentAdditionSet.notDeductLateLeaveEarly));
                     /** 休暇の計算方法の設定.休暇の割増計算方法.詳細設定.遅刻・早退を控除しない.就業時間帯毎の設定を可能とする */
-//                    self.checkedB8_23(convertToBoolean(obj.hourlyPaymentAdditionSet.enableSetPerWorkHour2));
+                    self.checkedB8_23(convertToBoolean(obj.hourlyPaymentAdditionSet.enableSetPerWorkHour2));
                     /** 休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.インターバル免除時間を含めて計算する */
                     self.checkedB8_21(convertToBoolean(obj.hourlyPaymentAdditionSet.calculateIncludeIntervalExemptionTime2));
                     
@@ -1126,12 +1174,12 @@ module nts.uk.at.view.kmk013.b {
                     /** 休暇の計算方法の設定.休暇の割増計算方法.詳細設定.遅刻・早退を控除しない.就業時間帯毎の設定を可能とする */
                     self.checkedB5_22(convertToBoolean(obj.regularWork.enableSetPerWorkHour1));
                     /** 休暇の計算方法の設定.休暇の割増計算方法.詳細設定.遅刻・早退を控除しない.就業時間帯毎の設定を可能とする */
-//                    self.checkedB5_23(convertToBoolean(obj.regularWork.enableSetPerWorkHour2));
+                    self.checkedB5_23(convertToBoolean(obj.regularWork.enableSetPerWorkHour2));
                     
                     /** 休暇の計算方法の設定.休暇の割増計算方法.詳細設定.遅刻・早退を控除しない.就業時間帯毎の設定を可能とする */     
                     self.checkedB6_21(convertToBoolean(obj.flexWork.enableSetPerWorkHour1));
                     /** 休暇の計算方法の設定.休暇の割増計算方法.詳細設定.遅刻・早退を控除しない.就業時間帯毎の設定を可能とする */                               
-//                    self.checkedB6_22(convertToBoolean(obj.flexWork.enableSetPerWorkHour2));
+                    self.checkedB6_22(convertToBoolean(obj.flexWork.enableSetPerWorkHour2));
                     /** 休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.休暇分を含める設定.月次法定内のみ加算*/
                     self.checkedB6_23(convertToBoolean(obj.flexWork.additionWithinMonthlyStatutory));
                     
@@ -1139,9 +1187,10 @@ module nts.uk.at.view.kmk013.b {
                     self.checkedB7_23(convertToBoolean(obj.irregularWork.enableSetPerWorkHour1));
                     
                     /** 休暇の計算方法の設定.休暇の割増計算方法.詳細設定.遅刻・早退を控除しない.就業時間帯毎の設定を可能とする */
-//                    self.checkedB7_24(convertToBoolean(obj.irregularWork.enableSetPerWorkHour2));
+                    self.checkedB7_24(convertToBoolean(obj.irregularWork.enableSetPerWorkHour2));
                     
                     self.notifyVarKnockoutchange();
+                    self.isLoadAfterGetData(false);
                 });    
             }
             
@@ -1155,6 +1204,10 @@ module nts.uk.at.view.kmk013.b {
                 self.selectedValueB612.valueHasMutated();
                 self.selectedValueB74.valueHasMutated();
                 self.selectedValueB715.valueHasMutated();    
+                self.checkedB615.valueHasMutated();
+                self.timeB219.valueHasMutated();
+                self.timeB221.valueHasMutated();
+                self.timeB223.valueHasMutated();
             }
             
             save(): void {
@@ -1175,10 +1228,10 @@ module nts.uk.at.view.kmk013.b {
                     obj.notReferringAch = self.selectedB29();
                     if (self.selectedB29() == 0) {
                         obj.referComHolidayTime = self.selectedB215();
-                        if (self.selectedB215() == 0) {
+                        if (self.selectedB215() == 0 && self.enableB215()) {
                             obj.oneDay = self.timeB219();
                             obj.morning = self.timeB221();
-                            obj.afternoon = self.timeB223()
+                            obj.afternoon = self.timeB223();
                         }
                     }
                 }
@@ -1196,6 +1249,8 @@ module nts.uk.at.view.kmk013.b {
                     obj.regularWork.exemptTaxTimePre = convertToInt(self.checkedB514());
                     if (self.checkedB513() == true) {
                         obj.regularWork.enableSetPerWorkHour1 = convertToInt(self.checkedB5_22());    
+                    } else {
+                        obj.regularWork.enableSetPerWorkHour1 = self.oldData().regularWork.enableSetPerWorkHour1;    
                     }
                 } else {
                     obj.regularWork.exemptTaxTimePre = self.oldData().regularWork.exemptTaxTimePre;
@@ -1216,8 +1271,10 @@ module nts.uk.at.view.kmk013.b {
                     obj.regularWork.incChildNursingCareWork = convertToInt(self.checkedB519());
                     obj.regularWork.notDeductLateleaveWork = convertToInt(self.checkedB520());
                     obj.regularWork.exemptTaxTimeWork = convertToInt(self.checkedB521());
-                    if (self.checkedB520() == true) {
+                    if (self.checkedB520() == true && self.enableB5_23()) {
                         obj.regularWork.enableSetPerWorkHour2 = convertToInt(self.checkedB5_23());    
+                    } else {
+                        obj.regularWork.enableSetPerWorkHour2 = self.oldData().regularWork.enableSetPerWorkHour2;
                     }
                 } else {
                     obj.regularWork.additionTimeWork = self.oldData().regularWork.additionTimeWork;
@@ -1236,18 +1293,21 @@ module nts.uk.at.view.kmk013.b {
                     obj.flexWork.incChildNursingCarePre = convertToInt(self.checkedB69());
                     obj.flexWork.notDeductLateleavePre = convertToInt(self.checkedB610());
                     obj.flexWork.exemptTaxTimePre = convertToInt(self.checkedB611());
+                    obj.flexWork.predeterminedOvertimePre = convertToInt(self.checkedB68());
                     if (self.checkedB610() == true) {
                         obj.flexWork.enableSetPerWorkHour1 = convertToInt(self.checkedB6_21());    
+                    } else {
+                        obj.flexWork.enableSetPerWorkHour1 = self.oldData().flexWork.enableSetPerWorkHour1;
                     }
-                    
                 } else {
                     obj.flexWork.additionTimePre = self.oldData().flexWork.additionTimePre;
                     obj.flexWork.incChildNursingCarePre = self.oldData().flexWork.incChildNursingCarePre;
                     obj.flexWork.notDeductLateleavePre = self.oldData().flexWork.notDeductLateleavePre;
                     obj.flexWork.exemptTaxTimePre = self.oldData().flexWork.exemptTaxTimePre;
+                    obj.flexWork.enableSetPerWorkHour1 = self.oldData().flexWork.enableSetPerWorkHour1;
                 }
-                if (self.enableB68() == true) {
-                    obj.flexWork.predeterminedOvertimePre = convertToInt(self.enableB68());
+                if (self.enableB68()) {
+                    obj.flexWork.predeterminedOvertimePre = convertToInt(self.checkedB68());
                 } else {
                     obj.flexWork.predeterminedOvertimePre = self.oldData().flexWork.predeterminedOvertimePre;
                 }
@@ -1259,7 +1319,19 @@ module nts.uk.at.view.kmk013.b {
                     obj.flexWork.exemptTaxTimeWork = convertToInt(self.checkedB619());
                     obj.flexWork.minusAbsenceTimeWork = convertToInt(self.checkedB620());
                     if (self.checkedB615() == true) {
-                        obj.flexWork.additionWithinMonthlyStatutory = convertToInt(self.checkedB6_23());    
+                        if (self.enableB616()) {
+                            obj.flexWork.predeterminDeficiencyWork = convertToInt(self.checkedB616());    
+                        } else {
+                            obj.flexWork.predeterminDeficiencyWork = self.oldData().flexWork.predeterminDeficiencyWork;        
+                        }
+                        if (self.enableB6_23()) {
+                            obj.flexWork.additionWithinMonthlyStatutory = convertToInt(self.checkedB6_23());    
+                        } else {
+                            obj.flexWork.additionWithinMonthlyStatutory = self.oldData().flexWork.additionWithinMonthlyStatutory;
+                        }
+                    } else {
+                        obj.flexWork.predeterminDeficiencyWork = self.oldData().flexWork.predeterminDeficiencyWork;
+                        obj.flexWork.additionWithinMonthlyStatutory = self.oldData().flexWork.additionWithinMonthlyStatutory;
                     }
                     if (self.checkedB618() == true) {
                         obj.flexWork.enableSetPerWorkHour2 = convertToInt(self.checkedB6_22());    
@@ -1272,31 +1344,28 @@ module nts.uk.at.view.kmk013.b {
                     obj.flexWork.minusAbsenceTimeWork = self.oldData().flexWork.minusAbsenceTimeWork;
                     obj.flexWork.enableSetPerWorkHour2 = self.oldData().enableSetPerWorkHour2;  
                 }
-                if (self.enableB616() == true) {
-                    obj.flexWork.predeterminDeficiencyWork = convertToInt(self.checkedB616());
-                } else {
-                    obj.flexWork.predeterminDeficiencyWork = self.oldData().flexWork.predeterminDeficiencyWork;
-                }
                 //irregularWork
                 obj.irregularWork = {};
                 obj.irregularWork.companyId = "";
                 obj.irregularWork.calcActualOperationPre = self.selectedValueB74();
                 if (self.selectedValueB74() == 1) {
-                    obj.irregularWork.additionTimePre = convertToInt(self.checkedB57());
-                    obj.irregularWork.incChildNursingCarePre = convertToInt(self.checkedB512());
-                    obj.irregularWork.notDeductLateleavePre = convertToInt(self.checkedB513());
-                    obj.irregularWork.exemptTaxTimePre = convertToInt(self.checkedB514());
-                    if (self.checkedB713()) {
+                    obj.irregularWork.additionTimePre = convertToInt(self.checkedB77());
+                    obj.irregularWork.incChildNursingCarePre = convertToInt(self.checkedB712());
+                    obj.irregularWork.notDeductLateleavePre = convertToInt(self.checkedB713());
+                    obj.irregularWork.exemptTaxTimePre = convertToInt(self.checkedB714());
+                    if (self.checkedB713() && self.enableB7_23()) {
                         obj.irregularWork.enableSetPerWorkHour1 = convertToInt(self.checkedB7_23());
+                    } else {
+                        obj.irregularWork.enableSetPerWorkHour1 = self.oldData().irregularWork.enableSetPerWorkHour1;    
                     }
                 } else {
                     obj.irregularWork.additionTimePre = self.oldData().irregularWork.additionTimePre;
                     obj.irregularWork.incChildNursingCarePre = self.oldData().irregularWork.incChildNursingCarePre;
                     obj.irregularWork.notDeductLateleavePre = self.oldData().irregularWork.notDeductLateleavePre;
                     obj.irregularWork.exemptTaxTimePre = self.oldData().irregularWork.exemptTaxTimePre;
-                    obj.irregularWork.enableSetPerWorkHour1 = self.oldData().enableSetPerWorkHour1;
+                    obj.irregularWork.enableSetPerWorkHour1 = self.oldData().irregularWorkenableSetPerWorkHour1;
                 }
-                if (self.enableB79() == true) {
+                if (self.enableB79() == true && self.checkedB77()) {
                     obj.irregularWork.deformatExcValue = convertToInt(self.selectedIdB79());
                 } else {
                     obj.irregularWork.deformatExcValue = self.oldData().irregularWork.deformatExcValue;
@@ -1349,10 +1418,10 @@ module nts.uk.at.view.kmk013.b {
                     } else {
                        obj.hourlyPaymentAddCommand.enableSetPerWorkHour1 = self.oldData().hourlyPaymentAdditionSet.enableSetPerWorkHour1; 
                     }
-                    if (self.checkedB8_7() == true) {
+                    if (self.checkedB8_7() == true && self.enableB8_9()) {
                         obj.hourlyPaymentAddCommand.deformatExcValue = self.selectedIdB8_9();
                     } else {
-                        obj.hourlyPaymentAddCommand.deformatExcValue = self.oldData().hourlyPaymentAdditionSet.calcPremiumVacation;
+                        obj.hourlyPaymentAddCommand.deformatExcValue = self.oldData().hourlyPaymentAdditionSet.deformatExcValue;
                     }
                 }
                 
@@ -1390,6 +1459,7 @@ module nts.uk.at.view.kmk013.b {
         const lastTabIndexTabPanel1 = 28;
         const lastTabIndexTabPanel2 = 41;
         const lastTabIndexTabPanel3 = 57;
+        const lastTabIndexBeforeTabPanel1  = 14;
         
         class BoxModel {
             id: number;
