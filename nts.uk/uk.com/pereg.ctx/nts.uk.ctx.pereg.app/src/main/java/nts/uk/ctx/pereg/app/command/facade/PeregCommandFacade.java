@@ -188,8 +188,26 @@ public class PeregCommandFacade {
 
 		// UPDATE COMMAND
 		this.update(inputContainer);
-
+		
+		// DELETE COMMAND
+		this.delete(inputContainer);
+		
 		return new Object[] { recordId };
+	}
+	
+	/**
+	 * @param inputContainer
+	 * delete data when click register cps001
+	 */
+	private void delete(PeregInputContainer inputContainer) {
+
+		List<PeregDeleteCommand> deleteInputs = inputContainer.getInputs().stream()
+				.filter(p -> p.isDelete()).map(x -> new PeregDeleteCommand(inputContainer.getPersonId(),
+						inputContainer.getEmployeeId(), x.getCategoryCd(), x.getRecordId()))
+				.collect(Collectors.toList());
+		
+		deleteInputs.forEach(deleteCommand -> delete(deleteCommand));
+
 	}
 
 	/**
