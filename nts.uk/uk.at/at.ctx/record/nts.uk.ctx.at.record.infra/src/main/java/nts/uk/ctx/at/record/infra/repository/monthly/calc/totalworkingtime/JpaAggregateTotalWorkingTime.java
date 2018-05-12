@@ -51,6 +51,7 @@ public class JpaAggregateTotalWorkingTime extends JpaRepository implements Aggre
 		KrcdtMonAggrTotalWrk entity = this.getEntityManager().find(KrcdtMonAggrTotalWrk.class, key);
 		if (entity == null) return;
 		entity.workTime = workTime.getWorkTime().v();
+		entity.actualWorkTime = workTime.getActualWorkTime().v();
 		entity.withinPrescribedPremiumTime = workTime.getWithinPrescribedPremiumTime().v();
 		entity.schedulePrescribedWorkingTime = prescribedWorkingTime.getSchedulePrescribedWorkingTime().v();
 		entity.recordPrescribedWorkingTime = prescribedWorkingTime.getRecordPrescribedWorkingTime().v();

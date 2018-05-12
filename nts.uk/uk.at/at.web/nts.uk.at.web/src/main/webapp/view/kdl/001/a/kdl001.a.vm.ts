@@ -81,7 +81,10 @@ module nts.uk.at.view.kdl001.a {
                                 self.selectedCodeList([_.first(self.selectAbleItemList()).code]);
                                 self.selectedCode(_.first(self.selectAbleItemList()).code); 
                             } else {
-                                self.selectedCode(_.first(self.selectedCodeList()));       
+                                let valueSelect = _.find(self.selectAbleItemList(), data => {
+                                    return data.code == _.first(self.selectedCodeList());
+                                });
+                                self.selectedCode(valueSelect != undefined ? _.first(self.selectedCodeList()) : "");       
                             }
                         } else {
                             self.selectedCodeList([]);

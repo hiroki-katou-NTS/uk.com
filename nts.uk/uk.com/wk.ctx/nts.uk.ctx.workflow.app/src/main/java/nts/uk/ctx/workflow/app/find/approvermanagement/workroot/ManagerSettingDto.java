@@ -1,14 +1,14 @@
 package nts.uk.ctx.workflow.app.find.approvermanagement.workroot;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Data;
 import nts.arc.time.GeneralDate;
 
 /**
  * @author sang.nv
  * 上司の設定
  */
-@Value
+@Data
 @AllArgsConstructor
 public class ManagerSettingDto {
 	/** 開始日 */

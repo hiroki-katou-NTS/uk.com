@@ -2,10 +2,12 @@ package nts.uk.ctx.workflow.app.command.approvermanagement.workroot;
 
 import java.util.List;
 
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 public class AddHistoryDto {
 
 	/**申請種類*/

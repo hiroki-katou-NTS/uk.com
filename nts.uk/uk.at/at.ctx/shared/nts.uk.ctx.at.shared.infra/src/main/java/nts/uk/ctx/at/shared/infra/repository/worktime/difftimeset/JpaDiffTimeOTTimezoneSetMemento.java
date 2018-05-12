@@ -55,12 +55,12 @@ public class JpaDiffTimeOTTimezoneSetMemento implements DiffTimeOTTimezoneSetMem
 
 	@Override
 	public void setLegalOTframeNo(OTFrameNo legalOTframeNo) {
-		this.entity.setLegalOtFrameNo(legalOTframeNo.v());
+		this.entity.setLegalOtFrameNo(legalOTframeNo == null ? null : legalOTframeNo.v());
 	}
 
 	@Override
 	public void setSettlementOrder(SettlementOrder settlementOrder) {
-		this.entity.setPayoffOrder(settlementOrder.v());
+		this.entity.setPayoffOrder(settlementOrder == null ? null : settlementOrder.v());
 	}
 
 	@Override

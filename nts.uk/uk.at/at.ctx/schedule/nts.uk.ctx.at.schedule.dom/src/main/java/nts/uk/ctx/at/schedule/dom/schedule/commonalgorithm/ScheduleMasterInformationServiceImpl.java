@@ -57,15 +57,15 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 	private BusinessTypeOfEmpAdaptor businessTypeOfEmpAdaptor;
 
 	@Override
-	public ScheduleMasterInformationDto getScheduleMasterInformationDto(String employeeId, GeneralDate baseDate,
-			String exeId) {
+	public Optional<ScheduleMasterInformationDto> getScheduleMasterInformationDto(String employeeId,
+			GeneralDate baseDate, String exeId) {
 		String companyId = AppContexts.user().companyId();
-		ScheduleMasterInformationDto result = new ScheduleMasterInformationDto();
+		Optional<ScheduleMasterInformationDto> result = Optional.of(new ScheduleMasterInformationDto());
 
 		// 雇用コードを取得する
 		boolean valueSetEmpCode = this.setEmployeeCode(companyId, exeId, employeeId, baseDate, result);
 		if (!valueSetEmpCode) {
-			return result;
+			return Optional.empty();
 		}
 		// 分類コードを取得する
 		this.getClassificationCode(companyId, employeeId, baseDate, result);
@@ -73,13 +73,13 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 		// 職位IDを取得する
 		boolean valueAcquireJobTitleId = this.acquireJobTitleId(companyId, exeId, employeeId, baseDate, result);
 		if (!valueAcquireJobTitleId) {
-			return result;
+			return Optional.empty();
 		}
 
 		// 職場IDを取得する
 		boolean valueAcquireWorkplaceId = this.acquireWorkplaceId(companyId, exeId, employeeId, baseDate, result);
 		if (!valueAcquireWorkplaceId) {
-			return result;
+			return Optional.empty();
 		}
 
 		// 勤務種別コードを取得する
@@ -99,13 +99,13 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 	 * @return
 	 */
 	private boolean setEmployeeCode(String companyId, String exeId, String employeeId, GeneralDate baseDate,
-			ScheduleMasterInformationDto result) {
+			Optional<ScheduleMasterInformationDto> result) {
 		// Imported「所属雇用履歴」から雇用コードを取得する(lấy 雇用コード từ Imported「所属雇用履歴」)
 		Optional<EmploymentHistoryImported> employmentHisOptional = this.scEmploymentAdapter.getEmpHistBySid(companyId,
 				employeeId, baseDate);
 		if (employmentHisOptional.isPresent()) {
 			String employmentCode = employmentHisOptional.get().getEmploymentCode();
-			result.setEmployeeCode(employmentCode);
+			result.get().setEmployeeCode(employmentCode);
 			return true;
 		} else {
 			ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(this.getErrorContent("Msg_602", "#Com_Employment"),
@@ -124,15 +124,15 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 	 * @param result
 	 */
 	private void getClassificationCode(String companyId, String employeeId, GeneralDate baseDate,
-			ScheduleMasterInformationDto result) {
+			Optional<ScheduleMasterInformationDto> result) {
 		// Imported「所属分類履歴」から分類コードを取得する(lấy 分類コード từ Imported「所属分類履歴」)
 		Optional<SClsHistImported> hisExport = this.syClassificationAdapter.findSClsHistBySid(companyId, employeeId,
 				baseDate);
 		if (hisExport.isPresent()) {
 			String classificationCode = hisExport.get().getClassificationCode();
-			result.setClassificationCode(classificationCode);
+			result.get().setClassificationCode(classificationCode);
 		} else {
-			result.setClassificationCode(null);
+			result.get().setClassificationCode(null);
 		}
 	}
 
@@ -147,13 +147,13 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 	 * @return
 	 */
 	private boolean acquireJobTitleId(String companyId, String exeId, String employeeId, GeneralDate baseDate,
-			ScheduleMasterInformationDto result) {
+			Optional<ScheduleMasterInformationDto> result) {
 		// Imported「所属職位履歴」から職位IDを取得する(lấy 職位ID từ Imported「所属職位履歴」)
 		Optional<EmployeeJobHistImported> employeeJobHisOptional = this.syJobTitleAdapter.findBySid(employeeId,
 				baseDate);
 		if (employeeJobHisOptional.isPresent()) {
 			String jobId = employeeJobHisOptional.get().getJobTitleID();
-			result.setJobId(jobId);
+			result.get().setJobId(jobId);
 			return true;
 		} else {
 			ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(this.getErrorContent("Msg_602", "#Com_Jobtitle"),
@@ -174,12 +174,12 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 	 * @return
 	 */
 	private boolean acquireWorkplaceId(String companyId, String exeId, String employeeId, GeneralDate baseDate,
-			ScheduleMasterInformationDto result) {
+			Optional<ScheduleMasterInformationDto> result) {
 		// Imported「所属職場履歴」から職場IDを取得する(lấy職場ID từ Imported「所属職場履歴」)
 		Optional<SWkpHistImported> swkpHisOptional = this.syWorkplaceAdapter.findBySid(employeeId, baseDate);
 		if (swkpHisOptional.isPresent()) {
 			String workPlaceId = swkpHisOptional.get().getWorkplaceId();
-			result.setWorkplaceId(workPlaceId);
+			result.get().setWorkplaceId(workPlaceId);
 			return true;
 		} else {
 			ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(this.getErrorContent("Msg_602", "#Com_Workplace"),
@@ -198,21 +198,24 @@ public class ScheduleMasterInformationServiceImpl implements ScheduleMasterInfor
 	 * @param result
 	 */
 
-	private void acquireWorkTypeCode(String employeeId, GeneralDate baseDate, ScheduleMasterInformationDto result) {
+	private void acquireWorkTypeCode(String employeeId, GeneralDate baseDate,
+			Optional<ScheduleMasterInformationDto> result) {
 		// ドメインモデル「社員の勤務種別の履歴」を取得する
 		Optional<BusinessTypeOfEmpHis> businessTypeOfEmpHis = this.businessTypeOfEmpHisAdaptor
 				.findByBaseDateAndSid(baseDate, employeeId);
 		if (!businessTypeOfEmpHis.isPresent()) {
-			result.setBusinessTypeCode(null);
+			result.get().setBusinessTypeCode(null);
 			return;
 		}
+		// ドメインモデル「社員の勤務種別」を取得する
 		Optional<BusinessTypeOfEmp> businessTypeOfEmp = this.businessTypeOfEmpAdaptor.getBySidAndHistId(employeeId,
 				businessTypeOfEmpHis.get().getHistoryId());
 		if (!businessTypeOfEmp.isPresent()) {
-			result.setBusinessTypeCode(null);
+			result.get().setBusinessTypeCode(null);
 			return;
 		}
-		result.setBusinessTypeCode(businessTypeOfEmp.get().getBusinessTypeCode());
+
+		result.get().setBusinessTypeCode(businessTypeOfEmp.get().getBusinessTypeCode());
 	}
 
 	/**

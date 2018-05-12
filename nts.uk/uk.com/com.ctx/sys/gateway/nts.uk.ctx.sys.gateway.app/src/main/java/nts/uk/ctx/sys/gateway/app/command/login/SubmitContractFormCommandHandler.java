@@ -87,10 +87,10 @@ public class SubmitContractFormCommandHandler extends CommandHandler<SubmitContr
 	 * @param command the command
 	 */
 	private void checkInput(SubmitContractFormCommand command) {
-		if (command.getContractCode().isEmpty()||command.getContractCode() == null) {
+		if (command.getContractCode() == null || command.getContractCode().isEmpty()) {
 			throw new BusinessException("Msg_313");
 		}
-		if (command.getPassword().isEmpty()||command.getPassword() == null) {
+		if (command.getPassword() == null || command.getPassword().isEmpty()) {
 			throw new BusinessException("Msg_310");
 		}
 	}

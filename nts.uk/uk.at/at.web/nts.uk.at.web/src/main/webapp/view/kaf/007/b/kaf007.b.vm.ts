@@ -309,7 +309,7 @@ module nts.uk.at.view.kaf007.b {
                 }
                 if ( inputReasonDisp == true && detailReasonDisp == true ) {
                     if ( !nts.uk.util.isNullOrEmpty( inputReason ) && !nts.uk.util.isNullOrEmpty( detailReason ) ) {
-                        appReason = inputReason + ":" + detailReason;
+                        appReason = inputReason + "\n" + detailReason;
                     } else if ( !nts.uk.util.isNullOrEmpty( inputReason ) && nts.uk.util.isNullOrEmpty( detailReason ) ) {
                         appReason = inputReason;
                     } else if ( nts.uk.util.isNullOrEmpty( inputReason ) && !nts.uk.util.isNullOrEmpty( detailReason ) ) {

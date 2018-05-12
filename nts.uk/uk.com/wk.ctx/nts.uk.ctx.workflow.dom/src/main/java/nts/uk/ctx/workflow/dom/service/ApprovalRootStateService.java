@@ -13,9 +13,10 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
  */
 public interface ApprovalRootStateService {
 	
-	public void insertAppRootType(String companyID, String employeeID, ApplicationType appType, GeneralDate date, String appID);
+	public void insertAppRootType(String companyID, String employeeID, ApplicationType appType, 
+			GeneralDate date, String appID, Integer rootType);
 	
-	public void delete(String rootStateID); 
+	public void delete(String rootStateID, Integer rootType); 
 	
 	/**
 	 * 対象者と期間から承認ルートインスタンスを取得する

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.schedule.commonalgorithm;
 
+import java.util.Optional;
+
 import nts.arc.time.GeneralDate;
 
 /**
@@ -16,6 +18,6 @@ public interface ScheduleMasterInformationService {
 	 * @param exeId
 	 * @return ScheduleMasterInformationDto
 	 */
-	public ScheduleMasterInformationDto getScheduleMasterInformationDto(String employeeId, GeneralDate baseDate,
-			String exeId);
+	public Optional<ScheduleMasterInformationDto> getScheduleMasterInformationDto(String employeeId,
+			GeneralDate baseDate, String exeId);
 }

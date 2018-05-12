@@ -171,10 +171,10 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                             self.elapseTime.end();
                             
                             // Get EndTime from server, fallback to client
-                            let endTime = self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString;
-                            if (nts.uk.text.isNullOrEmpty(endTime))
-                                endTime = moment.utc().add(9,"h").format("YYYY/MM/DD HH:mm:ss")
-                            self.endTime(endTime);
+                            self.endTime(self.getAsyncData(info.taskDatas, "endTime").valueAsString);
+//                            if (nts.uk.text.isNullOrEmpty(endTime))
+//                                endTime = moment.utc().add(9,"h").format("YYYY/MM/DD HH:mm:ss")
+//                            self.endTime(endTime);
 
                             // DailyCreate
                             self.dailyCreateStatus(self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString);
@@ -195,7 +195,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                     });
                 })
                 .while(info => info.pending || info.running)
-                .pause(100)
+                .pause(1000)
             );
         }
 
