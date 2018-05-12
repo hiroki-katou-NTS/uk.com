@@ -35,7 +35,7 @@ module nts.uk.at.view.kdw006 {
             }
 
             open007() {
-                let isDaily = true;
+                let isDaily = 0;
                 nts.uk.request.jump("/view/kdw/007/a/index.xhtml", { ShareObject: isDaily });
             }
 
@@ -59,7 +59,7 @@ module nts.uk.at.view.kdw006 {
             }
 
             open007Month() {
-                let isDaily = false;
+                let isDaily = 1;
                 nts.uk.request.jump("/view/kdw/007/a/index.xhtml", { ShareObject: isDaily });
             }
 

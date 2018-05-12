@@ -1,12 +1,14 @@
 package nts.uk.screen.at.app.ktgwidget.find.dto;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
-@Value
+@AllArgsConstructor
+@Getter
 public class DeadlineOfRequest {
 
-	private int use;
+	private boolean use;
 	
 	private GeneralDate deadLine;
 }

@@ -300,7 +300,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         min: number;
     }
     export interface DeadlineOfRequestDto {
-        use: number;
+        use: boolean;
         deadLine: Date;
     }
     export interface YearlyHolidayInfoDto {
@@ -417,7 +417,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             this.unApproved = data.unApproved;
             this.deniedNo = data.deniedNo;
             this.remand = data.remand;
-            this.appDeadlineUse= data.appDeadlineMonth.use===1?true:false;
+            this.appDeadlineUse = data.appDeadlineMonth.use;
             this.appDeadlineMonth =  data.appDeadlineMonth.deadLine;
             this.presenceDailyPer = data.presenceDailyPer;
             this.overtimeHours = (data.overtimeHours.hours<10?('0'+data.overtimeHours.hours):data.overtimeHours.hours)+':'+(data.overtimeHours.min<10?('0'+data.overtimeHours.min):data.overtimeHours.min);

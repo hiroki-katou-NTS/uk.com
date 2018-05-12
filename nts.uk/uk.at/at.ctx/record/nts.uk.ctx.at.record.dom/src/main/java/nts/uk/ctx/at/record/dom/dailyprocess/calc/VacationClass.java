@@ -103,7 +103,7 @@ public class VacationClass {
 //				 											  personalCondition,vacationAddTimeSet);
 		
 		//超過有休
-		AttendanceTime overSalaryTime = vacationTimeOfcalcDaily(workType,VacationCategory.SpecialHoliday,
+		AttendanceTime overSalaryTime = vacationTimeOfcalcDaily(workType,VacationCategory.TimeDigestVacation,
 			  	 												 predetermineTimeSet,siftCode,
 			  	 												 personalCondition,holidayAddtionSet);
 		int sumOverTime = goOutTimeOfDaily.stream()
@@ -175,16 +175,19 @@ public class VacationClass {
 														 Optional<WorkTimeCode> siftCode,
 			 											 Optional<PersonalLaborCondition> personalCondition,
 			 											 HolidayAddtionSet holidayAddtionSet) {
-		//referenceAtr 実績の就業時間帯を参照する(休暇加算時間設定クラスのメンバ)
-		BreakDownTimeDay breakDownTimeDay = getVacationAddSet(predetermineTimeSet, siftCode, true);
+		//使用する区分を持っている休暇種類であるかを判定しつつ、区分を持ってる休暇は使用するしないも見る
+		if(holidayAddtionSet.getAdditionVacationSet().dicisionExistAndNotUse(vacationCategory))
+			return new AttendanceTime(0);
+		BreakDownTimeDay breakDownTimeDay = getVacationAddSet(predetermineTimeSet, siftCode, holidayAddtionSet);
 		switch(workType.getDailyWork().decisionMatchWorkType(vacationCategory.convertWorkTypeClassification())) {
 			case FULL_TIME:
-			case HOLIDAY:
 				return breakDownTimeDay.getOneDay();
 			case MORNING:
 				return breakDownTimeDay.getMorning();
 			case AFTERNOON:
 				return breakDownTimeDay.getAfternoon();
+			case HOLIDAY:
+				return new AttendanceTime(0);
 			default:
 				throw new RuntimeException("unknown WorkType");
 		}
@@ -192,21 +195,24 @@ public class VacationClass {
 	
 	/**
 	 * 休暇加算設定の取得
-	 * @param referenceAtr 実績の就業時間帯を参照する(休暇加算時間設定クラスのメンバ)
+	 * @param holidayAddtionSet. 実績の就業時間帯を参照する(休暇加算時間設定クラスのメンバ)
 	 * @return
 	 */
 	private static BreakDownTimeDay getVacationAddSet(PredetermineTimeSetForCalc predetermineTimeSet,Optional<WorkTimeCode> siftCode
-											 ,boolean referenceAtr) {
+											 ,HolidayAddtionSet holidayAddtionSet) {
 		//参照する
-		if(referenceAtr) {
+		if(holidayAddtionSet.getReferActualWorkHours().equals(NotUseAtr.USE)) {
 			if(siftCode.isPresent()) {
-				//return predetermineTimeSet.getAdditionSet().getAddTime();
-				return predetermineTimeSet.getAdditionSet().getPredTime();
+				return predetermineTimeSet.getAdditionSet().getAddTime();
+				//return predetermineTimeSet.getAdditionSet().getPredTime();
 			}
 			else {
-				if(true/*ここには就業時間帯が存在しない場合の参照先(フィールド)が実装されてきたら、そこを見るようにする*/) {
-					/****ここには「勤務実績を参照する」クラスが実装されたら、会社一律設定を返すようにする*****/
-					return predetermineTimeSet.getAdditionSet().getAddTime();
+				//会社一律の休暇加算
+				if(holidayAddtionSet.getWorkRecord().isPresent() ) {
+					val test = holidayAddtionSet.getWorkRecord().get().getAdditionTimeCompany();
+					return (test.isPresent())
+							?new BreakDownTimeDay(test.get().getOneDay(), test.get().getMorning(), test.get().getAfternoon())
+							:new BreakDownTimeDay(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0));
 				}
 				else {
 					return predetermineTimeSet.getAdditionSet().getAddTime();
@@ -249,7 +255,7 @@ public class VacationClass {
 		if (holidayCalcMethodSet.getCalcurationByActualTimeAtr(premiumAtr)==CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME) {// 実働時間以外も含めて計算する 場合
 			// 加算時間の設定を取得
 			//referenceAtr 実績の就業時間帯を参照する(休暇加算時間設定クラスのメン)　VN待ちのため、仮でtrueを置く
-			BreakDownTimeDay breakdownTimeDay = getVacationAddSet(predetermineTimeSet, siftCode,true);
+			BreakDownTimeDay breakdownTimeDay = getVacationAddSet(predetermineTimeSet, siftCode,holidayAddtionSet);
 			// 休暇加算時間を加算するかどうか判断
 			vacationAddTime = judgeVacationAddTime(breakdownTimeDay, workingSystem, premiumAtr,
 												   holidayAddtionSet, workType,holidayCalcMethodSet);

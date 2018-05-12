@@ -3,6 +3,7 @@ module nts.uk.at.view.kmw006.f.viewmodel {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
     import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
     import kibanTimer = nts.uk.ui.sharedvm.KibanTimer;
 
     export class ScreenModel {
@@ -27,7 +28,7 @@ module nts.uk.at.view.kmw006.f.viewmodel {
             if (self.params)
                 self.totalCount(self.params.listEmployeeId.length);
             else
-                self.totalCount(sessionStorage.getItem("MonthlyClosureListEmpId").value.split(',').length);
+                self.totalCount(localStorage.getItem("MonthlyClosureListEmpId") ? localStorage.getItem("MonthlyClosureListEmpId").split(',').length : 0);
             self.items = ko.observableArray([]);
             self.initIGrid();
             self.dispProcessCount = ko.computed(() => {
@@ -52,13 +53,14 @@ module nts.uk.at.view.kmw006.f.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             block.invisible();
-            service.getMonthlyClosureLog(self.params ? self.params.monthlyClosureUpdateLogId : sessionStorage.getItem("MonthlyClosureUpdateLogId").value).done((result) => {
+            service.getMonthlyClosureLog(self.params ? self.params.monthlyClosureUpdateLogId : localStorage.getItem("MonthlyClosureUpdateLogId")).done((result) => {
                 self.startTime(result.executionDateTime);
                 self.completeStatus(result.completeStatus);
+                self.elapseTime.start();
                 if (self.params)
                     self.processMonthlyUpdate();
                 else {
-                    self.taskId(sessionStorage.getItem("MonthlyClosureTaskId").value);
+                    self.taskId(localStorage.getItem("MonthlyClosureTaskId"));
                     self.checkAsyncProcess();
                 }
                 dfd.resolve();
@@ -74,10 +76,9 @@ module nts.uk.at.view.kmw006.f.viewmodel {
         private processMonthlyUpdate(): void {
             var self = this;
             var command = self.params;
-            self.elapseTime.start();
             service.executeMonthlyClosure(command).done(res => {
                 self.taskId(res.id);
-                sessionStorage.setItem("MonthlyClosureTaskId", res.id);
+                localStorage.setItem("MonthlyClosureTaskId", res.id);
                 self.checkAsyncProcess();
             });
         }
@@ -113,7 +114,7 @@ module nts.uk.at.view.kmw006.f.viewmodel {
         private checkResult(taskInfor) {
             let self = this;
             block.invisible();
-            service.getResults(self.params ? self.params.monthlyClosureUpdateLogId : sessionStorage.getItem("MonthlyClosureUpdateLogId").value).done((result) => {
+            service.getResults(self.params ? self.params.monthlyClosureUpdateLogId : localStorage.getItem("MonthlyClosureUpdateLogId")).done((result) => {
                 let listErr: Array<MonthlyClosureErrorInfor> = [];
                 for (let i = 0; i < result.listErrorInfor.length; i++) {
                     let item = result.listErrorInfor[i];
@@ -136,12 +137,13 @@ module nts.uk.at.view.kmw006.f.viewmodel {
         private confirmComplete() {
             let self = this;
             block.invisible();
-            service.completeConfirm(self.params ? self.params.monthlyClosureUpdateLogId : sessionStorage.getItem("MonthlyClosureUpdateLogId").value).done(() => {
-                sessionStorage.removeItem("MonthlyClosureUpdateLogId");
-                sessionStorage.removeItem("MonthlyClosureListEmpId");
-                sessionStorage.removeItem("MonthlyClosureId");
-                sessionStorage.removeItem("MonthlyClosureExecutionDateTime");
-                sessionStorage.removeItem("MonthlyClosureTaskId");
+            service.completeConfirm(self.params ? self.params.monthlyClosureUpdateLogId : localStorage.getItem("MonthlyClosureUpdateLogId")).done(() => {
+                localStorage.removeItem("MonthlyClosureUpdateLogId");
+                localStorage.removeItem("MonthlyClosureListEmpId");
+                localStorage.removeItem("MonthlyClosureId");
+                localStorage.removeItem("MonthlyClosureExecutionDateTime");
+                localStorage.removeItem("MonthlyClosureTaskId");
+                setShared("kmw006fConfirm", {check: true});
                 nts.uk.ui.windows.close();
             }).fail((error) => {
                 alertError(error);

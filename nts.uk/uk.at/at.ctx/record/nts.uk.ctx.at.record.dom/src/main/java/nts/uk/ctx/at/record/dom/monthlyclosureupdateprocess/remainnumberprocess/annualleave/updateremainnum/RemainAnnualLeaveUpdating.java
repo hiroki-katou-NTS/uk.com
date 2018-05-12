@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.annualleave.updateremainnum;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +13,8 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainHistRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainingHistory;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveTimeRemainHistRepository;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveTimeRemainingHistory;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.AnnLeaMaxDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxHistRepository;
@@ -40,6 +43,9 @@ public class RemainAnnualLeaveUpdating {
 	@Inject
 	private AnnualLeaveRemainHistRepository annLeaveRemainHistRepo;
 
+	@Inject
+	private AnnualLeaveTimeRemainHistRepository annLeaveTimeRemainHistRepo;
+
 	/**
 	 * 年休残数更新
 	 * 
@@ -66,10 +72,11 @@ public class RemainAnnualLeaveUpdating {
 		for (AnnualLeaveGrantRemainingData data : listRemainData) {
 			AnnualLeaveRemainingHistory hist = new AnnualLeaveRemainingHistory(data, period.getYearMonth(),
 					period.getClosureId(), period.getClosureDate());
-			annLeaveRemainHistRepo.add(hist);
+			annLeaveRemainHistRepo.addOrUpdate(hist);
 		}
 		updateAnnualLeaveRemainProcess(output.getAsOfPeriodEnd());
-
+		updateAnnualLeaveTimeRemainProcess(
+				output.getAsOfGrant().isPresent() ? output.getAsOfGrant().get() : Collections.emptyList());
 	}
 
 	/**
@@ -99,7 +106,7 @@ public class RemainAnnualLeaveUpdating {
 							? maxDataOutput.getTimeAnnualLeaveMax().get().getMaxMinutes().v() : null,
 					maxDataOutput.getTimeAnnualLeaveMax() != null && maxDataOutput.getTimeAnnualLeaveMax().isPresent()
 							? maxDataOutput.getTimeAnnualLeaveMax().get().getUsedMinutes().v() : null);
-			 annLeaveMaxRepo.update(maxData);
+			annLeaveMaxRepo.update(maxData);
 		} else {
 			AnnualLeaveMaxData maxDataOutput = output.getAsOfPeriodEnd().getMaxData();
 			AnnualLeaveMaxData maxData = AnnualLeaveMaxData.createFromJavaType(empId,
@@ -113,7 +120,7 @@ public class RemainAnnualLeaveUpdating {
 							? maxDataOutput.getTimeAnnualLeaveMax().get().getMaxMinutes().v() : null,
 					maxDataOutput.getTimeAnnualLeaveMax() != null && maxDataOutput.getTimeAnnualLeaveMax().isPresent()
 							? maxDataOutput.getTimeAnnualLeaveMax().get().getUsedMinutes().v() : null);
-			annLeaveMaxRepo.update(maxData);
+			annLeaveMaxRepo.add(maxData);
 		}
 	}
 
@@ -174,6 +181,18 @@ public class RemainAnnualLeaveUpdating {
 						data.getAnnualLeaveConditionInfo().isPresent()
 								? data.getAnnualLeaveConditionInfo().get().getWorkingDays().v() : null);
 				annLeaveRemainRepo.add(addDomain);
+			}
+		}
+	}
+
+	/**
+	 * 年休付与時点残数履歴データ更新処理
+	 */
+	private void updateAnnualLeaveTimeRemainProcess(List<AnnualLeaveInfo> listInfor) {
+		for (AnnualLeaveInfo infor : listInfor) {
+			for (AnnualLeaveGrantRemainingData data : infor.getGrantRemainingNumberList()) {
+				AnnualLeaveTimeRemainingHistory hist = new AnnualLeaveTimeRemainingHistory(data, infor.getYmd());
+				annLeaveTimeRemainHistRepo.add(hist);
 			}
 		}
 	}
