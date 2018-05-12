@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.stamp.stampcard;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,9 +16,10 @@ public class JpaStampCardRepository implements StampCardRepository {
 
 	@Override
 	public List<StampCard> getListStampCard(String sid) {
-		return Arrays.asList(
-				StampCard.createFromJavaType(IdentifierUtil.randomUniqueId(), sid, "a0000001", GeneralDate.today()),
-				StampCard.createFromJavaType(IdentifierUtil.randomUniqueId(), sid, "a0000002", GeneralDate.today()));
+		List<StampCard> mockResults = new ArrayList<>();
+		mockResults.add(StampCard.createFromJavaType(IdentifierUtil.randomUniqueId(), sid, "a0000001", GeneralDate.today()));
+		mockResults.add(StampCard.createFromJavaType(IdentifierUtil.randomUniqueId(), sid, "a0000002", GeneralDate.today()));
+		return mockResults;
 	}
 
 	@Override
