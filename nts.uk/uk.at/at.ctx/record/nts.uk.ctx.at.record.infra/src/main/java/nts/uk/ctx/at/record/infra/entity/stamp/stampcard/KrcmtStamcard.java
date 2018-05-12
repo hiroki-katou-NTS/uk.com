@@ -10,23 +10,23 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 //@Entity
 //@Table(name = "KRCMT_STAMP_CARD")
-public class KrcmtStamcard extends  UkJpaEntity{
+public class KrcmtStamcard {
 	
-	@Id
-	@Column(name = "STAMP_CARD_ID")
+	//@Id
+	//@Column(name = "STAMP_CARD_ID")
 	public String cardId;
 	
-	@Column(name = "SID")
+	//@Column(name = "SID")
 	public String sid;
 	
-	@Column(name = "STAMP_NUMBER")
+	//@Column(name = "STAMP_NUMBER")
 	public String stampNumber;
 
-	@Column(name = "REGISTER_DATE")
+	//@Column(name = "REGISTER_DATE")
     public GeneralDate registerDate;
 	
 
-	@Override
+	//@Override
 	protected Object getKey() {
 		return cardId;
 	}
