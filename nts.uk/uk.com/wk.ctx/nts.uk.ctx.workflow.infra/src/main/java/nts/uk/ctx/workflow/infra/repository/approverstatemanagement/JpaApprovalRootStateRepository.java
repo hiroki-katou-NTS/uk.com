@@ -588,11 +588,12 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 
 	@Override
 	public void deleteConfirmDay(String employeeID, GeneralDate date) {
-		List<WwfdpApprovalRootStatePK> rootStateKeyList = this.queryProxy().query(SELECT_CF_DAY_BY_EMP_DATE, WwfdtApprovalRootDay.class)
-				.setParameter("recordDate", date)
+		List<WwfdpApprovalRootDayPK> rootDayKeyList = this.queryProxy().query(SELECT_CF_DAY_BY_EMP_DATE, WwfdtApprovalRootDay.class)
+				.setParameter("startDate", date)
+				.setParameter("endDate", date)
 				.setParameter("employeeID", employeeID)
-				.getList(x -> new WwfdpApprovalRootStatePK(x.wwfdpApprovalRootDayPK.rootStateID));
-		this.commandProxy().removeAll(WwfdtApprovalRootState.class, rootStateKeyList);
+				.getList(x -> new WwfdpApprovalRootDayPK(x.wwfdpApprovalRootDayPK.rootStateID));
+		this.commandProxy().removeAll(WwfdtApprovalRootDay.class, rootDayKeyList);
 		this.getEntityManager().flush();
 	}
 }
