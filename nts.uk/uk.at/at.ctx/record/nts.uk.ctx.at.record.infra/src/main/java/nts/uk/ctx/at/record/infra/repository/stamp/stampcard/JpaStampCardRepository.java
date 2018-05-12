@@ -1,21 +1,24 @@
 package nts.uk.ctx.at.record.infra.repository.stamp.stampcard;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 
 @Stateless
-public class JpaStampCardRepository implements StampCardRepository{
+public class JpaStampCardRepository implements StampCardRepository {
 
 	@Override
 	public List<StampCard> getListStampCard(String sid) {
-		// TODO Auto-generated method stub
-		return new ArrayList<>();
+		return Arrays.asList(
+				StampCard.createFromJavaType(IdentifierUtil.randomUniqueId(), sid, "a0000001", GeneralDate.today()),
+				StampCard.createFromJavaType(IdentifierUtil.randomUniqueId(), sid, "a0000002", GeneralDate.today()));
 	}
 
 	@Override
@@ -27,21 +30,19 @@ public class JpaStampCardRepository implements StampCardRepository{
 	@Override
 	public void add(StampCard domain) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void update(StampCard domain) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void delete(String stampCardId) {
 		// TODO Auto-generated method stub
-		
-	}
 
-	
+	}
 
 }
