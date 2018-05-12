@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class HolidayUseTimeDto {
 
 	/** 時間消化休暇使用時間: 勤怠時間 */

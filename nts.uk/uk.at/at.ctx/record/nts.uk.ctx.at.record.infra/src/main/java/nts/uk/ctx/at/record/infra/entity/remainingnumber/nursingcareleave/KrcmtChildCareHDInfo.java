@@ -37,11 +37,11 @@ public class KrcmtChildCareHDInfo extends UkJpaEntity{
 	
 	//本年度上限日数
 	@Column(name="MAX_DAY_THIS_FISCAL_YEAR")
-	private Integer maxDayThisFiscalYear;
+	private Double maxDayThisFiscalYear;
 	
 	//次年度上限日数
 	@Column(name="MAX_DAY_NEXT_FISCAL_YEAR")
-	private Integer maxDayNextFiscalYear;
+	private Double maxDayNextFiscalYear;
 	
 	@Override
 	protected Object getKey() {

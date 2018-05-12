@@ -8,4 +8,6 @@ public interface AppRootStateConfirmAdapter {
 			Integer confirmAtr, Integer appType, GeneralDate date);
 
 	void clearAppRootstate(String rootId);
+	
+	void deleteApprovalByEmployeeIdAndDate(String employeeID, GeneralDate date);
 }

@@ -240,8 +240,10 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 		val vWorkDays = verticalTotal.getWorkDays();
 		val vAbsenceDays = vWorkDays.getAbsenceDays();
 		val vAbsenceDaysMap = vAbsenceDays.getAbsenceDaysList();
-		val aggrAbsenceDays01 = AggregateAbsenceDays.of(1, new AttendanceDaysMonth(10.0 + randomVal));
-		val aggrAbsenceDays02 = AggregateAbsenceDays.of(2, new AttendanceDaysMonth(20.0 + randomVal));
+		val aggrAbsenceDays01 = AggregateAbsenceDays.of(1, new AttendanceDaysMonth(10.0 + randomVal),
+				new AttendanceTimeMonth(0));
+		val aggrAbsenceDays02 = AggregateAbsenceDays.of(2, new AttendanceDaysMonth(20.0 + randomVal),
+				new AttendanceTimeMonth(0));
 		vAbsenceDaysMap.put(1, aggrAbsenceDays01);
 		if (randomVal >= 6) vAbsenceDaysMap.put(2, aggrAbsenceDays02);
 		val vSpecificDays = vWorkDays.getSpecificDays();

@@ -88,7 +88,21 @@ public class WorkType extends AggregateRoot {
 
 	/** 出勤系かチェックする　*/
 	private boolean isWorkingType(WorkTypeClassification wt) {
-		return wt == WorkTypeClassification.Attendance || wt == WorkTypeClassification.Shooting;
+		return wt == WorkTypeClassification.Attendance || wt == WorkTypeClassification.Shooting 
+				|| wt == WorkTypeClassification.HolidayWork;
+	}
+	
+	public boolean isNoneWorkTimeType(){
+		if (dailyWork != null && dailyWork.getWorkTypeUnit() == WorkTypeUnit.OneDay) {
+			return isNoneWorkTimeType(dailyWork.getOneDay());
+		}
+		return false;
+	}
+	
+	private boolean isNoneWorkTimeType(WorkTypeClassification wt) {
+		return wt == WorkTypeClassification.Holiday || wt == WorkTypeClassification.Pause
+				|| wt == WorkTypeClassification.LeaveOfAbsence || wt == WorkTypeClassification.Closure
+				|| wt == WorkTypeClassification.ContinuousWork;
 	}
 
 	/**

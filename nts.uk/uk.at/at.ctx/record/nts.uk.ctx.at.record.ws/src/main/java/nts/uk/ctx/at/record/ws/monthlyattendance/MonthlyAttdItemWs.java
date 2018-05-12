@@ -38,4 +38,10 @@ public class MonthlyAttdItemWs extends WebService {
 	public List<AttdItemDto> findByAnyItem(AttdItemLinkRequest request) {
 		return this.finder.findByAnyItem(request);
 	}
+	
+	@POST
+	@Path("findall")
+	public List<AttdItemDto> findAll() {
+		return this.finder.findAll();
+	}
 }

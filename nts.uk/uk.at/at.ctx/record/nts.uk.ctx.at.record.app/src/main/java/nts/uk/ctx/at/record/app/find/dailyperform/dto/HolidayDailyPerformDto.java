@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class HolidayDailyPerformDto {
 
 	/** 年休: 日別実績の年休 */

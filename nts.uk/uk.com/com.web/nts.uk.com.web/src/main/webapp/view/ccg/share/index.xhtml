@@ -82,41 +82,43 @@
 			<com:ko tag="if" bind="showQuickSearchTab">
 				<div tabindex="-1" class="tab-content-1">
 					<com:ko tag="if" bind="showAllReferableEmployee">
-						<div tabindex="7" id="ccg001-btn-search-all" class="btn-quick-search" data-bind="click: searchAllListEmployee">
-							<div class="flex valign-center btn_big">
-								<i class="icon icon-28-allemployee"></i>
+						<div tabindex="7" id="ccg001-btn-search-all" class="btn-quick-search">
+							<div class="flex valign-center btn_big ccg-btn-quick-search ccg001-btn"
+								data-bind="click: searchAllListEmployee">
+								<i class="icon ccg001-icon-btn-big icon-28-allemployee"></i>
 								<label class="labelBigButton">#{i18n.getText('CCG001_34')}</label> 
 							</div>
-							<span class="controlSettingBg caret-right"></span>
+							<span class="ccg001-caret ccg001-caret-quick-big caret-right"></span>
 						</div>
 					</com:ko>
 					<com:ko tag="if" bind="showOnlyMe">
-						<div tabindex="8" id="ccg001-btn-only-me" class="btn-quick-search" data-bind="click: getEmployeeLogin">
-							<div class="flex valign-center btn_big">
-								<i class="icon icon-26-onlyemployee"></i>
+						<div tabindex="8" id="ccg001-btn-only-me" class="btn-quick-search">
+							<div class="flex valign-center btn_big ccg-btn-quick-search ccg001-btn"
+								data-bind="click: getEmployeeLogin">
+								<i class="icon ccg001-icon-btn-big icon-26-onlyemployee"></i>
 								<label class="labelBigButton">#{i18n.getText('CCG001_35')}</label> 
 							</div>
-							<span class="controlSettingBg caret-right"></span>
+							<span class="ccg001-caret ccg001-caret-quick-big caret-right"></span>
 						</div>
 					</com:ko>
 					<com:ko tag="if" bind="showSameWorkplace">
-						<div tabindex="9" id="ccg001-btn-same-workplace" class="btn-quick-search"
-							data-bind="click: searchEmployeeOfDepOnly">
-							<div class="flex valign-center btn_small">
-								<i class="icon icon-48-ofworkplace"></i>
+						<div tabindex="9" id="ccg001-btn-same-workplace" class="btn-quick-search">
+							<div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
+								data-bind="click: searchEmployeeOfDepOnly">
+								<i class="icon ccg001-icon-btn-small icon-48-ofworkplace"></i>
 								<label class="labelSmallButton">#{i18n.getText('CCG001_38')}</label> 
 							</div>
-							<span class="controlSetting caret-right"></span>
+							<span class="ccg001-caret ccg001-caret-quick-small caret-right"></span>
 						</div>
 					</com:ko>
 					<com:ko tag="if" bind="showSameWorkplaceAndChild">
-						<div tabindex="10" id="ccg001-btn-same-workplace-and-child" class="btn-quick-search"
-							data-bind="click: searchEmployeeOfDepAndChild">
-							<div class="flex valign-center btn_small">
-								<i class="icon icon-49-workplacechild"></i>
+						<div tabindex="10" id="ccg001-btn-same-workplace-and-child" class="btn-quick-search">
+							<div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
+								data-bind="click: searchEmployeeOfDepAndChild">
+								<i class="icon ccg001-icon-btn-small icon-49-workplacechild"></i>
 								<label class="labelSmallButton">#{i18n.getText('CCG001_39')}</label> 
 							</div>
-							<span class="controlSetting caret-right"></span>
+							<span class="ccg001-caret ccg001-caret-quick-small caret-right"></span>
 						</div>
 					</com:ko>
 				</div>
@@ -272,7 +274,7 @@
 							</div>
 							<div class="pull-left height-maximum margin-left-10 ccg001-table">
 								<div class="ccg001-cell mid">
-									<div tabindex="32" id="ccg001-btn-advanced-search" class="ccg-btn-vertical height-maximum"
+									<div tabindex="32" id="ccg001-btn-advanced-search" class="ccg001-btn ccg-btn-vertical height-maximum"
 										data-bind="click: advancedSearchEmployee">
 										<div class="ccg001-cell mid">
 											<div class="ccg-lbl-vertical ccg-lbl-extract-emp">#{i18n.getText('CCG001_25')}</div>
@@ -280,7 +282,7 @@
 									</div>
 								</div>
 								<div class="ccg001-cell mid">
-									<span class="ccg-caret caret-right"></span>
+									<span class="ccg001-caret ccg001-caret-vertical caret-right"></span>
 								</div>
 							</div>
 							
@@ -290,7 +292,7 @@
 								</div>
 								<div class="pull-left height-maximum margin-left-10 ccg001-table">
 									<div class="ccg001-cell mid">
-										<div tabindex="34" id="ccg001-btn-KCP005-apply" class="ccg-btn-vertical height-maximum"
+										<div tabindex="34" id="ccg001-btn-KCP005-apply" class="ccg001-btn ccg-btn-vertical height-maximum"
 											data-bind="click: extractSelectedEmployees">
 											<div class="ccg001-cell mid">
 												<i class="icon icon-47-white-check-mark"></i>
@@ -299,7 +301,7 @@
 										</div>
 									</div>
 									<div class="ccg001-cell mid">
-										<span class="ccg-caret caret-right"></span>
+										<span class="ccg001-caret ccg001-caret-vertical caret-right"></span>
 									</div>
 								</div>
 							</com:ko>
@@ -313,7 +315,7 @@
 	</div>
 	<div id="hor-scroll-button-hide" class="height-maximum">
 		<div class="ccg001-cell mid">
-			<div id="ccg001-btn-search-drawer" class="ccg-btn-vertical height-maximum" data-bind="click: showComponent">
+			<div id="ccg001-btn-search-drawer" class="ccg001-btn ccg-btn-vertical height-maximum" data-bind="click: showComponent">
 				<div class="ccg001-cell mid">
 				<i class="icon icon-01-searchmode"></i>
 				<div class="ccg-lbl-vertical ccg-lbl-search-drawer">#{i18n.getText('CCG001_21')}</div>
@@ -321,7 +323,7 @@
 			</div>
 		</div>
 		<div class="ccg001-cell mid">
-			<span class="ccg-caret caret-right"></span>
+			<span class="ccg001-caret ccg001-caret-vertical caret-right"></span>
 		</div>
 	</div>
 </ui:composition>

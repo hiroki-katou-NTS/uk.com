@@ -131,8 +131,8 @@ public class OverTimeFrameTime {
 	 */
 	public OverTimeFrameTime calcDiverGenceTime() {
 		
-		TimeDivergenceWithCalculation overTimeWork = this.OverTimeWork==null?this.OverTimeWork:this.OverTimeWork.calcDiverGenceTime();
-		TimeDivergenceWithCalculation transferTime = this.TransferTime==null?this.TransferTime:this.TransferTime.calcDiverGenceTime();
+		TimeDivergenceWithCalculation overTimeWork = this.OverTimeWork==null?TimeDivergenceWithCalculation.emptyTime():this.OverTimeWork.calcDiverGenceTime();
+		TimeDivergenceWithCalculation transferTime = this.TransferTime==null?TimeDivergenceWithCalculation.emptyTime():this.TransferTime.calcDiverGenceTime();
 		
 		return new OverTimeFrameTime(this.getOverWorkFrameNo(),overTimeWork,transferTime,this.BeforeApplicationTime,this.orderTime);
 	}

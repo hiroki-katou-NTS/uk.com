@@ -397,7 +397,8 @@ public class MonthlyDetail {
 						new AttendanceTime(0),
 						new AttendanceTime(0),
 						new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
-						new AttendanceTime(0))
+						new AttendanceTime(0)),
+				new AttendanceTime(0)
 				));
 		
 		return weeklyPTAfterAssign;

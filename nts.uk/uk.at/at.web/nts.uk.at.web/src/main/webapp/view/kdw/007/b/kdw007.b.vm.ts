@@ -281,6 +281,12 @@ module nts.uk.at.view.kdw007.b.viewmodel {
         closeDialog() {
             nts.uk.ui.windows.close();
         }
+
+        startPage(): JQueryPromise<any> {
+            var dfd = $.Deferred();
+                    dfd.resolve();
+            return dfd.promise();
+        }
     }
 
     export class ErAlAtdItemCondition {

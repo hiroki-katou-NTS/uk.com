@@ -424,13 +424,18 @@ public class MonthlyCalculation {
 		this.aggregateTime.aggregateActualWorkingTime(aggrPeriod, this.workingSystem,
 				this.actualWorkingTime, this.flexTime);
 		
+		// フレックス時間勤務の時
+		if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK){
+			
+			// 年休使用時間に加算する
+			this.addAnnualLeaveUseTime();
+			
+			// 控除時間が余分に入れられていないか確認する
+			this.checkDeductTime();
+		}
+		
 		// 総労働時間を計算
 		this.calcTotalWorkingTime();
-		
-		// フレックス時間勤務の時、フレックス時間から控除した年休控除時間を年休使用時間に加算する
-		if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK){
-			this.addAnnualLeaveUseTimeDeductFlex();
-		}
 		
 		// 管理期間の36協定時間の作成
 		this.agreementTimeOfManagePeriod = new AgreementTimeOfManagePeriod(this.employeeId, this.yearMonth);
@@ -468,9 +473,9 @@ public class MonthlyCalculation {
 	}
 	
 	/**
-	 * フレックス時間から控除した年休控除時間を年休使用時間に加算する
+	 * 年休使用時間に加算する
 	 */
-	private void addAnnualLeaveUseTimeDeductFlex(){
+	private void addAnnualLeaveUseTime(){
 		
 		// 控除後の結果にエラーがある時、加算しない
 		val afterDeduct = this.flexTime.getDeductDaysAndTime();
@@ -489,7 +494,18 @@ public class MonthlyCalculation {
 		// 控除した時間を年休使用時間に加算する
 		val annualLeave = this.aggregateTime.getVacationUseTime().getAnnualLeave();
 		annualLeave.addMinuteToUseTime(deductedTime.v());
-
+	}
+	
+	/**
+	 * 控除時間が余分に入れられていないか確認する
+	 */
+	public void checkDeductTime(){
+		
+		// 控除後の結果にエラーがある時、確認しない
+		val afterDeduct = this.flexTime.getDeductDaysAndTime();
+		if (afterDeduct.getErrorInfos().size() > 0) return;
+		if (!afterDeduct.getPredetermineTimeSetOfWeekDay().isPresent()) return;
+		
 		// 控除時間が余分に入力されていないか確認する
 		val predetermineTimeSet = afterDeduct.getPredetermineTimeSetOfWeekDay().get();
 		val predAddTimeAM = predetermineTimeSet.getPredTime().getAddTime().getMorning();

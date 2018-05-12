@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQue
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryR;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.AlCheckTargetCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
@@ -51,6 +52,9 @@ public class ErAlWorkRecordCheckService {
 
 	@Inject
 	private WorkInformationRepository workInfo;
+	
+	@Inject
+	private ErrorAlarmConditionRepository errorAlarmConditionRepo;
 
 	public List<RegulationInfoEmployeeQueryR> filterEmployees(GeneralDate workingDate, Collection<String> employeeIds,
 			ErrorAlarmCondition checkCondition) {
@@ -132,6 +136,64 @@ public class ErAlWorkRecordCheckService {
 
 		return toEmptyResultMap();
 	}
+	
+	public List<ErrorRecord> checkWithRecord(GeneralDate workingDate, Collection<String> employeeIds,
+			List<String> EACheckID) {
+		return checkWithRecord(new DatePeriod(workingDate, workingDate), employeeIds, EACheckID) ;
+	}
+	
+	public List<ErrorRecord> checkWithRecord(DatePeriod workingDate, Collection<String> employeeIds,
+			List<String> EACheckID) {
+		List<ErrorAlarmCondition> checkConditions = errorRecordRepo.findConditionByListErrorAlamCheckId(EACheckID);
+		if(checkConditions.isEmpty()){
+			checkConditions = errorAlarmConditionRepo.findConditionByListErrorAlamCheckId(EACheckID);
+		}
+		
+		List<DailyRecordDto> record = fullFinder.find(new ArrayList<>(employeeIds), workingDate);
+		
+		if (checkConditions != null && !checkConditions.isEmpty()) {
+			GeneralDate start = workingDate.start();
+			List<ErrorRecord> result = new ArrayList<>();
+			while (start.beforeOrEquals(workingDate.end())) {
+				GeneralDate temp = start;
+				List<DailyRecordDto> cdRecors = record.stream().filter(r -> r.workingDate().equals(temp)).collect(Collectors.toList());
+				result.addAll(checkConditions.stream().map(c -> {
+					return checkWithRecord(temp, employeeIds, c, cdRecors);
+				}).flatMap(List::stream).collect(Collectors.toList()));
+				start = start.addDays(1);
+			}
+			return result;
+			
+		}
+
+		return toEmptyResultList();
+	}
+	
+	
+	
+	public List<ErrorRecord> checkWithRecord(GeneralDate workingDate, Collection<String> employeeIds,
+			ErrorAlarmCondition checkCondition, List<DailyRecordDto> record) {
+		List<String> filted = this.filterEmployees(workingDate, employeeIds, checkCondition).stream()
+				.map(e -> e.getEmployeeId()).collect(Collectors.toList());
+
+		if (filted.isEmpty()) {
+			return toEmptyResultList();
+		}
+		/** 社員に一致する日別実績を取得する */
+		List<DailyRecordDto> cRecord = record.stream().filter(c -> filted.contains(c.employeeId())).collect(Collectors.toList());
+
+		if (cRecord.isEmpty()) {
+			return toEmptyResultList();
+		}
+
+		return cRecord.stream().map(c -> {
+			boolean result = checkErrorAlarmCondition(c, checkCondition);
+			if(result){
+				return new ErrorRecord(workingDate, c.employeeId(), checkCondition.getErrorAlarmCheckID());
+			}
+			return null;
+		}).filter(c -> c != null).collect(Collectors.toList());
+	}
 
 	/** 大塚用連続休暇チェック */
 	public ContinuousHolidayCheckResult checkContinuousHolidays(String employeeId, DatePeriod range) {
@@ -205,6 +267,10 @@ public class ErAlWorkRecordCheckService {
 	private <T> Map<String, T> toEmptyResultMap() {
 		return new HashMap<>();
 	}
+	
+	private <T> List<T> toEmptyResultList() {
+		return new ArrayList<>();
+	}
 
 	private RegulationInfoEmployeeQuery createQueryToFilterEmployees(GeneralDate workingDate,
 			AlCheckTargetCondition checkCondition) {
@@ -227,8 +293,8 @@ public class ErAlWorkRecordCheckService {
 		query.setFilterByWorktype(isFixed ? false : checkCondition.getFilterByBusinessType());
 		query.setWorktypeCodes(isFixed ? new ArrayList<>() : checkCondition.getLstBusinessTypeCode().stream().map(c -> c.v())
 				.collect(Collectors.toList()));
-		query.setPeriodStart(workingDate.toString());
-		query.setPeriodEnd(workingDate.toString());
+		query.setPeriodStart(workingDate);
+		query.setPeriodEnd(workingDate);
 		query.setIncludeIncumbents(true);
 		query.setIncludeWorkersOnLeave(true);
 		query.setIncludeOccupancy(true);
@@ -238,5 +304,35 @@ public class ErAlWorkRecordCheckService {
 		// query.setRetireStart(retireStart);
 		// query.setRetireEnd(retireEnd);
 		return query;
+	}
+	
+	public class ErrorRecord {
+		private GeneralDate date;
+		private String employeeId;
+		private String erAlId;
+		private final boolean error = true;
+		
+		public ErrorRecord(GeneralDate date, String employeeId, String erAlId) {
+			super();
+			this.date = date;
+			this.employeeId = employeeId;
+			this.erAlId = erAlId;
+		}
+
+		public GeneralDate getDate() {
+			return date;
+		}
+
+		public String getEmployeeId() {
+			return employeeId;
+		}
+
+		public String getErAlId() {
+			return erAlId;
+		}
+
+		public boolean isError() {
+			return error;
+		}
 	}
 }

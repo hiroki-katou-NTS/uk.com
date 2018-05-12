@@ -12,8 +12,15 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.val;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
+import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
+import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.IrregularWorkingTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -77,5 +84,59 @@ public class KrcdtMonRegIrregTime extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {		
 		return this.PK;
+	}
+	
+	/**
+	 * ドメインに変換
+	 * @return 月別実績の通常変形時間
+	 */
+	public RegularAndIrregularTimeOfMonthly toDomain(){
+		
+		// 月別実績の変形労働時間
+		val irregularWorkingTime = IrregularWorkingTimeOfMonthly.of(
+				new AttendanceTimeMonthWithMinus(this.multiMonthIrregularMiddleTime),
+				new AttendanceTimeMonthWithMinus(this.irregularPeriodCarryforwardTime),
+				new AttendanceTimeMonth(this.irregularWorkingShortageTime),
+				new TimeMonthWithCalculation(
+						new AttendanceTimeMonth(this.irregularLegalOverTime),
+						new AttendanceTimeMonth(this.calcIrregularLegalOverTime)));
+		
+		return RegularAndIrregularTimeOfMonthly.of(
+				new AttendanceTimeMonth(this.monthlyTotalPremiumTime),
+				new AttendanceTimeMonth(this.weeklyTotalPremiumTime),
+				irregularWorkingTime);
+	}
+	
+	/**
+	 * ドメインから変換　（for Insert）
+	 * @param key キー値：月別実績の勤怠時間
+	 * @param domain 月別実績の通常変形時間
+	 */
+	public void fromDomainForPersist(AttendanceTimeOfMonthlyKey key, RegularAndIrregularTimeOfMonthly domain){
+		
+		this.PK = new KrcdtMonAttendanceTimePK(
+				key.getEmployeeId(),
+				key.getYearMonth().v(),
+				key.getClosureId().value,
+				key.getClosureDate().getClosureDay().v(),
+				(key.getClosureDate().getLastDayOfMonth() ? 1 : 0));
+		this.fromDomainForUpdate(domain);
+	}
+	
+	/**
+	 * ドメインから変換　(for Update)
+	 * @param domain 月別実績の通常変形時間
+	 */
+	public void fromDomainForUpdate(RegularAndIrregularTimeOfMonthly domain){
+		
+		val irregularWorkingTime = domain.getIrregularWorkingTime();
+		
+		this.weeklyTotalPremiumTime = domain.getWeeklyTotalPremiumTime().v();
+		this.monthlyTotalPremiumTime = domain.getMonthlyTotalPremiumTime().v();
+		this.multiMonthIrregularMiddleTime = irregularWorkingTime.getMultiMonthIrregularMiddleTime().v();
+		this.irregularPeriodCarryforwardTime = irregularWorkingTime.getIrregularPeriodCarryforwardTime().v();
+		this.irregularWorkingShortageTime = irregularWorkingTime.getIrregularWorkingShortageTime().v();
+		this.irregularLegalOverTime = irregularWorkingTime.getIrregularLegalOverTime().getTime().v();
+		this.calcIrregularLegalOverTime = irregularWorkingTime.getIrregularLegalOverTime().getCalcTime().v();
 	}
 }

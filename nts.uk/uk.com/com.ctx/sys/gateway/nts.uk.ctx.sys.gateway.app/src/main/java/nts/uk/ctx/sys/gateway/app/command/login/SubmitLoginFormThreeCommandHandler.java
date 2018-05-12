@@ -14,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
@@ -46,44 +45,54 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
-	protected void internalHanler(CommandHandlerContext<SubmitLoginFormThreeCommand> context) {
+	protected String internalHanler(CommandHandlerContext<SubmitLoginFormThreeCommand> context) {
 
 		SubmitLoginFormThreeCommand command = context.getCommand();
-		String companyCode = command.getCompanyCode();
-		String employeeCode = command.getEmployeeCode();
-		String password = command.getPassword();
-		String contractCode = command.getContractCode();
-		String companyId = contractCode+"-"+companyCode;
-		
-		// check validate input
-		this.checkInput(command);
-		
-		//reCheck Contract
-		this.reCheckContract(contractCode, command.getContractPassword());
-		
-		// Edit employee code
-		employeeCode = this.employeeCodeEdit(employeeCode, companyId);
-		
-		// Get domain 社員
-		EmployeeImport em = this.getEmployee(companyId, employeeCode);
-		
-		// Check del state
-		this.checkEmployeeDelStatus(em.getEmployeeId());
-				
-		// Get User by PersonalId
-		UserImport user = this.getUser(em.getPersonalId());
-		
-		// check password
-		this.compareHashPassword(user, password);
-		
-		// check time limit
-		this.checkLimitTime(user);
-		
-		//set info to session
-		this.setLoggedInfo(user,em,companyCode);
-		
-		//set role Id for LoginUserContextManager
-		this.setRoleId(user.getUserId());
+		if (command.isSignOn()) {
+			// アルゴリズム「アカウント照合」を実行する
+			this.compareAccount(context.getCommand().getRequest());
+		} else {
+			String companyCode = command.getCompanyCode();
+			String employeeCode = command.getEmployeeCode();
+			String password = command.getPassword();
+			String contractCode = command.getContractCode();
+			String companyId = contractCode+"-"+companyCode;
+			
+			// check validate input
+			this.checkInput(command);
+			
+			//reCheck Contract
+			this.reCheckContract(contractCode, command.getContractPassword());
+			
+			// Edit employee code
+			employeeCode = this.employeeCodeEdit(employeeCode, companyId);
+			
+			// Get domain 社員
+			EmployeeImport em = this.getEmployee(companyId, employeeCode);
+			
+			// Check del state
+			this.checkEmployeeDelStatus(em.getEmployeeId());
+					
+			// Get User by PersonalId
+			UserImport user = this.getUser(em.getPersonalId());
+			
+			// check password
+			String msgErrorId = this.compareHashPassword(user, password);
+			if (msgErrorId != null){
+				return msgErrorId;
+			} 
+			
+			// check time limit
+			this.checkLimitTime(user);
+			
+			//set info to session
+			context.getCommand().getRequest().changeSessionId();
+			this.setLoggedInfo(user,em,companyCode);
+			
+			//set role Id for LoginUserContextManager
+			this.setRoleId(user.getUserId());
+		}
+		return null;
 	}
 
 	/**
@@ -173,18 +182,6 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 			return user.get();
 		} else {
 			throw new BusinessException("Msg_301");
-		}
-	}
-
-	/**
-	 * Compare hash password.
-	 *
-	 * @param user the user
-	 * @param password the password
-	 */
-	private void compareHashPassword(UserImport user, String password) {
-		if (!PasswordHash.verifyThat(password, user.getUserId()).isEqualTo(user.getPassword())) {
-			throw new BusinessException("Msg_302");
 		}
 	}
 

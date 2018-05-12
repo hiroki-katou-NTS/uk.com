@@ -326,8 +326,7 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 						 DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
 					 			   			   TimeWithCalculation.sameTime(new AttendanceTime(0)),
 					 			   			   TimeWithCalculation.sameTime(new AttendanceTime(0))),
-						 ChildCareAttribute.CARE
-						),
+						 ChildCareAttribute.CARE),
 				this.krcdtDayVacation == null ? null : this.krcdtDayVacation.toDomain()
 				);
 

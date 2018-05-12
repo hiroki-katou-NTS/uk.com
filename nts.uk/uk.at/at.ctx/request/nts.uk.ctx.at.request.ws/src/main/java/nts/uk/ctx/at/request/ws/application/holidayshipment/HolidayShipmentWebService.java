@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.ws.application.holidayshipment;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import org.apache.commons.lang3.StringUtils;
@@ -83,6 +84,12 @@ public class HolidayShipmentWebService extends WebService {
 	}
 
 	@POST
+	@Path("get_selected_working_hours")
+	public WorkTimeInfoDto getSelectedWorkingHours(ChangeWorkTypeParam param) {
+		return this.screenAFinder.getSelectedWorkingHours(param.getWkTypeCD(), param.getWkTimeCD());
+	}
+
+	@POST
 	@Path("save")
 	public void save(SaveHolidayShipmentCommand command) {
 		saveHandler.handle(command);
@@ -138,8 +145,8 @@ public class HolidayShipmentWebService extends WebService {
 
 	@POST
 	@Path("change_abs_date_to_holiday")
-	public void changeAbsDate(SaveHolidayShipmentCommand command) {
-		this.changeDateAbsToHolidayHanler.handle(command);
+	public JavaTypeResult<Integer> changeAbsDate(SaveHolidayShipmentCommand command) {
+		return new JavaTypeResult<Integer>(this.changeDateAbsToHolidayHanler.handle(command));
 	}
 
 }

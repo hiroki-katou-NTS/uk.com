@@ -33,7 +33,7 @@ public class ExcessOverTimeWorkMidNightTime {
 	 * @return
 	 */
 	public ExcessOverTimeWorkMidNightTime calcDiverGenceTime() {
-		return new ExcessOverTimeWorkMidNightTime(this.time!=null?this.time.calcDiverGenceTime():this.time);
+		return new ExcessOverTimeWorkMidNightTime(this.time!=null?this.time.calcDiverGenceTime():TimeDivergenceWithCalculation.emptyTime());
 	}
 	
 }

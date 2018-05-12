@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingD
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmentapp.RecruitmentAppDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
@@ -32,9 +33,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.Employment
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.ApplicationMetaOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.output.ApprovalRootPattern;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
@@ -57,6 +55,7 @@ import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceReposit
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
+import nts.uk.ctx.at.shared.dom.personallaborcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -84,10 +83,6 @@ public class HolidayShipmentScreenAFinder {
 
 	@Inject
 	private BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
-	@Inject
-	private CollectApprovalRootPatternService collectApprovalRootPatternService;
-	@Inject
-	private StartupErrorCheckService startupErrorCheckService;
 	@Inject
 	private WorkplaceAdapter wkPlaceAdapter;
 	@Inject
@@ -144,7 +139,7 @@ public class HolidayShipmentScreenAFinder {
 	// Screen A Start
 	public HolidayShipmentDto startPageA(String employeeID, GeneralDate initDate, int uiType) {
 		employeeID = employeeID == null ? AppContexts.user().employeeId() : employeeID;
-		String companyID = AppContexts.user().companyId();
+		companyID = AppContexts.user().companyId();
 		// アルゴリズム「起動前共通処理（新規）」を実行する
 		HolidayShipmentDto result = commonProcessBeforeStart(appType, companyID, employeeID, initDate);
 
@@ -155,9 +150,11 @@ public class HolidayShipmentScreenAFinder {
 				otherCommonAlgorithm.judgmentPrePostAtr(appType, refDate, uiType == 0 ? true : false).value);
 
 		// アルゴリズム「平日時就業時間帯の取得」を実行する
-		PersonalLaborCondition perLaborCondition = getWorkingHourOnWeekDays(employeeID, refDate);
+		SingleDaySchedule wkOnWeekDays = getWorkingHourOnWeekDays(employeeID, refDate);
 
-		String wkTimeCD = getWkTimeCD(perLaborCondition);
+		String wkTimeCD = getWkTimeCD(wkOnWeekDays);
+
+		result.setWkTimeCD(wkTimeCD);
 
 		GeneralDate appDate, deadDate;
 
@@ -171,14 +168,14 @@ public class HolidayShipmentScreenAFinder {
 		commonProcessAtStartup(companyID, employeeID, refDate, appDate, takingOutWkTypeCD, takingOutWkTimeCD, deadDate,
 				holiDayWkTypeCD, holidayWkTimeCD, result, appCommonSettingOutput);
 		// アルゴリズム「勤務時間初期値の取得」を実行する
-		setWorkTimeInfo(result, wkTimeCD);
+		String wkTypeCD = result.getRecWkTypes().size() > 0 ? result.getRecWkTypes().get(0).getWorkTypeCode() : "";
+		setWorkTimeInfo(result, wkTimeCD, wkTypeCD);
 
 		return result;
 	}
 
-	private void setWorkTimeInfo(HolidayShipmentDto result, String wkTimeCD) {
+	private void setWorkTimeInfo(HolidayShipmentDto result, String wkTimeCD, String wkTypeCD) {
 		if (wkTimeCD != null) {
-			String wkTypeCD = result.getRecWkTypes().size() > 0 ? result.getRecWkTypes().get(0).getWorkTypeCode() : "";
 			if (StringUtils.isNoneEmpty(wkTypeCD)) {
 				result.setWorkTimeInfo(getWkTimeInfoInitValue(companyID, wkTypeCD, wkTimeCD));
 			}
@@ -199,18 +196,23 @@ public class HolidayShipmentScreenAFinder {
 		GeneralDate baseDate = comType == ApplicationCombination.Abs.value ? absDate : recDate;
 
 		HolidayShipmentDto output = commonProcessBeforeStart(appType, companyID, employeeID, baseDate);
+		// アルゴリズム「実績の取得」を実行する
 		// AchievementOutput achievementOutput = getAchievement(companyID,
 		// employeeID, baseDate);
-		// アルゴリズム「実績の取得」を実行する
+		// アルゴリズム「申請日の変更」を実行する
 		setChangeAppDateData(recDate, absDate, companyID, employeeID, uiType, output);
 
 		return output;
 	}
 
-	private String getWkTimeCD(PersonalLaborCondition perLaborCondition) {
-		if (perLaborCondition != null) {
-			Optional<WorkTimeCode> wkTimeCodeOpt = perLaborCondition.getWorkCategory().getWeekdayTime()
-					.getWorkTimeCode();
+	public WorkTimeInfoDto getSelectedWorkingHours(String wkTypeCD, String wkTimeCD) {
+		String companyID = AppContexts.user().companyId();
+		return getWkTimeInfoInitValue(companyID, wkTypeCD, wkTimeCD);
+	}
+
+	private String getWkTimeCD(SingleDaySchedule wkOnWeekDays) {
+		if (wkOnWeekDays != null) {
+			Optional<WorkTimeCode> wkTimeCodeOpt = wkOnWeekDays.getWorkTimeCode();
 
 			if (wkTimeCodeOpt.isPresent()) {
 
@@ -237,7 +239,7 @@ public class HolidayShipmentScreenAFinder {
 		ApplicationSetting appSet = appCommonSet.applicationSetting;
 		// 承認ルート基準日をチェックする
 		GeneralDate inputDate;
-		if (!appSet.getBaseDateFlg().equals(BaseDateFlg.APP_DATE)) {
+		if (appSet.getBaseDateFlg().equals(BaseDateFlg.APP_DATE)) {
 
 			inputDate = referenceDate;
 		} else {
@@ -326,12 +328,13 @@ public class HolidayShipmentScreenAFinder {
 
 		List<TimezoneUse> timeZones = new ArrayList<TimezoneUse>();
 
+		// ○就業時間帯を取得
 		Optional<WorkTimeSetting> workTimeOpt = wkTimeRepo.findByCode(companyID, wkTimeCode);
 
 		if (workTimeOpt.isPresent()) {
 
 			wkTimeCode = workTimeOpt.get().getWorktimeCode().v();
-
+			// ○所定時間帯を取得
 			Optional<PredetemineTimeSetting> preTimeSetOpt = preTimeSetRepo.findByWorkTimeCode(companyID, wkTimeCode);
 
 			if (preTimeSetOpt.isPresent()) {
@@ -366,7 +369,7 @@ public class HolidayShipmentScreenAFinder {
 
 		// アルゴリズム「振休振出申請定型理由の取得」を実行する
 
-		output.setAppReasonComboItems(appResonRepo.getReasonByCompanyId(companyID).stream()
+		output.setAppReasonComboItems(appResonRepo.getReasonByAppType(companyID, appType.value).stream()
 				.map(x -> ApplicationReasonDto.convertToDto(x)).collect(Collectors.toList()));
 
 		// アルゴリズム「基準日別設定の取得」を実行する
@@ -606,12 +609,13 @@ public class HolidayShipmentScreenAFinder {
 
 	}
 
-	private PersonalLaborCondition getWorkingHourOnWeekDays(String employeeID, GeneralDate baseDate) {
+	private SingleDaySchedule getWorkingHourOnWeekDays(String employeeID, GeneralDate baseDate) {
+		// ドメインモデル「個人労働条件」を取得する
 		Optional<PersonalLaborCondition> perLaborConOpt = perLaborConRepo.findById(employeeID, baseDate);
 		if (!perLaborConOpt.isPresent()) {
 			return null;
 		} else {
-			return perLaborConOpt.get();
+			return perLaborConOpt.get().getWorkCategory().getWeekdayTime();
 		}
 
 	}
@@ -670,8 +674,8 @@ public class HolidayShipmentScreenAFinder {
 				}
 			} else {
 				Optional<ComSubstVacation> comSubOpt = comSubrepo.findById(companyID);
-				boolean isNoComSubOrNotManage = !comSubOpt.isPresent()
-						|| comSubOpt.get().getSetting().getIsManage().equals(ManageDistinct.NO);
+				boolean isNoComSubOrNotManage = comSubOpt.isPresent()
+						&& comSubOpt.get().getSetting().getIsManage().equals(ManageDistinct.NO);
 				if (isNoComSubOrNotManage) {
 					throw new BusinessException("Msg_323");
 				}

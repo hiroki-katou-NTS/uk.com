@@ -52,7 +52,7 @@ public class WithinStatutoryMidNightTime {
 		 * @return
 		 */
 		public WithinStatutoryMidNightTime calcDiverGenceTime() {
-			return new WithinStatutoryMidNightTime(this.time!=null?this.time.calcDiverGenceTime():this.time);
+			return new WithinStatutoryMidNightTime(this.time!=null?this.time.calcDiverGenceTime():TimeDivergenceWithCalculation.emptyTime());
 		}
 		
 }

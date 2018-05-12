@@ -26,7 +26,12 @@ public class AppRootStateConfirmAdapterImpl implements AppRootStateConfirmAdapte
 
 	@Override
 	public void clearAppRootstate(String rootId) {
-		approvalRootStatePub.deleteApprovalRootState(rootId);
+		approvalRootStatePub.cleanApprovalRootState(rootId, 1);
+	}
+
+	@Override
+	public void deleteApprovalByEmployeeIdAndDate(String employeeID, GeneralDate date) {
+		approvalRootStatePub.deleteConfirmDay(employeeID, date);
 	}
 
 }

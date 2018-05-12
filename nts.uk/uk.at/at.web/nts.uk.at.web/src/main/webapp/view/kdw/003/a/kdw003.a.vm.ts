@@ -21,7 +21,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
     
     var CHECK_INPUT = {"759" :  "760", "760" :  "759", "761" :  "762", 
                        "762" :  "761", "763" :  "764", "764" :  "763", 
-                       "765" :  "766", "766" :  "765", "157" :  "159", 
+                       "765" :  "766", "766" :  "765", "157" :  "159",
                        "159" :  "157", "163" :  "165", "165" :  "163",
                        "169" :  "171", "171" :  "169",
                        "175" :  "177", "177" :  "175", "181" :  "183", 
@@ -259,7 +259,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         self.datePicker().startDate = dateRange.startDate;
                         self.datePicker().endDate = dateRange.endDate; 
                         self.datePicker.valueHasMutated();
-                        self.selectedDate(dateRange.startDate);
                     }
                 }
             });
@@ -426,12 +425,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 // no20
                 self.dPErrorDto(data.dperrorDto); 
                 // flex
-                if (data.flexShortage != null && data.flexShortage.showFlex && self.displayFormat == 0) {
+                if (data.flexShortage != null && data.flexShortage.showFlex && self.displayFormat() == 0) {
                     self.breakTimeDay(data.flexShortage.breakTimeDay);
                     self.calcFlex(new CalcFlex(data.flexShortage.value18, data.flexShortage.value21, data.flexShortage.value189, data.flexShortage.value190, data.flexShortage.value191));
                     self.flexShortage(new FlexShortage(self, self.calcFlex(),  self.breakTimeDay()));
                     // アルゴリズム「フレックス不足の相殺が実施できるかチェックする」
-                    self.calcFlex(data.flexShortage.canflex);
+                    self.canFlex(data.flexShortage.canflex);
                 }else{
                     $("#flex").remove();
                 }
@@ -944,12 +943,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     // no20
                     self.dPErrorDto(data.dperrorDto);
                     // flex
-                    if (data.flexShortage != null && data.flexShortage.showFlex && self.displayFormat == 0) {
+                    if (data.flexShortage != null && data.flexShortage.showFlex && self.displayFormat() == 0) {
                         self.breakTimeDay(data.flexShortage.breakTimeDay);
                         self.calcFlex(new CalcFlex(data.flexShortage.value18, data.flexShortage.value21, data.flexShortage.value189, data.flexShortage.value190, data.flexShortage.value191));
                         self.flexShortage(new FlexShortage(self, self.calcFlex(), self.breakTimeDay()));
                         // アルゴリズム「フレックス不足の相殺が実施できるかチェックする」
-                        self.calcFlex(data.flexShortage.canflex);
+                        self.canFlex(data.flexShortage.canflex);
                     } else {
                         $("#flex").remove();
                     }
@@ -2134,23 +2133,24 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
     }
     export class AuthorityDetailModel {
-        available1: KnockoutObservable<boolean> = ko.observable(true);
-        available4: KnockoutObservable<boolean> = ko.observable(true);
-        available2: KnockoutObservable<boolean> = ko.observable(true);
-        available3: KnockoutObservable<boolean> = ko.observable(true);
-        available5: KnockoutObservable<boolean> = ko.observable(true);
-        available8: KnockoutObservable<boolean> = ko.observable(true);
-        available8Authority: KnockoutObservable<boolean> = ko.observable(true);
-        available22: KnockoutObservable<boolean> = ko.observable(true);
-        available24: KnockoutObservable<boolean> = ko.observable(true);
-        available7: KnockoutObservable<boolean> = ko.observable(true);
-        available23: KnockoutObservable<boolean> = ko.observable(true);
-        available25: KnockoutObservable<boolean> = ko.observable(true);
-        available17: KnockoutObservable<boolean> = ko.observable(true);
-        available18: KnockoutObservable<boolean> = ko.observable(true);
-        available19: KnockoutObservable<boolean> = ko.observable(true);
-        available20: KnockoutObservable<boolean> = ko.observable(true);
-        available21: KnockoutObservable<boolean> = ko.observable(true);
+        available1: KnockoutObservable<boolean> = ko.observable(false);
+        available4: KnockoutObservable<boolean> = ko.observable(false);
+        available2: KnockoutObservable<boolean> = ko.observable(false);
+        available3: KnockoutObservable<boolean> = ko.observable(false);
+        available5: KnockoutObservable<boolean> = ko.observable(false);
+        available8: KnockoutObservable<boolean> = ko.observable(false);
+        available8Authority: KnockoutObservable<boolean> = ko.observable(false);
+        available11: KnockoutObservable<boolean> = ko.observable(false);
+        available22: KnockoutObservable<boolean> = ko.observable(false);
+        available24: KnockoutObservable<boolean> = ko.observable(false);
+        available7: KnockoutObservable<boolean> = ko.observable(false);
+        available23: KnockoutObservable<boolean> = ko.observable(false);
+        available25: KnockoutObservable<boolean> = ko.observable(false);
+        available17: KnockoutObservable<boolean> = ko.observable(false);
+        available18: KnockoutObservable<boolean> = ko.observable(false);
+        available19: KnockoutObservable<boolean> = ko.observable(false);
+        available20: KnockoutObservable<boolean> = ko.observable(false);
+        available21: KnockoutObservable<boolean> = ko.observable(false);
         constructor(data: Array<DailyPerformanceAuthorityDto>, authority : any, showCheckbox) {
             var self = this;
             if (!data) return;
@@ -2165,7 +2165,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             this.available7(self.checkAvailable(data, 7));
             this.available23(self.checkAvailable(data, 23));
             this.available25(self.checkAvailable(data, 25));
-            if (self.checkAvailable(data, 25) && showCheckbox) {
+            if (self.checkAvailable(data, 25) && showCheckbox) { 
                 $("#btn-signAll").css("visibility", "visible");
                 $("#btn-releaseAll").css("visibility", "visible");
 
@@ -2180,6 +2180,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             this.available20(self.checkAvailable(data, 20));
             this.available21(self.checkAvailable(data, 21));
             this.available8Authority(this.available8() && authority)
+            this.available11(self.checkAvailable(data, 11));
 
         }
         checkAvailable(data: Array<DailyPerformanceAuthorityDto>, value: number): boolean {
@@ -2290,7 +2291,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     break;
                 case 2:
                     //KDL001 
-                    let dfd = $.Deferred();
+                    let dfd2 = $.Deferred();
                     let employeeIdSelect: any = _.find(selfParent.dailyPerfomanceData(), function(item: any) {
                         return item.id == self.rowId().substring(1, self.rowId().length);
                     });
@@ -2323,13 +2324,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 }
                             }
                         });
-                         dfd.resolve();
+                         dfd2.resolve();
                     });
-                    dfd.promise()
+                    dfd2.promise()
                     break;
                 case 3:
                     //KDL010 
-                    let dfd = $.Deferred();
+                    let dfd3 = $.Deferred();
                     nts.uk.ui.block.invisible();
                     nts.uk.ui.windows.setShared('KDL010SelectWorkLocation', self.selectedCode());
                     nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
@@ -2347,19 +2348,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 if (codeName != undefined) {
                                     self.updateCodeName(self.rowId(), self.attendenceId, codeName.name, codeName.code);
                                 }
-                                dfd.resolve();
+                                dfd3.resolve();
                             });
                         }
                         else {
                             self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");  
-                            dfd.resolve();
+                            dfd3.resolve();
                         }
                     });
-                    dfd.promise()
+                    dfd3.promise()
                     break;
                 case 4:
                     //KDL032
-                    let dfd = $.Deferred();
+                    let dfd4 = $.Deferred();
                     let no = DEVIATION_REASON_MAP[self.attendenceId];
                     nts.uk.ui.block.invisible();
                     let dataSetShare = {
@@ -2384,16 +2385,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                     return item.code == returnData && item.id == "" + no;
                                 });
                                 self.updateCodeName(self.rowId(), self.attendenceId, codeName.name, codeName.code);
-                                  dfd.resolve();
+                                  dfd4.resolve();
                             });
                         }
                         else {
                             self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");
                             nts.uk.ui.block.clear();
-                              dfd.resolve();
+                              dfd4.resolve();
                         }
                     });
-                    dfd.promise()
+                    dfd4.promise()
                     break;
                 case 5:
                     //CDL008 
@@ -2408,7 +2409,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             }
                         }
                     let data5 : any;
-                    let dfd1 = $.Deferred();
+                    let dfd5 = $.Deferred();
                     service.findAllCodeName(param5).done((data: any) => {
                         data5 = data;
                         codeName = _.find(data5, (item: any) => {
@@ -2419,9 +2420,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             baseDate: moment(dateCon.date),
                             isMultiple: false
                     }, true);
-                        dfd1.resolve()
+                        dfd5.resolve()
                     });
-                    dfd1.promise();
+                    dfd5.promise();
                     nts.uk.ui.windows.sub.modal('com', '/view/cdl/008/a/index.xhtml').onClosed(function(): any {
                         // Check is cancel.
                         if (nts.uk.ui.windows.getShared('CDL008Cancel')) {
@@ -2441,7 +2442,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     break;
                 case 6:
                     //KCP002
-                    let dfd = $.Deferred();
+                    let dfd6 = $.Deferred();
                     nts.uk.ui.windows.setShared('inputCDL003', {
                         selectedCodes: self.selectedCode(),
                         showNoSelection: false,
@@ -2464,10 +2465,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             });
                         } else {
                             self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");
-                            dfd.resolve()
+                            dfd6.resolve()
                         }
                     })
-                    dfd.promise();
+                    dfd6.promise();
                     break;
                 case 7:
                     //KCP003 
@@ -2513,7 +2514,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     })
                     break;
                 case 8:
-                     let dfd = $.Deferred();
+                     let dfd8 = $.Deferred();
                     nts.uk.ui.windows.setShared('CDL002Params', {
                         isMultiple: false,
                         selectedCodes: self.selectedCode(),
@@ -2529,7 +2530,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         var output = nts.uk.ui.windows.getShared('CDL002Output'); 
                         if (output != "") {
                             let param8 = {
-                                typeDialog: 8,
+                                typeDialog: 8, 
                             }
                             service.findAllCodeName(param8).done((data: any) => {
                                 nts.uk.ui.block.clear();
@@ -2537,14 +2538,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                     return item.code == output;
                                 });
                                 self.updateCodeName(self.rowId(), self.attendenceId, codeName.name, codeName.code);
-                                 dfd.resolve();
+                                 dfd8.resolve();
                             });
                         } else {
                             self.updateCodeName(self.rowId(), self.attendenceId, nts.uk.resource.getText("KDW003_82"), "");
-                            dfd.resolve();
+                            dfd8.resolve();
                         }
                     })
-                    dfd.promise();
+                    dfd8.promise();
                     break;
             }
             nts.uk.ui.block.clear();
