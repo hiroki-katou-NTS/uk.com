@@ -22,6 +22,8 @@ import com.aspose.cells.WorksheetCollection;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveOfThisMonthImported;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveRemainingAdapter;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveUsageStatusOfThisMonthImported;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingDataSource;
@@ -44,7 +46,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 	private final int numberColumn = 23;
 	// private final int minRowDetails = 4;
 	private HolidayRemainingDataSource dataSource;
-	private DatePeriod datePeriod;
+	private YearMonth currentMonth = GeneralDate.today().yearMonth();
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, HolidayRemainingDataSource dataSource) {
@@ -78,16 +80,12 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 	}
 
 	private void printTemplate(Worksheet worksheet) throws Exception {
-		GeneralDate start = GeneralDate.fromString(dataSource.getStartMonth(), "yyyy/MM/dd");
-		GeneralDate end = GeneralDate.fromString(dataSource.getEndMonth(), "yyyy/MM/dd");
-		GeneralDate currentMonth = GeneralDate.today();
-		datePeriod = new DatePeriod(start, end);
+
 		Cells cells = worksheet.getCells();
 
 		// B1_1, B1_2
-		cells.get(1, 0).setValue(
-				TextResource.localize("KDR001_2") + start.toString("yyyy/MM")
-				+ "　～　" + end.toString("yyyy/MM"));
+		cells.get(1, 0).setValue(TextResource.localize("KDR001_2") + dataSource.getStartMonth().toString("yyyy/MM")
+				+ "　～　" + dataSource.getEndMonth().toString("yyyy/MM"));
 		// B1_3
 		cells.get(2, 0).setValue(TextResource.localize("KDR001_3"));
 		// C1_1
@@ -106,17 +104,20 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		cells.get(4, 7).setValue(TextResource.localize("KDR001_10"));
 		// C1_8
 		cells.get(4, 8).setValue(TextResource.localize("KDR001_11"));
-		if (end.compareTo(currentMonth) >= 0 && currentMonth.compareTo(start) >= 0) {
+
+		if (totalMonths(currentMonth, dataSource.getEndMonth().yearMonth()) >= 0
+				&& totalMonths(dataSource.getStartMonth().yearMonth(), currentMonth) >= 0) {
 			Shape shape = worksheet.getShapes().get(0);
-			shape.setLowerRightColumn(shape.getLowerRightColumn() + totalMonths(start, currentMonth));
+			shape.setLowerRightColumn(
+					shape.getLowerRightColumn() + totalMonths(dataSource.getStartMonth().yearMonth(), currentMonth));
 		} else {
 			worksheet.getShapes().removeAt(0);
 		}
 		// C1_9
-		for (int i = 0; i <= totalMonths(start, end); i++) {
-			cells.get(4, 10 + i).setValue(String.valueOf(start.addMonths(i).month()) + "月");
+		for (int i = 0; i <= totalMonths(dataSource.getStartMonth().yearMonth(),
+				dataSource.getEndMonth().yearMonth()); i++) {
+			cells.get(4, 10 + i).setValue(String.valueOf(dataSource.getStartMonth().addMonths(i).month()) + "月");
 		}
-
 	}
 
 	private void printNoneBreakPage(Worksheet worksheet) throws Exception {
@@ -231,9 +232,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 	private int printHolidayRemainingEachPerson(Worksheet worksheet, int firstRow, HolidaysRemainingEmployee employee)
 			throws Exception {
-		// Call rql 363
-		List<AnnLeaveUsageStatusOfThisMonthImported> listAnnLeaveUsage = annLeaveRemainingAdapter
-				.getAnnLeaveUsageOfThisMonth(employee.getEmployeeId(), datePeriod);
 		int rowIndexD = firstRow;
 		Cells cells = worksheet.getCells();
 		int totalRowDetails = 0;
@@ -246,6 +244,33 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_14"));
 			// E3_1
 			cells.get(firstRow + 1, 9).setValue(TextResource.localize("KDR001_15"));
+
+			// Call rql 265
+			AnnLeaveOfThisMonthImported annLeave = 
+					annLeaveRemainingAdapter.getAnnLeaveOfThisMonth(employee.getEmployeeId());
+			if (annLeave != null)
+			{
+				// E1_4
+				cells.get(firstRow, 5).setValue(annLeave.getFirstMonthRemNumDays());
+				// E1_5
+				cells.get(firstRow, 6).setValue(annLeave.getUsedDays());
+				// E1_6
+				cells.get(firstRow, 7).setValue(annLeave.getRemainDays());
+			}
+			
+			// Call rql 363
+			List<AnnLeaveUsageStatusOfThisMonthImported> listAnnLeaveUsage = annLeaveRemainingAdapter
+					.getAnnLeaveUsageOfThisMonth(employee.getEmployeeId(),
+							new DatePeriod(dataSource.getStartMonth(), dataSource.getEndMonth()));
+			for (AnnLeaveUsageStatusOfThisMonthImported item : listAnnLeaveUsage) {
+				if (currentMonth.compareTo(item.getYearMonth()) != 0) continue;
+				int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), item.getYearMonth());
+				// E2_3 当月以降
+				cells.get(firstRow, 10 + totalMonth).setValue(item.getMonthlyUsageDays());
+				// E3_3 当月以降
+				cells.get(firstRow + 1, 10 + totalMonth).setValue(item.getMonthlyRemainingDays());
+			}
+
 			firstRow += 2;
 			totalRowDetails += 2;
 		}
@@ -405,7 +430,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		cell.setStyle(style);
 	}
 
-	private int totalMonths(GeneralDate start, GeneralDate end) {
+	private int totalMonths(YearMonth start, YearMonth end) {
 		return (end.year() - start.year()) * 12 + (end.month() - start.month());
 	}
 }

@@ -108,10 +108,10 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			// 次回年休付与を計算
 			List<NextAnnualLeaveGrant> annualLeaveGrant = calcNextAnnualLeaveGrantDate.algorithm(companyId, employeeId,
 					Optional.empty());
-			if (annualLeaveGrant.size() == 0)
-				return null;
-			result.setGrantDate(annualLeaveGrant.get(0).getGrantDate());
-			result.setGrantDays(annualLeaveGrant.get(0).getGrantDays().v());
+			if (annualLeaveGrant!= null && annualLeaveGrant.size() > 0){
+				result.setGrantDate(annualLeaveGrant.get(0).getGrantDate());
+				result.setGrantDays(annualLeaveGrant.get(0).getGrantDays().v());
+			}
 			return result;
 		} catch (Exception e) {
 			return null;

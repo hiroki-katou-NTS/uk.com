@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveOfThisMonthImported;
@@ -14,6 +15,7 @@ import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AnnLeaveOfThisMonth;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AnnLeaveRemainNumberPub;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
+@Stateless
 public class AnnLeaveRemainingFinder implements AnnLeaveRemainingAdapter {
 
 	@Inject
