@@ -148,7 +148,7 @@
 						<button id="btn-legend"
 								data-bind="ntsLegendButton: legendOptions">凡例</button>
 							<button id="btn-saveColumnWidth"
-								data-bind="click: btnSaveColumnWidth_Click, visible : showButton().available8">#{i18n.getText('KDW003_24')}</button>
+								data-bind="click: btnSaveColumnWidth_Click, visible : showButton().available11">#{i18n.getText('KDW003_24')}</button>
 							<div class="setting-container">
 								<button id="btn-setting" data-bind="click: btnSetting_Click , visible:true">&#9881;</button>
 								<div id="setting-content">
@@ -179,7 +179,7 @@
 						</div>
 						<span style="margin: 10px 0 0 18px; display: inline-block;"
 							data-bind="text: comment"></span>
-						<div id="flex">
+						<div id="flex" data-bind="visible : showFlex">
 							<table id="flex-table">
 								<thead>
 									<tr>

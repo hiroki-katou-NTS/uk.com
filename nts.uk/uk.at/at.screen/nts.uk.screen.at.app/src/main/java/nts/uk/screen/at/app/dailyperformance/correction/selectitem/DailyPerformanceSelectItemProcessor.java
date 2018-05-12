@@ -551,7 +551,7 @@ public class DailyPerformanceSelectItemProcessor {
 		screenDto.getItemValues().clear();
 		screenDto.getItemValues().addAll(set);
 		// screenDto.setLstData(lstData);
-		screenDto.markLoginUser();
+		screenDto.markLoginUser(sId);
 		screenDto.createAccessModifierCellState(mapDP);
 		return screenDto;
 	}
