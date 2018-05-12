@@ -297,6 +297,102 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 	}
 	
 	public void setData(OverTimeOfDaily overTimeOfDaily){
+		this.overTime1  = 0;
+		this.overTime2  = 0;
+		this.overTime3  = 0;
+		this.overTime4  = 0;
+		this.overTime5  = 0;
+		this.overTime6  = 0;
+		this.overTime7  = 0;
+		this.overTime8  = 0;
+		this.overTime9  = 0;
+		this.overTime10 = 0;
+		//振替時間
+		this.transTime1 = 0;
+		this.transTime2 = 0;
+		this.transTime3 = 0;
+		this.transTime4 = 0;
+		this.transTime5 = 0;
+		this.transTime6 = 0;
+		this.transTime7 = 0;
+		this.transTime8 = 0;
+		this.transTime9 = 0;
+		this.transTime10= 0;
+		//計算残業時間
+		this.calcOverTime1 = 0;
+		this.calcOverTime2 = 0;
+		this.calcOverTime3 = 0;
+		this.calcOverTime4 = 0;
+		this.calcOverTime5 = 0;
+		this.calcOverTime6 = 0;
+		this.calcOverTime7 = 0;
+		this.calcOverTime8 = 0;
+		this.calcOverTime9 = 0;
+		this.calcOverTime10= 0;
+		//計算振替時間
+		this.calcTransTime1 = 0;
+		this.calcTransTime2 = 0;
+		this.calcTransTime3 = 0;
+		this.calcTransTime4 = 0;
+		this.calcTransTime5 = 0;
+		this.calcTransTime6 = 0;
+		this.calcTransTime7 = 0;
+		this.calcTransTime8 = 0;
+		this.calcTransTime9 = 0;
+		this.calcTransTime10= 0;
+		//事前残業申請
+		this.preOverTimeAppTime1 = 0;
+		this.preOverTimeAppTime2 = 0;
+		this.preOverTimeAppTime3 = 0;
+		this.preOverTimeAppTime4 = 0;
+		this.preOverTimeAppTime5 = 0;
+		this.preOverTimeAppTime6 = 0;
+		this.preOverTimeAppTime7 = 0;
+		this.preOverTimeAppTime8 = 0;
+		this.preOverTimeAppTime9 = 0;
+		this.preOverTimeAppTime10 = 0;
+		//残業乖離時間
+		this.divergenceTime1  = 0;
+		this.divergenceTime2  = 0;
+		this.divergenceTime3  = 0;
+		this.divergenceTime4  = 0;
+		this.divergenceTime5  = 0;
+		this.divergenceTime6  = 0;
+		this.divergenceTime7  = 0;
+		this.divergenceTime8  = 0;
+		this.divergenceTime9  = 0;
+		this.divergenceTime10 = 0;
+		//振替乖離時間
+		this.divergenceTransTime1 = 0;
+		this.divergenceTransTime2 = 0;
+		this.divergenceTransTime3 = 0;
+		this.divergenceTransTime4 = 0;
+		this.divergenceTransTime5 = 0;
+		this.divergenceTransTime6 = 0;
+		this.divergenceTransTime7 = 0;
+		this.divergenceTransTime8 = 0;
+		this.divergenceTransTime9 = 0;
+		this.divergenceTransTime10= 0;
+		
+		this.ileglMidntOverTime = 0;
+		//計算法定外
+		this.calcIleglMidNOverTime = 0;
+		//法定外残業深夜乖離時間
+		this.divIleglMidnOverTime = 0;
+		
+		//拘束時間
+		this.overTimeBindTime = 0;
+		//変形法定内残業
+		this.deformLeglOverTime = 0;
+		//フレックス時間
+		this.flexTime = 0;
+		//計算フレックス時間
+		this.calcFlexTime = 0;
+		//事前フレックス時間
+		this.preAppFlexTime = 0;
+		//フレックス乖離時間
+		this.divergenceFlexTime = 0;
+		
 		if(overTimeOfDaily != null) {
 			//残業枠時間
 			if(overTimeOfDaily.getOverTimeWorkFrameTime() != null
@@ -414,7 +510,7 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 				//計算フレックス時間
 				this.calcFlexTime = overTimeOfDaily.getFlexTime().getFlexTime().getCalcTime().valueAsMinutes();
 				//事前フレックス時間
-				this.preAppFlexTime = overTimeOfDaily.getFlexTime().getBeforeApplicationTime().valueAsMinutes();
+				this.preAppFlexTime = overTimeOfDaily.getFlexTime().getBeforeApplicationTime() == null ? 0 :overTimeOfDaily.getFlexTime().getBeforeApplicationTime().valueAsMinutes();
 				//フレックス乖離時間
 				this.divergenceFlexTime = overTimeOfDaily.getFlexTime().getFlexTime().getDivergenceTime().valueAsMinutes();
 			}

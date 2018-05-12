@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /** 日別実績の特別休暇 / 日別実績の年休 / 日別実績の超過有休 / 日別実績の代休 */
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
 public class HolidayUseTimeDto {

@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.calculation.holiday;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktype.VacationCategory;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -39,6 +40,33 @@ public class LeaveSetAdded extends DomainObject{
 		this.annualHoliday = annualHoliday;
 		this.yearlyReserved = yearlyReserved;
 		this.specialHoliday = specialHoliday;
+	}
+	
+	
+	/**
+	 * 引数に一致する使用区分を持っているか
+	 * && その使用区分が使用しない　であるか判定する
+	 * 持っていない場合は、falseを返す
+	 * @param vacationCategory
+	 * @return
+	 */
+	public boolean dicisionExistAndNotUse(VacationCategory vacationCategory) {
+		switch(vacationCategory) {
+			case AnnualHoliday:
+				return annualHoliday.equals(NotUseAtr.NOT_USE);
+			case YearlyReserved:
+				return yearlyReserved.equals(NotUseAtr.NOT_USE);
+			case SpecialHoliday:
+				return specialHoliday.equals(NotUseAtr.NOT_USE);
+			case Absence:
+			case Holiday:
+			case Pause:
+			case SubstituteHoliday:
+			case TimeDigestVacation:
+				return false;
+			default:
+				throw new RuntimeException("unknown vacationCategory");
+		}
 	}
 }
 
