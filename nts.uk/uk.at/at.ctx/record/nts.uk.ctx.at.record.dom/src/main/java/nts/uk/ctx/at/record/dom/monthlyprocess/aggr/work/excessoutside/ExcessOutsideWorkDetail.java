@@ -14,11 +14,11 @@ import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWork
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthly;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlx;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.FlexTimeOfTimeSeries;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.MonthlyPremiumTimeOfTimeSeries;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.WeeklyPremiumTimeOfTimeSeries;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.WorkTimeOfTimeSeries;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
@@ -85,20 +85,20 @@ public class ExcessOutsideWorkDetail {
 	 * @param aggregateTotalWorkingTime 集計総労働時間
 	 * @param regAndIrgTimeOfMonthly 月別実績の通常変形時間
 	 * @param flexTimeOfMonthly 月別実績のフレックス時間
-	 * @param aggrSetOfFlex フレックス時間勤務の月の集計設定
+	 * @param flexAggrSet フレックス時間勤務の月の集計設定
 	 * @param roundingSet 月別実績の丸め設定
 	 */
 	public void setTotalTimeAfterRound(
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			RegularAndIrregularTimeOfMonthly regAndIrgTimeOfMonthly,
 			FlexTimeOfMonthly flexTimeOfMonthly,
-			AggrSettingMonthlyOfFlx aggrSetOfFlex,
+			FlexMonthWorkTimeAggrSet flexAggrSet,
 			RoundingSetOfMonthly roundingSet){
 		
 		// 丸め前合計時間にコピーする
 		TotalTimeBeforeRound totalTimeBeforeRound = new TotalTimeBeforeRound();
 		totalTimeBeforeRound.copyValues(aggregateTotalWorkingTime,
-				regAndIrgTimeOfMonthly, flexTimeOfMonthly, aggrSetOfFlex);
+				regAndIrgTimeOfMonthly, flexTimeOfMonthly, flexAggrSet);
 		
 		// 各合計時間を丸める
 		this.totalTimeAfterRound.setTotalTimeAfterRound(totalTimeBeforeRound, roundingSet);
