@@ -14,6 +14,7 @@ import javax.json.JsonObject;
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.task.data.TaskDataSetter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.SyEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
@@ -51,6 +52,8 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 	
 	@Inject
 	private VacationHistoryRepository vacationHistoryRepository;
+	
+	ExcelExportService excelExportService;
 	
 	@Override
 	protected void handle(CommandHandlerContext<CheckFuncDataCommand> context) {
@@ -146,11 +149,20 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				}
 			}
 			// Excel出力情報ListをもとにExcel出力をする (Xuất ra file excel)
-
+			exportCsv(excelInforList);
 		}
 
 	}
-
+	/**
+	 * 計画休暇一覧を取得する
+	 * 
+	 * @param exportExcel
+	 * @param excelInfoComand
+	 * @return
+	 */
+	public ExportServiceResult exportCsv(List<ExcelInforCommand> command) {
+		return this.excelExportService.start(command);
+	}
 	/**
 	 * 計画休暇一覧を取得する
 	 * 
