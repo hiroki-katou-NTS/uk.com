@@ -106,7 +106,6 @@ module nts.uk.com.view.cmf005.c.viewmodel {
                 { headerText: self.headerNameCategories, key: 'categoryName', width: 200 }
             ]);
 
-
             self.listCategoryChosed = self.currentCategorySelected;
         }
 

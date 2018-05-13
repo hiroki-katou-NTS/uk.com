@@ -42,7 +42,9 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         currentCategory: KnockoutObservableArray<any>;
 
         //datepicker B5_2_2
-        enable: KnockoutObservable<boolean>;
+        enableDate: KnockoutObservable<boolean>;
+        enableMonth: KnockoutObservable<boolean>;
+        enableYear: KnockoutObservable<boolean>;
         requiredDate: KnockoutObservable<boolean>;
         requiredMonth: KnockoutObservable<boolean>;
         requiredYear: KnockoutObservable<boolean>;
@@ -122,10 +124,13 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             ]);
 
             //DatePcicker B6_1
-            self.enable = ko.observable(true);
-            self.requiredDate = ko.observable(true);
-            self.requiredMonth = ko.observable(true);
-            self.requiredYear = ko.observable(true);
+            self.enableDate = ko.observable(true);
+            self.enableMonth = ko.observable(true);
+            self.enableYear = ko.observable(true);
+            
+            self.requiredDate = ko.observable(false);
+            self.requiredMonth = ko.observable(false);
+            self.requiredYear = ko.observable(false);
 
             self.startDateDailyString = ko.observable("");
             self.endDateDailyString = ko.observable("");
@@ -231,10 +236,10 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.rdSelected = ko.observable(1);
 
             //B6_2_2
-            let startEndDate = self.getDateDefault();
-            self.dateValue = ko.observable({ startDate: startEndDate.startDate, endDate: startEndDate.endDate });
-            self.monthValue = ko.observable({ startDate: startEndDate.startDate, endDate: startEndDate.endDate });
-            self.yearValue = ko.observable({ startDate: startEndDate.startYear, endDate: startEndDate.endYear });
+            self.dateValue = ko.observable({ startDate: moment.utc().subtract(1, "M").add(1, "d").format("YYYY/MM/DD"), 
+                        endDate: moment.utc().format("YYYY/MM/DD")});
+            self.monthValue = ko.observable({startDate: moment.utc().subtract(1, "M").format("YYYY/MM"), endDate: moment.utc().format("YYYY/MM")});
+            self.yearValue = ko.observable({startDate: moment.utc().format("YYYY"), endDate: moment.utc().format("YYYY")});
 
             //B7_2_1
             self.isSaveBeforeDeleteFlg = ko.observable(model.SAVE_BEFOR_DELETE_ATR.YES);
@@ -400,66 +405,17 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                     self.requiredMonth = ko.observable(true);
                 } else if (self.listDataCategory()[i].timeStore == 1) {
                     self.requiredYear = ko.observable(true);
-                } else if (self.listDataCategory()[i].timeStore == 2) {
+                } else if (self.listDataCategory()[i].timeStore == 3) {
                     self.requiredDate = ko.observable(true);
                 }
             }
         }
-
+        
         /**
          * Open screen A
          */
         backScreenA() {
             nts.uk.request.jump("/view/cmf/005/a/index.xhtml");
-        }
-
-
-        /**
-         * Get date default
-         *return 本日(NOW）－　１ヵ月　＋　１日
-         */
-        getDateDefault() {
-            var timeCurrent = moment.utc(new Date(), "YYYY/MM/DD");
-            //let dateCurrent = moment.utc("2000/3/28", "YYYY/MM/DD");
-            var dateNow = timeCurrent.add(1, "M");
-            let currentYear = timeCurrent.get('year');
-            let date = dateNow.get('date');
-            let moth = dateNow.get('month');
-            let year = dateNow.get('year');
-
-            let newMonth = moth - 1 == 0 ? 12 : moth - 1;
-            var newYear = newMonth == 12 ? year - 1 : year;
-            let newDate = date + 1;
-            if (newMonth == 4 || newMonth == 6 || newMonth == 9 || newMonth == 11) {
-                newDate = newDate - 30 > 0 ? newDate - 30 : newDate;
-                newMonth = newDate - 30 > 0 ? newMonth + 1 : newMonth;
-            } else {
-                newDate = newDate - 31 > 0 ? newDate - 31 : newDate;
-                newMonth = newDate - 31 > 0 ? newMonth + 1 : newMonth;
-            }
-
-            //if current year is a leap year
-            if (moment([currentYear]).isLeapYear()) {
-
-                if (newMonth == 2) {
-                    let sub = newDate - 29;
-                    if (sub > 0) {
-                        newMonth = newMonth + 1;
-                        newDate = sub;
-                    }
-                }
-            }
-            //if current year is not a leap year
-            else {
-                if (newMonth == 2) {
-                    let sub = newDate - 28;
-                    if (sub > 0) {
-                        newMonth = newMonth + 1;
-                        newDate = sub;
-                    }
-                }
-            }
-            return new model.ItemDate(newYear + "/" + newMonth + "/" + newDate, year + "/" + moth + "/" + date, newYear, year);
         }
 
 

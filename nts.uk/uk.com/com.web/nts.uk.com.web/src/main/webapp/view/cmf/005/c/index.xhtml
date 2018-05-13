@@ -24,8 +24,8 @@
 
 			<ui:define name="content">
 				<div id="inline" >
-					<!--C_1-->
-					<div style="margin-left: 20px;margin-top: 10px"  id="combo-box"
+					<!--C2_1-->
+					<div id = "C2_1" tabindex="1" style="margin-left: 20px;margin-top: 10px"  
 						data-bind="ntsComboBox: {
 									options: systemTypes,
 									value: selectedCode,
@@ -37,7 +37,7 @@
 				<br></br>
 				<div id = "C3_1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF005_46')}</div>
 				<div id = "C3_2" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMF005_47')}</div>
-				<div id="swap-list" data-bind="ntsSwapList: {
+				<div id="swap-list" tabindex="2" data-bind="ntsSwapList: {
 								showSearchBox: { showLeft : true},
 								height: 450,
                             	width: 200,
@@ -52,8 +52,8 @@
 								innerDrag: { left: false, right: true },
 								outerDrag: { left: true, right: true } 
 							}"/>
-				<button id = "C20_1" data-bind="click : submit" class="x-large proceed ">#{i18n.getText('CMF005_48')}</button>
-				<button id = "C20_2" data-bind="click : closePopup" class="large" >#{i18n.getText('CMF005_49')}</button>
+				<button id = "C20_1" tabindex="16" data-bind="click : submit" class="x-large proceed ">#{i18n.getText('CMF005_48')}</button>
+				<button id = "C20_2" tabindex="17" data-bind="click : closePopup" class="large" >#{i18n.getText('CMF005_49')}</button>
 
 			</ui:define>
 	</ui:composition>
