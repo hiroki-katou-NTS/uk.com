@@ -500,7 +500,7 @@ public class ExcessOutsideWorkMng {
 		
 		// 累計就業時間を集計する
 		AttendanceTimeMonthWithMinus totalWorkTime =
-				new AttendanceTimeMonthWithMinus(workTime.getTimeSeriesTotalLegalTime(targetPeriod).v());
+				new AttendanceTimeMonthWithMinus(workTime.getTimeSeriesTotalLegalActualTime(targetPeriod).v());
 		
 		// 累計フレックス時間を集計する
 		AttendanceTimeMonthWithMinus totalFlexTime =
