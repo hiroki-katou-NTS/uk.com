@@ -165,7 +165,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         sprStampSourceInfo: KnockoutObservable<any> = ko.observable(null);
 
         itemMonth: any = [];
-        itemValueMonthParent: any;
+        itemValueMonthParent: any = {};
         valueUpdateMonth: any = null;
         constructor(dataShare: any) {
             var self = this;
@@ -479,7 +479,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.showFlex(true);
                 self.breakTimeDay(data.flexShortage.breakTimeDay);
                 self.calcFlex(new CalcFlex(data.flexShortage.value18, data.flexShortage.value21, data.flexShortage.value189, data.flexShortage.value190, data.flexShortage.value191));
-
+                self.canFlex(data.flexShortage.canflex);
+                self.itemMonthLayout(data);
+                self.itemValueMonthParent = data.flexShortage.monthParent;
                 let fst: FlexShortage = self.flexShortage();
 
                 //fst.parent = ko.observable(self);
@@ -487,9 +489,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
                 //self.flexShortage(new FlexShortage(self, self.calcFlex(),  self.breakTimeDay()));
                 // アルゴリズム「フレックス不足の相殺が実施できるかチェックする」
-                self.canFlex(data.flexShortage.canflex);
-                self.itemMonthLayout(data);
-                self.itemValueMonthParent = data.flexShortage.monthParent;
             } else {
                 self.showFlex(false);
             }
@@ -949,15 +948,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         self.calcFlex(new CalcFlex(data.flexShortage.value18, data.flexShortage.value21, data.flexShortage.value189, data.flexShortage.value190, data.flexShortage.value191));
                         //self.flexShortage(new FlexShortage(self, self.calcFlex(), self.breakTimeDay()));
 
-                        let fst: FlexShortage = self.flexShortage();
-
-                        fst.bindData(ko.toJS(self.calcFlex), ko.toJS(self.breakTimeDay));
-
-
                         // アルゴリズム「フレックス不足の相殺が実施できるかチェックする」
                         self.canFlex(data.flexShortage.canflex);
                         self.itemMonthLayout(data);
                         self.itemValueMonthParent = data.flexShortage.monthParent;
+                        
+                        let fst: FlexShortage = self.flexShortage();
+
+                        fst.bindData(ko.toJS(self.calcFlex), ko.toJS(self.breakTimeDay));
+
                     } else {
                         self.showFlex(false);
                     }
@@ -2741,11 +2740,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
 
             let self = this,
-                val18 = dataCalc.value18.value,
-                val21 = dataCalc.value21.value,
-                val189 = dataCalc.value189.value,
-                val190 = dataCalc.value190.value,
-                val191 = dataCalc.value191.value;
+                val18 = dataCalc.value18,
+                val21 = dataCalc.value21,
+                val189 = dataCalc.value189,
+                val190 = dataCalc.value190,
+                val191 = dataCalc.value191;
 
             self.shortageTime(nts.uk.resource.getText("KDW003_89", [self.convertToHours(Number(val191) + Number(val21) * (-1)), self.convertToHours(Number(val21) * (-1))]));
             //self.nextMonthTransferredMoneyTime(self.convertToHours(Number(val18) * (-1)));
@@ -2759,12 +2758,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let self = this,
                 number189 = Number(self.noOfHolidays()),
                 val189 = self.natural(number189) * Number(self.natural(breakTimeDay.day)) + (number189 - self.natural(number189)) / 0.5 * self.natural(breakTimeDay.am),
-                minuNextMonth = (dataCalc.value191.value + dataCalc.value21.value) - (val189 + self.absentDeductionTime());
+                minuNextMonth;
+            if (self.absentDeductionTime() != undefined) {
+                minuNextMonth = (dataCalc.value191 + dataCalc.value21) - (val189 + self.absentDeductionTime())
+            }
+            else{
+               return ; 
+            }
 
-            minuNextMonth = minuNextMonth < 0 ? 0 : minuNextMonth;
+            minuNextMonth = minuNextMonth < 0 ? 0 : minuNextMonth * (-1);
             self.nextMonthTransferredMoneyTime(self.convertToHours(minuNextMonth));
 
-            self.checkColor(self.nextMonthTransferredMoneyTime(), breakTimeDay);
+           self.checkColor(self.nextMonthTransferredMoneyTime(), breakTimeDay);
 
             __viewContext.vm.valueUpdateMonth = {};
             let dataFlexUpdate = __viewContext.vm.itemValueMonthParent,
@@ -2778,8 +2783,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     if (value.itemId == 190) {
                         value.value = self.absentDeductionTime();
                     }
-                    return value;
-                });
+                    return value; 
+                }); 
 
             if (dataFlexUpdate) {
                 dataFlexUpdate["items"] = items;
@@ -2819,10 +2824,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
 
             if (check1174) {
-                nts.uk.resource.getMessage("Msg_1174")
+                nts.uk.resource.getMessage("Msg_1174");
+                $("#next-month").ntsError("set", nts.uk.resource.getMessage("Msg_1174"), "Msg_1174");
+            } else {
+                if ($("#next-month").ntsError("hasError", "Msg_1174")) $("#next-month").ntsError("clearByCode", "Msg_1174");
             }
             if (check1175) {
                 nts.uk.resource.getMessage("Msg_1175")
+                $("#next-month").ntsError("set", nts.uk.resource.getMessage("Msg_1174"), "Msg_1174");
+            } else {
+                if ($("#next-month").ntsError("hasError", "Msg_1175")) $("#next-month").ntsError("clearByCode", "Msg_1175");
             }
         }
     }
@@ -2834,11 +2845,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         value190: any;
         value191: any;
         constructor(value18: any, value21: any, value189: any, value190: any, value191: any) {
-            this.value18 = value18;
-            this.value21 = value21;
-            this.value189 = value189;
-            this.value190 = value190;
-            this.value191 = value191;
+            this.value18 = Number(value18.value);
+            this.value21 = Number(value21.value);
+            this.value189 = Number(value189.value);
+            this.value190 = Number(value190.value);
+            this.value191 = Number(value191.value);
         }
     }
 

@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kdr001.a.main.css" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="kdr001.a.start.js" />
+			<com:scriptfile path="kdr001.a.vm.js" />
+			<com:scriptfile path="kdr001.a.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- A1_1 -->
+				<button id="A1_1" tabindex="1" class="proceed"
+					data-bind="click: exportButton, enable: (!nts.uk.ui.errors.hasError()) &amp;&amp; (holidayRemainingSelectedCd())">#{i18n.getText('KDR001_25')}</button>
+			</div>
+
+			<div class="cf" id="contents-area">
+				<!-- A2_1  CCG001-->
+
+				<div class="ccg001searchkcp005">
+					<div id="ccgcomponent"></div>
+
+					<!-- A2_2  -->
+					<div class="employeeInfoSearch">
+						<div class="selectionHoliday">
+							<div id="employeeSearch" tabindex="2"></div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="holidayAction">
+					<table>
+						<tr>
+							<td style="width:110px">
+								<!-- A3_1 -->
+								<div class="labelRangeDate"
+									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_26')}
+								</div>
+							</td>
+							<td>
+								<!-- A3_2 -->
+								<div tabindex="3" style="width: 162px; "
+									data-bind="ntsDatePicker: {
+									required: true,
+									showJumpButtons: true,
+									value: startDateString,
+									dateFormat: 'yearmonth',
+									name: '#[KDR001_27]'
+									}">
+								</div> <!-- A3_3 -->
+								<div class="ntsDateRangeComponent ntsRangeLabel"
+									style="margin-top: 11px; width: 30px;">
+									<label style="margin: 6px">～</label>
+								</div> <!-- A3_4 -->
+								<div tabindex="4" style="width: 162px;"
+									data-bind="ntsDatePicker: {
+									required: true,
+									showJumpButtons: true,
+									value: endDateString,
+									dateFormat: 'yearmonth',
+									name: '#[KDR001_28]'
+									}">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td style="width:110px">
+								<!-- A4_1  -->
+								<div class="labelRangeDate"
+									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_30')}
+								</div>
+							</td>
+							<td>
+								<!-- A4_2  -->
+								<div tabindex="6"
+									data-bind="ntsComboBox: {
+							    name:'#[KDR001_30]',
+								options: lstHolidayRemaining,
+								optionsValue: 'cd',
+								value: holidayRemainingSelectedCd,
+								optionsText: 'name',
+								editable: false,
+								enable: true,
+								columns: [
+									{ prop: 'cd', length: 1 },
+									{ prop: 'name', length: 14 }
+								]}">
+								</div> <!-- A4_3  -->
+								<button class="small"
+									data-bind="click: openKDR001b, 
+								enable: permissionOfEmploymentForm().availability()"
+									tabindex="7" style="margin-left: 20px;">#{i18n.getText('KDR001_31')}</button>
+							</td>
+						</tr>
+						<tr>
+							<td style="width:110px">
+								<!-- A6_1  -->
+								<div class="labelRangeDate"
+									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_35')}
+								</div>
+							</td>
+							<td>
+								<!-- A6_2  -->
+								<div id="combo-box2" tabindex="9" 
+									data-bind="ntsComboBox: {
+								required: true,
+								options: itemSelected,
+								optionsValue: 'code',
+								visibleItemsCount: 3,
+								value: selectedCode,
+								optionsText: 'name',
+								editable: false,
+								enable: true,
+								
+								columns: [
+									{ prop: 'name', length: 10 }
+								]}">
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
