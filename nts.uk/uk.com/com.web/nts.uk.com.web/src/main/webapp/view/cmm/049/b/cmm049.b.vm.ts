@@ -62,6 +62,8 @@ module nts.uk.com.view.cmm049.b {
                                 _self.checkAlgorthm(data);
                                 dfd.resolve();
                             }
+                        }).fail((res: any) => {
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => { nts.uk.ui.windows.close(); });
                         });
                         break;
                     case UserInfoItem.PERSONAL_PC_MAIL:
@@ -76,6 +78,8 @@ module nts.uk.com.view.cmm049.b {
                                 _self.checkAlgorthm(data);
                                 dfd.resolve();
                             }
+                        }).fail((res: any) => {
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => { nts.uk.ui.windows.close(); });
                         });
                         break;
                     case UserInfoItem.COMPANY_MOBILE_MAIL:
@@ -90,6 +94,8 @@ module nts.uk.com.view.cmm049.b {
                                 _self.checkAlgorthm(data);
                                 dfd.resolve();
                             }
+                        }).fail((res: any) => {
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => { nts.uk.ui.windows.close(); });
                         });
 
                         break;
@@ -105,6 +111,8 @@ module nts.uk.com.view.cmm049.b {
                                 _self.checkAlgorthm(data);
                                 dfd.resolve();
                             }
+                        }).fail((res: any) => {
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => { nts.uk.ui.windows.close(); });
                         });
                         break;
                     default:
