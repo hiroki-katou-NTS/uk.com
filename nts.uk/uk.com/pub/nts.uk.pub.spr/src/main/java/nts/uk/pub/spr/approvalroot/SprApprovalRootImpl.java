@@ -100,15 +100,15 @@ public class SprApprovalRootImpl implements SprApprovalRootService {
 		List<ApprovalRootStateSprExport> approvalRootStateSprList = sprApprovalSearchPub.getRootStateByDateAndType(date, rootType);
 		approvalRootStateSprList.forEach(x -> {
 			if(rootType==0){
-//				// ドメインモデル「申請」を取得する
-//				Optional<ApplicationSpr> opApplicationSpr = applicationSprPub.getAppByID(companyID, x.getRootStateID());
-//				if(!opApplicationSpr.isPresent()){
-//					return;
-//				} 
-//				// 申請種類!＝残業種類
-//				if(opApplicationSpr.get().getAppType()!=0){
-//					return;
-//				}
+				// ドメインモデル「申請」を取得する
+				Optional<ApplicationSpr> opApplicationSpr = applicationSprPub.getAppByID(companyID, x.getRootStateID());
+				if(!opApplicationSpr.isPresent()){
+					return;
+				} 
+				// 申請種類!＝残業種類
+				if(opApplicationSpr.get().getAppType()!=0){
+					return;
+				}
 			}
 			// （ワークフローExport）アルゴリズム「3.指定した社員が承認できるかの判断」を実行する
 			JudgmentSprExport judgmentSprExport = sprApprovalSearchPub
