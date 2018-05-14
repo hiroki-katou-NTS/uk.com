@@ -167,7 +167,26 @@ module nts.uk.at.view.kwr008.a {
             }
 
             openKWR008B(){
-                nts.uk.ui.windows.sub.modal("/view/kwr/008/b/index.xhtml", { title: "出力項目設定画面" });
+                let self = this;
+                nts.uk.ui.block.invisible();
+                let param = {
+                    selectedCd: self.selectedOutputItem()
+                }
+                nts.uk.ui.windows.setShared("KWR008_B_Param", param);
+                nts.uk.ui.windows.sub.modal("at", "/view/kwr/008/b/index.xhtml").onClosed(() => {
+                    let resultData = nts.uk.ui.windows.getShared("KWR008_B_Result");
+                    if (!resultData) {
+                        self.selectedOutputItem(null);
+                        nts.uk.ui.block.clear();
+                        return;
+                    } else {
+                        self.selectedOutputItem(resultData.selectedCd);
+                    }
+                    }).always(function() {
+                        block.clear();
+                    });
+                });
+                
             }
 
             /**
