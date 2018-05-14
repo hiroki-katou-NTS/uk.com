@@ -1,5 +1,10 @@
 module nts.uk.at.view.kdm002.b {
     import getText = nts.uk.resource.getText;
+    import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+    import alertError = nts.uk.ui.dialog.alertError;
+    
     export module viewmodel {
 
         export class ScreenModel {
@@ -9,18 +14,18 @@ module nts.uk.at.view.kdm002.b {
             ERROR_MESS: string = getText("KDM002_27")
             
             // params
-            parrams = nts.uk.ui.windows.getShared('KDM002Params');
-            empployeeList: any = parrams.empployeeList;
-            periodDate: any =  parrams.periodDate;
-            date: any = parrams.date;
-            maxday: any = parrams.maxDaysCumulationByEmp;   
+            pempployeeList:  KnockoutObservable<EmployeeSearchDto>;
+            pstartDate:  KnockoutObservable<string>;
+            pendDate: KnockoutObservable<string>;
+            pdate:  KnockoutObservable<string>;
+            pmaxday:  KnockoutObservable<number>;   
             
             // table result
-            timeStart: KnockoutObservable<string> = ko.observable('2018/01/01 13:25:16');
-            timeOver: KnockoutObservable<string> = ko.observable('00:03:07.123');
+            timeStart: KnockoutObservable<string>;
+            timeOver: KnockoutObservable<string> = ko.observable('00:00:00');
             status: KnockoutObservable<string> = ko.observable('処理中');
-            result: KnockoutObservable<string> = ko.observable('2 / 25人');
-            total: KnockoutObservable<number> = ko.observable(empployeeList.length);
+            result: KnockoutObservable<string> = ko.observable('0 / 25人');
+            total: KnockoutObservable<number>;
             pass: KnockoutObservable<number> = ko.observable(0);
             error: KnockoutObservable<number> = ko.observable(0);
             // gridList
@@ -31,20 +36,40 @@ module nts.uk.at.view.kdm002.b {
             // flag
             isStop: KnockoutObservable<boolean> = ko.observable(false);
             isComplete: KnockoutObservable<boolean> = ko.observable(false);
+            isError: KnockoutObservable<boolean> = ko.observable(false);
             
+            taskId: KnockoutObservable<string> =  ko.observable('');
+            timeStartt: any;
+            timeNow: any;
             constructor() {
+                let self = this;
+                self.timeStartt = new Date();
+                let systemDate = Date.now();
+                let convertdLocalTime = new Date(systemDate);
+                let hourOffset = convertdLocalTime.getTimezoneOffset() / 60;
+                convertdLocalTime.setHours( convertdLocalTime.getHours() - hourOffset );
+                self.timeStart = ko.observable(moment.utc(convertdLocalTime).format("YYYY/MM/DD H:mm:ss"));
+                // get params from KDM002-A
+                let parrams = getShared('KDM002Params');
+                self.pempployeeList  = ko.observable(parrams.empployeeList);
+                self.pstartDate = ko.observable(parrams.startDate);
+                self.pendDate = ko.observable(parrams.endDate);
+                self.pdate =  ko.observable(parrams.date);
+                self.pmaxday=  ko.observable(parrams.maxday);   
+                
+                self.result = ko.observable('0 / '+self.pempployeeList().length +'人');
                 let dataDump = {
                     employeeCode: '',
                     employeeName: '',
-                    errorMessage: ''
+                    errorMessage: '',
                 };
-                
+                self.total = ko.observable(self.pempployeeList().length);
                 self.currentCode = ko.observable(dataDump);
                 self.imErrorLog =  ko.observableArray([]);
                 self.columns = ko.observableArray([
-                    { headerText: '会社コード', key: 'employeeCode', width: 100 },
-                    { headerText: '会社名', key: 'employeeName', width: 150 },
-                    { headerText: 'イラー内容', key: 'errorMessage', width: 300 }
+                    { headerText: nts.uk.resource.getText("KDM002_25"), key: 'employeeCode', width: 140 },
+                    { headerText: nts.uk.resource.getText("KDM002_26"), key: 'employeeName', width: 150 },
+                    { headerText: nts.uk.resource.getText("KDM002_27"), key: 'errorMessage', width: 300 }
                 ]);
             }
             
@@ -55,6 +80,7 @@ module nts.uk.at.view.kdm002.b {
                 var self = this;
                 var dfd = $.Deferred();
                 var self = this;
+                self.execution();
                 dfd.resolve();
                 return dfd.promise();
             }
@@ -64,11 +90,19 @@ module nts.uk.at.view.kdm002.b {
             */
             public execution(): void {
                 var self = this;
-                let command: CheckFuncDto = new CheckFuncDto(
-                    self.total(),
-                    0,
-                    0,
-                    self.imErrorLog());
+                 $('#BTN_STOP').focus();
+                let command: CheckFuncDto = new CheckFuncDto({
+                    total: self.total(),
+                    error: 0,
+                    pass: 0,
+                    outputErrorList: null,
+                    employeeList: self.pempployeeList(),
+                    startTime: moment.utc(self.pstartDate()).toISOString(),
+                    endTime: moment.utc(self.pendDate()).toISOString(),
+                    date: moment.utc(self.pdate()).toISOString(),
+                    maxDay: self.pmaxday()
+                });
+                
                 // find task id
                 service.execution(command).done(function(res: any) {
                     self.taskId(res.taskInfor.id);
@@ -91,25 +125,51 @@ module nts.uk.at.view.kdm002.b {
                             // update state on screen
                             if (res.running || res.succeeded || res.cancelled) {
                                 _.forEach(res.taskDatas, item => {
-                                    // 「非同期タスク情報」を取得する
-                                    let serverData = JSON.parse(item.valueAsString);
-                                    console.log(serverData);
-                                    // "処理トータルカウント
-                                    if (item.key == 'NUMBER_OF_ERROR') {
+                                    if (item.key.substring(0, 10) == "ERROR_LIST") {
+                                        let error = JSON.parse(item.valueAsString);
+                                        let errorContent: IErrorLog = {
+                                            employeeCode: error.employeeCode,
+                                            employeeName: error.employeeName,
+                                            errorMessage: nts.uk.resource.getMessage(error.errorMessage)
+                                        }
+                                        self.imErrorLog.push(errorContent);
                                     }
                                     // 処理カウント
                                     if (item.key == 'NUMBER_OF_SUCCESS') {
-                                    }
-                                    //エラー件数
-                                    if (item.key == 'NUMBER_OF_TOTAL') {
-                                    }
-                                    // 動作状態
-                                    if (item.key == 'ERROR_LIST') {
+                                        self.result(item.valueAsNumber + " / " + self.total() + "人");
                                     }
                                 });
+
+                                if (res.running) {
+                                    // 経過時間＝現在時刻－開始時刻
+                                    self.timeNow = new Date();
+                                    let over = (self.timeNow.getSeconds() + self.timeNow.getMinutes() * 60 + self.timeNow.getHours() * 60) - (self.timeStartt.getSeconds() + self.timeStartt.getMinutes() * 60 + self.timeStartt.getHours() * 60);
+                                    let time = new Date(null);
+                                    time.setSeconds(over); // specify value for SECONDS here
+                                    let result = time.toISOString().substr(11, 8);
+
+                                    self.timeOver(result);
+                                }
                             }
 
                             if (res.succeeded || res.failed || res.cancelled) {
+                                if (self.imErrorLog().length == 0) {
+                                    self.status('完了');
+                                    $('#BTN_CLOSE').focus();
+                                }
+                                else {
+                                    // resize windows
+                                    var windowSize = nts.uk.ui.windows.getSelf();
+                                    windowSize.$dialog.dialog('option', {
+                                        width: 650,
+                                        height: 550
+                                    });
+                                    windowSize.$dialog.resize();
+                                    self.isError(true);
+                                    self.isComplete(true);
+                                    self.status('完了　（エラーあり）');
+                                    $('#BTN_ERROR_EXPORT').focus();
+                                }
                                 self.isStop(true);
                             }
                         });
@@ -123,7 +183,11 @@ module nts.uk.at.view.kdm002.b {
                 let self = this;
                 self.isStop(true);
                 self.isComplete(true);
-                ('#BTN_CLOSE').focus();
+                if (nts.uk.text.isNullOrEmpty(self.taskId())) {
+                    return;
+                }
+                nts.uk.request.asyncTask.requestToCancel(self.taskId());
+                $('#BTN_CLOSE').focus();
             }
             
             //閉じるボタンをクリックする
@@ -135,7 +199,12 @@ module nts.uk.at.view.kdm002.b {
             //エラー出力ボタンをクリックする
             errorExport(){
                 let self = this;
-                
+                nts.uk.ui.block.invisible();
+                service.exportDatatoCsv(ko.toJS(self.imErrorLog())).fail(function(res: any) {
+                    alertError({ messageId: res.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
             }
         }
         
@@ -162,6 +231,11 @@ module nts.uk.at.view.kdm002.b {
             error: number;
             pass: number;
             outputErrorList: IErrorLog[];
+            employeeList: EmployeeSearchDto[];
+            startTime: string;
+            endTime: string;
+            date:string;
+            maxDay: number;
         }
         
         class CheckFuncDto {
@@ -169,12 +243,23 @@ module nts.uk.at.view.kdm002.b {
             error: number;
             pass: number;
             outputErrorList: IErrorLog[];
+            employeeList: EmployeeSearchDto[];
+            startTime: string;
+            endTime: string;
+            date: string;
+            maxDay: number;
+            
              constructor(param: ICheckFuncDto) {
                 let self = this;
                 self.total = param.total;
                 self.error = param.error;
                 self.pass = param.pass;
                 self.outputErrorList = param.outputErrorList;
+                self.employeeList = param.employeeList;
+                self.startTime = param.startTime;
+                self.endTime = param.endTime;
+                self.date = param.date;
+                self.maxDay = param.maxDay;
              }
         }
     }
