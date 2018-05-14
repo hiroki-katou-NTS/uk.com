@@ -194,14 +194,12 @@ module nts.uk.com.view.ccg.share.ccg {
                     return self.baseDate() && self.periodStart() && self.periodEnd() ? true : false;
                 });
 
-                self.initSubscribers();
-
             }
 
             /**
              * Initialize subscribers
              */
-            private initSubscribers(): void {
+            public initSubscribers(): void {
                 let self = this;
 
                 self.periodStart.subscribe(startDate => {
@@ -507,6 +505,8 @@ module nts.uk.com.view.ccg.share.ccg {
                             if (data.showOnStart) {
                                 self.showComponent();
                             }
+
+                            self.initSubscribers();
                             dfd.resolve();
                         }));
                     });
@@ -606,11 +606,11 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.showPeriodYM = nts.uk.util.isNullOrUndefined(self.showPeriod) ? false : (self.showPeriod ? options.periodFormatYM : false);
 
                 /** Required parameter */
-                self.baseDate(moment.utc(options.baseDate));
-                self.periodStart(options.periodFormatYM ?
-                    moment.utc(options.periodStartDate).startOf('month') : moment.utc(options.periodStartDate).startOf('day'));
-                self.periodEnd(options.periodFormatYM ?
-                    moment.utc(options.periodEndDate).startOf('month') : moment.utc(options.periodEndDate).startOf('day'));
+                self.baseDate(nts.uk.util.isNullOrUndefined(options.baseDate) ? moment() : moment.utc(options.baseDate));
+                self.periodStart(nts.uk.util.isNullOrUndefined(options.periodStartDate) ? moment() : (options.periodFormatYM ?
+                    moment.utc(options.periodStartDate).startOf('month') : moment.utc(options.periodStartDate).startOf('day')));
+                self.periodEnd(nts.uk.util.isNullOrUndefined(options.periodEndDate) ? moment() : (options.periodFormatYM ?
+                    moment.utc(options.periodEndDate).startOf('month') : moment.utc(options.periodEndDate).startOf('day')));
                 self.selectedIncumbent(options.inService);
                 self.selectedLeave(options.leaveOfAbsence);
                 self.selectedClosed(options.closed);
