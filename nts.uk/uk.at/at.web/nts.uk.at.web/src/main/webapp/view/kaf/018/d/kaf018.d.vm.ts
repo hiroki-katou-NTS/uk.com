@@ -116,7 +116,6 @@ module nts.uk.at.view.kaf018.d.viewmodel {
                     }
                 ],
                 ntsControls: [
-                    { name: 'Button', text: "1", controlType: 'Button', enable: true }
                 ]
             });
         }

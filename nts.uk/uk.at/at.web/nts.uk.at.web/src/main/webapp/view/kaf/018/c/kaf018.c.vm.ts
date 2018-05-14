@@ -60,6 +60,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         startPage() : JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            block.invisible();
             let params = getShared("KAF018C_PARAMS");
             if (params) {
                 self.closureId = params.closureId;

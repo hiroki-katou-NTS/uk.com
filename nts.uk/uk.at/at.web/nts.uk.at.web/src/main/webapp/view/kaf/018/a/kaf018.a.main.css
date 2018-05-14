@@ -36,12 +36,25 @@
 	margin-left: 25px;
 }
 
+.bts-sendMail {
+	margin-left: 550px;
+}
+
 .btn-excute {
 	float: left;
 	margin-left: 20px;
 	margin-top: 230px;	
 }
 
+.content-left-top {
+	height: 135px;
+	width: : auto;
+}
+
+.content-left-bottom {
+	height: 50px;
+	width: : auto;
+}
 .clear {
 	clear:both;
 }

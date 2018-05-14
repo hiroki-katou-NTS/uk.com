@@ -4,6 +4,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
     import service = nts.uk.at.view.kaf018.a.service;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import error = nts.uk.ui.dialog.alertError;
     import block = nts.uk.ui.block;
     var lstWkp = [];
     export class ScreenModel {
@@ -79,7 +80,6 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                     self.processingYm(nts.uk.time.formatYearMonth(data.yearMonth));
                     $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
                         self.reloadData().done(() => {
-                            $('#tree-grid').focusTreeGridComponent();
                             block.clear();
                         });
                     });
@@ -179,7 +179,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                 multiSelectedWorkplaceId: self.multiSelectedWorkplaceId()
             };
             if (self.multiSelectedWorkplaceId().length == 0) {
-                $('#tree-grid').ntsError('set', 'Msg_786');
+                error({ messageId: 'Msg_786' });
             } else {
                 if (self.selectedValue() == 0) {
                     nts.uk.request.jump('/view/kaf/018/b/index.xhtml', params);
