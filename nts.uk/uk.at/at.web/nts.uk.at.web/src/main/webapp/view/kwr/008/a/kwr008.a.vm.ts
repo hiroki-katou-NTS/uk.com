@@ -112,11 +112,7 @@ module nts.uk.at.view.kwr008.a {
                 });
 
                 //A4
-                service.getOutItemSettingCode().done((dataArr: Array<share.OutputSettingCodeDto>) => {
-                    _.forEach(dataArr, data => {
-                        self.outputItem.push(new share.ItemModel(data.cd, data.name));
-                    });
-                });
+                self.getOutItemSettingCode();
                 // A6
                 self.restoreOutputConditionAnnualWorkSchedule()
                 .done((data: model.OutputConditionAnnualWorkScheduleChar) => {
@@ -131,6 +127,15 @@ module nts.uk.at.view.kwr008.a {
                 self.selectedEmployeeCode = ko.observableArray([]);
                 self.alreadySettingPersonal = ko.observableArray([]);
                 self.maxDaysCumulationByEmp = ko.observable(0);
+            }
+            getOutItemSettingCode() {
+                var self = this;
+                self.outputItem([]);
+                service.getOutItemSettingCode().done((dataArr: Array<share.OutputSettingCodeDto>) => {
+                    _.forEach(dataArr, data => {
+                        self.outputItem.push(new share.ItemModel(data.cd, data.name));
+                    });
+                });
             }
 
             exportReport() {
@@ -176,6 +181,8 @@ module nts.uk.at.view.kwr008.a {
                 }
                 nts.uk.ui.windows.setShared("KWR008_B_Param", param);
                 nts.uk.ui.windows.sub.modal("at", "/view/kwr/008/b/index.xhtml").onClosed(() => {
+                    //reload A4_2
+                    self.getOutItemSettingCode();
                     let resultData = nts.uk.ui.windows.getShared("KWR008_B_Result");
                     if (!resultData) {
                         self.selectedOutputItem(null);
