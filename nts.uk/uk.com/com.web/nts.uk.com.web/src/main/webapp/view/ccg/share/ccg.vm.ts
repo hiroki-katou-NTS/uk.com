@@ -75,7 +75,6 @@ module nts.uk.com.view.ccg.share.ccg {
             selectedCodeJobtitle: KnockoutObservableArray<string>;
             selectedCodeWorkplace: KnockoutObservableArray<string>;
             selectedCodeEmployee: KnockoutObservableArray<string>;
-            selectedCodeWorkType: KnockoutObservableArray<string>;
 
             // params
             employments: ComponentOption;
@@ -1386,9 +1385,14 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             advancedSearchEmployee(): void {
                 let self = this;
+                // validate all inputs & conditions
                 if (self.isInvalidBaseDate() || self.isStatusEmployeePeriodInvalid()) {
                     return;
                 }
+                if (!self.isValidAdvancedSearchCondition()) {
+                    return;
+                }
+                
                 // set param
                 self.setAdvancedSearchParam();
 
@@ -1419,6 +1423,34 @@ module nts.uk.com.view.ccg.share.ccg {
                 } else {
                     self.findAndReturnListEmployee(true);
                 }
+            }
+
+            /**
+             * Check advanced search conditions
+             */
+            private isValidAdvancedSearchCondition(): boolean {
+                let self = this;
+                if (self.showEmployment && nts.uk.util.isNullOrEmpty(self.selectedCodeEmployment())) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1195' });
+                    return false;
+                }
+                if (self.showWorkplace && nts.uk.util.isNullOrEmpty(self.selectedCodeWorkplace())) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1197' });
+                    return false;
+                }
+                if (self.showClassification && nts.uk.util.isNullOrEmpty(self.selectedCodeClassification())) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1198' });
+                    return false;
+                }
+                if (self.showJobTitle && nts.uk.util.isNullOrEmpty(self.selectedCodeJobtitle())) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1199' });
+                    return false;
+                }
+                if (self.showWorktype && nts.uk.util.isNullOrEmpty(self.selectedWorkTypeCode())) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1200' });
+                    return false;
+                }
+                return true;
             }
 
             /**
