@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Optional;import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -94,6 +94,8 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 	public List<EmployeeInfoDtoExport> getEmployeesAtWorkByBaseDate(String companyId, GeneralDate standardDate) {
 
 		List<EmployeeDataMngInfo> listEmpDomain = empDataMngRepo.findByCompanyId(companyId);
+		
+		Map<String, String> mapSidPid = listEmpDomain.stream().collect(Collectors.toMap(x -> x.getEmployeeId(), x -> x.getPersonId()));
 
 		List<EmployeeInfoDtoExport> result = new ArrayList<EmployeeInfoDtoExport>();
 
@@ -107,7 +109,7 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 		List<AffCompanyHist> affCompanyHistList = affComHistRepo.getAffCompanyHistoryOfEmployees(employeeIds);
 		
 		Map<String, AffCompanyHist> map = affCompanyHistList.stream()
-				.collect(Collectors.toMap(x -> x.getLstAffCompanyHistByEmployee().get(0).getSId(), x -> x));
+				.collect(Collectors.toMap(x -> x.getPId(), x -> x));
 		
 		List<String> personIds = affCompanyHistList.stream().map(x -> x.getPId()).collect(Collectors.toList());
 		
@@ -115,7 +117,7 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 		
 		
 		result =  listEmpDomain.stream().map(x -> {
-			AffCompanyHist affComHist = map.get(x.getEmployeeId());
+			AffCompanyHist affComHist = map.get(mapSidPid.get(x.getEmployeeId()));
 
 			if (affComHist == null)
 				return null;
