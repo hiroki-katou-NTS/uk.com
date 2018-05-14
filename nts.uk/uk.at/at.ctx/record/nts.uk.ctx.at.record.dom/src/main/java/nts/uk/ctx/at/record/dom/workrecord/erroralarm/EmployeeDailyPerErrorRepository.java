@@ -27,4 +27,6 @@ public interface EmployeeDailyPerErrorRepository {
 	
 	void removeParam(String sid, GeneralDate date);
 	
+	boolean checkExistErrorByDate(String companyID, String employeeID, GeneralDate date);
+	
 }
