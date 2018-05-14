@@ -8,12 +8,12 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.app.find.stamp.StampDto;
 import nts.uk.ctx.at.record.app.find.stamp.StampDetailParamDto;
-import nts.uk.ctx.at.record.dom.stamp.card.StampCardtemRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.StampCardRepository;
 
 @Stateless
 public class StampCardFinder {
 	@Inject
-	private StampCardtemRepository stampCardRepo;
+	private StampCardRepository stampCardRepo;
 	
 	/**
 	 * 

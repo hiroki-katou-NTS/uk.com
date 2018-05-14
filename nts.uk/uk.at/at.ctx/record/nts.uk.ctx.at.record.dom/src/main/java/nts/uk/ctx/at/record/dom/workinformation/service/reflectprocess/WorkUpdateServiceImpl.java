@@ -427,6 +427,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		if(lstHolidayWorkFrameTime.isEmpty()) {
 			return dailyData;
 		}
+		List<Integer> lstWorktimeFrameTemp = new ArrayList<>();
 		if(isPre) {			
 			lstHolidayWorkFrameTime.stream().forEach(x -> {
 				if(worktimeFrame.containsKey(x.getHolidayFrameNo().v())) {
@@ -434,6 +435,13 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 					x.setBeforeApplicationTime(Finally.of(worktimeTmp));
 				}
 			});	
+			lstWorktimeFrameTemp = this.lstPreWorktimeFrameItem();
+			for(int i = 1; i <= 10; i++) {
+				if(!worktimeFrame.containsKey(i)) {
+					Integer item = this.lstPreWorktimeFrameItem().get(i - 1); 
+					lstWorktimeFrameTemp.remove(item);
+				}
+			}	
 		} else {
 			lstHolidayWorkFrameTime.stream().forEach(x -> {
 				if(worktimeFrame.containsKey(x.getHolidayFrameNo().v())) {
@@ -444,19 +452,6 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 					}
 				}
 			});
-		}
-		dailyData.setAttendanceTimeOfDailyPerformance(Optional.of(attendanceTimeData));
-		attendanceTime.updateFlush(attendanceTimeData);
-		List<Integer> lstWorktimeFrameTemp = new ArrayList<>();
-		if(isPre) {
-			lstWorktimeFrameTemp = this.lstPreWorktimeFrameItem();
-			for(int i = 1; i <= 10; i++) {
-				if(!worktimeFrame.containsKey(i)) {
-					Integer item = this.lstPreWorktimeFrameItem().get(i - 1); 
-					lstWorktimeFrameTemp.remove(item);
-				}
-			}	
-		} else {
 			lstWorktimeFrameTemp = this.lstAfterWorktimeFrameItem();
 			for(int i = 1; i <= 10; i++) {
 				if(!worktimeFrame.containsKey(i)) {
@@ -465,8 +460,8 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 				}
 			}	
 		}
-		
-		//List<EditStateOfDailyPerformance> lstEdit = this.updateEditStateOfDailyPerHoliday(employeeId, dateData, lstWorktimeFrameTemp, dailyData.getEditState());
+		dailyData.setAttendanceTimeOfDailyPerformance(Optional.of(attendanceTimeData));
+		attendanceTime.updateFlush(attendanceTimeData);		
 		this.updateEditStateOfDailyPerformance(employeeId, dateData, lstWorktimeFrameTemp);
 		return dailyData;
 	}
