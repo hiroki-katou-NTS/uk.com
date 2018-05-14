@@ -1,15 +1,11 @@
 package nts.uk.ctx.sys.assist.dom.deletedata.manualsetting;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.assist.dom.storage.TargetCategory;
-import nts.uk.ctx.sys.assist.dom.storage.TargetEmployees;
 
 @Getter
 @Setter
@@ -77,11 +73,11 @@ public class ManualSetDeletion extends AggregateRoot {
 
 	// 月次削除開始月
 	/** The start month of monthly. */
-	private int startMonthOfMonthly;
+	private GeneralDate startMonthOfMonthly;
 
 	// 月次削除終了月
 	/** The end month of monthly. */
-	private int endMonthOfMonthly;
+	private GeneralDate endMonthOfMonthly;
 
 	// 年次開始年
 	/** The start year of monthly. */
@@ -91,16 +87,12 @@ public class ManualSetDeletion extends AggregateRoot {
 	/** The end year of monthly. */
 	private int endYearOfMonthly;
 	
-	/**
-	 * 実行者
-	 */
-//	private List<EmployeeDeletion> employees;
 
 	public static ManualSetDeletion createFromJavatype(String delId, String companyId, int systemType, String delName,
 			boolean isSaveBeforeDeleteFlg, boolean isExistCompressPassFlg, String passwordCompressFileEncrypt,
 			boolean haveEmployeeSpecifiedFlg, String sId, String supplementExplanation, GeneralDate referenceDate,
 			GeneralDateTime executionDateTime, GeneralDate startDateOfDaily, GeneralDate endDateOfDaily,
-			int startMonthOfMonthly, int endMonthOfMonthly, int startYearOfMonthly, int endYearOfMonthly) {
+			GeneralDate startMonthOfMonthly, GeneralDate endMonthOfMonthly, int startYearOfMonthly, int endYearOfMonthly) {
 		return new ManualSetDeletion(delId, companyId, systemType, new DelName(delName), isSaveBeforeDeleteFlg,
 				isExistCompressPassFlg, new PasswordCompressFileEncrypt(passwordCompressFileEncrypt),
 				haveEmployeeSpecifiedFlg, sId, new SupplementExplanation(supplementExplanation), referenceDate,

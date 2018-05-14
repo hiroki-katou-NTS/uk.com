@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.assist.infra.entity.deletedata.manualsetting;
+package nts.uk.ctx.sys.assist.infra.entity.deletedata.management;
 
 import java.io.Serializable;
 
@@ -12,14 +12,10 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class SspdtEmployeesDeletionPK implements Serializable{
+public class SspdtManagementDeletionPK implements Serializable{
 	 
 	private static final long serialVersionUID = 1L;
 	@NotNull
 	@Column(name = "DEL_ID")
     public String delId;
-	
-	@NotNull
-	@Column(name = "EMPLOYEE_ID")
-    public String employeeId;
 }

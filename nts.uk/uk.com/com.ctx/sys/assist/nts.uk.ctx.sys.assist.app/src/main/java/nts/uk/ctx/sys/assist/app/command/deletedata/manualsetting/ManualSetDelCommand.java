@@ -4,10 +4,15 @@
 package nts.uk.ctx.sys.assist.app.command.deletedata.manualsetting;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.BusinessName;
+import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.CategoryDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.DelName;
+import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.EmployeeDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.ManualSetDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.PasswordCompressFileEncrypt;
 import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.SupplementExplanation;
@@ -22,11 +27,13 @@ public class ManualSetDelCommand {
 	private String delName;
 	private String suppleExplanation;
 	private int systemType;
+	private GeneralDate referenceDate;
+	private GeneralDateTime executionDateAndTime;
 	private GeneralDate dayStartDate;
 	private GeneralDate dayEndDate;
 	
-	private int monthStartDate;
-	private int monthEndDate;
+	private GeneralDate monthStartDate;
+	private GeneralDate monthEndDate;
 	private int startYear;
 	private int endYear;
 	
@@ -35,15 +42,28 @@ public class ManualSetDelCommand {
 	private String passwordForCompressFile;
 	private int haveEmployeeSpecifiedFlg;
 	private List<EmployeesDeletionCommand> employees;
-	private List<CategoryDeletionCommand> category;
+	private List<CategoryDeletionCommand> categories;
 	
-	public ManualSetDeletion toDomain(String storeProcessingId, String cid, String sid) {
+	public ManualSetDeletion toDomain(String delId, String cid, String sid) {
 		boolean isSaveBeforeDeleteFlg = this.isSaveBeforeDeleteFlg == 1;
 		boolean isExistCompressPasswordFlg = this.isExistCompressPasswordFlg == 1;
 		boolean haveEmployeeSpecifiedFlg = this.haveEmployeeSpecifiedFlg == 1;
-		return new ManualSetDeletion(storeProcessingId, cid, systemType, new DelName(delName), isSaveBeforeDeleteFlg, 
+		return new ManualSetDeletion(delId, cid, systemType, new DelName(delName), isSaveBeforeDeleteFlg, 
 				isExistCompressPasswordFlg, new PasswordCompressFileEncrypt(passwordForCompressFile), haveEmployeeSpecifiedFlg, 
 				sid, new SupplementExplanation(suppleExplanation),
-				null, null, dayStartDate, dayEndDate, monthStartDate, monthEndDate, startYear, endYear);			
+				referenceDate, executionDateAndTime, dayStartDate, dayEndDate, monthStartDate, monthEndDate, startYear, endYear);			
+	}
+	
+	public List<EmployeeDeletion> getEmployees(String delId) {
+		return employees.stream().map(x -> {
+			return new EmployeeDeletion(delId, x.getEmployeeId(), new BusinessName(x.getBusinessName()));
+		}).collect(Collectors.toList());
+	}
+	
+	
+	public List<CategoryDeletion> getCategories(String delId) {
+		return categories.stream().map(x -> {
+			return new CategoryDeletion(delId, x.getCategoryId(), x.getPeriodDeletion());
+		}).collect(Collectors.toList());
 	}
 }

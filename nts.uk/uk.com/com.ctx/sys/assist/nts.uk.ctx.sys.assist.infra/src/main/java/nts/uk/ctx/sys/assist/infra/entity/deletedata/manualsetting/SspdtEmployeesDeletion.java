@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.assist.infra.entity.deletedata.manualsetting;
 
 import java.io.Serializable;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -25,6 +26,7 @@ public class SspdtEmployeesDeletion extends UkJpaEntity implements Serializable 
 	
 	/** The business name. */
 	/** ビジネスネーム */
+	@Basic(optional = false)
 	@Column(name = "BUSINESS_NAME")
 	public String businessName;
 	
@@ -34,8 +36,8 @@ public class SspdtEmployeesDeletion extends UkJpaEntity implements Serializable 
 	}
 
 	public EmployeeDeletion toDomain() {
-		return EmployeeDeletion.createFromJavatype(this.sspdtEmployeesDeletionPK.delID, 
-				this.sspdtEmployeesDeletionPK.employeeID, this.businessName);
+		return EmployeeDeletion.createFromJavatype(this.sspdtEmployeesDeletionPK.delId, 
+				this.sspdtEmployeesDeletionPK.employeeId, this.businessName);
 	}
 
 	public static SspdtEmployeesDeletion toEntity(EmployeeDeletion employeeDeletion) {

@@ -71,6 +71,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         supplementExplanation: KnockoutObservable<string>;
 
         //D
+        // reference date
+        referenceDate : string;
         //Radio button
         itemTitleAtr: KnockoutObservableArray<any>;
         selectedTitleAtr: KnockoutObservable<number>;
@@ -187,6 +189,9 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.supplementExplanation = ko.observable("");
           
             //D
+            //referenceDate init toDay
+            self.referenceDate = moment.utc().format("YYYY/MM/DD");
+            
             self.systemType = ko.observable(1);
             self.initEmployeeList = ko.observableArray([]);
             self.employeeList = ko.observableArray([]);
@@ -195,11 +200,11 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.selectedEmployeeCode = ko.observableArray([]);
             self.alreadySettingPersonal = ko.observableArray([]);
             self.itemTitleAtr = ko.observableArray([
-                { value: 0, titleAtrName: resource.getText('CMF005_51') },
-                { value: 1, titleAtrName: resource.getText('CMF005_52') }]);
-            self.selectedTitleAtr = ko.observable(0);
+                { value: 1, titleAtrName: resource.getText('CMF005_51') },
+                { value: 0, titleAtrName: resource.getText('CMF005_52') }]);
+            self.selectedTitleAtr = ko.observable(1);
             self.selectedTitleAtr.subscribe(function(value) {
-                if(value == 0) {
+                if(value == 1) {
                     self.applyKCP005ContentSearch(self.initEmployeeList());
                 } 
                 else {
@@ -464,7 +469,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 * @param: data: the data return from CCG001
                 */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-                    self.selectedTitleAtr(0);
+                    self.selectedTitleAtr(1);
                     self.initEmployeeList(data.listEmployee);
                     self.applyKCP005ContentSearch(data.listEmployee);
                 }
@@ -516,8 +521,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         private validateD() : boolean {
             var self = this;
             
-            if ((self.selectedTitleAtr() == 0 && self.selectedEmployeeCode() && self.selectedEmployeeCode().length > 0)
-                || (self.selectedTitleAtr() == 1 && self.initEmployeeList() && self.initEmployeeList().length > 0)) {
+            if ((self.selectedTitleAtr() == 1 && self.selectedEmployeeCode() && self.selectedEmployeeCode().length > 0)
+                || (self.selectedTitleAtr() == 0 && self.initEmployeeList() && self.initEmployeeList().length > 0)) {
                 return true;
             } else {
                 nts.uk.ui.dialog.error({ messageId: "Msg_498", messageParams: ["X", "Y"] });
@@ -531,12 +536,14 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         setEmployeeDeletionList() {
             var self = this;
             self.employeeDeletionList.removeAll();
-            if (self.selectedTitleAtr() == 0) {
+            if (self.selectedTitleAtr() == 1) {
                 for (var i = 0; i < self.selectedEmployeeCode().length; i++) {
                     for (var j = 0; j < self.employeeList().length; j++) {
                         if (self.employeeList()[j].code == self.selectedEmployeeCode()[i]) {
                             let employee = self.employeeList()[j];
-                            self.employeeDeletionList.push(new EmployeeDeletion(employee.code, employee.name));
+                            self.employeeDeletionList.push(
+                                new EmployeeDeletion(employee.code, employee.name, 
+                                    employee.code, employee.name));
                         }
                     }
                 }
@@ -586,13 +593,22 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             
         private saveManualSetting(): void {
             let self = this;
+            console.log(self.isSaveBeforeDeleteFlg());
+            console.log(self.isExistCompressPasswordFlg());
+            console.log(self.passwordForCompressFile());
+            console.log(self.selectedTitleAtr());
+            
             let manualSetting = new ManualSettingModal(self.deleteSetName(),self.supplementExplanation(), self.systemType(), 
+                    moment.utc(self.referenceDate, 'YYYY/MM/DD'), moment.utc().toISOString(),
                     moment.utc(self.dateValue().startDate, 'YYYY/MM/DD'), moment.utc(self.dateValue().endDate, 'YYYY/MM/DD'),
-                    moment.utc(self.monthValue().startDate, 'YYYYMM'), moment.utc(self.monthValue().endDate, 'YYYYMM'),
+                    moment.utc(self.monthValue().startDate, 'YYYY/MM'), moment.utc(self.monthValue().endDate, 'YYYY/MM'),
                     Number(self.yearValue().startDate), Number(self.yearValue().endDate),
-                    Number(self.isSaveBeforeDeleteFlg), Number(self.isExistCompressPasswordFlg), self.passwordForCompressFile,
-                    Number(self.haveEmployeeSpecifiedFlg), self.employeeDeletionList(), self.categoryDeletionList());
-
+                    Number(self.isSaveBeforeDeleteFlg()), Number(self.isExistCompressPasswordFlg()), self.passwordForCompressFile(),
+                    Number(self.selectedTitleAtr()), self.employeeDeletionList(), self.categoryDeletionList());
+            
+            console.log(1);
+            console.log(manualSetting);
+            
             service.addManualSetDel(manualSetting).done(() => {
                 
             }).fail(res => {
@@ -655,10 +671,14 @@ module nts.uk.com.view.cmf005.b.viewmodel {
     export class EmployeeDeletion {
         code: string;
         name: string;
+        employeeId: string;
+        businessName: string;
         
-        constructor(code: string, name: string) {
+        constructor(code: string, name: string, employeeId: string, businessName: string) {
             this.code = code;
             this.name = name;
+            this.employeeId = employeeId;
+            this.businessName = businessName;
         }
     }
     
@@ -667,6 +687,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         delName: string;
         suppleExplanation: string;
         systemType: number;
+        referenceDate: string;
+        executionDateAndTime: string;
         dayStartDate: string;
         dayEndDate: string;
         monthStartDate: string;
@@ -680,14 +702,17 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         employees: Array<EmployeeDeletion>;
         category: Array<CategoryDeletion>;
 
-        constructor(delName: string, suppleExplanation: string, systemType: number,
-            dayStartDate: string, dayEndDate: string, monthStartDate: string, monthEndDate: string,
+        constructor(delName: string, suppleExplanation: string, systemType: number, referenceDate: string,
+            executionDateAndTime: string, dayStartDate: string, dayEndDate: string, 
+            monthStartDate: string, monthEndDate: string,
             startYear: number, endYear: number, isSaveBeforeDeleteFlg: number, isExistCompressPasswordFlg: number,
             passwordForCompressFile: string, haveEmployeeSpecifiedFlg: number, employees: Array<EmployeeDeletion>,
             category: Array<CategoryDeletion>) {
             this.delName = delName;
             this.suppleExplanation = suppleExplanation;
             this.systemType = systemType;
+            this.referenceDate = referenceDate;
+            this.executionDateAndTime = executionDateAndTime;
             this.dayStartDate = dayStartDate;
             this.dayEndDate = dayEndDate;
             this.monthStartDate = monthStartDate;
