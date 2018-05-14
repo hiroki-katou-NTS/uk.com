@@ -2845,7 +2845,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
             if (check1175) {
                 nts.uk.resource.getMessage("Msg_1175")
-                $("#next-month").ntsError("set", nts.uk.resource.getMessage("Msg_1174"), "Msg_1174");
+                $("#next-month").ntsError("set", nts.uk.resource.getMessage("Msg_1175"), "Msg_1175");
             } else {
                 if ($("#next-month").ntsError("hasError", "Msg_1175")) $("#next-month").ntsError("clearByCode", "Msg_1175");
             }
