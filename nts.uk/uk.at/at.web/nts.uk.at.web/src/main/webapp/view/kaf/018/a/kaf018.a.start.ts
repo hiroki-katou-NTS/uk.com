@@ -6,7 +6,7 @@ module nts.uk.at.view.kaf018.a.start {
             __viewContext.bind(screenModel);
             nts.uk.ui.block.clear();
             _.defer(() => {
-                $('#combo-box').focus();
+                $('#combo-box input').focus();
             });
         })
     });
