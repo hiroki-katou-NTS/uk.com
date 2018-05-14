@@ -65,7 +65,8 @@ module nts.uk.at.view.kaf018.d.viewmodel {
                     appEndDate == "";
                 }
                 let dateRange = self.appDateRangeColor(self.convertDateMDW(appStartDate), self.convertDateMDW(appEndDate));
-                self.listDataDisp.push(new ContentDisp(index, data.appType, data.appName, data.prePostAtr ? "事前" : "事後", dateRange, data.appContent, self.disReflectionStatus(data.reflectState), self.disApprovalStatus(data.approvalStatus), data.phase1, data.phase2, data.phase3, data.phase4, data.phase5));
+                let reflectStateContent = self.disReflectionStatus(data.reflectState);
+                self.listDataDisp.push(new ContentDisp(index, data.appType, data.appName, data.prePostAtr ? "事前" : "事後", dateRange, data.appContent, data.reflectState, reflectStateContent , self.disApprovalStatus(data.approvalStatus), data.phase1, data.phase2, data.phase3, data.phase4, data.phase5));
                 index++;
             });
             let colorBackGr = self.fillColorbackGr();
@@ -90,7 +91,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
                     { headerText: text("KAF018_37"), key: 'prePostAtr', dataType: 'string', width: 120 },
                     { headerText: text("KAF018_38"), key: 'appDate', dataType: 'string', width: 150 },
                     { headerText: text("KAF018_39"), key: 'appContent', dataType: 'string', width: 450 },
-                    { headerText: text("KAF018_40"), key: 'reflectState', dataType: 'string', width: 100 },
+                    { headerText: text("KAF018_40"), key: 'reflectStateContent', dataType: 'string', width: 100 },
                     { headerText: text("KAF018_41"), key: 'approvalStatus', dataType: 'string', width: 150 },
                     { headerText: text("KAF018_42"), key: 'phase1', dataType: 'string', width: 150 },
                     { headerText: text("KAF018_43"), key: 'phase2', dataType: 'string', width: 150 },
@@ -113,6 +114,9 @@ module nts.uk.at.view.kaf018.d.viewmodel {
                         state: 'state',
                         states: colorBackGr
                     }
+                ],
+                ntsControls: [
+                    { name: 'Button', text: "1", controlType: 'Button', enable: true }
                 ]
             });
         }
@@ -124,22 +128,22 @@ module nts.uk.at.view.kaf018.d.viewmodel {
                 let rowId = item.index;
                 //fill color in 承認状況
                 if (item.reflectState == shareModel.NOTREFLECTED) {//0 下書き保存/未反映　=　未
-                    result.push(new shared.CellState(rowId, 'reflectState', ['unapprovalCell']));
+                    result.push(new shared.CellState(rowId, 'reflectStateContent', ['unapprovalCell']));
                 }
                 if (item.reflectState == shareModel.WAITREFLECTION) {//1 反映待ち　＝　承認済み
-                    result.push(new shared.CellState(rowId, 'reflectState', ['approvalCell']));
+                    result.push(new shared.CellState(rowId, 'reflectStateContent', ['approvalCell']));
                 }
                 if (item.reflectState == shareModel.REFLECTED) {//2 反映済　＝　反映済み
-                    result.push(new shared.CellState(rowId, 'reflectState', ['reflectCell']));
+                    result.push(new shared.CellState(rowId, 'reflectStateContent', ['reflectCell']));
                 }
                 if (item.reflectState == shareModel.WAITCANCEL || item.reflectState == shareModel.CANCELED) {//3,4 取消待ち/取消済　＝　取消
-                    result.push(new shared.CellState(rowId, 'reflectState', ['cancelCell']));
+                    result.push(new shared.CellState(rowId, 'reflectStateContent', ['cancelCell']));
                 }
                 if (item.reflectState == shareModel.REMAND) {//5 差し戻し　＝　差戻
-                    result.push(new shared.CellState(rowId, 'reflectState', ['remandCell']));
+                    result.push(new shared.CellState(rowId, 'reflectStateContent', ['remandCell']));
                 }
                 if (item.reflectState == shareModel.DENIAL) {//6 否認　=　否
-                    result.push(new shared.CellState(rowId, 'reflectState', ['denialCell']));
+                    result.push(new shared.CellState(rowId, 'reflectStateContent', ['denialCell']));
                 }
             });
             return result;
@@ -291,13 +295,14 @@ module nts.uk.at.view.kaf018.d.viewmodel {
         appDate: string;
         appContent: string;
         reflectState: number;
+        reflectStateContent: string;
         approvalStatus: string;
         phase1: string;
         phase2: string;
         phase3: string;
         phase4: string;
         phase5: string;
-        constructor(index: number, appId: string, appName: string, prePostAtr: string, appDate: string, appContent: string, reflectState: number,
+        constructor(index: number, appId: string, appName: string, prePostAtr: string, appDate: string, appContent: string, reflectState: number, reflectStateContent: string,
             approvalStatus: string, phase1: string, phase2: string, phase3: string, phase4: string, phase5: string) {
             this.index = index;
             this.appId = appId;
@@ -306,6 +311,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
             this.appDate = appDate;
             this.appContent = appContent;
             this.reflectState = reflectState;
+            this.reflectStateContent = reflectStateContent;
             this.approvalStatus = approvalStatus;
             this.phase1 = phase1;
             this.phase2 = phase2;
