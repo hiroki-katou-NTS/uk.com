@@ -16,6 +16,7 @@ import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.task.data.TaskDataSetter;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.SyEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.AnnualBreakManageAdapter;
@@ -87,13 +88,15 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 		if (outputErrorInfoCommand.size() > 0) {
 			// エラーがあった場合
 			for (int i = 0; i < outputErrorInfoCommand.size(); i++) {
-				JsonObject value = Json.createObjectBuilder()
-						.add("employeeCode", outputErrorInfoCommand.get(i).getEmployeeCode())
-						.add("employeeName", outputErrorInfoCommand.get(i).getEmployeeName())
-						.add("errorMessage", outputErrorInfoCommand.get(i).getErrorMessage()).build();
-				setter.setData(ERROR_LIST + i, value);
-				setter.updateData(NUMBER_OF_SUCCESS, outputErrorInfoCommand.size());
-				setter.updateData(NUMBER_OF_ERROR, outputErrorInfoCommand.size());
+				if (!StringUtil.isNullOrEmpty(outputErrorInfoCommand.get(i).getEmployeeCode(), true)) {
+					JsonObject value = Json.createObjectBuilder()
+							.add("employeeCode", outputErrorInfoCommand.get(i).getEmployeeCode())
+							.add("employeeName", outputErrorInfoCommand.get(i).getEmployeeName())
+							.add("errorMessage", outputErrorInfoCommand.get(i).getErrorMessage()).build();
+					setter.setData(ERROR_LIST + i, value);
+					setter.updateData(NUMBER_OF_SUCCESS, outputErrorInfoCommand.size());
+					setter.updateData(NUMBER_OF_ERROR, outputErrorInfoCommand.size());
+				}
 			}
 		} else {
 			// エラーがなかった場合
