@@ -2765,13 +2765,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 val189 = self.natural(number189) * Number(self.natural(breakTimeDay.day)) + (number189 - self.natural(number189)) / 0.5 * self.natural(breakTimeDay.am),
                 minuNextMonth;
             if (self.absentDeductionTime() != undefined) {
-                minuNextMonth = (dataCalc.value191 + dataCalc.value21) - (val189 + self.absentDeductionTime())
+                minuNextMonth = ((dataCalc.value191 + dataCalc.value21) - (val189 + self.absentDeductionTime())) * (-1)
             }
             else{
                return ; 
             }
 
-            minuNextMonth = minuNextMonth < 0 ? 0 : minuNextMonth * (-1);
+           // minuNextMonth = minuNextMonth < 0 ? 0 : minuNextMonth * (-1);
             self.nextMonthTransferredMoneyTime(self.convertToHours(minuNextMonth));
 
            self.checkColor(self.nextMonthTransferredMoneyTime(), breakTimeDay);
