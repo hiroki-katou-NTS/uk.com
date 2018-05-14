@@ -45,6 +45,7 @@ public class EmployeeInfoPubImpl implements EmployeeInfoPublisher {
 				.isFindEmploymentInfo(dto.isFindEmploymentInfo)
 				.isFindJobTilteInfo(dto.isFindJobTilteInfo)
 				.isFindWorkPlaceInfo(dto.isFindWorkPlaceInfo)
+				.peroid(dto.peroid)
 				.build());
 		return resultList.parallelStream().map(res -> {
 			EmployeeInfoExport data = new EmployeeInfoExport();

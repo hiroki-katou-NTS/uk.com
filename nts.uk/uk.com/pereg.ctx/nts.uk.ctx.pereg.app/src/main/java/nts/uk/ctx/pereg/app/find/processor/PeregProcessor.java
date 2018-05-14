@@ -446,11 +446,10 @@ public class PeregProcessor {
 			boolean isCtgViewOnly, GeneralDate startDate) {
 		// get per info item def with order
 		PersonInfoCategory category = paramObject.getPersonInfoCategory();
-		List<PersonInfoItemDefinition> fullItemDefinitionList = perItemRepo
-				.getAllItemDefByCategoryId(category.getPersonInfoCategoryId(), paramObject.getContractCode());
 
-		List<PersonInfoItemDefinition> itemDefinitionList = fullItemDefinitionList.stream()
-				.filter(item -> item.haveNotParentCode()).collect(Collectors.toList());
+		List<PersonInfoItemDefinition> itemDefinitionList = perItemRepo.getAllItemByCtgWithAuth(
+				category.getPersonInfoCategoryId(), paramObject.getContractCode(), paramObject.getRoleId(),
+				paramObject.isSelfAuth());
 
 		List<PerInfoItemDefForLayoutDto> lstReturn = new ArrayList<>();
 		PersonInfoItemDefinition itemDefinition;
@@ -459,31 +458,24 @@ public class PeregProcessor {
 		Map<String, PersonInfoItemAuth> mapItemAuth = itemAuthRepo
 				.getAllItemAuth(paramObject.getRoleId(), category.getPersonInfoCategoryId()).stream()
 				.collect(Collectors.toMap(e -> e.getPersonItemDefId(), e -> e));
+		
 		for (int i = 0; i < itemDefinitionList.size(); i++) {
 			itemDefinition = itemDefinitionList.get(i);
-
-			// check authority
 			PersonInfoItemAuth personInfoItemAuth = mapItemAuth.get(itemDefinition.getPerInfoItemDefId());
 			PersonInfoAuthType itemRole = paramObject.isSelfAuth() ? personInfoItemAuth.getSelfAuth()
 					: personInfoItemAuth.getOtherAuth();
-			if (itemRole == PersonInfoAuthType.HIDE) {
-				continue;
-			}
-			// convert item-definition to layoutDto
 			ActionRole role = itemRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT;
+
 			PerInfoItemDefForLayoutDto itemDto = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition, i,
 					role, isCtgViewOnly, combobox, employeeId, startDate);
 
-			// get and convert childrenItems
-			List<PerInfoItemDefForLayoutDto> childrenItems = itemForLayoutFinder.getChildrenItems(
-					fullItemDefinitionList, category, itemDefinition, employeeId, i, isCtgViewOnly, startDate, combobox,
-					role);
+			List<PerInfoItemDefForLayoutDto> childrenItems = itemForLayoutFinder.getChildrenItems(category,
+					itemDefinition, employeeId, i, isCtgViewOnly, startDate, combobox, role);
 
 			itemDto.setLstChildItemDef(childrenItems);
 
 			lstReturn.add(itemDto);
 		}
-
 		return lstReturn;
 	}
 	

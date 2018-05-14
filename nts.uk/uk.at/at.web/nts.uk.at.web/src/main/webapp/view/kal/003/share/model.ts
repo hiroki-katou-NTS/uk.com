@@ -363,7 +363,7 @@ module nts.uk.at.view.kal003.share.model {
             let self = this;
             self.targetNO = ko.observable(NO);
             self.conditionAtr = param ? ko.observable(param.conditionAtr) : ko.observable(0);
-            self.useAtr = param ? ko.observable(param.useAtr) : ko.observable(false);
+            self.useAtr = param ? ko.observable(param.useAtr) : ko.observable(true);
             self.uncountableAtdItem = param ? ko.observable(param.uncountableAtdItem) : ko.observable(null);
             self.countableAddAtdItems(param && param.countableAddAtdItems ? param.countableAddAtdItems : []);
             self.countableSubAtdItems(param && param.countableSubAtdItems ? param.countableSubAtdItems : []);

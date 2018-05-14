@@ -3,9 +3,11 @@ module nts.uk.at.view.kdr001.b {
         let screenModel = new viewmodel.ScreenModel();
         screenModel.start().done(function(self) {
                 __viewContext.bind(screenModel);
-                // focus
-                self.setFocus();
-            setTimeout(function() {self.setFocus(); }, 200);
+                setTimeout(function () { 
+                    self.setFocus(); 
+                    $("#rowSpecialHoliday > td > div > div > label").addClass("limited-label");
+                    $("#rowSpecialHoliday > td > div > div > label > span.label").addClass("label-checkbox");
+                }, 200);
             });
         });
 }

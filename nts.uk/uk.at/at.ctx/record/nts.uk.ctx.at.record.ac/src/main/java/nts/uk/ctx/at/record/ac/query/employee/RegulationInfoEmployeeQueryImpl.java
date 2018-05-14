@@ -67,10 +67,10 @@ public class RegulationInfoEmployeeQueryImpl implements RegulationInfoEmployeeQu
 		query.employeeIds = new ArrayList<>(employeeIds);
 		query.peroid = date;
 		query.isFindWorkPlaceInfo = false;
-		query.isFindBussinessTypeInfo = false;
-		query.isFindClasssificationInfo = false;
-		query.isFindEmploymentInfo = false;
-		query.isFindJobTilteInfo = false;
+		query.isFindBussinessTypeInfo = true;
+		query.isFindClasssificationInfo = true;
+		query.isFindEmploymentInfo = true;
+		query.isFindJobTilteInfo = true;
 		return emInfoPub.find(query).stream().map(e -> EmployeeSearchInfoDto.builder().employeeId(e.employeeId)
 				.businessTypes(e.businessTypeHistorys.stream()
 						.map(b -> HistoryCommonInfo.builder().code(b.businessTypeCode).employeeId(b.employeeId)

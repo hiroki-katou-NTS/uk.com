@@ -145,6 +145,36 @@ module nts.uk.at.view.kdw002.c {
                                     }
                                 }
                             }
+                            let listData = self.dailyServiceTypeControl().displayAndInput;
+                            let notUseExist = _.find(listData, function(e){ return !e.toUse });
+                            if(nts.uk.util.isNullOrUndefined(notUseExist)){
+                                $("#useCheckAll").prop('checked', true);
+                            }else{
+                                $("#useCheckAll").prop('checked', false);
+                            }
+                            
+                            let notYouCanCheckAll = true;
+                            for(let i =0;i<listData.length;i++){
+                                if(listData[i].toUse ==true && listData[i].userCanUpdateAtr == 1){
+                                    if(!listData[i].youCanChangeIt){
+                                        notYouCanCheckAll =false;
+                                        break;
+                                    }
+                                }
+                            }
+                            $("#youCanCheckAll").prop('checked', notYouCanCheckAll);
+                            
+                            let notOtherCheckAll = true;
+                            for(let i =0;i<listData.length;i++){
+                                if(listData[i].toUse ==true && listData[i].userCanUpdateAtr == 1){
+                                    if(!listData[i].canBeChangedByOthers){
+                                        notOtherCheckAll =false;
+                                        break;
+                                    }
+                                }
+                            }
+                            $("#otherCheckAll").prop('checked', notOtherCheckAll);
+                            
                             nts.uk.ui.block.clear();
                         }
                     );
@@ -265,6 +295,8 @@ module nts.uk.at.view.kdw002.c {
                 service.getMonthlyAttdItemByRoleID(roleID).done(function(data) {
                     let listDefault: Array<DisplayAndInputControl> = [];
                     if (nts.uk.util.isNullOrUndefined(data)) {
+                        
+                        
                         if (self.listAttdMonthlyItem.length != 0) {
                             for (let i = 0; i < self.listAttdMonthlyItem.length; i++) {
                                 listDefault.push(
@@ -280,6 +312,7 @@ module nts.uk.at.view.kdw002.c {
                         }
 
                     } else {
+                        
                         if (self.listAttdMonthlyItem.length != 0) {
                             for (let j = 0; j < data.listDisplayAndInputMonthly.length; j++) {
                                 for (let i = 0; i < self.listAttdMonthlyItem.length; i++) {
@@ -303,6 +336,7 @@ module nts.uk.at.view.kdw002.c {
                     self.dailyServiceTypeControl(
                         new DailyAttendanceItemAuth("", roleID, _.sortBy(listDefault, ['itemDailyID']))
                     );
+                    
                     dfd.resolve(self.dailyServiceTypeControl());
                 });
                 return dfd.promise();
@@ -548,6 +582,7 @@ module nts.uk.at.view.kdw002.c {
 }
 function useChanged(element, rowId, userCanSet) {
     //update lai element
+    
     var value = $("#grid").igGrid("getCellValue", rowId, "toUse");
     if ($("#grid").igGridUpdating('isEditing')) {
         $("#grid").igGridUpdating('endEdit', true);
@@ -573,6 +608,14 @@ function useChanged(element, rowId, userCanSet) {
         cellYouCanChangeIt.children().prop("disabled", true);
         cellCanBeChangedByOthers.children().prop("disabled", true);
     }
+    
+    let temp = $('#grid').data('igGrid').dataSource._data;
+    let notUseExist = _.find(temp, function(e){ return !e.toUse });
+    if(nts.uk.util.isNullOrUndefined(notUseExist)){
+        $("#useCheckAll").prop('checked', true);
+    }else{
+        $("#useCheckAll").prop('checked', false);
+    }
 }
 
 
@@ -582,6 +625,22 @@ function youCanChangeItChanged(element, rowId) {
         $("#grid").igGridUpdating('endEdit', true);
     }
     $("#grid").igGridUpdating("setCellValue", rowId, "youCanChangeIt", value != true);
+    
+    let temp = $('#grid').data('igGrid').dataSource._data;
+    let notYouCanCheckAll = true;
+    for(let i =0;i<temp.length;i++){
+        if(temp[i].toUse ==true && temp[i].userCanUpdateAtr == 1){
+            if(!temp[i].youCanChangeIt){
+                notYouCanCheckAll =false;
+                break;
+            }
+        }
+    }
+    $("#youCanCheckAll").prop('checked', notYouCanCheckAll);
+    
+    
+    
+   
 }
 function canBeChangedByOthersChanged(element, rowId) {
     var value = $("#grid").igGrid("getCellValue", rowId, "canBeChangedByOthers");
@@ -589,6 +648,19 @@ function canBeChangedByOthersChanged(element, rowId) {
         $("#grid").igGridUpdating('endEdit', true);
     }
     $("#grid").igGridUpdating("setCellValue", rowId, "canBeChangedByOthers", value != true);
+    
+    
+    let temp = $('#grid').data('igGrid').dataSource._data;
+    let notOtherCheckAll = true;
+    for(let i =0;i<temp.length;i++){
+        if(temp[i].toUse ==true && temp[i].userCanUpdateAtr == 1){
+            if(!temp[i].canBeChangedByOthers){
+                notOtherCheckAll =false;
+                break;
+            }
+        }
+    }
+    $("#otherCheckAll").prop('checked', notOtherCheckAll);
 }
 
 function userCanSetChanged(element, rowId) {

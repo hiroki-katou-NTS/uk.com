@@ -151,6 +151,8 @@ public class JpaEmployeeInfoRepository extends JpaRepository implements Employee
 								.endDate(data.getWplEndDate()).build();
 					}).collect(Collectors.toList());
 			info.setWorkPlaceHistorys(workPlaces);
+		} else {
+			info.setWorkPlaceHistorys(Collections.emptyList());
 		}
 
 		// Add classification info.
@@ -164,6 +166,8 @@ public class JpaEmployeeInfoRepository extends JpaRepository implements Employee
 								.endDate(data.getClassEndDate()).build();
 					}).collect(Collectors.toList());
 			info.setClassificationHistorys(classifications);
+		} else {
+			info.setClassificationHistorys(Collections.emptyList());
 		}
 
 		// Add Employment info.
@@ -177,6 +181,8 @@ public class JpaEmployeeInfoRepository extends JpaRepository implements Employee
 								.endDate(data.getEmploymentEndDate()).build();
 					}).collect(Collectors.toList());
 			info.setEmploymentHistorys(employments);
+		} else {
+			info.setEmploymentHistorys(Collections.emptyList());
 		}
 
 		// Add Job title info.
@@ -189,6 +195,8 @@ public class JpaEmployeeInfoRepository extends JpaRepository implements Employee
 								.startDate(data.getJobStrDate()).endDate(data.getJobEndDate()).build();
 					}).collect(Collectors.toList());
 			info.setJobTitleHistorys(jobTitles);
+		} else {
+			info.setJobTitleHistorys(Collections.emptyList());
 		}
 
 		// Add Bussiness type info.
@@ -202,6 +210,8 @@ public class JpaEmployeeInfoRepository extends JpaRepository implements Employee
 								.endDate(data.getWorkTypeEndDate()).build();
 					}).collect(Collectors.toList());
 			info.setBusinessTypeHistorys(businessTypes);
+		} else {
+			info.setBusinessTypeHistorys(Collections.emptyList());
 		}
 		return info;
 	}
