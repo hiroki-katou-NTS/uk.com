@@ -25,7 +25,9 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- A1_1 -->
-				<button tabindex="1" id="A1_1" class="proceed" data-bind="click: exportReport, enable: $root.errors.isEmpty">#{i18n.getText('KWR008_3')}</button>
+				<button tabindex="1" id="A1_1" class="proceed"
+				data-bind="click: exportReport,
+							enable: $root.errors.isEmpty &amp;&amp; checkInput()">#{i18n.getText('KWR008_3')}</button>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<!-- A2_1  CCG001-->
@@ -71,7 +73,7 @@
 								editable: false,
 								columns: [
 									{ prop: 'code', length: 2 },
-									{ prop: 'name', length: 10, lengthDropDown: 20 },
+									{ prop: 'name', length: 15, lengthDropDown: 15 },
 								]}"></div>
 								<!-- A4_3 -->
 								<button data-bind="click: openKWR008B,

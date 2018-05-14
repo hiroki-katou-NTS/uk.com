@@ -122,12 +122,16 @@ module nts.uk.at.view.kwr008.a {
                     } else if (self.outputItem().length) {
                         self.selectedOutputItem(self.outputItem()[0].code);
                     }
+                    if (!self.outputItem().length) {
+                        self.selectedOutputItem(null);
+                    }
                 });
 
                 self.selectedEmployeeCode = ko.observableArray([]);
                 self.alreadySettingPersonal = ko.observableArray([]);
                 self.maxDaysCumulationByEmp = ko.observable(0);
             }
+
             getOutItemSettingCode() {
                 var self = this;
                 self.outputItem([]);
@@ -136,6 +140,10 @@ module nts.uk.at.view.kwr008.a {
                         self.outputItem.push(new share.ItemModel(data.cd, data.name));
                     });
                 });
+            }
+            checkInput(): boolean {
+                var self = this;
+                return self.dateValue().startDate && self.dateValue().endDate && self.selectedOutputItem();
             }
 
             exportReport() {
