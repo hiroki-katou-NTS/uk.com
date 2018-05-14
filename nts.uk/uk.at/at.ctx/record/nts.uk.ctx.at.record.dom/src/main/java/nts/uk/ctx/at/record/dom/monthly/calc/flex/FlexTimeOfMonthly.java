@@ -460,8 +460,8 @@ public class FlexTimeOfMonthly {
 		
 		AttendanceTimeMonthWithMinus flexTargetTime = new AttendanceTimeMonthWithMinus(0);
 		
-		// 合計法定内時間を取得する
-		val totalLegalTime = aggregateTotalWorkingTime.getWorkTime().getTimeSeriesTotalLegalTime(datePeriod);
+		// 合計法定内実働時間を取得する
+		val totalLegalTime = aggregateTotalWorkingTime.getWorkTime().getTimeSeriesTotalLegalActualTime(datePeriod);
 		
 		// フレックス対象時間に合計法定内時間（就業時間）を加算する
 		flexTargetTime = flexTargetTime.addMinutes(totalLegalTime.v());
