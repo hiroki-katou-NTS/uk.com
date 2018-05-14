@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.app.find.attendancerecord.export.setting;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -47,20 +48,28 @@ public class AttendanceRecordExportSettingFinder {
 	/**
 	 * Gets the attendance record export setting dto.
 	 *
-	 * @param companyId the company id
-	 * @param code the code
+	 * @param companyId
+	 *            the company id
+	 * @param code
+	 *            the code
 	 * @return the attendance record export setting dto
 	 */
-	public AttendanceRecordExportSettingDto getAttendanceRecordExportSettingDto(String companyId, String code) {
+	public AttendanceRecordExportSettingDto getAttendanceRecordExportSettingDto(String companyId, long code) {
 
-		AttendanceRecordExportSetting domain = attendanceRecExpSetRepo.getAttendanceRecExpSet(companyId, code);
+		Optional<AttendanceRecordExportSetting> optionalDomain = attendanceRecExpSetRepo
+				.getAttendanceRecExpSet(companyId, code);
 
-		AttendanceRecordExportSettingDto dto = new AttendanceRecordExportSettingDto();
+		if (optionalDomain.isPresent()) {
+			AttendanceRecordExportSetting domain = optionalDomain.get();
+			AttendanceRecordExportSettingDto dto = new AttendanceRecordExportSettingDto();
 
-		dto.setCode(domain.getCode().toString());
-		dto.setName(domain.getName().toString());
-		dto.setSealUseAtr(domain.getSealUseAtr());
+			dto.setCode(domain.getCode().toString());
+			dto.setName(domain.getName().toString());
+			dto.setSealUseAtr(domain.getSealUseAtr());
 
-		return dto;
+			return dto;
+		}
+		return new AttendanceRecordExportSettingDto();
+
 	}
 }

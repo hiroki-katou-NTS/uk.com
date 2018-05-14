@@ -15,7 +15,7 @@ public interface AttendanceRecordExportSettingSetMemento {
 	 * @param companyId the company id
 	 * @return the company id
 	 */
-	void getCompanyId(String companyId);
+	void setCompanyId(String companyId);
 
 	/**
 	 * Sets the daily ouput item.
@@ -57,5 +57,5 @@ public interface AttendanceRecordExportSettingSetMemento {
 	 *
 	 * @param seal the new seal stamp
 	 */
-	void setSealStamp(List<SealColumnName> seal);
+	void setSealStamp(String companyId, ExportSettingCode code, List<SealColumnName> seal);
 }

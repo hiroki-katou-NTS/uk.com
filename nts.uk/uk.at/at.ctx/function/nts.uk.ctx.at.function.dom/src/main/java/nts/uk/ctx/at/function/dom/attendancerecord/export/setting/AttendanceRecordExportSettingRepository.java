@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.attendancerecord.export.setting;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The Interface AttendanceRecordOutputSettingRepository.
@@ -22,7 +23,7 @@ public interface AttendanceRecordExportSettingRepository {
 	 * @param code the code
 	 * @return the attendance rec out set
 	 */
-	AttendanceRecordExportSetting getAttendanceRecExpSet(String companyId, String code);
+	Optional<AttendanceRecordExportSetting> getAttendanceRecExpSet(String companyId, long code);
 
 	/**
 	 * Update attendance rec out set.
