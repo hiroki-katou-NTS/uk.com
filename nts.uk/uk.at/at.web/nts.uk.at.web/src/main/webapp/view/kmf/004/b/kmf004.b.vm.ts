@@ -83,7 +83,7 @@ module nts.uk.at.view.kmf004.b {
                             self.name(data.personalGrantDateName);
                             self.provisionCheck(data.provision == 1 ? true : false);
                             self.selectedBaseDateId(data.grantDateAtr),
-                            self.standardDate(data.grantDate),
+                            self.standardDate(data.grantDateAtr != 0 ? "" : data.grantDate),
                             self.bindPerSetData(data.personalGrantDateCode)
                             $("#input-name").focus();
                             nts.uk.ui.errors.clearAll();
