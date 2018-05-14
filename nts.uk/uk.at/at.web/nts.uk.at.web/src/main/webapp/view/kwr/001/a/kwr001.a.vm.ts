@@ -5,7 +5,6 @@ module nts.uk.at.view.kwr001.a {
     
     export module viewmodel {
         export class ScreenModel {
-            data: KnockoutObservable<number>;
             dataOutputType: KnockoutObservableArray<any>;
             
             // datepicker A1_6
@@ -21,7 +20,7 @@ module nts.uk.at.view.kwr001.a {
             
             // dropdownlist A7_3
             itemListCodeTemplate: KnockoutObservableArray<ItemModel>;
-            selectedCodeA7_3: KnockoutObservable<number>;
+            selectedCodeA7_3: KnockoutObservable<string>;
             
             // dropdownlist A9_2
             itemListTypePageBrake: KnockoutObservableArray<ItemModel>;
@@ -75,8 +74,6 @@ module nts.uk.at.view.kwr001.a {
             
             constructor() {
                 let self = this;
-
-                self.data = ko.observable(1);
                 
                 self.enableConfigErrCode = ko.observable(true);
                 self.enableByOutputFormat = ko.observable(true);
@@ -205,7 +202,12 @@ module nts.uk.at.view.kwr001.a {
                 // TODO: hoangdd - lay du lieu tu service
                 self.itemListCodeTemplate = ko.observableArray([
                     new ItemModel('0', '123'),
-                    new ItemModel('1', '456')
+                    new ItemModel('1', '456'),
+                    new ItemModel('2', '123'),
+                    new ItemModel('3', '123'),
+                    new ItemModel('4', '456'),
+                    new ItemModel('5', '123'),
+                    new ItemModel('6', '456'),
                 ]);
                 
                 // TODO: hoangdd - lay du lieu tu service
@@ -216,7 +218,7 @@ module nts.uk.at.view.kwr001.a {
                 
                 self.selectedCodeA9_2 = ko.observable(1);
                 
-                self.selectedCodeA7_3 = ko.observable(1); 
+                self.selectedCodeA7_3 = ko.observable(''); 
                 
                 // TODO: hoangdd - lay du lieu tu service
                 self.itemListConditionSet = ko.observableArray([
@@ -303,7 +305,7 @@ module nts.uk.at.view.kwr001.a {
                     self.selectedDataOutputType(workScheduleOutputCondition.outputType);
                     // TODO - hoangdd: A7_3 se can 1 service de lay list, sau do so sanh code da chon vs list code tra ve de lay index
                     //          workScheduleOutputCondition.code
-                    self.selectedCodeA7_3(1);
+                    self.selectedCodeA7_3('1');
                     self.selectedCodeA9_2(workScheduleOutputCondition.pageBreakIndicator);
                     self.checkedA10_2(workScheduleOutputCondition.settingDetailTotalOuput.details);
                     self.checkedA10_3(workScheduleOutputCondition.settingDetailTotalOuput.personalTotal);
@@ -390,8 +392,13 @@ module nts.uk.at.view.kwr001.a {
                 })
             }
             openScreenC (): void {
-                var self = this;
-                nts.uk.ui.windows.setShared('KWR001_C', self.data(), true);
+                let self = this;
+                
+                let codeChoose = _.find(self.itemListCodeTemplate(), function(o) { 
+                    return self.selectedCodeA7_3() == o.code; 
+                });
+                
+                nts.uk.ui.windows.setShared('KWR001_C', codeChoose.code, true);
                 nts.uk.ui.windows.sub.modal('/view/kwr/001/c/index.xhtml').onClosed(function(): any {
                     nts.uk.ui.windows.getShared('KWR001_C');
                 });
