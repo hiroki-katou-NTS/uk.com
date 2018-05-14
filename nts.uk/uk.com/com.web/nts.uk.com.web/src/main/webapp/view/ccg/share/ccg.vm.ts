@@ -599,9 +599,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 // showBaseDate and showPeriod can not hide at the same time
                 const isBaseDateAndPeriodHidden = !options.showBaseDate && !options.showPeriod;
                 self.showBaseDate = nts.uk.util.isNullOrUndefined(options.showBaseDate) ? true : (isBaseDateAndPeriodHidden ? true : options.showBaseDate);
-                self.showClosure = nts.uk.util.isNullOrUndefined(options.showClosure) ? false : options.showClosure;
                 self.showAllClosure = nts.uk.util.isNullOrUndefined(options.showAllClosure) ? false : options.showAllClosure;
                 self.showPeriod = nts.uk.util.isNullOrUndefined(options.showPeriod) ? false : options.showPeriod;
+                self.showClosure = self.showPeriod; // specs update ver3.1
                 // if ShowPeriod = false then period accuracy must be false too. 
                 self.showPeriodYM = nts.uk.util.isNullOrUndefined(self.showPeriod) ? false : (self.showPeriod ? options.periodFormatYM : false);
 
