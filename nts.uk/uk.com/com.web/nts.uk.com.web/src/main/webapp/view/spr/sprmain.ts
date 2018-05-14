@@ -1,4 +1,5 @@
 __viewContext.ready(function() {
+    nts.uk.request.login.keepUsedLoginPage("com", "/view/ccg/007/d/index.xhtml");
 	var paramSPR = JSON.parse(window.sessionStorage.getItem("paramSPR"));
 	window.sessionStorage.removeItem("paramSPR");
     var menuCD = parseInt(paramSPR.menu);
