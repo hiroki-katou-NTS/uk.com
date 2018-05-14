@@ -43,6 +43,9 @@ public class LayoutPersonInfoValueDto {
 
 	// for new set item structor
 	private String itemParentCode;
+	
+	// is not ItemDefinition of attribute
+	private int dispOrder;
 
 	@NonNull
 	// index of item in list (multiple, history)
@@ -112,6 +115,9 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setRow(0);
 		dataObject.setRequired(itemDef.getIsRequired() == 1);
 		dataObject.setShowColor(true);
+		
+		//2018/02/11
+		dataObject.setDispOrder(itemDef.getDispOrder());
 
 		dataObject.setType(itemDef.getItemTypeState().getItemType());
 		dataObject.setCtgType(perInfoCategory.getCategoryType().value);

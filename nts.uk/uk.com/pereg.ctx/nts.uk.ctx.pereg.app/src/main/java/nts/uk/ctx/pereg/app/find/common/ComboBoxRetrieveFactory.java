@@ -278,7 +278,7 @@ public class ComboBoxRetrieveFactory {
 			// return new ArrayList<>();
 			// 就業時間帯マスタ
 			if (workplaceId == null ) {
-				PeregDto resultDto = layoutingProcessor.findSingle(new PeregQuery("CS00017", employeeId, "", standardDate));
+				PeregDto resultDto = layoutingProcessor.findSingle(PeregQuery.createQueryLayout("CS00017", employeeId, "", standardDate));
 				if (resultDto != null) {
 					AffWorlplaceHistItemDto workPlaceItem = (AffWorlplaceHistItemDto) resultDto.getDomainDto();
 					workplaceId = workPlaceItem.getWorkplaceCode();

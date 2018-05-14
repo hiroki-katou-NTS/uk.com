@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
@@ -47,9 +46,6 @@ public class ItemDefFinder {
 	private LayoutingProcessor layoutingProcessor;
 	
 	@Inject
-	private EmployeeDataMngInfoRepository empRepo;
-	
-	@Inject
 	private PerInfoCategoryRepositoty perInfoCtgRepo;
 
 	@Inject
@@ -71,9 +67,6 @@ public class ItemDefFinder {
 		// app context
 		String contractCd = AppContexts.user().contractCode();
 		String companyId = AppContexts.user().companyId();
-
-		// get Person ID
-		query.setPersonId(empRepo.findByEmpId(query.getEmployeeId()).get().getPersonId());
 
 		// get category 
 		PersonInfoCategory perInfoCtg = perInfoCtgRepo.getPerInfoCategoryByCtgCD(query.getCategoryCode(), companyId).get();

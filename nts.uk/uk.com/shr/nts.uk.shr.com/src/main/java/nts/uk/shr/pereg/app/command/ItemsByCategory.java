@@ -29,9 +29,20 @@ public class ItemsByCategory {
 
 	/** Record Id, but this is null when new record */
 	private String recordId;
+	
+	/** if category will be deleted when register */
+	private boolean delete;
 
 	/** input items */
 	private List<ItemValue> items;
+	
+	public ItemsByCategory(String categoryCd, String recordId, List<ItemValue> items) {
+		super();
+		this.categoryCd = categoryCd;
+		this.recordId = recordId;
+		this.items = items;
+		this.delete = false;
+	}
 
 	public Object createCommandForSystemDomain(String personId, String employeeId, Class<?> commandClass) {
 
@@ -102,4 +113,5 @@ public class ItemsByCategory {
 	public List<String> getItemIdList() {
 		return this.items.stream().map(x -> x.definitionId()).collect(Collectors.toList());
 	}
+
 }

@@ -11,7 +11,7 @@ module cps002.a.vm {
     import block = nts.uk.ui.block;
     import lv = nts.layout.validate;
     import vc = nts.layout.validation;
-
+    let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'];
     export class ViewModel {
 
         date: KnockoutObservable<Date> = ko.observable(moment().toDate());
@@ -31,6 +31,8 @@ module cps002.a.vm {
         createTypeId: KnockoutObservable<number> = ko.observable(3);
 
         currentEmployee: KnockoutObservable<Employee> = ko.observable(new Employee());
+
+        stampCardEditing: StampCardEditing;
 
         categorySelectedCode: KnockoutObservable<string> = ko.observable('');
 
@@ -227,7 +229,15 @@ module cps002.a.vm {
 
             });
 
+
+            self.currentEmployee().employeeCode.subscribe((employeeCode) => {
+                var self = this;
+                self.updateCardNumber();
+            });
+
             self.start();
+
+            console.log('start done');
 
         }
 
@@ -264,19 +274,37 @@ module cps002.a.vm {
             });
             service.getLayout().done((layout) => {
                 if (layout) {
-                    service.getUserSetting().done((result: IUserSetting) => {
-                        if (result) {
-                            self.getEmployeeCode(result).done((empCode) => {
+                    let dfs: Array<JQueryDeferred<any>> = [$.Deferred(), $.Deferred()];
+
+                    service.getStamCardEdit().done(data => {
+                        dfs[0].resolve(data);
+                    });
+
+                    service.getUserSetting().done(data => {
+                        dfs[1].resolve(data);
+                    });
+
+                    $.when.apply($, dfs).then(() => {
+                        let stampCardEditing = arguments[0];
+                        let userSetting = arguments[1];
+
+                        writeConstraint("StampNumber", {
+                            maxLength: stampCardEditing.digitsNumber
+                        });
+
+                        self.stampCardEditing = new StampCardEditing(stampCardEditing.method, stampCardEditing.digitsNumber);
+
+                        if (userSetting) {
+                            self.getEmployeeCode(userSetting).done((empCode) => {
                                 self.currentEmployee().employeeCode(empCode);
-                                self.getCardNumber(result);
 
                             });
                         }
-
-                        self.currentUseSetting(new UserSetting(result));
-
-                        self.getLastRegHistory(result);
+                        self.currentUseSetting(new UserSetting(userSetting));
+                        self.getLastRegHistory(userSetting);
                         $("#hireDate").focus();
+
+                        console.log('start done1');
                     });
                 } else {
                     dialog({ messageId: "Msg_344" }).then(() => {
@@ -322,34 +350,10 @@ module cps002.a.vm {
             return dfd.promise();
         }
 
-        getCardNumber(userSetting: IUserSetting) {
-            //            let self = this,
-            //                genType = userSetting.cardNumberType,
-            //                eployee = self.currentEmployee();
-            //
-            //            if (genType === 1 || genType === 4) {
-            //
-            //                //                service.getCardNumber(genType === 1 ? userSetting.cardNumberLetter : '').done((result) => {
-            //                //
-            //                //                    eployee.cardNo(result);
-            //                //
-            //                //                });
-            //            } else {
-            //
-            //                if (genType === 3) {
-            //
-            //                    eployee.cardNo(eployee.employeeCode());
-            //                }
-            //
-            //                if (genType === 5) {
-            //
-            //                    service.getEmployeeCodeAndComId(userSetting.employeeCodeLetter).done((result) => {
-            //
-            //                        eployee.cardNo(result);
-            //                    });
-            //                }
-            //            }
-
+        updateCardNumber(userSetting: IUserSetting) {
+            let self = this;
+            let employee = self.currentEmployee();
+            employee.cardNo(__viewContext.user.companyCode + employee.employeeCode());
         }
 
         isError() {
@@ -1021,6 +1025,22 @@ module cps002.a.vm {
 
     }
 
+    class StampCardEditing {
+        method: EDIT_METHOD;
+        digitsNumber: number;
 
+        constructor(method: number, digitsNumber: number) {
+            this.method = method;
+            this.digitsNumber = digitsNumber;
+        }
+
+    }
+
+    enum EDIT_METHOD {
+        PreviousZero = 0,
+        AfterZero = 1,
+        PreviousSpace = 2,
+        AfterSpace = 3
+    }
 
 }

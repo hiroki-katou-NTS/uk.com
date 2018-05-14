@@ -26,7 +26,7 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode
 				nts.uk.ctx.sys.gateway.dom.login.UserName
-				nts.uk.ctx.at.record.dom.stamp.CardNumber
+				nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber
 				nts.uk.ctx.sys.gateway.dom.login.LoginId
 				nts.uk.ctx.sys.gateway.dom.login.RawPassword
 				nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullName
@@ -123,12 +123,12 @@
 
 									<div class="div_line">
 										<div class="step1_top_left_col1">
-											<div data-bind="ntsFormLabel: {  constraint:'CardNumber' }">#{i18n.getText('CPS002_18')}</div>
+											<div data-bind="ntsFormLabel: {  constraint:'StampNumber' }">#{i18n.getText('CPS002_18')}</div>
 										</div>
 										<div class="step1_top_left_col2">
 											<input class="form_step1"
 												data-bind="ntsTextEditor: {value: cardNo,
-												constraint:'CardNumber',
+												constraint:'StampNumber',
 												name: '#{i18n.getText('CPS002_18')}',
 												option: {
 												 	width: '160' 

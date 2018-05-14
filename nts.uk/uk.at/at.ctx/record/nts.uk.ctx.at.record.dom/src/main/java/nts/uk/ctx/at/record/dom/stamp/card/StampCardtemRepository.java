@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.stamp.card;
 
 import java.util.List;
 
-public interface StampCardRepository {
+public interface StampCardtemRepository {
 	/**
 	 *  Get List Card by Person ID
 	 * @param employeeID
