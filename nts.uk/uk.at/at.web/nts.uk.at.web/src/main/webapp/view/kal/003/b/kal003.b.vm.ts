@@ -709,7 +709,6 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 //With type 金額 - AmountMoney
                 return service.getAttendanceItemByAtr(6);
             }
-
         }
 
         

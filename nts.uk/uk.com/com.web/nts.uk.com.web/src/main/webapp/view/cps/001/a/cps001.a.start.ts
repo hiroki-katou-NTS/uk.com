@@ -1,6 +1,6 @@
 module cps001.a {
     import setShared = nts.uk.ui.windows.setShared;
-
+    
     let __viewContext: any = window['__viewContext'] || {};
     __viewContext.ready(() => {
         __viewContext.transferred.ifPresent(data => {

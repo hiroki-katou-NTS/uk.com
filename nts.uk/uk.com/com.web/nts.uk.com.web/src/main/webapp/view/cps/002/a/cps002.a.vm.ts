@@ -426,14 +426,14 @@ module cps002.a.vm {
             layout.layoutCode('');
             layout.layoutName('');
             layout.listItemCls([]);
-            
+
             let command = ko.toJS(self.currentEmployee());
-            
+
             //add atr
             command.employeeCopyId = self.copyEmployee().employeeId;
             command.initSettingId = self.currentInitSetting().itemId;
             command.createType = self.createTypeId();
-            
+
             service.getLayoutByCreateType(command).done((data: ILayout) => {
                 layout.layoutCode(data.layoutCode || '');
                 layout.layoutName(data.layoutName || '');
@@ -444,12 +444,16 @@ module cps002.a.vm {
 
                 layout.listItemCls(data.itemsClassification || []);
                 if (layout.listItemCls().length > 0) {
-                    new vc(layout.listItemCls());
+                    _.defer(() => {
+                        new vc(layout.listItemCls());
+                        _.defer(() => {
+                            $('.drag-panel input:not(:disabled):first').focus();
+                        });
+                    });
                 }
 
             });
 
-            $("#employeeAvatar").focus();
 
             service.getSelfRoleAuth().done((result: IRoleAuth) => {
 
@@ -461,7 +465,7 @@ module cps002.a.vm {
 
 
         }
-        
+
         completeStep1() {
             let self = this;
             if (self.copyEmployee().employeeId === '' && !self.isUseInitValue()) {
@@ -585,7 +589,7 @@ module cps002.a.vm {
             if (self.currentStep() === 1) {
                 $('#emp_reg_info_wizard').ntsWizard("prev");
             }
-            if (self.currentStep() === 2　&& self.createTypeId() !== 3) {
+            if (self.currentStep() === 2 && self.createTypeId() !== 3) {
                 self.gotoStep1();
             }
             if (self.createTypeId() === 3) {
@@ -658,7 +662,6 @@ module cps002.a.vm {
                 isCardNoMode = param === 'true' ? true : false,
                 useSetting = self.currentUseSetting(),
                 employee = self.currentEmployee();
-
             setShared("cardNoMode", isCardNoMode);
             if (useSetting) {
 
@@ -672,12 +675,13 @@ module cps002.a.vm {
 
                 }
             }
+
             subModal('/view/cps/002/e/index.xhtml', { title: '' }).onClosed(() => {
 
                 let result = getShared("CPS002_PARAM"),
                     currentEmp = self.currentEmployee();
                 if (result) {
-
+                    $("#employeeCode").ntsError("clear");
                     param === isCardNoMode ? currentEmp.cardNo(result) : currentEmp.employeeCode(result);
                 }
             });
@@ -768,7 +772,6 @@ module cps002.a.vm {
             self.avatarId("");
             self.loginId("");
             self.password("");
-
         }
     }
 

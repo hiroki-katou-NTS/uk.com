@@ -12,7 +12,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRec
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
 @Stateless
 public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
@@ -21,7 +21,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 	@Inject
 	private WorkTimeIsFluidWork workTimeService;
 	@Inject
-	private ScheWorkUpdateService workUpdate;
+	private WorkUpdateService workUpdate;
 	@Inject
 	private ScheStartEndTimeReflect scheStartEndTimeReflect;
 	
@@ -159,7 +159,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 			Integer overShiftNight) {
 		// INPUT．残業時間反映フラグをチェックする
 		//INPUT．外深夜時間をチェックする
-		if(!timeReflectFlg || overShiftNight < 0) {
+		if(!timeReflectFlg || overShiftNight == null || overShiftNight < 0) {
 			return;
 		}
 		//所定外深夜時間の反映
@@ -171,7 +171,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		//INPUT．残業時間反映フラグをチェックする
 		//INPUT．フレックス時間をチェックする
 		if(!timeReflectFlg
-				|| flexExessTime < 0) {
+				|| flexExessTime == null || flexExessTime < 0) {
 			return;
 		}
 		//フレックス時間を反映する

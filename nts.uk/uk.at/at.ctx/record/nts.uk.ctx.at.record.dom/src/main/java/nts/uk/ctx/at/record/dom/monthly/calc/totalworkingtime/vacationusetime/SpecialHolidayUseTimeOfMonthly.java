@@ -16,13 +16,12 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  *
  */
+@Getter
 public class SpecialHolidayUseTimeOfMonthly {
 	
 	/** 使用時間 */
-	@Getter
 	private AttendanceTimeMonth useTime;
 	/** 時系列ワーク */
-	@Getter
 	private Map<GeneralDate, SpecialHolidayUseTimeOfTimeSeries> timeSeriesWorks;
 	
 	/**
@@ -47,6 +46,23 @@ public class SpecialHolidayUseTimeOfMonthly {
 		return domain;
 		
 	}
+
+	/**
+	 * 複写
+	 * @param useTime 使用時間
+	 * @param timeSeriesWorks 時系列ワーク
+	 * @return 月別実績の特別休暇使用時間
+	 */
+	public static SpecialHolidayUseTimeOfMonthly copyFrom(
+			AttendanceTimeMonth useTime,
+			Map<GeneralDate, SpecialHolidayUseTimeOfTimeSeries> timeSeriesWorks){
+		
+		val domain = new SpecialHolidayUseTimeOfMonthly();
+		domain.useTime = new AttendanceTimeMonth(useTime.valueAsMinutes());
+		domain.timeSeriesWorks = timeSeriesWorks;
+		return domain;
+		
+	}
 	
 	/**
 	 * 特別休暇使用時間を確認する
@@ -65,14 +81,14 @@ public class SpecialHolidayUseTimeOfMonthly {
 			// 「日別実績の特別休暇」を取得する
 			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
-			//*****（未）　ここから先のドメインがまだない
-			//VacationOfDaily vacationOfDaily = totalWorkingTime.getVacation();
-			//SpecialHolidayOfDaily specialHolidayOfDaily = vacationOfDaily.getSpecialHoliday();
+			if (totalWorkingTime.getHolidayOfDaily() == null) return;
+			val holidayOfDaily = totalWorkingTime.getHolidayOfDaily();
+			if (holidayOfDaily.getSpecialHoliday() == null) return;
+			val specialHoliday = holidayOfDaily.getSpecialHoliday();
 			
 			// 取得した使用時間を「月別実績の特別休暇使用時間」に入れる
-			//*****（未）　「日別実績の特別休暇」クラスをnewして、値を入れて、それをset？
-			val specialHolidayUseTimeOfTimeSeries = SpecialHolidayUseTimeOfTimeSeries.of(ymd);
-			this.timeSeriesWorks.putIfAbsent(ymd, specialHolidayUseTimeOfTimeSeries);
+			val specialHolidayUseTime = SpecialHolidayUseTimeOfTimeSeries.of(ymd, specialHoliday);
+			this.timeSeriesWorks.putIfAbsent(ymd, specialHolidayUseTime);
 		}
 	}
 	
@@ -86,8 +102,15 @@ public class SpecialHolidayUseTimeOfMonthly {
 		
 		for (val timeSeriesWork : this.timeSeriesWorks.values()){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
-			//SpecialHolidayOfDaily specialHolidayUseTime = timeSeriesWork.getSpecialHolidayUseTime();
-			//this.useTime.addMinutes(specialHolidayUseTime.getUseTime().valueAsMinutes());
+			this.useTime.addMinutes(timeSeriesWork.getSpecialHolidayUseTime().getUseTime().v());
 		}
+	}
+	
+	/**
+	 * 使用時間に分を加算する
+	 * @param minutes 分
+	 */
+	public void addMinuteToUseTime(int minutes){
+		this.useTime = this.useTime.addMinutes(minutes);
 	}
 }

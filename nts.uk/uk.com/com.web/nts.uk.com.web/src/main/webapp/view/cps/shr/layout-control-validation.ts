@@ -29,8 +29,8 @@ module nts.layout {
         initCheckError: (items: Array<any>) => {
             // validate button, radio button
             _(items)
-                .filter(x => _.has(x, "items") && _.isFunction(x.items))
-                .map(x => x.items())
+                .filter(x => _.has(x, "items") && !!x.items)
+                .map(x => x.items)
                 .flatten()
                 .flatten()
                 .filter((x: IItemData) => x.required && x.type != ITEM_TYPE.SET)
@@ -49,8 +49,8 @@ module nts.layout {
         },
         checkError: (items: Array<any>) => {
             _(items)
-                .filter(x => _.has(x, "items") && _.isFunction(x.items))
-                .map(x => x.items())
+                .filter(x => _.has(x, "items") && !!x.items)
+                .map(x => x.items)
                 .flatten()
                 .flatten()
                 .filter((x: any) => x.type != ITEM_TYPE.SET)
@@ -60,12 +60,12 @@ module nts.layout {
                         element = document.getElementById(id),
                         $element = $(element);
 
-                    if (element) {
+                    if (element && !!x.editable) {
                         if (element.tagName.toUpperCase() == "INPUT") {
                             $element
                                 .trigger('blur')
                                 .trigger('change');
-                        } else if (element.tagName.toUpperCase() == "BUTTON" || $element.hasClass('radio-wrapper')) {
+                        } else if ((element.tagName.toUpperCase() == "BUTTON" || $element.hasClass('radio-wrapper'))) {
                             if (nou(x.value) && x.required) {
                                 if (!getError($element).length) {
                                     $element.ntsError('set', {
@@ -77,6 +77,7 @@ module nts.layout {
                         }
                         else {
                             $element
+                                .trigger('validate')
                                 .find('.nts-input')
                                 .trigger('blur')
                                 .trigger('change');
@@ -97,7 +98,7 @@ module nts.layout {
 
         find = (categoryCode: string, subscribeCode: string): IFindData => {
             let self = this,
-                controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && _.isFunction(x.items)).map(x => x.items()).flatten().flatten().value(),
+                controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && !!x.items).map(x => x.items).flatten().flatten().value(),
                 subscribe: any = _.find(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && x.itemCode == subscribeCode);
 
             if (subscribe) {
@@ -117,7 +118,7 @@ module nts.layout {
             }
 
             let self = this,
-                controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && _.isFunction(x.items)).map(x => x.items()).flatten().flatten().value(),
+                controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && !!x.items).map(x => x.items).flatten().flatten().value(),
                 subscribes: Array<any> = _.filter(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && (subscribesCode || []).indexOf(x.itemCode) > -1);
 
             return subscribes.map(x => {
@@ -131,7 +132,7 @@ module nts.layout {
 
         findChilds = (categoryCode: string, parentCode: string): Array<IFindData> => {
             let self = this,
-                controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && _.isFunction(x.items)).map(x => x.items()).flatten().flatten().value(),
+                controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && !!x.items).map(x => x.items).flatten().flatten().value(),
                 subscribes: Array<any> = _.filter(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && x.itemParentCode == parentCode),
                 childset: Array<string> = _(subscribes).filter(x => [ITEM_TYPE.SET, ITEM_TYPE.SET_TABLE].indexOf(x.type) > -1).map(x => x.itemCode).value();
 
@@ -186,8 +187,10 @@ module nts.layout {
 
                 self.time_range();
 
+                self.haft_int();
+
                 validate.initCheckError(lstCls);
-            }, 500);
+            }, 50);
         }
 
         textBox = () => {
@@ -204,7 +207,7 @@ module nts.layout {
                             lindex: number = value.lastIndexOf('　'),
                             dom = $(item.id);
 
-                        if (index > 0 && lindex < value.length - 1) {
+                        if (!value || (index > 0 && lindex < value.length - 1)) {
                             rmError(dom, "Msg_924");
                         } else if (!dom.is(':disabled') && !dom.ntsError('hasError')) {
                             dom.ntsError('set', {
@@ -281,13 +284,13 @@ module nts.layout {
 
             if (CS00035_IS00366) {
                 fetch.check_remain_days(empId).done(x => {
-                    CS00035_IS00366.data.editable(x);
+                    CS00035_IS00366.data.numberedit(x);
                 });
             }
 
             if (CS00035_IS00368) {
                 fetch.check_remain_left(empId).done(x => {
-                    CS00035_IS00368.data.editable(x);
+                    CS00035_IS00368.data.numberedit(x);
                 });
             }
         }
@@ -298,7 +301,7 @@ module nts.layout {
                 radios: Array<IGrandRadio> = [{
                     ctgCode: 'CS00025',
                     radioCode: 'IS00296',
-                    relateCode: ['IS00297', 'IS00299', 'IS00299', 'IS00300', 'IS00301']
+                    relateCode: ['IS00297', 'IS00298', 'IS00299', 'IS00300', 'IS00301']
                 }, {
                         ctgCode: 'CS00026',
                         radioCode: 'IS00303',
@@ -337,17 +340,15 @@ module nts.layout {
                         relateCode: ['IS00360', 'IS00361', 'IS00362', 'IS00363', 'IS00364']
                     }, {
                         ctgCode: 'CS00035',
-                        radioCode: 'IS00311',
+                        radioCode: 'IS00370',
                         relateCode: ['IS00371', 'IS00372', 'IS00374']
                     }, {
                         ctgCode: 'CS00036',
-                        rdctCode: 'CS00028',
-                        radioCode: 'IS00316',
+                        radioCode: 'IS00375',
                         relateCode: ['IS00376', 'IS00377', 'IS00378', 'IS00379']
                     }, {
                         ctgCode: 'CS00036',
-                        rdctCode: 'CS00028',
-                        radioCode: 'IS00321',
+                        radioCode: 'IS00380',
                         relateCode: ['IS00381', 'IS00382', 'IS00383', 'IS00384']
                     }, {
                         ctgCode: 'CS00049',
@@ -400,7 +401,11 @@ module nts.layout {
 
                     if (rd) {
                         rd.data.value.subscribe(v => {
-                            _.each(ctrls, c => c.data.editable(v == 1));
+                            _.each(ctrls, c => {
+                                if (c && c.data) {
+                                    c.data.editable(v == 1);
+                                }
+                            });
                         });
                         rd.data.value.valueHasMutated();
                     }
@@ -715,11 +720,7 @@ module nts.layout {
                 setData = (ctrl: IFindData, value?: any) => {
                     if (ctrl) {
                         ctrl.data.value(value);
-                        //ctrl.data.defValue = value;
                     }
-                },
-                setDataText = (ctrl: IFindData, value?: any) => {
-                    ctrl && ctrl.data.textValue(value || undefined);
                 },
                 setEditAble = (ctrl: IFindData, editable?: boolean) => {
                     ctrl && ctrl.data.editable(editable || false);
@@ -768,7 +769,7 @@ module nts.layout {
                                             dom2.parent().removeClass('error');
                                         }
                                     }
-                                }, 100);
+                                }, 50);
                             });
                         }
                     }
@@ -837,7 +838,6 @@ module nts.layout {
 
                             if (childData[0]) {
                                 setData(workType, childData[0].code);
-                                setDataText(workType, childData[0].name);
                             }
                         });
                     });
@@ -857,10 +857,8 @@ module nts.layout {
 
                             if (childData) {
                                 setData(workType, childData.selectedWorkTypeCode);
-                                setDataText(workType, childData.selectedWorkTypeName);
 
                                 setData(workTime, childData.selectedWorkTimeCode);
-                                setDataText(workTime, childData.selectedWorkTimeName);
 
                                 firstTimes && setData(firstTimes.start, childData.first && childData.first.start);
                                 firstTimes && setData(firstTimes.end, childData.first && childData.first.end);
@@ -1124,7 +1122,7 @@ module nts.layout {
                                     result.data.value(undefined);
                                 }
                             }
-                            else if (vnb1 || vnb2) {
+                            else if (ITEM_SINGLE_TYPE.NUMERIC == first.data.item.dataTypeValue) {
                                 result.data.value(Number(vnb1) - Number(vnb2));
                             } else {
                                 result.data.value(undefined);
@@ -1146,7 +1144,9 @@ module nts.layout {
                 CS00016_IS00077: IFindData = finder.find('CS00016', 'IS00077'),
                 CS00016_IS00079: IFindData = finder.find('CS00016', 'IS00079'),
                 CS00017_IS00082: IFindData = finder.find('CS00017', 'IS00082'),
-                CS00017_IS00084: IFindData = finder.find('CS00017', 'IS00084');
+                CS00017_IS00084: IFindData = finder.find('CS00017', 'IS00084'),
+                CS00020_IS00130: IFindData = finder.find('CS00020', 'IS00130'),
+                CS00020_IS00131: IFindData = finder.find('CS00020', 'IS00131');
 
             if (CS00016_IS00077 && CS00016_IS00079) {
                 CS00016_IS00077.data.value.subscribe(_date => {
@@ -1197,6 +1197,45 @@ module nts.layout {
                     }).done((cbx: Array<IComboboxItem>) => {
                         CS00017_IS00084.data.lstComboBoxValue(cbx);
                     });
+                });
+            }
+
+            if (CS00017_IS00084 && (CS00020_IS00130 || CS00020_IS00131)) {
+                CS00017_IS00084.data.value.subscribe(wc => {
+                    if (CS00020_IS00130) {
+                        let comboData = ko.toJS(CS00020_IS00130.data);
+
+                        fetch.get_cb_data({
+                            comboBoxType: comboData.item.referenceType,
+                            categoryId: comboData.categoryId,
+                            required: comboData.required,
+                            standardDate: undefined,
+                            typeCode: undefined,
+                            masterType: comboData.item.masterType,
+                            employeeId: undefined,
+                            cps002: true,
+                            workplaceId: CS00017_IS00084.data.value()
+                        }).done(data => {
+                            CS00020_IS00130.data.lstComboBoxValue(data);
+                        });;
+                    }
+                    if (CS00020_IS00131) {
+                        let comboData = ko.toJS(CS00020_IS00131.data);
+
+                        fetch.get_cb_data({
+                            comboBoxType: comboData.item.referenceType,
+                            categoryId: comboData.categoryId,
+                            required: comboData.required,
+                            standardDate: undefined,
+                            typeCode: undefined,
+                            masterType: comboData.item.masterType,
+                            employeeId: undefined,
+                            cps002: true,
+                            workplaceId: CS00017_IS00084.data.value()
+                        }).done(data => {
+                            CS00020_IS00131.data.lstComboBoxValue(data);
+                        });;
+                    }
                 });
             }
         }
@@ -1455,11 +1494,55 @@ module nts.layout {
                                             ctrl2.parent().removeClass('error');
                                         }
                                     }
-                                }, 100);
+                                }, 50);
                             });
                         }
                     });
                 });
+        }
+
+        haft_int = () => {
+            let self = this,
+                finder: IFinder = self.finder,
+                haft_int: Array<IHaftInt> = [
+                    //{
+                    //'ctgCode': 'CS00035',
+                    //'inpCode': 'IS00369'
+                    //},
+                    {
+                        'ctgCode': 'CS00036',
+                        'inpCode': 'IS00377'
+                    },
+                    {
+                        'ctgCode': 'CS00036',
+                        'inpCode': 'IS00378'
+                    },
+                    {
+                        'ctgCode': 'CS00036',
+                        'inpCode': 'IS00379'
+                    },
+                    {
+                        'ctgCode': 'CS00036',
+                        'inpCode': 'IS00382'
+                    },
+                    {
+                        'ctgCode': 'CS00036',
+                        'inpCode': 'IS00383'
+                    },
+                    {
+                        'ctgCode': 'CS00036',
+                        'inpCode': 'IS00384'
+                    }
+                ],
+                validation = (haft: IHaftInt) => {
+                    let ctrl: IFindData = finder.find(haft.ctgCode, haft.inpCode);
+
+                    if (ctrl) {
+                        (((__viewContext || {}).primitiveValueConstraints || {})[ctrl.id.replace(/#/g, '')] || {}).valueType = "HalfInt";
+                    }
+                };
+
+            _.each(haft_int, h => validation(h));
         }
     }
 
@@ -1517,6 +1600,7 @@ module nts.layout {
         textValue: KnockoutObservable<any>;
         item: any;
         editable: KnockoutObservable<boolean>;
+        numberedit: KnockoutObservable<boolean>;
         readonly: KnockoutObservable<boolean>;
         categoryCode: string;
         itemCode: string;
@@ -1625,6 +1709,11 @@ module nts.layout {
         comboboxCode: string;
         result: string;
         specialCd: number;
+    }
+
+    interface IHaftInt {
+        ctgCode: string;
+        inpCode: string;
     }
 
     interface ISpeacialParam {

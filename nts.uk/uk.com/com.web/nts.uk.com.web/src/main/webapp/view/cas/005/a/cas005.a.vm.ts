@@ -88,11 +88,19 @@ module nts.uk.com.view.cas005.a {
                 self.roleName = ko.observable('');
                 self.roleCode = ko.observable('');
                 self.assignAtr = ko.observable(0);
+                 let allEmployee = [];
+                allEmployee.push(self.listEmployeeReferenceRange()[0]);
+                let other = [];
+                other.push(self.listEmployeeReferenceRange()[1]);
+                other.push(self.listEmployeeReferenceRange()[2]);
+                other.push(self.listEmployeeReferenceRange()[3]);
                 self.assignAtr.subscribe(function(value) {
                     if (value == 0) {
+                        self.listEmployeeReferenceRange(allEmployee);
                         self.visibleWebmenu(true);
                         self.enumEmployment(false)
                     } else {
+                        self.listEmployeeReferenceRange(other);
                         self.visibleWebmenu(false);
                         self.enumEmployment(true);
                     }
@@ -103,7 +111,6 @@ module nts.uk.com.view.cas005.a {
 
                 });
                 self.employeeReferenceRange = ko.observable(0);
-
 
                 //switch
                 self.categoryAssign = ko.observableArray([
@@ -116,6 +123,7 @@ module nts.uk.com.view.cas005.a {
                 ]);
                 self.selectCategoryAssign = ko.observable(1);
                 self.selectReferenceAuthority = ko.observable(1);
+                
                 //combobox
                 self.selectedCode = ko.observable('1');
                 self.isEnable = ko.observable(true);

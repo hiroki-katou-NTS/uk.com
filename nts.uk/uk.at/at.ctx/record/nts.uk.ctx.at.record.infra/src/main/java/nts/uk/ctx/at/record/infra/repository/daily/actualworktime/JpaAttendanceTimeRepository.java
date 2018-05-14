@@ -39,6 +39,8 @@ import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttimePK;
+import nts.uk.ctx.at.record.infra.entity.daily.vacation.KrcdtDayVacation;
+import nts.uk.ctx.at.record.infra.entity.daily.vacation.KrcdtDayVacationPK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -71,8 +73,8 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 			}
 			if(attendanceTime.getActualWorkingTimeOfDaily().getDivTime() != null) {
 				//追加
-					this.commandProxy().insert(KrcdtDayDivergenceTime.toEntity(attendanceTime.getEmployeeId(), attendanceTime.getYmd(),
-																			   attendanceTime.getActualWorkingTimeOfDaily().getDivTime()));
+				this.commandProxy().insert(KrcdtDayDivergenceTime.toEntity(attendanceTime.getEmployeeId(), attendanceTime.getYmd(),
+																			  attendanceTime.getActualWorkingTimeOfDaily().getDivTime()));
 			}
 			if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
 				if (attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
@@ -120,17 +122,27 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 				this.commandProxy().insert(
 						KrcdtDayPrsIncldTime.create(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), attendanceTime
 								.getActualWorkingTimeOfDaily().getTotalWorkingTime().getWithinStatutoryTimeOfDaily()));
+				if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayOfDaily() != null) {
+					/*休暇時間*/
+					this.commandProxy().insert(KrcdtDayVacation.create(attendanceTime.getEmployeeId(),
+							attendanceTime.getYmd(),
+							attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayOfDaily()));
+				}
 			}
 		}
 	}
 
 	@Override
 	public void update(AttendanceTimeOfDailyPerformance attendanceTime) {
+		
 		KrcdtDayAttendanceTime entity = this.queryProxy()
 				.find(new KrcdtDayAttendanceTimePK(attendanceTime.getEmployeeId(), attendanceTime.getYmd()),
 						KrcdtDayAttendanceTime.class)
 				.orElse(null);
+
+		//delete -> Insert
 		deleteByEmployeeIdAndDate(attendanceTime.getEmployeeId(), attendanceTime.getYmd());
+		
 		if (entity != null) {
 			/* 勤怠時間 */
 			entity.setData(attendanceTime);
@@ -266,6 +278,23 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 									.insert(KrcdtDayPrsIncldTime.create(attendanceTime.getEmployeeId(),
 											attendanceTime.getYmd(), attendanceTime.getActualWorkingTimeOfDaily()
 													.getTotalWorkingTime().getWithinStatutoryTimeOfDaily()));
+							}
+						}
+						if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayOfDaily() != null) {
+							/*休暇時間*/
+							Optional<KrcdtDayVacation> krcdtDayVacation = this.queryProxy()
+																	.find(new KrcdtDayVacationPK(attendanceTime.getEmployeeId(),
+																								 attendanceTime.getYmd()),
+																		  KrcdtDayVacation.class);
+							if(krcdtDayVacation.isPresent()) {
+								krcdtDayVacation.get().setData(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayOfDaily());
+								this.commandProxy().update(krcdtDayVacation.get());
+							}
+							else {
+								this.commandProxy()
+									.insert(KrcdtDayVacation.create(attendanceTime.getEmployeeId(),
+																	attendanceTime.getYmd(),
+																	attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayOfDaily()));
 							}
 						}
 					}

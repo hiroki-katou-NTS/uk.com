@@ -25,7 +25,7 @@ public interface JudgmentApprovalStatusService {
 	 			true：承認者である
 	 			false：承認者でない
 	 */
-	public Boolean judgmentTargetPersonIsApprover(String companyID, String rootStateID, String employeeID);
+	public Boolean judgmentTargetPersonIsApprover(String companyID, String rootStateID, String employeeID, Integer rootType);
 	
 	/**
 	 * 2.承認ステータスの判断
@@ -33,7 +33,7 @@ public interface JudgmentApprovalStatusService {
 	 * @param rootStateID インスタンスID
 	 * @return ステータス：（否認、承認済、未承認、差し戻し）
 	 */
-	public ApprovalBehaviorAtr determineApprovalStatus(String companyID, String rootStateID);
+	public ApprovalBehaviorAtr determineApprovalStatus(String companyID, String rootStateID, Integer rootType);
 	
 	/**
 	 * 3.指定した社員が承認できるかの判断
@@ -42,7 +42,7 @@ public interface JudgmentApprovalStatusService {
 	 * @param employeeID 社員ID
 	 * @return
 	 */
-	public ApproverPersonOutput judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID);
+	public ApproverPersonOutput judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID, Integer rootType);
 	
 	/**
 	 * 1.承認フェーズ毎の承認者を取得する
