@@ -11,6 +11,18 @@ module nts.uk.com.view.cmf005.share.model {
         PAYROLL_SYS = 2,
         OFFICE_HELPER = 3
     }
+    
+    export enum TIME_STORE {
+        MONTHLY = 0,
+        ANNUAL = 1,
+        FULL_TIME = 2,
+        DAILY = 3
+    }
+    
+    export enum STORAGE_RANGE_SAVE {
+        EARCH_EMP = 0,
+        ALL_EMP = 1
+    }
 
     export class ItemModel {
         code: number;
