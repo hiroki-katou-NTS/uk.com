@@ -43,8 +43,9 @@ public class UpdateSetOutItemsWoScCommandHandler extends CommandHandler<SetOutIt
 
         List<ItemOutTblBook> listItemOutTblBook = updateCommand.getListItemOutput().stream()
                    .map(m -> {
-                        String itemOutCdStr = StringUtil.isNullOrEmpty(m.getCd(), true)?
-                                              String.valueOf(++itemOutCd[0]) : m.getCd();
+                        String itemOutCdStr = StringUtil.padLeft(StringUtil.isNullOrEmpty(m.getCd(), true)?
+                                                                     String.valueOf(++itemOutCd[0]) : m.getCd(),
+                                                                 2, '0');
                         return ItemOutTblBook.createFromJavaType(companyId,
                         updateCommand.getCd(),
                         itemOutCdStr,

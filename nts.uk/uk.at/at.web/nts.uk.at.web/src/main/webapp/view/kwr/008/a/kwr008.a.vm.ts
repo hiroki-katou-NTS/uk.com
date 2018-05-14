@@ -166,7 +166,7 @@ module nts.uk.at.view.kwr008.a {
                 nts.uk.ui.block.clear();
             }
 
-            openKWR008B(){
+            openKWR008B() {
                 let self = this;
                 nts.uk.ui.block.invisible();
                 let param = {
@@ -182,11 +182,7 @@ module nts.uk.at.view.kwr008.a {
                     } else {
                         self.selectedOutputItem(resultData.selectedCd);
                     }
-                    }).always(function() {
-                        block.clear();
-                    });
                 });
-                
             }
 
             /**
