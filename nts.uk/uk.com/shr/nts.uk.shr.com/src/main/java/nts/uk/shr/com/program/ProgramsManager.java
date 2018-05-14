@@ -1528,6 +1528,15 @@ public class ProgramsManager {
 	/** KAF010A */
 	public static final Program KAF010A = new Program(WebAppId.AT, ProgramIdConsts.KAF010A, "KAF010_1",
 			"/view/kaf/010/a/index.xhtml");
+	/** KAF011A */
+	public static final Program KAF011A = new Program(WebAppId.AT, ProgramIdConsts.KAF011A, "KAF011_80",
+			"/view/kaf/011/a/index.xhtml");
+	/** KAF011B */
+	public static final Program KAF011B = new Program(WebAppId.AT, ProgramIdConsts.KAF011B, "KAF011_81",
+			"/view/kaf/011/b/index.xhtml");
+	/** KAF011C */
+	public static final Program KAF011C = new Program(WebAppId.AT, ProgramIdConsts.KAF011C, "KAF011_62",
+			"/view/kaf/011/c/index.xhtml");
 	// TODO: Define new programs here.
 	/**
 	 * CMM051A
