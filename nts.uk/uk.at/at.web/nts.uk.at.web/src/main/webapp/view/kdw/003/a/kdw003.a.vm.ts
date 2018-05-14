@@ -480,7 +480,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.breakTimeDay(data.flexShortage.breakTimeDay);
                 self.calcFlex(new CalcFlex(data.flexShortage.value18, data.flexShortage.value21, data.flexShortage.value189, data.flexShortage.value190, data.flexShortage.value191));
                 self.canFlex(data.flexShortage.canflex);
-               
+                self.itemMonth = [];
                 let fst: FlexShortage = self.flexShortage();
 
                 //fst.parent = ko.observable(self);
@@ -950,6 +950,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         //self.flexShortage(new FlexShortage(self, self.calcFlex(), self.breakTimeDay()));
 
                         // アルゴリズム「フレックス不足の相殺が実施できるかチェックする」
+                         self.itemMonth = [];
                         self.canFlex(data.flexShortage.canflex);
                         
                         let fst: FlexShortage = self.flexShortage();
