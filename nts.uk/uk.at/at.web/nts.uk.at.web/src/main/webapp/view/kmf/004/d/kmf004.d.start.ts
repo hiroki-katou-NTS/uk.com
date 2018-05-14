@@ -3,7 +3,7 @@ module nts.uk.at.view.kmf004.d {
         let screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
-            if(screenModel.checkUpdate(true)){
+            if(!screenModel.editMode()){
                 $("#inpPattern").focus();
             }else{
                 $("#inpCode").focus();

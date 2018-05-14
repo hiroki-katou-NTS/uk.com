@@ -47,7 +47,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             self.checkUpdate = ko.observable(false);
             self.display = ko.observable(false);
             self.items = ko.observableArray([]);
-            self.editMode = ko.observable(true);  
+            self.editMode = ko.observable(true); 
             self.selectedCode.subscribe((code) => {   
                 if (code) {
                     let foundItem: Per = _.find(self.lstPer(), (item: Per) => {
@@ -116,20 +116,21 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     self.selectedName(null);
                     self.checkUpdate(false);
                     self.provisionCheck(false);
-                    $("#inpCode").focus();
                     self.items([]);
                     for (let i = 0; i < 20; i++) {
                         if(self.items()[i] == undefined){
                             let t : item = {
-                            yearServiceNo: ko.mapping.fromJS(i),
-                            month: ko.mapping.fromJS(null),
-                            year: ko.mapping.fromJS(null),
-                            date: ko.mapping.fromJS(null)
+                                yearServiceNo: ko.mapping.fromJS(i),
+                                month: ko.mapping.fromJS(null),
+                                year: ko.mapping.fromJS(null),
+                                date: ko.mapping.fromJS(null)
                             }
                             self.items.push(new Item(t));
                         }
                     }
-                }else{
+                    
+                    $("#inpCode").focus();
+                } else {
                     let sortedData : KnockoutObservableArray<any> = ko.observableArray([]);
                     sortedData(_.orderBy(lstData, ['yearServiceCode'], ['asc']));
                      $("#inpPattern").focus();
@@ -313,7 +314,6 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             }).ifCancel(() => {  
                
             }); 
-//            $("#inpPattern").focus();
         } 
         
         
