@@ -81,7 +81,7 @@ module nts.uk.com.view.ccg001.a {
                 self.systemType = ko.observable(1);
                 self.showBaseDate = ko.observable(true); // 基準日利用
                 self.showAllClosure = ko.observable(true); // 全締め表示
-                self.showPeriod = ko.observable(true); // 対象期間利用
+                self.showPeriod = ko.observable(false); // 対象期間利用
                 self.periodFormatYM = ko.observable(false); // 対象期間精度
             }
 

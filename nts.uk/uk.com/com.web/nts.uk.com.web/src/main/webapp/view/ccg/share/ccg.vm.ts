@@ -810,9 +810,6 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             private initCcgEvent(): void {
                 let self = this;
-                $('#component-ccg001').parent('#component-ccg001').on('hover', e => {
-                    console.log('hovered');
-                });
                 $(window).on('click', function(e) {
                     // Check is click to inside component.
                     if (e.target.id == "component-ccg001" || $(e.target).parents("#component-ccg001")[0]) {
