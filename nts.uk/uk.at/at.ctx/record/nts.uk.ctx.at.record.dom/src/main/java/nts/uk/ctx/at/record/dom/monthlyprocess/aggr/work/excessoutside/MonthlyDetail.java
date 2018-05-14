@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
+import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.AddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.AnnualLeaveUseTimeOfTimeSeries;
@@ -27,6 +28,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.WorkTimeOfTi
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.HolidayWorkAndTransferAtr;
@@ -178,8 +180,12 @@ public class MonthlyDetail {
 		val assignedDetail = this.weeklyPremiumAssignedTime.getHolidayWorkTime();
 		
 		// 振替順を取得する
-		val holidayWorkTransferOrder =
-				this.excessOutsideWorkMng.getLegalTransferOrderSet().getLegalHolidayWorkTransferOrder();
+		LegalTransferOrderSetOfAggrMonthly legalTransferOrderSet =
+				this.excessOutsideWorkMng.getSettingsByReg().getLegalTransferOrderSet();
+		if (this.excessOutsideWorkMng.getWorkingSystem() == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
+			legalTransferOrderSet = this.excessOutsideWorkMng.getSettingsByDefo().getLegalTransferOrderSet();
+		}
+		val holidayWorkTransferOrder = legalTransferOrderSet.getLegalHolidayWorkTransferOrder();
 		
 		// 休出枠時間分ループ
 		for (val legalHolidayWorkTransferOrder : holidayWorkTransferOrder.getLegalHolidayWorkTransferOrders()){
@@ -297,8 +303,12 @@ public class MonthlyDetail {
 		val assignedDetail = this.weeklyPremiumAssignedTime.getOverTime();
 		
 		// 振替順を取得する
-		val overTimeTransferOrder =
-				this.excessOutsideWorkMng.getLegalTransferOrderSet().getLegalOverTimeTransferOrder();
+		LegalTransferOrderSetOfAggrMonthly legalTransferOrderSet =
+				this.excessOutsideWorkMng.getSettingsByReg().getLegalTransferOrderSet();
+		if (this.excessOutsideWorkMng.getWorkingSystem() == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
+			legalTransferOrderSet = this.excessOutsideWorkMng.getSettingsByDefo().getLegalTransferOrderSet();
+		}
+		val overTimeTransferOrder = legalTransferOrderSet.getLegalOverTimeTransferOrder();
 		
 		// 残業枠時間分ループ
 		for (val legalOverTimeTransferOrder : overTimeTransferOrder.getLegalOverTimeTransferOrders()){
@@ -527,8 +537,12 @@ public class MonthlyDetail {
 		val monthlyPremiumTime = this.excessOutsideWorkMng.getExcessOutsideWorkDetail().getMonthlyPremiumTime();
 		
 		// 振替順を取得する
-		val holidayWorkTransferOrder =
-				this.excessOutsideWorkMng.getLegalTransferOrderSet().getLegalHolidayWorkTransferOrder();
+		LegalTransferOrderSetOfAggrMonthly legalTransferOrderSet =
+				this.excessOutsideWorkMng.getSettingsByReg().getLegalTransferOrderSet();
+		if (this.excessOutsideWorkMng.getWorkingSystem() == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
+			legalTransferOrderSet = this.excessOutsideWorkMng.getSettingsByDefo().getLegalTransferOrderSet();
+		}
+		val holidayWorkTransferOrder = legalTransferOrderSet.getLegalHolidayWorkTransferOrder();
 		
 		// 休出枠時間分ループ
 		for (val legalHolidayWorkTransferOrder : holidayWorkTransferOrder.getLegalHolidayWorkTransferOrders()){
@@ -648,8 +662,12 @@ public class MonthlyDetail {
 		val monthlyPremiumTime = this.excessOutsideWorkMng.getExcessOutsideWorkDetail().getMonthlyPremiumTime();
 		
 		// 振替順を取得する
-		val overTimeTransferOrder =
-				this.excessOutsideWorkMng.getLegalTransferOrderSet().getLegalOverTimeTransferOrder();
+		LegalTransferOrderSetOfAggrMonthly legalTransferOrderSet =
+				this.excessOutsideWorkMng.getSettingsByReg().getLegalTransferOrderSet();
+		if (this.excessOutsideWorkMng.getWorkingSystem() == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
+			legalTransferOrderSet = this.excessOutsideWorkMng.getSettingsByDefo().getLegalTransferOrderSet();
+		}
+		val overTimeTransferOrder = legalTransferOrderSet.getLegalOverTimeTransferOrder();
 		
 		// 残業枠時間分ループ
 		for (val legalOverTimeTransferOrder : overTimeTransferOrder.getLegalOverTimeTransferOrders()){

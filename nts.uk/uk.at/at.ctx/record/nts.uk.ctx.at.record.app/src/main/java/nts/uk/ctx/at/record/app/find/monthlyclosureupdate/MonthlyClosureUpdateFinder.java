@@ -215,6 +215,7 @@ public class MonthlyClosureUpdateFinder {
 				listResult.add(result);
 			}
 		}
+		listResult.sort((e1, e2) -> e1.getEmployeeCode().compareToIgnoreCase(e2.getEmployeeCode()));
 		return listResult;
 	}
 

@@ -149,7 +149,7 @@ module nts.uk.at.view.kmw006.a.viewmodel {
             });
             self.dispLatestClosure = ko.computed(() => {
                 if (!nts.uk.text.isNullOrEmpty(self.executionDate()) && nts.uk.ntsNumber.isNumber(self.targetYm(), false))
-                    return getText("KMW006_7", [nts.uk.time.formatYearMonth(self.targetYm()), moment(self.executionDate()).format("YYYY/MM/DD")]);
+                    return getText("KMW006_7", [nts.uk.time.formatYearMonth(self.targetYm()), moment.utc(self.executionDate()).format("YYYY/MM/DD")]);
                 else
                     return null
             });

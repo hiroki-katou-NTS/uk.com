@@ -1,14 +1,11 @@
 package nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.monthlyupdatemgr;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.layer.app.command.AsyncCommandHandlerContext;
-import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
@@ -19,11 +16,9 @@ import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErro
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErrorInforRepository;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdatePersonLog;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdatePersonLogRepository;
-import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.cancelactuallock.CancelActualLock;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.closurestatusmng.ClosureStatusMng;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.logprocess.MonthlyClosureUpdateLogProcess;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.MonthlyClosureRemainNumProcess;
-import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.ymupdate.ProcessYearMonthUpdate;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.CalcPeriodForClosureProcValue;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.CalcPeriodForClosureProcess;
@@ -41,12 +36,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class MonthlyUpdateMgr {
-
-	@Inject
-	private CancelActualLock cancelLock;
-
-	@Inject
-	private ProcessYearMonthUpdate ymUpdate;
 
 	@Inject
 	private MonthlyClosureUpdateLogProcess logProcess;
@@ -69,23 +58,8 @@ public class MonthlyUpdateMgr {
 	@Inject
 	private CalcPeriodForClosureProcess calcPeriod;
 
-	public void monthlyUpdateMgr(AsyncCommandHandlerContext asyncContext, String monthlyClosureLogId,
-			List<String> listEmpId, int closureId, YearMonth ym, ClosureDate closureDate, DatePeriod period) {
-		String companyId = AppContexts.user().companyId();
-		TaskDataSetter dataSetter = asyncContext.getDataSetter();
-		int count = 0;
-		dataSetter.setData("processed", count);
-		for (String empId : listEmpId) {
-			processEmployee(monthlyClosureLogId, empId, closureId, ym, closureDate, period);
-			dataSetter.updateData("processed", ++count);
-		}
-		cancelLock.cancelActualLock(companyId, closureId);
-		ymUpdate.processYmUpdate(companyId, closureId);
-		logProcess.monthlyClosureUpdateLogProcess(monthlyClosureLogId);
-	}
-
 	// 社員毎に実行される処理
-	private void processEmployee(String monthlyClosureLogId, String empId, int closureId, YearMonth ym,
+	public void processEmployee(String monthlyClosureLogId, String empId, int closureId, YearMonth ym,
 			ClosureDate closureDate, DatePeriod period) {
 		String companyId = AppContexts.user().companyId();
 		CalcPeriodForClosureProcValue calculatedResult = calcPeriod.algorithm(companyId, empId, closureId);

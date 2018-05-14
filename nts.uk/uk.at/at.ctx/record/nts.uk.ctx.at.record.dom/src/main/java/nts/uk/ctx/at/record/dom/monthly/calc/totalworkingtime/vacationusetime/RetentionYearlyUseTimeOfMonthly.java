@@ -78,7 +78,9 @@ public class RetentionYearlyUseTimeOfMonthly {
 			// 「日別実績の積立年休」を取得する
 			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
+			if (totalWorkingTime.getHolidayOfDaily() == null) return;
 			val holidayOfDaily = totalWorkingTime.getHolidayOfDaily();
+			if (holidayOfDaily.getYearlyReserved() == null) return;
 			val yearlyReserved = holidayOfDaily.getYearlyReserved();
 			
 			// 取得した使用時間を「月別実績の積立年休使用時間」に入れる

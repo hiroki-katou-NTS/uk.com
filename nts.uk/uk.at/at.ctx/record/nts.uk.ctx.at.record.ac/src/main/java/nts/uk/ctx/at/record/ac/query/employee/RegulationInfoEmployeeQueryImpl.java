@@ -33,6 +33,8 @@ public class RegulationInfoEmployeeQueryImpl implements RegulationInfoEmployeeQu
 		GeneralDateTime baseDate = GeneralDateTime.localDateTime(queryX.getBaseDate().localDate().atStartOfDay());
 		GeneralDateTime periodStart = GeneralDateTime.localDateTime(queryX.getPeriodStart().localDate().atStartOfDay());
 		GeneralDateTime periodEnd = GeneralDateTime.localDateTime(queryX.getPeriodEnd().localDate().atStartOfDay());
+		GeneralDateTime retireStart = GeneralDateTime.localDateTime(queryX.getRetireStart().localDate().atStartOfDay());
+		GeneralDateTime retireEnd = GeneralDateTime.localDateTime(queryX.getRetireEnd().localDate().atStartOfDay());
 		return EmployeeSearchQueryDto.builder().baseDate(baseDate).referenceRange(queryX.getReferenceRange())
 				.filterByEmployment(queryX.getFilterByEmployment()).employmentCodes(queryX.getEmploymentCodes())
 				.filterByDepartment(queryX.getFilterByDepartment()).departmentCodes(queryX.getDepartmentCodes())
@@ -44,6 +46,8 @@ public class RegulationInfoEmployeeQueryImpl implements RegulationInfoEmployeeQu
 				.includeIncumbents(queryX.getIncludeIncumbents())
 				.includeWorkersOnLeave(queryX.getIncludeWorkersOnLeave()).includeOccupancy(queryX.getIncludeOccupancy())
 				.systemType(2).sortOrderNo(1).includeRetirees(queryX.getIncludeRetirees()).filterByClosure(queryX.getFilterByClosure())
+				.retireStart(retireStart)
+				.retireEnd(retireEnd)
 				.closureIds(queryX.getClosureIds()).build();
 	}
 

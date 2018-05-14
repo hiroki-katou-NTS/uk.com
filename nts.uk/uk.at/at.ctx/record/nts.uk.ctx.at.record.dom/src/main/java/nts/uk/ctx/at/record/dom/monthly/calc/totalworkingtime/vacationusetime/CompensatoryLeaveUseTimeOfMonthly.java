@@ -78,7 +78,9 @@ public class CompensatoryLeaveUseTimeOfMonthly {
 			// 「日別実績の代休」を取得する
 			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
+			if (totalWorkingTime.getHolidayOfDaily() == null) return;
 			val holidayOfDaily = totalWorkingTime.getHolidayOfDaily();
+			if (holidayOfDaily.getSubstitute() == null) return;
 			val substitute = holidayOfDaily.getSubstitute();
 			
 			// 取得した使用時間を「月別実績の代休使用時間」に入れる
