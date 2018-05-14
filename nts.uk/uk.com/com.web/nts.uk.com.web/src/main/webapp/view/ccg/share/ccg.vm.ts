@@ -37,9 +37,12 @@ module nts.uk.com.view.ccg.share.ccg {
             showPeriodYM: boolean; // 対象期間精度
 
             /** Required parameter */
-            baseDate: KnockoutObservable<moment.Moment>;
-            periodStart: KnockoutObservable<moment.Moment>;
-            periodEnd: KnockoutObservable<moment.Moment>;
+            inputBaseDate: KnockoutObservable<string>;
+            inputPeriodStart: KnockoutObservable<string>;
+            inputPeriodEnd: KnockoutObservable<string>;
+            baseDate: KnockoutComputed<moment.Moment>;
+            periodStart: KnockoutComputed<moment.Moment>;
+            periodEnd: KnockoutComputed<moment.Moment>;
 
             /** Quick search tab options */
             showAllReferableEmployee: boolean; // 参照可能な社員すべて
@@ -90,8 +93,10 @@ module nts.uk.com.view.ccg.share.ccg {
             referenceRange: number;
             
             //params Status Of Employee
-            statusPeriodStart: KnockoutObservable<moment.Moment>;
-            statusPeriodEnd: KnockoutObservable<moment.Moment>;
+            inputStatusPeriodStart: KnockoutObservable<string>;
+            inputStatusPeriodEnd: KnockoutObservable<string>;
+            statusPeriodStart: KnockoutComputed<moment.Moment>;
+            statusPeriodEnd: KnockoutComputed<moment.Moment>;
 
             incumbentDatasource: KnockoutObservableArray<any>;
             selectedIncumbent: KnockoutObservable<boolean>; // 在職区分
@@ -160,9 +165,12 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.reservedEmployees = ko.observableArray([]);
                 self.reservedEmployeesTab3 = ko.observableArray([]);
 
-                // status of employment period
-                self.statusPeriodStart = ko.observable(moment.utc("1900/01/01", "YYYY/MM/DD"));
-                self.statusPeriodEnd = ko.observable(moment());
+                // date picker
+                self.inputBaseDate = ko.observable('');
+                self.inputPeriodStart = ko.observable('');
+                self.inputPeriodEnd = ko.observable('');
+                self.inputStatusPeriodStart = ko.observable(moment.utc("1900/01/01", "YYYY/MM/DD").toISOString());
+                self.inputStatusPeriodEnd = ko.observable(moment().toISOString());
 
                 // flags
                 self.isShow = ko.observable(false);
@@ -174,9 +182,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.isOpenWorkTypeList = ko.observable(false);
 
                 // search reference date & period
-                self.baseDate = ko.observable(moment());
-                self.periodStart = ko.observable(moment());
-                self.periodEnd = ko.observable(moment());
                 self.acquiredBaseDate = ko.observable('');
 
                 // status of employee
@@ -189,11 +194,34 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.listWorkType = ko.observableArray([]);
                 self.selectedWorkTypeCode = ko.observableArray([]);
                 
-                //check show button Apply
+                // init computed values
+                self.initComputedValues();
+
+            }
+
+            /**
+             * Initialize computed values
+             */
+            public initComputedValues(): void {
+                let self = this;
+                self.baseDate = ko.computed(() => {
+                    return moment.utc(self.inputBaseDate());
+                });
+                self.periodStart = ko.computed(() => {
+                    return moment.utc(self.inputPeriodStart());
+                });
+                self.periodEnd = ko.computed(() => {
+                    return moment.utc(self.inputPeriodEnd());
+                });
+                self.statusPeriodStart = ko.computed(() => {
+                    return moment.utc(self.inputStatusPeriodStart());
+                });
+                self.statusPeriodEnd = ko.computed(() => {
+                    return moment.utc(self.inputStatusPeriodEnd());
+                });
                 self.showApplyBtn = ko.computed(() => {
                     return self.baseDate() && self.periodStart() && self.periodEnd() ? true : false;
                 });
-
             }
 
             /**
@@ -201,6 +229,9 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             public initSubscribers(): void {
                 let self = this;
+                self.baseDate.subscribe(vl => {
+                    self.applyDataSearch();
+                });
 
                 self.periodStart.subscribe(startDate => {
                     if (startDate.isAfter(self.periodEnd())) {
@@ -210,6 +241,8 @@ module nts.uk.com.view.ccg.share.ccg {
                         } else {
                             $("#inp-period-startYMD").ntsError('set', nts.uk.resource.getMessage("FND_E_SPAN_REVERSED", [CCG001_30]), "FND_E_SPAN_REVERSED");
                         }
+                    } else {
+                        self.applyDataSearch();
                     }
                 });
 
@@ -223,6 +256,8 @@ module nts.uk.com.view.ccg.share.ccg {
                         } else {
                             $("#inp-period-startYMD").ntsError('set', nts.uk.resource.getMessage("FND_E_SPAN_REVERSED", [CCG001_30]), "FND_E_SPAN_REVERSED");
                         }
+                    } else {
+                        self.applyDataSearch();
                     }
                 });
 
@@ -501,7 +536,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
                         _.defer(() => self.applyDataSearch().always(() => {
                             // Set acquired base date to status period end date
-                            self.statusPeriodEnd(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT));
+                            self.inputStatusPeriodEnd(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toISOString());
                             if (data.showOnStart) {
                                 self.showComponent();
                             }
@@ -606,11 +641,11 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.showPeriodYM = nts.uk.util.isNullOrUndefined(self.showPeriod) ? false : (self.showPeriod ? options.periodFormatYM : false);
 
                 /** Required parameter */
-                self.baseDate(nts.uk.util.isNullOrUndefined(options.baseDate) ? moment() : moment.utc(options.baseDate));
-                self.periodStart(nts.uk.util.isNullOrUndefined(options.periodStartDate) ? moment() : (options.periodFormatYM ?
-                    moment.utc(options.periodStartDate).startOf('month') : moment.utc(options.periodStartDate).startOf('day')));
-                self.periodEnd(nts.uk.util.isNullOrUndefined(options.periodEndDate) ? moment() : (options.periodFormatYM ?
-                    moment.utc(options.periodEndDate).startOf('month') : moment.utc(options.periodEndDate).startOf('day')));
+                self.inputBaseDate(nts.uk.util.isNullOrUndefined(options.baseDate) ? moment().toISOString() : options.baseDate);
+                self.inputPeriodStart(nts.uk.util.isNullOrUndefined(options.periodStartDate) ? moment().toISOString() : (options.periodFormatYM ?
+                    moment.utc(options.periodStartDate).startOf('month').toISOString() : moment.utc(options.periodStartDate).startOf('day').toISOString()));
+                self.inputPeriodEnd(nts.uk.util.isNullOrUndefined(options.periodEndDate) ? moment().toISOString() : (options.periodFormatYM ?
+                    moment.utc(options.periodEndDate).startOf('month').toISOString() : moment.utc(options.periodEndDate).startOf('day').toISOString()));
                 self.selectedIncumbent(options.inService);
                 self.selectedLeave(options.leaveOfAbsence);
                 self.selectedClosed(options.closed);

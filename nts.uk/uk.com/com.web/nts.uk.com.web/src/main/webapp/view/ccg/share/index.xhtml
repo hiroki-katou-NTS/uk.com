@@ -14,7 +14,7 @@
 								data-bind="ntsDatePicker: {
 								name: '#[CCG001_27]',
 								dateFormat: 'YYYY/MM/DD',
-								value: baseDate,
+								value: inputBaseDate,
 								required: true }"></div>
 						</div>
 					</com:ko>
@@ -44,14 +44,14 @@
 									data-bind="ntsDatePicker: {
 										name: '#[CCG001_30]',
 										dateFormat: 'YYYY/MM/DD',
-										value: periodStart,
+										value: inputPeriodStart,
 										required: true }"></div>
 								<label>～</label>
 								<div id="inp-period-endYMD" tabindex="3"
 									data-bind="ntsDatePicker: {
 										name: '#[CCG001_31]',
 										dateFormat: 'YYYY/MM/DD',
-										value: periodEnd,
+										value: inputPeriodEnd,
 										required: true }"></div>
 							</com:ko>
 							<com:ko tag="if" bind="showPeriodYM">
@@ -59,14 +59,14 @@
 									data-bind="ntsDatePicker: {
 										name: '#[CCG001_30]',
 										dateFormat: 'YYYY/MM',
-										value: periodStart,
+										value: inputPeriodStart,
 										required: true }"></div>
 								<label>～</label>
 								<div id="inp-period-endYM" tabindex="3"
 									data-bind="ntsDatePicker: {
 										name: '#[CCG001_31]',
 										dateFormat: 'YYYY/MM',
-										value: periodEnd,
+										value: inputPeriodEnd,
 										required: true }"></div>
 							</com:ko>
 						</div>
@@ -184,14 +184,14 @@
 											<div id="ccg001-partg-start" tabindex="16" data-bind="ntsDatePicker: {
 												name: '#[CCG001_93]',
 												dateFormat: 'YYYY/MM/DD',
-												value: statusPeriodStart,
+												value: inputStatusPeriodStart,
 												required: true }">
 											</div> 
 											<span> ~ </span>
 											<div id="ccg001-partg-end" tabindex="17" data-bind="ntsDatePicker: {
 												name: '#[CCG001_94]',
 												dateFormat: 'YYYY/MM/DD',
-												value: statusPeriodEnd,
+												value: inputStatusPeriodEnd,
 												required: true }">
 											</div> 
 										</div>
