@@ -319,6 +319,7 @@ module nts.uk.at.view.kdw008.b {
                 new service.Service().getDailyPerformance(businessTypeCode, self.selectedSheetNo()).done(function(data: IBusinessTypeDetail) {
                     if (data) {
                         self.valuesMonthly([]);
+                        self.listMonthlyAttdItem(_.cloneDeep(self.listMonthlyAttdItemFullData()));
                         self.businessTypeFormatDailyValue([]);
                         self.currentBusinessType(new BusinessTypeDetailModel(data));
                         self.currentBusinessType().attendanceItemDtos.valueHasMutated();
@@ -372,6 +373,8 @@ module nts.uk.at.view.kdw008.b {
                         }
 
                     } else {
+                         self.valuesMonthly([]);
+                        self.listMonthlyAttdItem(_.cloneDeep(self.listMonthlyAttdItemFullData()));
                         self.currentBusinessType([]);
                     }
                     dfd.resolve();
@@ -517,7 +520,7 @@ module nts.uk.at.view.kdw008.b {
                             attendanceItemId: item.attendanceItemId,
                             dislayNumber: item.attendanceItemDisplayNumber,
                             attendanceItemName: item.attendanceItemName,
-                            order: indexOfDaily,
+                            order: indexOfDaily,    
                             columnWidth: item.columnWidth ? item.columnWidth : null
                         };
                         return new BusinessTypeFormatDetailModel(dailyAdd);
