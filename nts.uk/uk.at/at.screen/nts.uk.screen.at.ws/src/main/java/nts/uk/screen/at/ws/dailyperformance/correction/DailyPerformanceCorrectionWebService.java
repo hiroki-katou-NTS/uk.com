@@ -134,10 +134,13 @@ public class DailyPerformanceCorrectionWebService {
 		// insert flex 
 		if (dataParent.getMonthValue() != null) {
 			val month = dataParent.getMonthValue();
-			monthModifyCommandFacade.handleUpdate(new MonthlyModifyQuery(month.getItems().stream().map(x -> {
-				return ItemValue.builder().itemId(x.getItemId()).layout(x.getLayoutCode()).value(x.getValue()).valueType(ValueType.valueOf(x.getValueType())).withPath("");
-			}).collect(Collectors.toList()), month.getYearMonth(),
-					month.getEmployeeId(), month.getClosureId(), month.getClosureDate(), Collections.emptyList()));
+			if (month != null && month.getItems() != null) {
+				monthModifyCommandFacade.handleUpdate(new MonthlyModifyQuery(month.getItems().stream().map(x -> {
+					return ItemValue.builder().itemId(x.getItemId()).layout(x.getLayoutCode()).value(x.getValue())
+							.valueType(ValueType.valueOf(x.getValueType())).withPath("");
+				}).collect(Collectors.toList()), month.getYearMonth(), month.getEmployeeId(), month.getClosureId(),
+						month.getClosureDate(), Collections.emptyList()));
+			}
 		}
 		List<DPItemValue> itemValueChild= dataParent.getItemValues().stream().map(x -> {
 			DPItemValue item = x;

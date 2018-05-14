@@ -15,6 +15,9 @@ import javax.ws.rs.core.MediaType;
 import nts.uk.query.app.employee.RegulationInfoEmpQueryDto;
 import nts.uk.query.app.employee.RegulationInfoEmployeeDto;
 import nts.uk.query.app.employee.RegulationInfoEmployeeFinder;
+import nts.uk.query.model.person.EmployeeInfoQueryModel;
+import nts.uk.query.model.person.EmployeeInfoRepository;
+import nts.uk.query.model.person.EmployeeInfoResultModel;
 
 /**
  * The Class RegulationInfoEmployeeWs.
@@ -26,6 +29,9 @@ public class RegulationInfoEmployeeWs {
 	/** The finder. */
 	@Inject
 	private RegulationInfoEmployeeFinder finder;
+	
+	@Inject
+	private EmployeeInfoRepository repo;
 
 	/**
 	 * Find regulation info employee.
@@ -37,5 +43,11 @@ public class RegulationInfoEmployeeWs {
 	@Path("find")
 	public List<RegulationInfoEmployeeDto> findRegulationInfoEmployee(RegulationInfoEmpQueryDto query) {
 		return this.finder.find(query);
+	}
+	
+	@POST
+	@Path("find2")
+	public List<EmployeeInfoResultModel> findRegulationInfoEmployee(EmployeeInfoQueryModel query) {
+		return this.repo.find(query);
 	}
 }

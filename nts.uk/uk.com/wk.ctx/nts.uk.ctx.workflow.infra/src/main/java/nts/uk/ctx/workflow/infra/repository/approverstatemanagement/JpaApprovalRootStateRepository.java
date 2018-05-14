@@ -477,15 +477,15 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	public List<ApprovalRootState> getRootStateByDateAndType(GeneralDate date, Integer rootType) {
 		switch (rootType) {
 		case 1:
-			return this.queryProxy().query(SELECT_CF_DAY_BY_EMP_DATE, WwfdtApprovalRootDay.class)
+			return this.queryProxy().query(SELECT_CF_DAY_BY_DATE, WwfdtApprovalRootDay.class)
 					.setParameter("startDate", date)
 					.setParameter("endDate", date).getList(x -> x.toDomain());
 		case 2:
-			return this.queryProxy().query(SELECT_CF_MONTH_BY_EMP_DATE, WwfdtApprovalRootMonth.class)
+			return this.queryProxy().query(SELECT_CF_MONTH_BY_DATE, WwfdtApprovalRootMonth.class)
 					.setParameter("startDate", date)
 					.setParameter("endDate", date).getList(x -> x.toDomain());
 		default:
-			return this.queryProxy().query(SELECT_APP_BY_EMP_DATE, WwfdtApprovalRootState.class)
+			return this.queryProxy().query(SELECT_APP_BY_DATE, WwfdtApprovalRootState.class)
 					.setParameter("startDate", date)
 					.setParameter("endDate", date).getList(x -> x.toDomain());
 		}
