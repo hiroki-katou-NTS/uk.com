@@ -123,6 +123,8 @@ module nts.uk.at.view.kwr008.a {
                     if (data) {
                         self.selectedOutputItem(data.setItemsOutputCd);
                         self.selectedBreakPage(data.breakPage);
+                    } else if (self.outputItem().length) {
+                        self.selectedOutputItem(self.outputItem()[0].code);
                     }
                 });
 

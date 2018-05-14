@@ -60,7 +60,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                                 if (i >= self.outputItem().length) { 
                                     self.outputItem.push(new OutputItemData(i + 1, dataSorted[i].cd, dataSorted[i].useClass, dataSorted[i].headingName, dataSorted[i].valOutFormat, ''));
                                 } else {
-                                    self.outputItem()[i].updateData(i + 1, dataSorted[i].cd, dataSorted[i].useClass, dataSorted[i].headingName, dataSorted[i].valOutFormat, '');
+                                    self.outputItem()[i].updateData(i + 1, dataSorted[i].cd, dataSorted[i].useClass, dataSorted[i].headingName, dataSorted[i].valOutFormat, '', null);
                                 }
                                 if (dataSorted[i].cd != 1) { // rule 36 = 1
                                     let addItems = _.filter(dataSorted[i].listOperationSetting, (x) => { return x.operation === 1; }).map((item) => { return item.attendanceItemId; });
@@ -74,7 +74,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                             }
                         }
                         for (var i = dataSorted.length; i < self.outputItem().length; i++) {
-                            self.outputItem()[i].updateData(i+1, null, false, '', 0, '');
+                            self.outputItem()[i].updateData(i+1, null, false, '', 0, '', null);
                         }
                     }).always(function() {
                         self.updateMode(code);
@@ -341,7 +341,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.currentSetOutputSettingCode(new SetOutputSettingCode(null));
 
             for (var i = 0; i < self.outputItem().length; i++) {
-                self.outputItem()[i].updateData(i + 1, null, false, '', 0, '');
+                self.outputItem()[i].updateData(i + 1, null, false, '', 0, '', null);
             }
             self.outputItem()[0].outputTargetItem(self.rule36CalculationName);
             self.buildIsCheckedAll();
@@ -479,7 +479,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.outputTargetItem(outputTargetItem || '');
         }
 
-        updateData(sortBy: number, cd: string, useClass: boolean, headingName: string, valueOutputFormat: number, outputTargetItem: string) {
+        updateData(sortBy: number, cd: string, useClass: boolean, headingName: string, valueOutputFormat: number, outputTargetItem: string, listOperationSetting: KnockoutObservableArray<OperationCondition>) {
             let self = this;
             self.sortBy(sortBy || 1);
             self.cd(cd);
@@ -487,6 +487,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.headingName(headingName || '');
             self.valueOutputFormat(valueOutputFormat || 0);
             self.outputTargetItem(outputTargetItem || '');
+            self.listOperationSetting(listOperationSetting? listOperationSetting : []);
         }
 
         buildListOperationSetting(listOperation: Array<any>) {
