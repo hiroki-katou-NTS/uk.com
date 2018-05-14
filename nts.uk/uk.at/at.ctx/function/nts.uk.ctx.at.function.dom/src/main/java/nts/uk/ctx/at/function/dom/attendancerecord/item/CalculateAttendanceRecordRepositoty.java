@@ -16,7 +16,7 @@ public interface CalculateAttendanceRecordRepositoty {
 	 * @param position the position
 	 * @return the calculate attendance record
 	 */
-	CalculateAttendanceRecord getCalculateAttendanceRecord(String CompanyId, ExportSettingCode code, int columnIndex, int position, int exportArt );
+	CalculateAttendanceRecord getCalculateAttendanceRecord(String CompanyId, ExportSettingCode code, long columnIndex, long position, long exportArt );
 
 	/**
 	 * Adds the calculate attendance record.

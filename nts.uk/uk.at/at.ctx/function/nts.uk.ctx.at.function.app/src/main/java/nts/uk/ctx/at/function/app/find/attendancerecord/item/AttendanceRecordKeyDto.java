@@ -6,16 +6,16 @@ import lombok.Value;
 public class AttendanceRecordKeyDto {
 	
 	/** The code. */
-	private String code;
+	private long code;
 	
 	/** The column index. */
-	private int columnIndex;
+	private long columnIndex;
 	
 	/** The position. */
-	private int position;
+	private long position;
 	
 	/** The export art. */
-	private int exportArt;
+	private long exportArt;
 	
 	
 

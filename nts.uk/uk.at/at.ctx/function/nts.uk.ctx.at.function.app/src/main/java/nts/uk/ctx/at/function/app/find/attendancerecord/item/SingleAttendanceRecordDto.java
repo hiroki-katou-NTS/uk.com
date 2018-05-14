@@ -15,6 +15,8 @@ public class SingleAttendanceRecordDto implements AttendanceRecordDisplayDto {
 
 	/** The attribute. */
 	int attribute;
+	
+	
 
 	/**
 	 * Instantiates a new single attendance record dto.
@@ -31,6 +33,15 @@ public class SingleAttendanceRecordDto implements AttendanceRecordDisplayDto {
 		this.name = name;
 		this.itemId = itemId;
 		this.attribute = attribute;
+	}
+
+
+
+	/**
+	 * Instantiates a new single attendance record dto.
+	 */
+	public SingleAttendanceRecordDto() {
+		super();
 	}
 
 }
