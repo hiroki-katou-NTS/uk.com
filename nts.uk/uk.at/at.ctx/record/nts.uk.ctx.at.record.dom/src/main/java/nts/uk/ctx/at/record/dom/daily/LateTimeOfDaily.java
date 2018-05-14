@@ -105,8 +105,14 @@ public class LateTimeOfDaily {
 		  LateTimeSheet lateTimeSheet = new LateTimeSheet(Optional.of(forRecordTimeSheet), Optional.of(forDeductTimeSheet), workNo.v(), Optional.empty());
 		
 		//遅刻・早退を控除する
-		NotUseAtr notDeductLateLeaveEarly = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()?holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly()
-																															  :NotUseAtr.NOT_USE;
+//		NotUseAtr notDeductLateLeaveEarly = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()?holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly()
+//																															  :NotUseAtr.NOT_USE;
+		NotUseAtr notDeductLateLeaveEarly = NotUseAtr.NOT_USE;
+		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {
+			if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly()) {
+				notDeductLateLeaveEarly = NotUseAtr.USE;
+			}
+		}
 		//遅刻計上時間の計算
 		TimeWithCalculation lateTime = lateTimeSheet.calcForRecordTime(late);
 		//遅刻控除時間の計算 

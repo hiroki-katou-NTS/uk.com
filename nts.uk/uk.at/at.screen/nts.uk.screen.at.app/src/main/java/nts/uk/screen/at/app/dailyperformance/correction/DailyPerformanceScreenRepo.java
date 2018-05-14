@@ -48,6 +48,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHi
 import nts.uk.screen.at.app.dailyperformance.correction.dto.reasondiscrepancy.ReasonCodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInfoOfDailyPerformanceDetailDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceIdPeriodAtScreen;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceAuthorityDto;
 
 /**
  * @author hungnm
@@ -114,7 +115,7 @@ public interface DailyPerformanceScreenRepo {
 	List<FormatDPCorrectionDto> getListFormatDPCorrection(List<String> lstBusinessType);
 
 	/** Get Daily performance business type type control */
-	List<DPBusinessTypeControl> getListBusinessTypeControl(List<String> lstBusinessType, List<Integer> lstAttendanceItem);
+	List<DPBusinessTypeControl> getListBusinessTypeControl(String companyId, String authorityDailyID, List<Integer> lstAttendanceItem, boolean use);
 
 	/** Get list attendance item */
 	List<DPAttendanceItem> getListAttendanceItem(List<Integer> lstAttendanceItem);
@@ -178,6 +179,15 @@ public interface DailyPerformanceScreenRepo {
 	
 	List<DailyPerformanceAuthorityDto> findDailyAuthority(String roleId);
 	
+	/**
+	 * find authority for monthlyPer
+	 * kmw003 screen
+	 * @param roleId
+	 * @param availability
+	 * @return
+	 */
+	List<MonthlyPerformanceAuthorityDto> findAuthority(String roleId, BigDecimal availability);
+	
 	List<WorkTimeWorkplaceDto> findWorkHours(String companyId, String workplaceId);
 	
 	List<CodeName> findWorkTimeZone(String companyId, List<String> shifCode);
@@ -187,8 +197,6 @@ public interface DailyPerformanceScreenRepo {
 	List<CodeName> findWorkType(String companyId, Set<String> typeCodes);
 	
 	void updateColumnsWidth(Map<Integer, Integer> lstHeader, List<String> formatCodes);
-	
-	Optional<DailyRecOpeFuncDto> findDailyRecOpeFun(String companyId);
 	
 	List<EnumConstant> findErAlApplication(String companyId, List<String> errorCode);
 	

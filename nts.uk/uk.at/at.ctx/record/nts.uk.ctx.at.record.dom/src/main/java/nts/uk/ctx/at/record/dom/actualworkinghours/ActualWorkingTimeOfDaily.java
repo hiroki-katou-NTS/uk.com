@@ -60,6 +60,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -180,7 +181,7 @@ public class ActualWorkingTimeOfDaily {
 			   IntegrationOfDaily integrationOfDaily,
 			   Optional<WorkType> scheWorkType,
 			   AutoCalFlexOvertimeSetting flexAutoCalSet,
-			   DailyUnit dailyUnit, WorkScheduleTimeOfDaily workScheduleTime
+			   DailyUnit dailyUnit, WorkScheduleTimeOfDaily workScheduleTime,Optional<CoreTimeSetting> coreTimeSetting
 				/*計画所定時間*/
 				/*実績所定労働時間*/) {
 
@@ -208,7 +209,7 @@ public class ActualWorkingTimeOfDaily {
 					eachCompanyTimeSet,
 					breakTimeCount,
 					integrationOfDaily,
-					flexAutoCalSet
+					flexAutoCalSet,coreTimeSetting
 					/*計画所定時間*/
 					/*実績所定労働時間*/);
 		
@@ -244,7 +245,6 @@ public class ActualWorkingTimeOfDaily {
 													   forCalcDivergenceDto,
 													   divergenceTimeList,
 													   workScheduleTime
-														/*実績所定労働時間*/
 													   );
 		
 		/*返値*/
@@ -464,10 +464,17 @@ public class ActualWorkingTimeOfDaily {
 			
 			//休暇加算を残業として計算する場合、ロジックの関係上、就業時間計算時に休暇加算が合算されてしまう
 			//ここでは、合算されてしまっている休暇加算を差し引いている
-			if(totalWorkingTime.getWithinStatutoryTimeOfDaily().getWorkTime().greaterThan(predetermineTime.valueAsMinutes())) {
-				totalWorkingTime.setWithinWorkTime(predetermineTime);
+//			if(totalWorkingTime.getWithinStatutoryTimeOfDaily().getWorkTime().greaterThan(predetermineTime.valueAsMinutes())) {
+//				totalWorkingTime.setWithinWorkTime(predetermineTime);
+//			}
+			if(ootsukaFixedCalcSet != null && ootsukaFixedCalcSet.isPresent() ) {
+				if(ootsukaFixedCalcSet.get().getExceededPredAddVacationCalc().getCalcMethod() != null
+					 && ootsukaFixedCalcSet.get().getExceededPredAddVacationCalc().getCalcMethod().isCalcAsOverTime()
+					 && totalWorkingTime.getWithinStatutoryTimeOfDaily().getWorkTime().greaterThan(predetermineTime.valueAsMinutes())) {
+					totalWorkingTime.setWithinWorkTime(predetermineTime);
+				}
 			}
-			
+
 			//就業時間から休憩未取得時間を減算(休憩未取得を残業時間として計算する　であれば差し引く)
 			if(ootsukaFixedCalcSet != null
 			   && ootsukaFixedCalcSet.isPresent()

@@ -367,7 +367,7 @@ module nts.uk.ui {
                         }
                         
                         setTimeout(function(){
-                            let dialogM = dialogInfo.$dialog.closest("div[role='dialog']");
+                            let dialogM = dialogInfo.isRoot ? $("body") : dialogInfo.$dialog.closest("div[role='dialog']");
                             let topDiff = (dialogM.innerHeight() - dialog.innerHeight()) / 2;
                             let leftDiff = (dialogM.innerWidth() - dialog.innerWidth()) / 2;
                             if(topDiff > 0){

@@ -1,41 +1,29 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-
+/**
+ * 権限別日次項目制御
+ * @author tutk
+ *
+ */
 @Getter
 public class DailyAttendanceItemAuthority extends AggregateRoot {
-	private int attendanceItemId;
+	
+	/**会社ID*/
+	private String companyID;
+	/**ロール*/
+	private String authorityDailyId;
 
-	private String authorityId;
+	private List<DisplayAndInputControl> listDisplayAndInputControl = new ArrayList<>();
 
-	private boolean youCanChangeIt;
-
-	private boolean canBeChangedByOthers;
-
-	private boolean use;
-
-	private int userCanSet;
-
-	public DailyAttendanceItemAuthority(int attendanceItemId, String authorityId,
-			boolean youCanChangeIt, boolean canBeChangedByOthers, boolean use, int userCanSet) {
+	public DailyAttendanceItemAuthority(String companyID, String authorityDailyId, List<DisplayAndInputControl> listDisplayAndInputControl) {
 		super();
-		this.attendanceItemId = attendanceItemId;
-		this.authorityId = authorityId;
-		this.youCanChangeIt = youCanChangeIt;
-		this.canBeChangedByOthers = canBeChangedByOthers;
-		this.use = use;
-		this.userCanSet = userCanSet;
+		this.companyID = companyID;
+		this.authorityDailyId = authorityDailyId;
+		this.listDisplayAndInputControl = listDisplayAndInputControl;
 	}
-	
-	
-	public static DailyAttendanceItemAuthority createFromJavaType(int attendanceItemId, String authorityId,
-			boolean youCanChangeIt, boolean canBeChangedByOthers, boolean use,
-			int userCanSet) {
-		
-			return new DailyAttendanceItemAuthority(attendanceItemId, authorityId, youCanChangeIt, canBeChangedByOthers, use, userCanSet);
-		
-	}
-	
-
 }

@@ -12,7 +12,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.query.app.employee.EmployeeSearchQueryDto;
+import nts.uk.query.app.employee.RegulationInfoEmpQueryDto;
 import nts.uk.query.app.employee.RegulationInfoEmployeeDto;
 import nts.uk.query.app.employee.RegulationInfoEmployeeFinder;
 
@@ -35,7 +35,7 @@ public class RegulationInfoEmployeeWs {
 	 */
 	@POST
 	@Path("find")
-	public List<RegulationInfoEmployeeDto> findRegulationInfoEmployee(EmployeeSearchQueryDto query) {
+	public List<RegulationInfoEmployeeDto> findRegulationInfoEmployee(RegulationInfoEmpQueryDto query) {
 		return this.finder.find(query);
 	}
 }

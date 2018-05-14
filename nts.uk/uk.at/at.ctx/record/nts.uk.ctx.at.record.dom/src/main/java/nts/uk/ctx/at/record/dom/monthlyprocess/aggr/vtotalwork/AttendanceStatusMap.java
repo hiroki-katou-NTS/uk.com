@@ -21,11 +21,11 @@ public class AttendanceStatusMap {
 	/**
 	 * コンストラクタ
 	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
-	 * @param timeLeaveingOfDailys 日別実績の出退勤リスト
+	 * @param timeLeavingOfDailys 日別実績の出退勤リスト
 	 */
 	public AttendanceStatusMap(
 			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys,
-			List<TimeLeavingOfDailyPerformance> timeLeaveingOfDailys){
+			List<TimeLeavingOfDailyPerformance> timeLeavingOfDailys){
 		
 		this.map = new HashMap<>();
 		for (val attendanceTime : attendanceTimeOfDailys){
@@ -36,7 +36,7 @@ public class AttendanceStatusMap {
 			val totalWorkingTime = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime();
 			this.map.get(ymd).setTotalTime(totalWorkingTime.getTotalTime());
 		}
-		for (val timeLeaving : timeLeaveingOfDailys){
+		for (val timeLeaving : timeLeavingOfDailys){
 			val ymd = timeLeaving.getYmd();
 			this.map.putIfAbsent(ymd, new AttendanceStatus(ymd));
 		

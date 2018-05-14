@@ -1,0 +1,296 @@
+module nts.uk.at.view.kdw006.c.viewmodel {
+    let __viewContext: any = window["__viewContext"] || {};
+
+    export class ScreenModelC {
+        daiPerformanceFunDto: KnockoutObservable<DaiPerformanceFunDto>;
+        approvalProcessDto: KnockoutObservable<ApprovalProcessDto>;
+        identityProcessDto: KnockoutObservable<IdentityProcessDto>
+        monPerformanceFunDto: KnockoutObservable<MonPerformanceFunDto>;
+        itemList: KnockoutObservableArray<any>;
+        hiddenYourself: KnockoutObservable<boolean>;
+        hiddenSuper: KnockoutObservable<boolean>;
+        
+        sideBar: KnockoutObservable<number>;
+        constructor() {
+            let self = this;
+            self.itemList = ko.observableArray([]);
+            self.hiddenYourself = ko.observable(true);
+            self.hiddenSuper= ko.observable(true);
+            
+            self.sideBar = ko.observable(0);
+            let yourSelf = __viewContext.enums.YourselfConfirmError;
+            _.forEach(yourSelf, (a) => {
+                self.itemList.push(new ItemModel(a.value, a.name));
+            });
+
+            self.daiPerformanceFunDto = ko.observable(new DaiPerformanceFunDto({
+                cid: '',
+                comment: null,
+                monthChkMsgAtr: 0,
+                disp36Atr: 0,
+                clearManuAtr: 0,
+                flexDispAtr: 0,
+                breakCalcUpdAtr: 0,
+                breakTimeAutoAtr: 0,
+                breakClrTimeAtr: 0,
+                autoSetTimeAtr: 0,
+                ealyCalcUpdAtr: 0,
+                overtimeCalcUpdAtr: 0,
+                lawOverCalcUpdAtr: 0,
+                manualFixAutoSetAtr: 0,
+            }));
+            self.approvalProcessDto = ko.observable(new ApprovalProcessDto({
+                cid: '',
+                jobTitleId: null,
+                useDailyBossChk: 0,
+                useMonthBossChk: 0,
+                supervisorConfirmError: 0,
+            }));
+            self.identityProcessDto = ko.observable(new IdentityProcessDto({
+                cid: '',
+                useDailySelfCk: 0,
+                useMonthSelfCK: 0,
+                yourselfConfirmError: 0
+            }));
+            self.monPerformanceFunDto = ko.observable(new MonPerformanceFunDto({
+                cid: '',
+                comment: null,
+                dailySelfChkDispAtr: 0
+            }));
+        }
+
+
+        start(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+            nts.uk.ui.block.grayout();
+            $.when(self.getIdentity(), self.getApproval(), self.getDaily(), self.getMonthly()).done(() => {
+                dfd.resolve();
+            }).always(() => {
+                nts.uk.ui.errors.clearAll();
+                nts.uk.ui.block.clear();
+            });
+
+
+
+            return dfd.promise();
+        }
+        
+        jumpTo(sidebar) : JQueryPromise<any> {
+                let self = this;
+                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });
+            }
+
+
+        //Get IdentityProcess 本人確認処理の利用設定
+        getIdentity(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+            service.getIdentity().done(function(data: IIdentityProcessDto) {
+                if (data) {
+                    self.identityProcessDto(new IdentityProcessDto(data));
+                    dfd.resolve();
+                } else {
+                    dfd.resolve();
+                }
+            });
+            return dfd.promise();
+        }
+
+        // get ApprovalProcess 承認処理の利用設定 
+        getApproval(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+            service.getApproval().done(function(data: IApprovalProcessDto) {
+                if (data) {
+                    self.approvalProcessDto(new ApprovalProcessDto(data));
+                    dfd.resolve();
+                } else {
+                    dfd.resolve();
+                }
+            });
+            return dfd.promise();
+        }
+
+        // get DaiPerformanceFun 日別実績の修正の機能 
+        getDaily(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+            service.getDaily().done(function(data: IDaiPerformanceFunDto) {
+                if (data) {
+                    self.daiPerformanceFunDto(new DaiPerformanceFunDto(data));
+                    dfd.resolve();
+                } else {
+                    dfd.resolve();
+                }
+            });
+            return dfd.promise();
+        }
+
+        // get DaiPerformanceFun 日別実績の修正の機能 
+        getMonthly(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+            service.getMonthly().done(function(data: IMonPerformanceFunDto) {
+                if (data) {
+                    self.monPerformanceFunDto(new MonPerformanceFunDto(data));
+                    dfd.resolve();
+                } else {
+                    dfd.resolve();
+                }
+            });
+            return dfd.promise();
+        }
+        // when click register button 
+        saveData() {
+            let self = this;
+            nts.uk.ui.block.grayout();
+            if (nts.uk.ui.errors.hasError() === false) {
+                service.updateIdentity(ko.toJS(self.identityProcessDto)).done(function() {
+                    service.updateApproval(ko.toJS(self.approvalProcessDto)).done(function() {
+                        service.updateDaily(ko.toJS(self.daiPerformanceFunDto)).done(function() {
+                            service.updateMonthly(ko.toJS(self.monPerformanceFunDto)).done(function() {
+                                //self.start();
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            });
+                        });
+                    });
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
+            }
+            
+        }
+    }
+    class BoxModel {
+        id: number;
+        name: string;
+        constructor(id, name) {
+            var self = this;
+            self.id = id;
+            self.name = name;
+        }
+    }
+    interface IDaiPerformanceFunDto {
+        cid: string;
+        comment: string;
+        monthChkMsgAtr: number;
+        disp36Atr: number;
+        clearManuAtr: number;
+        flexDispAtr: number;
+        breakCalcUpdAtr: number;
+        breakTimeAutoAtr: number;
+        breakClrTimeAtr: number;
+        autoSetTimeAtr: number;
+        ealyCalcUpdAtr: number;
+        overtimeCalcUpdAtr: number;
+        lawOverCalcUpdAtr: number;
+        manualFixAutoSetAtr: number;
+    }
+
+    class DaiPerformanceFunDto {
+        cid: KnockoutObservable<string>;
+        comment: KnockoutObservable<string>;
+        monthChkMsgAtr: KnockoutObservable<boolean>;
+        disp36Atr: KnockoutObservable<boolean>;
+        clearManuAtr: KnockoutObservable<boolean>;
+        flexDispAtr: KnockoutObservable<boolean>;
+        breakCalcUpdAtr: KnockoutObservable<boolean>;
+        breakTimeAutoAtr: KnockoutObservable<boolean>;
+        breakClrTimeAtr: KnockoutObservable<boolean>;
+        autoSetTimeAtr: KnockoutObservable<boolean>;
+        ealyCalcUpdAtr: KnockoutObservable<boolean>;
+        overtimeCalcUpdAtr: KnockoutObservable<boolean>;
+        lawOverCalcUpdAtr: KnockoutObservable<boolean>;
+        manualFixAutoSetAtr: KnockoutObservable<boolean>;
+
+        constructor(param: IDaiPerformanceFunDto) {
+            let self = this;
+            self.cid = ko.observable(param.cid);
+            self.comment = ko.observable(param.comment);
+            self.monthChkMsgAtr = ko.observable(param.monthChkMsgAtr == 1 ? true : false);
+            self.disp36Atr = ko.observable(param.disp36Atr == 1 ? true : false);
+            self.clearManuAtr = ko.observable(param.clearManuAtr == 1 ? true : false);
+            self.flexDispAtr = ko.observable(param.flexDispAtr == 1 ? true : false);
+            self.breakCalcUpdAtr = ko.observable(param.breakCalcUpdAtr == 1 ? true : false);
+            self.breakTimeAutoAtr = ko.observable(param.breakTimeAutoAtr == 1 ? true : false);
+            self.breakClrTimeAtr = ko.observable(param.breakClrTimeAtr == 1 ? true : false);
+            self.autoSetTimeAtr = ko.observable(param.autoSetTimeAtr == 1 ? true : false);
+            self.ealyCalcUpdAtr = ko.observable(param.ealyCalcUpdAtr == 1 ? true : false);
+            self.overtimeCalcUpdAtr = ko.observable(param.overtimeCalcUpdAtr == 1 ? true : false);
+            self.lawOverCalcUpdAtr = ko.observable(param.lawOverCalcUpdAtr == 1 ? true : false);
+            self.manualFixAutoSetAtr = ko.observable(param.manualFixAutoSetAtr == 1 ? true : false);
+        }
+    }
+
+    interface IApprovalProcessDto {
+        cid: string;
+        jobTitleId: string;
+        useDailyBossChk: number;
+        useMonthBossChk: number;
+        supervisorConfirmError: number;
+    }
+    class ApprovalProcessDto {
+        cid: KnockoutObservable<string>;
+        jobTitleId: KnockoutObservable<string>;
+        useDailyBossChk: KnockoutObservable<boolean>;
+        useMonthBossChk: KnockoutObservable<boolean>;
+        supervisorConfirmError: KnockoutObservable<number>;
+
+        constructor(param: IApprovalProcessDto) {
+            let self = this;
+            self.cid = ko.observable(param.cid);
+            self.jobTitleId = ko.observable(param.jobTitleId);
+            self.useDailyBossChk = ko.observable(param.useDailyBossChk == 1 ? true : false);
+            self.useMonthBossChk = ko.observable(param.useMonthBossChk == 1 ? true : false);
+            self.supervisorConfirmError = ko.observable(param.supervisorConfirmError);
+        }
+    }
+
+    interface IIdentityProcessDto {
+        cid: string;
+        useDailySelfCk: number;
+        useMonthSelfCK: number;
+        yourselfConfirmError: number;
+    }
+    class IdentityProcessDto {
+        cid: KnockoutObservable<string>;
+        useDailySelfCk: KnockoutObservable<boolean>;
+        useMonthSelfCK: KnockoutObservable<boolean>;
+        yourselfConfirmError: KnockoutObservable<number>;
+
+        constructor(param: IIdentityProcessDto) {
+            let self = this;
+            self.cid = ko.observable(param.cid);
+            self.useDailySelfCk = ko.observable(param.useDailySelfCk == 1 ? true : false);
+            self.useMonthSelfCK = ko.observable(param.useMonthSelfCK == 1 ? true : false);
+            self.yourselfConfirmError = ko.observable(param.yourselfConfirmError);
+        }
+    }
+    interface IMonPerformanceFunDto {
+        cid: string;
+        comment: string;
+        dailySelfChkDispAtr: number;
+    }
+    class MonPerformanceFunDto {
+        cid: KnockoutObservable<string>;
+        comment: KnockoutObservable<string>;
+        dailySelfChkDispAtr: KnockoutObservable<boolean>;
+        constructor(param: IMonPerformanceFunDto) {
+            let self = this;
+            self.cid = ko.observable(param.cid);
+            self.comment = ko.observable(param.comment);
+            self.dailySelfChkDispAtr = ko.observable(param.dailySelfChkDispAtr == 1 ? true : false);
+        }
+    }
+
+    class ItemModel {
+        code: number;
+        name: string;
+
+        constructor(code: number, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }
+}

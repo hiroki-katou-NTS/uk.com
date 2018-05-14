@@ -81,7 +81,9 @@ public class SpecialHolidayUseTimeOfMonthly {
 			// 「日別実績の特別休暇」を取得する
 			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
+			if (totalWorkingTime.getHolidayOfDaily() == null) return;
 			val holidayOfDaily = totalWorkingTime.getHolidayOfDaily();
+			if (holidayOfDaily.getSpecialHoliday() == null) return;
 			val specialHoliday = holidayOfDaily.getSpecialHoliday();
 			
 			// 取得した使用時間を「月別実績の特別休暇使用時間」に入れる

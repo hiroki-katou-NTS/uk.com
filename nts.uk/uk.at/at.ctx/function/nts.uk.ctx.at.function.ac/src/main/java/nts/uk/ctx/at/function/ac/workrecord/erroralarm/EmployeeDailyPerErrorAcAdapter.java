@@ -30,4 +30,18 @@ public class EmployeeDailyPerErrorAcAdapter implements EmployeeDailyPerErrorAdap
 
 	}
 
+	@Override
+	public List<EmployeeDailyPerErrorImport> getByErrorAlarm(List<String> employeeId, DatePeriod datePeriod,
+			List<String> errorCodes) {
+		List<EmployeeDailyPerErrorPubExport> employeeDailyExportList = pub.getByErrorCode(employeeId, datePeriod,
+				errorCodes);
+		if(employeeDailyExportList == null)
+			throw new RuntimeException("EmployeeDailyPerErrorPub.getByErrorCode return NULL");
+		
+		return employeeDailyExportList.stream()
+				.map(e -> new EmployeeDailyPerErrorImport(e.getCompanyID(), e.getEmployeeID(), e.getDate(),
+						e.getErrorAlarmWorkRecordCode(), e.getAttendanceItemList(), e.getErrorCancelAble()))
+				.collect(Collectors.toList());
+	}
+
 }

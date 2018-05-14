@@ -34,6 +34,9 @@ public class WorkTimeOfMonthly {
 	/** 所定内割増時間 */
 	@Setter
 	private AttendanceTimeMonth withinPrescribedPremiumTime;
+	/** 実働就業時間 */
+	@Setter
+	private AttendanceTimeMonth actualWorkTime;
 	
 	/** 時系列ワーク */
 	private Map<GeneralDate, WorkTimeOfTimeSeries> timeSeriesWorks;
@@ -45,6 +48,7 @@ public class WorkTimeOfMonthly {
 		
 		this.workTime = new AttendanceTimeMonth(0);
 		this.withinPrescribedPremiumTime = new AttendanceTimeMonth(0);
+		this.actualWorkTime = new AttendanceTimeMonth(0);
 		this.timeSeriesWorks = new HashMap<>();
 	}
 
@@ -52,15 +56,18 @@ public class WorkTimeOfMonthly {
 	 * ファクトリー
 	 * @param workTime 就業時間
 	 * @param withinPrescribedPremiumTime 所定内割増時間
+	 * @param actualWorkTime 実働就業時間
 	 * @return 月別実績の就業時間
 	 */
 	public static WorkTimeOfMonthly of(
 			AttendanceTimeMonth workTime,
-			AttendanceTimeMonth withinPrescribedPremiumTime){
+			AttendanceTimeMonth withinPrescribedPremiumTime,
+			AttendanceTimeMonth actualWorkTime){
 		
 		val domain = new WorkTimeOfMonthly();
 		domain.workTime = workTime;
 		domain.withinPrescribedPremiumTime = withinPrescribedPremiumTime;
+		domain.actualWorkTime = actualWorkTime;
 		return domain;
 	}
 
@@ -68,17 +75,20 @@ public class WorkTimeOfMonthly {
 	 * 複写
 	 * @param workTime 就業時間
 	 * @param withinPrescribedPremiumTime 所定内割増時間
+	 * @param actualWorkTime 実働就業時間
 	 * @param timeSeriesWorks 時系列ワーク
 	 * @return 月別実績の就業時間
 	 */
 	public static WorkTimeOfMonthly copyFrom(
 			AttendanceTimeMonth workTime,
 			AttendanceTimeMonth withinPrescribedPremiumTime,
+			AttendanceTimeMonth actualWorkTime,
 			Map<GeneralDate, WorkTimeOfTimeSeries> timeSeriesWorks){
 		
 		val domain = new WorkTimeOfMonthly();
 		domain.workTime = new AttendanceTimeMonth(workTime.valueAsMinutes());
 		domain.withinPrescribedPremiumTime = new AttendanceTimeMonth(withinPrescribedPremiumTime.valueAsMinutes());
+		domain.actualWorkTime = new AttendanceTimeMonth(actualWorkTime.valueAsMinutes());
 		domain.timeSeriesWorks = timeSeriesWorks;
 		return domain;
 	}
@@ -122,6 +132,10 @@ public class WorkTimeOfMonthly {
 				// 変形法定内残業を就業時間に加算
 				workTime = workTime.addMinutes(overTimeOfDaily.getIrregularWithinPrescribedOverTimeWork().v());
 			}
+			
+			// 「日別実績の総労働時間．休暇加算時間」を取得する
+			//val vacationAddTime = totalWorkingTime.getVacationAddTime();
+			AttendanceTime vacationAddTime = new AttendanceTime(0);
 	
 			// 時系列ワークに追加
 			val workTimeOfTimeSeries = WorkTimeOfTimeSeries.of(ymd,
@@ -130,7 +144,8 @@ public class WorkTimeOfMonthly {
 							withinPrescribedTimeOfDaily.getActualWorkTime(),
 							withinPrescribedPremiumTime,
 							withinPrescribedTimeOfDaily.getWithinStatutoryMidNightTime(),
-							withinPrescribedTimeOfDaily.getVacationAddTime())
+							withinPrescribedTimeOfDaily.getVacationAddTime()),
+					vacationAddTime
 					);
 			this.timeSeriesWorks.putIfAbsent(ymd, workTimeOfTimeSeries);
 		}
@@ -168,16 +183,8 @@ public class WorkTimeOfMonthly {
 			OverTimeOfMonthly overTime,
 			HolidayWorkTimeOfMonthly holidayWorkTime){
 
-		// 就業時間を集計する
-		this.workTime = new AttendanceTimeMonth(0);
-		this.withinPrescribedPremiumTime = new AttendanceTimeMonth(0);
-		for (val timeSeriesWork : this.timeSeriesWorks.values()){
-			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
-			val legalTime = timeSeriesWork.getLegalTime();
-			this.workTime = this.workTime.addMinutes(legalTime.getWorkTime().v());
-			this.withinPrescribedPremiumTime = this.withinPrescribedPremiumTime.addMinutes(
-					legalTime.getWithinPrescribedPremiumTime().v());
-		}
+		// 就業時間の合計処理
+		this.totalizeWorkTime(datePeriod);
 		
 		// 就業時間に法定内残業時間を加算する
 		this.workTime = this.workTime.addMinutes(overTime.getLegalOverTime(datePeriod).v());
@@ -194,6 +201,26 @@ public class WorkTimeOfMonthly {
 		// 就業時間から週割増合計時間・月割増合計時間を引く
 		this.workTime = this.workTime.minusMinutes(actualWorkingTime.getWeeklyTotalPremiumTime().v());
 		this.workTime = this.workTime.minusMinutes(actualWorkingTime.getMonthlyTotalPremiumTime().v());
+	}
+	
+	/**
+	 * 就業時間の合計処理
+	 * @param datePeriod 期間
+	 */
+	public void totalizeWorkTime(DatePeriod datePeriod){
+		
+		this.workTime = new AttendanceTimeMonth(0);
+		this.withinPrescribedPremiumTime = new AttendanceTimeMonth(0);
+		this.actualWorkTime = new AttendanceTimeMonth(0);
+		for (val timeSeriesWork : this.timeSeriesWorks.values()){
+			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
+			val legalTime = timeSeriesWork.getLegalTime();
+			this.workTime = this.workTime.addMinutes(legalTime.getWorkTime().v());
+			this.withinPrescribedPremiumTime = this.withinPrescribedPremiumTime.addMinutes(
+					legalTime.getWithinPrescribedPremiumTime().v());
+			this.actualWorkTime = this.actualWorkTime.addMinutes(
+					legalTime.getActualWorkTime().v());
+		}
 	}
 	
 	/**
@@ -214,5 +241,6 @@ public class WorkTimeOfMonthly {
 		this.workTime = this.workTime.addMinutes(target.workTime.v());
 		this.withinPrescribedPremiumTime = this.withinPrescribedPremiumTime.addMinutes(
 				target.withinPrescribedPremiumTime.v());
+		this.actualWorkTime = this.actualWorkTime.addMinutes(target.actualWorkTime.v());
 	}
 }

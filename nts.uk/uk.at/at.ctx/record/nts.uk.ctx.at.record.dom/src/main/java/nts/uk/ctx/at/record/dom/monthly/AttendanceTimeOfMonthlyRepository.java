@@ -43,6 +43,17 @@ public interface AttendanceTimeOfMonthlyRepository {
 			String employeeId, YearMonth yearMonth, ClosureId closureId);
 	
 	/**
+	 * 検索　（社員リスト）
+	 * @param employeeIds 社員IDリスト
+	 * @param yearMonth 年月
+	 * @param closureId 締めID
+	 * @param closureDate 締め日付
+	 * @return 該当する月別実績の勤怠時間
+	 */
+	List<AttendanceTimeOfMonthly> findByEmployees(List<String> employeeIds, YearMonth yearMonth,
+			ClosureId closureId, ClosureDate closureDate);
+	
+	/**
 	 * 登録および更新
 	 * @param attendanceTimeOfMonthly 月別実績の勤怠時間
 	 */

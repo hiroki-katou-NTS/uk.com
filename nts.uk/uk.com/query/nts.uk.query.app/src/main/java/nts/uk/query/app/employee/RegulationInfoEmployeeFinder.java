@@ -40,7 +40,7 @@ public class RegulationInfoEmployeeFinder {
 	 * @param queryDto the query dto
 	 * @return the list
 	 */
-	public List<RegulationInfoEmployeeDto> find(EmployeeSearchQueryDto queryDto) {
+	public List<RegulationInfoEmployeeDto> find(RegulationInfoEmpQueryDto queryDto) {
 		
 		//Algorithm: 検索条件の職場一覧を参照範囲に基いて変更する
 		this.changeWorkplaceListByRole(queryDto);
@@ -64,7 +64,7 @@ public class RegulationInfoEmployeeFinder {
 	 * @return the list
 	 */
 	// 検索条件の職場一覧を参照範囲に基いて変更する
-	private void changeWorkplaceListByRole(EmployeeSearchQueryDto queryDto) {
+	private void changeWorkplaceListByRole(RegulationInfoEmpQueryDto queryDto) {
 		// get RoleId
 		String roleId = this.workPlaceAdapter.findRoleIdBySystemType(queryDto.getSystemType());
 
@@ -122,7 +122,7 @@ public class RegulationInfoEmployeeFinder {
 	 * @return the list
 	 */
 	//change list Workplace [指定条件から参照可能な職場リストを取得する]
-	private void changeListWorkplaces(EmployeeSearchQueryDto queryParam) {
+	private void changeListWorkplaces(RegulationInfoEmpQueryDto queryParam) {
 		// get List Workplace
 		GeneralDate date = GeneralDate.fromString(queryParam.getBaseDate(), "yyyy-MM-dd");
 		List<String> wkplist = this.workPlaceAdapter.getWorkPlaceIdByEmployeeReferenceRange(date,
