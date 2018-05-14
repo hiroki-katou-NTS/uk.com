@@ -375,12 +375,14 @@ module nts.uk.at.view.kmf004.b {
              */
             addListError(errorsRequest: Array<string>) {
                 var messages = {};
-                _.forEach(errorsRequest, function(err) {
+                var errors = errorsRequest.filter((v, i, a) => a.indexOf(v) === i);
+                
+                _.forEach(errors, function(err) {
                     messages[err] = nts.uk.resource.getMessage(err);
                 });
     
                 var errorVm = {
-                    messageId: errorsRequest,
+                    messageId: errors,
                     messages: messages
                 };
     
