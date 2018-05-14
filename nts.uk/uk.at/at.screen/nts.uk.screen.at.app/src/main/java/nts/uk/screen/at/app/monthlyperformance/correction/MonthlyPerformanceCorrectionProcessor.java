@@ -358,7 +358,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 		for (int i = 0; i < screenDto.getLstEmployee().size(); i++) {
 			MonthlyPerformanceEmployeeDto employee = screenDto.getLstEmployee().get(i);
 			String employeeId = employee.getId();
-			String lockStatus = lockStatusMap.isEmpty() ? "" : lockStatusMap.get(employee.getId()).getLockStatusString();		
+			String lockStatus = lockStatusMap.isEmpty() || !lockStatusMap.containsKey(employee.getId()) ? "" : lockStatusMap.get(employee.getId()).getLockStatusString();		
 			
 			MPDataDto mpdata = new MPDataDto(employeeId,
 					lockStatus, "", employee.getCode(),employee.getBusinessName(), employeeId, "", false, false, false, "");
