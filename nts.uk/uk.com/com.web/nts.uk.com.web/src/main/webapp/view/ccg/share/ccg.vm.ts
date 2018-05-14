@@ -1545,9 +1545,9 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             public searchByCode(): void {
                 let self = this;
-                $('#ccg001-inp-code').ntsEditor('validate');
-                if ($('#ccg001-inp-code').ntsError('hasError')) {
+                if (nts.uk.util.isNullOrEmpty(self.inputCodeTab3())) {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_1201' });
+                    return;
                 }
                 const query = {
                     code: self.inputCodeTab3(),
@@ -1567,9 +1567,9 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             public searchByName(): void {
                 let self = this;
-                $('#ccg001-inp-name').ntsEditor('validate');
-                if ($('#ccg001-inp-name').ntsError('hasError')) {
+                if (nts.uk.util.isNullOrEmpty(self.inputNameTab3())) {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_1201' });
+                    return;
                 }
                 const query = {
                     name: self.inputNameTab3(),
@@ -1589,9 +1589,9 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             public searchByEntryDate(): void {
                 let self = this;
-                $('#ccg001-date-entry').ntsEditor('validate');
-                if ($('#ccg001-date-entry').ntsError('hasError')) {
+                if (self.isInValidEntryDate()) {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_1201' });
+                    return;
                 }
                 const query = {
                     useClosure: self.showClosure,
@@ -1611,9 +1611,9 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             public searchByRetirementDate(): void {
                 let self = this;
-                $('#ccg001-date-retirement').ntsEditor('validate');
-                if ($('#ccg001-date-retirement').ntsError('hasError')) {
+                if (self.isInValidRetirementDate()) {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_1201' });
+                    return;
                 }
                 const query = {
                     useClosure: self.showClosure,
@@ -1626,6 +1626,24 @@ module nts.uk.com.view.ccg.share.ccg {
                     self.showDataOnKcp005Tab3(data);
                     nts.uk.ui.block.clear(); // clear block UI
                 });
+            }
+
+            /**
+             * Check input entry date
+             */
+            private isInValidEntryDate(): boolean {
+                let self = this;
+                return nts.uk.util.isNullOrEmpty(self.entryDateTab3().startDate)
+                    || nts.uk.util.isNullOrEmpty(self.entryDateTab3().endDate);
+            }
+
+            /**
+             * Check input retirement date
+             */
+            private isInValidRetirementDate(): boolean {
+                let self = this;
+                return nts.uk.util.isNullOrEmpty(self.retirementDateTab3().startDate)
+                    || nts.uk.util.isNullOrEmpty(self.retirementDateTab3().endDate);
             }
 
             /**
