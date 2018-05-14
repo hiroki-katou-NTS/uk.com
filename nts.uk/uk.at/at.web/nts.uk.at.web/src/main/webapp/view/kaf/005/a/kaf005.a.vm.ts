@@ -139,7 +139,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.appDate(transferData.appDate);
                 self.multilContent(transferData.applicationReason);
                 self.employeeIDs(transferData.employeeIDs); 
-                self.uiType(1); 
+                self.uiType(transferData.uiType); 
             }
                     
             //KAF000_A
