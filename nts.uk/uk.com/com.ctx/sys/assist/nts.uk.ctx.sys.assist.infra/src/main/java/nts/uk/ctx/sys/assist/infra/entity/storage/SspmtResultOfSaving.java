@@ -49,21 +49,21 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 	/**
 	 * ファイル容量
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "FILE_SIZE")
 	public int fileSize;
 
 	/**
 	 * 保存セットコード
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "SAVE_SET_CODE")
 	public String saveSetCode;
 
 	/**
 	 * 保存ファイル名
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "SAVE_FILE_NAME")
 	public String saveFileName;
 
@@ -84,7 +84,7 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 	/**
 	 * 保存終了日時
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "SAVE_END_DATETIME")
 	public GeneralDateTime saveEndDatetime;
 
@@ -105,7 +105,7 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 	/**
 	 * 圧縮パスワード
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "COMPRESSED_PASSWORD")
 	public String compressedPassword;
 
@@ -119,14 +119,14 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 	/**
 	 * 対象人数
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "TARGET_NUMBER_PEOPLE")
 	public int targetNumberPeople;
 
 	/**
 	 * 結果状態
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "SAVE_STATUS")
 	public int saveStatus;
 
@@ -140,7 +140,7 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 	/**
 	 * ファイルID
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "FILE_ID")
 	public String fileId;
 
