@@ -154,7 +154,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         showDateRange: KnockoutObservable<any> = ko.observable(true);
         flexShortage: KnockoutObservable<FlexShortage> = ko.observable(new FlexShortage(null, null, null));
         optionNoOfHolidays: any = { width: "70",
-                    grouplength: 3,
+                    decimallength: 1,
                     unitID: 'DAYS'}
         calcFlex: KnockoutObservable<CalcFlex> = ko.observable(null);
         showFlex: KnockoutObservable<any> = ko.observable(false);
@@ -871,8 +871,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         btnExtraction_Click() {
             var self = this;
             console.log(self.dailyPerfomanceData());
-            if (!nts.uk.ui.errors.hasError()) {
-                self.hideComponent();
+           // if (!nts.uk.ui.errors.hasError()) {
+              nts.uk.ui.errors.clearAll();  
+              self.hideComponent();
                 let lstEmployee = [];
                 if (self.displayFormat() === 0) {
                     let lst = _.find(self.lstEmployee(), (employee) => {
@@ -967,7 +968,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     nts.uk.ui.dialog.alert(error.message);
                     nts.uk.ui.block.clear();
                 });
-            }
+         //   }
         }
 
         showErrorDialog() {
