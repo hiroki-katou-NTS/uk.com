@@ -83,7 +83,6 @@ module nts.uk.at.view.kaf018.b.viewmodel {
                         listEmpCd: self.listEmployeeCode
                     };
                     service.exeSendUnconfirmedMail(obj).done(function(result: any) {
-                        debugger;
                         if (result.ok) {
                             info({ messageId: "Msg_792" });
                         }

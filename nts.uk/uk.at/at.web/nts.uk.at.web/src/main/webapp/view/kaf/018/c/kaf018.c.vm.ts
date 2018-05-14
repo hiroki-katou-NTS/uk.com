@@ -80,7 +80,11 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             _.forEach(self.listWorkplace, function(item) {
                 self.listWkpId.push(item.code);
             });
-            return self.initExTable();
+            self.initExTable().done(() => {
+                dfd.resolve();    
+            }).fail(() => {
+                dfd.reject();    
+            });
         }
 
 
@@ -161,12 +165,9 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                         .DetailHeader(initExTable.detailHeader).DetailContent(initExTable.detailContent)
                         .create();
                     dfd.resolve();
-                }).always(() => {
-                    block.clear();
-                })
+                });
             }).fail(() => {
                 dfd.reject();
-                block.clear();
             })
             return dfd.promise();
         }

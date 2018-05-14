@@ -426,8 +426,7 @@ public class ApprovalStatusFinder {
 	private String getBreakTimeApp(Application_New applicaton_N, String companyID, String appId) {
 		String appContent = "";
 		AppHolidayWorkFull appHoliday = appDetailInfoRepo.getAppHolidayWorkInfo(companyID, appId);
-		appContent += I18NText.getText("KAF018_275") + appHoliday.getWorkTypeName() + "　" + appHoliday.getWorkTimeName()
-				+ "　";
+		appContent += I18NText.getText("KAF018_275") + appHoliday.getWorkTypeName() + appHoliday.getWorkTimeName();
 		appContent += appHoliday.getStartTime1();
 		if (!Objects.isNull(appHoliday.getStartTime1()) && !Objects.isNull(appHoliday.getEndTime1())) {
 			appContent += I18NText.getText("KAF018_220");
@@ -477,8 +476,8 @@ public class ApprovalStatusFinder {
 	private String getAppWorkChangeInfo(String companyID, String appId) {
 		String appContent = "";
 		AppWorkChangeFull appWorkChange = appDetailInfoRepo.getAppWorkChangeInfo(companyID, appId);
-		appContent += I18NText.getText("KAF018_250");
-		appContent += appWorkChange.getWorkTypeName() + " " + appWorkChange.getWorkTimeName() + " ";
+		appContent += I18NText.getText("KAF018_250") + " ";
+		appContent += appWorkChange.getWorkTypeName() + appWorkChange.getWorkTimeName();
 		if (!Objects.isNull(appWorkChange.getWorkTimeStart1()) && !Objects.isNull(appWorkChange.getWorkTimeEnd1())) {
 			appContent += Objects.isNull(appWorkChange.getGoWorkAtr1()) ? "" : I18NText.getText("KAF018_252");
 			appContent += appWorkChange.getWorkTimeStart1();
@@ -509,9 +508,9 @@ public class ApprovalStatusFinder {
 		appContent += appOverTime.getWorkClockFrom1();
 		appContent += I18NText.getText("KAF018_220");
 		appContent += appOverTime.getWorkClockTo1();
-		appContent += appOverTime.getWorkClockFrom2() != null ? appOverTime.getWorkClockFrom2() : " ";
-		appContent += appOverTime.getWorkClockTo2() != null ? I18NText.getText("KAF018_220") : " ";
-		appContent += appOverTime.getWorkClockTo2() != null ? appOverTime.getWorkClockTo2() : " ";
+		appContent += appOverTime.getWorkClockFrom2() != "" ? appOverTime.getWorkClockFrom2() : " ";
+		appContent += appOverTime.getWorkClockTo2() != "" ? I18NText.getText("KAF018_220") : " ";
+		appContent += appOverTime.getWorkClockTo2() != "" ? appOverTime.getWorkClockTo2() : " ";
 		appContent += "残業合計  ";
 
 		List<OverTimeFrame> lstFrame = appOverTime.getLstFrame();
@@ -524,16 +523,18 @@ public class ApprovalStatusFinder {
 		String frameName = "";
 		for (OverTimeFrame overFrame : lstFrame) {
 			if (overFrame.getApplicationTime() != 0) {
-				frameName += overFrame.getName() + " " + clockShorHm(overFrame.getApplicationTime()) + "　";
-				countItem++;
+				frameName += overFrame.getName() + clockShorHm(overFrame.getApplicationTime());
+				time += overFrame.getApplicationTime();
+				countItem ++;
 				if (countItem > 2) {
 					countRest = lstFrame.size() - 3;
+					break;
 				}
 			}
-			time += overFrame.getApplicationTime();
 		}
-		String other = I18NText.getText("KAF018_231", String.valueOf(countRest));
-		appContent += clockShorHm(time) + "　" + "（" + frameName + other + "）";
+		String other = countRest>0 ? I18NText.getText("KAF018_231", String.valueOf(countRest)) : "";
+		String otherFull = (frameName != "" || other !="") ? "（" + frameName + other + "）" : "";
+		appContent += clockShorHm(time) + "　" + otherFull;
 		return appContent;
 	}
 
@@ -576,7 +577,7 @@ public class ApprovalStatusFinder {
 				AllDayHalfDayLeaveAtr.class);
 		if (allDayHaflDay.equals(AllDayHalfDayLeaveAtr.ALL_DAY_LEAVE)
 				&& !holidayAppType.equals(HolidayAppType.SPECIAL_HOLIDAY)) {
-			appContent = I18NText.getText("KAF018_279") + I18NText.getText("KAF018_248")
+			appContent += I18NText.getText("KAF018_279") + I18NText.getText("KAF018_248")
 					+ I18NText.getText("CMM045_230", value) + "\n" + applicaton_N.getAppReason();
 		} else if (holidayAppType.equals(HolidayAppType.SPECIAL_HOLIDAY)) {
 			// TODO
