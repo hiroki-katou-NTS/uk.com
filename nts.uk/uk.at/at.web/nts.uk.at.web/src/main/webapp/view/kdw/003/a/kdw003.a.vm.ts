@@ -2749,7 +2749,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 val190 = dataCalc.value190,
                 val191 = dataCalc.value191;
 
-            self.shortageTime(nts.uk.resource.getText("KDW003_89", [self.convertToHours(Number(val191) + Number(val21) * (-1)), self.convertToHours(Number(val21) * (-1))]));
+            self.shortageTime(nts.uk.resource.getText("KDW003_89", [self.convertToHours((Number(val191) + Number(val21)) * (-1)), self.convertToHours(Number(val21) * (-1))]));
             //self.nextMonthTransferredMoneyTime(self.convertToHours(Number(val18) * (-1)));
             self.noOfHolidays(Number(val189));
             self.absentDeductionTime(Number(val190));
