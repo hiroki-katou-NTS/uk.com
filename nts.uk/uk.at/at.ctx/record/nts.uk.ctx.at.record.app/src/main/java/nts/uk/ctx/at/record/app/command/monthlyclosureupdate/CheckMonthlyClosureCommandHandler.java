@@ -142,6 +142,8 @@ public class CheckMonthlyClosureCommandHandler extends CommandHandlerWithResult<
 		query.setIncludeWorkersOnLeave(true);
 		query.setIncludeOccupancy(true);
 		query.setIncludeRetirees(false);
+		query.setRetireStart(GeneralDate.today());
+		query.setRetireEnd(GeneralDate.today());
 		query.setSortOrderNo(1);
 		// query.setNameType(nameType);
 		query.setSystemType(2);
