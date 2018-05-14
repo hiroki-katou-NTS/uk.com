@@ -111,59 +111,73 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 		String companyID = AppContexts.user().companyId();
 		switch (app.getAppType()) {
 		case OVER_TIME_APPLICATION: {
+			/** 残業申請*/
 			// OK
 			return this.getOverTimeAppContent(app, companyID, appID, appReason);
 		}
 		case ABSENCE_APPLICATION: {
+			/** 休暇申請*/
 			// OK
 			return this.getAbsenAppContent(app, companyID, appID, appReason);
 		}
 		case WORK_CHANGE_APPLICATION: {
+			/** 勤務変更申請*/
 			// OK
 			return this.getWorkChangeAppContent(app, companyID, appID, appReason);
 		}
 		case BUSINESS_TRIP_APPLICATION: {
-			// Pending
+			/** 出張申請*/
+			// TODO
 			return this.getBusinessTripContent(app, companyID, appID, appReason);
 		}
 		case GO_RETURN_DIRECTLY_APPLICATION: {
+			/** 直行直帰申請*/
 			// OK
 			return this.getGoReturnDirectlyAppContent(app, companyID, appID, appReason);
 		}
 		case BREAK_TIME_APPLICATION: {
+			/** 休出時間申請*/
 			// OK
 			return this.getBreakTimeAppContent(app, companyID, appID, appReason);
 		}
 		case STAMP_APPLICATION: {
+			/** 打刻申請*/
 			// OK
 			return this.getStampAppContent(app, companyID, appID, appReason);
 		}
 		case ANNUAL_HOLIDAY_APPLICATION: {
-			// Pending
+			/** 時間年休申請*/
+			// TODO
 			return this.getAnnualAppContent(app, companyID, appID, appReason);
 		}
 		case EARLY_LEAVE_CANCEL_APPLICATION: {
+			/** 遅刻早退取消申請*/
 			// OK
 			return this.getEarlyLeaveAppContent(app, companyID, appID, appReason);
 		}
 		case COMPLEMENT_LEAVE_APPLICATION: {
-			// Handling
+			/** 振休振出申請*/
+			// OK
 			return this.getComplementLeaveAppContent(app, companyID, appID, appReason);
 		}
 		case STAMP_NR_APPLICATION: {
-			// NO SPEC
+			/** 打刻申請（NR形式）*/
+			// TODO
 			return this.getStampNrAppContent(app, companyID, appID, appReason);
 		}
 		case LONG_BUSINESS_TRIP_APPLICATION: {
-			// Pending
+			/** 連続出張申請*/
+			// TODO
 			return this.getLongBusinessTripAppContent(app, companyID, appID, appReason);
 		}
 		case BUSINESS_TRIP_APPLICATION_OFFICE_HELPER: {
-			// NO SPEC
+			/** 出張申請オフィスヘルパー*/
+			// TODO
 			return this.getBusinessTripOfficeAppContent(app, companyID, appID, appReason);
 		}
 		case APPLICATION_36: {
-			// NO SPEC
+			/** ３６協定時間申請*/
+			// TODO
 			return this.getApp36AppContent(app, companyID, appID, appReason);
 		}
 		}
@@ -407,7 +421,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 	}
 
 	private String getAbsenAppContent(Application_New app, String companyID, String appID, String appReason) {
-		// OK
+		// DONE
 		String content = I18NText.getText("CMM045_279");
 		Optional<AppAbsence> op_appAbsen = absenRepo.getAbsenceByAppId(companyID, appID);
 		if (op_appAbsen.isPresent()) {
@@ -476,7 +490,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 	}
 
 	private String getWorkChangeAppContent(Application_New app, String companyID, String appID, String appReason) {
-		// OK
+		// DONE
 		String content = I18NText.getText("CMM045_250");
 		Optional<AppWorkChange> op_appWork = workChangeRepo.getAppworkChangeById(companyID, appID);
 		if (op_appWork.isPresent()) {
@@ -518,14 +532,14 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 	}
 
 	private String getBusinessTripContent(Application_New app, String companyID, String appID, String appReason) {
-		// Pending
+		// TODO
 		String content = I18NText.getText("CMM045_254") + I18NText.getText("CMM045_255");
 		return content + "\n" + appReason;
 	}
 
 	private String getGoReturnDirectlyAppContent(Application_New app, String companyID, String appID,
 			String appReason) {
-		// OK
+		// DONE
 		Optional<GoBackDirectly> op_appGoBack = goBackRepo.findByApplicationID(companyID, appID);
 		String content = I18NText.getText("CMM045_258") + " ";
 		if (op_appGoBack.isPresent()) {
@@ -543,7 +557,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 	}
 
 	private String getBreakTimeAppContent(Application_New app, String companyID, String appID, String appReason) {
-		// OK
+		// DONE
 		Optional<AppHolidayWork> op_appWork = holidayRepo.getAppHolidayWorkFrame(companyID, appID);
 		String content = "";
 		if (op_appWork.isPresent()) {
@@ -783,7 +797,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 	}
 
 	private String getStampAppContent(Application_New app, String companyID, String appID, String appReason) {
-		// OK
+		// DONE
 		String content = "";
 		AppStamp appStamp = appStampRepo.findByAppID(companyID, appID);
 		if (!Objects.isNull(appStamp)) {
@@ -822,8 +836,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 						k++;
 					}
 				}
-				content += (appStamp.getAppStampGoOutPermits().size() - k > 0
-						? I18NText.getText("CMM045_231", (appStamp.getAppStampGoOutPermits().size() - k) + "") : "");
+				content += (k > 3 ? I18NText.getText("CMM045_230", k - 3 + "") : "");
 				break;
 			}
 			case STAMP_WORK: {
@@ -837,8 +850,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 							+ (x.getStartTime().isPresent() ? x.getEndTime().get().toString() : "") + " ";
 					k++;
 				}
-				content += (appStamp.getAppStampGoOutPermits().size() - k > 0
-						? I18NText.getText("CMM045_231", (appStamp.getAppStampGoOutPermits().size() - k) + "") : "");
+				content += (k > 3 ? I18NText.getText("CMM045_230", k - 3 + "") : "");
 				break;
 			}
 			case STAMP_ONLINE_RECORD: {
@@ -921,8 +933,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 					}
 					}
 				}
-				content += (appStamp.getAppStampGoOutPermits().size() - k > 0
-						? I18NText.getText("CMM045_231", (appStamp.getAppStampGoOutPermits().size() - k) + "") : "");
+				content += (k > 3 ? I18NText.getText("CMM045_230", k - 3 + "") : "");
 				break;
 			}
 			}
