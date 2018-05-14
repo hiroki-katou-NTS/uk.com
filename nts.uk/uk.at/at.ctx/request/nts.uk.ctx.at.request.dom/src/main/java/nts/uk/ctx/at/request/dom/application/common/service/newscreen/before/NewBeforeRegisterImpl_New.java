@@ -94,7 +94,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 			}
 			// 登録可能期間のチェック(１年以内)
 			if(periodCurrentMonth.getStartDate().addYears(1).beforeOrEquals(endDate)) {
-				throw new BusinessException("Msg_276", endDate.toString(DATE_FORMAT));
+				throw new BusinessException("Msg_276", periodCurrentMonth.getStartDate().addYears(1).toString(DATE_FORMAT));
 			}
 			
 			// 過去月のチェック
