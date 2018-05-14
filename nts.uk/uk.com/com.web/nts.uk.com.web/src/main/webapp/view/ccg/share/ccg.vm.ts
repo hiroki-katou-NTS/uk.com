@@ -125,13 +125,13 @@ module nts.uk.com.view.ccg.share.ccg {
             // Acquired baseDate
             acquiredBaseDate: KnockoutObservable<string>;
 
-            tab3ds: any;
-            tab3SelectedValues: any;
-            tab3Code: any;
-            tab3Name: any;
+            employeeListTab3: KnockoutObservableArray<string>;
+            selectedEmployeesTab3: KnockoutObservableArray<string>;
+            inputCodeTab3: KnockoutObservable<string>;
+            inputNameTab3: KnockoutObservable<string>;
+            entryDateTab3: KnockoutObservable<any>;
+            retirementDateTab3: KnockoutObservable<any>;
             tab3kcp005option: any;
-            tab3Entry: any;
-            tab3Retirement: any;
 
             employmentSubscriptions: Array<KnockoutSubscription> = [];
             employeeSubscriptions: Array<KnockoutSubscription> = [];
@@ -270,12 +270,12 @@ module nts.uk.com.view.ccg.share.ccg {
                     { headerText: nts.uk.resource.getText('CCG001_61'), prop: 'businessTypeName', width: 200 }
                 ]);
 
-                self.tab3ds = ko.observableArray([]);
-                self.tab3SelectedValues = ko.observable([]);
-                self.tab3Name = ko.observable("");
-                self.tab3Code = ko.observable("");
-                self.tab3Entry = ko.observable({});
-                self.tab3Retirement = ko.observable({});
+                self.employeeListTab3 = ko.observableArray([]);
+                self.selectedEmployeesTab3 = ko.observableArray([]);
+                self.inputNameTab3 = ko.observable("");
+                self.inputCodeTab3 = ko.observable("");
+                self.entryDateTab3 = ko.observable({});
+                self.retirementDateTab3 = ko.observable({});
             }
             
             /**
@@ -919,9 +919,9 @@ module nts.uk.com.view.ccg.share.ccg {
                     isMultiSelect: self.isMultiple,
                     isMultipleUse: true,
                     listType: ListType.EMPLOYEE,
-                    employeeInputList: self.tab3ds,
+                    employeeInputList: self.employeeListTab3,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                    selectedCode: self.tab3SelectedValues,
+                    selectedCode: self.selectedEmployeesTab3,
                     isDialog: true,
                     isShowNoSelectRow: false,
                     isShowWorkPlaceName: true,
@@ -1478,11 +1478,11 @@ module nts.uk.com.view.ccg.share.ccg {
             public getSelectedCodeEmployeeTab3(): string[]{
                 let self = this;
                 if (self.isMultiple) {
-                    return self.tab3SelectedValues();
+                    return self.selectedEmployeesTab3();
                 } else {
                     let employeeCodes = [];
-                    if (!nts.uk.util.isNullOrEmpty(self.tab3SelectedValues())) {
-                        employeeCodes.push(self.tab3SelectedValues());
+                    if (!nts.uk.util.isNullOrEmpty(self.selectedEmployeesTab3())) {
+                        employeeCodes.push(self.selectedEmployeesTab3());
                     }
                     return employeeCodes;
                 }
@@ -1491,7 +1491,7 @@ module nts.uk.com.view.ccg.share.ccg {
             private showDataOnKcp005Tab3(data: Array<EmployeeSearchDto>): void {
                 let self = this;
                 self.reservedEmployeesTab3(data);
-                self.tab3ds(self.toUnitModelList(data));
+                self.employeeListTab3(self.toUnitModelList(data));
             }
             
             /**
@@ -1541,8 +1541,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_1201' });
                 }
                 const query = {
-                    
-                    code: self.tab3Code(),
+                    code: self.inputCodeTab3(),
                     useClosure: false,
                     systemType: 1,
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate()
@@ -1559,7 +1558,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_1201' });
                 }
                 const query = {
-                    name: self.tab3Name(),
+                    name: self.inputNameTab3(),
                     useClosure: false,
                     systemType: 1,
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate()
@@ -1579,7 +1578,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     useClosure: false,
                     systemType: 1,
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate(),
-                    period: self.toPeriodDto(self.tab3Entry())
+                    period: self.toPeriodDto(self.entryDateTab3())
                 };
                 service.searchByEntryDate(query).done(data => {
                     self.showDataOnKcp005Tab3(data);
@@ -1596,7 +1595,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     useClosure: false,
                     systemType: 1,
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate(),
-                    period: self.toPeriodDto(self.tab3Retirement())
+                    period: self.toPeriodDto(self.retirementDateTab3())
                 };
                 service.searchByRetirementDate(query).done(data => {
                     self.showDataOnKcp005Tab3(data);
