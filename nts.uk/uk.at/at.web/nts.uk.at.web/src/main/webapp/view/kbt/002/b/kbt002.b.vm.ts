@@ -288,7 +288,10 @@ module nts.uk.at.view.kbt002.b {
                 } else if (execItem.targetMonth() == 2) {
                     startTargetDate = moment([today.year(), today.month(), execItem.targetDate()]).add(2, 'months');
                 }
-                targetDateStr += startTargetDate.format("YYYY/MM/DD");
+                if(startTargetDate._isValid){
+                    targetDateStr += startTargetDate.format("YYYY/MM/DD");
+                }
+                
 
                 // Calculate end target date
                 if (self.currentExecItem().targetDate() == 1) {
@@ -300,8 +303,11 @@ module nts.uk.at.view.kbt002.b {
                 } else {
                     endTargetDate = startTargetDate.add(execItem.creationPeriod(), 'months');
                 }
-                targetDateStr += '～'
-                targetDateStr += endTargetDate.format("YYYY/MM/DD") + 'です';
+                targetDateStr += '～';
+                 if(startTargetDate._isValid){
+                    targetDateStr += endTargetDate.format("YYYY/MM/DD");
+                }
+                 targetDateStr += 'です';
                 
                 return targetDateStr;
             }
