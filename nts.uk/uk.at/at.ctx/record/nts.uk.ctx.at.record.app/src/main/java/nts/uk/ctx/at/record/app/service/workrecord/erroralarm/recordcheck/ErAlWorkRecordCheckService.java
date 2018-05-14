@@ -307,8 +307,8 @@ public class ErAlWorkRecordCheckService {
 		query.setIncludeAreOnLoan(true);
 		query.setIncludeGoingOnLoan(false);
 		query.setIncludeRetirees(false);
-		// query.setRetireStart(retireStart);
-		// query.setRetireEnd(retireEnd);
+		query.setRetireStart(workingDate);
+		query.setRetireEnd(workingDate);
 		return query;
 	}
 	
