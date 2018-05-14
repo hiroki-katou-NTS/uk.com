@@ -123,22 +123,22 @@ module nts.uk.at.view.kaf018.d.viewmodel {
             _.each(self.listDataDisp(), function(item) {
                 let rowId = item.index;
                 //fill color in 承認状況
-                if (item.reflectState == 0) {//0 下書き保存/未反映　=　未
+                if (item.reflectState == shareModel.NOTREFLECTED) {//0 下書き保存/未反映　=　未
                     result.push(new shared.CellState(rowId, 'reflectState', ['unapprovalCell']));
                 }
-                if (item.reflectState == 1) {//1 反映待ち　＝　承認済み
+                if (item.reflectState == shareModel.WAITREFLECTION) {//1 反映待ち　＝　承認済み
                     result.push(new shared.CellState(rowId, 'reflectState', ['approvalCell']));
                 }
-                if (item.reflectState == 2) {//2 反映済　＝　反映済み
+                if (item.reflectState == shareModel.REFLECTED) {//2 反映済　＝　反映済み
                     result.push(new shared.CellState(rowId, 'reflectState', ['reflectCell']));
                 }
-                if (item.reflectState == 3 || item.reflectState == 4) {//3,4 取消待ち/取消済　＝　取消
+                if (item.reflectState == shareModel.WAITCANCEL || item.reflectState == shareModel.CANCELED) {//3,4 取消待ち/取消済　＝　取消
                     result.push(new shared.CellState(rowId, 'reflectState', ['cancelCell']));
                 }
-                if (item.reflectState == 5) {//5 差し戻し　＝　差戻
+                if (item.reflectState == shareModel.REMAND) {//5 差し戻し　＝　差戻
                     result.push(new shared.CellState(rowId, 'reflectState', ['remandCell']));
                 }
-                if (item.reflectState == 6) {//6 否認　=　否
+                if (item.reflectState == shareModel.DENIAL) {//6 否認　=　否
                     result.push(new shared.CellState(rowId, 'reflectState', ['denialCell']));
                 }
             });

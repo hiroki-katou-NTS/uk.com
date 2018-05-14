@@ -15,9 +15,11 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.request.app.find.setting.company.request.approvallistsetting.ApprovalListDisplaySetDto;
 import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.appabsence.AllDayHalfDayLeaveAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.OverTimeFrame;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppAbsenceFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppDetailInfoRepository;
@@ -38,7 +40,10 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApp
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.HolidayAppType;
+import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryForComDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosuresDto;
@@ -74,6 +79,9 @@ public class ApprovalStatusFinder {
 	@Inject
 	private AppDetailInfoRepository appDetailInfoRepo;
 
+	@Inject
+	private RequestSettingRepository repoRequestSet;
+	
 	/**
 	 * アルゴリズム「承認状況本文起動」を実行する
 	 */
@@ -268,7 +276,7 @@ public class ApprovalStatusFinder {
 				.initApprovalSttRequestContentDis(appSttContent.getListStatusEmp());
 		HdAppSetDto hdAppSetDto = HdAppSetDto.convertToDto(appList.getLstHdAppSet().get());
 		List<ApplicationDetailDto> listApplicationDetail = new ArrayList<>();
-		
+
 		List<ApprovalSttAppDetail> listAppSttDetail = appList.getApprovalSttAppDetail();
 		for (ApprovalSttAppDetail app : listAppSttDetail) {
 			ApplicationDetailDto detail = new ApplicationDetailDto();
@@ -280,12 +288,14 @@ public class ApprovalStatusFinder {
 			detail.setAppStartDate(applicaton_N.getStartDate().get());
 			detail.setAppEndDate(applicaton_N.getEndDate().get());
 			detail.setAppName(app.getAppDispName().getDispName().v());
-			detail.setPrePostAtr(applicaton_N.getPrePostAtr().value== 1 ? true : false);
+			detail.setPrePostAtr(applicaton_N.getPrePostAtr().value == 1 ? true : false);
 
-			List<ApprovalPhaseStateImport_New> listApprovalPhase= app.getAppContent().getApprRootContentExport().getApprovalRootState().getListApprovalPhaseState();
-			listApprovalPhase.sort((ApprovalPhaseStateImport_New x1, ApprovalPhaseStateImport_New x2) -> x1.getPhaseOrder() - x2.getPhaseOrder());
+			List<ApprovalPhaseStateImport_New> listApprovalPhase = app.getAppContent().getApprRootContentExport()
+					.getApprovalRootState().getListApprovalPhaseState();
+			listApprovalPhase.sort((ApprovalPhaseStateImport_New x1,
+					ApprovalPhaseStateImport_New x2) -> x1.getPhaseOrder() - x2.getPhaseOrder());
 			List<Integer> appStatus = new ArrayList<>();
-			for(ApprovalPhaseStateImport_New appPhase: listApprovalPhase) {
+			for (ApprovalPhaseStateImport_New appPhase : listApprovalPhase) {
 				ApprovalBehaviorAtrImport_New appBehavior = appPhase.getApprovalAtr();
 				switch (appBehavior) {
 				case UNAPPROVED:
@@ -308,7 +318,8 @@ public class ApprovalStatusFinder {
 			List<ApproverOutput> listApprover = app.getListApprover();
 			for (ApproverOutput approver : listApprover) {
 				int phase = approver.getPhase();
-				String numOfPerson = approver.getNumOfPeople() > 0 ? I18NText.getText("KAF018_47", approver.getNumOfPeople().toString()) : "";
+				String numOfPerson = approver.getNumOfPeople() > 0
+						? I18NText.getText("KAF018_47", approver.getNumOfPeople().toString()) : "";
 				String others = approver.getEmpName() + numOfPerson;
 				switch (phase) {
 				case 1:
@@ -372,8 +383,9 @@ public class ApprovalStatusFinder {
 				break;
 			// 振休振出申請
 			case COMPLEMENT_LEAVE_APPLICATION:
-				//Not use anymore
-				//appContent = getAppCompltLeaveInfo(applicaton_N, companyID, appId);
+				// Not use anymore
+				// appContent = getAppCompltLeaveInfo(applicaton_N, companyID,
+				// appId);
 				// Đơn xin đồng bộ
 				break;
 			// 打刻申請（NR形式）
@@ -414,31 +426,35 @@ public class ApprovalStatusFinder {
 	private String getBreakTimeApp(Application_New applicaton_N, String companyID, String appId) {
 		String appContent = "";
 		AppHolidayWorkFull appHoliday = appDetailInfoRepo.getAppHolidayWorkInfo(companyID, appId);
-		appContent += I18NText.getText("KAF018_275") + appHoliday.getWorkTypeName() + appHoliday.getWorkTimeName();
+		appContent += I18NText.getText("KAF018_275") + appHoliday.getWorkTypeName() + "　" + appHoliday.getWorkTimeName()
+				+ "　";
+		appContent += appHoliday.getStartTime1();
 		if (!Objects.isNull(appHoliday.getStartTime1()) && !Objects.isNull(appHoliday.getEndTime1())) {
 			appContent += I18NText.getText("KAF018_220");
 		}
-		appContent += appHoliday.getEndTime1() + appHoliday.getStartTime2();
+		appContent += appHoliday.getEndTime1();
+		appContent += appHoliday.getStartTime2();
 		if (!Objects.isNull(appHoliday.getStartTime2()) && !Objects.isNull(appHoliday.getEndTime2())) {
 			appContent += I18NText.getText("KAF018_220");
 		}
-		appContent += appHoliday.getEndTime1();
+		appContent += appHoliday.getEndTime2();
 		List<OverTimeFrame> lstFrame = appHoliday.getLstFrame();
 		int totalTime = 0;
 		for (OverTimeFrame overTime : lstFrame) {
 			totalTime += overTime.getApplicationTime();
 		}
-		appContent += I18NText.getText("KAF018_276") + clockShorHm(totalTime);
 		int countItem = 0;
+		String contentOther = "";
 		for (OverTimeFrame overFrame : lstFrame) {
 			if (overFrame.getApplicationTime() != 0) {
-				appContent += overFrame.getName() + " " + clockShorHm(overFrame.getApplicationTime());
+				contentOther += overFrame.getName() + " " + clockShorHm(overFrame.getApplicationTime());
 				countItem++;
-				if (countItem > 2) {
+				if (countItem > 1) {
 					break;
 				}
 			}
 		}
+		appContent += I18NText.getText("KAF018_276") + "　" + clockShorHm(totalTime) + "（" + contentOther + "）";
 		appContent += "\n" + applicaton_N.getAppReason();
 		return appContent;
 	}
@@ -449,7 +465,6 @@ public class ApprovalStatusFinder {
 		appContent += I18NText.getText("KAF018_258");
 		appContent += Objects.isNull(appGoBackInfo.getGoWorkAtr1()) ? "" : I18NText.getText("KAF018_259");
 		appContent += appGoBackInfo.getWorkTimeStart1();
-		appContent += I18NText.getText("KAF018_260");
 		appContent += Objects.isNull(appGoBackInfo.getBackHomeAtr1()) ? "" : I18NText.getText("KAF018_260");
 		appContent += appGoBackInfo.getWorkTimeEnd1();
 		appContent += Objects.isNull(appGoBackInfo.getGoWorkAtr2()) ? "" : I18NText.getText("KAF018_259");
@@ -463,7 +478,7 @@ public class ApprovalStatusFinder {
 		String appContent = "";
 		AppWorkChangeFull appWorkChange = appDetailInfoRepo.getAppWorkChangeInfo(companyID, appId);
 		appContent += I18NText.getText("KAF018_250");
-		appContent += appWorkChange.getWorkTypeName() + appWorkChange.getWorkTimeName() + " ";
+		appContent += appWorkChange.getWorkTypeName() + " " + appWorkChange.getWorkTimeName() + " ";
 		if (!Objects.isNull(appWorkChange.getWorkTimeStart1()) && !Objects.isNull(appWorkChange.getWorkTimeEnd1())) {
 			appContent += Objects.isNull(appWorkChange.getGoWorkAtr1()) ? "" : I18NText.getText("KAF018_252");
 			appContent += appWorkChange.getWorkTimeStart1();
@@ -509,7 +524,7 @@ public class ApprovalStatusFinder {
 		String frameName = "";
 		for (OverTimeFrame overFrame : lstFrame) {
 			if (overFrame.getApplicationTime() != 0) {
-				frameName += overFrame.getName() + " " + clockShorHm(overFrame.getApplicationTime());
+				frameName += overFrame.getName() + " " + clockShorHm(overFrame.getApplicationTime()) + "　";
 				countItem++;
 				if (countItem > 2) {
 					countRest = lstFrame.size() - 3;
@@ -518,7 +533,7 @@ public class ApprovalStatusFinder {
 			time += overFrame.getApplicationTime();
 		}
 		String other = I18NText.getText("KAF018_231", String.valueOf(countRest));
-		appContent += clockShorHm(time) + I18NText.getText("KAF018_231", frameName + other);
+		appContent += clockShorHm(time) + "　" + "（" + frameName + other + "）";
 		return appContent;
 	}
 
@@ -557,11 +572,49 @@ public class ApprovalStatusFinder {
 			value = "";
 			break;
 		}
-		appContent = I18NText.getText("KAF018_279") + I18NText.getText("KAF018_248")
-				+ I18NText.getText("CMM045_230", value) + "　" + "\n" + applicaton_N.getAppReason();
+		AllDayHalfDayLeaveAtr allDayHaflDay = EnumAdaptor.valueOf(appabsence.getAllDayHalfDayLeaveAtr(),
+				AllDayHalfDayLeaveAtr.class);
+		if (allDayHaflDay.equals(AllDayHalfDayLeaveAtr.ALL_DAY_LEAVE)
+				&& !holidayAppType.equals(HolidayAppType.SPECIAL_HOLIDAY)) {
+			appContent = I18NText.getText("KAF018_279") + I18NText.getText("KAF018_248")
+					+ I18NText.getText("CMM045_230", value) + "\n" + applicaton_N.getAppReason();
+		} else if (holidayAppType.equals(HolidayAppType.SPECIAL_HOLIDAY)) {
+			// TODO
+			// Pending
+			appContent += I18NText.getText("KAF018_279") + I18NText.getText("KAF018_248");
+			appContent += value;
+			appContent += applicaton_N.getAppReason();
+		} else if (allDayHaflDay.equals(AllDayHalfDayLeaveAtr.HALF_DAY_LEAVE)) {
+			appContent += I18NText.getText("KAF018_279") + I18NText.getText("KAF018_249");
+			// 休暇申請.就業時間帯コード
+			appContent += I18NText.getText("#KAF018_230", appabsence.getWorkTimeName());
+			appContent += appabsence.getStartTime1();
+			appContent += I18NText.getText("KAF018_220");
+			appContent += appabsence.getEndTime1();
+			appContent += appabsence.getStartTime2();
+			appContent += I18NText.getText("KAF018_220");
+			appContent += appabsence.getEndTime2();
+		}
+		if (isDisplayReason(applicaton_N, companyID)) {
+			appContent += "\n" + applicaton_N.getAppReason();
+		}
 		return appContent;
 	}
 
+	private boolean isDisplayReason(Application_New applicaton_N, String companyID) {
+		Optional<RequestSetting> requestSet = repoRequestSet.findByCompany(companyID);
+		ApprovalListDisplaySetting appDisplaySet = null;
+		ApprovalListDisplaySetDto displaySet = null;
+		if(requestSet.isPresent()){
+			appDisplaySet = requestSet.get().getApprovalListDisplaySetting();
+			displaySet = ApprovalListDisplaySetDto.fromDomain(appDisplaySet);
+		}
+		if (displaySet.getAppReasonDisAtr() == 1 && Objects.isNull(applicaton_N.getAppReason())) {
+			return true;
+		}
+		return false;
+	}
+	
 	private String clockShorHm(Integer minute) {
 		return (minute / 60 + ":" + (minute % 60 < 10 ? "0" + minute % 60 : minute % 60));
 	}
