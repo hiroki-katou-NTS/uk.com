@@ -16,7 +16,10 @@ public class CalculateAttendanceRecordDto implements AttendanceRecordDisplayDto 
 	String name;
 
 	/** The item id. */
-	List<Integer> itemId;
+	List<Integer> addedItem;
+	
+	/** The subtracted item. */
+	List<Integer> subtractedItem;
 
 	/** The attribute. */
 	int attribute;
@@ -31,18 +34,20 @@ public class CalculateAttendanceRecordDto implements AttendanceRecordDisplayDto 
 	/**
 	 * Instantiates a new calculate attendance record dto.
 	 *
-	 * @param name
-	 *            the name
-	 * @param itemId
-	 *            the item id
-	 * @param attribute
-	 *            the attribute
+	 * @param name the name
+	 * @param addedItem the added item
+	 * @param subtractedItem the subtracted item
+	 * @param attribute the attribute
 	 */
-	public CalculateAttendanceRecordDto(String name, List<Integer> itemId, int attribute) {
+	public CalculateAttendanceRecordDto(String name, List<Integer> addedItem, List<Integer> subtractedItem,
+			int attribute) {
 		super();
 		this.name = name;
-		this.itemId = itemId;
+		this.addedItem = addedItem;
+		this.subtractedItem = subtractedItem;
 		this.attribute = attribute;
 	}
+
+
 
 }

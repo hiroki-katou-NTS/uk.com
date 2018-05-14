@@ -16,7 +16,7 @@ public interface SingleAttendanceRecordRepository {
 	 * @param position the position
 	 * @return the single attendance record
 	 */
-	SingleAttendanceRecord getSingleAttendanceRecord(String CompanyId, ExportSettingCode code, int columnIndex, int position,int exportArt );
+	SingleAttendanceRecord getSingleAttendanceRecord(String companyId, ExportSettingCode exportSettingCode, int columnIndex, int position,int exportArt );
 
 	/**
 	 * Adds the singgle attendance record.
@@ -27,7 +27,7 @@ public interface SingleAttendanceRecordRepository {
 	 * @param position the position
 	 * @param singleAttendanceRecord the single attendance record
 	 */
-	void addSingleAttendanceRecord(String CompanyId, ExportSettingCode code, int columnIndex, int position, SingleAttendanceRecord singleAttendanceRecord);
+	void addSingleAttendanceRecord(String companyId, ExportSettingCode exportSettingCode, int columnIndex, int position, SingleAttendanceRecord singleAttendanceRecord);
 
 	/**
 	 * Update singgle attendance record.
@@ -38,7 +38,7 @@ public interface SingleAttendanceRecordRepository {
 	 * @param position the position
 	 * @param singleAttendanceRecord the single attendance record
 	 */
-	void updateSingleAttendanceRecord(String CompanyId, ExportSettingCode code, int columnIndex, int position, SingleAttendanceRecord singleAttendanceRecord);
+	void updateSingleAttendanceRecord(String companyId, ExportSettingCode exportSettingCode, int columnIndex, int position, SingleAttendanceRecord singleAttendanceRecord);
 
 	/**
 	 * Delete singgle attendance record.
@@ -49,5 +49,5 @@ public interface SingleAttendanceRecordRepository {
 	 * @param position the position
 	 * @param singleAttendanceRecord the single attendance record
 	 */
-	void deleteSingleAttendanceRecord(String CompanyId, ExportSettingCode code, int columnIndex, int position, SingleAttendanceRecord singleAttendanceRecord);
+	void deleteSingleAttendanceRecord(String companyId, ExportSettingCode exportSettingCode, int columnIndex, int position, SingleAttendanceRecord singleAttendanceRecord);
 }

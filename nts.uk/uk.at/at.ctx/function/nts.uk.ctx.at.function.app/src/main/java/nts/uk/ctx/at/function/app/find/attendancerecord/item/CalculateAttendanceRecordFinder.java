@@ -5,6 +5,8 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
+import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordRepositoty;
 import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceAdapter;
 import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceDto;
@@ -46,6 +48,25 @@ public class CalculateAttendanceRecordFinder {
 	 */
 	public List<AttendanceNameDivergenceDto> getNameAttendance(List<Integer> dailyAttendanceItemIds){
 		return atName.getDailyAttendanceItemName(dailyAttendanceItemIds);
+	}
+	
+	public CalculateAttendanceRecordDto getCalculateAttendanceRecordDto(AttendanceRecordKeyDto attendanceRecordKey) {
+		//get domain object
+		CalculateAttendanceRecord calculateAttendanceRecord = this.calculateAttendanceRecordRepository.getCalculateAttendanceRecord(
+																AppContexts.user().companyId(),
+																new ExportSettingCode(attendanceRecordKey.getCode()), 
+																attendanceRecordKey.getColumnIndex(),
+																attendanceRecordKey.getPosition(),
+																attendanceRecordKey.getExportArt());
+		//convert to dto
+		CalculateAttendanceRecordDto calculateAttendanceRecordDto = new CalculateAttendanceRecordDto(
+																	calculateAttendanceRecord.getName().toString(),
+																	calculateAttendanceRecord.getAddedItem(),
+																	calculateAttendanceRecord.getSubtractedItem(),
+																	calculateAttendanceRecord.getAttribute().value);
+				
+		
+		return calculateAttendanceRecordDto;
 	}
 
 }

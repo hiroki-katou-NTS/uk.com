@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.function.app.find.attendancerecord.item;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -60,13 +59,19 @@ public class SingleAttendanceRecordFinder {
 	 * @param exportArt the export art
 	 * @return the single attendance record
 	 */
-	public SingleAttendanceRecordDto getSingleAttendanceRecord(String code, int columnIndex, int position,int exportArt) {
+	public SingleAttendanceRecordDto getSingleAttendanceRecord(AttendanceRecordKeyDto attendanceRecordKey) {
 		//get domain
-		SingleAttendanceRecord singleAttendanceRecord = this.singleAttendanceRecordRepository
-										.getSingleAttendanceRecord(AppContexts.user().companyId(), new ExportSettingCode(code), columnIndex, position, exportArt);
+		SingleAttendanceRecord singleAttendanceRecord = this.singleAttendanceRecordRepository.getSingleAttendanceRecord(
+															AppContexts.user().companyId(),
+															new ExportSettingCode(attendanceRecordKey.getCode()),
+															attendanceRecordKey.getColumnIndex(),
+															attendanceRecordKey.getPosition(),
+															attendanceRecordKey.getExportArt());
 		//convert to Dto
-		SingleAttendanceRecordDto singleAttendanceRecordDto = new 
-				SingleAttendanceRecordDto(singleAttendanceRecord.getName().toString(), singleAttendanceRecord.getTimeItemId(), singleAttendanceRecord.getAttribute().value);
+		SingleAttendanceRecordDto singleAttendanceRecordDto = new SingleAttendanceRecordDto(
+															singleAttendanceRecord.getName().toString(),
+															singleAttendanceRecord.getTimeItemId(),
+															singleAttendanceRecord.getAttribute().value);
 		//return
 		return singleAttendanceRecordDto;
 	}

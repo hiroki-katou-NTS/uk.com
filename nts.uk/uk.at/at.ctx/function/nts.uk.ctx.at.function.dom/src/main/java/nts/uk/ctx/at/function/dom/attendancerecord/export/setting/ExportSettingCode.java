@@ -1,15 +1,17 @@
 package nts.uk.ctx.at.function.dom.attendancerecord.export.setting;
 
+import nts.arc.primitive.LongPrimitiveValue;
 import nts.arc.primitive.PrimitiveValue;
-import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.StringMaxLength;
+import nts.arc.primitive.constraint.LongMaxValue;
+import nts.arc.primitive.constraint.LongMinValue;
 
 /**
  * The Class OutputSettingCode.
  */
 //出力項目設定コード
-@StringMaxLength(2)
-public class ExportSettingCode extends StringPrimitiveValue<PrimitiveValue<String>> {
+@LongMinValue(0)
+@LongMaxValue(99)
+public class ExportSettingCode extends LongPrimitiveValue<PrimitiveValue<Long>> {
 
 	/** serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -19,7 +21,7 @@ public class ExportSettingCode extends StringPrimitiveValue<PrimitiveValue<Strin
 	 *
 	 * @param rawValue the raw value
 	 */
-	public ExportSettingCode(String rawValue) {
+	public ExportSettingCode(Long rawValue) {
 		super(rawValue);
 	}
 
