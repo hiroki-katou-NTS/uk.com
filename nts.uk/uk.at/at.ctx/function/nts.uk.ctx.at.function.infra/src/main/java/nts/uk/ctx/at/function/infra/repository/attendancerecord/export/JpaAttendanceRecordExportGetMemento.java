@@ -34,7 +34,7 @@ public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExpo
 
 	@Override
 	public Boolean isUseAtr() {
-		return this.entity.getUseAtr().compareTo(BigDecimal.ONE);
+		return null;
 	}
 
 	@Override
