@@ -146,6 +146,7 @@ public class ErAlWorkRecordCheckService {
 			List<String> EACheckID) {
 		List<ErrorAlarmCondition> checkConditions = errorRecordRepo.findConditionByListErrorAlamCheckId(EACheckID);
 		if(checkConditions.isEmpty()){
+			/** TODO: check is Use*/
 			checkConditions = errorAlarmConditionRepo.findConditionByListErrorAlamCheckId(EACheckID);
 		}
 		
@@ -179,6 +180,11 @@ public class ErAlWorkRecordCheckService {
 		if (filted.isEmpty()) {
 			return toEmptyResultList();
 		}
+		return finalCheck(workingDate, checkCondition, record, filted);
+	}
+
+	private List<ErrorRecord> finalCheck(GeneralDate workingDate, ErrorAlarmCondition checkCondition,
+			List<DailyRecordDto> record, List<String> filted) {
 		/** 社員に一致する日別実績を取得する */
 		List<DailyRecordDto> cRecord = record.stream().filter(c -> filted.contains(c.employeeId())).collect(Collectors.toList());
 
