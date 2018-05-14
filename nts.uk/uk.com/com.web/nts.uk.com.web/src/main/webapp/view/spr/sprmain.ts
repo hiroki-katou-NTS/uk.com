@@ -35,7 +35,7 @@ __viewContext.ready(function() {
 	case 2:
         nts.uk.request.jump("at", "/view/kaf/005/a/index.xhtml?a=1", 
             {
-                uiType: 1,
+                uiType: 0,
                 appDate: date,
                 startTime: starttime,
                 endTime: endtime,
