@@ -149,6 +149,19 @@ module nts.uk.com.view.cps001.i.vm {
                 $("#idDateGrantInp").focus();
             });
 
+            self.deadlineDateInp.subscribe(value => {
+                let self = this,
+                    grantDate = moment.utc(self.dateGrantInp(), "YYYY/MM/DD"),
+                    deadline = moment.utc(self.deadlineDateInp(), "YYYY/MM/DD");
+                if (((new Date(deadline._d)) > (new Date(grantDate._d)))) {
+                    var checkValiGrantDate = moment(grantDate._i, "YYYY/MM/DD", undefined, true);
+
+                    if (($('#idDateGrantInp').ntsError('check')) && checkValiGrantDate.isValid()) {
+                        $('#idDateGrantInp').ntsError('clear');
+                    }
+                }
+            });
+
 
         }
 
@@ -244,7 +257,7 @@ module nts.uk.com.view.cps001.i.vm {
             self.timeOver(null);
             self.selectedRuleCode(1);
             $("#idDateGrantInp").focus();
-            nts.uk.ui.errors.clearAll;
+            nts.uk.ui.errors.clearAll();
         }
 
         Save() {
@@ -261,12 +274,13 @@ module nts.uk.com.view.cps001.i.vm {
             $("#dayNumberOfReam").trigger("validate");
 
 
-            if (nts.uk.ui.errors.hasError()) {
-                return;
-            }
 
             if ((new Date(deadline._d)) < (new Date(grantDate._d))) {
                 $('#idDateGrantInp').ntsError('set', { messageId: "Msg_1023" });
+                return;
+            }
+
+            if (nts.uk.ui.errors.hasError()) {
                 return;
             }
 
@@ -414,9 +428,9 @@ module nts.uk.com.view.cps001.i.vm {
 
         formatDate(value) {
             if (value) {
-                return value >= 0 ? "&nbsp;" + value + '日' :  value + '日';
-            }else{
-                 return "&nbsp;0日";
+                return value >= 0 ? "&nbsp;" + value + '日' : value + '日';
+            } else {
+                return "&nbsp;0日";
             }
         }
 
