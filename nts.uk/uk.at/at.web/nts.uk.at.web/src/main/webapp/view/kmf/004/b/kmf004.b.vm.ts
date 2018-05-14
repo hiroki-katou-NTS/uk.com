@@ -358,9 +358,9 @@ module nts.uk.at.view.kmf004.b {
                                 self.singleSelectedCode(self.items()[count].code);    
                                 return;
                             }
-                            
-                            nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         });
+                        
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                     }).always(function() {
