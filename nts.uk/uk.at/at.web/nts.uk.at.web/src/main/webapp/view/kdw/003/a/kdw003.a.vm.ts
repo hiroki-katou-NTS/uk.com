@@ -480,13 +480,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.breakTimeDay(data.flexShortage.breakTimeDay);
                 self.calcFlex(new CalcFlex(data.flexShortage.value18, data.flexShortage.value21, data.flexShortage.value189, data.flexShortage.value190, data.flexShortage.value191));
                 self.canFlex(data.flexShortage.canflex);
-                self.itemMonthLayout(data);
-                self.itemValueMonthParent = data.flexShortage.monthParent;
+               
                 let fst: FlexShortage = self.flexShortage();
 
                 //fst.parent = ko.observable(self);
                 fst.bindData(ko.toJS(self.calcFlex), ko.toJS(self.breakTimeDay));
 
+                self.itemMonthLayout(data);
+                self.itemValueMonthParent = data.flexShortage.monthParent;
                 //self.flexShortage(new FlexShortage(self, self.calcFlex(),  self.breakTimeDay()));
                 // アルゴリズム「フレックス不足の相殺が実施できるかチェックする」
             } else {
@@ -950,12 +951,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
                         // アルゴリズム「フレックス不足の相殺が実施できるかチェックする」
                         self.canFlex(data.flexShortage.canflex);
-                        self.itemMonthLayout(data);
-                        self.itemValueMonthParent = data.flexShortage.monthParent;
                         
                         let fst: FlexShortage = self.flexShortage();
 
                         fst.bindData(ko.toJS(self.calcFlex), ko.toJS(self.breakTimeDay));
+                        
+                        self.itemMonthLayout(data);
+                        self.itemValueMonthParent = data.flexShortage.monthParent;
 
                     } else {
                         self.showFlex(false);
@@ -2772,23 +2774,28 @@ module nts.uk.at.view.kdw003.a.viewmodel {
            self.checkColor(self.nextMonthTransferredMoneyTime(), breakTimeDay);
 
             __viewContext.vm.valueUpdateMonth = {};
-            let dataFlexUpdate = __viewContext.vm.itemValueMonthParent,
-                items = _.map(ko.toJS(__viewContext.vm).itemMonth, value => {
-                    if (value.itemId == 18) {
-                        value.value = String(minuNextMonth * (-1));
-                    }
-                    if (value.itemId == 189) {
-                        value.value = self.noOfHolidays();
-                    }
-                    if (value.itemId == 190) {
-                        value.value = self.absentDeductionTime();
-                    }
-                    return value; 
-                }); 
+            
+            if (__viewContext.vm.itemMonth.length > 0){
+                let dataFlexUpdate = __viewContext.vm.itemValueMonthParent,
+                    items = _.map(ko.toJS(__viewContext.vm).itemMonth, value => {
+                        if (value.itemId == 18) {
+                            value.value = String(minuNextMonth * (-1));
+                        }
+                        if (value.itemId == 189) {
+                            value.value = self.noOfHolidays();
+                        }
+                        if (value.itemId == 190) {
+                            value.value = self.absentDeductionTime();
+                        }
+                        return value;
+                    });
 
-            if (dataFlexUpdate) {
-                dataFlexUpdate["items"] = items;
-                __viewContext.vm.valueUpdateMonth = dataFlexUpdate;
+                if (dataFlexUpdate) {
+                    dataFlexUpdate["items"] = items;
+                    __viewContext.vm.valueUpdateMonth = dataFlexUpdate;
+                }
+            }else{
+                __viewContext.vm.valueUpdateMonth = null;
             }
         }
         natural(value: any): number {
