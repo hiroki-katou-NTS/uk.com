@@ -43,7 +43,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             ]);
             self.rule36CalculationName = getText('KWR008_32');
             for (var i = 1; i <= 10; i++) {
-                self.outputItem.push(new OutputItemData(i, -1, false, '', 0, ''));
+                self.outputItem.push(new OutputItemData(i, null, false, '', 0, ''));
             }
             //event select change
             self.selectedCode.subscribe((code) => {
@@ -53,8 +53,9 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                // self.outputItem.removeAll();
                 if (code) {
                     service.getListItemOutput(code).done(r => {
+                        let dataSorted = [];
                         if (r && r.length > 0) {
-                            let dataSorted = _.sortBy(r, ['sortBy']);
+                            dataSorted = _.sortBy(r, ['sortBy']);
                             for (var i = 0; i < dataSorted.length; i++) {
                                 if (i >= self.outputItem().length) { 
                                     self.outputItem.push(new OutputItemData(i + 1, dataSorted[i].cd, dataSorted[i].useClass, dataSorted[i].headingName, dataSorted[i].valOutFormat, ''));
@@ -71,9 +72,9 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                                     self.buildOutputItem(resultData, self.outputItem()[i]);
                                 }
                             }
-                            for (var i = dataSorted.length; i < self.outputItem().length; i++) {
-                                self.outputItem()[i].updateData(i+1, -1, false, '', 0, '');
-                            }
+                        }
+                        for (var i = dataSorted.length; i < self.outputItem().length; i++) {
+                            self.outputItem()[i].updateData(i+1, null, false, '', 0, '');
                         }
                     }).always(function() {
                         self.updateMode(code);
@@ -318,7 +319,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 }
             }
             for (var i = self.outputItem().length; i < 10; i++) {
-                self.outputItem.push(new OutputItemData(i + 1, -1, false, '', 0, ''));
+                self.outputItem.push(new OutputItemData(i + 1, null, false, '', 0, ''));
             }
             self.outputItem()[0].outputTargetItem(self.rule36CalculationName);
             self.buildIsCheckedAll();
@@ -335,9 +336,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.currentSetOutputSettingCode(new SetOutputSettingCode(null));
 
             for (var i = 0; i < self.outputItem().length; i++) {
-                self.outputItem()[i].update(i + 1, -1, false, '', 0, '');
+                self.outputItem()[i].updateData(i + 1, null, false, '', 0, '');
             }
-            self.outputItem()[0].cd(0);
             self.outputItem()[0].outputTargetItem(self.rule36CalculationName);
             self.buildIsCheckedAll();
         }
@@ -377,12 +377,14 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 return;
             }
 
-            self.currentSetOutputSettingCode().buildListItemOutput(ko.toJS(itemOutUseClass));
+            self.currentSetOutputSettingCode().buildListItemOutput(ko.toJS(itemOutByName));
             let data: model.OutputSettingCodeDto = ko.toJS(self.currentSetOutputSettingCode);
 
             if (self.isNewMode()) {
                 service.registerOutputItemSetting(data).done(() => {
                     info({ messageId: 'Msg_15' }).then(() => {
+                        self.currentSetOutputSettingCode().displayCode = self.currentSetOutputSettingCode().cd();
+                        self.currentSetOutputSettingCode().displayName = self.currentSetOutputSettingCode().name();
                         self.listStandardImportSetting.push(self.currentSetOutputSettingCode());
                         self.listStandardImportSetting_Sort();
                         self.selectedCode(self.currentSetOutputSettingCode().cd());
@@ -456,32 +458,32 @@ module nts.uk.at.view.kwr008.b.viewmodel {
     }
     export class OutputItemData {
         sortBy: KnockoutObservable<number>= ko.observable(1);
-        cd: KnockoutObservable<number>= ko.observable(0);
+        cd: KnockoutObservable<string>= ko.observable(null);
         useClass: KnockoutObservable<boolean>= ko.observable(false);
         headingName: KnockoutObservable<string>= ko.observable('');
         valueOutputFormat: KnockoutObservable<number>= ko.observable(0);
         outputTargetItem: KnockoutObservable<string>= ko.observable('');
         listOperationSetting: KnockoutObservableArray<OperationCondition> = ko.observableArray([]);
-        constructor(sortBy: number, cd: number, useClass: boolean, headingName: string, valueOutputFormat: number, outputTargetItem: string) {
+        constructor(sortBy: number, cd: string, useClass: boolean, headingName: string, valueOutputFormat: number, outputTargetItem: string) {
             let self = this;
             self.sortBy(sortBy || 1);
-            self.cd(cd || 0);
+            self.cd(cd);
             self.useClass(useClass || false);
             self.headingName(headingName || '');
             self.valueOutputFormat(valueOutputFormat || 0);
             self.outputTargetItem(outputTargetItem || '');
         }
-        
-        updateData(sortBy: number, cd: number, useClass: boolean, headingName: string, valueOutputFormat: number, outputTargetItem: string) {
+
+        updateData(sortBy: number, cd: string, useClass: boolean, headingName: string, valueOutputFormat: number, outputTargetItem: string) {
             let self = this;
             self.sortBy(sortBy || 1);
-            self.cd(cd || 0);
+            self.cd(cd);
             self.useClass(useClass || false);
             self.headingName(headingName || '');
             self.valueOutputFormat(valueOutputFormat || 0);
             self.outputTargetItem(outputTargetItem || '');
         }
-        
+
         buildListOperationSetting(listOperation: Array<any>) {
             let self = this;
             if (listOperation && listOperation.length > 0) {
@@ -513,8 +515,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.displayName = self.name();
             self.outNumExceedTime36Agr(param ? param.outNumExceedTime36Agr || false : false);
             self.displayFormat(param ? param.displayFormat || 0 : 0);
-
         }
+
         buildListItemOutput(listItemOutput: Array<any>) {
             let self = this;
             if (listItemOutput && listItemOutput.length > 0) {
