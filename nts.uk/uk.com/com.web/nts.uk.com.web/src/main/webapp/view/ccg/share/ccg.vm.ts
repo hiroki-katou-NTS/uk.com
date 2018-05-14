@@ -1411,19 +1411,6 @@ module nts.uk.com.view.ccg.share.ccg {
             public findAndReturnListEmployee(isAdvancedSearch: boolean): void {
                 let self = this;
                 service.findRegulationInfoEmployee(self.queryParam).done(data => {
-                     nts.uk.request.ajax('com', 'query/employee/find2', {
-                        employeeIds: _.map(data, i => i.employeeId),
-                            startDate: new Date("1999-1-1"),
-                            endDate: new Date("2018-12-12"),
-                        findClasssificationInfo: true,
-                        findJobTilteInfo: false,
-                        findWorkPlaceInfo: true,
-                        findEmploymentInfo: true,
-                        findBussinessTypeInfo: true,
-                    }).done ((data => {
-                        console.log(data);
-                    })
-
                     // Data not found
                     if (nts.uk.util.isNullOrEmpty(data)) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_317" });

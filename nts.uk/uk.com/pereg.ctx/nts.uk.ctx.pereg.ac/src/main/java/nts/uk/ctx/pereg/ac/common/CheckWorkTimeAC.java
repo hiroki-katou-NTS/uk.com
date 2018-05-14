@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.pub.worktime.predset.PredetemineTimeSettingPub;
@@ -12,6 +13,7 @@ import nts.uk.ctx.pereg.dom.common.CheckResult;
 import nts.uk.ctx.pereg.dom.common.CheckWorkTimeRepo;
 import nts.uk.shr.com.context.AppContexts;
 
+@Stateless
 public class CheckWorkTimeAC implements CheckWorkTimeRepo {
 
 	@Inject
