@@ -52,7 +52,7 @@
 											options: sendMailSetOptions,
 											optionsValue: 'code',
 											optionsText: 'name',
-											value: selectedMailPcCom,
+											value: selectedPcComSendMailSet,
 											required: false,
 											enable: true }"></div>
 
@@ -64,12 +64,12 @@
 											options: selfEditSetOptions,
 											optionsValue: 'code',
 											optionsText: 'name',
-											value: selectedMailPcPerson,
+											value: selectedPcComSelfEditSet,
 											required: false,
-											enable: controlMailPcCompany }"></div>
+											enable: controlMailPcCom }"></div>
 								</td>
 								<td style="text-align: center;"><button tabindex="4"
-										style="width: 80px;"  data-bind="enable:controlButtonMailPcPerson,click: openDialogUserInfo.bind($data, 0)">#{i18n.getText('CMM049_15')}</button></td>
+										style="width: 80px;"  data-bind="enable:controlMailPcCom,click: openDialogUserInfo.bind($data, 0)">#{i18n.getText('CMM049_15')}</button></td>
 							</tr>
 
 							<tr>
@@ -81,7 +81,7 @@
 											options: sendMailSetOptions,
 											optionsValue: 'code',
 											optionsText: 'name',
-											value: selectedMailPcPersonal,
+											value: selectedPcPersonalSendMailSet,
 											required: false,
 											enable: true }"></div>
 
@@ -93,12 +93,12 @@
 											options: selfEditSetOptions,
 											optionsValue: 'code',
 											optionsText: 'name',
-											value: selectedMailPcPersonSetting,
+											value: selectedPcPersonalSelfEditSet,
 											required: false,
 											enable: controlMailPcPersonal }"></div>
 								</td>
 								<td style="text-align: center;"><button tabindex="7"
-										style="width: 80px;" data-bind="enable:controlButtonMailPcPersonSetting,click: openDialogUserInfo.bind($data, 1)">#{i18n.getText('CMM049_15')}</button></td>
+										style="width: 80px;" data-bind="enable:controlMailPcPersonal,click: openDialogUserInfo.bind($data, 1)">#{i18n.getText('CMM049_15')}</button></td>
 							</tr>
 
 							<tr>
@@ -111,7 +111,7 @@
 											options: sendMailSetOptions ,
 											optionsValue: 'code',
 											optionsText: 'name',
-											value: selectedMailMobileCompany,
+											value: selectedMobileComSendMailSet,
 											required: false,
 											enable: true }"></div>
 
@@ -123,12 +123,12 @@
 											options: selfEditSetOptions,
 											optionsValue: 'code',
 											optionsText: 'name',
-											value: selectedMailMobileCompanySetting,
+											value: selectedMobileComSelfEditSet,
 											required: false,
-											enable: controlMailMobileCompany }"></div>
+											enable: controlMailMobileCom }"></div>
 								</td>
 								<td style="text-align: center;"><button tabindex="10"
-										style="width: 80px;" data-bind="enable:controlButtonMailMobileCompanySetting,click: openDialogUserInfo.bind($data, 2)">#{i18n.getText('CMM049_15')}</button></td>
+										style="width: 80px;" data-bind="enable:controlMailMobileCom,click: openDialogUserInfo.bind($data, 2)">#{i18n.getText('CMM049_15')}</button></td>
 							</tr>
 							<tr>
 								<td class="bg-green">#{i18n.getText('CMM049_11')}</td>
@@ -139,7 +139,7 @@
 											options: sendMailSetOptions,
 											optionsValue: 'code',
 											optionsText: 'name',
-											value: selectedMailMobilePersonal,
+											value: selectedMobilePersonalSendMailSet,
 											required: false,
 											enable: true }"></div>
 
@@ -151,11 +151,11 @@
 											options: selfEditSetOptions,
 											optionsValue: 'code',
 											optionsText: 'name',
-											value: selectedMailMobilePersonalSetting,
+											value: selectedMobilePersonalSelfEditSet,
 											required: false,
-											enable: controlMailMobilePersonalSetting }"></div>
+											enable: controlMailMobilePersonal }"></div>
 								</td>
-								<td style="text-align: center;"><button tabindex="13" data-bind = "enable:controlButton,click: openDialogUserInfo.bind($data, 3)"
+								<td style="text-align: center;"><button tabindex="13" data-bind = "enable:controlMailMobilePersonal,click: openDialogUserInfo.bind($data, 3)"
 										style="width: 80px;" >#{i18n.getText('CMM049_15')}</button></td>
 							</tr>
 							<tr>
@@ -171,7 +171,7 @@
 											options: selfEditSetOptions,
 											optionsValue: 'code',
 											optionsText: 'name',
-											value: selectedMobilePhoneCompany,
+											value: selectedMobilePhoneComSelfEditSet,
 											required: false,
 											enable: true }"></div>
 								</td>
@@ -189,7 +189,7 @@
 											options: selfEditSetOptions,
 											optionsValue: 'code',
 											optionsText: 'name',
-											value: selectedMobilePhoneCompanySetting,
+											value: selectedMobilePhonePersonalSelfEditSet,
 											required: false,
 											enable: true }"></div>
 								</td>
@@ -206,7 +206,7 @@
 											options: selfEditSetOptions,
 											optionsValue: 'code',
 											optionsText: 'name',
-											value: selectedPassword,
+											value: selectedPasswordSelfEditSet,
 											required: false,
 											enable: true }"></div>
 								</td>

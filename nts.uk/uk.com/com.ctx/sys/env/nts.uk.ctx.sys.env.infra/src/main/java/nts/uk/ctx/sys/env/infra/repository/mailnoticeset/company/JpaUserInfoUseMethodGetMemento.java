@@ -66,6 +66,9 @@ public class JpaUserInfoUseMethodGetMemento implements UserInfoUseMethodGetMemen
 	 */
 	@Override
 	public Optional<SettingUseSendMail> getSettingUseMail() {
+		if (this.entity.getUseMailSet() == null) {
+			return Optional.ofNullable(null);
+		}
 		return Optional.of(SettingUseSendMail.valueOf(this.entity.getUseMailSet()));
 	}
 
