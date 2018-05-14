@@ -10,7 +10,7 @@ import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRecPK;
 @StaticMetamodel(KfnstAttndRec.class)
 public class KfnstAttndRec_ { 
 
-    public static volatile SingularAttribute<KfnstAttndRec, Object> itemName;
+    public static volatile SingularAttribute<KfnstAttndRec, String> itemName;
     public static volatile SingularAttribute<KfnstAttndRec, BigDecimal> useAtr;
     public static volatile SingularAttribute<KfnstAttndRec, KfnstAttndRecPK> id;
     public static volatile SingularAttribute<KfnstAttndRec, BigDecimal> attribute;

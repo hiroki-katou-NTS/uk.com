@@ -36,7 +36,7 @@ public class KfnstAttndRecOutSet extends UkJpaEntity implements Serializable {
 
 	/** The name. */
 	@Column(name="NAME")
-	private Object name;
+	private String name;
 
 	/** The seal use atr. */
 	@Column(name="SEAL_USE_ATR")

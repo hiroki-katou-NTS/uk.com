@@ -39,7 +39,7 @@ public class KfnstAttndRec extends UkJpaEntity implements Serializable {
 
 	/** The item name. */
 	@Column(name = "ITEM_NAME")
-	private Object itemName;
+	private String itemName;
 
 	/** The use atr. */
 	@Column(name = "USE_ATR")

@@ -34,7 +34,7 @@ public class KfnstSealColumn extends UkJpaEntity implements Serializable {
 
 	/** The seal stamp name. */
 	@Column(name = "SEAL_STAMP_NAME")
-	private Object sealStampName;
+	private String sealStampName;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()

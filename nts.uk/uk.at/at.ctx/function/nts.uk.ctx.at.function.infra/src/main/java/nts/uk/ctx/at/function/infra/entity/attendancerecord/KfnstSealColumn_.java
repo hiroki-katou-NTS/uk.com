@@ -9,7 +9,7 @@ import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstSealColumnPK;
 @StaticMetamodel(KfnstSealColumn.class)
 public class KfnstSealColumn_ { 
 
-    public static volatile SingularAttribute<KfnstSealColumn, Object> sealStampName;
+    public static volatile SingularAttribute<KfnstSealColumn, String> sealStampName;
     public static volatile SingularAttribute<KfnstSealColumn, KfnstSealColumnPK> id;
 
 }

@@ -11,7 +11,7 @@ import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.Kfnst
 public class KfnstAttndRecOutSet_ { 
 
     public static volatile SingularAttribute<KfnstAttndRecOutSet, BigDecimal> sealUseAtr;
-    public static volatile SingularAttribute<KfnstAttndRecOutSet, Object> name;
+    public static volatile SingularAttribute<KfnstAttndRecOutSet, String> name;
     public static volatile SingularAttribute<KfnstAttndRecOutSet, KfnstAttndRecOutSetPK> id;
 
 }
