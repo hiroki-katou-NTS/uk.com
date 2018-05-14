@@ -17,7 +17,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeZoneOutput
 import nts.uk.ctx.at.record.dom.stamp.StampItem;
 import nts.uk.ctx.at.record.dom.stamp.StampRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.StampCardItem;
-import nts.uk.ctx.at.record.dom.stamp.card.StampCardtemRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.StampCardRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
@@ -33,7 +33,7 @@ public class StampServiceImpl implements StampDomainService {
 	@Inject
 	private StampRepository stampRepo;
 	@Inject
-	private StampCardtemRepository stampCardRepo;
+	private StampCardRepository stampCardRepo;
 
 	public List<StampItem> handleData(StampReflectRangeOutput s, ExecutionType reCreateAttr,
 			String empCalAndSumExecLogID, GeneralDate date, String employeeId, String companyId) {

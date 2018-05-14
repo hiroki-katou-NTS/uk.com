@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,22 +19,11 @@ public class SpecialLeaveNumberInfo {
 	//残数
 	private SpecialLeaveRemainingNumber remainingNumber;
 	
-	public SpecialLeaveNumberInfo(BigDecimal dayNumberOfGrant, Integer timeOfGrant,BigDecimal dayNumberOfUse, Integer timeOfUse,
-			BigDecimal useSavingDays, BigDecimal numberOverDays, Integer timeOver, BigDecimal dayNumberOfRemain, Integer timeOfRemain) {
-		
-		this.grantNumber = SpecialLeaveGrantNumber.createFromJavaType(dayNumberOfGrant, timeOfGrant);
-	
-		this.usedNumber = SpecialLeaveUsedNumber.createFromJavaType(dayNumberOfUse, timeOfUse, useSavingDays, numberOverDays, timeOver);
-		this.remainingNumber = SpecialLeaveRemainingNumber.createFromJavaType(dayNumberOfRemain, timeOfRemain);
-	}
-	
 	public SpecialLeaveNumberInfo(double dayNumberOfGrant, Integer timeOfGrant,double dayNumberOfUse, Integer timeOfUse,
 			Double useSavingDays, double numberOverDays, Integer timeOver, double dayNumberOfRemain, Integer timeOfRemain) {
 		this.grantNumber = SpecialLeaveGrantNumber.createFromJavaType(dayNumberOfGrant, timeOfGrant);
 		this.usedNumber = SpecialLeaveUsedNumber.createFromJavaType(dayNumberOfUse,timeOfUse,useSavingDays,numberOverDays,timeOver);
 		this.remainingNumber = SpecialLeaveRemainingNumber.createFromJavaType(dayNumberOfRemain, timeOfRemain);
 	}
-	
-	
 
 }

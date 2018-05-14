@@ -1,11 +1,10 @@
 package nts.uk.ctx.at.record.app.command.remainingnumber.specialleavegrant.add;
 
-import java.math.BigDecimal;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
@@ -43,14 +42,14 @@ public class AddSpeLeaGrant6CommandHandler
 				command.getGrantDate(),command.getDeadlineDate(), 
 				command.getExpStatus().intValue(),
 				GrantRemainRegisterType.MANUAL.value, 
-				command.getNumberDayGrant(), 
+				command.getNumberDayGrant().doubleValue(), 
 				command.getTimeGrant() != null ? command.getTimeGrant().intValue() : null ,
-				command.getNumberDayUse(), 
+				command.getNumberDayUse().doubleValue(), 
 				command.getTimeUse() != null ? command.getTimeUse().intValue() : null, 
-				new BigDecimal(0),
-				command.getNumberDaysOver(),
+				0.0,
+				command.getNumberDaysOver().doubleValue(),
 				command.getTimeOver() != null ? command.getTimeOver().intValue() : null,
-				command.getNumberDayRemain(),
+				command.getNumberDayRemain().doubleValue(),
 				command.getTimeRemain() != null ? command.getTimeRemain().intValue() : null);
 
 		return new PeregAddCommandResult(addSpeLeaveGrantCommandHandler.addHandler(domain));
