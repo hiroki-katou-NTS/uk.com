@@ -2829,8 +2829,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 $("#next-month").attr('style', 'background-color: white !important');
             }
             // check
-            if (breakTimeDay.am <= self.nextMonthTransferredMoneyTime()) {
+            let numberMonth = moment.duration(self.nextMonthTransferredMoneyTime()).asMinutes();
+            if (breakTimeDay.am <= numberMonth) {
                 check1175 = true;
+                $("#next-month").attr('style', 'background-color: red !important');
+            } else {
+                $("#next-month").attr('style', 'background-color: white !important');
             }
 
             if (check1174) {
