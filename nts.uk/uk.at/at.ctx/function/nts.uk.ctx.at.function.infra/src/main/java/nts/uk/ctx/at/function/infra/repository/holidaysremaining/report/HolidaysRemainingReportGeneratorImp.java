@@ -251,8 +251,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 				if (dataSource.getStartMonth().addMonths(i).yearMonth().compareTo(currentMonth) > 0)
 				{
 					setBackgroundGray(cells.get(firstRow, 10 + i));
-					setBackgroundGray(cells.get(firstRow - 2, 10 + i));
-					setBackgroundGray(cells.get(firstRow + 2, 10 + i));
+					setBackgroundGray(cells.get(firstRow + 1, 10 + i));
 				}
 			}
 			
