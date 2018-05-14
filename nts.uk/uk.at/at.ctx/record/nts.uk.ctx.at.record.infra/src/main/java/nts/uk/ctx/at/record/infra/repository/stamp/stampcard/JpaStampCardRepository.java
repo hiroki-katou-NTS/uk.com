@@ -37,16 +37,20 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 	public Optional<StampCard> getByStampCardId(String stampCardId) {
 		Optional<StampCard> entity = this.queryProxy().query(GET_BY_CARD_ID, KrcmtStamcard.class)
 				.setParameter("cardid", stampCardId).getSingle(x -> toDomain(x));
-		return entity;
+		if (entity.isPresent())
+			return entity;
+		else
+			return Optional.empty();
 	}
 
 	@Override
 	public Optional<StampCard> getByCardNoAndContractCode(String cardNo, String contractCd) {
 		Optional<StampCard> entity = this.queryProxy().query(GET_BY_CARD_NO_AND_CONTRACT_CODE, KrcmtStamcard.class)
-				.setParameter("cardNo", cardNo)
-				.setParameter("contractCd", contractCd)
-				.getSingle(x -> toDomain(x));
-		return entity;
+				.setParameter("cardNo", cardNo).setParameter("contractCd", contractCd).getSingle(x -> toDomain(x));
+		if (entity.isPresent())
+			return entity;
+		else
+			return Optional.empty();
 	}
 
 	@Override
