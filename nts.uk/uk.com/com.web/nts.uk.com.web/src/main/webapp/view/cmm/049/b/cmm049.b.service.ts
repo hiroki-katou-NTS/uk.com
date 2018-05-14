@@ -8,7 +8,8 @@ module nts.uk.com.view.cmm049.b {
             getPCMailCompany: "sys/env/userinfoset/pcmail/company",
             getPCMailPerson: "sys/env/userinfoset/pcmail/person",
             getMobileMailCompany: "sys/env/userinfoset/mobilemail/company",
-            getMobileMailPerson: "sys/env/userinfoset/mobilemail/person"
+            getMobileMailPerson: "sys/env/userinfoset/mobilemail/person",
+            saveMailDestinationFunction: "sys/env/userinfoset/save/settingByMenu"
             
         }
 
@@ -27,5 +28,10 @@ module nts.uk.com.view.cmm049.b {
         export function getMobileMailPerson(): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.getMobileMailPerson);
         }
+        
+        export function saveMailDestinationFunction(data: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.saveMailDestinationFunction, data);
+        }
+
     }
 }

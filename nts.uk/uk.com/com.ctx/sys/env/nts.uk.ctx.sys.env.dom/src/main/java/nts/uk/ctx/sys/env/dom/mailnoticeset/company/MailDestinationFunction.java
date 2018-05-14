@@ -7,6 +7,7 @@ package nts.uk.ctx.sys.env.dom.mailnoticeset.company;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
 
@@ -19,6 +20,7 @@ public class MailDestinationFunction extends AggregateRoot{
 
 	/** The company id. */
 	// 会社ID
+	@Setter
 	private String companyId;
 
 	/** The setting item. */

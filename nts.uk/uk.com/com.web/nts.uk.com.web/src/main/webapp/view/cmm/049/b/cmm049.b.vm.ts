@@ -8,6 +8,8 @@ module nts.uk.com.view.cmm049.b {
             items: KnockoutObservableArray<ItemModel>;
             columns: KnockoutObservableArray<any>;
             currentCodeList: KnockoutObservableArray<any>;
+            settingItem: number;
+            listFunctionID: Array<number> = [];
             userInfoItemName: KnockoutObservable<string>;
 
             constructor() {
@@ -31,6 +33,7 @@ module nts.uk.com.view.cmm049.b {
                 let dfd = $.Deferred<any>();
 
                 let dataObject: any = nts.uk.ui.windows.getShared("CMM049_DIALOG_B_INPUT_DATA");
+                _self.settingItem = dataObject;
                 _self.bindingData(dataObject).done(() => {
                     dfd.resolve();
                 });
@@ -46,7 +49,7 @@ module nts.uk.com.view.cmm049.b {
                 if (nts.uk.util.isNullOrUndefined(dataObject)) {
                     return;
                 }
-                switch (dataObject.userInfo) {
+                switch (dataObject) {
                     case UserInfoItem.COMPANY_PC_MAIL:
                         _self.userInfoItemName(nts.uk.resource.getText("CMM049_16"));
                         service.getPCMailCompany().done((data: any) => {
@@ -122,8 +125,36 @@ module nts.uk.com.view.cmm049.b {
             /**
              * save
              */
-            public save(): void {
-
+            public save(): JQueryPromise<any> {
+            let self =this;
+                let dfd = $.Deferred<any>();
+            let listOfSendMailFunction: Array<SendMailFunction> = [];
+            self.listFunctionID.forEach((item) => {
+                self.currentCodeList().forEach(K => {
+                    if (item == K) {
+                        listOfSendMailFunction.push({
+                            functionId: item,
+                            sendSetting: 1
+                        });
+                    } else {
+                        listOfSendMailFunction.push({
+                            functionId: item,
+                            sendSetting: 0
+                        });
+                    }
+                })
+            });
+            let data = {
+                mailDestinationFunctionDto: {
+                    settingItem: self.settingItem,
+                    sendByFunctionSetting: listOfSendMailFunction
+                }
+            }
+            service.saveMailDestinationFunction(data).done(() => {
+                nts.uk.ui.windows.close();
+                dfd.resolve();
+            });
+            return dfd.promise();
             }
 
             private checkAlgorthm(data: any) {
@@ -133,6 +164,7 @@ module nts.uk.com.view.cmm049.b {
                 if (data.mailDestinationFunctionDto) {
                     data.mailFunctionDto.forEach((item: any, index: any) => {
                         listOfMailFunction.push(item.functionId);
+                            self.listFunctionID.push(item.functionId);
                     });
                     data.mailDestinationFunctionDto.sendByFunctionSetting.forEach((item: any, index: any) => {
                         if (item.sendSetting == 1) {
@@ -159,6 +191,15 @@ module nts.uk.com.view.cmm049.b {
             constructor(code: number, name: string) {
                 this.code = code;
                 this.name = name;
+            }
+        }
+        class SendMailFunction {
+            functionId: number;
+            sendSetting: number;
+
+            constructor(functionId: number, sendSetting: number) {
+                this.functionId = functionId;
+                this.sendSetting = sendSetting;
             }
         }
 

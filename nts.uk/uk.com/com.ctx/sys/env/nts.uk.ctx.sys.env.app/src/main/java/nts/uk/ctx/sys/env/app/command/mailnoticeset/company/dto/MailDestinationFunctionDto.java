@@ -5,6 +5,7 @@
 package nts.uk.ctx.sys.env.app.command.mailnoticeset.company.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Value;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunctionGetMemento;
@@ -21,7 +22,7 @@ public class MailDestinationFunctionDto implements MailDestinationFunctionGetMem
 	public Integer settingItem;
 
 	/** The send by function setting. */
-	public List<SendMailByFunctionSetting> sendByFunctionSetting;
+	public List<SendMailByFunctionSettingDto> sendByFunctionSetting;
 	
 	/*
 	 * (non-Javadoc)
@@ -31,7 +32,9 @@ public class MailDestinationFunctionDto implements MailDestinationFunctionGetMem
 	 */
 	@Override
 	public List<SendMailByFunctionSetting> getSendByFunctionSetting() {
-		return this.sendByFunctionSetting;
+		return this.sendByFunctionSetting.stream().map(item->{
+			return new SendMailByFunctionSetting(item);
+		}).collect(Collectors.toList());
 	}
 
 	/*

@@ -4,16 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.sys.env.app.command.mailnoticeset.company;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.sys.env.app.command.mailnoticeset.company.dto.MailDestinationFunctionDto;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunction;
-
-@Data
+@Getter
+@Setter
 public class MailDestinationFunctionSaveCommand {
 
 	/** The fixed work setting. */
 	private MailDestinationFunctionDto mailDestinationFunctionDto;
 
+	
 	/**
 	 * To domain.
 	 *
@@ -21,6 +23,11 @@ public class MailDestinationFunctionSaveCommand {
 	 */
 	public MailDestinationFunction toDomain() {
 		return new MailDestinationFunction(this.mailDestinationFunctionDto);
+	}
+
+
+	public MailDestinationFunctionSaveCommand() {
+		super();
 	}
 
 }

@@ -140,10 +140,7 @@ module nts.uk.com.view.cmm049.a {
                 let _self = this;
                 nts.uk.ui.block.grayout();
 
-                let dataObject: any = {
-                    userInfo: userInfo
-                };
-                nts.uk.ui.windows.setShared("CMM049_DIALOG_B_INPUT_DATA", dataObject);
+                nts.uk.ui.windows.setShared("CMM049_DIALOG_B_INPUT_DATA", userInfo);
                 nts.uk.ui.windows.sub.modal("/view/cmm/049/b/index.xhtml").onClosed(() => {
                     nts.uk.ui.block.clear();
                 });

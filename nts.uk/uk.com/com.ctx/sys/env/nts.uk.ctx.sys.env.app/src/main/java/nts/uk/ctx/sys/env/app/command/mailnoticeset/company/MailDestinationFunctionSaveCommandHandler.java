@@ -40,6 +40,7 @@ public class MailDestinationFunctionSaveCommandHandler extends CommandHandler<Ma
 		// Get new domain
 		MailDestinationFunctionSaveCommand command = context.getCommand();
 		MailDestinationFunction newDomain = command.toDomain();
+		newDomain.setCompanyId(companyId);
 		UserInfoItem settingItem = newDomain.getSettingItem();
 
 		// Remove old domain then add new domain

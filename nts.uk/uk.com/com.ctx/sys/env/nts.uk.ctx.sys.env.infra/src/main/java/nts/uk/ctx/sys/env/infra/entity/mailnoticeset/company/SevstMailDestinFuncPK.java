@@ -19,10 +19,10 @@ public class SevstMailDestinFuncPK implements Serializable {
     private String cid;
     
     @Column(name = "SETTING_ITEM")
-    private int settingItem;
+    private Integer settingItem;
     
     @Column(name = "FUNCTION_ID")
-    private int functionId;
+    private Integer functionId;
     
     public SevstMailDestinFuncPK() {
     }

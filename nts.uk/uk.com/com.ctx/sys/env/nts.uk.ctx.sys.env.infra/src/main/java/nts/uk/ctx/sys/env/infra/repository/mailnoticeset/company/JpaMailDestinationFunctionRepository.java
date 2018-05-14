@@ -81,7 +81,7 @@ public class JpaMailDestinationFunctionRepository extends JpaRepository implemen
 				root.get(SevstMailDestinFunc_.sevstMailDestinFuncPK).get(SevstMailDestinFuncPK_.cid), companyId));
 		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(SevstMailDestinFunc_.sevstMailDestinFuncPK).get(SevstMailDestinFuncPK_.settingItem),
-				userInfoItem));
+				userInfoItem.value));
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
