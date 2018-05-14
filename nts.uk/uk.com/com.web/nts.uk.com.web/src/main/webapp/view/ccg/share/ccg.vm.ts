@@ -125,7 +125,7 @@ module nts.uk.com.view.ccg.share.ccg {
             // Acquired baseDate
             acquiredBaseDate: KnockoutObservable<string>;
 
-            employeeListTab3: KnockoutObservableArray<string>;
+            employeeListTab3: KnockoutObservableArray<UnitModel>;
             selectedEmployeesTab3: KnockoutObservableArray<string>;
             inputCodeTab3: KnockoutObservable<string>;
             inputNameTab3: KnockoutObservable<string>;
@@ -1475,6 +1475,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
             }        
 
+            /**
+             * Get selected code employee in tab3
+             */
             public getSelectedCodeEmployeeTab3(): string[]{
                 let self = this;
                 if (self.isMultiple) {
@@ -1488,6 +1491,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
             }        
 
+            /**
+             * Show data to kcp005 on tab 3
+             */
             private showDataOnKcp005Tab3(data: Array<EmployeeSearchDto>): void {
                 let self = this;
                 self.reservedEmployeesTab3(data);
@@ -1549,8 +1555,10 @@ module nts.uk.com.view.ccg.share.ccg {
                     systemType: self.systemType,
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate()
                 };
+                nts.uk.ui.block.invisible(); // block ui
                 service.searchByCode(query).done(data => {
                     self.showDataOnKcp005Tab3(data);
+                    nts.uk.ui.block.clear(); // clear block UI
                 });
             }
 
@@ -1569,8 +1577,10 @@ module nts.uk.com.view.ccg.share.ccg {
                     systemType: self.systemType,
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate()
                 };
+                nts.uk.ui.block.invisible(); // block ui
                 service.searchByName(query).done(data => {
                     self.showDataOnKcp005Tab3(data);
+                    nts.uk.ui.block.clear(); // clear block UI
                 });
             }
 
@@ -1589,8 +1599,10 @@ module nts.uk.com.view.ccg.share.ccg {
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate(),
                     period: self.toPeriodDto(self.entryDateTab3())
                 };
+                nts.uk.ui.block.invisible(); // block ui
                 service.searchByEntryDate(query).done(data => {
                     self.showDataOnKcp005Tab3(data);
+                    nts.uk.ui.block.clear(); // clear block UI
                 });
             }
 
@@ -1609,8 +1621,10 @@ module nts.uk.com.view.ccg.share.ccg {
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate(),
                     period: self.toPeriodDto(self.retirementDateTab3())
                 };
+                nts.uk.ui.block.invisible(); // block ui
                 service.searchByRetirementDate(query).done(data => {
                     self.showDataOnKcp005Tab3(data);
+                    nts.uk.ui.block.clear(); // clear block UI
                 });
             }
 
