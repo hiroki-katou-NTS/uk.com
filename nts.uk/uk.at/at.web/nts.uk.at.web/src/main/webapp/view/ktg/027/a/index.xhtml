@@ -23,23 +23,23 @@
 				<div class="valign-center control-group">
 					<label>#{i18n.getText('KTG027_3')}</label>
 					<div
-						data-bind="ntsDatePicker: { value: yearMonth, dateFormat: 'yearmonth', valueFormat: 'YYYYMM',showJumpButtons: true}"></div>
+						data-bind="ntsDatePicker: { value: targetMonth, dateFormat: 'yearmonth', valueFormat: 'YYYYMM',showJumpButtons: true}"></div>
 				</div>
 				<div class="valign-center control-group">
 					<label>#{i18n.getText('KTG027_4')}</label>
 					<div id="combo-box"
 						data-bind="ntsComboBox: {
 							name: 'Sample List',
-							options: itemList,
-							optionsValue: 'code',
+							options: closureResultModel,
+							optionsValue: 'closureId',
 							visibleItemsCount: 5,
-							value: selectedCBB,
-							optionsText: 'name',
+							value: selectedClosureID,
+							optionsText: 'closureName',
 							columns: [
-								{ prop: 'name', length: 10 },
+								{ prop: 'closureName', length: 10 },
 							]}"></div>
-					<button>#{i18n.getText('KTG027_5')}</button>
-					<button	style ="margin-left: 50px;" data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top'}">?</button>
+					<button data-bind = "click : clickExtractionBtn">#{i18n.getText('KTG027_5')}</button>
+					<button	style ="margin-left: 50px;" data-bind="ntsHelpButton: {textId : 'KTG027_11', position: 'right top'}">?</button>
 				</div>
 				<table id="fixed-table">
 					<colgroup>

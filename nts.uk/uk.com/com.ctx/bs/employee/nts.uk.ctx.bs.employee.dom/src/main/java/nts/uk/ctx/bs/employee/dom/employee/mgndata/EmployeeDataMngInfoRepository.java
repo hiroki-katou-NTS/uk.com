@@ -25,7 +25,7 @@ public interface EmployeeDataMngInfoRepository {
 
 	Optional<EmployeeInfo> findById(String sid);
 
-	List<EmployeeSimpleInfo> findByIds(List<String> lstId);
+//	List<EmployeeSimpleInfo> findByIds(List<String> lstId);
 
 	Optional<EmployeeInfo> getDepartment(String departmentId, GeneralDate date);
 
