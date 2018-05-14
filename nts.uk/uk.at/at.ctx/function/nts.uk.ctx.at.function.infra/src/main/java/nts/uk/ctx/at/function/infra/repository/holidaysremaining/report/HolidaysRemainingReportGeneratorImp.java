@@ -245,6 +245,17 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			// E3_1
 			cells.get(firstRow + 1, 9).setValue(TextResource.localize("KDR001_15"));
 
+			// Set background
+			for (int i = 0; i <= totalMonths(dataSource.getStartMonth().yearMonth(),
+					dataSource.getEndMonth().yearMonth()); i++) {
+				if (dataSource.getStartMonth().addMonths(i).yearMonth().compareTo(currentMonth) > 0)
+				{
+					setBackgroundGray(cells.get(firstRow, 10 + i));
+					setBackgroundGray(cells.get(firstRow - 2, 10 + i));
+					setBackgroundGray(cells.get(firstRow + 2, 10 + i));
+				}
+			}
+			
 			// Call rql 265
 			AnnLeaveOfThisMonthImported annLeave = 
 					annLeaveRemainingAdapter.getAnnLeaveOfThisMonth(employee.getEmployeeId());
@@ -265,10 +276,12 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			for (AnnLeaveUsageStatusOfThisMonthImported item : listAnnLeaveUsage) {
 				if (currentMonth.compareTo(item.getYearMonth()) != 0) continue;
 				int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), item.getYearMonth());
-				// E2_3 当月以降
-				cells.get(firstRow, 10 + totalMonth).setValue(item.getMonthlyUsageDays());
-				// E3_3 当月以降
-				cells.get(firstRow + 1, 10 + totalMonth).setValue(item.getMonthlyRemainingDays());
+				if (totalMonth >= 0) {
+					// E2_3 当月以降
+					cells.get(firstRow, 10 + totalMonth).setValue(item.getMonthlyUsageDays());
+					// E3_3 当月以降
+					cells.get(firstRow + 1, 10 + totalMonth).setValue(item.getMonthlyRemainingDays());
+				}
 			}
 
 			firstRow += 2;
@@ -427,6 +440,13 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 	private void setBottomBorderStyle(Cell cell) {
 		Style style = cell.getStyle();
 		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM, Color.getBlack());
+		cell.setStyle(style);
+	}
+	
+	private void setBackgroundGray(Cell cell){
+		Style style = cell.getStyle();
+		style.setForegroundColor(Color.getGray());
+		style.setBackgroundColor(Color.getGray());
 		cell.setStyle(style);
 	}
 
