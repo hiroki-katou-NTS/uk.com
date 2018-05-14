@@ -19,19 +19,19 @@ module nts.uk.at.view.kal003.a.tab {
         init(): void {
             let self = this;
             let listAgErr = [];   
-            service.getAgreementError().done((data) => {
-                _.each(data, (x) => {
-                    listAgErr.push(new model.AgreeConditionErrorDto({
-                        id: x.id,
-                        useAtr: x.useAtr ? true : false,
-                        period: x.period,
-                        errorAlarm: x.errorAlarm,
-                        messageDisp: x.messageDisp,
-                        name: x.name
-                    }));
-                });
-                self.listAgreementError(listAgErr);
-            });
+//            service.getAgreementError().done((data) => {
+//                _.each(data, (x) => {
+//                    listAgErr.push(new model.AgreeConditionErrorDto({
+//                        id: x.id,
+//                        useAtr: x.useAtr ? true : false,
+//                        period: x.period,
+//                        errorAlarm: x.errorAlarm,
+//                        messageDisp: x.messageDisp,
+//                        name: x.name
+//                    }));
+//                });
+//                self.listAgreementError(listAgErr);
+//            });
         }
     } 
 }//end tab

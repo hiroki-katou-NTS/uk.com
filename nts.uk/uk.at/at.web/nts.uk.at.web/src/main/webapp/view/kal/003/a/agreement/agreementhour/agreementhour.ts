@@ -24,19 +24,19 @@ module nts.uk.at.view.kal003.a.tab {
         init(): void {
             let self = this;
             let listAgHour = [];
-            service.getAgreementHour().done((data) => {
-                _.each(data, (x) => {
-                    listAgHour.push(new model.AgreeCondOt({
-                        id: x.id,
-                        no: x.no,
-                        ot36: x.ot36,
-                        excessNum: x.excessNum,
-                        messageDisp: x.messageDisp
-                    }));
-                });
-
-                self.listAgreementHour(listAgHour);
-            });
+//            service.getAgreementHour().done((data) => {
+//                _.each(data, (x) => {
+//                    listAgHour.push(new model.AgreeCondOt({
+//                        id: x.id,
+//                        no: x.no,
+//                        ot36: x.ot36,
+//                        excessNum: x.excessNum,
+//                        messageDisp: x.messageDisp
+//                    }));
+//                });
+//
+//                self.listAgreementHour(listAgHour);
+//            });
         }
 
         createNewLine(): void {

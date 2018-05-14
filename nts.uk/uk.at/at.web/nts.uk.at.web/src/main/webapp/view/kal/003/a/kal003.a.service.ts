@@ -11,18 +11,16 @@ module nts.uk.at.view.kal003.a.service {
         getDailyErrorAlarmCheck: "at/function/alarm/checkcondition/findDailyErrorAlarmCheck",
         getClsNameByCodes: "bs/employee/classification/getClsNameByCds",
         getEmpNameByCodes: "bs/employee/employment/findNamesByCodes",
-        getJobNameByIds: "bs/employee/jobtitle/getNamesByIds",
-        getBusTypeByCodes: "at/record/worktypeselection/getNamesByCodes",
-        getAgreementHour: "at/function/alarm/checkcondition/agree36/findcondot",
-        getAgreementError: "at/function/alarm/checkcondition/agree36/finderror", 
-        getAgreementNameError: "at/function/alarm/checkcondition/agree36/findnameerror",
+        // chua co
+        getJobNamesByIds: "bs/employee/jobtitle/getNamesByIds",
+        getBusTypeNamesByCodes: "at/record/worktypeselection/getNamesByCodes",
           //monthly
-        geAllFixedExtraItemMon : "at/record/condition/monthlycheckcondition/getallfixitemmonthly"
+        getAllFixedExtraItemMon : "at/record/condition/monthlycheckcondition/getallfixitemmonthly"
     }
 
     export function getAllData(category: number): JQueryPromise<any> {
         let _path = format(paths.getAllData, category);
-        return ajax("a_path);
+        return ajax("at", _path);
     };
     
     export function getOneData(category: number, code: string): JQueryPromise<any> {
@@ -35,7 +33,7 @@ module nts.uk.at.view.kal003.a.service {
     };
 
     export function deleteData(data: any): JQueryPromise<any> {
-        return ajax("at", pat.deleteDadata);  
+        return ajax("at", paths.deleteData);  
     }
     
     export function getDailyErrorAlarmCheck(): JQueryPromise<any> {
@@ -44,37 +42,37 @@ module nts.uk.at.view.kal003.a.service {
     /**
      * get All Fixed Condition WorkRecord data 
      */
-    export function getAllFixedConData(): JQue ryPromise<Array<any>>{
-        return ajax("at", paths.getAllFionData);
+    export function getAllFixedConData(): JQueryPromise<Array<any>>{
+        return ajax("at", paths.getAllFixedConData);
     }
     
     export function getClsNameByCodes(data: Array<string>): JQueryPromise<any> {
-        return ajax("com", paths.getClsNameBCo data);
+        return ajax("com", paths.getClsNameByCodes, data);
     } 
     
     export function getEmpNameByCodes(data: Array<string>): JQueryPromise<any> {
-        return ajax("com", paths.getEmpNameBCo data);
+        return ajax("com", paths.getEmpNameByCodes, data);
     } 
     
     export function getBusTypeNamesByCodes(data: Array<string>): JQueryPromise<any> {
-        return ajax("at", paths.getBusTypeByC, data);
+        return ajax("at", paths.getBusTypeNamesByCodes, data);
     }
     
     export function getJobNamesByIds(data: Array<string>): JQueryPromise<any> {
-        return ajax("com", paths.getJobNameByIdata);
+        return ajax("com", paths.getJobNamesByIds);
     }
 
     
-    export function getAgreementHour(): JQueryPromise<any> {
-        return ajax("at", paths.getAgreementHour);
-    }
+//    export function getAgreementHour(): JQueryPromise<any> {
+//        return ajax("at", paths.getAgreementHour);
+//    }
 
-    export function getAgreementError(): JQueryPromise<any> {
-        return ajax("at", paths.getAgreementError);
-    }
+//    export function getAgreementError(): JQueryPromise<any> {
+//        return ajax("at", paths.getAgreementError);
+//    }
     //monthly
-    export function getAllFixedExtraItemMon(): JQue ryPromise<Array<any>>{
-        return ajax("at", paths.getAlFixedExtraItemMon); 
+    export function getAllFixedExtraItemMon(): JQueryPromise<Array<any>>{
+        return ajax("at", paths.getAllFixedExtraItemMon); 
 
     }
 }
