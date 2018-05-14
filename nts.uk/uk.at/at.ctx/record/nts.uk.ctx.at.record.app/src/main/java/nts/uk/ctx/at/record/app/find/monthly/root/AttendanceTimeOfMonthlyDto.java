@@ -43,7 +43,7 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 	/** 締めID: 締めID */
 	// @AttendanceItemValue
 	// @AttendanceItemLayout(jpPropertyName = "締めID", layout = "A")
-	private int closureID;
+	private int closureID = 1;
 
 	/** 締め日: 日付 */
 	// @AttendanceItemLayout(jpPropertyName = "締め日", layout = "B")
