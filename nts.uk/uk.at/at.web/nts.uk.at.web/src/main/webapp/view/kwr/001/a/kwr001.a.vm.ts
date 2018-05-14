@@ -396,6 +396,9 @@ module nts.uk.at.view.kwr001.a {
                     nts.uk.ui.windows.getShared('KWR001_C');
                 });
             }
+            processExcel(): void {
+                service.exportExcel();
+            }
         }
         
         const DATE_FORMAT_YYYY_MM_DD = "YYYY/MM/DD";
