@@ -6,29 +6,40 @@ module nts.uk.com.view.cmf003.f {
     export module service {
         
         var paths = {
-            executionImportCsvData: "exio/exi/csvimport/execution",
-            addErrorLog: "exio/exi/proccessLog/addErrorLog",
-            check: "exio/exi/csvimport/check",
+            findDataStorageMng: "ctx/sys/assist/app/findDataStorageMng/{0}",
+            findResultOfSaving: "ctx/sys/assist/app/findResultOfSaving/{0}",
+            setInterruptSaving: "ctx/sys/assist/app/setInterruptSaving",
+            deleteDataStorageMng: "ctx/sys/assist/app/deleteDataStorageMng"
         }   
     
         /**
-         * call service execution import data
+         * get DataStorageMng
          */
-        export function executionImportCsvData(command: any): JQueryPromise<any> {
-            return ajax('com', paths.executionImportCsvData, command);
+        export function findDataStorageMng(storeProcessingId: string): JQueryPromise<any> {
+            let _path = format(paths.findDataStorageMng, storeProcessingId);
+            return ajax('com', _path);
         }
         
         /**
-         * call service check import data
+         * delete DataStorageMng when interupt/error/done
          */
-        export function check(command: any): JQueryPromise<any> {
-            return ajax('com', paths.check, command);
+        export function deleteDataStorageMng(command: any): JQueryPromise<any> {
+            return ajax("com", paths.deleteDataStorageMng, command);
         }
+        
         /**
-        * add error log  
-        */
-        export function addErrorLog(command: any): JQueryPromise<any> {
-            return ajax('com', paths.addErrorLog, command);
+         * find ResultOfSaving to get fileID
+         */
+        export function findResultOfSaving(storeProcessingId: string): JQueryPromise<any> {
+            let _path = format(paths.findResultOfSaving, storeProcessingId);
+            return ajax('com', _path);
+        }
+        
+        /**
+         * update interrupt process
+         */
+        export function setInterruptSaving(command: any): JQueryPromise<any> {
+            return ajax("com", paths.setInterruptSaving, command);
         }
     }
 }

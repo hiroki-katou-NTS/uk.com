@@ -16,7 +16,7 @@ public class JpaDataStorageMngRepository extends JpaRepository implements DataSt
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspmtDataStorageMng f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.dataStorageMngPk.storeProcessingId =:storeProcessingId ";
+			+ " WHERE  f.storeProcessingId =:storeProcessingId ";
 
 	@Override
 	public List<DataStorageMng> getAllDataStorageMng() {
@@ -52,6 +52,15 @@ public class JpaDataStorageMngRepository extends JpaRepository implements DataSt
 		entity.categoryCount = categoryCount;
 		entity.operatingCondition = operatingCondition;
 		this.commandProxy().update(entity);
-
 	}
+	
+	@Override
+    public void update(DataStorageMng domain){
+        this.commandProxy().update(SspmtDataStorageMng.toEntity(domain));
+    }
+	
+	@Override
+    public void remove(String storeProcessingId){
+        this.commandProxy().remove(SspmtDataStorageMng.class, storeProcessingId); 
+    }
 }
