@@ -1,24 +1,20 @@
 module nts.uk.com.view.cmm048.b {
 
     import MainDto = nts.uk.com.view.cmm048.b.model.MainDto;
-    import MailFunctionDto = nts.uk.com.view.cmm048.b.model.MailFunctionDto;
     import FunctionSettingDto = nts.uk.com.view.cmm048.b.model.FunctionSettingDto;
     
     export module viewmodel {  
         
         export class ScreenModel {        
-            
-            userInfoItemName: KnockoutObservable<string>;
-            items: KnockoutObservableArray<FunctionSettingModel>;
-            selectedItem: KnockoutObservable<FunctionSettingModel>;
+                        
             columnSetting: KnockoutObservableArray<any>;
+            
+            mainModel: MainModel;
             
             constructor() {
                 let _self = this;
                 
-                _self.userInfoItemName = ko.observable("");
-                _self.items = ko.observableArray([]);                
-                _self.selectedItem = ko.observable(null);
+                _self.mainModel = new MainModel();            
                 
                 _self.columnSetting = ko.observableArray([
                     { headerText: "", key: 'functionId', width: 150,  hidden: true },
@@ -50,35 +46,7 @@ module nts.uk.com.view.cmm048.b {
                 if (nts.uk.util.isNullOrUndefined(dataObject)) {                                   
                     return;
                 }
-                switch (dataObject.userInfo) {
-                    case UserInfoItem.COMPANY_PC_MAIL:
-                        _self.userInfoItemName(nts.uk.resource.getText("CMM048_46"));
-                        service.findCompanyPcMail().done((data) => {
-                            _self.items(_.map(data, (item) => new FunctionSettingModel(item)));
-                        });
-                    break;
-                    case UserInfoItem.PERSONAL_PC_MAIL:
-                        _self.userInfoItemName(nts.uk.resource.getText("CMM048_47"));
-                        service.findPersonalPcMail().done((data) => {
-                            _self.items(_.map(data, (item) => new FunctionSettingModel(item)));
-                        });
-                    break;
-                    case UserInfoItem.COMPANY_MOBILE_MAIL:
-                        _self.userInfoItemName(nts.uk.resource.getText("CMM048_48"));
-                        service.findCompanyMobileMail().done((data) => {
-                            _self.items(_.map(data, (item) => new FunctionSettingModel(item)));
-                        });
-                    break;
-                    case UserInfoItem.PERSONAL_MOBILE_MAIL:
-                        _self.userInfoItemName(nts.uk.resource.getText("CMM048_49"));
-                        service.findPersonalMobileMail().done((data) => {
-                            _self.items(_.map(data, (item) => new FunctionSettingModel(item)));
-                        });
-                    break;
-                    default:
-                        _self.userInfoItemName("");
-                }               
-                
+                _self.mainModel.updateData(dataObject.userInfo);                          
             }   
             
             /**
@@ -91,11 +59,48 @@ module nts.uk.com.view.cmm048.b {
         }
             
         export class MainModel {
-            listFunctionSetting: Array<FunctionSettingModel>;
+            userInfoItemName: KnockoutObservable<string>;
+            listFunctionSetting: KnockoutObservableArray<FunctionSettingModel>;
+            selectedItem: KnockoutObservable<FunctionSettingModel>;
             
             constructor() {
                 let _self = this;
-                _self.listFunctionSetting = [];
+                _self.userInfoItemName = ko.observable("");
+                _self.listFunctionSetting = ko.observableArray([]);
+                _self.selectedItem = ko.observable(null);
+            }
+            
+            updateData(userInfo: UserInfoItem) {
+                let _self = this;
+                
+                switch (userInfo) {
+                    case UserInfoItem.COMPANY_PC_MAIL:
+                        _self.userInfoItemName(nts.uk.resource.getText("CMM048_46"));
+                        service.findCompanyPcMail().done((data: Array<FunctionSettingDto>) => {
+                            _self.listFunctionSetting(_.map(data, (item) => new FunctionSettingModel(item)));
+                        });
+                    break;
+                    case UserInfoItem.PERSONAL_PC_MAIL:
+                        _self.userInfoItemName(nts.uk.resource.getText("CMM048_47"));
+                        service.findPersonalPcMail().done((data: Array<FunctionSettingDto>) => {
+                            _self.listFunctionSetting(_.map(data, (item) => new FunctionSettingModel(item)));
+                        });
+                    break;
+                    case UserInfoItem.COMPANY_MOBILE_MAIL:
+                        _self.userInfoItemName(nts.uk.resource.getText("CMM048_48"));
+                        service.findCompanyMobileMail().done((data: Array<FunctionSettingDto>) => {
+                            _self.listFunctionSetting(_.map(data, (item) => new FunctionSettingModel(item)));
+                        });
+                    break;
+                    case UserInfoItem.PERSONAL_MOBILE_MAIL:
+                        _self.userInfoItemName(nts.uk.resource.getText("CMM048_49"));
+                        service.findPersonalMobileMail().done((data: Array<FunctionSettingDto>) => {
+                            _self.listFunctionSetting(_.map(data, (item) => new FunctionSettingModel(item)));
+                        });
+                    break;
+                    default:
+                        _self.userInfoItemName("");
+                }          
             }
         }
         

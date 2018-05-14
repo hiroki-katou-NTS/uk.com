@@ -4,6 +4,7 @@ module nts.uk.com.view.cmm048.a {
     import PasswordPolicyDto = nts.uk.com.view.cmm048.a.model.PasswordPolicyDto;
     import ComplexityDto = nts.uk.com.view.cmm048.a.model.ComplexityDto;
     import UseContactSettingDto = nts.uk.com.view.cmm048.a.model.UseContactSettingDto;
+    import MailNoticeSetSaveCommand = nts.uk.com.view.cmm048.a.model.MailNoticeSetSaveCommand;
     
     export module viewmodel {
 
@@ -43,6 +44,12 @@ module nts.uk.com.view.cmm048.a {
 //                    })
 //                    dfd.resolve();
 //                })
+            
+                // Jump to CCG008 in case of error
+//                nts.uk.ui.dialog.alertError({ messageId: null }).then(() => {
+//                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+//                });
+                
                 
                 dfd.resolve();
                 return dfd.promise();
@@ -59,9 +66,46 @@ module nts.uk.com.view.cmm048.a {
              * Save
              */
             public save() {
+                let _self = this;
                 
+                nts.uk.ui.block.grayout();
+                let command: MailNoticeSetSaveCommand = {
+                    isPasswordUpdate: _self.tab1Visible(),
+                    isContactUpdate: _self.tab2Visible(),
+                    password: "",
+                    employeeInfoContact: _self.mainModel.employeeInfoContact.toDto(),
+                    personContact: _self.mainModel.personContact.toDto(),
+                    listUseContactSetting: _.map(_self.mainModel.listUseContactSetting, item => item.toDto())
+                }
+                service.save(command)
+                    .done((res) => {
+                        nts.uk.ui.block.clear();
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_15' });                       
+                    })
+                    .fail((err) => {
+                        nts.uk.ui.block.clear();
+                        _self.showMessageError(err);
+                    });
             }
             
+            /**
+             * showMessageError
+             */
+            public showMessageError(res: any) {
+                let dfd = $.Deferred<any>();
+                
+                // check error business exception
+                if (!res.businessException) {
+                    return;
+                }
+                
+                // show error message
+                if (Array.isArray(res.errors)) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                }
+            }
         }
         
         export class MainModel {
@@ -111,6 +155,17 @@ module nts.uk.com.view.cmm048.a {
                 _self.mobileMailAddress = ko.observable("emp@mobilemail.com");
                 _self.cellPhoneNo = ko.observable("080-XXXX-XXXX");
             }
+            
+            toDto(): EmployeeInfoContactDto {
+                let _self = this;
+                let dto: EmployeeInfoContactDto = {
+                    employeeId: _self.employeeId(),
+                    mailAddress: _self.mailAddress(),
+                    mobileMailAddress: _self.mobileMailAddress(),
+                    cellPhoneNo: _self.cellPhoneNo()
+                };
+                return dto;
+            }
         }
         
         export class PersonContactModel {
@@ -125,6 +180,17 @@ module nts.uk.com.view.cmm048.a {
                 _self.mailAddress = ko.observable("person@pcmail.com");
                 _self.mobileMailAddress = ko.observable("person@mobilemail.com");
                 _self.cellPhoneNo = ko.observable("090-XXXX-XXXX");
+            }
+            
+            toDto(): PersonContactDto {
+                let _self = this;
+                let dto: PersonContactDto = {
+                    personId: _self.personId(),
+                    mailAddress: _self.mailAddress(),
+                    mobileMailAddress: _self.mobileMailAddress(),
+                    cellPhoneNo: _self.cellPhoneNo()
+                };
+                return dto;
             }
         }
         
@@ -280,6 +346,16 @@ module nts.uk.com.view.cmm048.a {
                 _self.employeeId(dto.employeeId);
                 _self.settingItem(dto.settingItem);
                 _self.useMailSetting(dto.useMailSetting);
+            }
+            
+            toDto(): UseContactSettingDto {
+                let _self = this;
+                let dto: UseContactSettingDto = {
+                    employeeId: _self.employeeId(),
+                    settingItem: _self.settingItem(),
+                    useMailSetting: _self.useMailSetting()
+                };
+                return dto;
             }
         }
     }

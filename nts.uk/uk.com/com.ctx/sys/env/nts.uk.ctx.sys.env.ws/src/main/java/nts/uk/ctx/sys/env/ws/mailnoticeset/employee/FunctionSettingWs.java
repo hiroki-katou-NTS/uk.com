@@ -20,7 +20,7 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
 /**
  * The Class FunctionSettingWs.
  */
-@Path("sys/env/userinfo")
+@Path("sys/env/mailnoticeset/userinfo")
 @Produces(MediaType.APPLICATION_JSON)
 public class FunctionSettingWs extends WebService {
 

@@ -32,18 +32,18 @@
 					<div class="tab-outline">
 						<div class="tab-rows">
 							<div style="width: 100px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CMM048_45')}</div>
-							<div style="width: auto;" class="label" data-bind="text: userInfoItemName"></div>
+							<div style="width: auto;" class="label" data-bind="text: mainModel.userInfoItemName"></div>
 						</div>
 						<div class="tab-rows">
 							<table id="single-list" data-bind="ntsGridList: {								
 								name: '#[CMM048_51]',
 								height: 300,
-								dataSource: items,
+								dataSource: mainModel.listFunctionSetting,
 								optionsValue: 'functionId',
 								columns: columnSetting,
 								enable: false,
 								multiple: false,
-								value: selectedItem,
+								value: mainModel.selectedItem,
 								rows: 10
 							}"></table>
 						</div>

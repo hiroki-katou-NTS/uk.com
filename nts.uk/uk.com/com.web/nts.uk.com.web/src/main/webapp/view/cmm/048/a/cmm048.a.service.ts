@@ -3,11 +3,17 @@ module nts.uk.com.view.cmm048.a {
     export module service {
         
         let servicePath: any = {
+            getData: "",
             getAllEnum: "sys/env/userinfoset/getAllEnum",
+            save: "sys/env/mailnoticeset/save"
         }
 
         export function getAllEnum(): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.getAllEnum);
+        }
+        
+        export function save(command: model.MailNoticeSetSaveCommand): JQueryPromise<void> {
+            return nts.uk.request.ajax(servicePath.save, command);
         }
         
     }
@@ -19,7 +25,7 @@ module nts.uk.com.view.cmm048.a {
             employeeInfoContact: EmployeeInfoContactDto;
             personContact: PersonContactDto;
             passwordPolicy: PasswordPolicyDto;
-            listUserInfoUseMethod: Array<PasswordPolicyDto>;
+            listUserInfoUseMethod: Array<UserInfoUseMethodDto>;
             listUseContactSettingDto: Array<UseContactSettingDto>;
         }
         
@@ -67,6 +73,15 @@ module nts.uk.com.view.cmm048.a {
             employeeId: string;
             settingItem: number;
             useMailSetting: boolean;
+        }
+        
+        export interface MailNoticeSetSaveCommand {     
+            isPasswordUpdate: boolean;
+            isContactUpdate: boolean;
+            password: string;    
+            employeeInfoContact: EmployeeInfoContactDto;
+            personContact: PersonContactDto;
+            listUseContactSetting: Array<UserInfoUseMethodDto>;
         }
     }
 }

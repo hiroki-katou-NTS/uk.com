@@ -21,7 +21,7 @@ public class UseContactSettingDto implements UseContactSettingSetMemento {
 
 	/** The use mail setting. */
 	// メール利用設定
-	public boolean useMailSetting;
+	public Boolean useMailSetting;
 
 	/*
 	 * (non-Javadoc)

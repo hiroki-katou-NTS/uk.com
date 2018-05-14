@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.sys.env.dom.mailnoticeset.company;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Enum SettingUseSendMail.
  */
