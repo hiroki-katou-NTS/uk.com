@@ -86,7 +86,7 @@ module nts.uk.ui.koExtentions {
             var buttons: any = ko.unwrap(option.buttons);
 
             var self = nts.uk.ui.windows.getSelf();
-            var id = 'ntsErrorDialog_';// + self.id;
+            var id = 'ntsErrorDialog_' + self.id;
             var $dialog = $("<div>", { "id": id });
             PS.$('body').append($dialog);
             // Create Buttons
@@ -147,21 +147,23 @@ module nts.uk.ui.koExtentions {
             var autoclose: boolean = ko.unwrap(option.autoclose);
             var show: boolean = ko.unwrap(option.show);
             var self = nts.uk.ui.windows.getSelf();
-
-            var id = 'ntsErrorDialog_';// + self.id;
+            if(nts.uk.util.isNullOrUndefined(self)){
+                return;    
+            }
+            var id = 'ntsErrorDialog_' + self.id;
             var $dialog;
-//            if (self.isRoot) {
+            if (self.isRoot) {
                 $dialog = PS.$("#" + id);
-//            } else {
-//                while (!nts.uk.util.isNullOrUndefined(self)) {
-//                    if (self.isRoot) {
-//                        self = null;
-//                        $dialog = $((nts.uk.ui.windows.getSelf().parent.globalContext.document).getElementById(id));
-//                    } else {
-//                        self = self.parent;
-//                    }
-//                }
-//            }
+            } else {
+                while (!nts.uk.util.isNullOrUndefined(self)) {
+                    if (self.isRoot) {
+                        self = null;
+                        $dialog = $((nts.uk.ui.windows.getSelf().parent.globalContext.document).getElementById(id));
+                    } else {
+                        self = self.parent;
+                    }
+                }
+            }
 
             if (show == true) {
                 // Create Error Table
