@@ -329,6 +329,12 @@ module nts.uk.at.view.kmf004.b {
                     }
                 }
                 
+                if(self.provisionCheck()) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1219" });
+                    nts.uk.ui.block.clear();
+                    return;
+                }
+                
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     service.removePer(self.specialHolidayCode(), self.code()).done(function() {
                         self.getData().done(function(){
