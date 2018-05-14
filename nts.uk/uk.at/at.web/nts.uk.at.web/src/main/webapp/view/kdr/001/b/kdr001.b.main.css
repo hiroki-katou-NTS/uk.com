@@ -39,10 +39,6 @@
 
 .ntsCheckBox{
 	width: 150px;
-	display: inline-block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 .multicheckbox-wrapper label{
 	margin-right: 5px;
@@ -51,4 +47,7 @@
 .holiday-button{
 	margin-left: 50px;
 	height: 50px;
+}
+.label-checkbox{
+	width: 50px;
 }
