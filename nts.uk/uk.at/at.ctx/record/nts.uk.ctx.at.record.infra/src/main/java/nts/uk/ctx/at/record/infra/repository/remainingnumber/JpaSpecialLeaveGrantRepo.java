@@ -103,7 +103,6 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 		// data.getDetails().getUsedNumber().getUseSavingDays().isPresent()
 		// ? data.getDetails().getUsedNumber().getUseSavingDays().get().v()
 		// : 0;
-		entity.useSavingDays = null;
 		
 		// Over
 		if (data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().isPresent()) {
@@ -157,7 +156,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 		// data.getDetails().getUsedNumber().getUseSavingDays().isPresent()
 		// ? data.getDetails().getUsedNumber().getUseSavingDays().get().v()
 		// : 0;
-		entity.useSavingDays = null;
+		entity.useSavingDays = 0d;
 		// Over
 		if (data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().isPresent()) {
 			entity.numberOverDays = data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get()
