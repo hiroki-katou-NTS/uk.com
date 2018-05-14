@@ -302,10 +302,10 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                         else if(count > 0 && count < self.lstPer().length){
                             self.selectedCode(ko.toJS(self.lstPer()[count].yearServiceCode));    
                             return;
-                        }
-                        
-                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                        }                        
                     });
+                    
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error.message);
                 });
