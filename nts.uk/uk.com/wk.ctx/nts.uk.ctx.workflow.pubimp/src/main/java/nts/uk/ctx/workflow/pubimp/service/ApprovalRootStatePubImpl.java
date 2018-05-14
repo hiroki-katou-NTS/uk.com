@@ -358,19 +358,6 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		long start = System.currentTimeMillis();
 		List<ApprovalRootState> resultApprovalRootState = this.approvalRootStateRepository.findByApprover(companyID, startDate, endDate, approverID, rootType);
 		approvalRootStates.addAll(resultApprovalRootState);
-		/*if(!CollectionUtil.isEmpty(resultApprovalRootState)){
-			for(ApprovalRootState approvalRootState : resultApprovalRootState){
-				for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
-					for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()){
-						for(ApproverState approverState : approvalFrame.getListApproverState()){
-							if(approverState.getApproverID().equals(approverID)){
-								approvalRootStates.add(approvalRootState);
-							}
-						}
-					}
-				}
-			}
-		}	*/
 		long end = System.currentTimeMillis();
 		System.out.println("Thời gian chạy đoạn lệnh: " + (end - start) + "Millis");
 		// ドメインモデル「代行承認」を取得する
@@ -382,22 +369,6 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 			for(Agent agent : agents){
 				// ドメインモデル「承認ルートインスタンス」を取得する
 				employeeApproverID.add(agent.getEmployeeId());
-				if(!CollectionUtil.isEmpty(resultApprovalRootState)){
-					for(ApprovalRootState approvalRootState : resultApprovalRootState){
-						if(approvalRootState.getApprovalRecordDate().afterOrEquals(agent.getStartDate()) && approvalRootState.getApprovalRecordDate().beforeOrEquals(agent.getEndDate())){
-							for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
-								for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()){
-									for(ApproverState approverState : approvalFrame.getListApproverState()){
-										if(approverState.getApproverID().equals(agent.getEmployeeId())){
-											approvalRootStates.add(approvalRootState);
-										}
-									}
-								}
-							}
-						}
-						
-					}
-				}
 			}
 		}
 		long end1 = System.currentTimeMillis();

@@ -60,8 +60,6 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	private static final String SELECT_APP_BY_EMP_DATE;
 	private static final String SELECT_CF_DAY_BY_EMP_DATE;
 	private static final String SELECT_CF_MONTH_BY_EMP_DATE;
-
-	private static final String SELECT_BY_DATE_AND_TYPE;
 	
 	private static final String SELECT_BY_LIST_EMP_DATE;
 	
@@ -159,13 +157,6 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString.append(" AND e.rootType = :rootType");
 		builderString.append(" AND e.employeeID IN :employeeID");
 		SELECT_BY_LIST_EMP_DATE = builderString.toString();
-		
-		builderString = new StringBuilder();
-		builderString.append("SELECT e");
-		builderString.append(" FROM WwfdtApprovalRootState e");
-		builderString.append(" WHERE e.recordDate = :recordDate");
-		builderString.append(" AND e.rootType = :rootType");
-		SELECT_BY_DATE_AND_TYPE = builderString.toString();
 		
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
@@ -484,10 +475,20 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 
 	@Override
 	public List<ApprovalRootState> getRootStateByDateAndType(GeneralDate date, Integer rootType) {
-		return this.queryProxy().query(SELECT_BY_DATE_AND_TYPE, WwfdtApprovalRootState.class)
-				.setParameter("recordDate", date)
-				.setParameter("rootType", rootType)
-				.getList(x -> x.toDomain());
+		switch (rootType) {
+		case 1:
+			return this.queryProxy().query(SELECT_CF_DAY_BY_EMP_DATE, WwfdtApprovalRootDay.class)
+					.setParameter("startDate", date)
+					.setParameter("endDate", date).getList(x -> x.toDomain());
+		case 2:
+			return this.queryProxy().query(SELECT_CF_MONTH_BY_EMP_DATE, WwfdtApprovalRootMonth.class)
+					.setParameter("startDate", date)
+					.setParameter("endDate", date).getList(x -> x.toDomain());
+		default:
+			return this.queryProxy().query(SELECT_APP_BY_EMP_DATE, WwfdtApprovalRootState.class)
+					.setParameter("startDate", date)
+					.setParameter("endDate", date).getList(x -> x.toDomain());
+		}
 	}
 
 	@Override
