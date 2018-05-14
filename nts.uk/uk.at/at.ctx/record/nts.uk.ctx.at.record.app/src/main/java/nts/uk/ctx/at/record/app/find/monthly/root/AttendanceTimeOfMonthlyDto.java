@@ -84,7 +84,7 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 		if(domain != null) {
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYm(domain.getYearMonth());
-			dto.setClosureID(domain.getClosureId() == null ? 0 : domain.getClosureId().value);
+			dto.setClosureID(domain.getClosureId() == null ? 1 : domain.getClosureId().value);
 			dto.setClosureDate(domain.getClosureDate() == null ? null 
 					: new ClosureDateDto(domain.getClosureDate().getClosureDay().v(), domain.getClosureDate().getLastDayOfMonth()));
 			dto.setDatePeriod(domain.getDatePeriod() == null ? null 
