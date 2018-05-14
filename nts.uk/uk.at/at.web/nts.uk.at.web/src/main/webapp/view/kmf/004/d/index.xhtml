@@ -27,11 +27,11 @@
 			<!-- BEGIN FUNCTION AREA-->
 			<div id="functions-area">
 				<!-- E1_1: Button New -->
-				<button tabindex="1" id="btn_001" class="button separate-button fix-button"  data-bind="enable: lstPer().length>0, click: newMode">#{i18n.getText('KMF004_1')}</button>
+				<button tabindex="1" id="btn_001" class="button separate-button fix-button"  data-bind="enable: !editMode(), click: newMode">#{i18n.getText('KMF004_1')}</button>
 				<!-- E1_2: Button Registration -->
 				<button tabindex="2" id="btn_002" class="button proceed separate-button fix-button" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KMF004_2')}</button>
 				<!-- E1_3: Button Delete -->
-				<button tabindex="3" id="btn_004" class="button danger separate-button fix-button" data-bind="enable: lstPer().length>0, click: remove" >#{i18n.getText('KMF004_3')}</button>
+				<button tabindex="3" id="btn_004" class="button danger separate-button fix-button" data-bind="enable: !editMode(), click: remove" >#{i18n.getText('KMF004_3')}</button>
 				<!-- E1_1: Button New -->
 				<button tabindex="4" id="btn_005" class="button separate-button fix-button"  data-bind="click: closeDialog">#{i18n.getText('KMF004_4')}</button>
 			</div>

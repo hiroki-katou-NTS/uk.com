@@ -24,6 +24,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         // year month date
         items: KnockoutObservableArray<Item>;
         provisionCheck: KnockoutObservable<boolean>;
+        editMode: KnockoutObservable<boolean>;
         
         constructor() {
             let self = this;
@@ -46,6 +47,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             self.checkUpdate = ko.observable(false);
             self.display = ko.observable(false);
             self.items = ko.observableArray([]);
+            self.editMode = ko.observable(true);  
             self.selectedCode.subscribe((code) => {   
                 if (code) {
                     let foundItem: Per = _.find(self.lstPer(), (item: Per) => {
@@ -75,6 +77,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     self.codeObject(ko.toJS(self.selectedOption().yearServiceCode));
                     self.check(false);
                     self.provisionCheck(self.selectedOption().provision == 1 ? true : false);
+                    self.editMode(false);
                     nts.uk.ui.errors.clearAll();   
                 }
             });
@@ -250,6 +253,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             self.items([]);
             self.provisionCheck(false);
             self.selectedId(0);
+            self.editMode(true);  
             
             for (let i = 0; i < 20; i++) {
                     let t : item = {
