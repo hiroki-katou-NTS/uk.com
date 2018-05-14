@@ -901,29 +901,25 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 // Load KCP05 on tab 3
-                if (true) {
-                    const Kcp005MarginHeight = 240;
+                const Kcp005MarginHeight = 255;
 
-                    self.tab3kcp005option = {
-                        isShowAlreadySet: false,
-                        maxWidth: 400,
-                        isMultiSelect: self.isMultiple,
-                        isMultipleUse: true,
-                        listType: ListType.EMPLOYEE,
-                        employeeInputList: self.tab3ds,
-                        selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                        selectedCode: self.tab3SelectedValues,
-                        isDialog: true,
-                        isShowNoSelectRow: false,
-                        isShowWorkPlaceName: true,
-                        maxRows: self.calculateKcp005Rows(Kcp005MarginHeight),
-                    }
-
-                    // Show KCP005
-                    $('#tab3kcp005').ntsListComponent(self.tab3kcp005option).done(() => dfd.resolve());
-                } else {
-                    dfd.resolve();
+                self.tab3kcp005option = {
+                    isShowAlreadySet: false,
+                    maxWidth: 400,
+                    isMultiSelect: self.isMultiple,
+                    isMultipleUse: true,
+                    listType: ListType.EMPLOYEE,
+                    employeeInputList: self.tab3ds,
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    selectedCode: self.tab3SelectedValues,
+                    isDialog: true,
+                    isShowNoSelectRow: false,
+                    isShowWorkPlaceName: true,
+                    maxRows: self.calculateKcp005Rows(Kcp005MarginHeight),
                 }
+
+                // Show KCP005
+                $('#tab3kcp005').ntsListComponent(self.tab3kcp005option).done(() => dfd.resolve());
                 return dfd.promise();
             }
 
