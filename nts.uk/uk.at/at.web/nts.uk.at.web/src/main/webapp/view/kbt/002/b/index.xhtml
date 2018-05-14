@@ -182,7 +182,7 @@
 														<div tabindex="-1" data-bind="ntsCheckBox: { checked: recreateTransfer, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 }">#{i18n.getText('KBT002_32')}</div>
 														<div tabindex="-1" data-bind="ntsCheckBox: { checked: createEmployee, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 }">#{i18n.getText('KBT002_33')}</div>
 														<div tabindex="-1" data-bind="ntsCheckBox: { checked: recreateWorkType, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 }">#{i18n.getText('KBT002_149')}</div>
-														<div tabindex="-1" data-bind="ntsCheckBox: { checked: manualCorrection, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 &amp;&amp; recreateTransfer() &amp;&amp; manualCorrection() }">#{i18n.getText('KBT002_34')}</div>
+														<div tabindex="-1" data-bind="ntsCheckBox: { checked: manualCorrection, enable: perScheduleCls() &amp;&amp; creationTarget() == 1 &amp;&amp; recreateTransfer() &amp;&amp; recreateWorkType() }">#{i18n.getText('KBT002_34')}</div>
 													</div>
 		                         				</div>
 		                         			</div>
@@ -211,7 +211,7 @@
 		                         			</div>
 		                         		</div>
 		                         		<!-- 更新処理の日別処理対象者区分  -->
-											<div class="execSetting"
+											<div class="execSetting" style="margin-left: 25px;" 
 												data-bind="ntsRadioBoxGroup: {
 											options: $parent.targetGroupClass,
 											optionsValue: 'targetId',
