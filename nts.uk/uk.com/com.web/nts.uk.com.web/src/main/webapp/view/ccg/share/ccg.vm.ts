@@ -1534,6 +1534,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.quickSearchEmployee();
             }
 
+            /**
+             * Search employee by code
+             */
             public searchByCode(): void {
                 let self = this;
                 $('#ccg001-inp-code').ntsEditor('validate');
@@ -1542,8 +1545,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
                 const query = {
                     code: self.inputCodeTab3(),
-                    useClosure: false,
-                    systemType: 1,
+                    useClosure: self.showClosure,
+                    systemType: self.systemType,
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate()
                 };
                 service.searchByCode(query).done(data => {
@@ -1551,6 +1554,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 });
             }
 
+            /**
+             * Search employee by name
+             */
             public searchByName(): void {
                 let self = this;
                 $('#ccg001-inp-name').ntsEditor('validate');
@@ -1559,8 +1565,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
                 const query = {
                     name: self.inputNameTab3(),
-                    useClosure: false,
-                    systemType: 1,
+                    useClosure: self.showClosure,
+                    systemType: self.systemType,
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate()
                 };
                 service.searchByName(query).done(data => {
@@ -1568,6 +1574,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 });
             }
 
+            /**
+             * Search employee by entry date
+             */
             public searchByEntryDate(): void {
                 let self = this;
                 $('#ccg001-date-entry').ntsEditor('validate');
@@ -1575,8 +1584,8 @@ module nts.uk.com.view.ccg.share.ccg {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_1201' });
                 }
                 const query = {
-                    useClosure: false,
-                    systemType: 1,
+                    useClosure: self.showClosure,
+                    systemType: self.systemType,
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate(),
                     period: self.toPeriodDto(self.entryDateTab3())
                 };
@@ -1585,6 +1594,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 });
             }
 
+            /**
+             * Search employee by retirement date
+             */
             public searchByRetirementDate(): void {
                 let self = this;
                 $('#ccg001-date-retirement').ntsEditor('validate');
@@ -1592,8 +1604,8 @@ module nts.uk.com.view.ccg.share.ccg {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_1201' });
                 }
                 const query = {
-                    useClosure: false,
-                    systemType: 1,
+                    useClosure: self.showClosure,
+                    systemType: self.systemType,
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate(),
                     period: self.toPeriodDto(self.retirementDateTab3())
                 };
@@ -1602,6 +1614,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 });
             }
 
+            /**
+             * Convert period in dateRangePicker to period dto
+             */
             private toPeriodDto(period: any): any {
                 return {
                     startDate: new Date(period.startDate),
