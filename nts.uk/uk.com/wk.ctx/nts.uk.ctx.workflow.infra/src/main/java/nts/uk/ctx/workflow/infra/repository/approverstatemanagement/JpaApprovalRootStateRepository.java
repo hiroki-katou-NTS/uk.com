@@ -531,17 +531,17 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 			List<String> employeeIDs, Integer rootType) {
 		switch (rootType) {
 		case 1:
-			return this.queryProxy().query(SELECT_CFS_DAY_BY_EMP_AND_DATES, WwfdtApprovalRootDay.class)
+			return this.queryProxy().query(SELECT_CF_DAY_BY_DATE, WwfdtApprovalRootDay.class)
 				.setParameter("recordDate", approvalRecordDates)
 				.setParameter("employeeID", employeeIDs)
 				.getList(x -> x.toDomain());
 		case 2:
-			return this.queryProxy().query(SELECT_CFS_MONTH_BY_EMP_AND_DATES, WwfdtApprovalRootMonth.class)
+			return this.queryProxy().query(SELECT_CF_MONTH_BY_DATE, WwfdtApprovalRootMonth.class)
 					.setParameter("recordDate", approvalRecordDates)
 					.setParameter("employeeID", employeeIDs)
 					.getList(x -> x.toDomain());
 		default:
-			return this.queryProxy().query(SELECT_APPS_BY_EMP_AND_DATES, WwfdtApprovalRootState.class)
+			return this.queryProxy().query(SELECT_APP_BY_DATE, WwfdtApprovalRootState.class)
 					.setParameter("recordDate", approvalRecordDates)
 					.setParameter("employeeID", employeeIDs)
 					.getList(x -> x.toDomain());
