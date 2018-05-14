@@ -36,6 +36,8 @@
 					nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode
 					nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode
 					nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode
+					nts.uk.shr.com.primitive.sample.SampleTimeDuration
+					nts.uk.shr.com.primitive.sample.CommonAmount
 		    </com:ValidatorScript>
 		</ui:define>
 
@@ -201,7 +203,7 @@
 									<td class="ui-widget-body"><span class="text-holiday">
 											<input style="width: 55px"
 											data-bind="ntsNumberEditor: { 
-														name:'Deci', 
+														name: fst.nameNoOfHolidays, 
 														value: fst.noOfHolidays, 
 														constraint: 'CommonAmount', 
 														option:  optionNoOfHolidays, 
@@ -214,7 +216,7 @@
 									<td class="ui-widget-body"><span class="text-holiday">
 											<input style="width: 55px"
 											data-bind="ntsTimeEditor: {
-														name: 'Duration', 
+														name: fst.nameAbsentDeductionTime, 
 														constraint: 'SampleTimeDuration', 
 														value: fst.absentDeductionTime, 
 														inputFormat: 'time', 

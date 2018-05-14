@@ -153,11 +153,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         initScreenSPR: any = 0;
         showDateRange: KnockoutObservable<any> = ko.observable(true);
         flexShortage: KnockoutObservable<FlexShortage> = ko.observable(new FlexShortage(null, null, null));
-        optionNoOfHolidays: any = ko.mapping.fromJS({
-            width: "50",
-            grouplength: 3,
-            decimallength: 2
-        })
+        optionNoOfHolidays: any = { width: "70",
+                    grouplength: 3,
+                    unitID: 'DAYS'}
         calcFlex: KnockoutObservable<CalcFlex> = ko.observable(null);
         showFlex: KnockoutObservable<any> = ko.observable(false);
         breakTimeDay: KnockoutObservable<BreakTimeDay> = ko.observable(null);
@@ -2718,11 +2716,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         shortageTime: KnockoutObservable<any> = ko.observable();
         nextMonthTransferredMoneyTime: KnockoutObservable<string> = ko.observable("");
         noOfHolidays: KnockoutObservable<any> = ko.observable();
+        nameNoOfHolidays:any;
         absentDeductionTime: KnockoutObservable<any> = ko.observable();
+        nameAbsentDeductionTime: any;
 
         constructor(parent: any, dataCalc: CalcFlex, breakTimeDay: BreakTimeDay) {
             let self = this;
-
+            this.nameNoOfHolidays = nts.uk.resource.getText('Com_PaidHoliday');
+            this.nameAbsentDeductionTime = nts.uk.resource.getText('KDW003_79');
             self.noOfHolidays.subscribe(val => {
                 let parent = ko.toJS(__viewContext.vm);
 
@@ -2747,7 +2748,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 val21 = dataCalc.value21,
                 val189 = dataCalc.value189,
                 val190 = dataCalc.value190,
-                val191 = dataCalc.value191;
+                val191 = dataCalc.value191; 
 
             self.shortageTime(nts.uk.resource.getText("KDW003_89", [self.convertToHours((Number(val191) + Number(val21)) * (-1)), self.convertToHours(Number(val21) * (-1))]));
             //self.nextMonthTransferredMoneyTime(self.convertToHours(Number(val18) * (-1)));
