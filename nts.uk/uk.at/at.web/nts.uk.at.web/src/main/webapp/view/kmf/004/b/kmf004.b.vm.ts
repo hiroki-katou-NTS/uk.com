@@ -356,7 +356,7 @@ module nts.uk.at.view.kmf004.b {
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         });
                     }).fail(function(error) {
-                        nts.uk.ui.dialog.alertError(error.message);
+                        nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                     }).always(function() {
                         nts.uk.ui.block.clear();      
                     });
