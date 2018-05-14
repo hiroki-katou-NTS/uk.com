@@ -41,11 +41,10 @@ module nts.uk.com.view.cmf003.f {
                 let self = this;
                 var params =  nts.uk.ui.windows.getShared("CMF001_E_PARAMS");
                 
-                self.startTime = moment.utc();
+                self.timeStart = new Date();
                 self.timeOver = ko.observable('00:00:00');
                 self.dataStorageMng = ko.observable({});
-                //self.storeProcessingId = params.storeProcessingId;
-                self.storeProcessingId = "111111111111111111111111111111111116";
+                self.storeProcessingId = params.storeProcessingId;
                 self.dataSaveSetName = params.dataSaveSetName;
                 self.dayStartValue = moment.utc(params.dayValue.startDate, 'YYYY/MM/DD').format("YYYY/MM/DD");
                 self.dayEndValue = moment.utc(params.dayValue.endDate, 'YYYY/MM/DD').format("YYYY/MM/DD");
@@ -68,7 +67,7 @@ module nts.uk.com.view.cmf003.f {
                 dfd = $.Deferred();
 
                 //データ保存監視処理: 
-                self.interval = setInterval(self.confirmProcess(), 1000);
+                self.interval = setInterval(self.confirmProcess, 1000, self);
                 
                 dfd.resolve();
                 return dfd.promise();
@@ -77,14 +76,15 @@ module nts.uk.com.view.cmf003.f {
             /**
             * confirm process after 1s
             */
-            public confirmProcess(): void {
+            public confirmProcess(self): void {
                 let storeProcessingId = self.storeProcessingId;
+                
                 service.findDataStorageMng(storeProcessingId).done(function(res: any) {
                     var storageMng = res;
                     
                     // F1_6 set time over 
                     var timeNow = new Date();
-                    let over = (self.timeNow.getSeconds()+self.timeNow.getMinutes()*60+ self.timeNow.getHours()*60) - (self.timeStart.getSeconds()+self.timeStart.getMinutes()*60+ self.timeStart.getHours()*60);
+                    let over = (timeNow.getSeconds()+timeNow.getMinutes()*60+ timeNow.getHours()*60*60) - (self.timeStart.getSeconds()+self.timeStart.getMinutes()*60+ self.timeStart.getHours()*60*60);
                     let time = new Date(null);
                     time.setSeconds(over); // specify value for SECONDS here
                     let result = time.toISOString().substr(11, 8);
@@ -102,11 +102,6 @@ module nts.uk.com.view.cmf003.f {
                         // stop auto request to server
                         clearInterval(self.interval);
                         
-                        // end: update dialog to Error/Interrupt mode
-                        if((storageMng.operatingCondition == 5) || (storageMng.operatingCondition == 6)) {
-                            self.dialogMode("error_interrupt");
-                        }
-                        
                         // end: update dialog to complete mode
                         if(storageMng.operatingCondition == 4) {
                             self.dialogMode("done");
@@ -117,7 +112,7 @@ module nts.uk.com.view.cmf003.f {
                                 service.findResultOfSaving(storeProcessingId).done(function(res: any) {
                                     //TODO download by file id 
                                 }).fail(function(res: any) {
-                                    console.log(res);
+                                    console.log("Get fileId fail");
                                 });                            
                             })
                             .ifNo(() => {
@@ -125,30 +120,35 @@ module nts.uk.com.view.cmf003.f {
                             });
                         }
                         
+                        // end: update dialog to Error/Interrupt mode
+                        if((storageMng.operatingCondition == 5) || (storageMng.operatingCondition == 6)) {
+                            self.dialogMode("error_interrupt");
+                        }
+                        
                         // delete dataStorageMng of process when end
                         let dataStorageMng = new DataStorageMng(storeProcessingId, 0, 0, 0, 0, 0);
                         service.deleteDataStorageMng(dataStorageMng).done(function(res: any) {
-                            console.log(res);
+                            console.log("delete cuccess");
                         }).fail(function(res: any) {
-                            console.log(res);
+                            console.log("delete fails");
                         });
                     }
                 }).fail(function(res: any) {
-                    console.log(res);
+                    console.log("findDataStorageMng fail");
                 });
             }
             
             // interrupt process when click button
             public interrupt(): void {
                 let self = this;
-                let dataStorageMng = new DataStorageMng(self.storeProcessingId, 1, 0, 0, 0, 5);
+                let dataStorageMng = new DataStorageMng(self.storeProcessingId, 1, self.categoryCount(), self.categoryTotalCount(), self.errorCount(), 5);
                 
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_387" })
                 .ifYes(() => {
                     service.setInterruptSaving(dataStorageMng).done(function(res: any) {
-                        console.log(res);
+                        console.log("interrupt cuccess");
                     }).fail(function(res: any) {
-                        console.log(res);
+                        console.log("interrupt fail");
                     });
                 })
                 .ifNo(() => {
@@ -163,12 +163,17 @@ module nts.uk.com.view.cmf003.f {
                     service.findResultOfSaving(self.storeProcessingId).done(function(res: any) {
                         //TODO download by file id 
                     }).fail(function(res: any) {
-                        console.log(res);
+                        console.log("Get fileId fail");
                     });
                 })
                 .ifNo(() => {
                     return;
                 });
+            }
+            
+            // close popup
+            public close(): void {
+                 nts.uk.ui.windows.close();
             }
         }
         
