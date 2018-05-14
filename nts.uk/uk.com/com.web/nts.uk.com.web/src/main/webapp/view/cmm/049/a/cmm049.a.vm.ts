@@ -79,6 +79,7 @@ module nts.uk.com.view.cmm049.a {
             public startPage(): JQueryPromise<any> {
                 let _self = this;
                 let dfd = $.Deferred<any>();
+                nts.uk.ui.block.invisible();
                 $.when(service.getAllEnum(), service.findUserinfoUseMethod()).done((dataEnums: any, dataUserinfoUseMethod: any) => {
                     //bind enums
                     _self.enums = dataEnums
@@ -87,7 +88,12 @@ module nts.uk.com.view.cmm049.a {
                     //bind data to screen
                     _self.bindToScreen(dataUserinfoUseMethod);
                     dfd.resolve();
-                })
+                }).fail((res: any) => {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => {
+                        nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                    });
+                    dfd.reject();
+                }).always(() => nts.uk.ui.block.clear());
                 return dfd.promise();
             }
 
