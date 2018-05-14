@@ -85,6 +85,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             }).fail(() => {
                 dfd.reject();    
             });
+            return dfd.promise();
         }
 
 

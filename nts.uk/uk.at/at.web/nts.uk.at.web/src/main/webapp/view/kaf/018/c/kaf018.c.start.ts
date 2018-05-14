@@ -6,9 +6,11 @@ module nts.uk.at.view.kaf018.c {
         });
         let screenModel = new kaf018.c.viewmodel.ScreenModel();        
         screenModel.startPage().done(function(){
-            __viewContext.bind(screenModel);    
-            nts.uk.ui.block.clear(); 
-            $('#extable').focus();     
+            __viewContext.bind(screenModel);
+            nts.uk.ui.block.clear();
+            _.defer(() => {
+                $('#extable-box').focus();
+            });     
         })
     });
 }
