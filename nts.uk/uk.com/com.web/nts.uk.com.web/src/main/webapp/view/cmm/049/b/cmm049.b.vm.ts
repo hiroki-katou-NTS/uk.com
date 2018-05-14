@@ -126,45 +126,56 @@ module nts.uk.com.view.cmm049.b {
              * save
              */
             public save(): JQueryPromise<any> {
-            let self =this;
+                let self = this;
                 let dfd = $.Deferred<any>();
-            let listOfSendMailFunction: Array<SendMailFunction> = [];
-            self.listFunctionID.forEach((item) => {
-                self.currentCodeList().forEach(K => {
-                    if (item == K) {
-                        listOfSendMailFunction.push({
-                            functionId: item,
-                            sendSetting: 1
-                        });
-                    } else {
+                let listOfSendMailFunction: Array<SendMailFunction> = [];
+                self.listFunctionID.forEach((item) => {
+                    if (self.currentCodeList().length <= 0) {
                         listOfSendMailFunction.push({
                             functionId: item,
                             sendSetting: 0
                         });
                     }
-                })
-            });
-            let data = {
-                mailDestinationFunctionDto: {
-                    settingItem: self.settingItem,
-                    sendByFunctionSetting: listOfSendMailFunction
+                    else {
+                        let check = _.filter(self.currentCodeList(), function(o) { return o == item });
+                        if (check.length > 0) {
+                            listOfSendMailFunction.push({
+                                functionId: item,
+                                sendSetting: 1
+                            });
+                        }
+                        else {
+                            listOfSendMailFunction.push({
+                                functionId: item,
+                                sendSetting: 0
+                            });
+
+                        }
+                    }
+                });
+                let data = {
+                    mailDestinationFunctionDto: {
+                        settingItem: self.settingItem,
+                        sendByFunctionSetting: listOfSendMailFunction
+                    }
                 }
-            }
-            service.saveMailDestinationFunction(data).done(() => {
-                nts.uk.ui.windows.close();
-                dfd.resolve();
-            });
-            return dfd.promise();
+                service.saveMailDestinationFunction(data).done(() => {
+                    nts.uk.ui.windows.close();
+                    dfd.resolve();
+                });
+                return dfd.promise();
             }
 
             private checkAlgorthm(data: any) {
                 let self = this;
                 let listOfMailFunction: Array<any> = [];
-
+                data.mailFunctionDto.forEach((item: any, index: any) => {
+                    self.listFunctionID.push(item.functionId);
+                });
                 if (data.mailDestinationFunctionDto) {
                     data.mailFunctionDto.forEach((item: any, index: any) => {
                         listOfMailFunction.push(item.functionId);
-                            self.listFunctionID.push(item.functionId);
+
                     });
                     data.mailDestinationFunctionDto.sendByFunctionSetting.forEach((item: any, index: any) => {
                         if (item.sendSetting == 1) {
