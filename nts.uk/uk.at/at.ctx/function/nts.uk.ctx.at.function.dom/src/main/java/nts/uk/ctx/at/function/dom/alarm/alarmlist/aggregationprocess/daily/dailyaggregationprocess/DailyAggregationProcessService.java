@@ -97,10 +97,41 @@ public class DailyAggregationProcessService {
 		return listValueExtractAlarm;
 	}
 	
+	public List<ValueExtractAlarm> dailyAggregationProcess(String comId, String checkConditionCode, PeriodByAlarmCategory period, List<EmployeeSearchDto> employee,
+			DatePeriod datePeriod, List<String> employeeIds) {
+		
+		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>(); 		
+		
+		// ドメインモデル「カテゴリ別アラームチェック条件」を取得する
+		alCheckConByCategoryRepo.find(comId, AlarmCategory.DAILY.value, checkConditionCode).ifPresent(alCheckConByCategory -> {
+			// カテゴリアラームチェック条件．抽出条件を元に日次データをチェックする
+			DailyAlarmCondition dailyAlarmCondition = (DailyAlarmCondition) alCheckConByCategory.getExtractionCondition();
+
+			// tab2: 日別実績のエラーアラーム
+			listValueExtractAlarm.addAll(this.extractDailyRecord(dailyAlarmCondition, datePeriod, employee, comId, employeeIds));
+			
+			// tab3: チェック条件
+			listValueExtractAlarm.addAll(this.extractCheckCondition(dailyAlarmCondition, datePeriod, employee, comId, employeeIds));
+			
+			// tab4: 「システム固定のチェック項目」で実績をチェックする
+			List<ValueExtractAlarm> fixed = employee.stream().map(e -> this.extractFixedCondition(dailyAlarmCondition, period, e))
+					.flatMap(List::stream).collect(Collectors.toList());
+			listValueExtractAlarm.addAll(fixed);
+		});
+		
+		return listValueExtractAlarm;
+	}
+	
 	// tab2: 日別実績のエラーアラーム
 	private List<ValueExtractAlarm> extractDailyRecord(DailyAlarmCondition dailyAlarmCondition,
 			PeriodByAlarmCategory period, EmployeeSearchDto employee, String companyID) {
 		return dailyPerformanceService.aggregationProcess(dailyAlarmCondition, period, employee, companyID);
+	}
+	
+	// tab2: 日別実績のエラーアラーム
+	private List<ValueExtractAlarm> extractDailyRecord(DailyAlarmCondition dailyAlarmCondition,
+			DatePeriod period, List<EmployeeSearchDto> employee, String companyID, List<String> employeeIds) {
+		return dailyPerformanceService.aggregationProcess(dailyAlarmCondition, period, employeeIds, employee, companyID);
 	}
 	
 	// tab3: チェック条件
@@ -114,6 +145,24 @@ public class DailyAggregationProcessService {
 		for(ErrorRecordImport errorRecord : listErrorRecord) {
 			if(errorRecord.isError()) {
 				listValueExtractAlarm.add(this.checkConditionGenerateValue(employee, errorRecord.getDate(), mapWorkRecordExtraCon.get(errorRecord.getErAlId()), companyID));				
+			}			
+		}
+		
+		return listValueExtractAlarm;
+	}
+	
+	// tab3: チェック条件
+	private List<ValueExtractAlarm> extractCheckCondition(DailyAlarmCondition dailyAlarmCondition, DatePeriod period, 
+			List<EmployeeSearchDto> employee, String companyID, List<String> emIds) {
+		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>();
+		List<WorkRecordExtraConAdapterDto> listWorkRecordExtraCon=  workRecordExtraConAdapter.getAllWorkRecordExtraConByListID(dailyAlarmCondition.getExtractConditionWorkRecord());
+		Map<String, WorkRecordExtraConAdapterDto> mapWorkRecordExtraCon = listWorkRecordExtraCon.stream().collect(Collectors.toMap(WorkRecordExtraConAdapterDto::getErrorAlarmCheckID, x->x));
+		
+		List<ErrorRecordImport> listErrorRecord = erAlWorkRecordCheckAdapter.check(dailyAlarmCondition.getExtractConditionWorkRecord(), period, emIds);
+		for(ErrorRecordImport errorRecord : listErrorRecord) {
+			if(errorRecord.isError()) {
+				EmployeeSearchDto em = employee.stream().filter(e -> e.getId().equals(errorRecord.getEmployeeId())).findFirst().get();
+				listValueExtractAlarm.add(this.checkConditionGenerateValue(em, errorRecord.getDate(), mapWorkRecordExtraCon.get(errorRecord.getErAlId()), companyID));				
 			}			
 		}
 		

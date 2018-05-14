@@ -4,7 +4,10 @@ module nts.uk.at.view.kal001.a.service {
         var paths = {
             getAlarmByUser: "at/function/alarm/kal/001/pattern/setting",
             getCheckConditionTime: "at/function/alarm/kal/001/check/condition/time",
-            extractAlarm: "at/function/alarm/kal/001/extract/alarm"
+            extractAlarm: "at/function/alarm/kal/001/extract/alarm",
+            isExtracting: "at/function/alarm/kal/001/isextracting",
+            extractStarting: "at/function/alarm/kal/001/extractstarting",
+            extractFinished: "at/function/alarm/kal/001/extractfinished"
         }
         
         export function getAlarmByUser(): JQueryPromise<Array<any>> {
@@ -21,7 +24,19 @@ module nts.uk.at.view.kal001.a.service {
             
             return nts.uk.request.ajax("at", paths.extractAlarm, command);
         }
-           
+    
+        export function isExtracting(): JQueryPromise<boolean> {
+            return nts.uk.request.ajax("at", paths.isExtracting);
+        }        
+
+        export function extractStarting(): JQueryPromise<string> {                              
+              return nts.uk.request.ajax("at", paths.extractStarting);
+        }
+        
+        export function extractFinished(statusId): JQueryPromise<void>{
+            
+            return nts.uk.request.ajax("at", paths.extractFinished, { processStatusId: statusId });
+        }
     
         export interface CheckConditionTimeDto{
             category : number;

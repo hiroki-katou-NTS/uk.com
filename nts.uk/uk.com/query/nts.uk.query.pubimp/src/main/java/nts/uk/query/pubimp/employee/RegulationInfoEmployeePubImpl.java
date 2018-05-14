@@ -10,12 +10,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.query.model.employee.EmployeeSearchQuery;
-import nts.uk.query.model.employee.RegulationInfoEmployeeRepository;
+import nts.uk.query.app.employee.RegulationInfoEmpQueryDto;
+import nts.uk.query.app.employee.RegulationInfoEmployeeDto;
+import nts.uk.query.app.employee.RegulationInfoEmployeeFinder;
 import nts.uk.query.pub.employee.EmployeeSearchQueryDto;
 import nts.uk.query.pub.employee.RegulationInfoEmployeeExport;
 import nts.uk.query.pub.employee.RegulationInfoEmployeePub;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class RegulationInfoEmployeePubImpl.
@@ -23,9 +23,12 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class RegulationInfoEmployeePubImpl implements RegulationInfoEmployeePub {
 
-	/** The emp repo. */
+	/** The Constant GENERAL_DATE_FORMAT. */
+	private final static String GENERAL_DATE_FORMAT = "yyyy-MM-dd";
+
+	/** The emp finder. */
 	@Inject
-	private RegulationInfoEmployeeRepository empRepo;
+	private RegulationInfoEmployeeFinder empFinder;
 
 	/*
 	 * (non-Javadoc)
@@ -35,15 +38,15 @@ public class RegulationInfoEmployeePubImpl implements RegulationInfoEmployeePub 
 	 */
 	@Override
 	public List<RegulationInfoEmployeeExport> find(EmployeeSearchQueryDto query) {
-		return this.empRepo.find(AppContexts.user().companyId(), this.toQueryModel(query)).stream()
-				.map(model -> RegulationInfoEmployeeExport.builder()
-						.employeeCode(model.getEmployeeCode())
-						.employeeId(model.getEmployeeID())
-						.employeeName(model.getName().orElse(""))
-						.workplaceId(model.getWorkplaceId().orElse(""))
-						.workplaceCode(model.getWorkplaceCode().orElse(""))
-						.workplaceName(model.getWorkplaceName().orElse(""))
-						.build())
+		List<RegulationInfoEmployeeDto> resultList = this.empFinder.find(this.toQueryModel(query));
+		return resultList.stream().map(item -> RegulationInfoEmployeeExport.builder()
+				.employeeCode(item.getEmployeeCode())
+				.employeeId(item.getEmployeeId())
+				.employeeName(item.getEmployeeName())
+				.workplaceCode(item.getWorkplaceCode())
+				.workplaceId(item.getWorkplaceId())
+				.workplaceName(item.getWorkplaceName())
+				.build())
 				.collect(Collectors.toList());
 	}
 
@@ -53,9 +56,9 @@ public class RegulationInfoEmployeePubImpl implements RegulationInfoEmployeePub 
 	 * @param query the query
 	 * @return the employee search query
 	 */
-	private EmployeeSearchQuery toQueryModel(EmployeeSearchQueryDto query) {
-		return EmployeeSearchQuery.builder()
-			.baseDate(query.getBaseDate())
+	private RegulationInfoEmpQueryDto toQueryModel(EmployeeSearchQueryDto query) {
+		return RegulationInfoEmpQueryDto.builder()
+			.baseDate(query.getBaseDate().toString(GENERAL_DATE_FORMAT))
 			.classificationCodes(query.getClassificationCodes())
 			.departmentCodes(query.getDepartmentCodes())
 			.employmentCodes(query.getEmploymentCodes())
@@ -76,11 +79,11 @@ public class RegulationInfoEmployeePubImpl implements RegulationInfoEmployeePub 
 			.filterByClosure(query.getFilterByClosure())
 			.closureIds(query.getClosureIds())
 			.nameType(query.getNameType())
-			.periodEnd(query.getPeriodEnd())
-			.periodStart(query.getPeriodStart())
+			.periodEnd(query.getPeriodEnd().toString(GENERAL_DATE_FORMAT))
+			.periodStart(query.getPeriodStart().toString(GENERAL_DATE_FORMAT))
 			.referenceRange(query.getReferenceRange())
-			.retireEnd(query.getRetireEnd())
-			.retireStart(query.getRetireStart())
+			.retireEnd(query.getRetireEnd().toString(GENERAL_DATE_FORMAT))
+			.retireStart(query.getRetireStart().toString(GENERAL_DATE_FORMAT))
 			.sortOrderNo(query.getSortOrderNo())
 			.workplaceCodes(query.getWorkplaceCodes())
 			.systemType(query.getSystemType())
