@@ -348,7 +348,7 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 		if(optionsEnd!=null){
 			endScheduleId = this.scheduler.scheduleOnCurrentCompany(optionsEnd).getScheduleId();
 		}
-		taskSetting.setScheduleId(endScheduleId);
+		taskSetting.setEndScheduleId(endScheduleId);
 		
 		if (command.isNewMode()) {
 			try {
@@ -371,9 +371,11 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 			}
 			this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class,oldScheduleId);
 			try {
+				this.execTaskSettingRepo.remove(companyId,  command.getExecItemCd());
 				this.repMonthDayRepo.removeAllByCidAndExecCd(companyId, command.getExecItemCd());
-				this.execTaskSettingRepo.update(taskSetting);
+				this.execTaskSettingRepo.insert(taskSetting);
 				this.repMonthDayRepo.insert(companyId, command.getExecItemCd(), days);
+				//this.execTaskSettingRepo.update(taskSetting);
 			} catch (Exception e) {
 				this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class,scheduleId);
 				if(endScheduleId!=null){
@@ -447,27 +449,38 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 			if(repeatMinute==null){
 				cronExpress.append("0 "+startMinute+" "+startHours+" * * ? ");
 			}else{
-				if(command.getEndTimeCls()==1){
-					
-					if(endHour-startHours ==0){
-						cronExpress = this.getCron(startMinute, endMinute, repeatMinute, startHours);
-						cronExpress.append(" * * ? ");
-					}else if(endHour-startHours==1){
-						cronExpress = this.getCron(startMinute, 60, repeatMinute, startHours);
-						cronExpress2 = this.getCron(startTimeRun, endMinute, repeatMinute, endHour);
-						cronExpress.append(" * * ? ");
-						cronExpress2.append(" * * ? ");
-						
+				if(repeatMinute ==60){
+					if(command.getEndTimeCls()==1){
+						if(command.getEndTime()%60>startMinute){
+							cronExpress.append("0 "+startMinute+" "+startHours+"-"+command.getEndTime()/60+"/1 * * ? ");
+						}else{
+							cronExpress.append("0 "+startMinute+" "+startHours+"-"+(command.getEndTime()/60-1)+"/1 * * ? ");
+						}
 					}else{
-						cronExpress = this.getCron(startMinute, 60, repeatMinute, startHours);
-						cronExpress2 = this.getCronRangeMoreTwo(startTimeRun, 60, repeatMinute,startHours, endHour);
-						cronExpress3 = this.getCron(startTimeRun, endMinute, repeatMinute, endHour);
-						cronExpress.append(" * * ? ");
-						cronExpress2.append(" * * ? ");
-						cronExpress3.append(" * * ? ");
+						cronExpress.append("0 "+startMinute+" "+startHours+"/1 * * ? ");
 					}
 				}else{
-					cronExpress.append("0 0/"+repeatMinute+" * * * ? ");	
+					if(command.getEndTimeCls()==1){
+						if(endHour-startHours ==0){
+							cronExpress = this.getCron(startMinute, endMinute, repeatMinute, startHours);
+							cronExpress.append(" * * ? ");
+						}else if(endHour-startHours==1){
+							cronExpress = this.getCron(startMinute, 60, repeatMinute, startHours);
+							cronExpress2 = this.getCron(startTimeRun, endMinute, repeatMinute, endHour);
+							cronExpress.append(" * * ? ");
+							cronExpress2.append(" * * ? ");
+							
+						}else{
+							cronExpress = this.getCron(startMinute, 60, repeatMinute, startHours);
+							cronExpress2 = this.getCronRangeMoreTwo(startTimeRun, 60, repeatMinute,startHours, endHour);
+							cronExpress3 = this.getCron(startTimeRun, endMinute, repeatMinute, endHour);
+							cronExpress.append(" * * ? ");
+							cronExpress2.append(" * * ? ");
+							cronExpress3.append(" * * ? ");
+						}
+					}else{
+						cronExpress.append("0 0/"+repeatMinute+" * * * ? ");	
+					}
 				}
 				
 			}
@@ -479,27 +492,40 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 				if(repeatMinute==null){
 					cronExpress.append("0 "+startMinute+" "+startHours+" * * ? ");
 				}else{
-					if(command.getEndTimeCls()==1){
-						if(endHour-startHours ==0){
-							cronExpress = this.getCron(startMinute, endMinute, repeatMinute, startHours);
-							cronExpress.append(" ? * * ");
-						}else if(endHour-startHours==1){
-							cronExpress = this.getCron(startMinute, 60, repeatMinute, startHours);
-							cronExpress2 = this.getCron(startTimeRun, endMinute, repeatMinute, endHour);
-							cronExpress.append(" ? * * ");
-							cronExpress2.append(" ? * * ");
-							
+					if(repeatMinute ==60){
+						if(command.getEndTimeCls()==1){
+							if(command.getEndTime()%60>startMinute){
+								cronExpress.append("0 "+startMinute+" "+startHours+"-"+command.getEndTime()/60+"/1 * * ? ");
+							}else{
+								cronExpress.append("0 "+startMinute+" "+startHours+"-"+(command.getEndTime()/60-1)+"/1 * * ? ");
+							}
 						}else{
-							cronExpress = this.getCron(startMinute, 60, repeatMinute, startHours);
-							cronExpress2 = this.getCronRangeMoreTwo(startTimeRun, 60, repeatMinute,startHours, endHour);
-							cronExpress3 = this.getCron(startTimeRun, endMinute, repeatMinute, endHour);
-							cronExpress.append(" ? * * ");
-							cronExpress2.append(" ? * * ");
-							cronExpress3.append(" ? * * ");
+							cronExpress.append("0 "+startMinute+" "+startHours+"/1 * * ? ");
 						}
 					}else{
-						cronExpress.append("0 0/"+repeatMinute+" * ? * * ");
+						if(command.getEndTimeCls()==1){
+							if(endHour-startHours ==0){
+								cronExpress = this.getCron(startMinute, endMinute, repeatMinute, startHours);
+								cronExpress.append(" ? * * ");
+							}else if(endHour-startHours==1){
+								cronExpress = this.getCron(startMinute, 60, repeatMinute, startHours);
+								cronExpress2 = this.getCron(startTimeRun, endMinute, repeatMinute, endHour);
+								cronExpress.append(" ? * * ");
+								cronExpress2.append(" ? * * ");
+								
+							}else{
+								cronExpress = this.getCron(startMinute, 60, repeatMinute, startHours);
+								cronExpress2 = this.getCronRangeMoreTwo(startTimeRun, 60, repeatMinute,startHours, endHour);
+								cronExpress3 = this.getCron(startTimeRun, endMinute, repeatMinute, endHour);
+								cronExpress.append(" ? * * ");
+								cronExpress2.append(" ? * * ");
+								cronExpress3.append(" ? * * ");
+							}
+						}else{
+							cronExpress.append("0 0/"+repeatMinute+" * ? * * ");
+						}
 					}
+					
 				}
 				break;
 			}
@@ -507,26 +533,39 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 			if(repeatMinute==null){
 				cronExpress.append("0 "+startMinute+" "+startHours+" ? ");
 			}else{
-				if(command.getEndTimeCls()==1){
-					if(endHour-startHours ==0){
-						cronExpress = this.getCron(startMinute, endMinute, repeatMinute, startHours);
-						cronExpress.append(" ? ");
-					}else if(endHour-startHours==1){
-						cronExpress = this.getCron(startMinute, 60, repeatMinute, startHours);
-						cronExpress2 = this.getCron(startTimeRun, endMinute, repeatMinute, endHour);
-						cronExpress.append(" ? ");
-						cronExpress2.append(" ? ");
-						
+				if(repeatMinute ==60){
+					if(command.getEndTimeCls()==1){
+						if(command.getEndTime()%60>startMinute){
+							cronExpress.append("0 "+startMinute+" "+startHours+"-"+command.getEndTime()/60+"/1 ? ");
+						}else{
+							cronExpress.append("0 "+startMinute+" "+startHours+"-"+(command.getEndTime()/60-1)+"/1 ? ");
+						}
 					}else{
-						cronExpress = this.getCron(startMinute, 60, repeatMinute, startHours);
-						cronExpress2 = this.getCronRangeMoreTwo(startTimeRun, 60, repeatMinute,startHours, endHour);
-						cronExpress3 = this.getCron(startTimeRun, endMinute, repeatMinute, endHour);
-						cronExpress.append(" ? ");
-						cronExpress2.append(" ? ");
-						cronExpress3.append(" ? ");
+						cronExpress.append("0 "+startMinute+" "+startHours+"/1 ? ");
 					}
+					
 				}else{
-					cronExpress.append("0 0/"+repeatMinute+" *	 ? " );
+					if(command.getEndTimeCls()==1){
+						if(endHour-startHours ==0){
+							cronExpress = this.getCron(startMinute, endMinute, repeatMinute, startHours);
+							cronExpress.append(" ? ");
+						}else if(endHour-startHours==1){
+							cronExpress = this.getCron(startMinute, 60, repeatMinute, startHours);
+							cronExpress2 = this.getCron(startTimeRun, endMinute, repeatMinute, endHour);
+							cronExpress.append(" ? ");
+							cronExpress2.append(" ? ");
+							
+						}else{
+							cronExpress = this.getCron(startMinute, 60, repeatMinute, startHours);
+							cronExpress2 = this.getCronRangeMoreTwo(startTimeRun, 60, repeatMinute,startHours, endHour);
+							cronExpress3 = this.getCron(startTimeRun, endMinute, repeatMinute, endHour);
+							cronExpress.append(" ? ");
+							cronExpress2.append(" ? ");
+							cronExpress3.append(" ? ");
+						}
+					}else{
+						cronExpress.append("0 0/"+repeatMinute+" *	 ? " );
+					}
 				}
 				
 			}
@@ -718,20 +757,32 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 			if(repeatMinute==null){
 				cronExpress.append("0 "+startMinute+" "+startHours+" ");
 			}else{
-				if(command.getEndTimeCls()==1){
-					if(endHour-startHours ==0){
-						cronExpress = this.getCron(startMinute, endMinute, repeatMinute, startHours);
-					}else if(endHour-startHours==1){
-						cronExpress = this.getCron(startMinute, 60, repeatMinute, startHours);
-						cronExpress2 = this.getCron(startTimeRun, endMinute, repeatMinute, endHour);
-						
+				if(repeatMinute ==60){
+					if(command.getEndTimeCls()==1){
+						if(command.getEndTime()%60>startMinute){
+							cronExpress.append("0 "+startMinute+" "+startHours+"-"+command.getEndTime()/60+"/1 ");
+						}else{
+							cronExpress.append("0 "+startMinute+" "+startHours+"-"+(command.getEndTime()/60-1)+"/1 ");
+						}
 					}else{
-						cronExpress = this.getCron(startMinute, 60, repeatMinute, startHours);
-						cronExpress2 = this.getCronRangeMoreTwo(startTimeRun, 60, repeatMinute,startHours, endHour);
-						cronExpress3 = this.getCron(startTimeRun, endMinute, repeatMinute, endHour);
+						cronExpress.append("0 "+startMinute+" "+startHours+"/1 ");
 					}
 				}else{
-					cronExpress.append("0 0/"+repeatMinute+" * ");
+					if(command.getEndTimeCls()==1){
+						if(endHour-startHours ==0){
+							cronExpress = this.getCron(startMinute, endMinute, repeatMinute, startHours);
+						}else if(endHour-startHours==1){
+							cronExpress = this.getCron(startMinute, 60, repeatMinute, startHours);
+							cronExpress2 = this.getCron(startTimeRun, endMinute, repeatMinute, endHour);
+							
+						}else{
+							cronExpress = this.getCron(startMinute, 60, repeatMinute, startHours);
+							cronExpress2 = this.getCronRangeMoreTwo(startTimeRun, 60, repeatMinute,startHours, endHour);
+							cronExpress3 = this.getCron(startTimeRun, endMinute, repeatMinute, endHour);
+						}
+					}else{
+						cronExpress.append("0 0/"+repeatMinute+" * ");
+					}
 				}
 			}
 			
@@ -888,27 +939,39 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 			if(repeatMinute==null){
 				cronExpress.append("0 "+startMinute+" "+startHours+" * * ?");
 			}else{
-				if(command.getEndTimeCls()==1){
-					
-					if(endHour-startHours ==0){
-						cronExpress = this.getCron(startMinute, endMinute, repeatMinute, startHours);
-						cronExpress.append(" * * ? ");
-					}else if(endHour-startHours==1){
-						cronExpress = this.getCron(startMinute, 60, repeatMinute, startHours);
-						cronExpress2 = this.getCron(startTimeRun, endMinute, repeatMinute, endHour);
-						cronExpress.append(" * * ? ");
-						cronExpress2.append(" * * ? ");
-						
+				if(repeatMinute ==60){
+					if(command.getEndTimeCls()==1){
+						if(command.getEndTime()%60>startMinute){
+							cronExpress.append("0 "+startMinute+" "+startHours+"-"+command.getEndTime()/60+"/1 * * ?");
+						}else{
+							cronExpress.append("0 "+startMinute+" "+startHours+"-"+(command.getEndTime()/60-1)+"/1 * * ?");
+						}
 					}else{
-						cronExpress = this.getCron(startMinute, 60, repeatMinute, startHours);
-						cronExpress2 = this.getCronRangeMoreTwo(startTimeRun, 60, repeatMinute,startHours, endHour);
-						cronExpress3 = this.getCron(startTimeRun, endMinute, repeatMinute, endHour);
-						cronExpress.append(" * * ? ");
-						cronExpress2.append(" * * ? ");
-						cronExpress3.append(" * * ? ");
+						cronExpress.append("0 "+startMinute+" "+startHours+"/1 * * ?");	
 					}
 				}else{
-					cronExpress.append("0 0/"+repeatMinute+" * * * ? ");	
+					if(command.getEndTimeCls()==1){
+						
+						if(endHour-startHours ==0){
+							cronExpress = this.getCron(startMinute, endMinute, repeatMinute, startHours);
+							cronExpress.append(" * * ? ");
+						}else if(endHour-startHours==1){
+							cronExpress = this.getCron(startMinute, 60, repeatMinute, startHours);
+							cronExpress2 = this.getCron(startTimeRun, endMinute, repeatMinute, endHour);
+							cronExpress.append(" * * ? ");
+							cronExpress2.append(" * * ? ");
+							
+						}else{
+							cronExpress = this.getCron(startMinute, 60, repeatMinute, startHours);
+							cronExpress2 = this.getCronRangeMoreTwo(startTimeRun, 60, repeatMinute,startHours, endHour);
+							cronExpress3 = this.getCron(startTimeRun, endMinute, repeatMinute, endHour);
+							cronExpress.append(" * * ? ");
+							cronExpress2.append(" * * ? ");
+							cronExpress3.append(" * * ? ");
+						}
+					}else{
+						cronExpress.append("0 0/"+repeatMinute+" * * * ? ");	
+					}
 				}
 			}
 				break;

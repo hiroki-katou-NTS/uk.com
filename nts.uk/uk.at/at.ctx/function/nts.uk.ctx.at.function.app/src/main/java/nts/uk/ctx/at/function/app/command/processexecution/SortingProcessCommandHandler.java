@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
@@ -26,9 +27,9 @@ import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLo
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.ExecutionTaskSetting;
 import nts.uk.shr.com.task.schedule.UkJobScheduler;
 @Stateless
-public class SortingProcessCommandHandler extends AsyncCommandHandler<ScheduleExecuteCommand> {
+public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecuteCommand> {
 	@Inject
-	private ExecuteProcessExecutionCommandHandler execHandler;
+	private ExecuteProcessExecutionAutoCommandHandler execHandler;
 	@Inject
 	private ProcessExecutionLogManageRepository processExecLogManaRepo;
 	@Inject

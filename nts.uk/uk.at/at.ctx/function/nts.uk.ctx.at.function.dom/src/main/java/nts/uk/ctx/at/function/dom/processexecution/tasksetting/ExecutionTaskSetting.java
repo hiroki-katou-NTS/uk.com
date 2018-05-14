@@ -81,7 +81,35 @@ public class ExecutionTaskSetting extends AggregateRoot {
 			
 			if (oneDayRepInr.getDetail() != null && oneDayRepInr.getDetail().isPresent()) {
 				// 画面項目「C2_18：繰り返し間隔入力欄」に開始時刻～終了時刻以上の時間を入力し、登録することはできない
-				if (oneDayRepInr.getDetail().get().value > (endTime.getEndTime().minute() - startTime.minute())) {
+				
+				int oneDayRepInrLoop = 1;
+				switch (oneDayRepInr.getDetail().get().value) {
+				case 0:
+					oneDayRepInrLoop =1;
+					break;
+				case 1:
+					oneDayRepInrLoop =5;
+					break;
+				case 2:
+					oneDayRepInrLoop =10;
+					break;
+				case 3:
+					oneDayRepInrLoop =15;
+					break;
+				case 4:
+					oneDayRepInrLoop =30;
+					break;
+				case 5:
+					oneDayRepInrLoop =60;
+					break;	
+				default:
+					oneDayRepInrLoop = 1;
+					break;
+				}
+				
+				int totalMinuteEndTime	= endTime.getEndTime().hour()*60+ endTime.getEndTime().minute();
+				int totalMinuteStartTime = startTime.hour()*60+startTime.minute();
+				if (oneDayRepInrLoop > (totalMinuteEndTime  - totalMinuteStartTime)) {
 					throw new BusinessException("Msg_848");
 				}
 			}

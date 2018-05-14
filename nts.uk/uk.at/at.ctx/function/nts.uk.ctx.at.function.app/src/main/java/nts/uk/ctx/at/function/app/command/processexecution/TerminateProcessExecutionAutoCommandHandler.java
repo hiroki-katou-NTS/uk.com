@@ -17,9 +17,8 @@ import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLo
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
-
 @Stateless
-public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler<TerminateProcessExecutionCommand> {
+public class TerminateProcessExecutionAutoCommandHandler extends AsyncCommandHandler<TerminateProcessExecutionCommand> {
 
 	@Inject
 	private ProcessExecutionLogRepository procExecLogRepo;
@@ -34,7 +33,6 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 	@Override
 	public void handle(CommandHandlerContext<TerminateProcessExecutionCommand> context) {
 		val asyncContext = context.asAsync();
-		val dataSetter = asyncContext.getDataSetter();
 		TerminateProcessExecutionCommand command = context.getCommand();
 		String execItemCd = command.getExecItemCd();
 		String companyId = command.getCompanyId();
@@ -47,7 +45,6 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 		
 		//「待機中」 or 「無効」の場合
 		if(processExecLogMan.getCurrentStatus().value==1 || processExecLogMan.getCurrentStatus().value==2){
-			dataSetter.setData("currentStatusIsOneOrTwo", "Msg_1102");
 			return;
 		}
 		
@@ -93,42 +90,30 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 			if (task.getProcExecTask().value == ProcessExecutionTask.DAILY_CREATION.value) {
 				if (task.getStatus() == null) {
 					this.interupt(execId, ExeStateOfCalAndSum.START_INTERRUPTION.value);
-					if(execType == 1){ 
-						dataSetter.setData("interupt", "true");
-					}
+					
 					return;
 				}
 			//日別計算の処理が完了しているか確認する	
 			} else if (task.getProcExecTask().value == ProcessExecutionTask.DAILY_CALCULATION.value) {
 				if (task.getStatus() == null) {
 					this.interupt(execId, ExeStateOfCalAndSum.START_INTERRUPTION.value);
-					if(execType == 1){ 
-						dataSetter.setData("interupt", "true");
-					}
+					
 					return;
 				}
 			//承認結果反映の処理が完了しているか確認する	
 			} else if (task.getProcExecTask().value == ProcessExecutionTask.RFL_APR_RESULT.value) {
 				if (task.getStatus() == null) {
 					this.interupt(execId, ExeStateOfCalAndSum.START_INTERRUPTION.value);
-					if(execType == 1){ 
-						dataSetter.setData("interupt", "true");
-					}
+				
 					return;
 				}
 			//月別集計の処理が完了しているか確認する	
 			} else if (task.getProcExecTask().value == ProcessExecutionTask.MONTHLY_AGGR.value) {
 				if (task.getStatus() == null) {
 					this.interupt(execId, ExeStateOfCalAndSum.START_INTERRUPTION.value);
-					if(execType == 1){ 
-						dataSetter.setData("interupt", "true");
-					}
 					return;
 				}
 			} else{
-				if(execType == 1){ 
-					dataSetter.setData("interupt", "true");
-				}
 			} 
 		});
 		

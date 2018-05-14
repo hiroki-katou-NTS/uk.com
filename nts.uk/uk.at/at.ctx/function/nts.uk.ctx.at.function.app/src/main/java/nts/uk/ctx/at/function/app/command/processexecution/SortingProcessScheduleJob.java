@@ -12,7 +12,7 @@ public class SortingProcessScheduleJob extends UkScheduledJob{
 	private SortingProcessCommandHandler sortingProcessCommandHandler;
 	@Override
 	protected void execute(ExecutionContext context) {
-		/*
+		
 		String companyId = context.scheduletimeData().getString("companyId");
 		String execItemCd = context.scheduletimeData().getString("execItemCd");
 		//todo fixed 
@@ -21,9 +21,8 @@ public class SortingProcessScheduleJob extends UkScheduledJob{
 		s.setCompanyId(companyId);
 		s.setExecItemCd(execItemCd);
 		s.setScheduleId(scheduleId);
-		AsyncCommandHandlerContext<ScheduleExecuteCommand> ctxRe = new AsyncCommandHandlerContext<ScheduleExecuteCommand>(s);
-		this.sortingProcessCommandHandler.handle(ctxRe);
-		*/
+		this.sortingProcessCommandHandler.handle(s);
+		
 	}
 
 }

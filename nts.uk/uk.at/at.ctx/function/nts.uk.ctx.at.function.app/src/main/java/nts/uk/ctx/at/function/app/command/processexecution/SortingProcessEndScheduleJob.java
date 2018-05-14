@@ -11,11 +11,10 @@ import nts.uk.shr.com.task.schedule.UkScheduledJob;
 public class SortingProcessEndScheduleJob extends UkScheduledJob{
 
 	@Inject
-	private TerminateProcessExecutionCommandHandler terminateProcessExecutionCommandHandler;
+	private TerminateProcessExecutionAutoCommandHandler terminateProcessExecutionCommandHandler;
 	
 	@Override
 	protected void execute(ExecutionContext context) {
-		/*
 		String companyId = context.scheduletimeData().getString("companyId");
 		String execItemCd = context.scheduletimeData().getString("execItemCd");
 		TerminateProcessExecutionCommand t = new TerminateProcessExecutionCommand();
@@ -24,7 +23,6 @@ public class SortingProcessEndScheduleJob extends UkScheduledJob{
 		t.setExecType(0);
 		AsyncCommandHandlerContext<TerminateProcessExecutionCommand> ctxRe = new AsyncCommandHandlerContext<TerminateProcessExecutionCommand>(t);
 		this.terminateProcessExecutionCommandHandler.handle(ctxRe);
-		*/
 	}
 
 }
