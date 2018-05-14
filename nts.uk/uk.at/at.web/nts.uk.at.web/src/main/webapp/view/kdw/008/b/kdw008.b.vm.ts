@@ -339,9 +339,16 @@ module nts.uk.at.view.kdw008.b {
                         data.businessTypeFormatMonthlyDtos = _.sortBy(data.businessTypeFormatMonthlyDtos, ["order"]);
                         if (data.businessTypeFormatMonthlyDtos) {
                             var attendanceItemModelMonthly = _.map(data.businessTypeFormatMonthlyDtos, item => {
+                                let nameItemAttd = "";
+                                for(let i =0;i<self.listMonthlyAttdItemFullData().length;i++){
+                                    if(item.attendanceItemId ==self.listMonthlyAttdItemFullData()[i].attendanceItemId){
+                                       nameItemAttd = self.listMonthlyAttdItemFullData()[i].attendanceItemName;     
+                                    }
+                                }
+                                
                                 var obj = {
                                     attendanceItemId: item.attendanceItemId,
-                                    attendanceItemName: item.attendanceItemName,
+                                    attendanceItemName: nameItemAttd,
                                     attendanceItemDisplayNumber: item.dislayNumber,
                                     columnWidth: item.columnWidth
                                 };
@@ -373,7 +380,7 @@ module nts.uk.at.view.kdw008.b {
                         }
 
                     } else {
-                         self.valuesMonthly([]);
+                        self.valuesMonthly([]);
                         self.listMonthlyAttdItem(_.cloneDeep(self.listMonthlyAttdItemFullData()));
                         self.currentBusinessType([]);
                     }
