@@ -13,7 +13,7 @@ public class StampCardEditingRepoImpl implements StampCardEditingRepo {
 
 	@Override
 	public Optional<StampCardEditing> get(String companyId) {
-		return Optional.of(StampCardEditing.createFromJavaType(companyId, 20, StampCardEditMethod.PreviousZero.value));
+		return Optional.of(StampCardEditing.createFromJavaType(companyId, 16, StampCardEditMethod.PreviousZero.value));
 	}
 
 }

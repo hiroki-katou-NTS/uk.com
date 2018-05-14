@@ -11,7 +11,6 @@ module cps002.a.vm {
     import block = nts.uk.ui.block;
     import lv = nts.layout.validate;
     import vc = nts.layout.validation;
-    let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'];
     export class ViewModel {
 
         date: KnockoutObservable<Date> = ko.observable(moment().toDate());
@@ -234,13 +233,58 @@ module cps002.a.vm {
                 var self = this;
                 self.updateCardNumber();
             });
+            
+            self.currentEmployee().cardNo.subscribe((cardNo) => {
+                let self = this;
+                let stampCardMehod = self.stampCardEditing.method;
+                let maxLength = self.stampCardEditing.digitsNumber;
+                if (cardNo.length < maxLength) {
+                    
+                    let textValue = cardNo;
+                    switch (stampCardMehod) {
+                        case EDIT_METHOD.PreviousZero: {
+                            textValue= self.autoChange('0', POSITION.Previous, textValue, maxLength);
+                            break;
+                        }
+                        case EDIT_METHOD.AfterZero: {
+                            textValue= self.autoChange('0', POSITION.After, textValue, maxLength);
+                            break;
+                        }
+                        case EDIT_METHOD.PreviousSpace: {
+                            textValue= self.autoChange(' ', POSITION.Previous, textValue, maxLength);
+                            break;
+                        }
+                        case EDIT_METHOD.AfterSpace: {
+                            textValue= self.autoChange(' ', POSITION.After, textValue, maxLength);
+                            break;
+                        }
+                        default: {
+                            break;
+                        }
+                    } 
+                    self.currentEmployee().cardNo(textValue);
+                }
+            });
 
             self.start();
 
             console.log('start done');
 
         }
-
+        
+        autoChange(character: string, position: POSITION, textValue: string, maxLength: number): string {
+            if (position == POSITION.Previous) {
+                while (textValue.length < maxLength) {
+                    textValue = character + textValue;
+                }
+            } else {
+                while (textValue.length < maxLength) {
+                    textValue = textValue + character;
+                }
+            }
+            return textValue;
+        }
+        
         loadCopySettingItemData() {
 
             let self = this,
@@ -287,10 +331,8 @@ module cps002.a.vm {
                     $.when.apply($, dfs).then(() => {
                         let stampCardEditing = arguments[0];
                         let userSetting = arguments[1];
-
-                        writeConstraint("StampNumber", {
-                            maxLength: stampCardEditing.digitsNumber
-                        });
+                        
+                        __viewContext.primitiveValueConstraints["StampNumber"].maxLength = stampCardEditing.digitsNumber;
 
                         self.stampCardEditing = new StampCardEditing(stampCardEditing.method, stampCardEditing.digitsNumber);
 
@@ -1041,6 +1083,11 @@ module cps002.a.vm {
         AfterZero = 1,
         PreviousSpace = 2,
         AfterSpace = 3
+    }
+    
+    enum POSITION {
+        Previous = 0,
+        After = 1
     }
 
 }

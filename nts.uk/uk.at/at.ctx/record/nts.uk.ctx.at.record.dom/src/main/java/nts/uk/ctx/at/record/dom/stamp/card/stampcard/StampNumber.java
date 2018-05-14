@@ -1,9 +1,12 @@
 package nts.uk.ctx.at.record.dom.stamp.card.stampcard;
 
 import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.StringRegEx;
+import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.StringCharType;
+import nts.arc.primitive.constraint.StringMaxLength;
 
-@StringRegEx("a-z A-Z 0-9 \" # $ % & ( ) ~ | { } [ ] @ : ` * + ? ; / _ \\ - ><")
+@StringMaxLength(20)
+@StringCharType(CharType.ANY_HALF_WIDTH)
 public class StampNumber extends StringPrimitiveValue<StampNumber> {
 
 	/**
