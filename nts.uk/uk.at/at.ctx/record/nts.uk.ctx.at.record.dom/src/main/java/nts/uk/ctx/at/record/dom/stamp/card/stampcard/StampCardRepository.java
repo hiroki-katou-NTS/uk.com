@@ -8,6 +8,8 @@ public interface StampCardRepository {
 	List<StampCard> getListStampCard(String sid);
 
 	Optional<StampCard> getByStampCardId(String stampCardId);
+	
+	Optional<StampCard> getByCardNoAndContractCode(String cardNo , String contractCd);
 
 	void add(StampCard domain);
 

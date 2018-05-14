@@ -61,7 +61,8 @@ public class EmployeeInfoFinder {
 
 		// check duplicate cardNo
 		if (empInfo.cardNo != null) {
-			Optional<StampCard> stampCard = this.stampCardRepo.getByStampCardId(empInfo.cardNo);
+			String contractCode =  AppContexts.user().contractCode();
+			Optional<StampCard> stampCard = this.stampCardRepo.getByCardNoAndContractCode(empInfo.cardNo , contractCode);
 			if (stampCard.isPresent()) {
 				throw new BusinessException("Msg_346");
 			}

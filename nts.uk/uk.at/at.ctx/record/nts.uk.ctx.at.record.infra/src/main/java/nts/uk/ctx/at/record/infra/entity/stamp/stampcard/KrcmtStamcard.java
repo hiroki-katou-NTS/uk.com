@@ -8,25 +8,28 @@ import javax.persistence.Table;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-//@Entity
-//@Table(name = "KRCMT_STAMP_CARD")
-public class KrcmtStamcard {
+@Entity
+@Table(name = "KRCMT_STAMP_CARD")
+public class KrcmtStamcard extends UkJpaEntity{
 	
-	//@Id
-	//@Column(name = "STAMP_CARD_ID")
+	@Id
+	@Column(name = "CARD_ID")
 	public String cardId;
 	
-	//@Column(name = "SID")
+	@Column(name = "SID")
 	public String sid;
 	
-	//@Column(name = "STAMP_NUMBER")
-	public String stampNumber;
+	@Column(name = "CARD_NO")
+	public String cardNo;
 
-	//@Column(name = "REGISTER_DATE")
+	@Column(name = "REGISTER_DATE")
     public GeneralDate registerDate;
+    
+	@Column(name = "CONTRACT_CODE")
+    public String contractCd;
 	
 
-	//@Override
+	@Override
 	protected Object getKey() {
 		return cardId;
 	}

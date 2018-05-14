@@ -30,17 +30,22 @@ public class StampCard extends AggregateRoot {
 	 * 登録日付
 	 */
 	private GeneralDate registerDate;
+	
+	
+	/** 契約コード */
+	private ContractCode contractCd;
 
 	public static StampCard createFromJavaType(String stampCardId, String employeeId, String stampNumber,
-			GeneralDate registerDate) {
-		return new StampCard(stampCardId, employeeId, new StampNumber(stampNumber), registerDate);
+			GeneralDate registerDate , String contractCd) {
+		return new StampCard(stampCardId, employeeId, new StampNumber(stampNumber), registerDate , new ContractCode(contractCd));
 	}
 
-	public StampCard(String stampCardId, String employeeId, StampNumber stampNumber, GeneralDate registerDate) {
+	public StampCard(String stampCardId, String employeeId, StampNumber stampNumber, GeneralDate registerDate, ContractCode contractCd) {
 		super();
 		this.stampCardId = stampCardId;
 		this.employeeId = employeeId;
 		this.stampNumber = stampNumber;
 		this.registerDate = registerDate;
+		this.contractCd = contractCd;
 	}
 }

@@ -9,6 +9,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 
@@ -36,7 +37,7 @@ public class AddStampCardCommandHandler extends CommandHandlerWithResult<AddStam
 		// create new domain and add
 		String stampCardId = IdentifierUtil.randomUniqueId();
 		StampCard stampCard = StampCard.createFromJavaType(stampCardId, command.getEmployeeId(),
-				command.getStampNumber(), GeneralDate.today());
+				command.getStampNumber(), GeneralDate.today(), AppContexts.user().contractCode());
 		stampCardRepo.add(stampCard);
 		
 		return new PeregAddCommandResult(stampCardId);

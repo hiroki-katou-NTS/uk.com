@@ -8,6 +8,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
 @Stateless
@@ -33,7 +34,7 @@ public class UpdateStampCardCommandHandler extends CommandHandler<UpdateStampCar
 		
 		// update domain
 		StampCard stampCard = StampCard.createFromJavaType(command.getStampNumberId(), command.getEmployeeId(),
-				command.getStampNumber(), GeneralDate.today());
+				command.getStampNumber(), GeneralDate.today(), AppContexts.user().contractCode());
 		
 		stampCardRepo.update(stampCard);
 		
