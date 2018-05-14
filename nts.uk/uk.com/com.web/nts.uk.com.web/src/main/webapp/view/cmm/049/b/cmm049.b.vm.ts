@@ -17,7 +17,7 @@ module nts.uk.com.view.cmm049.b {
 
                 _self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText(""), key: 'code', width: 250, hidden: true },
-                    { headerText: nts.uk.resource.getText("CMM049_16"), key: 'name', width: 250 }
+                    { headerText: nts.uk.resource.getText("CMM049_21"), key: 'name', width: 250 }
                 ]);
 
                 _self.currentCodeList = ko.observableArray([]);
