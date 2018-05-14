@@ -3426,13 +3426,6 @@ var nts;
                 var STORAGE_KEY_USED_LOGIN_PAGE = "nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE";
                 var STORAGE_KEY_SERIALIZED_SESSION = "nts.uk.request.login.STORAGE_KEY_SERIALIZED_SESSION";
                 function keepUsedLoginPage(url) {
-                    if (arguments.length === 2) {
-                        var loginLocator = location.siteRoot
-                            .mergeRelativePath(request.WEB_APP_NAME[arguments[0]] + '/')
-                            .mergeRelativePath(arguments[1]);
-                        keepUsedLoginPage.apply(null, [loginLocator.serialize()]);
-                        return;
-                    }
                     if (url === undefined) {
                         keepUsedLoginPage(location.current.serialize());
                         return;
@@ -7502,7 +7495,7 @@ var nts;
                     /**
                      * Grid cell.
                      */
-                    function gridCell($grid, rowIdx, columnKey, innerIdx, valueObj, isRestore) {
+                    function gridCell($grid, rowIdx, columnKey, innerIdx, valueObj, styleMaker) {
                         var $exTable = helper.closest($grid, "." + NAMESPACE);
                         var x = helper.getExTableFromGrid($grid);
                         var updateMode = x.updateMode;
@@ -7519,6 +7512,13 @@ var nts;
                             value = helper.viewData(viewFn, viewMode, valueObj);
                         }
                         var touched;
+                        if (styleMaker && _.isFunction(styleMaker)) {
+                            var style_1 = styleMaker(rowIdx, columnKey, innerIdx, valueObj);
+                            if (style_1) {
+                                $cell.style.color = style_1.textColor;
+                                makeUp($grid, rowIdx, columnKey, style_1);
+                            }
+                        }
                         var $childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
                         if ($childCells.length > 0) {
                             if (value.constructor === Array) {
@@ -7558,7 +7558,7 @@ var nts;
                     /**
                      * Grid row.
                      */
-                    function gridRow($grid, rowIdx, data, isRestore) {
+                    function gridRow($grid, rowIdx, data, styleMaker) {
                         var $exTable = helper.closest($grid, "." + NAMESPACE);
                         var x = helper.getExTableFromGrid($grid);
                         var updateMode = x.updateMode;
@@ -7579,8 +7579,15 @@ var nts;
                                     var cellObj_1;
                                     var $target = $cells[index];
                                     var childCells_1 = $target.querySelectorAll("." + render.CHILD_CELL_CLS);
+                                    var cData = data[key];
+                                    if (styleMaker && _.isFunction(styleMaker)) {
+                                        var style_2 = styleMaker(rowIdx, key, -1, cData);
+                                        if (style_2) {
+                                            $target.style.color = style_2.textColor;
+                                            makeUp($grid, rowIdx, key, style_2);
+                                        }
+                                    }
                                     if (childCells_1.length > 0) {
-                                        var cData = data[key];
                                         if (_.isFunction(viewFn)) {
                                             cData = helper.viewData(viewFn, viewMode, data[key]);
                                         }
@@ -7604,7 +7611,6 @@ var nts;
                                         }
                                     }
                                     else {
-                                        var cData = data[key];
                                         if (_.isFunction(viewFn)) {
                                             cData = helper.viewData(viewFn, viewMode, data[key]);
                                         }
@@ -7622,6 +7628,35 @@ var nts;
                         return touched;
                     }
                     render.gridRow = gridRow;
+                    /**
+                     * Makeup.
+                     */
+                    function makeUp($grid, rowIdx, key, hypo) {
+                        var dCellsStyle = $.data($grid, internal.D_CELLS_STYLE);
+                        if (!dCellsStyle) {
+                            dCellsStyle = {};
+                            dCellsStyle[rowIdx] = [new style.Cell(rowIdx, key, hypo)];
+                            $.data($grid, internal.D_CELLS_STYLE, dCellsStyle);
+                            return;
+                        }
+                        var dup;
+                        var cells = dCellsStyle[rowIdx];
+                        if (cells) {
+                            _.forEach(cells, function (c, i) {
+                                if (c.columnKey === key) {
+                                    c.makeup = hypo;
+                                    dup = true;
+                                    return false;
+                                }
+                            });
+                            if (!dup) {
+                                cells.push(new style.Cell(rowIdx, key, hypo));
+                            }
+                        }
+                        else {
+                            dCellsStyle[rowIdx] = [new style.Cell(rowIdx, key, hypo)];
+                        }
+                    }
                     /**
                      * Trace.
                      */
@@ -7721,6 +7756,7 @@ var nts;
                                 self.errorCellsIn();
                                 self.detCellsIn();
                                 self.editCellIn();
+                                self.madeUpCellsIn();
                             }
                             else if (self.$container.classList.contains(BODY_PRF + LEFTMOST)) {
                                 self.selectedRowsIn();
@@ -7925,13 +7961,35 @@ var nts;
                             var det = $.data(self.$container, internal.DET);
                             if (!det)
                                 return;
-                            _.forEach(Object.keys(det), function (rIdx) {
+                            self.eachKey(det, function (obj) { return obj; }, function ($cell) { return helper.markCellWith(style.DET_CLS, $cell); });
+                        };
+                        /**
+                         * Made up cells in.
+                         */
+                        Cloud.prototype.madeUpCellsIn = function () {
+                            var self = this;
+                            var dCellsStyle = $.data(self.$container, internal.D_CELLS_STYLE);
+                            if (!dCellsStyle)
+                                return;
+                            self.eachKey(dCellsStyle, function (obj) { return obj.columnKey; }, function ($cell, obj) {
+                                var makeup = obj.makeup;
+                                if (makeup) {
+                                    $cell.style.color = makeup.textColor;
+                                }
+                            });
+                        };
+                        /**
+                         * Each key.
+                         */
+                        Cloud.prototype.eachKey = function (obj, key, cb) {
+                            var self = this;
+                            _.forEach(Object.keys(obj), function (rIdx) {
                                 if (rIdx >= self.startIndex && rIdx <= self.endIndex) {
-                                    _.forEach(det[rIdx], function (key) {
-                                        var $cell = selection.cellAt(self.$container, rIdx, key);
+                                    _.forEach(obj[rIdx], function (valObj) {
+                                        var $cell = selection.cellAt(self.$container, rIdx, key(valObj));
                                         if ($cell === intan.NULL || !$cell)
                                             return;
-                                        helper.markCellWith(style.DET_CLS, $cell);
+                                        cb($cell, valObj);
                                     });
                                 }
                             });
@@ -8694,7 +8752,7 @@ var nts;
                     /**
                      * Stick grid cell ow.
                      */
-                    function stickGridCellOw($grid, rowIdx, columnKey, innerIdx, value) {
+                    function stickGridCellOw($grid, rowIdx, columnKey, innerIdx, value, styleMaker) {
                         var $exTable = helper.closest($grid, "." + NAMESPACE);
                         var exTable = $.data($exTable, NAMESPACE);
                         var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
@@ -8709,7 +8767,7 @@ var nts;
                             return;
                         var changedData = _.cloneDeep(cData);
                         gen.dataSource[rowIdx][columnKey] = value;
-                        var touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, value);
+                        var touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, value, styleMaker);
                         if (touched && touched.dirty) {
                             var cellObj = new selection.Cell(rowIdx, columnKey, changedData, innerIdx);
                             cellObj.setTarget(touched.updateTarget);
@@ -8721,7 +8779,7 @@ var nts;
                     /**
                      * Stick grid row ow.
                      */
-                    function stickGridRowOw($grid, rowIdx, data) {
+                    function stickGridRowOw($grid, rowIdx, data, styleMaker) {
                         var $exTable = helper.closest($grid, "." + NAMESPACE);
                         var exTable = $.data($exTable, NAMESPACE);
                         var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
@@ -8758,7 +8816,7 @@ var nts;
                                 delete origData[k];
                             }
                         });
-                        var touched = render.gridRow($grid, rowIdx, origData);
+                        var touched = render.gridRow($grid, rowIdx, origData, styleMaker);
                         if (changedCells.length > 0) {
                             changedCells.forEach(function (c) { return c.setTarget(touched.updateTarget); });
                             pushStickHistory($grid, changedCells);
@@ -9413,7 +9471,7 @@ var nts;
                                     result();
                                     return;
                                 }
-                                update.stickGridCellOw($grid, rowIdx, key, -1, sticker.data);
+                                update.stickGridCellOw($grid, rowIdx, key, -1, sticker.data, sticker.styleMaker);
                                 return;
                             }
                             _.forEach(sticker.data, function (cData) {
@@ -9422,7 +9480,7 @@ var nts;
                                 if (!key)
                                     return false;
                             });
-                            update.stickGridRowOw($grid, rowIdx, data);
+                            update.stickGridRowOw($grid, rowIdx, data, sticker.styleMaker);
                         });
                     }
                     spread.bindRowSticker = bindRowSticker;
@@ -11570,9 +11628,10 @@ var nts;
                     }());
                     style.CellStyleParam = CellStyleParam;
                     var Cell = /** @class */ (function () {
-                        function Cell(rowId, columnKey) {
-                            this.rowId = rowId;
+                        function Cell(rowIndex, columnKey, makeup) {
+                            this.rowIndex = rowIndex;
                             this.columnKey = columnKey;
+                            this.makeup = makeup;
                         }
                         return Cell;
                     }());
@@ -11830,7 +11889,7 @@ var nts;
                             case "updateMode":
                                 return setUpdateMode(self, params[0], params[1]);
                             case "viewMode":
-                                return setViewMode(self, params[0], params[1]);
+                                return setViewMode(self, params[0], params[1], params[2]);
                             case "mode":
                                 setMode(self, params[0], params[1], params[2]);
                                 break;
@@ -11848,6 +11907,9 @@ var nts;
                                 break;
                             case "stickValidate":
                                 setStickValidate(self, params[0]);
+                                break;
+                            case "stickStyler":
+                                setStickStyler(self, params[0]);
                                 break;
                             case "stickUndo":
                                 undoStick(self);
@@ -12136,7 +12198,7 @@ var nts;
                     /**
                      * Set view mode.
                      */
-                    function setViewMode($container, mode, occupation) {
+                    function setViewMode($container, mode, occupation, features) {
                         var exTable = $container.data(NAMESPACE);
                         if (!mode)
                             return exTable.viewMode;
@@ -12168,6 +12230,23 @@ var nts;
                         $.data(table, internal.DET, null);
                         $container.data(errors.ERRORS, null);
                         exTable.setViewMode(mode);
+                        if (features && exTable.detailContent.features) {
+                            var newFeatures = _.map(exTable.detailContent.features, function (f, i) {
+                                var z = -1;
+                                _.forEach(features, function (ft, y) {
+                                    if (f.name == ft.name) {
+                                        z = y;
+                                        return false;
+                                    }
+                                });
+                                if (z > -1) {
+                                    var fts = features.splice(z, 1);
+                                    return fts[0];
+                                }
+                                return f;
+                            });
+                            exTable.detailContent.features = newFeatures;
+                        }
                         var ds = helper.getOrigDS(table);
                         render.begin(table, _.cloneDeep(ds), exTable.detailContent);
                     }
@@ -12279,6 +12358,21 @@ var nts;
                         }
                         else {
                             sticker.validate = validate;
+                        }
+                    }
+                    /**
+                     * Set stick styler.
+                     */
+                    function setStickStyler($container, styler) {
+                        var $grid = $container.find("." + BODY_PRF + DETAIL);
+                        var sticker = $grid.data(internal.STICKER);
+                        if (!sticker) {
+                            sticker = new spread.Sticker();
+                            sticker.styleMaker = styler;
+                            $grid.data(internal.STICKER, sticker);
+                        }
+                        else {
+                            sticker.styleMaker = styler;
                         }
                     }
                     /**
@@ -12649,6 +12743,7 @@ var nts;
                     internal.DET = "x-det";
                     internal.PAINTER = "painter";
                     internal.CELLS_STYLE = "body-cells-style";
+                    internal.D_CELLS_STYLE = "d-body-cells-style";
                     internal.VIEW = "view";
                     internal.EX_PART = "expart";
                     internal.TIME_VALID_RANGE = "time-validate-range";
@@ -12717,6 +12812,7 @@ var nts;
                         $.data($grid, internal.COPY_HISTORY, null);
                         $.data($grid, internal.EDIT_HISTORY, null);
                         $.data($grid, internal.STICK_HISTORY, null);
+                        $.data($grid, internal.DET, null);
                         var exTable = helper.getExTableFromGrid($grid);
                         if (!exTable)
                             return;
