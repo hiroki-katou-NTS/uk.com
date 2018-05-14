@@ -2821,22 +2821,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 let hours = value.split("-")[1].split(":");
                 if (Number(hours[0]) > 15 || (Number(hours[0]) == 15 && hours[1] != "00")) {
                     check1174 = true;
-                    $("#next-month").attr('style', 'background-color: red !important');
-                } else {
-                    $("#next-month").attr('style', 'background-color: white !important');
                 }
-            } else {
-                $("#next-month").attr('style', 'background-color: white !important');
             }
             // check
             let numberMonth = moment.duration(self.nextMonthTransferredMoneyTime()).asMinutes();
             if (breakTimeDay.am <= numberMonth) {
                 check1175 = true;
-                $("#next-month").attr('style', 'background-color: red !important');
+            } 
+            if (check1174 || check1175) {
+                 $("#next-month").attr('style', 'background-color: red !important');
             } else {
                 $("#next-month").attr('style', 'background-color: white !important');
             }
-
             if (check1174) {
                 nts.uk.resource.getMessage("Msg_1174");
                 $("#next-month").ntsError("set", nts.uk.resource.getMessage("Msg_1174"), "Msg_1174");
