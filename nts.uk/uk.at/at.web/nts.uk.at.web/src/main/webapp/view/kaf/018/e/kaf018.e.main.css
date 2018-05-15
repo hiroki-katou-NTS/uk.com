@@ -1,5 +1,6 @@
 #contents-area{
 	margin: 20px;
+	height: auto !important;
 }
 #tbl-control{
 	width: 1000px;

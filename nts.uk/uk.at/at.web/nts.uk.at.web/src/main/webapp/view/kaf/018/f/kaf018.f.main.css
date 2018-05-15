@@ -35,8 +35,8 @@
 }
 
 .extable-header-leftmost tr td {
-	padding-left: 5px;
-	padding-right: 5px;
+	padding-left: 2px;
+	padding-right: 2px;
 }
 
 .extable-body-leftmost tr td:NTH-CHILD(1) {
