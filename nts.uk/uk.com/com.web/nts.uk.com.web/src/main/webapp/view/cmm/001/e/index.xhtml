@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 800,
+					width : 815,
 					height : 550
 				};
 			</script>
@@ -22,23 +22,17 @@
 		<ui:define name="content">
 			<div id="content-area" class="contents-area fixed-flex-layout"
 				style="display: block;">
-				<div style="padding: 10px;">
+				<div style="padding-top: 20px; padding-left: 20px;">
 					<label>#{i18n.getText('CMM001_41')}</label>
 				</div>
 				<div class="div-table">
 					<table data-bind="name : #{i18n.getText('CMM001_42')};">
-						<colgroup>
-							<col width="20px" />
-							<col width="170px" />
-							<col width="280px" />
-							<col width="310px" />
-						</colgroup>
 						<thead>
 							<tr class="bg-green">
-								<th><div data-bind="ntsCheckBox: {checked: isCheckedAll};"></div></th>
-								<th><label>#{i18n.getText('CMM001_43')}</label></th>
-								<th><label>#{i18n.getText('CMM001_44')}</label></th>
-								<th>
+								<th width="20px"><div data-bind="ntsCheckBox: {checked: isCheckedAll};"></div></th>
+								<th width="154px"><label>#{i18n.getText('CMM001_43')}</label></th>
+								<th width="264px"><label>#{i18n.getText('CMM001_44')}</label></th>
+								<th width="294px">
 									<div style="padding-bottom: 5px"><label>#{i18n.getText('CMM001_45')}</label></div>
 									<div id="copy-method-header" data-bind="ntsSwitchButton: {
 												options: switchOptions,
@@ -49,16 +43,17 @@
 												name: '#{i18n.getText('CMM001_45')}'}"
 										tabindex="2" style="display: inline-flex;"></div>
 									<div style="padding-top: 3px"><span class="caret-bottom outline"></span></div></th>
+								<th width="16px"></th>
 							</tr>
 						</thead>
 						<tbody data-bind="foreach: dataSource">
 							<tr data-bind="css: { selected: flag }">
-								<td><div data-bind="ntsCheckBox: {checked: flag}"
+								<td width="20px"><div data-bind="ntsCheckBox: {checked: flag}"
 										class="checkbox-item"></div></td>
-								<td data-bind="ifnot: isBorder, css: { 'border-custom' : isBorder }"><label
+								<td width="170px" data-bind="ifnot: isBorder, css: { 'border-custom' : isBorder }"><label
 									data-bind="text: systemType;"></label></td>
-								<td><label data-bind="text: masterCopyCategory"></label></td>
-								<td><div data-bind="ntsSwitchButton: {
+								<td width="280px"><label data-bind="text: masterCopyCategory"></label></td>
+								<td width="310px"><div data-bind="ntsSwitchButton: {
 												options: $parent.switchOptions,
 												optionsValue: 'copyMethod',
 												optionsText: 'text',
