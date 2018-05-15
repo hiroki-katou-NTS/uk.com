@@ -1,64 +1,42 @@
-.image-left{
-	float: left;
-	margin-right: 20px;
-}
-.image-right{
-	float: right;
-	margin-right: 20px;
-}
 
-.clear {
-	clear: both;
-}
-
-.button-image {
+#J1 {
 	margin-left: 100px;
-	margin-right: 100px;	
 }
-
-.title {
-	margin: 10px;
+#J2 {
+	margin-top: 20px;
+	height:20px !important;
+	
 }
-
-.title-left {
-	margin-left: 150px;
-	vertical-align: 20px;
+#J2_1 {
+	margin-left: 100px;
 }
-
-.title-right {
-	margin-right: 10px;
-	vertical-align: 12px;
-	padding-bottom: 20px;
-	float: right;	
+#J2_2 {
+	margin-left:5px;
 }
-
-.import-creation {
-	background-image: url("../resource/外部出力A1.jpg");
-	background-size: 100%;
-	height: 254px;
-	width: 257px;
-	background-repeat: no-repeat;
-	margin-left: 50px;
+#J2_3 {
+	margin-left:10px;
 }
-
-.setting-creation {
-	background-image: url("../resource/外部出力A2.jpg");
-	background-size: 100%;
-	height: 254px;
-	width: 264px;
-	background-repeat: no-repeat;
-	margin-left: 50px;
+#J2_4 {
+	margin-left:5px;
 }
-
-.history-reference {
-	background-image: url("../resource/外部出力A3.jpg");
-	background-size: 100%;
-	width: 286px;
-	height: 109px;
-	background-repeat: no-repeat;
-	margin-right: 50px;
+#J2_5 {
+	margin-left:5px;
 }
-
-.clear {
-	clear: both;
+#J4_1 {
+	margin-left: 100px;
+	margin-top: 10px;
+}
+#J4_2 {
+	margin-left:290px;
+}
+#J5_1 {
+	margin-left: 100px;
+	margin-top: 20px;
+}
+#J5_2 {
+	margin-left:20px;
+}
+#J6 {
+	margin-left:410px;
+	margin-top: -15px;
 }
