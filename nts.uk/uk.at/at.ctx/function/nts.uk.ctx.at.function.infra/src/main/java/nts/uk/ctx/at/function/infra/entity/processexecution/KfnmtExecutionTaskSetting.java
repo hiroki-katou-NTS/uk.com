@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.infra.entity.processexecution;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -98,13 +99,6 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 	@Column(name = "NEXT_EXEC_DATE_TIME")
 	public GeneralDateTime nextExecDateTime;
 	
-	/* 繰り返し間隔(日) */
-	@Column(name = "REP_INR_DAY")
-	public Integer repIntervalDay;
-	
-	/* 繰り返し間隔（週） */
-	@Column(name = "REP_INR_WEEK")
-	public Integer repIntervalWeek;
 	
 	/* 日 */
 	@Column(name = "MONDAY")
@@ -182,6 +176,13 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 	@Column(name = "REP_INR_DEC")
 	public Integer december;
 	
+	/* スケジュールID */
+	@Column(name = "SCHEDULE_ID")
+	public String scheduleId;
+	
+	@Column(name = "END_SCHEDULE_ID")
+	public String endScheduleId;
+	
 	@OneToMany(mappedBy="execTaskSetting", cascade = CascadeType.ALL)
 	@JoinTable(name = "KFNMT_REP_MONTH_DATE")
 	public List<KfnmtRepeatMonthDay> repeatMonthDateList;
@@ -202,17 +203,13 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 				this.endTime == null ? null : new EndTime(this.endTime));
 		
 		// 繰り返し間隔
-		OneDayRepeatInterval oneDayRepInr =
-				new OneDayRepeatInterval(
-						this.oneDayRepInterval == null ? null : new OneDayRepeatIntervalDetail(this.oneDayRepInterval),
-						EnumAdaptor.valueOf(this.oneDayRepCls, OneDayRepeatClassification.class));
+		OneDayRepeatInterval oneDayRepInr = new OneDayRepeatInterval(this.oneDayRepInterval == null ? null : EnumAdaptor.valueOf(this.oneDayRepInterval,OneDayRepeatIntervalDetail.class), EnumAdaptor.valueOf(this.oneDayRepCls, OneDayRepeatClassification.class));
+				
 		// 終了日日付指定
 		TaskEndDate endDate = new TaskEndDate(
 				EnumAdaptor.valueOf(this.endDateCls, EndDateClassification.class),
 				this.endDate);
 		
-		// 繰り返し詳細設定(毎日)
-		RepeatDetailSettingDaily daily = new RepeatDetailSettingDaily(new DailyDaySetting(this.repIntervalDay));
 		
 		// 繰り返し詳細設定(毎週)
 		RepeatDetailSettingWeekly weekly =
@@ -223,8 +220,7 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 												this.thursday == 1 ? true : false,
 												this.friday == 1 ? true : false,
 												this.saturday == 1 ? true : false,
-												this.sunday == 1 ? true : false),
-						new WeeklyWeekSetting(this.repIntervalWeek));
+												this.sunday == 1 ? true : false));
 		
 		// 繰り返し詳細設定(毎月)
 		List<RepeatMonthDaysSelect> days =
@@ -248,7 +244,7 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 		RepeatDetailSettingMonthly monthly = new RepeatDetailSettingMonthly(days, months);
 		
 		// 繰り返し詳細設定
-		RepeatDetailSetting detailSetting = new RepeatDetailSetting(daily, weekly, monthly);
+		RepeatDetailSetting detailSetting = new RepeatDetailSetting(weekly, monthly);
 		
 		return new ExecutionTaskSetting(oneDayRepInr,
 										new ExecutionCode(this.kfnmtExecTaskSettingPK.execItemCd),
@@ -261,7 +257,7 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 										EnumAdaptor.valueOf(this.repeatContent, RepeatContentItem.class),
 										detailSetting,
 										startDate,
-										new StartTime(this.startTime));
+										new StartTime(this.startTime),this.scheduleId,this.endScheduleId);
 	}
 	
 	/**
@@ -277,15 +273,13 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 							domain.getEndTime() == null ? 0 : domain.getEndTime().getEndTimeCls().value,
 							domain.getEndTime().getEndTime() == null ? null : domain.getEndTime().getEndTime().v(),
 							domain.getOneDayRepInr() == null ? 0 : domain.getOneDayRepInr().getOneDayRepCls().value,
-							domain.getOneDayRepInr().getDetail() == null ? null : domain.getOneDayRepInr().getDetail().v(),
+							(domain.getOneDayRepInr().getDetail() == null || !domain.getOneDayRepInr().getDetail().isPresent()) ? null : domain.getOneDayRepInr().getDetail().get().value,
 							domain.isRepeat() ? 1 : 0,
 							domain.getContent() == null ? 0 : domain.getContent().value,
 							domain.getEndDate() == null ? 0 : domain.getEndDate().getEndDateCls().value,
 							domain.getEndDate() == null ? null : domain.getEndDate().getEndDate(),
 							domain.isEnabledSetting() ? 1 : 0,
-							domain.getNextExecDateTime() == null ? null : domain.getNextExecDateTime(),
-							domain.getDetailSetting().getDaily() == null ? null : domain.getDetailSetting().getDaily().getDay().v(),
-							domain.getDetailSetting().getWeekly() == null ? null : domain.getDetailSetting().getWeekly().getWeeklyWeekSetting().v(),
+							(domain.getNextExecDateTime() == null || !domain.getNextExecDateTime().isPresent())  ? null : domain.getNextExecDateTime().get(),
 							domain.getDetailSetting().getWeekly().getWeekdaySetting().isMonday() ? 1 : 0,
 							domain.getDetailSetting().getWeekly().getWeekdaySetting().isTuesday() ? 1 : 0,
 							domain.getDetailSetting().getWeekly().getWeekdaySetting().isWednesday() ? 1 : 0,
@@ -305,6 +299,7 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 							domain.getDetailSetting().getMonthly().getMonth().isOctober() ? 1 : 0,
 							domain.getDetailSetting().getMonthly().getMonth().isNovember() ? 1 : 0,
 							domain.getDetailSetting().getMonthly().getMonth().isDecember() ? 1 : 0,
+							domain.getScheduleId(), (domain.getEndScheduleId()!=null && domain.getEndScheduleId().isPresent())?domain.getEndScheduleId().get():null,		
 							new ArrayList<>());
 	}
 }
