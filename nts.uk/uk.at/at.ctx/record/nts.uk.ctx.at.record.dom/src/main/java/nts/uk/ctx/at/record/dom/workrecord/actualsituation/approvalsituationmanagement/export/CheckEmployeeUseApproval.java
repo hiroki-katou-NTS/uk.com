@@ -33,8 +33,9 @@ public class CheckEmployeeUseApproval {
 	   String companyId = AppContexts.user().companyId();
 	   Optional<ApprovalProcessingUseSetting> appUseOpt = approvalProcessingUseSettingRepository.findByCompanyId(companyId);
 	   if(appUseOpt.isPresent() && !appUseOpt.get().getUseDayApproverConfirm()) return false;
-	   Optional<AffJobTitleSidImport>  affJobTitleSidOpt= affJobTitleAdapter.findByEmployeeId(employeeId, date);
-	   if(!affJobTitleSidOpt.isPresent()) return false;
-	   return checkPosstionApproval.checkPossitionApproval(affJobTitleSidOpt.get().getJobTitleId(), appUseOpt.get().getLstJobTitleNotUse());
+	   else return true;
+//	   Optional<AffJobTitleSidImport>  affJobTitleSidOpt= affJobTitleAdapter.findByEmployeeId(employeeId, date);
+//	   if(!affJobTitleSidOpt.isPresent()) return false;
+//	   return checkPosstionApproval.checkPossitionApproval(affJobTitleSidOpt.get().getJobTitleId(), appUseOpt.get().getLstJobTitleNotUse());
    }
 }

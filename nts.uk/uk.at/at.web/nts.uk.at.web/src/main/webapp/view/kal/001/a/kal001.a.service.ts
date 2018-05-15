@@ -22,15 +22,44 @@ module nts.uk.at.view.kal001.a.service {
             let command = new ExtractAlarmCommand(listEmployee, alarmCode, 
                                                    _.map(listPeriodByCategory, (item) =>{ return new PeriodByCategoryCommand(item);}));
             
-            return nts.uk.request.ajax("at", paths.extractAlarm, command);
+            let def = $.Deferred();
+            
+            nts.uk.request.ajax("at", paths.extractAlarm, command).done(function(task){
+                nts.uk.deferred.repeat(conf => conf.task(() => {
+                    return nts.uk.request.asyncTask.getInfo(task.id).done(function(res: any) {
+                        if(res.succeeded){
+                            let data = {};
+                            let sorted = _.sortBy(res.taskDatas, function(t){ return parseInt(t.key.replace("dataNo", "")) });
+                            let dataX = []; 
+                            _.forEach(sorted, item => {
+                                if(item.key === "extracting" ){
+                                    data["extracting"] = item.valueAsBoolean;
+                                } else if(item.key === "nullData"){
+                                    data["nullData"] = item.valueAsBoolean;
+                                } else {
+                                    dataX.push(JSON.parse(item.valueAsString));     
+                                }
+                            });
+                            data["extractedAlarmData"] = dataX;
+                            def.resolve(data);
+                        } else if(res.failed){
+                            def.reject(res.error);
+                        }
+                    });
+                }).while(infor => {
+                    return (infor.pending || infor.running) && infor.status != "REQUESTED_CANCEL";
+                }).pause(1000));
+            });
+            
+            return def.promise();
         }
     
         export function isExtracting(): JQueryPromise<boolean> {
             return nts.uk.request.ajax("at", paths.isExtracting);
         }        
 
-        export function extractStarting(): JQueryPromise<string> {                              
-              return nts.uk.request.ajax("at", paths.extractStarting);
+        export function extractStarting(): JQueryPromise<string> {
+            return nts.uk.request.ajax("at", paths.extractStarting);
         }
         
         export function extractFinished(statusId): JQueryPromise<void>{
