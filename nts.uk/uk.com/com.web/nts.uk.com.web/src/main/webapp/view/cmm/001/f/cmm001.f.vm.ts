@@ -111,6 +111,7 @@ module nts.uk.com.view.cmm001.f {
                         return nts.uk.request.asyncTask.getInfo(self.taskId()).done(function(res: any) {
                             // update state on screen
                             if (res.running || res.succeeded || res.cancelled) {
+                                self.isFinish(true);
                                 _.forEach(res.taskDatas, item => {
                                     if (item.key.substring(0, 5) == "DATA_") {
                                         if (self.readIndex.indexOf(parseInt(item.key.substring(5))) != -1) {
@@ -136,8 +137,8 @@ module nts.uk.com.view.cmm001.f {
                                     }
                                     //self.totalRecord(self.numberSuccess() + self.numberFail());                                                             
                                 });
-                                
-                                if (self.pauseFlag() == false) {
+
+                                if (self.isFinish() == true && !self.isError() == true) {
                                     self.executionState(nts.uk.resource.getText("CMM001_64"));
                                 }
                                 self.countData(self.numberFail() + self.numberSuccess());
@@ -157,11 +158,11 @@ module nts.uk.com.view.cmm001.f {
                                     $('#closeDialog').focus();
                                 }
                                 if (self.numberFail() > 0) {
-                                    if (!self.pauseFlag() == false) {
-                                        self.executionState(nts.uk.resource.getText("CMM001_65"));
-                                    } 
                                     self.isError(true);
                                     $('#tableShowError').show();
+                                    if (self.isFinish() == true && self.isError() == true) {
+                                        self.executionState(nts.uk.resource.getText("CMM001_65"));
+                                    }
                                 }
                                 self.numberFail(self.errorLogs().length);
                                 self.readIndex.removeAll();
@@ -191,7 +192,7 @@ module nts.uk.com.view.cmm001.f {
 
             public getExecutionStartDate() {
                 let currentDate: string;
-//                currentDate = moment().toDate().toString();
+                //                currentDate = moment().toDate().toString();
                 currentDate = new Date().toLocaleString();
                 console.log(currentDate);
                 return currentDate;
