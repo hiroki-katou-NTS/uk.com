@@ -23,6 +23,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
  *
  */
 public class MappingFactory {
+
 	
 	public static void mapItemClass(PeregDto peregDto, LayoutPersonInfoClsDto classItem) {
 

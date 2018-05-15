@@ -19,6 +19,7 @@ public class AddSpeLeaGrant13CommandHandler
 		extends CommandHandlerWithResult<AddSpecialLeaveGrant13Command, PeregAddCommandResult>
 		implements PeregAddCommandHandler<AddSpecialLeaveGrant13Command> {
 
+		
 	@Inject
 	private SpeLeaveGrantCommandHandler addSpeLeaveGrantCommandHandler;
 

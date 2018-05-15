@@ -39,6 +39,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
 @Stateless
 public class ItemDefFinder {
+
 	
 	@Inject
 	private PerInfoItemDefRepositoty perItemRepo;

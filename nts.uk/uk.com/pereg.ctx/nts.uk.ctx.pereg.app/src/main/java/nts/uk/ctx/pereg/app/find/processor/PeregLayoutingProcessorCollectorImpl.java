@@ -72,6 +72,7 @@ import nts.uk.shr.pereg.app.find.PeregFinder;
 @SuppressWarnings("serial")
 public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcessorCollector {
 
+
 	/** ctg single finder */
 	private static final List<TypeLiteral<?>> FINDER_CTG_SINGLE_HANDLER_CLASSES = Arrays.asList(
 			// CS00001  社員データ管理

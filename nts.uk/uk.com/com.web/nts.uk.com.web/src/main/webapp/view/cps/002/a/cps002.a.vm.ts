@@ -1,4 +1,5 @@
 module cps002.a.vm {
+
     import alert = nts.uk.ui.dialog.alert;
     import text = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
@@ -227,10 +228,60 @@ module cps002.a.vm {
 
             });
 
+            self.currentEmployee().employeeCode.subscribe((employeeCode) => {
+                var self = this;
+                self.updateCardNumber();
+            });
+            
+            self.currentEmployee().cardNo.subscribe((cardNo) => {
+                let self = this;
+                let stampCardMehod = self.stampCardEditing.method;
+                let maxLength = self.stampCardEditing.digitsNumber;
+                if (cardNo.length < maxLength) {
+                    
+                    let textValue = cardNo;
+                    switch (stampCardMehod) {
+                        case EDIT_METHOD.PreviousZero: {
+                            textValue= self.autoChange('0', POSITION.Previous, textValue, maxLength);
+                            break;
+                        }
+                        case EDIT_METHOD.AfterZero: {
+                            textValue= self.autoChange('0', POSITION.After, textValue, maxLength);
+                            break;
+                        }
+                        case EDIT_METHOD.PreviousSpace: {
+                            textValue= self.autoChange(' ', POSITION.Previous, textValue, maxLength);
+                            break;
+                        }
+                        case EDIT_METHOD.AfterSpace: {
+                            textValue= self.autoChange(' ', POSITION.After, textValue, maxLength);
+                            break;
+                        }
+                        default: {
+                            break;
+                        }
+                    } 
+                    self.currentEmployee().cardNo(textValue);
+                }
+            });
+
             self.start();
 
         }
-
+        
+        autoChange(character: string, position: POSITION, textValue: string, maxLength: number): string {
+            if (position == POSITION.Previous) {
+                while (textValue.length < maxLength) {
+                    textValue = character + textValue;
+                }
+            } else {
+                while (textValue.length < maxLength) {
+                    textValue = textValue + character;
+                }
+            }
+            return textValue;
+        }
+        
         loadCopySettingItemData() {
 
             let self = this,
@@ -264,9 +315,26 @@ module cps002.a.vm {
             });
             service.getLayout().done((layout) => {
                 if (layout) {
-                    service.getUserSetting().done((result: IUserSetting) => {
-                        if (result) {
-                            self.getEmployeeCode(result).done((empCode) => {
+                    let dfs: Array<JQueryDeferred<any>> = [$.Deferred(), $.Deferred()];
+
+                    service.getStamCardEdit().done(data => {
+                        dfs[0].resolve(data);
+                    });
+
+                    service.getUserSetting().done(data => {
+                        dfs[1].resolve(data);
+                    });
+
+                    $.when.apply($, dfs).then(() => {
+                        let stampCardEditing = arguments[0];
+                        let userSetting = arguments[1];
+                        
+                        __viewContext.primitiveValueConstraints["StampNumber"].maxLength = stampCardEditing.digitsNumber;
+
+                        self.stampCardEditing = new StampCardEditing(stampCardEditing.method, stampCardEditing.digitsNumber);
+
+                        if (userSetting) {
+                            self.getEmployeeCode(userSetting).done((empCode) => {
                                 self.currentEmployee().employeeCode(empCode);
                                 self.getCardNumber(result);
 
@@ -1021,6 +1089,17 @@ module cps002.a.vm {
 
     }
 
+    enum EDIT_METHOD {
+        PreviousZero = 0,
+        AfterZero = 1,
+        PreviousSpace = 2,
+        AfterSpace = 3
+    }
+    
+    enum POSITION {
+        Previous = 0,
+        After = 1
+    }
 
 
 }

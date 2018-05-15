@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.base.SpecialVacationCD;
 // 特別休暇付与残数データ
 public class SpecialLeaveGrantRemainingData extends AggregateRoot {
 
+
 	// 特別休暇ID
 	private String specialId;
 	

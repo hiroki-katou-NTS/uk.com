@@ -66,6 +66,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
 @Stateless
 public class LayoutFinder {
 
+
 	@Inject
 	private EmployeeDataMngInfoRepository employeeDataRepo;
 

@@ -10,6 +10,7 @@ import nts.arc.time.GeneralDate;
 @NoArgsConstructor
 public class PeregQuery {
 
+
 	private String categoryId;
 
 	private String categoryCode;

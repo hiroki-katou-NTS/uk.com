@@ -44,6 +44,7 @@ import nts.uk.shr.pereg.app.find.PeregQuery;
 @Stateless
 public class RegisterLayoutFinder {
 
+
 	// sonnlb start code
 	@Inject
 	private INewLayoutReposotory repo;

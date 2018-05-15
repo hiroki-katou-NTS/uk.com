@@ -31,6 +31,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
 @Stateless
 public class InitValueSetItemFinder {
 
+
 	@Inject
 	private PerInfoInitValueSetItemRepository settingItemRepo;
 
