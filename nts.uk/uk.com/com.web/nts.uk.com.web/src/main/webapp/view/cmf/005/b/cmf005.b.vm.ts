@@ -280,11 +280,25 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 }
                 if (categoryC && (categoryC.length > 0)) {
                     self.listDataCategory.removeAll();
+                    self.requiredDate = ko.observable(false);
+                    self.requiredMonth = ko.observable(false);
+                    self.requiredYear = ko.observable(false);
                     for (let i = 0; i < categoryC.length; i++) {
                         self.listDataCategory.push(categoryC[i]);
+
+                        if (!self.requiredMonth() && categoryC[i].timeStore == model.TIME_STORE.MONTHLY) {
+                            self.requiredMonth = ko.observable(true);
+                        }
+
+                        if (!self.requiredYear() && categoryC[i].timeStore == model.TIME_STORE.ANNUAL) {
+                            self.requiredYear = ko.observable(true);
+                        }
+
+                        if (!self.requiredDate() && categoryC[i].timeStore == model.TIME_STORE.DAILY) {
+                            self.requiredDate = ko.observable(true);
+                        }
                     }
 
-                    self.setRangePickerRequire();
                 }
 
                 $("#B4_2").focus();
@@ -353,7 +367,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         */
         validateDatePicker() {
             let self = this;
-            if (self.requiredDate) {;
+            if (self.requiredDate) {
+                ;
                 if (self.dateValue().startDate && self.dateValue().endDate) {
                     if (self.dateValue().startDate > self.dateValue().endDate) {
                         return false;
@@ -411,26 +426,6 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 }
             } else {
                 return true;
-            }
-        }
-
-        /**
-        * Setting require for RangePicker
-        */
-        private setRangePickerRequire(): void {
-            let self = this;
-
-            self.requiredDate = ko.observable(false);
-            self.requiredMonth = ko.observable(false);
-            self.requiredYear = ko.observable(false);
-            for (var i = 0; i < self.listDataCategory().length; i++) {
-                if (self.listDataCategory()[i].timeStore == 0) {
-                    self.requiredMonth = ko.observable(true);
-                } else if (self.listDataCategory()[i].timeStore == 1) {
-                    self.requiredYear = ko.observable(true);
-                } else if (self.listDataCategory()[i].timeStore == 3) {
-                    self.requiredDate = ko.observable(true);
-                }
             }
         }
 
@@ -630,7 +625,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
     function timeStore(value, row) {
         if (value == model.TIME_STORE.MONTHLY) {
             return getText('Enum_TimeStore_MONTHLY');
-        } else if ( value == model.TIME_STORE.ANNUAL) {
+        } else if (value == model.TIME_STORE.ANNUAL) {
             return getText('Enum_TimeStore_ANNUAL');
         } else if (value == model.TIME_STORE.FULL_TIME) {
             return getText('Enum_TimeStore_FULL_TIME');
