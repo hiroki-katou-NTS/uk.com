@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdm001.j {
+module nts.uk.at.view.kdm001.k {
     export module viewmodel {
         export class ScreenModel {
         items: KnockoutObservableArray<ItemModel>;
@@ -15,6 +15,7 @@ module nts.uk.at.view.kdm001.j {
         numberDay: KnockoutObservableArray<any>;      
         constructor() {
             var self = this;
+            self.items = ko.observableArray([]);
             self.initScreen();
             self.currentCode = ko.observable();
             self.currentCodeList = ko.observableArray([]);
@@ -29,19 +30,18 @@ module nts.uk.at.view.kdm001.j {
             self.employeeName = ko.observable('employeeName');
             self.dateHoliday = ko.observable('2016/10/2');
             self.numberDay = ko.observable('numberDay');
-            self.items = ko.observableArray([]);
             
             for(let i = 1; i < 100; i++) {
-                self.items.push(new ItemModel('00' + i, "2010/1/10", "1.0E"));
+                self.items.push(new ItemModel('00' + i, "2010/1/10", "1.0F"));
             }
             
             self.columns = ko.observableArray([
                 { headerText: 'コード', key: 'code', width: 100, hidden: true },
-                { headerText: nts.uk.resource.getText("KDM001_95"), key: 'date', width: 110 }, 
+                { headerText: nts.uk.resource.getText("KDM001_95"), key: 'date', width: 100 }, 
                 { headerText: nts.uk.resource.getText("KDM001_96"), key: 'useNumberDay', width: 100} 
             ]); 
+            
         }
-        
     }
     
     class ItemModel {

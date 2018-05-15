@@ -1,6 +1,6 @@
-module nts.uk.com.view.kdm001.j {
+module nts.uk.at.view.kdm001.j {
     __viewContext.ready(function() {
-        let screenModel = new nts.uk.com.view.kdm001.j.viewmodel.ScreenModel();
+        let screenModel = new nts.uk.at.view.kdm001.j.viewmodel.ScreenModel();
             __viewContext.bind(screenModel);
             
     });
