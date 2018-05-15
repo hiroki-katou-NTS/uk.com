@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
-import nts.arc.time.GeneralDate;
-
 /**
  * ドメインサービス：日別実績計算処理
  * @author shuichu_ishida

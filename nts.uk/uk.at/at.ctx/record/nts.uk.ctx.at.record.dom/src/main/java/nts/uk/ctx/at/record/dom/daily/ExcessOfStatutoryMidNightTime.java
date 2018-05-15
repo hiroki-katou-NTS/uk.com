@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.daily;
 
 import lombok.Value;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 

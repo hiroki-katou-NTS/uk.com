@@ -70,12 +70,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	//必要になったら追加
 	//private WorkingHours
 	//private RaisingSalaryTime
-	//private Optional<> flexTimeSheet;
 	private final List<WithinWorkTimeFrame> withinWorkTimeFrame;
 	private List<LeaveEarlyDecisionClock> leaveEarlyDecisionClock = new ArrayList<>();
 	private List<LateDecisionClock> lateDecisionClock = new ArrayList<>();
-//	private List<LateTimeOfDaily> lateTimeOfDaily;
-//	private final FlexWithinWorkTimeSheet flexTimeSheet;
 	
 	
 	
@@ -272,19 +269,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	}
 
 	/**
-	 * 所定時間帯と重複している就業時間帯設定時間を取り出す。
-	 * @param start 開始時刻
-	 * @param end　終了時刻
-	 */
-	private static List<EmTimeZoneSet> extractBetween(List<EmTimeZoneSet> timeZoneList,TimeWithDayAttr start,TimeWithDayAttr end){
-		List<EmTimeZoneSet> returnList = new ArrayList<>();
-		timeZoneList.forEach(source ->{ source.getTimezone().timeSpan().getDuplicatedWith(new TimeSpanForCalc(start, end)).ifPresent(duplicated -> {
-											returnList.add(source.newSpanWith(duplicated.getStart(), duplicated.getEnd()));
-										});
-									});
-		return returnList;
-	}
-	/**
 	 * 平日出勤の出勤時間帯を取得
 	 * @param fixedWorkSetting 固定勤務設定クラス
 	 * @param attendanceHolidayAttr 出勤休日区分
@@ -375,10 +359,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			   PredetermineTimeSetForCalc predetermineTimeSet,
 			   Optional<WorkTimeCode> siftCode,
 			   Optional<PersonalLaborCondition> personalCondition, 
-//			   LateTimeSheet lateTimeSheet,
-//			   LeaveEarlyTimeSheet leaveEarlyTimeSheet,
-//			   LateTimeOfDaily lateTimeOfDaily,
-//			   LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
 			   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 			   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			   WorkingSystem workingSystem,

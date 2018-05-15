@@ -68,7 +68,6 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 						}
 						if(flg) addItemList.add(item);
 					}
-					//addItemList.addAll(addItems);
 				}
 			}
 			//ユーザ設定
@@ -87,7 +86,6 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 						}
 						if(flg) addItemList.add(item);
 					}
-					//addItemList.addAll(addItems);
 				}
 			}
 		}

@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,28 +19,17 @@ import nts.uk.ctx.at.record.dom.daily.vacationusetime.TimeDigestOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.LeaveSetAdded;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.ENUM.CalcurationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfFlexWork;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfIrregularWork;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfRegularWork;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.CalculationByActualTimeAtr;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
-import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.AddVacationSet;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.worktype.VacationCategory;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 休暇クラス
@@ -355,35 +343,6 @@ public class VacationClass {
 //
 //		case VARIABLE_WORKING_TIME_WORK:
 //			return addSettingOfIrregularWork.getCalculationByActualTimeAtr(statutoryDivision);
-//
-//		case EXCLUDED_WORKING_CALCULATE:
-//			throw new RuntimeException("不正な労働制です");
-//		default:
-//			throw new RuntimeException("不正な労働制です");
-//		}
-//	}
-
-
-//	/**
-//	 * 休暇加算設定の取得
-//	 * @author ken_takasu
-//	 * @param workingSystem
-//	 * @return
-//	 */
-//	private NotUseAtr getUseAtr(WorkingSystem workingSystem, 
-//								PremiumAtr premiumAtr,
-//								WorkRegularAdditionSet addSettingOfRegularWork,
-//								WorkDeformedLaborAdditionSet addSettingOfIrregularWork,
-//								WorkFlexAdditionSet addSettingOfFlexWork) {
-//		switch (workingSystem) {
-//		case REGULAR_WORK:
-//			return addSettingOfRegularWork.getNotUseAtr(statutoryDivision);
-//
-//		case FLEX_TIME_WORK:
-//			return addSettingOfFlexWork.getNotUseAtr(statutoryDivision);
-//
-//		case VARIABLE_WORKING_TIME_WORK:
-//			return addSettingOfIrregularWork.getNotUseAtr(statutoryDivision);
 //
 //		case EXCLUDED_WORKING_CALCULATE:
 //			throw new RuntimeException("不正な労働制です");

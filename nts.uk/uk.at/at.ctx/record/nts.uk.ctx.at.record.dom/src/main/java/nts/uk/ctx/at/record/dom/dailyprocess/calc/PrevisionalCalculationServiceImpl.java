@@ -25,8 +25,6 @@ import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveAttr;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.SalaryCalAttr;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.SpecificSalaryCalAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectWorkInforDomainService;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkingTimeSheet;

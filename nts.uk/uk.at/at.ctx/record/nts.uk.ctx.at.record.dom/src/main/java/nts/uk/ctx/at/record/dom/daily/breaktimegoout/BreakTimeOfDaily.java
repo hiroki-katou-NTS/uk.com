@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
-
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
@@ -17,7 +15,6 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetRoundingAtr;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 
 /**

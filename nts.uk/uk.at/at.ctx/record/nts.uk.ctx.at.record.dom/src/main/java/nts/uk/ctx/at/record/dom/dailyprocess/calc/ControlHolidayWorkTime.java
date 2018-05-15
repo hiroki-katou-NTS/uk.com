@@ -6,7 +6,6 @@ import java.util.List;
 import lombok.Value;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 
 /**

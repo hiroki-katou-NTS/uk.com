@@ -45,7 +45,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
@@ -53,7 +52,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
-import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
@@ -204,60 +202,6 @@ public class OverTimeOfDaily {
 		}
 		return transTotalTime;
 	}
-	
-	/**
-	 * 早出・普通の設定(優先順位)を見て並び替える
-	 * @param overTimeWorkFrameTimeSheetList
-	 * @param prioritySet
-	 * @return
-	 */
-	public static List<OverTimeFrameTimeSheet> sortedByPriority(List<OverTimeFrameTimeSheet> overTimeWorkFrameTimeSheetList,StatutoryPrioritySet prioritySet){
-		List<OverTimeFrameTimeSheet> copyList = new ArrayList<>();
-		if(prioritySet.isPriorityNormal()) {
-			/*普通を優先*/
-			//copyList.addAll(overTimeWorkFrameTimeSheetList.stream().filter(tc -> !tc.isGoEarly()).collect(Collectors.toList()));
-			//copyList.addAll(overTimeWorkFrameTimeSheetList.stream().filter(tc -> tc.isGoEarly()).collect(Collectors.toList()));
-		}else {
-			/*早出を優先*/
-			//copyList.addAll(overTimeWorkFrameTimeSheetList.stream().filter(tc -> tc.isGoEarly()).collect(Collectors.toList()));
-			//copyList.addAll(overTimeWorkFrameTimeSheetList.stream().filter(tc -> !tc.isGoEarly()).collect(Collectors.toList()));
-		}
-		return copyList;
-	}
-	
-	
-	/**
-	 * 指定時間の振替処理から呼ばれた振替処理
-	 * @param hurikaeAbleTime 振替可能時間
-	 * @param prioritySet 振替可能時間
-	 */
-	public void hurikakesyori(AttendanceTime hurikaeAbleTime,StatutoryPrioritySet prioritySet) {
-//		List<OverTimeFrameTimeSheetWork> hurikae = sortedByPriority(overTimeWorkFrameTimeSheet,prioritySet);
-//		AttendanceTime ableTransTime = new AttendanceTime(0);
-//		for(OverTimeFrameTimeSheetWork overTimeFrameTimeSheet : hurikae) {
-////			if(/*Not 振替大将*/) {
-////				continue;
-////			}
-//			//残業時間 >= 振替可能時間
-//			if(overTimeFrameTimeSheet.getOverWorkFrameTime().getOverTimeWork().getCalcTime().greaterThanOrEqualTo(hurikaeAbleTime.valueAsMinutes())) {
-//				ableTransTime = hurikaeAbleTime;
-//			}
-//			//残業時間 < 振替可能時間
-//			else {
-//				ableTransTime = overTimeFrameTimeSheet.getOverWorkFrameTime().getOverTimeWork().getCalcTime(); 
-//			}
-//			overTimeWorkFrameTime.stream().sorted((first,second) -> first.getOverWorkFrameNo().compareTo(second.getOverWorkFrameNo()));
-//			//残業枠時間帯に対する加算
-//			overTimeFrameTimeSheet.getOverWorkFrameTime().getOverTimeWork().addMinutes(ableTransTime, ableTransTime);
-//			overTimeFrameTimeSheet.getOverWorkFrameTime().getTransferTime().addMinutes(ableTransTime, ableTransTime);
-//			//日別実績の～～が持ってる枠に対する加算
-//			overTimeWorkFrameTime.get(overTimeFrameTimeSheet.getFrameNo().v()).getOverTimeWork().addMinutes(ableTransTime, ableTransTime);
-//			overTimeWorkFrameTime.get(overTimeFrameTimeSheet.getFrameNo().v()).getTransferTime().addMinutes(ableTransTime, ableTransTime);
-//			
-//			hurikaeAbleTime.minusMinutes(ableTransTime.valueAsMinutes());
-//		}
-	}
-	
 	
 	public OverTimeOfDaily createFromJavaType(List<OverTimeFrameTime> frameTimeList,
 											  ExcessOverTimeWorkMidNightTime midNightTime,
@@ -475,9 +419,6 @@ public class OverTimeOfDaily {
 	private void calcOverTimeFromUnuseTime(AttendanceTime actualWorkTime, AttendanceTime unUseBreakTime,
 										   OverTimeCalcNoBreak ootsukaFixedCalcSet, DailyUnit dailyUnit, AttendanceTime predTime
 										   ) {
-		//仮法定労働時間
-		AttendanceTime predetermineTime = predTime;
-		
 		//就業時間として計算か判定
 		if(ootsukaFixedCalcSet == null
 			|| ootsukaFixedCalcSet.getCalcMethod() == null
