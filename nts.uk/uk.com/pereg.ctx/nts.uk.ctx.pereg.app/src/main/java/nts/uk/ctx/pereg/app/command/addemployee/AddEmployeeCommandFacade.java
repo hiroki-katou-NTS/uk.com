@@ -39,6 +39,9 @@ public class AddEmployeeCommandFacade {
 	
 	public List<ItemsByCategory> createData(AddEmployeeCommand command) {
 		
+		// add new category cardNo to input
+		command.getInputs().add(createCardNoCategory(command.getCardNo()));
+		
 		if (command.getCreateType() == 3) {
 			return command.getInputs();
 		}
@@ -58,8 +61,7 @@ public class AddEmployeeCommandFacade {
 						command.getCategoryData(categoryCode)))
 				.filter(itemsByCategory -> itemsByCategory != null).collect(Collectors.toList());
 		
-		// add new category cardNo to input
-		composedData.add(createCardNoCategory(command.getCardNo()));
+		
 		
 		return composedData;
 		
