@@ -478,14 +478,14 @@ public class ApprovalStatusFinder {
 		AppWorkChangeFull appWorkChange = appDetailInfoRepo.getAppWorkChangeInfo(companyID, appId);
 		appContent += I18NText.getText("KAF018_250") + " ";
 		appContent += appWorkChange.getWorkTypeName() + appWorkChange.getWorkTimeName();
-		if (!Objects.isNull(appWorkChange.getWorkTimeStart1()) && !Objects.isNull(appWorkChange.getWorkTimeEnd1())) {
+		if (!appWorkChange.getWorkTimeStart1().equals("") && !appWorkChange.getWorkTimeEnd1().equals("")) {
 			appContent += Objects.isNull(appWorkChange.getGoWorkAtr1()) ? "" : I18NText.getText("KAF018_252");
 			appContent += appWorkChange.getWorkTimeStart1();
 			appContent += I18NText.getText("KAF018_220");
 			appContent += Objects.isNull(appWorkChange.getBackHomeAtr1()) ? "" : I18NText.getText("KAF018_252");
 			appContent += appWorkChange.getWorkTimeEnd1();
 		}
-		if (!Objects.isNull(appWorkChange.getWorkTimeStart2()) && !Objects.isNull(appWorkChange.getWorkTimeEnd2())) {
+		if (!appWorkChange.getWorkTimeStart2().equals("") && !appWorkChange.getWorkTimeEnd2().equals("")) {
 			appContent += Objects.isNull(appWorkChange.getGoWorkAtr2()) ? "" : I18NText.getText("KAF018_252");
 			appContent += appWorkChange.getWorkTimeStart2();
 			appContent += I18NText.getText("KAF018_220");
