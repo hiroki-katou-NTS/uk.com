@@ -100,9 +100,9 @@
 				                            			<input data-bind="ntsTextEditor: {
 				                            				name: '#[KWR008_31]',
 				                            				value : $data.headingName,
-				                            				required: false,
+				                            				required: $index() == 0,
 				                            				option : { width : '190px'},
-				                            				constraint: 'ItemOutTblBookHeadingName'}"  />
+				                            				constraint: 'ItemOutTblBookHeadingName'}" />
 				                            	</td>
 				                            	<td><button id="btnSettingB16_5"  data-bind="click: function() {$parent.openKDW007($data.sortBy)}, enable: true, visible: $data.sortBy() > 1">#{i18n.getText('KWR008_34')}</button></td>
 				                            	<td>
