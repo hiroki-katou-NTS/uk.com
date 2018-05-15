@@ -236,7 +236,7 @@ public class ErAlWorkRecordCheckService {
 					return false;
 				}
 			}
-			return false;
+			return true;
 		}).map(em -> em.getEmployeeId()).collect(Collectors.toList());
 	}
 

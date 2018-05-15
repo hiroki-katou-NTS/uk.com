@@ -2765,13 +2765,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 val189 = self.natural(number189) * Number(self.natural(breakTimeDay.day)) + (number189 - self.natural(number189)) / 0.5 * self.natural(breakTimeDay.am),
                 minuNextMonth;
             if (self.absentDeductionTime() != undefined) {
-                minuNextMonth = (dataCalc.value191 + dataCalc.value21) - (val189 + self.absentDeductionTime())
+                minuNextMonth = ((dataCalc.value191 + dataCalc.value21) - (val189 + self.absentDeductionTime())) * (-1)
             }
             else{
                return ; 
             }
 
-            minuNextMonth = minuNextMonth < 0 ? 0 : minuNextMonth * (-1);
+           // minuNextMonth = minuNextMonth < 0 ? 0 : minuNextMonth * (-1);
             self.nextMonthTransferredMoneyTime(self.convertToHours(minuNextMonth));
 
            self.checkColor(self.nextMonthTransferredMoneyTime(), breakTimeDay);
@@ -2821,18 +2821,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 let hours = value.split("-")[1].split(":");
                 if (Number(hours[0]) > 15 || (Number(hours[0]) == 15 && hours[1] != "00")) {
                     check1174 = true;
-                    $("#next-month").attr('style', 'background-color: red !important');
-                } else {
-                    $("#next-month").attr('style', 'background-color: white !important');
                 }
+            }
+            // check
+            let numberMonth = moment.duration(self.nextMonthTransferredMoneyTime()).asMinutes();
+            if (breakTimeDay.am <= numberMonth) {
+                check1175 = true;
+            } 
+            if (check1174 || check1175) {
+                 $("#next-month").attr('style', 'background-color: red !important');
             } else {
                 $("#next-month").attr('style', 'background-color: white !important');
             }
-            // check
-            if (breakTimeDay.am <= self.nextMonthTransferredMoneyTime()) {
-                check1175 = true;
-            }
-
             if (check1174) {
                 nts.uk.resource.getMessage("Msg_1174");
                 $("#next-month").ntsError("set", nts.uk.resource.getMessage("Msg_1174"), "Msg_1174");
@@ -2841,7 +2841,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
             if (check1175) {
                 nts.uk.resource.getMessage("Msg_1175")
-                $("#next-month").ntsError("set", nts.uk.resource.getMessage("Msg_1174"), "Msg_1174");
+                $("#next-month").ntsError("set", nts.uk.resource.getMessage("Msg_1175"), "Msg_1175");
             } else {
                 if ($("#next-month").ntsError("hasError", "Msg_1175")) $("#next-month").ntsError("clearByCode", "Msg_1175");
             }
