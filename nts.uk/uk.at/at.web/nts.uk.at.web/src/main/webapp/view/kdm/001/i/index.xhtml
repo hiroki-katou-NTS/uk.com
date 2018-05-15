@@ -1,0 +1,190 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 880, height: 490 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="kdm001.i.vm.js" />
+			<com:scriptfile path="kdm001.i.start.js" />
+			<com:stylefile path="kdm001.i.style.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<!--I1 文言-->
+				<div class="down-s">
+					<span class="label">#{i18n.getText('KDM001_103')}</span>
+				</div>
+
+				<!--I2 対象者-->
+				<!--I2_1 職場コード-->
+				<!--I2_2職場名称-->
+				<!--I2_3 ：-->
+				<!--I2_4 社員コード-->
+				<!--I2_5 社員名-->
+				<div>
+					<div data-bind="ntsFormLabel: {}">
+						<span class="label" data-bind="text: workCode"></span><span
+							class="label" data-bind="text: workplaceName"></span><span
+							class="label">#{i18n.getText('KDM001_58')}</span><span
+							class="label" data-bind="text: employeeCode"></span><span
+							class="label" data-bind="text: employeeName"></span>
+					</div>
+				</div>
+				<!-- I3 罫線 -->
+				<div class="set-row">
+					<hr />
+				</div>
+				<!-- I4 休出 -->
+				<div tabindex="1"
+					data-bind="ntsCheckBox: { checked: checkedHoliday, enable: true, text: '#{i18n.getText('KDM001_101')}' }"></div>
+				<!-- I5 罫線 -->
+				<div class="set-row">
+					<hr />
+				</div>
+
+				<div class="down-s set-date flex valign-center">
+					<!-- I6 年月日 -->
+					<!-- I6_1 年月日 -->
+					<!-- I6_2 休出日数 -->
+					<!-- I6_3 休出日数 -->
+					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_62')}</div>
+					<!-- Datepicker -->
+					<div
+						data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+					<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_111')}</span>
+					<!-- Combobox -->
+					<div id="combo-box-holiday"
+						data-bind="ntsComboBox: {
+					name: '#{i18n.getText('KDM001_112')}',
+					options: itemListHoliday,
+					optionsValue: 'code',
+					visibleItemsCount: 5,
+					value: selectedCodeHoliday,
+					optionsText: 'name',
+					editable: isEditable,
+					enable: isEnable,
+				
+					columns: [
+						{ prop: 'name', length: 5 },
+					]}">
+					</div>
+				</div>
+
+				<div class="down-s set-due-date flex valign-center">
+					<!-- I8 期限 -->
+					<!-- I8_1 期限 -->
+					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_72')}</div>
+					<!-- Datepicker -->
+					<div
+						data-bind="ntsDatePicker: {value: duedate, dateFormat: 'YYYY/MM/DD'}"></div>
+				</div>
+
+				<div class="down-s">
+					<!-- I9 代休 -->
+					<div
+						data-bind="ntsCheckBox: { checked: checkedSubHoliday, enable: true, text: '#{i18n.getText('KDM001_113')}' }"></div>
+				</div>
+				<!-- I10 罫線 -->
+				<div class="set-row">
+					<hr />
+				</div>
+
+				<div class="down-s flex valign-center">
+					<!-- I11 年月日 -->
+					<!-- I11_1 年月日 -->
+					<!-- I11_2 代休日数 -->
+					<!-- I11_3 代休日数 -->
+					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_75')}</div>
+					<!-- Datepicker -->
+					<div
+						data-bind="ntsDatePicker: {value: dateSubHoliday, dateFormat: 'YYYY/MM/DD'}"></div>
+					<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_115')}</span>
+					<!-- Combobox -->
+					<div id="combo-box-sub-holiday"
+						data-bind="ntsComboBox: {
+					name: '#{i18n.getText('KDM001_112')}',
+					options: itemListSubHoliday,
+					optionsValue: 'code',
+					visibleItemsCount: 5,
+					value: selectedCodeSubHoliday,
+					optionsText: 'name',
+					editable: isEditable,
+					enable: isEnable,
+				
+					columns: [
+						{ prop: 'name', length: 5 },
+					]}">
+					</div>
+				</div>
+
+				<div class="down-s">
+					<!-- I12 分割消化 -->
+					<div
+						data-bind="ntsCheckBox: { checked: checkedSplit, enable: enable, text: '#{i18n.getText('KDM001_79')}' }"></div>
+					<!-- I12_1 年月日 -->
+					<!-- I12_2 年月日 -->
+					<!-- I12_3 代休日数 -->
+					<!-- I12_4 代休日数 -->
+					<div class="down-s flex valign-center" style="margin-left: 35px;">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDM001_80')}</div>
+						<!-- Datepicker -->
+						<div
+							data-bind="ntsDatePicker: {value: dateOptionSubHoliday, dateFormat: 'YYYY/MM/DD', enable: isOptionSubHolidayEnable  }"></div>
+						<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_115')}</span>
+						<!-- Combobox -->
+						<div id="combo-box-option-sub-holiday"
+							data-bind="ntsComboBox: {
+							name: '#{i18n.getText('KDM001_116')}',
+							options: itemListOptionSubHoliday,
+							optionsValue: 'code',
+							visibleItemsCount: 5,
+							value: selectedCodeOptionSubHoliday,
+							optionsText: 'name',
+							editable: isEditable,
+							enable: isOptionSubHolidayEnable,
+						
+							columns: [
+								{ prop: 'name', length: 5 },
+							]}">
+						</div>
+					</div>
+					<!-- I13 残数 -->
+					<div class="label">#{i18n.getText('KDM001_84')}</div>
+
+					<!-- I14 罫線 -->
+					<div class="set-row">
+						<hr />
+					</div>
+					<!-- I15 残数 -->
+					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_85')}</div>
+					<!-- I15_1 残数 -->
+					<span class="label" data-bind="text: dayRemaining"></span>
+					<!-- I30 罫線 -->
+					<div class="set-row">
+						<hr />
+					</div>
+					<!-- I31_1 登録 -->
+					<div id="area-bottom">
+						<div id="process" data-bind="visible: true"
+							style="text-align: center;">
+							<button id="stopExecute" class="proceed x-large">#{i18n.getText('KDM001_89')}</button>
+
+							<button id="closeDialog" class="large"
+								data-bind="click: closeDialog">#{i18n.getText('KDM001_90')}</button>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			<div id="functions-area-bottom"></div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
