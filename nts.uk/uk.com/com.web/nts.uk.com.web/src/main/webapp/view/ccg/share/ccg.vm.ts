@@ -1635,6 +1635,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 const query = {
                     code: self.inputCodeTab3(),
                     useClosure: self.showClosure,
+                    closureId: self.selectedClosure(),
                     systemType: self.systemType,
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate()
                 };
@@ -1657,6 +1658,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 const query = {
                     name: self.inputNameTab3(),
                     useClosure: self.showClosure,
+                    closureId: self.selectedClosure(),
                     systemType: self.systemType,
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate()
                 };
@@ -1678,6 +1680,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
                 const query = {
                     useClosure: self.showClosure,
+                    closureId: self.selectedClosure(),
                     systemType: self.systemType,
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate(),
                     period: self.toPeriodDto(self.entryDateTab3())
@@ -1700,6 +1703,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
                 const query = {
                     useClosure: self.showClosure,
+                    closureId: self.selectedClosure(),
                     systemType: self.systemType,
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate(),
                     period: self.toPeriodDto(self.retirementDateTab3())

@@ -298,7 +298,7 @@ public class RegulationInfoEmployeeFinder {
 	private List<String> filterByClosure(SearchEmployeeQuery query, List<String> sIds) {
 		if (query.isUseClosure() && !query.isAllClosure()) {
 			List<String> empCds = this.closureEmpAdapter.findListEmpCdByClosureId(query.getClosureId());
-			List<String> filteredSids = this.empHisAdapter.findSIdsByEmpCdsAndPeriod(empCds, query.getDatePeriod());
+			List<String> filteredSids = this.empHisAdapter.findSIdsByEmpCdsAndPeriod(empCds, query.getReferenceDatePeriod());
 
 			// filter list employee ids
 			return sIds.stream().filter(filteredSids::contains).collect(Collectors.toList());

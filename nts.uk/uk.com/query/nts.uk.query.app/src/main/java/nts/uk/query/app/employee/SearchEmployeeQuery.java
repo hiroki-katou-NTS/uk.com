@@ -53,4 +53,13 @@ public class SearchEmployeeQuery {
 	public DatePeriod getDatePeriod() {
 		return new DatePeriod(this.period.getStartDate(), this.period.getEndDate());
 	}
+
+	/**
+	 * Gets the reference date period.
+	 *
+	 * @return the reference date period
+	 */
+	public DatePeriod getReferenceDatePeriod() {
+		return new DatePeriod(this.referenceDate, this.referenceDate);
+	}
 }
