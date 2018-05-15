@@ -39,7 +39,7 @@
 					<div data-bind="ntsPanel:{width: '340px', height: '370px', showIcon: false, visible: true, direction: 'right'}">
 						<div id="B2_1">
 							<!-- B2_2 -->
-							<table id="listStandardImportSetting" data-bind="ntsGridList: {								
+							<table tabindex="5" id="listStandardImportSetting" data-bind="ntsGridList: {								
 								rows: 15,
 								columns: [
 					                { headerText: '#{i18n.getText('KWR008_22')}', key: 'displayCode', width: 60, formatter: _.escape },
@@ -73,10 +73,9 @@
 						
 						<!-- B4_1 -->
 						<div style="margin-bottom: 15px" data-bind ="ntsFormLabel: { required: true }" >#{i18n.getText('KWR008_27')}</div>
-
+						<div tabindex="8" >
 						<table id="table-output-items" >
                                    <colgroup>
-                                   		<col width="0"/>
                                         <col width="38"/>
 										<col width="220"/>
 			                            <col width="50"/>
@@ -86,7 +85,6 @@
                                    <thead>
                                       <tr> 
 
-                                          <th class="ui-widget-header"  style ="text-align: center;"></th>
                                           <th class="ui-widget-header"  style ="text-align: center;"><div data-bind="ntsCheckBox: {checked: isCheckedAll}"></div></th>
                                           <th class="ui-widget-header"  style ="text-align: center;">#{i18n.getText('KWR008_28')}</th>
                                           <th class="ui-widget-header"  style ="text-align: center;"></th>
@@ -97,15 +95,14 @@
                                    </thead>
                                    <tbody data-bind = "foreach: outputItem()">
                                        <tr>
-                                       			<td><span class="limited-label" data-bind="text: $data.index"></span></td>
 				                            	<td style="text-align: center;"><div tabindex="9" data-bind="ntsCheckBox: {checked: $data.useClass}"></div></td>
 				                            	<td>
 				                            			<input data-bind="ntsTextEditor: {
 				                            				name: '#[KWR008_31]',
 				                            				value : $data.headingName,
 				                            				required: false,
-				                            				option : { width : '190px'}},
-				                            				constraint: 'ItemOutTblBookHeadingName'"  />
+				                            				option : { width : '190px'},
+				                            				constraint: 'ItemOutTblBookHeadingName'}"  />
 				                            	</td>
 				                            	<td><button id="btnSettingB16_5"  data-bind="click: function() {$parent.openKDW007($data.sortBy)}, enable: true, visible: $data.sortBy() > 1">#{i18n.getText('KWR008_34')}</button></td>
 				                            	<td>
@@ -125,6 +122,7 @@
                                        </tr>
                                    </tbody>
                                </table>
+                               </div>
 					</div>
 					<div data-bind="with: currentSetOutputSettingCode" style="margin-top: 15px;">
 						<!-- B5_1 -->
