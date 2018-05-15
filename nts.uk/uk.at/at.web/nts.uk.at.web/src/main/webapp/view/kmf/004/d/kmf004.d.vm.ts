@@ -25,6 +25,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         items: KnockoutObservableArray<Item>;
         provisionCheck: KnockoutObservable<boolean>;
         editMode: KnockoutObservable<boolean>;
+        provisionDeactive: KnockoutObservable<boolean>;
         
         constructor() {
             let self = this;
@@ -37,6 +38,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 { headerText: nts.uk.resource.getText("KMF004_8"), key: 'yearServiceName', width: 160, formatter: _.escape}
             ]);
             self.provisionCheck = ko.observable(false);
+            self.provisionDeactive = ko.observable(false);
             self.selectedId = ko.observable(0);
             self.lstPer = ko.observableArray([]);
             self.selectedCode = ko.observable("");
@@ -77,6 +79,11 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     self.codeObject(ko.toJS(self.selectedOption().yearServiceCode));
                     self.check(false);
                     self.provisionCheck(self.selectedOption().provision == 1 ? true : false);
+                    if(self.selectedOption().provision == 1) {
+                        self.provisionDeactive(false);
+                    } else {
+                        self.provisionDeactive(true);
+                    }
                     self.editMode(false);
                     nts.uk.ui.errors.clearAll();   
                 }
@@ -116,6 +123,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     self.selectedName(null);
                     self.checkUpdate(false);
                     self.provisionCheck(false);
+                    self.provisionDeactive(false);
                     self.items([]);
                     for (let i = 0; i < 20; i++) {
                         if(self.items()[i] == undefined){
@@ -140,6 +148,11 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     self.selectedCode(ko.toJS(self.lstPer()[0].yearServiceCode));
                     self.selectedName(self.lstPer()[0].yearServiceName);
                     self.provisionCheck(self.lstPer()[0].provision == 1 ? true : false);
+                    if(self.lstPer()[0].provision == 1) {
+                        self.provisionDeactive(false);
+                    } else {
+                        self.provisionDeactive(true);
+                    }
                     self.codeObject(ko.toJS(self.lstPer()[0].yearServiceCode));                   
                 }
                 
@@ -255,6 +268,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             self.selectedName("");
             self.items([]);
             self.provisionCheck(false);
+            self.provisionDeactive(true);
             self.selectedId(0);
             self.editMode(true);  
             
