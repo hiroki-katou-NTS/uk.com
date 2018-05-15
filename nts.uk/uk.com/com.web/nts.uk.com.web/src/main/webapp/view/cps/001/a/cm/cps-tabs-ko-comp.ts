@@ -411,8 +411,33 @@ module nts.custom.component {
                                 break;
                             case IT_CAT_TYPE.MULTI:
                                 params.gridlist.row(10);
-                                params.gridlist.options([]);
-                                $('#category-data_optionText').text('');
+
+                                fetch.get_hist_data(query).done(data => {
+                                    let title = _.find(data, x => !x.optionValue),
+                                        _data = _.filter(data, x => !!x.optionValue),
+                                        ids = _.map(_data, m => m.optionValue),
+                                        id = ko.toJS(params.gridlist.value);
+
+                                    if (title) {
+                                        $('#category-data_optionText').text(title.optionText);
+                                    }
+
+                                    params.gridlist.options(_data);
+                                    if (_data.length) {
+                                        if (ids.indexOf(id) == -1 || oval != v) {
+                                            if (ids[0] != id) {
+                                                params.gridlist.value(ids[0]);
+                                            } else {
+                                                params.gridlist.value.valueHasMutated();
+                                            }
+                                        } else {
+                                            params.gridlist.value.valueHasMutated();
+                                        }
+                                    } else {
+                                        params.event.add();
+                                        params.gridlist.value(undefined);
+                                    }
+                                });
 
                                 params.change.call(null, {
                                     id: v,
