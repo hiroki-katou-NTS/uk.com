@@ -48,7 +48,7 @@ public class JpaMailFunctionGetMemento implements MailFunctionGetMemento {
 	 */
 	@Override
 	public boolean isProprietySendMailSettingAtr() {
-		return this.entity.getSendMailSetAtr() == 1;
+		return this.entity.getSendMailSetAtr() == 0;
 	}
 
 	/* (non-Javadoc)

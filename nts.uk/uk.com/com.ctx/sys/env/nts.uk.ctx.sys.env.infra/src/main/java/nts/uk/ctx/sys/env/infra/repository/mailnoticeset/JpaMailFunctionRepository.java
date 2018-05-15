@@ -21,8 +21,6 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.MailFunction;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.MailFunctionRepository;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.SevmtMailFunction;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.SevmtMailFunction_;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFuncPK_;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFunc_;
 
 /**
  * The Class JpaMailFunctionRepository.
@@ -30,8 +28,8 @@ import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFunc
 @Stateless
 public class JpaMailFunctionRepository extends JpaRepository implements MailFunctionRepository {
 
-	private static final Integer TRUE_VAL = 1;
-	private static final Integer FALSE_VAL = 0;
+	private static final Integer TRUE_VAL = 0;
+	private static final Integer FALSE_VAL = 1;
 	/*
 	 * (non-Javadoc)
 	 * 
