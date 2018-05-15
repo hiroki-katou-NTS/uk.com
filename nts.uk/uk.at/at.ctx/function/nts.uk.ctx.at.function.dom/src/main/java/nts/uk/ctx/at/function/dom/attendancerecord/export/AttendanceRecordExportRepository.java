@@ -14,7 +14,7 @@ public interface AttendanceRecordExportRepository {
 	 * @param outputSettingCode the output setting code
 	 * @return the all attendance record output
 	 */
-	List<AttendanceRecordExport> getAllAttendanceRecordExport(String companyId, String exportSettingCode);
+	List<AttendanceRecordExport> getAllAttendanceRecordExportDaily(String companyId, long exportSettingCode);
 
 	/**
 	 * Gets the attendance record export by index.
@@ -24,7 +24,7 @@ public interface AttendanceRecordExportRepository {
 	 * @param columnIndex the column index
 	 * @return the attendance record export by index
 	 */
-	List<AttendanceRecordExport> getAttendanceRecordExportByIndex(String companyId, String exportSettingCode, int columnIndex);
+	List<AttendanceRecordExport> getAllAttendanceRecordExportMonthly(String companyId, long exportSettingCode);
 
 	/**
 	 * Update attendance record output.

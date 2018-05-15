@@ -22,30 +22,6 @@ public class AttendanceRecordExportSaveCommandHandle extends CommandHandler<Atte
 	@Override
 	protected void handle(CommandHandlerContext<AttendanceRecordExportSaveCommand> context) {
 
-//		// Get command
-//		AttendanceRecordExportSaveCommand command = context.getCommand();
-//
-//		// Convert to domain
-//		AttendanceRecordExport domain = new AttendanceRecordExport();
-//
-//		// Set data
-//		domain.setColumnIndex(command.getColumnIndex());
-//		domain.setExportAtr(ExportAtr.valueOf(command.getExportAtr()));
-//		domain.setUseAtr(command.getUserAtr());
-//
-//		String companyId = AppContexts.user().companyId();
-//		// Find AttendanceRecordExport
-//		
-//		List<AttendanceRecordExport> resultList = attendanceRecExpRepo.getAttendanceRecordExportByIndex(companyId, command.getExportCode(), command.getColumnIndex());
-//		
-//		// Update Entity
-//		
-//		resultList.forEach(item -> {
-//			
-//			
-//		});
-		
-		
 	}
 
 }

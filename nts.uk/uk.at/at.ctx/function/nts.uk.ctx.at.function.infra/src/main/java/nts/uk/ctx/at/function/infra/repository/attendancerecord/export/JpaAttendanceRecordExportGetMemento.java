@@ -6,6 +6,10 @@ import java.util.Optional;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExportGetMemento;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.ExportAtr;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.AttendanceRecordDisplay;
+import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecord;
+import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordGetMemento;
+import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecord;
+import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecordGetMemento;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
 
 /**
@@ -14,7 +18,9 @@ import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
 public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExportGetMemento {
 
 	/** The entity. */
-	private KfnstAttndRec entity;
+	private KfnstAttndRec upperEntity;
+
+	private KfnstAttndRec lowerEntity;
 
 	/**
 	 * Instantiates a new jpa attendance record export get memento.
@@ -22,8 +28,9 @@ public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExpo
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaAttendanceRecordExportGetMemento(KfnstAttndRec entity) {
-		this.entity = entity;
+	public JpaAttendanceRecordExportGetMemento(KfnstAttndRec upperEntity, KfnstAttndRec lowerEntity) {
+		this.upperEntity = upperEntity;
+		this.lowerEntity = lowerEntity;
 	}
 
 	/**
@@ -41,7 +48,7 @@ public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExpo
 	 */
 	@Override
 	public ExportAtr getExportAtr() {
-		return ExportAtr.valueOf(this.entity.getAttribute().intValue());
+		return ExportAtr.valueOf(this.upperEntity.getAttribute().intValue());
 	}
 
 	/*
@@ -52,7 +59,7 @@ public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExpo
 	 */
 	@Override
 	public int getColumnIndex() {
-		return (int) this.entity.getId().getColumnIndex();
+		return (int) this.upperEntity.getId().getColumnIndex();
 	}
 
 	/*
@@ -64,7 +71,7 @@ public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExpo
 	@Override
 	public Boolean isUseAtr() {
 		// ZERO = false, ONE = true
-		return this.entity.getUseAtr().compareTo(BigDecimal.ZERO) == 1 ? true : false;
+		return this.upperEntity.getUseAtr().compareTo(BigDecimal.ONE) == 0 ? true : false;
 	}
 
 	/*
@@ -75,8 +82,18 @@ public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExpo
 	 */
 	@Override
 	public Optional<AttendanceRecordDisplay> getUpperPosition() {
-		// No Code
-		return null;
+
+		// 13 <= Attribute <=15
+		if (this.upperEntity.getAttribute().compareTo(new BigDecimal(12)) == 1
+				&& this.upperEntity.getAttribute().compareTo(new BigDecimal(16)) == -1)
+			return Optional.of(new SingleAttendanceRecord((SingleAttendanceRecordGetMemento) upperEntity));
+		// 16<= Attribute <= 18
+		if (this.upperEntity.getAttribute().compareTo(new BigDecimal(15)) == 1
+				&& this.upperEntity.getAttribute().compareTo(new BigDecimal(16)) == 19)
+			return Optional.of(new CalculateAttendanceRecord((CalculateAttendanceRecordGetMemento) upperEntity));
+
+		return Optional.empty();
+
 	}
 
 	/*
@@ -87,8 +104,17 @@ public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExpo
 	 */
 	@Override
 	public Optional<AttendanceRecordDisplay> getLowerPosition() {
-		// No Code
-		return null;
+
+		// 13 <= Attribute <=15
+		if (this.lowerEntity.getAttribute().compareTo(new BigDecimal(12)) == 1
+				&& this.lowerEntity.getAttribute().compareTo(new BigDecimal(16)) == -1)
+			return Optional.of(new SingleAttendanceRecord((SingleAttendanceRecordGetMemento) lowerEntity));
+		// 16<= Attribute <= 18
+		if (this.lowerEntity.getAttribute().compareTo(new BigDecimal(15)) == 1
+				&& this.lowerEntity.getAttribute().compareTo(new BigDecimal(16)) == 19)
+			return Optional.of(new CalculateAttendanceRecord((CalculateAttendanceRecordGetMemento) lowerEntity));
+
+		return Optional.empty();
 	}
 
 }

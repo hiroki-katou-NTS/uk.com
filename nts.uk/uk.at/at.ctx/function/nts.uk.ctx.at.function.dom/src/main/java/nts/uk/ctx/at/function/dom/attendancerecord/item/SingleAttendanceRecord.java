@@ -129,16 +129,27 @@ public class SingleAttendanceRecord extends DomainObject implements AttendanceRe
 		this.name = memento.getName();
 		this.timeItemId = memento.getTimeItemId();
 	}
-	
+
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(SingleAttendanceRecordSetMemento memento) {
 		memento.setAttribute(this.attribute);
 		memento.setName(this.name);
 		memento.setTimeItemId(this.timeItemId);
+	}
+
+	/**
+	 * Gets the name display.
+	 *
+	 * @return the name display
+	 */
+	@Override
+	public String getNameDisplay() {
+		return this.name.toString();
 	}
 
 }

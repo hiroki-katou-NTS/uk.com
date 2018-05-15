@@ -38,14 +38,8 @@ public class CalculateAttendanceRecord extends DomainObject implements Attendanc
 	/**
 	 * Instantiates a new calculate item in attendance record.
 	 *
-	 * @param attribute
-	 *            the attribute
-	 * @param name
-	 *            the name
-	 * @param addedItem
-	 *            the added item
-	 * @param subtractedItem
-	 *            the subtracted item
+	 * @param memento
+	 *            the memento
 	 */
 	public CalculateAttendanceRecord(CalculateAttendanceRecordGetMemento memento) {
 		super();
@@ -54,11 +48,12 @@ public class CalculateAttendanceRecord extends DomainObject implements Attendanc
 		this.addedItem = memento.getAddedItem();
 		this.subtractedItem = memento.getSubtractedItem();
 	}
-	
+
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(CalculateAttendanceRecordSetMemento memento) {
 		memento.setAttribute(this.attribute);
@@ -77,6 +72,11 @@ public class CalculateAttendanceRecord extends DomainObject implements Attendanc
 		// No Code
 	}
 
+	/**
+	 * Hash code.
+	 *
+	 * @return the int
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -93,6 +93,13 @@ public class CalculateAttendanceRecord extends DomainObject implements Attendanc
 		return result;
 	}
 
+	/**
+	 * Equals.
+	 *
+	 * @param obj
+	 *            the obj
+	 * @return true, if successful
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -127,22 +134,55 @@ public class CalculateAttendanceRecord extends DomainObject implements Attendanc
 		return true;
 	}
 
+	/**
+	 * Switch export item.
+	 *
+	 * @param outputAtr
+	 *            the output atr
+	 * @param number
+	 *            the number
+	 * @return the int
+	 */
 	@Override
 	public int switchExportItem(ExportAtr outputAtr, int number) {
 		// No Coding
 		return 0;
 	}
 
+	/**
+	 * Switch export registration destination.
+	 *
+	 * @param outputAtr
+	 *            the output atr
+	 * @param number
+	 *            the number
+	 * @return the int
+	 */
 	@Override
 	public int switchExportRegistrationDestination(ExportAtr outputAtr, int number) {
 		// No Coding
 		return 0;
 	}
 
+	/**
+	 * Return export item name.
+	 *
+	 * @return the int
+	 */
 	@Override
 	public int returnExportItemName() {
 		// No Coding
 		return 0;
+	}
+
+	/**
+	 * Gets the name display.
+	 *
+	 * @return the name display
+	 */
+	@Override
+	public String getNameDisplay() {
+		return this.name.toString();
 	}
 
 }

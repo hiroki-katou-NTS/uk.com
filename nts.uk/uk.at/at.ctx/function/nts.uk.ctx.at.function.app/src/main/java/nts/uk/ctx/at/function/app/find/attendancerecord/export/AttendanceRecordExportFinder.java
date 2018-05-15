@@ -28,10 +28,11 @@ public class AttendanceRecordExportFinder {
 	 *            the code
 	 * @return the all attendance record export
 	 */
-	public List<AttendanceRecordExportDto> getAllAttendanceRecordExport(String companyId, String code) {
+	public List<AttendanceRecordExportDto> getAllAttendanceRecordExportDaily(String companyId, long code) {
 
 		// Get list of domain
-		List<AttendanceRecordExport> domainList = attendanceRecordExpRepo.getAllAttendanceRecordExport(companyId, code);
+		List<AttendanceRecordExport> domainList = attendanceRecordExpRepo.getAllAttendanceRecordExportDaily(companyId,
+				code);
 
 		// Convert domain to Dto
 		List<AttendanceRecordExportDto> dtoList = domainList.stream().map(item -> {
@@ -39,6 +40,36 @@ public class AttendanceRecordExportFinder {
 			dto.setColumnIndex(item.getColumnIndex());
 			dto.setExportAtr(item.getExportAtr().value);
 			dto.setUserAtr(item.getUseAtr());
+			dto.setUpperPosition(item.getUpperPosition().get().getNameDisplay());
+			dto.setLowwerPosition(item.getLowerPosition().get().getNameDisplay());
+			return dto;
+		}).collect(Collectors.toList());
+		return dtoList;
+	}
+
+	/**
+	 * Gets the all attendance record export monthly.
+	 *
+	 * @param companyId
+	 *            the company id
+	 * @param code
+	 *            the code
+	 * @return the all attendance record export monthly
+	 */
+	public List<AttendanceRecordExportDto> getAllAttendanceRecordExportMonthly(String companyId, long code) {
+
+		// Get list of domain
+		List<AttendanceRecordExport> domainList = attendanceRecordExpRepo.getAllAttendanceRecordExportMonthly(companyId,
+				code);
+
+		// Convert domain to Dto
+		List<AttendanceRecordExportDto> dtoList = domainList.stream().map(item -> {
+			AttendanceRecordExportDto dto = new AttendanceRecordExportDto();
+			dto.setColumnIndex(item.getColumnIndex());
+			dto.setExportAtr(item.getExportAtr().value);
+			dto.setUserAtr(item.getUseAtr());
+			dto.setUpperPosition(item.getUpperPosition().get().getNameDisplay());
+			dto.setLowwerPosition(item.getLowerPosition().get().getNameDisplay());
 			return dto;
 		}).collect(Collectors.toList());
 		return dtoList;

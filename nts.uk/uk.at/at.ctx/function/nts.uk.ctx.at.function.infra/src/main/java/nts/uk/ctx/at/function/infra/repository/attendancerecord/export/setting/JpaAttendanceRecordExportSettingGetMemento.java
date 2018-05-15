@@ -88,7 +88,7 @@ public class JpaAttendanceRecordExportSettingGetMemento implements AttendanceRec
 	 */
 	@Override
 	public Boolean getSealUseAtr() {
-		return this.attendanceEntity.getSealUseAtr().compareTo(BigDecimal.ONE) == 1 ? true : false;
+		return this.attendanceEntity.getSealUseAtr().compareTo(BigDecimal.ONE) == 0 ? true : false;
 	}
 
 	/*
