@@ -7,6 +7,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 public class PeregStampCardDto extends PeregDomainDto {
 
+
 	@PeregEmployeeId
 	private String employeeId;
 

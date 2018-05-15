@@ -5,6 +5,7 @@ import java.util.Optional;
 
 public interface StampCardRepository {
 
+
 	List<StampCard> getListStampCard(String sid);
 
 	Optional<StampCard> getByStampCardId(String stampCardId);

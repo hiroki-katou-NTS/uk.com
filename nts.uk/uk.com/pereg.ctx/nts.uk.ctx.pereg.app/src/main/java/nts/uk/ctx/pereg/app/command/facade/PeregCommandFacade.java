@@ -34,6 +34,7 @@ import nts.uk.shr.pereg.app.find.PeregQuery;
 @ApplicationScoped
 public class PeregCommandFacade {
 
+
 	@Inject
 	private PeregCommandHandlerCollector handlerCollector;
 

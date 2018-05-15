@@ -6,6 +6,7 @@ import nts.uk.shr.pereg.app.PeregItem;
 
 @Getter
 public class AddStampCardCommand {
+
 	
 	/**社員ID*/
 	@PeregEmployeeId

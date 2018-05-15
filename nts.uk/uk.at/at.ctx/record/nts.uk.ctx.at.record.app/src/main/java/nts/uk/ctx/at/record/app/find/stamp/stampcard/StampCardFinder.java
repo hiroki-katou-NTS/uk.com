@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.stamp.card.StampCardtemRepository;
 
 @Stateless
 public class StampCardFinder {
+
 	@Inject
 	private StampCardtemRepository stampCardRepo;
 	

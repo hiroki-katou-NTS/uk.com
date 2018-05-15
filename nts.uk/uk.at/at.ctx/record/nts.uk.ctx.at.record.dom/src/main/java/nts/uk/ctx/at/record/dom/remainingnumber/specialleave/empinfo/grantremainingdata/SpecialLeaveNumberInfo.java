@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremain
 @NoArgsConstructor
 //特別休暇数情報
 public class SpecialLeaveNumberInfo {
+
 	//付与数
 	private SpecialLeaveGrantNumber grantNumber;
 	//使用数

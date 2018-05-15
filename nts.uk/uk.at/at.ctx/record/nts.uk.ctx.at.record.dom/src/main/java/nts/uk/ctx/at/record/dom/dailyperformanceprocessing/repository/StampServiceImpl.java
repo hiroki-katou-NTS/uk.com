@@ -28,6 +28,7 @@ import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class StampServiceImpl implements StampDomainService {
+
 	@Inject
 	private ErrMessageInfoRepository errRepo;
 	@Inject

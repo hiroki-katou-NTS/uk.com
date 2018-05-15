@@ -14,6 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 //特別休暇付与数
 public class SpecialLeaveGrantNumber {
+
 	//日数
 	public DayNumberOfGrant dayNumberOfGrant;
 	//時間

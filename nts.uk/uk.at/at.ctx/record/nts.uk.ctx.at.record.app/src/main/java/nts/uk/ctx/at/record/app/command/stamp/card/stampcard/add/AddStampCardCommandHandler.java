@@ -16,7 +16,8 @@ import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 @Stateless
 public class AddStampCardCommandHandler extends CommandHandlerWithResult<AddStampCardCommand, PeregAddCommandResult>
 		implements PeregAddCommandHandler<AddStampCardCommand> {
-	
+
+		
 	@Inject
 	private StampCardRepository stampCardRepo;
 

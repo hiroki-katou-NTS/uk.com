@@ -13,6 +13,7 @@ import lombok.Setter;
 // 特別休暇使用数
 public class SpecialLeaveUsedNumber {
 
+
 	public DayNumberOfUse dayNumberOfUse;
 
 	public Optional<TimeOfUse> timeOfUse;

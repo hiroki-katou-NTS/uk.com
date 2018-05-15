@@ -14,7 +14,8 @@ import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 @Stateless
 public class UpdateStampCardCommandHandler extends CommandHandler<UpdateStampCardCommand>
 		implements PeregUpdateCommandHandler<UpdateStampCardCommand> {
-	
+
+		
 	@Inject
 	private StampCardRepository stampCardRepo;
 

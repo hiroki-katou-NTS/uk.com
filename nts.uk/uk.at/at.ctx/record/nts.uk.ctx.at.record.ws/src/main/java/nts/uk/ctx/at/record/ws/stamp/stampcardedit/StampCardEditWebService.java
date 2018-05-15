@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.app.find.stamp.card.stampcardedit.StampCardEditFinde
 @Path("record/stamp/stampcardedit")
 @Produces("application/json")
 public class StampCardEditWebService extends WebService {
+
 	@Inject
 	private StampCardEditFinder stampCardEditFinder;
 	

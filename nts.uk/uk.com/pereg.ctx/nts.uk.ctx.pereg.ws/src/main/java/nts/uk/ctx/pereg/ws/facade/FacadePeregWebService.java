@@ -14,6 +14,7 @@ import nts.uk.shr.pereg.app.command.PeregInputContainer;
 @Produces("application/json")
 public class FacadePeregWebService extends WebService {
 
+
 	@Inject
 	private PeregCommandFacade commandFacade;
 	

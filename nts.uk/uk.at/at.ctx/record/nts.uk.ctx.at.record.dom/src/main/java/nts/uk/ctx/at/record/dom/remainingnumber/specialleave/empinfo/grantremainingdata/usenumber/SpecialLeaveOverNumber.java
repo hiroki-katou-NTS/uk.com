@@ -13,6 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 // 特別休暇上限超過消滅数
 public class SpecialLeaveOverNumber {
+
 	
 	// 日数
 	public DayNumberOver numberOverDays;

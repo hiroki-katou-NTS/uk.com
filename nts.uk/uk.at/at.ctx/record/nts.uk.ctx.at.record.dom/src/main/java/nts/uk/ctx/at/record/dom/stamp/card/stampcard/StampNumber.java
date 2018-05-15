@@ -9,6 +9,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 @StringCharType(CharType.ANY_HALF_WIDTH)
 public class StampNumber extends StringPrimitiveValue<StampNumber> {
 
+
 	/**
 	 * 
 	 */

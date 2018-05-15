@@ -9,6 +9,7 @@ import nts.arc.layer.dom.AggregateRoot;
 @Getter
 public class StampCardEditing extends AggregateRoot {
 
+
 	private String companyId;
 
 	private StampCardDigitNumber digitsNumber;

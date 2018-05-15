@@ -7,6 +7,7 @@ import nts.uk.shr.pereg.app.PeregRecordId;
 
 @Getter
 public class UpdateStampCardCommand {
+
 	
 	@PeregRecordId
 	private String stampNumberId;

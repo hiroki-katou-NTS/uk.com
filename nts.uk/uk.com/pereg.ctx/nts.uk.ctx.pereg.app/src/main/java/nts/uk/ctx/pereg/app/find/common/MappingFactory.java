@@ -23,6 +23,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
  *
  */
 public class MappingFactory {
+
 	
 	public static Map<String, Object> getFullDtoValue(PeregDto peregDto) {
 		// Map<itemcode, Object: value of field>

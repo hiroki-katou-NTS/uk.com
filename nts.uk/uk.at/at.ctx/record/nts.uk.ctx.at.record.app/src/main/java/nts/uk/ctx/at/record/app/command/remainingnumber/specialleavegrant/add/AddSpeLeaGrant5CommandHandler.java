@@ -20,6 +20,7 @@ public class AddSpeLeaGrant5CommandHandler
 		extends CommandHandlerWithResult<AddSpecialLeaveGrant5Command, PeregAddCommandResult>
 		implements PeregAddCommandHandler<AddSpecialLeaveGrant5Command> {
 
+		
 	@Inject
 	private SpeLeaveGrantCommandHandler addSpeLeaveGrantCommandHandler;
 

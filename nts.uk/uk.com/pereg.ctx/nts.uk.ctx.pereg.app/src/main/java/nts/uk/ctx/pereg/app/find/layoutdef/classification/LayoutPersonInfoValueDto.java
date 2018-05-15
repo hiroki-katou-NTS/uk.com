@@ -17,6 +17,7 @@ import nts.uk.shr.pereg.app.ComboBoxObject;
 @RequiredArgsConstructor
 public class LayoutPersonInfoValueDto {
 
+
 	private String recordId;
 
 	// categoryID

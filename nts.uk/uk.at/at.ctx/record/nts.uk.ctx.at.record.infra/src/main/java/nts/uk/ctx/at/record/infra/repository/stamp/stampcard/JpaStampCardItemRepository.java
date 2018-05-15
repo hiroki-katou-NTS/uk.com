@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.infra.entity.stamp.stampcard.KwkdtStampCard;
 @Stateless
 public class JpaStampCardItemRepository extends JpaRepository implements StampCardtemRepository {
 
+
 	private final String SELECT_BY_SID = "SELECT c FROM KwkdtStampCard c"
 			+ " WHERE c.employeeID = :employeeID";
 	

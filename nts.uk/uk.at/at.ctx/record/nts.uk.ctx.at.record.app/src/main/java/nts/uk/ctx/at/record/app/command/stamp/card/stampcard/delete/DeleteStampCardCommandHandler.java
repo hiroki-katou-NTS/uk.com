@@ -11,6 +11,7 @@ import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
 @Stateless
 public class DeleteStampCardCommandHandler extends CommandHandler<DeleteStampCardCommand>
 	implements PeregDeleteCommandHandler<DeleteStampCardCommand>{
+
 	
 	@Inject
 	private StampCardRepository stampCardRepo;

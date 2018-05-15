@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
 @AllArgsConstructor
 public class StampCardEditDto {
 
+
 	private int digitsNumber;
 
 	private int method;

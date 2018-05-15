@@ -130,6 +130,7 @@ import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 @Stateless
 @SuppressWarnings("serial")
 public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerCollector {
+
 	/** Add handlers */
 	private static final List<TypeLiteral<?>> ADD_HANDLER_CLASSES = Arrays.asList(
 			//CS00001	社員データ管理

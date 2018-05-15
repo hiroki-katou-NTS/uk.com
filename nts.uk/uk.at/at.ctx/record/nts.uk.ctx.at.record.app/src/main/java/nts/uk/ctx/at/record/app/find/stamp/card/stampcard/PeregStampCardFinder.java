@@ -18,6 +18,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 @Stateless
 public class PeregStampCardFinder implements PeregFinder<PeregStampCardDto> {
 
+
 	@Inject
 	private StampCardRepository stampCardRepo;
 

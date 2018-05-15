@@ -9,6 +9,7 @@ import nts.arc.time.GeneralDate;
 @Setter
 public class StampCard extends AggregateRoot {
 
+
 	// domain name: 打刻カード
 
 	/**

@@ -11,6 +11,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class StampCardEditFinder {
+
 	
 	@Inject
 	private StampCardEditingRepo stampCardEditRepo;

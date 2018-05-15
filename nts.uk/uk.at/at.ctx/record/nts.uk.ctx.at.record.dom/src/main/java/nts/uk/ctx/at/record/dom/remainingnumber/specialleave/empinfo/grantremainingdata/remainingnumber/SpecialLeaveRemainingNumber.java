@@ -14,6 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 // 特別休暇残数
 public class SpecialLeaveRemainingNumber {
+
 	// 日数
 	public DayNumberOfRemain dayNumberOfRemain;
 	// 時間

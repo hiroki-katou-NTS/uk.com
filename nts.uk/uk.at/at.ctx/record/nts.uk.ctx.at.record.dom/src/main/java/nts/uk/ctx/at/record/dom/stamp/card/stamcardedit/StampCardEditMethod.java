@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum StampCardEditMethod {
+
 	
 	//前ゼロ
 	PreviousZero(0),

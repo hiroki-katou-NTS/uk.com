@@ -1,4 +1,5 @@
 module cps002.a.vm {
+
     import alert = nts.uk.ui.dialog.alert;
     import text = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;

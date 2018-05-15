@@ -1,4 +1,5 @@
 module cps001.h.vm {
+
     import text = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
     import error = nts.uk.ui.dialog.alertError;
