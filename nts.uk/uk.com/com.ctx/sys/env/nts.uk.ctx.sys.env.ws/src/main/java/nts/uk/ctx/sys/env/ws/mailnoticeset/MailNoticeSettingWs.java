@@ -22,7 +22,7 @@ public class MailNoticeSettingWs extends WebService {
 	@Path("save")
 	@POST
 	public void save(MailNoticeSetSaveCommand command) {
-		//this.functionSettingFinder.findByUserInfoItem(UserInfoItem.COMPANY_PC_MAIL);
+		//TODO
 	}
 	
 }

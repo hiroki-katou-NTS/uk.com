@@ -752,5 +752,16 @@ public class ProgramIdConsts {
 	public static final String CMM053A = "CMM053A";
 	public static final String CMM053B = "CMM053B";
 
+	/**
+	 * CMM048
+	 */
+	public static final String CMM048A = "CMM048A";
+	public static final String CMM048B = "CMM048B";
+	
+	/**
+	 * CMM049
+	 */
+	public static final String CMM049A = "CMM049A";
+	public static final String CMM049B = "CMM049B";
 
 }

@@ -11,13 +11,13 @@ package nts.uk.ctx.sys.env.dom.mailnoticeset.company;
 public enum SettingUseSendMail {
 
 	/** The use. */
-	USE(1, "Enum_SettingUseSendMail_Use","利用する"),
+	USE(1, "Enum_SettingUseSendMail_USE","利用する"),
 	
 	/** The not use. */
-	NOT_USE(0, "Enum_SettingUseSendMail_NotUse","利用しない"),
+	NOT_USE(0, "Enum_SettingUseSendMail_NOT_USE","利用しない"),
 	
 	/** The personal selectable. */
-	PERSONAL_SELECTABLE(2, "Enum_SettingUseSendMail_Personal_Selectable","個人選択可");
+	PERSONAL_SELECTABLE(2, "Enum_SettingUseSendMail_PERSONAL_SELECTABLE","個人選択可");
 
 	/** The value. */
 	public final int value;

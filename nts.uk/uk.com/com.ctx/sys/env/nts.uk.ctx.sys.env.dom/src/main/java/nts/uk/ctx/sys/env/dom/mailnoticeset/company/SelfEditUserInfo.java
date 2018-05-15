@@ -11,10 +11,10 @@ package nts.uk.ctx.sys.env.dom.mailnoticeset.company;
 public enum SelfEditUserInfo {
 
 	/** The can edit. */
-	CAN_EDIT(1, "Enum_SelfEditUserInfo_Can_Edit","編集可"),
+	CAN_EDIT(1, "Enum_SelfEditUserInfo_CAN_EDIT","編集可"),
 	
 	/** The can not edit. */
-	CAN_NOT_EDIT(0, "Enum_SelfEditUserInfo_Can_Not_Edit","編集不可");
+	CAN_NOT_EDIT(0, "Enum_SelfEditUserInfo_CAN_NOT_EDIT","編集不可");
 	
 
 	/** The value. */

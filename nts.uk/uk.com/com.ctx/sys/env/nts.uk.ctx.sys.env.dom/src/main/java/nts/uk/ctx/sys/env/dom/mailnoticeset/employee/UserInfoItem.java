@@ -11,25 +11,25 @@ package nts.uk.ctx.sys.env.dom.mailnoticeset.employee;
 public enum UserInfoItem {
 
 	/** The none. */
-	COMPANY_PC_MAIL(0, "Enum_UserInfoItem_Company_PC_Mail","会社PCメール"),
+	COMPANY_PC_MAIL(0, "Enum_UserInfoItem_COMPANY_PC_MAIL","会社PCメール"),
 	
 	/** The personal pc mail. */
-	PERSONAL_PC_MAIL(1, "Enum_UserInfoItem_Personal_PC_Mail","個人PCメール"),
+	PERSONAL_PC_MAIL(1, "Enum_UserInfoItem_PERSONAL_PC_MAIL","個人PCメール"),
 	
 	/** The company mobile mail. */
-	COMPANY_MOBILE_MAIL(2, "Enum_UserInfoItem_Company_Mobile_Mail","会社携帯メール"),
+	COMPANY_MOBILE_MAIL(2, "Enum_UserInfoItem_COMPANY_MOBILE_MAIL","会社携帯メール"),
 	
 	/** The personal mobile mail. */
-	PERSONAL_MOBILE_MAIL(3, "Enum_UserInfoItem_Personal_Mobile_Mail","個人携帯メール"),
+	PERSONAL_MOBILE_MAIL(3, "Enum_UserInfoItem_PERSONAL_MOBILE_MAIL","個人携帯メール"),
 	
 	/** The company mobile phone. */
-	COMPANY_MOBILE_PHONE(4, "Enum_UserInfoItem_Company_Mobile_Phone","会社携帯電話"),
+	COMPANY_MOBILE_PHONE(4, "Enum_UserInfoItem_COMPANY_MOBILE_PHONE","会社携帯電話"),
 	
 	/** The personal mobile phone. */
-	PERSONAL_MOBILE_PHONE(5, "Enum_UserInfoItem_Personal_Mobile_Phone","個人携帯電話"),
+	PERSONAL_MOBILE_PHONE(5, "Enum_UserInfoItem_PERSONAL_MOBILE_PHONE","個人携帯電話"),
 	
 	/** The password. */
-	PASSWORD(6, "Enum_UserInfoItem_Password","パスワード");
+	PASSWORD(6, "Enum_UserInfoItem_PASSWORD","パスワード");
 
 	/** The value. */
 	public final int value;
