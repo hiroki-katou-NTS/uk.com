@@ -1631,8 +1631,12 @@ public class ProgramsManager {
 			"/view/kal/004/a/index.xhtml");
 	public static final Program KAL004B = new Program(WebAppId.AT, ProgramIdConsts.KAL004B, "KAL004_2",
 			"/view/kal/004/b/index.xhtml");
+	public static final Program KAL004D = new Program(WebAppId.AT, ProgramIdConsts.KAL004D, "KAL004_2",
+			"/view/kal/004/d/index.xhtml");
 	public static final Program KAL004F = new Program(WebAppId.AT, ProgramIdConsts.KAL004F, "KAL004_2",
 			"/view/kal/004/f/index.xhtml");
+	public static final Program KAL004G = new Program(WebAppId.AT, ProgramIdConsts.KAL004G, "KAL004_2",
+			"/view/kal/004/g/index.xhtml");
 	/** KDW004 */
 	public static final Program KDW004A = new Program(WebAppId.AT, ProgramIdConsts.KDW004A, "KDW004_1",
 			"/view/kdw/004/a/index.xhtml");
