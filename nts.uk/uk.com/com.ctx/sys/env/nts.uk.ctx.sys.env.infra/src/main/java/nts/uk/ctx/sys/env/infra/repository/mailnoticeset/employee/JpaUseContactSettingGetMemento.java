@@ -20,7 +20,7 @@ public class JpaUseContactSettingGetMemento implements UseContactSettingGetMemen
 
 	@Override
 	public UserInfoItem getSettingItem() {
-		return UserInfoItem.valueOf(this.entity.getSetItem());
+		return UserInfoItem.valueOf(this.entity.getSevstUseContactSetPK().getSetItem());
 	}
 
 	@Override

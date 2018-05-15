@@ -12,10 +12,10 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
-@Table(name = "SEVST_MAIL_FUNCTION")
+@Table(name = "SEVMT_MAIL_FUNCTION")
 @Getter
 @Setter
-public class SevstMailFunction extends UkJpaEntity implements Serializable {
+public class SevmtMailFunction extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
    
     @Column(name = "EXCLUS_VER")
@@ -44,10 +44,10 @@ public class SevstMailFunction extends UkJpaEntity implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof SevstMailFunction)) {
+        if (!(object instanceof SevmtMailFunction)) {
             return false;
         }
-        SevstMailFunction other = (SevstMailFunction) object;
+        SevmtMailFunction other = (SevmtMailFunction) object;
         if ((this.functionId == null && other.functionId != null) || (this.functionId != null && !this.functionId.equals(other.functionId))) {
             return false;
         }
@@ -64,7 +64,7 @@ public class SevstMailFunction extends UkJpaEntity implements Serializable {
 		return this.functionId;
 	}
 
-	public SevstMailFunction() {
+	public SevmtMailFunction() {
 		super();
 	}
     

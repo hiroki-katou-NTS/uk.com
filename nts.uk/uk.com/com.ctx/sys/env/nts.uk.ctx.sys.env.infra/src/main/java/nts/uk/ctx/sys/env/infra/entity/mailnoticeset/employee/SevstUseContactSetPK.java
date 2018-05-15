@@ -28,7 +28,11 @@ public class SevstUseContactSetPK implements Serializable {
     @Column(name = "SID")
     private String sid;
 
-	/**
+    /** The set item. */
+    @Column(name = "SETTING_ITEM")
+    private int setItem;
+
+    /**
 	 * Instantiates a new sevst use contact set PK.
 	 */
 	public SevstUseContactSetPK() {
@@ -46,40 +50,44 @@ public class SevstUseContactSetPK implements Serializable {
     }
 
     /* (non-Javadoc)
-     * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (cid != null ? cid.hashCode() : 0);
-        hash += (sid != null ? sid.hashCode() : 0);
-        return hash;
-    }
-
-    /* (non-Javadoc)
-     * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof SevstUseContactSetPK)) {
-            return false;
-        }
-        SevstUseContactSetPK other = (SevstUseContactSetPK) object;
-        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
-            return false;
-        }
-        if ((this.sid == null && other.sid != null) || (this.sid != null && !this.sid.equals(other.sid))) {
-            return false;
-        }
-        return true;
-    }
-
-    /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
         return "javaapplication1.SevstUseContactSetPK[ cid=" + cid + ", sid=" + sid + " ]";
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
+		result = prime * result + setItem;
+		result = prime * result + ((sid == null) ? 0 : sid.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SevstUseContactSetPK other = (SevstUseContactSetPK) obj;
+		if (cid == null) {
+			if (other.cid != null)
+				return false;
+		} else if (!cid.equals(other.cid))
+			return false;
+		if (setItem != other.setItem)
+			return false;
+		if (sid == null) {
+			if (other.sid != null)
+				return false;
+		} else if (!sid.equals(other.sid))
+			return false;
+		return true;
+	}
 }
