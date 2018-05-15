@@ -14,7 +14,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         isNewMode: KnockoutObservable<boolean> = ko.observable(true);
 
         //enum value output format
-        valueOutputFormat: KnockoutObservableArray<any> = ko.observableArray([]);
+        valOutFormat: KnockoutObservableArray<any> = ko.observableArray([]);
 
         //B2_2
         listStandardImportSetting: KnockoutObservableArray<model.OutputSettingCodeDto> = ko.observableArray([]);
@@ -123,7 +123,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
                 service.getValueOutputFormat().done(data => {
                     for (let i = 0, count = data.length; i < count; i++) {
-                        self.valueOutputFormat.push(new model.ItemModel(data[i].value, data[i].localizedName));
+                        self.valOutFormat.push(new model.ItemModel(data[i].value, data[i].localizedName));
                     }
                 }).always(function() {
                     dfd.resolve(self);
@@ -154,7 +154,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 return;
             }
 
-            self.getListItemByAtr(self.outputItem()[index].valueOutputFormat()).done((lstItem) => {
+            self.getListItemByAtr(self.outputItem()[index].valOutFormat()).done((lstItem) => {
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                 let lstAddItems = _.filter(self.outputItem()[index].listOperationSetting(), (item) => {
                     return item.operation();
@@ -187,7 +187,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             let dfd = $.Deferred<any>();
             let operationName = "";
             if (lstItems && lstItems.length > 0) {
-                service.getAttendanceItemByCodes(lstItems).done((items) => {               
+                service.getAttendanceItemByCodes(lstItems).done((items) => {
                     _.forEach(items, (item) => {
                         if (isAdd) {
                             outputItem.listOperationSetting.push(new OperationCondition(item.attendanceItemId, 1, item.attendanceItemName));
@@ -243,10 +243,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         }
 
         // get data for kdw007
-        getListItemByAtr(valueOutputFormat) {
+        getListItemByAtr(valOutFormat) {
             let self = this;
             let dfd = $.Deferred<any>();
-            if (valueOutputFormat === 1) {
+            if (valOutFormat === 1) {
                 //With type 回数 - Times
                 service.getAttendanceItemByAtr(2).done((lstAtdItem) => {
                     service.getOptItemByAtr(1).done((lstOptItem) => {
@@ -256,7 +256,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         dfd.resolve(lstAtdItem);
                     });
                 });
-            } else if (valueOutputFormat === 0) {
+            } else if (valOutFormat === 0) {
                 //With type 時間 - Time
                 service.getAttendanceItemByAtr(5).done((lstAtdItem) => {
                     service.getOptItemByAtr(0).done((lstOptItem) => {
@@ -266,12 +266,12 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         dfd.resolve(lstAtdItem);
                     });
                 });
-            } else if (valueOutputFormat === 2) {
+            } else if (valOutFormat === 2) {
                 //With type 時刻 - TimeWithDay
                 service.getAttendanceItemByAtr(6).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });
-            } else if (valueOutputFormat === 3) {
+            } else if (valOutFormat === 3) {
                 //With type 金額 - AmountMoney
                 service.getAttendanceItemByAtr(3).done((lstAtdItem) => {
                     service.getOptItemByAtr(2).done((lstOptItem) => {
@@ -467,26 +467,26 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         cd: KnockoutObservable<string>= ko.observable(null);
         useClass: KnockoutObservable<boolean>= ko.observable(false);
         headingName: KnockoutObservable<string>= ko.observable('');
-        valueOutputFormat: KnockoutObservable<number>= ko.observable(0);
+        valOutFormat: KnockoutObservable<number>= ko.observable(0);
         outputTargetItem: KnockoutObservable<string>= ko.observable('');
         listOperationSetting: KnockoutObservableArray<OperationCondition> = ko.observableArray([]);
-        constructor(sortBy: number, cd: string, useClass: boolean, headingName: string, valueOutputFormat: number, outputTargetItem: string) {
+        constructor(sortBy: number, cd: string, useClass: boolean, headingName: string, valOutFormat: number, outputTargetItem: string) {
             let self = this;
             self.sortBy(sortBy || 1);
             self.cd(cd);
             self.useClass(useClass || false);
             self.headingName(headingName || '');
-            self.valueOutputFormat(valueOutputFormat || 0);
+            self.valOutFormat(valOutFormat || 0);
             self.outputTargetItem(outputTargetItem || '');
         }
 
-        updateData(sortBy: number, cd: string, useClass: boolean, headingName: string, valueOutputFormat: number, outputTargetItem: string, listOperationSetting: KnockoutObservableArray<OperationCondition>) {
+        updateData(sortBy: number, cd: string, useClass: boolean, headingName: string, valOutFormat: number, outputTargetItem: string, listOperationSetting: KnockoutObservableArray<OperationCondition>) {
             let self = this;
             self.sortBy(sortBy || 1);
             self.cd(cd);
             self.useClass(useClass || false);
             self.headingName(headingName || '');
-            self.valueOutputFormat(valueOutputFormat || 0);
+            self.valOutFormat(valOutFormat || 0);
             self.outputTargetItem(outputTargetItem || '');
             self.listOperationSetting(listOperationSetting? listOperationSetting : []);
         }
@@ -534,7 +534,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         listItemOutput[i].cd,
                         listItemOutput[i].useClass,
                         listItemOutput[i].headingName,
-                        listItemOutput[i].valueOutputFormat,
+                        listItemOutput[i].valOutFormat,
                         listItemOutput[i].outputTargetItem);
                     if (listItemOutput[i].listOperationSetting) {
                         outputItemData.buildListOperationSetting(listItemOutput[i].listOperationSetting);

@@ -96,37 +96,6 @@ module nts.uk.at.view.kwr008.a {
                     }
                 });
 
-                service.getPermissionOfEmploymentForm().done((permission: any) => {
-                    self.permissionOfEmploymentForm(new model.PermissionOfEmploymentFormModel(
-                            permission.companyId,
-                            permission.roleId,
-                            permission.functionNo,
-                            permission.availability));
-                });
-                //A3
-                service.getPeriod().done((data) => {
-                    if (data) {
-                        self.startDateString(data.startYearMonth);
-                        self.endDateString(data.endYearMonth);
-                    }
-                });
-
-                //A4
-                self.getOutItemSettingCode();
-                // A6
-                self.restoreOutputConditionAnnualWorkSchedule()
-                .done((data: model.OutputConditionAnnualWorkScheduleChar) => {
-                    if (data) {
-                        self.selectedOutputItem(data.setItemsOutputCd);
-                        self.selectedBreakPage(data.breakPage);
-                    } else if (self.outputItem().length) {
-                        self.selectedOutputItem(self.outputItem()[0].code);
-                    }
-                    if (!self.outputItem().length) {
-                        self.selectedOutputItem(null);
-                    }
-                });
-
                 self.selectedEmployeeCode = ko.observableArray([]);
                 self.alreadySettingPersonal = ko.observableArray([]);
                 self.maxDaysCumulationByEmp = ko.observable(0);
@@ -305,13 +274,50 @@ module nts.uk.at.view.kwr008.a {
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-                service.getPageBreakSelection().done((enumRes)=>{
+
+                var getPermissionOfEmploymentForm = service.getPermissionOfEmploymentForm().done((permission: any) => {
+                    self.permissionOfEmploymentForm(new model.PermissionOfEmploymentFormModel(
+                            permission.companyId,
+                            permission.roleId,
+                            permission.functionNo,
+                            permission.availability));
+                });
+                //A3
+                var getPeriod = service.getPeriod().done((data) => {
+                    if (data) {
+                        self.startDateString(data.startYearMonth);
+                        self.endDateString(data.endYearMonth);
+                    }
+                });
+
+                //A4
+                self.getOutItemSettingCode();
+                // A6
+                var restoreOutputConditionAnnualWorkSchedule
+                    = self.restoreOutputConditionAnnualWorkSchedule()
+                    .done((data: model.OutputConditionAnnualWorkScheduleChar) => {
+                        if (data) {
+                            self.selectedOutputItem(data.setItemsOutputCd);
+                            self.selectedBreakPage(data.breakPage);
+                        } else if (self.outputItem().length) {
+                            self.selectedOutputItem(self.outputItem()[0].code);
+                        }
+                        if (!self.outputItem().length) {
+                            self.selectedOutputItem(null);
+                        }
+                    });
+
+                var getPageBreakSelection = service.getPageBreakSelection().done((enumRes)=>{
                     self.breakPage(enumRes);
                 }).fail((enumError)=>{
                     console.log(`fail : ${enumError}`);
                 });
 
-                dfd.resolve(self);
+                $.when(getPermissionOfEmploymentForm, getPeriod,
+                       restoreOutputConditionAnnualWorkSchedule,
+                       getPageBreakSelection).done(() => {
+                            dfd.resolve(self);
+                       })
                 return dfd.promise();
             }
             public validate(): boolean {
