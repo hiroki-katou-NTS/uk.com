@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class SspdtEmployeesDeletionPK implements Serializable{
+public class SspdtCategoryDeletionPK implements Serializable{
 	 
 	private static final long serialVersionUID = 1L;
 	@NotNull
@@ -20,6 +20,6 @@ public class SspdtEmployeesDeletionPK implements Serializable{
     public String delId;
 	
 	@NotNull
-	@Column(name = "EMPLOYEE_ID")
-    public String employeeId;
+	@Column(name = "CATEGORY_ID")
+    public String categoryId;
 }

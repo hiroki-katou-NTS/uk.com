@@ -17,5 +17,5 @@ public class SspdtResultDeletionPK implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@NotNull
 	@Column(name = "DEL_ID")
-    public String delID;
+    public String delId;
 }

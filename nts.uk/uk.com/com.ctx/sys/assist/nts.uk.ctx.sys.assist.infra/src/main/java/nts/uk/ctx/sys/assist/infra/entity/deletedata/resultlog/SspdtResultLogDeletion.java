@@ -2,17 +2,14 @@ package nts.uk.ctx.sys.assist.infra.entity.deletedata.resultlog;
 
 import java.io.Serializable;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.deletedata.resultlog.ResultLogDeletion;
@@ -31,23 +28,25 @@ public class SspdtResultLogDeletion extends UkJpaEntity implements Serializable 
 
 	/** The deletion Id. */
 	/** データ削除処理ID */
+	@Basic(optional = false)
 	@Column(name = "DEL_ID")
 	public String delId;
 
 	/** The company Id. */
 	/** 会社ID */
+	@Basic(optional = false)
 	@Column(name = "CID")
 	public String companyID;
 
 	/** The log time. */
 	/** ログ登録日時 */
+	@Basic(optional = false)
 	@Column(name = "LOG_TIME")
-	@Convert(converter = GeneralDateToDBConverter.class)
-	@Temporal(TemporalType.TIMESTAMP)
 	public GeneralDateTime logTime;
 
 	/** The processing content. */
 	// 処理内容
+	@Basic(optional = false)
 	@Column(name = "PROCESSING_CONTENT")
 	public String processingContent;
 
@@ -64,8 +63,6 @@ public class SspdtResultLogDeletion extends UkJpaEntity implements Serializable 
 	/** The error date. */
 	// エラー日付
 	@Column(name = "ERROR_DATE")
-	@Convert(converter = GeneralDateToDBConverter.class)
-	@Temporal(TemporalType.DATE)
 	public GeneralDate errorDate;
 
 	@Override
