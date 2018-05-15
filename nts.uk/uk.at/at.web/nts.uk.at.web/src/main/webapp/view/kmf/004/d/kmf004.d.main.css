@@ -48,6 +48,10 @@ table.data-items thead {
 	background-color: #c7f391;
 }
 
+table.data-items thead td {
+	text-align: left;
+}
+
 table.data-items tr {
 	height: 32px;
 }
@@ -72,7 +76,7 @@ table.data-items tbody {
 }
 
 td.hidden-right-border{
-	    border-right-style: hidden;
+	/*border-right-style: hidden;*/
 }
 
 .data-items{
