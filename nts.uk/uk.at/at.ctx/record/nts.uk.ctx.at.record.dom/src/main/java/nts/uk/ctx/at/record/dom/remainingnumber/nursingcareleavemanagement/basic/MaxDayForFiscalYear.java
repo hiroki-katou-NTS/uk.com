@@ -5,7 +5,7 @@ import nts.arc.primitive.constraint.HalfIntegerRange;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 
 @HalfIntegerRange(min = 0, max = 999.5)
-public class MaxDayForFiscalYear extends HalfIntegerPrimitiveValue<DayNumberOfUse> {
+public class MaxDayForFiscalYear extends HalfIntegerPrimitiveValue<MaxDayForFiscalYear> {
 
 	/**
 	 * 本年度上限日数

@@ -349,13 +349,15 @@ public class OtherHolidayInfoService {
 		DesignatedTime result = new DesignatedTime(new OneDayTime(0), new OneDayTime(0));
 
 		CompensatoryLeaveComSetting comSet = compensLeaveComSetRepository.find(cid);
-		Optional<DesignatedTime> designTime = comSet.getCompensatoryOccurrenceSetting().stream()
-				.filter(i -> i.getOccurrenceType().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value)
-				.findFirst().map(i -> i.getTransferSetting().getDesignatedTime());
-		if (!designTime.isPresent()) {
-			return result;
+		if (comSet != null) {
+			Optional<DesignatedTime> designTime = comSet.getCompensatoryOccurrenceSetting().stream()
+					.filter(i -> i.getOccurrenceType().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value)
+					.findFirst().map(i -> i.getTransferSetting().getDesignatedTime());
+			if (designTime.isPresent()) {
+				return designTime.get();
+			}
 		}
-		return designTime.get();
+		return result;
 	}
 
 	/**

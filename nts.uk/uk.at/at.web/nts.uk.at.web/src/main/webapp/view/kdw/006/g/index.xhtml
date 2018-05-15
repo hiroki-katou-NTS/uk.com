@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:stylefile path="kdw006.g.main.css" />
+			<com:scriptfile path="kdw006.g.start.js" />
+			<com:scriptfile path="kdw006.g.vm.js" />
+			<com:scriptfile path="kdw006.g.service.js" />
+
+			<com:EnumScript>
+				nts.uk.ctx.at.record.dom.workrecord.operationsetting.YourselfConfirmError
+			</com:EnumScript>
+
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- G1_1 -->
+				<a class="goback" tabindex="1"
+					data-bind="ntsLinkButton: { action: jumpTo.bind($data, sideBar) }">#{i18n.getText('KDW006_25')}</a>
+				<!-- G1_2 -->
+				<button id="register-button" class="proceed" tabindex="2"
+					data-bind="click: saveData, enable: employmentList().length>0" style="margin-left: 85px;">#{i18n.getText('KDW006_26')}</button>
+				<!-- G5_1 -->
+				<button id="copy-button" class="normal" tabindex="3"
+					data-bind="click: copyData" style="margin-left: 85px;">#{i18n.getText('KDW006_52')}</button>
+			</div>
+			<div id="contents-area">
+				<div id="screen-g">
+					<table>
+						<tr>
+							<td id="left-side">
+								<div id="empt-list-setting"></div>
+							</td>
+							<td id="right-side">
+								<!-- G2_1 -->
+								<div class="label">
+									#{i18n.getText('KDW006_53')}
+									<!-- G2_2 -->
+									<button tabindex="5" id="image-button"
+										data-bind="ntsHelpButton: {image: 'KDW006_1.png', position: 'left top-10', enable: true }">?</button>
+								</div>
+								<div id="items-type1" data-bind="foreach: groups1">
+									<div class="up-part">
+										<span class="no-name-group"
+											data-bind="text: no + ' ' + name()"></span>
+										<button id="default-value"
+											data-bind="attr: {tabindex: no == 1 ? 6 :0 || no == 2 ? 9:0 || no == 3 ? 12:0 || no == 4 ? 15:0}, click: defaultValue">#{i18n.getText('KDW006_54')}</button>
+									</div>
+									<div class="down-part">
+										<button id="choose-workType"
+											data-bind="attr: {tabindex:  no == 1 ? 7 : 0 || no == 2 ? 10 : 0 || no == 3 ? 13 : 0 || no == 4 ? 16 : 0}, click: openKDL002Dialog">#{i18n.getText('KDW006_55')}</button>
+										<span><input id="work-type-names"
+											data-bind="ntsTextEditor: { value: workTypeName , enable: false }" /></span>
+										<button id="clear-workType"
+											data-bind="attr: {tabindex:  no == 1 ? 8 : 0 || no == 2 ? 11 : 0 || no == 3 ? 14 : 0 || no == 4 ? 17 : 0}, click: clear">#{i18n.getText('KDW006_56')}</button>
+									</div>
+									<span id="work-type-comment" data-bind="text: comment"></span>
+								</div>
+
+								<div id="items-type2" data-bind="foreach : groups2">
+									<div class="up-part">
+										<span class="no-group" data-bind="text: no"></span> <input
+											class="name-group"
+											data-bind="attr: {tabindex:  no == 5 ? 18 : 0 || no == 6 ? 21 : 0 || no == 7 ? 24 : 0 || no == 5 ? 27 : 0 || no == 5 ? 30 : 0 || no == 5 ? 32 : 0}, 
+											ntsTextEditor: { name: '#[KDW006_57]',constraint: 'ChangeableWorkTypeGroupName', value: name}" />
+									</div>
+									<div class="down-part">
+										<button id="choose-workType"
+											data-bind="attr: {tabindex:  no == 5 ? 19 : 0 || no == 6 ? 22 : 0 || no == 7 ? 25 : 0 || no == 5 ? 28 : 0 || no == 5 ? 30 : 0 || no == 5 ? 33 : 0}, 
+											click: openKDL002Dialog">#{i18n.getText('KDW006_55')}</button>
+										<span><input id="work-type-names"
+											data-bind="ntsTextEditor: { value: workTypeName , enable: false }" /></span>
+										<button id="clear-workType"
+											data-bind="attr: {tabindex:  no == 5 ? 20 : 0 || no == 6 ? 23 : 0 || no == 7 ? 26 : 0 || no == 5 ? 29 : 0 || no == 5 ? 31 : 0 || no == 5 ? 34 : 0}, 
+											click: clear">#{i18n.getText('KDW006_56')}</button>
+									</div>
+								</div>
+								<div style="margin-top: 30px"></div>
+							</td>
+						</tr>
+					</table>
+
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

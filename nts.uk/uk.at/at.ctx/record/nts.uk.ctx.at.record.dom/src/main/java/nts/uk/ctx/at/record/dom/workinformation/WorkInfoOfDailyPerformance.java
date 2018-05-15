@@ -85,7 +85,7 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 				.newWorkTimeCode(recordInfo == null ? null : recordInfo.getWorkTimeCode())
 				.build().toBePublished();
 	}
-	
+
 	/**
 	 * 勤務予定の勤務情報と勤務実績の勤務情報が同じかどうか確認する
 	 * @param workNo

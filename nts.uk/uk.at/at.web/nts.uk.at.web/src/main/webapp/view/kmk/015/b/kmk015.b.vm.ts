@@ -4,12 +4,11 @@ module nts.uk.at.view.kmk015.b {
             
             periodStart: KnockoutObservable<moment.Moment>;
             periodEnd: KnockoutObservable<moment.Moment>;
-            isSubmit: KnockoutObservable<boolean>;
             
             constructor() {
                 let self = this;
-                self.periodStart = ko.observable(moment(null));
-                self.periodEnd = ko.observable(moment(null));
+                self.periodStart = ko.observable(moment());
+                self.periodEnd = ko.observable(moment());
             }
             
             /**
@@ -19,6 +18,9 @@ module nts.uk.at.view.kmk015.b {
                 let self = this;
                 let dfd = $.Deferred<void>();
 
+                // block ui
+//                nts.uk.ui.block.invisible();
+                
                 dfd.resolve();
 
                 return dfd.promise();
@@ -30,13 +32,6 @@ module nts.uk.at.view.kmk015.b {
             public submit() {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                
-                $("#inp-period-startYMD").ntsEditor("validate");
-                $("#inp-period-endYMD").ntsEditor("validate");
-                
-                if (nts.uk.ui.errors.hasError()) {
-                    return;                   
-                }
 
                 if (self.periodStart().isAfter(self.periodEnd())) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_917" });
@@ -49,7 +44,6 @@ module nts.uk.at.view.kmk015.b {
                 // Set shared data.
                 let time = self.periodStart().format("YYYY/MM/DD") + ' ~ ' + self.periodEnd().format("YYYY/MM/DD");
                 let returnedData = {
-                    isCreated: true,
                     timeHistory: time,
                     start: self.periodStart(),
                     end: self.periodEnd()

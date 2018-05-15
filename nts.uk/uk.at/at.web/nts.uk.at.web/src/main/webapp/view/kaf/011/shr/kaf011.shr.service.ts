@@ -1,6 +1,7 @@
 module nts.uk.at.view.kaf011.shr.service {
 
     import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
     var paths: any = {
         start: "at/request/application/holidayshipment/start",
         changeWkType: "at/request/application/holidayshipment/change_work_type",
@@ -13,9 +14,7 @@ module nts.uk.at.view.kaf011.shr.service {
         holidayShipmentCancel: "at/request/application/holidayshipment/cancel",
         changeAbsDate: "at/request/application/holidayshipment/change_abs_date",
         changeAbsDateToHoliday: "at/request/application/holidayshipment/change_abs_date_to_holiday",
-
-
-
+        getSelectedWorkingHours: "at/request/application/holidayshipment/get_selected_working_hours",
     }
 
     export function start(startParam: any) {
@@ -23,12 +22,10 @@ module nts.uk.at.view.kaf011.shr.service {
     }
 
     export function changeWkType(changeWkTypeParam) {
-
         return ajax(paths.changeWkType, changeWkTypeParam);
     }
 
     export function changeDay(changeDayParam) {
-
         return ajax(paths.changeDay, changeDayParam);
     }
     export function save(saveCmd: common.ISaveHolidayShipmentCommand) {
@@ -53,10 +50,15 @@ module nts.uk.at.view.kaf011.shr.service {
     export function changeAbsDate(saveCmd: common.ISaveHolidayShipmentCommand) {
         return ajax(paths.changeAbsDate, saveCmd);
     }
-    
+
     export function changeAbsDateToHoliday(saveCmd: common.ISaveHolidayShipmentCommand) {
         return ajax(paths.changeAbsDateToHoliday, saveCmd);
     }
+    export function getSelectedWorkingHours(changeWkTypeParam) {
+        return ajax(paths.getSelectedWorkingHours, changeWkTypeParam);
+    }
+
+
 
 
 

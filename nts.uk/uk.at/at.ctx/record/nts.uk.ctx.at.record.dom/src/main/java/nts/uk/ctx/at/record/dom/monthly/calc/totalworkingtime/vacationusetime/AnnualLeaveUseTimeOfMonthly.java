@@ -78,7 +78,9 @@ public class AnnualLeaveUseTimeOfMonthly {
 			// 「日別実績の年休」を取得する
 			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
+			if (totalWorkingTime.getHolidayOfDaily() == null) return;
 			val holidayOfDaily = totalWorkingTime.getHolidayOfDaily();
+			if (holidayOfDaily.getAnnual() == null) return;
 			val annual = holidayOfDaily.getAnnual();
 			
 			// 取得した使用時間を「月別実績の年休使用時間」に入れる

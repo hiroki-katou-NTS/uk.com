@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.command.dailyperform;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -43,6 +44,7 @@ import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDai
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommandUpdateHandler;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlCheckService;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
@@ -208,7 +210,7 @@ public class DailyRecordWorkCommandHandler {
 	private <T extends DailyWorkCommonCommand> void handler(DailyRecordWorkCommand command, boolean isUpdate) {
 		Set<String> mapped = command.itemValues().stream().map(c -> getGroup(c))
 				.distinct().collect(Collectors.toSet());
-		IntegrationOfDaily calcResult = calcIfNeed(mapped, command);
+		List<EmployeeDailyPerError> errors = calcIfNeed(mapped, command);
 		mapped.stream().forEach(c -> {
 			CommandFacade<T> handler = (CommandFacade<T>) getHandler(c, isUpdate);
 			if(handler != null){
@@ -218,15 +220,13 @@ public class DailyRecordWorkCommandHandler {
 		//remove data error
 		employeeDailyPerErrorRepository.removeParam(command.getEmployeeId(), command.getWorkDate());
 		//check and insert error;
-		determineErrorAlarmWorkRecordService.checkAndInsert(command.getEmployeeId(), command.getWorkDate());
-		if(calcResult.getEmployeeError().isEmpty()) {
-			calcResult.getEmployeeError().stream().forEach(er -> {
-				employeeDailyPerErrorRepository.insert(er);
-			});
-		}
+		//determineErrorAlarmWorkRecordService.checkAndInsert(command.getEmployeeId(), command.getWorkDate());
+		
+		determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(errors);
+		
 	}
 	
-	private IntegrationOfDaily calcIfNeed(Set<String> group, DailyRecordWorkCommand command){
+	private List<EmployeeDailyPerError> calcIfNeed(Set<String> group, DailyRecordWorkCommand command){
 //		if(group.contains("I") || group.contains("G") 
 //				|| group.contains("E") || group.contains("F") || group.contains("H") || 
 //				group.contains("J") || group.contains("K") || group.contains("L") || 
@@ -256,7 +256,8 @@ public class DailyRecordWorkCommandHandler {
 //			command.getLogOnInfo
 //			group.add("I");
 			group.add("G");
-			return calced;
+			
+			return calced.getEmployeeError();
 //		}
 	}
 	

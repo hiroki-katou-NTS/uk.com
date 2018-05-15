@@ -41,6 +41,13 @@ public class OverTimeCalcNoBreak extends WorkTimeDomainObject {
 		this.notInLawOT = memento.getNotInLawOT();
 	}
 
+	public OverTimeCalcNoBreak(CalcMethodNoBreak calcMethod, OTFrameNo inLawOT, OTFrameNo notInLawOT) {
+		super();
+		this.calcMethod = calcMethod;
+		this.inLawOT = inLawOT;
+		this.notInLawOT = notInLawOT;
+	}
+	
 	/**
 	 * Save to memento.
 	 *

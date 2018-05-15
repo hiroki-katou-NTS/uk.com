@@ -15,13 +15,9 @@
 			<com:scriptfile path="/view/ccg/share/ccg.service.js"
 				of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/kdl/023/base/kdl023.base.service.js" />
 			<com:scriptfile path="kdr001.a.start.js" />
 			<com:scriptfile path="kdr001.a.vm.js" />
 			<com:scriptfile path="kdr001.a.service.js" />
-			<com:ValidatorScript>
-				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber
-				</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
@@ -39,12 +35,12 @@
 
 					<!-- A2_2  -->
 					<div class="employeeInfoSearch">
-						<div class="selectionHoliday" tabindex="2">
-							<div id="employeeSearch"></div>
+						<div class="selectionHoliday">
+							<div id="employeeSearch" tabindex="2"></div>
 						</div>
 					</div>
-
 				</div>
+				
 				<div class="holidayAction">
 					<table>
 						<tr>
@@ -89,8 +85,7 @@
 							</td>
 							<td>
 								<!-- A4_2  -->
-								<div id="comboBx-HolidayRemaining" tabindex="6"
-									
+								<div tabindex="6"
 									data-bind="ntsComboBox: {
 							    name:'#[KDR001_30]',
 								options: lstHolidayRemaining,
@@ -104,11 +99,10 @@
 									{ prop: 'name', length: 14 }
 								]}">
 								</div> <!-- A4_3  -->
-								<button
+								<button class="small"
 									data-bind="click: openKDR001b, 
 								enable: permissionOfEmploymentForm().availability()"
 									tabindex="7" style="margin-left: 20px;">#{i18n.getText('KDR001_31')}</button>
-
 							</td>
 						</tr>
 						<tr>
@@ -122,6 +116,7 @@
 								<!-- A6_2  -->
 								<div id="combo-box2" tabindex="9" 
 									data-bind="ntsComboBox: {
+								required: true,
 								options: itemSelected,
 								optionsValue: 'code',
 								visibleItemsCount: 3,
@@ -129,6 +124,7 @@
 								optionsText: 'name',
 								editable: false,
 								enable: true,
+								
 								columns: [
 									{ prop: 'name', length: 10 }
 								]}">

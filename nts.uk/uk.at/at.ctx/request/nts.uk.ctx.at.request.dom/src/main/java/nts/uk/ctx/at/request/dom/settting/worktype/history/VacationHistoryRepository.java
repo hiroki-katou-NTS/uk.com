@@ -28,13 +28,12 @@ public interface VacationHistoryRepository {
 	void update(PlanVacationHistory vacationHistory);
 
     /**
-     * Removes the vacation history.
+     * Removes the wkp config hist.
      *
      * @param companyId the company id
      * @param historyId the history id
-     * @param workTypeCode the work type code
      */
-    void removeVacationHistory(String companyId, String historyId, String workTypeCode);
+    void removeWkpConfigHist(String companyId, String historyId);
 
     /**
      * Find by work type code.
@@ -57,21 +56,4 @@ public interface VacationHistoryRepository {
     public Integer countByDatePeriod(String companyId, String workTypeCode, DatePeriod datePeriod,
 			String histId);
 
-    /**
-     * Find history.
-     *
-     * @param companyId the company id
-     * @param historyId the history id
-     * @return the optional
-     */
-    public List<PlanVacationHistory> findHistory(String companyId, String historyId);
-    
-    /**
-     * Find history by period.
-     *
-     * @param companyId the company id
-     * @param period the period
-     * @return the list
-     */
-    public List<PlanVacationHistory> findHistoryByPeriod(String companyId, DatePeriod period);
 }

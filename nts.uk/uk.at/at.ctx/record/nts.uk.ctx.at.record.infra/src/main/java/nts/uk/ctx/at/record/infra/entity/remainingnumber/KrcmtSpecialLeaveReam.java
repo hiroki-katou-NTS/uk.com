@@ -61,7 +61,7 @@ public class KrcmtSpecialLeaveReam extends UkJpaEntity  {
     public int timeUse;
 	
 	@Column(name = "USED_SAVING_DAYS")
-    public double useSavingDays;
+    public Double useSavingDays;
 	
 	@Column(name = "NUMBER_OVER_DAYS")
     public double numberOverDays;

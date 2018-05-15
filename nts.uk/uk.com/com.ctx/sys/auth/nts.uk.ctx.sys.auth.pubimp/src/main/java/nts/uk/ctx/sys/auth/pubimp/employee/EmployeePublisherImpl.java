@@ -64,16 +64,17 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 	private CanApprovalOnBaseDateService canApprovalOnBaseDateService;
 
 	@Inject
+	private AcquireListWorkplaceByEmpIDService acquireListWorkplace;
+	
+	@Inject
 	private AcquireUserIDFromEmpIDService acquireUserIDFromEmpIDService;
-
+	
 	@Inject
 	private RoleIndividualService roleIndividualService;
-	
+
 	@Inject
 	private RoleExportRepo roleExportRepo;
 	
-	@Inject
-	private AcquireListWorkplaceByEmpIDService acquireListWorkplace;
 	@Override
 	public Optional<NarrowEmpByReferenceRange> findByEmpId(List<String> sID, int roleType) {
 		// imported（権限管理）「社員」を取得する Request No1
@@ -123,7 +124,7 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 					listtWorkID.addAll(listWorkPlaceID3);
 					// 取得した所属職場履歴項目（List）を参照可能職場ID（List）で絞り込む
 					result = lisAfiliationWorkplace.stream().filter(c -> listtWorkID.contains(c.getWorkplaceId())).map(x -> x.getEmployeeId()).collect(Collectors.toList());
-
+					
 				}
 			}
 
@@ -177,9 +178,13 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 			OptionalInt optEmpRange = roleExportRepo.findEmpRangeByRoleID(roleID);
 			// 指定社員が参照可能な職場リストを取得する
 			// (Lấy list workplace của employee chỉ định)
-		    List<String> listWorkPlaceID = acquireListWorkplace.getListWorkPlaceID(employeeID, optEmpRange.getAsInt(), referenceDate);
-		    return listWorkPlaceID;
+			List<String> listWorkPlaceID = acquireListWorkplace.getListWorkPlaceID(employeeID, optEmpRange.getAsInt(), referenceDate);
+			if (listWorkPlaceID.isEmpty()) {
+				return new ArrayList<>();
+			} else {
+				return listWorkPlaceID;
+			}
 		}
 	}
-
+	
 }

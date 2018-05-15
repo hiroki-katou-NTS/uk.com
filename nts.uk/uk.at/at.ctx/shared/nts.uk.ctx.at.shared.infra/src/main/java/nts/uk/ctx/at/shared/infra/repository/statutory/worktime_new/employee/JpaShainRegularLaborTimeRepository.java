@@ -20,8 +20,6 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaNormalSet;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaNormalSetPK;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaRegLaborTime;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaRegLaborTimePK;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaRegLaborTimePK_;
@@ -40,9 +38,7 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	 */
 	@Override
 	public void add(ShainRegularLaborTime setting) {
-		KshstShaRegLaborTime entity = new KshstShaRegLaborTime();
-		setting.saveToMemento(new JpaShainRegularLaborTimeSetMemento(entity));
-		commandProxy().insert(entity);
+		commandProxy().insert(this.toEntity(setting));
 	}
 
 	/*
@@ -52,13 +48,7 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	 */
 	@Override
 	public void update(ShainRegularLaborTime setting) {
-		KshstShaRegLaborTime entity = this.queryProxy()
-				.find(new KshstShaRegLaborTimePK(setting.getCompanyId().v(),
-						setting.getEmployeeId().v()),
-						KshstShaRegLaborTime.class)
-				.get();
-		setting.saveToMemento(new JpaShainRegularLaborTimeSetMemento(entity));
-		commandProxy().update(entity);
+		commandProxy().update(this.toEntity(setting));
 	}
 
 	/*
@@ -85,6 +75,19 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 		}
 
 		return Optional.ofNullable(this.toDomain(optEntity.get()));
+	}
+
+	/**
+	 * To entity.
+	 *
+	 * @param emplRegWorkHour
+	 *            the empl reg work hour
+	 * @return the kshst sha reg labor time
+	 */
+	private KshstShaRegLaborTime toEntity(ShainRegularLaborTime emplRegWorkHour) {
+		KshstShaRegLaborTime entity = new KshstShaRegLaborTime();
+		emplRegWorkHour.saveToMemento(new JpaShainRegularLaborTimeSetMemento(entity));
+		return entity;
 	}
 
 	/**

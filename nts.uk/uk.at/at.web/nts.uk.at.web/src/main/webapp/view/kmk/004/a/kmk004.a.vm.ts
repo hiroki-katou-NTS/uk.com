@@ -109,7 +109,6 @@ module nts.uk.at.view.kmk004.a {
                 service.saveCompanySetting(ko.toJS(saveCommand)).done(() => {
                     self.worktimeVM.isNewMode(false);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    self.worktimeVM.worktimeSetting.updateOriginFlexSpecifiedTime();
                 }).fail(error => {
                     nts.uk.ui.dialog.alertError(error);
                 });

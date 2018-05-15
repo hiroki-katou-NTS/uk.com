@@ -109,7 +109,7 @@ module cps001.a.vm {
 
             setInterval(() => {
                 let aut = _(self.layout.listItemCls())
-                    .map((m: any) => _.has(m, 'items') && ko.isObservable(m.items) ? ko.toJS(m.items) : undefined)
+                    .map((m: any) => m.items || undefined)
                     .filter(x => !!x)
                     .flatten() // flat set item
                     .flatten() // flat list item
@@ -117,7 +117,7 @@ module cps001.a.vm {
                     .filter(x => !!x)
                     .value();
 
-                self.saveAble(!!aut.length);
+                self.saveAble(!!aut.length && !hasError());
             }, 0);
         }
 
@@ -149,7 +149,7 @@ module cps001.a.vm {
         unblock() {
             setTimeout(() => {
                 unblock();
-            }, 500);
+            }, 50);
         }
 
         deleteEmployee() {
@@ -169,7 +169,9 @@ module cps001.a.vm {
             });
 
             modal('../b/index.xhtml').onClosed(() => {
-                self.reload();
+                if (getShared('CPS001B_VALUES')) {
+                    self.reload();
+                }
             });
         }
 
@@ -211,7 +213,7 @@ module cps001.a.vm {
                     self.unblock();
                     alert(mes.message);
                 });
-            }, 100);
+            }, 50);
         }
 
         change = (evt: IEventData) => {
@@ -297,7 +299,7 @@ module cps001.a.vm {
                         _.defer(() => {
                             new vc(self.layout.listItemCls());
                             _.defer(() => {
-                                $('.drag-panel input:first').focus();
+                                $('.drag-panel input:not(:disabled):first').focus();
                                 self.unblock();
                             });
                         });

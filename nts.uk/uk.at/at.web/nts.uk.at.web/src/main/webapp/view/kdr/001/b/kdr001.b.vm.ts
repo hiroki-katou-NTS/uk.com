@@ -87,9 +87,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 alertError({ messageId: res.messageId });
                 block.clear();
                 dfd.reject();
-
             });
-
             return dfd.promise();
         }
 
@@ -153,7 +151,6 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     else {
                         self.currentCode(_rsList[0].cd);
                     }
-
                     self.lstHolidays(_rsList);
                 }
                 else {
@@ -178,7 +175,6 @@ module nts.uk.at.view.kdr001.b.viewmodel {
          */
         settingCreateMode() {
             let self = this;
-
             // clear selected holiday set
             self.currentCode('');
             // clear holiday setting
@@ -218,7 +214,6 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                                 self.setFocus();
                             });
                         });
-
                     }).fail(function(error) {
                         if (error.messageId == 'Msg_880') {
                             dialog.alertError({ messageId: error.messageId });
@@ -250,7 +245,6 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                         block.clear();
                     });
                 }
-
             }
         }
 
@@ -262,7 +256,6 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 lstHolidays = self.lstHolidays,
                 currentHoliday: HolidayRemaining = self.currentHoliday();
             block.invisible();
-
             dialog.confirmDanger({ messageId: "Msg_18" }).ifYes(() => {
                 if (currentHoliday.cd()) {
                     let index: number = _.findIndex(lstHolidays(), function(x)
@@ -311,7 +304,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         }
     }
     export class HolidayRemaining {
-
+        
         /**
          * 会社ID
          */
@@ -324,6 +317,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
          * 名称
          */
         name: KnockoutObservable<string>;
+        
         displayCd: string;
         displayName: string;
         /**
@@ -394,7 +388,9 @@ module nts.uk.at.view.kdr001.b.viewmodel {
          * 積立年休の項目を出力する
          */
         yearlyReserved: KnockoutObservable<boolean>;
+        
         listSpecialHoliday: KnockoutObservableArray<number>;
+        
         constructor(param: any) {
             let self = this;
             self.cid = ko.observable(param ? param.cid || '' : '');
@@ -436,9 +432,10 @@ module nts.uk.at.view.kdr001.b.viewmodel {
     }
 
     export class SpecialHoliday {
+        
         /*特別休暇コード*/
         specialHolidayCode: KnockoutObservable<number>;
-
+        
         /*特別休暇名称*/
         specialHolidayName: KnockoutObservable<string>;
 

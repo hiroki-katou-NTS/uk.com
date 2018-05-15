@@ -20,11 +20,11 @@ module nts.custombinding {
                 textKey: string = _.has(access, 'textKey') ? access.textKey : 'text',
                 valueKey: string = _.has(access, 'valueKey') ? access.valueKey : 'value',
                 visibleItemsCount: number = _.has(access, 'visibleItemsCount') ? access.visibleItemsCount : 10,
-                $show = $('<div>', { 'style': 'line-height: 29px; padding-left: 2px;' }),
+                $show = $('<div>', { 'class': 'nts-toggle-dropdown', 'style': 'line-height: 29px; padding-left: 2px;' }),
                 template = '';
 
             if (_.isArray(access.columns)) {
-                template = `<div class='fixed-flex-layout'>${_.map(access.columns, (c, i) => `<div data-class='${c.class}' class='${i == access.columns.length - 1 ? 'fixed-flex-layout-right' : 'fixed-flex-layout-left'}'>\$\{${c.prop}\}</div>`).join('')}</div>`;
+                template = `<div class='fixed-flex-layout'>${_.map(access.columns, (c, i) => `<div data-ntsclass='${c.class || ''}' class='${i == access.columns.length - 1 ? `fixed-flex-layout-right ${c.class}` : `fixed-flex-layout-left  ${c.class}`}'>\$\{${c.prop}\}</div>`).join('')}</div>`;
             }
 
             $element.igCombo({
@@ -44,21 +44,26 @@ module nts.custombinding {
                 dropDownWidth: "auto",
                 dropDownOpening: function(evt, ui) {
                     $(ui.list).css('min-width', $(evt.target).width() + 'px')
-                        .find('[data-class]').each((i, e) => {
-                            $(e).addClass($(e).data('class'));
+                        .find('[data-ntsclass]').each((i, e) => {
+                            $(e).addClass($(e).data('ntsclass'));
                         });
                 }
             });
 
-            let $parent = $element.find('.ui-igcombo-hidden-field').parent();
-
-            /*$parent.append($show).css('overflow', 'hidden');
-
-            $parent.find('.ui-igcombo-fieldholder').addClass('hidden');*/
-
-            $show.on('click', () => {
-                $parent.find('.ui-igcombo-field').trigger('click');
-            });
+            $element
+                .find('.ui-igcombo-hidden-field')
+                .parent()
+                .append($show)
+                .css('overflow', 'hidden')
+                .find('.ui-igcombo-fieldholder').addClass('hidden');
+            $show.on('click', () => {
+                if ($element.data('igCombo')) {
+                    if ($element.igCombo("dropDownOpened")) {
+                        $element.igCombo('closeDropDown');
+                    } else {
+                        $element.igCombo('openDropDown', () => { }, true, true);
+                    }
+                }            });
 
             value.subscribe(v => {
                 if ($element.data("igCombo")) {
@@ -88,28 +93,50 @@ module nts.custombinding {
             dataSource.valueHasMutated();
 
             enable.subscribe(e => {
-                $element.igCombo('option', 'disabled', !e);
+                if ($element.data('igCombo')) {
+                    $element.igCombo('option', 'disabled', !e);
+                }
             });
             //enable.valueHasMutated();
 
-            $(document).on('keydown', (evt) => {
-                if (evt.ctrlKey) {
-                    $('.ui-igcombo-dropdown.ui-igcombo-orientation-bottom [data-class]')
-                        .each((i, e) => {
-                            $(e).removeClass($(e).data('class'));
-                        });
-                }
-            }).on('keyup', (evt, close) => {
-                if (evt.keyCode == 17) {
-                    $('.ui-igcombo-dropdown.ui-igcombo-orientation-bottom [data-class]')
-                        .each((i, e) => {
-                            $(e).addClass($(e).data('class'));
-                        });
-                }
-            });
+            $(document)
+                .on('click', evt => {
+                    if ($(evt.target).parents('.ui-igcombo-wrapper')[0] == $element[0]) {
+                        return;
+                    } else if ($(evt.target).parents('.ui-igcombo-dropdown').length == 0) {
+                        if ($element.data('igCombo')) {
+                            $element.igCombo("closeDropDown");
+                        }
+                    }
+                });
         }
         update = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => { }
     }
 }
 
 ko.bindingHandlers["ntsDropDownList"] = new nts.custombinding.ComboBoxControl();
+
+$(document)
+    .on('keydown', (evt) => {
+        if (evt.ctrlKey) {
+            $('.ui-igcombo-dropdown[class*=ui-igcombo-orientation-] [data-class]')
+                .each((i, e) => {
+                    $(e).removeClass($(e).data('ntsclass'));
+                });
+
+            $('[data-ntsclass]').each((i, e) => {
+                $(e).removeClass($(e).data('ntsclass'));
+            });
+        }
+    }).on('keyup', (evt, close) => {
+        if (evt.keyCode == 17) {
+            $('.ui-igcombo-dropdown[class*=ui-igcombo-orientation-] [data-class]')
+                .each((i, e) => {
+                    $(e).addClass($(e).data('ntsclass'));
+                });
+
+            $('[data-ntsclass]').each((i, e) => {
+                $(e).addClass($(e).data('ntsclass'));
+            });
+        }
+    });

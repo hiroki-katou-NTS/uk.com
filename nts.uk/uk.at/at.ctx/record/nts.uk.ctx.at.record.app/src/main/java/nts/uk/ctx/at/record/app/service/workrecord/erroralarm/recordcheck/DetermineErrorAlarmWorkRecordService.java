@@ -56,6 +56,18 @@ public class DetermineErrorAlarmWorkRecordService implements ErAlCheckService {
 							Arrays.asList(ae.getKey().getErrorDisplayItem().intValue()));
 				}).collect(Collectors.toList());
 	}
+	
+	@Override
+	public void createEmployeeDailyPerError(List<EmployeeDailyPerError> errors) {
+		for(EmployeeDailyPerError error : errors) {
+			if(error.getAttendanceItemList().get(0) != null) {
+				//String prefix = error.getErrorAlarmWorkRecordCode().v().substring(0, 1);
+				//if(prefix.equals("D") || prefix.equals("S")) {
+					createEmployeeDailyPerError.createEmployeeDailyPerError(error);
+				//}
+			}
+		}
+	}
 
 	private Boolean isError(Boolean erAl) {
 		return erAl != null && erAl;

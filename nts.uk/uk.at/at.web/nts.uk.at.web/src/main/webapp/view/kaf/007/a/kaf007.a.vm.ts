@@ -62,12 +62,16 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             //Start Date
             self.datePeriod.subscribe(value => {
                 nts.uk.ui.errors.clearAll();
+                nts.uk.ui.block.grayout();
                 $(".ntsStartDatePicker").trigger("validate");
                 $(".ntsEndDatePicker").trigger("validate");
                 if (nts.uk.ui.errors.hasError()) {
+                    nts.uk.ui.block.clear();
                     return;
                 }
-                self.changeApplicationDate(value.startDate, value.endDate);
+                self.changeApplicationDate(value.startDate, value.endDate).done(() => {
+                    nts.uk.ui.block.clear();
+                });
             });
         }
         /**
@@ -257,8 +261,9 @@ module nts.uk.at.view.kaf007.a.viewmodel {
          * @param date: 申請日
          * @param dateType (Start or End type)
          */
-        private changeApplicationDate(startDate : any, endDate : any){
+        private changeApplicationDate(startDate : any, endDate : any): JQueryPromise<any>{
             let self = this,
+            dfd = $.Deferred(),
             tmpStartDate : string = moment(startDate).format(self.dateFormat),
             tmpEndDate : string = moment(endDate).format(self.dateFormat),
             application = self.appWorkChange().application();
@@ -274,10 +279,13 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             //実績の内容
             service.getRecordWorkInfoByDate(moment(endDate === null ? startDate : endDate).format(self.dateFormat)).done((recordWorkInfo) => {
                 //Binding data
+                dfd.resolve();
                 ko.mapping.fromJS( recordWorkInfo, {}, self.recordWorkInfo );
             }).fail((res) => {
-                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});
+                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                dfd.reject();
             });
+            return dfd.promise();
         }
         /**
          * 申請日を変更する
@@ -286,12 +294,9 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         private checkChangeAppDate(date: string){
             let self = this;
             date = moment(date).format(self.dateFormat);
-            nts.uk.ui.block.invisible();
             self.kaf000_a.getAppDataDate(2, date, false)
-            .done(()=>{
-                nts.uk.ui.block.clear();         
-            }).fail(()=>{
-                nts.uk.ui.block.clear();    
+            .done(()=>{       
+            }).fail(()=>{ 
             });
         }
         /**

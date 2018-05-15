@@ -14,7 +14,7 @@ import nts.uk.ctx.at.request.app.command.setting.vacation.history.dto.VacationHi
 public class VacationHistoryCommand {
 	
 	/** The is create mode. */
-	private Boolean isCreated;
+	private Boolean isCreateMode;
 	
 	/** The max day. */
 	private Integer maxDay;

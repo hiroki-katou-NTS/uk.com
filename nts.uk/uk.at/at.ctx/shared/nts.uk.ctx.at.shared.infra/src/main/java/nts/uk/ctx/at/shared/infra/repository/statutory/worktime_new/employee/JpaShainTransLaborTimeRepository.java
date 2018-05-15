@@ -24,22 +24,16 @@ public class JpaShainTransLaborTimeRepository extends JpaRepository implements S
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTimeRepository#add(nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTime)
 	 */
 	@Override
-	public void add(ShainTransLaborTime domain) {
-		KshstShaTransLabTime entity = new KshstShaTransLabTime();
-		domain.saveToMemento(new JpaShainTransLaborTimeSetMemento(entity));
-		commandProxy().insert(entity);
+	public void add(ShainTransLaborTime emplDeforLaborWorkingHour) {
+		commandProxy().insert(this.toEntity(emplDeforLaborWorkingHour));
 	}
 
 	/* 
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTimeRepository#update(nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTime)
 	 */
 	@Override
-	public void update(ShainTransLaborTime domain) {
-		KshstShaTransLabTime entity = this.queryProxy().find(
-				new KshstShaTransLabTimePK(domain.getCompanyId().v(), domain.getEmployeeId().v()),
-				KshstShaTransLabTime.class).get();
-		domain.saveToMemento(new JpaShainTransLaborTimeSetMemento(entity));
-		commandProxy().update(entity);
+	public void update(ShainTransLaborTime emplDeforLaborWorkingHour) {
+		commandProxy().update(this.toEntity(emplDeforLaborWorkingHour));
 	}
 
 	/* 
@@ -65,6 +59,17 @@ public class JpaShainTransLaborTimeRepository extends JpaRepository implements S
 		return Optional.ofNullable(this.toDomain(optEntity.get()));
 	}
 
+	/**
+	 * To entity.
+	 *
+	 * @param domain the domain
+	 * @return the kshst sha trans lab time
+	 */
+	private KshstShaTransLabTime toEntity(ShainTransLaborTime domain) {
+		KshstShaTransLabTime entity = new KshstShaTransLabTime();
+		domain.saveToMemento(new JpaShainTransLaborTimeSetMemento(entity));
+		return entity;
+	}
 	
 	/**
 	 * To domain.

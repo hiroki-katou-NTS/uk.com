@@ -24,8 +24,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -52,18 +50,29 @@ public class OvertimeServiceImpl implements OvertimeService {
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
 	@Override
-	public int checkOvertime(String url) {
+	public int checkOvertimeAtr(String url) {
 		if(url == null){
-			return 0;
+			return OverTimeAtr.ALL.value;
 		}
-			if(url.equals("0")){
-				return OverTimeAtr.PREOVERTIME.value;
-			}else if(url.equals("1")){
-				return OverTimeAtr.REGULAROVERTIME.value;
-			}else if(url.equals("2")){
-				return OverTimeAtr.ALL.value;
-			}
-		return 2;
+		switch(url){
+		case "0":
+			return OverTimeAtr.PREOVERTIME.value;
+		case "1":
+			return OverTimeAtr.REGULAROVERTIME.value;
+		case "2":
+			return OverTimeAtr.ALL.value;
+		default:
+			return OverTimeAtr.ALL.value;
+			
+		}
+//			if(url.equals("0")){
+//				return OverTimeAtr.PREOVERTIME.value;
+//			}else if(url.equals("1")){
+//				return OverTimeAtr.REGULAROVERTIME.value;
+//			}else if(url.equals("2")){
+//				return OverTimeAtr.ALL.value;
+//			}
+//		return 2;
 	}
 
 	/* (non-Javadoc)

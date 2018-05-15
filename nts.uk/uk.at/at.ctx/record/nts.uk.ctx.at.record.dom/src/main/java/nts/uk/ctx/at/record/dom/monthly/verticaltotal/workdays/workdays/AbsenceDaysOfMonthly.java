@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -20,6 +21,8 @@ public class AbsenceDaysOfMonthly {
 
 	/** 欠勤合計日数 */
 	private AttendanceDaysMonth totalAbsenceDays;
+	/** 欠勤合計時間 */
+	private AttendanceTimeMonth totalAbsenceTime;
 	/** 欠勤日数 */
 	private Map<Integer, AggregateAbsenceDays> absenceDaysList;
 	
@@ -29,21 +32,25 @@ public class AbsenceDaysOfMonthly {
 	public AbsenceDaysOfMonthly(){
 		
 		this.totalAbsenceDays = new AttendanceDaysMonth(0.0);
+		this.totalAbsenceTime = new AttendanceTimeMonth(0);
 		this.absenceDaysList = new HashMap<>();
 	}
 	
 	/**
 	 * ファクトリー
 	 * @param totalAbsenceDays 欠勤合計日数
+	 * @param totalAbsenceTime 欠勤合計時間
 	 * @param absenceDaysList 欠勤日数
 	 * @return 月別実績の欠勤日数
 	 */
 	public static AbsenceDaysOfMonthly of(
 			AttendanceDaysMonth totalAbsenceDays,
+			AttendanceTimeMonth totalAbsenceTime,
 			List<AggregateAbsenceDays> absenceDaysList){
 		
 		val domain = new AbsenceDaysOfMonthly();
 		domain.totalAbsenceDays = totalAbsenceDays;
+		domain.totalAbsenceTime = totalAbsenceTime;
 		for (val absenceDays : absenceDaysList){
 			val absenceFrameNo = Integer.valueOf(absenceDays.getAbsenceFrameNo());
 			domain.absenceDaysList.putIfAbsent(absenceFrameNo, absenceDays);
@@ -100,6 +107,7 @@ public class AbsenceDaysOfMonthly {
 			
 			// 欠勤合計日数の集計
 			this.totalAbsenceDays = this.totalAbsenceDays.addDays(aggrAbsenceDays.getDays().v());
+			this.totalAbsenceTime = this.totalAbsenceTime.addMinutes(aggrAbsenceDays.getTime().v());
 		}
 	}
 	
@@ -110,10 +118,12 @@ public class AbsenceDaysOfMonthly {
 	public void sum(AbsenceDaysOfMonthly target){
 		
 		this.totalAbsenceDays = this.totalAbsenceDays.addDays(target.totalAbsenceDays.v());
+		this.totalAbsenceTime = this.totalAbsenceTime.addMinutes(target.totalAbsenceTime.v());
 		for (val absenceDays : this.absenceDaysList.values()){
 			val frameNo = absenceDays.getAbsenceFrameNo();
 			if (target.absenceDaysList.containsKey(frameNo)){
 				absenceDays.addDays(target.absenceDaysList.get(frameNo).getDays().v());
+				absenceDays.addTime(target.absenceDaysList.get(frameNo).getTime().v());
 			}
 		}
 		for (val targetAbsenceDays : target.absenceDaysList.values()){

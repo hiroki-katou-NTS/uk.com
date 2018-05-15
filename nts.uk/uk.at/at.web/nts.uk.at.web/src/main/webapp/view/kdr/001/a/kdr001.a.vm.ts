@@ -12,7 +12,6 @@ module nts.uk.at.view.kdr001.a.viewmodel {
     export class ScreenModel {
 
         ccgcomponent: GroupOption;
-        systemTypes: KnockoutObservableArray<any>;
 
         // Options
         isQuickSearchTab: KnockoutObservable<boolean>;
@@ -57,7 +56,6 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         endDateString: KnockoutObservable<string>;
 
         lstLabelInfomation: KnockoutObservableArray<string>;
-        //            infoCreateMethod: KnockoutObservable<string>;
         infoPeriodDate: KnockoutObservable<string>;
         lengthEmployeeSelected: KnockoutObservable<string>;
 
@@ -68,9 +66,6 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         employeeList: KnockoutObservableArray<UnitModel>;
         alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
         ccgcomponentPerson: GroupOption;
-
-        // date
-        date: KnockoutObservable<string>;
 
         //combo-box
         lstHolidayRemaining: KnockoutObservableArray<HolidayRemainingModel> = ko.observableArray([]) ;
@@ -84,24 +79,19 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         constructor() {
             var self = this;
 
-            self.date = ko.observable(moment());
-            self.systemTypes = ko.observableArray([
+            self.systemType = ko.observableArray([
                 { name: 'システム管理者', value: 1 }, // PERSONAL_INFORMATION
                 { name: '就業', value: 2 } // EMPLOYMENT
             ]);
             self.lstSearchEmployee = ko.observableArray([]);
-
             // initial ccg options
             self.setDefaultCcg001Option();
-
-            
 
             self.periodFormatYM.subscribe(item => {
                 if (item) {
                     self.showClosure(true);
                 }
             });
-
             self.startDateString = ko.observable(moment());
             self.endDateString = ko.observable(moment());
             self.selectedEmployeeCode = ko.observableArray([]);
@@ -233,11 +223,9 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                     self.applyKCP005ContentSearch(data.listEmployee);
                 }
             }
-            //$('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
         }
 
-
-               /**
+       /**
        * start page data 
        */
         public startPage(): JQueryPromise<any> {
@@ -251,7 +239,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                     nts.uk.characteristics.restore("UserSpecific_" + user.employeeId)
                     ).done((
                             holidayRemainings: Array<any>,
-                            dateData: IGetDate,
+                            dateData: GetDate,
                             permission: any,
                             userSpecific
                             ) => {
@@ -263,7 +251,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                     let nextMonth = moment(endDate).add(1, 'M');
 
                     //画面項目「A3_2：開始年月」にパラメータ「当月」－1年した値をセットする
-                    let preYear = moment(startDate).add(-1, 'Y');
+                    let preYear = moment(nextMonth).add(-1, 'Y');
                     self.startDateString(moment.utc(preYear).format("YYYY/MM/DD"));
                     self.endDateString(moment.utc(nextMonth).format("YYYY/MM/DD"));
                         
@@ -339,9 +327,9 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 maxWidth: 550,
                 maxRows: 15
             };
-
+            self.startDateString($('#inp-period-startYM').val());
+            self.endDateString($('#inp-period-endYM').val());
         }
-
 
         /**
          * function export excel button
@@ -353,9 +341,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 return;
             }
             nts.uk.ui.block.invisible();
-            
-            let startMonth = moment.utc(self.startDateString());
-            let endMonth = moment.utc(self.endDateString());
+            let startMonth = moment(self.startDateString(), 'YYYY/MM');
+            let endMonth = moment(self.endDateString(), 'YYYY/MM');
             let totalMonths = (parseInt(endMonth.format("YYYY"))*12 + parseInt(endMonth.format("MM")))
                              - (parseInt(startMonth.format("YYYY"))*12 + parseInt(startMonth.format("MM")));
             if (totalMonths < 0){
@@ -394,8 +381,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             nts.uk.characteristics.save("UserSpecific_" + user.employeeId, userSpecificInformation);
 
             let holidayRemainingOutputCondition = new HolidayRemainingOutputCondition(
-                startMonth.format("YYYY/MM"),
-                endMonth.format("YYYY/MM"),
+                startMonth.format("YYYY/MM/DD"),
+                endMonth.format("YYYY/MM/DD"),
                 self.holidayRemainingSelectedCd(),
                 self.selectedCode()
             );
@@ -490,11 +477,6 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             self.startDate = '';
             self.worktimeCode = '';
         }
-    }
-    
-    export interface IGetDate{
-        startDate : string;
-        endDate : string;
     }
     
     export class GetDate{

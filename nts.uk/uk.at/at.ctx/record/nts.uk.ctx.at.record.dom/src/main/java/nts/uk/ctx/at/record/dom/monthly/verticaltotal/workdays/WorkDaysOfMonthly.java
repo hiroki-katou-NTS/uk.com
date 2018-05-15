@@ -152,7 +152,6 @@ public class WorkDaysOfMonthly {
 		this.absenceDays.aggregate(workingSystem, workType, workTypeDaysCountTable, isAttendanceDay);
 		
 		// 所定日数の集計
-		//*****（未）　付与前・付与後の振り分けは、年休残数管理が実装されるまで、保留。
 		this.predetermineDays.aggregate(workTypeDaysCountTable);
 		
 		// 勤務日数の集計

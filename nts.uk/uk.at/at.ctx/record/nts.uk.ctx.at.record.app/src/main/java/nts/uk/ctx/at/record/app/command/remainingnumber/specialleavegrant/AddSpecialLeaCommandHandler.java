@@ -37,7 +37,7 @@ public class AddSpecialLeaCommandHandler extends CommandHandler<SpecialLeaveRema
 				command.getExpStatus(), GrantRemainRegisterType.MANUAL.value,
 				command.getNumberDayGrant(), command.getTimeGrant(), 
 				command.getNumberDayUse(),command.getTimeUse(), 
-				0.0, 
+				null, 
 				command.getNumberDaysOver(),command.getTimeOver(), 
 				command.getNumberDayRemain(), command.getTimeRemain());
 		

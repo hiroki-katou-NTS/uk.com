@@ -5,11 +5,14 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.ApplyTimeAtr;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.CommonReflectParamSche;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.absenceleave.AbsenceLeaveReflectSche;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.appforleave.ForleaveReflectSche;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.gobacksche.ApplicationGobackScheInfor;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.gobacksche.ChangeAtrAppGoback;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.gobacksche.GoBackDirectlyReflectSche;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.gobacksche.GobackReflectParam;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.holidaywork.HolidayWorkReflectSche;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.recruitment.RecruitmentAppReflectSche;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.workchange.WorkChangeReflectServiceSche;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.CommonReflectSchePubParam;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.AppReflectProcessSchePub;
@@ -23,7 +26,12 @@ public class AppReflectProcessSchePubImpl implements AppReflectProcessSchePub{
 	private ForleaveReflectSche leaveReflect;
 	@Inject
 	private WorkChangeReflectServiceSche workchangeReflect;
-
+	@Inject
+	private HolidayWorkReflectSche holidayWorkReflect;
+	@Inject
+	private AbsenceLeaveReflectSche absenceLeaveReflect;
+	@Inject
+	private RecruitmentAppReflectSche recruitmentReflect;
 	@Override
 	public boolean goBackDirectlyReflectSch(ApplicationReflectParamScheDto reflectPara) {
 		ApplicationGobackScheInfor gobackInfo = new ApplicationGobackScheInfor(EnumAdaptor.valueOf(reflectPara.getGobackInfor().getChangeAtrAppGoback().value, ChangeAtrAppGoback.class),
@@ -58,8 +66,25 @@ public class AppReflectProcessSchePubImpl implements AppReflectProcessSchePub{
 				schePubParam.getWorktypeCode(),
 				schePubParam.getWorkTimeCode(),
 				schePubParam.getStartDate(),
-				schePubParam.getEndDate());
+				schePubParam.getEndDate(),
+				schePubParam.getStartTime(),
+				schePubParam.getEndTime());
 		return paramSche;
+	}
+
+	@Override
+	public boolean holidayWorkReflectSche(CommonReflectSchePubParam holidayWorkParam) {		
+		return holidayWorkReflect.holidayWorkReflect(this.toParamSche(holidayWorkParam));
+	}
+
+	@Override
+	public boolean absenceLeaveReflectSche(CommonReflectSchePubParam absenceLeaverParam) {		
+		return absenceLeaveReflect.absenceLeaveReflect(this.toParamSche(absenceLeaverParam));
+	}
+
+	@Override
+	public boolean recruitmentReflectSche(CommonReflectSchePubParam recruitmentParam) {
+		return recruitmentReflect.recruitmentReflect(this.toParamSche(recruitmentParam));
 	}
 
 

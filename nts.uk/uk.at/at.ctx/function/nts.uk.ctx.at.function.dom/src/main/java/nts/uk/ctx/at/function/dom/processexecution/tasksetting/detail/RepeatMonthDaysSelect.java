@@ -101,7 +101,7 @@ public enum RepeatMonthDaysSelect {
 	DAY_31(31),
 	
 	/* 最終日 */
-	DAY_32(32);
+	LAST_DAY(32);
 	
 	/** The value. */
 	public final int value;

@@ -70,7 +70,20 @@ public enum CalcMethodExceededPredAddVacation {
 		return null;
 	}
 	
+	/**
+	 * 就業時間として計算するかどうか判定する
+	 * @return　就業時間として判定する
+	 */
 	public boolean isCalcAsWorking() {
 		return CALC_AS_WORKING.equals(this);
 	}
+	
+	/**
+	 * 残業時間として計算するかどうか判定する
+	 * @return　残業時間として判定する
+	 */
+	public boolean isCalcAsOverTime() {
+		return CALC_AS_OVERTIME.equals(this);
+	}
+	
 }

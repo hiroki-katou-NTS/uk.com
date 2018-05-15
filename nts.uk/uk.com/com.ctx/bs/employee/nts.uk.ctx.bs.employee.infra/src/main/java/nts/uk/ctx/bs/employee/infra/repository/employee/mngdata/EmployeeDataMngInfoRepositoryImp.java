@@ -67,7 +67,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			"ON e.bsymtEmployeeDataMngInfoPk.pId = p.bpsmtPersonPk.pId",
 			"WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :lstId AND e.delStatus = 0",
 			"ORDER BY e.bsymtEmployeeDataMngInfoPk.sId ASC");
-	
+
 	// Lanlt end
 	private static final String GET_ALL_BY_CID = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid AND e.delStatus = 1 ORDER BY  e.employeeCode ASC";
 
@@ -99,6 +99,9 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	/** The select by cid and sid. */
 	public final String SELECT_BY_SIDS = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid";
+	
+	private static final String GET_ALL = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid ORDER BY  e.employeeCode ASC";
+
 
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
@@ -136,15 +139,6 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				.setParameter("pid", pId).getSingle().map(m -> toDomain(m)).orElse(null);
 	}
 
-	@Override
-	public List<EmployeeSimpleInfo> findByIds(List<String> lstId) {
-		List<EmployeeSimpleInfo> emps = queryProxy().query(SELECT_INFO_BY_IDS, Object[].class)
-				.setParameter("lstId", lstId)
-				.getList(m -> new EmployeeSimpleInfo(m[0].toString(), m[1].toString(), m[2].toString()));
-		
-		return emps;
-	}
-	
 	@Override
 	public List<EmployeeDataMngInfo> findByEmployeeId(String sId) {
 		return queryProxy().query(SELECT_BY_EMP_ID, BsymtEmployeeDataMngInfo.class).setParameter("sId", sId).getList()
@@ -254,6 +248,15 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		Optional<EmployeeInfo> emp = queryProxy().query(SELECT_BY_SID_1, Object[].class).setParameter("sid", sid)
 				.getSingle(c -> toDomain(c, 0));
 		return emp;
+	}
+
+	@Override
+	public List<EmployeeSimpleInfo> findByIds(List<String> lstId) {
+		List<EmployeeSimpleInfo> emps = queryProxy().query(SELECT_INFO_BY_IDS, Object[].class)
+				.setParameter("lstId", lstId)
+				.getList(m -> new EmployeeSimpleInfo(m[0].toString(), m[1].toString(), m[2].toString()));
+		
+		return emps;
 	}
 
 	@Override
@@ -423,6 +426,14 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			commandProxy().update(entity);
 		}
 
+	}
+
+	@Override
+	public List<EmployeeDataMngInfo> getAllByCid(String cid) {
+		List<BsymtEmployeeDataMngInfo> listEntity = this.queryProxy()
+				.query(GET_ALL, BsymtEmployeeDataMngInfo.class).setParameter("cid", cid).getList();
+
+		return toListEmployeeDataMngInfo(listEntity);
 	}
 
 	// laitv code end

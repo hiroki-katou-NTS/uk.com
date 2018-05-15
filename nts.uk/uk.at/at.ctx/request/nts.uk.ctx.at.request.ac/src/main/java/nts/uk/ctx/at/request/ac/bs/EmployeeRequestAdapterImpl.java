@@ -174,7 +174,8 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 	@Override
 	public List<String> getListSIdByWkpIdAndPeriod(String workplaceId, GeneralDate startDate,
 			GeneralDate endDate) {
-		// List<String> data = this.workplacePub.findListSIdByCidAndWkpIdAndPeriod(workplaceId, startDate, endDate);
+//		List<String> data = this.workplacePub.findListSIdByCidAndWkpIdAndPeriod(workplaceId, startDate, endDate);
+//		return data;
 		return null;
 	}
 }

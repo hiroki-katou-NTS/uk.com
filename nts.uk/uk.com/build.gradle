@@ -66,6 +66,7 @@ subprojects {
         from "build/libs"
         into "${project(':com.web').projectDir}/../../uk.repo"
         include "nts*.jar"
+        exclude "nts*web.jar"
 	}
 
 	task initd (dependsOn: [
@@ -84,7 +85,8 @@ subprojects {
 		':com.ctx:bs:person:nts.uk.ctx.bs.person.dom:upver',
 		':com.ctx:bs:person:nts.uk.ctx.bs.person.infra:upver',
 		':com.ctx:bs:person:nts.uk.ctx.bs.person.pub:upver',
-		':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub:upver'
+		':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub:upver',
+		':com.ctx:sys:portal:nts.uk.ctx.sys.portal.pub:upver'
 	]) { }
 	
 	dependencies {
@@ -846,7 +848,6 @@ project (':com.ctx:sys:assist:nts.uk.ctx.sys.assist.ac') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.dom')
 		compile project(':com.ctx:sys:assist:nts.uk.ctx.sys.assist.app')
-		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
 	}
 }
 
@@ -1021,7 +1022,6 @@ project (':com.web:nts.uk.com.web') {
 		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.infra', version: version
 		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pub', version: version
 		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pubimp', version: version
-		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.ws', version: version
 		
 		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.ac', version: version
 		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.app', version: version

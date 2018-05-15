@@ -61,14 +61,15 @@ public class AnnLeaEmpBasicInfoDomService{
 		int remainingHours = remainingMinutes / 60;
 		remainingMinutes -= remainingHours * 60;
 
-		return annLeaveRemainNumber.getDays() + "日と　" + remainingHours + " : " + convertWithMinutes(remainingMinutes);
+		return annLeaveRemainNumber.getDays() + "日と　" + remainingHours + ":" + convertWithMinutes(remainingMinutes);
 	}
 	
-	public String calculateLastGrantDate(List<AnnualLeaveGrantRemainingData> listData) {
-		if (listData.isEmpty()) {
-			return not_grant; 
+	public String calculateLastGrantDate(String employeeId) {
+		Optional<AnnualLeaveGrantRemainingData> lastDataOpt = annLeaDataRepo.getLast(employeeId);
+		if (!lastDataOpt.isPresent()) {
+			return not_grant;
 		} else {
-			return listData.get(0).getGrantDate().toString();
+			return lastDataOpt.get().getGrantDate().toString();
 		}
 	}
 	
@@ -81,10 +82,10 @@ public class AnnLeaEmpBasicInfoDomService{
 	}
 	
 	private String convertWithMinutes(int minutes) {
-		if ( minutes < 10) {
-			return "0" + minutes;
+		if ( Math.abs(minutes) < 10) {
+			return "0" + Math.abs(minutes);
 		}
-		return "" + minutes;
+		return "" + Math.abs(minutes);
 	}
 	
 }

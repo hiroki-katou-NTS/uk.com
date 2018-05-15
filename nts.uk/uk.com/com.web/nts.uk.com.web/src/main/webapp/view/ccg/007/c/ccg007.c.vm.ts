@@ -41,13 +41,8 @@ module nts.uk.pr.view.ccg007.c {
                             self.openContractAuthDialog();
                         }
                         else {
-                            if (data) {
-                                //get employ login setting and check permit view form
-                                self.getEmployeeLoginSetting(data.contractCode);
-                            }
-                            else {
-                                nts.uk.request.jump("/view/ccg/007/b/index.xhtml");
-                            }
+                            //get employ login setting and check permit view form
+                            self.getEmployeeLoginSetting(data?data.contractCode:null);
                         }
                         //clear blockUI
                         blockUI.clear();
@@ -115,8 +110,13 @@ module nts.uk.pr.view.ccg007.c {
                     let isSignOn = url.indexOf('signon=on') >= 0;
                     
                     //Check signon
-                    if (isSubmit && isSignOn){
+                    if (isSubmit && isSignOn) {
                         self.submitLogin(isSignOn);
+                    }
+                    else {
+                        if (isSubmit) {
+                            self.getEmployeeLoginSetting(self.contractCode());
+                        }
                     }
                 });
             }

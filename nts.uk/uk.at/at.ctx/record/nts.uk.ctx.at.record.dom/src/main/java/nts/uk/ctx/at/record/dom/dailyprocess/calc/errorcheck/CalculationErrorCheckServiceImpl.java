@@ -55,14 +55,40 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 			//システム固定
 			if(errorItem.getFixedAtr()) {
 				val addItems = systemErrorCheck(integrationOfDaily,errorItem,attendanceItemConverter);
-				if(!addItems.isEmpty() && addItems != null)
-					addItemList.addAll(addItems);
+				if(!addItems.isEmpty() && addItems != null) {
+					for(val item : addItems) {
+						Boolean flg = true;
+						
+						//addListにふくまれていなければ追加する
+						for(EmployeeDailyPerError addedItem : addItemList) {
+							if(item.getErrorAlarmWorkRecordCode().equals(addedItem.getErrorAlarmWorkRecordCode())) {
+								flg = false;
+								break;
+							}
+						}
+						if(flg) addItemList.add(item);
+					}
+					//addItemList.addAll(addItems);
+				}
 			}
 			//ユーザ設定
 			else {
 				val addItems = erAlCheckService.checkErrorFor(integrationOfDaily.getAffiliationInfor().getEmployeeId(), integrationOfDaily.getAffiliationInfor().getYmd());
-				if(!addItems.isEmpty() && addItems != null)
-					addItemList.addAll(addItems);
+				if(!addItems.isEmpty() && addItems != null) {
+					for(val item : addItems) {
+						Boolean flg = true;
+						
+						//addListにふくまれていなければ追加する
+						for(EmployeeDailyPerError addedItem : addItemList) {
+							if(item.getErrorAlarmWorkRecordCode().equals(addedItem.getErrorAlarmWorkRecordCode())) {
+								flg = false;
+								break;
+							}
+						}
+						if(flg) addItemList.add(item);
+					}
+					//addItemList.addAll(addItems);
+				}
 			}
 		}
 		integrationOfDaily.setEmployeeError(addItemList);
@@ -132,6 +158,25 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 			//乖離時間のエラー	
 			case ERROR_OF_DIVERGENCE_TIME:
 			case ALARM_OF_DIVERGENCE_TIME:
+			case DIVERGENCE_ERROR_1:
+			case DIVERGENCE_ALARM_1:
+			case DIVERGENCE_ERROR_2:
+			case DIVERGENCE_ALARM_2:
+			case DIVERGENCE_ERROR_3:
+			case DIVERGENCE_ALARM_4:
+			case DIVERGENCE_ERROR_5:
+			case DIVERGENCE_ALARM_5:
+			case DIVERGENCE_ERROR_6:
+			case DIVERGENCE_ALARM_6:
+			case DIVERGENCE_ERROR_7:
+			case DIVERGENCE_ALARM_7:
+			case DIVERGENCE_ERROR_8:
+			case DIVERGENCE_ALARM_8:
+			case DIVERGENCE_ERROR_9:
+			case DIVERGENCE_ALARM_9:	
+			case DIVERGENCE_ERROR_10:
+			case DIVERGENCE_ALARM_10:
+							
 				if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
 					return divTimeSysFixedCheckService.divergenceTimeCheckBySystemFixed(AppContexts.user().companyId(), 
 																			 	 integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
