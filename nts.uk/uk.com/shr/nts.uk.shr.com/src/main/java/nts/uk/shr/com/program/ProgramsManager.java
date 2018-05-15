@@ -1674,7 +1674,7 @@ public class ProgramsManager {
 	public static final Program CMF002V2 = new Program(WebAppId.COM, ProgramIdConsts.CMF002V2, "CMF002_21",
 			"/view/cmf/002/v2/index.xhtml");	
 	
-	/** KAF018 */
+	/** KAF018  */
 	public static final Program KAF018A = new Program(WebAppId.AT, ProgramIdConsts.KAF018A, "KAF018_1",
 			"/view/kaf/018/a/index.xhtml");
 	public static final Program KAF018B = new Program(WebAppId.AT, ProgramIdConsts.KAF018B, "KAF018_2",
