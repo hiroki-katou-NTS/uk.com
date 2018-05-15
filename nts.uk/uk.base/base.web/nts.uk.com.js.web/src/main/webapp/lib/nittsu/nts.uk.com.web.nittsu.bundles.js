@@ -3426,6 +3426,13 @@ var nts;
                 var STORAGE_KEY_USED_LOGIN_PAGE = "nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE";
                 var STORAGE_KEY_SERIALIZED_SESSION = "nts.uk.request.login.STORAGE_KEY_SERIALIZED_SESSION";
                 function keepUsedLoginPage(url) {
+                    if (arguments.length === 2) {
+                        var loginLocator = location.siteRoot
+                            .mergeRelativePath(request.WEB_APP_NAME[arguments[0]] + '/')
+                            .mergeRelativePath(arguments[1]);
+                        keepUsedLoginPage.apply(null, [loginLocator.serialize()]);
+                        return;
+                    }
                     if (url === undefined) {
                         keepUsedLoginPage(location.current.serialize());
                         return;
@@ -5290,6 +5297,7 @@ var nts;
                     ScreenWindow.prototype.dispose = function () {
                         var _this = this;
                         _.defer(function () { return _this.onClosedHandler(); });
+                        window.parent.$("body").trigger("dialogclosed", { dialogId: this.id });
                         // delay 2 seconds to avoid IE error when any JS is running in destroyed iframe
                         setTimeout(function () {
                             _this.$iframe.remove();
@@ -5299,6 +5307,7 @@ var nts;
                             _this.globalContext = null;
                             _this.parent = null;
                             _this.onClosedHandler = null;
+                            //                    this.id = null;
                         }, 2000);
                     };
                     return ScreenWindow;
@@ -15553,6 +15562,10 @@ var nts;
                                 bindingContext.$data.option().show(false);
                             }
                         }).dialogPositionControl();
+                        PS.$("body").bind("dialogclosed", function (evt, eData) {
+                            $dialog.dialog("close");
+                            $dialog.remove();
+                        });
                     };
                     /**
                      * Update
@@ -15569,6 +15582,9 @@ var nts;
                         var autoclose = ko.unwrap(option.autoclose);
                         var show = ko.unwrap(option.show);
                         var self = nts.uk.ui.windows.getSelf();
+                        if (nts.uk.util.isNullOrUndefined(self)) {
+                            return;
+                        }
                         var id = 'ntsErrorDialog_' + self.id;
                         var $dialog;
                         if (self.isRoot) {

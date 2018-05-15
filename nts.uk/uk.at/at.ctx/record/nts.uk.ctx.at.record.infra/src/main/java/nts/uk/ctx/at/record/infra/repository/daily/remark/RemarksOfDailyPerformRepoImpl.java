@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.daily.remark;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -64,11 +65,15 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 
 	@Override
 	public void update(RemarksOfDailyPerform domain) {
-		queryProxy().find(new KrcdtDayRemarksColumnPK(domain.getEmployeeId(), domain.getYmd(), domain.getRemarkNo()), 
-				KrcdtDayRemarksColumn.class).ifPresent(c -> {
+		Optional<KrcdtDayRemarksColumn> remarks = queryProxy().find(new KrcdtDayRemarksColumnPK(domain.getEmployeeId(), domain.getYmd(), domain.getRemarkNo()), 
+				KrcdtDayRemarksColumn.class);
+		if(remarks.isPresent()){
+			KrcdtDayRemarksColumn c = remarks.get();
 			c.remarks = domain.getRemarks() == null ? null : domain.getRemarks().v();
 			commandProxy().update(c);
-		});
+		} else {
+			add(domain);
+		}
 	}
 
 	@Override

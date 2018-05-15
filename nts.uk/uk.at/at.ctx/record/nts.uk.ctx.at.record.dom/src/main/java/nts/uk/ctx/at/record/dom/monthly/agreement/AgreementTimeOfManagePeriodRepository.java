@@ -27,6 +27,14 @@ public interface AgreementTimeOfManagePeriodRepository {
 	 * @return 年度に該当する管理期間の36協定時間　（年月順）
 	 */
 	List<AgreementTimeOfManagePeriod> findByYearOrderByYearMonth(String employeeId, Year year);
+
+	/**
+	 * 検索　（社員リスト）
+	 * @param employeeIds 社員IDリスト
+	 * @param yearMonth 年月
+	 * @return 該当する管理期間の36協定時間
+	 */
+	List<AgreementTimeOfManagePeriod> findByEmployees(List<String> employeeIds, YearMonth yearMonth);
 	
 	/**
 	 * 登録および更新

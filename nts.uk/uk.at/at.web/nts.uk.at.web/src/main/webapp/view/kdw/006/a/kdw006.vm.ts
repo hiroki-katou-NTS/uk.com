@@ -1,7 +1,7 @@
 module nts.uk.at.view.kdw006 {
     export module viewmodel {
         export class ScreenModel {
-            constructor() {
+            constructor(dataShare) {
             }
 
             startPage(): JQueryPromise<any> {
@@ -31,7 +31,7 @@ module nts.uk.at.view.kdw006 {
 
             open002Control() {
                 let isDaily = true;
-                nts.uk.request.jump("/view/kdw/002/b/index.xhtml", { ShareObject: isDaily });
+                nts.uk.request.jump("/view/kdw/002/c/index.xhtml", { ShareObject: isDaily });
             }
 
             open007() {
@@ -41,7 +41,7 @@ module nts.uk.at.view.kdw006 {
 
             open008() {
                 let isDaily = true;
-                nts.uk.request.jump("/view/kdw/008/a/index.xhtml", { ShareObject: isDaily });
+                nts.uk.request.jump("/view/kdw/008/d/index.xhtml", { ShareObject: isDaily });
             }
 
             open006_G() {
@@ -55,7 +55,7 @@ module nts.uk.at.view.kdw006 {
 
             open002ControlMonth() {
                 let isDaily = false;
-                nts.uk.request.jump("/view/kdw/002/b/index.xhtml", { ShareObject: isDaily });
+                nts.uk.request.jump("/view/kdw/002/c/index.xhtml", { ShareObject: isDaily });
             }
 
             open007Month() {
@@ -65,7 +65,7 @@ module nts.uk.at.view.kdw006 {
 
             open008Month() {
                 let isDaily = false;
-                nts.uk.request.jump("/view/kdw/008/a/index.xhtml", { ShareObject: isDaily });
+                nts.uk.request.jump("/view/kdw/008/d/index.xhtml", { ShareObject: isDaily });
             }
 
             openKDW002() {

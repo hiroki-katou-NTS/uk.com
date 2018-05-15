@@ -99,6 +99,11 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 	@Column(name = "WKP_MAIL_MNG")
 	public int wkpMailMng;
 	
+	/* 対象者区分 */
+	@Column(name = "TARGET_GROUP_CLS")
+	public int targetGroupClassification;
+	
+	
 	@OneToOne
 	@JoinColumns({
 		@JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
@@ -115,7 +120,7 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 			int targetMonth, Integer targetDate, Integer creationPeriod, int creationTarget, int recreateWorkType,
 			int manualCorrection, int createEmployee, int recreateTransfer, int dailyPerfCls, int dailyPerfItem,
 			int midJoinEmployee, int reflectResultCls, int monthlyAggCls, int indvAlarmCls, int indvMailPrin,
-			int indvMailMng, int wkpAlarmCls, int wkpMailMng) {
+			int indvMailMng, int wkpAlarmCls, int wkpMailMng,int targetGroupClassification) {
 		super();
 		this.kfnmtProcExecSetPK = kfnmtProcExecSetPK;
 		this.perScheduleCls = perScheduleCls;
@@ -137,5 +142,6 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 		this.indvMailMng = indvMailMng;
 		this.wkpAlarmCls = wkpAlarmCls;
 		this.wkpMailMng = wkpMailMng;
+		this.targetGroupClassification =targetGroupClassification; 
 	}
 }

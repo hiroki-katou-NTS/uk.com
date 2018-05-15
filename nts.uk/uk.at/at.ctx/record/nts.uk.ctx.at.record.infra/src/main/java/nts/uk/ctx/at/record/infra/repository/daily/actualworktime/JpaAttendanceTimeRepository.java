@@ -39,6 +39,8 @@ import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttimePK;
+import nts.uk.ctx.at.record.infra.entity.daily.vacation.KrcdtDayVacation;
+import nts.uk.ctx.at.record.infra.entity.daily.vacation.KrcdtDayVacationPK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -120,7 +122,12 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 				this.commandProxy().insert(
 						KrcdtDayPrsIncldTime.create(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), attendanceTime
 								.getActualWorkingTimeOfDaily().getTotalWorkingTime().getWithinStatutoryTimeOfDaily()));
-				
+				if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayOfDaily() != null) {
+					/*休暇時間*/
+					this.commandProxy().insert(KrcdtDayVacation.create(attendanceTime.getEmployeeId(),
+							attendanceTime.getYmd(),
+							attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayOfDaily()));
+				}
 			}
 		}
 	}
@@ -271,6 +278,23 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 									.insert(KrcdtDayPrsIncldTime.create(attendanceTime.getEmployeeId(),
 											attendanceTime.getYmd(), attendanceTime.getActualWorkingTimeOfDaily()
 													.getTotalWorkingTime().getWithinStatutoryTimeOfDaily()));
+							}
+						}
+						if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayOfDaily() != null) {
+							/*休暇時間*/
+							Optional<KrcdtDayVacation> krcdtDayVacation = this.queryProxy()
+																	.find(new KrcdtDayVacationPK(attendanceTime.getEmployeeId(),
+																								 attendanceTime.getYmd()),
+																		  KrcdtDayVacation.class);
+							if(krcdtDayVacation.isPresent()) {
+								krcdtDayVacation.get().setData(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayOfDaily());
+								this.commandProxy().update(krcdtDayVacation.get());
+							}
+							else {
+								this.commandProxy()
+									.insert(KrcdtDayVacation.create(attendanceTime.getEmployeeId(),
+																	attendanceTime.getYmd(),
+																	attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayOfDaily()));
 							}
 						}
 					}
