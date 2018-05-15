@@ -12,7 +12,6 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class PeriodFinder {
-
 	@Inject
 	private AgreementOperationSettingAdapter agreementOperationSettingAdapter;
 	@Inject
@@ -31,5 +30,4 @@ public class PeriodFinder {
 		YearMonth endYm   = startYm.addMonths(11);
 		return new PeriodDto(startYm.year() + "" + startYm.month(), endYm.year() + "" + endYm.month());
 	}
-
 }

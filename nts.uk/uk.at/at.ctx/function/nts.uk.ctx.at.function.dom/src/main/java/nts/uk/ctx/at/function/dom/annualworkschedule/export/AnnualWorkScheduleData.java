@@ -30,4 +30,8 @@ public class AnnualWorkScheduleData {
 	private String period5th;
 	private String period6th;
 	private String period7th;
+
+	public AnnualWorkScheduleData(String name) {
+		this.name = name;
+	}
 }

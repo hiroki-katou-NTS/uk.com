@@ -2,12 +2,10 @@ package nts.uk.ctx.at.function.app.find.annualworkschedule;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.function.dom.annualworkschedule.SetOutItemsWoSc;
 import nts.uk.ctx.at.function.dom.annualworkschedule.repository.SetOutItemsWoScRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -17,12 +15,11 @@ import nts.uk.shr.com.context.AppContexts;
 */
 public class SetOutItemsWoScFinder
 {
+	@Inject
+	private SetOutItemsWoScRepository finder;
 
-    @Inject
-    private SetOutItemsWoScRepository finder;
-
-    public List<SetOutItemsWoScDto> getAllSetOutItemsWoSc() {
-    	String cid = AppContexts.user().companyId();
-        return finder.getAllSetOutItemsWoSc(cid).stream().map(item -> SetOutItemsWoScDto.fromDomain(item)).collect(Collectors.toList());
-    }
+	public List<SetOutItemsWoScDto> getAllSetOutItemsWoSc() {
+		String cid = AppContexts.user().companyId();
+		return finder.getAllSetOutItemsWoSc(cid).stream().map(item -> SetOutItemsWoScDto.fromDomain(item)).collect(Collectors.toList());
+	}
 }

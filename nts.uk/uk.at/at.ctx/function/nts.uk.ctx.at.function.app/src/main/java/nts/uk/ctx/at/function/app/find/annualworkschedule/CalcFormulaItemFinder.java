@@ -14,13 +14,11 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.repository.CalcFormulaItemR
 */
 public class CalcFormulaItemFinder
 {
+	@Inject
+	private CalcFormulaItemRepository finder;
 
-    @Inject
-    private CalcFormulaItemRepository finder;
-
-    public List<CalcFormulaItemDto> getAllCalcFormulaItem(){
-        return finder.getAllCalcFormulaItem().stream().map(item -> CalcFormulaItemDto.fromDomain(item))
-                .collect(Collectors.toList());
-    }
-
+	public List<CalcFormulaItemDto> getAllCalcFormulaItem(){
+		return finder.getAllCalcFormulaItem().stream().map(item -> CalcFormulaItemDto.fromDomain(item))
+				.collect(Collectors.toList());
+	}
 }

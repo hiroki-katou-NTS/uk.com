@@ -11,7 +11,6 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class PermissionOfEmploymentFinder {
-
 	@Inject
 	private PermissionOfEmploymentFormRepository permissionOfEmploymentFormRepository;
 

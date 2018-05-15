@@ -34,11 +34,10 @@ import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 /**
  * Web Service for KWR008_年間勤務表
  */
-
 @Path("at/function/annualworkschedule")
 @Produces("application/json")
 public class Kwr008WebService extends WebService {
-	
+
 	@Inject
 	private I18NResourcesForUK i18n;
 
@@ -89,20 +88,20 @@ public class Kwr008WebService extends WebService {
 		return EnumAdaptor.convertToValueNameList(PageBreakIndicator.class, i18n);
 	}
 	
-	/*
+	/**
 	 * 値の出力形式
 	 * Enum
-	 * */
+	 */
 	@POST
 	@Path("get/enum/valueoutputformat")
 	public List<EnumConstant> getEnumValueOutputFormat(){
 		return EnumAdaptor.convertToValueNameList(ValueOuputFormat.class, i18n);
 	}
 	
-	/*
+	/**
 	 * 36協定時間を出力する場合の表示形式
 	 * Enum
-	 * */
+	 */
 	@POST
 	@Path("get/enum/outputagreementtime")
 	public List<EnumConstant> getEnumOutputAgreementTime(){
@@ -145,9 +144,9 @@ public class Kwr008WebService extends WebService {
 		this.updateOutputItemSetting.handle(command);
 	}
 	
-	/*
+	/**
 	 * 帳表に出力する項目
-	 * */
+	 */
 	@POST
 	@Path("get/listItemOutput/{setOutCd}")
 	public List<ItemOutTblBookDto> listItemOuput(@PathParam("setOutCd") String setOutCd){

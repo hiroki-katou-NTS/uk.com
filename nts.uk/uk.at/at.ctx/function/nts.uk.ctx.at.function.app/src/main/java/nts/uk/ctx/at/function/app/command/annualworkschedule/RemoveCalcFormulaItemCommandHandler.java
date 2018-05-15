@@ -13,16 +13,15 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class RemoveCalcFormulaItemCommandHandler extends CommandHandler<CalcFormulaItemCommand>
 {
-    
-    @Inject
-    private CalcFormulaItemRepository repository;
-    
-    @Override
-    protected void handle(CommandHandlerContext<CalcFormulaItemCommand> context) {
-        String cid = AppContexts.user().companyId();
-        String setOutCd = context.getCommand().getSetOutCd();
-        String itemOutCd = context.getCommand().getItemOutCd();
-        int attendanceItemId = context.getCommand().getAttendanceItemId();
-        repository.remove(cid, setOutCd, itemOutCd, attendanceItemId);
-    }
+	@Inject
+	private CalcFormulaItemRepository repository;
+
+	@Override
+	protected void handle(CommandHandlerContext<CalcFormulaItemCommand> context) {
+		String cid = AppContexts.user().companyId();
+		String setOutCd = context.getCommand().getSetOutCd();
+		String itemOutCd = context.getCommand().getItemOutCd();
+		int attendanceItemId = context.getCommand().getAttendanceItemId();
+		repository.remove(cid, setOutCd, itemOutCd, attendanceItemId);
+	}
 }

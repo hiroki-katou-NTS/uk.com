@@ -14,15 +14,14 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class AddCalcFormulaItemCommandHandler extends CommandHandler<CalcFormulaItemCommand>
 {
-    
-    @Inject
-    private CalcFormulaItemRepository repository;
-    
-    @Override
-    protected void handle(CommandHandlerContext<CalcFormulaItemCommand> context) {
-        CalcFormulaItemCommand addCommand = context.getCommand();
-        repository.add(CalcFormulaItem.createFromJavaType(AppContexts.user().companyId(), addCommand.getSetOutCd(),
-                                                          addCommand.getItemOutCd(), addCommand.getAttendanceItemId(),
-                                                          addCommand.getOperation()));
-    }
+	@Inject
+	private CalcFormulaItemRepository repository;
+
+	@Override
+	protected void handle(CommandHandlerContext<CalcFormulaItemCommand> context) {
+		CalcFormulaItemCommand addCommand = context.getCommand();
+		repository.add(CalcFormulaItem.createFromJavaType(AppContexts.user().companyId(), addCommand.getSetOutCd(),
+														  addCommand.getItemOutCd(), addCommand.getAttendanceItemId(),
+														  addCommand.getOperation()));
+	}
 }

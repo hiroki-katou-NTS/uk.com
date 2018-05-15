@@ -19,20 +19,20 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class KfnrtSetOutItemsWoScPk implements Serializable
 {
-    private static final long serialVersionUID = 1L;
-    
-    /**
-    * 会社ID
-    */
-    @Basic(optional = false)
-    @Column(name = "CID")
-    public String cid;
-    
-    /**
-    * コード
-    */
-    @Basic(optional = false)
-    @Column(name = "CD")
-    public String cd;
-    
+	private static final long serialVersionUID = 1L;
+	
+	/**
+	* 会社ID
+	*/
+	@Basic(optional = false)
+	@Column(name = "CID")
+	public String cid;
+	
+	/**
+	* コード
+	*/
+	@Basic(optional = false)
+	@Column(name = "CD")
+	public String cd;
+	
 }

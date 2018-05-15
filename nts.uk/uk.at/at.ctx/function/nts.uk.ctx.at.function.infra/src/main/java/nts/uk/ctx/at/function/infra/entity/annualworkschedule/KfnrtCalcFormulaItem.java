@@ -25,40 +25,40 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KFNRT_CALC_FORMULA_ITEM")
 public class KfnrtCalcFormulaItem extends UkJpaEntity implements Serializable
 {
-    private static final long serialVersionUID = 1L;
-    /**
-    * ID
-    */
-    @EmbeddedId
-    public KfnrtCalcFormulaItemPk calcFormulaItemPk;
-    
-    /**
-    * オペレーション
-    */
-    @Basic(optional = false)
-    @Column(name = "OPERATION")
-    public int operation;
+	private static final long serialVersionUID = 1L;
+	/**
+	* ID
+	*/
+	@EmbeddedId
+	public KfnrtCalcFormulaItemPk calcFormulaItemPk;
+	
+	/**
+	* オペレーション
+	*/
+	@Basic(optional = false)
+	@Column(name = "OPERATION")
+	public int operation;
 
-    @ManyToOne
-    @JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-            @JoinColumn(name = "SET_OUT_CD", referencedColumnName = "SET_OUT_CD", insertable = false, updatable = false),
-            @JoinColumn(name = "ITEM_OUT_CD", referencedColumnName = "CD", insertable = false, updatable = false) })
-    public KfnrtItemOutTblBook itemOutTblBook;
+	@ManyToOne
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+			@JoinColumn(name = "SET_OUT_CD", referencedColumnName = "SET_OUT_CD", insertable = false, updatable = false),
+			@JoinColumn(name = "ITEM_OUT_CD", referencedColumnName = "CD", insertable = false, updatable = false) })
+	public KfnrtItemOutTblBook itemOutTblBook;
 
-    @Override
-    protected Object getKey()
-    {
-        return calcFormulaItemPk;
-    }
+	@Override
+	protected Object getKey()
+	{
+		return calcFormulaItemPk;
+	}
 
-    public CalcFormulaItem toDomain() {
-        return CalcFormulaItem.createFromJavaType(this.calcFormulaItemPk.cid, this.calcFormulaItemPk.setOutCd, this.calcFormulaItemPk.itemOutCd, this.calcFormulaItemPk.attendanceItemId, this.operation);
-    }
+	public CalcFormulaItem toDomain() {
+		return CalcFormulaItem.createFromJavaType(this.calcFormulaItemPk.cid, this.calcFormulaItemPk.setOutCd, this.calcFormulaItemPk.itemOutCd, this.calcFormulaItemPk.attendanceItemId, this.operation);
+	}
 
-    public static KfnrtCalcFormulaItem toEntity(CalcFormulaItem domain) {
-        return new KfnrtCalcFormulaItem(new KfnrtCalcFormulaItemPk(domain.getCid(), domain.getSetOutCd(), domain.getItemOutCd(),
-                                        domain.getAttendanceItemId()), domain.getOperation());
-    }
+	public static KfnrtCalcFormulaItem toEntity(CalcFormulaItem domain) {
+		return new KfnrtCalcFormulaItem(new KfnrtCalcFormulaItemPk(domain.getCid(), domain.getSetOutCd(), domain.getItemOutCd(),
+										domain.getAttendanceItemId()), domain.getOperation());
+	}
 
 	public KfnrtCalcFormulaItem(KfnrtCalcFormulaItemPk calcFormulaItemPk, int operation) {
 		super();

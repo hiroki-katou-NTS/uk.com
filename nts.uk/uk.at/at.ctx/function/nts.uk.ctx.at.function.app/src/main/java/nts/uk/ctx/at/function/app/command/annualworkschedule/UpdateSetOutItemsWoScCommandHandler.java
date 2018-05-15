@@ -24,47 +24,45 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 @Transactional
 public class UpdateSetOutItemsWoScCommandHandler extends CommandHandler<SetOutItemsWoScCommand> {
-    @Inject
-    private SetOutItemsWoScRepository repository;
+	@Inject
+	private SetOutItemsWoScRepository repository;
 
-    @Override
-    protected void handle(CommandHandlerContext<SetOutItemsWoScCommand> context) {
-        String companyId = AppContexts.user().companyId();
-        SetOutItemsWoScCommand updateCommand = context.getCommand();
+	@Override
+	protected void handle(CommandHandlerContext<SetOutItemsWoScCommand> context) {
+		String companyId = AppContexts.user().companyId();
+		SetOutItemsWoScCommand updateCommand = context.getCommand();
 
-        Optional<ItemOutTblBookCommand> lastItemOutTblBookCommand
-            = updateCommand.getListItemOutput().stream().filter(m -> !StringUtil.isNullOrEmpty(m.getCd(), true))
-              .max((m1, m2) -> Integer.compare(Integer.valueOf(m1.getCd()), Integer.valueOf(m2.getCd())));
+		Optional<ItemOutTblBookCommand> lastItemOutTblBookCommand
+			= updateCommand.getListItemOutput().stream().filter(m -> !StringUtil.isNullOrEmpty(m.getCd(), true))
+			.max((m1, m2) -> Integer.compare(Integer.valueOf(m1.getCd()), Integer.valueOf(m2.getCd())));
 
-        int[] itemOutCd = {0};
-        if (lastItemOutTblBookCommand.isPresent()) {
-            itemOutCd[0] = Integer.valueOf(lastItemOutTblBookCommand.get().getCd());
-        }
+		int[] itemOutCd = {0};
+		if (lastItemOutTblBookCommand.isPresent()) {
+			itemOutCd[0] = Integer.valueOf(lastItemOutTblBookCommand.get().getCd());
+		}
 
-        List<ItemOutTblBook> listItemOutTblBook = updateCommand.getListItemOutput().stream()
-                   .map(m -> {
-                        String itemOutCdStr = StringUtil.padLeft(StringUtil.isNullOrEmpty(m.getCd(), true)?
-                                                                     String.valueOf(++itemOutCd[0]) : m.getCd(),
-                                                                 2, '0');
-                        return ItemOutTblBook.createFromJavaType(companyId,
-                        updateCommand.getCd(),
-                        itemOutCdStr,
-                        m.getSortBy(),
-                        m.getHeadingName(), m.isUseClass(), m.getValOutFormat(),
-                           //list CalcFormulaItem
-                           m.getListOperationSetting().stream()
-                           .map(os -> CalcFormulaItem.createFromJavaType(companyId,
-                                updateCommand.getCd(),
-                                itemOutCdStr,
-                                os.getAttendanceItemId(),
-                                os.getOperation())).collect(Collectors.toList()));
-                   }).collect(Collectors.toList());
+		List<ItemOutTblBook> listItemOutTblBook = updateCommand.getListItemOutput().stream()
+				.map(m -> {
+						String itemOutCdStr = StringUtil.padLeft(StringUtil.isNullOrEmpty(m.getCd(), true)?
+																String.valueOf(++itemOutCd[0]) : m.getCd(), 2, '0');
+						return ItemOutTblBook.createFromJavaType(companyId,
+						updateCommand.getCd(),
+						itemOutCdStr,
+						m.getSortBy(),
+						m.getHeadingName(), m.isUseClass(), m.getValOutFormat(),
+						//list CalcFormulaItem
+						m.getListOperationSetting().stream()
+						.map(os -> CalcFormulaItem.createFromJavaType(companyId,
+								updateCommand.getCd(),
+								itemOutCdStr,
+								os.getAttendanceItemId(),
+								os.getOperation())).collect(Collectors.toList()));
+				}).collect(Collectors.toList());
 
-        repository.update(new SetOutItemsWoSc(companyId, new OutItemsWoScCode(updateCommand.getCd()),
-                          new OutItemsWoScName(updateCommand.getName()),
-                          updateCommand.isOutNumExceedTime36Agr(),
-                          EnumAdaptor.valueOf(updateCommand.getDisplayFormat(), OutputAgreementTime.class),
-                          listItemOutTblBook));
-    
-    }
+		repository.update(new SetOutItemsWoSc(companyId, new OutItemsWoScCode(updateCommand.getCd()),
+						new OutItemsWoScName(updateCommand.getName()),
+						updateCommand.isOutNumExceedTime36Agr(),
+						EnumAdaptor.valueOf(updateCommand.getDisplayFormat(), OutputAgreementTime.class),
+						listItemOutTblBook));
+	}
 }

@@ -17,22 +17,20 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class UpdateItemOutTblBookCommandHandler extends CommandHandler<ItemOutTblBookCommand>
 {
-    
-    @Inject
-    private ItemOutTblBookRepository repository;
-    
-    @Override
-    protected void handle(CommandHandlerContext<ItemOutTblBookCommand> context) {
-        String companyId = AppContexts.user().companyId();
-        ItemOutTblBookCommand updateCommand = context.getCommand();
-        repository.update(ItemOutTblBook.createFromJavaType(companyId, updateCommand.getSetOutCd(),
-                                                            updateCommand.getCd(), updateCommand.getSortBy(),
-                                                            updateCommand.getHeadingName(), updateCommand.isUseClass(),
-                                                            updateCommand.getValOutFormat(),
-                                                            updateCommand.getListOperationSetting().stream().map(m ->
-	                                                            CalcFormulaItem.createFromJavaType(companyId, m.getSetOutCd(),
-	                                                                m.getItemOutCd(), m.getAttendanceItemId(), m.getOperation())
-	                                                        ).collect(Collectors.toList())));
-    
-    }
+	@Inject
+	private ItemOutTblBookRepository repository;
+
+	@Override
+	protected void handle(CommandHandlerContext<ItemOutTblBookCommand> context) {
+		String companyId = AppContexts.user().companyId();
+		ItemOutTblBookCommand updateCommand = context.getCommand();
+		repository.update(ItemOutTblBook.createFromJavaType(companyId, updateCommand.getSetOutCd(),
+															updateCommand.getCd(), updateCommand.getSortBy(),
+															updateCommand.getHeadingName(), updateCommand.isUseClass(),
+															updateCommand.getValOutFormat(),
+															updateCommand.getListOperationSetting().stream().map(m ->
+																CalcFormulaItem.createFromJavaType(companyId, m.getSetOutCd(),
+																	m.getItemOutCd(), m.getAttendanceItemId(), m.getOperation())
+															).collect(Collectors.toList())));
+	}
 }

@@ -13,14 +13,13 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class RemoveSetOutItemsWoScCommandHandler extends CommandHandler<SetOutItemsWoScCommand>
 {
-    
-    @Inject
-    private SetOutItemsWoScRepository repository;
-    
-    @Override
-    protected void handle(CommandHandlerContext<SetOutItemsWoScCommand> context) {
-        String cid = AppContexts.user().companyId();
-        String cd = context.getCommand().getCd();
-        repository.remove(cid, cd);
-    }
+	@Inject
+	private SetOutItemsWoScRepository repository;
+
+	@Override
+	protected void handle(CommandHandlerContext<SetOutItemsWoScCommand> context) {
+		String cid = AppContexts.user().companyId();
+		String cd = context.getCommand().getCd();
+		repository.remove(cid, cd);
+	}
 }

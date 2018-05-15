@@ -9,5 +9,6 @@ import lombok.Setter;
 @Setter
 public class ExportData {
 	HeaderData header;
+	List<ExportItem> exportItems;
 	List<EmployeeData> employees;
 }

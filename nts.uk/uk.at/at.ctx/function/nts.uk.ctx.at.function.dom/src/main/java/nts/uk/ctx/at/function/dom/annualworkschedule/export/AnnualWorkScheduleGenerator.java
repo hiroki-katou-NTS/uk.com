@@ -10,5 +10,5 @@ public interface AnnualWorkScheduleGenerator {
 	 * @param fileContext the file context
 	 * @param exportData the export data
 	 */
-	void generate(FileGeneratorContext fileContext, ExportDataSource dataSource);
+	void generate(FileGeneratorContext fileContext, ExportData dataSource);
 }

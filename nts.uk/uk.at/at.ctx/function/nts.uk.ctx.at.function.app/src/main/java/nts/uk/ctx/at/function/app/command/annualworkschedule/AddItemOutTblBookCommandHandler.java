@@ -17,20 +17,20 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class AddItemOutTblBookCommandHandler extends CommandHandler<ItemOutTblBookCommand> {
 
-    @Inject
-    private ItemOutTblBookRepository repository;
+	@Inject
+	private ItemOutTblBookRepository repository;
 
-    @Override
-    protected void handle(CommandHandlerContext<ItemOutTblBookCommand> context) {
-        String companyId = AppContexts.user().companyId();
-        ItemOutTblBookCommand addCommand = context.getCommand();
-        repository.add(ItemOutTblBook.createFromJavaType(companyId,
-                       addCommand.getSetOutCd(), addCommand.getCd(), addCommand.getSortBy(),
-                       addCommand.getHeadingName(), addCommand.isUseClass(),
-                       addCommand.getValOutFormat(),
-                       addCommand.getListOperationSetting().stream().map(m ->
-                           CalcFormulaItem.createFromJavaType(companyId, m.getSetOutCd(),
-                               m.getItemOutCd(), m.getAttendanceItemId(), m.getOperation())
-                       ).collect(Collectors.toList())));
-    }
+	@Override
+	protected void handle(CommandHandlerContext<ItemOutTblBookCommand> context) {
+		String companyId = AppContexts.user().companyId();
+		ItemOutTblBookCommand addCommand = context.getCommand();
+		repository.add(ItemOutTblBook.createFromJavaType(companyId,
+					addCommand.getSetOutCd(), addCommand.getCd(), addCommand.getSortBy(),
+					addCommand.getHeadingName(), addCommand.isUseClass(),
+					addCommand.getValOutFormat(),
+					addCommand.getListOperationSetting().stream().map(m ->
+						CalcFormulaItem.createFromJavaType(companyId, m.getSetOutCd(),
+							m.getItemOutCd(), m.getAttendanceItemId(), m.getOperation())
+					).collect(Collectors.toList())));
+	}
 }

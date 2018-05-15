@@ -13,42 +13,42 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBook;
 public class ItemOutTblBookDto
 {
 	/**
-	    * 年間勤務表(36チェックリスト)の出力条件.コード
-	    */
-	    private String setOutCd;
-	    
-	    /**
-	    * コード
-	    */
-	    private String cd;
-	    
-	    /**
-	    * 並び順
-	    */
-	    private int sortBy;
-	    
-	    /**
-	    * 見出し名称
-	    */
-	    private String headingName;
-	    
-	    /**
-	    * 使用区分
-	    */
-	    private boolean useClass;
-	    
-	    /**
-	    * 値の出力形式
-	    */
-	    private int valOutFormat;
+	* 年間勤務表(36チェックリスト)の出力条件.コード
+	*/
+	private String setOutCd;
 
-	    List<CalcFormulaItem> listOperationSetting;
-    
-    public static ItemOutTblBookDto fromDomain(ItemOutTblBook domain)
-    {
-        return new ItemOutTblBookDto(domain.getSetOutCd(), domain.getCd().v(), domain.getSortBy(),
-        		domain.getHeadingName().v(), domain.isUseClassification(), domain.getValOutFormat().value, domain.getListOperationSetting());
-    }
+	/**
+	* コード
+	*/
+	private String cd;
+
+	/**
+	* 並び順
+	*/
+	private int sortBy;
+
+	/**
+	* 見出し名称
+	*/
+	private String headingName;
+
+	/**
+	* 使用区分
+	*/
+	private boolean useClass;
+
+	/**
+	* 値の出力形式
+	*/
+	private int valOutFormat;
+
+	List<CalcFormulaItem> listOperationSetting;
+
+	public static ItemOutTblBookDto fromDomain(ItemOutTblBook domain)
+	{
+		return new ItemOutTblBookDto(domain.getSetOutCd(), domain.getCd().v(), domain.getSortBy(),
+				domain.getHeadingName().v(), domain.isUseClassification(), domain.getValOutFormat().value, domain.getListOperationSetting());
+	}
 
 	public ItemOutTblBookDto(String setOutCd, String cd, int sortBy, String headingName, boolean useClass, int valOutFormat,
 			List<CalcFormulaItem> listOperationSetting) {
@@ -61,8 +61,4 @@ public class ItemOutTblBookDto
 		this.valOutFormat = valOutFormat;
 		this.listOperationSetting = listOperationSetting;
 	}
-    
-    
-
-    
 }

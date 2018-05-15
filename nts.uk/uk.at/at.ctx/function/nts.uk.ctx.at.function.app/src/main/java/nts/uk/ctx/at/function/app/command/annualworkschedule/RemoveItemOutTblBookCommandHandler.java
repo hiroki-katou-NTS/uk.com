@@ -13,15 +13,14 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class RemoveItemOutTblBookCommandHandler extends CommandHandler<ItemOutTblBookCommand>
 {
-    
-    @Inject
-    private ItemOutTblBookRepository repository;
-    
-    @Override
-    protected void handle(CommandHandlerContext<ItemOutTblBookCommand> context) {
-        String cid = AppContexts.user().companyId();
-        String setOutCd = context.getCommand().getSetOutCd();
-        String cd = context.getCommand().getCd();
-        repository.remove(cid, setOutCd, cd);
-    }
+	@Inject
+	private ItemOutTblBookRepository repository;
+
+	@Override
+	protected void handle(CommandHandlerContext<ItemOutTblBookCommand> context) {
+		String cid = AppContexts.user().companyId();
+		String setOutCd = context.getCommand().getSetOutCd();
+		String cd = context.getCommand().getCd();
+		repository.remove(cid, setOutCd, cd);
+	}
 }

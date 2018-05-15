@@ -15,14 +15,12 @@ import nts.uk.shr.com.context.AppContexts;
 */
 public class ItemOutTblBookFinder
 {
+	@Inject
+	private ItemOutTblBookRepository finder;
 
-    @Inject
-    private ItemOutTblBookRepository finder;
-
-    public List<ItemOutTblBookDto> getItemOutTblBookBySetOutCd(String setOutCd) {
-        String cid = AppContexts.user().companyId();
-        return finder.getItemOutTblBookBySetOutCd(cid, setOutCd).stream().map(item -> ItemOutTblBookDto.fromDomain(item))
-                .collect(Collectors.toList());
-    }
-
+	public List<ItemOutTblBookDto> getItemOutTblBookBySetOutCd(String setOutCd) {
+		String cid = AppContexts.user().companyId();
+		return finder.getItemOutTblBookBySetOutCd(cid, setOutCd).stream().map(item -> ItemOutTblBookDto.fromDomain(item))
+				.collect(Collectors.toList());
+	}
 }

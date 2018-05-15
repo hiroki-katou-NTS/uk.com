@@ -9,30 +9,30 @@ import lombok.Value;
  */
 @Value
 public class SetOutItemsWoScCommand {
-    /**
-     * 
-     */
-    private String cid;
+	/**
+	 * 
+	 */
+	private String cid;
 
-    /**
-    * コード
-    */
-    private String cd;
+	/**
+	* コード
+	*/
+	private String cd;
 
-    /**
-    * 名称
-    */
-    private String name;
+	/**
+	* 名称
+	*/
+	private String name;
 
-    /**
-    * 36協定時間を超過した月数を出力する
-    */
-    private boolean outNumExceedTime36Agr;
+	/**
+	* 36協定時間を超過した月数を出力する
+	*/
+	private boolean outNumExceedTime36Agr;
 
-    /**
-    * 表示形式
-    */
-    private int displayFormat;
+	/**
+	* 表示形式
+	*/
+	private int displayFormat;
 
-    private List<ItemOutTblBookCommand> listItemOutput;
+	private List<ItemOutTblBookCommand> listItemOutput;
 }
