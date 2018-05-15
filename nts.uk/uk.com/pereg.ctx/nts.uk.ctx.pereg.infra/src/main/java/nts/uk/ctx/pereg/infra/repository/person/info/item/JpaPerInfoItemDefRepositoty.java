@@ -67,9 +67,14 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	private final static String SELECT_NO_WHERE = String.join(" ", SELECT_COMMON_FIELD, JOIN_COMMON_TABLE);
 
 	private final static String COMMON_CONDITION = "ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND ic.itemParentCd IS NULL ORDER BY io.disporder";
+	
+	private final static String CONDITION = "ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId ORDER BY io.disporder";
 
 	private final static String SELECT_ITEMS_BY_CATEGORY_ID_QUERY = String.join(" ", SELECT_NO_WHERE, "WHERE",
 			COMMON_CONDITION);
+	
+	private final static String SELECT_ALL_ITEMS_BY_CATEGORY_ID = String.join(" ", SELECT_NO_WHERE, "WHERE",
+			CONDITION);
 
 	private final static String SELECT_ITEM_BY_CTG_WITH_AUTH = String.join(" ", SELECT_NO_WHERE,
 			"INNER JOIN PpemtPersonItemAuth au",
@@ -298,6 +303,14 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", perInfoCtgId).getList(i -> {
 					List<String> items = getChildIds(contractCd, perInfoCtgId, String.valueOf(i[1]));
 					return createDomainFromEntity(i, items);
+				});
+	}
+	
+	@Override
+	public List<PersonInfoItemDefinition> getAllItemDefByCategoryId(String perInfoCtgId, String contractCd) {
+		return this.queryProxy().query(SELECT_ALL_ITEMS_BY_CATEGORY_ID, Object[].class)
+				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", perInfoCtgId).getList(i -> {
+					return createDomainFromEntity(i, new ArrayList<>());
 				});
 	}
 

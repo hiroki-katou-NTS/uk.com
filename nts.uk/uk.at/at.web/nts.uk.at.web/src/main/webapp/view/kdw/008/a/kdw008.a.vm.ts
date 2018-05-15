@@ -371,6 +371,8 @@ module nts.uk.at.view.kdw008.a {
                 self.getDetail(self.selectedCode()).done(() => {
                     _.defer(() => { $("#currentCode").focus(); 
                     self.checked(true);
+                    _.defer(() => {nts.uk.ui.errors.clearAll();});
+                    
                     });
                 });
                 //$("#currentCode").focus();
@@ -384,10 +386,10 @@ module nts.uk.at.view.kdw008.a {
                     self.selectedSheetName("");
                     self.valuesMonthlyTab3([]);
                     self.listMonthlyAttdItem(_.cloneDeep(self.listMonthlyAttdItemFullData()));
-                    nts.uk.ui.errors.clearAll();
+                    _.defer(() => {nts.uk.ui.errors.clearAll();});
                 }
                 
-                nts.uk.ui.errors.clearAll();
+                    _.defer(() => {nts.uk.ui.errors.clearAll();});
             }
 
             btnSheetNo() {
@@ -541,7 +543,7 @@ module nts.uk.at.view.kdw008.a {
                                     self.reloadData(removeAuthorityDto.dailyPerformanceFormatCode, true);    
                                 });
                             }).fail(function(error) {
-                            });;
+                            });
                             
                         });
                 } else {

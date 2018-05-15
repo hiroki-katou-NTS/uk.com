@@ -21,7 +21,7 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 	private String employeeId;
 
 	/** 締めID: 締めID */
-	private int closureId;
+	private int closureId = 1;
 
 	/** 締め日: 日付 */
 	private ClosureDateDto closureDate;

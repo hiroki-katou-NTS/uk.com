@@ -26,7 +26,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class WorkTimeOfMonthly {
+public class WorkTimeOfMonthly implements Cloneable {
 
 	/** 就業時間 */
 	@Setter
@@ -70,27 +70,21 @@ public class WorkTimeOfMonthly {
 		domain.actualWorkTime = actualWorkTime;
 		return domain;
 	}
-
-	/**
-	 * 複写
-	 * @param workTime 就業時間
-	 * @param withinPrescribedPremiumTime 所定内割増時間
-	 * @param actualWorkTime 実働就業時間
-	 * @param timeSeriesWorks 時系列ワーク
-	 * @return 月別実績の就業時間
-	 */
-	public static WorkTimeOfMonthly copyFrom(
-			AttendanceTimeMonth workTime,
-			AttendanceTimeMonth withinPrescribedPremiumTime,
-			AttendanceTimeMonth actualWorkTime,
-			Map<GeneralDate, WorkTimeOfTimeSeries> timeSeriesWorks){
-		
-		val domain = new WorkTimeOfMonthly();
-		domain.workTime = new AttendanceTimeMonth(workTime.valueAsMinutes());
-		domain.withinPrescribedPremiumTime = new AttendanceTimeMonth(withinPrescribedPremiumTime.valueAsMinutes());
-		domain.actualWorkTime = new AttendanceTimeMonth(actualWorkTime.valueAsMinutes());
-		domain.timeSeriesWorks = timeSeriesWorks;
-		return domain;
+	
+	@Override
+	public WorkTimeOfMonthly clone() {
+		WorkTimeOfMonthly cloned = new WorkTimeOfMonthly();
+		try {
+			cloned.workTime = new AttendanceTimeMonth(this.workTime.v());
+			cloned.withinPrescribedPremiumTime = new AttendanceTimeMonth(this.withinPrescribedPremiumTime.v());
+			cloned.actualWorkTime = new AttendanceTimeMonth(this.actualWorkTime.v());
+			// ※　Shallow Copy.
+			cloned.timeSeriesWorks = this.timeSeriesWorks;
+		}
+		catch (Exception e){
+			throw new RuntimeException("WorkTimeOfMonthly clone error.");
+		}
+		return cloned;
 	}
 	
 	/**
@@ -134,8 +128,7 @@ public class WorkTimeOfMonthly {
 			}
 			
 			// 「日別実績の総労働時間．休暇加算時間」を取得する
-			//val vacationAddTime = totalWorkingTime.getVacationAddTime();
-			AttendanceTime vacationAddTime = new AttendanceTime(0);
+			val vacationAddTime = totalWorkingTime.getVacationAddTime();
 	
 			// 時系列ワークに追加
 			val workTimeOfTimeSeries = WorkTimeOfTimeSeries.of(ymd,
@@ -162,6 +155,21 @@ public class WorkTimeOfMonthly {
 		for (val timeSeriesWork : this.timeSeriesWorks.values()){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
 			returnTime = returnTime.addMinutes(timeSeriesWork.getLegalTime().getWorkTime().v());
+		}
+		return returnTime;
+	}
+	
+	/**
+	 * 時系列合計法定内実働時間を取得する
+	 * @param datePeriod 期間
+	 * @return 時系列合計法定内実働時間
+	 */
+	public AttendanceTimeMonth getTimeSeriesTotalLegalActualTime(DatePeriod datePeriod){
+		
+		AttendanceTimeMonth returnTime = new AttendanceTimeMonth(0);
+		for (val timeSeriesWork : this.timeSeriesWorks.values()){
+			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
+			returnTime = returnTime.addMinutes(timeSeriesWork.getLegalTime().getActualWorkTime().v());
 		}
 		return returnTime;
 	}

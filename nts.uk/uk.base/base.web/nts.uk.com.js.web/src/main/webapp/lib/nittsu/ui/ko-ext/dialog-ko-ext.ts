@@ -130,6 +130,11 @@ module nts.uk.ui.koExtentions {
                     bindingContext.$data.option().show(false);
                 }
             }).dialogPositionControl();
+            
+            PS.$("body").bind("dialogclosed", function(evt, eData){
+                $dialog.dialog("close");
+                $dialog.remove();
+            });
         }
 
         /**

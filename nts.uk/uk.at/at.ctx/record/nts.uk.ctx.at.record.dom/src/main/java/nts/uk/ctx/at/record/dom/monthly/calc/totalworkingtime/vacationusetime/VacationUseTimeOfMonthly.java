@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -13,7 +14,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class VacationUseTimeOfMonthly {
+public class VacationUseTimeOfMonthly implements Cloneable {
 	
 	/** 年休 */
 	private AnnualLeaveUseTimeOfMonthly annualLeave;
@@ -57,30 +58,19 @@ public class VacationUseTimeOfMonthly {
 		return domain;
 	}
 
-	/**
-	 * 複写
-	 * @param annualLeave 年休
-	 * @param retentionYearly 積立年休
-	 * @param specialHoliday 特別休暇
-	 * @param compensatoryLeave 代休
-	 * @return 月別実績の休暇使用時間
-	 */
-	public static VacationUseTimeOfMonthly copyFrom(
-			AnnualLeaveUseTimeOfMonthly annualLeave,
-			RetentionYearlyUseTimeOfMonthly retentionYearly,
-			SpecialHolidayUseTimeOfMonthly specialHoliday,
-			CompensatoryLeaveUseTimeOfMonthly compensatoryLeave){
-
-		val domain = new VacationUseTimeOfMonthly();
-		domain.annualLeave = AnnualLeaveUseTimeOfMonthly.copyFrom(
-				annualLeave.getUseTime(), annualLeave.getTimeSeriesWorks());
-		domain.retentionYearly = RetentionYearlyUseTimeOfMonthly.copyFrom(
-				retentionYearly.getUseTime(), retentionYearly.getTimeSeriesWorks());
-		domain.specialHoliday = SpecialHolidayUseTimeOfMonthly.copyFrom(
-				specialHoliday.getUseTime(), specialHoliday.getTimeSeriesWorks());
-		domain.compensatoryLeave = CompensatoryLeaveUseTimeOfMonthly.copyFrom(
-				compensatoryLeave.getUseTime(), compensatoryLeave.getTimeSeriesWorks());
-		return domain;
+	@Override
+	public VacationUseTimeOfMonthly clone() {
+		VacationUseTimeOfMonthly cloned = new VacationUseTimeOfMonthly();
+		try {
+			cloned.annualLeave = this.annualLeave.clone();
+			cloned.retentionYearly = this.retentionYearly.clone();
+			cloned.specialHoliday = this.specialHoliday.clone();
+			cloned.compensatoryLeave = this.compensatoryLeave.clone();
+		}
+		catch (Exception e){
+			throw new RuntimeException("VacationUseTimeOfMonthly clone error.");
+		}
+		return cloned;
 	}
 	
 	/**
