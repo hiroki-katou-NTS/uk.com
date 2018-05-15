@@ -12,6 +12,5 @@ public class SevstUseContactSet_ {
     public static volatile SingularAttribute<SevstUseContactSet, Integer> useMailSet;
     public static volatile SingularAttribute<SevstUseContactSet, SevstUseContactSetPK> sevstUseContactSetPK;
     public static volatile SingularAttribute<SevstUseContactSet, Integer> exclusVer;
-    public static volatile SingularAttribute<SevstUseContactSet, Integer> setItem;
 
 }

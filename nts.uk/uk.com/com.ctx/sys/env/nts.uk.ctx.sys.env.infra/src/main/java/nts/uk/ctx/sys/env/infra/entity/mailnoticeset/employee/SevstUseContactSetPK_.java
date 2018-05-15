@@ -10,5 +10,5 @@ public class SevstUseContactSetPK_ {
 
     public static volatile SingularAttribute<SevstUseContactSetPK, String> cid;
     public static volatile SingularAttribute<SevstUseContactSetPK, String> sid;
-
+    public static volatile SingularAttribute<SevstUseContactSet, Integer> setItem;
 }

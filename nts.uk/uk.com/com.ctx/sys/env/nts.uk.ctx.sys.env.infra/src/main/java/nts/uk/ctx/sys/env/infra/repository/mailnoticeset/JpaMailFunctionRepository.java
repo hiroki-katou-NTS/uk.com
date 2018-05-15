@@ -19,8 +19,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.MailFunction;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.MailFunctionRepository;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.SevstMailFunction;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.SevstMailFunction_;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.SevmtMailFunction;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.SevmtMailFunction_;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFuncPK_;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFunc_;
 
@@ -45,20 +45,20 @@ public class JpaMailFunctionRepository extends JpaRepository implements MailFunc
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<SevstMailFunction> cq = criteriaBuilder.createQuery(SevstMailFunction.class);
-		Root<SevstMailFunction> root = cq.from(SevstMailFunction.class);
+		CriteriaQuery<SevmtMailFunction> cq = criteriaBuilder.createQuery(SevmtMailFunction.class);
+		Root<SevmtMailFunction> root = cq.from(SevmtMailFunction.class);
 
 		// Build query
 		cq.select(root);
 
 		// Add where conditions
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere.add(criteriaBuilder.equal(root.get(SevstMailFunction_.sendMailSetAtr),
+		lstpredicateWhere.add(criteriaBuilder.equal(root.get(SevmtMailFunction_.sendMailSetAtr),
 				proprietySendMailSettingAtr ? TRUE_VAL : FALSE_VAL));
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-		cq.orderBy(criteriaBuilder.desc(root.get(SevstMailFunction_.sortOrder)));
+		cq.orderBy(criteriaBuilder.desc(root.get(SevmtMailFunction_.sortOrder)));
 
-		List<SevstMailFunction> listSevstMailFunction = em.createQuery(cq).getResultList();
+		List<SevmtMailFunction> listSevstMailFunction = em.createQuery(cq).getResultList();
 
 		// Check exist
 		if (!CollectionUtil.isEmpty(listSevstMailFunction)) {
@@ -70,7 +70,7 @@ public class JpaMailFunctionRepository extends JpaRepository implements MailFunc
 		return lstMailFunction;
 	}
 
-	private MailFunction toDomain(SevstMailFunction entity) {
+	private MailFunction toDomain(SevmtMailFunction entity) {
 		return new MailFunction(new JpaMailFunctionGetMemento(entity));
 	}
 

@@ -8,7 +8,7 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.FunctionId;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.FunctionName;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.MailFunctionGetMemento;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.SortOrder;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.SevstMailFunction;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.SevmtMailFunction;
 
 /**
  * The Class JpaMailFunctionGetMemento.
@@ -16,14 +16,14 @@ import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.SevstMailFunction;
 public class JpaMailFunctionGetMemento implements MailFunctionGetMemento {
 
 	/** The entity. */
-	private SevstMailFunction entity;
+	private SevmtMailFunction entity;
 
 	/**
 	 * Instantiates a new jpa mail function get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaMailFunctionGetMemento(SevstMailFunction entity) {
+	public JpaMailFunctionGetMemento(SevmtMailFunction entity) {
 		this.entity = entity;
 	}
 

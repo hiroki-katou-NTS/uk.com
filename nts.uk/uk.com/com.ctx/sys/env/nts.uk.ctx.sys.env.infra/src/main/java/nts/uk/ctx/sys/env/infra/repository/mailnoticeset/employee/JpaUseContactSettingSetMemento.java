@@ -45,7 +45,7 @@ public class JpaUseContactSettingSetMemento implements UseContactSettingSetMemen
 	 */
 	@Override
 	public void setSettingItem(UserInfoItem settingItem) {
-		this.entity.setSetItem(settingItem.value);
+		this.entity.getSevstUseContactSetPK().setSetItem(settingItem.value);
 	}
 
 	/* (non-Javadoc)

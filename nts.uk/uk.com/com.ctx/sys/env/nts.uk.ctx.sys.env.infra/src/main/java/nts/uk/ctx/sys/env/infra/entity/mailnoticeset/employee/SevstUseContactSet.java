@@ -34,10 +34,6 @@ public class SevstUseContactSet extends UkJpaEntity implements Serializable {
     /** The exclus ver. */
     @Column(name = "EXCLUS_VER")
     private int exclusVer;
-    
-    /** The set item. */
-    @Column(name = "SET_ITEM")
-    private int setItem;
 
     /** The use mail set. */
     @Column(name = "USE_MAIL_SET")
@@ -58,31 +54,6 @@ public class SevstUseContactSet extends UkJpaEntity implements Serializable {
     }
 
     /* (non-Javadoc)
-     * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (sevstUseContactSetPK != null ? sevstUseContactSetPK.hashCode() : 0);
-        return hash;
-    }
-
-    /* (non-Javadoc)
-     * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof SevstUseContactSet)) {
-            return false;
-        }
-        SevstUseContactSet other = (SevstUseContactSet) object;
-        if ((this.sevstUseContactSetPK == null && other.sevstUseContactSetPK != null) || (this.sevstUseContactSetPK != null && !this.sevstUseContactSetPK.equals(other.sevstUseContactSetPK))) {
-            return false;
-        }
-        return true;
-    }
-
-    /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     @Override
@@ -96,6 +67,35 @@ public class SevstUseContactSet extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return this.sevstUseContactSetPK;
+	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + exclusVer;
+		result = prime * result + ((sevstUseContactSetPK == null) ? 0 : sevstUseContactSetPK.hashCode());
+		result = prime * result + useMailSet;
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SevstUseContactSet other = (SevstUseContactSet) obj;
+		if (exclusVer != other.exclusVer)
+			return false;
+		if (sevstUseContactSetPK == null) {
+			if (other.sevstUseContactSetPK != null)
+				return false;
+		} else if (!sevstUseContactSetPK.equals(other.sevstUseContactSetPK))
+			return false;
+		if (useMailSet != other.useMailSet)
+			return false;
+		return true;
 	}
     
 }
