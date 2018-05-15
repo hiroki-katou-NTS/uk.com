@@ -84,7 +84,6 @@ public class PerInfoItemDefForLayoutFinder {
 	public PerInfoItemDefForLayoutDto createItemLayoutDto(PersonInfoCategory category,
 			PersonInfoItemDefinition itemDefinition, int dispOrder, ActionRole role, boolean isCtgViewOnly,
 			Map<String, Map<Boolean, List<ComboBoxObject>>> combobox, String employeeId, GeneralDate startDate) {
-		long start = System.currentTimeMillis();
 		PerInfoItemDefForLayoutDto itemForLayout = new PerInfoItemDefForLayoutDto(itemDefinition);
 
 		itemForLayout.setDispOrder(dispOrder);
@@ -114,8 +113,6 @@ public class PerInfoItemDefForLayoutFinder {
 
 			}
 		}
-		System.out.println("convet to layout Item " + itemDefinition.getItemName().v() + " "
-				+ (System.currentTimeMillis() - start));
 		return itemForLayout;
 	}
 
