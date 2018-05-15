@@ -190,7 +190,7 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto19>>(){},
 			// CS00068  特別休暇20付与残数
 			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto20>>(){},
-			// CS00068 打刻カード番号
+			// CS00069 打刻カード番号
 			new TypeLiteral<PeregFinder<PeregStampCardDto>>(){}
 			);
 

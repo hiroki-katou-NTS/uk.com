@@ -174,7 +174,7 @@ public class CopySettingItemFinder {
 	private Map<String, Object> getCategoryData(List<String> categoryCodes, String employeeId, GeneralDate baseDate) {
 		Map<String, Object> dataMap = new HashMap<>();
 		categoryCodes.forEach(categoryCode -> {
-			PeregDto dto = this.layoutProcessor.findSingle(new PeregQuery(categoryCode, employeeId, null, baseDate));
+			PeregDto dto = this.layoutProcessor.findSingle(PeregQuery.createQueryLayout(categoryCode, employeeId, null, baseDate));
 			if ( dto != null ) {
 				dataMap.putAll(MappingFactory.getFullDtoValue(dto));
 			}

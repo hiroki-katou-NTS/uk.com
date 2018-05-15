@@ -152,7 +152,7 @@ public class RegisterLayoutFinder {
 			}
 			
 			for (LayoutPersonInfoClsDto classItem : entry.getValue()) {
-				List<Object> items = classItem.getListItemDf().stream().map(itemDef -> {
+				List<LayoutPersonInfoValueDto> items = classItem.getListItemDf().stream().map(itemDef -> {
 					Optional<SettingItemDto> dataServerItemOpt = dataServer.stream()
 							.filter(item -> item.getItemDefId().equals(itemDef.getId())).findFirst();
 					return createLayoutItemByDef(dataServerItemOpt, itemDef, classItem, hireDate, perInfoCategory.get());
@@ -242,7 +242,7 @@ public class RegisterLayoutFinder {
 
 		this.initCtgSettingFinder.getAllCategoryBySetId(command.getInitSettingId()).forEach(x -> {
 
-			querys.add(new PeregQuery(x.getCategoryCd(), command.getEmployeeCopyId(), null, command.getHireDate()));
+			querys.add(PeregQuery.createQueryLayout(x.getCategoryCd(), command.getEmployeeCopyId(), null, command.getHireDate()));
 		});
 
 		querys.forEach(x -> {
