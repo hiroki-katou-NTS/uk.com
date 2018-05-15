@@ -55,7 +55,7 @@ public class AddYearServicePerCommandHandler extends CommandHandlerWithResult<Ad
 		}
 		
 		if(yearServicePer.getProvision() == 1) {
-			yearServicePerRep.changeAllProvision();
+			yearServicePerRep.changeAllProvision(context.getCommand().getSpecialHolidayCode());
 		}
 		
 		yearServicePerRep.insertPer(yearServicePer);

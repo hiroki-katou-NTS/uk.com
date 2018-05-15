@@ -86,5 +86,5 @@ public interface YearServicePerRepository {
 	 */
 	List<YearServicePer> getAllPer(String companyId);
 	
-	void changeAllProvision();
+	void changeAllProvision(int specialHolidayCode);
 }

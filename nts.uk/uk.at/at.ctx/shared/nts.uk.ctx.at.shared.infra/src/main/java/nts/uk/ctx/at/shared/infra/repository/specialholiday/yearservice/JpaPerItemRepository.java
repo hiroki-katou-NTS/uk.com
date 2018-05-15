@@ -35,7 +35,7 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 	
 	private final String SELECT_ALL_PER = SELECT_NO_WHERE_PER + "WHERE c.kshstYearServicePerPK.companyId = :companyId ORDER BY c.kshstYearServicePerPK.specialHolidayCode ASC";
 	
-	private final String CHANGE_ALL_PROVISION = "UPDATE KshstYearServicePer e SET e.provision = 0 WHERE e.kshstYearServicePerPK.companyId = :companyId";
+	private final String CHANGE_ALL_PROVISION = "UPDATE KshstYearServicePer e SET e.provision = 0 WHERE e.kshstYearServicePerPK.companyId = :companyId AND e.kshstYearServicePerPK.specialHolidayCode = :specialHolidayCode ";
 	
 	/**
 	 * change entity to domain
@@ -184,11 +184,12 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 				.getList(c->toDomainPer(c));
 	}
 	@Override
-	public void changeAllProvision() {
+	public void changeAllProvision(int specialHolidayCode) {
 		String companyId = AppContexts.user().companyId();
 		
 		this.getEntityManager().createQuery(CHANGE_ALL_PROVISION)
 		.setParameter("companyId", companyId)
+		.setParameter("specialHolidayCode", specialHolidayCode)
 		.executeUpdate();
 	}
 }
