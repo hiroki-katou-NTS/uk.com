@@ -4,14 +4,14 @@ module nts.uk.at.view.kaf018.b.viewmodel {
     import formatDate = nts.uk.time.formatDate;
     import info = nts.uk.ui.dialog.info;
     import error = nts.uk.ui.dialog.alertError;
-        import shareModel = kaf018.share.model;
+    import shareModel = kaf018.share.model;
     import confirm = nts.uk.ui.dialog.confirm;
     import block = nts.uk.ui.block;
-    
+
     export class ScreenModel {
         tempData: Array<model.ConfirmationStatus> = [];
         enable: KnockoutObservable<boolean> = ko.observable(true);
-        listWorkplaceId: KnockoutObservableArray<string> =  ko.observableArray([]);
+        listWorkplaceId: KnockoutObservableArray<string> = ko.observableArray([]);
         closureId: number;
         closureName: string;
         processingYm: string;
@@ -22,9 +22,9 @@ module nts.uk.at.view.kaf018.b.viewmodel {
         listWorkplace: Array<model.WorkplaceInfor>;
         constructor() {
             var self = this;
-            $("#fixed-table").ntsFixedTable({ width: 1000, height: 161 });         
+            $("#fixed-table").ntsFixedTable({ width: 1000, height: 161 });
         }
-        
+
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
@@ -36,7 +36,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
             self.startDate = params.startDate;
             self.endDate = params.endDate;
             self.listEmployeeCode = params.listEmployeeCode;
-            self.isDailyComfirm = params.isConfirmData ;
+            self.isDailyComfirm = params.isConfirmData;
             self.listWorkplace = params.listWorkplace;
             let obj = {
                 startDate: self.startDate,
@@ -48,8 +48,8 @@ module nts.uk.at.view.kaf018.b.viewmodel {
             service.getAppSttByWorkpace(obj).done(function(data: any) {
                 console.log(data);
                 _.forEach(data, function(item) {
-                    self.tempData.push(new model.ConfirmationStatus(item.workplaceId, item.workplaceName , item.enabled, item.checked, item.numOfApp, item.approvedNumOfCase, item.numOfUnreflected, item.numOfUnapproval, item.numOfDenials));
-                
+                    self.tempData.push(new model.ConfirmationStatus(item.workplaceId, item.workplaceName, item.enabled, item.checked, item.numOfApp, item.approvedNumOfCase, item.numOfUnreflected, item.numOfUnapproval, item.numOfDenials));
+
                 })
                 dfd.resolve();
                 block.clear();
@@ -62,20 +62,20 @@ module nts.uk.at.view.kaf018.b.viewmodel {
         private sendMails() {
             var self = this;
             block.invisible();
-            let confirmStatus : Array<model.UnApprovalSendMail> = [];
+            let confirmStatus: Array<model.UnApprovalSendMail> = [];
             _.forEach(self.tempData, function(item) {
                 if (item.isChecked()) {
                     confirmStatus.push(new model.UnApprovalSendMail(item.workplaceId, item.isChecked()));
                 }
             });
-            
+
             service.getCheckSendMail(confirmStatus).done(function() {
                 confirm({ messageId: "Msg_795" }).ifYes(() => {
-                    block.invisible(); 
+                    block.invisible();
                     let listWkpId = [];
                     _.forEach(confirmStatus, function(item) {
-                        listWkpId.push(item.workplaceId);        
-                    }); 
+                        listWkpId.push(item.workplaceId);
+                    });
                     let obj = {
                         listWkpId: listWkpId,
                         closureStart: self.startDate,
@@ -102,26 +102,26 @@ module nts.uk.at.view.kaf018.b.viewmodel {
             });
         }
 
-        private getRecord1(value1: number, value2: number) : string {
-            return value2 +"/"+ (value1 ? value1 + "件" : 0);
+        private getRecord1(value1: number, value2: number): string {
+            return value2 + "/" + (value1 ? value1 + "件" : 0);
         }
-        
+
         private getRecord(value?: number) {
             return value ? value + "件" : "";
         }
-        
-        private getTargetDate() : string{
+
+        private getTargetDate(): string {
             var self = this;
             let startDate = nts.uk.time.formatDate(new Date(self.startDate), 'yyyy/MM/dd');
             let endDate = nts.uk.time.formatDate(new Date(self.endDate), 'yyyy/MM/dd');
-            return self.processingYm +"("+ startDate +" ～ "+ endDate+")";
+            return self.processingYm + "(" + startDate + " ～ " + endDate + ")";
         }
 
         gotoC(index) {
             var self = this;
             let listWorkplace = [];
             _.each(self.tempData, function(item) {
-                listWorkplace.push(new shareModel.ItemModel(item.workplaceId, item.workplaceName));        
+                listWorkplace.push(new shareModel.ItemModel(item.workplaceId, item.workplaceName));
             });
             let params = {
                 closureId: self.closureId,
@@ -138,45 +138,45 @@ module nts.uk.at.view.kaf018.b.viewmodel {
     }
 
     export module model {
-        
-        export class  UnApprovalSendMail {
+
+        export class UnApprovalSendMail {
             workplaceId: string;
-            isChecked: boolean;    
+            isChecked: boolean;
             constructor(workplaceId: string, isChecked: boolean) {
-                this.workplaceId = workplaceId ;
+                this.workplaceId = workplaceId;
                 this.isChecked = isChecked;
             }
         }
-        
+
         export class IParam {
-           closureId: number;
-            
-           /** The closure name. */
-           closureName: string;
-            
-           /** The start date. */
-           startDate: Date;
-            
+            closureId: number;
+
+            /** The closure name. */
+            closureName: string;
+
+            /** The start date. */
+            startDate: Date;
+
             /** The end date. */
             endDate: Date;
-             
+
             /** The closure date. */
             //処理年月
             closureDate: number;
-            
+
             processingYm: string;
-            
+
             isConfirmData: boolean;
-            
+
             listEmployeeCode: Array<any>;
-            
+
             listWorkplace: Array<WorkplaceInfor>;
         }
 
         export class WorkplaceInfor {
             // 職場ID
             code: string;
-            
+
             name: string;
             constructor(code: string, name: string) {
                 this.code = code;
@@ -208,22 +208,18 @@ module nts.uk.at.view.kaf018.b.viewmodel {
             /**
              * ・否認件数
              */
-            numOfDenials: number;  
+            numOfDenials: number;
 
-            constructor( workplaceId: string, workplaceName: string, isEnabled: boolean, isChecked: boolean, numOfApp: number,
-            approvedNumOfCase: number, numOfUnreflected: number, numOfUnapproval: number, numOfDenials: number) {
+            constructor(workplaceId: string, workplaceName: string, isEnabled: boolean, isChecked: boolean, numOfApp: number,
+                approvedNumOfCase: number, numOfUnreflected: number, numOfUnapproval: number, numOfDenials: number) {
                 this.workplaceId = workplaceId;
                 this.workplaceName = workplaceName;
                 this.numOfApp = numOfApp ? numOfApp : 0;
                 this.approvedNumOfCase = approvedNumOfCase ? approvedNumOfCase : 0;
-                this.numOfUnreflected =  numOfUnreflected ? numOfUnreflected : 0;
+                this.numOfUnreflected = numOfUnreflected ? numOfUnreflected : 0;
                 this.numOfUnapproval = numOfUnapproval ? numOfUnapproval : 0;
                 this.numOfDenials = numOfDenials ? numOfDenials : 0;
-                if(this.numOfUnapproval < 0) {
-                    this.isEnabled = false;    
-                }else {
-                    this.isEnabled = true;
-                }
+                this.isEnabled = isEnabled;
                 this.isChecked = ko.observable(isChecked);
             }
         }

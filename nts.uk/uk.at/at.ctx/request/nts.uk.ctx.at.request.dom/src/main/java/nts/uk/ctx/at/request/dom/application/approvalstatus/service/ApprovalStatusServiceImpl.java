@@ -256,7 +256,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		Integer numOfUnapprovalDisp = numOfUnapproval == 0 ? null : numOfUnapproval;
 		Integer numOfDenialsDisp = numOfDenials == 0 ? null : numOfDenials;
 		boolean isEnable = true;
-		if (Objects.isNull(numOfUnapprovalDisp)) {
+		if (Objects.isNull(numOfUnapprovalDisp) || numOfUnapprovalDisp <= 0) {
 			isEnable = false;
 		}
 		ApprovalSttAppOutput approvalSttApp = new ApprovalSttAppOutput(wkpInfor.getCode(), wkpInfor.getName(), isEnable,
