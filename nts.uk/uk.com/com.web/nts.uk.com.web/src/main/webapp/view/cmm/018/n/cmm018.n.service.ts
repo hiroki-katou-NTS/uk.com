@@ -23,8 +23,8 @@ module nts.uk.com.view.cmm018.n {
                 baseDate: any;
                 lstEmpIds: string[];
                 rootAtr: number;
-                lstApps: string[];
-                constructor(baseDate: any, lstEmpIds: string[], rootAtr: number, lstApps: string[]) {
+                lstApps: number[];
+                constructor(baseDate: any, lstEmpIds: string[], rootAtr: number, lstApps: number[]) {
                     this.baseDate = baseDate;
                     this.lstEmpIds = lstEmpIds;
                     this.rootAtr = rootAtr;

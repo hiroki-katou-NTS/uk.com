@@ -9,5 +9,5 @@ public class EmployeeRegisterApprovalRootDto {
 	public GeneralDate baseDate;
 	public List<String> lstEmpIds;
 	public int rootAtr;
-	public List<String> lstApps;
+	public List<Integer> lstApps;
 }

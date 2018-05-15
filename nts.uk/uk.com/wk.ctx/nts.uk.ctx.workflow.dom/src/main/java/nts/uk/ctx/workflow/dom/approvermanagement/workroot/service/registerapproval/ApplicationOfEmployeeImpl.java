@@ -36,7 +36,7 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 		List<PersonApprovalRoot> lstPsRoots = lstPersonRootInfor
 				.stream()
 				.filter(x -> x.getEmployeeId().equals(sId) 
-						&& x.getEmploymentRootAtr() != EmploymentRootAtr.COMMON
+						&& x.getEmploymentRootAtr().equals(EmploymentRootAtr.APPLICATION)
 						&& x.getApplicationType().equals(appType))
 				.collect(Collectors.toList());
 		//データが１件以上取得した場合(data >= 1)

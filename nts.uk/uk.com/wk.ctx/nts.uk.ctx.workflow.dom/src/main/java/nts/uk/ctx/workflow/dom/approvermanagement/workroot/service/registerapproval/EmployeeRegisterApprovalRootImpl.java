@@ -39,7 +39,9 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.Employ
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeApproverOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeOrderApproverAsAppOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.WpApproverAsAppOutput;
+import nts.uk.ctx.workflow.dom.service.CollectApprovalRootService;
 import nts.uk.ctx.workflow.dom.service.output.ApproverInfo;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprovalRoot {
@@ -61,9 +63,15 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 	private PersonAdapter psAdapter;
 	@Inject
 	private SyJobTitleAdapter jobTitle;
+	@Inject
+	private CollectApprovalRootService collectApprRootService;
+	
+	/**
+	 * 01.申請者としての承認ルートを取得する
+	 */
 	@Override
 	public Map<String, WpApproverAsAppOutput> lstEmps(String companyID, GeneralDate baseDate, List<String> lstEmpIds,
-			int rootAtr, List<String> lstApps) {
+			int rootAtr, List<Integer> lstApps) {
 		// toan the du lieu co workplace
 		Map<String, WpApproverAsAppOutput> appOutput = new HashMap<>();
 
@@ -78,13 +86,17 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 			List<ApprovalRootCommonOutput> appOfEmployee = new ArrayList<>();
 			// ループ中の承認ルート対象が共通ルート が false の場合(loại đơn xin đang xử lý loop : 共通ルート = false)
 			if (rootAtr == EmploymentRootAtr.COMMON.value) {
+				//社員の共通の承認ルートを取得する(lấy thông tin Common approval route  của nhân viên theo )
 				appOfEmployee = appEmployee.commonOfEmployee(lstComs, lstWps, lstPss, companyID, empId, baseDate);
 				this.getData(appOfEmployee, companyID, empId, baseDate, appOutput, 99, "共通ルート");
 			}
 			// 選択する申請対象をループする(loop theo loại don xin da chon)
-			for (String appType : lstApps) {
-
-				ApplicationType appTypeE = EnumAdaptor.valueOf(Integer.parseInt(appType), ApplicationType.class);
+			for (Integer appType : lstApps) {
+				//社員の対象申請の承認ルートを取得する(lấy thông tin approval route cua nhan vien theo loại đơn đang xử lý)
+				if(appType.equals(99)){
+					continue;
+				}
+				ApplicationType appTypeE = EnumAdaptor.valueOf(appType, ApplicationType.class);
 				appOfEmployee = appEmployee.appOfEmployee(lstComs, lstWps, lstPss, companyID, empId, appTypeE,
 						baseDate);
 				this.getData(appOfEmployee, companyID, empId, baseDate, appOutput, appTypeE.value, appTypeE.nameId);
@@ -148,13 +160,22 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 				List<EmployeeOrderApproverAsAppOutput> employIn = new ArrayList<>();
 				for (ApproverInfo appInfo : phase.getApprovers()) {
 					String name = "";
+					//ドメインモデル「承認者」．区分をチェックする(check thong tin domain「承認者」．区分)
 					if(appInfo.getApprovalAtr() == ApprovalAtr.PERSON) {
 						name = psAdapter.getPersonInfo(appInfo.getSid()).getEmployeeName();
+						employIn.add(new EmployeeOrderApproverAsAppOutput(appInfo.getOrderNumber(),name));
 					}else {
-						name = jobTitle.findJobTitleByPositionId(companyID, appInfo.getJobId(), baseDate).getPositionName();
+						
+//						name = jobTitle.findJobTitleByPositionId(companyID, appInfo.getJobId(), baseDate).getPositionName();
+						//3.職位から承認者へ変換する
+						String employeeID = AppContexts.user().employeeId();
+						List<ApproverInfo> lstApEm = collectApprRootService.convertPositionToApprover(companyID, employeeID, baseDate, appInfo.getJobId());
+						for (ApproverInfo approver : lstApEm) {
+							employIn.add(new EmployeeOrderApproverAsAppOutput(appInfo.getOrderNumber(),approver.getName()));
+						}
 					}
 					
-					employIn.add(new EmployeeOrderApproverAsAppOutput(appInfo.getOrderNumber(),name));
+//					employIn.add(new EmployeeOrderApproverAsAppOutput(appInfo.getOrderNumber(),name));
 				}
 				ApproverAsApplicationInforOutput appAsAppInfor = new ApproverAsApplicationInforOutput(
 						phase.getOrderNumber(), EnumAdaptor.valueOf(phase.getApprovalForm(), ApprovalForm.class).name,
@@ -164,7 +185,7 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 			}
 		} else {
 			// 「マスタなし」を表示し、出力対象として追加する(hiển thị là 「マスタなし」 ,và thêm vào dữ liệu output)
-			ApproverAsApplicationInforOutput phase = new ApproverAsApplicationInforOutput(apptyle, null, null);
+			ApproverAsApplicationInforOutput phase = new ApproverAsApplicationInforOutput(0, null, null);
 			phaseInfors.add(phase);
 		}
 		PersonImport ps = psAdapter.getPersonInfo(empId);

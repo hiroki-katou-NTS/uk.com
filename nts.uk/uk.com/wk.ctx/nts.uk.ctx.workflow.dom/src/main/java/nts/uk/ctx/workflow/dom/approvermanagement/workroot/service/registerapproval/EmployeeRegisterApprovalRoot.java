@@ -22,5 +22,5 @@ public interface EmployeeRegisterApprovalRoot {
 	 * @param lstApps 選択する申請対象
 	 * @return
 	 */
-	Map<String, WpApproverAsAppOutput> lstEmps(String companyID, GeneralDate baseDate, List<String> lstEmpIds, int rootAtr, List<String> lstApps);
+	Map<String, WpApproverAsAppOutput> lstEmps(String companyID, GeneralDate baseDate, List<String> lstEmpIds, int rootAtr, List<Integer> lstApps);
 }
