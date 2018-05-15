@@ -33,7 +33,8 @@ public class ApprovalRootState extends AggregateRoot {
 	@Setter
 	private List<ApprovalPhaseState> listApprovalPhaseState;
 	
-	public static ApprovalRootState createFromFirst(String appID, RootType rootType, String historyID, GeneralDate date, String employeeID, ApprovalRootState approvalRootState){
+	public static ApprovalRootState createFromFirst(String companyID, String appID, RootType rootType, String historyID, 
+			GeneralDate date, String employeeID, ApprovalRootState approvalRootState){
 		if(Strings.isBlank(approvalRootState.getRootStateID())){
 			return ApprovalRootState.builder()
 					.rootStateID(appID)
@@ -42,7 +43,7 @@ public class ApprovalRootState extends AggregateRoot {
 					.approvalRecordDate(date)
 					.employeeID(employeeID)
 					.listApprovalPhaseState(approvalRootState.getListApprovalPhaseState().stream()
-							.map(x -> ApprovalPhaseState.createFromFirst(appID, x)).collect(Collectors.toList()))
+							.map(x -> ApprovalPhaseState.createFromFirst(companyID, date, appID, x)).collect(Collectors.toList()))
 					.build();
 		}
 		return approvalRootState;

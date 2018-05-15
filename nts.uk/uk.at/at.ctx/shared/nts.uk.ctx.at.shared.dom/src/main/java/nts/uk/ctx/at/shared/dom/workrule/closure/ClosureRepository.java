@@ -138,7 +138,7 @@ public interface ClosureRepository {
 	 * @param closureMonth the closure month
 	 * @return the optional
 	 */
-	Optional<ClosureHistory> findByClosureIdAndCurrentMonth(Integer closureId, Integer closureMonth);
+	Optional<ClosureHistory> findByClosureIdAndCurrentMonth(String companyId, Integer closureId, Integer closureMonth);
 	
 	/**
 	 * Find by current month.

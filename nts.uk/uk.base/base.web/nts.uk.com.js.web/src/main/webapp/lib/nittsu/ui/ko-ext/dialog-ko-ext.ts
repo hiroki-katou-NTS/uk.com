@@ -130,6 +130,11 @@ module nts.uk.ui.koExtentions {
                     bindingContext.$data.option().show(false);
                 }
             }).dialogPositionControl();
+            
+            PS.$("body").bind("dialogclosed", function(evt, eData){
+                $dialog.dialog("close");
+                $dialog.remove();
+            });
         }
 
         /**
@@ -147,7 +152,9 @@ module nts.uk.ui.koExtentions {
             var autoclose: boolean = ko.unwrap(option.autoclose);
             var show: boolean = ko.unwrap(option.show);
             var self = nts.uk.ui.windows.getSelf();
-
+            if(nts.uk.util.isNullOrUndefined(self)){
+                return;    
+            }
             var id = 'ntsErrorDialog_' + self.id;
             var $dialog;
             if (self.isRoot) {

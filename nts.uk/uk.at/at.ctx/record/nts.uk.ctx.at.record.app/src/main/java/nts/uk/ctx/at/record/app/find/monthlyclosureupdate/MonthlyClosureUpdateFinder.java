@@ -98,7 +98,7 @@ public class MonthlyClosureUpdateFinder {
 			for (ClosureInfor infor : listClosureInfor) {
 				List<MonthlyClosureUpdateLog> listMonthlyLog = monthlyClosureUpdateRepo
 						.getAllByClosureId(companyId, infor.getClosureId().value).stream()
-						.sorted((o1, o2) -> o1.getExecutionDateTime().compareTo(o2.getExecutionDateTime()))
+						.sorted((o1, o2) -> o2.getExecutionDateTime().compareTo(o1.getExecutionDateTime()))
 						.collect(Collectors.toList());
 				MonthlyClosureUpdateLog log = null;
 				if (!listMonthlyLog.isEmpty())
@@ -215,6 +215,7 @@ public class MonthlyClosureUpdateFinder {
 				listResult.add(result);
 			}
 		}
+		listResult.sort((e1, e2) -> e1.getEmployeeCode().compareToIgnoreCase(e2.getEmployeeCode()));
 		return listResult;
 	}
 

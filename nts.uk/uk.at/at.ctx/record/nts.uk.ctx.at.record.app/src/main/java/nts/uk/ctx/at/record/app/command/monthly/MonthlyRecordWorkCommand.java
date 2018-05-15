@@ -60,7 +60,7 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 		return this;
 	}
 	
-	public MonthlyRecordWorkCommand withData(DailyRecordDto data){
+	public MonthlyRecordWorkCommand withData(MonthlyRecordWorkDto data){
 		this.setRecords(data);
 		return this;
 	}

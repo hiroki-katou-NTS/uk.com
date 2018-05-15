@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.closurestatus;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -35,6 +36,16 @@ public class JpaClosureStatusManagementRepository extends JpaRepository implemen
 		if (opt.isPresent())
 			return Optional.of(opt.get().toDomain());
 		return Optional.empty();
+	}
+
+	@Override
+	public Optional<ClosureStatusManagement> getLatestByEmpId(String employeeId) {
+		String sql = "SELECT a FROM KrcdtClosureSttMng a WHERE a.pk.employeeId = :employeeId ORDER BY a.end DESC";
+		List<KrcdtClosureSttMng> lstEntity = this.queryProxy().query(sql, KrcdtClosureSttMng.class)
+				.setParameter("employeeId", employeeId).getList();
+		if (lstEntity.isEmpty())
+			return Optional.empty();
+		return Optional.of(lstEntity.get(0).toDomain());
 	}
 
 }
