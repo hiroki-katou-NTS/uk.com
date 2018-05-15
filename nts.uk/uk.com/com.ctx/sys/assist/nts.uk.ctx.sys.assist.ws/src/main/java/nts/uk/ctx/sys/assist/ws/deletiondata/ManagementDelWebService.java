@@ -28,7 +28,7 @@ public class ManagementDelWebService extends WebService {
 		return managementDelFinder.findManagementDelById(delId);
 	}
 	
-//	@POST
+	@POST
 	@Path("setInterruptDeleting")
 	public void setInterruptSaving(ManagementDelCommand command) {
 		this.updateManagementDelCommandHandler.handle(command);
