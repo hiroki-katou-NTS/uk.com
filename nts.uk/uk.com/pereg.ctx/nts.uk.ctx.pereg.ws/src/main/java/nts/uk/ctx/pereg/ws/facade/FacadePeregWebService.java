@@ -19,18 +19,6 @@ public class FacadePeregWebService extends WebService {
 	private PeregCommandFacade commandFacade;
 	
 	@POST
-	@Path("add")
-	public void add(PeregInputContainer inputContainer) {
-		this.commandFacade.add(inputContainer);
-	}
-	
-	@POST
-	@Path("update")
-	public void update(PeregInputContainer inputContainer) {
-		this.commandFacade.update(inputContainer);
-	}
-	
-	@POST
 	@Path("delete")
 	public void delete(PeregDeleteCommand deleteCommand) {
 		this.commandFacade.delete(deleteCommand);

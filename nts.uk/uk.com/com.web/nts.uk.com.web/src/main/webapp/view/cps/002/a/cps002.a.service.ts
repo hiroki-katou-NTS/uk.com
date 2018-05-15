@@ -3,11 +3,12 @@ module cps002.a.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     import block = nts.uk.ui.block;
-    let
-        regpath = "ctx/pereg/",
+
+    let regpath = "ctx/pereg/",
         paths: any = {
             getEmployeeCode: 'employee/mngdata/getGenerateEmplCode',
             getCardNumber: 'employee/mngdata/getGenerateCardNo',
+            getStamCardEditing: 'record/stamp/stampcardedit/find',
             getLayout: 'person/newlayout/get-layout-can-null',
             getAllInitValueSetting: 'person/info/setting/init/findAllHasChild',
             getSelfRoleAuth: 'roles/auth/get-self-auth',
@@ -28,7 +29,8 @@ module cps002.a.service {
         let dfd = $.Deferred<any>();
         let self = this;
         _.defer(() => block.invisible());
-        nts.uk.request.ajax(regpath + paths.getLayout)
+        
+        ajax(regpath + paths.getLayout)
             .done(function(res) {
                 dfd.resolve(res);
             }).fail(function(res) {
@@ -103,6 +105,10 @@ module cps002.a.service {
                 _.defer(() => block.clear());
             });
         return dfd.promise();
+    }
+
+    export function getStamCardEdit() {
+        return nts.uk.request.ajax("at", paths.getStamCardEditing);
     }
 
     export function getEmployeeCodeAndComId(employeeLetter) {

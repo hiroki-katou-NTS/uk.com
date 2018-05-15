@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
