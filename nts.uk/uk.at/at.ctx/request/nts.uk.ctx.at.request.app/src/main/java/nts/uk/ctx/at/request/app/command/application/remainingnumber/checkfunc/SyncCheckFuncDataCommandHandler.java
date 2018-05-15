@@ -87,15 +87,17 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				outputErrorInfoCommand);
 		if (outputErrorInfoCommand.size() > 0) {
 			// エラーがあった場合
+			int errCount = 0;
 			for (int i = 0; i < outputErrorInfoCommand.size(); i++) {
+				JsonObject value = Json.createObjectBuilder()
+						.add("employeeCode", outputErrorInfoCommand.get(i).getEmployeeCode())
+						.add("employeeName", outputErrorInfoCommand.get(i).getEmployeeName())
+						.add("errorMessage", outputErrorInfoCommand.get(i).getErrorMessage()).build();
+				setter.setData(ERROR_LIST + i, value);
 				if (!StringUtil.isNullOrEmpty(outputErrorInfoCommand.get(i).getEmployeeCode(), true)) {
-					JsonObject value = Json.createObjectBuilder()
-							.add("employeeCode", outputErrorInfoCommand.get(i).getEmployeeCode())
-							.add("employeeName", outputErrorInfoCommand.get(i).getEmployeeName())
-							.add("errorMessage", outputErrorInfoCommand.get(i).getErrorMessage()).build();
-					setter.setData(ERROR_LIST + i, value);
-					setter.updateData(NUMBER_OF_SUCCESS, outputErrorInfoCommand.size());
-					setter.updateData(NUMBER_OF_ERROR, outputErrorInfoCommand.size());
+					errCount++;
+					setter.updateData(NUMBER_OF_SUCCESS, errCount);
+					setter.updateData(NUMBER_OF_ERROR, errCount);
 				}
 			}
 		} else {
@@ -186,8 +188,8 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 		if (planVacationHistory.isEmpty()) {
 			// 出力エラー情報に追加する
 			OutputErrorInfoCommand outputErrorInfo = new OutputErrorInfoCommand();
-			outputErrorInfo.setEmployeeCode(null);
-			outputErrorInfo.setEmployeeName(null);
+			outputErrorInfo.setEmployeeCode("");
+			outputErrorInfo.setEmployeeName("");
 			outputErrorInfo.setErrorMessage("Msg_1138");
 
 			outputErrorInfoCommand.add(outputErrorInfo);
