@@ -1618,6 +1618,13 @@ public class ProgramsManager {
 			"/view/cmm/001/c/index.xhtml");
 	public static final Program CMM001D = new Program(WebAppId.COM, ProgramIdConsts.CMM001D, null,
 			"/view/cmm/001/d/index.xhtml");
+	/**
+	 * CMM001F
+	 */
+	public static final Program CMM001F = new Program(WebAppId.COM, ProgramIdConsts.CMM001F, "CMM001_69",
+			"/view/cmm/001/f/index.xhtml");
+	
+	
 	/** CCG018 */
 
 	/** KAL001 */
