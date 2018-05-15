@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.dom.annualworkschedule;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -13,7 +12,6 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoSc
 /**
 * 年間勤務表（36チェックリスト）の出力項目設定
 */
-@AllArgsConstructor
 @Getter
 public class SetOutItemsWoSc extends AggregateRoot {
 	/**
@@ -49,5 +47,16 @@ public class SetOutItemsWoSc extends AggregateRoot {
 				new OutItemsWoScName(name), outNumExceedTime36Agr,
 				EnumAdaptor.valueOf(displayFormat, OutputAgreementTime.class),
 				listItemOutTblBook);
+	}
+
+	public SetOutItemsWoSc(String cid, OutItemsWoScCode cd, OutItemsWoScName name, boolean outNumExceedTime36Agr,
+			OutputAgreementTime displayFormat, List<ItemOutTblBook> listItemOutTblBook) {
+		super();
+		this.cid = cid;
+		this.cd = cd;
+		this.name = name;
+		this.outNumExceedTime36Agr = outNumExceedTime36Agr;
+		this.displayFormat = displayFormat;
+		this.listItemOutTblBook = listItemOutTblBook;
 	}
 }

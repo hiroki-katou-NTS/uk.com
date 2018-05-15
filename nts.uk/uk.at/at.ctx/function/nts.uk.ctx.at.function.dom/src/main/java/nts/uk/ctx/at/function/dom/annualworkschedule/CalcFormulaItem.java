@@ -1,13 +1,11 @@
 package nts.uk.ctx.at.function.dom.annualworkschedule;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
 * 項目の算出式
 */
-@AllArgsConstructor
 @Getter
 public class CalcFormulaItem extends DomainObject
 {
@@ -39,5 +37,14 @@ public class CalcFormulaItem extends DomainObject
 
 	public static CalcFormulaItem createFromJavaType(String cid, String setOutCd, String itemOutCd, int attendanceItemId, int operation) {
 		return new CalcFormulaItem(cid, setOutCd, itemOutCd, attendanceItemId, operation);
+	}
+
+	public CalcFormulaItem(String cid, String setOutCd, String itemOutCd, int attendanceItemId, int operation) {
+		super();
+		this.cid = cid;
+		this.setOutCd = setOutCd;
+		this.itemOutCd = itemOutCd;
+		this.attendanceItemId = attendanceItemId;
+		this.operation = operation;
 	}
 }

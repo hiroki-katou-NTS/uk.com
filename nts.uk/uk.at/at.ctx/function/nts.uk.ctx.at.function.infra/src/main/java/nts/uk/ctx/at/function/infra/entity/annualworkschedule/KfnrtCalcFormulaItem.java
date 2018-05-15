@@ -52,7 +52,7 @@ public class KfnrtCalcFormulaItem extends UkJpaEntity implements Serializable
     }
 
     public CalcFormulaItem toDomain() {
-        return new CalcFormulaItem(this.calcFormulaItemPk.cid, this.calcFormulaItemPk.setOutCd, this.calcFormulaItemPk.itemOutCd, this.calcFormulaItemPk.attendanceItemId, this.operation);
+        return CalcFormulaItem.createFromJavaType(this.calcFormulaItemPk.cid, this.calcFormulaItemPk.setOutCd, this.calcFormulaItemPk.itemOutCd, this.calcFormulaItemPk.attendanceItemId, this.operation);
     }
 
     public static KfnrtCalcFormulaItem toEntity(CalcFormulaItem domain) {

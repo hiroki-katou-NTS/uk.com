@@ -36,27 +36,26 @@ public class AddSetOutItemsWoScCommandHandler extends CommandHandler<SetOutItems
 		SetOutItemsWoScCommand addCommand = context.getCommand();
 		if(domainService.checkDuplicateCode(addCommand.getCd())) {
 			throw new BusinessException("Msg_3");
-		} else {
-			int[] itemOutCd = {0};
-			List<ItemOutTblBook> listItemOutTblBook = addCommand.getListItemOutput().stream()
-				.map(m -> ItemOutTblBook.createFromJavaType(companyId,
-					addCommand.getCd(),             //年間勤務表(36チェックリスト)の出力条件.コード
-					String.valueOf(++itemOutCd[0]), //帳表に出力する項目.コード auto increment
-					m.getSortBy(),
-					m.getHeadingName(), m.isUseClass(), m.getValOutFormat(),
-					//list 項目の算出式
-					m.getListOperationSetting().stream()
-					.map(os -> CalcFormulaItem.createFromJavaType(companyId,
-							addCommand.getCd(),           //年間勤務表(36チェックリスト)の出力条件.コード
-							String.valueOf(itemOutCd[0]), //帳表に出力する項目.コード
-							os.getAttendanceItemId(), os.getOperation())).collect(Collectors.toList()))
-				).collect(Collectors.toList());
+		} 
+		int[] itemOutCd = {0};
+		List<ItemOutTblBook> listItemOutTblBook = addCommand.getListItemOutput().stream()
+			.map(m -> ItemOutTblBook.createFromJavaType(companyId,
+				addCommand.getCd(),             //年間勤務表(36チェックリスト)の出力条件.コード
+				String.valueOf(++itemOutCd[0]), //帳表に出力する項目.コード auto increment
+				m.getSortBy(),
+				m.getHeadingName(), m.isUseClass(), m.getValOutFormat(),
+				//list 項目の算出式
+				m.getListOperationSetting().stream()
+				.map(os -> CalcFormulaItem.createFromJavaType(companyId,
+						addCommand.getCd(),           //年間勤務表(36チェックリスト)の出力条件.コード
+						String.valueOf(itemOutCd[0]), //帳表に出力する項目.コード
+						os.getAttendanceItemId(), os.getOperation())).collect(Collectors.toList()))
+			).collect(Collectors.toList());
 
-			repository.add(SetOutItemsWoSc.createFromJavaType(companyId, addCommand.getCd(),
-															  addCommand.getName(),
-															  addCommand.isOutNumExceedTime36Agr(),
-															  addCommand.getDisplayFormat(),
-															  listItemOutTblBook));
-		}
+		repository.add(SetOutItemsWoSc.createFromJavaType(companyId, addCommand.getCd(),
+														  addCommand.getName(),
+														  addCommand.isOutNumExceedTime36Agr(),
+														  addCommand.getDisplayFormat(),
+														  listItemOutTblBook));
 	}
 }

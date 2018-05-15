@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.dom.annualworkschedule;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
@@ -13,7 +12,6 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.ItemOutTblBo
 /**
 * 帳表に出力する項目
 */
-@AllArgsConstructor
 @Getter
 public class ItemOutTblBook extends DomainObject {
 	/**
@@ -58,4 +56,20 @@ public class ItemOutTblBook extends DomainObject {
 				new ItemOutTblBookHeadingName(headingName), useClass,
 				EnumAdaptor.valueOf(valOutFormat, ValueOuputFormat.class), listCalcFormulaItem);
 	}
+
+	public ItemOutTblBook(String cid, String setOutCd, ItemOutTblBookCode cd, int sortBy,
+			ItemOutTblBookHeadingName headingName, boolean useClassification, ValueOuputFormat valOutFormat,
+			List<CalcFormulaItem> listOperationSetting) {
+		super();
+		this.cid = cid;
+		this.setOutCd = setOutCd;
+		this.cd = cd;
+		this.sortBy = sortBy;
+		this.headingName = headingName;
+		this.useClassification = useClassification;
+		this.valOutFormat = valOutFormat;
+		this.listOperationSetting = listOperationSetting;
+	}
+	
+	
 }

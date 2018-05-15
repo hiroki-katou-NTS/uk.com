@@ -98,10 +98,10 @@ public class KfnrtItemOutTblBook extends UkJpaEntity implements Serializable
 	}
 
     public ItemOutTblBook toDomain() {
-        return new ItemOutTblBook(this.itemOutTblBookPk.cid, this.itemOutTblBookPk.setOutCd,
-                                  new ItemOutTblBookCode(this.itemOutTblBookPk.cd), this.sortBy,
-                                  new ItemOutTblBookHeadingName(this.headingName), this.useClass == 1? true: false,
-                                  EnumAdaptor.valueOf(this.valOutFormat, ValueOuputFormat.class),
+        return ItemOutTblBook.createFromJavaType(this.itemOutTblBookPk.cid, this.itemOutTblBookPk.setOutCd,
+                                  this.itemOutTblBookPk.cd, this.sortBy,
+                                  this.headingName, this.useClass == 1? true: false,
+                                  this.valOutFormat,
         this.listCalcFormulaItem.stream().map(m -> m.toDomain()).collect(Collectors.toList()));
     }
 
