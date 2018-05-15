@@ -55,8 +55,10 @@ public class PeregStampCardFinder implements PeregFinder<PeregStampCardDto> {
 
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
-		// TODO Auto-generated method stub
-		return null;
+		List<StampCard> stampCardList = stampCardRepo.getListStampCard(query.getEmployeeId());
+		return stampCardList.stream()
+				.map(stampCard -> new ComboBoxObject(stampCard.getStampCardId(), stampCard.getStampNumber().v()))
+				.collect(Collectors.toList());
 	}
 
 }
