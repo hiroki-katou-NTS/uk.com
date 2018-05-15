@@ -142,7 +142,6 @@ module nts.uk.at.view.kwr001.a {
                     periodFormatYM: false,
                     
                     /** Required parameter */
-//                    baseDate: moment(self.endDatepicker(), DATE_FORMAT_YYYY_MM_DD).toISOString(),
                     baseDate: moment().toISOString(),
                     periodStartDate: moment().toISOString(),
                     periodEndDate: moment().toISOString(),
@@ -201,19 +200,16 @@ module nts.uk.at.view.kwr001.a {
 
                 // TODO: hoangdd - lay du lieu tu service
                 self.itemListCodeTemplate = ko.observableArray([
-                    new ItemModel('0', '123'),
-                    new ItemModel('1', '456'),
-                    new ItemModel('2', '123'),
-                    new ItemModel('3', '123'),
-                    new ItemModel('4', '456'),
-                    new ItemModel('5', '123'),
-                    new ItemModel('6', '456'),
+                    new ItemModel('0', 'なし'),
+                    new ItemModel('1', '社員'),
+                    new ItemModel('2', '職場')
                 ]);
                 
                 // TODO: hoangdd - lay du lieu tu service
                 self.itemListTypePageBrake = ko.observableArray([
-                    new ItemModel('0', '123'),
-                    new ItemModel('1', '456')
+                    new ItemModel('0', 'なし'),
+                    new ItemModel('1', '社員'),
+                    new ItemModel('2', '職場')
                 ]);
                 
                 self.selectedCodeA9_2 = ko.observable(1);
@@ -305,7 +301,7 @@ module nts.uk.at.view.kwr001.a {
                     self.selectedDataOutputType(workScheduleOutputCondition.outputType);
                     // TODO - hoangdd: A7_3 se can 1 service de lay list, sau do so sanh code da chon vs list code tra ve de lay index
                     //          workScheduleOutputCondition.code
-                    self.selectedCodeA7_3('1');
+                    self.selectedCodeA7_3(data.code);
                     self.selectedCodeA9_2(workScheduleOutputCondition.pageBreakIndicator);
                     self.checkedA10_2(workScheduleOutputCondition.settingDetailTotalOuput.details);
                     self.checkedA10_3(workScheduleOutputCondition.settingDetailTotalOuput.personalTotal);
@@ -387,24 +383,105 @@ module nts.uk.at.view.kwr001.a {
                     nts.uk.ui.windows.sub.modal('/view/kwr/001/b/index.xhtml').onClosed(function(): any {
                         workScheduleOutputCondition.errorAlarmCode = nts.uk.ui.windows.getShared('KWR001_B_errorAlarmCode');
                         service.saveCharacteristic(companyId, userId, workScheduleOutputCondition);
-                        console.log(workScheduleOutputCondition);
                     });  
                 })
             }
             openScreenC (): void {
                 let self = this;
+                let codeChoose = self.getCodeFromListCode(self.selectedCodeA7_3(), self.itemListCodeTemplate());
                 
-                let codeChoose = _.find(self.itemListCodeTemplate(), function(o) { 
-                    return self.selectedCodeA7_3() == o.code; 
-                });
-                
-                nts.uk.ui.windows.setShared('KWR001_C', codeChoose.code, true);
+                nts.uk.ui.windows.setShared('KWR001_C', codeChoose, true);
                 nts.uk.ui.windows.sub.modal('/view/kwr/001/c/index.xhtml').onClosed(function(): any {
                     nts.uk.ui.windows.getShared('KWR001_C');
                 });
             }
+            
+            private getCodeFromListCode(pos: string, lstCode: ItemModel[]): string {
+                let self = this;
+                let codeChoose = _.find(lstCode, function(o) { 
+                    return pos == o.code; 
+                });
+                return codeChoose.code;
+            }
+            
             processExcel(): void {
-                service.exportExcel();
+                let self = this;
+                if (self.validateMinimumOneChecked()) {
+                    self.saveWorkScheduleOutputCondition();
+                    service.exportExcel();    
+                }
+                
+            }
+            
+            private processPdf(): void {
+                let self = this;
+                if (self.validateMinimumOneChecked()) {
+                    self.saveWorkScheduleOutputCondition();
+                }
+            }
+            
+            private validateMinimumOneChecked(): boolean {
+                let self = this;
+                if (!self.checkedA10_2() && !self.checkedA10_3() && !self.checkedA10_4() && !self.checkedA10_5()
+                        && !self.checkedA10_6() && self.checkedA10_7() && !self.checkedA10_10() && !self.checkedA10_11()
+                        && !self.checkedA10_12() && !self.checkedA10_13() && !self.checkedA10_14() && !self.checkedA10_15() 
+                        && !self.checkedA10_16() && !self.checkedA10_17() && !self.checkedA10_18()) {
+                    nts.uk.ui.dialog.error({ messageId: "Msg_1141" });
+                    return false;
+                }
+                
+                if (!self.checkedA10_2() && !self.checkedA10_3() && !self.checkedA10_4() && !self.checkedA10_5()
+                        && !self.checkedA10_6() && !self.checkedA10_7()) {
+                    nts.uk.ui.dialog.error({ messageId: "Msg_1141" });
+                    return false;
+                }
+                return true;
+            }
+            
+            private saveWorkScheduleOutputCondition(): void {
+                let self = this;
+                
+                let companyId: string = __viewContext.user.companyId;
+                let userId: string = __viewContext.user.employeeId;
+                service.restoreCharacteristic(companyId, userId).done(function(data: any) {
+                    // return data default
+                    if (!self.checkedA10_7()) {
+                        self.checkedA10_10(false);
+                        self.checkedA10_11(false);
+                        self.checkedA10_12(false);
+                        self.checkedA10_13(false);
+                        self.checkedA10_14(false);
+                        self.checkedA10_15(false);
+                        self.checkedA10_16(false);
+                        self.checkedA10_17(false);
+                        self.checkedA10_18(false);
+                    }
+                    
+                    if (self.selectedDataOutputType() == 1) {
+                        self.checkedA10_3(false);
+                        self.checkedA10_5(false);
+                    }
+                    
+                    let totalWorkplaceHierachy = new TotalWorkplaceHierachy(self.checkedA10_10(), self.checkedA10_11(), 
+                                                                            self.checkedA10_12(), self.checkedA10_13(), 
+                                                                            self.checkedA10_14(), self.checkedA10_15(), 
+                                                                            self.checkedA10_16(), self.checkedA10_17(), 
+                                                                            self.checkedA10_18());
+                    let workScheduleSettingTotalOutput = new WorkScheduleSettingTotalOutput(self.checkedA10_2(), self.checkedA10_3(), 
+                                                                                            self.checkedA10_4(), self.checkedA10_5(), 
+                                                                                            self.checkedA10_6(), self.checkedA10_7(), 
+                                                                                            totalWorkplaceHierachy);
+                    
+                    let codeChoose = self.getCodeFromListCode(self.selectedCodeA7_3(), self.itemListCodeTemplate());
+                    let errorAlarmCode: any[];
+                    
+                    errorAlarmCode = data.errorAlarmCode;
+                    
+                    let workScheduleOutputCondition = new WorkScheduleOutputCondition(companyId, userId, self.selectedDataOutputType(), 
+                                                                                    codeChoose, self.selectedCodeA9_2(), 
+                                                                                    workScheduleSettingTotalOutput, self.selectedCodeA13_1(), errorAlarmCode);
+                    service.saveCharacteristic(companyId, userId, workScheduleOutputCondition); 
+                })    
             }
         }
         

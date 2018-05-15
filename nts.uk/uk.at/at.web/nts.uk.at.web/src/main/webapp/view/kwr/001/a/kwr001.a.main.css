@@ -37,7 +37,7 @@
 
 .A13_1{
 	margin-left: 27px;
-	width: 145px;
+	width: 120px;
 	display:  flex;
 	flex-direction:  column;
 }
@@ -114,4 +114,8 @@ hr {
 
 #output-setting-content {
 	height: 573px
+}
+
+#btnSetErrorAlarmCd {
+	margin-left: 20px;
 }

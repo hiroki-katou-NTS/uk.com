@@ -26,7 +26,7 @@
 				<!-- A1_1 -->
 				<button tabindex="1" id="btnExportExcel" class="proceed" data-bind="click:processExcel">#{i18n.getText('KWR001_5')}</button>
 				<!-- A1_2 -->
-				<button tabindex="2" id="btnExportPdf" class="proceed">#{i18n.getText('KWR001_6')}</button>
+				<button tabindex="2" id="btnExportPdf" class="proceed" data-bind="click: processPdf">#{i18n.getText('KWR001_6')}</button>
 			</div>
 			
 			<div id="content-area">
@@ -192,7 +192,7 @@
 											</td>
 											<td class="td-center">
 												<!-- A13_4 -->
-												<button tabindex="27" data-bind="click: openScreenB, enable: enableConfigErrCode">#{i18n.getText('KWR001_14')}</button>
+												<button id="btnSetErrorAlarmCd" tabindex="27" data-bind="click: openScreenB, enable: enableConfigErrCode">#{i18n.getText('KWR001_14')}</button>
 											</td>
 										</tr>
 									</table>
