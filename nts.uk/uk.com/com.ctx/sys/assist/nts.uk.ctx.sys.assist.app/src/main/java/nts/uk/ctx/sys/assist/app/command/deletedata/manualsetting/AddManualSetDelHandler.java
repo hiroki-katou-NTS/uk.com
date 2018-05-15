@@ -51,7 +51,6 @@ public class AddManualSetDelHandler extends CommandHandler<ManualSetDelCommand> 
         String sid = loginUserContext.userId();
 
 		ManualSetDeletion domain = manualSetCmd.toDomain(delId, cid, sid);
-		
 		System.out.println("manualSetCmd: " + manualSetCmd);
 		
 //		// 画面の保存対象社員から「社員指定の有無」を判定する ( check radio button )presenceOfEmployee
@@ -69,6 +68,6 @@ public class AddManualSetDelHandler extends CommandHandler<ManualSetDelCommand> 
 		
 		repo.addManualSetting(domain);
 		
-		manualSetDeletionService.serverManualSaveProcessing(delId);
+		manualSetDeletionService.start(delId);
 	}
 }
