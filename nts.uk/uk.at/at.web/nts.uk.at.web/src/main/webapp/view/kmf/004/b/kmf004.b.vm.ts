@@ -136,7 +136,7 @@ module nts.uk.at.view.kmf004.b {
                             };
                             
                             self.dataItems.push(new Item(item));    
-                        }
+                        }          
                     }).fail(function(res) {
                           
                     });
@@ -283,6 +283,7 @@ module nts.uk.at.view.kmf004.b {
                         } else {  
                             self.getData();         
                             self.singleSelectedCode(self.code());
+                            self.singleSelectedCode.valueHasMutated();
                             
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
                                 $("#input-name").focus();

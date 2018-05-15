@@ -168,7 +168,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             nts.uk.ui.block.invisible();
             let self = this;
             $("#inpCode").trigger("validate");
-            $("inpPattern").trigger("validate");
+            $("#inpPattern").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
                 return;       
             }
@@ -202,12 +202,13 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     $("#inpPattern").focus();   
                     service.update(dataTransfer).done(function(errors: Array<string>){
                         self.getData().done(function(){
-                            self.selectedCode(code);   
+                            self.selectedCode(code); 
+                            self.selectedCode.valueHasMutated();  
+                            
                             if (errors.length > 0) {
                                self.addListError(errors);
                             } else {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                                    self.selectedCode(code);
                                     $("#inpPattern").focus();
                                 });
                             }
@@ -221,11 +222,12 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     // insert item to list
                     service.add(dataTransfer).done(function(errors: Array<string>){
                         self.getData().done(function(){
+                            self.selectedCode(code); 
+                            
                             if (errors.length > 0) {
                                self.addListError(errors);
                             }else{
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                                   self.selectedCode(code);  
                                     $("#inpPattern").focus();
                                 });
                             }
