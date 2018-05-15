@@ -725,10 +725,27 @@ module nts.uk.com.view.ccg.share.ccg {
                                 closureName: ConfigEnumClosure.CLOSURE_ALL_NAME
                             });
                         }
+
+                        // set closure list
                         self.closureList(data);
+
                         self.getSelectedClosure().done(selected => {
+                            // set selected closure
                             self.selectedClosure(selected);
-                            self.selectedClosure.subscribe(vl => self.applyDataSearch());
+
+                            // initialize selected cosure subscriber
+                            self.selectedClosure.subscribe(vl => {
+                                // calculate period by current month
+                                self.calculatePeriod(parseInt(moment().format(CcgDateFormat.YEAR_MONTH))).done(period => {
+                                    // set input period
+                                    self.inputPeriodStart(moment.utc(period.startDate, CcgDateFormat.DEFAULT_FORMAT).toISOString());
+                                    self.inputPeriodEnd(moment.utc(period.endDate, CcgDateFormat.DEFAULT_FORMAT).toISOString());
+
+                                    // apply data search
+                                    self.applyDataSearch();
+                                });
+                            });
+
                             dfd.resolve();
                         });
                     });
@@ -1354,7 +1371,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 // Period accuracy is YM 
                 if (self.showPeriodYM) {
-                    self.calculatePeriod().done(period => {
+                    self.calculatePeriod(parseInt(self.periodEnd().format(CcgDateFormat.YEAR_MONTH))).done(period => {
                         if (!self.showBaseDate) {
                             // set base date = period end
                             self.acquiredBaseDate(period.endDate);
@@ -1372,13 +1389,15 @@ module nts.uk.com.view.ccg.share.ccg {
                 return dfd.promise();
             }
 
-            public calculatePeriod(): JQueryPromise<DatePeriodDto> {
+            /**
+             * Calculate date period from selected closure id and yearMonth
+             */
+            public calculatePeriod(yearMonth: number): JQueryPromise<DatePeriodDto> {
                 let self = this;
                 let dfd = $.Deferred<DatePeriodDto>();
                 const closureId = self.selectedClosure() == ConfigEnumClosure.CLOSURE_ALL ? 1 : self.selectedClosure();
-                const parsedYM = parseInt(self.periodEnd().format('YYYYMM'));
                 // アルゴリズム「当月の期間を算出する」を実行する
-                service.calculatePeriod(closureId, parsedYM)
+                service.calculatePeriod(closureId, yearMonth)
                     .done(period => dfd.resolve(period));
                 return dfd.promise();
             }
@@ -1811,6 +1830,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
         export class CcgDateFormat {
             static DEFAULT_FORMAT = 'YYYY-MM-DD';
+            static YEAR_MONTH = 'YYYYMM';
         }
         
          export class ConfigEnumClosure{
