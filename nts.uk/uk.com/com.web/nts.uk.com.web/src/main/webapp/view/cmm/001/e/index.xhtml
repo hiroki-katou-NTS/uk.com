@@ -29,9 +29,9 @@
 					<table data-bind="name : #{i18n.getText('CMM001_42')};">
 						<colgroup>
 							<col width="20px" />
-							<col width="150px" />
-							<col width="200px" />
-							<col width="350px" />
+							<col width="170px" />
+							<col width="280px" />
+							<col width="310px" />
 						</colgroup>
 						<thead>
 							<tr class="bg-green">
@@ -39,7 +39,7 @@
 								<th><label>#{i18n.getText('CMM001_43')}</label></th>
 								<th><label>#{i18n.getText('CMM001_44')}</label></th>
 								<th>
-									<div><label>#{i18n.getText('CMM001_45')}</label></div>
+									<div style="padding-bottom: 5px"><label>#{i18n.getText('CMM001_45')}</label></div>
 									<div id="copy-method-header" data-bind="ntsSwitchButton: {
 												options: switchOptions,
 												optionsValue: 'copyMethod',
@@ -47,8 +47,8 @@
 												value: switchHeader,
 												enable: true,
 												name: '#{i18n.getText('CMM001_45')}'}"
-										tabindex="2" style="display: inline"></div>
-									<div><span class="caret-bottom outline"></span></div></th>
+										tabindex="2" style="display: inline-flex;"></div>
+									<div style="padding-top: 3px"><span class="caret-bottom outline"></span></div></th>
 							</tr>
 						</thead>
 						<tbody data-bind="foreach: dataSource">
@@ -66,7 +66,7 @@
 												required: true,
 												enable: true,
 												name: '#{i18n.getText('CMM001_45')}'}"
-										tabindex="4" class="switch-method"></div></td>
+										tabindex="4" style="display: inline-flex;" class="switch-method"></div></td>
 							</tr>
 						</tbody>
 					</table>

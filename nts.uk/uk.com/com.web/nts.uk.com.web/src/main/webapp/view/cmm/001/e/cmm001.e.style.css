@@ -22,6 +22,9 @@ td.border-custom {
 	border-top: none;
  }
 .caret-bottom.outline {
-    margin-left: 110px;
-    font-size: 50px;
+    margin-left: 120px;
+    font-size: 30px;
+}
+.nts-switch-button {
+	width: 100px;
 }
