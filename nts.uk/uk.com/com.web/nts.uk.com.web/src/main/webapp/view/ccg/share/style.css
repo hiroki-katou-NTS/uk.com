@@ -32,6 +32,13 @@
 	cursor: pointer;
 }
 
+#ccg001-part-g {
+	width: 420px;
+	margin-right: 5px;
+	padding-right: 5px;
+	overflow: auto;
+}
+
 .ccg001-btn {
 	background-color: #2ECC71;
 	color: white;
@@ -130,7 +137,7 @@
 }
 
 .ccg-tabpanel #tab-3{
-	width: 490px;
+	width: 500px;
 }
 
 .ccg-tabpanel > div {

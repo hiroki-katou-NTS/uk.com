@@ -985,6 +985,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 let dfd = $.Deferred<void>();
                 // Load KCP05 on tab 3
                 const Kcp005MarginHeight = 255;
+                const calculatedRows = self.calculateKcp005Rows(Kcp005MarginHeight);
+                const maxRows = calculatedRows < 10 ? 10 : calculatedRows;
 
                 self.tab3kcp005option = {
                     isShowAlreadySet: false,
@@ -998,7 +1000,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     isDialog: true,
                     isShowNoSelectRow: false,
                     isShowWorkPlaceName: true,
-                    maxRows: self.calculateKcp005Rows(Kcp005MarginHeight),
+                    maxRows: maxRows,
                 }
 
                 // Show KCP005
