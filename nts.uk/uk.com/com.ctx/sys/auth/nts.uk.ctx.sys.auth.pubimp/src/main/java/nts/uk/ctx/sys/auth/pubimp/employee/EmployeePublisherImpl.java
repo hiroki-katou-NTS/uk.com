@@ -63,7 +63,6 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 		// imported（権限管理）「社員」を取得する Request No1
 		// employeeID = employeeID login
 		String employeeIDLogin = AppContexts.user().employeeId();
-		sID.add(employeeIDLogin);
 		List<String> result = new ArrayList<>();
 		Optional<EmployeeBasicInforAuthImport> employeeImport = personAdapter.getPersonInfor(employeeIDLogin);
 		// List<String> listEmployeeID = listEmployeeImport.stream().map(c ->
