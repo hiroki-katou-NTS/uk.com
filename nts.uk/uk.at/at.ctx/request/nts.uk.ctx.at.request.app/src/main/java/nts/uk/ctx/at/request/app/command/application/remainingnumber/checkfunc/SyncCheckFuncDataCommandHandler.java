@@ -73,15 +73,15 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 
 		// アルゴリズム「社員ID、期間をもとに期間内に年休付与日がある社員を抽出する」を実行する
 		// TODO RequestList 要求No304. 
-		List<String> employeeList = command.getEmployeeList().stream().map(f -> f.getEmployeeId())
+		List<String> employeeList = employeeSearchCommand.stream().map(f -> f.getEmployeeId())
 				.collect(Collectors.toList());
 
 		List<AnnualBreakManageImport> employeeIdRq304 = annualBreakManageAdapter.getEmployeeId(employeeList,
 				command.getStartTime(), command.getEndTime());
 
 		// パラメータ.社員Listと取得した年休付与がある社員ID(List)を比較する
-		checkEmployeeListId(setter, employeeIdRq304, employeeListResult, outputErrorInfoCommand, employeeSearchCommand);
-
+		checkEmployeeListId(employeeSearchCommand, employeeIdRq304, employeeListResult, outputErrorInfoCommand);
+				
 		// TODO 計画休暇一覧を取得する
 		List<PlannedVacationListCommand> plannedVacationList = getPlannedVacationList(new DatePeriod(command.getStartTime(), command.getEndTime()),
 				outputErrorInfoCommand);
@@ -100,8 +100,14 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 					setter.updateData(NUMBER_OF_ERROR, errCount);
 				}
 			}
+			try {
+				TimeUnit.SECONDS.sleep(1001);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		} else {
 			// エラーがなかった場合
+
 			// TODO アルゴリズム「Excel出力データ取得」を実行する
 			List<ExcelInforCommand> excelInforList = new ArrayList<>();
 			for (int i = 0; i < employeeSearchCommand.size(); i++) {
@@ -221,13 +227,17 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 	 * @param outputErrorInfoCommand
 	 * @param employeeSearchCommand
 	 */
-	private void checkEmployeeListId(TaskDataSetter setter, List<AnnualBreakManageImport> employeeIdRq304,
-			List<EmployeeSearchCommand> employeeListResult, List<OutputErrorInfoCommand> outputErrorInfoCommand,
-			List<EmployeeSearchCommand> employeeSearchCommand) {
+	private void checkEmployeeListId(List<EmployeeSearchCommand> employeeSearchCommand, List<AnnualBreakManageImport> employeeIdRq304,
+			List<EmployeeSearchCommand> employeeListResult, List<OutputErrorInfoCommand> outputErrorInfoCommand
+			) {
 		for (EmployeeSearchCommand employee : employeeSearchCommand) {
-			AnnualBreakManageImport findEmployeeById = employeeIdRq304.stream()
-					.filter(x -> employee.getEmployeeId().equals(x)).findAny().orElse(null);
-			if (findEmployeeById == null) {
+			Optional<AnnualBreakManageImport> findEmployeeById = employeeIdRq304.stream()
+					.filter(x -> employee.getEmployeeId().equals(x.getEmployeeId())).findFirst();
+			if (findEmployeeById.isPresent()) {
+				// 社員が両方に存在する場合
+				employeeListResult.add(employee);				
+				
+			} else {
 				// パラメータ.社員Listにのみ存在する社員の場合
 				OutputErrorInfoCommand outputErrorInfo = new OutputErrorInfoCommand();
 				outputErrorInfo.setEmployeeCode(employee.getEmployeeCode());
@@ -235,9 +245,6 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				outputErrorInfo.setErrorMessage(MSG_1116);
 
 				outputErrorInfoCommand.add(outputErrorInfo);
-			} else {
-				// 社員が両方に存在する場合
-				employeeListResult.add(employee);
 			}
 		}
 
