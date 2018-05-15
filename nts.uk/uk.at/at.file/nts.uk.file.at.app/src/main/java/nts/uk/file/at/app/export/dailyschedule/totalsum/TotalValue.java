@@ -12,5 +12,7 @@ public class TotalValue {
 	// 勤怠項目ID
 	private int attendanceId;
 	// 値
-	private int value;
+	private String value;
+	
+	private int valueType;
 }

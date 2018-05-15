@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 public class IndividualDailyWorkSchedule {
 	// 社員ID
-	private int employeeId;
+	private String employeeId;
 	// 年月日
 	private int date;
 	// 備考内容

@@ -49,18 +49,18 @@ public class TotalDayCountWs {
 	 * @param employeeId
 	 * @param lstDate
 	 */
-	private void calculatePredeterminedDay(int employeeId, DateRange dateRange, TotalCountDay totalCountDay) {
+	private void calculatePredeterminedDay(String employeeId, DateRange dateRange, TotalCountDay totalCountDay) {
 		// ドメインモデル「画面で利用できる勤怠項目一覧」を取得する
 		AttendanceType attendanceType = attendanceTypeRepository.getItemByScreenUseAtr(AppContexts.user().companyId(), 19)
 				.stream().filter(x -> x.getAttendanceItemId() == 1 && x.getAttendanceItemType().value == 1).findFirst().get();
 		
 		// ドメインモデル「勤務種類」を取得する
-		Optional<WorkType> optWorkType = workTypeRepository.findByPK(AppContexts.user().companyId(), String.valueOf(attendanceType.getAttendanceItemId()));
+		Optional<WorkType> optWorkType = workTypeRepository.findByPK(AppContexts.user().companyId(), "001");
 		
 		if (optWorkType.isPresent()) {
 			// ドメインモデル「日別実績の勤務情報」を取得する
 			List<String> empList = new ArrayList<>();
-			empList.add(String.valueOf(employeeId));
+			empList.add(employeeId);
 			// 予定勤務種類コードを取得する
 			List<WorkInfoOfDailyPerformanceDetailDto> dailyPerformanceList = dailyPerformanceRepo.find(empList, dateRange);
 			
@@ -77,7 +77,7 @@ public class TotalDayCountWs {
 	 * @param dayType
 	 * @return
 	 */
-	private void calculateNonPredeterminedDay(int employeeId, DateRange dateRange, TotalCountDay totalCountDay) {
+	private void calculateNonPredeterminedDay(String employeeId, DateRange dateRange, TotalCountDay totalCountDay) {
 		// ドメインモデル「画面で利用できる勤怠項目一覧」を取得する
 		AttendanceType attendanceType = attendanceTypeRepository.getItemByScreenUseAtr(AppContexts.user().companyId(), 19)
 				.stream().filter(x -> x.getAttendanceItemId() == 58 && x.getAttendanceItemType().value == 1).findFirst().get();
@@ -92,7 +92,7 @@ public class TotalDayCountWs {
 				if (workType.getDailyWork().getMorning().value == dayType.value) {
 					// ドメインモデル「日別実績の勤務情報」を取得する
 					List<String> empList = new ArrayList<>();
-					empList.add(String.valueOf(employeeId));
+					empList.add(employeeId);
 					// 予定勤務種類コードを取得する
 					List<WorkInfoOfDailyPerformanceDetailDto> dailyPerformanceList = dailyPerformanceRepo.find(empList, dateRange);
 					
@@ -130,7 +130,7 @@ public class TotalDayCountWs {
 	 * @param dateRange
 	 * @param totalCountDay
 	 */
-	private void calculateDayCount(int employeeId, DateRange dateRange, TotalCountDay totalCountDay) {
+	private void calculateDayCount(String employeeId, DateRange dateRange, TotalCountDay totalCountDay) {
 		// 勤怠項目ID = 592 or 598 or 604 or 610
 		List<Integer> lstAttendanceId = new ArrayList<>();
 		lstAttendanceId.add(592);
@@ -144,7 +144,7 @@ public class TotalDayCountWs {
 									   x.getAttendanceItemType().value == 1).findFirst().get();
 		
 		List<String> lstEmployeeId = new ArrayList<>();
-		lstEmployeeId.add(String.valueOf(employeeId));
+		lstEmployeeId.add(employeeId);
 		
 		List<AttendanceResultImport> attendanceResultImport = attendanceResultAdapter.getValueOf(lstEmployeeId, new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), lstAttendanceId);
 		
@@ -186,9 +186,9 @@ public class TotalDayCountWs {
 	 * @param dateRange
 	 * @param totalCountDay
 	 */
-	public void calculateAllDayCount(int employeeId, DateRange dateRange, TotalCountDay totalCountDay) {
+	public void calculateAllDayCount(String employeeId, DateRange dateRange, TotalCountDay totalCountDay) {
 		calculatePredeterminedDay(employeeId, dateRange, totalCountDay);
-		calculateNonPredeterminedDay(employeeId, dateRange, totalCountDay);
-		calculateDayCount(employeeId, dateRange, totalCountDay);
+		//calculateNonPredeterminedDay(employeeId, dateRange, totalCountDay);
+		//calculateDayCount(employeeId, dateRange, totalCountDay);
 	}
 }

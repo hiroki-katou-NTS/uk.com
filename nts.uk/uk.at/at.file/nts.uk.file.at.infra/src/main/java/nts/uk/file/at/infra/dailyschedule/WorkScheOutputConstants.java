@@ -24,6 +24,7 @@ public class WorkScheOutputConstants {
 	
 	// Personal total
 	public static final String PERSONAL_TOTAL = "個人計";
+	public static final String WORKPLACE_TOTAL = "職場計";
 	
 	// DAY_COUNT
 	public static final String DAY_COUNT = "日数計";
@@ -41,4 +42,13 @@ public class WorkScheOutputConstants {
 			PREDETERMINED, HOLIDAY, OFF, YEAR_OFF,
 			HEAVY, SPECIAL, ABSENCE, LATE_COME, EARLY_LEAVE
 		};
+	
+	// Range name, used to copy range from template to real sheet
+	public static final String RANGE_EMPLOYEE_ROW = "EmployeeRow";
+	public static final String RANGE_WORKPLACE_ROW = "WorkplaceRow";
+	public static final String RANGE_WHITE_ROW = "White"; // Append number of row after this constants, eg. "White3" for 3 rows
+	public static final String RANGE_LIGHTBLUE_ROW = "LBlue"; // Append number of row after this constants, eg. "LBlue3" for 3 rows
+	public static final String RANGE_DAYCOUNT_ROW = "DayCount";
+	public static final String RANGE_TOTAL_ROW = "WorkplaceRow"; // Append number of row after this constants, eg. "Total3" for 3 rows
+	public static final String RANGE_GROSS_ROW = "WorkplaceRow"; // Append number of row after this constants, eg. "Gross3" for 3 rows
 }

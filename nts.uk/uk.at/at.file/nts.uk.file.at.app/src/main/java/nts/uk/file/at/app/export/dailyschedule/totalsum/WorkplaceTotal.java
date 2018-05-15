@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 public class WorkplaceTotal {
 	// 職場ID
-	private int workplaceId;
+	private String workplaceId;
 	// 職場合算値
 	private List<TotalValue> totalWorkplaceValue;
 }

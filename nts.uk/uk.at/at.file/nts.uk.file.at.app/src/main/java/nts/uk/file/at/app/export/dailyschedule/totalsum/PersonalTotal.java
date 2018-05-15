@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class PersonalTotal {
 	// 社員ID
-	private int employeeId;
+	private String employeeId;
 	// 個人合算値
 	private List<TotalValue> personalSumTotal;
 }
