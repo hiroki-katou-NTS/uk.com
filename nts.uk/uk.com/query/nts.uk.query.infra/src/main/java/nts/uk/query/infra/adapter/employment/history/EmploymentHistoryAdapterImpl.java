@@ -25,7 +25,7 @@ public class EmploymentHistoryAdapterImpl extends JpaRepository implements Emplo
 	/** The Constant FIND_BY_EMPCDS_AND_PERIOD. */
 	private static final String FIND_BY_EMPCDS_AND_PERIOD = "SELECT h FROM BsymtEmploymentHist h"
 			+ " INNER JOIN BsymtEmploymentHistItem hi"
-			+ " ON h.HIST_ID = hi.HIST_ID"
+			+ " ON h.hisId = hi.hisId"
 			+ " WHERE hi.empCode IN :empCds"
 			+ " AND h.strDate <= :endDate"
 			+ " AND :startDate <= h.endDate";
