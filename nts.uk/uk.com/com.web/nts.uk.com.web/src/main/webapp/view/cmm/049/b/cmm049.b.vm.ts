@@ -54,9 +54,9 @@ module nts.uk.com.view.cmm049.b {
                         _self.userInfoItemName(nts.uk.resource.getText("CMM049_16"));
                         service.getPCMailCompany().done((data: any) => {
                             if (data) {
-                                data.mailFunctionDto.forEach((item: any, index: any) => {
-                                    _self.items.push(new ItemModel(item.functionId, item.functionName));
-                                });
+                                 let mapped = _.map(data.mailFunctionDto, item => new ItemModel(item.functionId, item.functionName));
+                                mapped =_.sortBy(mapped,item => item.name);
+                                _self.items(mapped);
 
                                 //compare and check items in list
                                 _self.checkAlgorthm(data);
@@ -70,9 +70,9 @@ module nts.uk.com.view.cmm049.b {
                         _self.userInfoItemName(nts.uk.resource.getText("CMM049_17"));
                         service.getPCMailPerson().done((data: any) => {
                             if (data) {
-                                data.mailFunctionDto.forEach((item: any, index: any) => {
-                                    _self.items.push(new ItemModel(item.functionId, item.functionName));
-                                });
+                                let mapped = _.map(data.mailFunctionDto, item => new ItemModel(item.functionId, item.functionName));
+                                mapped =_.sortBy(mapped,item => item.name);
+                                _self.items(mapped);
 
                                 //compare and check items in list
                                 _self.checkAlgorthm(data);
@@ -86,9 +86,9 @@ module nts.uk.com.view.cmm049.b {
                         _self.userInfoItemName(nts.uk.resource.getText("CMM049_18"));
                         service.getMobileMailCompany().done((data: any) => {
                             if (data) {
-                                data.mailFunctionDto.forEach((item: any, index: any) => {
-                                    _self.items.push(new ItemModel(item.functionId, item.functionName));
-                                });
+                                let mapped = _.map(data.mailFunctionDto, item => new ItemModel(item.functionId, item.functionName));
+                                mapped =_.sortBy(mapped,item => item.name);
+                                _self.items(mapped);
 
                                 //compare and check items in list
                                 _self.checkAlgorthm(data);
@@ -103,9 +103,9 @@ module nts.uk.com.view.cmm049.b {
                         _self.userInfoItemName(nts.uk.resource.getText("CMM049_19"));
                         service.getMobileMailPerson().done((data: any) => {
                             if (data) {
-                                data.mailFunctionDto.forEach((item: any, index: any) => {
-                                    _self.items.push(new ItemModel(item.functionId, item.functionName));
-                                });
+                                let mapped = _.map(data.mailFunctionDto, item => new ItemModel(item.functionId, item.functionName));
+                                mapped =_.sortBy(mapped,item => item.name);
+                                _self.items(mapped);
 
                                 //compare and check items in list
                                 _self.checkAlgorthm(data);
