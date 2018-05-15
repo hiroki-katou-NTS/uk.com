@@ -55,6 +55,7 @@ import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.Sp
 import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto7;
 import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto8;
 import nts.uk.ctx.at.record.app.find.remainingnumber.specialleavegrant.finder.SpecialLeaveGrantDto9;
+import nts.uk.ctx.at.record.app.find.stamp.card.stampcard.PeregStampCardDto;
 import nts.uk.ctx.at.shared.app.find.shortworktime.ShortWorkTimeDto;
 import nts.uk.ctx.at.shared.app.find.workingcondition.WorkingConditionDto;
 import nts.uk.ctx.bs.employee.app.find.classification.affiliate.AffClassificationDto;
@@ -188,8 +189,9 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 			// CS00067  特別休暇19付与残数
 			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto19>>(){},
 			// CS00068  特別休暇20付与残数
-			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto20>>(){}
-			
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto20>>(){},
+			// CS00068 打刻カード番号
+			new TypeLiteral<PeregFinder<PeregStampCardDto>>(){}
 			);
 
 	@Override
