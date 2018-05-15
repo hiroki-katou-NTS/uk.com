@@ -425,6 +425,8 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             public initNextTabFeature() {
                 var self = this;
+                const TAB_KEY_CODE = 9;
+
                 // Auto next tab when press tab key.
                 $('#tab-2').find('#StatusOfEmployeeList').find('.ui-accordion-header').on('click', function() {
                     self.isOpenStatusOfEmployeeList(!self.isOpenStatusOfEmployeeList());
@@ -444,38 +446,43 @@ module nts.uk.com.view.ccg.share.ccg {
                 $('#tab-2').find('#WorkTypeList').find('.ui-accordion-header').on('click', function() {
                     self.isOpenWorkTypeList(!self.isOpenWorkTypeList());
                 });
+
+                // when tab to last item of tab 1
                 $("[tabindex='10']").on('keydown', function(e) {
-                    if (e.which == 9 && self.showAdvancedSearchTab) {
+                    if (e.which == TAB_KEY_CODE && self.showAdvancedSearchTab) {
+                        // switch to tab 2
                         self.selectedTab('tab-2');
+
+                        // auto open accordion
                         if (!self.isOpenStatusOfEmployeeList()) {
                             $('#tab-2').find('#StatusOfEmployeeList').find('.ui-accordion-header').click();
                         }
                         $("[tabindex='11']").on('keydown', function(e) {
-                            if (e.which == 9) {
+                            if (e.which == TAB_KEY_CODE) {
                                 if (!self.isOpenEmploymentList()) {
                                     $('#tab-2').find('#EmploymentList').find('.ui-accordion-header').click();
                                 }
                             }
                             $("[tabindex='12']").on('keydown', function(e) {
-                                if (e.which == 9) {
+                                if (e.which == TAB_KEY_CODE) {
                                     if (!self.isOpenClassificationList()) {
                                         $('#tab-2').find('#ClassificationList').find('.ui-accordion-header').click();
                                     }
                                 }
                                 $("[tabindex='13']").on('keydown', function(e) {
-                                    if (e.which == 9) {
+                                    if (e.which == TAB_KEY_CODE) {
                                         if (!self.isOpenJoptitleList()) {
                                             $('#tab-2').find('#JoptitleList').find('.ui-accordion-header').click();
                                         }
                                     }
                                     $("[tabindex='14']").on('keydown', function(e) {
-                                        if (e.which == 9) {
+                                        if (e.which == TAB_KEY_CODE) {
                                             if (!self.isOpenWorkplaceList()) {
                                                 $('#tab-2').find('#WorkplaceList').find('.ui-accordion-header').click();
                                             }
                                         }
                                         $("[tabindex='15']").on('keydown', function(e) {
-                                            if (e.which == 9) {
+                                            if (e.which == TAB_KEY_CODE) {
                                                 if (!self.isOpenWorkTypeList()) {
                                                     $('#tab-2').find('#WorkTypeList').find('.ui-accordion-header').click();
                                                 }
@@ -486,10 +493,27 @@ module nts.uk.com.view.ccg.share.ccg {
                             });
                         });
                     }
+                    if (e.which == TAB_KEY_CODE && !self.showAdvancedSearchTab) {
+                        // switch to tab 3
+                        self.selectedTab('tab-3');
+                    }
                 });
-                $("[tabindex='6']").on('keydown', function(e) {
-                    if (e.which == 9 && self.selectedTab() == 'tab-2' && !$(e.target).parents("[tabindex='6']")[0]) {
+                // when tab to last item of tab 2
+                $("[tabindex='34']").on('keydown', function(e) {
+                    if (e.which == TAB_KEY_CODE) {
+                        // switch to tab 3
+                        self.selectedTab('tab-3');
+                    }
+                });
+                // when tab to last item of tab 3
+                $("[tabindex='43']").on('keydown', function(e) {
+                    if (e.which == TAB_KEY_CODE && self.showQuickSearchTab) {
+                        // switch to tab 1
                         self.selectedTab('tab-1');
+                    }
+                    if (e.which == TAB_KEY_CODE && !self.showQuickSearchTab && self.showAdvancedSearchTab) {
+                        // switch to tab 2
+                        self.selectedTab('tab-2');
                     }
                 });
                 

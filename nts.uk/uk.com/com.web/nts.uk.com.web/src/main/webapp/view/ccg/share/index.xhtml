@@ -149,7 +149,7 @@
 										</div>
 										<div style="padding-bottom: 20px;">
 											<label>#{i18n.getText('CCG001_47')}</label>
-											<div tabindex="14" class="pull-right" id="switch-buttons" data-bind="ntsSwitchButton: {
+											<div tabindex="13" class="pull-right" id="switch-buttons" data-bind="ntsSwitchButton: {
 												name: '#[CCG001_48]',
 												options: closedDatasource,
 												optionsValue: 'code',
@@ -160,7 +160,7 @@
 										</div>
 										<div style="padding-bottom: 20px;">
 											<label>#{i18n.getText('CCG001_45')}</label>
-											<div tabindex="13" class="pull-right" id="switch-buttons" data-bind="ntsSwitchButton: {
+											<div tabindex="14" class="pull-right" id="switch-buttons" data-bind="ntsSwitchButton: {
 												name: '#[CCG001_46]',
 												options: leaveOfAbsenceDatasource,
 												optionsValue: 'code',
@@ -315,36 +315,37 @@
 					<div class="control-group ccg001-control-group">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_104')}</div>
 						<div class="pull-right">
-							<input tabindex="3" id="ccg001-input-code"
+							<input tabindex="35" id="ccg001-input-code"
 										data-bind="ntsTextEditor: {
-										name: '#[CCG015_43]',
+										name: '#[CCG001_106]',
 										value: inputCodeTab3,
 										required: false
 										}" />
-							<button tabindex="5" class="proceed caret-bottom"
+							<button tabindex="36" class="proceed caret-bottom"
 								data-bind="click: searchByCode">#{i18n.getText('CCG001_108')}</button>
 						</div>
 					</div>
 					<div class="control-group ccg001-control-group">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_105')}</div>
 						<div class="pull-right">
-							<input tabindex="3" id="ccg001-inp-name"
+							<input tabindex="37" id="ccg001-inp-name"
 										data-bind="ntsTextEditor: {
-										name: '#[CCG015_43]',
+										name: '#[CCG001_107]',
 										value: inputNameTab3,
 										required: false
 										}" />
-							<button tabindex="5" class="proceed caret-bottom"
+							<button tabindex="38" class="proceed caret-bottom"
 								data-bind="click: searchByName">#{i18n.getText('CCG001_108')}</button>
 						</div>
 					</div>
 					<div class="control-group ccg001-control-group">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_98')}</div>
 						<div class="pull-right">
-							<button tabindex="5" class="proceed caret-bottom pull-right"
+							<button tabindex="40" class="proceed caret-bottom pull-right"
 								data-bind="click: searchByEntryDate">#{i18n.getText('CCG001_108')}</button>
-							<div tabindex="1" id="ccg001-date-entry" class="ccg001-date-range pull-right"
+							<div tabindex="39" id="ccg001-date-entry" class="ccg001-date-range pull-right"
 								data-bind="ntsDateRangePicker: {
+									name: '#[CCG001_100]',
 									required: true,
 									enable: true,
 									showNextPrevious: false,
@@ -355,10 +356,11 @@
 					<div class="control-group ccg001-control-group">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_99')}</div>
 						<div class="pull-right">
-							<button tabindex="5" class="proceed caret-bottom pull-right"
+							<button tabindex="42" class="proceed caret-bottom pull-right"
 								data-bind="click: searchByRetirementDate">#{i18n.getText('CCG001_108')}</button>
-							<div tabindex="1" id="ccg001-date-retirement" class="ccg001-date-range pull-right"
+							<div tabindex="41" id="ccg001-date-retirement" class="ccg001-date-range pull-right"
 								data-bind="ntsDateRangePicker: {
+									name: '#[CCG001_100]',
 									required: true,
 									enable: true,
 									showNextPrevious: false,
@@ -366,11 +368,11 @@
 									maxRange: 'oneMonth'}"/>
 						</div>
 					</div>
-					<div id="tab3kcp005"></div>
+					<div tabindex="43" id="tab3kcp005"></div>
 				</div>
 				<div class="pull-right height-maximum ccg001-table">
 					<div class="ccg001-cell mid">
-						<div tabindex="34" id="ccg001-btn-KCP005-apply" class="ccg001-btn ccg-btn-vertical height-maximum"
+						<div tabindex="44" id="ccg001-btn-KCP005-apply" class="ccg001-btn ccg-btn-vertical height-maximum"
 							data-bind="click: extractSelectedEmployeesInTab3">
 							<div class="ccg001-cell mid">
 								<i class="icon icon-47-white-check-mark"></i>
