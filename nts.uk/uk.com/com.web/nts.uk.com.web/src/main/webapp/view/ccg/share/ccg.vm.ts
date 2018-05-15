@@ -1573,7 +1573,13 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             private showDataOnKcp005Tab3(data: Array<EmployeeSearchDto>): void {
                 let self = this;
+                // reserve list data
                 self.reservedEmployeesTab3(data);
+
+                // clear selected codes
+                self.selectedEmployeesTab3([]);
+
+                // set data to kcp005
                 self.employeeListTab3(self.toUnitModelList(data));
             }
             
