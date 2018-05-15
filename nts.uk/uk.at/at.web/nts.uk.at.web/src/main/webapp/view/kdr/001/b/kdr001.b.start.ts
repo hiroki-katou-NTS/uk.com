@@ -3,6 +3,7 @@ module nts.uk.at.view.kdr001.b {
         let screenModel = new viewmodel.ScreenModel();
         screenModel.start().done(function(self) {
             __viewContext.bind(screenModel);
+            self.setFocus();
         });
     });
 }
