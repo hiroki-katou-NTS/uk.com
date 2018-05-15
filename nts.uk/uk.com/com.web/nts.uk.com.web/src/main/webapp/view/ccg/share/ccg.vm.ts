@@ -67,6 +67,7 @@ module nts.uk.com.view.ccg.share.ccg {
             isOpenWorkplaceList: KnockoutObservable<boolean>;
             isOpenWorkTypeList: KnockoutObservable<boolean>;
             isInDialog: boolean;
+            isNotApplySearch: boolean;
 
             // tabs
             tabs: KnockoutObservableArray<any>;
@@ -241,7 +242,7 @@ module nts.uk.com.view.ccg.share.ccg {
                         } else {
                             $("#inp-period-startYMD").ntsError('set', nts.uk.resource.getMessage("FND_E_SPAN_REVERSED", [CCG001_30]), "FND_E_SPAN_REVERSED");
                         }
-                    } else {
+                    } else if (!self.isNotApplySearch) {
                         self.applyDataSearch();
                     }
                 });
@@ -256,7 +257,7 @@ module nts.uk.com.view.ccg.share.ccg {
                         } else {
                             $("#inp-period-startYMD").ntsError('set', nts.uk.resource.getMessage("FND_E_SPAN_REVERSED", [CCG001_30]), "FND_E_SPAN_REVERSED");
                         }
-                    } else {
+                    } else if (!self.isNotApplySearch) {
                         self.applyDataSearch();
                     }
                 });
@@ -762,8 +763,10 @@ module nts.uk.com.view.ccg.share.ccg {
                                 // calculate period by current month
                                 self.calculatePeriod(parseInt(moment().format(CcgDateFormat.YEAR_MONTH))).done(period => {
                                     // set input period
+                                    self.isNotApplySearch = true;
                                     self.inputPeriodStart(moment.utc(period.startDate, CcgDateFormat.DEFAULT_FORMAT).toISOString());
                                     self.inputPeriodEnd(moment.utc(period.endDate, CcgDateFormat.DEFAULT_FORMAT).toISOString());
+                                    self.isNotApplySearch = false;
 
                                     // apply data search
                                     self.applyDataSearch();
