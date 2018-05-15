@@ -7,14 +7,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class SingleAttendanceRecordSaveCommand {
-
+public class SingleAttendanceRecordDeleteCommand {
+	
 	/** The export setting code. */
 	private int exportSettingCode;
 
-	/** The use atr. */
-	private boolean useAtr;
-	
 	/** The export atr. */
 	private int exportAtr;
 
@@ -29,15 +26,17 @@ public class SingleAttendanceRecordSaveCommand {
 
 	/** The attribute. */
 	private int attribute;
-
+	
 	/** The name. */
 	private String name;
 
 	/**
-	 * Instantiates a new single attendance record save command.
+	 * Instantiates a new single attendance record delete command.
 	 */
-	public SingleAttendanceRecordSaveCommand() {
+	public SingleAttendanceRecordDeleteCommand() {
 		super();
 	}
+
+	
 
 }

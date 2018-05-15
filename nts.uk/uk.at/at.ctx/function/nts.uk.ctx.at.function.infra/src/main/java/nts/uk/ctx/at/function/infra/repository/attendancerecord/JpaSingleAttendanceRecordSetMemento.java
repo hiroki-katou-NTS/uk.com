@@ -50,7 +50,7 @@ public class JpaSingleAttendanceRecordSetMemento implements SingleAttendanceReco
 	 */
 	@Override
 	public void setName(ItemName itemName) {
-		this.kfnstAttndRec.setItemName(itemName.toString());
+		this.kfnstAttndRec.setItemName(itemName.v());
 
 	}
 

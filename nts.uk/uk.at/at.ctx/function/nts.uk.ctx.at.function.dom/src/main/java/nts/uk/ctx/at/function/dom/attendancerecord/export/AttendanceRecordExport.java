@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.dom.attendancerecord.export;
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.function.dom.attendancerecord.item.AttendanceRecordDisplay;
 // 出勤簿に出力する項目
 @Getter
 @Setter
+@AllArgsConstructor
 public class AttendanceRecordExport extends DomainObject {
 
 	/** The output classification. */
