@@ -41,7 +41,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	/* 表示メッセージ */
 	private DisplayMessage displayMessage;
 
-	// アラームチェック対象者の条件
+	// チェック条件 : アラームチェック対象者の条件
 	private AlCheckTargetCondition checkTargetCondtion;
 
 	// 勤務種類の条件

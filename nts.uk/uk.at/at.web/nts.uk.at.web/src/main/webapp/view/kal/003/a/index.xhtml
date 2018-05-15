@@ -13,8 +13,12 @@
 			<com:scriptfile path="../share/kal003utils.js" />
 			<com:scriptfile path="common/scopecheck.js" />
 			<com:scriptfile path="common/checkconditiontab.js" />
+			<com:scriptfile path="monthly/checkalarmcommon.js" />
 			<com:scriptfile path="daily/dailyperformance/dailyperfortab.js" />
 			<com:scriptfile path="daily/fixedcheckcondition/fixedchecktab.js" />
+			<com:scriptfile path="monthly/alarmchecktab.js" />
+			<com:scriptfile path="agreement/agreementerror/agreementerror.js" />
+			<com:scriptfile path="agreement/agreementhour/agreementhour.js" />
 			<com:stylefile path="kal003.a.style.css" />
 			<com:scriptfile path="kal003.a.service.js" />
 			<com:scriptfile path="kal003.a.vm.js" />
@@ -25,7 +29,7 @@
 		    </com:ValidatorScript>
 
 			<com:scriptfile path="kal003.a.start.js" />
-			
+
 		</ui:define>
 
 		<ui:define name="content">
@@ -46,6 +50,8 @@
 							<div class="valign-center control-group">
 								<label>#{i18n.getText('KAL003_48')}</label>
 								<div tabindex="6" id="combo-box" data-bind="ntsComboBox: {
+								<div tabindex="5" id="combo-box"
+									data-bind="ntsComboBox: {
 									options: cbbItemList,
 									optionsValue: 'code',
 									visibleItemsCount: 5,
@@ -71,7 +77,7 @@
 						            ], 
  									multiple: false, 
  									value: selectedAlarmCheckConditionCode 
- 								}"></table> 
+ 								}"></table>
 						</div>
 					</div>
 					<div class="right-content">
@@ -83,12 +89,15 @@
 								<input tabindex="9" id="A3_4" data-bind="ntsTextEditor: {name: '#[KAL003_12]', value: name, required: true, constraint: 'AlarmCheckConditionName'}" />
 							</div>
 							<div class="valign-center control-group">
-								<label class="flabel">#{i18n.getText('KAL003_9')}</label> 
-								<label data-bind="text: displayCategory"></label>
+								<label class="flabel">#{i18n.getText('KAL003_9')}</label> <label
+									data-bind="text: displayCategory"></label>
 							</div>
-							<div class="valign-center control-group" data-bind="visible: category() == 5">
+							<div class="valign-center control-group"
+								data-bind="visible: category() == 5">
 								<label class="flabel">#{i18n.getText('KAL003_50')}</label>
 								<div tabindex="10" data-bind="ntsRadioBoxGroup: {
+								<div tabindex="9"
+									data-bind="ntsRadioBoxGroup: {
 									options: $parent.radioItemList,
 									optionsValue: 'code',
 									optionsText: 'name',
@@ -105,23 +114,29 @@
 							data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 							<div class="tab-content-1" data-bind="with: tabScopeCheck">
 								<div data-bind="with: targetCondition">
-									<ui:include src="common/scopecheck.xhtml"/>
+									<ui:include src="common/scopecheck.xhtml" />
 								</div>
 							</div>
 							<div class="tab-content-2" data-bind="with: tabDailyErrorAlarm">
 								<ui:include src="daily/dailyperformance/dailyperfor.xhtml" />
 							</div>
 							<div class="tab-content-3" data-bind="with: tabCheckCondition">
- 								<ui:include src="common/checkconditions.xhtml" />
+								<ui:include src="common/checkconditions.xhtml" />
 							</div>
 							<div class="tab-content-4" data-bind="with: tabFixedCondition">
 								<ui:include src="daily/fixedcheckcondition/fixedcheck.xhtml" />
 							</div>
-							<div class="tab-content-5" data-bind="with: tabFixedCondition">
-								<ui:include src="daily/fixedcheckcondition/fixedcheck.xhtml" />
+							<div class="tab-content-5" data-bind="with: tabAlarmcheck">
+								<ui:include src="monthly/alarmcheck.xhtml" />
 							</div>
-							<div class="tab-content-6" data-bind="with: tabFixedCondition">
-								<ui:include src="daily/fixedcheckcondition/fixedcheck.xhtml" />
+							<div class="tab-content-6" data-bind="with: tabCheckAlarm">
+								<ui:include src="monthly/checkalarmcommon.xhtml" />
+							</div>
+							<div class="tab-content-7" data-bind="with: tabAgreementError">
+								<ui:include src="agreement/agreementerror/agreementerror.xhtml" />
+							</div>
+							<div class="tab-content-8" data-bind="with: tabAgreementHour">
+								<ui:include src="agreement/agreementhour/agreementhour.xhtml" />
 							</div>
 						</div>
 					</div>
