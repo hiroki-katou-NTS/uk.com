@@ -13,7 +13,7 @@ module nts.uk.com.view.cmm049.b {
             
         }
 
-        export function getPCMailCompany(): JQueryPromise<any> {
+        export function getPCMailCompany(): JQueryPromise<MailFunctionListDto> {
             return nts.uk.request.ajax(servicePath.getPCMailCompany);
         }
         
@@ -32,6 +32,14 @@ module nts.uk.com.view.cmm049.b {
         export function saveMailDestinationFunction(data: any): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.saveMailDestinationFunction, data);
         }
+        
+        export interface MailFunctionDto {
+            functionId: number;
+            functionName: string;
+        }
+        export interface MailFunctionListDto {
+            mailFunctionDto: Array<MailFunctionDto>;
+        } 
 
     }
 }

@@ -1,6 +1,7 @@
 module nts.uk.com.view.cmm049.b {
 
-
+import MailFunctionListDto = nts.uk.com.view.cmm049.b.service.MailFunctionListDto;
+import MailFunctionDto = nts.uk.com.view.cmm049.b.service.MailFunctionDto;
     export module viewmodel {
 
         export class ScreenModel {
@@ -52,48 +53,27 @@ module nts.uk.com.view.cmm049.b {
                 switch (dataObject) {
                     case UserInfoItem.COMPANY_PC_MAIL:
                         _self.userInfoItemName(nts.uk.resource.getText("CMM049_16"));
-                        service.getPCMailCompany().done((data: any) => {
-                            if (data) {
-                                 let mapped = _.map(data.mailFunctionDto, item => new ItemModel(item.functionId, item.functionName));
-                                mapped =_.sortBy(mapped,item => item.name);
-                                _self.items(mapped);
-
-                                //compare and check items in list
-                                _self.checkAlgorthm(data);
-                                dfd.resolve();
-                            }
+                        service.getPCMailCompany().done((data: MailFunctionListDto) => {
+                            _self.loadListMailFunction(data);
+                            dfd.resolve();
                         }).fail((res: any) => {
                             nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => { nts.uk.ui.windows.close(); });
                         });
                         break;
                     case UserInfoItem.PERSONAL_PC_MAIL:
                         _self.userInfoItemName(nts.uk.resource.getText("CMM049_17"));
-                        service.getPCMailPerson().done((data: any) => {
-                            if (data) {
-                                let mapped = _.map(data.mailFunctionDto, item => new ItemModel(item.functionId, item.functionName));
-                                mapped =_.sortBy(mapped,item => item.name);
-                                _self.items(mapped);
-
-                                //compare and check items in list
-                                _self.checkAlgorthm(data);
-                                dfd.resolve();
-                            }
+                        service.getPCMailPerson().done((data: MailFunctionListDto) => {
+                            _self.loadListMailFunction(data);
+                            dfd.resolve();
                         }).fail((res: any) => {
                             nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => { nts.uk.ui.windows.close(); });
                         });
                         break;
                     case UserInfoItem.COMPANY_MOBILE_MAIL:
                         _self.userInfoItemName(nts.uk.resource.getText("CMM049_18"));
-                        service.getMobileMailCompany().done((data: any) => {
-                            if (data) {
-                                let mapped = _.map(data.mailFunctionDto, item => new ItemModel(item.functionId, item.functionName));
-                                mapped =_.sortBy(mapped,item => item.name);
-                                _self.items(mapped);
-
-                                //compare and check items in list
-                                _self.checkAlgorthm(data);
-                                dfd.resolve();
-                            }
+                        service.getMobileMailCompany().done((data: MailFunctionListDto) => {
+                            _self.loadListMailFunction(data);
+                            dfd.resolve();
                         }).fail((res: any) => {
                             nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => { nts.uk.ui.windows.close(); });
                         });
@@ -101,16 +81,9 @@ module nts.uk.com.view.cmm049.b {
                         break;
                     case UserInfoItem.PERSONAL_MOBILE_MAIL:
                         _self.userInfoItemName(nts.uk.resource.getText("CMM049_19"));
-                        service.getMobileMailPerson().done((data: any) => {
-                            if (data) {
-                                let mapped = _.map(data.mailFunctionDto, item => new ItemModel(item.functionId, item.functionName));
-                                mapped =_.sortBy(mapped,item => item.name);
-                                _self.items(mapped);
-
-                                //compare and check items in list
-                                _self.checkAlgorthm(data);
-                                dfd.resolve();
-                            }
+                        service.getMobileMailPerson().done((data: MailFunctionListDto) => {
+                            _self.loadListMailFunction(data);
+                            dfd.resolve();
                         }).fail((res: any) => {
                             nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => { nts.uk.ui.windows.close(); });
                         });
@@ -120,6 +93,18 @@ module nts.uk.com.view.cmm049.b {
                         dfd.resolve();
                 }
                 return dfd.promise();
+            }
+
+            private loadListMailFunction(list: MailFunctionListDto): void {
+                let _self = this;
+                if (list) {
+                    let mapped = _.map(list.mailFunctionDto, item => new ItemModel(item.functionId, item.functionName));
+                    mapped = _.sortBy(mapped, item => item.name);
+                    _self.items(mapped);
+
+                    //compare and check items in list
+                    _self.checkAlgorthm(list);
+                }
             }
 
             /**
