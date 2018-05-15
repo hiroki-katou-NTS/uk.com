@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.ExportAtr;
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.ExportAtr;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class CalculateAttendanceRecord extends DomainObject implements AttendanceRecordDisplay {
 
 	/** The attribute. */

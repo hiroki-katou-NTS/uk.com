@@ -58,6 +58,12 @@ public class JpaCalculateAttendanceRecordRepository extends JpaRepository implem
 		
 	}
 	
+	/**
+	 * To domain.
+	 *
+	 * @param kfnstAttndRec the kfnst attnd rec
+	 * @return the calculate attendance record
+	 */
 	private CalculateAttendanceRecord toDomain(KfnstAttndRec kfnstAttndRec) {
 		// get KfnstAttndRecItem by KfnstAttndRecPK
 		List<KfnstAttndRecItem> listKfnstAttndRecItem = this.findAttendanceRecordItems(AppContexts.user().companyId(),
@@ -71,6 +77,17 @@ public class JpaCalculateAttendanceRecordRepository extends JpaRepository implem
 
 	}
 	
+	/**
+	 * To entity attnd rec.
+	 *
+	 * @param exportSettingCode the export setting code
+	 * @param columnIndex the column index
+	 * @param position the position
+	 * @param exportArt the export art
+	 * @param useAtr the use atr
+	 * @param calculateAttendanceRecord the calculate attendance record
+	 * @return the kfnst attnd rec
+	 */
 	private KfnstAttndRec toEntityAttndRec(ExportSettingCode exportSettingCode, long columnIndex, long position,
 			long exportArt,boolean useAtr, CalculateAttendanceRecord calculateAttendanceRecord) {
 		//find entity KfnstAttndRec by pk
