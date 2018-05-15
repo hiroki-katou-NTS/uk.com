@@ -396,7 +396,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         self.selectedCode(self.currentSetOutputSettingCode().cd());
                     });
                 }).fail(err => {
-                    $('#B3_2').ntsError('set', err);
+                    alertError({messageId: err.messageId});
                 }).always(function() {
                     block.clear();
                 });
@@ -409,7 +409,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     }
                     info({ messageId: 'Msg_15' });
                 }).fail(err => {
-                    $('#B3_2').ntsError('set', err);
+                    console.log(err);
                 }).always(function() {
                     block.clear();
                 });
