@@ -335,7 +335,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             let self = this;
 
             self.isNewMode(true); 
-            $("#B3_2").focus();
+            
             //self.outputItem.removeAll();
             //$('#listStandardImportSetting').ntsGridList('deselectAll');
             self.currentSetOutputSettingCode(new SetOutputSettingCode(null));
@@ -345,6 +345,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             }
             self.outputItem()[0].outputTargetItem(self.rule36CalculationName);
             self.buildIsCheckedAll();
+            $("#B3_2").focus();
         }
 
         //do register
