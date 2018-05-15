@@ -6,9 +6,9 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.ManualSetDeletion;
-import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.ManualSetDeletionRepository;
-import nts.uk.ctx.sys.assist.infra.entity.deletedata.manualsetting.SspdtManualSetDeletion;
+import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
+import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletionRepository;
+import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspdtManualSetDeletion;
 
 @Stateless
 public class JpaManualSetDeletionRepository extends JpaRepository implements ManualSetDeletionRepository {

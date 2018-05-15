@@ -6,9 +6,9 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.assist.dom.deletedata.result.ResultDeletion;
-import nts.uk.ctx.sys.assist.dom.deletedata.result.ResultDeletionRepository;
-import nts.uk.ctx.sys.assist.infra.entity.deletedata.result.SspdtResultDeletion;
+import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletion;
+import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletionRepository;
+import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspdtResultDeletion;
 
 @Stateless
 public class JpaResultDeletionRepository extends JpaRepository implements ResultDeletionRepository {

@@ -6,14 +6,14 @@ package nts.uk.ctx.sys.assist.app.command.deletedata.manualsetting;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.CategoryDeletionRepository;
-import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.EmployeesDeletionRepository;
-import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.ManualSetDeletion;
-import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.ManualSetDeletionRepository;
-import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.ManualSetDeletionService;
+import nts.uk.ctx.sys.assist.dom.deletedata.CategoryDeletionRepository;
+import nts.uk.ctx.sys.assist.dom.deletedata.EmployeesDeletionRepository;
+import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
+import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletionRepository;
+import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletionService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -22,7 +22,7 @@ import nts.uk.shr.com.context.LoginUserContext;
  *
  */
 @Stateless
-public class AddManualSetDelHandler extends CommandHandler<ManualSetDelCommand> {
+public class AddManualSetDelHandler extends CommandHandlerWithResult<ManualSetDelCommand, String> {
 	@Inject
 	private ManualSetDeletionRepository repo;
 	@Inject
@@ -40,7 +40,7 @@ public class AddManualSetDelHandler extends CommandHandler<ManualSetDelCommand> 
 	 * .CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<ManualSetDelCommand> context) {
+	protected String handle(CommandHandlerContext<ManualSetDelCommand> context) {
 		ManualSetDelCommand manualSetCmd = context.getCommand();
 		String delId = IdentifierUtil.randomUniqueId();
 		
@@ -64,10 +64,12 @@ public class AddManualSetDelHandler extends CommandHandler<ManualSetDelCommand> 
 
 //		}
 		
-		repoCate.addAll(manualSetCmd.getCategories(delId));
+//		repoCate.addAll(manualSetCmd.getCategories(delId));
 		
 		repo.addManualSetting(domain);
 		
 		manualSetDeletionService.start(delId);
+		
+		return delId;
 	}
 }

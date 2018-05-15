@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.DataDeletionCsv;
-import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.DataDeletionCsvRepository;
+import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionCsv;
+import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionCsvRepository;
 
 /**
  * @author nam.lh
