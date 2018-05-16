@@ -218,17 +218,16 @@ public class LayoutFinder {
 			case CONTINUOUS_HISTORY_FOR_ENDDATE:
 				// get data
 				getDataforSingleItem(perInfoCategory, classItemList, standardDate, browsingPeronId, browsingEmpId, query);
-				classItemList.forEach(classItem -> {
-					checkActionRoleItemData(itemAuthMap.get(classItem.getPersonInfoCategoryID()), classItem, selfBrowsing);
-				});
 				break;
 			case MULTIINFO:
 				getDataforListItem(perInfoCategory, classItemList.get(0), standardDate, browsingPeronId, browsingEmpId, query);
 				break;
-
 			default:
 				break;
 			}
+			classItemList.forEach(classItem -> {
+				checkActionRoleItemData(itemAuthMap.get(classItem.getPersonInfoCategoryID()), classItem, selfBrowsing);
+			});
 			
 		}
 
