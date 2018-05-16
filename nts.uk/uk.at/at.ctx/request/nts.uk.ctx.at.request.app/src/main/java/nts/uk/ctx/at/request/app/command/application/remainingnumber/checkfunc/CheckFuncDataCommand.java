@@ -15,5 +15,5 @@ public class CheckFuncDataCommand {
 	private GeneralDate startTime;
 	private GeneralDate endTime;
 	private GeneralDate date;
-	private double maxDay;
+	private Double maxDay;
 }

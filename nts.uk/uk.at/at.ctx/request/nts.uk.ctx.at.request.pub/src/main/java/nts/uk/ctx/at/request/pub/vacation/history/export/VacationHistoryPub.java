@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.pub.vacation.history.export;
 
 import java.util.List;
 
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.GeneralDate;
 
 /**
  * The Interface VacationHistoryPub.
@@ -31,8 +31,8 @@ public interface VacationHistoryPub {
 	 * Gets the plan vacation history.
 	 *
 	 * @param companyId the company id
-	 * @param period the period
+	 * @param baseDate the base date
 	 * @return the plan vacation history
 	 */
-	List<VacationHistoryExport> getPlanVacationHistory(String companyId, DatePeriod period);
+	List<VacationHistoryExport> getPlanVacationHistory(String companyId, GeneralDate baseDate);
 }
