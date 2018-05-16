@@ -102,6 +102,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 },
                 owner: this
             });
+
+            $('#table-output-items').ntsFixedTable({ height: 390, width: 1200 });
         }
 
         public startPage(): JQueryPromise<any> {
