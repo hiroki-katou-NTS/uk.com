@@ -26,7 +26,7 @@ public class SingleAttendanceRecordDeleteCommandHandler extends CommandHandler<S
 	protected void handle(CommandHandlerContext<SingleAttendanceRecordDeleteCommand> context) {
 		SingleAttendanceRecordDeleteCommand command = context.getCommand();
 		
-		SingleAttendanceRecord singleAttendanceRecord = new SingleAttendanceRecord(SingleItemAttributes.valueOf(command.getAttribute()), new ItemName(command.getName()), command.getTimeTimeId());
+		SingleAttendanceRecord singleAttendanceRecord = new SingleAttendanceRecord(SingleItemAttributes.valueOf(command.getAttribute()), new ItemName(command.getName()), command.getTimeItemId());
 		
 		this.singleAttendanceRecordRepository.deleteSingleAttendanceRecord(
 																	AppContexts.user().companyId(),

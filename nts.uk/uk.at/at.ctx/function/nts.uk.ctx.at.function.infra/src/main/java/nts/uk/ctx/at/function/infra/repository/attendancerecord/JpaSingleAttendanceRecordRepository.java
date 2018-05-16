@@ -54,8 +54,6 @@ public class JpaSingleAttendanceRecordRepository extends JpaRepository implement
 	@Override
 	public void addSingleAttendanceRecord(String companyId, ExportSettingCode exportSettingCode, long columnIndex,
 			long position,long exportArt,boolean useAtr, SingleAttendanceRecord singleAttendanceRecord) {
-		
-		
 		// TODO Auto-generated method stub
 
 	}
@@ -105,8 +103,8 @@ public class JpaSingleAttendanceRecordRepository extends JpaRepository implement
 		if(optionalKfnstAttndRec.isPresent()) this.commandProxy().remove(optionalKfnstAttndRec.get());
 		
 		//find and delete KfnstAttndRecItem
-		Optional<KfnstAttndRecItem> optionalkfnstAttndRecItem = this.findAttendanceRecordItemByPK(companyId, exportSettingCode, columnIndex, position, exportArt, singleAttendanceRecord.getTimeItemId());
-		if(optionalkfnstAttndRecItem.isPresent()) this.commandProxy().remove(optionalkfnstAttndRecItem.get());
+		Optional<KfnstAttndRecItem> optionalKfnstAttndRecItem = this.findAttendanceRecordItemByPK(companyId, exportSettingCode, columnIndex, position, exportArt, singleAttendanceRecord.getTimeItemId());
+		if(optionalKfnstAttndRecItem.isPresent()) this.commandProxy().remove(optionalKfnstAttndRecItem.get());
 		this.getEntityManager().flush();
 	}
 
@@ -181,6 +179,8 @@ public class JpaSingleAttendanceRecordRepository extends JpaRepository implement
 		KfnstAttndRecItem kfnstAttndRecItem = this.queryProxy().find(kfnstAttndRecItemPk, KfnstAttndRecItem.class).orElse(new KfnstAttndRecItem());
 		
 		singleAttendanceRecord.saveToMemento(new JpaSingleAttendanceRecordSetMemento(kfnstAttndRec, kfnstAttndRecItem));
+		//set formulaType
+		kfnstAttndRecItem.setFormulaType(new BigDecimal(1));
 		return kfnstAttndRecItem;
 	}
 
