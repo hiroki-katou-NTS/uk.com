@@ -72,7 +72,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
         //D
         // reference date
-        referenceDate : string;
+        referenceDate: string;
         //Radio button
         itemTitleAtr: KnockoutObservableArray<any>;
         selectedTitleAtr: KnockoutObservable<number>;
@@ -191,7 +191,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             //D
             //referenceDate init toDay
             self.referenceDate = moment.utc().format("YYYY/MM/DD");
-            
+
             self.systemType = ko.observable(1);
             self.initEmployeeList = ko.observableArray([]);
             self.employeeList = ko.observableArray([]);
@@ -204,7 +204,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 { value: 0, titleAtrName: resource.getText('CMF005_52') }]);
             self.selectedTitleAtr = ko.observable(1);
             self.selectedTitleAtr.subscribe(function(value) {
-                if(value == 1) {
+                if (value == 1) {
                     self.applyKCP005ContentSearch(self.initEmployeeList());
                 }
                 else {
@@ -562,7 +562,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                         if (self.employeeList()[j].code == self.selectedEmployeeCode()[i]) {
                             let employee = self.employeeList()[j];
                             self.employeeDeletionList.push(
-                                new EmployeeDeletion(employee.code, employee.name, 
+                                new EmployeeDeletion(employee.code, employee.name,
                                     employee.code, employee.name));
                         }
                     }
@@ -608,19 +608,29 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
         private gotoscreenF(): void {
             let self = this;
-            self.saveManualSetting();
+            let params = {};
+                params.deleteSetName = self.deleteSetName();
+                params.dateValue = self.dateValue();
+                params.monthValue = self.monthValue();
+                params.yearValue = self.yearValue();
+                params.saveBeforDelete = self.isSaveBeforeDeleteFlg();
+                
+            setShared("CMF005_E_PARAMS", params);
+
+            //self.saveManualSetting();
+            modal("/view/cmf/005/f/index.xhtml");
         }
 
         private saveManualSetting(): void {
-            let self = this;            
-            let manualSetting = new ManualSettingModal(self.deleteSetName(),self.supplementExplanation(), self.systemType(), 
-                    moment.utc(self.referenceDate, 'YYYY/MM/DD'), moment.utc().toISOString(),
-                    moment.utc(self.dateValue().startDate, 'YYYY/MM/DD'), moment.utc(self.dateValue().endDate, 'YYYY/MM/DD'),
-                    moment.utc(self.monthValue().startDate, 'YYYY/MM'), moment.utc(self.monthValue().endDate, 'YYYY/MM'),
-                    Number(self.yearValue().startDate), Number(self.yearValue().endDate),
-                    Number(self.isSaveBeforeDeleteFlg()), Number(self.isExistCompressPasswordFlg()), self.passwordForCompressFile(),
-                    Number(self.selectedTitleAtr()), self.employeeDeletionList(), self.categoryDeletionList());
-            
+            let self = this;
+            let manualSetting = new ManualSettingModal(self.deleteSetName(), self.supplementExplanation(), self.systemType(),
+                moment.utc(self.referenceDate, 'YYYY/MM/DD'), moment.utc().toISOString(),
+                moment.utc(self.dateValue().startDate, 'YYYY/MM/DD'), moment.utc(self.dateValue().endDate, 'YYYY/MM/DD'),
+                moment.utc(self.monthValue().startDate, 'YYYY/MM'), moment.utc(self.monthValue().endDate, 'YYYY/MM'),
+                Number(self.yearValue().startDate), Number(self.yearValue().endDate),
+                Number(self.isSaveBeforeDeleteFlg()), Number(self.isExistCompressPasswordFlg()), self.passwordForCompressFile(),
+                Number(self.selectedTitleAtr()), self.employeeDeletionList(), self.categoryDeletionList());
+
             service.addManualSetDel(manualSetting).done(() => {
 
             }).fail(res => {
@@ -685,7 +695,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         name: string;
         employeeId: string;
         businessName: string;
-        
+
         constructor(code: string, name: string, employeeId: string, businessName: string) {
             this.code = code;
             this.name = name;
@@ -715,7 +725,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         category: Array<CategoryDeletion>;
 
         constructor(delName: string, suppleExplanation: string, systemType: number, referenceDate: string,
-            executionDateAndTime: string, dayStartDate: string, dayEndDate: string, 
+            executionDateAndTime: string, dayStartDate: string, dayEndDate: string,
             monthStartDate: string, monthEndDate: string,
             startYear: number, endYear: number, isSaveBeforeDeleteFlg: number, isExistCompressPasswordFlg: number,
             passwordForCompressFile: string, haveEmployeeSpecifiedFlg: number, employees: Array<EmployeeDeletion>,
