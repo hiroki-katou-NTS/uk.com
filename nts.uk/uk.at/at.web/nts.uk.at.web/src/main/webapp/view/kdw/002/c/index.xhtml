@@ -17,14 +17,9 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<div tabindex="1" class="myLinkButton">
-					<input tabindex="-1" class="myLinkButtonIcon" type="image"
-						src="data: image/png;base64,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" />
-					<div data-bind="click: navigateView" class="myLinkButtonText">
-						<a tabindex="-1" href="">#{i18n.getText('KDW002_8')}</a>
-					</div>
-				</div>
-				<button tabindex="2" class="proceed" data-bind="click: submitData">#{i18n.getText('KDW002_2')}</button>
+				<a id="button1" class="goback"
+					data-bind="ntsLinkButton: { action: jumpToHome.bind($data, sideBar)}">#{i18n.getText('KDW002_8')}</a>
+				<button tabindex="2" id="submitDataId" class="proceed" data-bind="click: submitData">#{i18n.getText('KDW002_2')}</button>
 				<!--  <button tabindex="3" class="copy"  data-bind="click: copy">#{i18n.getText('KDW002_14')}</button>  -->
 				<!--  <label class="mylabel">#{i18n.getText('KDW002_1')}</label> -->
 			</div>
@@ -33,7 +28,7 @@
 					<div class="fixed-flex-layout-left"
 						data-bind="ntsPanel:{ direction: 'right', visible: true}">
 						<label class="leftLabel">権限</label>
-						<table id="leftGrid"
+						<table id="leftGrid" tabindex="3"
 							data-bind="ntsGridList: {								
 								height: 200,
 								dataSource: bussinessCodeItems,
@@ -46,10 +41,10 @@
 							}"></table>
 					</div>
 					<div class="fixed-flex-layout-right">
-					<input type="text" class="searchText" placeholder="コード／名称で検索"
-						data-bind="value: txtSearch" />
-					<button class="searchButton" data-bind="click: searchData">検索</button>
-					<table id="grid"></table>
+						<div style="width: 300px" tabindex="4" data-bind="ntsSearchBox: { targetKey: 'itemDailyID', mode: 'igGrid', comId: 'grid', 
+							items: datasources, selectedKey: 'itemDailyID', fields: ['displayNumber','itemDailyName']}" />
+					<!-- <button class="searchButton" data-bind="click: searchData">検索</button> -->
+					<table tabindex="5"  id="grid"></table>
 					</div>
 				</div>
 			<!-- </div> -->

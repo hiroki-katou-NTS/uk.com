@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.TimeDigestOfDaily;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -10,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /** 日別実績の時間消化休暇 */
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class TimeDigestionVacationDailyPerformDto {
 

@@ -48,13 +48,12 @@ public class WorkHolidayTimeDailyPerformDto {
 						getTimeSpan(c.getTimeSheet()), 
 						c.getHolidayWorkTimeSheetNo().v())), 
 				HolidayMidnightWorkDto.fromHolidayMidnightWork(domain.getHolidayMidNightWork() == null || !domain.getHolidayMidNightWork().isPresent()
-																?null
-																:domain.getHolidayMidNightWork().get()), 
-				domain.getHolidayTimeSpentAtWork().valueAsMinutes(), 
+																? null :domain.getHolidayMidNightWork().get()), 
+				domain.getHolidayTimeSpentAtWork() == null ? null : domain.getHolidayTimeSpentAtWork().valueAsMinutes(), 
 				ConvertHelper.mapTo(domain.getHolidayWorkFrameTime(), (c) -> new HolidayWorkFrameTimeDto(
-						CalcAttachTimeDto.toTimeWithCal(c.getHolidayWorkTime().get()), 
-						CalcAttachTimeDto.toTimeWithCal(c.getTransferTime().get()), 
-						getAttendanceTime(c.getBeforeApplicationTime().get()),
+						CalcAttachTimeDto.toTimeWithCal(c.getHolidayWorkTime().isPresent() ? c.getHolidayWorkTime().get() : null), 
+						CalcAttachTimeDto.toTimeWithCal(c.getTransferTime().isPresent() ? c.getTransferTime().get() : null), 
+						getAttendanceTime(c.getBeforeApplicationTime().isPresent() ? c.getBeforeApplicationTime().get() : null),
 						c.getHolidayFrameNo().v())));
 	}
 

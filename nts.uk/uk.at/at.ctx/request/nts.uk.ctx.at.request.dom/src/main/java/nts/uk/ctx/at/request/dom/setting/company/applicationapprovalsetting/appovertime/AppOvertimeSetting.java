@@ -6,6 +6,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.request.dom.application.BreakReflect;
+import nts.uk.ctx.at.request.dom.application.Changeable;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 /**
@@ -82,12 +83,17 @@ public class AppOvertimeSetting extends AggregateRoot{
 	 * 休憩区分
 	 */
 	private BreakReflect restAtr;
+	/**
+	 * 勤種変更可否フラグ
+	 */
+	private Changeable workTypeChangeFlag;
 	
 	public static AppOvertimeSetting createFromJavaType(String companyId, int flexJExcessUseSetAtr, 
 			int preTypeSiftReflectFlg, int preOvertimeReflectFlg, int postTypeSiftReflectFlg, 
 			int postBreakReflectFlg, int postWorktimeReflectFlg, int calendarDispAtr, 
 			int earlyOvertimeUseAtr, int instructExcessOTAtr, int priorityStampSetAtr, 
-			int unitAssignmentOvertime, int normalOvertimeUseAtr, int attendanceId, int useOt, int restAtr){
+			int unitAssignmentOvertime, int normalOvertimeUseAtr, int attendanceId, int useOt, 
+			int restAtr, int workTypeChangeFlag){
 		return new  AppOvertimeSetting(companyId, EnumAdaptor.valueOf(flexJExcessUseSetAtr, FlexExcessUseSetAtr.class), 
 				EnumAdaptor.valueOf(preTypeSiftReflectFlg, UseAtr.class), 
 				EnumAdaptor.valueOf(preOvertimeReflectFlg, UseAtr.class), 
@@ -102,6 +108,7 @@ public class AppOvertimeSetting extends AggregateRoot{
 				EnumAdaptor.valueOf(normalOvertimeUseAtr, UseAtr.class), 
 				new OtHourUnitControl(EnumAdaptor.valueOf(attendanceId, AttendanceType.class), 
 						EnumAdaptor.valueOf(useOt, UseOtWk.class)), 
-				EnumAdaptor.valueOf(restAtr, BreakReflect.class));
+				EnumAdaptor.valueOf(restAtr, BreakReflect.class),
+				EnumAdaptor.valueOf(workTypeChangeFlag, Changeable.class));
 	}
 }

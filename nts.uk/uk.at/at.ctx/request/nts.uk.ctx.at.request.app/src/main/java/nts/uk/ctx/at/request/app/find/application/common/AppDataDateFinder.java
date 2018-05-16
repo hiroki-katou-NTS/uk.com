@@ -80,7 +80,7 @@ public class AppDataDateFinder {
 		AchievementOutput achievementOutput = new AchievementOutput(appGeneralDate, null, null, null, null, null, null);
 		ApprovalRootContentImport_New approvalRootContentImport = null;
 		ApplicationDto_New applicationDto = null;
-		PrePostAtr defaultPrePostAtr = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), appGeneralDate);
+		PrePostAtr defaultPrePostAtr = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), appGeneralDate,0);
 		if(Strings.isNotBlank(appID)){
 			Application_New application = applicationRepository_New.findByID(companyID, appID).get();
 			SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(

@@ -226,26 +226,42 @@ module nts.uk.at.view.kal001.a.model {
             if ($(".nts-input").ntsError("hasError")) return;
                                       
             block.invisible();
-            service.extractAlarm(listSelectedEmpployee, self.currentAlarmCode(), listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto)=>{
-                
-                if(dataExtractAlarm.extracting) {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_993" });    
-                    return;
+            service.isExtracting().done((isExtracting: boolean)=>{
+                if(isExtracting){
+                    nts.uk.ui.dialog.info({ messageId: "Msg_993" });   
+                    block.clear();    
+                    return;  
                 }
-                if(dataExtractAlarm.nullData){
-                      nts.uk.ui.dialog.info({ messageId: "Msg_835" });   
-                      return;
-                }
-                
-                nts.uk.ui.windows.setShared("extractedAlarmData", dataExtractAlarm.extractedAlarmData);
-                modal("/view/kal/001/b/index.xhtml").onClosed(() => {
-                    
-                });
+                service.extractStarting().done((statusId: string)=>{
+                    service.extractAlarm(listSelectedEmpployee, self.currentAlarmCode(), listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto)=>{
+                        service.extractFinished(statusId);
+                        if(dataExtractAlarm.extracting) {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_993" });    
+                            return;
+                        }
+                        if(dataExtractAlarm.nullData){
+                              nts.uk.ui.dialog.info({ messageId: "Msg_835" });   
+                              return;
+                        }
+                        
+                        nts.uk.ui.windows.setShared("extractedAlarmData", dataExtractAlarm.extractedAlarmData);
+                        modal("/view/kal/001/b/index.xhtml").onClosed(() => {
+                            
+                        });
+                    }).fail((errorExtractAlarm)=>{
+                        alertError(errorExtractAlarm);
+                    }).always(()=>{
+                        block.clear();    
+                    });
+                }).fail((errorExtractAlarm)=>{
+                    block.clear();    
+                    alertError(errorExtractAlarm);
+                })
             }).fail((errorExtractAlarm)=>{
-                alertError(errorExtractAlarm);
-            }).always(()=>{
                 block.clear();    
-            });
+                alertError(errorExtractAlarm);
+            })
+            
 
         }
 

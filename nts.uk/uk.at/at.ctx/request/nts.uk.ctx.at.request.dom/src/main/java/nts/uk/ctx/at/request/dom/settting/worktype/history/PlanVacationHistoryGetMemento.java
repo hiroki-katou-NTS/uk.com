@@ -37,7 +37,7 @@ public interface PlanVacationHistoryGetMemento {
 	 *
 	 * @return the max day
 	 */
-	public Integer getMaxDay();
+	public OptionalMaxDay getMaxDay();
 	
 	/**
 	 * Gets the period.

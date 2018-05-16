@@ -105,6 +105,18 @@ public class CalcPeriodForAggregate {
 			val employmentPeriod = employmentHist.getPeriod();
 			if (employmentPeriod.end().before(closurePeriod.start())) continue;
 			
+			// 「締めID履歴リスト」の末尾と締めIDを比較
+			if (this.closureIdHistories.size() > 0){
+				val lastHistory = this.closureIdHistories.get(this.closureIdHistories.size() - 1);
+				if (lastHistory.getClosureId().value == closureId.intValue()){
+					
+					// 「締めID履歴リスト」の末尾を更新
+					lastHistory.setPeriod(new DatePeriod(
+							lastHistory.getPeriod().start(), employmentPeriod.end()));
+					continue;
+				}
+			}
+			
 			// 処理中の「所属雇用履歴」より前が締められたかチェックし、「締めID履歴」を作成
 			if (employmentPeriod.start().after(closurePeriod.start())){
 				this.closureIdHistories.add(ClosureIdHistory.of(closureId, employmentPeriod));
@@ -183,8 +195,12 @@ public class CalcPeriodForAggregate {
 		if (this.closurePeriods.size() > 0) {
 			val lastPeriod = this.closurePeriods.get(this.closurePeriods.size() - 1);
 			
-			// 末尾の「締め処理期間．締め年月日」と「実締め毎集計期間．本来の締め期間．終了日」を比較
-			if (lastPeriod.getClosureYmd().afterOrEquals(aggrPeriod.getOriginalClosurePeriod().end())){
+			// 既存の締め処理期間に追加するかチェック
+			if (lastPeriod.getYearMonth().equals(aggrPeriod.getYearMonth()) &&
+				lastPeriod.getClosureId().value == aggrPeriod.getClosureId().value &&
+				lastPeriod.getClosureDate().getClosureDay().equals(aggrPeriod.getClosureDate().getClosureDay()) &&
+				lastPeriod.getClosureDate().getLastDayOfMonth() == aggrPeriod.getClosureDate().getLastDayOfMonth() &&
+				lastPeriod.getClosureYmd().afterOrEquals(aggrPeriod.getOriginalClosurePeriod().end())){
 				
 				// 末尾の締め処理期間に実締め毎集計期間を追加
 				lastPeriod.addAggrPeriodEachActualClosure(aggrPeriod);
