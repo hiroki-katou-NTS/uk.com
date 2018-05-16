@@ -298,6 +298,11 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 }
             }
             
+            if(self.provisionCheck()) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_1219" });
+                return;
+            }
+            
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => { 
                 service.remove(self.selectedOption()).done(function(){
                     self.getData().done(function(){
