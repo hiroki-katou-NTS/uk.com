@@ -49,16 +49,16 @@ public class RegulationInfoEmployeePubImpl implements RegulationInfoEmployeePub 
 	@Override
 	public List<RegulationInfoEmployeeExport> find(EmployeeSearchQueryDto query) {
 		List<RegulationInfoEmployeeDto> resultList = new ArrayList<>();
+		// Find login employee info.
+		String loginEmployeeId = AppContexts.user().employeeId();
+		String companyId = AppContexts.user().companyId();
+		RegulationInfoEmployee loginEmployee = this.employeeInfoRepository.findBySid(companyId, loginEmployeeId,
+				GeneralDateTime.now());
 		try {
 			resultList = this.empFinder.find(this.toQueryModel(query));
 		} catch (RuntimeException e) {
 			// When search only me.
 			if (e.getMessage().equals("Unable to search")) {
-				// Find login employee info.
-				String loginEmployeeId = AppContexts.user().employeeId();
-				String companyId = AppContexts.user().companyId();
-				RegulationInfoEmployee loginEmployee = this.employeeInfoRepository.findBySid(companyId, loginEmployeeId,
-						GeneralDateTime.now());
 				return Arrays
 						.asList(RegulationInfoEmployeeExport.builder().employeeCode(loginEmployee.getEmployeeCode())
 								.employeeId(loginEmployee.getEmployeeID()).employeeName(loginEmployee.getName().get())
