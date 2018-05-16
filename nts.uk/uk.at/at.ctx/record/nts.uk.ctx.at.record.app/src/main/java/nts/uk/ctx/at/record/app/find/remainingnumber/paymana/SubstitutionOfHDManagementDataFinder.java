@@ -16,8 +16,16 @@ public class SubstitutionOfHDManagementDataFinder {
 	@Inject
 	private SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepository;
 	
+	/**
+	 * ドメイン「振出管理データ」より紐付け対象となるデータを取得する
+	 * @param sid
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
 	public List<SubstitutionOfHDManagementDataDto> getBySidDatePeriod(String sid, GeneralDate startDate, GeneralDate endDate){
-		return null;
+		return substitutionOfHDManaDataRepository.getBySidDatePeriod(sid, startDate, endDate, 0d).stream()
+				.map(item -> SubstitutionOfHDManagementDataDto.createFromDomain(item)).collect(Collectors.toList());
 	}
 	
 	public List<SubstitutionOfHDManagementDataDto> getBysiDRemCod(String empId) {

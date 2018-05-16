@@ -18,7 +18,9 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	
 	private String QUERY_BYSID_REM_COD = String.join(" ",QUERY_BYSID, "AND s.remainDays > 0") ;
 	
-	private final String QUERY_BY_SID_DATEPERIOD = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND s.dayOff >= :startDate AND s.dayOff <= :endDate" ;
+	private final String QUERY_BY_SID_DATEPERIOD = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND s.dayOff >= :startDate AND s.dayOff <= :endDate"
+			+ " AND (s.remainDays <> :remainDays OR s.subOfHDID in "
+			+ "(SELECT pm.subOfHDID FROM KrcmtSubOfHDManaData pm inner join KrcmtPayoutSubOfHDMana ps on pm.subOfHDID = ps.krcmtPayoutSubOfHDManaPK.subOfHDID))" ;
 	
 	@Override
 	public List<SubstitutionOfHDManagementData> getBysiD(String cid, String sid) {
@@ -69,11 +71,12 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 
 	@Override
 	public List<SubstitutionOfHDManagementData> getBySidDatePeriod(String sid, GeneralDate startDate,
-			GeneralDate endDate) {
+			GeneralDate endDate, Double remainDays) {
 		List<KrcmtSubOfHDManaData> listSubOfHD = this.queryProxy().query(QUERY_BY_SID_DATEPERIOD, KrcmtSubOfHDManaData.class)
 				.setParameter("sid", sid)
 				.setParameter("startDate", startDate)
 				.setParameter("endDate", endDate)
+				.setParameter("remainDays", remainDays)
 				.getList();
 		return listSubOfHD.stream().map(i->toDomain(i)).collect(Collectors.toList());
 	}
