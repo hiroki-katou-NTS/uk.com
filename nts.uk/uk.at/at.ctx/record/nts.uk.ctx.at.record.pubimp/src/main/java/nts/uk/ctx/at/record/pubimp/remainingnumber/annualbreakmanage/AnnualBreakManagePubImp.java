@@ -78,14 +78,14 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 		GeneralDate designatedDate = GeneralDate.ymd(startDate.get().year(), 1, 1);
 		
 		// 計算期間．終了日←パラメータ「指定日」
-		GeneralDate endDate = designatedDate;
+		GeneralDate endDate = confirmDay;
 		// ドメインモデル「年休社員基本情報」を取得
 		Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = annLeaEmpBasicInfoRepository.get(employeeId);
 		if (!annualLeaveEmpBasicInfo.isPresent()) {
 			return yearlyHolidaysTimeRemainingExport;
 		}
 		// 次回年休付与を計算
-		List<NextAnnualLeaveGrant> nextAnnualLeaveGrant = calculateNextHolidayGrant(employeeId, new DatePeriod(startDate.get(), endDate));
+		List<NextAnnualLeaveGrant> nextAnnualLeaveGrant = calculateNextHolidayGrant(employeeId, new DatePeriod(designatedDate, endDate));
 		// ログインしている会社ID　取得
 		LoginUserContext loginUserContext = AppContexts.user();
 		String companyId = loginUserContext.companyId();
@@ -109,7 +109,7 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 				// 取得した年休の集計結果．年休情報(付与時点)でループ
 				for (AnnualLeaveInfo annualLeaveInfoe : aggrResultOfAnnualLeave.get().getAsOfGrant().get()) {
 					// 「年休の集計結果」で付与された年月日をチェック
-					if (annualLeaveInfoe.getYmd().before(startDate.get()) && annualLeaveInfoe.getYmd().after(endDate)) {
+					if (startDate.get().beforeOrEquals(annualLeaveInfoe.getYmd()) && endDate.afterOrEquals(annualLeaveInfoe.getYmd())) {
 						//  計算期間．開始日<=年休情報．年月日<=計算期間．終了日
 						YearlyHolidaysTimeRemainingExport yhtre = 
 								new YearlyHolidaysTimeRemainingExport(annualLeaveInfoe.getYmd(), 
@@ -120,7 +120,7 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 				}
 				
 				// 年休計算開始日←次回年休付与．付与年月日
-				startDate = Optional.of(nextAnnualLeaveGrant.get(++count).getGrantDate());
+				startDate = Optional.of(nextAnnualLeaveGrant.get(count++).getGrantDate());
 				prevAnnualLeave = aggrResultOfAnnualLeave;
 			}
 			
@@ -149,13 +149,11 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 	@Override
 	public List<NextAnnualLeaveGrant> calculateNextHolidayGrant(String employeeId, DatePeriod time) {
 		List<NextAnnualLeaveGrant> nextAnnualLeaveGrant = new ArrayList<>();
-		boolean isNull = false;
 		// ○Imported(就業)「社員」を取得する
 		EmployeeRecordImport employeeRecordImport = pmployeeRecordAdapter.getPersonInfor(employeeId);
 		// ○パラメータ「期間」をチェック
-			Optional<GeneralDate> start_date = null;
+			Optional<GeneralDate> start_date = Optional.empty();
 			if (time == null) {
-				isNull = true;
 				start_date = getClosureStartForEmployee.algorithm(employeeId);
 			}
 			
@@ -174,13 +172,14 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 			}
 			val grantHdTblSet = grantHdTblSetOpt.get();
 			
+			//○次回年休付与を取得する
 			nextAnnualLeaveGrant = getNextAnnualLeaveGrant
 					.algorithm(companyId, 
 							annualLeaveEmpBasicInfo.get().getGrantRule().getGrantTableCode().toString(), 
 							employeeRecordImport.getEntryDate(), 
 							annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate(), 
-							isNull == true ? new DatePeriod(start_date.get().addDays(1), GeneralDate.fromString("9999/12/31", "yyyy/mm/dd")) : time, 
-							isNull == true ? true: false);
+							time == null ? new DatePeriod(start_date.get().addDays(1), GeneralDate.fromString("9999/12/31", "yyyy/mm/dd")) : time, 
+							time == null ? true: false);
 		return nextAnnualLeaveGrant;
 	}
 	

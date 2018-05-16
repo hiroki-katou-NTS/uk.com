@@ -27,8 +27,8 @@ public class ExcelExportService extends ExportService<List<ExcelInforCommand>> {
     @Override
 	protected void handle(ExportServiceContext<List<ExcelInforCommand>> context) {
     	List<ExcelInforCommand> listOuput = context.getQuery();
-    	if (listOuput.isEmpty()) {
-    		return;
+    	if (listOuput == null) {
+    		listOuput = new ArrayList<>();
     	}
     	List<String> listHeader = new ArrayList<>();
     	listHeader.add("KDM002_11");
@@ -38,37 +38,40 @@ public class ExcelExportService extends ExportService<List<ExcelInforCommand>> {
     	listHeader.add("KDM002_15");
     	listHeader.add("KDM002_16");
     	listHeader.add("KDM002_9");
-    	List<Integer> sizePlannedVacationListCommand = new ArrayList<>();
-    	for (ExcelInforCommand excelInforCommand : listOuput) {
-    		sizePlannedVacationListCommand.add(excelInforCommand.getPlannedVacationListCommand().size());	 
-		}
-    	ExcelInforCommand maxSizeExcelInforCommand = listOuput.get(Collections.max(sizePlannedVacationListCommand));
-    	for (PlannedVacationListCommand plannedVacation : maxSizeExcelInforCommand.getPlannedVacationListCommand()) {
-    		listHeader.add(plannedVacation.getWorkTypeName());
-    		listHeader.add(plannedVacation.getWorkTypeName()+"（上限）");
-		}
-    	
-    	List<String> header = this.getTextHeader(listHeader);  
-		
-		List<Map<String, Object>> dataSource = listOuput
-				.stream()
-        		.map(infoLine -> {
-		        	 Map<String, Object> map = new HashMap<>();
-					 map.put(header.get(0), infoLine.getName());
-					 map.put(header.get(1), infoLine.getDateStart());
-					 map.put(header.get(2), infoLine.getDateEnd());
-					 map.put(header.get(3), infoLine.getDateOffYear());
-					 map.put(header.get(4), infoLine.getDateTargetRemaining());
-					 map.put(header.get(5), infoLine.getDateAnnualRetirement());
-					 map.put(header.get(6), infoLine.getDateAnnualRest());
-					 for(int i = 0; i < Collections.max(sizePlannedVacationListCommand); i++){
-						 map.put(header.get(i+7), infoLine.getPlannedVacationListCommand().get(i).getMaxNumberDays());
-						 map.put(header.get(i+7), infoLine.getNumberOfWorkTypeUsedImport().get(i).getAttendanceDaysMonth());
-					 }
-					 return map;
-		        })
-        		.collect(Collectors.toList());
-		
+    	List<Map<String, Object>> dataSource = new ArrayList<>();
+    	List<String> header = this.getTextHeader(listHeader);
+    	if (!listOuput.isEmpty()) {
+	    	List<Integer> sizePlannedVacationListCommand = new ArrayList<>();
+	    	for (ExcelInforCommand excelInforCommand : listOuput) {
+	    		sizePlannedVacationListCommand.add(excelInforCommand.getPlannedVacationListCommand().size());	 
+			}
+	    	ExcelInforCommand maxSizeExcelInforCommand = listOuput.get(Collections.max(sizePlannedVacationListCommand));
+	    	for (PlannedVacationListCommand plannedVacation : maxSizeExcelInforCommand.getPlannedVacationListCommand()) {
+	    		listHeader.add(plannedVacation.getWorkTypeName());
+	    		listHeader.add(plannedVacation.getWorkTypeName()+"（上限）");
+			}
+	    	
+	    	List<String> head = this.getTextHeader(listHeader);  
+			dataSource = listOuput
+					.stream()
+	        		.map(infoLine -> {
+			        	 Map<String, Object> map = new HashMap<>();
+						 map.put(head.get(0), infoLine.getName());
+						 map.put(head.get(1), infoLine.getDateStart());
+						 map.put(head.get(2), infoLine.getDateEnd());
+						 map.put(head.get(3), infoLine.getDateOffYear());
+						 map.put(head.get(4), infoLine.getDateTargetRemaining());
+						 map.put(head.get(5), infoLine.getDateAnnualRetirement());
+						 map.put(head.get(6), infoLine.getDateAnnualRest());
+						 for(int i = 0; i < Collections.max(sizePlannedVacationListCommand); i++){
+							 map.put(head.get(i+7), infoLine.getPlannedVacationListCommand().get(i).getMaxNumberDays());
+							 map.put(head.get(i+7), infoLine.getNumberOfWorkTypeUsedImport().get(i).getAttendanceDaysMonth());
+						 }
+						 return map;
+			        })
+	        		.collect(Collectors.toList());
+			header = head;
+    	}
 		
 
     	CSVFileData dataExport = new CSVFileData("", header, dataSource);

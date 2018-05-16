@@ -5,7 +5,9 @@ module nts.uk.at.view.kdm002.b {
     export module service {
         var paths = {
             execution: "at/request/application/remainnumber/checkFunc/execution",
-            exportDatatoCsv: "at/request/application/remainnumber/checkFunc/export"
+            exportDatatoCsv: "at/request/application/remainnumber/checkFunc/export",
+            exportExcel: "at/request/application/remainnumber/checkFunc/exportExcel"
+            
         }
         /**
          * call service execution 
@@ -19,6 +21,13 @@ module nts.uk.at.view.kdm002.b {
          */
         export function exportDatatoCsv(data : viewmodel.IErrorLog[]): JQueryPromise<any> {
             return nts.uk.request.exportFile(paths.exportDatatoCsv, data);
+        }
+        
+        /**
+         * download excel file
+         */
+        export function exportExcel(data): JQueryPromise<any> {
+            return nts.uk.request.exportFile(paths.exportExcel, data);
         }
     }
 }

@@ -42,6 +42,8 @@ module nts.uk.at.view.kdm002.b {
             taskId: KnockoutObservable<string> =  ko.observable('');
             timeStartt: any;
             timeNow: any;
+            excelContent: KnockoutObservable<any> = ko.observable('');
+            startExportExcel: KnockoutObservable<boolean>;
             constructor() {
                 self.timeStartt = new Date();
                 let systemDate = Date.now();
@@ -56,7 +58,7 @@ module nts.uk.at.view.kdm002.b {
                 self.pendDate = ko.observable(parrams.endDate);
                 self.pdate =  ko.observable(parrams.date);
                 self.pmaxday=  ko.observable(parrams.maxday);   
-                
+                self.resultMessage = getText("KDM002_31");
                 //self.result = ko.observable('0 / '+self.pempployeeList().length +'人');
                 self.result = ko.observable(self.resultMessage.replace('{0}', '0').replace('{1}', self.pempployeeList().length));
                 let dataDump = {
@@ -72,6 +74,12 @@ module nts.uk.at.view.kdm002.b {
                     { headerText: nts.uk.resource.getText("KDM002_26"), key: 'employeeName', width: 150 },
                     { headerText: nts.uk.resource.getText("KDM002_27"), key: 'errorMessage', width: 300 }
                 ]);
+                self.startExportExcel = ko.observable(false);
+                self.startExportExcel.subscribe((data) => {
+                    if (data) {
+                        self.excelExport();
+                    }
+                });
             }
             
             /**
@@ -134,6 +142,10 @@ module nts.uk.at.view.kdm002.b {
                                         }
                                         self.imErrorLog.push(errorContent);
                                     }
+                                    if (item.key.substring(0, 10) == "EXCEL_LIST") {
+                                        let exContent = JSON.parse(item.valueAsString);
+                                          self.excelContent.push(exContent);
+                                    }
                                     // 処理カウント
                                     if (item.key == 'NUMBER_OF_SUCCESS') {
                                         self.result(self.resultMessage.replace("{0}", item.valueAsNumber).replace("{1}", self.total()));
@@ -171,6 +183,9 @@ module nts.uk.at.view.kdm002.b {
                                     $('#BTN_ERROR_EXPORT').focus();
                                 }
                                 self.isStop(true);
+                                if (res.succeeded) {
+                                    self.startExportExcel(true);
+                                }
                             }
                         });
                     }).while(infor => {
@@ -201,6 +216,16 @@ module nts.uk.at.view.kdm002.b {
                 let self = this;
                 nts.uk.ui.block.invisible();
                 service.exportDatatoCsv(ko.toJS(self.imErrorLog())).fail(function(res: any) {
+                    alertError({ messageId: res.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
+            
+            excelExport() {
+                let self = this;
+                nts.uk.ui.block.invisible();
+                service.exportExcel(ko.toJS(self.excelContent())).fail(function(res: any) {
                     alertError({ messageId: res.messageId });
                 }).always(function() {
                     nts.uk.ui.block.clear();
