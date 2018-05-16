@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 import nts.uk.ctx.at.record.infra.entity.remainingnumber.paymana.KrcmtSubOfHDManaData;
@@ -16,6 +17,8 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	private String QUERY_BYSID = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND s.cID = :cid" ;
 	
 	private String QUERY_BYSID_REM_COD = String.join(" ",QUERY_BYSID, "AND s.remainDays > 0") ;
+	
+	private final String QUERY_BY_SID_DATEPERIOD = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND s.dayOff >= :startDate AND s.dayOff <= :endDate" ;
 	
 	@Override
 	public List<SubstitutionOfHDManagementData> getBysiD(String cid, String sid) {
@@ -62,5 +65,16 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 		entity.requiredDays = domain.getRequiredDays().v();
 		entity.remainDays = domain.getRemainDays().v();
 		return entity;
+	}
+
+	@Override
+	public List<SubstitutionOfHDManagementData> getBySidDatePeriod(String sid, GeneralDate startDate,
+			GeneralDate endDate) {
+		List<KrcmtSubOfHDManaData> listSubOfHD = this.queryProxy().query(QUERY_BY_SID_DATEPERIOD, KrcmtSubOfHDManaData.class)
+				.setParameter("sid", sid)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.getList();
+		return listSubOfHD.stream().map(i->toDomain(i)).collect(Collectors.toList());
 	}
 }
