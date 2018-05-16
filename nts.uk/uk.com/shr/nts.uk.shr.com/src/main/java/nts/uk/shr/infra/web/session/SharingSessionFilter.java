@@ -18,6 +18,7 @@ import lombok.val;
 import nts.arc.security.csrf.CsrfToken;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 import nts.uk.shr.com.context.loginuser.SessionLowLayer;
+import nts.uk.shr.infra.web.request.ProgramIdDetector;
 
 public class SharingSessionFilter implements Filter {
 	
@@ -51,7 +52,8 @@ public class SharingSessionFilter implements Filter {
 					.map(c -> c.getValue())
 					.findFirst()
 					.ifPresent(sessionContext -> {
-						if (!isLoggedIn || !sessionContext.equals(createStringSessionContext())) {
+						if (isCrossRequest(httpRequest) 
+							&& (!isLoggedIn || !sessionContext.equals(createStringSessionContext()))) {
 							restoreSessionContext(sessionContext);
 						}
 					});
@@ -73,6 +75,13 @@ public class SharingSessionFilter implements Filter {
 	}
 	
 	private static final String DELIMITER = "@";
+	
+	private static boolean isCrossRequest(HttpServletRequest request) {
+		String context = request.getContextPath();
+		String originator = request.getHeader(ProgramIdDetector.PG_PATH);
+		if (originator == null) return false;
+		return originator.indexOf(context) == -1;
+	}
 
 	private static String createStringSessionContext() {
 		String userContext = CDI.current().select(LoginUserContextManager.class).get().toBase64();
