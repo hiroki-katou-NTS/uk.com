@@ -65,11 +65,11 @@
 										optionsValue: 'value',
 										visibleItemsCount: 5,
 										value: holidayTime,
-										optionsText: 'name',
+										optionsText: 'value',
 										enable: true,
 										required: true,
 										selectFirstIfNull: true,
-										columns: [{ prop: 'name', length: 5}]}"></div>
+										columns: [{ prop: 'value', length: 5}]}"></div>
 					</div>
 				<div class="flex valign-center margin-bottom padding-left-15">
 					<!-- M10_1 残数 -->
@@ -82,20 +82,20 @@
 										optionsValue: 'value',
 										visibleItemsCount: 5,
 										value: remainDays,
-										optionsText: 'name',
+										optionsText: 'value',
 										enable: true,
 										required: true,
 										selectFirstIfNull: true,
-										columns: [{ prop: 'name', length: 5}]}"></div>
+										columns: [{ prop: 'value', length: 5}]}"></div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
 				<!-- M31_1 登録 -->
 				<button class="proceed" data-bind="click: openKDM001M" tabindex="5">#{i18n.getText('KDM001_89')}</button>
 				<!-- M31_2 削除 -->
-				<button class="danger" data-bind="click: openKDM001M" tabindex="6">#{i18n.getText('KDM001_90')}</button>
+				<button class="danger" data-bind="click: openKDM001M" tabindex="6">#{i18n.getText('KDM001_100')}</button>
 				<!-- M31_3 キャンセル -->
-				<button data-bind="click: closeKDM001M" tabindex="7">#{i18n.getText('KDM001_100')}</button>
+				<button data-bind="click: closeKDM001M" tabindex="7">#{i18n.getText('KDM001_90')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
