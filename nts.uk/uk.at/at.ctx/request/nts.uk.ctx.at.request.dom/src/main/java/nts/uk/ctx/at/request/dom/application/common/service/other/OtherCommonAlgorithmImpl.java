@@ -83,7 +83,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		// ドメインモデル「雇用に紐づく就業締め」を取得する
 		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(companyID, employmentCD);
 		if(!closureEmployment.isPresent()){
-			throw new RuntimeException("Msg_1134");
+			throw new BusinessException("Msg_1134");
 		}
 		/*
 		ドメインモデル「締め」を取得する(lấy thông tin domain「締め」)
