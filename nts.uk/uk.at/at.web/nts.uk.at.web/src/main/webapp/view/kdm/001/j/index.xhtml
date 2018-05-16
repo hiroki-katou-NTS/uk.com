@@ -56,7 +56,7 @@
 							multiple: true,
 							rows: 8,
 							value: currentCodeList
-						}"></table>
+						}" tabindex="1"></table>
 				</div>
 				<!-- J7_1 残-->
 				<span id="J7_1" style="margin-left: 210px; margin-top: 15px;"
@@ -66,10 +66,9 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!-- J31_1 登録 -->
-				<button id="J31_1" style="margin-top: 10px" class="proceed">#{i18n.getText('KDM001_89')}</button>
+				<button id="J31_1" style="margin-top: 10px" class="proceed" tabindex="2">#{i18n.getText('KDM001_89')}</button>
 				<!-- J31_2 キャンセル -->
-				<button id="J31_2" style="margin-top: 10px"
-					data-bind="click: closeDialog">#{i18n.getText('KDM001_90')}</button>
+				<button id="J31_2" style="margin-top: 10px" data-bind="click: closeDialog" tabindex="3">#{i18n.getText('KDM001_90')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

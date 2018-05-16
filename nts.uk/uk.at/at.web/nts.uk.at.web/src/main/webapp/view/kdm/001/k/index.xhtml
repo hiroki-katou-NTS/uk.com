@@ -17,7 +17,7 @@
 			<div id="contents-area">
 				<!-- K1 文言 -->
 				<div>
-					<span id="K1" class="label">#{i18n.getText('KDM001_104')}</span>
+					<span id="K1" class="label">#{i18n.getText('KDM001_105')}</span>
 				</div>
 				<div id="K2">
 					<!-- K2_1 職場コード -->
@@ -25,7 +25,7 @@
 					<!-- K2_2 職場名称 -->
 					<span id="K2_2" class="label" data-bind="text: workPlaceName"></span>
 					<!-- K2_3 ： -->
-					<span id="K2_3" class="label">:</span>
+					<span id="K2_3" class="label">#{i18n.getText('KDM001_58')}</span>
 					<!-- K2_4 社員コード -->
 					<span id="K2_4" class="label" data-bind="text: employeeCode"></span>
 					<!-- K2_5 社員名 -->
@@ -43,24 +43,23 @@
 				</div>
 				<div id="parent">
 					<!-- K5 紐付候補リスト -->
-					<div id="K6">
+					<div id="K5">
 						<table id="multi-list"
 							data-bind="ntsGridList: {
-								height: 300,
 								options: items,
-								name: '#{i18n.getText('KDM001_93')}',
+								name: '#[KDM001_93]',
 								optionsValue: 'code',
 								columns: columns,
 								rows:8,
 								multiple: true,
 								value: currentCodeList
-							}"></table>
+							}" tabindex="1"></table>
 					</div>
 					<div>
 						<!-- K6_1 代休日 -->
-						<span id="K5_1" class="label" data-bind="text: dateHoliday"></span>
+						<span id="K6_1" class="label" data-bind="text: dateHoliday"></span>
 						<!-- K6_2 発生数 -->
-						<span id="K5_2" class="label" data-bind="text: numberDay"></span>
+						<span id="K6_2" class="label" data-bind="text: numberDay"></span>
 					</div>
 				</div>
 				<div style="margin-top: 15px; margin-left: 15px;">
@@ -72,9 +71,9 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!-- K31_1 登録 -->
-				<button id="K31_1" style="margin-top: 10px" class="proceed ">#{i18n.getText('KDM001_89')}</button>
+				<button id="K31_1" style="margin-top: 10px" class="proceed " tabindex="2">#{i18n.getText('KDM001_89')}</button>
 				<!-- K31_2 キャンセル -->
-				<button id="K31_2" style="margin-top: 10px" data-bind="click: closeDialog">#{i18n.getText('KDM001_90')}</button>
+				<button id="K31_2" style="margin-top: 10px" data-bind="click: closeDialog" tabindex="3">#{i18n.getText('KDM001_90')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
