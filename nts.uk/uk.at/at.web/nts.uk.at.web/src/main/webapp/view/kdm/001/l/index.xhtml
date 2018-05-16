@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+				<script>var dialogSize = { width: 535, height: 550 };</script>
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="kdm001.l.vm.js" />
+				<com:scriptfile path="kdm001.l.start.js" />
+				<com:stylefile path="kdm001.l.style.css" />
+			</ui:define>
+			
+			<ui:define name="content">
+			<div id="contents-area">
+					<!-- L1 文言 -->
+					<div id="L1div" >
+						<span  id = "L1" class="label" >#{i18n.getText('KDM001_106')}</span>
+					</div>
+					<!-- L2 対象者 -->
+					<div id="L2" data-bind="ntsFormLabel: {}" >
+						<!-- L2_1 職場コード -->
+						<span  id = "L2_1" class="label" data-bind="text: workCode" ></span>
+						<!-- L2_2 職場名称 -->
+						<span id = "L2_2" class="label" data-bind="text: workPlaceName"></span>
+						<!-- L2_3 ： -->
+						<span id = "L2_3" class="label" >:</span>
+						<!-- L2_4 社員コード -->
+						<span id = "L2_4" class="label" data-bind="text: employeeCode" ></span>
+						<!-- L2_5 社員名 -->
+						<span id = "L2_5" class="label" data-bind="text: employeeName" ></span>
+					</div>
+					<!-- L3 罫線 -->
+					<div id = "L3" >
+						<hr/>
+					</div>
+					<!-- L4 休出 -->
+					<div id = "bottom" >
+						<div>
+							<span id = "L4_1" class="label" >#{i18n.getText('KDM001_110')}</span>
+						</div>
+						<!-- L5 罫線 -->
+						<div id="L5" >
+							<hr/>
+						</div>
+						<!-- L6_1 年月日 -->
+						<div data-bind="ntsFormLabel: { required: required}" style="width: 80px;">#{i18n.getText('KDM001_62')}</div>
+						<!-- L6_2 年月日 -->
+						<div id ="L6_2" data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+						<br/>
+						<div class="down-s set-date flex valign-center" style="margin-top: 5px;">
+							<!-- L8_1 休出日数 -->
+							<div data-bind="ntsFormLabel: { required: required1}" style="margin-top: 10px;width: 80px;">#{i18n.getText('KDM001_111')}</div>
+							<!-- L8_2 休出日数 -->
+							<div id="combo-box" style="margin-top: 10px;margin-left: 7px;" data-bind="ntsComboBox: {
+								name: '#{i18n.getText('KDM001_73')}',
+								options: daysOff,
+								optionsValue: 'code',
+								visibleItemsCount: 5,
+								value: selectedCodeDayOff,
+								optionsText: 'name',
+								editable: isEditableDayOff,
+								enable: isEnableDayOff,
+								columns: [
+									{ prop: 'day', length: 10 },
+								]}"></div>
+						  </div>
+						<br/>
+						<!-- L9_1 期限 -->
+						<div id ="L9_1" data-bind="ntsFormLabel: { required: required1}" style="width: 80px;" >#{i18n.getText('KDM001_72')}</div>
+						<!-- L9_2 期限 -->
+						<div id = "L9_2" data-bind="ntsDatePicker: {value: deadline, dateFormat: 'YYYY/MM/DD'}"></div>
+						<br/>
+						<div class="down-s set-date flex valign-center" style="margin-top: 5px;">
+							<!-- L10_1 残数 -->
+							<div data-bind="ntsFormLabel: { required: required1}" style="margin-top: 10px;width: 80px;">#{i18n.getText('KDM001_85')}</div>
+							<!-- L10_2 残数 -->
+							<div style="margin-top: 10px;margin-left: 6px;" id="combo-box" data-bind="ntsComboBox: {
+								name: '#{i18n.getText('KDM001_85')}',
+								options: days,
+								optionsValue: 'code',
+								visibleItemsCount: 5,
+								value: selectedCodeDay,
+								optionsText: 'name',
+								editable: isEditableDay,
+								enable: isEnableDay,
+								columns: [
+									{ prop: 'day', length: 10 },
+								]}"></div>
+							<!-- L10_4 期限切れ -->
+							<div style="margin-left: 30px;" data-bind="ntsCheckBox: { checked: enable }">#{i18n.getText('KDM001_87')}</div>
+						</div>
+					</div>
+			</div>	
+			<div id="functions-area-bottom">
+						<!-- K31_1 登録 -->
+						<button id="K31_1" class="proceed" >#{i18n.getText('KDM001_89')}</button>
+						<!-- L31_2 削除 -->
+						<button id="K31_2" class="danger" >#{i18n.getText('KDM001_100')}</button>
+						<!-- L31_3 キャンセル -->
+						<button id="K31_3" >#{i18n.getText('KDM001_90')}</button>	
+			</div>
+		</ui:define>
+		</ui:composition>
+   	</body>
+</html>
