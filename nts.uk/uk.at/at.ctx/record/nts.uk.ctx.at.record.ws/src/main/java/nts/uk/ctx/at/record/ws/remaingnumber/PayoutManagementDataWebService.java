@@ -20,7 +20,7 @@ public class PayoutManagementDataWebService extends WebService {
 	
 	@POST
 	@Path("getBysiDRemCod/{empId}/{state}")
-	// get SubstitutionOfHDManagement by SID and remainsDays > 0
+	// get SubstitutionOfHDManagement by SID and stateAtr = ?
 	public List<PayoutManagementDataDto> getBysiDRemCod(@PathParam("empId") String employeeId, @PathParam("state") int state) {
 		return finder.getBysiDRemCod(employeeId, state);
 	}
