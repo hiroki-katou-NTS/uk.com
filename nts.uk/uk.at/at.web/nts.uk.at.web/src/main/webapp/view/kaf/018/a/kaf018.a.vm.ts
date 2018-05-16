@@ -164,7 +164,8 @@ module nts.uk.at.view.kaf018.a.viewmodel {
             console.log(self.multiSelectedWorkplaceId());
             _.forEach(self.multiSelectedWorkplaceId(), function(item) {
                 let data = _.find(lstWkp, (wkp) => { return wkp.workplaceId == item });
-                listWorkplace.push({ code: data.workplaceId, name: data.name });
+                let name = data.code + data.name ;
+                listWorkplace.push({ code: data.code, name: name });
             })
             console.log(listWorkplace);
             let params = {

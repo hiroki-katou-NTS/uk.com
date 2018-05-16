@@ -183,6 +183,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
                 this.name = name;
             }
         }
+        
         export class ConfirmationStatus {
             workplaceId: string;
             workplaceName: string;

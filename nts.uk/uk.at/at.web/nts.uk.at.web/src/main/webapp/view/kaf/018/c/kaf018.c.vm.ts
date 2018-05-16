@@ -36,7 +36,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 
         dailySttOut: DailyStatusOut = new DailyStatusOut(null, null);
         listApprovalEmployee: KnockoutObservableArray<ApprovalStatusEmployee> = ko.observableArray([]);
-        listDailyStatus : KnockoutObservableArray<DailyStatusOut> = ko.observableArray([]);
+        listDailyStatus: KnockoutObservableArray<DailyStatusOut> = ko.observableArray([]);
         constructor() {
             var self = this;
             this.legendOptions = {
@@ -57,7 +57,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         /**
          * 起動する
          */
-        startPage() : JQueryPromise<any> {
+        startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             block.invisible();
@@ -82,9 +82,9 @@ module nts.uk.at.view.kaf018.c.viewmodel {
                 self.listWkpId.push(item.code);
             });
             self.initExTable().done(() => {
-                dfd.resolve();    
+                dfd.resolve();
             }).fail(() => {
-                dfd.reject();    
+                dfd.reject();
             });
             return dfd.promise();
         }
@@ -100,7 +100,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             self.selectedWplName(wkp.name);
         }
 
-        getStatusSymbol() : JQueryPromise<any> {
+        getStatusSymbol(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             let obj = {
@@ -142,13 +142,13 @@ module nts.uk.at.view.kaf018.c.viewmodel {
         /**
          * Create exTable
          */
-        initExTable(): JQueryPromise<any>  {
+        initExTable(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             self.getStatusSymbol().done(function(data: any) {
                 self.listApprovalEmployee = data.listAppSttEmp;
                 self.listDailyStatus = data.listDailyStt;
-                
+
                 let sv1 = self.setColorForCellHeaderDetail();
                 let sv2 = self.setSymbolForCellContentDetail(self.listDailyStatus);
                 $.when(sv1, sv2).done(function(detailHeaderDeco) {
@@ -183,7 +183,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             self.getStatusSymbol().done(function(data: any) {
                 self.listApprovalEmployee = data.listAppSttEmp;
                 self.listDailyStatus = data.listDailyStt;
-                
+
                 let sv1 = self.setColorForCellHeaderDetail();
                 let sv2 = self.setSymbolForCellContentDetail(self.listDailyStatus);
                 $.when(sv1, sv2).done(function(detailHeaderDeco) {
@@ -232,21 +232,21 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 
             // create detail Columns and detail Content Columns
             let currentDay = new Date(self.dtPrev().toString());
-            while (currentDay <= self.dtAft()) {
-                let time = new shareModel.Time(currentDay);
+            let listResize: Array<ResizeColumn> = self.getResizeColumn(listData);
+            _.each(listResize, function(item) {
+                let time = new shareModel.Time(item.date);
                 detailHeaderColumns.push({
-                    key: "_" + time.yearMonthDay, width: "60px", headerText: self.getDay(time)
+                    key: "_" + time.yearMonthDay, width: item.width, headerText: self.getDay(time)
                 });
                 detailContentColumns.push({
-                    key: "__" + time.yearMonthDay, width: "60px"
+                    key: "__" + time.yearMonthDay, width: item.width
                 });
                 currentDay.setDate(currentDay.getDate() + 1);
-            }
-
+            });
             //create Detail Header
             detailHeader = {
                 columns: detailHeaderColumns,
-                width: "1100px",
+                width: "1000px",
                 features: [
                     {
                         name: "HeaderRowHeight",
@@ -343,11 +343,10 @@ module nts.uk.at.view.kaf018.c.viewmodel {
          */
         setSymbolForCellContentDetail(listData: Array<DailyStatusOut>): JQueryPromise<any> {
             var self = this, dfd = $.Deferred();
+
             _.each(listData, function(emp: DailyStatusOut) {
                 let currentDay = new Date(self.dtPrev().toString());
-                var vaueDate: Date;
                 while (currentDay <= self.dtAft()) {
-
                     let time = new shareModel.Time(currentDay);
                     let key = "__" + time.yearMonthDay;
                     let curentDayConvert = nts.uk.time.formatDate(currentDay, 'yyyy/MM/dd');
@@ -374,6 +373,26 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             return dfd.promise();
         }
 
+        getResizeColumn(listData: Array<DailyStatusOut>): Array<ResizeColumn> {
+            var self = this;
+            let resizeColumn: Array<ResizeColumn> = [];
+            let currentDay = new Date(self.dtPrev().toString());
+            while (currentDay <= self.dtAft()) {
+                resizeColumn.push(new ResizeColumn(nts.uk.time.formatDate(currentDay, 'yyyy/MM/dd'), 0));
+                currentDay.setDate(currentDay.getDate() + 1);
+            }
+            _.each(listData, function(emp: DailyStatusOut) {
+                _.each(emp.listDaily, function(daily: DailyStatus) {
+                    let dateTemp = _.find(resizeColumn, { date: daily.date });
+                    if (dateTemp.size < daily.stateSymbol.length) {
+                        dateTemp.size = daily.stateSymbol.length;
+                        dateTemp.updateWidth();
+                    }
+                });
+            });
+            return resizeColumn;
+        }
+
         backToB() {
             var self = this;
             let params = {
@@ -390,15 +409,15 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 
         goToD(rData) {
             var self = this;
-            let listStatusEmp : Array<ApprovalStatusEmployee> = [];
+            let listStatusEmp: Array<ApprovalStatusEmployee> = [];
             _.each(self.listApprovalEmployee, function(item) {
-                if(rData.empId == item.sid) {
-                      listStatusEmp.push(new ApprovalStatusEmployee(item.sid, item.startDate, item.endDate));  
+                if (rData.empId == item.sid) {
+                    listStatusEmp.push(new ApprovalStatusEmployee(item.sid, item.startDate, item.endDate));
                 }
-                
+
             });
             let params = {
-               empName: rData.empName,
+                empName: rData.empName,
                 selectedEmpId: rData.empId,
                 listStatusEmp: listStatusEmp
             }
@@ -415,23 +434,53 @@ module nts.uk.at.view.kaf018.c.viewmodel {
             this.listDaily = listDaily;
         }
     }
-    
+
     class DailyStatus {
         date: Date;
         stateSymbol: Array<number>;
     }
-    
+
     class ApprovalStatusEmployee {
-         sId: string;
-         startDate: Date;
-         endDate: Date;
+        sId: string;
+        startDate: Date;
+        endDate: Date;
         constructor(sId: string, startDate: Date, endDate: Date) {
             this.sId = sId;
             this.startDate = startDate;
             this.endDate = endDate;
-        }    
+        }
     }
-    
+
+    class ResizeColumn {
+        date: string;
+        width: string;
+        size: number;
+        constructor(date: string, size: number) {
+            this.date = date;
+            this.size = size;
+            this.updateWidth();
+
+        }
+        updateWidth() {
+            switch (this.size) {
+                case 0:
+                    this.width = "30px";
+                    break;
+                case 1:
+                    this.width = "30px";
+                    break;
+                case 2:
+                    this.width = "40px";
+                    break;
+                case 3:
+                    this.width = "50px";
+                    break;
+                case 4:
+                    this.width = "50px";
+                    break;
+            }
+        }
+    }
     class ApprovalSttByEmp {
         selectedWkpId: string;
         listWkpId: Array<any>;
