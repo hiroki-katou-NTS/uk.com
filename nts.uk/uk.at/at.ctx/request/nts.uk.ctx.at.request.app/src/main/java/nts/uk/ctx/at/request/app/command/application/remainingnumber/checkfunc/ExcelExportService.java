@@ -31,13 +31,13 @@ public class ExcelExportService extends ExportService<List<ExcelInforCommand>> {
     		return;
     	}
     	List<String> listHeader = new ArrayList<>();
-    	listHeader.add(TextResource.localize("KDM002_11"));
-    	listHeader.add(TextResource.localize("KDM002_12"));
-    	listHeader.add(TextResource.localize("KDM002_13"));
-    	listHeader.add(TextResource.localize("KDM002_14"));
-    	listHeader.add(TextResource.localize("KDM002_15"));
-    	listHeader.add(TextResource.localize("KDM002_16"));
-    	listHeader.add(TextResource.localize("KDM002_9"));
+    	listHeader.add("KDM002_11");
+    	listHeader.add("KDM002_12");
+    	listHeader.add("KDM002_13");
+    	listHeader.add("KDM002_14");
+    	listHeader.add("KDM002_15");
+    	listHeader.add("KDM002_16");
+    	listHeader.add("KDM002_9");
     	List<Integer> sizePlannedVacationListCommand = new ArrayList<>();
     	for (ExcelInforCommand excelInforCommand : listOuput) {
     		sizePlannedVacationListCommand.add(excelInforCommand.getPlannedVacationListCommand().size());	 
