@@ -98,7 +98,9 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             }
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
             self.selectedItem.subscribe(x =>{
-                console.log(x);
+                //TODO
+                // CALL SERVICE
+                // RELOAD SUBSTITUTE DATA TABLE
             });
         }
         openNewSubstituteData() {
@@ -227,9 +229,29 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         }
         pegSetting(value) {
             let selectedRowData = value;
+            setShared('PEGSETTING_PARAMS', value);
+            if (!(nts.uk.util.isNullOrUndefined(value.substituedWorkingDate))) {
+                modal("/view/kdm/001/j/index.xhtml").onClosed(function() {
+                    location.reload();
+                });
+            } else {
+                modal("/view/kdm/001/k/index.xhtml").onClosed(function() {
+                    location.reload();
+                });
+            }
         }
         doCorrection(value) {
             let selectedRowData = value;
+            setShared('CORRECTION_PARAMS', value);
+            if (!(nts.uk.util.isNullOrUndefined(value.substituedWorkingDate))) {
+                modal("/view/kdm/001/l/index.xhtml").onClosed(function() {
+                    location.reload();
+                });
+            } else {
+                modal("/view/kdm/001/m/index.xhtml").onClosed(function() {
+                    location.reload();
+                });
+            }
         }
     }
     export class SubstitutedData {
@@ -242,6 +264,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         substituedHolidayPeg: string;
         remainHolidayHours: number;
         expiredHolidayHours: number;
+        isLinked: boolean;
         constructor(id: number, substituedWorkingDate: string, substituedWorkingHours: number, substituedWorkingPeg: string,
             substituedHolidayDate: string, substituteHolidayHours: number, substituedHolidayPeg: string, remainHolidayHours: number,
             expiredHolidayHours: number) {
