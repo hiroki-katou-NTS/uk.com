@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -33,7 +32,7 @@ public class AgreeCondOt {
 	private MessageDisp messageDisp;
 	
 	public static AgreeCondOt createFromJavaType(String id, String companyId, int category, String code, int no, 
-													BigDecimal ot36, int excessNum, String messageDisp){
+													int ot36, int excessNum, String messageDisp){
 		return new AgreeCondOt(id, companyId,
 				EnumAdaptor.valueOf(category, AlarmCategory.class),
 				new AlarmCheckConditionCode(code), no, new OverTime(ot36), new Number(excessNum),

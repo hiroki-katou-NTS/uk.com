@@ -71,15 +71,20 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 			}
 		}
 		if (command.getCategory() == AlarmCategory.AGREEMENT.value) {
-			List<DeleteAgreeConditionErrorCommand> listErrorDel = context.getCommand().getDeleteCondError();  
-			for(DeleteAgreeConditionErrorCommand obj : listErrorDel){
-				this.conErrRep.delete(obj.getCode(), obj.getCategory());
+			List<DeleteAgreeConditionErrorCommand> listErrorDel = command.getCondAgree36().getListCondError().stream()
+																		.map(c -> DeleteAgreeConditionErrorCommand.changeType(c)).collect(Collectors.toList());  
+			if(!listErrorDel.isEmpty()){
+				for(DeleteAgreeConditionErrorCommand obj : listErrorDel){
+					this.conErrRep.delete(obj.getCode(), obj.getCategory());
+				}
 			}
-			
-			
-			List<DeleteAgreeCondOtCommand> listOtDel = context.getCommand().getDeleteCondOt();
-			for(DeleteAgreeCondOtCommand item : listOtDel){
-				this.otRep.delete(item.getCode(), item.getCategory());
+
+			List<DeleteAgreeCondOtCommand> listOtDel = command.getCondAgree36().getListCondOt().stream()
+																.map(x -> DeleteAgreeCondOtCommand.changeType(x)).collect(Collectors.toList());
+			if(!listOtDel.isEmpty()){
+				for(DeleteAgreeCondOtCommand item : listOtDel){
+					this.otRep.delete(item.getCode(), item.getCategory());
+				}
 			}
 		}
 		conditionRepo.delete(companyId, command.getCategory(), command.getCode());

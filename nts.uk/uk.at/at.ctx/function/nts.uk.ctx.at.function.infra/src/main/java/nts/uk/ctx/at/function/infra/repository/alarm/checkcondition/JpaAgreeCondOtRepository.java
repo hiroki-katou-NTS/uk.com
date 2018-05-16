@@ -44,8 +44,9 @@ public class JpaAgreeCondOtRepository extends JpaRepository implements IAgreeCon
 	 */
 	private static Kfnmt36AgreeCondOt toEntity(AgreeCondOt domain){
 		val entity = new Kfnmt36AgreeCondOt();
+		String companyId = AppContexts.user().companyId();
 		entity.kfnmt36AgreeCondOtPK = new Kfnmt36AgreeCondOtPK(domain.getId(), domain.getNo(), domain.getCode().v(), 
-																domain.getCompanyId(), domain.getCategory().value);
+																companyId, domain.getCategory().value);
 		entity.excessNum = domain.getExcessNum().v();
 		entity.messageDisp = (domain.getMessageDisp() == null ? null : domain.getMessageDisp().v());
 		entity.ot36 = domain.getOt36().v();

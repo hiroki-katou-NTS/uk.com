@@ -38,7 +38,7 @@ public class AlarmCheckConditionByCategoryCommand {
 
 	private MonAlarmCheckConCommand monAlarmCheckCon;
 	
-	private UpdateAgree36Command agree36; 
+	private UpdateAgree36Command condAgree36; 
 	
 	List<DeleteAgreeConditionErrorCommand> deleteCondError;
 	
@@ -60,7 +60,7 @@ public class AlarmCheckConditionByCategoryCommand {
 		this.schedule4WeekAlarmCheckCondition = schedule4WeekAlarmCheckCondition;
 		this.action = action;
 		this.monAlarmCheckCon = monAlarmCheckCon;
-		this.agree36 = agree36;
+		this.condAgree36 = agree36;
 	}
 
 }

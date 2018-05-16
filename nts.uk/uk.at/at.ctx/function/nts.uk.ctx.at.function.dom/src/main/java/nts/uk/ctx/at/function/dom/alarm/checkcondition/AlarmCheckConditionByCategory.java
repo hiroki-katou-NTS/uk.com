@@ -44,7 +44,7 @@ public class AlarmCheckConditionByCategory extends AggregateRoot {
 
 	public AlarmCheckConditionByCategory(String companyId, int category, String code, String name,
 			AlarmCheckTargetCondition extractTargetCondition, List<String> listRoleId,
-			ExtractionCondition extractionCondition) {
+			ExtractionCondition extractionCondition, AlarmChkCondAgree36 alarmChkCondAgree36) {
 		super();
 		this.companyId = companyId;
 		this.category = EnumAdaptor.valueOf(category, AlarmCategory.class);
@@ -53,6 +53,7 @@ public class AlarmCheckConditionByCategory extends AggregateRoot {
 		this.extractTargetCondition = extractTargetCondition;
 		this.listRoleId = listRoleId;
 		this.extractionCondition = extractionCondition;
+		this.alarmChkCondAgree36 = alarmChkCondAgree36;
 	}
 
 	public void changeState(String name, List<String> lstRoleId, AlarmCheckTargetCondition targetCondition,

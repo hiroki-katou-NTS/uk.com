@@ -9,34 +9,20 @@ module nts.uk.at.view.kal003.a.tab {
     export class AgreementHourTab {
         listAgreementHour: KnockoutObservableArray<model.AgreeCondOt> = ko.observableArray([]);
         currentRowSelected: KnockoutObservable<any> = ko.observable(null);
+        category: KnockoutObservable<number>;
 
-        constructor() {
+        constructor(category: number, listAgreementHour?: Array<model.AgreeCondOt>) {
             let self = this;
-            self.init();
+            self.category = ko.observable(category);
             self.currentRowSelected.subscribe((data) => {
                 $("#fixed-table-agreement-hour tr").removeClass("ui-state-active");
                 $("#fixed-table-agreement-hour tr[data-id='" + data + "']").addClass("ui-state-active");
             });
+            if (listAgreementHour) {
+                self.listAgreementHour(listAgreementHour);
+            }
 
             $("#fixed-table-agreement-hour").ntsFixedTable({ height: 285, width: 500 });
-        }
-
-        init(): void {
-            let self = this;
-            let listAgHour = [];
-//            service.getAgreementHour().done((data) => {
-//                _.each(data, (x) => {
-//                    listAgHour.push(new model.AgreeCondOt({
-//                        id: x.id,
-//                        no: x.no,
-//                        ot36: x.ot36,
-//                        excessNum: x.excessNum,
-//                        messageDisp: x.messageDisp
-//                    }));
-//                });
-//
-//                self.listAgreementHour(listAgHour);
-//            });
         }
 
         createNewLine(): void {
@@ -44,16 +30,23 @@ module nts.uk.at.view.kal003.a.tab {
             if (self.listAgreementHour == null || self.listAgreementHour == undefined) {
                 self.listAgreementHour([]);
             }
-            if (self.listAgreementHour().length >= 10) {
+
+            let lengthListAgreementHour: number = self.listAgreementHour().length;
+            if (lengthListAgreementHour >= 10) {
                 dialog.alertError({ messageId: "Msg_1242" });
                 return;
             }
             let defaultAgreementHour = shareutils.getDefaultAgreementHour();
-            defaultAgreementHour.no = self.listAgreementHour().length + 1;
+            if (lengthListAgreementHour == 0) {
+                defaultAgreementHour.no = 1;
+            } else {
+                defaultAgreementHour.no = self.listAgreementHour()[lengthListAgreementHour - 1].no + 1;
+            }
 
             self.listAgreementHour.push(defaultAgreementHour);
-            self.currentRowSelected(self.listAgreementHour().length);
-            $("#fixed-table-agreement-hour tr")[self.listAgreementHour().length - 1].scrollIntoView();
+            
+            self.currentRowSelected(self.listAgreementHour()[lengthListAgreementHour].no);
+            $("#fixed-table-agreement-hour tr")[lengthListAgreementHour].scrollIntoView();
         }
 
         deleteLine(): void {
@@ -69,7 +62,7 @@ module nts.uk.at.view.kal003.a.tab {
                 return;
             }
             if (indexRowSelected == self.listAgreementHour().length) {
-                self.currentRowSelected(indexRowSelected);
+                self.currentRowSelected(self.listAgreementHour()[indexRowSelected - 1].no);
             } else {
                 self.currentRowSelected(self.listAgreementHour()[indexRowSelected].no);
             }
