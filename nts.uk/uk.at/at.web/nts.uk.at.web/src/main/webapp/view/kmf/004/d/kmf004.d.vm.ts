@@ -212,16 +212,16 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             if (nts.uk.ui.errors.hasError() === false) {
                 // update item to list  
                 if(self.checkUpdate()){
-                    $("#inpPattern").focus();   
+                    $("#inpPattern").focus(); 
+                      
                     service.update(dataTransfer).done(function(errors: Array<string>){
                         self.getData().done(function(){
-                            self.selectedCode(code); 
-                            self.selectedCode.valueHasMutated();  
-                            
                             if (errors.length > 0) {
                                self.addListError(errors);
                             } else {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                                    self.selectedCode(code); 
+                                    self.selectedCode.valueHasMutated(); 
                                     $("#inpPattern").focus();
                                 });
                             }
@@ -229,18 +229,17 @@ module nts.uk.at.view.kmf004.d.viewmodel {
           
                     }).fail(function(res){
                         $('#inpCode').ntsError('set', res);
-                        });
+                    });
                 } else {
                     self.selectedOption(null);
                     // insert item to list
                     service.add(dataTransfer).done(function(errors: Array<string>){
                         self.getData().done(function(){
-                            self.selectedCode(code); 
-                            
                             if (errors.length > 0) {
                                self.addListError(errors);
                             }else{
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                                    self.selectedCode(code); 
                                     $("#inpPattern").focus();
                                 });
                             }
