@@ -10,7 +10,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeletePayoutManagementDataCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeleteSubstitutionOfHDManaDataCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeleteSubstitutionOfHDManaDataCommandHandler;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.UpdateSubstitutionOfHDManaDataCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.UpdateSubstitutionOfHDManaDataCommandHandler;
@@ -39,7 +39,7 @@ public class SubstitutionOfHDManagementDataWebService extends WebService {
 	
 	@POST
 	@Path("delete")
-	public void delete(DeletePayoutManagementDataCommand command){
+	public void delete(DeleteSubstitutionOfHDManaDataCommand command){
 		deleteSub.handle(command);
 	}
 	
