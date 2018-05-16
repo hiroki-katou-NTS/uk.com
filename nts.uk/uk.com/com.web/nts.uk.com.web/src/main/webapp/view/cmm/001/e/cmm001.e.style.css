@@ -28,7 +28,7 @@ thead label {
 	font-weight: bold;
 }
 tbody {
-	height: 250px;
+	height: 410px;
 	overflow-y: scroll;
     overflow-x: hidden;
 }

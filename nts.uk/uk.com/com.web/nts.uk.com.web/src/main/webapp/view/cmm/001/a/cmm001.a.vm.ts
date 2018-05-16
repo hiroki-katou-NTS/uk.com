@@ -18,7 +18,7 @@ module cmm001.a {
         itemList: KnockoutObservable<any>;
         roundingRules: KnockoutObservableArray<RoundingRule>;
         roundingRules3: KnockoutObservableArray<RoundingRule>;
-        // check true false A2_2l
+        // check true false A2_2
         display: KnockoutObservable<boolean>;
         checkInsert: KnockoutObservable<boolean>;
 
@@ -290,15 +290,16 @@ module cmm001.a {
                         var masterCopyDataCmd: MasterCopyDataCommand = { companyId: cid, masterDataList: IMasterDataList };
                         service.getAllMasterCopyCategory().then(function(masterCopyCateList: Array<MasterCopyCategory>) {
                             for (item of masterCopyCateList) {
-                            var IMasterCopyCategoryDto : MasterCopyCategoryDto = {masterCopyId: item.masterCopyId, categoryName: item.masterCopyCategory, order: item.order, systemType: item.systemType, copyMethod: 1};
-                            IMasterDataList.push(IMasterCopyCategoryDto);
+                                var IMasterCopyCategoryDto: MasterCopyCategoryDto = { masterCopyId: item.masterCopyId, categoryName: item.masterCopyCategory, order: item.order, systemType: item.systemType, copyMethod: 1 };
+                                IMasterDataList.push(IMasterCopyCategoryDto);
                             }
                             nts.uk.ui.windows.setShared('masterCopyDataCmd', masterCopyDataCmd);
                             nts.uk.ui.windows.sub.modal('/view/cmm/001/f/index.xhtml', { title: '', }).onClosed(function(): any {
-                            $('#companyName').focus();});
+                                $('#companyName').focus();
+                            });
                         });
                     });
-                    });
+                });
                     self.start().then(function() {
                         $('#companyName').focus();
                         self.display.valueHasMutated();
@@ -314,7 +315,7 @@ module cmm001.a {
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
-            }
+            
         }
 
         /** search post code */
