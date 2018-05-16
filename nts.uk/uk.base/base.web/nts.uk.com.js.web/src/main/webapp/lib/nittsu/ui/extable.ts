@@ -5542,6 +5542,8 @@ module nts.uk.ui.exTable {
                     return getCellById(self, params[0], params[1]);
                 case "updatedCells":
                     return getUpdatedCells(self);
+                case "lockCells":
+                    return getLockCells(self);
                 case "addNewRow":
                     break;
                 case "removeRows":
@@ -6150,6 +6152,24 @@ module nts.uk.ui.exTable {
             let data = $container.data(NAMESPACE).modifications;
             if (!data) return [];
             return helper.valuesArray(data);
+        }
+        
+        /**
+         * Get lock cells.
+         */
+        function getLockCells($container: JQuery) {
+            let tbl = helper.getMainTable($container[0]);
+            let det = $.data(tbl, internal.DET); 
+            let cells = [];
+            Object.keys(det).forEach(function(k) {
+                if (!util.isNullOrUndefined(det[k])) {
+                    det[k].forEach(function(v) {
+                        cells.push({ rowIndex: k, columnKey: v });
+                    });
+                }
+            }); 
+             
+            return cells; 
         }
         
         /**

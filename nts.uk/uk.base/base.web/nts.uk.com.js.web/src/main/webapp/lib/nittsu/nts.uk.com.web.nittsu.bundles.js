@@ -11943,6 +11943,8 @@ var nts;
                                 return getCellById(self, params[0], params[1]);
                             case "updatedCells":
                                 return getUpdatedCells(self);
+                            case "lockCells":
+                                return getLockCells(self);
                             case "addNewRow":
                                 break;
                             case "removeRows":
@@ -12548,6 +12550,22 @@ var nts;
                         if (!data)
                             return [];
                         return helper.valuesArray(data);
+                    }
+                    /**
+                     * Get lock cells.
+                     */
+                    function getLockCells($container) {
+                        var tbl = helper.getMainTable($container[0]);
+                        var det = $.data(tbl, internal.DET);
+                        var cells = [];
+                        Object.keys(det).forEach(function (k) {
+                            if (!uk.util.isNullOrUndefined(det[k])) {
+                                det[k].forEach(function (v) {
+                                    cells.push({ rowIndex: k, columnKey: v });
+                                });
+                            }
+                        });
+                        return cells;
                     }
                     /**
                      * Round retreat.
