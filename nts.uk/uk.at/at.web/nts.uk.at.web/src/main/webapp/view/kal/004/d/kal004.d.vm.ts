@@ -19,7 +19,6 @@ module nts.uk.com.view.kal004.d.viewmodel {
             self.getCategoryId = ko.observable(nts.uk.ui.windows.getShared("categoryId"));
             self.strMonth = ko.observable(self.getParam.strMonth);
             self.endMonth = ko.observable(self.getParam.endMonth);
-
         }
         Decide(): any {
             var self = this;
