@@ -70,6 +70,7 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 		dto.setWithError(WithError.NO_ERROR);
 
 		int countSuccess = DEFAULT_VALUE;
+		int countError = DEFAULT_VALUE;
 
 		// Variable to count amount of list of error records sent to DB
 		int errorRecordCount = DEFAULT_VALUE;
@@ -103,8 +104,9 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 					// Clear the list for the new batch of error record
 					errorList.clear();
 				}
+				countError += 1;
 				errorList.add(errorContentDto);
-				setter.updateData(NUMBER_OF_ERROR, errorList.size()); // update
+				setter.updateData(NUMBER_OF_ERROR, countError); // update
 																		// the
 																		// number
 																		// of

@@ -105,13 +105,14 @@ module nts.uk.com.view.cmm001.f {
 
                 // Set execution state to processing
                 self.executionState(nts.uk.resource.getText("CMM001_63"));
+                $("#interrupt").focus();
 
                 nts.uk.deferred.repeat(conf => conf
                     .task(() => {
                         return nts.uk.request.asyncTask.getInfo(self.taskId()).done(function(res: any) {
                             // update state on screen
                             if (res.running || res.succeeded || res.cancelled) {
-                                self.isFinish(true);
+
                                 _.forEach(res.taskDatas, item => {
                                     if (item.key.substring(0, 5) == "DATA_") {
                                         if (self.readIndex.indexOf(parseInt(item.key.substring(5))) != -1) {
@@ -138,9 +139,6 @@ module nts.uk.com.view.cmm001.f {
                                     //self.totalRecord(self.numberSuccess() + self.numberFail());                                                             
                                 });
 
-                                if (self.isFinish() == true && !self.isError() == true) {
-                                    self.executionState(nts.uk.resource.getText("CMM001_64"));
-                                }
                                 self.countData(self.numberFail() + self.numberSuccess());
                             }
 
@@ -153,17 +151,26 @@ module nts.uk.com.view.cmm001.f {
                                 //                                });
 
                                 self.isFinish(true);
-                                $('.countdown').stopCount();
+                                $('.countdown').stopCount()
+
+
                                 if (res.succeeded) {
                                     $('#closeDialog').focus();
                                 }
                                 if (self.numberFail() > 0) {
                                     self.isError(true);
                                     $('#tableShowError').show();
-                                    if (self.isFinish() == true && self.isError() == true) {
+                                    if (self.isFinish() == true && self.isError() == true && self.pauseFlag() == false) {
                                         self.executionState(nts.uk.resource.getText("CMM001_65"));
+
                                     }
+                                    $("#error").focus();
                                 }
+                                if (self.isFinish() == true && !self.isError() == true && self.pauseFlag() == false) {
+                                    self.executionState(nts.uk.resource.getText("CMM001_64"));
+                                    $("#cancel").focus();
+                                }
+                                
                                 self.numberFail(self.errorLogs().length);
                                 self.readIndex.removeAll();
                             }
@@ -191,11 +198,26 @@ module nts.uk.com.view.cmm001.f {
             }
 
             public getExecutionStartDate() {
-                let currentDate: string;
+                let currentDate: Date;
                 //                currentDate = moment().toDate().toString();
-                currentDate = new Date().toLocaleString();
-                console.log(currentDate);
-                return currentDate;
+                currentDate = new Date();
+                let year = currentDate.getFullYear();
+                let mount = currentDate.getMonth() + 1;
+                let testMount = mount + "";
+                if (mount < 10){
+                    testMount = "0" + mount;
+                }
+                let day = currentDate.getDate();
+                let testDay = day + "";
+                if (day < 10){
+                    testDay = "0" + day;
+                }
+                let hour = currentDate.getHours();
+                let minute = currentDate.getMinutes();
+                let second = currentDate.getSeconds();
+                let date: string;
+                date = year + "/" + testMount + "/" + testDay + " " + hour + ":" + minute + ":" + second;
+                return date;
             }
 
             public cancelDialog(): void {
