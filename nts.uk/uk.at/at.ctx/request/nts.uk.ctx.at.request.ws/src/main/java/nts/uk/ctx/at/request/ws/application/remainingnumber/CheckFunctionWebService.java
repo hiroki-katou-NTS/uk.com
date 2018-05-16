@@ -12,6 +12,8 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc.CheckFuncDataCommand;
 import nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc.CheckFuncExecutionRespone;
 import nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc.ErrorInfoExportService;
+import nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc.ExcelExportService;
+import nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc.ExcelInforCommand;
 import nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc.OutputErrorInfoCommand;
 import nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc.SyncCheckFuncDataCommandHandler;
 
@@ -25,6 +27,9 @@ public class CheckFunctionWebService extends WebService{
 	@Inject
 	private ErrorInfoExportService exportService;
 	
+	@Inject
+	ExcelExportService excelExportService;
+	
 	@POST
 	@Path("execution")
 	public CheckFuncExecutionRespone csvImportProcess(CheckFuncDataCommand command) {
@@ -37,5 +42,11 @@ public class CheckFunctionWebService extends WebService{
 	@Path("export")
 	public ExportServiceResult exportCsvError(List<OutputErrorInfoCommand> command) {
 		return this.exportService.start(command);
+	}
+	
+	@POST
+	@Path("exportExcel")
+	public ExportServiceResult exportExcel(List<ExcelInforCommand> command) {
+		return this.excelExportService.start(command);
 	}
 }
