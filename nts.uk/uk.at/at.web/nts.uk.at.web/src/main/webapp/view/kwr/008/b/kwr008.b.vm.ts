@@ -338,8 +338,6 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             self.isNewMode(true); 
             
-            //self.outputItem.removeAll();
-            //$('#listStandardImportSetting').ntsGridList('deselectAll');
             self.currentSetOutputSettingCode(new SetOutputSettingCode(null));
 
             for (var i = 0; i < self.outputItem().length; i++) {
@@ -365,15 +363,15 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             
             for (var i = 0; i < itemOutUseClass.length; i++) {
                 // item Rule 36 - do not checking
-                if (itemOutUseClass[i].sortBy == 0) {
+                if (itemOutUseClass[i].sortBy() == 1) {
                     continue;
                 }
                 
-                if (itemOutUseClass[i].listOperationSetting.lenth == 0) {
+                if (itemOutUseClass[i].listOperationSetting().length == 0) {
                     alertError({ messageId: "Msg_881" });
                     block.clear();
                     return;
-                } else if (itemOutUseClass[i].listOperationSetting.lenth > 50) {
+                } else if (itemOutUseClass[i].listOperationSetting().length > 50) {
                     alertError({ messageId: "Msg_882" });
                     block.clear();
                     return;
