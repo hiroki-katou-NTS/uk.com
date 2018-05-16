@@ -19,7 +19,7 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	private String QUERY_BYSID_WITH_COND = String.join(" ",QUERY_BYSID, "AND p.stateAtr = :state");
 	
 	private final String QUERY_BY_SID_DATEPERIOD = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:employeeId AND p.dayOff >= :startDate AND p.dayOff <= :endDate"
-			+ " AND (p.stateAtr = :state OR p.payoutId in (SELECT pm.payoutId in KrcmtPayoutManaData pm inner join KrcmtPayoutSubOfHDMana ps on pm.payoutId = ps.krcmtPayoutSubOfHDManaPK.payoutId))" ;
+			+ " AND (p.stateAtr = :state OR p.payoutId in (SELECT pm.payoutId FROM KrcmtPayoutManaData pm inner join KrcmtPayoutSubOfHDMana ps on pm.payoutId = ps.krcmtPayoutSubOfHDManaPK.payoutId))" ;
 	
 	
 	@Override

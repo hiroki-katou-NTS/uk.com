@@ -9,6 +9,11 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.UsedDays;
 
+/**
+ * 休出代休紐付け管理
+ * @author HopNT
+ *
+ */
 @NoArgsConstructor
 @Getter
 public class LeaveComDayOffManagement extends AggregateRoot{
