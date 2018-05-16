@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/sidebar.xhtml">
+		<ui:define name="sidebar-head">
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<!-- COMPONENT KCP009 -->
+			<com:scriptfile path="/view/kcp/009/kcp009.js" of="/nts.uk.com.web" />
+			<com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="kdm001.b.start.js" />
+			<com:scriptfile path="kdm001.b.service.js" />
+			<com:scriptfile path="kdm001.b.vm.js" />
+			<com:stylefile path="kdm001.b.main.css" />
+		</ui:define>
+		<ui:define name="sidebar">
+			<ul class="navigator">
+				<!-- 残数管理データ登録_振休管理 -->
+				<li><a tabindex = "-1" href="#tabpanel-1" role="tab-navigator">AAAAA</a></li>
+				<!-- 残数管理データ登録_代休管理 -->
+				<li><a tabindex = "-1" href="#tabpanel-2" role="tab-navigator">BBBBB</a></li>
+				<!-- 残数管理データ登録_６０Ｈ超休管理 -->
+				<li><a tabindex = "-1" href="#tabpanel-3" role="tab-navigator">CCCCC</a></li>
+			</ul>
+		</ui:define>
+		<ui:define name="sidebar-content">
+			<!-- 残数管理データ登録_振休管理 -->
+			<div id="tabpanel-1" role="tabpanel"></div>
+			<!-- 残数管理データ登録_代休管理 -->
+			<div id="tabpanel-2" role="tabpanel">
+				<!-- B1 -->
+				<div class="sidebar-content-header flex valign-center header-content">
+					<span class="title">Dialog Title</span>
+						<div>
+							<button tabindex = "6" data-bind="click: openNewSubstituteData">#{i18n.getText('KDM001_1')}</button>
+						</div>
+						<div style="margin-left: auto;">
+							<a  tabindex = "7" class="goout" data-bind="ntsLinkButton: { jump: 'index.xhtml' }">#{i18n.getText('KDM001_113')}</a>
+						</div>
+					
+				</div>
+				<div class="contents-area">
+					<!-- CCG001 -->
+					<div id="ccgcomponent"></div>
+					<!-- B2 -->
+					<!-- KCP009 -->
+					<div  tabindex = "1" id="emp-component"></div>
+					<div class="div-table">
+						<!-- B3 -->
+						<div class="div-table-row">
+							<div class="div-table-col">
+								<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDM001_3')}</div>
+							</div>
+							<div class="div-table-col-medium">
+								<div>
+									<div  tabindex = "2"
+										data-bind="ntsRadioButton: {checked: selectedPeriodItem, option: periodOptionItem()[0], optionValue: 'value', optionText: 'name', group: 'periodOption'}"></div>
+								</div>
+								<div>
+									<div  tabindex = "3"
+										data-bind="ntsRadioButton: {checked: selectedPeriodItem, option: periodOptionItem()[1], optionValue: 'value', optionText: 'name', group: 'periodOption'}"></div>
+								</div>
+							</div>
+							<div class="div-table-col-big">
+								<div></div>
+								<div id="daterangepicker"  tabindex = "4"
+									data-bind="ntsDateRangePicker: { required: false, enable: selectedPeriodItem()==1, showNextPrevious: true, value: dateValue, maxRange: 'oneMonth'}" />
+							</div>
+							<div class="div-table-col-big">
+								<div></div>
+								<button  tabindex = "5"
+									data-bind="click: filterByPeriod, , enable: selectedPeriodItem()==1">#{i18n.getText('KDM001_7')}</button>
+							</div>
+						</div>
+						<!-- B4 -->
+						<div class="div-table-row">
+						<label>#{i18n.getText('KDM001_123')}</label>
+							<table id="substituteDataGrid"></table>
+						</div>
+					</div>
+					<!-- B5 -->
+					<div class=" panel panel-frame person-info-panel flex valign-center">
+						<div >
+							<label>#{i18n.getText('KDM001_38')}</label>
+							<label data-bind = "text: dispTotalRemainHours"></label>
+						</div>
+						<div style="margin-left: auto;">
+							<label>#{i18n.getText('KDM001_40')}</label>
+							<label data-bind = "text: dispTotalExpiredHours"></label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="tabpanel-3" role="tabpanel"></div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.remainingnumber;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -78,6 +79,23 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	}
 
 	@Override
+	public void delete(String sid) {
+       this.commandProxy().remove(KrcmtPayoutManaData.class,sid );
+	}
+
+	@Override
+	public void update(PayoutManagementData domain) {
+		 this.commandProxy().update(toEntity(domain));
+	}
+
+	@Override
+	public Optional<PayoutManagementData> findByID(String ID) {
+		Optional<KrcmtPayoutManaData> entity = this.queryProxy().find(ID, KrcmtPayoutManaData.class);
+		if(entity.isPresent()){
+			return Optional.ofNullable(toDomain(entity.get()));
+		}
+		return Optional.empty();
+	}
 	public List<PayoutManagementData> getBySidDatePeriod(String sid, GeneralDate startDate, GeneralDate endDate,
 			int digestionAtr) {
 		List<KrcmtPayoutManaData> listSubOfHD = this.queryProxy().query(QUERY_BY_SID_DATEPERIOD, KrcmtPayoutManaData.class)

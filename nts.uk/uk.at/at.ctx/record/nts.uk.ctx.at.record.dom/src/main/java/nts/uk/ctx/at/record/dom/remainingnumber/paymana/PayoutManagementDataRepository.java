@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.paymana;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 
@@ -14,6 +15,11 @@ public interface PayoutManagementDataRepository {
 	
 	List<PayoutManagementData> getSid(String cid, String sid);
 	
+	void delete(String sid);
+	
+	void update(PayoutManagementData domain);
+	
+	Optional<PayoutManagementData> findByID(String ID);
 	// ドメイン「振休管理データ」より紐付け対象となるデータを取得する
 	List<PayoutManagementData> getBySidDatePeriod(String sid, GeneralDate startDate, GeneralDate endDate, int digestionAtr);
 }
