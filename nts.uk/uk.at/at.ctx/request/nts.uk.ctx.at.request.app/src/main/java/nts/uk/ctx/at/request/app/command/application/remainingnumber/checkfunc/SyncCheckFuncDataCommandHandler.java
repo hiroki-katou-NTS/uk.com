@@ -9,7 +9,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateful;
 import javax.inject.Inject;
 import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
@@ -23,6 +26,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImp
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.AnnualBreakManageAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.AnnualBreakManageImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.DailyWorkTypeListImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.NumberOfWorkTypeUsedImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.YearlyHolidaysTimeRemainingImport;
 import nts.uk.ctx.at.request.dom.settting.worktype.history.PlanVacationHistory;
 import nts.uk.ctx.at.request.dom.settting.worktype.history.VacationHistoryRepository;
@@ -160,16 +164,46 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				excelInforCommand.setName(employeeRecordImport.getPname());
 				excelInforCommand.setDateStart(employeeRecordImport.getEntryDate());
 				excelInforCommand.setDateEnd(employeeRecordImport.getRetiredDate());
-				excelInforCommand.setDateOffYear(yearlyHolidaysTimeRemainingImport.get(i).getAnnualHolidayGrantDay());
+				excelInforCommand.setDateOffYear(yearlyHolidaysTimeRemainingImport.get(0).getAnnualHolidayGrantDay());
 				excelInforCommand.setDateTargetRemaining(command.getDate());
-				excelInforCommand.setDateAnnualRetirement(yearlyHolidaysTimeRemainingImport.get(i).getAnnualRemainingGrantTime());
-				excelInforCommand.setDateAnnualRest(yearlyHolidaysTimeRemainingImport.get(i).getAnnualRemaining());
+				excelInforCommand.setDateAnnualRetirement(yearlyHolidaysTimeRemainingImport.get(0).getAnnualRemainingGrantTime());
+				excelInforCommand.setDateAnnualRest(yearlyHolidaysTimeRemainingImport.get(0).getAnnualRemaining());
 				excelInforCommand.setNumberOfWorkTypeUsedImport(dailyWorkTypeListImport.get().getNumberOfWorkTypeUsedExports());
 				excelInforCommand.setPlannedVacationListCommand(plannedVacationList);
 				excelInforList.add(excelInforCommand);
+				 //JsonArray jsonArray = new JSONArray();
+				JsonArray jsonArrayDailyWorkTypeListImport = (JsonArray) Json.createArrayBuilder();
+				for (NumberOfWorkTypeUsedImport workType : dailyWorkTypeListImport.get().getNumberOfWorkTypeUsedExports()) {
+					jsonArrayDailyWorkTypeListImport.add((JsonValue) Json.createObjectBuilder()
+					         .add("workTypeCode", workType.getWorkTypeCode())
+					         .add("attendanceDaysMonth", workType.getAttendanceDaysMonth()));
 
-				setter.updateData(NUMBER_OF_SUCCESS, i + 1);
+				} 
+				JsonArray jsonArrayPlannedVacationList = (JsonArray) Json.createArrayBuilder();
+				for (PlannedVacationListCommand planVa : plannedVacationList) {
+					jsonArrayPlannedVacationList.add((JsonValue) Json.createObjectBuilder()
+					         .add("maxNumberDays", planVa.getMaxNumberDays())
+					         .add("workTypeCode", planVa.getWorkTypeCode())
+					         .add("workTypeName", planVa.getWorkTypeName())
+					         );
+
+
+				}
 				
+				JsonObject jsonExcelInforCommand = Json.createObjectBuilder()
+						.add("name", employeeRecordImport.getPname())
+						.add("dateStart", employeeRecordImport.getEntryDate().toString("YYYY/MM/DD"))
+						.add("dateEnd", employeeRecordImport.getRetiredDate().toString("YYYY/MM/DD"))
+						.add("dateOffYear", yearlyHolidaysTimeRemainingImport.get(0).getAnnualHolidayGrantDay().toString("YYYY/MM/DD"))
+						.add("dateTargetRemaining", command.getDate().toString("YYYY/MM/DD"))
+						.add("dateAnnualRetirement", yearlyHolidaysTimeRemainingImport.get(0).getAnnualRemainingGrantTime())
+						.add("dateAnnualRest", yearlyHolidaysTimeRemainingImport.get(0).getAnnualRemaining())
+						.add("numberOfWorkTypeUsedImport", jsonArrayDailyWorkTypeListImport)
+						.add("plannedVacationListCommand", jsonArrayPlannedVacationList).build();
+
+				
+				setter.updateData(NUMBER_OF_SUCCESS, i + 1);
+				setter.setData("EXCEL_LIST" + i, jsonExcelInforCommand);
 				System.out.println("----------------" + (i + 1));
 			}
 			// Excel出力情報ListをもとにExcel出力をする (Xuất ra file excel)
