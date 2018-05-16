@@ -39,7 +39,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         displaySPHDRamainNo: KnockoutObservable<boolean>;
         displaySixtyhExtraRest: KnockoutObservable<boolean>;
         
-        dataRecord: KnockoutObservable<OptionalWidgetInfo>
+        dataRecord: KnockoutObservable<OptionalWidgetInfo>;
         
         
         
@@ -251,7 +251,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         }
         
         openKDW003Dialog() {
-            let self = this;
+            var self = this;
             if(self.dataRecord().presenceDailyPer){
                 window.top.location = window.location.origin + '/nts.uk.at.web/view/kdw/003/a/index.xhtml';
             }else{
