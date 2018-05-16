@@ -126,7 +126,7 @@ import MailFunctionDto = nts.uk.com.view.cmm049.b.service.MailFunctionDto;
                     if (self.currentCodeList().length <= 0) {
                         listOfSendMailFunction.push({
                             functionId: item,
-                            sendSetting: 0
+                            sendSetting: SendSetting.CAN_NOT_EDIT
                         });
                     }
                     else {
@@ -134,13 +134,12 @@ import MailFunctionDto = nts.uk.com.view.cmm049.b.service.MailFunctionDto;
                         if (check.length > 0) {
                             listOfSendMailFunction.push({
                                 functionId: item,
-                                sendSetting: 1
-                            });
+                                sendSetting: SendSetting.CAN_EDIT                            });
                         }
                         else {
                             listOfSendMailFunction.push({
                                 functionId: item,
-                                sendSetting: 0
+                                sendSetting: SendSetting.CAN_NOT_EDIT
                             });
 
                         }
@@ -171,7 +170,7 @@ import MailFunctionDto = nts.uk.com.view.cmm049.b.service.MailFunctionDto;
 
                     });
                     data.mailDestinationFunctionDto.sendByFunctionSetting.forEach((item: any, index: any) => {
-                        if (item.sendSetting == 1) {
+                        if (item.sendSetting == SendSetting.CAN_EDIT) {
                             let returnArray: Array<any> = _.find(listOfMailFunction, function(o) {
                                 return o == item.functionId;
                             });
@@ -205,6 +204,11 @@ import MailFunctionDto = nts.uk.com.view.cmm049.b.service.MailFunctionDto;
                 this.functionId = functionId;
                 this.sendSetting = sendSetting;
             }
+        }
+        
+        export enum SendSetting {
+            CAN_NOT_EDIT,
+            CAN_EDIT
         }
 
         export enum UserInfoItem {

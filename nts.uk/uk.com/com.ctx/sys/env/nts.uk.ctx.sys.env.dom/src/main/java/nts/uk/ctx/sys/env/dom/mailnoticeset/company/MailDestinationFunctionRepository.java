@@ -19,21 +19,14 @@ public interface MailDestinationFunctionRepository {
 	 * @return the mail destination function
 	 */
 	public MailDestinationFunction findByCidAndSettingItem(String companyId, UserInfoItem userInfoItem);
-	
+
 	/**
 	 * Adds the.
 	 *
 	 * @param domain the domain
 	 */
 	void add(MailDestinationFunction domain);
-	
-	/**
-	 * Update.
-	 *
-	 * @param domain the domain
-	 */
-	void update(MailDestinationFunction domain);
-	
+
 	/**
 	 * Removes the.
 	 *
@@ -41,6 +34,5 @@ public interface MailDestinationFunctionRepository {
 	 * @param userInfoItem the user info item
 	 */
 	void remove(String companyId, UserInfoItem userInfoItem);
-	
 
 }

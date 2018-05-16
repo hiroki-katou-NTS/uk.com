@@ -27,7 +27,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class MailFunctionAndDestinationFinder {
 
-	/** The mail function finder repository. */
+	/** The mail function repository. */
 	@Inject
 	private MailFunctionRepository mailFunctionRepository;
 
@@ -35,6 +35,13 @@ public class MailFunctionAndDestinationFinder {
 	@Inject
 	private MailDestinationFunctionRepository mailDestinationFunctionRepository;
 
+	/**
+	 * Gets the data.
+	 *
+	 * @param userInfoItem
+	 *            the user info item
+	 * @return the data
+	 */
 	public SettingDataDto getData(UserInfoItem userInfoItem) {
 		String companyId = this.getCid();
 		// ・メール送信設定可否区分＝True
@@ -62,6 +69,11 @@ public class MailFunctionAndDestinationFinder {
 		}
 	}
 
+	/**
+	 * Gets the cid.
+	 *
+	 * @return the cid
+	 */
 	private String getCid() {
 		return AppContexts.user().companyId();
 	}

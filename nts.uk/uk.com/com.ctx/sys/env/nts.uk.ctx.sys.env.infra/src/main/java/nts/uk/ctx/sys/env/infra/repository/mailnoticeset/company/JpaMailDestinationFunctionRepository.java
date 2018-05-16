@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2018 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.env.infra.repository.mailnoticeset.company;
 
 import java.util.ArrayList;
@@ -23,6 +27,13 @@ import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFunc
 @Stateless
 public class JpaMailDestinationFunctionRepository extends JpaRepository implements MailDestinationFunctionRepository {
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.company.
+	 * MailDestinationFunctionRepository#findByCidAndSettingItem(java.lang.
+	 * String, nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem)
+	 */
 	@Override
 	public MailDestinationFunction findByCidAndSettingItem(String companyId, UserInfoItem userInfoItem) {
 		// Get entity manager
@@ -58,13 +69,8 @@ public class JpaMailDestinationFunctionRepository extends JpaRepository implemen
 	@Override
 	public void add(MailDestinationFunction domain) {
 		List<SevstMailDestinFunc> entities = new ArrayList<>();
-		domain.saveToMemento(new JpaMailDestinationFunctionSetMemento(entities,domain.getCompanyId()));
+		domain.saveToMemento(new JpaMailDestinationFunctionSetMemento(entities, domain.getCompanyId()));
 		this.commandProxy().insertAll(entities);
-	}
-
-	@Override
-	public void update(MailDestinationFunction domain) {
-		
 	}
 
 	@Override

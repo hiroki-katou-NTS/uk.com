@@ -50,6 +50,7 @@ public class UserInfoSettingWs extends WebService {
 
 	@Inject
 	private I18NResourcesForUK i18n;
+
 	/**
 	 * Find.
 	 *

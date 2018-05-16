@@ -39,12 +39,11 @@ public class UserInfoUseMethodFinder {
 		} else {
 			String companyId = AppContexts.user().companyId();
 			List<UserInfoUseMethod> lstUserInfoUseMethod = userInfoUseMethodRepository.findByCompanyId(companyId);
-			List<UserInfoUseMethodDto> lstDto = lstUserInfoUseMethod.stream().map(item -> {
+			return lstUserInfoUseMethod.stream().map(item -> {
 				UserInfoUseMethodDto dto = new UserInfoUseMethodDto();
 				item.saveToMemento(dto);
 				return dto;
 			}).collect(Collectors.toList());
-			return lstDto;
 		}
 	}
 }

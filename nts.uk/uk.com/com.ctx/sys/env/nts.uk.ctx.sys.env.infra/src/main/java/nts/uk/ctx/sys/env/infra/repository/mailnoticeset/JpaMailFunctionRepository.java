@@ -30,6 +30,7 @@ public class JpaMailFunctionRepository extends JpaRepository implements MailFunc
 
 	private static final Integer TRUE_VAL = 0;
 	private static final Integer FALSE_VAL = 1;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -60,9 +61,7 @@ public class JpaMailFunctionRepository extends JpaRepository implements MailFunc
 
 		// Check exist
 		if (!CollectionUtil.isEmpty(listSevstMailFunction)) {
-			lstMailFunction = listSevstMailFunction.stream().map(item -> {
-				return this.toDomain(item);
-			}).collect(Collectors.toList());
+			lstMailFunction = listSevstMailFunction.stream().map(this::toDomain).collect(Collectors.toList());
 		}
 		// Return
 		return lstMailFunction;

@@ -101,7 +101,6 @@ module nts.uk.com.view.cmm049.a {
                 let _self = this;
                 data.settingUseSendMail.forEach((item: any, index: number) => {
                     _self.sendMailSetOptions().push({ code: item.value, name: item.fieldName });
-                    //TODO
                     //                    _self.sendMailSetOptions().push({ code: item.value, name: item.localizedName });
                     data.selfEditSetting.forEach((item: any, index: number) => {
                         _self.selfEditSetOptions.push({ code: item.value, name: item.fieldName });

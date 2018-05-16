@@ -15,7 +15,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  * UserInfoUseMethodSave Command Handler
- * @author phund
+ * 
  *
  */
 @Stateless
@@ -24,8 +24,12 @@ public class UserInfoUseMethodSaveCommandHandler extends CommandHandler<UserInfo
 	@Inject
 	private UserInfoUseMethodRepository repo;
 
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
 	@Transactional
