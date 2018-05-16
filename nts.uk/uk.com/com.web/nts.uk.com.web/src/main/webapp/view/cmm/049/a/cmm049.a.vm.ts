@@ -100,11 +100,10 @@ module nts.uk.com.view.cmm049.a {
             public bindEnums(data: any) {
                 let _self = this;
                 data.settingUseSendMail.forEach((item: any, index: number) => {
-                    _self.sendMailSetOptions().push({ code: item.value, name: item.fieldName });
-                    //                    _self.sendMailSetOptions().push({ code: item.value, name: item.localizedName });
-                    data.selfEditSetting.forEach((item: any, index: number) => {
-                        _self.selfEditSetOptions.push({ code: item.value, name: item.fieldName });
-                    })
+                    _self.sendMailSetOptions().push({ code: item.value, name: item.localizedName });                  
+                });
+                data.selfEditSetting.forEach((item: any, index: number) => {
+                    _self.selfEditSetOptions.push({ code: item.value, name: item.localizedName });
                 });
             }
 

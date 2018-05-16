@@ -17,15 +17,15 @@ module nts.uk.com.view.cmm049.b {
             return nts.uk.request.ajax(servicePath.getPCMailCompany);
         }
         
-        export function getPCMailPerson(): JQueryPromise<any> {
+        export function getPCMailPerson(): JQueryPromise<MailFunctionListDto> {
             return nts.uk.request.ajax(servicePath.getPCMailPerson);
         }
         
-        export function getMobileMailCompany(): JQueryPromise<any> {
+        export function getMobileMailCompany(): JQueryPromise<MailFunctionListDto> {
             return nts.uk.request.ajax(servicePath.getMobileMailCompany);
         }
         
-        export function getMobileMailPerson(): JQueryPromise<any> {
+        export function getMobileMailPerson(): JQueryPromise<MailFunctionListDto> {
             return nts.uk.request.ajax(servicePath.getMobileMailPerson);
         }
         
