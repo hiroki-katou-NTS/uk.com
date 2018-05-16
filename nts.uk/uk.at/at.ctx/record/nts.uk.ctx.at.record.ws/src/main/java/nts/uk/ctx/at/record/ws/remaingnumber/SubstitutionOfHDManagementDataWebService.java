@@ -9,6 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeletePayoutManagementDataCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeleteSubstitutionOfHDManaDataCommandHandler;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.UpdateSubstitutionOfHDManaDataCommand;
@@ -45,7 +46,21 @@ public class SubstitutionOfHDManagementDataWebService extends WebService {
 	@POST
 	@Path("getBysiDRemCod/{empId}")
 	// get SubstitutionOfHDManagement by SID and remainsDays > 0
-	public List<SubstitutionOfHDManagementDataDto> getBysiDRemCod(@PathParam("empId") String employeeId) {
+	public List<SubstitutionOfHDManagementDataDto> getBysiDRemCod(@PathParam("empId")String employeeId) {
 		return finder.getBysiDRemCod(employeeId);
+	}
+	
+	@POST
+	@Path("getBySidDatePeriodNoRemainDay/{empId}/{startDate}/{endDate}")
+	// get SubstitutionOfHDManagement by SID and remainsDays > 0
+	public List<SubstitutionOfHDManagementDataDto> getBySidDatePeriodNoRemainDay(@PathParam("empId")String employeeId, @PathParam("startDate")GeneralDate startDate, @PathParam("endDate")GeneralDate endDate) {
+		return finder.getBySidDatePeriodNoRemainDay(employeeId, startDate, endDate);
+	}
+	
+	@POST
+	@Path("getBySidRemainDayAndInPayout/{empId}")
+	// get SubstitutionOfHDManagement by SID and remainsDays != 0, and in PayoutMng 
+	public List<SubstitutionOfHDManagementDataDto> getBySidRemainDayAndInPayout(@PathParam("empId")String employeeId) {
+		return finder.getBySidRemainDayAndInPayout(employeeId);
 	}
 }

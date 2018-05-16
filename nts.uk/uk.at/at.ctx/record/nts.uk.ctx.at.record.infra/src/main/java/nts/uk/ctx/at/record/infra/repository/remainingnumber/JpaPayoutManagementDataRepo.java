@@ -24,6 +24,7 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	
 	private final String QUERY_BY_SID_DATEPERIOD_DIF = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:employeeId AND p.dayOff >= :startDate AND p.dayOff <= :endDate AND p.stateAtr != :state";
 	
+	private final String QUERY_BY_SID_DATEPERIOD_NO_DIGES = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:employeeId AND p.dayOff >= :startDate AND p.dayOff <= :endDate";
 	
 	@Override
 	public List<PayoutManagementData> getSid(String cid, String sid) {
@@ -117,6 +118,16 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 				.setParameter("startDate", startDate)
 				.setParameter("endDate", endDate)
 				.setParameter("state", digestionAtr)
+				.getList();
+		return listSubOfHD.stream().map(i->toDomain(i)).collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<PayoutManagementData> getBySidDatePeriodNoDigestion(String sid, GeneralDate startDate, GeneralDate endDate) {
+		List<KrcmtPayoutManaData> listSubOfHD = this.queryProxy().query(QUERY_BY_SID_DATEPERIOD_NO_DIGES, KrcmtPayoutManaData.class)
+				.setParameter("sid", sid)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
 				.getList();
 		return listSubOfHD.stream().map(i->toDomain(i)).collect(Collectors.toList());
 	}

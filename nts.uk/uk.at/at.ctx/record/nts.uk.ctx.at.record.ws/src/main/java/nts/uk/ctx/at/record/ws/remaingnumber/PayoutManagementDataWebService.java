@@ -45,13 +45,19 @@ public class PayoutManagementDataWebService extends WebService{
 	@POST
 	@Path("getBysiDRemCod/{empId}/{state}")
 	// get SubstitutionOfHDManagement by SID and stateAtr = ?
-	public List<PayoutManagementDataDto> getBysiDRemCod(@PathParam("empId") String employeeId, @PathParam("state") int state) {
+	public List<PayoutManagementDataDto> getBysiDRemCod(@PathParam("empId")String employeeId, @PathParam("state")int state) {
 		return finder.getBysiDRemCod(employeeId, state);
 	}
 	
 	@POST
 	@Path("getBySidDatePeriod/{empId}/{startDate}/{endDate}")
-	public List<PayoutManagementDataDto> getBySidDatePeriod(@PathParam("empId")String sid, @PathParam("startDate")GeneralDate startDate,@PathParam("endDate") GeneralDate endDate) {
+	public List<PayoutManagementDataDto> getBySidDatePeriod(@PathParam("empId")String sid, @PathParam("startDate")GeneralDate startDate,@PathParam("endDate")GeneralDate endDate) {
+		return finder.getBySidDatePeriod(sid, startDate, endDate);
+	}
+	
+	@POST
+	@Path("getBySidDatePeriodNoDigestion/{empId}/{startDate}/{endDate}")
+	public List<PayoutManagementDataDto> getBySidDatePeriodNoDigestion(@PathParam("empId")String sid, @PathParam("startDate")GeneralDate startDate,@PathParam("endDate") GeneralDate endDate) {
 		return finder.getBySidDatePeriod(sid, startDate, endDate);
 	}
 }

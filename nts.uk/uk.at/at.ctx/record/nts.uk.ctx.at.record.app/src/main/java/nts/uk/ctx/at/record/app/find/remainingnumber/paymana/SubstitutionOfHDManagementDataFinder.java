@@ -34,4 +34,14 @@ public class SubstitutionOfHDManagementDataFinder {
 		return substitutionOfHDManaDataRepository.getBysiDRemCod(cid, empId).stream().map(item -> SubstitutionOfHDManagementDataDto.createFromDomain(item))
 				.collect(Collectors.toList());
 	}
+	
+	public List<SubstitutionOfHDManagementDataDto> getBySidDatePeriodNoRemainDay(String sid, GeneralDate startDate, GeneralDate endDate) {
+		return substitutionOfHDManaDataRepository.getBySidDatePeriodNoRemainDay(sid, startDate, endDate).stream().map(item -> SubstitutionOfHDManagementDataDto.createFromDomain(item))
+				.collect(Collectors.toList());
+	}
+	
+	public List<SubstitutionOfHDManagementDataDto> getBySidRemainDayAndInPayout(String sid) {
+		return substitutionOfHDManaDataRepository.getBySidRemainDayAndInPayout(sid).stream().map(item -> SubstitutionOfHDManagementDataDto.createFromDomain(item))
+				.collect(Collectors.toList());
+	}
 }
