@@ -38,7 +38,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 { headerText: nts.uk.resource.getText("KMF004_8"), key: 'yearServiceName', width: 160, formatter: _.escape}
             ]);
             self.provisionCheck = ko.observable(false);
-            self.provisionDeactive = ko.observable(false);
+            self.provisionDeactive = ko.observable(true);
             self.selectedId = ko.observable(0);
             self.lstPer = ko.observableArray([]);
             self.selectedCode = ko.observable("");
@@ -123,7 +123,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     self.selectedName(null);
                     self.checkUpdate(false);
                     self.provisionCheck(false);
-                    self.provisionDeactive(false);
+                    self.provisionDeactive(true);
                     self.items([]);
                     for (let i = 0; i < 20; i++) {
                         if(self.items()[i] == undefined){

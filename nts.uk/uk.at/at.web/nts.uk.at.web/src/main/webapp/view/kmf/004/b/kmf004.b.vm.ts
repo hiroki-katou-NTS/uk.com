@@ -32,6 +32,7 @@ module nts.uk.at.view.kmf004.b {
             standardDateEnable: KnockoutObservable<boolean>;
             standardDateReq: KnockoutObservable<boolean>;
             provisionCheck: KnockoutObservable<boolean>;
+            provisionDeactive: KnockoutObservable<boolean>;
             
             constructor() {
                 let self = this,
@@ -49,6 +50,7 @@ module nts.uk.at.view.kmf004.b {
                 self.singleSelectedCode = ko.observable("");
                 
                 self.provisionCheck = ko.observable(false);  
+                self.provisionDeactive = ko.observable(true);
                 
                 self.code = ko.observable("");
                 self.editMode = ko.observable(true);  
@@ -82,6 +84,11 @@ module nts.uk.at.view.kmf004.b {
                             self.code(data.personalGrantDateCode);
                             self.name(data.personalGrantDateName);
                             self.provisionCheck(data.provision == 1 ? true : false);
+                            if(data.provision == 1) {
+                                self.provisionDeactive(false);
+                            } else {
+                                self.provisionDeactive(true);
+                            }
                             self.selectedBaseDateId(data.grantDateAtr),
                             self.standardDate(data.grantDateAtr != 0 ? "" : data.grantDate),
                             self.bindPerSetData(data.personalGrantDateCode)
@@ -206,6 +213,7 @@ module nts.uk.at.view.kmf004.b {
                 self.editMode(true);  
                 self.name(""); 
                 self.provisionCheck(false);
+                self.provisionDeactive(true);
                 self.selectedBaseDateId(0); 
                 self.standardDate("");
                 self.standardDateReq(true);
