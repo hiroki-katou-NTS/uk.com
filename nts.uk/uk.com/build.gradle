@@ -235,6 +235,10 @@ project (':shr:nts.uk.shr.com') {
 		// https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-jaxrs
 		compileOnly group: 'org.jboss.resteasy', name: 'resteasy-jaxrs', version: '3.1.2.Final'
 		
+		// for JMS
+		compileOnly group: 'javax.jms', name: 'javax.jms-api', version: '2.0.1'
+		compile group: 'javax.ejb', name: 'javax.ejb-api', version: '3.2.2'
+		
 		// https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
 		testCompile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.4.0'
 	}
