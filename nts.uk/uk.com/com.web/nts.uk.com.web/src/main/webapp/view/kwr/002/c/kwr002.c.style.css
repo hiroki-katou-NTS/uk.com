@@ -1,0 +1,40 @@
+@CHARSET "UTF-8";
+
+
+#left-content {
+	margin: 10px 0px 0 20px !important;
+	float: left;
+	height: 296px;
+}
+
+#right-content {
+	margin-left: 40px;
+	margin-top: 10px;
+	float: left;
+	height: 350px;
+}
+
+.master_panel{
+	margin: 20px;
+}
+
+.panel-frame.cell{
+	width: 111px;
+	height: auto;
+	padding: 0px;
+}
+
+.sub{
+	margin: 10px;
+	border-radius: 5px;
+	height: 28px;
+}
+.seal{
+	width:64px;
+	border-radius:5px;
+	border: 1px solid;
+}
+.parent-tab{
+	border:1px solid;
+	border-radius:5px;
+}

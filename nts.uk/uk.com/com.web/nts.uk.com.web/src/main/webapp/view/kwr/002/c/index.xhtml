@@ -4,6 +4,8 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	
+	
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
@@ -19,7 +21,7 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<div>
+				<div class="form-label">
 					<span style="margin-right: 15px"
 						data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KWR002_60')}</span>
 					<span class="label" style="margin-right: 5px"
@@ -37,56 +39,58 @@
 
 						<tr class="row">
 							<td>
-								<div
-									data-bind="ntsFormLabel: { required: false,constraint:['SealColumnName'] }">#{i18n.getText('KWR002_61')}</div>
+								<div class="form-label"
+									data-bind="ntsFormLabel: { required: false, constraint:['SealColumnName'] }">#{i18n.getText('KWR002_61')}</div>
 							</td>
 							<td>
-								<div
+								<div 
 									data-bind="ntsSwitchButton: {
-									options: switchUSe3,
+									options: useSeal,
 									optionsValue: 'code',
 									optionsText: 'name',
 									name: '#[KWR002_62]',
-									value: ,
-									enable: }">
-									Switch Button</div>
+									value: useSealValue ,
+									enable: true}"></div>
+
+
 								<div>
-									<input class="nts-input"
+
+									<input class="nts-input seal"
 										data-bind="ntsTextEditor: {
 										  name: '#[KWR002_65]',
                                           value: ,
                                           constraint: 'SealColumnName',
                                           enable: ,
                                           required: true}" />
-									<input class="nts-input"
+									<input class="nts-input seal"
 										data-bind="ntsTextEditor: {
 										  name: '#[KWR002_66]',
                                           value: ,
                                           constraint: 'SealColumnName',
                                           enable: ,
                                           required: true}" />
-									<input class="nts-input"
+									<input class="nts-input seal"
 										data-bind="ntsTextEditor: {
 										  name: '#[KWR002_67]',
                                           value: ,
                                           constraint: 'SealColumnName',
                                           enable: ,
                                           required: true}" />
-									<input class="nts-input"
+									<input class="nts-input seal"
 										data-bind="ntsTextEditor: {
 										  name: '#[KWR002_68]',
                                           value: ,
                                           constraint: 'SealColumnName',
                                           enable: ,
                                           required: true}" />
-									<input class="nts-input"
+									<input class="nts-input seal"
 										data-bind="ntsTextEditor: {
 										  name: '#[KWR002_69]',
                                           value: ,
                                           constraint: 'SealColumnName',
                                           enable: ,
                                           required: true}" />
-									<input class="nts-input"
+									<input class="nts-input seal"
 										data-bind="ntsTextEditor: {
 										  name: '#[KWR002_70]',
                                           value: ,
@@ -94,6 +98,8 @@
                                           enable: ,
                                           required: true}" />
 								</div>
+
+
 							</td>
 						</tr>
 						<tr>
@@ -104,24 +110,58 @@
 							</td>
 						</tr>
 					</table>
-					<div id="content-area" class="contents-area fixed-flex-layout">
-						<div
-							data-bind="ntsPanel:{width: '350px', height: '400px', direction: 'right', showIcon: true, visible: true}">
-							<div class="input-wrapper">
-								<span class="nts-editor-wrapped ntsControl"><input
-									class="ntsSearchBox nts-editor ntsSearchBox_Component"
-									type="text" placeholder="コード・名称で検索・・・" data-name="検索テキストボックス"
-									tabindex="0" style="width: 250px;" /></span>
-							</div>
-							<div class="input-wrapper">
-								<button class="search-btn caret-bottom ntsSearchBox_Component"
-									tabindex="0">検索</button>
-							</div>
+					<div id="left-content" style="float: left"
+						class="bg-green caret-right caret-background fixed-flex-layout-left">
+						<div data-bind="ntsPanel:{width: '350px', height: '400px', direction: 'right', showIcon: true, visible: true}">
+
+							<span class="nts-editor-wrapped ntsControl"><input
+								class="ntsSearchBox nts-editor ntsSearchBox_Component"
+								type="text" placeholder="コード・名称で検索・・・" data-name="検索テキストボックス"
+								tabindex="0" style="width: 250px;" /></span>
+
+
+							<button class="search-btn caret-bottom ntsSearchBox_Component"
+								tabindex="0">検索</button>
+
 							<button class="clear-btn ntsSearchBox_Component" tabindex="0">解除</button>
+
+							<div style="margin: 20px">
+								<table tabindex="5" id="single-list"
+									data-bind="ntsGridList:{
+								width: 330,
+								height: 255,
+								options: attendanceItemList,								
+								optionsValue: 'attendCode',
+								columns: columns,
+								multiple: false,
+								enable: true}">
+
+								</table>
+							</div>
 						</div>
+
 					</div>
 
-					<div id="right-content" class="fixed-flex-layout-right"></div>
+					<div id="right-content" class="fixed-flex-layout-right">
+						<div id="tab-panel"
+							data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+							<div class="tab-content-1">
+								<span>#{i18n.getText('KWR002_91')}</span>
+										<div class="panel panel-frame cell">
+										<div class="panel panel-gray-bg sub ">Default 1</div>
+										<div class="panel panel-gray-bg sub ">Default 2</div>
+										</div>
+							</div>
+							<div class="tab-content-2">
+								
+								<span>#{i18n.getText('KWR002_101')}</span>
+										<div class="panel panel-frame cell">
+										<div class="panel panel-gray-bg sub ">Default 1</div>
+										<div class="panel panel-gray-bg sub ">Default 2</div>
+										</div>
+							</div>
+						</div>
+					</div>
 				</div>
 
 			</div>
