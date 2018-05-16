@@ -31,13 +31,13 @@ public class ExcelExportService extends ExportService<List<ExcelInforCommand>> {
     		return;
     	}
     	List<String> listHeader = new ArrayList<>();
-    	listHeader.add("氏名");
-    	listHeader.add("入社年月日");
-    	listHeader.add("退職年月日");
-    	listHeader.add("年休付与日");
-    	listHeader.add("残数の対象日");
-    	listHeader.add("年休付与後残数");
-    	listHeader.add("年休残数");
+    	listHeader.add("KDM002_11");
+    	listHeader.add("KDM002_12");
+    	listHeader.add("KDM002_13");
+    	listHeader.add("KDM002_14");
+    	listHeader.add("KDM002_15");
+    	listHeader.add("KDM002_16");
+    	listHeader.add("KDM002_9");
     	List<Integer> sizePlannedVacationListCommand = new ArrayList<>();
     	for (ExcelInforCommand excelInforCommand : listOuput) {
     		sizePlannedVacationListCommand.add(excelInforCommand.getPlannedVacationListCommand().size());	 

@@ -23,8 +23,9 @@ module nts.uk.at.view.kdm002.b {
             // table result
             timeStart: KnockoutObservable<string>;
             timeOver: KnockoutObservable<string> = ko.observable('00:00:00');
-            status: KnockoutObservable<string> = ko.observable('処理中');
-            result: KnockoutObservable<string> = ko.observable('0 / 25人');
+            status: KnockoutObservable<string> = ko.observable(getText("KDM002_28"));
+            result: KnockoutObservable<string> = ko.observable('');
+            resultMessage: string = getText("KDM002_31");
             total: KnockoutObservable<number>;
             pass: KnockoutObservable<number> = ko.observable(0);
             error: KnockoutObservable<number> = ko.observable(0);
@@ -42,7 +43,6 @@ module nts.uk.at.view.kdm002.b {
             timeStartt: any;
             timeNow: any;
             constructor() {
-                let self = this;
                 self.timeStartt = new Date();
                 let systemDate = Date.now();
                 let convertdLocalTime = new Date(systemDate);
@@ -57,7 +57,8 @@ module nts.uk.at.view.kdm002.b {
                 self.pdate =  ko.observable(parrams.date);
                 self.pmaxday=  ko.observable(parrams.maxday);   
                 
-                self.result = ko.observable('0 / '+self.pempployeeList().length +'人');
+                //self.result = ko.observable('0 / '+self.pempployeeList().length +'人');
+                self.result = ko.observable(self.resultMessage.replace('{0}', '0').replace('{1}', self.pempployeeList().length));
                 let dataDump = {
                     employeeCode: '',
                     employeeName: '',
@@ -90,7 +91,6 @@ module nts.uk.at.view.kdm002.b {
             */
             public execution(): void {
                 var self = this;
-                 $('#BTN_STOP').focus();
                 let command: CheckFuncDto = new CheckFuncDto({
                     total: self.total(),
                     error: 0,
@@ -136,7 +136,7 @@ module nts.uk.at.view.kdm002.b {
                                     }
                                     // 処理カウント
                                     if (item.key == 'NUMBER_OF_SUCCESS') {
-                                        self.result(item.valueAsNumber + " / " + self.total() + "人");
+                                        self.result(self.resultMessage.replace("{0}", item.valueAsNumber).replace("{1}", self.total()));
                                     }
                                 });
 
@@ -154,7 +154,7 @@ module nts.uk.at.view.kdm002.b {
 
                             if (res.succeeded || res.failed || res.cancelled) {
                                 if (self.imErrorLog().length == 0) {
-                                    self.status('完了');
+                                    self.status(getText("KDM002_29"));
                                     $('#BTN_CLOSE').focus();
                                 }
                                 else {
@@ -167,7 +167,7 @@ module nts.uk.at.view.kdm002.b {
                                     windowSize.$dialog.resize();
                                     self.isError(true);
                                     self.isComplete(true);
-                                    self.status('完了　（エラーあり）');
+                                    self.status(getText("KDM002_30"));
                                     $('#BTN_ERROR_EXPORT').focus();
                                 }
                                 self.isStop(true);
