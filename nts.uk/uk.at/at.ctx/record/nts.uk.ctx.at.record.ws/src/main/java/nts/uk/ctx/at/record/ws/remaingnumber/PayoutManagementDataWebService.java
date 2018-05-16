@@ -8,10 +8,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.at.record.app.command.remainingnumber.paymana1.DeletePayoutManagementDataCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.paymana1.DeletePayoutManagementDataCommandHandler;
-import nts.uk.ctx.at.record.app.command.remainingnumber.paymana1.PayoutManagementDataCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.paymana1.UpdatePayoutManagementDataCommandHandler;
+import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeletePayoutManagementDataCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeletePayoutManagementDataCommandHandler;
+import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.PayoutManagementDataCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.UpdatePayoutManagementDataCommandHandler;
 import nts.uk.ctx.at.record.app.find.remainingnumber.paymana.PayoutManagementDataDto;
 import nts.uk.ctx.at.record.app.find.remainingnumber.paymana.PayoutManagementDataFinder;
 
@@ -42,7 +42,7 @@ public class PayoutManagementDataWebService {
 	
 	@POST
 	@Path("getBysiDRemCod/{empId}/{state}")
-	// get SubstitutionOfHDManagement by SID and remainsDays > 0
+	// get SubstitutionOfHDManagement by SID and stateAtr = ?
 	public List<PayoutManagementDataDto> getBysiDRemCod(@PathParam("empId") String employeeId, @PathParam("state") int state) {
 		return finder.getBysiDRemCod(employeeId, state);
 	}

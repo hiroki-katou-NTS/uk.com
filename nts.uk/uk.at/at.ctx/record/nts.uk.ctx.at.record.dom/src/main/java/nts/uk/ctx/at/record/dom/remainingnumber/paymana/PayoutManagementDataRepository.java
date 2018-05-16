@@ -22,4 +22,7 @@ public interface PayoutManagementDataRepository {
 	Optional<PayoutManagementData> findByID(String ID);
 	// ドメイン「振休管理データ」より紐付け対象となるデータを取得する
 	List<PayoutManagementData> getBySidDatePeriod(String sid, GeneralDate startDate, GeneralDate endDate, int digestionAtr);
+	
+	// ドメイン「振出管理データ」より指定されたデータを取得する: 消化区分　≠　未消化
+	List<PayoutManagementData> getBySidDatePeriodDif(String sid, GeneralDate startDate, GeneralDate endDate, int digestionAtr);
 }
