@@ -13,16 +13,16 @@ import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutManagementDataRepo
 @Stateless
 public class UpdatePayoutManagementDataCommandHandler extends CommandHandler<PayoutManagementDataCommand> {
 
-	
 	@Inject
 	private PayoutManagementDataRepository payoutMNDTRepo;
-	
+
 	@Override
 	protected void handle(CommandHandlerContext<PayoutManagementDataCommand> context) {
 		PayoutManagementDataCommand command = context.getCommand();
-//		Optional<PayoutManagementData> managementData = payoutMNDTRepo.findByID(command.getSID());
-//		PayoutManagementData data = managementData.get();
-//		payoutMNDTRepo.update(data);
+		PayoutManagementData data = new PayoutManagementData(command.getPayoutId(), command.getCID(), command.getSID(),
+				command.getPayoutDate(), command.getExpiredDate(), command.getLawAtr(), command.getOccurredDays(),
+				command.getUnUsedDays(), command.getStateAtr());
+		payoutMNDTRepo.update(data);
 	}
 
 }
