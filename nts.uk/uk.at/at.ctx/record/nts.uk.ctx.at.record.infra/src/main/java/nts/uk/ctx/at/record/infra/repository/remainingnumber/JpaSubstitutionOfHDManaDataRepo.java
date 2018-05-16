@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.remainingnumber;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -62,5 +63,26 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 		entity.requiredDays = domain.getRequiredDays().v();
 		entity.remainDays = domain.getRemainDays().v();
 		return entity;
+	}
+
+	@Override
+	public void delete(String sid) {
+		this.commandProxy().remove(KrcmtSubOfHDManaData.class,sid);
+		
+	}
+
+	@Override
+	public void update(SubstitutionOfHDManagementData domain) {
+		this.commandProxy().update(toEntity(domain));
+		
+	}
+
+	@Override
+	public Optional<SubstitutionOfHDManagementData> findByID(String Id) {
+		Optional<KrcmtSubOfHDManaData> entity = this.queryProxy().find(Id, KrcmtSubOfHDManaData.class);
+		if(entity.isPresent()){
+			return Optional.ofNullable(toDomain(entity.get()));
+		}
+		return Optional.empty();
 	}
 }

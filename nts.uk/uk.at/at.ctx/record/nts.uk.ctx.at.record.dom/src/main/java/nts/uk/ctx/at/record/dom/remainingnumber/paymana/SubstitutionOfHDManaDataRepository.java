@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.paymana;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface SubstitutionOfHDManaDataRepository {
 	
@@ -11,4 +12,10 @@ public interface SubstitutionOfHDManaDataRepository {
 	void create(SubstitutionOfHDManagementData domain);
 	
 	List<SubstitutionOfHDManagementData> getBysiD(String cid, String sid);
+	
+	void delete(String sid);
+	
+	void update(SubstitutionOfHDManagementData domain);
+	
+	Optional<SubstitutionOfHDManagementData> findByID(String Id);
 }

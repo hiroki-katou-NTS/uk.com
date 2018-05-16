@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.paymana;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PayoutManagementDataRepository {
 	
@@ -11,4 +12,10 @@ public interface PayoutManagementDataRepository {
 	void create(PayoutManagementData domain);
 	
 	List<PayoutManagementData> getSid(String cid, String sid);
+	
+	void delete(String sid);
+	
+	void update(PayoutManagementData domain);
+	
+	Optional<PayoutManagementData> findByID(String ID);
 }
