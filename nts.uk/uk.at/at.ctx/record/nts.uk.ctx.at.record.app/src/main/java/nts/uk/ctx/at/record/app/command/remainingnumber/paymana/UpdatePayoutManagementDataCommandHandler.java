@@ -20,9 +20,9 @@ public class UpdatePayoutManagementDataCommandHandler extends CommandHandler<Pay
 	@Override
 	protected void handle(CommandHandlerContext<PayoutManagementDataCommand> context) {
 		PayoutManagementDataCommand command = context.getCommand();
-		Optional<PayoutManagementData> managementData = payoutMNDTRepo.findByID(command.getSID());
-		PayoutManagementData data = managementData.get();
-		payoutMNDTRepo.update(data);
+//		Optional<PayoutManagementData> managementData = payoutMNDTRepo.findByID(command.getSID());
+//		PayoutManagementData data = managementData.get();
+//		payoutMNDTRepo.update(data);
 	}
 
 }

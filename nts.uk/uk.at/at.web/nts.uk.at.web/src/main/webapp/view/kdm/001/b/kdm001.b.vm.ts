@@ -98,7 +98,9 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             }
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
             self.selectedItem.subscribe(x =>{
-                console.log(x);
+                //TODO
+                // CALL SERVICE
+                // RELOAD SUBSTITUTE DATA TABLE
             });
         }
         openNewSubstituteData() {
@@ -111,27 +113,13 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         }
         updateSubstituteDataList(){
             var self = this;
-            let substituteDataArray: Array<SubstitutedData> = [
-                new SubstitutedData(1, "1/1/2018", 1, "A", "2/1/2018", 0.5, "A", 0.5, 0.5),
-                new SubstitutedData(2, "1/1/2018", 1, "B", "2/1/2018", 0.5, "B", 0.5, 0.5),
-                new SubstitutedData(3, "1/1/2018", 1, "C", "2/1/2018", 0.5, "C", 0.5, 0.5),
-                new SubstitutedData(4, "1/1/2018", 1, "D", "2/1/2018", 0.5, "D", 0.5, 0.5),
-                new SubstitutedData(5, "1/1/2018", 1, "E", "2/1/2018", 0.5, "E", 0.5, 0.5),
-                new SubstitutedData(6, "1/1/2018", 1, "F", "2/1/2018", 0.5, "F", 0.5, 0.5),
-                new SubstitutedData(7, "1/1/2018", 1, "G", "2/1/2018", 0.5, "G", 0.5, 0.5),
-                new SubstitutedData(8, "1/1/2018", 1, "H", "2/1/2018", 0.5, "H", 0.5, 0.5),
-                new SubstitutedData(9, "1/1/2018", 1, "I", "2/1/2018", 0.5, "I", 0.5, 0.5),
-                new SubstitutedData(10, "1/1/2018", 1, "J", "2/1/2018", 0.5, "J", 0.5, 0.5),
-                new SubstitutedData(11, "1/1/2018", 1, "K", "2/1/2018", 0.5, "K", 0.5, 0.5),
-                new SubstitutedData(12, "1/1/2018", 1, "L", "2/1/2018", 0.5, "L", 0.5, 0.5),
-                new SubstitutedData(13, "1/1/2018", 1, "M", "2/1/2018", 0.5, "M", 0.5, 0.5),
-                new SubstitutedData(14, "1/1/2018", 1, "N", "2/1/2018", 0.5, "N", 0.5, 0.5),
-                new SubstitutedData(15, "1/1/2018", 1, "O", "2/1/2018", 0.5, "O", 0.5, 0.5),
-                new SubstitutedData(16, "1/1/2018", 1, "P", "2/1/2018", 0.5, "P", 0.5, 0.5),
-                new SubstitutedData(17, "1/1/2018", 1, "Q", "2/1/2018", 0.5, "Q", 0.5, 0.5),
-                new SubstitutedData(18, "1/1/2018", 1, "R", "2/1/2018", 0.5, "R", 0.5, 0.5),
-                new SubstitutedData(19, "1/1/2018", 1, "S", "2/1/2018", 0.5, "S", 0.5, 0.5)
-            ];
+            let substituteDataArray: Array<SubstitutedData> = [];
+            for (var i = 1 ; i <= 100; i++){
+                var date1 = i + '/1/2018';
+                var date2 = i + '/1/2018';
+                var hours = Math.floor(Math.random() * 8) + 1 ;
+                substituteDataArray.push(new SubstitutedData(i, i%2 == 0 ? date1 : null, i%2 == 0 ? hours : null, i%2 == 0 ?"基" : "", i%2 == 1 ? date2 : null, i%2 == 1 ? hours : null, i%2 == 1 ?"基" : "", 0.5, 0.5)); 
+            }
             self.substituteData = ko.observableArray(substituteDataArray);
             self.dispTotalRemainHours(_.sumBy(substituteDataArray, function(x) { return x.remainHolidayHours }) + getText('KDM001_27'));
             self.dispTotalExpiredHours(_.sumBy(substituteDataArray, function(x) { return x.expiredHolidayHours }) + getText('KDM001_31'));
@@ -227,9 +215,29 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         }
         pegSetting(value) {
             let selectedRowData = value;
+            setShared('PEGSETTING_PARAMS', value);
+            if (value.substituedWorkingDate.length>0) {
+                modal("/view/kdm/001/j/index.xhtml").onClosed(function() {
+                    location.reload();
+                });
+            } else {
+                modal("/view/kdm/001/k/index.xhtml").onClosed(function() {
+                    location.reload();
+                });
+            }
         }
         doCorrection(value) {
             let selectedRowData = value;
+            setShared('CORRECTION_PARAMS', value);
+            if (value.substituedWorkingDate.length>0) {
+                modal("/view/kdm/001/l/index.xhtml").onClosed(function() {
+                    location.reload();
+                });
+            } else {
+                modal("/view/kdm/001/m/index.xhtml").onClosed(function() {
+                    location.reload();
+                });
+            }
         }
     }
     export class SubstitutedData {
@@ -242,6 +250,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         substituedHolidayPeg: string;
         remainHolidayHours: number;
         expiredHolidayHours: number;
+        isLinked: boolean;
         constructor(id: number, substituedWorkingDate: string, substituedWorkingHours: number, substituedWorkingPeg: string,
             substituedHolidayDate: string, substituteHolidayHours: number, substituedHolidayPeg: string, remainHolidayHours: number,
             expiredHolidayHours: number) {

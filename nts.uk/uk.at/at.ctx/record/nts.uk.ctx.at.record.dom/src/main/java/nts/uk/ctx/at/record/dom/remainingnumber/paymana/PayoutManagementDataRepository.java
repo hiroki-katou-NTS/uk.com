@@ -15,7 +15,7 @@ public interface PayoutManagementDataRepository {
 	
 	List<PayoutManagementData> getSid(String cid, String sid);
 	
-	void delete(String sid);
+	void delete(String payoutId);
 	
 	void update(PayoutManagementData domain);
 	

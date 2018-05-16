@@ -10,8 +10,8 @@ module nts.uk.com.view.kdm001.i.viewmodel {
         checkedHoliday: KnockoutObservable<boolean> = ko.observable(false);;
         checkedSubHoliday: KnockoutObservable<boolean> = ko.observable(false);
         checkedSplit: KnockoutObservable<boolean> = ko.observable(false);
-        date: KnockoutObservable<string> = ko.observable('');
-        duedate: KnockoutObservable<string> = ko.observable('');
+        dateHoliday: KnockoutObservable<string> = ko.observable('');
+        duedateHoliday: KnockoutObservable<string> = ko.observable('');
         dateSubHoliday: KnockoutObservable<string> = ko.observable('');
         dateOptionSubHoliday: KnockoutObservable<string> = ko.observable('');
         dateOffOptionSubHoliday: KnockoutObservable<string> = ko.observable('');
@@ -42,8 +42,8 @@ module nts.uk.com.view.kdm001.i.viewmodel {
                     self.isOptionSubHolidayEnable(false);
                 }
             });
-            self.date('20000101');
-            self.duedate('20000101');
+            self.dateHoliday('20000101');
+            self.duedateHoliday('20000101');
             self.dateSubHoliday('20000101');
             self.dateOptionSubHoliday('20000101');
             self.dateOffOptionSubHoliday('20000101');

@@ -5,6 +5,6 @@ import lombok.Getter;
 @Getter
 public class DeleteSubstitutionOfHDManaDataCommand {
 
-	 String sid;
+	 String subOfHDID;
 	
 }

@@ -5,6 +5,6 @@ import lombok.Getter;
 @Getter
 public class DeletePayoutManagementDataCommand {
 
-	String sid;
+	String payoutId;
 	
 }

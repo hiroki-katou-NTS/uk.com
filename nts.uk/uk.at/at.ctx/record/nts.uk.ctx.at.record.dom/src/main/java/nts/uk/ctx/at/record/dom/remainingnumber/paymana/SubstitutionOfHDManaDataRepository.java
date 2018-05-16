@@ -15,7 +15,7 @@ public interface SubstitutionOfHDManaDataRepository {
 	
 	List<SubstitutionOfHDManagementData> getBysiD(String cid, String sid);
 	
-	void delete(String sid);
+	void delete(String subOfHDID);
 	
 	void update(SubstitutionOfHDManagementData domain);
 	
