@@ -71,8 +71,8 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	}
 
 	@Override
-	public void delete(String sid) {
-		this.commandProxy().remove(KrcmtSubOfHDManaData.class,sid);
+	public void delete(String subOfHDID) {
+		this.commandProxy().remove(KrcmtSubOfHDManaData.class,subOfHDID);
 		
 	}
 

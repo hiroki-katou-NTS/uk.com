@@ -8,15 +8,15 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 
 @Stateless
-public class DeleteSubstitutionOfHDManaDataCommandHandler extends CommandHandler<DeletePayoutManagementDataCommand> {
+public class DeleteSubstitutionOfHDManaDataCommandHandler extends CommandHandler<DeleteSubstitutionOfHDManaDataCommand> {
    
 	@Inject
 	private SubstitutionOfHDManaDataRepository SHDMDRepo;
 	
 	@Override
-	protected void handle(CommandHandlerContext<DeletePayoutManagementDataCommand> context) {
-		DeletePayoutManagementDataCommand command = context.getCommand();
-	    SHDMDRepo.delete(command.getSid());
+	protected void handle(CommandHandlerContext<DeleteSubstitutionOfHDManaDataCommand> context) {
+		DeleteSubstitutionOfHDManaDataCommand command = context.getCommand();
+	    SHDMDRepo.delete(command.getSubOfHDID());
 		
 	}
 

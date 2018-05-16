@@ -81,8 +81,8 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	}
 
 	@Override
-	public void delete(String sid) {
-       this.commandProxy().remove(KrcmtPayoutManaData.class,sid );
+	public void delete(String payoutId) {
+       this.commandProxy().remove(KrcmtPayoutManaData.class,payoutId );
 	}
 
 	@Override
