@@ -43,7 +43,6 @@ module nts.uk.at.view.kdm002.b {
             timeStartt: any;
             timeNow: any;
             constructor() {
-                let self = this;
                 self.timeStartt = new Date();
                 let systemDate = Date.now();
                 let convertdLocalTime = new Date(systemDate);
@@ -92,7 +91,6 @@ module nts.uk.at.view.kdm002.b {
             */
             public execution(): void {
                 var self = this;
-                 $('#BTN_STOP').focus();
                 let command: CheckFuncDto = new CheckFuncDto({
                     total: self.total(),
                     error: 0,
