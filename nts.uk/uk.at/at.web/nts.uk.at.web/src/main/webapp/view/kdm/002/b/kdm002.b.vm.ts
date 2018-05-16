@@ -43,6 +43,7 @@ module nts.uk.at.view.kdm002.b {
             timeStartt: any;
             timeNow: any;
             constructor() {
+                let self = this;
                 self.timeStartt = new Date();
                 let systemDate = Date.now();
                 let convertdLocalTime = new Date(systemDate);
@@ -192,7 +193,6 @@ module nts.uk.at.view.kdm002.b {
             
             //閉じるボタンをクリックする
             close(){
-                let self = this;
                 nts.uk.ui.windows.close();
             }
             
