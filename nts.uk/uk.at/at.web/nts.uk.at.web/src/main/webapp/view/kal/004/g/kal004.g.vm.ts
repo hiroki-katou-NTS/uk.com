@@ -158,15 +158,30 @@ module nts.uk.at.view.kal004.g.viewmodel {
 
             self.selectedTab.subscribe((value) => {
                 if (value == "tab-1") {
-                    $("#start-tab1").focus();
+                    setTimeout(function() {
+                        $("#start-tab1").focus();
+                    }, 100);
+
                 } else if (value == "tab-2") {
-                    $("#start-tab-2 input").focus();
+                    setTimeout(function() {
+                        $("#start-tab-2 input").focus();
+                    }, 100);
+
                 } else if (value == "tab-3") {
-                    $("#start-tab3").focus();
+                      setTimeout(function() {
+                        $("#start-tab3").focus();
+                    }, 100);
+                    
                 } else if (value == "tab-4") {
-                    $("#start-tab4").focus();
+                      setTimeout(function() {
+                        $("#start-tab4").focus();
+                    }, 100);
+                    
                 } else if (value == "tab-5") {
-                    $("#start-tab5").focus();
+                      setTimeout(function() {
+                        $("#start-tab5").focus();
+                    }, 100);
+                   
                 }
                 nts.uk.ui.errors.clearAll();
             });
