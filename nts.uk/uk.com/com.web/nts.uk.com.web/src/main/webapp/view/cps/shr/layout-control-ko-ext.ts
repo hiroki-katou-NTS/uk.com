@@ -12,7 +12,8 @@ module nts.custombinding {
     import parseTime = nts.uk.time.parseTime;
     import nou = nts.uk.util.isNullOrUndefined;
 
-    let rmError = window['nts']['uk']['ui']['errors']['removeByCode'],
+    let __viewContext: any = window['__viewContext'] || {},
+        rmError = window['nts']['uk']['ui']['errors']['removeByCode'],
         getError = window['nts']['uk']['ui']['errors']['getErrorList'],
         clearError = window['nts']['uk']['ui']['errors']['clearAll'],
         writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'],
@@ -707,7 +708,7 @@ module nts.custombinding {
                                                     <thead>
                                                         <tr>
                                                             <th data-bind="ntsProp: { left: __flft }">
-                                                                <div data-bind="style: { 'margin-left': (__flft() - __lft()) + 'px' }"></div>
+                                                                <div data-bind="style: { 'margin-left': (__flft() - __lft()) + 'px' }, text: text('CPS001_146')"></div>
                                                             </th>
                                                             <!-- ko foreach: { data: _.first(renders()).items, as: 'header' } -->
                                                                 <!-- ko let: { __wdt: ko.observable(0) } -->
@@ -1479,7 +1480,7 @@ module nts.custombinding {
                             case ITEM_SINGLE_TYPE.STRING:
                                 constraint.valueType = "String";
                                 constraint.maxLength = dts.stringItemLength || dts.maxLength;
-                                constraint.stringExpression = '';
+                                constraint.stringExpression = undefined; //"(?:)";
 
                                 switch (dts.stringItemType) {
                                     default:
@@ -2042,14 +2043,14 @@ module nts.custombinding {
                                 recordId: ["undefined", "null"].indexOf(k) > -1 ? undefined : k,
                                 items: rows[k],
                                 checked: ko.observable(false),
-                                enable: editable
+                                enable: ko.observable(editable)
                             }))),
                             clone = (row: any) => {
                                 let recordId = 'NID_' + random(),
                                     _row = {
                                         recordId: recordId,
                                         checked: ko.observable(false),
-                                        enable: editable,
+                                        enable: true,
                                         items: []
                                     };
 
@@ -2111,22 +2112,24 @@ module nts.custombinding {
                                 clone(_row);
                             });
                         } else {
-                            if (!_row.recordId && _rows.length == 1) {
-                                renders.removeAll();
-                            } else {
-                                _.each(renders(), (row, rid) => {
-                                    row.checked.subscribe(c => {
-                                        calc_data();
-                                    });
-                                    _(row.items).each(r => {
-                                        ko.utils.extend(r, {
-                                            checked: row.checked
+                            if (_row) {
+                                if (!_row.recordId && _rows.length == 1) {
+                                    renders.removeAll();
+                                } else {
+                                    _.each(renders(), (row, rid) => {
+                                        row.checked.subscribe(c => {
+                                            calc_data();
+                                        });
+                                        _(row.items).each(r => {
+                                            ko.utils.extend(r, {
+                                                checked: row.checked
+                                            });
                                         });
                                     });
-                                });
-                            }
+                                }
 
-                            clone(_row);
+                                clone(_row);
+                            }
                         }
 
                         _.each(renders(), (row, rid) => {
