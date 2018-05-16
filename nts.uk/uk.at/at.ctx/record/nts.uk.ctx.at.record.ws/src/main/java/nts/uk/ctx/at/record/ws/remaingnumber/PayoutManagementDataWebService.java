@@ -9,6 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeletePayoutManagementDataCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeletePayoutManagementDataCommandHandler;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.PayoutManagementDataCommand;
@@ -46,5 +47,11 @@ public class PayoutManagementDataWebService extends WebService{
 	// get SubstitutionOfHDManagement by SID and stateAtr = ?
 	public List<PayoutManagementDataDto> getBysiDRemCod(@PathParam("empId") String employeeId, @PathParam("state") int state) {
 		return finder.getBysiDRemCod(employeeId, state);
+	}
+	
+	@POST
+	@Path("getBySidDatePeriod/{empId}/{startDate}/{endDate}")
+	public List<PayoutManagementDataDto> getBySidDatePeriod(@PathParam("empId")String sid, @PathParam("startDate")GeneralDate startDate,@PathParam("endDate") GeneralDate endDate) {
+		return finder.getBySidDatePeriod(sid, startDate, endDate);
 	}
 }
