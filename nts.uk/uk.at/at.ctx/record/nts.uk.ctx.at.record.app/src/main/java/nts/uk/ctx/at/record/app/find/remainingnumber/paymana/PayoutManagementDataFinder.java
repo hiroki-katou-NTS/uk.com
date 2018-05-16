@@ -37,4 +37,10 @@ public class PayoutManagementDataFinder {
 		return payoutManagementDataRepository.getSidWithCod(cid, empId, state).stream().map(item -> PayoutManagementDataDto.createFromDomain(item))
 				.collect(Collectors.toList());
 	}
+	
+	public List<PayoutManagementDataDto> getBySidDatePeriodDif(String empId, GeneralDate startDate, GeneralDate endDate, int state) {
+
+		return payoutManagementDataRepository.getBySidDatePeriodDif(empId, startDate, endDate, state).stream().map(item -> PayoutManagementDataDto.createFromDomain(item))
+				.collect(Collectors.toList());
+	}
 }

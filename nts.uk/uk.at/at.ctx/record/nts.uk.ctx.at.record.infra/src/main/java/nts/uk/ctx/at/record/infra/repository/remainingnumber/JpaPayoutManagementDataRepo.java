@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.remainingnumber;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -20,6 +21,8 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	
 	private final String QUERY_BY_SID_DATEPERIOD = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:employeeId AND p.dayOff >= :startDate AND p.dayOff <= :endDate"
 			+ " AND (p.stateAtr = :state OR p.payoutId in (SELECT pm.payoutId FROM KrcmtPayoutManaData pm inner join KrcmtPayoutSubOfHDMana ps on pm.payoutId = ps.krcmtPayoutSubOfHDManaPK.payoutId))" ;
+	
+	private final String QUERY_BY_SID_DATEPERIOD_DIF = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:employeeId AND p.dayOff >= :startDate AND p.dayOff <= :endDate AND p.stateAtr != :state";
 	
 	
 	@Override
@@ -78,9 +81,38 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	}
 
 	@Override
+	public void delete(String payoutId) {
+       this.commandProxy().remove(KrcmtPayoutManaData.class,payoutId );
+	}
+
+	@Override
+	public void update(PayoutManagementData domain) {
+		 this.commandProxy().update(toEntity(domain));
+	}
+
+	@Override
+	public Optional<PayoutManagementData> findByID(String ID) {
+		Optional<KrcmtPayoutManaData> entity = this.queryProxy().find(ID, KrcmtPayoutManaData.class);
+		if(entity.isPresent()){
+			return Optional.ofNullable(toDomain(entity.get()));
+		}
+		return Optional.empty();
+	}
 	public List<PayoutManagementData> getBySidDatePeriod(String sid, GeneralDate startDate, GeneralDate endDate,
 			int digestionAtr) {
 		List<KrcmtPayoutManaData> listSubOfHD = this.queryProxy().query(QUERY_BY_SID_DATEPERIOD, KrcmtPayoutManaData.class)
+				.setParameter("sid", sid)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.setParameter("state", digestionAtr)
+				.getList();
+		return listSubOfHD.stream().map(i->toDomain(i)).collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<PayoutManagementData> getBySidDatePeriodDif(String sid, GeneralDate startDate, GeneralDate endDate,
+			int digestionAtr) {
+		List<KrcmtPayoutManaData> listSubOfHD = this.queryProxy().query(QUERY_BY_SID_DATEPERIOD_DIF, KrcmtPayoutManaData.class)
 				.setParameter("sid", sid)
 				.setParameter("startDate", startDate)
 				.setParameter("endDate", endDate)
