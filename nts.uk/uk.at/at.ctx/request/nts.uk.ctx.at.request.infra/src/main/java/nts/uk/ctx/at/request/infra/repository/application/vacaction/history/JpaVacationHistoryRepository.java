@@ -123,7 +123,7 @@ public class JpaVacationHistoryRepository extends JpaRepository implements Vacat
 	}
 	
 	@Override
-	public List<PlanVacationHistory> findHistoryByPeriod(String companyId, DatePeriod period) {
+	public List<PlanVacationHistory> findHistoryByBaseDate(String companyId, GeneralDate baseDate) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -134,10 +134,6 @@ public class JpaVacationHistoryRepository extends JpaRepository implements Vacat
 		// root data
 		Root<KrqmtVacationHistory> root = cq.from(KrqmtVacationHistory.class);
 		
-		// Get start date, end Date
-		GeneralDate startDate = period.start();
-		GeneralDate endDate = period.end();
-
 		// select root
 		cq.select(root);
 
@@ -148,9 +144,9 @@ public class JpaVacationHistoryRepository extends JpaRepository implements Vacat
 		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(KrqmtVacationHistory_.krqmtVacationHistoryPK).get(KrqmtVacationHistoryPK_.cid), companyId));
 		
-		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KrqmtVacationHistory_.startDate), startDate));
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(root.get(KrqmtVacationHistory_.startDate), baseDate));
 		
-		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KrqmtVacationHistory_.endDate), endDate));
+		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KrqmtVacationHistory_.endDate), baseDate));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
