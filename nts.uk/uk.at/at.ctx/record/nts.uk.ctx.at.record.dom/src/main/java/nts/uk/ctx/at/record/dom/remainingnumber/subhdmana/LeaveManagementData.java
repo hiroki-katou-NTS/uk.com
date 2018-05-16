@@ -15,6 +15,11 @@ import nts.uk.ctx.at.record.dom.remainingnumber.base.ManagementDataHours;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
+/**
+ * 休出管理データ
+ * @author HopNT
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

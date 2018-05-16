@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.remainingnumber;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -19,7 +20,7 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	private String QUERY_BYSID_WITH_COND = String.join(" ",QUERY_BYSID, "AND p.stateAtr = :state");
 	
 	private final String QUERY_BY_SID_DATEPERIOD = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:employeeId AND p.dayOff >= :startDate AND p.dayOff <= :endDate"
-			+ " AND (p.stateAtr = :state OR p.payoutId in (SELECT pm.payoutId in KrcmtPayoutManaData pm inner join KrcmtPayoutSubOfHDMana ps on pm.payoutId = ps.krcmtPayoutSubOfHDManaPK.payoutId))" ;
+			+ " AND (p.stateAtr = :state OR p.payoutId in (SELECT pm.payoutId FROM KrcmtPayoutManaData pm inner join KrcmtPayoutSubOfHDMana ps on pm.payoutId = ps.krcmtPayoutSubOfHDManaPK.payoutId))" ;
 	
 	private final String QUERY_BY_SID_DATEPERIOD_DIF = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:employeeId AND p.dayOff >= :startDate AND p.dayOff <= :endDate AND p.stateAtr != :state";
 	
@@ -80,6 +81,23 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	}
 
 	@Override
+	public void delete(String sid) {
+       this.commandProxy().remove(KrcmtPayoutManaData.class,sid );
+	}
+
+	@Override
+	public void update(PayoutManagementData domain) {
+		 this.commandProxy().update(toEntity(domain));
+	}
+
+	@Override
+	public Optional<PayoutManagementData> findByID(String ID) {
+		Optional<KrcmtPayoutManaData> entity = this.queryProxy().find(ID, KrcmtPayoutManaData.class);
+		if(entity.isPresent()){
+			return Optional.ofNullable(toDomain(entity.get()));
+		}
+		return Optional.empty();
+	}
 	public List<PayoutManagementData> getBySidDatePeriod(String sid, GeneralDate startDate, GeneralDate endDate,
 			int digestionAtr) {
 		List<KrcmtPayoutManaData> listSubOfHD = this.queryProxy().query(QUERY_BY_SID_DATEPERIOD, KrcmtPayoutManaData.class)
