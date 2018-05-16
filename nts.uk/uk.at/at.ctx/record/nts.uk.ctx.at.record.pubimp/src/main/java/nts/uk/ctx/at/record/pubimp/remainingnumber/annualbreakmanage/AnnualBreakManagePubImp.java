@@ -109,7 +109,7 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 				// 取得した年休の集計結果．年休情報(付与時点)でループ
 				for (AnnualLeaveInfo annualLeaveInfoe : aggrResultOfAnnualLeave.get().getAsOfGrant().get()) {
 					// 「年休の集計結果」で付与された年月日をチェック
-					if (annualLeaveInfoe.getYmd().before(startDate.get()) && annualLeaveInfoe.getYmd().after(endDate)) {
+					if (startDate.get().beforeOrEquals(annualLeaveInfoe.getYmd()) && endDate.afterOrEquals(annualLeaveInfoe.getYmd())) {
 						//  計算期間．開始日<=年休情報．年月日<=計算期間．終了日
 						YearlyHolidaysTimeRemainingExport yhtre = 
 								new YearlyHolidaysTimeRemainingExport(annualLeaveInfoe.getYmd(), 

@@ -125,7 +125,6 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				//(Thực hiện thuật toán 「指定年月日時点の年休残数を取得-lấy số phép còn lại tại thời điểm xác định」)
 				List<YearlyHolidaysTimeRemainingImport> yearlyHolidaysTimeRemainingImport = annualBreakManageAdapter
 						.getYearHolidayTimeAnnualRemaining(employeeSearchCommand.get(i).getEmployeeId(), command.getDate());
-				System.out.println("---------------------:" + yearlyHolidaysTimeRemainingImport.size());
 				if (yearlyHolidaysTimeRemainingImport.isEmpty()) {
 					//取得失敗
 					//パラメータ.処理人数に＋１加算する
@@ -170,13 +169,15 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				excelInforList.add(excelInforCommand);
 
 				setter.updateData(NUMBER_OF_SUCCESS, i + 1);
+				
+				System.out.println("----------------" + (i + 1));
 			}
 			// Excel出力情報ListをもとにExcel出力をする (Xuất ra file excel)
-			exportCsv(excelInforList);
+			//exportCsv(excelInforList);
 		}
 		//delay a moment.
 		try {
-			TimeUnit.SECONDS.sleep(1100);
+			TimeUnit.SECONDS.sleep(1);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
