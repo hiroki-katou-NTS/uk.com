@@ -18,5 +18,8 @@ module nts.uk.at.view.kdm001.test.viewmodel {
         openKDM001M(): void {
             modal("/view/kdm/001/m/index.xhtml").onClosed(function() { });
         }
+        openKDM001I(): void {
+            modal("/view/kdm/001/i/index.xhtml").onClosed(function() { });
+        }
     }
 }

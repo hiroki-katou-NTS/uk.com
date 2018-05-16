@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 880, height: 490 };</script>
+			<script>var dialogSize = { width: 535, height: 620 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="kdm001.i.vm.js" />
 			<com:scriptfile path="kdm001.i.start.js" />
@@ -165,25 +165,21 @@
 					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_85')}</div>
 					<!-- I15_1 残数 -->
 					<span class="label" data-bind="text: dayRemaining"></span>
-					<!-- I30 罫線 -->
-					<div class="set-row">
-						<hr />
-					</div>
-					<!-- I31_1 登録 -->
-					<div id="area-bottom">
-						<div id="process" data-bind="visible: true"
-							style="text-align: center;">
-							<button id="stopExecute" class="proceed x-large">#{i18n.getText('KDM001_89')}</button>
-
-							<button id="closeDialog" class="large"
-								data-bind="click: closeDialog">#{i18n.getText('KDM001_90')}</button>
-						</div>
-					</div>
-
+					
 				</div>
 			</div>
 
-			<div id="functions-area-bottom"></div>
+			<!-- I31_1 登録 -->
+			<div id="functions-area-bottom">
+				<div id="process" data-bind="visible: true"
+					style="text-align: center;">
+					<button id="stopExecute" class="proceed x-large">#{i18n.getText('KDM001_89')}</button>
+
+					<button id="closeDialog" class="large"
+						data-bind="click: closeDialog">#{i18n.getText('KDM001_90')}</button>
+				</div>
+			</div>
+			
 		</ui:define>
 	</ui:composition>
 </body>
