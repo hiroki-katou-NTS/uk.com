@@ -4,18 +4,24 @@
  *****************************************************************/
 package nts.uk.query.pubimp.employee;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDateTime;
 import nts.uk.query.app.employee.RegulationInfoEmpQueryDto;
 import nts.uk.query.app.employee.RegulationInfoEmployeeDto;
 import nts.uk.query.app.employee.RegulationInfoEmployeeFinder;
+import nts.uk.query.model.employee.RegulationInfoEmployee;
+import nts.uk.query.model.employee.RegulationInfoEmployeeRepository;
 import nts.uk.query.pub.employee.EmployeeSearchQueryDto;
 import nts.uk.query.pub.employee.RegulationInfoEmployeeExport;
 import nts.uk.query.pub.employee.RegulationInfoEmployeePub;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class RegulationInfoEmployeePubImpl.
@@ -29,6 +35,10 @@ public class RegulationInfoEmployeePubImpl implements RegulationInfoEmployeePub 
 	/** The emp finder. */
 	@Inject
 	private RegulationInfoEmployeeFinder empFinder;
+	
+	/** The employee info repository. */
+	@Inject
+	private RegulationInfoEmployeeRepository employeeInfoRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -38,7 +48,25 @@ public class RegulationInfoEmployeePubImpl implements RegulationInfoEmployeePub 
 	 */
 	@Override
 	public List<RegulationInfoEmployeeExport> find(EmployeeSearchQueryDto query) {
-		List<RegulationInfoEmployeeDto> resultList = this.empFinder.find(this.toQueryModel(query));
+		List<RegulationInfoEmployeeDto> resultList = new ArrayList<>();
+		try {
+			resultList = this.empFinder.find(this.toQueryModel(query));
+		} catch (RuntimeException e) {
+			// When search only me.
+			if (e.getMessage().equals("Unable to search")) {
+				// Find login employee info.
+				String loginEmployeeId = AppContexts.user().employeeId();
+				String companyId = AppContexts.user().companyId();
+				RegulationInfoEmployee loginEmployee = this.employeeInfoRepository.findBySid(companyId, loginEmployeeId,
+						GeneralDateTime.now());
+				return Arrays
+						.asList(RegulationInfoEmployeeExport.builder().employeeCode(loginEmployee.getEmployeeCode())
+								.employeeId(loginEmployee.getEmployeeID()).employeeName(loginEmployee.getName().get())
+								.workplaceCode(loginEmployee.getWorkplaceCode().get())
+								.workplaceId(loginEmployee.getWorkplaceId().get())
+								.workplaceName(loginEmployee.getWorkplaceName().get()).build());
+			}
+		}
 		return resultList.stream().map(item -> RegulationInfoEmployeeExport.builder()
 				.employeeCode(item.getEmployeeCode())
 				.employeeId(item.getEmployeeId())
