@@ -48,8 +48,9 @@ public class JpaAgreeConditionErrorRepository extends JpaRepository implements I
 	 */
 	private static Kfnmt36AgreeCondErr toEntity(AgreeConditionError domain){
 		val entity = new Kfnmt36AgreeCondErr();
+		String companyId = AppContexts.user().companyId();
 		entity.kfnmt36AgreeCondErrPK = new Kfnmt36AgreeCondErrPK(domain.getId(), domain.getCode().v(),
-																	domain.getCompanyId(), domain.getCategory().value);
+																	companyId, domain.getCategory().value);
 		entity.errorAlarm = domain.getErrorAlarm().value;
 		entity.messageDisp = (domain.getMessageDisp() == null ? null : domain.getMessageDisp().v());
 		entity.period = domain.getPeriod().value;

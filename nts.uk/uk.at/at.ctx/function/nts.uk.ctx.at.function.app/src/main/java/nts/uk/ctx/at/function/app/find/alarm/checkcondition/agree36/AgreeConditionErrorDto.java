@@ -10,6 +10,7 @@ import lombok.Value;
 @Value
 public class AgreeConditionErrorDto {
 	/** ID */
+	int category;
 	String id;
 	String code;
 	/** 使用区分 */

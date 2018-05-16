@@ -1,19 +1,18 @@
 package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.agree36;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeCondOt;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategory;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -28,7 +27,7 @@ public class Kfnmt36AgreeCondOt extends UkJpaEntity implements Serializable {
 
 	/** 36超過時間 */
 	@Column(name = "OVERTIME_36")
-	public BigDecimal ot36;
+	public int ot36;
 
 	/** 36超過回数 */
 	@Column(name = "EXCESS_NUM_36")
@@ -51,4 +50,23 @@ public class Kfnmt36AgreeCondOt extends UkJpaEntity implements Serializable {
 		return null;
 	}
 
+	public Kfnmt36AgreeCondOt(Kfnmt36AgreeCondOtPK kfnmt36AgreeCondOtPK, int ot36, int excessNum, String messageDisp) {
+		super();
+		this.kfnmt36AgreeCondOtPK = kfnmt36AgreeCondOtPK;
+		this.ot36 = ot36;
+		this.excessNum = excessNum;
+		this.messageDisp = messageDisp;
+	}
+	/**
+	 * convert from domain to entity
+	 * @param domain
+	 * @return
+	 * @author yennth
+	 */
+	public static Kfnmt36AgreeCondOt toEnity(AgreeCondOt domain){
+		return new Kfnmt36AgreeCondOt(new Kfnmt36AgreeCondOtPK(domain.createId(), domain.getNo(), domain.getCode().v(), domain.getCompanyId(), domain.getCategory().value), 
+										domain.getOt36().v(), 
+										domain.getExcessNum().v(), 
+										domain.getMessageDisp().v());
+	}
 }

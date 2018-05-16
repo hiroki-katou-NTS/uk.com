@@ -6,34 +6,19 @@ module nts.uk.at.view.kal003.a.tab {
     import shareutils = nts.uk.at.view.kal003.share.kal003utils;
 
     export class AgreementErrorTab {
-        listAgreementError: KnockoutObservableArray<model.AgreeConditionErrorDto>;
-
-        constructor() {
+        listAgreementError: KnockoutObservableArray<model.AgreeConditionErrorDto> = ko.observableArray([]);
+        category: KnockoutObservable<number>;
+        constructor(category: number, listAgreementError?: Array<model.AgreeConditionErrorDto>) {
             let self = this;
-            self.listAgreementError = ko.observableArray([]);
-            self.init();
+            self.category = ko.observable(category);
+            if (listAgreementError) {
+                self.listAgreementError(listAgreementError);
+            }
 
             $("#fixed-table-agreement-error").ntsFixedTable({ height: 416, width: 490 });
         }
 
-        init(): void {
-            let self = this;
-            let listAgErr = [];   
-//            service.getAgreementError().done((data) => {
-//                _.each(data, (x) => {
-//                    listAgErr.push(new model.AgreeConditionErrorDto({
-//                        id: x.id,
-//                        useAtr: x.useAtr ? true : false,
-//                        period: x.period,
-//                        errorAlarm: x.errorAlarm,
-//                        messageDisp: x.messageDisp,
-//                        name: x.name
-//                    }));
-//                });
-//                self.listAgreementError(listAgErr);
-//            });
-        }
-    } 
+    }
 }//end tab
 
 

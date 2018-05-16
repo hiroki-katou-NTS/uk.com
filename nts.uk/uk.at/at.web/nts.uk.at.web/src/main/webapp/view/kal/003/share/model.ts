@@ -59,8 +59,8 @@ module nts.uk.at.view.kal003.share.model {
         dailyAlarmCheckCondition: KnockoutObservable<DailyAlarmCheckCondition> = ko.observable(new DailyAlarmCheckCondition(DATA_CONDITION_TO_EXTRACT.ALL, false, [], [], []));
         schedule4WeekAlarmCheckCondition: KnockoutObservable<Schedule4WeekAlarmCheckCondition> = ko.observable(new Schedule4WeekAlarmCheckCondition(SCHEDULE_4_WEEK_CHECK_CONDITION.FOR_ACTUAL_RESULTS_ONLY));
         action: KnockoutObservable<number> = ko.observable(0);
-        agreement36: KnockoutObservable<Agreement36> = ko.observable(new Agreement36([], []));
-        monAlarmCheckCon :KnockoutObservable<MonAlarmCheckCon> = ko.observable(new MonAlarmCheckCon([]));
+        condAgree36: KnockoutObservable<Agreement36> = ko.observable(new Agreement36([], []));
+        monAlarmCheckCon: KnockoutObservable<MonAlarmCheckCon> = ko.observable(new MonAlarmCheckCon([]));
         constructor(code: string, name: string, category: ItemModel, availableRoles: Array<string>, targetCondition: AlarmCheckTargetCondition) {
             this.code = ko.observable(code);
             this.name = ko.observable(name);
@@ -243,12 +243,12 @@ module nts.uk.at.view.kal003.share.model {
     }
 
     export class Agreement36 {
-        listAgreementHour: KnockoutObservableArray<AgreeCondOt>;//tab agreement hour
-        listAreementError: KnockoutObservableArray<AgreeConditionErrorDto>;//tab agreement error
+        listCondOt: KnockoutObservableArray<AgreeCondOt>;//tab agreement hour
+        listCondError: KnockoutObservableArray<AgreeConditionErrorDto>;//tab agreement error
 
-        constructor(listAgreementHour: Array<AgreeCondOt>, listAreementError: Array<AgreeConditionErrorDto>) {
-            this.listAgreementHour = ko.observableArray(listAgreementHour);
-            this.listAreementError = ko.observableArray(listAreementError);
+        constructor(listCondOt: Array<AgreeCondOt>, listCondError: Array<AgreeConditionErrorDto>) {
+            this.listCondOt = ko.observableArray(listCondOt);
+            this.listCondError = ko.observableArray(listCondError);
         }
     }
 
@@ -766,9 +766,9 @@ module nts.uk.at.view.kal003.share.model {
         message: string;
         useAtr: boolean;
     }
-    
-    
-    
+
+
+
     //class FixedConditionWorkRecord
     export class FixedConditionWorkRecord {
         dailyAlarmConID: string;
@@ -786,6 +786,8 @@ module nts.uk.at.view.kal003.share.model {
     }
 
     export interface IAgreeCondOt {
+        category: number;
+        code: string;
         id: string;
         no: number;
         ot36: number;
@@ -794,6 +796,8 @@ module nts.uk.at.view.kal003.share.model {
     }
 
     export class AgreeCondOt {
+        category: number;
+        code: string;
         id: string;
         no: number;
         ot36: KnockoutObservable<number>;
@@ -801,6 +805,8 @@ module nts.uk.at.view.kal003.share.model {
         messageDisp: KnockoutObservable<string>;
 
         constructor(param: IAgreeCondOt) {
+            this.category = param.category;
+            this.code = param.code;
             this.id = param.id;
             this.no = param.no;
             this.ot36 = ko.observable(param.ot36);
@@ -810,8 +816,10 @@ module nts.uk.at.view.kal003.share.model {
     }
 
     export interface IAgreeConditionErrorDto {
+        category: number;
+        code: string;
         id: string;
-        useAtr: boolean;
+        useAtr: number;
         period: number;
         errorAlarm: number;
         messageDisp: string;
@@ -819,14 +827,18 @@ module nts.uk.at.view.kal003.share.model {
     }
 
     export class AgreeConditionErrorDto {
+        category: number;
+        code: string;
         id: string;
-        useAtr: KnockoutObservable<boolean>;
+        useAtr: KnockoutObservable<number>;
         period: number;
         errorAlarm: number;
         messageDisp: KnockoutObservable<string>;
         name: string;
 
         constructor(param: IAgreeConditionErrorDto) {
+            this.category = param.category;
+            this.code = param.code;
             this.id = param.id;
             this.useAtr = ko.observable(param.useAtr);
             this.period = param.period;
@@ -835,15 +847,15 @@ module nts.uk.at.view.kal003.share.model {
             this.name = param.name;
         }
     }
-    
+
     //monthly
-    export class MonAlarmCheckCon{
-        listFixExtraMon : KnockoutObservableArray<FixedExtraMonFun>;
-        constructor(listFixExtraMon : KnockoutObservableArray<FixedExtraMonFun>){
+    export class MonAlarmCheckCon {
+        listFixExtraMon: KnockoutObservableArray<FixedExtraMonFun>;
+        constructor(listFixExtraMon: KnockoutObservableArray<FixedExtraMonFun>) {
             this.listFixExtraMon = ko.observableArray(listFixExtraMon);
         }
     }
-    
+
     //interface FixedExtraMonFun
     export interface IFixedExtraMonFun {
         monAlarmCheckID: string;
@@ -852,7 +864,7 @@ module nts.uk.at.view.kal003.share.model {
         message: string;
         useAtr: boolean;
     }
-    
+
     //class FixedExtraMonFun
     export class FixedExtraMonFun {
         monAlarmCheckID: string;
@@ -868,6 +880,6 @@ module nts.uk.at.view.kal003.share.model {
             this.monAlarmCheckName = data.monAlarmCheckName;
         }
     }
-    
+
 
 }

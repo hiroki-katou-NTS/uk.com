@@ -12,6 +12,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeConditionError;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategory;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
@@ -56,5 +57,27 @@ public class Kfnmt36AgreeCondErr extends UkJpaEntity implements Serializable{
 	protected Object getKey() {
 		return kfnmt36AgreeCondErrPK;
 	}
-	
+
+	public Kfnmt36AgreeCondErr(Kfnmt36AgreeCondErrPK kfnmt36AgreeCondErrPK, int useAtr, int period, int errorAlarm,
+			String messageDisp) {
+		super();
+		this.kfnmt36AgreeCondErrPK = kfnmt36AgreeCondErrPK;
+		this.useAtr = useAtr;
+		this.period = period;
+		this.errorAlarm = errorAlarm;
+		this.messageDisp = messageDisp;
+	}
+	/**
+	 * convert from domain to entity
+	 * @param domain
+	 * @return
+	 * @author yennth
+	 */
+	public static Kfnmt36AgreeCondErr toEntity(AgreeConditionError domain){
+		return new Kfnmt36AgreeCondErr(new Kfnmt36AgreeCondErrPK(domain.createId(), domain.getCode().v(), domain.getCompanyId(), domain.getCategory().value), 
+										domain.getUseAtr().value, 
+										domain.getPeriod().value, 
+										domain.getErrorAlarm().value, 
+										domain.getMessageDisp().v());
+	}
 }

@@ -65,8 +65,8 @@ module nts.uk.at.view.kal003.a.viewmodel {
             self.tabFixedCondition = new tab.FixedCheckConditionTab();
             self.tabAlarmcheck = new tab.AlarmcheckTab();
             self.tabCheckAlarm = new tab.CheckAlarmTab();
-            self.tabAgreementError = new tab.AgreementErrorTab();
-            self.tabAgreementHour = new tab.AgreementHourTab();
+            self.tabAgreementError = new tab.AgreementErrorTab(self.selectedCategory());
+            self.tabAgreementHour = new tab.AgreementHourTab(self.selectedCategory());
 
             self.selectedCategory.subscribe((data) => {
                 self.switchCategory(data);
@@ -207,6 +207,20 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 data.monAlarmCheckCon().listFixExtraMon(self.tabAlarmcheck.listFixedExtraMonFun());
             }
 
+            if (data.category() == model.CATEGORY._36_AGREEMENT) {
+                data.condAgree36().listCondOt(self.tabAgreementHour.listAgreementHour());
+                data.condAgree36().listCondError(self.tabAgreementError.listAgreementError());
+                _.each(data.condAgree36().listCondOt(), function(item) {
+                    item.category = self.selectedAlarmCheckCondition().category();
+                    item.code = self.selectedAlarmCheckCondition().code();
+                });
+                _.each(data.condAgree36().listCondError(), function(obj) {
+                    obj.category = self.selectedAlarmCheckCondition().category();
+                    obj.code = self.selectedAlarmCheckCondition().code();
+                    obj.useAtr(+obj.useAtr());
+                });
+            }
+
             let command: any = ko.toJS(data);
             $("#A3_4").trigger("validate");
             $("#check-condition-table .nts-editor.nts-input").trigger("validate");
@@ -272,9 +286,14 @@ module nts.uk.at.view.kal003.a.viewmodel {
         openKAL003dDialog() {
             let self = this;
             nts.uk.ui.errors.clearAll();
+
             modal("/view/kal/003/d/index.xhtml").onClosed(() => {
                 var output = getShared("outputKAL003d");
                 if (!nts.uk.util.isNullOrUndefined(output)) {
+                    if (self.selectedAlarmCheckCondition().category() == model.CATEGORY._36_AGREEMENT) {
+                        self.tabAgreementError.listAgreementError([]);
+                        self.tabAgreementHour.listAgreementHour([]);
+                    }
                     self.selectCategoryFromDialog(true);
                     if (self.selectedCategory() != output)
                         self.selectedCategory(output);
@@ -317,9 +336,18 @@ module nts.uk.at.view.kal003.a.viewmodel {
                                 result.targetCondition.targetBusinessType));
                         let _fixedList: Array<model.FixedConditionWorkRecord> = _.map(result.dailyAlarmCheckCondition.listFixedExtractConditionWorkRecord, (fix: model.IFixedConditionWorkRecord) => { return new model.FixedConditionWorkRecord(fix); });
                         let _checkList: Array<model.WorkRecordExtractingCondition> = _.map(result.dailyAlarmCheckCondition.listExtractConditionWorkRecork, (c: model.IWorkRecordExtractingCondition) => { return shareutils.convertTransferDataToWorkRecordExtractingCondition(c); });
-                        item.dailyAlarmCheckCondition(new model.DailyAlarmCheckCondition(result.dailyAlarmCheckCondition.conditionToExtractDaily, result.dailyAlarmCheckCondition.addApplication, result.dailyAlarmCheckCondition.listErrorAlarmCode, _checkList, _fixedList));
+                        item.dailyAlarmCheckCondition(
+                            new model.DailyAlarmCheckCondition(
+                                result.dailyAlarmCheckCondition.conditionToExtractDaily,
+                                result.dailyAlarmCheckCondition.addApplication,
+                                result.dailyAlarmCheckCondition.listErrorAlarmCode,
+                                _checkList,
+                                _fixedList));
                         item.schedule4WeekAlarmCheckCondition().schedule4WeekCheckCondition(result.schedule4WeekCondition);
-                        item.agreement36(new model.Agreement36([], []));
+                        item.condAgree36(
+                            new model.Agreement36(
+                                result.condAgree36.listCondOt,
+                                result.condAgree36.listCondError));
                         let _listFixExtraMon: Array<model.FixedExtraMonFun> = _.map(result.monAlarmCheckConDto.listFixExtraMon, acc => {
                             return new model.FixedExtraMonFun(acc);
                         });
@@ -340,8 +368,14 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         }
 
                         if (item.category() == model.CATEGORY._36_AGREEMENT) {
-                            //                            self.tabAgreementError.listAgreementError(item.agreement36().listAgreementError());
-                            //                            self.tabAgreementHour.listAgreementHour(item.agreement36().listAgreementHour());
+                            let listAgreementErrorKnockout = _.map(item.condAgree36().listCondError(), x => {
+                                return new model.AgreeConditionErrorDto(x);
+                            });
+                            let listAgreementHourKnockout = _.map(item.condAgree36().listCondOt(), y => {
+                                return new model.AgreeCondOt(y);
+                            });
+                            self.tabAgreementError.listAgreementError(listAgreementErrorKnockout);
+                            self.tabAgreementHour.listAgreementHour(listAgreementHourKnockout);
                         }
 
                         if (item.category() == model.CATEGORY.MONTHLY) {
