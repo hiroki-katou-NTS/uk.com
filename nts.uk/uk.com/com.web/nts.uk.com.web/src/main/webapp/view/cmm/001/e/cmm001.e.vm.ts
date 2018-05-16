@@ -1,4 +1,5 @@
-module cmm001.e {
+module nts.uk.com.view.cmm001.e {
+    
     export module viewmodel {
 
         export class ScreenModel {

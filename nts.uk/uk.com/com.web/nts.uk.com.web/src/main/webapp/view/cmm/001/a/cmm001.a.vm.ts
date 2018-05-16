@@ -1,5 +1,9 @@
 module cmm001.a {
     import PostCode = nts.uk.pr.view.base.postcode.service.model.PostCode;
+    import MasterCopyCategory = nts.uk.com.view.cmm001.e.model.MasterCopyCategory;
+    import MasterCopyCategoryDto = nts.uk.com.view.cmm001.e.MasterCopyCategoryDto;
+    import MasterCopyDataCommand = nts.uk.com.view.cmm001.e.MasterCopyDataCommand;
+    
     export class ViewModel {
 
         gridColumns: KnockoutObservableArray<any>;
@@ -14,7 +18,7 @@ module cmm001.a {
         itemList: KnockoutObservable<any>;
         roundingRules: KnockoutObservableArray<RoundingRule>;
         roundingRules3: KnockoutObservableArray<RoundingRule>;
-        // check true false A2_2
+        // check true false A2_2l
         display: KnockoutObservable<boolean>;
         checkInsert: KnockoutObservable<boolean>;
 
@@ -281,7 +285,19 @@ module cmm001.a {
                 // insert a company
                 service.add(dataTransfer).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        $('#companyName').focus();
+                        var cid = self.currentCompany().companyId();
+                        var IMasterDataList: MasterCopyCategoryDto[] = [];
+                        var masterCopyDataCmd: MasterCopyDataCommand = { companyId: cid, masterDataList: IMasterDataList };
+                        service.getAllMasterCopyCategory().then(function(masterCopyCateList: Array<MasterCopyCategory>) {
+                            for (item of masterCopyCateList) {
+                            var IMasterCopyCategoryDto : MasterCopyCategoryDto = {masterCopyId: item.masterCopyId, categoryName: item.masterCopyCategory, order: item.order, systemType: item.systemType, copyMethod: 1};
+                            IMasterDataList.push(IMasterCopyCategoryDto);
+                            }
+                            nts.uk.ui.windows.setShared('masterCopyDataCmd', masterCopyDataCmd);
+                            nts.uk.ui.windows.sub.modal('/view/cmm/001/f/index.xhtml', { title: '', }).onClosed(function(): any {
+                            $('#companyName').focus();});
+                        });
+                    });
                     });
                     self.start().then(function() {
                         $('#companyName').focus();
