@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.settting.worktype.history.PlanVacationHistory;
 import nts.uk.ctx.at.request.dom.settting.worktype.history.VacationHistoryRepository;
 import nts.uk.ctx.at.request.pub.vacation.history.export.HistoryExport;
@@ -12,7 +13,6 @@ import nts.uk.ctx.at.request.pub.vacation.history.export.MaxDayExport;
 import nts.uk.ctx.at.request.pub.vacation.history.export.VacationHistoryExport;
 import nts.uk.ctx.at.request.pub.vacation.history.export.VacationHistoryPub;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class VacationHistoryPubImpl.
@@ -84,13 +84,13 @@ public class VacationHistoryPubImpl implements VacationHistoryPub{
 	}
 	
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.request.pub.vacation.history.export.VacationHistoryPub#getPlanVacationHistory(java.lang.String, nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 * @see nts.uk.ctx.at.request.pub.vacation.history.export.VacationHistoryPub#getPlanVacationHistory(java.lang.String, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public List<VacationHistoryExport> getPlanVacationHistory(String companyId, DatePeriod period){
+	public List<VacationHistoryExport> getPlanVacationHistory(String companyId, GeneralDate baseDate){
 
 		// Get history list
-		List<PlanVacationHistory> historyList = this.historyRepository.findHistoryByPeriod(companyId, period);
+		List<PlanVacationHistory> historyList = this.historyRepository.findHistoryByBaseDate(companyId, baseDate);
 
 		// convert to Dto
 		return this.toDto(historyList);

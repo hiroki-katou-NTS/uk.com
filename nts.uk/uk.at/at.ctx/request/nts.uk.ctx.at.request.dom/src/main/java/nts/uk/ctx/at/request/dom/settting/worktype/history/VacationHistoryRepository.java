@@ -6,6 +6,7 @@ package nts.uk.ctx.at.request.dom.settting.worktype.history;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -73,5 +74,5 @@ public interface VacationHistoryRepository {
      * @param period the period
      * @return the list
      */
-    public List<PlanVacationHistory> findHistoryByPeriod(String companyId, DatePeriod period);
+    public List<PlanVacationHistory> findHistoryByBaseDate(String companyId, GeneralDate baseDate);
 }
