@@ -15,7 +15,7 @@ public class ApprovalRootCommonOutput {
 	/**履歴ID*/
 	private String historyId;
 	/**申請種類*/
-	private int applicationType;
+	private Integer applicationType;
 	/**開始日*/
 	private GeneralDate startDate;
 	/**完了日*/
@@ -25,7 +25,7 @@ public class ApprovalRootCommonOutput {
 	/**任意項目申請ID*/
 	private String anyItemApplicationId;
 	/**確認ルート種類*/
-	private int confirmationRootType;
+	private Integer confirmationRootType;
 	/**就業ルート区分*/
 	private int employmentRootAtr;
 }

@@ -26,10 +26,10 @@ export module viewmodel {
             ]);
 
             self.currentAppType = ko.observableArray([]);
-
             //Init selectedEmployee
             self.selectedEmployee = ko.observableArray([]);
             self.baseDate = ko.observable(moment(new Date()).toDate());
+            self.start();
         }
 
         loadGrid() {
@@ -81,31 +81,24 @@ export module viewmodel {
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
         }
 
-        getRightList() {
-            let self = this;
-            var dfd = $.Deferred();
-            self.applicationType.removeAll();
-            service.getRightList().done(function(data: any) {
-                let items : ItemModel[] = [];
-                items.push( new ItemModel(99,  "共通ルート"));
-                _.forEach(data, function(value: any){
-                    if(value.value !== 14){
-                        items.push(new ItemModel(value.value, value.localizedName));
-                    }
-                    
-                })
-                
-                self.applicationType(items);
-
-                dfd.resolve();
-            });
-            return dfd.promise();
-        }
-
         start() {
             let self = this;
-            let dfd = $.Deferred();
-            $.when(self.getRightList()).done(function() {
+            var dfd = $.Deferred();
+            service.getRightList().done(function(data: any) {
+                let items : ItemModel[] = [];
+                items.push( new ItemModel(99,  "共通ルート", 0));
+                _.forEach(data, function(value: any){
+                    if(value.value !== 14){
+                        items.push(new ItemModel(value.value, value.localizedName, 1));
+                    }
+                })
+                service.getConfirmName().done(function(confirm: any){
+                    _.forEach(confirm, function(obj){
+                        items.push(new ItemModel(obj.value + 20, obj.localizedName, 2));
+                    });
+                     self.applicationType(items);
+                    self.loadGrid();
+                });
                 dfd.resolve();
             });
             return dfd.promise();
@@ -117,8 +110,6 @@ export module viewmodel {
         //Exceｌ出力
         printExcel(){
             var self = this;
-            
-            
             //対象社員を選択したかをチェックする(kiểm tra đã chọn nhân viên chưa?)
             //対象者未選択(chưa chọn nhân viên)
             if(self.selectedEmployee().length <= 0){
@@ -131,22 +122,23 @@ export module viewmodel {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_199"});
                 return;    
             }
-            //xuat file
-            let data = new service.model.appInfor();
-            data.baseDate = self.baseDate();
+            let lstApp = []
+            _.each(self.currentAppType(), function(code){
+                let a = self.findTypeSelected(code);
+                let empRoot1 = a.empRoot;
+                let code1 = empRoot1 == 2 ? (a.code - 20) : a.code;
+                lstApp.push({code: code1,
+                             empRoot: empRoot1});
+            });
+//            let lst1 = [];
+//            _.each(self.selectedEmployee(), function(emp){
+//                lst1.push(emp.employeeId);
+//            });
             
-            //fix tam du lieu
-            //data.lstEmpIds = self.selectedEmployee();
-            var lstEmpIds : string[] = [];
-            data.lstEmpIds = self.selectedEmployee();
-            data.lstApps = self.currentAppType();
-            var isCommon = self.findCommon();
-            if(!nts.uk.util.isNullOrUndefined(isCommon)){
-                data.rootAtr = 0;
-            }else{
-                data.rootAtr = 1;
-            }
-            nts.uk.ui.block.grayout();
+            
+            //xuat file
+            let data = new service.model.appInfor(self.baseDate(), self.selectedEmployee(), lstApp);
+            nts.uk.ui.block.invisible();
             service.saveAsExcel(data).done(()=>{
                  nts.uk.ui.block.clear();   
             }).fail(function(res: any){
@@ -154,20 +146,22 @@ export module viewmodel {
                  nts.uk.ui.block.clear();
             });
         }
-        findCommon(){
+        findTypeSelected(appType: number){
             let self = this;
-            return _.find(self.currentAppType(), function(value){
-                return value  == 99;    
-            });    
+            return _.find(self.applicationType(), function(app){
+                return app.code == appType;
+            });
         }
     }
 
         export class ItemModel {
             code: number;
             name: string;
-            constructor(code: number, name: string) {
+            empRoot: number;
+            constructor(code: number, name: string, empRoot: number) {
                 this.code = code;
                 this.name = name;
+                this.empRoot = empRoot;
             }
         }
         

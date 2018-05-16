@@ -34,10 +34,13 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApproverAsApplicationInforOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeApproverAsApplicationOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeOrderApproverAsAppOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.WpApproverAsAppOutput;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.registerapproval.AppTypes;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 @Stateless
@@ -360,10 +363,14 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 
 			Cell em_Form = cells.get(firstRow, COLUMN_INDEX[3]);
 			String appName = "";
-			if (m1.getKey().toString().equals("99")) {
+			AppTypes typeApp = (AppTypes) m1.getKey();
+			if (typeApp.getEmpRoot() == EmploymentRootAtr.COMMON.value){
 				appName = "共通";
-			} else {
-				appName = EnumAdaptor.valueOf(Integer.valueOf(m1.getKey().toString()), ApplicationType.class).nameId;
+			} else if(typeApp.getEmpRoot() == EmploymentRootAtr.APPLICATION.value){
+				appName = EnumAdaptor.valueOf(typeApp.getCode(), ApplicationType.class).nameId;
+			}
+			else if(typeApp.getEmpRoot() == EmploymentRootAtr.CONFIRMATION.value){
+				appName = EnumAdaptor.valueOf(typeApp.getCode(), ConfirmationRootType.class).nameId;
 			}
 			em_Form.setValue(appName);
 			// SET STYLE CHO CỘT THỨ 3
@@ -446,13 +453,18 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 				cells.merge(firstRow, COLUMN_INDEX[3], max, 1, true);
 			}
 			Cell em_Form = cells.get(firstRow, COLUMN_INDEX[3]);
-			if (m1.getKey().toString().equals("99")) {
-				em_Form.setValue("共通");
-			} else {
-				em_Form.setValue(
-						EnumAdaptor.valueOf(Integer.valueOf(m1.getKey().toString()), ApplicationType.class).nameId);
+			String appName1 = "";
+			AppTypes typeApp = (AppTypes) m1.getKey();
+			if (typeApp.getEmpRoot() == EmploymentRootAtr.COMMON.value){
+				appName1 = "共通";
+			} else if(typeApp.getEmpRoot() == EmploymentRootAtr.APPLICATION.value){
+				appName1 = EnumAdaptor.valueOf(typeApp.getCode(), ApplicationType.class).nameId;
 			}
-
+			else if(typeApp.getEmpRoot() == EmploymentRootAtr.CONFIRMATION.value){
+				appName1 = EnumAdaptor.valueOf(typeApp.getCode(), ConfirmationRootType.class).nameId;
+			}
+			
+			em_Form.setValue(appName1);
 			// SET STYLE CHO CỘT THỨ 3
 			for (int i = 0; i < max; i++) {
 				Cell style_Form = cells.get(firstRow + i, COLUMN_INDEX[3]);

@@ -28,6 +28,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseReposito
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
@@ -70,8 +71,7 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 	 * 01.申請者としての承認ルートを取得する
 	 */
 	@Override
-	public Map<String, WpApproverAsAppOutput> lstEmps(String companyID, GeneralDate baseDate, List<String> lstEmpIds,
-			int rootAtr, List<Integer> lstApps) {
+	public Map<String, WpApproverAsAppOutput> lstEmps(String companyID, GeneralDate baseDate, List<String> lstEmpIds, List<AppTypes> lstApps) {
 		// toan the du lieu co workplace
 		Map<String, WpApproverAsAppOutput> appOutput = new HashMap<>();
 
@@ -85,34 +85,46 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 		for (String empId : lstEmpIds) {
 			List<ApprovalRootCommonOutput> appOfEmployee = new ArrayList<>();
 			// ループ中の承認ルート対象が共通ルート が false の場合(loại đơn xin đang xử lý loop : 共通ルート = false)
-			if (rootAtr == EmploymentRootAtr.COMMON.value) {
-				//社員の共通の承認ルートを取得する(lấy thông tin Common approval route  của nhân viên theo )
+			boolean checkComm = this.checkCommon(lstApps);
+			if(checkComm){//TH common
 				appOfEmployee = appEmployee.commonOfEmployee(lstComs, lstWps, lstPss, companyID, empId, baseDate);
-				this.getData(appOfEmployee, companyID, empId, baseDate, appOutput, 99, "共通ルート");
+				//get root by common
+				this.getData(appOfEmployee, companyID, empId, baseDate, appOutput, new AppTypes(99, 0), "共通ルート");
 			}
-			// 選択する申請対象をループする(loop theo loại don xin da chon)
-			for (Integer appType : lstApps) {
-				//社員の対象申請の承認ルートを取得する(lấy thông tin approval route cua nhan vien theo loại đơn đang xử lý)
-				if(appType.equals(99)){
+			for (AppTypes app : lstApps) {
+				if(app.getCode().equals(99) && app.getEmpRoot() == 0){
 					continue;
 				}
-				ApplicationType appTypeE = EnumAdaptor.valueOf(appType, ApplicationType.class);
-				appOfEmployee = appEmployee.appOfEmployee(lstComs, lstWps, lstPss, companyID, empId, appTypeE,
+				String appTypeName = "";
+				if(app.getEmpRoot() == EmploymentRootAtr.APPLICATION.value){//TH application
+					appTypeName = EnumAdaptor.valueOf(app.getCode(), ApplicationType.class).nameId;
+				}else if(app.getEmpRoot() == EmploymentRootAtr.CONFIRMATION.value){//TH confirm
+					appTypeName = EnumAdaptor.valueOf(app.getCode(), ConfirmationRootType.class).nameId;
+				}
+				//get root by application/confirm
+				appOfEmployee = appEmployee.appOfEmployee(lstComs, lstWps, lstPss, companyID, empId, app,
 						baseDate);
-				this.getData(appOfEmployee, companyID, empId, baseDate, appOutput, appTypeE.value, appTypeE.nameId);
+				this.getData(appOfEmployee, companyID, empId, baseDate, appOutput, app, appTypeName);
 			}
-
 		}
 		return appOutput;
 	}
 
+	private boolean checkCommon(List<AppTypes> lstApps){
+		for (AppTypes app : lstApps) {
+			if(app.getCode().equals(99) && app.getEmpRoot() == EmploymentRootAtr.COMMON.value){
+				return true;
+			}
+		}
+		return false;
+	}
 	private Map<String, WpApproverAsAppOutput> getData(List<ApprovalRootCommonOutput> lstAppOfEmployee,
 			String companyID, String empId, GeneralDate baseDate, Map<String, WpApproverAsAppOutput> appOutput,
-			int apptyle, String appTypeName) {
+			AppTypes apptyle, String appTypeName) {
 		// list phase cua employee
 		List<ApproverAsApplicationInforOutput> phaseInfors = new ArrayList<>();
 		// du lieu cua phase trong employee
-		Map<Integer, List<ApproverAsApplicationInforOutput>> mapAppType = new HashMap<>();
+		Map<AppTypes, List<ApproverAsApplicationInforOutput>> mapAppType = new HashMap<>();
 		Map<String, EmployeeApproverAsApplicationOutput> mapEmpRootInfo = new HashMap<>();
 		// 終了状態が「承認ルートあり」の場合(trang thai ket thuc「có approval route」)
 		if (!CollectionUtil.isEmpty(lstAppOfEmployee)) {
@@ -199,7 +211,7 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 			Map<String, EmployeeApproverAsApplicationOutput> mapEmAp = wpRoot.getMapEmpRootInfo();
 			if(!mapEmAp.isEmpty() && mapEmAp.containsKey(empId)) {
 				EmployeeApproverAsApplicationOutput employ = mapEmAp.get(empId);
-				Map<Integer, List<ApproverAsApplicationInforOutput>> mapAppTypeAsApprover = employ.getMapAppTypeAsApprover();
+				Map<AppTypes, List<ApproverAsApplicationInforOutput>> mapAppTypeAsApprover = employ.getMapAppTypeAsApprover();
 				mapAppTypeAsApprover.put(apptyle, phaseInfors);
 			}else {
 				mapEmAp.put(empId, infor);
