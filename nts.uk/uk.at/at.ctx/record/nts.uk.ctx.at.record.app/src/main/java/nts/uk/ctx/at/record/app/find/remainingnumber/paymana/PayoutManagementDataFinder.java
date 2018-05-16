@@ -28,11 +28,7 @@ public class PayoutManagementDataFinder {
 	 */
 	public List<PayoutManagementDataDto> getBySidDatePeriod(String sid, GeneralDate startDate, GeneralDate endDate){
 		List<PayoutManagementData> listPayout = payoutManagementDataRepository.getBySidDatePeriod(sid, startDate, endDate, DigestionAtr.UNUSED.value);
-		
-		if (!listPayout.isEmpty()){
-			return listPayout.stream().map(i->PayoutManagementDataDto.createFromDomain(i)).collect(Collectors.toList());
-		}
-		return Collections.emptyList();
+		return listPayout.stream().map(i->PayoutManagementDataDto.createFromDomain(i)).collect(Collectors.toList());
 	}
 	
 	public List<PayoutManagementDataDto> getBysiDRemCod(String empId, int state) {

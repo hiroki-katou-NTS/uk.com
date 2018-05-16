@@ -9,6 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeletePayoutManagementDataCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeleteSubstitutionOfHDManaDataCommandHandler;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.UpdateSubstitutionOfHDManaDataCommand;
@@ -47,5 +48,11 @@ public class SubstitutionOfHDManagementDataWebService extends WebService {
 	// get SubstitutionOfHDManagement by SID and remainsDays > 0
 	public List<SubstitutionOfHDManagementDataDto> getBysiDRemCod(@PathParam("empId") String employeeId) {
 		return finder.getBysiDRemCod(employeeId);
+	}
+	
+	@POST
+	@Path("getBySidDatePeriod/{empId}/{startDate}/{endDate}")
+	public List<SubstitutionOfHDManagementDataDto> getBySidDatePeriod(@PathParam("empId")String sid, @PathParam("startDate")GeneralDate startDate,@PathParam("endDate") GeneralDate endDate) {
+		return finder.getBySidDatePeriod(sid, startDate, endDate);
 	}
 }
