@@ -389,19 +389,13 @@ module nts.uk.at.view.kmf004.b {
              * Add list error.
              */
             addListError(errorsRequest: Array<string>) {
-                var messages = {};
-                var errors = errorsRequest.filter((v, i, a) => a.indexOf(v) === i);
-                
-                _.forEach(errors, function(err) {
-                    messages[err] = nts.uk.resource.getMessage(err);
+                var self = this;
+                var errors = [];
+                _.forEach(errorsRequest, function(err) {
+                    errors.push({ message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
                 });
     
-                var errorVm = {
-                    messageId: errors,
-                    messages: messages
-                };
-    
-                nts.uk.ui.dialog.bundledErrors(errorVm);
+                nts.uk.ui.dialog.bundledErrors({ errors: errors });
             }
         }
         

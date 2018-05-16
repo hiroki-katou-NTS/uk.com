@@ -26,7 +26,7 @@
 			<!-- BEGIN FUNCTION AREA-->
 			<div id="functions-area">
 				<button tab-index="3" class="newBtn" data-bind="click: newBtn, hasfocus: true, enable: !editMode()">#{i18n.getText('KMF004_1')}</button>
-				<button tab-index="1" class="registerBtn proceed" data-bind="click: registerBtn">#{i18n.getText('KMF004_2')}</button>
+				<button tab-index="1" class="registerBtn proceed" data-bind="click: registerBtn, enable: $root.errors.isEmpty">#{i18n.getText('KMF004_2')}</button>
 				<button tab-index="4" class="deleteBtn danger" data-bind="click: deleteBtn, enable: items().length > 0 &amp;&amp; !editMode()">#{i18n.getText('KMF004_3')}</button>
 				<button tab-index="2" class="closeBtn" data-bind="click: closeBtn">#{i18n.getText('KMF004_4')}</button>
 			</div>
