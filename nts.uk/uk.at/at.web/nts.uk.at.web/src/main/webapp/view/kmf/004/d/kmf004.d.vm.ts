@@ -298,6 +298,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 }
             }
             
+            // Add error before check remove
             if(self.provisionCheck()) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_1219" });
                 return;
