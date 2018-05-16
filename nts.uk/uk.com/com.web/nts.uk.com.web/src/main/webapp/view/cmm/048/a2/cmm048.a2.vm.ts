@@ -41,47 +41,6 @@ module a2 {
             _self.mainModel = model;
             _self.employeeInfoContact = model.employeeInfoContact;
             _self.personContact = model.personContact;           
-            
-            //TODO fake data           
-//            let user1 = new UserInfoUseMethodModel();
-//            user1.settingItem(UserInfoItem.COMPANY_PC_MAIL);
-//            user1.settingUseMail(1);
-//            _self.mainModel.listUserInfoUseMethod.push(user1);
-//            
-//            let user2 = new UserInfoUseMethodModel();
-//            user2.settingItem(UserInfoItem.PERSONAL_PC_MAIL);
-//            user2.settingUseMail(2);
-//            _self.mainModel.listUserInfoUseMethod.push(user2);
-////            
-////            let user3 = new UserInfoUseMethodModel();
-////            user3.settingItem(UserInfoItem.COMPANY_MOBILE_MAIL);
-////            user3.settingUseMail(0);
-////            _self.mainModel.listUserInfoUseMethod.push(user3);
-////            
-////            let user4 = new UserInfoUseMethodModel();
-////            user4.settingItem(UserInfoItem.PERSONAL_MOBILE_MAIL);
-////            user4.settingUseMail(2);
-////            _self.mainModel.listUserInfoUseMethod.push(user4);
-////            
-//            let use1 = new UseContactSettingModel();
-//            use1.settingItem(UserInfoItem.COMPANY_PC_MAIL);
-//            use1.useMailSetting(true);
-//            _self.mainModel.listUseContactSetting.push(use1);
-//            
-//            let use2 = new UseContactSettingModel();
-//            use2.settingItem(UserInfoItem.PERSONAL_PC_MAIL);
-//            use2.useMailSetting(false);
-//            _self.mainModel.listUseContactSetting.push(use2);
-////            
-////            let use3 = new UseContactSettingModel();
-////            use3.settingItem(UserInfoItem.COMPANY_MOBILE_MAIL);
-////            use3.useMailSetting(false);
-////            _self.mainModel.listUseContactSetting.push(use3);
-////            
-////            let use4 = new UseContactSettingModel();
-////            use4.settingItem(UserInfoItem.PERSONAL_MOBILE_MAIL);
-////            use4.useMailSetting(true);
-////            _self.mainModel.listUseContactSetting.push(use4);
         
             _self.setUserInfo(UserInfoItem.COMPANY_PC_MAIL);
             _self.setUserInfo(UserInfoItem.PERSONAL_PC_MAIL);
@@ -138,7 +97,7 @@ module a2 {
         
         private setUserInfo(userInfo: UserInfoItem) {
             let _self = this;
-            let itemModel: UserInfoUseMethodModel = _.find(_self.mainModel.listUserInfoUseMethod, method => method.settingItem() == userInfo);
+            let itemModel: UserInfoUseMethodModel = _.find(_self.mainModel.listUserInfoUseMethod(), method => method.settingItem() == userInfo);
             switch (userInfo) {
                 case UserInfoItem.COMPANY_PC_MAIL:
                     if (nts.uk.util.isNullOrUndefined(itemModel)) {
@@ -200,7 +159,7 @@ module a2 {
         
         private setUseContact(userInfo: UserInfoItem) {
             let _self = this;
-            let itemModel: UseContactSettingModel = _.find(_self.mainModel.listUseContactSetting, method => method.settingItem() == userInfo);
+            let itemModel: UseContactSettingModel = _.find(_self.mainModel.listUseContactSetting(), method => method.settingItem() == userInfo);
             switch (userInfo) {
                 case UserInfoItem.COMPANY_PC_MAIL:
                     if (nts.uk.util.isNullOrUndefined(itemModel)) {

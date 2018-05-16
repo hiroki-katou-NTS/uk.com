@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.sys.env.ws.mailnoticeset.company;
@@ -48,6 +48,7 @@ public class UserInfoSettingWs extends WebService {
 	@Inject
 	private UserInfoUseMethodSaveCommandHandler userInfoUseMethodSaveCommandHandler;
 
+	/** The i 18 n. */
 	@Inject
 	private I18NResourcesForUK i18n;
 
@@ -130,6 +131,11 @@ public class UserInfoSettingWs extends WebService {
 		this.mailDestinationFunctionSaveCommandHandler.handle(command);
 	}
 
+	/**
+	 * Gets the all enum.
+	 *
+	 * @return the all enum
+	 */
 	@Path("getAllEnum")
 	@POST
 	public UserInfoEnumDto getAllEnum() {

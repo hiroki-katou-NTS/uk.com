@@ -1,60 +1,97 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.sys.env.infra.repository.mailnoticeset.employee;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSetting;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSettingRepository;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevstUseContactSet;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevstUseContactSetPK;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevstUseContactSetPK_;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevstUseContactSet_;
 
 /**
  * The Class JpaUseContactSettingRepository.
  */
 @Stateless
-public class JpaUseContactSettingRepository extends JpaRepository implements UseContactSettingRepository{
+public class JpaUseContactSettingRepository extends JpaRepository implements UseContactSettingRepository {
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSettingRepository#findByEmployeeId(java.lang.String)
-	 */
-	@Override
-	public UseContactSetting findByEmployeeId(String employeeId,String companyId) {
-		return this.queryProxy().find(new SevstUseContactSetPK(companyId, employeeId), SevstUseContactSet.class).map(e -> this.toDomain(e)).get();
-	}
-
-	/**
-	 * To domain.
-	 *
-	 * @param e the e
-	 * @return the use contact setting
-	 */
-	private UseContactSetting toDomain(SevstUseContactSet e) {
-		return new UseContactSetting(new JpaUseContactSettingGetMemento(e));
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSettingRepository#add(nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSetting, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSettingRepository
+	 * #add(nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSetting,
+	 * java.lang.String)
 	 */
 	@Override
 	public void add(UseContactSetting useContactSetting, String companyId) {
-		this.commandProxy().insert(this.toEntity(useContactSetting,companyId));
+		this.commandProxy().insert(this.toEntity(useContactSetting, companyId));
 	}
 
 	/**
 	 * To entity.
 	 *
-	 * @param useContactSetting the use contact setting
-	 * @param companyId the company id
+	 * @param useContactSetting
+	 *            the use contact setting
+	 * @param companyId
+	 *            the company id
 	 * @return the sevst use contact set
 	 */
 	private SevstUseContactSet toEntity(UseContactSetting useContactSetting, String companyId) {
 		SevstUseContactSet entity = new SevstUseContactSet();
-		useContactSetting.saveToMemento(new JpaUseContactSettingSetMemento(entity,companyId));
+		useContactSetting.saveToMemento(new JpaUseContactSettingSetMemento(entity, companyId));
 		return entity;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSettingRepository
+	 * #findByEmployeeId(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<UseContactSetting> findByEmployeeId(String employeeId, String companyId) {
+		List<UseContactSetting> lstReturn = new ArrayList<>();
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<SevstUseContactSet> cq = criteriaBuilder.createQuery(SevstUseContactSet.class);
+		Root<SevstUseContactSet> root = cq.from(SevstUseContactSet.class);
+
+		// Build query
+		cq.select(root);
+
+		// Add where conditions
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(SevstUseContactSet_.sevstUseContactSetPK).get(SevstUseContactSetPK_.cid), companyId));
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(SevstUseContactSet_.sevstUseContactSetPK).get(SevstUseContactSetPK_.sid), employeeId));
+
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		List<SevstUseContactSet> listSevstUseContactSet = em.createQuery(cq).getResultList();
+
+		// Check exist
+		if (!CollectionUtil.isEmpty(listSevstUseContactSet)) {
+			listSevstUseContactSet.stream().forEach(
+					entity -> lstReturn.add(new UseContactSetting(new JpaUseContactSettingGetMemento(entity))));
+		}
+
+		return lstReturn;
 	}
 
 }

@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee;
@@ -22,41 +22,53 @@ public class SevstUseContactSetPK implements Serializable {
 
 	/** The cid. */
 	@Column(name = "CID")
-    private String cid;
+	private String cid;
 
-    /** The sid. */
-    @Column(name = "SID")
-    private String sid;
+	/** The sid. */
+	@Column(name = "SID")
+	private String sid;
 
-    /** The set item. */
-    @Column(name = "SETTING_ITEM")
-    private int setItem;
+	/** The set item. */
+	@Column(name = "SETTING_ITEM")
+	private int setItem;
 
-    /**
+	/**
 	 * Instantiates a new sevst use contact set PK.
 	 */
 	public SevstUseContactSetPK() {
 	}
-	
-    /**
-     * Instantiates a new sevst use contact set PK.
-     *
-     * @param cid the cid
-     * @param sid the sid
-     */
-    public SevstUseContactSetPK(String cid, String sid) {
-        this.cid = cid;
-        this.sid = sid;
-    }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "javaapplication1.SevstUseContactSetPK[ cid=" + cid + ", sid=" + sid + " ]";
-    }
+	/**
+	 * Instantiates a new sevst use contact set PK.
+	 *
+	 * @param cid
+	 *            the cid
+	 * @param sid
+	 *            the sid
+	 * @param setItem
+	 *            the set item
+	 */
+	public SevstUseContactSetPK(String cid, String sid, int setItem) {
+		this.cid = cid;
+		this.sid = sid;
+		this.setItem = setItem;
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "javaapplication1.SevstUseContactSetPK[ cid=" + cid + ", sid=" + sid + " ]";
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -67,6 +79,11 @@ public class SevstUseContactSetPK implements Serializable {
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

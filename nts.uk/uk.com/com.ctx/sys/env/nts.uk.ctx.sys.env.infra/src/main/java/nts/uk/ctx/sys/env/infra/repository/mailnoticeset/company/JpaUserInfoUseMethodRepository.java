@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.sys.env.infra.repository.mailnoticeset.company;
@@ -16,10 +16,12 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethodRepository;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstUserInfoUsemethod;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstUserInfoUsemethodPK;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstUserInfoUsemethodPK_;
@@ -66,6 +68,21 @@ public class JpaUserInfoUseMethodRepository extends JpaRepository implements Use
 		}
 
 		return lstReturn;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethodRepository#
+	 * findByCompanyIdAndSettingItem(java.lang.String,
+	 * nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem)
+	 */
+	@Override
+	public Optional<UserInfoUseMethod> findByCompanyIdAndSettingItem(String companyId, UserInfoItem settingItem) {
+		val pk = new SevstUserInfoUsemethodPK(companyId, settingItem.value);
+		return this.queryProxy().find(pk, SevstUserInfoUsemethod.class)
+				.map(entity -> new UserInfoUseMethod(new JpaUserInfoUseMethodGetMemento(entity)));
 	}
 
 	/*

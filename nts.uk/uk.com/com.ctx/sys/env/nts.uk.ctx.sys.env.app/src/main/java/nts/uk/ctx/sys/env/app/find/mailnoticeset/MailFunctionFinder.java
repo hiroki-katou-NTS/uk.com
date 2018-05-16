@@ -32,12 +32,11 @@ public class MailFunctionFinder {
 	 */
 	public List<MailFunctionDto> findByCidAndSettingMail(Boolean proprietySendMailSettingAtr) {
 		List<MailFunction> lstMailFunction = mailFunctionFinderRepository.findAll(proprietySendMailSettingAtr);
-		List<MailFunctionDto> lstDto = lstMailFunction.stream().map(item -> {
+		return lstMailFunction.stream().map(item -> {
 			MailFunctionDto dto = new MailFunctionDto();
 			item.saveToMemento(dto);
 			return dto;
 		}).collect(Collectors.toList());
-		return lstDto;
 
 	}
 }

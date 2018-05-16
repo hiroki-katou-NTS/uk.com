@@ -3,13 +3,12 @@ module nts.uk.com.view.cmm048.a {
     export module service {
         
         let servicePath: any = {
-            getData: "",
-            getAllEnum: "sys/env/userinfoset/getAllEnum",
+            getData: "sys/env/mailnoticeset/find",            
             save: "sys/env/mailnoticeset/save"
         }
-
-        export function getAllEnum(): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.getAllEnum);
+        
+        export function getData(): JQueryPromise<model.MainDto> {
+            return nts.uk.request.ajax(servicePath.getData);
         }
         
         export function save(command: model.MailNoticeSetSaveCommand): JQueryPromise<void> {

@@ -11,7 +11,7 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.MailFunctionSetMemento;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.SortOrder;
 
 /**
- * Instantiates a new mail function dto.
+ * The Class MailFunctionDto.
  */
 @Data
 public class MailFunctionDto implements MailFunctionSetMemento {
@@ -28,28 +28,50 @@ public class MailFunctionDto implements MailFunctionSetMemento {
 	/** The sort order. */
 	public Integer sortOrder;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.env.dom.mailnoticeset.MailFunctionSetMemento#setFunctionId
+	 * (nts.uk.ctx.sys.env.dom.mailnoticeset.FunctionId)
+	 */
 	@Override
 	public void setFunctionId(FunctionId functionId) {
 		this.functionId = functionId.v();
-
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.MailFunctionSetMemento#
+	 * setFunctionName(nts.uk.ctx.sys.env.dom.mailnoticeset.FunctionName)
+	 */
 	@Override
 	public void setFunctionName(FunctionName functionName) {
 		this.functionName = functionName.v();
-
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.MailFunctionSetMemento#
+	 * setProprietySendMailSettingAtr(boolean)
+	 */
 	@Override
 	public void setProprietySendMailSettingAtr(boolean proprietySendMailSettingAtr) {
 		this.proprietySendMailSettingAtr = proprietySendMailSettingAtr;
-
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.env.dom.mailnoticeset.MailFunctionSetMemento#setSortOrder(
+	 * nts.uk.ctx.sys.env.dom.mailnoticeset.SortOrder)
+	 */
 	@Override
 	public void setSortOrder(SortOrder sortOrder) {
 		this.sortOrder = sortOrder.v();
-
 	}
 
 }

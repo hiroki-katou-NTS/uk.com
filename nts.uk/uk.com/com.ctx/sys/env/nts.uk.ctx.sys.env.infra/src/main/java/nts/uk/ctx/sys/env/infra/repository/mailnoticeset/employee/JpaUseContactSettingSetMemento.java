@@ -17,27 +17,25 @@ public class JpaUseContactSettingSetMemento implements UseContactSettingSetMemen
 	/** The entity. */
 	private SevstUseContactSet entity;
 	
-	/** The company id. */
-	private String companyId;
-	
 	/**
 	 * Instantiates a new jpa use contact setting set memento.
 	 *
 	 * @param entity the entity
 	 * @param companyId the company id
 	 */
-	public JpaUseContactSettingSetMemento(SevstUseContactSet entity,String companyId) {
+	public JpaUseContactSettingSetMemento(SevstUseContactSet entity, String companyId) {
 		this.entity = entity;
-		this.companyId = companyId;
+		SevstUseContactSetPK pk = new SevstUseContactSetPK();
+		pk.setCid(companyId);
+		this.entity.setSevstUseContactSetPK(pk);
 	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSettingSetMemento#setEmployeeID(java.lang.String)
 	 */
 	@Override
-	public void setEmployeeID(String EmployeeID) {
-		SevstUseContactSetPK pk = new SevstUseContactSetPK(companyId, EmployeeID);
-		this.entity.setSevstUseContactSetPK(pk);
+	public void setEmployeeID(String employeeID) {
+		this.entity.getSevstUseContactSetPK().setSid(employeeID);
 	}
 
 	/* (non-Javadoc)

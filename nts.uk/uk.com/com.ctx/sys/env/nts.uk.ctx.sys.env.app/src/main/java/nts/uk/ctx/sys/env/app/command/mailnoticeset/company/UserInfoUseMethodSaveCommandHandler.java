@@ -14,13 +14,12 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethodRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * UserInfoUseMethodSave Command Handler
- * 
- *
+ * The Class UserInfoUseMethodSaveCommandHandler.
  */
 @Stateless
 public class UserInfoUseMethodSaveCommandHandler extends CommandHandler<UserInfoUseMethodSaveCommand> {
 
+	/** The repo. */
 	@Inject
 	private UserInfoUseMethodRepository repo;
 

@@ -11,5 +11,11 @@ import java.util.List;
  */
 public interface MailFunctionRepository {
 
+	/**
+	 * Find all.
+	 *
+	 * @param proprietySendMailSettingAtr the propriety send mail setting atr
+	 * @return the list
+	 */
 	public List<MailFunction> findAll(Boolean proprietySendMailSettingAtr);
 }

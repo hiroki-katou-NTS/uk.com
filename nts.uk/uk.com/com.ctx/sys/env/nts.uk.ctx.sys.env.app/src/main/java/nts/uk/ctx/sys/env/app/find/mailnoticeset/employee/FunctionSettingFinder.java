@@ -44,7 +44,6 @@ public class FunctionSettingFinder {
 	public List<FunctionSettingDto> findByUserInfoItem(UserInfoItem userInfoItem) {
 		
 		String companyId = AppContexts.user().companyId();
-		//TODO mailFunctionRepository
 		List<FunctionSettingDto> listResult = this.mailFunctionRepository.findAll(true).stream()
 				.map(item -> new FunctionSettingDto(item.getFunctionId().v(), item.getFunctionName().v(), false))
 				.collect(Collectors.toList());	

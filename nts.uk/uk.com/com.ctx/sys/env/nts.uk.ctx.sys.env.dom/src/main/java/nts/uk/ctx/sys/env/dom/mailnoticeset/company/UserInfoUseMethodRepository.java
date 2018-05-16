@@ -5,12 +5,15 @@
 package nts.uk.ctx.sys.env.dom.mailnoticeset.company;
 
 import java.util.List;
+import java.util.Optional;
+
+import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
 
 /**
  * The Interface UserInfoUseMethodRepository.
  */
 public interface UserInfoUseMethodRepository {
-	
+
 	/**
 	 * Find by company id.
 	 *
@@ -20,16 +23,25 @@ public interface UserInfoUseMethodRepository {
 	public List<UserInfoUseMethod> findByCompanyId(String companyId);
 
 	/**
+	 * Find by company id and setting item.
+	 *
+	 * @param companyId the company id
+	 * @param settingItem the setting item
+	 * @return the optional
+	 */
+	public Optional<UserInfoUseMethod> findByCompanyIdAndSettingItem(String companyId, UserInfoItem settingItem);
+
+	/**
 	 * Update.
 	 *
-	 * @param userInfo the user info
+	 * @param lstUserInfo the lst user info
 	 */
 	public void update(List<UserInfoUseMethod> lstUserInfo);
 
 	/**
 	 * Creates the.
 	 *
-	 * @param userInfo the user info
+	 * @param lstUserInfo the lst user info
 	 */
 	public void create(List<UserInfoUseMethod> lstUserInfo);
 }

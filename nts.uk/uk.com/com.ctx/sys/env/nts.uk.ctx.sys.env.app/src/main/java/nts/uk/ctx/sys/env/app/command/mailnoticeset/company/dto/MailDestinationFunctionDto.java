@@ -32,9 +32,9 @@ public class MailDestinationFunctionDto implements MailDestinationFunctionGetMem
 	 */
 	@Override
 	public List<SendMailByFunctionSetting> getSendByFunctionSetting() {
-		return this.sendByFunctionSetting.stream().map(item->{
-			return new SendMailByFunctionSetting(item);
-		}).collect(Collectors.toList());
+		return this.sendByFunctionSetting.stream()
+				.map(SendMailByFunctionSetting::new)
+				.collect(Collectors.toList());
 	}
 
 	/*

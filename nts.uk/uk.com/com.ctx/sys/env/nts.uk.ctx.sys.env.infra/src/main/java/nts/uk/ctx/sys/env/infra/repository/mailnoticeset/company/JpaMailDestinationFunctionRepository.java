@@ -24,6 +24,9 @@ import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFunc
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFuncPK_;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFunc_;
 
+/**
+ * The Class JpaMailDestinationFunctionRepository.
+ */
 @Stateless
 public class JpaMailDestinationFunctionRepository extends JpaRepository implements MailDestinationFunctionRepository {
 
@@ -66,6 +69,13 @@ public class JpaMailDestinationFunctionRepository extends JpaRepository implemen
 		return new MailDestinationFunction(new JpaMailDestinationFunctionGetMemento(listSevstMailDestinFunc));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.company.
+	 * MailDestinationFunctionRepository#add(nts.uk.ctx.sys.env.dom.
+	 * mailnoticeset.company.MailDestinationFunction)
+	 */
 	@Override
 	public void add(MailDestinationFunction domain) {
 		List<SevstMailDestinFunc> entities = new ArrayList<>();
@@ -73,6 +83,13 @@ public class JpaMailDestinationFunctionRepository extends JpaRepository implemen
 		this.commandProxy().insertAll(entities);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.sys.env.dom.mailnoticeset.company.
+	 * MailDestinationFunctionRepository#remove(java.lang.String,
+	 * nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem)
+	 */
 	@Override
 	public void remove(String companyId, UserInfoItem userInfoItem) {
 		// Get entity manager

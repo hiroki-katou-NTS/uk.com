@@ -134,14 +134,14 @@ import MailFunctionDto = nts.uk.com.view.cmm049.b.service.MailFunctionDto;
                         if (check.length > 0) {
                             listOfSendMailFunction.push({
                                 functionId: item,
-                                sendSetting: SendSetting.CAN_EDIT                            });
+                                sendSetting: SendSetting.CAN_EDIT                            
+                            });
                         }
                         else {
                             listOfSendMailFunction.push({
                                 functionId: item,
                                 sendSetting: SendSetting.CAN_NOT_EDIT
                             });
-
                         }
                     }
                 });

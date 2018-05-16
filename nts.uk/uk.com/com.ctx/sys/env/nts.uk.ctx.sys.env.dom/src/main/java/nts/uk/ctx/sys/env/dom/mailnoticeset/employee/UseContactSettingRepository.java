@@ -1,8 +1,10 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.sys.env.dom.mailnoticeset.employee;
+
+import java.util.List;
 
 /**
  * The Interface UseContactSettingRepository.
@@ -14,10 +16,10 @@ public interface UseContactSettingRepository {
 	 *
 	 * @param employeeId the employee id
 	 * @param companyId the company id
-	 * @return the use contact setting
+	 * @return the list
 	 */
-	UseContactSetting findByEmployeeId(String employeeId,String companyId);
-	
+	List<UseContactSetting> findByEmployeeId(String employeeId, String companyId);
+
 	/**
 	 * Adds the.
 	 *

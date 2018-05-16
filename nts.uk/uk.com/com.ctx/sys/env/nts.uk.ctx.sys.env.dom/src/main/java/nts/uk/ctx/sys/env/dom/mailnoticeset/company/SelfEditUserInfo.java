@@ -27,7 +27,7 @@ public enum SelfEditUserInfo {
 	public final String description;
 
 	/** The Constant values. */
-	private final static SelfEditUserInfo[] values = SelfEditUserInfo.values();
+	private static final SelfEditUserInfo[] values = SelfEditUserInfo.values();
 
 	/**
 	 * Instantiates a new abolish atr.
