@@ -5,14 +5,15 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.at.record.app.command.remainingnumber.paymana1.DeletePayoutManagementDataCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.paymana1.DeleteSubstitutionOfHDManaDataCommandHandler;
-import nts.uk.ctx.at.record.app.command.remainingnumber.paymana1.UpdateSubstitutionOfHDManaDataCommand;
-import nts.uk.ctx.at.record.app.command.remainingnumber.paymana1.UpdateSubstitutionOfHDManaDataCommandHandler;
+import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeletePayoutManagementDataCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeleteSubstitutionOfHDManaDataCommandHandler;
+import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.UpdateSubstitutionOfHDManaDataCommand;
+import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.UpdateSubstitutionOfHDManaDataCommandHandler;
 
 @Path("at/record/remainnumber/subsitution_hd")
 @Produces("application/json")
-public class SubstitutionOfHDManagementDataWebService {
+public class SubstitutionOfHDManagementDataWebService extends WebService {
 
 	@Inject
 	private DeleteSubstitutionOfHDManaDataCommandHandler deleteSub;

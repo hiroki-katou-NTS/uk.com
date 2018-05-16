@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeletePayoutManagementDataCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeletePayoutManagementDataCommandHandler;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.PayoutManagementDataCommand;
@@ -17,7 +18,7 @@ import nts.uk.ctx.at.record.app.find.remainingnumber.paymana.PayoutManagementDat
 
 @Path("at/record/remainnumber/payoutmanagement")
 @Produces("application/json")
-public class PayoutManagementDataWebService {
+public class PayoutManagementDataWebService extends WebService{
    
 	@Inject
     private DeletePayoutManagementDataCommandHandler deletePayout;
