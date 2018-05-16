@@ -6,10 +6,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.EmployeeDeletion;
-import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.EmployeesDeletionRepository;
-import nts.uk.ctx.sys.assist.infra.entity.deletedata.manualsetting.SspdtEmployeesDeletion;
-import nts.uk.ctx.sys.assist.infra.entity.deletedata.manualsetting.SspdtEmployeesDeletionPK;
+import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
+import nts.uk.ctx.sys.assist.dom.deletedata.EmployeesDeletionRepository;
+import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspdtEmployeesDeletion;
+import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspdtEmployeesDeletionPK;
 
 @Stateless
 public class JpaEmployeesDeletionRepository extends JpaRepository implements EmployeesDeletionRepository {

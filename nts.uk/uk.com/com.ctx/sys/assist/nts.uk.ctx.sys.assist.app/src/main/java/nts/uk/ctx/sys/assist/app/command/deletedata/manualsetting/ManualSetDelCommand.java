@@ -9,13 +9,13 @@ import java.util.stream.Collectors;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.BusinessName;
-import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.CategoryDeletion;
-import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.DelName;
-import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.EmployeeDeletion;
-import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.ManualSetDeletion;
-import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.PasswordCompressFileEncrypt;
-import nts.uk.ctx.sys.assist.dom.deletedata.manualsetting.SupplementExplanation;
+import nts.uk.ctx.sys.assist.dom.deletedata.BusinessName;
+import nts.uk.ctx.sys.assist.dom.deletedata.CategoryDeletion;
+import nts.uk.ctx.sys.assist.dom.deletedata.DelName;
+import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
+import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
+import nts.uk.ctx.sys.assist.dom.deletedata.PasswordCompressFileEncrypt;
+import nts.uk.ctx.sys.assist.dom.deletedata.SupplementExplanation;
 
 /**
  * @author hiep.th
