@@ -55,6 +55,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 	@Inject
 	private VacationHistoryRepository vacationHistoryRepository;
 	
+	@Inject
 	ExcelExportService excelExportService;
 	
 	@Override
@@ -124,7 +125,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				//(Thực hiện thuật toán 「指定年月日時点の年休残数を取得-lấy số phép còn lại tại thời điểm xác định」)
 				List<YearlyHolidaysTimeRemainingImport> yearlyHolidaysTimeRemainingImport = annualBreakManageAdapter
 						.getYearHolidayTimeAnnualRemaining(employeeSearchCommand.get(i).getEmployeeId(), command.getDate());
-				
+				System.out.println("---------------------:" + yearlyHolidaysTimeRemainingImport.size());
 				if (yearlyHolidaysTimeRemainingImport.isEmpty()) {
 					//取得失敗
 					//パラメータ.処理人数に＋１加算する
