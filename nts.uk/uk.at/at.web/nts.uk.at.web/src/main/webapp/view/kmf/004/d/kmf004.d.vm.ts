@@ -179,6 +179,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         /** update or insert data when click button register **/
         register() {   
             nts.uk.ui.block.invisible();
+            
             let self = this;
             $("#inpCode").trigger("validate");
             $("#inpPattern").trigger("validate");
@@ -229,6 +230,8 @@ module nts.uk.at.view.kmf004.d.viewmodel {
           
                     }).fail(function(res){
                         $('#inpCode').ntsError('set', res);
+                    }).always(function(){
+                        nts.uk.ui.block.clear();    
                     });
                 } else {
                     self.selectedOption(null);
@@ -248,11 +251,11 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_3" }).then(() => { 
                             $('#inpCode').focus();
                         });
+                    }).always(function(){
+                        nts.uk.ui.block.clear();    
                     });
                 }
-            }
-           
-            nts.uk.ui.block.clear();   
+            }   
         } 
         
         //  new mode 
