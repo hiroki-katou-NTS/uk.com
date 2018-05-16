@@ -24,6 +24,7 @@ module nts.uk.ui.koExtentions {
             var deleteOptions = ko.unwrap(data.deleteOptions);
             var observableColumns = ko.unwrap(data.columns);
             var showNumbering = ko.unwrap(data.showNumbering) === true ? true : false;
+            var columnResize: boolean = ko.unwrap(data.columnResize);
             var enable: boolean = ko.unwrap(data.enable);
             var value = ko.unwrap(data.value);
             var virtualization = true;
@@ -54,6 +55,11 @@ module nts.uk.ui.koExtentions {
                     enableRowNumbering: false, //this feature is not needed
                     rowSelectorColumnWidth: 25
                 });    
+            }
+            if(columnResize){
+                features.push({
+                    name: "Resizing"
+                });
             }
             let tabIndex = $grid.attr("tabindex");
             $grid.data("tabindex", nts.uk.util.isNullOrEmpty(tabIndex) ? "0" : tabIndex);
