@@ -85,7 +85,7 @@ public class ExecutionLogDto {
 				domain.getExistenceError().value,
 				new ExecutionTime(domain.getExecutionTime().getStartTime(), domain.getExecutionTime().getEndTime()),
 				domain.getProcessStatus().value,
-				new ObjectPeriod(domain.getObjectPeriod().getStartDate(), domain.getObjectPeriod().getEndDate()),
+				(domain.getObjectPeriod()!=null && domain.getObjectPeriod().isPresent())? new ObjectPeriod(domain.getObjectPeriod().get().getStartDate(), domain.getObjectPeriod().get().getEndDate()):null,
 				domain.getCalExecutionSetInfoID(),
 				domain.getReflectApprovalSetInfo().isPresent()
 						? SetInforReflAprResultDto.fromDomain(domain.getReflectApprovalSetInfo().get())

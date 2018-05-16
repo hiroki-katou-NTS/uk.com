@@ -536,18 +536,12 @@ public class MonthlyCalculation {
 		if (afterDeduct.getErrorInfos().size() > 0) return;
 		if (!afterDeduct.getPredetermineTimeSetOfWeekDay().isPresent()) return;
 
-		// 控除後の年休控除時間が0以下の時、加算しない
-		if (afterDeduct.getAnnualLeaveDeductTime().lessThanOrEqualTo(0)) return;
-		
 		// 控除前の年休控除時間を取得する
 		val beforeDeductTime = this.flexTime.getAnnualLeaveTimeBeforeDeduct();
 		
-		// 控除した時間を求める
-		val deductedTime = beforeDeductTime.minusMinutes(afterDeduct.getAnnualLeaveDeductTime().v());
-
-		// 控除した時間を年休使用時間に加算する
+		// 控除前の年休控除時間を年休使用時間に加算する
 		val annualLeave = this.aggregateTime.getVacationUseTime().getAnnualLeave();
-		annualLeave.addMinuteToUseTime(deductedTime.v());
+		annualLeave.addMinuteToUseTime(beforeDeductTime.v());
 	}
 	
 	/**

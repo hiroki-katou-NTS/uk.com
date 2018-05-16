@@ -85,5 +85,8 @@ public class SaveProcessExecutionCommand {
 	private GeneralDate refDate;
 	
     private List<String> workplaceList;
+    
+    /* 対象者区分 */
+	private int targetGroupClassification;
 
 }
