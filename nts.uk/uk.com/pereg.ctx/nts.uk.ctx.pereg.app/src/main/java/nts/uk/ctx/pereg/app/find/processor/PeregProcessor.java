@@ -178,23 +178,23 @@ public class PeregProcessor {
 		
 		PeregDto peregDto = null;
 		String infoId = query.getInfoId();
-		CategoryType categoryType = perInfoCtg.getCategoryType();
 
-		if ((perInfoCtg.getIsFixed() == IsFixed.FIXED && infoId != null)
-				|| (infoId == null && categoryType == CategoryType.SINGLEINFO)) {
+		if ((perInfoCtg.isFixed() && infoId != null) || (infoId == null && perInfoCtg.isSingleCategory())) {
 			peregDto = layoutingProcessor.findSingle(query);
 		}
 		
 		CheckViewOnlyReturnObj checkViewOnly = new CheckViewOnlyReturnObj();
-		if (categoryType != CategoryType.SINGLEINFO) {
+		
+		if (perInfoCtg.isHistoryCategory()) {
 			checkViewOnly = checkCtgIsViewOnly(peregDto, perInfoCtg, roleId, infoId, loginEmpId.equals(employeeId));
 		}
+		
 		ParamForGetPerItem getItemDefParam = new ParamForGetPerItem(perInfoCtg, infoId, roleId == null ? "" : roleId,
 				companyId, contractCode, loginEmpId.equals(employeeId));
 
 		// map PersonInfoItemDefinition →→ PerInfoItemDefForLayoutDto
 		List<PerInfoItemDefForLayoutDto> lstPerInfoItemDefForLayout = getPerItemDefForLayout(getItemDefParam,
-				loginEmpId, checkViewOnly.isViewOnly, checkViewOnly.startDate);
+				loginEmpId, checkViewOnly.isViewOnly(), checkViewOnly.getStartDate());
 
 		EmpMaintLayoutDto empMaintLayoutDto = new EmpMaintLayoutDto();
 
@@ -351,20 +351,22 @@ public class PeregProcessor {
 		}
 	}
 	
-	private CheckViewOnlyReturnObj checkCtgIsViewOnly(PeregDto peregDto, PersonInfoCategory perInfoCtg, String roleId, String infoId, boolean isSelf) {
+	private CheckViewOnlyReturnObj checkCtgIsViewOnly(PeregDto peregDto, PersonInfoCategory perInfoCtg, String roleId,
+			String infoId, boolean isSelf) {
 		CheckViewOnlyReturnObj returnObject = new CheckViewOnlyReturnObj();
-		PersonInfoCategoryAuth perInfoCtgAuth = perAuth.getDetailPersonCategoryAuthByPId(roleId, perInfoCtg.getPersonInfoCategoryId()).get();
+		PersonInfoCategoryAuth perInfoCtgAuth = perAuth
+				.getDetailPersonCategoryAuthByPId(roleId, perInfoCtg.getPersonInfoCategoryId()).get();
 		String exceptionItemCode = "CS00003";
-		if(infoId == null) {
-			if((perInfoCtgAuth.getOtherAllowAddHis() == PersonInfoPermissionType.NO && !isSelf)
-					||(perInfoCtgAuth.getSelfAllowAddHis() == PersonInfoPermissionType.NO && isSelf)) {
-				returnObject.isViewOnly = false;
+		if (infoId == null) {
+			if ((perInfoCtgAuth.getOtherAllowAddHis() == PersonInfoPermissionType.NO && !isSelf)
+					|| (perInfoCtgAuth.getSelfAllowAddHis() == PersonInfoPermissionType.NO && isSelf)) {
+				returnObject.setViewOnly(false);
 				return returnObject;
 			}
-		}else {
-			String sDateId = "";	
-			String eDateId = "";	
-			if(!perInfoCtg.getCategoryCode().v().equals(exceptionItemCode)) {
+		} else {
+			String sDateId = "";
+			String eDateId = "";
+			if (!perInfoCtg.getCategoryCode().v().equals(exceptionItemCode)) {
 				Optional<DateRangeItem> dateRangeItem = perInfoCtgRepositoty
 						.getDateRangeItemByCategoryId(perInfoCtg.getPersonInfoCategoryId());
 				if (dateRangeItem.isPresent()) {
@@ -372,44 +374,54 @@ public class PeregProcessor {
 					sDateId = dateRangeItem.get().getStartDateItemId();
 				}
 			}
-			
+
 			Object sValue = null;
 			Object eValue = null;
-			if(perInfoCtg.getIsFixed() == IsFixed.FIXED) {			
-				List<Field> fields =  AnnotationUtil.getStreamOfFieldsAnnotated(peregDto.getDtoClass(), PeregItem.class).collect(Collectors.toList());
-				sValue = getDateValueOfFixedCtg(peregDto, perInfoCtg.getCategoryCode().v(), exceptionItemCode, fields, sDateId, true);
-				eValue = getDateValueOfFixedCtg(peregDto, perInfoCtg.getCategoryCode().v(), exceptionItemCode, fields, eDateId, false);
-			}else {
-				if(perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
-					Optional<EmpInfoItemData> dateForStartDate = empInfoItemDataRepository.getInfoItemByItemDefIdAndRecordId(sDateId, infoId);
-					Optional<EmpInfoItemData> dateForEndDate = empInfoItemDataRepository.getInfoItemByItemDefIdAndRecordId(eDateId, infoId);
+			if (perInfoCtg.getIsFixed() == IsFixed.FIXED) {
+				List<Field> fields = AnnotationUtil.getStreamOfFieldsAnnotated(peregDto.getDtoClass(), PeregItem.class)
+						.collect(Collectors.toList());
+				sValue = getDateValueOfFixedCtg(peregDto, perInfoCtg.getCategoryCode().v(), exceptionItemCode, fields,
+						sDateId, true);
+				eValue = getDateValueOfFixedCtg(peregDto, perInfoCtg.getCategoryCode().v(), exceptionItemCode, fields,
+						eDateId, false);
+			} else {
+				if (perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
+					Optional<EmpInfoItemData> dateForStartDate = empInfoItemDataRepository
+							.getInfoItemByItemDefIdAndRecordId(sDateId, infoId);
+					Optional<EmpInfoItemData> dateForEndDate = empInfoItemDataRepository
+							.getInfoItemByItemDefIdAndRecordId(eDateId, infoId);
 					sValue = dateForStartDate.isPresent() ? dateForStartDate.get().getDataState().getDateValue() : null;
 					eValue = dateForEndDate.isPresent() ? dateForEndDate.get().getDataState().getDateValue() : null;
-					
-				}else {
-					Optional<PersonInfoItemData> dateForStartDate = perInfoItemDataRepository.getPerInfoItemDataByItemDefIdAndRecordId(sDateId, infoId);
-					Optional<PersonInfoItemData> dateForEndDate = perInfoItemDataRepository.getPerInfoItemDataByItemDefIdAndRecordId(eDateId, infoId);
+
+				} else {
+					Optional<PersonInfoItemData> dateForStartDate = perInfoItemDataRepository
+							.getPerInfoItemDataByItemDefIdAndRecordId(sDateId, infoId);
+					Optional<PersonInfoItemData> dateForEndDate = perInfoItemDataRepository
+							.getPerInfoItemDataByItemDefIdAndRecordId(eDateId, infoId);
 					sValue = dateForStartDate.isPresent() ? dateForStartDate.get().getDataState().getDateValue() : null;
 					eValue = dateForEndDate.isPresent() ? dateForEndDate.get().getDataState().getDateValue() : null;
-				}			
+				}
 			}
 			Period period = getPeriod(sValue, eValue);
 			GeneralDate sDate = GeneralDate.fromString(sValue.toString(), "yyyy/MM/dd");
-			returnObject.startDate = sDate;
-			if(period == Period.PRESENT) {
-				returnObject.isViewOnly = false;
-				return returnObject;
+			returnObject.setStartDate(sDate);
+			boolean viewOnly = false;
+			if (period == Period.PRESENT) {
+				viewOnly = false;
 			}
-			if(period == Period.FUTURE) {
-				returnObject.isViewOnly = isSelf?perInfoCtgAuth.getSelfFutureHisAuth() == PersonInfoAuthType.REFERENCE : perInfoCtgAuth.getOtherFutureHisAuth() == PersonInfoAuthType.REFERENCE;
-				return returnObject;
-			}else {
-				returnObject.isViewOnly = isSelf?perInfoCtgAuth.getSelfPastHisAuth() == PersonInfoAuthType.REFERENCE : perInfoCtgAuth.getOtherPastHisAuth() == PersonInfoAuthType.REFERENCE;
-				return returnObject;
+			if (period == Period.FUTURE) {
+				viewOnly = isSelf ? perInfoCtgAuth.getSelfFutureHisAuth() == PersonInfoAuthType.REFERENCE
+						: perInfoCtgAuth.getOtherFutureHisAuth() == PersonInfoAuthType.REFERENCE;
+			} else {
+				viewOnly = isSelf ? perInfoCtgAuth.getSelfPastHisAuth() == PersonInfoAuthType.REFERENCE
+						: perInfoCtgAuth.getOtherPastHisAuth() == PersonInfoAuthType.REFERENCE;
 			}
+			returnObject.setViewOnly(viewOnly);
+			return returnObject;
 		}
 		return returnObject;
 	}
+	
 	private Object getDateValueOfFixedCtg(PeregDto peregDto, String ctgCode, String exceptionItemCode, List<Field> fields, String dateId, boolean isStart) {
 		Optional<Field> field = Optional.empty();
 		if(ctgCode.equals(exceptionItemCode)) {
@@ -493,8 +505,4 @@ public class PeregProcessor {
 		FUTURE(3);
 		Period(int a) {}
 	}
-}
-class CheckViewOnlyReturnObj{
-	boolean isViewOnly;
-	GeneralDate startDate;
 }
