@@ -47,4 +47,11 @@ public interface IAgreeCondOtRepository {
 	 * @param agreeCondOt
 	 */
 	public void delete(String code, int category);
+	/**
+	 * delete by code, category and id
+	 * @param code
+	 * @param category
+	 * @param id
+	 */
+	public void deleteId(String code, int category, String id, int no);
 }

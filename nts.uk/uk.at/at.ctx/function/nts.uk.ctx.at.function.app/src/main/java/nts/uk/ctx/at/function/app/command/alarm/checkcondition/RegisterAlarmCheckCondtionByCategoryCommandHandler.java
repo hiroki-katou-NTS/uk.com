@@ -13,6 +13,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.AgreeCondOtCommand;
 import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.AgreeConditionErrorCommand;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
@@ -172,8 +173,17 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				if(listOt.size() > 10){
 					throw new BusinessException("Msg_1242"); 
 				}
+				// find 1 list agreeconditionot from DB, if item in DB isn't existed in UI => delete 
+				List<AgreeCondOt> agreeConditionDbList = otRep.findAll(command.getCode(), command.getCategory());
+				for (AgreeCondOt itemDb : agreeConditionDbList) {
+					Boolean exists = listOt.stream().anyMatch(x -> x.getId().equals(itemDb.getId()));
+					if (!exists) {
+						otRep.deleteId(command.getCode(), command.getCategory(), itemDb.getId(), itemDb.getNo());
+					}
+				}
+				// update/insert listOt
 				for(AgreeCondOt obj : listOt){
-					if(obj.getId() != null){
+					if(!StringUtil.isNullOrEmpty(obj.getId(), true)){
 						Optional<AgreeCondOt> oldOption = otRep.findById(obj.getId(), obj.getNo(), obj.getCode().v(),
 																			companyId, obj.getCategory().value);
 						if(oldOption.isPresent()){
@@ -186,7 +196,6 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 						obj.setId(UUID.randomUUID().toString());
 						otRep.insert(obj);
 					}
-			
 				}
 				break;
 			default:

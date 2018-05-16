@@ -22,6 +22,7 @@ public class JpaAgreeCondOtRepository extends JpaRepository implements IAgreeCon
 	
 	private final String DELETE_NO_WHERE = "DELETE FROM Kfnmt36AgreeCondOt c ";
 	private final String DELETE_CODE = DELETE_NO_WHERE + "WHERE c.kfnmt36AgreeCondOtPK.companyId = :companyId AND c.kfnmt36AgreeCondOtPK.category = :category AND c.kfnmt36AgreeCondOtPK.code = :code ";
+	private final String DELEETE_ID = DELETE_CODE + " AND c.kfnmt36AgreeCondOtPK.id = :id AND c.kfnmt36AgreeCondOtPK.no = :no ";
 	/**
 	 * convert from entity to domain
 	 * @param entity
@@ -111,7 +112,7 @@ public class JpaAgreeCondOtRepository extends JpaRepository implements IAgreeCon
 		this.commandProxy().insert(toEntity(agreeCondOt));
 	}
 	/**
-	 * delete AgreeCondOt
+	 * delete list AgreeCondOt
 	 * @author yennth
 	 */
 	@Override
@@ -121,6 +122,20 @@ public class JpaAgreeCondOtRepository extends JpaRepository implements IAgreeCon
 								.setParameter("companyId", companyId)
 								.setParameter("category", category)
 								.setParameter("code", code)
+								.executeUpdate();
+	}
+	/**
+	 * delete AgreeCondOt
+	 */
+	@Override
+	public void deleteId(String code, int category, String id, int no) {
+		String companyId = AppContexts.user().companyId();
+		this.getEntityManager().createQuery(DELEETE_ID)
+								.setParameter("companyId", companyId)
+								.setParameter("category", category)
+								.setParameter("code", code)
+								.setParameter("id", id)
+								.setParameter("no", no)
 								.executeUpdate();
 	}
 
