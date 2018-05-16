@@ -1,0 +1,20 @@
+.margin-bottom {
+	margin-bottom: 10px;
+}
+
+.padding-item {
+	padding: 25px !important;
+}
+
+.column-1 {
+	width: 90px;
+}
+
+.padding-left-15 {
+	padding-left: 15px;
+}
+
+.combobox-select-day {
+	margin-left: 4px;
+	width: 108px !important;
+}
