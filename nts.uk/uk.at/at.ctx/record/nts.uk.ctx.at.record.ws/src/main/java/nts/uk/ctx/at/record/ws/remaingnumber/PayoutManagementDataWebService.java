@@ -17,7 +17,7 @@ import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.UpdatePayoutMana
 import nts.uk.ctx.at.record.app.find.remainingnumber.paymana.PayoutManagementDataDto;
 import nts.uk.ctx.at.record.app.find.remainingnumber.paymana.PayoutManagementDataFinder;
 
-@Path("at/record/remainnumber/payoutmanagement")
+@Path("at/record/remainnumber/paymana")
 @Produces("application/json")
 public class PayoutManagementDataWebService extends WebService{
    
@@ -44,7 +44,7 @@ public class PayoutManagementDataWebService extends WebService{
 	
 	@POST
 	@Path("getBysiDRemCod/{empId}/{state}")
-	// get SubstitutionOfHDManagement by SID and remainsDays > 0
+	// get SubstitutionOfHDManagement by SID and stateAtr = ?
 	public List<PayoutManagementDataDto> getBysiDRemCod(@PathParam("empId") String employeeId, @PathParam("state") int state) {
 		return finder.getBysiDRemCod(employeeId, state);
 	}
