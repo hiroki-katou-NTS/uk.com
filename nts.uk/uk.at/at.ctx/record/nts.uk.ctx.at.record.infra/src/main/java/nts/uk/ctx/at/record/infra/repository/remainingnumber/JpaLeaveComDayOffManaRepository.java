@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.infra.repository.remainingnumber;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -13,6 +15,9 @@ import nts.uk.ctx.at.record.infra.entity.remainingnumber.subhdmana.KrcmtLeaveDay
 @Stateless
 public class JpaLeaveComDayOffManaRepository extends JpaRepository implements LeaveComDayOffManaRepository{
 
+	private final String QUERY = "SELECT lc FROM KrcmtLeaveDayOffMana lc";
+	private final String QUERY_BY_LEAVEID = String.join(" ", QUERY," WHERE lc.krcmtLeaveDayOffManaPK.leaveID =:leaveID");
+	
 	@Override
 	public void add(LeaveComDayOffManagement domain) {
 		this.commandProxy().insert(toEntity(domain));
@@ -54,6 +59,12 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 	private KrcmtLeaveDayOffMana toEntity(LeaveComDayOffManagement domain){
 		KrcmtLeaveDayOffManaPK key = new KrcmtLeaveDayOffManaPK(domain.getLeaveID(), domain.getComDayOffID());
 		return new KrcmtLeaveDayOffMana(key, domain.getUsedDays().v(), domain.getUsedHours().v(), domain.getTargetSelectionAtr().value);
+	}
+
+	@Override
+	public List<LeaveComDayOffManagement> getByLeaveID(String leaveID) {
+		List<KrcmtLeaveDayOffMana> listLeaveD = this.queryProxy().query(QUERY_BY_LEAVEID,KrcmtLeaveDayOffMana.class).getList();
+		return listLeaveD.stream().map(item->toDomain(item)).collect(Collectors.toList());
 	}
 
 

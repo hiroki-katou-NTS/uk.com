@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.subhdmana;
 
+import java.util.List;
+
 public interface LeaveComDayOffManaRepository {
 	
 	void add(LeaveComDayOffManagement domain);
@@ -7,4 +9,6 @@ public interface LeaveComDayOffManaRepository {
 	void update(LeaveComDayOffManagement domain);
 	
 	void delete(String leaveID, String comDayOffID);
+	
+	List<LeaveComDayOffManagement> getByLeaveID(String leaveID);
 }

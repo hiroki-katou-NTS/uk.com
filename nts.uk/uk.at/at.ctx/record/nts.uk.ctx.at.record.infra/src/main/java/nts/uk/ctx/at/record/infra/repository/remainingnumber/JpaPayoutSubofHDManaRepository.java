@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.infra.repository.remainingnumber;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -13,6 +15,10 @@ import nts.uk.ctx.at.record.infra.entity.remainingnumber.paymana.KrcmtPayoutSubO
 @Stateless
 public class JpaPayoutSubofHDManaRepository extends JpaRepository implements PayoutSubofHDManaRepository {
 
+	private final String QUERY = "SELECT ps FROM KrcmtPayoutSubOfHDMana ps ";
+	
+	private final String QUERY_BY_PAYOUTID = String.join(" ",QUERY, " WHERE ps.krcmtPayoutSubOfHDManaPK.payoutId =:payoutId");
+	
 	@Override
 	public void add(PayoutSubofHDManagement domain) {
 		this.commandProxy().insert(toEntity(domain));
@@ -54,6 +60,12 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 	private KrcmtPayoutSubOfHDMana toEntity(PayoutSubofHDManagement domain){
 		KrcmtPayoutSubOfHDManaPK key = new KrcmtPayoutSubOfHDManaPK(domain.getPayoutId(), domain.getSubOfHDID());
 		return new KrcmtPayoutSubOfHDMana(key, domain.getUsedDays().v(), domain.getTargetSelectionAtr().value);
+	}
+
+	@Override
+	public List<PayoutSubofHDManagement> getByPayoutId(String payoutId) {
+		List<KrcmtPayoutSubOfHDMana> listpayoutSub = this.queryProxy().query(QUERY_BY_PAYOUTID,KrcmtPayoutSubOfHDMana.class).getList();
+		return listpayoutSub.stream().map(item->toDomain(item)).collect(Collectors.toList());
 	}
 
 }
