@@ -33,10 +33,18 @@
 }
 
 #ccg001-part-g {
-	width: 420px;
+	width: 440px;
 	margin-right: 5px;
 	padding-right: 5px;
 	overflow: auto;
+}
+
+#ccg001-part-g .form-label{
+	width: 120px;
+}
+
+.ccg001-inp {
+	width: 216px;
 }
 
 .ccg001-btn {
@@ -127,6 +135,7 @@
 	margin-left: 5px;
 }
 .ccg001-date-range {
+	margin-left: 5px;
 	margin-right: 5px;
 }
 .ccg001-label {
@@ -137,7 +146,7 @@
 }
 
 .ccg-tabpanel #tab-3{
-	width: 500px;
+	width: 520px;
 }
 
 .ccg-tabpanel > div {

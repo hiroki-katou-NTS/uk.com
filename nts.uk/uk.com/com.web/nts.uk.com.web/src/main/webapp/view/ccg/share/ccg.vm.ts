@@ -993,7 +993,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 self.tab3kcp005option = {
                     isShowAlreadySet: false,
-                    maxWidth: 400,
+                    maxWidth: 420,
                     isMultiSelect: self.isMultiple,
                     isMultipleUse: true,
                     listType: ListType.EMPLOYEE,
