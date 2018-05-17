@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -52,6 +53,14 @@ public interface AttendanceTimeOfMonthlyRepository {
 	 */
 	List<AttendanceTimeOfMonthly> findByEmployees(List<String> employeeIds, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate);
+
+	/**
+	 * 検索　（基準日）
+	 * @param employeeId 社員ID
+	 * @param criteriaDate 基準日
+	 * @return 月別実績の勤怠時間
+	 */
+	List<AttendanceTimeOfMonthly> findByDate(String employeeId, GeneralDate criteriaDate);
 	
 	/**
 	 * 登録および更新
