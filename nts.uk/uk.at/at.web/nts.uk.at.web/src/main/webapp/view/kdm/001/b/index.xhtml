@@ -43,11 +43,11 @@
 					<span class="title">Dialog Title</span>
 					<!-- B1_1 新規 -->
 					<div>
-						<button tabindex="6" data-bind="click: openNewSubstituteData">#{i18n.getText('KDM001_1')}</button>
+						<button id ="B1_1" tabindex="6" data-bind="click: openNewSubstituteData">#{i18n.getText('KDM001_1')}</button>
 					</div>
 					<!-- B1_2 「代休確認表」出力画面へ遷移する -->
 					<div style="margin-left: auto;">
-						<a tabindex="7" class="goout"
+						<a id = "B1_2" tabindex="7" class="goout"
 							data-bind="ntsLinkButton: { jump: 'index.xhtml' }">#{i18n.getText('KDM001_113')}</a>
 					</div>
 
@@ -63,32 +63,33 @@
 						<div class="div-table-row">
 							<div class="div-table-col">
 								<!-- B3_1  期間設定  -->
-								<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDM001_3')}</div>
+								<div class="div-table-row-1"
+									data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDM001_3')}</div>
 							</div>
 							<div class="div-table-col-medium">
-								<div>
-									<!-- B3_2  現在の残数状況 -->
-									<div tabindex="2"
+								<!-- B3_2  現在の残数状況 -->
+								<div class="div-table-row-1">
+									<div id = "B3_2" tabindex="2" class="cell"
 										data-bind="ntsRadioButton: {checked: selectedPeriodItem, option: periodOptionItem()[0], optionValue: 'value', optionText: 'name', group: 'periodOption'}"></div>
 								</div>
-								<div>
-									<!-- B3_3  過去の結果 -->
-									<div tabindex="3" class="radio-group"
+
+								<!-- B3_3  過去の結果 -->
+								<div class="div-table-row-2">
+									<div id ="B3_3" class="cell" tabindex="3"
 										data-bind="ntsRadioButton: {checked: selectedPeriodItem, option: periodOptionItem()[1], optionValue: 'value', optionText: 'name', group: 'periodOption'}"></div>
 								</div>
 							</div>
 							<div class="div-table-col-big">
-							<div class="div-table-row-2"></div>
+								<div class="div-table-row-1"></div>
 								<!-- B3_4  期間範囲 -->
-								<div class="div-table-row-2" id="daterangepicker"
-									tabindex="4"
+								<div class="div-table-row-2" id="daterangepicker" tabindex="4"
 									data-bind="ntsDateRangePicker: { required: false, enable: selectedPeriodItem()==1, showNextPrevious: true, value: dateValue, maxRange: 'oneMonth'}" />
 							</div>
 							<div class="div-table-col-big">
-								<div class="div-table-row-2"></div>
+								<div class="div-table-row-1"></div>
 								<!-- B3_5  抽出 -->
 								<div class="div-table-row-2">
-									<button tabindex="5"
+									<button id ="B3_5" tabindex="5"
 										data-bind="click: filterByPeriod, , enable: selectedPeriodItem()==1">#{i18n.getText('KDM001_7')}</button>
 								</div>
 

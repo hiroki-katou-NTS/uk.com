@@ -40,10 +40,23 @@
 	
 }
 
+.div-table-row-1 {
+	display: table-row;
+	height: 37px;
+	clear: both;
+	vertical-align: middle;
+}
+
+.cell {
+    vertical-align: middle;
+    display: table-cell;
+}
+
 .div-table-row-2 {
 	display: table-row;
-	height: 25px;
+	height: 37px;
 	clear: both;
+	vertical-align: middle;
 }
 
 .person-info-panel {
