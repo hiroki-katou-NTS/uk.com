@@ -1686,6 +1686,9 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             public searchByEntryDate(): void {
                 let self = this;
+                if ($('#ccg001-date-entry *').ntsError('hasError')) {
+                    return;
+                }
                 if (self.isInValidEntryDate()) {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_1201' });
                     return;
@@ -1709,6 +1712,9 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             public searchByRetirementDate(): void {
                 let self = this;
+                if ($('#ccg001-date-retirement *').ntsError('hasError')) {
+                    return;
+                }
                 if (self.isInValidRetirementDate()) {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_1201' });
                     return;
