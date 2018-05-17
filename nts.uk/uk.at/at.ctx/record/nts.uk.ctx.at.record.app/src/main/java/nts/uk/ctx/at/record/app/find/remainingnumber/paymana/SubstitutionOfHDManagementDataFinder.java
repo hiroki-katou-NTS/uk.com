@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -16,14 +17,24 @@ public class SubstitutionOfHDManagementDataFinder {
 	@Inject
 	private SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepository;
 	
+	@Inject 
+	private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
 	/**
 	 * ドメイン「振出管理データ」より紐付け対象となるデータを取得する
 	 * @param sid
 	 * @return
 	 */
 	public List<SubstitutionOfHDManagementDataDto> getBySidDatePeriod(String sid, String payoutID){
+		List<String> listSubID = payoutSubofHDManaRepository.getByPayoutId(payoutID).stream().map(i -> i.getSubOfHDID())
+				.collect(Collectors.toList());
 		return substitutionOfHDManaDataRepository.getBySidDatePeriod(sid,payoutID, 0d).stream()
-				.map(item -> SubstitutionOfHDManagementDataDto.createFromDomain(item)).collect(Collectors.toList());
+				.map(item -> {
+					SubstitutionOfHDManagementDataDto subDto =SubstitutionOfHDManagementDataDto.createFromDomain(item);
+					if (listSubID.contains(item.getSubOfHDID())){
+						subDto.setLinked(true);
+					}
+					return subDto;
+				}).collect(Collectors.toList());
 	}
 	
 	public List<SubstitutionOfHDManagementDataDto> getBysiDRemCod(String empId) {

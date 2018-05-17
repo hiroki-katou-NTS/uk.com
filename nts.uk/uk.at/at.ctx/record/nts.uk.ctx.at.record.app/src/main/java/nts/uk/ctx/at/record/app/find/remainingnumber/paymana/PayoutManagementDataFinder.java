@@ -10,6 +10,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutManagementDataRepository;
+import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
+import nts.uk.ctx.at.record.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -18,6 +20,8 @@ public class PayoutManagementDataFinder {
 	@Inject
 	private PayoutManagementDataRepository payoutManagementDataRepository;
 
+	@Inject
+	private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
 	/**
 	 * ドメイン「振休管理データ」より紐付け対象となるデータを取得する
 	 * @param sid
@@ -25,7 +29,18 @@ public class PayoutManagementDataFinder {
 	 */
 	public List<PayoutManagementDataDto> getBySidDatePeriod(String sid, String subOfHDID){
 		List<PayoutManagementData> listPayout = payoutManagementDataRepository.getBySidDatePeriod(sid,subOfHDID,DigestionAtr.UNUSED.value);
-		return listPayout.stream().map(i->PayoutManagementDataDto.createFromDomain(i)).collect(Collectors.toList());
+		
+		List<String> listPayoutSub = payoutSubofHDManaRepository.getBySubId(subOfHDID).stream()
+				.map(i -> i.getPayoutId()).collect(Collectors.toList());
+		
+		return listPayout.stream().map(i->{
+			PayoutManagementDataDto payout = PayoutManagementDataDto.createFromDomain(i);
+			if (listPayoutSub.contains(i.getPayoutId())){
+				payout.setLinked(true);
+			}
+			return payout;
+			
+		}).collect(Collectors.toList());
 	}
 	
 	public List<PayoutManagementDataDto> getBysiDRemCod(String empId, int state) {
