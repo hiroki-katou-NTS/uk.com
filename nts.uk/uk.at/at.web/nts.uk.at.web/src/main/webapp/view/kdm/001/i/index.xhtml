@@ -9,6 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 535, height: 630 };</script>
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="kdm001.i.vm.js" />
 			<com:scriptfile path="kdm001.i.start.js" />
 			<com:stylefile path="kdm001.i.style.css" />
@@ -64,7 +65,7 @@
 					visibleItemsCount: 5,
 					value: selectedCodeHoliday,
 					optionsText: 'name',
-					editable: true,
+					editable: false,
 					enable: true,
 					columns: [
 						{ prop: 'name', length: 5 },
@@ -108,7 +109,7 @@
 					visibleItemsCount: 5,
 					value: selectedCodeSubHoliday,
 					optionsText: 'name',
-					editable: true,
+					editable: false,
 					enable: true,
 					columns: [
 						{ prop: 'name', length: 5 },
@@ -138,8 +139,8 @@
 							visibleItemsCount: 5,
 							value: selectedCodeOptionSubHoliday,
 							optionsText: 'name',
-							editable: true,
-							enable: isOptionSubHolidayEnable,						
+							editable: false,
+							enable: isOptionSubHolidayEnable,
 							columns: [
 								{ prop: 'name', length: 5 },
 							]}">
