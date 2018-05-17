@@ -15,7 +15,6 @@ public class UseContactSetting {
 
 	/** The Employee ID. */
 	// 社員ID
-	// TODO change Stirng to Primitive value
 	private String employeeId;
 
 	/** The setting item. */
