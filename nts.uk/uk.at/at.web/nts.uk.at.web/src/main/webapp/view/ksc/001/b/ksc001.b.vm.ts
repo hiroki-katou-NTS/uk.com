@@ -259,7 +259,7 @@ module nts.uk.at.view.ksc001.b {
                 var self = this;
                 self.employeeList([]);
                 var employeeSearchs: UnitModel[] = [];
-                var scd = [];
+                self.selectedEmployeeCode([]);
                 for (var employeeSearch of dataList) {
                     var employee: UnitModel = {
                         code: employeeSearch.employeeCode,
@@ -267,10 +267,9 @@ module nts.uk.at.view.ksc001.b {
                         workplaceName: employeeSearch.workplaceName
                     };
                     employeeSearchs.push(employee);
-                    scd.push(employee.code);
+                    self.selectedEmployeeCode.push(employee.code);
                 }
-                
-                self.selectedEmployeeCode(scd);
+
                 // update employee list by ccg001 search 
                 self.employeeList(employeeSearchs);
 

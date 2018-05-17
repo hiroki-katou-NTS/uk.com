@@ -184,9 +184,8 @@ module nts.uk.ui {
             }
 
             onClosed(callback: () => void) {
-                var dialogElement = this.$dialog[0];
-                this.onClosedHandler = function() {
-                    var dataModel = ko.dataFor(dialogElement);
+                this.onClosedHandler = () => {
+                    var dataModel = ko.dataFor(this.$dialog[0]);
                     dataModel.kiban.errorDialogViewModel.errors([]);
                     //dataModel.kiban.errorDialogViewModel.errors.valueHasMutated();
                     callback();
@@ -210,7 +209,7 @@ module nts.uk.ui {
 
             dispose() {
                 _.defer(() => this.onClosedHandler());
-
+                window.parent.$("body").trigger("dialogclosed", {dialogId: this.id});
                 // delay 2 seconds to avoid IE error when any JS is running in destroyed iframe
                 setTimeout(() => {
                     this.$iframe.remove();
@@ -219,7 +218,8 @@ module nts.uk.ui {
                     this.$iframe = null;
                     this.globalContext = null;
                     this.parent = null;
-                    this.onClosedHandler = null
+                    this.onClosedHandler = null;
+//                    this.id = null;
                 }, 2000);
             }
         }

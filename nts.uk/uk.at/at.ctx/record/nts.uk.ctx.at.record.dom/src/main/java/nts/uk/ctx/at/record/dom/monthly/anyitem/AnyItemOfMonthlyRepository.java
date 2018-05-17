@@ -45,6 +45,18 @@ public interface AnyItemOfMonthlyRepository {
 	List<AnyItemOfMonthly> findByMonthly(String employeeId, YearMonth yearMonth);
 
 	/**
+	 * 検索　（社員リスト）
+	 * @param employeeIds 社員IDリスト
+	 * @param yearMonth 年月
+	 * @param closureId 締めID
+	 * @param closureDate 締め日付
+	 * @param anyItemId 任意項目ID
+	 * @return 該当する月別実績の任意項目
+	 */
+	List<AnyItemOfMonthly> findByEmployees(List<String> employeeIds, YearMonth yearMonth,
+			ClosureId closureId, ClosureDate closureDate, int anyItemId);
+	
+	/**
 	 * 登録および更新
 	 * @param anyItemOfMonthly 月別実績の任意項目
 	 */

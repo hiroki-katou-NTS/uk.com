@@ -62,9 +62,12 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandler<Upda
 				if (wt.isWokingDay()) {
 					BreakTimeOfDailyPerformance breakTime = getUpdateBreakTime(command.getEmployeeId(),
 							command.getWorkingDate(), wi, companyId);
-					if(breakTime != null) {
+					if(breakTime != null){
 						/** 「日別実績の休憩時間帯」を更新する */
 						this.breakTimeRepo.update(breakTime);
+					} else {
+						/** 「日別実績の休憩時間帯」を削除する */
+						this.breakTimeRepo.delete(command.getEmployeeId(), command.getWorkingDate());
 					}
 				} else {
 					/** 「日別実績の休憩時間帯」を削除する */
@@ -97,8 +100,10 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandler<Upda
 		if (!inputByHandItems.isEmpty()) {
 			List<ItemValue> ipByHandValues = AttendanceItemUtil.toItemValues(BreakTimeDailyDto.getDto(breakTimeRecord),
 					inputByHandItems);
-			return AttendanceItemUtil.fromItemValues(BreakTimeDailyDto.getDto(breakTime), ipByHandValues)
+			if(ipByHandValues != null){
+				return AttendanceItemUtil.fromItemValues(BreakTimeDailyDto.getDto(breakTime), ipByHandValues.stream().filter(c -> c != null).collect(Collectors.toList()))
 					.toDomain(employeeId, workingDate);
+			}
 		}
 		return breakTime;
 	}

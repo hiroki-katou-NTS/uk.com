@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
@@ -22,18 +22,19 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 @Getter
 public class DiffTimezoneSetting extends WorkTimeDomainObject {
 
-	/** The employment timezone. */
+	/** The employment timezones. */
 	// 就業時間帯
 	private List<EmTimeZoneSet> employmentTimezones;
 
-	/** The OT timezone. */
+	/** The o T timezones. */
 	// 残業時間帯
 	private List<DiffTimeOTTimezoneSet> oTTimezones;
 
 	/**
 	 * Instantiates a new diff timezone setting.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public DiffTimezoneSetting(DiffTimezoneSettingGetMemento memento) {
 		this.employmentTimezones = memento.getEmploymentTimezones();
@@ -43,15 +44,16 @@ public class DiffTimezoneSetting extends WorkTimeDomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(DiffTimezoneSettingSetMemento memento) {
 		memento.setEmploymentTimezones(this.employmentTimezones);
 		memento.setOTTimezones(this.oTTimezones);
 	}
-	
+
 	/**
-	 * Restore data.
+	 * Correct data.
 	 *
 	 * @param other
 	 *            the other
@@ -67,17 +69,23 @@ public class DiffTimezoneSetting extends WorkTimeDomainObject {
 		// restore 残業時間帯
 		this.oTTimezones = other.getOTTimezones();
 	}
-	
+
 	/**
 	 * Correct default data.
 	 */
 	public void correctDefaultData() {
 		this.oTTimezones.forEach(item -> item.correctDefaultData());
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject#validate()
+	 */
 	@Override
 	public void validate() {
-		
+
 		// Validate overlap employmentTimezones
 		for (int i = 0; i < this.employmentTimezones.size(); i++) {
 			EmTimeZoneSet em = this.employmentTimezones.get(i);
@@ -85,11 +93,11 @@ public class DiffTimezoneSetting extends WorkTimeDomainObject {
 				EmTimeZoneSet em2 = this.employmentTimezones.get(j);
 				// check overlap
 				if (em.getTimezone().isOverlap(em2.getTimezone())) {
-					this.bundledBusinessExceptions.addMessage("Msg_515","KMK003_86");
+					this.bundledBusinessExceptions.addMessage("Msg_515", "KMK003_86");
 				}
 			}
 		}
-		
+
 		// validate overlap oTTimezones
 		for (int i = 0; i < this.oTTimezones.size(); i++) {
 			DiffTimeOTTimezoneSet em = this.oTTimezones.get(i);
@@ -97,24 +105,41 @@ public class DiffTimezoneSetting extends WorkTimeDomainObject {
 				DiffTimeOTTimezoneSet em2 = this.oTTimezones.get(j);
 				// check overlap
 				if (em.getTimezone().isOverlap(em2.getTimezone())) {
-					this.bundledBusinessExceptions.addMessage("Msg_515","KMK003_89");
+					this.bundledBusinessExceptions.addMessage("Msg_515", "KMK003_89");
 				}
 			}
 		}
-		
-		// validate worktime vs OT time
-		//validate msg_845
-		this.checkOverTimeAndEmTimeOverlap();
+
 		super.validate();
 	}
-	
+
 	/**
 	 * Check over time and em time overlap.
 	 */
-	private void checkOverTimeAndEmTimeOverlap() {
-		if (this.oTTimezones.stream().anyMatch(ot -> CollectionUtil.isEmpty(this.employmentTimezones)
-				|| this.employmentTimezones.stream().anyMatch(em -> ot.getTimezone().isOverlap(em.getTimezone())))) {
-			this.bundledBusinessExceptions.addMessage("Msg_845", "KMK003_89");
-		}
+	public boolean isOverTimeAndEmTimeOverlap() {
+		if (CollectionUtil.isEmpty(this.employmentTimezones) || CollectionUtil.isEmpty(this.oTTimezones)) {
+			return false;
+		}		
+		return this.oTTimezones.stream().anyMatch(ot -> this.employmentTimezones.stream().anyMatch(em -> ot.getTimezone().isOverlap(em.getTimezone())));
+	}
+
+	/**
+	 * Sets the employment timezones.
+	 *
+	 * @param employmentTimezones
+	 *            the new employment timezones
+	 */
+	public void setEmploymentTimezones(List<EmTimeZoneSet> employmentTimezones) {
+		this.employmentTimezones = employmentTimezones;
+	}
+
+	/**
+	 * Sets the OT timezones.
+	 *
+	 * @param oTTimezones
+	 *            the new OT timezones
+	 */
+	public void setOTTimezones(List<DiffTimeOTTimezoneSet> oTTimezones) {
+		this.oTTimezones = oTTimezones;
 	}
 }

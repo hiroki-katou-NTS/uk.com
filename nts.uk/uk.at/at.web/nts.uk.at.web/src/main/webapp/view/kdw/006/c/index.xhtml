@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kdw006.c.main.css" />
+			<com:scriptfile path="kdw006.c.start.js" />
+			<com:scriptfile path="kdw006.c.vm.js" />
+			<com:scriptfile path="kdw006.c.service.js" />
+
+			<com:EnumScript>
+				nts.uk.ctx.at.record.dom.workrecord.operationsetting.YourselfConfirmError
+			</com:EnumScript>
+
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- C1_1 -->
+				<a class="goback" tabindex="1"
+					data-bind="ntsLinkButton: { action: jumpTo.bind($data, sideBar) }">#{i18n.getText('KDW006_25')}</a>
+				<!-- C1_2 -->
+				<button id="register-button" class="proceed" tabindex="2"
+					data-bind="click: saveData" style="margin-left: 85px;">#{i18n.getText('KDW006_26')}</button>
+			</div>
+			<div id="contents-area">
+				<div id="screen-d">
+					<!-- C2_1 -->
+					<div id="label11" class="label">#{i18n.getText('KDW006_35')}</div>
+					<!-- C2_2 -->
+					<div id="checkBox21" class="check-box-atr" tabindex="3"
+						data-bind="ntsCheckBox: { checked: identityProcessDto().useDailySelfCk}">#{i18n.getText('KDW006_36')}</div>
+					<!-- C2_3 -->
+					<div id="radioBox22" class="radio-error" tabindex="4"
+						data-bind="ntsRadioBoxGroup: {
+				        options: itemList,
+				        optionsValue: 'code',
+				        optionsText: 'name',
+				        value: identityProcessDto().yourselfConfirmError,
+				        enable: identityProcessDto().useDailySelfCk}">
+					</div>
+					<!-- C2_4 -->
+					<div id="checkBox31" class="check-box-atr" tabindex="5"
+						data-bind="ntsCheckBox: { checked: approvalProcessDto().useDailyBossChk }">#{i18n.getText('KDW006_37')}</div>
+					<!-- C2_5 -->
+					<div id="radioBox32" class="radio-error" tabindex="6"
+						data-bind="ntsRadioBoxGroup: {
+				        options: itemList,
+				        optionsValue: 'code',
+				        optionsText: 'name',
+				        value: approvalProcessDto().supervisorConfirmError,
+				        enable: approvalProcessDto().useDailyBossChk}">
+					</div>
+					<!-- C2_6 -->
+					<div id="checkBox41" class="check-box-atr" tabindex="7"
+						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().monthChkMsgAtr }">#{i18n.getText('KDW006_64')}</div>
+					<!-- C2_7 -->
+					<div id="checkBox51" class="check-box-atr" tabindex="8"
+						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().disp36Atr }">#{i18n.getText('KDW006_65')}</div>
+					<!-- C2_8 -->
+					<div id="checkBox61" class="check-box-atr" tabindex="9"
+						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().flexDispAtr }">#{i18n.getText('KDW006_66')}</div>
+					<!-- C2_9 -->
+					<div id="checkBox71" class="check-box-atr" tabindex="10"
+						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().autoSetTimeAtr }">#{i18n.getText('KDW006_67')}</div>
+					<!-- C2_10 -->
+					<div id="checkBox81" class="check-box-atr" tabindex="11"
+						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().manualFixAutoSetAtr }">#{i18n.getText('KDW006_68')}</div>
+					<!-- C2_11 -->
+					<div id="checkBox91" class="check-box-atr" tabindex="12"
+						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().breakClrTimeAtr }">#{i18n.getText('KDW006_69')}</div>
+					<!-- C2_12 -->
+					<div id="checkBox101" class="check-box-atr" tabindex="13"
+						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().clearManuAtr }">#{i18n.getText('KDW006_70')}</div>
+					<div>
+						<!-- C3_1 -->
+						<div id="label11" class="label">#{i18n.getText('KDW006_60')}</div>
+						<!-- C3_2 -->
+						<div id="checkBox111" class="check-box-atr" tabindex="14"
+							data-bind="ntsCheckBox: { checked: monPerformanceFunDto().dailySelfChkDispAtr }">#{i18n.getText('KDW006_61')}</div>
+						<!-- C3_3 -->
+						<div id="checkBox121" class="check-box-atr" tabindex="15"
+							data-bind="ntsCheckBox: { checked: identityProcessDto().useMonthSelfCK }">#{i18n.getText('KDW006_36')}</div>
+						<!-- C3_4 -->
+						<div id="checkBox131" class="check-box-atr" tabindex="16"
+							data-bind="ntsCheckBox: { checked: approvalProcessDto().useMonthBossChk }">#{i18n.getText('KDW006_37')}</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
+

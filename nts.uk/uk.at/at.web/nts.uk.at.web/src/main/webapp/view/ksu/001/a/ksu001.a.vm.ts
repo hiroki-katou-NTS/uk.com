@@ -667,6 +667,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         updateExTable(): void {
             let self = this;
+            // reset state of cell
+            $("#extable").find(".ex-body-detail").data("x-det", null);
+            // save scroll's position
             $("#extable").exTable("saveScroll");
             self.stopRequest(false);
 
@@ -815,8 +818,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 _.forEach(self.dataSource(), (x) => {
                     if (x.confirmedAtr == 1) {
                         $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
-                    } else {
-                        $("#extable").exTable("unlockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
                     }
                 });
 
@@ -867,6 +868,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         updateDetailAndHorzSum(): void {
             let self = this;
+            // reset state of cell
+            $("#extable").find(".ex-body-detail").data("x-det", null);
+            // save scroll's position
             $("#extable").exTable("saveScroll");
             //Get dates in time period
             let currentDay = new Date(self.dtPrev().toString());
@@ -1085,7 +1089,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         };
 
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
-//                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
+                        //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
                         setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
                     });

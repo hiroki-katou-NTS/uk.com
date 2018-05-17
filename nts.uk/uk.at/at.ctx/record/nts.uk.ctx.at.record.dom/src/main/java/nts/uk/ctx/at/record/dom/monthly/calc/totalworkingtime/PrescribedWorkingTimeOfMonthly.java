@@ -17,7 +17,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class PrescribedWorkingTimeOfMonthly {
+public class PrescribedWorkingTimeOfMonthly implements Cloneable {
 
 	/** 計画所定労働時間 */
 	private AttendanceTimeMonth schedulePrescribedWorkingTime;
@@ -51,6 +51,21 @@ public class PrescribedWorkingTimeOfMonthly {
 		domain.schedulePrescribedWorkingTime = schedulePrescribedWorkingTime;
 		domain.recordPrescribedWorkingTime = recordPrescribedWorkingTime;
 		return domain;
+	}
+	
+	@Override
+	public PrescribedWorkingTimeOfMonthly clone() {
+		PrescribedWorkingTimeOfMonthly cloned = new PrescribedWorkingTimeOfMonthly();
+		try {
+			cloned.schedulePrescribedWorkingTime = new AttendanceTimeMonth(this.schedulePrescribedWorkingTime.v());
+			cloned.recordPrescribedWorkingTime = new AttendanceTimeMonth(this.recordPrescribedWorkingTime.v());
+			// ※　Shallow Copy.
+			cloned.timeSeriesWorks = timeSeriesWorks;
+		}
+		catch (Exception e){
+			throw new RuntimeException("PrescribedWorkingTimeOfMonthly clone error.");
+		}
+		return cloned;
 	}
 	
 	/**

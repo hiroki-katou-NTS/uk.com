@@ -60,7 +60,7 @@ public class WorkTimezoneOtherSubHolTimeSet extends WorkTimeDomainObject {
 	 *            the old domain
 	 */
 	public void correctData(ScreenMode screenMode, WorkTimezoneOtherSubHolTimeSet oldDomain) {
-		this.subHolTimeSet.correctData(screenMode, oldDomain.getSubHolTimeSet());
+		this.subHolTimeSet.correctData(screenMode, oldDomain.getSubHolTimeSet(),this.originAtr);
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class WorkTimezoneOtherSubHolTimeSet extends WorkTimeDomainObject {
 	 *            the screen mode
 	 */
 	public void correctDefaultData(ScreenMode screenMode) {
-		this.subHolTimeSet.correctDefaultData(screenMode);
+		this.subHolTimeSet.correctDefaultData(screenMode,this.originAtr);
 	}
 
 }

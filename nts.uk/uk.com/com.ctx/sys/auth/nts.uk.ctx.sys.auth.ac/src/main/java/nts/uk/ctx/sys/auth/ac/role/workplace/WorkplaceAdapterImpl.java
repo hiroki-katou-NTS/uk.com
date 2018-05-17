@@ -16,6 +16,7 @@ import nts.uk.ctx.bs.employee.pub.workplace.AffAtWorkplaceExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.AffWorkplaceHistImport;
+import nts.uk.ctx.sys.auth.dom.adapter.workplace.AffWorkplaceImport;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.AffiliationWorkplace;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.WorkplaceAdapter;
 
@@ -62,9 +63,11 @@ public class WorkplaceAdapterImpl implements WorkplaceAdapter {
 	}
 
 	@Override
-	public List<String> findListSIdByCidAndWkpIdAndPeriod(String workplaceId, GeneralDate startDate,
+	public List<AffWorkplaceImport> findListSIdByCidAndWkpIdAndPeriod(String workplaceId, GeneralDate startDate,
 			GeneralDate endDate) {
-		return syWorkplacePub.findListSIdByCidAndWkpIdAndPeriod(workplaceId, startDate, endDate);
+		return syWorkplacePub.findListSIdByCidAndWkpIdAndPeriod(workplaceId, startDate, endDate).stream().map(
+				item -> new AffWorkplaceImport(item.getEmployeeId(), item.getJobEntryDate(), item.getRetirementDate()))
+				.collect(Collectors.toList());
 	}
 
 	private AffiliationWorkplace toImport (AffAtWorkplaceExport ex){

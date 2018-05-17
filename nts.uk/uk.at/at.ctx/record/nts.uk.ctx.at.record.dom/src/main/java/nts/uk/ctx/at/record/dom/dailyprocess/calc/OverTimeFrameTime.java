@@ -124,4 +124,17 @@ public class OverTimeFrameTime {
 	public boolean isPreOverLimitDivergenceTime() {
 		return this.calcPreOverLimitDivergenceTime() > 0 ? true:false;
 	}
+	
+	/**
+	 * 乖離時間のみ再計算
+	 * @return
+	 */
+	public OverTimeFrameTime calcDiverGenceTime() {
+		
+		TimeDivergenceWithCalculation overTimeWork = this.OverTimeWork==null?TimeDivergenceWithCalculation.emptyTime():this.OverTimeWork.calcDiverGenceTime();
+		TimeDivergenceWithCalculation transferTime = this.TransferTime==null?TimeDivergenceWithCalculation.emptyTime():this.TransferTime.calcDiverGenceTime();
+		
+		return new OverTimeFrameTime(this.getOverWorkFrameNo(),overTimeWork,transferTime,this.BeforeApplicationTime,this.orderTime);
+	}
+	
 }

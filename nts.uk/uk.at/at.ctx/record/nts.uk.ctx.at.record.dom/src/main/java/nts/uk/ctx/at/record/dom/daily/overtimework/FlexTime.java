@@ -16,7 +16,7 @@ public class FlexTime {
 	private AttendanceTime beforeApplicationTime; 
 	
 	public TimeWithCalculation getNotMinusFlexTime() {
-		return TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.flexTime.getCalcTime() == null ? 0 :this.flexTime.getCalcTime().valueAsMinutes()),
+		return TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.flexTime.getTime() == null ? 0 :this.flexTime.getTime().valueAsMinutes()),
 				 new AttendanceTime(this.flexTime.getCalcTime()==null ? 0 : this.flexTime.getCalcTime().valueAsMinutes()));
 	}
 	
@@ -52,4 +52,14 @@ public class FlexTime {
 	public boolean isPreOverLimitDivergenceTime() {
 		return this.calcPreOverLimitDivergenceTime() > 0 ? true:false;
 	}
+	
+	/**
+	 * 乖離時間のみ再計算
+	 * @return
+	 */
+	public FlexTime calcDiverGenceTime() {
+		TimeDivergenceWithCalculationMinusExist calcedDiverGenceTime = this.flexTime==null?this.flexTime:this.flexTime.calcDiverGenceTime();
+		return new FlexTime(calcedDiverGenceTime,this.beforeApplicationTime);
+	}
+	
 }

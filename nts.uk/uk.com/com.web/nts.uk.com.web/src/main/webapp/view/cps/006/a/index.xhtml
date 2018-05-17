@@ -79,7 +79,7 @@
 								enable: true,
 								required: true,
 								immediate: false}"></input>
-							<com:ko-if bind="displayIsAbolished === 0">
+							<com:ko-if bind="displayIsAbolished() === 0">
 								<div data-bind="ntsCheckBox: { checked: isAbolition }">#{i18n.getText('CPS006_11')}</div>
 							</com:ko-if>
 						</div>

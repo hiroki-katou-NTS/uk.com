@@ -219,7 +219,7 @@
 									data-bind="ntsCheckBox: { checked: isAbolish }">#{i18n.getText('KMK003_16')}
 								</div>
 								<div class="main-input" tabindex="15" id="colorpicker"
-									data-bind="ntsColorPicker: {name: '#[KMK003_161]',value: colorCode, enable: true, width: 50}" />
+									data-bind="ntsColorPicker: {name: '#[KMK003_161]',value: colorCode, enable: true, width: 50},visible: false" />
 							</div>
 							<div class="setting_header_br">
 								<div style="width: 190px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
@@ -322,7 +322,9 @@
 													isDetailMode: isDetailMode,
 													useHalfDay: useHalfDay,
 													enum: settingEnum,
-													mainSettingModel: mainSettingModel}">
+													mainSettingModel: mainSettingModel,
+													isNewMode: isNewMode 
+													}">
 												</div>
 											</div>
 											<div tabindex="45" class="tab-a2">
@@ -403,6 +405,7 @@
 											</div>
 											<div tabindex="138" class="tab-a11">
 												<div class="tab-outline" data-bind="ntsKMK003A11: {
+													isNewMode: isNewMode,
 													screenMode: tabMode,
 													model: mainSettingModel,
 													enum: settingEnum													

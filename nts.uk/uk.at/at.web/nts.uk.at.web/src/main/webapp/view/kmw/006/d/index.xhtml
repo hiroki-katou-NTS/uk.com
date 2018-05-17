@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+                var dialogSize = {
+                    width : 450,
+                    height : 610
+                };
+            </script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmw006.d.style.css" />
+			<com:scriptfile path="kmw006.d.service.js" />
+			<com:scriptfile path="kmw006.d.vm.js" />
+			<com:scriptfile path="kmw006.d.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area-bottom">
+				<button tabindex="1" id="D3_2" data-bind="click: closeDialog">#{i18n.getText('KMW006_31')}</button>
+			</div>
+			<div class="contents-area">
+				<div style="padding: 20px">
+					<div class="valign-center control-group">
+						<div style="width: 90px" data-bind="ntsFormLabel: {}">#{i18n.getText('KMW006_32')}</div>
+						<span class="label" style="padding-right: 30px" data-bind="text: closureIdName"></span>
+						<span class="label" data-bind="text: dispTargetYm"></span>
+					</div>
+					<div class="valign-center control-group">
+						<div style="width: 90px" data-bind="ntsFormLabel: {}">#{i18n.getText('KMW006_34')}</div>
+						<span class="label" data-bind="text: executionDt"></span>
+					</div>
+					<table id="single-list" data-bind="ntsGridList: {								
+						height: 374,
+						dataSource: items,
+						primaryKey: 'employeeCode',
+						columns: [
+							{ headerText: '#{i18n.getText('KMW006_13')}', key: 'no', width: 50, formatter: _.escape },
+			                { headerText: '#{i18n.getText('KMW006_16')}', key: 'employeeCode', width: 160, formatter: _.escape },
+			                { headerText: '#{i18n.getText('KMW006_17')}', key: 'employeeName', width: 180, formatter: _.escape }
+			            ], 
+						multiple: false,
+						value: currentCode
+					}"></table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

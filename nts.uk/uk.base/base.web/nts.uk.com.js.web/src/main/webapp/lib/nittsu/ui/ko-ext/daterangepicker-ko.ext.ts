@@ -40,7 +40,14 @@ module nts.uk.ui.koExtentions {
             
             $datePickerArea.data("required", required);
             
-            let dateFormat: string = (dateType !== 'yearmonth') ? "YYYY/MM/DD" : 'YYYY/MM';
+            let dateFormat: string;
+            if(dateType === 'year') {
+                dateFormat = 'YYYY'; 
+            } else if(dateType === 'yearmonth') {
+                dateFormat = 'YYYY/MM'; 
+            } else {
+                dateFormat = 'YYYY/MM/DD'; 
+            }
             var ISOFormat = text.getISOFormat(dateFormat);
             ISOFormat = ISOFormat.replace(/d/g,"").trim();
             
@@ -156,8 +163,10 @@ module nts.uk.ui.koExtentions {
                             } else {
                                 maxDate = maxDate.date(currentDate - 1);    
                             }    
-                        } else {
+                        } else if(dateFormat === "YYYY/MM"){
                             maxDate = maxDate.add(1, 'year').add(-1, "months");   
+                        } else {
+                            maxDate = maxDate.add(1, 'year');
                         }
                         if (endDate.isAfter(maxDate)) {
                             $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_OVER_YEAR", [rangeName]), "FND_E_SPAN_OVER_YEAR");        
@@ -177,22 +186,22 @@ module nts.uk.ui.koExtentions {
                 var validator = new validation.TimeValidator(isStart ? startName : endName, "", 
                     {required: false, outputFormat: dateFormat, valueType: "string"});
                 
-                var result = validator.validate(newText);
-                
+                var valueX = time.formatPattern(newText, dateFormat, ISOFormat);
+                if(!nts.uk.util.isNullOrEmpty(valueX) && valueX !== "Invalid date"){
+                    $target.val(valueX);
+                    $target.datepicker("update");
+                    newText = valueX;
+                }
+
+                let result = validator.validate(newText);
                 let oldValue = value();
-                if($target.hasClass("ntsStartDatePicker")){
+                if (isStart) {
                     oldValue.startDate = result.isValid ? result.parsedValue : newText;            
                 } else {
                     oldValue.endDate = result.isValid ? result.parsedValue : newText;    
                 }
                 
                 validateProcess(newText, $target, isStart, oldValue, result);
-                var valueX = time.formatPattern(newText, dateFormat, ISOFormat);
-                if(!nts.uk.util.isNullOrEmpty(valueX) && valueX !== "Invalid date"){
-                    //console.log(1);
-                    $target.val(valueX);
-                }
-                
                 value(oldValue);
             });
             
@@ -247,7 +256,14 @@ module nts.uk.ui.koExtentions {
             let enable = data.enable === undefined ? true : ko.unwrap(data.enable);
             let required = ko.unwrap(data.required);
             
-            let dateFormat: string = (dateType !== 'yearmonth') ? "YYYY/MM/DD" : 'YYYY/MM';
+            let dateFormat: string;
+            if(dateType === 'year') {
+                dateFormat = 'YYYY'; 
+            } else if(dateType === 'yearmonth') {
+                dateFormat = 'YYYY/MM'; 
+            } else {
+                dateFormat = 'YYYY/MM/DD'; 
+            }
             var ISOFormat = text.getISOFormat(dateFormat);
             ISOFormat = ISOFormat.replace(/d/g,"").trim();
             

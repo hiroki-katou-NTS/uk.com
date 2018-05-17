@@ -2236,15 +2236,17 @@ module nts.uk.at.view.kmk003.a {
                     // get data from simple mode (tab2)
                     if (this.displayMode() == 1) {
                         const simple = this.lstWorkingTimezoneSimpleMode()[0];
-                        const detail = <EmTimeZoneSetDto>{};
-                        detail.employmentTimeFrameNo = 1;
-                        detail.timezone = <TimeZoneRoundingDto>{};
-                        detail.timezone.rounding = <TimeRoundingSettingDto>{};
-                        detail.timezone.rounding.roundingTime = simple.roundingTime();
-                        detail.timezone.rounding.rounding = simple.rounding();
-                        detail.timezone.start = simple.timeRange().startTime;
-                        detail.timezone.end = simple.timeRange().endTime;
-                        lstWorkingTimezone = [detail];
+                        if (simple) {
+                            const detail = <EmTimeZoneSetDto>{};
+                            detail.employmentTimeFrameNo = 1;
+                            detail.timezone = <TimeZoneRoundingDto>{};
+                            detail.timezone.rounding = <TimeRoundingSettingDto>{};
+                            detail.timezone.rounding.roundingTime = simple.roundingTime();
+                            detail.timezone.rounding.rounding = simple.rounding();
+                            detail.timezone.start = simple.timeRange().startTime;
+                            detail.timezone.end = simple.timeRange().endTime;
+                            lstWorkingTimezone = [detail];
+                        }
                     }
 
                     let dataDTO: FixedWorkTimezoneSetDto = {
@@ -2257,6 +2259,7 @@ module nts.uk.at.view.kmk003.a {
                 resetData() {
                     this.lstWorkingTimezone([]);
                     this.lstOTTimezone([]);
+                    this.lstWorkingTimezoneSimpleMode([]);
                 }
             }
 

@@ -35,25 +35,36 @@ public class PCLogOnInfoOfDaily {
 	
 	//出勤ログイン乖離時間の計算
 	public AttendanceTime calcPCLogOnCalc(Optional<TimeLeavingOfDailyPerformance> attendanceLeave,GoLeavingWorkAtr goLeavingWorkAtr) {
+		if(!attendanceLeave.isPresent()) return new AttendanceTime(0);
 		List<AttendanceTime> resultList = new ArrayList<>();
 		for(LogOnInfo logOn : this.logOnInfo) {
-			//PCログオン
-			int pcLogOn = logOn.getLogOnLogOffTime(goLeavingWorkAtr)!=null?logOn.getLogOnLogOffTime(goLeavingWorkAtr).valueAsMinutes():0;
-			//出勤または退勤時間の取得
-			int stamp = 0;
-			if(attendanceLeave.isPresent()) {
-				if(attendanceLeave.get().getAttendanceLeavingWork(new WorkNo(logOn.getWorkNo().v())).isPresent()) {
-					Optional<TimeActualStamp> timeActualstamp = goLeavingWorkAtr.isGO_WORK()?attendanceLeave.get().getAttendanceLeavingWork(new WorkNo(logOn.getWorkNo().v())).get().getAttendanceStamp():
-																						 	 attendanceLeave.get().getAttendanceLeavingWork(new WorkNo(logOn.getWorkNo().v())).get().getLeaveStamp();
-					if(timeActualstamp.isPresent()) {
-						Optional<WorkStamp> workStamp = timeActualstamp.get().getStamp();
-						if(workStamp.isPresent()) {
-							stamp = workStamp.get().getTimeWithDay()!=null?workStamp.get().getTimeWithDay().valueAsMinutes():0;
-						}
-					}
-				}
+			if(!logOn.getLogOnLogOffTime(goLeavingWorkAtr).isPresent()) {
+				continue;
 			}
-			resultList.add(new AttendanceTime(pcLogOn-stamp));
+			TimeWithDayAttr pclogon = logOn.getLogOnLogOffTime(goLeavingWorkAtr).get();
+			if(pclogon==null) continue;
+
+			
+			//出勤または退勤時間の取得
+			if(!attendanceLeave.isPresent()) continue;
+			if(!attendanceLeave.get().getAttendanceLeavingWork(new WorkNo(logOn.getWorkNo().v())).isPresent()) continue;
+					
+			Optional<TimeActualStamp> timeActualstamp = goLeavingWorkAtr.isGO_WORK()?attendanceLeave.get().getAttendanceLeavingWork(new WorkNo(logOn.getWorkNo().v())).get().getAttendanceStamp():
+			 	 																	 attendanceLeave.get().getAttendanceLeavingWork(new WorkNo(logOn.getWorkNo().v())).get().getLeaveStamp();
+			if(!timeActualstamp.isPresent()) continue;
+			if(!timeActualstamp.get().getStamp().isPresent()) continue;
+			Optional<WorkStamp> workStamp = timeActualstamp.get().getStamp();
+			if(!workStamp.isPresent()) continue;
+			if(workStamp.get().getTimeWithDay()==null) continue;
+			
+			//PCログオン
+			int pcLogOn = pclogon.valueAsMinutes();
+			//出勤時刻
+			int stamp = workStamp.get().getTimeWithDay().valueAsMinutes();
+			
+			//出勤なら「出勤-ログオン」、退勤なら「ログオフ-退勤」
+			int calcResult = goLeavingWorkAtr.isGO_WORK()?stamp-pcLogOn:pcLogOn-stamp;
+			resultList.add(new AttendanceTime(calcResult));
 		}
 		AttendanceTime result = new AttendanceTime(resultList.stream().filter(t -> t != null).mapToInt(t -> t.valueAsMinutes()).sum());	
 		if(result==null||result.lessThan(0)) {
@@ -69,8 +80,7 @@ public class PCLogOnInfoOfDaily {
 	 * @return　Optional<LogOnInfo>
 	 */
 	public Optional<LogOnInfo> getLogOnInfo(PCLogOnNo workNo) {
-	    LogOnInfo logOnInfo = this.logOnInfo.stream().filter(t->t.getWorkNo().equals(workNo)).findFirst().orElse(null);
-		return Optional.of(logOnInfo);
+		return this.logOnInfo.stream().filter(t->t.getWorkNo().equals(workNo)).findFirst();
 	}
 	
 	/**

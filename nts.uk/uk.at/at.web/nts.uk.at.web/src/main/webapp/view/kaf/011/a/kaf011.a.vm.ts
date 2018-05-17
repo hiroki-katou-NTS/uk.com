@@ -7,6 +7,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
     import service = nts.uk.at.view.kaf011.shr.service;
     import block = nts.uk.ui.block;
     import jump = nts.uk.request.jump;
+    import alError = nts.uk.ui.dialog.alertError;
 
     export class ViewModel {
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
@@ -56,7 +57,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
             self.appComSelectedCode.subscribe((newCode) => {
                 if (newCode == 0) { return; };
                 if (newCode == 1) {
-                    $("#absDatePinker").ntsError("clear");
+                    $("#absDatePicker").ntsError("clear");
                 }
                 if (newCode == 2) {
                     $("#recDatePicker").ntsError("clear");
@@ -64,8 +65,20 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 }
 
             });
-        }
+            self.appReasons.subscribe((appReasons) => {
+                if (appReasons) {
+                    let defaultReason = _.find(appReasons, { 'defaultFlg': 1 });
+                    if (defaultReason) {
+                        self.appReasonSelectedID(defaultReason.reasonID);
+                    }
+                }
 
+            });
+        }
+        enablePrepost() {
+            let self = this;
+            return self.screenModeNew() && self.appTypeSet().canClassificationChange() != 0;
+        }
 
         start(): JQueryPromise<any> {
             block.invisible();
@@ -81,7 +94,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.setDataFromStart(data);
 
             }).fail((error) => {
-                dialog({ messageId: error.messageId });
+                alError({ messageId: error.messageId, messageParams: error.parameterIds });
             }).always(() => {
                 block.clear();
                 dfd.resolve();
@@ -120,17 +133,53 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.showReason(data.applicationSetting.appReasonDispAtr);
                 self.displayPrePostFlg(data.applicationSetting.displayPrePostFlg);
                 self.appTypeSet(new common.AppTypeSet(data.appTypeSet || null));
+                self.recWk().wkTimeCD(data.wkTimeCD || null);
             }
         }
-        validate() {
-
+        validateControl() {
+            let self = this,
+                isRecError = self.checkRecTime(),
+                isAbsError = self.checkAbsTime();
             $(".kaf-011-combo-box ,.nts-input").trigger("validate");
+            let isKibanControlError = nts.uk.ui.errors.hasError();
+            return isRecError || isAbsError || isKibanControlError;
 
         }
-
-        register() {
+        checkRecTime() {
             let self = this,
-                saveCmd: common.ISaveHolidayShipmentCommand = {
+                comCode = self.appComSelectedCode(),
+                isRecCreate = comCode == 1 || comCode == 0,
+                isError = false;
+            if (isRecCreate) {
+                let wkTimeCd = self.recWk().wkTimeCD();
+                if (!wkTimeCd) {
+                    $('#recTimeBtn').ntsError('set', { messageId: 'FND_E_REQ_SELECT', messageParams: [text('KAF011_30')] });
+                    isError = true;
+                }
+            }
+            return isError;
+
+        }
+        checkAbsTime() {
+            let self = this,
+                comCode = self.appComSelectedCode(),
+                isAbsCreate = comCode == 2 || comCode == 0,
+                isError = false;
+            if (isAbsCreate) {
+                let isUseWkTime = self.absWk().changeWorkHoursType();
+                if (isUseWkTime) {
+                    let wkTimeCd = self.absWk().wkTimeCD();
+                    if (!wkTimeCd) {
+                        $('#absTimeBtn').ntsError('set', { messageId: 'FND_E_REQ_SELECT', messageParams: [text('KAF011_30')] });
+                        isError = true;
+                    }
+                }
+            }
+            return isError;
+        }
+        genSaveCmd(): common.ISaveHolidayShipmentCommand {
+            let self = this,
+                returnCmd = common.ISaveHolidayShipmentCommand = {
                     recCmd: ko.mapping.toJS(self.recWk()),
                     absCmd: ko.mapping.toJS(self.absWk()),
                     comType: self.appComSelectedCode(),
@@ -143,39 +192,68 @@ module nts.uk.at.view.kaf011.a.screenModel {
                         appVersion: 0
                         ,
                     }
-                },
-                selectedReason = _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() }),
-                appReason = self.getReason(self.appReasonSelectedID(),
-                    self.appReasons(),
-                    self.reason());
-
+                }, selectedReason = self.appReasonSelectedID() ? _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() }) : null;
             if (selectedReason) {
-                saveCmd.appCmd.appReasonText = selectedReason.reasonTemp
+                returnCmd.appCmd.appReasonText = selectedReason.reasonTemp;
             }
+            returnCmd.absCmd.changeWorkHoursType = returnCmd.absCmd.changeWorkHoursType ? 1 : 0;
+            return returnCmd;
 
-            if (!nts.uk.at.view.kaf000.shr.model.CommonProcess.checklenghtReason(appReason, "#appReason")) {
-                return;
-            }
-            saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;
+        }
+        register() {
+            let self = this,
+                saveCmd = self.genSaveCmd();
 
-
-            self.validate();
-            if (nts.uk.ui.errors.hasError()) { return; }
+            let isControlError = self.validateControl();
+            if (isControlError) { return; }
+            
+            let isCheckReasonError = !self.checkReason();
+            if (isCheckReasonError) { return; }
             block.invisible();
             service.save(saveCmd).done(() => {
                 dialog({ messageId: 'Msg_15' }).then(function() {
                     location.reload();
                 });
             }).fail((error) => {
-                dialog({ messageId: error.messageId, messageParams: error.parameterIds });
+                alError({ messageId: error.messageId, messageParams: error.parameterIds });
             }).always(() => {
                 block.clear();
                 $("#recDatePicker").focus();
             });
         }
 
-        getReason(inputReasonID: string, inputReasonList: Array<any>, detailReason: string): string {
-            let appReason = '';
+        showAppReason(): boolean {
+            let self = this;
+            if (self.screenModeNew()) {
+                return self.appTypeSet().displayAppReason() != 0;
+            } else {
+
+                return self.appTypeSet().displayAppReason() != 0 || self.appTypeSet().displayFixedReason() != 0;
+            }
+
+        }
+
+        checkReason(): boolean {
+            let self = this,
+                appReason = self.getReason();
+            let appReasonError = !nts.uk.at.view.kaf000.shr.model.CommonProcess.checkAppReason(true, self.appTypeSet().displayFixedReason() != 0, self.appTypeSet().displayAppReason() != 0, appReason);
+            if (appReasonError) {
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' });
+                return false;
+            }
+            let isCheckLengthError: boolean = !nts.uk.at.view.kaf000.shr.model.CommonProcess.checklenghtReason(appReason, "#appReason");
+            if (isCheckLengthError) {
+                return false;
+            }
+            return true;
+        }
+
+        getReason(): string {
+            let appReason = '',
+                self = this,
+                inputReasonID = self.appReasonSelectedID(),
+                inputReasonList = self.appReasons(),
+                detailReason = self.reason();
             let inputReason: string = '';
             if (!nts.uk.util.isNullOrEmpty(inputReasonID)) {
                 inputReason = _.find(inputReasonList, { 'reasonID': inputReasonID }).reasonTemp;

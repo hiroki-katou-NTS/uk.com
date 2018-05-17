@@ -23,11 +23,11 @@ public class StampReflectTimezone extends WorkTimeDomainObject {
 	private WorkNo workNo;
 
 	/** The classification. */
-	// 出退勤区�
+	// 出退勤区分
 	private GoLeavingWorkAtr classification;
 
 	/** The end time. */
-	// 終亙�刻
+	// 終了時刻
 	private TimeWithDayAttr endTime;
 
 	/** The start time. */
@@ -73,6 +73,24 @@ public class StampReflectTimezone extends WorkTimeDomainObject {
 		memento.setClassification(this.classification);
 		memento.setEndTime(this.endTime);
 		memento.setStartTime(this.startTime);
+	}
+	
+	/**
+	 * Update start time.
+	 *
+	 * @param startTime the start time
+	 */
+	public void updateStartTime(TimeWithDayAttr startTime) {
+		this.startTime = startTime;
+	}
+
+	/**
+	 * Update end time.
+	 *
+	 * @param endTime the end time
+	 */
+	public void updateEndTime(TimeWithDayAttr endTime) {
+		this.endTime = endTime;
 	}
 
 	/**
@@ -152,22 +170,5 @@ public class StampReflectTimezone extends WorkTimeDomainObject {
 			//this.endTime = new TimeWithDayAttr(0);
 		}
 	}
-	
-	/**
-	 * Update start time.
-	 *
-	 * @param startTime the start time
-	 */
-	public void updateStartTime(TimeWithDayAttr startTime) {
-		this.startTime = startTime;
-	}
 
-	/**
-	 * Update end time.
-	 *
-	 * @param endTime the end time
-	 */
-	public void updateEndTime(TimeWithDayAttr endTime) {
-		this.endTime = endTime;
-	}
 }

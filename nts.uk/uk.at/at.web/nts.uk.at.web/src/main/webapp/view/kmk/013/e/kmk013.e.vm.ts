@@ -45,15 +45,15 @@ module nts.uk.at.view.kmk013.e {
                     new ItemModel(2, nts.uk.resource.getText("Enum_Rounding_Down_Over"))
                 ]);
                 self.itemListExcOutRounding = ko.observableArray([
-                    new ItemModel(0, nts.uk.resource.getText("Enum_Rounding_Down")),
-                    new ItemModel(1, nts.uk.resource.getText("Enum_Rounding_Up"))
+                    new ItemModel(0, nts.uk.resource.getText("Enum_Exc_Rounding_Down")),
+                    new ItemModel(1, nts.uk.resource.getText("Enum_Exc_Rounding_Up"))
                 ]);
                 self.itemListExcOutRoundingFull = ko.observableArray([
-                    new ItemModel(0, nts.uk.resource.getText("Enum_Rounding_Down")),
-                    new ItemModel(1, nts.uk.resource.getText("Enum_Rounding_Up")),
-                    new ItemModel(2, nts.uk.resource.getText("Enum_Rounding_Down_Over"))
+                    new ItemModel(0, nts.uk.resource.getText("Enum_Exc_Rounding_Down")),
+                    new ItemModel(1, nts.uk.resource.getText("Enum_Exc_Rounding_Up")),
+                    new ItemModel(2, nts.uk.resource.getText("Enum_Exc_Follow_Element"))
                 ]);
-                self.currentRounding = ko.observableArray([]);
+                self.currentRounding = ko.observableArray(self.itemListExcOutRounding());
                 
                 self.isEnable = ko.observable(true);
                 self.isEditable = ko.observable(false);
@@ -68,6 +68,8 @@ module nts.uk.at.view.kmk013.e {
                     }
                     else {
                         self.currentRounding(self.itemListExcOutRounding());
+                        if (self.excRoundingProc() == 2)
+                            self.excRoundingProc(0);
                     }
                 });
                 
@@ -190,6 +192,8 @@ module nts.uk.at.view.kmk013.e {
                     self.list_round(screenModel.itemListRoundingFull());
                 } else {
                     self.list_round(screenModel.itemListRounding());
+                    if (self.rounding() == 2)
+                        self.rounding(0);
                 }
                 
                 this.unit.subscribe(function(v) {
@@ -197,6 +201,8 @@ module nts.uk.at.view.kmk013.e {
                         self.list_round(screenModel.itemListRoundingFull());
                     } else {
                         self.list_round(screenModel.itemListRounding());
+                        if (self.rounding() == 2)
+                            self.rounding(0);
                     }
                 });
             }

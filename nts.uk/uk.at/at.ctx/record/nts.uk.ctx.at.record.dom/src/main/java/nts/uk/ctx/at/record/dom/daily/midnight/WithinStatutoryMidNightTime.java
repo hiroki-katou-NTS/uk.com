@@ -1,16 +1,9 @@
 package nts.uk.ctx.at.record.dom.daily.midnight;
 
-import java.util.Collections;
-import java.util.List;
-
 import lombok.Value;
 import lombok.val;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 
@@ -53,4 +46,13 @@ public class WithinStatutoryMidNightTime {
 		public boolean isOverLimitDivergenceTime() {
 			return this.calcOverLimitDivergenceTime() > 0 ? true:false;
 		}
+		
+		/**
+		 * 乖離時間のみ再計算
+		 * @return
+		 */
+		public WithinStatutoryMidNightTime calcDiverGenceTime() {
+			return new WithinStatutoryMidNightTime(this.time!=null?this.time.calcDiverGenceTime():TimeDivergenceWithCalculation.emptyTime());
+		}
+		
 }

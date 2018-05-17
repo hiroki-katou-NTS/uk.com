@@ -6,12 +6,10 @@ package nts.uk.ctx.sys.auth.pubimp.role;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.app.find.role.workplace.RoleWorkplaceIDFinder;
 import nts.uk.ctx.sys.auth.app.find.role.workplace.WorkplaceIdDto;
@@ -30,17 +28,22 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class RoleExportRepoImpl.
  */
 @Stateless
-public class RoleExportRepoImpl implements RoleExportRepo{
+public class RoleExportRepoImpl implements RoleExportRepo {
 
 	/** The role repo. */
 	@Inject
 	private RoleRepository roleRepo;
-	
+
+	/** The role workplace ID finder. */
 	@Inject
 	private RoleWorkplaceIDFinder roleWorkplaceIDFinder;
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.auth.pub.role.RoleExportRepo#findByListRoleId(java.lang.String, java.util.List)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.auth.pub.role.RoleExportRepo#findByListRoleId(java.lang.
+	 * String, java.util.List)
 	 */
 	@Override
 	public List<RoleExport> findByListRoleId(String companyId, List<String> lstRoleId) {
@@ -53,24 +56,29 @@ public class RoleExportRepoImpl implements RoleExportRepo{
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.auth.pub.role.RoleExportRepo#findWorkPlaceIdByRoleId(java.lang.Integer)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.auth.pub.role.RoleExportRepo#findWorkPlaceIdByRoleId(java.
+	 * lang.Integer)
 	 */
 	@Override
-	//ロールIDから参照可能な職場リストを取得する
+	// ロールIDから参�可能な職場リストを取得す�
 	public WorkplaceIdExport findWorkPlaceIdByRoleId(Integer systemType) {
-		
+
 		WorkplaceIdDto workplaceIdDto = roleWorkplaceIDFinder.findListWokplaceId(systemType);
-		
+
 		WorkplaceIdExport workplaceIdExport = new WorkplaceIdExport();
 		workplaceIdExport.setIsAllEmp(workplaceIdDto.getIsAllEmp());
 		workplaceIdExport.setListWorkplaceIds(workplaceIdDto.getListWorkplaceIds());
-		
+
 		return workplaceIdExport;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see
 	 * nts.uk.ctx.sys.auth.pub.role.RoleExportRepo#findById(java.lang.String)
 	 */
@@ -85,6 +93,9 @@ public class RoleExportRepoImpl implements RoleExportRepo{
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.auth.pub.role.RoleExportRepo#findWorkPlaceIdNoRole(java.lang.Integer)
+	 */
 	@Override
 	public WorkplaceIdExport findWorkPlaceIdNoRole(Integer systemType) {
 		WorkplaceIdDto workplaceIdDto = roleWorkplaceIDFinder.findListWokplaceIdNoCheckRole(systemType);
@@ -96,110 +107,130 @@ public class RoleExportRepoImpl implements RoleExportRepo{
 		return workplaceIdExport;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.uk.ctx.sys.auth.pub.role.RoleExportRepo
-	 * #getWorkPlaceIdByEmployeeReferenceRange(nts.arc.time.GeneralDate, java.lang.Integer)
+	 * #getWorkPlaceIdByEmployeeReferenceRange(nts.arc.time.GeneralDate,
+	 * java.lang.Integer)
 	 */
 	@Override
-	public List<String> getWorkPlaceIdByEmployeeReferenceRange(GeneralDate baseDate,
-			Integer employeeReferenceRange) {
+	public List<String> getWorkPlaceIdByEmployeeReferenceRange(GeneralDate baseDate, Integer employeeReferenceRange) {
 		WorkplaceParam param = new WorkplaceParam();
 		param.setBaseDate(baseDate);
 		param.setReferenceRange(employeeReferenceRange);
 		return this.roleWorkplaceIDFinder.findListWorkplaceId(param);
 	}
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.auth.pub.role.RoleExportRepo#findRoleIdBySystemType(java.lang.Integer)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.auth.pub.role.RoleExportRepo#findRoleIdBySystemType(java.
+	 * lang.Integer)
 	 */
 	@Override
 	public String findRoleIdBySystemType(Integer systemType) {
 		return this.roleWorkplaceIDFinder.findRoleIdBySystemType(systemType);
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.auth.pub.role.RoleExportRepo#getWhetherLoginerCharge()
+	 */
 	@Override
 	public RoleWhetherLoginPubExport getWhetherLoginerCharge() {
-		String employmentRoleID = AppContexts.user().roles().forAttendance(); 
+		String employmentRoleID = AppContexts.user().roles().forAttendance();
 		String salaryRoleID = AppContexts.user().roles().forPayroll();
-		String humanResourceRoleID = AppContexts.user().roles().forPersonnel(); 
-		String officeHelperRoleID = AppContexts.user().roles().forOfficeHelper(); 
-		String personalInforRoleID= AppContexts.user().roles().forPersonalInfo();
-		
-		
+		String humanResourceRoleID = AppContexts.user().roles().forPersonnel();
+		String officeHelperRoleID = AppContexts.user().roles().forOfficeHelper();
+		String personalInforRoleID = AppContexts.user().roles().forPersonalInfo();
+
 		RoleWhetherLoginPubExport outputRole = new RoleWhetherLoginPubExport();
-		Optional<Role> roleEmployment =  roleRepo.findByRoleId(employmentRoleID);
-		if(roleEmployment.isPresent()) {
-			if(roleEmployment.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
+		Optional<Role> roleEmployment = roleRepo.findByRoleId(employmentRoleID);
+		if (roleEmployment.isPresent()) {
+			if (roleEmployment.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
 				outputRole.setEmployeeCharge(true);
 			}
 		}
-		Optional<Role> roleSalaryRole =  roleRepo.findByRoleId(salaryRoleID);
-		if(roleSalaryRole.isPresent()) {
-			if(roleSalaryRole.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
+		Optional<Role> roleSalaryRole = roleRepo.findByRoleId(salaryRoleID);
+		if (roleSalaryRole.isPresent()) {
+			if (roleSalaryRole.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
 				outputRole.setSalaryProfessional(true);
 			}
 		}
-		
-		Optional<Role> roleHumanResource =  roleRepo.findByRoleId(humanResourceRoleID);
-		if(roleHumanResource.isPresent()) {
-			if(roleHumanResource.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
+
+		Optional<Role> roleHumanResource = roleRepo.findByRoleId(humanResourceRoleID);
+		if (roleHumanResource.isPresent()) {
+			if (roleHumanResource.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
 				outputRole.setHumanResOfficer(true);
 			}
 		}
-		
-		Optional<Role> roleOfficeHelper =  roleRepo.findByRoleId(officeHelperRoleID);
-		if(roleOfficeHelper.isPresent()) {
-			if(roleOfficeHelper.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
+
+		Optional<Role> roleOfficeHelper = roleRepo.findByRoleId(officeHelperRoleID);
+		if (roleOfficeHelper.isPresent()) {
+			if (roleOfficeHelper.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
 				outputRole.setOfficeHelperPersonne(true);
 			}
 		}
-		
-		Optional<Role> rolePersonalInfor =  roleRepo.findByRoleId(personalInforRoleID);
-		if(rolePersonalInfor.isPresent()) {
-			if(rolePersonalInfor.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
+
+		Optional<Role> rolePersonalInfor = roleRepo.findByRoleId(personalInforRoleID);
+		if (rolePersonalInfor.isPresent()) {
+			if (rolePersonalInfor.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
 				outputRole.setPersonalInformation(true);
 			}
 		}
-		
+
 		return outputRole;
 	}
 
 	@Override
 	public OperableSystemExport getOperableSystem() {
-		String attendanceRoleID = AppContexts.user().roles().forAttendance(); 
+		String attendanceRoleID = AppContexts.user().roles().forAttendance();
 		String salaryRoleID = AppContexts.user().roles().forPayroll();
-		String humanResourceRoleID = AppContexts.user().roles().forPersonnel(); 
-		String officeHelperRoleID = AppContexts.user().roles().forOfficeHelper(); 
-		
+		String humanResourceRoleID = AppContexts.user().roles().forPersonnel();
+		String officeHelperRoleID = AppContexts.user().roles().forOfficeHelper();
+
 		OperableSystemExport outputRole = new OperableSystemExport(false, false, false, false);
 		Optional<Role> roleAttendance = roleRepo.findByRoleId(attendanceRoleID);
 		if (roleAttendance.isPresent()) {
 			if (roleAttendance.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
 				outputRole.setAttendance(true);
 			}
-		} 
-		Optional<Role> roleSalaryRole =  roleRepo.findByRoleId(salaryRoleID);
+		}
+		Optional<Role> roleSalaryRole = roleRepo.findByRoleId(salaryRoleID);
 		if (roleSalaryRole.isPresent()) {
 			if (roleSalaryRole.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
 				outputRole.setSalary(true);
 			}
-		} 
-		
-		Optional<Role> roleHumanResource =  roleRepo.findByRoleId(humanResourceRoleID);
+		}
+
+		Optional<Role> roleHumanResource = roleRepo.findByRoleId(humanResourceRoleID);
 		if (roleHumanResource.isPresent()) {
 			if (roleHumanResource.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
-				outputRole.setHumanResource(true);;
+				outputRole.setHumanResource(true);
+				;
 			}
-		} 
-		
-		Optional<Role> roleOfficeHelper =  roleRepo.findByRoleId(officeHelperRoleID);
+		}
+
+		Optional<Role> roleOfficeHelper = roleRepo.findByRoleId(officeHelperRoleID);
 		if (roleOfficeHelper.isPresent()) {
 			if (roleOfficeHelper.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
 				outputRole.setOfficeHelper(true);
 			}
 		}
-		
+
 		return outputRole;
 	}
-}
 
+	@Override
+	public OptionalInt findEmpRangeByRoleID(String roleID) {
+		Optional<Role> optRole = roleRepo.findByRoleId(roleID);
+		if (!optRole.isPresent()) {
+			return OptionalInt.empty();
+		} else {
+			int result = optRole.get().getEmployeeReferenceRange().value;
+			return OptionalInt.of(result);
+		}
+	}
+
+}

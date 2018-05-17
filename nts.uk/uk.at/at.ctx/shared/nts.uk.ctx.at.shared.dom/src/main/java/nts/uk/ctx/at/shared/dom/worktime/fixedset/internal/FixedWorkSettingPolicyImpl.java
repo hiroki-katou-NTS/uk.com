@@ -41,7 +41,8 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 	/** The wtz common set policy. */
 	@Inject
 	private WorkTimezoneCommonSetPolicy wtzCommonSetPolicy;
-	
+
+	/** The fixed stamp reflect timezone policy. */
 	@Inject
 	private FixedStampReflectTimezonePolicy fixedStampReflectTimezonePolicy;
 
@@ -73,24 +74,30 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 
 		// Check domain StampReflectTimezone
 		// #Msg_520
-//		List<StampReflectTimezone> listGoWork = fixedWorkSetting.getLstStampReflectTimezone().stream()
-//				.filter(domain -> domain.getClassification() == GoLeavingWorkAtr.GO_WORK)
-//				.collect(Collectors.toList());
-//		List<StampReflectTimezone> listLeaveWork = fixedWorkSetting.getLstStampReflectTimezone().stream()
-//				.filter(domain -> domain.getClassification() == GoLeavingWorkAtr.LEAVING_WORK)
-//				.collect(Collectors.toList());
-//		if (!predetemineTimeSet.getPrescribedTimezoneSetting().isUseShiftTwo()) {
-//			listGoWork = listGoWork.stream()
-//				.filter(domain -> domain.getWorkNo().v() == 1)
-//				.collect(Collectors.toList());
-//			listLeaveWork = listLeaveWork.stream()
-//					.filter(domain -> domain.getWorkNo().v() == 1)
-//					.collect(Collectors.toList());
-//		}
-//		if (this.isOverlap(listGoWork) || this.isOverlap(listLeaveWork)) {
-//			be.addMessage("Msg_520");
-//		}
-		
+		// List<StampReflectTimezone> listGoWork =
+		// fixedWorkSetting.getLstStampReflectTimezone().stream()
+		// .filter(domain -> domain.getClassification() ==
+		// GoLeavingWorkAtr.GO_WORK)
+		// .collect(Collectors.toList());
+		// List<StampReflectTimezone> listLeaveWork =
+		// fixedWorkSetting.getLstStampReflectTimezone().stream()
+		// .filter(domain -> domain.getClassification() ==
+		// GoLeavingWorkAtr.LEAVING_WORK)
+		// .collect(Collectors.toList());
+		// if
+		// (!predetemineTimeSet.getPrescribedTimezoneSetting().isUseShiftTwo())
+		// {
+		// listGoWork = listGoWork.stream()
+		// .filter(domain -> domain.getWorkNo().v() == 1)
+		// .collect(Collectors.toList());
+		// listLeaveWork = listLeaveWork.stream()
+		// .filter(domain -> domain.getWorkNo().v() == 1)
+		// .collect(Collectors.toList());
+		// }
+		// if (this.isOverlap(listGoWork) || this.isOverlap(listLeaveWork)) {
+		// be.addMessage("Msg_520");
+		// }
+
 		// validate list stamp timezone
 		if (DisplayMode.DETAIL.equals(displayMode.getDisplayMode())) {
 			this.fixedStampReflectTimezonePolicy.validate(be, predetemineTimeSet, fixedWorkSetting);
@@ -120,31 +127,42 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 		// validate WorkTimezoneCommonSet
 		this.wtzCommonSetPolicy.validate(be, predetemineTimeSet, fixedWorkSetting.getCommonSetting());
 
+		// Filter AM PM
+		fixedWorkSetting.getLstHalfDayWorkTimezone().forEach(fixedTime -> {
+			this.fixHalfDayPolicy.filterTimezone(predetemineTimeSet, fixedTime, displayMode.getDisplayMode(),
+					fixedWorkSetting.getUseHalfDayShift());
+		});
 	}
 
 	/**
-	 * Checks if is overlap.
+	 * Validate half day work.
 	 *
-	 * @param listTimezone
-	 *            the list timezone
-	 * @return true, if is overlap
+	 * @param be
+	 *            the be
+	 * @param predetemineTimeSet
+	 *            the predetemine time set
+	 * @param displayMode
+	 *            the display mode
+	 * @param fixedWorkSetting
+	 *            the fixed work setting
 	 */
-//	private boolean isOverlap(List<StampReflectTimezone> listTimezone) {
-//		Collections.sort(listTimezone, Comparator.comparing(StampReflectTimezone::getStartTime));
-//
-//		for (int i = 0; i < listTimezone.size(); i++) {
-//			StampReflectTimezone tz1 = listTimezone.get(i);
-//			for (int j = i + 1; j < listTimezone.size(); j++) {
-//				StampReflectTimezone tz2 = listTimezone.get(j);
-//				// check overlap
-//				if (!(tz1.getEndTime().lessThanOrEqualTo(tz2.getStartTime())
-//						|| tz1.getStartTime().greaterThanOrEqualTo(tz2.getEndTime()))) {
-//					return true;
-//				}
-//			}
-//		}
-//		return false;
-//	}
+	// private boolean isOverlap(List<StampReflectTimezone> listTimezone) {
+	// Collections.sort(listTimezone,
+	// Comparator.comparing(StampReflectTimezone::getStartTime));
+	//
+	// for (int i = 0; i < listTimezone.size(); i++) {
+	// StampReflectTimezone tz1 = listTimezone.get(i);
+	// for (int j = i + 1; j < listTimezone.size(); j++) {
+	// StampReflectTimezone tz2 = listTimezone.get(j);
+	// // check overlap
+	// if (!(tz1.getEndTime().lessThanOrEqualTo(tz2.getStartTime())
+	// || tz1.getStartTime().greaterThanOrEqualTo(tz2.getEndTime()))) {
+	// return true;
+	// }
+	// }
+	// }
+	// return false;
+	// }
 
 	/**
 	 * Validate half day work.
