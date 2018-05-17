@@ -585,7 +585,22 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		reflectStampOutput.setOutingTimeOfDailyPerformance(outingDailyPerformance);
 		reflectStampOutput.setLstStamp(lstStamp);
 		reflectStampOutput.setTemporaryTimeOfDailyPerformance(temporaryPerformance);
-		reflectStampOutput.setTimeLeavingOfDailyPerformance(timeLeavingOfDailyPerformance);
+		
+		boolean isPassed =false;
+		for (int i = 0; i < size; i++) {
+
+			StampItem x = lstStampItem.get(i);
+			if(x.getStampAtr().value==0 || x.getStampAtr().value==1){
+				isPassed =true;
+				break;
+			}
+		}
+		if(isPassed){
+			reflectStampOutput.setTimeLeavingOfDailyPerformance(timeLeavingOfDailyPerformance);
+		}else{
+			reflectStampOutput.setTimeLeavingOfDailyPerformance(timeDailyPer);
+		}
+		
 		return reflectStampOutput;
 
 	}
@@ -1879,7 +1894,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				});
 			} else {
 				lstOutingTimeSheet = new ArrayList<OutingTimeSheet>();
-				lstOutingTimeSheet.add(new OutingTimeSheet(null, null, null, null, null, null));
+				lstOutingTimeSheet.add(new OutingTimeSheet(null, null, new AttendanceTime(0), new AttendanceTime(0), null, null));
 				outDailyPer = new OutingTimeOfDailyPerformance(employeeId, date, lstOutingTimeSheet);
 			}
 		} else {
@@ -3120,7 +3135,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				}
 
 			} else {
-				if (attendanceTime.v().intValue() >= timeDestination.v().intValue()) {
+				if (attendanceTime.v().intValue() > timeDestination.v().intValue()) {
 					return true;
 				} else {
 					return false;

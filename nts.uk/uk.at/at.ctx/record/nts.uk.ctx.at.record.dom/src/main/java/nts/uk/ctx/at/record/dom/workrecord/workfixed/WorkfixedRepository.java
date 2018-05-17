@@ -7,6 +7,8 @@ package nts.uk.ctx.at.record.dom.workrecord.workfixed;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.YearMonth;
+
 /**
  * The Interface WorkfixedRepository.
  */
@@ -52,4 +54,15 @@ public interface WorkfixedRepository {
 	  * @return the list
 	  */
 	List<WorkFixed> findWorkFixed(String cid);
+	
+	/**
+	 * Find.
+	 *
+	 * @param cid the cid
+	 * @param processYm the process ym
+	 * @param wkpId the wkp id
+	 * @param closureId the closure id
+	 * @return the optional
+	 */
+	Optional<WorkFixed> find(String cid, String wkpId, Integer closureId, YearMonth processYm);
 }

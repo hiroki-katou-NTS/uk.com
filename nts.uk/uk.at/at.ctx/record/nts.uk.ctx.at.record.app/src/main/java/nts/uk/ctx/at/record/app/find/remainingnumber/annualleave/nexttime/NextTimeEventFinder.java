@@ -8,7 +8,7 @@ import nts.arc.time.GeneralDate;
 public class NextTimeEventFinder {
 	
 	public NextTimeEventDto getNextTimeData(NextTimeEventParam param) {
-		return new NextTimeEventDto(GeneralDate.max().toString(), "0", "0");
+		return new NextTimeEventDto(GeneralDate.max().toString(), "0.0日", "0:00");
 	}
 
 }

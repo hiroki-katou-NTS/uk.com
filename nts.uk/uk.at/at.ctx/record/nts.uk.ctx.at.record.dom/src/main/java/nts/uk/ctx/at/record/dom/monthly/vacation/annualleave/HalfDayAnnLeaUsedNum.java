@@ -10,7 +10,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.Used
  * @author shuichu_ishida
  */
 @Getter
-public class HalfDayAnnLeaUsedNum {
+public class HalfDayAnnLeaUsedNum implements Cloneable {
 
 	/** 回数 */
 	private UsedTimes times;
@@ -44,5 +44,21 @@ public class HalfDayAnnLeaUsedNum {
 		domain.timesBeforeGrant = timeBeforeGrant;
 		domain.timesAfterGrant = timesAfterGrant;
 		return domain;
+	}
+	
+	@Override
+	public HalfDayAnnLeaUsedNum clone() {
+		HalfDayAnnLeaUsedNum cloned = new HalfDayAnnLeaUsedNum();
+		try {
+			cloned.times = new UsedTimes(this.times.v());
+			cloned.timesBeforeGrant = new UsedTimes(this.timesBeforeGrant.v());
+			if (this.timesAfterGrant.isPresent()){
+				cloned.timesAfterGrant = Optional.of(new UsedTimes(this.timesAfterGrant.get().v()));
+			}
+		}
+		catch (Exception e){
+			throw new RuntimeException("HalfDayAnnLeaUsedNum clone error.");
+		}
+		return cloned;
 	}
 }

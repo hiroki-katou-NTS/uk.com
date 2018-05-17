@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.query.app.employee;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +44,7 @@ public class RegulationInfoEmployeeFinder {
 	/** The work place adapter. */
 	@Inject
 	private RoleWorkPlaceAdapter workPlaceAdapter;
-
+	
 	/** The emp auth adapter. */
 	@Inject
 	private EmployeeAuthAdapter empAuthAdapter;
@@ -76,7 +77,23 @@ public class RegulationInfoEmployeeFinder {
 	public List<RegulationInfoEmployeeDto> find(RegulationInfoEmpQueryDto queryDto) {
 		
 		//Algorithm: 検索条件の職場一覧を参照範囲に基いて変更する
-		this.changeWorkplaceListByRole(queryDto);
+		boolean isSearchOnlyMe = this.changeWorkplaceListByRole(queryDto);
+		
+		if(isSearchOnlyMe) {
+			// Find login employee info.
+			String loginEmployeeId = AppContexts.user().employeeId();
+			String companyId = AppContexts.user().companyId();
+			RegulationInfoEmployee loginEmployee = this.employeeInfoRepository.findBySid(companyId, loginEmployeeId,
+					GeneralDateTime.now());
+			return Arrays.asList(RegulationInfoEmployeeDto.builder()
+					.employeeCode(loginEmployee.getEmployeeCode())
+					.employeeId(loginEmployee.getEmployeeID())
+					.employeeName(loginEmployee.getName().orElse(""))
+					.workplaceId(loginEmployee.getWorkplaceId().orElse(""))
+					.workplaceCode(loginEmployee.getWorkplaceCode().orElse(""))
+					.workplaceName(loginEmployee.getWorkplaceName().orElse(""))
+					.build());
+		}
 		
 		return this.repo.find(AppContexts.user().companyId(), queryDto.toQueryModel()).stream()
 				.map(model -> this.toDto(model))
@@ -156,9 +173,10 @@ public class RegulationInfoEmployeeFinder {
 	 * @return the list
 	 */
 	// 検索条件の職場一覧を参照範囲に基いて変更する
-	private void changeWorkplaceListByRole(RegulationInfoEmpQueryDto queryDto) {
+	private boolean changeWorkplaceListByRole(RegulationInfoEmpQueryDto queryDto) {
 		// get RoleId
 		String roleId = this.workPlaceAdapter.findRoleIdBySystemType(queryDto.getSystemType());
+		boolean isSearchOnlyMe = false;
 
 		// check RoleId
 		if (roleId == null) {
@@ -170,7 +188,7 @@ public class RegulationInfoEmployeeFinder {
 
 		// Check Role.
 		if (role.getEmployeeReferenceRange() == EmployeeReferenceRange.ONLY_MYSELF) {
-			throw new RuntimeException("Unable to search");
+			isSearchOnlyMe = true;
 		}
 
 		// check param referenceRange
@@ -204,7 +222,7 @@ public class RegulationInfoEmployeeFinder {
 		default:
 			throw new RuntimeException("Invalid enum value");
 		}
-
+		return isSearchOnlyMe;
 	}
 	
 	/**

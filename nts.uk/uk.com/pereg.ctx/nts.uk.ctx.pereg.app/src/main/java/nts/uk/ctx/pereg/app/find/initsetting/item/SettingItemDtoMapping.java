@@ -13,10 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
-import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 
 @Stateless
@@ -24,37 +22,40 @@ public class SettingItemDtoMapping {
 
 	@Inject
 	private ComboBoxRetrieveFactory comboBoxFac;
-	@Inject 
-	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
 
-	public void setTextForItem(List<SettingItemDto> result, String employeeId, GeneralDate baseDate) {
-		setTextForSelectionItem(result, employeeId, baseDate);
+	/**
+	 * @param result
+	 * @param employeeId
+	 * @param baseDate
+	 * @param perInfoCategory
+	 * 
+	 * change value from value -> text
+	 */
+	public void setTextForItem(List<SettingItemDto> result, String employeeId, GeneralDate baseDate,
+			PersonInfoCategory perInfoCategory) {
+		setTextForSelectionItem(result, employeeId, baseDate, perInfoCategory);
 		setTextForSetItem(result);
 	}
 
-	public void setTextForSelectionItem(List<SettingItemDto> result, String employeeId, GeneralDate baseDate) {
+	public void setTextForSelectionItem(List<SettingItemDto> result, String employeeId, GeneralDate baseDate,
+			PersonInfoCategory perInfoCategory) {
 
-		List<SettingItemDto> selectionItemLst = result.stream()
-				.filter(x -> x.getDataType().equals(DataTypeValue.SELECTION)).collect(Collectors.toList());
-		if (CollectionUtil.isEmpty(selectionItemLst)) {
+		List<SettingItemDto> selectionItemList = result.stream()
+				.filter(x -> (x.getDataType() == DataTypeValue.SELECTION
+						|| x.getDataType() == DataTypeValue.SELECTION_BUTTON
+						|| x.getDataType() == DataTypeValue.SELECTION_RADIO))
+				.filter(x -> x.getSaveData().getValue() != null && !x.getSaveData().getValue().toString().isEmpty())
+				.collect(Collectors.toList());
+
+		if (CollectionUtil.isEmpty(selectionItemList)) {
 			return;
 		}
 
-		// Get company id
-		String companyId = AppContexts.user().companyId();
-
-		selectionItemLst.forEach(item -> {
-			// Get perInfoCategory
-			Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty
-					.getPerInfoCategoryByCtgCD(item.getCategoryCode(), companyId);
-			
-			if (!perInfoCategory.isPresent()) {
-				throw new RuntimeException("invalid PersonInfoCategory");
-			}
+		selectionItemList.forEach(item -> {
 
 			List<ComboBoxObject> comboxList = this.comboBoxFac.getComboBox(item.getSelectionItemRefType(),
-					item.getSelectionItemRefCd(), baseDate, employeeId, null, true, true,
-					perInfoCategory.get().getPersonEmployeeType(), true );
+					item.getSelectionItemRefCd(), baseDate, employeeId, null, true,
+					perInfoCategory.getPersonEmployeeType(), true, perInfoCategory.getCategoryCode().v());
 
 			comboxList.forEach(cbItem -> {
 				if (cbItem.getOptionValue().equals(item.getSaveData().getValue().toString())) {

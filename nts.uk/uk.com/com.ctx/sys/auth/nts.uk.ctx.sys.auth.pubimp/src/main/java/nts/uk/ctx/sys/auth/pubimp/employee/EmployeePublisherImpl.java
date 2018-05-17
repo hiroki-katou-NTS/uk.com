@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.auth.pubimp.employee;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -16,9 +17,12 @@ import nts.uk.ctx.sys.auth.dom.adapter.person.PersonAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.AffWorkplaceHistImport;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.AffiliationWorkplace;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.sys.auth.dom.algorithm.AcquireListWorkplaceByEmpIDService;
+import nts.uk.ctx.sys.auth.dom.algorithm.AcquireUserIDFromEmpIDService;
 import nts.uk.ctx.sys.auth.dom.algorithm.CanApprovalOnBaseDateService;
 import nts.uk.ctx.sys.auth.dom.algorithm.DetermineEmpCanReferService;
 import nts.uk.ctx.sys.auth.dom.algorithm.EmpReferenceRangeService;
+import nts.uk.ctx.sys.auth.dom.grant.service.RoleIndividualService;
 import nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
@@ -27,6 +31,7 @@ import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManagerRepository;
 import nts.uk.ctx.sys.auth.pub.employee.EmpWithRangeLogin;
 import nts.uk.ctx.sys.auth.pub.employee.EmployeePublisher;
 import nts.uk.ctx.sys.auth.pub.employee.NarrowEmpByReferenceRange;
+import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.auth.pub.user.UserExport;
 import nts.uk.ctx.sys.auth.pub.user.UserPublisher;
 import nts.uk.shr.com.context.AppContexts;
@@ -58,6 +63,18 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 	@Inject
 	private CanApprovalOnBaseDateService canApprovalOnBaseDateService;
 
+	@Inject
+	private AcquireListWorkplaceByEmpIDService acquireListWorkplace;
+	
+	@Inject
+	private AcquireUserIDFromEmpIDService acquireUserIDFromEmpIDService;
+	
+	@Inject
+	private RoleIndividualService roleIndividualService;
+
+	@Inject
+	private RoleExportRepo roleExportRepo;
+	
 	@Override
 	public Optional<NarrowEmpByReferenceRange> findByEmpId(List<String> sID, int roleType) {
 		// imported（権限管理）「社員」を取得する Request No1
@@ -130,13 +147,12 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 	}
 
 	@Override
-	public Optional<EmpWithRangeLogin> getByComIDAndEmpCD(String companyID, String employeeCD) {
-
+	public Optional<EmpWithRangeLogin> getByComIDAndEmpCD(String companyID, String employeeCD, GeneralDate referenceDate) {
 		// imported（権限管理）「社員」を取得する Lấy request List No.18
 		Optional<EmpInfoImport> empInfor = employeeInfoAdapter.getByComnyIDAndEmployeeCD(companyID, employeeCD);
 		if (empInfor.isPresent()) {
 			// 指定社員が基準日に承認権限を持っているかチェックする Lay request 305 tu domain service
-			boolean result = canApprovalOnBaseDateService.canApprovalOnBaseDate(empInfor.get().getCompanyId(), empInfor.get().getEmployeeId(), GeneralDate.today());
+			boolean result = canApprovalOnBaseDateService.canApprovalOnBaseDate(empInfor.get().getCompanyId(), empInfor.get().getEmployeeId(), referenceDate);
 			if (result == true) {
 				return Optional.of((new EmpWithRangeLogin(empInfor.get().getPerName(), empInfor.get().getCompanyId(), empInfor.get().getPersonId(), empInfor.get().getEmployeeCode(), empInfor.get().getEmployeeId())));
 			} else
@@ -145,4 +161,29 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 		return Optional.empty();
 	}
 
+	@Override
+	public List<String> getListWorkPlaceID(String employeeID, GeneralDate referenceDate) {
+		// 社員IDからユーザIDを取得する
+		// (Lấy userID từ employeeID)
+		Optional<String> userID = acquireUserIDFromEmpIDService.getUserIDByEmpID(employeeID);
+		if (!userID.isPresent()) {
+			return new ArrayList<>();
+		} else {
+			// ユーザIDからロールを取得する
+			// (lấy role từ userID)
+			String roleID = roleIndividualService.getRoleFromUserId(userID.get(), RoleType.EMPLOYMENT.value, referenceDate);
+			// 社員参照範囲を取得する
+			// (Lấy phạm vi tham chiếu employee)
+			OptionalInt optEmpRange = roleExportRepo.findEmpRangeByRoleID(roleID);
+			// 指定社員が参照可能な職場リストを取得する
+			// (Lấy list workplace của employee chỉ định)
+			List<String> listWorkPlaceID = acquireListWorkplace.getListWorkPlaceID(employeeID, optEmpRange.getAsInt(), referenceDate);
+			if (listWorkPlaceID.isEmpty()) {
+				return new ArrayList<>();
+			} else {
+				return listWorkPlaceID;
+			}
+		}
+	}
+	
 }

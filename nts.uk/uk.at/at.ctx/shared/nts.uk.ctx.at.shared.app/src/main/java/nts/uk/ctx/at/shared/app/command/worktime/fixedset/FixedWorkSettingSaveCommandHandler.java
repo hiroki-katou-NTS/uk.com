@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.fixedset;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -16,8 +14,8 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommonSaveCommandHandler;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.policy.FixedWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -59,21 +57,23 @@ public class FixedWorkSettingSaveCommandHandler extends CommandHandler<FixedWork
 
 		// call repository save fixed work setting
 		if (command.isAddMode()) {
-			fixedWorkSetting.restoreDefaultData(ScreenMode.valueOf(command.getScreenMode()));
+			fixedWorkSetting.correctDefaultData(ScreenMode.valueOf(command.getScreenMode()));
+			fixedWorkSetting.setDefaultData(ScreenMode.valueOf(command.getScreenMode()));
 			// Validate + common handler
 			this.validate(command, fixedWorkSetting);
 			this.fixedWorkSettingRepository.add(fixedWorkSetting);
-		} else {
-			Optional<FixedWorkSetting> opFixedWorkSetting = this.fixedWorkSettingRepository.findByKey(companyId,
-					command.getWorktimeSetting().worktimeCode);
-			if (opFixedWorkSetting.isPresent()) {
-				fixedWorkSetting.restoreData(ScreenMode.valueOf(command.getScreenMode()),
-						command.getWorktimeSetting().getWorkTimeDivision(), opFixedWorkSetting.get());
-				// Validate + common handler
-				this.validate(command, fixedWorkSetting);
-				this.fixedWorkSettingRepository.update(fixedWorkSetting);
-			}
+			return;
 		}
+
+		// update mode
+		FixedWorkSetting oldDomain = this.fixedWorkSettingRepository
+				.findByKey(companyId, command.getWorktimeSetting().worktimeCode).get();
+		fixedWorkSetting.correctData(ScreenMode.valueOf(command.getScreenMode()),
+				command.getWorktimeSetting().getWorkTimeDivision(), oldDomain);
+		fixedWorkSetting.setDefaultData(ScreenMode.valueOf(command.getScreenMode()));
+		// Validate + common handler
+		this.validate(command, fixedWorkSetting);
+		this.fixedWorkSettingRepository.update(fixedWorkSetting);
 	}
 
 	/**
@@ -111,7 +111,7 @@ public class FixedWorkSettingSaveCommandHandler extends CommandHandler<FixedWork
 
 		// Check policy
 		this.fixedPolicy.validate(bundledBusinessExceptions, command.toDomainPredetemineTimeSetting(),
-				fixedWorkSetting);
+				command.toWorkTimeDisplayMode(), fixedWorkSetting);
 
 		// Throw exceptions if exist
 		if (!bundledBusinessExceptions.cloneExceptions().isEmpty()) {

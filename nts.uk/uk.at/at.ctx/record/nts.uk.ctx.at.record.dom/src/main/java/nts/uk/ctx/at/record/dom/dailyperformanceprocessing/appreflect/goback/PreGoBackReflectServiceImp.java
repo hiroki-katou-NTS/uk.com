@@ -2,12 +2,8 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ApplicationReflectOutput;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReasonNotReflectRecord;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReflectedStateRecord;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 
 @Stateless
 public class PreGoBackReflectServiceImp implements PreGoBackReflectService {
@@ -16,13 +12,13 @@ public class PreGoBackReflectServiceImp implements PreGoBackReflectService {
 	@Inject
 	private ScheTimeReflect scheTimeReflect;
 	@Inject
-	private ScheWorkUpdateService workTimeUpdate;
+	private WorkUpdateService workTimeUpdate;
 	@Inject
 	private AfterWorkTimeTypeReflect afterWorkTimeType;
 	@Inject
 	private AfterScheTimeReflect afterScheTime;
 	@Override
-	public ApplicationReflectOutput gobackReflect(GobackReflectParameter para) {
+	public boolean gobackReflect(GobackReflectParameter para) {
 		try {
 			//予定勤種・就時の反映
 			boolean chkTimeTypeSche = timeTypeSche.reflectScheWorkTimeType(para);
@@ -32,14 +28,14 @@ public class PreGoBackReflectServiceImp implements PreGoBackReflectService {
 			timeTypeSche.reflectRecordWorktimetype(para);
 			//時刻の反映
 			scheTimeReflect.reflectTime(para, this.workTypetimeReflect(para));
-			return new ApplicationReflectOutput(ReflectedStateRecord.REFLECTED, ReasonNotReflectRecord.ACTUAL_CONFIRMED);
+			return true;
 		} catch(Exception ex) {
-			return new ApplicationReflectOutput(para.getGobackData().getReflectState(), para.getGobackData().getReasoNotReflect());
+			return false;
 		}
 	}
 
 	@Override
-	public ApplicationReflectOutput afterGobackReflect(GobackReflectParameter para) {
+	public boolean afterGobackReflect(GobackReflectParameter para) {
 		try {
 			//予定勤種・就時の反映
 			Boolean chkTimeTypeChe = afterWorkTimeType.workTimeAndTypeScheReflect(para);
@@ -50,9 +46,9 @@ public class PreGoBackReflectServiceImp implements PreGoBackReflectService {
 			//時刻の反映
 			scheTimeReflect.reflectTime(para, this.workTypetimeReflect(para));
 			
-			return new ApplicationReflectOutput(ReflectedStateRecord.REFLECTED, ReasonNotReflectRecord.ACTUAL_CONFIRMED);
+			return true;
 		} catch (Exception ex) {
-			return new ApplicationReflectOutput(para.getGobackData().getReflectState(), para.getGobackData().getReasoNotReflect());
+			return false;
 		}
 	}
 	/**

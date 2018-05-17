@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime;
 
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ApplicationReflectOutput;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 
 /**
  * 勤務実績に反映
@@ -14,6 +15,13 @@ public interface PreHolidayWorktimeReflectService {
 	 * @param holidayWorkPara
 	 * @return
 	 */
-	public ApplicationReflectOutput preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara);
+	public boolean preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara, boolean isPre);
+	/**
+	 * create IntegrationOfDaily
+	 * @param employeeId
+	 * @param baseDate
+	 * @return
+	 */
+	public IntegrationOfDaily createIntegrationOfDailyStart(String employeeId, GeneralDate baseDate, String workTimeCode, String workTypeCode, Integer startTime, Integer endTime);
 	
 }

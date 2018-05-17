@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.adapter.workplace.affiliate;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -29,4 +30,16 @@ public interface AffWorkplaceAdapter {
 	 * @return
 	 */
 	Optional<AffWorkPlaceSidImport> findBySidAndDate(String employeeId, GeneralDate baseDate);
+	
+	
+	/**
+	 * 所属職場を含む上位階層の職場IDを取得
+	 * @param companyId
+	 * @param employeeId
+	 * @param baseDate
+	 * @return
+	 */
+	List<String> findAffiliatedWorkPlaceIdsToRoot(String companyId, String employeeId, GeneralDate baseDate);
+	
+	List<AffAtWorkplaceImport> findBySIdAndBaseDate(List<String> employeeIds, GeneralDate baseDate);
 }

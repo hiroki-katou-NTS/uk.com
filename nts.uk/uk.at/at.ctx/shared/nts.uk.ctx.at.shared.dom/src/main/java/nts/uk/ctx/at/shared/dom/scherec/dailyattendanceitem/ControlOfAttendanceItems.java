@@ -1,39 +1,41 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem;
 
-import java.math.BigDecimal;
+import java.util.Optional;
 
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TimeInputUnit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.HeaderBackgroundColor;
-
+/**
+ * 日次の勤怠項目の制御
+ * @author tutk
+ *
+ */
 @Getter
 public class ControlOfAttendanceItems extends AggregateRoot {
+	
+	/**会社ID*/
+	private String companyID;
+	
+	/**勤怠項目ID*/
+	private int itemDailyID;
+	
+	/**日別実績のヘッダ背景色*/
+	private Optional<HeaderBackgroundColor> headerBgColorOfDailyPer;
 
-	private BigDecimal attandanceTimeId;
+	/**時間項目の入力単位*/
+	private Optional<TimeInputUnit> inputUnitOfTimeItem;
 
-	private TimeInputUnit inputUnitOfTimeItem;
-
-	private int nameLineFeedPosition;
-
-	private HeaderBackgroundColor headerBackgroundColorOfDailyPerformance;
-
-	public ControlOfAttendanceItems(BigDecimal attandanceTimeId, TimeInputUnit inputUnitOfTimeItem,
-			HeaderBackgroundColor headerBackgroundColorOfDailyPerformance, int nameLineFeedPosition) {
+	public ControlOfAttendanceItems(String companyID, int itemDailyID, HeaderBackgroundColor headerBgColorOfDailyPer, TimeInputUnit inputUnitOfTimeItem) {
 		super();
-		this.attandanceTimeId = attandanceTimeId;
-		this.inputUnitOfTimeItem = inputUnitOfTimeItem;
-		this.headerBackgroundColorOfDailyPerformance = headerBackgroundColorOfDailyPerformance;
-		this.nameLineFeedPosition = nameLineFeedPosition;
+		this.companyID = companyID;
+		this.itemDailyID = itemDailyID;
+		this.headerBgColorOfDailyPer = Optional.ofNullable(headerBgColorOfDailyPer);
+		this.inputUnitOfTimeItem =  Optional.ofNullable(inputUnitOfTimeItem);
 	}
+	
+	
+	
 
-	public static ControlOfAttendanceItems createFromJavaType(BigDecimal attandanceTimeId, int inputUnitOfTimeItem,
-			String headerBackgroundColorOfDailyPerformance, int nameLineFeedPosition) {
-
-		return new ControlOfAttendanceItems(attandanceTimeId,
-				inputUnitOfTimeItem == -1 ? null : EnumAdaptor.valueOf(inputUnitOfTimeItem, TimeInputUnit.class),
-				new HeaderBackgroundColor(headerBackgroundColorOfDailyPerformance), nameLineFeedPosition);
-	}
 
 }

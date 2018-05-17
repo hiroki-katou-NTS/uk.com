@@ -27,4 +27,13 @@ public class ExcessOverTimeWorkMidNightTime {
 	public boolean isOverLimitDivergenceTime() {
 		return this.calcOverLimitDivergenceTime() > 0 ? true:false;
 	}
+	
+	/**
+	 * 乖離時間のみ再計算
+	 * @return
+	 */
+	public ExcessOverTimeWorkMidNightTime calcDiverGenceTime() {
+		return new ExcessOverTimeWorkMidNightTime(this.time!=null?this.time.calcDiverGenceTime():TimeDivergenceWithCalculation.emptyTime());
+	}
+	
 }

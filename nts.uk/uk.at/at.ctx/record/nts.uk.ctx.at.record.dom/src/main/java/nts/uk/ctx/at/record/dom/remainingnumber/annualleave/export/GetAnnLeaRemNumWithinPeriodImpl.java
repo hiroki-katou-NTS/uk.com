@@ -71,10 +71,12 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 	private Optional<Boolean> isOverWriteOpt;
 	/** 上書き用の暫定年休管理データ */
 	private Optional<List<TempAnnualLeaveManagement>> forOverWriteListOpt;
-	/** 年休情報（パラメータ） */
-	private AnnualLeaveInfo paramInfo;
+	/** 前回の年休の集計結果 */
+	private Optional<AggrResultOfAnnualLeave> prevAnnualLeaveOpt;
 	/** 年休集計期間WORKリスト */
 	private List<AggregatePeriodWork> aggregatePeriodWorks;
+	/** 年休付与残数データリスト */
+	private List<AnnualLeaveGrantRemainingData> grantRemainingDatas;
 
 	/** 期間中の年休残数を取得 */
 	@Override
@@ -82,7 +84,7 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 			String companyId, String employeeId, DatePeriod aggrPeriod, TempAnnualLeaveMngMode mode,
 			GeneralDate criteriaDate, boolean isGetNextMonthData, boolean isCalcAttendanceRate,
 			Optional<Boolean> isOverWriteOpt, Optional<List<TempAnnualLeaveManagement>> forOverWriteListOpt,
-			Optional<AnnualLeaveInfo> annualLeaveInfoOpt) {
+			Optional<AggrResultOfAnnualLeave> prevAnnualLeaveOpt) {
 		
 		this.companyId = companyId;
 		this.employeeId = employeeId;
@@ -92,8 +94,7 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 		this.isCalcAttendanceRate = isCalcAttendanceRate;
 		this.isOverWriteOpt = isOverWriteOpt;
 		this.forOverWriteListOpt = forOverWriteListOpt;
-		this.paramInfo = null;
-		if (annualLeaveInfoOpt.isPresent()) this.paramInfo = annualLeaveInfoOpt.get();
+		this.prevAnnualLeaveOpt = prevAnnualLeaveOpt;
 		
 		// 年休の使用区分を取得する
 		boolean isManageAnnualLeave = false;
@@ -102,6 +103,9 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 		if (!isManageAnnualLeave) return Optional.empty();
 
 		AggrResultOfAnnualLeave aggrResult = new AggrResultOfAnnualLeave();
+		
+		// 年休付与残数データ　取得
+		this.grantRemainingDatas = this.annLeaGrantRemDataRepo.findNotExp(employeeId);
 		
 		// 集計開始日時点の年休情報を作成
 		AnnualLeaveInfo annualLeaveInfo = this.createInfoAsOfPeriodStart();
@@ -123,7 +127,7 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 
 			// 年休の消滅・付与・消化
 			aggrResult = annualLeaveInfo.lapsedGrantDigest(companyId, employeeId, aggregatePeriodWork,
-					tempAnnualLeaveMngs, isGetNextMonthData, isCalcAttendanceRate, aggrResult);
+					tempAnnualLeaveMngs, isGetNextMonthData, isCalcAttendanceRate, aggrResult, annualLeaveSet);
 		}
 		
 		// 「年休の集計結果」を返す
@@ -139,18 +143,24 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 		AnnualLeaveInfo emptyInfo = new AnnualLeaveInfo();
 		emptyInfo.setYmd(this.aggrPeriod.start());
 		
+		// 「前回の年休情報」を確認　（前回の年休の集計結果．年休情報（期間終了日の翌日開始時点））
+		AnnualLeaveInfo prevAnnualLeaveInfo = null;
+		if (this.prevAnnualLeaveOpt.isPresent()){
+			prevAnnualLeaveInfo = this.prevAnnualLeaveOpt.get().getAsOfStartNextDayOfPeriodEnd();
+		}
+		
 		// 「開始日」と「年休情報．年月日」を比較
 		boolean isSameInfo = false;
-		if (this.paramInfo != null){
-			if (this.aggrPeriod.start() == this.paramInfo.getYmd()){
+		if (prevAnnualLeaveInfo != null){
+			if (this.aggrPeriod.start() == prevAnnualLeaveInfo.getYmd()){
 				isSameInfo = true;
 			}
 		}
 		if (isSameInfo){
 			
-			// パラメータ「年休情報」を取得　→　取得内容をもとに年休情報を作成
-			return this.createInfoFromRemainingData(this.paramInfo.getGrantRemainingNumberList(),
-					this.paramInfo.getMaxData());
+			// 「前回の年休情報」を取得　→　取得内容をもとに年休情報を作成
+			return this.createInfoFromRemainingData(
+					prevAnnualLeaveInfo.getGrantRemainingNumberList(), prevAnnualLeaveInfo.getMaxData());
 		}
 		
 		//　社員に対応する締め開始日を取得する
@@ -187,21 +197,13 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 
 		// 締め開始日>=集計開始日　or 締め開始日がnull　の時
 		
-		// 「年休付与残数データ」を取得
-		List<AnnualLeaveGrantRemainingData> annLeaGrantRemDatas = new ArrayList<>();
-		val allGrantRemDatas = this.annLeaGrantRemDataRepo.findNotExp(this.employeeId);
-		for (val grantRemData : allGrantRemDatas){
-			if (!this.aggrPeriod.contains(grantRemData.getGrantDate())) continue;
-			annLeaGrantRemDatas.add(grantRemData);
-		}
-		
 		// 「年休上限データ」を取得
 		val annLeaMaxDataOpt = this.annLeaMaxDataRepo.get(this.employeeId);
 		if (!annLeaMaxDataOpt.isPresent()) return emptyInfo;
 		val annLeaMaxData = annLeaMaxDataOpt.get();
 
 		// 取得内容をもとに年休情報を作成
-		return this.createInfoFromRemainingData(annLeaGrantRemDatas, annLeaMaxData);
+		return this.createInfoFromRemainingData(this.grantRemainingDatas, annLeaMaxData);
 	}
 	
 	/**
@@ -243,7 +245,8 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 		if (nextDayOfPeriodEnd.before(GeneralDate.max())) nextDayOfPeriodEnd = nextDayOfPeriodEnd.addDays(1);
 		
 		// 「年休付与残数データ」を取得　（期限日　昇順、付与日　昇順）
-		val remainingDatas = this.annLeaGrantRemDataRepo.findNotExp(this.employeeId);
+		List<AnnualLeaveGrantRemainingData> remainingDatas = new ArrayList<>();
+		remainingDatas.addAll(this.grantRemainingDatas);
 		Collections.sort(remainingDatas, new Comparator<AnnualLeaveGrantRemainingData>() {
 			@Override
 			public int compare(AnnualLeaveGrantRemainingData o1, AnnualLeaveGrantRemainingData o2) {

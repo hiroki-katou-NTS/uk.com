@@ -54,7 +54,7 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandler<AddAppWork
 				appCommand.getEnteredPersonSID(), 
 				new AppReason(Strings.EMPTY), 
 				appCommand.getStartDate(),
-				new AppReason(appCommand.getApplicationReason().replaceFirst(COLON_STRING, System.lineSeparator())),
+				new AppReason(appCommand.getApplicationReason()),
 				ApplicationType.WORK_CHANGE_APPLICATION, 
 				appCommand.getApplicantSID(),
 				Optional.of(appCommand.getStartDate()),

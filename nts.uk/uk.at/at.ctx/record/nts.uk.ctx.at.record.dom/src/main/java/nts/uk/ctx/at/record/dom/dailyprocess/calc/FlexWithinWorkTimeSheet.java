@@ -4,13 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
-import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.AutoCalOverTimeAttr;
-import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculationMinusExist;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculationMinusExist;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDay;
 import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
@@ -18,26 +14,30 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.LateDecisionCl
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.LeaveEarlyDecisionClock;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeFrame;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
-import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethod;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.ENUM.CalcurationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfFlexWork;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfIrregularWork;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfRegularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.CalculationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayCalcMethodSet;
+//import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.VacationCategory;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.ctx.at.shared.dom.PremiumAtr;
 
 /**
  * フレックス就業時間内時間帯
@@ -48,11 +48,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	/*コアタイム*/
 	private Optional<TimeSpanForCalc> coreTimeSheet;
-	/*事前申請時間*/
-	private AttendanceTime preOrderTime;
 
 	public FlexWithinWorkTimeSheet(List<WithinWorkTimeFrame> withinWorkTimeFrame, Optional<TimeSpanForCalc> coreTimeSheet) {
-		super(withinWorkTimeFrame,new LateDecisionClock(new TimeWithDayAttr(0), 1),new LeaveEarlyDecisionClock(new TimeWithDayAttr(0), 1));
+		super(withinWorkTimeFrame,Optional.of(new LateDecisionClock(new TimeWithDayAttr(0), 1)),Optional.of(new LeaveEarlyDecisionClock(new TimeWithDayAttr(0), 1)));
 		this.coreTimeSheet = coreTimeSheet;
 	}	
 	
@@ -74,7 +72,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 			 									PredetermineTimeSetForCalc predetermineTimeSet,
 			 									Optional<WorkTimeCode> siftCode,
 			 									Optional<PersonalLaborCondition> personalCondition,
-			 									VacationAddTimeSet vacationAddTimeSet) {
+			 									HolidayAddtionSet holidayAddtionSet) {
 		if(workType.getDailyWork().getOneDay().isSubstituteHoliday()
 			|| workType.getDailyWork().getMorning().isSubstituteHoliday()
 			|| workType.getDailyWork().getAfternoon().isSubstituteHoliday())
@@ -84,7 +82,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 													 predetermineTimeSet,
 													 siftCode,
 													 personalCondition,
-													 vacationAddTimeSet);
+													 holidayAddtionSet);
 		}
 		else {
 			return new AttendanceTime(0);
@@ -93,6 +91,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	
 	/**
 	 * フレックス時間を計算する
+	 * @param preAppTime 
 	 * @return
 	 */
 	public FlexTime createWithinWorkTimeSheetAsFlex(CalcMethodOfNoWorkingDay calcMethod,HolidayCalcMethodSet holidayCalcMethodSet,AutoCalOverTimeAttr autoCalcAtr,WorkType workType,SettingOfFlexWork flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
@@ -103,8 +102,10 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 //			   										LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
 			   										boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 			   										boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-			   										WorkingSystem workingSystem,AddSettingOfIrregularWork addSettingOfIrregularWork,AddSettingOfFlexWork addSettingOfFlexWork,AddSettingOfRegularWork addSettingOfRegularWork,
-			   										VacationAddTimeSet vacationAddTimeSet,TimeLimitUpperLimitSetting flexLimitSetting) {
+			   										WorkingSystem workingSystem,WorkDeformedLaborAdditionSet illegularAddSetting,
+													 WorkFlexAdditionSet flexAddSetting,
+													 WorkRegularAdditionSet regularAddSetting,
+													 HolidayAddtionSet holidayAddtionSet,TimeLimitUpperLimitSetting flexLimitSetting, AttendanceTime preAppTime) {
 		
 		FlexTime flexTime = new FlexTime(TimeDivergenceWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),new AttendanceTime(0));
 		
@@ -122,10 +123,10 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 //				   										  leaveEarlyTimeOfDaily,
 				   										  late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 				   										  leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-				   										  workingSystem, addSettingOfIrregularWork, addSettingOfFlexWork, addSettingOfRegularWork,
-				   										  vacationAddTimeSet);
+				   										  workingSystem, illegularAddSetting, flexAddSetting, regularAddSetting,
+				   										  holidayAddtionSet);
 		/*事前申請を上限とする制御*/
-		AttendanceTimeOfExistMinus afterLimitFlexTime = decisionLimit(flexLimitSetting,calcflexTime);
+		AttendanceTimeOfExistMinus afterLimitFlexTime = decisionLimit(flexLimitSetting,calcflexTime,preAppTime);
 		
 		return new FlexTime(TimeDivergenceWithCalculationMinusExist.sameTime(afterLimitFlexTime),new AttendanceTime(0));
 	}
@@ -134,16 +135,20 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	 * 事前申請上限制所処理
 	 * @param flexLimitSetting フレックス超過時間の自動計算設定.自動計算設定.時間外の上限設定
 	 * @param flexTime 
+	 * @param preAppTime 
 	 * @return
 	 */
-	private AttendanceTimeOfExistMinus decisionLimit(TimeLimitUpperLimitSetting flexLimitSetting, AttendanceTimeOfExistMinus flexTime) {
+	private AttendanceTimeOfExistMinus decisionLimit(TimeLimitUpperLimitSetting flexLimitSetting, AttendanceTimeOfExistMinus flexTime, AttendanceTime preAppTime) {
 		switch(flexLimitSetting) {
 			//事前申請を上限にする
 			case LIMITNUMBERAPPLICATION:
-				//上限制御をやりつつ、値を返す
-				return (this.preOrderTime.greaterThan(flexTime.v()))?new AttendanceTimeOfExistMinus(this.preOrderTime.v()):flexTime;
-			//指示時間を上限にする
+				//指示時間を上限にする ←はEAで修正されたら適切な処理入れる
 			case INDICATEDYIMEUPPERLIMIT:	
+				//上限制御をやりつつ、値を返す
+				return (preAppTime.greaterThan(flexTime.v()))
+						?flexTime
+						:new AttendanceTimeOfExistMinus(preAppTime.v());
+			
 			//上限なし	
 			case NOUPPERLIMIT:
 				return flexTime;
@@ -162,73 +167,70 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 												   VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
 												   StatutoryDivision statutoryDivision,Optional<WorkTimeCode> siftCode,
 												   Optional<PersonalLaborCondition> personalCondition,
-//												   LateTimeSheet lateTimeSheet,LeaveEarlyTimeSheet leaveEarlyTimeSheet,LateTimeOfDaily lateTimeOfDaily,
-//												   LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
 												   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 												   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-												   WorkingSystem workingSystem,AddSettingOfIrregularWork addSettingOfIrregularWork,AddSettingOfFlexWork addSettingOfFlexWork,AddSettingOfRegularWork addSettingOfRegularWork,
-												   VacationAddTimeSet vacationAddTimeSet) {
+												   WorkingSystem workingSystem,WorkDeformedLaborAdditionSet illegularAddSetting,
+													 WorkFlexAdditionSet flexAddSetting,
+													 WorkRegularAdditionSet regularAddSetting,
+													 HolidayAddtionSet holidayAddtionSet) {
 		/*法定労働時間の算出*/
-		StatutoryWorkingTime houtei = calcStatutoryTime(workType,flexCalcMethod,predetermineTimeSet,siftCode,personalCondition,vacationAddTimeSet);
+		StatutoryWorkingTime houtei = calcStatutoryTime(workType,flexCalcMethod,predetermineTimeSet,siftCode,personalCondition,holidayAddtionSet);
 		/*実働時間の算出*/
-		AttendanceTimeOfExistMinus zitudou = new AttendanceTimeOfExistMinus(super.calcWorkTime(PremiumAtr.RegularWork, CalculationByActualTimeAtr.CalculationByActualTime, vacationClass, timevacationUseTimeOfDaily,
-				    statutoryDivision,
-				    workType,
-				    predetermineTimeSet,
-				    siftCode,
-				    personalCondition, 
-//				    lateTimeSheet,
-//				    leaveEarlyTimeSheet,
-//				    lateTimeOfDaily,
-//				    leaveEarlyTimeOfDaily,
-				    late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-				    leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-				    workingSystem,
-				    addSettingOfIrregularWork,
-				    addSettingOfFlexWork,
-				    addSettingOfRegularWork,
-				    vacationAddTimeSet,
-				    holidayCalcMethodSet).valueAsMinutes());
+		AttendanceTimeOfExistMinus zitudou = new AttendanceTimeOfExistMinus(super.calcWorkTime(PremiumAtr.RegularWork, 
+																							   flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(), 
+																							   vacationClass, 
+																							   timevacationUseTimeOfDaily,
+																							   statutoryDivision,
+																							   workType,
+																							   predetermineTimeSet,
+																							   siftCode,
+																							   personalCondition, 
+																							   late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
+																							   leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
+																							   workingSystem,
+																							   illegularAddSetting,
+																							   flexAddSetting,
+																							   regularAddSetting,
+																							   holidayAddtionSet,
+																							   holidayCalcMethodSet).valueAsMinutes());
 		/*実働時間の算出(割増時間含む)*/
-		AttendanceTimeOfExistMinus zitudouIncludePremium = new AttendanceTimeOfExistMinus(super.calcWorkTime(PremiumAtr.Premium, CalculationByActualTimeAtr.CalculationByActualTime,vacationClass, timevacationUseTimeOfDaily,
-				    statutoryDivision,
-				    workType,
-				    predetermineTimeSet,
-				    siftCode,
-				    personalCondition, 
-//				    lateTimeSheet,
-//				    leaveEarlyTimeSheet,
-//				    lateTimeOfDaily,
-//				    leaveEarlyTimeOfDaily,
-				    late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-				    leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-				    workingSystem,
-				    addSettingOfIrregularWork,
-				    addSettingOfFlexWork,
-				    addSettingOfRegularWork,
-				    vacationAddTimeSet,
-				    holidayCalcMethodSet).valueAsMinutes());
+		AttendanceTimeOfExistMinus zitudouIncludePremium = new AttendanceTimeOfExistMinus(super.calcWorkTime(PremiumAtr.Premium,
+																											 flexAddSetting.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday().getCalculateActualOperation(),
+																											 vacationClass, 
+																											 timevacationUseTimeOfDaily,
+																											 statutoryDivision,
+																											 workType,
+																											 predetermineTimeSet,
+																											 siftCode,
+																											 personalCondition, 
+																											 late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
+																											 leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
+																											 workingSystem,
+																											 illegularAddSetting,
+																											 flexAddSetting,
+																											 regularAddSetting,
+																											 holidayAddtionSet,
+																											 holidayCalcMethodSet).valueAsMinutes());
 		
 		AttendanceTimeOfExistMinus flexTime = new AttendanceTimeOfExistMinus(0);
-		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getCalculationByActualTime().isCalclationByActualTime()
-				&& !holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getCalculationByActualTime().isCalclationByActualTime()) {
+		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation()!=CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME
+				&& holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getCalculateActualOperation()==CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME) {
 			/*フレックス時間算出*/
-			//zitudouとhouteiを入れ替える
-			flexTime = new AttendanceTimeOfExistMinus(houtei.getForActualWorkTime().v()).minusMinutes(zitudou.valueAsMinutes());
+			flexTime = new AttendanceTimeOfExistMinus(zitudou.valueAsMinutes()).minusMinutes(houtei.getForActualWorkTime().v());
 			if(flexTime.lessThan(0)) {
-				flexTime = new AttendanceTimeOfExistMinus(houtei.getForWorkTimeIncludePremium().v()).minusMinutes(zitudouIncludePremium.valueAsMinutes());
+				flexTime = new AttendanceTimeOfExistMinus(zitudouIncludePremium.valueAsMinutes()).minusMinutes(houtei.getForWorkTimeIncludePremium().v());
 				flexTime = (flexTime.greaterThan(0))?new AttendanceTimeOfExistMinus(0):flexTime;
 				/*不足しているフレックス時間*/
 				//zitudouIncludとzitudouを入れ替える
 				AttendanceTimeOfExistMinus husokuZiKasanZikan = zitudouIncludePremium.minusMinutes(zitudou.valueAsMinutes());
 			}
 		}
-		else if(!holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getCalculationByActualTime().isCalclationByActualTime()
-				&& !holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getCalculationByActualTime().isCalclationByActualTime()) {
-			flexTime = new AttendanceTimeOfExistMinus(houtei.getForActualWorkTime().v()).minusMinutes(zitudou.valueAsMinutes());
+		else if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation()!=CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME
+				&& holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getCalculateActualOperation()!=CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME) {
+			flexTime = new AttendanceTimeOfExistMinus(zitudou.valueAsMinutes()).minusMinutes(houtei.getForActualWorkTime().v());
 		}
-		else if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getCalculationByActualTime().isCalclationByActualTime()
-				&& holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getCalculationByActualTime().isCalclationByActualTime()) {
+		else if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation()==CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME
+				&& holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getCalculateActualOperation()==CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME) {
 			/*不足しているフレックス時間*/
 			//flexTime = new AttendanceTimeOfExistMinus(houtei.getForWorkTimeIncludePremium().valueAsMinutes() - predetermineTimeSet.getAdditionSet().getPredTime().getPredetermineWorkTime());
 			flexTime = new AttendanceTimeOfExistMinus(zitudouIncludePremium.v()).minusMinutes(houtei.getForWorkTimeIncludePremium().valueAsMinutes());
@@ -248,9 +250,9 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	 * @return
 	 */
 	public StatutoryWorkingTime calcStatutoryTime(WorkType workType,SettingOfFlexWork flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
-												  Optional<WorkTimeCode> siftCode,Optional<PersonalLaborCondition> personalCondition,VacationAddTimeSet vacationAddTimeSet) {
+												  Optional<WorkTimeCode> siftCode,Optional<PersonalLaborCondition> personalCondition,HolidayAddtionSet holidayAddtionSet) {
 		val predetermineTime = predetermineTimeSet.getAdditionSet().getPredTime().getOneDay();
-		StatutoryDeductionForFlex deductionTime = calcdeductTime(workType,flexCalcMethod,predetermineTimeSet,siftCode,personalCondition,vacationAddTimeSet);
+		StatutoryDeductionForFlex deductionTime = calcdeductTime(workType,flexCalcMethod,predetermineTimeSet,siftCode,personalCondition,holidayAddtionSet);
 		return new StatutoryWorkingTime( new AttendanceTime(predetermineTime.v() - deductionTime.getForActualWork().valueAsMinutes()) 
 										,new AttendanceTime(predetermineTime.v() - deductionTime.getForPremium().valueAsMinutes()));
 	}
@@ -261,11 +263,11 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 													PredetermineTimeSetForCalc predetermineTimeSet,
 													Optional<WorkTimeCode> siftCode,
 													Optional<PersonalLaborCondition> personalCondition,
-													VacationAddTimeSet vacationAddTimeSet){
+													HolidayAddtionSet holidayAddtionSet){
 		/*休日控除時間の計算*/
 //		AttendanceTime forHolidayTime = calcHolidayDeductionTime(workType);
 		/*代休控除時間の計算*/
-		AttendanceTime forCompensatoryLeaveTime = calcSubstituteHoliday(workType,predetermineTimeSet,siftCode,personalCondition,vacationAddTimeSet);
+		AttendanceTime forCompensatoryLeaveTime = calcSubstituteHoliday(workType,predetermineTimeSet,siftCode,personalCondition,holidayAddtionSet);
 		
 		DeductionTime deductionTime = new DeductionTime(forCompensatoryLeaveTime,forCompensatoryLeaveTime);//(forHolidayTime,forCompensatoryLeaveTime);
 		//DeductionTime deductionTime = new DeductionTime(new AttendanceTime(0),new AttendanceTime(0));//(forHolidayTime,forCompensatoryLeaveTime);
@@ -275,33 +277,82 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 //											,deductionTime.forPremiumCalcPredetermineDeduction(flexCalcMethod.getFlexCalcMethod()));
 	}
 	
-	public AttendanceTime calcWorkTime(PremiumAtr premiumAtr, CalculationByActualTimeAtr calcActualTime,VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
-			   StatutoryDivision statutoryDivision,
-			   WorkType workType,
-			   PredetermineTimeSetForCalc predetermineTimeSet,
-			   Optional<WorkTimeCode> siftCode,
-			   Optional<PersonalLaborCondition> personalCondition, 
-			   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-			   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-			   WorkingSystem workingSystem,
-			   AddSettingOfIrregularWork addSettingOfIrregularWork,
-			   AddSettingOfFlexWork addSettingOfFlexWork,
-			   AddSettingOfRegularWork addSettingOfRegularWork,
-			   VacationAddTimeSet vacationAddTimeSet,
-			   HolidayCalcMethodSet holidayCalcMethodSet,
-			   CalcMethodOfNoWorkingDay calcMethod, 
-			   AutoCalOverTimeAttr autoCalcAtr, 
-			   SettingOfFlexWork flexCalcMethod,
-			   TimeLimitUpperLimitSetting flexLimitSetting
+	public AttendanceTime calcWorkTime(PremiumAtr premiumAtr, 
+									   CalcurationByActualTimeAtr calcActualTime,
+									   VacationClass vacationClass,
+									   TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
+									   StatutoryDivision statutoryDivision,
+									   WorkType workType,
+									   PredetermineTimeSetForCalc predetermineTimeSet,
+									   Optional<WorkTimeCode> siftCode,
+									   Optional<PersonalLaborCondition> personalCondition, 
+									   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
+									   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
+									   WorkingSystem workingSystem,
+									   WorkDeformedLaborAdditionSet illegularAddSetting,
+									   WorkFlexAdditionSet flexAddSetting,
+									   WorkRegularAdditionSet regularAddSetting,
+									   HolidayAddtionSet holidayAddtionSet,
+									   HolidayCalcMethodSet holidayCalcMethodSet,
+									   CalcMethodOfNoWorkingDay calcMethod, 
+									   AutoCalOverTimeAttr autoCalcAtr, 
+									   SettingOfFlexWork flexCalcMethod,
+									   TimeLimitUpperLimitSetting flexLimitSetting,
+									   AttendanceTime preFlexTime,Optional<CoreTimeSetting> coreTimeSetting
 			   ) {
-		AttendanceTime withinTime = super.calcWorkTime(premiumAtr, calcActualTime, vacationClass, timevacationUseTimeOfDaily, statutoryDivision, workType, predetermineTimeSet, siftCode, personalCondition, late, leaveEarly, workingSystem, addSettingOfIrregularWork, addSettingOfFlexWork, addSettingOfRegularWork, vacationAddTimeSet, holidayCalcMethodSet);
-		FlexTime flexTime = this.createWithinWorkTimeSheetAsFlex(calcMethod, holidayCalcMethodSet, autoCalcAtr, workType, flexCalcMethod, predetermineTimeSet, vacationClass, timevacationUseTimeOfDaily, statutoryDivision, siftCode, personalCondition, late, leaveEarly, workingSystem, addSettingOfIrregularWork, addSettingOfFlexWork, addSettingOfRegularWork, vacationAddTimeSet, flexLimitSetting);
+		AttendanceTime withinTime = super.calcWorkTime(premiumAtr,
+													   calcActualTime,
+													   vacationClass,
+													   timevacationUseTimeOfDaily,
+													   statutoryDivision, 
+													   workType, 
+													   predetermineTimeSet, 
+													   siftCode, 
+													   personalCondition, 
+													   late, 
+													   leaveEarly, 
+													   workingSystem, 
+													   illegularAddSetting, 
+													   flexAddSetting, 
+													   regularAddSetting, 
+													   holidayAddtionSet, 
+													   holidayCalcMethodSet);
+		FlexTime flexTime = this.createWithinWorkTimeSheetAsFlex(calcMethod, 
+																 holidayCalcMethodSet, 
+																 autoCalcAtr, 
+																 workType, 
+																 flexCalcMethod, 
+																 predetermineTimeSet, 
+																 vacationClass, 
+																 timevacationUseTimeOfDaily, 
+																 statutoryDivision, 
+																 siftCode, 
+																 personalCondition, 
+																 late, 
+																 leaveEarly, 
+																 workingSystem, 
+																 illegularAddSetting, 
+																 flexAddSetting, 
+																 regularAddSetting, 
+																 holidayAddtionSet, 
+																 flexLimitSetting,
+																 preFlexTime);
+		AttendanceTime result = new AttendanceTime(0);
 		if(flexTime.getFlexTime().getTime().greaterThan(0)) {
-			return withinTime.minusMinutes(flexTime.getFlexTime().getTime().valueAsMinutes());
+			result = withinTime.minusMinutes(flexTime.getFlexTime().getTime().valueAsMinutes());
 		}
 		else {
-			return withinTime;
+			result = withinTime;
 		}
 		
+		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()&&coreTimeSetting.isPresent()&&!coreTimeSetting.get().isUseTimeSheet()) {
+			//遅刻時間を就業時間から控除しない場合かつ最低勤務時間よりも就業時間が小さい場合の処理
+			if(!holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly()) {
+				if(result.lessThan(coreTimeSetting.get().getMinWorkTime())) {
+					result = coreTimeSetting.get().getMinWorkTime();
+				}
+			}
+		}
+		return result;
 	}
 }

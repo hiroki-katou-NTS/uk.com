@@ -70,6 +70,7 @@ public enum CalcMethodNoBreak {
 		return null;
 	}
 	
+	
 	/**
 	 * 就業時間から計算であるか判定する
 	 * @return 就業時間から計算である

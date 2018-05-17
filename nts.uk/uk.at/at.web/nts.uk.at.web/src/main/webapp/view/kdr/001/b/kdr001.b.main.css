@@ -1,0 +1,53 @@
+
+.holidayAction {
+	border-radius: 5px;
+	width: 810px;
+	padding: 5px;	
+	margin: -10px;
+}
+
+
+.lableInfo {
+	margin-top: 8px;
+	margin-left: 10px;
+	width: 100%;
+}
+
+
+.label{
+	margin-left: 20px;
+	margin-top: 5px;
+}
+
+.selectionHoliday {
+	border-radius: 5px;
+	margin-left: 20px;
+	width: 420px;
+	float:left;
+}
+
+.labelWork {
+	width: 200px;
+	margin: 10px 0px;
+}
+
+
+.holidaytable table, th, td {
+    border: 1px solid black;
+   
+}
+
+.ntsCheckBox{
+	width: 150px;
+}
+.multicheckbox-wrapper label{
+	margin-right: 5px;
+}
+
+.holiday-button{
+	margin-left: 50px;
+	height: 50px;
+}
+.label-checkbox{
+	width: 50px;
+}

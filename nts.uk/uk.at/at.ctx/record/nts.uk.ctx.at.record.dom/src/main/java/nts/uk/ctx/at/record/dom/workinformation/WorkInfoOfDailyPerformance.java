@@ -56,7 +56,7 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 		this.backStraightAtr = backStraightAtr;
 		this.ymd = ymd;
 		this.scheduleTimeSheets = scheduleTimeSheets; 
-	}
+	} 
 	
 	/**
 	 * 勤務予定を実績に移す
@@ -85,7 +85,7 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 				.newWorkTimeCode(recordInfo == null ? null : recordInfo.getWorkTimeCode())
 				.build().toBePublished();
 	}
-	
+
 	/**
 	 * 勤務予定の勤務情報と勤務実績の勤務情報が同じかどうか確認する
 	 * @param workNo

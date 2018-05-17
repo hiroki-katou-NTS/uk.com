@@ -55,8 +55,8 @@ public class FlowOffdayWorkTimezone extends WorkTimeDomainObject {
 	 * @param oldDomain
 	 *            the old domain
 	 */
-	public void restoreData(ScreenMode screenMode, FlowOffdayWorkTimezone oldDomain) {
-		this.restTimeZone.restoreData(screenMode, oldDomain.getRestTimeZone());
+	public void correctData(ScreenMode screenMode, FlowOffdayWorkTimezone oldDomain) {
+		this.restTimeZone.correctData(screenMode, oldDomain.getRestTimeZone());
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class FlowOffdayWorkTimezone extends WorkTimeDomainObject {
 	 * @param screenMode
 	 *            the screen mode
 	 */
-	public void restoreDefaultData(ScreenMode screenMode) {
-		this.restTimeZone.restoreDefaultData(screenMode);
+	public void correctDefaultData(ScreenMode screenMode) {
+		this.restTimeZone.correctDefaultData(screenMode);
 	}
 }

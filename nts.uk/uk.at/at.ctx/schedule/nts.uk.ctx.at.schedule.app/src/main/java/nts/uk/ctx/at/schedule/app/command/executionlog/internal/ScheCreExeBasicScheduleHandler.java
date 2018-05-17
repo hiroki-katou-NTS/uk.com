@@ -415,7 +415,8 @@ public class ScheCreExeBasicScheduleHandler {
 		ScheduleMasterInformationDto scheduleMasterInfor = scheduleMasterInforOpt.get();
 		ScheMasterInfo workScheduleMaster = new ScheMasterInfo(commandSave.getEmployeeId(), commandSave.getYmd(),
 				scheduleMasterInfor.getEmployeeCode(), scheduleMasterInfor.getClassificationCode(),
-				commandSave.getWorktypeCode(), scheduleMasterInfor.getJobId(), scheduleMasterInfor.getWorkplaceId());
+				scheduleMasterInfor.getBusinessTypeCode(), scheduleMasterInfor.getJobId(),
+				scheduleMasterInfor.getWorkplaceId());
 		commandSave.setWorkScheduleMaster(workScheduleMaster);
 		return true;
 	}
