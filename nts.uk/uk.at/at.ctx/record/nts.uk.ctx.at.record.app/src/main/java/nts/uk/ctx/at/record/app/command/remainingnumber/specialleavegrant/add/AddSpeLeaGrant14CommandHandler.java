@@ -49,7 +49,7 @@ public class AddSpeLeaGrant14CommandHandler
 				command.getTimeGrant() != null ? command.getTimeGrant().intValue() : null ,
 				command.getNumberDayUse(), 
 				command.getTimeUse() != null ? command.getTimeUse().intValue() : null, 
-				new BigDecimal(0),
+				null,
 				command.getNumberDaysOver(),
 				command.getTimeOver() != null ? command.getTimeOver().intValue() : null,
 				command.getNumberDayRemain(),
