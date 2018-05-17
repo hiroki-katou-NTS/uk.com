@@ -14,11 +14,11 @@ module nts.uk.at.view.kdm002.b {
             ERROR_MESS: string = getText("KDM002_27")
             
             // params
-            pempployeeList:  KnockoutObservable<EmployeeSearchDto>;
-            pstartDate:  KnockoutObservable<string>;
-            pendDate: KnockoutObservable<string>;
-            pdate:  KnockoutObservable<string>;
-            pmaxday:  KnockoutObservable<number>;   
+            pempployeeList:  KnockoutObservableArray<EmployeeSearchDto> = ko.observable([]);
+            pstartDate:  KnockoutObservable<string> = ko.observable('');
+            pendDate: KnockoutObservable<string>= ko.observable('');
+            pdate:  KnockoutObservable<string>= ko.observable('');
+            pmaxday:  KnockoutObservable<number>= ko.observable(null);   
             
             // table result
             timeStart: KnockoutObservable<string>;
@@ -26,7 +26,7 @@ module nts.uk.at.view.kdm002.b {
             status: KnockoutObservable<string> = ko.observable(getText("KDM002_28"));
             result: KnockoutObservable<string> = ko.observable('');
             resultMessage: string = getText("KDM002_31");
-            total: KnockoutObservable<number>;
+            total: KnockoutObservable<number> = ko.observable(0);
             pass: KnockoutObservable<number> = ko.observable(0);
             error: KnockoutObservable<number> = ko.observable(0);
             // gridList
@@ -45,6 +45,7 @@ module nts.uk.at.view.kdm002.b {
             excelContent: KnockoutObservable<any> = ko.observable('');
             startExportExcel: KnockoutObservable<boolean>;
             constructor() {
+                let self = this;
                 self.timeStartt = new Date();
                 let systemDate = Date.now();
                 let convertdLocalTime = new Date(systemDate);
@@ -53,11 +54,11 @@ module nts.uk.at.view.kdm002.b {
                 self.timeStart = ko.observable(moment.utc(convertdLocalTime).format("YYYY/MM/DD H:mm:ss"));
                 // get params from KDM002-A
                 let parrams = getShared('KDM002Params');
-                self.pempployeeList  = ko.observable(parrams.empployeeList);
-                self.pstartDate = ko.observable(parrams.startDate);
-                self.pendDate = ko.observable(parrams.endDate);
-                self.pdate =  ko.observable(parrams.date);
-                self.pmaxday=  ko.observable(parrams.maxday);   
+                self.pempployeeList(parrams.empployeeList);
+                self.pstartDate(parrams.startDate);
+                self.pendDate(parrams.endDate);
+                self.pdate(parrams.date);
+                self.pmaxday(parrams.maxday);   
                 self.resultMessage = getText("KDM002_31");
                 //self.result = ko.observable('0 / '+self.pempployeeList().length +'人');
                 self.result = ko.observable(self.resultMessage.replace('{0}', '0').replace('{1}', self.pempployeeList().length));
@@ -66,7 +67,7 @@ module nts.uk.at.view.kdm002.b {
                     employeeName: '',
                     errorMessage: '',
                 };
-                self.total = ko.observable(self.pempployeeList().length);
+                self.total(self.pempployeeList().length);
                 self.currentCode = ko.observable(dataDump);
                 self.imErrorLog =  ko.observableArray([]);
                 self.columns = ko.observableArray([
@@ -86,19 +87,22 @@ module nts.uk.at.view.kdm002.b {
             * start page data 
             */
             public startPage(): JQueryPromise<any> {
-                var self = this;
-                var dfd = $.Deferred();
-                var self = this;
-                self.execution();
-                dfd.resolve();
+                let self = this;
+                let dfd = $.Deferred();
+                self.execution().done(() => {
+                }).always(() => {
+                     dfd.resolve();
+                });;
+                
                 return dfd.promise();
             }
             
             /**
             * execution 
             */
-            public execution(): void {
-                var self = this;
+            public execution(): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred();
                 let command: CheckFuncDto = new CheckFuncDto({
                     total: self.total(),
                     error: 0,
@@ -113,12 +117,16 @@ module nts.uk.at.view.kdm002.b {
                 
                 // find task id
                 service.execution(command).done(function(res: any) {
+                    dfd.resolve(self);
                     self.taskId(res.taskInfor.id);
                     // update state
                     self.updateState();
                 }).fail(function(res: any) {
                     console.log(res);
+                    dfd.resolve(self);
                 });
+                
+                return dfd.promise();
             }
             
             /**
@@ -132,6 +140,8 @@ module nts.uk.at.view.kdm002.b {
                         return nts.uk.request.asyncTask.getInfo(self.taskId()).done(function(res: any) {
                             // update state on screen
                             if (res.running || res.succeeded || res.cancelled) {
+                                self.excelContent('');
+                                self.imErrorLog.removeAll();
                                 _.forEach(res.taskDatas, item => {
                                     if (item.key.substring(0, 10) == "ERROR_LIST") {
                                         let error = JSON.parse(item.valueAsString);
@@ -140,15 +150,18 @@ module nts.uk.at.view.kdm002.b {
                                             employeeName: error.employeeName,
                                             errorMessage: nts.uk.resource.getMessage(error.errorMessage)
                                         }
+                                        //self.imErrorLog.removeAll();
                                         self.imErrorLog.push(errorContent);
-                                    }
-                                    if (item.key.substring(0, 10) == "EXCEL_LIST") {
-                                        let exContent = JSON.parse(item.valueAsString);
-                                          self.excelContent.push(exContent);
-                                    }
-                                    // 処理カウント
-                                    if (item.key == 'NUMBER_OF_SUCCESS') {
-                                        self.result(self.resultMessage.replace("{0}", item.valueAsNumber).replace("{1}", self.total()));
+                                    } else {
+                                        if (item.key.substring(0, 10) == "EXCEL_LIST") {
+                                            let exContent = JSON.parse(item.valueAsString);
+                                              self.excelContent(exContent);
+                                        } else {
+                                            // 処理カウント
+                                            if (item.key == 'NUMBER_OF_SUCCESS') {
+                                                self.result(self.resultMessage.replace("{0}", item.valueAsNumber).replace("{1}", self.total()));
+                                            }
+                                        }
                                     }
                                 });
 
@@ -173,6 +186,7 @@ module nts.uk.at.view.kdm002.b {
                                     // resize windows
                                     var windowSize = nts.uk.ui.windows.getSelf();
                                     windowSize.$dialog.dialog('option', {
+                                        position: 'fixed',
                                         width: 650,
                                         height: 550
                                     });
@@ -183,8 +197,9 @@ module nts.uk.at.view.kdm002.b {
                                     $('#BTN_ERROR_EXPORT').focus();
                                 }
                                 self.isStop(true);
-                                if (res.succeeded) {
+                                if (res.succeeded && self.excelContent()) {
                                     self.startExportExcel(true);
+//                                    $('#BTN_CLOSE').focus();
                                 }
                             }
                         });
@@ -207,7 +222,6 @@ module nts.uk.at.view.kdm002.b {
             
             //閉じるボタンをクリックする
             close(){
-                let self = this;
                 nts.uk.ui.windows.close();
             }
             

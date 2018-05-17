@@ -107,18 +107,20 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 							prevAnnualLeave);
 			if (aggrResultOfAnnualLeave.isPresent()){
 				// 取得した年休の集計結果．年休情報(付与時点)でループ
-				for (AnnualLeaveInfo annualLeaveInfoe : aggrResultOfAnnualLeave.get().getAsOfGrant().get()) {
-					// 「年休の集計結果」で付与された年月日をチェック
-					if (startDate.get().beforeOrEquals(annualLeaveInfoe.getYmd()) && endDate.afterOrEquals(annualLeaveInfoe.getYmd())) {
-						//  計算期間．開始日<=年休情報．年月日<=計算期間．終了日
-						YearlyHolidaysTimeRemainingExport yhtre = 
-								new YearlyHolidaysTimeRemainingExport(annualLeaveInfoe.getYmd(), 
-										null, 
-										annualLeaveInfoe.getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v());
-						yearlyHolidaysTimeRemainingExport.add(yhtre );
+				Optional<List<AnnualLeaveInfo>> optListAnnus = aggrResultOfAnnualLeave.get().getAsOfGrant();
+				if (optListAnnus.isPresent() && !optListAnnus.get().isEmpty()) {
+					for (AnnualLeaveInfo annualLeaveInfoe : optListAnnus.get()) {
+						// 「年休の集計結果」で付与された年月日をチェック
+						if (startDate.get().beforeOrEquals(annualLeaveInfoe.getYmd()) && endDate.afterOrEquals(annualLeaveInfoe.getYmd())) {
+							//  計算期間．開始日<=年休情報．年月日<=計算期間．終了日
+							YearlyHolidaysTimeRemainingExport yhtre = 
+									new YearlyHolidaysTimeRemainingExport(annualLeaveInfoe.getYmd(), 
+											null, 
+											annualLeaveInfoe.getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v());
+							yearlyHolidaysTimeRemainingExport.add(yhtre );
+						}
 					}
 				}
-				
 				// 年休計算開始日←次回年休付与．付与年月日
 				startDate = Optional.of(nextAnnualLeaveGrant.get(count++).getGrantDate());
 				prevAnnualLeave = aggrResultOfAnnualLeave;
