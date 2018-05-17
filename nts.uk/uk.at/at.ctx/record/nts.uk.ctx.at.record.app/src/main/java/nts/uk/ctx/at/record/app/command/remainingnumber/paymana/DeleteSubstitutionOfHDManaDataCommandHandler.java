@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
+import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SubstitutionOfHDManaDataService;
 
 @Stateless
 public class DeleteSubstitutionOfHDManaDataCommandHandler extends CommandHandler<DeleteSubstitutionOfHDManaDataCommand> {
@@ -13,11 +14,12 @@ public class DeleteSubstitutionOfHDManaDataCommandHandler extends CommandHandler
 	@Inject
 	private SubstitutionOfHDManaDataRepository SHDMDRepo;
 	
+	private SubstitutionOfHDManaDataService substitutionOfHDManaDataService;
+	
 	@Override
 	protected void handle(CommandHandlerContext<DeleteSubstitutionOfHDManaDataCommand> context) {
 		DeleteSubstitutionOfHDManaDataCommand command = context.getCommand();
-	    SHDMDRepo.delete(command.getSubOfHDID());
-		
+	    substitutionOfHDManaDataService.deleteSubsitutionOfHDManaData(command.expirationDate, command.getSubOfHDID());
 	}
 
 }
