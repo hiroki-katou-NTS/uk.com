@@ -483,7 +483,6 @@ module nts.custom.component {
                                         } else {
                                             let nid = _.find(ids, _i => oids.indexOf(_i) == -1);
 
-                                            debugger;
                                             if (nid) {
                                                 params.gridlist.value(nid);
                                             }
