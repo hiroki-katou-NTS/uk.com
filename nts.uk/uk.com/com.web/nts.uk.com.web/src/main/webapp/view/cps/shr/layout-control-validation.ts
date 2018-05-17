@@ -1581,7 +1581,7 @@ module nts.layout {
 
                     fetch.perm((__viewContext || {}).user.role.personalInfo, categoryId).done(perm => {
                         if (perm) {
-                            let remove = _.find(ctrls, c => c.data.recordId.indexOf("NID_") > -1);
+                            let remove = _.find(ctrls, c => c.data.recordId && c.data.recordId.indexOf("NID_") > -1);
 
                             if (is_self) {
                                 if (!perm.selfAllowAddMulti && remove) {

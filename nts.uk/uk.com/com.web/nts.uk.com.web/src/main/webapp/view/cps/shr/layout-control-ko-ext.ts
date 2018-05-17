@@ -1896,6 +1896,7 @@ module nts.custombinding {
                                         definitionId: x.itemDefId,
                                         itemCode: x.itemCode,
                                         value: data.value,
+                                        dvalue: x.defValue,
                                         'type': data.typeData
                                     } : null;
                                 })
@@ -1914,6 +1915,12 @@ module nts.custombinding {
                                     deleted = group[recordId].map(m => m.checked).filter(m => !m).length == 0;
 
                                 if (_recordId || (!_recordId && !deleted)) {
+                                    // delete check for CARD_NO
+                                    if (_categoryCd == "CS00069" && !group[recordId][0].value) {
+                                        deleted = true;
+                                        console.log(deleted);
+                                    }
+
                                     inputs.push({
                                         recordId: _recordId,
                                         categoryCd: _categoryCd,
@@ -1922,7 +1929,7 @@ module nts.custombinding {
                                             return {
                                                 definitionId: m.definitionId,
                                                 itemCode: m.itemCode,
-                                                value: m.value,
+                                                value: deleted ? m.dvalue : m.value,
                                                 'type': m.type
                                             };
                                         })
@@ -1932,7 +1939,7 @@ module nts.custombinding {
                         });
 
                         inputs = _(inputs).filter(f => {
-                            return f.items.filter(m => !!m.value).length > 0;
+                            return f.items.filter(m => !!m.value).length > 0 || (f.recordId && f.delete);
                         }).value();
 
                         // change value
@@ -2067,7 +2074,8 @@ module nts.custombinding {
                                             "textValue",
                                             "value",
                                             "recordId",
-                                            "checked"
+                                            "checked",
+                                            "defValue"
                                         ]);
 
                                     ko.utils.extend(_r, {
@@ -2080,7 +2088,8 @@ module nts.custombinding {
                                         numberedit: ko.observable(c.numberedit),
                                         showColor: ko.observable(c.showColor),
                                         textValue: ko.observable(c.textValue),
-                                        value: ko.observable(undefined)
+                                        value: ko.observable(undefined),
+                                        defValue: undefined
                                     });
 
                                     _r.value.subscribe(v => {
