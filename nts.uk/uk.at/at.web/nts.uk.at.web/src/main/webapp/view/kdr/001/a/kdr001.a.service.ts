@@ -7,7 +7,8 @@ module nts.uk.at.view.kdr001.a {
                 findAll: "at/function/holidaysremaining/findAll",
                 saveAsExcel: "at/function/holidaysremaining/report",
                 getDate: "at/function/holidaysremaining/getDate",
-                getPermissionOfEmploymentForm: "at/function/holidaysremaining/getPermissionOfEmploymentForm"
+                getPermissionOfEmploymentForm: "at/function/holidaysremaining/getPermissionOfEmploymentForm",
+                getBreakSelection: "at/function/holidaysremaining/getBreakSelection"
             };
         
         
@@ -25,6 +26,9 @@ module nts.uk.at.view.kdr001.a {
         
         export function getPermissionOfEmploymentForm() : JQueryPromise<any> {
             return nts.uk.request.ajax("at", path.getPermissionOfEmploymentForm);
+        }
+        export function getBreakSelection() : JQueryPromise<any> {
+            return nts.uk.request.ajax("at", path.getBreakSelection);
         }
     }
 }

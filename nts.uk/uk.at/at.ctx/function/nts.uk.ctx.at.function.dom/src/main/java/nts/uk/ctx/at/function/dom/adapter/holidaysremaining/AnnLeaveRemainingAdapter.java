@@ -10,4 +10,6 @@ public interface AnnLeaveRemainingAdapter {
 			DatePeriod datePeriod);
 	
 	public AnnLeaveOfThisMonthImported getAnnLeaveOfThisMonth(String employeeId);
+	
+	public NextHolidayGrantDateImported getNextHolidayGrantDate(String companyId, String employeeId);
 }

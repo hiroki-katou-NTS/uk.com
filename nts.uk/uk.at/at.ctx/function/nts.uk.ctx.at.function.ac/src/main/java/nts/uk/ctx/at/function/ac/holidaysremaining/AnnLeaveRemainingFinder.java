@@ -10,9 +10,11 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveOfThisMonthImported;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveRemainingAdapter;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveUsageStatusOfThisMonthImported;
+import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.NextHolidayGrantDateImported;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AggrResultOfAnnualLeaveEachMonth;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AnnLeaveOfThisMonth;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AnnLeaveRemainNumberPub;
+import nts.uk.ctx.at.record.pub.remainnumber.annualleave.NextHolidayGrantDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -56,6 +58,16 @@ public class AnnLeaveRemainingFinder implements AnnLeaveRemainingAdapter {
 				annLeave.getUsedMinutes(),
 				annLeave.getRemainDays().v(), 
 				annLeave.getRemainMinutes()
+				);
+	}
+
+	@Override
+	public NextHolidayGrantDateImported getNextHolidayGrantDate(String companyId, String employeeId) {
+		NextHolidayGrantDate nextHoloday = annLeaveRemainNumberPub.getNextHolidayGrantDate(companyId, employeeId);
+		if(nextHoloday == null) return null;
+	
+		return new NextHolidayGrantDateImported(
+				nextHoloday.getGrantDate()
 				);
 	}
 }

@@ -20,4 +20,11 @@ public interface AnnLeaveRemainNumberPub {
 	 * @return
 	 */
 	List<AggrResultOfAnnualLeaveEachMonth> getAnnLeaveRemainAfterThisMonth(String employeeId, DatePeriod datePeriod);
+	
+	/**
+	 * RequestList #No.369
+	 * @param employeeId
+	 * @return
+	 */
+	NextHolidayGrantDate getNextHolidayGrantDate(String companyId, String employeeId);	
 }
