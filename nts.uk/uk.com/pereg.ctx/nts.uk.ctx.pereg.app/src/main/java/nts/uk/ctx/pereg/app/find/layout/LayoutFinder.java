@@ -5,6 +5,7 @@ package nts.uk.ctx.pereg.app.find.layout;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -432,18 +433,14 @@ public class LayoutFinder {
 		for (LayoutPersonInfoClsDto classItem : classItemList) {
 			for (LayoutPersonInfoValueDto valueItem : classItem.getItems()) {
 
-				DataTypeStateDto itemDataTypeSate = valueItem.getItem();
-				if (itemDataTypeSate != null) {
-					int dataType = itemDataTypeSate.getDataTypeValue();
-					if (dataType == DataTypeValue.SELECTION.value || dataType == DataTypeValue.SELECTION_RADIO.value
-							|| dataType == DataTypeValue.SELECTION_BUTTON.value) {
-						SelectionItemDto selectionItemDto = (SelectionItemDto) valueItem.getItem();
-						boolean isDataType6 = dataType == DataTypeValue.SELECTION.value;
-						valueItem.setLstComboBoxValue(comboBoxFactory.getComboBox(selectionItemDto, employeeId,
-								comboBoxStandardDate, valueItem.isRequired(), perInfoCategory.getPersonEmployeeType(),
-								isDataType6, perInfoCategory.getCategoryCode().v()));
-					}
+				if (valueItem.isComboBoxItem()) {
+					SelectionItemDto selectionItemDto = (SelectionItemDto) valueItem.getItem();
+					boolean isDataType6 = valueItem.isSelectionItem();
+					valueItem.setLstComboBoxValue(comboBoxFactory.getComboBox(selectionItemDto, employeeId,
+							comboBoxStandardDate, valueItem.isRequired(), perInfoCategory.getPersonEmployeeType(),
+							isDataType6, perInfoCategory.getCategoryCode().v()));
 				}
+				
 			}
 		}
 	}
@@ -454,14 +451,25 @@ public class LayoutFinder {
 		if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
 			List<PeregDto> peregDtoList = layoutingProcessor.findList(query);
 			List<LayoutPersonInfoValueDto> items = new ArrayList<>();
-
-			for (PeregDto peregDto : peregDtoList) {
-
-				List<LayoutPersonInfoValueDto> itemsOfPeregDto = convertPeregDtoToValueItemList(perInfoCategory,
-						peregDto, classItem.getListItemDf());
-
+			
+			if (peregDtoList.isEmpty()) {
+				// nếu không có dữ liệu nào thì tự tạo một cái mới trên Server và trả về.
+				List<LayoutPersonInfoValueDto> itemsOfPeregDto = classItem.getListItemDf().stream()
+						.map(itemDef -> LayoutPersonInfoValueDto.cloneFromItemDef(perInfoCategory, itemDef))
+						.collect(Collectors.toList());
+				
 				items.addAll(itemsOfPeregDto);
+			} else {
+				for (PeregDto peregDto : peregDtoList) {
+
+					List<LayoutPersonInfoValueDto> itemsOfPeregDto = convertPeregDtoToValueItemList(perInfoCategory,
+							peregDto, classItem.getListItemDf());
+
+					items.addAll(itemsOfPeregDto);
+				}
 			}
+
+			
 			classItem.setListItemDf(null);
 			classItem.setPersonInfoCategoryCD(perInfoCategory.getCategoryCode().v());
 			classItem.setItems(items);
@@ -485,12 +493,8 @@ public class LayoutFinder {
 			LayoutPersonInfoValueDto valueItem = LayoutPersonInfoValueDto.cloneFromItemDef(perInfoCategory, itemDef);
 			Object value = itemCodeValueMap.get(valueItem.getItemCode());
 
-			if (valueItem.getItem() != null) {
-				int itemType = valueItem.getItem().getDataTypeValue();
-				if (itemType == DataTypeValue.SELECTION.value || itemType == DataTypeValue.SELECTION_BUTTON.value
-						|| itemType == DataTypeValue.SELECTION_RADIO.value) {
-					value = value == null ? null : value.toString();
-				}
+			if (valueItem.isComboBoxItem()) {
+				value = value == null ? null : value.toString();
 			}
 
 			// set value
@@ -504,7 +508,7 @@ public class LayoutFinder {
 
 		return items;
 	}
-
+	
 	/**
 	 * @param perInfoCategoryId
 	 * @param authClassItem
