@@ -16,7 +16,7 @@ import nts.uk.ctx.at.record.infra.entity.stamp.stampcard.KrcmtStamcard;
 public class JpaStampCardRepository extends JpaRepository implements StampCardRepository {
 
 
-	private String GET_ALL_BY_SID = "SELECT a FROM KrcmtStamcard a WHERE a.sid = :sid ";
+	private String GET_ALL_BY_SID = "SELECT a FROM KrcmtStamcard a WHERE a.sid = :sid ORDER BY a.registerDate, a.cardNo ASC";
 
 	private String GET_BY_CARD_ID = "SELECT a FROM KrcmtStamcard a WHERE a.cardId = :cardid";
 
