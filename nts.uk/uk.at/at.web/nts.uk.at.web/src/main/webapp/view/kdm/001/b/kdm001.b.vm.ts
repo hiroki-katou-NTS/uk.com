@@ -118,7 +118,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 var date1 = i + '/1/2018';
                 var date2 = i + '/1/2018';
                 var hours = Math.floor(Math.random() * 8) + 1 ;
-                var isLinked = i %4 == 0 ? 0 : 1;
+                var isLinked = i %4 == 0 ? 1 : 0;
                 substituteDataArray.push(new SubstitutedData(i, i%2 == 0 ? date1 : null, i%2 == 0 ? hours : null, i%2 == 0 ?"基" : "", i%2 == 1 ? date2 : null, i%2 == 1 ? hours : null, i%2 == 1 ?"基" : "", 0.5, 0.5, isLinked)); 
             }
             self.substituteData = ko.observableArray(substituteDataArray);
@@ -199,8 +199,8 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     { headerText: getText('KDM001_124'), key: 'substituedHolidayPeg', dataType: 'string', width: '100px' },
                     { headerText: getText('KDM001_37'), template: '<div style="float:right"> ${remainHolidayHours} </div>', key: 'remainHolidayHours', dataType: 'string', width: '100px' },
                     { headerText: getText('KDM001_20'), template: '<div style="float:right"> ${expiredHolidayHours} </div>', key: 'expiredHolidayHours', dataType: 'string', width: '100px' },
-                    { headerText: 'Button', key: 'pegSetting', dataType: 'string', width: '85px', unbound: true, ntsControl: 'ButtonPegSetting' },
-                    { headerText: 'Delete', key: 'isLinked', dataType: 'string', width: '55px', unbound: true, ntsControl: 'ButtonCorrection' }
+                    { headerText: '', key: 'pegSetting', dataType: 'string', width: '85px', unbound: true, ntsControl: 'ButtonPegSetting' },
+                    { headerText: '', key: 'isLinked', dataType: 'string', width: '55px', unbound: true, ntsControl: 'ButtonCorrection' }
                 ],
                 features: [
                     {
@@ -211,8 +211,15 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 ],
                 ntsControls: [
                     { name: 'ButtonPegSetting', text: getText('KDM001_22'), click: function(value) { self.pegSetting(value) }, controlType: 'Button' },
-                    { name: 'ButtonCorrection', text: getText('KDM001_23'), enable: 'isLinked == 1', click: function(value) { self.doCorrection(value) }, controlType: 'Button' }
+                    { name: 'ButtonCorrection', text: getText('KDM001_23'), click: function(value) { self.doCorrection(value) }, controlType: 'Button' }
                 ]
+            });
+            
+            _.forEach(self.substituteData(), function(value) {
+                if (value.isLinked == 1){
+                    let rowId = value.id;
+                    $("#substituteDataGrid").ntsGrid("disableNtsControlAt", rowId, 'isLinked', 'Button');
+                }
             });
         }
         pegSetting(value) {
