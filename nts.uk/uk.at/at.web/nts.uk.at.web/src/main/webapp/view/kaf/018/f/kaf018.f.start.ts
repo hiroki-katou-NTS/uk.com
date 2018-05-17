@@ -4,10 +4,9 @@ module nts.uk.at.view.kaf018.f {
         __viewContext.transferred.ifPresent(data => {
             nts.uk.ui.windows.setShared("KAF018F_PARAMS", data);
         });
-        let screenModel = new kaf018.f.viewmodel.ScreenModel();        
-        screenModel.startPage().done(function(){
-            __viewContext.bind(screenModel);          
-            // $("#H3_1_1").focus(); 
+        let screenModel = new kaf018.f.viewmodel.ScreenModel();
+        screenModel.startPage().done(function() {
+            __viewContext.bind(screenModel);
         })
     });
 }

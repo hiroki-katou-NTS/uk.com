@@ -33,11 +33,11 @@
 					<tr>
 						<td>
 							<!-- F2_1 -->
-							<button class="auto-height"
+							<button class="auto-height" tabindex="2"
 								data-bind="click: preWkp, enable: enablePre">
 								#{i18n.getText('KAF018_27')}<i class="img-icon icon-prev"></i>
 							</button> <!-- F2_2 -->
-							<button class="auto-height"
+							<button class="auto-height" tabindex="3"
 								data-bind="click: nextWkp, enable: enableNext">
 								#{i18n.getText('KAF018_28')}<i class="img-icon icon-next"></i>
 							</button>
@@ -75,12 +75,12 @@
 						</td>
 						<td class="align-right">
 							<!-- F10 -->
-							<button data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KAF018_65')}</button>
+							<button tabindex="-1" data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KAF018_65')}</button>
 						</td>
 					</tr>
 				</table>
 				<!-- F5 -->
-				<div id="extable"></div>
+				<div tabindex="4" id="extable"></div>
 			</div>
 		</ui:define>
 	</ui:composition>
