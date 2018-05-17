@@ -21,4 +21,6 @@ public class DailyPerformanceReportData {
 	/** The lst workplace report data. */
 	public WorkplaceReportData workplaceReportData;
 	
+	/** The lst daily report data. */
+	public List<DailyReportData> lstDailyReportData;
 }

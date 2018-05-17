@@ -14,5 +14,5 @@ public interface WorkScheduleOutputGenerator {
 	 * @param fileContext the file context
 	 * @param reportData the report data
 	 */
-	void generate (WorkScheduleOutputCondition reportData, WorkplaceConfigInfo workplace, WorkScheduleOutputQuery query);
+	void generate (WorkScheduleOutputQuery query);
 }

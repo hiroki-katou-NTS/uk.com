@@ -1,5 +1,7 @@
 package nts.uk.file.at.app.export.dailyschedule;
 
+import nts.uk.ctx.at.function.dom.attendancetype.ScreenUseAtr;
+
 /**
  * 帳票出力種類.
  *
@@ -23,5 +25,22 @@ public enum FormOutputType {
 	 */
 	private FormOutputType(int outputType) {
 		this.outputType = outputType;
+	}
+	
+	public static FormOutputType valueOf(Integer value) {
+		// Invalid object.
+		if (value == null) {
+			return null;
+		}
+
+		// Find value.
+		for (FormOutputType val : FormOutputType.values()) {
+			if (val.outputType == value) {
+				return val;
+			}
+		}
+
+		// Not found.
+		return null;
 	}
 }

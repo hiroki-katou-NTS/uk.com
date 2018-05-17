@@ -21,11 +21,13 @@ module nts.uk.at.view.kwr001.a {
                                                     "_employeeId_" + userId);
         }
         
-        export function exportExcel(): JQueryPromise<any> {
-            return nts.uk.request.ajax('at', paths.exportExcel);
+        export function exportExcel(data: WorkScheduleOutputQueryDto): JQueryPromise<any> {
+            return nts.uk.request.ajax('at', paths.exportExcel, data);
         }
         
         const SLASH = "/";
         
     }
 }
+
+//# sourceMappingURL=http://localhost:8080/nts.uk.at.web/view/kwr/001/a/kwr001.a.vm.ts

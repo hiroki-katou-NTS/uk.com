@@ -1,9 +1,12 @@
 package nts.uk.file.at.app.export.dailyschedule;
 
+import java.text.Normalizer.Form;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Data;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
@@ -23,7 +26,7 @@ public class WorkScheduleOutputCondition  {
 	// 帳票出力種類
 	private FormOutputType outputType;
 	// 出力項目設定コード
-	private List<OutputItemSettingCode> code;
+	private OutputItemSettingCode code;
 	// 改ページ区分
 	private PageBreakIndicator pageBreakIndicator;
 	// 日別勤務表用明細・合計出力設定
@@ -32,4 +35,19 @@ public class WorkScheduleOutputCondition  {
 	private OutputConditionSetting conditionSetting;
 	// 勤務実績のエラーアラームコード
 	private Optional<List<ErrorAlarmWorkRecordCode>> errorAlarmCode;
+	
+	public static WorkScheduleOutputCondition createFromJavaType(WorkScheduleOutputConditionDto dto) {
+		WorkScheduleOutputCondition condition = new WorkScheduleOutputCondition();
+		condition.setCompanyId(dto.getCompanyId());
+		condition.setUserId(dto.getUserId());
+		condition.setOutputType(FormOutputType.valueOf(dto.getOutputType()));
+		condition.setCode(new OutputItemSettingCode(dto.getCode()));
+		condition.setPageBreakIndicator(PageBreakIndicator.valueOf(dto.getPageBreakIndicator()));
+		condition.setSettingDetailTotalOutput(dto.getSettingDetailTotalOutput());
+		condition.setConditionSetting(OutputConditionSetting.valueOf(dto.getConditionSetting()));
+		condition.setErrorAlarmCode(Optional.of(dto.getErrorAlarmCode().stream().map(temp -> {
+			return new ErrorAlarmWorkRecordCode(temp);
+		}).collect(Collectors.toList())));
+		return condition;
+	}
 }
