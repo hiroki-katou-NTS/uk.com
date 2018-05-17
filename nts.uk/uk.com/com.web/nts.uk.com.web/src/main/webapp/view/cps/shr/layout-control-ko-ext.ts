@@ -1918,7 +1918,6 @@ module nts.custombinding {
                                     // delete check for CARD_NO
                                     if (_categoryCd == "CS00069" && !group[recordId][0].value) {
                                         deleted = true;
-                                        console.log(deleted);
                                     }
 
                                     inputs.push({
