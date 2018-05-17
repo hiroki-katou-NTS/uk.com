@@ -402,16 +402,16 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         };
                     })
                 },
-                dateInputList = $(".table-container").find('tbody').find('tr').find('#date'),
-                dateInputListOfYear = $(".table-container").find('tbody').find('tr').find('#datey'),
+                dateInputList = $('tr').find('#date'),
+                dateInputListOfYear = $('tr').find('#datey'),
                 itemList: Array<any> = _.filter(ko.toJS(self.currentCategory().itemList()), function(item: PerInfoInitValueSettingItemDto) {
                     return item.dataType === 3 && item.selectedRuleCode === 2;
                 });
             if (dateInputList.length > 0 || dateInputListOfYear.length > 0) {
                 let i: number = 0;
                 _.each(itemList, function(item: PerInfoInitValueSettingItemDto) {
-                    let $input1 = $(".table-container").find('tbody').find('tr').find('#date')[i],
-                        $input2 = $(".table-container").find('tbody').find('tr').find('#datey')[i];
+                    let $input1 = dateInputList[i],
+                        $input2 = dateInputListOfYear[i];
                     if ($input1 != undefined) {
                         $input1.setAttribute("nameid", item.itemName);
                     }
@@ -547,6 +547,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
             if ((Browser.indexOf('MSIE ') > 0) || !!Browser.match(/Trident.*rv\:11\./)) {
                 $("#sub-right>table>tbody").css("height", "495px");
             }
+        }
+        
+        checkError(itemList : Array<any>){
+        
         }
 
     }
@@ -946,7 +950,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 self.selectionItemRefType = params.selectionItemRefType || undefined;
 
                 self.selection = ko.observableArray(params.selection || []);
-                self.selectedCode = ko.observable(params.stringValue || "1");
+                self.selectedCode = ko.observable(params.stringValue || "0");
             }
 
 
