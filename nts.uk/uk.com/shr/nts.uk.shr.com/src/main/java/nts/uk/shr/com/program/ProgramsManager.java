@@ -1760,6 +1760,18 @@ public class ProgramsManager {
 	public static final Program KMW006F = new Program(WebAppId.AT, ProgramIdConsts.KMW006F, "KMW006_46",
 			"/view/kmw/006/f/index.xhtml");
 
+    /**
+     * CMF003
+     */
+	public static final Program CMF003A = new Program(WebAppId.COM, ProgramIdConsts.CMF003A, "CMF003_1",
+			"/view/cmf/003/a/index.xhtml");
+	public static final Program CMF003B = new Program(WebAppId.COM, ProgramIdConsts.CMF003B, "CMF003_2",
+			"/view/cmf/003/b/index.xhtml");
+	public static final Program CMF003C = new Program(WebAppId.COM, ProgramIdConsts.CMF003C, "CMF003_3",
+			"/view/cmf/003/c/index.xhtml");
+	public static final Program CMF003F = new Program(WebAppId.COM, ProgramIdConsts.CMF003F, "CMF003_6",
+			"/view/cmf/003/f/index.xhtml");
+
 	/**
 	 * All programs map.
 	 */
