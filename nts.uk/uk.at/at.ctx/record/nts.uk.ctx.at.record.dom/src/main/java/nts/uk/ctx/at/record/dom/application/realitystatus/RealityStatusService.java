@@ -192,11 +192,6 @@ public class RealityStatusService {
 			GeneralDate endDate, boolean useBossConfirm, boolean usePersonConfirm) {
 		// 期間範囲分の日別確認（リスト）を作成する(Tạo list confirm hàng ngày)
 		List<DailyConfirmOutput> listDailyConfirm = new ArrayList<DailyConfirmOutput>();
-		GeneralDate currentDate = startDate;
-		while (currentDate.beforeOrEquals(endDate)) {
-			listDailyConfirm.add(new DailyConfirmOutput(wkpId, sId, currentDate, false, false));
-			currentDate = currentDate.addDays(1);
-		}
 		SumCountOutput sumCount = new SumCountOutput();
 
 		// 利用するの場合(use)
@@ -239,20 +234,25 @@ public class RealityStatusService {
 				endDate, sId, cid, 1);
 		// 承認ルートの状況
 		for (ApproveRootStatusForEmpImport approval : listApproval) {
+			DailyConfirmOutput dailyConfirm;
+			// 日別確認（リスト）に同じ職場ID、社員ID、対象日が登録済
+			Optional<DailyConfirmOutput> confirm = listDailyConfirm.stream().filter(x -> x.getWkpId().equals(wkpId)
+					&& x.getSId().equals(sId) && x.getTargetDate().equals(approval.getAppDate())).findFirst();
+			if (confirm.isPresent()) {
+				// 対象の日別確認（リスト）の行を対象とする
+				dailyConfirm = confirm.get();
+			} else {
+				// 日別確認（リスト）に追加する
+				dailyConfirm = new DailyConfirmOutput(wkpId, sId, approval.getAppDate(), false, false);
+				listDailyConfirm.add(dailyConfirm);
+			}
 			// 承認ルート状況.承認状況
 			if (ApprovalStatusForEmployee.APPROVED.equals(approval.getApprovalStatus())) {
-				Optional<DailyConfirmOutput> confirm = listDailyConfirm.stream().filter(x -> x.getWkpId().equals(wkpId)
-						&& x.getSId().equals(sId) && x.getTargetDate().equals(approval.getAppDate())).findFirst();
-				if (confirm.isPresent()) {
-					// 日別確認リスト)を変更
-					// 上司確認 ＝確認
-					confirm.get().setBossConfirm(true);
-				}
-				// 「承認済」の場合
+				// 上司確認 ＝確認
+				dailyConfirm.setBossConfirm(true);
 				// 上司確認件数 ＝＋１
 				sumCount.bossConfirm++;
 			} else {
-				// 「未承認」又は「承認中」の場合
 				// 上司未確認件数 ＝＋１
 				sumCount.bossUnconfirm++;
 			}
@@ -287,6 +287,11 @@ public class RealityStatusService {
 			if (confirm.isPresent()) {
 				// 対象の日別確認（リスト）の行を対象として内容を更新するする
 				confirm.get().setPersonConfirm(true);
+			} else {
+				// 日別確認（リスト）に追加
+				DailyConfirmOutput newConfirm = new DailyConfirmOutput(wkpId, sId, identification.getProcessingYmd(),
+						true, false);
+				listDailyConfirm.add(newConfirm);
 			}
 			// 本人確認件数 ＝＋１
 			sumCount.personConfirm++;
