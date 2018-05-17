@@ -42,6 +42,9 @@ public class KrcmtPayoutManaData extends UkJpaEntity{
 	
 	@Column(name="STATE_ATR")
 	public int stateAtr;
+	
+	@Column(name="DISAPEAR_DATE")
+	public GeneralDate disapearDate;
 
 	@Override
 	protected Object getKey() {

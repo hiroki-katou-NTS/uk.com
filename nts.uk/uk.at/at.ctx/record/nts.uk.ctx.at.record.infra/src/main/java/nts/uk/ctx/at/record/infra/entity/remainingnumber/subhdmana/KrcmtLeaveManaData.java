@@ -50,6 +50,9 @@ public class KrcmtLeaveManaData extends UkJpaEntity {
 	
 	@Column(name="HALF_DAY_TIME")
 	public int halfDayTime;
+	
+	@Column(name="DISAPEAR_DATE")
+	public GeneralDate disapearDate;
 
 	@Override
 	protected Object getKey() {
