@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SelfEditUserInfo;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SettingUseSendMail;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethodRepository;
@@ -66,6 +67,9 @@ public class UserInfoUseMethodSaveCommandHandler extends CommandHandler<UserInfo
 				if (newDomain.getSettingUseMail().get().equals(SettingUseSendMail.NOT_USE)) {
 					newDomain.corretSelfEdit(optionalDom.get().getSelfEdit());
 				}
+			}
+			if (!optionalDom.isPresent() && newDomain.getSettingUseMail().get().equals(SettingUseSendMail.NOT_USE)) {
+				newDomain.corretSelfEdit(SelfEditUserInfo.CAN_NOT_EDIT);
 			}
 			return newDomain;
 		}).collect(Collectors.toList());
