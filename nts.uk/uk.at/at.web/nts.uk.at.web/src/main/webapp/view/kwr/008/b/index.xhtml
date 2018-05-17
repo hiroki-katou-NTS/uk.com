@@ -112,8 +112,9 @@
                                                     name:'#[KWR008_30]',
                                                     value: $data.valOutFormat,
                                                     optionsText: 'name',
+                                                    enable: $data.sortBy() > 1,
                                                     columns: [{ prop: 'name', length: 2 }]
-                                                }, visible: $data.sortBy() > 1">
+                                                }">
                                     </div>
                                  </td>
                                 <td><span class="limited-label" data-bind="text: $data.outputTargetItem"></span></td>
