@@ -23,7 +23,7 @@ public class ItemOutTblBookCommand {
 	* 並び順
 	*/
 	private int sortBy;
-	
+
 	/**
 	* 見出し名称
 	*/
@@ -38,6 +38,11 @@ public class ItemOutTblBookCommand {
 	* 値の出力形式
 	*/
 	private int valOutFormat;
+
+	/**
+	 * 36協定時間
+	 */
+	private boolean item36AgreementTime;
 
 	List<CalcFormulaItemCommand> listOperationSetting;
 }

@@ -36,8 +36,7 @@ public class SetOutItemsWoScDto
 	*/
 	private int displayFormat;
 
-	public static SetOutItemsWoScDto fromDomain(SetOutItemsWoSc domain)
-	{
+	public static SetOutItemsWoScDto fromDomain(SetOutItemsWoSc domain) {
 		return new SetOutItemsWoScDto(domain.getCid(), domain.getCd().v(), domain.getName().v(),
 									  domain.isOutNumExceedTime36Agr(), domain.getDisplayFormat().value);
 	}

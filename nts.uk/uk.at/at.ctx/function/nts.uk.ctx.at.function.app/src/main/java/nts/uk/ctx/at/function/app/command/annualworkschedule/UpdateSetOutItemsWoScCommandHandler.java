@@ -27,34 +27,49 @@ public class UpdateSetOutItemsWoScCommandHandler extends CommandHandler<SetOutIt
 	@Inject
 	private SetOutItemsWoScRepository repository;
 
+	/**
+	 * 36協定時間
+	 */
+	private String CD_36_AGREEMENT_TIME = "01";
+
 	@Override
 	protected void handle(CommandHandlerContext<SetOutItemsWoScCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		SetOutItemsWoScCommand updateCommand = context.getCommand();
 
 		Optional<ItemOutTblBookCommand> lastItemOutTblBookCommand
-			= updateCommand.getListItemOutput().stream().filter(m -> !StringUtil.isNullOrEmpty(m.getCd(), true))
+			= updateCommand.getListItemOutput().stream()
+			.filter(m -> !StringUtil.isNullOrEmpty(m.getCd(), true) && !m.isItem36AgreementTime())
 			.max((m1, m2) -> Integer.compare(Integer.valueOf(m1.getCd()), Integer.valueOf(m2.getCd())));
 
-		int[] itemOutCd = {0};
+		int[] itemOutCd = {1};
 		if (lastItemOutTblBookCommand.isPresent()) {
 			itemOutCd[0] = Integer.valueOf(lastItemOutTblBookCommand.get().getCd());
 		}
 
 		List<ItemOutTblBook> listItemOutTblBook = updateCommand.getListItemOutput().stream()
 				.map(m -> {
-						String itemOutCdStr = StringUtil.padLeft(StringUtil.isNullOrEmpty(m.getCd(), true)?
-																String.valueOf(++itemOutCd[0]) : m.getCd(), 2, '0');
+						StringBuilder itemOutCdStr = new StringBuilder();
+						if (StringUtil.isNullOrEmpty(m.getCd(), true)) {
+							if (m.isItem36AgreementTime()) {
+								itemOutCdStr.append(CD_36_AGREEMENT_TIME);
+							} else {
+								itemOutCdStr.append(StringUtil.padLeft(String.valueOf(++itemOutCd[0]), 2, '0'));
+							}
+						} else {
+							itemOutCdStr.append(m.getCd());
+						}
+			
 						return ItemOutTblBook.createFromJavaType(companyId,
 						updateCommand.getCd(),
-						itemOutCdStr,
+						itemOutCdStr.toString(),
 						m.getSortBy(),
 						m.getHeadingName(), m.isUseClass(), m.getValOutFormat(),
 						//list CalcFormulaItem
 						m.getListOperationSetting().stream()
 						.map(os -> CalcFormulaItem.createFromJavaType(companyId,
 								updateCommand.getCd(),
-								itemOutCdStr,
+								itemOutCdStr.toString(),
 								os.getAttendanceItemId(),
 								os.getOperation())).collect(Collectors.toList()));
 				}).collect(Collectors.toList());

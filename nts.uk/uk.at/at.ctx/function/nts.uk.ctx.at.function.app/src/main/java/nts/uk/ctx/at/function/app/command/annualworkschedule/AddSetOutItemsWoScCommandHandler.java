@@ -31,6 +31,11 @@ public class AddSetOutItemsWoScCommandHandler extends CommandHandler<SetOutItems
 	@Inject
 	private AnnualWorkScheduleService domainService;
 
+	/**
+	 * 36協定時間
+	 */
+	private String CD_36_AGREEMENT_TIME = "01";
+
 	@Override
 	protected void handle(CommandHandlerContext<SetOutItemsWoScCommand> context) {
 		String companyId = AppContexts.user().companyId();
@@ -38,10 +43,11 @@ public class AddSetOutItemsWoScCommandHandler extends CommandHandler<SetOutItems
 		if(domainService.checkDuplicateCode(addCommand.getCd())) {
 			throw new BusinessException("Msg_3");
 		} 
-		int[] itemOutCd = {0};
+		int[] itemOutCd = {1};
 		List<ItemOutTblBook> listItemOutTblBook = addCommand.getListItemOutput().stream()
 			.map(m -> {
-				String itemOutCdStr = StringUtil.padLeft(String.valueOf(++itemOutCd[0]), 2, '0');
+				String itemOutCdStr = m.isItem36AgreementTime()? CD_36_AGREEMENT_TIME :
+															StringUtil.padLeft(String.valueOf(++itemOutCd[0]), 2, '0');
 				return ItemOutTblBook.createFromJavaType(companyId,
 				addCommand.getCd(), //年間勤務表(36チェックリスト)の出力条件.コード
 				itemOutCdStr,       //帳表に出力する項目.コード auto increment

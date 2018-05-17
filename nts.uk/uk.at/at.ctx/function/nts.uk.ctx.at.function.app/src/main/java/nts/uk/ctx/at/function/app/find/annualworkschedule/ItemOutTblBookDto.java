@@ -12,6 +12,7 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBook;
 @Value
 public class ItemOutTblBookDto
 {
+	private final static String CD_36_AGREEMENT_TIME = "01";
 	/**
 	* 年間勤務表(36チェックリスト)の出力条件.コード
 	*/
@@ -42,15 +43,22 @@ public class ItemOutTblBookDto
 	*/
 	private int valOutFormat;
 
+	/**
+	 * 36協定時間
+	 */
+	private boolean item36AgreementTime;
+
 	List<CalcFormulaItem> listOperationSetting;
 
 	public static ItemOutTblBookDto fromDomain(ItemOutTblBook domain)
 	{
+		boolean isItem36AgreementTime = CD_36_AGREEMENT_TIME.equals(domain.getCd().v());
 		return new ItemOutTblBookDto(domain.getSetOutCd(), domain.getCd().v(), domain.getSortBy(),
-				domain.getHeadingName().v(), domain.isUseClassification(), domain.getValOutFormat().value, domain.getListOperationSetting());
+				domain.getHeadingName().v(), domain.isUseClassification(), domain.getValOutFormat().value,
+				isItem36AgreementTime, domain.getListOperationSetting());
 	}
 
-	public ItemOutTblBookDto(String setOutCd, String cd, int sortBy, String headingName, boolean useClass, int valOutFormat,
+	public ItemOutTblBookDto(String setOutCd, String cd, int sortBy, String headingName, boolean useClass, int valOutFormat, boolean item36AgreementTime,
 			List<CalcFormulaItem> listOperationSetting) {
 		super();
 		this.setOutCd = setOutCd;
@@ -59,6 +67,7 @@ public class ItemOutTblBookDto
 		this.headingName = headingName;
 		this.useClass = useClass;
 		this.valOutFormat = valOutFormat;
+		this.item36AgreementTime = item36AgreementTime;
 		this.listOperationSetting = listOperationSetting;
 	}
 }

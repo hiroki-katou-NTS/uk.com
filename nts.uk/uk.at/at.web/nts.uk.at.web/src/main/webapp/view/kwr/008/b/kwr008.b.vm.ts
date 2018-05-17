@@ -43,26 +43,50 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             ]);
             self.rule36CalculationName = getText('KWR008_32');
             for (var i = 1; i <= 10; i++) {
-                self.outputItem.push(new OutputItemData(i, null, false, '', 0, ''));
+                self.outputItem.push(new OutputItemData(i,
+                    null,
+                    false,
+                    '',
+                    0,
+                    '',
+                    i == 1 //set is 36協定時間 if it's fist OutputItem
+                 ));
             }
             //event select change
             self.selectedCode.subscribe((code) => {
                 block.invisible();
                 nts.uk.ui.errors.clearAll();
-                //self.isCheckedAll(false);
-               // self.outputItem.removeAll();
                 if (code) {
                     service.getListItemOutput(code).done(r => {
                         let dataSorted = [];
                         if (r && r.length > 0) {
                             dataSorted = _.sortBy(r, ['sortBy']);
+                            //check exist item 36協定時間
+                            var item36AgreementTime = _.find(dataSorted, (item) => {return item.item36AgreementTime;});
+                            if (!item36AgreementTime) {
+                                dataSorted.unshift({item36AgreementTime: true});
+                            }
+
                             for (var i = 0; i < dataSorted.length; i++) {
-                                if (i >= self.outputItem().length) { 
-                                    self.outputItem.push(new OutputItemData(i + 1, dataSorted[i].cd, dataSorted[i].useClass, dataSorted[i].headingName, dataSorted[i].valOutFormat, ''));
+                                if (i >= self.outputItem().length) {
+                                    self.outputItem.push(new OutputItemData(i + 1,
+                                     dataSorted[i].cd,
+                                     dataSorted[i].useClass,
+                                     dataSorted[i].headingName,
+                                     dataSorted[i].valOutFormat,
+                                     '',
+                                     dataSorted[i].item36AgreementTime));
                                 } else {
-                                    self.outputItem()[i].updateData(i + 1, dataSorted[i].cd, dataSorted[i].useClass, dataSorted[i].headingName, dataSorted[i].valOutFormat, '', null);
+                                    self.outputItem()[i].updateData(i + 1,
+                                        dataSorted[i].cd,
+                                        dataSorted[i].useClass,
+                                        dataSorted[i].headingName,
+                                        dataSorted[i].valOutFormat,
+                                        '',
+                                        dataSorted[i].item36AgreementTime,
+                                        null);
                                 }
-                                if (dataSorted[i].cd != 1) { // rule 36 = 1
+                                if (!dataSorted[i].item36AgreementTime) {
                                     let addItems = _.filter(dataSorted[i].listOperationSetting, (x) => { return x.operation === 1; }).map((item) => { return item.attendanceItemId; });
                                     let subItems = _.filter(dataSorted[i].listOperationSetting, (x) => { return x.operation === 0; }).map((item) => { return item.attendanceItemId; });
                                     let resultData = {
@@ -74,7 +98,14 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                             }
                         }
                         for (var i = dataSorted.length; i < self.outputItem().length; i++) {
-                            self.outputItem()[i].updateData(i+1, null, false, '', 0, '', null);
+                            self.outputItem()[i].updateData(i+1,
+                                null,
+                                false,
+                                '',
+                                0,
+                                '',
+                                i == 0, //set is 36協定時間 if it's fist OutputItem
+                                 null);
                         }
                     }).always(function() {
                         self.updateMode(code);
@@ -326,7 +357,14 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 }
             }
             for (var i = self.outputItem().length; i < 10; i++) {
-                self.outputItem.push(new OutputItemData(i + 1, null, false, '', 0, ''));
+                self.outputItem.push(new OutputItemData(i + 1,
+                null,
+                false,
+                '',
+                0,
+                '',
+                i == 0 //set is 36協定時間 if it's fist OutputItem
+                ));
             }
             self.outputItem()[0].outputTargetItem(self.rule36CalculationName);
             self.buildIsCheckedAll();
@@ -337,13 +375,17 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             let self = this;
 
             self.isNewMode(true); 
-            
-            //self.outputItem.removeAll();
-            //$('#listStandardImportSetting').ntsGridList('deselectAll');
             self.currentSetOutputSettingCode(new SetOutputSettingCode(null));
 
             for (var i = 0; i < self.outputItem().length; i++) {
-                self.outputItem()[i].updateData(i + 1, null, false, '', 0, '', null);
+                self.outputItem()[i].updateData(i + 1,
+                    null,
+                    false,
+                    '',
+                    0,
+                    '',
+                    i == 0, //set is 36協定時間 if it's fist OutputItem
+                    null);
             }
             self.outputItem()[0].outputTargetItem(self.rule36CalculationName);
             self.buildIsCheckedAll();
@@ -365,7 +407,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             
             for (var i = 0; i < itemOutUseClass.length; i++) {
                 // item Rule 36 - do not checking
-                if (itemOutUseClass[i].sortBy == 0) {
+                if (itemOutUseClass[i].item36AgreementTime) {
                     continue;
                 }
                 
@@ -471,8 +513,9 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         headingName: KnockoutObservable<string>= ko.observable('');
         valOutFormat: KnockoutObservable<number>= ko.observable(0);
         outputTargetItem: KnockoutObservable<string>= ko.observable('');
+        item36AgreementTime: KnockoutObservable<boolean> = ko.observable(false);
         listOperationSetting: KnockoutObservableArray<OperationCondition> = ko.observableArray([]);
-        constructor(sortBy: number, cd: string, useClass: boolean, headingName: string, valOutFormat: number, outputTargetItem: string) {
+        constructor(sortBy: number, cd: string, useClass: boolean, headingName: string, valOutFormat: number, outputTargetItem: string, item36AgreementTime: boolean) {
             let self = this;
             self.sortBy(sortBy || 1);
             self.cd(cd);
@@ -480,9 +523,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.headingName(headingName || '');
             self.valOutFormat(valOutFormat || 0);
             self.outputTargetItem(outputTargetItem || '');
+            self.item36AgreementTime(item36AgreementTime || false);
         }
 
-        updateData(sortBy: number, cd: string, useClass: boolean, headingName: string, valOutFormat: number, outputTargetItem: string, listOperationSetting: KnockoutObservableArray<OperationCondition>) {
+        updateData(sortBy: number, cd: string, useClass: boolean, headingName: string, valOutFormat: number, outputTargetItem: string, item36AgreementTime: boolean, listOperationSetting: KnockoutObservableArray<OperationCondition>) {
             let self = this;
             self.sortBy(sortBy || 1);
             self.cd(cd);
@@ -490,6 +534,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.headingName(headingName || '');
             self.valOutFormat(valOutFormat || 0);
             self.outputTargetItem(outputTargetItem || '');
+            self.item36AgreementTime(item36AgreementTime || false);
             self.listOperationSetting(listOperationSetting? listOperationSetting : []);
         }
 
@@ -513,7 +558,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         displayCode: string;
         name: KnockoutObservable<string> = ko.observable('');
         displayName: string;
-        outNumExceedTime36Agr: KnockoutObservable<number> = ko.observable(false);
+        outNumExceedTime36Agr: KnockoutObservable<boolean> = ko.observable(false);
         displayFormat: KnockoutObservable<number> = ko.observable(0);
         listItemOutput: KnockoutObservableArray<OutputItemData> = ko.observableArray([]);
         constructor(param) {
@@ -537,7 +582,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         listItemOutput[i].useClass,
                         listItemOutput[i].headingName,
                         listItemOutput[i].valOutFormat,
-                        listItemOutput[i].outputTargetItem);
+                        listItemOutput[i].outputTargetItem,
+                        listItemOutput[i].item36AgreementTime);
                     if (listItemOutput[i].listOperationSetting) {
                         outputItemData.buildListOperationSetting(listItemOutput[i].listOperationSetting);
                     }
