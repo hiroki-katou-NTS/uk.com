@@ -424,7 +424,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             $.when(self.getDataSpecDateAndHoliday()).done(() => {
                 _.each(self.arrDay, (date) => {
                     let ymd = date.yearMonthDay;
-                    let dateFormat = moment(date.yearMonthDay).format(self.dateFormat);
+                    let dateFormat = moment(date.yearMonthDay).format("YYYY/MM/DD");
                     if (_.includes(self.dataWkpSpecificDate(), dateFormat) || _.includes(self.dataComSpecificDate(), dateFormat)) {
                         detailHeaderDeco.push(new shareModel.CellColor("_" + ymd, "1", "bg-schedule-specific-date"));
                     } else if (_.includes(self.dataPublicHoliday(), dateFormat)) {
