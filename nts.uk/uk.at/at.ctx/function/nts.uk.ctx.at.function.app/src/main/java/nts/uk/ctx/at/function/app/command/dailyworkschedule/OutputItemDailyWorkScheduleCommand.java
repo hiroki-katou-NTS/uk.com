@@ -37,11 +37,11 @@ public class OutputItemDailyWorkScheduleCommand implements OutputItemDailyWorkSc
 	private List<PrintRemarksContentCommand> lstRemarkContent;
 	
 	/** The zone name. */
-	private int zoneName;
+	private int workTypeNameDisplay;
 	
 	// This variable used to know is new mode when save.
 	@Getter
-	private boolean isNewMode;
+	private boolean newMode; 
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleGetMemento#getItemCode()
@@ -99,6 +99,6 @@ public class OutputItemDailyWorkScheduleCommand implements OutputItemDailyWorkSc
 	 */
 	@Override
 	public NameWorkTypeOrHourZone getWorkTypeNameDisplay() {
-		return NameWorkTypeOrHourZone.valueOf(this.zoneName);
+		return NameWorkTypeOrHourZone.valueOf(this.workTypeNameDisplay);
 	}
 }

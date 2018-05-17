@@ -11,8 +11,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
 /**
  * The Class OutputItemSettingCode.
  */
-@IntegerMaxValue(2)
-@ZeroPaddedCode
+@IntegerMaxValue(99)
 // 出力項目設定コード
 public class OutputItemSettingCode extends IntegerPrimitiveValue<OutputItemSettingCode>{
 	

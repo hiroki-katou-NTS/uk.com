@@ -199,11 +199,7 @@ module nts.uk.at.view.kwr001.a {
                 self.selectedDataOutputType.valueHasMutated();
 
                 // TODO: hoangdd - lay du lieu tu service
-                self.itemListCodeTemplate = ko.observableArray([
-                    new ItemModel('0', 'なし'),
-                    new ItemModel('1', '社員'),
-                    new ItemModel('2', '職場')
-                ]);
+                self.itemListCodeTemplate = ko.observableArray([]);
                 
                 // TODO: hoangdd - lay du lieu tu service
                 self.itemListTypePageBrake = ko.observableArray([
@@ -270,10 +266,15 @@ module nts.uk.at.view.kwr001.a {
                 $.when(self.getDataCharateristic()).done(function(dataCharacteristic: any) {
                     let isExist = !(_.isUndefined(dataCharacteristic) || _.isNull(dataCharacteristic));
                     self.getDataStartPageService(isExist).done(function(dataService: any) {
+                        
+                        self.itemListCodeTemplate(dataService.lstOutputItemDailyWorkSchedule);
+                        
                         switch(dataService.strReturn) {
+                            // return screen A, show data from characteristic
                             case SHOW_CHARACTERISTIC:
                                 self.renewDataPage();
                                 break;
+                            // return screen A, don't have data characteristic
                             case STRING_EMPTY:
                                 break;
                             case OPEN_SCREEN_C:
@@ -299,9 +300,7 @@ module nts.uk.at.view.kwr001.a {
                 service.restoreCharacteristic(companyId, userId).done(function(data: any) {
                     let workScheduleOutputCondition: WorkScheduleOutputCondition = data;
                     self.selectedDataOutputType(workScheduleOutputCondition.outputType);
-                    // TODO - hoangdd: A7_3 se can 1 service de lay list, sau do so sanh code da chon vs list code tra ve de lay index
-                    //          workScheduleOutputCondition.code
-                    self.selectedCodeA7_3(data.code);
+                    self.selectedCodeA7_3(workScheduleOutputCondition.code);
                     self.selectedCodeA9_2(workScheduleOutputCondition.pageBreakIndicator);
                     self.checkedA10_2(workScheduleOutputCondition.settingDetailTotalOuput.details);
                     self.checkedA10_3(workScheduleOutputCondition.settingDetailTotalOuput.personalTotal);
@@ -401,6 +400,9 @@ module nts.uk.at.view.kwr001.a {
                 let codeChoose = _.find(lstCode, function(o) { 
                     return pos == o.code; 
                 });
+                if (_.isUndefined(codeChoose)) {
+                    return null;
+                }
                 return codeChoose.code;
             }
             

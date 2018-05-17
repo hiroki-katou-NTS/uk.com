@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -48,7 +49,7 @@ public class KfnmtItemWorkSchedule extends UkJpaEntity implements Serializable {
 	private BigDecimal workTypeNameDisplay;
 
 	/** The lst kfnmt attendance display. */
-	@OneToMany
+	@OneToMany(cascade = CascadeType.PERSIST, orphanRemoval = true)
 	@JoinColumns({
 			@JoinColumn(name="CID", referencedColumnName="CID"),
 			@JoinColumn(name="ITEM_CODE", referencedColumnName="ITEM_CODE")
@@ -56,7 +57,7 @@ public class KfnmtItemWorkSchedule extends UkJpaEntity implements Serializable {
 	private List<KfnmtAttendanceDisplay> lstKfnmtAttendanceDisplay;
 	
 	/** The lst kfnmt print remark cont. */
-	@OneToMany
+	@OneToMany(cascade = CascadeType.PERSIST, orphanRemoval = true)
 	@JoinColumns({
 			@JoinColumn(name="CID", referencedColumnName="CID"),
 			@JoinColumn(name="ITEM_CODE", referencedColumnName="ITEM_CODE")

@@ -8,6 +8,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class OutputItemDailyWorkSchedule.
@@ -51,6 +52,7 @@ public class OutputItemDailyWorkSchedule extends AggregateRoot{
 		this.itemName = memento.getItemName();
 		this.lstDisplayedAttendance = memento.getLstDisplayedAttendance();
 		this.lstRemarkContent = memento.getLstRemarkContent();
+		this.workTypeNameDisplay = memento.getWorkTypeNameDisplay();
 	}
 	
 	/**
@@ -59,10 +61,14 @@ public class OutputItemDailyWorkSchedule extends AggregateRoot{
 	 * @param memento the memento
 	 */
 	public void saveToMemento(OutputItemDailyWorkScheduleSetMemento memento) {
+		if (this.companyID == null) {
+			this.companyID = AppContexts.user().companyId();
+		}
 		memento.setCompanyID(this.companyID);
 		memento.setItemCode(this.itemCode);
 		memento.setItemName(this.itemName);
 		memento.setLstDisplayedAttendance(this.lstDisplayedAttendance);
 		memento.setLstRemarkContent(this.lstRemarkContent);
+		memento.setWorkTypeNameDisplay(this.workTypeNameDisplay);
 	}
 }

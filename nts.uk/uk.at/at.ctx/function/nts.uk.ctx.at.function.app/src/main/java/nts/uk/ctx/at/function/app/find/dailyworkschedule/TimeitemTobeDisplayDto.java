@@ -17,4 +17,7 @@ public class TimeitemTobeDisplayDto {
 	
 	/** The attendance display. */
 	private int attendanceDisplay;
+	
+	/** The attendance name. */
+	private String attendanceName;
 }

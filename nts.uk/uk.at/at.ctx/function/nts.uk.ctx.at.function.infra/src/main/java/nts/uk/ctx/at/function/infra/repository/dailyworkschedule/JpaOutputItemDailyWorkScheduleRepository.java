@@ -5,16 +5,27 @@
 package nts.uk.ctx.at.function.infra.repository.dailyworkschedule;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedule;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedulePK;
+import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedulePK_;
+import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedule_;
 
 /**
  * The Class JpaOutputItemDailyWorkScheduleRepository.
@@ -61,7 +72,35 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 	@Override
 	public List<OutputItemDailyWorkSchedule> findByCid(String companyId) {
 		// TODO Auto-generated method stub
-		return new ArrayList<>();
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		// Create builder
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+
+		// Create query
+		CriteriaQuery<KfnmtItemWorkSchedule> cq = builder.createQuery(KfnmtItemWorkSchedule.class);
+
+		// From table
+		Root<KfnmtItemWorkSchedule> root = cq.from(KfnmtItemWorkSchedule.class);
+
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		// Add where condition
+		predicateList.add(builder.equal(root.get(KfnmtItemWorkSchedule_.id).get(KfnmtItemWorkSchedulePK_.cid),companyId));
+		cq.where(predicateList.toArray(new Predicate[] {}));
+
+		// Get results
+		List<KfnmtItemWorkSchedule> results = em.createQuery(cq).getResultList();
+
+		// Check empty
+		if (CollectionUtil.isEmpty(results)) {
+			return Collections.emptyList();
+		}
+
+		// Return
+		return results.stream().map(item -> new OutputItemDailyWorkSchedule(new JpaOutputItemDailyWorkScheduleGetMemento(item)))
+				.collect(Collectors.toList());
 	}
 
 	/* (non-Javadoc)
@@ -69,10 +108,27 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 	 */
 	@Override
 	public void deleteByCidAndCode(String companyId, int code) {
-		KfnmtItemWorkSchedulePK primaryKey = new KfnmtItemWorkSchedulePK();
-		primaryKey.setCid(companyId);
-		primaryKey.setItemCode(code);
-		this.commandProxy().remove(KfnmtItemWorkSchedule.class, primaryKey);
+//		KfnmtItemWorkSchedulePK primaryKey = new KfnmtItemWorkSchedulePK();
+//		primaryKey.setCid(companyId);
+//		primaryKey.setItemCode(code);
+//		this.commandProxy().remove(KfnmtItemWorkSchedule.class, primaryKey);
+		
+		EntityManager em = this.getEntityManager();
+		
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        // create delete
+        CriteriaDelete<KfnmtItemWorkSchedule> delete = cb.createCriteriaDelete(KfnmtItemWorkSchedule.class);
+
+        // set the root class
+        Root<KfnmtItemWorkSchedule> root = delete.from(KfnmtItemWorkSchedule.class);
+
+        // set where clause
+        delete.where(cb.equal(root.get(KfnmtItemWorkSchedule_.id).get(KfnmtItemWorkSchedulePK_.cid), companyId),
+        				cb.equal(root.get(KfnmtItemWorkSchedule_.id).get(KfnmtItemWorkSchedulePK_.itemCode), code));
+
+        // perform update
+        em.createQuery(delete).executeUpdate();
 	}
 
 	/* (non-Javadoc)

@@ -17,6 +17,7 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.PrintRemarksContent;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtAttendanceDisplay;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtAttendanceDisplayPK;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedule;
+import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedulePK;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtPrintRemarkCont;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtPrintRemarkContPK;
 
@@ -31,8 +32,12 @@ public class JpaOutputItemDailyWorkScheduleSetMemento implements OutputItemDaily
 	/**
 	 * Instantiates a new jpa output item daily work schedule set memento.
 	 */
-	public JpaOutputItemDailyWorkScheduleSetMemento(KfnmtItemWorkSchedule domain) {
-		this.kfnmtItemWorkSchedule = domain;
+	public JpaOutputItemDailyWorkScheduleSetMemento(KfnmtItemWorkSchedule entity) {
+		if (entity.getId() == null) {
+			KfnmtItemWorkSchedulePK key = new KfnmtItemWorkSchedulePK();
+			entity.setId(key);	
+		}
+		this.kfnmtItemWorkSchedule = entity;
 	}
 
 	/* (non-Javadoc)
@@ -40,7 +45,9 @@ public class JpaOutputItemDailyWorkScheduleSetMemento implements OutputItemDaily
 	 */
 	@Override
 	public void setCompanyID(String companyID) {
-		kfnmtItemWorkSchedule.getId().setCid(companyID);
+		KfnmtItemWorkSchedulePK key = kfnmtItemWorkSchedule.getId();
+		key.setCid(companyID);
+		kfnmtItemWorkSchedule.setId(key);
 	}
 
 	/* (non-Javadoc)
@@ -48,7 +55,9 @@ public class JpaOutputItemDailyWorkScheduleSetMemento implements OutputItemDaily
 	 */
 	@Override
 	public void setItemCode(OutputItemSettingCode itemCode) {
-		kfnmtItemWorkSchedule.getId().setItemCode(itemCode.v());
+		KfnmtItemWorkSchedulePK key = kfnmtItemWorkSchedule.getId();
+		key.setItemCode(itemCode.v());
+		kfnmtItemWorkSchedule.setId(key);
 	}
 
 	/* (non-Javadoc)

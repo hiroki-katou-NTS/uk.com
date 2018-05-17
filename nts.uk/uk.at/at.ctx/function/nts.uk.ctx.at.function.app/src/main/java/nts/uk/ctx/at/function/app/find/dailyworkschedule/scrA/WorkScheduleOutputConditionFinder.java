@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataInforReturnDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.scrB.ErrorAlarmCodeDto;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository;
@@ -111,7 +112,7 @@ public class WorkScheduleOutputConditionFinder {
 		
 		// ドメインモデル「日別勤務表の出力項目」をすべて取得する(Acquire all domain model "Output items of daily work schedule")
 		List<OutputItemDailyWorkSchedule> lstOutputItemDailyWorkSchedule = outputItemDailyWorkScheduleRepository.findByCid(companyId);
-		if (lstOutputItemDailyWorkSchedule.isEmpty()) {
+		if (!lstOutputItemDailyWorkSchedule.isEmpty()) {
 			if (isExistWorkScheduleOutputCondition) {
 				dto.setStrReturn(SHOW_CHARACTERISTIC);
 			} else {
@@ -125,6 +126,9 @@ public class WorkScheduleOutputConditionFinder {
 				throw new BusinessException("Msg_1141");
 			}
 		}
+		
+		dto.setLstOutputItemDailyWorkSchedule(getOutputItemDailyWorkSchedule(lstOutputItemDailyWorkSchedule));
+		
 		return dto;
 	}
 	
@@ -175,4 +179,15 @@ public class WorkScheduleOutputConditionFinder {
 								.sorted(Comparator.comparing(ErrorAlarmCodeDto::getCode))
 								.collect(Collectors.toList());
 	} 
+	
+	// convert to DTO
+	private List<DataInforReturnDto> getOutputItemDailyWorkSchedule(List<OutputItemDailyWorkSchedule> lstOutputItemDailyWorkSchedule) {
+		return lstOutputItemDailyWorkSchedule.stream()
+						.map(domain -> {
+											DataInforReturnDto dto = new DataInforReturnDto(String.valueOf(domain.getItemCode().v()), 
+																							domain.getItemName().v());
+											return dto;
+										})
+						.collect(Collectors.toList());
+	}
 }

@@ -5,11 +5,13 @@
 package nts.uk.ctx.at.function.app.command.dailyworkschedule;
 
 import lombok.Data;
+import lombok.Setter;
 
 /**
  * The Class TimeitemTobeDisplayDto.
  */
 @Data
+@Setter
 public class TimeItemTobeDisplayCommand {
 	
 	/** The sort by. */

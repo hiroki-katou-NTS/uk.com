@@ -27,5 +27,5 @@ public class OutputItemDailyWorkScheduleDto {
 	private List<PrintRemarksContentDto> lstRemarkContent;
 	
 	/** The zone name. */
-	private int zoneName;
+	private int workTypeNameDisplay;
 }

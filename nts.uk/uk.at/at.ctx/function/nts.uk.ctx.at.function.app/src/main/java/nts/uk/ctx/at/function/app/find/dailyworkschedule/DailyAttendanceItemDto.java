@@ -2,21 +2,19 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.function.app.command.dailyworkschedule;
+package nts.uk.ctx.at.function.app.find.dailyworkschedule;
 
 import lombok.Data;
-import lombok.Setter;
 
 /**
- * The Class PrintRemarksContentDto.
+ * Instantiates a new daily attendance item dto.
  */
 @Data
-@Setter
-public class PrintRemarksContentCommand {
+public class DailyAttendanceItemDto {
 	
-	/** The used classification. */
-	private int usedClassification;
+	/** The code. */
+	private String code;
 	
-	/** The printitem. */
-	private int printitem;
+	/** The name. */
+	private String name;
 }

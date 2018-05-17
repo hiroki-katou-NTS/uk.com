@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.function.ws.dailyworkschedule;
 
+import java.util.Map;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -15,7 +17,6 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleCommand;
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleDeleteHandler;
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleSaveHandler;
-import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputItemDailyWorkScheduleDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputItemDailyWorkScheduleFinder;
 
 /**
@@ -44,7 +45,7 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 	 */
 	@Path("find")
 	@POST
-	public OutputItemDailyWorkScheduleDto find(){
+	public Map<String, Object> find(){
 		return this.outputItemDailyWorkScheduleFinder.findByCid();
 	}
 	
@@ -64,7 +65,7 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 	 *
 	 * @param code the code
 	 */
-	@Path("delete")
+	@Path("delete/{code}")
 	@POST
 	public void delete(@PathParam("code") int code){
 		this.outputItemDailyWorkScheduleDeleteHandler.delete(code);
