@@ -1581,14 +1581,18 @@ module nts.uk.com.view.ccg.share.ccg {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_317" });
                     return;
                 }
+
+                // sort by code
+                const sortedList = _.sortBy(data, item => item.employeeCode);
+
                 // reserve list data
-                self.reservedEmployeesTab3(data);
+                self.reservedEmployeesTab3(sortedList);
 
                 // clear selected codes
                 self.selectedEmployeesTab3([]);
 
                 // set data to kcp005
-                self.employeeListTab3(self.toUnitModelList(data));
+                self.employeeListTab3(self.toUnitModelList(sortedList));
             }
             
             /**
