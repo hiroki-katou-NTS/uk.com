@@ -25,8 +25,7 @@ module nts.uk.com.view.kdm001.i.viewmodel {
 
         constructor() {
             let self = this;
-            self.initScreen();
-            _.defer(() => {$('#checkedHoliday').focus()});
+            self.initScreen();         
         }
 
         initScreen(): void {
