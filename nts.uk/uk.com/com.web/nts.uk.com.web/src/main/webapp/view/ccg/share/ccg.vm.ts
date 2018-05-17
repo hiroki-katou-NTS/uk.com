@@ -1576,6 +1576,11 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             private showDataOnKcp005Tab3(data: Array<EmployeeSearchDto>): void {
                 let self = this;
+                // Data not found
+                if (nts.uk.util.isNullOrEmpty(data)) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_317" });
+                    return;
+                }
                 // reserve list data
                 self.reservedEmployeesTab3(data);
 
