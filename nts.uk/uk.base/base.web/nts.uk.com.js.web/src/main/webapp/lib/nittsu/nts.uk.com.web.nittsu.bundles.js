@@ -3831,12 +3831,25 @@ var nts;
                  */
                 function getProgram() {
                     nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function (pg) {
+                        var programName = "";
+                        var queryString = __viewContext.program.queryString;
+                        if (queryString) {
+                            var program = _.find(pg, function (p) {
+                                return p.param === queryString;
+                            });
+                            if (program) {
+                                programName = program.name;
+                            }
+                        }
+                        else if (programName === "" && pg && pg.length > 0) {
+                            programName = pg[0].name;
+                        }
                         // show program name on title of browser
                         ui.viewModelBuilt.add(function () {
-                            ui._viewModel.kiban.programName(pg);
+                            ui._viewModel.kiban.programName(programName);
                         });
                         var $pgArea = $("#pg-area");
-                        $("<div/>").attr("id", "pg-name").text(pg).appendTo($pgArea);
+                        $("<div/>").attr("id", "pg-name").text(programName).appendTo($pgArea);
                         var $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
                         var $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
                         $manualBtn.on(constants.CLICK, function () {
@@ -22227,6 +22240,7 @@ var nts;
                         feature_2.CELL_STATE = "CellState";
                         feature_2.ROW_STATE = "RowState";
                         feature_2.TEXT_COLOR = "TextColor";
+                        feature_2.TEXT_STYLE = "TextStyle";
                         feature_2.HEADER_STYLES = "HeaderStyles";
                         feature_2.HIDING = "Hiding";
                         feature_2.SHEET = "Sheet";
@@ -25646,6 +25660,8 @@ var nts;
                                 // Text color
                                 this.textColorFeatureDef = feature.find(ntsFeatures, feature.TEXT_COLOR);
                                 this.setTextColorsTableMap(ntsFeatures);
+                                // Text style
+                                this.textStyleFeatureDef = feature.find(ntsFeatures, feature.TEXT_STYLE);
                             }
                             /**
                              * Add disable rows.
@@ -25738,6 +25754,14 @@ var nts;
                                         return item[columnKeyName];
                                     });
                                 });
+                            };
+                            CellFormatter.prototype.setTextStylesTableMap = function () {
+                                if (uk.util.isNullOrUndefined(this.textStyleFeatureDef))
+                                    return;
+                                var rowIdName = this.textStyleFeatureDef.rowId;
+                                var columnKeyName = this.textStyleFeatureDef.columnKey;
+                                var styleName = this.textStyleFeatureDef.style;
+                                var stylesTable = this.textStyleFeatureDef.styles;
                             };
                             /**
                              * Format textbox.
