@@ -21,12 +21,10 @@ public class PayoutManagementDataFinder {
 	/**
 	 * ドメイン「振休管理データ」より紐付け対象となるデータを取得する
 	 * @param sid
-	 * @param startDate
-	 * @param endDate
 	 * @return List<PayoutManagementDataDto>
 	 */
-	public List<PayoutManagementDataDto> getBySidDatePeriod(String sid, GeneralDate startDate, GeneralDate endDate){
-		List<PayoutManagementData> listPayout = payoutManagementDataRepository.getBySidDatePeriod(sid, startDate, endDate, DigestionAtr.UNUSED.value);
+	public List<PayoutManagementDataDto> getBySidDatePeriod(String sid, String subOfHDID){
+		List<PayoutManagementData> listPayout = payoutManagementDataRepository.getBySidDatePeriod(sid,subOfHDID,DigestionAtr.UNUSED.value);
 		return listPayout.stream().map(i->PayoutManagementDataDto.createFromDomain(i)).collect(Collectors.toList());
 	}
 	

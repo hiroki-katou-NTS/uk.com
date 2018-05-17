@@ -50,9 +50,9 @@ public class PayoutManagementDataWebService extends WebService{
 	}
 	
 	@POST
-	@Path("getBySidDatePeriod/{empId}/{startDate}/{endDate}")
-	public List<PayoutManagementDataDto> getBySidDatePeriod(@PathParam("empId")String sid, GeneralDate startDate, GeneralDate endDate) {
-		return finder.getBySidDatePeriod(sid, startDate, endDate);
+	@Path("getBySidDatePeriod/{empId}/{subOfHDID}")
+	public List<PayoutManagementDataDto> getBySidDatePeriod(@PathParam("empId")String sid,@PathParam("subOfHDID")String subOfHDID) {
+		return finder.getBySidDatePeriod(sid, subOfHDID);
 	}
 	
 	@POST

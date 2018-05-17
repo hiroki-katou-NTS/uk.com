@@ -11,4 +11,6 @@ public interface LeaveComDayOffManaRepository {
 	void delete(String leaveID, String comDayOffID);
 	
 	List<LeaveComDayOffManagement> getByLeaveID(String leaveID);
+	
+	List<LeaveComDayOffManagement> getBycomDayOffID(String comDayOffID);
 }
