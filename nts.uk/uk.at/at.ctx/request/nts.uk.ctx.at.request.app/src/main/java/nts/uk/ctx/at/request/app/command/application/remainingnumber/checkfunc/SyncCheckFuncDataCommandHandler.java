@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +15,8 @@ import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
@@ -171,43 +175,24 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				excelInforCommand.setNumberOfWorkTypeUsedImport(dailyWorkTypeListImport.get().getNumberOfWorkTypeUsedExports());
 				excelInforCommand.setPlannedVacationListCommand(plannedVacationList);
 				excelInforList.add(excelInforCommand);
-				 //JsonArray jsonArray = new JSONArray();
-				JsonArray jsonArrayDailyWorkTypeListImport = (JsonArray) Json.createArrayBuilder();
-				for (NumberOfWorkTypeUsedImport workType : dailyWorkTypeListImport.get().getNumberOfWorkTypeUsedExports()) {
-					jsonArrayDailyWorkTypeListImport.add((JsonValue) Json.createObjectBuilder()
-					         .add("workTypeCode", workType.getWorkTypeCode())
-					         .add("attendanceDaysMonth", workType.getAttendanceDaysMonth()));
-
-				} 
-				JsonArray jsonArrayPlannedVacationList = (JsonArray) Json.createArrayBuilder();
-				for (PlannedVacationListCommand planVa : plannedVacationList) {
-					jsonArrayPlannedVacationList.add((JsonValue) Json.createObjectBuilder()
-					         .add("maxNumberDays", planVa.getMaxNumberDays())
-					         .add("workTypeCode", planVa.getWorkTypeCode())
-					         .add("workTypeName", planVa.getWorkTypeName())
-					         );
-
-
-				}
-				
-				JsonObject jsonExcelInforCommand = Json.createObjectBuilder()
-						.add("name", employeeRecordImport.getPname())
-						.add("dateStart", employeeRecordImport.getEntryDate().toString("YYYY/MM/DD"))
-						.add("dateEnd", employeeRecordImport.getRetiredDate().toString("YYYY/MM/DD"))
-						.add("dateOffYear", yearlyHolidaysTimeRemainingImport.get(0).getAnnualHolidayGrantDay().toString("YYYY/MM/DD"))
-						.add("dateTargetRemaining", command.getDate().toString("YYYY/MM/DD"))
-						.add("dateAnnualRetirement", yearlyHolidaysTimeRemainingImport.get(0).getAnnualRemainingGrantTime())
-						.add("dateAnnualRest", yearlyHolidaysTimeRemainingImport.get(0).getAnnualRemaining())
-						.add("numberOfWorkTypeUsedImport", jsonArrayDailyWorkTypeListImport)
-						.add("plannedVacationListCommand", jsonArrayPlannedVacationList).build();
-
 				
 				setter.updateData(NUMBER_OF_SUCCESS, i + 1);
-				setter.setData("EXCEL_LIST" + i, jsonExcelInforCommand);
+				
 				System.out.println("----------------" + (i + 1));
 			}
 			// Excel出力情報ListをもとにExcel出力をする (Xuất ra file excel)
 			//exportCsv(excelInforList);
+			final ByteArrayOutputStream out = new ByteArrayOutputStream();
+		    final ObjectMapper mapper = new ObjectMapper();
+
+		    try {
+				mapper.writeValue(out, excelInforList);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		    final byte[] data = out.toByteArray();
+			setter.setData("EXCEL_LIST", new String(data));
 		}
 		//delay a moment.
 		try {
