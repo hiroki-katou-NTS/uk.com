@@ -27,53 +27,63 @@ public class PayoutManagementDataService {
 	}
 
 	// (Thực hiện thuật toán 「Ｇ．振休管理データの修正（振出設定）入力項目チェック処理」)
-	public boolean checkboxData(boolean checkBox, int stateAtr, GeneralDate expiredDate, double unUsedDays ) {
+	public boolean checkboxData(boolean checkBox, int stateAtr, GeneralDate expiredDate, double unUsedDays) {
+		boolean check = false;
 		if (checkBox) {
 			if (stateAtr == 2) {
 				// message : エラーメッセージ(Msg_1212)をエラーリストにセットする
+				check = false;
 				throw new BusinessException("Msg_1212");
 			} else {
 				GeneralDate today = GeneralDate.today();
+				if (today.before(expiredDate)) {
+					check = false;
+					throw new BusinessException("Mg_825");
+				} else {
+					check = true;
+				}
 			}
 		} else {
-
+			if (unUsedDays == 0) {
+				check = false;
+				throw new BusinessException("Mg_1213");
+			} else {
+				check = true;
+			}
 		}
-		return false;
+		return check;
 	}
 
-	public boolean checkUpdate(PayoutManagementData data, boolean checkBox, int stateAtr,  GeneralDate expiredDate, double unUsedDays) {
+	public boolean checkUpdate(PayoutManagementData data, boolean checkBox, int stateAtr, GeneralDate expiredDate,
+			double unUsedDays) {
 		boolean update = false;
-		// (Thực hiện thuật toán 「振出（年月日）チェック処理」"xử lý check chuyển đổi (năm
-		// tháng ngày)")
+		// 振出（年月日）チェック処理
 		boolean check = checkProcess();
 		if (check) {
-			// (Thực hiện thuật toán 「Ｇ．振休管理データの修正（振出設定）入力項目チェック処理」)
-
-			boolean checkBoxData = checkboxData(checkBox, stateAtr, expiredDate,unUsedDays);
+			// 振休管理データの修正（振出設定）入力項目チェック処理
+			boolean checkBoxData = checkboxData(checkBox, stateAtr, expiredDate, unUsedDays);
 			if (checkBoxData) {
-				// update
-
 				payoutMNDTRepo.update(data);
 				update = true;
 			} else {
 				// error
-
 				update = false;
 			}
 		} else {
 			// error
-
 			update = false;
 		}
-
 		return update;
 	}
 
-	public void update(PayoutManagementData data, boolean checkBox, int stateAtr, GeneralDate expiredDate, double unUsedDays) {
-		boolean up = checkUpdate(data, checkBox, stateAtr, expiredDate, unUsedDays);
-		if (up) {
+	public void update(PayoutManagementData data, boolean checkBox, int stateAtr, GeneralDate expiredDate,
+			double unUsedDays) {
+		boolean update = checkUpdate(data, checkBox, stateAtr, expiredDate, unUsedDays);
+		if (update) {
 			// hiển thị message
+			throw new BusinessException("Mg_15");
 		} else {
+			throw new BusinessException("Error");
 			// error
 		}
 
