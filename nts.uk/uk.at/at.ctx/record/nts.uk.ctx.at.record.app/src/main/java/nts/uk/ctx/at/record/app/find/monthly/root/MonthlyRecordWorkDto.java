@@ -25,13 +25,25 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	private ClosureDateDto closureDate;
 
 	/** 月別実績の所属情報: 月別実績の所属情報 */
-	@AttendanceItemLayout(jpPropertyName = "月別実績の所属情報", layout = "A")
+	@AttendanceItemLayout(jpPropertyName = "月別実績の所属情報", layout = "B")
 	private AffiliationInfoOfMonthlyDto affiliation;
 
 	/** 月別実績の勤怠時間: 月別実績の勤怠時間 */
-	@AttendanceItemLayout(jpPropertyName = "月別実績の勤怠時間", layout = "B")
+	@AttendanceItemLayout(jpPropertyName = "月別実績の勤怠時間", layout = "A")
 	private AttendanceTimeOfMonthlyDto attendanceTime;
 
+	/** 月別実績の任意項目 */
+	@AttendanceItemLayout(jpPropertyName = "月別実績の任意項目", layout = "C")
+	private AnyItemOfMonthlyDto anyItem;
+	
+	/** 年休月別残数データ: 年休月別残数データ */
+	@AttendanceItemLayout(jpPropertyName = "年休月別残数データ", layout = "D")
+	private AnnLeaRemNumEachMonthDto annLeave;
+
+	/** 積立年休月別残数データ: 積立年休月別残数データ */
+	@AttendanceItemLayout(jpPropertyName = "積立年休月別残数データ", layout = "E")
+	private RsvLeaRemNumEachMonthDto rsvLeave;
+	
 	@Override
 	public String employeeId() {
 		return this.employeeId;
