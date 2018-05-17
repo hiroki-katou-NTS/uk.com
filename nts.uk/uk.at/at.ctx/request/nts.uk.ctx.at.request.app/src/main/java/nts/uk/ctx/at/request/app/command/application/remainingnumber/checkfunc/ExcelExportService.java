@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -40,17 +41,23 @@ public class ExcelExportService extends ExportService<List<ExcelInforCommand>> {
     	List<Map<String, Object>> dataSource = new ArrayList<>();
     	List<String> header = this.getTextHeader(listHeader);
     	if (!listOuput.isEmpty()) {
-	    	List<Integer> sizePlannedVacationListCommand = new ArrayList<>();
-	    	for (ExcelInforCommand excelInforCommand : listOuput) {
-	    		sizePlannedVacationListCommand.add(excelInforCommand.getPlannedVacationListCommand().size());	 
+	    	int indx = 0;
+	    	int size = listOuput.get(0).getPlannedVacationListCommand() == null ? 0 : listOuput.get(0).getPlannedVacationListCommand().size();
+	    	int maxSize = size;
+	    	for (int i = 1; i < listOuput.size(); i++) {
+	    		size = listOuput.get(0).getPlannedVacationListCommand() == null ? 0 : listOuput.get(0).getPlannedVacationListCommand().size();
+	    		if (maxSize < size) {
+	    			maxSize = size;
+	    			indx = i;
+	    		}
 			}
-	    	ExcelInforCommand maxSizeExcelInforCommand = listOuput.get(Collections.max(sizePlannedVacationListCommand));
-	    	for (PlannedVacationListCommand plannedVacation : maxSizeExcelInforCommand.getPlannedVacationListCommand()) {
-	    		listHeader.add(plannedVacation.getWorkTypeName());
-	    		listHeader.add(plannedVacation.getWorkTypeName()+TextResource.localize("KDM002_34"));
+	    	List<PlannedVacationListCommand> lstPlan = listOuput.get(indx).getPlannedVacationListCommand();
+	    	for (int i = 0; i < lstPlan.size(); i++) {
+	    		listHeader.add(lstPlan.get(i).getWorkTypeName());
+	    		listHeader.add(lstPlan.get(i).getWorkTypeName()+TextResource.localize("KDM002_34"));
 			}
-	    	
 	    	List<String> head = this.getTextHeader(listHeader);  
+	    	final int finalMaxSize = maxSize;
 			dataSource = listOuput
 					.stream()
 	        		.map(infoLine -> {
@@ -62,7 +69,7 @@ public class ExcelExportService extends ExportService<List<ExcelInforCommand>> {
 						 map.put(head.get(4), infoLine.getDateTargetRemaining());
 						 map.put(head.get(5), infoLine.getDateAnnualRetirement());
 						 map.put(head.get(6), infoLine.getDateAnnualRest());
-						 for(int i = 0; i < Collections.max(sizePlannedVacationListCommand); i++){
+						 for(int i = 0; i < finalMaxSize; i++){
 							 map.put(head.get(i+7), infoLine.getPlannedVacationListCommand().get(i).getMaxNumberDays());
 							 map.put(head.get(i+7), infoLine.getNumberOfWorkTypeUsedImport().get(i).getAttendanceDaysMonth());
 						 }

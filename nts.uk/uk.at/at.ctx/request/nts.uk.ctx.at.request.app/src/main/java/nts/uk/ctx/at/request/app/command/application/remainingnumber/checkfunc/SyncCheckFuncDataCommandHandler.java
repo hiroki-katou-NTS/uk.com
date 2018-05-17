@@ -27,6 +27,8 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumb
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.DailyWorkTypeListImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.YearlyHolidaysTimeRemainingImport;
 import nts.uk.ctx.at.request.dom.settting.worktype.history.PlanVacationHistory;
+import nts.uk.ctx.at.request.dom.settting.worktype.history.PlanVacationHistoryGetMemento;
+import nts.uk.ctx.at.request.dom.settting.worktype.history.PlanVacationHistorySetMemento;
 import nts.uk.ctx.at.request.dom.settting.worktype.history.VacationHistoryRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -216,8 +218,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 		}
 		for (PlanVacationHistory element : planVacationHistory) {
 			// ドメインモデル「計画休暇を取得できる上限日数」を取得する (Lấy domain 「計画休暇を取得できる上限日数」)
-			List<PlanVacationHistory> planVacationHistoryMaxDay = vacationHistoryRepository.findHistory(companyId,
-					element.getWorkTypeCode());
+			List<PlanVacationHistory> planVacationHistoryMaxDay = vacationHistoryRepository.findHistory(companyId, element.identifier());
 			// ドメインモデル「勤務種類」を取得する (lấy domain 「勤務種類」)
 			Optional<WorkType> workType = workTypeRepository.findByDeprecated(loginUserContext.companyId(), element.getWorkTypeCode());
 			if (workType.isPresent()) {
