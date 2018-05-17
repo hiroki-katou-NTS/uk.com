@@ -17,7 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class SubstitutionOfHDManaDataService {
 	
 	@Inject
-	private SyEmploymentAdapter syEmploymentAdapter;
+	private SysEmploymentHisAdapter syEmploymentAdapter;
 	
 	@Inject
 	private EmpSubstVacationRepository empSubstVacationRepository;

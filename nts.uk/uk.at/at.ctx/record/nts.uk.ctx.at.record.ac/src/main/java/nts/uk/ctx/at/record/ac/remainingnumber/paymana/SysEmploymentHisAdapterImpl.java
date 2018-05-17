@@ -8,12 +8,12 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SEmpHistoryExport;
-import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SyEmploymentAdapter;
+import nts.uk.ctx.at.record.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
 import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 
 @Stateless
-public class SyEmploymentAdapterImpl implements SyEmploymentAdapter{
+public class SysEmploymentHisAdapterImpl implements SysEmploymentHisAdapter{
 
 	@Inject
 	private SyEmploymentPub syEmploymentPub;

@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 
-public interface SyEmploymentAdapter {
+public interface SysEmploymentHisAdapter {
 
 	/**
 	 * Find S job hist by sid.
