@@ -18,15 +18,15 @@ import nts.uk.shr.infra.file.csv.CSVFileData;
 import nts.uk.shr.infra.file.csv.CSVReportGenerator;
 
 @Stateless
-public class ExcelExportService extends ExportService<List<ExcelInforCommand>> {
+public class ExcelExportService extends ExportService<List<ExcelInforCommandJson>> {
 
 	/** The generator. */
     @Inject
     private CSVReportGenerator generator;
     
     @Override
-	protected void handle(ExportServiceContext<List<ExcelInforCommand>> context) {
-    	List<ExcelInforCommand> listOuput = context.getQuery();
+	protected void handle(ExportServiceContext<List<ExcelInforCommandJson>> context) {
+    	List<ExcelInforCommandJson> listOuput = context.getQuery();
     	if (listOuput == null) {
     		listOuput = new ArrayList<>();
     	}
@@ -42,10 +42,10 @@ public class ExcelExportService extends ExportService<List<ExcelInforCommand>> {
     	List<String> header = this.getTextHeader(listHeader);
     	if (!listOuput.isEmpty()) {
 	    	List<Integer> sizePlannedVacationListCommand = new ArrayList<>();
-	    	for (ExcelInforCommand excelInforCommand : listOuput) {
+	    	for (ExcelInforCommandJson excelInforCommand : listOuput) {
 	    		sizePlannedVacationListCommand.add(excelInforCommand.getPlannedVacationListCommand().size());	 
 			}
-	    	ExcelInforCommand maxSizeExcelInforCommand = listOuput.get(Collections.max(sizePlannedVacationListCommand));
+	    	ExcelInforCommandJson maxSizeExcelInforCommand = listOuput.get(Collections.max(sizePlannedVacationListCommand));
 	    	for (PlannedVacationListCommand plannedVacation : maxSizeExcelInforCommand.getPlannedVacationListCommand()) {
 	    		listHeader.add(plannedVacation.getWorkTypeName());
 	    		listHeader.add(plannedVacation.getWorkTypeName()+"（上限）");
