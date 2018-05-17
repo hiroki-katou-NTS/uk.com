@@ -48,6 +48,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHi
 import nts.uk.screen.at.app.dailyperformance.correction.dto.reasondiscrepancy.ReasonCodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInfoOfDailyPerformanceDetailDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceIdPeriodAtScreen;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceAuthorityDto;
 
 /**
  * @author hungnm
@@ -177,6 +178,15 @@ public interface DailyPerformanceScreenRepo {
 	List<ReasonCodeName> findDivergenceReason(String companyId, int divTimeId);
 	
 	List<DailyPerformanceAuthorityDto> findDailyAuthority(String roleId);
+	
+	/**
+	 * find authority for monthlyPer
+	 * kmw003 screen
+	 * @param roleId
+	 * @param availability
+	 * @return
+	 */
+	List<MonthlyPerformanceAuthorityDto> findAuthority(String roleId, BigDecimal availability);
 	
 	List<WorkTimeWorkplaceDto> findWorkHours(String companyId, String workplaceId);
 	

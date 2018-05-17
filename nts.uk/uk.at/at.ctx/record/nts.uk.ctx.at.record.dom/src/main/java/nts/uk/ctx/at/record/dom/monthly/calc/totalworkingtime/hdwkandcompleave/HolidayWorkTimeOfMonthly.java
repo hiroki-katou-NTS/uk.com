@@ -15,19 +15,21 @@ import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
 import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlex;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlx;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalHolidayWorkTransferOrderOfAggrMonthly;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.ExcessOutsideTimeSet;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.TreatHolidayWorkTimeOfLessThanCriteriaPerWeek;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.ExcessOutsideTimeSetReg;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriod;
+import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodEnum;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.HolidayWorkAndTransferAtr;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -105,15 +107,17 @@ public class HolidayWorkTimeOfMonthly {
 	 * @param workInfo 勤務情報
 	 * @param legalHolidayWorkTransferOrder 法定内休出振替順
 	 * @param excessOutsideTimeSet 時間外超過設定
-	 * @param treatHolidayWorkTimeOfLessThanCriteriaPerWeek 1週間の基準時間未満の休日出勤時間の扱い
+	 * @param roleHolidayWorkFrameMap 休出枠の役割
+	 * @param autoExceptHolidayWorkFrames 自動的に除く休出枠
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void aggregateForRegAndIrreg(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
 			String companyId, String workplaceId, String employmentCd, WorkingSystem workingSystem,
 			MonthlyAggregateAtr aggregateAtr, WorkInformation workInfo,
 			LegalHolidayWorkTransferOrderOfAggrMonthly legalHolidayWorkTransferOrder,
-			ExcessOutsideTimeSet excessOutsideTimeSet,
-			TreatHolidayWorkTimeOfLessThanCriteriaPerWeek treatHolidayWorkTimeOfLessThanCriteriaPerWeek,
+			ExcessOutsideTimeSetReg excessOutsideTimeSet,
+			Map<Integer, RoleOfOpenPeriod> roleHolidayWorkFrameMap,
+			List<RoleOfOpenPeriod> autoExceptHolidayWorkFrames,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 集計区分を確認する
@@ -127,15 +131,14 @@ public class HolidayWorkTimeOfMonthly {
 		if (isAggregateHolidayWork){
 			
 			// 自動的に除く休出枠を確認する
-			val autoExcludeHolidayWorkFrames = treatHolidayWorkTimeOfLessThanCriteriaPerWeek.getAutoExcludeHolidayWorkFrames();
-			if (autoExcludeHolidayWorkFrames.isEmpty()) {
+			if (autoExceptHolidayWorkFrames.isEmpty()) {
 				// 0件なら、自動計算せず休出時間を集計する
-				this.aggregateWithoutAutoCalc(attendanceTimeOfDaily);
+				this.aggregateWithoutAutoCalc(attendanceTimeOfDaily, roleHolidayWorkFrameMap);
 			}
 			else {
 				// 1件以上なら、自動計算して休出時間を集計する
 				this.aggregateByAutoCalc(attendanceTimeOfDaily, companyId, workplaceId, employmentCd, workingSystem,
-						workInfo, legalHolidayWorkTransferOrder, autoExcludeHolidayWorkFrames, repositories);
+						workInfo, legalHolidayWorkTransferOrder, roleHolidayWorkFrameMap, repositories);
 			}
 		}
 	}
@@ -151,11 +154,8 @@ public class HolidayWorkTimeOfMonthly {
 	private boolean confirmAggregateHolidayWork(
 			String companyId,
 			WorkInformation workInfo,
-			ExcessOutsideTimeSet excessOutsideTimeSet,
+			ExcessOutsideTimeSetReg excessOutsideTimeSet,
 			RepositoriesRequiredByMonthlyAggr repositories){
-		
-		// 「勤務種類が法内休出の休出時間は時間外超過対象から自動的に除く」でない時、休出を集計する
-		if (!excessOutsideTimeSet.isAutoExcludeHolidayWorkTimeFromExcessOutsideWorkTime()) return true;
 		
 		// 勤務種類から法定内休日か判断する
 		val workType = repositories.getWorkType().findByPK(companyId, workInfo.getWorkTypeCode().v());
@@ -181,14 +181,14 @@ public class HolidayWorkTimeOfMonthly {
 	 * @param workingSystem 労働制
 	 * @param workInfo 勤務情報
 	 * @param legalHolidayWorkTransferOrder 法定内休出振替順
-	 * @param autoExcludeHolidayWorkFrames 自動的に除く休出枠
+	 * @param roleHolidayWorkFrameMap 休出枠の役割
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	private void aggregateByAutoCalc(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
 			String companyId, String placeId, String employmentCd, WorkingSystem workingSystem,
 			WorkInformation workInfo,
 			LegalHolidayWorkTransferOrderOfAggrMonthly legalHolidayWorkTransferOrder,
-			List<HolidayWorkFrameNo> autoExcludeHolidayWorkFrames,
+			Map<Integer, RoleOfOpenPeriod> roleHolidayWorkFrameMap,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 法定内休出にできる時間を計算する
@@ -222,15 +222,18 @@ public class HolidayWorkTimeOfMonthly {
 			// 休出枠時間のループ処理
 			canLegalHolidayWork = this.holidayWorkFrameTimeProcess(holidayWorkAndTransferAtr,
 					legalHolidayWorkTransferOrder, canLegalHolidayWork,
-					autoExcludeHolidayWorkFrames, holidayWorkFrameTimes, attendanceTimeOfDaily.getYmd());
+					roleHolidayWorkFrameMap, holidayWorkFrameTimes, attendanceTimeOfDaily.getYmd());
 		}
 	}
 	
 	/**
 	 * 自動計算せず集計する
 	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
+	 * @param roleHolidayWorkFrameMap 休出枠の役割
 	 */
-	private void aggregateWithoutAutoCalc(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily){
+	private void aggregateWithoutAutoCalc(
+			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
+			Map<Integer, RoleOfOpenPeriod> roleHolidayWorkFrameMap){
 		
 		// 「休出枠時間」を取得する
 		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
@@ -244,9 +247,26 @@ public class HolidayWorkTimeOfMonthly {
 		// 取得した休出枠時間を「集計休出時間」に入れる
 		for (val holidayWorkFrameTimeSrc : holidayWorkFrameTimeSrcs){
 			val holidayWorkFrameNo = holidayWorkFrameTimeSrc.getHolidayFrameNo();
+			
+			// 対象の集計休出時間を確認する
 			val targetAggregateHolidayWorkTime = this.getTargetAggregateHolidayWorkTime(holidayWorkFrameNo);
 			val ymd = attendanceTimeOfDaily.getYmd();
-			targetAggregateHolidayWorkTime.addHolidayWorkTimeInTimeSeriesWork(ymd, holidayWorkFrameTimeSrc);
+			
+			// 法定内・外の各役割に応じて法定内・法定外休出時間に入れる
+			if (!roleHolidayWorkFrameMap.containsKey(holidayWorkFrameNo.v())) continue;
+			val targetRole = roleHolidayWorkFrameMap.get(holidayWorkFrameNo.v());
+			switch (targetRole.getRoleOfOpenPeriodEnum()){
+			case STATUTORY_HOLIDAYS:
+				// 法定内の休出枠に該当する時、法定内休出時間に入れる
+				targetAggregateHolidayWorkTime.addLegalHolidayWorkTimeInTimeSeriesWork(ymd, holidayWorkFrameTimeSrc);
+				break;
+			case NON_STATUTORY_HOLIDAYS:
+				// 法定外の休出枠に該当する時、休出時間に入れる
+				targetAggregateHolidayWorkTime.addHolidayWorkTimeInTimeSeriesWork(ymd, holidayWorkFrameTimeSrc);
+				break;
+			case MIX_WITHIN_OUTSIDE_STATUTORY:
+				break;
+			}
 		}
 	}
 	
@@ -278,7 +298,7 @@ public class HolidayWorkTimeOfMonthly {
 	 * @param holidayWorkAndTransferAtr 休出振替区分
 	 * @param legalHolidayWorkTransferOrderOfAggrMonthly 法定内休出振替順
 	 * @param canLegalHolidayWork 法定内休出に出来る時間
-	 * @param autoExcludeHolidayWorkFrameList 自動的に除く休出枠
+	 * @param roleHolidayWorkFrameMap 休出枠の役割
 	 * @param holidayWorkFrameTimeMap 休出枠時間　（日別実績より取得）
 	 * @param ymd 年月日
 	 * @return 法定内休出に出来る時間　（計算後）
@@ -287,7 +307,7 @@ public class HolidayWorkTimeOfMonthly {
 			HolidayWorkAndTransferAtr holidayWorkAndTransferAtr,
 			LegalHolidayWorkTransferOrderOfAggrMonthly legalHolidayWorkTransferOrderOfAggrMonthly,
 			AttendanceTime canLegalHolidayWork,
-			List<HolidayWorkFrameNo> autoExcludeHolidayWorkFrameList,
+			Map<Integer, RoleOfOpenPeriod> roleHolidayWorkFrameMap,
 			Map<HolidayWorkFrameNo, HolidayWorkFrameTime> holidayWorkFrameTimeMap,
 			GeneralDate ymd){
 		
@@ -306,7 +326,14 @@ public class HolidayWorkTimeOfMonthly {
 			val timeSeriesWork = targetHolidayWorkTime.getAndPutTimeSeriesWork(ymd);
 			
 			// 自動的に除く休出枠か確認する
-			if (autoExcludeHolidayWorkFrameList.contains(holidayWorkFrameNo)){
+			boolean isAutoExcept = false;
+			if (roleHolidayWorkFrameMap.containsKey(holidayWorkFrameNo.v())){
+				if (roleHolidayWorkFrameMap.get(holidayWorkFrameNo.v()).getRoleOfOpenPeriodEnum() ==
+						RoleOfOpenPeriodEnum.MIX_WITHIN_OUTSIDE_STATUTORY){
+					isAutoExcept = true;
+				}
+			}
+			if (isAutoExcept){
 				
 				// 取得した休出枠時間を集計休出時間に入れる　（入れた時間分を法定内休出にできる時間から引く）
 				switch (holidayWorkAndTransferAtr){
@@ -374,12 +401,12 @@ public class HolidayWorkTimeOfMonthly {
 	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
 	 * @param companyId 会社ID
 	 * @param aggregateAtr 集計区分
-	 * @param aggrSetOfFlex フレックス時間勤務の月の集計設定
+	 * @param flexAggrSet フレックス時間勤務の月の集計設定
 	 * @param monthlyAggrSetOfFlexOpt フレックス勤務の月別集計設定
 	 * @param flexTime フレックス時間
 	 */
 	public FlexTime aggregateForFlex(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
-			String companyId, MonthlyAggregateAtr aggregateAtr, AggrSettingMonthlyOfFlx aggrSetOfFlex,
+			String companyId, MonthlyAggregateAtr aggregateAtr, FlexMonthWorkTimeAggrSet flexAggrSet,
 			Optional<MonthlyAggrSetOfFlex> monthlyAggrSetOfFlexOpt, FlexTime flexTime){
 		
 		// 「休出枠時間」を取得する
@@ -397,7 +424,7 @@ public class HolidayWorkTimeOfMonthly {
 			val holidayWorkFrameNo = holidayWorkFrameTimeSrc.getHolidayFrameNo();
 			
 			// 「設定．残業を含める」を確認する
-			if (aggrSetOfFlex.isIncludeOverTime()){
+			if (flexAggrSet.getIncludeOverTime() == NotUseAtr.USE){
 
 				// 休日出勤フレックス加算を確認
 				if (monthlyAggrSetOfFlexOpt.isPresent()) {

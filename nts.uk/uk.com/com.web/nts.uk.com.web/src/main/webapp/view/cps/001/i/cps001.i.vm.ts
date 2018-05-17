@@ -149,6 +149,19 @@ module nts.uk.com.view.cps001.i.vm {
                 $("#idDateGrantInp").focus();
             });
 
+            self.deadlineDateInp.subscribe(value => {
+                let self = this,
+                    grantDate = moment.utc(self.dateGrantInp(), "YYYY/MM/DD"),
+                    deadline = moment.utc(self.deadlineDateInp(), "YYYY/MM/DD");
+                if (((new Date(deadline._d)) > (new Date(grantDate._d)))) {
+                    var checkValiGrantDate = moment(grantDate._i, "YYYY/MM/DD", undefined, true);
+
+                    if (($('#idDateGrantInp').ntsError('check')) && checkValiGrantDate.isValid()) {
+                        $('#idDateGrantInp').ntsError('clear');
+                    }
+                }
+            });
+
 
         }
 
@@ -244,7 +257,7 @@ module nts.uk.com.view.cps001.i.vm {
             self.timeOver(null);
             self.selectedRuleCode(1);
             $("#idDateGrantInp").focus();
-            nts.uk.ui.errors.clearAll;
+            nts.uk.ui.errors.clearAll();
         }
 
         Save() {
@@ -261,12 +274,13 @@ module nts.uk.com.view.cps001.i.vm {
             $("#dayNumberOfReam").trigger("validate");
 
 
-            if (nts.uk.ui.errors.hasError()) {
-                return;
-            }
 
             if ((new Date(deadline._d)) < (new Date(grantDate._d))) {
                 $('#idDateGrantInp').ntsError('set', { messageId: "Msg_1023" });
+                return;
+            }
+
+            if (nts.uk.ui.errors.hasError()) {
                 return;
             }
 
@@ -414,9 +428,9 @@ module nts.uk.com.view.cps001.i.vm {
 
         formatDate(value) {
             if (value) {
-                return value >= 0 ? "&nbsp;" + value + '日' :  value + '日';
-            }else{
-                 return "&nbsp;0日";
+                return value >= 0 ? "&nbsp;" + value + '日' : value + '日';
+            } else {
+                return "&nbsp;0日";
             }
         }
 
@@ -445,7 +459,7 @@ module nts.uk.com.view.cps001.i.vm {
             service.getItemDef(ctgCode.ctgCodeChirld).done((data: Array<IItem>) => {
                 if (!data[6].display && !data[9].display && !data[11].display && !data[14].display) {
                     var currentDialog = nts.uk.ui.windows.getSelf();
-                    currentDialog.setWidth(618);
+                    currentDialog.setWidth(628);
                 }
                 self.setItemDefValue(data).done(() => {
                     self.setGridList();
@@ -532,7 +546,7 @@ module nts.uk.com.view.cps001.i.vm {
                 { headerText: nts.uk.resource.getText('CPS001_131'), key: 'timeOver', width: 70, hidden: self.timeExeededH() },
                 { headerText: nts.uk.resource.getText('CPS001_123'), key: 'numberDayRemain', width: 75 },
                 { headerText: nts.uk.resource.getText('CPS001_149'), key: 'timeRemain', width: 70, hidden: self.timeReamH() },
-                { headerText: nts.uk.resource.getText('CPS001_129'), key: 'expStatus', width: 80 }
+                { headerText: nts.uk.resource.getText('CPS001_129'), key: 'expStatus', width: 90 }
             ]);
             let table: string = '<table tabindex="5" id="sel_item_grid" data-bind="ntsGridList: { height: 282, options: listData, primaryKey:\'specialid\',columns:columns,multiple: false, value: currentValue , rows :10 }"></table>';
             $("#tbl").html(table);

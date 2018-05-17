@@ -43,7 +43,7 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 	/** 締めID: 締めID */
 	// @AttendanceItemValue
 	// @AttendanceItemLayout(jpPropertyName = "締めID", layout = "A")
-	private int closureID;
+	private int closureID = 1;
 
 	/** 締め日: 日付 */
 	// @AttendanceItemLayout(jpPropertyName = "締め日", layout = "B")
@@ -84,9 +84,8 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 		if(domain != null) {
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYm(domain.getYearMonth());
-			dto.setClosureID(domain.getClosureId() == null ? 0 : domain.getClosureId().value);
-			dto.setClosureDate(domain.getClosureDate() == null ? null 
-					: new ClosureDateDto(domain.getClosureDate().getClosureDay().v(), domain.getClosureDate().getLastDayOfMonth()));
+			dto.setClosureID(domain.getClosureId() == null ? 1 : domain.getClosureId().value);
+			dto.setClosureDate(domain.getClosureDate() == null ? null : ClosureDateDto.from(domain.getClosureDate()));
 			dto.setDatePeriod(domain.getDatePeriod() == null ? null 
 					: new DatePeriodDto(domain.getDatePeriod().start(), domain.getDatePeriod().end()));
 //			dto.setAggregateTimes(aggregateTimes);
@@ -105,7 +104,7 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 			return null;
 		}
 		return AttendanceTimeOfMonthly.of(employeeId, ym, ConvertHelper.getEnum(closureID, ClosureId.class), 
-										new ClosureDate(closureDate.getClosureDay(), closureDate.getLastDayOfMonth()), 
+										closureDate == null ? null : closureDate.toDomain(), 
 										new DatePeriod(datePeriod.getStart(), datePeriod.getEnd()), 
 										monthlyCalculation == null ? null : monthlyCalculation.toDomain(), 
 										excessOutsideWork == null ? null : excessOutsideWork.toDomain(), 

@@ -113,8 +113,8 @@ module nts.uk.ui.koExtentions {
                         $input.ntsError('set', result.errorMessage, result.errorCode, false);
                     }
                     
-                    valueChanging.markUserChange($input);
-                    value(newText);
+                    // valueChanging.markUserChange($input);
+                    // value(newText);
                 }
             });
 
@@ -136,8 +136,8 @@ module nts.uk.ui.koExtentions {
                             $input.ntsError('set', result.errorMessage, result.errorCode, false);
                         }
                         
-                        valueChanging.markUserChange($input);
-                        value(newText);
+                        // valueChanging.markUserChange($input);
+                        // value(newText);
                     }
                 }
             });
@@ -295,8 +295,8 @@ module nts.uk.ui.koExtentions {
                         }
                     } else {
                         $input.ntsError('set', result.errorMessage, result.errorCode, false);
-                        valueChanging.markUserChange($input);
-                        value(newText);
+                        // valueChanging.markUserChange($input);
+                        // value(newText);
                     } 
                 }
             });

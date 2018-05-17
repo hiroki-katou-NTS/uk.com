@@ -12,4 +12,6 @@ public interface MonthlyItemControlByAuthRepository {
 	void updateMonthlyAttdItemAuth(MonthlyItemControlByAuthority monthlyItemControlByAuthority);
 	
 	void addMonthlyAttdItemAuth(MonthlyItemControlByAuthority monthlyItemControlByAuthority);
+	
+	Optional<MonthlyItemControlByAuthority> getMonthlyAttdItemByUse(String companyID,String authorityMonthlyId,List<Integer> itemMonthlyID,int toUse);
 }

@@ -95,7 +95,7 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 				//就時の反映
 				workUpdate.updateRecordWorkTime(param.getEmployeeId(), param.getBaseDate(), isWorkTimeReflect.getWorkTimeCode(), true);
 			}
-			//開始終了時刻が反映できるか
+			//予定開始終了時刻が反映できるか
 			StartEndTimeIsRecordReflect isReflectStartEndTime = this.checkReflectScheStartEndTime(param.getEmployeeId(), param.getBaseDate(),
 					checkworkDay, param.getStartTime(), param.getEndTime(), isWorkTimeReflect.getWorkTimeCode());
 			if(isReflectStartEndTime.isChkReflect()) {
@@ -135,10 +135,12 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 			return outData;
 		}
 		WorkingConditionItem workingConditionData = personalLablorCodition.get();
+		if(!workingConditionData.getWorkCategory().getWeekdayTime().getWorkTimeCode().isPresent()) {
+			return outData;
+		}
 		outData.setChkReflect(true);
 		//反映就業時間帯=「平日時」．就業時間帯コード
-		outData.setWorkTimeCode(workingConditionData.getWorkCategory().getWeekdayTime().getWorkTimeCode().isPresent() ? 
-				workingConditionData.getWorkCategory().getWeekdayTime().getWorkTimeCode().get().v() : "000");
+		outData.setWorkTimeCode(workingConditionData.getWorkCategory().getWeekdayTime().getWorkTimeCode().get().v());
 		
 		return outData;
 	}
@@ -165,7 +167,7 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 		List<TimezoneUse> lstTimezone = timeZoneSetting.getLstTimezone().stream()
 				.filter(x -> x.getWorkNo() == 1)
 				.collect(Collectors.toList());
-		if(!lstTimezone.isEmpty()) {
+		if(lstTimezone.isEmpty()) {
 			return outData;
 		}
 		outData.setChkReflect(true);
@@ -261,7 +263,7 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 		}
 		WorkStamp actualStamp = optActualStamp.get();
 		//取得した出勤時刻に値がない　OR
-		//取得した打刻元情報が「打刻自動セット(個人情報)、直行直帰申請」
+		//取得した打刻元情報が「打刻自動セット(個人情報)、直行直帰」
 		if(actualStamp.getStampSourceInfo() == null ||  actualStamp.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT
 				|| actualStamp.getStampSourceInfo() == StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO) {
 			return true;

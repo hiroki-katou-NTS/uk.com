@@ -110,8 +110,12 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 	public IntegrationOfDaily createIntegrationOfDailyStart(String employeeId, GeneralDate baseDate
 			, String workTimeCode, String workTypeCode, Integer startTime, Integer endTime) {
 		IntegrationOfDaily daily =overTimeService.calculateForAppReflect(employeeId, baseDate);
+		if(daily == null) {
+			return null;
+		}
 		WorkInfoOfDailyPerformance workInformation = daily.getWorkInformation();
 		workInformation.setRecordInfo(new WorkInformation(workTimeCode, workTypeCode));
+		Optional<TimeLeavingOfDailyPerformance> optAttendanceLeave= daily.getAttendanceLeave();
 		WorkStamp attendance = new WorkStamp(new TimeWithDayAttr(startTime),
 				new TimeWithDayAttr(startTime),
 				new WorkLocationCD("01"), 
@@ -122,9 +126,9 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 				new WorkLocationCD("01"),
 				StampSourceInfo.CORRECTION_RECORD_SET );
 
-		TimeActualStamp atStamp = new TimeActualStamp(attendance,leaving,1);
+		TimeActualStamp atStamp = new TimeActualStamp(attendance,attendance,1);
 
-		TimeActualStamp leStamp = new TimeActualStamp(attendance,leaving,1);
+		TimeActualStamp leStamp = new TimeActualStamp(leaving,leaving,1);
 
 		TimeLeavingWork timeLeavingWork = new TimeLeavingWork(new WorkNo(1),atStamp,leStamp);
 		List<TimeLeavingWork> lstTimeLeavingWork = new ArrayList<>();
@@ -134,7 +138,7 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 		daily.setWorkInformation(workInformation);
 		IntegrationOfDaily calculateData = calculate.calculate(daily);
 		attendanceTime.updateFlush(calculateData.getAttendanceTimeOfDailyPerformance().get());
-		
+			
 		return daily;
 	}
 

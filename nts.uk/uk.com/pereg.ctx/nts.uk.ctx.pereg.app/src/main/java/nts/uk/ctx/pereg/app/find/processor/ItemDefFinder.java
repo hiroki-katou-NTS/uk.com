@@ -34,9 +34,8 @@ import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataReposit
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.find.PeregQuery;
-import nts.uk.shr.pereg.app.find.dto.EmpOptionalDto;
+import nts.uk.shr.pereg.app.find.dto.OptionalItemDataDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
-import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
 
 @Stateless
 public class ItemDefFinder {
@@ -192,20 +191,20 @@ public class ItemDefFinder {
 	
 	private void setItemDefValueOfOptCtg(String recordId, PersonEmployeeType type, List<ItemValue> itemDefList) {
 		if (type == PersonEmployeeType.EMPLOYEE) {
-			List<EmpOptionalDto> empOptionItemData = empInfoItemDataRepo
+			List<OptionalItemDataDto> empOptionItemData = empInfoItemDataRepo
 					.getAllInfoItemByRecordId(recordId).stream().map(x -> x.genToPeregDto())
 					.collect(Collectors.toList());
 			Map<String, Object> mapEmpOptionItemData = new HashMap<>();
-			for(EmpOptionalDto i : empOptionItemData) {
+			for(OptionalItemDataDto i : empOptionItemData) {
 				mapEmpOptionItemData.put(i.getItemCode(), i.getValue());
 			}
 			setItemValueFromMap(itemDefList, mapEmpOptionItemData);
 		} else {
-			List<PersonOptionalDto> perOptionItemData = perInfoItemDataRepo
+			List<OptionalItemDataDto> perOptionItemData = perInfoItemDataRepo
 					.getAllInfoItemByRecordId(recordId).stream().map(x -> x.genToPeregDto())
 					.collect(Collectors.toList());
 			Map<String, Object> mapPerOptionItemData = new HashMap<>();
-			for(PersonOptionalDto i : perOptionItemData) {
+			for(OptionalItemDataDto i : perOptionItemData) {
 				mapPerOptionItemData.put(i.getItemCode(), i.getValue());
 			}
 			setItemValueFromMap(itemDefList, mapPerOptionItemData);

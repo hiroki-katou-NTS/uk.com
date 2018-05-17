@@ -126,9 +126,13 @@ public class AbsenceLeaveReflectScheImpl implements AbsenceLeaveReflectSche{
 				return dataOutput;
 			}
 			WorkingConditionItem workingConditionData = personalLablorCodition.get();
-			dataOutput.setReflect(true);
-			dataOutput.setWorkTimeCode(workingConditionData.getWorkCategory().getWeekdayTime().getWorkTimeCode().isPresent() 
-					? workingConditionData.getWorkCategory().getWeekdayTime().getWorkTimeCode().get().v() : "000");
+			if(workingConditionData.getWorkCategory().getWeekdayTime().getWorkTimeCode().isPresent()) {
+				dataOutput.setReflect(true);	
+			} else {
+				return dataOutput; 
+			}
+			
+			dataOutput.setWorkTimeCode(workingConditionData.getWorkCategory().getWeekdayTime().getWorkTimeCode().get().v());
 		} else {
 			dataOutput.setReflect(true);
 			dataOutput.setWorkTimeCode(worktimeCode);

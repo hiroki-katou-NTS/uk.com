@@ -187,6 +187,8 @@ module nts.layout {
 
                 self.time_range();
 
+                self.haft_int();
+
                 validate.initCheckError(lstCls);
             }, 50);
         }
@@ -1498,6 +1500,50 @@ module nts.layout {
                     });
                 });
         }
+
+        haft_int = () => {
+            let self = this,
+                finder: IFinder = self.finder,
+                haft_int: Array<IHaftInt> = [
+                    //{
+                    //'ctgCode': 'CS00035',
+                    //'inpCode': 'IS00369'
+                    //},
+                    {
+                        'ctgCode': 'CS00036',
+                        'inpCode': 'IS00377'
+                    },
+                    {
+                        'ctgCode': 'CS00036',
+                        'inpCode': 'IS00378'
+                    },
+                    {
+                        'ctgCode': 'CS00036',
+                        'inpCode': 'IS00379'
+                    },
+                    {
+                        'ctgCode': 'CS00036',
+                        'inpCode': 'IS00382'
+                    },
+                    {
+                        'ctgCode': 'CS00036',
+                        'inpCode': 'IS00383'
+                    },
+                    {
+                        'ctgCode': 'CS00036',
+                        'inpCode': 'IS00384'
+                    }
+                ],
+                validation = (haft: IHaftInt) => {
+                    let ctrl: IFindData = finder.find(haft.ctgCode, haft.inpCode);
+
+                    if (ctrl) {
+                        (((__viewContext || {}).primitiveValueConstraints || {})[ctrl.id.replace(/#/g, '')] || {}).valueType = "HalfInt";
+                    }
+                };
+
+            _.each(haft_int, h => validation(h));
+        }
     }
 
     enum ITEM_SINGLE_TYPE {
@@ -1663,6 +1709,11 @@ module nts.layout {
         comboboxCode: string;
         result: string;
         specialCd: number;
+    }
+
+    interface IHaftInt {
+        ctgCode: string;
+        inpCode: string;
     }
 
     interface ISpeacialParam {
