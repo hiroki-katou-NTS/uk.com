@@ -716,10 +716,8 @@ module nts.custombinding {
                                                                     <div data-bind="text: header.itemName,
                                                                         style: {
                                                                             'width': __wdt() + 'px',
-                                                                            'margin-left': (__flft() - __lft()) + 'px'
-                                                                        },
-                                                                        css: {
-                                                                            'bg-remanded-application': header.required
+                                                                            'margin-left': (__flft() - __lft()) + 'px',
+                                                                            'background-color': header.required ? '#FAC002' : 'transparent'
                                                                         }"></div>
                                                                 </th>
                                                                 <!-- /ko -->
@@ -1480,7 +1478,7 @@ module nts.custombinding {
                             case ITEM_SINGLE_TYPE.STRING:
                                 constraint.valueType = "String";
                                 constraint.maxLength = dts.stringItemLength || dts.maxLength;
-                                constraint.stringExpression = undefined; //"(?:)";
+                                constraint.stringExpression = /(?:)/;
 
                                 switch (dts.stringItemType) {
                                     default:
@@ -2074,6 +2072,7 @@ module nts.custombinding {
 
                                     ko.utils.extend(_r, {
                                         checked: _row.checked,
+                                        checkable: _row.enable,
                                         recordId: recordId,
                                         readonly: ko.observable(c.readonly),
                                         editable: ko.observable(c.editable),
@@ -2122,7 +2121,8 @@ module nts.custombinding {
                                         });
                                         _(row.items).each(r => {
                                             ko.utils.extend(r, {
-                                                checked: row.checked
+                                                checked: row.checked,
+                                                checkable: row.enable
                                             });
                                         });
                                     });

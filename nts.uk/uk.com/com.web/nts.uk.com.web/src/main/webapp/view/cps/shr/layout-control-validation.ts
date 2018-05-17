@@ -7,7 +7,8 @@ module nts.layout {
 
     import parseTime = nts.uk.time.parseTime;
 
-    let rmError = nts.uk.ui.errors["removeByCode"],
+    let __viewContext: any = window['__viewContext'] || {},
+        rmError = nts.uk.ui.errors["removeByCode"],
         getError = nts.uk.ui.errors["getErrorByElement"],
         getErrorList = nts.uk.ui.errors["getErrorList"],
         removeErrorByElement = window['nts']['uk']['ui']['errors']["removeByElement"],
@@ -60,6 +61,10 @@ module nts.layout {
                         element = document.getElementById(id),
                         $element = $(element);
 
+                    if (_.has(x, "recordId") && !x.value && !!$element.parents('.table-scroll').length) {
+                        return;
+                    }
+
                     if (element && !!x.editable) {
                         if (element.tagName.toUpperCase() == "INPUT") {
                             $element
@@ -96,7 +101,7 @@ module nts.layout {
             self.lstCls = lstCls;
         }
 
-        find = (categoryCode: string, subscribeCode: string): IFindData => {
+        find = (categoryCode: string, subscribeCode): IFindData => {
             let self = this,
                 controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && !!x.items).map(x => x.items).flatten().flatten().value(),
                 subscribe: any = _.find(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && x.itemCode == subscribeCode);
@@ -112,14 +117,10 @@ module nts.layout {
             return null;
         };
 
-        finds = (categoryCode: string, subscribesCode: Array<string>): Array<IFindData> => {
-            if (!_.isArray(subscribesCode)) {
-                throw "[subscribesCode] isn't an array!";
-            }
-
+        finds = (categoryCode: string, subscribesCode: Array<string> = undefined): Array<IFindData> => {
             let self = this,
                 controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && !!x.items).map(x => x.items).flatten().flatten().value(),
-                subscribes: Array<any> = _.filter(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && (subscribesCode || []).indexOf(x.itemCode) > -1);
+                subscribes: Array<any> = _.filter(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && (!!subscribesCode ? subscribesCode.indexOf(x.itemCode) > -1 : true));
 
             return subscribes.map(x => {
                 return <IFindData>{
@@ -149,6 +150,21 @@ module nts.layout {
                 };
             });
         };
+
+        remove = (item) => {
+            let self = this;
+
+            _.each(self.lstCls, cls => {
+                if (_.has(cls, "items") && cls.items.indexOf(item) > -1) {
+                    _.remove(cls.items, item);
+                    if (_.has(_.first(cls.renders()), "items")) {
+                        cls.renders.remove(m => m.items.indexOf(item) > -1);
+                    } else {
+                        cls.renders.remove(m => m == item);
+                    }
+                }
+            });
+        };
     }
 
     const fetch = {
@@ -161,7 +177,8 @@ module nts.layout {
         get_resvLeaNumber: (sid: string) => ajax('com', `ctx/pereg/layout/getResvLeaNumber/${sid}`),
         get_calDayTime: (sid: string, specialCd: number) => ajax('com', `ctx/pereg/layout/calDayTime/${sid}/${specialCd}`),
         check_remain_days: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainDays/${sid}`),
-        check_remain_left: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainLeft/${sid}`)
+        check_remain_left: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainLeft/${sid}`),
+        perm: (rid, cid) => ajax(`ctx/pereg/roles/auth/category/find/${rid}/${cid}`)
     }
 
     export class validation {
@@ -189,6 +206,8 @@ module nts.layout {
                 self.time_range();
 
                 self.haft_int();
+
+                self.card_no();
 
                 validate.initCheckError(lstCls);
             }, 50);
@@ -1545,6 +1564,52 @@ module nts.layout {
 
             _.each(haft_int, h => validation(h));
         }
+
+        card_no = () => {
+            let self = this,
+                finder: IFinder = self.finder,
+                ctrls: Array<IFindData> = finder.finds("CS00069", undefined),
+                empId = ko.toJS(__viewContext.viewModel.employee.employeeId),
+                is_self = __viewContext.user.employeeId == empId;
+
+            if (!!ctrls) {
+                let categoryId = ((ctrls[0] || <any>{}).data || <any>{}).categoryId;
+                if (categoryId) {
+                    __viewContext
+                        .primitiveValueConstraints[ctrls[0].id.replace(/#/g, '')]
+                        .stringExpression = /[a-zA-Z0-9\"\#\$\%\&\(\~\|\{\}\[\]\@\:\`\*\+\?\;\/\_\-\>\<\)]{1,20}/;
+
+                    fetch.perm((__viewContext || {}).user.role.personalInfo, categoryId).done(perm => {
+                        if (perm) {
+                            let remove = _.find(ctrls, c => c.data.recordId.indexOf("NID_") > -1);
+
+                            if (is_self) {
+                                if (!perm.selfAllowAddMulti && remove) {
+                                    finder.remove(remove.data);
+                                }
+
+                                _.each(ctrls, c => {
+                                    if (ko.isObservable(c.data.checkable)) {
+                                        c.data.checkable(!!perm.selfAllowDelMulti);
+                                    }
+                                });
+                            } else {
+                                if (!perm.otherAllowAddMulti && remove) {
+                                    finder.remove(remove.data);
+                                }
+
+                                _.each(ctrls, c => {
+                                    if (c.data.recordId.indexOf("NID_") == -1) {
+                                        c.data.checkable(!!perm.otherAllowDelMulti);
+                                    }
+                                });
+                            }
+                        }
+
+                    });
+                }
+            }
+        }
     }
 
     enum ITEM_SINGLE_TYPE {
@@ -1583,8 +1648,9 @@ module nts.layout {
 
     interface IFinder {
         find: (categoryCode: string, subscribeCode: string) => IFindData;
-        finds: (categoryCode: string, subscribesCode: Array<string>) => Array<IFindData>;
+        finds: (categoryCode: string, subscribesCode?: Array<string>) => Array<IFindData>;
         findChilds: (categoryCode: string, parentCode: string) => Array<IFindData>;
+        remove: (item: any) => void;
     }
 
     interface IFindData {
@@ -1608,6 +1674,7 @@ module nts.layout {
         lstComboBoxValue: KnockoutObservableArray<any>;
         itemParentCode?: string;
         itemName?: string;
+        categoryId?: string;
     }
 
     interface IComboboxItem {
