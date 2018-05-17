@@ -132,8 +132,8 @@ public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 				 domain.getExecutionTime().getStartTime(),
 				 domain.getExecutionTime().getEndTime(),
 				 domain.getProcessStatus().value,
-				 domain.getObjectPeriod().getStartDate(),
-				 domain.getObjectPeriod().getEndDate(),
+				(domain.getObjectPeriod()!=null&&domain.getObjectPeriod().isPresent())?domain.getObjectPeriod().get().getStartDate():null,
+				(domain.getObjectPeriod()!=null&&domain.getObjectPeriod().isPresent())?domain.getObjectPeriod().get().getEndDate():null,
 				 domain.getCalExecutionSetInfoID());
 		if (domain.getExecutionContent() == ExecutionContent.DAILY_CREATION) {
 			entity.calExeSetInfor = KrcdtCalExeSetInfor.toEntity(domain.getDailyCreationSetInfo().get());

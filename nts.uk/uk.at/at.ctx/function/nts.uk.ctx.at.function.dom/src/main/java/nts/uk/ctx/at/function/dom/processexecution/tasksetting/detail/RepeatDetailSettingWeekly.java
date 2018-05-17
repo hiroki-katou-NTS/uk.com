@@ -13,6 +13,4 @@ public class RepeatDetailSettingWeekly extends DomainObject {
 	/* 曜日 */
 	private RepeatWeekDaysSelect weekdaySetting;
 	
-	/* 繰り返し間隔（週） */
-	private WeeklyWeekSetting weeklyWeekSetting;
 }

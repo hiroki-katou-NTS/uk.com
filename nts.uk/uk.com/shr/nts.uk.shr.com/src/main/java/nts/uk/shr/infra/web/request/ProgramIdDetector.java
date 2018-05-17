@@ -29,7 +29,7 @@ public class ProgramIdDetector implements Filter {
 	/**
 	 * Program path header.
 	 */
-	private static final String PG_PATH = "PG-Path";
+	public static final String PG_PATH = "PG-Path";
 	
 	/**
 	 * Web app map.
