@@ -190,6 +190,10 @@ module nts.uk.com.view.cmm049.a {
 
                 let listData = [data1, data2, data3, data4, data5, data6, data7];
                 service.saveUserinfoUseMethod({ lstUserInfoUseMethodDto: listData }).done(() => {
+                    service.findUserinfoUseMethod().done((dataUserinfoUseMethod: any) => {
+                        //bind data to screen
+                        self.bindToScreen(dataUserinfoUseMethod);
+                    });
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 });
             }

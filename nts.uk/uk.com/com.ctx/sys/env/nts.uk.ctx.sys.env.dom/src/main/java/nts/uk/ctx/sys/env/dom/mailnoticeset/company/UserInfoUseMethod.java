@@ -59,4 +59,8 @@ public class UserInfoUseMethod extends AggregateRoot {
 		this.settingItem = memento.getSettingItem();
 		this.settingUseMail = memento.getSettingUseMail();
 	}
+	
+	public void corretSelfEdit(SelfEditUserInfo oldSelfEdit) {
+		this.selfEdit = oldSelfEdit;
+	}
 }

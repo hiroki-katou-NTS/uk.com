@@ -4,12 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.sys.env.app.command.mailnoticeset.company;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SettingUseSendMail;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethodRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -35,12 +41,34 @@ public class UserInfoUseMethodSaveCommandHandler extends CommandHandler<UserInfo
 	protected void handle(CommandHandlerContext<UserInfoUseMethodSaveCommand> context) {
 		UserInfoUseMethodSaveCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		if (repo.findByCompanyId(companyId).isEmpty()) {
+		List<UserInfoUseMethod> lstUserInfoUseMethod = repo.findByCompanyId(companyId);
+		if (lstUserInfoUseMethod.isEmpty()) {
 			// save
 			this.repo.create(command.toDomain());
 		} else {
-			this.repo.update(command.toDomain());
+			List<UserInfoUseMethod> lstUserInfoUseMethodAfterCorrect = this.correctData(lstUserInfoUseMethod,command.toDomain());
+			this.repo.update(lstUserInfoUseMethodAfterCorrect);
 		}
+	}
+
+	/**
+	 * Correct data.
+	 *
+	 * @param oldList the old list
+	 * @param newList the new list
+	 * @return the list
+	 */
+	private List<UserInfoUseMethod> correctData(List<UserInfoUseMethod> oldList, List<UserInfoUseMethod> newList) {
+		return newList.stream().map(newDomain -> {
+			Optional<UserInfoUseMethod> optionalDom = oldList.stream()
+					.filter(i -> i.getSettingItem().equals(newDomain.getSettingItem())).findFirst();
+			if (newDomain.getSettingUseMail().isPresent() && optionalDom.isPresent()) {
+				if (newDomain.getSettingUseMail().get().equals(SettingUseSendMail.NOT_USE)) {
+					newDomain.corretSelfEdit(optionalDom.get().getSelfEdit());
+				}
+			}
+			return newDomain;
+		}).collect(Collectors.toList());
 	}
 
 }
