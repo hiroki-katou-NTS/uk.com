@@ -3,7 +3,7 @@ module cmm001.a {
     import MasterCopyCategory = nts.uk.com.view.cmm001.e.model.MasterCopyCategory;
     import MasterCopyCategoryDto = nts.uk.com.view.cmm001.e.MasterCopyCategoryDto;
     import MasterCopyDataCommand = nts.uk.com.view.cmm001.e.MasterCopyDataCommand;
-    
+
     export class ViewModel {
 
         gridColumns: KnockoutObservableArray<any>;
@@ -76,7 +76,7 @@ module cmm001.a {
                     let foundItem: ICompany = _.find(self.sel001Data(), (item: ICompany) => {
                         return item.companyCode == value;
                     });
-                    
+
                     service.findComId(foundItem.companyId).done((comId) => {
                         self.currentCompany(new CompanyModel(comId));
                         self.checkInsert(false);
@@ -101,7 +101,7 @@ module cmm001.a {
                             self.currentCompany().kyuyo(sys.kyuyo);
                             self.currentCompany().shugyo(sys.shugyo);
                         });
-                        
+
                         $("#companyName").focus();
                         nts.uk.ui.errors.clearAll();
                     });
@@ -113,7 +113,7 @@ module cmm001.a {
                     self.sel001Data(self.listCom());
                     self.currentCompanyCode(self.sel001Data()[0].companyCode);
                 } else {
-                    self.sel001Data(_.filter(self.listCom(), function(obj:ICompany) {
+                    self.sel001Data(_.filter(self.listCom(), function(obj: ICompany) {
                         return obj.isAbolition == 0;
                     }));
                     if (self.sel001Data().length == 0) {
@@ -220,9 +220,9 @@ module cmm001.a {
                 phoneNum: self.currentCompany().addinfor().phoneNum(),
 
             }
-             if((dataAdd.faxNum == "" || dataAdd.faxNum == null) && (dataAdd.add_1 == "" || dataAdd.add_1 == null) && (dataAdd.add_2 == "" || dataAdd.add_2 == null) && (dataAdd.addKana_1 == "" || dataAdd.addKana_1 == null) && (dataAdd.addKana_2 == "" || dataAdd.addKana_2 == null) && (dataAdd.postCd == "" || dataAdd.postCd == null) && (dataAdd.phoneNum == "" || dataAdd.phoneNum == null)){
-                    dataAdd = null;
-                }
+            if ((dataAdd.faxNum == "" || dataAdd.faxNum == null) && (dataAdd.add_1 == "" || dataAdd.add_1 == null) && (dataAdd.add_2 == "" || dataAdd.add_2 == null) && (dataAdd.addKana_1 == "" || dataAdd.addKana_1 == null) && (dataAdd.addKana_2 == "" || dataAdd.addKana_2 == null) && (dataAdd.postCd == "" || dataAdd.postCd == null) && (dataAdd.phoneNum == "" || dataAdd.phoneNum == null)) {
+                dataAdd = null;
+            }
             let dataCom = {
                 ccd: self.currentCompany().companyCode(),
                 name: self.currentCompany().companyName(),
@@ -257,7 +257,7 @@ module cmm001.a {
             }
             if (!self.currentCompany().isAbolition()) {
                 $('#checked2').ntsError('clear');
-            }  
+            }
             if (nts.uk.ui.errors.hasError()) {
                 nts.uk.ui.block.clear();
                 return;
@@ -284,38 +284,44 @@ module cmm001.a {
             } else {
                 // insert a company
                 service.add(dataTransfer).done(function() {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        var cid = self.currentCompany().companyId();
-                        var IMasterDataList: MasterCopyCategoryDto[] = [];
-                        var masterCopyDataCmd: MasterCopyDataCommand = { companyId: cid, masterDataList: IMasterDataList };
-                        service.getAllMasterCopyCategory().then(function(masterCopyCateList: Array<MasterCopyCategory>) {
-                            for (item of masterCopyCateList) {
-                                var IMasterCopyCategoryDto: MasterCopyCategoryDto = { masterCopyId: item.masterCopyId, categoryName: item.masterCopyCategory, order: item.order, systemType: item.systemType, copyMethod: 1 };
-                                IMasterDataList.push(IMasterCopyCategoryDto);
-                            }
-                            nts.uk.ui.windows.setShared('masterCopyDataCmd', masterCopyDataCmd);
-                            nts.uk.ui.windows.sub.modal('/view/cmm/001/f/index.xhtml', { title: '', }).onClosed(function(): any {
-                                $('#companyName').focus();
-                            });
-                        });
-                    });
-                });
                     self.start().then(function() {
                         $('#companyName').focus();
                         self.display.valueHasMutated();
                         self.currentCompanyCode(code);
                     });
-                }).fail(function(error) {
-                    if (error.messageId == 'Msg_809') {
-                        $('#companyCode').ntsError('set', { messageId: "Msg_809" });
-                    }
-                    if (error.messageId == 'Msg_3') {
-                        $('#companyCode').ntsError('set', { messageId: "Msg_3" });
-                    }
-                }).always(() => {
-                    nts.uk.ui.block.clear();
+                    nts.uk.ui.dialog.info({ messageId: "Msg_1148" }).then(function() {
+                        var cid = self.currentCompany().companyId();
+                        var IMasterDataList: MasterCopyCategoryDto[] = [];
+                        var masterCopyDataCmd: MasterCopyDataCommand = { companyId: cid, masterDataList: IMasterDataList };
+                        service.getAllMasterCopyCategory().then(function(masterCopyCateList: Array<MasterCopyCategory>) {
+                            if (masterCopyCateList != null) {
+                                for (item of masterCopyCateList) {
+                                    var IMasterCopyCategoryDto: MasterCopyCategoryDto = { masterCopyId: item.masterCopyId, categoryName: item.masterCopyCategory, order: item.order, systemType: item.systemType, copyMethod: 1 };
+                                    IMasterDataList.push(IMasterCopyCategoryDto);
+                                }
+                                nts.uk.ui.windows.setShared('masterCopyDataCmd', masterCopyDataCmd);
+                                nts.uk.ui.windows.sub.modal('/view/cmm/001/f/index.xhtml', { title: '', }).onClosed(function(): any {
+                                    $('#companyName').focus();
+                                });
+                            } else {
+                                nts.uk.ui.dialog.info({ messageId: "Msg_1149" });
+                            }
+
+                        });
+                    });
                 });
-            
+
+            }).fail(function(error) {
+                if (error.messageId == 'Msg_809') {
+                    $('#companyCode').ntsError('set', { messageId: "Msg_809" });
+                }
+                if (error.messageId == 'Msg_3') {
+                    $('#companyCode').ntsError('set', { messageId: "Msg_3" });
+                }
+            }).always(() => {
+                nts.uk.ui.block.clear();
+            });
+
         }
 
         /** search post code */
@@ -324,7 +330,7 @@ module cmm001.a {
             let self = this;
             // if don't have post code to find
             if (self.currentCompany().addinfor().postCd() == "") {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_438", messageParams: [nts.uk.resource.getText("CMM001_22")]}).then(() => { 
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_438", messageParams: [nts.uk.resource.getText("CMM001_22")] }).then(() => {
                     $("#postal").focus();
                     nts.uk.ui.block.clear();
                 });
@@ -333,7 +339,7 @@ module cmm001.a {
             // search by post code 
             service.findPostCd(self.currentCompany().addinfor().postCd()).done((item) => {
                 if (item.length == 0) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_818" }).then(() => { 
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_818" }).then(() => {
                         $("#postal").focus();
                         nts.uk.ui.block.clear();
                     });
@@ -351,7 +357,7 @@ module cmm001.a {
                 nts.uk.ui.block.clear();
             });
         }
-        
+
         openEDialog() {
             let self = this;
             nts.uk.ui.windows.setShared('companyId', self.currentCompany().companyId());
@@ -401,7 +407,7 @@ module cmm001.a {
                 phoneNum: "",
                 postCd: ""
             };
-            if(param.addinfor != null){
+            if (param.addinfor != null) {
                 address = param.addinfor;
             }
             this.addinfor = ko.observable(new AddInfor(address));
