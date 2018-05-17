@@ -98,7 +98,10 @@ public class JpaUserInfoUseMethodRepository extends JpaRepository implements Use
 			Optional<SevstUserInfoUsemethod> optional = this.queryProxy().find(
 					new SevstUserInfoUsemethodPK(dom.getCompanyId(), dom.getSettingItem().value),
 					SevstUserInfoUsemethod.class);
-			SevstUserInfoUsemethod entity = optional.get();
+			SevstUserInfoUsemethod entity = new SevstUserInfoUsemethod(new SevstUserInfoUsemethodPK());
+			if (optional.isPresent()) {
+				entity = optional.get();
+			}
 			dom.saveToMemento(new JpaUserInfoUseMethodSetMemento(entity));
 			this.commandProxy().update(entity);
 		});
