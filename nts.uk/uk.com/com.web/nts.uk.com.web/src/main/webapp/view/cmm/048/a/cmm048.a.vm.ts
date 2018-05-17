@@ -24,6 +24,7 @@ module nts.uk.com.view.cmm048.a {
             constructor() {
                 let _self = this;
                 
+                //TODO tab visible
                 _self.tab1Visible = ko.observable(true);
                 _self.tab2Visible = ko.observable(true);
                 _self.tabs = ko.observableArray([
