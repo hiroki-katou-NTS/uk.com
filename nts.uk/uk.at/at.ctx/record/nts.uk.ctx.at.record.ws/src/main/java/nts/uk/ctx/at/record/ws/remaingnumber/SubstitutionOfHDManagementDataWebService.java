@@ -53,7 +53,7 @@ public class SubstitutionOfHDManagementDataWebService extends WebService {
 	@POST
 	@Path("getBySidDatePeriodNoRemainDay/{empId}/{startDate}/{endDate}")
 	// get SubstitutionOfHDManagement by SID and remainsDays > 0
-	public List<SubstitutionOfHDManagementDataDto> getBySidDatePeriodNoRemainDay(@PathParam("empId")String employeeId, @PathParam("startDate")GeneralDate startDate, @PathParam("endDate")GeneralDate endDate) {
+	public List<SubstitutionOfHDManagementDataDto> getBySidDatePeriodNoRemainDay(@PathParam("empId")String employeeId, GeneralDate startDate, GeneralDate endDate) {
 		return finder.getBySidDatePeriodNoRemainDay(employeeId, startDate, endDate);
 	}
 	
@@ -65,7 +65,7 @@ public class SubstitutionOfHDManagementDataWebService extends WebService {
 	}
 
 	@Path("getBySidDatePeriod/{empId}/{startDate}/{endDate}")
-	public List<SubstitutionOfHDManagementDataDto> getBySidDatePeriod(@PathParam("empId")String sid, @PathParam("startDate")GeneralDate startDate,@PathParam("endDate") GeneralDate endDate) {
+	public List<SubstitutionOfHDManagementDataDto> getBySidDatePeriod(@PathParam("empId")String sid, GeneralDate startDate, GeneralDate endDate) {
 		return finder.getBySidDatePeriod(sid, startDate, endDate);
 	}
 }
