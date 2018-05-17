@@ -7,8 +7,9 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 535, height: 550 };</script>
+				<script>var dialogSize = { width: 430, height: 545 };</script>
 				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="../share/model.js" />
 				<com:scriptfile path="kdm001.l.vm.js" />
 				<com:scriptfile path="kdm001.l.start.js" />
 				<com:stylefile path="kdm001.l.style.css" />
@@ -47,51 +48,51 @@
 							<hr/>
 						</div>
 						<!-- L6_1 年月日 -->
-						<div data-bind="ntsFormLabel: { required: required}" style="width: 80px;">#{i18n.getText('KDM001_62')}</div>
+						<div data-bind="ntsFormLabel: { required: true}" style="width: 80px;">#{i18n.getText('KDM001_62')}</div>
 						<!-- L6_2 年月日 -->
 						<div id ="L6_2" data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
 						<br/>
 						<div class="down-s set-date flex valign-center" style="margin-top: 5px;">
 							<!-- L8_1 休出日数 -->
-							<div data-bind="ntsFormLabel: { required: required1}" style="margin-top: 10px;width: 80px;">#{i18n.getText('KDM001_111')}</div>
+							<div data-bind="ntsFormLabel: { required: true}" style="margin-top: 10px;width: 80px;">#{i18n.getText('KDM001_111')}</div>
 							<!-- L8_2 休出日数 -->
-							<div id="combo-box" style="margin-top: 10px;margin-left: 7px;" data-bind="ntsComboBox: {
-								name: '#{i18n.getText('KDM001_73')}',
+							<div class="combobox-select-day" data-bind="ntsComboBox: {
+								name: '#[KDM001_73]',
 								options: daysOff,
 								optionsValue: 'code',
 								visibleItemsCount: 5,
 								value: selectedCodeDayOff,
 								optionsText: 'name',
-								editable: isEditableDayOff,
-								enable: isEnableDayOff,
+								editable: false,
+								enable: true,
 								columns: [
-									{ prop: 'day', length: 10 },
+									{ prop: 'name', length: 10 },
 								]}"></div>
 						  </div>
 						<br/>
 						<!-- L9_1 期限 -->
-						<div id ="L9_1" data-bind="ntsFormLabel: { required: required1}" style="width: 80px;" >#{i18n.getText('KDM001_72')}</div>
+						<div id ="L9_1" data-bind="ntsFormLabel: { required: true}" style="width: 80px;" >#{i18n.getText('KDM001_72')}</div>
 						<!-- L9_2 期限 -->
 						<div id = "L9_2" data-bind="ntsDatePicker: {value: deadline, dateFormat: 'YYYY/MM/DD'}"></div>
 						<br/>
 						<div class="down-s set-date flex valign-center" style="margin-top: 5px;">
 							<!-- L10_1 残数 -->
-							<div data-bind="ntsFormLabel: { required: required1}" style="margin-top: 10px;width: 80px;">#{i18n.getText('KDM001_85')}</div>
+							<div data-bind="ntsFormLabel: { required: true}" style="margin-top: 10px;width: 80px;">#{i18n.getText('KDM001_85')}</div>
 							<!-- L10_2 残数 -->
-							<div style="margin-top: 10px;margin-left: 6px;" id="combo-box" data-bind="ntsComboBox: {
-								name: '#{i18n.getText('KDM001_85')}',
-								options: days,
-								optionsValue: 'code',
-								visibleItemsCount: 5,
-								value: selectedCodeDay,
-								optionsText: 'name',
-								editable: isEditableDay,
-								enable: isEnableDay,
-								columns: [
-									{ prop: 'day', length: 10 },
-								]}"></div>
+							<div class="combobox-select-day" data-bind="ntsComboBox: {
+									name: '#[KDM001_85]',
+									options: days,
+									optionsValue: 'code',
+									visibleItemsCount: 5,
+									value: selectedCodeDay,
+									optionsText: 'name',
+									editable: false,
+									enable: true,
+									columns: [
+										{ prop: 'name', length: 10 },
+									]}"></div>
 							<!-- L10_4 期限切れ -->
-							<div style="margin-left: 30px;" data-bind="ntsCheckBox: { checked: enable }">#{i18n.getText('KDM001_87')}</div>
+							<div style="margin-left: 30px;" data-bind="ntsCheckBox: { checked: checkedExpired }">#{i18n.getText('KDM001_87')}</div>
 						</div>
 					</div>
 			</div>	
@@ -101,7 +102,7 @@
 						<!-- L31_2 削除 -->
 						<button id="K31_2" class="danger" >#{i18n.getText('KDM001_100')}</button>
 						<!-- L31_3 キャンセル -->
-						<button id="K31_3" >#{i18n.getText('KDM001_90')}</button>	
+						<button id="K31_3" data-bind="click: closeDialog" >#{i18n.getText('KDM001_90')}</button>	
 			</div>
 		</ui:define>
 		</ui:composition>

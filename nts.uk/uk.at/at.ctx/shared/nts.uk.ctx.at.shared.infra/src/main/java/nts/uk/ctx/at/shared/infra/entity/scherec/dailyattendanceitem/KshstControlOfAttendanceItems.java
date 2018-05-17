@@ -21,49 +21,43 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KSHST_ATD_ITEM_CONTROL")
 public class KshstControlOfAttendanceItems extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@EmbeddedId
 	public KshstControlOfAttendanceItemsPK kshstControlOfAttendanceItemsPK;
-	
+
 	@Column(name = "HEADER_BACKGROUND_COLOR")
 	public String headerBgColorOfDailyPer;
-	
+
 	@Column(name = "TIME_INPUT_UNIT")
-	public int inputUnitOfTimeItem;
-	
-	
+	public Integer inputUnitOfTimeItem;
+
 	@Override
 	protected Object getKey() {
 		return kshstControlOfAttendanceItemsPK;
 	}
 
-	public KshstControlOfAttendanceItems(KshstControlOfAttendanceItemsPK kshstControlOfAttendanceItemsPK, String headerBgColorOfDailyPer, int inputUnitOfTimeItem) {
+	public KshstControlOfAttendanceItems(KshstControlOfAttendanceItemsPK kshstControlOfAttendanceItemsPK,
+			String headerBgColorOfDailyPer, Integer inputUnitOfTimeItem) {
 		super();
 		this.kshstControlOfAttendanceItemsPK = kshstControlOfAttendanceItemsPK;
 		this.headerBgColorOfDailyPer = headerBgColorOfDailyPer;
 		this.inputUnitOfTimeItem = inputUnitOfTimeItem;
-		
+
 	}
-	
+
 	public static KshstControlOfAttendanceItems toEntity(ControlOfAttendanceItems domain) {
-		return new  KshstControlOfAttendanceItems(
-				new KshstControlOfAttendanceItemsPK(domain.getCompanyID(),domain.getItemDailyID()),
-				domain.getHeaderBgColorOfDailyPer().isPresent()?domain.getHeaderBgColorOfDailyPer().get().v():null,
-				domain.getInputUnitOfTimeItem().isPresent()?domain.getInputUnitOfTimeItem().get().value:null
-				);
+		return new KshstControlOfAttendanceItems(
+				new KshstControlOfAttendanceItemsPK(domain.getCompanyID(), domain.getItemDailyID()),
+				domain.getHeaderBgColorOfDailyPer().isPresent() ? domain.getHeaderBgColorOfDailyPer().get().v() : null,
+				domain.getInputUnitOfTimeItem().isPresent() ? domain.getInputUnitOfTimeItem().get().value : null);
 	}
-	
+
 	public ControlOfAttendanceItems toDomain() {
-		return new  ControlOfAttendanceItems(
-				this.kshstControlOfAttendanceItemsPK.companyID,
+		return new ControlOfAttendanceItems(this.kshstControlOfAttendanceItemsPK.companyID,
 				this.kshstControlOfAttendanceItemsPK.itemDailyID,
-				new HeaderBackgroundColor(this.headerBgColorOfDailyPer),
-				EnumAdaptor.valueOf(this.inputUnitOfTimeItem, TimeInputUnit.class)
-				);
+				(this.headerBgColorOfDailyPer != null) ? new HeaderBackgroundColor(this.headerBgColorOfDailyPer) : null,
+				(this.inputUnitOfTimeItem != null) ? EnumAdaptor.valueOf(this.inputUnitOfTimeItem, TimeInputUnit.class)
+						: null);
 	}
-
-
-
-	
 
 }

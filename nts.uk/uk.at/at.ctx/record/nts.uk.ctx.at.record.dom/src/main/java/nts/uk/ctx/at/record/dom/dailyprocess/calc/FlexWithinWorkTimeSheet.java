@@ -33,6 +33,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.VacationCategory;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -141,12 +142,13 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		switch(flexLimitSetting) {
 			//事前申請を上限にする
 			case LIMITNUMBERAPPLICATION:
+				//指示時間を上限にする ←はEAで修正されたら適切な処理入れる
+			case INDICATEDYIMEUPPERLIMIT:	
 				//上限制御をやりつつ、値を返す
 				return (preAppTime.greaterThan(flexTime.v()))
-						?new AttendanceTimeOfExistMinus(preAppTime.v())
-						:flexTime;
-			//指示時間を上限にする
-			case INDICATEDYIMEUPPERLIMIT:	
+						?flexTime
+						:new AttendanceTimeOfExistMinus(preAppTime.v());
+			
 			//上限なし	
 			case NOUPPERLIMIT:
 				return flexTime;
@@ -296,7 +298,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 									   AutoCalOverTimeAttr autoCalcAtr, 
 									   SettingOfFlexWork flexCalcMethod,
 									   TimeLimitUpperLimitSetting flexLimitSetting,
-									   AttendanceTime preFlexTime
+									   AttendanceTime preFlexTime,Optional<CoreTimeSetting> coreTimeSetting
 			   ) {
 		AttendanceTime withinTime = super.calcWorkTime(premiumAtr,
 													   calcActualTime,
@@ -335,12 +337,22 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 																 holidayAddtionSet, 
 																 flexLimitSetting,
 																 preFlexTime);
+		AttendanceTime result = new AttendanceTime(0);
 		if(flexTime.getFlexTime().getTime().greaterThan(0)) {
-			return withinTime.minusMinutes(flexTime.getFlexTime().getTime().valueAsMinutes());
+			result = withinTime.minusMinutes(flexTime.getFlexTime().getTime().valueAsMinutes());
 		}
 		else {
-			return withinTime;
+			result = withinTime;
 		}
 		
+		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()&&coreTimeSetting.isPresent()&&!coreTimeSetting.get().isUseTimeSheet()) {
+			//遅刻時間を就業時間から控除しない場合かつ最低勤務時間よりも就業時間が小さい場合の処理
+			if(!holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly()) {
+				if(result.lessThan(coreTimeSetting.get().getMinWorkTime())) {
+					result = coreTimeSetting.get().getMinWorkTime();
+				}
+			}
+		}
+		return result;
 	}
 }

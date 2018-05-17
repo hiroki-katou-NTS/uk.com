@@ -28,4 +28,7 @@ public interface PayoutManagementDataRepository {
 	
 	// ドメイン「振出管理データ」より指定されたデータを取得する
 	List<PayoutManagementData> getBySidDatePeriodNoDigestion(String sid, GeneralDate startDate, GeneralDate endDate);
+	
+	
+	
 }

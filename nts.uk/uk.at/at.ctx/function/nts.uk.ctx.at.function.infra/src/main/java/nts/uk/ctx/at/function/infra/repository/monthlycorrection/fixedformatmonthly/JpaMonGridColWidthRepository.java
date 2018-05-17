@@ -30,7 +30,7 @@ public class JpaMonGridColWidthRepository extends JpaRepository implements Colum
 			return Optional.of(new ColumnWidtgByMonthly(companyID, listColumnWidthOfDisplayItem));
 			
 		}
-		return Optional.of(null);
+		return Optional.empty();
 	}
 
 	@Override

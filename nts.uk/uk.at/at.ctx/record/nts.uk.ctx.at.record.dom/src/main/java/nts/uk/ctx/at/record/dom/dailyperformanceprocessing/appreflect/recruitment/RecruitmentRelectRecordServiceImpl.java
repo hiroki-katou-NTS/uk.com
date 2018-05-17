@@ -19,6 +19,8 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.S
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.StartEndTimeOffReflect;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.StartEndTimeOutput;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
@@ -45,6 +47,8 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 	private WorkTypeIsClosedService workTypeService;
 	@Inject
 	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyRepos;
+	@Inject
+	private WorkInformationRepository workRepository;
 	@Override
 	public boolean recruitmentReflect(CommonReflectParameter param, boolean isPre) {
 		try {
@@ -89,6 +93,10 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 		boolean isStartTime = this.checkReflectRecordStartEndTime(param.getWorkTypeCode(), 1, true, param.getEmployeeId(), param.getBaseDate());
 		
 		boolean isEndTime = this.checkReflectRecordStartEndTime(param.getWorkTypeCode(), 1, false, param.getEmployeeId(), param.getBaseDate());
+		Optional<WorkInfoOfDailyPerformance> optWorkInfor = workRepository.find(param.getEmployeeId(), param.getBaseDate());
+		if(!optWorkInfor.isPresent()) {
+			return;
+		}
 		IntegrationOfDaily daily = holidayWorktimeService.createIntegrationOfDailyStart(param.getEmployeeId(), param.getBaseDate(), param.getWorkTimeCode(), param.getWorkTypeCode(), param.getStartTime(), param.getEndTime());
 		if(isStartTime || isEndTime) {			
 			//開始時刻の反映

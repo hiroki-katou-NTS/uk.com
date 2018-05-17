@@ -7,8 +7,9 @@
 <body>
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 430, height: 500 };</script>
+			<script>var dialogSize = { width: 430, height: 420 };</script>
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="kdm001.m.start.js" />
 			<com:scriptfile path="kdm001.m.vm.js" />
 			<com:stylefile path="kdm001.m.style.css" />
@@ -56,20 +57,20 @@
 				</div>
 				<div class="flex valign-center margin-bottom padding-left-15">
 					<!-- M8_1 代休時間 -->
-					<div class="column-1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDM001_125')}</div>
+					<div class="column-1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDM001_115')}</div>
 					<!-- M8_2 時間数 -->
 					<div class="combobox-select-day"
 						data-bind="ntsComboBox: {
 										name: '#[KDM001_86]', 
 										options: holidayTimeList,
-										optionsValue: 'value',
+										optionsValue: 'code',
 										visibleItemsCount: 5,
 										value: holidayTime,
-										optionsText: 'value',
+										optionsText: 'name',
 										enable: true,
 										required: true,
 										selectFirstIfNull: true,
-										columns: [{ prop: 'value', length: 5}]}" tabindex="2"></div>
+										columns: [{ prop: 'name', length: 5}]}" tabindex="2"></div>
 					</div>
 				<div class="flex valign-center margin-bottom padding-left-15">
 					<!-- M10_1 残数 -->
@@ -79,14 +80,14 @@
 						data-bind="ntsComboBox: {
 										name: '#[KDM001_86]', 
 										options: remainDaysList,
-										optionsValue: 'value',
+										optionsValue: 'code',
 										visibleItemsCount: 5,
 										value: remainDays,
-										optionsText: 'value',
+										optionsText: 'name',
 										enable: true,
 										required: true,
 										selectFirstIfNull: true,
-										columns: [{ prop: 'value', length: 5}]}" tabindex="4"></div>
+										columns: [{ prop: 'name', length: 5}]}" tabindex="4"></div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">

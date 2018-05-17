@@ -9,4 +9,6 @@ public interface WorkplaceAdapter {
 	Optional<WorkplaceImport> getWorlkplaceHistory(String employeeId, GeneralDate baseDate);
 	
 	List<WorkplaceIdName> findWkpByWkpId(String companyId, GeneralDate baseDate, List<String> wkpIds);
+	
+	List<WorkplaceImport> getWorlkplaceHistory(List<String> employeeId, GeneralDate baseDate);
 }

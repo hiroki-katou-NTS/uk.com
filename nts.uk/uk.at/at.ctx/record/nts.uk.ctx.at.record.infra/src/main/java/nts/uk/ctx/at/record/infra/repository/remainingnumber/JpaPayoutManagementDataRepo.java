@@ -90,7 +90,6 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	public void update(PayoutManagementData domain) {
 		 this.commandProxy().update(toEntity(domain));
 	}
-
 	@Override
 	public Optional<PayoutManagementData> findByID(String ID) {
 		Optional<KrcmtPayoutManaData> entity = this.queryProxy().find(ID, KrcmtPayoutManaData.class);

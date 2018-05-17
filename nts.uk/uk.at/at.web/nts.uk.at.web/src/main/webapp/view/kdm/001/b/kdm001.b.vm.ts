@@ -21,7 +21,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         //___________KCP009______________
         employeeInputList: KnockoutObservableArray<EmployeeKcp009> = ko.observableArray([]);
         systemReference: KnockoutObservable<number> = ko.observable(SystemType.EMPLOYMENT);
-        isDisplayOrganizationName: KnockoutObservable<boolean> = ko.observable(true);
+        isDisplayOrganizationName: KnockoutObservable<boolean> = ko.observable(false);
         targetBtnText: string = getText("KCP009_3");
         listComponentOption: ComponentOption;
         selectedItem: KnockoutObservable<string> = ko.observable(null);
@@ -118,7 +118,8 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 var date1 = i + '/1/2018';
                 var date2 = i + '/1/2018';
                 var hours = Math.floor(Math.random() * 8) + 1 ;
-                substituteDataArray.push(new SubstitutedData(i, i%2 == 0 ? date1 : null, i%2 == 0 ? hours : null, i%2 == 0 ?"基" : "", i%2 == 1 ? date2 : null, i%2 == 1 ? hours : null, i%2 == 1 ?"基" : "", 0.5, 0.5)); 
+                var isLinked = i %4 == 0 ? 1 : 0;
+                substituteDataArray.push(new SubstitutedData(i, i%2 == 0 ? date1 : null, i%2 == 0 ? hours : null, i%2 == 0 ?"基" : "", i%2 == 1 ? date2 : null, i%2 == 1 ? hours : null, i%2 == 1 ?"基" : "", 0.5, 0.5, isLinked)); 
             }
             self.substituteData = ko.observableArray(substituteDataArray);
             self.dispTotalRemainHours(_.sumBy(substituteDataArray, function(x) { return x.remainHolidayHours }) + getText('KDM001_27'));
@@ -189,6 +190,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                 virtualizationMode: 'continuous',
                 columns: [
                     { headerText: 'ID', key: 'id', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: 'linked', key: 'isLinked', dataType: 'string', width: '0px', hidden: true },
                     { headerText: getText('KDM001_33'), template: '<div style="float:right"> ${substituedWorkingDate} </div>', key: 'substituedWorkingDate', dataType: 'string', width: '120px' },
                     { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${substituedWorkingHours} </div>', key: 'substituedWorkingHours', dataType: 'string', width: '100px' },
                     { headerText: getText('KDM001_124'), key: 'substituedWorkingPeg', dataType: 'string', width: '100px' },
@@ -197,8 +199,8 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     { headerText: getText('KDM001_124'), key: 'substituedHolidayPeg', dataType: 'string', width: '100px' },
                     { headerText: getText('KDM001_37'), template: '<div style="float:right"> ${remainHolidayHours} </div>', key: 'remainHolidayHours', dataType: 'string', width: '100px' },
                     { headerText: getText('KDM001_20'), template: '<div style="float:right"> ${expiredHolidayHours} </div>', key: 'expiredHolidayHours', dataType: 'string', width: '100px' },
-                    { headerText: 'Button', key: 'pegSetting', dataType: 'string', width: '85px', unbound: true, ntsControl: 'ButtonPegSetting' },
-                    { headerText: 'Delete', key: 'correction', dataType: 'string', width: '55px', unbound: true, ntsControl: 'ButtonCorrection' }
+                    { headerText: '', key: 'pegSetting', dataType: 'string', width: '85px', unbound: true, ntsControl: 'ButtonPegSetting' },
+                    { headerText: '', key: 'isLinked', dataType: 'string', width: '55px', unbound: true, ntsControl: 'ButtonCorrection' }
                 ],
                 features: [
                     {
@@ -212,17 +214,24 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     { name: 'ButtonCorrection', text: getText('KDM001_23'), click: function(value) { self.doCorrection(value) }, controlType: 'Button' }
                 ]
             });
+            
+            _.forEach(self.substituteData(), function(value) {
+                if (value.isLinked == 1){
+                    let rowId = value.id;
+                    $("#substituteDataGrid").ntsGrid("disableNtsControlAt", rowId, 'isLinked', 'Button');
+                }
+            });
         }
         pegSetting(value) {
             let selectedRowData = value;
             setShared('PEGSETTING_PARAMS', value);
             if (value.substituedWorkingDate.length>0) {
                 modal("/view/kdm/001/j/index.xhtml").onClosed(function() {
-                    location.reload();
+                    //location.reload();
                 });
             } else {
                 modal("/view/kdm/001/k/index.xhtml").onClosed(function() {
-                    location.reload();
+                    //location.reload();
                 });
             }
         }
@@ -231,11 +240,11 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             setShared('CORRECTION_PARAMS', value);
             if (value.substituedWorkingDate.length>0) {
                 modal("/view/kdm/001/l/index.xhtml").onClosed(function() {
-                    location.reload();
+                    //location.reload();
                 });
             } else {
                 modal("/view/kdm/001/m/index.xhtml").onClosed(function() {
-                    location.reload();
+                    //location.reload();
                 });
             }
         }
@@ -250,10 +259,10 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         substituedHolidayPeg: string;
         remainHolidayHours: number;
         expiredHolidayHours: number;
-        isLinked: boolean;
+        isLinked: number;
         constructor(id: number, substituedWorkingDate: string, substituedWorkingHours: number, substituedWorkingPeg: string,
             substituedHolidayDate: string, substituteHolidayHours: number, substituedHolidayPeg: string, remainHolidayHours: number,
-            expiredHolidayHours: number) {
+            expiredHolidayHours: number, isLinked: number) {
             this.id = id;
             this.substituedWorkingDate = substituedWorkingDate;
             this.substituedWorkingHours = substituedWorkingHours;
@@ -263,6 +272,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             this.substituedHolidayPeg = substituedHolidayPeg;
             this.remainHolidayHours = remainHolidayHours;
             this.expiredHolidayHours = expiredHolidayHours;
+            this.isLinked = isLinked;
         }
     }
     export class ItemModel {

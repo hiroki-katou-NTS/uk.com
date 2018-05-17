@@ -13,7 +13,7 @@ import nts.uk.ctx.pereg.dom.person.info.item.IsRequired;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemCode;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.DataState;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.DataStateType;
-import nts.uk.shr.pereg.app.find.dto.EmpOptionalDto;
+import nts.uk.shr.pereg.app.find.dto.OptionalItemDataDto;
 
 @NoArgsConstructor
 @Getter
@@ -113,10 +113,10 @@ public class EmpInfoItemData extends AggregateRoot {
 		return resultState;
 	}
 
-	public EmpOptionalDto genToPeregDto() {
-		EmpOptionalDto dto = new EmpOptionalDto();
+	public OptionalItemDataDto genToPeregDto() {
+		OptionalItemDataDto dto = new OptionalItemDataDto();
 		dto.setItemCode(this.itemCode.v());
-		dto.setPerInfoDefId(perInfoDefId);
+		dto.setPerInfoItemDefId(perInfoDefId);
 		dto.setRecordId(recordId);
 		dto.setPerInfoCtgId(perInfoCtgId);
 		dto.setPerInfoCtgCd(perInfoCtgCd);

@@ -6,6 +6,8 @@ package nts.uk.query.model.employee;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDateTime;
+
 /**
  * The Interface EmployeeQueryModelRepository.
  */
@@ -19,5 +21,14 @@ public interface RegulationInfoEmployeeRepository {
 	 * @return the list
 	 */
 	public List<RegulationInfoEmployee> find(String comId, EmployeeSearchQuery paramQuery);
+	
+	/**
+	 * Find by sid.
+	 *
+	 * @param comId the com id
+	 * @param sid the sid
+	 * @return the regulation info employee
+	 */
+	public RegulationInfoEmployee findBySid(String comId, String sid, GeneralDateTime baseDate);
 
 }

@@ -38,7 +38,7 @@ public class PayoutManagementDataWebService extends WebService{
 	@POST
 	@Path("save")
 	public void save(PayManaRemainCommand command) {
-			addHandler.handle(command);
+		addHandler.handle(command);
 	}
 	
 	@POST
@@ -62,13 +62,13 @@ public class PayoutManagementDataWebService extends WebService{
 	
 	@POST
 	@Path("getBySidDatePeriod/{empId}/{startDate}/{endDate}")
-	public List<PayoutManagementDataDto> getBySidDatePeriod(@PathParam("empId")String sid, @PathParam("startDate")GeneralDate startDate,@PathParam("endDate")GeneralDate endDate) {
+	public List<PayoutManagementDataDto> getBySidDatePeriod(@PathParam("empId")String sid, GeneralDate startDate, GeneralDate endDate) {
 		return finder.getBySidDatePeriod(sid, startDate, endDate);
 	}
 	
 	@POST
 	@Path("getBySidDatePeriodNoDigestion/{empId}/{startDate}/{endDate}")
-	public List<PayoutManagementDataDto> getBySidDatePeriodNoDigestion(@PathParam("empId")String sid, @PathParam("startDate")GeneralDate startDate,@PathParam("endDate") GeneralDate endDate) {
-		return finder.getBySidDatePeriod(sid, startDate, endDate);
+	public List<PayoutManagementDataDto> getBySidDatePeriodNoDigestion(@PathParam("empId")String sid, GeneralDate startDate, GeneralDate endDate) {
+		return finder.getBySidDatePeriodNoDigestion(sid, startDate, endDate);
 	}
 }

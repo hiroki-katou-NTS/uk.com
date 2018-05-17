@@ -209,7 +209,7 @@ module nts.uk.ui {
 
             dispose() {
                 _.defer(() => this.onClosedHandler());
-
+                window.parent.$("body").trigger("dialogclosed", {dialogId: this.id});
                 // delay 2 seconds to avoid IE error when any JS is running in destroyed iframe
                 setTimeout(() => {
                     this.$iframe.remove();
@@ -218,7 +218,8 @@ module nts.uk.ui {
                     this.$iframe = null;
                     this.globalContext = null;
                     this.parent = null;
-                    this.onClosedHandler = null
+                    this.onClosedHandler = null;
+//                    this.id = null;
                 }, 2000);
             }
         }

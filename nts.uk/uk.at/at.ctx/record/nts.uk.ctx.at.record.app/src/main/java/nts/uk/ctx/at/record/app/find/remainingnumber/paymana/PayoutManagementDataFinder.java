@@ -43,7 +43,7 @@ public class PayoutManagementDataFinder {
 				.collect(Collectors.toList());
 	}
 	
-	public List<PayoutManagementDataDto> getBySidDatePeriodNoDigestion(String empId, GeneralDate startDate, GeneralDate endDate, int state) {
+	public List<PayoutManagementDataDto> getBySidDatePeriodNoDigestion(String empId, GeneralDate startDate, GeneralDate endDate) {
 
 		return payoutManagementDataRepository.getBySidDatePeriodNoDigestion(empId, startDate, endDate).stream().map(item -> PayoutManagementDataDto.createFromDomain(item))
 				.collect(Collectors.toList());

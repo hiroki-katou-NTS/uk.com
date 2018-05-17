@@ -14,6 +14,8 @@ public interface ClosureStatusManagementRepository {
 	
 	public Optional<ClosureStatusManagement> getById(String employeeId, YearMonth ym, int closureId, ClosureDate closureDate);
 
+	public Optional<ClosureStatusManagement> getLatestByEmpId(String employeeId);
+	
 	public void add(ClosureStatusManagement domain);
 	
 }

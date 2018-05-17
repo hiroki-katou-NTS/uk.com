@@ -13,6 +13,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.pub.spr.ApplicationSprPub;
+import nts.uk.ctx.at.request.pub.spr.export.ApplicationSpr;
 //import nts.uk.ctx.at.request.pub.spr.export.ApplicationSpr;
 import nts.uk.ctx.bs.employee.pub.spr.EmployeeSprPub;
 import nts.uk.ctx.bs.employee.pub.spr.export.EmpSprExport;
@@ -100,18 +101,19 @@ public class SprApprovalRootImpl implements SprApprovalRootService {
 		List<ApprovalRootStateSprExport> approvalRootStateSprList = sprApprovalSearchPub.getRootStateByDateAndType(date, rootType);
 		approvalRootStateSprList.forEach(x -> {
 			if(rootType==0){
-//				// ドメインモデル「申請」を取得する
-//				Optional<ApplicationSpr> opApplicationSpr = applicationSprPub.getAppByID(companyID, x.getRootStateID());
-//				if(!opApplicationSpr.isPresent()){
-//					return;
-//				} 
-//				// 申請種類!＝残業種類
-//				if(opApplicationSpr.get().getAppType()!=0){
-//					return;
-//				}
+				// ドメインモデル「申請」を取得する
+				Optional<ApplicationSpr> opApplicationSpr = applicationSprPub.getAppByID(companyID, x.getRootStateID());
+				if(!opApplicationSpr.isPresent()){
+					return;
+				} 
+				// 申請種類!＝残業種類
+				if(opApplicationSpr.get().getAppType()!=0){
+					return;
+				}
 			}
 			// （ワークフローExport）アルゴリズム「3.指定した社員が承認できるかの判断」を実行する
-			JudgmentSprExport judgmentSprExport = sprApprovalSearchPub.judgmentTargetPersonCanApprove(companyID, x.getRootStateID(), employeeID);
+			JudgmentSprExport judgmentSprExport = sprApprovalSearchPub
+					.judgmentTargetPersonCanApprove(companyID, x.getRootStateID(), employeeID, rootType);
 			if(!(judgmentSprExport.getAuthorFlag()&&judgmentSprExport.getApprovalAtr()==0&&!judgmentSprExport.getExpirationAgentFlag())){
 				return;
 			}
