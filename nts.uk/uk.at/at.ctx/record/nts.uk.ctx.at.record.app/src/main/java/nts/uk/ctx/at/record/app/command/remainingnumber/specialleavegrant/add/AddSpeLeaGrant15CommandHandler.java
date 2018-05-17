@@ -37,12 +37,6 @@ public class AddSpeLeaGrant15CommandHandler
 		val command = context.getCommand();
 		String specialId = IdentifierUtil.randomUniqueId();
 		String cid = AppContexts.user().companyId();
-
-		// 付与日＞使用期限の場合はエラー #Msg_1023
-		if (command.getGrantDate().compareTo(command.getDeadlineDate()) > 0) {
-			throw new BusinessException("Msg_1023");
-		}
-
 		SpecialLeaveGrantRemainingData domain = SpecialLeaveGrantRemainingData.createFromJavaType(specialId, cid,
 				command.getSid(),15,
 				command.getGrantDate(),command.getDeadlineDate(), 

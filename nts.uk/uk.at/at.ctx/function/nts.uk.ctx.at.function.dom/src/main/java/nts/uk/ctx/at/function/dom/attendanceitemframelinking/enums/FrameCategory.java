@@ -1,33 +1,83 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums;
 
 import lombok.AllArgsConstructor;
 
+/**
+ * The Enum FrameCategory.
+ */
 @AllArgsConstructor
+// 枠カテゴリ
 public enum FrameCategory {
-	
-	/* 残業 */
+
+	/** The Over time. */
+	// 残業
 	OverTime(0),
-	/* 残業振替 */
+
+	/** The Over time tranfer. */
+	// 残業振替
 	OverTimeTranfer(1),
-	/* 休出 */
+
+	/** The Rest. */
+	// 休出
 	Rest(2),
-	/* 休出振替 */
+
+	/** The Rest tranfer. */
+	// 休出振替
 	RestTranfer(3),
-	/* 割増項目 */
+
+	/** The Extra item. */
+	// 割増項目
 	ExtraItem(4),
-	/* 加給時間項目 */
+
+	/** The Addtion time item. */
+	// 加給時間項目
 	AddtionTimeItem(5),
-	/* 特定加給時間項目 */
+
+	/** The Specific addtion time item. */
+	// 特定加給時間項目
 	SpecificAddtionTimeItem(6),
-	/* 乖離時間項目 */
+
+	/** The Divergence time item. */
+	// 乖離時間項目
 	DivergenceTimeItem(7),
-	/* 任意項目 */
+
+	/** The Any item. */
+	// 任意項目
 	AnyItem(8),
-	/* 外出 */
+
+	/** The Go out. */
+	// 外出
 	GoOut(9),
-	/* 特定日 */
-	SpecificDate(10);
-	
+
+	/** The Specific date. */
+	// 特定日
+	SpecificDate(10),
+
+	/** The Excess time. */
+	// 超過時間
+	ExcessTime(11),
+
+	/** The Absence. */
+	// 欠勤
+	Absence(12),
+
+	/** The Special holiday frame. */
+	// 特別休暇枠
+	SpecialHolidayFrame(13),
+
+	/** The Total count. */
+	// 回数集計
+	TotalCount(14),
+
+	/** The Special holiday. */
+	// 特別休暇
+	SpecialHoliday(15);
+
+	/** The value. */
 	public final int value;
 
 }

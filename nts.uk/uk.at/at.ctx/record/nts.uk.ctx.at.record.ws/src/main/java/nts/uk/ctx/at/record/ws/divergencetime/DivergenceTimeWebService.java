@@ -150,5 +150,11 @@ public class DivergenceTimeWebService extends WebService {
 	public List<AttendanceNameDivergenceDto> getAtName(List<Integer> dailyAttendanceItemIds) {
 		return this.getItemSet.getAtName(dailyAttendanceItemIds);
 	}
+	
+	@POST
+	@Path("getMonthlyAttendanceDivergenceName")
+	public List<AttendanceNameDivergenceDto> getMonthlyAttendanceDivergenceName(List<Integer> monthlyAttendanceItemIds) {
+		return this.getItemSet.getMonthlyAtName(monthlyAttendanceItemIds);
+	}
 
 }

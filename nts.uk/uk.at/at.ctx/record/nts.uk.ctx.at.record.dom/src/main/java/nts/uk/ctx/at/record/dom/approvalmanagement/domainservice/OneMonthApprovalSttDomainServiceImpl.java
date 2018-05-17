@@ -91,6 +91,8 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 		query.setIncludeAreOnLoan(true);
 		query.setIncludeGoingOnLoan(false);
 		query.setIncludeRetirees(false);
+		query.setRetireStart(GeneralDate.today());
+		query.setRetireEnd(GeneralDate.today());
 		return query;
 	}
 

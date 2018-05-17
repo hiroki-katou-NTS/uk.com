@@ -35,6 +35,13 @@ public class JpaControlOfAttendanceItemsRepository extends JpaRepository impleme
 		this.commandProxy().update(updateEntity);
 	}
 
+	@Override
+	public void insertControlOfAttendanceItem(ControlOfAttendanceItems controlOfAttendanceItems) {
+		KshstControlOfAttendanceItems newEntity =KshstControlOfAttendanceItems.toEntity(controlOfAttendanceItems);
+		this.commandProxy().insert(newEntity);
+	}
+
+
 	
 
 }

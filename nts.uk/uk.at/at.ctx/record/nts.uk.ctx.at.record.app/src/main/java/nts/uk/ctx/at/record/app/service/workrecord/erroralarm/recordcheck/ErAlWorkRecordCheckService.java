@@ -17,14 +17,17 @@ import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.result.ContinuousHolidayCheckResult;
+import nts.uk.ctx.at.record.dom.adapter.query.employee.EmployeeSearchInfoDto;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQuery;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryAdapter;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryR;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.AlCheckTargetCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtraConRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.ContinuousHolCheckSet;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.repo.ContinuousHolCheckSetRepo;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
@@ -51,6 +54,12 @@ public class ErAlWorkRecordCheckService {
 
 	@Inject
 	private WorkInformationRepository workInfo;
+	
+	@Inject
+	private ErrorAlarmConditionRepository errorAlarmConditionRepo;
+	
+	@Inject
+	private WorkRecordExtraConRepository workRecordExtraRepo;
 
 	public List<RegulationInfoEmployeeQueryR> filterEmployees(GeneralDate workingDate, Collection<String> employeeIds,
 			ErrorAlarmCondition checkCondition) {
@@ -133,6 +142,126 @@ public class ErAlWorkRecordCheckService {
 		return toEmptyResultMap();
 	}
 
+	public List<EmployeeSearchInfoDto> filterAllEmployees(DatePeriod workingDate, Collection<String> employeeIds) {
+		return this.employeeSearch.search(employeeIds, workingDate);
+	}
+	
+	public List<String> filterAllEmployees(GeneralDate workingDate, Collection<String> employeeIds, ErrorAlarmCondition condition) {
+		return filterEmployees(this.employeeSearch.search(employeeIds, new DatePeriod(workingDate, workingDate)),
+				workingDate, condition.getCheckTargetCondtion());
+	}
+	
+	public List<ErrorRecord> checkWithRecord(GeneralDate workingDate, Collection<String> employeeIds,
+			List<String> EACheckID) {
+		return checkWithRecord(new DatePeriod(workingDate, workingDate), employeeIds, EACheckID) ;
+	}
+	
+	public List<ErrorRecord> checkWithRecord(DatePeriod workingDate, Collection<String> employeeIds,
+			List<String> EACheckID) {
+		
+		List<ErrorAlarmCondition> checkConditions = errorRecordRepo.findConditionByListErrorAlamCheckId(EACheckID);
+		if(checkConditions.isEmpty()){
+			EACheckID = workRecordExtraRepo.getAllWorkRecordExtraConByListID(EACheckID).stream()
+					.filter(c -> c.isUseAtr()).map(c -> c.getErrorAlarmCheckID()).collect(Collectors.toList());
+			if(EACheckID.isEmpty()){
+				return toEmptyResultList();
+			}
+			checkConditions = errorAlarmConditionRepo.findConditionByListErrorAlamCheckId(EACheckID);
+		}
+		
+		if(checkConditions.isEmpty()){
+			return toEmptyResultList();
+		}
+		
+		List<EmployeeSearchInfoDto> employees = this.filterAllEmployees(workingDate, employeeIds);
+		
+		if(employees.isEmpty()){
+			return toEmptyResultList();
+		}
+		
+		List<DailyRecordDto> record = fullFinder.find(new ArrayList<>(employeeIds), workingDate);
+			
+		if(record.isEmpty()){
+			return toEmptyResultList();
+		}
+		
+		GeneralDate start = workingDate.start();
+		List<ErrorRecord> result = new ArrayList<>();
+		while (start.beforeOrEquals(workingDate.end())) {
+			GeneralDate temp = start;
+			List<DailyRecordDto> cdRecors = record.stream().filter(r -> r.workingDate().equals(temp)).collect(Collectors.toList());
+			if (cdRecors.isEmpty()) {
+				continue;
+			}
+			result.addAll(checkConditions.stream().map(c -> {
+				return finalCheck(temp, c, cdRecors, filterEmployees(employees, temp, c.getCheckTargetCondtion()));
+			}).flatMap(List::stream).collect(Collectors.toList()));
+			start = start.addDays(1);
+		}
+		return result;
+			
+	}
+	
+	
+	
+	public List<ErrorRecord> checkWithRecord(GeneralDate workingDate, Collection<String> employeeIds,
+			ErrorAlarmCondition checkCondition, List<DailyRecordDto> record) {
+		List<String> filted = this.filterAllEmployees(workingDate, employeeIds, checkCondition);
+
+		if (filted.isEmpty()) {
+			return toEmptyResultList();
+		}
+		return finalCheck(workingDate, checkCondition, record, filted);
+	}
+	
+	private List<String> filterEmployees(List<EmployeeSearchInfoDto> source, GeneralDate workingDate, AlCheckTargetCondition checkCondition){
+		return source.stream().filter(em -> {
+			if(isTrue(checkCondition.getFilterByEmployment())){
+				if(!em.getEmployments().stream().filter(emp -> emp.getRange().contains(workingDate)).findFirst().isPresent()){
+					return false;
+				}
+			}
+			if(isTrue(checkCondition.getFilterByClassification())){
+				if(!em.getClassifications().stream().filter(emp -> emp.getRange().contains(workingDate)).findFirst().isPresent()){
+					return false;
+				}
+			}
+			if(isTrue(checkCondition.getFilterByJobTitle())){
+				if(!em.getJobTitles().stream().filter(emp -> emp.getRange().contains(workingDate)).findFirst().isPresent()){
+					return false;
+				}
+			}
+			if(isTrue(checkCondition.getFilterByBusinessType())){
+				if(!em.getBusinessTypes().stream().filter(emp -> emp.getRange().contains(workingDate)).findFirst().isPresent()){
+					return false;
+				}
+			}
+			return true;
+		}).map(em -> em.getEmployeeId()).collect(Collectors.toList());
+	}
+
+	private boolean isTrue(Boolean checkCondition) {
+		return checkCondition != null && checkCondition;
+	}
+
+	private List<ErrorRecord> finalCheck(GeneralDate workingDate, ErrorAlarmCondition checkCondition,
+			List<DailyRecordDto> record, List<String> filted) {
+		/** 社員に一致する日別実績を取得する */
+		List<DailyRecordDto> cRecord = record.stream().filter(c -> filted.contains(c.employeeId())).collect(Collectors.toList());
+
+		if (cRecord.isEmpty()) {
+			return toEmptyResultList();
+		}
+
+		return cRecord.stream().map(c -> {
+			boolean result = checkErrorAlarmCondition(c, checkCondition);
+			if(result){
+				return new ErrorRecord(workingDate, c.employeeId(), checkCondition.getErrorAlarmCheckID());
+			}
+			return null;
+		}).filter(c -> c != null).collect(Collectors.toList());
+	}
+
 	/** 大塚用連続休暇チェック */
 	public ContinuousHolidayCheckResult checkContinuousHolidays(String employeeId, DatePeriod range) {
 		Optional<ContinuousHolCheckSet> settingOp = checkSetting.find(AppContexts.user().companyId());
@@ -205,6 +334,10 @@ public class ErAlWorkRecordCheckService {
 	private <T> Map<String, T> toEmptyResultMap() {
 		return new HashMap<>();
 	}
+	
+	private <T> List<T> toEmptyResultList() {
+		return new ArrayList<>();
+	}
 
 	private RegulationInfoEmployeeQuery createQueryToFilterEmployees(GeneralDate workingDate,
 			AlCheckTargetCondition checkCondition) {
@@ -235,8 +368,38 @@ public class ErAlWorkRecordCheckService {
 		query.setIncludeAreOnLoan(true);
 		query.setIncludeGoingOnLoan(false);
 		query.setIncludeRetirees(false);
-		// query.setRetireStart(retireStart);
-		// query.setRetireEnd(retireEnd);
+		query.setRetireStart(workingDate);
+		query.setRetireEnd(workingDate);
 		return query;
+	}
+	
+	public class ErrorRecord {
+		private GeneralDate date;
+		private String employeeId;
+		private String erAlId;
+		private final boolean error = true;
+		
+		public ErrorRecord(GeneralDate date, String employeeId, String erAlId) {
+			super();
+			this.date = date;
+			this.employeeId = employeeId;
+			this.erAlId = erAlId;
+		}
+
+		public GeneralDate getDate() {
+			return date;
+		}
+
+		public String getEmployeeId() {
+			return employeeId;
+		}
+
+		public String getErAlId() {
+			return erAlId;
+		}
+
+		public boolean isError() {
+			return error;
+		}
 	}
 }

@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.dom.person.info.item.IsRequired;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemCode;
 import nts.uk.shr.pereg.app.find.dto.DataStateType;
-import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
+import nts.uk.shr.pereg.app.find.dto.OptionalItemDataDto;
 
 @NoArgsConstructor
 @Getter
@@ -86,8 +86,8 @@ public class PersonInfoItemData extends AggregateRoot {
 		return resultState;
 	}
 
-	public PersonOptionalDto genToPeregDto() {
-		PersonOptionalDto dto = new PersonOptionalDto();
+	public OptionalItemDataDto genToPeregDto() {
+		OptionalItemDataDto dto = new OptionalItemDataDto();
 		dto.setItemCode(this.itemCode.v());
 		dto.setPerInfoCtgId(this.perInfoCtgCd);
 		dto.setPerInfoCtgCd(perInfoCtgCd);
