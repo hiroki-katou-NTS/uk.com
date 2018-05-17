@@ -21,7 +21,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         //___________KCP009______________
         employeeInputList: KnockoutObservableArray<EmployeeKcp009> = ko.observableArray([]);
         systemReference: KnockoutObservable<number> = ko.observable(SystemType.EMPLOYMENT);
-        isDisplayOrganizationName: KnockoutObservable<boolean> = ko.observable(true);
+        isDisplayOrganizationName: KnockoutObservable<boolean> = ko.observable(false);
         targetBtnText: string = getText("KCP009_3");
         listComponentOption: ComponentOption;
         selectedItem: KnockoutObservable<string> = ko.observable(null);

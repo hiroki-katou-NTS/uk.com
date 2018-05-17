@@ -58,7 +58,9 @@
 	clear: both;
 	vertical-align: middle;
 }
-
+.emp-component-size {
+	width: 900px;
+}
 .person-info-panel {
 	margin-top: 30px;
 	width: 970px;

@@ -25,11 +25,11 @@
 		<ui:define name="sidebar">
 			<ul class="navigator">
 				<!-- 残数管理データ登録_振休管理 -->
-				<li><a tabindex="-1" href="#tabpanel-1" role="tab-navigator">AAAAA</a></li>
+				<li><a tabindex="-1" href="#tabpanel-1" role="tab-navigator">#{i18n.getText('KDM001_149')}</a></li>
 				<!-- 残数管理データ登録_代休管理 -->
-				<li><a tabindex="-1" href="#tabpanel-2" role="tab-navigator">BBBBB</a></li>
+				<li><a tabindex="-1" href="#tabpanel-2" role="tab-navigator">#{i18n.getText('KDM001_150')}</a></li>
 				<!-- 残数管理データ登録_６０Ｈ超休管理 -->
-				<li><a tabindex="-1" href="#tabpanel-3" role="tab-navigator">CCCCC</a></li>
+				<li><a tabindex="-1" href="#tabpanel-3" role="tab-navigator">#{i18n.getText('KDM001_151')}</a></li>
 			</ul>
 		</ui:define>
 		<ui:define name="sidebar-content">
@@ -40,7 +40,8 @@
 				<!-- B1 -->
 				<div
 					class="sidebar-content-header flex valign-center header-content">
-					<span class="title">Dialog Title</span>
+					<!-- B1_0 画面タイプ名  -->
+					<span class="title">#{i18n.getText('KDM001_150')}</span>
 					<!-- B1_1 新規 -->
 					<div>
 						<button id ="B1_1" tabindex="6" data-bind="click: openNewSubstituteData">#{i18n.getText('KDM001_1')}</button>
@@ -48,7 +49,7 @@
 					<!-- B1_2 「代休確認表」出力画面へ遷移する -->
 					<div style="margin-left: auto;">
 						<a id = "B1_2" tabindex="7" class="goout"
-							data-bind="ntsLinkButton: { jump: 'index.xhtml' }">#{i18n.getText('KDM001_113')}</a>
+							data-bind="ntsLinkButton: { jump: 'index.xhtml' }">#{i18n.getText('KDM001_32')}</a>
 					</div>
 
 				</div>
@@ -56,9 +57,11 @@
 					<!-- CCG001 -->
 					<div id="ccgcomponent"></div>
 					<!-- B2 -->
-					<!-- KCP009  対象者  -->
-					<div tabindex="1" id="emp-component"></div>
 					<div class="div-table">
+						<!-- KCP009  対象者  -->
+						<div class = "emp-component-size">
+						<div tabindex="1" id="emp-component"></div>
+						</div>
 						<!-- B3 -->
 						<div class="div-table-row">
 							<div class="div-table-col">
