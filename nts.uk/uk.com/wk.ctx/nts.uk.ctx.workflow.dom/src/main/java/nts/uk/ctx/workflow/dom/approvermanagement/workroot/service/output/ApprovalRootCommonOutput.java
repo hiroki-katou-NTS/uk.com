@@ -30,8 +30,8 @@ public class ApprovalRootCommonOutput {
 	/**就業ルート区分*/
 	private int employmentRootAtr;
 	public ApprovalRootCommonOutput(String companyId, String approvalId, String employeeId, String workpalceId,
-			String historyId, int applicationType, GeneralDate startDate, GeneralDate endDate, String branchId,
-			String anyItemApplicationId, int confirmationRootType, int employmentRootAtr) {
+			String historyId, Integer applicationType, GeneralDate startDate, GeneralDate endDate, String branchId,
+			String anyItemApplicationId, Integer confirmationRootType, int employmentRootAtr) {
 		super();
 		this.companyId = companyId;
 		this.approvalId = approvalId;
