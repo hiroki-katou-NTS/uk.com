@@ -411,11 +411,11 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     continue;
                 }
                 
-                if (itemOutUseClass[i].listOperationSetting.lenth == 0) {
+                if (itemOutUseClass[i].listOperationSetting().length == 0) {
                     alertError({ messageId: "Msg_881" });
                     block.clear();
                     return;
-                } else if (itemOutUseClass[i].listOperationSetting.lenth > 50) {
+                } else if (itemOutUseClass[i].listOperationSetting().length > 50) {
                     alertError({ messageId: "Msg_882" });
                     block.clear();
                     return;
@@ -471,17 +471,18 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 let data = ko.toJS(self.listStandardImportSetting()[selectedIndex]);
                 // send request remove item
                 service.deleteOutputItemSetting(data).done(() => {
-                    info({ messageId: 'Msg_16' });
-                    self.listStandardImportSetting.splice(selectedIndex, 1);
-                    if (self.listStandardImportSetting().length == 0) {
-                        self.selectedCode('');
-                    } else {
-                        if (selectedIndex >= self.listStandardImportSetting().length) {
-                            self.selectedCode(self.listStandardImportSetting()[self.listStandardImportSetting().length].cd());
+                    info({ messageId: 'Msg_16' }).then(() => {
+                        self.listStandardImportSetting.splice(selectedIndex, 1);
+                        if (self.listStandardImportSetting().length == 0) {
+                            self.selectedCode('');
                         } else {
-                            self.selectedCode(self.listStandardImportSetting()[selectedIndex].cd());
+                            if (selectedIndex >= self.listStandardImportSetting().length) {
+                                self.selectedCode(self.listStandardImportSetting()[self.listStandardImportSetting().length].cd());
+                            } else {
+                                self.selectedCode(self.listStandardImportSetting()[selectedIndex].cd());
+                            }
                         }
-                    }
+                    });
                 });
 
             });
