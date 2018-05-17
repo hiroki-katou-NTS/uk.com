@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.monthly.root;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,10 +11,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.dailyperform.optionalitem.dto.OptionalItemValueDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.ClosureDateDto;
-import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyAmountMonth;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyTimeMonth;
-import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -50,9 +48,10 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 			return ConvertHelper.mapTo(values, any -> AnyItemOfMonthly.of(employeeId, yearMonth, 
 					ConvertHelper.getEnum(closureId, ClosureId.class),
 					closureDate == null ? null : closureDate.toDomain(),
-					any.getItemNo(), new AnyTimeMonth(any.getMonthlyTime()),
-					new AnyTimesMonth(any.getMonthlyTimes()), 
-					new AnyAmountMonth(any.getMonthlyAmount())));
+					any.getItemNo(),
+					Optional.ofNullable(any.getMonthlyTime()),
+					Optional.ofNullable(any.getMonthlyTimes()), 
+					Optional.ofNullable(any.getMonthlyAmount())));
 		}
 		return new ArrayList<>();
 	}
