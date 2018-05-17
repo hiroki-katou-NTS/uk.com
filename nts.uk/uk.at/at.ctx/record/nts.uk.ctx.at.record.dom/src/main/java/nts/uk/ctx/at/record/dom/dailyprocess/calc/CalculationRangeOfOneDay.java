@@ -25,6 +25,7 @@ import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinPremiumTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -50,15 +51,18 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
@@ -303,17 +307,100 @@ public class CalculationRangeOfOneDay {
 				}
 			}
 		}
-		//if(this.withinWorkingTimeSheet.isPresent())
-			//val premiumTimeSheet = this.withinWorkingTimeSheet.get().getWithinWorkTimeFrame().stream()
-			//																				 .filter(tc -> tc.getPremiumTimeSheetInPredetermined().isPresent())
-			//																				 .map(tc -> tc.getPremiumTimeSheetInPredetermined().get())
-		
+//		forOOtsukaPartMethod(statutorySet, 
+//							 dailyTime,
+//							 this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().getFrameTimeSheets(),
+//							 autoCalculationSet,
+//							 breakdownTimeDay,
+//							 overTimeHourSetList,
+//							 dailyUnit,
+//							 holidayCalcMethodSet,
+//							 null,
+//							 vacationClass,
+//							 timevacationUseTimeOfDaily,
+//							 afterDay,
+//							 predetermineTimeSetForCalc,
+//							 siftCode,
+//							 personalCondition,
+//							 leaveEarly,
+//							 workingSystem,
+//							 holidayAddtionSet,
+//							 regularAddSetting,
+//							 flexAddSetting,
+//							 illegularAddSetting,
+//							 leaveEarly);
 	}
 
 
 
 
 	
+
+	
+	private void forOOtsukaPartMethod(LegalOTSetting statutorySet, DailyTime dailyTime, List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheetList, 
+									  AutoCalOvertimeSetting autoCalculationSet, BreakDownTimeDay breakdownTimeDay, List<OverTimeOfTimeZoneSet> overTimeHourSetList, 
+									  DailyUnit dailyUnit, HolidayCalcMethodSet holidayCalcMethodSet, WithinWorkTimeSheet createWithinWorkTimeSheet, 
+									  VacationClass vacationClass, TimevacationUseTimeOfDaily timevacationUseTimeOfDaily, WorkType workType, 
+									  PredetermineTimeSetForCalc predetermineTimeSet, Optional<WorkTimeCode> siftCode, Optional<PersonalLaborCondition> personalCondition, 
+									  boolean late, WorkingSystem workingSystem, HolidayAddtionSet holidayAddtionSet, WorkRegularAdditionSet regularAddSetting, 
+									  WorkFlexAdditionSet flexAddSetting, WorkDeformedLaborAdditionSet illegularAddSetting, boolean leaveEarly) {
+		List<WithinPremiumTimeSheetForCalc> tets =  this.withinWorkingTimeSheet.isPresent()
+														 ?this.withinWorkingTimeSheet.get().getWithinWorkTimeFrame()
+																 						   .stream()
+																 						   .filter(tc -> tc.getPremiumTimeSheetInPredetermined().isPresent())
+																 						   .map(tc -> tc.getPremiumTimeSheetInPredetermined().get())
+																 						   .collect(Collectors.toList())
+														 :Collections.emptyList();
+		for(WithinPremiumTimeSheetForCalc timeSheet : tets) {
+			if(this.outsideWorkTimeSheet.isPresent()) {
+				if(this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) {
+					this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().getFrameTimeSheets()
+											  .add(new OverTimeFrameTimeSheetForCalc(new TimeZoneRounding(timeSheet.getTimeSheet().getStart(),timeSheet.getTimeSheet().getEnd(),null),
+													  								 timeSheet.getTimeSheet(),
+													  								 Collections.emptyList(),
+													  								 Collections.emptyList(),
+													  								 Collections.emptyList(),
+													  								 Collections.emptyList(),
+													  								 Optional.empty(),
+													  								 new OverTimeFrameTime(new OverTimeFrameNo(10),
+													  										 			   TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),
+													  										 			   TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),
+													  										 			   new AttendanceTime(0),
+													  										 			   new AttendanceTime(0)),
+													  								 StatutoryAtr.Excess,
+													  								 false,
+													  								 new EmTimezoneNo(0),
+													  								 false,
+													  								 Optional.empty(),
+													  								 Optional.empty()
+													  								 ));
+				}
+			}
+		}
+		OverTimeFrameTimeSheetForCalc.diciaionCalcStatutory(statutorySet, 
+															dailyTime, 
+															overTimeWorkFrameTimeSheetList, 
+															autoCalculationSet, 
+															breakdownTimeDay, 
+															overTimeHourSetList, 
+															dailyUnit, 
+															holidayCalcMethodSet, 
+															createWithinWorkTimeSheet, 
+															vacationClass, 
+															timevacationUseTimeOfDaily, 
+															workType, 
+															predetermineTimeSet, 
+															siftCode, 
+															personalCondition, 
+															late, 
+															leaveEarly, 
+															workingSystem, 
+															illegularAddSetting, 
+															flexAddSetting, 
+															regularAddSetting, 
+															holidayAddtionSet);
+	}
+
 	/**
 	 * 各深夜時間の算出結果から深夜時間の合計を算出する
 	 * 

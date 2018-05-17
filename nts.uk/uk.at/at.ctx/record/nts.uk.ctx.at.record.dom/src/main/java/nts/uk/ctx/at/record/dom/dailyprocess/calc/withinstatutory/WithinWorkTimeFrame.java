@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
@@ -69,20 +70,18 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author keisuke_hoshina
  *
  */
+@Getter
 public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements LateLeaveEarlyManagementTimeFrame {
 
-	@Getter
 	private final EmTimeFrameNo workingHoursTimeNo;
 	
-	@Getter
-	private final Optional<TimeSpanForCalc> premiumTimeSheetInPredetermined;
-	
-	@Getter
 	//遅刻時間帯・・・deductByLateLeaveEarlyを呼ぶまでは値が無い
 	private Optional<LateTimeSheet> lateTimeSheet;
-	@Getter
 	//早退時間帯・・・deductByLateLeaveEarlyを呼ぶまでは値が無い
 	private Optional<LeaveEarlyTimeSheet> leaveEarlyTimeSheet;
+	//計算用所定内割増時間
+	@Setter
+	private Optional<WithinPremiumTimeSheetForCalc> premiumTimeSheetInPredetermined;
 	
 	
 	/**
@@ -105,9 +104,9 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		
 		super(timeSheet, calculationTimeSheet,recorddeductionTimeSheets,deductionTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet);
 		this.workingHoursTimeNo = workingHoursTimeNo;
-		this.premiumTimeSheetInPredetermined = Optional.empty();
 		this.lateTimeSheet = lateTimeSheet;
 		this.leaveEarlyTimeSheet = leaveEarlyTimeSheet;
+		this.premiumTimeSheetInPredetermined = Optional.empty();
 	}
 	
 
