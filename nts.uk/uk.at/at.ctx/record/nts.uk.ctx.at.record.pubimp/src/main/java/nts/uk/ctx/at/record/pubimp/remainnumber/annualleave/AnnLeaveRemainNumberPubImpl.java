@@ -139,6 +139,8 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 					Optional.empty());
 			// 締め処理期間のうち、同じ年月の期間をまとめる
 			Map<YearMonth, List<ClosurePeriod>> listMap = listClosurePeriod.stream()
+					.filter(item -> item.getYearMonth().compareTo(datePeriod.start().yearMonth()) >= 0
+							&& item.getYearMonth().compareTo(datePeriod.end().yearMonth()) <= 0)
 					.collect(Collectors.groupingBy(ClosurePeriod::getYearMonth));
 
 			List<ClosurePeriodEachYear> listClosurePeriodEachYear = new ArrayList<ClosurePeriodEachYear>();

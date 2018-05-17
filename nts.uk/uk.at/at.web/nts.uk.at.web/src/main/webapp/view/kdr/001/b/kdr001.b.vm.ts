@@ -184,6 +184,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.isNewMode(true);
             //focus
             self.setFocus();
+            self.setSpecialHolidayStyle();
             $('.nts-input').ntsError('clear');
             nts.uk.ui.errors.clearAll();
         }
