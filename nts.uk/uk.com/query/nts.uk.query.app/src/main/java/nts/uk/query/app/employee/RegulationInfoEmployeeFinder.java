@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.query.model.employee.EmployeeAuthAdapter;
 import nts.uk.query.model.employee.EmployeeReferenceRange;
 import nts.uk.query.model.employee.EmployeeRoleImported;
@@ -83,7 +84,7 @@ public class RegulationInfoEmployeeFinder {
 			// Find login employee info.
 			String loginEmployeeId = AppContexts.user().employeeId();
 			String companyId = AppContexts.user().companyId();
-			RegulationInfoEmployee loginEmployee = this.employeeInfoRepository.findBySid(companyId, loginEmployeeId,
+			RegulationInfoEmployee loginEmployee = this.repo.findBySid(companyId, loginEmployeeId,
 					GeneralDateTime.now());
 			return Arrays.asList(RegulationInfoEmployeeDto.builder()
 					.employeeCode(loginEmployee.getEmployeeCode())
