@@ -90,7 +90,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         columnEmployees: KnockoutObservableArray<NtsGridListColumn>;
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
-        categoryDeletionList: KnockoutObservableArray<CategoryDeletion>;;
+        categoryDeletionList: KnockoutObservableArray<CategoryDeletion>;
+        delId : string;
 
         constructor() {
             var self = this;
@@ -110,8 +111,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
 
             //Radio button
-            self.optionCategory = ko.observable({ value: 1, text: nts.uk.resource.getText("CMF005_15") });
-            self.optionDeleteSet = ko.observable({ value: 2, text: nts.uk.resource.getText("CMF005_16") });
+            self.optionCategory = ko.observable({ value: 1, text: getText("CMF005_15") });
+            self.optionDeleteSet = ko.observable({ value: 2, text: getText("CMF005_16") });
             self.deleteSetName = ko.observable('');
 
             //B5_3
@@ -608,17 +609,18 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
         private gotoscreenF(): void {
             let self = this;
+            self.saveManualSetting();
+            console.log("nextF :"+self.delId);
             let params = {};
+                params.delId = self.delId;
                 params.deleteSetName = self.deleteSetName();
                 params.dateValue = self.dateValue();
                 params.monthValue = self.monthValue();
                 params.yearValue = self.yearValue();
                 params.saveBeforDelete = self.isSaveBeforeDeleteFlg();
-                
-            setShared("CMF005_E_PARAMS", params);
 
-            //self.saveManualSetting();
-            modal("/view/cmf/005/f/index.xhtml");
+            setShared("CMF005_E_PARAMS", params);
+//            modal("/view/cmf/005/f/index.xhtml");
         }
 
         private saveManualSetting(): void {
@@ -630,11 +632,16 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 Number(self.yearValue().startDate), Number(self.yearValue().endDate),
                 Number(self.isSaveBeforeDeleteFlg()), Number(self.isExistCompressPasswordFlg()), self.passwordForCompressFile(),
                 Number(self.selectedTitleAtr()), self.employeeDeletionList(), self.categoryDeletionList());
+            
+            service.addManualSetDel(manualSetting).done(function(data: any) {
+                
+                    alertError("delId");
+                
+            }).fail(function(error) {
+                alertError("thuongtv");
 
-            service.addManualSetDel(manualSetting).done(() => {
-
-            }).fail(res => {
-
+            }).always(() => {
+                alertError("lolololol");
             });
         }
     }
@@ -653,9 +660,9 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
     function storageRangeSaved(value, row) {
         if (value == model.STORAGE_RANGE_SAVE.EARCH_EMP) {
-            return getText('Enum_Storage_Range_Saved_EARCH_EMP');
+            return getText('Enum_StorageRangeSaved_EARCH_EMP');
         } else if (value == model.STORAGE_RANGE_SAVE.ALL_EMP) {
-            return getText('Enum_Storage_Range_Saved_ALL_EMP');
+            return getText('Enum_StorageRangeSaved_ALL_EMP');
         }
     }
 

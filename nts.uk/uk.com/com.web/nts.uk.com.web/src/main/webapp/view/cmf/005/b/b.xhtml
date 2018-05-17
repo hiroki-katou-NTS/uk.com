@@ -52,10 +52,11 @@
 							data-bind="ntsGridList: {
 							height: 400,
 							width: 500,
-							showNumbering: true,
+							showNumbering: false,
 							dataSource: listDataCategory,
 							primaryKey: 'categoryId',
 							columns: listColumnHeader,
+							columnResize: true,
 							multiple: false,
 							value : currentCategory,
 							rows: 5

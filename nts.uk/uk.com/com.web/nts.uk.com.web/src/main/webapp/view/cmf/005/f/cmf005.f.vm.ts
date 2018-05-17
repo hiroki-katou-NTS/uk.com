@@ -51,8 +51,8 @@ module nts.uk.com.view.cmf005.f.viewmodel {
             self.timeOver = ko.observable('00:00:00');
             self.dataManagementDel = ko.observable({});
 
-            //self.delId = params.delId;
-            self.delId = "9d15a7eb-731d-42d8-b59c-a4a12faa1589";
+            self.delId = params.delId;
+//            self.delId = "9d15a7eb-731d-42d8-b59c-a4a12faa1589";
 
             //F3
             self.deleteSetName = params.deleteSetName;
@@ -125,18 +125,17 @@ module nts.uk.com.view.cmf005.f.viewmodel {
                     if (managementDel.operatingCondition == 4) {
                         self.dialogMode("done");
                     }
-                
+
                      // delete dataManagementDel of process when end
                      let dataManagementDel = new DataManagementDel(delId, 0, 0, 0, 0, 0);
-    //                 service.deleteManagementDel(dataManagementDel).done(function(res: any) {
-    //                    console.log(res);
-    //                 }).fail(function(res: any) {
-    //                     console.log(res);
-    //                 });
+                     service.deleteManagementDel(dataManagementDel).done(function(res: any) {
+                     }).fail(function(res: any) {
+
+                    });
                 }
 
             }).fail(function(res: any) {
-                console.log(res);
+
             });
         }
 
@@ -150,7 +149,7 @@ module nts.uk.com.view.cmf005.f.viewmodel {
                     service.setInterruptDeleting(dataManagementDel).done(function(res: any) {
                         self.dialogMode("done");
                     }).fail(function(res: any) {
-                        console.log(res);
+
                     });
                 })
                 .ifNo(() => {
