@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.dom.processexecution.tasksetting;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
@@ -10,11 +12,16 @@ import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.On
  * 1日の繰り返し間隔
  */
 @Getter
-@AllArgsConstructor
 public class OneDayRepeatInterval extends DomainObject {
-	/* 1日の繰り返し間隔ありなし区分 */
-	private OneDayRepeatIntervalDetail detail;
-	
 	/* 繰り返し間隔 */
-	private OneDayRepeatClassification oneDayRepCls;
+	private Optional<OneDayRepeatIntervalDetail> detail;
+	
+	/* 指定区分 */
+	private  OneDayRepeatClassification oneDayRepCls;
+
+	public OneDayRepeatInterval(OneDayRepeatIntervalDetail detail, OneDayRepeatClassification oneDayRepCls) {
+		this.detail = Optional.ofNullable(detail);
+		this.oneDayRepCls = oneDayRepCls;
+	}
+	
 }

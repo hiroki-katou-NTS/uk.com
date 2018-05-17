@@ -153,11 +153,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         initScreenSPR: any = 0;
         showDateRange: KnockoutObservable<any> = ko.observable(true);
         flexShortage: KnockoutObservable<FlexShortage> = ko.observable(new FlexShortage(null, null, null));
-        optionNoOfHolidays: any = ko.mapping.fromJS({
-            width: "50",
-            grouplength: 3,
-            decimallength: 2
-        })
+        optionNoOfHolidays: any = { width: "70",
+                    decimallength: 1,
+                    unitID: 'DAYS'}
         calcFlex: KnockoutObservable<CalcFlex> = ko.observable(null);
         showFlex: KnockoutObservable<any> = ko.observable(false);
         breakTimeDay: KnockoutObservable<BreakTimeDay> = ko.observable(null);
@@ -480,13 +478,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.breakTimeDay(data.flexShortage.breakTimeDay);
                 self.calcFlex(new CalcFlex(data.flexShortage.value18, data.flexShortage.value21, data.flexShortage.value189, data.flexShortage.value190, data.flexShortage.value191));
                 self.canFlex(data.flexShortage.canflex);
-                self.itemMonthLayout(data);
-                self.itemValueMonthParent = data.flexShortage.monthParent;
+                self.itemMonth = [];
                 let fst: FlexShortage = self.flexShortage();
 
                 //fst.parent = ko.observable(self);
                 fst.bindData(ko.toJS(self.calcFlex), ko.toJS(self.breakTimeDay));
 
+                self.itemMonthLayout(data);
+                self.itemValueMonthParent = data.flexShortage.monthParent;
                 //self.flexShortage(new FlexShortage(self, self.calcFlex(),  self.breakTimeDay()));
                 // アルゴリズム「フレックス不足の相殺が実施できるかチェックする」
             } else {
@@ -872,8 +871,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         btnExtraction_Click() {
             var self = this;
             console.log(self.dailyPerfomanceData());
-            if (!nts.uk.ui.errors.hasError()) {
-                self.hideComponent();
+           // if (!nts.uk.ui.errors.hasError()) {
+              nts.uk.ui.errors.clearAll();  
+              self.hideComponent();
                 let lstEmployee = [];
                 if (self.displayFormat() === 0) {
                     let lst = _.find(self.lstEmployee(), (employee) => {
@@ -949,13 +949,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         //self.flexShortage(new FlexShortage(self, self.calcFlex(), self.breakTimeDay()));
 
                         // アルゴリズム「フレックス不足の相殺が実施できるかチェックする」
+                         self.itemMonth = [];
                         self.canFlex(data.flexShortage.canflex);
-                        self.itemMonthLayout(data);
-                        self.itemValueMonthParent = data.flexShortage.monthParent;
                         
                         let fst: FlexShortage = self.flexShortage();
 
                         fst.bindData(ko.toJS(self.calcFlex), ko.toJS(self.breakTimeDay));
+                        
+                        self.itemMonthLayout(data);
+                        self.itemValueMonthParent = data.flexShortage.monthParent;
 
                     } else {
                         self.showFlex(false);
@@ -966,7 +968,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     nts.uk.ui.dialog.alert(error.message);
                     nts.uk.ui.block.clear();
                 });
-            }
+         //   }
         }
 
         showErrorDialog() {
@@ -2715,11 +2717,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         shortageTime: KnockoutObservable<any> = ko.observable();
         nextMonthTransferredMoneyTime: KnockoutObservable<string> = ko.observable("");
         noOfHolidays: KnockoutObservable<any> = ko.observable();
+        nameNoOfHolidays:any;
         absentDeductionTime: KnockoutObservable<any> = ko.observable();
+        nameAbsentDeductionTime: any;
 
         constructor(parent: any, dataCalc: CalcFlex, breakTimeDay: BreakTimeDay) {
             let self = this;
-
+            this.nameNoOfHolidays = nts.uk.resource.getText('Com_PaidHoliday');
+            this.nameAbsentDeductionTime = nts.uk.resource.getText('KDW003_79');
             self.noOfHolidays.subscribe(val => {
                 let parent = ko.toJS(__viewContext.vm);
 
@@ -2744,9 +2749,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 val21 = dataCalc.value21,
                 val189 = dataCalc.value189,
                 val190 = dataCalc.value190,
-                val191 = dataCalc.value191;
+                val191 = dataCalc.value191; 
 
-            self.shortageTime(nts.uk.resource.getText("KDW003_89", [self.convertToHours(Number(val191) + Number(val21) * (-1)), self.convertToHours(Number(val21) * (-1))]));
+            self.shortageTime(nts.uk.resource.getText("KDW003_89", [self.convertToHours((Number(val191) + Number(val21)) * (-1)), self.convertToHours(Number(val21) * (-1))]));
             //self.nextMonthTransferredMoneyTime(self.convertToHours(Number(val18) * (-1)));
             self.noOfHolidays(Number(val189));
             self.absentDeductionTime(Number(val190));
@@ -2760,35 +2765,40 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 val189 = self.natural(number189) * Number(self.natural(breakTimeDay.day)) + (number189 - self.natural(number189)) / 0.5 * self.natural(breakTimeDay.am),
                 minuNextMonth;
             if (self.absentDeductionTime() != undefined) {
-                minuNextMonth = (dataCalc.value191 + dataCalc.value21) - (val189 + self.absentDeductionTime())
+                minuNextMonth = ((dataCalc.value191 + dataCalc.value21) - (val189 + self.absentDeductionTime())) * (-1)
             }
             else{
                return ; 
             }
 
-            minuNextMonth = minuNextMonth < 0 ? 0 : minuNextMonth * (-1);
+           // minuNextMonth = minuNextMonth < 0 ? 0 : minuNextMonth * (-1);
             self.nextMonthTransferredMoneyTime(self.convertToHours(minuNextMonth));
 
            self.checkColor(self.nextMonthTransferredMoneyTime(), breakTimeDay);
 
             __viewContext.vm.valueUpdateMonth = {};
-            let dataFlexUpdate = __viewContext.vm.itemValueMonthParent,
-                items = _.map(ko.toJS(__viewContext.vm).itemMonth, value => {
-                    if (value.itemId == 18) {
-                        value.value = String(minuNextMonth * (-1));
-                    }
-                    if (value.itemId == 189) {
-                        value.value = self.noOfHolidays();
-                    }
-                    if (value.itemId == 190) {
-                        value.value = self.absentDeductionTime();
-                    }
-                    return value; 
-                }); 
+            
+            if (__viewContext.vm.itemMonth.length > 0){
+                let dataFlexUpdate = __viewContext.vm.itemValueMonthParent,
+                    items = _.map(ko.toJS(__viewContext.vm).itemMonth, value => {
+                        if (value.itemId == 18) {
+                            value.value = String(minuNextMonth * (-1));
+                        }
+                        if (value.itemId == 189) {
+                            value.value = self.noOfHolidays();
+                        }
+                        if (value.itemId == 190) {
+                            value.value = self.absentDeductionTime();
+                        }
+                        return value;
+                    });
 
-            if (dataFlexUpdate) {
-                dataFlexUpdate["items"] = items;
-                __viewContext.vm.valueUpdateMonth = dataFlexUpdate;
+                if (dataFlexUpdate) {
+                    dataFlexUpdate["items"] = items;
+                    __viewContext.vm.valueUpdateMonth = dataFlexUpdate;
+                }
+            }else{
+                __viewContext.vm.valueUpdateMonth = null;
             }
         }
         natural(value: any): number {
@@ -2811,18 +2821,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 let hours = value.split("-")[1].split(":");
                 if (Number(hours[0]) > 15 || (Number(hours[0]) == 15 && hours[1] != "00")) {
                     check1174 = true;
-                    $("#next-month").attr('style', 'background-color: red !important');
-                } else {
-                    $("#next-month").attr('style', 'background-color: white !important');
                 }
+            }
+            // check
+            let numberMonth = moment.duration(self.nextMonthTransferredMoneyTime()).asMinutes();
+            if (breakTimeDay.am <= numberMonth) {
+                check1175 = true;
+            } 
+            if (check1174 || check1175) {
+                 $("#next-month").attr('style', 'background-color: red !important');
             } else {
                 $("#next-month").attr('style', 'background-color: white !important');
             }
-            // check
-            if (breakTimeDay.am <= self.nextMonthTransferredMoneyTime()) {
-                check1175 = true;
-            }
-
             if (check1174) {
                 nts.uk.resource.getMessage("Msg_1174");
                 $("#next-month").ntsError("set", nts.uk.resource.getMessage("Msg_1174"), "Msg_1174");
@@ -2831,7 +2841,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
             if (check1175) {
                 nts.uk.resource.getMessage("Msg_1175")
-                $("#next-month").ntsError("set", nts.uk.resource.getMessage("Msg_1174"), "Msg_1174");
+                $("#next-month").ntsError("set", nts.uk.resource.getMessage("Msg_1175"), "Msg_1175");
             } else {
                 if ($("#next-month").ntsError("hasError", "Msg_1175")) $("#next-month").ntsError("clearByCode", "Msg_1175");
             }

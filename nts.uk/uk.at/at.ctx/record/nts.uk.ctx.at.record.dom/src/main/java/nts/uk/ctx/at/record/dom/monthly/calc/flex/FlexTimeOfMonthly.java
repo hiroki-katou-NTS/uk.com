@@ -460,8 +460,8 @@ public class FlexTimeOfMonthly {
 		
 		AttendanceTimeMonthWithMinus flexTargetTime = new AttendanceTimeMonthWithMinus(0);
 		
-		// 合計法定内時間を取得する
-		val totalLegalTime = aggregateTotalWorkingTime.getWorkTime().getTimeSeriesTotalLegalTime(datePeriod);
+		// 合計法定内実働時間を取得する
+		val totalLegalTime = aggregateTotalWorkingTime.getWorkTime().getTimeSeriesTotalLegalActualTime(datePeriod);
 		
 		// フレックス対象時間に合計法定内時間（就業時間）を加算する
 		flexTargetTime = flexTargetTime.addMinutes(totalLegalTime.v());
@@ -638,13 +638,15 @@ public class FlexTimeOfMonthly {
 						// 「フレックス時間（休暇加算前）」と「法定内として扱う時間」を比較する
 						if (beforeAddVacation <= treatLegal){
 							
-							// 「フレックス時間（休暇加算前）」を「法定内フレックス時間」に入れる
-							this.flexTime.setLegalFlexTime(new AttendanceTimeMonthWithMinus(beforeAddVacation));
+							// 「フレックス時間（休暇加算前）」を「法定内フレックス時間」に加算する
+							this.flexTime.setLegalFlexTime(new AttendanceTimeMonthWithMinus(
+									this.flexTime.getLegalFlexTime().v() + beforeAddVacation));
 						}
 						else {
 							
-							// 「法定内として扱う時間」を「法定内フレックス時間」に入れる
-							this.flexTime.setLegalFlexTime(new AttendanceTimeMonthWithMinus(treatLegal));
+							// 「法定内として扱う時間」を「法定内フレックス時間」に加算する
+							this.flexTime.setLegalFlexTime(new AttendanceTimeMonthWithMinus(
+									this.flexTime.getLegalFlexTime().v() + treatLegal));
 							
 							// 「法定外フレックス時間」を求める
 							this.flexTime.setIllegalFlexTime(new AttendanceTimeMonthWithMinus(
