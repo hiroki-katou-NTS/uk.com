@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.pubimp.remainingnumber.annualbreakmanage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -172,7 +171,6 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 			if (!grantHdTblSetOpt.isPresent()){
 				return nextAnnualLeaveGrant;
 			}
-			val grantHdTblSet = grantHdTblSetOpt.get();
 			
 			//○次回年休付与を取得する
 			nextAnnualLeaveGrant = getNextAnnualLeaveGrant

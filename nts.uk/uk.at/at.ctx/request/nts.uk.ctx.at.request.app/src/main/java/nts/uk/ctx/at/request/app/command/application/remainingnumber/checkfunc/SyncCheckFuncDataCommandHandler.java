@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.val;
@@ -100,7 +99,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 			// エラーがなかった場合
 
 			// TODO アルゴリズム「Excel出力データ取得」を実行する
-			List<ExcelInforCommandJson> excelInforList = new ArrayList<>();
+			List<ExcelInforCommand> excelInforList = new ArrayList<>();
 			for (int i = 0; i < employeeSearchCommand.size(); i++) {
 				if (asyncTask.hasBeenRequestedToCancel()) {
 					asyncTask.finishedAsCancelled();
@@ -152,7 +151,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 					continue;
 				}
 				//取得した情報をもとにExcel 出力情報Listに設定する
-				ExcelInforCommandJson excelInforCommand = new ExcelInforCommandJson();
+				ExcelInforCommand excelInforCommand = new ExcelInforCommand();
 				excelInforCommand.setName(employeeRecordImport.getPname());
 				excelInforCommand.setDateStart(employeeRecordImport.getEntryDate().toString());
 				excelInforCommand.setDateEnd(employeeRecordImport.getRetiredDate().toString());
@@ -165,8 +164,6 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				excelInforList.add(excelInforCommand);
 				
 				setter.updateData(NUMBER_OF_SUCCESS, i + 1);
-				
-				System.out.println("----------------" + (i + 1));
 			}
 			// Excel出力情報ListをもとにExcel出力をする (Xuất ra file excel)
 			//exportCsv(excelInforList);

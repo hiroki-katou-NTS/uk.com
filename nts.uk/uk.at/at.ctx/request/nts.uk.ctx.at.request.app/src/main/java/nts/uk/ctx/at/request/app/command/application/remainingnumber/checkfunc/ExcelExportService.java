@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,15 +17,15 @@ import nts.uk.shr.infra.file.csv.CSVFileData;
 import nts.uk.shr.infra.file.csv.CSVReportGenerator;
 
 @Stateless
-public class ExcelExportService extends ExportService<List<ExcelInforCommandJson>> {
+public class ExcelExportService extends ExportService<List<ExcelInforCommand>> {
 
 	/** The generator. */
     @Inject
     private CSVReportGenerator generator;
     
     @Override
-	protected void handle(ExportServiceContext<List<ExcelInforCommandJson>> context) {
-    	List<ExcelInforCommandJson> listOuput = context.getQuery();
+	protected void handle(ExportServiceContext<List<ExcelInforCommand>> context) {
+    	List<ExcelInforCommand> listOuput = context.getQuery();
     	if (listOuput == null) {
     		listOuput = new ArrayList<>();
     	}
@@ -42,10 +41,10 @@ public class ExcelExportService extends ExportService<List<ExcelInforCommandJson
     	List<String> header = this.getTextHeader(listHeader);
     	if (!listOuput.isEmpty()) {
 	    	List<Integer> sizePlannedVacationListCommand = new ArrayList<>();
-	    	for (ExcelInforCommandJson excelInforCommand : listOuput) {
+	    	for (ExcelInforCommand excelInforCommand : listOuput) {
 	    		sizePlannedVacationListCommand.add(excelInforCommand.getPlannedVacationListCommand().size());	 
 			}
-	    	ExcelInforCommandJson maxSizeExcelInforCommand = listOuput.get(Collections.max(sizePlannedVacationListCommand));
+	    	ExcelInforCommand maxSizeExcelInforCommand = listOuput.get(Collections.max(sizePlannedVacationListCommand));
 	    	for (PlannedVacationListCommand plannedVacation : maxSizeExcelInforCommand.getPlannedVacationListCommand()) {
 	    		listHeader.add(plannedVacation.getWorkTypeName());
 	    		listHeader.add(plannedVacation.getWorkTypeName()+TextResource.localize("KDM002_34"));
