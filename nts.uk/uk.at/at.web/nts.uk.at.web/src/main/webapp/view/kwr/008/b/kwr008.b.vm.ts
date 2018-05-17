@@ -376,7 +376,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             self.isNewMode(true); 
             self.currentSetOutputSettingCode(new SetOutputSettingCode(null));
-
+            self.selectedCode(null);
             for (var i = 0; i < self.outputItem().length; i++) {
                 self.outputItem()[i].updateData(i + 1,
                     null,
