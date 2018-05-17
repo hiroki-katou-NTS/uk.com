@@ -91,7 +91,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
         categoryDeletionList: KnockoutObservableArray<CategoryDeletion>;
-        delId : string;
+        delId : KnockoutObservable<string>;
 
         constructor() {
             var self = this;
@@ -220,6 +220,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 { headerText: getText('CMF005_56'), key: 'code', width: 150 },
                 { headerText: getText('CMF005_57'), key: 'name', width: 200 }
             ]);
+            self.delId = ko.observable("");
+            
         }
 
         /**
@@ -609,10 +611,9 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
         private gotoscreenF(): void {
             let self = this;
-            self.saveManualSetting();
-            console.log("nextF :"+self.delId);
             let params = {};
-                params.delId = self.delId;
+            console.log("abc:"+self.delId());
+                params.delId = self.delId();
                 params.deleteSetName = self.deleteSetName();
                 params.dateValue = self.dateValue();
                 params.monthValue = self.monthValue();
@@ -620,7 +621,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 params.saveBeforDelete = self.isSaveBeforeDeleteFlg();
 
             setShared("CMF005_E_PARAMS", params);
-//            modal("/view/cmf/005/f/index.xhtml");
+            modal("/view/cmf/005/f/index.xhtml");
         }
 
         private saveManualSetting(): void {
@@ -634,14 +635,12 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 Number(self.selectedTitleAtr()), self.employeeDeletionList(), self.categoryDeletionList());
             
             service.addManualSetDel(manualSetting).done(function(data: any) {
-                
-                    alertError("delId");
-                
+                self.delId(data);
+                self.gotoscreenF();
             }).fail(function(error) {
-                alertError("thuongtv");
+                alertError(error);
 
             }).always(() => {
-                alertError("lolololol");
             });
         }
     }

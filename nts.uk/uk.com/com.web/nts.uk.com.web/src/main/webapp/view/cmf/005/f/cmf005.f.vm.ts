@@ -12,7 +12,7 @@ module nts.uk.com.view.cmf005.f.viewmodel {
         interval: any;
 
         // received delId from E
-        delId: string;
+        delId: KnockoutObservable<string>;
 
         // time when start process
         timeStart: any;
@@ -46,12 +46,12 @@ module nts.uk.com.view.cmf005.f.viewmodel {
         constructor() {
             var self = this;
             var params = nts.uk.ui.windows.getShared("CMF005_E_PARAMS");
-
+            self.delId = ko.observable("");
             self.timeStart = new Date();
             self.timeOver = ko.observable('00:00:00');
             self.dataManagementDel = ko.observable({});
 
-            self.delId = params.delId;
+            self.delId(params.delId);
 //            self.delId = "9d15a7eb-731d-42d8-b59c-a4a12faa1589";
 
             //F3
@@ -93,7 +93,7 @@ module nts.uk.com.view.cmf005.f.viewmodel {
            */
         public confirmProcess(): void {
             let self = this;
-            let delId = self.delId;
+            let delId = self.delId();
             service.findManagementDel(delId).done(function(res: any) {
                 var managementDel = res;
 
@@ -182,7 +182,7 @@ module nts.uk.com.view.cmf005.f.viewmodel {
     }
 
     function getStatusEnum(value) {
-        console.log(value);
+       
         if (value && value == model.OPERATING_CONDITION.INPREPARATION) {
             return getText('Enum_OperatingCondition_INPREPARATION');
         } else if (value && value == model.OPERATING_CONDITION.SAVING) {
