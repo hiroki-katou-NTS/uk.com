@@ -219,8 +219,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 			List<PlanVacationHistory> planVacationHistoryMaxDay = vacationHistoryRepository.findHistory(companyId,
 					element.getWorkTypeCode());
 			// ドメインモデル「勤務種類」を取得する (lấy domain 「勤務種類」)
-			String workTypeCd = "";
-			Optional<WorkType> workType = workTypeRepository.findByDeprecated(loginUserContext.companyId(), workTypeCd);
+			Optional<WorkType> workType = workTypeRepository.findByDeprecated(loginUserContext.companyId(), element.getWorkTypeCode());
 			if (workType.isPresent()) {
 				PlannedVacationListCommand plannedVacation = new PlannedVacationListCommand();
 				plannedVacation.setWorkTypeCode(workType.get().getWorkTypeCode().toString());
