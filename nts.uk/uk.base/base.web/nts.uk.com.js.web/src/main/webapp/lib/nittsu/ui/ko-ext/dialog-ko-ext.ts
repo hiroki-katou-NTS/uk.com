@@ -162,8 +162,10 @@ module nts.uk.ui.koExtentions {
                 }).dialogPositionControl();
                 
                 PS.$("body").bind("dialogclosed", function(evt, eData){
-                    $dialog.dialog("close");
-                    $dialog.remove();
+                    if($dialog.attr("id") === eData.dialogId){
+                        $dialog.dialog("close");
+                        $dialog.remove();
+                    }
                 });    
             });
         }
