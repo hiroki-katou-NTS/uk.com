@@ -22,11 +22,15 @@ public class JpaEmployeeHistoryRepository extends JpaRepository implements Emplo
 
 	/** The Constant FIND_BY_ENTRY_DATE. */
 	private static final String FIND_BY_ENTRY_DATE = "SELECT c FROM BsymtAffCompanyHist c"
-			+ " WHERE c.startDate >= :startDate" + " AND c.startDate <= :endDate";
+			+ " WHERE c.startDate >= :startDate" 
+			+ " AND c.startDate <= :endDate"
+			+ " AND c.companyId = :comId";
 
 	/** The Constant FIND_BY_RETIREMENT_DATE. */
 	private static final String FIND_BY_RETIREMENT_DATE = "SELECT c FROM BsymtAffCompanyHist c"
-			+ " WHERE c.endDate >= :startDate" + " AND c.endDate <= :endDate";
+			+ " WHERE c.endDate >= :startDate"
+			+ " AND c.endDate <= :endDate"
+			+ " AND c.companyId = :comId";
 
 	/*
 	 * (non-Javadoc)
@@ -35,9 +39,12 @@ public class JpaEmployeeHistoryRepository extends JpaRepository implements Emplo
 	 * findEmployeeByEntryDate(nts.uk.shr.com.time.calendar.period.DatePeriod)
 	 */
 	@Override
-	public List<String> findEmployeeByEntryDate(DatePeriod period) {
+	public List<String> findEmployeeByEntryDate(String comId, DatePeriod period) {
 		return this.queryProxy().query(FIND_BY_ENTRY_DATE, BsymtAffCompanyHist.class)
-				.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList().stream()
+				.setParameter("startDate", period.start())
+				.setParameter("endDate", period.end())
+				.setParameter("comId", comId)
+				.getList().stream()
 				.map(e -> e.bsymtAffCompanyHistPk.sId).collect(Collectors.toList());
 	}
 
@@ -49,9 +56,12 @@ public class JpaEmployeeHistoryRepository extends JpaRepository implements Emplo
 	 * DatePeriod)
 	 */
 	@Override
-	public List<String> findEmployeeByRetirementDate(DatePeriod period) {
+	public List<String> findEmployeeByRetirementDate(String comId, DatePeriod period) {
 		return this.queryProxy().query(FIND_BY_RETIREMENT_DATE, BsymtAffCompanyHist.class)
-				.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList().stream()
+				.setParameter("startDate", period.start())
+				.setParameter("endDate", period.end())
+				.setParameter("comId", comId)
+				.getList().stream()
 				.map(e -> e.bsymtAffCompanyHistPk.sId).collect(Collectors.toList());
 	}
 

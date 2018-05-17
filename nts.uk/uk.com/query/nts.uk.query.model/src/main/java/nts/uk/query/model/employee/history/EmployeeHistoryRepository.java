@@ -16,16 +16,18 @@ public interface EmployeeHistoryRepository {
 	/**
 	 * Find employee by entry date.
 	 *
+	 * @param comId the com id
 	 * @param period the period
 	 * @return the list
 	 */
-	List<String> findEmployeeByEntryDate(DatePeriod period);
+	List<String> findEmployeeByEntryDate(String comId, DatePeriod period);
 
 	/**
 	 * Find employee by retirement date.
 	 *
+	 * @param comId the com id
 	 * @param period the period
 	 * @return the list
 	 */
-	List<String> findEmployeeByRetirementDate(DatePeriod period);
+	List<String> findEmployeeByRetirementDate(String comId, DatePeriod period);
 }

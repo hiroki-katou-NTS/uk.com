@@ -289,7 +289,7 @@ public class RegulationInfoEmployeeFinder {
 	 * @return the list
 	 */
 	public List<String> searchByEntryDate(DatePeriod period, Integer systemType) {
-		List<String> sIds = this.empHisRepo.findEmployeeByEntryDate(period);
+		List<String> sIds = this.empHisRepo.findEmployeeByEntryDate(AppContexts.user().companyId(), period);
 
 		return this.empAuthAdapter.narrowEmpListByReferenceRange(sIds, systemType);
 	}
@@ -302,7 +302,7 @@ public class RegulationInfoEmployeeFinder {
 	 * @return the list
 	 */
 	public List<String> searchByRetirementDate(DatePeriod period, Integer systemType) {
-		List<String> sIds = this.empHisRepo.findEmployeeByRetirementDate(period);
+		List<String> sIds = this.empHisRepo.findEmployeeByRetirementDate(AppContexts.user().companyId(), period);
 
 		return this.empAuthAdapter.narrowEmpListByReferenceRange(sIds, systemType);
 	}
