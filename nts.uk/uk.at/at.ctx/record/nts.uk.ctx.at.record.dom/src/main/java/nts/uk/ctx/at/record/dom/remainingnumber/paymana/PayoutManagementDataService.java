@@ -1,12 +1,10 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.paymana;
 
-import java.util.Date;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.layer.ws.json.serializer.GeneralDateDeserializer;
 import nts.arc.time.GeneralDate;
 
 @Stateless
@@ -21,9 +19,17 @@ public class PayoutManagementDataService {
 	// (Thực hiện thuật toán 「振出（年月日）チェック処理」"xử lý check chuyển đổi (năm tháng
 	// ngày)")
 	public boolean checkProcess() {
-		// todo somethings
-
-		return false;
+		// data fake : đang chờ trả lời Q&A
+		GeneralDate closingDate = GeneralDate.ymd(2018, 03, 12);
+		GeneralDate changeDate = GeneralDate.ymd(2018, 5, 12);
+		boolean check = false;
+		if (changeDate.compareTo(closingDate) < 0) {
+			check = true;
+		} else {
+			check = false;
+			throw new BusinessException("Mg_740");
+		}
+		return check;
 	}
 
 	// (Thực hiện thuật toán 「Ｇ．振休管理データの修正（振出設定）入力項目チェック処理」)
@@ -64,6 +70,9 @@ public class PayoutManagementDataService {
 			boolean checkBoxData = checkboxData(checkBox, stateAtr, expiredDate, unUsedDays);
 			if (checkBoxData) {
 				payoutMNDTRepo.update(data);
+
+				// **chưa có :(Thực hiện thuật toán 「振休残数管理データ更新フラグ処理」):bât cờ flag
+
 				update = true;
 			} else {
 				// error
@@ -86,7 +95,5 @@ public class PayoutManagementDataService {
 			throw new BusinessException("Error");
 			// error
 		}
-
 	}
-
 }
