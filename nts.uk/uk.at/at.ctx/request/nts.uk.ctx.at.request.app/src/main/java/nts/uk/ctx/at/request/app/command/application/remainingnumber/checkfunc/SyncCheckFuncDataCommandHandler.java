@@ -11,26 +11,20 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateful;
 import javax.inject.Inject;
 import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
-import javax.json.JsonValue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.SyEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.AnnualBreakManageAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.AnnualBreakManageImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.DailyWorkTypeListImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.NumberOfWorkTypeUsedImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.YearlyHolidaysTimeRemainingImport;
 import nts.uk.ctx.at.request.dom.settting.worktype.history.PlanVacationHistory;
 import nts.uk.ctx.at.request.dom.settting.worktype.history.VacationHistoryRepository;
@@ -38,7 +32,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateful
 public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFuncDataCommand> {
@@ -57,14 +50,8 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 	@Inject
 	private AnnualBreakManageAdapter annualBreakManageAdapter;
 
-//	@Inject
-//	private IVactionHistoryRulesService iVactionHistoryRulesService;
-	
 	@Inject
 	private VacationHistoryRepository vacationHistoryRepository;
-	
-	@Inject
-	ExcelExportService excelExportService;
 	
 	@Override
 	protected void handle(CommandHandlerContext<CheckFuncDataCommand> context) {
@@ -166,10 +153,10 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				//取得した情報をもとにExcel 出力情報Listに設定する
 				ExcelInforCommand excelInforCommand = new ExcelInforCommand();
 				excelInforCommand.setName(employeeRecordImport.getPname());
-				excelInforCommand.setDateStart(employeeRecordImport.getEntryDate());
-				excelInforCommand.setDateEnd(employeeRecordImport.getRetiredDate());
-				excelInforCommand.setDateOffYear(yearlyHolidaysTimeRemainingImport.get(0).getAnnualHolidayGrantDay());
-				excelInforCommand.setDateTargetRemaining(command.getDate());
+				excelInforCommand.setDateStart(employeeRecordImport.getEntryDate().toString());
+				excelInforCommand.setDateEnd(employeeRecordImport.getRetiredDate().toString());
+				excelInforCommand.setDateOffYear(yearlyHolidaysTimeRemainingImport.get(0).getAnnualHolidayGrantDay().toString());
+				excelInforCommand.setDateTargetRemaining(command.getDate().toString());
 				excelInforCommand.setDateAnnualRetirement(yearlyHolidaysTimeRemainingImport.get(0).getAnnualRemainingGrantTime());
 				excelInforCommand.setDateAnnualRest(yearlyHolidaysTimeRemainingImport.get(0).getAnnualRemaining());
 				excelInforCommand.setNumberOfWorkTypeUsedImport(dailyWorkTypeListImport.get().getNumberOfWorkTypeUsedExports());
@@ -177,8 +164,6 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				excelInforList.add(excelInforCommand);
 				
 				setter.updateData(NUMBER_OF_SUCCESS, i + 1);
-				
-				System.out.println("----------------" + (i + 1));
 			}
 			// Excel出力情報ListをもとにExcel出力をする (Xuất ra file excel)
 			//exportCsv(excelInforList);
@@ -196,21 +181,12 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 		}
 		//delay a moment.
 		try {
-			TimeUnit.SECONDS.sleep(1);
+			TimeUnit.SECONDS.sleep(10);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
-	/**
-	 * 計画休暇一覧を取得する
-	 * 
-	 * @param exportExcel
-	 * @param excelInfoComand
-	 * @return
-	 */
-	public ExportServiceResult exportCsv(List<ExcelInforCommand> command) {
-		return this.excelExportService.start(command);
-	}
+
 	/**
 	 * 計画休暇一覧を取得する
 	 * 
@@ -243,8 +219,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 			List<PlanVacationHistory> planVacationHistoryMaxDay = vacationHistoryRepository.findHistory(companyId,
 					element.getWorkTypeCode());
 			// ドメインモデル「勤務種類」を取得する (lấy domain 「勤務種類」)
-			String workTypeCd = "";
-			Optional<WorkType> workType = workTypeRepository.findByDeprecated(loginUserContext.companyId(), workTypeCd);
+			Optional<WorkType> workType = workTypeRepository.findByDeprecated(loginUserContext.companyId(), element.getWorkTypeCode());
 			if (workType.isPresent()) {
 				PlannedVacationListCommand plannedVacation = new PlannedVacationListCommand();
 				plannedVacation.setWorkTypeCode(workType.get().getWorkTypeCode().toString());

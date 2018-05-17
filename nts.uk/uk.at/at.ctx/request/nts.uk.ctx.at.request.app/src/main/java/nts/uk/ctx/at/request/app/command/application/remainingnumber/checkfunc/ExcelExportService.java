@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +47,7 @@ public class ExcelExportService extends ExportService<List<ExcelInforCommand>> {
 	    	ExcelInforCommand maxSizeExcelInforCommand = listOuput.get(Collections.max(sizePlannedVacationListCommand));
 	    	for (PlannedVacationListCommand plannedVacation : maxSizeExcelInforCommand.getPlannedVacationListCommand()) {
 	    		listHeader.add(plannedVacation.getWorkTypeName());
-	    		listHeader.add(plannedVacation.getWorkTypeName()+"（上限）");
+	    		listHeader.add(plannedVacation.getWorkTypeName()+TextResource.localize("KDM002_34"));
 			}
 	    	
 	    	List<String> head = this.getTextHeader(listHeader);  
@@ -74,7 +73,7 @@ public class ExcelExportService extends ExportService<List<ExcelInforCommand>> {
     	}
 		
 
-    	CSVFileData dataExport = new CSVFileData("", header, dataSource);
+    	CSVFileData dataExport = new CSVFileData("PGID_処理年月日時分秒_社員コード.xlsx", header, dataSource);
         // generate file
         this.generator.generate(context.getGeneratorContext(), dataExport);		
 	}
