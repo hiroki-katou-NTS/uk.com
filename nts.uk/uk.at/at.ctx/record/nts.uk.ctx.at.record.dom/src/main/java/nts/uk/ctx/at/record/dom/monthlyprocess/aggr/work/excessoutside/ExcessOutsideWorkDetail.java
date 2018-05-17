@@ -6,25 +6,19 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
-import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
-import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceItemOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthly;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlx;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.FlexTimeOfTimeSeries;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.MonthlyPremiumTimeOfTimeSeries;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.WeeklyPremiumTimeOfTimeSeries;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.WorkTimeOfTimeSeries;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
@@ -52,6 +46,8 @@ public class ExcessOutsideWorkDetail {
 	private Map<GeneralDate, MonthlyPremiumTimeOfTimeSeries> monthlyPremiumTime;
 	/** 丸め後合計時間 */
 	private TotalTime totalTimeAfterRound;
+	/** 丸め差分時間 */
+	private TotalTime roundDiffTime;
 	
 	/**
 	 * コンストラクタ
@@ -65,6 +61,7 @@ public class ExcessOutsideWorkDetail {
 		this.weeklyPremiumTime = new HashMap<>();
 		this.monthlyPremiumTime = new HashMap<>();
 		this.totalTimeAfterRound = new TotalTime();
+		this.roundDiffTime = new TotalTime();
 	}
 	
 	/**
@@ -88,20 +85,20 @@ public class ExcessOutsideWorkDetail {
 	 * @param aggregateTotalWorkingTime 集計総労働時間
 	 * @param regAndIrgTimeOfMonthly 月別実績の通常変形時間
 	 * @param flexTimeOfMonthly 月別実績のフレックス時間
-	 * @param aggrSetOfFlex フレックス時間勤務の月の集計設定
+	 * @param flexAggrSet フレックス時間勤務の月の集計設定
 	 * @param roundingSet 月別実績の丸め設定
 	 */
 	public void setTotalTimeAfterRound(
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			RegularAndIrregularTimeOfMonthly regAndIrgTimeOfMonthly,
 			FlexTimeOfMonthly flexTimeOfMonthly,
-			AggrSettingMonthlyOfFlx aggrSetOfFlex,
+			FlexMonthWorkTimeAggrSet flexAggrSet,
 			RoundingSetOfMonthly roundingSet){
 		
 		// 丸め前合計時間にコピーする
 		TotalTimeBeforeRound totalTimeBeforeRound = new TotalTimeBeforeRound();
 		totalTimeBeforeRound.copyValues(aggregateTotalWorkingTime,
-				regAndIrgTimeOfMonthly, flexTimeOfMonthly, aggrSetOfFlex);
+				regAndIrgTimeOfMonthly, flexTimeOfMonthly, flexAggrSet);
 		
 		// 各合計時間を丸める
 		this.totalTimeAfterRound.setTotalTimeAfterRound(totalTimeBeforeRound, roundingSet);
@@ -158,16 +155,15 @@ public class ExcessOutsideWorkDetail {
 		// 各合計時間を丸める
 		this.totalTimeAfterRound.setTotalTimeAfterRound(totalTimeBeforeRound, roundingSet);
 		
-		// 丸め差分時間を求める　→　丸め差分時間を時系列の時間に割り当てる
-		this.assignRoundDiffTime(totalTimeBeforeRound, datePeriod.end());
+		// 丸め差分時間を求める
+		this.askRoundDiffTime(totalTimeBeforeRound);
 	}
 	
 	/**
-	 * 丸め差分時間を割り当てる
+	 * 丸め差分時間を求める
 	 * @param totalTimeBeforeRound 丸め前合計時間
-	 * @param assignDate 割り当て日
 	 */
-	private void assignRoundDiffTime(TotalTimeBeforeRound totalTimeBeforeRound, GeneralDate assignDate){
+	private void askRoundDiffTime(TotalTimeBeforeRound totalTimeBeforeRound){
 		
 		// 就業時間
 		int diffWorkMinutes = this.totalTimeAfterRound.getWorkTime().v()
@@ -176,23 +172,14 @@ public class ExcessOutsideWorkDetail {
 		int diffWithinPrescribedMinutes = this.totalTimeAfterRound.getWithinPrescribedPremiumTime().v()
 				- totalTimeBeforeRound.getWithinPrescribedPremiumTime().v();
 		if (diffWithinPrescribedMinutes < 0) diffWithinPrescribedMinutes = 0;
-		this.workTime.putIfAbsent(assignDate, new WorkTimeOfTimeSeries(assignDate));
-		val workTimeDetail = this.workTime.get(assignDate);
-		workTimeDetail.addLegalTime(WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(
-				new AttendanceTime(diffWorkMinutes),
-				new AttendanceTime(0),
-				new AttendanceTime(diffWithinPrescribedMinutes),
-				new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
-				new AttendanceTime(0)));
+		this.roundDiffTime.setWorkTime(new AttendanceTimeMonth(diffWorkMinutes));
+		this.roundDiffTime.setWithinPrescribedPremiumTime(new AttendanceTimeMonth(diffWithinPrescribedMinutes));
 		
 		// 残業時間
 		for (val overTimeEachFrameNo : this.totalTimeAfterRound.getOverTime().values()){
 			val overTimeFrameNo = overTimeEachFrameNo.getOverTimeFrameNo();
 			if (!totalTimeBeforeRound.getOverTime().containsKey(overTimeFrameNo)) continue;
 			val overTimeBeforeRound = totalTimeBeforeRound.getOverTime().get(overTimeFrameNo);
-			this.overTime.putIfAbsent(overTimeFrameNo, new AggregateOverTime(overTimeFrameNo));
-			val overTimeDetail = this.overTime.get(overTimeFrameNo);
-			val targetWork = overTimeDetail.getAndPutTimeSeriesWork(assignDate);
 			
 			int diffOverMinutes = overTimeEachFrameNo.getOverTime().getTime().v()
 					- overTimeBeforeRound.getOverTime().getTime().v();
@@ -210,16 +197,14 @@ public class ExcessOutsideWorkDetail {
 					- overTimeBeforeRound.getTransferOverTime().getCalcTime().v();
 			if (diffCalcTransOverMinutes < 0) diffCalcTransOverMinutes = 0;
 			
-			targetWork.addOverTime(new OverTimeFrameTime(
-					overTimeFrameNo,
-					TimeDivergenceWithCalculation.createTimeWithCalculation(
-							new AttendanceTime(diffOverMinutes),
-							new AttendanceTime(diffCalcOverMinutes)),
-					TimeDivergenceWithCalculation.createTimeWithCalculation(
-							new AttendanceTime(diffTransOverMinutes),
-							new AttendanceTime(diffCalcTransOverMinutes)),
-					new AttendanceTime(0),
-					new AttendanceTime(0)));
+			this.roundDiffTime.getOverTime().putIfAbsent(overTimeFrameNo,
+					OverTimeFrameTotalTime.of(overTimeFrameNo,
+							new TimeMonthWithCalculation(
+									new AttendanceTimeMonth(diffOverMinutes),
+									new AttendanceTimeMonth(diffCalcOverMinutes)),
+							new TimeMonthWithCalculation(
+									new AttendanceTimeMonth(diffTransOverMinutes),
+									new AttendanceTimeMonth(diffCalcTransOverMinutes))));
 		}
 		
 		// 休出時間
@@ -227,9 +212,6 @@ public class ExcessOutsideWorkDetail {
 			val holidayWorkTimeFrameNo = holidayWorkTimeEachFrameNo.getHolidayWorkFrameNo();
 			if (!totalTimeBeforeRound.getHolidayWorkTime().containsKey(holidayWorkTimeFrameNo)) continue;
 			val holidayWorkTimeBeforeRound = totalTimeBeforeRound.getHolidayWorkTime().get(holidayWorkTimeFrameNo);
-			this.holidayWorkTime.putIfAbsent(holidayWorkTimeFrameNo, new AggregateHolidayWorkTime(holidayWorkTimeFrameNo));
-			val holidayWorkTimeDetail = this.holidayWorkTime.get(holidayWorkTimeFrameNo);
-			val targetWork = holidayWorkTimeDetail.getAndPutTimeSeriesWork(assignDate);
 			
 			int diffHolidayWorkMinutes = holidayWorkTimeEachFrameNo.getHolidayWorkTime().getTime().v()
 					- holidayWorkTimeBeforeRound.getHolidayWorkTime().getTime().v();
@@ -247,40 +229,33 @@ public class ExcessOutsideWorkDetail {
 					- holidayWorkTimeBeforeRound.getTransferTime().getCalcTime().v();
 			if (diffCalcTransMinutes < 0) diffCalcTransMinutes = 0;
 			
-			targetWork.addHolidayWorkTime(new HolidayWorkFrameTime(
-					holidayWorkTimeFrameNo,
-					Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(
-							new AttendanceTime(diffHolidayWorkMinutes),
-							new AttendanceTime(diffCalcHolidayWorkMinutes))),
-					Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(
-							new AttendanceTime(diffTransMinutes),
-							new AttendanceTime(diffCalcTransMinutes))),
-					Finally.of(new AttendanceTime(0))));
+			this.roundDiffTime.getHolidayWorkTime().putIfAbsent(holidayWorkTimeFrameNo,
+					HolidayWorkFrameTotalTime.of(holidayWorkTimeFrameNo,
+							new TimeMonthWithCalculation(
+									new AttendanceTimeMonth(diffHolidayWorkMinutes),
+									new AttendanceTimeMonth(diffCalcHolidayWorkMinutes)),
+							new TimeMonthWithCalculation(
+									new AttendanceTimeMonth(diffTransMinutes),
+									new AttendanceTimeMonth(diffCalcTransMinutes))));
 		}
 		
 		// フレックス超過時間
 		int diffFlexExcessMinutes = this.totalTimeAfterRound.getFlexExcessTime().v()
 				- totalTimeBeforeRound.getFlexExcessTime().v();
 		if (diffFlexExcessMinutes < 0) diffFlexExcessMinutes = 0;
-		this.flexExcessTime.putIfAbsent(assignDate, new FlexTimeOfTimeSeries(assignDate));
-		val flexExcessTimeDetail = this.flexExcessTime.get(assignDate);
-		flexExcessTimeDetail.addMinutesToFlexTimeInFlexTime(diffFlexExcessMinutes);
+		this.roundDiffTime.setFlexExcessTime(new AttendanceTimeMonth(diffFlexExcessMinutes));
 		
 		// 週割増合計時間
 		int diffWeekPremiumMinutes = this.totalTimeAfterRound.getWeeklyTotalPremiumTime().v()
 				- totalTimeBeforeRound.getWeeklyTotalPremiumTime().v();
 		if (diffWeekPremiumMinutes < 0) diffWeekPremiumMinutes = 0;
-		this.weeklyPremiumTime.putIfAbsent(assignDate, new WeeklyPremiumTimeOfTimeSeries(assignDate));
-		val weekPremiumTimeDetail = this.weeklyPremiumTime.get(assignDate);
-		weekPremiumTimeDetail.addMinutesToWeeklyPremiumTime(diffWeekPremiumMinutes);
+		this.roundDiffTime.setWeeklyTotalPremiumTime(new AttendanceTimeMonth(diffWeekPremiumMinutes));
 		
 		// 月割増合計時間
 		int diffMonthPremiumMinutes = this.totalTimeAfterRound.getMonthlyTotalPremiumTime().v()
 				- totalTimeBeforeRound.getMonthlyTotalPremiumTime().v();
 		if (diffMonthPremiumMinutes < 0) diffMonthPremiumMinutes = 0;
-		this.monthlyPremiumTime.putIfAbsent(assignDate, new MonthlyPremiumTimeOfTimeSeries(assignDate));
-		val monthPremiumTimeDetail = this.monthlyPremiumTime.get(assignDate);
-		monthPremiumTimeDetail.addMinutesToMonthlyPremiumTime(diffMonthPremiumMinutes);
+		this.roundDiffTime.setMonthlyTotalPremiumTime(new AttendanceTimeMonth(diffMonthPremiumMinutes));
 	}
 	
 	/**

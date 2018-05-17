@@ -15,13 +15,12 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * 月別実績の年休使用時間
  * @author shuichi_ishida
  */
-public class AnnualLeaveUseTimeOfMonthly {
+@Getter
+public class AnnualLeaveUseTimeOfMonthly implements Cloneable {
 	
 	/** 使用時間 */
-	@Getter
 	private AttendanceTimeMonth useTime;
 	/** 時系列ワーク */
-	@Getter
 	private Map<GeneralDate, AnnualLeaveUseTimeOfTimeSeries> timeSeriesWorks;
 	
 	/**
@@ -45,6 +44,20 @@ public class AnnualLeaveUseTimeOfMonthly {
 		domain.useTime = useTime;
 		return domain;
 	}
+
+	@Override
+	public AnnualLeaveUseTimeOfMonthly clone() {
+		AnnualLeaveUseTimeOfMonthly cloned = new AnnualLeaveUseTimeOfMonthly();
+		try {
+			cloned.useTime = new AttendanceTimeMonth(this.useTime.v());
+			// ※　Shallow Copy.
+			cloned.timeSeriesWorks = this.timeSeriesWorks;
+		}
+		catch (Exception e){
+			throw new RuntimeException("AnnualLeaveUseTimeOfMonthly clone error.");
+		}
+		return cloned;
+	}
 	
 	/**
 	 * 年休使用時間を確認する
@@ -63,14 +76,14 @@ public class AnnualLeaveUseTimeOfMonthly {
 			// 「日別実績の年休」を取得する
 			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
-			//*****（未）　ここから先のドメインがまだない
-			//VacationOfDaily vacationOfDaily = totalWorkingTime.getVacation();
-			//annualLeaveOfDaily annualLeaveOfDaily = vacationOfDaily.getAnnualLeave();
+			if (totalWorkingTime.getHolidayOfDaily() == null) return;
+			val holidayOfDaily = totalWorkingTime.getHolidayOfDaily();
+			if (holidayOfDaily.getAnnual() == null) return;
+			val annual = holidayOfDaily.getAnnual();
 			
 			// 取得した使用時間を「月別実績の年休使用時間」に入れる
-			//*****（未）　「日別実績の年休」クラスをnewして、値を入れて、それをset？
-			val annualLeaveUseTimeOfTimeSeries = AnnualLeaveUseTimeOfTimeSeries.of(ymd);
-			this.timeSeriesWorks.putIfAbsent(ymd, annualLeaveUseTimeOfTimeSeries);
+			val annualLeaveUseTime = AnnualLeaveUseTimeOfTimeSeries.of(ymd, annual);
+			this.timeSeriesWorks.putIfAbsent(ymd, annualLeaveUseTime);
 		}
 	}
 	
@@ -84,9 +97,24 @@ public class AnnualLeaveUseTimeOfMonthly {
 		
 		for (val timeSeriesWork : this.timeSeriesWorks.values()){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
-			//AnnualLeaveOfDaily annualLeaveUseTime = timeSeriesWork.getAnnualLeaveUseTime();
-			//this.useTime.addMinutes(annualLeaveUseTime.getUseTime().valueAsMinutes());
+			this.addMinuteToUseTime(timeSeriesWork.getAnnualLeaveUseTime().getUseTime().v());
 		}
+	}
+	
+	/**
+	 * 年休使用時間を求める
+	 * @param datePeriod 期間
+	 * @return 年休使用時間
+	 */
+	public AttendanceTimeMonth getTotalUseTime(DatePeriod datePeriod){
+		
+		AttendanceTimeMonth returnTime = new AttendanceTimeMonth(0);
+		
+		for (val timeSeriesWork : this.timeSeriesWorks.values()){
+			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
+			returnTime = returnTime.addMinutes(timeSeriesWork.getAnnualLeaveUseTime().getUseTime().v());
+		}
+		return returnTime;
 	}
 	
 	/**

@@ -16,14 +16,14 @@ public class GetWeekStart {
 
 	/** 通常・変形勤務の法定労働時間 */
 	//@Inject
-	//*****（未）　取得リポジトリは、別担当で作成中。
+	//*****（未）　法定労働時間ドメインから取得するのではなく、週開始用ドメインを作成する予定。2018.4.19 shuichi_ishida
 	
 	/**
-	 * 取得
+	 * 週開始を取得する
 	 * @param workingSystem 労働制
 	 * @return 週開始
 	 */
-	public Optional<WeekStart> get(WorkingSystem workingSystem){
+	public Optional<WeekStart> algorithm(WorkingSystem workingSystem){
 		//*****（未）　パラメータは、法定労働時間の取得メソッドに揃える
 		
 		Optional<WeekStart> returnValue = Optional.empty();

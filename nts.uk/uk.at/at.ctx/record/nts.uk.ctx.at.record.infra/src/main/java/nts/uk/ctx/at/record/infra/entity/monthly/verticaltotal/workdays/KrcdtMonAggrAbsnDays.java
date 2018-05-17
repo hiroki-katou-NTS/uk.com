@@ -12,7 +12,11 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AggregateAbsenceDays;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -34,6 +38,10 @@ public class KrcdtMonAggrAbsnDays extends UkJpaEntity implements Serializable {
 	/** 欠勤日数 */
 	@Column(name = "ABSENCE_DAYS")
 	public double absenceDays;
+	
+	/** 欠勤時間 */
+	@Column(name = "ABSENCE_TIME")
+	public int absenceTime;
 
 	/** マッチング：月別実績の勤怠時間 */
 	@ManyToOne
@@ -52,5 +60,44 @@ public class KrcdtMonAggrAbsnDays extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {		
 		return this.PK;
+	}
+	
+	/**
+	 * ドメインに変換
+	 * @return 集計欠勤日数
+	 */
+	public AggregateAbsenceDays toDomain(){
+		
+		return AggregateAbsenceDays.of(
+				this.PK.absenceFrameNo,
+				new AttendanceDaysMonth(this.absenceDays),
+				new AttendanceTimeMonth(this.absenceTime));
+	}
+	
+	/**
+	 * ドメインから変換　（for Insert）
+	 * @param key キー値：月別実績の勤怠時間
+	 * @param domain 集計欠勤日数
+	 */
+	public void fromDomainForPersist(AttendanceTimeOfMonthlyKey key, AggregateAbsenceDays domain){
+		
+		this.PK = new KrcdtMonAggrAbsnDaysPK(
+				key.getEmployeeId(),
+				key.getYearMonth().v(),
+				key.getClosureId().value,
+				key.getClosureDate().getClosureDay().v(),
+				(key.getClosureDate().getLastDayOfMonth() ? 1 : 0),
+				domain.getAbsenceFrameNo());
+		this.fromDomainForUpdate(domain);
+	}
+	
+	/**
+	 * ドメインから変換　(for Update)
+	 * @param domain 集計欠勤日数
+	 */
+	public void fromDomainForUpdate(AggregateAbsenceDays domain){
+		
+		this.absenceDays = domain.getDays().v();
+		this.absenceTime = domain.getTime().v();
 	}
 }

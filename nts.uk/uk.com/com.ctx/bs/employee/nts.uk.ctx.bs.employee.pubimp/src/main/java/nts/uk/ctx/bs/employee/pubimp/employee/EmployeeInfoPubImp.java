@@ -51,7 +51,7 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 		} else {
 			EmployeeDataMngInfo emp = empInfo.get();
 			
-			Optional<Person> person = personRepo.getByPId(emp.getPersonId());
+			Optional<Person> person = personRepo.getByPersonId(emp.getPersonId());
 			
 			EmployeeInfoDtoExport result = new EmployeeInfoDtoExport(emp.getCompanyId(),
 					emp.getEmployeeCode() == null ? null : emp.getEmployeeCode().v(), emp.getEmployeeId(),

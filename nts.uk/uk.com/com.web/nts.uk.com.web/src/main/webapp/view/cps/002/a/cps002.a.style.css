@@ -261,3 +261,7 @@
 .finish .ui-dialog-titlebar-close {
 	display: none;
 }
+
+#hor-scroll-button-hide {
+	position: absolute !important;
+}

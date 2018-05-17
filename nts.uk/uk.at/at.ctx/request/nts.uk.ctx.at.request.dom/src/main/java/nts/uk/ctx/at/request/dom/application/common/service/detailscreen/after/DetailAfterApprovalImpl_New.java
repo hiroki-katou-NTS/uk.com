@@ -77,7 +77,9 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 					(application.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)
 					|| application.getAppType().equals(ApplicationType.BREAK_TIME_APPLICATION)))
 				|| application.getAppType().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION)
-				|| application.getAppType().equals(ApplicationType.WORK_CHANGE_APPLICATION)){
+				|| application.getAppType().equals(ApplicationType.WORK_CHANGE_APPLICATION)
+				|| application.getAppType().equals(ApplicationType.ABSENCE_APPLICATION)
+				|| application.getAppType().equals(ApplicationType.COMPLEMENT_LEAVE_APPLICATION)){
 				appReflectManager.reflectEmployeeOfApp(application);
 			}
 		} else {

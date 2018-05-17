@@ -1,43 +1,57 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave;
 
+import java.util.Optional;
+
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedNumber;
+import lombok.Setter;
 
 /**
  * 実積立年休
  * @author shuichu_ishida
  */
 @Getter
+@Setter
 public class RealReserveLeave {
 
-	/** 残数 */
-	private ReserveLeaveRemainingDayNumber remainingNumber;
 	/** 使用数 */
 	private ReserveLeaveUsedNumber usedNumber;
+	/** 残数 */
+	private ReserveLeaveRemainingNumber remainingNumber;
+	/** 残数付与前 */
+	private ReserveLeaveRemainingNumber remainingNumberBeforeGrant;
+	/** 残数付与後 */
+	private Optional<ReserveLeaveRemainingNumber> remainingNumberAfterGrant;
 	
 	/**
 	 * コンストラクタ
 	 */
 	public RealReserveLeave(){
 		
-		this.remainingNumber = new ReserveLeaveRemainingDayNumber(0.0);
-		this.usedNumber = new ReserveLeaveUsedNumber(0.0, null);
+		this.usedNumber = new ReserveLeaveUsedNumber();
+		this.remainingNumber = new ReserveLeaveRemainingNumber();
+		this.remainingNumberBeforeGrant = new ReserveLeaveRemainingNumber();
+		this.remainingNumberAfterGrant = Optional.empty();
 	}
 	
 	/**
 	 * ファクトリー
-	 * @param remainingNumber 残数
 	 * @param usedNumber 使用数
+	 * @param remainingNumber 残数
+	 * @param remainingNumberBeforeGrant 残数付与前
+	 * @param remainingNumberAfterGrant 残数付与後
 	 * @return 実積立年休
 	 */
 	public static RealReserveLeave of(
-			ReserveLeaveRemainingDayNumber remainingNumber,
-			ReserveLeaveUsedNumber usedNumber){
+			ReserveLeaveUsedNumber usedNumber,
+			ReserveLeaveRemainingNumber remainingNumber,
+			ReserveLeaveRemainingNumber remainingNumberBeforeGrant,
+			Optional<ReserveLeaveRemainingNumber> remainingNumberAfterGrant){
 		
 		RealReserveLeave domain = new RealReserveLeave();
-		domain.remainingNumber = remainingNumber;
 		domain.usedNumber = usedNumber;
+		domain.remainingNumber = remainingNumber;
+		domain.remainingNumberBeforeGrant = remainingNumberBeforeGrant;
+		domain.remainingNumberAfterGrant = remainingNumberAfterGrant;
 		return domain;
 	}
 }

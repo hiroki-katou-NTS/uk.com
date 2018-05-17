@@ -37,6 +37,13 @@ public class HolidayWorkFrameTime {
 		this.holidayWorkTime = Finally.of(this.holidayWorkTime.get().addMinutes(time, calcTime));
 	}
 	
+	public HolidayWorkFrameTime addHolidayTimeExistReturn(AttendanceTime time,AttendanceTime calcTime) {
+		return new HolidayWorkFrameTime(this.holidayFrameNo, 
+										Finally.of(this.holidayWorkTime.get().addMinutes(time, calcTime)), 
+										this.transferTime, 
+										this.beforeApplicationTime);
+	}
+	
 	//休出枠Noのみ指定した休出枠Noに更新する
 	public HolidayWorkFrameTime updateHolidayFrameNo(HolidayWorkFrameNo holidayFrameNo) {
 		
@@ -115,8 +122,8 @@ public class HolidayWorkFrameTime {
 	
 	
 	public HolidayWorkFrameTime calcDiverGenceTime() {
-		TimeDivergenceWithCalculation holidayWorkTime = this.holidayWorkTime.isPresent()?this.holidayWorkTime.get().calcDiverGenceTime():this.holidayWorkTime.get();
-		TimeDivergenceWithCalculation transferTime = this.transferTime.isPresent()?this.transferTime.get().calcDiverGenceTime():this.transferTime.get();
+		TimeDivergenceWithCalculation holidayWorkTime = this.holidayWorkTime.isPresent()?this.holidayWorkTime.get().calcDiverGenceTime():TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0));
+		TimeDivergenceWithCalculation transferTime = this.transferTime.isPresent()?this.transferTime.get().calcDiverGenceTime():TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0));
 		
 		return new HolidayWorkFrameTime(this.holidayFrameNo,Finally.of(holidayWorkTime),Finally.of(transferTime),this.beforeApplicationTime);
 	}

@@ -585,7 +585,22 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		reflectStampOutput.setOutingTimeOfDailyPerformance(outingDailyPerformance);
 		reflectStampOutput.setLstStamp(lstStamp);
 		reflectStampOutput.setTemporaryTimeOfDailyPerformance(temporaryPerformance);
-		reflectStampOutput.setTimeLeavingOfDailyPerformance(timeLeavingOfDailyPerformance);
+		
+		boolean isPassed =false;
+		for (int i = 0; i < size; i++) {
+
+			StampItem x = lstStampItem.get(i);
+			if(x.getStampAtr().value==0 || x.getStampAtr().value==1){
+				isPassed =true;
+				break;
+			}
+		}
+		if(isPassed){
+			reflectStampOutput.setTimeLeavingOfDailyPerformance(timeLeavingOfDailyPerformance);
+		}else{
+			reflectStampOutput.setTimeLeavingOfDailyPerformance(timeDailyPer);
+		}
+		
 		return reflectStampOutput;
 
 	}

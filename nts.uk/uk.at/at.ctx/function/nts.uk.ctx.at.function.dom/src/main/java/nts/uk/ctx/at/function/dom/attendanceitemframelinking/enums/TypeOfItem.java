@@ -8,11 +8,11 @@ public enum TypeOfItem {
 	/* スケジュール */
 	Schedule(0),
 	/* 日次 */
-	Monthly(1),
+	Daily(1),
 	/* 月次 */
-	Weekly(2),
+	Monthly(2),
 	/* 週次 */
-	Daily(3),
+	Weekly(3),
 	/* 任意期間 */
 	AnyPeriod(4);
 	

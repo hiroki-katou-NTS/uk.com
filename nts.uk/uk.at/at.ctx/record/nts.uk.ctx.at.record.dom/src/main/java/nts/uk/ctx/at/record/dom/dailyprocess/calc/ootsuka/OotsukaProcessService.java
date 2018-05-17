@@ -15,4 +15,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 public interface OotsukaProcessService {
 
 	public WorkType getOotsukaWorkType(WorkType workType,Optional<FixedWorkCalcSetting> calcMethodOfFixWork,TimeLeavingOfDailyPerformance attendanceLeaving, HolidayCalculation holidayCalculation);
+	
+	public boolean decisionOotsukaMode(WorkType workType,Optional<FixedWorkCalcSetting> calcMethodOfFixWork,TimeLeavingOfDailyPerformance attendanceLeaving, HolidayCalculation holidayCalculation);
 }

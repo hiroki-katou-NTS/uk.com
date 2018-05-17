@@ -1,8 +1,9 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output;
 
+import lombok.Data;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-@Value
+@Data
 public class ApprovalRootCommonOutput {
 	/**会社ID*/
 	private String companyId;
@@ -28,4 +29,22 @@ public class ApprovalRootCommonOutput {
 	private Integer confirmationRootType;
 	/**就業ルート区分*/
 	private int employmentRootAtr;
+	public ApprovalRootCommonOutput(String companyId, String approvalId, String employeeId, String workpalceId,
+			String historyId, int applicationType, GeneralDate startDate, GeneralDate endDate, String branchId,
+			String anyItemApplicationId, int confirmationRootType, int employmentRootAtr) {
+		super();
+		this.companyId = companyId;
+		this.approvalId = approvalId;
+		this.employeeId = employeeId;
+		this.workpalceId = workpalceId;
+		this.historyId = historyId;
+		this.applicationType = applicationType;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.branchId = branchId;
+		this.anyItemApplicationId = anyItemApplicationId;
+		this.confirmationRootType = confirmationRootType;
+		this.employmentRootAtr = employmentRootAtr;
+	}
+	
 }

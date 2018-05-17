@@ -23,6 +23,7 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtEmpOrderCond;
 import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtEmployeeOrder;
 import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtEmployeeOrderPK;
@@ -72,14 +73,10 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		List<String> classificationCodes = paramQuery.getClassificationCodes();
 		List<String> jobTitleCodes = paramQuery.getJobTitleCodes();
 		List<String> worktypeCodes = paramQuery.getWorktypeCodes();
+		List<Integer> closureIds = paramQuery.getClosureIds();
 
 		// Add company condition 
 		conditions.add(cb.equal(root.get(EmployeeDataView_.cid), comId));
-//		conditions.add(cb.or(
-//				cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.comStrDate), paramQuery.getPeriodStart()),
-//						cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodStart())),
-//				cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.comStrDate), paramQuery.getPeriodEnd()),
-//						cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodEnd()))));
 
 		// Add NOT_DELETED condition
 		conditions.add(cb.equal(root.get(EmployeeDataView_.delStatusAtr), NOT_DELETED));
@@ -140,18 +137,37 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			conditions
 					.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.jobInfoEndDate), paramQuery.getBaseDate()));
 		}
-		if (paramQuery.getSystemType() == SystemType.EMPLOYMENT.value && paramQuery.getFilterByWorktype()) {
-			// return empty list if condition code list is empty
-			if (worktypeCodes.isEmpty()) {
-				return Collections.emptyList();
-			}
+		if (paramQuery.getSystemType() == SystemType.EMPLOYMENT.value) {
+			if (paramQuery.getFilterByWorktype()) {
+				// return empty list if condition code list is empty
+				if (worktypeCodes.isEmpty()) {
+					return Collections.emptyList();
+				}
 
-			// update query conditions
-			conditions.add(root.get(EmployeeDataView_.workTypeCd).in(worktypeCodes));
-			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.workTypeStrDate),
-					GeneralDate.localDate(paramQuery.getBaseDate().toLocalDate())));
-			conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.workTypeEndDate),
-					GeneralDate.localDate(paramQuery.getBaseDate().toLocalDate())));
+				// update query conditions
+				conditions.add(root.get(EmployeeDataView_.workTypeCd).in(worktypeCodes));
+				conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.workTypeStrDate),
+						GeneralDate.localDate(paramQuery.getBaseDate().toLocalDate())));
+				conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.workTypeEndDate),
+						GeneralDate.localDate(paramQuery.getBaseDate().toLocalDate())));
+			}
+			if (paramQuery.getFilterByClosure()) {
+				// return empty list if condition code list is empty
+				if (closureIds.isEmpty()) {
+					return Collections.emptyList();
+				}
+
+				// update query conditions
+				conditions.add(root.get(EmployeeDataView_.closureId).in(closureIds));
+
+				// check exist before add employment conditions
+				if (!paramQuery.getFilterByEmployment()) {
+					conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.employmentStrDate),
+							paramQuery.getBaseDate()));
+					conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.employmentEndDate),
+							paramQuery.getBaseDate()));
+				}
+			}
 		}
 		cq.where(conditions.toArray(new Predicate[] {}));
 
@@ -301,6 +317,50 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			// Not found.
 			return null;
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.query.model.employee.RegulationInfoEmployeeRepository
+	 * #findBySid(java.lang.String, java.lang.String, nts.arc.time.GeneralDateTime)
+	 */
+	@Override
+	public RegulationInfoEmployee findBySid(String comId, String sid, GeneralDateTime baseDate) {
+		CriteriaBuilder cb = this.getEntityManager().getCriteriaBuilder();
+		CriteriaQuery<EmployeeDataView> cq = cb.createQuery(EmployeeDataView.class);
+		Root<EmployeeDataView> root = cq.from(EmployeeDataView.class);
+		
+		// Constructing condition.
+		List<Predicate> conditions = new ArrayList<Predicate>();
+
+		// Add company condition
+		conditions.add(cb.equal(root.get(EmployeeDataView_.cid), comId));
+
+		// Add NOT_DELETED condition
+		conditions.add(cb.equal(root.get(EmployeeDataView_.delStatusAtr), NOT_DELETED));
+		
+		// Where SID.
+		conditions.add(cb.equal(root.get(EmployeeDataView_.sid), sid));
+		
+		// Where base date.
+		conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wplStrDate), baseDate));
+		conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wplEndDate), baseDate));
+		
+		// Find fist.
+		cq.where(conditions.toArray(new Predicate[] {}));
+		List<EmployeeDataView> res = this.getEntityManager().createQuery(cq).getResultList();
+		EmployeeDataView entity = res.get(0);
+		
+		// Convert.
+		return RegulationInfoEmployee.builder()
+				.classificationCode(Optional.ofNullable(entity.getClassificationCode())).employeeCode(entity.getScd())
+				.employeeID(entity.getSid()).employmentCode(Optional.ofNullable(entity.getEmpCd()))
+				.hireDate(Optional.ofNullable(entity.getComStrDate()))
+				.jobTitleCode(Optional.ofNullable(entity.getJobCd()))
+				.name(Optional.ofNullable(entity.getBusinessName()))
+				.workplaceId(Optional.ofNullable(entity.getWorkplaceId()))
+				.workplaceCode(Optional.ofNullable(entity.getWplCd()))
+				.workplaceName(Optional.ofNullable(entity.getWplName()))
+				.build();
 	}
 
 }

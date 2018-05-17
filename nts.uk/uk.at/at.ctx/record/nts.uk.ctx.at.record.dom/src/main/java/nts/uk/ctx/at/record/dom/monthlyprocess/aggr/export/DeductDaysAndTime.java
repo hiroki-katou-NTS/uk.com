@@ -1,15 +1,19 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -28,8 +32,8 @@ public class DeductDaysAndTime {
 
 	/** 所定時間設定（平日時就業） */
 	private Optional<PredetemineTimeSetting> predetermineTimeSetOfWeekDay;
-	/** エラーメッセージID */
-	private List<String> errorMessageIds;
+	/** エラー情報リスト */
+	private List<MonthlyAggregationErrorInfo> errorInfos;
 	
 	/**
 	 * コンストラクタ
@@ -41,6 +45,9 @@ public class DeductDaysAndTime {
 		this.annualLeaveDeductDays = annualLeaveDeductDays;
 		this.annualLeaveDeductTime = new AttendanceTimeMonth(0);
 		this.absenceDeductTime = absenceDeductTime;
+		
+		this.predetermineTimeSetOfWeekDay = Optional.empty();
+		this.errorInfos = new ArrayList<>();
 	}
 	
 	/**
@@ -61,9 +68,16 @@ public class DeductDaysAndTime {
 		AttendanceTimeMonth convertTime = new AttendanceTimeMonth(0);
 		
 		// 平日時就業時間帯コードを取得する
-		val workTimeCdOpt = workingConditionItem.getWorkCategory().getWeekdayTime().getWorkTimeCode();
+		val weekdayTime = workingConditionItem.getWorkCategory().getWeekdayTime();
+		if (weekdayTime == null){
+			this.errorInfos.add(new MonthlyAggregationErrorInfo(
+					"015", new ErrMessageContent(TextResource.localize("Msg_1142"))));
+			return;
+		}
+		val workTimeCdOpt = weekdayTime.getWorkTimeCode();
 		if (!workTimeCdOpt.isPresent()){
-			this.errorMessageIds.add("not exist WorkTimeCode");
+			this.errorInfos.add(new MonthlyAggregationErrorInfo(
+					"015", new ErrMessageContent(TextResource.localize("Msg_1142"))));
 			return;
 		}
 		val workTimeCd = workTimeCdOpt.get().v();
@@ -74,10 +88,8 @@ public class DeductDaysAndTime {
 		if (!this.predetermineTimeSetOfWeekDay.isPresent()){
 			
 			// エラー処理
-			//ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
-			//		new ErrMessageResource("011"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
-			//		new ErrMessageContent(TextResource.localize("Msg_1011")));
-			this.errorMessageIds.add("not exist PredetermineTimeSetting");
+			this.errorInfos.add(new MonthlyAggregationErrorInfo(
+					"015", new ErrMessageContent(TextResource.localize("Msg_1142"))));
 			return;
 		}
 		val predetermineTimeSet = this.predetermineTimeSetOfWeekDay.get();
