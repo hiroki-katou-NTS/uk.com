@@ -50,7 +50,7 @@
 					<!-- M6_1 年月日 -->
 					<div class="column-1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDM001_62')}</div>
 					<!-- M6_2 年月日 -->
-					<div
+					<div id="M6_2"
 						data-bind="ntsDatePicker: {value: substituteHolidayDate, dateFormat: 'YYYY/MM/DD'}"
 						tabindex="1"></div>
 				</div>
@@ -69,7 +69,7 @@
 										enable: true,
 										required: true,
 										selectFirstIfNull: true,
-										columns: [{ prop: 'value', length: 5}]}"></div>
+										columns: [{ prop: 'value', length: 5}]}" tabindex="2"></div>
 					</div>
 				<div class="flex valign-center margin-bottom padding-left-15">
 					<!-- M10_1 残数 -->
@@ -86,7 +86,7 @@
 										enable: true,
 										required: true,
 										selectFirstIfNull: true,
-										columns: [{ prop: 'value', length: 5}]}"></div>
+										columns: [{ prop: 'value', length: 5}]}" tabindex="4"></div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
