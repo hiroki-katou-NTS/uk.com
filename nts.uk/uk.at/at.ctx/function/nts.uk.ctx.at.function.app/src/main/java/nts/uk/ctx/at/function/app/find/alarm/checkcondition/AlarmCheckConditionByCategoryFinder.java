@@ -127,7 +127,7 @@ public class AlarmCheckConditionByCategoryFinder {
 				String agreementNameErr = listAgreeNameError.stream()
 						.filter(x -> (x.getPeriod() == item.getPeriod() && x.getErrorAlarm() == item.getErrorAlarm()))
 						.findFirst().get().getName().v();
-				return new AgreeConditionErrorDto(item.getId(), item.getCode().v(), 
+				return new AgreeConditionErrorDto(item.getCategory().value, item.getId(), item.getCode().v(), 
 													item.getUseAtr().value, item.getPeriod().value,
 													item.getErrorAlarm().value, item.getMessageDisp().v(), agreementNameErr);
 			}).collect(Collectors.toList());
@@ -135,7 +135,7 @@ public class AlarmCheckConditionByCategoryFinder {
 			List<AgreeCondOtDto> listCondOt = new ArrayList<>();
 			List<AgreeCondOt> result = condOtRep.findAll(domain.getCode().v(), domain.getCategory().value);
 			listCondOt = result.stream().map(x -> {
-				return new AgreeCondOtDto(x.getId(), x.getNo(), x.getCode().v(),
+				return new AgreeCondOtDto(x.getCategory().value, x.getId(), x.getNo(), x.getCode().v(),
 											x.getOt36().v(), x.getExcessNum().v(), x.getMessageDisp().v());
 			}).collect(Collectors.toList());
 		

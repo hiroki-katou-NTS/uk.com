@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.app.command.alarm.checkcondition;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -12,6 +13,9 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
+import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.AgreeCondOtCommand;
+import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.AgreeConditionErrorCommand;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
@@ -24,6 +28,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.ExtractionCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeCondOt;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeConditionError;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AlarmChkCondAgree36;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeCondOtRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeConditionErrorRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
@@ -135,7 +140,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			case AGREEMENT: 
 				// update agree condtion error
 				List<AgreeConditionError> listError = new ArrayList<>();
-				listError = command.getAgree36().getListCondError().stream().map(x -> 
+				listError = command.getCondAgree36().getListCondError().stream().map(x -> 
 					AgreeConditionError.createFromJavaType(x.getId(), x.getCompanyId(), x.getCategory(),
 															x.getCode(), x.getUseAtr(), x.getPeriod(), 
 															x.getErrorAlarm(), x.getMessageDisp())
@@ -143,42 +148,54 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				for(AgreeConditionError item : listError){
 					if(item.getId() != null){
 						Optional<AgreeConditionError> oldOption = conErrRep.findById(item.getId(), item.getCode().v(), 
-																						item.getCompanyId(), item.getCategory().value);
+																						companyId, item.getCategory().value);
 						if(oldOption.isPresent()){
 							conErrRep.update(item);
 						}else{
+							item.setId(UUID.randomUUID().toString());
 							conErrRep.insert(item);
 						}
 					}else{
+						item.setId(UUID.randomUUID().toString());
 						conErrRep.insert(item);
 					}
 				}
 				// update agree conditon ot
 				List<AgreeCondOt> listOt = new ArrayList<>();
+				listOt = command.getCondAgree36().getListCondOt().stream().map(x -> 
+						AgreeCondOt.createFromJavaType(x.getId(), x.getCompanyId(), 
+								x.getCategory(), x.getCode(), 
+								x.getNo(), x.getOt36(), x.getExcessNum(), x.getMessageDisp())
+				).collect(Collectors.toList());
 				if(listOt.isEmpty()){
 					throw new BusinessException("Msg_832"); 
 				}
 				if(listOt.size() > 10){
 					throw new BusinessException("Msg_1242"); 
 				}
-				listOt = command.getAgree36().getListCondOt().stream().map(x -> 
-						AgreeCondOt.createFromJavaType(x.getId(), x.getCompanyId(), 
-								x.getCategory(), x.getCode(), 
-								x.getNo(), x.getOt36(), x.getExcessNum(), x.getMessageDisp())
-				).collect(Collectors.toList());
+				// find 1 list agreeconditionot from DB, if item in DB isn't existed in UI => delete 
+				List<AgreeCondOt> agreeConditionDbList = otRep.findAll(command.getCode(), command.getCategory());
+				for (AgreeCondOt itemDb : agreeConditionDbList) {
+					Boolean exists = listOt.stream().anyMatch(x -> x.getId().equals(itemDb.getId()));
+					if (!exists) {
+						otRep.deleteId(command.getCode(), command.getCategory(), itemDb.getId(), itemDb.getNo());
+					}
+				}
+				// update/insert listOt
 				for(AgreeCondOt obj : listOt){
-					if(obj.getId() != null){
+					if(!StringUtil.isNullOrEmpty(obj.getId(), true)){
 						Optional<AgreeCondOt> oldOption = otRep.findById(obj.getId(), obj.getNo(), obj.getCode().v(),
-																			obj.getCompanyId(), obj.getCategory().value);
+																			companyId, obj.getCategory().value);
 						if(oldOption.isPresent()){
 							otRep.update(obj);
 						}else{
+							obj.setId(UUID.randomUUID().toString());
 							otRep.insert(obj);
 						}
 					}else{
+						obj.setId(UUID.randomUUID().toString());
 						otRep.insert(obj);
 					}
-			
 				}
 				break;
 			default:
@@ -245,7 +262,8 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 							command.getTargetCondition().getTargetJobTitle(),
 							command.getTargetCondition().getTargetEmployment(),
 							command.getTargetCondition().getTargetClassification()),
-					command.getAvailableRoles(), extractionCondition);
+					command.getAvailableRoles(), extractionCondition, new AlarmChkCondAgree36(command.getCondAgree36().getListCondError().stream().map(x -> AgreeConditionErrorCommand.toDomain(x)).collect(Collectors.toList()), 
+							command.getCondAgree36().getListCondOt().stream().map(c -> AgreeCondOtCommand.toDomain(c)).collect(Collectors.toList())));
 			
 			conditionRepo.add(domain);
 		}

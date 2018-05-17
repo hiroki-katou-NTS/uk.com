@@ -33,7 +33,7 @@ module nts.uk.at.view.kal003.a.service {
     };
 
     export function deleteData(data: any): JQueryPromise<any> {
-        return ajax("at", paths.deleteData);  
+        return ajax("at", paths.deleteData, data);  
     }
     
     export function getDailyErrorAlarmCheck(): JQueryPromise<any> {

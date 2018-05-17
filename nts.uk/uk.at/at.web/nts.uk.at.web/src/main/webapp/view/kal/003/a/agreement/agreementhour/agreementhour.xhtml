@@ -6,14 +6,15 @@
 
 	<com:ValidatorScript>
         nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.MessageDisp
-        nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.NameWKRecord
+        nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.OverTime
+        nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.Number
     </com:ValidatorScript>
 
 	<ui:define name="htmlHead">
 		<com:scriptfile set="IGNITE" />
 	</ui:define>
 
-	<div id ="div-fixed-table">
+	<div id="div-fixed-table">
 		<div class="mg-bot-10">
 			<span>#{i18n.getText('KAL003_209')}</span>
 		</div>
@@ -41,27 +42,41 @@
 					<td class="text-center"><span data-bind="text: no"></span></td>
 					<td><input
 						data-bind="ntsTimeEditor: {
-									value: ot36, constraint: 'NameWKRecord', required: true, enable: true, readonly: false, immediate: false, name: '#[KAL003_206]', 
+									value: ot36, 
+									constraint: 'OverTime', 
+									required: true, 
+									enable: true, 
+									readonly: false, 
+									immediate: false, 
+					                mode: 'time',
+									name: '#[KAL003_206]', 
 									option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
                 						inputFormat: 'time',
                 						placeholder: '',
 						                width: '73px',
-						                textalign: 'center'
+						                textalign: 'center',
             						}))}" />
 					</td>
 					<td><input
 						data-bind="ntsNumberEditor: {
-								value: excessNum, constraint: 'NameWKRecord', required: true, name: '#[KAL003_207]', readonly: false,
+								value: excessNum, 
+								constraint: 'Number', 
+								required: true, 
+								name: '#[KAL003_207]', 
+								readonly: false,
 								option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
 									grouplength: 5,
 									decimallength: 0,
 									placeholder: '',
 									width: '73px',
 									textalign: 'center',
-									currencyformat: 'TIMES'}))}" />
+									unitID: 'TIMES'}))}" />
 					</td>
 					<td><input
-						data-bind="ntsTextEditor: {value: messageDisp, required: false, constraint: 'MessageDisp', name: '#[KAL003_208]', 
+						data-bind="ntsTextEditor: {value: messageDisp, 
+													required: false, 
+													constraint: 'MessageDisp', 
+													name: '#[KAL003_208]', 
 		                       option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
 				                textmode: 'text',
 				                placeholder: '',

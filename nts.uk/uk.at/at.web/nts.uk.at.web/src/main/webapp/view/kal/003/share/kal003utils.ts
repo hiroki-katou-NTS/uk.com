@@ -189,8 +189,10 @@ module nts.uk.at.view.kal003.share {
 
         }
 
-        export function getDefaultAgreementHour(checkItem: number): model.AgreeCondOt {
+        export function getDefaultAgreementHour(): model.AgreeCondOt {
             let agreeCondOt = new model.AgreeCondOt({
+                category: 0,
+                code: '',
                 id: '',
                 no: 0,
                 ot36: 0,
