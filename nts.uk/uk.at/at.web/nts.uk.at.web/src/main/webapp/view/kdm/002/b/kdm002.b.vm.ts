@@ -141,7 +141,7 @@ module nts.uk.at.view.kdm002.b {
                             // update state on screen
                             if (res.running || res.succeeded || res.cancelled) {
                                 self.excelContent('');
-                                //self.imErrorLog.removeAll();
+                                self.imErrorLog.removeAll();
                                 _.forEach(res.taskDatas, item => {
                                     if (item.key.substring(0, 10) == "ERROR_LIST") {
                                         let error = JSON.parse(item.valueAsString);
@@ -150,6 +150,7 @@ module nts.uk.at.view.kdm002.b {
                                             employeeName: error.employeeName,
                                             errorMessage: nts.uk.resource.getMessage(error.errorMessage)
                                         }
+                                        //self.imErrorLog.removeAll();
                                         self.imErrorLog.push(errorContent);
                                     } else {
                                         if (item.key.substring(0, 10) == "EXCEL_LIST") {
@@ -185,6 +186,7 @@ module nts.uk.at.view.kdm002.b {
                                     // resize windows
                                     var windowSize = nts.uk.ui.windows.getSelf();
                                     windowSize.$dialog.dialog('option', {
+                                        position: 'fixed',
                                         width: 650,
                                         height: 550
                                     });
@@ -197,6 +199,7 @@ module nts.uk.at.view.kdm002.b {
                                 self.isStop(true);
                                 if (res.succeeded && self.excelContent()) {
                                     self.startExportExcel(true);
+//                                    $('#BTN_CLOSE').focus();
                                 }
                             }
                         });
