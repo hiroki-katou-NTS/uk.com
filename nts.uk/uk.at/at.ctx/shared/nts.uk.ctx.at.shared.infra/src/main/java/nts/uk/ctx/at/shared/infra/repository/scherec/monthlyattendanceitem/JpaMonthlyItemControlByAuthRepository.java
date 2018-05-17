@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.scherec.monthlyattendanceitem;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -7,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.DisplayAndInputMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthority;
@@ -19,6 +21,14 @@ public class JpaMonthlyItemControlByAuthRepository  extends JpaRepository implem
 			+ " WHERE c.krcstDisplayAndInputMonthlyPK.companyID = :companyID"
 			+ " AND c.krcstDisplayAndInputMonthlyPK.authorityMonthlyID = :authorityMonthlyID"
 			+ " ORDER BY c.krcstDisplayAndInputMonthlyPK.itemMonthlyID";
+//	
+//	private final String SELECT_BY_AUTHORITY_MONTHLY_ID_AND_TO_USE = "SELECT c FROM KrcstDisplayAndInputMonthly c"
+//			+ " WHERE c.krcstDisplayAndInputMonthlyPK.companyID = :companyID"
+//			+ " AND c.krcstDisplayAndInputMonthlyPK.authorityMonthlyID = :authorityMonthlyID"
+//			+ " AND c.krcstDisplayAndInputMonthlyPK.itemMonthlyID  = :itemMonthlyID "
+//			+ " AND c.toUse = :toUse "
+//			+ " ORDER BY c.krcstDisplayAndInputMonthlyPK.itemMonthlyID";
+	
 	@Override
 	public List<MonthlyItemControlByAuthority> getListMonthlyAttendanceItemAuthority(String companyId) {
 		// TODO Auto-generated method stub
@@ -76,6 +86,35 @@ public class JpaMonthlyItemControlByAuthRepository  extends JpaRepository implem
 		for(KrcstDisplayAndInputMonthly krcstDisplayAndInputMonthly:newEntity) {
 			this.commandProxy().insert(krcstDisplayAndInputMonthly);
 		} 
+	}
+
+	private final String SELECT_BY_AUTHORITY_MONTHLY_LIST_ID = "SELECT c FROM KrcstDisplayAndInputMonthly c"
+			+ " WHERE c.krcstDisplayAndInputMonthlyPK.companyID = :companyID"
+			+ " AND c.krcstDisplayAndInputMonthlyPK.authorityMonthlyID = :authorityMonthlyID"
+			+ " AND c.krcstDisplayAndInputMonthlyPK.itemMonthlyID  IN  :itemMonthlyIDs"
+			+ " AND c.toUse = :toUse "
+			+ " ORDER BY c.krcstDisplayAndInputMonthlyPK.itemMonthlyID";
+	
+	@Override
+	public Optional<MonthlyItemControlByAuthority> getMonthlyAttdItemByUse(String companyID, String authorityMonthlyId,
+			List<Integer> itemMonthlyIDs, int toUse) {
+		List<DisplayAndInputMonthly> data = new  ArrayList<>();
+		CollectionUtil.split(itemMonthlyIDs, 1000, subIdList -> {
+			data.addAll(
+					this.queryProxy().query(SELECT_BY_AUTHORITY_MONTHLY_LIST_ID,KrcstDisplayAndInputMonthly.class)
+					.setParameter("companyID", companyID)
+					.setParameter("authorityMonthlyID", authorityMonthlyId)
+					.setParameter("itemMonthlyIDs", itemMonthlyIDs)
+					.setParameter("toUse", toUse)
+					.getList(c->c.toDomain()));
+			
+		});
+		if(data.isEmpty())
+			return Optional.empty();
+		MonthlyItemControlByAuthority monthlyItemControlByAuthority = new MonthlyItemControlByAuthority(
+				companyID,authorityMonthlyId,data
+				);
+		return Optional.of(monthlyItemControlByAuthority);
 	}
 
 }
