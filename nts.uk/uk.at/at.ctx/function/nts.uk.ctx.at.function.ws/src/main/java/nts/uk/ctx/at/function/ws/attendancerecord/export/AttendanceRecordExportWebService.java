@@ -18,7 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * The Class AttendanceRecordExportWebService.
  */
-@Path("at/function/attendancerecord/export")
+@Path("com/function/attendancerecord/export")
 @Produces("application/json")
 public class AttendanceRecordExportWebService {
 

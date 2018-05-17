@@ -4,8 +4,8 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	
-	
+
+
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
@@ -39,11 +39,11 @@
 
 						<tr class="row">
 							<td>
-								<div class="form-label"
+								<div class="form-label useSeal"
 									data-bind="ntsFormLabel: { required: false, constraint:['SealColumnName'] }">#{i18n.getText('KWR002_61')}</div>
 							</td>
 							<td>
-								<div 
+								<div
 									data-bind="ntsSwitchButton: {
 									options: useSeal,
 									optionsValue: 'code',
@@ -53,49 +53,49 @@
 									enable: true}"></div>
 
 
-								<div>
+								<div class="sealGroup">
 
 									<input class="nts-input seal"
 										data-bind="ntsTextEditor: {
 										  name: '#[KWR002_65]',
-                                          value: ,
+                                          value: sealName1,
                                           constraint: 'SealColumnName',
-                                          enable: ,
+                                          enable: useSealValue,
                                           required: true}" />
 									<input class="nts-input seal"
 										data-bind="ntsTextEditor: {
 										  name: '#[KWR002_66]',
-                                          value: ,
+                                          value: sealName2,
                                           constraint: 'SealColumnName',
-                                          enable: ,
+                                          enable: useSealValue,
                                           required: true}" />
 									<input class="nts-input seal"
 										data-bind="ntsTextEditor: {
 										  name: '#[KWR002_67]',
-                                          value: ,
+                                          value: sealName3 ,
                                           constraint: 'SealColumnName',
-                                          enable: ,
+                                          enable: useSealValue,
                                           required: true}" />
 									<input class="nts-input seal"
 										data-bind="ntsTextEditor: {
 										  name: '#[KWR002_68]',
-                                          value: ,
+                                          value: sealName4 ,
                                           constraint: 'SealColumnName',
-                                          enable: ,
+                                          enable: useSealValue,
                                           required: true}" />
 									<input class="nts-input seal"
 										data-bind="ntsTextEditor: {
 										  name: '#[KWR002_69]',
-                                          value: ,
+                                          value: sealName5 ,
                                           constraint: 'SealColumnName',
-                                          enable: ,
+                                          enable: useSealValue,
                                           required: true}" />
 									<input class="nts-input seal"
 										data-bind="ntsTextEditor: {
 										  name: '#[KWR002_70]',
-                                          value: ,
+                                          value: sealName6 ,
                                           constraint: 'SealColumnName',
-                                          enable: ,
+                                          enable: useSealValue,
                                           required: true}" />
 								</div>
 
@@ -105,19 +105,20 @@
 						<tr>
 							<td colspan="2">
 								<div>
-									<span class="label">#{i18n.getText('KWR002_71')}</span>
+									<span class="label notice">#{i18n.getText('KWR002_71')}</span>
 								</div>
 							</td>
 						</tr>
 					</table>
 					<div id="left-content" style="float: left"
 						class="bg-green caret-right caret-background fixed-flex-layout-left">
-						<div data-bind="ntsPanel:{width: '350px', height: '400px', direction: 'right', showIcon: true, visible: true}">
+						<div
+							data-bind="ntsPanel:{width: '340px', direction: 'right', showIcon: true, visible: true}">
 
-							<span class="nts-editor-wrapped ntsControl"><input
+							<!-- <span class="nts-editor-wrapped ntsControl search"><input
 								class="ntsSearchBox nts-editor ntsSearchBox_Component"
 								type="text" placeholder="コード・名称で検索・・・" data-name="検索テキストボックス"
-								tabindex="0" style="width: 250px;" /></span>
+								tabindex="0" style="width: 210px;" /></span>
 
 
 							<button class="search-btn caret-bottom ntsSearchBox_Component"
@@ -126,18 +127,29 @@
 							<button class="clear-btn ntsSearchBox_Component" tabindex="0">解除</button>
 
 							<div style="margin: 20px">
-								<table tabindex="5" id="single-list"
+								<table id="single-list"
 									data-bind="ntsGridList:{
-								width: 330,
-								height: 255,
-								options: attendanceItemList,								
-								optionsValue: 'attendCode',
+								height: 350,
+								dataSource: attendanceItemList,
+								primaryKey: 'code',
 								columns: columns,
-								multiple: false,
-								enable: true}">
+								multiple: false
+								}">
 
 								</table>
-							</div>
+							</div> -->
+							<div style="width: 300px"
+								data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'attendanceCode', comId: 'single-list', 
+											items: attendanceItemList, selected: currentCode, selectedKey: 'attendanceItemName', fields: ['attendanceItemName', 'attendanceItemName'], mode: 'igGrid'}" />
+							<table id="single-list"
+								data-bind="ntsGridList: {
+											height: 320,
+											options: attendanceItemList,
+											optionsValue:'attendanceItemName',
+											columns: columns,
+											multiple: false,
+											value: currentCode
+										}"></table>
 						</div>
 
 					</div>
@@ -146,24 +158,102 @@
 						<div id="tab-panel"
 							data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 							<div class="tab-content-1">
-								<span>#{i18n.getText('KWR002_91')}</span>
-										<div class="panel panel-frame cell">
+								<div class="column">
+									<span>#{i18n.getText('KWR002_91')}</span>
+									<div class="panel panel-frame cell">
+										<div class="panel panel-gray-bg sub top">Default
+											1</div>
+										<div class="panel panel-gray-bg sub bot">Default
+											2</div>
+									</div>
+								</div>
+
+								<div class="column">
+									<span>#{i18n.getText('KWR002_92')}</span>
+									<div class="panel panel-frame cell">
 										<div class="panel panel-gray-bg sub ">Default 1</div>
 										<div class="panel panel-gray-bg sub ">Default 2</div>
-										</div>
+									</div>
+								</div>
+								<div class="column">
+									<span>#{i18n.getText('KWR002_93')}</span>
+									<div class="panel panel-frame cell">
+										<div class="panel panel-gray-bg sub ">Default 1</div>
+										<div class="panel panel-gray-bg sub ">Default 2</div>
+									</div>
+								</div>
+								<div class="column">
+									<span>#{i18n.getText('KWR002_94')}</span>
+									<div class="panel panel-frame cell">
+										<div class="panel panel-gray-bg sub ">Default 1</div>
+										<div class="panel panel-gray-bg sub ">Default 2</div>
+									</div>
+								</div>
+								<div class="column">
+									<span>#{i18n.getText('KWR002_95')}</span>
+									<div class="panel panel-frame cell">
+										<div class="panel panel-gray-bg sub ">Default 1</div>
+										<div class="panel panel-gray-bg sub ">Default 2</div>
+									</div>
+								</div>
+								<div class="column">
+									<span>#{i18n.getText('KWR002_96')}</span>
+									<div class="panel panel-frame cell">
+										<div class="panel panel-gray-bg sub ">Default 1</div>
+										<div class="panel panel-gray-bg sub ">Default 2</div>
+									</div>
+								</div>
+								<div class="column">
+									<span>#{i18n.getText('KWR002_97')}</span>
+									<div class="panel panel-frame cell">
+										<div class="panel panel-gray-bg sub ">Default 1</div>
+										<div class="panel panel-gray-bg sub ">Default 2</div>
+									</div>
+								</div>
+								<div class="column">
+									<span>#{i18n.getText('KWR002_98')}</span>
+									<div class="panel panel-frame cell">
+										<div class="panel panel-gray-bg sub ">Default 1</div>
+										<div class="panel panel-gray-bg sub ">Default 2</div>
+									</div>
+								</div>
+								<div class="column">
+									<span>#{i18n.getText('KWR002_99')}</span>
+									<div class="panel panel-frame cell">
+										<div class="panel panel-gray-bg sub ">Default 1</div>
+										<div class="panel panel-gray-bg sub ">Default 2</div>
+									</div>
+								</div>
+								<br />
 							</div>
 							<div class="tab-content-2">
-								
-								<span>#{i18n.getText('KWR002_101')}</span>
-										<div class="panel panel-frame cell">
+								<div class="column">
+									<span>#{i18n.getText('KWR002_101')}</span>
+									<div class="panel panel-frame cell">
 										<div class="panel panel-gray-bg sub ">Default 1</div>
 										<div class="panel panel-gray-bg sub ">Default 2</div>
-										</div>
+									</div>
+								</div>
+
+								<div class="column">
+									<span>#{i18n.getText('KWR002_102')}</span>
+									<div class="panel panel-frame cell">
+										<div class="panel panel-gray-bg sub ">Default 1</div>
+										<div class="panel panel-gray-bg sub ">Default 2</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 
+			</div>
+			<hr></hr>
+			<div id="foot-area" class="fixed-flex-layout">
+				<div class="buttons">
+					<button class="proceed x-large">#{i18n.getText('KWR002_120')}</button>
+					<button>#{i18n.getText('KWR002_121')}</button>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

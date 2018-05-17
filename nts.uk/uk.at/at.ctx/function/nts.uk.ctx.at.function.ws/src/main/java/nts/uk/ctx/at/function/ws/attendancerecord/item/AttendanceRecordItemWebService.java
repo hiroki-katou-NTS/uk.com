@@ -69,6 +69,7 @@ public class AttendanceRecordItemWebService {
 	@POST
 	@Path("getSingleAttndRecInfo")
 	public SingleAttendanceRecordDto getSingleAttendanceRecordInfo(AttendanceRecordKeyDto attendanceRecordKey) {
+		
 		return this.singleAttendanceRecordFinder.getSingleAttendanceRecord(attendanceRecordKey);
 	}
 
@@ -144,6 +145,7 @@ public class AttendanceRecordItemWebService {
 	@POST
 	@Path("getAttndRecItem")
 	public List<AttendanceRecordItemDto> getAttendanceRecordItemsByScreenUseAtr(int screenUseAtr){
+		System.err.println("runned..........................");
 		return this.attendanceItemFinder.getAttendanceItemsByScreenUseAtr(screenUseAtr);
 	}
 
