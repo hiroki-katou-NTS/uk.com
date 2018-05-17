@@ -407,7 +407,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             
             for (var i = 0; i < itemOutUseClass.length; i++) {
                 // item Rule 36 - do not checking
-                if (itemOutUseClass[i].item36AgreementTime) {
+                if (itemOutUseClass[i].item36AgreementTime()) {
                     continue;
                 }
                 
