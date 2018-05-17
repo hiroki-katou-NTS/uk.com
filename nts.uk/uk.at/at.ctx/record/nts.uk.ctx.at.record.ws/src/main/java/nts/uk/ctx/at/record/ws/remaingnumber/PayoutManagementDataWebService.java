@@ -10,8 +10,10 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.AddPayManaCommandHandler;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeletePayoutManagementDataCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.DeletePayoutManagementDataCommandHandler;
+import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.PayManaRemainCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.PayoutManagementDataCommand;
 import nts.uk.ctx.at.record.app.command.remainingnumber.paymana.UpdatePayoutManagementDataCommandHandler;
 import nts.uk.ctx.at.record.app.find.remainingnumber.paymana.PayoutManagementDataDto;
@@ -22,6 +24,9 @@ import nts.uk.ctx.at.record.app.find.remainingnumber.paymana.PayoutManagementDat
 public class PayoutManagementDataWebService extends WebService{
    
 	@Inject
+	private AddPayManaCommandHandler addHandler;
+	
+	@Inject
     private DeletePayoutManagementDataCommandHandler deletePayout;
 	
 	@Inject
@@ -30,6 +35,12 @@ public class PayoutManagementDataWebService extends WebService{
 	@Inject
 	private PayoutManagementDataFinder finder;
 
+	@POST
+	@Path("save")
+	public void save(PayManaRemainCommand command) {
+		addHandler.handle(command);
+	}
+	
 	@POST
 	@Path("update")
 	public void update(PayoutManagementDataCommand command){
