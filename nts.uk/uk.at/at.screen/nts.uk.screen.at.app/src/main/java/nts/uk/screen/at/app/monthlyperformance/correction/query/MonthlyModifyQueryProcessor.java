@@ -13,7 +13,6 @@ import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.screen.at.app.dailyperformance.correction.datadialog.AttendanceItemTypeDialog;
 
 @Stateless
 public class MonthlyModifyQueryProcessor {
@@ -33,7 +32,7 @@ public class MonthlyModifyQueryProcessor {
 					.items(AttendanceItemUtil.toItemValues(recordData, itemIds, AttendanceItemUtil.AttendanceItemType.MONTHLY_ITEM))
 					.employeeId(recordData.getEmployeeId())
 					.yearMonth(recordData.getYearMonth().v())
-					.closureId(recordData.getClosureId())
+					.closureId(recordData.getClosureID())
 					.closureDate(recordData.getClosureDate())
 					.completed();
 		}).collect(Collectors.toList());
