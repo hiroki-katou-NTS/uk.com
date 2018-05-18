@@ -34,8 +34,12 @@ module nts.custombinding {
                     accessor.height(element.offsetHeight);
                 }
 
-                if (_.has(accessor, "hasScroll") && ko.isObservable(accessor.hasScroll)) {
-                    accessor.hasScroll(element.scrollWidth > element.clientWidth);
+                if (_.has(accessor, "hasScrollX") && ko.isObservable(accessor.hasScrollX)) {
+                    accessor.hasScrollX(element.scrollWidth > element.clientWidth);
+                }
+
+                if (_.has(accessor, "hasScrollY") && ko.isObservable(accessor.hasScrollY)) {
+                    accessor.hasScrollY(element.scrollHeight > element.clientHeight);
                 }
 
                 if (_.has(accessor, "top") && ko.isObservable(accessor.top)) {
@@ -54,6 +58,26 @@ module nts.custombinding {
                     $element.data('length', _len);
                     if (_olen < _len) {
                         $element.scrollTop($element.prop("scrollHeight"));
+                    }
+                }
+
+                if (_.has(accessor, "maxHeight")) {
+                    let m = ko.toJS(accessor.maxHeight),
+                        c = m.byChild,
+                        l = m.length,
+                        r = $element.find(c),
+                        h = r.height();
+
+                    if (r.length <= 5) {
+                        $element.css('overflow-y', 'hidden');
+                    } else {
+                        $element.css('overflow-y', 'auto');
+                    }
+
+                    if (element.scrollWidth > element.clientWidth) {
+                        $element.css('max-height', ((h * l) + 17) + 'px');
+                    } else {
+                        $element.css('max-height', ((h * l) + 4) + 'px');
                     }
                 }
             }, 0);
@@ -693,16 +717,16 @@ module nts.custombinding {
                                     <div class="item-controls">
                                         <div data-bind="ntsFormLabel: { required: false, text: className || '' }"></div>
                                         <div class="table-container header-1rows" data-bind="let: {
-                                                    __hsc: ko.observable(false),
                                                     __lft: ko.observable(0),
-                                                    __flft: ko.observable(0),
+                                                    __flft: ko.observable(0)
                                                 }">
                                             <div class="table-scroll" data-bind="ntsProp: {
-                                                        left: __lft, 
-                                                        hasScroll: __hsc,
-                                                        scrollDown: 'tbody>tr'
-                                                    }, style: { 
-                                                        'max-height': __hsc() ? '176px' : '159px' 
+                                                        left: __lft,
+                                                        scrollDown: 'tbody>tr',
+                                                        maxHeight: {
+                                                            byChild: 'tbody>tr',
+                                                            length: 5
+                                                        }
                                                     }">
                                                 <table>
                                                     <thead>
