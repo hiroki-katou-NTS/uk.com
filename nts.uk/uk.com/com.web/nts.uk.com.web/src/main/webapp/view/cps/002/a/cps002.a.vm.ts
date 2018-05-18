@@ -267,20 +267,7 @@ module cps002.a.vm {
                 }
             });
 
-            self.subContraint.subscribe((value){
-                if (!value) {
-                    service.getStamCardEdit().done(data => {
-                        __viewContext.primitiveValueConstraints.StampNumber.maxLength = data.digitsNumber;
-                        self.subContraint(true);
-                    });
-
-                }
-            })
-
             self.start();
-
-
-
         }
 
         autoChange(character: string, position: POSITION, textValue: string, maxLength: number): string {
@@ -323,31 +310,20 @@ module cps002.a.vm {
 
             let self = this;
             self.currentEmployee().clearData();
-            self.subContraint(false);
+            
+            service.getStamCardEdit().done(data => {
+                self.stampCardEditing = new StampCardEditing(data.method, data.digitsNumber);
+                self.subContraint(false);
+                __viewContext.primitiveValueConstraints.StampNumber.maxLength = data.digitsNumber;
+                self.subContraint(true);
+            });
 
             nts.uk.characteristics.restore("NewEmployeeBasicInfo").done((data: IEmployeeBasicInfo) => {
                 self.employeeBasicInfo(data);
             });
             service.getLayout().done((layout) => {
                 if (layout) {
-                    let dfs: Array<JQueryDeferred<any>> = [$.Deferred(), $.Deferred()];
-
-                    service.getStamCardEdit().done(data => {
-                        dfs[0].resolve(data);
-                    });
-
-                    service.getUserSetting().done(data => {
-                        dfs[1].resolve(data);
-                    });
-
-                    $.when.apply($, dfs).then(() => {
-                        let stampCardEditing = arguments[0];
-                        let userSetting = arguments[1];
-
-                        __viewContext.primitiveValueConstraints["StampNumber"].maxLength = stampCardEditing.digitsNumber;
-
-                        self.stampCardEditing = new StampCardEditing(stampCardEditing.method, stampCardEditing.digitsNumber);
-
+                    service.getUserSetting().done(userSetting => {
                         if (userSetting) {
                             self.getEmployeeCode(userSetting).done((empCode) => {
                                 self.currentEmployee().employeeCode(empCode);
@@ -357,8 +333,6 @@ module cps002.a.vm {
                         self.currentUseSetting(new UserSetting(userSetting));
                         self.getLastRegHistory(userSetting);
                         $("#hireDate").focus();
-
-                        console.log('start done1');
                     });
                 } else {
                     dialog({ messageId: "Msg_344" }).then(() => {
