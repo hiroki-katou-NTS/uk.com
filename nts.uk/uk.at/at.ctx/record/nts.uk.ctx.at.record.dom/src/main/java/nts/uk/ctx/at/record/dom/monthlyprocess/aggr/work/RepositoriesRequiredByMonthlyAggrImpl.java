@@ -10,7 +10,7 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthlyRepository;
@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.GetVacationAddSet;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.PayItemCountOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlexRepository;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthlyRepository;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
@@ -102,6 +103,9 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 社員の日別積実績エラー一覧 */
 	@Inject
 	public EmployeeDailyPerErrorRepository employeeDailyError;
+	/** 日別実績の任意項目の取得 */
+	@Inject
+	public AnyItemValueOfDailyRepo anyItemValueOfDaily;
 	
 	/** 勤務情報の取得 */
 	@Inject
@@ -169,6 +173,9 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 回数集計 */
 	@Inject
 	public TotalTimesRepository totalTimes;
+	/** 任意項目 */
+	@Inject
+	public OptionalItemRepository optionalItem;
 	
 	/** 週開始の取得 */
 	@Inject
@@ -188,8 +195,6 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	@Inject
 	public AgreementMonthSettingRepository agreementMonthSet;
 	
-	/** 月別実績の縦計方法の取得 */
-	//
 	/** 出勤状態を取得する */
 	@Inject
 	public GetAttendanceStatus attendanceStatus;
