@@ -38,9 +38,9 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 			throw new BusinessException("Msg_1000", "Msg_1026");
 		}
 		// 対象社員コード(employeeCode)をチェックする
-		employeeSprPub.validateEmpCodeSpr(employeeCD);
+		employeeSprPub.validateEmpCodeSpr(employeeCD.trim());
 		// （基幹・社員Export）アルゴリズム「「会社ID」「社員コード」より社員基本情報を取得」を実行する　RequestList No.18
-		Optional<EmpSprExport> opEmployeeSpr = employeeSprPub.getEmployeeID(companyID, employeeCD);
+		Optional<EmpSprExport> opEmployeeSpr = employeeSprPub.getEmployeeID(companyID, employeeCD.trim());
 		if(!opEmployeeSpr.isPresent()){
 			throw new BusinessException("Msg_1000", "Msg_1027");
 		}
@@ -80,9 +80,9 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 			throw new BusinessException("Msg_1000", "Msg_1026");
 		}
 		// 対象社員コード(employeeCode)をチェックする
-		employeeSprPub.validateEmpCodeSpr(employeeCD);
+		employeeSprPub.validateEmpCodeSpr(employeeCD.trim());
 		// （基幹・社員Export）アルゴリズム「「会社ID」「社員コード」より社員基本情報を取得」を実行する　RequestList No.18
-		Optional<EmpSprExport> opEmployeeSpr = employeeSprPub.getEmployeeID(companyID, employeeCD);
+		Optional<EmpSprExport> opEmployeeSpr = employeeSprPub.getEmployeeID(companyID, employeeCD.trim());
 		if(!opEmployeeSpr.isPresent()){
 			throw new BusinessException("Msg_1000", "Msg_1027");
 		}
@@ -122,9 +122,9 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 			throw new BusinessException("Msg_1000", "Msg_1026");
 		}
 		// 対象社員コード(employeeCode)をチェックする
-		employeeSprPub.validateEmpCodeSpr(employeeCD);
+		employeeSprPub.validateEmpCodeSpr(employeeCD.trim());
 		// （基幹・社員Export）アルゴリズム「「会社ID」「社員コード」より社員基本情報を取得」を実行する　RequestList No.18
-		Optional<EmpSprExport> opEmployeeSpr = employeeSprPub.getEmployeeID(companyID, employeeCD);
+		Optional<EmpSprExport> opEmployeeSpr = employeeSprPub.getEmployeeID(companyID, employeeCD.trim());
 		if(!opEmployeeSpr.isPresent()){
 			throw new BusinessException("Msg_1000", "Msg_1027");
 		}
@@ -187,7 +187,7 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 		}
 		// フォームデータ「抽出対象(selecttype)」を取得する
 		try {
-			Integer selectTypeValue = Integer.valueOf(selectType);
+			Integer selectTypeValue = Integer.valueOf(selectType.trim());
 			// 抽出対象(selecttype)をチェックする
 			if(selectTypeValue != 0 && selectTypeValue != 1){
 				throw new BusinessException("Msg_1014", selectType.toString());
@@ -208,9 +208,9 @@ public class LoginParamCheckImpl implements LoginParamCheck {
 			throw new BusinessException("Msg_1000", "Msg_1026");
 		}
 		// 対象社員コード(employeeCode)をチェックする
-		employeeSprPub.validateEmpCodeSpr(employeeCD);
+		employeeSprPub.validateEmpCodeSpr(employeeCD.trim());
 		// （基幹・社員Export）アルゴリズム「「会社ID」「社員コード」より社員基本情報を取得」を実行する　RequestList No.18
-		Optional<EmpSprExport> opEmployeeSpr = employeeSprPub.getEmployeeID(companyID, employeeCD);
+		Optional<EmpSprExport> opEmployeeSpr = employeeSprPub.getEmployeeID(companyID, employeeCD.trim());
 		if(!opEmployeeSpr.isPresent()){
 			throw new BusinessException("Msg_1000", "Msg_1027");
 		}

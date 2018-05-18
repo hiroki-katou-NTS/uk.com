@@ -8,12 +8,14 @@ import java.util.Optional;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDateTime;
 
 /**
  * The Class RegulationInfoEmployee.
  */
 @Getter
+@Setter
 @Builder
 public class RegulationInfoEmployee { // 社員のソート用の規定情報
 

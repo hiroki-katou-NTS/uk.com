@@ -70,8 +70,10 @@ public class MPHeaderDto {
 		//G_1   状態
 		//lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_21"), "state", "String", "30px", "", false, "FlexImage", true, true));
 		lstHeader.add(new MPHeaderDto("状<br>態", "state", "String", "30px", "", false, "FlexImage", true, true));
+		String name = TextResource.localize("KMW003_22");
+		String newName = name.replace("\n", "<br>");
 		//G_2 アラーム/エラー	
-		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_22"), "error", "String", "60px", "", false, "Label", true, true));
+		lstHeader.add(new MPHeaderDto(newName, "error", "String", "60px", "", false, "Label", true, true));
 		//G_3 社員コード
 		lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_23"), "employeeCode", "String", "85px", "", false, "Label", true, true));
 		//G_4 社員名
@@ -100,7 +102,7 @@ public class MPHeaderDto {
 	}
 	public static MPHeaderDto createSimpleHeader(PAttendanceItem item, ControlOfMonthlyDto ctrOfMonthlyDto) {
 		String key = mergeString(ADD_CHARACTER, String.valueOf(item.getId()));
-		String width = String.valueOf(item.getColumnWidth() == null ? 30 : item.getColumnWidth()) + PX;
+		String width = String.valueOf(item.getColumnWidth() == null ? 100 : item.getColumnWidth()) + PX;
 		MPHeaderDto dto = new MPHeaderDto("", key, "String", width, "", false, "", false, false);
 		int attendanceAtr = item.getAttendanceAtr();
 

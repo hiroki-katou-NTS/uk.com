@@ -375,39 +375,45 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 nts.uk.ui.block.clear();
                 dfd.resolve();
             }).fail(function(error) {
-                // if (error.messageId == "KDW/003/a") {
-                //self.selectDisplayItem();
-                nts.uk.ui.windows.setShared("selectedPerfFmtCodeList", "");
-                nts.uk.ui.windows.sub.modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
-                    var dataTemp = nts.uk.ui.windows.getShared('dailyPerfFmtList');
-                    if (dataTemp != undefined) {
-                        let data = [dataTemp.dailyPerformanceFormatCode()];
+                if (error.messageId != "KDW/003/a") {
+                    nts.uk.ui.dialog.alert({ messageId:  error.messageId}).then(function() {
+                        nts.uk.request.jumpToTopPage();
+                    });
+                   
+                } else {
+                    //self.selectDisplayItem();
+                    nts.uk.ui.windows.setShared("selectedPerfFmtCodeList", "");
+                    nts.uk.ui.windows.sub.modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
+                        var dataTemp = nts.uk.ui.windows.getShared('dailyPerfFmtList');
+                        if (dataTemp != undefined) {
+                            let data = [dataTemp.dailyPerformanceFormatCode()];
 
-                        let param = {
-                            dateRange: dateRangeParam ? {
-                                startDate: moment(dateRangeParam.startDate).utc().toISOString(),
-                                endDate: moment(dateRangeParam.endDate).utc().toISOString()
-                            } : null,
-                            displayFormat: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().displayFormat,
-                            initScreen: 0,
-                            mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
-                            lstEmployee: [],
-                            formatCodes: data,
-                            objectShare: _.isEmpty(self.shareObject()) ? null : self.shareObject()
-                        };
-                        nts.uk.ui.block.invisible();
-                        nts.uk.ui.block.grayout();
-                        service.startScreen(param).done((data) => {
-                            self.processMapData(data);
-                            nts.uk.ui.block.clear();
-                            dfd.resolve();
-                        }).fail(function(error) {
-                            nts.uk.ui.dialog.alert(error.message);
-                            nts.uk.ui.block.clear();
-                        });
-                    }
-                });
-                //   }
+                            let param = {
+                                dateRange: dateRangeParam ? {
+                                    startDate: moment(dateRangeParam.startDate).utc().toISOString(),
+                                    endDate: moment(dateRangeParam.endDate).utc().toISOString()
+                                } : null,
+                                displayFormat: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().displayFormat,
+                                initScreen: 0,
+                                mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
+                                lstEmployee: [],
+                                formatCodes: data,
+                                objectShare: _.isEmpty(self.shareObject()) ? null : self.shareObject()
+                            };
+                            nts.uk.ui.block.invisible();
+                            nts.uk.ui.block.grayout();
+                            service.startScreen(param).done((data) => {
+                                self.processMapData(data);
+                                nts.uk.ui.block.clear();
+                                dfd.resolve();
+                            }).fail(function(error) {
+                                nts.uk.ui.dialog.alert(error.message);
+                                nts.uk.ui.block.clear();
+                            });
+                        }
+                    });
+                }
+                
             });
             return dfd.promise();
         }
@@ -965,7 +971,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.displayNumberZero();
                     nts.uk.ui.block.clear();
                 }).fail(function(error) {
-                    nts.uk.ui.dialog.alert(error.message);
+                    nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
+                        nts.uk.request.jumpToTopPage();
+                    });
                     nts.uk.ui.block.clear();
                 });
          //   }
