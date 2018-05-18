@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 430, height: 545 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="kdm001.g.vm.js" />
+			<com:scriptfile path="kdm001.g.start.js" />
+			<com:stylefile path="kdm001.g.style.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<!-- G1 文言 -->
+				<div id="G1div">
+					<span id="G1" class="label">#{i18n.getText('KDM001_101')}</span>
+				</div>
+				<!-- G2 対象者 -->
+				<div id="G2" data-bind="ntsFormLabel: {}">
+					<!-- G2_1 職場コード -->
+					<span id="G2_1" class="label" data-bind="text: workCode"></span>
+					<!-- G2_2 職場名称 -->
+					<span id="G2_2" class="label" data-bind="text: workPlaceName"></span>
+					<!-- G2_3 ： -->
+					<span id="G2_3" class="label">:</span>
+					<!-- G2_4 社員コード -->
+					<span id="G2_4" class="label" data-bind="text: employeeCode"></span>
+					<!-- G2_5 社員名 -->
+					<span id="G2_5" class="label" data-bind="text: employeeName"></span>
+				</div>
+				<!-- G3 罫線 -->
+				<div id="G3">
+					<hr />
+				</div>
+				<!-- G4 休出 -->
+				<div id="bottom">
+					<div>
+						<span id="G4_1" class="label">#{i18n.getText('KDM001_61')}</span>
+					</div>
+					<!-- G5 罫線 -->
+					<div id="G5">
+						<hr />
+					</div>
+					<!-- G6_1 年月日 -->
+					<table>
+						<tr>
+							<th><P>1</P>
+								<div data-bind="ntsFormLabel: { required: true}"
+									style="width: 80px;">#{i18n.getText('KDM001_62')}</div> <!-- G6_1 年月日 -->
+								<div id="G6_1"
+									data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+							</th>
+							<th><P>5</P>
+								<div class="down-s set-date valign-center"
+									style="margin-top: 5px;">
+									<!-- G6_3 -->
+									<div data-bind="ntsFormLabel: { required: true}"
+										style="border-style: none;margin-top: 10px; width: 80px;">#{i18n.getText('KDM001_64')}</div>
+									<!-- G6_4 -->
+									<div class="combobox-select-day"
+										data-bind="ntsComboBox: {
+									name: '#[KDM001_85]',
+									options: days,
+									optionsValue: 'code',
+									visibleItemsCount: 5,
+									value: selectedCodeDay,
+									optionsText: 'name',
+									editable: false,
+									enable: true,
+									columns: [
+										{ prop: 'name', length: 10 },
+									]}"></div>
+								</div></th>
+						</tr>
+					</table>
+					<br />
+					<P>2</P>
+					<div class="down-s set-date flex valign-center"
+						style="margin-top: 5px;">
+						<!-- G7_1 -->
+						<div data-bind="ntsFormLabel: { required: true}"
+							style="margin-top: 10px; width: 80px;">#{i18n.getText('KDM001_70')}</div>
+						<!-- G7_2-->
+						<div class="combobox-select-day"
+							data-bind="ntsComboBox: {
+								name: '#[KDM001_73]',
+								options: daysOff,
+								optionsValue: 'code',
+								visibleItemsCount: 5,
+								value: selectedCodeDayOff,
+								optionsText: 'name',
+								editable: false,
+								enable: true,
+								columns: [
+									{ prop: 'name', length: 10 },
+								]}"></div>
+					</div>
+					<br />
+					<!-- G8_1 -->
+					<P>3</P>
+					<div id="G8_1" data-bind="ntsFormLabel: { required: true}"
+						style="width: 80px;">#{i18n.getText('KDM001_72')}</div>
+					<!--G8_2 -->
+					<div id="G8_2"
+						data-bind="ntsDatePicker: {value: deadline, dateFormat: 'YYYY/MM/DD'}"></div>
+					<br />
+					<P>4</P>
+					<div class="down-s set-date flex valign-center"
+						style="margin-top: 5px;">
+						<!-- G9_1 -->
+						<div data-bind="ntsFormLabel: { required: true}"
+							style="margin-top: 10px; width: 80px;">#{i18n.getText('KDM001_85')}</div>
+						<!-- G9_2 -->
+						<div class="combobox-select-day"
+							data-bind="ntsComboBox: {
+									name: '#[KDM001_85]',
+									options: days,
+									optionsValue: 'code',
+									visibleItemsCount: 5,
+									value: selectedCodeDay,
+									optionsText: 'name',
+									editable: false,
+									enable: true,
+									columns: [
+										{ prop: 'name', length: 10 },
+									]}"></div>
+						<!-- G9_4 -->
+						<div style="margin-left: 30px;"
+							data-bind="ntsCheckBox: { checked: checkedExpired }">#{i18n.getText('KDM001_87')}</div>
+					</div>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<!-- K31_1 登録 -->
+				<button id="K31_1" class="proceed">#{i18n.getText('KDM001_89')}</button>
+				<!-- L31_2 削除 -->
+				<button id="K31_2" class="danger">#{i18n.getText('KDM001_100')}</button>
+				<!-- L31_3 キャンセル -->
+				<button id="K31_3" data-bind="click: closeDialog">#{i18n.getText('KDM001_90')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
