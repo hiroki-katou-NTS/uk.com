@@ -105,7 +105,7 @@ public class ExcelExportService extends ExportService<List<ExcelInforCommand>> {
     	}
 		
 		Date now = new Date();
-		String fileName = "KDM002_" +new SimpleDateFormat("yyyyMMddHHmmss").format(now.getTime()).toString()+ "_PGID_処理年月日時分秒_社員コード.xls";
+		String fileName = "KDM002_" +new SimpleDateFormat("yyyyMMddHHmmss").format(now.getTime()).toString()+ "_処理年月日時分秒_社員コード.xls";
     	CSVFileData dataExport = new CSVFileData(fileName, header, dataSource);
         // generate file
         this.generator.generate(context.getGeneratorContext(), dataExport);		

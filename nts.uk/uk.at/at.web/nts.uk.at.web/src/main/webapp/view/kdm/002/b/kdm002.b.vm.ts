@@ -137,7 +137,6 @@ module nts.uk.at.view.kdm002.b {
                 // 1秒おきに下記を実行
                 nts.uk.deferred.repeat(conf => conf
                     .task(() => {
-                        if (
                         return nts.uk.request.asyncTask.getInfo(self.taskId()).done(function(res: any) {
                             // update state on screen
                             if (res.running || res.succeeded || res.cancelled) {
@@ -180,7 +179,9 @@ module nts.uk.at.view.kdm002.b {
 
                             if (res.succeeded || res.failed || res.cancelled) {
                                 if (self.imErrorLog().length == 0) {
-                                    self.status(getText("KDM002_29"));
+                                    if (res.succeeded) {
+                                        self.status(getText("KDM002_29"));
+                                    }
                                     $('#BTN_CLOSE').focus();
                                 }
                                 else {
