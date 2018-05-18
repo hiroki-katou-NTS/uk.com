@@ -21,6 +21,9 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
+import nts.uk.ctx.at.request.dom.application.applist.service.CheckExitSync;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppCompltLeaveFull;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppDetailInfoRepository;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTempRepository;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailType;
@@ -134,7 +137,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 
 	@Inject
 	private AtEmploymentAdapter atEmploymentAdapter;
-
+	
+	@Inject
+	private AppDetailInfoRepository repoAppDetail;
 	@Override
 	public List<ApprovalStatusEmployeeOutput> getApprovalStatusEmployee(String wkpId, GeneralDate closureStart,
 			GeneralDate closureEnd, List<String> listEmpCd) {
@@ -779,6 +784,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			// アルゴリズム「承認状況申請内容取得実績」を実行する
 			ApprovalSttDetailRecord approvalSttDetail = this.getApplicationDetailRecord(appContent);
 			// アルゴリズム「承認状況申請内容取得振休振出」を実行する
+			//AppCompltLeaveSyncOutput sync = this.getCompltLeaveSyncOutput(companyId, app);
 			// this.getAppliDetailAcquisitionOfBreakdown(app, listApplication);
 			// アルゴリズム「承認状況申請内容取得休暇」を実行する
 			String relationshipName = this.getApprovalSttDetailVacation(app);
@@ -791,18 +797,34 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	/**
 	 * 「承認状況申請内容取得振休振出
 	 */
-	private AppCompltLeaveSyncOutput getCompltLeaveSyncOutput(String companyId, String appId) {
-		AppCompltLeaveSyncOutput complt;
+	private AppCompltLeaveSyncOutput getCompltLeaveSyncOutput(String companyId, Application_New app) {
 		//既に紐付け対象となっているト
 		//TODO
 		//アルゴリズム「同時申請された振休振出申請を取得する」を実行する
-		AppCompltLeaveSyncOutput sync = otherCommonAlgorithm.getAppComplementLeaveSync(companyId, appId);
+		AppCompltLeaveSyncOutput sync = otherCommonAlgorithm.getAppComplementLeaveSync(companyId, app.getAppID());
+		AppCompltLeaveFull appMain = null;
+		AppCompltLeaveFull appSub = null;
+		String appDateSub = null;
+		String appInputSub = null;
 		if(!sync.isSync()){//TH k co don lien ket
-			return null;
+			//lay thong tin chi tiet
+			appMain = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType());
 		}else{//TH co don lien ket
-			
-			//complt = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType());
-		}
+			//lay thong tin chi tiet A
+			/*appMain = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType());
+			//check B co trong list don xin k?
+			String appIdSync = sync.getType() == 0 ? sync.getRecId() : sync.getAbsId();
+			CheckExitSync checkExit = this.checkExitSync(lstCompltLeave, appIdSync);
+			if(checkExit.isCheckExit()){//exist
+				appDateSub = checkExit.getAppDateSub().toString("yyyy/MM/dd");
+				appInputSub = checkExit.getInputDateSub().toString("yyyy/MM/dd HH:mm");
+			}else{//not exist
+				//lay thong tin chung
+				Application_New sub = repoApp.findByID(companyId, appIdSync).get();
+				appDateSub = sub.getAppDate().toString("yyyy/MM/dd");
+				appInputSub = sub.getInputDate().toString("yyyy/MM/dd HH:mm");*/
+			}
+			//appSub = repoAppDetail.getAppCompltLeaveInfo(companyId, appIdSync, sync.getType() == 0 ? 1 : 0);
 		return null;
 	}
 	
@@ -871,7 +893,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			if(lstAgentData.isEmpty()) continue;
 			AgentDataRequestPubImport agent = lstAgentData.stream().findFirst().get();
 			// 対象が存在する場合
-			if (Objects.isNull(agent)) {
+			if (!Objects.isNull(agent)) {
 				switch (agent.getAgentAppType1()) {
 				// 0:代行者指定
 				case SUBSTITUTE_DESIGNATION:

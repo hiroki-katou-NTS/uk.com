@@ -418,9 +418,9 @@ public class ApprovalStatusFinder {
 
 	private String getAppCompltLeaveInfo(Application_New applicaton_N, String companyID, String appId) {
 		String appContent = "";
-		AppCompltLeaveFull appComlt = appDetailInfoRepo.getAppCompltLeaveInfo(companyID, appId, 1);
+		//AppCompltLeaveFull appComlt = appDetailInfoRepo.getAppCompltLeaveInfo(companyID, appId, 1);
 		appContent += I18NText.getText("KAF018_262");
-		appContent += appComlt.getStartTime();
+		//appContent += appComlt.getStartTime();
 		return null;
 	}
 
