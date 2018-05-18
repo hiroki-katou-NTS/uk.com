@@ -4,10 +4,22 @@
 	display: block;
 }
 
+#B3_2{
+	text-align:right;
+}
+
 #B5_3 label{
 	margin-right:30px;
 }
 
 #B5_3{
 	margin-left:30px;
+}
+
+.headingName {
+	height:17px;
+}
+
+.nts-fixed-body-wrapper {
+	height : 311px !important;
 }

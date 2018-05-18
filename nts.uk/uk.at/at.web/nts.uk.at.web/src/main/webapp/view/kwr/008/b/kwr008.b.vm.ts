@@ -134,7 +134,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 owner: this
             });
 
-            $('#table-output-items').ntsFixedTable({ height: 362, width: 1200 });
+            $('#table-output-items').ntsFixedTable({ height: 320, width: 1200 });
         }
 
         public startPage(): JQueryPromise<any> {
@@ -376,7 +376,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             self.isNewMode(true); 
             self.currentSetOutputSettingCode(new SetOutputSettingCode(null));
-
+            self.selectedCode(null);
             for (var i = 0; i < self.outputItem().length; i++) {
                 self.outputItem()[i].updateData(i + 1,
                     null,
@@ -407,7 +407,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             
             for (var i = 0; i < itemOutUseClass.length; i++) {
                 // item Rule 36 - do not checking
-                if (itemOutUseClass[i].item36AgreementTime) {
+                if (itemOutUseClass[i].item36AgreementTime()) {
                     continue;
                 }
                 
