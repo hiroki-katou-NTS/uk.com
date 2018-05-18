@@ -19,7 +19,7 @@ public class PayManaRemainCommand {
 	private Double unUsedDays;
 	private int stateAtr;
 	private String subOfHDID;
-	private boolean subUunknownDate;
+	private boolean subUnknownDate;
 	private GeneralDate subDayoffDate;
 	private Double requiredDays;	
 	private Double remainDays;
