@@ -359,7 +359,6 @@ module nts.uk.at.view.kwr001.a {
 
                 $.when(service.restoreCharacteristic(companyId, userId)).done(function(data: WorkScheduleOutputCondition) {
                 if (_.isUndefined(data)) {
-                    // TODO - hoangdd: fake data default according spec
                     let totalWorkplaceHierachy = new TotalWorkplaceHierachy(false, false, false, false, false, false, false, false, false);
                     let workScheduleSettingTotalOutput = new WorkScheduleSettingTotalOutput(false, false, false, false, false, false, totalWorkplaceHierachy);
                     let workScheduleOutputCondition = new WorkScheduleOutputCondition(companyId, userId, 0, '', 0, workScheduleSettingTotalOutput, 0, []);
@@ -391,7 +390,14 @@ module nts.uk.at.view.kwr001.a {
                 
                 nts.uk.ui.windows.setShared('KWR001_C', codeChoose, true);
                 nts.uk.ui.windows.sub.modal('/view/kwr/001/c/index.xhtml').onClosed(function(): any {
-                    nts.uk.ui.windows.getShared('KWR001_C');
+                    $.when(self.getDataCharateristic()).done(function(dataCharacteristic: any) {
+                    let isExist = !(_.isUndefined(dataCharacteristic) || _.isNull(dataCharacteristic));
+                    self.getDataStartPageService(isExist).done(function(dataService: any) { 
+                            self.itemListCodeTemplate(dataService.lstOutputItemDailyWorkSchedule);
+                        }).fail(function(error) {
+                           nts.uk.ui.dialog.alertError(error);     
+                        });
+                    });
                 });
             }
             
