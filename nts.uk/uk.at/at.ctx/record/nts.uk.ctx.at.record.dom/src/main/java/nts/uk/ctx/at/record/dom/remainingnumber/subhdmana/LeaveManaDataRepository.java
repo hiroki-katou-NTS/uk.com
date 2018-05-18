@@ -17,6 +17,7 @@ public interface LeaveManaDataRepository {
 	
 	List<LeaveManagementData> getBySidWithsubHDAtrAndDateCondition (String cid, String sid, GeneralDate startDate, GeneralDate endDate);
 	
+	List<LeaveManagementData> getBySidWithHolidayDate(String cid, String sid, GeneralDate dateHoliday);
 	
 	void create(LeaveManagementData domain);
 }

@@ -48,7 +48,8 @@
 				</div>
 				<div class="down-s set-date flex valign-center">
 					<!-- I6 年月日 -->
-					<div class="labelTitle" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_62')}</div>
+					<div class="labelTitle"
+						data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_62')}</div>
 					<!-- I6_1 年月日 -->
 					<!-- Datepicker -->
 					<div
@@ -73,8 +74,9 @@
 					</div>
 				</div>
 				<div class="down-s set-due-date flex valign-center">
-					<!-- I8 期限 -->		
-					<div class="labelTitle" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_72')}</div>
+					<!-- I8 期限 -->
+					<div class="labelTitle"
+						data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_72')}</div>
 					<!-- I8_1 期限 -->
 					<!-- Datepicker -->
 					<div
@@ -92,7 +94,8 @@
 				</div>
 				<div class="down-s flex valign-center">
 					<!-- I11 年月日 -->
-					<div class="labelTitle" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_75')}</div>
+					<div class="labelTitle"
+						data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_75')}</div>
 					<!-- I11_1 年月日 -->
 					<!-- Datepicker -->
 					<div
@@ -153,20 +156,22 @@
 						<hr />
 					</div>
 					<!-- I15 残数 -->
-					<div class="labelTitle" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_85')}</div>
+					<div class="labelTitle"
+						data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_85')}</div>
 					<!-- I15_1 残数 -->
-					<span class="label" data-bind="text: dayRemaining" ></span>
+					<span class="label" data-bind="text: dayRemaining"></span>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
 				<div id="process" data-bind="visible: true"
 					style="text-align: center;">
 					<!-- I31_1 登録 -->
-					<button id="stopExecute" class="proceed">#{i18n.getText('KDM001_89')}</button>
+					<button id="stopExecute" data-bind="click: createDialog"
+						class="proceed">#{i18n.getText('KDM001_89')}</button>
 					<!-- I31_1 キャンセル -->
 					<button id="closeDialog" data-bind="click: closeDialog">#{i18n.getText('KDM001_90')}</button>
 				</div>
-			</div>			
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>
