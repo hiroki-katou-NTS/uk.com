@@ -21,8 +21,8 @@ public class JpaStampCardItemRepository extends JpaRepository implements StampCa
 
 	private static StampCardItem toDomain(KwkdtStampCard entity) {
 		StampCardItem domain = StampCardItem.createFromJavaType(
-				entity.employeeID, 
-				entity.kwkdtStampCardPK.cardNumber);
+				entity.sid, 
+				entity.cardNo);
 		return domain;
 	}
 
